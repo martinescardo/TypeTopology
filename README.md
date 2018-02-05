@@ -13,17 +13,16 @@ and date at the place of contribution.
 The is an [hmlt](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html)
 rendring of the Agda code.
 
-# [UF](http://www.cs.bham.ac.uk/~mhe/agda-new/UF.html)
+# Spartan MLTT and univalent foundatinos
 
-At the moment this is both a mess and incomplete, but it works. It
-imports public [SpartanMLTT], which has portions that should be moved
-to UF (everything regarding equality, for example), and repetitions
+
+At the moment the univalent foundations module [UF](http://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) is a mess and incomplete, but it works. It imports public the module  [SpartanMLTT](http://www.cs.bham.ac.uk/~mhe/agda-new/SpartanMLTT.html), which has portions that should be moved to UF (everything regarding equality, for example), and repetitions
 should be avoided, and better naming conventions are needed.
 
 
 # Omniscient and searchable types
 
-This investigates the notion of [omniscient type]((http://www.cs.bham.ac.uk/~mhe/agda-new/OmniscientTypes.html). A type `X` is omniscient
+This investigates the notion of [omniscient type](http://www.cs.bham.ac.uk/~mhe/agda-new/OmniscientTypes.html). A type `X` is omniscient
 iff
 ```agda
    Π \(p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
@@ -34,7 +33,7 @@ that the function type [`LPO → ℕ` is omniscient](http://www.cs.bham.ac.uk/~m
 See also [WLPO](http://www.cs.bham.ac.uk/~mhe/agda-new/WLPO.html).
 
 A more interesting example of an omniscient set is `ℕ∞`, known as the [generic convergent sequence](http://www.cs.bham.ac.uk/~mhe/agda-new/GenericConvergentSequence.html), which under
-classical logic) is equivalent to `ℕ ∪ { ∞ }`.
+classical logic is equivalent to `ℕ ∪ { ∞ }`.
 But it is more direct to [show](http://www.cs.bham.ac.uk/~mhe/agda-new/ConvergentSequenceSearchable.html) that `ℕ∞` is a [searchable type](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableTypes.html), and get
 omniscience as a corollary.
 
@@ -52,10 +51,10 @@ in published papers we used an underlined symbol `n` to denote the copy
 of `n : ℕ` in `ℕ∞`.)
 
 This is used to show that the [non-continuity of a function ℕ∞ → ℕ is
-decidable](http://www.cs.bham.ac.uk/~mhe/agda-new/DecidabilityOfNonContinuity)
+decidable](http://www.cs.bham.ac.uk/~mhe/agda-new/DecidabilityOfNonContinuity.hmtl).
 
 Another example of searchable set is the type of univalent
-propositions (proved in the above module [SearchableTypes](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableTypes.html).
+propositions (proved in the above module [SearchableTypes](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableTypes.html)).
 
 Given countably many searchable sets, one can take the disjoint sum
 with a limit point at infinity, and this is again a searchable
@@ -65,8 +64,8 @@ increasingly complex searchable ordinals. The the modules
 
 [SquashedSum](http://www.cs.bham.ac.uk/~mhe/agda-new/SquashedSum.html) defines the sum of a countable family with an added point at infinity.
 
-The module [SearchableOrdinals](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableOrdinals.html) defines a map from ordinal codes `a la Brouwer to types which are seatchable.
-The module [LexicographicSearch](http://www.cs.bham.ac.uk/~mhe/agda-new/LexicographicSearch) show how to find infima of decidable predicates in the lexicographic order.
+The module [SearchableOrdinals](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableOrdinals.html) defines a map from ordinal codes à la Brouwer to types which are searchable.
+The module [LexicographicSearch](http://www.cs.bham.ac.uk/~mhe/agda-new/LexicographicSearch.html) show how to find infima of decidable predicates in the lexicographic order.
 The module [ConvergentSequenceInfSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/ConvergentSequenceInfSearchable) shows that we can find infima of decidable predicates on `ℕ∞`. 
 
 # Conaturals
@@ -85,18 +84,6 @@ The module [BasicDiscontinuityTaboo](http://www.cs.bham.ac.uk/~mhe/agda-new/Basi
 shows that a basic form of discontinuity is a
 taboo, and this is used to formulate and prove Rice's
 Theorem.
-
-# Rogue modules
-
-The following two rogue modules depart from our main philosophy of
-working strictly within ML type theory with the propositional
-axiom of extensionality. They disable the termination checker, for
-the reasons explained in the first module. But to make our point,
-we also include runnable experiments in the second module:
-[CountableTychonoff](http://www.cs.bham.ac.uk/~mhe/agda-new/CountableTychonoff).html implements a countable Tychonoff Theorem for searchable sets, and 
-[CantorSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/CantorSearchable.html) uses this to conclude that the Cantor type is searchable. 
-
-The following modules return to the well-behavedness paradigm.
 
 # Injective types
 
@@ -147,3 +134,16 @@ results and discussion that we choose not to bring here:
 * [KrausLemma](http://www.cs.bham.ac.uk/~mhe/agda-new/KrausLemma.html)
 * [NonCollapsibleFamily](http://www.cs.bham.ac.uk/~mhe/agda-new/NonCollapsibleFamily.html)
 * [PropIndexedPiSigma](http://www.cs.bham.ac.uk/~mhe/agda-new/PropIndexedPiSigma.html)
+
+# Rogue modules: countable Tychonoff and omniscience of the Cantor space
+
+The following two rogue modules depart from our main philosophy of
+working strictly within a Spartan Martin-Löf type theory with
+univalent extensions.  They disable the termination checker, for the
+reasons explained in the first module. But to make our point, we also
+include runnable experiments in the second module:
+[CountableTychonoff](http://www.cs.bham.ac.uk/~mhe/agda-new/CountableTychonoff).html
+implements a countable Tychonoff Theorem for searchable sets, and
+[CantorSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/CantorSearchable.html)
+uses this to conclude that the Cantor type is searchable.
+
