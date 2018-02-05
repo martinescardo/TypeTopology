@@ -13,7 +13,7 @@ and date at the place of contribution.
 The is an [hmlt](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html)
 rendring of the Agda code.
 
-# Spartan MLTT and univalent foundatinos
+# Spartan MLTT and univalent foundations
 
 
 At the moment the univalent foundations module [UF](http://www.cs.bham.ac.uk/~mhe/agda-new/UF.html) is a mess and incomplete, but it works. It imports public the module  [SpartanMLTT](http://www.cs.bham.ac.uk/~mhe/agda-new/SpartanMLTT.html), which has portions that should be moved to UF (everything regarding equality, for example), and repetitions
@@ -38,7 +38,7 @@ But it is more direct to [show](http://www.cs.bham.ac.uk/~mhe/agda-new/Convergen
 omniscience as a corollary.
 
 An interesting consequence of the omniscience of `ℕ∞` is that the
-[following property](http://www.cs.bham.ac.uk/~mhe/agda-new/ADecidableQuantificationOverTheNaturals), an instance of `WLPO`, holds constructively:
+[following property](http://www.cs.bham.ac.uk/~mhe/agda-new/ADecidableQuantificationOverTheNaturals.html), an instance of `WLPO`, holds constructively:
 ```
   Π \(p : ℕ∞ → 𝟚) → (Π \(n : ℕ) → p(under n) ≡ ₁) + ¬(Π \(n : ℕ) → p(under n) ≡ ₁).
 ```
@@ -66,7 +66,7 @@ increasingly complex searchable ordinals. The the modules
 
 The module [SearchableOrdinals](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableOrdinals.html) defines a map from ordinal codes à la Brouwer to types which are searchable.
 The module [LexicographicSearch](http://www.cs.bham.ac.uk/~mhe/agda-new/LexicographicSearch.html) show how to find infima of decidable predicates in the lexicographic order.
-The module [ConvergentSequenceInfSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/ConvergentSequenceInfSearchable) shows that we can find infima of decidable predicates on `ℕ∞`. 
+The module [ConvergentSequenceInfSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/ConvergentSequenceInfSearchable.html) shows that we can find infima of decidable predicates on `ℕ∞`. 
 
 # Conaturals
 
@@ -76,7 +76,7 @@ illustrative example ([CoNaturalsExercise](http://www.cs.bham.ac.uk/~mhe/agda-ne
 
 # The topology of the universe
 
-The module [TheTopologyOfTheUniverse](http://www.cs.bham.ac.uk/~mhe/agda-new/) discusses in what sense `ℕ∞` is the generic
+The module [TheTopologyOfTheUniverse](http://www.cs.bham.ac.uk/~mhe/agda-new/TheTopologyOfTheUniverse.html) discusses in what sense `ℕ∞` is the generic
 convergent sequence, and proves that the universe `U` of types is
 indiscrete, with a certain Rice's Theorem for the universe U as a
 corollary in the module [RicesTheoremForTheUniverse](http://www.cs.bham.ac.uk/~mhe/agda-new/RicesTheoremForTheUniverse.html).
