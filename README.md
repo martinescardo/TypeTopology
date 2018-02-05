@@ -51,8 +51,7 @@ in published papers we used an underlined symbol `n` to denote the copy
 of `n : ℕ` in `ℕ∞`.)
 
 This is used to show that the [non-continuity of a function ℕ∞ → ℕ is
-decidable](http://www.cs.bham.ac.uk/~mhe/agda-new/DecidabilityOfNonContinuity.hmtl).
-
+decidable](http://www.cs.bham.ac.uk/~mhe/agda-new/DecidabilityOfNonContinuity.html).
 Another example of searchable set is the type of univalent
 propositions (proved in the above module [SearchableTypes](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableTypes.html)).
 
@@ -60,10 +59,8 @@ Given countably many searchable sets, one can take the disjoint sum
 with a limit point at infinity, and this is again a searchable
 sets. This construction is called the squashed sum of the countable
 family searchable sets. It can be transfinitely iterated to produce
-increasingly complex searchable ordinals. The the modules
-
+increasingly complex searchable ordinals. The the module
 [SquashedSum](http://www.cs.bham.ac.uk/~mhe/agda-new/SquashedSum.html) defines the sum of a countable family with an added point at infinity.
-
 The module [SearchableOrdinals](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableOrdinals.html) defines a map from ordinal codes à la Brouwer to types which are searchable.
 The module [LexicographicSearch](http://www.cs.bham.ac.uk/~mhe/agda-new/LexicographicSearch.html) show how to find infima of decidable predicates in the lexicographic order.
 The module [ConvergentSequenceInfSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/ConvergentSequenceInfSearchable.html) shows that we can find infima of decidable predicates on `ℕ∞`. 
