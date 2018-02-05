@@ -1,17 +1,12 @@
-```
-   v a r i o u s   n e w   t h e o r e m s   i n  
-   c o n s t r u c t i v e    u n i v a l e n t    m a t h e m a t i c s
-   w r i t t e n    i n   A g d a
-```
+# Various new theorems in constructive univalent mathematics written in Agda
 
 This development was started by Martin Escardo in 2010, to github
 Monday 5th February 2018. A few files are authored by collaborators,
-with names added at the top. If you contribute, please add your name
-and date at the place of contribution.
+with names added at the top. If you contribute, please add your full
+real name and date at the place of contribution.
 
-
-The is an [hmlt](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html)
-rendring of the Agda code.
+In this discusion we give links to an [hmlt](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html)
+rendering of the Agda code hosted at Martin Escardo's institutional web page.
 
 # Spartan MLTT and univalent foundations
 
@@ -59,7 +54,7 @@ Given countably many searchable sets, one can take the disjoint sum
 with a limit point at infinity, and this is again a searchable
 sets. This construction is called the squashed sum of the countable
 family searchable sets. It can be transfinitely iterated to produce
-increasingly complex searchable ordinals. The the module
+increasingly complex searchable ordinals. The module
 [SquashedSum](http://www.cs.bham.ac.uk/~mhe/agda-new/SquashedSum.html) defines the sum of a countable family with an added point at infinity.
 The module [SearchableOrdinals](http://www.cs.bham.ac.uk/~mhe/agda-new/SearchableOrdinals.html) defines a map from ordinal codes à la Brouwer to types which are searchable.
 The module [LexicographicSearch](http://www.cs.bham.ac.uk/~mhe/agda-new/LexicographicSearch.html) show how to find infima of decidable predicates in the lexicographic order.
@@ -87,7 +82,7 @@ Theorem.
 The module
 [InjectiveTypes](http://www.cs.bham.ac.uk/~mhe/agda-new/InjectiveTypes.html)
 shows that universes are injective, and more generally that the
-injective types are the retracts of exponential powers of universes.
+injective types are precisely the retracts of exponential powers of universes.
 This uses properties of products and sums indexed by univalent
 propositions. This uses the module [IdEmbedding]((http://www.cs.bham.ac.uk/~mhe/agda-new/IdEmbedding.html), which shows that the identity type former `Id {X} : X → X → U` is an embedding assuming either Streicher's K axiom (`U` is a set) or the Voevodky's univalence axiom.
 
