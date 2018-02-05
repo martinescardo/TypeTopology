@@ -85,7 +85,7 @@ The module
 shows that universes are injective, and more generally that the
 injective types are precisely the retracts of exponential powers of universes.
 This uses properties of products and sums indexed by univalent
-propositions. This uses the module [IdEmbedding]((http://www.cs.bham.ac.uk/~mhe/agda-new/IdEmbedding.html), which shows that the identity type former `Id {X} : X → X → U` is an embedding assuming either Streicher's K axiom (`U` is a set) or the Voevodky's univalence axiom.
+propositions. This uses the module [IdEmbedding](http://www.cs.bham.ac.uk/~mhe/agda-new/IdEmbedding.html), which shows that the identity type former `Id {X} : X → X → U` is an embedding assuming either Streicher's K axiom (`U` is a set) or the Voevodky's univalence axiom.
 
 And more subtly, it uses that a product of searchable sets indexed by a
 univalent proposition is itself searchable: [PropTychonoff](http://www.cs.bham.ac.uk/~mhe/agda-new/PropTychonoff.html).
