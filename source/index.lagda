@@ -39,7 +39,7 @@ symbols to get to their definitions.
 
 The module dependency graph: http://www.cs.bham.ac.uk/~mhe/agda-new/manual.pdf
 
-The following module investigates the notion of omniscient set. A
+The following module investigates the notion of omniscience set. A
 set X is omniscient iff
 
    (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
@@ -116,7 +116,7 @@ open import DecidabilityOfNonContinuity
 \end{code}
 
 Another example of searchable set is the type of univalent
-propositions (proved in the above module SearchableTypes).
+propositions (proved in the above module Searchable).
 
 Given countably many searchable sets, one can take the disjoint sum
 with a limit point at infinity, and this is again a searchable
