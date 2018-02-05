@@ -1,0 +1,106 @@
+Martin Escardo 2012.
+
+The following says that a particular kind of discontinuity for
+functions p : ℕ∞ → ₂ is a taboo. Equivalently, it says that the
+convergence of the constant sequence ₀ to the number ₁ in the type
+of binary numbers is a taboo. A Brouwerian continuity axiom is
+that any convergent sequence in the type ₂ of binary numbers must
+be eventually constant (which we don't postulate).
+
+\begin{code}
+
+{-# OPTIONS --without-K --exact-split --safe #-}
+
+open import UF
+
+module BasicDiscontinuityTaboo (fe : ∀ {U V} → FunExt U V) where
+
+open import Naturals
+open import Two
+open import GenericConvergentSequence
+open import WLPO
+
+basic-discontinuity : (ℕ∞ → 𝟚) → U₀ ̇
+basic-discontinuity p = ((n : ℕ) → p(under n) ≡ ₀) × (p ∞ ≡ ₁)
+
+basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
+basic-discontinuity-taboo p (f , r) u = two-equality-cases lemma₀ lemma₁
+ where 
+  fact₀ : u ≡ ∞ → p u ≡ ₁
+  fact₀ t = ap p t ∙ r
+
+  fact₁ : p u ≢ ₁ → u ≢ ∞
+  fact₁ = contrapositive fact₀
+
+  fact₂ : p u ≡ ₀ → u ≢ ∞
+  fact₂ = fact₁ ∘ Lemma[b≡₀→b≢₁]
+
+  lemma₀ : p u ≡ ₀ → u ≡ ∞ + u ≢ ∞
+  lemma₀ s = inr(fact₂ s)
+
+  fact₃ : p u ≡ ₁ → ((n : ℕ) → u ≢ under n)
+  fact₃ t n s = zero-is-not-one(Lemma[x≡y→x≡z→y≡z](f n)(Lemma[x≡y→x≡z→y≡z](ap p s) t))
+
+  lemma₁ : p u ≡ ₁ → u ≡ ∞ + u ≢ ∞
+  lemma₁ t = inl(not-ℕ-is-∞ fe (fact₃ t))
+
+\end{code}
+
+The converse also holds. It shows that any proof of WLPO is a
+discontinuous function, which we use to build a discontinuous function
+of type ℕ∞ → 𝟚.
+
+\begin{code}
+
+WLPO-is-discontinuous : WLPO → Σ \(p : ℕ∞ → 𝟚) → basic-discontinuity p
+WLPO-is-discontinuous f = p , (d , d∞)
+ where
+  p : ℕ∞ → 𝟚
+  p u = equality-cases (f u) case₀ case₁
+   where
+    case₀ : (r : u ≡ ∞) → f u ≡ inl r → 𝟚
+    case₀ r s = ₁     
+    case₁ : (r : u ≢ ∞) → f u ≡ inr r → 𝟚
+    case₁ r s = ₀     
+
+  d : (n : ℕ) → p(under n) ≡ ₀
+  d n = equality-cases (f(under n)) case₀ case₁
+   where
+    case₀ : (r : under n ≡ ∞) → f(under n) ≡ inl r → p(under n) ≡ ₀
+    case₀ r s = 𝟘-elim(∞-is-not-ℕ n (r ⁻¹))    
+    case₁ : (g : under n ≢ ∞) → f(under n) ≡ inr g → p(under n) ≡ ₀
+    case₁ g = ap (λ t → equality-cases t (λ r s → ₁) (λ r s → ₀))
+
+  d∞ : p ∞ ≡ ₁
+  d∞ = equality-cases (f ∞) case₀ case₁
+   where
+    case₀ : (r : ∞ ≡ ∞) → f ∞ ≡ inl r → p ∞ ≡ ₁
+    case₀ r = ap (λ t → equality-cases t (λ r s → ₁) (λ r s → ₀))
+    case₁ : (g : ∞ ≢ ∞) → f ∞ ≡ inr g → p ∞ ≡ ₁
+    case₁ g = 𝟘-elim(g refl)
+
+\end{code}
+
+If two 𝟚-valued functions defined on ℕ∞ agree at ℕ, they have to agree
+at ∞ too, unless WLPO holds:
+
+\begin{code}
+
+disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ q(under n)) → p ∞ ≢ q ∞ → WLPO
+disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
+ where
+  r : ℕ∞ → 𝟚
+  r u = (p u) ⊕ (q u)
+
+  r-lemma : (n : ℕ) → r(under n) ≡ ₀
+  r-lemma n = Lemma[b≡c→b⊕c≡₀](f n)
+
+  r-lemma∞ : r ∞ ≡ ₁
+  r-lemma∞ = Lemma[b≢c→b⊕c≡₁] g
+
+open import DiscreteAndSeparated
+
+agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ q(under n)) → p ∞ ≡ q ∞ 
+agreement-cotaboo φ p q f = 𝟚-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
+
+\end{code}
