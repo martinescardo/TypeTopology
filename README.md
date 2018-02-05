@@ -135,7 +135,7 @@ working strictly within a Spartan Martin-Löf type theory with
 univalent extensions.  They disable the termination checker, for the
 reasons explained in the first module. But to make our point, we also
 include runnable experiments in the second module:
-[CountableTychonoff](http://www.cs.bham.ac.uk/~mhe/agda-new/CountableTychonoff).html
+[CountableTychonoff](http://www.cs.bham.ac.uk/~mhe/agda-new/CountableTychonoff.html)
 implements a countable Tychonoff Theorem for searchable sets, and
 [CantorSearchable](http://www.cs.bham.ac.uk/~mhe/agda-new/CantorSearchable.html)
 uses this to conclude that the Cantor type is searchable.
