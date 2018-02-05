@@ -5,8 +5,9 @@ Monday 5th February 2018. A few files are authored by collaborators,
 with names added at the top. If you contribute, please add your full
 real name and date at the place of contribution.
 
-In this discusion we give links to an [hmlt](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html)
-rendering of the Agda code hosted at Martin Escardo's institutional web page.
+In this discusion we give links to an [hmlt rendering of the Agda
+ code](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html) hosted at
+ Martin Escardo's institutional web page.
 
 # Spartan MLTT and univalent foundations
 
