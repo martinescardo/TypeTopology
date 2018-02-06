@@ -585,23 +585,23 @@ as those that are 𝟚-CompactInhabited or empty:
 
 \begin{code}
 
-isProp-𝟚-CIorNe : ∀ {U} {X : U ̇} → isProp(𝟚-CompactInhabited X + ¬ X)
-isProp-𝟚-CIorNe {U} {X} = sum-of-contradictory-props
+isProp-𝟚-CIorE : ∀ {U} {X : U ̇} → isProp(𝟚-CompactInhabited X + empty X)
+isProp-𝟚-CIorE {U} {X} = sum-of-contradictory-props
                            𝟚-CompactInhabited-isProp (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
                              (λ c u → ptrec 𝟘-isProp (contrapositive pr₁ u) (c (λ _ → ₀)))
 
-𝟚-CIorNE-C : ∀ {U} {X : U ̇} → 𝟚-CompactInhabited X + ¬ X → 𝟚-Compact X
-𝟚-CIorNE-C (inl c)   = pr₂(𝟚-ci-i-and-c c)
-𝟚-CIorNE-C (inr u) p = inr (ptrec 𝟘-isProp (λ σ → u (pr₁ σ)))
+𝟚-CIorE-C : ∀ {U} {X : U ̇} → 𝟚-CompactInhabited X + empty X → 𝟚-Compact X
+𝟚-CIorE-C (inl c)   = pr₂(𝟚-ci-i-and-c c)
+𝟚-CIorE-C (inr u) p = inr (ptrec 𝟘-isProp (λ σ → u (pr₁ σ)))
 
-𝟚-C-CIorNE : ∀ {U} {X : U ̇} → 𝟚-Compact X → 𝟚-CompactInhabited X + ¬ X
-𝟚-C-CIorNE {U} {X} c = g
+𝟚-C-CIorE : ∀ {U} {X : U ̇} → 𝟚-Compact X → 𝟚-CompactInhabited X + empty X
+𝟚-C-CIorE {U} {X} c = g
  where
-  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → 𝟚-CompactInhabited X + ¬ X
+  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → 𝟚-CompactInhabited X + empty X
   h (inl t) = inl (𝟚-i-and-c-ci (ptfunct pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
   
-  g : 𝟚-CompactInhabited X + ¬ X
+  g : 𝟚-CompactInhabited X + empty X
   g = h (c (λ _ → ₀))
 
 \end{code}

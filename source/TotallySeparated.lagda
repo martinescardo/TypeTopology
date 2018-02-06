@@ -325,23 +325,15 @@ module Apartness (pt : PropTrunc) where
 
  open PropositionalTruncation (pt)
 
- prop-valued : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- prop-valued _♯_ = ∀ x y → isProp(x ♯ y)
-
- irreflexive : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- irreflexive _♯_ = ∀ x → ¬(x ♯ x)
-
- symmetric : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- symmetric _♯_ = ∀ x y → x ♯ y → y ♯ x
-
- cotransitive : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
+ prop-valued irreflexive symmetric cotransitive tight apartness
+     : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
+ 
+ prop-valued  _♯_ = ∀ x y → isProp(x ♯ y)
+ irreflexive  _♯_ = ∀ x → ¬(x ♯ x)
+ symmetric    _♯_ = ∀ x y → x ♯ y → y ♯ x
  cotransitive _♯_ = ∀ x y z → x ♯ y → x ♯ z ∨ y ♯ z
-
- tight : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- tight _♯_ = ∀ x y → ¬(x ♯ y) → x ≡ y
-
- apartness : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- apartness _♯_ = prop-valued _♯_ × irreflexive _♯_ × symmetric _♯_ × cotransitive _♯_
+ tight        _♯_ = ∀ x y → ¬(x ♯ y) → x ≡ y
+ apartness    _♯_ = prop-valued _♯_ × irreflexive _♯_ × symmetric _♯_ × cotransitive _♯_
 
 \end{code}
 
