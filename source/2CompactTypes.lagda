@@ -43,6 +43,7 @@ and SearchableTypes) are structure on the type.
 𝟚-Compact-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-Compact X)
 𝟚-Compact-isProp {U} = isProp-exponential-ideal (fe U U)
                          (λ _ → decidable-isProp (fe U U₀) ptisp)
+
 \end{code}
 
 The following technical lemmas are often useful in our investigation
@@ -97,6 +98,19 @@ We do indeed get a stronger notion:
     g : ((x : X) → p x ≡ ₁) → ¬ Σ \x → p x ≡ ₀
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
   f (inr u) = inl (not-exists₀-implies-forall₁ p u)
+
+\end{code}
+
+TODO. Add that finite types are compact. For the moment we do the base
+case:
+
+\begin{code}
+
+empty-𝟚-Compact : ∀ {U} {X : U ̇} → empty X → 𝟚-Compact X
+empty-𝟚-Compact u p = inr (ptrec 𝟘-isProp λ σ → u (pr₁ σ))
+
+empty-𝟚-compact : ∀ {U} {X : U ̇} → empty X → 𝟚-compact X
+empty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
 
@@ -245,6 +259,14 @@ surjection-𝟚-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
+retract-𝟚-Compact : ∀ {U V} {X : U ̇} {Y : V ̇}
+                  → retract Y of X → 𝟚-Compact X → 𝟚-Compact Y
+retract-𝟚-Compact (f , hass) = surjection-𝟚-Compact f (retraction-surjection f hass)
+
+retract-𝟚-Compact' : ∀ {U V} {X : U ̇} {Y : V ̇}
+                  → ∥ retract Y of X ∥ → 𝟚-Compact X → 𝟚-Compact Y
+retract-𝟚-Compact' t c = ptrec 𝟚-Compact-isProp (λ r → retract-𝟚-Compact r c) t
+
 image-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                → 𝟚-compact X → 𝟚-compact (image f)
 image-𝟚-compact f = surjection-𝟚-compact (corestriction f) (corestriction-surjection f)
@@ -252,6 +274,10 @@ image-𝟚-compact f = surjection-𝟚-compact (corestriction f) (corestriction-
 retract-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇}
                   → retract Y of X → 𝟚-compact X → 𝟚-compact Y
 retract-𝟚-compact (f , hass) = surjection-𝟚-compact f (retraction-surjection f hass)
+
+retract-𝟚-compact' : ∀ {U V} {X : U ̇} {Y : V ̇}
+                  → ∥ retract Y of X ∥ → 𝟚-compact X → 𝟚-compact Y
+retract-𝟚-compact' t c = ptrec 𝟚-compact-isProp (λ r → retract-𝟚-compact r c) t
 
 i2c2c : ∀ {U V} {X : U ̇} {Y : V ̇}
       → X → 𝟚-compact (X → Y) → 𝟚-compact Y
@@ -464,75 +490,158 @@ of propositions, we have partial information for the moment.
 
 \begin{code}
 
-module CompactnessOfPropositions where
-
- ispcd : ∀ {U} (X : U ̇) → isProp X → 𝟚-Compact X → decidable X
- ispcd X isp c = f a
-  where
-   a : decidable ∥ X × (₀ ≡ ₀) ∥ 
-   a = c (λ x → ₀)
+ispcd : ∀ {U} (X : U ̇) → isProp X → 𝟚-Compact X → decidable X
+ispcd X isp c = f a
+ where
+  a : decidable ∥ X × (₀ ≡ ₀) ∥ 
+  a = c (λ x → ₀)
    
-   f : decidable ∥ X × (₀ ≡ ₀) ∥ → decidable X
-   f (inl s) = inl (ptrec isp pr₁ s)
-   f (inr u) = inr (λ x → u ∣ x , refl ∣)
+  f : decidable ∥ X × (₀ ≡ ₀) ∥ → decidable X
+  f (inl s) = inl (ptrec isp pr₁ s)
+  f (inr u) = inr (λ x → u ∣ x , refl ∣)
 
- ispdc : ∀ {U} (X : U ̇) → isProp X → decidable X → 𝟚-Compact X
- ispdc X isp d p = g d
-  where
-   g : decidable X → decidable (∃ \x → p x ≡ ₀)
-   g (inl x) = two-equality-cases b c
-    where
-     b : p x ≡ ₀ → decidable (∃ \x → p x ≡ ₀)
-     b r = inl ∣ x , r ∣
+ispcd-corollary : ∀ {U} {X : U ̇} → 𝟚-Compact X → decidable ∥ X ∥
+ispcd-corollary {U} {X} c = ispcd ∥ X ∥ ptisp (surjection-𝟚-Compact ∣_∣ pt-is-surjection c)
+
+ispdc : ∀ {U} (X : U ̇) → isProp X → decidable X → 𝟚-Compact X
+ispdc X isp d p = g d
+ where
+  g : decidable X → decidable (∃ \x → p x ≡ ₀)
+  g (inl x) = two-equality-cases b c
+   where
+    b : p x ≡ ₀ → decidable (∃ \x → p x ≡ ₀)
+    b r = inl ∣ x , r ∣
      
-     c : p x ≡ ₁ → decidable (∃ \x → p x ≡ ₀)
-     c r = inr (ptrec (𝟘-isProp) f) 
-      where
-       f : ¬ Σ \y → p y ≡ ₀
-       f (y , q) = zero-is-not-one (transport (λ x → p x ≡ ₀) (isp y x) q ⁻¹ ∙ r)
+    c : p x ≡ ₁ → decidable (∃ \x → p x ≡ ₀)
+    c r = inr (ptrec (𝟘-isProp) f) 
+     where
+      f : ¬ Σ \y → p y ≡ ₀
+      f (y , q) = zero-is-not-one (transport (λ x → p x ≡ ₀) (isp y x) q ⁻¹ ∙ r)
        
-   g (inr u) = inr (ptrec 𝟘-isProp (λ σ → u(pr₁ σ)))
+  g (inr u) = inr (ptrec 𝟘-isProp (λ σ → u(pr₁ σ)))
 
- ispcwd : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact X → decidable(¬ X)
- ispcwd X isp c = f a
-  where
-   a : decidable (X → ₀ ≡ ₁)
-   a = c (λ x → ₀)
+ispcwd : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact X → decidable(¬ X)
+ispcwd X isp c = f a
+ where
+  a : decidable (X → ₀ ≡ ₁)
+  a = c (λ x → ₀)
    
-   f : decidable (X → ₀ ≡ ₁) → decidable (¬ X)
-   f (inl u) = inl (zero-is-not-one  ∘ u)
-   f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
+  f : decidable (X → ₀ ≡ ₁) → decidable (¬ X)
+  f (inl u) = inl (zero-is-not-one  ∘ u)
+  f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
 
- em2cdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
- em2cdn X isp c = cases l m a
-  where
-   p : X + ¬ X → 𝟚
-   p (inl x) = ₀
-   p (inr u) = ₁
+em2cdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
+em2cdn X isp c = cases l m a
+ where
+  p : X + ¬ X → 𝟚
+  p (inl x) = ₀
+  p (inr u) = ₁
   
-   a : decidable ((z : X + ¬ X) → p z ≡ ₁)
-   a = c p
+  a : decidable ((z : X + ¬ X) → p z ≡ ₁)
+  a = c p
   
-   l : ((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
-   l α = inl(λ x → 𝟘-elim (zero-is-not-one (α (inl x))))
+  l : ((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
+  l α = inl(λ x → 𝟘-elim (zero-is-not-one (α (inl x))))
   
-   α : (u : X → 𝟘) (z : X + ¬ X) → p z ≡ ₁
-   α u (inl x) = 𝟘-elim (u x)
-   α u (inr v) = refl
+  α : (u : X → 𝟘) (z : X + ¬ X) → p z ≡ ₁
+  α u (inl x) = 𝟘-elim (u x)
+  α u (inr v) = refl
      
-   m : ¬((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
-   m φ = inr(λ u → φ(α u))
+  m : ¬((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
+  m φ = inr(λ u → φ(α u))
 
 \end{code}
 
-TODO: Notice that the map ∣_∣:X→∥X∥ is a surjection, and hence if X is
-𝟚-Compact, then ∥X∥, being a searchable proposition, is
-decidable. That is, if X is compact then it is decidable whether it is
-inhabited.
+Added 8th Feb 2018: A pointed detachable subset of a compact type is a
+retract. Hence any detachable (pointed or not) subset of a compact
+type is compact.
 
-See also the module SimpleTypes, which uses this module to study
-the least collection of types containing ℕ (and sometimes 𝟚) closed
-under (non-dependent) function types.
+\begin{code}
+
+detachable-subset-𝟚-Compact-retract : ∀ {U} {X : U ̇} {A : X → 𝟚}
+  → 𝟚-Compact X → (Σ \(x : X) → A(x) ≡ ₀) → retract (Σ \(x : X) → A(x) ≡ ₀) of X
+detachable-subset-𝟚-Compact-retract {U} {X} {A} c (x₀ , e₀) = r , pr₁ , rs
+ where
+  r : X → Σ \(x : X) → A x ≡ ₀
+  r x = two-equality-cases (λ(e : A x ≡ ₀) → (x , e)) (λ(e : A x ≡ ₁) → (x₀ , e₀))
+  
+  rs : (σ : Σ \(x : X) → A x ≡ ₀) → r(pr₁ σ) ≡ σ
+  rs (x , e) = w
+   where
+    s : (b : 𝟚) → b ≡ ₀ → two-equality-cases (λ(_ : b ≡ ₀) → (x , e)) (λ(_ : b ≡ ₁) → (x₀ , e₀)) ≡ (x , e)
+    s ₀ refl = refl
+    s ₁ ()
+    t : two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
+    t = s (A x) e
+    u : (λ e' → x , e') ≡ (λ _ → x , e)
+    u = funext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-is-set e' e)
+    v : r x ≡ two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
+    v = ap (λ f₀ → two-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
+    w : r x ≡ x , e
+    w = v ∙ t
+
+detachable-subset-𝟚-Compact : ∀ {U} {X : U ̇} (A : X → 𝟚)
+  → 𝟚-Compact X → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
+detachable-subset-𝟚-Compact {U} {X} A c = g (c A)
+ where
+  g : decidable (∃ \(x : X) → A x ≡ ₀) → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
+  g (inl e) = retract-𝟚-Compact' (ptfunct (detachable-subset-𝟚-Compact-retract c) e) c
+  g (inr u) = empty-𝟚-Compact (contrapositive ∣_∣ u)
+
+\end{code}
+
+For the weak compact case, the retraction method to prove the last
+theorem is not available, but the conclusion holds, with some of the
+same ingredients (and with a longer proof (is there a shorter one?)).
+
+\begin{code}
+
+detachable-subset-𝟚-compact : ∀ {U} {X : U ̇} (A : X → 𝟚)
+  → 𝟚-compact X → 𝟚-compact(Σ \(x : X) → A(x) ≡ ₁)
+detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
+ where
+  p₀ : (x : X) → A x ≡ ₀ → 𝟚
+  p₀ x e = ₁
+  
+  p₁ : (x : X) → A x ≡ ₁ → 𝟚
+  p₁ x e = q (x , e)
+  
+  p : X → 𝟚
+  p x = two-equality-cases (p₀ x) (p₁ x)
+  
+  p-spec₀ : (x : X) → A x ≡ ₀ → p x ≡ ₁
+  p-spec₀ x e = s (A x) e (p₁ x)
+   where
+    s : (b : 𝟚) → b ≡ ₀ → (f₁ : b ≡ ₁ → 𝟚) → two-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
+    s ₀ refl = λ f₁ → refl
+    s ₁ ()
+    
+  p-spec₁ : (x : X) (e : A x ≡ ₁) → p x ≡ q (x , e)
+  p-spec₁ x e = u ∙ t
+   where
+    y : A x ≡ ₁ → 𝟚
+    y _ = q (x , e)
+    r : p₁ x ≡ y
+    r = funext (fe U₀ U₀) λ e' → ap (p₁ x) (𝟚-is-set e' e)
+    s : (b : 𝟚) → b ≡ ₁ → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
+    s ₀ ()
+    s ₁ refl = refl
+    t : two-equality-cases (p₀ x) y ≡ q (x , e)
+    t = s (A x) e
+    u : p x ≡ two-equality-cases (p₀ x) y
+    u = ap (two-equality-cases (p₀ x)) r
+  
+  g : decidable ((x : X) → p x ≡ ₁) → decidable ((σ : Σ \(x : X) → A x ≡ ₁) → q σ ≡ ₁)
+  g (inl α) = inl h
+   where
+    h : (σ : Σ \(x : X) → A x ≡ ₁) → q σ ≡ ₁
+    h (x , e) = (p-spec₁ x e) ⁻¹ ∙ α x
+  g (inr u) = inr(contrapositive h u)
+   where
+    h : ((σ : Σ \(x : X) → A x ≡ ₁) → q σ ≡ ₁) → (x : X) → p x ≡ ₁
+    h β x = two-equality-cases (p-spec₀ x) (λ e → p-spec₁ x e ∙ β (x , e))
+
+\end{code}
 
 20 Jan 2017
 
@@ -591,8 +700,8 @@ isProp-𝟚-CIorE {U} {X} = sum-of-contradictory-props
                              (λ c u → ptrec 𝟘-isProp (contrapositive pr₁ u) (c (λ _ → ₀)))
 
 𝟚-CIorE-C : ∀ {U} {X : U ̇} → 𝟚-CompactInhabited X + empty X → 𝟚-Compact X
-𝟚-CIorE-C (inl c)   = pr₂(𝟚-ci-i-and-c c)
-𝟚-CIorE-C (inr u) p = inr (ptrec 𝟘-isProp (λ σ → u (pr₁ σ)))
+𝟚-CIorE-C (inl c) = pr₂(𝟚-ci-i-and-c c)
+𝟚-CIorE-C (inr u) = empty-𝟚-Compact u
 
 𝟚-C-CIorE : ∀ {U} {X : U ̇} → 𝟚-Compact X → 𝟚-CompactInhabited X + empty X
 𝟚-C-CIorE {U} {X} c = g
@@ -608,3 +717,7 @@ isProp-𝟚-CIorE {U} {X} = sum-of-contradictory-props
 
 Perhaps this characterization of compacteness can make some of the
 above proofs a little bit more direct.
+
+See also the module SimpleTypes, which uses this module to study
+the least collection of types containing ℕ (and sometimes 𝟚) closed
+under (non-dependent) function types.

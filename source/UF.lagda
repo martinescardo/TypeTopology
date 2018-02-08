@@ -1194,6 +1194,9 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
    g (x , p) = x , to-Σ-Id (λ y → ∥ Σ (λ x → f x ≡ y) ∥) (p , (ptisp _ _))
 
+ pt-is-surjection : ∀ {U} {X : U ̇} → isSurjection(λ(x : X) → ∣ x ∣)
+ pt-is-surjection t = ptrec ptisp (λ x → ∣ x , ptisp (∣ x ∣) t ∣) t
+
 \end{code}
 
 Surjections can be characterized as follows, modulo size:

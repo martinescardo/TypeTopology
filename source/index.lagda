@@ -1,6 +1,6 @@
-   v a r i o u s   n e w   t h e o r e m s   i n  
-   c o n s t r u c t i v e    u n i v a l e n t    m a t h e m a t i c s
-   w r i t t e n    i n   A g d a
+   Various new theorems in
+   constructive univalent mathematics
+   written in Agda
 
    Martin Escardo, 2010--
    Continuously evolving.
