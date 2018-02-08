@@ -59,7 +59,7 @@ Lemma[[a≡₀→b≡₀]→b≡₁→a≡₁] f = Lemma[b≢₀→b≡₁] ∘ 
 
 \end{code}
 
- Definition (Natural order of binary numbers):
+Definition (Natural order of binary numbers):
 
 \begin{code}
 
@@ -80,6 +80,11 @@ a ≤' b = b ≡ ₀ → a ≡ ₀
 ≤'-gives-≤ {₁} {₀} f p = (f refl)⁻¹
 ≤'-gives-≤ {₁} {₁} f p = p
 
+≤-anti : {a b : 𝟚} → a ≤ b → b ≤ a → a ≡ b
+≤-anti {₀} {₀} f g = refl
+≤-anti {₀} {₁} f g = g refl
+≤-anti {₁} {₀} f g = ≤-gives-≤' f refl
+≤-anti {₁} {₁} f g = refl
 
 _≥_ : (a b : 𝟚) → U₀ ̇
 a ≥ b = b ≤ a

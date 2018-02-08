@@ -425,6 +425,10 @@ equality-cases (inl x) f g = f x refl
 equality-cases (inr y) f g = g y refl
 
 
+×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
+     → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y') 
+×-≡ refl refl = refl
+
 Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇ 
 Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
 

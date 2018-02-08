@@ -22,7 +22,16 @@ open import UF
 module 2CompactTypes (fe : ∀ U V → FunExt U V)
                      (pt : PropTrunc)
                      where
-                     
+
+fe₀₀ : FunExt U₀ U₀
+fe₀₀ = fe U₀ U₀
+
+funext₀₀ : {X : U₀ ̇} {A : X → U₀ ̇} {f g : Π A} → ((x : X) → f x ≡ g x) → f ≡ g
+funext₀₀ = funext fe₀₀
+
+funext₀ : ∀ U → {X : U ̇} {A : X → U₀ ̇} {f g : Π A} → ((x : X) → f x ≡ g x) → f ≡ g
+funext₀ U = funext (fe U U₀)
+
 open PropositionalTruncation (pt)
 open import Two
 open import DecidableAndDetachable
@@ -127,13 +136,13 @@ boolean predicate λ x → ₁:
  where
   g : decidable (p ≡ λ x → ₁) → decidable ((x : X) → p x ≡ ₁)
   g (inl r) = inl (happly p (λ x → ₁) r)
-  g (inr u) = inr (contrapositive (funext (fe U U₀)) u)
+  g (inr u) = inr (contrapositive (funext₀ U) u)
 
 𝟚-cc' : ∀ {U} {X : U ̇} → 𝟚-compact X → 𝟚-compact' X
 𝟚-cc' {U} {X} c p = g (c p)
  where
   g : decidable ((x : X) → p x ≡ ₁) → decidable (p ≡ λ x → ₁)
-  g (inl α) = inl (funext (fe U U₀) α)
+  g (inl α) = inl (funext₀ U α)
   g (inr u) = inr (contrapositive (happly p (λ x → ₁)) u)
 
 \end{code}
@@ -394,7 +403,7 @@ corollaries:
 
 tscd₀ : {X : U₀ ̇} {Y : U₀ ̇} → totally-separated X → retract 𝟚 of Y
      → 𝟚-compact (X → Y) → discrete X
-tscd₀ {X} {Y} ts r c = tscd ts (retract-𝟚-compact (rpe (fe U₀ U₀) r) c)
+tscd₀ {X} {Y} ts r c = tscd ts (retract-𝟚-compact (rpe fe₀₀ r) c)
 
 module _ {U : Universe} {X : U ̇} where
 
@@ -443,7 +452,7 @@ open import GenericConvergentSequence
 open import WLPO
 
 [ℕ∞→𝟚]-compact-implies-WLPO : 𝟚-compact (ℕ∞ → 𝟚) → WLPO
-[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-WLPO (tscd (ℕ∞-totally-separated (fe U₀ U₀)) c)
+[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-WLPO (tscd (ℕ∞-totally-separated fe₀₀) c)
 
 \end{code}
 
@@ -623,7 +632,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     y : A x ≡ ₁ → 𝟚
     y _ = q (x , e)
     r : p₁ x ≡ y
-    r = funext (fe U₀ U₀) λ e' → ap (p₁ x) (𝟚-is-set e' e)
+    r = funext₀₀ (λ e' → ap (p₁ x) (𝟚-is-set e' e))
     s : (b : 𝟚) → b ≡ ₁ → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
     s ₁ refl = refl
@@ -728,9 +737,28 @@ under (non-dependent) function types.
 \begin{code}
 
 _has-inf_ : ∀ {U} {X : U ̇} → (X → 𝟚) → 𝟚 → U ̇
-p has-inf n = (∀ x → n ≤ p x) × ∀ m → (∀ x → m ≤ p x) → m ≤ n
+p has-inf n = (∀ x → n ≤ p x) × (∀ m → (∀ x → m ≤ p x) → m ≤ n)
 
-𝟚-compact-has-infs : ∀ {U} {X : U ̇} → 𝟚-compact X → ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
+has-inf-isProp : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → isProp(p has-inf n)
+has-inf-isProp {U} {X} p n (f , g) (f' , g') = ×-≡ r s
+ where
+  r : f ≡ f'
+  r = funext₀ U (λ x → funext₀₀ (λ r → 𝟚-is-set (f x r) (f' x r)))
+  s : g ≡ g'
+  s = funext (fe U₀ U) (λ n → funext₀ U (λ φ → funext₀₀ (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
+
+at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → isProp (Σ \(n : 𝟚) → p has-inf n)
+at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-Id (_has-inf_ p)
+                                                       (≤-anti (g' n f) (g n' f') ,
+                                                        has-inf-isProp p n' _ _)
+
+has-infs : ∀ {U} → U ̇ → U ̇
+has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
+
+has-infs-isProp : ∀ {U} {X : U ̇} → isProp(has-infs X)
+has-infs-isProp {U} {X} = isProp-exponential-ideal (fe U U) at-most-one-inf
+
+𝟚-compact-has-infs : ∀ {U} {X : U ̇} → 𝟚-compact X → has-infs X
 𝟚-compact-has-infs c p = g (c p)
  where
   g : decidable (∀ x → p x ≡ ₁) → Σ \(n : 𝟚) → p has-inf n
@@ -743,28 +771,31 @@ p has-inf n = (∀ x → n ≤ p x) × ∀ m → (∀ x → m ≤ p x) → m ≤
       α : ∀ x → p x ≡ ₁
       α x = φ x r
 
-has-infs-𝟚-compact : ∀ {U} {X : U ̇} → (∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n) → 𝟚-compact X
+has-infs-𝟚-compact : ∀ {U} {X : U ̇} → has-infs X → 𝟚-compact X
 has-infs-𝟚-compact h p = f (h p)
  where
   f : (Σ \(n : 𝟚) → p has-inf n) → decidable (∀ x → p x ≡ ₁)
-  f (₀ , g , h) = inr u
+  f (₀ , _ , h) = inr u
    where
-    u : (∀ x → p x ≡ ₁) → 𝟘
+    u : ¬ ∀ x → p x ≡ ₁
     u α = zero-is-not-one (h ₁ (λ x r → α x) refl)
-  f (₁ , g , h) = inl (λ x → g x refl)
+  f (₁ , g , _) = inl α
+   where
+    α : ∀ x → p x ≡ ₁
+    α x = g x refl
 
 \end{code}
 
-TODO: Show that isProp(∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n).
-
-Type-theoretical choice:
+Application of type-theoretical choice:
 
 \begin{code}
 
 inf : ∀ {U} {X : U ̇} → 𝟚-compact X → (X → 𝟚) → 𝟚
 inf c p = pr₁(𝟚-compact-has-infs c p)
 
-inf-property : ∀ {U} {X : U ̇} → (c : 𝟚-compact X) → (p : X → 𝟚) → p has-inf (inf c p)
+inf-property : ∀ {U} {X : U ̇} → (c : 𝟚-compact X) (p : X → 𝟚) → p has-inf (inf c p)
 inf-property c p = pr₂(𝟚-compact-has-infs c p)
 
 \end{code}
+
+Is there a similar characterization of strong compactness?
