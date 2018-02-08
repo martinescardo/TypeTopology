@@ -281,7 +281,7 @@ retract-𝟚-compact' t c = ptrec 𝟚-compact-isProp (λ r → retract-𝟚-com
 
 i2c2c : ∀ {U V} {X : U ̇} {Y : V ̇}
       → X → 𝟚-compact (X → Y) → 𝟚-compact Y
-i2c2c x = retract-𝟚-compact ((λ f → f x) , ((λ y _ → y) , λ y → refl)) 
+i2c2c x = retract-𝟚-compact (pdrc x)
 
 \end{code}
 

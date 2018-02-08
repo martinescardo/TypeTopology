@@ -928,18 +928,6 @@ isUnivalent-idtofun-lc  ua fe X Y =
 
 \end{code}
 
-
-\begin{code}
-
- 
-\end{code}
-
-
-\begin{code}
-
-
-\end{code}
-
 More generally:
 
 \begin{code}
