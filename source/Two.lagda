@@ -162,4 +162,10 @@ Lemma[b≢c→b⊕c≡₁] = Lemma[b≢₀→b≡₁] ∘ (contrapositive Lemma[
 Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
 Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ Lemma[b≡₁→b≢₀]  
 
+₁-top : {b : 𝟚} → b ≤ ₁
+₁-top r = refl
+
+₀-bottom : {b : 𝟚} → ₀ ≤ b
+₀-bottom ()
+
 \end{code}

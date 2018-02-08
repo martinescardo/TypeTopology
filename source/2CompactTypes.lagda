@@ -722,3 +722,49 @@ above proofs a little bit more direct.
 See also the module SimpleTypes, which uses this module to study
 the least collection of types containing ℕ (and sometimes 𝟚) closed
 under (non-dependent) function types.
+
+8 Feb 2018: A type X is 𝟚-compact iff every map X → 𝟚 has an infimum:
+
+\begin{code}
+
+_has-inf_ : ∀ {U} {X : U ̇} → (X → 𝟚) → 𝟚 → U ̇
+p has-inf n = (∀ x → n ≤ p x) × ∀ m → (∀ x → m ≤ p x) → m ≤ n
+
+𝟚-compact-has-infs : ∀ {U} {X : U ̇} → 𝟚-compact X → ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
+𝟚-compact-has-infs c p = g (c p)
+ where
+  g : decidable (∀ x → p x ≡ ₁) → Σ \(n : 𝟚) → p has-inf n
+  g (inl α) = ₁ , (λ x _ → α x) , λ m φ → ₁-top
+  g (inr u) = ₀ , (λ x → ₀-bottom) , h
+   where
+    h : (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ ₀
+    h m φ r = 𝟘-elim (u α)
+     where
+      α : ∀ x → p x ≡ ₁
+      α x = φ x r
+
+has-infs-𝟚-compact : ∀ {U} {X : U ̇} → (∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n) → 𝟚-compact X
+has-infs-𝟚-compact h p = f (h p)
+ where
+  f : (Σ \(n : 𝟚) → p has-inf n) → decidable (∀ x → p x ≡ ₁)
+  f (₀ , g , h) = inr u
+   where
+    u : (∀ x → p x ≡ ₁) → 𝟘
+    u α = zero-is-not-one (h ₁ (λ x r → α x) refl)
+  f (₁ , g , h) = inl (λ x → g x refl)
+
+\end{code}
+
+TODO: Show that isProp(∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n).
+
+Type-theoretical choice:
+
+\begin{code}
+
+inf : ∀ {U} {X : U ̇} → 𝟚-compact X → (X → 𝟚) → 𝟚
+inf c p = pr₁(𝟚-compact-has-infs c p)
+
+inf-property : ∀ {U} {X : U ̇} → (c : 𝟚-compact X) → (p : X → 𝟚) → p has-inf (inf c p)
+inf-property c p = pr₂(𝟚-compact-has-infs c p)
+
+\end{code}
