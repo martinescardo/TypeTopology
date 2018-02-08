@@ -552,15 +552,16 @@ em2cdn X isp c = cases l m a
 
 \end{code}
 
-Added 8th Feb 2018: A pointed detachable subset of a compact type is a
+8th Feb 2018: A pointed detachable subset of any type is a
 retract. Hence any detachable (pointed or not) subset of a compact
-type is compact.
+type is compact. The first construction should probably go to another
+module.
 
 \begin{code}
 
-detachable-subset-𝟚-Compact-retract : ∀ {U} {X : U ̇} {A : X → 𝟚}
-  → 𝟚-Compact X → (Σ \(x : X) → A(x) ≡ ₀) → retract (Σ \(x : X) → A(x) ≡ ₀) of X
-detachable-subset-𝟚-Compact-retract {U} {X} {A} c (x₀ , e₀) = r , pr₁ , rs
+detachable-subset-retract : ∀ {U} {X : U ̇} {A : X → 𝟚}
+  → (Σ \(x : X) → A(x) ≡ ₀) → retract (Σ \(x : X) → A(x) ≡ ₀) of X
+detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
   r : X → Σ \(x : X) → A x ≡ ₀
   r x = two-equality-cases (λ(e : A x ≡ ₀) → (x , e)) (λ(e : A x ≡ ₁) → (x₀ , e₀))
@@ -585,7 +586,7 @@ detachable-subset-𝟚-Compact : ∀ {U} {X : U ̇} (A : X → 𝟚)
 detachable-subset-𝟚-Compact {U} {X} A c = g (c A)
  where
   g : decidable (∃ \(x : X) → A x ≡ ₀) → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
-  g (inl e) = retract-𝟚-Compact' (ptfunct (detachable-subset-𝟚-Compact-retract c) e) c
+  g (inl e) = retract-𝟚-Compact' (ptfunct detachable-subset-retract e) c
   g (inr u) = empty-𝟚-Compact (contrapositive ∣_∣ u)
 
 \end{code}
