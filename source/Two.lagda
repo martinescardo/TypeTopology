@@ -153,15 +153,15 @@ Addition modulo 2:
 
 \begin{code}
 
-₁- : 𝟚 → 𝟚
-₁- ₀ = ₁
-₁- ₁ = ₀
+complement : 𝟚 → 𝟚
+complement ₀ = ₁
+complement ₁ = ₀
 
 infixr 31 _⊕_
 
 _⊕_ : 𝟚 → 𝟚 → 𝟚
 ₀ ⊕ x = x
-₁ ⊕ x = ₁- x
+₁ ⊕ x = complement x
 
 Lemma[b⊕b≡₀] : {b : 𝟚} → b ⊕ b ≡ ₀
 Lemma[b⊕b≡₀] {₀} = refl

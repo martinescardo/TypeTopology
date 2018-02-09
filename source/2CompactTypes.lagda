@@ -33,7 +33,7 @@ funext₀ : ∀ U → {X : U ̇} {A : X → U₀ ̇} {f g : Π A} → ((x : X) �
 funext₀ U = funext (fe U U₀)
 
 open PropositionalTruncation (pt)
-open import Two
+open import Two 
 open import DecidableAndDetachable
 
 \end{code}
@@ -811,17 +811,16 @@ inf₁-converse c {p} α = ₁-maximal (h g)
   g : ∀ x → ₁ ≤ p x
   g x _ = α x
 
-
 \end{code}
 
 The inf operator is a filter:
 
 \begin{code}
 
-private _⊓_ : 𝟚 → 𝟚 → 𝟚
+_⊓_ : 𝟚 → 𝟚 → 𝟚
 _⊓_ = min𝟚
 
-private _⊓̇_ : ∀ {U} {X : U ̇} → (X → 𝟚) → (X → 𝟚) → (X → 𝟚)
+_⊓̇_ : ∀ {U} {X : U ̇} → (X → 𝟚) → (X → 𝟚) → (X → 𝟚)
 p ⊓̇ q = λ x → p x ⊓ q x
 
 isFilter : ∀ {U} {X : U ̇} → ((X → 𝟚) → 𝟚) → U ̇
