@@ -895,7 +895,3 @@ TODO.
   particular, it is of interest to generalize this to "Sierpinki like"
   dominances. And what is "Sierpinski like" in precise (internal)
   terms? This should be formulated in terms of cotaboos.
-
-
-  
-  
