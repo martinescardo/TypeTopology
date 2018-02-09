@@ -66,6 +66,12 @@ Definition (Natural order of binary numbers):
 _≤_ : (a b : 𝟚) → U₀ ̇
 a ≤ b = a ≡ ₁ → b ≡ ₁
 
+₁-top : {b : 𝟚} → b ≤ ₁
+₁-top r = refl
+
+₀-bottom : {b : 𝟚} → ₀ ≤ b
+₀-bottom ()
+
 _≤'_ : (a b : 𝟚) → U₀ ̇
 a ≤' b = b ≡ ₀ → a ≡ ₀
 
@@ -86,6 +92,9 @@ a ≤' b = b ≡ ₀ → a ≡ ₀
 ≤-anti {₁} {₀} f g = ≤-gives-≤' f refl
 ≤-anti {₁} {₁} f g = refl
 
+₁-maximal : {b : 𝟚} → ₁ ≤ b → b ≡ ₁
+₁-maximal = ≤-anti ₁-top
+
 _≥_ : (a b : 𝟚) → U₀ ̇
 a ≥ b = b ≤ a
 
@@ -101,7 +110,7 @@ Lemma[minab≤b] : {a b : 𝟚} → min𝟚 a b ≤ b
 Lemma[minab≤b] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
 Lemma[minab≤b] {₁} {b} r = r
 
-Lemma[min𝟚ab≡₁→b≡₁]  : {a b : 𝟚} → min𝟚 a b ≡ ₁ → b ≡ ₁
+Lemma[min𝟚ab≡₁→b≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → b ≡ ₁
 Lemma[min𝟚ab≡₁→b≡₁] {₀} {₀} r = r
 Lemma[min𝟚ab≡₁→b≡₁] {₀} {₁} r = refl
 Lemma[min𝟚ab≡₁→b≡₁] {₁} {₀} r = r
@@ -110,6 +119,12 @@ Lemma[min𝟚ab≡₁→b≡₁] {₁} {₁} r = refl
 Lemma[min𝟚ab≡₁→a≡₁]  : {a b : 𝟚} → min𝟚 a b ≡ ₁ → a ≡ ₁
 Lemma[min𝟚ab≡₁→a≡₁] {₀} r = r
 Lemma[min𝟚ab≡₁→a≡₁] {₁} r = refl
+
+Lemma[a≡₁→b≡₁→min𝟚ab≡₁] : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → min𝟚 a b ≡ ₁ 
+Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₀} p q = q
+Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₁} p q = p
+Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₀} p q = q
+Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₁} p q = refl
 
 Lemma[a≤b→min𝟚ab≡a] : {a b : 𝟚} → a ≤ b → min𝟚 a b ≡ a
 Lemma[a≤b→min𝟚ab≡a] {₀} {b} p = refl
@@ -166,11 +181,5 @@ Lemma[b≢c→b⊕c≡₁] = Lemma[b≢₀→b≡₁] ∘ (contrapositive Lemma[
 
 Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
 Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ Lemma[b≡₁→b≢₀]  
-
-₁-top : {b : 𝟚} → b ≤ ₁
-₁-top r = refl
-
-₀-bottom : {b : 𝟚} → ₀ ≤ b
-₀-bottom ()
 
 \end{code}

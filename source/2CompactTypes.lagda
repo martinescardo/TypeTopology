@@ -762,11 +762,11 @@ has-infs-isProp {U} {X} = isProp-exponential-ideal (fe U U) at-most-one-inf
 𝟚-compact-has-infs c p = g (c p)
  where
   g : decidable (∀ x → p x ≡ ₁) → Σ \(n : 𝟚) → p has-inf n
-  g (inl α) = ₁ , (λ x _ → α x) , λ m φ → ₁-top
-  g (inr u) = ₀ , (λ x → ₀-bottom) , h
+  g (inl α) = ₁ , (λ x _ → α x) , λ m _ → ₁-top
+  g (inr u) = ₀ , (λ _ → ₀-bottom) , h
    where
     h : (m : 𝟚) → (∀ x → m ≤ p x) → m ≤ ₀
-    h m φ r = 𝟘-elim (u α)
+    h _ φ r = 𝟘-elim (u α)
      where
       α : ∀ x → p x ≡ ₁
       α x = φ x r
@@ -786,6 +786,8 @@ has-infs-𝟚-compact h p = f (h p)
 
 \end{code}
 
+Is there a similar characterization of strong compactness?
+
 Application of type-theoretical choice:
 
 \begin{code}
@@ -796,6 +798,65 @@ inf c p = pr₁(𝟚-compact-has-infs c p)
 inf-property : ∀ {U} {X : U ̇} → (c : 𝟚-compact X) (p : X → 𝟚) → p has-inf (inf c p)
 inf-property c p = pr₂(𝟚-compact-has-infs c p)
 
+inf₁ : ∀ {U} {X : U ̇} (c : 𝟚-compact X) {p : X → 𝟚}
+     → inf c p ≡ ₁ → ∀ x → p x ≡ ₁
+inf₁ c {p} r x = pr₁(inf-property c p) x r
+
+inf₁-converse : ∀ {U} {X : U ̇} (c : 𝟚-compact X) {p : X → 𝟚}
+     → (∀ x → p x ≡ ₁) → inf c p ≡ ₁ 
+inf₁-converse c {p} α = ₁-maximal (h g)
+ where
+  h : (∀ x → ₁ ≤ p x) → ₁ ≤ inf c p
+  h = pr₂(inf-property c p) ₁
+  g : ∀ x → ₁ ≤ p x
+  g x _ = α x
+
+
 \end{code}
 
-Is there a similar characterization of strong compactness?
+The inf operator is a filter:
+
+\begin{code}
+
+private _⊓_ : 𝟚 → 𝟚 → 𝟚
+_⊓_ = min𝟚
+
+private _⊓̇_ : ∀ {U} {X : U ̇} → (X → 𝟚) → (X → 𝟚) → (X → 𝟚)
+p ⊓̇ q = λ x → p x ⊓ q x
+
+isFilter : ∀ {U} {X : U ̇} → ((X → 𝟚) → 𝟚) → U ̇
+isFilter φ = ∀ p q → φ (p ⊓̇ q) ≡ (φ p) ⊓ (φ q)
+
+inf-filter : ∀ {U} {X : U ̇} (c : 𝟚-compact X)
+          → isFilter (inf c)
+inf-filter c p q = ≤-anti u v
+ where
+  u : inf c (p ⊓̇ q) ≡ ₁ → inf c p ⊓ inf c q ≡ ₁
+  u r = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] l₄ l₅
+   where
+    l₁ : ∀ x → (p ⊓̇ q) x ≡ ₁
+    l₁ = inf₁ c r
+    l₂ : ∀ x → p x ≡ ₁
+    l₂ x = Lemma[min𝟚ab≡₁→a≡₁] (l₁ x)
+    l₃ : ∀ x → q x ≡ ₁
+    l₃ x = Lemma[min𝟚ab≡₁→b≡₁] {p x} (l₁ x)
+    l₄ : inf c p ≡ ₁
+    l₄ = inf₁-converse c l₂
+    l₅ : inf c q ≡ ₁
+    l₅ = inf₁-converse c l₃
+    
+  v : (inf c p ⊓ inf c q) ≡ ₁ → inf c (p ⊓̇ q) ≡ ₁
+  v s = inf₁-converse c l₅
+   where
+    l₁ : inf c p ≡ ₁
+    l₁ = Lemma[min𝟚ab≡₁→a≡₁] s
+    l₂ : inf c q ≡ ₁
+    l₂ = Lemma[min𝟚ab≡₁→b≡₁] {inf c p} s
+    l₃ : ∀ x → p x ≡ ₁
+    l₃ = inf₁ c l₁
+    l₄ : ∀ x → q x ≡ ₁
+    l₄ = inf₁ c l₂
+    l₅ : ∀ x → (p ⊓̇ q) x ≡ ₁
+    l₅ x = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (l₃ x) (l₄ x)
+  
+\end{code}
