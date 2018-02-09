@@ -859,3 +859,43 @@ inf-filter c p q = ≤-anti u v
     l₅ x = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (l₃ x) (l₄ x)
   
 \end{code}
+
+TODO.
+
+* Strong compactness: attainability of minima. Existence of potential
+  maxima.
+
+* Relation of 𝟚-compactness with finiteness and discreteness.
+
+* Non-classical cotaboos Every 𝟚-compact subtype of ℕ is finite. Every
+  𝟚-compact subtype of a discrete type is finite. What are the
+  cotaboos necessary (and sufficient) to prove that the type of
+  decidable subsingletons of ℕ∞→ℕ is 𝟚-compact?  Continuity principles
+  are enough.
+
+* 𝟚-subspace: e:X→Y such that every clopen X→𝟚 extends to some clopen
+  Y→𝟚 (formulated with Σ and ∃). Or to a largest such clopen, or a
+  smallest such clopen (right and left adjoints to the restriction map
+  (Y→𝟚)→(X→𝟚) that maps v to v ∘ e and could be written e ⁻¹[ v ].  A
+  𝟚-subspace-embedding of totally separated types should be a
+  (homotopy) embedding, but not conversely (find a counter-example).
+
+* 𝟚-injective types (injectives wrt to 𝟚-subspace-embeddigs). They
+  should be the retracts of powers of 𝟚. Try to characterize them
+  "intrinsically".
+
+* Relation of 𝟚-subspaces with 𝟚-compact subtypes.
+
+* 𝟚-Hofmann-Mislove theorem: clopen filters of clopens should
+  correspond to 𝟚-compact (𝟚-saturated) 𝟚-subspaces. Are cotaboos
+  needed for this?
+
+* Which results here depend on the particular dominance 𝟚, and which
+  ones generalize to any dominance, or to any "suitable" dominance? In
+  particular, it is of interest to generalize this to "Sierpinki like"
+  dominances. And what is "Sierpinski like" in precise (internal)
+  terms? This should be formulated in terms of cotaboos.
+
+
+  
+  
