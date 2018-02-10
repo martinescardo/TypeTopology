@@ -23,15 +23,6 @@ module 2CompactTypes (fe : ∀ U V → FunExt U V)
                      (pt : PropTrunc)
                      where
 
-fe₀₀ : FunExt U₀ U₀
-fe₀₀ = fe U₀ U₀
-
-funext₀₀ : {X : U₀ ̇} {A : X → U₀ ̇} {f g : Π A} → ((x : X) → f x ≡ g x) → f ≡ g
-funext₀₀ = funext fe₀₀
-
-funext₀ : ∀ U → {X : U ̇} {A : X → U₀ ̇} {f g : Π A} → ((x : X) → f x ≡ g x) → f ≡ g
-funext₀ U = funext (fe U U₀)
-
 open PropositionalTruncation (pt)
 open import Two 
 open import DecidableAndDetachable
@@ -52,24 +43,6 @@ and SearchableTypes) are structure on the type.
 𝟚-Compact-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-Compact X)
 𝟚-Compact-isProp {U} = isProp-exponential-ideal (fe U U)
                          (λ _ → decidable-isProp (fe U U₀) ptisp)
-
-\end{code}
-
-The following technical lemmas are often useful in our investigation
-of compactness.
-
-\begin{code}
-
-not-exists₀-implies-forall₁ : ∀ {U} {X : U ̇} (p : X → 𝟚)
-                            → ¬ (∃ \(x : X) → p x ≡ ₀) → (Π \(x : X) → p x ≡ ₁)
-not-exists₀-implies-forall₁ p u x = Lemma[b≢₀→b≡₁] (not-exists-implies-forall-not (u ∘ ∣_∣) x)
-
-forall₁-implies-not-exists₀ : ∀ {U} {X : U ̇} (p : X → 𝟚)
-                            → (Π \(x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀
-forall₁-implies-not-exists₀ p α = ptrec 𝟘-isProp h
- where
-  h : (Σ \x → p x ≡ ₀) → 𝟘
-  h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
 
 \end{code}
 
@@ -106,7 +79,7 @@ We do indeed get a stronger notion:
    where
     g : ((x : X) → p x ≡ ₁) → ¬ Σ \x → p x ≡ ₀
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
-  f (inr u) = inl (not-exists₀-implies-forall₁ p u)
+  f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
 
 \end{code}
 
@@ -136,13 +109,13 @@ boolean predicate λ x → ₁:
  where
   g : decidable (p ≡ λ x → ₁) → decidable ((x : X) → p x ≡ ₁)
   g (inl r) = inl (happly p (λ x → ₁) r)
-  g (inr u) = inr (contrapositive (funext₀ U) u)
+  g (inr u) = inr (contrapositive (funext (fe U U₀)) u)
 
 𝟚-cc' : ∀ {U} {X : U ̇} → 𝟚-compact X → 𝟚-compact' X
 𝟚-cc' {U} {X} c p = g (c p)
  where
   g : decidable ((x : X) → p x ≡ ₁) → decidable (p ≡ λ x → ₁)
-  g (inl α) = inl (funext₀ U α)
+  g (inl α) = inl (funext (fe U U₀) α)
   g (inr u) = inr (contrapositive (happly p (λ x → ₁)) u)
 
 \end{code}
@@ -226,7 +199,7 @@ omniscient-Compact {U} {X} φ p = g (φ p)
  where
   g : ((Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
-  g (inr α) = inr (forall₁-implies-not-exists₀ p α)
+  g (inr α) = inr (forall₁-implies-not-exists₀ pt p α)
 
 \end{code}
 
@@ -403,7 +376,7 @@ corollaries:
 
 tscd₀ : {X : U₀ ̇} {Y : U₀ ̇} → totally-separated X → retract 𝟚 of Y
      → 𝟚-compact (X → Y) → discrete X
-tscd₀ {X} {Y} ts r c = tscd ts (retract-𝟚-compact (rpe fe₀₀ r) c)
+tscd₀ {X} {Y} ts r c = tscd ts (retract-𝟚-compact (rpe (fe U₀ U₀) r) c)
 
 module _ {U : Universe} {X : U ̇} where
 
@@ -452,7 +425,7 @@ open import GenericConvergentSequence
 open import WLPO
 
 [ℕ∞→𝟚]-compact-implies-WLPO : 𝟚-compact (ℕ∞ → 𝟚) → WLPO
-[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-WLPO (tscd (ℕ∞-totally-separated fe₀₀) c)
+[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-WLPO (tscd (ℕ∞-totally-separated (fe U₀ U₀)) c)
 
 \end{code}
 
@@ -632,7 +605,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     y : A x ≡ ₁ → 𝟚
     y _ = q (x , e)
     r : p₁ x ≡ y
-    r = funext₀₀ (λ e' → ap (p₁ x) (𝟚-is-set e' e))
+    r = (funext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-is-set e' e))
     s : (b : 𝟚) → b ≡ ₁ → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
     s ₁ refl = refl
@@ -694,7 +667,7 @@ SearchableTypes and OmniscientTypes).
      where
       h : (Σ \(x : X) → p x ≡ ₀) → Σ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
       h (x , r) = x , λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
-    g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ p v) ∣
+    g (inr _) (inr v) = ∣ x₀ , (λ _ → not-exists₀-implies-forall₁ pt p v) ∣
 
 \end{code}
 
@@ -743,9 +716,9 @@ has-inf-isProp : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → isProp(p has
 has-inf-isProp {U} {X} p n (f , g) (f' , g') = ×-≡ r s
  where
   r : f ≡ f'
-  r = funext₀ U (λ x → funext₀₀ (λ r → 𝟚-is-set (f x r) (f' x r)))
+  r = funext (fe U U₀) (λ x → funext (fe U₀ U₀) (λ r → 𝟚-is-set (f x r) (f' x r)))
   s : g ≡ g'
-  s = funext (fe U₀ U) (λ n → funext₀ U (λ φ → funext₀₀ (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
+  s = funext (fe U₀ U) (λ n → funext (fe U U₀) (λ φ → funext (fe U₀ U₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
 
 at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → isProp (Σ \(n : 𝟚) → p has-inf n)
 at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-Id (_has-inf_ p)

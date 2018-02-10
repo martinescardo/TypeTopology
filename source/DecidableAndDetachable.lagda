@@ -112,3 +112,24 @@ decidable-closed-under-Σ {U} {V} {X} {Y} isp d e = g d
 \end{code}
 
 Notice that p is unique (Agda exercise - you will need extensionality).
+
+\begin{code}
+
+open import UF
+
+module _ (pt : PropTrunc) where
+
+ open PropositionalTruncation (pt)
+
+ not-exists₀-implies-forall₁ : ∀ {U} {X : U ̇} (p : X → 𝟚)
+                            → ¬ (∃ \(x : X) → p x ≡ ₀) → (Π \(x : X) → p x ≡ ₁)
+ not-exists₀-implies-forall₁ p u x = Lemma[b≢₀→b≡₁]    (not-exists-implies-forall-not (u ∘ ∣_∣) x)
+
+ forall₁-implies-not-exists₀ : ∀ {U} {X : U ̇} (p : X → 𝟚)
+                            → (Π \(x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀
+ forall₁-implies-not-exists₀ p α = ptrec 𝟘-isProp h
+  where
+   h : (Σ \x → p x ≡ ₀) → 𝟘
+   h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
+
+\end{code}
