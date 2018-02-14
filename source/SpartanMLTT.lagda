@@ -262,6 +262,14 @@ forall-not-implies-not-Σ : ∀ {U} {X : U ̇} {A : X → U ̇}
     → ((x : X) → ¬(A x)) → ¬(Σ \(x : X) → A x)
 forall-not-implies-not-Σ = uncurry
 
+Left-fails-then-right-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → P + Q → ¬ P → Q
+Left-fails-then-right-holds (inl p) u = 𝟘-elim (u p)
+Left-fails-then-right-holds (inr q) u = q
+
+Right-fails-then-left-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → P + Q → ¬ Q → P
+Right-fails-then-left-holds (inl p) u = p
+Right-fails-then-left-holds (inr q) u = 𝟘-elim (u q)
+
 \end{code}
 
 Double-negation unshift:

@@ -113,6 +113,8 @@ decidable-closed-under-Σ {U} {V} {X} {Y} isp d e = g d
 
 Notice that p is unique (Agda exercise - you will need extensionality).
 
+Don't really have a good place to put this:
+
 \begin{code}
 
 open import UF

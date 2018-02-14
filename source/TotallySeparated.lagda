@@ -337,8 +337,6 @@ module Apartness (pt : PropTrunc) where
 
 \end{code}
 
-TODO. Clearly, all of the above are proposition-valued.
-
 We now show that a type is totally separated iff a particular
 apartness relation _♯₂ is tight:
 
@@ -389,5 +387,108 @@ apartness relation _♯₂ is tight:
 
    α : (p : X → 𝟚) → p x ≡ p y
    α p = 𝟚-separated (p x) (p y) (λ u → h (p , u))
+
+\end{code}
+
+ 12 Feb 2018. 
+
+\begin{code}
+
+ reflexive transitive equivalence
+     : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
+ 
+ reflexive   _≈_ = ∀ x → x ≈ x
+ transitive  _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
+ equivalence _≈_ = prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
+
+ neg-apart-is-equiv : ∀ {U} {X : U ̇} → FunExt U U₀
+                    → (_♯_ : X → X → U ̇) → apartness _♯_ → equivalence (λ x y → ¬(x ♯ y))
+ neg-apart-is-equiv {U} {X} fe _♯_ (♯p , ♯i , ♯s , ♯c) = p , ♯i , s , t
+  where
+   p : (x y : X) → isProp (¬ (x ♯ y))
+   p x y = neg-isProp fe
+   
+   s : (x y : X) → ¬ (x ♯ y) → ¬ (y ♯ x)
+   s x y u a = u (♯s y x a)
+   
+   t : (x y z : X) → ¬ (x ♯ y) → ¬ (y ♯ z) → ¬ (x ♯ z)
+   t x y z u v a = v (♯s z y (left-fails-then-right-holds (♯p z y) b u))
+    where
+     b : (x ♯ y) ∨ (z ♯ y)
+     b = ♯c x z y a
+
+ \end{code}
+
+ The following positive formulation of ¬(x ♯ y), which says that two
+ elements have the same elements apart from them iff they are not
+ apart, gives another way to see that it is an equivalence relation:
+
+ \begin{code}
+
+ same-apart-are-not-apart : ∀ {U} {X : U ̇} (x y : X) (_♯_ : X → X → U ̇) → apartness _♯_
+                          → ((z : X) → x ♯ z ⇔ y ♯ z) ⇔ ¬(x ♯ y)
+ same-apart-are-not-apart {U} {X} x y _♯_ (p , i , s , c) = f , g 
+  where
+   f : ((z : X) → x ♯ z ⇔ y ♯ z) → ¬ (x ♯ y)
+   f φ a = i y (pr₁(φ y) a)
+   
+   g : ¬ (x ♯ y) → (z : X) → x ♯ z ⇔ y ♯ z
+   g n z = g₁ , g₂
+    where
+     g₁ : x ♯ z → y ♯ z
+     g₁ a = s z y (left-fails-then-right-holds (p z y) b n)
+      where
+       b : (x ♯ y) ∨ (z ♯ y)
+       b = c x z y a
+       
+     n' : ¬(y ♯ x)
+     n' a = n (s y x a)
+     
+     g₂ : y ♯ z → x ♯ z
+     g₂ a = s z x (left-fails-then-right-holds (p z x) b n')
+      where
+       b : (y ♯ x) ∨ (z ♯ x)
+       b = c y z x a
+
+ not-not-equal-not-apart : ∀ {U} {X : U ̇} (x y : X) (_♯_ : X → X → U ̇) → apartness _♯_
+                         → ¬¬(x ≡ y) → ¬(x ♯ y)
+ not-not-equal-not-apart {U} {X} x y _♯_ (_ , i , _ , _) = contrapositive f
+  where
+   f : x ♯ y → ¬(x ≡ y)
+   f a p = i y (transport (λ x → x ♯ y) p a)
+
+ tight-separated : ∀ {U} {X : U ̇} → (_♯_ : X → X → U ̇) → apartness _♯_ → tight _♯_ → separated X
+ tight-separated _♯_ a t = f
+  where
+   f : ∀ x y → ¬¬(x ≡ y) → x ≡ y
+   f x y φ = t x y (not-not-equal-not-apart x y _♯_ a φ)
+
+ tight-set : ∀ {U} {X : U ̇} → FunExt U U₀
+           → (_♯_ : X → X → U ̇) → apartness _♯_ → tight _♯_ → isSet X
+ tight-set fe _♯_ a t = separated-is-set fe (tight-separated _♯_ a t)
+
+ tight-separated' : ∀ {U} {X : U ̇} → FunExt U U → FunExt U U₀
+                 → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → separated X
+ tight-separated' {U} {X} fe fe₀ = ptrec (isProp-separated fe fe₀) f
+   where
+    f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → separated X
+    f (_♯_ , a , t) = tight-separated _♯_ a t
+
+ tight-set' : ∀ {U} {X : U ̇} → FunExt U U → FunExt U U₀
+           → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → isSet' X
+ tight-set' {U} {X} fe fe₀ = ptrec (isProp-isSet' fe) f
+   where
+    f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → isSet' X
+    f (_♯_ , a , t) = isSet-isSet' (tight-set fe₀ _♯_ a t)
+
+ reflects : ∀ {U V W T} {X : U ̇} {Y : V ̇} → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
+ reflects _♯_ _♯♯_ f = ∀ x x' → (f x) ♯♯ (f x') → x ♯ x'
+
+{-
+ tight-reflection : ∀ {U V W T} {X : U ̇} (_♯_ : X → X → V ̇) → apartness _♯_ 
+  → Σ \(X/♯ : {!!} ̇) → (Σ \(_♯♯_ : X/♯ → X/♯ → {!!}) → (tight _♯♯_) × (apartness _♯♯_) → Σ \(η : X → X/♯) → reflects _♯_ _♯♯_ η)
+  × (X' : W) (_♯'_ : X' → X' → T ̇) → (tight _♯'_) × (apartness _♯_) → (f : X → X') → reflects _♯_ _♯♯_ 
+ tight-reflection = {!!} 
+-}
 
 \end{code}

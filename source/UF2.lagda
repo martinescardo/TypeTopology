@@ -81,4 +81,14 @@ separated-is-path-collapsible fe s = stable-is-collapsible fe (s _ _)
 separated-is-set : ∀ {U} → FunExt U U₀ → {X : U ̇} → separated X → isSet X
 separated-is-set fe s = path-collapsible-is-set (separated-is-path-collapsible fe s) 
 
+isProp-separated : ∀ {U} → FunExt U U → FunExt U U₀ → {X : U ̇} → isProp(separated X)
+isProp-separated fe fe₀ {X} = ip-is-p f
+ where
+  f : separated X → isProp(separated X)
+  f s = isProp-exponential-ideal fe
+          (λ _ → isProp-exponential-ideal fe
+                    (λ _ → isProp-exponential-ideal fe
+                              (λ _ → separated-is-set fe₀ s)))
+
+
 \end{code}

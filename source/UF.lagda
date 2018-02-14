@@ -992,6 +992,20 @@ isProp-exponential-ideal {U} {V} fe {X} {A} isa = lemma
   lemma : isProp(Π A)
   lemma f g = funext fe (λ x → isa x (f x) (g x))
 
+isSet' : ∀ {U} → U ̇ → U ̇
+isSet' X = (x y : X) → isProp(x ≡ y)
+
+isSet'-isSet : ∀ {U} {X : U ̇} → isSet' X → isSet X
+isSet'-isSet s {x} {y} = s x y
+
+isSet-isSet' : ∀ {U} {X : U ̇} → isSet X → isSet' X
+isSet-isSet' s x y = s {x} {y}
+
+isProp-isSet' : ∀ {U} {X : U ̇} → FunExt U U → isProp (isSet' X)
+isProp-isSet' fe = isProp-exponential-ideal fe
+                    (λ x → isProp-exponential-ideal fe
+                              (λ y → isProp-isProp fe))
+
 propExt : ∀ U → U ′ ̇ 
 propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
 
@@ -1092,6 +1106,12 @@ module PropositionalTruncation (pt : PropTrunc) where
 
  _∨_ : ∀ {U} {V} → U ̇ → V ̇ → U ⊔ V ̇
  P ∨ Q = ∥ P + Q ∥
+
+ left-fails-then-right-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → isProp Q → P ∨ Q → ¬ P → Q
+ left-fails-then-right-holds i d u = ptrec i (λ d → Left-fails-then-right-holds d u) d
+
+ right-fails-then-left-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → isProp P → P ∨ Q → ¬ Q → P
+ right-fails-then-left-holds i d u = ptrec i (λ d → Right-fails-then-left-holds d u) d
 
  infixr 0 _∨_
  infix 0 ∥_∥

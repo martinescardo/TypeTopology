@@ -25,7 +25,7 @@ open import UF
 module LPO (fe : {U V : Universe} → FunExt U V) where
 
 open import Naturals
-open import Two
+open import Two hiding (_≤_)
 open import GenericConvergentSequence
 open import DecidableAndDetachable
 open import OmniscientTypes
@@ -40,7 +40,7 @@ LPO-isProp = isProp-exponential-ideal fe f
   a x (n , p) (m , q) = Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set fe _ _)
   
   f : (x : ℕ∞) → isProp (decidable (Σ \n → x ≡ under n))
-  f x = sum-of-contradictory-props (a x) (neg-isProp fe) (λ u φ → φ u)
+  f x = decidable-isProp fe (a x)
 
 LPO-implies-omniscient-ℕ : LPO → omniscient ℕ
 LPO-implies-omniscient-ℕ lpo β = cases a b d
