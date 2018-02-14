@@ -425,9 +425,9 @@ apartness relation _♯₂ is tight:
 
  \begin{code}
 
- same-apart-are-not-apart : ∀ {U} {X : U ̇} (x y : X) (_♯_ : X → X → U ̇) → apartness _♯_
+ same-apart-are-not-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
                           → ((z : X) → x ♯ z ⇔ y ♯ z) ⇔ ¬(x ♯ y)
- same-apart-are-not-apart {U} {X} x y _♯_ (p , i , s , c) = f , g 
+ same-apart-are-not-apart {U} {V} {X} x y _♯_ (p , i , s , c) = f , g 
   where
    f : ((z : X) → x ♯ z ⇔ y ♯ z) → ¬ (x ♯ y)
    f φ a = i y (pr₁(φ y) a)
@@ -484,11 +484,179 @@ apartness relation _♯₂ is tight:
  reflects : ∀ {U V W T} {X : U ̇} {Y : V ̇} → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  reflects _♯_ _♯♯_ f = ∀ x x' → (f x) ♯♯ (f x') → x ♯ x'
 
+ module TightReflection
+          {U V : Universe}
+          (fe : ∀ U V → FunExt U V)
+          (pe : propExt V)
+          (X : U ̇)
+          (_♯_ : X → X → V ̇)
+          (♯p : prop-valued _♯_)
+          (♯i : irreflexive _♯_)
+          (♯s : symmetric _♯_)
+          (♯c : cotransitive _♯_)
+   where
+
+   fuv : FunExt (U ⊔ V ′) (U ⊔ V ′)
+   fuv = fe (U ⊔ V ′) (U ⊔ V ′)
+
+   ♯a : apartness _♯_
+   ♯a = (♯p , ♯i , ♯s , ♯c)
+
+   Ω : V ′ ̇
+   Ω = Prop {V}
+
+   Ω-isSet : isSet Ω
+   Ω-isSet = Prop-isSet (fe V V) pe
+
+   powerset-isSet : ∀ {W} {A : W ̇} → isSet(A → Ω)
+   powerset-isSet {W} = isSet-exponential-ideal (fe W (V ′)) (λ x → Ω-isSet)
+
+   apart : X → (X → Ω)
+   apart x y = x ♯ y , ♯p x y
+
+   _~_ : X → X → V ̇
+   x ~ y = ¬(x ♯ y)
+
+   apart-lemma : (x y : X) → x ~ y → apart x ≡ apart y
+   apart-lemma x y na = funext (fe U (V ′)) h
+    where
+     f : (z : X) → x ♯ z ⇔ y ♯ z
+     f = pr₂ (same-apart-are-not-apart x y _♯_ ♯a) na
+     
+     g : (z : X) → x ♯ z ≡ y ♯ z
+     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
+
+     h : (z : X) → apart x z ≡ apart y z
+     h z = to-Σ-Id isProp (g z , isProp-isProp (fe V V) _ _)
+
+   open ImageAndSurjection pt
+   
+   X' : U ⊔ V ′ ̇
+   X' = image apart
+
+   X'-isSet : isSet X'
+   X'-isSet = subset-of-set-is-set (X → Ω) _ powerset-isSet ptisp
+
+   η : X → X'
+   η = corestriction apart
+
+   η-surjection : isSurjection η
+   η-surjection = corestriction-surjection apart
+
+   η-induction : ∀ {W} (P : X' → W ̇)
+             → ((x' : X') → isProp(P x'))
+             → ((x : X) → P(η x))
+             → (x' : X') → P x'
+   η-induction = surjection-induction η η-surjection
+
+   _♯'_ : X' → X' → U ⊔ V ′ ̇
+   (u , _) ♯' (v , _) = ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥
+          
+   η-preserves-apartness : {x y : X} → x ♯ y → η x ♯' η y
+   η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
+   
+   η-strongly-extensional : {x y : X} → η x ♯' η y → x ♯ y 
+   η-strongly-extensional {x} {y} = ptrec (♯p x y) g
+    where
+     g : (Σ \(x' : X) → Σ \(y' : X) → (x' ♯ y') × (apart x' ≡ apart x) × (apart y' ≡ apart y)) → x ♯ y
+     g (x' , y' , a , p , q) = ♯s _ _ (j (♯s _ _ (i a)))
+      where
+       i : x' ♯ y' → x ♯ y'
+       i = idtofun _ _ (ap pr₁ (happly _ _ p y'))
+       
+       j : y' ♯ x → y ♯ x
+       j = idtofun _ _ (ap pr₁ (happly _ _ q x))
+   
+   ♯'p : prop-valued _♯'_
+   ♯'p _ _ = ptisp
+
+   ♯'i : irreflexive _♯'_
+   ♯'i = by-induction
+    where
+     induction-step : ∀ x → ¬(η x ♯' η x)
+     induction-step x a = ♯i x (η-strongly-extensional a)
+     
+     by-induction : irreflexive _♯'_
+     by-induction = η-induction
+                      (λ x' → ¬ (x' ♯' x'))
+                      (λ _ → isProp-exponential-ideal (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-isProp))
+                      induction-step
+
+   ♯'s : symmetric _♯'_
+   ♯'s = by-induction
+    where
+     induction-step : ∀ x y → η x ♯' η y → η y ♯' η x
+     induction-step x y a = η-preserves-apartness(♯s x y (η-strongly-extensional a))
+     
+     by-induction : symmetric _♯'_
+     by-induction = η-induction
+                      (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
+                      (λ x' → isProp-exponential-ideal fuv (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' x')))
+                      λ x → η-induction _
+                               (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' (η x)))
+                               (induction-step x)
+   
+   ♯'c : cotransitive _♯'_
+   ♯'c = by-induction
+    where
+     induction-step : ∀ x y z → η x ♯' η y → η x ♯' η z ∨ η y ♯' η z
+     induction-step x y z a = ptfunct c b
+      where
+       a' : x ♯ y
+       a' = η-strongly-extensional a
+       b : x ♯ z ∨ y ♯ z
+       b = ♯c x y z a'
+       c : (x ♯ z) + (y ♯ z) → (η x ♯' η z) + (η y ♯' η z)
+       c (inl e) = inl (η-preserves-apartness e)
+       c (inr f) = inr (η-preserves-apartness f)
+
+     by-induction : cotransitive _♯'_
+     by-induction =
+       η-induction
+         (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
+         (λ _ → isProp-exponential-ideal fuv (λ _ → isProp-exponential-ideal fuv (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))))
+         (λ x → η-induction _
+                   (λ _ → isProp-exponential-ideal fuv (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp)))
+                   (λ y → η-induction _
+                             (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))
+                             (induction-step x y)))
+
+   ♯'a : apartness _♯'_
+   ♯'a = (♯'p , ♯'i , ♯'s , ♯'c)
+
+   ♯'t : tight _♯'_
+   ♯'t (u , e) (v , f) n = g
+    where
+     h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
+     h (x , p) (y , q) = to-Σ-Id _ (t , ptisp _ _)
+      where
+       remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
+       remark = n
+       
+       r : x ♯ y → 𝟘
+       r a = n ∣ x , y , a , p , q ∣
+       
+       s : apart x ≡ apart y
+       s = apart-lemma x y r
+       
+       t : u ≡ v
+       t = p ⁻¹ ∙ s ∙ q
+       
+     g : (u , e) ≡ (v , f)
+     g = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
+     
+   η-equiv-equal : {x y : X} → x ~ y → η x ≡ η y
+   η-equiv-equal {x} {y} = ♯'t _ _ ∘ contrapositive(η-strongly-extensional {x} {y})
+
 {-
- tight-reflection : ∀ {U V W T} {X : U ̇} (_♯_ : X → X → V ̇) → apartness _♯_ 
-  → Σ \(X/♯ : {!!} ̇) → (Σ \(_♯♯_ : X/♯ → X/♯ → {!!}) → (tight _♯♯_) × (apartness _♯♯_) → Σ \(η : X → X/♯) → reflects _♯_ _♯♯_ η)
-  × (X' : W) (_♯'_ : X' → X' → T ̇) → (tight _♯'_) × (apartness _♯_) → (f : X → X') → reflects _♯_ _♯♯_ 
- tight-reflection = {!!} 
+   tight-reflection : ∀ {W T} (X'' : W ̇) (_♯''_ : X'' → X'' → T ̇) → apartness _♯''_ → tight _♯''_
+                    → (f : X → X'') → reflects _♯_ _♯''_ f → isContr (Σ \(f' : X' → X'') → f' ∘ η ≡ f)
+   tight-reflection X'' _♯''_ (♯''p , ♯''i , ♯''s , ♯''c) ♯''t f r = go
+    where
+     i : {x y : X} → x ~ y → f x ≡ f y
+     i = ♯''t _ _ ∘ contrapositive (r _ _)
+     go : isContr (Σ \(f' : X' → X'') → f' ∘ η ≡ f)
+     go = {!!}
 -}
 
 \end{code}

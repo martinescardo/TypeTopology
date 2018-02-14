@@ -819,6 +819,14 @@ isProp-isProp {U} {X} fe f g = claim₁
   claim₁ : f ≡ g
   claim₁  = funext fe claim₀
 
+isProp-isContr : ∀ {U} {X : U ̇} → FunExt U U → isProp(isContr X)
+isProp-isContr {U} {X} fe (x , φ) (y , γ) = to-Σ-Id _ (φ y , funext fe λ z → iss {y} {z} _ _)
+ where
+  isp : isProp X
+  isp = c-is-p (y , γ)
+  iss : isSet X
+  iss = prop-is-set isp
+
 subtype-of-set-is-set : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y) → left-cancellable m → isSet Y → isSet X
 subtype-of-set-is-set {U} {V} {X} m i h = path-collapsible-is-set (f , g)
  where
