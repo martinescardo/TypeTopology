@@ -854,7 +854,7 @@ apartness relation _♯₂ is tight:
 
   We now show that the above data provide the tight reflection, or
   universal strongly extensional map from X to tight apartness types,
-  were unique existence is expressed by the contractibility of a Σ
+  where unique existence is expressed by the contractibility of a Σ
   type, as usual in univalent mathematics and homotopy type
   theory. Notice the use of η-induction to avoid dealing directly with
   the details of the constructions performed above.
