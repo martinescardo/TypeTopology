@@ -856,7 +856,7 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
-   We now show that the above date provide the tight reflection, or
+   We now show that the above data provide the tight reflection, or
    universal strongly extensional map from X to tight apartness types,
    were unique existence is expressed by the contractibility of a Σ
    type, as usual in univalent mathematics and homotopy type
