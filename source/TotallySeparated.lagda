@@ -40,7 +40,7 @@ T₁, non-T₂, and non totally separated space which is zero dimensional
 (has a base of clopen sets), and where the intersection of two compact
 subsets need not be compact. The failure of the Hausdorff property is
 with the two points an infinity, which can't be separated by disjoint
-open neightbourhoods.)
+open neighbourhoods.)
 
 The total separatedness of the reals (of any kind) should also give a
 taboo. All non-sets fail (without the need of taboos) to be totally
@@ -251,7 +251,7 @@ We construct the reflection as the image of the evaluation map.
 
 \end{code}
 
-Then the reflector is the corestruction of the evaluation map. The
+Then the reflector is the corestriction of the evaluation map. The
 induction principle for surjections gives an induction principle for
 the reflector.
 
@@ -695,7 +695,7 @@ A map is called strongly extensional if it reflects apartness.
 \end{code}
 
    The following induction principle is our main tool. Its uses look
-   convulated at times by the need to show that the property one is
+   convoluted at times by the need to show that the property one is
    doing induction over is prop-valued. Typically this involves the
    use of the fact the propositions for an exponential ideal, and,
    more generally, are closed under products.
@@ -979,5 +979,5 @@ TODO.
 
 * Show that the tight reflection also gives the quotient by _~_.
 
-* Show that the tight reflectio of ♯₂ has the universal property of
+* Show that the tight reflection of ♯₂ has the universal property of
   the totally separated reflection.
