@@ -690,9 +690,9 @@ apartness relation _♯₂ is tight:
 
   The following induction principle is our main tool. Its uses look
   convoluted at times by the need to show that the property one is
-  doing induction over is prop-valued. Typically this involves the
-  use of the fact the propositions for an exponential ideal, and,
-  more generally, are closed under products.
+  doing induction over is prop-valued. Typically this involves the use
+  of the fact the propositions form an exponential ideal, and, more
+  generally, are closed under products.
 
 \begin{code}
 
