@@ -656,7 +656,7 @@ A map is called strongly extensional if it reflects apartness.
 \end{code}
 
    The following is an immediate consequence of the fact that two
-   equivalent elements has the same apartness class, using functional
+   equivalent elements have the same apartness class, using functional
    and propositional extensionality.
 
 \begin{code}
