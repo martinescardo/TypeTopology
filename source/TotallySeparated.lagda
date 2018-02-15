@@ -953,15 +953,9 @@ apartness relation _♯₂ is tight:
     e : isEmbedding η
     e = s-lc-e η lc X'-isSet
 
-    r : retraction η
-    r = η-induction _ e induction-step
-     where
-      induction-step : (x : X) → Σ \y → η y ≡ η x
-      induction-step x = x , refl
-
     cm : isContrMap η
-    cm x' = i-p-is-c (r x') (e x')
-     
+    cm = pr₂ (c-es η) (e , η-surjection)
+
 \end{code}
 
 TODO. 
