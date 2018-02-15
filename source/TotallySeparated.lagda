@@ -571,8 +571,13 @@ A map is called strongly extensional if it reflects apartness.
 \begin{code}
 
  strongly-extensional : ∀ {U V W T} {X : U ̇} {Y : V ̇}
-                      → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
- strongly-extensional _♯_ _♯♯_ f = ∀ {x x'} → f x ♯♯ f x' → x ♯ x'
+                              → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
+ strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
+ 
+
+ preserves : ∀ {U V W T} {X : U ̇} {Y : V ̇}
+          → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
+ preserves R S f = ∀ {x x'} → R x x' → S (f x) (f x')
 
  module TightReflection
           {U V : Universe}
@@ -722,11 +727,17 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
+   (Maybe a better (equivalent) definition would be
+   
+      x' ♯ y' = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (η x ≡ x') × (η y ≡ y').
+      
+   Perhaps I should rewrite the proof in this way.)
+
    Then η preserves and reflects apartness:
 
 \begin{code}
 
-   η-preserves-apartness : {x y : X} → x ♯ y → η x ♯' η y
+   η-preserves-apartness : preserves _♯_ _♯'_ η
    η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
    
    η-strongly-extensional : strongly-extensional _♯_ _♯'_ η
@@ -935,6 +946,31 @@ A map is called strongly extensional if it reflects apartness.
      ic : isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
      ic = (f' , r) , c
 
+\end{code}
+
+The tight reflection is also the quotient of X by ~.
+
+\begin{code}
+{- TODO:
+   tight-quotient : ∀ {W} (A : W ̇)
+                    → isSet A
+                    → (f : X → A)
+                    → (∀ {x x'} →  x ~ x' → f x ≡ f x')
+                    → isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+   tight-quotient {W} A iss f i = tight-reflection A _♯ᴬ_ ♯ᴬa ♯ᴬt f se
+    where
+     _♯ᴬ_ : A → A → U ⊔ V ⊔ W ̇
+     a ♯ᴬ b' = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (f x ≡ a) × (f y ≡ a)
+
+     ♯ᴬa : apartness _♯ᴬ_
+     ♯ᴬa = {!!}
+
+     ♯ᴬt : tight _♯ᴬ_
+     ♯ᴬt = {!!}
+     
+     se : strongly-extensional _♯_ _♯ᴬ_ f
+     se = {!!}
+-}
 \end{code}
 
    The following are direct consequences of the reflection, but we
