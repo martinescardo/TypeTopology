@@ -634,8 +634,8 @@ A map is called strongly extensional if it reflects apartness.
 
    Initially we tried to work with the function apart : X → (X → V ̇)
    defined by apart = _♯_. However, at some point in the development
-   below it was impossible to proceed, when we need that any two
-   proofs of apart x = apart y are equal. This should be the case
+   below it was impossible to proceed, when we need that the identity
+   type apart x = apart is a proposition. This should be the case
    because _♯_ is prop-valued. The most convenient way to achieve this
    is to restrict the codomain of apart from V to Ω.
 
