@@ -491,7 +491,7 @@ apartness relation _♯₂ is tight:
 
  strongly-extensional : ∀ {U V W T} {X : U ̇} {Y : V ̇}
                       → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
- strongly-extensional _♯_ _♯♯_ f = ∀ {x x'} → (f x) ♯♯ (f x') → x ♯ x'
+ strongly-extensional _♯_ _♯♯_ f = ∀ {x x'} → f x ♯♯ f x' → x ♯ x'
 
  module TightReflection
           {U V : Universe}
@@ -603,7 +603,7 @@ apartness relation _♯₂ is tight:
        η-induction
         (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
         (λ x' → isProp-exponential-ideal fuv
-                   (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' x')))
+                 (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' x')))
         (λ x → η-induction _
                  (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' (η x)))
                  (induction-step x))
@@ -629,11 +629,11 @@ apartness relation _♯₂ is tight:
        η-induction
         (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
         (λ _ → isProp-exponential-ideal fuv
-                  (λ _ → isProp-exponential-ideal fuv
-                            (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))))
+                 (λ _ → isProp-exponential-ideal fuv
+                          (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))))
         (λ x → η-induction _
                  (λ _ → isProp-exponential-ideal fuv
-                           (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp)))
+                          (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp)))
                  (λ y → η-induction _
                           (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))
                           (induction-step x y)))
