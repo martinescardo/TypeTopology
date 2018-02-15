@@ -457,9 +457,9 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-The following is the standard equivalence relation induced by an
-apartness relation. The tightness axiom defined above says that this
-equivalence relation is equality.
+ The following is the standard equivalence relation induced by an
+ apartness relation. The tightness axiom defined above says that this
+ equivalence relation is equality.
 
 \begin{code}
 
@@ -518,9 +518,9 @@ equivalence relation is equality.
 
 \end{code}
 
-Not-not equal elements are not apart, and hence, in the presence of
-tights, they are equal. It follows that tight apartness types are
-sets.
+ Not-not equal elements are not apart, and hence, in the presence of
+ tightness, they are equal. It follows that tight apartness types are
+ sets.
 
 \begin{code}
 
@@ -544,9 +544,9 @@ sets.
 
 \end{code}
 
-The above use the apartness and tightness data, but their existence is
-enough, because being a separated type and being a set are
-propositions.
+ The above use the apartness and tightness data, but their existence is
+ enough, because being a separated type and being a set are
+ propositions.
 
 \begin{code}
 
@@ -566,7 +566,7 @@ propositions.
 
 \end{code}
 
-A map is called strongly extensional if it reflects apartness.
+ A map is called strongly extensional if it reflects apartness.
 
 \begin{code}
 
@@ -593,375 +593,374 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
-   We now name the standard equivalence relation induced by _♯_.
+  We now name the standard equivalence relation induced by _♯_.
 
 \begin{code}
 
-   _~_ : X → X → V ̇
-   x ~ y = ¬(x ♯ y)
+  _~_ : X → X → V ̇
+  x ~ y = ¬(x ♯ y)
 
 \end{code}
 
-   For certain purposes we need the apartness axioms packed in to a
-   single axiom.
+  For certain purposes we need the apartness axioms packed in to a
+  single axiom.
 
 \begin{code}
 
-   ♯a : apartness _♯_
-   ♯a = (♯p , ♯i , ♯s , ♯c)
+  ♯a : apartness _♯_
+  ♯a = (♯p , ♯i , ♯s , ♯c)
 
 \end{code}
 
-   We choose our object Ω of truth-values (aka propositions) at
-   universe level V, as is the universe our apartness relations takes
-   values in.
+  We choose our object Ω of truth-values (aka propositions) at
+  universe level V, as is the universe our apartness relations takes
+  values in.
 
 \begin{code}
 
-   Ω : V ′ ̇
-   Ω = Prop {V}
+  Ω : V ′ ̇
+  Ω = Prop {V}
 
 \end{code}
 
-   The following two facts plays a crucial role.
+  The following two facts plays a crucial role.
 
 \begin{code}
 
-   Ω-isSet : isSet Ω
-   Ω-isSet = Prop-isSet (fe V V) pe
+  Ω-isSet : isSet Ω
+  Ω-isSet = Prop-isSet (fe V V) pe
 
-   powerset-isSet : ∀ {W} {A : W ̇} → isSet(A → Ω)
-   powerset-isSet {W} = isSet-exponential-ideal (fe W (V ′)) (λ x → Ω-isSet)
+  powerset-isSet : ∀ {W} {A : W ̇} → isSet(A → Ω)
+  powerset-isSet {W} = isSet-exponential-ideal (fe W (V ′)) (λ x → Ω-isSet)
 
 \end{code}
 
-   Initially we tried to work with the function apart : X → (X → V ̇)
-   defined by apart = _♯_. However, at some point in the development
-   below it was difficult to proceed, when we need that the identity
-   type apart x = apart is a proposition. This should be the case
-   because _♯_ is prop-valued. The most convenient way to achieve this
-   is to restrict the codomain of apart from V to Ω.
+  Initially we tried to work with the function apart : X → (X → V ̇)
+  defined by apart = _♯_. However, at some point in the development
+  below it was difficult to proceed, when we need that the identity
+  type apart x = apart is a proposition. This should be the case
+  because _♯_ is prop-valued. The most convenient way to achieve this
+  is to restrict the codomain of apart from V to Ω.
 
 \begin{code}
 
-   apart : X → (X → Ω)
-   apart x y = x ♯ y , ♯p x y
+  apart : X → (X → Ω)
+  apart x y = x ♯ y , ♯p x y
 
 \end{code}
 
-   The following is an immediate consequence of the fact that two
-   equivalent elements have the same apartness class, using functional
-   and propositional extensionality.
+  The following is an immediate consequence of the fact that two
+  equivalent elements have the same apartness class, using functional
+  and propositional extensionality.
 
 \begin{code}
 
-   apart-lemma : (x y : X) → x ~ y → apart x ≡ apart y
-   apart-lemma x y na = funext (fe U (V ′)) h
-    where
-     f : (z : X) → x ♯ z ⇔ y ♯ z
-     f = not-apart-have-same-apart x y _♯_ ♯a na
+  apart-lemma : (x y : X) → x ~ y → apart x ≡ apart y
+  apart-lemma x y na = funext (fe U (V ′)) h
+   where
+    f : (z : X) → x ♯ z ⇔ y ♯ z
+    f = not-apart-have-same-apart x y _♯_ ♯a na
      
-     g : (z : X) → x ♯ z ≡ y ♯ z
-     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
+    g : (z : X) → x ♯ z ≡ y ♯ z
+    g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
-     h : (z : X) → apart x z ≡ apart y z
-     h z = to-Σ-Id isProp (g z , isProp-isProp (fe V V) _ _)
+    h : (z : X) → apart x z ≡ apart y z
+    h z = to-Σ-Id isProp (g z , isProp-isProp (fe V V) _ _)
 
 \end{code}
 
-   We now construct the tight reflection of (X,♯) to get (X',♯')
-   together with a universal strongly extensional map from X into
-   tight apartness types. We take X' to be the image of the apart map.
+  We now construct the tight reflection of (X,♯) to get (X',♯')
+  together with a universal strongly extensional map from X into
+  tight apartness types. We take X' to be the image of the apart map.
 
 \begin{code}
 
-   open ImageAndSurjection pt
+  open ImageAndSurjection pt
    
-   X' : U ⊔ V ′ ̇
-   X' = image apart
+  X' : U ⊔ V ′ ̇
+  X' = image apart
 
-   X'-isSet : isSet X'
-   X'-isSet = subset-of-set-is-set (X → Ω) _ powerset-isSet ptisp
+  X'-isSet : isSet X'
+  X'-isSet = subset-of-set-is-set (X → Ω) _ powerset-isSet ptisp
 
-   η : X → X'
-   η = corestriction apart
+  η : X → X'
+  η = corestriction apart
 
 \end{code}
 
-   The following induction principle is our main tool. Its uses look
-   convoluted at times by the need to show that the property one is
-   doing induction over is prop-valued. Typically this involves the
-   use of the fact the propositions for an exponential ideal, and,
-   more generally, are closed under products.
+  The following induction principle is our main tool. Its uses look
+  convoluted at times by the need to show that the property one is
+  doing induction over is prop-valued. Typically this involves the
+  use of the fact the propositions for an exponential ideal, and,
+  more generally, are closed under products.
 
 \begin{code}
 
-   η-surjection : isSurjection η
-   η-surjection = corestriction-surjection apart
+  η-surjection : isSurjection η
+  η-surjection = corestriction-surjection apart
 
-   η-induction : ∀ {W} (P : X' → W ̇)
+  η-induction : ∀ {W} (P : X' → W ̇)
              → ((x' : X') → isProp(P x'))
              → ((x : X) → P(η x))
              → (x' : X') → P x'
-   η-induction = surjection-induction η η-surjection
+  η-induction = surjection-induction η η-surjection
 
 \end{code}
 
-   The apartness relation _♯'_ on X' is defined as follows.
+  The apartness relation _♯'_ on X' is defined as follows.
 
 \begin{code}
 
-   _♯'_ : X' → X' → U ⊔ V ′ ̇
-   (u , _) ♯' (v , _) = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
+  _♯'_ : X' → X' → U ⊔ V ′ ̇
+  (u , _) ♯' (v , _) = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
 
 \end{code}
 
-   Then η preserves and reflects apartness.
+  Then η preserves and reflects apartness.
 
 \begin{code}
 
-   η-preserves-apartness : preserves _♯_ _♯'_ η
-   η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
+  η-preserves-apartness : preserves _♯_ _♯'_ η
+  η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
 
-   η-strongly-extensional : strongly-extensional _♯_ _♯'_ η
-   η-strongly-extensional {x} {y} = ptrec (♯p x y) g
-    where
-     g : (Σ \(x' : X) → Σ \(y' : X) → (x' ♯ y') × (apart x' ≡ apart x) × (apart y' ≡ apart y))
-       → x ♯ y
-     g (x' , y' , a , p , q) = ♯s _ _ (j (♯s _ _ (i a)))
-      where
-       i : x' ♯ y' → x ♯ y'
-       i = idtofun _ _ (ap pr₁ (happly _ _ p y'))
+  η-strongly-extensional : strongly-extensional _♯_ _♯'_ η
+  η-strongly-extensional {x} {y} = ptrec (♯p x y) g
+   where
+    g : (Σ \(x' : X) → Σ \(y' : X) → (x' ♯ y') × (apart x' ≡ apart x) × (apart y' ≡ apart y))
+      → x ♯ y
+    g (x' , y' , a , p , q) = ♯s _ _ (j (♯s _ _ (i a)))
+     where
+      i : x' ♯ y' → x ♯ y'
+      i = idtofun _ _ (ap pr₁ (happly _ _ p y'))
        
-       j : y' ♯ x → y ♯ x
-       j = idtofun _ _ (ap pr₁ (happly _ _ q x))
+      j : y' ♯ x → y ♯ x
+      j = idtofun _ _ (ap pr₁ (happly _ _ q x))
 
 \end{code}
 
-   Of course, we must check that _♯'_ is indeed an apartness
-   relation. We do this by η-induction. These proofs by induction need
-   routine proofs that some things are propositions. We include the
-   following abbreviation `fuv` to avoid some long lines in such
-   proofs.
+  Of course, we must check that _♯'_ is indeed an apartness
+  relation. We do this by η-induction. These proofs by induction need
+  routine proofs that some things are propositions. We include the
+  following abbreviation `fuv` to avoid some long lines in such
+  proofs.
 
 \begin{code}
 
-   fuv : FunExt (U ⊔ V ′) (U ⊔ V ′)
-   fuv = fe (U ⊔ V ′) (U ⊔ V ′)
+  fuv : FunExt (U ⊔ V ′) (U ⊔ V ′)
+  fuv = fe (U ⊔ V ′) (U ⊔ V ′)
 
-   ♯'p : prop-valued _♯'_
-   ♯'p _ _ = ptisp
+  ♯'p : prop-valued _♯'_
+  ♯'p _ _ = ptisp
 
-   ♯'i : irreflexive _♯'_
-   ♯'i = by-induction
-    where
-     induction-step : ∀ x → ¬(η x ♯' η x)
-     induction-step x a = ♯i x (η-strongly-extensional a)
+  ♯'i : irreflexive _♯'_
+  ♯'i = by-induction
+   where
+    induction-step : ∀ x → ¬(η x ♯' η x)
+    induction-step x a = ♯i x (η-strongly-extensional a)
      
-     by-induction : _
-     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
+    by-induction : _
+    by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
                       (λ _ → isProp-exponential-ideal (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-isProp))
                       induction-step
 
-   ♯'s : symmetric _♯'_
-   ♯'s = by-nested-induction
-    where
-     induction-step : ∀ x y → η x ♯' η y → η y ♯' η x
-     induction-step x y a = η-preserves-apartness(♯s x y (η-strongly-extensional a))
+  ♯'s : symmetric _♯'_
+  ♯'s = by-nested-induction
+   where
+    induction-step : ∀ x y → η x ♯' η y → η y ♯' η x
+    induction-step x y a = η-preserves-apartness(♯s x y (η-strongly-extensional a))
      
-     by-nested-induction : _
-     by-nested-induction =
-       η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
-        (λ x' → isProp-exponential-ideal fuv
-                 (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' x')))
-        (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
-                 (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' (η x)))
-                 (induction-step x))
+    by-nested-induction : _
+    by-nested-induction =
+      η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
+       (λ x' → isProp-exponential-ideal fuv
+                (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' x')))
+       (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
+                (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' (η x)))
+                (induction-step x))
    
-   ♯'c : cotransitive _♯'_
-   ♯'c = by-nested-induction
-    where
-     induction-step : ∀ x y z → η x ♯' η y → η x ♯' η z ∨ η y ♯' η z
-     induction-step x y z a = ptfunct c b
-      where
-       a' : x ♯ y
-       a' = η-strongly-extensional a
+  ♯'c : cotransitive _♯'_
+  ♯'c = by-nested-induction
+   where
+    induction-step : ∀ x y z → η x ♯' η y → η x ♯' η z ∨ η y ♯' η z
+    induction-step x y z a = ptfunct c b
+     where
+      a' : x ♯ y
+      a' = η-strongly-extensional a
        
-       b : x ♯ z ∨ y ♯ z
-       b = ♯c x y z a'
+      b : x ♯ z ∨ y ♯ z
+      b = ♯c x y z a'
        
-       c : (x ♯ z) + (y ♯ z) → (η x ♯' η z) + (η y ♯' η z)
-       c (inl e) = inl (η-preserves-apartness e)
-       c (inr f) = inr (η-preserves-apartness f)
+      c : (x ♯ z) + (y ♯ z) → (η x ♯' η z) + (η y ♯' η z)
+      c (inl e) = inl (η-preserves-apartness e)
+      c (inr f) = inr (η-preserves-apartness f)
 
-     by-nested-induction : _
-     by-nested-induction =
-       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
-        (λ _ → isProp-exponential-ideal fuv
-                 (λ _ → isProp-exponential-ideal fuv
-                          (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))))
-        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
-                 (λ _ → isProp-exponential-ideal fuv
-                          (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp)))
-                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                          (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))
-                          (induction-step x y)))
+    by-nested-induction : _
+    by-nested-induction =
+      η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
+       (λ _ → isProp-exponential-ideal fuv
+                (λ _ → isProp-exponential-ideal fuv
+                         (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))))
+       (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
+                (λ _ → isProp-exponential-ideal fuv
+                         (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp)))
+                (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
+                         (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))
+                         (induction-step x y)))
 
-   ♯'a : apartness _♯'_
-   ♯'a = (♯'p , ♯'i , ♯'s , ♯'c)
+  ♯'a : apartness _♯'_
+  ♯'a = (♯'p , ♯'i , ♯'s , ♯'c)
 
 \end{code}
 
-   The tightness of _♯'_ cannot by proved by induction by reduction to
-   properties of _♯_, as above, because _♯_ is not (necessarily)
-   tight. We need to work with the definitions of X' and _♯'_
-   directly.
+  The tightness of _♯'_ cannot by proved by induction by reduction to
+  properties of _♯_, as above, because _♯_ is not (necessarily)
+  tight. We need to work with the definitions of X' and _♯'_ directly.
 
 \begin{code}
 
-   ♯'t : tight _♯'_
-   ♯'t (u , e) (v , f) n = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
-    where
-     h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
-     h (x , p) (y , q) = to-Σ-Id _ (t , ptisp _ _)
-      where
-       remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
-       remark = n
+  ♯'t : tight _♯'_
+  ♯'t (u , e) (v , f) n = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
+   where
+    h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
+    h (x , p) (y , q) = to-Σ-Id _ (t , ptisp _ _)
+     where
+      remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
+      remark = n
        
-       r : x ♯ y → 𝟘
-       r a = n ∣ x , y , a , p , q ∣
+      r : x ♯ y → 𝟘
+      r a = n ∣ x , y , a , p , q ∣
+      
+      s : apart x ≡ apart y
+      s = apart-lemma x y r
        
-       s : apart x ≡ apart y
-       s = apart-lemma x y r
-       
-       t : u ≡ v
-       t = p ⁻¹ ∙ s ∙ q
+      t : u ≡ v
+      t = p ⁻¹ ∙ s ∙ q
 
 \end{code}
 
-   The tightness of _♯'_ gives that η maps equivalent elements to
-   equal elements, and its irreflexity gives that elements with the
-   same η image are equivalent.
+  The tightness of _♯'_ gives that η maps equivalent elements to equal
+  elements, and its irreflexity gives that elements with the same η
+  image are equivalent.
 
 \begin{code}
 
-   η-equiv-equal : {x y : X} → x ~ y → η x ≡ η y
-   η-equiv-equal = ♯'t _ _ ∘ contrapositive η-strongly-extensional
+  η-equiv-equal : {x y : X} → x ~ y → η x ≡ η y
+  η-equiv-equal = ♯'t _ _ ∘ contrapositive η-strongly-extensional
 
-   η-equal-equiv : {x y : X} → η x ≡ η y → x ~ y
-   η-equal-equiv {x} {y} p a = ♯'i (η y) (transport (λ z → z ♯' η y) p (η-preserves-apartness a))
+  η-equal-equiv : {x y : X} → η x ≡ η y → x ~ y
+  η-equal-equiv {x} {y} p a = ♯'i (η y) (transport (λ z → z ♯' η y) p (η-preserves-apartness a))
 
 \end{code}
 
-   We now show that the above data provide the tight reflection, or
-   universal strongly extensional map from X to tight apartness types,
-   were unique existence is expressed by the contractibility of a Σ
-   type, as usual in univalent mathematics and homotopy type
-   theory. Notice the use of η-induction to avoid dealing directly
-   with the details of the constructions performed above.
+  We now show that the above data provide the tight reflection, or
+  universal strongly extensional map from X to tight apartness types,
+  were unique existence is expressed by the contractibility of a Σ
+  type, as usual in univalent mathematics and homotopy type
+  theory. Notice the use of η-induction to avoid dealing directly with
+  the details of the constructions performed above.
 
 \begin{code}
 
-   tight-reflection : ∀ {W T} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
-                    → apartness _♯ᴬ_
-                    → tight _♯ᴬ_
-                    → (f : X → A)
-                    → strongly-extensional _♯_ _♯ᴬ_ f
-                    → isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
-   tight-reflection {W} {T} A  _♯ᴬ_  ♯ᴬa  ♯ᴬt  f  se = ic
-    where
-     iss : isSet A
-     iss = tight-set (fe W U₀) _♯ᴬ_ ♯ᴬa ♯ᴬt
+  tight-reflection : ∀ {W T} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
+                   → apartness _♯ᴬ_
+                   → tight _♯ᴬ_
+                   → (f : X → A)
+                   → strongly-extensional _♯_ _♯ᴬ_ f
+                   → isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+  tight-reflection {W} {T} A  _♯ᴬ_  ♯ᴬa  ♯ᴬt  f  se = ic
+   where
+    iss : isSet A
+    iss = tight-set (fe W U₀) _♯ᴬ_ ♯ᴬa ♯ᴬt
      
-     i : {x y : X} → x ~ y → f x ≡ f y
-     i = ♯ᴬt _ _ ∘ contrapositive se
+    i : {x y : X} → x ~ y → f x ≡ f y
+    i = ♯ᴬt _ _ ∘ contrapositive se
      
-     φ : (x' : X') → isProp (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
-     φ = η-induction _ γ induction-step
-       where
-        induction-step : (y : X) → isProp (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
-        induction-step x (a , d) (b , e) = to-Σ-Id _ (p , ptisp _ _)
-         where
-          h :  (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
-            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
-            → a ≡ b
-          h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
+    φ : (x' : X') → isProp (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
+    φ = η-induction _ γ induction-step
+      where
+       induction-step : (y : X) → isProp (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
+       induction-step x (a , d) (b , e) = to-Σ-Id _ (p , ptisp _ _)
+        where
+         h :  (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
+           → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
+           → a ≡ b
+         h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
           
-          p : a ≡ b
-          p = ptrec iss (λ σ → ptrec iss (h σ) e) d
+         p : a ≡ b
+         p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
-        γ : (x' : X') → isProp (isProp (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-        γ x' = isProp-isProp (fe (U ⊔ (V ′) ⊔ W) (U ⊔ (V ′) ⊔ W))
+       γ : (x' : X') → isProp (isProp (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
+       γ x' = isProp-isProp (fe (U ⊔ (V ′) ⊔ W) (U ⊔ (V ′) ⊔ W))
 
-     k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
-     k = η-induction _ φ induction-step
-      where
-       induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)
-       induction-step x = f x , ∣ x , refl , refl ∣
+    k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
+    k = η-induction _ φ induction-step
+     where
+      induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)
+      induction-step x = f x , ∣ x , refl , refl ∣
 
-     f' : X' → A
-     f' x' = pr₁(k x')
+    f' : X' → A
+    f' x' = pr₁(k x')
 
-     r : f' ∘ η ≡ f
-     r = funext (fe U W) h
-      where
-       g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
-       g y = pr₂(k(η y))
+    r : f' ∘ η ≡ f
+    r = funext (fe U W) h
+     where
+      g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
+      g y = pr₂(k(η y))
 
-       j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
-       j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
+      j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+      j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
          
-       h : (y : X) → f'(η y) ≡ f y
-       h y = ptrec iss (j y) (g y)
+      h : (y : X) → f'(η y) ≡ f y
+      h y = ptrec iss (j y) (g y)
 
-     c : (σ : Σ \(f'' : X' → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
-     c (f'' , s) = to-Σ-Id _ (t , v)
-      where
-       w : ∀ x → f'(η x) ≡ f''(η x)
-       w x = ap (λ f → f x) (r ∙ s ⁻¹)
+    c : (σ : Σ \(f'' : X' → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+    c (f'' , s) = to-Σ-Id _ (t , v)
+     where
+      w : ∀ x → f'(η x) ≡ f''(η x)
+      w x = ap (λ f → f x) (r ∙ s ⁻¹)
 
-       t : f' ≡ f''
-       t = funext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
+      t : f' ≡ f''
+      t = funext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
 
-       u : f'' ∘ η ≡ f
-       u = transport (λ g → g ∘ η ≡ f) t r
+      u : f'' ∘ η ≡ f
+      u = transport (λ g → g ∘ η ≡ f) t r
 
-       v : u ≡ s
-       v = isSet-exponential-ideal (fe U W) (λ _ → iss) u s
+      v : u ≡ s
+      v = isSet-exponential-ideal (fe U W) (λ _ → iss) u s
                      
-     ic : isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
-     ic = (f' , r) , c
+    ic : isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+    ic = (f' , r) , c
 
 \end{code}
 
-   The following is a consequence of the reflection, but we offer a
-   direct proof.
+  The following is a consequence of the reflection, but we offer a
+  direct proof.
 
 \begin{code}
 
-   tight-η-equiv : tight _♯_ → X ≃ X'
-   tight-η-equiv t = (η , isContrMap-is-equiv η cm)
-    where
-     lc : left-cancellable η
-     lc {x} {y} p = i h
-      where
-       i : ¬ (η x ♯' η y) → x ≡ y
-       i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
+  tight-η-equiv : tight _♯_ → X ≃ X'
+  tight-η-equiv t = (η , isContrMap-is-equiv η cm)
+   where
+    lc : left-cancellable η
+    lc {x} {y} p = i h
+     where
+      i : ¬ (η x ♯' η y) → x ≡ y
+      i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
      
-       h : ¬(η x ♯' η y)
-       h a = ♯'i (η y) (transport (λ z → z ♯' η y) p a)
+      h : ¬(η x ♯' η y)
+      h a = ♯'i (η y) (transport (λ z → z ♯' η y) p a)
 
-     e : isEmbedding η
-     e = s-lc-e η lc X'-isSet
+    e : isEmbedding η
+    e = s-lc-e η lc X'-isSet
 
-     r : retraction η
-     r = η-induction _ e induction-step
-      where
-       induction-step : (x : X) → Σ \y → η y ≡ η x
-       induction-step x = x , refl
+    r : retraction η
+    r = η-induction _ e induction-step
+     where
+      induction-step : (x : X) → Σ \y → η y ≡ η x
+      induction-step x = x , refl
 
-     cm : isContrMap η
-     cm x' = i-p-is-c (r x') (e x')
+    cm : isContrMap η
+    cm x' = i-p-is-c (r x') (e x')
      
 \end{code}
 
