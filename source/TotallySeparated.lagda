@@ -46,6 +46,15 @@ The total separatedness of the reals (of any kind) should also give a
 taboo. All non-sets fail (without the need of taboos) to be totally
 separated, because totally separated spaces are sets.
 
+Total separatedness is also characterized as the tightness of a
+certain apartness relation that can be defined in any type.
+
+We also show how to construct the tight reflection of any type
+equipped with an apartness relation, given by a universal strongly
+extensional map into a tight apartness type. Any type with a tight
+apartness relation is a set, and so this reflection is always a set.
+
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -99,6 +108,14 @@ retract-totally-separated (r , (s , rs)) ts {y} {y'} α = section-lc s (r , rs) 
   h : s y ≡ s y'
   h = ts (λ p → α (p ∘ s))
 
+\end{code}
+
+Recall that a type is called separated if the doubly negated equality
+of any two element implies their equality, and that such a type is a
+set.
+
+\begin{code}
+
 totally-separated-is-separated : ∀ {U} (X : U ̇) → totally-separated X → separated X
 totally-separated-is-separated X ts = g
  where
@@ -122,7 +139,7 @@ The converse fails: the type of propositions is a set, but its total
 separatedness implies excluded middle. In fact, its separatedness
 already implies excluded middle (exercise).
 
-Old proof:
+Old proof which by-passes the step via separatedness:
 
 \begin{code}
 
@@ -214,6 +231,12 @@ module TotallySeparatedReflection
  open PropositionalTruncation pt
  open ImageAndSurjection pt
 
+\end{code}
+
+We construct the reflection as the image of the evaluation map.
+
+\begin{code}
+
  T : U ̇ → U ̇
  T X = image (eval {U} {X})
  
@@ -226,6 +249,15 @@ module TotallySeparatedReflection
    g : (e : (q : T X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
    g e = to-Σ-Id _ (funext (fe U U₀) (f e), ptisp _ t)
 
+\end{code}
+
+Then the reflector is the corestruction of the evaluation map. The
+induction principle for surjections gives an induction principle for
+the reflector.
+
+\begin{code}
+
+
  η : {X : U ̇} → X → T X
  η {X} = corestriction (eval {U} {X})
 
@@ -237,6 +269,13 @@ module TotallySeparatedReflection
              → ((x : X) → P(η x))
              → (x' : T X) → P x'
  η-induction = surjection-induction η η-surjection
+
+\end{code}
+
+Perhaps we could have used more induction in the following proof
+rather than direct proofs (as in the proof of tight reflection below).
+
+\begin{code}
 
  totally-separated-reflection : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
                               → (f : X → A) → isContr (Σ \(f' : T X → A) → f' ∘ η ≡ f)
@@ -287,6 +326,13 @@ module TotallySeparatedReflection
    go : isContr (Σ \(f' : T X → A) → f' ∘ η ≡ f)
    go = (f' , r) , c
 
+\end{code}
+
+We package the above as follows for convenient use elsewhere
+(including the module 2CompactTypes).
+
+\begin{code}
+
  totally-separated-reflection' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
                               → is-equiv (λ (f' : T X → A) → f' ∘ η)
  totally-separated-reflection' ts = isContrMap-is-equiv _ (totally-separated-reflection ts)
@@ -315,10 +361,11 @@ with the S-separated reflection of the lifting of X, and hence, in
 this context, it makes sense to restrict our attention to S-separated
 types.
 
-Another useful thing is that in a totally separated type X we can
-define a tight apartness relation x♯y by ∃(p:X→𝟚), p(x)‌≠p(y), where
-tightness means ¬(x♯y)→x=y. Part of the following should be moved to
-another module about apartness, but I keep it here for the moment.
+Another useful thing is that in any type X we can define an apartness
+relation x♯y by ∃(p:X→𝟚), p(x)‌≠p(y), which is tight iff X is totally
+separated, where tightness means ¬(x♯y)→x=y. Part of the following
+should be moved to another module about apartness, but I keep it here
+for the moment.
 
 26 January 2018.
 
@@ -393,7 +440,11 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
- 12 Feb 2018. 
+ 12 Feb 2018. This was prompted by the discussion
+ https://nforum.ncatlab.org/discussion/8282/points-of-the-localic-quotient-with-respect-to-an-apartness-relation/
+
+ But is clearly related to the above characterization of total
+ separatedness.
 
 \begin{code}
 
@@ -403,6 +454,14 @@ apartness relation _♯₂ is tight:
  reflexive   _≈_ = ∀ x → x ≈ x
  transitive  _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
  equivalence _≈_ = prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
+
+\end{code}
+
+The following is the standard equivalence relation induced by an
+apartness relation. The tightness axiom defined above says that this
+equivalence relation is equality.
+
+\begin{code}
 
  neg-apart-is-equiv : ∀ {U} {X : U ̇} → FunExt U U₀
                     → (_♯_ : X → X → U ̇) → apartness _♯_ → equivalence (λ x y → ¬(x ♯ y))
@@ -428,13 +487,6 @@ apartness relation _♯₂ is tight:
 
  \begin{code}
 
- have-same-apart-are-not-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
-                               → ((z : X) → x ♯ z ⇔ y ♯ z) → ¬(x ♯ y)
- have-same-apart-are-not-apart {U} {V} {X} x y _♯_ (p , i , s , c) = f
-  where
-   f : ((z : X) → x ♯ z ⇔ y ♯ z) → ¬ (x ♯ y)
-   f φ a = i y (pr₁(φ y) a)
-
  not-apart-have-same-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
                           → ¬(x ♯ y) → ((z : X) → x ♯ z ⇔ y ♯ z) 
  not-apart-have-same-apart {U} {V} {X} x y _♯_ (p , i , s , c) = g
@@ -457,6 +509,21 @@ apartness relation _♯₂ is tight:
        b : (y ♯ x) ∨ (z ♯ x)
        b = c y z x a
 
+ have-same-apart-are-not-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
+                               → ((z : X) → x ♯ z ⇔ y ♯ z) → ¬(x ♯ y)
+ have-same-apart-are-not-apart {U} {V} {X} x y _♯_ (p , i , s , c) = f
+  where
+   f : ((z : X) → x ♯ z ⇔ y ♯ z) → ¬ (x ♯ y)
+   f φ a = i y (pr₁(φ y) a)
+
+\end{code}
+
+Not-not equal elements are not apart, and hence, in the presence of
+tights, they are equal. It follows that tight apartness types are
+sets.
+
+\begin{code}
+
  not-not-equal-not-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇)
                          → apartness _♯_ → ¬¬(x ≡ y) → ¬(x ♯ y)
  not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = contrapositive f
@@ -475,6 +542,14 @@ apartness relation _♯₂ is tight:
            → (_♯_ : X → X → V ̇) → apartness _♯_ → tight _♯_ → isSet X
  tight-set fe _♯_ a t = separated-is-set fe (tight-separated _♯_ a t)
 
+\end{code}
+
+The above use the apartness and tightness data, but their existence is
+enough, because being a separated type and being a set are
+propositions.
+
+\begin{code}
+
  tight-separated' : ∀ {U} {X : U ̇} → FunExt U U → FunExt U U₀
                  → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → separated X
  tight-separated' {U} {X} fe fe₀ = ptrec (isProp-separated fe fe₀) f
@@ -488,6 +563,12 @@ apartness relation _♯₂ is tight:
    where
     f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → isSet' X
     f (_♯_ , a , t) = isSet-isSet' (tight-set fe₀ _♯_ a t)
+
+\end{code}
+
+A map is called strongly extensional if it reflects apartness.
+
+\begin{code}
 
  strongly-extensional : ∀ {U V W T} {X : U ̇} {Y : V ̇}
                       → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
@@ -505,14 +586,43 @@ apartness relation _♯₂ is tight:
           (♯c : cotransitive _♯_)
    where
 
+\end{code}
+
+   We include the following abbreviation to avoid some long lines,
+   especially in some proofs by induction that need routine proofs
+   that some things are propositions to make the inductions possible.
+
+\begin{code}
+
    fuv : FunExt (U ⊔ V ′) (U ⊔ V ′)
    fuv = fe (U ⊔ V ′) (U ⊔ V ′)
+
+\end{code}
+
+   For certain purposes we need the apartness axioms packed in to a
+   single axiom.
+
+\begin{code}
 
    ♯a : apartness _♯_
    ♯a = (♯p , ♯i , ♯s , ♯c)
 
+\end{code}
+
+   We choose our object Ω of truth-values (aka propositions) at
+   universe level V, as is the universe our apartness relations takes
+   values in.
+
+\begin{code}
+
    Ω : V ′ ̇
    Ω = Prop {V}
+
+\end{code}
+
+   The following two facts plays a crucial role.
+
+\begin{code}
 
    Ω-isSet : isSet Ω
    Ω-isSet = Prop-isSet (fe V V) pe
@@ -520,11 +630,36 @@ apartness relation _♯₂ is tight:
    powerset-isSet : ∀ {W} {A : W ̇} → isSet(A → Ω)
    powerset-isSet {W} = isSet-exponential-ideal (fe W (V ′)) (λ x → Ω-isSet)
 
+\end{code}
+
+   Initially we tried to work with the function apart : X → (X → V ̇)
+   defined by apart = _♯_. However, at some point in the development
+   below it was impossible to proceed, when we need that any two
+   proofs of apart x = apart y are equal. This should be the case
+   because _♯_ is prop-valued. The most convenient way to achieve this
+   is to restrict the codomain of apart from V to Ω.
+
+\begin{code}
+
    apart : X → (X → Ω)
    apart x y = x ♯ y , ♯p x y
 
+\end{code}
+
+   We now name the standard equivalence relation induced by _♯_:
+
+\begin{code}
+
    _~_ : X → X → V ̇
    x ~ y = ¬(x ♯ y)
+
+\end{code}
+
+   The following is an immediate consequence of the fact that two
+   equivalent elements has the same apartness class, using functional
+   and propositional extensionality.
+
+\begin{code}
 
    apart-lemma : (x y : X) → x ~ y → apart x ≡ apart y
    apart-lemma x y na = funext (fe U (V ′)) h
@@ -538,6 +673,14 @@ apartness relation _♯₂ is tight:
      h : (z : X) → apart x z ≡ apart y z
      h z = to-Σ-Id isProp (g z , isProp-isProp (fe V V) _ _)
 
+\end{code}
+
+   We now construct the tight reflection of (X,♯) to get (X',♯')
+   together with a universal strongly extensional map from X into
+   tight apartness types. We take X' to be the image of the apart map.
+
+\begin{code}
+
    open ImageAndSurjection pt
    
    X' : U ⊔ V ′ ̇
@@ -549,6 +692,16 @@ apartness relation _♯₂ is tight:
    η : X → X'
    η = corestriction apart
 
+\end{code}
+
+   The following induction principle is our main tool. Its uses look
+   convulated at times by the need to show that the property one is
+   doing induction over is prop-valued. Typically this involves the
+   use of the fact the propositions for an exponential ideal, and,
+   more generally, are closed under products.
+
+\begin{code}
+
    η-surjection : isSurjection η
    η-surjection = corestriction-surjection apart
 
@@ -558,9 +711,21 @@ apartness relation _♯₂ is tight:
              → (x' : X') → P x'
    η-induction = surjection-induction η η-surjection
 
+\end{code}
+
+   The apartness relation _♯'_ on X' is defined as follows.
+
+\begin{code}
+
    _♯'_ : X' → X' → U ⊔ V ′ ̇
    (u , _) ♯' (v , _) = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
-          
+
+\end{code}
+
+   Then η preserves and reflects apartness:
+
+\begin{code}
+
    η-preserves-apartness : {x y : X} → x ♯ y → η x ♯' η y
    η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
    
@@ -576,7 +741,14 @@ apartness relation _♯₂ is tight:
        
        j : y' ♯ x → y ♯ x
        j = idtofun _ _ (ap pr₁ (happly _ _ q x))
-   
+
+\end{code}
+
+   Of course, we must check that this does indeed defined an apartness
+   relation. We do this by η-induction.
+
+\begin{code}
+
    ♯'p : prop-valued _♯'_
    ♯'p _ _ = ptisp
 
@@ -587,8 +759,7 @@ apartness relation _♯₂ is tight:
      induction-step x a = ♯i x (η-strongly-extensional a)
      
      by-induction : _
-     by-induction = η-induction
-                      (λ x' → ¬ (x' ♯' x'))
+     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
                       (λ _ → isProp-exponential-ideal (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-isProp))
                       induction-step
 
@@ -600,11 +771,10 @@ apartness relation _♯₂ is tight:
      
      by-nested-induction : _
      by-nested-induction =
-       η-induction
-        (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
+       η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
         (λ x' → isProp-exponential-ideal fuv
                  (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' x')))
-        (λ x → η-induction _
+        (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
                  (λ y' → isProp-exponential-ideal fuv (λ _ → ♯'p y' (η x)))
                  (induction-step x))
    
@@ -626,20 +796,28 @@ apartness relation _♯₂ is tight:
 
      by-nested-induction : _
      by-nested-induction =
-       η-induction
-        (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
+       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
         (λ _ → isProp-exponential-ideal fuv
                  (λ _ → isProp-exponential-ideal fuv
                           (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))))
-        (λ x → η-induction _
+        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
                  (λ _ → isProp-exponential-ideal fuv
                           (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp)))
-                 (λ y → η-induction _
+                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
                           (λ _ → isProp-exponential-ideal fuv (λ _ → ptisp))
                           (induction-step x y)))
 
    ♯'a : apartness _♯'_
    ♯'a = (♯'p , ♯'i , ♯'s , ♯'c)
+
+\end{code}
+
+   The tightness of _♯'_ cannot by proved by induction by reduction to
+   properties of _♯_, as above, because _♯_ is not (necessarily)
+   tight. We need to work with the definitions of X' and _♯'_
+   directly.
+
+\begin{code}
 
    ♯'t : tight _♯'_
    ♯'t (u , e) (v , f) n = g
@@ -661,13 +839,32 @@ apartness relation _♯₂ is tight:
        
      g : (u , e) ≡ (v , f)
      g = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
-     
+
+\end{code}
+
+   The tightness of _♯'_ gives that η maps equivalent elements to
+   equal elements, and its irreflexity gives that elements with the
+   same η image are equivalent.
+
+\begin{code}
+
    η-equiv-equal : {x y : X} → x ~ y → η x ≡ η y
    η-equiv-equal = ♯'t _ _ ∘ contrapositive η-strongly-extensional
 
    η-equal-equiv : {x y : X} → η x ≡ η y → x ~ y
    η-equal-equiv {x} {y} p a = ♯'i (η y) (transport (λ z → z ♯' η y) p (η-preserves-apartness a))
-   
+
+\end{code}
+
+   We now show that the above date provide the tight reflection, or
+   universal strongly extensional map from X to tight apartness types,
+   were unique existence is expressed by the contractibility of a Σ
+   type, as usual in univalent mathematics and homotopy type
+   theory. Notice the use of η-induction to avoid dealing directly
+   with the details of the constructions performed above.
+
+\begin{code}
+
    tight-reflection : ∀ {W T} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
                     → apartness _♯ᴬ_
                     → tight _♯ᴬ_
@@ -740,7 +937,9 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-The following are direct consequences of the reflection, but we offer direct proofs:
+   The following are direct consequences of the reflection, but we
+   offer direct proofs (we did this as a warming-up, preparation
+   exercise to prove the previous proposition):
 
 \begin{code}
 
@@ -775,3 +974,10 @@ The following are direct consequences of the reflection, but we offer direct pro
        s = tight-η-lc t r
 
 \end{code}
+
+TODO. 
+
+* Show that the tight reflection also gives the quotient by _~_.
+
+* Show that the tight reflectio of ♯₂ has the universal property of
+  the totally separated reflection.
