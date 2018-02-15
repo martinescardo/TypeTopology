@@ -593,14 +593,12 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
-   We include the following abbreviation to avoid some long lines,
-   especially in some proofs by induction that need routine proofs
-   that some things are propositions to make the inductions possible.
+   We now name the standard equivalence relation induced by _♯_.
 
 \begin{code}
 
-   fuv : FunExt (U ⊔ V ′) (U ⊔ V ′)
-   fuv = fe (U ⊔ V ′) (U ⊔ V ′)
+   _~_ : X → X → V ̇
+   x ~ y = ¬(x ♯ y)
 
 \end{code}
 
@@ -648,15 +646,6 @@ A map is called strongly extensional if it reflects apartness.
 
    apart : X → (X → Ω)
    apart x y = x ♯ y , ♯p x y
-
-\end{code}
-
-   We now name the standard equivalence relation induced by _♯_:
-
-\begin{code}
-
-   _~_ : X → X → V ̇
-   x ~ y = ¬(x ♯ y)
 
 \end{code}
 
@@ -727,19 +716,13 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
-   (Maybe a better (equivalent) definition would be
-   
-      x' ♯ y' = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (η x ≡ x') × (η y ≡ y').
-      
-   Perhaps I should rewrite the proof in this way.)
-
-   Then η preserves and reflects apartness:
+   Then η preserves and reflects apartness.
 
 \begin{code}
 
    η-preserves-apartness : preserves _♯_ _♯'_ η
    η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
-   
+
    η-strongly-extensional : strongly-extensional _♯_ _♯'_ η
    η-strongly-extensional {x} {y} = ptrec (♯p x y) g
     where
@@ -755,10 +738,16 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
-   Of course, we must check that this does indeed defined an apartness
-   relation. We do this by η-induction.
+   Of course, we must check that _♯'_ is indeed an apartness
+   relation. We do this by η-induction. These proofs by induction need
+   routine proofs that some things are propositions. We include the
+   following abbreviation `fuv` to avoid some long lines in such
+   proofs.
 
 \begin{code}
+
+   fuv : FunExt (U ⊔ V ′) (U ⊔ V ′)
+   fuv = fe (U ⊔ V ′) (U ⊔ V ′)
 
    ♯'p : prop-valued _♯'_
    ♯'p _ _ = ptisp
@@ -831,7 +820,7 @@ A map is called strongly extensional if it reflects apartness.
 \begin{code}
 
    ♯'t : tight _♯'_
-   ♯'t (u , e) (v , f) n = g
+   ♯'t (u , e) (v , f) n = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
     where
      h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
      h (x , p) (y , q) = to-Σ-Id _ (t , ptisp _ _)
@@ -847,9 +836,6 @@ A map is called strongly extensional if it reflects apartness.
        
        t : u ≡ v
        t = p ⁻¹ ∙ s ∙ q
-       
-     g : (u , e) ≡ (v , f)
-     g = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
 
 \end{code}
 
@@ -890,27 +876,27 @@ A map is called strongly extensional if it reflects apartness.
      i : {x y : X} → x ~ y → f x ≡ f y
      i = ♯ᴬt _ _ ∘ contrapositive se
      
-     φ : (x' : X') → isProp (Σ (λ a → ∃ (λ x → (η x ≡ x') × (f x ≡ a))))
+     φ : (x' : X') → isProp (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
      φ = η-induction _ γ induction-step
        where
-        induction-step : (y : X) → isProp (Σ (λ a → ∃ (λ x → (η x ≡ η y) × (f x ≡ a))))
+        induction-step : (y : X) → isProp (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
         induction-step x (a , d) (b , e) = to-Σ-Id _ (p , ptisp _ _)
          where
-          h :  Σ (λ x' → (η x' ≡ η x) × (f x' ≡ a))
-            → Σ (λ y' → (η y' ≡ η x) × (f y' ≡ b))
+          h :  (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
+            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
             → a ≡ b
           h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
           
           p : a ≡ b
           p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
-        γ : (x' : X') → isProp (isProp (Σ (λ a → ∃ (λ x → (η x ≡ x') × (f x ≡ a)))))
+        γ : (x' : X') → isProp (isProp (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
         γ x' = isProp-isProp (fe (U ⊔ (V ′) ⊔ W) (U ⊔ (V ′) ⊔ W))
 
      k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
      k = η-induction _ φ induction-step
       where
-       induction-step : (y : X) → Σ (λ a → ∃ (λ x → (η x ≡ η y) × (f x ≡ a)))
+       induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)
        induction-step x = f x , ∣ x , refl , refl ∣
 
      f' : X' → A
@@ -919,10 +905,10 @@ A map is called strongly extensional if it reflects apartness.
      r : f' ∘ η ≡ f
      r = funext (fe U W) h
       where
-       g : (y : X) → ∃ (λ x → (η x ≡ η y) × (f x ≡ f' (η y)))
+       g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
        g y = pr₂(k(η y))
 
-       j : (y : X) → Σ (λ x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+       j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
        j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
          
        h : (y : X) → f'(η y) ≡ f y
@@ -948,72 +934,41 @@ A map is called strongly extensional if it reflects apartness.
 
 \end{code}
 
-The tight reflection is also the quotient of X by ~.
-
-\begin{code}
-{- TODO:
-   tight-quotient : ∀ {W} (A : W ̇)
-                    → isSet A
-                    → (f : X → A)
-                    → (∀ {x x'} →  x ~ x' → f x ≡ f x')
-                    → isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
-   tight-quotient {W} A iss f i = tight-reflection A _♯ᴬ_ ♯ᴬa ♯ᴬt f se
-    where
-     _♯ᴬ_ : A → A → U ⊔ V ⊔ W ̇
-     a ♯ᴬ b' = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (f x ≡ a) × (f y ≡ a)
-
-     ♯ᴬa : apartness _♯ᴬ_
-     ♯ᴬa = {!!}
-
-     ♯ᴬt : tight _♯ᴬ_
-     ♯ᴬt = {!!}
-     
-     se : strongly-extensional _♯_ _♯ᴬ_ f
-     se = {!!}
--}
-\end{code}
-
-   The following are direct consequences of the reflection, but we
-   offer direct proofs (we did this as a warming-up, preparation
-   exercise to prove the previous proposition):
+   The following is a consequence of the reflection, but we offer a
+   direct proof.
 
 \begin{code}
 
-   tight-η-lc : tight _♯_ → left-cancellable η
-   tight-η-lc t {x} {y} p = g
+   tight-η-equiv : tight _♯_ → X ≃ X'
+   tight-η-equiv t = (η , isContrMap-is-equiv η cm)
     where
-     remark : η x ≡ η y
-     remark = p
-     
-     i : ¬ (η x ♯' η y) → x ≡ y
-     i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
-     
-     h : η x ♯' η y → 𝟘
-     h a = ♯'i (η y) (transport (λ z → z ♯' η y) p a)
-     
-     g : x ≡ y
-     g = i h
-
-   tight-η-retraction : tight _♯_ → (x' : X') → Σ \(x : X) → η x ≡ x'
-   tight-η-retraction t = η-induction (λ x' → Σ (λ x → η x ≡ x')) g induction-step
-    where
-     induction-step : (x : X) → Σ (λ y → η y ≡ η x)
-     induction-step x = x , refl
-     
-     g : (x' : X') → isProp (Σ (λ x → η x ≡ x'))
-     g (u , e) (y , p) (z , q) = to-Σ-Id _ (s , tight-set (fe (U ⊔ V ′) U₀) _♯'_ ♯'a ♯'t _ _)
+     lc : left-cancellable η
+     lc {x} {y} p = i h
       where
-       r : η y ≡ η z
-       r = p ∙ q ⁻¹
-       
-       s : y ≡ z
-       s = tight-η-lc t r
+       i : ¬ (η x ♯' η y) → x ≡ y
+       i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
+     
+       h : ¬(η x ♯' η y)
+       h a = ♯'i (η y) (transport (λ z → z ♯' η y) p a)
 
+     e : isEmbedding η
+     e = s-lc-e η lc X'-isSet
+
+     r : retraction η
+     r = η-induction _ e induction-step
+      where
+       induction-step : (x : X) → Σ \y → η y ≡ η x
+       induction-step x = x , refl
+
+     cm : isContrMap η
+     cm x' = i-p-is-c (r x') (e x')
+     
 \end{code}
 
 TODO. 
 
-* Show that the tight reflection also gives the quotient by _~_.
+* The tight reflection has the universal property of the quotient by
+  _~_. Conversely, the quotient by _~_ gives the tight reflection.
 
-* Show that the tight reflection of ♯₂ has the universal property of
-  the totally separated reflection.
+* The tight reflection of ♯₂ has the universal property of the totally
+  separated reflection.

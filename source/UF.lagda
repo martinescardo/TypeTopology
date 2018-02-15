@@ -411,6 +411,13 @@ qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
     hf'' : (x : X) → h(h'(f'(f x))) ≡ x
     hf'' x = ap h (hf' (f x)) ∙ hf x
 
+equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
+equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
+
+equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
+equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
+
+
 \end{code}
 
 Left-cancellable maps.
@@ -712,6 +719,27 @@ pcubp X Y i j (x , y) (x' , y') = to-Σ-Id (λ _ → Y)
 fiber : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → f x ≡ y
 
+isContrMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+isContrMap f = ∀ y → isContr (fiber f y)
+
+isContrMap-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → is-equiv f
+isContrMap-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
+ where
+  φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
+  φ' = φ
+  c : (y : Y) → Σ \(x : X) → f x ≡ y
+  c y = pr₁(φ y)
+  d : (y : Y) → (σ : Σ \(x : X) → f x ≡ y) → c y ≡ σ
+  d y = pr₂(φ y)
+  g : Y → X
+  g y = pr₁(c y)
+  fg : (y : Y) → f (g y) ≡ y
+  fg y = pr₂(c y)
+  e : (x : X) → g(f x) , fg (f x) ≡ x , refl
+  e x = d (f x) (x , refl)
+  gf : (x : X) → g (f x) ≡ x
+  gf x = ap pr₁ (e x)
+
 isEmbedding : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEmbedding f = ∀ y → isProp(fiber f y)
 
@@ -898,13 +926,16 @@ K-idtofun-lc : ∀ {U} → K (U ′)
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
-K-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → K V → isEmbedding f
-K-lc-e {U} {V} {X} {Y} f f-lc k y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
+s-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → isSet Y → isEmbedding f
+s-lc-e {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))
    q : yoneda-nat (λ x → f x ≡ y) p x' r ≡ p'
-   q = k Y (yoneda-nat (λ x → f x ≡ y) p x' r) p'
+   q = iss (yoneda-nat (λ x → f x ≡ y) p x' r) p'
+
+K-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → K V → isEmbedding f
+K-lc-e {U} {V} {X} {Y} f f-lc k = s-lc-e f f-lc (k Y)
 
 \end{code}
 
@@ -1106,6 +1137,18 @@ module PropositionalTruncation (pt : PropTrunc) where
    ∣_∣ : ∀ {U} {X : U ̇} → X → ∥ X ∥
    ptrec : ∀ {U V} {X : U ̇} {Y : V ̇} → isProp Y → (X → Y) → ∥ X ∥ → Y
 
+ isContr'-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X × ∥ X ∥)
+ isContr'-isProp fe = isProp-closed-under-Σ (isProp-isProp fe) (λ _ → ptisp)
+
+ c-es₁ : ∀ {U} {X : U ̇} → isContr X ⇔ isProp X × ∥ X ∥
+ c-es₁ {U} {X} = f , g
+  where
+   f : isContr X → isProp X × ∥ X ∥ 
+   f (x , φ) = c-is-p (x , φ) , ∣ x ∣
+   
+   g : isProp X × ∥ X ∥ → isContr X
+   g (i , s) = ptrec i id s , i (ptrec i id s)
+   
  ptfunct : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ptfunct f = ptrec ptisp (λ x → ∣ f x ∣)
 
@@ -1120,7 +1163,7 @@ module PropositionalTruncation (pt : PropTrunc) where
 
  right-fails-then-left-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → isProp P → P ∨ Q → ¬ Q → P
  right-fails-then-left-holds i d u = ptrec i (λ d → Right-fails-then-left-holds d u) d
-
+ 
  infixr 0 _∨_
  infix 0 ∥_∥
 
@@ -1168,7 +1211,6 @@ module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist'
 
 \end{code}
 
-
 A main application of propositional truncations is to be able to
 define images and surjections:
 
@@ -1202,6 +1244,16 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
 
  isSurjection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
  isSurjection f = ∀ y → ∃ \x → f x ≡ y
+
+ c-es  :  ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
+          → isContrMap f ⇔ isEmbedding f × isSurjection f
+ c-es f = g , h
+  where
+   g : isContrMap f → isEmbedding f × isSurjection f 
+   g i = (λ y → pr₁(pr₁ c-es₁ (i y))) , (λ y → pr₂(pr₁ c-es₁ (i y)))
+   
+   h : isEmbedding f × isSurjection f → isContrMap f
+   h (e , s) = λ y → pr₂ c-es₁ (e y , s y)
 
  corestriction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                          → isSurjection (corestriction f)
@@ -1250,37 +1302,6 @@ Surjections can be characterized as follows, modulo size:
 \end{code}
 
 We definitely need to make the notation more uniform!
-
-\begin{code}
-
-isContrMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isContrMap f = ∀ y → isContr (fiber f y)
-
-isContrMap-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → is-equiv f
-isContrMap-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
- where
-  φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
-  φ' = φ
-  c : (y : Y) → Σ \(x : X) → f x ≡ y
-  c y = pr₁(φ y)
-  d : (y : Y) → (σ : Σ \(x : X) → f x ≡ y) → c y ≡ σ
-  d y = pr₂(φ y)
-  g : Y → X
-  g y = pr₁(c y)
-  fg : (y : Y) → f (g y) ≡ y
-  fg y = pr₂(c y)
-  e : (x : X) → g(f x) , fg (f x) ≡ x , refl
-  e x = d (f x) (x , refl)
-  gf : (x : X) → g (f x) ≡ x
-  gf x = ap pr₁ (e x)
-
-equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
-equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
-
-equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
-equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
-
-\end{code}
 
 Excluded middle (EM) is not provable or disprovable. However, we do
 have that there is no truth value other than false (⊥) or true (⊤),
