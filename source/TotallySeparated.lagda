@@ -613,7 +613,7 @@ apartness relation _♯₂ is tight:
 \end{code}
 
   We work with the object Ω of truth-values (aka propositions) at
-  universe V (which lives in the next universe V ′), as is in this
+  universe V (which lives in the next universe V ′), as it is in this
   universe our apartness relations takes values in.
 
 \begin{code}
