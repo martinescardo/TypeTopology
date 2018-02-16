@@ -964,32 +964,32 @@ apartness on it.
     u : isContr (Σ \(θ : X' → X) → θ ∘ η ≡ id)
     u = tight-reflection X _♯_ ♯a ♯t id id
     
-    θ : X' → X
-    θ = pr₁(pr₁ u)
-    
-    p₀ : θ ∘ η ≡ id
-    p₀ = pr₂(pr₁ u)
-    
-    p₁ : η ∘ θ ∘ η ≡ η
-    p₁ = ap (_∘_ η) p₀
-    
     v : isContr (Σ \(ζ : X' → X') → ζ ∘ η ≡ η)
     v = tight-reflection X' _♯'_ ♯'a ♯'t η η-strongly-extensional
+
+    θ : X' → X
+    θ = pr₁(pr₁ u)
     
     ζ : X' → X'
     ζ = pr₁(pr₁ v)
     
     φ : (ζ' : X' → X') → ζ' ∘ η ≡ η → ζ ≡ ζ'
     φ ζ' p = ap pr₁ (pr₂ v (ζ' , p))
+
+    p₀ : θ ∘ η ≡ id
+    p₀ = pr₂(pr₁ u)
     
-    p₂ : ζ ≡ id
-    p₂ = φ id refl
+    p₁ : η ∘ θ ∘ η ≡ η
+    p₁ = ap (_∘_ η) p₀
+
+    p₂ : ζ ≡ η ∘ θ
+    p₂ = φ (η ∘ θ) p₁
     
-    p₃ : ζ ≡ η ∘ θ
-    p₃ = φ (η ∘ θ) p₁
+    p₃ : ζ ≡ id
+    p₃ = φ id refl
     
     p₄ : η ∘ θ ≡ id
-    p₄ = p₃ ⁻¹ ∙ p₂
+    p₄ = p₂ ⁻¹ ∙ p₃
 
   tight-η-equiv-direct : tight _♯_ → X ≃ X'
   tight-η-equiv-direct t = (η , isContrMap-is-equiv η cm)
