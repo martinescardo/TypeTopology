@@ -614,7 +614,7 @@ apartness relation _♯₂ is tight:
 
   We work with the object Ω of truth-values (aka propositions) at
   universe V (which lives in the next universe V ′), as it is in this
-  universe our apartness relations takes values in.
+  universe that our apartness relations takes values in.
 
 \begin{code}
 
@@ -640,7 +640,8 @@ apartness relation _♯₂ is tight:
   below it was difficult to proceed, when we need that the identity
   type apart x = apart y is a proposition. This should be the case
   because _♯_ is prop-valued. The most convenient way to achieve this
-  is to restrict the codomain of apart from V to Ω.
+  is to restrict the codomain of apart from V to Ω, so that the
+  codomain of apart is a set.
 
 \begin{code}
 
