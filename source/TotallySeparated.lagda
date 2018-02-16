@@ -680,6 +680,14 @@ apartness relation _♯₂ is tight:
   X' : U ⊔ V ′ ̇
   X' = image apart
 
+\end{code}
+
+The type X may or may not be a set, but its tight reflection is
+necessarily a set, and we can see this before we define a tight
+apartness on it.
+
+\begin{code}
+
   X'-isSet : isSet X'
   X'-isSet = subset-of-set-is-set (X → Ω) _ powerset-isSet ptisp
 
