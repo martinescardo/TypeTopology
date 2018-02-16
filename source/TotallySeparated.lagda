@@ -192,7 +192,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-Id _ (t , r)
    s = p ∙ q ⁻¹
    
    t : x ≡ y
-   t = ts (λ p → ap (λ φ → φ p) s)
+   t = ts (happly _ _ s)
    
    r : transport (λ x → eval x ≡ φ) t p ≡ q
    r = totally-separated-is-set fe
@@ -294,7 +294,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      γ q = φ (q ∘ f)
      
      u : (Σ \(x : X) → (λ p → p x) ≡ φ) → Σ \(a : A) → eval a ≡ γ
-     u (x , r) = f x , funext (fe V U₀) (λ q → ap (λ φ → φ (q ∘ f)) r)
+     u (x , r) = f x , funext (fe V U₀) (λ q → happly _ _ r (q ∘ f))
      
    h' : (x' : T X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
@@ -303,7 +303,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    f' (φ , s) = pr₁ (h φ s)
    
    b : (x' : T X) (q : A → 𝟚) → q(f' x') ≡ pr₁ x' (q ∘ f)
-   b (φ , s) q = ap (λ γ → γ q) (pr₂ (h φ s))
+   b (φ , s) = happly _ _ (pr₂ (h φ s))
    
    r : f' ∘ η ≡ f
    r = funext (fe U V) (λ x → ts (b (η x)))
@@ -312,7 +312,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    c (f'' , s) = to-Σ-Id _ (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
-     w x = ap (λ f → f x) (r ∙ s ⁻¹)
+     w = happly _ _ (r ∙ s ⁻¹)
      
      t : f' ≡ f''
      t = funext (fe U V) (η-induction _ (λ _ → iss) w)
@@ -917,7 +917,7 @@ apartness relation _♯₂ is tight:
     c (f'' , s) = to-Σ-Id _ (t , v)
      where
       w : ∀ x → f'(η x) ≡ f''(η x)
-      w x = ap (λ f → f x) (r ∙ s ⁻¹)
+      w = happly _ _ (r ∙ s ⁻¹)
 
       t : f' ≡ f''
       t = funext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
@@ -933,13 +933,58 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-  The following is a consequence of the reflection, but we offer a
-  direct proof.
+  The following is an immediate consequence of the tight reflection,
+  by the usual categorical argument, using the fact that the identity
+  map is strongly extensional (with the identity function as the
+  proof). Notice that our construction of the reflection produces a
+  result in a universe higher than those where the starting data are,
+  to avoid impredicativity (aka propositional resizing). Nevertheless,
+  the usual categorical argument is applicable.
+
+  A direct proof that doesn't rely on the tight reflection is equally
+  short in this case, and is also included.
+
+  What the following construction says is that if _♯_ is tight, then
+  any element of X is uniquely determined by the set of elements apart
+  from it.
 
 \begin{code}
 
-  tight-η-equiv : tight _♯_ → X ≃ X'
-  tight-η-equiv t = (η , isContrMap-is-equiv η cm)
+  tight-η-equiv-abstract-nonsense : tight _♯_ → X ≃ X'
+  tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly _ _ p₄) , (θ , happly _ _ p₀)
+   where
+    u : isContr (Σ \(θ : X' → X) → θ ∘ η ≡ id)
+    u = tight-reflection X _♯_ ♯a ♯t id id
+    
+    θ : X' → X
+    θ = pr₁(pr₁ u)
+    
+    p₀ : θ ∘ η ≡ id
+    p₀ = pr₂(pr₁ u)
+    
+    p₁ : η ∘ θ ∘ η ≡ η
+    p₁ = ap (_∘_ η) p₀
+    
+    v : isContr (Σ \(ζ : X' → X') → ζ ∘ η ≡ η)
+    v = tight-reflection X' _♯'_ ♯'a ♯'t η η-strongly-extensional
+    
+    ζ : X' → X'
+    ζ = pr₁(pr₁ v)
+    
+    φ : (ζ' : X' → X') → ζ' ∘ η ≡ η → ζ ≡ ζ'
+    φ ζ' p = ap pr₁ (pr₂ v (ζ' , p))
+    
+    p₂ : ζ ≡ id
+    p₂ = φ id refl
+    
+    p₃ : ζ ≡ η ∘ θ
+    p₃ = φ (η ∘ θ) p₁
+    
+    p₄ : η ∘ θ ≡ id
+    p₄ = p₃ ⁻¹ ∙ p₂
+
+  tight-η-equiv-direct : tight _♯_ → X ≃ X'
+  tight-η-equiv-direct t = (η , isContrMap-is-equiv η cm)
    where
     lc : left-cancellable η
     lc {x} {y} p = i h
