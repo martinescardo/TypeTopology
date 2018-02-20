@@ -833,7 +833,78 @@ inf-filter c p q = ≤-anti u v
   
 \end{code}
 
+20 Feb 2018. In classical topology, a space X is compact iff the
+projection A × X → A is a closed map for every space A, meaning that
+the image of every closed set is closed. In our case, because of the
+use of decidable truth-values in the definition of 𝟚-compactness, the
+appropriate notion is that of clopen map, that is, a map that sends
+clopen sets to clopen sets. As in our setup, clopen sets correspond to
+decidable subsets, or sets with 𝟚-valued characteristic functions.
+
+There is a certain asymmetry in the following definition, in that the
+input decidable predicate (or clopen subtype) is given as a 𝟚-valued
+function, whereas instead of saying that the image predicate factors
+through the embedding 𝟚 of into the type of truth values, we say that
+it has decidable truth-values, which is equivalent. Such an asymmetry
+is already present in the formulation of the notion of compactness.
+
+\begin{code}
+
+isClopenMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+isClopenMap {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y) → decidable(∃ \(x : X) → (p x ≡ ₀) × (f x ≡ y))
+
+isClopenMap-isProp : ∀ {U V} {X : U ̇} {Y : V ̇} → (∀ U V → FunExt U V)
+                   → (f : X → Y) → isProp(isClopenMap f)
+isClopenMap-isProp {U} {V} fe f = isProp-exponential-ideal (fe U (U ⊔ V))
+                                    (λ p → isProp-exponential-ideal (fe V (U ⊔ V))
+                                             (λ y → decidable-isProp (fe (U ⊔ V) U₀) ptisp))
+
+fst : ∀ {U V} (A : U ̇) (X : V ̇) → A × X → A
+fst _ _ = pr₁
+
+𝟚-compact-clopen-projections : ∀ {U} (X : U ̇)
+                             → 𝟚-Compact X
+                             → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
+𝟚-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
+ where
+  g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
+   → decidable (∃ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a))
+  g (inl e) = inl ((ptfunct h) e)
+   where
+    h : (Σ \(x : X) → p (a , x) ≡ ₀) → Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)
+    h (x , r) =  (a , x) , (r , refl)
+  g (inr u) = inr (contrapositive (ptfunct h) u)
+   where
+    h : (Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ \(x : X) → p (a , x) ≡ ₀
+    h ((a' , x) , (r , s)) = x , transport (λ a' → p (a' , x) ≡ ₀) s r
+
+clopen-projections-𝟚-compact : ∀ {U} (X : U ̇)
+                             → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
+                             → 𝟚-Compact X
+clopen-projections-𝟚-compact X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
+ where
+  g : decidable (∃ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
+   → decidable (∃ \(x : X) → p x ≡ ₀)
+  g (inl e) = inl (ptfunct h e)
+   where
+    h : (Σ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)) → Σ \(x : X) → p x ≡ ₀
+    h ((* , x) , r , _) = x , r
+  g (inr u) = inr(contrapositive (ptfunct h) u)
+   where
+    h : (Σ \(x : X) → p x ≡ ₀) → Σ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)
+    h (x , r) = (* , x) , (r , refl)
+
+
+\end{code}
+
+Notice how for certain purposes the relevant notion is that of strong
+compactness (e.g. regarding the clopenness of the projection), whereas
+for others it is that of weak compactness (e.g. regarding existence of
+infima of 𝟚-valued maps).
+
 TODO.
+
+* Consider 𝟚-perfect maps.
 
 * Strong compactness: attainability of minima. Existence of potential
   maxima.
