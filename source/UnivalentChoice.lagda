@@ -135,7 +135,7 @@ module UnivalentChoice (U : Universe)
  sei : {X Y : U ̇} → isSet Y → isSet (X → Y)
  sei isy = isSet-exponential-ideal (fe U U) (λ x → isy)
 
- open TChoice U ∥_∥ ptfunct isSet sei (prop-is-set ptisp)
+ open TChoice U ∥_∥ ptfunct isSet sei (prop-isSet ptisp)
 
  AC   = (X : U ̇) (A : X → U ̇) (P : (x : X) → A x → U ̇)
      → isSet X
@@ -174,7 +174,7 @@ module UnivalentChoice (U : Universe)
    g = ac' X
            (λ x → Σ \(a : A x) → P x a)
            s
-           (λ x → subset-of-set-is-set (A x) (P x) (t x) (λ {a} → isp x a))
+           (λ x → subset-of-set-isSet (A x) (P x) (t x) (λ {a} → isp x a))
            f
 
  AC'AC'' : AC' → AC''
@@ -220,7 +220,7 @@ module ChoiceUnderEM₀ (U : Universe)
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
  l : {X : U ̇} → isSet(¬¬ X)
- l {X} = prop-is-set (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
+ l {X} = prop-isSet (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
  
  fact : DNS → DNA
  fact = TChoice.theorem U ¬¬ ¬¬-functor isSet sei l
@@ -307,7 +307,7 @@ module AC-renders-all-sets-discrete
    A x = Σ \(i : 𝟚) → a i ≡ x
    
    isa : (x : X) → isSet(A x)
-   isa x = subset-of-set-is-set 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
+   isa x = subset-of-set-isSet 𝟚 (λ i → a i ≡ x) 𝟚-isSet isx
    
    ac'' : AC''
    ac'' = AC'AC'' (ACAC' ac)

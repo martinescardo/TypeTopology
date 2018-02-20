@@ -64,8 +64,8 @@ path-collapsible X = {x y : X} → collapsible(x ≡ y)
 set-is-path-collapsible : ∀ {U} → {X : U ̇} → isSet X → path-collapsible X
 set-is-path-collapsible u = (id , u)
 
-path-collapsible-is-set : ∀ {U} {X : U ̇} → path-collapsible X → isSet X
-path-collapsible-is-set pc p q = claim₂
+path-collapsible-isSet : ∀ {U} {X : U ̇} → path-collapsible X → isSet X
+path-collapsible-isSet pc p q = claim₂
  where
   f : ∀ {x y} → x ≡ y → x ≡ y
   f = pr₁ pc
@@ -81,8 +81,8 @@ path-collapsible-is-set pc p q = claim₂
 prop-is-path-collapsible : ∀ {U} {X : U ̇} → isProp X → path-collapsible X
 prop-is-path-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → refl))
 
-prop-is-set : ∀ {U} {X : U ̇} → isProp X → isSet X
-prop-is-set h = path-collapsible-is-set(prop-is-path-collapsible h)
+prop-isSet : ∀ {U} {X : U ̇} → isProp X → isSet X
+prop-isSet h = path-collapsible-isSet(prop-is-path-collapsible h)
 
 𝟘-is-collapsible : collapsible 𝟘
 𝟘-is-collapsible = (λ x → x) , (λ x → λ ())
@@ -117,8 +117,8 @@ path-from-trivial-loop {U} {X} = J A λ x → refl
 paths-from-is-contractible : ∀ {U} {X : U ̇} (x₀ : X) → isContr(paths-from x₀)
 paths-from-is-contractible x₀ = trivial-loop x₀ , (λ t → path-from-trivial-loop (pr₂ t))
 
-paths-from-is-prop : ∀ {U} {X : U ̇} (x : X) → isProp(paths-from x)
-paths-from-is-prop x = c-is-p (paths-from-is-contractible x)
+paths-from-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-from x)
+paths-from-isProp x = c-is-p (paths-from-is-contractible x)
 
 _⇒_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → (X → V ⊔ W ̇)
 A ⇒ B = λ x → A x → B x
@@ -709,8 +709,8 @@ paths-to-contractible x = rc-is-c (pr₁(pt-pf-equiv x))
                                   (pr₁(pr₂((pt-pf-equiv x))))
                                   (paths-from-contractible x)
 
-paths-to-is-prop : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
-paths-to-is-prop x = c-is-p (paths-to-contractible x)
+paths-to-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
+paths-to-isProp x = c-is-p (paths-to-contractible x)
 
 pcubp : ∀ {U} (X Y : U ̇) → isProp X → isProp Y → isProp(X × Y)
 pcubp X Y i j (x , y) (x' , y') = to-Σ-Id (λ _ → Y) 
@@ -747,7 +747,7 @@ embedding-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding f �
 embedding-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 id-isEmbedding : ∀ {U} {X : U ̇} → isEmbedding (id {U} {X})
-id-isEmbedding = paths-to-is-prop
+id-isEmbedding = paths-to-isProp
 
 isEmbedding' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEmbedding' f = ∀ x x' → is-equiv (ap f {x} {x'})
@@ -839,7 +839,7 @@ isProp-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X)
 isProp-isProp {U} {X} fe f g = claim₁
  where
   lemma : isSet X
-  lemma = prop-is-set f
+  lemma = prop-isSet f
   claim : (x y : X) → f x y ≡ g x y
   claim x y = lemma (f x y) (g x y)
   claim₀ : (x : X) → f x ≡ g x 
@@ -853,10 +853,10 @@ isProp-isContr {U} {X} fe (x , φ) (y , γ) = to-Σ-Id _ (φ y , funext fe λ z 
   isp : isProp X
   isp = c-is-p (y , γ)
   iss : isSet X
-  iss = prop-is-set isp
+  iss = prop-isSet isp
 
-subtype-of-set-is-set : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y) → left-cancellable m → isSet Y → isSet X
-subtype-of-set-is-set {U} {V} {X} m i h = path-collapsible-is-set (f , g)
+subtype-of-set-isSet : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y) → left-cancellable m → isSet Y → isSet X
+subtype-of-set-isSet {U} {V} {X} m i h = path-collapsible-isSet (f , g)
  where
   f : {x x' : X} → x ≡ x' → x ≡ x'
   f r = i (ap m r)
@@ -1000,9 +1000,9 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     go : isProp(Y x)
     go = lcmtpip s (section-lc s (r , rs)) isp
 
-subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
+subset-of-set-isSet : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
                     → isSet X → ({x : X} → isProp(Y x)) → isSet(Σ \(x : X) → Y x)
-subset-of-set-is-set X Y h p = subtype-of-set-is-set pr₁ (pr₁-lc p) h
+subset-of-set-isSet X Y h p = subtype-of-set-isSet pr₁ (pr₁-lc p) h
 
 isSet-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isSet(A x)) → isSet(Π A) 
@@ -1061,7 +1061,7 @@ PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}} → (p holds
 PropExt {U} fe pe {p} {q} f g = to-Σ-Id isProp ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
 
 Prop-isSet : ∀ {U} → FunExt U U → propExt U → isSet (Prop {U})
-Prop-isSet {U} fe pe = path-collapsible-is-set pc
+Prop-isSet {U} fe pe = path-collapsible-isSet pc
  where
   A : (p q : Prop) → U ̇
   A p q = (p holds → q holds) × (q holds → p holds) 

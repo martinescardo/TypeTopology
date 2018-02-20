@@ -63,7 +63,7 @@ open import UF2
 𝟚-compact-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-compact X)
 𝟚-compact-isProp {U} = isProp-exponential-ideal (fe U U)
                          (λ _ → decidable-isProp (fe U U₀)
-                                  (isProp-exponential-ideal (fe U U₀) λ _ → 𝟚-is-set))
+                                  (isProp-exponential-ideal (fe U U₀) λ _ → 𝟚-isSet))
 
 \end{code}
 
@@ -238,7 +238,7 @@ surjection-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
 surjection-𝟚-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
  where
   g : decidable((x : X) → q (f x) ≡ ₁) → decidable ((x : Y) → q x ≡ ₁)
-  g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
+  g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-isSet) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
 retract-𝟚-Compact : ∀ {U V} {X : U ̇} {Y : V ̇}
@@ -296,7 +296,7 @@ module TCompactness {U : Universe} (X : U ̇) where
    f α x = (extension-property p x) ⁻¹ ∙ α (η x)
    
    g : (α : (x : X) → p x ≡ ₁) → ((x' : T X) → extension p x' ≡ ₁)
-   g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
+   g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-isSet) g'
      where
       g' : (x : X) → extension p (η x) ≡ ₁
       g' x = extension-property p x ∙ α x 
@@ -557,7 +557,7 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     t : two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
     t = s (A x) e
     u : (λ e' → x , e') ≡ (λ _ → x , e)
-    u = funext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-is-set e' e)
+    u = funext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-isSet e' e)
     v : r x ≡ two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
     v = ap (λ f₀ → two-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
     w : r x ≡ x , e
@@ -605,7 +605,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     y : A x ≡ ₁ → 𝟚
     y _ = q (x , e)
     r : p₁ x ≡ y
-    r = (funext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-is-set e' e))
+    r = (funext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-isSet e' e))
     s : (b : 𝟚) → b ≡ ₁ → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
     s ₁ refl = refl
@@ -716,9 +716,9 @@ has-inf-isProp : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → isProp(p has
 has-inf-isProp {U} {X} p n (f , g) (f' , g') = ×-≡ r s
  where
   r : f ≡ f'
-  r = funext (fe U U₀) (λ x → funext (fe U₀ U₀) (λ r → 𝟚-is-set (f x r) (f' x r)))
+  r = funext (fe U U₀) (λ x → funext (fe U₀ U₀) (λ r → 𝟚-isSet (f x r) (f' x r)))
   s : g ≡ g'
-  s = funext (fe U₀ U) (λ n → funext (fe U U₀) (λ φ → funext (fe U₀ U₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
+  s = funext (fe U₀ U) (λ n → funext (fe U U₀) (λ φ → funext (fe U₀ U₀) (λ r → 𝟚-isSet (g n φ r) (g' n φ r))))
 
 at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → isProp (Σ \(n : 𝟚) → p has-inf n)
 at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-Id (_has-inf_ p)

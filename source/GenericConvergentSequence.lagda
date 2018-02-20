@@ -34,27 +34,29 @@ decreasing : (ℕ → 𝟚) → U₀ ̇
 decreasing α = (i : ℕ) → α i ≥ α(succ i)
 
 decreasing-isProp : FunExt₀ → (α : ℕ → 𝟚) → isProp(decreasing α)
-decreasing-isProp fe α = isProp-exponential-ideal fe (λ i → isProp-exponential-ideal fe (λ p → 𝟚-is-set))
+decreasing-isProp fe α = isProp-exponential-ideal fe (λ i → isProp-exponential-ideal fe (λ p → 𝟚-isSet))
 
 ℕ∞ : U₀ ̇
 ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α
 
-decreasing-is-prop : FunExt₀ → {α : ℕ → 𝟚} → isProp(decreasing α)
-decreasing-is-prop fe {α} p q = funext fe fact₂
+{- Old:
+decreasing-isProp : FunExt₀ → {α : ℕ → 𝟚} → isProp(decreasing α)
+decreasing-isProp fe {α} p q = funext fe fact₂
  where
   fact₀ : (i : ℕ) (f g : α(succ i) ≡ ₁ → α i ≡ ₁) → f ≡ g
   fact₀ i f g = funext fe fact₁
    where
     fact₁ : (r : α (succ i) ≡ ₁) → f r ≡ g r
-    fact₁ r = 𝟚-is-set (f r) (g r)
+    fact₁ r = 𝟚-isSet (f r) (g r)
   fact₂ : (i : ℕ) → p i ≡ q i
   fact₂ i = fact₀ i (p i) (q i) 
+-}
 
 incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
 
 incl-lc : FunExt₀ → left-cancellable incl
-incl-lc fe = pr₁-lc (decreasing-is-prop fe)  
+incl-lc fe = pr₁-lc (decreasing-isProp fe _)  
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0 = β 0
@@ -108,7 +110,7 @@ Cantor-separated fe = separated-ideal fe (λ _ → 𝟚-separated)
 ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)
 
 ℕ∞-set : FunExt₀ → isSet ℕ∞
-ℕ∞-set fe = separated-is-set fe (ℕ∞-separated fe)
+ℕ∞-set fe = separated-isSet fe (ℕ∞-separated fe)
 
 open import TotallySeparated
 

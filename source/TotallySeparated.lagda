@@ -130,8 +130,8 @@ totally-separated-is-separated X ts = g
 
 open import UF2
 
-totally-separated-is-set : ∀ {U} → FunExt U U₀ → (X : U ̇) → totally-separated X → isSet X
-totally-separated-is-set fe X t = separated-is-set fe (totally-separated-is-separated X t)
+totally-separated-isSet : ∀ {U} → FunExt U U₀ → (X : U ̇) → totally-separated X → isSet X
+totally-separated-isSet fe X t = separated-isSet fe (totally-separated-is-separated X t)
 
 \end{code}
 
@@ -143,14 +143,14 @@ Old proof which by-passes the step via separatedness:
 
 \begin{code}
 
-totally-separated-is-set' : ∀ {U} → FunExt U U₀ → (X : U ̇) → totally-separated X → isSet X
-totally-separated-is-set' fe X t = path-collapsible-is-set h
+totally-separated-isSet' : ∀ {U} → FunExt U U₀ → (X : U ̇) → totally-separated X → isSet X
+totally-separated-isSet' fe X t = path-collapsible-isSet h
  where
   f : {x y : X} → x ≡ y → x ≡ y
   f r = t(λ p → ap p r)
   
   b : {x y : X} (φ γ : (p : X → 𝟚) → p x ≡ p y) → φ ≡ γ
-  b φ γ = funext fe (λ p → discrete-is-set 𝟚-discrete (φ p) (γ p))
+  b φ γ = funext fe (λ p → discrete-isSet 𝟚-discrete (φ p) (γ p))
   
   c : {x y : X} (r s : x ≡ y) → (λ p → ap p r) ≡ (λ p → ap p s)
   c r s = b(λ p → ap p r) (λ p → ap p s)
@@ -195,7 +195,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-Id _ (t , r)
    t = ts (happly _ _ s)
    
    r : transport (λ x → eval x ≡ φ) t p ≡ q
-   r = totally-separated-is-set fe
+   r = totally-separated-isSet fe
          ((X → 𝟚) → 𝟚) (totally-separated-ideal fe (λ p → 𝟚-totally-separated)) _ q
 
 ieevalts : ∀ {U} {X : U ̇} → FunExt U U₀ → isEmbedding(eval {U} {X}) → totally-separated X
@@ -282,7 +282,7 @@ rather than direct proofs (as in the proof of tight reflection below).
  totally-separated-reflection {V} {X} {A} ts f = go
   where
    iss : isSet A
-   iss = totally-separated-is-set (fe V U₀) A ts
+   iss = totally-separated-isSet (fe V U₀) A ts
    
    ie : (γ : (A → 𝟚) → 𝟚) → isProp (Σ \(a : A) → eval a ≡ γ)
    ie = tsieeval (fe V U₀) ts
@@ -350,7 +350,7 @@ boolean predicates (which we exploit in the module 2CompactTypes).
 TODO: most of what we said doesn't depend on the type 𝟚, and total
 separatedness can be generalized to S-separatedness for an arbitrary
 type S, where 𝟚-separatedness is total separatedness. Then, for
-example, Prop-separated is equivalent to is-set, all types in U are U
+example, Prop-separated is equivalent to isSet, all types in U are U
 separated, Set-separatedness (where Set is the type of sets) should be
 equivalent to is-1-groupoid, etc.
 
@@ -540,7 +540,7 @@ apartness relation _♯₂ is tight:
 
  tight-set : ∀ {U V} {X : U ̇} → FunExt U U₀
            → (_♯_ : X → X → V ̇) → apartness _♯_ → tight _♯_ → isSet X
- tight-set fe _♯_ a t = separated-is-set fe (tight-separated _♯_ a t)
+ tight-set fe _♯_ a t = separated-isSet fe (tight-separated _♯_ a t)
 
 \end{code}
 
@@ -690,7 +690,7 @@ apartness on it.
 \begin{code}
 
   X'-isSet : isSet X'
-  X'-isSet = subset-of-set-is-set (X → Ω) _ powerset-isSet ptisp
+  X'-isSet = subset-of-set-isSet (X → Ω) _ powerset-isSet ptisp
 
   η : X → X'
   η = corestriction apart
