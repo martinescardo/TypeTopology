@@ -27,15 +27,15 @@ also say that
 
  * X is strongly 𝕊-overt if the composite
 
-             d'          ∃
-     (X→𝕊) ⟶  (X→Ω)  ⟶  Ω
+           d'        ∃
+     (X→𝕊) →  (X→Ω)  →  Ω
 
    factors through the embedding d : 𝕊 ↪ Ω into the type Ω of truth
    values, where d' p = d ∘ p.
 
-The (weak) overtness of X says that every X-indexed family of elements
-of 𝕊 has a least upper bound, and the strong overtness of X says is
-that this coincides with the least upper bound calculated (by the
+The (normal) overtness of X says that every X-indexed family of
+elements of 𝕊 has a least upper bound, and the strong overtness of X
+says that this coincides with the least upper bound calculated (by the
 existential quantifier ∃) in Ω.
 
 Because the dominance 𝕊=𝟚 is a boolean algebra, we get the odd fact that
@@ -657,9 +657,9 @@ detachable-subset-strongly-𝟚-overt {U} {X} A c = g (c A)
 
 \end{code}
 
-For the weak compact case, the retraction method to prove the last
-theorem is not available, but the conclusion holds, with some of the
-same ingredients (and with a longer proof (is there a shorter one?)).
+For the compact case, the retraction method to prove the last theorem
+is not available, but the conclusion holds, with some of the same
+ingredients (and with a longer proof (is there a shorter one?)).
 
 \begin{code}
 
