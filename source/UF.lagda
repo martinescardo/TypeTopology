@@ -1163,6 +1163,15 @@ module PropositionalTruncation (pt : PropTrunc) where
 
  right-fails-then-left-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → isProp P → P ∨ Q → ¬ Q → P
  right-fails-then-left-holds i d u = ptrec i (λ d → Right-fails-then-left-holds d u) d
+
+ pt-gdn : ∀ {U} {X : U ̇} → ∥ X ∥ → ∀ {V} (P : V ̇) → isProp P → (X → P) → P
+ pt-gdn {U} {X} s {V} P isp u = ptrec isp u s
+
+ gdn-pt : ∀ {U} {X : U ̇} → (∀ {V} (P : V ̇) → isProp P → (X → P) → P) → ∥ X ∥ 
+ gdn-pt {U} {X} φ = φ ∥ X ∥ ptisp ∣_∣
+
+ pt-dn : ∀ {U} {X : U ̇} → ∥ X ∥ → ¬¬ X
+ pt-dn s = pt-gdn s 𝟘 𝟘-isProp
  
  infixr 0 _∨_
  infix 0 ∥_∥
@@ -1333,6 +1342,13 @@ DNE-EM fe dne P isp = dne (P + ¬ P)
                           (decidable-isProp fe isp)
                           (λ u → u (inr (λ p → u (inl p))))
 
+module _ (pt : PropTrunc) where
+
+ open PropositionalTruncation pt
+
+ double-negation-is-truncation-gives-DNE : ∀ {U} → ((X : U ̇) → ¬¬ X → ∥ X ∥) → DNE U
+ double-negation-is-truncation-gives-DNE {U} f P isp u = ptrec isp id (f P u)
+ 
 fem-proptrunc : ∀ {U} → FunExt U U₀ → EM U → propositional-truncations-exist U U
 fem-proptrunc fe em X = ¬¬ X ,
                     (isProp-exponential-ideal fe (λ _ → 𝟘-isProp) ,

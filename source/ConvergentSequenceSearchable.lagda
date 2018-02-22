@@ -114,11 +114,11 @@ module _ (fe' : ∀ U V → FunExt U V) (pt : PropTrunc) where
 
  open import 2CompactTypes (fe') (pt)
   
- ℕ∞-is-𝟚-Compact : 𝟚-Compact ℕ∞
- ℕ∞-is-𝟚-Compact = omniscient-Compact ℕ∞-is-omniscient
+ ℕ∞-is-strongly-𝟚-overt : strongly-𝟚-overt ℕ∞
+ ℕ∞-is-strongly-𝟚-overt = omniscient-Compact ℕ∞-is-omniscient
 
  ℕ∞-is-𝟚-compact : 𝟚-compact ℕ∞
- ℕ∞-is-𝟚-compact = 𝟚-Cc ℕ∞-is-𝟚-Compact
+ ℕ∞-is-𝟚-compact = 𝟚-so-c ℕ∞-is-strongly-𝟚-overt
 
 
 \end{code}

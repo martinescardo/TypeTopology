@@ -1,26 +1,74 @@
 Martin Escardo, January 2018
 
-We consider 𝟚-compact types, various closure properties for them,
-their interaction with discreteness, total separatedess and function
-types, and number of characterizations. A type is 𝟚-compact iff it is
-𝟚-overt iff every map into 𝟚 has a infimum (or equivalently supremum).
+We define and study 𝟚-compact types.
 
-(More generally, we can consider S-compact types where S is a
-dominance (such as the Rosolini dominance, which is one manifestation
-of the Sierpinski space), but we don't do this here.)
+A dominance is a collection of propositions (or subsingletons, or
+truth values) that contains 𝟙 and is closed under Σ (see the module
+Dominance).
+
+The decidable propositions form a dominance, represented by the
+two-point type 𝟚 ≃ 𝟙 + 𝟙 with points ₀ and ₁ (see the module Two). A
+point n : 𝟚 represents the decidable truth-value or proposition
+n ≡ ₁. The natural order on 𝟚, defined by
+
+  m ≤ n = (m ≡ ₁ → n ≡ ₁) ≃ (n ≡ ₀ → m ≡ ₀),
+  
+corresponds to the implication order (P ≤ Q = P → Q) of propositions.
+
+Given a dominance 𝕊, we define a type X, we consider the natural map Κ
+: 𝕤 → (X → 𝕊) that sends s:𝕊 to the constant function λ x → s, and we
+say that
+
+ * X is 𝕊-compact if Κ has a right adjoint A : (X → 𝕊) → 𝕊,
+ * X is 𝕊-overt   if K has a left adjoint  E : (X → 𝕊) → 𝕊,
+
+where we endow the function type (X → 𝕊) with the pointwise order. We
+also say that
+
+ * X is strongly 𝕊-overt if the composite
+
+             d'          ∃
+     (X→𝕊) ⟶  (X→Ω)  ⟶  Ω
+
+   factors through the embedding d : 𝕊 ↪ Ω into the type Ω of truth
+   values, where d' p = d ∘ p.
+
+The (weak) overtness of X says that every X-indexed family of elements
+of 𝕊 has a least upper bound, and the strong overtness of X says is
+that this coincides with the least upper bound calculated (by the
+existential quantifier ∃) in Ω.
+
+Because the dominance 𝕊=𝟚 is a boolean algebra, we get the odd fact that
+
+ * A is 𝟚-compact iff it is 𝟚-overt.
+
+But strong overtness is a strictly stronger notion, which corresponds
+to LPO, whereas compactness and overtness correspond to WLPO. We have
+that
+
+ * X is strongly 𝟚-over if and only if (Σ \(x : X) → p x ≡ ₀) is
+   decidable for every p : X → 𝟚.
+
+ * X is 𝟚-compact if and only if (Π \(x : X) → p x ≡ ₁) is decidable
+   for every p : X → 𝟚.
+
+This shows that strong 𝟚-compactness, defined as strong 𝟚-overtness
+but replacing ∃ by ∀, coincides with 𝟚-compactness. We take this as
+our primary definition of 𝟚-compactness and the characterize it as the
+existence of a right adjoint to Κ.
+ 
+We consider various closure properties for 𝟚-compact and strongly
+𝟚-overt types, their interaction with discreteness, total separatedess
+and function types, and number of characterizations. 
 
 Because 𝟚-compact types are defined in terms of maps into 𝟚, a type is
 𝟚-compact iff its totally separated reflection is 𝟚-compact, since
 𝟚-compactness is a proposition. We also discuss the 𝟚-compactness of
-propositions.
+propositions. The same is true for strong 𝟚-overtness.
 
-We have two notions of compactness, one strong (written with upper
-case C in the development below) and the other one weak (written with
-lower case c). It is the weak one that arises in synthetic topology
-via the dominance 𝟚 and seems to be primary in the sense of admitting
-a number of natural characterizations, discussed above. However, it is
-strong compactness that is characterized by clopenness of projections.
-
+See also the module SimpleTypes, which uses this module to study
+the least collection of types containing ℕ (and sometimes 𝟚) closed
+under (non-dependent) function types.
 
 \begin{code}
 
@@ -38,30 +86,33 @@ open import DecidableAndDetachable
 
 \end{code}
 
-The following is the strong notion of compactness here, which is
-implied by omniscience and hence by searchability (see below).
-However, compactness is property of a type whereas omniscience and
-searchability (as we have defined them in the modules OmniscientTypes
-and SearchableTypes) are structure on the type.
+The following is the strong notion of overtness, which is implied by
+omniscience and hence by searchability (see below).  However, strong
+overtness is property of a type whereas omniscience and searchability
+(as we have defined them in the modules OmniscientTypes and
+SearchableTypes) are structure on the type.
 
 \begin{code}
 
-𝟚-Compact : ∀ {U} → U ̇ → U ̇
-𝟚-Compact X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
+strongly-𝟚-overt : ∀ {U} → U ̇ → U ̇
+strongly-𝟚-overt X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
 
-𝟚-Compact-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-Compact X)
-𝟚-Compact-isProp {U} = isProp-exponential-ideal (fe U U)
-                         (λ _ → decidable-isProp (fe U U₀) ptisp)
+strongly-𝟚-overt-isProp : ∀ {U} {X : U ̇} → isProp (strongly-𝟚-overt X)
+strongly-𝟚-overt-isProp {U} = isProp-exponential-ideal (fe U U)
+                                (λ _ → decidable-isProp (fe U U₀) ptisp)
+
+so-Markov : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → (p : X → 𝟚)
+          → ¬¬(∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+so-Markov {U} {X} c p φ = g (c p)
+ where
+  g : decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+  g (inl e) = e
+  g (inr u) = 𝟘-elim (φ u)
 
 \end{code}
 
-We also consider a weakening of the notion of compactness, which is
-frequently enough to get our desired conclusions from the assumption
-of compactness and, moreover, has a number of natural
-characterizations in terms of other existing notions. Notice that the
-strong notion is written with capital C whereas its weakining is
-written with lower case c. The relation of (strong) compactness with
-weak compactness is the same as that of LPO with WLPO.
+The relation of strong overtness with compactness is the same as that
+of LPO with WLPO.
 
 \begin{code}
 
@@ -77,12 +128,12 @@ open import UF2
 
 \end{code}
 
-We do indeed get a stronger notion:
+The following implication is not to be expected for dominances other than 𝟚:
 
 \begin{code}
 
-𝟚-Cc : ∀ {U} {X : U ̇} → 𝟚-Compact X → 𝟚-compact X
-𝟚-Cc {U} {X} c p = f (c p)
+𝟚-so-c : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → 𝟚-compact X
+𝟚-so-c {U} {X} c p = f (c p)
  where
   f : decidable (∃ \(x : X) → p x ≡ ₀) → decidable (Π \(x : X) → p x ≡ ₁)
   f (inl s) = inr (λ α → ptrec 𝟘-isProp (g α) s)
@@ -93,21 +144,21 @@ We do indeed get a stronger notion:
 
 \end{code}
 
-TODO. Add that finite types are compact. For the moment we do the base
-case:
+TODO. Add that finite types are strongly overt and hence compact. For
+the moment we do the base case:
 
 \begin{code}
 
-empty-𝟚-Compact : ∀ {U} {X : U ̇} → empty X → 𝟚-Compact X
-empty-𝟚-Compact u p = inr (ptrec 𝟘-isProp λ σ → u (pr₁ σ))
+empty-strongly-𝟚-overt : ∀ {U} {X : U ̇} → empty X → strongly-𝟚-overt X
+empty-strongly-𝟚-overt u p = inr (ptrec 𝟘-isProp λ σ → u (pr₁ σ))
 
 empty-𝟚-compact : ∀ {U} {X : U ̇} → empty X → 𝟚-compact X
 empty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
 
-The weak compactness of X is equivalent to the isolatedness of the
-boolean predicate λ x → ₁:
+The compactness of X is equivalent to the isolatedness of the boolean
+predicate λ x → ₁:
 
 \begin{code}
 
@@ -203,14 +254,14 @@ ddc' y₀ y₁ ne dy = dcc (𝟚-retract-of-discrete ne dy)
 So, in summary, if Y is a non-trivial discrete type, then X is
 𝟚-compact iff (X → Y) is discrete.
 
-Compactness of omniscient sets (and hence of searchable sets, and
-hence of ℕ∞):
+Strong overtness, and hence compactness, of omniscient sets (and hence
+of searchable sets, and hence of ℕ∞, for example):
 
 \begin{code}
 
 open import OmniscientTypes
 
-omniscient-Compact : ∀ {U} {X : U ̇} → omniscient X → 𝟚-Compact X
+omniscient-Compact : ∀ {U} {X : U ̇} → omniscient X → strongly-𝟚-overt X
 omniscient-Compact {U} {X} φ p = g (φ p)
  where
   g : ((Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
@@ -228,9 +279,9 @@ Compactness of images:
 open ImageAndSurjection (pt)
 open import UF2
 
-surjection-𝟚-Compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                     → isSurjection f → 𝟚-Compact X → 𝟚-Compact Y
-surjection-𝟚-Compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
+surjection-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                            → isSurjection f → strongly-𝟚-overt X → strongly-𝟚-overt Y
+surjection-strongly-𝟚-overt {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
  where
   h : (Σ \(x : X) → q(f x) ≡ ₀) → Σ \(y : Y) → q y ≡ ₀
   h (x , r) = (f x , r)
@@ -245,9 +296,9 @@ surjection-𝟚-Compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (ptfunct h s)
   g (inr u) = inr (contrapositive (ptrec ptisp k) u)
 
-image-𝟚-Compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-               → 𝟚-Compact X → 𝟚-Compact (image f)
-image-𝟚-Compact f = surjection-𝟚-Compact (corestriction f) (corestriction-surjection f)
+image-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                       → strongly-𝟚-overt X → strongly-𝟚-overt (image f)
+image-strongly-𝟚-overt f = surjection-strongly-𝟚-overt (corestriction f) (corestriction-surjection f)
 
 surjection-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                      → isSurjection f → 𝟚-compact X → 𝟚-compact Y
@@ -257,13 +308,13 @@ surjection-𝟚-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-isSet) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
-retract-𝟚-Compact : ∀ {U V} {X : U ̇} {Y : V ̇}
-                  → retract Y of X → 𝟚-Compact X → 𝟚-Compact Y
-retract-𝟚-Compact (f , hass) = surjection-𝟚-Compact f (retraction-surjection f hass)
+retract-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇}
+                         → retract Y of X → strongly-𝟚-overt X → strongly-𝟚-overt Y
+retract-strongly-𝟚-overt (f , hass) = surjection-strongly-𝟚-overt f (retraction-surjection f hass)
 
-retract-𝟚-Compact' : ∀ {U V} {X : U ̇} {Y : V ̇}
-                  → ∥ retract Y of X ∥ → 𝟚-Compact X → 𝟚-Compact Y
-retract-𝟚-Compact' t c = ptrec 𝟚-Compact-isProp (λ r → retract-𝟚-Compact r c) t
+retract-strongly-𝟚-overt' : ∀ {U V} {X : U ̇} {Y : V ̇}
+                          → ∥ retract Y of X ∥ → strongly-𝟚-overt X → strongly-𝟚-overt Y
+retract-strongly-𝟚-overt' t c = ptrec strongly-𝟚-overt-isProp (λ r → retract-strongly-𝟚-overt r c) t
 
 image-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                → 𝟚-compact X → 𝟚-compact (image f)
@@ -285,14 +336,14 @@ i2c2c x = retract-𝟚-compact (pdrc x)
 
 A main reason to consider the notion of total separatedness is that
 the totally separated reflection T X of X has the same supply of
-boolean predicates as X, and hence X is compact iff T X is compact, as
-we show now.
+boolean predicates as X, and hence X is strongly overt (compact) iff T
+X is strongly overt (respectively compact), as we show now.
 
 \begin{code}
 
 open import TotallySeparated
 
-module TCompactness {U : Universe} (X : U ̇) where
+module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
 
  open TotallySeparatedReflection {U} fe pt
  
@@ -301,6 +352,25 @@ module TCompactness {U : Universe} (X : U ̇) where
 
  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
  extension-property p = happly _ _ (pr₂ (pr₁ (totally-separated-reflection 𝟚-totally-separated p)))
+
+ sot : strongly-𝟚-overt X → strongly-𝟚-overt (T X)
+ sot = surjection-strongly-𝟚-overt η (η-surjection) 
+
+ tos : strongly-𝟚-overt (T X) → strongly-𝟚-overt X
+ tos c p = h (c (extension p))
+  where
+   f : (Σ \(x' : T X) → extension p x' ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+   f (x' , r) = ptfunct f' (η-surjection x')
+    where
+     f' : (Σ \(x : X) → η x ≡ x') → Σ \(x : X) → p x ≡ ₀
+     f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
+
+   g : (Σ \(x : X) → p x ≡ ₀) → Σ \(x' : T X) → extension p x' ≡ ₀
+   g (x , r) = η x , (extension-property p x ∙ r) 
+
+   h : decidable (∃ \(x' : T X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
+   h (inl x) = inl (ptrec ptisp f x)
+   h (inr u) = inr (contrapositive (ptfunct g) u)
 
  ct : 𝟚-compact X → 𝟚-compact (T X)
  ct = surjection-𝟚-compact η (η-surjection)
@@ -320,25 +390,6 @@ module TCompactness {U : Universe} (X : U ̇) where
    h : decidable ((x' : T X) → extension p x' ≡ ₁) → decidable ((x : X) → p x ≡ ₁)
    h (inl α) = inl (f α)
    h (inr u) = inr (contrapositive g u)
-
- Ct : 𝟚-Compact X → 𝟚-Compact (T X)
- Ct = surjection-𝟚-Compact η (η-surjection) 
-
- tC : 𝟚-Compact (T X) → 𝟚-Compact X
- tC c p = h (c (extension p))
-  where
-   f : (Σ \(x' : T X) → extension p x' ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
-   f (x' , r) = ptfunct f' (η-surjection x')
-    where
-     f' : (Σ \(x : X) → η x ≡ x') → Σ \(x : X) → p x ≡ ₀
-     f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
-
-   g : (Σ \(x : X) → p x ≡ ₀) → Σ \(x' : T X) → extension p x' ≡ ₀
-   g (x , r) = η x , (extension-property p x ∙ r) 
-
-   h : decidable (∃ \(x' : T X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
-   h (inl x) = inl (ptrec ptisp f x)
-   h (inr u) = inr (contrapositive (ptfunct g) u)
 
 \end{code}
 
@@ -480,18 +531,17 @@ Closure of compactness under sums (and hence binary products):
 
 \end{code}
 
-TODO. Consider also capital compactness, and other closure properties.
+TODO. Consider also other possible closure properties, and strong
+overtness.
 
-TODO. If X is 𝟚-compact, its propositional truncation is simply ¬¬X.
-
-We now turn to the compactness of propositions. A proposition is
-strongly compact iff it is decidable. Regarding the weak compactness
-of propositions, we have partial information for the moment.
+We now turn to propositions. A proposition is strongly overt iff it is
+decidable. Regarding the compactness of propositions, we have partial
+information for the moment.
 
 \begin{code}
 
-ispcd : ∀ {U} (X : U ̇) → isProp X → 𝟚-Compact X → decidable X
-ispcd X isp c = f a
+isod : ∀ {U} (X : U ̇) → isProp X → strongly-𝟚-overt X → decidable X
+isod X isp c = f a
  where
   a : decidable ∥ X × (₀ ≡ ₀) ∥ 
   a = c (λ x → ₀)
@@ -500,11 +550,18 @@ ispcd X isp c = f a
   f (inl s) = inl (ptrec isp pr₁ s)
   f (inr u) = inr (λ x → u ∣ x , refl ∣)
 
-ispcd-corollary : ∀ {U} {X : U ̇} → 𝟚-Compact X → decidable ∥ X ∥
-ispcd-corollary {U} {X} c = ispcd ∥ X ∥ ptisp (surjection-𝟚-Compact ∣_∣ pt-is-surjection c)
+isod-corollary : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → decidable ∥ X ∥
+isod-corollary {U} {X} c = isod ∥ X ∥ ptisp (surjection-strongly-𝟚-overt ∣_∣ pt-is-surjection c)
 
-ispdc : ∀ {U} (X : U ̇) → isProp X → decidable X → 𝟚-Compact X
-ispdc X isp d p = g d
+isdni : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → ¬¬ X → ∥ X ∥
+isdni {U} {X} c φ = g (isod-corollary c)
+ where
+  g : decidable ∥ X ∥ → ∥ X ∥
+  g (inl s) = s
+  g (inr u) = 𝟘-elim (φ (λ x → u ∣ x ∣))
+
+idso : ∀ {U} (X : U ̇) → isProp X → decidable X → strongly-𝟚-overt X
+idso X isp d p = g d
  where
   g : decidable X → decidable (∃ \x → p x ≡ ₀)
   g (inl x) = two-equality-cases b c
@@ -520,8 +577,8 @@ ispdc X isp d p = g d
        
   g (inr u) = inr (ptrec 𝟘-isProp (λ σ → u(pr₁ σ)))
 
-ispcwd : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact X → decidable(¬ X)
-ispcwd X isp c = f a
+icdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact X → decidable(¬ X)
+icdn X isp c = f a
  where
   a : decidable (X → ₀ ≡ ₁)
   a = c (λ x → ₀)
@@ -530,8 +587,8 @@ ispcwd X isp c = f a
   f (inl u) = inl (zero-is-not-one  ∘ u)
   f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
 
-em2cdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
-em2cdn X isp c = cases l m a
+emcdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
+emcdn X isp c = cases l m a
  where
   p : X + ¬ X → 𝟚
   p (inl x) = ₀
@@ -553,9 +610,9 @@ em2cdn X isp c = cases l m a
 \end{code}
 
 8th Feb 2018: A pointed detachable subset of any type is a
-retract. Hence any detachable (pointed or not) subset of a compact
-type is compact. The first construction should probably go to another
-module.
+retract. Hence any detachable (pointed or not) subset of a strongly
+overt type is compact. The first construction should probably go to
+another module.
 
 \begin{code}
 
@@ -581,13 +638,22 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     w : r x ≡ x , e
     w = v ∙ t
 
-detachable-subset-𝟚-Compact : ∀ {U} {X : U ̇} (A : X → 𝟚)
-                            → 𝟚-Compact X → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
-detachable-subset-𝟚-Compact {U} {X} A c = g (c A)
+\end{code}
+
+Notice that in the above lemma we need to assume that the detachable
+set is pointed. But its use below doesn't, because strong overtness
+allows us to decide inhabitedness, and strong overtness is a
+proposition.
+
+\begin{code}
+
+detachable-subset-strongly-𝟚-overt : ∀ {U} {X : U ̇} (A : X → 𝟚)
+                                   → strongly-𝟚-overt X → strongly-𝟚-overt(Σ \(x : X) → A(x) ≡ ₀)
+detachable-subset-strongly-𝟚-overt {U} {X} A c = g (c A)
  where
-  g : decidable (∃ \(x : X) → A x ≡ ₀) → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
-  g (inl e) = retract-𝟚-Compact' (ptfunct detachable-subset-retract e) c
-  g (inr u) = empty-𝟚-Compact (contrapositive ∣_∣ u)
+  g : decidable (∃ \(x : X) → A x ≡ ₀) → strongly-𝟚-overt(Σ \(x : X) → A(x) ≡ ₀)
+  g (inl e) = retract-strongly-𝟚-overt' (ptfunct detachable-subset-retract e) c
+  g (inr u) = empty-strongly-𝟚-overt (contrapositive ∣_∣ u)
 
 \end{code}
 
@@ -653,14 +719,21 @@ SearchableTypes and OmniscientTypes).
 
 \begin{code}
 
-𝟚-CompactInhabited : ∀ {U} → U ̇ → U ̇
-𝟚-CompactInhabited X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+inhabited-strongly-𝟚-overt : ∀ {U} → U ̇ → U ̇
+inhabited-strongly-𝟚-overt X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
-𝟚-CompactInhabited-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-CompactInhabited X)
-𝟚-CompactInhabited-isProp {U} = isProp-exponential-ideal (fe U U) (λ _ → ptisp)
+inhabited-strongly-𝟚-overt-isProp : ∀ {U} {X : U ̇} → isProp (inhabited-strongly-𝟚-overt X)
+inhabited-strongly-𝟚-overt-isProp {U} = isProp-exponential-ideal (fe U U) (λ _ → ptisp)
 
-𝟚-ci-i-and-c : ∀ {U} {X : U ̇} → 𝟚-CompactInhabited X → ∥ X ∥ × 𝟚-Compact X
-𝟚-ci-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-isProp (fe U U₀) ptisp) (g₂ p) (c p))
+\end{code}
+
+Notice that, in view of the above results, inhabitedness can be
+replaced by non-emptiness in the following results:
+
+\begin{code}
+
+iso-i-and-c : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X → ∥ X ∥ × strongly-𝟚-overt X
+iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-isProp (fe U U₀) ptisp) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
@@ -675,8 +748,8 @@ SearchableTypes and OmniscientTypes).
       f (x , s) = zero-is-not-one (s ⁻¹ ∙ φ r x)
     h (inr u) = inl ∣ x₀ , (Lemma[b≢₁→b≡₀] u) ∣
 
-𝟚-i-and-c-ci : ∀ {U} {X : U ̇} → ∥ X ∥ × 𝟚-Compact X → 𝟚-CompactInhabited X
-𝟚-i-and-c-ci {U} {X} (t , c) p = ptrec ptisp f t
+i-and-c-iso : ∀ {U} {X : U ̇} → ∥ X ∥ × strongly-𝟚-overt X → inhabited-strongly-𝟚-overt X
+i-and-c-iso {U} {X} (t , c) p = ptrec ptisp f t
  where
   f : X → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
   f x₀ = g (𝟚-discrete (p x₀) ₀) (c p)
@@ -691,39 +764,33 @@ SearchableTypes and OmniscientTypes).
 
 \end{code}
 
-This characterizes the 𝟚-CompactInhabited types as those that are
-𝟚-Compact and inhabited. We can also characterize the 𝟚-Compact types
-as those that are 𝟚-CompactInhabited or empty:
+This characterizes the inhabited-strongly-𝟚-overt types as those that are
+strongly-𝟚-overt and inhabited. We can also characterize the strongly-𝟚-overt types
+as those that are inhabited-strongly-𝟚-overt or empty:
 
 \begin{code}
 
-isProp-𝟚-CIorE : ∀ {U} {X : U ̇} → isProp(𝟚-CompactInhabited X + empty X)
-isProp-𝟚-CIorE {U} {X} = sum-of-contradictory-props
-                           𝟚-CompactInhabited-isProp (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
-                             (λ c u → ptrec 𝟘-isProp (contrapositive pr₁ u) (c (λ _ → ₀)))
+isProp-isoore : ∀ {U} {X : U ̇} → isProp(inhabited-strongly-𝟚-overt X + empty X)
+isProp-isoore {U} {X} = sum-of-contradictory-props
+                           inhabited-strongly-𝟚-overt-isProp
+                             (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
+                                (λ c u → ptrec 𝟘-isProp (contrapositive pr₁ u) (c (λ _ → ₀)))
 
-𝟚-CIorE-C : ∀ {U} {X : U ̇} → 𝟚-CompactInhabited X + empty X → 𝟚-Compact X
-𝟚-CIorE-C (inl c) = pr₂(𝟚-ci-i-and-c c)
-𝟚-CIorE-C (inr u) = empty-𝟚-Compact u
+isoore-so : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X + empty X → strongly-𝟚-overt X
+isoore-so (inl c) = pr₂(iso-i-and-c c)
+isoore-so (inr u) = empty-strongly-𝟚-overt u
 
-𝟚-C-CIorE : ∀ {U} {X : U ̇} → 𝟚-Compact X → 𝟚-CompactInhabited X + empty X
-𝟚-C-CIorE {U} {X} c = g
+so-isoore : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → inhabited-strongly-𝟚-overt X + empty X
+so-isoore {U} {X} c = g
  where
-  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → 𝟚-CompactInhabited X + empty X
-  h (inl t) = inl (𝟚-i-and-c-ci (ptfunct pr₁ t , c))
+  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → inhabited-strongly-𝟚-overt X + empty X
+  h (inl t) = inl (i-and-c-iso (ptfunct pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
   
-  g : 𝟚-CompactInhabited X + empty X
+  g : inhabited-strongly-𝟚-overt X + empty X
   g = h (c (λ _ → ₀))
 
 \end{code}
-
-Perhaps this characterization of compacteness can make some of the
-above proofs a little bit more direct.
-
-See also the module SimpleTypes, which uses this module to study
-the least collection of types containing ℕ (and sometimes 𝟚) closed
-under (non-dependent) function types.
 
 8 Feb 2018: A type X is 𝟚-compact iff every map X → 𝟚 has an infimum:
 
@@ -782,7 +849,7 @@ has-infs-𝟚-compact h p = f (h p)
 TODO. Show equivalence with existence of suprema. Is there a similar
 characterization of strong compactness?
 
-Application of type-theoretical choice:
+Implicit application of type-theoretical choice:
 
 \begin{code}
 
@@ -797,7 +864,7 @@ inf₁ : ∀ {U} {X : U ̇} (c : 𝟚-compact X) {p : X → 𝟚}
 inf₁ c {p} r x = pr₁(inf-property c p) x r
 
 inf₁-converse : ∀ {U} {X : U ̇} (c : 𝟚-compact X) {p : X → 𝟚}
-     → (∀ x → p x ≡ ₁) → inf c p ≡ ₁ 
+              → (∀ x → p x ≡ ₁) → inf c p ≡ ₁ 
 inf₁-converse c {p} α = ₁-maximal (h g)
  where
   h : (∀ x → ₁ ≤ p x) → ₁ ≤ inf c p
@@ -810,7 +877,7 @@ inf₁-converse c {p} α = ₁-maximal (h g)
 21 Feb 2018.
 
 It is well known that infima and suprema are characterized as
-adjoints. TODO. Link the above development with the following.
+adjoints. TODO. Link the above development with the following (easy).
 
 In synthetic topology with the dominance 𝟚, a type is called 𝟚-compact
 if the map Κ : 𝟚 → (X → 𝟚) has a right adjoint A : (X → 𝟚) → 𝟚, with
@@ -912,10 +979,7 @@ Right adjoints to Κ are characterized as follows:
 
 Using this as a lemma, we see that a type is 𝟚-compact in the sense we
 defined iff it is compact in the usual sense of synthetic topology for
-the dominance 𝟚. (NB. The following proof of this fact uses funext,
-but it is possible to avoid funext by avoiding the characterization
-𝟚-cc' and 𝟚-c'c above of compactness. However this would need a longer
-proof with repetitions of portions of the above arguments.)
+the dominance 𝟚.
 
 \begin{code}
 
@@ -1094,7 +1158,9 @@ the image of every closed set is closed. In our case, because of the
 use of decidable truth-values in the definition of 𝟚-compactness, the
 appropriate notion is that of clopen map, that is, a map that sends
 clopen sets to clopen sets. As in our setup, clopen sets correspond to
-decidable subsets, or sets with 𝟚-valued characteristic functions.
+decidable subsets, or sets with 𝟚-valued characteristic functions. In
+our case, the clopeness of the projections characterize the notion of
+strong overtness, which is stronger than compactness.
 
 There is a certain asymmetry in the following definition, in that the
 input decidable predicate (or clopen subtype) is given as a 𝟚-valued
@@ -1125,10 +1191,10 @@ isClopenMap-isProp {U} {V} fe f = isProp-exponential-ideal (fe U (U ⊔ V))
 fst : ∀ {U V} (A : U ̇) (X : V ̇) → A × X → A
 fst _ _ = pr₁
 
-𝟚-compact-clopen-projections : ∀ {U} (X : U ̇)
-                             → 𝟚-Compact X
-                             → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
-𝟚-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
+strongly-𝟚-overt-clopen-projections : ∀ {U} (X : U ̇)
+                                    → strongly-𝟚-overt X
+                                    → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
+strongly-𝟚-overt-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
   g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
     → decidable (∃ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a))
@@ -1141,10 +1207,10 @@ fst _ _ = pr₁
     h : (Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ \(x : X) → p (a , x) ≡ ₀
     h ((a' , x) , (r , s)) = x , transport (λ a' → p (a' , x) ≡ ₀) s r
 
-clopen-projections-𝟚-compact : ∀ {U} (X : U ̇)
-                             → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
-                             → 𝟚-Compact X
-clopen-projections-𝟚-compact X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
+clopen-projections-strongly-𝟚-overt : ∀ {U} (X : U ̇)
+                                    → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
+                                    → strongly-𝟚-overt X
+clopen-projections-strongly-𝟚-overt X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
  where
   g : decidable (∃ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
     → decidable (∃ \(x : X) → p x ≡ ₀)
@@ -1160,16 +1226,11 @@ clopen-projections-𝟚-compact X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
 
 \end{code}
 
-Notice how for certain purposes the relevant notion is that of strong
-compactness (e.g. regarding the clopenness of the projection), whereas
-for others it is that of weak compactness (e.g. regarding existence of
-infima of 𝟚-valued maps).
-
 TODO.
 
 * Consider 𝟚-perfect maps.
 
-* Strong compactness: attainability of minima. Existence of potential
+* Strong overtness: attainability of minima. Existence of potential
   maxima.
 
 * Relation of 𝟚-compactness with finiteness and discreteness.
