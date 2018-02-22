@@ -1,7 +1,8 @@
 Martin Escardo 2011, 2017, 2018.
 
-We define and study totally separated types. Most of the material in
-this file is from January 2018.
+We define and study totally separated types (which could also have
+been called 𝟚-separated types). Most of the material in this file is
+from January 2018.
 
 The terminology "totally separated" comes from topology, where it
 means that the clopens separate the points. Here the maps into 𝟚
@@ -68,6 +69,10 @@ open import DiscreteAndSeparated hiding (tight)
 totally-separated : ∀ {U} → U ̇ → U ̇
 totally-separated X = {x y : X} → ((p : X → 𝟚) → p x ≡ p y) → x ≡ y
 
+𝟚-separated : ∀ {U} → U ̇ → U ̇
+𝟚-separated = totally-separated
+
+
 \end{code}
 
 Excluded middle implies that all sets are discrete and hence totally
@@ -126,7 +131,7 @@ totally-separated-is-separated X ts = g
     a p = ¬¬-functor (ap p {x} {y}) φ
     
     h : (p : X → 𝟚) → p x ≡ p y
-    h p = 𝟚-separated (p x) (p y) (a p)
+    h p = 𝟚-is-separated (p x) (p y) (a p)
 
 open import UF2
 
@@ -346,6 +351,19 @@ We package the above as follows for convenient use elsewhere
 In particular, because 𝟚 is totally separated, T X and X have the same
 boolean predicates (which we exploit in the module 2CompactTypes).
 
+The notion of total separatedness (or 𝟚-separatedness) is analogous to
+the T₀-separation axiom (which says that any two points with the same
+open neighbourhoods are equal).
+
+\begin{code}
+
+𝟚-sober : ∀ {U W} → W ̇ → U ′ ⊔ W ̇
+𝟚-sober {U} {W} A = 𝟚-separated A × ((X : U ̇) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
+
+\end{code}
+
+TODO: example of 𝟚-separated type that fails to be 𝟚-sober, 𝟚-sober
+reflection.
 
 TODO: most of what we said doesn't depend on the type 𝟚, and total
 separatedness can be generalized to S-separatedness for an arbitrary
@@ -436,7 +454,7 @@ apartness relation _♯₂ is tight:
    h (p , u) = na ∣ p , u ∣
 
    α : (p : X → 𝟚) → p x ≡ p y
-   α p = 𝟚-separated (p x) (p y) (λ u → h (p , u))
+   α p = 𝟚-is-separated (p x) (p y) (λ u → h (p , u))
 
 \end{code}
 

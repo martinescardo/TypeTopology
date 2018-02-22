@@ -115,7 +115,7 @@ module concrete-example where
  open import DiscreteAndSeparated
  
  𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ≡ p ∞₁
- 𝟚-indistinguishability nwlpo p = 𝟚-separated (p ∞₀) (p ∞₁)
+ 𝟚-indistinguishability nwlpo p = 𝟚-is-separated (p ∞₀) (p ∞₁)
                                     (not-exists-implies-forall-not
                                       (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
 

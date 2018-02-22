@@ -149,10 +149,11 @@ equality.
 KK : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 KK R X = (X → R) → R
 
-contravariant : ∀ {U V W} {X : U ̇} {Y : V ̇} {R : W ̇} → (X → Y) → (Y → R) → (X → R)
-contravariant f p = p ∘ f 
+dual : ∀ {U V W} {X : U ̇} {Y : V ̇} (R : W ̇) → (X → Y) → (Y → R) → (X → R)
+dual R f p = p ∘ f
+
 K-functor : ∀ {U V W} {R : U ̇} {X : V ̇} {Y : W ̇} → (X → Y) → KK R X → KK R Y
-K-functor = contravariant ∘ contravariant
+K-functor = dual _ ∘ dual _
 
 ηK : ∀ {U V} {R : U ̇} {X : V ̇} → X → KK R X
 ηK x p = p x
@@ -234,7 +235,7 @@ A ⇔ B = (A → B) × (B → A)
 ¬ A = A → 𝟘
 
 contrapositive : ∀ {U V} {A : U ̇} {B : V ̇} → (A → B) → ¬ B → ¬ A
-contrapositive = contravariant
+contrapositive = dual _
 
 \end{code}
 

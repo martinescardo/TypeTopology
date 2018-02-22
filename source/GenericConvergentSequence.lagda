@@ -104,7 +104,7 @@ force-decreasing-is-not-much-smaller β (succ n) p = f c
     f (inr r) = force-decreasing-is-not-much-smaller β n r
 
 Cantor-separated : FunExt₀ → separated (ℕ → 𝟚)
-Cantor-separated fe = separated-ideal fe (λ _ → 𝟚-separated)
+Cantor-separated fe = separated-ideal fe (λ _ → 𝟚-is-separated)
 
 ℕ∞-separated : FunExt₀ → separated ℕ∞
 ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)

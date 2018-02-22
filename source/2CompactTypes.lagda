@@ -1,17 +1,26 @@
 Martin Escardo, January 2018
 
-We consider 𝟚-Compact types, various closure properties for them, and
+We consider 𝟚-compact types, various closure properties for them,
 their interaction with discreteness, total separatedess and function
-types.
+types, and number of characterizations. A type is 𝟚-compact iff it is
+𝟚-overt iff every map into 𝟚 has a infimum (or equivalently supremum).
 
 (More generally, we can consider S-compact types where S is a
 dominance (such as the Rosolini dominance, which is one manifestation
 of the Sierpinski space), but we don't do this here.)
 
-Because 𝟚-Compact types are defined in terms of maps into 𝟚, a type is
+Because 𝟚-compact types are defined in terms of maps into 𝟚, a type is
 𝟚-compact iff its totally separated reflection is 𝟚-compact, since
 𝟚-compactness is a proposition. We also discuss the 𝟚-compactness of
 propositions.
+
+We have two notions of compactness, one strong (written with upper
+case C in the development below) and the other one weak (writtenc with
+lower case c). It is the weak one that arises in synthetic topology
+via the dominance 𝟚 and seems to be primary in the sense of admitting
+a number of natural characterizations, discussed above. However, it is
+strong compactness that is characterized by clopenness of projections.
+
 
 \begin{code}
 
@@ -29,9 +38,9 @@ open import DecidableAndDetachable
 
 \end{code}
 
-The following is our primary notion of compactness here, which is
-implied by omniscience and hence by searchability.  However,
-compactness is property of a type whereas omniscience and
+The following is the strong notion of compactness here, which is
+implied by omniscience and hence by searchability (se below).
+However, compactness is property of a type whereas omniscience and
 searchability (as we have defined them in the modules OmniscientTypes
 and SearchableTypes) are structure on the type.
 
@@ -48,10 +57,11 @@ and SearchableTypes) are structure on the type.
 
 We also consider a weakening of the notion of compactness, which is
 frequently enough to get our desired conclusions from the assumption
-of compactness. Notice that the original notion is written with
-capital C whereas its weakining is written with lower case c. The
-relation of (strong) compactness with weak compactness is the same as
-that of LPO with WLPO.
+of compactness and, moreover, has a number of natural
+characterizations in terms of other existing notions. Notice that the
+strong notion is written with capital C whereas its weakining is
+written with lower case c. The relation of (strong) compactness with
+weak compactness is the same as that of LPO with WLPO.
 
 \begin{code}
 
@@ -103,6 +113,12 @@ boolean predicate λ x → ₁:
 
 𝟚-compact' : ∀ {U} → U ̇ → U ̇
 𝟚-compact' X = (p : X → 𝟚) → decidable (p ≡ λ x → ₁)
+
+𝟚-compact'-isProp : ∀ {U} {X : U ̇} → isProp(𝟚-compact' X)
+𝟚-compact'-isProp {U} = isProp-exponential-ideal (fe U U)
+                          (λ p → decidable-isProp (fe U U₀)
+                                   (isSet-exponential-ideal (fe U U₀)
+                                       (λ x → 𝟚-isSet)))
 
 𝟚-c'c : ∀ {U} {X : U ̇} → 𝟚-compact' X → 𝟚-compact X
 𝟚-c'c {U} {X} c' p = g (c' p)
@@ -564,7 +580,7 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     w = v ∙ t
 
 detachable-subset-𝟚-Compact : ∀ {U} {X : U ̇} (A : X → 𝟚)
-  → 𝟚-Compact X → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
+                            → 𝟚-Compact X → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
 detachable-subset-𝟚-Compact {U} {X} A c = g (c A)
  where
   g : decidable (∃ \(x : X) → A x ≡ ₀) → 𝟚-Compact(Σ \(x : X) → A(x) ≡ ₀)
@@ -580,7 +596,7 @@ same ingredients (and with a longer proof (is there a shorter one?)).
 \begin{code}
 
 detachable-subset-𝟚-compact : ∀ {U} {X : U ̇} (A : X → 𝟚)
-  → 𝟚-compact X → 𝟚-compact(Σ \(x : X) → A(x) ≡ ₁)
+                            → 𝟚-compact X → 𝟚-compact(Σ \(x : X) → A(x) ≡ ₁)
 detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
  where
   p₀ : (x : X) → A x ≡ ₀ → 𝟚
@@ -595,7 +611,8 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
   p-spec₀ : (x : X) → A x ≡ ₀ → p x ≡ ₁
   p-spec₀ x e = s (A x) e (p₁ x)
    where
-    s : (b : 𝟚) → b ≡ ₀ → (f₁ : b ≡ ₁ → 𝟚) → two-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
+    s : (b : 𝟚) → b ≡ ₀ → (f₁ : b ≡ ₁ → 𝟚)
+      → two-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
     s ₀ refl = λ f₁ → refl
     s ₁ ()
     
@@ -606,7 +623,8 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     y _ = q (x , e)
     r : p₁ x ≡ y
     r = (funext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-isSet e' e))
-    s : (b : 𝟚) → b ≡ ₁ → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
+    s : (b : 𝟚) → b ≡ ₁
+      → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
     s ₁ refl = refl
     t : two-equality-cases (p₀ x) y ≡ q (x , e)
@@ -759,6 +777,9 @@ has-infs-𝟚-compact h p = f (h p)
 
 \end{code}
 
+TODO. Take 𝟚-DeMorgan-duals to show equivalence with existence of
+suprema (see below).
+
 Is there a similar characterization of strong compactness?
 
 Application of type-theoretical choice:
@@ -786,52 +807,281 @@ inf₁-converse c {p} α = ₁-maximal (h g)
 
 \end{code}
 
-The inf operator is a filter:
+21 Feb 2018.
+
+It is well known that infima and suprema are characterized as
+adjoints. TODO. Link the above development with the following.
+
+In synthetic topology with the dominance 𝟚, a type is called 𝟚-compact
+if the map Κ : 𝟚 → (X → 𝟚) has a right adjoint A : (X → 𝟚) → 𝟚, with
+respect to the natural ordering of 𝟚 and the pointwise order of the
+function type (X → 𝟚), and 𝟚-overt if it has a left-adjoint E : (X →
+𝟚) → 𝟚. Because 𝟚 is self-dual, 𝟚-compactness and 𝟚-overtness are
+equivalent concepts, and A = inf and E = sup.
+
+Κ is the usual combinator (written Kappa rather than Kay here):
 
 \begin{code}
 
-_⊓_ : 𝟚 → 𝟚 → 𝟚
-_⊓_ = min𝟚
+Κ : ∀ {U V} {X : U ̇} {Y : V ̇} → Y → (X → Y)
+Κ y x = y
 
-_⊓̇_ : ∀ {U} {X : U ̇} → (X → 𝟚) → (X → 𝟚) → (X → 𝟚)
-p ⊓̇ q = λ x → p x ⊓ q x
-
-isFilter : ∀ {U} {X : U ̇} → ((X → 𝟚) → 𝟚) → U ̇
-isFilter φ = ∀ p q → φ (p ⊓̇ q) ≡ (φ p) ⊓ (φ q)
-
-inf-filter : ∀ {U} {X : U ̇} (c : 𝟚-compact X)
-          → isFilter (inf c)
-inf-filter c p q = ≤-anti u v
- where
-  u : inf c (p ⊓̇ q) ≡ ₁ → inf c p ⊓ inf c q ≡ ₁
-  u r = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] l₄ l₅
-   where
-    l₁ : ∀ x → (p ⊓̇ q) x ≡ ₁
-    l₁ = inf₁ c r
-    l₂ : ∀ x → p x ≡ ₁
-    l₂ x = Lemma[min𝟚ab≡₁→a≡₁] (l₁ x)
-    l₃ : ∀ x → q x ≡ ₁
-    l₃ x = Lemma[min𝟚ab≡₁→b≡₁] {p x} (l₁ x)
-    l₄ : inf c p ≡ ₁
-    l₄ = inf₁-converse c l₂
-    l₅ : inf c q ≡ ₁
-    l₅ = inf₁-converse c l₃
-    
-  v : (inf c p ⊓ inf c q) ≡ ₁ → inf c (p ⊓̇ q) ≡ ₁
-  v s = inf₁-converse c l₅
-   where
-    l₁ : inf c p ≡ ₁
-    l₁ = Lemma[min𝟚ab≡₁→a≡₁] s
-    l₂ : inf c q ≡ ₁
-    l₂ = Lemma[min𝟚ab≡₁→b≡₁] {inf c p} s
-    l₃ : ∀ x → p x ≡ ₁
-    l₃ = inf₁ c l₁
-    l₄ : ∀ x → q x ≡ ₁
-    l₄ = inf₁ c l₂
-    l₅ : ∀ x → (p ⊓̇ q) x ≡ ₁
-    l₅ x = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (l₃ x) (l₄ x)
-  
 \end{code}
+
+The pointwise order on boolean predicates:
+
+\begin{code}
+
+_≤̇_ : ∀ {U} {X : U ̇} → (X → 𝟚) → (X → 𝟚) → U ̇
+p ≤̇ q = ∀ x → p x ≤ q x
+
+\end{code}
+
+We define adjunctions in the two special cases where one of the sides
+is Κ with Y=𝟚, for simplicity, rather than in full generality:
+
+\begin{code}
+
+Κ⊣ : ∀ {U} {X : U ̇} → ((X → 𝟚) → 𝟚) → U ̇
+Κ⊣ A = (n : 𝟚) (p : _ → 𝟚) → Κ n ≤̇ p ⇔ n ≤ A p
+
+_⊣Κ : ∀ {U} {X : U ̇} → ((X → 𝟚) → 𝟚) → U ̇
+E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤ n ⇔ p ≤̇ Κ n
+
+\end{code}
+
+TODO: The types Κ⊣ A and E ⊣Κ are propositions.
+
+Right adjoints to Κ are characterized as follows:
+
+\begin{code}
+
+Κ⊣-charac : ∀ {U} {X : U ̇} → (A : (X → 𝟚) → 𝟚)
+           → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁))
+Κ⊣-charac {U} {X} A = f , g
+ where
+  f : Κ⊣ A → (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
+  f φ p = f₀ , f₁
+   where
+    f₀ : A p ≡ ₁ → p ≡ (λ x → ₁)
+    f₀ r = funext (fe U U₀) l₃
+     where
+      l₀ : ₁ ≤ A p → Κ ₁ ≤̇ p
+      l₀ = pr₂ (φ ₁ p)
+      l₁ : Κ ₁ ≤̇ p
+      l₁ = l₀ (λ _ → r)
+      l₂ : (x : X) → ₁ ≤ p x
+      l₂ = l₁
+      l₃ : (x : X) → p x ≡ ₁
+      l₃ x = l₂ x refl
+      
+    f₁ : p ≡ (λ x → ₁) → A p ≡ ₁
+    f₁ s = l₀ refl
+     where
+      l₃ : (x : X) → p x ≡ ₁
+      l₃ = happly _ _ s
+      l₂ : (x : X) → ₁ ≤ p x
+      l₂ x _ = l₃ x 
+      l₁ : Κ ₁ ≤̇ p
+      l₁ = l₂
+      l₀ : ₁ ≤ A p
+      l₀ = pr₁ (φ ₁ p) l₁
+      
+  g : ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)) → Κ⊣ A
+  g γ n p = (g₀ n refl , g₁ n refl)
+   where
+    g₀ : ∀ m → m ≡ n → Κ m ≤̇ p → m ≤ A p
+    g₀ ₀ r l ()
+    g₀ ₁ refl l refl = pr₂ (γ p) l₁
+     where
+      l₀ : (x : X) → p x ≡ ₁
+      l₀ x = l x refl
+      l₁ : p ≡ (λ x → ₁)
+      l₁ = funext (fe U U₀) l₀
+      
+    g₁ : ∀ m → m ≡ n → m ≤ A p → Κ m ≤̇ p
+    g₁ ₀ r l x ()
+    g₁ ₁ refl l x refl = l₀ x
+     where
+      l₁ : p ≡ (λ x → ₁)
+      l₁ = pr₁ (γ p) (l refl)
+      l₀ : (x : X) → p x ≡ ₁
+      l₀ = happly _ _ l₁
+
+\end{code}
+
+Using this as a lemma, we see that a type is 𝟚-compact in the sense we
+defined iff it is compact in the usual sense of synthetic topology for
+the dominance 𝟚. (NB. The following proof of this fact uses funext,
+but it is possible to avoid funext by avoiding the characterization
+𝟚-cc' and 𝟚-c'c above of compactness. However this would need a longer
+proof with repetitions of portions of the above arguments.)
+
+\begin{code}
+
+𝟚-compact-iff-Κ-has-right-adjoint : ∀ {U} {X : U ̇}
+                                  → 𝟚-compact X ⇔ (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A)
+𝟚-compact-iff-Κ-has-right-adjoint {U} {X} = (f , g)
+ where
+  f : 𝟚-compact X → Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A
+  f c = (A , pr₂ (Κ⊣-charac A) l₁)
+   where
+    c' : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁))
+    c' = 𝟚-cc' c
+    l₀ : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁)) → Σ \(n : 𝟚) → n ≡ ₁ ⇔ p ≡ (λ x → ₁)
+    l₀ p (inl r) = (₁ , ((λ _ → r) , λ _ → refl))
+    l₀ p (inr u) = (₀ , ((λ s → 𝟘-elim (zero-is-not-one s)) , λ r → 𝟘-elim (u r)))
+    A : (X → 𝟚) → 𝟚
+    A p = pr₁(l₀ p (c' p))
+    l₁ : (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
+    l₁ p = pr₂(l₀ p (c' p))
+    
+  g : ((Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A)) → 𝟚-compact X
+  g (A , φ) = 𝟚-c'c c'
+   where
+    l₁ : (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
+    l₁ = pr₁ (Κ⊣-charac A) φ
+    l₀ : (p : X → 𝟚) → decidable(A p ≡ ₁) → decidable (p ≡ (λ x → ₁))
+    l₀ p (inl r) = inl (pr₁ (l₁ p) r)
+    l₀ p (inr u) = inr (contrapositive (pr₂ (l₁ p)) u)
+    c' : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁))
+    c' p = l₀ p (𝟚-discrete (A p) ₁)
+
+\end{code}
+
+Next we show that κ has a right adjoint iff it has a left adjoint,
+namely its De Morgan dual, which exists because 𝟚 is a boolean algebra
+and hence so is the type (X → 𝟚) with the pointwise operations.
+
+\begin{code}
+
+𝟚-DeMorgan-dual : ∀ {U} {X : U ̇} → ((X → 𝟚) → 𝟚) → ((X → 𝟚) → 𝟚)
+𝟚-DeMorgan-dual φ = λ p → complement(φ(λ x → complement(p x)))
+
+𝟚-DeMorgan-dual-involutive : ∀ {U} → {X : U ̇} → (φ : (X → 𝟚) → 𝟚)
+                           → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) ≡ φ
+𝟚-DeMorgan-dual-involutive {U} φ = funext (fe U U₀) h
+ where
+  f : ∀ p → complement (complement (φ (λ x → complement (complement (p x)))))
+          ≡ φ (λ x → complement (complement (p x)))
+  f p = complement-involutive (φ (λ x → complement (complement (p x))))
+  
+  g : ∀ p → φ (λ x → complement (complement (p x))) ≡ φ p
+  g p = ap φ (funext (fe U U₀) (λ x → complement-involutive (p x)))
+  
+  h : ∀ p → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) p ≡ φ p
+  h p = f p ∙ g p
+
+𝟚-compact-is-𝟚-overt : ∀ {U} {X : U ̇} → (A : (X → 𝟚) → 𝟚)
+                      → Κ⊣ A → (𝟚-DeMorgan-dual A) ⊣Κ
+𝟚-compact-is-𝟚-overt {U} {X} A = f
+ where
+  E : (X → 𝟚) → 𝟚
+  E = 𝟚-DeMorgan-dual A
+  f : Κ⊣ A → E ⊣Κ
+  f φ = γ
+   where
+     γ : (n : 𝟚) (p : X → 𝟚) → (E p ≤ n) ⇔ (p ≤̇ Κ n)
+     γ n p = (γ₀ , γ₁ )
+      where
+       γ₀ : E p ≤ n → p ≤̇ Κ n
+       γ₀ l = m₃
+        where
+         m₀ : complement n ≤ A (λ x → complement (p x))
+         m₀ = complement-left l
+         m₁ : Κ (complement n) ≤̇ (λ x → complement (p x))
+         m₁ = pr₂ (φ (complement n) (λ x → complement (p x))) m₀
+         m₂ : (x : X) → complement n ≤ complement (p x)
+         m₂ = m₁
+         m₃ : (x : X) → p x ≤ n
+         m₃ x = complement-both-left (m₂ x)
+         
+       γ₁ : p ≤̇ Κ n → E p ≤ n
+       γ₁ l = complement-left m₀
+        where
+         m₃ : (x : X) → p x ≤ n
+         m₃ = l
+         m₂ : (x : X) → complement n ≤ complement (p x)
+         m₂ x = complement-both-right (m₃ x)
+         m₁ : Κ (complement n) ≤̇ (λ x → complement (p x))
+         m₁ = m₂
+         m₀ : complement n ≤ A (λ x → complement (p x))
+         m₀ = pr₁ (φ (complement n) (λ x → complement (p x))) m₁
+
+𝟚-overt-is-𝟚-compact : ∀ {U} {X : U ̇} → (E : (X → 𝟚) → 𝟚)
+                     → E ⊣Κ → Κ⊣ (𝟚-DeMorgan-dual E)
+𝟚-overt-is-𝟚-compact {U} {X} E = g
+ where
+  A : (X → 𝟚) → 𝟚
+  A = 𝟚-DeMorgan-dual E
+  g : E ⊣Κ → Κ⊣ A
+  g γ = φ
+   where
+     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ⇔ n ≤ A p 
+     φ n p = (φ₀ , φ₁ )
+      where
+       φ₀ : Κ n ≤̇ p → n ≤ A p
+       φ₀ l = complement-right m₀ 
+        where
+         m₃ : (x : X) → n ≤ p x
+         m₃ = l
+         m₂ : (x : X) → complement (p x) ≤ complement n
+         m₂ x = complement-both-right (m₃ x) 
+         m₁ : (λ x → complement (p x)) ≤̇ Κ (complement n)
+         m₁ = m₂
+         m₀ : E (λ x → complement (p x)) ≤ complement n
+         m₀ = pr₂ (γ (complement n) (λ x → complement (p x))) m₂
+
+       φ₁ : n ≤ A p → Κ n ≤̇ p
+       φ₁ l = m₃
+        where
+         m₀ : E (λ x → complement (p x)) ≤ complement n
+         m₀ = complement-right l
+         m₁ : (λ x → complement (p x)) ≤̇ Κ (complement n)
+         m₁ = pr₁ (γ (complement n) (λ x → complement (p x))) m₀
+         m₂ : (x : X) → complement (p x) ≤ complement n
+         m₂ = m₁
+         m₃ : (x : X) → n ≤ p x
+         m₃ x = complement-both-left (m₂ x)
+
+\end{code}
+
+We have the following corollaries:
+
+\begin{code}
+
+𝟚-compact-iff-𝟚-overt : ∀ {U} {X : U ̇}
+                      → (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A) ⇔ (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
+𝟚-compact-iff-𝟚-overt {U} {X} = (f , g)
+ where
+  f : (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A) → (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
+  f (A , φ) = (𝟚-DeMorgan-dual A , 𝟚-compact-is-𝟚-overt A φ)
+  
+  g : (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ) → (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A)
+  g (E , γ) = (𝟚-DeMorgan-dual E , 𝟚-overt-is-𝟚-compact E γ)
+
+\end{code}
+
+In this corollary we record explicitly that a type is 𝟚-compact iff it
+is 𝟚-overt:
+
+\begin{code}
+
+𝟚-compact-iff-Κ-has-left-adjoint : ∀ {U} {X : U ̇}
+                                 → 𝟚-compact X ⇔ (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
+𝟚-compact-iff-Κ-has-left-adjoint {U} {X} = (f , g)
+ where
+  f : 𝟚-compact X → (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
+  f c = pr₁ 𝟚-compact-iff-𝟚-overt (pr₁ 𝟚-compact-iff-Κ-has-right-adjoint c)
+
+  g : (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ) → 𝟚-compact X
+  g o = pr₂ 𝟚-compact-iff-Κ-has-right-adjoint (pr₂ 𝟚-compact-iff-𝟚-overt o)
+
+\end{code}
+
+TODO. Assuming FunExt, we get as a corollary that
+
+      E ⊣Κ ⇔ ((p : X → 𝟚) → E p ≡ ₀ ⇔ p ≡ (λ x → ₀)).
 
 20 Feb 2018. In classical topology, a space X is compact iff the
 projection A × X → A is a closed map for every space A, meaning that
@@ -846,12 +1096,20 @@ input decidable predicate (or clopen subtype) is given as a 𝟚-valued
 function, whereas instead of saying that the image predicate factors
 through the embedding 𝟚 of into the type of truth values, we say that
 it has decidable truth-values, which is equivalent. Such an asymmetry
-is already present in the formulation of the notion of compactness.
+is already present in our formulation of the notion of compactness.
+
+We have defined image with lower case in the module UF. We now need
+Images with upper case:
 
 \begin{code}
 
+Image : ∀ {U V W} {X : U ̇} {Y : V ̇}
+     → (X → Y) → (X → W ̇) → (Y → U ⊔ V ⊔ W ̇)
+Image f A = λ y → ∃ \x → A x × (f x ≡ y)
+
 isClopenMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isClopenMap {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y) → decidable(∃ \(x : X) → (p x ≡ ₀) × (f x ≡ y))
+isClopenMap {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y)
+                              → decidable (Image f (λ x → p x ≡ ₀) y)
 
 isClopenMap-isProp : ∀ {U V} {X : U ̇} {Y : V ̇} → (∀ U V → FunExt U V)
                    → (f : X → Y) → isProp(isClopenMap f)
@@ -868,7 +1126,7 @@ fst _ _ = pr₁
 𝟚-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
   g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
-   → decidable (∃ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a))
+    → decidable (∃ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a))
   g (inl e) = inl ((ptfunct h) e)
    where
     h : (Σ \(x : X) → p (a , x) ≡ ₀) → Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)
@@ -884,7 +1142,7 @@ clopen-projections-𝟚-compact : ∀ {U} (X : U ̇)
 clopen-projections-𝟚-compact X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
  where
   g : decidable (∃ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
-   → decidable (∃ \(x : X) → p x ≡ ₀)
+    → decidable (∃ \(x : X) → p x ≡ ₀)
   g (inl e) = inl (ptfunct h e)
    where
     h : (Σ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)) → Σ \(x : X) → p x ≡ ₀
