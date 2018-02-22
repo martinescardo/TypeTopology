@@ -15,7 +15,7 @@ Because 𝟚-compact types are defined in terms of maps into 𝟚, a type is
 propositions.
 
 We have two notions of compactness, one strong (written with upper
-case C in the development below) and the other one weak (writtenc with
+case C in the development below) and the other one weak (written with
 lower case c). It is the weak one that arises in synthetic topology
 via the dominance 𝟚 and seems to be primary in the sense of admitting
 a number of natural characterizations, discussed above. However, it is
@@ -39,7 +39,7 @@ open import DecidableAndDetachable
 \end{code}
 
 The following is the strong notion of compactness here, which is
-implied by omniscience and hence by searchability (se below).
+implied by omniscience and hence by searchability (see below).
 However, compactness is property of a type whereas omniscience and
 searchability (as we have defined them in the modules OmniscientTypes
 and SearchableTypes) are structure on the type.
@@ -482,6 +482,8 @@ Closure of compactness under sums (and hence binary products):
 
 TODO. Consider also capital compactness, and other closure properties.
 
+TODO. If X is 𝟚-compact, its propositional truncation is simply ¬¬X.
+
 We now turn to the compactness of propositions. A proposition is
 strongly compact iff it is decidable. Regarding the weak compactness
 of propositions, we have partial information for the moment.
@@ -777,10 +779,8 @@ has-infs-𝟚-compact h p = f (h p)
 
 \end{code}
 
-TODO. Take 𝟚-DeMorgan-duals to show equivalence with existence of
-suprema (see below).
-
-Is there a similar characterization of strong compactness?
+TODO. Show equivalence with existence of suprema. Is there a similar
+characterization of strong compactness?
 
 Application of type-theoretical choice:
 
@@ -815,9 +815,8 @@ adjoints. TODO. Link the above development with the following.
 In synthetic topology with the dominance 𝟚, a type is called 𝟚-compact
 if the map Κ : 𝟚 → (X → 𝟚) has a right adjoint A : (X → 𝟚) → 𝟚, with
 respect to the natural ordering of 𝟚 and the pointwise order of the
-function type (X → 𝟚), and 𝟚-overt if it has a left-adjoint E : (X →
-𝟚) → 𝟚. Because 𝟚 is self-dual, 𝟚-compactness and 𝟚-overtness are
-equivalent concepts, and A = inf and E = sup.
+function type (X → 𝟚), and 𝟚-overt if it has a left-adjoint
+E : (X → 𝟚) → 𝟚.
 
 Κ is the usual combinator (written Kappa rather than Kay here):
 
@@ -850,7 +849,8 @@ E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤ n ⇔ p ≤̇ Κ n
 
 \end{code}
 
-TODO: The types Κ⊣ A and E ⊣Κ are propositions.
+TODO: The types Κ⊣ A and E ⊣Κ are propositions, and so are the types
+Σ \A → Κ⊣ A (compactness) and Σ \E → E ⊣Κ (overtness).
 
 Right adjoints to Κ are characterized as follows:
 
