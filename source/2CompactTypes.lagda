@@ -15,7 +15,7 @@ n ≡ ₁. The natural order on 𝟚, defined by
   
 corresponds to the implication order (P ≤ Q = P → Q) of propositions.
 
-Given a dominance 𝕊 and a type X, we consider the map Κ : 𝕤 → (X → 𝕊)
+Given a dominance 𝕊 and a type X, we consider the map Κ : 𝕊 → (X → 𝕊)
 that sends s:𝕊 to the constant function λ x → s, and we say that
 
  * X is 𝕊-compact if Κ has a right adjoint A : (X → 𝕊) → 𝕊,
@@ -45,7 +45,7 @@ But strong overtness is a strictly stronger notion, which corresponds
 to LPO, whereas compactness and overtness correspond to WLPO. We have
 that
 
- * X is strongly 𝟚-overt if and only if (Σ \(x : X) → p x ≡ ₀) is
+ * X is strongly 𝟚-overt if and only if (∃ \(x : X) → p x ≡ ₀) is
    decidable for every p : X → 𝟚.
 
  * X is 𝟚-compact if and only if (Π \(x : X) → p x ≡ ₁) is decidable
