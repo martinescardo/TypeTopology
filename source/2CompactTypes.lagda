@@ -46,7 +46,7 @@ But strong overtness is a strictly stronger notion, which corresponds
 to LPO, whereas compactness and overtness correspond to WLPO. We have
 that
 
- * X is strongly 𝟚-over if and only if (Σ \(x : X) → p x ≡ ₀) is
+ * X is strongly 𝟚-overt if and only if (Σ \(x : X) → p x ≡ ₀) is
    decidable for every p : X → 𝟚.
 
  * X is 𝟚-compact if and only if (Π \(x : X) → p x ≡ ₁) is decidable
