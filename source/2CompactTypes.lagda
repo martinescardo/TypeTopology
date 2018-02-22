@@ -15,9 +15,8 @@ n ≡ ₁. The natural order on 𝟚, defined by
   
 corresponds to the implication order (P ≤ Q = P → Q) of propositions.
 
-Given a dominance 𝕊, we define a type X, we consider the natural map Κ
-: 𝕤 → (X → 𝕊) that sends s:𝕊 to the constant function λ x → s, and we
-say that
+Given a dominance 𝕊 and a type X, we consider the map Κ : 𝕤 → (X → 𝕊)
+that sends s:𝕊 to the constant function λ x → s, and we say that
 
  * X is 𝕊-compact if Κ has a right adjoint A : (X → 𝕊) → 𝕊,
  * X is 𝕊-overt   if K has a left adjoint  E : (X → 𝕊) → 𝕊,
