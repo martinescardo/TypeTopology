@@ -52,10 +52,10 @@ that
  * X is 𝟚-compact if and only if (Π \(x : X) → p x ≡ ₁) is decidable
    for every p : X → 𝟚.
 
-This shows that strong 𝟚-compactness, defined as strong 𝟚-overtness
-but replacing ∃ by ∀, coincides with 𝟚-compactness. We take this as
-our primary definition of 𝟚-compactness and the characterize it as the
-existence of a right adjoint to Κ.
+We take this as our primary definition of 𝟚-compactness and then
+characterize it as the existence of a right adjoint to Κ.  The above
+also shows that strong 𝟚-compactness, defined as strong 𝟚-overtness
+but replacing ∃ by ∀, coincides with 𝟚-compactness.
  
 We consider various closure properties for 𝟚-compact and strongly
 𝟚-overt types, their interaction with discreteness, total separatedess
