@@ -1079,9 +1079,14 @@ is 𝟚-overt:
 
 \end{code}
 
-TODO. Assuming FunExt, we get as a corollary that
+TODO. We get as a corollary that
 
       E ⊣Κ ⇔ ((p : X → 𝟚) → E p ≡ ₀ ⇔ p ≡ (λ x → ₀)).
+
+TODO. Find the appropriate place in this file to remark that decidable
+propositions are closed under 𝟚-compact/overt meets and joins. And
+then clopen sets (or 𝟚-open sets, or complemented subsets) are closed
+under 𝟚-compact/over unions and intersections.
 
 20 Feb 2018. In classical topology, a space X is compact iff the
 projection A × X → A is a closed map for every space A, meaning that
