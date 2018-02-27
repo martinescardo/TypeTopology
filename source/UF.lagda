@@ -1172,6 +1172,9 @@ module PropositionalTruncation (pt : PropTrunc) where
 
  pt-dn : ∀ {U} {X : U ̇} → ∥ X ∥ → ¬¬ X
  pt-dn s = pt-gdn s 𝟘 𝟘-isProp
+
+ binary-choice : ∀ {U V} {X : U ̇} {Y : V ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
+ binary-choice s t = ptrec ptisp (λ x → ptrec ptisp (λ y → ∣ x , y ∣) t) s
  
  infixr 0 _∨_
  infix 0 ∥_∥

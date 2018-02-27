@@ -335,8 +335,8 @@ i2c2c x = retract-𝟚-compact (pdrc x)
 
 A main reason to consider the notion of total separatedness is that
 the totally separated reflection T X of X has the same supply of
-boolean predicates as X, and hence X is strongly overt (compact) iff T
-X is strongly overt (respectively compact), as we show now.
+boolean predicates as X, and hence X is strongly overt (compact) iff
+T X is strongly overt (respectively compact), as we show now.
 
 \begin{code}
 
@@ -846,7 +846,7 @@ has-infs-𝟚-compact h p = f (h p)
 \end{code}
 
 TODO. Show equivalence with existence of suprema. Is there a similar
-characterization of strong compactness?
+characterization of strong overtness?
 
 Implicit application of type-theoretical choice:
 

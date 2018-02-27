@@ -72,7 +72,6 @@ totally-separated X = {x y : X} → ((p : X → 𝟚) → p x ≡ p y) → x ≡
 𝟚-separated : ∀ {U} → U ̇ → U ̇
 𝟚-separated = totally-separated
 
-
 \end{code}
 
 Excluded middle implies that all sets are discrete and hence totally
@@ -589,7 +588,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
  strongly-extensional : ∀ {U V W T} {X : U ̇} {Y : V ̇}
-                              → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
+                      → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
  
 
@@ -908,7 +907,7 @@ apartness on it.
        induction-step : (y : X) → isProp (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
        induction-step x (a , d) (b , e) = to-Σ-Id _ (p , ptisp _ _)
         where
-         h :  (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
+         h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
            → a ≡ b
          h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
