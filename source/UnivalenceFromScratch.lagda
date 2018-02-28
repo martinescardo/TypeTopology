@@ -196,7 +196,7 @@ universe. It is common to assume a tower of universes U₀, U₁, U₂,
    U₂ : U₃,
    ⋮
 
-(It is sometimes assumed that these universes are cummulative in a
+(It is sometimes assumed that these universes are cumulative in a
 certain sense, but we will not assume (or reject) this.)
 
 When we have universes, a type family A indexed by a type X:U may be
