@@ -398,7 +398,9 @@ the K axiom, which, as discussed above, contradicts univalence, and
 hence we disable it. Inductive definitions in Agda are given with the
 keyword "data". Unlike Coq, Agda doesn't derive the induction
 principles, and one has to do this manually, as we do in the
-definition of J.
+definition of J. Finally, notice that in Agda one constructs things by
+first specifying their types and then giving a definition with the
+equality sign.
 
 \begin{code}
 
