@@ -46,6 +46,9 @@ that they should be as concise as possible (and not more). They are
 not meant to be an Encyclopedia of Univalence (you may create a fork
 for that).
 
+The source code for this file is available at
+https://github.com/martinescardo/TypeTopology/tree/master/source
+
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
 
@@ -488,6 +491,3 @@ isUnivalent U = (X Y : U ̇) → isEquiv(IdToEq X Y)
 
 Thus, we see that even in its concise symbolic form, the formulation
 of univalence is far from direct.
-
-The source code for this file is available at
-https://github.com/martinescardo/TypeTopology/tree/master/source
