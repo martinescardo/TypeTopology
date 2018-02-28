@@ -357,17 +357,18 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     "proto-univalent" in the sense that it cannot distinguish concrete
     isomorphic types such as ℕ and ℕ×ℕ. This is because, being
     isomorphic, they are equivalent. But then univalence gives
-    Id(ℕ,ℕ×ℕ). And if we have P(ℕ) for a given "property" P:U→U, then
-    we get, using J, also P(ℕ×ℕ), and vice-versa. (Exercise. You have
-    understood type theory if you can solve this exercise.)
+    Id(ℕ,ℕ×ℕ). And if we have P(ℕ) for a given "property" P:U→U of
+    types, then we get, using J, also P(ℕ×ℕ), and
+    vice-versa. (Exercise. You have understood type theory if you can
+    solve this exercise.)
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
     under isomorphism in a positive, mathematical sense.
 
  4. Thus, we see that the formulation of univalence is far from
-    direct, and has much more to it than the slogan "isomorphic types
-    are equal".
+    direct, and has much more to it than the (in our opinion,
+    misleading) slogan "isomorphic types are equal".
 
     What the consistency of the univalence type says is that one
     possible understanding of the identity type Id(X,Y) for X,Y:U is
