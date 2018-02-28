@@ -126,7 +126,7 @@ the binary disjoint sum +.
 
 The elements of a type correspond to proofs, and instead of saying
 that a type A has a given element, it is common practice to say that A
-holds, when A is understood as a proposition.
+holds, when the type A is understood as a proposition.
 
 * The identity type
   -----------------
@@ -197,7 +197,7 @@ universe. It is common to assume a tower of universes U₀, U₁, U₂,
    ⋮
 
 (It is sometimes assumed that these universes are cumulative in a
-certain sense, but we will not assume (or reject) this.)
+certain sense, but we will not nned to assume (or reject) this.)
 
 When we have universes, a type family A indexed by a type X:U may be
 considered to be a function A:X→V for some universe V.
@@ -370,11 +370,11 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     equivalent. But then univalence gives Id(ℕ,ℕ×ℕ). And if we have
     P(ℕ) for a given "property" P:U→U of types, then we get, using J,
     also P(ℕ×ℕ), and vice-versa. (Exercise: get P(ℕ×ℕ) from P(ℕ) as
-    suggested, and vice versa. You have understood type theory if you
+    suggested, and vice-versa. You have understood type theory if you
     can solve this exercise.)
 
     Thus, we can't find a concrete P:U→U with P(ℕ) inhabited and
-    P(ℕ×ℕ) empty.
+    P(ℕ×ℕ) empty, or the other way round.
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
@@ -483,7 +483,7 @@ idIsEquiv X = g
 IdToEq : {U : Universe} (X Y : U ̇) → Id X Y → Eq X Y
 IdToEq {U} = J A f
  where
-  A :  (X Y : U ̇) → Id X Y → U ̇
+  A : (X Y : U ̇) → Id X Y → U ̇
   A X Y p = Eq X Y
   f : (X : U ̇) → A X X (refl X)
   f X = (id X , idIsEquiv X)
