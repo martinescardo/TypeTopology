@@ -180,9 +180,9 @@ will be the case that for some other types X, even in the presence of
 univalence, K(X) "holds", meaning that we can construct an element of
 it. Such types are called sets. The K axiom says that all types are
 sets. The univalence axiom implies that some types are not sets (then
-they may be 1-groupoids, 2-groupoids, ..., and even ∞-groupoids, but
-we will not address this important aspect of univalent mathematics
-here).
+they will instead be 1-groupoids, or 2-groupoids, ..., or even
+∞-groupoids, but we will not address this important aspect of
+univalent mathematics here).
 
 * Universes
   ---------
