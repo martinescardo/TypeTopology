@@ -36,6 +36,16 @@ This is because
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
 although universes have of course been considered in both.
 
+* Please contribute
+  -----------------
+
+The HoTT/UF community, and more generally the mathematical and logical
+communities, are invited to create issues or propose pull requests to
+improve these notes. However, the underlying idea of these notes is
+that they should be as concise as possible (and not more). They are
+not meant to be an Encyclopedia of Univalence (you may create a fork
+for that).
+
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
 
@@ -481,10 +491,3 @@ of univalence is far from direct.
 
 The source code for this file is available at
 https://github.com/martinescardo/TypeTopology/tree/master/source
-
-The HoTT/UF community, and more generally the mathematical and logical
-communities, are invited to create issues or propose pull requests to
-improve these notes. However, the underlying idea of these notes is
-that they should be as concise as possible (and not more). They are
-not meant to be an Encyclopedia of Univalence (you may create a fork
-for that).
