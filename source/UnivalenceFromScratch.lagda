@@ -55,7 +55,7 @@ Martin-Löf type theory well.
 
 Types are the analogues of sets in ZFC and objects in topos theory.
 
-Types are construced together with their elements, and not by
+Types are constructed together with their elements, and not by
 collecting some previously existing elements. When a type is
 constructed, we get freshly new elements for it. We write
 
@@ -77,7 +77,7 @@ incorrect, rather than false:
 * Products and sums of type families
   ----------------------------------
 
-Given a family of types A(x) indexed by elements of a type x:X, we can
+Given a family of types A(x) indexed by elements x of a type X, we can
 form its product and sum:
 
     Π(x:X), A(x),
