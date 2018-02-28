@@ -251,7 +251,7 @@ and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
   f(x) := refl(singleton(x)).
 
-Then we use J(A,f) to get a function
+With this we get a function
 
   φ : Π(y,x:X), Π(p:Id(y,x)), Id(singleton(x), (y,p))
   φ := J(A,f).
