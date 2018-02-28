@@ -39,9 +39,10 @@ although universes have of course been considered in both.
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
 
-This is correct: univalence is a type. It takes a number of steps to
-construct it, in addition to subtle decisions (as e.g. to work with
-equivalences rather than isomorphisms, as discussed below).
+This is correct: univalence is a type, and the univalence axiom says
+that this type has some inhabitant. It takes a number of steps to
+construct this type, in addition to subtle decisions (as e.g. to work
+with equivalences rather than isomorphisms, as discussed below).
 
 We first need to briefly introduce Martin-Löf type theory (MLTT). We
 will not give a course in MLTT. Instead, we will mention which
@@ -384,10 +385,10 @@ univalence type, in Agda notation. (Agda documentation is at
 http://wiki.portal.chalmers.se/agda/pmwiki.php).
 
 The fragment of Agda used here amounts to the subset of MLTT with
-Π,Σ,Id and a tower of universes discussed above. By default, Agda has
-the K axiom, which, as discussed above, contradicts univalence, and
-hence we disable it. Inductive definitions in Agda are given with the
-keyword "data". Unlike Coq, Agda doesn't derive the induction
+Π,Σ,Id and a tower of universes as discussed above. By default, Agda
+has the K axiom, which, as discussed above, contradicts univalence,
+and hence we disable it. Inductive definitions in Agda are given with
+the keyword "data". Unlike Coq, Agda doesn't derive the induction
 principles, and one has to do this manually, as we do in the
 definition of J. Finally, notice that in Agda one constructs things by
 first specifying their types and then giving a definition with the
@@ -421,7 +422,7 @@ J A f x x (refl x) = f x
 isSingleton : {U : Universe} → U ̇ → U ̇
 isSingleton X = Σ \(c : X) → (x : X) → Id c x
 
-fiber : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
+fiber : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → Id (f x) y
 
 isEquiv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
