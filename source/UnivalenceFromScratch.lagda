@@ -369,8 +369,12 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     such as ℕ and ℕ×ℕ. This is because, being isomorphic, they are
     equivalent. But then univalence gives Id(ℕ,ℕ×ℕ). And if we have
     P(ℕ) for a given "property" P:U→U of types, then we get, using J,
-    also P(ℕ×ℕ), and vice-versa. (Exercise. You have understood type
-    theory if you can solve this exercise.)
+    also P(ℕ×ℕ), and vice-versa. (Exercise: get P(ℕ×ℕ) from P(ℕ) as
+    suggested, and vice versa. You have understood type theory if you
+    can solve this exercise.)
+
+    Thus, we can't find a concrete P:U→U with P(ℕ) inhabited and
+    P(ℕ×ℕ) empty.
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
