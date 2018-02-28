@@ -31,7 +31,7 @@ saying goes, it is not even wrong.
 This is because
 
    univalence is a property of the *identity type*
-   of a *universe of types*.
+   of a universe of types.
 
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
 although universes have of course been considered in both.
@@ -309,7 +309,8 @@ the inhabitedness of the type isUnivalent(U) is undecided.
 * Notes
   -----
 
- 0. The minimal Martin-Löf type theory needed to formulate univalence has
+ 0. The minimal Martin-Löf type theory needed to formulate univalence
+    has
 
       Π, Σ, Id, U.
 
