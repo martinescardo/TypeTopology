@@ -39,10 +39,10 @@ although universes have of course been considered in both.
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
 
-This is correct: univalence is a type, and the univalence axiom says
-that this type has some inhabitant. It takes a number of steps to
-construct this type, in addition to subtle decisions (as e.g. to work
-with equivalences rather than isomorphisms, as discussed below).
+Univalence is a type, and the univalence axiom says that this type has
+some inhabitant. It takes a number of steps to construct this type, in
+addition to subtle decisions (e.g. to work with equivalences rather
+than isomorphisms, as discussed below).
 
 We first need to briefly introduce Martin-Löf type theory (MLTT). We
 will not give a course in MLTT. Instead, we will mention which
