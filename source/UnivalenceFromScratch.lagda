@@ -20,17 +20,18 @@ scratch,
  * first written informally but rigorously in mathematical English
    prose, and
  
- * then formally in Agda notation for Martin-Löf typet theory.
+ * then formally in Agda notation for Martin-Löf type theory.
 
 (Search for "UnivalenceFromScratch" to jump to the formal version.)
 
-The univalence axiom is not true or false, in say, ZFC or the internal
+The univalence axiom is not true or false in, say, ZFC or the internal
 language of an elementary topos. It cannot even be formulated. As the
 saying goes, it is not even wrong.
 
 This is because
 
-   univalence is a property of the *identity type* of a *universe of types*.
+   univalence is a property of the *identity type*
+   of a *universe of types*.
 
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
 although universes have of course been considered in both.
@@ -42,12 +43,12 @@ This is correct: univalence is a type. It takes a number of steps to
 construct it, in addition to subtle decisions (as e.g. to work with
 equivalences rather than isomorphisms, as discussed below).
 
-We first need to briefly introduce Martin-Löf type theory. We will not
-give a course in MLTT. Instead, we will mention which constructs of
-MLTT are needed to give a complete definition of the univalence
-axiom. This will be enough to illustrate the important fact that in
-order to understand univalence we first need to understand Martin-Löf
-type theory (MLTT) well.
+We first need to briefly introduce Martin-Löf type theory (MLTT). We
+will not give a course in MLTT. Instead, we will mention which
+constructs of MLTT are needed to give a complete definition of the
+univalence type. This will be enough to illustrate the important fact
+that in order to understand univalence we first need to understand
+Martin-Löf type theory well.
 
 * Types and their elements
   ------------------------
@@ -76,7 +77,7 @@ incorrect, rather than false:
 * Products and sums of type families
   ----------------------------------
 
-Given family of types A(x) indexed by elements of a type x:X, we can
+Given a family of types A(x) indexed by elements of a type x:X, we can
 form its product and sum:
 
     Π(x:X), A(x),
@@ -106,7 +107,7 @@ And we have the empty type 𝟘 and the one-element type 𝟙.
 There is no underlying logic in MLTT. Propositions are types, and Π
 and Σ play the role of universal and existential quantifiers, via the
 so-called Curry-Howard interpretation of logic. But univalent type
-theory relies on a variation ∃ of Σ which will not play any role here
+theory relies on a variation ∃ of Σ, which will not play any role here
 and hence won't be discussed. As for the connectives, implication is
 given by the function-space construction →, conjunction by the binary
 cartesian product ×, and disjunction by the binary disjoint sum + (or
@@ -120,13 +121,15 @@ Given a type X and elements x,y:X, we have the identity type
 
     Id_X(x,y),
 
-with the subscript X often elided. We have a function
+with the subscript X often elided. The idea is that Id(x,y) collects
+the ways in which x and y are identified.
+
+We have a function
 
     refl : Π(x:X), Id(x,x).
 
-The idea is that the function refl witnesses the reflexivity of the
-"relation" Id. Without univalence, refl is the only given way to
-construct elements of the identity type.
+which identifies any element with itself. Without univalence, refl is
+the only given way to construct elements of the identity type.
 
 In addition to refl, we stipulate that for any given type family A(x,y,p)
 indexed by elements x,y:X and p:Id(x,y) and any given function
@@ -135,18 +138,19 @@ indexed by elements x,y:X and p:Id(x,y) and any given function
 
 we have a function 
 
-    J(A,f) : Π(x,y:X), Π(p:Id(x,y)) → A(x,y,p),
+    J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p),
 
 with
 
     J(A,f)(x,x,refl(x)) = f(x).
 
-The idea is that Id(x,y) collects the ways in which x and y are
-identified.
+We will see examples of uses of J in the steps leading to the
+construction of the univalence type.
 
 With these requirements, the exact nature of the type Id(x,y) is
-fairly unspecified. It is consistent that it is always a subsingleton,
-which is known as the K axiom for the type X, in the following sense:
+fairly under-specified. It is consistent that it is always a
+subsingleton, which is known as the K axiom for the type X, in the
+following sense:
 
    K(X) = Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
 
@@ -156,17 +160,14 @@ itself, and the identity type of the identity type, and so on, which
 is the basis for univalent mathematics (but this is not discussed
 here, as it is not needed in order to construct the univalence type).
 
-On the other hand the univalence axioms provides a means to
-constructing elements other than refl(x), at least for some types
-X. It will be the case than for some other types X, even in the
+On the other hand, the univalence axiom provides a means of
+constructing elements other than refl(x), at least for some types.
+It will be the case than for some other types X, even in the
 presence of univalence, K(X) "holds", meaning that we can construct an
 element of it. Such types are called sets. The K axiom says that all
 types are sets. The univalence axiom says that some types are not sets
 (then they may be 1-groupoids, 2-groupoids, ..., and even ∞-groupoids,
 but we will not address this aspect of univalent mathematics here).
-
-We will see examples of uses of J in the steps leading to the
-construction of the univalence type.
 
 * Universes
   ---------
@@ -194,20 +195,20 @@ such as the type of groups, whose definition starts like this:
 
 Here isSet(G)=Π(x,y:G),Id(x,y), as above. With univalence, G itself
 will not be a set, but a 1-gropoid instead, namely a type whose
-identity types are all sets. Moreover, if U univalent for A,B:Grp, the
-identity type Id(A,B) can be shown to be in bijection with the group
-isomorphisms of A and B.
+identity types are all sets. Moreover, if U is univalent, then for
+A,B:Grp, the identity type Id(A,B) can be shown to be in bijection
+with the group isomorphisms of A and B.
 
 * Univalence
   ----------
 
 Univalence is a property of the identity type Id_U of a universe U. It
-takes a number of steps to define this type.
+takes a number of steps to define the univalence type.
   
 We say that a type X is a singleton if we have an element c with
 Id(c,x) for all x:X. In Curry-Howard logic, this is
 
-    isSingleton(X) = Σ(c : X), Π(x : X), Id(c,x).
+    isSingleton(X) = Σ(c:X), Π(x:X), Id(c,x).
 
 (Alternative terminology: X is contractible.)
 
@@ -216,16 +217,17 @@ points x:X that are mapped to y:
 
     f⁻¹(y) = Σ(x:X),Id(f(x),y)
 
-The function f is called an equivalence if its is fibers are are all
+The function f is called an equivalence if its is fibers are all
 singletons:
 
     isEquiv(f) = Π(y:Y), isSingleton(f⁻¹(y)).
 
 The type of equivalences from X:U to Y:U is
 
-    Eq(X,Y) = Σ(f : X → Y), isEquiv(f).
+    Eq(X,Y) = Σ(f:X→Y), isEquiv(f).
 
-Given x:X, we have the singleton type of y:Y with Id(y,x):
+Given x:X, we have the singleton type consisting of the elements y:Y
+with Id(y,x):
 
    singletonType(x) = Σ(y:X), Id(y,x).
 
@@ -235,11 +237,11 @@ We also have the element singleton(x) of this type:
 
 We now need to *prove* that singleton types are singletons:
 
-   Π(x : X), isSingleton(singletonType x).
+   Π(x:X), isSingleton(singletonType(x)).
 
 In order to do that, we use J with the type family
 
-  A(y,x,p) := Id(singleton(x), (y , p)),
+  A(y,x,p) := Id(singleton(x), (y,p)),
 
 and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
@@ -247,21 +249,21 @@ and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
 Then we use J(A,f) to get a function
 
-  φ : Π(y x : X), Π(p : Id y x), Id(singleton(x), (y , p))
+  φ : Π(y,x:X), Π(p:Id(y,x)), Id(singleton(x), (y,p))
   φ := J(A,f).
 
 (Notice the reversal of y and x.)
 
 With this, we can define a function
 
-  g : Π(x : X), Π(σ : singletonType x), Id (singleton x) σ
-  g(x , (y , p)) := φ(y,x,p).
+  g : Π(x:X), Π(σ:singletonType(x)), Id(singleton(x), σ)
+  g(x,(y,p)) := φ(y,x,p).
 
 Finally, using g we get our desired result, that singleton types are
 singletons:
 
-  h : (x : X) → Σ \(c : singletonType x) → (σ : singletonType x) → Id c σ
-  h x = (singleton x , g x)
+  h : Π(x:X), Σ(c:singletonType(x)), Π(σ:singletonType(x)), Id(c,σ)
+  h(x) := (singleton(x) , g(x)).
 
 Now, for any type X, its identity function Id_X, defined by
 
@@ -272,9 +274,9 @@ singleton type defined above, which we proved to be a singleton. We
 need to name this function, because it is needed in the formulation of
 the univalence of U:
 
-  idIsEquiv : Π(X : U), isEquiv(id_X).
+  idIsEquiv : Π(X:U), isEquiv(id_X).
 
-Now we use J the second time to define a function
+Now we use J a second time to define a function
 
   IdToEq : Π(X,Y:U), Id(X,Y) → Eq(X,Y).
 
@@ -309,25 +311,25 @@ IdToEq(X,Y) is itself an equivalence:
 
      Π(u,v: isUnivalent(U)), Id(u,v).
 
-    This says that the univalence is a subsingleton type (any two of
-    its elements are identified). In the first step we use u (or v) to
-    get function extensionality (any two pointwise identified
-    functions are identified), which is *not* provable in MLTT, but is
-    provable from the assumption that U is univalent. Then, using
-    this, one shows that being an equivalence is a subsingleton
-    type. Finally, again using function extensionality, we get that a
-    product of subsingletons is a subsingleton. But then Id(u,v),
-    which is what we wanted to show. But this of course omits the
-    proof that univalence implies function extensionality (original
-    due to Voevodsky), which is fairly elaborate.
+    This says that univalence is a subsingleton type (any two of its
+    elements are identified). In the first step we use u (or v) to get
+    function extensionality (any two pointwise identified functions
+    are identified), which is *not* provable in MLTT, but is provable
+    from the assumption that U is univalent. Then, using this, one
+    shows that being an equivalence is a subsingleton type. Finally,
+    again using function extensionality, we get that a product of
+    subsingletons is a subsingleton. But then Id(u,v), which is what
+    we wanted to show. But this of course omits the proof that
+    univalence implies function extensionality (originally due to
+    Voevodsky), which is fairly elaborate.
 
  2. For a function f:X→Y, consider the type
 
      Iso(f) := Σ(g:Y→X), (Π(x:X), Id(g(f(x)), x)) × (Π(y:Y), Id(f(g(y)), y)).
 
-    We have a functions r:Iso(f)→isEquiv(f) and
+    We have functions r:Iso(f)→isEquiv(f) and
     s:isEquiv(f)→Iso(f). However, the type isEquiv(f) is always a
-    subsingleton, assuming function extensionality, whereas tthe type
+    subsingleton, assuming function extensionality, whereas the type
     Iso(f) need not be. What we do have is that the function r is a
     retraction with section s.
 
@@ -345,11 +347,12 @@ IdToEq(X,Y) is itself an equivalence:
     that, before we postulate univalence, that MLTT is
     "proto-univalent" in the sense that it cannot distinguish concrete
     isomorphic types such as ℕ and ℕ×ℕ. This is because, being
-    isomorphic, they are equivalent. But then univalence gives Id(ℕ,
-    ℕ×ℕ). And if we have P(ℕ) then we get, using J, also P(ℕ×ℕ), and
-    vice verse. Exercise!
+    isomorphic, they are equivalent. But then univalence gives
+    Id(ℕ,ℕ×ℕ). And if we have P(ℕ) then we get, using J, also P(ℕ×ℕ),
+    and vice-versa. (Exercise! You have understood type theory if you
+    can solve this exercise.)
 
-    So MLTT is invariant under isomorphism in this double negative,
+    So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
     under isomorphism in a positive, mathematical sense.
 
@@ -361,37 +364,34 @@ IdToEq(X,Y) is itself an equivalence:
     possible understanding of the identity type Id(X,Y) for X,Y:U is
     as precisely the type Eq(X,Y) of equivalences. Without univalence,
     the nature of the identity type of the universe in MLTT is fairly
-    underspecified. It is a remarkable property of MLTT that it is
+    under-specified. It is a remarkable property of MLTT that it is
     consistent with this interpretation of the identity type of the
     universe.
 
  5. For the univalence axiom to be consistent, it is important that
-    "equality reflection", which identifies identity type with
-    (definitional) equalities, is absent from the theory. This is
+    "equality reflection", which identifies the identity type with
+    (definitional) equality, is absent from the theory. This is
     because equality reflection gives the K axiom for all types,
-    including the universe, which is direct contradiction with
+    including the universe, which is in direct contradiction with
     univalence.
 
 3. Formal construction of the univalence type in Agda
    --------------------------------------------------
 
 We now give a symbolic rendering of the above construction of the
-univalence type, in Agda notation (see
+univalence type, in Agda notation. (Agda documentation is at
 http://wiki.portal.chalmers.se/agda/pmwiki.php).
 
 \begin{code}
 
 module UnivalenceFromScratch where
 
-open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to usuc ; Level to Universe)
+open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _′ ; Level to Universe)
 
 _̇ : (U : Universe) → _
 U ̇ = Set U -- This should be the only use of the Agda keyword 'Set' in this development.
 
 infix  0 _̇
-
-_′ : Universe → Universe
-_′ = usuc
 
 data Σ {U V : Universe} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
   _,_ : (x : X) (y : Y x) → Σ Y
@@ -461,3 +461,13 @@ isUnivalent U = (X Y : U ̇) → isEquiv(IdToEq X Y)
 
 Thus, we see that even in its concise symbolic form, the formulation
 of univalence is far from direct.
+
+The source code for this file is available at
+https://github.com/martinescardo/TypeTopology/tree/master/source
+
+The HoTT/UF community, and more generally the mathematical and logical
+communities, are invited to create issues or propose pull requests to
+improve these notes. However, the underlying idea of these notes is
+that they should be as concise as possible (and not more). They are
+not meant to be an Encyclopedia of Univalence (you may create a fork
+for that).
