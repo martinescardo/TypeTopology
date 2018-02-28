@@ -370,7 +370,7 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     being in one-to-one correspondence with it. Without univalence,
     the nature of the identity type of the universe in MLTT is fairly
     under-specified. It is a remarkable property of MLTT that it is
-    consistent with this interpretation of the identity type of the
+    consistent with this understanding of the identity type of the
     universe.
 
 3. Formal construction of the univalence type in Agda
