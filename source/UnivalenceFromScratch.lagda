@@ -103,11 +103,11 @@ one-element type 𝟙, which will not be needed here.
 There is no underlying logic in MLTT. Propositions are types, and Π
 and Σ play the role of universal and existential quantifiers, via the
 so-called Curry-Howard interpretation of logic. But univalent type
-theory relies on a variation ∃ of Σ, which will not play any role here
-and hence won't be discussed. As for the connectives, implication is
-given by the function-space construction →, conjunction by the binary
-cartesian product ×, and disjunction by the binary disjoint sum + (or
-by a variation ∨ that occurs in univalent type theory, again not
+theory of requires a variation ∃ of Σ, which will not play any role
+here and hence won't be discussed. As for the connectives, implication
+is given by the function-space construction →, conjunction by the
+binary cartesian product ×, and disjunction by the binary disjoint sum
++ (or by a variation ∨ that occurs in univalent type theory, again not
 needed here).
 
 The elements of a type correspond to proofs, and instead of saying
@@ -126,7 +126,7 @@ the ways in which x and y are identified.
 
 We have a function
 
-    refl : Π(x:X), Id(x,x).
+    refl : Π(x:X), Id(x,x),
 
 which identifies any element with itself. Without univalence, refl is
 the only given way to construct elements of the identity type.
@@ -140,9 +140,9 @@ we have a function
 
     J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p),
 
-with
+such that
 
-    J(A,f)(x,x,refl(x)) := f(x).
+    J(A,f)(x,x,refl(x)) = f(x).
 
 We will see examples of uses of J in the steps leading to the
 construction of the univalence type.
