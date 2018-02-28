@@ -386,7 +386,7 @@ We now give a symbolic rendering of the above construction of the
 univalence type, in Agda notation. (Agda documentation is at
 http://wiki.portal.chalmers.se/agda/pmwiki.php).
 
-The fragment of Agda used here amounts to the the subset of MLTT with
+The fragment of Agda used here amounts to the subset of MLTT with
 Π,Σ,Id and a tower of universes discussed above. By default, Agda has
 the K axiom, which, as discussed above, contradicts univalence, and
 hence we disable it. Inductive definitions in Agda are given with the
