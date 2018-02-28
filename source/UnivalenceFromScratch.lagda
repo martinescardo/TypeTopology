@@ -219,7 +219,7 @@ Id(c,x) for all x:X. In Curry-Howard logic, this is
 For a function f:X→Y and an element y:Y, its fiber is the type of
 points x:X that are mapped to y:
 
-    f⁻¹(y) := Σ(x:X),Id(f(x),y)
+    f⁻¹(y) := Σ(x:X),Id(f(x),y).
 
 The function f is called an equivalence if its is fibers are all
 singletons:
@@ -327,8 +327,8 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     from the assumption that U is univalent. Then, using this, one
     shows that being an equivalence is a subsingleton type. Finally,
     again using function extensionality, we get that a product of
-    subsingletons is a subsingleton. But then Id(u,v), which is what
-    we wanted to show. But this of course omits the proof that
+    subsingletons is a subsingleton. But then Id(u,v) holds, which is
+    what we wanted to show. But this of course omits the proof that
     univalence implies function extensionality (originally due to
     Voevodsky), which is fairly elaborate.
 
