@@ -162,7 +162,7 @@ here, as it is not needed in order to construct the univalence type).
 
 On the other hand, the univalence axiom provides a means of
 constructing elements other than refl(x), at least for some types.  It
-will be the case than for some other types X, even in the presence of
+will be the case that for some other types X, even in the presence of
 univalence, K(X) "holds", meaning that we can construct an element of
 it. Such types are called sets. The K axiom says that all types are
 sets. The univalence axiom implies that some types are not sets (then
