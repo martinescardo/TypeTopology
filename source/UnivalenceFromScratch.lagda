@@ -391,7 +391,7 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     the nature of the identity type of the universe in MLTT is fairly
     under-specified. It is a remarkable property of MLTT that it is
     consistent with this understanding of the identity type of the
-    universe.
+    universe, discovered by Vladimir Voevodsky.
 
 3. Formal construction of the univalence type in Agda
    --------------------------------------------------
