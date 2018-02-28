@@ -142,7 +142,7 @@ we have a function
 
 with
 
-    J(A,f)(x,x,refl(x)) = f(x).
+    J(A,f)(x,x,refl(x)) := f(x).
 
 We will see examples of uses of J in the steps leading to the
 construction of the univalence type.
@@ -377,13 +377,6 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     under-specified. It is a remarkable property of MLTT that it is
     consistent with this interpretation of the identity type of the
     universe.
-
- 5. For the univalence axiom to be consistent, it is important that
-    "equality reflection", which identifies the identity type with
-    (definitional) equality, is absent from the theory. This is
-    because equality reflection gives the K axiom for all types,
-    including the universe, which is in direct contradiction with
-    univalence.
 
 3. Formal construction of the univalence type in Agda
    --------------------------------------------------
