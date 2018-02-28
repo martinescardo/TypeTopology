@@ -183,10 +183,6 @@ universe. It is common to assume a tower of universes U₀, U₁, U₂,
 (It is sometimes assumed that these universes are cummulative in a
 certain sense, but we will not assume (or reject) this.)
 
-The letters U, V, W range over universes, the successor of a universe
-U is written U ′, and the first universe after the universes U and V
-is written U ⊔ V, to avoid subscripts.
-
 When we have universes, a type family A indexed by a type X:U may be
 considered to be a function A:X→V for some universe V.
 
@@ -393,6 +389,10 @@ principles, and one has to do this manually, as we do in the
 definition of J. Finally, notice that in Agda one constructs things by
 first specifying their types and then giving a definition with the
 equality sign.
+
+The letters U, V, W range over universes, the successor of a universe
+U is written U ′, and the first universe after the universes U and V
+is written U ⊔ V, to avoid subscripts.
 
 \begin{code}
 
