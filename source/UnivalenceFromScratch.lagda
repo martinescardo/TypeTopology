@@ -102,13 +102,10 @@ one-element type 𝟙, which will not be needed here.
 
 There is no underlying logic in MLTT. Propositions are types, and Π
 and Σ play the role of universal and existential quantifiers, via the
-so-called Curry-Howard interpretation of logic. Univalent type theory
-of requires a variation ∃ of Σ, and uses both ∃ and Σ, which will not
-play any role here and hence won't be discussed. As for the
+so-called Curry-Howard interpretation of logic. As for the
 connectives, implication is given by the function-space construction
 →, conjunction by the binary cartesian product ×, and disjunction by
-the binary disjoint sum + (or by a variation ∨ that occurs in
-univalent type theory, again not needed here).
+the binary disjoint sum +.
 
 The elements of a type correspond to proofs, and instead of saying
 that a type A has a given element, it is common practice to say that A
