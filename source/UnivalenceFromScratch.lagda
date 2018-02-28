@@ -89,7 +89,7 @@ function that maps elements x:X to elements of A(x). An element of the
 type Σ A is a pair (x,a) with x:X and a:A(x).
 
 We also have the type X→Y of functions from X to Y, which is the
-particular case of Π with the constant family A(x):=Y
+particular case of Π with the constant family A(x):=Y.
 
 We also have the cartesian product X×Y, whose elements are pairs. This
 is the particular case of Σ, again with A(x):=Y. 
@@ -110,7 +110,7 @@ the binary disjoint sum +.
 
 The elements of a type correspond to proofs, and instead of saying
 that a type A has a given element, it is common practice to say that A
-holds, when A is interpreted as a proposition.
+holds, when A is understood as a proposition.
 
 * The identity type
   -----------------
