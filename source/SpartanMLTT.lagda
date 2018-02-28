@@ -335,8 +335,7 @@ Jbased x A b .x refl = b
 J : ∀ {U V} {X : U ̇}
   → (A : (x y : X) → x ≡ y → V ̇)
   → ((x : X) → A x x refl)
-  → {x y : X} (r : x ≡ y)
-  → A x y r
+  → {x y : X} (r : x ≡ y) → A x y r
 J A f {x} {y} = Jbased x (λ y p → A x y p) (f x) y
 
 \end{code}
