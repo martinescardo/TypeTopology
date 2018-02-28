@@ -88,6 +88,9 @@ which we also write Π A and Σ A. An element of the type Π A is a
 function that maps elements x:X to elements of A(x). An element of the
 type Σ A is a pair (x,a) with x:X and a:A(x).
 
+(We adopt the convention that Π and Σ scope over the whole rest of the
+expression.)
+
 We also have the type X→Y of functions from X to Y, which is the
 particular case of Π with the constant family A(x):=Y.
 
@@ -203,15 +206,15 @@ in bijection with the group isomorphisms of A and B.
 Univalence is a property of the identity type Id_U of a universe U. It
 takes a number of steps to define the univalence type.
   
-We say that a type X is a singleton if we have an element c with
+We say that a type X is a singleton if we have an element c:X with
 Id(c,x) for all x:X. In Curry-Howard logic, this is
 
     isSingleton(X) := Σ(c:X), Π(x:X), Id(c,x).
 
-(Alternative terminology: X is contractible.)
+(Alternative terminology not used here: X is contractible.)
 
 For a function f:X→Y and an element y:Y, its fiber is the type of
-points x:X that are mapped to y:
+points x:X that are mapped to (a point identified with) y:
 
     f⁻¹(y) := Σ(x:X),Id(f(x),y).
 
@@ -225,7 +228,7 @@ The type of equivalences from X:U to Y:U is
     Eq(X,Y) := Σ(f:X→Y), isEquiv(f).
 
 Given x:X, we have the singleton type consisting of the elements y:Y
-with Id(y,x):
+identified with x:
 
    singletonType(x) := Σ(y:X), Id(y,x).
 
