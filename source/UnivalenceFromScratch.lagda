@@ -54,7 +54,7 @@ Martin-Löf type theory well.
 * Types and their elements
   ------------------------
 
-Types are the analogues of sets in ZFC and objects in topos theory.
+Types are the analogues of sets in ZFC and of objects in topos theory.
 
 Types are constructed together with their elements, and not by
 collecting some previously existing elements. When a type is
@@ -64,7 +64,7 @@ constructed, we get freshly new elements for it. We write
 
 to declare that the element x has type X. This is not something that
 is true or false (like a membership relation x ∈ X in ZFC). For
-example, if ℕ is the type of natural numbers, we may have
+example, if ℕ is the type of natural numbers, we may write
 
     17 : ℕ,
    (13,17) : ℕ × ℕ.
