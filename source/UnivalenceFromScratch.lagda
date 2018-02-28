@@ -88,18 +88,14 @@ function that maps elements x:X to elements of A(x). An element of the
 type Σ A is a pair (x,a) with x:X and a:A(x).
 
 We also have the type X→Y of functions from X to Y, which is the
-particular case of Π with the constant family A(x)=Y
+particular case of Π with the constant family A(x):=Y
 
 We also have the cartesian product X×Y, whose elements are pairs. This
-is the particular case of Σ, again with A(x)=Y. (It also can be viewed
-as a particular case of Π, for families indexed by a two-point type 𝟚
-with elements ₀,₁:𝟚. But we need a universe U in order to be able to
-define A(₀)=X and A(₁)=Y - see below.)
+is the particular case of Σ, again with A(x):=Y. 
 
-We also have the disjoint sum X+Y, which can be seen as a particular
-case of Σ for families indexed by the type 𝟚.
+We also have the disjoint sum X+Y, the empty type 𝟘 and the
+one-element type 𝟙, which will not be needed here.
 
-And we have the empty type 𝟘 and the one-element type 𝟙.
 
 * Quantifiers and logic
   ---------------------
@@ -113,6 +109,10 @@ given by the function-space construction →, conjunction by the binary
 cartesian product ×, and disjunction by the binary disjoint sum + (or
 by a variation ∨ that occurs in univalent type theory, again not
 needed here).
+
+The elements of a type correspond to proofs, and instead of saying
+that a type A has a given element, it is common practice to say that A
+holds, when A is interpreted as a proposition.
 
 * The identity type
   -----------------
@@ -152,7 +152,7 @@ fairly under-specified. It is consistent that it is always a
 subsingleton, which is known as the K axiom for the type X, in the
 following sense:
 
-   K(X) = Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
+   K(X) := Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
 
 The second identity type is that of the type Id(x,y). This is possible
 because any type has an identity type, including the identity type
@@ -161,13 +161,14 @@ is the basis for univalent mathematics (but this is not discussed
 here, as it is not needed in order to construct the univalence type).
 
 On the other hand, the univalence axiom provides a means of
-constructing elements other than refl(x), at least for some types.
-It will be the case than for some other types X, even in the
-presence of univalence, K(X) "holds", meaning that we can construct an
-element of it. Such types are called sets. The K axiom says that all
-types are sets. The univalence axiom says that some types are not sets
-(then they may be 1-groupoids, 2-groupoids, ..., and even ∞-groupoids,
-but we will not address this aspect of univalent mathematics here).
+constructing elements other than refl(x), at least for some types.  It
+will be the case than for some other types X, even in the presence of
+univalence, K(X) "holds", meaning that we can construct an element of
+it. Such types are called sets. The K axiom says that all types are
+sets. The univalence axiom implies that some types are not sets (then
+they may be 1-groupoids, 2-groupoids, ..., and even ∞-groupoids, but
+we will not address this important aspect of univalent mathematics
+here).
 
 * Universes
   ---------
@@ -176,10 +177,13 @@ Our final ingredient is a "large" type of "small" types, called a
 universe. It is common to assume a tower of universes U₀, U₁, U₂,
 ... of "larger and larger" types, with
 
-   U₀ : U₁,  U₁ : U₂,  U₂ : U₃, ...
+   U₀ : U₁,
+   U₁ : U₂,
+   U₂ : U₃,
+   ⋮
 
-It is sometimes assumed that these universes are cumulative, but we
-will not assume (or reject) this.
+(It is sometimes assumed that these universes are cummulative in a
+certain sense, but we will not assume (or reject) this.)
 
 The letters U, V, W range over universes, the successor of a universe
 U is written U ′, and the first universe after the universes U and V
@@ -191,13 +195,13 @@ considered to be a function A:X→V for some universe V.
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
 
- Grp = Σ(G:U), isSet(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯ 
+ Grp := Σ(G:U), isSet(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯ 
 
-Here isSet(G)=Π(x,y:G),Id(x,y), as above. With univalence, G itself
+Here isSet(G):=Π(x,y:G),Id(x,y), as above. With univalence, G itself
 will not be a set, but a 1-gropoid instead, namely a type whose
-identity types are all sets. Moreover, if U is univalent, then for
-A,B:Grp, the identity type Id(A,B) can be shown to be in bijection
-with the group isomorphisms of A and B.
+identity types are all sets. Moreover, if U satisfies the univalence
+axiom, then for A,B:Grp, the identity type Id(A,B) can be shown to be
+in bijection with the group isomorphisms of A and B.
 
 * Univalence
   ----------
@@ -208,32 +212,32 @@ takes a number of steps to define the univalence type.
 We say that a type X is a singleton if we have an element c with
 Id(c,x) for all x:X. In Curry-Howard logic, this is
 
-    isSingleton(X) = Σ(c:X), Π(x:X), Id(c,x).
+    isSingleton(X) := Σ(c:X), Π(x:X), Id(c,x).
 
 (Alternative terminology: X is contractible.)
 
 For a function f:X→Y and an element y:Y, its fiber is the type of
 points x:X that are mapped to y:
 
-    f⁻¹(y) = Σ(x:X),Id(f(x),y)
+    f⁻¹(y) := Σ(x:X),Id(f(x),y)
 
 The function f is called an equivalence if its is fibers are all
 singletons:
 
-    isEquiv(f) = Π(y:Y), isSingleton(f⁻¹(y)).
+    isEquiv(f) := Π(y:Y), isSingleton(f⁻¹(y)).
 
 The type of equivalences from X:U to Y:U is
 
-    Eq(X,Y) = Σ(f:X→Y), isEquiv(f).
+    Eq(X,Y) := Σ(f:X→Y), isEquiv(f).
 
 Given x:X, we have the singleton type consisting of the elements y:Y
 with Id(y,x):
 
-   singletonType(x) = Σ(y:X), Id(y,x).
+   singletonType(x) := Σ(y:X), Id(y,x).
 
 We also have the element singleton(x) of this type:
 
-   singleton(x) = (x , refl(x)).
+   singleton(x) := (x, refl(x)).
 
 We now need to *prove* that singleton types are singletons:
 
@@ -267,7 +271,7 @@ singletons:
 
 Now, for any type X, its identity function Id_X, defined by
 
-  id(x) = x,
+  id(x) := x,
 
 is an equivalence. This is because the fiber id⁻¹(x) is simply the
 singleton type defined above, which we proved to be a singleton. We
@@ -296,6 +300,11 @@ Finally, we say that the universe U is univalent if the map
 IdToEq(X,Y) is itself an equivalence:
 
   isUnivalent(U) := Π(X,Y:U), isEquiv(IdToEq(X,Y)).
+
+The type isUnivalent(U) may or may not have an inhabitant. The
+univalence axiom says that it does. Without the univalence axiom (or
+some other axiom such as the assertion that K(U) has an inhabitant),
+the inhabitedness of the type isUnivalent(U) is undecided.
 
 * Notes
   -----
@@ -348,9 +357,9 @@ IdToEq(X,Y) is itself an equivalence:
     "proto-univalent" in the sense that it cannot distinguish concrete
     isomorphic types such as ℕ and ℕ×ℕ. This is because, being
     isomorphic, they are equivalent. But then univalence gives
-    Id(ℕ,ℕ×ℕ). And if we have P(ℕ) then we get, using J, also P(ℕ×ℕ),
-    and vice-versa. (Exercise! You have understood type theory if you
-    can solve this exercise.)
+    Id(ℕ,ℕ×ℕ). And if we have P(ℕ) for a given "property" P:U→U, then
+    we get, using J, also P(ℕ×ℕ), and vice-versa. (Exercise. You have
+    understood type theory if you can solve this exercise.)
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
@@ -362,7 +371,8 @@ IdToEq(X,Y) is itself an equivalence:
 
     What the consistency of the univalence type says is that one
     possible understanding of the identity type Id(X,Y) for X,Y:U is
-    as precisely the type Eq(X,Y) of equivalences. Without univalence,
+    as precisely the type Eq(X,Y) of equivalences, in the sense of
+    being in one-to-one correspondence with it. Without univalence,
     the nature of the identity type of the universe in MLTT is fairly
     under-specified. It is a remarkable property of MLTT that it is
     consistent with this interpretation of the identity type of the
@@ -382,7 +392,17 @@ We now give a symbolic rendering of the above construction of the
 univalence type, in Agda notation. (Agda documentation is at
 http://wiki.portal.chalmers.se/agda/pmwiki.php).
 
+The fragment of Agda used here amounts to the the subset of MLTT with
+Π,Σ,Id and a tower of universes discussed above. By default, Agda has
+the K axiom, which, as discussed above, contradicts univalence, and
+hence we disable it. Inductive definitions in Agda are given with the
+keyword "data". Unlike Coq, Agda doesn't derive the induction
+principles, and one has to do this manually, as we do in the
+definition of J.
+
 \begin{code}
+
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UnivalenceFromScratch where
 
