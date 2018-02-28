@@ -258,7 +258,7 @@ With this we get a function
 
 (Notice the reversal of y and x.)
 
-With this, we can define a function
+With this, we can in turn define a function
 
   g : Π(x:X), Π(σ:singletonType(x)), Id(singleton(x), σ)
   g(x,(y,p)) := φ(y,x,p).
@@ -354,14 +354,13 @@ the inhabitedness of the type isUnivalent(U) is undecided.
 
  3. The fact (again proved by Voevodsky, with the model of simplicial
     sets) that MLTT is consistent with the univalence axiom shows
-    that, before we postulate univalence, that MLTT is
-    "proto-univalent" in the sense that it cannot distinguish concrete
-    isomorphic types such as ℕ and ℕ×ℕ. This is because, being
-    isomorphic, they are equivalent. But then univalence gives
-    Id(ℕ,ℕ×ℕ). And if we have P(ℕ) for a given "property" P:U→U of
-    types, then we get, using J, also P(ℕ×ℕ), and
-    vice-versa. (Exercise. You have understood type theory if you can
-    solve this exercise.)
+    that, before we postulate univalence, MLTT is "proto-univalent" in
+    the sense that it cannot distinguish concrete isomorphic types
+    such as ℕ and ℕ×ℕ. This is because, being isomorphic, they are
+    equivalent. But then univalence gives Id(ℕ,ℕ×ℕ). And if we have
+    P(ℕ) for a given "property" P:U→U of types, then we get, using J,
+    also P(ℕ×ℕ), and vice-versa. (Exercise. You have understood type
+    theory if you can solve this exercise.)
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
@@ -371,7 +370,7 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     direct, and has much more to it than the (in our opinion,
     misleading) slogan "isomorphic types are equal".
 
-    What the consistency of the univalence type says is that one
+    What the consistency of the univalence axiom says is that one
     possible understanding of the identity type Id(X,Y) for X,Y:U is
     as precisely the type Eq(X,Y) of equivalences, in the sense of
     being in one-to-one correspondence with it. Without univalence,
