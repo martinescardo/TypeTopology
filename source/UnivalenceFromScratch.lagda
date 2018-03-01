@@ -457,7 +457,7 @@ singletonType x = Σ \y → Id y x
 singleton : {U : Universe} {X : U ̇} (x : X) → singletonType x
 singleton x = (x , refl x)
 
-singletonTypesAreSingletons : ∀ {U} {X : U ̇} (x : X) → isSingleton(singletonType x)
+singletonTypesAreSingletons : {U : Universe} {X : U ̇} (x : X) → isSingleton(singletonType x)
 singletonTypesAreSingletons {U} {X} = h
  where
   A : (y x : X) → Id y x → U ̇
@@ -471,14 +471,14 @@ singletonTypesAreSingletons {U} {X} = h
   h : (x : X) → Σ \(c : singletonType x) → (σ : singletonType x) → Id c σ
   h x = (singleton x , g x)
 
-id : ∀ {U} (X : U ̇) → X → X
+id : {U : Universe} (X : U ̇) → X → X
 id X x = x
 
 idIsEquiv : {U : Universe} (X : U ̇) → isEquiv(id X)
 idIsEquiv X = g
  where
   g : (x : X) → isSingleton (fiber (id X) x)
-  g x = singletonTypesAreSingletons x
+  g = singletonTypesAreSingletons
 
 IdToEq : {U : Universe} (X Y : U ̇) → Id X Y → Eq X Y
 IdToEq {U} = J A f
