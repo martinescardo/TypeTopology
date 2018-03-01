@@ -197,7 +197,7 @@ universe. It is common to assume a tower of universes U₀, U₁, U₂,
    ⋮
 
 (It is sometimes assumed that these universes are cumulative in a
-certain sense, but we will not nned to assume (or reject) this.)
+certain sense, but we will not need to assume (or reject) this.)
 
 When we have universes, a type family A indexed by a type X:U may be
 considered to be a function A:X→V for some universe V.
@@ -358,9 +358,10 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     consistent axiom, it is crucial to use the type isEquiv(f). It was
     Voevodsky's insight that not only a subsingleton version of Iso(f)
     is needed, but also how to construct it. The construction of
-    isEquiv(f) is very simple, but very difficult to arrive at. It is
-    motivated by homotopical models of the theory. But the univalence
-    axiom can be understood without reference to homotopy theory.
+    isEquiv(f) is very simple and elegant, but very difficult to
+    arrive at. It is motivated by homotopical models of the
+    theory. But the univalence axiom can be understood without
+    reference to homotopy theory.
 
  3. The fact (again proved by Voevodsky, with the model of simplicial
     sets) that MLTT is consistent with the univalence axiom shows
@@ -391,7 +392,8 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     the nature of the identity type of the universe in MLTT is fairly
     under-specified. It is a remarkable property of MLTT that it is
     consistent with this understanding of the identity type of the
-    universe, discovered by Vladimir Voevodsky.
+    universe, discovered by Vladimir Voevodsky (and foreseen by Martin
+    Hofmann and Thomas Streicher (1996) in a particular case).
 
 3. Formal construction of the univalence type in Agda
    --------------------------------------------------
