@@ -207,11 +207,12 @@ such as the type of groups, whose definition starts like this:
 
  Grp := Σ(G:U), isSet(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯ 
 
-Here isSet(G):=Π(x,y:G),Π(p,q),Id(p,q), as above. With univalence, Grp
-itself will not be a set, but a 1-groupoid instead, namely a type whose
-identity types are all sets. Moreover, if U satisfies the univalence
-axiom, then for A,B:Grp, the identity type Id(A,B) can be shown to be
-in bijection with the group isomorphisms of A and B.
+Here isSet(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
+univalence, Grp itself will not be a set, but a 1-groupoid instead,
+namely a type whose identity types are all sets. Moreover, if U
+satisfies the univalence axiom, then for A,B:Grp, the identity type
+Id(A,B) can be shown to be in bijection with the group isomorphisms of
+A and B.
 
 * Univalence
   ----------
