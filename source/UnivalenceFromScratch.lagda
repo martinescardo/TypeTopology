@@ -367,15 +367,12 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     sets) that MLTT is consistent with the univalence axiom shows
     that, before we postulate univalence, MLTT is "proto-univalent" in
     the sense that it cannot distinguish concrete isomorphic types
-    such as ℕ and ℕ×ℕ. This is because, being isomorphic, they are
-    equivalent. But then univalence gives Id(ℕ,ℕ×ℕ). And if we have
-    P(ℕ) for a given "property" P:U→U of types, then we get, using J,
-    also P(ℕ×ℕ), and vice-versa. (Exercise: get P(ℕ×ℕ) from P(ℕ) as
-    suggested, and vice-versa. You have understood type theory if you
-    can solve this exercise.)
-
-    Thus, we can't find a concrete P:U→U with P(ℕ) inhabited and
-    P(ℕ×ℕ) empty, or the other way round.
+    such as X:=ℕ and Y:=ℕ×ℕ by a property P:U→U such that P(X) holds
+    but P(Y) doesn't.  This is because, being isomorphic, X and Y are
+    equivalent. But then univalence implies Id(X,Y), which in turn
+    implies P(X)⇔P(Y) using J.  Because univalence is consistent, it
+    follows that for any given concrete P:U→U, it is impossible to
+    prove that P(X) holds but P(Y) doesn't.
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
