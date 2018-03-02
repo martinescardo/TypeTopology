@@ -241,7 +241,6 @@ $\Id(c,x)$ for all $x:X$. In Curry-Howard logic, this is
 \[
     \isSingleton(X) := \Sigma(c:X), \Pi(x:X), \Id(c,x).
 \]
-
 For a function $f:X\to Y$ and an element $y:Y$, its fiber is the type of
 points $x:X$ that are mapped to (a point identified with) $y$:
 \[
@@ -330,8 +329,8 @@ $\IdToEq(X,Y)$ is itself an equivalence:
 \subsection{The univalence axiom}
 
 The type $\isUnivalent(\U)$ may or may not have an inhabitant. The
-univalence axiom says that it does. Without the univalence axiom (or
-some other axiom such as the assertion that $\K(\U)$ has an inhabitant),
+univalence axiom says that it does. Without the univalence axiom, or
+some other axiom such as the assertion that $\K(\U)$ has an inhabitant,
 the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
 
 \subsection{Notes}
@@ -384,7 +383,7 @@ the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
 
 \item The fact (again proved by Voevodsky, with the model of simplicial
     sets) that MLTT is consistent with the univalence axiom shows
-    that, before we postulate univalence, MLTT is "proto-univalent" in
+    that, before we postulate univalence, MLTT is ``proto-univalent'' in
     the sense that it cannot distinguish concrete isomorphic types
     such as $X:=\N$ and $Y:=\N\times \N$ by a property $P:\U\to \U$ such that $P(X)$ holds
     but $P(Y)$ doesn't.  This is because, being isomorphic, $X$ and $Y$ are
