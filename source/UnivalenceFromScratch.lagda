@@ -328,9 +328,9 @@ the inhabitedness of the type isUnivalent(U) is undecided.
  0. The minimal Martin-Löf type theory needed to formulate univalence
     has
 
-      Π, Σ, Id, U.
+      Π, Σ, Id, U, Ú.
 
-    One universe suffices (the one which univalence talks about).
+    Two universes U:Ú suffice, where univalence talks about U.
   
  1. It can be shown, by a very complicated and interesting argument,
     that
