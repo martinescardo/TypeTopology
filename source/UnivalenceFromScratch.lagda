@@ -253,9 +253,9 @@ identified with x:
 
    singletonType(x) := Σ(y:X), Id(y,x).
 
-We also have the element singleton(x) of this type:
+We also have the element η(x) of this type:
 
-   singleton(x) := (x, refl(x)).
+   η(x) := (x, refl(x)).
 
 We now need to *prove* that singleton types are singletons:
 
@@ -263,29 +263,29 @@ We now need to *prove* that singleton types are singletons:
 
 In order to do that, we use J with the type family
 
-   A(y,x,p) := Id(singleton(x), (y,p)),
+   A(y,x,p) := Id(η(x), (y,p)),
 
 and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
-   f(x) := refl(singleton(x)).
+   f(x) := refl(η(x)).
 
 With this we get a function
 
-   φ : Π(y,x:X), Π(p:Id(y,x)), Id(singleton(x), (y,p))
+   φ : Π(y,x:X), Π(p:Id(y,x)), Id(η(x), (y,p))
    φ := J(A,f).
 
 (Notice the reversal of y and x.)
 
 With this, we can in turn define a function
 
-   g : Π(x:X), Π(σ:singletonType(x)), Id(singleton(x), σ)
+   g : Π(x:X), Π(σ:singletonType(x)), Id(η(x), σ)
    g(x,(y,p)) := φ(y,x,p).
 
 Finally, using g we get our desired result, that singleton types are
 singletons:
 
    h : Π(x:X), Σ(c:singletonType(x)), Π(σ:singletonType(x)), Id(c,σ)
-   h(x) := (singleton(x) , g(x)).
+   h(x) := (η(x) , g(x)).
 
 Now, for any type X, its identity function Id_X, defined by
 
@@ -297,6 +297,9 @@ need to name this function, because it is needed in the formulation of
 the univalence of U:
 
    idIsEquiv : Π(X:U), isEquiv(id_X).
+
+(The identity function id_X should not be confused with the identity
+type Id_X.)
 
 Now we use J a second time to define a function
 
@@ -464,22 +467,22 @@ Eq X Y = Σ \(f : X → Y) → isEquiv f
 singletonType : {U : Universe} {X : U ̇} → X → U ̇
 singletonType x = Σ \y → Id y x
 
-singleton : {U : Universe} {X : U ̇} (x : X) → singletonType x
-singleton x = (x , refl x)
+η : {U : Universe} {X : U ̇} (x : X) → singletonType x
+η x = (x , refl x)
 
 singletonTypesAreSingletons : {U : Universe} {X : U ̇} (x : X) → isSingleton(singletonType x)
 singletonTypesAreSingletons {U} {X} = h
  where
   A : (y x : X) → Id y x → U ̇
-  A y x p = Id (singleton x) (y , p)
+  A y x p = Id (η x) (y , p)
   f : (x : X) → A x x (refl x)
-  f x = refl (singleton x)
-  φ : (y x : X) (p : Id y x) → Id (singleton x) (y , p)
+  f x = refl (η x)
+  φ : (y x : X) (p : Id y x) → Id (η x) (y , p)
   φ = J A f
-  g : (x : X) (σ : singletonType x) → Id (singleton x) σ
+  g : (x : X) (σ : singletonType x) → Id (η x) σ
   g x (y , p) = φ y x p
   h : (x : X) → Σ \(c : singletonType x) → (σ : singletonType x) → Id c σ
-  h x = (singleton x , g x)
+  h x = (η x , g x)
 
 id : {U : Universe} (X : U ̇) → X → X
 id X x = x
