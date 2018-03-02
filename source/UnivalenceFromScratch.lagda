@@ -36,7 +36,7 @@ This is because
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
 although universes have of course been considered in both. Of course,
 we can create *models* of the identity type and univalence in these
-theories. But these notes we try to understandt the concept of
+theories. But in these notes we try to understandt the concept of
 identity type independently of any such models, as in the original
 Martin-Löf type theory.
 
@@ -87,7 +87,8 @@ incorrect, rather than false:
     17 : ℕ × ℕ (nonsense),
    (13,17) : ℕ (nonsense).
 
-This is no different than in the internal language of a topos.
+This is no different from the situation in the internal language of a
+topos.
 
 * Products and sums of type families
   ----------------------------------
@@ -121,13 +122,16 @@ one-element type 𝟙, which will not be needed here.
 There is no underlying logic in MLTT. Propositions are types, and Π
 and Σ play the role of universal and existential quantifiers, via the
 so-called Curry-Howard interpretation of logic. As for the
-connectives, implication is given by the function-space construction
-→, conjunction by the binary cartesian product ×, and disjunction by
-the binary disjoint sum +.
+connectives, implication is given by the function-type construction →,
+conjunction by the binary cartesian product ×, and disjunction by the
+binary disjoint sum +.
 
 The elements of a type correspond to proofs, and instead of saying
 that a type A has a given element, it is common practice to say that A
-holds, when the type A is understood as a proposition.
+holds, when the type A is understood as a proposition. In this case,
+x:A is read as saying that x is a proof of A. But this is just a
+linguistic device, which is (deliberately) not reflected in the
+formalism.
 
 * The identity type
   -----------------
@@ -170,11 +174,12 @@ which is known as the K axiom for the type X, in the following sense:
 
    K(X) := Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
 
-The second identity type is that of the type Id(x,y). This is possible
-because any type has an identity type, including the identity type
-itself, and the identity type of the identity type, and so on, which
-is the basis for univalent mathematics (but this is not discussed
-here, as it is not needed in order to construct the univalence type).
+The second identity type Id(p,q) is that of the type Id(x,y). This is
+possible because any type has an identity type, including the identity
+type itself, and the identity type of the identity type, and so on,
+which is the basis for univalent mathematics (but this is not
+discussed here, as it is not needed in order to construct the
+univalence type).
 
 On the other hand, the univalence axiom provides a means of
 constructing elements other than refl(x), at least for some types.  It
@@ -258,61 +263,61 @@ We now need to *prove* that singleton types are singletons:
 
 In order to do that, we use J with the type family
 
-  A(y,x,p) := Id(singleton(x), (y,p)),
+   A(y,x,p) := Id(singleton(x), (y,p)),
 
 and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
-  f(x) := refl(singleton(x)).
+   f(x) := refl(singleton(x)).
 
 With this we get a function
 
-  φ : Π(y,x:X), Π(p:Id(y,x)), Id(singleton(x), (y,p))
-  φ := J(A,f).
+   φ : Π(y,x:X), Π(p:Id(y,x)), Id(singleton(x), (y,p))
+   φ := J(A,f).
 
 (Notice the reversal of y and x.)
 
 With this, we can in turn define a function
 
-  g : Π(x:X), Π(σ:singletonType(x)), Id(singleton(x), σ)
-  g(x,(y,p)) := φ(y,x,p).
+   g : Π(x:X), Π(σ:singletonType(x)), Id(singleton(x), σ)
+   g(x,(y,p)) := φ(y,x,p).
 
 Finally, using g we get our desired result, that singleton types are
 singletons:
 
-  h : Π(x:X), Σ(c:singletonType(x)), Π(σ:singletonType(x)), Id(c,σ)
-  h(x) := (singleton(x) , g(x)).
+   h : Π(x:X), Σ(c:singletonType(x)), Π(σ:singletonType(x)), Id(c,σ)
+   h(x) := (singleton(x) , g(x)).
 
 Now, for any type X, its identity function Id_X, defined by
 
-  id(x) := x,
+   id(x) := x,
 
 is an equivalence. This is because the fiber id⁻¹(x) is simply the
 singleton type defined above, which we proved to be a singleton. We
 need to name this function, because it is needed in the formulation of
 the univalence of U:
 
-  idIsEquiv : Π(X:U), isEquiv(id_X).
+   idIsEquiv : Π(X:U), isEquiv(id_X).
 
 Now we use J a second time to define a function
 
-  IdToEq : Π(X,Y:U), Id(X,Y) → Eq(X,Y).
+   IdToEq : Π(X,Y:U), Id(X,Y) → Eq(X,Y).
 
 For X,Y:U and p:Id(X,Y), we set
 
-  A(X,Y,p) := Eq(X,Y)
+   A(X,Y,p) := Eq(X,Y)
   
 and
 
-  f(X) := (id_X , idIsEquiv(X)),
+   f(X) := (id_X , idIsEquiv(X)),
 
 and
 
-  IdToEq := J(A,f).
+   IdToEq := J(A,f).
 
 Finally, we say that the universe U is univalent if the map
 IdToEq(X,Y) is itself an equivalence:
 
-  isUnivalent(U) := Π(X,Y:U), isEquiv(IdToEq(X,Y)).
+   isUnivalent(U) := Π(X,Y:U), isEquiv(IdToEq(X,Y)).
 
 * The univalence axiom
   --------------------
