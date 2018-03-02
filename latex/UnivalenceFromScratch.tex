@@ -44,7 +44,7 @@
 
 \section{Introduction}
 
-The univalence axiom~\cite{hottbook,grayson} is not true or false
+The univalence axiom~\cite{unimath,hottbook,grayson} is not true or false
 in, say, ZFC or the internal language of an elementary topos. It
 cannot even be formulated. As the saying goes, it is not even wrong.
 %
@@ -58,7 +58,7 @@ as a \emph{native} concept. Of course, we can create \emph{models} of
 the identity type in these theories, which will make univalence hold
 or fail. But in these notes we try to understand the primitive concept
 of identity type, directly and independently of any such particular
-model, in the original (intensional) Martin-L\"of type theory
+model, as in the original (intensional) Martin-L\"of type theory
 (1979)~\cite{MR682410}, and the univalence axiom for it. In
 particular, we don't use the equality sign ``$=$'' to denote the
 identity type $\Id$, or think of it as a path space.
@@ -93,16 +93,16 @@ that is true or false (unlike a membership relation $x \in X$ in
 ZFC). For example, if $\N$ is the type of natural numbers, we may
 write
 \begin{gather*}  
-    17 : \N, \\
-   (13,17) : \N \times  \N.
+    0 : \N, \\
+   (0,0) : \N \times  \N.
 \end{gather*}
 However, the following statements are nonsensical and syntactically
 incorrect, rather than false:
 \begin{eqnarray*}
-    17 : \N \times  \N & \text{(nonsense)}, \\
-   (13,17) : \N & \text{(nonsense)}.  
+    0 : \N \times  \N & \text{(nonsense)}, \\
+   (0,0) : \N & \text{(nonsense)}.  
 \end{eqnarray*}
-This is no different from the situation in the internal language of a
+This is no difference from the situation in the internal language of a
 topos.
 
 \subsection{Products and sums of type families}
