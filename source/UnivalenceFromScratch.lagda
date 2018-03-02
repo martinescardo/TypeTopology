@@ -290,7 +290,7 @@ singletons:
    h : Π(x:X), Σ(c:singletonType(x)), Π(σ:singletonType(x)), Id(c,σ)
    h(x) := (η(x),g(x)).
 
-Now, for any type X, its identity function Id_X, defined by
+Now, for any type X, its identity function id_X, defined by
 
    id(x) := x,
 
