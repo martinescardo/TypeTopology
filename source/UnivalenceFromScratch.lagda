@@ -40,7 +40,8 @@ univalence hold or fail. But in these notes we try to understand the
 primitive concept of identity type, and the univalence axiom, directly
 and independently of any such particular model, as in the original
 Martin-Löf type theory. In particular, we refuse to use the equality
-sign "=" to denote the identity type Id.
+sign "=" to denote the identity type Id, or to speak of it as a path
+space.
 
 The underlying idea of these notes is that they should be as concise
 as possible (and not more). They are not meant to be an Encyclopedia
