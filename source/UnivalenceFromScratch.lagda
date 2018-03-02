@@ -36,7 +36,7 @@ This is because
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
 although universes have of course been considered in both. Of course,
 we can create *models* of the identity type and univalence in these
-theories. But in these notes we try to understandt the concept of
+theories. But in these notes we try to understand the concept of
 identity type independently of any such models, as in the original
 Martin-Löf type theory.
 
