@@ -33,12 +33,12 @@ This is because
    univalence is a property of the *identity type*
    of a universe of types.
 
-Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
-although universes have of course been considered in both. Of course,
-we can create *models* of the identity type and univalence in these
-theories. But in these notes we try to understand the concept of
-identity type independently of any such models, as in the original
-Martin-Löf type theory.
+Nothing like Martin-Löf's identity type occurs in ZFC or topos logic
+as a *primitive* concept like in MLTT. Of course, we can create
+*models* of the identity type and univalence in these theories. But in
+these notes we try to understand the concept of identity type
+independently of any such models, as in the original Martin-Löf type
+theory.
 
 The underlying idea of these notes is that they should be as concise
 as possible (and not more). They are not meant to be an Encyclopedia
