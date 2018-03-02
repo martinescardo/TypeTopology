@@ -36,8 +36,9 @@ This is because
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
 although universes have of course been considered in both. Of course,
 we can create *models* of the identity type and univalence in these
-theories. But these notes discuss the identity type and univalence
-before we consider any model.
+theories. But these notes we try to understandt the concept of
+identity type independently of any such models, as in the original
+Martin-Löf type theory.
 
 The underlying idea of these notes is that they should be as concise
 as possible (and not more). They are not meant to be an Encyclopedia
@@ -85,6 +86,8 @@ incorrect, rather than false:
 
     17 : ℕ × ℕ (nonsense),
    (13,17) : ℕ (nonsense).
+
+This is no different than in the internal language of a topos.
 
 * Products and sums of type families
   ----------------------------------
@@ -150,7 +153,7 @@ indexed by elements x,y:X and p:Id(x,y) and any given function
 
 we have a function 
 
-    J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p),
+    J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p)
 
 such that
 
@@ -159,10 +162,11 @@ such that
 We will see examples of uses of J in the steps leading to the
 construction of the univalence type.
 
-With these requirements, the exact nature of the type Id(x,y) is
-fairly under-specified. It is consistent that it is always a
-subsingleton, which is known as the K axiom for the type X, in the
-following sense:
+Then, in summary, the identity type is given by the data Id,refl,J.
+
+With this, the exact nature of the type Id(x,y) is fairly
+under-specified. It is consistent that it is always a subsingleton,
+which is known as the K axiom for the type X, in the following sense:
 
    K(X) := Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
 
@@ -309,6 +313,9 @@ Finally, we say that the universe U is univalent if the map
 IdToEq(X,Y) is itself an equivalence:
 
   isUnivalent(U) := Π(X,Y:U), isEquiv(IdToEq(X,Y)).
+
+* The univalence axiom
+  --------------------
 
 The type isUnivalent(U) may or may not have an inhabitant. The
 univalence axiom says that it does. Without the univalence axiom (or
