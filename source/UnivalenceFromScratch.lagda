@@ -278,7 +278,7 @@ With this we get a function
 
 With this, we can in turn define a function
 
-   g : Π(x:X), Π(σ:singletonType(x)), Id(η(x), σ)
+   g : Π(x:X), Π(σ:singletonType(x)), Id(η(x),σ)
    g(x,(y,p)) := φ(y,x,p).
 
 Finally, using g we get our desired result, that singleton types are
@@ -359,7 +359,7 @@ the inhabitedness of the type isUnivalent(U) is undecided.
 
  2. For a function f:X→Y, consider the type
 
-     Iso(f) := Σ(g:Y→X), (Π(x:X), Id(g(f(x)), x)) × (Π(y:Y), Id(f(g(y)), y)).
+     Iso(f) := Σ(g:Y→X), (Π(x:X), Id(g(f(x)),x)) × (Π(y:Y), Id(f(g(y)),y)).
 
     We have functions r:Iso(f)→isEquiv(f) and
     s:isEquiv(f)→Iso(f). However, the type isEquiv(f) is always a
