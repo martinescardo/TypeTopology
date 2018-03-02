@@ -13,6 +13,7 @@
 \newcommand{\refl}{\operatorname{refl}}
 \newcommand{\K}{\operatorname{K}}
 \newcommand{\U}{\operatorname{\mathcal{U}}}
+\newcommand{\V}{\operatorname{\mathcal{V}}}
 \newcommand{\isSet}{\operatorname{isSet}}
 \newcommand{\Grp}{\operatorname{Grp}}
 \newcommand{\isSingleton}{\operatorname{isSingleton}}
@@ -53,30 +54,29 @@ This is because
    of a universe of types.
 \end{quote}
 Nothing like Martin-L\"of's identity type occurs in ZFC or topos logic
-as a \emph{native} concept, like in MLTT. Of course, we can create
-\emph{models} of the identity type and univalence in these theories,
-which will make univalence hold or fail. But in these notes we try to
-understand the primitive concept of identity type, and the univalence
-axiom, directly and independently of any such particular model, as in
-the original (intensional) Martin-L\"of type theory
-(1979)~\cite{MR682410}. In particular, we don't use the equality sign
-``$=$'' to denote the identity type $\Id$, or think of it as a path
-space.
+as a \emph{native} concept. Of course, we can create \emph{models} of
+the identity type in these theories, which will make univalence hold
+or fail. But in these notes we try to understand the primitive concept
+of identity type, directly and independently of any such particular
+model, in the original (intensional) Martin-L\"of type theory
+(1979)~\cite{MR682410}, and the univalence axiom for it. In
+particular, we don't use the equality sign ``$=$'' to denote the
+identity type $\Id$, or think of it as a path space.
 
 
 Univalence is a type, and the univalence axiom says that this type has
 some inhabitant. It takes a number of steps to construct this type, in
-addition to subtle decisions (e.g. to work with equivalences rather
+addition to subtle decisions (e.g.\ to work with equivalences rather
 than isomorphisms, as discussed below).
 
 We first need to briefly introduce Martin-L\"of type theory (MLTT). We
-will not give a course in MLTT. Instead, we will mention which
-constructs of MLTT are needed to give a complete definition of the
-univalence type. This will be enough to illustrate the important fact
-that in order to understand univalence we first need to understand
-Martin-L\"of type theory well.
+will not give a full definition of MLTT. Instead, we will mention
+which constructs of MLTT are needed to give a complete definition of
+the univalence type. This will be enough to illustrate the important
+fact that in order to understand univalence we first need to
+understand Martin-L\"of type theory well.
 
-\section{Martin-L\"of type theory}
+\section{Martin-L\"of type theory, briefly}
 
 \subsection{Types and their elements}
 
@@ -88,14 +88,14 @@ constructed, we get freshly new elements for it. We write
 \[
     x:X
 \]
-to declare that the element $x$ has type $X$. This is not something that
-is true or false (like a membership relation $x \in X$ in ZFC). For
-example, if $\N$  is the type of natural numbers, we may write
+to declare that the element $x$ has type $X$. This is not something
+that is true or false (unlike a membership relation $x \in X$ in
+ZFC). For example, if $\N$ is the type of natural numbers, we may
+write
 \begin{gather*}  
     17 : \N, \\
-   (13,17) : \N \times  \N. \\
+   (13,17) : \N \times  \N.
 \end{gather*}
-
 However, the following statements are nonsensical and syntactically
 incorrect, rather than false:
 \begin{eqnarray*}
@@ -215,7 +215,7 @@ $ of ``larger and larger'' types, with
 \end{gather*}
 
 When we have universes, a type family $A$ indexed by a type $X:\U$ may be
-considered to be a function $A:X\to V$ for some universe $V$.
+considered to be a function $A:X\to \V$ for some universe $\V$.
 %
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
@@ -296,7 +296,7 @@ singletons:
    h(x) & := & (\eta(x),g(x)).
 \end{eqnarray*}
 Now, for any type $X$, its identity function $\id_X$, defined by
-$ id(x) := x$, is an equivalence. This is because the fiber
+$\id(x) := x$, is an equivalence. This is because the fiber
 $\id^{-1}(x)$ is simply the singleton type defined above, which we
 proved to be a singleton. We need to name this function, 
 to formulate of the univalence of $\U$:
@@ -314,7 +314,7 @@ For $X,Y:\U$ and $p:\Id(X,Y)$, we set
 \]  
 and
 \[
-   f(X) := (\id_X , \idIsEquiv(X)),
+   f(X) := (\id_X , \idIsEquiv(X))
 \]
 and
 \[
@@ -372,14 +372,14 @@ the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
     retraction with section $s$.
 
     Moreover, the univalence type formulated as above, but using
-    $\Iso(f)$ rather than $\isEquiv(f)$ is provably empty. So, to have a
-    consistent axiom, it is crucial to use the type $\isEquiv(f)$. It was
-    Voevodsky's insight that not only a subsingleton version of $\Iso(f)$
-    is needed, but also how to construct it. The construction of
-    $\isEquiv(f)$ is very simple and elegant, but very difficult to
-    arrive at. It is motivated by homotopical models of the
-    theory. But the univalence axiom can be understood without
-    reference to homotopy theory.
+    $\Iso(f)$ rather than $\isEquiv(f)$, is provably empty. So, to
+    have a consistent axiom, it is crucial to use the type
+    $\isEquiv(f)$. It was Voevodsky's insight not only that a
+    subsingleton version of $\Iso(f)$ is needed, but also how to
+    construct it. The construction of $\isEquiv(f)$ is very simple and
+    elegant, but very difficult to arrive at. It is motivated by
+    homotopical models of the theory. But the univalence axiom can be
+    understood without reference to homotopy theory.
 
 \item The fact (again proved by Voevodsky, with the model of simplicial
     sets) that MLTT is consistent with the univalence axiom shows
@@ -412,6 +412,11 @@ the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
     in a particular case).
   \end{enumerate}
 
+  \section*{Acknowledgements}
+
+  I benefitted from input by Andrej Bauer, Marta Bunge, Thierry
+  Coquand and Mike Shulman on draft versions of these notes.
+  
 \bibliographystyle{plain}
 \bibliography{references}
 
