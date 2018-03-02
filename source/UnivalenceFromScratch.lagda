@@ -495,3 +495,14 @@ isUnivalent U = (X Y : U ̇) → isEquiv(IdToEq X Y)
 
 Thus, we see that even in its concise symbolic form, the formulation
 of univalence is far from direct.
+
+Using projections pr₁ and pr₂ rather than pattern matching on Σ types,
+Agda calculates the following normal form for the term isUnivalent:
+
+λ U → (X Y : Set U) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
+(x : Σ (λ x₁ → Id (f x₁) y₁)) → Id c x))) →
+Σ (λ c → (x : Σ (λ x₁ → Id (J (λ X₁ Y₁ p → Σ (λ f →
+(y₁ : Y₁) → Σ (λ c₁ → (x₂ : Σ (λ x₃ → Id (f x₃) y₁)) → Id c₁ x₂)))
+(λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ , refl x₂) , (λ yp → J (λ y₁ x₃ p →
+Id (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ , refl x₃))
+(pr₁ yp) x₂ (pr₂ yp)))) X Y x₁) y)) → Id c x)
