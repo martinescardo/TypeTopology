@@ -263,7 +263,7 @@ We now need to *prove* that singleton types are singletons:
 
 In order to do that, we use J with the type family
 
-   A(y,x,p) := Id(η(x), (y,p)),
+   A(y,x,p) := Id(η(x),(y,p)),
 
 and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
@@ -271,7 +271,7 @@ and the function f : Π(x:X), A(x,x,refl(x)) defined by
 
 With this we get a function
 
-   φ : Π(y,x:X), Π(p:Id(y,x)), Id(η(x), (y,p))
+   φ : Π(y,x:X), Π(p:Id(y,x)), Id(η(x),(y,p))
    φ := J(A,f).
 
 (Notice the reversal of y and x.)
@@ -285,7 +285,7 @@ Finally, using g we get our desired result, that singleton types are
 singletons:
 
    h : Π(x:X), Σ(c:singletonType(x)), Π(σ:singletonType(x)), Id(c,σ)
-   h(x) := (η(x) , g(x)).
+   h(x) := (η(x),g(x)).
 
 Now, for any type X, its identity function Id_X, defined by
 
