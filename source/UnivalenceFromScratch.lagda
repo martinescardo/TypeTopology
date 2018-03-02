@@ -34,20 +34,18 @@ This is because
    of a universe of types.
 
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic,
-although universes have of course been considered in both.
+although universes have of course been considered in both. Of course,
+we can create *models* of the identity type and univalence in these
+theories. But these notes discuss the identity type and univalence
+before we consider any model.
 
-* Please contribute
-  -----------------
-
-The HoTT/UF community, and more generally the mathematical and logical
-communities, are invited to create issues or propose pull requests to
-improve these notes. However, the underlying idea of these notes is
-that they should be as concise as possible (and not more). They are
-not meant to be an Encyclopedia of Univalence (you may create a fork
-for that).
+The underlying idea of these notes is that they should be as concise
+as possible (and not more). They are not meant to be an Encyclopedia
+of Univalence.
 
 The source code for this file is available at
 https://github.com/martinescardo/TypeTopology/tree/master/source
+Issues and contributions are welcome.
 
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
