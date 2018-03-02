@@ -39,8 +39,8 @@ of the identity type and univalence in these theories, which will make
 univalence hold or fail. But in these notes we try to understand the
 primitive concept of identity type, and the univalence axiom, directly
 and independently of any such particular model, as in the original
-Martin-Löf type theory. In particular, don't use the equality sign "="
-to denote the identity type Id, or think of it as a path space.
+Martin-Löf type theory. In particular, we don't use the equality sign
+"=" to denote the identity type Id, or think of it as a path space.
 
 The underlying idea of these notes is that they should be as concise
 as possible (and not more). They are not meant to be an Encyclopedia
