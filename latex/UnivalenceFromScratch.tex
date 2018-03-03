@@ -107,7 +107,7 @@ topos.
 
 \subsection{Products and sums of type families}
 
-Given a family of types $A(x)$ indexed by elements x of a type X, we can
+Given a family of types $A(x)$ indexed by elements $x$ of a type $X$, we can
 form its product and sum:
 \begin{gather*}
     \Pi(x:X), A(x), \\
@@ -135,7 +135,7 @@ $\Pi$ and $\Sigma$ play the role of universal and existential
 quantifiers, via the so-called Curry-Howard interpretation of
 logic. As for the connectives, implication is given by the
 function-type construction~$\to$, conjunction by the binary cartesian
-product~$\times$ , and disjunction by the binary disjoint sum~$+$, and
+product~$\times$ , disjunction by the binary disjoint sum~$+$, and
 negation by the type of functions into the empty type.
 
 When a type is understood as a proposition, its elements correspond to
@@ -299,7 +299,7 @@ Now, for any type $X$, its identity function $\id_X$, defined by
 $\id(x) := x$, is an equivalence. This is because the fiber
 $\id^{-1}(x)$ is simply the singleton type defined above, which we
 proved to be a singleton. We need to name this function, 
-to formulate of the univalence of $\U$:
+to formulate the univalence of $\U$:
 \[
    \idIsEquiv : \Pi(X:\U), \isEquiv(\id_X).
  \]
