@@ -455,7 +455,7 @@ J : {U V : Universe} {X : U ̇}
   → (A : (x y : X) → Id x y → V ̇)
   → ((x : X) → A x x (refl x))
   → (x y : X) (p : Id x y) → A x y p
-J A f x x (refl x) = f x
+J A f x .x (refl .x) = f x
 
 isSingleton : {U : Universe} → U ̇ → U ̇
 isSingleton X = Σ \(c : X) → (x : X) → Id c x
