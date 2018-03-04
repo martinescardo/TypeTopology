@@ -186,20 +186,21 @@ construction of the univalence type.
 Then, in summary, the identity type is given by the data $\Id,\refl,\J$.
 %
 With this, the exact nature of the type $\Id(x,y)$ is fairly
-under-specified. It is consistent that it is always a subsingleton,
-which is known as the $\K$ axiom for the type $X$, in the following
-sense:
+under-specified. It is consistent that it is always a subsingleton in
+the sense that $K(X)$ holds, where
 \[
    \K(X) := \Pi(x,y:X), \Pi(p,q:\Id(x,y)), \Id(p,q).
 \]
-The $\K$ axiom says that $\K(X)$ holds for every type $X$.  The second
-identity type $\Id(p,q)$ is that of the type $\Id(x,y)$. This is
-possible because any type has an identity type, including the identity
-type itself, and the identity type of the identity type, and so on,
-which is the basis for univalent mathematics (but this is not
-discussed here, as it is not needed in order to construct the
-univalence type). In univalent mathematics, a type that satisfies
-$\K(X)$ is called a set, and so the $\K$ axiom says that all types are
+The second identity type $\Id(p,q)$ is that of the type
+$\Id(x,y)$. This is possible because any type has an identity type,
+including the identity type itself, and the identity type of the
+identity type, and so on, which is the basis for univalent mathematics
+(but this is not discussed here, as it is not needed in order to
+construct the univalence type).
+
+The $\K$ axiom says that $\K(X)$ holds for every type $X$.  In
+univalent mathematics, a type $X$ that satisfies $\K(X)$ is called a
+set, and with this terminology, the $\K$ axiom says that all types are
 sets.
 
 On the other hand, the univalence axiom provides a means of
@@ -297,8 +298,8 @@ With this, we can in turn define a function
    g & : & \Pi(x:X), \Pi(\sigma :\singletonType(x)), \Id(\eta(x),\sigma ) \\
    g(x,(y,p)) & := & \phi(y,x,p).
 \end{eqnarray*}
-Finally, using the function $g$ we get our desired result, that singleton types are
-singletons:
+Finally, using the function $g$, we get our desired result, that
+singleton types are singletons:
 \begin{eqnarray*}
    h & : & \Pi(x:X), \Sigma(c:\singletonType(x)), \Pi(\sigma :\singletonType(x)), \Id(c,\sigma )\\
    h(x) & := & (\eta(x),g(x)).
@@ -306,8 +307,7 @@ singletons:
 Now, for any type $X$, its identity function $\id_X$, defined by
 $\id(x) := x$, is an equivalence. This is because the fiber
 $\id^{-1}(x)$ is simply the singleton type defined above, which we
-proved to be a singleton. We need to name this function, 
-to formulate the univalence of $\U$:
+proved to be a singleton. We need to name this function:
 \[
    \idIsEquiv : \Pi(X:\U), \isEquiv(\id_X).
  \]
@@ -338,8 +338,9 @@ $\IdToEq(X,Y)$ is itself an equivalence:
 
 The type $\isUnivalent(\U)$ may or may not have an inhabitant. The
 univalence axiom says that it does. Without the univalence axiom, or
-some other axiom such as the assertion that $\K(\U)$ has an inhabitant,
-the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
+some other axiom such as the assertion that the type $\K(\U)$ has an
+inhabitant, the inhabitedness of the type $\isUnivalent(\U)$ is
+undecided.
 
 \subsection{Notes}
 

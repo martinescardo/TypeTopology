@@ -1,13 +1,3 @@
-Martin Escardo, 28 February 2018.
-
-    ---------------------------------------------------
-    A self-contained, brief and complete formulation of
-    Voevodsky's Univalence Axiom
-    ---------------------------------------------------
-
-A 9-page verbal explanation is available at
-http://www.cs.bham.ac.uk/~mhe/agda-new/UnivalenceFromScratch.pdf
-
 This file type checks in Agda 2.6.0.
 
 \begin{code}
@@ -88,7 +78,3 @@ isUnivalent : (U : Universe) → U ′ ̇
 isUnivalent U = (X Y : U ̇) → isEquiv(IdToEq X Y)
 
 \end{code}
-
-The univalence axiom for the universe U postulates an inhabitant of
-the type `isUnivalent U`. Alternatively, `isUnivalent U` can be used
-as an explicit hypothesis.
