@@ -22,7 +22,9 @@ scratch,
  
  * then formally in Agda notation for Martin-Löf type theory.
 
-(Search for "UnivalenceFromScratch" to jump to the formal version.)
+(Search for "UnivalenceFromScratch" to jump to the formal version, and use
+http://www.cs.bham.ac.uk/~mhe/agda-new/UnivalenceFromScratch.pdf
+as an alternative to the the text that follows.)
 
 The univalence axiom is not true or false in, say, ZFC or the internal
 language of an elementary topos. It cannot even be formulated. As the
