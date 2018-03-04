@@ -161,9 +161,9 @@ we have a function
 
     J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p)
 
-such that
+with
 
-    J(A,f)(x,x,refl(x)) = f(x).
+    J(A,f)(x,x,refl(x)) := f(x).
 
 We will see examples of uses of J in the steps leading to the
 construction of the univalence type.

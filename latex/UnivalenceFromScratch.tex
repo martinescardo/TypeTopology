@@ -144,6 +144,11 @@ it is common practice to say that $A$ holds. Then a type declaration
 $x:A$ is read as saying that $x$ is a proof of $A$. But this is just a
 linguistic device, which is not reflected in the formalism.
 
+We remark that in univalent mathematics the terminology
+\emph{proposition} is reserved for subsingleton types (types whose
+elements are all identified). The propositions that arise the
+construction of the univalence type are subsingletons.
+
 \subsection{The identity type}
 
 Given a type $X$ and elements $x,y:X$, we have the identity type
@@ -169,9 +174,9 @@ we have a function
 \[
     \J(A,f) : \Pi(x,y:X), \Pi(p:\Id(x,y)), A(x,y,p)
 \]
-such that
+with
 \[
-    \J(A,f)(x,x,\refl(x)) = f(x).
+    \J(A,f)(x,x,\refl(x)) := f(x).
 \]
 We will see examples of uses of $\J$ in the steps leading to the
 construction of the univalence type.
@@ -185,22 +190,23 @@ sense:
 \[
    \K(X) := \Pi(x,y:X), \Pi(p,q:\Id(x,y)), \Id(p,q).
 \]
-The second identity type $\Id(p,q)$ is that of the type $\Id(x,y)$. This is
+The $\K$ axiom says that $\K(X)$ holds for every type $X$.  The second
+identity type $\Id(p,q)$ is that of the type $\Id(x,y)$. This is
 possible because any type has an identity type, including the identity
 type itself, and the identity type of the identity type, and so on,
 which is the basis for univalent mathematics (but this is not
 discussed here, as it is not needed in order to construct the
-univalence type).
+univalence type). In univalent mathematics, a type that satisfies
+$\K(X)$ is called a set, and so the $\K$ axiom says that all types are
+sets.
 
 On the other hand, the univalence axiom provides a means of
-constructing elements other than $\refl(x)$, at least for some types.
-It will be the case that for some other types $X$, even in the
-presence of univalence, $\K(X)$ holds. Such types are called sets. The
-$\K$ axiom says that all types are sets. The univalence axiom implies
-that some types are not sets. (Then they will instead be 1-groupoids,
-or 2-groupoids, ..., or even $\infty$-groupoids, with such notions
-defined within MLTT rather than via models, but we will not address
-this important aspect of univalent mathematics here).
+constructing elements other than $\refl(x)$, at least for some types,
+and hence the univalence axiom implies that some types are not
+sets. (Then they will instead be 1-groupoids, or 2-groupoids, \dots, or
+even $\infty$-groupoids, with such notions defined within MLTT rather
+than via models, but we will not address this important aspect of
+univalent mathematics here).
 
 \subsection{Universes}
 
@@ -372,25 +378,38 @@ the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
     retraction with section $s$.
 
     Moreover, the univalence type formulated as above, but using
-    $\Iso(f)$ rather than $\isEquiv(f)$, is provably empty. So, to
-    have a consistent axiom, it is crucial to use the type
+    $\Iso(f)$ rather than $\isEquiv(f)$, is provably empty, e.g.\ for
+    MLTT with $\Pi, \Sigma, \Id$, the empty and two-point types, and
+    three universes, as shown by Shulman~\cite{shulman:e46}. With only
+    one universe, the formulation with $\Iso(f)$ is consistent, as
+    shown by Hofmann and Streicher's groupoid model, but in this case
+    all elements of the universe are sets and $\Iso(f)$ is a
+    subsingleton, and hence equivalent to $\isEquiv(f)$.
+    
+    So, to have a consistent axiom, it is crucial to use the type
     $\isEquiv(f)$. It was Voevodsky's insight not only that a
     subsingleton version of $\Iso(f)$ is needed, but also how to
     construct it. The construction of $\isEquiv(f)$ is very simple and
-    elegant, but very difficult to arrive at. It is motivated by
-    homotopical models of the theory. But the univalence axiom can be
-    understood without reference to homotopy theory.
+    elegant, and motivated by homotopical models of the theory, where
+    it corresponds to \emph{weak equivalence}. But the univalence
+    axiom can be understood without reference to homotopy theory.
 
-\item The fact (again proved by Voevodsky, with the model of simplicial
-    sets) that MLTT is consistent with the univalence axiom shows
-    that, before we postulate univalence, MLTT is ``proto-univalent'' in
-    the sense that it cannot distinguish concrete isomorphic types
-    such as $X:=\N$ and $Y:=\N\times \N$ by a property $P:\U\to \U$ such that $P(X)$ holds
-    but $P(Y)$ doesn't.  This is because, being isomorphic, $X$ and $Y$ are
-    equivalent. But then univalence implies $\Id(X,Y)$, which in turn
-    implies $P(X) \iff P(Y)$ using $\J$.  Because univalence is consistent, it
-    follows that for any given concrete $P:\U\to \U$, it is impossible to
-    prove that $P(X)$ holds but $P(Y)$ doesn't.
+  \item Voevodsky gave a model of univalence for MLTT with
+    $\Pi,\Sigma$, empty type, one-point type, two-point type, natural
+    numbers, and an infinite tower of universes in simplicial
+    sets~\cite{kapulkin:lumsdaine:voevodsky,kapulkin:lumsdaine}, thus
+    establishing the consistency of the univalence axiom.
+    
+    The consistency of the univalence axiom shows that, before we
+    postulate it, MLTT is ``proto-univalent'' in the sense that it
+    cannot distinguish concrete isomorphic types such as $X:=\N$ and
+    $Y:=\N\times \N$ by a property $P:\U\to \U$ such that $P(X)$ holds
+    but $P(Y)$ doesn't.  This is because, being isomorphic, $X$ and
+    $Y$ are equivalent. But then univalence implies $\Id(X,Y)$, which
+    in turn implies $P(X) \iff P(Y)$ using $\J$.  Because univalence
+    is consistent, it follows that for any given concrete
+    $P:\U\to \U$, it is impossible to prove that $P(X)$ holds but
+    $P(Y)$ doesn't.
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
@@ -415,7 +434,8 @@ the inhabitedness of the type $\isUnivalent(\U)$ is undecided.
   \section*{Acknowledgements}
 
   I benefitted from input by Andrej Bauer, Marta Bunge, Thierry
-  Coquand and Mike Shulman on draft versions of these notes.
+  Coquand, Dan Grayson and Mike Shulman on draft versions of these
+  notes.
   
 \bibliographystyle{plain}
 \bibliography{references}
