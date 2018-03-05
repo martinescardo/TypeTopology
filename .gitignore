@@ -5,3 +5,9 @@ m
 c
 b
 e
+*.aux
+*.log
+*.out
+*.pdf
+*.html
+*.blg
