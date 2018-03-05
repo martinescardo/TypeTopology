@@ -5,6 +5,7 @@ Martin Escardo, 28 February 2018.
     Voevodsky's Univalence Axiom
     ---------------------------------------------------
 
+
 1. Introduction
    ------------
    
@@ -22,9 +23,7 @@ scratch,
  
  * then formally in Agda notation for Martin-Löf type theory.
 
-(Search for "UnivalenceFromScratch" to jump to the formal version, and use
-http://www.cs.bham.ac.uk/~mhe/agda-new/UnivalenceFromScratch.pdf
-as an alternative to the text that follows.)
+(Search for "UnivalenceFromScratch" to jump to the formal version.)
 
 The univalence axiom is not true or false in, say, ZFC or the internal
 language of an elementary topos. It cannot even be formulated. As the
@@ -51,6 +50,9 @@ of Univalence.
 The source code for this file is available at
 https://github.com/martinescardo/TypeTopology/tree/master/source
 Issues and contributions are welcome.
+
+A pdf version without the Agda code is available here:
+http://www.cs.bham.ac.uk/~mhe/agda-new/UnivalenceFromScratch.pdf
 
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
@@ -137,6 +139,11 @@ x:A is read as saying that x is a proof of A. But this is just a
 linguistic device, which is (deliberately) not reflected in the
 formalism.
 
+We remark that in univalent mathematics the terminology
+*proposition* is reserved for subsingleton types (types whose
+elements are all identified). The propositions that arise in the
+construction of the univalence type are all subsingletons.
+
 * The identity type
   -----------------
 
@@ -154,7 +161,7 @@ We have a function
 which identifies any element with itself. Without univalence, refl is
 the only given way to construct elements of the identity type.
 
-In addition to refl, we stipulate that for any given type family A(x,y,p)
+In addition to refl, for any given type family A(x,y,p)
 indexed by elements x,y:X and p:Id(x,y) and any given function
 
     f : Π(x:X), A(x,x,refl(x)),
@@ -163,18 +170,15 @@ we have a function
 
     J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p)
 
-with
-
-    J(A,f)(x,x,refl(x)) := f(x).
+with J(A,f)(x,x,refl(x)) stipulated to be f(x).
 
 We will see examples of uses of J in the steps leading to the
 construction of the univalence type.
 
 Then, in summary, the identity type is given by the data Id,refl,J.
-
 With this, the exact nature of the type Id(x,y) is fairly
-under-specified. It is consistent that it is always a subsingleton,
-which is known as the K axiom for the type X, in the following sense:
+under-specified. It is consistent that it is always a subsingleton in
+the sense that K(X) holds, where
 
    K(X) := Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
 
@@ -185,13 +189,14 @@ which is the basis for univalent mathematics (but this is not
 discussed here, as it is not needed in order to construct the
 univalence type).
 
+The K axiom says that K(X) holds for every type X.  In univalent
+mathematics, a type X that satisfies K(X) is called a set, and with
+this terminology, the K axiom says that all types are sets.
+
 On the other hand, the univalence axiom provides a means of
-constructing elements other than refl(x), at least for some types.  It
-will be the case that for some other types X, even in the presence of
-univalence, K(X) "holds", meaning that we can construct an element of
-it. Such types are called sets. The K axiom says that all types are
-sets. The univalence axiom implies that some types are not sets. (Then
-they will instead be 1-groupoids, or 2-groupoids, ..., or even
+constructing elements other than refl(x), at least for some types, and
+hence the univalence axiom implies that some types are not sets. (Then
+they will instead be 1-groupoids, or 2-groupoids, ⋯, or even
 ∞-groupoids, with such notions defined within MLTT rather than via
 models, but we will not address this important aspect of univalent
 mathematics here).
@@ -207,9 +212,6 @@ universe. It is common to assume a tower of universes U₀, U₁, U₂,
    U₁ : U₂,
    U₂ : U₃,
    ⋮
-
-(It is sometimes assumed that these universes are cumulative in a
-certain sense, but we will not need to assume (or reject) this.)
 
 When we have universes, a type family A indexed by a type X:U may be
 considered to be a function A:X→V for some universe V.
@@ -338,14 +340,14 @@ the inhabitedness of the type isUnivalent(U) is undecided.
 * Notes
   -----
 
- 0. The minimal Martin-Löf type theory needed to formulate univalence
+ 1. The minimal Martin-Löf type theory needed to formulate univalence
     has
 
       Π, Σ, Id, U, U'.
 
     Two universes U:U' suffice, where univalence talks about U.
   
- 1. It can be shown, by a very complicated and interesting argument,
+ 2. It can be shown, by a very complicated and interesting argument,
     that
 
      Π(u,v: isUnivalent(U)), Id(u,v).
@@ -362,7 +364,7 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     univalence implies function extensionality (originally due to
     Voevodsky), which is fairly elaborate.
 
- 2. For a function f:X→Y, consider the type
+ 3. For a function f:X→Y, consider the type
 
      Iso(f) := Σ(g:Y→X), (Π(x:X), Id(g(f(x)),x)) × (Π(y:Y), Id(f(g(y)),y)).
 
@@ -373,25 +375,37 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     retraction with section s.
 
     Moreover, the univalence type formulated as above, but using
-    Iso(f) rather than isEquiv(f) is provably empty. So, to have a
-    consistent axiom, it is crucial to use the type isEquiv(f). It was
-    Voevodsky's insight that not only a subsingleton version of Iso(f)
-    is needed, but also how to construct it. The construction of
-    isEquiv(f) is very simple and elegant, but very difficult to
-    arrive at. It is motivated by homotopical models of the
-    theory. But the univalence axiom can be understood without
-    reference to homotopy theory.
+    Iso(f) rather than isEquiv(f) is provably empty, e.g. for MLTT
+    with Π, Σ, Id, the empty and two-point types, and three universes,
+    as shown by Shulman. With only one universe, the formulation with
+    Iso(f) is consistent, as shown by Hofmann and Streicher's groupoid
+    model, but in this case all elements of the universe are sets and
+    Iso(f) is a subsingleton, and hence equivalent to isEquiv(f).
 
- 3. The fact (again proved by Voevodsky, with the model of simplicial
-    sets) that MLTT is consistent with the univalence axiom shows
-    that, before we postulate univalence, MLTT is "proto-univalent" in
-    the sense that it cannot distinguish concrete isomorphic types
-    such as X:=ℕ and Y:=ℕ×ℕ by a property P:U→U such that P(X) holds
-    but P(Y) doesn't.  This is because, being isomorphic, X and Y are
-    equivalent. But then univalence implies Id(X,Y), which in turn
-    implies P(X)⇔P(Y) using J.  Because univalence is consistent, it
-    follows that for any given concrete P:U→U, it is impossible to
-    prove that P(X) holds but P(Y) doesn't.
+
+    So, to have a consistent axiom in general, it is crucial to use
+    the type isEquiv(f). It was Voevodsky's insight that not only a
+    subsingleton version of Iso(f) is needed, but also how to
+    construct it. The construction of isEquiv(f) is very simple and
+    elegant, and motivated by homotopical models of the theory, where
+    it corresponds to the concept with the same name. But the
+    univalence axiom can be understood without reference to homotopy
+    theory.
+
+ 3. Voevodsky gave a model of univalence for MLTT with Π,Σ, empty
+    type, one-point type, two-point type, natural numbers, and an
+    infinite tower of universes in simplicial sets, thus establishing
+    the consistency of the univalence axiom.
+    
+    The consistency of the univalence axiom shows that, before we
+    postulate it, MLTT is "proto-univalent" in the sense that it
+    cannot distinguish concrete isomorphic types such as X:=ℕ and
+    Y:=ℕ×ℕ by a property P:U→U such that P(X) holds but P(Y) doesn't.
+    This is because, being isomorphic, X and Y are equivalent. But
+    then univalence implies Id(X,Y), which in turn implies P(X) ⇔ P(Y)
+    using J.  Because univalence is consistent, it follows that for
+    any given concrete P:U→U, it is impossible to prove that P(X)
+    holds but P(Y) doesn't.
 
     So MLTT is invariant under isomorphism in this doubly negative,
     meta-mathematical sense. With univalence, it becomes invariant
@@ -410,6 +424,50 @@ the inhabitedness of the type isUnivalent(U) is undecided.
     consistent with this understanding of the identity type of the
     universe, discovered by Vladimir Voevodsky (and foreseen by Martin
     Hofmann and Thomas Streicher (1996) in a particular case).
+
+This paper only explains what the *univalence axiom* is. A brief and
+reasonably complete introduction to *univalent mathematics* is given
+by Grayson.
+
+References
+----------
+
+Daniel R. Grayson.  An introduction to univalent foundations for
+mathematicians, 2017.  https://arxiv.org/abs/1711.01477
+
+Martin Hofmann and Thomas Streicher.  The groupoid interpretation of
+type theory.  In Twenty-five years of constructive type theory
+(Venice, 1995), volume 36 of Oxford Logic Guides, pages
+83--111. Oxford Univ.  Press, New York, 1998.
+http://citeseerx.ist.psu.edu/viewdoc/download;jsessionid=8452D335B33D098D993C3D5E870CAE03?doi=10.1.1.37.606&rep=rep1&type=pdf
+
+Chris Kapulkin and Peter LeFanu Lumsdaine.  The simplicial model of
+univalent foundations (after Voevodsky), 2012.  https://arxiv.org/abs/1211.2851
+
+Chris Kapulkin, Peter LeFanu Lumsdaine, and Vladimir Voevodsky.  The
+simplicial model of univalent foundations, 2012. https://arxiv.org/abs/1203.2553
+
+Per Martin-L\"of.  Constructive mathematics and computer programming.
+In Logic, methodology and philosophy of science, VI
+(Hannover, 1979), volume 104 of Stud. Logic Found. Math.,
+pages 153--175. North-Holland, Amsterdam, 1982.
+http://archive-pml.github.io/martin-lof/pdfs/Constructive-mathematics-and-computer-programming-1982.pdf
+
+Michael Shulman.  Solution to Exercise 4.6 (in pure MLTT), March
+2018.  https://github.com/HoTT/HoTT/pull/923.
+
+The Univalent Foundations Program.  Homotopy Type Theory:
+Univalent Foundations of Mathematics.
+https://homotopytypetheory.org/book, Institute for Advanced
+Study, 2013.
+https://homotopytypetheory.org/book/
+
+Vladimir Voevodsky.  An experimental library of formalized mathematics
+based on the univalent foundations.  Math. Structures
+Comput. Sci., 25(5):1278--1294, 2015.
+https://www.math.ias.edu/vladimir/sites/math.ias.edu.vladimir/files/Univalent%20library%20paper%20current.pdf
+
+
 
 3. Formal construction of the univalence type in Agda
    --------------------------------------------------
