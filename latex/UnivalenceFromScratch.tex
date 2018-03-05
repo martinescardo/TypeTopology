@@ -255,7 +255,7 @@ points $x:X$ that are mapped to (a point identified with) $y$:
 \[
     f^{-1}(y) := \Sigma(x:X),\Id(f(x),y).
 \]
-The function $f$ is called an equivalence if its is fibers are all
+The function $f$ is called an equivalence if its fibers are all
 singletons:
 \[
     \isEquiv(f) := \Pi(y:Y), \isSingleton(f^{-1}(y)).
@@ -264,7 +264,7 @@ The type of equivalences from $X:\U$ to $Y:\U$ is
 \[
     \Eq(X,Y) := \Sigma(f:X\to Y), \isEquiv(f).
 \]
-Given $x:X$, we have the singleton type consisting of the elements $y:Y$
+Given $x:X$, we have the singleton type consisting of the elements $y:X$
 identified with $x$:
 \[
    \singletonType(x) := \Sigma(y:X), \Id(y,x).

@@ -24,7 +24,7 @@ scratch,
 
 (Search for "UnivalenceFromScratch" to jump to the formal version, and use
 http://www.cs.bham.ac.uk/~mhe/agda-new/UnivalenceFromScratch.pdf
-as an alternative to the the text that follows.)
+as an alternative to the text that follows.)
 
 The univalence axiom is not true or false in, say, ZFC or the internal
 language of an elementary topos. It cannot even be formulated. As the
@@ -32,7 +32,7 @@ saying goes, it is not even wrong.
 
 This is because
 
-   univalence is a property of the *identity type*
+   univalence is a property of Martin-Löf's *identity type*
    of a universe of types.
 
 Nothing like Martin-Löf's identity type occurs in ZFC or topos logic
