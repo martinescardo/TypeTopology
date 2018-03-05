@@ -244,7 +244,7 @@ points x:X that are mapped to (a point identified with) y:
 
     f⁻¹(y) := Σ(x:X),Id(f(x),y).
 
-The function f is called an equivalence if its is fibers are all
+The function f is called an equivalence if its fibers are all
 singletons:
 
     isEquiv(f) := Π(y:Y), isSingleton(f⁻¹(y)).
@@ -253,7 +253,7 @@ The type of equivalences from X:U to Y:U is
 
     Eq(X,Y) := Σ(f:X→Y), isEquiv(f).
 
-Given x:X, we have the singleton type consisting of the elements y:Y
+Given x:X, we have the singleton type consisting of the elements y:X
 identified with x:
 
    singletonType(x) := Σ(y:X), Id(y,x).
