@@ -454,7 +454,8 @@ pages 153--175. North-Holland, Amsterdam, 1982.
 http://archive-pml.github.io/martin-lof/pdfs/Constructive-mathematics-and-computer-programming-1982.pdf
 
 Michael Shulman.  Solution to Exercise 4.6 (in pure MLTT), March
-2018.  https://github.com/HoTT/HoTT/pull/923.
+2018. https://github.com/HoTT/HoTT/commit/531bc5865089cb8b32a0c49d0f9bf220f811a292
+
 
 The Univalent Foundations Program.  Homotopy Type Theory:
 Univalent Foundations of Mathematics.
@@ -572,8 +573,9 @@ isUnivalent U = (X Y : U ̇) → isEquiv(IdToEq X Y)
 Thus, we see that even in its concise symbolic form, the formulation
 of univalence is far from direct.
 
-Using projections pr₁ and pr₂ rather than pattern matching on Σ types,
-Agda calculates the following normal form for the term isUnivalent:
+Using projections pr₁ and pr₂ rather than pattern matching on Σ types
+(by defining Σ as a record type), Agda calculates the following normal
+form for the term isUnivalent:
 
 λ U → (X Y : Set U) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
 (x : Σ (λ x₁ → Id (f x₁) y₁)) → Id c x))) →
