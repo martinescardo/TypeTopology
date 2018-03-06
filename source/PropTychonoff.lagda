@@ -13,7 +13,7 @@ With excluded middle for propositions, the above claim is not
 surprising, because
 
     (𝟘 → Y) = Y^𝟘 ≃ 𝟙 (which is always searchable),
-    (𝟙 → Y) = Y^𝟙 ≃ 𝟙 (which is searchable if Y is),
+    (𝟙 → Y) = Y^𝟙 ≃ Y (which is searchable if Y is),
 
 and excluded middle for a proposition X amounts to X=𝟘 or X=𝟙, so
 that 

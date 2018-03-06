@@ -85,7 +85,7 @@ The module
 shows that universes are injective, and more generally that the
 injective types are precisely the retracts of exponential powers of universes.
 This uses properties of products and sums indexed by univalent
-propositions. This uses the module [IdEmbedding](http://www.cs.bham.ac.uk/~mhe/agda-new/IdEmbedding.html), which shows that the identity type former `Id {X} : X → X → U` is an embedding assuming either Streicher's K axiom (`U` is a set) or the Voevodky's univalence axiom.
+propositions. This uses the module [IdEmbedding](http://www.cs.bham.ac.uk/~mhe/agda-new/IdEmbedding.html), which shows that the identity type former `Id {X} : X → X → U` is an embedding assuming either Streicher's K axiom (`U` is a set) or Voevodky's univalence axiom.
 
 The following generalizes the squashed sum, with a simple construction
 and proof, using the injectivity of the universe and the Prop-Tychonoff theorem:
