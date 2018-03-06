@@ -16,8 +16,8 @@ open import DiscreteAndSeparated
 discrete-is-path-collapsible : ∀ {U} {X : U ̇} → discrete X → path-collapsible X
 discrete-is-path-collapsible d = decidable-is-collapsible (d _ _)
 
-discrete-is-set : ∀ {U} {X : U ̇} → discrete X → isSet X
-discrete-is-set d = path-collapsible-is-set(discrete-is-path-collapsible d)
+discrete-isSet : ∀ {U} {X : U ̇} → discrete X → isSet X
+discrete-isSet d = path-collapsible-isSet(discrete-is-path-collapsible d)
 
 dd-sum : ∀ {U} {X : U ̇} → {Y : X → U ̇}
        → discrete X → ((x : X) → discrete(Y x)) → discrete(Σ Y)
@@ -38,20 +38,20 @@ dd-sum {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')
               q' : transport Y p' y ≡ y'
               q' = Σ-≡-lemma (x , y) (x' , y') r
               s : p ≡ p'
-              s = discrete-is-set d p p'
+              s = discrete-isSet d p p'
               q : transport Y p y ≡ y'
               q = ap (λ p → transport Y p y) s ∙ q'
    g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
 open import Two
 
-𝟚-is-set : isSet 𝟚
-𝟚-is-set = discrete-is-set 𝟚-discrete
+𝟚-isSet : isSet 𝟚
+𝟚-isSet = discrete-isSet 𝟚-discrete
 
 open import Naturals
 
-ℕ-is-set : isSet ℕ
-ℕ-is-set = discrete-is-set ℕ-discrete
+ℕ-isSet : isSet ℕ
+ℕ-isSet = discrete-isSet ℕ-discrete
 
 nonempty : ∀ {U} → U ̇ → U ̇
 nonempty X = empty(empty X)
@@ -78,7 +78,18 @@ stable-is-collapsible {U} fe {X} s = (f , g)
 separated-is-path-collapsible : ∀ {U} → FunExt U U₀ → {X : U ̇} → separated X → path-collapsible X
 separated-is-path-collapsible fe s = stable-is-collapsible fe (s _ _)
 
-separated-is-set : ∀ {U} → FunExt U U₀ → {X : U ̇} → separated X → isSet X
-separated-is-set fe s = path-collapsible-is-set (separated-is-path-collapsible fe s) 
+separated-isSet : ∀ {U} → FunExt U U₀ → {X : U ̇} → separated X → isSet X
+separated-isSet fe s = path-collapsible-isSet (separated-is-path-collapsible fe s) 
+
+isProp-separated : ∀ {U} → FunExt U U → FunExt U U₀ → {X : U ̇} → isProp(separated X)
+isProp-separated fe fe₀ {X} = ip-is-p f
+ where
+  f : separated X → isProp(separated X)
+  f s = isProp-exponential-ideal fe
+          (λ _ → isProp-exponential-ideal fe
+                    (λ _ → isProp-exponential-ideal fe
+                              (λ _ → separated-isSet fe₀ s)))
+
 
 \end{code}
+

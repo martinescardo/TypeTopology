@@ -264,5 +264,6 @@ open import UnivalentChoice
 open import Dominance
 open import KrausLemma
 open import NonCollapsibleFamily
+open import UnivalenceFromScratch
 
 \end{code}

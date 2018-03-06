@@ -25,7 +25,7 @@ open import UF
 module LPO (fe : {U V : Universe} → FunExt U V) where
 
 open import Naturals
-open import Two
+open import Two hiding (_≤_)
 open import GenericConvergentSequence
 open import DecidableAndDetachable
 open import OmniscientTypes
@@ -40,7 +40,7 @@ LPO-isProp = isProp-exponential-ideal fe f
   a x (n , p) (m , q) = Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set fe _ _)
   
   f : (x : ℕ∞) → isProp (decidable (Σ \n → x ≡ under n))
-  f x = sum-of-contradictory-props (a x) (neg-isProp fe) (λ u φ → φ u)
+  f x = decidable-isProp fe (a x)
 
 LPO-implies-omniscient-ℕ : LPO → omniscient ℕ
 LPO-implies-omniscient-ℕ lpo β = cases a b d
@@ -141,5 +141,59 @@ LPO→ℕ-searchable = prop-tychonoff-corollary' fe LPO-isProp f
 
 LPO→ℕ-omniscient : omniscient(LPO → ℕ)
 LPO→ℕ-omniscient = searchable-implies-omniscient LPO→ℕ-searchable
+
+\end{code}
+
+TODO.
+
+Added 10 Feb 2018. Another way to get LPO as a proposition, without
+using function extensionality.
+
+\begin{code}
+
+{-
+open import DiscreteAndSeparated
+open import UF2
+open import NaturalsAddition renaming (_+_ to _++_)
+
+_⊑_ : ℕ → ℕ → U₀ ̇
+m ⊑ n = Σ \k → m ++ k ≡ n
+
+-- ⊑-anti : ∀ m n → m ⊑ n
+
+bmin : (α : ℕ → 𝟚) (n : ℕ) → α n ≡ ₁ → Σ \(m : ℕ) → α m ≡ ₁ → (m' : ℕ) → α m' ≡ ₁ → m ⊑ m'
+bmin α zero p = zero , (λ q m' q' → m' , (zero-plus-n-equals-n m'))
+bmin α (succ n) p = {!!} , {!!}
+
+
+minimizec : (α : ℕ → 𝟚) → collapsible (Σ \(n : ℕ) → α n ≡ ₁)
+minimizec α = (f , κ)
+ where
+  
+  h : (n : ℕ) → α n ≡ ₁ → Σ \(k : ℕ) → α k ≡ ₁
+  h zero p = zero , p
+  h (succ n) p = cases (λ q → h n q)
+                       (λ u → (succ n) , p)
+                       (𝟚-discrete (α n) ₁)
+
+  
+  f : (Σ \(n : ℕ) → α n ≡ ₁) → (Σ \(n : ℕ) → α n ≡ ₁)
+  f (n , p) = h n p
+  κ : constant f
+  κ (zero , p) (zero , p') = ap (λ r → (0 , r)) (𝟚-is-set p p')
+  κ (zero , p) (succ n' , p') = {!!}
+  κ (succ n , p) (zero , p') = {!!}
+  κ (succ n , p) (succ n' , p') = {!!}
+
+-}
+
+{-
+minimize α (zero , p) = (zero , p)
+minimize α (succ n , p) = f (𝟚-discrete (α n) ₁)
+ where
+  f : decidable(α n ≡ ₁) → (Σ \(n : ℕ) → α n ≡ ₁)
+  f (inl q) = minimize α (n , q)
+  f (inr u) = {!!}
+-}
 
 \end{code}

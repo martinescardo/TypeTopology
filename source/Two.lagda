@@ -183,3 +183,34 @@ Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
 Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ Lemma[b≡₁→b≢₀]  
 
 \end{code}
+
+Order and complements:
+
+\begin{code}
+
+complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
+complement-left {₀} {₀} f p = f p
+complement-left {₀} {₁} f p = p
+complement-left {₁} {c} f p = refl
+
+complement-right : {b c : 𝟚} → b ≤ complement c → c ≤ complement b
+complement-right {₀} {c} f p = refl
+complement-right {₁} {₀} f p = p
+complement-right {₁} {₁} f p = f p
+
+complement-both-left : {b c : 𝟚} → complement b ≤ complement c → c ≤ b
+complement-both-left {₀} {₀} f p = p
+complement-both-left {₀} {₁} f p = f p
+complement-both-left {₁} {c} f p = refl
+
+complement-both-right : {b c : 𝟚} → b ≤ c → complement c ≤ complement b
+complement-both-right {₀} {c} f p = refl
+complement-both-right {₁} {₀} f p = f p
+complement-both-right {₁} {₁} f p = p
+
+complement-involutive : (b : 𝟚) → complement(complement b) ≡ b
+complement-involutive ₀ = refl
+complement-involutive ₁ = refl
+
+
+\end{code}

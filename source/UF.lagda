@@ -64,8 +64,8 @@ path-collapsible X = {x y : X} → collapsible(x ≡ y)
 set-is-path-collapsible : ∀ {U} → {X : U ̇} → isSet X → path-collapsible X
 set-is-path-collapsible u = (id , u)
 
-path-collapsible-is-set : ∀ {U} {X : U ̇} → path-collapsible X → isSet X
-path-collapsible-is-set pc p q = claim₂
+path-collapsible-isSet : ∀ {U} {X : U ̇} → path-collapsible X → isSet X
+path-collapsible-isSet pc p q = claim₂
  where
   f : ∀ {x y} → x ≡ y → x ≡ y
   f = pr₁ pc
@@ -81,8 +81,8 @@ path-collapsible-is-set pc p q = claim₂
 prop-is-path-collapsible : ∀ {U} {X : U ̇} → isProp X → path-collapsible X
 prop-is-path-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → refl))
 
-prop-is-set : ∀ {U} {X : U ̇} → isProp X → isSet X
-prop-is-set h = path-collapsible-is-set(prop-is-path-collapsible h)
+prop-isSet : ∀ {U} {X : U ̇} → isProp X → isSet X
+prop-isSet h = path-collapsible-isSet(prop-is-path-collapsible h)
 
 𝟘-is-collapsible : collapsible 𝟘
 𝟘-is-collapsible = (λ x → x) , (λ x → λ ())
@@ -117,8 +117,8 @@ path-from-trivial-loop {U} {X} = J A λ x → refl
 paths-from-is-contractible : ∀ {U} {X : U ̇} (x₀ : X) → isContr(paths-from x₀)
 paths-from-is-contractible x₀ = trivial-loop x₀ , (λ t → path-from-trivial-loop (pr₂ t))
 
-paths-from-is-prop : ∀ {U} {X : U ̇} (x : X) → isProp(paths-from x)
-paths-from-is-prop x = c-is-p (paths-from-is-contractible x)
+paths-from-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-from x)
+paths-from-isProp x = c-is-p (paths-from-is-contractible x)
 
 _⇒_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → (X → V ⊔ W ̇)
 A ⇒ B = λ x → A x → B x
@@ -411,6 +411,13 @@ qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
     hf'' : (x : X) → h(h'(f'(f x))) ≡ x
     hf'' x = ap h (hf' (f x)) ∙ hf x
 
+equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
+equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
+
+equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
+equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
+
+
 \end{code}
 
 Left-cancellable maps.
@@ -702,8 +709,8 @@ paths-to-contractible x = rc-is-c (pr₁(pt-pf-equiv x))
                                   (pr₁(pr₂((pt-pf-equiv x))))
                                   (paths-from-contractible x)
 
-paths-to-is-prop : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
-paths-to-is-prop x = c-is-p (paths-to-contractible x)
+paths-to-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
+paths-to-isProp x = c-is-p (paths-to-contractible x)
 
 pcubp : ∀ {U} (X Y : U ̇) → isProp X → isProp Y → isProp(X × Y)
 pcubp X Y i j (x , y) (x' , y') = to-Σ-Id (λ _ → Y) 
@@ -712,6 +719,27 @@ pcubp X Y i j (x , y) (x' , y') = to-Σ-Id (λ _ → Y)
 fiber : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → f x ≡ y
 
+isContrMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+isContrMap f = ∀ y → isContr (fiber f y)
+
+isContrMap-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → is-equiv f
+isContrMap-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
+ where
+  φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
+  φ' = φ
+  c : (y : Y) → Σ \(x : X) → f x ≡ y
+  c y = pr₁(φ y)
+  d : (y : Y) → (σ : Σ \(x : X) → f x ≡ y) → c y ≡ σ
+  d y = pr₂(φ y)
+  g : Y → X
+  g y = pr₁(c y)
+  fg : (y : Y) → f (g y) ≡ y
+  fg y = pr₂(c y)
+  e : (x : X) → g(f x) , fg (f x) ≡ x , refl
+  e x = d (f x) (x , refl)
+  gf : (x : X) → g (f x) ≡ x
+  gf x = ap pr₁ (e x)
+
 isEmbedding : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEmbedding f = ∀ y → isProp(fiber f y)
 
@@ -719,7 +747,7 @@ embedding-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding f �
 embedding-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 id-isEmbedding : ∀ {U} {X : U ̇} → isEmbedding (id {U} {X})
-id-isEmbedding = paths-to-is-prop
+id-isEmbedding = paths-to-isProp
 
 isEmbedding' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEmbedding' f = ∀ x x' → is-equiv (ap f {x} {x'})
@@ -811,7 +839,7 @@ isProp-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X)
 isProp-isProp {U} {X} fe f g = claim₁
  where
   lemma : isSet X
-  lemma = prop-is-set f
+  lemma = prop-isSet f
   claim : (x y : X) → f x y ≡ g x y
   claim x y = lemma (f x y) (g x y)
   claim₀ : (x : X) → f x ≡ g x 
@@ -819,8 +847,16 @@ isProp-isProp {U} {X} fe f g = claim₁
   claim₁ : f ≡ g
   claim₁  = funext fe claim₀
 
-subtype-of-set-is-set : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y) → left-cancellable m → isSet Y → isSet X
-subtype-of-set-is-set {U} {V} {X} m i h = path-collapsible-is-set (f , g)
+isProp-isContr : ∀ {U} {X : U ̇} → FunExt U U → isProp(isContr X)
+isProp-isContr {U} {X} fe (x , φ) (y , γ) = to-Σ-Id _ (φ y , funext fe λ z → iss {y} {z} _ _)
+ where
+  isp : isProp X
+  isp = c-is-p (y , γ)
+  iss : isSet X
+  iss = prop-isSet isp
+
+subtype-of-set-isSet : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y) → left-cancellable m → isSet Y → isSet X
+subtype-of-set-isSet {U} {V} {X} m i h = path-collapsible-isSet (f , g)
  where
   f : {x x' : X} → x ≡ x' → x ≡ x'
   f r = i (ap m r)
@@ -890,13 +926,16 @@ K-idtofun-lc : ∀ {U} → K (U ′)
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
-K-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → K V → isEmbedding f
-K-lc-e {U} {V} {X} {Y} f f-lc k y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
+s-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → isSet Y → isEmbedding f
+s-lc-e {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))
    q : yoneda-nat (λ x → f x ≡ y) p x' r ≡ p'
-   q = k Y (yoneda-nat (λ x → f x ≡ y) p x' r) p'
+   q = iss (yoneda-nat (λ x → f x ≡ y) p x' r) p'
+
+K-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → K V → isEmbedding f
+K-lc-e {U} {V} {X} {Y} f f-lc k = s-lc-e f f-lc (k Y)
 
 \end{code}
 
@@ -961,9 +1000,9 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     go : isProp(Y x)
     go = lcmtpip s (section-lc s (r , rs)) isp
 
-subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
+subset-of-set-isSet : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
                     → isSet X → ({x : X} → isProp(Y x)) → isSet(Σ \(x : X) → Y x)
-subset-of-set-is-set X Y h p = subtype-of-set-is-set pr₁ (pr₁-lc p) h
+subset-of-set-isSet X Y h p = subtype-of-set-isSet pr₁ (pr₁-lc p) h
 
 isSet-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isSet(A x)) → isSet(Π A) 
@@ -992,6 +1031,20 @@ isProp-exponential-ideal {U} {V} fe {X} {A} isa = lemma
   lemma : isProp(Π A)
   lemma f g = funext fe (λ x → isa x (f x) (g x))
 
+isSet' : ∀ {U} → U ̇ → U ̇
+isSet' X = (x y : X) → isProp(x ≡ y)
+
+isSet'-isSet : ∀ {U} {X : U ̇} → isSet' X → isSet X
+isSet'-isSet s {x} {y} = s x y
+
+isSet-isSet' : ∀ {U} {X : U ̇} → isSet X → isSet' X
+isSet-isSet' s x y = s {x} {y}
+
+isProp-isSet' : ∀ {U} {X : U ̇} → FunExt U U → isProp (isSet' X)
+isProp-isSet' fe = isProp-exponential-ideal fe
+                    (λ x → isProp-exponential-ideal fe
+                              (λ y → isProp-isProp fe))
+
 propExt : ∀ U → U ′ ̇ 
 propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
 
@@ -1008,7 +1061,7 @@ PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}} → (p holds
 PropExt {U} fe pe {p} {q} f g = to-Σ-Id isProp ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
 
 Prop-isSet : ∀ {U} → FunExt U U → propExt U → isSet (Prop {U})
-Prop-isSet {U} fe pe = path-collapsible-is-set pc
+Prop-isSet {U} fe pe = path-collapsible-isSet pc
  where
   A : (p q : Prop) → U ̇
   A p q = (p holds → q holds) × (q holds → p holds) 
@@ -1084,6 +1137,18 @@ module PropositionalTruncation (pt : PropTrunc) where
    ∣_∣ : ∀ {U} {X : U ̇} → X → ∥ X ∥
    ptrec : ∀ {U V} {X : U ̇} {Y : V ̇} → isProp Y → (X → Y) → ∥ X ∥ → Y
 
+ isContr'-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X × ∥ X ∥)
+ isContr'-isProp fe = isProp-closed-under-Σ (isProp-isProp fe) (λ _ → ptisp)
+
+ c-es₁ : ∀ {U} {X : U ̇} → isContr X ⇔ isProp X × ∥ X ∥
+ c-es₁ {U} {X} = f , g
+  where
+   f : isContr X → isProp X × ∥ X ∥ 
+   f (x , φ) = c-is-p (x , φ) , ∣ x ∣
+   
+   g : isProp X × ∥ X ∥ → isContr X
+   g (i , s) = ptrec i id s , i (ptrec i id s)
+   
  ptfunct : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ptfunct f = ptrec ptisp (λ x → ∣ f x ∣)
 
@@ -1093,6 +1158,24 @@ module PropositionalTruncation (pt : PropTrunc) where
  _∨_ : ∀ {U} {V} → U ̇ → V ̇ → U ⊔ V ̇
  P ∨ Q = ∥ P + Q ∥
 
+ left-fails-then-right-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → isProp Q → P ∨ Q → ¬ P → Q
+ left-fails-then-right-holds i d u = ptrec i (λ d → Left-fails-then-right-holds d u) d
+
+ right-fails-then-left-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → isProp P → P ∨ Q → ¬ Q → P
+ right-fails-then-left-holds i d u = ptrec i (λ d → Right-fails-then-left-holds d u) d
+
+ pt-gdn : ∀ {U} {X : U ̇} → ∥ X ∥ → ∀ {V} (P : V ̇) → isProp P → (X → P) → P
+ pt-gdn {U} {X} s {V} P isp u = ptrec isp u s
+
+ gdn-pt : ∀ {U} {X : U ̇} → (∀ {V} (P : V ̇) → isProp P → (X → P) → P) → ∥ X ∥ 
+ gdn-pt {U} {X} φ = φ ∥ X ∥ ptisp ∣_∣
+
+ pt-dn : ∀ {U} {X : U ̇} → ∥ X ∥ → ¬¬ X
+ pt-dn s = pt-gdn s 𝟘 𝟘-isProp
+
+ binary-choice : ∀ {U V} {X : U ̇} {Y : V ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
+ binary-choice s t = ptrec ptisp (λ x → ptrec ptisp (λ y → ∣ x , y ∣) t) s
+ 
  infixr 0 _∨_
  infix 0 ∥_∥
 
@@ -1140,7 +1223,6 @@ module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist'
 
 \end{code}
 
-
 A main application of propositional truncations is to be able to
 define images and surjections:
 
@@ -1174,6 +1256,16 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
 
  isSurjection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
  isSurjection f = ∀ y → ∃ \x → f x ≡ y
+
+ c-es  :  ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
+          → isContrMap f ⇔ isEmbedding f × isSurjection f
+ c-es f = g , h
+  where
+   g : isContrMap f → isEmbedding f × isSurjection f 
+   g i = (λ y → pr₁(pr₁ c-es₁ (i y))) , (λ y → pr₂(pr₁ c-es₁ (i y)))
+   
+   h : isEmbedding f × isSurjection f → isContrMap f
+   h (e , s) = λ y → pr₂ c-es₁ (e y , s y)
 
  corestriction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                          → isSurjection (corestriction f)
@@ -1223,37 +1315,6 @@ Surjections can be characterized as follows, modulo size:
 
 We definitely need to make the notation more uniform!
 
-\begin{code}
-
-isContrMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isContrMap f = ∀ y → isContr (fiber f y)
-
-isContrMap-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → is-equiv f
-isContrMap-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
- where
-  φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
-  φ' = φ
-  c : (y : Y) → Σ \(x : X) → f x ≡ y
-  c y = pr₁(φ y)
-  d : (y : Y) → (σ : Σ \(x : X) → f x ≡ y) → c y ≡ σ
-  d y = pr₂(φ y)
-  g : Y → X
-  g y = pr₁(c y)
-  fg : (y : Y) → f (g y) ≡ y
-  fg y = pr₂(c y)
-  e : (x : X) → g(f x) , fg (f x) ≡ x , refl
-  e x = d (f x) (x , refl)
-  gf : (x : X) → g (f x) ≡ x
-  gf x = ap pr₁ (e x)
-
-equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
-equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
-
-equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
-equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
-
-\end{code}
-
 Excluded middle (EM) is not provable or disprovable. However, we do
 have that there is no truth value other than false (⊥) or true (⊤),
 which we refer to as the density of the decidable truth values.
@@ -1284,6 +1345,13 @@ DNE-EM fe dne P isp = dne (P + ¬ P)
                           (decidable-isProp fe isp)
                           (λ u → u (inr (λ p → u (inl p))))
 
+module _ (pt : PropTrunc) where
+
+ open PropositionalTruncation pt
+
+ double-negation-is-truncation-gives-DNE : ∀ {U} → ((X : U ̇) → ¬¬ X → ∥ X ∥) → DNE U
+ double-negation-is-truncation-gives-DNE {U} f P isp u = ptrec isp id (f P u)
+ 
 fem-proptrunc : ∀ {U} → FunExt U U₀ → EM U → propositional-truncations-exist U U
 fem-proptrunc fe em X = ¬¬ X ,
                     (isProp-exponential-ideal fe (λ _ → 𝟘-isProp) ,

@@ -361,7 +361,7 @@ module _ (pt : PropTrunc) where
    y₀ = f x₀
    
    isp : (y : Y) → isProp (q y ≡ ₁)
-   isp y = 𝟚-is-set
+   isp y = 𝟚-isSet
    
    h : q y₀ ≡ ₁ → (y : Y) → q y ≡ ₁
    h r = surjection-induction f su (λ y → q y ≡ ₁) isp (g r)

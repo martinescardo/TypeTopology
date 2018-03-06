@@ -101,6 +101,6 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
 open import DiscreteAndSeparated
 
 agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ q(under n)) → p ∞ ≡ q ∞ 
-agreement-cotaboo φ p q f = 𝟚-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
+agreement-cotaboo φ p q f = 𝟚-is-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
 
 \end{code}

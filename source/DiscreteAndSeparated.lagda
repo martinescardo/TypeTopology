@@ -97,8 +97,8 @@ separated-ideal fe s f g h = funext fe lemma𝟚
 discrete-is-separated : ∀ {U} {X : U ̇} → discrete X → separated X
 discrete-is-separated d x y = ¬¬-elim(d x y)
 
-𝟚-separated : separated 𝟚
-𝟚-separated = discrete-is-separated 𝟚-discrete
+𝟚-is-separated : separated 𝟚
+𝟚-is-separated = discrete-is-separated 𝟚-discrete
 
 subtype-of-separated-is-separated : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
                                   → left-cancellable m → separated Y → separated X

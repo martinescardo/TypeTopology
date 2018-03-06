@@ -149,10 +149,11 @@ equality.
 KK : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 KK R X = (X → R) → R
 
-contravariant : ∀ {U V W} {X : U ̇} {Y : V ̇} {R : W ̇} → (X → Y) → (Y → R) → (X → R)
-contravariant f p = p ∘ f 
+dual : ∀ {U V W} {X : U ̇} {Y : V ̇} (R : W ̇) → (X → Y) → (Y → R) → (X → R)
+dual R f p = p ∘ f
+
 K-functor : ∀ {U V W} {R : U ̇} {X : V ̇} {Y : W ̇} → (X → Y) → KK R X → KK R Y
-K-functor = contravariant ∘ contravariant
+K-functor = dual _ ∘ dual _
 
 ηK : ∀ {U V} {R : U ̇} {X : V ̇} → X → KK R X
 ηK x p = p x
@@ -234,7 +235,7 @@ A ⇔ B = (A → B) × (B → A)
 ¬ A = A → 𝟘
 
 contrapositive : ∀ {U V} {A : U ̇} {B : V ̇} → (A → B) → ¬ B → ¬ A
-contrapositive = contravariant
+contrapositive = dual _
 
 \end{code}
 
@@ -261,6 +262,14 @@ not-exists-implies-forall-not = curry
 forall-not-implies-not-Σ : ∀ {U} {X : U ̇} {A : X → U ̇}
     → ((x : X) → ¬(A x)) → ¬(Σ \(x : X) → A x)
 forall-not-implies-not-Σ = uncurry
+
+Left-fails-then-right-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → P + Q → ¬ P → Q
+Left-fails-then-right-holds (inl p) u = 𝟘-elim (u p)
+Left-fails-then-right-holds (inr q) u = q
+
+Right-fails-then-left-holds : ∀ {U} {V} {P : U ̇} {Q : V ̇} → P + Q → ¬ Q → P
+Right-fails-then-left-holds (inl p) u = p
+Right-fails-then-left-holds (inr q) u = 𝟘-elim (u q)
 
 \end{code}
 
@@ -326,8 +335,7 @@ Jbased x A b .x refl = b
 J : ∀ {U V} {X : U ̇}
   → (A : (x y : X) → x ≡ y → V ̇)
   → ((x : X) → A x x refl)
-  → {x y : X} (r : x ≡ y)
-  → A x y r
+  → {x y : X} (r : x ≡ y) → A x y r
 J A f {x} {y} = Jbased x (λ y p → A x y p) (f x) y
 
 \end{code}
