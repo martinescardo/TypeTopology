@@ -51,8 +51,8 @@ The source code for this file is available at
 https://github.com/martinescardo/TypeTopology/tree/master/source
 Issues and contributions are welcome.
 
-A pdf version without the Agda code is available here:
-http://www.cs.bham.ac.uk/~mhe/agda-new/UnivalenceFromScratch.pdf
+This document is also available at https://arxiv.org/abs/1803.02294
+with the Agda code as an ancillary file.
 
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
