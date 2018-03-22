@@ -5,7 +5,7 @@ Martín Hötzel Escardó
 
 Originally 10 July 2014, modified 10 Oct 2017, 22 March 2018.
 
-This is a literate proof univalent in mathematics, in Agda notation.
+This is a literate proof in univalent mathematics, in Agda notation.
 
 We have that 3+3+3+3+3 = 5+5+5, or 5×3 = 3×5, and more generally
 
