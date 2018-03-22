@@ -34,19 +34,19 @@ sets by
 
 Then Fin is a semiring homomorphism:
 
- (3) Fin(m + n) ≅ Fin m + Fin n, where "+" in the rhs is disjoint union, 
- (4) Fin 1 ≅ 𝟙,
- (5) Fin(m × n) ≅ Fin m × Fin n, where "×" in the rhs is cartesian product,
+ (3) Fin(m + n) ≃ Fin m + Fin n, where "+" in the rhs is disjoint union, 
+ (4) Fin 1 ≃ 𝟙,
+ (5) Fin(m × n) ≃ Fin m × Fin n, where "×" in the rhs is cartesian product,
 
 It is also left-cancellable:
 
- (6) Fin m ≅ Fin n → m = n.
+ (6) Fin m ≃ Fin n → m = n.
 
 But instead of proving (3)-(5) after defining addition and
 multiplication, we prove that
 
- (3') For every m,n:ℕ there is k:ℕ with Fin k ≅ Fin m + Fin n.
- (5') For every m,n:ℕ there is k:ℕ with Fin k ≅ Fin m × Fin n. 
+ (3') For every m,n:ℕ there is k:ℕ with Fin k ≃ Fin m + Fin n.
+ (5') For every m,n:ℕ there is k:ℕ with Fin k ≃ Fin m × Fin n. 
 
 We then define addition and multiplication on ℕ from (3') and (5'),
 from which (3) and (5) follow tautologically.
@@ -54,20 +54,20 @@ from which (3) and (5) follow tautologically.
 This relies on type arithmetic. To prove (3'), we use the trivial
 equivalences
  
- X ≅ X + 𝟘,
- (X + Y) + 𝟙 ≅ X + (Y + 𝟙),
+ X ≃ X + 𝟘,
+ (X + Y) + 𝟙 ≃ X + (Y + 𝟙),
 
 mimicking the definition of addition on ℕ in Peano arithmetic (but
 with the equations written backwards).
 
 To prove (4), we use the equivalence
 
- 𝟘 + 𝟙 ≅ 𝟙
+ 𝟘 + 𝟙 ≃ 𝟙
 
 To prove (5'), we use the equivalences
 
- 𝟘 ≅ X × 𝟘,
- X × Y + X ≅ X × (Y + 𝟙),
+ 𝟘 ≃ X × 𝟘,
+ X × Y + X ≃ X × (Y + 𝟙),
 
 mimicking the definition of multiplication on ℕ in Peano arithmetic
 (again backwards).
@@ -75,33 +75,33 @@ mimicking the definition of multiplication on ℕ in Peano arithmetic
 To prove the cancellation property (6), we use the cancellation
 property
 
- X + 𝟙 ≅ Y + 𝟙 → X ≅ Y,
+ X + 𝟙 ≃ Y + 𝟙 → X ≃ Y,
 
 mimicking the cancellation property of the successor function on ℕ.
 (This is the only combinatorial argument here.)
 
 Now, relying on the equivalence
 
- X × Y ≅ Y × X,
+ X × Y ≃ Y × X,
 
 which corresponds to the rotation of the grid of pebbles, we can prove
 m × n = n × m as follows:
 
- Fin(m × n) ≅ Fin m × Fin n   by (5)
-            ≅ Fin n × Fin m   by  X × Y ≅ Y × X,
-            ≅ Fin(n × m)      by (5),
+ Fin(m × n) ≃ Fin m × Fin n   by (5)
+            ≃ Fin n × Fin m   by  X × Y ≃ Y × X,
+            ≃ Fin(n × m)      by (5),
 
 and so 
 
- m × n ≅ n × m                by (6).
+ m × n ≃ n × m                by (6).
 
 Similarly we can prove, of course,
 
- m + n ≅ n + m
+ m + n ≃ n + m
 
 using (3) and the equivalence
 
- X + Y ≅ Y + X.
+ X + Y ≃ Y + X.
 
 Among all these constructions, we use induction on ℕ only in
 
@@ -116,7 +116,7 @@ multiplication are commutative.
 
 Side-remark, to be explored in a future version. From the equivalence
 
- (5) Fin(m × n) ≅ Fin m × Fin n
+ (5) Fin(m × n) ≃ Fin m × Fin n
 
 we get two maps
 
