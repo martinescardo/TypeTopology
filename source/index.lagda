@@ -266,5 +266,6 @@ open import KrausLemma
 open import NonCollapsibleFamily
 open import UnivalenceFromScratch
 open import PlusOneLC
+open import ArithmeticViaEquivalence
 
 \end{code}

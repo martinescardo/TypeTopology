@@ -148,4 +148,125 @@ lemma[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'} (f 
        lemma₁ = hf' y'
        
 \end{code}
-  
+
+March 2018
+
+\begin{code}
+
++comm : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X + Y) ≃ (Y + X)
++comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
+  where
+    f : X + Y → Y + X
+    f (inl x) = inr x
+    f (inr y) = inl y
+    g : Y + X → X + Y
+    g (inl y) = inr y
+    g (inr x) = inl x
+    ε : (t : Y + X) → (f ∘ g) t ≡ t
+    ε (inl y) = refl
+    ε (inr x) = refl
+    η : (u : X + Y) → (g ∘ f) u ≡ u
+    η (inl x) = refl
+    η (inr y) = refl
+
+𝟘-rneutral : ∀ {U} {X : U ̇} → X ≃ (X + 𝟘)
+𝟘-rneutral {U} {X} = f , (g , ε) , (g , η)
+  where
+    f : X → X + 𝟘
+    f = inl
+    g : X + 𝟘 → X
+    g (inl x) = x
+    g (inr ())
+    ε : (y : X + 𝟘) → (f ∘ g) y ≡ y
+    ε (inl x) = refl
+    ε (inr ())
+    η : (x : X) → (g ∘ f) x ≡ x
+    η x = refl
+
+𝟘-rneutral' : ∀ {U} {X : U ̇} → (X + 𝟘) ≃ X 
+𝟘-rneutral' = ≃-sym 𝟘-rneutral
+
+𝟘-lneutral : ∀ {U} {X : U ̇} → (𝟘 + X) ≃ X 
+𝟘-lneutral = ≃-trans +comm 𝟘-rneutral'
+    
++assoc : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {Z : W ̇} → ((X + Y) + Z) ≃ (X + (Y + Z))
++assoc {U} {V} {W} {X} {Y} {Z} = f , (g , ε) , (g , η)
+  where
+    f : (X + Y) + Z → X + (Y + Z)
+    f (inl (inl x)) = inl x
+    f (inl (inr y)) = inr (inl y)
+    f (inr z)       = inr (inr z)
+    g : X + (Y + Z) → (X + Y) + Z
+    g (inl x)       = inl (inl x)
+    g (inr (inl y)) = inl (inr y)
+    g (inr (inr z)) = inr z
+    ε : (t : X + (Y + Z)) → (f ∘ g) t ≡ t
+    ε (inl x)       = refl
+    ε (inr (inl y)) = refl
+    ε (inr (inr z)) = refl
+    η : (u : (X + Y) + Z) → (g ∘ f) u ≡ u
+    η (inl (inl x)) = refl
+    η (inl (inr x)) = refl
+    η (inr x)       = refl
+
+×𝟘 : ∀ {U} {X : U ̇} → 𝟘 ≃ X × 𝟘
+×𝟘 {U} {X} = f , (g , ε) , (g , η)
+  where
+    f : 𝟘 → X × 𝟘
+    f ()
+    g : X × 𝟘 → 𝟘
+    g (x , ())
+    ε : (t : X × 𝟘) → (f ∘ g) t ≡ t
+    ε (x , ())
+    η : (u : 𝟘) → (g ∘ f) u ≡ u
+    η ()
+
+𝟙distr : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X × Y + X) ≃ X × (Y + 𝟙)
+𝟙distr {U} {V} {X} {Y} = f , (g , ε) , (g , η)
+  where
+    f : X × Y + X → X × (Y + 𝟙)
+    f (inl (x , y)) = x , inl y
+    f (inr x)       = x , inr *
+    g : X × (Y + 𝟙) → X × Y + X
+    g (x , inl y) = inl (x , y)
+    g (x , inr O) = inr x
+    ε : (t : X × (Y + 𝟙)) → (f ∘ g) t ≡ t
+    ε (x , inl y) = refl
+    ε (x , inr *) = refl
+    η : (u : X × Y + X) → (g ∘ f) u ≡ u
+    η (inl (x , y)) = refl
+    η (inr x)       = refl
+
+Ap+ : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} (Z : W ̇) → X ≃ Y → (X + Z) ≃ (Y + Z)
+Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η')
+  where
+    f' : X + Z → Y + Z
+    f' (inl x) = inl (f x)
+    f' (inr z) = inr z
+    g' : Y + Z → X + Z
+    g' (inl y) = inl (g y)
+    g' (inr z) = inr z
+    h' : Y + Z → X + Z
+    h' (inl y) = inl (h y)
+    h' (inr z) = inr z
+    ε' : (t : Y + Z) → (f' ∘ g') t ≡ t
+    ε' (inl y) = ap inl (ε y) 
+    ε' (inr z) = refl
+    η' : (u : X + Z) → (h' ∘ f') u ≡ u
+    η' (inl x) = ap inl (η x)
+    η' (inr z) = refl
+
+×comm :  ∀ {U} {V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
+×comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
+  where
+    f : X × Y → Y × X
+    f (x , y) = (y , x)
+    g : Y × X → X × Y
+    g (y , x) = (x , y)
+    ε : (t : Y × X) → (f ∘ g) t ≡ t
+    ε (y , x) = refl
+    η : (u : X × Y) → (g ∘ f) u ≡ u
+    η (x , y) = refl
+
+\end{code}
+
