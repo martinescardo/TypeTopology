@@ -432,6 +432,17 @@ equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
 equality-cases (inl x) f g = f x refl
 equality-cases (inr y) f g = g y refl
 
++disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inl x ≡ inr y → 𝟘
++disjoint ()
+
++disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inr y ≡ inl x → 𝟘
++disjoint' ()
+
+inl-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
+inl-injective refl = refl
+
+inr-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
+inr-injective refl = refl
 
 ×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
      → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y') 

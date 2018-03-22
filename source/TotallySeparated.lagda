@@ -427,7 +427,7 @@ apartness relation _♯₂ is tight:
    c : symmetric _♯₂_
    c x y = ptfunct g
     where
-     g : (Σ \(p : X → 𝟚) → p x ≢ p y) → Σ \(p : _ → 𝟚) → p y ≢ p x
+     g : (Σ \(p : X → 𝟚) → p x ≢ p y) → Σ \(p : X → 𝟚) → p y ≢ p x
      g (p , u) = p , ≢-sym u
    
    d : cotransitive _♯₂_

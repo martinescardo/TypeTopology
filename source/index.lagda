@@ -265,5 +265,6 @@ open import Dominance
 open import KrausLemma
 open import NonCollapsibleFamily
 open import UnivalenceFromScratch
+open import PlusOneLC
 
 \end{code}
