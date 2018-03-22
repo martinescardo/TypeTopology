@@ -178,7 +178,7 @@ fsucc = inl
 
 +construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m + Fin n)
 +construction m zero = m , 𝟘-rneutral
-+construction m (succ n) = goal
++construction m (succ n) = g
   where
     IH : Σ \(k : ℕ) → Fin k ≃ (Fin m + Fin n)
     IH = +construction m n
@@ -188,8 +188,8 @@ fsucc = inl
     φ = pr₂ IH
     φ+𝟙 : Fin(succ k) ≃ (Fin m + Fin (succ n))
     φ+𝟙 = ≃-trans (Ap+ 𝟙 φ) +assoc
-    goal : Σ \(k' : ℕ) → Fin k' ≃ (Fin m + Fin (succ n))
-    goal = succ k , φ+𝟙
+    g : Σ \(k' : ℕ) → Fin k' ≃ (Fin m + Fin (succ n))
+    g = succ k , φ+𝟙
 
 \end{code}
 
@@ -279,7 +279,7 @@ We now repeat this story for multiplication:
 
 ×construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Fin m × Fin n
 ×construction m zero = zero , ×𝟘
-×construction m (succ n) = goal
+×construction m (succ n) = g
   where
     IH : Σ \(k : ℕ) → Fin k ≃ Fin m × Fin n
     IH = ×construction m n
@@ -289,8 +289,8 @@ We now repeat this story for multiplication:
     φ = pr₂ IH
     φ' : Fin (k +' m) ≃ Fin m × (Fin n + 𝟙)
     φ' = ≃-trans (Fin+homo' k m) (≃-trans (Ap+ (Fin m) φ) 𝟙distr)
-    goal : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
-    goal = (k +' m) , φ'
+    g : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
+    g = (k +' m) , φ'
 
 _×'_ : ℕ → ℕ → ℕ
 m ×' n = pr₁(×construction m n)
