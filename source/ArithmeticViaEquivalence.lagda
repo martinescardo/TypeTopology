@@ -26,8 +26,8 @@ the coordinates, and doing this doesn't change the number of pebbles.
 How can this proof be formally rendered, as faithfully as possible to
 the intuition?
 
-We first define an interpretation function Fin : ℕ → Set of numbers as
-sets by
+We first define an interpretation function Fin : ℕ → U₀ of numbers as
+types (in the universe U₀) by
 
  (1) Fin   0  = 𝟘,          where 𝟘 is the empty set,
  (2) Fin(n+1) = Fin n + 𝟙,  where 𝟙 is the singleton set, 
@@ -105,7 +105,7 @@ using (3) and the equivalence
 
 Among all these constructions, we use induction on ℕ only in
 
-  * the definition (1-2) of the function Fin : ℕ → Set,
+  * the definition (1-2) of the function Fin : ℕ → U₀,
 
   * the existence (3')-(5') of addition and multiplication, and
 
@@ -215,7 +215,7 @@ characterizing equations from Peano arithmetic:
 
 \end{code}
 
-Tautologically, we get that Fin : ℕ → Type is an
+Tautologically, we get that Fin : ℕ → U₀ is an
 addition-homomorphism:
 
 \begin{code}
@@ -225,7 +225,7 @@ Fin+homo' m n = pr₂(+construction m n)
 
 \end{code}
 
-3rd and last definition by induction. The function Fin : ℕ → Type is
+3rd and last definition by induction. The function Fin : ℕ → U₀ is
 left-cancellable:
 
 \begin{code}
