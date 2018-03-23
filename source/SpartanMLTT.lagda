@@ -80,7 +80,6 @@ open Σ public
    → ((x : X) (y : Y x) → A(x , y)) → (t : (Σ \(x : X) → Y x)) → A t
 Σ-elim f (x , y) = f x y
 
-
 uncurry : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : W ̇}
         → ((x : X) → Y x → Z) → (Σ \(x : X) → Y x) → Z
 uncurry f (x , y) = f x y

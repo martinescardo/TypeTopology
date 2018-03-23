@@ -329,14 +329,14 @@ retraction f = ∀ y → Σ \x → f x ≡ y
 retract_Of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 retract Y Of X = Σ \(f : X → Y) → retraction f
 
-has-section : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-has-section r = Σ \s → r ∘ s ∼ id
+hasSection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+hasSection r = Σ \s → r ∘ s ∼ id
 
-has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-has-retraction s = Σ \r → r ∘ s ∼ id
+hasRetraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+hasRetraction s = Σ \r → r ∘ s ∼ id
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
-retract Y of X = Σ \(f : X → Y) → has-section f
+retract Y of X = Σ \(f : X → Y) → hasSection f
 
 retract-of-retract-Of : ∀ {U V} {X : U ̇} {Y : V ̇} → retract Y of X → retract Y Of X
 retract-of-retract-Of {U} {V} {X} {Y} (f , φ)= (f , hass)
@@ -361,11 +361,11 @@ Equivalences.
 
 \begin{code}
 
-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-is-equiv f = has-section f × has-retraction f 
+isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+isEquiv f = hasSection f × hasRetraction f 
 
 _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
-X ≃ Y = Σ \(f : X → Y) → is-equiv f
+X ≃ Y = Σ \(f : X → Y) → isEquiv f
 
 ideq : ∀ {U} (X : U ̇) → X ≃ X
 ideq X = id , ((id , idp) , (id , idp))
@@ -391,13 +391,13 @@ Eq = _≃_
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
-inverse : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → is-equiv f → qinv f
+inverse : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f → qinv f
 inverse {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
   sf : (x : X) → s(f x) ≡ x
   sf x = s(f x) ≡⟨ (rf (s (f x))) ⁻¹ ⟩ r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩ r(f x) ≡⟨ rf x ⟩ x ∎
 
-qinv-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-equiv f
+qinv-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isEquiv f
 qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
 
 ≃-sym : ∀ {U V} {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X 
@@ -407,7 +407,7 @@ qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
   g = pr₁(inverse f e)
   q : qinv g
   q = f , pr₂(pr₂(inverse f e)) , pr₁(pr₂(inverse f e))
-  d : is-equiv g
+  d : isEquiv g
   d = qinv-equiv g q
 
 equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
@@ -415,7 +415,6 @@ equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
 
 equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
 equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
-
 
 \end{code}
 
@@ -429,7 +428,7 @@ left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
 lcmtpip : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → isProp Y → isProp X
 lcmtpip f lc i x x' = lc (i (f x) (f x'))
 
-section-lc : ∀ {U V} {X : U ̇} {A : V ̇} (s : X → A) → has-retraction s → left-cancellable s
+section-lc : ∀ {U V} {X : U ̇} {A : V ̇} (s : X → A) → hasRetraction s → left-cancellable s
 section-lc {U} {V} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
 
 lcccomp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
@@ -443,7 +442,7 @@ Formulation of function extensionality.
 \begin{code}
 
 FunExt : ∀ U V → U ′ ⊔ V ′ ̇
-FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → is-equiv (happly f g)
+FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → isEquiv (happly f g)
 
 ≃-funext : ∀ U V → FunExt U V → {X : U ̇} {A : X → V ̇} (f g : Π A)
          → (f ≡ g) ≃ ((x : X) → f x ≡ g x)
@@ -518,14 +517,14 @@ Formulation of univalence.
 idtoeq : ∀ {U} (X : U ̇) → Nat (Id X) (Eq X)
 idtoeq X = yoneda-nat (Eq X) (ideq X)
 
+isUnivalent : ∀ U → U ′ ̇
+isUnivalent U = (X Y : U ̇) → isEquiv(idtoeq X Y)
+
 eqtofun : ∀ {U V} (X : U ̇) → Nat (Eq X) (λ (Y : V ̇) → X → Y)
 eqtofun X Y (f , _) = f
 
 idtofun : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 idtofun X Y p = eqtofun X Y (idtoeq X Y p)
-
-isUnivalent : ∀ U → U ′ ̇
-isUnivalent U = (X Y : U ̇) → is-equiv(idtoeq X Y)
 
 eqtoid : ∀ {U} → isUnivalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
 eqtoid ua X Y = pr₁(pr₁(ua X Y))
@@ -540,8 +539,8 @@ idtofun' X = yoneda-nat (λ Y → X → Y) id
 idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
 idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
 
-idtofun-is-equiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → is-equiv(idtofun X Y p)
-idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
+idtofun-isEquiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → isEquiv(idtofun X Y p)
+idtofun-isEquiv X Y p = pr₂(idtoeq X Y p)
 
 isUnivalent-≃ : ∀ {U} → isUnivalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
 isUnivalent-≃ ua X Y = idtoeq X Y , ua X Y
@@ -566,7 +565,7 @@ retraction is data not property:
 \begin{code}
 
 universality-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                     → is-universal-element A (x , a) → (y : X) → has-section(yoneda-nat A a y) 
+                     → is-universal-element A (x , a) → (y : X) → hasSection(yoneda-nat A a y) 
 universality-section {U} {V} {X} {A} x a u y = s y , φ y
  where
   s : Nat A (Id x)
@@ -589,11 +588,11 @@ idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
         η y p               ≡⟨ (hedberg-lemma x η y p)⁻¹ ⟩
         η x (idp x) ∙ p   ∎ )
 
-natural-section-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇}
+natural-section-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇}
                            (x : X) (r : Nat (Id x) A)
-                        → ((y : X) → has-section(r y)) 
-                        → ((y : X) → is-equiv(r y))
-natural-section-is-equiv {U} {V} {X} {A} x r hass = λ y → (hass y , hasr y)
+                        → ((y : X) → hasSection(r y)) 
+                        → ((y : X) → isEquiv(r y))
+natural-section-isEquiv {U} {V} {X} {A} x r hass = λ y → (hass y , hasr y)
  where
   s : Nat A (Id x)
   s y = pr₁ (hass y)
@@ -605,7 +604,7 @@ natural-section-is-equiv {U} {V} {X} {A} x r hass = λ y → (hass y , hasr y)
   idemp y p = ap (s y) (rs (r y p))
   η-is-id : (y : X) (p : x ≡ y) → η y p ≡ p
   η-is-id y p = idemp-is-id η y p (idemp y p)
-  hasr : (y : X) → has-retraction(r y)
+  hasr : (y : X) → hasRetraction(r y)
   hasr y = s y , η-is-id y
 
 \end{code}
@@ -616,8 +615,8 @@ We are interested in this corollary:
 
 universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → is-universal-element A (x , a)
-                   → (y : X) → is-equiv(yoneda-nat A a y)
-universality-equiv {U} {V} {X} {A} x a u = natural-section-is-equiv x (yoneda-nat A a)
+                   → (y : X) → isEquiv(yoneda-nat A a y)
+universality-equiv {U} {V} {X} {A} x a u = natural-section-isEquiv x (yoneda-nat A a)
                                                                       (universality-section x a u)
 \end{code}
 
@@ -626,12 +625,12 @@ The converse is trivial:
 \begin{code}
 
 section-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                     → ((y : X) → has-section(yoneda-nat A a y))
+                     → ((y : X) → hasSection(yoneda-nat A a y))
                      → is-universal-element A (x , a)
 section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
 
 equiv-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                   → ((y : X) → is-equiv(yoneda-nat A a y))
+                   → ((y : X) → isEquiv(yoneda-nat A a y))
                    → is-universal-element A (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
@@ -642,7 +641,7 @@ Next we show that a presheaf A is representable iff Σ A is contractible.
 \begin{code}
 
 _≊_ : ∀ {U V} {X : U ̇} → (X → V ̇) → (X → V ̇) → U ⊔ V ̇
-A ≊ B = Σ \(η : Nat A B) → ∀ x → is-equiv(η x)
+A ≊ B = Σ \(η : Nat A B) → ∀ x → isEquiv(η x)
 
 is-representable : ∀ {U} {X : U ̇} → (X → U ̇) → U ̇
 is-representable A = Σ \x → Id x ≊ A
@@ -653,7 +652,7 @@ contr-is-repr {U} {X} {A} ((x , a) , cc) = g
   g : Σ \(x : X) → Id x ≊ A
   g = x , (yoneda-nat A a , universality-equiv x a (cc-is-ue A (x , a) cc))
 
-equiv-closed-under-∼ : ∀ {U} {X Y : U ̇} (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
+equiv-closed-under-∼ : ∀ {U} {X Y : U ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
 equiv-closed-under-∼ {U} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
  where
   gs : (y : Y) → g(s y) ≡ y
@@ -661,9 +660,9 @@ equiv-closed-under-∼ {U} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (
   rg : (x : X) → r(g x) ≡ x
   rg x = r (g x) ≡⟨ ap r (peq x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎
 
-is-repr→is-equiv-yoneda : ∀ {U} {X : U ̇} {A : X → U ̇} (x : X) (η : Nat (Id x) A) (y : X) 
-                        → is-equiv (η y) → is-equiv (yoneda-nat A (yoneda-elem A η) y)
-is-repr→is-equiv-yoneda {U} {X} {A} x η y ise =
+is-repr→isEquiv-yoneda : ∀ {U} {X : U ̇} {A : X → U ̇} (x : X) (η : Nat (Id x) A) (y : X) 
+                        → isEquiv (η y) → isEquiv (yoneda-nat A (yoneda-elem A η) y)
+is-repr→isEquiv-yoneda {U} {X} {A} x η y ise =
   equiv-closed-under-∼ (η y) (yoneda-nat A (yoneda-elem A η) y) ise (yoneda-lemma A η y)
 
 repr-is-contr : ∀ {U} {X : U ̇} {A : X → U ̇} → is-representable A → isContr (Σ A)
@@ -672,7 +671,7 @@ repr-is-contr {U} {X} {A} (x , (η , φ)) = g
   σ : Σ A
   σ = x , yoneda-elem A η
   is-ue-σ : is-universal-element A σ
-  is-ue-σ = equiv-universality x (yoneda-elem A η) (λ y → is-repr→is-equiv-yoneda x η y (φ y))
+  is-ue-σ = equiv-universality x (yoneda-elem A η) (λ y → is-repr→isEquiv-yoneda x η y (φ y))
   g : Σ \(σ : Σ A) → is-center-of-contraction (Σ A) σ
   g = σ , ue-is-cc σ is-ue-σ
 
@@ -688,10 +687,10 @@ paths-from-contractible x = ((x , idp x) , singletons-contractible)
 paths-to : ∀ {U} {X : U ̇} → X → U ̇
 paths-to x = Σ \y → y ≡ x
 
-rc-is-c : ∀ {U} {X Y : U ̇} (r : X → Y) → has-section r → isContr X → isContr Y
+rc-is-c : ∀ {U} {X Y : U ̇} (r : X → Y) → hasSection r → isContr X → isContr Y
 rc-is-c {U} {X} {Y} r (s , rs) (x , i) = r x , λ y → r x ≡⟨ ap r (i (s y)) ⟩ r (s y) ≡⟨ rs y ⟩ y ∎
 
-pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : paths-from x → paths-to x) → is-equiv f
+pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : paths-from x → paths-to x) → isEquiv f
 pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
  where
   f : paths-from x → paths-to x
@@ -721,8 +720,8 @@ fiber f y = Σ \x → f x ≡ y
 isContrMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isContrMap f = ∀ y → isContr (fiber f y)
 
-isContrMap-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → is-equiv f
-isContrMap-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
+isContrMap-isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → isEquiv f
+isContrMap-isEquiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
  where
   φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
   φ' = φ
@@ -749,7 +748,7 @@ id-isEmbedding : ∀ {U} {X : U ̇} → isEmbedding (id {U} {X})
 id-isEmbedding = paths-to-isProp
 
 isEmbedding' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isEmbedding' f = ∀ x x' → is-equiv (ap f {x} {x'})
+isEmbedding' f = ∀ x x' → isEquiv (ap f {x} {x'})
 
 fiber' : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber' f y = Σ \x → y ≡ f x
@@ -773,7 +772,7 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
   b x = (x , idp (f x)) , ise (f x) (x , idp (f x))
   c : (x : X) → isContr(fiber' f (f x))
   c x = rc-is-c (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
-  g : (x x' : X) → is-equiv(ap f {x} {x'})
+  g : (x x' : X) → isEquiv(ap f {x} {x'})
   g x = universality-equiv x refl (cc-is-ue (λ x' → f x ≡ f x') (pr₁(c x)) (pr₂(c x))) 
 
 embedding'-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding' f → isEmbedding f
@@ -854,7 +853,8 @@ isProp-isContr {U} {X} fe (x , φ) (y , γ) = to-Σ-Id _ (φ y , funext fe λ z 
   iss : isSet X
   iss = prop-isSet isp
 
-subtype-of-set-isSet : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y) → left-cancellable m → isSet Y → isSet X
+subtype-of-set-isSet : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
+                     → left-cancellable m → isSet Y → isSet X
 subtype-of-set-isSet {U} {V} {X} m i h = path-collapsible-isSet (f , g)
  where
   f : {x x' : X} → x ≡ x' → x ≡ x'
@@ -866,11 +866,11 @@ subtype-of-set-isSet {U} {V} {X} m i h = path-collapsible-isSet (f , g)
 
 \begin{code}
 
-ip-ie-idtofun : ∀ {U} (fe : FunExt U U) (X Y : U ̇) (p : X ≡ Y) → isProp(is-equiv(idtofun X Y p))
+ip-ie-idtofun : ∀ {U} (fe : FunExt U U) (X Y : U ̇) (p : X ≡ Y) → isProp(isEquiv(idtofun X Y p))
 ip-ie-idtofun {U} fe X = Jbased X B go
  where
    B : (Y : U ̇) → X ≡ Y → U ̇
-   B Y p = isProp(is-equiv(idtofun X Y p))
+   B Y p = isProp(isEquiv(idtofun X Y p))
    A = Σ \(f : X → X) → f ≡ id
    a : isProp A
    a = c-is-p (paths-to-contractible id)
@@ -889,7 +889,7 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    go = pcubp A' A' b b
 
 jip : ∀ {U} → isUnivalent U → FunExt U U → {X Y : U ̇} 
-   → (f : X → Y) → isProp(is-equiv f) 
+   → (f : X → Y) → isProp(isEquiv f) 
 jip {U} ua fe {X} {Y} f ije = h ije
   where
     e : X ≃ Y
@@ -898,18 +898,18 @@ jip {U} ua fe {X} {Y} f ije = h ije
     p = eqtoid ua X Y e
     f' : X → Y
     f' = idtofun X Y p
-    h' : isProp(is-equiv f')
+    h' : isProp(isEquiv f')
     h' = ip-ie-idtofun fe X Y p
-    ije' : is-equiv f'
-    ije' = idtofun-is-equiv X Y p
+    ije' : isEquiv f'
+    ije' = idtofun-isEquiv X Y p
     e' : X ≃ Y
     e' = f' , ije'
     q : e' ≡ e
     q = idtoeq-eqtoid ua X Y e
     q₁ : f' ≡ f
     q₁ = ap pr₁ q
-    h : isProp(is-equiv f)
-    h = yoneda-nat (λ f → isProp(is-equiv f)) h' f q₁
+    h : isProp(isEquiv f)
+    h = yoneda-nat (λ f → isProp(isEquiv f)) h' f q₁
 
 \end{code}
 
@@ -948,10 +948,10 @@ eqtofun-lc : ∀ {U} → isUnivalent U → FunExt U U
            → (X Y : U ̇) → left-cancellable(eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
-  q : yoneda-nat is-equiv jef g p ≡ jeg
-  q = jip ua fe g (yoneda-nat is-equiv jef g p) jeg
+  q : yoneda-nat isEquiv jef g p ≡ jeg
+  q = jip ua fe g (yoneda-nat isEquiv jef g p) jeg
   go : f , jef ≡ g , jeg
-  go = to-Σ-Id is-equiv (p , q)
+  go = to-Σ-Id isEquiv (p , q)
   
 \end{code}
 
@@ -1009,14 +1009,8 @@ isSet-exponential-ideal {U} {V} fe {X} {A} isa {f} {g} = b
  where
   a : isProp (f ∼ g)
   a p q = funext fe λ x → isa x (p x) (q x)
-  
   b : isProp(f ≡ g)
   b = lcmtpip (happly f g) (section-lc (happly f g) (pr₂ (fe f g))) a
-
-\end{code}
-
-
-\begin{code}
 
 isProp-closed-under-Σ : ∀ {U V} {X : U ̇} {A : X → V ̇} 
                     → isProp X → ((x : X) → isProp(A x)) → isProp(Σ A)
@@ -1025,10 +1019,7 @@ isProp-closed-under-Σ {U} {V} {X} {A} isx isa (x , a) (y , b) =
 
 isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isProp(A x)) → isProp(Π A) 
-isProp-exponential-ideal {U} {V} fe {X} {A} isa = lemma
- where
-  lemma : isProp(Π A)
-  lemma f g = funext fe (λ x → isa x (f x) (g x))
+isProp-exponential-ideal {U} {V} fe {X} {A} isa f g = funext fe (λ x → isa x (f x) (g x))
 
 isSet' : ∀ {U} → U ̇ → U ̇
 isSet' X = (x y : X) → isProp(x ≡ y)
@@ -1056,8 +1047,10 @@ _holds = pr₁
 holdsIsProp : ∀ {U} → (p : Prop {U}) → isProp (p holds)
 holdsIsProp = pr₂
 
-PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}} → (p holds → q holds) → (q holds → p holds) → p ≡ q
-PropExt {U} fe pe {p} {q} f g = to-Σ-Id isProp ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
+PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}}
+        → (p holds → q holds) → (q holds → p holds) → p ≡ q
+PropExt {U} fe pe {p} {q} f g =
+        to-Σ-Id isProp ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
 
 Prop-isSet : ∀ {U} → FunExt U U → propExt U → isSet (Prop {U})
 Prop-isSet {U} fe pe = path-collapsible-isSet pc
@@ -1117,7 +1110,6 @@ disjoint-cases-embedding {U} {V} {W} {X} {Y} {A} f g ef eg d = go
        r = ap h p
 
 \end{code}
-
 
 To use propositional truncation, one needs to assume an element of
 PropTrunc, which is a postulated type with no postulated element. This
@@ -1283,7 +1275,8 @@ Surjections can be characterized as follows, modulo size:
 \begin{code}
 
  imageInduction : ∀ {W U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ⊔ W ′ ̇
- imageInduction {W} {U} {V} {X} {Y} f = (P : Y → W ̇) → ((y : Y) → isProp(P y)) → ((x : X) → P(f x)) → (y : Y) → P y
+ imageInduction {W} {U} {V} {X} {Y} f =
+                (P : Y → W ̇) → ((y : Y) → isProp(P y)) → ((x : X) → P(f x)) → (y : Y) → P y
 
  surjection-induction : ∀ {W U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
                       → isSurjection f → imageInduction {W} f 
@@ -1297,7 +1290,6 @@ Surjections can be characterized as follows, modulo size:
                                        (λ y → ptisp)
                                        (λ x → ∣ x , refl ∣)
 
-
  image-induction : ∀ {W U V} {X : U ̇} {Y : V ̇}
                  (f : X → Y) (P : image f → W ̇)
                → (∀ y' → isProp(P y'))
@@ -1307,7 +1299,7 @@ Surjections can be characterized as follows, modulo size:
                                           (corestriction-surjection f)
 
  retraction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
-                       → has-section f → isSurjection f 
+                       → hasSection f → isSurjection f 
  retraction-surjection {U} {V} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
 
 \end{code}
@@ -1331,7 +1323,6 @@ EM U = (P : U ̇) → isProp P → P + ¬ P
 
 WEM : ∀ U → U ′ ̇
 WEM U = (P : U ̇) → isProp P → ¬ P + ¬¬ P
-
 
 DNE : ∀ U → U ′ ̇
 DNE U = (P : U ̇) → isProp P → ¬¬ P → P
@@ -1381,7 +1372,8 @@ no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
 ⊥≠⊤ : ⊥ ≢ ⊤
 ⊥≠⊤ p = 𝟘-is-not-𝟙 (ap pr₁ p)
 
-no-truth-values-other-than-⊥-or-⊤ : FunExt U₀ U₀ → propExt U₀ → ¬ Σ \(p : Prop) → (p ≢ ⊥) × (p ≢ ⊤)  
+no-truth-values-other-than-⊥-or-⊤ : FunExt U₀ U₀ → propExt U₀
+                                   → ¬ Σ \(p : Prop) → (p ≢ ⊥) × (p ≢ ⊤)  
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
  where
    u : ¬ P

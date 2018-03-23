@@ -42,7 +42,7 @@ remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')
   gf' (x , _) = to-Σ-Id _ (gf x , neg-isProp (fe U U₀) _ _) 
   fg' : f' ∘ g' ∼ id
   fg' (y , _) = to-Σ-Id _ (fg y , neg-isProp (fe V U₀) _ _)
-  e' : is-equiv f'
+  e' : isEquiv f'
   e' = qinv-equiv f' (g' , gf' , fg')
 
 open import DiscreteAndSeparated

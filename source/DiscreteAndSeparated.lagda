@@ -250,7 +250,7 @@ qinvs-preserve-isolatedness {U} {V} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y)
   h (inl p) = inl (ap f p ∙ fg y)
   h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (gf x) ⁻¹ ∙ ap g q) u)
 
-equivalences-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → is-equiv f → (x : X) → isolated x → isolated (f x)
+equivalences-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f → (x : X) → isolated x → isolated (f x)
 equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (inverse f e)
 
 isolated-added-point : ∀ {U} {X : U ̇} → isolated {U} {X + 𝟙} (inr *)

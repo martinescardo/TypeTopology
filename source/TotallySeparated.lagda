@@ -338,8 +338,8 @@ We package the above as follows for convenient use elsewhere
 \begin{code}
 
  totally-separated-reflection' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
-                              → is-equiv (λ (f' : T X → A) → f' ∘ η)
- totally-separated-reflection' ts = isContrMap-is-equiv _ (totally-separated-reflection ts)
+                              → isEquiv (λ (f' : T X → A) → f' ∘ η)
+ totally-separated-reflection' ts = isContrMap-isEquiv _ (totally-separated-reflection ts)
 
  totally-separated-reflection'' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
                                → (T X → A) ≃ (X → A)
@@ -357,7 +357,7 @@ open neighbourhoods are equal).
 \begin{code}
 
 𝟚-sober : ∀ {U W} → W ̇ → U ′ ⊔ W ̇
-𝟚-sober {U} {W} A = 𝟚-separated A × ((X : U ̇) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
+𝟚-sober {U} {W} A = 𝟚-separated A × ((X : U ̇) (e : A → X) → isEquiv(dual 𝟚 e) → isEquiv e)
 
 \end{code}
 
@@ -480,9 +480,9 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- neg-apart-is-equiv : ∀ {U} {X : U ̇} → FunExt U U₀
+ neg-apart-isEquiv : ∀ {U} {X : U ̇} → FunExt U U₀
                     → (_♯_ : X → X → U ̇) → apartness _♯_ → equivalence (λ x y → ¬(x ♯ y))
- neg-apart-is-equiv {U} {X} fe _♯_ (♯p , ♯i , ♯s , ♯c) = p , ♯i , s , t
+ neg-apart-isEquiv {U} {X} fe _♯_ (♯p , ♯i , ♯s , ♯c) = p , ♯i , s , t
   where
    p : (x y : X) → isProp (¬ (x ♯ y))
    p x y = neg-isProp fe
@@ -1010,7 +1010,7 @@ apartness on it.
     p₄ = p₂ ⁻¹ ∙ p₃
 
   tight-η-equiv-direct : tight _♯_ → X ≃ X'
-  tight-η-equiv-direct t = (η , isContrMap-is-equiv η cm)
+  tight-η-equiv-direct t = (η , isContrMap-isEquiv η cm)
    where
     lc : left-cancellable η
     lc {x} {y} p = i h
