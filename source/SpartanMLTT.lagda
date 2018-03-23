@@ -372,7 +372,7 @@ _⁻¹ : ∀ {U} {X : U ̇} → {x y : X} → x ≡ y → y ≡ x
 p ⁻¹ = transport (λ x → x ≡ _) p refl
 
 ≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
-≢-sym f r = f(r ⁻¹)
+≢-sym u r = u(r ⁻¹)
 
 trans-sym : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ⁻¹ ∙ r ≡ refl
 trans-sym refl = refl
@@ -479,16 +479,11 @@ Standard syntax for equality chain reasoning:
 _≡⟨_⟩_ : ∀ {U} {X : U ̇} (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
 _ ≡⟨ p ⟩ q = p ∙ q
 
-
 _∎ : ∀ {U} {X : U ̇} → (x : X) → x ≡ x
 _∎ _ = refl
 
 𝟙-all-* : (x : 𝟙) → x ≡ *
 𝟙-all-* * = refl 
-
-\end{code}
-
-\begin{code}
 
 typeOf : ∀ {U} {X : U ̇} → X → U ̇
 typeOf {U} {X} x = X
@@ -514,13 +509,13 @@ infix  1 _∎
 infixr 0 _≡⟨_⟩_ 
 infixr 4 _,_
 infixr 2 _×_
-infixr 0 _+_
+infixr 1 _+_
 infixl 5 _∘_ 
 infix  50 ¬_
-infix  1 _≡_
-infix  1 _≢_
+infix  0 _≡_
+infix  0 _≢_
 infix  3  _⁻¹
-infix  0 _⇔_
+infix  -1 _⇔_
 
 \end{code}
 

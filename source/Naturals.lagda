@@ -39,7 +39,7 @@ succ-injective = ap pred
 ℕ-discrete (succ m) 0 = inr (λ())
 ℕ-discrete (succ m) (succ n) =  step(ℕ-discrete m n)
   where 
-   step : m ≡ n + (m ≢ n) → succ m ≡ succ n + (succ m ≢ succ n) 
+   step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n) 
    step (inl r) = inl(ap succ r)
    step (inr f) = inr(λ s → f(succ-injective s)) 
 

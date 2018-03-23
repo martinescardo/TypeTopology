@@ -193,12 +193,6 @@ Jbased' : ∀ {U V} {X : U ̇} (x : X) (B : (y : X) → x ≡ y → V ̇)
         → B x (idp x) → (y : X) (p : x ≡ y) → B y p
 Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
 
-\end{code}
-
-Finally, based path induction then reduces to J' in the obvious way:
-
-\begin{code}
-
 idp-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → idp x ∙ p ≡ p
 idp-left-neutral {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
 
@@ -236,15 +230,15 @@ Then of course associativity of path composition follows:
 
 \begin{code}
 
+assoc : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
+      → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
+assoc {U} {X} {x} {y} p q r = ap (λ f → f x y p q) (ext-assoc r) 
+
 left-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ idp y
 left-inverse {U} {X} {x} {y} = yoneda-elem-lc (λ x p → p ⁻¹ ∙ p) (λ x p → idp x) (idp(idp x)) y
 
 right-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → idp x ≡ p ∙ p ⁻¹
 right-inverse {U} {X} {x} {y} = yoneda-const (λ x p → p ∙ p ⁻¹) y
-
-assoc : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
-      → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
-assoc {U} {X} {x} {y} p q r = ap (λ f → f x y p q) (ext-assoc r) 
 
 cancel-left : ∀ {U} {X : U ̇} {x y z : X} {p : x ≡ y} {q r : y ≡ z}
             → p ∙ q ≡ p ∙ r → q ≡ r
@@ -361,7 +355,6 @@ retracts-compose : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
 retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
                                                     (s ∘ s' , λ z → ap r' (rs (s' z)) ∙ rs' z)
 
-
 \end{code}
 
 Equivalences.
@@ -376,6 +369,21 @@ X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
 ideq : ∀ {U} (X : U ̇) → X ≃ X
 ideq X = id , ((id , idp) , (id , idp))
+
+≃-trans : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+≃-trans {U} {V} {W} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
+  f' ∘ f , (g ∘ g' , fg'') , (h ∘ h' , hf'')
+ where
+    fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
+    fg'' z =  ap f' (fg (g' z)) ∙ fg' z
+    hf'' : (x : X) → h(h'(f'(f x))) ≡ x
+    hf'' x = ap h (hf' (f x)) ∙ hf x
+
+_≃⟨_⟩_ : ∀ {U V W} (X : U ̇) {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+_ ≃⟨ d ⟩ e = ≃-trans d e
+
+_■ : ∀ {U} (X : U ̇) → X ≃ X
+_■ = ideq
 
 Eq : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 Eq = _≃_
@@ -401,15 +409,6 @@ qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
   q = f , pr₂(pr₂(inverse f e)) , pr₁(pr₂(inverse f e))
   d : is-equiv g
   d = qinv-equiv g q
-
-≃-trans : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
-≃-trans {U} {V} {W} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
-  f' ∘ f , (g ∘ g' , fg'') , (h ∘ h' , hf'')
- where
-    fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
-    fg'' z =  ap f' (fg (g' z)) ∙ fg' z
-    hf'' : (x : X) → h(h'(f'(f x))) ≡ x
-    hf'' x = ap h (hf' (f x)) ∙ hf x
 
 equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
@@ -1424,6 +1423,8 @@ open import Two
 
 \begin{code}
 
-infix 1 _≃_
+infix  0 _≃_
+infix  1 _■
+infixr 0 _≃⟨_⟩_
 
 \end{code}

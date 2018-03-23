@@ -39,10 +39,10 @@ General properties:
 \begin{code}
 
 discrete-is-cotransitive : ∀ {U} {X : U ̇}
-                         → discrete X → {x y z : X} → x ≢ y →  x ≢ z  +  z ≢ y
+                         → discrete X → {x y z : X} → x ≢ y →  (x ≢ z) + (z ≢ y)
 discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
  where 
-  f : x ≡ z  +  x ≢ z → x ≢ z  +  z ≢ y
+  f : (x ≡ z) + (x ≢ z) → (x ≢ z) + (z ≢ y)
   f (inl r) = inr (λ s → φ(r ∙ s)) 
   f (inr γ) = inl γ 
 
@@ -133,10 +133,10 @@ apart-is-cotransitive : ∀ {U V} {X : U ̇} → {Y : X → V ̇}
                      → f ♯ g → f ♯ h  +  h ♯ g
 apart-is-cotransitive d f g h (x , φ)  = lemma₁(lemma₀ φ)
  where 
-  lemma₀ : f x ≢ g x → f x ≢ h x  +  h x ≢ g x
+  lemma₀ : f x ≢ g x → (f x ≢ h x)  +  (h x ≢ g x)
   lemma₀ = discrete-is-cotransitive (d x)
 
-  lemma₁ : f x ≢ h x  +  h x ≢ g x → f ♯ h  +  h ♯ g
+  lemma₁ : (f x ≢ h x) + (h x ≢ g x) → f ♯ h  +  h ♯ g
   lemma₁ (inl γ) = inl (x , γ)
   lemma₁ (inr δ) = inr (x , δ)
 

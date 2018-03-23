@@ -308,28 +308,28 @@ u ≡ under(n+1) if and only incl u n ≡ ₁ and incl u (n+1) ≡ ₀.
 
 \begin{code}
 
-finite-isolated : FunExt₀ → (u : ℕ∞) (n : ℕ) → u ≡ under n  +  u ≢ under n
+finite-isolated : FunExt₀ → (u : ℕ∞) (n : ℕ) → (u ≡ under n) + (u ≢ under n)
 finite-isolated fe u 0 = two-equality-cases lemma₀ lemma₁
  where 
-  lemma₀ : isZero u → u ≡ Zero + u ≢ Zero
+  lemma₀ : isZero u → (u ≡ Zero) + (u ≢ Zero)
   lemma₀ r = inl(isZero-equal-Zero fe r)
-  lemma₁ : positive u → u ≡ Zero + u ≢ Zero
+  lemma₁ : positive u → (u ≡ Zero) + (u ≢ Zero)
   lemma₁ r = inr(contrapositive fact (Lemma[b≡₁→b≢₀] r))
     where fact : u ≡ Zero → isZero u
           fact r = ap (λ u → incl u 0) r
 finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
  where
-  lemma₀ :  incl u n ≡ ₀ → u ≡ under(succ n) + u ≢ under(succ n) 
+  lemma₀ :  incl u n ≡ ₀ → (u ≡ under(succ n)) + (u ≢ under(succ n))
   lemma₀ r = inr(contrapositive lemma (Lemma[b≡₀→b≢₁] r))
    where
     lemma : u ≡ under(succ n) → incl u n ≡ ₁
     lemma r = ap (λ v → incl v n) r ∙ under-diagonal₁ n
-  lemma₁ :  incl u n ≡ ₁ → u ≡ under(succ n) + u ≢ under(succ n)
+  lemma₁ :  incl u n ≡ ₁ → (u ≡ under(succ n)) + (u ≢ under(succ n))
   lemma₁ r = two-equality-cases lemma₁₀ lemma₁₁
    where
-    lemma₁₀ :  incl u (succ n) ≡ ₀ → u ≡ under(succ n) + u ≢ under(succ n) 
+    lemma₁₀ :  incl u (succ n) ≡ ₀ → (u ≡ under(succ n)) + (u ≢ under(succ n))
     lemma₁₀ s = inl(Succ-criterion fe r s)
-    lemma₁₁ :  incl u (succ n) ≡ ₁ → u ≡ under(succ n) + u ≢ under(succ n) 
+    lemma₁₁ :  incl u (succ n) ≡ ₁ → (u ≡ under(succ n)) + (u ≢ under(succ n))
     lemma₁₁ s = inr (contrapositive lemma (Lemma[b≡₁→b≢₀] s))
      where
       lemma : u ≡ under(succ n) → incl u (succ n) ≡ ₀
@@ -369,7 +369,7 @@ max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
   t : decreasing (λ i → max𝟚 (α i) (β i))
   t i p = max𝟚-lemma-converse (α i) (β i) (f (max𝟚-lemma(α(succ i)) (β(succ i)) p))
     where
-     f : α(succ i) ≡ ₁ + β(succ i) ≡ ₁ → α i ≡ ₁ + β i ≡ ₁
+     f : (α(succ i) ≡ ₁) + (β(succ i) ≡ ₁) → (α i ≡ ₁) + (β i ≡ ₁)
      f (inl p) = inl (r i p)
      f (inr p) = inr (s i p)
 

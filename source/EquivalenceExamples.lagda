@@ -93,8 +93,8 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
       GF' : (x : X) → H(F w) x ≡ w x
       GF' x = hf x (w x)
   
-lemma[𝟙×Y≃Y] : ∀ {U} {Y : U ̇} → 𝟙 × Y ≃ Y
-lemma[𝟙×Y≃Y] {U} {Y} = (f , (g , fg) , (g , gf))
+equiv[𝟙×Y≃Y] : ∀ {U} {Y : U ̇} → 𝟙 × Y ≃ Y
+equiv[𝟙×Y≃Y] {U} {Y} = (f , (g , fg) , (g , gf))
   where 
     f : 𝟙 × Y → Y
     f (* , y) = y
@@ -106,8 +106,8 @@ lemma[𝟙×Y≃Y] {U} {Y} = (f , (g , fg) , (g , gf))
     gf (* , y) = refl
   
   
-lemma[X×Y≃Y×X] : ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
-lemma[X×Y≃Y×X] {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
+equiv[X×Y≃Y×X] : ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
+equiv[X×Y≃Y×X] {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
    where 
     f : X × Y → Y × X
     f (x , y) = (y , x)
@@ -118,12 +118,16 @@ lemma[X×Y≃Y×X] {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
     gf : ∀ t → g (f t) ≡ t
     gf t = refl
   
-lemma[Y×𝟙≃Y] : ∀ {U} {Y : U ̇} → Y × 𝟙 ≃ Y
-lemma[Y×𝟙≃Y] {U} {Y} = ≃-trans {U} {U} {U} lemma[X×Y≃Y×X] lemma[𝟙×Y≃Y] 
+equiv[Y×𝟙≃Y] : ∀ {U} {Y : U ̇} → Y × 𝟙 ≃ Y
+equiv[Y×𝟙≃Y] {U} {Y} =
+              Y × 𝟙 ≃⟨ equiv[X×Y≃Y×X] ⟩
+              𝟙 × Y ≃⟨ equiv[𝟙×Y≃Y] ⟩
+              Y ■
 
-lemma[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] : ∀ {U V W T} {X : U ̇} {X' : V ̇} {Y : W ̇} {Y' : T ̇}
+equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] : ∀ {U V W T} {X : U ̇} {X' : V ̇} {Y : W ̇} {Y' : T ̇}
                                   → X ≃ X' → Y ≃ Y' → X × Y ≃ X' × Y'
-lemma[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))
+equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
+                                  (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))
    = (f'' , (g'' , fg'') , (h'' , hf''))
    where 
     f'' : X × Y → X' × Y'
@@ -187,7 +191,9 @@ March 2018
 𝟘-rneutral' = ≃-sym 𝟘-rneutral
 
 𝟘-lneutral : ∀ {U} {X : U ̇} → (𝟘 + X) ≃ X 
-𝟘-lneutral = ≃-trans +comm 𝟘-rneutral'
+𝟘-lneutral {U} {X} = (𝟘 + X) ≃⟨ +comm ⟩
+                     (X + 𝟘) ≃⟨ 𝟘-rneutral' ⟩
+                      X ■
     
 +assoc : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {Z : W ̇} → ((X + Y) + Z) ≃ (X + (Y + Z))
 +assoc {U} {V} {W} {X} {Y} {Z} = f , (g , ε) , (g , η)

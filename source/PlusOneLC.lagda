@@ -90,20 +90,18 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-equiv f (g , gf 
 add-one-and-remove-isolated-point {V} {Y} (inr *) _ = ≃-sym add-and-remove-same-point
 
 +𝟙-cancellable : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
-+𝟙-cancellable {U} {V} {X} {Y} (φ , e) = ≃-trans a (≃-trans b c)
- where
-  a : X ≃ (X + 𝟙) ∖ (inr *)
-  a = add-and-remove-same-point
-  b : (X + 𝟙) ∖ (inr *) ≃ ((Y + 𝟙) ∖ φ (inr *))
-  b = remove-points φ (inverse φ e) (inr *)
-  c : ((Y + 𝟙) ∖ φ (inr *)) ≃ Y
-  c = add-one-and-remove-isolated-point
-       (φ (inr *))
-       (equivalences-preserve-isolatedness φ e (inr *) isolated-added-point)
++𝟙-cancellable {U} {V} {X} {Y} (φ , e) =
+   X                  ≃⟨ add-and-remove-same-point ⟩
+  (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (inverse φ e) (inr *) ⟩
+  (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
+                              (φ (inr *))
+                              (equivalences-preserve-isolatedness φ e (inr *) isolated-added-point) ⟩
+   Y ■ 
 
+\end{code}
 
-  
+\begin{code}
 
-
+infix 2 _∖_
 
 \end{code}

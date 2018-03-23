@@ -31,7 +31,7 @@ open import GenericConvergentSequence
 open import SpartanMLTT
 
 WLPO : U₀ ̇
-WLPO = (u : ℕ∞) → u ≡ ∞  +  u ≢ ∞
+WLPO = (u : ℕ∞) → (u ≡ ∞) + (u ≢ ∞)
 
 open import DiscreteAndSeparated
 

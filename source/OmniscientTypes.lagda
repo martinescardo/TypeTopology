@@ -44,7 +44,7 @@ apart-or-equal : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
               → (f g : (x : X) → Y x) → (f ♯ g) + (f ≡ g)
 apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
  where
-  claim : (x : X) → f x ≢ g x  +  f x ≡ g x
+  claim : (x : X) → (f x ≢ g x) + (f x ≡ g x)
   claim x = +-commutative(d x (f x) (g x))
 
   lemma₀ : Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → f x ≢ g x) × (p x ≡ ₁ → f x ≡ g x)
@@ -56,7 +56,7 @@ apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
   lemma₁ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁)
   lemma₁ = φ p
 
-  lemma₂ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁) → f ♯ g  +  f ≡ g
+  lemma₂ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁) → (f ♯ g) + (f ≡ g)
   lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r)) 
   lemma₂(inr h) = inr (funext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
 
@@ -67,7 +67,7 @@ omniscient-discrete-discrete : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X �
 
 omniscient-discrete-discrete fe φ d f g = h(apart-or-equal fe φ d f g)
  where
-  h : f ♯ g + f ≡ g → f ≡ g + f ≢ g
+  h : (f ♯ g) + (f ≡ g) → (f ≡ g) + (f ≢ g)
   h(inl a) = inr(apart-is-different a)
   h(inr r) = inl r
 

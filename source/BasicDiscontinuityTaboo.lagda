@@ -35,13 +35,13 @@ basic-discontinuity-taboo p (f , r) u = two-equality-cases lemma₀ lemma₁
   fact₂ : p u ≡ ₀ → u ≢ ∞
   fact₂ = fact₁ ∘ Lemma[b≡₀→b≢₁]
 
-  lemma₀ : p u ≡ ₀ → u ≡ ∞ + u ≢ ∞
+  lemma₀ : p u ≡ ₀ → (u ≡ ∞) + (u ≢ ∞)
   lemma₀ s = inr(fact₂ s)
 
   fact₃ : p u ≡ ₁ → ((n : ℕ) → u ≢ under n)
   fact₃ t n s = zero-is-not-one(Lemma[x≡y→x≡z→y≡z](f n)(Lemma[x≡y→x≡z→y≡z](ap p s) t))
 
-  lemma₁ : p u ≡ ₁ → u ≡ ∞ + u ≢ ∞
+  lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
   lemma₁ t = inl(not-ℕ-is-∞ fe (fact₃ t))
 
 \end{code}

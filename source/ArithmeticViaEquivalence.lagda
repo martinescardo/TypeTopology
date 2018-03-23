@@ -27,7 +27,7 @@ How can this proof be formally rendered, as faithfully as possible to
 the intuition?
 
 We first define an interpretation function Fin : ℕ → U₀ of numbers as
-types (in the universe U₀) by
+sets (in the universe U₀) by
 
  (1) Fin   0  = 𝟘,          where 𝟘 is the empty set,
  (2) Fin(n+1) = Fin n + 𝟙,  where 𝟙 is the singleton set, 
@@ -176,19 +176,21 @@ fsucc = inl
 
 \begin{code}
 
-+construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m + Fin n)
++construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Fin m + Fin n
 +construction m zero = m , 𝟘-rneutral
 +construction m (succ n) = g
   where
-    IH : Σ \(k : ℕ) → Fin k ≃ (Fin m + Fin n)
+    IH : Σ \(k : ℕ) → Fin k ≃ Fin m + Fin n
     IH = +construction m n
     k : ℕ
     k = pr₁ IH
-    φ : Fin k ≃ (Fin m + Fin n)
+    φ : Fin k ≃ Fin m + Fin n
     φ = pr₂ IH
-    φ+𝟙 : Fin(succ k) ≃ (Fin m + Fin (succ n))
-    φ+𝟙 = ≃-trans (Ap+ 𝟙 φ) +assoc
-    g : Σ \(k' : ℕ) → Fin k' ≃ (Fin m + Fin (succ n))
+    φ+𝟙 : Fin(succ k) ≃ Fin m + Fin (succ n)
+    φ+𝟙 =  Fin k + 𝟙          ≃⟨ Ap+ 𝟙 φ ⟩
+           (Fin m + Fin n) + 𝟙 ≃⟨ +assoc ⟩
+           (Fin m + Fin n + 𝟙) ■ 
+    g : Σ \(k' : ℕ) → Fin k' ≃ Fin m + Fin (succ n)
     g = succ k , φ+𝟙
 
 \end{code}
@@ -220,7 +222,7 @@ addition-homomorphism:
 
 \begin{code}
 
-Fin+homo' : (m n : ℕ) → Fin(m +' n) ≃ (Fin m + Fin n)
+Fin+homo' : (m n : ℕ) → Fin(m +' n) ≃ Fin m + Fin n
 Fin+homo' m n = pr₂(+construction m n)
 
 \end{code}
@@ -230,25 +232,15 @@ left-cancellable:
 
 \begin{code}
 
-flc-construction : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
-flc-construction zero zero p = refl
-flc-construction (succ m) zero p = 𝟘-elim absurd
- where
-  remark : (Fin m + 𝟙) ≃ 𝟘
-  remark = p
-  absurd : 𝟘
-  absurd = eqtofun _ _ p fzero
-flc-construction zero (succ n) p = 𝟘-elim absurd
- where
-  remark : 𝟘 ≃ (Fin n + 𝟙)
-  remark = p
-  absurd : 𝟘 
-  absurd = eqtofun _ _ (≃-sym p) fzero
-flc-construction (succ m) (succ n) p = ap succ r
+Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
+Fin-lc zero zero p = refl
+Fin-lc (succ m) zero p = 𝟘-elim (eqtofun _ _ p fzero)
+Fin-lc zero (succ n) p = 𝟘-elim (eqtofun _ _ (≃-sym p) fzero)
+Fin-lc (succ m) (succ n) p = ap succ r
  where
   IH : Fin m ≃ Fin n → m ≡ n
-  IH = flc-construction m n
-  remark : (Fin m + 𝟙) ≃ (Fin n + 𝟙)
+  IH = Fin-lc m n
+  remark : Fin m + 𝟙 ≃ Fin n + 𝟙
   remark = p
   q : Fin m ≃ Fin n
   q = +𝟙-cancellable fe p
@@ -266,10 +258,13 @@ addition:
 \begin{code}
 
 +'-comm : (m n : ℕ) → m +' n ≡ n +' m
-+'-comm m n = flc-construction (m +' n) (n +' m) p
++'-comm m n = Fin-lc (m +' n) (n +' m) p
  where
   p : Fin(m +' n) ≃ Fin(n +' m)
-  p = ≃-trans (Fin+homo' m n) (≃-trans +comm (≃-sym (Fin+homo' n m)))
+  p =  Fin (m +' n)  ≃⟨ Fin+homo' m n ⟩
+       Fin m + Fin n ≃⟨ +comm  ⟩
+       Fin n + Fin m ≃⟨ ≃-sym (Fin+homo' n m) ⟩
+       Fin (n +' m) ■
 
 \end{code}
 
@@ -288,7 +283,10 @@ We now repeat this story for multiplication:
     φ : Fin k ≃ Fin m × Fin n
     φ = pr₂ IH
     φ' : Fin (k +' m) ≃ Fin m × (Fin n + 𝟙)
-    φ' = ≃-trans (Fin+homo' k m) (≃-trans (Ap+ (Fin m) φ) 𝟙distr)
+    φ' = Fin (k +' m)          ≃⟨ Fin+homo' k m ⟩
+         Fin k + Fin m         ≃⟨ Ap+ (Fin m) φ ⟩
+         Fin m × Fin n + Fin m ≃⟨ 𝟙distr ⟩
+         Fin m × (Fin n + 𝟙) ■
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
     g = (k +' m) , φ'
 
@@ -305,10 +303,13 @@ Fin×homo : (m n : ℕ) → Fin(m ×' n) ≃ Fin m × Fin n
 Fin×homo m n = pr₂(×construction m n)
 
 ×-comm : (m n : ℕ) → m ×' n ≡ n ×' m
-×-comm m n = flc-construction (m ×' n) (n ×' m) φ
+×-comm m n = Fin-lc (m ×' n) (n ×' m) φ
  where
   φ : Fin(m ×' n) ≃ Fin(n ×' m)
-  φ = ≃-trans (Fin×homo m n) (≃-trans ×comm (≃-sym (Fin×homo n m)))
+  φ = Fin (m ×' n)  ≃⟨ Fin×homo m n ⟩
+      Fin m × Fin n ≃⟨ ×comm ⟩
+      Fin n × Fin m ≃⟨ ≃-sym (Fin×homo n m) ⟩
+      Fin (n ×' m) ■
 
 \end{code}
 

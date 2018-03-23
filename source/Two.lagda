@@ -138,11 +138,11 @@ max𝟚 : 𝟚 → 𝟚 → 𝟚
 max𝟚 ₀ b = b
 max𝟚 ₁ b = ₁
 
-max𝟚-lemma : (a b : 𝟚) → max𝟚 a b ≡ ₁ → a ≡ ₁ + b ≡ ₁
+max𝟚-lemma : (a b : 𝟚) → max𝟚 a b ≡ ₁ → (a ≡ ₁) + (b ≡ ₁)
 max𝟚-lemma ₀ b r = inr r
 max𝟚-lemma ₁ b r = inl refl
 
-max𝟚-lemma-converse : (a b : 𝟚) → a ≡ ₁ + b ≡ ₁ → max𝟚 a b ≡ ₁ 
+max𝟚-lemma-converse : (a b : 𝟚) → (a ≡ ₁) + (b ≡ ₁) → max𝟚 a b ≡ ₁ 
 max𝟚-lemma-converse ₀ b (inl r) = unique-from-𝟘 (zero-is-not-one r)
 max𝟚-lemma-converse ₀ b (inr r) = r
 max𝟚-lemma-converse ₁ b x = refl

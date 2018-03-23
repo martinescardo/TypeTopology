@@ -73,7 +73,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
   claim₂ : (Σ \(y : ℕ∞) → p y ≢ p(Succ y)) + ((y : ℕ∞) → p y ≡ p(Succ y))
   claim₂ = g(ℕ∞-is-omniscient q)
    where
-    fact : (y : ℕ∞) → p y ≢ p(Succ y) + ¬(p y ≢ p(Succ y))
+    fact : (y : ℕ∞) → (p y ≢ p(Succ y)) + ¬(p y ≢ p(Succ y))
     fact y = negation-preserves-decidability(𝟚-discrete (p y) (p(Succ y)))
 
     f : Σ \(q : ℕ∞ → 𝟚) → (y : ℕ∞) → (q y ≡ ₀ → p y ≢ p(Succ y))
@@ -166,11 +166,11 @@ p₃ (α , _) = α 0 <= α 1
 p₄ : ℕ∞ → 𝟚
 p₄ (α , _) = α 5 == α 100
 
-to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p(under n) ≡ ₁) → p(under 17) ≡ ₁ + ℕ
+to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p(under n) ≡ ₁) → (p(under 17) ≡ ₁) + ℕ
 to-something p (inl f) = inl (f 17)
 to-something p (inr _) = inr 1070
 
-eval1 : (p : ℕ∞ → 𝟚) → p(under 17) ≡ ₁ + ℕ
+eval1 : (p : ℕ∞ → 𝟚) → (p(under 17) ≡ ₁) + ℕ
 eval1 p = to-something p (Theorem-8·2 p)
 
 \end{code}
