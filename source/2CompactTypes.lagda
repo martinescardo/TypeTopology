@@ -148,11 +148,11 @@ the moment we do the base case:
 
 \begin{code}
 
-empty-strongly-𝟚-overt : ∀ {U} {X : U ̇} → empty X → strongly-𝟚-overt X
-empty-strongly-𝟚-overt u p = inr (ptrec 𝟘-isProp λ σ → u (pr₁ σ))
+isEmpty-strongly-𝟚-overt : ∀ {U} {X : U ̇} → isEmpty X → strongly-𝟚-overt X
+isEmpty-strongly-𝟚-overt u p = inr (ptrec 𝟘-isProp λ σ → u (pr₁ σ))
 
-empty-𝟚-compact : ∀ {U} {X : U ̇} → empty X → 𝟚-compact X
-empty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
+isIsEmpty-𝟚-compact : ∀ {U} {X : U ̇} → isEmpty X → 𝟚-compact X
+isIsEmpty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
 
@@ -652,7 +652,7 @@ detachable-subset-strongly-𝟚-overt {U} {X} A c = g (c A)
  where
   g : decidable (∃ \(x : X) → A x ≡ ₀) → strongly-𝟚-overt(Σ \(x : X) → A(x) ≡ ₀)
   g (inl e) = retract-strongly-𝟚-overt' (ptfunct detachable-subset-retract e) c
-  g (inr u) = empty-strongly-𝟚-overt (contrapositive ∣_∣ u)
+  g (inr u) = isEmpty-strongly-𝟚-overt (contrapositive ∣_∣ u)
 
 \end{code}
 
@@ -765,28 +765,28 @@ i-and-c-iso {U} {X} (t , c) p = ptrec ptisp f t
 
 This characterizes the inhabited-strongly-𝟚-overt types as those that are
 strongly-𝟚-overt and inhabited. We can also characterize the strongly-𝟚-overt types
-as those that are inhabited-strongly-𝟚-overt or empty:
+as those that are inhabited-strongly-𝟚-overt or isIsEmpty:
 
 \begin{code}
 
-isProp-isoore : ∀ {U} {X : U ̇} → isProp(inhabited-strongly-𝟚-overt X + empty X)
+isProp-isoore : ∀ {U} {X : U ̇} → isProp(inhabited-strongly-𝟚-overt X + isEmpty X)
 isProp-isoore {U} {X} = sum-of-contradictory-props
                            inhabited-strongly-𝟚-overt-isProp
                              (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
                                 (λ c u → ptrec 𝟘-isProp (contrapositive pr₁ u) (c (λ _ → ₀)))
 
-isoore-so : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X + empty X → strongly-𝟚-overt X
+isoore-so : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X + isEmpty X → strongly-𝟚-overt X
 isoore-so (inl c) = pr₂(iso-i-and-c c)
-isoore-so (inr u) = empty-strongly-𝟚-overt u
+isoore-so (inr u) = isEmpty-strongly-𝟚-overt u
 
-so-isoore : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → inhabited-strongly-𝟚-overt X + empty X
+so-isoore : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → inhabited-strongly-𝟚-overt X + isEmpty X
 so-isoore {U} {X} c = g
  where
-  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → inhabited-strongly-𝟚-overt X + empty X
+  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → inhabited-strongly-𝟚-overt X + isEmpty X
   h (inl t) = inl (i-and-c-iso (ptfunct pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
   
-  g : inhabited-strongly-𝟚-overt X + empty X
+  g : inhabited-strongly-𝟚-overt X + isEmpty X
   g = h (c (λ _ → ₀))
 
 \end{code}

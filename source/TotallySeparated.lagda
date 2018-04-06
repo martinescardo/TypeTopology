@@ -339,7 +339,7 @@ We package the above as follows for convenient use elsewhere
 
  totally-separated-reflection' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
                               → isEquiv (λ (f' : T X → A) → f' ∘ η)
- totally-separated-reflection' ts = isContrMap-isEquiv _ (totally-separated-reflection ts)
+ totally-separated-reflection' ts = isVoevodskyEquiv-isEquiv _ (totally-separated-reflection ts)
 
  totally-separated-reflection'' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
                                → (T X → A) ≃ (X → A)
@@ -1010,7 +1010,7 @@ apartness on it.
     p₄ = p₂ ⁻¹ ∙ p₃
 
   tight-η-equiv-direct : tight _♯_ → X ≃ X'
-  tight-η-equiv-direct t = (η , isContrMap-isEquiv η cm)
+  tight-η-equiv-direct t = (η , isVoevodskyEquiv-isEquiv η cm)
    where
     lc : left-cancellable η
     lc {x} {y} p = i h
@@ -1024,7 +1024,7 @@ apartness on it.
     e : isEmbedding η
     e = s-lc-e η lc X'-isSet
 
-    cm : isContrMap η
+    cm : isVoevodskyEquiv η
     cm = pr₂ (c-es η) (e , η-surjection)
 
 \end{code}

@@ -9,7 +9,7 @@ open import DecidableAndDetachable
 
 decidable-is-collapsible : ∀ {U} {X : U ̇} → decidable X → collapsible X
 decidable-is-collapsible (inl x) = inhabited-is-collapsible x
-decidable-is-collapsible (inr u) = empty-is-collapsible u
+decidable-is-collapsible (inr u) = isEmpty-is-collapsible u
 
 open import DiscreteAndSeparated
 
@@ -54,7 +54,7 @@ open import Naturals
 ℕ-isSet = discrete-isSet ℕ-discrete
 
 nonempty : ∀ {U} → U ̇ → U ̇
-nonempty X = empty(empty X)
+nonempty X = isEmpty(isEmpty X)
 
 stable : ∀ {U} → U ̇ → U ̇
 stable X = nonempty X → X
@@ -68,7 +68,7 @@ stable-is-collapsible {U} fe {X} s = (f , g)
  where
   f : X → X
   f x = s(λ u → u x)
-  claim₀ : (x y : X) → (u : empty X) → u x ≡ u y
+  claim₀ : (x y : X) → (u : isEmpty X) → u x ≡ u y
   claim₀ x y u = unique-from-𝟘(u x)
   claim₁ : (x y : X) → (λ u → u x) ≡ (λ u → u y)
   claim₁ x y = funext fe (claim₀ x y) 
@@ -82,7 +82,7 @@ separated-isSet : ∀ {U} → FunExt U U₀ → {X : U ̇} → separated X → i
 separated-isSet fe s = path-collapsible-isSet (separated-is-path-collapsible fe s) 
 
 isProp-separated : ∀ {U} → FunExt U U → FunExt U U₀ → {X : U ̇} → isProp(separated X)
-isProp-separated fe fe₀ {X} = ip-is-p f
+isProp-separated fe fe₀ {X} = iisProp-isProp f
  where
   f : separated X → isProp(separated X)
   f s = isProp-exponential-ideal fe

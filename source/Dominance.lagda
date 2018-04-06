@@ -52,7 +52,7 @@ dominant-closed-under-Σ : (D : Dominance) → (P : U ̇) (Q : P → U ̇)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
 isDominance-isProp : (d : U ̇ → U ̇) → isProp (isDominance d)
-isDominance-isProp d = ip-is-p lemma
+isDominance-isProp d = iisProp-isProp lemma
  where
   lemma : isDominance d → isProp (isDominance d)
   lemma isd = isProp-closed-under-Σ

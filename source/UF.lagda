@@ -1,8 +1,14 @@
 Martin Escardo, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018.
 
+This is a(n incomplete) univalent foundations library (in Agda
+notation), with some things developed using the Yoneda-lemma view of
+the identity type, as put forward in
+http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html, for the sake of
+experimentation.
+
 This file has been merged from various different files in different
 developments and needs to be organized. We also need to remove
-repetitions.
+some repetitions that arise from this merging.
 
 \begin{code}
 
@@ -10,38 +16,95 @@ repetitions.
 
 module UF where
 
+\end{code}
+
+The following imported module defines a minimal Martin-Löf type theory
+for univalent mathematics. Some things there are repeated here, and
+should be removed from there (TODO).
+
+\begin{code}
+
 open import SpartanMLTT public
+
+\end{code}
+
+In univalent logic, as opposed to Curry-Howard logic, a proposition is
+a subsingleton or a type such that any two of its elements are
+identified.
+
+https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
+https://unimath.github.io/bham2017/uf.pdf
+
+\begin{code}
 
 isProp : ∀ {U} → U ̇ → U ̇
 isProp X = (x y : X) → x ≡ y
 
-sum-of-contradictory-props : ∀ {U V} {P : U ̇} {Q : V ̇}
-                           → isProp P → isProp Q → (P → Q → 𝟘) → isProp(P + Q)
-sum-of-contradictory-props {U} {V} {P} {Q} isp isq f = go
-  where
-   go : (x y : P + Q) → x ≡ y
-   go (inl p) (inl p') = ap inl (isp p p')
-   go (inl p) (inr q)  = 𝟘-elim (f p q)
-   go (inr q) (inl p)  = 𝟘-elim (f p q)
-   go (inr q) (inr q') = ap inr (isq q q')
+\end{code}
 
-is-center-of-contraction : ∀ {U} (X : U ̇) → X → U ̇
-is-center-of-contraction X c = (x : X) → c ≡ x
+I prefer the following terminology, but I will stick to the above (at
+least for the moment).
+
+\begin{code}
+
+isSubsingleton : ∀ {U} → U ̇ → U ̇
+isSubsingleton = isProp
+
+\end{code}
+
+And of course we could adopt a terminology borrowed from topos logic:
+
+\begin{code}
+
+isTruthValue : ∀ {U} → U ̇ → U ̇
+isTruthValue = isProp
+
+\end{code}
+
+Next we define contractible types. The terminology is due to
+Voevodsky. I currently prefer the terminology "singleton type",
+because it makes more sense when we consider univalent type theory as
+interesting on its own right independently of its homotopical
+(originally motivating) models.
+
+\begin{code}
+
+is-the-only-element : ∀ {U} {X : U ̇} → X → U ̇
+is-the-only-element c = ∀ x → c ≡ x
+
+isSingleton : ∀ {U} → U ̇ → U ̇
+isSingleton X = Σ \(c : X) → is-the-only-element c
+
+\end{code}
+
+For compatibility with the homotopical terminology:
+
+\begin{code}
+
+is-center-of-contraction : ∀ {U} {X : U ̇} → X → U ̇
+is-center-of-contraction = is-the-only-element
 
 isContr : ∀ {U} → U ̇ → U ̇
-isContr X = Σ \(c : X) → is-center-of-contraction X c
+isContr = isSingleton
 
-c-is-p : ∀ {U} {X : U ̇} → isContr X → isProp X
-c-is-p {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
+isSingleton-isProp : ∀ {U} {X : U ̇} → isSingleton X → isProp X
+isSingleton-isProp {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
 
-ic-is-p : ∀ {U} {X : U ̇} → (X → isContr X) → isProp X
-ic-is-p {U} {X} φ x = c-is-p (φ x) x
+iisSingleton-isProp : ∀ {U} {X : U ̇} → (X → isSingleton X) → isProp X
+iisSingleton-isProp {U} {X} φ x = isSingleton-isProp (φ x) x
 
-ip-is-p : ∀ {U} {X : U ̇} → (X → isProp X) → isProp X
-ip-is-p {U} {X} φ x y = φ x x y
+iisProp-isProp : ∀ {U} {X : U ̇} → (X → isProp X) → isProp X
+iisProp-isProp {U} {X} φ x y = φ x x y
 
-i-p-is-c : ∀ {U} {X : U ̇} → X → isProp X → isContr X 
-i-p-is-c x h = x , h x
+inhabited-proposition-isSingleton : ∀ {U} {X : U ̇} → X → isProp X → isSingleton X 
+inhabited-proposition-isSingleton x h = x , h x
+
+\end{code}
+
+The two prototypical propositions:
+
+\begin{code}
+
 
 𝟘-isProp : isProp 𝟘
 𝟘-isProp x y = unique-from-𝟘 x
@@ -49,8 +112,22 @@ i-p-is-c x h = x , h x
 𝟙-isProp : isProp 𝟙
 𝟙-isProp * * = refl
 
+\end{code}
+
+A type is a set if all its identity types are subsingletons. In other
+words, sets are types for which equality is a proposition (rather than
+data or structure).
+
+\begin{code}
+
 isSet : ∀ {U} → U ̇ → U ̇
 isSet X = {x y : X} → isProp(x ≡ y)
+
+\end{code}
+
+We now consider some machinery for dealing with the above notions:
+
+\begin{code}
 
 constant : ∀ {U V} {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
 constant f = ∀ x y → f x ≡ f y
@@ -90,14 +167,34 @@ prop-isSet h = path-collapsible-isSet(prop-is-path-collapsible h)
 inhabited-is-collapsible : ∀ {U} {X : U ̇} → X → collapsible X
 inhabited-is-collapsible x = ((λ y → x) , λ y y' → refl)
 
-empty : ∀ {U} → U ̇ → U ̇
-empty X = X → 𝟘
+\end{code}
 
-empty-is-collapsible : ∀ {U} {X : U ̇} → empty X → collapsible X
-empty-is-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
+Under Curry-Howard, the function type X → 𝟘 is understood as the
+negation of X when X is viewed as a proposition. But when X is
+understood as a mathematical object, inhabiting the type X → 𝟘 amounts
+to showing that X is empty. (In fact, assuming univalence, defined
+below, the type X → 𝟘 is equivalent to the type X ≡ 𝟘
+(written (X → 𝟘) ≃ (X ≡ 𝟘)).)
+
+\begin{code}
+
+isEmpty : ∀ {U} → U ̇ → U ̇
+isEmpty X = X → 𝟘
+
+isEmpty-is-collapsible : ∀ {U} {X : U ̇} → isEmpty X → collapsible X
+isEmpty-is-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 
 𝟘-is-collapsible-as-a-particular-case : collapsible 𝟘
-𝟘-is-collapsible-as-a-particular-case = empty-is-collapsible id
+𝟘-is-collapsible-as-a-particular-case = isEmpty-is-collapsible id
+
+
+\end{code}
+
+For the moment we will use homotopical terminology for the following
+(but, for example, "paths-from x" could be written "singletonType x"
+as in https://arxiv.org/pdf/1803.02294).
+
+\begin{code}
 
 paths-from : ∀ {U} {X : U ̇} (x : X) → U ̇
 paths-from x = Σ \y → x ≡ y
@@ -109,16 +206,23 @@ trivial-loop : ∀ {U} {X : U ̇} (x : X) → paths-from x
 trivial-loop x = (x , refl)
 
 path-from-trivial-loop : ∀ {U} {X : U ̇} {x x' : X} (r : x ≡ x') → trivial-loop x ≡ (x' , r)
-path-from-trivial-loop {U} {X} = J A λ x → refl
+path-from-trivial-loop {U} {X} = J A (λ x → refl)
  where 
   A : (x x' : X) → x ≡ x' → U ̇
   A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (trivial-loop x) (x' , r) 
 
-paths-from-is-contractible : ∀ {U} {X : U ̇} (x₀ : X) → isContr(paths-from x₀)
-paths-from-is-contractible x₀ = trivial-loop x₀ , (λ t → path-from-trivial-loop (pr₂ t))
+paths-from-isSingleton : ∀ {U} {X : U ̇} (x₀ : X) → isSingleton(paths-from x₀)
+paths-from-isSingleton x₀ = trivial-loop x₀ , (λ t → path-from-trivial-loop (pr₂ t))
 
 paths-from-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-from x)
-paths-from-isProp x = c-is-p (paths-from-is-contractible x)
+paths-from-isProp x = isSingleton-isProp (paths-from-isSingleton x)
+
+\end{code}
+
+We now consider "natural transformations" and the Yoneda-machinery for
+them as discussed in http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
+
+\begin{code}
 
 _⇒_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → (X → V ⊔ W ̇)
 A ⇒ B = λ x → A x → B x
@@ -126,16 +230,41 @@ A ⇒ B = λ x → A x → B x
 Nat : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
 Nat A B = Π(A ⇒ B)
 
+\end{code}
+
+Point-point-wise equality of natural transformations:
+
+\begin{code}
+
 _≈_ : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} → Nat (Id x) A → Nat (Id x) A → U ⊔ V ̇
 η ≈ θ = ∀ y → η y ∼ θ y
+
+\end{code}
+
+The Yoneda element induced by a natural transformation:
+
+\begin{code}
 
 yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
            → Nat (Id x) A → A x
 yoneda-elem {U} {V} {X} {x} A η = η x (idp x)
 
+\end{code}
+
+We use capital Yoneda for the same constructions with the definition
+of "Nat" expanded, beginning here:
+
+\begin{code}
+
 Yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
            → ((y : X) → x ≡ y → A y) → A x
 Yoneda-elem = yoneda-elem
+
+\end{code}
+
+The natural transformation induced by an element:
+
+\begin{code}
 
 yoneda-nat : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
            → A x → Nat (Id x) A 
@@ -145,6 +274,13 @@ Yoneda-nat : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
            → A x → (y : X) → x ≡ y → A y
 Yoneda-nat = yoneda-nat
 
+\end{code}
+
+The Yoneda Lemma says that every natural transformation is induced by
+its Yoneda element:
+
+\begin{code}
+
 yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A)
             → yoneda-nat A (yoneda-elem A η) ≈ η 
 yoneda-lemma {U} {V} {X} {.x} A η x refl = idp (yoneda-elem A η)
@@ -153,6 +289,13 @@ Yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : (y : X) → x
              → transport A p (η x (idp x)) ≡ η y p
 Yoneda-lemma = yoneda-lemma
 
+\end{code}
+
+The word "computation" here arises from a tradition in MLTT and should
+not be taken too seriously:
+
+\begin{code}
+
 yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x) 
                    → yoneda-elem A (yoneda-nat A a) ≡ a
 yoneda-computation = idp 
@@ -160,6 +303,13 @@ yoneda-computation = idp
 Yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x) 
                    → transport A (idp x) a ≡ a
 Yoneda-computation {U} {V} {X} {x} {A} = yoneda-computation {U} {V} {X} {x} {A}
+
+\end{code}
+
+Two natural transformations with the same Yoneda elements are
+(point-point-wise) equal:
+
+\begin{code}
 
 yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : Nat (Id x) A)             
               → yoneda-elem A η ≡ yoneda-elem A θ → η ≈ θ
@@ -172,6 +322,12 @@ yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
 Yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : (y : X) → x ≡ y → A y)             
               → η x (idp x) ≡ θ x (idp x) → (y : X) (p : x ≡ y) → η y p ≡ θ y p
 Yoneda-elem-lc = yoneda-elem-lc
+
+\end{code}
+
+Some special cases of interest, which probably speak for themselves:
+
+\begin{code}
 
 yoneda-nat' : ∀ {U} {X : U ̇} (x {y} : X) → Id x y → Nat (Id y) (Id x)
 yoneda-nat' x = yoneda-nat (Id x)
@@ -213,20 +369,44 @@ Yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : (y : X) → x ≡ y
              → η x (idp x) ≡ η y p 
 Yoneda-const = yoneda-const
 
-singletons-contractible : ∀ {U} {X : U ̇} {x : X}
-                        → is-center-of-contraction (paths-from x) (x , idp x)
-singletons-contractible {U} {X} {x} (y , p) = yoneda-const η y p
+\end{code}
+
+The following is traditionally proved by induction on the identity
+type (as articulated by Jbased or J in the module SpartanMLTT), but
+here we use the Yoneda machinery instead:
+
+\begin{code}
+
+singleton-types-are-singletons : ∀ {U} {X : U ̇} {x : X}
+                        → is-the-only-element (x , idp x)
+singleton-types-are-singletons {U} {X} {x} (y , p) = yoneda-const η y p
  where
   η : (y : X) → x ≡ y → paths-from x
   η y p = (y , p)
 
+\end{code}
+
+What the following says is that the Yoneda machinery could have been
+taken as primitive, as an alternative to Jbased or J, in the sense
+that the latter can be recovered from the former.
+
+\begin{code}
+
 Jbased'' : ∀ {U V} {X : U ̇} (x : X) (A : paths-from x → V ̇)
          → A (x , idp x) → Π A
-Jbased'' x A b w = yoneda-nat A b w (singletons-contractible w)
+Jbased'' x A b w = yoneda-nat A b w (singleton-types-are-singletons w)
 
 Jbased' : ∀ {U V} {X : U ̇} (x : X) (B : (y : X) → x ≡ y → V ̇)
         → B x (idp x) → (y : X) (p : x ≡ y) → B y p
 Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
+
+\end{code}
+
+And now some uses of Yoneda to prove things that traditionally are
+proved using J(based).
+
+\begin{code}
+
 
 idp-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → idp x ∙ p ≡ p
 idp-left-neutral {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
@@ -306,28 +486,30 @@ to-Σ-Id {U} {V} {X} A {x , a} {y , b} (p , q) = r
   r : (x , a) ≡ (y , b)
   r = yoneda-nat (λ b → (x , a) ≡ (y , b)) yc b q
 
-is-universal-element : ∀ {U V} {X : U ̇} (A : X → V ̇) → Σ A → U ⊔ V ̇
-is-universal-element A (x , a) = ∀ y (b : A y) → Σ \(p : x ≡ y) → yoneda-nat A a y p ≡ b
+\end{code}
+
+Next we observe that "only elements" as defined above are universal
+elements as in category theory.
+
+\begin{code}
+
+is-universal-element : ∀ {U V} {X : U ̇} {A : X → V ̇} → Σ A → U ⊔ V ̇
+is-universal-element {U} {V} {X} {A} (x , a) = ∀ y (b : A y) → Σ \(p : x ≡ y) → yoneda-nat A a y p ≡ b
 
 ue-is-cc : ∀ {U V} {X : U ̇} {A : X → V ̇}
-          (σ : Σ A) → is-universal-element A σ → is-center-of-contraction (Σ A) σ
+          (σ : Σ A) → is-universal-element σ → is-the-only-element σ
 ue-is-cc {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-Id A ((u y) b)
 
 cc-is-ue : ∀ {U V} {X : U ̇} (A : X → V ̇) 
-          (σ : Σ A) → is-center-of-contraction (Σ A) σ → is-universal-element A σ
+          (σ : Σ A) → is-the-only-element σ → is-universal-element σ
 cc-is-ue A (x , a) φ y b = from-Σ-Id A {x , a} {y , b} (φ(y , b))
  
 \end{code}
 
-Retractions.
+But to study this we need to pause to define and study equivalences,
+which first requires defining retractions (and hence sections).
 
 \begin{code}
-
-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
-retraction f = ∀ y → Σ \x → f x ≡ y
-
-retract_Of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
-retract Y Of X = Σ \(f : X → Y) → retraction f
 
 hasSection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 hasSection r = Σ \s → r ∘ s ∼ id
@@ -337,29 +519,6 @@ hasRetraction s = Σ \r → r ∘ s ∼ id
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 retract Y of X = Σ \(f : X → Y) → hasSection f
-
-retract-of-retract-Of : ∀ {U V} {X : U ̇} {Y : V ̇} → retract Y of X → retract Y Of X
-retract-of-retract-Of {U} {V} {X} {Y} (f , φ)= (f , hass)
- where
-  hass : (y : Y) → Σ \(x : X) → f x ≡ y
-  hass y = pr₁ φ y , pr₂ φ y
-
-retract-Of-retract-of : ∀ {U V} {X : U ̇} {Y : V ̇} → retract Y Of X → retract Y of X
-retract-Of-retract-of {U} {V} {X} {Y} (f , hass) = (f , φ)
- where
-  φ : Σ \(s : Y → X) → f ∘ s ∼ id
-  φ = (λ y → pr₁ (hass y)) , λ y → pr₂ (hass y)
-
-retracts-compose : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
-                 → retract Y of X → retract Z of Y → retract Z of X
-retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
-                                                    (s ∘ s' , λ z → ap r' (rs (s' z)) ∙ rs' z)
-
-\end{code}
-
-Equivalences.
-
-\begin{code}
 
 isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEquiv f = hasSection f × hasRetraction f 
@@ -470,48 +629,6 @@ happly-lc fe f g = section-lc (happly f g) ((pr₂ (fe f g)))
 
 \end{code}
 
-More about retracts.
-
-\begin{code}
-
-rid : ∀ {U} {X : U ̇} → retract X of X
-rid = id , (id , λ x → refl)
-
-rexp : ∀ {U V W T} {X : U ̇} {Y : V ̇} {X' : W ̇} {Y' : T ̇} → FunExt U T
-    → retract X of X' → retract Y' of Y → retract (X → Y') of (X' → Y)
-rexp {U} {V} {W} {T} {X} {Y} {X'} {Y'} fe (rx , (sx , rsx)) (ry , (sy , rsy)) = (r , (s , rs))
- where
-  r : (X' → Y) → X → Y'
-  r f x = ry (f (sx x))
-  s : (X → Y') → X' → Y
-  s f' x' = sy (f' (rx x'))
-  rs' : (f' : X → Y') (x : X) → ry (sy (f' (rx (sx x)))) ≡ f' x
-  rs' f' x = rsy (f' (rx (sx x))) ∙ ap f' (rsx x)
-  rs : (f' : X → Y') → r (s f') ≡ f'
-  rs f' = funext fe (rs' f')
-
-rpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {Y' : W ̇} → FunExt U W
-    → retract Y' of Y → retract (X → Y') of (X → Y)
-rpe fe = rexp fe rid
-
-crpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {X' : W ̇} → FunExt U V
-    → retract X of X' → retract (X → Y) of (X' → Y)
-crpe fe rx = rexp fe rx rid
-
-pdrc : ∀ {U V} {X : U ̇} {Y : V ̇} → X → retract Y of (X → Y)
-pdrc x = ((λ f → f x) , ((λ y x → y) , λ y → refl))
-
-retracts-of-closed-under-exponentials : ∀ {U V W} {X : U ̇} {Y : V ̇} {B : W ̇} → FunExt W W
-                                      → X → retract B of X → retract B of Y → retract B of (X → Y)
-retracts-of-closed-under-exponentials {U} {V} {W} {X} {Y} {B} fe x rbx rby = rbxy
- where
-  rbbxy : retract (B → B) of (X → Y)
-  rbbxy = rexp fe rbx rby
-  rbxy : retract B of (X → Y)
-  rbxy = retracts-compose rbbxy (pdrc (pr₁ rbx x))
-
-\end{code}
-
 Formulation of univalence.
 
 \begin{code}
@@ -556,6 +673,14 @@ idtofun-isEquiv X Y p = pr₂(idtoeq X Y p)
 isUnivalent-≃ : ∀ {U} → isUnivalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
 isUnivalent-≃ ua X Y = idtoeq X Y , ua X Y
 
+\end{code}
+
+Induction on equivalences is available in univalent universes: to
+prove that all equivalences satisfy some property, it is enough to
+show that the identity equivalences satisfy it.
+
+\begin{code}
+
 JEq : ∀ {U} → isUnivalent U → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
     → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
@@ -571,15 +696,6 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
 
 \end{code}
 
-Formulation of the K axiom for a universe U.
-
-\begin{code}
-
-K : ∀ U → U ′ ̇
-K U = (X : U ̇) → isSet X
-
-\end{code}
-
 The following says that if the pair (x,a) is a universal element, then
 the natural transformation it induces (namely yoneda-nat {U} {X} {x} a)
 has a section and a retraction (which can be taken to be the same
@@ -589,7 +705,7 @@ retraction is data not property:
 \begin{code}
 
 universality-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                     → is-universal-element A (x , a) → (y : X) → hasSection(yoneda-nat A a y) 
+                     → is-universal-element (x , a) → (y : X) → hasSection(yoneda-nat A a y) 
 universality-section {U} {V} {X} {A} x a u y = s y , φ y
  where
   s : (y : X) → A y → x ≡ y
@@ -638,7 +754,7 @@ We are interested in this corollary:
 \begin{code}
 
 universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                   → is-universal-element A (x , a)
+                   → is-universal-element (x , a)
                    → (y : X) → isEquiv(yoneda-nat A a y)
 universality-equiv {U} {V} {X} {A} x a u = natural-section-isEquiv x (yoneda-nat A a)
                                                                      (universality-section x a u)
@@ -650,12 +766,12 @@ The converse is trivial:
 
 section-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                      → ((y : X) → hasSection(yoneda-nat A a y))
-                     → is-universal-element A (x , a)
+                     → is-universal-element (x , a)
 section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
 
 equiv-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → ((y : X) → isEquiv(yoneda-nat A a y))
-                   → is-universal-element A (x , a)
+                   → is-universal-element (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 \end{code}
@@ -670,7 +786,7 @@ A ≊ B = Σ \(η : Nat A B) → ∀ x → isEquiv(η x)
 isRepresentable : ∀ {U V} {X : U ̇} → (X → V ̇) → U ⊔ V ̇
 isRepresentable A = Σ \x → Id x ≊ A
 
-contr-is-repr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isContr (Σ A) → isRepresentable A 
+contr-is-repr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isSingleton (Σ A) → isRepresentable A 
 contr-is-repr {U} {V} {X} {A} ((x , a) , cc) = g
  where
   g : Σ \(x : X) → Id x ≊ A
@@ -689,14 +805,14 @@ is-repr→isEquiv-yoneda : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : N
 is-repr→isEquiv-yoneda {U} {V} {X} {A} x η y ise =
   equiv-closed-under-∼ (η y) (yoneda-nat A (yoneda-elem A η) y) ise (yoneda-lemma A η y)
 
-repr-is-contr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isRepresentable A → isContr (Σ A)
+repr-is-contr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isRepresentable A → isSingleton (Σ A)
 repr-is-contr {U} {V} {X} {A} (x , (η , φ)) = g
  where
   σ : Σ A
   σ = x , yoneda-elem A η
-  is-ue-σ : is-universal-element A σ
+  is-ue-σ : is-universal-element σ
   is-ue-σ = equiv-universality x (yoneda-elem A η) (λ y → is-repr→isEquiv-yoneda x η y (φ y))
-  g : Σ \(σ : Σ A) → is-center-of-contraction (Σ A) σ
+  g : Σ \(σ : Σ A) → is-the-only-element σ
   g = σ , ue-is-cc σ is-ue-σ
 
 \end{code}
@@ -706,14 +822,14 @@ univalence:
 
 \begin{code}
 
-univalence-via-contractibility : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isContr (Σ \(Y : U ̇) → X ≃ Y))
-univalence-via-contractibility {U} = (forth , back)
+univalence-via-contractibility : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-contractibility {U} = (f , g)
  where
-  forth : isUnivalent U → (X : U ̇) → isContr (Σ (Eq X))
-  forth ua X = repr-is-contr (X , (idtoeq X , ua X))
+  f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))
+  f ua X = repr-is-contr (X , (idtoeq X , ua X))
 
-  back : ((X : U ̇) → isContr (Σ (Eq X))) → isUnivalent U
-  back φ X = universality-equiv X (ideq X) (cc-is-ue (Eq X) (X , ideq X) (c-is-p (φ X) (X , ideq X)))
+  g : ((X : U ̇) → isSingleton (Σ (Eq X))) → isUnivalent U
+  g φ X = universality-equiv X (ideq X) (cc-is-ue (Eq X) (X , ideq X) (isSingleton-isProp (φ X) (X , ideq X)))
 
 \end{code}
 
@@ -725,13 +841,13 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 \begin{code}
 
-paths-from-contractible : ∀ {U} {X : U ̇} (x : X) → isContr(paths-from x)
-paths-from-contractible x = ((x , idp x) , singletons-contractible)
+paths-from-contractible : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-from x)
+paths-from-contractible x = ((x , idp x) , singleton-types-are-singletons)
 
 paths-to : ∀ {U} {X : U ̇} → X → U ̇
 paths-to x = Σ \y → y ≡ x
 
-rc-is-c : ∀ {U} {X Y : U ̇} (r : X → Y) → hasSection r → isContr X → isContr Y
+rc-is-c : ∀ {U} {X Y : U ̇} (r : X → Y) → hasSection r → isSingleton X → isSingleton Y
 rc-is-c {U} {X} {Y} r (s , rs) (x , i) = r x , λ y → r x ≡⟨ ap r (i (s y)) ⟩ r (s y) ≡⟨ rs y ⟩ y ∎
 
 pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : paths-from x → paths-to x) → isEquiv f
@@ -746,13 +862,13 @@ pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
   gf : g ∘ f ∼ id
   gf (y , p) = ap (λ p → y , p) (⁻¹-involutive p)
   
-paths-to-contractible : ∀ {U} {X : U ̇} (x : X) → isContr(paths-to x)
+paths-to-contractible : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-to x)
 paths-to-contractible x = rc-is-c (pr₁(pt-pf-equiv x))
                                   (pr₁(pr₂((pt-pf-equiv x))))
                                   (paths-from-contractible x)
 
 paths-to-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
-paths-to-isProp x = c-is-p (paths-to-contractible x)
+paths-to-isProp x = isSingleton-isProp (paths-to-contractible x)
 
 pbucp' : ∀ {U} (X Y : U ̇) → isProp(X × Y) → (Y → isProp X) × (X → isProp Y)
 pbucp' {U} X Y isp =  (λ y x x' → ap pr₁ (isp (x , y) (x' , y))) ,
@@ -767,11 +883,11 @@ pcubp X Y i j = pcubp' X Y ((λ _ → i) , (λ _ → j))
 fiber : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → f x ≡ y
 
-isContrMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isContrMap f = ∀ y → isContr (fiber f y)
+isVoevodskyEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+isVoevodskyEquiv f = ∀ y → isSingleton (fiber f y)
 
-isContrMap-isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isContrMap f → isEquiv f
-isContrMap-isEquiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
+isVoevodskyEquiv-isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isVoevodskyEquiv f → isEquiv f
+isVoevodskyEquiv-isEquiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
  where
   φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
   φ' = φ
@@ -818,9 +934,9 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
 embedding-embedding' : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding f → isEmbedding' f
 embedding-embedding' {U} {V} {X} {Y} f ise = g
  where
-  b : (x : X) → isContr(fiber f (f x))
+  b : (x : X) → isSingleton(fiber f (f x))
   b x = (x , idp (f x)) , ise (f x) (x , idp (f x))
-  c : (x : X) → isContr(fiber' f (f x))
+  c : (x : X) → isSingleton(fiber' f (f x))
   c x = rc-is-c (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → isEquiv(ap f {x} {x'})
   g x = universality-equiv x refl (cc-is-ue (λ x' → f x ≡ f x') (pr₁(c x)) (pr₂(c x))) 
@@ -828,7 +944,7 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
 embedding'-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding' f → isEmbedding f
 embedding'-embedding {U} {V} {X} {Y} f ise = g
  where
-  e : (x x' : X) → is-center-of-contraction (fiber' f (f x)) (x , idp (f x))
+  e : (x x' : X) → is-the-only-element (x , idp (f x))
   e x x' = ue-is-cc (x , idp (f x)) (equiv-universality x (idp (f x)) (ise x))
   h : (x : X) → isProp (fiber' f (f x))
   h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , idp (f x)) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎  
@@ -895,11 +1011,11 @@ isProp-isProp {U} {X} fe f g = claim₁
   claim₁ : f ≡ g
   claim₁  = funext fe claim₀
 
-isProp-isContr : ∀ {U} {X : U ̇} → FunExt U U → isProp(isContr X)
-isProp-isContr {U} {X} fe (x , φ) (y , γ) = to-Σ-Id _ (φ y , funext fe λ z → iss {y} {z} _ _)
+isProp-isSingleton : ∀ {U} {X : U ̇} → FunExt U U → isProp(isSingleton X)
+isProp-isSingleton {U} {X} fe (x , φ) (y , γ) = to-Σ-Id _ (φ y , funext fe λ z → iss {y} {z} _ _)
  where
   isp : isProp X
-  isp = c-is-p (y , γ)
+  isp = isSingleton-isProp (y , γ)
   iss : isSet X
   iss = prop-isSet isp
 
@@ -923,7 +1039,7 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    B Y p = isProp(isEquiv(idtofun X Y p))
    A = Σ \(f : X → X) → f ≡ id
    a : isProp A
-   a = c-is-p (paths-to-contractible id)
+   a = isSingleton-isProp (paths-to-contractible id)
    A' = Σ \(f : X → X) → f ∼ id
    η : (f : X → X) → f ∼ id → f ≡ id
    η f = funext fe
@@ -970,6 +1086,21 @@ its domain.
 
 isUnivalent-idtoeq-lc : ∀ {U} → isUnivalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
 isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
+
+\end{code}
+
+Formulation of the K axiom for a universe U.
+
+\begin{code}
+
+K : ∀ U → U ′ ̇
+K U = (X : U ̇) → isSet X
+
+\end{code}
+
+What we proved above using univalence also follows from K:
+
+\begin{code}
 
 K-idtofun-lc : ∀ {U} → K (U ′) 
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
@@ -1071,6 +1202,14 @@ isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V 
                         → ((x : X) → isProp(A x)) → isProp(Π A) 
 isProp-exponential-ideal {U} {V} fe {X} {A} isa f g = funext fe (λ x → isa x (f x) (g x))
 
+\end{code}
+
+The following code is used to make Agda work with the constructions we
+have given. We make the implicit arguments explicit in the definition
+of isSet.
+
+\begin{code}
+
 isSet' : ∀ {U} → U ̇ → U ̇
 isSet' X = (x y : X) → isProp(x ≡ y)
 
@@ -1084,7 +1223,6 @@ isProp-isSet' : ∀ {U} {X : U ̇} → FunExt U U → isProp (isSet' X)
 isProp-isSet' fe = isProp-exponential-ideal fe
                     (λ x → isProp-exponential-ideal fe
                               (λ y → isProp-isProp fe))
-
 propExt : ∀ U → U ′ ̇ 
 propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
 
@@ -1178,16 +1316,16 @@ module PropositionalTruncation (pt : PropTrunc) where
    ∣_∣ : ∀ {U} {X : U ̇} → X → ∥ X ∥
    ptrec : ∀ {U V} {X : U ̇} {Y : V ̇} → isProp Y → (X → Y) → ∥ X ∥ → Y
 
- isContr'-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X × ∥ X ∥)
- isContr'-isProp fe = isProp-closed-under-Σ (isProp-isProp fe) (λ _ → ptisp)
+ isSingleton'-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X × ∥ X ∥)
+ isSingleton'-isProp fe = isProp-closed-under-Σ (isProp-isProp fe) (λ _ → ptisp)
 
- c-es₁ : ∀ {U} {X : U ̇} → isContr X ⇔ isProp X × ∥ X ∥
+ c-es₁ : ∀ {U} {X : U ̇} → isSingleton X ⇔ isProp X × ∥ X ∥
  c-es₁ {U} {X} = f , g
   where
-   f : isContr X → isProp X × ∥ X ∥ 
-   f (x , φ) = c-is-p (x , φ) , ∣ x ∣
+   f : isSingleton X → isProp X × ∥ X ∥ 
+   f (x , φ) = isSingleton-isProp (x , φ) , ∣ x ∣
    
-   g : isProp X × ∥ X ∥ → isContr X
+   g : isProp X × ∥ X ∥ → isSingleton X
    g (i , s) = ptrec i id s , i (ptrec i id s)
    
  ptfunct : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
@@ -1299,13 +1437,13 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
  isSurjection f = ∀ y → ∃ \x → f x ≡ y
 
  c-es  :  ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
-          → isContrMap f ⇔ isEmbedding f × isSurjection f
+          → isVoevodskyEquiv f ⇔ isEmbedding f × isSurjection f
  c-es f = g , h
   where
-   g : isContrMap f → isEmbedding f × isSurjection f 
+   g : isVoevodskyEquiv f → isEmbedding f × isSurjection f 
    g i = (λ y → pr₁(pr₁ c-es₁ (i y))) , (λ y → pr₂(pr₁ c-es₁ (i y)))
    
-   h : isEmbedding f × isSurjection f → isContrMap f
+   h : isEmbedding f × isSurjection f → isVoevodskyEquiv f
    h (e , s) = λ y → pr₂ c-es₁ (e y , s y)
 
  corestriction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
@@ -1361,6 +1499,16 @@ have that there is no truth value other than false (⊥) or true (⊤),
 which we refer to as the density of the decidable truth values.
 
 \begin{code}
+
+sum-of-contradictory-props : ∀ {U V} {P : U ̇} {Q : V ̇}
+                           → isProp P → isProp Q → (P → Q → 𝟘) → isProp(P + Q)
+sum-of-contradictory-props {U} {V} {P} {Q} isp isq f = go
+  where
+   go : (x y : P + Q) → x ≡ y
+   go (inl p) (inl p') = ap inl (isp p p')
+   go (inl p) (inr q)  = 𝟘-elim (f p q)
+   go (inr q) (inl p)  = 𝟘-elim (f p q)
+   go (inr q) (inr q') = ap inr (isq q q')
 
 decidable-isProp : ∀ {U} {P : U ̇} → FunExt U U₀ → isProp P → isProp(P + ¬ P)
 decidable-isProp fe₀ isp = sum-of-contradictory-props
@@ -1460,6 +1608,70 @@ open import Two
 𝟚inProp-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥≠⊤ (p ∙ q ⁻¹))
 𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥≠⊤ (q ∙ p ⁻¹))
 𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₁ , q) = Σ-≡ ₁ ₁ p q refl (Prop-isSet fe pe p q)
+
+\end{code}
+
+More about retracts.
+
+\begin{code}
+
+rid : ∀ {U} {X : U ̇} → retract X of X
+rid = id , (id , λ x → refl)
+
+rexp : ∀ {U V W T} {X : U ̇} {Y : V ̇} {X' : W ̇} {Y' : T ̇} → FunExt U T
+    → retract X of X' → retract Y' of Y → retract (X → Y') of (X' → Y)
+rexp {U} {V} {W} {T} {X} {Y} {X'} {Y'} fe (rx , (sx , rsx)) (ry , (sy , rsy)) = (r , (s , rs))
+ where
+  r : (X' → Y) → X → Y'
+  r f x = ry (f (sx x))
+  s : (X → Y') → X' → Y
+  s f' x' = sy (f' (rx x'))
+  rs' : (f' : X → Y') (x : X) → ry (sy (f' (rx (sx x)))) ≡ f' x
+  rs' f' x = rsy (f' (rx (sx x))) ∙ ap f' (rsx x)
+  rs : (f' : X → Y') → r (s f') ≡ f'
+  rs f' = funext fe (rs' f')
+
+rpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {Y' : W ̇} → FunExt U W
+    → retract Y' of Y → retract (X → Y') of (X → Y)
+rpe fe = rexp fe rid
+
+crpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {X' : W ̇} → FunExt U V
+    → retract X of X' → retract (X → Y) of (X' → Y)
+crpe fe rx = rexp fe rx rid
+
+pdrc : ∀ {U V} {X : U ̇} {Y : V ̇} → X → retract Y of (X → Y)
+pdrc x = ((λ f → f x) , ((λ y x → y) , λ y → refl))
+
+retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
+retraction f = ∀ y → Σ \x → f x ≡ y
+
+retract_Of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
+retract Y Of X = Σ \(f : X → Y) → retraction f
+
+retract-of-retract-Of : ∀ {U V} {X : U ̇} {Y : V ̇} → retract Y of X → retract Y Of X
+retract-of-retract-Of {U} {V} {X} {Y} (f , φ)= (f , hass)
+ where
+  hass : (y : Y) → Σ \(x : X) → f x ≡ y
+  hass y = pr₁ φ y , pr₂ φ y
+
+retract-Of-retract-of : ∀ {U V} {X : U ̇} {Y : V ̇} → retract Y Of X → retract Y of X
+retract-Of-retract-of {U} {V} {X} {Y} (f , hass) = (f , φ)
+ where
+  φ : Σ \(s : Y → X) → f ∘ s ∼ id
+  φ = (λ y → pr₁ (hass y)) , λ y → pr₂ (hass y)
+
+retracts-compose : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
+                 → retract Y of X → retract Z of Y → retract Z of X
+retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
+                                                    (s ∘ s' , λ z → ap r' (rs (s' z)) ∙ rs' z)
+retracts-of-closed-under-exponentials : ∀ {U V W} {X : U ̇} {Y : V ̇} {B : W ̇} → FunExt W W
+                                      → X → retract B of X → retract B of Y → retract B of (X → Y)
+retracts-of-closed-under-exponentials {U} {V} {W} {X} {Y} {B} fe x rbx rby = rbxy
+ where
+  rbbxy : retract (B → B) of (X → Y)
+  rbbxy = rexp fe rbx rby
+  rbxy : retract B of (X → Y)
+  rbxy = retracts-compose rbbxy (pdrc (pr₁ rbx x))
 
 \end{code}
 

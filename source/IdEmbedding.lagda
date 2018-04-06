@@ -99,7 +99,7 @@ Id-Embedding-Lemma {U} fe fe' {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   g-lc : left-cancellable g
   g-lc = NatΣ-lc X (λ x → Id x ≡ A) A f f-lc 
   h : isProp T
-  h = lcmtpip g g-lc (c-is-p c)
+  h = lcmtpip g g-lc (isSingleton-isProp c)
 
 \end{code}
 
