@@ -324,15 +324,13 @@ Induction on ≡:
 
 \begin{code}
 
-Jbased : ∀ {U V} {X : U ̇} (x : X)
-  → (A : (y : X) → x ≡ y → V ̇)
+Jbased : ∀ {U V} {X : U ̇} (x : X) (A : (y : X) → x ≡ y → V ̇)
   → A x refl
   → (y : X) (r : x ≡ y)
   → A y r
 Jbased x A b .x refl = b
 
-J : ∀ {U V} {X : U ̇}
-  → (A : (x y : X) → x ≡ y → V ̇)
+J : ∀ {U V} {X : U ̇} (A : (x y : X) → x ≡ y → V ̇)
   → ((x : X) → A x x refl)
   → {x y : X} (r : x ≡ y) → A x y r
 J A f {x} {y} = Jbased x (λ y p → A x y p) (f x) y
@@ -384,6 +382,10 @@ ap f p = transport (λ y → f _ ≡ f y) p refl
 
 ap-id-is-id : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ ap id p
 ap-id-is-id refl = refl
+
+ap-comp : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
+       → ap f (p ∙ q) ≡ ap f p ∙ ap f q
+ap-comp f refl refl = refl       
 
 Lemma-ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X}
               (r : x ≡ x')

@@ -133,20 +133,33 @@ yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
            → Nat (Id x) A → A x
 yoneda-elem {U} {V} {X} {x} A η = η x (idp x)
 
-yoneda-nat : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) → A x → Nat (Id x) A 
+Yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
+           → ((y : X) → x ≡ y → A y) → A x
+Yoneda-elem = yoneda-elem
+
+yoneda-nat : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
+           → A x → Nat (Id x) A 
 yoneda-nat A a y p = transport A p a
+
+Yoneda-nat : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
+           → A x → (y : X) → x ≡ y → A y
+Yoneda-nat = yoneda-nat
 
 yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A)
             → yoneda-nat A (yoneda-elem A η) ≈ η 
 yoneda-lemma {U} {V} {X} {.x} A η x refl = idp (yoneda-elem A η)
 
+Yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : (y : X) → x ≡ y → A y) (y : X) (p : x ≡ y)
+             → transport A p (η x (idp x)) ≡ η y p
+Yoneda-lemma = yoneda-lemma
+
 yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x) 
                    → yoneda-elem A (yoneda-nat A a) ≡ a
 yoneda-computation = idp 
 
-transport-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A) (y : X) (p : x ≡ y)
-                → transport A p (η x (idp x)) ≡ η y p
-transport-lemma = yoneda-lemma
+Yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x) 
+                   → transport A (idp x) a ≡ a
+Yoneda-computation {U} {V} {X} {x} {A} = yoneda-computation {U} {V} {X} {x} {A}
 
 yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : Nat (Id x) A)             
               → yoneda-elem A η ≡ yoneda-elem A θ → η ≈ θ
@@ -156,15 +169,29 @@ yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   yoneda-nat A (yoneda-elem A θ) y p ≡⟨ yoneda-lemma A θ y p ⟩
   θ y p ∎
 
+Yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : (y : X) → x ≡ y → A y)             
+              → η x (idp x) ≡ θ x (idp x) → (y : X) (p : x ≡ y) → η y p ≡ θ y p
+Yoneda-elem-lc = yoneda-elem-lc
+
 yoneda-nat' : ∀ {U} {X : U ̇} (x {y} : X) → Id x y → Nat (Id y) (Id x)
 yoneda-nat' x = yoneda-nat (Id x)
+
+Yoneda-nat' : ∀ {U} {X : U ̇} (x {y} : X) → x ≡ y → (z : X) → y ≡ z → x ≡ z
+Yoneda-nat' = yoneda-nat'
 
 yoneda-elem' : ∀ {U} {X : U ̇} (x {y} : X) → Nat (Id y) (Id x) → Id x y
 yoneda-elem' x = yoneda-elem (Id x)
 
+Yoneda-elem' : ∀ {U} {X : U ̇} (x {y} : X) → ((z : X) → y ≡ z → x ≡ z) → x ≡ y
+Yoneda-elem' = yoneda-elem'
+
 yoneda-lemma' : ∀ {U} {X : U ̇} (x {y} : X) (η : Nat (Id y) (Id x)) (z : X) (p : y ≡ z)
               → (yoneda-elem' x η) ∙ p ≡ η z p
 yoneda-lemma' x = yoneda-lemma (Id x)
+
+Yoneda-lemma' : ∀ {U} {X : U ̇} (x {y} : X) (η : (z : X) → y ≡ z → x ≡ z) (z : X) (p : y ≡ z)
+              → η y (idp y) ∙ p ≡ η z p
+Yoneda-lemma' = yoneda-lemma'
 
 yoneda-lemma'' : ∀ {U} {X : U ̇} (x {y} : X) (η : Nat (Id y) (Id x)) (z : X) (p : y ≡ z)
               → yoneda-nat' x (yoneda-elem' x η) z p ≡ η z p
@@ -174,15 +201,23 @@ hedberg-lemma : ∀ {U} {X : U ̇} (x : X) (η : Nat (Id x) (Id x)) (y : X) (p :
               → (yoneda-elem' x η) ∙ p ≡ η y p
 hedberg-lemma x η y p = yoneda-lemma' x η y p
 
+Hedberg-lemma : ∀ {U} {X : U ̇} (x : X) (η : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
+              → η x (idp x) ∙ p ≡ η y p
+Hedberg-lemma = hedberg-lemma
+
 yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : Nat (Id x) (λ _ → B)) (y : X) (p : x ≡ y)
              → yoneda-elem (λ _ → B) η ≡ η y p 
 yoneda-const η = yoneda-elem-lc (λ y p → yoneda-elem _ η) η (idp (yoneda-elem _ η))
+
+Yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : (y : X) → x ≡ y → B) (y : X) (p : x ≡ y)
+             → η x (idp x) ≡ η y p 
+Yoneda-const = yoneda-const
 
 singletons-contractible : ∀ {U} {X : U ̇} {x : X}
                         → is-center-of-contraction (paths-from x) (x , idp x)
 singletons-contractible {U} {X} {x} (y , p) = yoneda-const η y p
  where
-  η : Nat (Id x) (λ _ → paths-from x)
+  η : (y : X) → x ≡ y → paths-from x
   η y p = (y , p)
 
 Jbased'' : ∀ {U V} {X : U ̇} (x : X) (A : paths-from x → V ̇)
@@ -207,8 +242,7 @@ idp-right-neutral = idp
 ⁻¹-contravariant {U} {X} {x} {y} p {z} = yoneda-elem-lc (λ z q → q ⁻¹ ∙ p ⁻¹)
                                                        (λ z q → (p ∙ q) ⁻¹)
                                                        idp-left-neutral
-                                                       z 
-
+                                                       z
 \end{code}
 
 Associativity also follows from the Yoneda Lemma, again with the same
@@ -252,44 +286,10 @@ cancel-left {U} {X} {x} {y} {z} {p} {q} {r} s =
        idp y ∙ r      ≡⟨ idp-left-neutral ⟩
        r ∎
 
-\end{code}
-
-Added 12 May 2015:
-
-Contractibility also arises as follows with the Yoneda Lemma.
-(see https://en.wikipedia.org/wiki/Representable_functor)
-
-A representation of A:X→U ̇ is a given x:X together with a natural
-equivalence
-
-  Π(y:X), x=y → A y
-
-(i.e. a y-indexed family of equivalences).
-
-Then a universal element of A is nothing but a center of contraction
-(x:X, a:A(x)) of the type Σ(x:X), A(x).
-
-So A:X→U ̇ is representable iff Σ(x:X), A(x) is contractible.
-
-   Example. An interesting instance of this is the case where X is U ̇,
-   B:U ̇ and A(C)=(B≃C), in which we get that A is representable iff the
-   type Σ(C:U ̇), B≃C is contractible.
-
-   But saying that, for any given B:U ̇, the above "presheaf" A is
-   representable is the same as saying that U ̇ is univalent.
-
-   Hence U ̇ is univalent = (Π(B : U ̇), contractible(Σ(C:U ̇), B≃C)).
-
-   We don't develop this example in this version of these Agda notes.
-
-The Agda development of this has been added 5 Nov 2015 and 17 Nov 2017:
-
-\begin{code}
-
 from-Σ-Id : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
           → σ ≡ τ
           → Σ \(p : pr₁ σ ≡ pr₁ τ) → yoneda-nat A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ
-from-Σ-Id {U} {V} {X} A {x , a} {τ} p = yoneda-nat B (idp x , idp a) τ p
+from-Σ-Id {U} {V} {X} A {x , a} {τ} = yoneda-nat B (idp x , idp a) τ
  where
    B : (τ : Σ A) → U ⊔ V ̇
    B τ = Σ \(p : x ≡ pr₁ τ) → yoneda-nat A a (pr₁ τ) p ≡ pr₂ τ
@@ -297,9 +297,9 @@ from-Σ-Id {U} {V} {X} A {x , a} {τ} p = yoneda-nat B (idp x , idp a) τ p
 to-Σ-Id : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
           → (Σ \(p : pr₁ σ ≡ pr₁ τ) → yoneda-nat A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ)
           → σ ≡ τ
-to-Σ-Id {U} {X} A {x , a} {y , b} (p , q) = r
+to-Σ-Id {U} {V} {X} A {x , a} {y , b} (p , q) = r
  where
-  η : Nat (Id x) (λ _ → Σ A)
+  η : (y : X) → x ≡ y → Σ A
   η y p = (y , yoneda-nat A a y p)
   yc : (x , a) ≡ (y , yoneda-nat A a y p)
   yc = yoneda-const η y p
@@ -395,7 +395,10 @@ inverse : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f →
 inverse {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
   sf : (x : X) → s(f x) ≡ x
-  sf x = s(f x) ≡⟨ (rf (s (f x))) ⁻¹ ⟩ r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩ r(f x) ≡⟨ rf x ⟩ x ∎
+  sf x = s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
+         r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
+         r(f x)       ≡⟨ rf x ⟩
+         x            ∎
 
 qinv-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isEquiv f
 qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
@@ -449,7 +452,7 @@ FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → isEquiv (happly f g)
 ≃-funext U V fe f g = happly f g , fe f g
 
 funext : ∀ {U V} (fe : FunExt U V) {X : U ̇} {A : X → V ̇} {f g : Π A} 
-      → ((x : X) → f x ≡ g x) → f ≡ g
+       → ((x : X) → f x ≡ g x) → f ≡ g
 funext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 
 happly-funext : ∀ {U V} {X : U ̇} {A : X → V ̇}
@@ -458,7 +461,7 @@ happly-funext : ∀ {U V} {X : U ̇} {A : X → V ̇}
 happly-funext fe f g = pr₂(pr₁(fe f g))
 
 funext-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : FunExt U V) 
-         → (f g : Π A) → left-cancellable(funext fe)
+         → (f g : Π A) → left-cancellable (funext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (funext fe) (happly f g , happly-funext fe f g)
 
 happly-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : FunExt U V) (f g : Π A) 
@@ -513,9 +516,11 @@ Formulation of univalence.
 
 \begin{code}
 
-
 idtoeq : ∀ {U} (X : U ̇) → Nat (Id X) (Eq X)
 idtoeq X = yoneda-nat (Eq X) (ideq X)
+
+idtoeq-bis : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
+idtoeq-bis = idtoeq
 
 isUnivalent : ∀ U → U ′ ̇
 isUnivalent U = (X Y : U ̇) → isEquiv(idtoeq X Y)
@@ -523,8 +528,14 @@ isUnivalent U = (X Y : U ̇) → isEquiv(idtoeq X Y)
 eqtofun : ∀ {U V} (X : U ̇) → Nat (Eq X) (λ (Y : V ̇) → X → Y)
 eqtofun X Y (f , _) = f
 
+eqtofun-bis : ∀ {U V} (X : U ̇) (Y : V ̇) → X ≃ Y → X → Y
+eqtofun-bis = eqtofun
+
 idtofun : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 idtofun X Y p = eqtofun X Y (idtoeq X Y p)
+
+idtofun-bis : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
+idtofun-bis = idtofun 
 
 eqtoid : ∀ {U} → isUnivalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
 eqtoid ua X Y = pr₁(pr₁(ua X Y))
@@ -544,6 +555,19 @@ idtofun-isEquiv X Y p = pr₂(idtoeq X Y p)
 
 isUnivalent-≃ : ∀ {U} → isUnivalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
 isUnivalent-≃ ua X Y = idtoeq X Y , ua X Y
+
+JEq : ∀ {U} → isUnivalent U → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+    → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
+JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
+ where
+  A' : (Y : U ̇) → X ≡ Y → V ̇
+  A' Y p = A Y (idtoeq X Y p)
+  b' : A' X refl
+  b' = b
+  f' : (Y : U ̇) (p : X ≡ Y) → A' Y p
+  f' = Jbased X A' b'
+  g : A Y (idtoeq X Y (eqtoid ua X Y e))
+  g = f' Y (eqtoid ua X Y e)
 
 \end{code}
 
@@ -568,7 +592,7 @@ universality-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                      → is-universal-element A (x , a) → (y : X) → hasSection(yoneda-nat A a y) 
 universality-section {U} {V} {X} {A} x a u y = s y , φ y
  where
-  s : Nat A (Id x)
+  s : (y : X) → A y → x ≡ y
   s y b = pr₁ (u y b) 
   φ : (y : X) (b : A y) → yoneda-nat A a y (s y b) ≡ b 
   φ y b = pr₂ (u y b)
@@ -580,13 +604,13 @@ Actually, it suffices to just give the section, as shown next
 
 \begin{code}
 
-idemp-is-id : ∀ {U} {X : U ̇} {x : X} (η : Nat (Id x) (Id x)) (y : X) (p : x ≡ y)
+idemp-is-id : ∀ {U} {X : U ̇} {x : X} (η : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
            → η y (η y p) ≡ η y p → η y p ≡ p
 idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
-        η x (idp x) ∙ η y p ≡⟨ hedberg-lemma x η y (η y p) ⟩
+        η x (idp x) ∙ η y p ≡⟨ Hedberg-lemma x η y (η y p) ⟩
         η y (η y p)         ≡⟨ idemp ⟩
-        η y p               ≡⟨ (hedberg-lemma x η y p)⁻¹ ⟩
-        η x (idp x) ∙ p   ∎ )
+        η y p               ≡⟨ (Hedberg-lemma x η y p)⁻¹ ⟩
+        η x (idp x) ∙ p     ∎ )
 
 natural-section-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇}
                            (x : X) (r : Nat (Id x) A)
@@ -594,7 +618,7 @@ natural-section-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇}
                         → ((y : X) → isEquiv(r y))
 natural-section-isEquiv {U} {V} {X} {A} x r hass = λ y → (hass y , hasr y)
  where
-  s : Nat A (Id x)
+  s : (y : X) → A y → x ≡ y
   s y = pr₁ (hass y)
   rs : {y : X} (a : A y) → r y (s y a) ≡ a
   rs {y} = pr₂ (hass y)
@@ -617,7 +641,7 @@ universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → is-universal-element A (x , a)
                    → (y : X) → isEquiv(yoneda-nat A a y)
 universality-equiv {U} {V} {X} {A} x a u = natural-section-isEquiv x (yoneda-nat A a)
-                                                                      (universality-section x a u)
+                                                                     (universality-section x a u)
 \end{code}
 
 The converse is trivial:
@@ -640,33 +664,33 @@ Next we show that a presheaf A is representable iff Σ A is contractible.
 
 \begin{code}
 
-_≊_ : ∀ {U V} {X : U ̇} → (X → V ̇) → (X → V ̇) → U ⊔ V ̇
+_≊_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
 A ≊ B = Σ \(η : Nat A B) → ∀ x → isEquiv(η x)
 
-is-representable : ∀ {U} {X : U ̇} → (X → U ̇) → U ̇
-is-representable A = Σ \x → Id x ≊ A
+isRepresentable : ∀ {U V} {X : U ̇} → (X → V ̇) → U ⊔ V ̇
+isRepresentable A = Σ \x → Id x ≊ A
 
-contr-is-repr : ∀ {U} {X : U ̇} {A : X → U ̇} → isContr (Σ A) → is-representable A 
-contr-is-repr {U} {X} {A} ((x , a) , cc) = g
+contr-is-repr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isContr (Σ A) → isRepresentable A 
+contr-is-repr {U} {V} {X} {A} ((x , a) , cc) = g
  where
   g : Σ \(x : X) → Id x ≊ A
   g = x , (yoneda-nat A a , universality-equiv x a (cc-is-ue A (x , a) cc))
 
-equiv-closed-under-∼ : ∀ {U} {X Y : U ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
-equiv-closed-under-∼ {U} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
+equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
+equiv-closed-under-∼ {U} {V} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
  where
   gs : (y : Y) → g(s y) ≡ y
   gs y = g (s y) ≡⟨ peq (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎
   rg : (x : X) → r(g x) ≡ x
   rg x = r (g x) ≡⟨ ap r (peq x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎
 
-is-repr→isEquiv-yoneda : ∀ {U} {X : U ̇} {A : X → U ̇} (x : X) (η : Nat (Id x) A) (y : X) 
+is-repr→isEquiv-yoneda : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A) (y : X) 
                         → isEquiv (η y) → isEquiv (yoneda-nat A (yoneda-elem A η) y)
-is-repr→isEquiv-yoneda {U} {X} {A} x η y ise =
+is-repr→isEquiv-yoneda {U} {V} {X} {A} x η y ise =
   equiv-closed-under-∼ (η y) (yoneda-nat A (yoneda-elem A η) y) ise (yoneda-lemma A η y)
 
-repr-is-contr : ∀ {U} {X : U ̇} {A : X → U ̇} → is-representable A → isContr (Σ A)
-repr-is-contr {U} {X} {A} (x , (η , φ)) = g
+repr-is-contr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isRepresentable A → isContr (Σ A)
+repr-is-contr {U} {V} {X} {A} (x , (η , φ)) = g
  where
   σ : Σ A
   σ = x , yoneda-elem A η
@@ -677,7 +701,27 @@ repr-is-contr {U} {X} {A} (x , (η , φ)) = g
 
 \end{code}
 
-Here are some further consequences:
+An immediate consequence is the following characterization of
+univalence:
+
+\begin{code}
+
+univalence-via-contractibility : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isContr (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-contractibility {U} = (forth , back)
+ where
+  forth : isUnivalent U → (X : U ̇) → isContr (Σ (Eq X))
+  forth ua X = repr-is-contr (X , (idtoeq X , ua X))
+
+  back : ((X : U ̇) → isContr (Σ (Eq X))) → isUnivalent U
+  back φ X = universality-equiv X (ideq X) (cc-is-ue (Eq X) (X , ideq X) (c-is-p (φ X) (X , ideq X)))
+
+\end{code}
+
+The fact that this is the case was announced on 5th August
+2014 with the techniques of the HoTT Book
+(https://groups.google.com/forum/#!msg/homotopytypetheory/HfCB_b-PNEU/Ibb48LvUMeUJ)),
+and the proof given here via Yoneda was announced on 12th May 2015
+(http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html).
 
 \begin{code}
 
@@ -710,9 +754,15 @@ paths-to-contractible x = rc-is-c (pr₁(pt-pf-equiv x))
 paths-to-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
 paths-to-isProp x = c-is-p (paths-to-contractible x)
 
+pbucp' : ∀ {U} (X Y : U ̇) → isProp(X × Y) → (Y → isProp X) × (X → isProp Y)
+pbucp' {U} X Y isp =  (λ y x x' → ap pr₁ (isp (x , y) (x' , y))) ,
+                      (λ x y y' → ap pr₂ (isp (x , y) (x , y')))
+
+pcubp' : ∀ {U} (X Y : U ̇) → (Y → isProp X) × (X → isProp Y) → isProp(X × Y)
+pcubp' X Y (i , j) (x , y) (x' , y') = to-Σ-Id _ (i y x x' , j x _ _)
+
 pcubp : ∀ {U} (X Y : U ̇) → isProp X → isProp Y → isProp(X × Y)
-pcubp X Y i j (x , y) (x' , y') = to-Σ-Id (λ _ → Y) 
-                                          (i x x' , j (yoneda-nat (λ _ → Y) y x' (i x x')) y')
+pcubp X Y i j = pcubp' X Y ((λ _ → i) , (λ _ → j))
 
 fiber : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → f x ≡ y
@@ -1412,6 +1462,8 @@ open import Two
 𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₁ , q) = Σ-≡ ₁ ₁ p q refl (Prop-isSet fe pe p q)
 
 \end{code}
+
+Associativities and precedences.
 
 \begin{code}
 
