@@ -511,14 +511,17 @@ which first requires defining retractions (and hence sections).
 
 \begin{code}
 
+_isSectionOf_ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → (Y → X) → U ̇
+s isSectionOf r = r ∘ s ∼ id
+
 hasSection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-hasSection r = Σ \s → r ∘ s ∼ id
+hasSection r = Σ \s → s isSectionOf r
 
 hasRetraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-hasRetraction s = Σ \r → r ∘ s ∼ id
+hasRetraction s = Σ \r → s isSectionOf r
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
-retract Y of X = Σ \(f : X → Y) → hasSection f
+retract Y of X = Σ \(r : X → Y) → hasSection r
 
 isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEquiv f = hasSection f × hasRetraction f 
@@ -586,6 +589,9 @@ Left-cancellable maps.
 
 left-cancellable : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
+
+left-cancellable' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
 
 lcmtpip : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → isProp Y → isProp X
 lcmtpip f lc i x x' = lc (i (f x) (f x'))

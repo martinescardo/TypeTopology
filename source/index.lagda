@@ -267,5 +267,6 @@ open import NonCollapsibleFamily
 open import UnivalenceFromScratch
 open import PlusOneLC
 open import ArithmeticViaEquivalence
+open import UAFE
 
 \end{code}

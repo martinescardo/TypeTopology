@@ -365,6 +365,9 @@ p ∙ q = transport (Id _) q p
 _⁻¹ : ∀ {U} {X : U ̇} → {x y : X} → x ≡ y → y ≡ x
 p ⁻¹ = transport (λ x → x ≡ _) p refl
 
+back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
+back-transport B p = transport B (p ⁻¹)
+
 ≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
 ≢-sym u r = u(r ⁻¹)
 
