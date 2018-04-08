@@ -507,7 +507,8 @@ cc-is-ue A (x , a) φ y b = from-Σ-Id A {x , a} {y , b} (φ(y , b))
 \end{code}
 
 But to study this we need to pause to define and study equivalences,
-which first requires defining retractions (and hence sections).
+which first requires defining retractions (and hence sections). We
+take Joyal's version of the notion of equivalence as the primary one.
 
 \begin{code}
 
@@ -549,6 +550,9 @@ _■ = ideq
 
 Eq : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 Eq = _≃_
+
+transport-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isEquiv (transport A p)
+transport-isEquiv refl = ((id , idp) , (id , idp))
 
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
@@ -666,6 +670,19 @@ eqtoid ua X Y = pr₁(pr₁(ua X Y))
 idtoeq-eqtoid : ∀ {U} (ua : isUnivalent U)
               → (X Y : U ̇) (e : X ≃ Y) → idtoeq X Y (eqtoid ua X Y e) ≡ e
 idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
+
+eqtoid' : ∀ {U} → isUnivalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
+eqtoid' ua X Y = pr₁(pr₂(ua X Y))
+
+eqtoid-idtoeq : ∀ {U} (ua : isUnivalent U)
+              → (X Y : U ̇) (p : X ≡ Y) →  eqtoid' ua X Y (idtoeq X Y p) ≡ p
+eqtoid-idtoeq ua X Y = pr₂(pr₂(ua X Y))
+
+idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
+idtoeq' X Y p = (path-to-fun p , transport-isEquiv p)
+
+idtoEqs-agree : ∀ {U} (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
+idtoEqs-agree X X refl = refl
 
 idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 idtofun' X = yoneda-nat (λ Y → X → Y) id
@@ -909,6 +926,28 @@ isVoevodskyEquiv-isEquiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
   e x = d (f x) (x , refl)
   gf : (x : X) → g (f x) ≡ x
   gf x = ap pr₁ (e x)
+
+\end{code}
+
+The following has a proof from function extensionality (see e.g. HoTT
+Book), but it has a more direct proof from univalence:
+
+\begin{code}
+
+isEquiv-isVoevodskyEquiv : ∀ {U} → isUnivalent U → {X Y : U ̇} (f : X → Y)
+                         → isEquiv f → isVoevodskyEquiv f
+isEquiv-isVoevodskyEquiv {U} ua {X} {Y} f ise = g Y (f , ise)
+ where
+  A : (Y : U ̇) → X ≃ Y → U ̇
+  A Y (f , ise) = isVoevodskyEquiv f
+  b : A X (ideq X)
+  b = paths-to-contractible
+  g :  (Y : U ̇) (e : X ≃ Y) → A Y e
+  g = JEq ua X A b
+
+\end{code}
+
+\begin{code}
 
 isEmbedding : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isEmbedding f = ∀ y → isProp(fiber f y)

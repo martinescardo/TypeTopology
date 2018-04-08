@@ -44,13 +44,6 @@ univalence implies function extensionality by Voevodsky:
 πδ : ∀ {U} (X : U ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
 πδ {U} X = refl {U} {X → X}
 
-path-to-fun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
-path-to-fun = transport id
-
-back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
-                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ path-to-fun p
-back-transport-is-pre-comp refl g = refl
-
 \end{code}
 
 We generalize "isEquiv" to an arbitrary "isE" in the following
@@ -77,11 +70,11 @@ module AbstractUAFE
  transport-isE : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isE (transport A p)
  transport-isE refl = I
 
- back-transport-isE : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isE (back-transport A p)
- back-transport-isE p = transport-isE (p ⁻¹)
-
  idtoE : ∀ {U} (X Y : U ̇) → X ≡ Y → X ⋍ Y
  idtoE X Y p = (path-to-fun p , transport-isE p)
+
+ back-transport-isE : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isE (back-transport A p)
+ back-transport-isE p = transport-isE (p ⁻¹)
 
  module AbstractUAFE2 (U : Universe)
                       (Etoid : (X Y : U ̇) → X ⋍ Y → X ≡ Y)
@@ -112,6 +105,7 @@ module AbstractUAFE
                               → back-transport (λ Z → Z → Y) (Etoid X X' e) g ≡ g ∘ pr₁ e 
   back-transport-is-pre-comp' {X} {X'} e g = back-transport-is-pre-comp (Etoid X X' e) g ∙ η
    where
+    f : X → X'
     f = pr₁ e
     η : g ∘ path-to-fun (Etoid X X' e) ≡ g ∘ f
     η = ap (λ h → g ∘ h) (Γ e) 
@@ -146,16 +140,17 @@ UAFE : ∀ {U} → isUnivalent U → ∀ {V} {X : V ̇} {Y : U ̇} (f g : X → 
 UAFE {U} ua {V} {X} {Y} = fe 
  where
   open AbstractUAFE isEquiv
-                    (λ {U} {X} → ((id , idp) , (id , idp)))
+                    (λ {U} {X} → ((id {U} {X} , idp) , (id , idp)))
                     δ-isEquiv
-                    (λ ise h → equiv-closed-under-∼ _ _ ise (λ x → ( h x )⁻¹))
+                    (λ ise h → equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹))
 
   h : (X Y : U ̇) → idtoE X Y ∼ idtoeq X Y
   h X X refl = refl
 
-  f : (X Y : U ̇) → idtoE X Y ∘ eqtoid ua X Y ∼ id
-  f X Y e = h X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid {U} ua X Y e
+  wua : (X Y : U ̇) → idtoE X Y ∘ eqtoid ua X Y ∼ id
+  wua X Y e = h X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
 
-  open AbstractUAFE2 U (eqtoid ua) f 
+  open AbstractUAFE2 U (eqtoid ua) wua
 
 \end{code}
+

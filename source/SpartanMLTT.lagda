@@ -368,6 +368,13 @@ p ⁻¹ = transport (λ x → x ≡ _) p refl
 back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
 back-transport B p = transport B (p ⁻¹)
 
+path-to-fun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
+path-to-fun = transport id
+
+back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
+                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ path-to-fun p
+back-transport-is-pre-comp refl g = refl
+
 ≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
 ≢-sym u r = u(r ⁻¹)
 
