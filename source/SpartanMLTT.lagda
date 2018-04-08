@@ -384,8 +384,21 @@ trans-sym refl = refl
 trans-sym' : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
 trans-sym' refl = refl
 
-ap : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x₀ x₁ : X} → x₀ ≡ x₁ → f x₀ ≡ f x₁
-ap f p = transport (λ y → f _ ≡ f y) p refl
+ap : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
+ap f p = transport (λ x' → f _ ≡ f x') p refl
+
+transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇} (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+             → transport (A ∘ f) p a ≡ transport A (ap f p) a
+transport-ap f refl = refl 
+
+nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
+              → transport B p (f x a) ≡ f y (transport A p a)
+nat-transport f refl = refl
+
+apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
+    (p : x ≡ y) → transport A p (f x) ≡ f y
+apd f refl = refl
+
 
 ap-id-is-id : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ ap id p
 ap-id-is-id refl = refl

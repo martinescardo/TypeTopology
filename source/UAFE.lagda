@@ -153,4 +153,3 @@ UAFE {U} ua {V} {X} {Y} = fe
   open AbstractUAFE2 U (eqtoid ua) wua
 
 \end{code}
-

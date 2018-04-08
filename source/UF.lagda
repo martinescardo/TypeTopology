@@ -704,7 +704,8 @@ show that the identity equivalences satisfy it.
 
 \begin{code}
 
-JEq : ∀ {U} → isUnivalent U → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+JEq : ∀ {U} → isUnivalent U
+    → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
     → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
  where
@@ -717,6 +718,43 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
   g : A Y (idtoeq X Y (eqtoid ua X Y e))
   g = f' Y (eqtoid ua X Y e)
 
+{- TODO:
+JEq-comp : ∀ {U} (ua : isUnivalent U)
+    → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+    → (b : A X (ideq X))
+    → JEq ua X A b X (ideq X) ≡ b
+JEq-comp ua X A b = ?
+-}
+
+\end{code}
+
+
+
+
+Conversely, if the induction principle for equivalences with its
+computation rule holds, then univalence follows:
+
+\begin{code}
+
+JEq-converse : ∀ {U}
+             → (jeq : ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+                → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e)
+             → (∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+                → (b : A X (ideq X)) → jeq X A b X (ideq X) ≡ b)
+             → isUnivalent U
+JEq-converse {U} jeq jeq-comp X = g
+ where
+  φ : (Y : U ̇) → X ≃ Y → X ≡ Y
+  φ = jeq X (λ Y p → X ≡ Y) (idp X)
+  φc : φ X (ideq X) ≡ idp X
+  φc = jeq-comp X (λ Y p → X ≡ Y) (idp X)
+  idtoeqφ : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (φ Y e) ≡ e
+  idtoeqφ = jeq X (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
+  φidtoeq : (Y : U ̇) (p : X ≡ Y) → φ Y (idtoeq X Y p) ≡ p
+  φidtoeq X refl = φc
+  g : (Y : U ̇) → isEquiv(idtoeq X Y)
+  g Y =  (φ Y , idtoeqφ Y) , (φ Y , φidtoeq Y)
+  
 \end{code}
 
 The following says that if the pair (x,a) is a universal element, then
