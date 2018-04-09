@@ -11,13 +11,11 @@ identity types _≡_.
 
 module SpartanMLTT where
 
-open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to usuc ; Level to Universe) public
+open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _′ ; Level to Universe) public
 
 _̇ : (U : Universe) → _
 U ̇ = Set U -- This should be the only use of the Agda keyword 'Set' in this development.
 
-_′ : Universe → Universe
-_′ = usuc
 
 U₁ = U₀ ′
 U₂ = U₁ ′
@@ -368,11 +366,11 @@ p ⁻¹ = transport (λ x → x ≡ _) p refl
 back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
 back-transport B p = transport B (p ⁻¹)
 
-path-to-fun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
-path-to-fun = transport id
+pathtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
+pathtofun = transport id
 
 back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
-                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ path-to-fun p
+                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ pathtofun p
 back-transport-is-pre-comp refl g = refl
 
 ≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
@@ -523,7 +521,6 @@ codomain {U} {V} {X} {Y} f = Y
 \begin{code}
 
 infix  0 _̇
-infix  99 _′
 infix  4  _∼_
 infixl 2 _∙_
 infix  1 _∎

@@ -551,9 +551,6 @@ _■ = ideq
 Eq : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 Eq = _≃_
 
-transport-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isEquiv (transport A p)
-transport-isEquiv refl = ((id , idp) , (id , idp))
-
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
@@ -603,6 +600,9 @@ lcmtpip f lc i x x' = lc (i (f x) (f x'))
 section-lc : ∀ {U V} {X : U ̇} {A : V ̇} (s : X → A) → hasRetraction s → left-cancellable s
 section-lc {U} {V} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
 
+isEquiv-lc : ∀ {U} {X Y : U ̇} (f : X → Y) → isEquiv f → left-cancellable f
+isEquiv-lc f (_ , hasr) = section-lc f hasr 
+
 lcccomp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
         → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
 lcccomp f g lcf lcg = lcf ∘ lcg
@@ -636,6 +636,18 @@ funext-lc fe f g = section-lc (funext fe) (happly f g , happly-funext fe f g)
 happly-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : FunExt U V) (f g : Π A) 
          → left-cancellable(happly f g)
 happly-lc fe f g = section-lc (happly f g) ((pr₂ (fe f g)))
+
+\end{code}
+
+Equivalence of transports.
+
+\begin{code}
+
+transport-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isEquiv (transport A p)
+transport-isEquiv refl =  pr₂ (ideq _)
+
+back-transport-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isEquiv (back-transport A p)
+back-transport-isEquiv p = transport-isEquiv (p ⁻¹)
 
 \end{code}
 
@@ -679,10 +691,15 @@ eqtoid-idtoeq : ∀ {U} (ua : isUnivalent U)
 eqtoid-idtoeq ua X Y = pr₂(pr₂(ua X Y))
 
 idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
-idtoeq' X Y p = (path-to-fun p , transport-isEquiv p)
+idtoeq' X Y p = (pathtofun p , transport-isEquiv p)
 
 idtoEqs-agree : ∀ {U} (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X X refl = refl
+
+idtoeq'-eqtoid : ∀ {U} (ua : isUnivalent U)
+               → (X Y : U ̇) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
+idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
+
 
 idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 idtofun' X = yoneda-nat (λ Y → X → Y) id
@@ -696,6 +713,30 @@ idtofun-isEquiv X Y p = pr₂(idtoeq X Y p)
 isUnivalent-≃ : ∀ {U} → isUnivalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
 isUnivalent-≃ ua X Y = idtoeq X Y , ua X Y
 
+back-transport-is-pre-comp' : ∀ {U} (ua : isUnivalent U)
+                           → {X X' Y : U ̇} (e : X ≃ X') (g : X' → Y)
+                           → back-transport (λ Z → Z → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e 
+back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
+ where
+  q : g ∘ pathtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
+  q = ap (λ h → g ∘ h) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
+
+equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
+equiv-closed-under-∼ {U} {V} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
+ where
+  gs : (y : Y) → g(s y) ≡ y
+  gs y = g (s y) ≡⟨ peq (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎
+  rg : (x : X) → r(g x) ≡ x
+  rg x = r (g x) ≡⟨ ap r (peq x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎
+
+equiv-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → isEquiv f → f ∼ g → isEquiv g
+equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+
+preComp-isEquiv : ∀ {U} (ua : isUnivalent U)
+                → {X Y Z : U ̇} (f : X → Y) → isEquiv f → isEquiv (λ (g : Y → Z) → g ∘ f)
+preComp-isEquiv ua {X} {Y} f ise = equiv-closed-under-∼' (back-transport-isEquiv (eqtoid ua X Y (f , ise)))
+                                                          (back-transport-is-pre-comp' ua (f , ise))
+
 \end{code}
 
 Induction on equivalences is available in univalent universes: to
@@ -703,6 +744,14 @@ prove that all equivalences satisfy some property, it is enough to
 show that the identity equivalences satisfy it.
 
 \begin{code}
+
+identity-data : ∀ {U} (X : U ̇) (i : X → X → U ̇) (r : (x : X) → i x x) → ∀ {V} → U ⊔ V ′ ̇
+identity-data {U} X i r {V} =
+ Σ \(j : (x : X) (A : (y : X) → i x y → V ̇)
+    → A x (r x) → (y : X) (p : i x y) → A y p)
+   → (x : X) (A : (y : X) → i x y → V ̇)
+    → (b : A x (r x))
+    → j x A b x (r x) ≡ b 
 
 JEq : ∀ {U} → isUnivalent U
     → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
@@ -852,14 +901,6 @@ contr-is-repr {U} {V} {X} {A} ((x , a) , cc) = g
  where
   g : Σ \(x : X) → Id x ≊ A
   g = x , (yoneda-nat A a , universality-equiv x a (cc-is-ue A (x , a) cc))
-
-equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
-equiv-closed-under-∼ {U} {V} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
- where
-  gs : (y : Y) → g(s y) ≡ y
-  gs y = g (s y) ≡⟨ peq (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎
-  rg : (x : X) → r(g x) ≡ x
-  rg x = r (g x) ≡⟨ ap r (peq x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎
 
 is-repr→isEquiv-yoneda : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A) (y : X) 
                         → isEquiv (η y) → isEquiv (yoneda-nat A (yoneda-elem A η) y)
