@@ -39,12 +39,11 @@ open import UF
 π₁-equals-π₂ ua {X} = isEquiv-lc (λ(g : Δ X → X) → g ∘ δ) (preComp-isEquiv ua δ  δ-isEquiv) (πδ X)
 
 fe : ∀ {U} → isUnivalent U → ∀ {V} {X : V ̇} {Y : U ̇} (f₁ f₂ : X → Y) → f₁ ∼ f₂ → f₁ ≡ f₂
-fe {U} ua {V} {X} {Y} f₁ f₂ h = 
-      f₁                              ≡⟨ refl ⟩
-     (λ x → f₁ x)                    ≡⟨ refl ⟩ 
-     (λ x → π₁ (f₁ x , f₂ x , h x))  ≡⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) (π₁-equals-π₂ ua) ⟩
-     (λ x → π₂ (f₁ x , f₂ x , h x))  ≡⟨ refl ⟩
-     (λ x → f₂ x)                    ≡⟨ refl ⟩ 
-      f₂                              ∎
+fe ua f₁ f₂ h = f₁                              ≡⟨ refl ⟩
+               (λ x → f₁ x)                    ≡⟨ refl ⟩ 
+               (λ x → π₁ (f₁ x , f₂ x , h x))  ≡⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) (π₁-equals-π₂ ua) ⟩
+               (λ x → π₂ (f₁ x , f₂ x , h x))  ≡⟨ refl ⟩
+               (λ x → f₂ x)                    ≡⟨ refl ⟩ 
+               f₂                               ∎
 
 \end{code}
