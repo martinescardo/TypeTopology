@@ -1,7 +1,10 @@
 Martin Escardo, 9th April 2018
 
-Voevodsky's original proof that univalence implies function
-extensionality as presented by Gambino, Kapulkin and Lumsdaine in
+Univalence implies function extensionality.
+
+We first give Voevodsky's original proof that univalence implies
+non-dependent function extensionality as presented by Gambino,
+Kapulkin and Lumsdaine in
 http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf.
 
 \begin{code}
@@ -10,7 +13,7 @@ http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf.
 
 module UAFE where
 
-open import UF
+open import UF hiding (𝟘;𝟙)
 
 Δ : ∀ {U} → U ̇ → U ̇
 Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y
@@ -28,7 +31,7 @@ open import UF
 δ-isEquiv {U} {X} = (π₁ , η) , (π₁ , ε)
  where
   η : (d : Δ X) → δ (π₁ d) ≡ d
-  η (x , x , refl) = refl
+  η (x , _ , refl) = refl
   ε : (x : X) → π₁ (δ x) ≡ x
   ε x = refl
 

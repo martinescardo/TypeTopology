@@ -694,7 +694,7 @@ idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq' X Y p = (pathtofun p , transport-isEquiv p)
 
 idtoEqs-agree : ∀ {U} (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
-idtoEqs-agree X X refl = refl
+idtoEqs-agree X _ refl = refl
 
 idtoeq'-eqtoid : ∀ {U} (ua : isUnivalent U)
                → (X Y : U ̇) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
