@@ -104,6 +104,9 @@ incorrect, rather than false:
     0 : \N \times  \N & \text{(nonsense)}, \\
    (0,0) : \N & \text{(nonsense)}.  
 \end{eqnarray*}
+In other words, $x \in X$ in ZFC is a binary relation, whereas ``$x:X$'' in type theory specifies
+that $x$ ranges over $X$.
+
 This is no different from the situation in the internal language of a
 topos.
 
@@ -429,6 +432,20 @@ Because both univalence and the $\K$ axiom are consistent, it follows that univa
     type of the universe, discovered by Vladimir Voevodsky (and
     foreseen by Martin Hofmann and Thomas Streicher~\cite{MR1686862}
     in a particular case).
+  \item It should also be emphasized that what univalence does it to
+    express the identity type $\Id(X,Y)$ for $X,Y : \U$ in terms of
+    the identity types of the types $X$ and $Y$. This is because the
+    notion of equivalence $X \simeq Y$ is defined in terms of the
+    identity types of $X$ and $Y$. In this sense, univalence is an
+    extensionality axiom: it says what identity of types $X$ and $Y$
+    is in terms of what identity for the elements of the types $X$ and
+    $Y$ are. From this perspective, it is very interesting that
+    univalence implies function extensionality (any two pointwise
+    identified functions are themselves identified) and propositional
+    extensionality (any two subsingletons, or truth values, which
+    imply each other are identified). Thus, univalence is a
+    common generalization of function extensionality and propositional
+    extensionality.
   \end{enumerate}
   This paper only explains what the \emph{univalence axiom} is. A
   brief and reasonably complete introduction to \emph{univalent
