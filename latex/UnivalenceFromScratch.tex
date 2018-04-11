@@ -91,8 +91,11 @@ constructed, we get freshly new elements for it. We write
     x:X
 \]
 to declare that the element $x$ has type $X$. This is not something
-that is true or false (unlike a membership relation $x \in X$ in
-ZFC). For example, if $\N$ is the type of natural numbers, we may
+that is true or false, unlike a membership relation $x \in X$ in
+ZFC. In other words, $x \in X$ in ZFC is a binary relation, whereas
+$x:X$ in type theory simply specifies that $x$ ranges over $X$.
+%
+For example, if $\N$ is the type of natural numbers, we may
 write
 \begin{gather*}  
     0 : \N, \\
@@ -104,9 +107,6 @@ incorrect, rather than false:
     0 : \N \times  \N & \text{(nonsense)}, \\
    (0,0) : \N & \text{(nonsense)}.  
 \end{eqnarray*}
-In other words, $x \in X$ in ZFC is a binary relation, whereas ``$x:X$'' in type theory specifies
-that $x$ ranges over $X$.
-
 This is no different from the situation in the internal language of a
 topos.
 
