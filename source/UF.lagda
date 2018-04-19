@@ -848,11 +848,11 @@ idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
         η y p               ≡⟨ (Hedberg-lemma x η y p)⁻¹ ⟩
         η x (idp x) ∙ p     ∎ )
 
-natural-section-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇}
+natural-retraction-has-section : ∀ {U V} {X : U ̇} {A : X → V ̇}
                            (x : X) (r : Nat (Id x) A)
                         → ((y : X) → hasSection(r y)) 
-                        → ((y : X) → isEquiv(r y))
-natural-section-isEquiv {U} {V} {X} {A} x r hass = λ y → (hass y , hasr y)
+                        → ((y : X) → hasRetraction(r y))
+natural-retraction-has-section {U} {V} {X} {A} x r hass = hasr
  where
   s : (y : X) → A y → x ≡ y
   s y = pr₁ (hass y)
@@ -867,6 +867,12 @@ natural-section-isEquiv {U} {V} {X} {A} x r hass = λ y → (hass y , hasr y)
   hasr : (y : X) → hasRetraction(r y)
   hasr y = s y , η-is-id y
 
+natural-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (r : Nat (Id x) A)
+                           → ((y : X) → hasSection(r y)) 
+                           → ((y : X) → isEquiv(r y))
+natural-retraction-isEquiv {U} {V} {X} {A} x r hass y = (hass y ,
+                                                         natural-retraction-has-section x r hass y)
+
 \end{code}
 
 We are interested in this corollary:
@@ -876,8 +882,8 @@ We are interested in this corollary:
 universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → is-universal-element (x , a)
                    → (y : X) → isEquiv(yoneda-nat A a y)
-universality-equiv {U} {V} {X} {A} x a u = natural-section-isEquiv x (yoneda-nat A a)
-                                                                     (universality-section x a u)
+universality-equiv {U} {V} {X} {A} x a u = natural-retraction-isEquiv x (yoneda-nat A a)
+                                                                        (universality-section x a u)
 \end{code}
 
 The converse is trivial:
@@ -1019,13 +1025,14 @@ isVoevodskyEquiv-isEquiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
 \end{code}
 
 The following has a proof from function extensionality (see e.g. HoTT
-Book), but it has a more direct proof from univalence:
+Book), but it has a more direct proof from univalence (we also give a
+proof without univalence later):
 
 \begin{code}
 
-isEquiv-isVoevodskyEquiv : ∀ {U} → isUnivalent U → {X Y : U ̇} (f : X → Y)
+isEquiv-isVoevodskyEquiv' : ∀ {U} → isUnivalent U → {X Y : U ̇} (f : X → Y)
                          → isEquiv f → isVoevodskyEquiv f
-isEquiv-isVoevodskyEquiv {U} ua {X} {Y} f ise = g Y (f , ise)
+isEquiv-isVoevodskyEquiv' {U} ua {X} {Y} f ise = g Y (f , ise)
  where
   A : (Y : U ̇) → X ≃ Y → U ̇
   A Y (f , ise) = isVoevodskyEquiv f
@@ -1879,25 +1886,27 @@ id-homotopies-are-natural h η {x} =
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
    ap h (η x)                       ∎
 
-qinv-ishae : ∀ {U} {X : U ̇} {Y : U ̇} (f : X → Y) → qinv f → isHAE f
-qinv-ishae {U} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
+qinv-ishae : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isHAE f
+qinv-ishae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
  where
   ε' : f ∘ g ∼ id
   ε' y = f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
          f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
          f (g y)         ≡⟨ ε y ⟩
-         y ∎
+         y               ∎
+         
   a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
   a x = η (g (f x))       ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
         ap (g ∘ f) (η x)  ≡⟨ ap-ap f g (η x) ⁻¹ ⟩
         ap g (ap f (η x)) ∎
+        
   b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
   b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ p → p ∙ ε (f x)) (ap (ap f) (a x)) ⟩
         ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ p → p ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
         ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹ ⟩
         ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ p → ε (f (g (f x))) ∙ p) (ap-ap f id (η x)) ⟩
         ε (f (g (f x))) ∙ ap f (η x)         ∎
-
+        
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
   τ x = ap f (η x)                                           ≡⟨ idp-left-neutral ⁻¹ ⟩
         idp (f (g (f x))) ∙ ap f (η x)                       ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
@@ -1905,6 +1914,98 @@ qinv-ishae {U} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                             ∎
+
+\end{code}
+
+The following could be defined by combining functions we already have,
+but a proof by path induction is direct:
+
+\begin{code}
+
+paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                  (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+               → (Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
+paths-in-fibers f .(f x) x .x refl p' (refl , r) = g
+ where
+  g : x , refl ≡ x , p'
+  g = ap (λ p → (x , p)) (r ⁻¹ ∙ idp-left-neutral)
+
+\end{code}
+
+Using this we see that half adjoint equivalence have contractible fibers:
+
+\begin{code}
+
+ishae-isVoevodsky : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                  → isHAE f → isVoevodskyEquiv f
+ishae-isVoevodsky {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁ σ) (pr₂ σ))
+ where
+  c : fiber f y
+  c = (g y , ε y)
+  
+  α : (x : X) (p : f x ≡ y) → c ≡ (x , p)
+  α x p = φ
+   where
+    γ : g y ≡ x
+    γ = (ap g p)⁻¹ ∙ η x
+    q : ap f γ ∙ p ≡ ε y
+    q = ap f γ ∙ p                          ≡⟨ refl ⟩
+        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ r → r ∙ p) (ap-comp f ((ap g p)⁻¹) (η x)) ⟩
+        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ r → ap f r ∙ ap f (η x) ∙ p) (ap-sym g p) ⟩
+        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ r → ap f (ap g (p ⁻¹)) ∙ r ∙ p) (τ x) ⟩
+        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ r → r ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹)) ⟩
+        ap (f ∘ g) (p ⁻¹) ∙ ε (f x) ∙ p     ≡⟨ ap (λ r → r ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹ ⟩
+        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ r → ε y ∙ r ∙ p) (ap-id-is-id (p ⁻¹))⁻¹ ⟩
+        ε y ∙ p ⁻¹ ∙ p                      ≡⟨ assoc (ε y) (p ⁻¹) p ⟩
+        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ r → ε y ∙ r) (trans-sym p) ⟩
+        ε y ∙ refl ≡⟨ refl ⟩
+        ε y ∎
+
+    φ : g y , ε y ≡ x , p
+    φ = paths-in-fibers f y (g y) x (ε y) p (γ , q)
+
+\end{code}
+
+Here are some corollaries:
+
+\begin{code}
+
+qinv-isVoevodsky : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                 → qinv f → isVoevodskyEquiv f
+qinv-isVoevodsky f q = ishae-isVoevodsky f (qinv-ishae f q)
+
+isEquiv-isVoevodskyEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                         → isEquiv f → isVoevodskyEquiv f
+isEquiv-isVoevodskyEquiv f ie = qinv-isVoevodsky f (inverse f ie)
+
+\end{code}
+
+The following again could be define by combining functions we already have:
+
+\begin{code}
+
+from-paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                  (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+               → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
+from-paths-in-fibers f .(f x) x .x refl .refl refl = refl , refl
+
+η-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+        (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+        (σ : Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p)
+      → from-paths-in-fibers f y x x' p p' (paths-in-fibers f y x x' p p' σ) ≡ σ
+η-pif f .(f x) x .x _ refl (refl , refl) = refl
+
+\end{code}
+
+Then the following follows from natural-section-has-retraction, but
+also has a direct proof by path induction:
+
+\begin{code}
+ε-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+        (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+        (q : (x , p) ≡ (x' , p'))
+      → paths-in-fibers f y x x' p p' (from-paths-in-fibers f y x x' p p' q) ≡ q
+ε-pif f .(f x) x .x refl .refl refl = refl
 
 \end{code}
 

@@ -405,6 +405,10 @@ ap-comp : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y z : X} (p : x ≡ y
        → ap f (p ∙ q) ≡ ap f p ∙ ap f q
 ap-comp f refl refl = refl       
 
+ap-sym : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y : X} (p : x ≡ y)
+       → (ap f p) ⁻¹ ≡ ap f (p ⁻¹)
+ap-sym f refl = refl       
+
 ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X}
               (r : x ≡ x')
            → ap g (ap f r) ≡ ap (g ∘ f) r
