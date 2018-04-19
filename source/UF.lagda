@@ -486,6 +486,16 @@ to-Σ-Id {U} {V} {X} A {x , a} {y , b} (p , q) = r
   r : (x , a) ≡ (y , b)
   r = yoneda-nat (λ b → (x , a) ≡ (y , b)) yc b q
 
+from-Σ-Id' : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
+           → σ ≡ τ
+           → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
+from-Σ-Id' = from-Σ-Id
+
+to-Σ-Id' : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
+         → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+         → σ ≡ τ
+to-Σ-Id' = to-Σ-Id
+
 \end{code}
 
 Next we observe that "only elements" as defined above are universal
@@ -949,8 +959,8 @@ paths-from-contractible x = ((x , idp x) , singleton-types-are-singletons)
 paths-to : ∀ {U} {X : U ̇} → X → U ̇
 paths-to x = Σ \y → y ≡ x
 
-rc-is-c : ∀ {U} {X Y : U ̇} (r : X → Y) → hasSection r → isSingleton X → isSingleton Y
-rc-is-c {U} {X} {Y} r (s , rs) (x , i) = r x , λ y → r x ≡⟨ ap r (i (s y)) ⟩ r (s y) ≡⟨ rs y ⟩ y ∎
+rc-is-c : ∀ {U V} {X : U ̇} {Y : V ̇} (r : X → Y) → hasSection r → isSingleton X → isSingleton Y
+rc-is-c {U} {V} {X} {Y} r (s , rs) (x , i) = r x , λ y → r x ≡⟨ ap r (i (s y)) ⟩ r (s y) ≡⟨ rs y ⟩ y ∎
 
 pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : paths-from x → paths-to x) → isEquiv f
 pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
@@ -1086,6 +1096,19 @@ maps, which again give left-cancellable maps.
 
 NatΣ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Σ A → Σ B
 NatΣ ζ (x , a) = (x , ζ x a)
+
+NatΣ-equiv : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+           → ((x : X) → isEquiv(ζ x)) → isEquiv(NatΣ ζ)
+NatΣ-equiv X A B ζ ise = ((s , ζs), (r , rζ)) 
+ where
+  s : Σ B → Σ A
+  s (x , b) = x , pr₁ (pr₁ (ise x)) b
+  ζs : (β : Σ B) → (NatΣ ζ ∘ s) β ≡ β
+  ζs (x , b) = ap (λ b → (x , b)) (pr₂ (pr₁ (ise x)) b)
+  r : Σ B → Σ A
+  r (x , b) = x , (pr₁ (pr₂ (ise x)) b)
+  rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
+  rζ (x , a) = ap (λ a → (x , a)) (pr₂ (pr₂ (ise x)) a)
 
 NatΣ-lc : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
         → ((x : X) → left-cancellable(ζ x)) → left-cancellable(NatΣ ζ)
@@ -1298,7 +1321,7 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     s : Y x → fiber e x
     s y = (x , y) , refl
     r : fiber e x → Y x
-    r ((.x , y) , refl) = y
+    r ((x , y) , refl) = y
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
     go : isProp(Y x)
@@ -1325,6 +1348,48 @@ isProp-closed-under-Σ {U} {V} {X} {A} isx isa (x , a) (y , b) =
 isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isProp(A x)) → isProp(Π A) 
 isProp-exponential-ideal {U} {V} fe {X} {A} isa f g = funext fe (λ x → isa x (f x) (g x))
+
+pr₁-equivalence : ∀ {U V} (X : U ̇) (Y : X → V ̇)
+               → ((x : X) → isSingleton (Y x))
+               → isEquiv (pr₁ {U} {V} {X} {Y})
+pr₁-equivalence {U} {V} X Y iss = (g , prg) , (g , gpr)
+ where
+  g : X → Σ Y
+  g x = x , pr₁(iss x)
+  prg : (x : X) → pr₁ (g x) ≡ x
+  prg x = refl
+  gpr : (σ : Σ Y) → g(pr₁ σ) ≡ σ
+  gpr (x , a) = to-Σ-Id _ (prg x , isSingleton-isProp (iss x) _ _)
+
+pr₁-vequivalence : ∀ {U V} (X : U ̇) (Y : X → V ̇)
+               → ((x : X) → isSingleton (Y x))
+               → isVoevodskyEquiv (pr₁ {U} {V} {X} {Y})
+pr₁-vequivalence {U} {V} X Y iss x = g
+ where
+  c : fiber pr₁ x
+  c = (x , pr₁ (iss x)) , refl
+  p : (y : Y x) → pr₁ (iss x) ≡ y
+  p = pr₂ (iss x)
+  f : (w : Σ \(σ : Σ Y) → pr₁ σ ≡ x) → c ≡ w
+  f ((.x , y) , refl) = ap (λ y → (x , y) , refl) (p y)
+  g : isSingleton (fiber pr₁ x)
+  g = c , f
+
+pr₁-vequivalence-converse : ∀ {U V} {X : U ̇} {Y : X → V ̇}
+                          → isVoevodskyEquiv (pr₁ {U} {V} {X} {Y})
+                          → ((x : X) → isSingleton(Y x))
+pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = go
+  where
+    f : Σ Y → X
+    f = pr₁ {U} {V} {X} {Y}
+    s : Y x → fiber f x
+    s y = (x , y) , refl
+    r : fiber f x → Y x
+    r ((x , y) , refl) = y
+    rs : (y : Y x) → r(s y) ≡ y
+    rs y = refl
+    go : isContr(Y x)
+    go = rc-is-c r (s , rs) (isv x)
 
 \end{code}
 
@@ -1796,6 +1861,50 @@ retracts-of-closed-under-exponentials {U} {V} {W} {X} {Y} {B} fe x rbx rby = rbx
   rbbxy = rexp fe rbx rby
   rbxy : retract B of (X → Y)
   rbxy = retracts-compose rbbxy (pdrc (pr₁ rbx x))
+
+\end{code}
+
+\begin{code}
+
+isHAE : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+isHAE {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id) → (x : X) → ap f (η x) ≡ ε (f x)
+
+id-homotopies-are-natural : ∀ {U} {X : U ̇} (h : X → X) (η : h ∼ id) {x : X}
+                         → η (h x) ≡ ap h (η x)
+id-homotopies-are-natural h η {x} =
+   η (h x)                          ≡⟨ refl ⟩
+   η (h x) ∙ idp (h x)              ≡⟨ ap (λ p → η(h x) ∙ p) ((trans-sym' (η x))⁻¹) ⟩
+   η (h x) ∙ (η x ∙ (η x)⁻¹)        ≡⟨ (assoc (η (h x)) (η x) (η x ⁻¹))⁻¹ ⟩
+   η (h x) ∙ η x ∙ (η x)⁻¹          ≡⟨ ap (λ q → η (h x) ∙ q ∙ (η x)⁻¹) ((ap-id-is-id (η x))) ⟩
+   η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
+   ap h (η x)                       ∎
+
+qinv-ishae : ∀ {U} {X : U ̇} {Y : U ̇} (f : X → Y) → qinv f → isHAE f
+qinv-ishae {U} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
+ where
+  ε' : f ∘ g ∼ id
+  ε' y = f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
+         f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
+         f (g y)         ≡⟨ ε y ⟩
+         y ∎
+  a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
+  a x = η (g (f x))       ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
+        ap (g ∘ f) (η x)  ≡⟨ ap-ap f g (η x) ⁻¹ ⟩
+        ap g (ap f (η x)) ∎
+  b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
+  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ p → p ∙ ε (f x)) (ap (ap f) (a x)) ⟩
+        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ p → p ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
+        ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹ ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ p → ε (f (g (f x))) ∙ p) (ap-ap f id (η x)) ⟩
+        ε (f (g (f x))) ∙ ap f (η x)         ∎
+
+  τ : (x : X) → ap f (η x) ≡ ε' (f x)
+  τ x = ap f (η x)                                           ≡⟨ idp-left-neutral ⁻¹ ⟩
+        idp (f (g (f x))) ∙ ap f (η x)                       ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
+        (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
+        (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
+        ε' (f x)                                             ∎
 
 \end{code}
 

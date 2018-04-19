@@ -1,9 +1,17 @@
 Martin Escardo, 9th April 2018
 
-We give Voevodsky's original proof that univalence implies
+We first give Voevodsky's original proof that univalence implies
 non-dependent function extensionality, as presented by Gambino,
 Kapulkin and Lumsdaine in
 http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf.
+
+Then we give his proof that, without using univalence, non-dependent
+function extensionality implies function extensionality. Thanks to
+Mike Shulman (13th April 2018) for unraveling the Coq proof given at
+https://github.com/vladimirias/Foundations/blob/master/Generalities/uu0.v
+(search for "Deduction of functional extnsionality for dependent
+functions (sections) from functional extensionality of usual
+functions") to an informal proof, which we translated to Agda.
 
 \begin{code}
 

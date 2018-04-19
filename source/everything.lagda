@@ -30,8 +30,6 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module index where
-
 \end{code}
 
 You can navigate this set of files by clicking at words or

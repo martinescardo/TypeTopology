@@ -390,7 +390,7 @@ transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇} (f : X → Y) 
 transport-ap f refl = refl 
 
 nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
-              → transport B p (f x a) ≡ f y (transport A p a)
+              → f y (transport A p a) ≡ transport B p (f x a)
 nat-transport f refl = refl
 
 apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
@@ -405,10 +405,10 @@ ap-comp : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y z : X} (p : x ≡ y
        → ap f (p ∙ q) ≡ ap f p ∙ ap f q
 ap-comp f refl refl = refl       
 
-Lemma-ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X}
+ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X}
               (r : x ≡ x')
            → ap g (ap f r) ≡ ap (g ∘ f) r
-Lemma-ap-ap {U} {V} {W} {X} {Y} {Z} f g = J A (λ x → refl)
+ap-ap {U} {V} {W} {X} {Y} {Z} f g = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → W ̇
   A x x' r = ap g (ap f r) ≡ ap (g ∘ f) r
@@ -429,6 +429,17 @@ ap-eval = happly _ _
 sym-is-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y)
                → refl ≡ p ⁻¹ ∙ p
 sym-is-inverse {X} = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
+
+refl-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
+refl-left-neutral {U} {X} {x} {_} {refl} = refl 
+
+homotopies-are-natural' : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+                      → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
+homotopies-are-natural' f g H {x} {_} {refl} = trans-sym' (H x)
+
+homotopies-are-natural : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+                      → H x ∙ ap g p ≡ ap f p ∙ H y
+homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
 Lemma[x≡y→y≡z→y≡z] : ∀ {U} {X : U ̇} {x y z : X} → x ≡ y → x ≡ z → y ≡ z
 Lemma[x≡y→y≡z→y≡z] refl p = p
