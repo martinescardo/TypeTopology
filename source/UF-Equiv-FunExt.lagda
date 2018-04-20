@@ -12,7 +12,9 @@ module UF-Equiv-FunExt where
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
+open import UF-Subsingletons-Retracts
 open import UF-FunExt
+open import UF-Equiv
 
 qinv-post : (∀ U V → FunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
           → qinv f → qinv (λ (h : A → X) → f ∘ h)

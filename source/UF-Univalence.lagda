@@ -8,7 +8,6 @@ module UF-Univalence where
 
 open import UF-Base
 open import UF-Subsingletons
-open import UF-Yoneda
 open import UF-Retracts
 open import UF-Equiv
 open import UF-LeftCancellable
@@ -39,13 +38,6 @@ idtoEqs-agree X _ refl = refl
 idtoeq'-eqtoid : ∀ {U} (ua : isUnivalent U)
                → (X Y : U ̇) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
 idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
-
-
-idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
-idtofun' X = yoneda-nat (λ Y → X → Y) id
-
-idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
-idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
 
 idtofun-isEquiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → isEquiv(idtofun X Y p)
 idtofun-isEquiv X Y p = pr₂(idtoeq X Y p)

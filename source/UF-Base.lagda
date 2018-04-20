@@ -6,10 +6,6 @@ module UF-Base where
 
 open import SpartanMLTT public
 
-\end{code}
-
-\begin{code}
-
 idp : ∀ {U} {X : U ̇} (x : X) → x ≡ x
 idp _ = refl
 

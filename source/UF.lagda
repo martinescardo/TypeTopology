@@ -28,5 +28,6 @@ open import UF-PropTrunc public
 open import UF-ImageAndSurjection public
 open import UF-ExcludedMiddle public
 open import UF-Homeless public
+open import UF-Equiv-FunExt
 
 \end{code}

@@ -229,4 +229,10 @@ and the proof given here via Yoneda was announced on 12th May 2015
 id-isEmbedding : ∀ {U} {X : U ̇} → isEmbedding (id {U} {X})
 id-isEmbedding = paths-to-isProp
 
+idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
+idtofun' X = yoneda-nat (λ Y → X → Y) id
+
+idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
+idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
+
 \end{code}
