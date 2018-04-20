@@ -89,7 +89,7 @@ separated-ideal fe s f g h = funext fe lemma𝟚
   lemma₀ r x = ap (λ h → h x) r
 
   lemma₁ : ∀ x → ¬¬(f x ≡ g x)
-  lemma₁ = DNU(¬¬-functor lemma₀ h)
+  lemma₁ = double-negation-unshift(¬¬-functor lemma₀ h)
 
   lemma𝟚 : ∀ x → f x ≡ g x
   lemma𝟚 x =  s x (f x) (g x) (lemma₁ x) 
@@ -154,7 +154,7 @@ tight : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
 tight fe s f g h = funext fe lemma₁
  where 
   lemma₀ : ∀ x → ¬¬(f x ≡ g x)
-  lemma₀ = not-exists-implies-forall-not h
+  lemma₀ = not-Σ-implies-Π-not h
 
   lemma₁ : ∀ x → f x ≡ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)

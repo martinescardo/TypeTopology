@@ -109,7 +109,7 @@ incl-is-a-section  = retr , (funext fe lemma)
      claim = two-equality-cases claim₁ claim₂
       where 
        claim₁ : isZero w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
-       claim₁ r = Lemma[x≡z→y≡z→x≡y] c₃ c₅
+       claim₁ r = c₃ ∙ c₅ ⁻¹
         where
          c₀ : w ≡ Zero
          c₀ = isZero-equal-Zero fe r
@@ -124,7 +124,7 @@ incl-is-a-section  = retr , (funext fe lemma)
          c₅ : Pred(retr(incl w)) ≡ Zero
          c₅ = ap Pred c₄
        claim₂ : positive w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
-       claim₂ r = Lemma[x≡z→y≡z→x≡y] c₃ c₁
+       claim₂ r = c₃ ∙ c₁ ⁻¹
         where
          c₀ : retr(incl w) ≡ Succ(retr(tl(incl w)))
          c₀ = retr-spec₁ (incl w) r

@@ -357,7 +357,7 @@ Order on ℕ∞:
 
 \begin{code}
 
-_≼_ : bin-rel ℕ∞
+_≼_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≼ v = (n : ℕ) → incl u n ≤ incl v n
 
 ∞-greatest : (u : ℕ∞) → u ≼ ∞
@@ -385,7 +385,7 @@ n ⊏ u = incl u n ≡ ₁
 
 infix  30 _⊏_
 
-_≺_ : bin-rel {U₀} ℕ∞
+_≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 {-

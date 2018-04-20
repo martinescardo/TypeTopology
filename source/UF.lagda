@@ -35,6 +35,164 @@ identified.
 https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
 https://unimath.github.io/bham2017/uf.pdf
 
+Equality (should be moved to the module UF).
+
+\begin{code}
+
+idp : ∀ {U} {X : U ̇} (x : X) → x ≡ x
+idp _ = refl
+
+
+\end{code}
+
+Induction on ≡:
+
+\begin{code}
+
+\end{code}
+
+We will often use pattern matching rather than J, but we'll make sure
+we don't use the K rule (UIP) inadvertently. But not in the following
+definition:
+
+\begin{code}
+
+pseudo-uip : ∀ {U} {X : U ̇} {x x' : X} (r : x ≡ x') → (x , refl) ≡ (x' , r)
+pseudo-uip {U} {X} = J {U} {U} {X} A (λ x → refl)
+ where
+   A : (x x' : X) → x ≡ x' → U ̇
+   A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (x , refl) (x' , r)
+
+\end{code}
+
+The parameter Y is not used explicitly in the definition of transport,
+but hardly ever can be inferred by Agda, and hence we make it
+explicit:
+
+\begin{code}
+
+pathtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
+pathtofun = transport id
+
+back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
+                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ pathtofun p
+back-transport-is-pre-comp refl g = refl
+
+≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
+≢-sym u r = u(r ⁻¹)
+
+trans-sym : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ⁻¹ ∙ r ≡ refl
+trans-sym refl = refl
+
+trans-sym' : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
+trans-sym' refl = refl
+
+transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇} (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+             → transport (A ∘ f) p a ≡ transport A (ap f p) a
+transport-ap f refl = refl 
+
+nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
+              → f y (transport A p a) ≡ transport B p (f x a)
+nat-transport f refl = refl
+
+apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
+    (p : x ≡ y) → transport A p (f x) ≡ f y
+apd f refl = refl
+
+
+ap-id-is-id : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ ap id p
+ap-id-is-id refl = refl
+
+ap-comp : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
+       → ap f (p ∙ q) ≡ ap f p ∙ ap f q
+ap-comp f refl refl = refl       
+
+ap-sym : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y : X} (p : x ≡ y)
+       → (ap f p) ⁻¹ ≡ ap f (p ⁻¹)
+ap-sym f refl = refl       
+
+ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X}
+              (r : x ≡ x')
+           → ap g (ap f r) ≡ ap (g ∘ f) r
+ap-ap {U} {V} {W} {X} {Y} {Z} f g = J A (λ x → refl)
+ where
+  A : (x x' : X) → x ≡ x' → W ̇
+  A x x' r = ap g (ap f r) ≡ ap (g ∘ f) r
+
+ap₂ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y → Z) {x₀ x₁ : X} {y₀ y₁ : Y}
+   → x₀ ≡ x₁ → y₀ ≡ y₁ → f x₀ y₀ ≡ f x₁ y₁
+ap₂ f refl refl = refl
+
+_∼_ : ∀ {U V} {X : U ̇} {A : X → V ̇} → Π A → Π A → U ⊔ V ̇
+f ∼ g = ∀ x → f x ≡ g x
+
+happly : ∀ {U V} {X : U ̇} {A : X → V ̇} (f g : Π A) → f ≡ g → f ∼ g
+happly f g p x = ap (λ h → h x) p
+
+ap-eval : ∀ {U V} {X : U ̇} {A : X → V ̇} {f g : Π A} → f ≡ g → f ∼ g
+ap-eval = happly _ _
+
+sym-is-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y)
+               → refl ≡ p ⁻¹ ∙ p
+sym-is-inverse {X} = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
+
+refl-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
+refl-left-neutral {U} {X} {x} {_} {refl} = refl 
+
+homotopies-are-natural' : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+                      → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
+homotopies-are-natural' f g H {x} {_} {refl} = trans-sym' (H x)
+
+homotopies-are-natural : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+                      → H x ∙ ap g p ≡ ap f p ∙ H y
+homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
+
+equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
+      → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
+equality-cases (inl x) f g = f x refl
+equality-cases (inr y) f g = g y refl
+
++disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inl x ≡ inr y → 𝟘
++disjoint ()
+
++disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inr y ≡ inl x → 𝟘
++disjoint' ()
+
+inl-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
+inl-injective refl = refl
+
+inr-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
+inr-injective refl = refl
+
+×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
+     → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y') 
+×-≡ refl refl = refl
+
+Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇ 
+Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
+
+Σ-≡-lemma : ∀ {U V} {X : U ̇} {Y : X → V ̇} (u v : Σ Y) (r : u ≡ v)
+          → transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
+Σ-≡-lemma {U} {V} {X} {Y} u v = J A (λ u → refl) {u} {v}
+ where
+  A : (u v : Σ Y) → u ≡ v → V ̇
+  A u v r = transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
+
+Σ-≡-lemma' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
+           → (r : (x , y) ≡ (x , y')) → transport Y (ap pr₁ r) y ≡ y'
+Σ-≡-lemma' x y y' = Σ-≡-lemma (x , y) (x , y')
+
+Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x x' : X) (y : Y x) (y' : Y x')
+     → (p : x ≡ x') → transport Y p y ≡ y' → (x , y) ≡ (x' , y') 
+Σ-≡ .x' x' .y y refl refl = refl
+
+Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x) 
+     → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y') 
+Σ-≡' x y y' r = ap (λ y → (x , y)) r
+
+\end{code}
+
+
 \begin{code}
 
 isProp : ∀ {U} → U ̇ → U ̇
@@ -2107,5 +2265,6 @@ Associativities and precedences.
 infix  0 _≃_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
+infix  4  _∼_
 
 \end{code}

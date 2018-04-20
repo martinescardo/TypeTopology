@@ -41,16 +41,14 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     case₀ r = x , (s , r)
      where 
       s : x ≢ ∞
-      s t = ne(ap p (Lemma[x≡z→y≡z→x≡y]
-                         t (ap Succ t ∙ Succ-∞-is-∞ fe)))
+      s t = ne(ap p (t ∙ (Succ-∞-is-∞ fe)⁻¹ ∙ (ap Succ t)⁻¹))
     case₁ : p x ≡ ₁ → Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)
     case₁ r = (Succ x) , (s , s')
      where 
       s : Succ x ≢ ∞
-      s t = ne (ap p (Lemma[x≡z→y≡z→x≡y] 
-                     (Succ-lc (Lemma[x≡z→y≡z→x≡y] t (Succ-∞-is-∞ fe))) t))
+      s t = ne (ap p (Succ-lc (t ∙ (Succ-∞-is-∞ fe)⁻¹) ∙ t ⁻¹))
       s' : p(Succ x) ≡ ₀
-      s' = Lemma[b≢₁→b≡₀] (λ t → ne (Lemma[x≡z→y≡z→x≡y] r t))
+      s' = Lemma[b≢₁→b≡₀] (λ t → ne (r ∙ t ⁻¹))
 
   claim₁ : ((y : ℕ∞) → p y ≡ p(Succ y)) →
             (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)

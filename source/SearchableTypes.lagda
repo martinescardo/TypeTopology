@@ -75,13 +75,13 @@ checking the two possibilities, we can always take x₀ = p ₀.
     x₀ = p ₀
  
     claim : p x₀ ≡ ₁ → p ₀ ≡ ₀ → p ₀ ≡ ₁
-    claim r s = Lemma[fx≡y→x≡x'→fx'≡y] p r s
+    claim r s = transport (λ x → p x ≡ ₁) s r
 
     lemma₀ : p x₀ ≡ ₁ → p ₀ ≡ ₁
     lemma₀ r = two-equality-cases (claim r) (λ s → s)
 
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
-    lemma₁ r = Lemma[fx≡y→x≡x'→fx'≡y] p r (lemma₀ r)
+    lemma₁ r = transport (λ x → p x ≡ ₁) (lemma₀ r) r
 
 open import UF2
 
@@ -313,7 +313,7 @@ retractions-preserve-searchability {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
    lemma = pr₂(ε p)
 
    h : q y₀ ≡ ₁ → (a : Y) → q a ≡ ₁
-   h r a = Lemma[x≡y→x≡z→z≡y] fact₀ fact₁ 
+   h r a = fact₁ ⁻¹ ∙ fact₀
     where 
      fact : Σ \(x : X) → f x ≡ a 
      fact = f-retract a

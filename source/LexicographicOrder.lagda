@@ -17,5 +17,8 @@ module LexicographicOrder where
 
 open import SpartanMLTT
 
+bin-rel : ∀ {U} → U ̇ → U ′ ̇
+bin-rel {U} X = X → X → U ̇
+
 lex-prod : ∀ {U V} {X : U ̇} {Y : X → V ̇} →  bin-rel X → ((x : X) → bin-rel(Y x)) → bin-rel(Σ \(x : X) → Y x)
 lex-prod R S (x , y) (x' , y') = R x x' × ((r : x ≡ x') → S x y (transport _ (r ⁻¹) y'))

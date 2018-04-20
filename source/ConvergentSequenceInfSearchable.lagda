@@ -63,7 +63,7 @@ open import GenericConvergentSequence
   Claim₂ r = Dagger₁(Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
-  Claim₃ r = Lemma[x≡y→x≡z→z≡y] r (ap p (Claim₁ r))
+  Claim₃ r = (ap p (Claim₁ r))⁻¹ ∙ r
 
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
   Lemma r = ℕ∞-density fe (Claim₂ r) (Claim₃ r)

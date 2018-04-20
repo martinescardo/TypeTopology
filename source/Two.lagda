@@ -37,7 +37,7 @@ two-equality-cases' {U} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
 
 
 Lemma[b≡₁→b≢₀] : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
-Lemma[b≡₁→b≢₀] r s = zero-is-not-one(Lemma[x≡y→y≡z→y≡z] s r)
+Lemma[b≡₁→b≢₀] r s = zero-is-not-one (s ⁻¹ ∙ r)
 
 
 Lemma[b≢₀→b≡₁] : {b : 𝟚} → b ≢ ₀ → b ≡ ₁
@@ -47,7 +47,7 @@ Lemma[b≢₁→b≡₀] : {b : 𝟚} → b ≢ ₁ → b ≡ ₀
 Lemma[b≢₁→b≡₀] f = two-equality-cases (λ r → r) (𝟘-elim ∘ f)
 
 Lemma[b≡₀→b≢₁] : {b : 𝟚} → b ≡ ₀ → b ≢ ₁
-Lemma[b≡₀→b≢₁] r s = zero-is-not-one(Lemma[x≡y→y≡z→y≡z] r s)
+Lemma[b≡₀→b≢₁] r s = zero-is-not-one (r ⁻¹ ∙ s)
 
 
 Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] : {a b : 𝟚} → (a ≡ ₁ → b ≡ ₁) → b ≡ ₀ → a ≡ ₀
