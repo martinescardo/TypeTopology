@@ -91,7 +91,7 @@ on the notion of total separatedness:
 \begin{code}
 
 simple-types-rℕ : {X : U₀ ̇} → simple-type X → retract ℕ of X
-simple-types-rℕ = simple-types-r rid
+simple-types-rℕ = simple-types-r identity-retraction
 
 stcwlpo' : {X : U₀ ̇} → simple-type X → 𝟚-compact X → WLPO'
 stcwlpo' s = retract-𝟚-compact (simple-types-rℕ s)
@@ -131,7 +131,7 @@ simple-types₂-pointed base       = zero
 simple-types₂-pointed (step s t) = λ x → simple-types₂-pointed t
 
 simple-types₂-r𝟚 : {X : U₀ ̇} → simple-type₂ X → retract 𝟚 of X
-simple-types₂-r𝟚 base₂      = rid
+simple-types₂-r𝟚 base₂      = identity-retraction
 simple-types₂-r𝟚 base       = 𝟚-retract-of-ℕ
 simple-types₂-r𝟚 (step s t) = retracts-of-closed-under-exponentials
                                  (fe U₀ U₀)

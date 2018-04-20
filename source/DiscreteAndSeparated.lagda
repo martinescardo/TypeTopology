@@ -206,8 +206,8 @@ binary-sum-separated {U} {V} {X} {Y} s t (inl x) (inl x') = lemma
   lemma : ¬¬(inl x ≡ inl x') → inl x ≡ inl x'
   lemma = (ap inl) ∘ (s x x') ∘ ¬¬-functor claim
 
-binary-sum-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ sum-disjoint )  
-binary-sum-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(sum-disjoint ∘ _⁻¹)) 
+binary-sum-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )  
+binary-sum-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹)) 
 binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma 
  where
   claim : inr y ≡ inr y' → y ≡ y'
@@ -251,7 +251,7 @@ qinvs-preserve-isolatedness {U} {V} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y)
   h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (gf x) ⁻¹ ∙ ap g q) u)
 
 equivalences-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f → (x : X) → isolated x → isolated (f x)
-equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (inverse f e)
+equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (isEquiv-qinv f e)
 
 isolated-added-point : ∀ {U} {X : U ̇} → isolated {U} {X + 𝟙} (inr *)
 isolated-added-point {U} {X} = h

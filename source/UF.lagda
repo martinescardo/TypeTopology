@@ -7,8 +7,8 @@ http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html, for the sake of
 experimentation.
 
 This file has been merged from various different files in different
-developments and needs to be organized. We also need to remove
-some repetitions that arise from this merging.
+developments and needs to be reorganized, and broken into smaller
+files.
 
 \begin{code}
 
@@ -19,8 +19,7 @@ module UF where
 \end{code}
 
 The following imported module defines a minimal Martin-Löf type theory
-for univalent mathematics. Some things there are repeated here, and
-should be removed from there (TODO).
+for univalent mathematics.
 
 \begin{code}
 
@@ -28,48 +27,11 @@ open import SpartanMLTT public
 
 \end{code}
 
-In univalent logic, as opposed to Curry-Howard logic, a proposition is
-a subsingleton or a type such that any two of its elements are
-identified.
-
-https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
-https://unimath.github.io/bham2017/uf.pdf
-
-Equality (should be moved to the module UF).
 
 \begin{code}
 
 idp : ∀ {U} {X : U ̇} (x : X) → x ≡ x
 idp _ = refl
-
-
-\end{code}
-
-Induction on ≡:
-
-\begin{code}
-
-\end{code}
-
-We will often use pattern matching rather than J, but we'll make sure
-we don't use the K rule (UIP) inadvertently. But not in the following
-definition:
-
-\begin{code}
-
-pseudo-uip : ∀ {U} {X : U ̇} {x x' : X} (r : x ≡ x') → (x , refl) ≡ (x' , r)
-pseudo-uip {U} {X} = J {U} {U} {X} A (λ x → refl)
- where
-   A : (x x' : X) → x ≡ x' → U ̇
-   A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (x , refl) (x' , r)
-
-\end{code}
-
-The parameter Y is not used explicitly in the definition of transport,
-but hardly ever can be inferred by Agda, and hence we make it
-explicit:
-
-\begin{code}
 
 pathtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
 pathtofun = transport id
@@ -77,9 +39,6 @@ pathtofun = transport id
 back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
                           → back-transport (λ Z → Z → Y) p g ≡ g ∘ pathtofun p
 back-transport-is-pre-comp refl g = refl
-
-≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
-≢-sym u r = u(r ⁻¹)
 
 trans-sym : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ⁻¹ ∙ r ≡ refl
 trans-sym refl = refl
@@ -99,7 +58,6 @@ apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
     (p : x ≡ y) → transport A p (f x) ≡ f y
 apd f refl = refl
 
-
 ap-id-is-id : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ ap id p
 ap-id-is-id refl = refl
 
@@ -111,9 +69,8 @@ ap-sym : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y : X} (p : x ≡ y)
        → (ap f p) ⁻¹ ≡ ap f (p ⁻¹)
 ap-sym f refl = refl       
 
-ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X}
-              (r : x ≡ x')
-           → ap g (ap f r) ≡ ap (g ∘ f) r
+ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X} (r : x ≡ x')
+     → ap g (ap f r) ≡ ap (g ∘ f) r
 ap-ap {U} {V} {W} {X} {Y} {Z} f g = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → W ̇
@@ -126,11 +83,11 @@ ap₂ f refl refl = refl
 _∼_ : ∀ {U V} {X : U ̇} {A : X → V ̇} → Π A → Π A → U ⊔ V ̇
 f ∼ g = ∀ x → f x ≡ g x
 
-happly : ∀ {U V} {X : U ̇} {A : X → V ̇} (f g : Π A) → f ≡ g → f ∼ g
-happly f g p x = ap (λ h → h x) p
+happly' : ∀ {U V} {X : U ̇} {A : X → V ̇} (f g : Π A) → f ≡ g → f ∼ g
+happly' f g p x = ap (λ h → h x) p
 
-ap-eval : ∀ {U V} {X : U ̇} {A : X → V ̇} {f g : Π A} → f ≡ g → f ∼ g
-ap-eval = happly _ _
+happly : ∀ {U V} {X : U ̇} {A : X → V ̇} {f g : Π A} → f ≡ g → f ∼ g
+happly = happly' _ _
 
 sym-is-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y)
                → refl ≡ p ⁻¹ ∙ p
@@ -147,51 +104,37 @@ homotopies-are-natural : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : 
                       → H x ∙ ap g p ≡ ap f p ∙ H y
 homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
-equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
-      → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
-equality-cases (inl x) f g = f x refl
-equality-cases (inr y) f g = g y refl
-
-+disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inl x ≡ inr y → 𝟘
-+disjoint ()
-
-+disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inr y ≡ inl x → 𝟘
-+disjoint' ()
-
-inl-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
-inl-injective refl = refl
-
-inr-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
-inr-injective refl = refl
-
 ×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
      → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y') 
 ×-≡ refl refl = refl
 
-Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇ 
-Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
-
-Σ-≡-lemma : ∀ {U V} {X : U ̇} {Y : X → V ̇} (u v : Σ Y) (r : u ≡ v)
+from-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (u v : Σ Y) (r : u ≡ v)
           → transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
-Σ-≡-lemma {U} {V} {X} {Y} u v = J A (λ u → refl) {u} {v}
+from-Σ-≡ {U} {V} {X} {Y} u v = J A (λ u → refl) {u} {v}
  where
   A : (u v : Σ Y) → u ≡ v → V ̇
   A u v r = transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
 
-Σ-≡-lemma' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
+from-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
            → (r : (x , y) ≡ (x , y')) → transport Y (ap pr₁ r) y ≡ y'
-Σ-≡-lemma' x y y' = Σ-≡-lemma (x , y) (x , y')
+from-Σ-≡' x y y' = from-Σ-≡ (x , y) (x , y')
 
-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x x' : X) (y : Y x) (y' : Y x')
+to-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x x' : X) (y : Y x) (y' : Y x')
      → (p : x ≡ x') → transport Y p y ≡ y' → (x , y) ≡ (x' , y') 
-Σ-≡ .x' x' .y y refl refl = refl
+to-Σ-≡ .x' x' .y y refl refl = refl
 
-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x) 
+to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x) 
      → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y') 
-Σ-≡' x y y' r = ap (λ y → (x , y)) r
+to-Σ-≡' x y y' r = ap (λ y → (x , y)) r
 
 \end{code}
 
+In univalent logic, as opposed to Curry-Howard logic, a proposition is
+a subsingleton or a type such that any two of its elements are
+identified.
+
+https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
+https://unimath.github.io/bham2017/uf.pdf
 
 \begin{code}
 
@@ -262,7 +205,6 @@ inhabited-proposition-isSingleton x h = x , h x
 The two prototypical propositions:
 
 \begin{code}
-
 
 𝟘-isProp : isProp 𝟘
 𝟘-isProp x y = unique-from-𝟘 x
@@ -344,7 +286,6 @@ isEmpty-is-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 
 𝟘-is-collapsible-as-a-particular-case : collapsible 𝟘
 𝟘-is-collapsible-as-a-particular-case = isEmpty-is-collapsible id
-
 
 \end{code}
 
@@ -565,7 +506,6 @@ proved using J(based).
 
 \begin{code}
 
-
 idp-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → idp x ∙ p ≡ p
 idp-left-neutral {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
 
@@ -664,13 +604,13 @@ elements as in category theory.
 is-universal-element : ∀ {U V} {X : U ̇} {A : X → V ̇} → Σ A → U ⊔ V ̇
 is-universal-element {U} {V} {X} {A} (x , a) = ∀ y (b : A y) → Σ \(p : x ≡ y) → yoneda-nat A a y p ≡ b
 
-ue-is-cc : ∀ {U V} {X : U ̇} {A : X → V ̇}
-          (σ : Σ A) → is-universal-element σ → is-the-only-element σ
-ue-is-cc {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-Id A ((u y) b)
+universal-element-is-the-only-element : ∀ {U V} {X : U ̇} {A : X → V ̇} (σ : Σ A)
+                                      → is-universal-element σ → is-the-only-element σ
+universal-element-is-the-only-element {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-Id A ((u y) b)
 
-cc-is-ue : ∀ {U V} {X : U ̇} (A : X → V ̇) 
-          (σ : Σ A) → is-the-only-element σ → is-universal-element σ
-cc-is-ue A (x , a) φ y b = from-Σ-Id A {x , a} {y , b} (φ(y , b))
+unique-element-is-universal-element : ∀ {U V} {X : U ̇} (A : X → V ̇) (σ : Σ A)
+                                    → is-the-only-element σ → is-universal-element σ
+unique-element-is-universal-element A (x , a) φ y b = from-Σ-Id A {x , a} {y , b} (φ(y , b))
  
 \end{code}
 
@@ -722,8 +662,8 @@ Eq = _≃_
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
-inverse : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f → qinv f
-inverse {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
+isEquiv-qinv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f → qinv f
+isEquiv-qinv {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
   sf : (x : X) → s(f x) ≡ x
   sf x = s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
@@ -731,18 +671,18 @@ inverse {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
          r(f x)       ≡⟨ rf x ⟩
          x            ∎
 
-qinv-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isEquiv f
-qinv-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
+qinv-isEquiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isEquiv f
+qinv-isEquiv f (g , (gf , fg)) = (g , fg) , (g , gf)
 
 ≃-sym : ∀ {U V} {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X 
 ≃-sym {U} {V} {X} {Y} (f , e) = (g , d)
  where
   g : Y → X
-  g = pr₁(inverse f e)
+  g = pr₁(isEquiv-qinv f e)
   q : qinv g
-  q = f , pr₂(pr₂(inverse f e)) , pr₁(pr₂(inverse f e))
+  q = f , pr₂(pr₂(isEquiv-qinv f e)) , pr₁(pr₂(isEquiv-qinv f e))
   d : isEquiv g
-  d = qinv-equiv g q
+  d = qinv-isEquiv g q
 
 equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
@@ -762,8 +702,9 @@ left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
 left-cancellable' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
 
-lcmtpip : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → isProp Y → isProp X
-lcmtpip f lc i x x' = lc (i (f x) (f x'))
+left-cancellable-reflects-isProp : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                                 → left-cancellable f → isProp Y → isProp X
+left-cancellable-reflects-isProp f lc i x x' = lc (i (f x) (f x'))
 
 section-lc : ∀ {U V} {X : U ̇} {A : V ̇} (s : X → A) → hasRetraction s → left-cancellable s
 section-lc {U} {V} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
@@ -771,9 +712,9 @@ section-lc {U} {V} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs 
 isEquiv-lc : ∀ {U} {X Y : U ̇} (f : X → Y) → isEquiv f → left-cancellable f
 isEquiv-lc f (_ , hasr) = section-lc f hasr 
 
-lcccomp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
-        → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
-lcccomp f g lcf lcg = lcf ∘ lcg
+left-cancellable-closed-under-∘ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+                                → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
+left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 
 \end{code}
 
@@ -782,11 +723,11 @@ Formulation of function extensionality.
 \begin{code}
 
 FunExt : ∀ U V → U ′ ⊔ V ′ ̇
-FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → isEquiv (happly f g)
+FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → isEquiv (happly' f g)
 
 ≃-funext : ∀ U V → FunExt U V → {X : U ̇} {A : X → V ̇} (f g : Π A)
          → (f ≡ g) ≃ ((x : X) → f x ≡ g x)
-≃-funext U V fe f g = happly f g , fe f g
+≃-funext U V fe f g = happly' f g , fe f g
 
 funext : ∀ {U V} (fe : FunExt U V) {X : U ̇} {A : X → V ̇} {f g : Π A} 
        → ((x : X) → f x ≡ g x) → f ≡ g
@@ -794,16 +735,16 @@ funext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 
 happly-funext : ∀ {U V} {X : U ̇} {A : X → V ̇}
                 (fe : FunExt U V) (f g : Π A) (h : f ∼ g)
-              → happly f g (funext fe h) ≡ h
+              → happly (funext fe h) ≡ h
 happly-funext fe f g = pr₂(pr₁(fe f g))
 
 funext-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : FunExt U V) 
          → (f g : Π A) → left-cancellable (funext fe {X} {A} {f} {g})
-funext-lc fe f g = section-lc (funext fe) (happly f g , happly-funext fe f g)
+funext-lc fe f g = section-lc (funext fe) (happly , happly-funext fe f g)
 
 happly-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : FunExt U V) (f g : Π A) 
-         → left-cancellable(happly f g)
-happly-lc fe f g = section-lc (happly f g) ((pr₂ (fe f g)))
+         → left-cancellable(happly' f g)
+happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
 
 \end{code}
 
@@ -945,9 +886,6 @@ JEq-comp ua X A b = ?
 
 \end{code}
 
-
-
-
 Conversely, if the induction principle for equivalences with its
 computation rule holds, then univalence follows:
 
@@ -1074,7 +1012,7 @@ contr-is-repr : ∀ {U V} {X : U ̇} {A : X → V ̇} → isSingleton (Σ A) →
 contr-is-repr {U} {V} {X} {A} ((x , a) , cc) = g
  where
   g : Σ \(x : X) → Id x ≊ A
-  g = x , (yoneda-nat A a , universality-equiv x a (cc-is-ue A (x , a) cc))
+  g = x , (yoneda-nat A a , universality-equiv x a (unique-element-is-universal-element A (x , a) cc))
 
 is-repr→isEquiv-yoneda : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A) (y : X) 
                         → isEquiv (η y) → isEquiv (yoneda-nat A (yoneda-elem A η) y)
@@ -1089,7 +1027,7 @@ repr-is-contr {U} {V} {X} {A} (x , (η , φ)) = g
   is-ue-σ : is-universal-element σ
   is-ue-σ = equiv-universality x (yoneda-elem A η) (λ y → is-repr→isEquiv-yoneda x η y (φ y))
   g : Σ \(σ : Σ A) → is-the-only-element σ
-  g = σ , ue-is-cc σ is-ue-σ
+  g = σ , universal-element-is-the-only-element σ is-ue-σ
 
 \end{code}
 
@@ -1105,7 +1043,7 @@ univalence-via-contractibility {U} = (f , g)
   f ua X = repr-is-contr (X , (idtoeq X , ua X))
 
   g : ((X : U ̇) → isSingleton (Σ (Eq X))) → isUnivalent U
-  g φ X = universality-equiv X (ideq X) (cc-is-ue (Eq X) (X , ideq X) (isSingleton-isProp (φ X) (X , ideq X)))
+  g φ X = universality-equiv X (ideq X) (unique-element-is-universal-element (Eq X) (X , ideq X) (isSingleton-isProp (φ X) (X , ideq X)))
 
 \end{code}
 
@@ -1241,19 +1179,26 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
   c : (x : X) → isSingleton(fiber' f (f x))
   c x = retract-of-singleton (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → isEquiv(ap f {x} {x'})
-  g x = universality-equiv x refl (cc-is-ue (λ x' → f x ≡ f x') (pr₁(c x)) (pr₂(c x))) 
+  g x = universality-equiv x refl (unique-element-is-universal-element
+                                         (λ x' → f x ≡ f x')
+                                         (pr₁(c x))
+                                         (pr₂(c x))) 
 
 embedding'-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding' f → isEmbedding f
 embedding'-embedding {U} {V} {X} {Y} f ise = g
  where
   e : (x x' : X) → is-the-only-element (x , idp (f x))
-  e x x' = ue-is-cc (x , idp (f x)) (equiv-universality x (idp (f x)) (ise x))
+  e x x' = universal-element-is-the-only-element
+             (x , idp (f x))
+             (equiv-universality x (idp (f x)) (ise x))
   h : (x : X) → isProp (fiber' f (f x))
   h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , idp (f x)) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎  
   g' : (y : Y) → isProp (fiber' f y)
   g' y (x , p) = transport (λ y → isProp (Σ \(x' : X) → y ≡ f x')) (p ⁻¹) (h x) (x , p)
   g : (y : Y) → isProp (fiber f y)
-  g y = lcmtpip (pr₁ (fiber-lemma f y)) (section-lc _ (pr₂ (pr₂ (fiber-lemma f y)))) (g' y)
+  g y = left-cancellable-reflects-isProp
+            (pr₁ (fiber-lemma f y))
+            (section-lc _ (pr₂ (pr₂ (fiber-lemma f y)))) (g' y)
 
 \end{code}
 
@@ -1309,10 +1254,7 @@ NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
 NatΠ-lc : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B)
     → ((x : X) → left-cancellable(f x))
     → {g g' : Π A} → NatΠ f g ≡ NatΠ f g' → g ∼ g'
-NatΠ-lc f flc {g} {g'} p x = flc x (q x)
- where
-   q : ∀ x → f x (g x) ≡ f x (g' x)
-   q = happly (NatΠ f g) (NatΠ f g') p
+NatΠ-lc f flc {g} {g'} p x = flc x (happly p x)
 
 isProp-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X)
 isProp-isProp {U} {X} fe f g = claim₁
@@ -1343,10 +1285,7 @@ subtype-of-set-isSet {U} {V} {X} m i h = path-collapsible-isSet (f , g)
   g : {x x' : X} (r s : x ≡ x') → f r ≡ f s
   g r s = ap i (h (ap m r) (ap m s))
 
-\end{code}
-
-\begin{code}
-
+-- We don't need this anymore if we reorder the code:
 ip-ie-idtofun : ∀ {U} (fe : FunExt U U) (X Y : U ̇) (p : X ≡ Y) → isProp(isEquiv(idtofun X Y p))
 ip-ie-idtofun {U} fe X = Jbased X B go
  where
@@ -1365,10 +1304,11 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    h-lc : left-cancellable h
    h-lc = NatΣ-lc (X → X) (λ f → f ∼ id) (λ f → f ≡ id) η η-lc
    b : isProp A'
-   b = lcmtpip h h-lc a
+   b = left-cancellable-reflects-isProp h h-lc a
    go : isProp(A' × A')
    go = props-closed-× b b
 
+-- Or this:
 jip : ∀ {U} → isUnivalent U → FunExt U U → {X Y : U ̇} 
    → (f : X → Y) → isProp(isEquiv f) 
 jip {U} ua fe {X} {Y} f ije = h ije
@@ -1392,13 +1332,6 @@ jip {U} ua fe {X} {Y} f ije = h ije
     h : isProp(isEquiv f)
     h = yoneda-nat (λ f → isProp(isEquiv f)) h' f q₁
 
-\end{code}
-
-If the codomain of a left-cancellable function is a proposition, so is
-its domain. 
-
-\begin{code}
-
 isUnivalent-idtoeq-lc : ∀ {U} → isUnivalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
 isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
@@ -1421,44 +1354,18 @@ K-idtofun-lc : ∀ {U} → K (U ′)
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
-s-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → isSet Y → isEmbedding f
-s-lc-e {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
+left-cancellable-maps-into-sets-are-embeddings : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
+                                               → left-cancellable f → isSet Y → isEmbedding f
+left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))
    q : yoneda-nat (λ x → f x ≡ y) p x' r ≡ p'
    q = iss (yoneda-nat (λ x → f x ≡ y) p x' r) p'
 
-K-lc-e : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y) → left-cancellable f → K V → isEmbedding f
-K-lc-e {U} {V} {X} {Y} f f-lc k = s-lc-e f f-lc (k Y)
-
-\end{code}
-
-The map eqtofun is left-cancellable assuming univalence (and function
-extensionality, which is a consequence of univalence, but we don't
-bother):
-
-\begin{code}
-
-eqtofun-lc : ∀ {U} → isUnivalent U → FunExt U U 
-           → (X Y : U ̇) → left-cancellable(eqtofun X Y)
-eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
- where
-  q : yoneda-nat isEquiv jef g p ≡ jeg
-  q = jip ua fe g (yoneda-nat isEquiv jef g p) jeg
-  go : f , jef ≡ g , jeg
-  go = to-Σ-Id isEquiv (p , q)
-  
-\end{code}
-
-The map idtofun is left-cancellable assuming univalence (and funext):
-
-\begin{code}
-
-isUnivalent-idtofun-lc : ∀ {U} → isUnivalent U → FunExt U U → (X Y : U ̇) 
-                       → left-cancellable(idtofun X Y)
-isUnivalent-idtofun-lc  ua fe X Y = 
-   lcccomp (idtoeq X Y) (eqtofun X Y) (isUnivalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
+left-cancellable-maps-are-embeddings-with-K : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
+                                            → left-cancellable f → K V → isEmbedding f
+left-cancellable-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k = left-cancellable-maps-into-sets-are-embeddings f f-lc (k Y)
 
 \end{code}
 
@@ -1493,7 +1400,41 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
     go : isProp(Y x)
-    go = lcmtpip s (section-lc s (r , rs)) isp
+    go = left-cancellable-reflects-isProp s (section-lc s (r , rs)) isp
+
+\end{code}
+
+The map eqtofun is left-cancellable assuming univalence (and function
+extensionality, which is a consequence of univalence, but we don't
+bother):
+
+\begin{code}
+
+eqtofun-lc : ∀ {U} → isUnivalent U → FunExt U U 
+           → (X Y : U ̇) → left-cancellable(eqtofun X Y)
+eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
+ where
+  q : yoneda-nat isEquiv jef g p ≡ jeg
+  q = jip ua fe g (yoneda-nat isEquiv jef g p) jeg
+  go : f , jef ≡ g , jeg
+  go = to-Σ-Id isEquiv (p , q)
+  
+\end{code}
+
+The map idtofun is left-cancellable assuming univalence (and funext):
+
+\begin{code}
+
+isUnivalent-idtofun-lc : ∀ {U} → isUnivalent U → FunExt U U → (X Y : U ̇) 
+                       → left-cancellable(idtofun X Y)
+isUnivalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
+                                        (idtoeq X Y)
+                                        (eqtofun X Y)
+                                        (isUnivalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
+
+\end{code}
+
+\begin{code}
 
 subset-of-set-isSet : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
                     → isSet X → ({x : X} → isProp(Y x)) → isSet(Σ \(x : X) → Y x)
@@ -1506,12 +1447,12 @@ isSet-exponential-ideal {U} {V} fe {X} {A} isa {f} {g} = b
   a : isProp (f ∼ g)
   a p q = funext fe λ x → isa x (p x) (q x)
   b : isProp(f ≡ g)
-  b = lcmtpip (happly f g) (section-lc (happly f g) (pr₂ (fe f g))) a
+  b = left-cancellable-reflects-isProp happly (section-lc happly (pr₂ (fe f g))) a
 
 isProp-closed-under-Σ : ∀ {U V} {X : U ̇} {A : X → V ̇} 
-                    → isProp X → ((x : X) → isProp(A x)) → isProp(Σ A)
+                      → isProp X → ((x : X) → isProp(A x)) → isProp(Σ A)
 isProp-closed-under-Σ {U} {V} {X} {A} isx isa (x , a) (y , b) = 
-                    Σ-≡ x y a b (isx x y) (isa y (transport A (isx x y) a) b)
+                      to-Σ-≡ x y a b (isx x y) (isa y (transport A (isx x y) a) b)
 
 isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isProp(A x)) → isProp(Π A) 
@@ -1530,8 +1471,8 @@ pr₁-equivalence {U} {V} X Y iss = (g , prg) , (g , gpr)
   gpr (x , a) = to-Σ-Id _ (prg x , isSingleton-isProp (iss x) _ _)
 
 pr₁-vequivalence : ∀ {U V} (X : U ̇) (Y : X → V ̇)
-               → ((x : X) → isSingleton (Y x))
-               → isVoevodskyEquiv (pr₁ {U} {V} {X} {Y})
+                → ((x : X) → isSingleton (Y x))
+                → isVoevodskyEquiv (pr₁ {U} {V} {X} {Y})
 pr₁-vequivalence {U} {V} X Y iss x = g
  where
   c : fiber pr₁ x
@@ -1959,10 +1900,10 @@ open import Two
 𝟚inProp ₁ = ⊤
 
 𝟚inProp-embedding : FunExt U₀ U₀ → propExt U₀ → isEmbedding 𝟚inProp
-𝟚inProp-embedding fe pe (P , isp) (₀ , p) (₀ , q) = Σ-≡ ₀ ₀ p q refl (Prop-isSet fe pe p q)
+𝟚inProp-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ ₀ ₀ p q refl (Prop-isSet fe pe p q)
 𝟚inProp-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥≠⊤ (p ∙ q ⁻¹))
 𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥≠⊤ (q ∙ p ⁻¹))
-𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₁ , q) = Σ-≡ ₁ ₁ p q refl (Prop-isSet fe pe p q)
+𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ ₁ ₁ p q refl (Prop-isSet fe pe p q)
 
 \end{code}
 
@@ -1970,8 +1911,14 @@ More about retracts.
 
 \begin{code}
 
-rid : ∀ {U} {X : U ̇} → retract X of X
-rid = id , (id , λ x → refl)
+identity-retraction : ∀ {U} {X : U ̇} → retract X of X
+identity-retraction = id , (id , λ x → refl)
+
+\end{code}
+
+Need better names for the following.
+
+\begin{code}
 
 rexp : ∀ {U V W T} {X : U ̇} {Y : V ̇} {X' : W ̇} {Y' : T ̇} → FunExt U T
     → retract X of X' → retract Y' of Y → retract (X → Y') of (X' → Y)
@@ -1988,14 +1935,20 @@ rexp {U} {V} {W} {T} {X} {Y} {X'} {Y'} fe (rx , (sx , rsx)) (ry , (sy , rsy)) = 
 
 rpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {Y' : W ̇} → FunExt U W
     → retract Y' of Y → retract (X → Y') of (X → Y)
-rpe fe = rexp fe rid
+rpe fe = rexp fe identity-retraction
 
 crpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {X' : W ̇} → FunExt U V
     → retract X of X' → retract (X → Y) of (X' → Y)
-crpe fe rx = rexp fe rx rid
+crpe fe rx = rexp fe rx identity-retraction
 
 pdrc : ∀ {U V} {X : U ̇} {Y : V ̇} → X → retract Y of (X → Y)
 pdrc x = ((λ f → f x) , ((λ y x → y) , λ y → refl))
+
+\end{code}
+
+Surjection expressed in Curry-Howard logic amounts to retraction.
+
+\begin{code}
 
 retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
 retraction f = ∀ y → Σ \x → f x ≡ y
@@ -2061,8 +2014,8 @@ id-homotopies-are-natural h η {x} =
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
    ap h (η x)                       ∎
 
-qinv-ishae : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isHAE f
-qinv-ishae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
+qinv-isHAE : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → isHAE f
+qinv-isHAE {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
  where
   ε' : f ∘ g ∼ id
   ε' y = f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
@@ -2111,9 +2064,9 @@ Using this we see that half adjoint equivalence have contractible fibers:
 
 \begin{code}
 
-ishae-isVoevodsky : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+isHAE-isVoevodsky : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                   → isHAE f → isVoevodskyEquiv f
-ishae-isVoevodsky {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁ σ) (pr₂ σ))
+isHAE-isVoevodsky {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁ σ) (pr₂ σ))
  where
   c : fiber f y
   c = (g y , ε y)
@@ -2147,11 +2100,11 @@ Here are some corollaries:
 
 qinv-isVoevodsky : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                  → qinv f → isVoevodskyEquiv f
-qinv-isVoevodsky f q = ishae-isVoevodsky f (qinv-ishae f q)
+qinv-isVoevodsky f q = isHAE-isVoevodsky f (qinv-isHAE f q)
 
 isEquiv-isVoevodskyEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                          → isEquiv f → isVoevodskyEquiv f
-isEquiv-isVoevodskyEquiv f ie = qinv-isVoevodsky f (inverse f ie)
+isEquiv-isVoevodskyEquiv f ie = qinv-isVoevodsky f (isEquiv-qinv f ie)
 
 \end{code}
 
@@ -2160,8 +2113,8 @@ The following again could be define by combining functions we already have:
 \begin{code}
 
 from-paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                  (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
-               → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
+                      (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+                    → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
 from-paths-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
 η-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
@@ -2217,17 +2170,17 @@ hasr-isprop-hass : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇
 hasr-isprop-hass fe {U} {V} {X} {Y} f (g , gf) (h , fh) = isSingleton-isProp c (h , fh)
  where
   a : qinv f
-  a = inverse f ((h , fh) , g , gf)
+  a = isEquiv-qinv f ((h , fh) , g , gf)
   b : isSingleton(fiber (λ h →  f ∘ h) id)
   b = qinv-isVoevodsky (λ h →  f ∘ h) (qinv-post fe f a) id
   r : fiber (λ h →  f ∘ h) id → hasSection f
-  r (h , p) = (h , happly (f ∘ h) id p)
+  r (h , p) = (h , happly' (f ∘ h) id p)
   s : hasSection f → fiber (λ h →  f ∘ h) id
   s (h , η) = (h , funext (fe V V) η)
   rs : (σ : hasSection f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ η → (h , η)) q
    where
-    q : happly (f ∘ h) id (funext (fe V V) η) ≡ η
+    q : happly' (f ∘ h) id (funext (fe V V) η) ≡ η
     q = happly-funext (fe V V) (f ∘ h) id η
   c : isSingleton (hasSection f)
   c = retract-of-singleton r (s , rs) b
@@ -2237,17 +2190,17 @@ hass-isprop-hasr : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇
 hass-isprop-hasr fe {U} {V} {X} {Y} f (g , fg) (h , hf) = isSingleton-isProp c (h , hf)
  where
   a : qinv f
-  a = inverse f ((g , fg) , (h , hf))
+  a = isEquiv-qinv f ((g , fg) , (h , hf))
   b : isSingleton(fiber (λ h →  h ∘ f) id)
   b = qinv-isVoevodsky (λ h →  h ∘ f) (qinv-pre fe f a) id
   r : fiber (λ h →  h ∘ f) id → hasRetraction f
-  r (h , p) = (h , happly (h ∘ f) id p)
+  r (h , p) = (h , happly' (h ∘ f) id p)
   s : hasRetraction f → fiber (λ h →  h ∘ f) id
   s (h , η) = (h , funext (fe U U) η) 
   rs : (σ : hasRetraction f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ η → (h , η)) q
    where
-    q : happly (h ∘ f) id (funext (fe U U) η) ≡ η
+    q : happly' (h ∘ f) id (funext (fe U U) η) ≡ η
     q = happly-funext (fe U U) (h ∘ f) id η
   c : isSingleton (hasRetraction f)
   c = retract-of-singleton r (s , rs) b

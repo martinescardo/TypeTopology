@@ -174,7 +174,7 @@ predicate λ x → ₁:
 𝟚-c'c {U} {X} c' p = g (c' p)
  where
   g : decidable (p ≡ λ x → ₁) → decidable ((x : X) → p x ≡ ₁)
-  g (inl r) = inl (happly p (λ x → ₁) r)
+  g (inl r) = inl (happly r)
   g (inr u) = inr (contrapositive (funext (fe U U₀)) u)
 
 𝟚-cc' : ∀ {U} {X : U ̇} → 𝟚-compact X → 𝟚-compact' X
@@ -182,7 +182,7 @@ predicate λ x → ₁:
  where
   g : decidable ((x : X) → p x ≡ ₁) → decidable (p ≡ λ x → ₁)
   g (inl α) = inl (funext (fe U U₀) α)
-  g (inr u) = inr (contrapositive (happly p (λ x → ₁)) u)
+  g (inr u) = inr (contrapositive happly u)
 
 \end{code}
 
@@ -214,7 +214,7 @@ cdd {U} {V} {X} {Y} c d f g = h (c p)
   φ α = (funext (fe U V) (λ x → pr₂ (r x) (α x)))
   
   γ : f ≡ g → (x : X) → p x ≡ ₁ 
-  γ t x = Lemma[b≢₀→b≡₁] (λ u → pr₁ (r x) u (happly f g t x))
+  γ t x = Lemma[b≢₀→b≡₁] (λ u → pr₁ (r x) u (happly t x))
 
   h : decidable((x : X) → p x ≡ ₁) → decidable (f ≡ g)
   h (inl α) = inl (φ α)
@@ -350,7 +350,7 @@ module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
  extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-totally-separated p))
 
  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
- extension-property p = happly _ _ (pr₂ (pr₁ (totally-separated-reflection 𝟚-totally-separated p)))
+ extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-totally-separated p)))
 
  sot : strongly-𝟚-overt X → strongly-𝟚-overt (T X)
  sot = surjection-strongly-𝟚-overt η (η-surjection) 
@@ -945,7 +945,7 @@ Right adjoints to Κ are characterized as follows:
     f₁ s = l₀ refl
      where
       l₃ : (x : X) → p x ≡ ₁
-      l₃ = happly _ _ s
+      l₃ = happly s
       l₂ : (x : X) → ₁ ≤ p x
       l₂ x _ = l₃ x 
       l₁ : Κ ₁ ≤̇ p
@@ -972,7 +972,7 @@ Right adjoints to Κ are characterized as follows:
       l₁ : p ≡ (λ x → ₁)
       l₁ = pr₁ (γ p) (l refl)
       l₀ : (x : X) → p x ≡ ₁
-      l₀ = happly _ _ l₁
+      l₀ = happly l₁
 
 \end{code}
 

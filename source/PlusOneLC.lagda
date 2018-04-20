@@ -43,13 +43,13 @@ remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')
   fg' : f' ∘ g' ∼ id
   fg' (y , _) = to-Σ-Id _ (fg y , neg-isProp (fe V U₀) _ _)
   e' : isEquiv f'
-  e' = qinv-equiv f' (g' , gf' , fg')
+  e' = qinv-isEquiv f' (g' , gf' , fg')
 
 open import DiscreteAndSeparated
 open import DecidableAndDetachable
 
 add-one-and-remove-isolated-point : ∀ {V} {Y : V ̇} (z : Y + 𝟙) → isolated z → ((Y + 𝟙) ∖ z) ≃ Y
-add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-equiv f (g , gf , fg))
+add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-isEquiv f (g , gf , fg))
  where
   f : (Y + 𝟙) ∖ (inl b) → Y
   f (inl y , u) = y
@@ -92,7 +92,7 @@ add-one-and-remove-isolated-point {V} {Y} (inr *) _ = ≃-sym add-and-remove-sam
 +𝟙-cancellable : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
 +𝟙-cancellable {U} {V} {X} {Y} (φ , e) =
    X                  ≃⟨ add-and-remove-same-point ⟩
-  (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (inverse φ e) (inr *) ⟩
+  (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (isEquiv-qinv φ e) (inr *) ⟩
   (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
                               (φ (inr *))
                               (equivalences-preserve-isolatedness φ e (inr *) isolated-added-point) ⟩

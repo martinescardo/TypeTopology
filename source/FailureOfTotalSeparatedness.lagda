@@ -137,7 +137,7 @@ module concrete-example where
    φ = transport _
 
    claim₀ : φ p (λ p → ₀) ≡ (λ p → ₁)
-   claim₀ = Σ-≡-lemma ∞₀ ∞₁ r
+   claim₀ = from-Σ-≡ ∞₀ ∞₁ r
 
    claim₁ : φ p (λ p → ₀) refl ≡ ₁
    claim₁ = ap (λ f → f refl) claim₀

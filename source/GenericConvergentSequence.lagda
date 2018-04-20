@@ -85,8 +85,8 @@ lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 clni-incl : FunExt₀ → (x : ℕ∞) → lcni(incl x) ≡ x
-clni-incl fe (α , d) = Σ-≡ (force-decreasing α) α (force-decreasing-is-decreasing α) d
-                            (funext fe (force-decreasing-unchanged α d)) (decreasing-isProp fe α _ _)
+clni-incl fe (α , d) = to-Σ-≡ (force-decreasing α) α (force-decreasing-is-decreasing α) d
+                               (funext fe (force-decreasing-unchanged α d)) (decreasing-isProp fe α _ _)
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤ β i
 force-decreasing-is-smaller β zero     p = p
@@ -202,7 +202,7 @@ under-lc {succ m} {succ n} r = ap succ (under-lc {m} {n} (Succ-lc r))
 -- This should be proved as a consequence of a general theorem:
 under-embedding : FunExt₀ → isEmbedding under
 under-embedding fe x (x₀ , r₀) (x₁ , r₁) =
-  Σ-≡ x₀ x₁ r₀ r₁ (under-lc (r₀ ∙ r₁ ⁻¹)) (ℕ∞-set fe _ _)
+  to-Σ-≡ x₀ x₁ r₀ r₁ (under-lc (r₀ ∙ r₁ ⁻¹)) (ℕ∞-set fe _ _)
 
 under-lc-refl : (k : ℕ) → under-lc refl ≡ refl {_} {ℕ} {k}
 under-lc-refl 0 = refl

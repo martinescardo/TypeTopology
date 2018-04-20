@@ -54,9 +54,9 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     H : Σ Y' → Σ Y
     H (x , y') = x , h x y'
     FG : (w' : Σ Y') → F(G w') ≡ w'
-    FG (x , y') = Σ-≡' x _ y' (fg x y')
+    FG (x , y') = to-Σ-≡' x _ y' (fg x y')
     HF : (w : Σ Y) → H(F w) ≡ w
-    HF (x , y) = Σ-≡' x _ y (hf x y)
+    HF (x , y) = to-Σ-≡' x _ y (hf x y)
   
 Π-congruence : (fe : ∀ {U V} → FunExt U V)
               → ∀ {U V} (X : U ̇) (Y Y' : X → V ̇)

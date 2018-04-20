@@ -35,7 +35,7 @@ equal-⊤-is-true P hp r = f *
 true-is-equal-⊤ : prop-univalence → (P : U ̇) (hp : isProp P)
                 → P → (P , hp) ≡ ⊤
 true-is-equal-⊤ hpu P hp x = 
- Σ-≡ P 𝟙 hp 𝟙-isProp 
+ to-Σ-≡ P 𝟙 hp 𝟙-isProp 
      (hpu unique-to-𝟙 (λ _ → x)) 
      (isProp-isProp fe (transport isProp (hpu unique-to-𝟙 (λ _ → x)) hp)
                   𝟙-isProp)
@@ -46,7 +46,7 @@ true-is-equal-⊤ hpu P hp x =
 
 Ω-from-prop-univalence : prop-univalence → Ω-univalence
 Ω-from-prop-univalence hpu {(P , hpP)} {(Q , hpQ)} f g = 
- Σ-≡ P Q hpP hpQ (hpu I II) (isProp-isProp fe (transport _ (hpu I II) hpP) hpQ)
+ to-Σ-≡ P Q hpP hpQ (hpu I II) (isProp-isProp fe (transport _ (hpu I II) hpP) hpQ)
  where
   I : P → Q
   I x = equal-⊤-is-true Q hpQ (f (true-is-equal-⊤ hpu P hpP x))

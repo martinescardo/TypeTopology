@@ -33,8 +33,8 @@ Kraus-Lemma : ∀ {U} {X : U ̇} → (f : X → X) → constant f → isProp(fix
 Kraus-Lemma {U} {X} f g (x , p) (y , q) = 
   -- p : x ≡ f x
   -- q : y ≡ f y
-  (x , p)        ≡⟨ Σ-≡ x y p p' r refl ⟩
-  (y , p')       ≡⟨ Σ-≡ y y p' q s t ⟩           
+  (x , p)        ≡⟨ to-Σ-≡ x y p p' r refl ⟩
+  (y , p')       ≡⟨ to-Σ-≡ y y p' q s t ⟩           
   (y , q) ∎
     where
      r : x ≡ y

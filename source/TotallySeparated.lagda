@@ -196,7 +196,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-Id _ (t , r)
    s = p ∙ q ⁻¹
    
    t : x ≡ y
-   t = ts (happly _ _ s)
+   t = ts (happly s)
    
    r : transport (λ x → eval x ≡ φ) t p ≡ q
    r = totally-separated-isSet fe
@@ -298,7 +298,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      γ q = φ (q ∘ f)
      
      u : (Σ \(x : X) → (λ p → p x) ≡ φ) → Σ \(a : A) → eval a ≡ γ
-     u (x , r) = f x , funext (fe V U₀) (λ q → happly _ _ r (q ∘ f))
+     u (x , r) = f x , funext (fe V U₀) (λ q → happly r (q ∘ f))
      
    h' : (x' : T X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
@@ -307,7 +307,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    f' (φ , s) = pr₁ (h φ s)
    
    b : (x' : T X) (q : A → 𝟚) → q(f' x') ≡ pr₁ x' (q ∘ f)
-   b (φ , s) = happly _ _ (pr₂ (h φ s))
+   b (φ , s) = happly (pr₂ (h φ s))
    
    r : f' ∘ η ≡ f
    r = funext (fe U V) (λ x → ts (b (η x)))
@@ -316,7 +316,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    c (f'' , s) = to-Σ-Id _ (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
-     w = happly _ _ (r ∙ s ⁻¹)
+     w = happly (r ∙ s ⁻¹)
      
      t : f' ≡ f''
      t = funext (fe U V) (η-induction _ (λ _ → iss) w)
@@ -757,10 +757,10 @@ apartness on it.
     g (x' , y' , a , p , q) = ♯s _ _ (j (♯s _ _ (i a)))
      where
       i : x' ♯ y' → x ♯ y'
-      i = idtofun _ _ (ap pr₁ (happly _ _ p y'))
+      i = idtofun _ _ (ap pr₁ (happly p y'))
        
       j : y' ♯ x → y ♯ x
-      j = idtofun _ _ (ap pr₁ (happly _ _ q x))
+      j = idtofun _ _ (ap pr₁ (happly q x))
 
 \end{code}
 
@@ -943,7 +943,7 @@ apartness on it.
     c (f'' , s) = to-Σ-Id _ (t , v)
      where
       w : ∀ x → f'(η x) ≡ f''(η x)
-      w = happly _ _ (r ∙ s ⁻¹)
+      w = happly (r ∙ s ⁻¹)
 
       t : f' ≡ f''
       t = funext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
@@ -977,7 +977,7 @@ apartness on it.
 \begin{code}
 
   tight-η-equiv-abstract-nonsense : tight _♯_ → X ≃ X'
-  tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly _ _ p₄) , (θ , happly _ _ p₀)
+  tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly p₄) , (θ , happly p₀)
    where
     u : isContr (Σ \(θ : X' → X) → θ ∘ η ≡ id)
     u = tight-reflection X _♯_ ♯a ♯t id id
@@ -1022,7 +1022,7 @@ apartness on it.
       h a = ♯'i (η y) (transport (λ z → z ♯' η y) p a)
 
     e : isEmbedding η
-    e = s-lc-e η lc X'-isSet
+    e = left-cancellable-maps-into-sets-are-embeddings η lc X'-isSet
 
     cm : isVoevodskyEquiv η
     cm = pr₂ (c-es η) (e , η-surjection)

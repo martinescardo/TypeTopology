@@ -71,7 +71,7 @@ Id-Embedding-Lemma {U} fe fe' {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   c : isContr(Σ A)
   c = yoneda-nat isContr (paths-from-contractible x₀) (Σ A) q
   f₀ : (x : X) → Id x ≡ A → (y : X) → Id x y ≡ A y
-  f₀ x = happly (Id x) A
+  f₀ x = happly
   f₁ : (x : X) → ((y : X) → Id x y ≡ A y) → Nat (Id x) A
   f₁ x = NatΠ (λ y → idtofun (Id x y) (A y))
   f₂ : (x : X) → Nat (Id x) A → A x
@@ -93,13 +93,17 @@ Id-Embedding-Lemma {U} fe fe' {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
       l : η ≈ η'
       l = yoneda-elem-lc η η' p
   f-lc : (x : X) → left-cancellable(f x)
-  f-lc x = lcccomp (f₀ x) (f₂ x ∘ f₁ x) (f₀-lc x) (lcccomp (f₁ x) (f₂ x) (f₁-lc x) (f₂-lc x))
+  f-lc x = left-cancellable-closed-under-∘
+               (f₀ x)
+               (f₂ x ∘ f₁ x)
+               (f₀-lc x)
+               (left-cancellable-closed-under-∘ (f₁ x) (f₂ x) (f₁-lc x) (f₂-lc x))
   g : T → Σ A
   g = NatΣ f 
   g-lc : left-cancellable g
   g-lc = NatΣ-lc X (λ x → Id x ≡ A) A f f-lc 
   h : isProp T
-  h = lcmtpip g g-lc (isSingleton-isProp c)
+  h = left-cancellable-reflects-isProp g g-lc (isSingleton-isProp c)
 
 \end{code}
 
@@ -130,9 +134,9 @@ But actually function extensionality is not needed for this: K alone suffices.
 \begin{code}
 
 Id-lc : ∀ {U} {X : U ̇} → left-cancellable (Id {U} {X})
-Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (Id y) (Id x) (p ⁻¹) y) (idp y)
+Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) (idp y)
 
 K-id-embedding-Theorem : ∀ {U} → K (U ′) → {X : U ̇} → isEmbedding(Id {U} {X})
-K-id-embedding-Theorem {U} k {X} = K-lc-e Id Id-lc k
+K-id-embedding-Theorem {U} k {X} = left-cancellable-maps-are-embeddings-with-K Id Id-lc k
 
 \end{code}

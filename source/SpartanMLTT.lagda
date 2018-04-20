@@ -231,6 +231,9 @@ ap f p = transport (λ x' → f _ ≡ f x') p refl
 back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
 back-transport B p = transport B (p ⁻¹)
 
+≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
+≢-sym u r = u(r ⁻¹)
+
 \end{code}
 
 Standard syntax for equality chain reasoning:
@@ -250,8 +253,17 @@ the moment:
 
 \begin{code}
 
-sum-disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inl x ≡ inr y → 𝟘
-sum-disjoint ()
++disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inl x ≡ inr y → 𝟘
++disjoint ()
+
++disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inr y ≡ inl x → 𝟘
++disjoint' ()
+
+inl-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
+inl-injective refl = refl
+
+inr-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
+inr-injective refl = refl
 
 \end{code}
 
@@ -259,6 +271,11 @@ sum-disjoint ()
 
 𝟙-all-* : (x : 𝟙) → x ≡ *
 𝟙-all-* * = refl 
+
+equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
+              → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
+equality-cases (inl x) f g = f x refl
+equality-cases (inr y) f g = g y refl
 
 \end{code}
 

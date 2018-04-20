@@ -63,7 +63,7 @@ prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
   lemma₂ : (x : X) (y : Y x) → x ≡ a → transport Y (hp a x) (f (x , y)) ≡ y
   lemma₂ _ y refl = fg (f (a , y)) ∙ fg y
   gf : (σ : Σ Y) → g(f σ) ≡ σ
-  gf (x , y) = Σ-≡ a x (f (x , y)) y (hp a x) (lemma₂ x y (hp x a))
+  gf (x , y) = to-Σ-≡ a x (f (x , y)) y (hp a x) (lemma₂ x y (hp x a))
 
 prop-indexed-sum-zero : ∀ {U V} {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
                       → Σ Y ≃ 𝟘

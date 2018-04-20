@@ -36,7 +36,7 @@ module NonCollapsibleFamily where
    r i = a i , η (a i) (i , refl)
 
    r-splits : (e : E) → Σ \(i : 𝟚) → r i ≡ e
-   r-splits (x , p) = pr₁ p' , Σ-≡ (a(pr₁ p')) x (η (a (pr₁ p')) ((pr₁ p') , refl)) p (pr₂ p') (prop-fix x _ p)
+   r-splits (x , p) = pr₁ p' , to-Σ-≡ (a(pr₁ p')) x (η (a (pr₁ p')) ((pr₁ p') , refl)) p (pr₂ p') (prop-fix x _ p)
     where
      p' : Σ \(i : 𝟚) → a i ≡ x
      p' = choice x p
@@ -51,7 +51,7 @@ module NonCollapsibleFamily where
    s-injective e e' p = (r-retract e)⁻¹ ∙ ap r p ∙ r-retract e'
 
    a-r : (i j : 𝟚) → a i ≡ a j → r i ≡ r j
-   a-r i j p = Σ-≡ (a i) (a j) (η (a i) (i , refl)) (η (a j) (j , refl)) p (prop-fix (a j) _ (η (a j) (j , refl)))
+   a-r i j p = to-Σ-≡ (a i) (a j) (η (a i) (i , refl)) (η (a j) (j , refl)) p (prop-fix (a j) _ (η (a j) (j , refl)))
 
    r-a : (i j : 𝟚) → r i ≡ r j → a i ≡ a j
    r-a i j = ap pr₁

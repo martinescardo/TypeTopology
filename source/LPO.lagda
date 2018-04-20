@@ -37,7 +37,7 @@ LPO-isProp : isProp LPO
 LPO-isProp = isProp-exponential-ideal fe f
  where
   a : (x : ℕ∞) → isProp(Σ \n → x ≡ under n)
-  a x (n , p) (m , q) = Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set fe _ _)
+  a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set fe _ _)
   
   f : (x : ℕ∞) → isProp (decidable (Σ \n → x ≡ under n))
   f x = decidable-isProp fe (a x)

@@ -27,7 +27,7 @@ dd-sum {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')
    g (inl p) = f (e x' (transport Y p y) y')
      where
        f : decidable(transport Y p y ≡ y') → decidable((x , y) ≡ (x' , y'))
-       f (inl q) = inl (Σ-≡ x x' y y' p q)
+       f (inl q) = inl (to-Σ-≡ x x' y y' p q)
        f (inr ψ) = inr c
          where
            c : x , y ≡ x' , y' → 𝟘
@@ -36,7 +36,7 @@ dd-sum {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')
               p' : x ≡ x'
               p' = ap pr₁ r
               q' : transport Y p' y ≡ y'
-              q' = Σ-≡-lemma (x , y) (x' , y') r
+              q' = from-Σ-≡ (x , y) (x' , y') r
               s : p ≡ p'
               s = discrete-isSet d p p'
               q : transport Y p y ≡ y'

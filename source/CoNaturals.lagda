@@ -1,5 +1,7 @@
 Martin Escardo 2012.
 
+(This module needs to be adapted to the univalent foundations.)
+
 We investigate coinduction and corecursion on ℕ∞, the generic
 convergent sequence.
 
@@ -383,6 +385,9 @@ Putting existence and uniqueness together, we get that P is the final
 coalgebra, as claimed:
 
 \begin{code}
+
+Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇ 
+Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
 
 P-is-the-final-coalgebra : ∀ {U} {X : U ̇} → 
 
