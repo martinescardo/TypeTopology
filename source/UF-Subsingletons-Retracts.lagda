@@ -1,9 +1,4 @@
-In univalent logic, as opposed to Curry-Howard logic, a proposition is
-a subsingleton or a type such that any two of its elements are
-identified.
-
-https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
-https://unimath.github.io/bham2017/uf.pdf
+(Do we need this module?)
 
 \begin{code}
 
@@ -11,7 +6,6 @@ https://unimath.github.io/bham2017/uf.pdf
 
 module UF-Subsingletons-Retracts where
 
-open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts

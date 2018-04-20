@@ -5,7 +5,6 @@
 module UF-Retracts where
 
 open import UF-Base
-open import UF-Subsingletons
 
 _isSectionOf_ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → (Y → X) → U ̇
 s isSectionOf r = r ∘ s ∼ id

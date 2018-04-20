@@ -7,18 +7,9 @@ Excluded middle related things.
 module UF-ExcludedMiddle where
 
 open import UF-Base
-open import UF-Subsingletons
-open import UF-Yoneda
-open import UF-Retracts
-open import UF-Subsingletons-Retracts
-open import UF-Equiv
-open import UF-LeftCancellable
-open import UF-FunExt
-open import UF-Univalence
-open import UF-Embedding
-open import UF-Subsingletons-FunExt
 open import UF-Prop
 open import UF-PropTrunc
+open import Two
 
 \end{code}
 
@@ -96,8 +87,6 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
      where
        l : (P , isp) ≡ ⊥
        l = PropExt fe pe u unique-from-𝟘
-
-open import Two
 
 ⊥-⊤-density : FunExt U₀ U₀ → propExt U₀ → (f : Prop → 𝟚)
             → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Prop) → f p ≡ ₁

@@ -5,7 +5,6 @@
 module UF-Retracts-FunExt where
 
 open import UF-Base
-open import UF-Subsingletons
 open import UF-Retracts
 open import UF-FunExt
 

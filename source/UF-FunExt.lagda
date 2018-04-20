@@ -7,9 +7,6 @@ Formulation of function extensionality
 module UF-FunExt where
 
 open import UF-Base
-open import UF-Subsingletons
-open import UF-Yoneda
-open import UF-Retracts
 open import UF-Equiv
 open import UF-LeftCancellable
 

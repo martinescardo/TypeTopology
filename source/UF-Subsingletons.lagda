@@ -11,7 +11,6 @@ https://unimath.github.io/bham2017/uf.pdf
 
 module UF-Subsingletons where
 
-open import SpartanMLTT
 open import UF-Base
 
 \end{code}

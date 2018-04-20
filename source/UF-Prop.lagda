@@ -4,19 +4,12 @@
 
 module UF-Prop where
 
-open import SpartanMLTT public
 open import UF-Base public
 open import UF-Subsingletons public
-open import UF-Yoneda public
-open import UF-Retracts public
-open import UF-Subsingletons-Retracts public
 open import UF-Equiv public
-open import UF-LeftCancellable public
 open import UF-FunExt public
-open import UF-Univalence public
 open import UF-Embedding public
 open import UF-Subsingletons-FunExt public
-open import UF-Retracts-FunExt public
 
 propExt : ∀ U → U ′ ̇ 
 propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
@@ -33,8 +26,7 @@ holdsIsProp = pr₂
 PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt {U} fe pe {p} {q} f g =
-        to-Σ-Id isProp ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
-
+        to-Σ-≡'' ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
 Prop-isSet : ∀ {U} → FunExt U U → propExt U → isSet (Prop {U})
 Prop-isSet {U} fe pe = path-collapsible-isSet pc
  where
