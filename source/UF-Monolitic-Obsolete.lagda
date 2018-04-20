@@ -14,7 +14,7 @@ files.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF where
+module UF-Monolitic-Obsolete where
 
 \end{code}
 

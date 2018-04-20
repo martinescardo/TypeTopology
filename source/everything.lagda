@@ -25,6 +25,8 @@
    𝟚-compactness interacts with discreteness, total separatedess and
    function types. We apply these results to simple types.
 
+   April 2018. The univalence foundations library was monolotic
+   before. Now it it has been modularized.
 
 \begin{code}
 
