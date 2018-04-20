@@ -11,7 +11,7 @@ About (sub)singletons using function extensionality.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-Subsingleton-FunExt where
+module UF-Subsingletons-FunExt where
 
 open import SpartanMLTT
 open import UF-Base

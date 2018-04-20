@@ -15,13 +15,13 @@ open import UF-Base public
 open import UF-Subsingletons public
 open import UF-Yoneda public
 open import UF-Retracts public
-open import UF-Subsingleton-Retracts public
+open import UF-Subsingletons-Retracts public
 open import UF-Equiv public
 open import UF-LeftCancellable public
 open import UF-FunExt public
 open import UF-Univalence public
 open import UF-Embedding public
-open import UF-Subsingleton-FunExt public
+open import UF-Subsingletons-FunExt public
 open import UF-Retracts-FunExt public
 open import UF-Prop public
 open import UF-PropTrunc public

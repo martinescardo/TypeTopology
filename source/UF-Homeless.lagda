@@ -11,13 +11,13 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Yoneda
 open import UF-Retracts
-open import UF-Subsingleton-Retracts
+open import UF-Subsingletons-Retracts
 open import UF-Equiv
 open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-Univalence
 open import UF-Embedding
-open import UF-Subsingleton-FunExt
+open import UF-Subsingletons-FunExt
 open import UF-Prop
 open import UF-PropTrunc
 

@@ -9,7 +9,7 @@ https://unimath.github.io/bham2017/uf.pdf
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-Subsingleton-Retracts where
+module UF-Subsingletons-Retracts where
 
 open import SpartanMLTT
 open import UF-Base

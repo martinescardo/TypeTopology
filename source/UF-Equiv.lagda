@@ -7,7 +7,7 @@ module UF-Equiv where
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
-open import UF-Subsingleton-Retracts
+open import UF-Subsingletons-Retracts
 
 \end{code}
 
@@ -54,13 +54,14 @@ idtoeq-traditional X _ refl = ideq X
 
 \end{code}
 
-We would have a definition equality if we had defined the traditional
+We would have a definitional equality if we had defined the traditional
 one using J(based), but because of the idiosyncracies of Agda, we
 don't with the current definition:
 
 \begin{code}
 
-eqtoeq-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → idtoeq X Y p ≡ idtoeq-traditional X Y p
+eqtoeq-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y)
+                 → idtoeq X Y p ≡ idtoeq-traditional X Y p
 eqtoeq-agreement {U} X _ refl = refl
 
 idtofun : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
