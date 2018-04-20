@@ -965,8 +965,9 @@ paths-from-contractible x = ((x , idp x) , singleton-types-are-singletons)
 paths-to : ∀ {U} {X : U ̇} → X → U ̇
 paths-to x = Σ \y → y ≡ x
 
-rc-is-c : ∀ {U V} {X : U ̇} {Y : V ̇} (r : X → Y) → hasSection r → isSingleton X → isSingleton Y
-rc-is-c {U} {V} {X} {Y} r (s , rs) (x , i) = r x , λ y → r x ≡⟨ ap r (i (s y)) ⟩ r (s y) ≡⟨ rs y ⟩ y ∎
+retract-of-singleton : ∀ {U V} {X : U ̇} {Y : V ̇} (r : X → Y)
+                    → hasSection r → isSingleton X → isSingleton Y
+retract-of-singleton {U} {V} {X} {Y} r (s , rs) (x , i) = r x , λ y → r x ≡⟨ ap r (i (s y)) ⟩ r (s y) ≡⟨ rs y ⟩ y ∎
 
 pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : paths-from x → paths-to x) → isEquiv f
 pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
@@ -981,22 +982,23 @@ pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
   gf (y , p) = ap (λ p → y , p) (⁻¹-involutive p)
   
 paths-to-contractible : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-to x)
-paths-to-contractible x = rc-is-c (pr₁(pt-pf-equiv x))
+paths-to-contractible x = retract-of-singleton
+                                  (pr₁(pt-pf-equiv x))
                                   (pr₁(pr₂((pt-pf-equiv x))))
                                   (paths-from-contractible x)
 
 paths-to-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
 paths-to-isProp x = isSingleton-isProp (paths-to-contractible x)
 
-pbucp' : ∀ {U} (X Y : U ̇) → isProp(X × Y) → (Y → isProp X) × (X → isProp Y)
-pbucp' {U} X Y isp =  (λ y x x' → ap pr₁ (isp (x , y) (x' , y))) ,
-                      (λ x y y' → ap pr₂ (isp (x , y) (x , y')))
+×-prop-criterion-necessity : ∀ {U} {X Y : U ̇} → isProp(X × Y) → (Y → isProp X) × (X → isProp Y)
+×-prop-criterion-necessity isp = (λ y x x' → ap pr₁ (isp (x , y) (x' , y ))) ,
+                                 (λ x y y' → ap pr₂ (isp (x , y) (x  , y')))
 
-pcubp' : ∀ {U} (X Y : U ̇) → (Y → isProp X) × (X → isProp Y) → isProp(X × Y)
-pcubp' X Y (i , j) (x , y) (x' , y') = to-Σ-Id _ (i y x x' , j x _ _)
+×-prop-criterion : ∀ {U} {X Y : U ̇} → (Y → isProp X) × (X → isProp Y) → isProp(X × Y)
+×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-Id _ (i y x x' , j x _ _)
 
-pcubp : ∀ {U} (X Y : U ̇) → isProp X → isProp Y → isProp(X × Y)
-pcubp X Y i j = pcubp' X Y ((λ _ → i) , (λ _ → j))
+props-closed-× : ∀ {U} {X Y : U ̇} → isProp X → isProp Y → isProp(X × Y)
+props-closed-× i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 fiber : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → f x ≡ y
@@ -1004,7 +1006,8 @@ fiber f y = Σ \x → f x ≡ y
 isVoevodskyEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isVoevodskyEquiv f = ∀ y → isSingleton (fiber f y)
 
-isVoevodskyEquiv-isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isVoevodskyEquiv f → isEquiv f
+isVoevodskyEquiv-isEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                         → isVoevodskyEquiv f → isEquiv f
 isVoevodskyEquiv-isEquiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
  where
   φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
@@ -1078,7 +1081,7 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
   b : (x : X) → isSingleton(fiber f (f x))
   b x = (x , idp (f x)) , ise (f x) (x , idp (f x))
   c : (x : X) → isSingleton(fiber' f (f x))
-  c x = rc-is-c (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
+  c x = retract-of-singleton (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → isEquiv(ap f {x} {x'})
   g x = universality-equiv x refl (cc-is-ue (λ x' → f x ≡ f x') (pr₁(c x)) (pr₂(c x))) 
 
@@ -1206,7 +1209,7 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    b : isProp A'
    b = lcmtpip h h-lc a
    go : isProp(A' × A')
-   go = pcubp A' A' b b
+   go = props-closed-× b b
 
 jip : ∀ {U} → isUnivalent U → FunExt U U → {X Y : U ̇} 
    → (f : X → Y) → isProp(isEquiv f) 
@@ -1385,7 +1388,7 @@ pr₁-vequivalence {U} {V} X Y iss x = g
 pr₁-vequivalence-converse : ∀ {U V} {X : U ̇} {Y : X → V ̇}
                           → isVoevodskyEquiv (pr₁ {U} {V} {X} {Y})
                           → ((x : X) → isSingleton(Y x))
-pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = go
+pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = retract-of-singleton r (s , rs) (isv x)
   where
     f : Σ Y → X
     f = pr₁ {U} {V} {X} {Y}
@@ -1395,8 +1398,6 @@ pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = go
     r ((x , y) , refl) = y
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
-    go : isContr(Y x)
-    go = rc-is-c r (s , rs) (isv x)
 
 \end{code}
 
@@ -1871,7 +1872,23 @@ retracts-of-closed-under-exponentials {U} {V} {W} {X} {Y} {B} fe x rbx rby = rbx
 
 \end{code}
 
+More about equivalences (mostly following the HoTT book).
+
 \begin{code}
+
+equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                                 → (Y → isVoevodskyEquiv f) → isVoevodskyEquiv f
+equiv-can-assume-pointed-codomain f φ y = φ y y
+
+maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : X → 𝟘)
+                     → isVoevodskyEquiv f
+maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
+
+isProp-isVoevodskyEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                        → isProp(isVoevodskyEquiv f)
+isProp-isVoevodskyEquiv fe {U} {V} f = isProp-exponential-ideal
+                                         (fe V (U ⊔ V))
+                                         (λ x → isProp-isSingleton (fe (U ⊔ V) (U ⊔ V)))
 
 isHAE : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isHAE {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id) → (x : X) → ap f (η x) ≡ ε (f x)
@@ -1894,10 +1911,10 @@ qinv-ishae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
          f (g (f (g y))) ≡⟨ ap f (η (g y)) ⟩
          f (g y)         ≡⟨ ε y ⟩
          y               ∎
-         
+
   a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
   a x = η (g (f x))       ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
-        ap (g ∘ f) (η x)  ≡⟨ ap-ap f g (η x) ⁻¹ ⟩
+        ap (g ∘ f) (η x)  ≡⟨ (ap-ap f g (η x))⁻¹ ⟩
         ap g (ap f (η x)) ∎
         
   b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
@@ -2006,6 +2023,80 @@ also has a direct proof by path induction:
         (q : (x , p) ≡ (x' , p'))
       → paths-in-fibers f y x x' p p' (from-paths-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
+
+\end{code}
+
+\begin{code}
+
+qinv-post : (∀ U V → FunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+          → qinv f → qinv (λ (h : A → X) → f ∘ h)
+qinv-post fe {U} {V} {W} {X} {Y} {A} f (g , η , ε) = (g' , η' , ε')
+ where
+  f' : (A → X) → (A → Y)
+  f' h = f ∘ h
+  g' : (A → Y) → (A → X)
+  g' k = g ∘ k
+  η' : (h : A → X) → g' (f' h) ≡ h
+  η' h = funext (fe W U) (η ∘ h)
+  ε' : (k : A → Y) → f' (g' k) ≡ k
+  ε' k = funext (fe W V) (ε ∘ k)
+  
+qinv-pre : (∀ U V → FunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+         → qinv f → qinv (λ (h : Y → A) → h ∘ f)
+qinv-pre fe {U} {V} {W} {X} {Y} {A} f (g , η , ε) = (g' , η' , ε')
+ where
+  f' : (Y → A) → (X → A)
+  f' h = h ∘ f
+  g' : (X → A) → (Y → A)
+  g' k = k ∘ g
+  η' : (h : Y → A) → g' (f' h) ≡ h
+  η' h = funext (fe V W) (λ y → ap h (ε y))
+  ε' : (k : X → A) → f' (g' k) ≡ k
+  ε' k = funext (fe U W) (λ x → ap k (η x))
+
+hasr-isprop-hass : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                 → hasRetraction f → isProp(hasSection f)
+hasr-isprop-hass fe {U} {V} {X} {Y} f (g , gf) (h , fh) = isSingleton-isProp c (h , fh)
+ where
+  a : qinv f
+  a = inverse f ((h , fh) , g , gf)
+  b : isSingleton(fiber (λ h →  f ∘ h) id)
+  b = qinv-isVoevodsky (λ h →  f ∘ h) (qinv-post fe f a) id
+  r : fiber (λ h →  f ∘ h) id → hasSection f
+  r (h , p) = (h , happly (f ∘ h) id p)
+  s : hasSection f → fiber (λ h →  f ∘ h) id
+  s (h , η) = (h , funext (fe V V) η)
+  rs : (σ : hasSection f) → r (s σ) ≡ σ
+  rs (h , η) = ap (λ η → (h , η)) q
+   where
+    q : happly (f ∘ h) id (funext (fe V V) η) ≡ η
+    q = happly-funext (fe V V) (f ∘ h) id η
+  c : isSingleton (hasSection f)
+  c = retract-of-singleton r (s , rs) b
+
+hass-isprop-hasr : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                 → hasSection f → isProp(hasRetraction f)
+hass-isprop-hasr fe {U} {V} {X} {Y} f (g , fg) (h , hf) = isSingleton-isProp c (h , hf)
+ where
+  a : qinv f
+  a = inverse f ((g , fg) , (h , hf))
+  b : isSingleton(fiber (λ h →  h ∘ f) id)
+  b = qinv-isVoevodsky (λ h →  h ∘ f) (qinv-pre fe f a) id
+  r : fiber (λ h →  h ∘ f) id → hasRetraction f
+  r (h , p) = (h , happly (h ∘ f) id p)
+  s : hasRetraction f → fiber (λ h →  h ∘ f) id
+  s (h , η) = (h , funext (fe U U) η) 
+  rs : (σ : hasRetraction f) → r (s σ) ≡ σ
+  rs (h , η) = ap (λ η → (h , η)) q
+   where
+    q : happly (h ∘ f) id (funext (fe U U) η) ≡ η
+    q = happly-funext (fe U U) (h ∘ f) id η
+  c : isSingleton (hasRetraction f)
+  c = retract-of-singleton r (s , rs) b
+
+isProp-isEquiv : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+               → isProp(isEquiv f)
+isProp-isEquiv fe f = ×-prop-criterion (hasr-isprop-hass fe f , hass-isprop-hasr fe f)
 
 \end{code}
 
