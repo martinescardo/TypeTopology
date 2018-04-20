@@ -8,13 +8,13 @@ experimentation.
 
 This file has been merged from various different files in different
 developments and needs to be reorganized, and broken into smaller
-files.
+files. [[Reorganization made. This file should not be used anymore.]]
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-Monolitic-Obsolete where
+module uf-Monolitic-Obsolete where
 
 \end{code}
 
