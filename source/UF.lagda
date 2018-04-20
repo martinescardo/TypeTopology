@@ -1,10 +1,8 @@
 Martin Escardo, 2011-2018.
 
-This is a(n incomplete) univalent foundations library (in Agda
-notation), with some things developed using the Yoneda-lemma view of
-the identity type, as put forward in
-http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html, for the sake of
-experimentation.
+This is a univalent foundations library (in Agda notation), with some
+things developed using the Yoneda-lemma view of the identity type, as
+put forward in http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
 
 \begin{code}
 

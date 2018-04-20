@@ -260,7 +260,7 @@ open import Sequence
 open import Two 
 open import HiggsInvolutionTheorem
 open import DummettDisjunction
-open import UnivalentChoice
+open import UF-Choice
 open import Dominance
 open import KrausLemma
 open import NonCollapsibleFamily

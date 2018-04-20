@@ -89,7 +89,5 @@ isProp-separated fe fe₀ {X} = iisProp-isProp f
           (λ _ → isProp-exponential-ideal fe
                     (λ _ → isProp-exponential-ideal fe
                               (λ _ → separated-isSet fe₀ s)))
-
-
+                              
 \end{code}
-

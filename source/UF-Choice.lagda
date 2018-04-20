@@ -34,7 +34,7 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 open import UF
 
-module UnivalentChoice where
+module UF-Choice where
 
 module Shift
    (U : Universe)
