@@ -15,7 +15,7 @@ open import Naturals
 open import GenericConvergentSequence
 open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)
-open import InjectiveTypes (fe)
+open import UF-InjectiveTypes (fe)
 open import ExtendedSumSearchable (fe)
 
 Σ¹ : (ℕ → U₀ ̇) → U₀ ̇
@@ -201,7 +201,7 @@ We show that the old and new squashed sums agree.
 
 \begin{code}
 
-open import EquivalenceExamples
+open import UF-EquivalenceExamples
 
 agreement-lemma : (X : ℕ → U₀ ̇) (u : ℕ∞) → (X / under) u ≃ Π (λ x → under x ≡ u → X x) -- (X / under) u ≃ (X [ u ]) 
 agreement-lemma X = 2nd-Π-extension-formula X under

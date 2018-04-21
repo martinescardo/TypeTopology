@@ -47,8 +47,8 @@ module PropTychonoff (fe : ∀ U V → FunExt U V) where
 
 open import Two
 open import SearchableTypes
-open import PropIndexedPiSigma
-open import EquivalenceExamples
+open import UF-PropIndexedPiSigma
+open import UF-EquivalenceExamples
 
 \end{code}
 

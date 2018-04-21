@@ -4,10 +4,10 @@ Martin Escardo, 27 April 2014
 
 {-# OPTIONS --without-K --exact-split --safe #-} 
 
-module PropIndexedPiSigma where
+module UF-PropIndexedPiSigma where
 
 open import UF
-open import EquivalenceExamples
+open import UF-EquivalenceExamples
 
 prop-indexed-product : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇} → isProp X 
                      → (a : X) → Π Y ≃ Y a

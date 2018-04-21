@@ -142,7 +142,7 @@ open import UF
 
 module ArithmeticViaEquivalence (fe : ∀ U V → FunExt U V) where
 
-open import EquivalenceExamples
+open import UF-EquivalenceExamples
 open import Naturals
 open import PlusOneLC
 

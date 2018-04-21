@@ -7,7 +7,7 @@ Martin Escardo, 2012
 
 open import UF
 
-module EquivalenceExamples where
+module UF-EquivalenceExamples where
 
 Curry-Uncurry : (fe : ∀ U V → FunExt U V)
              → ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}

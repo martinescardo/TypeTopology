@@ -9,7 +9,7 @@ open import UF
 module ExtendedSumSearchable (fe : ∀ U V → FunExt U V) where
 
 open import SearchableTypes
-open import InjectiveTypes (fe)
+open import UF-InjectiveTypes (fe)
 open import PropTychonoff (fe)
 
 extended-sum-searchable : ∀ {U V W} {X : U ̇} {K : V ̇} {Y : X → W ̇} (j : X → K) → isEmbedding j

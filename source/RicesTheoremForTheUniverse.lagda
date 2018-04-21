@@ -72,7 +72,7 @@ open import TheTopologyOfTheUniverse fe
 open import Two
 open import Naturals
 open import GenericConvergentSequence
-open import EquivalenceExamples
+open import UF-EquivalenceExamples
 open import WLPO
 open import BasicDiscontinuityTaboo fe
 

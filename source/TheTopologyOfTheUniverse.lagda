@@ -122,7 +122,7 @@ module TheTopologyOfTheUniverse (fe : ∀ U V → FunExt U V) where
 
 open import Naturals
 open import GenericConvergentSequence
-open import InjectiveTypes (fe)
+open import UF-InjectiveTypes (fe)
 
 \end{code}
 

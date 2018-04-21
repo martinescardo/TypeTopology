@@ -186,7 +186,7 @@ universes:
 
 \begin{code}
 
-open import InjectiveTypes
+open import UF-InjectiveTypes
 
 \end{code}
 
@@ -195,7 +195,7 @@ first that it is isomorphic to any of its factors:
 
 \begin{code}
 
-open import PropIndexedPiSigma
+open import UF-PropIndexedPiSigma
 
 \end{code}
 

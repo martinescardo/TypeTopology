@@ -85,9 +85,9 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF
 
-module InjectiveTypes (fe : ∀ U V → FunExt U V) where
+module UF-InjectiveTypes (fe : ∀ U V → FunExt U V) where
 
-open import EquivalenceExamples
+open import UF-EquivalenceExamples
 
 \end{code}
 
@@ -183,7 +183,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 
 \begin{code}
 
-  open import PropIndexedPiSigma
+  open import UF-PropIndexedPiSigma
 
   Π-extension-in-range : isEmbedding j → (x : X) → f/j(j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) (e (j x)) (x , refl)
