@@ -8,13 +8,13 @@ See remarks below for an explanation.
 
 open import UF
 
-module SquashedSum (fe : ∀ {U V} → FunExt U V) where
+module SquashedSum (fe : ∀ U V → FunExt U V) where
 
 open import Two
 open import Naturals
 open import GenericConvergentSequence
 open import SearchableTypes
-open import ConvergentSequenceSearchable (fe)
+open import ConvergentSequenceSearchable (fe U₀ U₀)
 open import InjectiveTypes (fe)
 open import ExtendedSumSearchable (fe)
 
@@ -22,7 +22,7 @@ open import ExtendedSumSearchable (fe)
 Σ¹ X = Σ (X / under)
 
 squashed-sum-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
-squashed-sum-searchable {X} ε = extended-sum-searchable under (under-embedding fe) ε ℕ∞-is-searchable 
+squashed-sum-searchable {X} ε = extended-sum-searchable under (under-embedding (fe U₀ U₀)) ε ℕ∞-is-searchable 
 
 \end{code}
   
@@ -88,7 +88,7 @@ This point at infinity is unique assuming extensionality, because:
 \begin{code}
 
 H : {X : ℕ → U₀ ̇} → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
-H {X} u r y y' = funext fe (λ k → funext fe (λ s → lemma k s))
+H {X} u r y y' = funext (fe U₀ U₀) (λ k → funext (fe U₀ U₀) (λ s → lemma k s))
  where
   lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s 
   lemma k s = 𝟘-elim(∞-is-not-ℕ k (r ⁻¹ ∙ s ⁻¹))
@@ -106,7 +106,7 @@ G : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] �
 G n u r y = y n r
 
 FG : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
-FG {X} n u r y = funext fe (λ k → funext fe (λ s → lemma k s))
+FG {X} n u r y = funext (fe U₀ U₀) (λ k → funext (fe U₀ U₀) (λ s → lemma k s))
  where
   f : {m n : ℕ} → m ≡ n → X m → X n
   f = transport X
@@ -118,7 +118,7 @@ FG {X} n u r y = funext fe (λ k → funext fe (λ s → lemma k s))
   A n k t = (u : ℕ∞) (r : under n ≡ u) (s : under k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
 
   φ : (n : ℕ) → A n n refl
-  φ n = λ u r s y → ap (y n) (ℕ∞-set fe r s) 
+  φ n = λ u r s y → ap (y n) (ℕ∞-set (fe U₀ U₀) r s) 
 
   lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
   lemma k s = J A φ {n} {k} (t k s) u r s y
@@ -181,7 +181,7 @@ extension-searchable {X} ε u p = y₀ , lemma
   lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
 
   lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-  lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ fe (λ n q → lemma₁' r y s n (q ⁻¹)))) 
+  lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ (fe U₀ U₀) (λ n q → lemma₁' r y s n (q ⁻¹)))) 
 
 \end{code}
 

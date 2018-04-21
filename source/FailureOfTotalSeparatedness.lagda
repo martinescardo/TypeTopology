@@ -37,7 +37,7 @@ a theorem rather than a metatheorem.
 
 open import UF
 
-module FailureOfTotalSeparatedness (fe : ∀ {U V} → FunExt U V) where
+module FailureOfTotalSeparatedness (fe : ∀ U V → FunExt U V) where
 
 open import Two
 open import Naturals
@@ -107,7 +107,7 @@ module concrete-example where
    p₁ u = p(u , λ r → ₁) 
 
    lemma : (n : ℕ) → p₀(under n) ≡ p₁(under n)
-   lemma n = ap (λ h → p(under n , h)) (funext fe claim)
+   lemma n = ap (λ h → p(under n , h)) (funext (fe U₀ U₀) claim)
     where
      claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
      claim s = 𝟘-elim(∞-is-not-ℕ n (s ⁻¹))
@@ -143,7 +143,7 @@ module concrete-example where
    claim₁ = ap (λ f → f refl) claim₀
 
    fact : refl ≡ p
-   fact = ℕ∞-set fe refl p
+   fact = ℕ∞-set (fe U₀ U₀) refl p
 
    claim₂ : ₀ ≡ φ p (λ p → ₀) refl
    claim₂ = ap (λ p → φ p (λ p → ₀) refl) fact
@@ -228,7 +228,7 @@ two embeddings e₀ and e₁:
  Lemma x φ = ap (λ ψ → (x , ψ)) claim
   where
    claim : (λ p → ₀) ≡ (λ p → ₁) 
-   claim = funext fe (λ p → 𝟘-elim(φ p))
+   claim = funext (fe U U₀) (λ p → 𝟘-elim(φ p))
 
 \end{code}
 

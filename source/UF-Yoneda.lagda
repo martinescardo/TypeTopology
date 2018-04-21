@@ -16,15 +16,6 @@ We now consider "natural transformations" (defined in Base) and the
 Yoneda-machinery for them as discussed in
 http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
 
-Point-point-wise equality of natural transformations:
-
-\begin{code}
-
-_≈_ : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} → Nat (Id x) A → Nat (Id x) A → U ⊔ V ̇
-η ≈ θ = ∀ y → η y ∼ θ y
-
-\end{code}
-
 The Yoneda element induced by a natural transformation:
 
 \begin{code}
@@ -194,15 +185,12 @@ proved using J(based).
 idp-left-neutral-bis : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → idp x ∙ p ≡ p
 idp-left-neutral-bis {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
 
-idp-right-neutral : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ p ∙ (idp y) 
-idp-right-neutral = idp
+⁻¹-involutive-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
+⁻¹-involutive-bis {U} {X} {x} {y} = yoneda-elem-lc (λ x p → (p ⁻¹)⁻¹) (λ x p → p) (idp(idp x)) y
 
-⁻¹-involutive : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
-⁻¹-involutive {U} {X} {x} {y} = yoneda-elem-lc (λ x p → (p ⁻¹)⁻¹) (λ x p → p) (idp(idp x)) y
-
-⁻¹-contravariant : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) {z : X} (q : y ≡ z)
+⁻¹-contravariant-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) {z : X} (q : y ≡ z)
                 → q ⁻¹ ∙ p ⁻¹ ≡ (p ∙ q)⁻¹
-⁻¹-contravariant {U} {X} {x} {y} p {z} = yoneda-elem-lc (λ z q → q ⁻¹ ∙ p ⁻¹)
+⁻¹-contravariant-bis {U} {X} {x} {y} p {z} = yoneda-elem-lc (λ z q → q ⁻¹ ∙ p ⁻¹)
                                                        (λ z q → (p ∙ q) ⁻¹)
                                                        idp-left-neutral
                                                        z
@@ -423,5 +411,37 @@ repr-is-contr {U} {V} {X} {A} (x , (η , φ)) = g
 idtoeq-bis : ∀ {U} (X : U ̇) → Nat (Id X) (Eq X)
 idtoeq-bis X = yoneda-nat (Eq X) (ideq X)
 
+NatΣ-lc : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+        → ((x : X) → left-cancellable(ζ x)) → left-cancellable(NatΣ ζ)
+NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
+  where
+    p : x ≡ y
+    p = pr₁ (from-Σ-Id B pq)
+    η : Nat (Id x) B
+    η = yoneda-nat B (ζ x a)
+    q : η y p ≡ ζ y b
+    q = pr₂ (from-Σ-Id B pq)
+    θ : Nat (Id x) A
+    θ = yoneda-nat A a
+    η' : Nat (Id x) B
+    η' y p = ζ y (θ y p)
+    r : η' ≈ η
+    r = yoneda-elem-lc η' η (idp (ζ x a)) 
+    r' : ζ y (θ y p) ≡ η y p
+    r' = r y p
+    s : ζ y (θ y p) ≡ ζ y b
+    s = r' ∙ q
+    t : θ y p ≡ b
+    t = ζ-lc y s
+    g : x , a ≡ y , b
+    g = to-Σ-Id A (p , t)
+
+idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
+idtofun' X = yoneda-nat (λ Y → X → Y) id
+
+idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
+idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
+
 \end{code}
+
 

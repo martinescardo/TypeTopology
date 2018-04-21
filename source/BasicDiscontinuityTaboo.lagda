@@ -13,7 +13,7 @@ be eventually constant (which we don't postulate).
 
 open import UF
 
-module BasicDiscontinuityTaboo (fe : ∀ {U V} → FunExt U V) where
+module BasicDiscontinuityTaboo (fe : ∀ U V → FunExt U V) where
 
 open import Naturals
 open import Two
@@ -42,7 +42,7 @@ basic-discontinuity-taboo p (f , r) u = two-equality-cases lemma₀ lemma₁
   fact₃ t n s = zero-is-not-one ((f n)⁻¹ ∙ (ap p s)⁻¹ ∙ t)
     
   lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
-  lemma₁ t = inl(not-ℕ-is-∞ fe (fact₃ t))
+  lemma₁ t = inl(not-ℕ-is-∞ (fe U₀ U₀) (fact₃ t))
 
 \end{code}
 

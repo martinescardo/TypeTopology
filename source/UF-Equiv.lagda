@@ -12,7 +12,7 @@ open import UF-Subsingletons-Retracts
 \end{code}
 
 We take Joyal's version of the notion of equivalence as the primary
-one because it is more symetrical.
+one because it is more symmetrical.
 
 \begin{code}
 
@@ -362,6 +362,23 @@ pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = retract-of-singleton r (s , 
     r ((x , y) , refl) = y
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
+
+\end{code}
+
+\begin{code}
+
+NatΣ-equiv : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+           → ((x : X) → isEquiv(ζ x)) → isEquiv(NatΣ ζ)
+NatΣ-equiv X A B ζ ise = ((s , ζs), (r , rζ)) 
+ where
+  s : Σ B → Σ A
+  s (x , b) = x , pr₁ (pr₁ (ise x)) b
+  ζs : (β : Σ B) → (NatΣ ζ ∘ s) β ≡ β
+  ζs (x , b) = ap (λ b → (x , b)) (pr₂ (pr₁ (ise x)) b)
+  r : Σ B → Σ A
+  r (x , b) = x , (pr₁ (pr₂ (ise x)) b)
+  rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
+  rζ (x , a) = ap (λ a → (x , a)) (pr₂ (pr₂ (ise x)) a)
 
 \end{code}
 

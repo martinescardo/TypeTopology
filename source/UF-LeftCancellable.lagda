@@ -27,5 +27,10 @@ left-cancellable-closed-under-∘ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
                                 → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
 left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 
+NatΠ-lc : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B)
+    → ((x : X) → left-cancellable(f x))
+    → {g g' : Π A} → NatΠ f g ≡ NatΠ f g' → g ∼ g'
+NatΠ-lc f flc {g} {g'} p x = flc x (happly p x)
+
 \end{code}
 

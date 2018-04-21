@@ -213,10 +213,9 @@ sense of univalent mathematics, where Id is the identity type former:
 
 \begin{code}
 
-open import IdEmbedding
+open import UF-IdEmbedding
 
 \end{code}
-
 
 The following generalizes the squashed sum, with a simple construction
 and proof, using the injectivity of the universe and the Prop-Tychonoff theorem:

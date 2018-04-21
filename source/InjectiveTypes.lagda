@@ -85,7 +85,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF
 
-module InjectiveTypes (fe : ∀ {U V} → FunExt U V) where
+module InjectiveTypes (fe : ∀ U V → FunExt U V) where
 
 open import EquivalenceExamples
 
@@ -153,8 +153,8 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
     φψ g θ y C (x , refl) = refl
 
     e : Nat g f/j ≃ Nat (g ∘ j) f
-    e = ψ g , (φ g , λ η → funext fe (λ x → funext fe (ψφ g η x )))
-            , (φ g , λ θ → funext fe (λ y → funext fe (λ C → funext fe (φψ g θ y C))))
+    e = ψ g , (φ g , λ η → funext (fe U (W ⊔ U)) (λ x → funext (fe U W) (ψφ g η x )))
+            , (φ g , λ θ → funext (fe V (U ⊔ V ⊔ W)) (λ y → funext (fe U (U ⊔ V ⊔ W)) (λ C → funext (fe (U ⊔ V) W) (φψ g θ y C))))
   
   Σ-extension-left-Kan : (g : Y → U ̇) → Nat f∖j g ≃ Nat f (g ∘ j)
   Σ-extension-left-Kan g = e
@@ -172,8 +172,8 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
     ψφ g η x B = refl
 
     e : Nat f∖j g ≃ Nat f (g ∘ j)
-    e = ψ g , (φ g , λ η → funext fe (λ x → funext fe (λ B → ψφ g η x B)))
-            , (φ g , λ θ → funext fe (λ y → funext fe (λ C → φψ g θ y C)))
+    e = ψ g , (φ g , λ η → funext (fe U (U ⊔ W)) (λ x → funext (fe W U) (λ B → ψφ g η x B)))
+            , (φ g , λ θ → funext (fe V (U ⊔ V ⊔ W)) (λ y → funext (fe (U ⊔ V ⊔ W) U) (λ C → φψ g θ y C)))
 
 \end{code}
 
@@ -186,10 +186,10 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
   open import PropIndexedPiSigma
 
   Π-extension-in-range : isEmbedding j → (x : X) → f/j(j x) ≃ f x
-  Π-extension-in-range e x = prop-indexed-product fe (e (j x)) (x , refl)
+  Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) (e (j x)) (x , refl)
 
   Π-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙
-  Π-extension-out-of-range y φ = prop-indexed-product-one fe (uncurry φ) 
+  Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ) 
 
   Σ-extension-in-range : isEmbedding j → (x : X) → f∖j(j x) ≃ f x
   Σ-extension-in-range e x = prop-indexed-sum (e(j x)) (x , refl)
@@ -248,7 +248,7 @@ respectively:
       FG' ψ x (_ , refl) = refl
       
       FG : (ψ : Π f/j) → F(G ψ) ≡ ψ
-      FG ψ = funext fe (λ y → funext fe (FG' ψ y))
+      FG ψ = funext (fe V (U ⊔ V ⊔ W)) (λ y → funext (fe (U ⊔ V) W) (FG' ψ y))
       
       GF : (φ : Π f) → G(F φ) ≡ φ
       GF φ = refl
@@ -341,7 +341,7 @@ But the lhs holds, and hence isContr(Σ-image j (Id x)).
    a y = eqtoid ua (Σ-image j (Id x) y) (Id (j x) y) (Σ-image-of-singleton-lemma j x y)
    
    b : Σ-image j (Id x) ≡ Id (j x)
-   b = funext fe a
+   b = funext (fe U (U ′)) a
 
 \end{code}
 
@@ -381,14 +381,14 @@ retracts-of-injectives {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘
     go : r ∘ g ∘ j ∼ f
     go x = ap r (h x) ∙ rs (f x)
 
-open import IdEmbedding
+open import UF-IdEmbedding
 
 injective-retract-of-power-of-universe : ∀ {U} {D : U ̇} → isUnivalent U
                                        → injectiveType D → retract D Of (D → U ̇)
 injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
-    a = i Id (UA-Id-embedding-Theorem ua fe fe) id
+    a = i Id (UA-Id-embedding-Theorem ua fe) id
 
 power-of-injective : ∀ {U V W T} {D : U ̇} {A : V ̇}
                    → injectiveType {W} {T} D → injectiveType (A → D)
@@ -401,6 +401,6 @@ power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
     f' y a = pr₁ (l a) y
     
     g : f' ∘ j ∼ f
-    g x = funext fe (λ a → pr₂ (l a) x)
+    g x = funext (fe V U) (λ a → pr₂ (l a) x)
 
 \end{code}

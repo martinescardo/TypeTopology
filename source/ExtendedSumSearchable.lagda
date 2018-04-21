@@ -6,7 +6,7 @@ Martin Escardo 29 April 2014.
 
 open import UF
 
-module ExtendedSumSearchable (fe : ∀ {U V} → FunExt U V) where
+module ExtendedSumSearchable (fe : ∀ U V → FunExt U V) where
 
 open import SearchableTypes
 open import InjectiveTypes (fe)

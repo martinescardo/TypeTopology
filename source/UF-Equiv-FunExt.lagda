@@ -82,8 +82,8 @@ hass-isprop-hasr fe {U} {V} {X} {Y} f (g , fg) (h , hf) = isSingleton-isProp c (
   c : isSingleton (hasRetraction f)
   c = retract-of-singleton r (s , rs) b
 
-isProp-isEquiv : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+isEquiv-isProp : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                → isProp(isEquiv f)
-isProp-isEquiv fe f = ×-prop-criterion (hasr-isprop-hass fe f , hass-isprop-hasr fe f)
+isEquiv-isProp fe f = ×-prop-criterion (hasr-isprop-hass fe f , hass-isprop-hasr fe f)
 
 \end{code}

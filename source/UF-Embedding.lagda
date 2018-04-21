@@ -6,6 +6,7 @@ module UF-Embedding where
 
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-Equiv
 open import UF-Retracts
 open import UF-Subsingletons-Retracts
 open import UF-Equiv
@@ -95,5 +96,8 @@ left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x ,
 left-cancellable-maps-are-embeddings-with-K : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
                                             → left-cancellable f → K V → isEmbedding f
 left-cancellable-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k = left-cancellable-maps-into-sets-are-embeddings f f-lc (k Y)
+
+id-isEmbedding : ∀ {U} {X : U ̇} → isEmbedding (id {U} {X})
+id-isEmbedding = paths-to-isProp
 
 \end{code}

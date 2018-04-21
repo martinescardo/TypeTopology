@@ -66,15 +66,15 @@ that module (or in fact any axiom other than extensionality).
 
 open import UF
 
-module RicesTheoremForTheUniverse (fe : ∀ {U V} → FunExt U V) where
+module RicesTheoremForTheUniverse (fe : ∀ U V → FunExt U V) where
 
-open import TheTopologyOfTheUniverse (fe)
+open import TheTopologyOfTheUniverse fe
 open import Two
 open import Naturals
 open import GenericConvergentSequence
 open import EquivalenceExamples
 open import WLPO
-open import BasicDiscontinuityTaboo (fe)
+open import BasicDiscontinuityTaboo fe
 
 \end{code}
 

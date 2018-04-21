@@ -46,9 +46,17 @@ idea (*) in the weakened form discussed above.
 
 \begin{code}
 
-open import UF
+module UF-IdEmbedding where
 
-module IdEmbedding where
+open import UF-Base
+open import UF-Subsingletons
+open import UF-FunExt
+open import UF-Equiv
+open import UF-Equiv-FunExt
+open import UF-Embedding
+open import UF-Yoneda
+open import UF-LeftCancellable
+open import UF-Univalence
 
 \end{code}
 
@@ -59,11 +67,11 @@ type Σ A.
 
 \begin{code}
 
-Id-Embedding-Lemma : ∀ {U} → FunExt U U → FunExt U (U ′) → {X : U ̇}
+Id-Embedding-Lemma : (∀ U V → FunExt U V) → ∀ {U} → {X : U ̇}
                   → ((x y : X) (A : X → U ̇)
                   → left-cancellable (idtofun (Id x y) (A y))) 
                   → isEmbedding(Id {U} {X})
-Id-Embedding-Lemma {U} fe fe' {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
+Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
   T = Σ \(x : X) → Id x ≡ A
   q : Σ (Id x₀) ≡ Σ A
@@ -79,16 +87,16 @@ Id-Embedding-Lemma {U} fe fe' {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   f : (x : X) → Id x ≡ A → A x
   f x = f₂ x ∘ f₁ x ∘ f₀ x
   f₀-lc : (x : X) → left-cancellable(f₀ x)
-  f₀-lc x = happly-lc fe' (Id x) A
+  f₀-lc x = happly-lc (fe U (U ′)) (Id x) A
   f₁-lc : (x : X) → left-cancellable(f₁ x)
   f₁-lc x = g
     where
       l : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → (x : X) → φ x ≡ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
       g : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → φ ≡ φ'
-      g p = funext fe' (l p) 
+      g p = funext (fe U (U ′)) (l p) 
   f₂-lc : (x : X) → left-cancellable(f₂ x)
-  f₂-lc x {η} {η'} p = funext fe (λ y → funext fe (l y))
+  f₂-lc x {η} {η'} p = funext (fe U U) (λ y → funext (fe U U) (l y))
     where
       l : η ≈ η'
       l = yoneda-elem-lc η η' p
@@ -109,11 +117,37 @@ Id-Embedding-Lemma {U} fe fe' {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
 
 Univalence implies that the function Id {U} {X} : X → (X → U ̇) is an embedding.
   
+The map eqtofun is left-cancellable assuming univalence (and function
+extensionality, which is a consequence of univalence, but we don't
+bother):
+
 \begin{code}
 
-UA-Id-embedding-Theorem : ∀ {U} → isUnivalent U → FunExt U U → FunExt U (U ′) 
+eqtofun-lc : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V)
+           → (X Y : U ̇) → left-cancellable(eqtofun X Y)
+eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
+ where
+  q : yoneda-nat isEquiv jef g p ≡ jeg
+  q = isEquiv-isProp fe g _ _
+  go : f , jef ≡ g , jeg
+  go = to-Σ-Id isEquiv (p , q)
+  
+\end{code}
+
+The map idtofun is left-cancellable assuming univalence (and funext):
+
+\begin{code}
+
+isUnivalent-idtofun-lc : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V) → (X Y : U ̇) 
+                       → left-cancellable(idtofun X Y)
+isUnivalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
+                                        (idtoeq X Y)
+                                        (eqtofun X Y)
+                                        (isUnivalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
+
+UA-Id-embedding-Theorem : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V)
                        → {X : U ̇} → isEmbedding(Id {U} {X})
-UA-Id-embedding-Theorem {U} ua fe fe' {X} = Id-Embedding-Lemma fe fe' 
+UA-Id-embedding-Theorem {U} ua fe {X} = Id-Embedding-Lemma fe 
                                             (λ x y a → isUnivalent-idtofun-lc ua fe (Id x y) (a y))
 
 \end{code}
@@ -123,9 +157,9 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding-Theorem' : ∀ {U} → K (U ′) → FunExt U U → FunExt U (U ′) 
+K-id-embedding-Theorem' : ∀ {U} → K (U ′) → (∀ U V → FunExt U V)
                        → {X : U ̇} → isEmbedding(Id {U} {X})
-K-id-embedding-Theorem' {U} k fe fe' {X} = Id-Embedding-Lemma fe fe' (K-idtofun-lc k) 
+K-id-embedding-Theorem' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k) 
 
 \end{code}
 

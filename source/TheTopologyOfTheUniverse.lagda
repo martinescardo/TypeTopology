@@ -118,7 +118,7 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 open import UF
 
-module TheTopologyOfTheUniverse (fe : ∀ {U V} → FunExt U V) where
+module TheTopologyOfTheUniverse (fe : ∀ U V → FunExt U V) where
 
 open import Naturals
 open import GenericConvergentSequence
@@ -147,6 +147,6 @@ Universe-Indiscreteness-Theorem {U} X X∞ = Y , (λ i → a (inl i)) , (a (inr 
   Y : ℕ∞ → U ̇
   Y = X' / under𝟙
   a : (z : ℕ + 𝟙) → Y (under𝟙 z) ≃ X' z
-  a z = Π-extension-in-range X' under𝟙 (under𝟙-embedding fe) z
+  a z = Π-extension-in-range X' under𝟙 (under𝟙-embedding (fe U₀ U₀)) z
 
 \end{code}

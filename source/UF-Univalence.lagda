@@ -126,3 +126,48 @@ isUnivalent-idtoeq-lc : ∀ {U} → isUnivalent U → (X Y : U ̇) → left-canc
 isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
 \end{code}
+
+The following has a proof from function extensionality (see e.g. HoTT
+Book), but it has a more direct proof from univalence (we also give a
+proof without univalence elsewhere, of course):
+
+\begin{code}
+
+open import UF-Subsingletons-Equiv
+
+isEquiv-isVoevodskyEquiv' : ∀ {U} → isUnivalent U → {X Y : U ̇} (f : X → Y)
+                         → isEquiv f → isVoevodskyEquiv f
+isEquiv-isVoevodskyEquiv' {U} ua {X} {Y} f ise = g Y (f , ise)
+ where
+  A : (Y : U ̇) → X ≃ Y → U ̇
+  A Y (f , ise) = isVoevodskyEquiv f
+  b : A X (ideq X)
+  b = paths-to-contractible
+  g :  (Y : U ̇) (e : X ≃ Y) → A Y e
+  g = JEq ua X A b
+
+\end{code}
+
+We have the following characterization of univalence from the Yoneda
+machinery.
+
+The fact that this is the case was announced on 5th August
+2014 with the techniques of the HoTT Book
+(https://groups.google.com/forum/#!msg/homotopytypetheory/HfCB_b-PNEU/Ibb48LvUMeUJ)),
+and the proof given here via Yoneda was announced on 12th May 2015
+(http:/E/www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html).
+
+\begin{code}
+
+open import UF-Yoneda
+
+univalence-via-contractibility : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-contractibility {U} = (f , g)
+ where
+  f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))
+  f ua X = repr-is-contr (X , (idtoeq X , ua X))
+
+  g : ((X : U ̇) → isSingleton (Σ (Eq X))) → isUnivalent U
+  g φ X = universality-equiv X (ideq X) (unique-element-is-universal-element (Eq X) (X , ideq X) (isSingleton-isProp (φ X) (X , ideq X)))
+
+\end{code}

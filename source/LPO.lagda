@@ -22,7 +22,7 @@ GenericConvergentSequence)
 
 open import UF
 
-module LPO (fe : {U V : Universe} → FunExt U V) where
+module LPO (fe : ∀ U V → FunExt U V) where
 
 open import Naturals
 open import Two hiding (_≤_)
@@ -34,13 +34,13 @@ LPO : U₀ ̇
 LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
 
 LPO-isProp : isProp LPO
-LPO-isProp = isProp-exponential-ideal fe f
+LPO-isProp = isProp-exponential-ideal (fe U₀ U₀) f
  where
   a : (x : ℕ∞) → isProp(Σ \n → x ≡ under n)
-  a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set fe _ _)
+  a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set (fe U₀ U₀)_ _)
   
   f : (x : ℕ∞) → isProp (decidable (Σ \n → x ≡ under n))
-  f x = decidable-isProp fe (a x)
+  f x = decidable-isProp (fe U₀ U₀) (a x)
 
 LPO-implies-omniscient-ℕ : LPO → omniscient ℕ
 LPO-implies-omniscient-ℕ lpo β = cases a b d
@@ -75,7 +75,7 @@ LPO-implies-omniscient-ℕ lpo β = cases a b d
             c = v n
             
             l : x ≡ ∞
-            l = not-ℕ-is-∞ fe v
+            l = not-ℕ-is-∞ (fe U₀ U₀) v
             
             e : α n ≡ ₁
             e = ap (λ x → incl x n) l
@@ -95,7 +95,7 @@ omniscient-ℕ→LPO chlpo x = cases a b d
     a (n , p) = inl g
       where
         g : Σ \(n : ℕ) → x ≡ under n
-        g = under-lemma fe x n p
+        g = under-lemma (fe U₀ U₀) x n p
         
     b : (Π \(n : ℕ) → β n ≡ ₁) → A
     b φ = inr g

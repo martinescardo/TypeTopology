@@ -79,6 +79,16 @@ sym-is-inverse {X} = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
 refl-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
 refl-left-neutral {U} {X} {x} {_} {refl} = refl 
 
+idp-right-neutral : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ p ∙ refl
+idp-right-neutral p = refl
+
+⁻¹-involutive : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
+⁻¹-involutive refl = refl
+
+⁻¹-contravariant : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) {z : X} (q : y ≡ z)
+                → q ⁻¹ ∙ p ⁻¹ ≡ (p ∙ q)⁻¹
+⁻¹-contravariant refl refl = refl
+
 homotopies-are-natural' : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
                       → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
 homotopies-are-natural' f g H {x} {_} {refl} = trans-sym' (H x)
@@ -126,6 +136,15 @@ A ⇒ B = λ x → A x → B x
 
 Nat : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
 Nat A B = Π(A ⇒ B)
+
+_≈_ : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} → Nat (Id x) A → Nat (Id x) A → U ⊔ V ̇
+η ≈ θ = ∀ y → η y ∼ θ y
+
+NatΣ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Σ A → Σ B
+NatΣ ζ (x , a) = (x , ζ x a)
+
+NatΠ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Π A → Π B
+NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
 
 left-cancellable : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'

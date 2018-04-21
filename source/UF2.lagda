@@ -1,4 +1,6 @@
-Martin Escardo, based on files
+Martin Escardo
+
+UF things that depend on non-UF things.
 
 \begin{code}
 

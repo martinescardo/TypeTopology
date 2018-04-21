@@ -9,7 +9,7 @@ open import UF
 
 module EquivalenceExamples where
 
-Curry-Uncurry : (fe : ∀ {U V} → FunExt U V)
+Curry-Uncurry : (fe : ∀ U V → FunExt U V)
              → ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
 Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
@@ -19,9 +19,9 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
     u g (x , y) = g x y
     cu : ∀ g → c (u g) ≡ g
-    cu g = funext fe (λ x → funext fe (λ y → refl))
+    cu g = funext (fe U (V ⊔ W)) (λ x → funext (fe V W) (λ y → refl))
     uc : ∀ f → u (c f) ≡ f
-    uc f = funext fe (λ w → refl)
+    uc f = funext (fe (U ⊔ V) W) (λ w → refl)
 
 Σ-assoc : ∀ {U V W} → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
         → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))

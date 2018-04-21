@@ -12,7 +12,7 @@ infinity (see the module SquashedSum).
 
 open import UF
 
-module SearchableOrdinals (fe : ∀ {U V} → FunExt U V) where
+module SearchableOrdinals (fe : ∀ U V → FunExt U V) where
 
 open import AlternativeCoproduct
 open import Naturals
