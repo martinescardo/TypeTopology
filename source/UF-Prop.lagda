@@ -17,6 +17,10 @@ propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) �
 Prop : ∀ {U} → U ′ ̇
 Prop {U} = Σ \(P : U ̇) → isProp P 
 
+⊥ ⊤ : Prop
+⊥ = 𝟘 , 𝟘-isProp   -- false
+⊤ = 𝟙 , 𝟙-isProp   -- true
+
 _holds : ∀ {U} → Prop → U ̇
 _holds = pr₁
 
@@ -83,7 +87,5 @@ disjoint-cases-embedding {U} {V} {W} {X} {Y} {A} f g ef eg d = go
        h (y , q) = inr y , q
        r : inr y , q ≡ inr y' , q'
        r = ap h p
-
-
 
 \end{code}

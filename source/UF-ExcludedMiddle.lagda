@@ -63,10 +63,6 @@ no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
        l : P ≡ 𝟘
        l = pe isp 𝟘-isProp u 𝟘-elim
 
-⊥ ⊤ : Prop
-⊥ = 𝟘 , 𝟘-isProp   -- false
-⊤ = 𝟙 , 𝟙-isProp   -- true
-
 𝟘-is-not-𝟙 : 𝟘 ≢ 𝟙
 𝟘-is-not-𝟙 p = idtofun 𝟙 𝟘 (p ⁻¹) *
 

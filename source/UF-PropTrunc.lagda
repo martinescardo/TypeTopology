@@ -113,4 +113,3 @@ module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist'
  infix 0 ∥_∥
 
 \end{code}
-

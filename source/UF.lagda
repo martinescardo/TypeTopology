@@ -4,6 +4,12 @@ This is a univalent foundations library (in Agda notation), with some
 things developed using the Yoneda-lemma view of the identity type, as
 put forward in http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
 
+Not all UF- modules are imported here, deliberately.
+
+There are no postulates: all axioms (univalence, function
+extensionality, proporisional extensionality, excluded middle, choice)
+can only be used as explicit assumptions.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split #-}
@@ -18,16 +24,16 @@ open import UF-Retracts public
 open import UF-Subsingletons-Retracts public
 open import UF-Equiv public
 open import UF-LeftCancellable public
-open import UF-FunExt public
-open import UF-Univalence public
 open import UF-Embedding public
 open import UF-Subsingletons-FunExt public
 open import UF-Retracts-FunExt public
 open import UF-Prop public
 open import UF-PropTrunc public
 open import UF-ImageAndSurjection public
-open import UF-ExcludedMiddle public
 open import UF-Equiv-FunExt public
 open import UF-IdEmbedding public
+open import UF-FunExt public
+open import UF-Univalence public
+open import UF-ExcludedMiddle public
 
 \end{code}

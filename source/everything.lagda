@@ -46,7 +46,7 @@ set X is omniscient iff
 
 \begin{code}
 
-open import OmniscientTypes
+import OmniscientTypes
 
 \end{code}
 
@@ -56,7 +56,7 @@ that the function type LPO→ℕ is omniscient:
 
 \begin{code}
 
-open import LPO
+import LPO
 
 \end{code}
 
@@ -64,7 +64,7 @@ See also:
 
 \begin{code}
 
-open import WLPO
+import WLPO
 
 \end{code}
 
@@ -73,7 +73,7 @@ classical logic) is ℕ ∪ { ∞ }, defined in the following module:
 
 \begin{code}
 
-open import GenericConvergentSequence 
+import GenericConvergentSequence 
 
 \end{code}
 
@@ -82,8 +82,8 @@ omniscience as a corollary:
 
 \begin{code}
 
-open import SearchableTypes
-open import ConvergentSequenceSearchable 
+import SearchableTypes
+import ConvergentSequenceSearchable 
 
 \end{code}
 
@@ -102,7 +102,7 @@ of n : ℕ in ℕ∞.)
 
 \begin{code}
 
-open import ADecidableQuantificationOverTheNaturals
+import ADecidableQuantificationOverTheNaturals
 
 \end{code}
 
@@ -111,7 +111,7 @@ decidable:
 
 \begin{code}
 
-open import DecidabilityOfNonContinuity
+import DecidabilityOfNonContinuity
 
 \end{code}
 
@@ -126,10 +126,10 @@ increasingly complex searchable ordinals.
 
 \begin{code}
 
-open import SquashedSum
-open import SearchableOrdinals
-open import LexicographicSearch
-open import ConvergentSequenceInfSearchable
+import SquashedSum
+import SearchableOrdinals
+import LexicographicSearch
+import ConvergentSequenceInfSearchable
 
 \end{code}
 
@@ -139,8 +139,8 @@ illustrative example:
 
 \begin{code}
 
-open import CoNaturals 
-open import CoNaturalsExercise
+import CoNaturals 
+import CoNaturalsExercise
 
 \end{code}
 
@@ -151,8 +151,8 @@ corollary:
 
 \begin{code}
 
-open import TheTopologyOfTheUniverse 
-open import RicesTheoremForTheUniverse 
+import TheTopologyOfTheUniverse 
+import RicesTheoremForTheUniverse 
 
 \end{code}
 
@@ -164,8 +164,8 @@ we also include runnable experiments in the second module:
 
 \begin{code}
 
-open import CountableTychonoff 
-open import CantorSearchable 
+import CountableTychonoff 
+import CantorSearchable 
 
 \end{code}
 
@@ -176,7 +176,7 @@ Theorem mentioned above:
 
 \begin{code}
 
-open import BasicDiscontinuityTaboo
+import BasicDiscontinuityTaboo
 
 \end{code}
 
@@ -186,7 +186,7 @@ universes:
 
 \begin{code}
 
-open import UF-InjectiveTypes
+import UF-InjectiveTypes
 
 \end{code}
 
@@ -195,7 +195,7 @@ first that it is isomorphic to any of its factors:
 
 \begin{code}
 
-open import UF-PropIndexedPiSigma
+import UF-PropIndexedPiSigma
 
 \end{code}
 
@@ -204,7 +204,7 @@ univalent proposition is itself searchable:
 
 \begin{code}
 
-open import PropTychonoff
+import PropTychonoff
 
 \end{code}
 
@@ -213,7 +213,7 @@ sense of univalent mathematics, where Id is the identity type former:
 
 \begin{code}
 
-open import UF-IdEmbedding
+import UF-IdEmbedding
 
 \end{code}
 
@@ -222,7 +222,7 @@ and proof, using the injectivity of the universe and the Prop-Tychonoff theorem:
 
 \begin{code}
 
-open import ExtendedSumSearchable
+import ExtendedSumSearchable
 
 \end{code}
 
@@ -234,38 +234,91 @@ results.
 
 \begin{code}
 
-open import TotallySeparated
-open import 2CompactTypes
-open import SimpleTypes
-open import FailureOfTotalSeparatedness 
+import TotallySeparated
+import 2CompactTypes
+import SimpleTypes
+import FailureOfTotalSeparatedness 
 
 \end{code}
 
-The following modules contain auxiliary definitions and additional
-results and discussion that we choose not to bring here:
+All modules, to check compilation.
 
 \begin{code}
 
-open import SpartanMLTT 
-open import DecidableAndDetachable 
-open import DiscreteAndSeparated 
-open import ExhaustibleTypes
-open import Naturals 
-open import BinaryNaturals
-open import OrdinalCodes
-open import Sequence
-open import Two 
-open import HiggsInvolutionTheorem
-open import DummettDisjunction
-open import Dominance
-open import NonCollapsibleFamily
-open import PlusOneLC
-open import ArithmeticViaEquivalence
-open import UF
-open import UF-SetExamples
-open import UF-Choice
-open import UF-KrausLemma
-open import UF-UA-FunExt
-open import UnivalenceFromScratch
+import 2CompactTypes
+import ADecidableQuantificationOverTheNaturals
+import AlternativeCoproduct
+import ArithmeticViaEquivalence
+import BasicDiscontinuityTaboo
+import BinaryNaturals
+import CantorSearchable
+import CoNaturalsExercise
+import CoNaturals
+import ConvergentSequenceInfSearchable
+import ConvergentSequenceSearchable
+import CountableTychonoff
+import DecidabilityOfNonContinuity
+import DecidableAndDetachable
+import DiscreteAndSeparated
+import Dominance
+import DummettDisjunction
+import ExhaustibleTypes
+import ExtendedSumSearchable
+import FailureOfTotalSeparatedness
+import GenericConvergentSequence
+import HiggsInvolutionTheorem
+import InfSearchable
+import LeftOvers
+import LexicographicOrder
+import LexicographicSearch
+import LPO
+import NaturalsAddition
+import Naturals
+import NonCollapsibleFamily
+import OmniscientTypes
+import OrdinalCodes
+import PlusOneLC
+import PropTychonoff
+import RicesTheoremForTheUniverse
+import SearchableOrdinals
+import SearchableTypes
+import Sequence
+import SimpleTypes
+import SpartanMLTT
+import SquashedSum
+import SubtypeClassifier
+import TheTopologyOfTheUniverse
+import TotallySeparated
+import Two
+import UF
+import UF-Base
+import UF-Choice
+import UF-Embedding
+import UF-EquivalenceExamples
+import UF-Equiv-FunExt
+import UF-Equiv
+import UF-ExcludedMiddle
+import UF-FunExt
+import UF-Historic
+import UF-IdEmbedding
+import UF-ImageAndSurjection
+import UF-InjectiveTypes
+import UF-KrausLemma
+import UF-LeftCancellable
+import UF-PropIndexedPiSigma
+import UF-Prop
+import UF-PropTrunc
+import UF-Retracts-FunExt
+import UF-Retracts
+import UF-SetExamples
+import UF-Subsingletons-Equiv
+import UF-Subsingletons-FunExt
+import UF-Subsingletons
+import UF-Subsingletons-Retracts
+import UF-UA-FunExt
+import UF-Univalence
+import UF-Yoneda
+import UnivalenceFromScratch
+import WLPO
 
 \end{code}
