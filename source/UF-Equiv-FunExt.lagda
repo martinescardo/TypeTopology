@@ -11,10 +11,17 @@ module UF-Equiv-FunExt where
 
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Subsingletons-Retracts
 open import UF-FunExt
 open import UF-Equiv
+
+isProp-isVoevodskyEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                        → isProp(isVoevodskyEquiv f)
+isProp-isVoevodskyEquiv fe {U} {V} f = isProp-exponential-ideal
+                                         (fe V (U ⊔ V))
+                                         (λ x → isProp-isSingleton (fe (U ⊔ V) (U ⊔ V)))
 
 qinv-post : (∀ U V → FunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
           → qinv f → qinv (λ (h : A → X) → f ∘ h)
