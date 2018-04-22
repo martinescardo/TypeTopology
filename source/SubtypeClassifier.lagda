@@ -3,6 +3,8 @@ Martin Escardo, 15 August 2014.
 There is some repetition with the module UF. Moreover, this module is
 incomplete (it has what we've needed so far).
 
+We should get rid of this module.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
