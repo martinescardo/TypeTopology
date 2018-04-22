@@ -8,7 +8,7 @@ Adapted to our development.
 
 open import UF
 
-module KrausLemma where
+module UF-KrausLemma where
 
 fix : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
 fix f = Σ \x → x ≡ f x

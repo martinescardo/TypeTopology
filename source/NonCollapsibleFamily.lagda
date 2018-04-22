@@ -7,7 +7,7 @@ Martin Escardo 2013
 module NonCollapsibleFamily where
 
  open import UF
- open import KrausLemma
+ open import UF-KrausLemma
  open import Two
  open import DecidableAndDetachable
  open import DiscreteAndSeparated

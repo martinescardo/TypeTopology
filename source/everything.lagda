@@ -247,8 +247,6 @@ results and discussion that we choose not to bring here:
 \begin{code}
 
 open import SpartanMLTT 
-open import UF
-open import UF2
 open import DecidableAndDetachable 
 open import DiscreteAndSeparated 
 open import ExhaustibleTypes
@@ -259,12 +257,14 @@ open import Sequence
 open import Two 
 open import HiggsInvolutionTheorem
 open import DummettDisjunction
-open import UF-Choice
 open import Dominance
-open import KrausLemma
 open import NonCollapsibleFamily
 open import PlusOneLC
 open import ArithmeticViaEquivalence
+open import UF
+open import UF2
+open import UF-Choice
+open import UF-KrausLemma
 open import UF-UA-FunExt
 open import UnivalenceFromScratch
 

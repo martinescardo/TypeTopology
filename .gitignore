@@ -14,5 +14,6 @@ b
 e
 updateurl
 index.html
+index.lagda
 source/html/*
 clean
