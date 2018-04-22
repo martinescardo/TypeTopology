@@ -263,9 +263,9 @@ open import UF-Choice
 open import Dominance
 open import KrausLemma
 open import NonCollapsibleFamily
+open import UnivalenceFromScratch
 open import PlusOneLC
 open import ArithmeticViaEquivalence
-open import UF-UA-FunExt
-open import UnivalenceFromScratch
+open import UAFE
 
 \end{code}

@@ -9,7 +9,7 @@ http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-UA-FunExt where
+module UAFE where
 
 open import UF hiding (𝟘;𝟙)
 
