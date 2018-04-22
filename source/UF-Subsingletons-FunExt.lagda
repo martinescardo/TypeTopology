@@ -52,11 +52,6 @@ isSet-exponential-ideal {U} {V} fe {X} {A} isa {f} {g} = b
   b : isProp(f ≡ g)
   b = left-cancellable-reflects-isProp happly (section-lc happly (pr₂ (fe f g))) a
 
-isProp-isVoevodskyEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                        → isProp(isVoevodskyEquiv f)
-isProp-isVoevodskyEquiv fe {U} {V} f = isProp-exponential-ideal
-                                         (fe V (U ⊔ V))
-                                         (λ x → isProp-isSingleton (fe (U ⊔ V) (U ⊔ V)))
 
 \end{code}
 
