@@ -83,7 +83,7 @@ checking the two possibilities, we can always take x₀ = p ₀.
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
     lemma₁ r = transport (λ x → p x ≡ ₁) (lemma₀ r) r
 
-open import UF2
+open import UF-SetExamples
 
 \end{code}
 

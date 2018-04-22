@@ -15,7 +15,7 @@ lemmas.)
 module GenericConvergentSequence where
 
 open import UF
-open import UF2
+open import UF-SetExamples
 open import Naturals
 open import Two
 open import DiscreteAndSeparated

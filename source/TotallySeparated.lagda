@@ -132,7 +132,7 @@ totally-separated-is-separated X ts = g
     h : (p : X → 𝟚) → p x ≡ p y
     h p = 𝟚-is-separated (p x) (p y) (a p)
 
-open import UF2
+open import UF-SetExamples
 
 totally-separated-isSet : ∀ {U} → FunExt U U₀ → (X : U ̇) → totally-separated X → isSet X
 totally-separated-isSet fe X t = separated-isSet fe (totally-separated-is-separated X t)

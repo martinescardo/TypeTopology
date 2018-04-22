@@ -254,7 +254,7 @@ module AC-renders-all-sets-discrete
  open import Two
  open import DecidableAndDetachable
  open import DiscreteAndSeparated
- open import UF2
+ open import UF-SetExamples
  
  lemma₁ : {X : U ̇} (a : 𝟚 → X)
         → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
@@ -370,7 +370,7 @@ module Observation (U : Universe)
  open import Two
  open import DecidableAndDetachable
  open import DiscreteAndSeparated
- open import UF2
+ open import UF-SetExamples
  
  observation : {X : U ̇} (a : 𝟚 → X)
         → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)

@@ -4,7 +4,7 @@ UF things that depend on non-UF things.
 
 \begin{code}
 
-module UF2 where
+module UF-SetExamples where
 
 open import UF
 open import DecidableAndDetachable

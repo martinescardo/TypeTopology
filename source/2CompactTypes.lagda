@@ -118,7 +118,7 @@ of LPO with WLPO.
 𝟚-compact : ∀ {U} → U ̇ → U ̇
 𝟚-compact X = (p : X → 𝟚) → decidable ((x : X) → p x ≡ ₁)
 
-open import UF2
+open import UF-SetExamples
 
 𝟚-compact-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-compact X)
 𝟚-compact-isProp {U} = isProp-exponential-ideal (fe U U)
@@ -276,7 +276,7 @@ Compactness of images:
 \begin{code}
 
 open ImageAndSurjection (pt)
-open import UF2
+open import UF-SetExamples
 
 surjection-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                             → isSurjection f → strongly-𝟚-overt X → strongly-𝟚-overt Y

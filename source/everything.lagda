@@ -262,7 +262,7 @@ open import NonCollapsibleFamily
 open import PlusOneLC
 open import ArithmeticViaEquivalence
 open import UF
-open import UF2
+open import UF-SetExamples
 open import UF-Choice
 open import UF-KrausLemma
 open import UF-UA-FunExt

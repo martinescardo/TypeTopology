@@ -153,7 +153,7 @@ using function extensionality.
 
 {-
 open import DiscreteAndSeparated
-open import UF2
+open import UF-SetExamples
 open import NaturalsAddition renaming (_+_ to _++_)
 
 _⊑_ : ℕ → ℕ → U₀ ̇
