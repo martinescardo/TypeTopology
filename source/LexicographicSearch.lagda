@@ -9,7 +9,6 @@ This module is mainly for use in the module SearchableOrdinals.
 module LexicographicSearch where
 
 open import SpartanMLTT
-open import Two
 open import LexicographicOrder
 open import InfSearchable
 

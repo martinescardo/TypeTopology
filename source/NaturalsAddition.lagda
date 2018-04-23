@@ -5,7 +5,6 @@
 module NaturalsAddition where
 
 open import SpartanMLTT hiding (_+_)
-open import Naturals
 
 infixl 31 _+_
 

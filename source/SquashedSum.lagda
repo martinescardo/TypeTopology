@@ -13,8 +13,6 @@ module SquashedSum (fe : ∀ U V → FunExt U V) where
 open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv
-open import Two
-open import Naturals
 open import GenericConvergentSequence
 open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)

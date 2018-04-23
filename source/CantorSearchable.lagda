@@ -10,12 +10,11 @@ and other modules.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
+open import SpartanMLTT
 open import UF-FunExt
 
 module CantorSearchable (fe : ∀ {U V} → FunExt U V) where
 
-open import Two
-open import Naturals
 open import SearchableTypes
 open import CountableTychonoff (fe)
 open import OmniscientTypes
@@ -50,7 +49,6 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 \begin{code}
 
 open import DiscreteAndSeparated
-open import Naturals
 
 discrete-Cantor→ℕ : discrete((ℕ → 𝟚) → ℕ)
 discrete-Cantor→ℕ = omniscient-discrete-discrete' fe cantor-omniscient ℕ-discrete
@@ -72,6 +70,10 @@ equal f  = pr₁(characteristic-function(discrete-Cantor→ℕ f))
 Experiments: Evaluate the following to normal form (give ₀, ₁, ₁, ₀ quickly):
 
 \begin{code}
+
+number : 𝟚 → ℕ
+number ₀ = 0
+number ₁ = 1
 
 test0 : 𝟚
 test0 = A(λ α → min𝟚(α 17)(α 180))

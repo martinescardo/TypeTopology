@@ -10,7 +10,6 @@ module Sequence (fe : ∀ {U V} → FunExt U V) where
 
 open import SpartanMLTT hiding (_+_)
 open import UF-Retracts
-open import Naturals
 open import NaturalsAddition
 
 _∶∶_ : ∀ {U} {X : ℕ → U ̇} → X 0 → ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)

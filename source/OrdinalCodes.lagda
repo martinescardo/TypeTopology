@@ -87,7 +87,6 @@
 module OrdinalCodes where
 
 open import SpartanMLTT
-open import Naturals
 
 \end{code}
 

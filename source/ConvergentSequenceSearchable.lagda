@@ -27,8 +27,6 @@ principle of omniscience.
 open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
-open import Naturals
-open import Two 
 open import GenericConvergentSequence
 open import SearchableTypes
 

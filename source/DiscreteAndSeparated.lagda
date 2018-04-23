@@ -26,17 +26,25 @@ discrete X = (x : X) → isolated x
 
 \end{code}
 
-A simple example:
+Standard examples:
 
 \begin{code}
-
-open import Two
 
 𝟚-discrete : discrete 𝟚
 𝟚-discrete ₀ ₀ = inl refl
 𝟚-discrete ₀ ₁ = inr(λ ())
 𝟚-discrete ₁ ₀ = inr(λ ())
 𝟚-discrete ₁ ₁ = inl refl
+
+ℕ-discrete : discrete ℕ 
+ℕ-discrete 0 0 = inl refl 
+ℕ-discrete 0 (succ n) = inr (λ())
+ℕ-discrete (succ m) 0 = inr (λ())
+ℕ-discrete (succ m) (succ n) =  step(ℕ-discrete m n)
+  where 
+   step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n) 
+   step (inl r) = inl(ap succ r)
+   step (inr f) = inr(λ s → f(succ-injective s)) 
 
 \end{code}
 
@@ -265,4 +273,42 @@ isolated-added-point {U} {X} = h
   h :  (y : X + 𝟙) → decidable (inr * ≡ y)
   h (inl x) = inr (λ ())
   h (inr *) = inl refl
+\end{code}
+
+\begin{code}
+
+≡-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≢ n) × (p n ≡ ₁ → m ≡ n)
+≡-indicator m = co-characteristic-function (ℕ-discrete m)
+
+χ≡ : ℕ → ℕ → 𝟚
+χ≡ m = pr₁ (≡-indicator m)
+
+χ≡-spec : (m n : ℕ) → (χ≡ m n ≡ ₀ → m ≢ n) × (χ≡ m n ≡ ₁ → m ≡ n)
+χ≡-spec m = pr₂ (≡-indicator m)
+
+_≡[ℕ]_ : ℕ → ℕ → U₀ ̇
+m ≡[ℕ] n = (χ≡ m n) ≡ ₁
+
+infix  30 _≡[ℕ]_
+
+≡-agrees-with-≡[ℕ] : (m n : ℕ) → m ≡ n ⇔ m ≡[ℕ] n
+≡-agrees-with-≡[ℕ] m n = (λ r → Lemma[b≢₀→b≡₁] (λ s → pr₁(χ≡-spec m n) s r)) , pr₂(χ≡-spec m n)
+
+≢-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≡ n) × (p n ≡ ₁ → m ≢ n)
+≢-indicator m = indicator(ℕ-discrete m)
+
+χ≢ : ℕ → ℕ → 𝟚
+χ≢ m = pr₁ (≢-indicator m)
+
+χ≢-spec : (m n : ℕ) → (χ≢ m n ≡ ₀ → m ≡ n) × (χ≢ m n ≡ ₁ → m ≢ n)
+χ≢-spec m = pr₂ (≢-indicator m)
+
+_≠_ : ℕ → ℕ → U₀ ̇
+m ≠ n = (χ≢ m n) ≡ ₁
+
+infix  30 _≠_
+
+≠-agrees-with-≢ : (m n : ℕ) → m ≠ n ⇔ m ≢ n
+≠-agrees-with-≢ m n = pr₂(χ≢-spec m n) , (λ d → Lemma[b≢₀→b≡₁] (contrapositive(pr₁(χ≢-spec m n)) d))
+
 \end{code}

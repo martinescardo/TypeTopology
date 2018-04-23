@@ -9,7 +9,6 @@ module OmniscientTypes where
 open import SpartanMLTT
 open import UF-FunExt
 open import UF-Subsingletons
-open import Two
 
 omniscient : ∀ {U} → U ̇ → U ̇
 omniscient X = (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)

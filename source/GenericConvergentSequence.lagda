@@ -21,8 +21,6 @@ open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-Embedding
 open import UF-SetExamples
-open import Naturals
-open import Two
 open import DiscreteAndSeparated
 
 FunExt₀ : U₁ ̇

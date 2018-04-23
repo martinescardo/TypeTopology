@@ -41,8 +41,6 @@ module FailureOfTotalSeparatedness (fe : ∀ U V → FunExt U V) where
 
 open import SpartanMLTT
 open import UF-Base
-open import Two
-open import Naturals
 open import GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO

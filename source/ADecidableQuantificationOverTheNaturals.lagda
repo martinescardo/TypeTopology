@@ -17,8 +17,6 @@ open import UF-FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : FunExt U₀ U₀) where
 
-open import Naturals
-open import Two 
 open import GenericConvergentSequence
 open import ConvergentSequenceSearchable (fe)
 open import DecidableAndDetachable

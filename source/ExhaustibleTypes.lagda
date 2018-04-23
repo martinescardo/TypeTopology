@@ -7,7 +7,6 @@ Martin Escardo 2011.
 module ExhaustibleTypes where
 
 open import SpartanMLTT
-open import Two
 
 \end{code}
 

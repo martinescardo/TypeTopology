@@ -19,13 +19,11 @@ module SimpleTypes (fe : ∀ U V → FunExt U V) (pt : PropTrunc) where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt
-open import Naturals
 
 data simple-type : U₀ ̇ → U₁ ̇ where
  base : simple-type ℕ
  step : {X Y : U₀ ̇} → simple-type X → simple-type Y → simple-type (X → Y)
 
-open import Two
 open import TotallySeparated
 open import 2CompactTypes (fe) (pt)
 open import DiscreteAndSeparated

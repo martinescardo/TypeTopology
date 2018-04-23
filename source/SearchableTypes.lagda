@@ -19,8 +19,6 @@ open import UF-Retracts
 open import UF-Equiv
 open import UF-PropTrunc
 open import UF-ImageAndSurjection
-open import Two public
-
 
 \end{code}
 
@@ -288,8 +286,6 @@ binary-Tychonoff ε δ = sums-preserve-searchability ε (λ i → δ)
 Corollary: binary coproducts preserve searchability:
 
 \begin{code}
-
-open import AlternativeCoproduct
 
 binary-sums-preserve-searchability : ∀ {U} {X₀ : U ̇} {X₁ : U ̇}
                                    → searchable X₀ → searchable X₁ → searchable(X₀ +' X₁)

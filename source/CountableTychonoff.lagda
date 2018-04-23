@@ -14,8 +14,6 @@ open import UF-FunExt
 module CountableTychonoff (fe : ∀ {U V} → FunExt U V) where
 
 open import SpartanMLTT
-open import Two
-open import Naturals
 open import SearchableTypes
 open import Sequence (fe)
 

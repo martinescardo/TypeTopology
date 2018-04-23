@@ -72,8 +72,6 @@ open import SpartanMLTT
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import TheTopologyOfTheUniverse fe
-open import Two
-open import Naturals
 open import GenericConvergentSequence
 open import WLPO
 open import BasicDiscontinuityTaboo fe

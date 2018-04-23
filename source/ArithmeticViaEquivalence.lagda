@@ -138,14 +138,13 @@ foundations in Agda notation).
 
 {-# OPTIONS --without-K --exact-split #-}
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (_+'_)
 open import UF-FunExt
 
 module ArithmeticViaEquivalence (fe : ∀ U V → FunExt U V) where
 
 open import UF-Equiv
 open import UF-EquivalenceExamples
-open import Naturals
 open import PlusOneLC
 
 \end{code}

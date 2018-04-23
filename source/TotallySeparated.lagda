@@ -72,7 +72,6 @@ open import UF-Embedding
 open import UF-FunExt
 open import UF-PropTrunc
 open import UF-ImageAndSurjection
-open import Two
 open import DiscreteAndSeparated hiding (tight)
 
 totally-separated : ∀ {U} → U ̇ → U ̇

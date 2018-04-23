@@ -16,8 +16,6 @@ open import UF-FunExt
 
 module BasicDiscontinuityTaboo (fe : ∀ U V → FunExt U V) where
 
-open import Naturals
-open import Two
 open import GenericConvergentSequence
 open import WLPO
 

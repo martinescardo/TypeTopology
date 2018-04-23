@@ -7,7 +7,6 @@ Martin Escardo 20-21 December 2012
 module InfSearchable where
 
 open import SpartanMLTT
-open import Two
 
 putative-root : ∀ {U} {X : U ̇} → (X → 𝟚) → X → U ̇
 putative-root p x₀ = (Σ \x → p x ≡ ₀) → p x₀ ≡ ₀

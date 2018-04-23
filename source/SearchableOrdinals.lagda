@@ -15,8 +15,6 @@ open import UF-FunExt
 module SearchableOrdinals (fe : ∀ U V → FunExt U V) where
 
 open import SpartanMLTT
-open import AlternativeCoproduct
-open import Naturals
 open import SquashedSum (fe)
 open import SearchableTypes
 

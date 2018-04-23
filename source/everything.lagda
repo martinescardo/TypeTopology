@@ -247,7 +247,6 @@ All modules, to check compilation.
 
 import 2CompactTypes
 import ADecidableQuantificationOverTheNaturals
-import AlternativeCoproduct
 import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
@@ -273,7 +272,6 @@ import LexicographicOrder
 import LexicographicSearch
 import LPO
 import NaturalsAddition
-import Naturals
 import NonCollapsibleFamily
 import OmniscientTypes
 import OrdinalCodes
@@ -288,7 +286,6 @@ import SpartanMLTT
 import SquashedSum
 import TheTopologyOfTheUniverse
 import TotallySeparated
-import Two
 import UF-Base
 import UF-Choice
 import UF-Embedding

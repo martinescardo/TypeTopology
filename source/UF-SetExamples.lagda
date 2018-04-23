@@ -49,12 +49,8 @@ dd-sum {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')
               q = ap (λ p → transport Y p y) s ∙ q'
    g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
-open import Two
-
 𝟚-isSet : isSet 𝟚
 𝟚-isSet = discrete-isSet 𝟚-discrete
-
-open import Naturals
 
 ℕ-isSet : isSet ℕ
 ℕ-isSet = discrete-isSet ℕ-discrete

@@ -85,7 +85,6 @@ module 2CompactTypes (fe : ∀ U V → FunExt U V)
                      where
 
 open PropositionalTruncation (pt)
-open import Two 
 open import DecidableAndDetachable
 
 \end{code}

@@ -9,7 +9,6 @@ module DecidableAndDetachable where
 open import SpartanMLTT
 open import UF-Subsingletons
 open import UF-PropTrunc
-open import Two
 
 \end{code}
 
@@ -134,4 +133,3 @@ module _ (pt : PropTrunc) where
    h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
 
 \end{code}
-

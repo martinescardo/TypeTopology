@@ -14,8 +14,6 @@ open import UF-FunExt
 module ConvergentSequenceInfSearchable (fe : ∀ {U V} → FunExt U V) where
 
 open import SpartanMLTT
-open import Naturals
-open import Two
 open import InfSearchable
 open import GenericConvergentSequence
 

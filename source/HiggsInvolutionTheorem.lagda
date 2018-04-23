@@ -19,6 +19,7 @@ Scedrov. Thanks to Phil Scott for bringing my attention to this proof.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
@@ -27,19 +28,15 @@ module HiggsInvolutionTheorem (fe : FunExt U₀ U₀)
                               (pe : propExt U₀)
                               where
 
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-
 involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
 involutive f = ∀{x} → f(f x) ≡ x
 
 higgs : (f : Ω → Ω) → left-cancellable f → involutive f
-higgs f cancelf {p} = cancelf(VII p)
+higgs f cancelf {p} = cancelf (VII p)
   where
    I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤ 
    I p r s = transport (λ p → f p ≡ ⊤) s r
-
+   
    II : (p : Ω) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
    II p r s = cancelf (r ∙ s ⁻¹)
 
@@ -47,7 +44,7 @@ higgs f cancelf {p} = cancelf(VII p)
    III p r = Ω-ext pe fe (I p r) (II p r)
 
    IV : (p : Ω) → f(f p) ≡ ⊤ → p ≡ ⊤
-   IV p r = cancelf(III (f p) r)
+   IV p r = cancelf (III (f p) r)
 
    V : (p : Ω) → f(f(f p)) ≡ ⊤ → f p ≡ ⊤
    V p r = IV (f p) r

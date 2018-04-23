@@ -122,7 +122,6 @@ module TheTopologyOfTheUniverse (fe : ∀ U V → FunExt U V) where
 
 open import SpartanMLTT
 open import UF-Equiv
-open import Naturals
 open import GenericConvergentSequence
 open import UF-InjectiveTypes (fe)
 
