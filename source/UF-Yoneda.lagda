@@ -418,6 +418,16 @@ Yoneda-Theorem x η = Yoneda-Theorem-back x η , Yoneda-Theorem-forth x η
 
 \end{code}
 
+It doesn't hurt expanding definitions for clarity:
+
+\begin{code}
+
+Yoneda-Theorem' : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : (y : X) → x ≡ y → A y)
+              → ((y : X) → isEquiv (η y)) ⇔ isSingleton (Σ A)
+Yoneda-Theorem' = Yoneda-Theorem
+
+\end{code}
+
 Next we conclude that a presheaf A is representable iff Σ A is
 contractible.
 
