@@ -62,7 +62,16 @@ apartness relation is a set, and so this reflection is always a set.
 
 module TotallySeparated where
 
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Retracts
+open import UF-Equiv
+open import UF-LeftCancellable
+open import UF-Embedding
+open import UF-FunExt
+open import UF-PropTrunc
+open import UF-ImageAndSurjection
 open import Two
 open import DiscreteAndSeparated hiding (tight)
 
@@ -190,7 +199,7 @@ eval : ∀ {U} {X : U ̇} → X → ((X → 𝟚) → 𝟚)
 eval x = λ p → p x
 
 tsieeval : ∀ {U} {X : U ̇} → FunExt U U₀ → totally-separated X → isEmbedding(eval {U} {X})
-tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-Id _ (t , r)
+tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡'' (t , r)
   where
    s : eval x ≡ eval y
    s = p ∙ q ⁻¹
@@ -251,7 +260,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : T X) → pr₁ x' p)
 
    g : (e : (q : T X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
-   g e = to-Σ-Id _ (funext (fe U U₀) (f e), ptisp _ t)
+   g e = to-Σ-≡'' (funext (fe U U₀) (f e), ptisp _ t)
 
 \end{code}
 
@@ -313,7 +322,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    r = funext (fe U V) (λ x → ts (b (η x)))
    
    c : (σ : Σ \(f'' : T X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
-   c (f'' , s) = to-Σ-Id _ (t , v)
+   c (f'' , s) = to-Σ-≡'' (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
      w = happly (r ∙ s ⁻¹)
@@ -683,7 +692,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → apart x z ≡ apart y z
-    h z = to-Σ-Id isProp (g z , isProp-isProp (fe V V) _ _)
+    h z = to-Σ-≡'' (g z , isProp-isProp (fe V V) _ _)
 
 \end{code}
 
@@ -848,7 +857,7 @@ apartness on it.
   ♯'t (u , e) (v , f) n = ptrec X'-isSet (λ σ → ptrec X'-isSet (h σ) f) e
    where
     h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
-    h (x , p) (y , q) = to-Σ-Id _ (t , ptisp _ _)
+    h (x , p) (y , q) = to-Σ-≡'' (t , ptisp _ _)
      where
       remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
       remark = n
@@ -905,7 +914,7 @@ apartness on it.
     φ = η-induction _ γ induction-step
       where
        induction-step : (y : X) → isProp (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
-       induction-step x (a , d) (b , e) = to-Σ-Id _ (p , ptisp _ _)
+       induction-step x (a , d) (b , e) = to-Σ-≡'' (p , ptisp _ _)
         where
          h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
@@ -940,7 +949,7 @@ apartness on it.
       h y = ptrec iss (j y) (g y)
 
     c : (σ : Σ \(f'' : X' → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
-    c (f'' , s) = to-Σ-Id _ (t , v)
+    c (f'' , s) = to-Σ-≡'' (t , v)
      where
       w : ∀ x → f'(η x) ≡ f''(η x)
       w = happly (r ∙ s ⁻¹)

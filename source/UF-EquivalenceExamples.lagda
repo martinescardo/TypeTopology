@@ -4,8 +4,10 @@ Martin Escardo, 2012
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-Equiv
+open import UF-FunExt
 
 module UF-EquivalenceExamples where
 

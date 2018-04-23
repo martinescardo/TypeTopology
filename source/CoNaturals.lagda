@@ -68,10 +68,11 @@ bisimulations. This gives a technique for establishing equalities on
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import UF-FunExt
 
 module CoNaturals (fe : ∀ {U V} → FunExt U V) where
 
+open import SpartanMLTT
 open import Naturals
 open import Two
 open import GenericConvergentSequence

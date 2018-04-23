@@ -64,15 +64,17 @@ that module (or in fact any axiom other than extensionality).
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import UF-FunExt
 
 module RicesTheoremForTheUniverse (fe : ∀ U V → FunExt U V) where
 
+open import SpartanMLTT
+open import UF-Equiv
+open import UF-EquivalenceExamples
 open import TheTopologyOfTheUniverse fe
 open import Two
 open import Naturals
 open import GenericConvergentSequence
-open import UF-EquivalenceExamples
 open import WLPO
 open import BasicDiscontinuityTaboo fe
 

@@ -6,10 +6,13 @@ See remarks below for an explanation.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import UF-FunExt
 
 module SquashedSum (fe : ∀ U V → FunExt U V) where
 
+open import SpartanMLTT
+open import UF-Base
+open import UF-Equiv
 open import Two
 open import Naturals
 open import GenericConvergentSequence

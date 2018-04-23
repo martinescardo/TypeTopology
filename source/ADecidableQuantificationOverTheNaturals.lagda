@@ -12,7 +12,8 @@ The theorem says that, for any p : ℕ∞ → ₂, the proposition
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import SpartanMLTT
+open import UF-FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : FunExt U₀ U₀) where
 

@@ -9,7 +9,13 @@ Martin Escardo 2011.
 
 module DiscreteAndSeparated where
 
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons
+open import UF-ExcludedMiddle
+open import UF-Equiv
+open import UF-Retracts
+open import UF-FunExt
 open import DecidableAndDetachable
 
 isolated : ∀ {U} {X : U ̇} → X → U ̇

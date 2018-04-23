@@ -11,7 +11,8 @@ be eventually constant (which we don't postulate).
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import SpartanMLTT
+open import UF-FunExt
 
 module BasicDiscontinuityTaboo (fe : ∀ U V → FunExt U V) where
 

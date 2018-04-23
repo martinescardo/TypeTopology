@@ -9,11 +9,14 @@ We should get rid of this module.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF hiding (⊤)
+open import UF-FunExt
 
 module SubtypeClassifier (fe : ∀ {U V} → FunExt U V) where
 
 open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons hiding (⊤)
+open import UF-Subsingletons-FunExt
 
 U = U₀ -- For the moment.
 

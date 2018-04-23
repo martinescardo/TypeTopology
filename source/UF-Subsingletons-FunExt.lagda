@@ -97,24 +97,7 @@ decidable-isProp fe₀ isp = sum-of-contradictory-props
 
 \end{code}
 
-
 \begin{code}
-
-propExt : ∀ U → U ′ ̇ 
-propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
-
-Prop : ∀ {U} → U ′ ̇
-Prop {U} = Σ \(P : U ̇) → isProp P 
-
-⊥ ⊤ : Prop
-⊥ = 𝟘 , 𝟘-isProp   -- false
-⊤ = 𝟙 , 𝟙-isProp   -- true
-
-_holds : ∀ {U} → Prop → U ̇
-_holds = pr₁
-
-holdsIsProp : ∀ {U} → (p : Prop {U}) → isProp (p holds)
-holdsIsProp = pr₂
 
 PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q

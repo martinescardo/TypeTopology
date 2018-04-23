@@ -73,7 +73,12 @@ under (non-dependent) function types.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import UF-FunExt
+open import UF-PropTrunc
+open import UF-Retracts
+open import UF-Retracts-FunExt
+open import UF-ImageAndSurjection
+open import UF-Equiv
 
 module 2CompactTypes (fe : ∀ U V → FunExt U V)
                      (pt : PropTrunc)
@@ -807,9 +812,7 @@ has-inf-isProp {U} {X} p n (f , g) (f' , g') = ×-≡ r s
   s = funext (fe U₀ U) (λ n → funext (fe U U₀) (λ φ → funext (fe U₀ U₀) (λ r → 𝟚-isSet (g n φ r) (g' n φ r))))
 
 at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → isProp (Σ \(n : 𝟚) → p has-inf n)
-at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-Id (_has-inf_ p)
-                                                       (≤-anti (g' n f) (g n' f') ,
-                                                        has-inf-isProp p n' _ _)
+at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡'' (≤-anti (g' n f) (g n' f') , has-inf-isProp p n' _ _)
 
 has-infs : ∀ {U} → U ̇ → U ̇
 has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n

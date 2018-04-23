@@ -12,10 +12,13 @@ holds (Tychonoff Theorem).)
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import UF-FunExt
+open import UF-PropTrunc
 
 module SimpleTypes (fe : ∀ U V → FunExt U V) (pt : PropTrunc) where
 
+open import UF-Retracts
+open import UF-Retracts-FunExt
 open import Naturals
 
 data simple-type : U₀ ̇ → U₁ ̇ where

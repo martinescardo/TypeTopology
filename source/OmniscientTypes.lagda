@@ -7,6 +7,8 @@ Martin Escardo 2011.
 module OmniscientTypes where
 
 open import SpartanMLTT
+open import UF-FunExt
+open import UF-Subsingletons
 open import Two
 
 omniscient : ∀ {U} → U ̇ → U ̇
@@ -37,7 +39,6 @@ More generally we have:
 
 open import DiscreteAndSeparated
 open import DecidableAndDetachable
-open import UF
 
 apart-or-equal : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
               → omniscient X → ((x : X) → discrete(Y x)) 

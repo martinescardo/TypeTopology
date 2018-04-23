@@ -14,7 +14,12 @@ lemmas.)
 
 module GenericConvergentSequence where
 
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
+open import UF-FunExt
+open import UF-Embedding
 open import UF-SetExamples
 open import Naturals
 open import Two

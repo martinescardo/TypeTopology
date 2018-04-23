@@ -31,6 +31,15 @@ least for the moment).
 isProp : ∀ {U} → U ̇ → U ̇
 isProp = isSubsingleton
 
+Prop : ∀ {U} → U ′ ̇
+Prop {U} = Σ \(P : U ̇) → isProp P 
+
+_holds : ∀ {U} → Prop → U ̇
+_holds = pr₁
+
+holdsIsProp : ∀ {U} → (p : Prop {U}) → isProp (p holds)
+holdsIsProp = pr₂
+
 \end{code}
 
 And of course we could adopt a terminology borrowed from topos logic:
@@ -100,6 +109,10 @@ The two prototypical propositions:
 
 𝟙-isProp : isProp 𝟙
 𝟙-isProp * * = refl
+
+⊥ ⊤ : Prop
+⊥ = 𝟘 , 𝟘-isProp   -- false
+⊤ = 𝟙 , 𝟙-isProp   -- true
 
 \end{code}
 
@@ -249,5 +262,12 @@ Formulation of the K axiom for a universe U.
 
 K : ∀ U → U ′ ̇
 K U = (X : U ̇) → isSet X
+
+\end{code}
+
+\begin{code}
+
+propExt : ∀ U → U ′ ̇ 
+propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
 
 \end{code}

@@ -13,7 +13,8 @@ functions L(n)=2n+1 and R(n)=2n+2.
 module BinaryNaturals where
 
 open import Naturals
-open import UF hiding (_+_) hiding (_×_)
+open import SpartanMLTT hiding (_+_) hiding (_×_)
+open import UF-Equiv
 
 \end{code}
 

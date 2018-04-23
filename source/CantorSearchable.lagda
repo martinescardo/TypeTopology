@@ -10,7 +10,7 @@ and other modules.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import UF-FunExt
 
 module CantorSearchable (fe : ∀ {U V} → FunExt U V) where
 

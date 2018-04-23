@@ -12,8 +12,11 @@ continuous, and searchable sets are secretly compact.
 
 module SearchableTypes where
 
+open import SpartanMLTT
+open import UF-Subsingletons
+open import UF-FunExt
 open import Two public
-open import UF
+
 
 \end{code}
 
@@ -92,6 +95,8 @@ propositions is searchable (assuming propositional extensionality,
 which is a consequence of univalence):
 
 \begin{code}
+
+open import UF-ExcludedMiddle
 
 Prop-searchable : FunExt U₀ U₀ → propExt U₀ → searchable Prop
 Prop-searchable fe pe p = two-equality-cases a b

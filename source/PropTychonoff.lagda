@@ -41,14 +41,19 @@ we had a convoluted path to this supposedly natural way).
 
 {-# OPTIONS --without-K --exact-split --safe #-} 
 
-open import UF
+open import SpartanMLTT
+open import UF-FunExt
 
 module PropTychonoff (fe : ∀ U V → FunExt U V) where
 
+open import UF-Base
+open import UF-Subsingletons
+open import UF-PropIndexedPiSigma
+open import UF-Equiv
+open import UF-EquivalenceExamples
+open import UF-ExcludedMiddle
 open import Two
 open import SearchableTypes
-open import UF-PropIndexedPiSigma
-open import UF-EquivalenceExamples
 
 \end{code}
 

@@ -6,7 +6,9 @@ Martin Escardo 2013
 
 module NonCollapsibleFamily where
 
- open import UF
+ open import SpartanMLTT
+ open import UF-Base
+ open import UF-Subsingletons
  open import UF-KrausLemma
  open import Two
  open import DecidableAndDetachable

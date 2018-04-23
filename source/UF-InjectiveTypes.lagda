@@ -83,11 +83,17 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 {-# OPTIONS --without-K --exact-split --safe #-} 
 
-open import UF
+open import UF-FunExt
 
 module UF-InjectiveTypes (fe : ∀ U V → FunExt U V) where
 
+open import SpartanMLTT
+open import UF-Base
+open import UF-Equiv
+open import UF-Embedding
+open import UF-Retracts
 open import UF-EquivalenceExamples
+open import UF-Univalence
 
 \end{code}
 

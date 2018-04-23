@@ -10,7 +10,11 @@ The proof may be new (or not).
 
 {-# OPTIONS --without-K --exact-split #-}
 
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-Equiv
+open import UF-FunExt
+open import UF-Subsingletons-FunExt
 
 module PlusOneLC (fe : ∀ U V → FunExt U V) where
 
@@ -26,7 +30,7 @@ add-and-remove-same-point {U} {X} = f , ((g , fg) , (g , gf))
   g (inl x , u) = x
   g (inr * , u) = 𝟘-elim (u refl)
   fg : f ∘ g ∼ id
-  fg (inl x , u) = to-Σ-Id _ (refl , neg-isProp (fe U U₀) _ _)
+  fg (inl x , u) = to-Σ-≡'' (refl , neg-isProp (fe U U₀) _ _)
   fg (inr * , u) = 𝟘-elim (u refl)
   gf : g ∘ f ∼ id
   gf x = refl
@@ -39,9 +43,9 @@ remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')
   g' : Y ∖ (f a) → X ∖ a
   g' (y , v) = (g y , λ(p : g y ≡ a) → v ((fg y) ⁻¹ ∙ ap f p))
   gf' : g' ∘ f' ∼ id
-  gf' (x , _) = to-Σ-Id _ (gf x , neg-isProp (fe U U₀) _ _) 
+  gf' (x , _) = to-Σ-≡'' (gf x , neg-isProp (fe U U₀) _ _) 
   fg' : f' ∘ g' ∼ id
-  fg' (y , _) = to-Σ-Id _ (fg y , neg-isProp (fe V U₀) _ _)
+  fg' (y , _) = to-Σ-≡'' (fg y , neg-isProp (fe V U₀) _ _)
   e' : isEquiv f'
   e' = qinv-isEquiv f' (g' , gf' , fg')
 
@@ -60,7 +64,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-isEquiv f (g , g
   g : Y → (Y + 𝟙) ∖ (inl b)
   g y = g' y (i (inl y))
   gf : g ∘ f ∼ id
-  gf (inl y , u) = to-Σ-Id _ (p , neg-isProp (fe V U₀) _ _)
+  gf (inl y , u) = to-Σ-≡'' (p , neg-isProp (fe V U₀) _ _)
    where
     φ : (p : inl b ≡ inl y) (q : i (inl y) ≡ inl p) → i (inl y) ≡ inr (≢-sym u)
     φ p q = 𝟘-elim (u (p ⁻¹))
@@ -73,7 +77,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-isEquiv f (g , g
   gf (inr * , u) = equality-cases (i (inl b)) φ ψ
    where
     φ : (p : inl b ≡ inl b) → i (inl b) ≡ inl p → g (f (inr * , u)) ≡ (inr * , u)
-    φ p q = r ∙ to-Σ-Id _ (refl , (neg-isProp (fe V U₀) _ _))
+    φ p q = r ∙ to-Σ-≡'' (refl , (neg-isProp (fe V U₀) _ _))
      where
       r : g b ≡ (inr * , λ ())
       r = ap (g' b) q 

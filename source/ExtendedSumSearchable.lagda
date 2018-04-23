@@ -4,7 +4,9 @@ Martin Escardo 29 April 2014.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import SpartanMLTT
+open import UF-FunExt
+open import UF-Embedding
 
 module ExtendedSumSearchable (fe : ∀ U V → FunExt U V) where
 

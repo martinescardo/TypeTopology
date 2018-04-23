@@ -20,10 +20,14 @@ GenericConvergentSequence)
 
 \begin{code}
 
-open import UF
+open import UF-FunExt
 
 module LPO (fe : ∀ U V → FunExt U V) where
 
+open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import Naturals
 open import Two hiding (_≤_)
 open import GenericConvergentSequence
