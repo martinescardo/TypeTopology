@@ -386,7 +386,7 @@ equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 \end{code}
 
 Then the Yoneda Theorem says that η : Nat (Id x) A) is a natural
-equivalence iff A is contractible.
+equivalence iff Σ A is a singleton.
 
 \begin{code}
 
