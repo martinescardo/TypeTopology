@@ -320,29 +320,40 @@ idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
         η x (idp x) ∙ p     ∎ )
 
 natural-retraction-has-section : ∀ {U V} {X : U ̇} {A : X → V ̇}
-                           (x : X) (r : Nat (Id x) A)
-                        → ((y : X) → hasSection(r y)) 
-                        → ((y : X) → hasRetraction(r y))
-natural-retraction-has-section {U} {V} {X} {A} x r hass = hasr
+                           (x : X) (f : Nat (Id x) A)
+                        → ((y : X) → hasSection(f y)) 
+                        → ((y : X) → hasRetraction(f y))
+natural-retraction-has-section {U} {V} {X} {A} x f hass = hasr
  where
   s : (y : X) → A y → x ≡ y
   s y = pr₁ (hass y)
-  rs : {y : X} (a : A y) → r y (s y a) ≡ a
-  rs {y} = pr₂ (hass y)
+  fs : {y : X} (a : A y) → f y (s y a) ≡ a
+  fs {y} = pr₂ (hass y)
   η : (y : X) → x ≡ y → x ≡ y
-  η y p = s y (r y p)
+  η y p = s y (f y p)
   idemp : (y : X) (p : x ≡ y) → η y (η y p) ≡ η y p
-  idemp y p = ap (s y) (rs (r y p))
+  idemp y p = ap (s y) (fs (f y p))
   η-is-id : (y : X) (p : x ≡ y) → η y p ≡ p
   η-is-id y p = idemp-is-id η y p (idemp y p)
-  hasr : (y : X) → hasRetraction(r y)
+  hasr : (y : X) → hasRetraction(f y)
   hasr y = s y , η-is-id y
 
-natural-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (r : Nat (Id x) A)
-                           → ((y : X) → hasSection(r y)) 
-                           → ((y : X) → isEquiv(r y))
-natural-retraction-isEquiv {U} {V} {X} {A} x r hass y = (hass y ,
-                                                         natural-retraction-has-section x r hass y)
+open import UF-FunExt
+open import UF-Equiv-FunExt
+
+natural-retraction-is-section-uniquely : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
+                                         (x : X) (f : Nat (Id x) A)
+                                       → ((y : X) → hasSection(f y)) 
+                                       → ((y : X) → isSingleton(hasRetraction(f y)))
+natural-retraction-is-section-uniquely fe {U} {V} {X} {A} x f hass y = inhabited-proposition-isSingleton
+                                                                        (natural-retraction-has-section x f hass y)
+                                                                        (hass-isprop-hasr fe (f y) (hass y))
+
+natural-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
+                           → ((y : X) → hasSection(f y)) 
+                           → ((y : X) → isEquiv(f y))
+natural-retraction-isEquiv {U} {V} {X} {A} x f hass y = (hass y ,
+                                                         natural-retraction-has-section x f hass y)
 
 \end{code}
 
@@ -355,6 +366,7 @@ universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → (y : X) → isEquiv(yoneda-nat A a y)
 universality-equiv {U} {V} {X} {A} x a u = natural-retraction-isEquiv x (yoneda-nat A a)
                                                                         (universality-section x a u)
+  
 \end{code}
 
 The converse is trivial:
@@ -373,7 +385,41 @@ equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 \end{code}
 
-Next we show that a presheaf A is representable iff Σ A is contractible.
+Then the Yoneda Theorem says that η : Nat (Id x) A) is a natural
+equivalence iff A is contractible.
+
+\begin{code}
+
+Yoneda-Theorem-forth : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+                   → isSingleton (Σ A) → (y : X) → isEquiv (η y)
+Yoneda-Theorem-forth {U} {V} {X} {A} x η iss y = g
+ where
+  u : is-universal-element (x , yoneda-elem A η)
+  u = unique-element-is-universal-element A (x , yoneda-elem A η) (isSingleton-isProp iss (x , yoneda-elem A η))
+  h : yoneda-nat A (yoneda-elem A η) y ∼ η y
+  h = yoneda-lemma A η y
+  g : isEquiv (η y)
+  g = equiv-closed-under-∼' (universality-equiv x (yoneda-elem A η) u y) h
+
+Yoneda-Theorem-back : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+                   → ((y : X) → isEquiv (η y)) → isSingleton (Σ A)
+Yoneda-Theorem-back {U} {V} {X} {A} x η φ = (x , yoneda-elem A η) , (universal-element-is-the-only-element (x , yoneda-elem A η) u)
+ where
+  h : ∀ y → yoneda-nat A (yoneda-elem A η) y ∼ η y
+  h = yoneda-lemma A η
+  g : ∀ y → isEquiv (yoneda-nat A (yoneda-elem A η) y)
+  g y = equiv-closed-under-∼ (η y) (yoneda-nat A (yoneda-elem A η) y) (φ y) (h y)
+  u : is-universal-element (x , yoneda-elem A η)
+  u = equiv-universality x (yoneda-elem A η) g 
+
+Yoneda-Theorem : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+              → ((y : X) → isEquiv (η y)) ⇔ isSingleton (Σ A)
+Yoneda-Theorem x η = Yoneda-Theorem-back x η , Yoneda-Theorem-forth x η              
+
+\end{code}
+
+Next we conclude that a presheaf A is representable iff Σ A is
+contractible.
 
 \begin{code}
 
@@ -442,4 +488,38 @@ idtofun' X = yoneda-nat (λ Y → X → Y) id
 idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
 idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
 
+\end{code}
+
+\begin{code}
+
+{- Just got started with this.
+module experiment (U V : Universe)
+                  (X : U ̇)
+                  (Y : V ̇)
+                  (f : X → Y)
+                  (g : Y → X)
+                  (gf : g ∘ f ∼ id)
+                  (fg : f ∘ g ∼ id)
+                  (y : Y)
+                  where
+
+ A : X → V ̇
+ A x = f x ≡ y
+
+ η η' : Nat (Id (g y)) A
+ η x p = f x ≡⟨ (ap f p)⁻¹ ⟩
+         f (g y) ≡⟨ fg y ⟩
+         y ∎
+
+ e : A (g y)
+ e = yoneda-elem A η
+
+ η' = {!!}
+
+ c : isSingleton (Σ A)
+ c = qinv-isVoevodsky f (g , (gf , fg)) y
+
+ ise : Σ \(x : X) → Σ \(η : (x' : X) → x ≡ x' → f x' ≡ y) → (x' : X) → isEquiv (η x')
+ ise = contr-is-repr c
+-}
 \end{code}
