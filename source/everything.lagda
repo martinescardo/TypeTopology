@@ -290,14 +290,12 @@ import SubtypeClassifier
 import TheTopologyOfTheUniverse
 import TotallySeparated
 import Two
-import UF
 import UF-Base
 import UF-Choice
 import UF-Embedding
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt
 import UF-Equiv
-import UF-ExcludedMiddle
 import UF-FunExt
 import UF-Historic
 import UF-IdEmbedding
@@ -314,6 +312,7 @@ import UF-Subsingletons-Equiv
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
 import UF-Subsingletons-Retracts
+import UF-Two-Prop-Density
 import UF-UA-FunExt
 import UF-Univalence
 import UF-Yoneda

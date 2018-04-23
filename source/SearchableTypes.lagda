@@ -15,6 +15,10 @@ module SearchableTypes where
 open import SpartanMLTT
 open import UF-Subsingletons
 open import UF-FunExt
+open import UF-Retracts
+open import UF-Equiv
+open import UF-PropTrunc
+open import UF-ImageAndSurjection
 open import Two public
 
 
@@ -96,7 +100,7 @@ which is a consequence of univalence):
 
 \begin{code}
 
-open import UF-ExcludedMiddle
+open import UF-Two-Prop-Density
 
 Prop-searchable : FunExt U₀ U₀ → propExt U₀ → searchable Prop
 Prop-searchable fe pe p = two-equality-cases a b
@@ -298,8 +302,6 @@ binary-sums-preserve-searchability {U} {X₀} {X₁} ε₀ ε₁ = sums-preserve
 \end{code}
 
 \begin{code}
-
-open import UF
 
 retractions-preserve-searchability : ∀ {U V} {X : U ̇} {Y : V ̇} {f : X → Y}
                                   → retraction f → searchable X → searchable Y

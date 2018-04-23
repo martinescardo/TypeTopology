@@ -32,7 +32,14 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-FunExt
+open import UF-PropTrunc
+open import UF-Two-Prop-Density
+open import UF-ImageAndSurjection
+open import UF-LeftCancellable
+open import UF-Equiv
 
 module UF-Choice where
 
@@ -268,7 +275,7 @@ module AC-renders-all-sets-discrete
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , to-Σ-Id (λ x → ∃ \(i : 𝟚) → a i ≡ x) (p , (ptisp _ t))
+     f (i , p) = i , to-Σ-≡'' (p , (ptisp _ t))
 
    s : image a → 𝟚
    s y = pr₁(r-splits y)
@@ -280,7 +287,7 @@ module AC-renders-all-sets-discrete
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-Id (λ x → ∃ \(i : 𝟚) → a i ≡ x) (p , (ptisp _ _))
+   a-r p = to-Σ-≡'' (p , (ptisp _ _))
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁
@@ -386,7 +393,7 @@ module Observation (U : Universe)
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , (to-Σ-Id (λ x → ¬¬(Σ \(i : 𝟚) → a i ≡ x)) (p , (neg-isProp (fe U U₀) _ t)))
+     f (i , p) = i , (to-Σ-≡'' (p , (neg-isProp (fe U U₀) _ t)))
 
    s : Y → 𝟚
    s y = pr₁(r-splits y)
@@ -398,7 +405,7 @@ module Observation (U : Universe)
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-Id (λ x → ¬¬(Σ \(i : 𝟚) → a i ≡ x)) (p , (neg-isProp (fe U U₀) _ _))
+   a-r p = to-Σ-≡'' (p , (neg-isProp (fe U U₀) _ _))
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁

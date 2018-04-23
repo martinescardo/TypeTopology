@@ -6,7 +6,11 @@ UF things that depend on non-UF things.
 
 module UF-SetExamples where
 
-open import UF
+open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons
+open import UF-FunExt
+open import UF-Subsingletons-FunExt
 open import DecidableAndDetachable
 
 decidable-is-collapsible : ∀ {U} {X : U ̇} → decidable X → collapsible X

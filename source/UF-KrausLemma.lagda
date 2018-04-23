@@ -6,9 +6,11 @@ Adapted to our development.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF
-
 module UF-KrausLemma where
+
+open import SpartanMLTT
+open import UF-Base
+open import UF-Subsingletons
 
 fix : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
 fix f = Σ \x → x ≡ f x

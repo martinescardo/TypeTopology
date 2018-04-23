@@ -18,10 +18,12 @@ Scedrov. Thanks to Phil Scott for bringing my attention to this proof.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF hiding (⊤)
+open import UF-FunExt
 
 module HiggsInvolutionTheorem (fe : ∀ {U V} → FunExt U V) where
 
+open import SpartanMLTT
+open import UF-Base
 open import SubtypeClassifier (fe)
 
 involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇

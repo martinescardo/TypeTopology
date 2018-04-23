@@ -11,7 +11,11 @@ http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf.
 
 module UF-UA-FunExt where
 
-open import UF hiding (𝟘;𝟙)
+open import SpartanMLTT
+open import UF-Base
+open import UF-Equiv
+open import UF-Univalence
+open import UF-LeftCancellable
 
 Δ : ∀ {U} → U ̇ → U ̇
 Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y

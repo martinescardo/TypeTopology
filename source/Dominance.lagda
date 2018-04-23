@@ -5,7 +5,12 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 
 \begin{code}
 
-open import UF hiding (𝟙) hiding (𝟙-isProp) hiding (⊤)
+-- open import UF -- hiding (𝟙) hiding (𝟙-isProp) hiding (⊤)
+
+open import SpartanMLTT hiding (𝟙)
+open import UF-Subsingletons hiding (𝟙-isProp) hiding (⊤)
+open import UF-Subsingletons-FunExt
+open import UF-FunExt
 
 module Dominance (U : Universe) (fe : ∀ U V → FunExt U V) where
 

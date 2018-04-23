@@ -7,6 +7,8 @@ Martin Escardo 2011.
 module DecidableAndDetachable where
 
 open import SpartanMLTT
+open import UF-Subsingletons
+open import UF-PropTrunc
 open import Two
 
 \end{code}
@@ -91,8 +93,6 @@ co-characteristic-function : ∀ {U V} {X : U ̇} {A : X → V ̇}
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x)
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
-open import UF
-
 decidable-closed-under-Σ : ∀ {U V} {X : U ̇} {Y : X → V ̇} → isProp X
                          → decidable X → ((x : X) → decidable (Y x)) → decidable (Σ Y)
 decidable-closed-under-Σ {U} {V} {X} {Y} isp d e = g d
@@ -117,8 +117,6 @@ extensionality).
 Don't really have a good place to put this:
 
 \begin{code}
-
-open import UF
 
 module _ (pt : PropTrunc) where
 

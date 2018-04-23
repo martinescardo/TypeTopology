@@ -4,7 +4,7 @@ Excluded middle related things.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-ExcludedMiddle where
+module UF-Two-Prop-Density where
 
 open import UF-Base
 open import UF-Subsingletons-FunExt

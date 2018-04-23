@@ -51,7 +51,7 @@ open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
-open import UF-ExcludedMiddle
+open import UF-Two-Prop-Density
 open import Two
 open import SearchableTypes
 
