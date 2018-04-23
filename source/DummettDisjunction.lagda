@@ -87,7 +87,8 @@ of the propositions is decidable:
 
 \begin{code}
 
-open import DecidableAndDetachable
+decidable : ∀ {U} → U ̇ → U ̇
+decidable A = A + (A → 𝟘)
 
 dl : (P Q : Set) → decidable P → linearity-axiom P Q
 dl P Q (inl p) = inr (λ _ → p)
