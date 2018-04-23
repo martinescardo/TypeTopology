@@ -21,6 +21,9 @@ open import UF-Base
 isSubsingleton : ∀ {U} → U ̇ → U ̇
 isSubsingleton X = (x y : X) → x ≡ y
 
+Ω : ∀ {U} → U ′ ̇
+Ω {U} = Σ \(P : U ̇) → isSubsingleton P 
+
 \end{code}
 
 I prefer the above terminology, but I will stick to the following (at
@@ -32,7 +35,7 @@ isProp : ∀ {U} → U ̇ → U ̇
 isProp = isSubsingleton
 
 Prop : ∀ {U} → U ′ ̇
-Prop {U} = Σ \(P : U ̇) → isProp P 
+Prop = Ω
 
 _holds : ∀ {U} → Prop → U ̇
 _holds = pr₁
@@ -47,7 +50,7 @@ And of course we could adopt a terminology borrowed from topos logic:
 \begin{code}
 
 isTruthValue : ∀ {U} → U ̇ → U ̇
-isTruthValue = isProp
+isTruthValue = isSubsingleton
 
 \end{code}
 

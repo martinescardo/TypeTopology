@@ -133,3 +133,32 @@ neg-isProp : ∀ {U} {X : U ̇} → FunExt U U₀ → isProp(¬ X)
 neg-isProp fe u v = funext fe (λ x → 𝟘-elim (u x)) 
 
 \end{code}
+
+For the moment we work with U₀ here because 𝟙 and ⊤ live in U₀:
+
+\begin{code}
+
+equal-⊤-is-true : (P : U₀ ̇) (hp : isProp P)
+               → (P , hp) ≡ ⊤ → P
+equal-⊤-is-true P hp r = f *
+ where
+  s : 𝟙 ≡ P
+  s = (ap pr₁ r)⁻¹
+  f : 𝟙 → P
+  f = transport id s
+
+true-is-equal-⊤ : propExt U₀ → FunExt U₀ U₀ → (P : U₀ ̇) (hp : isProp P)
+                → P → (P , hp) ≡ ⊤
+true-is-equal-⊤ pe fe P hp x = to-Σ-≡ P 𝟙 hp 𝟙-isProp (pe hp 𝟙-isProp unique-to-𝟙 λ _ → x)
+                                                        (isProp-isProp fe _ _)
+
+Ω-ext : propExt U₀ → FunExt U₀ U₀ → {p q : Ω}
+      → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
+Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ P Q isp isq (pe isp isq I II) (isProp-isProp fe _ _ ) 
+ where
+  I : P → Q
+  I x = equal-⊤-is-true Q isq (f (true-is-equal-⊤ pe fe P isp x))
+  II : Q → P
+  II y = equal-⊤-is-true P isp (g (true-is-equal-⊤ pe fe Q isq y))
+
+\end{code}

@@ -286,7 +286,6 @@ import Sequence
 import SimpleTypes
 import SpartanMLTT
 import SquashedSum
-import SubtypeClassifier
 import TheTopologyOfTheUniverse
 import TotallySeparated
 import Two

@@ -18,24 +18,25 @@ Scedrov. Thanks to Phil Scott for bringing my attention to this proof.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF-FunExt
-
-module HiggsInvolutionTheorem (fe : ∀ {U V} → FunExt U V) where
-
 open import SpartanMLTT
+open import UF-Subsingletons
+open import UF-FunExt
+open import UF-Subsingletons-FunExt
+
+module HiggsInvolutionTheorem (fe : FunExt U₀ U₀)
+                              (pe : propExt U₀)
+                              where
+
 open import UF-Base
-open import SubtypeClassifier (fe)
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 
 involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
 involutive f = ∀{x} → f(f x) ≡ x
 
-higgs : prop-univalence → (f : Ω → Ω) 
-     → left-cancellable f → involutive f
-higgs hpu f cancelf {p} = cancelf(VII p)
+higgs : (f : Ω → Ω) → left-cancellable f → involutive f
+higgs f cancelf {p} = cancelf(VII p)
   where
-   ΩU : Ω-univalence
-   ΩU = Ω-from-prop-univalence hpu
-
    I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤ 
    I p r s = transport (λ p → f p ≡ ⊤) s r
 
@@ -43,7 +44,7 @@ higgs hpu f cancelf {p} = cancelf(VII p)
    II p r s = cancelf (r ∙ s ⁻¹)
 
    III : (p : Ω) → f p ≡ ⊤ → p ≡ f ⊤
-   III p r = ΩU (I p r) (II p r)
+   III p r = Ω-ext pe fe (I p r) (II p r)
 
    IV : (p : Ω) → f(f p) ≡ ⊤ → p ≡ ⊤
    IV p r = cancelf(III (f p) r)
@@ -64,6 +65,6 @@ higgs hpu f cancelf {p} = cancelf(VII p)
      d = ap f c
 
    VII : (p : Ω) → f(f(f p)) ≡ f p
-   VII p = ΩU (V p) (VI p)
+   VII p = Ω-ext pe fe (V p) (VI p)
 
 \end{code}
