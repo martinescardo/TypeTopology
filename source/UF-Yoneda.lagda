@@ -443,5 +443,3 @@ idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
 idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
 
 \end{code}
-
-

@@ -79,4 +79,3 @@ prop-indexed-sum-zero {U} {V} {X} {Y} φ = f , (g , fg) , (g , gf)
   gf (x , y) = 𝟘-elim (φ x)
 
 \end{code}
-

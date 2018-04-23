@@ -19,7 +19,6 @@ open import UF-FunExt
 open import UF-Univalence
 open import UF-Embedding
 open import UF-Subsingletons-FunExt
-open import UF-Prop
 open import UF-PropTrunc
 
 ip-ie-idtofun : ∀ {U} (fe : FunExt U U) (X Y : U ̇) (p : X ≡ Y) → isProp(isEquiv(idtofun X Y p))

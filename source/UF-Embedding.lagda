@@ -100,4 +100,32 @@ left-cancellable-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k = left-canc
 id-isEmbedding : ∀ {U} {X : U ̇} → isEmbedding (id {U} {X})
 id-isEmbedding = paths-to-isProp
 
+disjoint-images : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} → (X → A) → (Y → A) → U ⊔ V ⊔ W ̇
+disjoint-images f g = ∀ x y → f x ≢ g y
+
+disjoint-cases-embedding : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → A) (g : Y → A)
+                         → isEmbedding f → isEmbedding g → disjoint-images f g
+                         → isEmbedding (cases f g)
+disjoint-cases-embedding {U} {V} {W} {X} {Y} {A} f g ef eg d = go
+  where
+   go : (a : A) (σ τ : Σ \(z : X + Y) → cases f g z ≡ a) → σ ≡ τ
+   go a (inl x , p) (inl x' , p') = r
+     where
+       q : x , p ≡ x' , p'
+       q = ef a (x , p) (x' , p')
+       h : fiber f a → fiber (cases f g) a
+       h (x , p) = inl x , p
+       r : inl x , p ≡ inl x' , p'
+       r = ap h q
+   go a (inl x , p) (inr y  , q) = 𝟘-elim (d x y (p ∙ q ⁻¹))
+   go a (inr y , q) (inl x  , p) = 𝟘-elim (d x y (p ∙ q ⁻¹))
+   go a (inr y , q) (inr y' , q') = r
+     where
+       p : y , q ≡ y' , q'
+       p = eg a (y , q) (y' , q')
+       h : fiber g a → fiber (cases f g) a
+       h (y , q) = inr y , q
+       r : inr y , q ≡ inr y' , q'
+       r = ap h p
+
 \end{code}

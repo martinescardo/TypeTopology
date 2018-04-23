@@ -306,7 +306,6 @@ import UF-InjectiveTypes
 import UF-KrausLemma
 import UF-LeftCancellable
 import UF-PropIndexedPiSigma
-import UF-Prop
 import UF-PropTrunc
 import UF-Retracts-FunExt
 import UF-Retracts

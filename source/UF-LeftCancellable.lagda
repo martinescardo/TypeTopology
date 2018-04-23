@@ -33,4 +33,3 @@ NatΠ-lc : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B
 NatΠ-lc f flc {g} {g'} p x = flc x (happly p x)
 
 \end{code}
-

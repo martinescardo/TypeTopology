@@ -67,12 +67,6 @@ eqtoeq-agreement {U} X _ refl = refl
 idtofun : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
 idtofun X Y p = eqtofun X Y (idtoeq X Y p)
 
-eqtofun-bis : ∀ {U V} (X : U ̇) → Nat (Eq X) (λ (Y : V ̇) → X → Y)
-eqtofun-bis = eqtofun
-
-idtofun-bis : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
-idtofun-bis = idtofun
-
 equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
 equiv-closed-under-∼ {U} {V} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
  where
@@ -170,12 +164,6 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   hg (x , refl) = refl
   gh : ∀ τ → g(h τ) ≡ τ
   gh (x , refl) = refl
-
-\end{code}
-
-More about equivalences (mostly following the HoTT book).
-
-\begin{code}
 
 equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                                  → (Y → isVoevodskyEquiv f) → isVoevodskyEquiv f

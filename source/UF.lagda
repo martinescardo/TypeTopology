@@ -27,7 +27,6 @@ open import UF-LeftCancellable public
 open import UF-Embedding public
 open import UF-Subsingletons-FunExt public
 open import UF-Retracts-FunExt public
-open import UF-Prop public
 open import UF-PropTrunc public
 open import UF-ImageAndSurjection public
 open import UF-Equiv-FunExt public
