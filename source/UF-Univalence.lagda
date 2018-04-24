@@ -112,9 +112,9 @@ JEq-converse : ∀ {U}
 JEq-converse {U} jeq jeq-comp X = g
  where
   φ : (Y : U ̇) → X ≃ Y → X ≡ Y
-  φ = jeq X (λ Y p → X ≡ Y) (idp X)
-  φc : φ X (ideq X) ≡ idp X
-  φc = jeq-comp X (λ Y p → X ≡ Y) (idp X)
+  φ = jeq X (λ Y p → X ≡ Y) refl
+  φc : φ X (ideq X) ≡ refl
+  φc = jeq-comp X (λ Y p → X ≡ Y) refl
   idtoeqφ : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (φ Y e) ≡ e
   idtoeqφ = jeq X (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
   φidtoeq : (Y : U ̇) (p : X ≡ Y) → φ Y (idtoeq X Y p) ≡ p

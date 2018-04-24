@@ -236,6 +236,37 @@ back-transport B p = transport B (p ⁻¹)
 
 \end{code}
 
+Some general definitions (perhaps we need to find a better place for
+this):
+
+\begin{code}
+
+_⇒_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → (X → V ⊔ W ̇)
+A ⇒ B = λ x → A x → B x
+
+Nat : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
+Nat A B = Π(A ⇒ B)
+
+_∼_ : ∀ {U V} {X : U ̇} {A : X → V ̇} → Π A → Π A → U ⊔ V ̇
+f ∼ g = ∀ x → f x ≡ g x
+
+_≈_ : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} → Nat (Id x) A → Nat (Id x) A → U ⊔ V ̇
+η ≈ θ = ∀ y → η y ∼ θ y
+
+NatΣ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Σ A → Σ B
+NatΣ ζ (x , a) = (x , ζ x a)
+
+NatΠ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Π A → Π B
+NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
+
+left-cancellable : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
+
+left-cancellable' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
+
+\end{code}
+
 Standard syntax for equality chain reasoning:
 
 \begin{code}
@@ -562,5 +593,6 @@ infix  3  _⁻¹
 infix  1 _∎
 infixr 0 _≡⟨_⟩_ 
 infixl 2 _∙_
+infix  4  _∼_
 
 \end{code}

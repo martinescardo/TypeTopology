@@ -26,7 +26,7 @@ embedding-embedding' : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbed
 embedding-embedding' {U} {V} {X} {Y} f ise = g
  where
   b : (x : X) → isSingleton(fiber f (f x))
-  b x = (x , idp (f x)) , ise (f x) (x , idp (f x))
+  b x = (x , refl) , ise (f x) (x , refl)
   c : (x : X) → isSingleton(fiber' f (f x))
   c x = retract-of-singleton (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → isEquiv(ap f {x} {x'})
@@ -38,12 +38,12 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
 embedding'-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEmbedding' f → isEmbedding f
 embedding'-embedding {U} {V} {X} {Y} f ise = g
  where
-  e : (x x' : X) → is-the-only-element (x , idp (f x))
+  e : (x x' : X) → is-the-only-element (x , refl)
   e x x' = universal-element-is-the-only-element
-             (x , idp (f x))
-             (equiv-universality x (idp (f x)) (ise x))
+             (x , refl)
+             (equiv-universality x refl (ise x))
   h : (x : X) → isProp (fiber' f (f x))
-  h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , idp (f x)) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎  
+  h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , refl) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎  
   g' : (y : Y) → isProp (fiber' f y)
   g' y (x , p) = transport (λ y → isProp (Σ \(x' : X) → y ≡ f x')) (p ⁻¹) (h x) (x , p)
   g : (y : Y) → isProp (fiber f y)
@@ -86,7 +86,7 @@ K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
 left-cancellable-maps-into-sets-are-embeddings : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
                                                → left-cancellable f → isSet Y → isEmbedding f
-left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (λ x → f x ≡ y) (r , q)
+left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (r , q)
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))

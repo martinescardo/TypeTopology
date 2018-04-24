@@ -222,11 +222,11 @@ paths-from-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-from x)
 paths-from-isProp x = isSingleton-isProp (paths-from-isSingleton x)
 
 singleton-types-are-singletons : ∀ {U} {X : U ̇} {x : X}
-                        → is-the-only-element {U} {paths-from x} (x , idp x)
+                        → is-the-only-element {U} {paths-from x} (x , refl)
 singleton-types-are-singletons {U} {X} (y , refl) = refl
 
 paths-from-contractible : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-from x)
-paths-from-contractible x = ((x , idp x) , singleton-types-are-singletons)
+paths-from-contractible x = ((x , refl) , singleton-types-are-singletons)
 
 paths-to : ∀ {U} {X : U ̇} → X → U ̇
 paths-to x = Σ \y → y ≡ x

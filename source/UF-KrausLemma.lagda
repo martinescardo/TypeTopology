@@ -24,7 +24,7 @@ key-insight f g p = key-lemma f g p ∙ (sym-is-inverse(g _ _))⁻¹
 
 transport-paths-along-paths : ∀ {U} {X Y : U ̇} {x y : X} (p : x ≡ y) (h k : X → Y) (q : h x ≡ k x) 
                            → transport (λ x → h x ≡ k x) p q ≡ (ap h p)⁻¹ ∙ q ∙ ap k p
-transport-paths-along-paths refl h k q = idp-left-neutral ⁻¹
+transport-paths-along-paths refl h k q = refl-left-neutral ⁻¹
 
 transport-paths-along-paths' : ∀ {U} {X : U ̇} {x : X} (p : x ≡ x) (f : X → X) (q : x ≡ f x) 
                             → transport (λ x → x ≡ f x) p q ≡ (p ⁻¹ ∙ q) ∙ ap f p
@@ -56,13 +56,13 @@ Kraus-Lemma {U} {X} f g (x , p) (y , q) =
      t = q'                        ≡⟨ transport-paths-along-paths' s f p' ⟩
          (s ⁻¹ ∙ p') ∙ ap f s      ≡⟨ assoc (s ⁻¹) p' (ap f s) ⟩
          s ⁻¹ ∙ (p' ∙ ap f s)      ≡⟨ ap (λ pr → s ⁻¹ ∙ (p' ∙ pr)) (key-insight f g s) ⟩
-         s ⁻¹ ∙ (p' ∙ refl)        ≡⟨ ap (λ pr → s ⁻¹ ∙ pr) ((idp-right-neutral p')⁻¹) ⟩ 
+         s ⁻¹ ∙ (p' ∙ refl)        ≡⟨ ap (λ pr → s ⁻¹ ∙ pr) ((refl-right-neutral p')⁻¹) ⟩ 
          s ⁻¹ ∙ p'                 ≡⟨ refl ⟩ 
         (p' ∙ (q ⁻¹))⁻¹ ∙ p'       ≡⟨ ap (λ pr → pr ∙ p') ((⁻¹-contravariant p' (q ⁻¹))⁻¹) ⟩
         ((q ⁻¹)⁻¹ ∙ (p' ⁻¹)) ∙ p'  ≡⟨ ap (λ pr → (pr ∙ (p' ⁻¹)) ∙ p') (⁻¹-involutive q) ⟩
         (q ∙ (p' ⁻¹)) ∙ p'         ≡⟨ assoc q (p' ⁻¹) p' ⟩
          q ∙ ((p' ⁻¹) ∙ p')        ≡⟨ ap (λ pr → q ∙ pr) ((sym-is-inverse p')⁻¹) ⟩
-         q ∙ refl                  ≡⟨ (idp-right-neutral q)⁻¹ ⟩
+         q ∙ refl                  ≡⟨ (refl-right-neutral q)⁻¹ ⟩
          q  ∎
 
 from-fix : ∀ {U} {X : U ̇} (f : X → X) → fix f → X

@@ -130,7 +130,7 @@ eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
   q : yoneda-nat isEquiv jef g p ≡ jeg
   q = isEquiv-isProp fe g _ _
   go : f , jef ≡ g , jeg
-  go = to-Σ-Id isEquiv (p , q)
+  go = to-Σ-Id (p , q)
   
 \end{code}
 
@@ -168,7 +168,7 @@ But actually function extensionality is not needed for this: K alone suffices.
 \begin{code}
 
 Id-lc : ∀ {U} {X : U ̇} → left-cancellable (Id {U} {X})
-Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) (idp y)
+Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
 K-id-embedding-Theorem : ∀ {U} → K (U ′) → {X : U ̇} → isEmbedding(Id {U} {X})
 K-id-embedding-Theorem {U} k {X} = left-cancellable-maps-are-embeddings-with-K Id Id-lc k

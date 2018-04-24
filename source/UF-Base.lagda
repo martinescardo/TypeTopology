@@ -6,9 +6,6 @@ module UF-Base where
 
 open import SpartanMLTT public
 
-idp : ∀ {U} {X : U ̇} (x : X) → x ≡ x
-idp _ = refl
-
 pathtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
 pathtofun = transport id
 
@@ -56,11 +53,11 @@ ap₂ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y → Z) {x₀ x
    → x₀ ≡ x₁ → y₀ ≡ y₁ → f x₀ y₀ ≡ f x₁ y₁
 ap₂ f refl refl = refl
 
-_∼_ : ∀ {U V} {X : U ̇} {A : X → V ̇} → Π A → Π A → U ⊔ V ̇
-f ∼ g = ∀ x → f x ≡ g x
+refl-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
+refl-left-neutral {U} {X} {x} {_} {refl} = refl
 
-idp-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → idp x ∙ p ≡ p
-idp-left-neutral {U} {X} {x} {_} {refl} = refl
+refl-right-neutral : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ p ∙ refl
+refl-right-neutral p = refl
 
 assoc : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
       → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
@@ -75,12 +72,6 @@ happly = happly' _ _
 sym-is-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y)
                → refl ≡ p ⁻¹ ∙ p
 sym-is-inverse {X} = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
-
-refl-left-neutral : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
-refl-left-neutral {U} {X} {x} {_} {refl} = refl 
-
-idp-right-neutral : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ p ∙ refl
-idp-right-neutral p = refl
 
 ⁻¹-involutive : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
 ⁻¹-involutive refl = refl
@@ -124,40 +115,5 @@ to-Σ-≡'' (refl , refl) = refl
 to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x) 
      → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y') 
 to-Σ-≡' x y y' r = ap (λ y → (x , y)) r
-
-\end{code}
-
-We need to find a better place for this:
-
-\begin{code}
-
-_⇒_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → (X → V ⊔ W ̇)
-A ⇒ B = λ x → A x → B x
-
-Nat : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
-Nat A B = Π(A ⇒ B)
-
-_≈_ : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} → Nat (Id x) A → Nat (Id x) A → U ⊔ V ̇
-η ≈ θ = ∀ y → η y ∼ θ y
-
-NatΣ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Σ A → Σ B
-NatΣ ζ (x , a) = (x , ζ x a)
-
-NatΠ : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Π A → Π B
-NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
-
-left-cancellable : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
-
-left-cancellable' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
-
-\end{code}
-
-Associativities and precedences.
-
-\begin{code}
-
-infix  4  _∼_
 
 \end{code}

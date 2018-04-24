@@ -5,7 +5,7 @@
 module UF-Yoneda where
 
 open import SpartanMLTT
-open import UF-Base
+-- open import UF-Base -- We redo the base via Yoneda!
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv
@@ -24,7 +24,7 @@ The Yoneda element induced by a natural transformation:
 
 yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
            → Nat (Id x) A → A x
-yoneda-elem {U} {V} {X} {x} A η = η x (idp x)
+yoneda-elem {U} {V} {X} {x} A η = η x refl
 
 \end{code}
 
@@ -60,10 +60,10 @@ its Yoneda element:
 
 yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A)
             → yoneda-nat A (yoneda-elem A η) ≈ η 
-yoneda-lemma A η x refl = idp (yoneda-elem A η)
+yoneda-lemma A η x refl = refl
 
 Yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : (y : X) → x ≡ y → A y) (y : X) (p : x ≡ y)
-             → transport A p (η x (idp x)) ≡ η y p
+             → transport A p (η x refl) ≡ η y p
 Yoneda-lemma = yoneda-lemma
 
 \end{code}
@@ -75,10 +75,10 @@ not be taken too seriously:
 
 yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x) 
                    → yoneda-elem A (yoneda-nat A a) ≡ a
-yoneda-computation = idp 
+yoneda-computation a = refl
 
 Yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x) 
-                   → transport A (idp x) a ≡ a
+                   → transport A refl a ≡ a
 Yoneda-computation {U} {V} {X} {x} {A} = yoneda-computation {U} {V} {X} {x} {A}
 
 \end{code}
@@ -97,7 +97,7 @@ yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   θ y p ∎
 
 Yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : (y : X) → x ≡ y → A y)             
-              → η x (idp x) ≡ θ x (idp x) → (y : X) (p : x ≡ y) → η y p ≡ θ y p
+              → η x refl ≡ θ x refl → (y : X) (p : x ≡ y) → η y p ≡ θ y p
 Yoneda-elem-lc = yoneda-elem-lc
 
 \end{code}
@@ -123,7 +123,7 @@ yoneda-lemma' : ∀ {U} {X : U ̇} (x {y} : X) (η : Nat (Id y) (Id x)) (z : X) 
 yoneda-lemma' x = yoneda-lemma (Id x)
 
 Yoneda-lemma' : ∀ {U} {X : U ̇} (x {y} : X) (η : (z : X) → y ≡ z → x ≡ z) (z : X) (p : y ≡ z)
-              → η y (idp y) ∙ p ≡ η z p
+              → η y refl ∙ p ≡ η z p
 Yoneda-lemma' = yoneda-lemma'
 
 yoneda-lemma'' : ∀ {U} {X : U ̇} (x {y} : X) (η : Nat (Id y) (Id x)) (z : X) (p : y ≡ z)
@@ -135,15 +135,15 @@ hedberg-lemma : ∀ {U} {X : U ̇} (x : X) (η : Nat (Id x) (Id x)) (y : X) (p :
 hedberg-lemma x η y p = yoneda-lemma' x η y p
 
 Hedberg-lemma : ∀ {U} {X : U ̇} (x : X) (η : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
-              → η x (idp x) ∙ p ≡ η y p
+              → η x refl ∙ p ≡ η y p
 Hedberg-lemma = hedberg-lemma
 
 yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : Nat (Id x) (λ _ → B)) (y : X) (p : x ≡ y)
              → yoneda-elem (λ _ → B) η ≡ η y p 
-yoneda-const η = yoneda-elem-lc (λ y p → yoneda-elem _ η) η (idp (yoneda-elem _ η))
+yoneda-const η = yoneda-elem-lc (λ y p → yoneda-elem _ η) η refl
 
 Yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : (y : X) → x ≡ y → B) (y : X) (p : x ≡ y)
-             → η x (idp x) ≡ η y p 
+             → η x refl ≡ η y p 
 Yoneda-const = yoneda-const
 
 \end{code}
@@ -155,7 +155,7 @@ here we use the Yoneda machinery instead:
 \begin{code}
 
 singleton-types-are-singletons-bis : ∀ {U} {X : U ̇} {x : X}
-                                  → is-the-only-element (x , idp x)
+                                  → is-the-only-element (x , refl)
 singleton-types-are-singletons-bis {U} {X} {x} (y , p) = yoneda-const η y p
  where
   η : (y : X) → x ≡ y → paths-from x
@@ -170,11 +170,11 @@ that the latter can be recovered from the former.
 \begin{code}
 
 Jbased'' : ∀ {U V} {X : U ̇} (x : X) (A : paths-from x → V ̇)
-         → A (x , idp x) → Π A
+         → A (x , refl) → Π A
 Jbased'' x A b w = yoneda-nat A b w (singleton-types-are-singletons w)
 
 Jbased' : ∀ {U V} {X : U ̇} (x : X) (B : (y : X) → x ≡ y → V ̇)
-        → B x (idp x) → (y : X) (p : x ≡ y) → B y p
+        → B x refl → (y : X) (p : x ≡ y) → B y p
 Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
 
 \end{code}
@@ -184,17 +184,17 @@ proved using J(based), for the sake of illustration:
 
 \begin{code}
 
-idp-left-neutral-bis : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → idp x ∙ p ≡ p
-idp-left-neutral-bis {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
+refl-left-neutral-bis : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
+refl-left-neutral-bis {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
 
 ⁻¹-involutive-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
-⁻¹-involutive-bis {U} {X} {x} {y} = yoneda-elem-lc (λ x p → (p ⁻¹)⁻¹) (λ x p → p) (idp(idp x)) y
+⁻¹-involutive-bis {U} {X} {x} {y} = yoneda-elem-lc (λ x p → (p ⁻¹)⁻¹) (λ x p → p) refl y
 
 ⁻¹-contravariant-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) {z : X} (q : y ≡ z)
                 → q ⁻¹ ∙ p ⁻¹ ≡ (p ∙ q)⁻¹
 ⁻¹-contravariant-bis {U} {X} {x} {y} p {z} = yoneda-elem-lc (λ z q → q ⁻¹ ∙ p ⁻¹)
                                                        (λ z q → (p ∙ q) ⁻¹)
-                                                       idp-left-neutral
+                                                       refl-left-neutral-bis
                                                        z
 \end{code}
 
@@ -209,7 +209,7 @@ ext-assoc : ∀ {U} {X : U ̇} {z t : X} (r : z ≡ t)
           ≡ (λ (x y : X) (p : x ≡ y) (q : y ≡ z) → p ∙ (q ∙ r))
 ext-assoc {U} {X} {z} {t} = yoneda-elem-lc (λ z r x y p q → p ∙ q ∙ r)
                                            (λ z r x y p q → p ∙ (q ∙ r))
-                                           (idp (λ x y p q → p ∙ q))
+                                           refl
                                            t 
 \end{code}
 
@@ -221,36 +221,36 @@ assoc-bis : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z 
       → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
 assoc-bis {U} {X} {x} {y} p q r = ap (λ f → f x y p q) (ext-assoc r) 
 
-left-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ idp y
-left-inverse {U} {X} {x} {y} = yoneda-elem-lc (λ x p → p ⁻¹ ∙ p) (λ x p → idp x) (idp(idp x)) y
+left-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ refl
+left-inverse {U} {X} {x} {y} = yoneda-elem-lc (λ x p → p ⁻¹ ∙ p) (λ x p → refl) refl y
 
-right-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → idp x ≡ p ∙ p ⁻¹
+right-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → refl ≡ p ∙ p ⁻¹
 right-inverse {U} {X} {x} {y} = yoneda-const (λ x p → p ∙ p ⁻¹) y
 
 cancel-left : ∀ {U} {X : U ̇} {x y z : X} {p : x ≡ y} {q r : y ≡ z}
             → p ∙ q ≡ p ∙ r → q ≡ r
 cancel-left {U} {X} {x} {y} {z} {p} {q} {r} s = 
-       q              ≡⟨ idp-left-neutral ⁻¹ ⟩
-       idp y ∙ q      ≡⟨ ap (λ t → t ∙ q) ((left-inverse p)⁻¹) ⟩
-       (p ⁻¹ ∙ p) ∙ q ≡⟨ assoc (p ⁻¹) p q ⟩
+       q              ≡⟨ refl-left-neutral-bis ⁻¹ ⟩
+       refl ∙ q       ≡⟨ ap (λ t → t ∙ q) ((left-inverse p)⁻¹) ⟩
+       (p ⁻¹ ∙ p) ∙ q ≡⟨ assoc-bis (p ⁻¹) p q ⟩
        p ⁻¹ ∙ (p ∙ q) ≡⟨ ap (λ t → p ⁻¹ ∙ t) s ⟩
-       p ⁻¹ ∙ (p ∙ r) ≡⟨ (assoc (p ⁻¹) p r)⁻¹ ⟩
+       p ⁻¹ ∙ (p ∙ r) ≡⟨ (assoc-bis (p ⁻¹) p r)⁻¹ ⟩
        (p ⁻¹ ∙ p) ∙ r ≡⟨ ap (λ t → t ∙ r) (left-inverse p) ⟩
-       idp y ∙ r      ≡⟨ idp-left-neutral ⟩
+       refl ∙ r       ≡⟨ refl-left-neutral-bis ⟩
        r ∎
 
-from-Σ-Id : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
+from-Σ-Id : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
           → σ ≡ τ
           → Σ \(p : pr₁ σ ≡ pr₁ τ) → yoneda-nat A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ
-from-Σ-Id {U} {V} {X} A {x , a} {τ} = yoneda-nat B (idp x , idp a) τ
+from-Σ-Id {U} {V} {X} {A} {x , a} {τ} = yoneda-nat B (refl , refl) τ
  where
    B : (τ : Σ A) → U ⊔ V ̇
    B τ = Σ \(p : x ≡ pr₁ τ) → yoneda-nat A a (pr₁ τ) p ≡ pr₂ τ
 
-to-Σ-Id : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
+to-Σ-Id : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
           → (Σ \(p : pr₁ σ ≡ pr₁ τ) → yoneda-nat A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ)
           → σ ≡ τ
-to-Σ-Id {U} {V} {X} A {x , a} {y , b} (p , q) = r
+to-Σ-Id {U} {V} {X} {A} {x , a} {y , b} (p , q) = r
  where
   η : (y : X) → x ≡ y → Σ A
   η y p = (y , yoneda-nat A a y p)
@@ -259,12 +259,12 @@ to-Σ-Id {U} {V} {X} A {x , a} {y , b} (p , q) = r
   r : (x , a) ≡ (y , b)
   r = yoneda-nat (λ b → (x , a) ≡ (y , b)) yc b q
 
-from-Σ-Id' : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
+from-Σ-Id' : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
            → σ ≡ τ
            → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-Id' = from-Σ-Id
 
-to-Σ-Id' : ∀ {U V} {X : U ̇} (A : X → V ̇) {σ τ : Σ A}
+to-Σ-Id' : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
          → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
          → σ ≡ τ
 to-Σ-Id' = to-Σ-Id
@@ -274,17 +274,17 @@ NatΣ-lc : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A 
 NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
   where
     p : x ≡ y
-    p = pr₁ (from-Σ-Id B pq)
+    p = pr₁ (from-Σ-Id pq)
     η : Nat (Id x) B
     η = yoneda-nat B (ζ x a)
     q : η y p ≡ ζ y b
-    q = pr₂ (from-Σ-Id B pq)
+    q = pr₂ (from-Σ-Id pq)
     θ : Nat (Id x) A
     θ = yoneda-nat A a
     η' : Nat (Id x) B
     η' y p = ζ y (θ y p)
     r : η' ≈ η
-    r = yoneda-elem-lc η' η (idp (ζ x a)) 
+    r = yoneda-elem-lc η' η refl
     r' : ζ y (θ y p) ≡ η y p
     r' = r y p
     s : ζ y (θ y p) ≡ ζ y b
@@ -292,7 +292,7 @@ NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
     t : θ y p ≡ b
     t = ζ-lc y s
     g : x , a ≡ y , b
-    g = to-Σ-Id A (p , t)
+    g = to-Σ-Id (p , t)
 
 \end{code}
 
@@ -306,11 +306,11 @@ is-universal-element {U} {V} {X} {A} (x , a) = ∀ y (b : A y) → Σ \(p : x �
 
 universal-element-is-the-only-element : ∀ {U V} {X : U ̇} {A : X → V ̇} (σ : Σ A)
                                       → is-universal-element σ → is-the-only-element σ
-universal-element-is-the-only-element {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-Id A ((u y) b)
+universal-element-is-the-only-element {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-Id ((u y) b)
 
 unique-element-is-universal-element : ∀ {U V} {X : U ̇} (A : X → V ̇) (σ : Σ A)
                                     → is-the-only-element σ → is-universal-element σ
-unique-element-is-universal-element A (x , a) φ y b = from-Σ-Id A {x , a} {y , b} (φ(y , b))
+unique-element-is-universal-element A (x , a) φ y b = from-Σ-Id (φ(y , b))
  
 \end{code}
 
@@ -399,6 +399,9 @@ We get yet another notion of equivalence (has it already been considered?)
 isE : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
 isE g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → hasSection(η x y)
 
+-- isE-isProp : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X) → isProp(isE g)
+-- isE-isProp {U} {V} {X} {Y} g (f , η , hass) (f' , η' , hass') = {!to-Σ-Id !}
+
 isVoevodskyEquiv-isE : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                      → isVoevodskyEquiv g → isE g
 isVoevodskyEquiv-isE {U} {V} {X} {Y} g φ = f , η , hass
@@ -426,10 +429,10 @@ as shown in https://github.com/HoTT/book/issues/718#issuecomment-65378867:
 idemp-is-id : ∀ {U} {X : U ̇} {x : X} (η : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
            → η y (η y p) ≡ η y p → η y p ≡ p
 idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
-        η x (idp x) ∙ η y p ≡⟨ Hedberg-lemma x η y (η y p) ⟩
+        η x refl ∙ η y p ≡⟨ Hedberg-lemma x η y (η y p) ⟩
         η y (η y p)         ≡⟨ idemp ⟩
         η y p               ≡⟨ (Hedberg-lemma x η y p)⁻¹ ⟩
-        η x (idp x) ∙ p     ∎ )
+        η x refl ∙ p     ∎ )
 
 natural-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇}
                            (x : X) (f : Nat (Id x) A)
@@ -540,6 +543,6 @@ idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 idtofun' X = yoneda-nat (λ Y → X → Y) id
 
 idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
-idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) (idp id)
+idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) refl
 
 \end{code}

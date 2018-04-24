@@ -23,7 +23,7 @@ _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → isEquiv f
 
 ideq : ∀ {U} (X : U ̇) → X ≃ X
-ideq X = id , ((id , idp) , (id , idp))
+ideq X = id , ((id , λ x → refl) , (id , λ x → refl))
 
 ≃-trans : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 ≃-trans {U} {V} {W} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
@@ -176,7 +176,7 @@ id-homotopies-are-natural : ∀ {U} {X : U ̇} (h : X → X) (η : h ∼ id) {x 
                          → η (h x) ≡ ap h (η x)
 id-homotopies-are-natural h η {x} =
    η (h x)                          ≡⟨ refl ⟩
-   η (h x) ∙ idp (h x)              ≡⟨ ap (λ p → η(h x) ∙ p) ((trans-sym' (η x))⁻¹) ⟩
+   η (h x) ∙ refl                   ≡⟨ ap (λ p → η(h x) ∙ p) ((trans-sym' (η x))⁻¹) ⟩
    η (h x) ∙ (η x ∙ (η x)⁻¹)        ≡⟨ (assoc (η (h x)) (η x) (η x ⁻¹))⁻¹ ⟩
    η (h x) ∙ η x ∙ (η x)⁻¹          ≡⟨ ap (λ q → η (h x) ∙ q ∙ (η x)⁻¹) ((ap-id-is-id (η x))) ⟩
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
@@ -204,8 +204,8 @@ qinv-isHAE {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         ε (f (g (f x))) ∙ ap f (η x)         ∎
         
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
-  τ x = ap f (η x)                                           ≡⟨ idp-left-neutral ⁻¹ ⟩
-        idp (f (g (f x))) ∙ ap f (η x)                       ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
+  τ x = ap f (η x)                                           ≡⟨ refl-left-neutral ⁻¹ ⟩
+        refl ∙ ap f (η x)                       ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
@@ -224,7 +224,7 @@ paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
 paths-in-fibers f .(f x) x .x refl p' (refl , r) = g
  where
   g : x , refl ≡ x , p'
-  g = ap (λ p → (x , p)) (r ⁻¹ ∙ idp-left-neutral)
+  g = ap (λ p → (x , p)) (r ⁻¹ ∙ refl-left-neutral)
 
 \end{code}
 
