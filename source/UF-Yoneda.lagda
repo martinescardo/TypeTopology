@@ -5,8 +5,9 @@
 module UF-Yoneda where
 
 open import SpartanMLTT
--- open import UF-Base -- We redo the base via Yoneda!
+-- open import UF-Base -- We redo the base via Yoneda! (Without name clashes.)
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Equiv
 open import UF-FunExt
@@ -53,6 +54,8 @@ Yoneda-nat = yoneda-nat
 
 \end{code}
 
+Notice that this is the based recursion principle for the identity type.
+
 The Yoneda Lemma says that every natural transformation is induced by
 its Yoneda element:
 
@@ -68,6 +71,9 @@ Yoneda-lemma = yoneda-lemma
 
 \end{code}
 
+From another point of view, the Yoneda lemma say that very natural
+transformation η is recursively defined.
+
 The word "computation" here arises from a tradition in MLTT and should
 not be taken too seriously:
 
@@ -81,10 +87,17 @@ Yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x)
                    → transport A refl a ≡ a
 Yoneda-computation {U} {V} {X} {x} {A} = yoneda-computation {U} {V} {X} {x} {A}
 
+yoneda-equivalence : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+                   → A x ≃ Nat (Id x) A  
+yoneda-equivalence fe {U} {V} {X} x A = yoneda-nat A ,
+                                       ((yoneda-elem A , λ η → funext (fe U (U ⊔ V)) (λ y → funext (fe U V) (λ p → yoneda-lemma A η y p))) ,
+                                        (yoneda-elem A , yoneda-computation {U} {V} {X} {x} {A}))
 \end{code}
 
 Two natural transformations with the same Yoneda elements are
-(point-point-wise) equal:
+(point-point-wise) equal. This can be proved using J (or equivalently
+pattern matching), but we use the opportunity to illustrate how to use
+the Yoneda Lemma.
 
 \begin{code}
 
@@ -150,7 +163,8 @@ Yoneda-const = yoneda-const
 
 The following is traditionally proved by induction on the identity
 type (as articulated by Jbased or J in the module SpartanMLTT), but
-here we use the Yoneda machinery instead:
+here we use the Yoneda machinery instead, again for the sake of
+illustration.
 
 \begin{code}
 
@@ -179,8 +193,8 @@ Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
 
 \end{code}
 
-And now some uses of Yoneda to prove things that traditionally are
-proved using J(based), for the sake of illustration:
+And now some more uses of Yoneda to prove things that traditionally
+are proved using J(based), again for the sake of illustration:
 
 \begin{code}
 
@@ -315,10 +329,11 @@ unique-element-is-universal-element A (x , a) φ y b = from-Σ-Id (φ(y , b))
 \end{code}
 
 The following says that if the pair (x,a) is a universal element, then
-the natural transformation it induces (namely yoneda-nat {U} {X} {x} a)
-has a section and a retraction (which can be taken to be the same
+the natural transformation it induces (namely yoneda-nat {U} {X} {x}
+a) has a section and a retraction (which can be taken to be the same
 function), and hence is an equivalence. Here having a section or
-retraction is data not property:
+retraction is data not property in general, but it is in some cases
+considered below.
 
 \begin{code}
 
@@ -346,7 +361,7 @@ section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
 
 Then the Yoneda Theorem (proved below) says that any η : Nat (Id x) A)
 is a natural equivalence iff Σ A is a singleton. This, in turn, is
-equivalent η being a natural retraction, and we start with it:
+equivalent to η being a natural retraction, and we start with it:
 
 \begin{code}
 
@@ -385,7 +400,7 @@ Here is a direct application (24th April 2018).
 \begin{code}
 
 equiv-adj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X)
-            (η : (x : X) (y : Y) → f x ≡ y → g y ≡ x)
+              (η : (x : X) (y : Y) → f x ≡ y → g y ≡ x)
           → ((x : X) (y : Y) → hasSection (η x y)) ⇔ isVoevodskyEquiv g 
 equiv-adj f g η = (λ isv x → Yoneda-Section-back (f x) (η x) (isv x)) , 
                   (λ φ x → Yoneda-Section-forth (f x) (η x) (φ x))
@@ -398,9 +413,6 @@ We get yet another notion of equivalence (has it already been considered?)
 
 isE : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
 isE g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → hasSection(η x y)
-
--- isE-isProp : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X) → isProp(isE g)
--- isE-isProp {U} {V} {X} {Y} g (f , η , hass) (f' , η' , hass') = {!to-Σ-Id !}
 
 isVoevodskyEquiv-isE : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                      → isVoevodskyEquiv g → isE g
@@ -416,9 +428,9 @@ isVoevodskyEquiv-isE {U} {V} {X} {Y} g φ = f , η , hass
   hass x = Yoneda-Section-forth (f x) (η x) (φ x)
 
 isE-isVoevodskyEquiv-isE : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
-                         → isE g → isVoevodskyEquiv g
+                        → isE g → isVoevodskyEquiv g
 isE-isVoevodskyEquiv-isE g (f , η , hass) x = Yoneda-Section-back (f x) (η x) (hass x)
-
+  
 \end{code}
 
 But a natural transformation of the above kind is an equivalence iff it has a section,
@@ -430,14 +442,13 @@ idemp-is-id : ∀ {U} {X : U ̇} {x : X} (η : (y : X) → x ≡ y → x ≡ y) 
            → η y (η y p) ≡ η y p → η y p ≡ p
 idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
         η x refl ∙ η y p ≡⟨ Hedberg-lemma x η y (η y p) ⟩
-        η y (η y p)         ≡⟨ idemp ⟩
-        η y p               ≡⟨ (Hedberg-lemma x η y p)⁻¹ ⟩
+        η y (η y p)      ≡⟨ idemp ⟩
+        η y p            ≡⟨ (Hedberg-lemma x η y p)⁻¹ ⟩
         η x refl ∙ p     ∎ )
 
-natural-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇}
-                           (x : X) (f : Nat (Id x) A)
-                        → ((y : X) → hasSection(f y)) 
-                        → ((y : X) → hasRetraction(f y))
+natural-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
+                             → ((y : X) → hasSection(f y)) 
+                             → ((y : X) → hasRetraction(f y))
 natural-retraction-is-section {U} {V} {X} {A} x f hass = hasr
  where
   s : (y : X) → A y → x ≡ y
@@ -460,12 +471,20 @@ The above use of the word "is" is justified by the following:
 \begin{code}
 
 natural-retraction-is-section-uniquely : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
-                                         (x : X) (f : Nat (Id x) A)
-                                       → ((y : X) → hasSection(f y)) 
-                                       → ((y : X) → isSingleton(hasRetraction(f y)))
-natural-retraction-is-section-uniquely fe x f hass y = inhabited-proposition-isSingleton
-                                                         (natural-retraction-is-section x f hass y)
-                                                         (hass-isprop-hasr fe (f y) (hass y))
+                                         (x : X) (η : Nat (Id x) A)
+                                       → ((y : X) → hasSection(η y)) 
+                                       → ((y : X) → isSingleton(hasRetraction(η y)))
+natural-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-isSingleton
+                                                         (natural-retraction-is-section x η hass y)
+                                                         (hass-isprop-hasr fe (η y) (hass y))
+
+nat-hasSection-isProp : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
+                        (x : X) (η : Nat (Id x) A)
+                      → isProp ((y : X) → hasSection (η y)) 
+nat-hasSection-isProp fe {U} {V} {X} {A} x η φ = isProp-exponential-ideal (fe U (U ⊔ V)) γ φ
+  where
+   γ : (y : X) → isProp (hasSection (η y))
+   γ y = hasr-isprop-hass fe (η y) (natural-retraction-is-section x η φ y)
 
 natural-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
                            → ((y : X) → hasSection(f y)) 
