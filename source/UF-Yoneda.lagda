@@ -71,7 +71,7 @@ Yoneda-lemma = yoneda-lemma
 
 \end{code}
 
-From another point of view, the Yoneda lemma say that very natural
+From another point of view, the Yoneda lemma says that very natural
 transformation η is recursively defined.
 
 The word "computation" here arises from a tradition in MLTT and should
@@ -87,11 +87,19 @@ Yoneda-computation : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (a : A x)
                    → transport A refl a ≡ a
 Yoneda-computation {U} {V} {X} {x} {A} = yoneda-computation {U} {V} {X} {x} {A}
 
+yoneda-nat-isEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+                   → isEquiv (yoneda-nat A)
+yoneda-nat-isEquiv fe {U} {V} {X} x A =
+   (yoneda-elem A , λ η → funext (fe U (U ⊔ V)) (λ y → funext (fe U V) (λ p → yoneda-lemma A η y p))) ,
+   (yoneda-elem A , yoneda-computation {U} {V} {X} {x} {A})
+
 yoneda-equivalence : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → A x ≃ Nat (Id x) A  
-yoneda-equivalence fe {U} {V} {X} x A = yoneda-nat A ,
-                                       ((yoneda-elem A , λ η → funext (fe U (U ⊔ V)) (λ y → funext (fe U V) (λ p → yoneda-lemma A η y p))) ,
-                                        (yoneda-elem A , yoneda-computation {U} {V} {X} {x} {A}))
+yoneda-equivalence fe x A = yoneda-nat A , yoneda-nat-isEquiv fe x A
+
+nats-are-uniquely-transports : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
+                            → isSingleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
+nats-are-uniquely-transports fe x A = isEquiv-isVoevodskyEquiv (yoneda-nat A) (yoneda-nat-isEquiv fe x A) 
 \end{code}
 
 Two natural transformations with the same Yoneda elements are
@@ -414,6 +422,11 @@ This motivates the following definition.
 hasAdj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
 hasAdj g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → hasSection(η x y)
 
+adj-obs : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
+          (η : (y : Y) → f x ≡ y → g y ≡ x)
+        → isSingleton (Σ \(q : g (f x) ≡ x) → (λ (y : Y) (p : f x ≡ y) → transport (λ y → g y ≡ x) p q) ≡ η)
+adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
+
 isVoevodskyEquiv-hasAdj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                        → isVoevodskyEquiv g → hasAdj g
 isVoevodskyEquiv-hasAdj {U} {V} {X} {Y} g φ = f , η , hass
@@ -544,7 +557,7 @@ We also have the following corollaries:
 \begin{code}
 
 isVoevodskyEquiv-hasAdj' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
-                       → isVoevodskyEquiv g → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
+                        → isVoevodskyEquiv g → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
 isVoevodskyEquiv-hasAdj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
                                                λ x y → (pr₁ (pr₂ γ) x y) ,
                                                        (nat-retraction-isEquiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)

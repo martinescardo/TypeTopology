@@ -26,7 +26,8 @@
    function types. We apply these results to simple types.
 
    April 2018. The univalence foundations library was monolotic
-   before. Now it it has been modularized.
+   before. Now it it has been modularized. We extended the
+   Yoneda-Lemma file with new results.
 
 \begin{code}
 
