@@ -68,16 +68,12 @@ idtofun : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
 idtofun X Y p = eqtofun X Y (idtoeq X Y p)
 
 equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
-equiv-closed-under-∼ {U} {V} {X} {Y} f g ((s , fs) , (r , rf)) peq = ((s , gs) , (r , rg))
- where
-  gs : (y : Y) → g(s y) ≡ y
-  gs y = g (s y) ≡⟨ peq (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎
-  rg : (x : X) → r(g x) ≡ x
-  rg x = r (g x) ≡⟨ ap r (peq x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎
+equiv-closed-under-∼ {U} {V} {X} {Y} f g (hass , hasr) h = (hasSection-closed-under-∼ f g hass h) ,
+                                                            (hasRetraction-closed-under-∼ f g hasr h)
 
 equiv-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → isEquiv f → f ∼ g → isEquiv g
 equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
-
+  
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
 

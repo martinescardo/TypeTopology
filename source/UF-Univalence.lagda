@@ -161,13 +161,17 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Yoneda
 
-univalence-via-contractibility : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
-univalence-via-contractibility {U} = (f , g)
+univalence-via-singletons : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-singletons {U} = (f , g)
  where
   f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))
-  f ua X = repr-is-contr (X , (idtoeq X , ua X))
+  f ua X = representable-singleton (X , (idtoeq X , ua X))
 
   g : ((X : U ̇) → isSingleton (Σ (Eq X))) → isUnivalent U
-  g φ X = universality-equiv X (ideq X) (unique-element-is-universal-element (Eq X) (X , ideq X) (isSingleton-isProp (φ X) (X , ideq X)))
+  g φ X = universality-equiv X (ideq X)
+                                (unique-element-is-universal-element
+                                       (Eq X)
+                                       (X , ideq X)
+                                       (isSingleton-isProp (φ X) (X , ideq X)))
 
 \end{code}

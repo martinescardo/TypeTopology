@@ -21,6 +21,18 @@ retract Y of X = Σ \(r : X → Y) → hasSection r
 identity-retraction : ∀ {U} {X : U ̇} → retract X of X
 identity-retraction = id , (id , λ x → refl)
 
+hasSection-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → hasSection f →  g ∼ f  → hasSection g
+hasSection-closed-under-∼ {U} {V} {X} {Y} f g (s , fs) h = (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
+
+hasSection-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → hasSection f → f ∼ g → hasSection g
+hasSection-closed-under-∼' ise h = hasSection-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+
+hasRetraction-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → hasRetraction f →  g ∼ f  → hasRetraction g
+hasRetraction-closed-under-∼ {U} {V} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
+
+hasRetraction-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → hasRetraction f → f ∼ g → hasRetraction g
+hasRetraction-closed-under-∼' ise h = hasRetraction-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+
 \end{code}
 
 Surjection expressed in Curry-Howard logic amounts to retraction.

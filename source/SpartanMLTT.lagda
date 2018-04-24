@@ -290,11 +290,13 @@ typeOf {U} {X} x = X
 universeOf : ∀ {U} (X : U ̇) → Universe
 universeOf {U} X = U
 
-domain : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ̇
+domain dom : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ̇
 domain {U} {V} {X} {Y} f = X
+dom = domain
 
-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → V ̇
+codomain cod : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → V ̇
 codomain {U} {V} {X} {Y} f = Y
+cod = codomain
 
 \end{code}
 
