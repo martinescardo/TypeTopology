@@ -540,6 +540,25 @@ representable-singleton {U} {V} {X} {A} (x , (η , φ)) = Yoneda-Theorem-back x 
 
 \end{code}
 
+We also have the following corollaries:
+
+\begin{code}
+
+isVoevodskyEquiv-hasAdj' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
+                       → isVoevodskyEquiv g → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
+isVoevodskyEquiv-hasAdj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
+                                               λ x y → (pr₁ (pr₂ γ) x y) ,
+                                                       (natural-retraction-isEquiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
+ where
+  γ : hasAdj g
+  γ = isVoevodskyEquiv-hasAdj g φ
+  
+hasAdj-isVoevodskyEquiv' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
+                        → (Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)) → isVoevodskyEquiv g
+hasAdj-isVoevodskyEquiv' g (f , ψ) = hasAdj-isVoevodskyEquiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂ (ψ x y))))
+
+\end{code}
+
 We need this elsewhere:
 
 \begin{code}
