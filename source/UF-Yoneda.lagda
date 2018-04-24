@@ -438,31 +438,31 @@ as shown in https://github.com/HoTT/book/issues/718#issuecomment-65378867:
 
 \begin{code}
 
-idemp-is-id : ∀ {U} {X : U ̇} {x : X} (η : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
-           → η y (η y p) ≡ η y p → η y p ≡ p
-idemp-is-id {U} {X} {x} η y p idemp = cancel-left (
-        η x refl ∙ η y p ≡⟨ Hedberg-lemma x η y (η y p) ⟩
-        η y (η y p)      ≡⟨ idemp ⟩
-        η y p            ≡⟨ (Hedberg-lemma x η y p)⁻¹ ⟩
-        η x refl ∙ p     ∎ )
+idemp-is-id : ∀ {U} {X : U ̇} {x : X} (e : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
+           → e y (e y p) ≡ e y p → e y p ≡ p
+idemp-is-id {U} {X} {x} e y p idemp = cancel-left (
+        e x refl ∙ e y p ≡⟨ Hedberg-lemma x e y (e y p) ⟩
+        e y (e y p)      ≡⟨ idemp ⟩
+        e y p            ≡⟨ (Hedberg-lemma x e y p)⁻¹ ⟩
+        e x refl ∙ p     ∎ )
 
-natural-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
-                             → ((y : X) → hasSection(f y)) 
-                             → ((y : X) → hasRetraction(f y))
-natural-retraction-is-section {U} {V} {X} {A} x f hass = hasr
+nat-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+                          → ((y : X) → hasSection(η y)) 
+                          → ((y : X) → hasRetraction(η y))
+nat-retraction-is-section {U} {V} {X} {A} x η hass = hasr
  where
   s : (y : X) → A y → x ≡ y
   s y = pr₁ (hass y)
-  fs : {y : X} (a : A y) → f y (s y a) ≡ a
-  fs {y} = pr₂ (hass y)
-  η : (y : X) → x ≡ y → x ≡ y
-  η y p = s y (f y p)
-  idemp : (y : X) (p : x ≡ y) → η y (η y p) ≡ η y p
-  idemp y p = ap (s y) (fs (f y p))
-  η-is-id : (y : X) (p : x ≡ y) → η y p ≡ p
-  η-is-id y p = idemp-is-id η y p (idemp y p)
-  hasr : (y : X) → hasRetraction(f y)
-  hasr y = s y , η-is-id y
+  ηs : {y : X} (a : A y) → η y (s y a) ≡ a
+  ηs {y} = pr₂ (hass y)
+  e : (y : X) → x ≡ y → x ≡ y
+  e y p = s y (η y p)
+  idemp : (y : X) (p : x ≡ y) → e y (e y p) ≡ e y p
+  idemp y p = ap (s y) (ηs (η y p))
+  e-is-id : (y : X) (p : x ≡ y) → e y p ≡ p
+  e-is-id y p = idemp-is-id e y p (idemp y p)
+  hasr : (y : X) → hasRetraction(η y)
+  hasr y = s y , e-is-id y
 
 \end{code}
 
@@ -470,13 +470,13 @@ The above use of the word "is" is justified by the following:
 
 \begin{code}
 
-natural-retraction-is-section-uniquely : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
-                                         (x : X) (η : Nat (Id x) A)
-                                       → ((y : X) → hasSection(η y)) 
-                                       → ((y : X) → isSingleton(hasRetraction(η y)))
-natural-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-isSingleton
-                                                         (natural-retraction-is-section x η hass y)
-                                                         (hass-isprop-hasr fe (η y) (hass y))
+nat-retraction-is-section-uniquely : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
+                                     (x : X) (η : Nat (Id x) A)
+                                   → ((y : X) → hasSection(η y)) 
+                                   → ((y : X) → isSingleton(hasRetraction(η y)))
+nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-isSingleton
+                                                      (nat-retraction-is-section x η hass y)
+                                                      (hass-isprop-hasr fe (η y) (hass y))
 
 nat-hasSection-isProp : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                         (x : X) (η : Nat (Id x) A)
@@ -484,13 +484,12 @@ nat-hasSection-isProp : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X
 nat-hasSection-isProp fe {U} {V} {X} {A} x η φ = isProp-exponential-ideal (fe U (U ⊔ V)) γ φ
   where
    γ : (y : X) → isProp (hasSection (η y))
-   γ y = hasr-isprop-hass fe (η y) (natural-retraction-is-section x η φ y)
+   γ y = hasr-isprop-hass fe (η y) (nat-retraction-is-section x η φ y)
 
-natural-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
-                           → ((y : X) → hasSection(f y)) 
-                           → ((y : X) → isEquiv(f y))
-natural-retraction-isEquiv {U} {V} {X} {A} x f hass y = (hass y ,
-                                                         natural-retraction-is-section x f hass y)
+nat-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
+                      → ((y : X) → hasSection(f y)) 
+                      → ((y : X) → isEquiv(f y))
+nat-retraction-isEquiv {U} {V} {X} {A} x f hass y = (hass y , nat-retraction-is-section x f hass y)
 
 \end{code}
 
@@ -501,8 +500,8 @@ We are interested in the following corollaries:
 universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → is-universal-element (x , a)
                    → (y : X) → isEquiv(yoneda-nat A a y)
-universality-equiv {U} {V} {X} {A} x a u = natural-retraction-isEquiv x (yoneda-nat A a)
-                                                                        (universality-section x a u)
+universality-equiv {U} {V} {X} {A} x a u = nat-retraction-isEquiv x (yoneda-nat A a)
+                                                                    (universality-section x a u)
   
 equiv-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → ((y : X) → isEquiv(yoneda-nat A a y))
@@ -511,7 +510,7 @@ equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 Yoneda-Theorem-forth : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                     → isSingleton (Σ A) → (y : X) → isEquiv (η y)
-Yoneda-Theorem-forth x η iss = natural-retraction-isEquiv x η (Yoneda-section-forth x η iss)
+Yoneda-Theorem-forth x η iss = nat-retraction-isEquiv x η (Yoneda-section-forth x η iss)
 
 Yoneda-Theorem-back : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                    → ((y : X) → isEquiv (η y)) → isSingleton (Σ A)
@@ -548,14 +547,14 @@ isVoevodskyEquiv-hasAdj' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y →
                        → isVoevodskyEquiv g → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
 isVoevodskyEquiv-hasAdj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
                                                λ x y → (pr₁ (pr₂ γ) x y) ,
-                                                       (natural-retraction-isEquiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
+                                                       (nat-retraction-isEquiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
  where
   γ : hasAdj g
   γ = isVoevodskyEquiv-hasAdj g φ
   
 hasAdj-isVoevodskyEquiv' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                         → (Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)) → isVoevodskyEquiv g
-hasAdj-isVoevodskyEquiv' g (f , ψ) = hasAdj-isVoevodskyEquiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂ (ψ x y))))
+hasAdj-isVoevodskyEquiv' g (f , ψ) = hasAdj-isVoevodskyEquiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂(ψ x y))))
 
 \end{code}
 
