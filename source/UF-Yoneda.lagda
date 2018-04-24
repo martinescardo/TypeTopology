@@ -531,10 +531,9 @@ isRepresentable : ∀ {U V} {X : U ̇} → (X → V ̇) → U ⊔ V ̇
 isRepresentable A = Σ \x → Id x ≊ A
 
 singleton-representable : ∀ {U V} {X : U ̇} {A : X → V ̇} → isSingleton (Σ A) → isRepresentable A 
-singleton-representable {U} {V} {X} {A} ((x , a) , cc) = g
- where
-  g : Σ \(x : X) → Id x ≊ A
-  g = x , yoneda-nat A a , universality-equiv x a (unique-element-is-universal-element A (x , a) cc)
+singleton-representable {U} {V} {X} {A} ((x , a) , cc) = x ,
+                                                         yoneda-nat A a ,
+                                                         Yoneda-Theorem-forth x (yoneda-nat A a) ((x , a) , cc)
 
 representable-singleton : ∀ {U V} {X : U ̇} {A : X → V ̇} → isRepresentable A → isSingleton (Σ A)
 representable-singleton {U} {V} {X} {A} (x , (η , φ)) = Yoneda-Theorem-back x η φ
