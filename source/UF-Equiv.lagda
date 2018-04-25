@@ -205,7 +205,7 @@ qinv-isHAE {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
   τ x = ap f (η x)                                           ≡⟨ refl-left-neutral ⁻¹ ⟩
-        refl ∙ ap f (η x)                       ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
+        refl ∙ ap f (η x)                                    ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
@@ -282,7 +282,7 @@ have:
 \begin{code}
 
 from-paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                        (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+                       (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                      → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
 from-paths-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
