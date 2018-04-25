@@ -276,6 +276,20 @@ isEquiv-isVoevodskyEquiv f ie = qinv-isVoevodsky f (isEquiv-qinv f ie)
 
 \end{code}
 
+So we don't need function extensionality to prove that ¬ X is
+logically equivalent to X ≃ 𝟘:
+
+\begin{code}
+
+negation-is-equal-𝟘 : ∀ {U} {X : U ̇}
+                    → ¬ X ⇔ X ≃ 𝟘
+negation-is-equal-𝟘 = (λ f → f , isVoevodskyEquiv-isEquiv f (maps-to-𝟘-are-equivs f)), pr₁
+
+\end{code}
+
+(Then with functional and propositional extensionality, which follow
+from univalence, we conclude that ¬X = (X ≃ 0) = (X ≡ 0).)
+
 The following again could be defined by combining functions we already
 have:
 
