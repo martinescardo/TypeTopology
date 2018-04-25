@@ -161,14 +161,6 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   gh : ∀ τ → g(h τ) ≡ τ
   gh (x , refl) = refl
 
-equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                                  → (Y → isVoevodskyEquiv f) → isVoevodskyEquiv f
-equiv-can-assume-pointed-codomain f φ y = φ y y
-
-maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : X → 𝟘)
-                     → isVoevodskyEquiv f
-maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
-
 isHAE : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isHAE {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id) → (x : X) → ap f (η x) ≡ ε (f x)
 
@@ -280,6 +272,14 @@ So we don't need function extensionality to prove that ¬ X is
 logically equivalent to X ≃ 𝟘:
 
 \begin{code}
+
+equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                                  → (Y → isVoevodskyEquiv f) → isVoevodskyEquiv f
+equiv-can-assume-pointed-codomain f φ y = φ y y
+
+maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : X → 𝟘)
+                     → isVoevodskyEquiv f
+maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
 negation-is-equal-𝟘 : ∀ {U} {X : U ̇}
                     → ¬ X ⇔ X ≃ 𝟘
