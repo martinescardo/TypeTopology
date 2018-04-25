@@ -79,6 +79,7 @@ open import UF-Retracts
 open import UF-Retracts-FunExt
 open import UF-ImageAndSurjection
 open import UF-Equiv
+open import ArithmeticViaEquivalence
 
 module 2CompactTypes (fe : ∀ U V → FunExt U V)
                      (pt : PropTrunc)

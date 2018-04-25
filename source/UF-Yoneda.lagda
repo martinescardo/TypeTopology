@@ -419,7 +419,7 @@ This motivates the following definition.
 
 \begin{code}
 
-hasAdj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
+hasAdj : ∀ {U V} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
 hasAdj g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → hasSection(η x y)
 
 adj-obs : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
@@ -427,18 +427,18 @@ adj-obs : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X �
         → isSingleton (Σ \(q : g (f x) ≡ x) → (λ (y : Y) (p : f x ≡ y) → transport (λ y → g y ≡ x) p q) ≡ η)
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
 
-isVoevodskyEquiv-hasAdj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
+isVoevodskyEquiv-hasAdj : ∀ {U V} {X : U ̇} {Y : V ̇} (g : Y → X)
                        → isVoevodskyEquiv g → hasAdj g
-isVoevodskyEquiv-hasAdj {U} {V} {X} {Y} g φ = f , η , hass
+isVoevodskyEquiv-hasAdj {U} {V} {X} {Y} g isv = f , η , hass
  where
   f : X → Y
-  f = pr₁ (pr₁ (isVoevodskyEquiv-isEquiv g φ))
+  f = pr₁ (pr₁ (isVoevodskyEquiv-isEquiv g isv))
   gf : (x : X) → g (f x) ≡ x
-  gf = pr₂ (pr₁ (isVoevodskyEquiv-isEquiv g φ))
+  gf = pr₂ (pr₁ (isVoevodskyEquiv-isEquiv g isv))
   η : (x : X) (y : Y) → f x ≡ y → g y ≡ x
   η x y p = transport (λ y → g y ≡ x) p (gf x )
   hass : (x : X) (y : Y) → hasSection (η x y)
-  hass x = Yoneda-section-forth (f x) (η x) (φ x)
+  hass x = Yoneda-section-forth (f x) (η x) (isv x)
 
 hasAdj-isVoevodskyEquiv : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                         → hasAdj g → isVoevodskyEquiv g
