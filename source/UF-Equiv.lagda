@@ -69,7 +69,7 @@ idtofun X Y p = eqtofun X Y (idtoeq X Y p)
 
 equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → isEquiv f →  g ∼ f  → isEquiv g
 equiv-closed-under-∼ {U} {V} {X} {Y} f g (hass , hasr) h = (hasSection-closed-under-∼ f g hass h) ,
-                                                            (hasRetraction-closed-under-∼ f g hasr h)
+                                                           (hasRetraction-closed-under-∼ f g hasr h)
 
 equiv-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → isEquiv f → f ∼ g → isEquiv g
 equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
@@ -162,7 +162,7 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   gh (x , refl) = refl
 
 equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                                 → (Y → isVoevodskyEquiv f) → isVoevodskyEquiv f
+                                  → (Y → isVoevodskyEquiv f) → isVoevodskyEquiv f
 equiv-can-assume-pointed-codomain f φ y = φ y y
 
 maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : X → 𝟘)
@@ -219,8 +219,8 @@ but a proof by path induction is direct:
 \begin{code}
 
 paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                  (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
-               → (Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
+                   (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+                → (Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
 paths-in-fibers f .(f x) x .x refl p' (refl , r) = g
  where
   g : x , refl ≡ x , p'
@@ -276,13 +276,14 @@ isEquiv-isVoevodskyEquiv f ie = qinv-isVoevodsky f (isEquiv-qinv f ie)
 
 \end{code}
 
-The following again could be define by combining functions we already have:
+The following again could be defined by combining functions we already
+have:
 
 \begin{code}
 
 from-paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                      (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
-                    → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
+                        (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
+                     → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
 from-paths-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
 η-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
@@ -293,8 +294,8 @@ from-paths-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
 \end{code}
 
-Then the following follows from natural-section-has-retraction, but
-also has a direct proof by path induction:
+Then the following is a consequence of natural-section-has-retraction,
+but also has a direct proof by path induction:
 
 \begin{code}
 ε-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
@@ -302,10 +303,6 @@ also has a direct proof by path induction:
         (q : (x , p) ≡ (x' , p'))
       → paths-in-fibers f y x x' p p' (from-paths-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
-
-\end{code}
-
-\begin{code}
 
 pr₁-equivalence : ∀ {U V} (X : U ̇) (Y : X → V ̇)
                → ((x : X) → isSingleton (Y x))
@@ -346,10 +343,6 @@ pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = retract-of-singleton r (s , 
     r ((x , y) , refl) = y
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
-
-\end{code}
-
-\begin{code}
 
 NatΣ-equiv : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
            → ((x : X) → isEquiv(ζ x)) → isEquiv(NatΣ ζ)
