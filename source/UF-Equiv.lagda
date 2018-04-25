@@ -268,8 +268,8 @@ isEquiv-isVoevodskyEquiv f ie = qinv-isVoevodsky f (isEquiv-qinv f ie)
 
 \end{code}
 
-So we don't need function extensionality to prove that ¬ X is
-logically equivalent to X ≃ 𝟘:
+We pause to characterize negation and singletons. Recall that ¬ X and
+isEmpty X are synonyms for the function type X → 𝟘.
 
 \begin{code}
 
@@ -281,14 +281,27 @@ maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : X → 𝟘)
                      → isVoevodskyEquiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
-negation-is-equal-𝟘 : ∀ {U} {X : U ̇}
-                    → ¬ X ⇔ X ≃ 𝟘
-negation-is-equal-𝟘 = (λ f → f , isVoevodskyEquiv-isEquiv f (maps-to-𝟘-are-equivs f)), pr₁
+negation-is-equiv-𝟘 : ∀ {U} {X : U ̇} → isEmpty X ⇔ X ≃ 𝟘
+negation-is-equiv-𝟘 = (λ f → f , isVoevodskyEquiv-isEquiv f (maps-to-𝟘-are-equivs f)), pr₁
 
 \end{code}
 
-(Then with functional and propositional extensionality, which follow
-from univalence, we conclude that ¬X = (X ≃ 0) = (X ≡ 0).)
+Then with functional and propositional extensionality, which follow
+from univalence, we conclude that ¬X = (X ≃ 0) = (X ≡ 0).
+
+And similarly, with similar observation:
+
+\begin{code}
+
+isSingleton-is-equiv-𝟙 : ∀ {U} {X : U ̇} → isSingleton X ⇔ X ≃ 𝟙
+isSingleton-is-equiv-𝟙 {U} {X} = forth , back
+ where
+  forth : isSingleton X → X ≃ 𝟙
+  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-* x)⁻¹)) , ((λ _ → x₀) , φ))
+  back : X ≃ 𝟙 → isSingleton X
+  back (f , (s , fs) , (r , rf)) = retract-of-singleton r (f , rf) 𝟙-isSingleton
+
+\end{code}
 
 The following again could be defined by combining functions we already
 have:

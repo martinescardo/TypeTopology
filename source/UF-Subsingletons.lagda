@@ -91,6 +91,9 @@ is-center-of-contraction = is-the-only-element
 isContr : ∀ {U} → U ̇ → U ̇
 isContr = isSingleton
 
+𝟙-isSingleton : isSingleton 𝟙
+𝟙-isSingleton = * , (λ x → (𝟙-all-* x)⁻¹)
+
 isSingleton-isProp : ∀ {U} {X : U ̇} → isSingleton X → isProp X
 isSingleton-isProp {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
 
