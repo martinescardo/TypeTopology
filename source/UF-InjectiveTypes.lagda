@@ -316,9 +316,9 @@ function same-Σ defined above. This and univalence give
  
 Hence
 
- isContr(Σ (Id x)) ≡ isContr(Σ-image j (Id x))
+ isSingleton(Σ (Id x)) ≡ isSingleton(Σ-image j (Id x))
 
-But the lhs holds, and hence isContr(Σ-image j (Id x)).
+But the lhs holds, and hence isSingleton(Σ-image j (Id x)).
 
 \begin{code}
 

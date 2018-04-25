@@ -337,8 +337,8 @@ retract-searchable (_ , φ) = retractions-preserve-searchability φ
 equiv-searchable : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → searchable X → searchable Y
 equiv-searchable (f , (g , fg) , (h , hf)) = retract-searchable (f , (λ y → g y , fg y))
 
-contractible-searchable : ∀ {U} {X : U ̇} → isContr X → searchable X
-contractible-searchable {U} {X} (x , φ) p = x , g
+singleton-searchable : ∀ {U} {X : U ̇} → isSingleton X → searchable X
+singleton-searchable {U} {X} (x , φ) p = x , g
  where
   g : p x ≡ ₁ → (y : X) → p y ≡ ₁
   g r y = transport (λ v → p v ≡ ₁) (φ y) r

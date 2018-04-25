@@ -228,7 +228,7 @@ paths-in-fibers f .(f x) x .x refl p' (refl , r) = g
 
 \end{code}
 
-Using this we see that half adjoint equivalence have contractible fibers:
+Using this we see that half adjoint equivalences have singleton fibers:
 
 \begin{code}
 

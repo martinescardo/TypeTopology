@@ -63,11 +63,13 @@ isProp-closed-under-Σ {U} {V} {X} {A} isx isa (x , a) (y , b) =
 
 \end{code}
 
-Next we define contractible types. The terminology is due to
-Voevodsky. I currently prefer the terminology "singleton type",
-because it makes more sense when we consider univalent type theory as
-interesting on its own right independently of its homotopical
-(originally motivating) models.
+Next we define singleton (or contractible types). The terminology
+"contractible" is due to Voevodsky. I currently prefer the terminology
+"singleton type", because it makes more sense when we consider
+univalent type theory as interesting on its own right independently of
+its homotopical (originally motivating) models. Also it emphasizes
+that we don't required homotopy theory as a prerequisite to understand
+univalent type theory.
 
 \begin{code}
 
@@ -225,8 +227,8 @@ singleton-types-are-singletons : ∀ {U} {X : U ̇} {x : X}
                         → is-the-only-element {U} {paths-from x} (x , refl)
 singleton-types-are-singletons {U} {X} (y , refl) = refl
 
-paths-from-contractible : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-from x)
-paths-from-contractible x = ((x , refl) , singleton-types-are-singletons)
+paths-from-singleton : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-from x)
+paths-from-singleton x = ((x , refl) , singleton-types-are-singletons)
 
 paths-to : ∀ {U} {X : U ̇} → X → U ̇
 paths-to x = Σ \y → y ≡ x

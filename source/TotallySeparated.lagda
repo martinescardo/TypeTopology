@@ -290,7 +290,7 @@ rather than direct proofs (as in the proof of tight reflection below).
 \begin{code}
 
  totally-separated-reflection : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
-                              → (f : X → A) → isContr (Σ \(f' : T X → A) → f' ∘ η ≡ f)
+                              → (f : X → A) → isSingleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
  totally-separated-reflection {V} {X} {A} ts f = go
   where
    iss : isSet A
@@ -335,7 +335,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      v : u ≡ s
      v = isSet-exponential-ideal (fe U V) (λ _ → iss) u s
 
-   go : isContr (Σ \(f' : T X → A) → f' ∘ η ≡ f)
+   go : isSingleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
    go = (f' , r) , c
 
 \end{code}
@@ -877,8 +877,8 @@ apartness on it.
 
   We now show that the above data provide the tight reflection, or
   universal strongly extensional map from X to tight apartness types,
-  where unique existence is expressed by the contractibility of a Σ
-  type, as usual in univalent mathematics and homotopy type
+  where unique existence is expressed by by saying that a Σ type is a
+  singleton, as usual in univalent mathematics and homotopy type
   theory. Notice the use of η-induction to avoid dealing directly with
   the details of the constructions performed above.
 
@@ -889,7 +889,7 @@ apartness on it.
                    → tight _♯ᴬ_
                    → (f : X → A)
                    → strongly-extensional _♯_ _♯ᴬ_ f
-                   → isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+                   → isSingleton (Σ \(f' : X' → A) → f' ∘ η ≡ f)
   tight-reflection {W} {T} A  _♯ᴬ_  ♯ᴬa  ♯ᴬt  f  se = ic
    where
     iss : isSet A
@@ -951,7 +951,7 @@ apartness on it.
       v : u ≡ s
       v = isSet-exponential-ideal (fe U W) (λ _ → iss) u s
                      
-    ic : isContr (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+    ic : isSingleton (Σ \(f' : X' → A) → f' ∘ η ≡ f)
     ic = (f' , r) , c
 
 \end{code}
@@ -976,10 +976,10 @@ apartness on it.
   tight-η-equiv-abstract-nonsense : tight _♯_ → X ≃ X'
   tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly p₄) , (θ , happly p₀)
    where
-    u : isContr (Σ \(θ : X' → X) → θ ∘ η ≡ id)
+    u : isSingleton (Σ \(θ : X' → X) → θ ∘ η ≡ id)
     u = tight-reflection X _♯_ ♯a ♯t id id
     
-    v : isContr (Σ \(ζ : X' → X') → ζ ∘ η ≡ η)
+    v : isSingleton (Σ \(ζ : X' → X') → ζ ∘ η ≡ η)
     v = tight-reflection X' _♯'_ ♯'a ♯'t η η-strongly-extensional
 
     θ : X' → X

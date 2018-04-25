@@ -142,7 +142,7 @@ isEquiv-isVoevodskyEquiv' {U} ua {X} {Y} f ise = g Y (f , ise)
   A : (Y : U ̇) → X ≃ Y → U ̇
   A Y (f , ise) = isVoevodskyEquiv f
   b : A X (ideq X)
-  b = paths-to-contractible
+  b = paths-to-singleton
   g :  (Y : U ̇) (e : X ≃ Y) → A Y e
   g = JEq ua X A b
 

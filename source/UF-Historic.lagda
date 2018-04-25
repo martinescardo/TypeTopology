@@ -28,7 +28,7 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    B Y p = isProp(isEquiv(idtofun X Y p))
    A = Σ \(f : X → X) → f ≡ id
    a : isProp A
-   a = isSingleton-isProp (paths-to-contractible id)
+   a = isSingleton-isProp (paths-to-singleton id)
    A' = Σ \(f : X → X) → f ∼ id
    η : (f : X → X) → f ∼ id → f ≡ id
    η f = funext fe
@@ -64,6 +64,6 @@ jip {U} ua fe {X} {Y} f ije = h ije
     q₁ : f' ≡ f
     q₁ = ap pr₁ q
     h : isProp(isEquiv f)
-    h = yoneda-nat (λ f → isProp(isEquiv f)) h' f q₁
+    h = yoneda-nat f' (λ f → isProp(isEquiv f)) h' f q₁
 
 \end{code}

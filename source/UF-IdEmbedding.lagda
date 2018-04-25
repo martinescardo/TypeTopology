@@ -76,8 +76,8 @@ Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   T = Σ \(x : X) → Id x ≡ A
   q : Σ (Id x₀) ≡ Σ A
   q = ap Σ p₀
-  c : isContr(Σ A)
-  c = yoneda-nat isContr (paths-from-contractible x₀) (Σ A) q
+  c : isSingleton(Σ A)
+  c = yoneda-nat (paths-from x₀) isSingleton (paths-from-singleton x₀) (Σ A) q
   f₀ : (x : X) → Id x ≡ A → (y : X) → Id x y ≡ A y
   f₀ x = happly
   f₁ : (x : X) → ((y : X) → Id x y ≡ A y) → Nat (Id x) A
@@ -127,7 +127,7 @@ eqtofun-lc : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V)
            → (X Y : U ̇) → left-cancellable(eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
-  q : yoneda-nat isEquiv jef g p ≡ jeg
+  q : yoneda-nat f isEquiv jef g p ≡ jeg
   q = isEquiv-isProp fe g _ _
   go : f , jef ≡ g , jeg
   go = to-Σ-Id (p , q)

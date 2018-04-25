@@ -80,6 +80,24 @@ sym-is-inverse {X} = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
                 → q ⁻¹ ∙ p ⁻¹ ≡ (p ∙ q)⁻¹
 ⁻¹-contravariant refl refl = refl
 
+left-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ refl
+left-inverse {U} {X} {x} {y} refl = refl
+
+right-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → refl ≡ p ∙ p ⁻¹
+right-inverse {U} {X} {x} {y} refl = refl
+
+cancel-left : ∀ {U} {X : U ̇} {x y z : X} {p : x ≡ y} {q r : y ≡ z}
+            → p ∙ q ≡ p ∙ r → q ≡ r
+cancel-left {U} {X} {x} {y} {z} {p} {q} {r} s = 
+       q              ≡⟨ refl-left-neutral ⁻¹ ⟩
+       refl ∙ q       ≡⟨ ap (λ t → t ∙ q) ((left-inverse p)⁻¹) ⟩
+       (p ⁻¹ ∙ p) ∙ q ≡⟨ assoc (p ⁻¹) p q ⟩
+       p ⁻¹ ∙ (p ∙ q) ≡⟨ ap (λ t → p ⁻¹ ∙ t) s ⟩
+       p ⁻¹ ∙ (p ∙ r) ≡⟨ (assoc (p ⁻¹) p r)⁻¹ ⟩
+       (p ⁻¹ ∙ p) ∙ r ≡⟨ ap (λ t → t ∙ r) (left-inverse p) ⟩
+       refl ∙ r       ≡⟨ refl-left-neutral ⟩
+       r ∎
+
 homotopies-are-natural' : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
                       → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
 homotopies-are-natural' f g H {x} {_} {refl} = trans-sym' (H x)

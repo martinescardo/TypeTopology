@@ -21,13 +21,13 @@ pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
   gf : g ∘ f ∼ id
   gf (y , p) = ap (λ p → y , p) (⁻¹-involutive p)
 
-paths-to-contractible : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-to x)
-paths-to-contractible x = retract-of-singleton
+paths-to-singleton : ∀ {U} {X : U ̇} (x : X) → isSingleton(paths-to x)
+paths-to-singleton x = retract-of-singleton
                                   (pr₁(pt-pf-equiv x))
                                   (pr₁(pr₂((pt-pf-equiv x))))
-                                  (paths-from-contractible x)
+                                  (paths-from-singleton x)
 
 paths-to-isProp : ∀ {U} {X : U ̇} (x : X) → isProp(paths-to x)
-paths-to-isProp x = isSingleton-isProp (paths-to-contractible x)
+paths-to-isProp x = isSingleton-isProp (paths-to-singleton x)
 
 \end{code}

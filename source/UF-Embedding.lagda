@@ -90,8 +90,8 @@ left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x ,
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))
-   q : yoneda-nat (λ x → f x ≡ y) p x' r ≡ p'
-   q = iss (yoneda-nat (λ x → f x ≡ y) p x' r) p'
+   q : yoneda-nat x (λ x → f x ≡ y) p x' r ≡ p'
+   q = iss (yoneda-nat x (λ x → f x ≡ y) p x' r) p'
 
 left-cancellable-maps-are-embeddings-with-K : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
                                             → left-cancellable f → K V → isEmbedding f
