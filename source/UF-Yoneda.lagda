@@ -15,8 +15,8 @@ open import UF-Equiv-FunExt
 
 \end{code}
 
-We now consider "natural transformations" (defined in Base) and the
-Yoneda-machinery for them as discussed in
+We now consider "natural transformations" Nat A B (defined elsewhere)
+and the Yoneda-machinery for them as discussed in
 http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html
 
 The Yoneda element induced by a natural transformation:
@@ -62,7 +62,7 @@ its Yoneda element:
 \begin{code}
 
 yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A)
-            → yoneda-nat x A (yoneda-elem A η) ≈ η 
+             → yoneda-nat x A (yoneda-elem A η) ≈ η 
 yoneda-lemma A η _ refl = refl
 
 Yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : (y : X) → x ≡ y → A y) (y : X) (p : x ≡ y)
@@ -71,7 +71,7 @@ Yoneda-lemma = yoneda-lemma
 
 \end{code}
 
-From another point of view, the Yoneda lemma says that every natural
+From another point of view, the Yoneda Lemma says that every natural
 transformation η is recursively defined.
 
 The word "computation" here arises from a tradition in MLTT and should
@@ -100,6 +100,7 @@ yoneda-equivalence fe x A = yoneda-nat x A , yoneda-nat-isEquiv fe x A
 nats-are-uniquely-transports : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
                             → isSingleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
 nats-are-uniquely-transports fe x A = isEquiv-isVoevodskyEquiv (yoneda-nat x A) (yoneda-nat-isEquiv fe x A) 
+
 \end{code}
 
 Two natural transformations with the same Yoneda elements are
@@ -110,7 +111,7 @@ the Yoneda Lemma.
 \begin{code}
 
 yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : Nat (Id x) A)             
-              → yoneda-elem A η ≡ yoneda-elem A θ → η ≈ θ
+               → yoneda-elem A η ≡ yoneda-elem A θ → η ≈ θ
 yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   η y p                                ≡⟨ (yoneda-lemma A η y p)⁻¹ ⟩
   yoneda-nat x A (yoneda-elem A η) y p ≡⟨ ap (λ e → yoneda-nat x A e y p) q ⟩
@@ -325,7 +326,7 @@ unique-element-is-universal-element A (x , a) φ y b = from-Σ-Id (φ(y , b))
 \end{code}
 
 The following says that if the pair (x,a) is a universal element, then
-the natural transformation it induces (namely yoneda-nat ? {U} {X} {x} a)
+the natural transformation it induces (namely yoneda-nat x a)
 has a section and a retraction (which can be taken to be the same
 function), and hence is an equivalence. Here having a section or
 retraction is data not property in general, but it is in some cases
@@ -349,10 +350,10 @@ section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
 
 \end{code}
 
-NB. Notice that Yoneda-nat ? gives two different natural
+NB. Notice that Yoneda-nat gives two different natural
 transformations, depending on the number of arguments it takes, namely
 the natural transformation (x : X) → A x → Nat (Id x) A and the
-natural transformation Nat (Id x) → A (or (y : X) → x ≡ y → A y) is
+natural transformation Nat (Id x) → A (or (y : X) → x ≡ y → A y) if
 two additional arguments x and a are given.
 
 Then the Yoneda Theorem (proved below) says that any η : Nat (Id x) A)
@@ -412,7 +413,7 @@ hasAdj g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y
 
 adj-obs : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
-        → isSingleton (Σ \(q : g (f x) ≡ x) → (λ (y : Y) (p : f x ≡ y) → transport (λ y → g y ≡ x) p q) ≡ η)
+        → isSingleton (Σ \(q : g (f x) ≡ x) → (λ y p → transport (λ y → g y ≡ x) p q) ≡ η)
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
 
 isVoevodskyEquiv-hasAdj : ∀ {U V} {X : U ̇} {Y : V ̇} (g : Y → X)
@@ -429,7 +430,7 @@ isVoevodskyEquiv-hasAdj {U} {V} {X} {Y} g isv = f , η , hass
   hass x = Yoneda-section-forth (f x) (η x) (isv x)
 
 hasAdj-isVoevodskyEquiv : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
-                        → hasAdj g → isVoevodskyEquiv g
+                       → hasAdj g → isVoevodskyEquiv g
 hasAdj-isVoevodskyEquiv g (f , η , hass) x = Yoneda-section-back (f x) (η x) (hass x)
   
 \end{code}

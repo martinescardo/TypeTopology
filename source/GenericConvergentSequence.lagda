@@ -339,7 +339,6 @@ finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
       lemma r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
 
 open import DiscreteAndSeparated
-open import DecidableAndDetachable
 
 under-lemma : FunExt₀ → (u : ℕ∞) (n : ℕ) → incl u n ≡ ₀ → Σ \(m : ℕ) → u ≡ under m
 under-lemma fe u zero p     = zero , isZero-equal-Zero fe p

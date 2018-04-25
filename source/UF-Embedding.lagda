@@ -7,7 +7,6 @@ module UF-Embedding where
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-Equiv
-open import UF-Retracts
 open import UF-Subsingletons-Retracts
 open import UF-Equiv
 open import UF-LeftCancellable

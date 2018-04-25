@@ -10,7 +10,6 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-KrausLemma
-open import DecidableAndDetachable
 open import DiscreteAndSeparated
  
 lemma : (X : U₀ ̇) (a : 𝟚 → X) → ((x : X) → collapsible(Σ \(i : 𝟚) → a i ≡ x)) → decidable(a ₀ ≡ a ₁)

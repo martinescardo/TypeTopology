@@ -29,7 +29,6 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import GenericConvergentSequence
-open import DecidableAndDetachable
 open import OmniscientTypes
 
 LPO : U₀ ̇

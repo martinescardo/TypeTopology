@@ -11,7 +11,6 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
-open import UF-EquivalenceExamples
 
 prop-indexed-product : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇} → isProp X 
                      → (a : X) → Π Y ≃ Y a

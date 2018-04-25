@@ -9,16 +9,11 @@ module UF-Historic where
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Yoneda
-open import UF-Retracts
-open import UF-Subsingletons-Retracts
 open import UF-Subsingletons-Equiv
 open import UF-Equiv
-open import UF-Equiv-FunExt
 open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-Univalence
-open import UF-Embedding
-open import UF-Subsingletons-FunExt
 open import UF-PropTrunc
 
 ip-ie-idtofun : ∀ {U} (fe : FunExt U U) (X Y : U ̇) (p : X ≡ Y) → isProp(isEquiv(idtofun X Y p))

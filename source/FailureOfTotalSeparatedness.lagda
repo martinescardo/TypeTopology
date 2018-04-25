@@ -241,8 +241,6 @@ module DiscreteAndSeparated.)
 
 \begin{code}
 
- open import DecidableAndDetachable
-
  weakly-isolated : ∀ {U} {X : U ̇} (x : X) → U ̇
  weakly-isolated x = ∀ x' → decidable(x' ≢ x)
 

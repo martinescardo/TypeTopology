@@ -17,7 +17,6 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-LeftCancellable
-open import UF-Equiv
 
 isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isProp(A x)) → isProp(Π A) 

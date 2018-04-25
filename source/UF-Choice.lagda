@@ -258,7 +258,6 @@ module AC-renders-all-sets-discrete
 
  open UnivalentChoice U fe pt public
  open ImageAndSurjection pt
- open import DecidableAndDetachable
  open import DiscreteAndSeparated
  open import UF-SetExamples
  
@@ -343,7 +342,6 @@ module AC-gives-EM
                       where
 
  open  AC-renders-all-sets-discrete U₁ pt fe
- open import DecidableAndDetachable
 
  lemma : AC → (P : Prop) → decidable(⊤ ≡ P)
  lemma ac P = ac-discrete-sets ac Prop (Prop-isSet (fe U₀ U₀) pe) a
@@ -372,7 +370,6 @@ module Observation (U : Universe)
                    where
                       
  open PropositionalTruncation pt
- open import DecidableAndDetachable
  open import DiscreteAndSeparated
  open import UF-SetExamples
  

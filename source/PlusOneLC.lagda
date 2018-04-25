@@ -50,7 +50,6 @@ remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')
   e' = qinv-isEquiv f' (g' , gf' , fg')
 
 open import DiscreteAndSeparated
-open import DecidableAndDetachable
 
 add-one-and-remove-isolated-point : ∀ {V} {Y : V ̇} (z : Y + 𝟙) → isolated z → ((Y + 𝟙) ∖ z) ≃ Y
 add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-isEquiv f (g , gf , fg))

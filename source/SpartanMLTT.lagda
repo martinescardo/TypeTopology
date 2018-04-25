@@ -139,6 +139,9 @@ Some basic Curry--Howard logic.
 
 \begin{code}
 
+decidable : ∀ {U} → U ̇ → U ̇
+decidable A = A + (A → 𝟘)
+
 _⇔_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 A ⇔ B = (A → B) × (B → A)
 

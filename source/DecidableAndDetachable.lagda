@@ -17,9 +17,6 @@ We look at decidable propositions and subsets (using the terminogy
 
 \begin{code}
 
-decidable : ∀ {U} → U ̇ → U ̇
-decidable A = A + (A → 𝟘)
-
 ¬¬-elim : ∀ {U} {A : U ̇} → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)

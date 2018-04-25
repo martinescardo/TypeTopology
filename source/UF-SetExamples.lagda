@@ -11,7 +11,6 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
-open import DecidableAndDetachable
 
 decidable-is-collapsible : ∀ {U} {X : U ̇} → decidable X → collapsible X
 decidable-is-collapsible (inl x) = inhabited-is-collapsible x
