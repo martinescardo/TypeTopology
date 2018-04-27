@@ -63,3 +63,22 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
                                                     (s ∘ s' , λ z → ap r' (rs (s' z)) ∙ rs' z)
 
 \end{code}
+
+\begin{code}
+
+Σ-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
+          → hasSection g → retract (Σ A) of (Σ \(y : Y) → A (g y))
+Σ-retract {U} {V} {W} {X} {Y} {A} g (f , gf) = γ , φ , γφ
+ where
+  γ : (Σ \(y : Y) → A (g y)) → Σ A
+  γ (y , a) = (g y , a)
+  φ : Σ A → Σ \(y : Y) → A (g y)
+  φ (x , a) = (f x , back-transport A (gf x) a) 
+  γφ : (σ : Σ A) → γ (φ σ) ≡ σ
+  γφ (x , a) = to-Σ-≡'' (gf x , p)
+   where
+    p : transport A (gf x) (back-transport A (gf x) a) ≡ a
+    p = back-and-forth-transport (gf x)
+  
+
+\end{code}

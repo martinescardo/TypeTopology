@@ -9,6 +9,10 @@ open import SpartanMLTT public
 pathtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
 pathtofun = transport id
 
+back-and-forth-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
+                         → (p : y ≡ x) → transport A p (back-transport A p a) ≡ a
+back-and-forth-transport refl = refl
+
 back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
                           → back-transport (λ Z → Z → Y) p g ≡ g ∘ pathtofun p
 back-transport-is-pre-comp refl g = refl
@@ -120,6 +124,10 @@ from-Σ-≡ {U} {V} {X} {Y} u v = J A (λ u → refl) {u} {v}
 from-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
            → (r : (x , y) ≡ (x , y')) → transport Y (ap pr₁ r) y ≡ y'
 from-Σ-≡' x y y' = from-Σ-≡ (x , y) (x , y')
+
+from-Σ-≡'' : ∀ {U V} {X : U ̇} {Y : X → V ̇} {u v : Σ Y} (r : u ≡ v)
+          → Σ \(p : pr₁ u ≡ pr₁ v) → transport Y p (pr₂ u) ≡ (pr₂ v)
+from-Σ-≡'' {U} {V} {X} {Y} {u} {v} r = (ap pr₁ r , from-Σ-≡ u v r)
 
 to-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x x' : X) (y : Y x) (y' : Y x')
      → (p : x ≡ x') → transport Y p y ≡ y' → (x , y) ≡ (x' , y') 

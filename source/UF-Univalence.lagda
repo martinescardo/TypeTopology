@@ -126,9 +126,9 @@ isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
 \end{code}
 
-The following has a proof from function extensionality (see e.g. HoTT
-Book), but it has a more direct proof from univalence (we also give a
-proof without univalence elsewhere, of course):
+The following has a proof from function extensionality, but it has a
+more direct proof from univalence (we also give a proof without
+univalence elsewhere, of course):
 
 \begin{code}
 

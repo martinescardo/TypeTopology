@@ -289,7 +289,7 @@ negation-is-equiv-𝟘 = (λ f → f , isVoevodskyEquiv-isEquiv f (maps-to-𝟘-
 Then with functional and propositional extensionality, which follow
 from univalence, we conclude that ¬X = (X ≃ 0) = (X ≡ 0).
 
-And similarly, with similar observation:
+And similarly, with similar a observation:
 
 \begin{code}
 
