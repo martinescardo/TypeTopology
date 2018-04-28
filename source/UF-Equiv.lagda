@@ -371,9 +371,9 @@ pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = retract-of-singleton r (s , 
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
 
-NatΣ-equiv : ∀ {U V W} (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
            → ((x : X) → isEquiv(ζ x)) → isEquiv(NatΣ ζ)
-NatΣ-equiv X A B ζ ise = ((s , ζs), (r , rζ)) 
+NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ)) 
  where
   s : Σ B → Σ A
   s (x , b) = x , pr₁ (pr₁ (ise x)) b
@@ -383,6 +383,10 @@ NatΣ-equiv X A B ζ ise = ((s , ζs), (r , rζ))
   r (x , b) = x , (pr₁ (pr₂ (ise x)) b)
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ a → (x , a)) (pr₂ (pr₂ (ise x)) a)
+  
+NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
+            → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
+NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
 
 \end{code}
 
