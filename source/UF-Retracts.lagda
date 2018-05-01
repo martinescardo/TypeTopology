@@ -79,6 +79,5 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
    where
     p : transport A (gf x) (back-transport A (gf x) a) ≡ a
     p = back-and-forth-transport (gf x)
-  
 
 \end{code}

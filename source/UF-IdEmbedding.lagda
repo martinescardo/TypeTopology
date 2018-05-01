@@ -83,7 +83,7 @@ Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   f₁ : (x : X) → ((y : X) → Id x y ≡ A y) → Nat (Id x) A
   f₁ x = NatΠ (λ y → idtofun (Id x y) (A y))
   f₂ : (x : X) → Nat (Id x) A → A x
-  f₂ x = yoneda-elem A
+  f₂ x = yoneda-elem x A
   f : (x : X) → Id x ≡ A → A x
   f x = f₂ x ∘ f₁ x ∘ f₀ x
   f₀-lc : (x : X) → left-cancellable(f₀ x)

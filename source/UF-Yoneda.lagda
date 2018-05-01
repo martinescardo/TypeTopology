@@ -23,9 +23,9 @@ The Yoneda element induced by a natural transformation:
 
 \begin{code}
 
-yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
+yoneda-elem : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
            → Nat (Id x) A → A x
-yoneda-elem {U} {V} {X} {x} A η = η x refl
+yoneda-elem x A η = η x refl
 
 \end{code}
 
@@ -34,7 +34,7 @@ of "Nat" expanded, beginning here:
 
 \begin{code}
 
-Yoneda-elem : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
+Yoneda-elem : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
            → ((y : X) → x ≡ y → A y) → A x
 Yoneda-elem = yoneda-elem
 
@@ -61,11 +61,11 @@ its Yoneda element:
 
 \begin{code}
 
-yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A)
-             → yoneda-nat x A (yoneda-elem A η) ≈ η 
-yoneda-lemma A η _ refl = refl
+yoneda-lemma : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
+             → yoneda-nat x A (yoneda-elem x A η) ≈ η 
+yoneda-lemma x A η _ refl = refl
 
-Yoneda-lemma : ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇)
+Yoneda-lemma : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                  (η : (y : X) → x ≡ y → A y) (y : X) (p : x ≡ y)
              → transport A p (η x refl) ≡ η y p
 Yoneda-lemma = yoneda-lemma
@@ -78,9 +78,9 @@ transformation η is recursively defined.
 \begin{code}
 
 yoneda-lemma' : (∀ U V → FunExt U V)
-              → ∀ {U V} {X : U ̇} {x : X} (A : X → V ̇) (η : Nat (Id x) A)
-              → yoneda-nat x A (yoneda-elem A η) ≡ η 
-yoneda-lemma' fe {U} {V} A η = funext (fe U (U ⊔ V)) (λ y → funext (fe U V) (λ p → yoneda-lemma A η y p))
+              → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
+              → yoneda-nat x A (yoneda-elem x A η) ≡ η 
+yoneda-lemma' fe {U} {V} x A η = funext (fe U (U ⊔ V)) (λ y → funext (fe U V) (λ p → yoneda-lemma x A η y p))
 
 \end{code}
 
@@ -94,13 +94,13 @@ Yoneda-computation : ∀ {U V} {X : U ̇} (x : X) {A : X → V ̇} (a : A x)
 Yoneda-computation x a = refl
 
 yoneda-computation : ∀ {U V} {X : U ̇} (x : X) {A : X → V ̇} (a : A x) 
-                  → yoneda-elem A (yoneda-nat x A a) ≡ a
+                  → yoneda-elem x A (yoneda-nat x A a) ≡ a
 yoneda-computation {U} {V} {X} x {A} = Yoneda-computation {U} {V} {X} x {A}
 
 yoneda-nat-isEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → isEquiv (yoneda-nat x A)
-yoneda-nat-isEquiv fe {U} {V} {X} x A = (yoneda-elem A , yoneda-lemma' fe A) ,
-                                        (yoneda-elem A , yoneda-computation {U} {V} {X} x {A})
+yoneda-nat-isEquiv fe {U} {V} {X} x A = (yoneda-elem x A , yoneda-lemma' fe x A) ,
+                                        (yoneda-elem x A , yoneda-computation {U} {V} {X} x {A})
 
 yoneda-equivalence : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → A x ≃ Nat (Id x) A  
@@ -175,26 +175,26 @@ Yoneda-section-forth : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (
                      → hasSection (η y)
 Yoneda-section-forth {U} {V} {X} {A} x η iss y = g
  where
-  u : is-universal-element (x , yoneda-elem A η)
-  u = unique-element-is-universal-element A (x , yoneda-elem A η) (isSingleton-isProp iss (x , yoneda-elem A η))
-  h : yoneda-nat x A (yoneda-elem A η) y ∼ η y
-  h = yoneda-lemma A η y
+  u : is-universal-element (x , yoneda-elem x A η)
+  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (isSingleton-isProp iss (x , yoneda-elem x A η))
+  h : yoneda-nat x A (yoneda-elem x A η) y ∼ η y
+  h = yoneda-lemma x A η y
   g : hasSection (η y)
-  g = hasSection-closed-under-∼' (universality-section x (yoneda-elem A η) u y) h
+  g = hasSection-closed-under-∼' (universality-section x (yoneda-elem x A η) u y) h
 
 Yoneda-section-back : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                    → ((y : X) → hasSection (η y))
                    → isSingleton (Σ A)
 Yoneda-section-back {U} {V} {X} {A} x η φ = c
  where
-  h : ∀ y → yoneda-nat x A (yoneda-elem A η) y ∼ η y
-  h = yoneda-lemma A η
-  g : ∀ y → hasSection (yoneda-nat x A (yoneda-elem A η) y)
-  g y = hasSection-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem A η) y) (φ y) (h y)
-  u : is-universal-element (x , yoneda-elem A η)
-  u = section-universality x (yoneda-elem A η) g 
+  h : ∀ y → yoneda-nat x A (yoneda-elem x A η) y ∼ η y
+  h = yoneda-lemma x A η
+  g : ∀ y → hasSection (yoneda-nat x A (yoneda-elem x A η) y)
+  g y = hasSection-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
+  u : is-universal-element (x , yoneda-elem x A η)
+  u = section-universality x (yoneda-elem x A η) g 
   c : isSingleton (Σ A)
-  c = (x , yoneda-elem A η) , (universal-element-is-the-only-element (x , yoneda-elem A η) u)
+  c = (x , yoneda-elem x A η) , (universal-element-is-the-only-element (x , yoneda-elem x A η) u)
   
 Yoneda-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                → isSingleton (Σ A) ⇔ ((y : X) → hasSection (η y))
@@ -249,7 +249,7 @@ as shown in https://github.com/HoTT/book/issues/718#issuecomment-65378867:
 
 Hedberg-lemma : ∀ {U} {X : U ̇} (x : X) (η : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
               → η x refl ∙ p ≡ η y p
-Hedberg-lemma x η = yoneda-lemma (Id x) η
+Hedberg-lemma x η = yoneda-lemma x (Id x) η
 
 idemp-is-id : ∀ {U} {X : U ̇} {x : X} (e : (y : X) → x ≡ y → x ≡ y) (y : X) (p : x ≡ y)
            → e y (e y p) ≡ e y p
@@ -390,11 +390,11 @@ the Yoneda Lemma.
 \begin{code}
 
 yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : Nat (Id x) A)             
-               → yoneda-elem A η ≡ yoneda-elem A θ → η ≈ θ
+               → yoneda-elem x A η ≡ yoneda-elem x A θ → η ≈ θ
 yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
-  η y p                                ≡⟨ (yoneda-lemma A η y p)⁻¹ ⟩
-  yoneda-nat x A (yoneda-elem A η) y p ≡⟨ ap (λ e → yoneda-nat x A e y p) q ⟩
-  yoneda-nat x A (yoneda-elem A θ) y p ≡⟨ yoneda-lemma A θ y p ⟩
+  η y p                                ≡⟨ (yoneda-lemma x A η y p)⁻¹ ⟩
+  yoneda-nat x A (yoneda-elem x A η) y p ≡⟨ ap (λ e → yoneda-nat x A e y p) q ⟩
+  yoneda-nat x A (yoneda-elem x A θ) y p ≡⟨ yoneda-lemma x A θ y p ⟩
   θ y p ∎
 
 Yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : (y : X) → x ≡ y → A y)             
@@ -414,22 +414,22 @@ Yoneda-nat-Id : ∀ {U} {X : U ̇} (x {y} : X) → x ≡ y → (z : X) → y ≡
 Yoneda-nat-Id = yoneda-nat-Id
 
 yoneda-elem-Id : ∀ {U} {X : U ̇} (x {y} : X) → Nat (Id y) (Id x) → Id x y
-yoneda-elem-Id x = yoneda-elem (Id x)
+yoneda-elem-Id x {y} = yoneda-elem y (Id x)
 
 Yoneda-elem-Id : ∀ {U} {X : U ̇} (x {y} : X) → ((z : X) → y ≡ z → x ≡ z) → x ≡ y
 Yoneda-elem-Id = yoneda-elem-Id
 
 yoneda-lemma-Id : ∀ {U} {X : U ̇} (x {y} : X) (η : Nat (Id y) (Id x)) (z : X) (p : y ≡ z)
                 → (yoneda-elem-Id x η) ∙ p ≡ η z p
-yoneda-lemma-Id x = yoneda-lemma (Id x)
+yoneda-lemma-Id x {y} = yoneda-lemma y (Id x)
 
 Yoneda-lemma-Id : ∀ {U} {X : U ̇} (x {y} : X) (η : (z : X) → y ≡ z → x ≡ z) (z : X) (p : y ≡ z)
                 → η y refl ∙ p ≡ η z p
 Yoneda-lemma-Id = yoneda-lemma-Id
 
 yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : Nat (Id x) (λ _ → B)) (y : X) (p : x ≡ y)
-             → yoneda-elem (λ _ → B) η ≡ η y p 
-yoneda-const η = yoneda-elem-lc (λ y p → yoneda-elem _ η) η refl
+             → yoneda-elem x (λ _ → B) η ≡ η y p 
+yoneda-const η = yoneda-elem-lc (λ y p → yoneda-elem _ _ η) η refl
 
 Yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : (y : X) → x ≡ y → B) (y : X) (p : x ≡ y)
              → η x refl ≡ η y p 
@@ -475,7 +475,7 @@ are proved using J(based), again for the sake of illustration:
 \begin{code}
 
 refl-left-neutral-bis : ∀ {U} {X : U ̇} {x y : X} {p : x ≡ y} → refl ∙ p ≡ p
-refl-left-neutral-bis {U} {X} {x} {y} {p} = yoneda-lemma (Id x) (λ y p → p) y p
+refl-left-neutral-bis {U} {X} {x} {y} {p} = yoneda-lemma x (Id x) (λ y p → p) y p
 
 ⁻¹-involutive-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
 ⁻¹-involutive-bis {U} {X} {x} {y} = yoneda-elem-lc (λ x p → (p ⁻¹)⁻¹) (λ x p → p) refl y

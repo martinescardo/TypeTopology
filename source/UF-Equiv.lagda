@@ -164,6 +164,10 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
 isHAE : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 isHAE {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id) → (x : X) → ap f (η x) ≡ ε (f x)
 
+isHAE-isEquiv : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+              → isHAE f → isEquiv f
+isHAE-isEquiv {U} {V} {X} f (g , η , ε , τ) = qinv-isEquiv f (g , η , ε)
+
 id-homotopies-are-natural : ∀ {U} {X : U ̇} (h : X → X) (η : h ∼ id) {x : X}
                          → η (h x) ≡ ap h (η x)
 id-homotopies-are-natural h η {x} =
@@ -202,6 +206,10 @@ qinv-isHAE {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                             ∎
+
+isEquiv-isHAE : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+              → isEquiv f → isHAE f
+isEquiv-isHAE f e = qinv-isHAE f (isEquiv-qinv f e)
 
 \end{code}
 
@@ -387,6 +395,38 @@ NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
 NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
             → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
+
+Σ-equiv' : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
+         → isHAE g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
+Σ-equiv' {U} {V} {W} {X} {Y} {A} g (f , fg , gf , α) = γ , φ , φγ , γφ
+ where
+  γ : (Σ \(y : Y) → A (g y)) → Σ A
+  γ (y , a) = (g y , a)
+  φ : Σ A → Σ \(y : Y) → A (g y)
+  φ (x , a) = (f x , back-transport A (gf x) a) 
+  γφ : (σ : Σ A) → γ (φ σ) ≡ σ
+  γφ (x , a) = to-Σ-≡'' (gf x , p)
+   where
+    p : transport A (gf x) (back-transport A (gf x) a) ≡ a
+    p = back-and-forth-transport (gf x)
+  φγ : (τ : (Σ \(y : Y) → A (g y))) → φ (γ τ) ≡ τ
+  φγ (y , a) = to-Σ-≡'' (fg y , q)
+   where
+    q : transport (λ y → A (g y)) (fg y) (back-transport A (gf (g y)) a) ≡ a
+    q = transport (λ y → A (g y)) (fg y) (back-transport A (gf (g y)) a) ≡⟨ transport-ap g (fg y) ⟩
+        transport A (ap g (fg y)) (back-transport A (gf (g y)) a)        ≡⟨ ap (λ r → transport A r (back-transport A (gf (g y)) a)) (α y) ⟩
+        transport A (gf (g y)) (back-transport A (gf (g y)) a)           ≡⟨ back-and-forth-transport (gf (g y)) ⟩
+        a ∎
+
+Σ-equiv : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
+        → isEquiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
+Σ-equiv {U} {V} {W} {X} {Y} {A} g e = γ , qinv-isEquiv γ q
+ where
+  γ :  (Σ \(y : Y) → A (g y)) → Σ A
+  γ = pr₁(Σ-equiv' g (isEquiv-isHAE g e))
+  q :  qinv γ
+  q = pr₂(Σ-equiv' g (isEquiv-isHAE g e))
+
 
 \end{code}
 

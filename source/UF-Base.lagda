@@ -9,6 +9,10 @@ open import SpartanMLTT public
 pathtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
 pathtofun = transport id
 
+forth-and-back-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
+                         → (p : x ≡ y) → back-transport A p (transport A p a) ≡ a
+forth-and-back-transport refl = refl
+
 back-and-forth-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
                          → (p : y ≡ x) → transport A p (back-transport A p a) ≡ a
 back-and-forth-transport refl = refl
