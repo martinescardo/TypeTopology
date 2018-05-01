@@ -396,9 +396,9 @@ NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
             → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
 
-Σ-equiv' : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
-         → isHAE g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
-Σ-equiv' {U} {V} {W} {X} {Y} {A} g (f , fg , gf , α) = γ , φ , φγ , γφ
+Σ-change-of-variables' : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
+                       → isHAE g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
+Σ-change-of-variables' {U} {V} {W} {X} {Y} {A} g (f , fg , gf , α) = γ , φ , φγ , γφ
  where
   γ : (Σ \(y : Y) → A (g y)) → Σ A
   γ (y , a) = (g y , a)
@@ -418,14 +418,14 @@ NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr�
         transport A (gf (g y)) (back-transport A (gf (g y)) a)           ≡⟨ back-and-forth-transport (gf (g y)) ⟩
         a ∎
 
-Σ-equiv : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
-        → isEquiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
-Σ-equiv {U} {V} {W} {X} {Y} {A} g e = γ , qinv-isEquiv γ q
+Σ-change-of-variables : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
+                      → isEquiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
+Σ-change-of-variables {U} {V} {W} {X} {Y} {A} g e = γ , qinv-isEquiv γ q
  where
   γ :  (Σ \(y : Y) → A (g y)) → Σ A
-  γ = pr₁(Σ-equiv' g (isEquiv-isHAE g e))
+  γ = pr₁(Σ-change-of-variables' g (isEquiv-isHAE g e))
   q :  qinv γ
-  q = pr₂(Σ-equiv' g (isEquiv-isHAE g e))
+  q = pr₂(Σ-change-of-variables' g (isEquiv-isHAE g e))
 
 
 \end{code}
