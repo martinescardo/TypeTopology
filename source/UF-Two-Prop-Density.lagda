@@ -71,7 +71,7 @@ no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
 ⊥≠⊤ p = 𝟘-is-not-𝟙 (ap pr₁ p)
 
 no-truth-values-other-than-⊥-or-⊤ : FunExt U₀ U₀ → propExt U₀
-                                   → ¬ Σ \(p : Prop) → (p ≢ ⊥) × (p ≢ ⊤)  
+                                   → ¬ Σ \(p : Ω) → (p ≢ ⊥) × (p ≢ ⊤)  
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
  where
    u : ¬ P
@@ -85,8 +85,8 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
        l : (P , isp) ≡ ⊥
        l = PropExt fe pe u unique-from-𝟘
 
-⊥-⊤-density : FunExt U₀ U₀ → propExt U₀ → (f : Prop → 𝟚)
-            → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Prop) → f p ≡ ₁
+⊥-⊤-density : FunExt U₀ U₀ → propExt U₀ → (f : Ω → 𝟚)
+            → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Ω) → f p ≡ ₁
 ⊥-⊤-density fe pe f r s p = Lemma[b≢₀→b≡₁] a
  where
     a : f p ≢ ₀
@@ -97,14 +97,14 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
         c : p ≢ ⊤
         c u = zero-is-not-one (t ⁻¹ ∙ ap f u ∙ s)
 
-𝟚inProp : 𝟚 → Prop
-𝟚inProp ₀ = ⊥
-𝟚inProp ₁ = ⊤
+𝟚inΩ : 𝟚 → Ω
+𝟚inΩ ₀ = ⊥
+𝟚inΩ ₁ = ⊤
 
-𝟚inProp-embedding : FunExt U₀ U₀ → propExt U₀ → isEmbedding 𝟚inProp
-𝟚inProp-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ ₀ ₀ p q refl (Prop-isSet fe pe p q)
-𝟚inProp-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥≠⊤ (p ∙ q ⁻¹))
-𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥≠⊤ (q ∙ p ⁻¹))
-𝟚inProp-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ ₁ ₁ p q refl (Prop-isSet fe pe p q)
+𝟚inΩ-embedding : FunExt U₀ U₀ → propExt U₀ → isEmbedding 𝟚inΩ
+𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ ₀ ₀ p q refl (Ω-isSet fe pe p q)
+𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥≠⊤ (p ∙ q ⁻¹))
+𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥≠⊤ (q ∙ p ⁻¹))
+𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ ₁ ₁ p q refl (Ω-isSet fe pe p q)
 
 \end{code}

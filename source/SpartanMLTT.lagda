@@ -342,6 +342,10 @@ data 𝟚 : U₀ ̇ where
  ₀ : 𝟚
  ₁ : 𝟚
 
+𝟚-possibilities : (b : 𝟚) → (b ≡ ₀) + (b ≡ ₁)
+𝟚-possibilities ₀ = inl refl
+𝟚-possibilities ₁ = inr refl
+
 zero-is-not-one : ₀ ≢ ₁
 zero-is-not-one ()
 

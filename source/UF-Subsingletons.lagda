@@ -34,13 +34,10 @@ least for the moment).
 isProp : ∀ {U} → U ̇ → U ̇
 isProp = isSubsingleton
 
-Prop : ∀ {U} → U ′ ̇
-Prop = Ω
-
-_holds : ∀ {U} → Prop → U ̇
+_holds : ∀ {U} → Ω → U ̇
 _holds = pr₁
 
-holdsIsProp : ∀ {U} → (p : Prop {U}) → isProp (p holds)
+holdsIsProp : ∀ {U} → (p : Ω {U}) → isProp (p holds)
 holdsIsProp = pr₂
 
 \end{code}
@@ -118,7 +115,7 @@ The two prototypical propositions:
 𝟙-isProp : isProp 𝟙
 𝟙-isProp * * = refl
 
-⊥ ⊤ : Prop
+⊥ ⊤ : Ω
 ⊥ = 𝟘 , 𝟘-isProp   -- false
 ⊤ = 𝟙 , 𝟙-isProp   -- true
 
@@ -131,7 +128,7 @@ data or structure).
 \begin{code}
 
 isSet : ∀ {U} → U ̇ → U ̇
-isSet X = {x y : X} → isProp(x ≡ y)
+isSet X = {x y : X} → isProp (x ≡ y)
 
 \end{code}
 
@@ -273,9 +270,30 @@ K U = (X : U ̇) → isSet X
 
 \end{code}
 
+Formulation of propositional extensionality:
+
 \begin{code}
 
 propExt : ∀ U → U ′ ̇ 
 propExt U = {P Q : U ̇} → isProp P → isProp Q → (P → Q) → (Q → P) → P ≡ Q
 
 \end{code}
+
+The following says that, in particular, for any proposition P, we have
+that P + ¬ P is a proposition, or that the decidability of a
+proposition is a proposition:
+
+\begin{code}
+
+sum-of-contradictory-props : ∀ {U V} {P : U ̇} {Q : V ̇}
+                           → isProp P → isProp Q → (P → Q → 𝟘) → isProp(P + Q)
+sum-of-contradictory-props {U} {V} {P} {Q} isp isq f = go
+  where
+   go : (x y : P + Q) → x ≡ y
+   go (inl p) (inl p') = ap inl (isp p p')
+   go (inl p) (inr q)  = 𝟘-elim (f p q)
+   go (inr q) (inl p)  = 𝟘-elim (f p q)
+   go (inr q) (inr q') = ap inr (isq q q')
+
+\end{code}
+

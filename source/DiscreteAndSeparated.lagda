@@ -236,7 +236,7 @@ binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma
 
 ⊥-⊤-density' : FunExt U₀ U₀ → propExt U₀ → ∀ {U} {X : U ̇}
               → separated X
-              → (f : Prop → X) → f ⊥ ≡ f ⊤ → constant f
+              → (f : Ω → X) → f ⊥ ≡ f ⊤ → constant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
     a : ∀ p → ¬¬(f p ≡ f ⊤)
@@ -274,6 +274,8 @@ isolated-added-point {U} {X} = h
   h (inl x) = inr (λ ())
   h (inr *) = inl refl
 \end{code}
+
+Back to old stuff:
 
 \begin{code}
 

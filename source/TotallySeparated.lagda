@@ -637,15 +637,12 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-  The following two facts play a crucial role.
+  The following fact plays a crucial role.
 
 \begin{code}
 
-  Ω-isSet : isSet Ω
-  Ω-isSet = Prop-isSet (fe V V) pe
-
-  powerset-isSet : ∀ {W} {A : W ̇} → isSet(A → Ω)
-  powerset-isSet {W} = isSet-exponential-ideal (fe W (V ′)) (λ x → Ω-isSet)
+  powerset-isSet : ∀ {W} {A : W ̇} → isSet (A → Ω)
+  powerset-isSet {W} = isSet-exponential-ideal (fe W (V ′)) (λ x → Ω-isSet (fe V V) pe)
 
 \end{code}
 

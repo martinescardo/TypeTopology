@@ -100,10 +100,10 @@ which is a consequence of univalence):
 
 open import UF-Two-Prop-Density
 
-Prop-searchable : FunExt U₀ U₀ → propExt U₀ → searchable Prop
-Prop-searchable fe pe p = two-equality-cases a b
+Ω-searchable : FunExt U₀ U₀ → propExt U₀ → searchable Ω
+Ω-searchable fe pe p = two-equality-cases a b
   where
-    A = Σ \(x₀ : Prop) → p x₀ ≡ ₁ → (x : Prop) → p x ≡ ₁
+    A = Σ \(x₀ : Ω) → p x₀ ≡ ₁ → (x : Ω) → p x ≡ ₁
     
     a : p ⊥ ≡ ₀ → A
     a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
@@ -143,10 +143,8 @@ only if p has a root.
 _is-a-root-of_ : ∀ {U} {X : U ̇} → X → (X → 𝟚) → U₀ ̇
 x is-a-root-of p = p x ≡ ₀
 
-
 _has-a-root : ∀ {U} {X : U ̇} → (X → 𝟚) → U ̇
 p has-a-root = Σ \x → x is-a-root-of p
-
 
 putative-root : ∀ {U} {X : U ̇}
               → searchable X → (p : X → 𝟚) → Σ \(x₀ : X) → (p has-a-root) ⇔ (x₀ is-a-root-of p)
@@ -175,10 +173,8 @@ selection functions. (Possible because choice holds in MLTT.)
 _has-selection_ : ∀ {U} (X : U ̇) → ((X → 𝟚) → X) → U ̇
 X has-selection ε = (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x ≡ ₁
 
-
 searchable' : ∀ {U} → U ̇ → U ̇
 searchable' X = Σ \(ε : (X → 𝟚) → X) → X has-selection ε
-
 
 searchable-implies-searchable' : ∀ {U} {X : U ̇} → searchable X → searchable' X
 searchable-implies-searchable' {U} {X} ε' = ε , lemma 
@@ -374,5 +370,4 @@ module _ (pt : PropTrunc) where
  image-searchable f = surjection-searchable (corestriction f)
                                             (corestriction-surjection f)
  
-
 \end{code}

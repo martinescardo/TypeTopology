@@ -343,10 +343,10 @@ module AC-gives-EM
 
  open  AC-renders-all-sets-discrete U₁ pt fe
 
- lemma : AC → (P : Prop) → decidable(⊤ ≡ P)
- lemma ac P = ac-discrete-sets ac Prop (Prop-isSet (fe U₀ U₀) pe) a
+ lemma : AC → (P : Ω) → decidable(⊤ ≡ P)
+ lemma ac P = ac-discrete-sets ac Ω (Ω-isSet (fe U₀ U₀) pe) a
    where
-    a : 𝟚 → Prop
+    a : 𝟚 → Ω
     a ₀ = ⊤
     a ₁ = P
     

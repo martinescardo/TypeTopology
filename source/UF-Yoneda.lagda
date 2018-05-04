@@ -89,18 +89,23 @@ not be taken too seriously:
 
 \begin{code}
 
-Yoneda-computation : ∀ {U V} {X : U ̇} (x : X) {A : X → V ̇} (a : A x) 
+Yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x) 
                    → transport A refl a ≡ a
-Yoneda-computation x a = refl
+Yoneda-computation x A a = refl
 
-yoneda-computation : ∀ {U V} {X : U ̇} (x : X) {A : X → V ̇} (a : A x) 
+yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x) 
                   → yoneda-elem x A (yoneda-nat x A a) ≡ a
-yoneda-computation {U} {V} {X} x {A} = Yoneda-computation {U} {V} {X} x {A}
+yoneda-computation x A = Yoneda-computation x A
+
+yoneda-elem-isEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+                   → isEquiv (yoneda-elem x A)
+yoneda-elem-isEquiv fe {U} {V} {X} x A = (yoneda-nat x A , yoneda-computation x A) ,
+                                         (yoneda-nat x A , yoneda-lemma' fe x A)
 
 yoneda-nat-isEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → isEquiv (yoneda-nat x A)
 yoneda-nat-isEquiv fe {U} {V} {X} x A = (yoneda-elem x A , yoneda-lemma' fe x A) ,
-                                        (yoneda-elem x A , yoneda-computation {U} {V} {X} x {A})
+                                        (yoneda-elem x A , yoneda-computation x A)
 
 yoneda-equivalence : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → A x ≃ Nat (Id x) A  
@@ -143,7 +148,7 @@ considered below.
 
 universality-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                      → is-universal-element (x , a)
-                     → (y : X) → hasSection(yoneda-nat x A a y) 
+                     → (y : X) → hasSection (yoneda-nat x A a y) 
 universality-section {U} {V} {X} {A} x a u y = s y , φ y
  where
   s : (y : X) → A y → x ≡ y
@@ -171,8 +176,8 @@ equivalent to η being a natural retraction, and we start with it:
 \begin{code}
 
 Yoneda-section-forth : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                     → isSingleton (Σ A) → (y : X)
-                     → hasSection (η y)
+                     → isSingleton (Σ A)
+                     → (y : X) → hasSection (η y)
 Yoneda-section-forth {U} {V} {X} {A} x η iss y = g
  where
   u : is-universal-element (x , yoneda-elem x A η)
@@ -295,15 +300,15 @@ nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-isSing
 nat-hasSection-isProp : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                         (x : X) (η : Nat (Id x) A)
                       → isProp ((y : X) → hasSection (η y)) 
-nat-hasSection-isProp fe {U} {V} {X} {A} x η φ = isProp-exponential-ideal (fe U (U ⊔ V)) γ φ
+nat-hasSection-isProp fe {U} {V} {X} x η φ = isProp-exponential-ideal (fe U (U ⊔ V)) γ φ
   where
    γ : (y : X) → isProp (hasSection (η y))
    γ y = hasr-isprop-hass fe (η y) (nat-retraction-is-section x η φ y)
 
-nat-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (f : Nat (Id x) A)
-                      → ((y : X) → hasSection(f y)) 
-                      → ((y : X) → isEquiv(f y))
-nat-retraction-isEquiv {U} {V} {X} {A} x f hass y = (hass y , nat-retraction-is-section x f hass y)
+nat-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+                      → ((y : X) → hasSection(η y)) 
+                      → ((y : X) → isEquiv(η y))
+nat-retraction-isEquiv x η hass y = (hass y , nat-retraction-is-section x η hass y)
 
 \end{code}
 
@@ -464,7 +469,7 @@ Jbased'' : ∀ {U V} {X : U ̇} (x : X) (A : paths-from x → V ̇)
 Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons w)
 
 Jbased' : ∀ {U V} {X : U ̇} (x : X) (B : (y : X) → x ≡ y → V ̇)
-        → B x refl → (y : X) (p : x ≡ y) → B y p
+        → B x refl → (y : X) → Π (B y)
 Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
 
 \end{code}

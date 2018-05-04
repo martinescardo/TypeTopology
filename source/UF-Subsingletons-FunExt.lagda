@@ -19,10 +19,10 @@ open import UF-FunExt
 open import UF-LeftCancellable
 
 isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
-                        → ((x : X) → isProp(A x)) → isProp(Π A) 
-isProp-exponential-ideal {U} {V} fe {X} {A} isa f g = funext fe (λ x → isa x (f x) (g x))
+                        → ((x : X) → isProp (A x)) → isProp (Π A) 
+isProp-exponential-ideal fe {X} {A} isa f g = funext fe (λ x → isa x (f x) (g x))
 
-isProp-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp(isProp X)
+isProp-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp (isProp X)
 isProp-isProp {U} {X} fe f g = claim₁
  where
   lemma : isSet X
@@ -78,39 +78,26 @@ isProp-isSet' fe = isProp-exponential-ideal fe
 
 \begin{code}
 
-sum-of-contradictory-props : ∀ {U V} {P : U ̇} {Q : V ̇}
-                           → isProp P → isProp Q → (P → Q → 𝟘) → isProp(P + Q)
-sum-of-contradictory-props {U} {V} {P} {Q} isp isq f = go
-  where
-   go : (x y : P + Q) → x ≡ y
-   go (inl p) (inl p') = ap inl (isp p p')
-   go (inl p) (inr q)  = 𝟘-elim (f p q)
-   go (inr q) (inl p)  = 𝟘-elim (f p q)
-   go (inr q) (inr q') = ap inr (isq q q')
-
 decidable-isProp : ∀ {U} {P : U ̇} → FunExt U U₀ → isProp P → isProp(P + ¬ P)
 decidable-isProp fe₀ isp = sum-of-contradictory-props
                              isp
                              (isProp-exponential-ideal fe₀ λ _ → 𝟘-isProp)
                              (λ p u → u p)
 
-\end{code}
-
-\begin{code}
-
-PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Prop {U}}
+PropExt : ∀ {U} → FunExt U U → propExt U → {p q : Ω {U}}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt {U} fe pe {p} {q} f g =
         to-Σ-≡'' ((pe (holdsIsProp p) (holdsIsProp q) f g) , isProp-isProp fe _ _)
-Prop-isSet : ∀ {U} → FunExt U U → propExt U → isSet (Prop {U})
-Prop-isSet {U} fe pe = path-collapsible-isSet pc
+
+Ω-isSet : ∀ {U} → FunExt U U → propExt U → isSet (Ω {U})
+Ω-isSet {U} fe pe = path-collapsible-isSet pc
  where
-  A : (p q : Prop) → U ̇
+  A : (p q : Ω) → U ̇
   A p q = (p holds → q holds) × (q holds → p holds) 
-  A-isProp : (p q : Prop) → isProp(A p q)
+  A-isProp : (p q : Ω) → isProp(A p q)
   A-isProp p q = isProp-closed-under-Σ (isProp-exponential-ideal fe (λ _ → holdsIsProp q)) 
                                        (λ _ → isProp-exponential-ideal fe (λ _ → holdsIsProp p)) 
-  g : (p q : Prop) → p ≡ q → A p q
+  g : (p q : Ω) → p ≡ q → A p q
   g p q e = (b , c)
    where
     a : p holds ≡ q holds
@@ -119,13 +106,13 @@ Prop-isSet {U} fe pe = path-collapsible-isSet pc
     b = transport (λ X → X) a
     c : q holds → p holds
     c = transport (λ X → X) (a ⁻¹)
-  h  : (p q : Prop) → A p q → p ≡ q 
+  h  : (p q : Ω) → A p q → p ≡ q 
   h p q (u , v) = PropExt fe pe u v
-  f  : (p q : Prop) → p ≡ q → p ≡ q
+  f  : (p q : Ω) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
-  constant-f : (p q : Prop) (d e : p ≡ q) → f p q d ≡ f p q e 
+  constant-f : (p q : Ω) (d e : p ≡ q) → f p q d ≡ f p q e 
   constant-f p q d e = ap (h p q) (A-isProp p q (g p q d) (g p q e))
-  pc : {p q : Prop} → Σ \(f : p ≡ q → p ≡ q) → constant f
+  pc : {p q : Ω} → Σ \(f : p ≡ q → p ≡ q) → constant f
   pc {p} {q} = (f p q , constant-f p q)
 
 neg-isProp : ∀ {U} {X : U ̇} → FunExt U U₀ → isProp(¬ X)
