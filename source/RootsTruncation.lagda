@@ -3,7 +3,7 @@ Martin Escardo, early 2013, typed 5th May 2018
 We show that the type of roots of a function α : ℕ → 𝟚 has a
 propositional truncation, in pure spartan Martin-Löf theory (without
 using function extensionality). We also show that if we already have
-truncations, we can "exit"q the truncation of the set of roots.
+truncations, we can "exit" the truncation of the set of roots.
 
 \begin{code}
 
@@ -35,7 +35,7 @@ FPO k α = there-is-a-minimal-root k α + there-is-no-root k α
 \end{code}
 
 The above "finite principle of omniscience" is a proposition using
-functional extensionality. However, here we want to avoid function
+functional extensionality. However, we want to avoid function
 extensionality here.
 
 \begin{code}
@@ -48,13 +48,13 @@ fpo (succ k) α = cases f g (fpo k α)
   f (m , p , l , φ) = inl (m , p , ≤-trans (succ m) k (succ k) l (≤-succ k) , φ)
   
   g : there-is-no-root k α → FPO (succ k) α
-  g φ = cases f₀ f₁ (𝟚-discrete (α k) ₀)
+  g φ = cases g₀ g₁ (𝟚-discrete (α k) ₀)
    where
-    f₀ : α k ≡ ₀ → FPO (succ k) α
-    f₀ p = inl (k , p , ≤-refl k , φ)
+    g₀ : α k ≡ ₀ → FPO (succ k) α
+    g₀ p = inl (k , p , ≤-refl k , φ)
     
-    f₁ : α k ≢ ₀ → FPO (succ k) α
-    f₁ u = inr (bounded-∀-next (λ n → α n ≢ ₀) k u φ)
+    g₁ : α k ≢ ₀ → FPO (succ k) α
+    g₁ u = inr (bounded-∀-next (λ n → α n ≢ ₀) k u φ)
 
 \end{code}
 
