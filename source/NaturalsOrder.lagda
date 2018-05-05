@@ -72,4 +72,17 @@ not-less-bigger-or-equal zero n u = zero-minimal n
 not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
+bounded-∀-next : ∀ {U} (A : ℕ → U ̇) (k : ℕ)
+        → A k
+        → ((n : ℕ) → n < k → A n)
+        → (n : ℕ) → n < succ k → A n
+bounded-∀-next A k a φ n l = cases f g s
+ where
+  s : (n < k) + (succ n ≡ succ k)
+  s = ≤-split (succ n) k l
+  f : n < k → A n
+  f = φ n
+  g : succ n ≡ succ k → A n
+  g p = back-transport A (succ-injective p) a
+  
 \end{code}
