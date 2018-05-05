@@ -140,3 +140,28 @@ roots-exit-truncation : (α : ℕ → 𝟚) → roots-truncation α → roots α
 roots-exit-truncation α = from-fix (μρ α)
 
 \end{code}
+
+Of course, if we already have propositional truncations, we can exit
+root truncations using the above technique.
+
+\begin{code}
+
+open import UF-PropTrunc
+
+module ExitRootTruncations (pt : PropTrunc) where
+
+ open PropositionalTruncation pt
+
+ exit-root-truncation : (α : ℕ → 𝟚) → ∥(Σ \(n : ℕ) → α n ≡ ₀)∥ → Σ \(n : ℕ) → α n ≡ ₀
+ exit-root-truncation α = h ∘ g
+  where
+   f : (Σ \(n : ℕ) → α n ≡ ₀) → fix (μρ α)
+   f = to-fix (μρ α) (μρ-constant α)
+   
+   g : ∥(Σ \(n : ℕ) → α n ≡ ₀)∥ → fix (μρ α)
+   g = ptrec (Kraus-Lemma (μρ α) (μρ-constant α)) f
+   
+   h : fix (μρ α) → Σ \(n : ℕ) → α n ≡ ₀
+   h = from-fix (μρ α)
+
+\end{code}
