@@ -72,3 +72,34 @@ to-fix : ∀ {U} {X : U ̇} (f : X → X) → constant f → X → fix f
 to-fix f g x = (f x , g x (f x))
 
 \end{code}
+
+A main application is to show that, in pure spartan MLTT, if a type
+has a constant endfunction then it has a propositional truncation.
+
+\begin{code}
+
+hasSplitSupport : ∀ {U} → U ̇ → U ′ ̇
+hasSplitSupport {U} X = Σ \(P : U ̇) → isProp P × (X ⇔ P)
+
+fix-hasSplitSupport : ∀ {U} {X : U ̇}
+                    → collapsible X
+                    → hasSplitSupport X
+fix-hasSplitSupport {U} {X} (f , κ) = fix f ,
+                                      Kraus-Lemma f κ ,
+                                      to-fix f κ ,
+                                      from-fix f
+
+hasPropTruncation : ∀ {U} V → U ̇ → (U ′) ⊔ (V ′) ̇
+hasPropTruncation {U} V X = Σ \(X' : U ̇) → isProp X'
+                                          × (X → X')
+                                          × ((P : V ̇) → isProp P → (X → P) → X' → P)
+
+split-truncation : ∀ {U} {X : U ̇} → hasSplitSupport X → ∀ V → hasPropTruncation V X
+split-truncation {U} {X} (X' , i , f , g) V = X' , i , f , λ P j h x' → h (g x')
+
+collapsible-hasPropTruncation : ∀ {U} {X : U ̇}
+                              → collapsible X
+                              → ∀ V → hasPropTruncation V X
+collapsible-hasPropTruncation {U} {X} c = split-truncation (fix-hasSplitSupport c)
+
+\end{code}

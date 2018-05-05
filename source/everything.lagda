@@ -273,12 +273,14 @@ import LexicographicOrder
 import LexicographicSearch
 import LPO
 import NaturalsAddition
+import NaturalsOrder
 import NonCollapsibleFamily
 import OmniscientTypes
 import OrdinalCodes
 import PlusOneLC
 import PropTychonoff
 import RicesTheoremForTheUniverse
+import RootsTruncation
 import SearchableOrdinals
 import SearchableTypes
 import Sequence
