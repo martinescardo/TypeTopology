@@ -169,8 +169,8 @@ path-collapsible-isSet {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc 
 
 \end{code}
 
-The also need the following symmetrical version of local Hedberg,
-which can be proved by reduction to the above (using the fact that
+We also need the following symmetrical version of local Hedberg, which
+can be proved by reduction to the above (using the fact that
 collapsible types are closed under equivalence), but at this point we
 don't have the machinery at this disposal (which is developed in
 modules that depend on this one), and hence we prove it directly by
