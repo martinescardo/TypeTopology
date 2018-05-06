@@ -19,7 +19,7 @@ module RootsTruncation (U : Universe)
                        (Z : U ̇)
                        (z : Z)
                        (z-isolated : isolated' z)
-                        where
+                       where
 
 open import NaturalsOrder
 open import UF-Subsingletons
@@ -34,14 +34,17 @@ n ≡ z.
 
 \begin{code}
 
-there-is-a-minimal-root : ℕ → (ℕ → Z) → U ̇
-there-is-a-minimal-root k α = Σ \(m : ℕ) → (α m ≡ z) × (m < k) × ((n : ℕ) → n < m → α n ≢ z)
+_has-no-root<_ : (ℕ → Z) → ℕ → U ̇
+α has-no-root< k = (n : ℕ) → n < k → α n ≢ z
 
-there-is-no-root : ℕ → (ℕ → Z) → U ̇
-there-is-no-root k α = (n : ℕ) → n < k → α n ≢ z
+_has-a-minimal-root<_ : (ℕ → Z) → ℕ → U ̇
+α has-a-minimal-root< k = Σ \(m : ℕ) → (α m ≡ z)
+                                      × (m < k)
+                                      × α has-no-root< m
 
 FPO : ℕ → (ℕ → Z) → U ̇
-FPO k α = there-is-a-minimal-root k α + there-is-no-root k α
+FPO k α = α has-a-minimal-root< k
+        + α has-no-root< k
 
 \end{code}
 
@@ -55,10 +58,10 @@ fpo : ∀ k α → FPO k α
 fpo zero α = inr (λ n ())
 fpo (succ k) α = cases f g (fpo k α)
  where
-  f : there-is-a-minimal-root k α → FPO (succ k) α
+  f : α has-a-minimal-root< k → FPO (succ k) α
   f (m , p , l , φ) = inl (m , p , ≤-trans (succ m) k (succ k) l (≤-succ k) , φ)
   
-  g : there-is-no-root k α → FPO (succ k) α
+  g : α has-no-root< k → FPO (succ k) α
   g φ = cases g₀ g₁ (z-isolated (α k))
    where
     g₀ : α k ≡ z → FPO (succ k) α
@@ -73,15 +76,17 @@ Given any root, we can find a minimal root.
 
 \begin{code}
 
-minimal-root : ∀ α n → α n ≡ z → there-is-a-minimal-root (succ n) α
+minimal-root : ∀ α n → α n ≡ z → α has-a-minimal-root< (succ n)
 minimal-root α n p = Right-fails-then-left-holds (fpo (succ n) α) g
  where
-  g : ¬(there-is-no-root (succ n) α)
+  g : ¬ (α has-no-root< (succ n))
   g φ = φ n (≤-refl n) p
 
 \end{code}
 
-With this we can define a constant endomap on the type of roots:
+With this we can define a constant endomap on the type of roots, that
+given any root finds a minimal root. Notice that the type of roots may
+be empty, and still the function is well defined.
 
 \begin{code}
 
@@ -107,15 +112,19 @@ roots α = Σ \(n : ℕ) → α n ≡ z
 μρ-constant : (α : ℕ → Z) → constant (μρ α)
 μρ-constant α (n , p) (n' , p') = r
  where
-  u : μρ-root α (n , p) ≤ μρ-root α (n' , p')
-  u = μρ-root-minimal α n p (μρ-root α (n' , p')) (μρ-root-is-root α (n' , p'))
+  m m' : ℕ
+  m  = μρ-root α (n , p)
+  m' = μρ-root α (n' , p')
   
-  v : μρ-root α (n' , p') ≤ μρ-root α (n , p)
-  v = μρ-root-minimal α n' p' (μρ-root α (n , p)) (μρ-root-is-root α (n , p))
+  l : m ≤ m'
+  l = μρ-root-minimal α n p m' (μρ-root-is-root α (n' , p'))
   
-  q : μρ-root α (n , p) ≡ μρ-root α (n' , p')
-  q = ≤-anti _ _ u v
+  l' : m' ≤ m
+  l' = μρ-root-minimal α n' p' m (μρ-root-is-root α (n , p))
 
+  q : m ≡ m'
+  q = ≤-anti _ _ l l'
+  
   r : μρ α (n , p) ≡ μρ α (n' , p')
   r = to-Σ-≡'' (q , isolated-Id-isProp z z-isolated _ _ _)
  
