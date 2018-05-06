@@ -29,7 +29,7 @@ module HiggsInvolutionTheorem (fe : FunExt U₀ U₀)
                               where
 
 involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
-involutive f = ∀{x} → f(f x) ≡ x
+involutive f = ∀{x} → f (f x) ≡ x
 
 higgs : (f : Ω → Ω) → left-cancellable f → involutive f
 higgs f cancelf {p} = cancelf (VII p)
@@ -43,25 +43,28 @@ higgs f cancelf {p} = cancelf (VII p)
    III : (p : Ω) → f p ≡ ⊤ → p ≡ f ⊤
    III p r = Ω-ext pe fe (I p r) (II p r)
 
-   IV : (p : Ω) → f(f p) ≡ ⊤ → p ≡ ⊤
+   IV : (p : Ω) → f (f p) ≡ ⊤ → p ≡ ⊤
    IV p r = cancelf (III (f p) r)
 
-   V : (p : Ω) → f(f(f p)) ≡ ⊤ → f p ≡ ⊤
+   V : (p : Ω) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
    V p r = IV (f p) r
 
-   VI : (p : Ω) → f p ≡ ⊤ → f(f(f p)) ≡ ⊤
+   VI : (p : Ω) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
    VI p r = d ∙ r
     where
-     a : f(f p) ≡ f ⊤
+     a : f (f p) ≡ f ⊤
      a = ap f r
+
      b : f ⊤ ≡ p
      b = (III p r)⁻¹
-     c : f(f p) ≡ p
+     
+     c : f (f p) ≡ p
      c = a ∙ b
-     d : f(f(f p)) ≡ f p
+     
+     d : f (f (f p)) ≡ f p
      d = ap f c
 
-   VII : (p : Ω) → f(f(f p)) ≡ f p
+   VII : (p : Ω) → f (f (f p)) ≡ f p
    VII p = Ω-ext pe fe (V p) (VI p)
 
 \end{code}
