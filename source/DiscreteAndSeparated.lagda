@@ -21,6 +21,9 @@ open import DecidableAndDetachable
 isolated : ∀ {U} {X : U ̇} → X → U ̇
 isolated x = ∀ y → decidable(x ≡ y)
 
+isolated' : ∀ {U} {X : U ̇} → X → U ̇
+isolated' x = ∀ y → decidable(y ≡ x)
+
 discrete : ∀ {U} → U ̇ → U ̇
 discrete X = (x : X) → isolated x
 

@@ -24,6 +24,9 @@ discrete-is-path-collapsible d = decidable-is-collapsible (d _ _)
 discrete-isSet : ∀ {U} {X : U ̇} → discrete X → isSet X
 discrete-isSet d = path-collapsible-isSet(discrete-is-path-collapsible d)
 
+isolated-Id-isProp : ∀ {U} {X : U ̇} (x : X) → isolated' x → (y : X) → isProp (y ≡ x)
+isolated-Id-isProp x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
+
 dd-sum : ∀ {U} {X : U ̇} → {Y : X → U ̇}
        → discrete X → ((x : X) → discrete(Y x)) → discrete(Σ Y)
 dd-sum {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')

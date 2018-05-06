@@ -79,7 +79,11 @@ happly = happly' _ _
 
 sym-is-inverse : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y)
                → refl ≡ p ⁻¹ ∙ p
-sym-is-inverse {X} = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
+sym-is-inverse = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
+
+sym-is-inverse' : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y)
+               → refl ≡ p ∙ p ⁻¹
+sym-is-inverse' refl = refl
 
 ⁻¹-involutive : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
 ⁻¹-involutive refl = refl

@@ -148,19 +148,51 @@ path-collapsible X = {x y : X} → collapsible(x ≡ y)
 set-is-path-collapsible : ∀ {U} → {X : U ̇} → isSet X → path-collapsible X
 set-is-path-collapsible u = (id , u)
 
-path-collapsible-isSet : ∀ {U} {X : U ̇} → path-collapsible X → isSet X
-path-collapsible-isSet pc p q = claim₂
+local-hedberg : ∀ {U} {X : U ̇} (x : X) 
+      → ((y : X) → collapsible (x ≡ y)) 
+      → (y : X) → isProp (x ≡ y)
+local-hedberg {U} {X} x pc y p q = claim₂
  where
-  f : ∀ {x y} → x ≡ y → x ≡ y
-  f = pr₁ pc
-  g : ∀ {x y} (p q : x ≡ y) → f p ≡ f q
-  g = pr₂ pc
-  claim₀ : ∀ {x y} (r : x ≡ y) → r ≡ (f refl) ⁻¹ ∙ f r
-  claim₀ = J (λ x y r → r ≡ (f refl) ⁻¹ ∙ f r) (λ x → sym-is-inverse(f refl))
-  claim₁ : (f refl) ⁻¹ ∙ f p ≡ (f refl) ⁻¹ ∙ f q
-  claim₁ = ap (λ h → (f refl) ⁻¹ ∙ h) (g p q)
+  f : (y : X) → x ≡ y → x ≡ y
+  f y = pr₁ (pc y)
+  g : (y : X) (p q : x ≡ y) → f y p ≡ f y q
+  g y = pr₂ (pc y)
+  claim₀ : (y : X) (r : x ≡ y) → r ≡ (f x refl)⁻¹ ∙ f y r
+  claim₀ _ refl = sym-is-inverse (f x refl)
+  claim₁ : (f x refl)⁻¹ ∙ f y p ≡ (f x refl)⁻¹ ∙ f y q
+  claim₁ = ap (λ h → (f x refl)⁻¹ ∙ h) (g y p q)
   claim₂ : p ≡ q
-  claim₂ = claim₀ p ∙ claim₁ ∙ (claim₀ q)⁻¹
+  claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹ 
+
+path-collapsible-isSet : ∀ {U} {X : U ̇} → path-collapsible X → isSet X
+path-collapsible-isSet {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
+
+\end{code}
+
+The also need the following symmetrical version of local Hedberg,
+which can be proved by reduction to the above (using the fact that
+collapsible types are closed under equivalence), but at this point we
+don't have the machinery at this disposal (which is developed in
+modules that depend on this one), and hence we prove it directly by
+symmetrizing the proof.
+
+\begin{code}
+
+local-hedberg' : ∀ {U} {X : U ̇} (x : X) 
+      → ((y : X) → collapsible (y ≡ x)) 
+      → (y : X) → isProp (y ≡ x)
+local-hedberg' {U} {X} x pc y p q = claim₂
+ where
+  f : (y : X) → y ≡ x → y ≡ x
+  f y = pr₁ (pc y)
+  g : (y : X) (p q : y ≡ x) → f y p ≡ f y q
+  g y = pr₂ (pc y)
+  claim₀ : (y : X) (r : y ≡ x) → r ≡  (f y r) ∙ (f x refl)⁻¹
+  claim₀ _ refl = sym-is-inverse' (f x refl)
+  claim₁ : f y p ∙ (f x refl)⁻¹  ≡ f y q ∙ (f x refl)⁻¹
+  claim₁ = ap (λ h → h ∙ (f x refl)⁻¹) (g y p q)
+  claim₂ : p ≡ q
+  claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
 
 prop-is-path-collapsible : ∀ {U} {X : U ̇} → isProp X → path-collapsible X
 prop-is-path-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → refl))
