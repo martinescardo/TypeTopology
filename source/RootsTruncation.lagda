@@ -39,8 +39,8 @@ _has-no-root<_ : (ℕ → Z) → ℕ → U ̇
 
 _has-a-minimal-root<_ : (ℕ → Z) → ℕ → U ̇
 α has-a-minimal-root< k = Σ \(m : ℕ) → (α m ≡ z)
-                                      × (m < k)
-                                      × α has-no-root< m
+                                     × (m < k)
+                                     × α has-no-root< m
 
 FPO : ℕ → (ℕ → Z) → U ̇
 FPO k α = α has-a-minimal-root< k

@@ -74,8 +74,26 @@ open import UF-PropTrunc
 open import UF-ImageAndSurjection
 open import DiscreteAndSeparated hiding (tight)
 
+\end{code}
+
+An equality defined by a Leibniz principle with 𝟚-valued functions:
+
+\begin{code}
+
+_≡₂_ : ∀ {U} {X : U ̇} → X → X → U ̇ 
+x ≡₂ y = (p : _ → 𝟚) → p x ≡ p y
+
+\end{code}
+
+(In topological models, maps into 𝟚 classify clopens, and so total
+separatedness amounts to "the clopens separate the points" in the
+sense that any two points with the same clopen neighbourhoods are
+equal. This notion in topology is called total separatedness.)
+
+\begin{code}
+
 totally-separated : ∀ {U} → U ̇ → U ̇
-totally-separated X = {x y : X} → ((p : X → 𝟚) → p x ≡ p y) → x ≡ y
+totally-separated X = {x y : X} → x ≡₂ y → x ≡ y
 
 𝟚-separated : ∀ {U} → U ̇ → U ̇
 𝟚-separated = totally-separated

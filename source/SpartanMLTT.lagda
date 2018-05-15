@@ -23,12 +23,12 @@ U₂ = U₁ ′
 
 For example, we write the following instead of 
 
-    Π : ∀ {i j} {X : Set i} → (Y : X → Set j) → Set (i ⊔ j)
+    Π : ∀ {i j} {X : Set i} (Y : X → Set j) → Set (i ⊔ j)
     Π Y = (x : _) → Y x
 
 \begin{code}
 
-Π : ∀ {U V} {X : U ̇} → (Y : X → V ̇) → U ⊔ V ̇
+Π : ∀ {U V} {X : U ̇} (Y : X → V ̇) → U ⊔ V ̇
 Π Y = (x : _) → Y x
  
 \end{code}
@@ -356,7 +356,6 @@ zero-is-not-one ()
 𝟚-cases : ∀ {U} {A : U ̇} → A → A → 𝟚 → A
 𝟚-cases = 𝟚-induction
 
-
 two-equality-cases : ∀ {U} {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
 two-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
 two-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
@@ -382,6 +381,32 @@ Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] f = Lemma[b≢₁→b≡₀] ∘ 
 
 Lemma[[a≡₀→b≡₀]→b≡₁→a≡₁] : {a b : 𝟚} → (a ≡ ₀ → b ≡ ₀) → b ≡ ₁ → a ≡ ₁
 Lemma[[a≡₀→b≡₀]→b≡₁→a≡₁] f = Lemma[b≢₀→b≡₁] ∘ (contrapositive f) ∘ Lemma[b≡₁→b≢₀]
+
+\end{code}
+
+𝟚-Characteristic function of equality on 𝟚:
+
+\begin{code}
+
+complement : 𝟚 → 𝟚
+complement ₀ = ₁
+complement ₁ = ₀
+
+complement-involutive : (b : 𝟚) → complement(complement b) ≡ b
+complement-involutive ₀ = refl
+complement-involutive ₁ = refl
+
+eq𝟚 : 𝟚 → 𝟚 → 𝟚
+eq𝟚 ₀ n = complement n
+eq𝟚 ₁ n = n
+
+eq𝟚-equal : (m n : 𝟚) → eq𝟚 m n ≡ ₁ → m ≡ n
+eq𝟚-equal ₀ n p = ap complement (p ⁻¹) ∙ complement-involutive n
+eq𝟚-equal ₁ n p = p ⁻¹
+
+equal-eq𝟚 : (m n : 𝟚) → m ≡ n → eq𝟚 m n ≡ ₁
+equal-eq𝟚 ₀ ₀ refl = refl
+equal-eq𝟚 ₁ ₁ refl = refl
 
 \end{code}
 
@@ -492,15 +517,13 @@ Addition modulo 2:
 
 \begin{code}
 
-complement : 𝟚 → 𝟚
-complement ₀ = ₁
-complement ₁ = ₀
-
-infixr 31 _⊕_
-
 _⊕_ : 𝟚 → 𝟚 → 𝟚
 ₀ ⊕ x = x
 ₁ ⊕ x = complement x
+
+complement-of-eq𝟚-is-⊕ : (m n : 𝟚) → complement(eq𝟚 m n) ≡ m ⊕ n
+complement-of-eq𝟚-is-⊕ ₀ n = complement-involutive n
+complement-of-eq𝟚-is-⊕ ₁ n = refl
 
 Lemma[b⊕b≡₀] : {b : 𝟚} → b ⊕ b ≡ ₀
 Lemma[b⊕b≡₀] {₀} = refl
@@ -546,10 +569,6 @@ complement-both-right : {b c : 𝟚} → b ≤ c → complement c ≤ complement
 complement-both-right {₀} {c} f p = refl
 complement-both-right {₁} {₀} f p = f p
 complement-both-right {₁} {₁} f p = p
-
-complement-involutive : (b : 𝟚) → complement(complement b) ≡ b
-complement-involutive ₀ = refl
-complement-involutive ₁ = refl
 
 \end{code}
 
@@ -601,5 +620,6 @@ infix  1 _∎
 infixr 0 _≡⟨_⟩_ 
 infixl 2 _∙_
 infix  4  _∼_
+infixr 31 _⊕_
 
 \end{code}
