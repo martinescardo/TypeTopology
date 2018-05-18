@@ -45,19 +45,19 @@ module _ {X : U ̇}
  where
   private
     g : {t z : X} (p : Id x t) (q : Id x z) → lc-maps (A t p) (A z q)
-    g {t} {z} p q = J x A' (J x Z id-lc-maps t p) z q
+    g {t} {z} p q = J x B (J x C id-lc-maps t p) z q
      where
-      A' : (y : X) → Id x y → U ̇
-      A' y q = lc-maps (A t p) (A y q)
-      Z : (y : X) → Id x y → U ̇
-      Z y p = lc-maps (A y p ) (A x refl) 
+      B : (y : X) → Id x y → U ̇
+      B y q = lc-maps (A t p) (A y q)
+      C : (y : X) → Id x y → U ̇
+      C y p = lc-maps (A y p ) (A x refl) 
   
     h : (b : A x refl) {y : X} (p : Id x y)
       → Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
-    h b {y} p = J x A' (b , refl) y p
+    h b {y} p = J x B (b , refl) y p
      where
-      A' : (y : X) (p : Id x y) → U ̇
-      A' y p = Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
+      B : (y : X) (p : Id x y) → U ̇
+      B y p = Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
   
   J' : A x refl → (y : X) (p : Id x y) → A y p
   J' b y p = pr₁ (h b p)
