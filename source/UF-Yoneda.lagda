@@ -412,6 +412,40 @@ funext-via-contractibility {U} {V} φ {X} {Y} f = γ
 
 \end{code}
 
+We also have the following characterization of univalence from the
+Yoneda machinery.
+
+The fact that this is the case was announced on 5th August
+2014 with the techniques of the HoTT Book
+(https://groups.google.com/forum/#!msg/homotopytypetheory/HfCB_b-PNEU/Ibb48LvUMeUJ)),
+and the proof given here via Yoneda was announced on 12th May 2015
+(http://www.cs.bham.ac.uk/~mhe/yoneda/yoneda.html).
+
+\begin{code}
+
+open import UF-Univalence
+
+univalence-via-singletons : ∀ {U}
+                          → isUnivalent U
+                            ⇔
+                            ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-singletons {U} = (f , g)
+ where
+  f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))
+  f ua X = representable-singleton (X , (idtoeq X , ua X))
+
+  g : ((X : U ̇) → isSingleton (Σ (Eq X))) → isUnivalent U
+  g φ X = universality-equiv X (ideq X)
+                                (unique-element-is-universal-element
+                                       (Eq X)
+                                       (X , ideq X)
+                                       (isSingleton-isProp (φ X) (X , ideq X)))
+
+\end{code}
+
+Notice that isSingleton can be replaced by isProp in the formulation
+of this logical equivalence (exercise).
+
 
 Appendix.
 
