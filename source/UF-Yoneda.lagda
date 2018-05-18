@@ -385,6 +385,34 @@ hasAdj-isVoevodskyEquiv' g (f , ψ) = hasAdj-isVoevodskyEquiv g (f , (λ x y →
 
 \end{code}
 
+Here is an application of the Yoneda machinery to a well-known result
+by Voevodsky. If products preserve contractibility, then dependent
+function extensionality holds.
+
+\begin{code}
+
+open import UF-Subsingletons-Retracts
+
+funext-via-contractibility : ∀ {U V}
+                           → ((X : U ̇) (Y : X → V ̇) → ((x : X) → isSingleton (Y x))
+                                                       → isSingleton (Π Y))
+                           → FunExt U V
+funext-via-contractibility {U} {V} φ {X} {Y} f = γ
+ where
+  A : Π Y → U ⊔ V ̇
+  A g = (x : X) → f x ≡ g x
+  η : Nat (Id f) A
+  η = happly' f
+  c : isSingleton (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
+  c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → paths-from-singleton (f x))
+  d : isSingleton (Σ A)
+  d = retract-of-singleton πσ πσ-hasSection c
+  γ : (g : Π Y) → isEquiv (happly' f g)
+  γ = Yoneda-Theorem-forth f η d
+
+\end{code}
+
+
 Appendix.
 
 Two natural transformations with the same Yoneda elements are
@@ -607,3 +635,4 @@ idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
 idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) refl
 
 \end{code}
+

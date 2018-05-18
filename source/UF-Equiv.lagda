@@ -339,16 +339,16 @@ but also has a direct proof by path induction:
       → paths-in-fibers f y x x' p p' (from-paths-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
 
-pr₁-equivalence : ∀ {U V} (X : U ̇) (Y : X → V ̇)
-               → ((x : X) → isSingleton (Y x))
-               → isEquiv (pr₁ {U} {V} {X} {Y})
-pr₁-equivalence {U} {V} X Y iss = (g , prg) , (g , gpr)
+pr₁-equivalence : ∀ {U V} (X : U ̇) (A : X → V ̇)
+               → ((x : X) → isSingleton (A x))
+               → isEquiv (pr₁ {U} {V} {X} {A})
+pr₁-equivalence {U} {V} X A iss = (g , prg) , (g , gpr)
  where
-  g : X → Σ Y
+  g : X → Σ A
   g x = x , pr₁(iss x)
   prg : (x : X) → pr₁ (g x) ≡ x
   prg x = refl
-  gpr : (σ : Σ Y) → g(pr₁ σ) ≡ σ
+  gpr : (σ : Σ A) → g(pr₁ σ) ≡ σ
   gpr (x , a) = to-Σ-≡'' (prg x , isSingleton-isProp (iss x) _ _)
 
 pr₁-vequivalence : ∀ {U V} (X : U ̇) (Y : X → V ̇)
@@ -365,19 +365,19 @@ pr₁-vequivalence {U} {V} X Y iss x = g
   g : isSingleton (fiber pr₁ x)
   g = c , f
 
-pr₁-vequivalence-converse : ∀ {U V} {X : U ̇} {Y : X → V ̇}
-                          → isVoevodskyEquiv (pr₁ {U} {V} {X} {Y})
-                          → ((x : X) → isSingleton(Y x))
-pr₁-vequivalence-converse {U} {V} {X} {Y} isv x = retract-of-singleton r (s , rs) (isv x)
+pr₁-vequivalence-converse : ∀ {U V} {X : U ̇} {A : X → V ̇}
+                          → isVoevodskyEquiv (pr₁ {U} {V} {X} {A})
+                          → ((x : X) → isSingleton(A x))
+pr₁-vequivalence-converse {U} {V} {X} {A} isv x = retract-of-singleton r (s , rs) (isv x)
   where
-    f : Σ Y → X
-    f = pr₁ {U} {V} {X} {Y}
-    s : Y x → fiber f x
-    s y = (x , y) , refl
-    r : fiber f x → Y x
-    r ((x , y) , refl) = y
-    rs : (y : Y x) → r(s y) ≡ y
-    rs y = refl
+    f : Σ A → X
+    f = pr₁ {U} {V} {X} {A}
+    s : A x → fiber f x
+    s a = (x , a) , refl
+    r : fiber f x → A x
+    r ((x , a) , refl) = a
+    rs : (a : A x) → r(s a) ≡ a
+    rs a = refl
 
 NatΣ-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
            → ((x : X) → isEquiv(ζ x)) → isEquiv(NatΣ ζ)
@@ -426,7 +426,6 @@ NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr�
   γ = pr₁(Σ-change-of-variables' A g (isEquiv-isHAE g e))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (isEquiv-isHAE g e))
-
 
 \end{code}
 
