@@ -65,9 +65,11 @@ show that the identity equivalences satisfy it.
 
 \begin{code}
 
-JEq : ∀ {U} → isUnivalent U
-    → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
-    → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
+Eq-induction : (U V : Universe) → (U ⊔ V)′ ̇
+Eq-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+                 → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
+
+JEq : ∀ {U} → isUnivalent U → ∀ {V} → Eq-induction U V
 JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
  where
   A' : (Y : U ̇) → X ≡ Y → V ̇
@@ -89,10 +91,7 @@ for Mathematics in Bonn.
 
 \begin{code}
 
-JEq-converse : ∀ {U}
-             → (∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
-                 → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e)
-             → isUnivalent U
+JEq-converse : ∀ {U} → (∀ {V} → Eq-induction U V) → isUnivalent U
 JEq-converse {U} jeq' X = γ
  where
 
