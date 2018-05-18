@@ -1,5 +1,5 @@
 Martin Escardo, 17 May 2018,
-while visiting the Hausdorff Institute in Bonn
+while visiting the Hausdorff Research Institute for Mathematics in Bonn
 
 This is an "improvement method" I learned from Peter Lumsdaine, 7 July
 2017, adapted from an Agda rendering by Andy Pitts, when
