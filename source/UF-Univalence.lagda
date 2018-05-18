@@ -103,8 +103,8 @@ JEq-converse {U} jeq' X = γ
   are not quite the same as Peter's. The main difference is that for
   the type of left-cancellable maps we use the native identity
   type. This is because he works with a global identity system on all
-  types, where we consider an identity system on the universe
-  only. His original version is here:
+  types, whereas we consider an identity system on one type only,
+  namely the universe U. His original version is here:
   http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
 
 \begin{code}
