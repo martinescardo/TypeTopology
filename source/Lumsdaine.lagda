@@ -5,9 +5,9 @@ This is an "improvement method" I learned from Peter Lumsdaine, 7 July
 2017, adapted from an Agda rendering by Andy Pitts, when
 the three of us were visiting the Newton Institute at that time.
 
-Given an identity system (Id, refl , J) with no computation rule for J,
-Peter produces another identity system (Id, refl , J' , J'-comp) with
-a propositional computation rule J'-comp for J'.
+Given an identity system (Id, refl , J) with no given "computation
+rule" for J, Peter produces another identity system (Id, refl , J' ,
+J'-comp) with a "propositional computation rule" J'-comp for J'.
 
 \begin{code}
 
