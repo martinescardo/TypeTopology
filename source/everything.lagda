@@ -272,6 +272,7 @@ import LeftOvers
 import LexicographicOrder
 import LexicographicSearch
 import LPO
+import Lumsdaine
 import NaturalsAddition
 import NaturalsOrder
 import NonCollapsibleFamily

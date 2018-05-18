@@ -394,7 +394,8 @@ the Yoneda Lemma.
 
 \begin{code}
 
-yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : Nat (Id x) A)             
+yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇}
+                   (η θ : Nat (Id x) A)             
                → yoneda-elem x A η ≡ yoneda-elem x A θ → η ≈ θ
 yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   η y p                                ≡⟨ (yoneda-lemma x A η y p)⁻¹ ⟩

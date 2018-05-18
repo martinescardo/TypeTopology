@@ -11,13 +11,7 @@ identity types _≡_.
 
 module SpartanMLTT where
 
-open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _′ ; Level to Universe) public
-
-_̇ : (U : Universe) → _
-U ̇ = Set U -- This should be the only use of the Agda keyword 'Set' in this development.
-
-U₁ = U₀ ′
-U₂ = U₁ ′
+open import Universes public
 
 \end{code}
 
@@ -606,7 +600,6 @@ Operator fixity and precedences.
 
 \begin{code}
 
-infix  0 _̇
 infixr 4 _,_
 infixr 2 _×_
 infixr 1 _+_

@@ -65,14 +65,6 @@ show that the identity equivalences satisfy it.
 
 \begin{code}
 
-identity-data : ∀ {U} (X : U ̇) (i : X → X → U ̇) (r : (x : X) → i x x) → ∀ {V} → U ⊔ V ′ ̇
-identity-data {U} X i r {V} =
- Σ \(j : (x : X) (A : (y : X) → i x y → V ̇)
-    → A x (r x) → (y : X) (p : i x y) → A y p)
-   → (x : X) (A : (y : X) → i x y → V ̇)
-    → (b : A x (r x))
-    → j x A b x (r x) ≡ b 
-
 JEq : ∀ {U} → isUnivalent U
     → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
     → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
@@ -87,40 +79,78 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
   g : A Y (idtoeq X Y (eqtoid ua X Y e))
   g = f' Y (eqtoid ua X Y e)
 
-{- TODO:
-JEq-comp : ∀ {U} (ua : isUnivalent U)
-    → ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
-    → (b : A X (ideq X))
-    → JEq ua X A b X (ideq X) ≡ b
-JEq-comp ua X A b = ?
--}
-
 \end{code}
 
-Conversely, if the induction principle for equivalences with its
-computation rule holds, then univalence follows:
+Conversely, if the induction principle for equivalences holds, then
+univalence follows:
 
 \begin{code}
 
 JEq-converse : ∀ {U}
-             → (jeq : ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
-                → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e)
              → (∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
-                → (b : A X (ideq X)) → jeq X A b X (ideq X) ≡ b)
+                 → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e)
              → isUnivalent U
-JEq-converse {U} jeq jeq-comp X = g
+JEq-converse {U} jeq' X = γ
  where
+
+\end{code}
+
+  The following is an adaptation of an 'improving method' I learned
+  from Peter Lumsdaine, 7 July 2017, when we were both visiting the
+  Newton Institute. The adaptation is needed because our assumptions
+  are not quite the same as Peters'.  See the module 'Lumsdaine' for
+  Peter's original version.
+
+\begin{code}
+
+  module _ {V} (A : (Y : U ̇) → X ≃ Y → V ̇) where
+   g : {Y Z : U ̇} (p : X ≃ Y) (q : X ≃ Z) → Σ \(f : A Y p → A Z q) → left-cancellable f
+   g {Y} {Z} p q = jeq' X B b Z q
+    where
+     B : (T : U ̇) → X ≃ T → V ̇
+     B T q = Σ \(f : A Y p → A T q) → left-cancellable f
+     C : (T : U ̇) → X ≃ T → V ̇
+     C T p = Σ \(f : A T p → A X (ideq X)) → left-cancellable f
+     b : B X (ideq X)
+     b = jeq' X C ((λ a → a) , λ p → p) _ p
+
+   h : (b : A X (ideq X)) {Y : U ̇} (p : X ≃ Y)
+     → Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (ideq X) p) b
+   h b p = jeq' X B (b , refl) _ p
+    where
+     B : (Y : U ̇) (p : X ≃ Y) → V ̇
+     B Y p = Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (ideq X) p) b
+   
+   jeq : A X (ideq X) → (Y : U ̇) (p : X ≃ Y) → A Y p
+   jeq b Y p = pr₁ (h b p)
+
+   jeq-comp : (b : A X (ideq X)) → jeq b X (ideq X) ≡ b
+   jeq-comp b = pr₂ (g (ideq X) (ideq X)) (pr₂ (h b (ideq X)))
+
+\end{code}
+
+  This is the end of Peter's construction, which we apply to our
+  problem as follows:
+   
+\begin{code}
+
   φ : (Y : U ̇) → X ≃ Y → X ≡ Y
-  φ = jeq X (λ Y p → X ≡ Y) refl
+  φ = jeq {U ′} (λ Y p → X ≡ Y) refl
   φc : φ X (ideq X) ≡ refl
-  φc = jeq-comp X (λ Y p → X ≡ Y) refl
+  φc = jeq-comp {U ′} (λ Y p → X ≡ Y) refl
   idtoeqφ : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (φ Y e) ≡ e
-  idtoeqφ = jeq X (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
+  idtoeqφ = jeq {U} (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
   φidtoeq : (Y : U ̇) (p : X ≡ Y) → φ Y (idtoeq X Y p) ≡ p
   φidtoeq X refl = φc
-  g : (Y : U ̇) → isEquiv(idtoeq X Y)
-  g Y =  (φ Y , idtoeqφ Y) , (φ Y , φidtoeq Y)
-  
+  γ : (Y : U ̇) → isEquiv(idtoeq X Y)
+  γ Y =  (φ Y , idtoeqφ Y) , (φ Y , φidtoeq Y)
+
+\end{code}
+
+This completes the deduction of univalence from equivalence induction.
+
+\begin{code}
+
 isUnivalent-idtoeq-lc : ∀ {U} → isUnivalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
 isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
