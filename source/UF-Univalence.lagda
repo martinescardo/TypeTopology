@@ -82,7 +82,10 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
 \end{code}
 
 Conversely, if the induction principle for equivalences holds, then
-univalence follows:
+univalence follows. In this construction, the parametric universe V is
+instantiated to the universe U and its successor U ′ only. This was
+produced 18th May 2018 while visiting the Hausdorff Research Institute
+for Mathematics in Bonn.
 
 \begin{code}
 
@@ -95,7 +98,7 @@ JEq-converse {U} jeq' X = γ
 
 \end{code}
 
-  The following is an adaptation of an 'improving method' I learned
+  The following is an adaptation of an 'improvement method' I learned
   from Peter Lumsdaine, 7 July 2017, when we were both visiting the
   Newton Institute. The adaptation is needed because our assumptions
   are not quite the same as Peters'.  See the module 'Lumsdaine' for
@@ -147,7 +150,8 @@ JEq-converse {U} jeq' X = γ
 
 \end{code}
 
-This completes the deduction of univalence from equivalence induction.
+This completes the deduction of univalence from equivalence
+induction. The following technical lemma is needed elsewhere.
 
 \begin{code}
 
@@ -157,8 +161,8 @@ isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 \end{code}
 
 The following has a proof from function extensionality, but it has a
-more direct proof from univalence (we also give a proof without
-univalence elsewhere, of course):
+more direct proof from equivalence induction (we also give a proof
+without univalence elsewhere, of course):
 
 \begin{code}
 
@@ -190,7 +194,10 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Yoneda
 
-univalence-via-singletons : ∀ {U} → isUnivalent U ⇔ ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-singletons : ∀ {U}
+                          → isUnivalent U
+                            ⇔
+                            ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
 univalence-via-singletons {U} = (f , g)
  where
   f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))
@@ -204,3 +211,6 @@ univalence-via-singletons {U} = (f , g)
                                        (isSingleton-isProp (φ X) (X , ideq X)))
 
 \end{code}
+
+Notice that isSingleton can be replace by isProp in the formulation of
+this logical equivalence (exercise).
