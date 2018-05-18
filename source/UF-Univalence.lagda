@@ -211,5 +211,5 @@ univalence-via-singletons {U} = (f , g)
 
 \end{code}
 
-Notice that isSingleton can be replace by isProp in the formulation of
-this logical equivalence (exercise).
+Notice that isSingleton can be replaced by isProp in the formulation
+of this logical equivalence (exercise).

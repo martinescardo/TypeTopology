@@ -34,27 +34,27 @@ private
   id x = x
 
   lc-maps : (X Y : U ̇) → U ̇ 
-  lc-maps X Y = Σ \(f : X → Y) → ∀ {x x'} → Id (f x) (f x') → Id {X} x x'
+  lc-maps X Y = Σ \(f : X → Y) → {x x' : X} → Id (f x) (f x') → Id x x'
 
   id-lc-maps : {X : U ̇} → lc-maps X X
   id-lc-maps = (id , id)
 
 module _ {X : U ̇}
          {x : X}
-         (A : (y : X) → Id {X} x y → U ̇)
+         (A : (y : X) → Id x y → U ̇)
  where
   private
-    g : {y z : X} (p : Id x y) (q : Id x z) → lc-maps (A y p) (A z q)
-    g p q = J x A' (J x Z id-lc-maps _ p) _ q
+    g : {t z : X} (p : Id x t) (q : Id x z) → lc-maps (A t p) (A z q)
+    g {t} {z} p q = J x A' (J x Z id-lc-maps t p) z q
      where
       A' : (y : X) → Id x y → U ̇
-      A' y q = lc-maps (A _ p) (A y q)
+      A' y q = lc-maps (A t p) (A y q)
       Z : (y : X) → Id x y → U ̇
-      Z y p = lc-maps (A y p ) (A _ refl) 
+      Z y p = lc-maps (A y p ) (A x refl) 
   
     h : (b : A x refl) {y : X} (p : Id x y)
       → Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
-    h b p = J x A' (b , refl) _ p
+    h b {y} p = J x A' (b , refl) y p
      where
       A' : (y : X) (p : Id x y) → U ̇
       A' y p = Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
