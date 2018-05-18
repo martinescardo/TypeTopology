@@ -2,8 +2,8 @@ Martin Escardo, 17 May 2018,
 while visiting the Hausdorff Research Institute for Mathematics in Bonn
 
 This is an "improvement method" I learned from Peter Lumsdaine, 7 July
-2017, adapted from an Agda rendering by Andy Pitts, when
-the three of us were visiting the Newton Institute at that time.
+2017 at the Newton Institute in Cambridge, adapted from an Agda
+rendering by Andy Pitts of Peter's Coq code from 14th October 2015.
 
 Given an identity system (Id, refl , J) with no given "computation
 rule" for J, Peter produces another identity system (Id, refl , J' ,
