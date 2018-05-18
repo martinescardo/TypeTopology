@@ -100,7 +100,11 @@ JEq-converse {U} jeq' X = γ
   The following is an adaptation of an 'improvement method' I learned
   from Peter Lumsdaine, 7 July 2017, when we were both visiting the
   Newton Institute. The adaptation is needed because our assumptions
-  are not quite the same as Peter's. His original version is here:
+  are not quite the same as Peter's. The main difference is that for
+  the type of left-cancellable maps we use the native identity
+  type. This is because he works with a global identity system on all
+  types, where we consider an identity system on the universe
+  only. His original version is here:
   http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
 
 \begin{code}
