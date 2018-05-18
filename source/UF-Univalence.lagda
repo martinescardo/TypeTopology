@@ -99,13 +99,18 @@ JEq-converse {U} jeq' X = γ
 
   The following is an adaptation of an 'improvement method' I learned
   from Peter Lumsdaine, 7 July 2017, when we were both visiting the
-  Newton Institute. The adaptation is needed because our assumptions
-  are not quite the same as Peter's. The main difference is that for
-  the type of left-cancellable maps we use the native identity
-  type. This is because he works with a global identity system on all
-  types, whereas we consider an identity system on one type only,
-  namely the universe U. His original version is here:
+  Newton Institute. His original version translated to Agda is here:
   http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
+  
+  Unfortunately, we couldn't use his result off-the-shelf. The main
+  difference is that Peter works with a global identity system on all
+  types (of a universe), whereas we work with an identity system on a
+  single type, namely a universe. As a result, we can't define the
+  type of left-cancellable maps using the notion of equality given by
+  the identity system, as Peter does. Instead, we define it using the
+  native (Martin-Loef) identity type, and with this little
+  modification, Peter's argument goes through for the situation
+  considered here.
 
 \begin{code}
 
