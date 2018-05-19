@@ -8,7 +8,7 @@ functions):
   https://github.com/vladimirias/Foundations/blob/master/Generalities/uu0.v
 
 Mike Shulman (13th April 2018) translated the Coq code to English
-prose for me:
+prose for me, where the comments between [[ and ]] are mine:
 
 "
 We prove that Pi of a family of contractible types is contractible;
@@ -19,24 +19,24 @@ this is well-known to imply full dependent funext.
 1. If each P(x) is contractible, then the projection pr1 : Sigma{x:X}
 P(x) --> X is an equivalence.  This requires no funext.
 
- This is pr₁-equivalence from UF-Equiv
+ [[This is pr₁-equivalence from UF-Equiv]]
 
 2. If (f : A -> B) is an equivalence, then so is postcomposition with
 it (X -> A) -> (X -> B).  This requires only non-dependent funext.
 
- This is qinv-post in UF-Equiv-FunExt
+ [[This is qinv-post in UF-Equiv-FunExt]]
  
 3. Thus, postcomposition with pr1 is an equivalence (X -> Sigma{x:X}
 P(x)) --> (X -> X).
 
- This is just an immediate consequence.
+ [[This is just an immediate consequence.]]
  
 4. Therefore, the fiber of "postcomposition with pr1" over idmap : X
 -> X is contractible.  (This is VV's *definition* of equivalence, but
 all notions of equivalence are *logically* equivalent without any
 funext, so it doesn't matter which we use.)
 
- This is just an immediate consequence.
+ [[This is just an immediate consequence.]]
 
 5. The latter fiber is "the type of sections of pr1", so it is
 equivalent to Pi(x:X) P(x).  Proving this requires full funext, but
