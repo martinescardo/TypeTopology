@@ -56,6 +56,12 @@ NFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h =
   (λ x → f₂ x)                    ≡⟨ refl ⟩ 
   f₂                               ∎
 
+\end{code}
+
+Added 19th May 2018:
+
+\begin{code}
+
 FunExt-from-Univalence : ∀ {U} → isUnivalent U → FunExt U U
 FunExt-from-Univalence ua = NFunExt-gives-FunExt' (NFunExt-from-Univalence ua)
 
