@@ -19,7 +19,7 @@ rexp {U} {V} {W} {T} {X} {Y} {X'} {Y'} fe (rx , (sx , rsx)) (ry , (sy , rsy)) = 
   rs' : (f' : X → Y') (x : X) → ry (sy (f' (rx (sx x)))) ≡ f' x
   rs' f' x = rsy (f' (rx (sx x))) ∙ ap f' (rsx x)
   rs : (f' : X → Y') → r (s f') ≡ f'
-  rs f' = funext fe (rs' f')
+  rs f' = dfunext fe (rs' f')
 
 rpe : ∀ {U V W} {X : U ̇} {Y : V ̇} {Y' : W ̇} → FunExt U W
     → retract Y' of Y → retract (X → Y') of (X → Y)

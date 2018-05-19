@@ -107,7 +107,7 @@ module concrete-example where
    p₁ u = p(u , λ r → ₁) 
 
    lemma : (n : ℕ) → p₀(under n) ≡ p₁(under n)
-   lemma n = ap (λ h → p(under n , h)) (funext (fe U₀ U₀) claim)
+   lemma n = ap (λ h → p(under n , h)) (dfunext (fe U₀ U₀) claim)
     where
      claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
      claim s = 𝟘-elim(∞-is-not-ℕ n (s ⁻¹))
@@ -228,7 +228,7 @@ two embeddings e₀ and e₁:
  Lemma x φ = ap (λ ψ → (x , ψ)) claim
   where
    claim : (λ p → ₀) ≡ (λ p → ₁) 
-   claim = funext (fe U U₀) (λ p → 𝟘-elim(φ p))
+   claim = dfunext (fe U U₀) (λ p → 𝟘-elim(φ p))
 
 \end{code}
 

@@ -94,9 +94,9 @@ Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
       l : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → (x : X) → φ x ≡ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
       g : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → φ ≡ φ'
-      g p = funext (fe U (U ′)) (l p) 
+      g p = dfunext (fe U (U ′)) (l p) 
   f₂-lc : (x : X) → left-cancellable(f₂ x)
-  f₂-lc x {η} {η'} p = funext (fe U U) (λ y → funext (fe U U) (l y))
+  f₂-lc x {η} {η'} p = dfunext (fe U U) (λ y → dfunext (fe U U) (l y))
     where
       l : η ≈ η'
       l = yoneda-elem-lc η η' p

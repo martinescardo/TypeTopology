@@ -75,7 +75,7 @@ stable-is-collapsible {U} fe {X} s = (f , g)
   claim₀ : (x y : X) → (u : isEmpty X) → u x ≡ u y
   claim₀ x y u = unique-from-𝟘(u x)
   claim₁ : (x y : X) → (λ u → u x) ≡ (λ u → u y)
-  claim₁ x y = funext fe (claim₀ x y) 
+  claim₁ x y = dfunext fe (claim₀ x y) 
   g : (x y : X) → f x ≡ f y
   g x y = ap s (claim₁ x y)
 

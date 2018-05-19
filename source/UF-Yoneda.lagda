@@ -80,7 +80,7 @@ transformation η is recursively defined.
 yoneda-lemma' : (∀ U V → FunExt U V)
               → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
               → yoneda-nat x A (yoneda-elem x A η) ≡ η 
-yoneda-lemma' fe {U} {V} x A η = funext (fe U (U ⊔ V)) (λ y → funext (fe U V) (λ p → yoneda-lemma x A η y p))
+yoneda-lemma' fe {U} {V} x A η = dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe U V) (λ p → yoneda-lemma x A η y p))
 
 \end{code}
 

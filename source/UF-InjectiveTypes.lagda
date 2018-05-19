@@ -159,8 +159,8 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
     φψ g θ y C (x , refl) = refl
 
     e : Nat g f/j ≃ Nat (g ∘ j) f
-    e = ψ g , (φ g , λ η → funext (fe U (W ⊔ U)) (λ x → funext (fe U W) (ψφ g η x )))
-            , (φ g , λ θ → funext (fe V (U ⊔ V ⊔ W)) (λ y → funext (fe U (U ⊔ V ⊔ W)) (λ C → funext (fe (U ⊔ V) W) (φψ g θ y C))))
+    e = ψ g , (φ g , λ η → dfunext (fe U (W ⊔ U)) (λ x → dfunext (fe U W) (ψφ g η x )))
+            , (φ g , λ θ → dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe U (U ⊔ V ⊔ W)) (λ C → dfunext (fe (U ⊔ V) W) (φψ g θ y C))))
   
   Σ-extension-left-Kan : (g : Y → U ̇) → Nat f∖j g ≃ Nat f (g ∘ j)
   Σ-extension-left-Kan g = e
@@ -178,8 +178,8 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
     ψφ g η x B = refl
 
     e : Nat f∖j g ≃ Nat f (g ∘ j)
-    e = ψ g , (φ g , λ η → funext (fe U (U ⊔ W)) (λ x → funext (fe W U) (λ B → ψφ g η x B)))
-            , (φ g , λ θ → funext (fe V (U ⊔ V ⊔ W)) (λ y → funext (fe (U ⊔ V ⊔ W) U) (λ C → φψ g θ y C)))
+    e = ψ g , (φ g , λ η → dfunext (fe U (U ⊔ W)) (λ x → dfunext (fe W U) (λ B → ψφ g η x B)))
+            , (φ g , λ θ → dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe (U ⊔ V ⊔ W) U) (λ C → φψ g θ y C)))
 
 \end{code}
 
@@ -254,7 +254,7 @@ respectively:
       FG' ψ x (_ , refl) = refl
       
       FG : (ψ : Π f/j) → F(G ψ) ≡ ψ
-      FG ψ = funext (fe V (U ⊔ V ⊔ W)) (λ y → funext (fe (U ⊔ V) W) (FG' ψ y))
+      FG ψ = dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe (U ⊔ V) W) (FG' ψ y))
       
       GF : (φ : Π f) → G(F φ) ≡ φ
       GF φ = refl
@@ -347,7 +347,7 @@ But the lhs holds, and hence isSingleton(Σ-image j (Id x)).
    a y = eqtoid ua (Σ-image j (Id x) y) (Id (j x) y) (Σ-image-of-singleton-lemma j x y)
    
    b : Σ-image j (Id x) ≡ Id (j x)
-   b = funext (fe U (U ′)) a
+   b = dfunext (fe U (U ′)) a
 
 \end{code}
 
@@ -407,6 +407,6 @@ power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
     f' y a = pr₁ (l a) y
     
     g : f' ∘ j ∼ f
-    g x = funext (fe V U) (λ a → pr₂ (l a) x)
+    g x = dfunext (fe V U) (λ a → pr₂ (l a) x)
 
 \end{code}

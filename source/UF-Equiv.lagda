@@ -267,7 +267,7 @@ Here are some corollaries:
 \begin{code}
 
 qinv-isVoevodsky : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                 → qinv f → isVoevodskyEquiv f
+                   → qinv f → isVoevodskyEquiv f
 qinv-isVoevodsky f q = isHAE-isVoevodsky f (qinv-isHAE f q)
 
 isEquiv-isVoevodskyEquiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)

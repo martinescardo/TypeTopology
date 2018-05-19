@@ -89,7 +89,7 @@ lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 clni-incl : FunExt₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 clni-incl fe (α , d) = to-Σ-≡ (force-decreasing α) α (force-decreasing-is-decreasing α) d
-                               (funext fe (force-decreasing-unchanged α d)) (decreasing-isProp fe α _ _)
+                               (dfunext fe (force-decreasing-unchanged α d)) (decreasing-isProp fe α _ _)
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤ β i
 force-decreasing-is-smaller β zero     p = p
@@ -123,7 +123,7 @@ open import TotallySeparated
   p : ℕ → (ℕ∞ → 𝟚)
   p i x = incl x i
   l : incl x ≡ incl y
-  l = funext fe (λ i → α (p i))
+  l = dfunext fe (λ i → α (p i))
   g : x ≡ y
   g = incl-lc fe l
 
@@ -159,14 +159,14 @@ Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
 ∞ = ((λ i → ₁) , λ i → id {U₀} {₁ ≡ ₁})
 
 Succ-∞-is-∞ : FunExt₀ → Succ ∞ ≡ ∞
-Succ-∞-is-∞ fe = incl-lc fe (funext fe lemma) 
+Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma) 
  where
    lemma : (i : ℕ) → incl(Succ ∞) i ≡ incl ∞ i
    lemma 0 = refl
    lemma (succ i) = refl
 
 unique-fixed-point-of-Succ : FunExt₀ → (u : ℕ∞) → u ≡ Succ u → u ≡ ∞
-unique-fixed-point-of-Succ fe u r = incl-lc fe (funext fe lemma)
+unique-fixed-point-of-Succ fe u r = incl-lc fe (dfunext fe lemma)
  where
   fact : (i : ℕ) → incl u i ≡ incl(Succ u) i 
   fact i = ap (λ w → incl w i) r
@@ -221,14 +221,14 @@ under-diagonal₁ 0 = refl
 under-diagonal₁ (succ n) = under-diagonal₁ n
  
 isZero-equal-Zero : FunExt₀ → {u : ℕ∞} → isZero u → u ≡ Zero
-isZero-equal-Zero fe {u} base = incl-lc fe (funext fe lemma)
+isZero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → incl u i ≡ incl Zero i
   lemma 0 = base
   lemma (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u i) (lemma i)
 
 not-Zero-is-Succ : FunExt₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
-not-Zero-is-Succ fe {u} f = incl-lc fe (funext fe lemma)
+not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → incl u i ≡ incl(Succ(Pred u)) i 
   lemma 0 = Lemma[b≢₀→b≡₁] (f ∘ isZero-equal-Zero fe)
@@ -244,7 +244,7 @@ positive-equal-Succ : FunExt₀ → {u : ℕ∞} → positive u → u ≡ Succ(P
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 
 Succ-criterion : FunExt₀ → {u : ℕ∞} {n : ℕ} → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ → u ≡ Succ(under n)
-Succ-criterion fe {u} {n} r s = incl-lc fe (funext fe (lemma u n r s))
+Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
  where
   lemma : (u : ℕ∞) (n : ℕ) → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ 
         → (i : ℕ) → incl u i ≡ incl (Succ(under n)) i
@@ -266,7 +266,7 @@ Succ-criterion fe {u} {n} r s = incl-lc fe (funext fe (lemma u n r s))
 ∞-is-not-ℕ n s = zero-is-not-one ((ap (λ w → incl w n) s ∙ under-diagonal₀ n)⁻¹)
 
 not-ℕ-is-∞ : FunExt₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
-not-ℕ-is-∞ fe {u} f = incl-lc fe (funext fe lemma) 
+not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma) 
  where
   lemma : (n : ℕ) → incl u n ≡ ₁
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (isZero-equal-Zero fe r)) 

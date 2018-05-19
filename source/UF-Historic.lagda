@@ -26,7 +26,7 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    a = isSingleton-isProp (paths-to-singleton id)
    A' = Σ \(f : X → X) → f ∼ id
    η : (f : X → X) → f ∼ id → f ≡ id
-   η f = funext fe
+   η f = dfunext fe
    η-lc : (f : X → X) → left-cancellable(η f)
    η-lc f = funext-lc fe f id
    h : A' → A

@@ -58,7 +58,7 @@ apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
 
   lemma₂ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁) → (f ♯ g) + (f ≡ g)
   lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r)) 
-  lemma₂(inr h) = inr (funext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
+  lemma₂(inr h) = inr (dfunext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
 
 
 omniscient-discrete-discrete : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇} → 

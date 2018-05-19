@@ -23,19 +23,29 @@ isProp-isVoevodskyEquiv fe {U} {V} f = isProp-exponential-ideal
                                          (fe V (U ⊔ V))
                                          (λ x → isProp-isSingleton (fe (U ⊔ V) (U ⊔ V)))
 
-qinv-post : (∀ U V → FunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
-          → qinv f → qinv (λ (h : A → X) → f ∘ h)
-qinv-post fe {U} {V} {W} {X} {Y} {A} f (g , η , ε) = (g' , η' , ε')
+qinv-post' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
+          → NFunExt W U → NFunExt W V
+          → (f : X → Y) → qinv f → qinv (λ (h : A → X) → f ∘ h)
+qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (A → X) → (A → Y)
   f' h = f ∘ h
   g' : (A → Y) → (A → X)
   g' k = g ∘ k
   η' : (h : A → X) → g' (f' h) ≡ h
-  η' h = funext (fe W U) (η ∘ h)
+  η' h = nfe (η ∘ h)
   ε' : (k : A → Y) → f' (g' k) ≡ k
-  ε' k = funext (fe W V) (ε ∘ k)
-  
+  ε' k = nfe' (ε ∘ k)
+
+qinv-post : (∀ U V → NFunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+          → qinv f → qinv (λ (h : A → X) → f ∘ h)
+qinv-post nfe {U} {V} {W} = qinv-post' (nfe W U) (nfe W V)
+
+equiv-post : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
+          → NFunExt W U → NFunExt W V
+          → (f : X → Y) → isEquiv f → isEquiv (λ (h : A → X) → f ∘ h)
+equiv-post nfe nfe' f e = qinv-isEquiv (λ h → f ∘ h) (qinv-post' nfe nfe' f (isEquiv-qinv f e))
+
 qinv-pre : (∀ U V → FunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
          → qinv f → qinv (λ (h : Y → A) → h ∘ f)
 qinv-pre fe {U} {V} {W} {X} {Y} {A} f (g , η , ε) = (g' , η' , ε')
@@ -45,9 +55,9 @@ qinv-pre fe {U} {V} {W} {X} {Y} {A} f (g , η , ε) = (g' , η' , ε')
   g' : (X → A) → (Y → A)
   g' k = k ∘ g
   η' : (h : Y → A) → g' (f' h) ≡ h
-  η' h = funext (fe V W) (λ y → ap h (ε y))
+  η' h = dfunext (fe V W) (λ y → ap h (ε y))
   ε' : (k : X → A) → f' (g' k) ≡ k
-  ε' k = funext (fe U W) (λ x → ap k (η x))
+  ε' k = dfunext (fe U W) (λ x → ap k (η x))
 
 hasr-isprop-hass : (∀ U V → FunExt U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                  → hasRetraction f → isProp(hasSection f)
@@ -56,15 +66,15 @@ hasr-isprop-hass fe {U} {V} {X} {Y} f (g , gf) (h , fh) = isSingleton-isProp c (
   a : qinv f
   a = isEquiv-qinv f ((h , fh) , g , gf)
   b : isSingleton(fiber (λ h →  f ∘ h) id)
-  b = qinv-isVoevodsky (λ h →  f ∘ h) (qinv-post fe f a) id
+  b = qinv-isVoevodsky (λ h →  f ∘ h) (qinv-post (λ U V → nfunext (fe U V)) f a) id
   r : fiber (λ h →  f ∘ h) id → hasSection f
   r (h , p) = (h , happly' (f ∘ h) id p)
   s : hasSection f → fiber (λ h →  f ∘ h) id
-  s (h , η) = (h , funext (fe V V) η)
+  s (h , η) = (h , dfunext (fe V V) η)
   rs : (σ : hasSection f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ η → (h , η)) q
    where
-    q : happly' (f ∘ h) id (funext (fe V V) η) ≡ η
+    q : happly' (f ∘ h) id (dfunext (fe V V) η) ≡ η
     q = happly-funext (fe V V) (f ∘ h) id η
   c : isSingleton (hasSection f)
   c = retract-of-singleton r (s , rs) b
@@ -80,11 +90,11 @@ hass-isprop-hasr fe {U} {V} {X} {Y} f (g , fg) (h , hf) = isSingleton-isProp c (
   r : fiber (λ h →  h ∘ f) id → hasRetraction f
   r (h , p) = (h , happly' (h ∘ f) id p)
   s : hasRetraction f → fiber (λ h →  h ∘ f) id
-  s (h , η) = (h , funext (fe U U) η) 
+  s (h , η) = (h , dfunext (fe U U) η) 
   rs : (σ : hasRetraction f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ η → (h , η)) q
    where
-    q : happly' (h ∘ f) id (funext (fe U U) η) ≡ η
+    q : happly' (h ∘ f) id (dfunext (fe U U) η) ≡ η
     q = happly-funext (fe U U) (h ∘ f) id η
   c : isSingleton (hasRetraction f)
   c = retract-of-singleton r (s , rs) b
@@ -135,7 +145,7 @@ function extensionality.
      → FunExt U (V ⊔ W)
      → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
      → σπ (πσ φ) ≡ φ
-σππσ fe φ = funext fe (λ x → refl)
+σππσ fe φ = dfunext fe (λ x → refl)
 
 πσ-isEquiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
            → FunExt U (V ⊔ W)

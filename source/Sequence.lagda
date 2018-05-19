@@ -26,7 +26,7 @@ tl α n = α(succ n)
 
 
 hd-tl-eta : ∀ {U} {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (hd α ∶∶ tl α) ≡ α
-hd-tl-eta {U} {X} = funext fe lemma
+hd-tl-eta {U} {X} = dfunext fe lemma
  where 
   lemma : {α : (n : ℕ) → X n} → (i : ℕ) → (hd α ∶∶ tl α) i ≡ α i
   lemma 0 = refl

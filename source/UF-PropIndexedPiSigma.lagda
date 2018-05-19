@@ -29,7 +29,7 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf' : (φ : Π Y) (x : X) → transport Y (hp a x) (φ a) ≡ φ x
   gf' φ x = gf'' φ (hp a x)
   gf : (φ : Π Y) → g(f φ) ≡ φ
-  gf φ = funext fe (gf' φ)
+  gf φ = dfunext fe (gf' φ)
 
 prop-indexed-product-one : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
                          → Π Y ≃ 𝟙
@@ -40,7 +40,7 @@ prop-indexed-product-one {U} {V} fe {X} {Y} v = unique-to-𝟙 , (g , fg) , (g ,
   fg : (u : 𝟙) → * ≡ u 
   fg * = refl
   gf : (φ : Π Y) → g * ≡ φ
-  gf φ = funext fe u
+  gf φ = dfunext fe u
    where
     u : (x : X) → g (unique-to-𝟙 φ) x ≡ φ x
     u x = unique-from-𝟘 (v x)

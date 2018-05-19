@@ -290,6 +290,7 @@ import SpartanMLTT
 import SquashedSum
 import TheTopologyOfTheUniverse
 import TotallySeparated
+import Universes
 import UF-Base
 import UF-Choice
 import UF-Embedding
@@ -297,6 +298,7 @@ import UF-EquivalenceExamples
 import UF-Equiv-FunExt
 import UF-Equiv
 import UF-FunExt
+import UF-FunExt-from-Naive-FunExt
 import UF-Historic
 import UF-IdEmbedding
 import UF-ImageAndSurjection

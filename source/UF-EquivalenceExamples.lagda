@@ -21,9 +21,9 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
     u g (x , y) = g x y
     cu : ∀ g → c (u g) ≡ g
-    cu g = funext (fe U (V ⊔ W)) (λ x → funext (fe V W) (λ y → refl))
+    cu g = dfunext (fe U (V ⊔ W)) (λ x → dfunext (fe V W) (λ y → refl))
     uc : ∀ f → u (c f) ≡ f
-    uc f = funext (fe (U ⊔ V) W) (λ w → refl)
+    uc f = dfunext (fe (U ⊔ V) W) (λ w → refl)
 
 Σ-assoc : ∀ {U V W} → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
         → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))
@@ -84,13 +84,13 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     H u' x = h x (u' x)
   
     FG :  (w' : ((x : X) → Y' x)) → F(G w') ≡ w'
-    FG w' = funext fe FG' 
+    FG w' = dfunext fe FG' 
      where
       FG' : (x : X) → F(G w') x ≡ w' x
       FG' x = fg x (w' x)
   
     HF : (w : ((x : X) → Y x)) → H(F w) ≡ w
-    HF w = funext fe GF' 
+    HF w = dfunext fe GF' 
      where
       GF' : (x : X) → H(F w) x ≡ w x
       GF' x = hf x (w x)

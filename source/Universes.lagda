@@ -6,8 +6,15 @@ open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _′ 
 
 infix  0 _̇
 
+\end{code}
+
+The following should be the only use of the Agda keyword 'Set' in this
+development:
+
+\begin{code}
+
 _̇ : (U : Universe) → _
-U ̇ = Set U -- This should be the only use of the Agda keyword 'Set' in this development.
+U ̇ = Set U
 
 U₁ = U₀ ′
 U₂ = U₁ ′

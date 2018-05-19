@@ -100,7 +100,7 @@ separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
 separated-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇}
                → ((x : X) → separated(Y x)) → separated(Π Y)
-separated-ideal fe s f g h = funext fe lemma𝟚
+separated-ideal fe s f g h = dfunext fe lemma𝟚
  where 
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ h → h x) r
@@ -168,7 +168,7 @@ tight : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
       → ((x : X) → separated(Y x))
       → (f g : (x : X) → Y x)
       → ¬(f ♯ g) → f ≡ g
-tight fe s f g h = funext fe lemma₁
+tight fe s f g h = dfunext fe lemma₁
  where 
   lemma₀ : ∀ x → ¬¬(f x ≡ g x)
   lemma₀ = not-Σ-implies-Π-not h

@@ -179,13 +179,13 @@ predicate λ x → ₁:
  where
   g : decidable (p ≡ λ x → ₁) → decidable ((x : X) → p x ≡ ₁)
   g (inl r) = inl (happly r)
-  g (inr u) = inr (contrapositive (funext (fe U U₀)) u)
+  g (inr u) = inr (contrapositive (dfunext (fe U U₀)) u)
 
 𝟚-cc' : ∀ {U} {X : U ̇} → 𝟚-compact X → 𝟚-compact' X
 𝟚-cc' {U} {X} c p = g (c p)
  where
   g : decidable ((x : X) → p x ≡ ₁) → decidable (p ≡ λ x → ₁)
-  g (inl α) = inl (funext (fe U U₀) α)
+  g (inl α) = inl (dfunext (fe U U₀) α)
   g (inr u) = inr (contrapositive happly u)
 
 \end{code}
@@ -215,7 +215,7 @@ cdd {U} {V} {X} {Y} c d f g = h (c p)
   r = pr₂ (co-characteristic-function λ x → d (f x) (g x))
 
   φ : ((x : X) → p x ≡ ₁) → f ≡ g
-  φ α = (funext (fe U V) (λ x → pr₂ (r x) (α x)))
+  φ α = (dfunext (fe U V) (λ x → pr₂ (r x) (α x)))
   
   γ : f ≡ g → (x : X) → p x ≡ ₁ 
   γ t x = Lemma[b≢₀→b≡₁] (λ u → pr₁ (r x) u (happly t x))
@@ -635,7 +635,7 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     t : two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
     t = s (A x) e
     u : (λ e' → x , e') ≡ (λ _ → x , e)
-    u = funext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-isSet e' e)
+    u = dfunext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-isSet e' e)
     v : r x ≡ two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
     v = ap (λ f₀ → two-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
     w : r x ≡ x , e
@@ -693,7 +693,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     y : A x ≡ ₁ → 𝟚
     y _ = q (x , e)
     r : p₁ x ≡ y
-    r = (funext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-isSet e' e))
+    r = (dfunext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-isSet e' e))
     s : (b : 𝟚) → b ≡ ₁
       → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
@@ -806,9 +806,9 @@ has-inf-isProp : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → isProp(p has
 has-inf-isProp {U} {X} p n (f , g) (f' , g') = ×-≡ r s
  where
   r : f ≡ f'
-  r = funext (fe U U₀) (λ x → funext (fe U₀ U₀) (λ r → 𝟚-isSet (f x r) (f' x r)))
+  r = dfunext (fe U U₀) (λ x → dfunext (fe U₀ U₀) (λ r → 𝟚-isSet (f x r) (f' x r)))
   s : g ≡ g'
-  s = funext (fe U₀ U) (λ n → funext (fe U U₀) (λ φ → funext (fe U₀ U₀) (λ r → 𝟚-isSet (g n φ r) (g' n φ r))))
+  s = dfunext (fe U₀ U) (λ n → dfunext (fe U U₀) (λ φ → dfunext (fe U₀ U₀) (λ r → 𝟚-isSet (g n φ r) (g' n φ r))))
 
 at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → isProp (Σ \(n : 𝟚) → p has-inf n)
 at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡'' (≤-anti (g' n f) (g n' f') , has-inf-isProp p n' _ _)
@@ -932,7 +932,7 @@ Right adjoints to Κ are characterized as follows:
   f φ p = f₀ , f₁
    where
     f₀ : A p ≡ ₁ → p ≡ (λ x → ₁)
-    f₀ r = funext (fe U U₀) l₃
+    f₀ r = dfunext (fe U U₀) l₃
      where
       l₀ : ₁ ≤ A p → Κ ₁ ≤̇ p
       l₀ = pr₂ (φ ₁ p)
@@ -965,7 +965,7 @@ Right adjoints to Κ are characterized as follows:
       l₀ : (x : X) → p x ≡ ₁
       l₀ x = l x refl
       l₁ : p ≡ (λ x → ₁)
-      l₁ = funext (fe U U₀) l₀
+      l₁ = dfunext (fe U U₀) l₀
       
     g₁ : ∀ m → m ≡ n → m ≤ A p → Κ m ≤̇ p
     g₁ ₀ r l x ()
@@ -1025,14 +1025,14 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
 
 𝟚-DeMorgan-dual-involutive : ∀ {U} → {X : U ̇} → (φ : (X → 𝟚) → 𝟚)
                            → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) ≡ φ
-𝟚-DeMorgan-dual-involutive {U} φ = funext (fe U U₀) h
+𝟚-DeMorgan-dual-involutive {U} φ = dfunext (fe U U₀) h
  where
   f : ∀ p → complement (complement (φ (λ x → complement (complement (p x)))))
           ≡ φ (λ x → complement (complement (p x)))
   f p = complement-involutive (φ (λ x → complement (complement (p x))))
   
   g : ∀ p → φ (λ x → complement (complement (p x))) ≡ φ p
-  g p = ap φ (funext (fe U U₀) (λ x → complement-involutive (p x)))
+  g p = ap φ (dfunext (fe U U₀) (λ x → complement-involutive (p x)))
   
   h : ∀ p → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) p ≡ φ p
   h p = f p ∙ g p

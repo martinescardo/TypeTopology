@@ -146,7 +146,7 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
   φ₀-is-universal-witness-assuming-X→𝟘 u r φ = ap p claim ∙ r 
    where
     claim : φ ≡ φ₀
-    claim = funext (fe U V) (λ x → unique-from-𝟘(u x))
+    claim = dfunext (fe U V) (λ x → unique-from-𝟘(u x))
 
   -- So we would get what we want if we had excluded middle, because
   -- the above shows that both X and X→𝟘 give the desired conclusion

@@ -20,7 +20,7 @@ open import UF-LeftCancellable
 
 isProp-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V ̇} 
                         → ((x : X) → isProp (A x)) → isProp (Π A) 
-isProp-exponential-ideal fe {X} {A} isa f g = funext fe (λ x → isa x (f x) (g x))
+isProp-exponential-ideal fe {X} {A} isa f g = dfunext fe (λ x → isa x (f x) (g x))
 
 isProp-isProp : ∀ {U} {X : U ̇} → FunExt U U → isProp (isProp X)
 isProp-isProp {U} {X} fe f g = claim₁
@@ -30,12 +30,12 @@ isProp-isProp {U} {X} fe f g = claim₁
   claim : (x y : X) → f x y ≡ g x y
   claim x y = lemma (f x y) (g x y)
   claim₀ : (x : X) → f x ≡ g x 
-  claim₀ x = funext fe (claim x) 
+  claim₀ x = dfunext fe (claim x) 
   claim₁ : f ≡ g
-  claim₁  = funext fe claim₀
+  claim₁  = dfunext fe claim₀
 
 isProp-isSingleton : ∀ {U} {X : U ̇} → FunExt U U → isProp(isSingleton X)
-isProp-isSingleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡'' (φ y , funext fe λ z → iss {y} {z} _ _)
+isProp-isSingleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡'' (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
   isp : isProp X
   isp = isSingleton-isProp (y , γ)
@@ -47,7 +47,7 @@ isSet-exponential-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {A : X → V �
 isSet-exponential-ideal {U} {V} fe {X} {A} isa {f} {g} = b
  where
   a : isProp (f ∼ g)
-  a p q = funext fe λ x → isa x (p x) (q x)
+  a p q = dfunext fe λ x → isa x (p x) (q x)
   b : isProp(f ≡ g)
   b = left-cancellable-reflects-isProp happly (section-lc happly (pr₂ (fe f g))) a
 
@@ -116,7 +116,7 @@ PropExt {U} fe pe {p} {q} f g =
   pc {p} {q} = (f p q , constant-f p q)
 
 neg-isProp : ∀ {U} {X : U ̇} → FunExt U U₀ → isProp(¬ X)
-neg-isProp fe u v = funext fe (λ x → 𝟘-elim (u x)) 
+neg-isProp fe u v = dfunext fe (λ x → 𝟘-elim (u x)) 
 
 \end{code}
 

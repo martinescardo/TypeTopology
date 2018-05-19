@@ -15,7 +15,7 @@ open import Universes public
 
 \end{code}
 
-For example, we write the following instead of 
+The module Universes allows us to write e.g. the following instead of
 
     Π : ∀ {i j} {X : Set i} (Y : X → Set j) → Set (i ⊔ j)
     Π Y = (x : _) → Y x

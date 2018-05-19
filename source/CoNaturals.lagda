@@ -133,13 +133,13 @@ P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
 
 alg-mophism-remark₀ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) 
                     → P ∘ h ≡ (𝟙+ h) ∘ p  →  h ≡ S ∘ (𝟙+ h) ∘ p
-alg-mophism-remark₀ p h a = funext fe (λ x → S-P-id ⁻¹ ∙ ap (λ F → S(F x)) a)
+alg-mophism-remark₀ p h a = dfunext fe (λ x → S-P-id ⁻¹ ∙ ap (λ F → S(F x)) a)
 
 alg-mophism-remark₁ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) → 
 
  h ≡ S ∘ (𝟙+ h) ∘ p  →  P ∘ h ≡ (𝟙+ h) ∘ p  
 
-alg-mophism-remark₁ p h b = funext fe (λ x → ap (λ G → P(G x)) b ∙ P-S-id)
+alg-mophism-remark₁ p h b = dfunext fe (λ x → ap (λ G → P(G x)) b ∙ P-S-id)
 
 
 diagram-commutes : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
@@ -150,7 +150,7 @@ homomorphism-existence : ∀ {U} {X : U ̇} →
 
  (p : X → 𝟙 + X) → Σ \(h : X → ℕ∞) → diagram-commutes p h
 
-homomorphism-existence {U} {X} p = h , (funext fe h-spec)
+homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
  where
   q : 𝟙 + X → 𝟙 + X
   q(inl s) = inl s
@@ -201,7 +201,7 @@ homomorphism-existence {U} {X} p = h , (funext fe h-spec)
       claim₄ 0  = claim₃ 0
       claim₄ (succ i) = claim₃(succ i)
       claim₅ : h x ≡ Succ(h x')
-      claim₅ = incl-lc fe (funext fe claim₄)
+      claim₅ = incl-lc fe (dfunext fe claim₄)
 
       claim₆ : P(h x) ≡ inr(h x')
       claim₆ = ap P claim₅
@@ -226,7 +226,7 @@ We now discuss coinduction. We first define bisimulations.
 
   (u v : ℕ∞) → R u v → u ≡ v
 
-ℕ∞-coinduction R b u v r = incl-lc fe (funext fe (lemma u v r))
+ℕ∞-coinduction R b u v r = incl-lc fe (dfunext fe (lemma u v r))
  where
   lemma : (u v : ℕ∞) → R u v → (i : ℕ) → incl u i ≡ incl v i
   lemma u v r 0 =  pr₁(b u v r)
@@ -351,7 +351,7 @@ homomorphism-uniqueness : ∀ {U} {X : U ̇}
                         → (p : X → 𝟙 + X) (f g : X → ℕ∞) 
                         → diagram-commutes p f → diagram-commutes p g 
                         → f ≡ g 
-homomorphism-uniqueness {U} {X} p f g a b = funext fe lemma
+homomorphism-uniqueness {U} {X} p f g a b = dfunext fe lemma
  where
   R : ℕ∞ → ℕ∞ → U ̇
   R u v = Σ \x → (u ≡ f x)  ×  (v ≡ g x)

@@ -180,7 +180,7 @@ totally-separated-isSet' fe X t = path-collapsible-isSet h
   f r = t(λ p → ap p r)
   
   b : {x y : X} (φ γ : (p : X → 𝟚) → p x ≡ p y) → φ ≡ γ
-  b φ γ = funext fe (λ p → discrete-isSet 𝟚-discrete (φ p) (γ p))
+  b φ γ = dfunext fe (λ p → discrete-isSet 𝟚-discrete (φ p) (γ p))
   
   c : {x y : X} (r s : x ≡ y) → (λ p → ap p r) ≡ (λ p → ap p s)
   c r s = b(λ p → ap p r) (λ p → ap p s)
@@ -204,7 +204,7 @@ separated reflections.
 
 totally-separated-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇}
                        → ((x : X) → totally-separated(Y x)) → totally-separated(Π Y)
-totally-separated-ideal fe {X} {Y} t {f} {g} e = funext fe h
+totally-separated-ideal fe {X} {Y} t {f} {g} e = dfunext fe h
  where
    P : (x : X) (p : Y x → 𝟚) → Π Y → 𝟚
    P x p f = p(f x)
@@ -238,7 +238,7 @@ ieevalts {U} {X} fe i {x} {y} e = ap pr₁ q
    h = i φ
    
    g : eval y ≡ φ
-   g = funext fe (λ p → (e p)⁻¹)
+   g = dfunext fe (λ p → (e p)⁻¹)
    
    q : x , refl ≡ y , g
    q = h (x , refl) (y , g)
@@ -277,7 +277,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : T X) → pr₁ x' p)
 
    g : (e : (q : T X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
-   g e = to-Σ-≡'' (funext (fe U U₀) (f e), ptisp _ t)
+   g e = to-Σ-≡'' (dfunext (fe U U₀) (f e), ptisp _ t)
 
 \end{code}
 
@@ -324,7 +324,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      γ q = φ (q ∘ f)
      
      u : (Σ \(x : X) → (λ p → p x) ≡ φ) → Σ \(a : A) → eval a ≡ γ
-     u (x , r) = f x , funext (fe V U₀) (λ q → happly r (q ∘ f))
+     u (x , r) = f x , dfunext (fe V U₀) (λ q → happly r (q ∘ f))
      
    h' : (x' : T X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
@@ -336,7 +336,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    b (φ , s) = happly (pr₂ (h φ s))
    
    r : f' ∘ η ≡ f
-   r = funext (fe U V) (λ x → ts (b (η x)))
+   r = dfunext (fe U V) (λ x → ts (b (η x)))
    
    c : (σ : Σ \(f'' : T X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡'' (t , v)
@@ -345,7 +345,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      w = happly (r ∙ s ⁻¹)
      
      t : f' ≡ f''
-     t = funext (fe U V) (η-induction _ (λ _ → iss) w)
+     t = dfunext (fe U V) (η-induction _ (λ _ → iss) w)
      
      u : f'' ∘ η ≡ f
      u = transport (λ g → g ∘ η ≡ f) t r
@@ -686,7 +686,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
   apart-lemma : (x y : X) → x ~ y → apart x ≡ apart y
-  apart-lemma x y na = funext (fe U (V ′)) h
+  apart-lemma x y na = dfunext (fe U (V ′)) h
    where
     f : (z : X) → x ♯ z ⇔ y ♯ z
     f = not-apart-have-same-apart x y _♯_ ♯a na
@@ -940,7 +940,7 @@ apartness on it.
     f' x' = pr₁(k x')
 
     r : f' ∘ η ≡ f
-    r = funext (fe U W) h
+    r = dfunext (fe U W) h
      where
       g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
       g y = pr₂(k(η y))
@@ -958,7 +958,7 @@ apartness on it.
       w = happly (r ∙ s ⁻¹)
 
       t : f' ≡ f''
-      t = funext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
+      t = dfunext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
 
       u : f'' ∘ η ≡ f
       u = transport (λ g → g ∘ η ≡ f) t r
