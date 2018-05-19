@@ -57,6 +57,6 @@ NFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h =
   f₂                               ∎
 
 FunExt-from-Univalence : ∀ {U} → isUnivalent U → FunExt U U
-FunExt-from-Univalence ua = NFunExt-gives-FunExt (NFunExt-from-Univalence ua) (NFunExt-from-Univalence ua)
+FunExt-from-Univalence ua = NFunExt-gives-FunExt' (NFunExt-from-Univalence ua)
 
 \end{code}
