@@ -56,7 +56,7 @@ open import UF-Yoneda
 open import UF-Subsingletons
 open import UF-Subsingletons-Retracts
 
-NFunExt-gives-FunExt : ∀ {U} {V} → NFunExt U (V ⊔ U) → NFunExt U U → FunExt U V
+NFunExt-gives-FunExt : ∀ {U} {V} → NFunExt U (U ⊔ V) → NFunExt U U → FunExt U V
 NFunExt-gives-FunExt {U} {V} nfe nfe' = funext-via-contractibility γ
  where
   γ : (X : U ̇) (A : X → V ̇) →
