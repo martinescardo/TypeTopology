@@ -386,8 +386,8 @@ hasAdj-isVoevodskyEquiv' g (f , ψ) = hasAdj-isVoevodskyEquiv g (f , (λ x y →
 \end{code}
 
 Here is an application of the Yoneda machinery to a well-known result
-by Voevodsky. If products preserve contractibility, then dependent
-function extensionality holds.
+by Voevodsky. If products preserve contractibility, then function
+extensionality holds (happly is an equivalence).
 
 \begin{code}
 
@@ -480,6 +480,13 @@ yoneda-nat-Id x {y} = yoneda-nat y (Id x)
 
 Yoneda-nat-Id : ∀ {U} {X : U ̇} (x {y} : X) → x ≡ y → (z : X) → y ≡ z → x ≡ z
 Yoneda-nat-Id = yoneda-nat-Id
+
+Id-charac : (∀ U V → FunExt U V)
+       → ∀ {U} {X : U ̇} (x {y} : X) → (x ≡ y) ≃ Nat (Id y) (Id x)
+Id-charac fe {U} {X} x {y} = yoneda-equivalence fe y (Id x)
+
+yoneda-nat-Eq : ∀ {U} (X {Y} : U ̇) → Eq X Y → Nat (Id Y) (Eq X)
+yoneda-nat-Eq X {Y} = yoneda-nat Y (Eq X)
 
 yoneda-elem-Id : ∀ {U} {X : U ̇} (x {y} : X) → Nat (Id y) (Id x) → Id x y
 yoneda-elem-Id x {y} = yoneda-elem y (Id x)
