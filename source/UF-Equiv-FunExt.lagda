@@ -24,7 +24,7 @@ isProp-isVoevodskyEquiv fe {U} {V} f = isProp-exponential-ideal
                                          (λ x → isProp-isSingleton (fe (U ⊔ V) (U ⊔ V)))
 
 qinv-post' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
-          → NFunExt W U → NFunExt W V
+          → NaiveFunExt W U → NaiveFunExt W V
           → (f : X → Y) → qinv f → qinv (λ (h : A → X) → f ∘ h)
 qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
@@ -37,12 +37,12 @@ qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
   ε' : (k : A → Y) → f' (g' k) ≡ k
   ε' k = nfe' (ε ∘ k)
 
-qinv-post : (∀ U V → NFunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+qinv-post : (∀ U V → NaiveFunExt U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
           → qinv f → qinv (λ (h : A → X) → f ∘ h)
 qinv-post nfe {U} {V} {W} = qinv-post' (nfe W U) (nfe W V)
 
 equiv-post : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
-          → NFunExt W U → NFunExt W V
+          → NaiveFunExt W U → NaiveFunExt W V
           → (f : X → Y) → isEquiv f → isEquiv (λ (h : A → X) → f ∘ h)
 equiv-post nfe nfe' f e = qinv-isEquiv (λ h → f ∘ h) (qinv-post' nfe nfe' f (isEquiv-qinv f e))
 

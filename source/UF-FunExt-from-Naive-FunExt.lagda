@@ -59,11 +59,10 @@ open import UF-Yoneda
 open import UF-Subsingletons
 open import UF-Subsingletons-Retracts
 
-NFunExt-gives-FunExt : ∀ {U} {V} → NFunExt U (U ⊔ V) → NFunExt U U → FunExt U V
-NFunExt-gives-FunExt {U} {V} nfe nfe' = funext-via-contractibility γ
+NaiveFunExt-gives-FunExt : ∀ {U} {V} → NaiveFunExt U (U ⊔ V) → NaiveFunExt U U → FunExt U V
+NaiveFunExt-gives-FunExt {U} {V} nfe nfe' = funext-via-contractibility γ
  where
-  γ : (X : U ̇) (A : X → V ̇) →
-      ((x : X) → isSingleton (A x)) → isSingleton (Π A)
+  γ : (X : U ̇) (A : X → V ̇) → ((x : X) → isSingleton (A x)) → isSingleton (Π A)
   γ X A φ = retract-of-singleton r (s , rs) iss
    where
     f : Σ A → X
@@ -83,7 +82,7 @@ NFunExt-gives-FunExt {U} {V} nfe nfe' = funext-via-contractibility γ
     rs : ∀ φ → r (s φ) ≡ φ
     rs φ = refl
 
-NFunExt-gives-FunExt' : ∀ {U} → NFunExt U U → FunExt U U
-NFunExt-gives-FunExt' fe = NFunExt-gives-FunExt fe fe
+NaiveFunExt-gives-FunExt' : ∀ {U} → NaiveFunExt U U → FunExt U U
+NaiveFunExt-gives-FunExt' fe = NaiveFunExt-gives-FunExt fe fe
 
 \end{code}

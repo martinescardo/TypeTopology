@@ -47,8 +47,8 @@ open import UF-FunExt-from-Naive-FunExt
 π₁-equals-π₂ : ∀ {U} → isUnivalent U → {X : U ̇} → π₁ ≡ π₂
 π₁-equals-π₂ ua {X} = isEquiv-lc (λ(g : Δ X → X) → g ∘ δ) (preComp-isEquiv ua δ  δ-isEquiv) (πδ X)
 
-NFunExt-from-Univalence : ∀ {U} → isUnivalent U → ∀ {V} → NFunExt V U
-NFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h =
+NaiveFunExt-from-Univalence : ∀ {U} → isUnivalent U → ∀ {V} → NaiveFunExt V U
+NaiveFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h =
   f₁                               ≡⟨ refl ⟩
   (λ x → f₁ x)                    ≡⟨ refl ⟩ 
   (λ x → π₁ (f₁ x , f₂ x , h x))  ≡⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) (π₁-equals-π₂ ua) ⟩
@@ -63,6 +63,6 @@ Added 19th May 2018:
 \begin{code}
 
 FunExt-from-Univalence : ∀ {U} → isUnivalent U → FunExt U U
-FunExt-from-Univalence ua = NFunExt-gives-FunExt' (NFunExt-from-Univalence ua)
+FunExt-from-Univalence ua = NaiveFunExt-gives-FunExt' (NaiveFunExt-from-Univalence ua)
 
 \end{code}

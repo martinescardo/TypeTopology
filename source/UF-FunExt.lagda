@@ -15,12 +15,12 @@ open import UF-LeftCancellable
 The appropriate notion of function extensionality in univalent
 mathematics is FunExt, define below. It is implied, by an argument due
 to Voevodky, by naive, non-dependent function extensionality, written
-NFunExt here.
+NaiveFunExt here.
 
 \begin{code}
 
-NFunExt : ∀ U V → U ′ ⊔ V ′ ̇
-NFunExt U V = {X : U ̇} {Y : V ̇} {f g : X → Y} → f ∼ g → f ≡ g
+NaiveFunExt : ∀ U V → U ′ ⊔ V ′ ̇
+NaiveFunExt U V = {X : U ̇} {Y : V ̇} {f g : X → Y} → f ∼ g → f ≡ g
 
 DFunExt : ∀ U V → U ′ ⊔ V ′ ̇
 DFunExt U V = {X : U ̇} {A : X → V ̇} {f g : Π A} → f ∼ g → f ≡ g
@@ -32,10 +32,10 @@ FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → isEquiv (happly' f g)
          → (f ≡ g) ≃ ((x : X) → f x ≡ g x)
 ≃-funext U V fe f g = happly' f g , fe f g
 
-dfunext : ∀ {U V} (fe : FunExt U V) → DFunExt U V
+dfunext : ∀ {U V} → FunExt U V → DFunExt U V
 dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 
-nfunext : ∀ {U V} (fe : FunExt U V) → NFunExt U V
+nfunext : ∀ {U V} (fe : FunExt U V) → NaiveFunExt U V
 nfunext fe = dfunext fe 
 
 happly-funext : ∀ {U V} {X : U ̇} {A : X → V ̇}
