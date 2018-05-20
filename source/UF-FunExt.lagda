@@ -35,7 +35,7 @@ FunExt U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → isEquiv (happly' f g)
 dfunext : ∀ {U V} → FunExt U V → DFunExt U V
 dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 
-nfunext : ∀ {U V} (fe : FunExt U V) → NaiveFunExt U V
+nfunext : ∀ {U V} → FunExt U V → NaiveFunExt U V
 nfunext fe = dfunext fe 
 
 happly-funext : ∀ {U V} {X : U ̇} {A : X → V ̇}
