@@ -425,10 +425,8 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Univalence
 
-univalence-via-singletons : ∀ {U}
-                          → isUnivalent U
-                            ⇔
-                            ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-singletons :
+  ∀ {U} → isUnivalent U   ⇔   ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
 univalence-via-singletons {U} = (f , g)
  where
   f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))

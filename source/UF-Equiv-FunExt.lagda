@@ -127,7 +127,7 @@ Its inverse:
 
 \end{code}
 
-The proof that they are mutually inverse, were one direction requires
+The proof that they are mutually inverse, where one direction requires
 function extensionality.
 
 \begin{code}
