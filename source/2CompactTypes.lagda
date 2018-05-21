@@ -155,8 +155,8 @@ the moment we do the base case:
 is-empty-strongly-𝟚-overt : ∀ {U} {X : U ̇} → is-empty X → strongly-𝟚-overt X
 is-empty-strongly-𝟚-overt u p = inr (ptrec 𝟘-is-prop λ σ → u (pr₁ σ))
 
-isIsEmpty-𝟚-compact : ∀ {U} {X : U ̇} → is-empty X → 𝟚-compact X
-isIsEmpty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
+empty-𝟚-compact : ∀ {U} {X : U ̇} → is-empty X → 𝟚-compact X
+empty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
 
@@ -767,9 +767,10 @@ i-and-c-iso {U} {X} (t , c) p = ptrec ptisp f t
 
 \end{code}
 
-This characterizes the inhabited-strongly-𝟚-overt types as those that are
-strongly-𝟚-overt and inhabited. We can also characterize the strongly-𝟚-overt types
-as those that are inhabited-strongly-𝟚-overt or isIsEmpty:
+This characterizes the inhabited-strongly-𝟚-overt types as those that
+are strongly-𝟚-overt and inhabited. We can also characterize the
+strongly-𝟚-overt types as those that are inhabited-strongly-𝟚-overt or
+empty:
 
 \begin{code}
 
