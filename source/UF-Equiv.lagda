@@ -165,18 +165,18 @@ is-hae : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-hae {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id) → (x : X) → ap f (η x) ≡ ε (f x)
 
 is-hae-is-equiv : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-              → is-hae f → is-equiv f
+               → is-hae f → is-equiv f
 is-hae-is-equiv {U} {V} {X} f (g , η , ε , τ) = qinv-is-equiv f (g , η , ε)
 
 id-homotopies-are-natural : ∀ {U} {X : U ̇} (h : X → X) (η : h ∼ id) {x : X}
                          → η (h x) ≡ ap h (η x)
 id-homotopies-are-natural h η {x} =
-   η (h x)                          ≡⟨ refl ⟩
-   η (h x) ∙ refl                   ≡⟨ ap (λ p → η(h x) ∙ p) ((trans-sym' (η x))⁻¹) ⟩
+   η (h x)                         ≡⟨ refl ⟩
+   η (h x) ∙ refl                  ≡⟨ ap (λ p → η(h x) ∙ p) ((trans-sym' (η x))⁻¹) ⟩
    η (h x) ∙ (η x ∙ (η x)⁻¹)        ≡⟨ (assoc (η (h x)) (η x) (η x ⁻¹))⁻¹ ⟩
    η (h x) ∙ η x ∙ (η x)⁻¹          ≡⟨ ap (λ q → η (h x) ∙ q ∙ (η x)⁻¹) ((ap-id-is-id (η x))) ⟩
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
-   ap h (η x)                       ∎
+   ap h (η x)                      ∎
 
 qinv-is-hae : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-hae f
 qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
@@ -188,7 +188,7 @@ qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
          y               ∎
 
   a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
-  a x = η (g (f x))       ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
+  a x = η (g (f x))      ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
         ap (g ∘ f) (η x)  ≡⟨ (ap-ap f g (η x))⁻¹ ⟩
         ap g (ap f (η x)) ∎
         
@@ -200,12 +200,12 @@ qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         ε (f (g (f x))) ∙ ap f (η x)         ∎
         
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
-  τ x = ap f (η x)                                           ≡⟨ refl-left-neutral ⁻¹ ⟩
-        refl ∙ ap f (η x)                                    ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
+  τ x = ap f (η x)                                         ≡⟨ refl-left-neutral ⁻¹ ⟩
+        refl ∙ ap f (η x)                                   ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
-        ε' (f x)                                             ∎
+        ε' (f x)                                            ∎
 
 is-equiv-is-hae : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
               → is-equiv f → is-hae f
@@ -218,10 +218,10 @@ but a proof by path induction is direct:
 
 \begin{code}
 
-paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+identifications-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                    (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                 → (Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
-paths-in-fibers f .(f x) x .x refl p' (refl , r) = g
+identifications-in-fibers f .(f x) x .x refl p' (refl , r) = g
  where
   g : x , refl ≡ x , p'
   g = ap (λ p → (x , p)) (r ⁻¹ ∙ refl-left-neutral)
@@ -245,7 +245,7 @@ is-hae-is-vv-equiv {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁
     γ : g y ≡ x
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ≡ ε y
-    q = ap f γ ∙ p                          ≡⟨ refl ⟩
+    q = ap f γ ∙ p                         ≡⟨ refl ⟩
         ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ r → r ∙ p) (ap-comp f ((ap g p)⁻¹) (η x)) ⟩
         ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ r → ap f r ∙ ap f (η x) ∙ p) (ap-sym g p) ⟩
         ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ r → ap f (ap g (p ⁻¹)) ∙ r ∙ p) (τ x) ⟩
@@ -258,7 +258,7 @@ is-hae-is-vv-equiv {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁
         ε y ∎
 
     φ : g y , ε y ≡ x , p
-    φ = paths-in-fibers f y (g y) x (ε y) p (γ , q)
+    φ = identifications-in-fibers f y (g y) x (ε y) p (γ , q)
 
 \end{code}
 
@@ -267,11 +267,11 @@ Here are some corollaries:
 \begin{code}
 
 qinv-is-vv-equiv : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                   → qinv f → is-vv-equiv f
+                 → qinv f → is-vv-equiv f
 qinv-is-vv-equiv f q = is-hae-is-vv-equiv f (qinv-is-hae f q)
 
 is-equiv-is-vv-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                         → is-equiv f → is-vv-equiv f
+                     → is-equiv f → is-vv-equiv f
 is-equiv-is-vv-equiv f ie = qinv-is-vv-equiv f (is-equiv-qinv f ie)
 
 \end{code}
@@ -316,15 +316,15 @@ have:
 
 \begin{code}
 
-from-paths-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+from-identifications-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                        (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                      → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
-from-paths-in-fibers f .(f x) x .x refl .refl refl = refl , refl
+from-identifications-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
 η-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
         (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
         (σ : Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p)
-      → from-paths-in-fibers f y x x' p p' (paths-in-fibers f y x x' p p' σ) ≡ σ
+      → from-identifications-in-fibers f y x x' p p' (identifications-in-fibers f y x x' p p' σ) ≡ σ
 η-pif f .(f x) x .x _ refl (refl , refl) = refl
 
 \end{code}
@@ -336,7 +336,7 @@ but also has a direct proof by path induction:
 ε-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
         (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
         (q : (x , p) ≡ (x' , p'))
-      → paths-in-fibers f y x x' p p' (from-paths-in-fibers f y x x' p p' q) ≡ q
+      → identifications-in-fibers f y x x' p p' (from-identifications-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
 
 pr₁-equivalence : ∀ {U V} (X : U ̇) (A : X → V ̇)
