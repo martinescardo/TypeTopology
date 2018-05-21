@@ -67,17 +67,17 @@ type Σ A.
 
 \begin{code}
 
-Id-Embedding-Lemma : (∀ U V → FunExt U V) → ∀ {U} → {X : U ̇}
+Id-Embedding-Lemma : (∀ U V → funext U V) → ∀ {U} → {X : U ̇}
                   → ((x y : X) (A : X → U ̇)
                   → left-cancellable (idtofun (Id x y) (A y))) 
-                  → isEmbedding(Id {U} {X})
+                  → is-embedding(Id {U} {X})
 Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
   T = Σ \(x : X) → Id x ≡ A
   q : Σ (Id x₀) ≡ Σ A
   q = ap Σ p₀
-  c : isSingleton(Σ A)
-  c = yoneda-nat (paths-from x₀) isSingleton (paths-from-singleton x₀) (Σ A) q
+  c : is-singleton(Σ A)
+  c = yoneda-nat (identifications-from x₀) is-singleton (identifications-from-singleton x₀) (Σ A) q
   f₀ : (x : X) → Id x ≡ A → (y : X) → Id x y ≡ A y
   f₀ x = happly
   f₁ : (x : X) → ((y : X) → Id x y ≡ A y) → Nat (Id x) A
@@ -110,12 +110,12 @@ Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   g = NatΣ f 
   g-lc : left-cancellable g
   g-lc = NatΣ-lc X (λ x → Id x ≡ A) A f f-lc 
-  h : isProp T
-  h = left-cancellable-reflects-isProp g g-lc (isSingleton-isProp c)
+  h : is-prop T
+  h = left-cancellable-reflects-is-prop g g-lc (is-singleton-is-prop c)
 
 \end{code}
 
-Univalence implies that the function Id {U} {X} : X → (X → U ̇) is an embedding.
+univalence implies that the function Id {U} {X} : X → (X → U ̇) is an embedding.
   
 The map eqtofun is left-cancellable assuming univalence (and function
 extensionality, which is a consequence of univalence, but we don't
@@ -123,12 +123,12 @@ bother):
 
 \begin{code}
 
-eqtofun-lc : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V)
+eqtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V)
            → (X Y : U ̇) → left-cancellable(eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
-  q : yoneda-nat f isEquiv jef g p ≡ jeg
-  q = isEquiv-isProp fe g _ _
+  q : yoneda-nat f is-equiv jef g p ≡ jeg
+  q = is-equiv-is-prop fe g _ _
   go : f , jef ≡ g , jeg
   go = to-Σ-Id (p , q)
   
@@ -138,17 +138,17 @@ The map idtofun is left-cancellable assuming univalence (and funext):
 
 \begin{code}
 
-isUnivalent-idtofun-lc : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V) → (X Y : U ̇) 
+is-univalent-idtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V) → (X Y : U ̇) 
                        → left-cancellable(idtofun X Y)
-isUnivalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
+is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)
                                         (eqtofun X Y)
-                                        (isUnivalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
+                                        (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
-UA-Id-embedding-Theorem : ∀ {U} → isUnivalent U → (∀ U V → FunExt U V)
-                       → {X : U ̇} → isEmbedding(Id {U} {X})
+UA-Id-embedding-Theorem : ∀ {U} → is-univalent U → (∀ U V → funext U V)
+                       → {X : U ̇} → is-embedding(Id {U} {X})
 UA-Id-embedding-Theorem {U} ua fe {X} = Id-Embedding-Lemma fe 
-                                            (λ x y a → isUnivalent-idtofun-lc ua fe (Id x y) (a y))
+                                            (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
 
 \end{code}
 
@@ -157,8 +157,8 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding-Theorem' : ∀ {U} → K (U ′) → (∀ U V → FunExt U V)
-                       → {X : U ̇} → isEmbedding(Id {U} {X})
+K-id-embedding-Theorem' : ∀ {U} → K (U ′) → (∀ U V → funext U V)
+                       → {X : U ̇} → is-embedding(Id {U} {X})
 K-id-embedding-Theorem' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k) 
 
 \end{code}
@@ -170,7 +170,7 @@ But actually function extensionality is not needed for this: K alone suffices.
 Id-lc : ∀ {U} {X : U ̇} → left-cancellable (Id {U} {X})
 Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-id-embedding-Theorem : ∀ {U} → K (U ′) → {X : U ̇} → isEmbedding(Id {U} {X})
+K-id-embedding-Theorem : ∀ {U} → K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
 K-id-embedding-Theorem {U} k {X} = left-cancellable-maps-are-embeddings-with-K Id Id-lc k
 
 \end{code}

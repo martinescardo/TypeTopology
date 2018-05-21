@@ -21,7 +21,7 @@ called "Decidability of non-continuity".
 open import SpartanMLTT
 open import UF-FunExt
 
-module DecidabilityOfNonContinuity (fe : FunExt U₀ U₀) where
+module DecidabilityOfNonContinuity (fe : funext U₀ U₀) where
 
 open import DiscreteAndSeparated
 open import GenericConvergentSequence

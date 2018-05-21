@@ -11,7 +11,7 @@ open import UF-FunExt
 
 module UF-EquivalenceExamples where
 
-Curry-Uncurry : (fe : ∀ U V → FunExt U V)
+Curry-Uncurry : (fe : ∀ U V → funext U V)
              → ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
 Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
@@ -60,7 +60,7 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     HF : (w : Σ Y) → H(F w) ≡ w
     HF (x , y) = to-Σ-≡' x _ y (hf x y)
   
-Π-congruence : (fe : ∀ {U V} → FunExt U V)
+Π-congruence : (fe : ∀ {U V} → funext U V)
               → ∀ {U V} (X : U ̇) (Y Y' : X → V ̇)
               → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 Π-congruence fe X Y Y' φ = (F , (G , FG) , (H , HF))

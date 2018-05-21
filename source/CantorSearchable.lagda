@@ -13,7 +13,7 @@ and other modules.
 open import SpartanMLTT
 open import UF-FunExt
 
-module CantorSearchable (fe : ∀ {U V} → FunExt U V) where
+module CantorSearchable (fe : ∀ {U V} → funext U V) where
 
 open import SearchableTypes
 open import CountableTychonoff (fe)

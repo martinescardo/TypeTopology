@@ -80,7 +80,7 @@ open import UF-Retracts-FunExt
 open import UF-ImageAndSurjection
 open import UF-Equiv
 
-module 2CompactTypes (fe : ∀ U V → FunExt U V)
+module 2CompactTypes (fe : ∀ U V → funext U V)
                      (pt : PropTrunc)
                      where
 
@@ -100,9 +100,9 @@ SearchableTypes) are structure on the type.
 strongly-𝟚-overt : ∀ {U} → U ̇ → U ̇
 strongly-𝟚-overt X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
 
-strongly-𝟚-overt-isProp : ∀ {U} {X : U ̇} → isProp (strongly-𝟚-overt X)
-strongly-𝟚-overt-isProp {U} = isProp-exponential-ideal (fe U U)
-                                (λ _ → decidable-isProp (fe U U₀) ptisp)
+strongly-𝟚-overt-is-prop : ∀ {U} {X : U ̇} → is-prop (strongly-𝟚-overt X)
+strongly-𝟚-overt-is-prop {U} = is-prop-exponential-ideal (fe U U)
+                                (λ _ → decidable-is-prop (fe U U₀) ptisp)
 
 so-Markov : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → (p : X → 𝟚)
           → ¬¬(∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
@@ -124,10 +124,10 @@ of LPO with WLPO.
 
 open import UF-SetExamples
 
-𝟚-compact-isProp : ∀ {U} {X : U ̇} → isProp (𝟚-compact X)
-𝟚-compact-isProp {U} = isProp-exponential-ideal (fe U U)
-                         (λ _ → decidable-isProp (fe U U₀)
-                                  (isProp-exponential-ideal (fe U U₀) λ _ → 𝟚-isSet))
+𝟚-compact-is-prop : ∀ {U} {X : U ̇} → is-prop (𝟚-compact X)
+𝟚-compact-is-prop {U} = is-prop-exponential-ideal (fe U U)
+                         (λ _ → decidable-is-prop (fe U U₀)
+                                  (is-prop-exponential-ideal (fe U U₀) λ _ → 𝟚-is-set))
 
 \end{code}
 
@@ -139,7 +139,7 @@ The following implication is not to be expected for dominances other than 𝟚:
 𝟚-so-c {U} {X} c p = f (c p)
  where
   f : decidable (∃ \(x : X) → p x ≡ ₀) → decidable (Π \(x : X) → p x ≡ ₁)
-  f (inl s) = inr (λ α → ptrec 𝟘-isProp (g α) s)
+  f (inl s) = inr (λ α → ptrec 𝟘-is-prop (g α) s)
    where
     g : ((x : X) → p x ≡ ₁) → ¬ Σ \x → p x ≡ ₀
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
@@ -152,10 +152,10 @@ the moment we do the base case:
 
 \begin{code}
 
-isEmpty-strongly-𝟚-overt : ∀ {U} {X : U ̇} → isEmpty X → strongly-𝟚-overt X
-isEmpty-strongly-𝟚-overt u p = inr (ptrec 𝟘-isProp λ σ → u (pr₁ σ))
+is-empty-strongly-𝟚-overt : ∀ {U} {X : U ̇} → is-empty X → strongly-𝟚-overt X
+is-empty-strongly-𝟚-overt u p = inr (ptrec 𝟘-is-prop λ σ → u (pr₁ σ))
 
-isIsEmpty-𝟚-compact : ∀ {U} {X : U ̇} → isEmpty X → 𝟚-compact X
+isIsEmpty-𝟚-compact : ∀ {U} {X : U ̇} → is-empty X → 𝟚-compact X
 isIsEmpty-𝟚-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
@@ -168,11 +168,11 @@ predicate λ x → ₁:
 𝟚-compact' : ∀ {U} → U ̇ → U ̇
 𝟚-compact' X = (p : X → 𝟚) → decidable (p ≡ λ x → ₁)
 
-𝟚-compact'-isProp : ∀ {U} {X : U ̇} → isProp(𝟚-compact' X)
-𝟚-compact'-isProp {U} = isProp-exponential-ideal (fe U U)
-                          (λ p → decidable-isProp (fe U U₀)
-                                   (isSet-exponential-ideal (fe U U₀)
-                                       (λ x → 𝟚-isSet)))
+𝟚-compact'-is-prop : ∀ {U} {X : U ̇} → is-prop(𝟚-compact' X)
+𝟚-compact'-is-prop {U} = is-prop-exponential-ideal (fe U U)
+                          (λ p → decidable-is-prop (fe U U₀)
+                                   (is-set-exponential-ideal (fe U U₀)
+                                       (λ x → 𝟚-is-set)))
 
 𝟚-c'c : ∀ {U} {X : U ̇} → 𝟚-compact' X → 𝟚-compact X
 𝟚-c'c {U} {X} c' p = g (c' p)
@@ -283,7 +283,7 @@ open ImageAndSurjection (pt)
 open import UF-SetExamples
 
 surjection-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                            → isSurjection f → strongly-𝟚-overt X → strongly-𝟚-overt Y
+                            → is-surjection f → strongly-𝟚-overt X → strongly-𝟚-overt Y
 surjection-strongly-𝟚-overt {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
  where
   h : (Σ \(x : X) → q(f x) ≡ ₀) → Σ \(y : Y) → q y ≡ ₀
@@ -304,11 +304,11 @@ image-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
 image-strongly-𝟚-overt f = surjection-strongly-𝟚-overt (corestriction f) (corestriction-surjection f)
 
 surjection-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                     → isSurjection f → 𝟚-compact X → 𝟚-compact Y
+                     → is-surjection f → 𝟚-compact X → 𝟚-compact Y
 surjection-𝟚-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
  where
   g : decidable((x : X) → q (f x) ≡ ₁) → decidable ((x : Y) → q x ≡ ₁)
-  g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-isSet) s)
+  g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
 retract-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇}
@@ -317,7 +317,7 @@ retract-strongly-𝟚-overt (f , hass) = surjection-strongly-𝟚-overt f (retra
 
 retract-strongly-𝟚-overt' : ∀ {U V} {X : U ̇} {Y : V ̇}
                           → ∥ retract Y of X ∥ → strongly-𝟚-overt X → strongly-𝟚-overt Y
-retract-strongly-𝟚-overt' t c = ptrec strongly-𝟚-overt-isProp (λ r → retract-strongly-𝟚-overt r c) t
+retract-strongly-𝟚-overt' t c = ptrec strongly-𝟚-overt-is-prop (λ r → retract-strongly-𝟚-overt r c) t
 
 image-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                → 𝟚-compact X → 𝟚-compact (image f)
@@ -329,7 +329,7 @@ retract-𝟚-compact (f , hass) = surjection-𝟚-compact f (retraction-surjecti
 
 retract-𝟚-compact' : ∀ {U V} {X : U ̇} {Y : V ̇}
                   → ∥ retract Y of X ∥ → 𝟚-compact X → 𝟚-compact Y
-retract-𝟚-compact' t c = ptrec 𝟚-compact-isProp (λ r → retract-𝟚-compact r c) t
+retract-𝟚-compact' t c = ptrec 𝟚-compact-is-prop (λ r → retract-𝟚-compact r c) t
 
 i2c2c : ∀ {U V} {X : U ̇} {Y : V ̇}
       → X → 𝟚-compact (X → Y) → 𝟚-compact Y
@@ -385,7 +385,7 @@ module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
    f α x = (extension-property p x) ⁻¹ ∙ α (η x)
    
    g : (α : (x : X) → p x ≡ ₁) → ((x' : T X) → extension p x' ≡ ₁)
-   g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-isSet) g'
+   g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
      where
       g' : (x : X) → extension p (η x) ≡ ₁
       g' x = extension-property p x ∙ α x 
@@ -543,7 +543,7 @@ information for the moment.
 
 \begin{code}
 
-isod : ∀ {U} (X : U ̇) → isProp X → strongly-𝟚-overt X → decidable X
+isod : ∀ {U} (X : U ̇) → is-prop X → strongly-𝟚-overt X → decidable X
 isod X isp c = f a
  where
   a : decidable ∥ X × (₀ ≡ ₀) ∥ 
@@ -563,7 +563,7 @@ isdni {U} {X} c φ = g (isod-corollary c)
   g (inl s) = s
   g (inr u) = 𝟘-elim (φ (λ x → u ∣ x ∣))
 
-idso : ∀ {U} (X : U ̇) → isProp X → decidable X → strongly-𝟚-overt X
+idso : ∀ {U} (X : U ̇) → is-prop X → decidable X → strongly-𝟚-overt X
 idso X isp d p = g d
  where
   g : decidable X → decidable (∃ \x → p x ≡ ₀)
@@ -573,14 +573,14 @@ idso X isp d p = g d
     b r = inl ∣ x , r ∣
      
     c : p x ≡ ₁ → decidable (∃ \x → p x ≡ ₀)
-    c r = inr (ptrec (𝟘-isProp) f) 
+    c r = inr (ptrec (𝟘-is-prop) f) 
      where
       f : ¬ Σ \y → p y ≡ ₀
       f (y , q) = zero-is-not-one (transport (λ x → p x ≡ ₀) (isp y x) q ⁻¹ ∙ r)
        
-  g (inr u) = inr (ptrec 𝟘-isProp (λ σ → u(pr₁ σ)))
+  g (inr u) = inr (ptrec 𝟘-is-prop (λ σ → u(pr₁ σ)))
 
-icdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact X → decidable(¬ X)
+icdn : ∀ {U} (X : U ̇) → is-prop X → 𝟚-compact X → decidable(¬ X)
 icdn X isp c = f a
  where
   a : decidable (X → ₀ ≡ ₁)
@@ -590,7 +590,7 @@ icdn X isp c = f a
   f (inl u) = inl (zero-is-not-one  ∘ u)
   f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
 
-emcdn : ∀ {U} (X : U ̇) → isProp X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
+emcdn : ∀ {U} (X : U ̇) → is-prop X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
 emcdn X isp c = cases l m a
  where
   p : X + ¬ X → 𝟚
@@ -635,7 +635,7 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     t : two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
     t = s (A x) e
     u : (λ e' → x , e') ≡ (λ _ → x , e)
-    u = dfunext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-isSet e' e)
+    u = dfunext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-is-set e' e)
     v : r x ≡ two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
     v = ap (λ f₀ → two-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
     w : r x ≡ x , e
@@ -656,7 +656,7 @@ detachable-subset-strongly-𝟚-overt {U} {X} A c = g (c A)
  where
   g : decidable (∃ \(x : X) → A x ≡ ₀) → strongly-𝟚-overt(Σ \(x : X) → A(x) ≡ ₀)
   g (inl e) = retract-strongly-𝟚-overt' (ptfunct detachable-subset-retract e) c
-  g (inr u) = isEmpty-strongly-𝟚-overt (contrapositive ∣_∣ u)
+  g (inr u) = is-empty-strongly-𝟚-overt (contrapositive ∣_∣ u)
 
 \end{code}
 
@@ -693,7 +693,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     y : A x ≡ ₁ → 𝟚
     y _ = q (x , e)
     r : p₁ x ≡ y
-    r = (dfunext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-isSet e' e))
+    r = (dfunext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-is-set e' e))
     s : (b : 𝟚) → b ≡ ₁
       → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
@@ -725,8 +725,8 @@ SearchableTypes and OmniscientTypes).
 inhabited-strongly-𝟚-overt : ∀ {U} → U ̇ → U ̇
 inhabited-strongly-𝟚-overt X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
-inhabited-strongly-𝟚-overt-isProp : ∀ {U} {X : U ̇} → isProp (inhabited-strongly-𝟚-overt X)
-inhabited-strongly-𝟚-overt-isProp {U} = isProp-exponential-ideal (fe U U) (λ _ → ptisp)
+inhabited-strongly-𝟚-overt-is-prop : ∀ {U} {X : U ̇} → is-prop (inhabited-strongly-𝟚-overt X)
+inhabited-strongly-𝟚-overt-is-prop {U} = is-prop-exponential-ideal (fe U U) (λ _ → ptisp)
 
 \end{code}
 
@@ -736,7 +736,7 @@ replaced by non-emptiness in the following results:
 \begin{code}
 
 iso-i-and-c : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X → ∥ X ∥ × strongly-𝟚-overt X
-iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-isProp (fe U U₀) ptisp) (g₂ p) (c p))
+iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-is-prop (fe U U₀) ptisp) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
@@ -745,7 +745,7 @@ iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-isProp (
   g₂ p (x₀ , φ) = h (𝟚-discrete (p x₀) ₁)
    where
     h : decidable(p x₀ ≡ ₁) → decidable (∃ \(x : X) → p x ≡ ₀)
-    h (inl r) = inr (ptrec 𝟘-isProp f)
+    h (inl r) = inr (ptrec 𝟘-is-prop f)
      where
       f : ¬ Σ \(x : X) → p x ≡ ₀
       f (x , s) = zero-is-not-one (s ⁻¹ ∙ φ r x)
@@ -773,24 +773,24 @@ as those that are inhabited-strongly-𝟚-overt or isIsEmpty:
 
 \begin{code}
 
-isProp-isoore : ∀ {U} {X : U ̇} → isProp(inhabited-strongly-𝟚-overt X + isEmpty X)
-isProp-isoore {U} {X} = sum-of-contradictory-props
-                           inhabited-strongly-𝟚-overt-isProp
-                             (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
-                                (λ c u → ptrec 𝟘-isProp (contrapositive pr₁ u) (c (λ _ → ₀)))
+is-prop-isoore : ∀ {U} {X : U ̇} → is-prop(inhabited-strongly-𝟚-overt X + is-empty X)
+is-prop-isoore {U} {X} = sum-of-contradictory-props
+                           inhabited-strongly-𝟚-overt-is-prop
+                             (is-prop-exponential-ideal (fe U U₀) (λ _ → 𝟘-is-prop))
+                                (λ c u → ptrec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
 
-isoore-so : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X + isEmpty X → strongly-𝟚-overt X
+isoore-so : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X + is-empty X → strongly-𝟚-overt X
 isoore-so (inl c) = pr₂(iso-i-and-c c)
-isoore-so (inr u) = isEmpty-strongly-𝟚-overt u
+isoore-so (inr u) = is-empty-strongly-𝟚-overt u
 
-so-isoore : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → inhabited-strongly-𝟚-overt X + isEmpty X
+so-isoore : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → inhabited-strongly-𝟚-overt X + is-empty X
 so-isoore {U} {X} c = g
  where
-  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → inhabited-strongly-𝟚-overt X + isEmpty X
+  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → inhabited-strongly-𝟚-overt X + is-empty X
   h (inl t) = inl (i-and-c-iso (ptfunct pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
   
-  g : inhabited-strongly-𝟚-overt X + isEmpty X
+  g : inhabited-strongly-𝟚-overt X + is-empty X
   g = h (c (λ _ → ₀))
 
 \end{code}
@@ -802,22 +802,22 @@ so-isoore {U} {X} c = g
 _has-inf_ : ∀ {U} {X : U ̇} → (X → 𝟚) → 𝟚 → U ̇
 p has-inf n = (∀ x → n ≤ p x) × (∀ m → (∀ x → m ≤ p x) → m ≤ n)
 
-has-inf-isProp : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → isProp(p has-inf n)
-has-inf-isProp {U} {X} p n (f , g) (f' , g') = ×-≡ r s
+has-inf-is-prop : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
+has-inf-is-prop {U} {X} p n (f , g) (f' , g') = ×-≡ r s
  where
   r : f ≡ f'
-  r = dfunext (fe U U₀) (λ x → dfunext (fe U₀ U₀) (λ r → 𝟚-isSet (f x r) (f' x r)))
+  r = dfunext (fe U U₀) (λ x → dfunext (fe U₀ U₀) (λ r → 𝟚-is-set (f x r) (f' x r)))
   s : g ≡ g'
-  s = dfunext (fe U₀ U) (λ n → dfunext (fe U U₀) (λ φ → dfunext (fe U₀ U₀) (λ r → 𝟚-isSet (g n φ r) (g' n φ r))))
+  s = dfunext (fe U₀ U) (λ n → dfunext (fe U U₀) (λ φ → dfunext (fe U₀ U₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
 
-at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → isProp (Σ \(n : 𝟚) → p has-inf n)
-at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡'' (≤-anti (g' n f) (g n' f') , has-inf-isProp p n' _ _)
+at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → is-prop (Σ \(n : 𝟚) → p has-inf n)
+at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡'' (≤-anti (g' n f) (g n' f') , has-inf-is-prop p n' _ _)
 
 has-infs : ∀ {U} → U ̇ → U ̇
 has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
 
-has-infs-isProp : ∀ {U} {X : U ̇} → isProp(has-infs X)
-has-infs-isProp {U} {X} = isProp-exponential-ideal (fe U U) at-most-one-inf
+has-infs-is-prop : ∀ {U} {X : U ̇} → is-prop(has-infs X)
+has-infs-is-prop {U} {X} = is-prop-exponential-ideal (fe U U) at-most-one-inf
 
 𝟚-compact-has-infs : ∀ {U} {X : U ̇} → 𝟚-compact X → has-infs X
 𝟚-compact-has-infs c p = g (c p)
@@ -1179,22 +1179,22 @@ Image : ∀ {U V W} {X : U ̇} {Y : V ̇}
      → (X → Y) → (X → W ̇) → (Y → U ⊔ V ⊔ W ̇)
 Image f A = λ y → ∃ \x → A x × (f x ≡ y)
 
-isClopenMap : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isClopenMap {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y)
+is-clopen-map : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-clopen-map {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y)
                               → decidable (Image f (λ x → p x ≡ ₀) y)
 
-isClopenMap-isProp : ∀ {U V} {X : U ̇} {Y : V ̇} → (∀ U V → FunExt U V)
-                   → (f : X → Y) → isProp(isClopenMap f)
-isClopenMap-isProp {U} {V} fe f = isProp-exponential-ideal (fe U (U ⊔ V))
-                                    (λ p → isProp-exponential-ideal (fe V (U ⊔ V))
-                                             (λ y → decidable-isProp (fe (U ⊔ V) U₀) ptisp))
+is-clopen-map-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇} → (∀ U V → funext U V)
+                   → (f : X → Y) → is-prop(is-clopen-map f)
+is-clopen-map-is-prop {U} {V} fe f = is-prop-exponential-ideal (fe U (U ⊔ V))
+                                    (λ p → is-prop-exponential-ideal (fe V (U ⊔ V))
+                                             (λ y → decidable-is-prop (fe (U ⊔ V) U₀) ptisp))
 
 fst : ∀ {U V} (A : U ̇) (X : V ̇) → A × X → A
 fst _ _ = pr₁
 
 strongly-𝟚-overt-clopen-projections : ∀ {U} (X : U ̇)
                                     → strongly-𝟚-overt X
-                                    → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
+                                    → (∀ {V} (A : V ̇) → is-clopen-map(fst A X))
 strongly-𝟚-overt-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
   g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
@@ -1209,7 +1209,7 @@ strongly-𝟚-overt-clopen-projections X c A p a = g (c (λ x → p (a , x)))
     h ((a' , x) , (r , s)) = x , transport (λ a' → p (a' , x) ≡ ₀) s r
 
 clopen-projections-strongly-𝟚-overt : ∀ {U} (X : U ̇)
-                                    → (∀ {V} (A : V ̇) → isClopenMap(fst A X))
+                                    → (∀ {V} (A : V ̇) → is-clopen-map(fst A X))
                                     → strongly-𝟚-overt X
 clopen-projections-strongly-𝟚-overt X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
  where

@@ -23,8 +23,8 @@ open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
 
-NaiveFunExt-from-Univalence : ∀ {U} → isUnivalent U → ∀ {V} → NaiveFunExt V U
-NaiveFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h = γ
+naive-funext-from-univalence : ∀ {U} → is-univalent U → ∀ {V} → naive-funext V U
+naive-funext-from-univalence ua {V} {X} {Y} {f₁} {f₂} h = γ
  where
   Δ : ∀ {U} → U ̇ → U ̇
   Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y
@@ -36,8 +36,8 @@ NaiveFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h = γ
   π₁ (x , _ , _) = x
   π₂ (_ , y , _) = y
 
-  δ-isEquiv : ∀ {U} {X : U ̇} → isEquiv (δ {U} {X})
-  δ-isEquiv {U} {X} = (π₁ , η) , (π₁ , ε)
+  δ-is-equiv : ∀ {U} {X : U ̇} → is-equiv (δ {U} {X})
+  δ-is-equiv {U} {X} = (π₁ , η) , (π₁ , ε)
    where
     η : (d : Δ X) → δ (π₁ d) ≡ d
     η (x , _ , refl) = refl
@@ -47,9 +47,9 @@ NaiveFunExt-from-Univalence ua {V} {X} {Y} {f₁} {f₂} h = γ
   πδ : ∀ {U} (X : U ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
   πδ {U} X = refl {U} {X → X}
 
-  π₁-equals-π₂ : ∀ {U} → isUnivalent U → {X : U ̇} → π₁ ≡ π₂
-  π₁-equals-π₂ ua {X} = isEquiv-lc (λ(g : Δ X → X) → g ∘ δ)
-                                   (preComp-isEquiv ua δ  δ-isEquiv) (πδ X)
+  π₁-equals-π₂ : ∀ {U} → is-univalent U → {X : U ̇} → π₁ ≡ π₂
+  π₁-equals-π₂ ua {X} = is-equiv-lc (λ(g : Δ X → X) → g ∘ δ)
+                                   (preComp-is-equiv ua δ δ-is-equiv) (πδ X)
                                    
   γ : f₁ ≡ f₂
   γ = f₁                              ≡⟨ refl ⟩
@@ -65,7 +65,7 @@ Added 19th May 2018:
 
 \begin{code}
 
-FunExt-from-Univalence : ∀ {U} → isUnivalent U → FunExt U U
-FunExt-from-Univalence ua = NaiveFunExt-gives-FunExt (NaiveFunExt-from-Univalence ua)
+funext-from-univalence : ∀ {U} → is-univalent U → funext U U
+funext-from-univalence ua = naive-funext-gives-funext (naive-funext-from-univalence ua)
 
 \end{code}

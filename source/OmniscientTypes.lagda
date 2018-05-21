@@ -39,7 +39,7 @@ More generally we have:
 open import DiscreteAndSeparated
 open import DecidableAndDetachable
 
-apart-or-equal : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
+apart-or-equal : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇}
               → omniscient X → ((x : X) → discrete(Y x)) 
               → (f g : (x : X) → Y x) → (f ♯ g) + (f ≡ g)
 apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
@@ -61,7 +61,7 @@ apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
   lemma₂(inr h) = inr (dfunext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
 
 
-omniscient-discrete-discrete : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇} → 
+omniscient-discrete-discrete : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇} → 
 
    omniscient X → ((x : X) → discrete(Y x)) → discrete((x : X) → Y x)
 
@@ -72,7 +72,7 @@ omniscient-discrete-discrete fe φ d f g = h(apart-or-equal fe φ d f g)
   h(inr r) = inl r
 
 
-omniscient-discrete-discrete' : ∀ {U V} {X : U ̇} {Y : V ̇} → FunExt U V
+omniscient-discrete-discrete' : ∀ {U V} {X : U ̇} {Y : V ̇} → funext U V
                              → omniscient X → discrete Y → discrete(X → Y)
 omniscient-discrete-discrete' fe φ d = omniscient-discrete-discrete fe φ (λ x → d)
 
@@ -89,7 +89,7 @@ omniscient-decidable X φ = f a
   f (inl (x , _)) = inl x
   f (inr u)       = inr (λ x → zero-is-not-one (u x))
 
-decidable-prop-omniscient : ∀ {U} (X : U ̇) → isProp X → decidable X → omniscient X
+decidable-prop-omniscient : ∀ {U} (X : U ̇) → is-prop X → decidable X → omniscient X
 decidable-prop-omniscient X isp δ p = g δ
  where
   g : decidable X → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁

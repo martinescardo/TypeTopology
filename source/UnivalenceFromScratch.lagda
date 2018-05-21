@@ -2,7 +2,7 @@ Martin Escardo, 28 February 2018.
 
     ---------------------------------------------------
     A self-contained, brief and complete formulation of
-    Voevodsky's Univalence Axiom
+    Voevodsky's univalence Axiom
     ---------------------------------------------------
 
 
@@ -23,7 +23,7 @@ scratch,
  
  * then formally in Agda notation for Martin-Löf type theory.
 
-(Search for "UnivalenceFromScratch" to jump to the formal version.)
+(Search for "univalenceFromScratch" to jump to the formal version.)
 
 The univalence axiom is not true or false in, say, ZFC or the internal
 language of an elementary topos. It cannot even be formulated. As the
@@ -45,7 +45,7 @@ Martin-Löf type theory. In particular, we don't use the equality sign
 
 The underlying idea of these notes is that they should be as concise
 as possible (and not more). They are not meant to be an Encyclopedia
-of Univalence.
+of univalence.
 
 The source code for this file is available at
 https://github.com/martinescardo/TypeTopology/tree/master/source
@@ -57,7 +57,7 @@ with the Agda code as an ancillary file.
 2. Informal, rigorous construction of the univalence type
    ------------------------------------------------------
 
-Univalence is a type, and the univalence axiom says that this type has
+univalence is a type, and the univalence axiom says that this type has
 some inhabitant. It takes a number of steps to construct this type, in
 addition to subtle decisions (e.g. to work with equivalences rather
 than isomorphisms, as discussed below).
@@ -219,25 +219,25 @@ considered to be a function A:X→V for some universe V.
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
 
- Grp := Σ(G:U), isSet(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯ 
+ Grp := Σ(G:U), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯ 
 
-Here isSet(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
+Here is-set(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
 univalence, Grp itself will not be a set, but a 1-groupoid instead,
 namely a type whose identity types are all sets. Moreover, if U
 satisfies the univalence axiom, then for A,B:Grp, the identity type
 Id(A,B) can be shown to be in bijection with the group isomorphisms of
 A and B.
 
-* Univalence
+* univalence
   ----------
 
-Univalence is a property of the identity type Id_U of a universe U. It
+univalence is a property of the identity type Id_U of a universe U. It
 takes a number of steps to define the univalence type.
   
 We say that a type X is a singleton if we have an element c:X with
 Id(c,x) for all x:X. In Curry-Howard logic, this is
 
-    isSingleton(X) := Σ(c:X), Π(x:X), Id(c,x).
+    is-singleton(X) := Σ(c:X), Π(x:X), Id(c,x).
 
 (Alternative terminology not used here: X is contractible.)
 
@@ -249,11 +249,11 @@ points x:X that are mapped to (a point identified with) y:
 The function f is called an equivalence if its fibers are all
 singletons:
 
-    isEquiv(f) := Π(y:Y), isSingleton(f⁻¹(y)).
+    is-equiv(f) := Π(y:Y), is-singleton(f⁻¹(y)).
 
 The type of equivalences from X:U to Y:U is
 
-    Eq(X,Y) := Σ(f:X→Y), isEquiv(f).
+    Eq(X,Y) := Σ(f:X→Y), is-equiv(f).
 
 Given x:X, we have the singleton type consisting of the elements y:X
 identified with x:
@@ -266,7 +266,7 @@ We also have the element η(x) of this type:
 
 We now need to *prove* that singleton types are singletons:
 
-   Π(x:X), isSingleton(singletonType(x)).
+   Π(x:X), is-singleton(singletonType(x)).
 
 In order to do that, we use J with the type family
 
@@ -303,7 +303,7 @@ singleton type defined above, which we proved to be a singleton. We
 need to name this function, because it is needed in the formulation of
 the univalence of U:
 
-   idIsEquiv : Π(X:U), isEquiv(id_X).
+   idIsEquiv : Π(X:U), is-equiv(id_X).
 
 (The identity function id_X should not be confused with the identity
 type Id_X.)
@@ -327,15 +327,15 @@ and
 Finally, we say that the universe U is univalent if the map
 IdToEq(X,Y) is itself an equivalence:
 
-   isUnivalent(U) := Π(X,Y:U), isEquiv(IdToEq(X,Y)).
+   is-univalent(U) := Π(X,Y:U), is-equiv(IdToEq(X,Y)).
 
 * The univalence axiom
   --------------------
 
-The type isUnivalent(U) may or may not have an inhabitant. The
+The type is-univalent(U) may or may not have an inhabitant. The
 univalence axiom says that it does. Without the univalence axiom (or
 some other axiom such as the assertion that K(U) has an inhabitant),
-the inhabitedness of the type isUnivalent(U) is undecided.
+the inhabitedness of the type is-univalent(U) is undecided.
 
 * Notes
   -----
@@ -350,7 +350,7 @@ the inhabitedness of the type isUnivalent(U) is undecided.
  2. It can be shown, by a very complicated and interesting argument,
     that
 
-     Π(u,v: isUnivalent(U)), Id(u,v).
+     Π(u,v: is-univalent(U)), Id(u,v).
 
     This says that univalence is a subsingleton type (any two of its
     elements are identified). In the first step we use u (or v) to get
@@ -368,25 +368,25 @@ the inhabitedness of the type isUnivalent(U) is undecided.
 
      Iso(f) := Σ(g:Y→X), (Π(x:X), Id(g(f(x)),x)) × (Π(y:Y), Id(f(g(y)),y)).
 
-    We have functions r:Iso(f)→isEquiv(f) and
-    s:isEquiv(f)→Iso(f). However, the type isEquiv(f) is always a
+    We have functions r:Iso(f)→is-equiv(f) and
+    s:is-equiv(f)→Iso(f). However, the type is-equiv(f) is always a
     subsingleton, assuming function extensionality, whereas the type
     Iso(f) need not be. What we do have is that the function r is a
     retraction with section s.
 
     Moreover, the univalence type formulated as above, but using
-    Iso(f) rather than isEquiv(f) is provably empty, e.g. for MLTT
+    Iso(f) rather than is-equiv(f) is provably empty, e.g. for MLTT
     with Π, Σ, Id, the empty and two-point types, and three universes,
     as shown by Shulman. With only one universe, the formulation with
     Iso(f) is consistent, as shown by Hofmann and Streicher's groupoid
     model, but in this case all elements of the universe are sets and
-    Iso(f) is a subsingleton, and hence equivalent to isEquiv(f).
+    Iso(f) is a subsingleton, and hence equivalent to is-equiv(f).
 
 
     So, to have a consistent axiom in general, it is crucial to use
-    the type isEquiv(f). It was Voevodsky's insight that not only a
+    the type is-equiv(f). It was Voevodsky's insight that not only a
     subsingleton version of Iso(f) is needed, but also how to
-    construct it. The construction of isEquiv(f) is very simple and
+    construct it. The construction of is-equiv(f) is very simple and
     elegant, and motivated by homotopical models of the theory, where
     it corresponds to the concept with the same name. But the
     univalence axiom can be understood without reference to homotopy
@@ -516,17 +516,17 @@ J : {U V : Universe} {X : U ̇}
   → (x y : X) (p : Id x y) → A x y p
 J A f x .x (refl .x) = f x
 
-isSingleton : {U : Universe} → U ̇ → U ̇
-isSingleton X = Σ \(c : X) → (x : X) → Id c x
+is-singleton : {U : Universe} → U ̇ → U ̇
+is-singleton X = Σ \(c : X) → (x : X) → Id c x
 
 fiber : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → Id (f x) y
 
-isEquiv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-isEquiv f = (y : _) → isSingleton(fiber f y)
+is-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-equiv f = (y : _) → is-singleton(fiber f y)
 
 Eq : {U V : Universe} → U ̇ → V ̇ → U ⊔ V ̇
-Eq X Y = Σ \(f : X → Y) → isEquiv f
+Eq X Y = Σ \(f : X → Y) → is-equiv f
 
 singletonType : {U : Universe} {X : U ̇} → X → U ̇
 singletonType x = Σ \y → Id y x
@@ -534,7 +534,7 @@ singletonType x = Σ \y → Id y x
 η : {U : Universe} {X : U ̇} (x : X) → singletonType x
 η x = (x , refl x)
 
-singletonTypesAreSingletons : {U : Universe} {X : U ̇} (x : X) → isSingleton(singletonType x)
+singletonTypesAreSingletons : {U : Universe} {X : U ̇} (x : X) → is-singleton(singletonType x)
 singletonTypesAreSingletons {U} {X} = h
  where
   A : (y x : X) → Id y x → U ̇
@@ -551,10 +551,10 @@ singletonTypesAreSingletons {U} {X} = h
 id : {U : Universe} (X : U ̇) → X → X
 id X x = x
 
-idIsEquiv : {U : Universe} (X : U ̇) → isEquiv(id X)
+idIsEquiv : {U : Universe} (X : U ̇) → is-equiv(id X)
 idIsEquiv X = g
  where
-  g : (x : X) → isSingleton (fiber (id X) x)
+  g : (x : X) → is-singleton (fiber (id X) x)
   g = singletonTypesAreSingletons
 
 IdToEq : {U : Universe} (X Y : U ̇) → Id X Y → Eq X Y
@@ -565,8 +565,8 @@ IdToEq {U} = J A f
   f : (X : U ̇) → A X X (refl X)
   f X = (id X , idIsEquiv X)
 
-isUnivalent : (U : Universe) → U ′ ̇
-isUnivalent U = (X Y : U ̇) → isEquiv(IdToEq X Y)
+is-univalent : (U : Universe) → U ′ ̇
+is-univalent U = (X Y : U ̇) → is-equiv(IdToEq X Y)
 
 \end{code}
 
@@ -575,7 +575,7 @@ of univalence is far from direct.
 
 Using projections pr₁ and pr₂ rather than pattern matching on Σ types
 (by defining Σ as a record type), Agda calculates the following normal
-form for the term isUnivalent:
+form for the term is-univalent:
 
 λ U → (X Y : Set U) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
 (x : Σ (λ x₁ → Id (f x₁) y₁)) → Id c x))) →
@@ -586,7 +586,7 @@ Id (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ , refl x₃))
 (pr₁ yp) x₂ (pr₂ yp)))) X Y x₁) y)) → Id c x)
 
 This is with lots of subterms elided. With all of them explicitly
-given, the normal form of isUnivalent is
+given, the normal form of is-univalent is
 
 λ U → (X Y : U ̇) (y : Σ {U} {U} {X → Y} (λ f → (y₁ : Y) → Σ {U} {U}
 {Σ {U} {U} {X} (λ x → Id {U} {Y} (f x) y₁)} (λ c → (x : Σ {U} {U} {X}

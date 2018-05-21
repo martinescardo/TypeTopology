@@ -12,7 +12,7 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 
-prop-indexed-product : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇} → isProp X 
+prop-indexed-product : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇} → is-prop X 
                      → (a : X) → Π Y ≃ Y a
 prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
@@ -21,7 +21,7 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   g : Y a → Π Y
   g y x = transport Y (hp a x) y
   lemma : (x : X) → hp x x ≡ refl
-  lemma x = prop-isSet hp (hp x x) refl
+  lemma x = prop-is-set hp (hp x x) refl
   fg : (y : Y a) → transport Y (hp a a) y ≡ y
   fg y = ap (λ r → transport Y r y) (lemma a)
   gf'' : (φ : Π Y) {x x' : X} → x ≡ x' → transport Y (hp x x') (φ x) ≡ φ x'
@@ -31,7 +31,7 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf : (φ : Π Y) → g(f φ) ≡ φ
   gf φ = dfunext fe (gf' φ)
 
-prop-indexed-product-one : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
+prop-indexed-product-one : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
                          → Π Y ≃ 𝟙
 prop-indexed-product-one {U} {V} fe {X} {Y} v = unique-to-𝟙 , (g , fg) , (g , gf)
  where
@@ -51,7 +51,7 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇} → isProp X 
+prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇} → is-prop X 
                  → (a : X) → Σ Y ≃ Y a
 prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
@@ -60,7 +60,7 @@ prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
   g : Y a → Σ Y
   g y = a , y
   lemma₁ : (x : X) → hp x x ≡ refl
-  lemma₁ x = prop-isSet hp (hp x x) refl
+  lemma₁ x = prop-is-set hp (hp x x) refl
   fg : (y : Y a) → f(a , y) ≡ y
   fg y = ap (λ r → transport Y r y) (lemma₁ a)
   lemma₂ : (x : X) (y : Y x) → x ≡ a → transport Y (hp a x) (f (x , y)) ≡ y

@@ -15,7 +15,7 @@ holds (Tychonoff Theorem).)
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes (fe : ∀ U V → FunExt U V) (pt : PropTrunc) where
+module SimpleTypes (fe : ∀ U V → funext U V) (pt : PropTrunc) where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt

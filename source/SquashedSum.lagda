@@ -8,7 +8,7 @@ See remarks below for an explanation.
 
 open import UF-FunExt
 
-module SquashedSum (fe : ∀ U V → FunExt U V) where
+module SquashedSum (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
 open import UF-Base

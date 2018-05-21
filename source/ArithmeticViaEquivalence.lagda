@@ -141,7 +141,7 @@ foundations in Agda notation).
 open import SpartanMLTT hiding (_+'_)
 open import UF-FunExt
 
-module ArithmeticViaEquivalence (fe : ∀ U V → FunExt U V) where
+module ArithmeticViaEquivalence (fe : ∀ U V → funext U V) where
 
 open import UF-Equiv
 open import UF-EquivalenceExamples

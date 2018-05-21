@@ -12,7 +12,7 @@ infinity (see the module SquashedSum).
 
 open import UF-FunExt
 
-module SearchableOrdinals (fe : ∀ U V → FunExt U V) where
+module SearchableOrdinals (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
 open import SquashedSum (fe)
@@ -26,10 +26,10 @@ considered in the module "Ordinals" (Church & Brouwer):
 \begin{code}
 
 data SO : U₀ ̇ where
-  One         : SO 
-  Add         : SO → SO → SO
-  Mul         : SO → SO → SO
-  SumPlusOne  : (ℕ → SO) → SO 
+  One           : SO 
+  Add           : SO → SO → SO
+  Mul           : SO → SO → SO
+  Sum-plus-One  : (ℕ → SO) → SO 
 
 \end{code}
 
@@ -46,10 +46,10 @@ function) is this:
 \begin{code}
 
 ordinal : SO → U₀ ̇
-ordinal           One  = 𝟙
-ordinal      (Add α β) = ordinal α +' ordinal β 
-ordinal      (Mul α β) = ordinal α ×  ordinal β 
-ordinal (SumPlusOne α) = Σ¹ \(i : ℕ) → ordinal(α i)
+ordinal           One    = 𝟙
+ordinal      (Add α β)   = ordinal α +' ordinal β 
+ordinal      (Mul α β)   = ordinal α ×  ordinal β 
+ordinal (Sum-plus-One α) = Σ¹ \(i : ℕ) → ordinal(α i)
 
 \end{code}
 
@@ -61,7 +61,7 @@ searchable-ordinals : (α : SO) → searchable(ordinal α)
 searchable-ordinals           One  = one-searchable
 searchable-ordinals      (Add α β) = binary-sums-preserve-searchability(searchable-ordinals α)(searchable-ordinals β)
 searchable-ordinals      (Mul α β) = binary-Tychonoff(searchable-ordinals α)(searchable-ordinals β)
-searchable-ordinals (SumPlusOne α) = squashed-sum-searchable (λ i → searchable-ordinals(α i))
+searchable-ordinals (Sum-plus-One α) = squashed-sum-searchable (λ i → searchable-ordinals(α i))
 
 \end{code}
 
@@ -78,7 +78,7 @@ open import OrdinalCodes
 brouwer-to-searchable-code : B → SO
 brouwer-to-searchable-code    Z  = One
 brouwer-to-searchable-code (S α) = Add One (brouwer-to-searchable-code α)
-brouwer-to-searchable-code (L α) = SumPlusOne(λ i → brouwer-to-searchable-code(α i))
+brouwer-to-searchable-code (L α) = Sum-plus-One(λ i → brouwer-to-searchable-code(α i))
 
 \end{code}
 

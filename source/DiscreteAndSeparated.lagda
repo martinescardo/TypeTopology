@@ -98,7 +98,7 @@ extensionality. More generally:
 separated : ∀ {U} → U ̇ → U ̇
 separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
-separated-ideal : ∀ {U V} → FunExt U V → {X : U ̇} {Y : X → V ̇}
+separated-ideal : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
                → ((x : X) → separated(Y x)) → separated(Π Y)
 separated-ideal fe s f g h = dfunext fe lemma𝟚
  where 
@@ -164,7 +164,7 @@ assuming extensionality:
 
 \begin{code}
 
-tight : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
+tight : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇}
       → ((x : X) → separated(Y x))
       → (f g : (x : X) → Y x)
       → ¬(f ♯ g) → f ≡ g
@@ -177,7 +177,7 @@ tight fe s f g h = dfunext fe lemma₁
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
 
 
-tight' : ∀ {U V} {X : U ̇} → FunExt U V → {Y : X → V ̇}
+tight' : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇}
        → ((x : X) → discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
 tight' fe d = tight fe (λ x → discrete-is-separated(d x)) 
 
@@ -237,7 +237,7 @@ binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma
   lemma : ¬¬(inr y ≡ inr y') → inr y ≡ inr y'
   lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
 
-⊥-⊤-density' : FunExt U₀ U₀ → propExt U₀ → ∀ {U} {X : U ̇}
+⊥-⊤-density' : funext U₀ U₀ → propext U₀ → ∀ {U} {X : U ̇}
               → separated X
               → (f : Ω → X) → f ⊥ ≡ f ⊤ → constant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
@@ -267,8 +267,8 @@ qinvs-preserve-isolatedness {U} {V} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y)
   h (inl p) = inl (ap f p ∙ fg y)
   h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (gf x) ⁻¹ ∙ ap g q) u)
 
-equivalences-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → isEquiv f → (x : X) → isolated x → isolated (f x)
-equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (isEquiv-qinv f e)
+equivalences-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → is-equiv f → (x : X) → isolated x → isolated (f x)
+equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (is-equiv-qinv f e)
 
 isolated-added-point : ∀ {U} {X : U ̇} → isolated {U} {X + 𝟙} (inr *)
 isolated-added-point {U} {X} = h

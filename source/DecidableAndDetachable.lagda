@@ -89,7 +89,7 @@ co-characteristic-function : ∀ {U V} {X : U ̇} {A : X → V ̇}
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x)
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
-decidable-closed-under-Σ : ∀ {U V} {X : U ̇} {Y : X → V ̇} → isProp X
+decidable-closed-under-Σ : ∀ {U V} {X : U ̇} {Y : X → V ̇} → is-prop X
                          → decidable X → ((x : X) → decidable (Y x)) → decidable (Σ Y)
 decidable-closed-under-Σ {U} {V} {X} {Y} isp d e = g d
  where
@@ -124,7 +124,7 @@ module _ (pt : PropTrunc) where
 
  forall₁-implies-not-exists₀ : ∀ {U} {X : U ̇} (p : X → 𝟚)
                             → (∀ (x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀
- forall₁-implies-not-exists₀ p α = ptrec 𝟘-isProp h
+ forall₁-implies-not-exists₀ p α = ptrec 𝟘-is-prop h
   where
    h : (Σ \x → p x ≡ ₀) → 𝟘
    h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)

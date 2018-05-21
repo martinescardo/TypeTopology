@@ -11,50 +11,50 @@ open import UF-Subsingletons
 open import UF-Equiv
 open import UF-LeftCancellable
 
-isUnivalent : ∀ U → U ′ ̇
-isUnivalent U = (X Y : U ̇) → isEquiv(idtoeq X Y)
+is-univalent : ∀ U → U ′ ̇
+is-univalent U = (X Y : U ̇) → is-equiv(idtoeq X Y)
 
-eqtoid : ∀ {U} → isUnivalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
+eqtoid : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
 eqtoid ua X Y = pr₁(pr₁(ua X Y))
 
-idtoeq-eqtoid : ∀ {U} (ua : isUnivalent U)
+idtoeq-eqtoid : ∀ {U} (ua : is-univalent U)
               → (X Y : U ̇) (e : X ≃ Y) → idtoeq X Y (eqtoid ua X Y e) ≡ e
 idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
 
-eqtoid' : ∀ {U} → isUnivalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
+eqtoid' : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
 eqtoid' ua X Y = pr₁(pr₂(ua X Y))
 
-eqtoid-idtoeq : ∀ {U} (ua : isUnivalent U)
+eqtoid-idtoeq : ∀ {U} (ua : is-univalent U)
               → (X Y : U ̇) (p : X ≡ Y) →  eqtoid' ua X Y (idtoeq X Y p) ≡ p
 eqtoid-idtoeq ua X Y = pr₂(pr₂(ua X Y))
 
 idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
-idtoeq' X Y p = (pathtofun p , transport-isEquiv p)
+idtoeq' X Y p = (identification-to-fun p , transport-is-equiv p)
 
 idtoEqs-agree : ∀ {U} (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X _ refl = refl
 
-idtoeq'-eqtoid : ∀ {U} (ua : isUnivalent U)
+idtoeq'-eqtoid : ∀ {U} (ua : is-univalent U)
                → (X Y : U ̇) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
 idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
 
-idtofun-isEquiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → isEquiv(idtofun X Y p)
-idtofun-isEquiv X Y p = pr₂(idtoeq X Y p)
+idtofun-is-equiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → is-equiv(idtofun X Y p)
+idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
 
-isUnivalent-≃ : ∀ {U} → isUnivalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
-isUnivalent-≃ ua X Y = idtoeq X Y , ua X Y
+is-univalent-≃ : ∀ {U} → is-univalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
+is-univalent-≃ ua X Y = idtoeq X Y , ua X Y
 
-back-transport-is-pre-comp' : ∀ {U} (ua : isUnivalent U)
+back-transport-is-pre-comp' : ∀ {U} (ua : is-univalent U)
                            → {X X' Y : U ̇} (e : X ≃ X') (g : X' → Y)
                            → back-transport (λ Z → Z → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e 
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
-  q : g ∘ pathtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
+  q : g ∘ identification-to-fun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
   q = ap (λ h → g ∘ h) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
 
-preComp-isEquiv : ∀ {U} (ua : isUnivalent U)
-                → {X Y Z : U ̇} (f : X → Y) → isEquiv f → isEquiv (λ (g : Y → Z) → g ∘ f)
-preComp-isEquiv ua {X} {Y} f ise = equiv-closed-under-∼' (back-transport-isEquiv (eqtoid ua X Y (f , ise)))
+preComp-is-equiv : ∀ {U} (ua : is-univalent U)
+                → {X Y Z : U ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
+preComp-is-equiv ua {X} {Y} f ise = equiv-closed-under-∼' (back-transport-is-equiv (eqtoid ua X Y (f , ise)))
                                                           (back-transport-is-pre-comp' ua (f , ise))
 
 \end{code}
@@ -69,7 +69,7 @@ Eq-induction : (U V : Universe) → (U ⊔ V)′ ̇
 Eq-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
                  → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 
-JEq : ∀ {U} → isUnivalent U → ∀ {V} → Eq-induction U V
+JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
 JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
  where
   A' : (Y : U ̇) → X ≡ Y → V ̇
@@ -91,7 +91,7 @@ for Mathematics in Bonn.
 
 \begin{code}
 
-JEq-converse : ∀ {U} → (∀ {V} → Eq-induction U V) → isUnivalent U
+JEq-converse : ∀ {U} → (∀ {V} → Eq-induction U V) → is-univalent U
 JEq-converse {U} jeq' X = γ
  where
 
@@ -153,7 +153,7 @@ JEq-converse {U} jeq' X = γ
   idtoeqφ = jeq {U} (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
   φidtoeq : (Y : U ̇) (p : X ≡ Y) → φ Y (idtoeq X Y p) ≡ p
   φidtoeq X refl = φc
-  γ : (Y : U ̇) → isEquiv(idtoeq X Y)
+  γ : (Y : U ̇) → is-equiv(idtoeq X Y)
   γ Y =  (φ Y , idtoeqφ Y) , (φ Y , φidtoeq Y)
 
 \end{code}
@@ -163,8 +163,8 @@ induction. The following technical lemma is needed elsewhere.
 
 \begin{code}
 
-isUnivalent-idtoeq-lc : ∀ {U} → isUnivalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
-isUnivalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
+is-univalent-idtoeq-lc : ∀ {U} → is-univalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
+is-univalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
 \end{code}
 
@@ -176,14 +176,14 @@ without univalence elsewhere, of course):
 
 open import UF-Subsingletons-Equiv
 
-isEquiv-isVoevodskyEquiv' : ∀ {U} → isUnivalent U → {X Y : U ̇} (f : X → Y)
-                         → isEquiv f → isVoevodskyEquiv f
-isEquiv-isVoevodskyEquiv' {U} ua {X} {Y} f ise = g Y (f , ise)
+is-equiv-is-vv-equiv' : ∀ {U} → is-univalent U → {X Y : U ̇} (f : X → Y)
+                     → is-equiv f → is-vv-equiv f
+is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
  where
   A : (Y : U ̇) → X ≃ Y → U ̇
-  A Y (f , ise) = isVoevodskyEquiv f
+  A Y (f , ise) = is-vv-equiv f
   b : A X (ideq X)
-  b = paths-to-singleton
+  b = identifications-to-singleton
   g :  (Y : U ̇) (e : X ≃ Y) → A Y e
   g = JEq ua X A b
 

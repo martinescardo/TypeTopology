@@ -22,7 +22,7 @@ GenericConvergentSequence)
 
 open import UF-FunExt
 
-module LPO (fe : ∀ U V → FunExt U V) where
+module LPO (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
 open import UF-Base
@@ -34,14 +34,14 @@ open import OmniscientTypes
 LPO : U₀ ̇
 LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
 
-LPO-isProp : isProp LPO
-LPO-isProp = isProp-exponential-ideal (fe U₀ U₀) f
+LPO-is-prop : is-prop LPO
+LPO-is-prop = is-prop-exponential-ideal (fe U₀ U₀) f
  where
-  a : (x : ℕ∞) → isProp(Σ \n → x ≡ under n)
+  a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
   a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set (fe U₀ U₀)_ _)
   
-  f : (x : ℕ∞) → isProp (decidable (Σ \n → x ≡ under n))
-  f x = decidable-isProp (fe U₀ U₀) (a x)
+  f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
+  f x = decidable-is-prop (fe U₀ U₀) (a x)
 
 LPO-implies-omniscient-ℕ : LPO → omniscient ℕ
 LPO-implies-omniscient-ℕ lpo β = cases a b d
@@ -135,7 +135,7 @@ open import SearchableTypes
 open import PropTychonoff
 
 LPO→ℕ-searchable : searchable(LPO → ℕ)
-LPO→ℕ-searchable = prop-tychonoff-corollary' fe LPO-isProp f
+LPO→ℕ-searchable = prop-tychonoff-corollary' fe LPO-is-prop f
  where
    f : LPO → searchable ℕ
    f = inhabited-omniscient-implies-searchable 0 ∘ LPO-implies-omniscient-ℕ

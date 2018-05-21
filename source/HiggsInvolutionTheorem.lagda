@@ -24,8 +24,8 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
-module HiggsInvolutionTheorem (fe : FunExt U₀ U₀)
-                              (pe : propExt U₀)
+module HiggsInvolutionTheorem (fe : funext U₀ U₀)
+                              (pe : propext U₀)
                               where
 
 involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇

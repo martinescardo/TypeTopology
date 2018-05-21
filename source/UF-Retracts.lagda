@@ -9,29 +9,29 @@ open import UF-Base
 _isSectionOf_ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → (Y → X) → U ̇
 s isSectionOf r = r ∘ s ∼ id
 
-hasSection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-hasSection r = Σ \s → s isSectionOf r
+has-section : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+has-section r = Σ \s → s isSectionOf r
 
-hasRetraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-hasRetraction s = Σ \r → s isSectionOf r
+has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+has-retraction s = Σ \r → s isSectionOf r
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
-retract Y of X = Σ \(r : X → Y) → hasSection r
+retract Y of X = Σ \(r : X → Y) → has-section r
 
 identity-retraction : ∀ {U} {X : U ̇} → retract X of X
 identity-retraction = id , (id , λ x → refl)
 
-hasSection-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → hasSection f →  g ∼ f  → hasSection g
-hasSection-closed-under-∼ {U} {V} {X} {Y} f g (s , fs) h = (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
+has-section-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → has-section f →  g ∼ f  → has-section g
+has-section-closed-under-∼ {U} {V} {X} {Y} f g (s , fs) h = (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
 
-hasSection-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → hasSection f → f ∼ g → hasSection g
-hasSection-closed-under-∼' ise h = hasSection-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+has-section-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → has-section f → f ∼ g → has-section g
+has-section-closed-under-∼' ise h = has-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
-hasRetraction-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → hasRetraction f →  g ∼ f  → hasRetraction g
-hasRetraction-closed-under-∼ {U} {V} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
+has-retraction-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → has-retraction f →  g ∼ f  → has-retraction g
+has-retraction-closed-under-∼ {U} {V} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
 
-hasRetraction-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → hasRetraction f → f ∼ g → hasRetraction g
-hasRetraction-closed-under-∼' ise h = hasRetraction-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+has-retraction-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → has-retraction f → f ∼ g → has-retraction g
+has-retraction-closed-under-∼' ise h = has-retraction-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 \end{code}
 
@@ -67,7 +67,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
 \begin{code}
 
 Σ-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
-          → hasSection g → retract (Σ A) of (Σ \(y : Y) → A (g y))
+          → has-section g → retract (Σ A) of (Σ \(y : Y) → A (g y))
 Σ-retract {U} {V} {W} {X} {Y} {A} g (f , gf) = γ , φ , γφ
  where
   γ : (Σ \(y : Y) → A (g y)) → Σ A

@@ -11,7 +11,7 @@ found.
 
 open import UF-FunExt
 
-module ConvergentSequenceInfSearchable (fe : ∀ {U V} → FunExt U V) where
+module ConvergentSequenceInfSearchable (fe : ∀ {U V} → funext U V) where
 
 open import SpartanMLTT
 open import InfSearchable
@@ -79,7 +79,7 @@ open import GenericConvergentSequence
   lower-bound-lemma u r 0 s = lemma
     where
      claim₀ : incl u 0 ≡ ₀ → p u ≡ α 0
-     claim₀ t = ap p (isZero-equal-Zero fe t)
+     claim₀ t = ap p (is-Zero-equal-Zero fe t)
      claim₁ : incl u 0 ≡ ₀ → ₀ ≡ ₁
      claim₁ t = r ⁻¹ ∙ claim₀ t ∙ s
      lemma : incl u 0 ≡ ₁

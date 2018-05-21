@@ -15,7 +15,7 @@ The theorem says that, for any p : ℕ∞ → ₂, the proposition
 open import SpartanMLTT
 open import UF-FunExt
 
-module ADecidableQuantificationOverTheNaturals (fe : FunExt U₀ U₀) where
+module ADecidableQuantificationOverTheNaturals (fe : funext U₀ U₀) where
 
 open import GenericConvergentSequence
 open import ConvergentSequenceSearchable (fe)

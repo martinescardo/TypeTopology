@@ -100,7 +100,7 @@ which is a consequence of univalence):
 
 open import UF-Two-Prop-Density
 
-Ω-searchable : FunExt U₀ U₀ → propExt U₀ → searchable Ω
+Ω-searchable : funext U₀ U₀ → propext U₀ → searchable Ω
 Ω-searchable fe pe p = two-equality-cases a b
   where
     A = Σ \(x₀ : Ω) → p x₀ ≡ ₁ → (x : Ω) → p x ≡ ₁
@@ -333,7 +333,7 @@ retract-searchable (_ , φ) = retractions-preserve-searchability φ
 equiv-searchable : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → searchable X → searchable Y
 equiv-searchable (f , (g , fg) , (h , hf)) = retract-searchable (f , (λ y → g y , fg y))
 
-singleton-searchable : ∀ {U} {X : U ̇} → isSingleton X → searchable X
+singleton-searchable : ∀ {U} {X : U ̇} → is-singleton X → searchable X
 singleton-searchable {U} {X} (x , φ) p = x , g
  where
   g : p x ≡ ₁ → (y : X) → p y ≡ ₁
@@ -344,7 +344,7 @@ module _ (pt : PropTrunc) where
  open ImageAndSurjection (pt)
 
  surjection-searchable : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                       → isSurjection f → searchable X → searchable Y
+                       → is-surjection f → searchable X → searchable Y
  surjection-searchable {U} {V} {X} {Y} f su ε q = (y₀ , h)
   where
    p : X → 𝟚
@@ -359,8 +359,8 @@ module _ (pt : PropTrunc) where
    y₀ : Y
    y₀ = f x₀
    
-   isp : (y : Y) → isProp (q y ≡ ₁)
-   isp y = 𝟚-isSet
+   isp : (y : Y) → is-prop (q y ≡ ₁)
+   isp y = 𝟚-is-set
    
    h : q y₀ ≡ ₁ → (y : Y) → q y ≡ ₁
    h r = surjection-induction f su (λ y → q y ≡ ₁) isp (g r)

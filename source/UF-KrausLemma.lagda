@@ -31,7 +31,7 @@ transport-paths-along-paths' : ∀ {U} {X : U ̇} {x : X} (p : x ≡ x) (f : X �
 transport-paths-along-paths'  p f q = transport-paths-along-paths p id f q
                                     ∙ ap (λ pr → pr ⁻¹ ∙ q ∙ (ap f p)) ((ap-id-is-id p)⁻¹)
 
-Kraus-Lemma : ∀ {U} {X : U ̇} → (f : X → X) → constant f → isProp(fix f)
+Kraus-Lemma : ∀ {U} {X : U ̇} → (f : X → X) → constant f → is-prop(fix f)
 Kraus-Lemma {U} {X} f g (x , p) (y , q) = 
   -- p : x ≡ f x
   -- q : y ≡ f y
@@ -78,28 +78,28 @@ has a constant endfunction then it has a propositional truncation.
 
 \begin{code}
 
-hasSplitSupport : ∀ {U} → U ̇ → U ′ ̇
-hasSplitSupport {U} X = Σ \(P : U ̇) → isProp P × (X ⇔ P)
+has-split-support : ∀ {U} → U ̇ → U ′ ̇
+has-split-support {U} X = Σ \(P : U ̇) → is-prop P × (X ⇔ P)
 
-fix-hasSplitSupport : ∀ {U} {X : U ̇}
+fix-has-split-support : ∀ {U} {X : U ̇}
                     → collapsible X
-                    → hasSplitSupport X
-fix-hasSplitSupport {U} {X} (f , κ) = fix f ,
+                    → has-split-support X
+fix-has-split-support {U} {X} (f , κ) = fix f ,
                                       Kraus-Lemma f κ ,
                                       to-fix f κ ,
                                       from-fix f
 
-hasPropTruncation : ∀ {U} V → U ̇ → (U ′) ⊔ (V ′) ̇
-hasPropTruncation {U} V X = Σ \(X' : U ̇) → isProp X'
+has-prop-truncation : ∀ {U} V → U ̇ → (U ′) ⊔ (V ′) ̇
+has-prop-truncation {U} V X = Σ \(X' : U ̇) → is-prop X'
                                           × (X → X')
-                                          × ((P : V ̇) → isProp P → (X → P) → X' → P)
+                                          × ((P : V ̇) → is-prop P → (X → P) → X' → P)
 
-split-truncation : ∀ {U} {X : U ̇} → hasSplitSupport X → ∀ V → hasPropTruncation V X
+split-truncation : ∀ {U} {X : U ̇} → has-split-support X → ∀ V → has-prop-truncation V X
 split-truncation {U} {X} (X' , i , f , g) V = X' , i , f , λ P j h x' → h (g x')
 
-collapsible-hasPropTruncation : ∀ {U} {X : U ̇}
+collapsible-has-prop-truncation : ∀ {U} {X : U ̇}
                               → collapsible X
-                              → ∀ V → hasPropTruncation V X
-collapsible-hasPropTruncation {U} {X} c = split-truncation (fix-hasSplitSupport c)
+                              → ∀ V → has-prop-truncation V X
+collapsible-has-prop-truncation {U} {X} c = split-truncation (fix-has-split-support c)
 
 \end{code}

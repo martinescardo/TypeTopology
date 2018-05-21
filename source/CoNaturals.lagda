@@ -70,7 +70,7 @@ bisimulations. This gives a technique for establishing equalities on
 
 open import UF-FunExt
 
-module CoNaturals (fe : ∀ {U V} → FunExt U V) where
+module CoNaturals (fe : ∀ {U V} → funext U V) where
 
 open import SpartanMLTT
 open import GenericConvergentSequence
@@ -105,7 +105,7 @@ S-P-id : {u : ℕ∞} → S(P u) ≡ u
 S-P-id {u} = two-equality-cases lemma₀ lemma₁ 
  where 
   lemma₀ : positivity u ≡ ₀ → S(P u) ≡ u
-  lemma₀ r = claim₁ ∙ (isZero-equal-Zero fe r)⁻¹
+  lemma₀ r = claim₁ ∙ (is-Zero-equal-Zero fe r)⁻¹
     where 
      claim₀ : P u ≡ Zero'
      claim₀ = ap (𝟚-cases Zero' (Pred' u)) r
@@ -181,7 +181,7 @@ homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
       claim₀ : (𝟙+ h)(p x) ≡ Zero'
       claim₀ = ap (𝟙+ h) r
       claim₁ : h x ≡ Zero
-      claim₁ = isZero-equal-Zero fe (ap E r)
+      claim₁ = is-Zero-equal-Zero fe (ap E r)
       claim₂ : P(h x) ≡ Zero'
       claim₂ = ap P claim₁ ∙ P-Zero
 

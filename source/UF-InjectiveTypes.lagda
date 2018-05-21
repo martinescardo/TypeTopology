@@ -85,7 +85,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF-FunExt
 
-module UF-InjectiveTypes (fe : ∀ U V → FunExt U V) where
+module UF-InjectiveTypes (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
 open import UF-Base
@@ -120,7 +120,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
   f/j = Π-extension
   f∖j = Σ-extension
 
-  Σ→Π : isEmbedding j → Nat f∖j f/j
+  Σ→Π : is-embedding j → Nat f∖j f/j
   Σ→Π e y ((x , p) , B) (x' , p') = transport f (embedding-lc j e (p ∙ p' ⁻¹)) B
 
 \end{code}
@@ -191,13 +191,13 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 
   open import UF-PropIndexedPiSigma
 
-  Π-extension-in-range : isEmbedding j → (x : X) → f/j(j x) ≃ f x
+  Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) (e (j x)) (x , refl)
 
   Π-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ) 
 
-  Σ-extension-in-range : isEmbedding j → (x : X) → f∖j(j x) ≃ f x
+  Σ-extension-in-range : is-embedding j → (x : X) → f∖j(j x) ≃ f x
   Σ-extension-in-range e x = prop-indexed-sum (e(j x)) (x , refl)
 
   Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j(y) ≃ 𝟘
@@ -224,11 +224,11 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 
 \begin{code}
 
-  Π-observation : isEmbedding j → (a : X) → f a ≃ (Π \(x : X) → j x ≡ j a → f x) 
+  Π-observation : is-embedding j → (a : X) → f a ≃ (Π \(x : X) → j x ≡ j a → f x) 
   Π-observation e a = ≃-sym (≃-trans (≃-sym (2nd-Π-extension-formula (j a)))
                                       (Π-extension-in-range e a))
 
-  Σ-observation : isEmbedding j → (a : X) → f a ≃ (Σ \(x : X) → (j x ≡ j a) × f x) 
+  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ \(x : X) → (j x ≡ j a) × f x) 
   Σ-observation e a = ≃-sym (≃-trans (≃-sym (2nd-Σ-extension-formula (j a)))
                                       (Σ-extension-in-range e a))
 
@@ -316,9 +316,9 @@ function same-Σ defined above. This and univalence give
  
 Hence
 
- isSingleton(Σ (Id x)) ≡ isSingleton(Σ-image j (Id x))
+ is-singleton(Σ (Id x)) ≡ is-singleton(Σ-image j (Id x))
 
-But the lhs holds, and hence isSingleton(Σ-image j (Id x)).
+But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
 
 \begin{code}
 
@@ -339,7 +339,7 @@ But the lhs holds, and hence isSingleton(Σ-image j (Id x)).
   fg refl = refl
 
 Σ-image-of-singleton : ∀ {U} {X Y : U ̇}
-                     → isUnivalent U 
+                     → is-univalent U 
                      → (j : X → Y) (x : X) → Σ-image j (Id x) ≡ Id (j x)
 Σ-image-of-singleton {U} {X} {Y} ua j x = b
   where
@@ -359,13 +359,13 @@ data rather than property):
 \begin{code}
 
 injectiveType : ∀ {U V W} → W ̇ → U ′ ⊔ V ′ ⊔ W ̇
-injectiveType {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → isEmbedding j
+injectiveType {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
                        → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
-universes-are-injective-Π : ∀ {U} → isUnivalent U → injectiveType {U} {U} (U ̇)
+universes-are-injective-Π : ∀ {U} → is-univalent U → injectiveType {U} {U} (U ̇)
 universes-are-injective-Π ua j e f = f / j , λ x → eqtoid ua _ _ (Π-extension-in-range f j e x)
 
-universes-are-injective-Σ : ∀ {U} → isUnivalent U → injectiveType {U} {U} (U ̇)
+universes-are-injective-Σ : ∀ {U} → is-univalent U → injectiveType {U} {U} (U ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
 retracts-of-injectives : ∀ {U V W T} {D : U ̇} {D' : V ̇}
@@ -389,7 +389,7 @@ retracts-of-injectives {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘
 
 open import UF-IdEmbedding
 
-injective-retract-of-power-of-universe : ∀ {U} {D : U ̇} → isUnivalent U
+injective-retract-of-power-of-universe : ∀ {U} {D : U ̇} → is-univalent U
                                        → injectiveType D → retract D Of (D → U ̇)
 injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
   where

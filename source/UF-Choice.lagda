@@ -89,7 +89,7 @@ or
 \end{code}
 
 We now add the above constraints of the HoTT book for choice, but
-abstractly, where T may be ∥_∥ and S may be isSet.
+abstractly, where T may be ∥_∥ and S may be is-set.
 
 \begin{code}
 
@@ -133,27 +133,27 @@ Univalent Choice.
 \begin{code}
 
 module UnivalentChoice (U : Universe)
-                       (fe : ∀ U V → FunExt U V)
+                       (fe : ∀ U V → funext U V)
                        (pt : PropTrunc)
                        where
 
  open PropositionalTruncation pt public
 
- sei : {X Y : U ̇} → isSet Y → isSet (X → Y)
- sei isy = isSet-exponential-ideal (fe U U) (λ x → isy)
+ sei : {X Y : U ̇} → is-set Y → is-set (X → Y)
+ sei isy = is-set-exponential-ideal (fe U U) (λ x → isy)
 
- open TChoice U ∥_∥ ptfunct isSet sei (prop-isSet ptisp)
+ open TChoice U ∥_∥ ptfunct is-set sei (prop-is-set ptisp)
 
  AC   = (X : U ̇) (A : X → U ̇) (P : (x : X) → A x → U ̇)
-     → isSet X
-     → ((x : X) → isSet (A x))
-     → ((x : X) (a : A x) → isProp (P x a))
+     → is-set X
+     → ((x : X) → is-set (A x))
+     → ((x : X) (a : A x) → is-prop (P x a))
      → (∀ (x : X) → ∃ \(a : A x) → P x a) → ∃ \(f : Π A) → ∀ (x : X) → P x (f x)
 
- AC'  = (X : U ̇) (Y : X → U ̇) → isSet X → ((x : X) → isSet (Y x))
+ AC'  = (X : U ̇) (Y : X → U ̇) → is-set X → ((x : X) → is-set (Y x))
      → (Π \(x : X) → ∥ Y x ∥) → ∥(Π \(x : X) → Y x)∥
 
- AC'' = (X : U ̇) (Y : X → U ̇) → isSet X → ((x : X) → isSet (Y x))
+ AC'' = (X : U ̇) (Y : X → U ̇) → is-set X → ((x : X) → is-set (Y x))
      → ∥(Π \(x : X) → ∥ Y x ∥ → Y x)∥
 
  ACAC' : AC → AC'
@@ -181,7 +181,7 @@ module UnivalentChoice (U : Universe)
    g = ac' X
            (λ x → Σ \(a : A x) → P x a)
            s
-           (λ x → subset-of-set-isSet (A x) (P x) (t x) (λ {a} → isp x a))
+           (λ x → subset-of-set-is-set (A x) (P x) (t x) (λ {a} → isp x a))
            f
 
  AC'AC'' : AC' → AC''
@@ -190,7 +190,7 @@ module UnivalentChoice (U : Universe)
  AC''AC' : AC'' → AC'
  AC''AC' = theorem'
 
- secretly-revealing-secrets : AC' → (B : U ̇) → isSet B → ∥(∥ B ∥ → B)∥
+ secretly-revealing-secrets : AC' → (B : U ̇) → is-set B → ∥(∥ B ∥ → B)∥
  secretly-revealing-secrets = lemma
 
 \end{code}
@@ -203,21 +203,21 @@ negation shift.
 module ChoiceUnderEM₀ (U : Universe)
                       (em : EM U)
                       (pt : PropTrunc)
-                      (fe : ∀ U V → FunExt U V)
+                      (fe : ∀ U V → funext U V)
                       where
                       
  open UnivalentChoice U fe pt
 
  α : {X : U ̇} → ∥ X ∥ → ¬¬ X
- α s u = ptrec 𝟘-isProp u s
+ α s u = ptrec 𝟘-is-prop u s
 
  β : {X : U ̇} → ¬¬ X → ∥ X ∥
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ptisp)
 
- DNS = (X : U ̇) (A : X → U ̇) → isSet X → ((x : X) → isSet (A x))
+ DNS = (X : U ̇) (A : X → U ̇) → is-set X → ((x : X) → is-set (A x))
      → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
 
- DNA = (X : U ̇) (A : X → U ̇) → isSet X → ((x : X) → isSet (A x))
+ DNA = (X : U ̇) (A : X → U ̇) → is-set X → ((x : X) → is-set (A x))
      → ¬¬(Π \(x : X) → ¬¬(A x) → A x)
 
  Fact : AC' → DNS
@@ -226,14 +226,14 @@ module ChoiceUnderEM₀ (U : Universe)
  Fact' : DNS → AC'
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
- l : {X : U ̇} → isSet(¬¬ X)
- l {X} = prop-isSet (isProp-exponential-ideal (fe U U₀) (λ _ → 𝟘-isProp))
+ l : {X : U ̇} → is-set(¬¬ X)
+ l {X} = prop-is-set (is-prop-exponential-ideal (fe U U₀) (λ _ → 𝟘-is-prop))
  
  fact : DNS → DNA
- fact = TChoice.theorem U ¬¬ ¬¬-functor isSet sei l
+ fact = TChoice.theorem U ¬¬ ¬¬-functor is-set sei l
 
  fact' : DNA → DNS
- fact' = TChoice.theorem' U ¬¬ ¬¬-functor isSet sei l
+ fact' = TChoice.theorem' U ¬¬ ¬¬-functor is-set sei l
 
 \end{code}
 
@@ -253,7 +253,7 @@ with values a ₀ = a₀ and a ₁ = a₁.
 module AC-renders-all-sets-discrete
                       (U : Universe)
                       (pt : PropTrunc)
-                      (fe : ∀ U V → FunExt U V)
+                      (fe : ∀ U V → funext U V)
                       where
 
  open UnivalentChoice U fe pt public
@@ -300,19 +300,19 @@ module AC-renders-all-sets-discrete
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
- lemma₂ : {X : U ̇} → isSet X → (a : 𝟚 → X)
+ lemma₂ : {X : U ̇} → is-set X → (a : 𝟚 → X)
         → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
- lemma₂ is a = ptrec (decidable-isProp (fe U U₀) is) (lemma₁ a)
+ lemma₂ is a = ptrec (decidable-is-prop (fe U U₀) is) (lemma₁ a)
 
- ac-discrete-sets : AC → (X : U ̇) → isSet X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
+ ac-discrete-sets : AC → (X : U ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
   where
    A : X → U ̇
    A x = Σ \(i : 𝟚) → a i ≡ x
    
-   isa : (x : X) → isSet(A x)
-   isa x = subset-of-set-isSet 𝟚 (λ i → a i ≡ x) 𝟚-isSet isx
+   isa : (x : X) → is-set(A x)
+   isa x = subset-of-set-is-set 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
    
    ac'' : AC''
    ac'' = AC'AC'' (ACAC' ac)
@@ -337,14 +337,14 @@ because (𝟙≡P)≡P.
 
 module AC-gives-EM
                       (pt : PropTrunc)
-                      (pe : propExt U₀)
-                      (fe : ∀ U V → FunExt U V)
+                      (pe : propext U₀)
+                      (fe : ∀ U V → funext U V)
                       where
 
  open  AC-renders-all-sets-discrete U₁ pt fe
 
  lemma : AC → (P : Ω) → decidable(⊤ ≡ P)
- lemma ac P = ac-discrete-sets ac Ω (Ω-isSet (fe U₀ U₀) pe) a
+ lemma ac P = ac-discrete-sets ac Ω (Ω-is-set (fe U₀ U₀) pe) a
    where
     a : 𝟚 → Ω
     a ₀ = ⊤
@@ -366,7 +366,7 @@ The following is probably not going to be useful for anything here:
 
 module Observation (U : Universe)
                    (pt : PropTrunc)
-                   (fe : ∀ U V → FunExt U V)
+                   (fe : ∀ U V → funext U V)
                    where
                       
  open PropositionalTruncation pt
@@ -387,7 +387,7 @@ module Observation (U : Universe)
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , (to-Σ-≡'' (p , (neg-isProp (fe U U₀) _ t)))
+     f (i , p) = i , (to-Σ-≡'' (p , (neg-is-prop (fe U U₀) _ t)))
 
    s : Y → 𝟚
    s y = pr₁(r-splits y)
@@ -399,7 +399,7 @@ module Observation (U : Universe)
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡'' (p , (neg-isProp (fe U U₀) _ _))
+   a-r p = to-Σ-≡'' (p , (neg-is-prop (fe U U₀) _ _))
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁

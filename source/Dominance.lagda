@@ -5,28 +5,28 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 
 \begin{code}
 
--- open import UF -- hiding (𝟙) hiding (𝟙-isProp) hiding (⊤)
+-- open import UF -- hiding (𝟙) hiding (𝟙-is-prop) hiding (⊤)
 
 open import SpartanMLTT hiding (𝟙)
-open import UF-Subsingletons hiding (𝟙-isProp) hiding (⊤)
+open import UF-Subsingletons hiding (𝟙-is-prop) hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 
-module Dominance (U : Universe) (fe : ∀ U V → FunExt U V) where
+module Dominance (U : Universe) (fe : ∀ U V → funext U V) where
 
 U' = U ′
 
 data 𝟙 : U ̇ where
  ⋆ : 𝟙
 
-𝟙-isProp : isProp 𝟙
-𝟙-isProp ⋆ ⋆ = refl
+𝟙-is-prop : is-prop 𝟙
+𝟙-is-prop ⋆ ⋆ = refl
 
 D2 : (U ̇ → U ̇) → U' ̇
-D2 d = (X : U ̇) → isProp(d X)
+D2 d = (X : U ̇) → is-prop(d X)
 
 D3 : (U ̇ → U ̇) → U' ̇
-D3 d = (X : U ̇) → d X → isProp X
+D3 d = (X : U ̇) → d X → is-prop X
 
 D4 : (U ̇ → U ̇) → U ̇
 D4 d = d 𝟙
@@ -34,45 +34,45 @@ D4 d = d 𝟙
 D5 : (U ̇ → U ̇) → U' ̇
 D5 d = (P : U ̇) (Q : P → U ̇) → d P → ((p : P) → d(Q p)) → d(Σ Q)
 
-isDominance : (U ̇ → U ̇) → U' ̇
-isDominance d = D2 d × D3 d × D4 d × D5 d
+is-dominance : (U ̇ → U ̇) → U' ̇
+is-dominance d = D2 d × D3 d × D4 d × D5 d
 
 Dominance : U' ̇
-Dominance = Σ isDominance
+Dominance = Σ is-dominance
 
-isDominant : (D : Dominance) → U ̇ → U ̇
-isDominant (d , _) = d
+is-dominant : (D : Dominance) → U ̇ → U ̇
+is-dominant (d , _) = d
 
-being-dominant-isProp : (D : Dominance) → (X : U ̇) → isProp (isDominant D X)
-being-dominant-isProp (_ , (isp , _)) = isp
+being-dominant-is-prop : (D : Dominance) → (X : U ̇) → is-prop (is-dominant D X)
+being-dominant-is-prop (_ , (isp , _)) = isp
 
-dominant-type-isProp : (D : Dominance) → (X : U ̇) → isDominant D X → isProp X
-dominant-type-isProp (_ , (_ , (disp , _))) = disp
+dominant-type-is-prop : (D : Dominance) → (X : U ̇) → is-dominant D X → is-prop X
+dominant-type-is-prop (_ , (_ , (disp , _))) = disp
 
-𝟙-isDominant : (D : Dominance) → isDominant D 𝟙
-𝟙-isDominant (_ , (_ , (_ , (oisd , _)))) = oisd
+𝟙-is-dominant : (D : Dominance) → is-dominant D 𝟙
+𝟙-is-dominant (_ , (_ , (_ , (oisd , _)))) = oisd
 
 dominant-closed-under-Σ : (D : Dominance) → (P : U ̇) (Q : P → U ̇)
-                        → isDominant D P → ((p : P) → isDominant D (Q p)) → isDominant D (Σ Q)
+                        → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
-isDominance-isProp : (d : U ̇ → U ̇) → isProp (isDominance d)
-isDominance-isProp d = iisProp-isProp lemma
+is-dominance-is-prop : (d : U ̇ → U ̇) → is-prop (is-dominance d)
+is-dominance-is-prop d = iis-prop-is-prop lemma
  where
-  lemma : isDominance d → isProp (isDominance d)
-  lemma isd = isProp-closed-under-Σ
-               (isProp-exponential-ideal (fe U' U) λ _ → isProp-isProp (fe U U))
-               λ _ → isProp-closed-under-Σ
-                       (isProp-exponential-ideal (fe U' U)
-                          λ _ → isProp-exponential-ideal (fe U U)
-                                   λ _ → isProp-isProp (fe U U))
-                       λ _ → isProp-closed-under-Σ
-                               (being-dominant-isProp (d , isd) 𝟙)
-                               λ _ → isProp-exponential-ideal (fe U' U')
-                                        λ _ → isProp-exponential-ideal (fe U' U)
-                                                 λ Q → isProp-exponential-ideal (fe U U)
-                                                          λ _ → isProp-exponential-ideal (fe U U)
-                                                                   λ _ → being-dominant-isProp (d , isd) (Σ Q)
+  lemma : is-dominance d → is-prop (is-dominance d)
+  lemma isd = is-prop-closed-under-Σ
+               (is-prop-exponential-ideal (fe U' U) λ _ → is-prop-is-prop (fe U U))
+               λ _ → is-prop-closed-under-Σ
+                       (is-prop-exponential-ideal (fe U' U)
+                          λ _ → is-prop-exponential-ideal (fe U U)
+                                   λ _ → is-prop-is-prop (fe U U))
+                       λ _ → is-prop-closed-under-Σ
+                               (being-dominant-is-prop (d , isd) 𝟙)
+                               λ _ → is-prop-exponential-ideal (fe U' U')
+                                        λ _ → is-prop-exponential-ideal (fe U' U)
+                                                 λ Q → is-prop-exponential-ideal (fe U U)
+                                                          λ _ → is-prop-exponential-ideal (fe U U)
+                                                                   λ _ → being-dominant-is-prop (d , isd) (Σ Q)
 
 
 \end{code}
@@ -86,16 +86,16 @@ module DecidableDominance where
  open import DecidableAndDetachable
 
  decidable-dominance : Dominance
- decidable-dominance = (λ P → isProp P × decidable P) ,
-                       (λ P → isProp-closed-under-Σ 
-                                 (isProp-isProp (fe U U))
-                                 (decidable-isProp (fe U U₀))) ,
+ decidable-dominance = (λ P → is-prop P × decidable P) ,
+                       (λ P → is-prop-closed-under-Σ 
+                                 (is-prop-is-prop (fe U U))
+                                 (decidable-is-prop (fe U U₀))) ,
                        (λ X → pr₁) ,
-                       (𝟙-isProp , inl ⋆) ,
-                       λ P Q dP dQ → isProp-closed-under-Σ (pr₁ dP) (λ p → pr₁(dQ p)) ,
+                       (𝟙-is-prop , inl ⋆) ,
+                       λ P Q dP dQ → is-prop-closed-under-Σ (pr₁ dP) (λ p → pr₁(dQ p)) ,
                                       decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
 
-module lift (d : U ̇ → U ̇) (isd : isDominance d) where
+module lift (d : U ̇ → U ̇) (isd : is-dominance d) where
 
  D : Dominance
  D = (d , isd)
@@ -112,14 +112,14 @@ module lift (d : U ̇ → U ̇) (isd : isDominance d) where
  isDefined : ∀ {V} {X : V ̇} → L X → U ̇
  isDefined (P , (isdp , φ)) = P
 
- isDominantisDefined : ∀ {V} {X : V ̇} → (x̃ : L X) → isDominant D (isDefined x̃)
- isDominantisDefined (P , (isdp , φ)) = isdp
+ is-dominantisDefined : ∀ {V} {X : V ̇} → (x̃ : L X) → is-dominant D (isDefined x̃)
+ is-dominantisDefined (P , (isdp , φ)) = isdp
 
  value : ∀ {V} {X : V ̇} → (x̃ : L X) → isDefined x̃ → X
  value (P , (isdp , φ)) = φ
 
  η : ∀ {V} {X : V ̇} → X → L X
- η x = 𝟙 , 𝟙-isDominant D , λ _ → x
+ η x = 𝟙 , 𝟙-is-dominant D , λ _ → x
 
  extension : ∀ {V W} {X : V ̇} {Y : W ̇} → (X ⇀ Y) → (L X → L Y)
  extension {V} {W} {X} {Y} f (P , (isdp , φ)) = (Q , (isdq , γ))
@@ -127,12 +127,12 @@ module lift (d : U ̇ → U ̇) (isd : isDominance d) where
    Q : U ̇
    Q = Σ \(p : P) → isDefined(f(φ p))
    
-   isdq : isDominant D Q
+   isdq : is-dominant D Q
    isdq = dominant-closed-under-Σ D
             P
             (λ p → isDefined(f(φ p)))
             isdp
-            (λ p → isDominantisDefined (f (φ p)))
+            (λ p → is-dominantisDefined (f (φ p)))
             
    γ : Q → Y
    γ (p , def) = value(f (φ p)) def

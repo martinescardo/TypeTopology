@@ -210,11 +210,11 @@ PL-gives-PL₀ pl P = pl P 𝟘
 PL₀-gives-PL : PL₀ → PL
 PL₀-gives-PL pl₀ P Q ε = pl₀ P (λ u → ε (λ p → pl₀ Q (λ _ → 𝟘-elim (u p))))
 
-CurryHoward-EM : Set₁
-CurryHoward-EM = (P : Set) → P + ¬ P
+Curry-Howard-EM : Set₁
+Curry-Howard-EM = (P : Set) → P + ¬ P
 
-PL-gives-CurryHoward-EM : PL → CurryHoward-EM
-PL-gives-CurryHoward-EM pl P = pl (P + ¬ P) P (λ f → inl (pl P 𝟘 (λ g → f (inr g))))
+PL-gives-Curry-Howard-EM : PL → Curry-Howard-EM
+PL-gives-Curry-Howard-EM pl P = pl (P + ¬ P) P (λ f → inl (pl P 𝟘 (λ g → f (inr g))))
 
 \end{code}
 
@@ -222,8 +222,8 @@ The converse of course holds, but again we don't need it:
 
 \begin{code}
 
-CurryHoward-EM-gives-PL : CurryHoward-EM → PL
-CurryHoward-EM-gives-PL em P Q ε = f (em P)
+Curry-Howard-EM-gives-PL : Curry-Howard-EM → PL
+Curry-Howard-EM-gives-PL em P Q ε = f (em P)
   where
     f : P + ¬ P → P
     f (inl p) = p
@@ -237,8 +237,8 @@ Dummett or Curry-Howard disjunction are logically equivalent:
 
 \begin{code}
 
-⊞-EM-gives-CurryHoward-EM : ⊞-EM → CurryHoward-EM
-⊞-EM-gives-CurryHoward-EM dem = PL-gives-CurryHoward-EM (PL₀-gives-PL (⊞-EM-gives-PL₀ dem)) 
+⊞-EM-gives-Curry-Howard-EM : ⊞-EM → Curry-Howard-EM
+⊞-EM-gives-Curry-Howard-EM dem = PL-gives-Curry-Howard-EM (PL₀-gives-PL (⊞-EM-gives-PL₀ dem)) 
 
 \end{code}
 
@@ -325,14 +325,14 @@ P ⊕ Q = (P → Q) → Q
 
 -- Notice that this doesn't use 𝟘-elim:
 
-⊕-CurryHoward-EM-left-gives-CurryHoward-EM : ((P : Set) → ¬ P ⊕ P) → CurryHoward-EM
-⊕-CurryHoward-EM-left-gives-CurryHoward-EM e P = e (P + ¬ P) (λ φ → inr (λ p → φ (inl p)))
+⊕-Curry-Howard-EM-left-gives-Curry-Howard-EM : ((P : Set) → ¬ P ⊕ P) → Curry-Howard-EM
+⊕-Curry-Howard-EM-left-gives-Curry-Howard-EM e P = e (P + ¬ P) (λ φ → inr (λ p → φ (inl p)))
 
 -- Notice also that ¬ P ⊕ P is (¬ P → P) → P, which is a particular
 -- case of Peirce's Law with an empty type.
 
-CurryHoward-EM-gives-⊕-CurryHoward-EM-left : CurryHoward-EM → (P : Set) → ¬ P ⊕ P
-CurryHoward-EM-gives-⊕-CurryHoward-EM-left em P = more-generally P (em P)
+Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left : Curry-Howard-EM → (P : Set) → ¬ P ⊕ P
+Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left em P = more-generally P (em P)
  where
   more-generally : (P : Set) → decidable P → ¬ P ⊕ P
   more-generally P (inl p) = λ φ → p
@@ -348,11 +348,11 @@ CurryHoward-EM-gives-⊕-CurryHoward-EM-left em P = more-generally P (em P)
 -- Curry-Howard disjunction agrees with weak Dummet disjunction iff
 -- excluded middle holds:
 
-agreement-gives-CurryHoward-EM : ((P Q : Set) → P ⊕ Q → P + Q) → CurryHoward-EM
-agreement-gives-CurryHoward-EM f P = f P (¬ P) (⊕-em-right P) 
+agreement-gives-Curry-Howard-EM : ((P Q : Set) → P ⊕ Q → P + Q) → Curry-Howard-EM
+agreement-gives-Curry-Howard-EM f P = f P (¬ P) (⊕-em-right P) 
 
-CurryHoward-EM-gives-agreement : CurryHoward-EM → (P Q : Set) → P ⊕ Q → P + Q
-CurryHoward-EM-gives-agreement em P Q = more-generally P Q (em P)
+Curry-Howard-EM-gives-agreement : Curry-Howard-EM → (P Q : Set) → P ⊕ Q → P + Q
+Curry-Howard-EM-gives-agreement em P Q = more-generally P Q (em P)
  where
   more-generally : (P Q : Set) → decidable P → P ⊕ Q → P + Q
   more-generally P Q (inl p) φ = inl p
@@ -363,12 +363,12 @@ CurryHoward-EM-gives-agreement em P Q = more-generally P Q (em P)
 ⊕-commutative : Set₁
 ⊕-commutative = (P Q : Set) → P ⊕ Q → Q ⊕ P
 
-⊕-commutative-gives-CurryHoward-EM : ⊕-commutative → CurryHoward-EM
-⊕-commutative-gives-CurryHoward-EM c P = c (P + ¬ P) (¬ P) (λ φ p → φ (inl p) p) inr
+⊕-commutative-gives-Curry-Howard-EM : ⊕-commutative → Curry-Howard-EM
+⊕-commutative-gives-Curry-Howard-EM c P = c (P + ¬ P) (¬ P) (λ φ p → φ (inl p) p) inr
 
 -- We also have, of course:
 
-equivalent-to-classical : CurryHoward-EM → (P Q : Set) → ¬(¬ P × ¬ Q) → P ⊕ Q
+equivalent-to-classical : Curry-Howard-EM → (P Q : Set) → ¬(¬ P × ¬ Q) → P ⊕ Q
 equivalent-to-classical em P Q = more-generally P Q (em P) (em Q)
  where
   more-generally : (P Q : Set) → decidable P → decidable Q → ¬(¬ P × ¬ Q) → P ⊕ Q

@@ -30,7 +30,7 @@ open import UF-PropTrunc
 open import GenericConvergentSequence
 open import SearchableTypes
 
-module ConvergentSequenceSearchable (fe : FunExt U₀ U₀) where
+module ConvergentSequenceSearchable (fe : funext U₀ U₀) where
 
 \end{code}
 
@@ -110,7 +110,7 @@ open import DiscreteAndSeparated
 ℕ∞→𝟚-discrete : discrete(ℕ∞ → 𝟚)
 ℕ∞→𝟚-discrete = omniscient-discrete-discrete fe ℕ∞-is-omniscient (λ u → 𝟚-discrete)
 
-module _ (fe' : ∀ U V → FunExt U V) (pt : PropTrunc) where
+module _ (fe' : ∀ U V → funext U V) (pt : PropTrunc) where
 
  open import 2CompactTypes (fe') (pt)
   

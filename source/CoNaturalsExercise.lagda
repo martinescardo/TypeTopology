@@ -24,7 +24,7 @@ this took.
 
 open import UF-FunExt
 
-module CoNaturalsExercise (fe : ∀ {U V} → FunExt U V) where
+module CoNaturalsExercise (fe : ∀ {U V} → funext U V) where
 
 open import SpartanMLTT
 open import CoNaturals (fe)
@@ -76,7 +76,7 @@ incl-is-a-section  = retr , (dfunext fe lemma)
       claim₀ : retr(incl w) ≡ Zero
       claim₀ = retr-spec₀(incl w) r
       claim₁ : v ≡ Zero
-      claim₁ = d ⁻¹ ∙ isZero-equal-Zero fe r
+      claim₁ = d ⁻¹ ∙ is-Zero-equal-Zero fe r
       claim₂ : retr(incl w) ≡ v
       claim₂ = claim₀ ∙ claim₁ ⁻¹
       claim₃ : u ≡ v
@@ -107,11 +107,11 @@ incl-is-a-section  = retr , (dfunext fe lemma)
      claim :  retr(incl(Pred w)) ≡ Pred(retr(incl w))
      claim = two-equality-cases claim₁ claim₂
       where 
-       claim₁ : isZero w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
+       claim₁ : is-Zero w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
        claim₁ r = c₃ ∙ c₅ ⁻¹
         where
          c₀ : w ≡ Zero
-         c₀ = isZero-equal-Zero fe r
+         c₀ = is-Zero-equal-Zero fe r
          c₁ : Pred w ≡ Zero
          c₁ = ap Pred c₀
          c₂ : incl (Pred w) 0 ≡ ₀

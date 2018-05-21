@@ -47,4 +47,3 @@ WLPO-[ℕ∞-discrete] w = {!!}
 
 More discussion is included in the modules TheTopologyOfTheUniverse
 and FailureOfTotalSeparatedness.
-

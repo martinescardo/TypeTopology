@@ -29,7 +29,8 @@ exhaustible' X =
 
 \end{code}
 
-Because the axiom of choice holds in MLTT:
+Because the Curry-Howard interpretation of the axiom of choice holds
+in MLTT:
 
 \begin{code}
 

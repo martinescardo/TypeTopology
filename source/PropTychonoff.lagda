@@ -44,7 +44,7 @@ we had a convoluted path to this supposedly natural way).
 open import SpartanMLTT
 open import UF-FunExt
 
-module PropTychonoff (fe : ∀ U V → FunExt U V) where
+module PropTychonoff (fe : ∀ U V → funext U V) where
 
 open import UF-Base
 open import UF-Subsingletons
@@ -58,7 +58,7 @@ open import SearchableTypes
 
 A crucial lemma is 
 
-    prop-indexed-product : isProp X → (a : X) → Π Y ≅ Y a
+    prop-indexed-product : is-prop X → (a : X) → Π Y ≅ Y a
 
 This is proved in the module Prop-indexed-product. Although it has a
 subtle proof, it should be intuitively clear, as X has at most one
@@ -75,11 +75,11 @@ Recall also that such an a₀ is called a universal witness for the predicate p.
 
 \begin{code}
 
-prop-tychonoff : ∀ {U V} {X : U ̇} {Y : X → V ̇} → isProp X 
+prop-tychonoff : ∀ {U V} {X : U ̇} {Y : X → V ̇} → is-prop X 
                → ((x : X) → searchable(Y x)) → searchable(Π Y)
 prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness 
  where
-  -- hp : isProp X
+  -- hp : is-prop X
   --  ε : (x : X) → searchable(Y x)
   --  p : Π Y → 𝟚
 
@@ -185,7 +185,7 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : ∀ {U V} {X : U ̇} {Y : V ̇} → isProp X 
+prop-tychonoff-corollary : ∀ {U V} {X : U ̇} {Y : V ̇} → is-prop X 
                         → searchable Y → searchable(X → Y)
 prop-tychonoff-corollary hp ε = prop-tychonoff hp (λ x → ε)
 
@@ -199,7 +199,7 @@ Better (9 Sep 2015):
 
 \begin{code}
 
-prop-tychonoff-corollary' : ∀ {U V } {X : U ̇} {Y : V ̇} → isProp X 
+prop-tychonoff-corollary' : ∀ {U V } {X : U ̇} {Y : V ̇} → is-prop X 
                           → (X → searchable Y) → searchable(X → Y)
 prop-tychonoff-corollary' hp ε = prop-tychonoff hp ε
 
@@ -219,7 +219,7 @@ proposition P, which is weak excluded middle, which is not provable.
 open import OmniscientTypes
 
 omniscient-prop-tychonoff-wem : 
-  ((X : U₀ ̇) (Y : X → U₀ ̇) → isProp X → ((x : X) → omniscient(Y x)) → omniscient(Π Y))
+  ((X : U₀ ̇) (Y : X → U₀ ̇) → is-prop X → ((x : X) → omniscient(Y x)) → omniscient(Π Y))
   → WEM U₀
 omniscient-prop-tychonoff-wem τ P isp = omniscient-decidable (¬ P) ¬P-omniscient
  where

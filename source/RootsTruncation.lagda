@@ -126,28 +126,28 @@ roots α = Σ \(n : ℕ) → α n ≡ z
   q = ≤-anti _ _ l l'
   
   r : μρ α (n , p) ≡ μρ α (n' , p')
-  r = to-Σ-≡'' (q , isolated-Id-isProp z z-isolated _ _ _)
+  r = to-Σ-≡'' (q , isolated-Id-is-prop z z-isolated _ _ _)
  
-roots-hasPropTruncation : (α : ℕ → Z) → ∀ U → hasPropTruncation U (roots α)
-roots-hasPropTruncation α = collapsible-hasPropTruncation (μρ α , μρ-constant α)
+roots-has-prop-truncation : (α : ℕ → Z) → ∀ U → has-prop-truncation U (roots α)
+roots-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)
 
 \end{code}
 
-Explicitly (and repeating the construction of roots-hasPropTruncation):
+Explicitly (and repeating the construction of roots-has-prop-truncation):
 
 \begin{code}
 
 roots-truncation : (ℕ → Z) → U ̇
 roots-truncation α = Σ \(r : roots α) → r ≡ μρ α r
 
-roots-truncation-isProp : (α : ℕ → Z) → isProp (roots-truncation α)
-roots-truncation-isProp α = Kraus-Lemma (μρ α) (μρ-constant α)
+roots-truncation-is-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
+roots-truncation-is-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
 
 roots-η : (α : ℕ → Z) → roots α → roots-truncation α
 roots-η α = to-fix (μρ α) (μρ-constant α)
 
 roots-universal : (α : ℕ → Z) → ∀ {U} (P : U ̇)
-                → isProp P → (roots α → P) → roots-truncation α → P
+                → is-prop P → (roots α → P) → roots-truncation α → P
 roots-universal α {U} P _ f t = f (from-fix (μρ α) t)
 
 \end{code}

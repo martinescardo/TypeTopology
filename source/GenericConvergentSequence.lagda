@@ -23,8 +23,8 @@ open import UF-Embedding
 open import UF-SetExamples
 open import DiscreteAndSeparated
 
-FunExt₀ : U₁ ̇
-FunExt₀ = FunExt U₀ U₀
+funext₀ : U₁ ̇
+funext₀ = funext U₀ U₀
 
 \end{code}
 
@@ -36,30 +36,28 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 decreasing : (ℕ → 𝟚) → U₀ ̇
 decreasing α = (i : ℕ) → α i ≥ α(succ i)
 
-decreasing-isProp : FunExt₀ → (α : ℕ → 𝟚) → isProp(decreasing α)
-decreasing-isProp fe α = isProp-exponential-ideal fe (λ i → isProp-exponential-ideal fe (λ p → 𝟚-isSet))
+decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
+decreasing-is-prop fe α = is-prop-exponential-ideal fe (λ i → is-prop-exponential-ideal fe (λ p → 𝟚-is-set))
 
 ℕ∞ : U₀ ̇
 ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α
 
-{- Old:
-decreasing-isProp : FunExt₀ → {α : ℕ → 𝟚} → isProp(decreasing α)
-decreasing-isProp fe {α} p q = funext fe fact₂
+decreasing-is-prop-old : funext₀ → {α : ℕ → 𝟚} → is-prop(decreasing α)
+decreasing-is-prop-old fe {α} p q = dfunext fe fact₂
  where
   fact₀ : (i : ℕ) (f g : α(succ i) ≡ ₁ → α i ≡ ₁) → f ≡ g
-  fact₀ i f g = funext fe fact₁
+  fact₀ i f g = nfunext fe fact₁
    where
     fact₁ : (r : α (succ i) ≡ ₁) → f r ≡ g r
-    fact₁ r = 𝟚-isSet (f r) (g r)
+    fact₁ r = 𝟚-is-set (f r) (g r)
   fact₂ : (i : ℕ) → p i ≡ q i
   fact₂ i = fact₀ i (p i) (q i) 
--}
 
 incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
 
-incl-lc : FunExt₀ → left-cancellable incl
-incl-lc fe = pr₁-lc (decreasing-isProp fe _)  
+incl-lc : funext₀ → left-cancellable incl
+incl-lc fe = pr₁-lc (decreasing-is-prop fe _)  
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0 = β 0
@@ -87,9 +85,9 @@ force-decreasing-unchanged α d (succ i) = g
 lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
-clni-incl : FunExt₀ → (x : ℕ∞) → lcni(incl x) ≡ x
+clni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 clni-incl fe (α , d) = to-Σ-≡ (force-decreasing α) α (force-decreasing-is-decreasing α) d
-                               (dfunext fe (force-decreasing-unchanged α d)) (decreasing-isProp fe α _ _)
+                               (dfunext fe (force-decreasing-unchanged α d)) (decreasing-is-prop fe α _ _)
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤ β i
 force-decreasing-is-smaller β zero     p = p
@@ -106,18 +104,18 @@ force-decreasing-is-not-much-smaller β (succ n) p = f c
     f (inl q) = succ n , q
     f (inr r) = force-decreasing-is-not-much-smaller β n r
 
-Cantor-separated : FunExt₀ → separated (ℕ → 𝟚)
+Cantor-separated : funext₀ → separated (ℕ → 𝟚)
 Cantor-separated fe = separated-ideal fe (λ _ → 𝟚-is-separated)
 
-ℕ∞-separated : FunExt₀ → separated ℕ∞
+ℕ∞-separated : funext₀ → separated ℕ∞
 ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)
 
-ℕ∞-set : FunExt₀ → isSet ℕ∞
-ℕ∞-set fe = separated-isSet fe (ℕ∞-separated fe)
+ℕ∞-set : funext₀ → is-set ℕ∞
+ℕ∞-set fe = separated-is-set fe (ℕ∞-separated fe)
 
 open import TotallySeparated
 
-ℕ∞-totally-separated : FunExt₀ → totally-separated ℕ∞
+ℕ∞-totally-separated : funext₀ → totally-separated ℕ∞
 ℕ∞-totally-separated fe {x} {y} α = g
  where
   p : ℕ → (ℕ∞ → 𝟚)
@@ -143,14 +141,14 @@ Succ (α , d) = (α' , d')
 positivity : ℕ∞ → 𝟚
 positivity u = incl u 0 
 
-isZero : ℕ∞ → U₀ ̇
-isZero u = positivity u ≡ ₀
+is-Zero : ℕ∞ → U₀ ̇
+is-Zero u = positivity u ≡ ₀
 
 positive : ℕ∞ → U₀ ̇
 positive u = positivity u ≡ ₁
 
-isZero-Zero : isZero Zero
-isZero-Zero = refl
+is-Zero-Zero : is-Zero Zero
+is-Zero-Zero = refl
 
 Zero-not-Succ : {u : ℕ∞} → Zero ≢ Succ u
 Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
@@ -158,14 +156,14 @@ Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
 ∞ : ℕ∞
 ∞ = ((λ i → ₁) , λ i → id {U₀} {₁ ≡ ₁})
 
-Succ-∞-is-∞ : FunExt₀ → Succ ∞ ≡ ∞
+Succ-∞-is-∞ : funext₀ → Succ ∞ ≡ ∞
 Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma) 
  where
    lemma : (i : ℕ) → incl(Succ ∞) i ≡ incl ∞ i
    lemma 0 = refl
    lemma (succ i) = refl
 
-unique-fixed-point-of-Succ : FunExt₀ → (u : ℕ∞) → u ≡ Succ u → u ≡ ∞
+unique-fixed-point-of-Succ : funext₀ → (u : ℕ∞) → u ≡ Succ u → u ≡ ∞
 unique-fixed-point-of-Succ fe u r = incl-lc fe (dfunext fe lemma)
  where
   fact : (i : ℕ) → incl u i ≡ incl(Succ u) i 
@@ -203,7 +201,7 @@ under-lc {succ m} {0} r = 𝟘-elim(Zero-not-Succ (r ⁻¹))
 under-lc {succ m} {succ n} r = ap succ (under-lc {m} {n} (Succ-lc r))
 
 -- This should be proved as a consequence of a general theorem:
-under-embedding : FunExt₀ → isEmbedding under
+under-embedding : funext₀ → is-embedding under
 under-embedding fe x (x₀ , r₀) (x₁ , r₁) =
   to-Σ-≡ x₀ x₁ r₀ r₁ (under-lc (r₀ ∙ r₁ ⁻¹)) (ℕ∞-set fe _ _)
 
@@ -220,18 +218,18 @@ under-diagonal₁ : (n : ℕ) → incl(under(succ n)) n ≡ ₁
 under-diagonal₁ 0 = refl
 under-diagonal₁ (succ n) = under-diagonal₁ n
  
-isZero-equal-Zero : FunExt₀ → {u : ℕ∞} → isZero u → u ≡ Zero
-isZero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
+is-Zero-equal-Zero : funext₀ → {u : ℕ∞} → is-Zero u → u ≡ Zero
+is-Zero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → incl u i ≡ incl Zero i
   lemma 0 = base
   lemma (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u i) (lemma i)
 
-not-Zero-is-Succ : FunExt₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
+not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
 not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → incl u i ≡ incl(Succ(Pred u)) i 
-  lemma 0 = Lemma[b≢₀→b≡₁] (f ∘ isZero-equal-Zero fe)
+  lemma 0 = Lemma[b≢₀→b≡₁] (f ∘ is-Zero-equal-Zero fe)
   lemma (succ i) = refl
 
 positive-is-not-Zero : {u : ℕ∞} → positive u → u ≢ Zero
@@ -240,10 +238,10 @@ positive-is-not-Zero {u} r s = lemma r
   lemma : ¬(positive u)
   lemma = Lemma[b≡₀→b≢₁](ap positivity s)
 
-positive-equal-Succ : FunExt₀ → {u : ℕ∞} → positive u → u ≡ Succ(Pred u)
+positive-equal-Succ : funext₀ → {u : ℕ∞} → positive u → u ≡ Succ(Pred u)
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 
-Succ-criterion : FunExt₀ → {u : ℕ∞} {n : ℕ} → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ → u ≡ Succ(under n)
+Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ → u ≡ Succ(under n)
 Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
  where
   lemma : (u : ℕ∞) (n : ℕ) → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ 
@@ -265,14 +263,14 @@ Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
 ∞-is-not-ℕ : (n : ℕ) → ∞ ≢ under n
 ∞-is-not-ℕ n s = zero-is-not-one ((ap (λ w → incl w n) s ∙ under-diagonal₀ n)⁻¹)
 
-not-ℕ-is-∞ : FunExt₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
+not-ℕ-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
 not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma) 
  where
   lemma : (n : ℕ) → incl u n ≡ ₁
-  lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (isZero-equal-Zero fe r)) 
+  lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r)) 
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r)) 
 
-ℕ∞-density : FunExt₀ → {p : ℕ∞ → 𝟚} → ((n : ℕ) → p(under n) ≡ ₁) → p ∞ ≡ ₁ → (u : ℕ∞) → p u ≡ ₁
+ℕ∞-density : funext₀ → {p : ℕ∞ → 𝟚} → ((n : ℕ) → p(under n) ≡ ₁) → p ∞ ≡ ₁ → (u : ℕ∞) → p u ≡ ₁
 ℕ∞-density fe {p} f r u = Lemma[b≢₀→b≡₁] lemma
  where 
   claim : p u ≡ ₀ → (n : ℕ) → u ≢ under n
@@ -287,15 +285,15 @@ not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
 under𝟙 : ℕ + 𝟙 → ℕ∞
 under𝟙 = cases under (λ _ → ∞)
 
-under𝟙-embedding : FunExt₀ → isEmbedding under𝟙
+under𝟙-embedding : funext₀ → is-embedding under𝟙
 under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-embedding fe) g d
  where
-  g : isEmbedding (λ _ → ∞)
+  g : is-embedding (λ _ → ∞)
   g x (* , p) (* , q) = ap (λ p → * , p) (ℕ∞-set fe p q)
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
   d n _ p = ∞-is-not-ℕ n (p ⁻¹)
 
-under𝟙-dense : FunExt₀ → ¬ Σ \(u : ℕ∞) → Π \(x : ℕ + 𝟙) → u ≢ under𝟙 x
+under𝟙-dense : funext₀ → ¬ Σ \(u : ℕ∞) → Π \(x : ℕ + 𝟙) → u ≢ under𝟙 x
 under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
  where
   g : u ≢ ∞
@@ -311,14 +309,14 @@ u ≡ under(n+1) if and only incl u n ≡ ₁ and incl u (n+1) ≡ ₀.
 
 \begin{code}
 
-finite-isolated : FunExt₀ → (u : ℕ∞) (n : ℕ) → (u ≡ under n) + (u ≢ under n)
+finite-isolated : funext₀ → (u : ℕ∞) (n : ℕ) → (u ≡ under n) + (u ≢ under n)
 finite-isolated fe u 0 = two-equality-cases lemma₀ lemma₁
  where 
-  lemma₀ : isZero u → (u ≡ Zero) + (u ≢ Zero)
-  lemma₀ r = inl(isZero-equal-Zero fe r)
+  lemma₀ : is-Zero u → (u ≡ Zero) + (u ≢ Zero)
+  lemma₀ r = inl(is-Zero-equal-Zero fe r)
   lemma₁ : positive u → (u ≡ Zero) + (u ≢ Zero)
   lemma₁ r = inr(contrapositive fact (Lemma[b≡₁→b≢₀] r))
-    where fact : u ≡ Zero → isZero u
+    where fact : u ≡ Zero → is-Zero u
           fact r = ap (λ u → incl u 0) r
 finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
  where
@@ -340,8 +338,8 @@ finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
 
 open import DiscreteAndSeparated
 
-under-lemma : FunExt₀ → (u : ℕ∞) (n : ℕ) → incl u n ≡ ₀ → Σ \(m : ℕ) → u ≡ under m
-under-lemma fe u zero p     = zero , isZero-equal-Zero fe p
+under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → incl u n ≡ ₀ → Σ \(m : ℕ) → u ≡ under m
+under-lemma fe u zero p     = zero , is-Zero-equal-Zero fe p
 under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
  where
   g :  decidable(incl u n ≡ ₀) → Σ \(m : ℕ) → u ≡ under m

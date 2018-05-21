@@ -77,7 +77,7 @@ transformation η is recursively defined.
 
 \begin{code}
 
-yoneda-lemma' : (∀ U V → FunExt U V)
+yoneda-lemma' : (∀ U V → funext U V)
               → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
               → yoneda-nat x A (yoneda-elem x A η) ≡ η 
 yoneda-lemma' fe {U} {V} x A η = dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe U V) (λ p → yoneda-lemma x A η y p))
@@ -97,21 +97,21 @@ yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x)
                   → yoneda-elem x A (yoneda-nat x A a) ≡ a
 yoneda-computation x A = Yoneda-computation x A
 
-yoneda-elem-isEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
-                   → isEquiv (yoneda-elem x A)
-yoneda-elem-isEquiv fe {U} {V} {X} x A = (yoneda-nat x A , yoneda-computation x A) ,
+yoneda-elem-is-equiv : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+                   → is-equiv (yoneda-elem x A)
+yoneda-elem-is-equiv fe {U} {V} {X} x A = (yoneda-nat x A , yoneda-computation x A) ,
                                          (yoneda-nat x A , yoneda-lemma' fe x A)
 
-yoneda-nat-isEquiv : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
-                   → isEquiv (yoneda-nat x A)
-yoneda-nat-isEquiv fe {U} {V} {X} x A = (yoneda-elem x A , yoneda-lemma' fe x A) ,
+yoneda-nat-is-equiv : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+                   → is-equiv (yoneda-nat x A)
+yoneda-nat-is-equiv fe {U} {V} {X} x A = (yoneda-elem x A , yoneda-lemma' fe x A) ,
                                         (yoneda-elem x A , yoneda-computation x A)
 
-yoneda-equivalence : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+yoneda-equivalence : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → A x ≃ Nat (Id x) A  
-yoneda-equivalence fe x A = yoneda-nat x A , yoneda-nat-isEquiv fe x A
+yoneda-equivalence fe x A = yoneda-nat x A , yoneda-nat-is-equiv fe x A
 
-Yoneda-equivalence : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
+Yoneda-equivalence : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
                    → A x ≃ (∀ y → x ≡ y → A y)
 Yoneda-equivalence = yoneda-equivalence
 
@@ -148,7 +148,7 @@ considered below.
 
 universality-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                      → is-universal-element (x , a)
-                     → (y : X) → hasSection (yoneda-nat x A a y) 
+                     → (y : X) → has-section (yoneda-nat x A a y) 
 universality-section {U} {V} {X} {A} x a u y = s y , φ y
  where
   s : (y : X) → A y → x ≡ y
@@ -157,7 +157,7 @@ universality-section {U} {V} {X} {A} x a u y = s y , φ y
   φ y b = pr₂ (u y b)
 
 section-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                     → ((y : X) → hasSection(yoneda-nat x A a y))
+                     → ((y : X) → has-section(yoneda-nat x A a y))
                      → is-universal-element (x , a)
 section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
 
@@ -176,33 +176,33 @@ equivalent to η being a natural retraction, and we start with it:
 \begin{code}
 
 Yoneda-section-forth : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                     → isSingleton (Σ A)
-                     → (y : X) → hasSection (η y)
+                     → is-singleton (Σ A)
+                     → (y : X) → has-section (η y)
 Yoneda-section-forth {U} {V} {X} {A} x η iss y = g
  where
   u : is-universal-element (x , yoneda-elem x A η)
-  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (isSingleton-isProp iss (x , yoneda-elem x A η))
+  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (is-singleton-is-prop iss (x , yoneda-elem x A η))
   h : yoneda-nat x A (yoneda-elem x A η) y ∼ η y
   h = yoneda-lemma x A η y
-  g : hasSection (η y)
-  g = hasSection-closed-under-∼' (universality-section x (yoneda-elem x A η) u y) h
+  g : has-section (η y)
+  g = has-section-closed-under-∼' (universality-section x (yoneda-elem x A η) u y) h
 
 Yoneda-section-back : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                   → ((y : X) → hasSection (η y))
-                   → isSingleton (Σ A)
+                   → ((y : X) → has-section (η y))
+                   → is-singleton (Σ A)
 Yoneda-section-back {U} {V} {X} {A} x η φ = c
  where
   h : ∀ y → yoneda-nat x A (yoneda-elem x A η) y ∼ η y
   h = yoneda-lemma x A η
-  g : ∀ y → hasSection (yoneda-nat x A (yoneda-elem x A η) y)
-  g y = hasSection-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
+  g : ∀ y → has-section (yoneda-nat x A (yoneda-elem x A η) y)
+  g y = has-section-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
   u : is-universal-element (x , yoneda-elem x A η)
   u = section-universality x (yoneda-elem x A η) g 
-  c : isSingleton (Σ A)
+  c : is-singleton (Σ A)
   c = (x , yoneda-elem x A η) , (universal-element-is-the-only-element (x , yoneda-elem x A η) u)
   
 Yoneda-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-               → isSingleton (Σ A) ⇔ ((y : X) → hasSection (η y))
+               → is-singleton (Σ A) ⇔ ((y : X) → has-section (η y))
 Yoneda-section x η = Yoneda-section-forth x η , Yoneda-section-back x η              
 
 \end{code}
@@ -213,7 +213,7 @@ Here is a direct application (24th April 2018).
 
 equiv-adj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X)
               (η : (x : X) (y : Y) → f x ≡ y → g y ≡ x)
-          → ((x : X) (y : Y) → hasSection (η x y)) ⇔ isVoevodskyEquiv g 
+          → ((x : X) (y : Y) → has-section (η x y)) ⇔ is-vv-equiv g 
 equiv-adj f g η = (λ isv x → Yoneda-section-back (f x) (η x) (isv x)) , 
                   (λ φ x → Yoneda-section-forth (f x) (η x) (φ x))
 
@@ -223,27 +223,27 @@ This motivates the following definition.
 
 \begin{code}
 
-hasAdj : ∀ {U V} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
-hasAdj g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → hasSection(η x y)
+has-adj : ∀ {U V} {X : U ̇} {Y : V ̇} → (Y → X) → U ⊔ V ̇
+has-adj g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → has-section(η x y)
 
-isVoevodskyEquiv-hasAdj : ∀ {U V} {X : U ̇} {Y : V ̇} (g : Y → X)
-                       → isVoevodskyEquiv g
-                       → hasAdj g
-isVoevodskyEquiv-hasAdj {U} {V} {X} {Y} g isv = f , η , hass
+is-vv-equiv-has-adj : ∀ {U V} {X : U ̇} {Y : V ̇} (g : Y → X)
+                       → is-vv-equiv g
+                       → has-adj g
+is-vv-equiv-has-adj {U} {V} {X} {Y} g isv = f , η , hass
  where
   f : X → Y
-  f = pr₁ (pr₁ (isVoevodskyEquiv-isEquiv g isv))
+  f = pr₁ (pr₁ (is-vv-equiv-is-equiv g isv))
   gf : (x : X) → g (f x) ≡ x
-  gf = pr₂ (pr₁ (isVoevodskyEquiv-isEquiv g isv))
+  gf = pr₂ (pr₁ (is-vv-equiv-is-equiv g isv))
   η : (x : X) (y : Y) → f x ≡ y → g y ≡ x
   η x y p = transport (λ y → g y ≡ x) p (gf x )
-  hass : (x : X) (y : Y) → hasSection (η x y)
+  hass : (x : X) (y : Y) → has-section (η x y)
   hass x = Yoneda-section-forth (f x) (η x) (isv x)
 
-hasAdj-isVoevodskyEquiv : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
-                       → hasAdj g
-                       → isVoevodskyEquiv g
-hasAdj-isVoevodskyEquiv g (f , η , hass) x = Yoneda-section-back (f x) (η x) (hass x)
+has-adj-is-vv-equiv : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
+                       → has-adj g
+                       → is-vv-equiv g
+has-adj-is-vv-equiv g (f , η , hass) x = Yoneda-section-back (f x) (η x) (hass x)
   
 \end{code}
 
@@ -266,8 +266,8 @@ idemp-is-id {U} {X} {x} e y p idemp = cancel-left (
         e x refl ∙ p     ∎ )
 
 nat-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                          → ((y : X) → hasSection(η y)) 
-                          → ((y : X) → hasRetraction(η y))
+                          → ((y : X) → has-section(η y)) 
+                          → ((y : X) → has-retraction(η y))
 nat-retraction-is-section {U} {V} {X} {A} x η hass = hasr
  where
   s : (y : X) → A y → x ≡ y
@@ -280,7 +280,7 @@ nat-retraction-is-section {U} {V} {X} {A} x η hass = hasr
   idemp y p = ap (s y) (ηs (η y p))
   e-is-id : (y : X) (p : x ≡ y) → e y p ≡ p
   e-is-id y p = idemp-is-id e y p (idemp y p)
-  hasr : (y : X) → hasRetraction(η y)
+  hasr : (y : X) → has-retraction(η y)
   hasr y = s y , e-is-id y
 
 \end{code}
@@ -289,26 +289,26 @@ The above use of the word "is" is justified by the following:
 
 \begin{code}
 
-nat-retraction-is-section-uniquely : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
+nat-retraction-is-section-uniquely : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                                      (x : X) (η : Nat (Id x) A)
-                                   → ((y : X) → hasSection(η y)) 
-                                   → ((y : X) → isSingleton(hasRetraction(η y)))
-nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-isSingleton
+                                   → ((y : X) → has-section(η y)) 
+                                   → ((y : X) → is-singleton(has-retraction(η y)))
+nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-is-singleton
                                                       (nat-retraction-is-section x η hass y)
-                                                      (hass-isprop-hasr fe (η y) (hass y))
+                                                      (hass-is-prop-hasr fe (η y) (hass y))
 
-nat-hasSection-isProp : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
+nat-has-section-is-prop : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                         (x : X) (η : Nat (Id x) A)
-                      → isProp ((y : X) → hasSection (η y)) 
-nat-hasSection-isProp fe {U} {V} {X} x η φ = isProp-exponential-ideal (fe U (U ⊔ V)) γ φ
+                      → is-prop ((y : X) → has-section (η y)) 
+nat-has-section-is-prop fe {U} {V} {X} x η φ = is-prop-exponential-ideal (fe U (U ⊔ V)) γ φ
   where
-   γ : (y : X) → isProp (hasSection (η y))
-   γ y = hasr-isprop-hass fe (η y) (nat-retraction-is-section x η φ y)
+   γ : (y : X) → is-prop (has-section (η y))
+   γ y = hasr-is-prop-hass fe (η y) (nat-retraction-is-section x η φ y)
 
-nat-retraction-isEquiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                      → ((y : X) → hasSection(η y)) 
-                      → ((y : X) → isEquiv(η y))
-nat-retraction-isEquiv x η hass y = (hass y , nat-retraction-is-section x η hass y)
+nat-retraction-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+                      → ((y : X) → has-section(η y)) 
+                      → ((y : X) → is-equiv(η y))
+nat-retraction-is-equiv x η hass y = (hass y , nat-retraction-is-section x η hass y)
 
 \end{code}
 
@@ -318,23 +318,23 @@ We are interested in the following corollaries:
 
 universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → is-universal-element (x , a)
-                   → (y : X) → isEquiv(yoneda-nat x A a y)
-universality-equiv {U} {V} {X} {A} x a u = nat-retraction-isEquiv x (yoneda-nat x A a)
+                   → (y : X) → is-equiv(yoneda-nat x A a y)
+universality-equiv {U} {V} {X} {A} x a u = nat-retraction-is-equiv x (yoneda-nat x A a)
                                                                     (universality-section x a u)
   
 equiv-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
-                   → ((y : X) → isEquiv(yoneda-nat x A a y))
+                   → ((y : X) → is-equiv(yoneda-nat x A a y))
                    → is-universal-element (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 Yoneda-Theorem-forth : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                    → isSingleton (Σ A)
-                    → (y : X) → isEquiv (η y)
-Yoneda-Theorem-forth x η iss = nat-retraction-isEquiv x η (Yoneda-section-forth x η iss)
+                    → is-singleton (Σ A)
+                    → (y : X) → is-equiv (η y)
+Yoneda-Theorem-forth x η iss = nat-retraction-is-equiv x η (Yoneda-section-forth x η iss)
 
 Yoneda-Theorem-back : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                   → ((y : X) → isEquiv (η y))
-                   → isSingleton (Σ A)
+                   → ((y : X) → is-equiv (η y))
+                   → is-singleton (Σ A)
 Yoneda-Theorem-back x η φ = Yoneda-section-back x η (λ y → pr₁(φ y))
 
 \end{code}
@@ -345,13 +345,13 @@ singleton.
 \begin{code}
 
 _≊_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
-A ≊ B = Σ \(η : Nat A B) → ∀ x → isEquiv(η x)
+A ≊ B = Σ \(η : Nat A B) → ∀ x → is-equiv(η x)
 
 isRepresentable : ∀ {U V} {X : U ̇} → (X → V ̇) → U ⊔ V ̇
 isRepresentable A = Σ \x → Id x ≊ A
 
 singleton-representable : ∀ {U V} {X : U ̇} {A : X → V ̇}
-                        → isSingleton (Σ A)
+                        → is-singleton (Σ A)
                         → isRepresentable A 
 singleton-representable {U} {V} {X} {A} ((x , a) , cc) = x ,
                                                          yoneda-nat x A a ,
@@ -359,7 +359,7 @@ singleton-representable {U} {V} {X} {A} ((x , a) , cc) = x ,
 
 representable-singleton : ∀ {U V} {X : U ̇} {A : X → V ̇}
                         → isRepresentable A
-                        → isSingleton (Σ A)
+                        → is-singleton (Σ A)
 representable-singleton {U} {V} {X} {A} (x , (η , φ)) = Yoneda-Theorem-back x η φ
 
 \end{code}
@@ -368,20 +368,20 @@ We also have the following corollaries:
 
 \begin{code}
 
-isVoevodskyEquiv-hasAdj' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
-                        → isVoevodskyEquiv g
-                        → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
-isVoevodskyEquiv-hasAdj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
+is-vv-equiv-has-adj' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
+                     → is-vv-equiv g
+                     → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
+is-vv-equiv-has-adj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
                                                λ x y → (pr₁ (pr₂ γ) x y) ,
-                                                       (nat-retraction-isEquiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
+                                                       (nat-retraction-is-equiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
  where
-  γ : hasAdj g
-  γ = isVoevodskyEquiv-hasAdj g φ
+  γ : has-adj g
+  γ = is-vv-equiv-has-adj g φ
   
-hasAdj-isVoevodskyEquiv' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
-                        → (Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x))
-                        → isVoevodskyEquiv g
-hasAdj-isVoevodskyEquiv' g (f , ψ) = hasAdj-isVoevodskyEquiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂(ψ x y))))
+has-adj-is-vv-equiv' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
+                     → (Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x))
+                     → is-vv-equiv g
+has-adj-is-vv-equiv' g (f , ψ) = has-adj-is-vv-equiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂(ψ x y))))
 
 \end{code}
 
@@ -393,21 +393,21 @@ extensionality holds (happly is an equivalence).
 
 open import UF-Subsingletons-Retracts
 
-funext-via-contractibility : ∀ {U V}
-                           → ((X : U ̇) (Y : X → V ̇) → ((x : X) → isSingleton (Y x))
-                                                       → isSingleton (Π Y))
-                           → FunExt U V
-funext-via-contractibility {U} {V} φ {X} {Y} f = γ
+funext-via-singletons : ∀ {U V}
+                      → ((X : U ̇) (Y : X → V ̇) → ((x : X) → is-singleton (Y x))
+                                                 → is-singleton (Π Y))
+                      → funext U V
+funext-via-singletons {U} {V} φ {X} {Y} f = γ
  where
   A : Π Y → U ⊔ V ̇
   A g = (x : X) → f x ≡ g x
   η : Nat (Id f) A
   η = happly' f
-  c : isSingleton (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
-  c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → paths-from-singleton (f x))
-  d : isSingleton (Σ A)
-  d = retract-of-singleton πσ πσ-hasSection c
-  γ : (g : Π Y) → isEquiv (happly' f g)
+  c : is-singleton (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
+  c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → identifications-from-singleton (f x))
+  d : is-singleton (Σ A)
+  d = retract-of-singleton πσ πσ-has-section c
+  γ : (g : Π Y) → is-equiv (happly' f g)
   γ = Yoneda-Theorem-forth f η d
 
 \end{code}
@@ -426,22 +426,22 @@ and the proof given here via Yoneda was announced on 12th May 2015
 open import UF-Univalence
 
 univalence-via-singletons :
-  ∀ {U} → isUnivalent U   ⇔   ((X : U ̇) → isSingleton (Σ \(Y : U ̇) → X ≃ Y))
+  ∀ {U} → is-univalent U   ⇔   ((X : U ̇) → is-singleton (Σ \(Y : U ̇) → X ≃ Y))
 univalence-via-singletons {U} = (f , g)
  where
-  f : isUnivalent U → (X : U ̇) → isSingleton (Σ (Eq X))
+  f : is-univalent U → (X : U ̇) → is-singleton (Σ (Eq X))
   f ua X = representable-singleton (X , (idtoeq X , ua X))
 
-  g : ((X : U ̇) → isSingleton (Σ (Eq X))) → isUnivalent U
+  g : ((X : U ̇) → is-singleton (Σ (Eq X))) → is-univalent U
   g φ X = universality-equiv X (ideq X)
                                 (unique-element-is-universal-element
                                        (Eq X)
                                        (X , ideq X)
-                                       (isSingleton-isProp (φ X) (X , ideq X)))
+                                       (is-singleton-is-prop (φ X) (X , ideq X)))
 
 \end{code}
 
-Notice that isSingleton can be replaced by isProp in the formulation
+Notice that is-singleton can be replaced by is-prop in the formulation
 of this logical equivalence (exercise).
 
 
@@ -479,7 +479,7 @@ yoneda-nat-Id x {y} = yoneda-nat y (Id x)
 Yoneda-nat-Id : ∀ {U} {X : U ̇} (x {y} : X) → x ≡ y → (z : X) → y ≡ z → x ≡ z
 Yoneda-nat-Id = yoneda-nat-Id
 
-Id-charac : (∀ U V → FunExt U V)
+Id-charac : (∀ U V → funext U V)
        → ∀ {U} {X : U ̇} (x {y} : X) → (x ≡ y) ≃ Nat (Id y) (Id x)
 Id-charac fe {U} {X} x {y} = yoneda-equivalence fe y (Id x)
 
@@ -521,7 +521,7 @@ singleton-types-are-singletons-bis : ∀ {U} {X : U ̇} (x : X)
                                   → is-the-only-element (x , refl)
 singleton-types-are-singletons-bis {U} {X} x (y , p) = yoneda-const η y p
  where
-  η : (y : X) → x ≡ y → paths-from x
+  η : (y : X) → x ≡ y → identifications-from x
   η y p = (y , p)
 
 \end{code}
@@ -532,7 +532,7 @@ that the latter can be recovered from the former.
 
 \begin{code}
 
-Jbased'' : ∀ {U V} {X : U ̇} (x : X) (A : paths-from x → V ̇)
+Jbased'' : ∀ {U V} {X : U ̇} (x : X) (A : identifications-from x → V ̇)
          → A (x , refl) → Π A
 Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons w)
 
@@ -645,17 +645,17 @@ NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
     g : x , a ≡ y , b
     g = to-Σ-Id (p , t)
 
-yoneda-equivalence-Σ : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (A : X → V ̇)
+yoneda-equivalence-Σ : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (A : X → V ̇)
                      → Σ A ≃ Σ \(x : X) → Nat (Id x) A
 yoneda-equivalence-Σ fe A = NatΣ-equiv' A (λ x → Nat (Id x) A) (λ x → yoneda-equivalence fe x A) 
 
-nats-are-uniquely-transports : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
-                            → isSingleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
-nats-are-uniquely-transports fe x A = isEquiv-isVoevodskyEquiv (yoneda-nat x A) (yoneda-nat-isEquiv fe x A) 
+nats-are-uniquely-transports : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
+                            → is-singleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
+nats-are-uniquely-transports fe x A = is-equiv-is-vv-equiv (yoneda-nat x A) (yoneda-nat-is-equiv fe x A) 
 
-adj-obs : (∀ U V → FunExt U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
+adj-obs : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
-        → isSingleton (Σ \(q : g (f x) ≡ x) → (λ y p → transport (λ y → g y ≡ x) p q) ≡ η)
+        → is-singleton (Σ \(q : g (f x) ≡ x) → (λ y p → transport (λ y → g y ≡ x) p q) ≡ η)
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
 
 \end{code}
