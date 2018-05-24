@@ -46,62 +46,82 @@ equiv-post : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
           → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 equiv-post nfe nfe' f e = qinv-is-equiv (λ h → f ∘ h) (qinv-post' nfe nfe' f (is-equiv-qinv f e))
 
-qinv-pre : (∀ U V → funext U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
-         → qinv f → qinv (λ (h : Y → A) → h ∘ f)
-qinv-pre fe {U} {V} {W} {X} {Y} {A} f (g , η , ε) = (g' , η' , ε')
+qinv-pre' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
+          → naive-funext V W → naive-funext U W
+          → (f : X → Y) → qinv f → qinv (λ (h : Y → A) → h ∘ f)
+qinv-pre' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (Y → A) → (X → A)
   f' h = h ∘ f
   g' : (X → A) → (Y → A)
   g' k = k ∘ g
   η' : (h : Y → A) → g' (f' h) ≡ h
-  η' h = dfunext (fe V W) (λ y → ap h (ε y))
+  η' h = nfe (λ y → ap h (ε y))
   ε' : (k : X → A) → f' (g' k) ≡ k
-  ε' k = dfunext (fe U W) (λ x → ap k (η x))
+  ε' k = nfe' (λ x → ap k (η x))
 
-hasr-is-prop-hass : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                 → has-retraction f → is-prop(has-section f)
-hasr-is-prop-hass fe {U} {V} {X} {Y} f (g , gf) (h , fh) = is-singleton-is-prop c (h , fh)
+qinv-pre : (∀ U V → naive-funext U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+         → qinv f → qinv (λ (h : Y → A) → h ∘ f)
+qinv-pre nfe {U} {V} {W} = qinv-pre' (nfe V W) (nfe U W)
+
+hasr-is-prop-hass' : ∀ {U} {V} {X : U ̇} {Y : V ̇} 
+                 → funext V U → funext V V
+                 → (f : X → Y) → has-retraction f → is-prop(has-section f)
+hasr-is-prop-hass' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) = is-singleton-is-prop c (h , fh)
  where
   a : qinv f
   a = is-equiv-qinv f ((h , fh) , g , gf)
   b : is-singleton(fiber (λ h →  f ∘ h) id)
-  b = qinv-is-vv-equiv (λ h →  f ∘ h) (qinv-post (λ U V → nfunext (fe U V)) f a) id
+  b = qinv-is-vv-equiv (λ h →  f ∘ h) (qinv-post' (nfunext fe) (nfunext fe') f a) id
   r : fiber (λ h →  f ∘ h) id → has-section f
   r (h , p) = (h , happly' (f ∘ h) id p)
   s : has-section f → fiber (λ h →  f ∘ h) id
-  s (h , η) = (h , dfunext (fe V V) η)
+  s (h , η) = (h , nfunext fe' η)
   rs : (σ : has-section f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ η → (h , η)) q
    where
-    q : happly' (f ∘ h) id (dfunext (fe V V) η) ≡ η
-    q = happly-funext (fe V V) (f ∘ h) id η
+    q : happly' (f ∘ h) id (nfunext fe' η) ≡ η
+    q = happly-funext fe' (f ∘ h) id η
   c : is-singleton (has-section f)
   c = retract-of-singleton r (s , rs) b
 
-hass-is-prop-hasr : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                 → has-section f → is-prop(has-retraction f)
-hass-is-prop-hasr fe {U} {V} {X} {Y} f (g , fg) (h , hf) = is-singleton-is-prop c (h , hf)
+hass-is-prop-hasr' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
+                   → funext U U → funext V U
+                   → (f : X → Y) → has-section f → is-prop(has-retraction f)
+hass-is-prop-hasr' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) = is-singleton-is-prop c (h , hf)
  where
   a : qinv f
   a = is-equiv-qinv f ((g , fg) , (h , hf))
   b : is-singleton(fiber (λ h →  h ∘ f) id)
-  b = qinv-is-vv-equiv (λ h →  h ∘ f) (qinv-pre fe f a) id
+  b = qinv-is-vv-equiv (λ h →  h ∘ f) (qinv-pre' (nfunext fe') (nfunext fe) f a) id
   r : fiber (λ h →  h ∘ f) id → has-retraction f
   r (h , p) = (h , happly' (h ∘ f) id p)
   s : has-retraction f → fiber (λ h →  h ∘ f) id
-  s (h , η) = (h , dfunext (fe U U) η) 
+  s (h , η) = (h , dfunext fe η) 
   rs : (σ : has-retraction f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ η → (h , η)) q
    where
-    q : happly' (h ∘ f) id (dfunext (fe U U) η) ≡ η
-    q = happly-funext (fe U U) (h ∘ f) id η
+    q : happly' (h ∘ f) id (dfunext fe η) ≡ η
+    q = happly-funext fe (h ∘ f) id η
   c : is-singleton (has-retraction f)
   c = retract-of-singleton r (s , rs) b
 
-is-equiv-is-prop : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
-               → is-prop(is-equiv f)
-is-equiv-is-prop fe f = ×-prop-criterion (hasr-is-prop-hass fe f , hass-is-prop-hasr fe f)
+hasr-is-prop-hass : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                 → has-retraction f → is-prop(has-section f)
+hasr-is-prop-hass fe {U} {V} = hasr-is-prop-hass' (fe V U) (fe V V)
+
+hass-is-prop-hasr : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                 → has-section f → is-prop(has-retraction f)
+hass-is-prop-hasr fe {U} {V} = hass-is-prop-hasr' (fe U U) (fe V U)
+
+is-prop-is-equiv : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                → is-prop(is-equiv f)
+is-prop-is-equiv fe f = ×-prop-criterion (hasr-is-prop-hass fe f , hass-is-prop-hasr fe f)
+
+is-prop-is-equiv' : ∀ {U} {V} {X : U ̇} {Y : V ̇} 
+                → funext V U → funext V V → funext U U → funext V U
+                → (f : X → Y) → is-prop(is-equiv f)
+is-prop-is-equiv' fe fe' fe'' fe''' f = ×-prop-criterion (hasr-is-prop-hass' fe fe' f , hass-is-prop-hasr' fe'' fe''' f)
 
 \end{code}
 
