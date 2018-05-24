@@ -123,6 +123,11 @@ is-prop-is-equiv' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
                 → (f : X → Y) → is-prop(is-equiv f)
 is-prop-is-equiv' fe fe' fe'' fe''' f = ×-prop-criterion (hasr-is-prop-hass' fe fe' f , hass-is-prop-hasr' fe'' fe''' f)
 
+is-prop-is-equiv'' : ∀ {U} {X Y : U ̇}
+                → funext U U
+                → (f : X → Y) → is-prop(is-equiv f)
+is-prop-is-equiv'' fe = is-prop-is-equiv' fe fe fe fe
+
 \end{code}
 
 The so-called type-theoretic axiom of choice:
