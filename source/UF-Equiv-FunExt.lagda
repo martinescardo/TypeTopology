@@ -109,10 +109,10 @@ The so-called type-theoretic axiom of choice:
 
 \begin{code}
 
-πσ : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-    → (Π \(x : X) → Σ \(y : Y x) → A x y)
-    → Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x)
-πσ φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
+tt-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+          → (Π \(x : X) → Σ \(y : Y x) → A x y)
+          → Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x)
+tt-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
 
 \end{code}
 
@@ -120,10 +120,10 @@ Its inverse:
 
 \begin{code}
 
-σπ : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-    → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-    → Π \(x : X) → Σ \(y : Y x) → A x y
-σπ (f , g) x = (f x) , (g x)
+tt-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+           → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
+           → Π \(x : X) → Σ \(y : Y x) → A x y
+tt-unchoice (f , g) x = (f x) , (g x)
 
 \end{code}
 
@@ -132,31 +132,33 @@ function extensionality.
 
 \begin{code}
 
-πσσπ : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-     → (t : Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-     → πσ (σπ {U} {V} {W} {X} {Y} {A} t) ≡ t
-πσσπ t = refl
+tt-choice-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+                  → (t : Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
+                  → tt-choice (tt-unchoice {U} {V} {W} {X} {Y} {A} t) ≡ t
+tt-choice-unchoice t = refl
 
-πσ-has-section : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-              → has-section (πσ {U} {V} {W} {X} {Y} {A})
-πσ-has-section {U} {V} {W} {X} {Y} {A} = σπ , πσσπ {U} {V} {W} {X} {Y} {A}
+tt-choice-has-section : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+                    → has-section (tt-choice {U} {V} {W} {X} {Y} {A})
+tt-choice-has-section {U} {V} {W} {X} {Y} {A} = tt-unchoice ,
+                                                tt-choice-unchoice {U} {V} {W} {X} {Y} {A}
 
-σππσ : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+tt-unchoice-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
      → funext U (V ⊔ W)
      → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
-     → σπ (πσ φ) ≡ φ
-σππσ fe φ = dfunext fe (λ x → refl)
+     → tt-unchoice (tt-choice φ) ≡ φ
+tt-unchoice-choice fe φ = dfunext fe (λ x → refl)
 
-πσ-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-           → funext U (V ⊔ W)
-           → is-equiv πσ
-πσ-is-equiv {U} {V} {W} {X} {Y} {A} fe = πσ-has-section ,
-                                        (σπ , σππσ {U} {V} {W} {X} {Y} {A} fe)
+tt-choice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+                   → funext U (V ⊔ W)
+                   → is-equiv tt-choice
+tt-choice-is-equiv {U} {V} {W} {X} {Y} {A} fe = tt-choice-has-section {U} {V} {W} {X} {Y} {A} ,
+                                                (tt-unchoice , tt-unchoice-choice fe)
 
-σπ-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-           → funext U (V ⊔ W)
-           → is-equiv σπ
-σπ-is-equiv {U} {V} {W} {X} {Y} {A} fe = (πσ , σππσ {U} {V} {W} {X} {Y} {A} fe) ,
-                                        (πσ , πσσπ {U} {V} {W} {X} {Y} {A}) 
+tt-unchoice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+                    → funext U (V ⊔ W)
+                    → is-equiv tt-unchoice
+tt-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
+   (tt-choice , tt-unchoice-choice {U} {V} {W} {X} {Y} {A} fe) ,
+   (tt-choice , tt-choice-unchoice {U} {V} {W} {X} {Y} {A}) 
                                         
 \end{code}

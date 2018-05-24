@@ -399,14 +399,18 @@ funext-via-singletons : ∀ {U V}
                       → funext U V
 funext-via-singletons {U} {V} φ {X} {Y} f = γ
  where
-  A : Π Y → U ⊔ V ̇
-  A g = (x : X) → f x ≡ g x
-  η : Nat (Id f) A
-  η = happly' f
   c : is-singleton (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
   c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → identifications-from-singleton (f x))
+  A : Π Y → U ⊔ V ̇
+  A g = (x : X) → f x ≡ g x
+  r : (Π \(x : X) → Σ \(y : Y x) → f x ≡ y) → Σ A
+  r = tt-choice
+  r-has-section : has-section r
+  r-has-section = tt-choice-has-section
   d : is-singleton (Σ A)
-  d = retract-of-singleton πσ πσ-has-section c
+  d = retract-of-singleton r r-has-section c
+  η : Nat (Id f) A
+  η = happly' f
   γ : (g : Π Y) → is-equiv (happly' f g)
   γ = Yoneda-Theorem-forth f η d
 
