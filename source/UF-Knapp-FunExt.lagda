@@ -28,16 +28,16 @@ of path-induced equivalences.
 \begin{code}
 
 isPIE : ∀ {U} {X Y : U ̇} → (X → Y) → U ′ ̇
-isPIE {U} {X} {Y} = fiber (idtofun' X Y)
+isPIE {U} {X} {Y} = fiber (idtofun X Y)
 
-isPIE-remark : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f ≡ Σ \(p : X ≡ Y) → idtofun' X Y p ≡ f
+isPIE-remark : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f ≡ Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
 isPIE-remark f = refl
 
 _⋍_ : ∀ {U} → U ̇ → U ̇ → U ′ ̇
 X ⋍ Y = Σ \(f : X → Y) → isPIE f
 
 idtopie : ∀ {U} {X Y : U ̇} → X ≡ Y → X ⋍ Y
-idtopie p = (idtofun' _ _ p , p , refl)
+idtopie p = (idtofun _ _ p , p , refl)
 
 pietofun : ∀ {U} {X Y : U ̇} → X ⋍ Y → X → Y
 pietofun (f , (p , q)) = f
@@ -46,7 +46,7 @@ pietoid : ∀ {U} {X Y : U ̇} → X ⋍ Y → X ≡ Y
 pietoid (f , (p , q)) = p
 
 pietofun-factors-through-idtofun : ∀ {U} {X Y : U ̇}
-                                 → (e : X ⋍ Y) → idtofun' X Y (pietoid e) ≡ pietofun e
+                                 → (e : X ⋍ Y) → idtofun X Y (pietoid e) ≡ pietofun e
 pietofun-factors-through-idtofun (f , (p , q)) = q
 
 pietoid-idtopie : ∀ {U} {X Y : U ̇} (p : X ≡ Y) → pietoid (idtopie p) ≡ p
@@ -59,9 +59,9 @@ PIE-induction : ∀ {U V} {X : U ̇} (A : {Y : U ̇} → (X → Y) → V ̇)
               → A (id {U} {X}) → {Y : U ̇} (f : X → Y) → isPIE f → A f
 PIE-induction {U} {V} {X} A g {Y} f (p , q) = transport A r (φ p)
   where
-   φ : {Y : U ̇} (p : X ≡ Y) → A (idtofun' _ _ p)
+   φ : {Y : U ̇} (p : X ≡ Y) → A (idtofun _ _ p)
    φ refl = g
-   r : idtofun' _ _ p ≡ f
+   r : idtofun _ _ p ≡ f
    r = ap pr₁ (idtopie-pietoid (f , p , q))
 
 isPIE-lc : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f → left-cancellable f
@@ -114,9 +114,9 @@ knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
                               → back-transport (λ Z → Z → Y) (pietoid e) g ≡ g ∘ pr₁ e 
   back-transport-is-pre-comp'' {U} {X} {X'} e g = back-transport-is-pre-comp (pietoid e) g ∙ q ∙ r
    where
-    φ : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → idtofun p ≡ pr₁ (idtopie p)
+    φ : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
     φ X .X refl = refl
-    q : g ∘ idtofun (pietoid e) ≡ g ∘ pr₁ (idtopie (pietoid e))
+    q : g ∘ Idtofun (pietoid e) ≡ g ∘ pr₁ (idtopie (pietoid e))
     q = ap (λ h → g ∘ h) (φ X X' (pr₁ (pr₂ e)))
     r : g ∘ pr₁ (idtopie (pietoid e)) ≡ g ∘ pr₁ e
     r = ap (λ h → g ∘ h) (ap pr₁ (idtopie-pietoid e))
@@ -186,6 +186,5 @@ is-equiv-isPIE-UA {U} φ X = γ
     p = pietofun-factors-through-idtofun (f , φ f ise)
   γ : (Y : U ̇) → is-equiv (idtoeq X Y)
   γ = nat-retraction-is-equiv X (idtoeq X) (λ Y → (s Y) , η)
-
 
 \end{code}

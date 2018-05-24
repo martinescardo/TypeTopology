@@ -769,10 +769,10 @@ apartness on it.
     g (x' , y' , a , p , q) = ♯s _ _ (j (♯s _ _ (i a)))
      where
       i : x' ♯ y' → x ♯ y'
-      i = idtofun' _ _ (ap pr₁ (happly p y'))
+      i = idtofun _ _ (ap pr₁ (happly p y'))
        
       j : y' ♯ x → y ♯ x
-      j = idtofun' _ _ (ap pr₁ (happly q x))
+      j = idtofun _ _ (ap pr₁ (happly q x))
 
 \end{code}
 

@@ -65,7 +65,7 @@ no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
        l = pe isp 𝟘-is-prop u 𝟘-elim
 
 𝟘-is-not-𝟙 : 𝟘 ≢ 𝟙
-𝟘-is-not-𝟙 p = idtofun' 𝟙 𝟘 (p ⁻¹) *
+𝟘-is-not-𝟙 p = idtofun 𝟙 𝟘 (p ⁻¹) *
 
 ⊥≠⊤ : ⊥ ≢ ⊤
 ⊥≠⊤ p = 𝟘-is-not-𝟙 (ap pr₁ p)

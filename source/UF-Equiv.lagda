@@ -64,8 +64,8 @@ eqtoeq-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y)
                  → idtoeq X Y p ≡ idtoeq-traditional X Y p
 eqtoeq-agreement {U} X _ refl = refl
 
-idtofun' : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
-idtofun' X Y p = eqtofun X Y (idtoeq X Y p)
+idtofun : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
+idtofun X Y p = eqtofun X Y (idtoeq X Y p)
 
 equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
 equiv-closed-under-∼ {U} {V} {X} {Y} f g (hass , hasr) h = (has-section-closed-under-∼ f g hass h) ,

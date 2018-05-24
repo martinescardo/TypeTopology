@@ -303,6 +303,7 @@ import UF-Historic
 import UF-IdEmbedding
 import UF-ImageAndSurjection
 import UF-InjectiveTypes
+import UF-Knapp-FunExt
 import UF-KrausLemma
 import UF-LeftCancellable
 import UF-PropIndexedPiSigma
