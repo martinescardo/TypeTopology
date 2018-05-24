@@ -354,7 +354,7 @@ module AC-gives-EM
  ac-gives-em ac P isp = g (lemma ac (P , isp))
   where
    g : decidable (⊤ ≡ (P , isp)) → decidable P
-   g (inl r) = inl (idtofun 𝟙 P (ap pr₁ r) *)
+   g (inl r) = inl (idtofun' 𝟙 P (ap pr₁ r) *)
    g (inr u) = inr (contrapositive (λ p → PropExt (fe U₀ U₀) pe (λ _ → p) (λ _ → *)) u)
 
 \end{code}

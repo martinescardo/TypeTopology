@@ -671,11 +671,11 @@ We need this elsewhere:
 idtoeq-bis : ∀ {U} (X : U ̇) → Nat (Id X) (Eq X)
 idtoeq-bis X = yoneda-nat X (Eq X) (ideq X)
 
-idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
-idtofun' X = yoneda-nat X (λ Y → X → Y) id
+idtofun'' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
+idtofun'' X = yoneda-nat X (λ Y → X → Y) id
 
-idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ idtofun' X
-idtofun-agree X = yoneda-elem-lc (idtofun X) (idtofun' X) refl
+idtofun-agree : ∀ {U} (X : U ̇) → idtofun' X ≈ idtofun'' X
+idtofun-agree X = yoneda-elem-lc (idtofun' X) (idtofun'' X) refl
 
 \end{code}
 

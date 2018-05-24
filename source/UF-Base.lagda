@@ -6,8 +6,8 @@ module UF-Base where
 
 open import SpartanMLTT public
 
-identification-to-fun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
-identification-to-fun = transport id
+idtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
+idtofun = transport id
 
 forth-and-back-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
                          → (p : x ≡ y) → back-transport A p (transport A p a) ≡ a
@@ -18,7 +18,7 @@ back-and-forth-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : 
 back-and-forth-transport refl = refl
 
 back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
-                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ identification-to-fun p
+                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ idtofun p
 back-transport-is-pre-comp refl g = refl
 
 trans-sym : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ⁻¹ ∙ r ≡ refl

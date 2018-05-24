@@ -29,7 +29,7 @@ eqtoid-idtoeq : ∀ {U} (ua : is-univalent U)
 eqtoid-idtoeq ua X Y = pr₂(pr₂(ua X Y))
 
 idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
-idtoeq' X Y p = (identification-to-fun p , transport-is-equiv p)
+idtoeq' X Y p = (idtofun p , transport-is-equiv p)
 
 idtoEqs-agree : ∀ {U} (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X _ refl = refl
@@ -38,7 +38,7 @@ idtoeq'-eqtoid : ∀ {U} (ua : is-univalent U)
                → (X Y : U ̇) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
 idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
 
-idtofun-is-equiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → is-equiv(idtofun X Y p)
+idtofun-is-equiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → is-equiv(idtofun' X Y p)
 idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
 
 is-univalent-≃ : ∀ {U} → is-univalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
@@ -49,7 +49,7 @@ back-transport-is-pre-comp' : ∀ {U} (ua : is-univalent U)
                            → back-transport (λ Z → Z → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e 
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
-  q : g ∘ identification-to-fun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
+  q : g ∘ idtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
   q = ap (λ h → g ∘ h) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
 
 preComp-is-equiv : ∀ {U} (ua : is-univalent U)

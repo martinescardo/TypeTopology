@@ -80,7 +80,7 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     go = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
 K-idtofun-lc : ∀ {U} → K (U ′) 
-            → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
+            → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun' (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
 left-cancellable-maps-into-sets-are-embeddings : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
