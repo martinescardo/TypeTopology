@@ -124,8 +124,8 @@ is-prop-is-equiv' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
 is-prop-is-equiv' fe fe' fe'' fe''' f = ×-prop-criterion (hasr-is-prop-hass' fe fe' f , hass-is-prop-hasr' fe'' fe''' f)
 
 is-prop-is-equiv'' : ∀ {U} {X Y : U ̇}
-                → funext U U
-                → (f : X → Y) → is-prop(is-equiv f)
+                   → funext U U
+                   → (f : X → Y) → is-prop(is-equiv f)
 is-prop-is-equiv'' fe = is-prop-is-equiv' fe fe fe fe
 
 \end{code}
@@ -134,10 +134,10 @@ The so-called type-theoretic axiom of choice:
 
 \begin{code}
 
-tt-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
           → (Π \(x : X) → Σ \(y : Y x) → A x y)
           → Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x)
-tt-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
+TT-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
 
 \end{code}
 
@@ -145,10 +145,10 @@ Its inverse:
 
 \begin{code}
 
-tt-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
            → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
            → Π \(x : X) → Σ \(y : Y x) → A x y
-tt-unchoice (f , g) x = (f x) , (g x)
+TT-unchoice (f , g) x = (f x) , (g x)
 
 \end{code}
 
@@ -157,33 +157,33 @@ function extensionality.
 
 \begin{code}
 
-tt-choice-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                   → (t : Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-                  → tt-choice (tt-unchoice {U} {V} {W} {X} {Y} {A} t) ≡ t
-tt-choice-unchoice t = refl
+                  → TT-choice (TT-unchoice {U} {V} {W} {X} {Y} {A} t) ≡ t
+TT-choice-unchoice t = refl
 
-tt-choice-has-section : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-                    → has-section (tt-choice {U} {V} {W} {X} {Y} {A})
-tt-choice-has-section {U} {V} {W} {X} {Y} {A} = tt-unchoice ,
-                                                tt-choice-unchoice {U} {V} {W} {X} {Y} {A}
+TT-choice-has-section : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+                    → has-section (TT-choice {U} {V} {W} {X} {Y} {A})
+TT-choice-has-section {U} {V} {W} {X} {Y} {A} = TT-unchoice ,
+                                                TT-choice-unchoice {U} {V} {W} {X} {Y} {A}
 
-tt-unchoice-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
      → funext U (V ⊔ W)
      → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
-     → tt-unchoice (tt-choice φ) ≡ φ
-tt-unchoice-choice fe φ = dfunext fe (λ x → refl)
+     → TT-unchoice (TT-choice φ) ≡ φ
+TT-unchoice-choice fe φ = dfunext fe (λ x → refl)
 
-tt-choice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                    → funext U (V ⊔ W)
-                   → is-equiv tt-choice
-tt-choice-is-equiv {U} {V} {W} {X} {Y} {A} fe = tt-choice-has-section {U} {V} {W} {X} {Y} {A} ,
-                                                (tt-unchoice , tt-unchoice-choice fe)
+                   → is-equiv TT-choice
+TT-choice-is-equiv {U} {V} {W} {X} {Y} {A} fe = TT-choice-has-section {U} {V} {W} {X} {Y} {A} ,
+                                                (TT-unchoice , TT-unchoice-choice fe)
 
-tt-unchoice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                     → funext U (V ⊔ W)
-                    → is-equiv tt-unchoice
-tt-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
-   (tt-choice , tt-unchoice-choice {U} {V} {W} {X} {Y} {A} fe) ,
-   (tt-choice , tt-choice-unchoice {U} {V} {W} {X} {Y} {A}) 
+                    → is-equiv TT-unchoice
+TT-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
+   (TT-choice , TT-unchoice-choice {U} {V} {W} {X} {Y} {A} fe) ,
+   (TT-choice , TT-choice-unchoice {U} {V} {W} {X} {Y} {A}) 
                                         
 \end{code}

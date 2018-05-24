@@ -404,9 +404,9 @@ funext-via-singletons {U} {V} φ {X} {Y} f = γ
   A : Π Y → U ⊔ V ̇
   A g = (x : X) → f x ≡ g x
   r : (Π \(x : X) → Σ \(y : Y x) → f x ≡ y) → Σ A
-  r = tt-choice
+  r = TT-choice
   r-has-section : has-section r
-  r-has-section = tt-choice-has-section
+  r-has-section = TT-choice-has-section
   d : is-singleton (Σ A)
   d = retract-of-singleton r r-has-section c
   η : Nat (Id f) A

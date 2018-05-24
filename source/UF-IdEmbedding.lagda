@@ -128,7 +128,7 @@ eqtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
   q : yoneda-nat f is-equiv jef g p ≡ jeg
-  q = is-equiv-is-prop fe g _ _
+  q = is-prop-is-equiv fe g _ _
   go : f , jef ≡ g , jeg
   go = to-Σ-Id (p , q)
   
