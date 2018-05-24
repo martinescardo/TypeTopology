@@ -167,8 +167,11 @@ is-equiv-isPIE-UA {U} φ X = γ
   k = knapps-funext-Criterion {U} H D
   s : (Y : U ̇) → X ≃ Y → X ≡ Y
   s Y (f , ise) = pietoid (f , (φ f ise))
+  --Remove this once Martin fixes the definition globally
+  isp : ∀ {A B : U ̇} (f : A → B) → is-prop (is-equiv f)
+  isp = {!!}
   rs : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
-  rs Y (f , ise) = to-Σ-≡'' ({!!} , is-prop-is-equiv {!!} {!!} {!!} f _ _)
+  rs Y (f , ise) = to-Σ-≡'' ({!!} , isp f _ _)
   γ : (Y : U ̇) → is-equiv (idtoeq X Y)
   γ = nat-retraction-is-equiv X (idtoeq X) (λ Y → (s Y) , rs Y)
 
