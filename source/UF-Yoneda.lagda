@@ -674,8 +674,8 @@ idtoeq-bis X = yoneda-nat X (Eq X) (ideq X)
 Idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 Idtofun' X = yoneda-nat X (λ Y → X → Y) id
 
-idtofun-agree : ∀ {U} (X : U ̇) → idtofun X ≈ Idtofun' X
-idtofun-agree X = yoneda-elem-lc (idtofun X) (Idtofun' X) refl
+idtofun-agree' : ∀ {U} (X : U ̇) → idtofun X ≈ Idtofun' X
+idtofun-agree' X = yoneda-elem-lc (idtofun X) (Idtofun' X) refl
 
 \end{code}
 

@@ -13,6 +13,7 @@ module UF-Knapp-FunExt where
 
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Univalence
@@ -186,5 +187,49 @@ is-equiv-isPIE-UA {U} φ X = γ
     p = pietofun-factors-through-idtofun (f , φ f ise)
   γ : (Y : U ̇) → is-equiv (idtoeq X Y)
   γ = nat-retraction-is-equiv X (idtoeq X) (λ Y → (s Y) , η)
+
+\end{code}
+
+We get the following characterization of univalence, where, as we can
+see from the proof, we can replace qinv by is-equiv:
+
+\begin{code}
+
+UA-characterization : ∀ {U}
+                   → ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+                   ⇔ is-univalent U 
+UA-characterization {U} = (forth , back)
+ where
+  forth : ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent U
+  forth γ  = is-equiv-isPIE-UA φ
+   where
+    φ : {X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f
+    φ {X} {Y} f ise = p , r
+     where
+      p : X ≡ Y
+      p = pr₁ (γ f (is-equiv-qinv f ise))
+      q : transport id p ≡ f
+      q = pr₂ (γ f (is-equiv-qinv f ise))
+      r : idtofun X Y p ≡ f
+      r = idtofun-agreement X Y p ∙ q
+  back : is-univalent U → ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+  back ua {X} {Y} f q = p , s
+   where
+    σ : Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
+    σ = UA-is-equiv-isPIE ua f (qinv-is-equiv f q)
+    p : X ≡ Y
+    p = pr₁ σ
+    r : idtofun X Y p ≡ f
+    r = pr₂ σ
+    s : Idtofun p ≡ f
+    s = (idtofun-agreement X Y p)⁻¹ ∙ r
+
+\end{code}
+
+TODO: Show that for any U, the type
+
+  ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+
+is a proposition. Or give a counter-example or counter-model.
 
 \end{code}
