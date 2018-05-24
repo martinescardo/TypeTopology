@@ -14,6 +14,7 @@ module UF-Knapp-FunExt where
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
+open import UF-Equiv-FunExt
 open import UF-Univalence
 open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
@@ -167,8 +168,11 @@ is-equiv-isPIE-UA {U} φ X = γ
   k = knapps-funext-Criterion {U} H D
   s : (Y : U ̇) → X ≃ Y → X ≡ Y
   s Y (f , ise) = pietoid (f , (φ f ise))
+  --Remove this once Martin fixes the definition globally
+  isp : ∀ {A B : U ̇} (f : A → B) → is-prop (is-equiv f)
+  isp = is-prop-is-equiv'' k
   rs : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
-  rs Y (f , ise) = to-Σ-≡'' ({!!} , is-prop-is-equiv {!!} {!!} {!!} f _ _)
+  rs Y (f , ise) = to-Σ-≡'' ({!!} , isp f _ _)
   γ : (Y : U ̇) → is-equiv (idtoeq X Y)
   γ = nat-retraction-is-equiv X (idtoeq X) (λ Y → (s Y) , rs Y)
 
