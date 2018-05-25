@@ -3,13 +3,17 @@ From Cory Knapp's PhD thesis (Chapter 2.4).
 Transcribed to Agda by Martin Escardo and Cory 9th April and 24th May
 2018.
 
-Function extensionality follows from a generalization of univalence.
+Function extensionality follows from a generalization of
+univalence. Using this, we formulate a condition equivalent to
+the univalence of the universe U, namely
+
+ (X Y : U ̇) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-Knapp-FunExt where
+module UF-Knapp-UA where
 
 open import UF-Base
 open import UF-Subsingletons
