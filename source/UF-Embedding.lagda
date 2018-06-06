@@ -128,3 +128,10 @@ disjoint-cases-embedding {U} {V} {W} {X} {Y} {A} f g ef eg d = go
        r = ap h p
 
 \end{code}
+
+TODO.
+  (1) f : X → Y is an embedding iff fiber f (f x) is a singleton for every x : X.
+  (2) f : X → Y is an embedding iff its corestriction to its image is an equivalence.
+
+This can be deduced directly from Yoneda.
+

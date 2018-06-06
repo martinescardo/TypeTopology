@@ -148,7 +148,7 @@ knapps-funext-Criterion H D = naive-funext-gives-funext (knapps-funext-criterion
 
 \end{code}
 
-Clearly, if univalence holds, then every equivalence is path induced@
+Clearly, if univalence holds, then every equivalence is path induced:
 
 \begin{code}
 

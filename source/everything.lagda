@@ -299,6 +299,7 @@ import UF-Equiv-FunExt
 import UF-Equiv
 import UF-FunExt
 import UF-FunExt-from-Naive-FunExt
+import UF-FunExt-from-Naive-FunExt-alternate
 import UF-Historic
 import UF-IdEmbedding
 import UF-ImageAndSurjection

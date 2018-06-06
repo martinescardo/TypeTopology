@@ -369,8 +369,8 @@ pr₁-vv-equiv {U} {V} X Y iss x = g
   g = c , f
 
 pr₁-vv-equiv-converse : ∀ {U V} {X : U ̇} {A : X → V ̇}
-                          → is-vv-equiv (pr₁ {U} {V} {X} {A})
-                          → ((x : X) → is-singleton(A x))
+                     → is-vv-equiv (pr₁ {U} {V} {X} {A})
+                     → ((x : X) → is-singleton(A x))
 pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton r (s , rs) (isv x)
   where
     f : Σ A → X

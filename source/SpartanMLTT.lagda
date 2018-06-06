@@ -25,6 +25,8 @@ The module Universes allows us to write e.g. the following instead of
 Π : ∀ {U V} {X : U ̇} (Y : X → V ̇) → U ⊔ V ̇
 Π Y = (x : _) → Y x
  
+syntax Π {A} (λ x → B) = Π（ x ∶ A ）, B
+
 \end{code}
 
 Identity and dependent function composition:
@@ -79,6 +81,8 @@ record Σ {U V : Universe} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
    pr₂ : Y pr₁
 
 open Σ public
+
+syntax Σ {A} (λ x → B) = Σ（ x ∶ A ）, B
 
 Σ-elim : ∀ {U V} {X : U ̇} {Y : X → V ̇} {A : Σ Y → U ⊔ V ̇}
        → ((x : X) (y : Y x) → A (x , y)) → Π A
@@ -238,11 +242,8 @@ this):
 
 \begin{code}
 
-_⇒_ : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → (X → V ⊔ W ̇)
-A ⇒ B = λ x → A x → B x
-
 Nat : ∀ {U V W} {X : U ̇} → (X → V ̇) → (X → W ̇) → U ⊔ V ⊔ W ̇
-Nat A B = Π(A ⇒ B)
+Nat A B = Π \x → A x → B x
 
 _∼_ : ∀ {U V} {X : U ̇} {A : X → V ̇} → Π A → Π A → U ⊔ V ̇
 f ∼ g = ∀ x → f x ≡ g x
