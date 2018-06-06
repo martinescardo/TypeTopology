@@ -6,10 +6,13 @@ This is an alternative version of UF-FunExt-from-Naive-FunExt.lagda
 here we split the proof that naive function extensionality into two parts:
 
 1. If post-composition with an equivalence is again an equivalence, then
-  function extensionality holds;
-2. If naive-function extensionality holds, then the antecedent of the above holds.
+   function extensionality holds;
+
+2. If naive-function extensionality holds, then the antecedent of the
+   above holds.
 
 Point 2. is already proved in UF-Equiv-Funext.lagda
+
 \begin{code}
 
 module UF-FunExt-from-Naive-FunExt-alternate where
@@ -22,11 +25,11 @@ open import UF-Yoneda
 open import UF-Subsingletons
 open import UF-Subsingletons-Retracts
 
-equiv-post-comp-closure : (U V W : Universe)  → (U ′) ⊔ ((V ′) ⊔ (W ′)) ̇ 
-equiv-post-comp-closure U V W = {X : U ̇} {Y : V ̇} {A : W ̇}
-                           → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
+equiv-post-comp-closure : ∀ U V W → (U ⊔ V ⊔ W) ′ ̇ 
+equiv-post-comp-closure U V W = {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+                              → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 
-equiv-post-gives-funext' : ∀ {U} {V} → equiv-post-comp-closure (U ⊔ V) U U → funext U V
+equiv-post-gives-funext' : ∀ {U V} → equiv-post-comp-closure (U ⊔ V) U U → funext U V
 equiv-post-gives-funext' {U} {V} eqc = funext-via-singletons γ
   where
   γ : (X : U ̇) (A : X → V ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
@@ -53,6 +56,6 @@ naive-funext-gives-funext' : ∀ {U} {V} → naive-funext U (U ⊔ V) → naive-
 naive-funext-gives-funext' {U} {V} nfe nfe' = equiv-post-gives-funext' (equiv-post nfe nfe')
 
 naive-funext-gives-funext : ∀ {U} → naive-funext U U → funext U U
-naive-funext-gives-funext fe = equiv-post-gives-funext' (equiv-post fe fe)
+naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 
 \end{code}
