@@ -17,7 +17,7 @@ open import SpartanMLTT
 open import InfSearchable
 open import GenericConvergentSequence
 
-ℕ∞-is-inf-searchable : inf-searchable ℕ∞ _≼_
+ℕ∞-is-inf-searchable : inf-searchable _≼_
 ℕ∞-is-inf-searchable p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where 
   α : ℕ → 𝟚
