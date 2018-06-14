@@ -21,7 +21,7 @@ bin-rel : ∀ {U} → U ̇ → U ′ ̇
 bin-rel {U} X = X → X → U ̇
 
 lex-prod : ∀ {U V} {X : U ̇} {Y : X → V ̇} →  bin-rel X → ({x : X} → bin-rel(Y x)) → bin-rel(Σ Y)
-lex-prod R S (x , y) (x' , y') = R x x' × ((r : x ≡ x') → S (transport _ r y) y')
+lex-prod _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ≡ x') → transport _ r y ≼ y')
 
 \end{code}
 
@@ -34,7 +34,7 @@ However, for a strict order, it makes sense to define
 \begin{code}
 
 slex-prod : ∀ {U V} {X : U ̇} {Y : X → V ̇} →  bin-rel X → ({x : X} → bin-rel(Y x)) → bin-rel(Σ Y)
-slex-prod R S (x , y) (x' , y') = R x x' + Σ \(r : x ≡ x') → S (transport _ r y) y'
+slex-prod _<_ _≺_ (x , y) (x' , y') = (x < x') + Σ \(r : x ≡ x') → transport _ r y ≺ y'
 
 \end{code}
 
@@ -55,7 +55,7 @@ follows.
 
 \begin{code}
 
-module _ (U V : Universe)
+module correcteness (U V : Universe)
          (X : U ̇)
          (Y : X → V ̇)
          (_<_ : X → X → U ̇)
