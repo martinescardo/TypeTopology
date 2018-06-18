@@ -95,36 +95,42 @@ Done sometime in 2013 in another developement, imported 18th June
 
 open import Ordinals
 
-lex-prod-Well : ∀ {U V} {X : U ̇} {Y : X → V ̇}
-             → (_<_ : bin-rel X)
-             → (_<'_ : {x : X} → bin-rel(Y x)) 
-             → Well-founded _<_
-             → ({x : X} → Well-founded(_<'_ {x}))
-             → Well-founded(slex-prod _<_ _<'_)
-lex-prod-Well {U} {V} {X} {Y} _<_ _<'_ w w' = lemma
- where
-  lemma' : (P : Σ Y → Set) →
-      ((z : Σ Y) → ((t : Σ Y) → slex-prod _<_ _<'_ t z → P t) → P z) →
-      (x : X) (y : Y x) → P(x , y)
-  lemma' P step = w Q claim
-   where
-    Q : X → V ̇
-    Q x = (y : Y x) → P(x , y)
-    claim : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
-    claim x step' = w' (λ y → P(x , y)) (λ y f → step (x , y) (φ y f)) 
-     where
-      φ : (y : Y x) → ((y' : Y x) → y' <' y → P (x , y')) → (z' : Σ Y) → slex-prod _<_ _<'_ z' (x , y) → P z'
-      φ y f (x' , y') (inl l) = step' x' l y'
-      φ y f (x' , y') (inr (r , m)) = transport P (fact ⁻¹) almost
-       where
-        almost : P(x , transport Y r y')
-        almost = f (transport Y r y') m
-        fact : (x' , y') ≡ (x , transport Y r y') 
-        fact = to-Σ-≡ x' x y' (transport Y r y') r refl
+module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} → bin-rel(Y x)) where
 
-  lemma : (P : Σ Y → U₀ ̇) →
-      ((z : Σ Y) → ((z' : Σ Y) → slex-prod _<_ _<'_ z' z → P z') → P z) →
-      (z : Σ Y) → P z
-  lemma P step (x , y) = lemma' P step x y
+ _⊏_ : bin-rel (Σ Y)
+ _⊏_ = slex-prod _<_ _≺_
+
+ lex-prod-wf : well-founded _<_
+             → ({x : X} → Well-founded (_≺_ {x}))
+             → well-founded _⊏_
+ lex-prod-wf w w' (x , y) = φ x y
+  where
+   P : Σ Y → U ⊔ V ̇
+   P = is-accessible _⊏_
+   γ : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
+   γ x step = w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f)) 
+    where
+     ψ : (y : Y x) → ((y' : Y x) → y' ≺ y → P (x , y')) → (z' : Σ Y) → z' ⊏ (x , y) → P z'
+     ψ y f (x' , y') (inl l) = step x' l y'
+     ψ y f (x' , y') (inr (r , m)) = back-transport P p α
+      where
+       α : P(x , transport Y r y')
+       α = f (transport Y r y') m
+       p : (x' , y') ≡ (x , transport Y r y') 
+       p = to-Σ-≡ x' x y' (transport Y r y') r refl
+   φ : (x : X) (y : Y x) → P(x , y)
+   φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
+
+ lex-prod-trans : transitive _<_
+                → ({x : X} → transitive (_≺_ {x}))
+                → transitive _⊏_
+ lex-prod-trans t t' {a , b} {x , y} {u , v} = f
+  where
+   f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
+   f (inl l) (inl m) = inl (t l m)
+   f (inl l) (inr (q , m)) = inl (transport (λ x → a < x) q l)
+   f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
+   f (inr (r , l)) (inr (refl , m)) = inr (r , (t' l m))
+
 
 \end{code}
