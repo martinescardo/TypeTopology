@@ -16,6 +16,7 @@ even on (Σ \(x : X) → Y x) if Y and S depend on X.
 module LexicographicOrder where
 
 open import SpartanMLTT hiding (_≤_)
+open import UF-Base hiding (_≤_)
 
 bin-rel : ∀ {U} → U ̇ → U ′ ̇
 bin-rel {U} X = X → X → U ̇
@@ -25,7 +26,7 @@ lex-prod _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ≡ x') → trans
 
 \end{code}
 
-Added 14th June 2018:
+Added 14th June 2018, from 2013 in another development.
 
 However, for a strict order, it makes sense to define
 
@@ -41,9 +42,9 @@ slex-prod _<_ _≺_ (x , y) (x' , y') = (x < x') + Σ \(r : x ≡ x') → transp
 
 Usually in such a context, a ≤ b is defined to be ¬(b < a).
 
-The negation of the above is, then,
+The negation of the strict lexicographic product is, then,
 
-   ¬(x ≤ x') ∧ ¬(x ≡ x' ∧ y < y') by de Morgan
+ ¬(x < x') ∧ ¬(x ≡ x' ∧ y < y') by de Morgan
 ⇔ x ≤ x' ∧ ¬(x ≡ x' ∧ y < y') by definition of ≤
 ⇔ x' ≤ x ∧ ((x ≡ x' → ¬(y < y')) by (un)currying
 ⇔ x' ≤ x ∧ ((x ≡ x' → y' ≤ y) by definition of ≤
@@ -55,7 +56,7 @@ follows.
 
 \begin{code}
 
-module correcteness (U V : Universe)
+module commutation (U V : Universe)
          (X : U ̇)
          (Y : X → V ̇)
          (_<_ : X → X → U ̇)
@@ -80,9 +81,50 @@ module correcteness (U V : Universe)
     h : (r : x' ≡ x) → not(y ≺ transport Y r y')
     h refl l = f (inr (refl , l))
   back : (x x' : X) (y : Y x) (y' : Y x') → (x' , y') ⊑ (x , y) → not((x , y) ⊏ (x' , y'))
-  back x x' y y' (f , g) (inl l) = f l
-  back x _  y y' (f , g) (inr (refl , l)) = g refl l
+  back x x' y y' (g , h) (inl l) = g l
+  back x _  y y' (g , h) (inr (refl , l)) = h refl l
 
 \end{code}
 
 TODO. Generalize the universe levels in various places.
+
+Done sometime in 2013 in another developement, imported 18th June
+2018.
+
+\begin{code}
+
+open import Ordinals
+
+lex-prod-Well : ∀ {U V} {X : U ̇} {Y : X → V ̇}
+             → (_<_ : bin-rel X)
+             → (_<'_ : {x : X} → bin-rel(Y x)) 
+             → Well-founded _<_
+             → ({x : X} → Well-founded(_<'_ {x}))
+             → Well-founded(slex-prod _<_ _<'_)
+lex-prod-Well {U} {V} {X} {Y} _<_ _<'_ w w' = lemma
+ where
+  lemma' : (P : Σ Y → Set) →
+      ((z : Σ Y) → ((t : Σ Y) → slex-prod _<_ _<'_ t z → P t) → P z) →
+      (x : X) (y : Y x) → P(x , y)
+  lemma' P step = w Q claim
+   where
+    Q : X → V ̇
+    Q x = (y : Y x) → P(x , y)
+    claim : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
+    claim x step' = w' (λ y → P(x , y)) (λ y f → step (x , y) (φ y f)) 
+     where
+      φ : (y : Y x) → ((y' : Y x) → y' <' y → P (x , y')) → (z' : Σ Y) → slex-prod _<_ _<'_ z' (x , y) → P z'
+      φ y f (x' , y') (inl l) = step' x' l y'
+      φ y f (x' , y') (inr (r , m)) = transport P (fact ⁻¹) almost
+       where
+        almost : P(x , transport Y r y')
+        almost = f (transport Y r y') m
+        fact : (x' , y') ≡ (x , transport Y r y') 
+        fact = to-Σ-≡ x' x y' (transport Y r y') r refl
+
+  lemma : (P : Σ Y → U₀ ̇) →
+      ((z : Σ Y) → ((z' : Σ Y) → slex-prod _<_ _<'_ z' z → P z') → P z) →
+      (z : Σ Y) → P z
+  lemma P step (x , y) = lemma' P step x y
+
+\end{code}

@@ -24,3 +24,5 @@ inf-searchable : U ̇
 inf-searchable = (p : X → 𝟚) → Σ \(x : X) → conditional-root p x × roots-infimum p x
 
 \end{code}
+
+

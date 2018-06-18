@@ -277,6 +277,7 @@ import NaturalsAddition
 import NaturalsOrder
 import NonCollapsibleFamily
 import OmniscientTypes
+import Ordinals
 import OrdinalCodes
 import PlusOneLC
 import PropTychonoff
