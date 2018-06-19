@@ -138,5 +138,6 @@ module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} �
                 → extensional _⊏_
  lex-prod-ex = {!!}
 -}
+=======
 
 \end{code}

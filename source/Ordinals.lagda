@@ -57,7 +57,6 @@ transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
 
 transitive : U ⊔ V ̇
 transitive = {x y z : X} → x < y → y < z → x < z
-
 _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
