@@ -147,6 +147,15 @@ extensional-is-prop fe isp e e' =
                       (e x y)
                       (e' x y)))
 
+transitive-is-prop : (∀ U V → funext U V) → prop-valued → is-prop transitive
+transitive-is-prop fe isp =
+ is-prop-exponential-ideal (fe U (U ⊔ V))
+   (λ x → is-prop-exponential-ideal (fe U (U ⊔ V))
+            (λ y → is-prop-exponential-ideal (fe U V)
+                     (λ z → is-prop-exponential-ideal (fe V V)
+                              (λ l → is-prop-exponential-ideal (fe V V)
+                                       (λ m → isp {x} {z})))))
+
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
 
