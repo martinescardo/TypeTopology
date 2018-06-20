@@ -67,6 +67,7 @@ transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
 transitive : U ⊔ V ̇
 transitive = (x y z : X) → x < y → y < z → x < z
 
+-- Or consider the truncated version of the following:
 co-transitive : U ⊔ V ̇
 co-transitive = {x y z : X} → x < y → x < z + x < y
 
