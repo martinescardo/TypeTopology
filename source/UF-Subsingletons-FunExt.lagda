@@ -61,25 +61,25 @@ of is-set.
 
 \begin{code}
 
-is-set' : ∀ {U} → U ̇ → U ̇
-is-set' X = (x y : X) → is-prop(x ≡ y)
+is-prop-is-set : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set X)
+is-prop-is-set {U} {X} fe = h
+ where
+  is-set' : ∀ {U} → U ̇ → U ̇
+  is-set' X = (x y : X) → is-prop(x ≡ y)
 
-is-set'-is-set : ∀ {U} {X : U ̇} → is-set' X → is-set X
-is-set'-is-set s {x} {y} = s x y
-
-is-set-is-set' : ∀ {U} {X : U ̇} → is-set X → is-set' X
-is-set-is-set' s x y = s {x} {y}
-
-is-prop-is-set' : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set' X)
-is-prop-is-set' fe = is-prop-exponential-ideal fe
+  is-prop-is-set' : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set' X)
+  is-prop-is-set' fe = is-prop-exponential-ideal fe
                        (λ x → is-prop-exponential-ideal fe
                        (λ y → is-prop-is-prop fe))
 
-is-prop-is-set : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set X)
-is-prop-is-set {U} {X} fe = g
- where
-  g : is-prop (is-set X)
-  g = subtype-of-prop-is-prop is-set-is-set' (ap is-set'-is-set) (is-prop-is-set' fe)
+  f : ∀ {U} {X : U ̇} → is-set' X → is-set X
+  f s {x} {y} = s x y
+
+  g : ∀ {U} {X : U ̇} → is-set X → is-set' X
+  g s x y = s {x} {y}
+
+  h : is-prop (is-set X)
+  h = subtype-of-prop-is-prop g (ap f) (is-prop-is-set' fe)
 
 \end{code}
 

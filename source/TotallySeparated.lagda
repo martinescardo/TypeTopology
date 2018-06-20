@@ -601,11 +601,11 @@ apartness relation _♯₂ is tight:
     f (_♯_ , a , t) = tight-separated _♯_ a t
 
  tight-set' : ∀ {U} {X : U ̇} → funext U U → funext U U₀
-           → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set' X
+           → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
  tight-set' {U} {X} fe fe₀ = ptrec (is-prop-is-set' fe) f
    where
-    f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set' X
-    f (_♯_ , a , t) = is-set-is-set' (tight-set fe₀ _♯_ a t)
+    f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
+    f (_♯_ , a , t) = is-set-is-set (tight-set fe₀ _♯_ a t)
 
 \end{code}
 
