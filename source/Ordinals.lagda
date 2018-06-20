@@ -67,16 +67,12 @@ transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
 is-transitive : U ⊔ V ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
--- Or consider the truncated version of the following:
-co-transitive : U ⊔ V ̇
-co-transitive = {x y z : X} → x < y → x < z + x < y
-
 _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
 ≼-prop-valued-order : (∀ U V → funext U V) → prop-valued-order → {x y : X} → is-prop(x ≼ y)
 ≼-prop-valued-order fe isp = is-prop-exponential-ideal (fe U V)
-                         (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp))
+                               (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp))
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -185,7 +181,12 @@ non-strict-trans = transfinite-induction' (λ z → (x y : X) → x < y → y < 
 
 When do we get x ≤ y → x ≼ y (say for ordinals)? When do we get cotransitivity?
 
+Or consider the truncated version of the following:
+
 \begin{code}
+
+cotransitive : U ⊔ V ̇
+cotransitive = {x y z : X} → x < y → x < z + x < y
 
 no-minimal-is-empty : is-well-founded → ∀ {W} (P : X → W ̇)
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
@@ -224,3 +225,5 @@ ordinal-ordinal₂ : is-ordinal → is-ordinal₂
 ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w , e , t)
 
 \end{code}
+
+TODO. is-ordinal₂ is a proposition, too.
