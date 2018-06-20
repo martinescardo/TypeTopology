@@ -222,7 +222,7 @@ is-ordinal₂ : U ⊔ V ̇
 is-ordinal₂ = Well-founded₂ × is-extensional × is-transitive
 
 ordinal-ordinal₂ : is-ordinal → is-ordinal₂
-ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w , e , t)
+ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w) , e , t
 
 \end{code}
 
