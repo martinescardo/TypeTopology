@@ -55,9 +55,11 @@ is-set-exponential-ideal {U} {V} fe {X} {A} isa {f} {g} = b
 
 \end{code}
 
-The following code is used to make Agda work with the constructions we
-have given. We make the implicit arguments explicit in the definition
-of is-set.
+The meat of the following proof is is-prop-is-set'. The rest of the
+code is to deal with implicit arguments in conjunction with function
+extensionality. The solution is not ideal. Ideally, functions with
+implicit parameters should be the same as their versions with explicit
+parameters.
 
 \begin{code}
 
@@ -69,8 +71,8 @@ is-prop-is-set {U} {X} fe = h
 
   is-prop-is-set' : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set' X)
   is-prop-is-set' fe = is-prop-exponential-ideal fe
-                       (λ x → is-prop-exponential-ideal fe
-                       (λ y → is-prop-is-prop fe))
+                         (λ x → is-prop-exponential-ideal fe
+                         (λ y → is-prop-is-prop fe))
 
   f : ∀ {U} {X : U ̇} → is-set' X → is-set X
   f s {x} {y} = s x y
