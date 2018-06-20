@@ -122,13 +122,6 @@ is-accessible-is-prop fe fe' = accessible-induction P φ
 well-founded-is-prop : funext U (U ⊔ V) → funext V (U ⊔ V) → is-prop well-founded
 well-founded-is-prop fe fe' = is-prop-exponential-ideal fe (is-accessible-is-prop fe fe')
 
-extensionality-constant : funext U V → funext V V
-                        → prop-valued
-                        → (e : extensional) {x y : X} {l l' : x ≼ y} {m m' : y ≼ x}
-                        → e l m ≡ e l' m'
-extensionality-constant fe fe' isp e {x} {y} {l} {l'} {m} {m'} = ap₂ e (≼-prop-valued fe fe' isp l l')
-                                                                   (≼-prop-valued fe fe' isp m m')
-
 
 extensional-gives-is-set : funext U V → funext V V → prop-valued
                          → extensional → is-set X
@@ -137,8 +130,11 @@ extensional-gives-is-set fe fe' isp e = identification-collapsible-is-set (f , �
   f : {x y :  X} → x ≡ y → x ≡ y
   f {x} {y} p = e (transport (λ z → x ≼ z) p (≼-refl {x}))
                   (transport (λ z → z ≼ x) p (≼-refl {x}))
+  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e l m ≡ e l' m'
+  ec {x} {y} {l} {l'} {m} {m'} = ap₂ e (≼-prop-valued fe fe' isp l l')
+                                       (≼-prop-valued fe fe' isp m m')
   κ : {x y : X} → constant (f {x} {y})
-  κ p q = extensionality-constant fe fe' isp e
+  κ p q = ec
   
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
