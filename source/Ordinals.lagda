@@ -85,17 +85,17 @@ x ≼ y = ∀ u → u < x → u < y
 ≼-trans f g u l = g u (f u l)
 
 extensional : U ⊔ V ̇
-extensional = {x y : X} → x ≼ y → y ≼ x → x ≡ y 
+extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y 
 
 extensional' : U ⊔ V ̇
-extensional' = {x y : X} → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y 
+extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y 
 
 extensional-extensional' : extensional → extensional'
-extensional-extensional' e {x} {y} f = e {x} {y} (λ u l → pr₁ (f u) l)
-                                                 (λ u l → pr₂ (f u) l)
+extensional-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
+                                         (λ u l → pr₂ (f u) l)
 
 extensional'-extensional : extensional' → extensional
-extensional'-extensional e' {x} {y} g h = e' (λ u → (g u , h u))
+extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
 
 ordinal : U ⊔ V ̇
 ordinal = well-founded × extensional × transitive
@@ -127,13 +127,23 @@ extensional-gives-is-set : funext U V → funext V V → prop-valued
 extensional-gives-is-set fe fe' isp e = identification-collapsible-is-set (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
-  f {x} {y} p = e (transport (λ z → x ≼ z) p (≼-refl {x}))
-                  (transport (λ z → z ≼ x) p (≼-refl {x}))
-  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e l m ≡ e l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ e (≼-prop-valued fe fe' isp l l')
-                                       (≼-prop-valued fe fe' isp m m')
+  f {x} {y} p = e x y (transport (λ z → x ≼ z) p (≼-refl {x}))
+                      (transport (λ z → z ≼ x) p (≼-refl {x}))
+  ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
+  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued fe fe' isp l l')
+                                             (≼-prop-valued fe fe' isp m m')
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
+
+extensional-is-prop : (∀ U V → funext U V) → prop-valued → is-prop extensional
+extensional-is-prop fe isp e e' =
+ dfunext (fe U (U ⊔ V))
+   (λ x → dfunext (fe U (U ⊔ V))
+             (λ y → is-prop-exponential-ideal (fe (U ⊔ V) (U ⊔ V))
+                      (λ l → is-prop-exponential-ideal (fe (U ⊔ V) U)
+                               (λ m → extensional-gives-is-set (fe U V) (fe V V) isp e))
+                      (e x y)
+                      (e' x y)))
 
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)

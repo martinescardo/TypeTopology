@@ -79,7 +79,7 @@ is-prop-is-set : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set X)
 is-prop-is-set {U} {X} fe = g
  where
   g : is-prop (is-set X)
-  g = subtype-of-prop-is-prop is-set-is-set' (λ p → ap is-set'-is-set p) (is-prop-is-set' fe)
+  g = subtype-of-prop-is-prop is-set-is-set' (ap is-set'-is-set) (is-prop-is-set' fe)
 
 \end{code}
 
