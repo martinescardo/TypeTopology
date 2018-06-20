@@ -74,11 +74,9 @@ co-transitive = {x y z : X} → x < y → x < z + x < y
 _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued : funext U V → funext V V
-              → prop-valued
-              → {x y : X} → is-prop(x ≼ y)
-≼-prop-valued fe fe' isp = is-prop-exponential-ideal fe
-                              (λ u → is-prop-exponential-ideal fe' (λ l → isp))
+≼-prop-valued : (∀ U V → funext U V) → prop-valued → {x y : X} → is-prop(x ≼ y)
+≼-prop-valued fe isp = is-prop-exponential-ideal (fe U V)
+                         (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp))
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -125,16 +123,16 @@ is-accessible-is-prop fe = accessible-induction P φ
 well-founded-is-prop : (∀ U V → funext U V) → is-prop well-founded
 well-founded-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
-extensional-gives-is-set : funext U V → funext V V → prop-valued
+extensional-gives-is-set : (∀ U V → funext U V) → prop-valued
                          → extensional → is-set X
-extensional-gives-is-set fe fe' isp e = identification-collapsible-is-set (f , κ)
+extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
   f {x} {y} p = e x y (transport (λ z → x ≼ z) p (≼-refl {x}))
                       (transport (λ z → z ≼ x) p (≼-refl {x}))
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued fe fe' isp l l')
-                                             (≼-prop-valued fe fe' isp m m')
+  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued fe isp l l')
+                                             (≼-prop-valued fe isp m m')
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
@@ -144,7 +142,7 @@ extensional-is-prop fe isp e e' =
    (λ x → dfunext (fe U (U ⊔ V))
              (λ y → is-prop-exponential-ideal (fe (U ⊔ V) (U ⊔ V))
                       (λ l → is-prop-exponential-ideal (fe (U ⊔ V) U)
-                               (λ m → extensional-gives-is-set (fe U V) (fe V V) isp e))
+                               (λ m → extensional-gives-is-set fe isp e))
                       (e x y)
                       (e' x y)))
 
