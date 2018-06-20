@@ -265,6 +265,10 @@ identifications-to x = Σ \y → y ≡ x
 props-closed-× : ∀ {U} {X Y : U ̇} → is-prop X → is-prop Y → is-prop(X × Y)
 props-closed-× i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
+subtype-of-prop-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
+                       → left-cancellable m → is-prop Y → is-prop X
+subtype-of-prop-is-prop {U} {V} {X} m lc isp x x' = lc (isp (m x) (m x'))
+
 subtype-of-set-is-set : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
                      → left-cancellable m → is-set Y → is-set X
 subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f , g)
