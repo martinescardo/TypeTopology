@@ -18,8 +18,8 @@ module Ordinals {U V : Universe}
                 (_<_ : X → X → V ̇)
                 where
 
-prop-valued : U ⊔ V ̇
-prop-valued = ({x y : X} → is-prop(x < y))
+prop-valued-order : U ⊔ V ̇
+prop-valued-order = ({x y : X} → is-prop(x < y))
 
 data is-accessible : X → U ⊔ V ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
@@ -74,8 +74,8 @@ co-transitive = {x y z : X} → x < y → x < z + x < y
 _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued : (∀ U V → funext U V) → prop-valued → {x y : X} → is-prop(x ≼ y)
-≼-prop-valued fe isp = is-prop-exponential-ideal (fe U V)
+≼-prop-valued-order : (∀ U V → funext U V) → prop-valued-order → {x y : X} → is-prop(x ≼ y)
+≼-prop-valued-order fe isp = is-prop-exponential-ideal (fe U V)
                          (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp))
 
 ≼-refl : {x : X} → x ≼ x
@@ -123,7 +123,7 @@ is-accessible-is-prop fe = accessible-induction P φ
 well-founded-is-prop : (∀ U V → funext U V) → is-prop well-founded
 well-founded-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
-extensional-gives-is-set : (∀ U V → funext U V) → prop-valued
+extensional-gives-is-set : (∀ U V → funext U V) → prop-valued-order
                          → extensional → is-set X
 extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
  where
@@ -131,12 +131,12 @@ extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
   f {x} {y} p = e x y (transport (λ z → x ≼ z) p (≼-refl {x}))
                       (transport (λ z → z ≼ x) p (≼-refl {x}))
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued fe isp l l')
-                                             (≼-prop-valued fe isp m m')
+  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp l l')
+                                             (≼-prop-valued-order fe isp m m')
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
-extensional-is-prop : (∀ U V → funext U V) → prop-valued → is-prop extensional
+extensional-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop extensional
 extensional-is-prop fe isp e e' =
  dfunext (fe U (U ⊔ V))
    (λ x → dfunext (fe U (U ⊔ V))
@@ -146,7 +146,7 @@ extensional-is-prop fe isp e e' =
                       (e x y)
                       (e' x y)))
 
-transitive-is-prop : (∀ U V → funext U V) → prop-valued → is-prop transitive
+transitive-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop transitive
 transitive-is-prop fe isp =
  is-prop-exponential-ideal (fe U (U ⊔ V))
    (λ x → is-prop-exponential-ideal (fe U (U ⊔ V))
@@ -155,7 +155,7 @@ transitive-is-prop fe isp =
                               (λ l → is-prop-exponential-ideal (fe V V)
                                        (λ m → isp {x} {z})))))
 
-ordinal-is-prop : (∀ U V → funext U V) → prop-valued → is-prop ordinal
+ordinal-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop ordinal
 ordinal-is-prop fe isp = props-closed-× (well-founded-is-prop fe)
                                         (props-closed-× (extensional-is-prop fe isp)
                                                         (transitive-is-prop fe isp))
