@@ -454,6 +454,9 @@ open import Ordinals
   γ : u ≡ v
   γ = incl-lc fe (dfunext fe h)
 
+ℕ∞-ordinal₂ : funext₀ → is-ordinal₂ _≺_
+ℕ∞-ordinal₂ fe = (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
+
 \end{code}
 
 precedences:
