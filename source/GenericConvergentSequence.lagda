@@ -14,7 +14,7 @@ lemmas.)
 
 module GenericConvergentSequence where
 
-open import SpartanMLTT renaming (_≤_ to _≤₂_)
+open import SpartanMLTT renaming (_≤_ to _≤₂_) renaming (≤-anti to ≤₂-anti)
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -303,7 +303,7 @@ under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-em
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
   d n _ p = ∞-is-not-ℕ n (p ⁻¹)
 
-under𝟙-dense : funext₀ → ¬ Σ \(u : ℕ∞) → Π \(x : ℕ + 𝟙) → u ≢ under𝟙 x
+under𝟙-dense : funext₀ → ¬ Σ \(u : ℕ∞) → (x : ℕ + 𝟙) → u ≢ under𝟙 x
 under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
  where
   g : u ≢ ∞
@@ -396,6 +396,12 @@ as the need arises.
 _≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
+⊏-gives-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
+⊏-gives-≺ n u a = n , refl , a
+
+≺-gives-⊏ : (n : ℕ) (u : ℕ∞) → under n ≺ u → n ⊏ u
+≺-gives-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (under-lc r) a
+
 ∞-maximal : (n : ℕ) → under n ≺ ∞
 ∞-maximal n = n , refl , ∞-⊏-maximal n
 
@@ -435,6 +441,18 @@ open import Ordinals
   f u (n , r , l) = back-transport (λ v → p v ≡ ₁) r (a n)
   b : p ∞ ≡ ₁
   b = φ ∞ f
+
+≺-extensional : funext₀ → is-extensional _≺_
+≺-extensional fe u v l m = γ
+ where
+  f : (i : ℕ) → i ⊏ u → i ⊏ v
+  f i a = ≺-gives-⊏ i v (l (under i) (⊏-gives-≺ i u a))
+  g : (i : ℕ) → i ⊏ v → i ⊏ u
+  g i a = ≺-gives-⊏ i u (m (under i) (⊏-gives-≺ i v a))
+  h : (i : ℕ) → incl u i ≡ incl v i
+  h i = ≤₂-anti (f i) (g i)
+  γ : u ≡ v
+  γ = incl-lc fe (dfunext fe h)
 
 \end{code}
 
