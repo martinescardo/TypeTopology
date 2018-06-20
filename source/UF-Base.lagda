@@ -4,7 +4,7 @@
 
 module UF-Base where
 
-open import SpartanMLTT public
+open import SpartanMLTT
 
 Idtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
 Idtofun = transport id

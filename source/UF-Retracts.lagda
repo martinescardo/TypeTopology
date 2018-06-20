@@ -4,6 +4,9 @@
 
 module UF-Retracts where
 
+open import SpartanMLTT
+open import UF-Base
+
 open import UF-Base
 
 _isSectionOf_ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → (Y → X) → U ̇

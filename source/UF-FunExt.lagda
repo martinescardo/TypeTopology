@@ -6,6 +6,7 @@ Formulation of function extensionality
 
 module UF-FunExt where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv
 open import UF-LeftCancellable

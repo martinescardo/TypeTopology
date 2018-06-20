@@ -4,6 +4,7 @@
 
 module UF-PropTrunc where
 
+open import SpartanMLTT
 open import UF-Base public
 open import UF-Subsingletons public
 open import UF-FunExt public

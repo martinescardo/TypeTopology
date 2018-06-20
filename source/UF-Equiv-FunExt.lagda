@@ -9,6 +9,7 @@ extensionality as the equivalence of happly for suitable parameters.)
 
 module UF-Equiv-FunExt where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

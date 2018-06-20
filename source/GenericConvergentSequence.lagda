@@ -14,7 +14,7 @@ lemmas.)
 
 module GenericConvergentSequence where
 
-open import SpartanMLTT
+open import SpartanMLTT renaming (_≤_ to _≤₂_)
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -34,10 +34,11 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 \begin{code}
 
 decreasing : (ℕ → 𝟚) → U₀ ̇
-decreasing α = (i : ℕ) → α i ≥ α(succ i)
+decreasing α = (i : ℕ) → α(succ i) ≤₂ α i 
 
 decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
-decreasing-is-prop fe α = is-prop-exponential-ideal fe (λ i → is-prop-exponential-ideal fe (λ p → 𝟚-is-set))
+decreasing-is-prop fe α = is-prop-exponential-ideal fe
+                            (λ i → is-prop-exponential-ideal fe (λ p → 𝟚-is-set))
 
 ℕ∞ : U₀ ̇
 ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α
@@ -73,7 +74,7 @@ force-decreasing-unchanged α d (succ i) = g
   where
     IH : force-decreasing α i ≡ α i
     IH = force-decreasing-unchanged α d i
-    p : α (succ i) ≤ α i
+    p : α (succ i) ≤₂ α i
     p = d i
     h : min𝟚 (α (succ i)) (α i) ≡ α (succ i)
     h = Lemma[a≤b→min𝟚ab≡a] p
@@ -89,7 +90,7 @@ clni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 clni-incl fe (α , d) = to-Σ-≡ (force-decreasing α) α (force-decreasing-is-decreasing α) d
                                (dfunext fe (force-decreasing-unchanged α d)) (decreasing-is-prop fe α _ _)
 
-force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤ β i
+force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤₂ β i
 force-decreasing-is-smaller β zero     p = p
 force-decreasing-is-smaller β (succ i) p = Lemma[min𝟚ab≡₁→a≡₁] p
 
@@ -249,7 +250,7 @@ positive-equal-Succ : funext₀ → {u : ℕ∞} → positive u → u ≡ Succ(P
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 
 Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
-Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
+Succ-criterion fe {u} {n} r s = incl-lc fe claim
  where
   lemma : (u : ℕ∞) (n : ℕ) → n ⊏ u → u ⊑ succ n 
         → (i : ℕ) → incl u i ≡ incl (Succ(under n)) i
@@ -265,6 +266,8 @@ Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
       lemma₁ 0 t = t
       lemma₁ (succ n) t = lemma₁ n (pr₂ u n t)
   lemma u (succ n) r s (succ i) = lemma (Pred u) n r s i
+  claim : incl u ≡ incl (Succ (under n))
+  claim = dfunext fe (lemma u n r s)
 
 
 ∞-is-not-ℕ : (n : ℕ) → ∞ ≢ under n
@@ -396,7 +399,6 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 ∞-maximal : (n : ℕ) → under n ≺ ∞
 ∞-maximal n = n , refl , ∞-⊏-maximal n
 
-open import Ordinals
 open import NaturalsOrder
 
 ⊏-reflect : (m n : ℕ) →  m ⊏ under n → m < n
@@ -404,6 +406,31 @@ open import NaturalsOrder
 ⊏-reflect zero (succ n) l = zero-minimal n
 ⊏-reflect (succ m) zero ()
 ⊏-reflect (succ m) (succ n) l = ⊏-reflect m n l
+
+⊏-back : (n : ℕ) (u : ℕ∞) → succ n ⊏ u → n ⊏ u
+⊏-back n (α , d) = d n
+
+
+⊏-trans'' : (n : ℕ) (u : ℕ∞) → (m : ℕ) → m < n → n ⊏ u → m ⊏ u
+⊏-trans'' zero u m () a
+⊏-trans'' (succ n) u m l a = cases (λ (l' : m < n) → IH m l' (⊏-back n u a))
+                                    (λ (r : m ≡ n) → back-transport (λ v → v ⊏ u) r (⊏-back n u a))
+                                    (_<_-split m n l)
+ where
+  IH : (m : ℕ) → m < n → n ⊏ u → m ⊏ u
+  IH = ⊏-trans'' n u
+
+⊏-trans' : (m n : ℕ) (u : ℕ∞) → m < n → n ⊏ u → m ⊏ u
+⊏-trans' m n u l = ⊏-trans'' n u m l
+  
+⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
+⊏-trans m n u a = ⊏-trans' m n u (⊏-reflect m n a)
+
+≺-trans : (u v w : ℕ∞) → u ≺ v → v ≺ w → u ≺ w
+≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
+
+
+open import Ordinals
 
 ≺-well-founded₂ : funext₀ → Well-founded₂ _≺_
 ≺-well-founded₂ fe p φ = ℕ∞-density fe a b

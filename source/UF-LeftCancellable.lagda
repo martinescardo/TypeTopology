@@ -8,6 +8,7 @@ The definition is given in UF-Base. Here we prove things about them.
 
 module UF-LeftCancellable where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
