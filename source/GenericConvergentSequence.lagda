@@ -407,28 +407,17 @@ open import NaturalsOrder
 ⊏-reflect (succ m) zero ()
 ⊏-reflect (succ m) (succ n) l = ⊏-reflect m n l
 
-⊏-back : (n : ℕ) (u : ℕ∞) → succ n ⊏ u → n ⊏ u
-⊏-back n (α , d) = d n
+⊏-back : (u : ℕ∞) (n : ℕ) → succ n ⊏ u → n ⊏ u
+⊏-back = pr₂
 
+⊏-trans' : (u : ℕ∞) (n : ℕ) → (m : ℕ) → m < n → n ⊏ u → m ⊏ u
+⊏-trans' u = regress (λ n → n ⊏ u) (⊏-back u) 
 
-⊏-trans'' : (n : ℕ) (u : ℕ∞) → (m : ℕ) → m < n → n ⊏ u → m ⊏ u
-⊏-trans'' zero u m () a
-⊏-trans'' (succ n) u m l a = cases (λ (l' : m < n) → IH m l' (⊏-back n u a))
-                                    (λ (r : m ≡ n) → back-transport (λ v → v ⊏ u) r (⊏-back n u a))
-                                    (_<_-split m n l)
- where
-  IH : (m : ℕ) → m < n → n ⊏ u → m ⊏ u
-  IH = ⊏-trans'' n u
-
-⊏-trans' : (m n : ℕ) (u : ℕ∞) → m < n → n ⊏ u → m ⊏ u
-⊏-trans' m n u l = ⊏-trans'' n u m l
-  
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
-⊏-trans m n u a = ⊏-trans' m n u (⊏-reflect m n a)
+⊏-trans m n u a = ⊏-trans' u n m (⊏-reflect m n a)
 
 ≺-trans : (u v w : ℕ∞) → u ≺ v → v ≺ w → u ≺ w
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
-
 
 open import Ordinals
 

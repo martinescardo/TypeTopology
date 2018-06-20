@@ -134,3 +134,20 @@ _<_-is-extensional {succ m} {succ n} f g = ap succ (≤-anti m n (f m (≤-refl 
 ℕ-is-ordinal = _<_-is-well-founded , _<_-is-extensional , _<_-trans
 
 \end{code}
+
+Can we use course-of-values instead, in the next construction?
+
+\begin{code}
+
+regress : ∀ {U} (P : ℕ → U ̇)
+        → ((n : ℕ) → P (succ n) → P n)
+        → (n : ℕ) → (m : ℕ) → m < n → P n → P m
+regress P ρ zero m () p
+regress P ρ (succ n) m l p = cases (λ (l' : m < n) → IH m l' (ρ n p))
+                                  (λ (r : m ≡ n) → back-transport P r (ρ n p))
+                                  (_<_-split m n l)
+ where
+  IH : (m : ℕ) → m < n → P n → P m
+  IH = regress P ρ n 
+
+\end{code}
