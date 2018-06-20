@@ -17,6 +17,7 @@ Point 2. is already proved in UF-Equiv-Funext.lagda
 
 module UF-FunExt-from-Naive-FunExt-alternate where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-FunExt
 open import UF-Equiv

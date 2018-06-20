@@ -6,6 +6,7 @@ This is superseeded and not used any more.
 
 module UF-Historic where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Yoneda

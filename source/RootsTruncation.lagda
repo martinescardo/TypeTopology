@@ -12,7 +12,8 @@ equality with any other point of the type is decidable.
 
 \begin{code}
 
-open import UF-Base hiding (_≤_) hiding (≤-anti)
+open import SpartanMLTT hiding (_≤_) hiding (≤-anti)
+open import UF-Base
 open import DiscreteAndSeparated
 
 module RootsTruncation (U : Universe)

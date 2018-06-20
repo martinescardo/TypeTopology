@@ -13,6 +13,7 @@ Here is an Agda version.
 
 module UF-FunExt-from-Naive-FunExt where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-FunExt
 open import UF-Equiv

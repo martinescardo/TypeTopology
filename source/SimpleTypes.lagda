@@ -12,6 +12,7 @@ holds (Tychonoff Theorem).)
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
+open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
