@@ -100,9 +100,9 @@ module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} �
  _⊏_ : bin-rel (Σ Y)
  _⊏_ = slex-prod _<_ _≺_
 
- lex-prod-wf : well-founded _<_
+ lex-prod-wf : is-well-founded _<_
              → ({x : X} → Well-founded (_≺_ {x}))
-             → well-founded _⊏_
+             → is-well-founded _⊏_
  lex-prod-wf w w' (x , y) = φ x y
   where
    P : Σ Y → U ⊔ V ̇
@@ -121,9 +121,9 @@ module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} �
    φ : (x : X) (y : Y x) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
 
- lex-prod-trans : transitive _<_
-                → ({x : X} → transitive (_≺_ {x}))
-                → transitive _⊏_
+ lex-prod-trans : is-transitive _<_
+                → ({x : X} → is-transitive (_≺_ {x}))
+                → is-transitive _⊏_
  lex-prod-trans t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)

@@ -47,25 +47,25 @@ transfinite-induction' :  ∀ {W} (P : X → W ̇)
 transfinite-induction' P f = accessible-induction (λ x _ → P x)
                                                   (λ x _ → f x)
 
-well-founded : U ⊔ V ̇
-well-founded = (x : X) → is-accessible x
+is-well-founded : U ⊔ V ̇
+is-well-founded = (x : X) → is-accessible x
 
 Well-founded : ∀ {W} → U ⊔ V ⊔ W ′ ̇
 Well-founded {W} = (P : X → W ̇) → ((x : X) → ((y : X) → y < x → P y) → P x)
                                  → (x : X) → P x
 
-transfinite-induction : well-founded → ∀ {W} → Well-founded {W}
+transfinite-induction : is-well-founded → ∀ {W} → Well-founded {W}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
-transfinite-induction-converse : Well-founded {U ⊔ V} → well-founded
+transfinite-induction-converse : Well-founded {U ⊔ V} → is-well-founded
 transfinite-induction-converse F = F is-accessible next
 
-transfinite-recursion : well-founded → ∀ {W} {Y : W ̇}
+transfinite-recursion : is-well-founded → ∀ {W} {Y : W ̇}
                      → ((x : X) → ((y : X) → y < x → Y) → Y) → X → Y
 transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
 
-transitive : U ⊔ V ̇
-transitive = (x y z : X) → x < y → y < z → x < z
+is-transitive : U ⊔ V ̇
+is-transitive = (x y z : X) → x < y → y < z → x < z
 
 -- Or consider the truncated version of the following:
 co-transitive : U ⊔ V ̇
@@ -84,21 +84,21 @@ x ≼ y = ∀ u → u < x → u < y
 ≼-trans : {x y z : X} → x ≼ y → y ≼ z → x ≼ z
 ≼-trans f g u l = g u (f u l)
 
-extensional : U ⊔ V ̇
-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y 
+is-extensional : U ⊔ V ̇
+is-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y 
 
-extensional' : U ⊔ V ̇
-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y 
+is-extensional' : U ⊔ V ̇
+is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y 
 
-extensional-extensional' : extensional → extensional'
+extensional-extensional' : is-extensional → is-extensional'
 extensional-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
                                          (λ u l → pr₂ (f u) l)
 
-extensional'-extensional : extensional' → extensional
+extensional'-extensional : is-extensional' → is-extensional
 extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
 
-ordinal : U ⊔ V ̇
-ordinal = well-founded × extensional × transitive
+is-ordinal : U ⊔ V ̇
+is-ordinal = is-well-founded × is-extensional × is-transitive
 
 is-accessible-is-prop : (∀ U V → funext U V)
                       → (x : X) → is-prop(is-accessible x)
@@ -120,11 +120,11 @@ is-accessible-is-prop fe = accessible-induction P φ
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
-well-founded-is-prop : (∀ U V → funext U V) → is-prop well-founded
+well-founded-is-prop : (∀ U V → funext U V) → is-prop is-well-founded
 well-founded-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
 extensional-gives-is-set : (∀ U V → funext U V) → prop-valued-order
-                         → extensional → is-set X
+                         → is-extensional → is-set X
 extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
@@ -136,7 +136,7 @@ extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
-extensional-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop extensional
+extensional-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop is-extensional
 extensional-is-prop fe isp e e' =
  dfunext (fe U (U ⊔ V))
    (λ x → dfunext (fe U (U ⊔ V))
@@ -146,7 +146,7 @@ extensional-is-prop fe isp e e' =
                       (e x y)
                       (e' x y)))
 
-transitive-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop transitive
+transitive-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop is-transitive
 transitive-is-prop fe isp =
  is-prop-exponential-ideal (fe U (U ⊔ V))
    (λ x → is-prop-exponential-ideal (fe U (U ⊔ V))
@@ -155,7 +155,7 @@ transitive-is-prop fe isp =
                               (λ l → is-prop-exponential-ideal (fe V V)
                                        (λ m → isp {x} {z})))))
 
-ordinal-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop ordinal
+ordinal-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop is-ordinal
 ordinal-is-prop fe isp = props-closed-× (well-founded-is-prop fe)
                                         (props-closed-× (extensional-is-prop fe isp)
                                                         (transitive-is-prop fe isp))
@@ -175,7 +175,7 @@ non-strict-trans : (z : X) → is-accessible z
 non-strict-trans = transfinite-induction' (λ z → (x y : X) → x < y → y < z → x ≤ z)
                                           (λ z f x y l m n → f y m z x n l m)
 
-<-gives-≼ : transitive → {x y : X} → x < y → x ≼ y
+<-gives-≼ : is-transitive → {x y : X} → x < y → x ≼ y
 <-gives-≼ t l u m = t _ _ _ m l
 
 ≼-gives-≤ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≤ y
@@ -187,7 +187,7 @@ When do we get x ≤ y → x ≼ y (say for ordinals)? When do we get cotransiti
 
 \begin{code}
 
-no-minimal-is-empty : well-founded → ∀ {W} (P : X → W ̇)
+no-minimal-is-empty : is-well-founded → ∀ {W} (P : X → W ̇)
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where
@@ -214,13 +214,13 @@ Well-founded₂ : U ⊔ V ̇
 Well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
                              → (x : X) → p x ≡ ₁
 
-well-founded-Wellfounded₂ : well-founded → Well-founded₂
+well-founded-Wellfounded₂ : is-well-founded → Well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 
-ordinal₂ : U ⊔ V ̇
-ordinal₂ = Well-founded₂ × extensional × transitive
+is-ordinal₂ : U ⊔ V ̇
+is-ordinal₂ = Well-founded₂ × is-extensional × is-transitive
 
-ordinal-ordinal₂ : ordinal → ordinal₂
+ordinal-ordinal₂ : is-ordinal → is-ordinal₂
 ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w , e , t)
 
 \end{code}

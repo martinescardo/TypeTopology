@@ -135,13 +135,13 @@ course-of-values-induction : ∀ {U} (P : ℕ → U ̇)
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ _<_-is-well-founded
 
-_<_-is-extensional : extensional _<_
+_<_-is-extensional : is-extensional _<_
 _<_-is-extensional zero     zero     f g = refl
 _<_-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-minimal n))
 _<_-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-minimal m))
 _<_-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
 
-ℕ-is-ordinal : ordinal _<_
+ℕ-is-ordinal : is-ordinal _<_
 ℕ-is-ordinal = _<_-is-well-founded , _<_-is-extensional , _<_-trans
 
 \end{code}
