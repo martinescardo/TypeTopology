@@ -124,13 +124,13 @@ module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} �
  lex-prod-trans : transitive _<_
                 → ({x : X} → transitive (_≺_ {x}))
                 → transitive _⊏_
- lex-prod-trans t t' {a , b} {x , y} {u , v} = f
+ lex-prod-trans t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
-   f (inl l) (inl m) = inl (t l m)
+   f (inl l) (inl m) = inl (t _ _ _ l m)
    f (inl l) (inr (q , m)) = inl (transport (λ x → a < x) q l)
    f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
-   f (inr (r , l)) (inr (refl , m)) = inr (r , (t' l m))
+   f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
 
 {- TODO
  lex-prod-ex : extensional _<_

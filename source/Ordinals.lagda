@@ -17,6 +17,9 @@ module Ordinals {U V : Universe}
                 (_<_ : X → X → V ̇)
                 where
 
+prop-valued : U ⊔ V ̇
+prop-valued = ({x y : X} → is-prop(x < y))
+
 data is-accessible : X → U ⊔ V ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
 
@@ -61,7 +64,7 @@ transfinite-recursion : well-founded → ∀ {W} {Y : W ̇}
 transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
 
 transitive : U ⊔ V ̇
-transitive = {x y z : X} → x < y → y < z → x < z
+transitive = (x y z : X) → x < y → y < z → x < z
 
 co-transitive : U ⊔ V ̇
 co-transitive = {x y z : X} → x < y → x < z + x < y
@@ -70,7 +73,7 @@ _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
 ≼-prop-valued : funext U V → funext V V
-              → ({x y : X} → is-prop(x < y))
+              → prop-valued
               → {x y : X} → is-prop(x ≼ y)
 ≼-prop-valued fe fe' isp = is-prop-exponential-ideal fe
                               (λ u → is-prop-exponential-ideal fe' (λ l → isp))
@@ -120,14 +123,14 @@ well-founded-is-prop : funext U (U ⊔ V) → funext V (U ⊔ V) → is-prop wel
 well-founded-is-prop fe fe' = is-prop-exponential-ideal fe (is-accessible-is-prop fe fe')
 
 extensionality-constant : funext U V → funext V V
-                        → ({x y : X} → is-prop(x < y))
+                        → prop-valued
                         → (e : extensional) {x y : X} {l l' : x ≼ y} {m m' : y ≼ x}
                         → e l m ≡ e l' m'
 extensionality-constant fe fe' isp e {x} {y} {l} {l'} {m} {m'} = ap₂ e (≼-prop-valued fe fe' isp l l')
                                                                    (≼-prop-valued fe fe' isp m m')
 
 
-extensional-gives-is-set : funext U V → funext V V → ({x y : X} → is-prop(x < y))
+extensional-gives-is-set : funext U V → funext V V → prop-valued
                          → extensional → is-set X
 extensional-gives-is-set fe fe' isp e = identification-collapsible-is-set (f , κ)
  where
@@ -153,7 +156,7 @@ non-strict-trans = transfinite-induction' (λ z → (x y : X) → x < y → y < 
                                           (λ z f x y l m n → f y m z x n l m)
 
 <-gives-≼ : transitive → {x y : X} → x < y → x ≼ y
-<-gives-≼ t l u m = t m l
+<-gives-≼ t l u m = t _ _ _ m l
 
 ≼-gives-≤ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≤ y
 ≼-gives-≤ y a x f l = ≤-refl y a (f y l)
@@ -164,7 +167,7 @@ When do we get x ≤ y → x ≼ y (say for ordinals)? When do we get cotransiti
 
 \begin{code}
 
-no-minimal-is-empty : well-founded → ∀ {W} → (P : X → W ̇)
+no-minimal-is-empty : well-founded → ∀ {W} (P : X → W ̇)
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where
@@ -181,3 +184,24 @@ no-minimal-is-empty w P s (x , p) = f s x p
   NB (x , p) s = f s x p 
 
 \end{code}
+
+We will need the following weakening of well-foundedness (transfinite
+induction for detachable subsets):
+
+\begin{code}
+
+Well-founded₂ : U ⊔ V ̇
+Well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
+                             → (x : X) → p x ≡ ₁
+
+well-founded-Wellfounded₂ : well-founded → Well-founded₂
+well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
+
+ordinal₂ : U ⊔ V ̇
+ordinal₂ = Well-founded₂ × extensional × transitive
+
+ordinal-ordinal₂ : ordinal → ordinal₂
+ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w , e , t)
+
+\end{code}
+
