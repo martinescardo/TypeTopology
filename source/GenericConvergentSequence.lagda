@@ -138,14 +138,20 @@ Succ (α , d) = (α' , d')
   d' 0 = λ r → refl
   d' (succ i) = d i
 
-positivity : ℕ∞ → 𝟚
-positivity u = incl u 0 
+_⊑_ : ℕ∞ → ℕ → U₀ ̇
+u ⊑ n = incl u n ≡ ₀
+
+_⊏_ : ℕ → ℕ∞ → U₀ ̇
+n ⊏ u = incl u n ≡ ₁
 
 is-Zero : ℕ∞ → U₀ ̇
-is-Zero u = positivity u ≡ ₀
+is-Zero u = u ⊑ 0
 
 positive : ℕ∞ → U₀ ̇
-positive u = positivity u ≡ ₁
+positive u = 0 ⊏ u
+
+positivity : ℕ∞ → 𝟚
+positivity u = incl u 0 
 
 is-Zero-Zero : is-Zero Zero
 is-Zero-Zero = refl
@@ -164,13 +170,15 @@ Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma)
    lemma (succ i) = refl
 
 unique-fixed-point-of-Succ : funext₀ → (u : ℕ∞) → u ≡ Succ u → u ≡ ∞
-unique-fixed-point-of-Succ fe u r = incl-lc fe (dfunext fe lemma)
+unique-fixed-point-of-Succ fe u r = incl-lc fe claim
  where
   fact : (i : ℕ) → incl u i ≡ incl(Succ u) i 
   fact i = ap (λ w → incl w i) r
   lemma : (i : ℕ) → incl u i ≡ ₁
   lemma 0 = fact 0
   lemma (succ i) = fact(succ i) ∙ lemma i
+  claim : incl u ≡ incl ∞
+  claim = (dfunext fe lemma)
 
 Pred : ℕ∞ → ℕ∞
 Pred(α , d) = (α ∘ succ , d ∘ succ)
@@ -209,12 +217,11 @@ under-lc-refl : (k : ℕ) → under-lc refl ≡ refl {_} {ℕ} {k}
 under-lc-refl 0 = refl
 under-lc-refl (succ k) = ap (ap succ) (under-lc-refl k)
 
-under-diagonal₀ : (n : ℕ) → incl(under n) n ≡ ₀
+under-diagonal₀ : (n : ℕ) → under n ⊑ n
 under-diagonal₀ 0 = refl
 under-diagonal₀ (succ n) = under-diagonal₀ n
 
-under-diagonal₁ : (n : ℕ) → incl(under(succ n)) n ≡ ₁
-
+under-diagonal₁ : (n : ℕ) → n ⊏ under(succ n)
 under-diagonal₁ 0 = refl
 under-diagonal₁ (succ n) = under-diagonal₁ n
  
@@ -241,20 +248,20 @@ positive-is-not-Zero {u} r s = lemma r
 positive-equal-Succ : funext₀ → {u : ℕ∞} → positive u → u ≡ Succ(Pred u)
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 
-Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ → u ≡ Succ(under n)
+Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
 Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
  where
-  lemma : (u : ℕ∞) (n : ℕ) → incl u n ≡ ₁ → incl u(succ n) ≡ ₀ 
+  lemma : (u : ℕ∞) (n : ℕ) → n ⊏ u → u ⊑ succ n 
         → (i : ℕ) → incl u i ≡ incl (Succ(under n)) i
   lemma u 0 r s 0 = r
   lemma u 0 r s (succ i) = lemma₀ i
      where 
-      lemma₀ : (i : ℕ) → incl u (succ i) ≡ ₀ 
+      lemma₀ : (i : ℕ) → u ⊑ succ i
       lemma₀ 0 = s
       lemma₀ (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u (succ i)) (lemma₀ i)
   lemma u (succ n) r s 0 = lemma₁ (succ n) r
      where 
-      lemma₁ : (n : ℕ) → incl u n ≡ ₁ → positive u
+      lemma₁ : (n : ℕ) → n ⊏ u → positive u
       lemma₁ 0 t = t
       lemma₁ (succ n) t = lemma₁ n (pr₂ u n t)
   lemma u (succ n) r s (succ i) = lemma (Pred u) n r s i
@@ -266,7 +273,7 @@ Succ-criterion fe {u} {n} r s = incl-lc fe (dfunext fe (lemma u n r s))
 not-ℕ-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
 not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma) 
  where
-  lemma : (n : ℕ) → incl u n ≡ ₁
+  lemma : (n : ℕ) → n ⊏ u
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r)) 
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r)) 
 
@@ -305,7 +312,7 @@ under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
 
 There should be a better proof of the following. The idea is simple:
 by the above development, u = under 0 if and only if incl u 0 ≡ 0, and
-u ≡ under(n+1) if and only incl u n ≡ ₁ and incl u (n+1) ≡ ₀.
+u ≡ under(n+1) if and only if n ⊏ u ⊑ n+1.
 
 \begin{code}
 
@@ -320,33 +327,33 @@ finite-isolated fe u 0 = two-equality-cases lemma₀ lemma₁
           fact r = ap (λ u → incl u 0) r
 finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
  where
-  lemma₀ :  incl u n ≡ ₀ → (u ≡ under(succ n)) + (u ≢ under(succ n))
+  lemma₀ :  u ⊑ n → (u ≡ under(succ n)) + (u ≢ under(succ n))
   lemma₀ r = inr(contrapositive lemma (Lemma[b≡₀→b≢₁] r))
    where
-    lemma : u ≡ under(succ n) → incl u n ≡ ₁
+    lemma : u ≡ under(succ n) → n ⊏ u
     lemma r = ap (λ v → incl v n) r ∙ under-diagonal₁ n
-  lemma₁ :  incl u n ≡ ₁ → (u ≡ under(succ n)) + (u ≢ under(succ n))
+  lemma₁ :  n ⊏ u → (u ≡ under(succ n)) + (u ≢ under(succ n))
   lemma₁ r = two-equality-cases lemma₁₀ lemma₁₁
    where
-    lemma₁₀ :  incl u (succ n) ≡ ₀ → (u ≡ under(succ n)) + (u ≢ under(succ n))
+    lemma₁₀ :  u ⊑ succ n → (u ≡ under(succ n)) + (u ≢ under(succ n))
     lemma₁₀ s = inl(Succ-criterion fe r s)
-    lemma₁₁ :  incl u (succ n) ≡ ₁ → (u ≡ under(succ n)) + (u ≢ under(succ n))
+    lemma₁₁ :  succ n ⊏ u → (u ≡ under(succ n)) + (u ≢ under(succ n))
     lemma₁₁ s = inr (contrapositive lemma (Lemma[b≡₁→b≢₀] s))
      where
-      lemma : u ≡ under(succ n) → incl u (succ n) ≡ ₀
+      lemma : u ≡ under(succ n) → u ⊑ succ n
       lemma r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
 
 open import DiscreteAndSeparated
 
-under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → incl u n ≡ ₀ → Σ \(m : ℕ) → u ≡ under m
+under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → u ≡ under m
 under-lemma fe u zero p     = zero , is-Zero-equal-Zero fe p
 under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
  where
-  g :  decidable(incl u n ≡ ₀) → Σ \(m : ℕ) → u ≡ under m
+  g :  decidable(u ⊑ n) → Σ \(m : ℕ) → u ≡ under m
   g (inl p) = under-lemma fe u n p
   g (inr φ) = succ n , s
     where
-      q : incl u n ≡ ₁
+      q : n ⊏ u
       q = Lemma[b≢₀→b≡₁] φ
       s : u ≡ Succ (under n)
       s = Succ-criterion fe {u} {n} q p
@@ -358,7 +365,7 @@ Order on ℕ∞:
 \begin{code}
 
 _≼_ : ℕ∞ → ℕ∞ → U₀ ̇
-u ≼ v = (n : ℕ) → incl u n ≤ incl v n
+u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
 
 ∞-greatest : (u : ℕ∞) → u ≼ ∞
 ∞-greatest u = λ n _ → refl
@@ -380,28 +387,46 @@ as the need arises.
 
 \begin{code}
 
-_⊏_ : ℕ → ℕ∞ → U₀ ̇
-n ⊏ u = incl u n ≡ ₁
-
-infix  30 _⊏_
+∞-⊏-maximal : (n : ℕ) → n ⊏ ∞
+∞-⊏-maximal n = refl
 
 _≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
-{-
+∞-maximal : (n : ℕ) → under n ≺ ∞
+∞-maximal n = n , refl , ∞-⊏-maximal n
 
-≺-OK-founded : (p : ℕ∞ → 𝟚) → ((v : ℕ∞) → ((u : ℕ∞) → u ≺ v → p u ≡ ₁) → p v ≡ ₁) → (v : ℕ∞) → p v ≡ ₁
-≺-OK-founded p φ = ℕ∞-density a b
+open import Ordinals
+open import NaturalsOrder
+
+⊏-reflect : (m n : ℕ) →  m ⊏ under n → m < n
+⊏-reflect zero zero ()
+⊏-reflect zero (succ n) l = zero-minimal n
+⊏-reflect (succ m) zero ()
+⊏-reflect (succ m) (succ n) l = ⊏-reflect m n l
+
+≺-well-founded₂ : funext₀ → Well-founded₂ _≺_
+≺-well-founded₂ fe p φ = ℕ∞-density fe a b
  where
-  a : (n : ℕ) → p(under n) ≡ ₁
-  a zero = φ (under zero) f
+  γ : (n : ℕ) → ((m : ℕ) → m < n → p (under m) ≡ ₁) → p (under n) ≡ ₁
+  γ n g = φ (under n) h
    where
-    f : (u : ℕ∞) → u ≺ under zero → p u ≡ ₁
-    f u (_ , _ , ())
-  a (succ n) = {!!}
-
+    h : (u : ℕ∞) → u ≺ under n → p u ≡ ₁
+    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-reflect m n l))
+  a : (n : ℕ) → p(under n) ≡ ₁
+  a = course-of-values-induction (λ n → p(under n) ≡ ₁) γ
+  f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
+  f u (n , r , l) = back-transport (λ v → p v ≡ ₁) r (a n)
   b : p ∞ ≡ ₁
-  b = {!!}
+  b = φ ∞ f
 
--}
+\end{code}
+
+precedences:
+
+\begin{code}
+
+infix  30 _⊏_
+infix  30 _≺_
+
 \end{code}

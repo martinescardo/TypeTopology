@@ -200,4 +200,3 @@ ordinal-ordinal₂ : ordinal → ordinal₂
 ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w , e , t)
 
 \end{code}
-
