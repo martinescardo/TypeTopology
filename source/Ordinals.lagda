@@ -1,4 +1,5 @@
-Martin Escardo, April 2013, adapted to this development June 2018
+Martin Escardo, April 2013, adapted to this development June 2018,
+with further additions.
 
 Ordinals like in the HoTT book and variations.
 
