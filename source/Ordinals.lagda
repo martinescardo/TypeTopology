@@ -36,7 +36,7 @@ accessible-induction P step = h
 
 prev : (x : X) → is-accessible x → (y : X) → y < x → is-accessible y
 prev = accessible-induction (λ x _ → (y : X) → y < x → is-accessible y)
-                            (λ x σ f y l → σ y l)
+                            (λ x σ f → σ)
 
 prev-behaviour : (x : X) → ∀(a : is-accessible x) → next x (prev x a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
@@ -102,9 +102,9 @@ extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
 ordinal : U ⊔ V ̇
 ordinal = well-founded × extensional × transitive
 
-is-accessible-is-prop : funext U (U ⊔ V) → funext V (U ⊔ V)
+is-accessible-is-prop : (∀ U V → funext U V)
                       → (x : X) → is-prop(is-accessible x)
-is-accessible-is-prop fe fe' = accessible-induction P φ
+is-accessible-is-prop fe = accessible-induction P φ
  where
   P : (x : X) → is-accessible x → U ⊔ V ̇
   P x a = (b : is-accessible x) → a ≡ b
@@ -112,7 +112,8 @@ is-accessible-is-prop fe fe' = accessible-induction P φ
   φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
     → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ≡ a)
     → (b : is-accessible x) → next x σ ≡ b
-  φ x σ IH b = next x σ ≡⟨ ap (λ f → next x f) (dfunext fe (λ y → dfunext fe' (h y))) ⟩
+  φ x σ IH b = next x σ ≡⟨ ap (next x)
+                               (dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe V (U ⊔ V)) (h y))) ⟩
                next x τ ≡⟨ prev-behaviour x b ⟩
                b ∎
    where
@@ -121,8 +122,8 @@ is-accessible-is-prop fe fe' = accessible-induction P φ
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
-well-founded-is-prop : funext U (U ⊔ V) → funext V (U ⊔ V) → is-prop well-founded
-well-founded-is-prop fe fe' = is-prop-exponential-ideal fe (is-accessible-is-prop fe fe')
+well-founded-is-prop : (∀ U V → funext U V) → is-prop well-founded
+well-founded-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
 extensional-gives-is-set : funext U V → funext V V → prop-valued
                          → extensional → is-set X
@@ -155,6 +156,11 @@ transitive-is-prop fe isp =
                      (λ z → is-prop-exponential-ideal (fe V V)
                               (λ l → is-prop-exponential-ideal (fe V V)
                                        (λ m → isp {x} {z})))))
+
+ordinal-is-prop : (∀ U V → funext U V) → prop-valued → is-prop ordinal
+ordinal-is-prop fe isp = props-closed-× (well-founded-is-prop fe)
+                                        (props-closed-× (extensional-is-prop fe isp)
+                                                        (transitive-is-prop fe isp))
 
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
