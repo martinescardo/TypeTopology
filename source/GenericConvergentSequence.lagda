@@ -22,7 +22,6 @@ open import UF-FunExt
 open import UF-Embedding
 open import UF-SetExamples
 open import DiscreteAndSeparated
-open import NaturalsOrder
 
 funext₀ : U₁ ̇
 funext₀ = funext U₀ U₀
@@ -352,21 +351,6 @@ finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
       lemma : u ≡ under(succ n) → u ⊑ succ n
       lemma r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
 
-under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
-under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
-under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
- where
-  IH : u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
-  IH = under-lemma fe u n
-  g :  decidable(u ⊑ n) → Σ \(m : ℕ) → (m ≤ succ n) × (u ≡ under m)
-  g (inl q) = pr₁(IH q) , ≤-trans (pr₁(IH q)) n (succ n) (pr₁(pr₂(IH q))) (≤-succ n) , pr₂(pr₂(IH q))
-  g (inr φ) = succ n , ≤-refl n , s
-    where
-      q : n ⊏ u
-      q = Lemma[b≢₀→b≡₁] φ
-      s : u ≡ Succ (under n)
-      s = Succ-criterion fe {u} {n} q p
-
 \end{code}
 
 Order on ℕ∞:
@@ -414,6 +398,8 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 ∞-maximal : (n : ℕ) → under n ≺ ∞
 ∞-maximal n = n , refl , ∞-⊏-maximal n
+
+open import NaturalsOrder
 
 ⊏-reflect : (m n : ℕ) →  m ⊏ under n → m < n
 ⊏-reflect zero zero ()
@@ -467,6 +453,21 @@ open import Ordinals hiding (_≤_) hiding (≤-refl)
 
 ℕ∞-ordinal₂ : funext₀ → is-ordinal₂ _≺_
 ℕ∞-ordinal₂ fe = (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
+
+under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
+under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
+ where
+  IH : u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+  IH = under-lemma fe u n
+  g :  decidable(u ⊑ n) → Σ \(m : ℕ) → (m ≤ succ n) × (u ≡ under m)
+  g (inl q) = pr₁(IH q) , ≤-trans (pr₁(IH q)) n (succ n) (pr₁(pr₂(IH q))) (≤-succ n) , pr₂(pr₂(IH q))
+  g (inr φ) = succ n , ≤-refl n , s
+    where
+      q : n ⊏ u
+      q = Lemma[b≢₀→b≡₁] φ
+      s : u ≡ Succ (under n)
+      s = Succ-criterion fe {u} {n} q p
 
 ≺-cotransitive : funext₀ → cotransitive _≺_
 ≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁)
