@@ -22,6 +22,7 @@ open import UF-FunExt
 open import UF-Embedding
 open import UF-SetExamples
 open import DiscreteAndSeparated
+open import NaturalsOrder
 
 funext₀ : U₁ ̇
 funext₀ = funext U₀ U₀
@@ -87,8 +88,7 @@ lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 clni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
-clni-incl fe (α , d) = to-Σ-≡ (force-decreasing α) α (force-decreasing-is-decreasing α) d
-                               (dfunext fe (force-decreasing-unchanged α d)) (decreasing-is-prop fe α _ _)
+clni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) , decreasing-is-prop fe α _ _)
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤₂ β i
 force-decreasing-is-smaller β zero     p = p
@@ -111,8 +111,8 @@ Cantor-separated fe = separated-ideal fe (λ _ → 𝟚-is-separated)
 ℕ∞-separated : funext₀ → separated ℕ∞
 ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)
 
-ℕ∞-set : funext₀ → is-set ℕ∞
-ℕ∞-set fe = separated-is-set fe (ℕ∞-separated fe)
+ℕ∞-is-set : funext₀ → is-set ℕ∞
+ℕ∞-is-set fe = separated-is-set fe (ℕ∞-separated fe)
 
 open import TotallySeparated
 
@@ -144,6 +144,12 @@ u ⊑ n = incl u n ≡ ₀
 
 _⊏_ : ℕ → ℕ∞ → U₀ ̇
 n ⊏ u = incl u n ≡ ₁
+
+not-⊏-is-⊒ : {m : ℕ} {u : ℕ∞} → ¬(m ⊏ u) → u ⊑ m
+not-⊏-is-⊒ f = Lemma[b≢₁→b≡₀] f
+
+not-⊑-is-⊐ : {m : ℕ} {u : ℕ∞} → ¬(u ⊑ m) → m ⊏ u
+not-⊑-is-⊐ f = Lemma[b≢₀→b≡₁] f
 
 is-Zero : ℕ∞ → U₀ ̇
 is-Zero u = u ⊑ 0
@@ -209,10 +215,10 @@ under-lc {0} {succ n} r = 𝟘-elim(Zero-not-Succ r)
 under-lc {succ m} {0} r = 𝟘-elim(Zero-not-Succ (r ⁻¹))
 under-lc {succ m} {succ n} r = ap succ (under-lc {m} {n} (Succ-lc r))
 
--- This should be proved as a consequence of a general theorem:
+-- This should be proved as a consequence of a more general theorem
+-- with essentially the same proof:
 under-embedding : funext₀ → is-embedding under
-under-embedding fe x (x₀ , r₀) (x₁ , r₁) =
-  to-Σ-≡ x₀ x₁ r₀ r₁ (under-lc (r₀ ∙ r₁ ⁻¹)) (ℕ∞-set fe _ _)
+under-embedding fe x (x₀ , r₀) (x₁ , r₁) = to-Σ-≡'' (under-lc (r₀ ∙ r₁ ⁻¹) , ℕ∞-is-set fe _ _)
 
 under-lc-refl : (k : ℕ) → under-lc refl ≡ refl {_} {ℕ} {k}
 under-lc-refl 0 = refl
@@ -299,7 +305,7 @@ under𝟙-embedding : funext₀ → is-embedding under𝟙
 under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-embedding fe) g d
  where
   g : is-embedding (λ _ → ∞)
-  g x (* , p) (* , q) = ap (λ p → * , p) (ℕ∞-set fe p q)
+  g x (* , p) (* , q) = ap (λ p → * , p) (ℕ∞-is-set fe p q)
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
   d n _ p = ∞-is-not-ℕ n (p ⁻¹)
 
@@ -346,15 +352,15 @@ finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
       lemma : u ≡ under(succ n) → u ⊑ succ n
       lemma r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
 
-open import DiscreteAndSeparated
-
-under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → u ≡ under m
-under-lemma fe u zero p     = zero , is-Zero-equal-Zero fe p
+under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
 under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
  where
-  g :  decidable(u ⊑ n) → Σ \(m : ℕ) → u ≡ under m
-  g (inl p) = under-lemma fe u n p
-  g (inr φ) = succ n , s
+  IH : u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+  IH = under-lemma fe u n
+  g :  decidable(u ⊑ n) → Σ \(m : ℕ) → (m ≤ succ n) × (u ≡ under m)
+  g (inl q) = pr₁(IH q) , ≤-trans (pr₁(IH q)) n (succ n) (pr₁(pr₂(IH q))) (≤-succ n) , pr₂(pr₂(IH q))
+  g (inr φ) = succ n , ≤-refl n , s
     where
       q : n ⊏ u
       q = Lemma[b≢₀→b≡₁] φ
@@ -396,6 +402,10 @@ as the need arises.
 _≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
+≺-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≺ v)
+≺-prop-valued fe u v (n , r , a) (m , s , b) =
+  to-Σ-≡'' (under-lc (r ⁻¹ ∙ s) , to-Σ-≡'' (ℕ∞-is-set fe _ _ , 𝟚-is-set _ _))
+
 ⊏-gives-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
 ⊏-gives-≺ n u a = n , refl , a
 
@@ -404,8 +414,6 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 ∞-maximal : (n : ℕ) → under n ≺ ∞
 ∞-maximal n = n , refl , ∞-⊏-maximal n
-
-open import NaturalsOrder
 
 ⊏-reflect : (m n : ℕ) →  m ⊏ under n → m < n
 ⊏-reflect zero zero ()
@@ -416,8 +424,11 @@ open import NaturalsOrder
 ⊏-back : (u : ℕ∞) (n : ℕ) → succ n ⊏ u → n ⊏ u
 ⊏-back = pr₂
 
+⊏-trans'' : (u : ℕ∞) (n : ℕ) → (m : ℕ) → m ≤ n → n ⊏ u → m ⊏ u
+⊏-trans'' u = regress (λ n → n ⊏ u) (⊏-back u) 
+
 ⊏-trans' : (u : ℕ∞) (n : ℕ) → (m : ℕ) → m < n → n ⊏ u → m ⊏ u
-⊏-trans' u = regress (λ n → n ⊏ u) (⊏-back u) 
+⊏-trans' u n m l = ⊏-trans'' u n m (≤-trans m (succ m) n (≤-succ m) l)
 
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
 ⊏-trans m n u a = ⊏-trans' u n m (⊏-reflect m n a)
@@ -425,9 +436,9 @@ open import NaturalsOrder
 ≺-trans : (u v w : ℕ∞) → u ≺ v → v ≺ w → u ≺ w
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
 
-open import Ordinals
+open import Ordinals hiding (_≤_) hiding (≤-refl)
 
-≺-well-founded₂ : funext₀ → Well-founded₂ _≺_
+≺-well-founded₂ : funext₀ → is-well-founded₂ _≺_
 ≺-well-founded₂ fe p φ = ℕ∞-density fe a b
  where
   γ : (n : ℕ) → ((m : ℕ) → m < n → p (under m) ≡ ₁) → p (under n) ≡ ₁
@@ -456,6 +467,24 @@ open import Ordinals
 
 ℕ∞-ordinal₂ : funext₀ → is-ordinal₂ _≺_
 ℕ∞-ordinal₂ fe = (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
+
+≺-cotransitive : funext₀ → cotransitive _≺_
+≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁)
+ where
+  g : decidable(n ⊏ w) → (u ≺ w) + (w ≺ v)
+  g (inl a) = inl (n , r , a)
+  g (inr f) = inr (m , s , ⊏-trans'' v n m l a)
+   where
+    b : w ⊑ n
+    b = not-⊏-is-⊒ {n} {w} f
+    σ : Σ \(m : ℕ) → (m ≤ n) × (w ≡ under m)
+    σ = under-lemma fe w n b
+    m : ℕ
+    m = pr₁ σ
+    l : m ≤ n
+    l = pr₁(pr₂ σ)
+    s : w ≡ under m
+    s = pr₂(pr₂ σ)
 
 \end{code}
 

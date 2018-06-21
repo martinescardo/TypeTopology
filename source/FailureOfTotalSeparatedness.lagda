@@ -143,7 +143,7 @@ module concrete-example where
    claim₁ = ap (λ f → f refl) claim₀
 
    fact : refl ≡ p
-   fact = ℕ∞-set (fe U₀ U₀) refl p
+   fact = ℕ∞-is-set (fe U₀ U₀) refl p
 
    claim₂ : ₀ ≡ φ p (λ p → ₀) refl
    claim₂ = ap (λ p → φ p (λ p → ₀) refl) fact

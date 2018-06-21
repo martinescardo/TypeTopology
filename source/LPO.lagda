@@ -24,12 +24,13 @@ open import UF-FunExt
 
 module LPO (fe : ∀ U V → funext U V) where
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (_≤_)
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import GenericConvergentSequence
 open import OmniscientTypes
+open import NaturalsOrder
 
 LPO : U₀ ̇
 LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
@@ -38,7 +39,7 @@ LPO-is-prop : is-prop LPO
 LPO-is-prop = is-prop-exponential-ideal (fe U₀ U₀) f
  where
   a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
-  a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-set (fe U₀ U₀)_ _)
+  a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-is-set (fe U₀ U₀)_ _)
   
   f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
   f x = decidable-is-prop (fe U₀ U₀) (a x)
@@ -93,9 +94,9 @@ omniscient-ℕ→LPO chlpo x = cases a b d
     d = chlpo β
     
     a : (Σ \(n : ℕ) → β n ≡ ₀) → A
-    a (n , p) = inl g
+    a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
-        g : Σ \(n : ℕ) → x ≡ under n
+        g : Σ \(m : ℕ) → (m ≤ n) × (x ≡ under m)
         g = under-lemma (fe U₀ U₀) x n p
         
     b : (Π \(n : ℕ) → β n ≡ ₁) → A

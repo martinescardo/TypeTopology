@@ -119,7 +119,7 @@ FG {X} n u r y = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s �
   A n k t = (u : ℕ∞) (r : under n ≡ u) (s : under k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
 
   φ : (n : ℕ) → A n n refl
-  φ n = λ u r s y → ap (y n) (ℕ∞-set (fe U₀ U₀) r s) 
+  φ n = λ u r s y → ap (y n) (ℕ∞-is-set (fe U₀ U₀) r s) 
 
   lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
   lemma k s = J A φ {n} {k} (t k s) u r s y

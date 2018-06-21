@@ -186,7 +186,7 @@ Or consider the truncated version of the following:
 \begin{code}
 
 cotransitive : U ⊔ V ̇
-cotransitive = {x y z : X} → x < y → x < z + x < y
+cotransitive = (x y z : X) → x < y → x < z + z < y
 
 no-minimal-is-empty : is-well-founded → ∀ {W} (P : X → W ̇)
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
@@ -211,19 +211,30 @@ induction for detachable subsets):
 
 \begin{code}
 
-Well-founded₂ : U ⊔ V ̇
-Well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
+is-well-founded₂ : U ⊔ V ̇
+is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
                              → (x : X) → p x ≡ ₁
 
-well-founded-Wellfounded₂ : is-well-founded → Well-founded₂
+well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 
+open import UF-SetExamples
+
+well-founded₂-is-prop : (∀ U V → funext U V) → is-prop is-well-founded₂
+well-founded₂-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V))
+                            (λ p → is-prop-exponential-ideal (fe (U ⊔ V) U)
+                                     (λ s → is-prop-exponential-ideal (fe U U₀) (λ x → 𝟚-is-set)))
+
 is-ordinal₂ : U ⊔ V ̇
-is-ordinal₂ = Well-founded₂ × is-extensional × is-transitive
+is-ordinal₂ = is-well-founded₂ × is-extensional × is-transitive
 
 ordinal-ordinal₂ : is-ordinal → is-ordinal₂
 ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w) , e , t
 
+ordinal₂-is-prop : (∀ U V → funext U V) → prop-valued-order → is-prop is-ordinal₂
+ordinal₂-is-prop fe isp = props-closed-× (well-founded₂-is-prop fe)
+                                        (props-closed-× (extensional-is-prop fe isp)
+                                                        (transitive-is-prop fe isp))
+
 \end{code}
 
-TODO. is-ordinal₂ is a proposition, too.

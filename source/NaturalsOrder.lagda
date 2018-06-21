@@ -94,54 +94,54 @@ Added 20th June 2018:
 open import UF-Subsingletons
 open import Ordinals hiding (_≤_) hiding (<-gives-≤) hiding (≤-refl)
 
-_<_-is-prop : (m n : ℕ) → is-prop(m < n)
-_<_-is-prop zero     zero     = 𝟘-is-prop
-_<_-is-prop zero    (succ n)  = 𝟙-is-prop
-_<_-is-prop (succ m) zero     = 𝟘-is-prop
-_<_-is-prop (succ m) (succ n) = _<_-is-prop m n
+<-is-prop-valued : (m n : ℕ) → is-prop(m < n)
+<-is-prop-valued zero     zero     = 𝟘-is-prop
+<-is-prop-valued zero    (succ n)  = 𝟙-is-prop
+<-is-prop-valued (succ m) zero     = 𝟘-is-prop
+<-is-prop-valued (succ m) (succ n) = <-is-prop-valued m n
 
-_<_-gives-≤ : (m n : ℕ) → m < n → m ≤ n
-_<_-gives-≤ m n = ≤-trans m (succ m) n (≤-succ m)
+<-gives-≤ : (m n : ℕ) → m < n → m ≤ n
+<-gives-≤ m n = ≤-trans m (succ m) n (≤-succ m)
 
-_<_-trans : (l m n : ℕ) → l < m → m < n → l < n
-_<_-trans l m n u v = ≤-trans (succ l) m n u (_<_-gives-≤ m n v)
+<-trans : (l m n : ℕ) → l < m → m < n → l < n
+<-trans l m n u v = ≤-trans (succ l) m n u (<-gives-≤ m n v)
 
-_<_-split : (m n : ℕ) → m < succ n → (m < n) + (m ≡ n)
-_<_-split m zero     l = inr (unique-minimal m l)
-_<_-split m (succ n) l = ≤-split m n l
+<-split : (m n : ℕ) → m < succ n → (m < n) + (m ≡ n)
+<-split m zero     l = inr (unique-minimal m l)
+<-split m (succ n) l = ≤-split m n l
 
 regress : ∀ {U} (P : ℕ → U ̇)
         → ((n : ℕ) → P (succ n) → P n)
-        → (n : ℕ) (m : ℕ) → m < n → P n → P m
-regress P ρ zero m () p
-regress P ρ (succ n) m l p = cases (λ (l' : m < n) → IH m l' (ρ n p))
-                                   (λ (r : m ≡ n) → back-transport P r (ρ n p))
-                                   (_<_-split m n l)
+        → (n : ℕ) (m : ℕ) → m ≤ n → P n → P m
+regress P ρ zero m l p = back-transport P (unique-minimal m l) p
+regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
+                                    (λ (r : m ≡ succ n) → back-transport P r p) 
+                                    (≤-split m n l)
  where
-  IH : (m : ℕ) → m < n → P n → P m
+  IH : (m : ℕ) → m ≤ n → P n → P m
   IH = regress P ρ n 
 
-_<_-is-well-founded : (m : ℕ) → is-accessible _<_ m
-_<_-is-well-founded zero     = next zero     (λ y l → unique-from-𝟘 l)
-_<_-is-well-founded (succ m) = next (succ m) (τ (_<_-is-well-founded m))
+<-is-well-founded : (m : ℕ) → is-accessible _<_ m
+<-is-well-founded zero     = next zero     (λ y l → unique-from-𝟘 l)
+<-is-well-founded (succ m) = next (succ m) (τ (<-is-well-founded m))
  where
   τ : is-accessible _<_ m → (n : ℕ) → n < succ m → is-accessible _<_ n
   τ a n u = cases (λ (v : n < m) → prev _<_ m a n v)
                   (λ (p : n ≡ m) → back-transport (is-accessible _<_) p a)
-                  (_<_-split n m u)
+                  (<-split n m u)
 
 course-of-values-induction : ∀ {U} (P : ℕ → U ̇)
                            → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
                            → (n : ℕ) → P n
-course-of-values-induction = transfinite-induction _<_ _<_-is-well-founded
+course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
-_<_-is-extensional : is-extensional _<_
-_<_-is-extensional zero     zero     f g = refl
-_<_-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-minimal n))
-_<_-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-minimal m))
-_<_-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
+<-is-extensional : is-extensional _<_
+<-is-extensional zero     zero     f g = refl
+<-is-extensional zero     (succ n) f g = unique-from-𝟘 (g zero (zero-minimal n))
+<-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-minimal m))
+<-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
 
 ℕ-is-ordinal : is-ordinal _<_
-ℕ-is-ordinal = _<_-is-well-founded , _<_-is-extensional , _<_-trans
+ℕ-is-ordinal = <-is-well-founded , <-is-extensional , <-trans
 
 \end{code}
