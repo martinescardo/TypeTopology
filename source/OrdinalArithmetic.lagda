@@ -4,7 +4,7 @@ Martin Escardo, 21 June 2018
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module OrdinalConstructions where
+module OrdinalArithmetic where
 
 open import SpartanMLTT hiding (_≤_)
 open import Ordinals hiding (_≤_)
