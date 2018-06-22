@@ -50,7 +50,7 @@ data 𝟘 : U₀ ̇ where
 
 unique-from-𝟘 : ∀ {U} {A : U ̇} → 𝟘 → A
 unique-from-𝟘 = λ ()
-
+ 
 𝟘-elim = unique-from-𝟘
 
 \end{code}
@@ -74,7 +74,7 @@ such cases.
 
 \begin{code}
 
-record Σ {U V : Universe} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
+record Σ {U V} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
   constructor _,_
   field
    pr₁ : X
@@ -114,7 +114,7 @@ Binary sums
 
 \begin{code}
 
-data _+_ {U V : Universe} (X : U ̇) (Y : V ̇) : U ⊔ V ̇ where
+data _+_ {U V} (X : U ̇) (Y : V ̇) : U ⊔ V ̇ where
   inl : X → X + Y
   inr : Y → X + Y
 
@@ -195,7 +195,7 @@ Equality (more in the module UF).
 
 \begin{code}
 
-data _≡_ {U : Universe} {X : U ̇} : X → X → U ̇ where
+data _≡_ {U} {X : U ̇} : X → X → U ̇ where
   refl : {x : X} → x ≡ x
 
 Id : ∀ {U} {X : U ̇} → X → X → U ̇

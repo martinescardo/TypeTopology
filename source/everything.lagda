@@ -278,6 +278,7 @@ import NaturalsOrder
 import NonCollapsibleFamily
 import OmniscientTypes
 import Ordinals
+import OrdinalConstructions
 import OrdinalCodes
 import PlusOneLC
 import PropTychonoff
@@ -310,12 +311,12 @@ import UF-KrausLemma
 import UF-LeftCancellable
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
-import UF-Retracts-FunExt
 import UF-Retracts
+import UF-Retracts-FunExt
 import UF-SetExamples
+import UF-Subsingletons
 import UF-Subsingletons-Equiv
 import UF-Subsingletons-FunExt
-import UF-Subsingletons
 import UF-Subsingletons-Retracts
 import UF-Two-Prop-Density
 import UF-UA-FunExt
