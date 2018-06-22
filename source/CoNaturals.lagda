@@ -76,10 +76,10 @@ open import SpartanMLTT
 open import GenericConvergentSequence
 
 Zero' : 𝟙 + ℕ∞
-Zero' = inl *
+Zero' = inl {U₀} {U₀} *
 
 Pred' : ℕ∞ → 𝟙 + ℕ∞
-Pred' u = inr(Pred u)
+Pred' u = inr {U₀} {U₀} (Pred u)
 
 P : ℕ∞ → 𝟙 + ℕ∞
 P u = 𝟚-cases Zero' (Pred' u) (positivity u)
@@ -90,7 +90,7 @@ P-Zero = refl
 P-Succ : (u : ℕ∞) → P(Succ u) ≡ inr u
 P-Succ u = ap inr Pred-Succ-u-is-u
 
-S : 𝟙 + ℕ∞ → ℕ∞
+S : 𝟙 {U₀} + ℕ∞ → ℕ∞
 S(inl *) = Zero
 S(inr u) = Succ u
 
@@ -127,7 +127,7 @@ P-lc : {u v : ℕ∞} → P u ≡ P v → u ≡ v
 P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
 
 𝟙+ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → 𝟙 + X → 𝟙 + Y
-𝟙+ f (inl s) = inl s
+𝟙+ f (inl s) = inl {U₀} s
 𝟙+ f (inr x) = inr(f x)
 
 

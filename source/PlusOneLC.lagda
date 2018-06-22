@@ -24,7 +24,7 @@ X ∖ a = Σ \(x : X) → x ≢ a
 add-and-remove-same-point : ∀ {U} {X : U ̇} →  X ≃ (X + 𝟙) ∖ (inr *)
 add-and-remove-same-point {U} {X} = f , ((g , fg) , (g , gf))
  where
-  f : X → (X + 𝟙) ∖ inr *
+  f : X → (X + 𝟙 {U}) ∖ inr *
   f x = (inl x , λ ())
   g : (X + 𝟙) ∖ inr * → X
   g (inl x , u) = x

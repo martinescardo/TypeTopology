@@ -194,7 +194,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
   Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) (e (j x)) (x , refl)
 
-  Π-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙
+  Π-extension-out-of-range : ∀ {W} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {W}
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ) 
 
   Σ-extension-in-range : is-embedding j → (x : X) → f∖j(j x) ≃ f x

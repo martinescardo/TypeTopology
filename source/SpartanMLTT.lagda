@@ -46,9 +46,9 @@ Empty type.
 
 \begin{code}
 
-data 𝟘 : U₀ ̇ where
+data 𝟘 {U} : U ̇ where
 
-unique-from-𝟘 : ∀ {U} {A : U ̇} → 𝟘 → A
+unique-from-𝟘 : ∀ {U V} {A : U ̇} → 𝟘 {V} → A
 unique-from-𝟘 = λ ()
  
 𝟘-elim = unique-from-𝟘
@@ -59,11 +59,11 @@ The one-element type is defined by induction with one case:
 
 \begin{code}
 
-data 𝟙 : U₀ ̇ where
+data 𝟙 {U} : U ̇ where
  * : 𝟙 
 
-unique-to-𝟙 : ∀ {U} {A : U ̇} → A → 𝟙
-unique-to-𝟙 a = *
+unique-to-𝟙 : ∀ {U V} {A : U ̇} → A → 𝟙 {V}
+unique-to-𝟙 {U} {V} a = * {V}
 
 \end{code}
 
@@ -137,14 +137,15 @@ Some basic Curry--Howard logic.
 
 \begin{code}
 
+¬_ : ∀ {U} → U ̇ → U ̇
+¬ A = A → 𝟘 {U₀}
+
 decidable : ∀ {U} → U ̇ → U ̇
-decidable A = A + (A → 𝟘)
+decidable A = A + ¬ A
 
 _⇔_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 A ⇔ B = (A → B) × (B → A)
 
-¬_ : ∀ {U}→ U ̇ → U ̇
-¬ A = A → 𝟘
 
 dual : ∀ {U V W} {X : U ̇} {Y : V ̇} (R : W ̇) → (X → Y) → (Y → R) → (X → R)
 dual R f p = p ∘ f
@@ -202,7 +203,7 @@ Id : ∀ {U} {X : U ̇} → X → X → U ̇
 Id = _≡_
 
 _≢_ : ∀ {U} {X : U ̇} → (x y : X) → U ̇
-x ≢ y = x ≡ y → 𝟘
+x ≢ y = ¬(x ≡ y)
 
 Jbased : ∀ {U V} {X : U ̇} (x : X) (A : (y : X) → x ≡ y → V ̇)
        → A x refl → (y : X) (r : x ≡ y) → A y r
@@ -282,10 +283,10 @@ the moment:
 
 \begin{code}
 
-+disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inl x ≡ inr y → 𝟘
++disjoint : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → ¬(inl x ≡ inr y)
 +disjoint ()
 
-+disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → inr y ≡ inl x → 𝟘
++disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → ¬(inr y ≡ inl x)
 +disjoint' ()
 
 inl-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
@@ -298,8 +299,8 @@ inr-injective refl = refl
 
 \begin{code}
 
-𝟙-all-* : (x : 𝟙) → x ≡ *
-𝟙-all-* * = refl 
+𝟙-all-* : ∀ {U} (x : 𝟙) → x ≡ *
+𝟙-all-* {U} * = refl {U}
 
 equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
               → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A

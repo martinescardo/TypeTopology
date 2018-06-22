@@ -1210,12 +1210,12 @@ strongly-𝟚-overt-clopen-projections X c A p a = g (c (λ x → p (a , x)))
     h : (Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ \(x : X) → p (a , x) ≡ ₀
     h ((a' , x) , (r , s)) = x , transport (λ a' → p (a' , x) ≡ ₀) s r
 
-clopen-projections-strongly-𝟚-overt : ∀ {U} (X : U ̇)
+clopen-projections-strongly-𝟚-overt : ∀ {U W} (X : U ̇)
                                     → (∀ {V} (A : V ̇) → is-clopen-map(fst A X))
                                     → strongly-𝟚-overt X
-clopen-projections-strongly-𝟚-overt X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
+clopen-projections-strongly-𝟚-overt {U} {W} X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
  where
-  g : decidable (∃ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
+  g : decidable (∃ \(z : 𝟙 {W} × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
     → decidable (∃ \(x : X) → p x ≡ ₀)
   g (inl e) = inl (ptfunct h e)
    where

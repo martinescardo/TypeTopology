@@ -289,8 +289,7 @@ equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y
                                   → (Y → is-vv-equiv f) → is-vv-equiv f
 equiv-can-assume-pointed-codomain f φ y = φ y y
 
-maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : X → 𝟘)
-                     → is-vv-equiv f
+maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : ¬ X) → is-vv-equiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
 negation-is-equiv-𝟘 : ∀ {U} {X : U ̇} → is-empty X ⇔ X ≃ 𝟘
@@ -305,8 +304,8 @@ And similarly, with similar a observation:
 
 \begin{code}
 
-is-singleton-is-equiv-𝟙 : ∀ {U} {X : U ̇} → is-singleton X ⇔ X ≃ 𝟙
-is-singleton-is-equiv-𝟙 {U} {X} = forth , back
+is-singleton-is-equiv-𝟙 : ∀ {U V} {X : U ̇} → is-singleton X ⇔ X ≃ 𝟙 {V}
+is-singleton-is-equiv-𝟙 {U} {V} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙
   forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-* x)⁻¹)) , ((λ _ → x₀) , φ))

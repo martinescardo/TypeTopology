@@ -124,8 +124,8 @@ using density.
 
 \begin{code}
 
-one-searchable : searchable 𝟙
-one-searchable p = * , f
+one-searchable : ∀ {U} → searchable 𝟙
+one-searchable {U} p = * {U} , f
  where 
   f : (r : p * ≡ ₁) (x : 𝟙) → p x ≡ ₁
   f r * = r

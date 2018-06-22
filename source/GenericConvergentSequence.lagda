@@ -298,7 +298,7 @@ not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma t = claim-∞ t (not-ℕ-is-∞ fe (claim t)) 
 
 under𝟙 : ℕ + 𝟙 → ℕ∞
-under𝟙 = cases under (λ _ → ∞)
+under𝟙 = cases {U₀} {U₀} under (λ _ → ∞)
 
 under𝟙-embedding : funext₀ → is-embedding under𝟙
 under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-embedding fe) g d

@@ -95,10 +95,10 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
       GF' : (x : X) → H(F w) x ≡ w x
       GF' x = hf x (w x)
   
-equiv[𝟙×Y≃Y] : ∀ {U} {Y : U ̇} → 𝟙 × Y ≃ Y
-equiv[𝟙×Y≃Y] {U} {Y} = (f , (g , fg) , (g , gf))
+equiv[𝟙×Y≃Y] : ∀ {U V} {Y : U ̇} → 𝟙 × Y ≃ Y
+equiv[𝟙×Y≃Y] {U} {V} {Y} = (f , (g , fg) , (g , gf))
   where 
-    f : 𝟙 × Y → Y
+    f : 𝟙 {V} × Y → Y
     f (* , y) = y
     g : Y → 𝟙 × Y 
     g y = (* , y)
@@ -120,10 +120,10 @@ equiv[X×Y≃Y×X] {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
     gf : ∀ t → g (f t) ≡ t
     gf t = refl
   
-equiv[Y×𝟙≃Y] : ∀ {U} {Y : U ̇} → Y × 𝟙 ≃ Y
-equiv[Y×𝟙≃Y] {U} {Y} =
+equiv[Y×𝟙≃Y] : ∀ {U V} {Y : U ̇} → Y × 𝟙 ≃ Y
+equiv[Y×𝟙≃Y] {U} {V} {Y} =
               Y × 𝟙 ≃⟨ equiv[X×Y≃Y×X] ⟩
-              𝟙 × Y ≃⟨ equiv[𝟙×Y≃Y] ⟩
+              𝟙 × Y ≃⟨ equiv[𝟙×Y≃Y] {U} {V} ⟩
               Y ■
 
 equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] : ∀ {U V W T} {X : U ̇} {X' : V ̇} {Y : W ̇} {Y' : T ̇}
@@ -175,10 +175,10 @@ March 2018
     η (inl x) = refl
     η (inr y) = refl
 
-𝟘-rneutral : ∀ {U} {X : U ̇} → X ≃ (X + 𝟘)
-𝟘-rneutral {U} {X} = f , (g , ε) , (g , η)
+𝟘-rneutral : ∀ {U V} {X : U ̇} → X ≃ (X + 𝟘)
+𝟘-rneutral {U} {V} {X} = f , (g , ε) , (g , η)
   where
-    f : X → X + 𝟘
+    f : X → X + 𝟘 {V}
     f = inl
     g : X + 𝟘 → X
     g (inl x) = x
@@ -189,13 +189,13 @@ March 2018
     η : (x : X) → (g ∘ f) x ≡ x
     η x = refl
 
-𝟘-rneutral' : ∀ {U} {X : U ̇} → (X + 𝟘) ≃ X 
-𝟘-rneutral' = ≃-sym 𝟘-rneutral
+𝟘-rneutral' : ∀ {U V} {X : U ̇} → (X + 𝟘) ≃ X 
+𝟘-rneutral' {U} {V} = ≃-sym (𝟘-rneutral {U} {V})
 
-𝟘-lneutral : ∀ {U} {X : U ̇} → (𝟘 + X) ≃ X 
-𝟘-lneutral {U} {X} = (𝟘 + X) ≃⟨ +comm ⟩
-                     (X + 𝟘) ≃⟨ 𝟘-rneutral' ⟩
-                      X ■
+𝟘-lneutral : ∀ {U V} {X : U ̇} → (𝟘 + X) ≃ X 
+𝟘-lneutral {U} {V} {X} = (𝟘 + X) ≃⟨ +comm ⟩
+                         (X + 𝟘) ≃⟨ 𝟘-rneutral' {U} {V} ⟩
+                         X ■
     
 +assoc : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {Z : W ̇} → ((X + Y) + Z) ≃ (X + (Y + Z))
 +assoc {U} {V} {W} {X} {Y} {Z} = f , (g , ε) , (g , η)
@@ -217,10 +217,10 @@ March 2018
     η (inl (inr x)) = refl
     η (inr x)       = refl
 
-×𝟘 : ∀ {U} {X : U ̇} → 𝟘 ≃ X × 𝟘
-×𝟘 {U} {X} = f , (g , ε) , (g , η)
+×𝟘 : ∀ {U V W} {X : U ̇} → 𝟘 ≃ X × 𝟘
+×𝟘 {U} {V} {W} {X} = f , (g , ε) , (g , η)
   where
-    f : 𝟘 → X × 𝟘
+    f : 𝟘 {V} → X × 𝟘 {W}
     f ()
     g : X × 𝟘 → 𝟘
     g (x , ())
@@ -229,10 +229,10 @@ March 2018
     η : (u : 𝟘) → (g ∘ f) u ≡ u
     η ()
 
-𝟙distr : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X × Y + X) ≃ X × (Y + 𝟙)
-𝟙distr {U} {V} {X} {Y} = f , (g , ε) , (g , η)
+𝟙distr : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} → (X × Y + X) ≃ X × (Y + 𝟙)
+𝟙distr {U} {V} {W} {X} {Y} = f , (g , ε) , (g , η)
   where
-    f : X × Y + X → X × (Y + 𝟙)
+    f : X × Y + X → X × (Y + 𝟙 {W})
     f (inl (x , y)) = x , inl y
     f (inr x)       = x , inr *
     g : X × (Y + 𝟙) → X × Y + X

@@ -89,8 +89,8 @@ is-center-of-contraction = is-the-only-element
 is-contr : ∀ {U} → U ̇ → U ̇
 is-contr = is-singleton
 
-𝟙-is-singleton : is-singleton 𝟙
-𝟙-is-singleton = * , (λ x → (𝟙-all-* x)⁻¹)
+𝟙-is-singleton : ∀ {U} → is-singleton 𝟙
+𝟙-is-singleton {U} = * , (λ (x : 𝟙 {U}) → (𝟙-all-* x)⁻¹)
 
 is-singleton-is-prop : ∀ {U} {X : U ̇} → is-singleton X → is-prop X
 is-singleton-is-prop {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
@@ -110,13 +110,13 @@ The two prototypical propositions:
 
 \begin{code}
 
-𝟘-is-prop : is-prop 𝟘
-𝟘-is-prop x y = unique-from-𝟘 x
+𝟘-is-prop : ∀ {U} → is-prop 𝟘
+𝟘-is-prop {U} x y = unique-from-𝟘 {U} {U} x
 
-𝟙-is-prop : is-prop 𝟙
-𝟙-is-prop * * = refl
+𝟙-is-prop : ∀ {U} → is-prop 𝟙
+𝟙-is-prop {U} * * = refl {U}
 
-⊥ ⊤ : Ω
+⊥ ⊤ : ∀ {U} → Ω {U}
 ⊥ = 𝟘 , 𝟘-is-prop   -- false
 ⊤ = 𝟙 , 𝟙-is-prop   -- true
 
@@ -201,8 +201,8 @@ prop-is-identification-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → r
 prop-is-set : ∀ {U} {X : U ̇} → is-prop X → is-set X
 prop-is-set h = identification-collapsible-is-set(prop-is-identification-collapsible h)
 
-𝟘-is-collapsible : collapsible 𝟘
-𝟘-is-collapsible = (λ x → x) , (λ x → λ ())
+𝟘-is-collapsible : ∀ {U} → collapsible 𝟘
+𝟘-is-collapsible {U} = (id {U} {𝟘} , (λ x → λ ()))
 
 inhabited-is-collapsible : ∀ {U} {X : U ̇} → X → collapsible X
 inhabited-is-collapsible x = ((λ y → x) , λ y y' → refl)
@@ -219,7 +219,7 @@ below, the type X → 𝟘 is equivalent to the type X ≡ 𝟘
 \begin{code}
 
 is-empty : ∀ {U} → U ̇ → U ̇
-is-empty X = X → 𝟘
+is-empty X = ¬ X
 
 is-empty-is-collapsible : ∀ {U} {X : U ̇} → is-empty X → collapsible X
 is-empty-is-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
@@ -311,13 +311,13 @@ proposition is a proposition:
 
 \begin{code}
 
-sum-of-contradictory-props : ∀ {U V} {P : U ̇} {Q : V ̇}
+sum-of-contradictory-props : ∀ {U V W} {P : U ̇} {Q : V ̇}
                            → is-prop P → is-prop Q → (P → Q → 𝟘) → is-prop(P + Q)
-sum-of-contradictory-props {U} {V} {P} {Q} isp isq f = go
+sum-of-contradictory-props {U} {V} {W} {P} {Q} isp isq f = go
   where
    go : (x y : P + Q) → x ≡ y
    go (inl p) (inl p') = ap inl (isp p p')
-   go (inl p) (inr q)  = 𝟘-elim (f p q)
+   go (inl p) (inr q)  = 𝟘-elim {U ⊔ V} {W} (f p q)
    go (inr q) (inl p)  = 𝟘-elim (f p q)
    go (inr q) (inr q') = ap inr (isq q q')
 

@@ -76,8 +76,8 @@ omniscient-discrete-discrete' : ∀ {U V} {X : U ̇} {Y : V ̇} → funext U V
                              → omniscient X → discrete Y → discrete(X → Y)
 omniscient-discrete-discrete' fe φ d = omniscient-discrete-discrete fe φ (λ x → d)
 
-𝟘-omniscient : omniscient 𝟘
-𝟘-omniscient p = inr (λ x → 𝟘-elim x)
+𝟘-omniscient : ∀ {U} → omniscient 𝟘
+𝟘-omniscient {U} p = inr (λ x → 𝟘-elim {U₀} {U} x)
 
 omniscient-decidable : ∀ {U} (X : U ̇) → omniscient X → decidable X
 omniscient-decidable X φ = f a

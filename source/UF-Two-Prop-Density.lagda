@@ -98,7 +98,7 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
         c : p ≢ ⊤
         c u = zero-is-not-one (t ⁻¹ ∙ ap f u ∙ s)
 
-𝟚inΩ : 𝟚 → Ω
+𝟚inΩ : 𝟚 → Ω {U₀}
 𝟚inΩ ₀ = ⊥
 𝟚inΩ ₁ = ⊤
 

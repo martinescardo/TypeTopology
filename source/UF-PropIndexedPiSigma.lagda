@@ -31,12 +31,12 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf : (φ : Π Y) → g(f φ) ≡ φ
   gf φ = dfunext fe (gf' φ)
 
-prop-indexed-product-one : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
+prop-indexed-product-one : ∀ {U V W T} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
                          → Π Y ≃ 𝟙
-prop-indexed-product-one {U} {V} fe {X} {Y} v = unique-to-𝟙 , (g , fg) , (g , gf)
+prop-indexed-product-one {U} {V} {W} {T} fe {X} {Y} v = unique-to-𝟙 , (g , fg) , (g , gf)
  where
-  g : 𝟙 → Π Y
-  g * x = unique-from-𝟘 (v x)
+  g : 𝟙 {W} → Π Y
+  g * x = unique-from-𝟘 {V} {T} (v x)
   fg : (u : 𝟙) → * ≡ u 
   fg * = refl
   gf : (φ : Π Y) → g * ≡ φ
@@ -68,11 +68,11 @@ prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf : (σ : Σ Y) → g(f σ) ≡ σ
   gf (x , y) = to-Σ-≡ a x (f (x , y)) y (hp a x) (lemma₂ x y (hp x a))
 
-prop-indexed-sum-zero : ∀ {U V} {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
+prop-indexed-sum-zero : ∀ {U V W} {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
                       → Σ Y ≃ 𝟘
-prop-indexed-sum-zero {U} {V} {X} {Y} φ = f , (g , fg) , (g , gf)
+prop-indexed-sum-zero {U} {V} {W} {X} {Y} φ = f , (g , fg) , (g , gf)
  where
-  f : Σ Y → 𝟘
+  f : Σ Y → 𝟘 {W}
   f (x , y) = φ x
   g : 𝟘 → Σ Y
   g ()

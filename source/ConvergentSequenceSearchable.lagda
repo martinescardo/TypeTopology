@@ -120,5 +120,4 @@ module _ (fe' : ∀ U V → funext U V) (pt : PropTrunc) where
  ℕ∞-is-𝟚-compact : 𝟚-compact ℕ∞
  ℕ∞-is-𝟚-compact = 𝟚-so-c ℕ∞-is-strongly-𝟚-overt
 
-
 \end{code}

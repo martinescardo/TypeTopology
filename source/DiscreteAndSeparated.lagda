@@ -270,10 +270,10 @@ qinvs-preserve-isolatedness {U} {V} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y)
 equivalences-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → is-equiv f → (x : X) → isolated x → isolated (f x)
 equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (is-equiv-qinv f e)
 
-isolated-added-point : ∀ {U} {X : U ̇} → isolated {U} {X + 𝟙} (inr *)
-isolated-added-point {U} {X} = h
+isolated-added-point : ∀ {U V} {X : U ̇} → isolated (inr *)
+isolated-added-point {U} {V} {X} = h
  where
-  h :  (y : X + 𝟙) → decidable (inr * ≡ y)
+  h :  (y : X + 𝟙 {V}) → decidable {U ⊔ V} (inr * ≡ y)
   h (inl x) = inr (λ ())
   h (inr *) = inl refl
 \end{code}
