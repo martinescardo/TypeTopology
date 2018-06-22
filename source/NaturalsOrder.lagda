@@ -142,6 +142,6 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 <-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
 
 ℕ-is-ordinal : is-ordinal _<_
-ℕ-is-ordinal = <-is-well-founded , <-is-extensional , <-trans
+ℕ-is-ordinal = <-is-prop-valued , <-is-well-founded , <-is-extensional , <-trans
 
 \end{code}

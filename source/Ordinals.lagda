@@ -19,7 +19,7 @@ module Ordinals {U V : Universe}
                 where
 
 is-prop-valued-order : U ⊔ V ̇
-is-prop-valued-order = ({x y : X} → is-prop(x < y))
+is-prop-valued-order = ((x y : X) → is-prop(x < y))
 
 data is-accessible : X → U ⊔ V ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
@@ -70,9 +70,9 @@ is-transitive = (x y z : X) → x < y → y < z → x < z
 _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued-order → {x y : X} → is-prop(x ≼ y)
-≼-prop-valued-order fe isp = is-prop-exponential-ideal (fe U V)
-                               (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp))
+≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued-order → (x y : X) → is-prop(x ≼ y)
+≼-prop-valued-order fe isp x y = is-prop-exponential-ideal (fe U V)
+                               (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp u y))
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -94,7 +94,7 @@ extensional'-extensional : is-extensional' → is-extensional
 extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
 
 is-ordinal : U ⊔ V ̇
-is-ordinal = is-well-founded × is-extensional × is-transitive
+is-ordinal = is-prop-valued-order × is-well-founded × is-extensional × is-transitive
 
 is-accessible-is-prop : (∀ U V → funext U V)
                       → (x : X) → is-prop(is-accessible x)
@@ -127,8 +127,8 @@ extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
   f {x} {y} p = e x y (transport (λ z → x ≼ z) p (≼-refl {x}))
                       (transport (λ z → z ≼ x) p (≼-refl {x}))
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
-  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp l l')
-                                             (≼-prop-valued-order fe isp m m')
+  ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp x y l l')
+                                             (≼-prop-valued-order fe isp y x m m')
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
@@ -149,12 +149,15 @@ transitive-is-prop fe isp =
             (λ y → is-prop-exponential-ideal (fe U V)
                      (λ z → is-prop-exponential-ideal (fe V V)
                               (λ l → is-prop-exponential-ideal (fe V V)
-                                       (λ m → isp {x} {z})))))
+                                       (λ m → isp x z)))))
 
 ordinal-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-ordinal
-ordinal-is-prop fe isp = props-closed-× (well-founded-is-prop fe)
-                                        (props-closed-× (extensional-is-prop fe isp)
-                                                        (transitive-is-prop fe isp))
+ordinal-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
+                                          λ x → is-prop-exponential-ideal (fe U V)
+                                                  (λ y → is-prop-is-prop (fe V V)))
+                          (props-closed-× (well-founded-is-prop fe)
+                            (props-closed-× (extensional-is-prop fe isp)
+                                            (transitive-is-prop fe isp)))
 
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
@@ -226,14 +229,17 @@ well-founded₂-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V))
                                      (λ s → is-prop-exponential-ideal (fe U U₀) (λ x → 𝟚-is-set)))
 
 is-ordinal₂ : U ⊔ V ̇
-is-ordinal₂ = is-well-founded₂ × is-extensional × is-transitive
+is-ordinal₂ = is-prop-valued-order × is-well-founded₂ × is-extensional × is-transitive
 
 ordinal-ordinal₂ : is-ordinal → is-ordinal₂
-ordinal-ordinal₂ (w , e , t) = (well-founded-Wellfounded₂ w) , e , t
+ordinal-ordinal₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
 ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-ordinal₂
-ordinal₂-is-prop fe isp = props-closed-× (well-founded₂-is-prop fe)
-                                         (props-closed-× (extensional-is-prop fe isp)
-                                                         (transitive-is-prop fe isp))
+ordinal₂-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
+                                          λ x → is-prop-exponential-ideal (fe U V)
+                                                  (λ y → is-prop-is-prop (fe V V)))
+                           (props-closed-× (well-founded₂-is-prop fe)
+                             (props-closed-× (extensional-is-prop fe isp)
+                                             (transitive-is-prop fe isp)))
 
 \end{code}

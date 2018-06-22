@@ -452,7 +452,7 @@ open import Ordinals hiding (_≤_) hiding (≤-refl)
   γ = incl-lc fe (dfunext fe h)
 
 ℕ∞-ordinal₂ : funext₀ → is-ordinal₂ _≺_
-ℕ∞-ordinal₂ fe = (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
+ℕ∞-ordinal₂ fe = (≺-prop-valued fe) , (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
 
 under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
 under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
@@ -470,7 +470,7 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
       s = Succ-criterion fe {u} {n} q p
 
 ≺-cotransitive : funext₀ → cotransitive _≺_
-≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁)
+≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁) 
  where
   g : decidable(n ⊏ w) → (u ≺ w) + (w ≺ v)
   g (inl a) = inl (n , r , a)

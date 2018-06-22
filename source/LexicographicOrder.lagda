@@ -17,6 +17,7 @@ module LexicographicOrder where
 
 open import SpartanMLTT hiding (_≤_)
 open import UF-Base
+open import UF-Subsingletons
 
 bin-rel : ∀ {U} → U ̇ → U ′ ̇
 bin-rel {U} X = X → X → U ̇
@@ -132,11 +133,6 @@ module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} �
    f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
 
-{- TODO
- lex-prod-ex : extensional _<_
-                → ({x : X} → extensional (_≺_ {x}))
-                → extensional _⊏_
- lex-prod-ex = {!!}
--}
-
 \end{code}
+
+-- lixo
