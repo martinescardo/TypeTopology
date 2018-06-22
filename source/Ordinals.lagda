@@ -132,6 +132,9 @@ extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
+ordinal-gives-is-set : (∀ U V → funext U V) → is-prop-valued-order → is-ordinal → is-set X
+ordinal-gives-is-set fe isp (p , w , e , t) = extensional-gives-is-set fe p e
+
 extensional-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-extensional
 extensional-is-prop fe isp e e' =
  dfunext (fe U (U ⊔ V))
@@ -238,8 +241,8 @@ ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-pr
 ordinal₂-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
                                           λ x → is-prop-exponential-ideal (fe U V)
                                                   (λ y → is-prop-is-prop (fe V V)))
-                           (props-closed-× (well-founded₂-is-prop fe)
-                             (props-closed-× (extensional-is-prop fe isp)
-                                             (transitive-is-prop fe isp)))
+                             (props-closed-× (well-founded₂-is-prop fe)
+                               (props-closed-× (extensional-is-prop fe isp)
+                                               (transitive-is-prop fe isp)))
 
 \end{code}

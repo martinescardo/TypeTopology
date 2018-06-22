@@ -96,20 +96,20 @@ Done sometime in 2013 in another developement, imported 18th June
 
 open import Ordinals
 
-module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} → bin-rel(Y x)) where
+module lex-things {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} → bin-rel(Y x)) where
 
  _⊏_ : bin-rel (Σ Y)
  _⊏_ = slex-prod _<_ _≺_
 
  lex-prod-wf : is-well-founded _<_
-             → ({x : X} → Well-founded (_≺_ {x}))
+             → ({x : X} → is-well-founded (_≺_ {x}))
              → is-well-founded _⊏_
  lex-prod-wf w w' (x , y) = φ x y
   where
    P : Σ Y → U ⊔ V ̇
    P = is-accessible _⊏_
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
-   γ x step = w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f)) 
+   γ x step = transfinite-induction _≺_ w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
     where
      ψ : (y : Y x) → ((y' : Y x) → y' ≺ y → P (x , y')) → (z' : Σ Y) → z' ⊏ (x , y) → P z'
      ψ y f (x' , y') (inl l) = step x' l y'
@@ -135,4 +135,40 @@ module _ {U V} {X : U ̇} {Y : X → V ̇} (_<_ : bin-rel X) (_≺_ : {x : X} �
 
 \end{code}
 
--- lixo
+What about extensionality of the lexicographic order? The
+non-dependent case is easy. I don't know whether it holds for the
+general, dependent, case. I think it needs further assumptions.
+
+
+\begin{code}
+
+{-
+module _ {U V} (X : U ̇) (Y : V ̇ ) (_<_ : bin-rel X) (_≺_ : bin-rel Y) where
+
+ open lex-things {U} {V} {X} {λ _ → Y} _<_ (λ {_} → _≺_)
+
+ lex-prod-ext : is-extensional _<_
+             → is-extensional _≺_
+             → is-extensional _⊏_
+ lex-prod-ext e e' (a , b) (x , y) f g = ×-≡ p q
+  where
+   f' : (u : X) → u < a → u < x
+   f' u l = cases (λ (m : u < x) → m)
+                  (λ (σ : Σ \(r : u ≡ x) → transport (λ _ → Y) r b ≺ y) → {!!})
+                  (f (u , b) (inl l))
+   g' : (u : X) → u < x → u < a
+   g' u = {!!}
+   p : a ≡ x
+   p = e a x f' g'
+   q : b ≡ y
+   q = {!!}
+-}
+
+{-
+ lex-prod-ordinal : is-ordinal _<_ → ({x : X} → is-ordinal (_≺_ {x})) → is-ordinal _⊏_
+ lex-prod-ordinal (isp , w₀ , e₀ , t₀) f = lex-prod-wf w₀ (λ {x} → pr₁ {!f!}) ,
+                                     lex-prod-ext e₀ {!λ {x} → pr₁(f {x})!} ,
+                                     lex-prod-trans t₀ {!λ {x} → pr₁(f {x})!}
+-}
+
+\end{code}
