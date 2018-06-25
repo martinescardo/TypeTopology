@@ -401,11 +401,17 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 open import NaturalsOrder
 
-⊏-reflect : (m n : ℕ) →  m ⊏ under n → m < n
-⊏-reflect zero zero ()
-⊏-reflect zero (succ n) l = zero-minimal n
-⊏-reflect (succ m) zero ()
-⊏-reflect (succ m) (succ n) l = ⊏-reflect m n l
+<-to-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
+<-to-⊏ zero zero ()
+<-to-⊏ zero (succ n) l = refl
+<-to-⊏ (succ m) zero ()
+<-to-⊏ (succ m) (succ n) l = <-to-⊏ m n l
+
+⊏-to-< : (m n : ℕ) →  m ⊏ under n → m < n
+⊏-to-< zero zero ()
+⊏-to-< zero (succ n) l = zero-minimal n
+⊏-to-< (succ m) zero ()
+⊏-to-< (succ m) (succ n) l = ⊏-to-< m n l
 
 ⊏-back : (u : ℕ∞) (n : ℕ) → succ n ⊏ u → n ⊏ u
 ⊏-back = pr₂
@@ -413,31 +419,31 @@ open import NaturalsOrder
 ⊏-trans'' : (u : ℕ∞) (n : ℕ) → (m : ℕ) → m ≤ n → n ⊏ u → m ⊏ u
 ⊏-trans'' u = regress (λ n → n ⊏ u) (⊏-back u) 
 
-⊏-trans' : (u : ℕ∞) (n : ℕ) → (m : ℕ) → m < n → n ⊏ u → m ⊏ u
-⊏-trans' u n m l = ⊏-trans'' u n m (≤-trans m (succ m) n (≤-succ m) l)
+⊏-trans' : (m : ℕ) (n : ℕ) (u : ℕ∞)  → m < n → n ⊏ u → m ⊏ u
+⊏-trans' m n u l = ⊏-trans'' u n m (≤-trans m (succ m) n (≤-succ m) l)
 
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
-⊏-trans m n u a = ⊏-trans' u n m (⊏-reflect m n a)
-
-≺-trans : (u v w : ℕ∞) → u ≺ v → v ≺ w → u ≺ w
-≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
+⊏-trans m n u a = ⊏-trans' m n u (⊏-to-< m n a)
 
 open import Ordinals hiding (_≤_) hiding (≤-refl)
 
-≺-well-founded₂ : funext₀ → is-well-founded₂ _≺_
-≺-well-founded₂ fe p φ = ℕ∞-density fe a b
+≺-trans : is-transitive _≺_
+≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
+
+finite-accessible : (n : ℕ) → is-accessible _≺_ (under n)
+finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (under n)) φ
  where
-  γ : (n : ℕ) → ((m : ℕ) → m < n → p (under m) ≡ ₁) → p (under n) ≡ ₁
-  γ n g = φ (under n) h
+  φ : (n : ℕ) → ((m : ℕ) → m < n → is-accessible _≺_ (under m)) → is-accessible _≺_ (under n)
+  φ n σ = next (under n) τ
    where
-    h : (u : ℕ∞) → u ≺ under n → p u ≡ ₁
-    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-reflect m n l))
-  a : (n : ℕ) → p(under n) ≡ ₁
-  a = course-of-values-induction (λ n → p(under n) ≡ ₁) γ
-  f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
-  f u (n , r , l) = back-transport (λ v → p v ≡ ₁) r (a n)
-  b : p ∞ ≡ ₁
-  b = φ ∞ f
+    τ : (u : ℕ∞) → u ≺ under n → is-accessible _≺_ u
+    τ u (m , r , l) = back-transport (is-accessible _≺_) r (σ m (⊏-to-< m n l))
+
+≺-well-founded : is-well-founded _≺_
+≺-well-founded v = next v σ
+ where
+  σ : (u : ℕ∞) → u ≺ v → is-accessible _≺_ u
+  σ u (n , r , l) = back-transport (is-accessible _≺_) r (finite-accessible n)
 
 ≺-extensional : funext₀ → is-extensional _≺_
 ≺-extensional fe u v l m = γ
@@ -450,6 +456,24 @@ open import Ordinals hiding (_≤_) hiding (≤-refl)
   h i = ≤₂-anti (f i) (g i)
   γ : u ≡ v
   γ = incl-lc fe (dfunext fe h)
+
+ℕ∞-ordinal : funext₀ → is-ordinal _≺_
+ℕ∞-ordinal fe = (≺-prop-valued fe) , ≺-well-founded , (≺-extensional fe) , ≺-trans
+
+≺-well-founded₂ : funext₀ → is-well-founded₂ _≺_
+≺-well-founded₂ fe p φ = ℕ∞-density fe a b
+ where
+  γ : (n : ℕ) → ((m : ℕ) → m < n → p (under m) ≡ ₁) → p (under n) ≡ ₁
+  γ n g = φ (under n) h
+   where
+    h : (u : ℕ∞) → u ≺ under n → p u ≡ ₁
+    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-to-< m n l))
+  a : (n : ℕ) → p(under n) ≡ ₁
+  a = course-of-values-induction (λ n → p(under n) ≡ ₁) γ
+  f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
+  f u (n , r , l) = back-transport (λ v → p v ≡ ₁) r (a n)
+  b : p ∞ ≡ ₁
+  b = φ ∞ f
 
 ℕ∞-ordinal₂ : funext₀ → is-ordinal₂ _≺_
 ℕ∞-ordinal₂ fe = (≺-prop-valued fe) , (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
@@ -486,6 +510,27 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
     l = pr₁(pr₂ σ)
     s : w ≡ under m
     s = pr₂(pr₂ σ)
+
+{- TODO
+<-to-≺ : (m n : ℕ) → m < n → under m ≺ under n
+<-to-≺ = {!!}
+
+<-to-≺ : (m n : ℕ) → under m ≺ under n → m < n
+<-to-≺ = ?
+
+⊏-to-≺ : (m : ℕ) (u : ℕ∞) → m ⊏ u → under m ≺ u
+⊏-to-≺ = ?
+-}
+
+\end{code}
+
+Added 25 June 2018. This may be placed somewhere else in the future.
+Another version of N∞, to be investigated.
+
+\begin{code}
+
+Ν∞ : U₁ ̇
+Ν∞ = Σ \(A : ℕ → Ω) → (n : ℕ) → A (succ n) holds → A n holds
 
 \end{code}
 

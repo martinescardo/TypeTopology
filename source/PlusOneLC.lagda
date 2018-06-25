@@ -58,7 +58,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-is-equiv f (g , 
   f (inl y , u) = y
   f (inr * , u) = b
   g' : (y : Y) → decidable (inl b ≡ inl y) → (Y + 𝟙) ∖ (inl b)
-  g' y (inl p) = (inr * , λ ())
+  g' y (inl p) = (inr * , +disjoint')
   g' y (inr u) = (inl y , contrapositive (λ p → p ⁻¹) u)
   g : Y → (Y + 𝟙) ∖ (inl b)
   g y = g' y (i (inl y))
@@ -78,7 +78,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-is-equiv f (g , 
     φ : (p : inl b ≡ inl b) → i (inl b) ≡ inl p → g (f (inr * , u)) ≡ (inr * , u)
     φ p q = r ∙ to-Σ-≡'' (refl , (neg-is-prop (fe V U₀) _ _))
      where
-      r : g b ≡ (inr * , λ ())
+      r : g b ≡ (inr * , +disjoint')
       r = ap (g' b) q 
     ψ : (v : inl b ≢ inl b) → i (inl b) ≡ inr v → g (f (inr * , u)) ≡ (inr * , u)
     ψ v q = 𝟘-elim (v refl)
