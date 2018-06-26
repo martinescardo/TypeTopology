@@ -511,22 +511,27 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
     s : w ≡ under m
     s = pr₂(pr₂ σ)
 
--- Need to clean this up:
 ℕ∞-𝟚-order-separated : funext₀ → 𝟚-order-separated _≺_ 
-ℕ∞-𝟚-order-separated fe x y (n , r , l) = (λ z → incl z n ) , (back-transport (λ v → incl v n ≡ ₀) r (under-diagonal₀ n) , l) , h
+ℕ∞-𝟚-order-separated fe x y (n , r , l) =  p , t , h
  where
-  f : (u v : ℕ∞) → u ≺ v → incl u n ≤₂ incl v n
-  f u v (n' , r' , l') s = ⊏-trans' n n' v aa l'
+  p : ℕ∞ → 𝟚
+  p z = incl z n
+  t : (p x ≡ ₀) × (p y ≡ ₁)
+  t = (back-transport (λ z → p z ≡ ₀) r (under-diagonal₀ n) , l)
+  f : (u v : ℕ∞) → u ≺ v → p u ≤₂ p v
+  f u v (n' , r' , l') s = ⊏-trans' n n' v b l'
    where
-    aa : n < n'
-    aa = ⊏-coarser-than-< n n' (transport (λ w → incl w n ≡ ₁) r' s)
-  g : (u v : ℕ∞) → incl u n <₂ incl v n → u ≺ v
+    a : p (under n') ≡ ₁
+    a = transport (λ z → p z ≡ ₁) r' s
+    b : n < n'
+    b = ⊏-coarser-than-< n n' a
+  g : (u v : ℕ∞) → p u <₂ p v → u ≺ v
   g u v (a , b) = pr₁ c , pr₂(pr₂ c) , (⊏-trans'' v n (pr₁ c) (pr₁(pr₂ c)) b)
    where
     c : Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
     c = under-lemma fe u n a
     
-  h : (u v : ℕ∞) → (u ≺ v → incl u n ≤₂ incl v n) × (incl u n <₂ incl v n → u ≺ v)
+  h : (u v : ℕ∞) → (u ≺ v → p u ≤₂ p v) × (p u <₂ p v → u ≺ v)
   h u v = f u v , g u v
 
 {- TODO
