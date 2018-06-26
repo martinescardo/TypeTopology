@@ -238,6 +238,54 @@ inhabited-omniscient-implies-searchable {U} {X} x₀ φ p = lemma(φ p)
 
 Some closure properties now:
 
+As a warm-up, we discuss a construction on selection functions
+(X → R) → X, and generalized quantifiers (X → R) → R, which we
+generalize to get closure of searchable types under Σ.
+
+\begin{code}
+
+module _ {U} {V} {R : V ̇} where
+ 
+  quantifier : U ̇ → U ⊔ V ̇
+  quantifier X = (X → R) → R
+
+  quant-prod : {X : U ̇} {Y : X → U ̇} → quantifier X → ((x : X)  → quantifier (Y x)) → quantifier (Σ Y)
+  quant-prod φ γ p = φ(λ x → γ x (λ y → p(x , y)))
+
+  selection : U ̇ → U ⊔ V ̇
+  selection X = (X → R) → X
+
+  sel-prod : {X : U ̇} {Y : X → U ̇} → selection X → ((x : X) → selection (Y x)) → selection (Σ Y)
+  sel-prod {X} {Y} ε δ p = (x₀ , y₀)
+    where 
+     next : (x : X) → Y x
+     next x = δ x (λ y → p(x , y))
+     x₀ : X
+     x₀ = ε(λ x → p(x , next x))
+     y₀ : Y x₀
+     y₀ = next x₀ 
+
+\end{code}
+
+ Alternative, equivalent, construction:
+
+\begin{code}
+
+  overline : {X : U ̇} → selection X → quantifier X
+  overline ε p = p(ε p)
+
+  sel-prod' : {X : U ̇} {Y : X → U ̇} → selection X → ((x : X) → selection (Y x)) → selection (Σ Y)
+  sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
+   where 
+    x₀ : X
+    x₀ = ε(λ x → overline(δ x) (λ y → p(x , y)))
+    y₀ : Y x₀
+    y₀ = δ x₀ (λ y → p(x₀ , y))
+
+\end{code}
+
+Back to searchable sets:
+
 \begin{code}
 
 sums-preserve-searchability : ∀ {U V} {X : U ̇} {Y : X → V ̇}

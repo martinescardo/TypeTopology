@@ -206,4 +206,19 @@ module _ {U V W T} {X : U ̇} (_<_ : X → X → W ̇) {Y : V ̇} (_≺_ : Y →
    multiplication-prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
     ap inr (×-≡ (ordinal-gives-is-set _<_ fe p (p , w , e , t) r s) (p' b y l m))
 
+{- The following doesn't work without further assumptions:
+
+ multiplication-cotransitive : cotransitive _<_ → cotransitive _≺_ → cotransitive _⊏_
+ multiplication-cotransitive c c' (u , v) (a , b) (x , y) (inl l) = f(c u a x l)
+  where
+   f : (u < x) + (x < a) → ((u , v) ⊏ (x , y)) + ((x , y) ⊏ (a , b))
+   f (inl m) = inl (inl m)
+   f (inr m) = inr (inl m)
+ multiplication-cotransitive c c' (u , v) (a , b) (x , y) (inr (r , l)) = f (c' v b y l)
+   where
+   f : (v ≺ y) + (y ≺ b) → ((u , v) ⊏ (x , y)) + ((x , y) ⊏ (a , b))
+   f (inl m) = {!!}
+   f (inr m) = inl {!!}
+-}
+
 \end{code}
