@@ -6,7 +6,7 @@ Martin Escardo, 21 June 2018
 
 module OrdinalArithmetic where
 
-open import SpartanMLTT hiding (_≤_)
+open import SpartanMLTT
 open import Ordinals hiding (_≤_)
 open import UF-Base
 open import UF-Subsingletons

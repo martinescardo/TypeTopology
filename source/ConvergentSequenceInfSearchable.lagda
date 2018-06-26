@@ -25,7 +25,7 @@ open import GenericConvergentSequence
   α(succ n) = min𝟚 (α n) (p(under(succ n)))
 
   a : ℕ∞
-  a = (α , λ i → Lemma[minab≤a])
+  a = (α , λ i → Lemma[minab≤₂a])
 
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
   Dagger₀ 0 r =  ap (λ w → incl w 0) r

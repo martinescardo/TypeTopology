@@ -24,7 +24,7 @@ open import UF-FunExt
 
 module LPO (fe : ∀ U V → funext U V) where
 
-open import SpartanMLTT hiding (_≤_)
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

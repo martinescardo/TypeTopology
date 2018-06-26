@@ -4,7 +4,7 @@ Martin Escardo, started 5th May 2018
 
 module NaturalsOrder where
 
-open import SpartanMLTT hiding (_≤_) hiding (≤-anti) public
+open import SpartanMLTT
 
 _≤_ : ℕ → ℕ → U₀ ̇
 zero ≤ n        = 𝟙

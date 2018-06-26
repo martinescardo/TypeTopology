@@ -7,7 +7,7 @@ Ordinals like in the HoTT book and variations.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT hiding (_≤_)
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt

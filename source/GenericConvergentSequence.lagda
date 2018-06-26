@@ -14,7 +14,7 @@ lemmas.)
 
 module GenericConvergentSequence where
 
-open import SpartanMLTT renaming (_≤_ to _≤₂_) renaming (≤-anti to ≤₂-anti)
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -66,7 +66,7 @@ force-decreasing β (succ i) = min𝟚 (β(succ i)) (force-decreasing β i)
 
 force-decreasing-is-decreasing : (β : ℕ → 𝟚) → decreasing(force-decreasing β)
 force-decreasing-is-decreasing β zero     = Lemma[min𝟚ab≡₁→b≡₁] {β 1} {β zero}
-force-decreasing-is-decreasing β (succ i) = Lemma[minab≤b] {β (succ (succ i))} {force-decreasing β (succ i)}
+force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (succ (succ i))} {force-decreasing β (succ i)}
 
 force-decreasing-unchanged : (α : ℕ → 𝟚) → decreasing α → force-decreasing α ∼ α
 force-decreasing-unchanged α d zero     = refl
@@ -77,7 +77,7 @@ force-decreasing-unchanged α d (succ i) = g
     p : α (succ i) ≤₂ α i
     p = d i
     h : min𝟚 (α (succ i)) (α i) ≡ α (succ i)
-    h = Lemma[a≤b→min𝟚ab≡a] p
+    h = Lemma[a≤₂b→min𝟚ab≡a] p
     g' : min𝟚 (α (succ i)) (force-decreasing α i) ≡ α (succ i)
     g' = transport (λ b → min𝟚 (α (succ i)) b ≡ α (succ i)) (IH ⁻¹) h
     g : force-decreasing α (succ i) ≡ α (succ i)
@@ -390,11 +390,11 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 ≺-prop-valued fe u v (n , r , a) (m , s , b) =
   to-Σ-≡'' (under-lc (r ⁻¹ ∙ s) , to-Σ-≡'' (ℕ∞-is-set fe _ _ , 𝟚-is-set _ _))
 
-⊏-gives-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
-⊏-gives-≺ n u a = n , refl , a
+⊏-coarser-than-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
+⊏-coarser-than-≺ n u a = n , refl , a
 
-≺-gives-⊏ : (n : ℕ) (u : ℕ∞) → under n ≺ u → n ⊏ u
-≺-gives-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (under-lc r) a
+≺-coarser-than-⊏ : (n : ℕ) (u : ℕ∞) → under n ≺ u → n ⊏ u
+≺-coarser-than-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (under-lc r) a
 
 ∞-maximal : (n : ℕ) → under n ≺ ∞
 ∞-maximal n = n , refl , ∞-⊏-maximal n
@@ -449,9 +449,9 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
 ≺-extensional fe u v l m = γ
  where
   f : (i : ℕ) → i ⊏ u → i ⊏ v
-  f i a = ≺-gives-⊏ i v (l (under i) (⊏-gives-≺ i u a))
+  f i a = ≺-coarser-than-⊏ i v (l (under i) (⊏-coarser-than-≺ i u a))
   g : (i : ℕ) → i ⊏ v → i ⊏ u
-  g i a = ≺-gives-⊏ i u (m (under i) (⊏-gives-≺ i v a))
+  g i a = ≺-coarser-than-⊏ i u (m (under i) (⊏-coarser-than-≺ i v a))
   h : (i : ℕ) → incl u i ≡ incl v i
   h i = ≤₂-anti (f i) (g i)
   γ : u ≡ v

@@ -12,7 +12,7 @@ equality with any other point of the type is decidable.
 
 \begin{code}
 
-open import SpartanMLTT hiding (_≤_) hiding (≤-anti)
+open import SpartanMLTT
 open import UF-Base
 open import DiscreteAndSeparated
 

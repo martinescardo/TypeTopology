@@ -423,52 +423,58 @@ Natural order of binary numbers:
 
 \begin{code}
 
-_≤_ : (a b : 𝟚) → U₀ ̇
-a ≤ b = a ≡ ₁ → b ≡ ₁
+_<₂_ : (a b : 𝟚) → U₀ ̇
+a <₂ b = (a ≡ ₀) × (b ≡ ₁) 
 
-₁-top : {b : 𝟚} → b ≤ ₁
+_≤₂_ : (a b : 𝟚) → U₀ ̇
+a ≤₂ b = a ≡ ₁ → b ≡ ₁
+
+<₂-coarser-than-≤₂ : {a b : 𝟚} → a <₂ b → a ≤₂ b
+<₂-coarser-than-≤₂ (refl , refl) _ = refl
+
+₁-top : {b : 𝟚} → b ≤₂ ₁
 ₁-top r = refl
 
-₀-bottom : {b : 𝟚} → ₀ ≤ b
+₀-bottom : {b : 𝟚} → ₀ ≤₂ b
 ₀-bottom ()
 
-_≤'_ : (a b : 𝟚) → U₀ ̇
-a ≤' b = b ≡ ₀ → a ≡ ₀
+_≤₂'_ : (a b : 𝟚) → U₀ ̇
+a ≤₂' b = b ≡ ₀ → a ≡ ₀
 
-≤-gives-≤' : {a b : 𝟚} → a ≤ b → a ≤' b
-≤-gives-≤' {₀} {b} f p = refl
-≤-gives-≤' {₁} {₀} f p = (f refl)⁻¹
-≤-gives-≤' {₁} {₁} f p = p
+≤₂-coarser-than-≤₂' : {a b : 𝟚} → a ≤₂ b → a ≤₂' b
+≤₂-coarser-than-≤₂' {₀} {b} f p = refl
+≤₂-coarser-than-≤₂' {₁} {₀} f p = (f refl)⁻¹
+≤₂-coarser-than-≤₂' {₁} {₁} f p = p
 
-≤'-gives-≤ : {a b : 𝟚} → a ≤' b → a ≤ b
-≤'-gives-≤ {₀} {₀} f p = p
-≤'-gives-≤ {₀} {₁} f p = refl
-≤'-gives-≤ {₁} {₀} f p = (f refl)⁻¹
-≤'-gives-≤ {₁} {₁} f p = p
+≤₂'-coarser-than-≤₂ : {a b : 𝟚} → a ≤₂' b → a ≤₂ b
+≤₂'-coarser-than-≤₂ {₀} {₀} f p = p
+≤₂'-coarser-than-≤₂ {₀} {₁} f p = refl
+≤₂'-coarser-than-≤₂ {₁} {₀} f p = (f refl)⁻¹
+≤₂'-coarser-than-≤₂ {₁} {₁} f p = p
 
-≤-anti : {a b : 𝟚} → a ≤ b → b ≤ a → a ≡ b
-≤-anti {₀} {₀} f g = refl
-≤-anti {₀} {₁} f g = g refl
-≤-anti {₁} {₀} f g = ≤-gives-≤' f refl
-≤-anti {₁} {₁} f g = refl
+≤₂-anti : {a b : 𝟚} → a ≤₂ b → b ≤₂ a → a ≡ b
+≤₂-anti {₀} {₀} f g = refl
+≤₂-anti {₀} {₁} f g = g refl
+≤₂-anti {₁} {₀} f g = ≤₂-coarser-than-≤₂' f refl
+≤₂-anti {₁} {₁} f g = refl
 
-₁-maximal : {b : 𝟚} → ₁ ≤ b → b ≡ ₁
-₁-maximal = ≤-anti ₁-top
+₁-maximal : {b : 𝟚} → ₁ ≤₂ b → b ≡ ₁
+₁-maximal = ≤₂-anti ₁-top
 
-_≥_ : (a b : 𝟚) → U₀ ̇
-a ≥ b = b ≤ a
+_≥₂_ : (a b : 𝟚) → U₀ ̇
+a ≥₂ b = b ≤₂ a
 
 min𝟚 : 𝟚 → 𝟚 → 𝟚
 min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
 
-Lemma[minab≤a] : {a b : 𝟚} → min𝟚 a b ≤ a
-Lemma[minab≤a] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
-Lemma[minab≤a] {₁} {b} r = refl
+Lemma[minab≤₂a] : {a b : 𝟚} → min𝟚 a b ≤₂ a
+Lemma[minab≤₂a] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
+Lemma[minab≤₂a] {₁} {b} r = refl
 
-Lemma[minab≤b] : {a b : 𝟚} → min𝟚 a b ≤ b
-Lemma[minab≤b] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
-Lemma[minab≤b] {₁} {b} r = r
+Lemma[minab≤₂b] : {a b : 𝟚} → min𝟚 a b ≤₂ b
+Lemma[minab≤₂b] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
+Lemma[minab≤₂b] {₁} {b} r = r
 
 Lemma[min𝟚ab≡₁→b≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → b ≡ ₁
 Lemma[min𝟚ab≡₁→b≡₁] {₀} {₀} r = r
@@ -486,9 +492,9 @@ Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₁} p q = p
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₀} p q = q
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₁} p q = refl
 
-Lemma[a≤b→min𝟚ab≡a] : {a b : 𝟚} → a ≤ b → min𝟚 a b ≡ a
-Lemma[a≤b→min𝟚ab≡a] {₀} {b} p = refl
-Lemma[a≤b→min𝟚ab≡a] {₁} {b} p = p refl
+Lemma[a≤₂b→min𝟚ab≡a] : {a b : 𝟚} → a ≤₂ b → min𝟚 a b ≡ a
+Lemma[a≤₂b→min𝟚ab≡a] {₀} {b} p = refl
+Lemma[a≤₂b→min𝟚ab≡a] {₁} {b} p = p refl
 
 lemma[min𝟚ab≡₀] : {a b : 𝟚} → min𝟚 a b ≡ ₀ → (a ≡ ₀) + (b ≡ ₀)
 lemma[min𝟚ab≡₀] {₀} {b} p = inl p
@@ -546,22 +552,22 @@ Order and complements:
 
 \begin{code}
 
-complement-left : {b c : 𝟚} → complement b ≤ c → complement c ≤ b
+complement-left : {b c : 𝟚} → complement b ≤₂ c → complement c ≤₂ b
 complement-left {₀} {₀} f p = f p
 complement-left {₀} {₁} f p = p
 complement-left {₁} {c} f p = refl
 
-complement-right : {b c : 𝟚} → b ≤ complement c → c ≤ complement b
+complement-right : {b c : 𝟚} → b ≤₂ complement c → c ≤₂ complement b
 complement-right {₀} {c} f p = refl
 complement-right {₁} {₀} f p = p
 complement-right {₁} {₁} f p = f p
 
-complement-both-left : {b c : 𝟚} → complement b ≤ complement c → c ≤ b
+complement-both-left : {b c : 𝟚} → complement b ≤₂ complement c → c ≤₂ b
 complement-both-left {₀} {₀} f p = p
 complement-both-left {₀} {₁} f p = f p
 complement-both-left {₁} {c} f p = refl
 
-complement-both-right : {b c : 𝟚} → b ≤ c → complement c ≤ complement b
+complement-both-right : {b c : 𝟚} → b ≤₂ c → complement c ≤₂ complement b
 complement-both-right {₀} {c} f p = refl
 complement-both-right {₁} {₀} f p = f p
 complement-both-right {₁} {₁} f p = p
