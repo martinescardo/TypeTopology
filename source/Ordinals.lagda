@@ -256,3 +256,36 @@ ordinal₂-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U 
                                                (transitive-is-prop fe isp)))
 
 \end{code}
+
+Experimental ideas. We don't truncate the Σ, at least not for the
+moment, so x <₂ y won't be a proposition in general. However, given
+𝟚-order-separation, this is logically equivalent to a proposition (has
+split support).
+
+\begin{code}
+
+_≺₂_ : X → X → U ⊔ V ̇
+x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)
+                          × ((u v : X) → (u < v → p u ≤₂ p v)
+                                       × (p u <₂ p v → u < v))
+
+≺₂-courser-than-< : (x y : X) → x ≺₂ y → x < y
+≺₂-courser-than-< x y (p , l , φ) = pr₂(φ x y) l
+
+𝟚-order-separated : U ⊔ V ̇
+𝟚-order-separated = (x y : X) → x < y → x ≺₂ y
+
+open import DiscreteAndSeparated
+
+𝟚-order-separated-gives-cotransitive : 𝟚-order-separated → cotransitive
+𝟚-order-separated-gives-cotransitive s x y z l = g (s x y l)
+ where
+  g : (Σ \(p : X → 𝟚) → (p x <₂ p y)
+                          × ((u v : X) → (u < v → p u ≤₂ p v)
+                                       × (p u <₂ p v → u < v)))
+   → (x < z) + (z < y)
+  g (p , (r , s) , φ) = cases (λ (t : p z ≡ ₀) → inr (pr₂ (φ z y) (t , s)))
+                              (λ (t : ¬(p z ≡ ₀)) → inl (pr₂ (φ x z) (r , (Lemma[b≢₀→b≡₁] t))))
+                              (𝟚-discrete (p z) ₀)
+
+\end{code} 

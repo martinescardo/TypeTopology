@@ -401,17 +401,17 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 open import NaturalsOrder
 
-<-to-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
-<-to-⊏ zero zero ()
-<-to-⊏ zero (succ n) l = refl
-<-to-⊏ (succ m) zero ()
-<-to-⊏ (succ m) (succ n) l = <-to-⊏ m n l
+<-coarser-than-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
+<-coarser-than-⊏ zero zero ()
+<-coarser-than-⊏ zero (succ n) l = refl
+<-coarser-than-⊏ (succ m) zero ()
+<-coarser-than-⊏ (succ m) (succ n) l = <-coarser-than-⊏ m n l
 
-⊏-to-< : (m n : ℕ) →  m ⊏ under n → m < n
-⊏-to-< zero zero ()
-⊏-to-< zero (succ n) l = zero-minimal n
-⊏-to-< (succ m) zero ()
-⊏-to-< (succ m) (succ n) l = ⊏-to-< m n l
+⊏-coarser-than-< : (m n : ℕ) →  m ⊏ under n → m < n
+⊏-coarser-than-< zero zero ()
+⊏-coarser-than-< zero (succ n) l = zero-minimal n
+⊏-coarser-than-< (succ m) zero ()
+⊏-coarser-than-< (succ m) (succ n) l = ⊏-coarser-than-< m n l
 
 ⊏-back : (u : ℕ∞) (n : ℕ) → succ n ⊏ u → n ⊏ u
 ⊏-back = pr₂
@@ -423,7 +423,7 @@ open import NaturalsOrder
 ⊏-trans' m n u l = ⊏-trans'' u n m (≤-trans m (succ m) n (≤-succ m) l)
 
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
-⊏-trans m n u a = ⊏-trans' m n u (⊏-to-< m n a)
+⊏-trans m n u a = ⊏-trans' m n u (⊏-coarser-than-< m n a)
 
 open import Ordinals hiding (_≤_) hiding (≤-refl)
 
@@ -437,7 +437,7 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
   φ n σ = next (under n) τ
    where
     τ : (u : ℕ∞) → u ≺ under n → is-accessible _≺_ u
-    τ u (m , r , l) = back-transport (is-accessible _≺_) r (σ m (⊏-to-< m n l))
+    τ u (m , r , l) = back-transport (is-accessible _≺_) r (σ m (⊏-coarser-than-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
 ≺-well-founded v = next v σ
@@ -467,7 +467,7 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
   γ n g = φ (under n) h
    where
     h : (u : ℕ∞) → u ≺ under n → p u ≡ ₁
-    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-to-< m n l))
+    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-coarser-than-< m n l))
   a : (n : ℕ) → p(under n) ≡ ₁
   a = course-of-values-induction (λ n → p(under n) ≡ ₁) γ
   f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
@@ -511,15 +511,33 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
     s : w ≡ under m
     s = pr₂(pr₂ σ)
 
+-- Need to clean this up:
+ℕ∞-𝟚-order-separated : funext₀ → 𝟚-order-separated _≺_ 
+ℕ∞-𝟚-order-separated fe x y (n , r , l) = (λ z → incl z n ) , (back-transport (λ v → incl v n ≡ ₀) r (under-diagonal₀ n) , l) , h
+ where
+  f : (u v : ℕ∞) → u ≺ v → incl u n ≤₂ incl v n
+  f u v (n' , r' , l') s = ⊏-trans' n n' v aa l'
+   where
+    aa : n < n'
+    aa = ⊏-coarser-than-< n n' (transport (λ w → incl w n ≡ ₁) r' s)
+  g : (u v : ℕ∞) → incl u n <₂ incl v n → u ≺ v
+  g u v (a , b) = pr₁ c , pr₂(pr₂ c) , (⊏-trans'' v n (pr₁ c) (pr₁(pr₂ c)) b)
+   where
+    c : Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+    c = under-lemma fe u n a
+    
+  h : (u v : ℕ∞) → (u ≺ v → incl u n ≤₂ incl v n) × (incl u n <₂ incl v n → u ≺ v)
+  h u v = f u v , g u v
+
 {- TODO
-<-to-≺ : (m n : ℕ) → m < n → under m ≺ under n
-<-to-≺ = {!!}
+<-coarser-than-≺ : (m n : ℕ) → m < n → under m ≺ under n
+<-coarser-than-≺ = {!!}
 
-<-to-≺ : (m n : ℕ) → under m ≺ under n → m < n
-<-to-≺ = ?
+<-coarser-than-≺ : (m n : ℕ) → under m ≺ under n → m < n
+<-coarser-than-≺ = ?
 
-⊏-to-≺ : (m : ℕ) (u : ℕ∞) → m ⊏ u → under m ≺ u
-⊏-to-≺ = ?
+⊏-coarser-than-≺ : (m : ℕ) (u : ℕ∞) → m ⊏ u → under m ≺ u
+⊏-coarser-than-≺ = ?
 -}
 
 \end{code}
