@@ -185,14 +185,24 @@ non-strict-trans = transfinite-induction' (λ z → (x y : X) → x < y → y < 
 
 \end{code}
 
-When do we get x ≤ y → x ≼ y (say for ordinals)? When do we get cotransitivity?
+When do we get x ≤ y → x ≼ y (say for ordinals)? When do we get
+cotransitivity? Jean S. Josef observed that cotransitivity gives x ≤ y
+→ x ≼ y if _<_ is an order. But cotransitivity alone is enough.
 
-Or consider the truncated version of the following:
+Or consider the truncated version of the following, if _<_ is
+proposition valued.
 
 \begin{code}
 
 cotransitive : U ⊔ V ̇
 cotransitive = (x y z : X) → x < y → x < z + z < y
+
+cotransitive-≤-gives-≼ : cotransitive → (x y : X) → x ≤ y → x ≼ y
+cotransitive-≤-gives-≼ c x y n u l = γ (c u x y l)
+ where
+  γ : (u < y) + (y < x) → u < y
+  γ (inl l) = l
+  γ (inr l) = 𝟘-elim (n l)
 
 no-minimal-is-empty : is-well-founded → ∀ {W} (P : X → W ̇)
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
