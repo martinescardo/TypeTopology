@@ -255,30 +255,59 @@ module prop-indexed-product-of-ordinals
         (o : (p : P) → is-ordinal (_<_ {p}))
         (fe : funext U V)
        where
+ 
+\end{code}
+
+We have the following families of equivalences indexed by P,
+constructed in the module UF-PropIndexedPiSigma:
+
+\begin{code}
 
  open import UF-Equiv
  open import UF-PropIndexedPiSigma
  
- φ : (p : P) → Π X → X p
+ private φ : (p : P) → Π X → X p
  φ p u = u p
  
- ψ : (p : P) → X p → Π X
+ private ψ : (p : P) → X p → Π X
  ψ p x q = transport X (isp p q) x
 
- η : (p : P) (u : Π X) → ψ p (φ p u) ≡ u
+ private η : (p : P) (u : Π X) → ψ p (φ p u) ≡ u
  η p = pr₂(pr₂(pr₂ (prop-indexed-product fe isp p)))
 
- ε : (p : P) (x : X p) → φ p (ψ p x) ≡ x
+ private ε : (p : P) (x : X p) → φ p (ψ p x) ≡ x
  ε p = pr₂(pr₁(pr₂ (prop-indexed-product fe isp p)))
+
+\end{code}
+
+The order on the product is constructed as follows from the order in
+the components:
+
+\begin{code}
 
  private _≺_ : Π X → Π X → U ⊔ W ̇
  u ≺ v = Σ \(p : P) → φ p u < φ p v
 
  order = _≺_
 
+\end{code}
+
+That it is subsingleton-valued depends only on the fact that the given
+order _<_ {p} on the components of the product are
+subsingleton-valued.
+
+\begin{code}
+
  prop-valued : is-prop-valued-order _≺_
  prop-valued u v = is-prop-closed-under-Σ isp
                      (λ p → is-prop-valued-ordinal (_<_ {p}) (o p) (φ p u) (φ p v))
+
+\end{code}
+
+The extensionality of the constructed order depends only on the fact
+that φ is a retraction.
+
+\begin{code}
 
  extensional : is-extensional _≺_
  extensional u v f g = dfunext fe γ
@@ -318,6 +347,14 @@ module prop-indexed-product-of-ordinals
    γ : u ∼ v
    γ = δ
 
+\end{code}
+
+The transitivity of the constructed order depends only on the
+transitivity of given order, using φ to transfer it, but not the fact
+that it is an equivalence (or a retraction or a section).
+
+\begin{code}
+
  transitive : is-transitive _≺_
  transitive u v w (p , l) (q , m) = p , t l m'
   where
@@ -325,6 +362,16 @@ module prop-indexed-product-of-ordinals
    t = is-transitive-ordinal (_<_ {p}) (o p) (φ p u) (φ p v) (φ p w)
    m' : φ p v < φ p w
    m' = transport (λ q → φ q v < φ q w) (isp q p) m
+
+\end{code}
+
+The well-foundedness of the constructed order uses the above
+accessibility lemma for retracts. However, not only the fact that ψ is
+a retraction is needed to apply the lemma, but also that it is a
+section, to derive the order condition (given by f below) for the
+lemma.
+
+\begin{code}
 
  well-founded : is-well-founded _≺_
  well-founded u = next u σ
