@@ -313,8 +313,10 @@ module prop-indexed-product-of-ordinals
      n = pr₂ m
      n' : φ p (ψ p x) < φ p u
      n' = transport (λ q → ψ p x q < φ q u) (isp q p) n
+   γ' : (p : P) → φ p u ≡ φ p v
+   γ' p = is-extensional-ordinal (_<_ {p}) (o p) (u p) (v p) (f' p) (g' p)
    γ : (p : P) → u p ≡ v p
-   γ p = is-extensional-ordinal (_<_ {p}) (o p) (u p) (v p) (f' p) (g' p)
+   γ = γ'
 
  transitive : is-transitive _≺_
  transitive u v w (p , l) (q , m) = p , t l m'
