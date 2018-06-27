@@ -9,6 +9,9 @@ open import SpartanMLTT
 Idtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → X → Y
 Idtofun = transport id
 
+back-Idtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → Y → X
+back-Idtofun = back-transport id
+
 forth-and-back-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
                          → (p : x ≡ y) → back-transport A p (transport A p a) ≡ a
 forth-and-back-transport refl = refl

@@ -21,7 +21,7 @@ Any proposition is an ordinal under the empty ordering.
 module subsingleton-ordinal {U V} (P : U ̇) (isp : is-prop P) where
 
  private _<_ : P → P → V ̇
- _<_ x y = 𝟘
+ x < y = 𝟘
 
  order = _<_
 
@@ -206,51 +206,149 @@ module _ {U V W T} {X : U ̇} (_<_ : X → X → W ̇) {Y : V ̇} (_≺_ : Y →
    multiplication-prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
     ap inr (×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
 
-{- Attempt (which will probably fail):
- multiplication-𝟚os : 𝟚-order-separated _<_ → 𝟚-order-separated _≺_ → 𝟚-order-separated _⊏_
- multiplication-𝟚os s s' (a , b) (x , y) (inl l) = q , pr₁(pr₂ σ) , φ
-  where
-   σ : Σ \(p : X → 𝟚) → (p a <₂ p x) × ((u v : X) → (u < v → p u ≤₂ p v) × (p u <₂ p v → u < v))
-   σ = s a x l
-   q : X × Y → 𝟚
-   q (x , y) = pr₁ σ x
-   φ : (u v : X × Y) → (u ⊏ v → q u ≤₂ q v) × (q u <₂ q v → u ⊏ v)
-   φ (m , n) (c , d) = f , g
-    where
-     f : (m , n) ⊏ (c , d) → q (m , n) ≤₂ q (c , d)
-     f (inl l') = pr₁(pr₂(pr₂(s a x l)) m c) l'
-     f (inr (r , l')) e = transport (λ v → pr₁ (s a x l) v ≡ ₁) r e
-     g : q (m , n) <₂ q (c , d) → (m , n) ⊏ (c , d)
-     g (i , j) = inl (pr₂(pr₂(pr₂(s a x l)) m c) (i , j))
- multiplication-𝟚os s s' (a , b) (x , y) (inr (r , l)) = q , pr₁(pr₂ σ) , φ
-  where
-   σ : Σ \(p : Y → 𝟚) → (p b <₂ p y) × ((u v : Y) → (u ≺ v → p u ≤₂ p v) × (p u <₂ p v → u ≺ v))
-   σ = s' b y l
-   q : X × Y → 𝟚
-   q (x , y) = pr₁ σ y
-   φ : (u v : X × Y) → (u ⊏ v → q u ≤₂ q v) × (q u <₂ q v → u ⊏ v)
-   φ (m , n) (c , d) = f , g
-    where
-     f : (m , n) ⊏ (c , d) → q (m , n) ≤₂ q (c , d)
-     f (inl l') = {!!}
-     f (inr (r , l')) = {!!}
-     g : q (m , n) <₂ q (c , d) → (m , n) ⊏ (c , d)
-     g (i , j) = {!!}
--}
+\end{code}
 
-{- The following doesn't work without further assumptions:
+Added 27 June 2018. A product of ordinals indexed by a subsingleton is
+an ordinal. Here "is" is used to indicate a construction, not a
+proposition. We begin with a general lemma (and a corollary, which is
+not used for our purposes).
 
- multiplication-cotransitive : cotransitive _<_ → cotransitive _≺_ → cotransitive _⊏_
- multiplication-cotransitive c c' (u , v) (a , b) (x , y) (inl l) = f(c u a x l)
-  where
-   f : (u < x) + (x < a) → ((u , v) ⊏ (x , y)) + ((x , y) ⊏ (a , b))
-   f (inl m) = inl (inl m)
-   f (inr m) = inr (inl m)
- multiplication-cotransitive c c' (u , v) (a , b) (x , y) (inr (r , l)) = f (c' v b y l)
+\begin{code}
+
+retract-accessible : ∀ {U V W T} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
+                       (r : X → Y) (s : Y → X)
+                    → ((y : Y) → r(s y) ≡ y)
+                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
+                    → (x : X) → is-accessible _<_ x → is-accessible _≺_ (r x)
+retract-accessible {U} {V} {W} {T} {X} {Y} _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
+ where
+  P : (x : X) → V ⊔ T ̇
+  P x = is-accessible _≺_ (r x)
+  γ : (x : X) → ((x' : X) → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
+  γ x τ = next (r x) σ
    where
-   f : (v ≺ y) + (y ≺ b) → ((u , v) ⊏ (x , y)) + ((x , y) ⊏ (a , b))
-   f (inl m) = {!!}
-   f (inr m) = inl {!!}
--}
+    σ : (y : Y) → y ≺ r x → is-accessible _≺_ y
+    σ y l = transport (is-accessible _≺_) (η y) m
+     where
+      m : is-accessible _≺_ (r (s y))
+      m = τ (s y) (φ x y l)
+
+retract-well-founded : ∀ {U V W T} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
+                       (r : X → Y) (s : Y → X)
+                    → ((y : Y) → r(s y) ≡ y)
+                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
+                    → is-well-founded _<_ → is-well-founded _≺_
+retract-well-founded {U} {V} {W} {T} {X} {Y} _<_ _≺_ r s η φ w = w'
+ where
+  wr : (x : X) → is-accessible _≺_ (r x)
+  wr x = retract-accessible _<_ _≺_ r s η φ x (w x)
+  w' : (y : Y) → is-accessible _≺_ y
+  w' y = transport (is-accessible _≺_) (η y) (wr (s y))
+
+module prop-indexed-product-of-ordinals
+        {U V W}
+        (P : U ̇)
+        (isp : is-prop P)
+        (X : P → V ̇)
+        (isp : is-prop P)
+        (_<_ : {p : P} → X p → X p → W ̇)
+        (o : (p : P) → is-ordinal (_<_ {p}))
+        (fe : funext U V)
+       where
+
+ open import UF-Equiv
+ open import UF-PropIndexedPiSigma
+ 
+ φ : (p : P) → Π X → X p
+ φ p u = u p
+ 
+ ψ : (p : P) → X p → Π X
+ ψ p x q = transport X (isp p q) x
+
+ η : (p : P) (u : Π X) → ψ p (φ p u) ≡ u
+ η p = pr₂(pr₂(pr₂ (prop-indexed-product fe isp p)))
+
+ ε : (p : P) (x : X p) → φ p (ψ p x) ≡ x
+ ε p = pr₂(pr₁(pr₂ (prop-indexed-product fe isp p)))
+
+ private _≺_ : Π X → Π X → U ⊔ W ̇
+ u ≺ v = Σ \(p : P) → φ p u < φ p v
+
+ order = _≺_
+
+ prop-valued : is-prop-valued-order _≺_
+ prop-valued u v = is-prop-closed-under-Σ isp
+                     (λ p → is-prop-valued-ordinal (_<_ {p}) (o p) (φ p u) (φ p v))
+
+ extensional : is-extensional _≺_
+ extensional u v f g = dfunext fe γ
+  where
+   f' : (p : P) (x : X p) → x < φ p u → x < φ p v
+   f' p x l = transport (λ x → x < φ p v) (ε p x) n'
+    where
+     l' : φ p (ψ p x) < φ p u
+     l' = back-transport (λ x → x < φ p u) (ε p x) l
+     a : ψ p x ≺ u
+     a = p , l'
+     m : ψ p x ≺ v
+     m = f (ψ p x) a
+     q : P
+     q = pr₁ m
+     n : φ q (ψ p x) < φ q v
+     n = pr₂ m
+     n' : φ p (ψ p x) < φ p v
+     n' = transport (λ q → ψ p x q < φ q v) (isp q p) n
+   g' : (p : P) (x : X p) → x < φ p v → x < φ p u
+   g' p x l = transport (λ x → x < φ p u) (ε p x) n'
+    where
+     l' : φ p (ψ p x) < φ p v
+     l' = back-transport (λ x → x < φ p v) (ε p x) l
+     a : ψ p x ≺ v
+     a = p , l'
+     m : ψ p x ≺ u
+     m = g (ψ p x) a
+     q : P
+     q = pr₁ m
+     n : φ q (ψ p x) < φ q u
+     n = pr₂ m
+     n' : φ p (ψ p x) < φ p u
+     n' = transport (λ q → ψ p x q < φ q u) (isp q p) n
+   γ : (p : P) → u p ≡ v p
+   γ p = is-extensional-ordinal (_<_ {p}) (o p) (u p) (v p) (f' p) (g' p)
+
+ transitive : is-transitive _≺_
+ transitive u v w (p , l) (q , m) = p , t l m'
+  where
+   t : φ p u < φ p v → φ p v < φ p w → φ p u < φ p w
+   t = is-transitive-ordinal (_<_ {p}) (o p) (φ p u) (φ p v) (φ p w)
+   m' : φ p v < φ p w
+   m' = transport (λ q → φ q v < φ q w) (isp q p) m
+
+ well-founded : is-well-founded _≺_
+ well-founded u = next u σ
+  where
+   a : (p : P) (u : X p) → is-accessible _<_ u
+   a p = is-well-founded-ordinal (_<_ {p}) (o p)
+   σ : (v : Π X) → v ≺ u → is-accessible _≺_ v
+   σ v (p , l) = d
+    where
+     b : is-accessible _<_ (φ p v)
+     b = prev _<_ (φ p u) (a p (φ p u)) (φ p v) l
+     c : is-accessible _≺_ (ψ p (φ p v))
+     c = retract-accessible _<_ _≺_ (ψ p) (φ p) (η p) f (φ p v) b
+      where
+       f : (x : X p) (u : Π X) → u ≺ ψ p x → φ p u < x
+       f x u (q , l) = transport (λ x → φ p u < x) (ε p x) l'
+        where
+         l' : u p < ψ p x p
+         l' = transport (λ r → u r < ψ p x r) (isp q p) l
+     d : is-accessible _≺_ v
+     d = transport (is-accessible _≺_) (η p v) c
+     
+ ordinal : is-ordinal _≺_
+ ordinal = prop-valued , well-founded , extensional , transitive
 
 \end{code}
+
+Could a proof using univalence be shorter?
+

@@ -82,6 +82,17 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
   g : A Y (idtoeq X Y (eqtoid ua X Y e))
   g = f' Y (eqtoid ua X Y e)
 
+Eq-transport : ∀ {U} → is-univalent U
+            → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
+Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e 
+
+Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
+Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
+                 → ((X : U ̇) → A X X (ideq X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
+
+JEq' : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
+JEq' ua A f X = JEq ua X (λ Y → A X Y) (f X)
+
 \end{code}
 
 Conversely, if the induction principle for equivalences holds, then
@@ -187,5 +198,13 @@ is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
   b = identifications-to-singleton
   g :  (Y : U ̇) (e : X ≃ Y) → A Y e
   g = JEq ua X A b
+
+\end{code}
+
+Added 27 Jun 2018. Type of types equipped with a binary relation.
+
+\begin{code}
+
+
 
 \end{code}

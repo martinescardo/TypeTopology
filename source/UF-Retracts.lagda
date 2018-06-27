@@ -9,14 +9,11 @@ open import UF-Base
 
 open import UF-Base
 
-_isSectionOf_ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → (Y → X) → U ̇
-s isSectionOf r = r ∘ s ∼ id
-
 has-section : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-has-section r = Σ \s → s isSectionOf r
+has-section r = Σ \s → r ∘ s ∼ id
 
 has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-has-retraction s = Σ \r → s isSectionOf r
+has-retraction s = Σ \r → r ∘ s ∼ id
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 retract Y of X = Σ \(r : X → Y) → has-section r

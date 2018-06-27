@@ -96,6 +96,18 @@ extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
 is-ordinal : U ⊔ V ̇
 is-ordinal = is-prop-valued-order × is-well-founded × is-extensional × is-transitive
 
+is-prop-valued-ordinal : is-ordinal → is-prop-valued-order
+is-prop-valued-ordinal = pr₁
+
+is-well-founded-ordinal : is-ordinal → is-well-founded
+is-well-founded-ordinal = pr₁ ∘ pr₂
+
+is-extensional-ordinal : is-ordinal → is-extensional
+is-extensional-ordinal = pr₁ ∘ pr₂ ∘ pr₂
+
+is-transitive-ordinal : is-ordinal → is-transitive
+is-transitive-ordinal = pr₂ ∘ pr₂ ∘ pr₂
+
 is-accessible-is-prop : (∀ U V → funext U V)
                       → (x : X) → is-prop(is-accessible x)
 is-accessible-is-prop fe = accessible-induction P φ
@@ -250,8 +262,8 @@ ordinal-ordinal₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
 ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-ordinal₂
 ordinal₂-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
-                                          λ x → is-prop-exponential-ideal (fe U V)
-                                                  (λ y → is-prop-is-prop (fe V V)))
+                                           (λ x → is-prop-exponential-ideal (fe U V)
+                                                  (λ y → is-prop-is-prop (fe V V))))
                              (props-closed-× (well-founded₂-is-prop fe)
                                (props-closed-× (extensional-is-prop fe isp)
                                                (transitive-is-prop fe isp)))
@@ -284,9 +296,13 @@ open import DiscreteAndSeparated
   g : (Σ \(p : X → 𝟚) → (p x <₂ p y)
                           × ((u v : X) → (u < v → p u ≤₂ p v)
                                        × (p u <₂ p v → u < v)))
-   → (x < z) + (z < y)
+    → (x < z) + (z < y)
   g (p , (r , s) , φ) = cases (λ (t : p z ≡ ₀) → inr (pr₂ (φ z y) (t , s)))
                               (λ (t : ¬(p z ≡ ₀)) → inl (pr₂ (φ x z) (r , (Lemma[b≢₀→b≡₁] t))))
                               (𝟚-discrete (p z) ₀)
 
 \end{code} 
+
+It seems that this is not going to be useful, because although ℕ∞
+satisfies this property, the property doesn't seem to be preserved by
+the lexicographic order (think about this).

@@ -69,3 +69,20 @@ funext-from-univalence : ∀ {U} → is-univalent U → funext U U
 funext-from-univalence ua = naive-funext-gives-funext (naive-funext-from-univalence ua)
 
 \end{code}
+
+Added 27 Jun 2018:
+
+\begin{code}
+
+funext-from-univalence' : ∀ U V → is-univalent U → is-univalent (U ⊔ V) → funext U V
+funext-from-univalence' U V ua ua' = naive-funext-gives-funext'
+                                       (naive-funext-from-univalence ua')
+                                       (naive-funext-from-univalence ua)
+
+global-funext-from-univalence : (∀ U → is-univalent U) → ∀ U V → funext U V
+global-funext-from-univalence ua U V = funext-from-univalence' U V (ua U) (ua (U ⊔ V))
+
+funext-from-successive-univalence : ∀ U → is-univalent U → is-univalent (U ′) → funext U (U ′)
+funext-from-successive-univalence U = funext-from-univalence' U (U ′)
+
+\end{code}
