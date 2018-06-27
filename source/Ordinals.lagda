@@ -25,10 +25,10 @@ data is-accessible : X → U ⊔ V ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
 
 accessible-induction : ∀ {W} (P : (x : X) → is-accessible x → W ̇)
-                    → ((x : X) (σ : (y : X) → y < x → is-accessible y)
-                        → ((y : X) (l : y < x) → P y (σ y l))
-                        → P x (next x σ))
-                    → (x : X) (a : is-accessible x) → P x a
+                     → ((x : X) (σ : (y : X) → y < x → is-accessible y)
+                         → ((y : X) (l : y < x) → P y (σ y l))
+                         → P x (next x σ))
+                     → (x : X) (a : is-accessible x) → P x a
 accessible-induction P step = h
   where
    h : (x : X) (a : is-accessible x) → P x a
@@ -38,12 +38,12 @@ prev : (x : X) → is-accessible x → (y : X) → y < x → is-accessible y
 prev = accessible-induction (λ x _ → (y : X) → y < x → is-accessible y)
                             (λ x σ f → σ)
 
-prev-behaviour : (x : X) → ∀(a : is-accessible x) → next x (prev x a) ≡ a
+prev-behaviour : (x : X) (a : is-accessible x) → next x (prev x a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
 transfinite-induction' :  ∀ {W} (P : X → W ̇)
-                         → ((x : X) → (∀(y : X) → y < x → P y) → P x)
-                         → (x : X) → is-accessible x → P x
+                       → ((x : X) → (∀(y : X) → y < x → P y) → P x)
+                       → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction (λ x _ → P x)
                                                   (λ x _ → f x)
 
@@ -52,16 +52,16 @@ is-well-founded = (x : X) → is-accessible x
 
 Well-founded : ∀ {W} → U ⊔ V ⊔ W ′ ̇
 Well-founded {W} = (P : X → W ̇) → ((x : X) → ((y : X) → y < x → P y) → P x)
-                                 → (x : X) → P x
+                                → (x : X) → P x
 
 transfinite-induction : is-well-founded → ∀ {W} → Well-founded {W}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
 transfinite-induction-converse : Well-founded {U ⊔ V} → is-well-founded
-transfinite-induction-converse F = F is-accessible next
+transfinite-induction-converse φ = φ is-accessible next
 
 transfinite-recursion : is-well-founded → ∀ {W} {Y : W ̇}
-                     → ((x : X) → ((y : X) → y < x → Y) → Y) → X → Y
+                      → ((x : X) → ((y : X) → y < x → Y) → Y) → X → Y
 transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
 
 is-transitive : U ⊔ V ̇
@@ -72,7 +72,7 @@ x ≼ y = ∀ u → u < x → u < y
 
 ≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued-order → (x y : X) → is-prop(x ≼ y)
 ≼-prop-valued-order fe isp x y = is-prop-exponential-ideal (fe U V)
-                               (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp u y))
+                                  (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp u y))
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -107,7 +107,7 @@ is-accessible-is-prop fe = accessible-induction P φ
     → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ≡ a)
     → (b : is-accessible x) → next x σ ≡ b
   φ x σ IH b = next x σ ≡⟨ ap (next x)
-                               (dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe V (U ⊔ V)) (h y))) ⟩
+                              (dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe V (U ⊔ V)) (h y))) ⟩
                next x τ ≡⟨ prev-behaviour x b ⟩
                b ∎
    where
@@ -132,8 +132,8 @@ extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
-ordinal-gives-is-set : (∀ U V → funext U V) → is-prop-valued-order → is-ordinal → is-set X
-ordinal-gives-is-set fe isp (p , w , e , t) = extensional-gives-is-set fe p e
+ordinal-gives-is-set : (∀ U V → funext U V) → is-ordinal → is-set X
+ordinal-gives-is-set fe (p , w , e , t) = extensional-gives-is-set fe p e
 
 extensional-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-extensional
 extensional-is-prop fe isp e e' =
@@ -154,34 +154,35 @@ transitive-is-prop fe isp =
                               (λ l → is-prop-exponential-ideal (fe V V)
                                        (λ m → isp x z)))))
 
-ordinal-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-ordinal
-ordinal-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
-                                          λ x → is-prop-exponential-ideal (fe U V)
-                                                  (λ y → is-prop-is-prop (fe V V)))
-                          (props-closed-× (well-founded-is-prop fe)
-                            (props-closed-× (extensional-is-prop fe isp)
-                                            (transitive-is-prop fe isp)))
+ordinal-is-prop : (∀ U V → funext U V) → is-prop is-ordinal
+ordinal-is-prop fe o = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
+                                        λ x → is-prop-exponential-ideal (fe U V)
+                                                (λ y → is-prop-is-prop (fe V V)))
+                        (props-closed-× (well-founded-is-prop fe)
+                          (props-closed-× (extensional-is-prop fe (pr₁ o))
+                                          (transitive-is-prop fe (pr₁ o))))
+                       o
 
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
 
-<-gives-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
-<-gives-≤ = transfinite-induction' (λ x → (y : X) → y < x → y ≤ x)
+<-coarser-than-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
+<-coarser-than-≤ = transfinite-induction' (λ x → (y : X) → y < x → y ≤ x)
                                    (λ x f y l m → f y l x m l) 
 
 ≤-refl : (x : X) → is-accessible x → x ≤ x
-≤-refl x a l = <-gives-≤ x a x l l
+≤-refl x a l = <-coarser-than-≤ x a x l l
 
 non-strict-trans : (z : X) → is-accessible z
                  → (x y : X) → x < y → y < z → x ≤ z
 non-strict-trans = transfinite-induction' (λ z → (x y : X) → x < y → y < z → x ≤ z)
                                           (λ z f x y l m n → f y m z x n l m)
 
-<-gives-≼ : is-transitive → {x y : X} → x < y → x ≼ y
-<-gives-≼ t l u m = t _ _ _ m l
+<-coarser-than-≼ : is-transitive → {x y : X} → x < y → x ≼ y
+<-coarser-than-≼ t {x} {y} l u m = t u x y m l
 
-≼-gives-≤ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≤ y
-≼-gives-≤ y a x f l = ≤-refl y a (f y l)
+≼-coarser-than-≤ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≤ y
+≼-coarser-than-≤ y a x f l = ≤-refl y a (f y l)
 
 \end{code}
 
@@ -197,8 +198,8 @@ proposition valued.
 cotransitive : U ⊔ V ̇
 cotransitive = (x y z : X) → x < y → x < z + z < y
 
-cotransitive-≤-gives-≼ : cotransitive → (x y : X) → x ≤ y → x ≼ y
-cotransitive-≤-gives-≼ c x y n u l = γ (c u x y l)
+cotransitive-≤-coarser-than-≼ : cotransitive → (x y : X) → x ≤ y → x ≼ y
+cotransitive-≤-coarser-than-≼ c x y n u l = γ (c u x y l)
  where
   γ : (u < y) + (y < x) → u < y
   γ (inl l) = l
@@ -222,14 +223,15 @@ no-minimal-is-empty w P s (x , p) = f s x p
 
 \end{code}
 
-We will need the following weakening of well-foundedness (transfinite
-induction for detachable subsets):
+We will need the following variation of well-foundedness (transfinite
+induction for detachable subsets), which isn't weaker or stronger than
+well-foundedness.
 
 \begin{code}
 
 is-well-founded₂ : U ⊔ V ̇
 is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
-                             → (x : X) → p x ≡ ₁
+                               → (x : X) → p x ≡ ₁
 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)

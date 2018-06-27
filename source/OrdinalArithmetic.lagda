@@ -204,7 +204,39 @@ module _ {U V W T} {X : U ̇} (_<_ : X → X → W ̇) {Y : V ̇} (_≺_ : Y →
    multiplication-prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
      𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
    multiplication-prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-    ap inr (×-≡ (ordinal-gives-is-set _<_ fe p (p , w , e , t) r s) (p' b y l m))
+    ap inr (×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
+
+{- Attempt (which will probably fail):
+ multiplication-𝟚os : 𝟚-order-separated _<_ → 𝟚-order-separated _≺_ → 𝟚-order-separated _⊏_
+ multiplication-𝟚os s s' (a , b) (x , y) (inl l) = q , pr₁(pr₂ σ) , φ
+  where
+   σ : Σ \(p : X → 𝟚) → (p a <₂ p x) × ((u v : X) → (u < v → p u ≤₂ p v) × (p u <₂ p v → u < v))
+   σ = s a x l
+   q : X × Y → 𝟚
+   q (x , y) = pr₁ σ x
+   φ : (u v : X × Y) → (u ⊏ v → q u ≤₂ q v) × (q u <₂ q v → u ⊏ v)
+   φ (m , n) (c , d) = f , g
+    where
+     f : (m , n) ⊏ (c , d) → q (m , n) ≤₂ q (c , d)
+     f (inl l') = pr₁(pr₂(pr₂(s a x l)) m c) l'
+     f (inr (r , l')) e = transport (λ v → pr₁ (s a x l) v ≡ ₁) r e
+     g : q (m , n) <₂ q (c , d) → (m , n) ⊏ (c , d)
+     g (i , j) = inl (pr₂(pr₂(pr₂(s a x l)) m c) (i , j))
+ multiplication-𝟚os s s' (a , b) (x , y) (inr (r , l)) = q , pr₁(pr₂ σ) , φ
+  where
+   σ : Σ \(p : Y → 𝟚) → (p b <₂ p y) × ((u v : Y) → (u ≺ v → p u ≤₂ p v) × (p u <₂ p v → u ≺ v))
+   σ = s' b y l
+   q : X × Y → 𝟚
+   q (x , y) = pr₁ σ y
+   φ : (u v : X × Y) → (u ⊏ v → q u ≤₂ q v) × (q u <₂ q v → u ⊏ v)
+   φ (m , n) (c , d) = f , g
+    where
+     f : (m , n) ⊏ (c , d) → q (m , n) ≤₂ q (c , d)
+     f (inl l') = {!!}
+     f (inr (r , l')) = {!!}
+     g : q (m , n) <₂ q (c , d) → (m , n) ⊏ (c , d)
+     g (i , j) = {!!}
+-}
 
 {- The following doesn't work without further assumptions:
 

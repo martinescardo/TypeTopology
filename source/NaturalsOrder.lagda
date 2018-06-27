@@ -92,7 +92,7 @@ Added 20th June 2018:
 \begin{code}
 
 open import UF-Subsingletons
-open import Ordinals hiding (_≤_) hiding (<-gives-≤) hiding (≤-refl)
+open import Ordinals hiding (_≤_) hiding (<-coarser-than-≤) hiding (≤-refl)
 
 <-is-prop-valued : (m n : ℕ) → is-prop(m < n)
 <-is-prop-valued zero     zero     = 𝟘-is-prop
@@ -100,11 +100,11 @@ open import Ordinals hiding (_≤_) hiding (<-gives-≤) hiding (≤-refl)
 <-is-prop-valued (succ m) zero     = 𝟘-is-prop
 <-is-prop-valued (succ m) (succ n) = <-is-prop-valued m n
 
-<-gives-≤ : (m n : ℕ) → m < n → m ≤ n
-<-gives-≤ m n = ≤-trans m (succ m) n (≤-succ m)
+<-coarser-than-≤ : (m n : ℕ) → m < n → m ≤ n
+<-coarser-than-≤ m n = ≤-trans m (succ m) n (≤-succ m)
 
 <-trans : (l m n : ℕ) → l < m → m < n → l < n
-<-trans l m n u v = ≤-trans (succ l) m n u (<-gives-≤ m n v)
+<-trans l m n u v = ≤-trans (succ l) m n u (<-coarser-than-≤ m n v)
 
 <-split : (m n : ℕ) → m < succ n → (m < n) + (m ≡ n)
 <-split m zero     l = inr (unique-minimal m l)
