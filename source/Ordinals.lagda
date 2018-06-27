@@ -223,15 +223,14 @@ no-minimal-is-empty w P s (x , p) = f s x p
 
 \end{code}
 
-We will need the following variation of well-foundedness (transfinite
-induction for detachable subsets), which isn't weaker or stronger than
-well-foundedness.
+We will need the following weakening of well-foundedness (transfinite
+induction for detachable subsets):
 
 \begin{code}
 
 is-well-founded₂ : U ⊔ V ̇
 is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
-                               → (x : X) → p x ≡ ₁
+                              → (x : X) → p x ≡ ₁
 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
