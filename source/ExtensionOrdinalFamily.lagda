@@ -13,12 +13,13 @@ ordinal, then so does every type in the extended family Y/j : A → W.
                    v
                    W
 
-This is a direct application of the construction in the module OrdinalArithmetic.prop-indexed-product-of-ordinals.
+This is a direct application of the construction in the module
+OrdinalArithmetic.prop-indexed-product-of-ordinals.
 
 This assumes X : W, A : W, and that the given ordinal structure is
 W-valued. More generally, we have the following typing, for which the
-above triangle no longer makes sense, because Y / j : U ⊔ V ⊔ W, but
-the constructions still work.
+above triangle no longer makes sense, because Y / j : A → U ⊔ V ⊔ W,
+but the constructions still work.
 
 \begin{code}
 
