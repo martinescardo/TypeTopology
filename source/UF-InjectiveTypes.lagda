@@ -108,6 +108,9 @@ Here is how we define f/j given f and j.
                    v
                    U
 
+We have to apply the following constructions for U=V=W for the above
+triangles to make sense.
+
 \begin{code}
 
 module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where

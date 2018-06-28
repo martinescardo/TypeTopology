@@ -250,7 +250,6 @@ module prop-indexed-product-of-ordinals
         (P : U ̇)
         (isp : is-prop P)
         (X : P → V ̇)
-        (isp : is-prop P)
         (_<_ : {p : P} → X p → X p → W ̇)
         (o : (p : P) → is-ordinal (_<_ {p}))
         (fe : funext U V)
@@ -400,4 +399,3 @@ lemma.
 \end{code}
 
 Could a proof using univalence be shorter?
-
