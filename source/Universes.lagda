@@ -4,8 +4,6 @@ module Universes where
 
 open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _′ ; Level to Universe) public
 
-infix  0 _̇
-
 \end{code}
 
 The following should be the only use of the Agda keyword 'Set' in this
@@ -37,3 +35,12 @@ infix 0 _↑
 infix 0 _↥
 
 \end{code}
+
+precedences:
+
+\begin{code}
+
+infix  0 _̇
+
+\end{code}
+

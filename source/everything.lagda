@@ -29,6 +29,9 @@
    before. Now it it has been modularized. We extended the
    Yoneda-Lemma file with new results.
 
+   29 June 2018. The work on searchable ordinals is essentially
+   complete. Some routine bells and whistles are missing.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -278,7 +281,6 @@ import NaturalsOrder
 import NonCollapsibleFamily
 import OmniscientTypes
 import OrdinalNotions
-import OrdinalArithmetic
 import OrdinalCodes
 import PlusOneLC
 import PropTychonoff
@@ -323,6 +325,7 @@ import UF-UA-FunExt
 import UF-Univalence
 import UF-Yoneda
 import UnivalenceFromScratch
+import WellOrderArithmetic
 import WLPO
 
 \end{code}

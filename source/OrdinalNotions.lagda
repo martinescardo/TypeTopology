@@ -185,6 +185,9 @@ x ≤ y = ¬(y < x)
 is-top : X → U ⊔ V ̇
 is-top x = (y : X) → y ≤ x
 
+has-top : U ⊔ V ̇
+has-top = Σ \(x : X) → is-top x
+
 <-coarser-than-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
 <-coarser-than-≤ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≤ x)

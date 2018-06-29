@@ -390,6 +390,9 @@ as the need arises.
 _≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
+∞-top : (u : ℕ∞) → ¬(∞ ≺ u)
+∞-top u (n , r , l) = ∞-is-not-ℕ n r
+
 below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → isolated u
 below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated fe n)
 
