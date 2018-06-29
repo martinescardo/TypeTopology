@@ -41,6 +41,9 @@ prev = accessible-induction (λ x _ → (y : X) → y < x → is-accessible y)
 prev-behaviour : (x : X) (a : is-accessible x) → next x (prev x a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
+prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y) → prev x (next x σ) ≡ σ
+prev-behaviour' x σ = refl
+
 transfinite-induction' :  ∀ {W} (P : X → W ̇)
                        → ((x : X) → (∀(y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
@@ -178,17 +181,22 @@ ordinal-is-prop fe o = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
 
+is-top : X → U ⊔ V ̇
+is-top x = (y : X) → y ≤ x
+
 <-coarser-than-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
-<-coarser-than-≤ = transfinite-induction' (λ x → (y : X) → y < x → y ≤ x)
-                                   (λ x f y l m → f y l x m l) 
+<-coarser-than-≤ = transfinite-induction'
+                     (λ x → (y : X) → y < x → y ≤ x)
+                     (λ x f y l m → f y l x m l) 
 
 ≤-refl : (x : X) → is-accessible x → x ≤ x
 ≤-refl x a l = <-coarser-than-≤ x a x l l
 
 non-strict-trans : (z : X) → is-accessible z
                  → (x y : X) → x < y → y < z → x ≤ z
-non-strict-trans = transfinite-induction' (λ z → (x y : X) → x < y → y < z → x ≤ z)
-                                          (λ z f x y l m n → f y m z x n l m)
+non-strict-trans = transfinite-induction'
+                    (λ z → (x y : X) → x < y → y < z → x ≤ z)
+                    (λ z f x y l m n → f y m z x n l m)
 
 <-coarser-than-≼ : is-transitive → {x y : X} → x < y → x ≼ y
 <-coarser-than-≼ t {x} {y} l u m = t u x y m l

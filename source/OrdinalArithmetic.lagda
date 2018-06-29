@@ -248,20 +248,20 @@ module times
          → is-ordinal _<_
          → is-ordinal _≺_
          → is-ordinal _⊏_
- ordinal fe (p , w , e , t) (p' , w' , e' , t') =
-   prop-valued ,
-   well-founded w w' ,
-   extensional w w' e e' ,
-   transitive t t'
+ ordinal fe (p , w , e , t) (p' , w' , e' , t') = prop-valued ,
+                                                  well-founded w w' ,
+                                                  extensional w w' e e' ,
+                                                  transitive t t'
   where
    prop-valued : is-prop-valued-order _⊏_
-   prop-valued (a , b) (x , y) (inl l) (inl m) = ap inl (p a x l m)
+   prop-valued (a , b) (x , y) (inl l) (inl m) =
+     ap inl (p a x l m)
    prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
      𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
    prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
      𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-    ap inr (×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
+     ap inr (×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
 
 \end{code}
 
@@ -469,18 +469,26 @@ lemma.
 
 Could a proof using univalence be shorter?
 
-Sum of an ordinal-indexed family of ordinals.
+Sum of an ordinal-indexed family of ordinals. To show that
+extensionality is preserved, our argument uses the assumption that
+each ordinal in the family has a top element. Perhaps better
+assumptions are possible. TODO: think about this.
+
+This assumption is valid in our applications. 
 
 \begin{code}
 
 open import Ordinals
 
 module sum
+        (fe : (∀ U V → funext U V))
         {U V W T}
         {X : U ̇}
         {Y : X → V ̇}
         (_<_ : X → X → W ̇)
         (_≺_ : {x : X} → Y x → Y x → T ̇)
+        (top : Π Y)
+        (ist : (x : X) → is-top _≺_ (top x))
       where
 
  open import LexicographicOrder
@@ -492,14 +500,14 @@ module sum
  order = _⊏_
 
  well-founded : is-well-founded _<_ 
-             → ({x : X} → is-well-founded (_≺_ {x}))
+             → ((x : X) → is-well-founded (_≺_ {x}))
              → is-well-founded _⊏_
  well-founded w w' (x , y) = φ x y
   where
    P : Σ Y → U ⊔ V ⊔ W ⊔ T ̇
    P = is-accessible _⊏_
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
-   γ x step = transfinite-induction _≺_ w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
+   γ x step = transfinite-induction _≺_ (w' x) (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
     where
      ψ : (y : Y x) → ((y' : Y x) → y' ≺ y → P (x , y')) → (z' : Σ Y) → z' ⊏ (x , y) → P z'
      ψ y f (x' , y') (inl l) = step x' l y'
@@ -513,7 +521,7 @@ module sum
    φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
 
  transitive : is-transitive _<_
-           → ({x : X} → is-transitive (_≺_ {x}))
+           → ((x : X) → is-transitive (_≺_ {x}))
            → is-transitive _⊏_
  transitive t t' (a , b) (x , y) (u , v) = f
   where
@@ -521,7 +529,7 @@ module sum
    f (inl l) (inl m) = inl (t _ _ _ l m)
    f (inl l) (inr (q , m)) = inl (transport (λ x → a < x) q l)
    f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
-   f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
+   f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
 \end{code}
 
@@ -530,69 +538,92 @@ forget to remove spurious hypotheses when we finish.
 
 \begin{code}
 
-{-
- preserve-top : (x : X) (y : Y x) → ((y' : Y x) → ¬(y ≺ y'))
-     → (x' : X) (r : x ≡ x') (y'' : Y x') → ¬ (transport Y r y ≺ y'')
- preserve-top x y top .x refl v = top v
+ private
+  transport-top : (x : X) (y : Y x) → is-top _≺_ y
+               → (x' : X) (r : x ≡ x') → is-top _≺_ (transport Y r y)
+  transport-top x y ist .x refl = ist
 
- preserve-bot : (x : X) (y : Y x) → ((y' : Y x) → ¬(y' ≺ y))
-     → (x' : X) (r : x ≡ x') (y'' : Y x') → ¬ (y'' ≺ transport Y r y)
- preserve-bot x y bot .x refl v = bot v
+  transport-order : (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
+                 →  v ≺ transport Y p b
+                 → back-transport Y p v ≺ b
+  transport-order a .a b v refl = id
 
- blah : (a x : X) (b : Y a) (v : Y x) (p : a ≡ x) →  v ≺ transport Y p b → back-transport Y p v ≺ b
- blah a .a b v refl l = l
+  transport-order' : (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
+                  → transport Y r v ≺ b → v ≺ back-transport Y r b
+  transport-order' a .a b v refl = id
+
 
  open import DiscreteAndSeparated
 
- sum-extensional : is-well-founded _<_ → ((x : X)
-                → is-well-founded (_≺_ {x}))
-                → (top : Π Y)
-                → ((x : X) (y : Y x) → ¬(top x ≺ y))
-                → (bot : Π Y)
-                → ((x : X) (y : Y x) → ¬(y ≺ bot x))
-                → ((x x' : X) → x < x' → isolated x)
-                → is-extensional _<_ → ((x : X) → is-extensional (_≺_ {x})) → is-extensional _⊏_
- sum-extensional w w' top ist bot isb i e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
+ extensional : is-prop-valued-order _<_
+            → is-well-founded _<_
+            → ((x : X) → is-well-founded (_≺_ {x}))
+            → is-extensional _<_
+            → ((x : X) → is-extensional (_≺_ {x}))
+            → is-extensional _⊏_
+ extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
   where
    f' : (u : X) → u < a → u < x
-   f' u l = cases
-             (λ (m : u < x) → m)
-             (λ (σ : Σ \(r : u ≡ x) → transport Y r (top u) ≺ y) → 𝟘-elim (preserve-top u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
-             (f (u , top u) (inl l))
-
+   f' u l = Cases (f (u , top u) (inl l))
+             (λ (m : u < x)
+                → m)
+             (λ (σ : Σ \(r : u ≡ x) → transport Y r (top u) ≺ y)
+                → 𝟘-elim (transport-top u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
    g' : (u : X) → u < x → u < a
-   g' u l = cases
-             (λ (m : u < a) → m)
-             (λ (σ : Σ \(r : u ≡ a) → transport Y r (top u) ≺ b) → 𝟘-elim (preserve-top u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
-             (g (u , top u) (inl l))
-
+   g' u l = Cases (g (u , top u) (inl l))
+             (λ (m : u < a)
+                → m)
+             (λ (σ : Σ \(r : u ≡ a) → transport Y r (top u) ≺ b)
+                → 𝟘-elim (transport-top u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
    p : a ≡ x
    p =  e a x f' g'
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
-   f'' v l = cases
-              (λ (l : x < x) → 𝟘-elim (≤-refl _<_ x (w x) l))
-              (λ (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y)  → φ σ)
-              (f (x , v) (inr ((p ⁻¹) , blah a x b v p l)))
-     where
-      φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
-      φ (r , l) = {!!}
-       where
-        aaa : {!!}
-        aaa = {!!}
-      
+   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-order a x b v p l)))
+              (λ (l : x < x)
+                 → 𝟘-elim (≤-refl _<_ x (w x) l))
+              (λ (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y)
+                 → φ σ)
+              where
+               φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
+               φ (r , l) = transport
+                            (λ r → transport Y r v ≺ y)
+                            (extensional-gives-is-set _<_ fe ispv e r refl)
+                            l
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
-   g'' u m = {!!}
+   g'' u m = Cases (g (x , u) (inr (refl , m)))
+              (λ (l : x < a)
+                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → x < a) p l)))
+              λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
+                 → transport
+                     (λ q → u ≺ transport Y q b)
+                     (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
+                     (transport-order' a x b u (pr₁ σ) (pr₂ σ))
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
 
--}
 
-{-
- lex-order-ordinal : is-ordinal _<_ → ({x : X} → is-ordinal (_≺_ {x})) → is-ordinal _⊏_
- lex-order-ordinal (isp , w₀ , e₀ , t₀) f = sum-well-founded w₀ (λ {x} → pr₁ {!f!}) ,
-                                     sum-extensional e₀ {!λ {x} → pr₁(f {x})!} ,
-                                     sum-transitive t₀ {!λ {x} → pr₁(f {x})!}
--}
+ ordinal : is-ordinal _<_
+         → ((x : X) → is-ordinal (_≺_ {x}))
+         → is-ordinal _⊏_
+ ordinal (p , w , e , t) f = prop-valued ,
+                             well-founded w (λ x → is-well-founded-ordinal _≺_ (f x)) ,
+                             extensional (is-prop-valued-ordinal _<_ (p , w , e , t))
+                                         w
+                                         (λ x → is-well-founded-ordinal _≺_ (f x))
+                                         e
+                                         (λ x → is-extensional-ordinal _≺_ (f x)) ,
+                             transitive t (λ x → is-transitive-ordinal _≺_ (f x))
+  where
+   prop-valued : is-prop-valued-order _⊏_
+   prop-valued (a , b) (x , y) (inl l) (inl m) =
+     ap inl (p a x l m)
+   prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
+     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
+   prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
+     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
+   prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
+     ap inr (to-Σ-≡'' (ordinal-gives-is-set _<_ fe (p , w , e , t) r s ,
+                       (is-prop-valued-ordinal (_≺_ {x}) (f x) (transport Y s b) y _ m)))
 
 \end{code}
 
@@ -624,7 +655,7 @@ but the constructions still work.
 open import UF-Embedding
 open import UF-Equiv
 
-module extend
+module extension
         (fe : ∀ U V → funext U V)
         {U V W}
         {X : U ̇}
@@ -656,7 +687,11 @@ module extend
 
 \end{code}
 
-2011, 2013, 21 Jun 2018. Sum plus a limit top point ∞.
+2011, 2013, 21 Jun 2018. Countable sum plus a top limit point, which,
+constructively, is not the same thing as the sum plus one. This is
+crucial to get searchability, but searchability is not addressed in
+this module. We need to assume that each ordinal in the family has top
+element.
 
 \begin{code}
 
@@ -666,6 +701,8 @@ module sum¹
         (X : ℕ → U ̇)
         (_<_ : {n : ℕ} → X n → X n → U ̇)
         (o : (n : ℕ) → is-ordinal (_<_ {n}))
+        (t : (n : ℕ) → X n)
+        (i : (n : ℕ) → is-top _<_ (t n))
        where
 
  open import LexicographicOrder
@@ -679,50 +716,23 @@ module sum¹
   fe₀ = fe U₀ U₀
 
   _◂_ : {w : ℕ∞} → (X / under) w → (X / under) w → U ̇
-  _◂_ {w} u v = Σ \(p : fiber under w) → u p < v p
+  _◂_ {w} = extension.order fe under (under-embedding fe₀) _<_ w 
 
   ordinal-◂ : (w : ℕ∞) → is-ordinal (_◂_ {w})
-  ordinal-◂ w = extend.ordinal fe under (under-embedding fe₀) _<_ w o
+  ordinal-◂ w = extension.ordinal fe under (under-embedding fe₀) _<_ w o
+
+  top : (u : ℕ∞) → (X / under) u
+  top u (n , r) = t n
+  
+  ist : (u : ℕ∞) → is-top _◂_ (top u)
+  ist u y ((n , r) , l) = i n (y (n , r)) l
 
   _◃_ : Σ¹ X → Σ¹ X → U ̇
-  _◃_ = sum.order _≺_ _◂_
+  _◃_ = sum.order fe _≺_ _◂_ top ist
 
- well-founded : is-well-founded _◃_
- well-founded = sum.well-founded _≺_ _◂_
-                 (is-well-founded-ordinal _≺_ (ℕ∞-ordinal fe₀))
-                 (λ {w} → is-well-founded-ordinal _◂_ (ordinal-◂ w))
-                 
- transitive : is-transitive _◃_
- transitive = sum.transitive _≺_ _◂_
-               (is-transitive-ordinal _≺_ (ℕ∞-ordinal fe₀))
-               (λ {w} → is-transitive-ordinal _◂_ (ordinal-◂ w))
+ order = _◃_
 
- prop-valued : is-prop-valued-order _◃_
- prop-valued (a , b) (x , y) (inl l) (inl m) =
-   ap inl (is-prop-valued-ordinal _≺_ (ℕ∞-ordinal fe₀) a x l m)
- prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-   𝟘-elim (≤-refl _≺_ x
-            (is-well-founded-ordinal _≺_ (ℕ∞-ordinal fe₀) x)
-            (transport (λ a → a ≺ x) s l))
- prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-   𝟘-elim (≤-refl _≺_ x
-            (is-well-founded-ordinal _≺_ (ℕ∞-ordinal fe₀) x)
-            (transport (λ a → a ≺ x) r m))
- prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-   ap inr (to-Σ-≡'' (ordinal-gives-is-set _≺_ fe (ℕ∞-ordinal fe₀) r s ,
-                     (is-prop-valued-ordinal _◂_ (ordinal-◂ x) _ _) _ _))
+ ordinal : is-ordinal _◃_
+ ordinal = sum.ordinal fe _≺_ _◂_ top ist (ℕ∞-ordinal fe₀) ordinal-◂
 
-{-                 
- extensional : is-extensional _◃_
- extensional (u , φ) (v , ψ) f g = {!!}
-  where
-   f' : (w : ℕ∞) → w ≺ u → w ≺ v
-   f' w (n , e , l) = cases
-                      {!!}
-                      {!!}
-                      (f (under n , (λ σ → {!!})) {!!})
-
- Ordinal : is-ordinal _◃_
- Ordinal = prop-valued , well-founded , extensional , transitive
--}
 \end{code}
