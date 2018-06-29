@@ -592,7 +592,7 @@ icdn X isp c = f a
   f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
 
 emcdn : ∀ {U} (X : U ̇) → is-prop X → 𝟚-compact(X + ¬ X) → decidable (¬ X)
-emcdn X isp c = cases l m a
+emcdn X isp c = Cases a l m
  where
   p : X + ¬ X → 𝟚
   p (inl x) = ₀

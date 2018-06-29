@@ -128,6 +128,9 @@ dep-cases f g (inr y) = g y
 cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} → (X → A) → (Y → A) → X + Y → A
 cases = dep-cases
 
+Cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} → X + Y → (X → A) → (Y → A) → A
+Cases z f g = cases f g z
+
 +-commutative : ∀ {U V} {A : U ̇} {B : V ̇} → A + B → B + A
 +-commutative = cases inr inl
 

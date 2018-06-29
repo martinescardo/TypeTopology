@@ -264,7 +264,6 @@ import Dominance
 import DummettDisjunction
 import ExhaustibleTypes
 import ExtendedSumSearchable
-import ExtensionOrdinalFamily
 import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
