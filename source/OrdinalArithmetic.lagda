@@ -7,7 +7,7 @@ Martin Escardo, 21 June 2018
 module OrdinalArithmetic where
 
 open import SpartanMLTT
-open import Ordinals hiding (_≤_)
+open import OrdinalNotions hiding (_≤_)
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
@@ -29,7 +29,7 @@ module subsingleton-ordinal
 
  order = _<_
 
- prop-valued : is-prop-valued-order _<_
+ prop-valued : is-prop-valued _<_
  prop-valued x y = 𝟘-is-prop
 
  extensional : is-extensional _<_
@@ -41,7 +41,7 @@ module subsingleton-ordinal
  well-founded : is-well-founded _<_
  well-founded x = next x (λ y ())
 
- ordinal : is-ordinal _<_
+ ordinal : is-well-order _<_
  ordinal = prop-valued , well-founded , extensional , transitive
 
 \end{code}
@@ -69,9 +69,9 @@ module plus
 
  order = _⊏_
   
- prop-valued : is-prop-valued-order _<_
-            → is-prop-valued-order _≺_
-            → is-prop-valued-order _⊏_
+ prop-valued : is-prop-valued _<_
+            → is-prop-valued _≺_
+            → is-prop-valued _⊏_
  prop-valued p p' (inl x) (inl x') l m = p x x' l m
  prop-valued p p' (inl x) (inr y') * * = refl
  prop-valued p p' (inr y) (inl x') () m
@@ -118,9 +118,9 @@ module plus
    g (inl x) = φ x (w x) 
    g (inr y) = γ y (w' y)
 
- ordinal : is-ordinal _<_
-        → is-ordinal _≺_
-        → is-ordinal _⊏_
+ ordinal : is-well-order _<_
+        → is-well-order _≺_
+        → is-well-order _⊏_
  ordinal (p , w , e , t) (p' , w' , e' , t') = prop-valued p p' ,
                                                well-founded w w' ,
                                                extensional w e e' ,
@@ -147,7 +147,7 @@ module successor
 
   order = _<'_
 
-  ordinal : is-ordinal _<_ → is-ordinal _<'_
+  ordinal : is-well-order _<_ → is-well-order _<'_
   ordinal o = plus.ordinal _<_ _≺_ o (subsingleton-ordinal.ordinal 𝟙 𝟙-is-prop)
 
 \end{code}
@@ -245,15 +245,15 @@ module times
    q = e' b y f'' g''
 
  ordinal : (∀ U V → funext U V)
-         → is-ordinal _<_
-         → is-ordinal _≺_
-         → is-ordinal _⊏_
+         → is-well-order _<_
+         → is-well-order _≺_
+         → is-well-order _⊏_
  ordinal fe (p , w , e , t) (p' , w' , e' , t') = prop-valued ,
                                                   well-founded w w' ,
                                                   extensional w w' e e' ,
                                                   transitive t t'
   where
-   prop-valued : is-prop-valued-order _⊏_
+   prop-valued : is-prop-valued _⊏_
    prop-valued (a , b) (x , y) (inl l) (inl m) =
      ap inl (p a x l m)
    prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
@@ -361,8 +361,8 @@ subsingleton-valued.
 
 \begin{code}
 
- prop-valued : ((p : P) → is-prop-valued-order (_<_ {p}))
-                → is-prop-valued-order _≺_
+ prop-valued : ((p : P) → is-prop-valued (_<_ {p}))
+                → is-prop-valued _≺_
  prop-valued f u v = is-prop-closed-under-Σ isp (λ p → f p (φ p u) (φ p v))
 
 \end{code}
@@ -458,12 +458,12 @@ lemma.
      d : is-accessible _≺_ v
      d = transport (is-accessible _≺_) (η p v) c
 
- ordinal : ((p : P) → is-ordinal (_<_ {p}))
-        → is-ordinal _≺_
- ordinal o = prop-valued  (λ p → is-prop-valued-ordinal _<_ (o p)) ,
-             well-founded (λ p → is-well-founded-ordinal _<_ (o p)) ,
-             extensional  (λ p → is-extensional-ordinal _<_ (o p)) ,
-             transitive   (λ p → is-transitive-ordinal _<_ (o p))
+ ordinal : ((p : P) → is-well-order (_<_ {p}))
+        → is-well-order _≺_
+ ordinal o = prop-valued  (λ p → prop-valuedness _<_ (o p)) ,
+             well-founded (λ p → well-foundedness _<_ (o p)) ,
+             extensional  (λ p → extensionality _<_ (o p)) ,
+             transitive   (λ p → transitivity _<_ (o p))
  
 \end{code}
 
@@ -477,8 +477,6 @@ assumptions are possible. TODO: think about this.
 This assumption is valid in our applications. 
 
 \begin{code}
-
-open import Ordinals
 
 module sum
         (fe : (∀ U V → funext U V))
@@ -555,7 +553,7 @@ forget to remove spurious hypotheses when we finish.
 
  open import DiscreteAndSeparated
 
- extensional : is-prop-valued-order _<_
+ extensional : is-prop-valued _<_
             → is-well-founded _<_
             → ((x : X) → is-well-founded (_≺_ {x}))
             → is-extensional _<_
@@ -602,19 +600,19 @@ forget to remove spurious hypotheses when we finish.
    q = e' x (transport Y p b) y f'' g''
 
 
- ordinal : is-ordinal _<_
-         → ((x : X) → is-ordinal (_≺_ {x}))
-         → is-ordinal _⊏_
+ ordinal : is-well-order _<_
+         → ((x : X) → is-well-order (_≺_ {x}))
+         → is-well-order _⊏_
  ordinal (p , w , e , t) f = prop-valued ,
-                             well-founded w (λ x → is-well-founded-ordinal _≺_ (f x)) ,
-                             extensional (is-prop-valued-ordinal _<_ (p , w , e , t))
+                             well-founded w (λ x → well-foundedness _≺_ (f x)) ,
+                             extensional (prop-valuedness _<_ (p , w , e , t))
                                          w
-                                         (λ x → is-well-founded-ordinal _≺_ (f x))
+                                         (λ x → well-foundedness _≺_ (f x))
                                          e
-                                         (λ x → is-extensional-ordinal _≺_ (f x)) ,
-                             transitive t (λ x → is-transitive-ordinal _≺_ (f x))
+                                         (λ x → extensionality _≺_ (f x)) ,
+                             transitive t (λ x → transitivity _≺_ (f x))
   where
-   prop-valued : is-prop-valued-order _⊏_
+   prop-valued : is-prop-valued _⊏_
    prop-valued (a , b) (x , y) (inl l) (inl m) =
      ap inl (p a x l m)
    prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
@@ -623,7 +621,7 @@ forget to remove spurious hypotheses when we finish.
      𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
      ap inr (to-Σ-≡'' (ordinal-gives-is-set _<_ fe (p , w , e , t) r s ,
-                       (is-prop-valued-ordinal (_≺_ {x}) (f x) (transport Y s b) y _ m)))
+                       (prop-valuedness (_≺_ {x}) (f x) (transport Y s b) y _ m)))
 
 \end{code}
 
@@ -675,8 +673,8 @@ module extension
 
  order = _≺_
 
- ordinal : ((x : X) → is-ordinal (_<_ {x}))
-         → is-ordinal _≺_
+ ordinal : ((x : X) → is-well-order (_<_ {x}))
+         → is-well-order _≺_
  ordinal o = pip.ordinal 
               (fe (U ⊔ V) W) 
               (fiber j a)
@@ -700,7 +698,7 @@ module sum¹
         {U}
         (X : ℕ → U ̇)
         (_<_ : {n : ℕ} → X n → X n → U ̇)
-        (o : (n : ℕ) → is-ordinal (_<_ {n}))
+        (o : (n : ℕ) → is-well-order (_<_ {n}))
         (t : (n : ℕ) → X n)
         (i : (n : ℕ) → is-top _<_ (t n))
        where
@@ -718,7 +716,7 @@ module sum¹
   _◂_ : {w : ℕ∞} → (X / under) w → (X / under) w → U ̇
   _◂_ {w} = extension.order fe under (under-embedding fe₀) _<_ w 
 
-  ordinal-◂ : (w : ℕ∞) → is-ordinal (_◂_ {w})
+  ordinal-◂ : (w : ℕ∞) → is-well-order (_◂_ {w})
   ordinal-◂ w = extension.ordinal fe under (under-embedding fe₀) _<_ w o
 
   top : (u : ℕ∞) → (X / under) u
@@ -732,7 +730,7 @@ module sum¹
 
  order = _◃_
 
- ordinal : is-ordinal _◃_
+ ordinal : is-well-order _◃_
  ordinal = sum.ordinal fe _≺_ _◂_ top ist (ℕ∞-ordinal fe₀) ordinal-◂
 
 \end{code}

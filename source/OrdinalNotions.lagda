@@ -13,13 +13,14 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
-module Ordinals {U V : Universe}
-                {X : U ̇}
-                (_<_ : X → X → V ̇)
-                where
+module OrdinalNotions
+        {U V : Universe}
+        {X : U ̇}
+        (_<_ : X → X → V ̇)
+       where
 
-is-prop-valued-order : U ⊔ V ̇
-is-prop-valued-order = ((x y : X) → is-prop(x < y))
+is-prop-valued : U ⊔ V ̇
+is-prop-valued = ((x y : X) → is-prop(x < y))
 
 data is-accessible : X → U ⊔ V ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
@@ -73,7 +74,7 @@ is-transitive = (x y z : X) → x < y → y < z → x < z
 _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued-order → (x y : X) → is-prop(x ≼ y)
+≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued → (x y : X) → is-prop(x ≼ y)
 ≼-prop-valued-order fe isp x y = is-prop-exponential-ideal (fe U V)
                                   (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp u y))
 
@@ -96,20 +97,20 @@ extensional-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
 extensional'-extensional : is-extensional' → is-extensional
 extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
 
-is-ordinal : U ⊔ V ̇
-is-ordinal = is-prop-valued-order × is-well-founded × is-extensional × is-transitive
+is-well-order : U ⊔ V ̇
+is-well-order = is-prop-valued × is-well-founded × is-extensional × is-transitive
 
-is-prop-valued-ordinal : is-ordinal → is-prop-valued-order
-is-prop-valued-ordinal = pr₁
+prop-valuedness : is-well-order → is-prop-valued
+prop-valuedness = pr₁
 
-is-well-founded-ordinal : is-ordinal → is-well-founded
-is-well-founded-ordinal = pr₁ ∘ pr₂
+well-foundedness : is-well-order → is-well-founded
+well-foundedness = pr₁ ∘ pr₂
 
-is-extensional-ordinal : is-ordinal → is-extensional
-is-extensional-ordinal = pr₁ ∘ pr₂ ∘ pr₂
+extensionality : is-well-order → is-extensional
+extensionality = pr₁ ∘ pr₂ ∘ pr₂
 
-is-transitive-ordinal : is-ordinal → is-transitive
-is-transitive-ordinal = pr₂ ∘ pr₂ ∘ pr₂
+transitivity : is-well-order → is-transitive
+transitivity = pr₂ ∘ pr₂ ∘ pr₂
 
 is-accessible-is-prop : (∀ U V → funext U V)
                       → (x : X) → is-prop(is-accessible x)
@@ -134,7 +135,7 @@ is-accessible-is-prop fe = accessible-induction P φ
 well-founded-is-prop : (∀ U V → funext U V) → is-prop is-well-founded
 well-founded-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
-extensional-gives-is-set : (∀ U V → funext U V) → is-prop-valued-order
+extensional-gives-is-set : (∀ U V → funext U V) → is-prop-valued
                          → is-extensional → is-set X
 extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
  where
@@ -147,10 +148,10 @@ extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
-ordinal-gives-is-set : (∀ U V → funext U V) → is-ordinal → is-set X
+ordinal-gives-is-set : (∀ U V → funext U V) → is-well-order → is-set X
 ordinal-gives-is-set fe (p , w , e , t) = extensional-gives-is-set fe p e
 
-extensional-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-extensional
+extensional-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-extensional
 extensional-is-prop fe isp e e' =
  dfunext (fe U (U ⊔ V))
    (λ x → dfunext (fe U (U ⊔ V))
@@ -160,7 +161,7 @@ extensional-is-prop fe isp e e' =
                       (e x y)
                       (e' x y)))
 
-transitive-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-transitive
+transitive-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-transitive
 transitive-is-prop fe isp =
  is-prop-exponential-ideal (fe U (U ⊔ V))
    (λ x → is-prop-exponential-ideal (fe U (U ⊔ V))
@@ -169,7 +170,7 @@ transitive-is-prop fe isp =
                               (λ l → is-prop-exponential-ideal (fe V V)
                                        (λ m → isp x z)))))
 
-ordinal-is-prop : (∀ U V → funext U V) → is-prop is-ordinal
+ordinal-is-prop : (∀ U V → funext U V) → is-prop is-well-order
 ordinal-is-prop fe o = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
                                         λ x → is-prop-exponential-ideal (fe U V)
                                                 (λ y → is-prop-is-prop (fe V V)))
@@ -262,13 +263,13 @@ well-founded₂-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V))
                             (λ p → is-prop-exponential-ideal (fe (U ⊔ V) U)
                                      (λ s → is-prop-exponential-ideal (fe U U₀) (λ x → 𝟚-is-set)))
 
-is-ordinal₂ : U ⊔ V ̇
-is-ordinal₂ = is-prop-valued-order × is-well-founded₂ × is-extensional × is-transitive
+is-well-order₂ : U ⊔ V ̇
+is-well-order₂ = is-prop-valued × is-well-founded₂ × is-extensional × is-transitive
 
-ordinal-ordinal₂ : is-ordinal → is-ordinal₂
-ordinal-ordinal₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
+is-well-order-gives-is-well-order₂ : is-well-order → is-well-order₂
+is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
-ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued-order → is-prop is-ordinal₂
+ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-well-order₂
 ordinal₂-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
                                            (λ x → is-prop-exponential-ideal (fe U V)
                                                   (λ y → is-prop-is-prop (fe V V))))

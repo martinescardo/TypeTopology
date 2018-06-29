@@ -92,7 +92,7 @@ Added 20th June 2018:
 \begin{code}
 
 open import UF-Subsingletons
-open import Ordinals hiding (_≤_) hiding (<-coarser-than-≤) hiding (≤-refl)
+open import OrdinalNotions hiding (_≤_) hiding (<-coarser-than-≤) hiding (≤-refl)
 
 <-is-prop-valued : (m n : ℕ) → is-prop(m < n)
 <-is-prop-valued zero     zero     = 𝟘-is-prop
@@ -141,7 +141,7 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 <-is-extensional (succ m) (zero)   f g = unique-from-𝟘 (f zero (zero-minimal m))
 <-is-extensional (succ m) (succ n) f g = ap succ (≤-anti m n (f m (≤-refl m)) (g n (≤-refl n)))
 
-ℕ-is-ordinal : is-ordinal _<_
+ℕ-is-ordinal : is-well-order _<_
 ℕ-is-ordinal = <-is-prop-valued , <-is-well-founded , <-is-extensional , <-trans
 
 \end{code}

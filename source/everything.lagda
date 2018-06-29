@@ -277,7 +277,7 @@ import NaturalsAddition
 import NaturalsOrder
 import NonCollapsibleFamily
 import OmniscientTypes
-import Ordinals
+import OrdinalNotions
 import OrdinalArithmetic
 import OrdinalCodes
 import PlusOneLC

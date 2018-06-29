@@ -432,7 +432,7 @@ open import NaturalsOrder
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
 ⊏-trans m n u a = ⊏-trans' m n u (⊏-coarser-than-< m n a)
 
-open import Ordinals hiding (_≤_) hiding (≤-refl)
+open import OrdinalNotions hiding (_≤_) hiding (≤-refl)
 
 ≺-trans : is-transitive _≺_
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
@@ -464,7 +464,7 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
   γ : u ≡ v
   γ = incl-lc fe (dfunext fe h)
 
-ℕ∞-ordinal : funext₀ → is-ordinal _≺_
+ℕ∞-ordinal : funext₀ → is-well-order _≺_
 ℕ∞-ordinal fe = (≺-prop-valued fe) , ≺-well-founded , (≺-extensional fe) , ≺-trans
 
 ≺-well-founded₂ : funext₀ → is-well-founded₂ _≺_
@@ -482,8 +482,11 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
   b : p ∞ ≡ ₁
   b = φ ∞ f
 
-ℕ∞-ordinal₂ : funext₀ → is-ordinal₂ _≺_
-ℕ∞-ordinal₂ fe = (≺-prop-valued fe) , (≺-well-founded₂ fe) , (≺-extensional fe) , ≺-trans
+ℕ∞-ordinal₂ : funext₀ → is-well-order₂ _≺_
+ℕ∞-ordinal₂ fe = ≺-prop-valued fe ,
+                  ≺-well-founded₂ fe ,
+                  ≺-extensional fe ,
+                  ≺-trans
 
 under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
 under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
