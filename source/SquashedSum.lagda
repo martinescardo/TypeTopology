@@ -26,7 +26,10 @@ squashed-sum-searchable : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → searchab
 squashed-sum-searchable {X} ε = extended-sum-searchable under (under-embedding (fe U₀ U₀)) ε ℕ∞-is-searchable 
 
 \end{code}
-  
+
+TODO. Define the natural map (Σ X) + 𝟙 → Σ¹ X, and show that it is an
+embedding whose image has empty complement. (This should be very easy.)
+
 The original version of this, given below was much more convoluted,
 but equivalent, as also shown below.
 
