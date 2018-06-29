@@ -621,12 +621,8 @@ but the constructions still work.
 
 \begin{code}
 
-open import SpartanMLTT
-open import UF-FunExt
 open import UF-Embedding
 open import UF-Equiv
-open import UF-Subsingletons
-open import Ordinals
 
 module extend
         (fe : ∀ U V → funext U V)
@@ -636,7 +632,7 @@ module extend
         {Y : X → W ̇}
         (j : X → A)
         (ise : is-embedding j)
-        (_<_ : {x : X} → Y x → Y x → W ̇) 
+        (_<_ : {x : X} → Y x → Y x → W ̇)        
         (a : A)
        where
 
@@ -649,7 +645,7 @@ module extend
  order = _≺_
 
  ordinal : ((x : X) → is-ordinal (_<_ {x}))
-        → is-ordinal _≺_
+         → is-ordinal _≺_
  ordinal o = pip.ordinal 
               (fe (U ⊔ V) W) 
               (fiber j a)
@@ -664,15 +660,6 @@ module extend
 
 \begin{code}
 
-open import UF-FunExt
-open import SpartanMLTT
-open import UF-Base
-open import UF-Equiv
-open import GenericConvergentSequence
-open import SearchableTypes
-open import Ordinals
-open import LexicographicOrder
-
 module sum¹
         (fe : ∀ U V → funext U V)
         {U}
@@ -681,11 +668,11 @@ module sum¹
         (o : (n : ℕ) → is-ordinal (_<_ {n}))
        where
 
+ open import LexicographicOrder
+ open import GenericConvergentSequence
  open import ExtendedSumSearchable (fe)
- open import ConvergentSequenceSearchable (fe U₀ U₀)
  open import UF-InjectiveTypes (fe)
  open import SquashedSum (fe)
- open import Ordinals
  open import UF-Embedding
 
  private
