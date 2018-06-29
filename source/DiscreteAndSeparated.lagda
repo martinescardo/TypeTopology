@@ -24,6 +24,23 @@ isolated x = ∀ y → decidable(x ≡ y)
 isolated' : ∀ {U} {X : U ̇} → X → U ̇
 isolated' x = ∀ y → decidable(y ≡ x)
 
+decidable-eq-sym : ∀ {U} {X : U ̇} (x y : X) → decidable (x ≡ y) → decidable (y ≡ x)
+decidable-eq-sym x y = cases
+                        (λ (p : x ≡ y) → inl (p ⁻¹))
+                        (λ (n : ¬(x ≡ y)) → inr (λ (q : y ≡ x) → n (q ⁻¹)))
+
+-isolated'-gives-isolated : ∀ {U} {X : U ̇} (x : X) → isolated' x → isolated x
+-isolated'-gives-isolated x i' y = cases
+                                   (λ (p : y ≡ x) → inl (p ⁻¹))
+                                   (λ (n : ¬(y ≡ x)) → inr (λ (p : x ≡ y) → n (p ⁻¹)))
+                                   (i' y)
+
+isolated'-gives-isolated : ∀ {U} {X : U ̇} (x : X) → isolated' x → isolated x
+isolated'-gives-isolated x i' y = decidable-eq-sym y x (i' y)
+
+isolated-gives-isolated' : ∀ {U} {X : U ̇} (x : X) → isolated x → isolated' x
+isolated-gives-isolated' x i y = decidable-eq-sym x y (i y)
+
 discrete : ∀ {U} → U ̇ → U ̇
 discrete X = (x : X) → isolated x
 

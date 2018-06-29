@@ -1,5 +1,7 @@
 Martin Escardo, 28 June 2018
 
+Maybe move the contents of this module to OrdinalArithmetic.
+
 For a universe (and hence an injective type) W and an embedding
 j : X → A, if every type in a family Y : X → W has the structure of an
 ordinal, then so does every type in the extended family Y/j : A → W.
@@ -48,16 +50,19 @@ module ExtensionOrdinalFamily
 
 open import UF-InjectiveTypes (fe)
 
-_≺_ : (Y / j) a → (Y / j) a → U ⊔ V ⊔ W ̇
-u ≺ v = Σ \(p : fiber j a) → u p < v p 
+private
+ _≺_ : (Y / j) a → (Y / j) a → U ⊔ V ⊔ W ̇
+ u ≺ v = Σ \(p : fiber j a) → u p < v p 
 
-ordinal : is-ordinal _≺_
-ordinal = prop-indexed-product-of-ordinals.ordinal
-           (fiber j a)
-           (ise a)
-           (λ (p : fiber j a) → Y (pr₁ p))
-           (λ {p : fiber j a} y y' → y < y')
-           (λ (p : fiber j a) → o (pr₁ p))
-           (fe (U ⊔ V) W) 
+extended-order = _≺_
+
+extended-ordinal : is-ordinal _≺_
+extended-ordinal = pip-ordinal
+                    (fe (U ⊔ V) W) 
+                    (fiber j a)
+                    (ise a)
+                    (λ (p : fiber j a) → Y (pr₁ p))
+                    (λ {p : fiber j a} y y' → y < y')
+                    (λ (p : fiber j a) → o (pr₁ p))
 
 \end{code}

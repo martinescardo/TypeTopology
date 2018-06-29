@@ -324,32 +324,36 @@ u ≡ under(n+1) if and only if n ⊏ u ⊑ n+1.
 
 \begin{code}
 
-finite-isolated : funext₀ → (u : ℕ∞) (n : ℕ) → (u ≡ under n) + (u ≢ under n)
-finite-isolated fe u 0 = two-equality-cases lemma₀ lemma₁
- where 
-  lemma₀ : is-Zero u → (u ≡ Zero) + (u ≢ Zero)
-  lemma₀ r = inl(is-Zero-equal-Zero fe r)
-  lemma₁ : positive u → (u ≡ Zero) + (u ≢ Zero)
-  lemma₁ r = inr(contrapositive fact (Lemma[b≡₁→b≢₀] r))
-    where fact : u ≡ Zero → is-Zero u
-          fact r = ap (λ u → incl u 0) r
-finite-isolated fe u (succ n) = two-equality-cases lemma₀ lemma₁
+finite-isolated : funext₀ → (n : ℕ) → isolated (under n)
+finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
  where
-  lemma₀ :  u ⊑ n → (u ≡ under(succ n)) + (u ≢ under(succ n))
-  lemma₀ r = inr(contrapositive lemma (Lemma[b≡₀→b≢₁] r))
-   where
-    lemma : u ≡ under(succ n) → n ⊏ u
-    lemma r = ap (λ v → incl v n) r ∙ under-diagonal₁ n
-  lemma₁ :  n ⊏ u → (u ≡ under(succ n)) + (u ≢ under(succ n))
-  lemma₁ r = two-equality-cases lemma₁₀ lemma₁₁
-   where
-    lemma₁₀ :  u ⊑ succ n → (u ≡ under(succ n)) + (u ≢ under(succ n))
-    lemma₁₀ s = inl(Succ-criterion fe r s)
-    lemma₁₁ :  succ n ⊏ u → (u ≡ under(succ n)) + (u ≢ under(succ n))
-    lemma₁₁ s = inr (contrapositive lemma (Lemma[b≡₁→b≢₀] s))
+  f : (u : ℕ∞) (n : ℕ) → decidable (u ≡ under n)
+  f u 0 = two-equality-cases g₀ g₁
+   where 
+    g₀ : is-Zero u → decidable (u ≡ Zero)
+    g₀ r = inl(is-Zero-equal-Zero fe r)
+    g₁ : positive u → decidable (u ≡ Zero)
+    g₁ r = inr(contrapositive h (Lemma[b≡₁→b≢₀] r))
      where
-      lemma : u ≡ under(succ n) → u ⊑ succ n
-      lemma r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
+      h : u ≡ Zero → is-Zero u
+      h r = ap (λ u → incl u 0) r
+  f u (succ n) = two-equality-cases g₀ g₁
+   where
+    g₀ :  u ⊑ n → decidable (u ≡ under(succ n))
+    g₀ r = inr(contrapositive g (Lemma[b≡₀→b≢₁] r))
+     where
+      g : u ≡ under(succ n) → n ⊏ u
+      g r = ap (λ v → incl v n) r ∙ under-diagonal₁ n
+    g₁ :  n ⊏ u → decidable (u ≡ under(succ n))
+    g₁ r = two-equality-cases g₁₀ g₁₁
+     where
+      g₁₀ : u ⊑ succ n → decidable (u ≡ under(succ n))
+      g₁₀ s = inl(Succ-criterion fe r s)
+      g₁₁ : succ n ⊏ u → decidable (u ≡ under(succ n))
+      g₁₁ s = inr (contrapositive g (Lemma[b≡₁→b≢₀] s))
+       where
+        g : u ≡ under(succ n) → u ⊑ succ n
+        g r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
 
 \end{code}
 
@@ -385,6 +389,9 @@ as the need arises.
 
 _≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
+
+below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → isolated u
+below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated fe n)
 
 ≺-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≺ v)
 ≺-prop-valued fe u v (n , r , a) (m , s , b) =

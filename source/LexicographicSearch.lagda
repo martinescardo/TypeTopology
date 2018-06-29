@@ -12,13 +12,13 @@ open import SpartanMLTT
 open import LexicographicOrder
 open import InfSearchable
 
-sums-preserve-inf-searchability : ∀ {U V} {X : U ̇} {Y : X → V ̇}
-  → (_≤_ : bin-rel X)
-  → (_≼_ : {x : X} → bin-rel(Y x))
+sums-preserve-inf-searchability : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
+  → (_≤_ : X → X → W ̇)
+  → (_≼_ : {x : X} → Y x → Y x → T ̇)
   → inf-searchable _≤_
   → ((x : X) → inf-searchable (_≼_ {x}))
-  → inf-searchable (lex-prod _≤_ _≼_)
-sums-preserve-inf-searchability {U} {V} {X} {Y} _≤_ _≼_ ε δ p =
+  → inf-searchable (lex-order _≤_ _≼_)
+sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where 
   lemma-next : (x : X) → Σ \(y₀ : Y x) → ((Σ \(y : Y x) → p(x , y) ≡ ₀) → p (x , y₀) ≡ ₀)
@@ -53,8 +53,8 @@ sums-preserve-inf-searchability {U} {V} {X} {Y} _≤_ _≼_ ε δ p =
   putative-root-lemma : (Σ \(t : (Σ \(x : X) → Y x)) → p t ≡ ₀) → p(x₀ , y₀) ≡ ₀
   putative-root-lemma ((x , y) , r) = pr₁ first-correctness (x , pr₁(next-correctness x) (y , r))
 
-  _⊑_ : bin-rel (Σ Y)
-  _⊑_ = lex-prod _≤_ _≼_ 
+  _⊑_ : Σ Y → Σ Y → U ⊔ W ⊔ T ̇
+  _⊑_ = lex-order _≤_ _≼_ 
 
   τ : {x x' : X} → x ≡ x' → Y x → Y x'
   τ = transport Y

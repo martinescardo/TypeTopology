@@ -19,10 +19,10 @@ open import ConvergentSequenceSearchable (fe U₀ U₀)
 open import UF-InjectiveTypes (fe)
 open import ExtendedSumSearchable (fe)
 
-Σ¹ : (ℕ → U₀ ̇) → U₀ ̇
+Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
-squashed-sum-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
+squashed-sum-searchable : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
 squashed-sum-searchable {X} ε = extended-sum-searchable under (under-embedding (fe U₀ U₀)) ε ℕ∞-is-searchable 
 
 \end{code}
