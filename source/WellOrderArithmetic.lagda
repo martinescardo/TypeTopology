@@ -749,8 +749,12 @@ crucial to get searchability, but searchability is not addressed in
 this module. We need to assume that each ordinal in the family has top
 element.
 
+This doesn't seem to be needed anymore, as it is subsumed by ∑¹ in the
+module Ordinals:
+
 \begin{code}
 
+{- Delete this eventually:
 module sum¹
         (fe : ∀ U V → funext U V)
         {U}
@@ -793,5 +797,7 @@ module sum¹
 
  topped : has-top _◃_
  topped = sum.top-preservation fe _≺_ _◂_ top ist (∞ , ∞-top)
+
+-}
  
 \end{code}
