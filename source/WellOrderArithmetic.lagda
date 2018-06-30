@@ -1,6 +1,6 @@
 Martin Escardo, 21 June 2018
 
-TODO. Avoid the word "ordinal".
+TODO. Avoid the word "ordinal", reserving it to the module Ordinals.
 
 \begin{code}
 
@@ -140,7 +140,7 @@ module plus
    
 \end{code}
 
-Successor.
+Successor (probably get rid of it).
 
 \begin{code}
 
@@ -491,6 +491,11 @@ lemma.
                 extensional  (λ p → extensionality _<_ (o p)) ,
                 transitive   (λ p → transitivity _<_ (o p))
 
+\end{code}
+
+I am not sure this is going to be useful:
+
+\begin{code}
 
  top-preservation : P → ((p : P) → has-top (_<_ {p})) → has-top _≺_
  top-preservation p f = (λ q → transport X (isp p q) (pr₁ (f p))) , g
@@ -506,8 +511,6 @@ lemma.
      n = transport (λ r → transport X r (pr₁ (f q)) < u q) (prop-is-set isp (isp q q) refl) m
  
 \end{code}
-
-Could a proof using univalence be shorter?
 
 Sum of an ordinal-indexed family of ordinals. To show that
 extensionality is preserved, our argument uses the assumption that
@@ -705,7 +708,7 @@ module extension
         {U V W}
         {X : U ̇}
         {A : V ̇}
-        {Y : X → W ̇}
+        (Y : X → W ̇)
         (j : X → A)
         (ise : is-embedding j)
         (_<_ : {x : X} → Y x → Y x → W ̇)        
@@ -769,10 +772,10 @@ module sum¹
   fe₀ = fe U₀ U₀
 
   _◂_ : {w : ℕ∞} → (X / under) w → (X / under) w → U ̇
-  _◂_ {w} = extension.order fe under (under-embedding fe₀) _<_ w 
+  _◂_ {w} = extension.order fe X under (under-embedding fe₀) _<_ w 
 
   well-order-◂ : (w : ℕ∞) → is-well-order (_◂_ {w})
-  well-order-◂ w = extension.well-order fe under (under-embedding fe₀) _<_ w o
+  well-order-◂ w = extension.well-order fe X under (under-embedding fe₀) _<_ w o
 
   top : (u : ℕ∞) → (X / under) u
   top u (n , r) = t n

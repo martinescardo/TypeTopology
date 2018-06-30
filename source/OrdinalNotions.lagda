@@ -101,16 +101,16 @@ is-well-order : U ⊔ V ̇
 is-well-order = is-prop-valued × is-well-founded × is-extensional × is-transitive
 
 prop-valuedness : is-well-order → is-prop-valued
-prop-valuedness = pr₁
+prop-valuedness (p , w , e , t) = p
 
 well-foundedness : is-well-order → is-well-founded
-well-foundedness = pr₁ ∘ pr₂
+well-foundedness (p , w , e , t) = w
 
 extensionality : is-well-order → is-extensional
-extensionality = pr₁ ∘ pr₂ ∘ pr₂
+extensionality (p , w , e , t) = e
 
 transitivity : is-well-order → is-transitive
-transitivity = pr₂ ∘ pr₂ ∘ pr₂
+transitivity (p , w , e , t) = t
 
 is-accessible-is-prop : (∀ U V → funext U V)
                       → (x : X) → is-prop(is-accessible x)
