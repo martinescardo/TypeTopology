@@ -95,6 +95,12 @@ equal. This notion in topology is called total separatedness.)
 totally-separated : ∀ {U} → U ̇ → U ̇
 totally-separated X = {x y : X} → x ≡₂ y → x ≡ y
 
+\end{code}
+
+Synonym:
+
+\begin{code}
+
 𝟚-separated : ∀ {U} → U ̇ → U ̇
 𝟚-separated = totally-separated
 
@@ -168,6 +174,35 @@ totally-separated-is-set fe X t = separated-is-set fe (totally-separated-is-sepa
 The converse fails: the type of propositions is a set, but its total
 separatedness implies excluded middle. In fact, its separatedness
 already implies excluded middle (exercise).
+
+The need to define f and g in the following proof arises because the
+function is-prop-is-exponential ideal requires a dependent function
+with explicit arguments, but total separatedness is defined with
+implicit arguments. The essence of the proof is that of p in the where
+clause.
+
+\begin{code}
+
+is-prop-totally-separated : ∀ {U} → funext U U → funext U U₀
+                         → (X : U ̇) → is-prop(totally-separated X)
+is-prop-totally-separated {U} fe fe₀ X = γ 
+ where
+  T : U ̇
+  T = (x y : X) → x ≡₂ y → x ≡ y
+  f : T → totally-separated X
+  f t {x} {y} φ = t x y φ
+  g : totally-separated X → T
+  g t x y φ = t {x} {y} φ
+  p : is-prop T
+  p t = is-prop-exponential-ideal fe
+           (λ x → is-prop-exponential-ideal fe
+                    (λ y → is-prop-exponential-ideal fe
+                              (λ p → totally-separated-is-set fe₀ X (f t))))
+        t
+
+  γ : is-prop (totally-separated X)
+  γ = subtype-of-prop-is-prop g (λ {t} {u} (q : g t ≡ g u) → ap f q) p
+\end{code}
 
 Old proof which by-passes the step via separatedness:
 

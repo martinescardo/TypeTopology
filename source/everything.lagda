@@ -282,6 +282,7 @@ import NonCollapsibleFamily
 import OmniscientTypes
 import OrdinalNotions
 import OrdinalCodes
+import Ordinals
 import PlusOneLC
 import PropTychonoff
 import RicesTheoremForTheUniverse

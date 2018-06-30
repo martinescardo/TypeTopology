@@ -38,8 +38,8 @@ This is the main theorem proved in this module:
 
 \begin{code}
 
-ℕ∞-is-searchable : searchable ℕ∞
-ℕ∞-is-searchable p = a , Lemma
+ℕ∞-searchable : searchable ℕ∞
+ℕ∞-searchable p = a , Lemma
  where 
   α : ℕ → 𝟚
   α 0       = p(under 0)
@@ -101,21 +101,21 @@ Corollaries:
 open import OmniscientTypes
 open import DiscreteAndSeparated
 
-ℕ∞-is-omniscient : omniscient ℕ∞
-ℕ∞-is-omniscient = searchable-implies-omniscient (ℕ∞-is-searchable)
+ℕ∞-omniscient : omniscient ℕ∞
+ℕ∞-omniscient = searchable-implies-omniscient (ℕ∞-searchable)
 
 ℕ∞→ℕ-discrete : discrete(ℕ∞ → ℕ)
-ℕ∞→ℕ-discrete = omniscient-discrete-discrete fe ℕ∞-is-omniscient (λ u → ℕ-discrete)
+ℕ∞→ℕ-discrete = omniscient-discrete-discrete fe ℕ∞-omniscient (λ u → ℕ-discrete)
 
 ℕ∞→𝟚-discrete : discrete(ℕ∞ → 𝟚)
-ℕ∞→𝟚-discrete = omniscient-discrete-discrete fe ℕ∞-is-omniscient (λ u → 𝟚-discrete)
+ℕ∞→𝟚-discrete = omniscient-discrete-discrete fe ℕ∞-omniscient (λ u → 𝟚-discrete)
 
 module _ (fe' : ∀ U V → funext U V) (pt : PropTrunc) where
 
  open import 2CompactTypes (fe') (pt)
   
  ℕ∞-is-strongly-𝟚-overt : strongly-𝟚-overt ℕ∞
- ℕ∞-is-strongly-𝟚-overt = omniscient-Compact ℕ∞-is-omniscient
+ ℕ∞-is-strongly-𝟚-overt = omniscient-Compact ℕ∞-omniscient
 
  ℕ∞-is-𝟚-compact : 𝟚-compact ℕ∞
  ℕ∞-is-𝟚-compact = 𝟚-so-c ℕ∞-is-strongly-𝟚-overt

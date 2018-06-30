@@ -58,10 +58,10 @@ All sets in the image of the function ordinal are searchable:
 \begin{code}
 
 searchable-ordinals : (α : SO) → searchable(ordinal α)
-searchable-ordinals           One  = one-searchable
-searchable-ordinals      (Add α β) = binary-sums-preserve-searchability(searchable-ordinals α)(searchable-ordinals β)
+searchable-ordinals           One  = 𝟙-searchable
+searchable-ordinals      (Add α β) = binary-sums-preserve-searchability'(searchable-ordinals α)(searchable-ordinals β)
 searchable-ordinals      (Mul α β) = binary-Tychonoff(searchable-ordinals α)(searchable-ordinals β)
-searchable-ordinals (Sum-plus-One α) = squashed-sum-searchable (λ i → searchable-ordinals(α i))
+searchable-ordinals (Sum-plus-One α) = squashed-sum-searchable (λ i → ordinal (α i)) (λ i → searchable-ordinals(α i))
 
 \end{code}
 

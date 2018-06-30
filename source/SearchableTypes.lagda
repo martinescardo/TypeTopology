@@ -124,8 +124,8 @@ using density.
 
 \begin{code}
 
-one-searchable : ∀ {U} → searchable 𝟙
-one-searchable {U} p = * {U} , f
+𝟙-searchable : ∀ {U} → searchable 𝟙
+𝟙-searchable {U} p = * {U} , f
  where 
   f : (r : p * ≡ ₁) (x : 𝟙) → p x ≡ ₁
   f r * = r
@@ -331,9 +331,9 @@ Corollary: binary coproducts preserve searchability:
 
 \begin{code}
 
-binary-sums-preserve-searchability : ∀ {U} {X₀ : U ̇} {X₁ : U ̇}
+binary-sums-preserve-searchability' : ∀ {U} {X₀ : U ̇} {X₁ : U ̇}
                                    → searchable X₀ → searchable X₁ → searchable(X₀ +' X₁)
-binary-sums-preserve-searchability {U} {X₀} {X₁} ε₀ ε₁ = sums-preserve-searchability 𝟚-searchable ε
+binary-sums-preserve-searchability' {U} {X₀} {X₁} ε₀ ε₁ = sums-preserve-searchability 𝟚-searchable ε
  where 
   ε : (i : 𝟚) → _
   ε ₀ = ε₀

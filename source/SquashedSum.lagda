@@ -22,8 +22,8 @@ open import ExtendedSumSearchable (fe)
 Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
-squashed-sum-searchable : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
-squashed-sum-searchable {X} ε = extended-sum-searchable under (under-embedding (fe U₀ U₀)) ε ℕ∞-is-searchable 
+squashed-sum-searchable : ∀ {U} (X : ℕ → U ̇) → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
+squashed-sum-searchable X ε = extended-sum-searchable under (under-embedding (fe U₀ U₀)) ε ℕ∞-searchable 
 
 \end{code}
 
@@ -195,7 +195,7 @@ searchable sets is itself searchable, as claimed above:
 \begin{code}
 
 squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ₁ X)
-squashed-sum-searchable' {X} f = sums-preserve-searchability ℕ∞-is-searchable (extension-searchable {X} f)
+squashed-sum-searchable' {X} f = sums-preserve-searchability ℕ∞-searchable (extension-searchable {X} f)
 
 \end{code}
 
