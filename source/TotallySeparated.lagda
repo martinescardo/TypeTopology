@@ -279,8 +279,7 @@ The following can also be considered as a special case of Σ (indexed by the typ
 
 \end{code}
 
-Closure under canonical injective /-extensions (see the module
-InjectiveTypes).
+Closure under /-extensions (see the module InjectiveTypes).
 
 \begin{code}
 
@@ -294,7 +293,8 @@ module _ (fe : ∀ U V → funext U V)  where
                          (Y : X → W ̇)
                     → ((x : X) → totally-separated (Y x))
                     → (a : A) → totally-separated ((Y / j) a)
- /-totally-separated {U} {V} {W} j e Y t a = Π-totally-separated (fe (U ⊔ V) W) (λ (σ : fiber j a) → t (pr₁ σ))
+ /-totally-separated {U} {V} {W} j e Y t a = Π-totally-separated (fe (U ⊔ V) W)
+                                                (λ (σ : fiber j a) → t (pr₁ σ))
 
 \end{code}
 
