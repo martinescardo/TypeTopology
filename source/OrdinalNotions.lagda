@@ -75,8 +75,8 @@ _≼_ : X → X → U ⊔ V ̇
 x ≼ y = ∀ u → u < x → u < y
 
 ≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued → (x y : X) → is-prop(x ≼ y)
-≼-prop-valued-order fe isp x y = is-prop-exponential-ideal (fe U V)
-                                  (λ u → is-prop-exponential-ideal (fe V V) (λ l → isp u y))
+≼-prop-valued-order fe isp x y = Π-is-prop (fe U V)
+                                  (λ u → Π-is-prop (fe V V) (λ l → isp u y))
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -133,7 +133,7 @@ is-accessible-is-prop fe = accessible-induction P φ
     h y l = IH y l (τ y l)
 
 well-founded-is-prop : (∀ U V → funext U V) → is-prop is-well-founded
-well-founded-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V)) (is-accessible-is-prop fe)
+well-founded-is-prop fe = Π-is-prop (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
 extensional-gives-is-set : (∀ U V → funext U V) → is-prop-valued
                          → is-extensional → is-set X
@@ -155,24 +155,24 @@ extensional-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is
 extensional-is-prop fe isp e e' =
  dfunext (fe U (U ⊔ V))
    (λ x → dfunext (fe U (U ⊔ V))
-             (λ y → is-prop-exponential-ideal (fe (U ⊔ V) (U ⊔ V))
-                      (λ l → is-prop-exponential-ideal (fe (U ⊔ V) U)
+             (λ y → Π-is-prop (fe (U ⊔ V) (U ⊔ V))
+                      (λ l → Π-is-prop (fe (U ⊔ V) U)
                                (λ m → extensional-gives-is-set fe isp e))
                       (e x y)
                       (e' x y)))
 
 transitive-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-transitive
 transitive-is-prop fe isp =
- is-prop-exponential-ideal (fe U (U ⊔ V))
-   (λ x → is-prop-exponential-ideal (fe U (U ⊔ V))
-            (λ y → is-prop-exponential-ideal (fe U V)
-                     (λ z → is-prop-exponential-ideal (fe V V)
-                              (λ l → is-prop-exponential-ideal (fe V V)
+ Π-is-prop (fe U (U ⊔ V))
+   (λ x → Π-is-prop (fe U (U ⊔ V))
+            (λ y → Π-is-prop (fe U V)
+                     (λ z → Π-is-prop (fe V V)
+                              (λ l → Π-is-prop (fe V V)
                                        (λ m → isp x z)))))
 
 ordinal-is-prop : (∀ U V → funext U V) → is-prop is-well-order
-ordinal-is-prop fe o = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
-                                        λ x → is-prop-exponential-ideal (fe U V)
+ordinal-is-prop fe o = props-closed-× (Π-is-prop (fe U (U ⊔ V))
+                                        λ x → Π-is-prop (fe U V)
                                                 (λ y → is-prop-is-prop (fe V V)))
                         (props-closed-× (well-founded-is-prop fe)
                           (props-closed-× (extensional-is-prop fe (pr₁ o))
@@ -262,9 +262,9 @@ well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 open import UF-SetExamples
 
 well-founded₂-is-prop : (∀ U V → funext U V) → is-prop is-well-founded₂
-well-founded₂-is-prop fe = is-prop-exponential-ideal (fe U (U ⊔ V))
-                            (λ p → is-prop-exponential-ideal (fe (U ⊔ V) U)
-                                     (λ s → is-prop-exponential-ideal (fe U U₀) (λ x → 𝟚-is-set)))
+well-founded₂-is-prop fe = Π-is-prop (fe U (U ⊔ V))
+                            (λ p → Π-is-prop (fe (U ⊔ V) U)
+                                     (λ s → Π-is-prop (fe U U₀) (λ x → 𝟚-is-set)))
 
 is-well-order₂ : U ⊔ V ̇
 is-well-order₂ = is-prop-valued × is-well-founded₂ × is-extensional × is-transitive
@@ -273,9 +273,9 @@ is-well-order-gives-is-well-order₂ : is-well-order → is-well-order₂
 is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
 ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-well-order₂
-ordinal₂-is-prop fe isp = props-closed-× (is-prop-exponential-ideal (fe U (U ⊔ V))
-                                           (λ x → is-prop-exponential-ideal (fe U V)
-                                                  (λ y → is-prop-is-prop (fe V V))))
+ordinal₂-is-prop fe isp = props-closed-× (Π-is-prop (fe U (U ⊔ V))
+                                           (λ x → Π-is-prop (fe U V)
+                                                     (λ y → is-prop-is-prop (fe V V))))
                              (props-closed-× (well-founded₂-is-prop fe)
                                (props-closed-× (extensional-is-prop fe isp)
                                                (transitive-is-prop fe isp)))

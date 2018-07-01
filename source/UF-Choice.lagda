@@ -227,7 +227,7 @@ module ChoiceUnderEM₀ (U : Universe)
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
  l : {X : U ̇} → is-set(¬¬ X)
- l {X} = prop-is-set (is-prop-exponential-ideal (fe U U₀) (λ _ → 𝟘-is-prop))
+ l {X} = prop-is-set (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
  
  fact : DNS → DNA
  fact = TChoice.theorem U ¬¬ ¬¬-functor is-set sei l

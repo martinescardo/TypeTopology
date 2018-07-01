@@ -389,7 +389,7 @@ subsingleton-valued.
 
  prop-valued : ((p : P) → is-prop-valued (_<_ {p}))
             → is-prop-valued _≺_
- prop-valued f u v = is-prop-closed-under-Σ isp (λ p → f p (φ p u) (φ p v))
+ prop-valued f u v = Σ-is-prop isp (λ p → f p (φ p u) (φ p v))
 
 \end{code}
 

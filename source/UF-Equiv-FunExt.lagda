@@ -20,9 +20,9 @@ open import UF-Equiv
 
 is-prop-is-vv-equiv : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                         → is-prop(is-vv-equiv f)
-is-prop-is-vv-equiv fe {U} {V} f = is-prop-exponential-ideal
-                                         (fe V (U ⊔ V))
-                                         (λ x → is-prop-is-singleton (fe (U ⊔ V) (U ⊔ V)))
+is-prop-is-vv-equiv fe {U} {V} f = Π-is-prop
+                                     (fe V (U ⊔ V))
+                                     (λ x → is-prop-is-singleton (fe (U ⊔ V) (U ⊔ V)))
 
 qinv-post' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
           → naive-funext W U → naive-funext W V

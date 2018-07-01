@@ -195,9 +195,9 @@ is-prop-totally-separated {U} fe fe₀ X = γ
   g : totally-separated X → T
   g t x y φ = t {x} {y} φ
   p : is-prop T
-  p t = is-prop-exponential-ideal fe
-           (λ x → is-prop-exponential-ideal fe
-                    (λ y → is-prop-exponential-ideal fe
+  p t = Π-is-prop fe
+           (λ x → Π-is-prop fe
+                    (λ y → Π-is-prop fe
                               (λ p → totally-separated-is-set fe₀ X (f t))))
         t
 
@@ -262,24 +262,47 @@ The following can also be considered as a special case of Σ (indexed by the typ
 
 \end{code}
 
-We now characterize the totally separated types X as those such that
-the map eval {X} is an embedding, in order to construct totally
-separated reflections.
-
 \begin{code}
 
 𝟚-totally-separated : totally-separated 𝟚
 𝟚-totally-separated e = e id
 
-totally-separated-ideal : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
-                       → ((x : X) → totally-separated(Y x)) → totally-separated(Π Y)
-totally-separated-ideal fe {X} {Y} t {f} {g} e = dfunext fe h
+Π-totally-separated : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
+                   → ((x : X) → totally-separated(Y x)) → totally-separated(Π Y)
+Π-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where
    P : (x : X) (p : Y x → 𝟚) → Π Y → 𝟚
    P x p f = p(f x)
    
    h : (x : X) → f x ≡ g x
    h x = t x (λ p → e(P x p))
+
+\end{code}
+
+Closure under canonical injective /-extensions (see the module
+InjectiveTypes).
+
+\begin{code}
+
+module _ (fe : ∀ U V → funext U V)  where
+
+ open import UF-InjectiveTypes fe
+
+ /-totally-separated : ∀ {U V W} {X : U ̇} {A : V ̇}
+                         (j : X → A)
+                         (e : is-embedding j)
+                         (Y : X → W ̇)
+                    → ((x : X) → totally-separated (Y x))
+                    → (a : A) → totally-separated ((Y / j) a)
+ /-totally-separated {U} {V} {W} j e Y t a = Π-totally-separated (fe (U ⊔ V) W) (λ (σ : fiber j a) → t (pr₁ σ))
+
+\end{code}
+
+We now characterize the totally separated types X as those such that
+the map eval {X} is an embedding, in order to construct totally
+separated reflections.
+
+\begin{code}
 
 eval : ∀ {U} {X : U ̇} → X → ((X → 𝟚) → 𝟚)
 eval x = λ p → p x
@@ -295,7 +318,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡'' (t , r)
    
    r : transport (λ x → eval x ≡ φ) t p ≡ q
    r = totally-separated-is-set fe
-         ((X → 𝟚) → 𝟚) (totally-separated-ideal fe (λ p → 𝟚-totally-separated)) _ q
+         ((X → 𝟚) → 𝟚) (Π-totally-separated fe (λ p → 𝟚-totally-separated)) _ q
 
 ieevalts : ∀ {U} {X : U ̇} → funext U U₀ → is-embedding(eval {U} {X}) → totally-separated X
 ieevalts {U} {X} fe i {x} {y} e = ap pr₁ q
@@ -867,7 +890,7 @@ apartness on it.
      
     by-induction : _
     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
-                      (λ _ → is-prop-exponential-ideal (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-is-prop))
+                      (λ _ → Π-is-prop (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-is-prop))
                       induction-step
 
   ♯'s : symmetric _♯'_
@@ -879,10 +902,10 @@ apartness on it.
     by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
-       (λ x' → is-prop-exponential-ideal fuv
-                (λ y' → is-prop-exponential-ideal fuv (λ _ → ♯'p y' x')))
+       (λ x' → Π-is-prop fuv
+                (λ y' → Π-is-prop fuv (λ _ → ♯'p y' x')))
        (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
-                (λ y' → is-prop-exponential-ideal fuv (λ _ → ♯'p y' (η x)))
+                (λ y' → Π-is-prop fuv (λ _ → ♯'p y' (η x)))
                 (induction-step x))
    
   ♯'c : cotransitive _♯'_
@@ -904,14 +927,14 @@ apartness on it.
     by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
-       (λ _ → is-prop-exponential-ideal fuv
-                (λ _ → is-prop-exponential-ideal fuv
-                         (λ _ → is-prop-exponential-ideal fuv (λ _ → ptisp))))
+       (λ _ → Π-is-prop fuv
+                (λ _ → Π-is-prop fuv
+                         (λ _ → Π-is-prop fuv (λ _ → ptisp))))
        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
-                (λ _ → is-prop-exponential-ideal fuv
-                         (λ _ → is-prop-exponential-ideal fuv (λ _ → ptisp)))
+                (λ _ → Π-is-prop fuv
+                         (λ _ → Π-is-prop fuv (λ _ → ptisp)))
                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                         (λ _ → is-prop-exponential-ideal fuv (λ _ → ptisp))
+                         (λ _ → Π-is-prop fuv (λ _ → ptisp))
                          (induction-step x y)))
 
   ♯'a : apartness _♯'_

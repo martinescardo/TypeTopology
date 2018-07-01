@@ -36,7 +36,7 @@ LPO : U₀ ̇
 LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
 
 LPO-is-prop : is-prop LPO
-LPO-is-prop = is-prop-exponential-ideal (fe U₀ U₀) f
+LPO-is-prop = Π-is-prop (fe U₀ U₀) f
  where
   a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
   a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-is-set (fe U₀ U₀)_ _)

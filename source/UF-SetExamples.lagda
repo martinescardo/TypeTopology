@@ -89,9 +89,9 @@ is-prop-separated : ∀ {U} → funext U U → funext U U₀ → {X : U ̇} → 
 is-prop-separated fe fe₀ {X} = iis-prop-is-prop f
  where
   f : separated X → is-prop(separated X)
-  f s = is-prop-exponential-ideal fe
-          (λ _ → is-prop-exponential-ideal fe
-                    (λ _ → is-prop-exponential-ideal fe
+  f s = Π-is-prop fe
+          (λ _ → Π-is-prop fe
+                    (λ _ → Π-is-prop fe
                               (λ _ → separated-is-set fe₀ s)))
                               
 \end{code}

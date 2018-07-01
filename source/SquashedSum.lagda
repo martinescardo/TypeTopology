@@ -30,6 +30,48 @@ squashed-sum-searchable X ε = extended-sum-searchable
                                 ε
                                 ℕ∞-searchable
 
+
+
+\end{code}
+
+Tentative thoughts:
+
+\begin{code}
+
+{- 
+sqs-totally-separated : ∀ {U} (X : ℕ → U ̇)
+                      → ((n : ℕ) → totally-separated (X n))
+                      → totally-separated (Σ¹ X)
+sqs-totally-separated {U} X t = γ
+ where
+  Y : ℕ∞ → U ̇ 
+  Y u = (σ : fiber under u) → X (pr₁ σ)
+  t' : (u : ℕ∞) → totally-separated (Y u)
+  t' u = ? -- totally-separated-ideal (fe U₀ U) (λ σ → t (pr₁ σ))
+  γ : totally-separated (Σ¹ X)
+  γ {u , f} {v , g} φ = γ'
+   where
+    r : u ≡ v
+    r = ℕ∞-totally-separated (fe U₀ U₀) (λ p → φ (λ σ → p(pr₁ σ)))
+    s₂ : transport Y r f ≡₂ g
+    s₂ p = gg
+     where
+      φ'' : (q : Σ Y → 𝟚) → q (u , f) ≡ q (v , g)
+      φ'' = φ
+      q : Σ Y → 𝟚
+      q (w , h) = p k
+       where
+        k : (σ : fiber under v) → X (pr₁ σ)
+        k (n , rr) = {!!}
+      hh : {!!}
+      hh = φ q
+      gg : p (transport Y r f) ≡ p g
+      gg = {!!}
+    s : transport Y r f ≡ g
+    s = t' v s₂
+    γ' : u , f ≡ v , g
+    γ' = to-Σ-≡'' (r , s)
+-}
 \end{code}
 
 TODO. Show that the following natural map (Σ X) + 𝟙 → Σ¹ X is an

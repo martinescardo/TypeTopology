@@ -47,7 +47,7 @@ module _ (pt : PropTrunc) where
  
 fem-proptrunc : ∀ {U} → funext U U₀ → EM U → propositional-truncations-exist U U
 fem-proptrunc fe em X = ¬¬ X ,
-                    (is-prop-exponential-ideal fe (λ _ → 𝟘-is-prop) ,
+                    (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
                      (λ x u → u x) ,
                      λ P isp u φ → EM-DNE em P isp (¬¬-functor u φ))
 

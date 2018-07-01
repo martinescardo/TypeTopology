@@ -54,10 +54,10 @@ is-truth-value = is-subsingleton
 
 \begin{code}
 
-is-prop-closed-under-Σ : ∀ {U V} {X : U ̇} {A : X → V ̇} 
-                      → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
-is-prop-closed-under-Σ {U} {V} {X} {A} isx isa (x , a) (y , b) = 
-                      to-Σ-≡ x y a b (isx x y) (isa y (transport A (isx x y) a) b)
+Σ-is-prop : ∀ {U V} {X : U ̇} {A : X → V ̇} 
+          → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
+Σ-is-prop {U} {V} {X} {A} isx isa (x , a) (y , b) = 
+  to-Σ-≡ x y a b (isx x y) (isa y (transport A (isx x y) a) b)
 
 \end{code}
 

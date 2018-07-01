@@ -102,7 +102,7 @@ strongly-𝟚-overt : ∀ {U} → U ̇ → U ̇
 strongly-𝟚-overt X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
 
 strongly-𝟚-overt-is-prop : ∀ {U} {X : U ̇} → is-prop (strongly-𝟚-overt X)
-strongly-𝟚-overt-is-prop {U} = is-prop-exponential-ideal (fe U U)
+strongly-𝟚-overt-is-prop {U} = Π-is-prop (fe U U)
                                 (λ _ → decidable-is-prop (fe U U₀) ptisp)
 
 so-Markov : ∀ {U} {X : U ̇} → strongly-𝟚-overt X → (p : X → 𝟚)
@@ -126,9 +126,9 @@ of LPO with WLPO.
 open import UF-SetExamples
 
 𝟚-compact-is-prop : ∀ {U} {X : U ̇} → is-prop (𝟚-compact X)
-𝟚-compact-is-prop {U} = is-prop-exponential-ideal (fe U U)
+𝟚-compact-is-prop {U} = Π-is-prop (fe U U)
                          (λ _ → decidable-is-prop (fe U U₀)
-                                  (is-prop-exponential-ideal (fe U U₀) λ _ → 𝟚-is-set))
+                                  (Π-is-prop (fe U U₀) λ _ → 𝟚-is-set))
 
 \end{code}
 
@@ -170,7 +170,7 @@ predicate λ x → ₁:
 𝟚-compact' X = (p : X → 𝟚) → decidable (p ≡ λ x → ₁)
 
 𝟚-compact'-is-prop : ∀ {U} {X : U ̇} → is-prop(𝟚-compact' X)
-𝟚-compact'-is-prop {U} = is-prop-exponential-ideal (fe U U)
+𝟚-compact'-is-prop {U} = Π-is-prop (fe U U)
                           (λ p → decidable-is-prop (fe U U₀)
                                    (is-set-exponential-ideal (fe U U₀)
                                        (λ x → 𝟚-is-set)))
@@ -727,7 +727,7 @@ inhabited-strongly-𝟚-overt : ∀ {U} → U ̇ → U ̇
 inhabited-strongly-𝟚-overt X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
 inhabited-strongly-𝟚-overt-is-prop : ∀ {U} {X : U ̇} → is-prop (inhabited-strongly-𝟚-overt X)
-inhabited-strongly-𝟚-overt-is-prop {U} = is-prop-exponential-ideal (fe U U) (λ _ → ptisp)
+inhabited-strongly-𝟚-overt-is-prop {U} = Π-is-prop (fe U U) (λ _ → ptisp)
 
 \end{code}
 
@@ -778,7 +778,7 @@ empty:
 is-prop-isoore : ∀ {U} {X : U ̇} → is-prop(inhabited-strongly-𝟚-overt X + is-empty X)
 is-prop-isoore {U} {X} = sum-of-contradictory-props
                            inhabited-strongly-𝟚-overt-is-prop
-                             (is-prop-exponential-ideal (fe U U₀) (λ _ → 𝟘-is-prop))
+                             (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
                                 (λ c u → ptrec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
 
 isoore-so : ∀ {U} {X : U ̇} → inhabited-strongly-𝟚-overt X + is-empty X → strongly-𝟚-overt X
@@ -819,7 +819,7 @@ has-infs : ∀ {U} → U ̇ → U ̇
 has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
 
 has-infs-is-prop : ∀ {U} {X : U ̇} → is-prop(has-infs X)
-has-infs-is-prop {U} {X} = is-prop-exponential-ideal (fe U U) at-most-one-inf
+has-infs-is-prop {U} {X} = Π-is-prop (fe U U) at-most-one-inf
 
 𝟚-compact-has-infs : ∀ {U} {X : U ̇} → 𝟚-compact X → has-infs X
 𝟚-compact-has-infs c p = g (c p)
@@ -1187,9 +1187,9 @@ is-clopen-map {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y)
 
 is-clopen-map-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇} → (∀ U V → funext U V)
                    → (f : X → Y) → is-prop(is-clopen-map f)
-is-clopen-map-is-prop {U} {V} fe f = is-prop-exponential-ideal (fe U (U ⊔ V))
-                                    (λ p → is-prop-exponential-ideal (fe V (U ⊔ V))
-                                             (λ y → decidable-is-prop (fe (U ⊔ V) U₀) ptisp))
+is-clopen-map-is-prop {U} {V} fe f = Π-is-prop (fe U (U ⊔ V))
+                                      (λ p → Π-is-prop (fe V (U ⊔ V))
+                                               (λ y → decidable-is-prop (fe (U ⊔ V) U₀) ptisp))
 
 fst : ∀ {U V} (A : U ̇) (X : V ̇) → A × X → A
 fst _ _ = pr₁

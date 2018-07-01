@@ -19,9 +19,9 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-LeftCancellable
 
-is-prop-exponential-ideal : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} 
-                        → ((x : X) → is-prop (A x)) → is-prop (Π A) 
-is-prop-exponential-ideal fe {X} {A} isa f g = dfunext fe (λ x → isa x (f x) (g x))
+Π-is-prop : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} 
+          → ((x : X) → is-prop (A x)) → is-prop (Π A) 
+Π-is-prop fe {X} {A} isa f g = dfunext fe (λ x → isa x (f x) (g x))
 
 is-prop-is-prop : ∀ {U} {X : U ̇} → funext U U → is-prop (is-prop X)
 is-prop-is-prop {U} {X} fe f g = claim₁
@@ -70,8 +70,8 @@ is-prop-is-set {U} {X} fe = h
   is-set' X = (x y : X) → is-prop(x ≡ y)
 
   is-prop-is-set' : ∀ {U} {X : U ̇} → funext U U → is-prop (is-set' X)
-  is-prop-is-set' fe = is-prop-exponential-ideal fe
-                         (λ x → is-prop-exponential-ideal fe
+  is-prop-is-set' fe = Π-is-prop fe
+                         (λ x → Π-is-prop fe
                          (λ y → is-prop-is-prop fe))
 
   f : ∀ {U} {X : U ̇} → is-set' X → is-set X
@@ -90,7 +90,7 @@ is-prop-is-set {U} {X} fe = h
 decidable-is-prop : ∀ {U} {P : U ̇} → funext U U₀ → is-prop P → is-prop(P + ¬ P)
 decidable-is-prop fe₀ isp = sum-of-contradictory-props
                              isp
-                             (is-prop-exponential-ideal fe₀ λ _ → 𝟘-is-prop)
+                             (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
                              (λ p u → u p)
 
 PropExt : ∀ {U} → funext U U → propext U → {p q : Ω {U}}
@@ -104,8 +104,9 @@ PropExt {U} fe pe {p} {q} f g =
   A : (p q : Ω) → U ̇
   A p q = (p holds → q holds) × (q holds → p holds) 
   A-is-prop : (p q : Ω) → is-prop(A p q)
-  A-is-prop p q = is-prop-closed-under-Σ (is-prop-exponential-ideal fe (λ _ → holds-is-prop q)) 
-                                       (λ _ → is-prop-exponential-ideal fe (λ _ → holds-is-prop p)) 
+  A-is-prop p q = Σ-is-prop (Π-is-prop fe
+                                   (λ _ → holds-is-prop q)) 
+                                   (λ _ → Π-is-prop fe (λ _ → holds-is-prop p)) 
   g : (p q : Ω) → p ≡ q → A p q
   g p q e = (b , c)
    where

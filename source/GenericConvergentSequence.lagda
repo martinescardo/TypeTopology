@@ -37,8 +37,8 @@ decreasing : (ℕ → 𝟚) → U₀ ̇
 decreasing α = (i : ℕ) → α(succ i) ≤₂ α i 
 
 decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
-decreasing-is-prop fe α = is-prop-exponential-ideal fe
-                            (λ i → is-prop-exponential-ideal fe (λ p → 𝟚-is-set))
+decreasing-is-prop fe α = Π-is-prop fe
+                            (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
 ℕ∞ : U₀ ̇
 ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α

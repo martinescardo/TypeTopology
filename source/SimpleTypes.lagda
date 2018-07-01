@@ -49,7 +49,7 @@ open import DiscreteAndSeparated
 
 simple-types-totally-separated : {X : U₀ ̇} → simple-type X → totally-separated X
 simple-types-totally-separated base       = ℕ-totally-separated
-simple-types-totally-separated (step s t) = totally-separated-ideal (fe U₀ U₀)
+simple-types-totally-separated (step s t) = Π-totally-separated (fe U₀ U₀)
                                               λ _ → simple-types-totally-separated t
 
 simple-types-pointed : {X : U₀ ̇} → simple-type X → X
@@ -124,7 +124,7 @@ compact, it is necessary that X is discrete and Y is compact.
 simple-types₂-totally-separated : {X : U₀ ̇} → simple-type₂ X → totally-separated X
 simple-types₂-totally-separated base₂       = 𝟚-totally-separated
 simple-types₂-totally-separated base        = ℕ-totally-separated
-simple-types₂-totally-separated (step s t)  = totally-separated-ideal (fe U₀ U₀)
+simple-types₂-totally-separated (step s t)  = Π-totally-separated (fe U₀ U₀)
                                                λ _ → simple-types₂-totally-separated t
 
 simple-types₂-pointed : {X : U₀ ̇} → simple-type₂ X → X

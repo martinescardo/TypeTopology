@@ -60,18 +60,18 @@ is-dominance-is-prop : (d : U ̇ → U ̇) → is-prop (is-dominance d)
 is-dominance-is-prop d = iis-prop-is-prop lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
-  lemma isd = is-prop-closed-under-Σ
-               (is-prop-exponential-ideal (fe U' U) λ _ → is-prop-is-prop (fe U U))
-               λ _ → is-prop-closed-under-Σ
-                       (is-prop-exponential-ideal (fe U' U)
-                          λ _ → is-prop-exponential-ideal (fe U U)
+  lemma isd = Σ-is-prop
+               (Π-is-prop (fe U' U) λ _ → is-prop-is-prop (fe U U))
+               λ _ → Σ-is-prop
+                       (Π-is-prop (fe U' U)
+                          λ _ → Π-is-prop (fe U U)
                                    λ _ → is-prop-is-prop (fe U U))
-                       λ _ → is-prop-closed-under-Σ
+                       λ _ → Σ-is-prop
                                (being-dominant-is-prop (d , isd) 𝟙)
-                               λ _ → is-prop-exponential-ideal (fe U' U')
-                                        λ _ → is-prop-exponential-ideal (fe U' U)
-                                                 λ Q → is-prop-exponential-ideal (fe U U)
-                                                          λ _ → is-prop-exponential-ideal (fe U U)
+                               λ _ → Π-is-prop (fe U' U')
+                                        λ _ → Π-is-prop (fe U' U)
+                                                 λ Q → Π-is-prop (fe U U)
+                                                          λ _ → Π-is-prop (fe U U)
                                                                    λ _ → being-dominant-is-prop (d , isd) (Σ Q)
 
 
@@ -87,12 +87,12 @@ module DecidableDominance where
 
  decidable-dominance : Dominance
  decidable-dominance = (λ P → is-prop P × decidable P) ,
-                       (λ P → is-prop-closed-under-Σ 
+                       (λ P → Σ-is-prop 
                                  (is-prop-is-prop (fe U U))
                                  (decidable-is-prop (fe U U₀))) ,
                        (λ X → pr₁) ,
                        (𝟙-is-prop , inl ⋆) ,
-                       λ P Q dP dQ → is-prop-closed-under-Σ (pr₁ dP) (λ p → pr₁(dQ p)) ,
+                       λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁(dQ p)) ,
                                       decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
 
 module lift (d : U ̇ → U ̇) (isd : is-dominance d) where

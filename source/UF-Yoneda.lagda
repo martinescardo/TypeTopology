@@ -300,7 +300,7 @@ nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-is-sin
 nat-has-section-is-prop : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                         (x : X) (η : Nat (Id x) A)
                       → is-prop ((y : X) → has-section (η y)) 
-nat-has-section-is-prop fe {U} {V} {X} x η φ = is-prop-exponential-ideal (fe U (U ⊔ V)) γ φ
+nat-has-section-is-prop fe {U} {V} {X} x η φ = Π-is-prop (fe U (U ⊔ V)) γ φ
   where
    γ : (y : X) → is-prop (has-section (η y))
    γ y = hasr-is-prop-hass fe (η y) (nat-retraction-is-section x η φ y)
