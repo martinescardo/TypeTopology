@@ -20,20 +20,20 @@ open import SearchableTypes
 
 \end{code}
 
-We use ordinal encodings that are slightly different from those
-considered in the module "Ordinals" (Church & Brouwer):
+We use ordinal encodings, or ordinal expressions, that are slightly
+different from the traditional "Brouwer ordinals".
 
 \begin{code}
 
-data SO : U₀ ̇ where
-  One           : SO 
-  Add           : SO → SO → SO
-  Mul           : SO → SO → SO
-  Sum-plus-One  : (ℕ → SO) → SO 
+data OE : U₀ ̇ where
+  One           : OE 
+  Add           : OE → OE → OE
+  Mul           : OE → OE → OE
+  Sum-plus-One  : (ℕ → OE) → OE 
 
 \end{code}
 
-The above are searchable ordinals codes. 
+The above are searchable-ordinal codes or expressions.
 
 (The empty ordinal is excluded because it is not searchable. It is
 merely exhaustible or omniscient (see the module Searchable for a
@@ -41,31 +41,62 @@ partial discussion of this). The reason why including the empty
 ordinal causes insurmountable problems is discussed in research papers.)
 
 The decoding function (or semantic interpretation, or evaluation
-function) is this:
+function) is this, with valued on topped ordinals, where an ordinal is
+a type equipped with a proposition-valued, well-founded, transitive
+and extensional relation (and such a type is automatically a
+set). "Topped" means that there is a top element in the order
+
+This version of the function is from 1st July 2018 (the original
+version considered only the underlying set of the ordinal and didn't
+construct the order as this was work in progress):
 
 \begin{code}
 
-ordinal : SO → U₀ ̇
-ordinal           One    = 𝟙
-ordinal      (Add α β)   = ordinal α +' ordinal β 
-ordinal      (Mul α β)   = ordinal α ×  ordinal β 
-ordinal (Sum-plus-One α) = Σ¹ \(i : ℕ) → ordinal(α i)
+open import Ordinals fe
+
+ord : OE → TOrd
+ord           One    = 𝟙º
+ord      (Add α β)   = ord α +º ord β 
+ord      (Mul α β)   = ord α ×º  ord β 
+ord (Sum-plus-One α) = ∑¹ \(i : ℕ) → ord(α i)
+
+usearchable-ord : (α : OE) → usearchable(ord α)
+usearchable-ord           One  = 𝟙-usearchable
+usearchable-ord      (Add α β) = +usearchable (ord α) (ord β) (usearchable-ord α) (usearchable-ord β)
+usearchable-ord      (Mul α β) = ×usearchable (ord α) (ord β) (usearchable-ord α) (usearchable-ord β) 
+usearchable-ord (Sum-plus-One α) = ∑¹-usearchable (λ i → ord (α i)) (λ i → usearchable-ord(α i))
 
 \end{code}
 
-All sets in the image of the function ordinal are searchable:
+Classically, the squashed sum is the ordinal sum plus 1, and we have a
+semantics with this interpretation, which gives ordinals with discrete
+underlying sets. Moreover, there a function maps the underlying set of
+the discrete version to the underlying set of the above version.
 
 \begin{code}
 
-searchable-ordinals : (α : SO) → searchable(ordinal α)
-searchable-ordinals           One  = 𝟙-searchable
-searchable-ordinals      (Add α β) = binary-sums-preserve-searchability'(searchable-ordinals α)(searchable-ordinals β)
-searchable-ordinals      (Mul α β) = binary-Tychonoff(searchable-ordinals α)(searchable-ordinals β)
-searchable-ordinals (Sum-plus-One α) = squashed-sum-searchable (λ i → ordinal (α i)) (λ i → searchable-ordinals(α i))
+{- TODO. Requires more work in other modules.
+ord' : OE → TOrd
+ord'           One    = 𝟙º
+ord'      (Add α β)   = ord' α +º ord' β 
+ord'      (Mul α β)   = ord' α ×º  ord' β 
+ord' (Sum-plus-One α) = {!!} -- ∑₁ (λ i → ord'(α i')
+
+udiscrete-ord' : (α : OE) → udiscrete(ord' α)
+udiscrete-ord'           One  = 𝟙-udiscrete
+udiscrete-ord'      (Add α β) = +udiscrete (ord' α) (ord' β) (udiscrete-ord' α) (udiscrete-ord' β)
+udiscrete-ord'      (Mul α β) = ×udiscrete (ord' α) (ord' β) (udiscrete-ord' α) (udiscrete-ord' β) 
+udiscrete-ord' (Sum-plus-One α) = {!!} -- ∑₁-udiscrete (λ i → ord (α i)) (λ i → udiscrete-ord'(α i))
+
+ord'-ord : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
+ord'-ord One = id
+ord'-ord (Add α β) c = {!!}
+ord'-ord (Mul α β) = {!!}
+ord'-ord (Sum-plus-One α) = {!!} 
+-}
 
 \end{code}
 
-Classically, the squashed sum is the ordinal sum plus 1. 
 
 Brouwer ordinal codes can be mapped to searchable ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is
@@ -75,10 +106,10 @@ bigger or equal.
 
 open import OrdinalCodes
 
-brouwer-to-searchable-code : B → SO
-brouwer-to-searchable-code    Z  = One
-brouwer-to-searchable-code (S α) = Add One (brouwer-to-searchable-code α)
-brouwer-to-searchable-code (L α) = Sum-plus-One(λ i → brouwer-to-searchable-code(α i))
+brouwer-to-oe : B → OE
+brouwer-to-oe    Z  = One
+brouwer-to-oe (S α) = Add One (brouwer-to-oe α)
+brouwer-to-oe (L α) = Sum-plus-One(λ i → brouwer-to-oe(α i))
 
 \end{code}
 
@@ -86,11 +117,11 @@ Relatively "small" example: a type which amounts to the ordinal ε₀ in set the
 
 \begin{code}
 
-ε₀-ordinal : U₀ ̇
-ε₀-ordinal = ordinal(brouwer-to-searchable-code B-ε₀)
+ε₀-ordinal : TOrd
+ε₀-ordinal = ord(brouwer-to-oe B-ε₀)
 
-searchable-ε₀-ordinal : searchable ε₀-ordinal
-searchable-ε₀-ordinal = searchable-ordinals(brouwer-to-searchable-code B-ε₀)
+searchable-ε₀-ordinal : usearchable ε₀-ordinal
+searchable-ε₀-ordinal = usearchable-ord(brouwer-to-oe B-ε₀)
 
 \end{code}
 

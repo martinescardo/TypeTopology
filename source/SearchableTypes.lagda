@@ -374,9 +374,18 @@ retractions-preserve-searchability {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
      fact₁ : q(f x) ≡ q a
      fact₁ = ap q (pr₂ fact)
 
-
 retract-searchable : ∀ {U V} {X : U ̇} {Y : V ̇} → retract Y Of X → searchable X → searchable Y
 retract-searchable (_ , φ) = retractions-preserve-searchability φ 
+
+𝟙+𝟙-searchable : ∀ {U} {V} → searchable (𝟙 {U} + 𝟙 {V})
+𝟙+𝟙-searchable = retract-searchable (f , r) 𝟚-searchable
+ where
+  f : 𝟚 → 𝟙 + 𝟙
+  f = 𝟚-cases (inl *) (inr *)
+  r : (y : 𝟙 + 𝟙) → Σ \(x : 𝟚) → f x ≡ y
+  r (inl *) = ₀ , refl
+  r (inr *) = ₁ , refl
+  
 
 equiv-searchable : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → searchable X → searchable Y
 equiv-searchable (f , (g , fg) , (h , hf)) = retract-searchable (f , (λ y → g y , fg y))

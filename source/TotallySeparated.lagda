@@ -21,8 +21,9 @@ function extensionality.
 In particular, the Cantor and Baire types 𝟚^ℕ and ℕ^ℕ are totally
 separated (like in topology).
 
-Closure under Σ fails in general. However, ℕ∞ (defined with Σ) is
-totally separated (proved in the module GenericConvergentSequence).
+Closure under Σ fails in general. However, we have closure under _×_,
+and ℕ∞ (defined with Σ) is totally separated (proved in the module
+GenericConvergentSequence).
 
 A counter-example to closure under Σ (from 2012) is in the file
 http://www.cs.bham.ac.uk/~mhe/agda-new/FailureOfTotalSeparatedness.html
@@ -225,6 +226,39 @@ totally-separated-is-set' fe X t = identification-collapsible-is-set h
   
   h : identification-collapsible X
   h {x} {y} = f , g
+
+\end{code}
+
+As discussed above, we don't have general closure under Σ, but we have
+this particular case:
+
+\begin{code}
+
+×-totally-separated : ∀ {U V} (X : U ̇) (Y : V ̇)
+                    → totally-separated X
+                    → totally-separated Y
+                    → totally-separated (X × Y)
+×-totally-separated X Y t u {a , b} {x , y} φ = ×-≡ (t (λ p → φ (λ z → p (pr₁ z))))
+                                                     (u (λ p → φ (λ z → p (pr₂ z))))
+
+\end{code}
+
+The following can also be considered as a special case of Σ (indexed by the type 𝟚):
+
+\begin{code}
+
++-totally-separated : ∀ {U V} (X : U ̇) (Y : V ̇)
+                    → totally-separated X
+                    → totally-separated Y
+                    → totally-separated (X + Y)
++-totally-separated X Y t u {inl x} {inl x'} φ =
+    ap inl (t (λ p → φ (cases p (λ (_ : Y) → ₀))))
++-totally-separated X Y t u {inl x} {inr y} φ =
+    𝟘-elim (zero-is-not-one (φ (cases (λ _ → ₀) (λ _ → ₁))))
++-totally-separated X Y t u {inr y} {inl x} φ =
+    𝟘-elim (zero-is-not-one (φ (cases (λ _ → ₁) (λ _ → ₀))))
++-totally-separated X Y t u {inr y} {inr y'} φ =
+    ap inr (u (λ p → φ (cases (λ (_ : X) → ₀) p)))
 
 \end{code}
 

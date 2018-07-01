@@ -18,17 +18,39 @@ open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)
 open import UF-InjectiveTypes (fe)
 open import ExtendedSumSearchable (fe)
+open import TotallySeparated
 
 Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
 squashed-sum-searchable : ∀ {U} (X : ℕ → U ̇) → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
-squashed-sum-searchable X ε = extended-sum-searchable under (under-embedding (fe U₀ U₀)) ε ℕ∞-searchable 
+squashed-sum-searchable X ε = extended-sum-searchable
+                                under
+                                (under-embedding (fe U₀ U₀))
+                                ε
+                                ℕ∞-searchable
 
 \end{code}
 
-TODO. Define the natural map (Σ X) + 𝟙 → Σ¹ X, and show that it is an
-embedding whose image has empty complement. (This should be very easy.)
+TODO. Show that the following natural map (Σ X) + 𝟙 → Σ¹ X is an
+embedding whose image has empty complement.
+
+\begin{code}
+
+sqse : ∀ {U} (X : ℕ → U ̇) → (Σ X) + 𝟙 → Σ¹ X
+sqse {U} X = cases
+               (λ (σ : Σ X)
+                  → under(pr₁ σ) , y (pr₁ σ) (pr₂ σ))
+               (λ (_ : 𝟙 {U₀})
+                  → ∞ , y∞)
+ where
+  y : (n : ℕ) (x : X n) (σ : fiber under (under n)) → X (pr₁ σ)
+  y n x (m , r) = back-transport X (under-lc r) x
+  y∞ : (σ : fiber under ∞) → X (pr₁ σ)
+  y∞ (m , r) = 𝟘-elim (∞-is-not-ℕ m (r ⁻¹))
+
+\end{code}
+
 
 The original version of this, given below was much more convoluted,
 but equivalent, as also shown below.

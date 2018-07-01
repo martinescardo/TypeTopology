@@ -27,9 +27,9 @@ discrete-is-set d = identification-collapsible-is-set(discrete-is-identification
 isolated-Id-is-prop : ∀ {U} {X : U ̇} (x : X) → isolated' x → (y : X) → is-prop (y ≡ x)
 isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
 
-dd-sum : ∀ {U} {X : U ̇} → {Y : X → U ̇}
+Σ-discrete : ∀ {U} {X : U ̇} → {Y : X → U ̇}
        → discrete X → ((x : X) → discrete(Y x)) → discrete(Σ Y)
-dd-sum {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')
+Σ-discrete {U} {X} {Y} d e (x , y) (x' , y') = g (d x x')
   where
    g : decidable(x ≡ x') → decidable(x , y ≡ x' , y')
    g (inl p) = f (e x' (transport Y p y) y')

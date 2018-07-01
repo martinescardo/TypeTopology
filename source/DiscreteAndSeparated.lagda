@@ -50,6 +50,12 @@ Standard examples:
 
 \begin{code}
 
+𝟘-discrete : ∀ {U} → discrete (𝟘 {U})
+𝟘-discrete ()
+
+𝟙-discrete : ∀ {U} → discrete (𝟙 {U})
+𝟙-discrete * * = inl refl
+
 𝟚-discrete : discrete 𝟚
 𝟚-discrete ₀ ₀ = inl refl
 𝟚-discrete ₀ ₁ = inr(λ ())
@@ -66,14 +72,31 @@ Standard examples:
    step (inl r) = inl(ap succ r)
    step (inr f) = inr(λ s → f(succ-injective s)) 
 
++discrete : ∀ {U V} {X : U ̇} {Y : V ̇}
+          → discrete X → discrete Y → discrete (X + Y)
++discrete d e (inl x) (inl x') =
+    Cases (d x x')
+     (λ (p : x ≡ x') → inl(ap inl p))
+     (λ (n : ¬(x ≡ x')) → inr (contrapositive inl-injective n))
++discrete d e (inl x) (inr y) = inr +disjoint
++discrete d e (inr y) (inl x) = inr +disjoint'
++discrete d e (inr y) (inr y') =
+    Cases (e y y')
+     (λ (p : y ≡ y') → inl(ap inr p))
+     (λ (n : ¬(y ≡ y')) → inr (contrapositive inr-injective n))
+
 \end{code}
+
+The closure of discrete types under Σ is proved in the module
+UF-SetExamples (as this requires to first prove that discrete types
+are sets).
 
 General properties:
 
 \begin{code}
 
 discrete-is-cotransitive : ∀ {U} {X : U ̇}
-                         → discrete X → {x y z : X} → x ≢ y →  (x ≢ z) + (z ≢ y)
+                         → discrete X → {x y z : X} → x ≢ y → (x ≢ z) + (z ≢ y)
 discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
  where 
   f : (x ≡ z) + (x ≢ z) → (x ≢ z) + (z ≢ y)
