@@ -230,7 +230,7 @@ totally-separated-is-set' fe X t = identification-collapsible-is-set h
 \end{code}
 
 As discussed above, we don't have general closure under Σ, but we have
-this particular case:
+the particular cases:
 
 \begin{code}
 
@@ -239,7 +239,34 @@ this particular case:
                     → totally-separated Y
                     → totally-separated (X × Y)
 ×-totally-separated X Y t u {a , b} {x , y} φ = ×-≡ (t (λ p → φ (λ z → p (pr₁ z))))
-                                                     (u (λ p → φ (λ z → p (pr₂ z))))
+                                                     (u (λ q → φ (λ z → q (pr₂ z))))
+
+Σ-dtt : ∀ {U V} (X : U ̇) (Y : X → V ̇)
+      → discrete X
+      → ((x : X) → totally-separated (Y x))
+      → totally-separated (Σ Y)
+Σ-dtt X Y d t {a , b} {x , y} φ = to-Σ-≡'' (r , s)
+ where
+  r : a ≡ x
+  r = discrete-totally-separated d (λ p → φ (λ z → p (pr₁ z)))
+  s₂ : transport Y r b ≡₂ y
+  s₂ q = g
+   where
+    f : {u : X} → (u ≡ x) + ¬(u ≡ x) → Y u → 𝟚
+    f (inl m) v = q (transport Y m v)
+    f (inr _) v = ₀ --<-- What we choose here is irrelevant.
+    p : Σ Y → 𝟚
+    p (u , v) = f (d u x) v
+    i : p (a , b) ≡ q (transport Y r b)
+    i = ap (λ δ → f δ b) (discrete-inl d a x r)
+    j : p (a , b) ≡ p (x , y)
+    j = φ p
+    k : p (x , y) ≡ q (transport Y refl y)
+    k = ap (λ δ → f δ y) (discrete-inl d x x refl)
+    g : q (transport Y r b) ≡ q y
+    g = i ⁻¹ ∙ j ∙ k
+  s : transport Y r b ≡ y
+  s = t x s₂
 
 \end{code}
 
@@ -279,7 +306,9 @@ The following can also be considered as a special case of Σ (indexed by the typ
 
 \end{code}
 
-Closure under /-extensions (see the module InjectiveTypes).
+Closure under /-extensions (see the module InjectiveTypes). Notice
+that j doesn't need to be an embedding (which which case the extension
+is merely a Kan extension rather than a proper extension).
 
 \begin{code}
 
@@ -289,12 +318,11 @@ module _ (fe : ∀ U V → funext U V)  where
 
  /-totally-separated : ∀ {U V W} {X : U ̇} {A : V ̇}
                          (j : X → A)
-                         (e : is-embedding j)
                          (Y : X → W ̇)
                     → ((x : X) → totally-separated (Y x))
                     → (a : A) → totally-separated ((Y / j) a)
- /-totally-separated {U} {V} {W} j e Y t a = Π-totally-separated (fe (U ⊔ V) W)
-                                                (λ (σ : fiber j a) → t (pr₁ σ))
+ /-totally-separated {U} {V} {W} j Y t a = Π-totally-separated (fe (U ⊔ V) W)
+                                              (λ (σ : fiber j a) → t (pr₁ σ))
 
 \end{code}
 
