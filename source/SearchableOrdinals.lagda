@@ -62,9 +62,15 @@ ord (Sum-plus-One α) = ∑¹ \(i : ℕ) → ord(α i)
 
 usearchable-ord : (α : OE) → usearchable(ord α)
 usearchable-ord           One  = 𝟙-usearchable
-usearchable-ord      (Add α β) = +usearchable (ord α) (ord β) (usearchable-ord α) (usearchable-ord β)
-usearchable-ord      (Mul α β) = ×usearchable (ord α) (ord β) (usearchable-ord α) (usearchable-ord β) 
-usearchable-ord (Sum-plus-One α) = ∑¹-usearchable (λ i → ord (α i)) (λ i → usearchable-ord(α i))
+usearchable-ord      (Add α β) = +usearchable (ord α) (ord β)
+                                   (usearchable-ord α)
+                                   (usearchable-ord β)
+usearchable-ord      (Mul α β) = ×usearchable (ord α) (ord β)
+                                   (usearchable-ord α)
+                                   (usearchable-ord β) 
+usearchable-ord (Sum-plus-One α) = ∑¹-usearchable
+                                       (λ i → ord (α i))
+                                       (λ i → usearchable-ord(α i))
 
 \end{code}
 
@@ -96,7 +102,6 @@ ord'-ord (Sum-plus-One α) = {!!}
 -}
 
 \end{code}
-
 
 Brouwer ordinal codes can be mapped to searchable ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is

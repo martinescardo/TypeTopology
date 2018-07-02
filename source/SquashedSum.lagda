@@ -12,11 +12,13 @@ module SquashedSum (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
 open import UF-Base
+open import UF-Subsingletons
 open import UF-Equiv
 open import GenericConvergentSequence
 open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)
 open import UF-InjectiveTypes (fe)
+open import UF-Embedding
 open import ExtendedSumSearchable (fe)
 open import TotallySeparated
 
@@ -30,69 +32,15 @@ squashed-sum-searchable X ε = extended-sum-searchable
                                 ε
                                 ℕ∞-searchable
 
-
-
 \end{code}
 
-Tentative thoughts:
-
-\begin{code}
-
-{- 
-sqs-totally-separated : ∀ {U} (X : ℕ → U ̇)
-                      → ((n : ℕ) → totally-separated (X n))
-                      → totally-separated (Σ¹ X)
-sqs-totally-separated {U} X t = γ
- where
-  Y : ℕ∞ → U ̇ 
-  Y u = (σ : fiber under u) → X (pr₁ σ)
-  t' : (u : ℕ∞) → totally-separated (Y u)
-  t' u = ? -- totally-separated-ideal (fe U₀ U) (λ σ → t (pr₁ σ))
-  γ : totally-separated (Σ¹ X)
-  γ {u , f} {v , g} φ = γ'
-   where
-    r : u ≡ v
-    r = ℕ∞-totally-separated (fe U₀ U₀) (λ p → φ (λ σ → p(pr₁ σ)))
-    s₂ : transport Y r f ≡₂ g
-    s₂ p = gg
-     where
-      φ'' : (q : Σ Y → 𝟚) → q (u , f) ≡ q (v , g)
-      φ'' = φ
-      q : Σ Y → 𝟚
-      q (w , h) = p k
-       where
-        k : (σ : fiber under v) → X (pr₁ σ)
-        k (n , rr) = {!!}
-      hh : {!!}
-      hh = φ q
-      gg : p (transport Y r f) ≡ p g
-      gg = {!!}
-    s : transport Y r f ≡ g
-    s = t' v s₂
-    γ' : u , f ≡ v , g
-    γ' = to-Σ-≡'' (r , s)
--}
-\end{code}
-
-TODO. Show that the following natural map (Σ X) + 𝟙 → Σ¹ X is an
-embedding whose image has empty complement.
-
-\begin{code}
-
-sqse : ∀ {U} (X : ℕ → U ̇) → (Σ X) + 𝟙 → Σ¹ X
-sqse {U} X = cases
-               (λ (σ : Σ X)
-                  → under(pr₁ σ) , y (pr₁ σ) (pr₂ σ))
-               (λ (_ : 𝟙 {U₀})
-                  → ∞ , y∞)
- where
-  y : (n : ℕ) (x : X n) (σ : fiber under (under n)) → X (pr₁ σ)
-  y n x (m , r) = back-transport X (under-lc r) x
-  y∞ : (σ : fiber under ∞) → X (pr₁ σ)
-  y∞ (m , r) = 𝟘-elim (∞-is-not-ℕ m (r ⁻¹))
-
-\end{code}
-
+TODO. Show that the natural map (Σ X) + 𝟙 → Σ¹ X is an embedding whose
+image has empty complement. (2nd July 2018: Better to do part of this
+in the module InjectiveTypes more generally. If we have X→U and j:A→B,
+we should have an embedding Σ X → Π (X/j). If B' is the complement of
+the image of j, we should also have an embedding B' → Π (X/j), and
+this should give an embedding (Σ X) + B' → Π (X/j) whose image has
+empty complement.)
 
 The original version of this, given below was much more convoluted,
 but equivalent, as also shown below.
@@ -103,6 +51,7 @@ The theorem here is that the "squashed sum" of any countable family of
 searchable sets is itself searchable (see the module Searchable,
 imported below, for the definition and fundamental facts about the
 notion).
+open import UF-InjectiveTypes (fe)
 
 (The terminology "squashed sum" comes from the paper "Infinite sets
 that satisfy the principle of omniscience in all varieties of
@@ -146,8 +95,8 @@ X [ u ] = (k : ℕ) → under k ≡ u → X k
 Σ₁ : (ℕ → U₀ ̇) → U₀ ̇
 Σ₁ X = Σ \(u : ℕ∞) → X [ u ]
 
-∞¹ : {X : ℕ → U₀ ̇} → Σ₁ X
-∞¹ = ∞ , λ k r → 𝟘-elim (∞-is-not-ℕ k (r ⁻¹))
+∞₁ : {X : ℕ → U₀ ̇} → Σ₁ X
+∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-ℕ k (r ⁻¹))
 
 \end{code}
 

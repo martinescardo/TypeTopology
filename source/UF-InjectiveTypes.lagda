@@ -279,6 +279,8 @@ respectively:
 
 \end{code}
 
+(Conjectural conjecture (2nd July 2018): if j is an embedding, then we have an embedding Σ f → Π f/j.)
+
 We now introduce the notations f / j and f ∖ j for the Π- and
 Σ-extensions, outside the above anonymous module.
 

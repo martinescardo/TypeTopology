@@ -230,7 +230,7 @@ totally-separated-is-set' fe X t = identification-collapsible-is-set h
 \end{code}
 
 As discussed above, we don't have general closure under Σ, but we have
-the particular cases:
+the following particular cases:
 
 \begin{code}
 
@@ -238,8 +238,9 @@ the particular cases:
                     → totally-separated X
                     → totally-separated Y
                     → totally-separated (X × Y)
-×-totally-separated X Y t u {a , b} {x , y} φ = ×-≡ (t (λ p → φ (λ z → p (pr₁ z))))
-                                                     (u (λ q → φ (λ z → q (pr₂ z))))
+×-totally-separated X Y t u {a , b} {x , y} φ =
+   ×-≡ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
+        (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
 
 Σ-dtt : ∀ {U V} (X : U ̇) (Y : X → V ̇)
       → discrete X
@@ -269,6 +270,14 @@ the particular cases:
   s = t x s₂
 
 \end{code}
+
+Maybe this can be further generalized by replacing the discreteness of X
+with the assumption that
+
+  (x : X) (q : Y x → 𝟚) → Σ \(p : Σ Y → 𝟚) → (y : Y x) → q y ≡ p (x , y).
+
+Then the previous few functions would be a particular case of this.
+
 
 The following can also be considered as a special case of Σ (indexed by the type 𝟚):
 

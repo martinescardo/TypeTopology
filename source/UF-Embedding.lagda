@@ -135,4 +135,3 @@ TODO.
   (2) f : X → Y is an embedding iff its corestriction to its image is an equivalence.
 
 This can be deduced directly from Yoneda.
-

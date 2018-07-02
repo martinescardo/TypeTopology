@@ -285,17 +285,25 @@ not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r)) 
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r)) 
 
-ℕ∞-density : funext₀ → {p : ℕ∞ → 𝟚} → ((n : ℕ) → p(under n) ≡ ₁) → p ∞ ≡ ₁ → (u : ℕ∞) → p u ≡ ₁
-ℕ∞-density fe {p} f r u = Lemma[b≢₀→b≡₁] lemma
- where 
-  claim : p u ≡ ₀ → (n : ℕ) → u ≢ under n
-  claim g n = contrapositive (λ s → ap p s ∙ f n) (Lemma[b≡₀→b≢₁] g)
+ℕ∞-density' : ∀ {U} {Y : U ̇} → funext₀ → separated Y
+             → {f g : ℕ∞ → Y}
+             → ((n : ℕ) → f(under n) ≡ g(under n))
+             → f ∞ ≡ g ∞
+             → (u : ℕ∞) → f u ≡ g u
+ℕ∞-density' {U} {Y} fe s {f} {g} h h∞ u = s (f u) (g u) c
+ where
+  a : f u ≢ g u → (n : ℕ) → u ≢ under n
+  a t n = contrapositive (λ (r : u ≡ under n) → back-transport (λ u → f u ≡ g u) r (h n)) t
+  b : f u ≢ g u → u ≢ ∞
+  b = contrapositive (λ (r : u ≡ ∞) → back-transport (λ u → f u ≡ g u) r h∞)
+  c : ¬¬(f u ≡ g u)
+  c = λ t → b t (not-ℕ-is-∞ fe (a t))
 
-  claim-∞ : p u ≡ ₀ → u ≢ ∞
-  claim-∞ = (contrapositive (λ s → ap p s ∙ r)) ∘ Lemma[b≡₀→b≢₁]
-
-  lemma : p u ≢ ₀
-  lemma t = claim-∞ t (not-ℕ-is-∞ fe (claim t)) 
+ℕ∞-density : funext₀ → {p : ℕ∞ → 𝟚}
+            → ((n : ℕ) → p(under n) ≡ ₁)
+            → p ∞ ≡ ₁
+            → (u : ℕ∞) → p u ≡ ₁
+ℕ∞-density fe = ℕ∞-density' fe 𝟚-is-separated
 
 under𝟙 : ℕ + 𝟙 → ℕ∞
 under𝟙 = cases {U₀} {U₀} under (λ _ → ∞)
