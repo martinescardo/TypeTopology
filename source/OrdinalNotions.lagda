@@ -247,8 +247,9 @@ no-minimal-is-empty w P s (x , p) = f s x p
 
 \end{code}
 
-We will need the following weakening of well-foundedness (transfinite
-induction for detachable subsets):
+Originally we needed the following weakening of well-foundedness
+(transfinite induction for detachable subsets), but now it is not
+needed any longer:
 
 \begin{code}
 

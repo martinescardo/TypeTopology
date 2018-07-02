@@ -799,5 +799,5 @@ module sum¹
  topped = sum.top-preservation fe _≺_ _◂_ top ist (∞ , ∞-top)
 
 -}
- 
+
 \end{code}
