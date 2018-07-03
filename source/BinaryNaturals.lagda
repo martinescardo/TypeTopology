@@ -142,33 +142,33 @@ The functions unary and binary are mutually inverse:
 
 unarybinary : ∀ n → unary(binary n) ≡ n
 unarybinary zero    = refl
-unarybinary(succ n) = goal
+unarybinary(succ n) = g
  where
   IH : unary(binary n) ≡ n
   IH = unarybinary n
   a : succ(unary(binary n)) ≡ succ n
   a = ap succ IH
-  goal : unary(Succ(binary n)) ≡ succ n
-  goal = sdiagram(binary n) ∙ a
+  g : unary(Succ(binary n)) ≡ succ n
+  g = sdiagram(binary n) ∙ a
 
 binaryunary : ∀ m → binary(unary m) ≡ m
 binaryunary zero = refl
-binaryunary(l m) = goal
+binaryunary(l m) = g
  where
   IH : binary(unary m) ≡ m
   IH = binaryunary m
   a : l(binary(unary m)) ≡ l m
   a = ap l IH
-  goal : binary(unary(l m)) ≡ l m
-  goal = ldiagram(unary m) ∙ a
-binaryunary(r m) = goal
+  g : binary(unary(l m)) ≡ l m
+  g = ldiagram(unary m) ∙ a
+binaryunary(r m) = g
  where
   IH : binary(unary m) ≡ m
   IH = binaryunary m
   a : r(binary(unary m)) ≡ r m
   a = ap r IH
-  goal : binary(unary(r m)) ≡ r m
-  goal = rdiagram(unary m) ∙ a 
+  g : binary(unary(r m)) ≡ r m
+  g = rdiagram(unary m) ∙ a 
 
 binary-unary-equivalence : 𝔹 ≃ ℕ
 binary-unary-equivalence = unary , (binary , unarybinary) , (binary , binaryunary)
@@ -183,7 +183,7 @@ unary-induction-on-𝔹 : ∀ {U} {B : 𝔹 → U ̇}
           → B zero 
           → (∀ n → B n → B(Succ n)) 
           → ∀ n → B n
-unary-induction-on-𝔹 {U} {B} base step = goal
+unary-induction-on-𝔹 {U} {B} base step = g
  where
   A : ℕ → U ̇
   A n = B (binary n)
@@ -195,15 +195,15 @@ unary-induction-on-𝔹 {U} {B} base step = goal
   a = ℕ-induction base' step'
   b : ∀ m → B(binary(unary m))
   b m = a (unary m)
-  goal : ∀ m → B m
-  goal m = transport B (binaryunary m) (b m) 
+  g : ∀ m → B m
+  g m = transport B (binaryunary m) (b m) 
 
 binary-induction-on-ℕ : ∀ {U} {A : ℕ → U ̇} 
           → A zero 
           → (∀ n → A n → A(L n)) 
           → (∀ n → A n → A(R n)) 
           → ∀ n → A n
-binary-induction-on-ℕ {U} {A} base stepl stepr = goal
+binary-induction-on-ℕ {U} {A} base stepl stepr = g
  where
   B : 𝔹 → U ̇
   B m = A (unary m)
@@ -217,8 +217,8 @@ binary-induction-on-ℕ {U} {A} base stepl stepr = goal
   b = 𝔹-induction base' stepl' stepr'
   a : ∀ n → A(unary(binary n))
   a n = b (binary n)
-  goal : ∀ n → A n
-  goal n = transport A (unarybinary n) (a n)
+  g : ∀ n → A n
+  g n = transport A (unarybinary n) (a n)
 
 \end{code}
 
@@ -241,14 +241,14 @@ Double-lemma(r m) = ap r (Double-lemma m)
 
 ddiagram : ∀ n → binary(double n) ≡ Double(binary n)
 ddiagram zero    = refl
-ddiagram(succ n) = goal
+ddiagram(succ n) = g
  where
   IH : binary(double n) ≡ Double(binary n)
   IH = ddiagram n
   a : Succ(Succ(binary(double n))) ≡ Succ(Succ(Double(binary n)))
   a = ap (λ n → Succ(Succ n)) IH
-  goal : binary(double(succ n)) ≡ Double(binary(succ n))
-  goal = a ∙ Double-lemma(binary n)
+  g : binary(double(succ n)) ≡ Double(binary(succ n))
+  g = a ∙ Double-lemma(binary n)
 
 \end{code}
 
@@ -282,14 +282,14 @@ r x  +♭ r y  = r(Succ(x +♭ y))
 
 +diagram : ∀ m n → binary(m + n) ≡ binary m +♭ binary n
 +diagram m zero     = refl
-+diagram m (succ n) = goal
++diagram m (succ n) = g
  where
   IH : binary(m + n) ≡ binary m +♭ binary n
   IH = +diagram m n
   a : Succ(binary(m + n)) ≡ Succ(binary m +♭ binary n)
   a = ap Succ IH
-  goal : Succ(binary(m + n)) ≡ binary m +♭ Succ(binary n)
-  goal = a ∙ +♭-lemma (binary m) (binary n)
+  g : Succ(binary(m + n)) ≡ binary m +♭ Succ(binary n)
+  g = a ∙ +♭-lemma (binary m) (binary n)
 
 \end{code}
 
