@@ -30,7 +30,7 @@ The native induction principle for ℕ:
 
 \end{code}
 
-The doublig function n ↦ 2n:
+The doubling function n ↦ 2n:
 
 \begin{code}
 
@@ -117,7 +117,7 @@ log2 n = size(binary n)
 Next we show that the functions binary and unary are mutually
 inverse, after we formulate and prove some lemmas for that.
 
-Firs some commutation properties:
+First some commutation properties:
 
 \begin{code}
 
