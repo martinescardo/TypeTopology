@@ -20,6 +20,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-Embedding
+open import UF-Retracts
 open import UF-SetExamples
 open import DiscreteAndSeparated
 
@@ -88,6 +89,9 @@ lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 clni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 clni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) , decreasing-is-prop fe α _ _)
+
+ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
+ℕ∞-retract-of-Cantor fe = lcni , incl , (clni-incl fe)
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤₂ β i
 force-decreasing-is-smaller β zero     p = p
@@ -214,10 +218,9 @@ under-lc {0} {succ n} r = 𝟘-elim(Zero-not-Succ r)
 under-lc {succ m} {0} r = 𝟘-elim(Zero-not-Succ (r ⁻¹))
 under-lc {succ m} {succ n} r = ap succ (under-lc {m} {n} (Succ-lc r))
 
--- This should be proved as a consequence of a more general theorem
--- with essentially the same proof:
 under-embedding : funext₀ → is-embedding under
-under-embedding fe x (x₀ , r₀) (x₁ , r₁) = to-Σ-≡'' (under-lc (r₀ ∙ r₁ ⁻¹) , ℕ∞-is-set fe _ _)
+under-embedding fe = left-cancellable-maps-into-sets-are-embeddings
+                       under under-lc (ℕ∞-is-set fe)
 
 under-lc-refl : (k : ℕ) → under-lc refl ≡ refl {_} {ℕ} {k}
 under-lc-refl 0 = refl
