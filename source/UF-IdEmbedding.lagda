@@ -22,9 +22,9 @@ contractible.
 Next we have (*)
 
  A x ≃ Nat (Id x) A             (yoneda)
-     = (y : Y) → Id x y → A y   (definition)
-     ≃ (y : Y) → Id x y ≃ A y   (because Σ A is contractible (Yoneda corollary))
-     ≃ (y : Y) → Id x y ≡ A y   (by univalence)
+     = (y : X) → Id x y → A y   (definition)
+     ≃ (y : X) → Id x y ≃ A y   (because Σ A is contractible (Yoneda corollary))
+     ≃ (y : X) → Id x y ≡ A y   (by univalence)
      ≃ Id x ≡ A                 (by function extensionality)
 
 Hence the type Σ \(x : X) → Id x ≡ A y is contractible, because Σ A is
