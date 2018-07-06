@@ -128,8 +128,8 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 
 \end{code}
 
-  (The natural transformation Σ→Π j itself should be a natural
-  embedding (conjectural conjecture).)
+  The natural transformation Σ→Π j itself should be a natural
+  embedding (conjectural conjecture).
 
 \begin{code}
 
@@ -186,6 +186,13 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 
 \end{code}
 
+  Conjectural conjecture: the type
+
+    Σ(f' : Y → U), Π(g : Y → U), Nat g f' = Nat (g∘f) f
+    
+  should be contractible assuming univalence. Similarly for left can
+  extensions as discussed below.
+  
   The above formula actually give extensions up to pointwise
   equivalence if j:X→Y is an embedding in the sense of univalent
   mathematics.
