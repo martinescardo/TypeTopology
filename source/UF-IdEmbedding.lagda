@@ -27,7 +27,7 @@ Next we have (*)
      ≃ (y : X) → Id x y ≡ A y   (by univalence)
      ≃ Id x ≡ A                 (by function extensionality)
 
-Hence the type Σ \(x : X) → Id x ≡ A y is contractible, because Σ A is
+Hence the type Σ \(x : X) → Id x ≡ A is contractible, because Σ A is
 contractible, which shows that Id : X → (X → U) is an embedding.
 
 2017:
