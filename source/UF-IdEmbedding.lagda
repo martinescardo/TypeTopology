@@ -12,7 +12,7 @@ This works as follows in outline:
 
 If A : X → U ̇ then the Id-fiber of A is Σ \(x : X) → Id x ≡ A.
 
-If the pair (x : X , p : Id x = A) is in the fiber, then
+If the pair (x,p) is in the fiber for x : X and p : Id x = A, then
 
    ap Σ p : Σ (Id x) = Σ A,
 
