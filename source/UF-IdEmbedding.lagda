@@ -16,7 +16,7 @@ If the pair (x,p) is in the fiber for x : X and p : Id x = A, then
 
    ap Σ p : Σ (Id x) = Σ A,
 
-and hence, being equal to a contractible type, Σ A is
+and hence, being equal to a contractible type, the type Σ A is
 contractible.
 
 Next we have (*)
