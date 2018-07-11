@@ -284,9 +284,17 @@ respectively:
       GF : (σ : Σ f) → G(F σ) ≡ σ
       GF (x , y) = refl
 
+{-
+  blah : is-embedding j → Σ f → Σ f/j
+  blah e (x , A) = j x , λ (p : fiber j (j x)) → back-transport f (embedding-lc j e (pr₂ p)) A
+
+  blahblah : (e : is-embedding j) → is-embedding (blah e)
+  blahblah e (y , A) ((x , B) , refl) ((x' , B') , p') = {!!}
+-}
+
 \end{code}
 
-(Conjectural conjecture (2nd July 2018): if j is an embedding, then we have an embedding Σ f → Π f/j.)
+(Conjectural conjecture (2nd July 2018): if j is an embedding, then we have an embedding Σ f → Σ f/j.)
 
 We now introduce the notations f / j and f ∖ j for the Π- and
 Σ-extensions, outside the above anonymous module.

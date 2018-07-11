@@ -37,7 +37,7 @@ squashed-sum-searchable X ε = extended-sum-searchable
 TODO. Show that the natural map (Σ X) + 𝟙 → Σ¹ X is an embedding whose
 image has empty complement. (2nd July 2018: Better to do part of this
 in the module InjectiveTypes more generally. If we have X→U and j:A→B,
-we should have an embedding Σ X → Π (X/j). If B' is the complement of
+we should have an embedding Σ X → Σ (X/j). If B' is the complement of
 the image of j, we should also have an embedding B' → Π (X/j), and
 this should give an embedding (Σ X) + B' → Π (X/j) whose image has
 empty complement.)
@@ -89,141 +89,143 @@ within intensional MLTT with function extensionality as a postulate
 
 \begin{code}
 
-_[_] : (ℕ → U₀ ̇) → (ℕ∞ → U₀ ̇)
-X [ u ] = (k : ℕ) → under k ≡ u → X k
+module original-version-and-equivalence-with-new-version where
 
-Σ₁ : (ℕ → U₀ ̇) → U₀ ̇
-Σ₁ X = Σ \(u : ℕ∞) → X [ u ]
+ _[_] : (ℕ → U₀ ̇) → (ℕ∞ → U₀ ̇)
+ X [ u ] = (k : ℕ) → under k ≡ u → X k
 
-∞₁ : {X : ℕ → U₀ ̇} → Σ₁ X
-∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-ℕ k (r ⁻¹))
+ Σ₁ : (ℕ → U₀ ̇) → U₀ ̇
+ Σ₁ X = Σ \(u : ℕ∞) → X [ u ]
 
-\end{code}
-
-This point at infinity is unique assuming extensionality, because:
-
-\begin{code}
-
-H : {X : ℕ → U₀ ̇} → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
-H {X} u r y y' = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s → lemma k s))
- where
-  lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s 
-  lemma k s = 𝟘-elim(∞-is-not-ℕ k (r ⁻¹ ∙ s ⁻¹))
+ ∞₁ : {X : ℕ → U₀ ̇} → Σ₁ X
+ ∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-ℕ k (r ⁻¹))
 
 \end{code}
 
-Next we have an isomorphism X [ u ] ≅ X n if under n ≡ u:
+ This point at infinity is unique assuming extensionality, because:
 
 \begin{code}
 
-F : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X n → X [ u ]
-F {X} n u r x k s = transport X (under-lc (r ∙ s ⁻¹)) x
-
-G : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] → X n
-G n u r y = y n r
-
-FG : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
-FG {X} n u r y = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s → lemma k s))
- where
-  f : {m n : ℕ} → m ≡ n → X m → X n
-  f = transport X
-
-  t : (k : ℕ) → under k ≡ u → n ≡ k
-  t k s = under-lc (r ∙ s ⁻¹)
-
-  A :  (n k : ℕ) → n ≡ k → U₀ ̇
-  A n k t = (u : ℕ∞) (r : under n ≡ u) (s : under k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
-
-  φ : (n : ℕ) → A n n refl
-  φ n = λ u r s y → ap (y n) (ℕ∞-is-set (fe U₀ U₀) r s) 
-
-  lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
-  lemma k s = J A φ {n} {k} (t k s) u r s y
-
-GF : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
-GF {X} n u r x = s
- where
-  f : {m n : ℕ} → m ≡ n → X m → X n
-  f = transport X
-  claim₀ : f (under-lc (r ∙ r ⁻¹)) x ≡ f (under-lc refl) x
-  claim₀ = ap (λ t → f (under-lc t) x) (trans-sym' r)
-  claim₁ : f (under-lc refl) x ≡ x
-  claim₁ = ap (λ t → f t x) (under-lc-refl n)
-  s : f (under-lc (r ∙ r ⁻¹)) x ≡ x 
-  s = claim₀ ∙ claim₁
+ H : {X : ℕ → U₀ ̇} → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
+ H {X} u r y y' = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s → lemma k s))
+  where
+   lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s 
+   lemma k s = 𝟘-elim(∞-is-not-ℕ k (r ⁻¹ ∙ s ⁻¹))
 
 \end{code}
 
-We now can show that the type X [ u ] is searchable for every u : ℕ∞
-provided the type X n is searchable for every n : ℕ. This is tricky,
-because a priory it is not enough to consider the cases under n ≡ u and u ≡ ∞.
-
-The above isomorphism is used to prove the correctness of the witness
-y₀ below, which is easily defined (using one direction of the
-isomorphism):
+ Next we have an isomorphism X [ u ] ≅ X n if under n ≡ u:
 
 \begin{code}
 
-extension-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → (u : ℕ∞) → searchable(X [ u ])
-extension-searchable {X} ε u p = y₀ , lemma
- where
-  Y : U₀ ̇
-  Y = X [ u ]
-  -- ε : (n : ℕ) → searchable(X n)
-  -- u : ℕ∞
-  -- p  : Y → ₂
+ F : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X n → X [ u ]
+ F {X} n u r x k s = transport X (under-lc (r ∙ s ⁻¹)) x
 
-  y₀ : Y
-  y₀ n r = pr₁(ε n (p ∘ (F n u r)))
+ G : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] → X n
+ G n u r y = y n r
 
-  lemma₁ : (n : ℕ) → under n ≡ u → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-  lemma₁ n r e = claim₃
-   where
-    claim₀ : (y : Y) → p(F n u r (G n u r y)) ≡ p y
-    claim₀ y = ap p (FG n u r y)
-    claim₁ : p(F n u r (G n u r y₀)) ≡ ₁ → (x : X n) → p(F n u r x) ≡ ₁
-    claim₁ =  pr₂(ε n (p ∘ (F n u r)))
-    claim₂ : (x : X n) → p(F n u r x) ≡ ₁
-    claim₂ = claim₁ (claim₀ y₀ ∙ e)
-    claim₃ : (y : Y) → p y ≡ ₁
-    claim₃ y = (claim₀ y)⁻¹ ∙ claim₂ (G n u r y)
+ FG : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
+ FG {X} n u r y = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s → lemma k s))
+  where
+   f : {m n : ℕ} → m ≡ n → X m → X n
+   f = transport X
 
-  lemma₂ : u ≡ ∞ → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-  lemma₂ r e y = ap p (H u r y y₀) ∙ e
+   t : (k : ℕ) → under k ≡ u → n ≡ k
+   t k s = under-lc (r ∙ s ⁻¹)
 
-  lemma₁' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → (n : ℕ) → under n ≢ u
-  lemma₁' e y s n r = zero-is-not-one (s ⁻¹ ∙ lemma₁ n r e y)
+   A :  (n k : ℕ) → n ≡ k → U₀ ̇
+   A n k t = (u : ℕ∞) (r : under n ≡ u) (s : under k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
 
-  lemma₂' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → u ≢ ∞
-  lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
+   φ : (n : ℕ) → A n n refl
+   φ n = λ u r s y → ap (y n) (ℕ∞-is-set (fe U₀ U₀) r s) 
 
-  lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-  lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ (fe U₀ U₀) (λ n q → lemma₁' r y s n (q ⁻¹)))) 
+   lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
+   lemma k s = J A φ {n} {k} (t k s) u r s y
+
+ GF : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
+ GF {X} n u r x = s
+  where
+   f : {m n : ℕ} → m ≡ n → X m → X n
+   f = transport X
+   claim₀ : f (under-lc (r ∙ r ⁻¹)) x ≡ f (under-lc refl) x
+   claim₀ = ap (λ t → f (under-lc t) x) (trans-sym' r)
+   claim₁ : f (under-lc refl) x ≡ x
+   claim₁ = ap (λ t → f t x) (under-lc-refl n)
+   s : f (under-lc (r ∙ r ⁻¹)) x ≡ x 
+   s = claim₀ ∙ claim₁
 
 \end{code}
 
-Finally, we can show that the squashed sum of any sequence of
-searchable sets is itself searchable, as claimed above:
+ We now can show that the type X [ u ] is searchable for every u : ℕ∞
+ provided the type X n is searchable for every n : ℕ. This is tricky,
+ because a priory it is not enough to consider the cases under n ≡ u and u ≡ ∞.
+
+ The above isomorphism is used to prove the correctness of the witness
+ y₀ below, which is easily defined (using one direction of the
+ isomorphism):
 
 \begin{code}
 
-squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ₁ X)
-squashed-sum-searchable' {X} f = sums-preserve-searchability ℕ∞-searchable (extension-searchable {X} f)
+ extension-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → (u : ℕ∞) → searchable(X [ u ])
+ extension-searchable {X} ε u p = y₀ , lemma
+  where
+   Y : U₀ ̇
+   Y = X [ u ]
+   -- ε : (n : ℕ) → searchable(X n)
+   -- u : ℕ∞
+   -- p  : Y → ₂
+
+   y₀ : Y
+   y₀ n r = pr₁(ε n (p ∘ (F n u r)))
+
+   lemma₁ : (n : ℕ) → under n ≡ u → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma₁ n r e = claim₃
+    where
+     claim₀ : (y : Y) → p(F n u r (G n u r y)) ≡ p y
+     claim₀ y = ap p (FG n u r y)
+     claim₁ : p(F n u r (G n u r y₀)) ≡ ₁ → (x : X n) → p(F n u r x) ≡ ₁
+     claim₁ =  pr₂(ε n (p ∘ (F n u r)))
+     claim₂ : (x : X n) → p(F n u r x) ≡ ₁
+     claim₂ = claim₁ (claim₀ y₀ ∙ e)
+     claim₃ : (y : Y) → p y ≡ ₁
+     claim₃ y = (claim₀ y)⁻¹ ∙ claim₂ (G n u r y)
+
+   lemma₂ : u ≡ ∞ → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma₂ r e y = ap p (H u r y y₀) ∙ e
+
+   lemma₁' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → (n : ℕ) → under n ≢ u
+   lemma₁' e y s n r = zero-is-not-one (s ⁻¹ ∙ lemma₁ n r e y)
+
+   lemma₂' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → u ≢ ∞
+   lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
+
+   lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ (fe U₀ U₀) (λ n q → lemma₁' r y s n (q ⁻¹)))) 
 
 \end{code}
 
-Martin Escardo, 2 May 2014
-
-We show that the old and new squashed sums agree.
+ Finally, we can show that the squashed sum of any sequence of
+ searchable sets is itself searchable, as claimed above:
 
 \begin{code}
 
-open import UF-EquivalenceExamples
+ squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ₁ X)
+ squashed-sum-searchable' {X} f = sums-preserve-searchability ℕ∞-searchable (extension-searchable {X} f)
 
-agreement-lemma : (X : ℕ → U₀ ̇) (u : ℕ∞) → (X / under) u ≃ Π (λ x → under x ≡ u → X x) -- (X / under) u ≃ (X [ u ]) 
-agreement-lemma X = 2nd-Π-extension-formula X under
+\end{code}
 
-agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σ₁ X
-agreement X = Σ-≃-congruence ℕ∞ (X / under) (λ u → X [ u ]) (agreement-lemma X)
+ Martin Escardo, 2 May 2014
+
+ We show that the old and new squashed sums agree.
+
+\begin{code}
+
+ open import UF-EquivalenceExamples
+
+ agreement-lemma : (X : ℕ → U₀ ̇) (u : ℕ∞) → (X / under) u ≃ Π (λ x → under x ≡ u → X x) -- (X / under) u ≃ (X [ u ]) 
+ agreement-lemma X = 2nd-Π-extension-formula X under
+
+ agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σ₁ X
+ agreement X = Σ-≃-congruence ℕ∞ (X / under) (λ u → X [ u ]) (agreement-lemma X)
 
 \end{code}
