@@ -20,9 +20,6 @@ succ-monotone m n l = l
 succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n 
 succ-order-injective m n l = l
 
-succ≤≡ : (m n : ℕ) → (succ m ≤ succ n) ≡ (m ≤ n)
-succ≤≡ m n = refl
-
 ≤-induction : {U : Universe} (P : (m n : ℕ) (l : m ≤ n) → U ̇)
             → ((n : ℕ) → P zero n (zero-minimal n))
             → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l)) 
@@ -30,6 +27,9 @@ succ≤≡ m n = refl
 ≤-induction P base step zero n *            = base n
 ≤-induction P base step (succ m) zero ()
 ≤-induction P base step (succ m) (succ n) l = step m n l (≤-induction P base step m n l)
+
+succ≤≡ : (m n : ℕ) → (succ m ≤ succ n) ≡ (m ≤ n)
+succ≤≡ m n = refl
 
 ≤-refl : (n : ℕ) → n ≤ n
 ≤-refl zero     = *
@@ -143,5 +143,24 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
 ℕ-ordinal : is-well-order _<_
 ℕ-ordinal = <-is-prop-valued , <-is-well-founded , <-is-extensional , <-trans
+
+\end{code}
+
+Induction on z, then y, then x:
+
+\begin{code}
+
+ℕ-cotransitive : cotransitive _<_
+ℕ-cotransitive zero y zero l = inr l
+ℕ-cotransitive (succ x) y zero l = inr (≤-trans 1 (succ(succ x)) y * l)
+ℕ-cotransitive x zero (succ z) ()
+ℕ-cotransitive zero (succ y) (succ z) l = inl (zero-minimal y)
+ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
+ where
+  IH : (x < z) + (z < y)
+  IH = ℕ-cotransitive x y z l
+  γ : (x < z) + (z < y) → (succ x < succ z) + (succ z < succ y)
+  γ (inl l) = inl (succ-monotone (succ x) z l)
+  γ (inr r) = inr (succ-monotone (succ z) y r)
 
 \end{code}

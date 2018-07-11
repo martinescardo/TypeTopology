@@ -229,15 +229,13 @@ module times
  extensional w w' e e' (a , b) (x , y) f g = ×-≡ p q 
   where
    f' : (u : X) → u < a → u < x
-   f' u l = cases
+   f' u l = Cases (f (u , y) (inl l))
              (λ (m : u < x) → m)
              (λ (σ : (u ≡ x) × (y ≺ y)) → 𝟘-elim (≤-refl _≺_ y (w' y) (pr₂ σ)))
-             (f (u , y) (inl l))
    g' : (u : X) → u < x → u < a
-   g' u l = cases
+   g' u l = Cases (g ((u , b)) (inl l))
              (λ (m : u < a) → m)
              (λ (σ : (u ≡ a) × (b ≺ b)) → 𝟘-elim (≤-refl _≺_ b (w' b) (pr₂ σ)))
-             (g ((u , b)) (inl l))
    p : a ≡ x
    p = e a x f' g'
    f'' : (v : Y) → v ≺ b → v ≺ y
@@ -514,22 +512,19 @@ I am not sure this is going to be useful:
 
 Sum of an ordinal-indexed family of ordinals. To show that
 extensionality is preserved, our argument uses the assumption that
-each ordinal in the family has a top element. Perhaps better
-assumptions are possible. TODO: think about this.
-
-This assumption is valid in our applications. 
+each ordinal in the family has a top element or that the index type is
+discrete.  (Perhaps better assumptions are possible. TODO: think about
+this.) These assumptions are valid in our applications. We have three
+sum submodules, the first one without assumptions.
 
 \begin{code}
 
 module sum
-        (fe : (∀ U V → funext U V))
         {U V W T}
         {X : U ̇}
         {Y : X → V ̇}
         (_<_ : X → X → W ̇)
         (_≺_ : {x : X} → Y x → Y x → T ̇)
-        (top : Π Y)
-        (ist : (x : X) → is-top _≺_ (top x))
       where
 
  open import LexicographicOrder
@@ -574,27 +569,28 @@ module sum
 
 \end{code}
 
-Extensionality. Attempt to find a suitable hypothesis to get it. Don't
-forget to remove spurious hypotheses when we finish.
 
 \begin{code}
+
+module sum-top
+        (fe : (∀ U V → funext U V))
+        {U V W T}
+        {X : U ̇}
+        {Y : X → V ̇}
+        (_<_ : X → X → W ̇)
+        (_≺_ : {x : X} → Y x → Y x → T ̇)
+        (top : Π Y)
+        (ist : (x : X) → is-top _≺_ (top x))
+      where
+
+ open sum {U} {V} {W} {T} {X} {Y} _<_  _≺_ public
+
+ private _⊏_ = order
 
  private
   transport-top : (x : X) (y : Y x) → is-top _≺_ y
                → (x' : X) (r : x ≡ x') → is-top _≺_ (transport Y r y)
   transport-top x y ist .x refl = ist
-
-  transport-order : (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
-                 →  v ≺ transport Y p b
-                 → back-transport Y p v ≺ b
-  transport-order a .a b v refl = id
-
-  transport-order' : (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
-                  → transport Y r v ≺ b → v ≺ back-transport Y r b
-  transport-order' a .a b v refl = id
-
-
- open import DiscreteAndSeparated
 
  extensional : is-prop-valued _<_
             → is-well-founded _<_
@@ -619,7 +615,7 @@ forget to remove spurious hypotheses when we finish.
    p : a ≡ x
    p =  e a x f' g'
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
-   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-order a x b v p l)))
+   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
                  → 𝟘-elim (≤-refl _<_ x (w x) l))
               (λ (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y)
@@ -638,7 +634,7 @@ forget to remove spurious hypotheses when we finish.
                  → transport
                      (λ q → u ≺ transport Y q b)
                      (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-order' a x b u (pr₁ σ) (pr₂ σ))
+                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
 
@@ -672,6 +668,100 @@ forget to remove spurious hypotheses when we finish.
    g : (σ : Σ Y) → ¬ ((x , top x) ⊏ σ)
    g (x' , y) (inl l) = f x' l
    g (x' , y) (inr (refl , l)) = ist x' y l
+
+\end{code}
+
+\begin{code}
+
+open import DiscreteAndSeparated
+
+module sum-cotransitive
+        (fe : (∀ U V → funext U V))
+        {U V W T}
+        {X : U ̇}
+        {Y : X → V ̇}
+        (_<_ : X → X → W ̇)
+        (_≺_ : {x : X} → Y x → Y x → T ̇)
+        (c : cotransitive _<_)
+      where
+
+ open sum {U} {V} {W} {T} {X} {Y} _<_  _≺_ public
+
+ private _⊏_ = order
+
+ extensional : is-prop-valued _<_
+            → is-well-founded _<_
+            → ((x : X) → is-well-founded (_≺_ {x}))
+            → is-extensional _<_
+            → ((x : X) → is-extensional (_≺_ {x}))
+            → is-extensional _⊏_
+ extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
+  where
+   f' : (u : X) → u < a → u < x
+   f' u l = Cases (c u a x l)
+             (λ (m : u < x)
+                → m)
+             (λ (m : x < a)
+                → let n : (x , y) ⊏ (x , y)
+                      n = f (x , y) (inl m)
+                  in 𝟘-elim (≤-refl _⊏_ (x , y) (sum.well-founded _<_ _≺_ w w' (x , y)) n))
+   g' : (u : X) → u < x → u < a
+   g' u l = Cases (c u x a l)
+             (λ (m : u < a)
+                → m)
+             (λ (m : a < x)
+                → let n : (a , b) ⊏ (a , b)
+                      n = g (a , b) (inl m)
+                  in 𝟘-elim (≤-refl _⊏_ (a , b) (sum.well-founded _<_ _≺_ w w' (a , b)) n))
+   p : a ≡ x
+   p =  e a x f' g'
+   f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
+   f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
+              (λ (l : x < x)
+                 → 𝟘-elim (≤-refl _<_ x (w x) l))
+              (λ (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y)
+                 → φ σ)
+              where
+               φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
+               φ (r , l) = transport
+                            (λ r → transport Y r v ≺ y)
+                            (extensional-gives-is-set _<_ fe ispv e r refl)
+                            l
+   g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
+   g'' u m = Cases (g (x , u) (inr (refl , m)))
+              (λ (l : x < a)
+                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → x < a) p l)))
+              λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
+                 → transport
+                     (λ q → u ≺ transport Y q b)
+                     (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
+                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
+   q : transport Y p b ≡ y
+   q = e' x (transport Y p b) y f'' g''
+
+
+ well-order : is-well-order _<_
+            → ((x : X) → is-well-order (_≺_ {x}))
+            → is-well-order _⊏_
+ well-order (p , w , e , t) f = prop-valued ,
+                                well-founded w (λ x → well-foundedness _≺_ (f x)) ,
+                                extensional (prop-valuedness _<_ (p , w , e , t))
+                                            w
+                                            (λ x → well-foundedness _≺_ (f x))
+                                            e
+                                            (λ x → extensionality _≺_ (f x)) ,
+                                transitive t (λ x → transitivity _≺_ (f x))
+  where
+   prop-valued : is-prop-valued _⊏_
+   prop-valued (a , b) (x , y) (inl l) (inl m) =
+     ap inl (p a x l m)
+   prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
+     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
+   prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
+     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
+   prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
+     ap inr (to-Σ-≡'' (ordinal-gives-is-set _<_ fe (p , w , e , t) r s ,
+                       (prop-valuedness (_≺_ {x}) (f x) (transport Y s b) y _ m)))
 
 \end{code}
 

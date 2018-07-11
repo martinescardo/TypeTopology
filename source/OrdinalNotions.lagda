@@ -179,6 +179,7 @@ ordinal-is-prop fe o = props-closed-× (Π-is-prop (fe U (U ⊔ V))
                                           (transitive-is-prop fe (pr₁ o))))
                        o
 
+
 _≤_ : X → X → V ̇
 x ≤ y = ¬(y < x)
 
@@ -207,6 +208,9 @@ non-strict-trans = transfinite-induction'
 
 ≼-coarser-than-≤ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≤ y
 ≼-coarser-than-≤ y a x f l = ≤-refl y a (f y l)
+
+trichotomous : U ⊔ V ̇
+trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
 
 \end{code}
 

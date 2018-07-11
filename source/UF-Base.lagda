@@ -38,6 +38,20 @@ nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : (x
               → f y (transport A p a) ≡ transport B p (f x a)
 nat-transport f refl = refl
 
+transport-rel : ∀ {U V W} {X : U ̇} {Y : X → V ̇} (_≺_ : {x : X} → Y x → Y x → W ̇)
+              → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
+              →  v ≺ transport Y p b
+              → back-transport Y p v ≺ b
+transport-rel _≺_ a .a b v refl = id
+
+transport-rel' : ∀ {U V W} {X : U ̇} {Y : X → V ̇} (_≺_ : {x : X} → Y x → Y x → W ̇)
+              → (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
+              → transport Y r v ≺ b
+              → v ≺ back-transport Y r b
+transport-rel' _≺_ a .a b v refl = id
+
+
+
 apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
     (p : x ≡ y) → transport A p (f x) ≡ f y
 apd f refl = refl
