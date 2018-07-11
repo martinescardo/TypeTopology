@@ -30,13 +30,19 @@ trans-sym refl = refl
 trans-sym' : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
 trans-sym' refl = refl
 
-transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇} (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇}
+              (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
              → transport (A ∘ f) p a ≡ transport A (ap f p) a
 transport-ap f refl = refl 
 
-nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
+nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇}
+                (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
               → f y (transport A p a) ≡ transport B p (f x a)
 nat-transport f refl = refl
+
+transport-prop : ∀ {U V W} {X : U ̇} {Y : X → V ̇} (P : {x : X} → Y x → W ̇)
+               (x : X) (y : Y x) → P y → (x' : X) (r : x ≡ x') → P(transport Y r y)
+transport-prop P x y p .x refl = p
 
 transport-rel : ∀ {U V W} {X : U ̇} {Y : X → V ̇} (_≺_ : {x : X} → Y x → Y x → W ̇)
               → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)

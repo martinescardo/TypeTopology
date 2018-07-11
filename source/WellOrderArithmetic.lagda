@@ -567,8 +567,26 @@ module sum
    f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
+ prop-valued : (∀ U V → funext U V)
+             → is-prop-valued _<_
+             → is-well-founded _<_
+             → is-extensional _<_
+             → ((x : X) → is-prop-valued (_≺_ {x}))
+             → is-prop-valued _⊏_
+ prop-valued fe p w e f (a , b) (x , y) (inl l) (inl m) =
+   ap inl (p a x l m)
+ prop-valued fe p w e f (a , b) (x , y) (inl l) (inr (s , m)) =
+   𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
+ prop-valued fe p w e f (a , b) (x , y) (inr (r , l)) (inl m) =
+   𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
+ prop-valued fe p _ e f (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
+   ap inr (to-Σ-≡'' (extensional-gives-is-set _<_ fe p e r s ,
+                     (f x (transport Y s b) y _ m)))
+
 \end{code}
 
+We know how to prove extensionality either assuming top elements or
+assuming cotransitivity. We do this in the following two modules.
 
 \begin{code}
 
@@ -587,11 +605,6 @@ module sum-top
 
  private _⊏_ = order
 
- private
-  transport-top : (x : X) (y : Y x) → is-top _≺_ y
-               → (x' : X) (r : x ≡ x') → is-top _≺_ (transport Y r y)
-  transport-top x y ist .x refl = ist
-
  extensional : is-prop-valued _<_
             → is-well-founded _<_
             → ((x : X) → is-well-founded (_≺_ {x}))
@@ -605,13 +618,13 @@ module sum-top
              (λ (m : u < x)
                 → m)
              (λ (σ : Σ \(r : u ≡ x) → transport Y r (top u) ≺ y)
-                → 𝟘-elim (transport-top u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
+                → 𝟘-elim (transport-prop (is-top _≺_) u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g (u , top u) (inl l))
              (λ (m : u < a)
                 → m)
              (λ (σ : Σ \(r : u ≡ a) → transport Y r (top u) ≺ b)
-                → 𝟘-elim (transport-top u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
+                → 𝟘-elim (transport-prop (is-top _≺_) u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
    p : a ≡ x
    p =  e a x f' g'
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
@@ -638,11 +651,10 @@ module sum-top
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
 
-
  well-order : is-well-order _<_
             → ((x : X) → is-well-order (_≺_ {x}))
             → is-well-order _⊏_
- well-order (p , w , e , t) f = prop-valued ,
+ well-order (p , w , e , t) f = prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
                                 well-founded w (λ x → well-foundedness _≺_ (f x)) ,
                                 extensional (prop-valuedness _<_ (p , w , e , t))
                                             w
@@ -650,18 +662,7 @@ module sum-top
                                             e
                                             (λ x → extensionality _≺_ (f x)) ,
                                 transitive t (λ x → transitivity _≺_ (f x))
-  where
-   prop-valued : is-prop-valued _⊏_
-   prop-valued (a , b) (x , y) (inl l) (inl m) =
-     ap inl (p a x l m)
-   prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-     ap inr (to-Σ-≡'' (ordinal-gives-is-set _<_ fe (p , w , e , t) r s ,
-                       (prop-valuedness (_≺_ {x}) (f x) (transport Y s b) y _ m)))
-
+                                
  top-preservation : has-top _<_ → has-top _⊏_
  top-preservation (x , f) = (x , top x) , g
   where
@@ -739,11 +740,10 @@ module sum-cotransitive
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
 
-
  well-order : is-well-order _<_
             → ((x : X) → is-well-order (_≺_ {x}))
             → is-well-order _⊏_
- well-order (p , w , e , t) f = prop-valued ,
+ well-order (p , w , e , t) f = prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
                                 well-founded w (λ x → well-foundedness _≺_ (f x)) ,
                                 extensional (prop-valuedness _<_ (p , w , e , t))
                                             w
@@ -751,18 +751,7 @@ module sum-cotransitive
                                             e
                                             (λ x → extensionality _≺_ (f x)) ,
                                 transitive t (λ x → transitivity _≺_ (f x))
-  where
-   prop-valued : is-prop-valued _⊏_
-   prop-valued (a , b) (x , y) (inl l) (inl m) =
-     ap inl (p a x l m)
-   prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
-   prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-     ap inr (to-Σ-≡'' (ordinal-gives-is-set _<_ fe (p , w , e , t) r s ,
-                       (prop-valuedness (_≺_ {x}) (f x) (transport Y s b) y _ m)))
-
+                                
 \end{code}
 
 28 June 2018.
