@@ -292,11 +292,13 @@ the moment:
 +disjoint' : ∀ {U V} {X : U ̇} {Y : V ̇} {x : X} {y : Y} → ¬(inr y ≡ inl x)
 +disjoint' ()
 
-inl-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
-inl-injective refl = refl
+inl-lc : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → inl {U} {V} {X} {Y} x ≡ inl x' → x ≡ x'
+inl-lc refl = refl
 
-inr-injective : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
-inr-injective refl = refl
+inr-lc : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
+inr-lc refl = refl
+
+
 
 \end{code}
 
@@ -355,9 +357,9 @@ zero-is-not-one ()
 𝟚-cases : ∀ {U} {A : U ̇} → A → A → 𝟚 → A
 𝟚-cases = 𝟚-induction
 
-two-equality-cases : ∀ {U} {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
-two-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
-two-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
+𝟚-equality-cases : ∀ {U} {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
+𝟚-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
+𝟚-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
 
 two-equality-cases' : ∀ {U} {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
 two-equality-cases' {U} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
@@ -367,10 +369,10 @@ Lemma[b≡₁→b≢₀] : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
 Lemma[b≡₁→b≢₀] r s = zero-is-not-one (s ⁻¹ ∙ r)
 
 Lemma[b≢₀→b≡₁] : {b : 𝟚} → b ≢ ₀ → b ≡ ₁
-Lemma[b≢₀→b≡₁] f = two-equality-cases (𝟘-elim ∘ f) (λ r → r) 
+Lemma[b≢₀→b≡₁] f = 𝟚-equality-cases (𝟘-elim ∘ f) (λ r → r) 
 
 Lemma[b≢₁→b≡₀] : {b : 𝟚} → b ≢ ₁ → b ≡ ₀
-Lemma[b≢₁→b≡₀] f = two-equality-cases (λ r → r) (𝟘-elim ∘ f)
+Lemma[b≢₁→b≡₀] f = 𝟚-equality-cases (λ r → r) (𝟘-elim ∘ f)
 
 Lemma[b≡₀→b≢₁] : {b : 𝟚} → b ≡ ₀ → b ≢ ₁
 Lemma[b≡₀→b≢₁] r s = zero-is-not-one (r ⁻¹ ∙ s)

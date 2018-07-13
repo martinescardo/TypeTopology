@@ -230,7 +230,7 @@ usearchable τ = searchable ⟪ τ ⟫
              → usearchable τ
              → ((x : ⟪ τ ⟫) → usearchable (υ x))
              → usearchable (∑ {τ} υ)
-∑-usearchable τ υ = sums-preserve-searchability             
+∑-usearchable τ υ = Σ-searchable             
 
 +usearchable : (τ υ : Ordᵀ)
               → usearchable τ

@@ -68,7 +68,7 @@ incl-is-a-section  = retr , (dfunext fe lemma)
 
   R-positivity : (u v : ℕ∞) → R u v → positivity u ≡ positivity v
   R-positivity u v (w , c , d) = 
-   two-equality-cases lemma₀ lemma₁ 
+   𝟚-equality-cases lemma₀ lemma₁ 
    where 
     lemma₀ : positivity w ≡ ₀ → positivity u ≡ positivity v
     lemma₀ r = ap positivity claim₃
@@ -105,7 +105,7 @@ incl-is-a-section  = retr , (dfunext fe lemma)
      claim₀ : Pred(retr(incl w)) ≡ Pred u
      claim₀ = ap Pred c
      claim :  retr(incl(Pred w)) ≡ Pred(retr(incl w))
-     claim = two-equality-cases claim₁ claim₂
+     claim = 𝟚-equality-cases claim₁ claim₂
       where 
        claim₁ : is-Zero w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
        claim₁ r = c₃ ∙ c₅ ⁻¹

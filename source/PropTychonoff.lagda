@@ -173,7 +173,7 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
 
   -- Finally, we do case analysis on the value of p φ:
   φ₀-is-universal-witness : p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
-  φ₀-is-universal-witness r φ = two-equality-cases (Claim₃ r φ) id
+  φ₀-is-universal-witness r φ = 𝟚-equality-cases (Claim₃ r φ) id
 
 \end{code}
 

@@ -62,7 +62,7 @@ sord : (α : OE) → usearchable(ord α)
 sord       One = 𝟙-usearchable
 sord (Add α β) = +usearchable (ord α) (ord β) (sord α) (sord β)
 sord (Mul α β) = ×usearchable (ord α) (ord β) (sord α) (sord β) 
-sord (Sum1 α)  = ∑¹-usearchable (ord ∘ α) (sord ∘ α)
+sord (Sum1 α)  = ∑¹-usearchable (ord ∘ α) (λ n → sord (α n))
 
 \end{code}
 
@@ -83,7 +83,7 @@ dord' : (α : OE) → udiscrete(ord' α)
 dord'      One  = 𝟙-udiscrete
 dord' (Add α β) = +udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
 dord' (Mul α β) = ×udiscrete (ord' α) (ord' β) (dord' α) (dord' β) 
-dord' (Sum1 α)  = ∑₁-udiscrete (ord' ∘ α) (dord' ∘ α)
+dord' (Sum1 α)  = ∑₁-udiscrete (ord' ∘ α) (λ n → dord' (α n))
 
 {-
 ord'-ord : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫

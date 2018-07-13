@@ -43,9 +43,9 @@ is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡'' (φ y , dfunext 
   iss : is-set X
   iss = prop-is-set isp
 
-is-set-exponential-ideal : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} 
-                        → ((x : X) → is-set(A x)) → is-set(Π A) 
-is-set-exponential-ideal {U} {V} fe {X} {A} isa {f} {g} = b
+Π-is-set : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} 
+         → ((x : X) → is-set(A x)) → is-set(Π A) 
+Π-is-set {U} {V} fe {X} {A} isa {f} {g} = b
  where
   a : is-prop (f ∼ g)
   a p q = dfunext fe λ x → isa x (p x) (q x)

@@ -83,7 +83,7 @@ checking the two possibilities, we can always take x₀ = p ₀.
     claim r s = transport (λ x → p x ≡ ₁) s r
 
     lemma₀ : p x₀ ≡ ₁ → p ₀ ≡ ₁
-    lemma₀ r = two-equality-cases (claim r) (λ s → s)
+    lemma₀ r = 𝟚-equality-cases (claim r) (λ s → s)
 
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
     lemma₁ r = transport (λ x → p x ≡ ₁) (lemma₀ r) r
@@ -101,7 +101,7 @@ which is a consequence of univalence):
 open import UF-Two-Prop-Density
 
 Ω-searchable : funext U₀ U₀ → propext U₀ → searchable Ω
-Ω-searchable fe pe p = two-equality-cases a b
+Ω-searchable fe pe p = 𝟚-equality-cases a b
   where
     A = Σ \(x₀ : Ω) → p x₀ ≡ ₁ → (x : Ω) → p x ≡ ₁
     
@@ -109,7 +109,7 @@ open import UF-Two-Prop-Density
     a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
     
     b : p ⊥ ≡ ₁ → A
-    b r = two-equality-cases c d
+    b r = 𝟚-equality-cases c d
       where
         c : p ⊤ ≡ ₀ → A
         c s = ⊤ , λ t → 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ t))
@@ -195,7 +195,7 @@ a proof of a proposition of the form (searchable X).
 open import OmniscientTypes
 
 searchable-implies-omniscient : ∀ {U} {X : U ̇} → searchable X → omniscient X
-searchable-implies-omniscient {U} {X} ε p = two-equality-cases case₀ case₁
+searchable-implies-omniscient {U} {X} ε p = 𝟚-equality-cases case₀ case₁
  where 
   x₀ : X
   x₀ = pr₁(ε p)
@@ -288,9 +288,9 @@ Back to searchable sets:
 
 \begin{code}
 
-sums-preserve-searchability : ∀ {U V} {X : U ̇} {Y : X → V ̇}
-                           → searchable X → ((x : X) → searchable(Y x)) → searchable(Σ Y)
-sums-preserve-searchability {i} {j} {X} {Y} ε δ p = (x₀ , y₀) , correctness
+Σ-searchable : ∀ {U V} {X : U ̇} {Y : X → V ̇}
+             → searchable X → ((x : X) → searchable(Y x)) → searchable(Σ Y)
+Σ-searchable {i} {j} {X} {Y} ε δ p = (x₀ , y₀) , correctness
  where 
   lemma-next : (x : X) → Σ \(y₀ : Y x) → p(x , y₀) ≡ ₁ → (y : Y x) → p(x , y) ≡ ₁
   lemma-next x = δ x (λ y → p(x , y))
@@ -323,7 +323,7 @@ Corollary: Binary products preserve searchability:
 \begin{code}
 
 binary-Tychonoff : ∀ {U V} {X : U ̇} {Y : V ̇} → searchable X → searchable Y → searchable(X × Y)
-binary-Tychonoff ε δ = sums-preserve-searchability ε (λ i → δ)
+binary-Tychonoff ε δ = Σ-searchable ε (λ i → δ)
 
 \end{code}
 
@@ -331,9 +331,9 @@ Corollary: binary coproducts preserve searchability:
 
 \begin{code}
 
-binary-sums-preserve-searchability' : ∀ {U} {X₀ : U ̇} {X₁ : U ̇}
+binary-Σ-searchable' : ∀ {U} {X₀ : U ̇} {X₁ : U ̇}
                                    → searchable X₀ → searchable X₁ → searchable(X₀ +' X₁)
-binary-sums-preserve-searchability' {U} {X₀} {X₁} ε₀ ε₁ = sums-preserve-searchability 𝟚-searchable ε
+binary-Σ-searchable' {U} {X₀} {X₁} ε₀ ε₁ = Σ-searchable 𝟚-searchable ε
  where 
   ε : (i : 𝟚) → _
   ε ₀ = ε₀

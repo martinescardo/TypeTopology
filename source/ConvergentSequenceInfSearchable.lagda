@@ -106,7 +106,7 @@ open import GenericConvergentSequence
     lemma = Lemma[b≢₀→b≡₁] claim₅
 
   uborlb-lemma : (l : ℕ∞) → ((x : ℕ∞) → p x ≡ ₀ → l ≼ x) → l ≼ a
-  uborlb-lemma l lower-bounder = two-equality-cases lemma₀ lemma₁
+  uborlb-lemma l lower-bounder = 𝟚-equality-cases lemma₀ lemma₁
    where
     lemma₀ : p a ≡ ₀ → l ≼ a
     lemma₀ = lower-bounder a

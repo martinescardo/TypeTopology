@@ -77,13 +77,13 @@ Standard examples:
 +discrete d e (inl x) (inl x') =
     Cases (d x x')
      (λ (p : x ≡ x') → inl(ap inl p))
-     (λ (n : ¬(x ≡ x')) → inr (contrapositive inl-injective n))
+     (λ (n : ¬(x ≡ x')) → inr (contrapositive inl-lc n))
 +discrete d e (inl x) (inr y) = inr +disjoint
 +discrete d e (inr y) (inl x) = inr +disjoint'
 +discrete d e (inr y) (inr y') =
     Cases (e y y')
      (λ (p : y ≡ y') → inl(ap inr p))
-     (λ (n : ¬(y ≡ y')) → inr (contrapositive inr-injective n))
+     (λ (n : ¬(y ≡ y')) → inr (contrapositive inr-lc n))
 
 \end{code}
 

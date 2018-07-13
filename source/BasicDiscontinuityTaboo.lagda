@@ -23,7 +23,7 @@ basic-discontinuity : (ℕ∞ → 𝟚) → U₀ ̇
 basic-discontinuity p = ((n : ℕ) → p(under n) ≡ ₀) × (p ∞ ≡ ₁)
 
 basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
-basic-discontinuity-taboo p (f , r) u = two-equality-cases lemma₀ lemma₁
+basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
  where 
   fact₀ : u ≡ ∞ → p u ≡ ₁
   fact₀ t = ap p t ∙ r

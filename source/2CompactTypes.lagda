@@ -172,8 +172,7 @@ predicate λ x → ₁:
 𝟚-compact'-is-prop : ∀ {U} {X : U ̇} → is-prop(𝟚-compact' X)
 𝟚-compact'-is-prop {U} = Π-is-prop (fe U U)
                           (λ p → decidable-is-prop (fe U U₀)
-                                   (is-set-exponential-ideal (fe U U₀)
-                                       (λ x → 𝟚-is-set)))
+                                   (Π-is-set (fe U U₀) (λ x → 𝟚-is-set)))
 
 𝟚-c'c : ∀ {U} {X : U ̇} → 𝟚-compact' X → 𝟚-compact X
 𝟚-c'c {U} {X} c' p = g (c' p)
@@ -568,7 +567,7 @@ idso : ∀ {U} (X : U ̇) → is-prop X → decidable X → strongly-𝟚-overt 
 idso X isp d p = g d
  where
   g : decidable X → decidable (∃ \x → p x ≡ ₀)
-  g (inl x) = two-equality-cases b c
+  g (inl x) = 𝟚-equality-cases b c
    where
     b : p x ≡ ₀ → decidable (∃ \x → p x ≡ ₀)
     b r = inl ∣ x , r ∣
@@ -625,20 +624,20 @@ detachable-subset-retract : ∀ {U} {X : U ̇} {A : X → 𝟚}
 detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
   r : X → Σ \(x : X) → A x ≡ ₀
-  r x = two-equality-cases (λ(e : A x ≡ ₀) → (x , e)) (λ(e : A x ≡ ₁) → (x₀ , e₀))
+  r x = 𝟚-equality-cases (λ(e : A x ≡ ₀) → (x , e)) (λ(e : A x ≡ ₁) → (x₀ , e₀))
   
   rs : (σ : Σ \(x : X) → A x ≡ ₀) → r(pr₁ σ) ≡ σ
   rs (x , e) = w
    where
-    s : (b : 𝟚) → b ≡ ₀ → two-equality-cases (λ(_ : b ≡ ₀) → (x , e)) (λ(_ : b ≡ ₁) → (x₀ , e₀)) ≡ (x , e)
+    s : (b : 𝟚) → b ≡ ₀ → 𝟚-equality-cases (λ(_ : b ≡ ₀) → (x , e)) (λ(_ : b ≡ ₁) → (x₀ , e₀)) ≡ (x , e)
     s ₀ refl = refl
     s ₁ ()
-    t : two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
+    t : 𝟚-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
     t = s (A x) e
     u : (λ e' → x , e') ≡ (λ _ → x , e)
     u = dfunext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-is-set e' e)
-    v : r x ≡ two-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
-    v = ap (λ f₀ → two-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
+    v : r x ≡ 𝟚-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
+    v = ap (λ f₀ → 𝟚-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
     w : r x ≡ x , e
     w = v ∙ t
 
@@ -678,13 +677,13 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
   p₁ x e = q (x , e)
   
   p : X → 𝟚
-  p x = two-equality-cases (p₀ x) (p₁ x)
+  p x = 𝟚-equality-cases (p₀ x) (p₁ x)
   
   p-spec₀ : (x : X) → A x ≡ ₀ → p x ≡ ₁
   p-spec₀ x e = s (A x) e (p₁ x)
    where
     s : (b : 𝟚) → b ≡ ₀ → (f₁ : b ≡ ₁ → 𝟚)
-      → two-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
+      → 𝟚-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
     s ₀ refl = λ f₁ → refl
     s ₁ ()
     
@@ -696,13 +695,13 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     r : p₁ x ≡ y
     r = (dfunext (fe U₀ U₀)) (λ e' → ap (p₁ x) (𝟚-is-set e' e))
     s : (b : 𝟚) → b ≡ ₁
-      → two-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
+      → 𝟚-equality-cases (λ (_ : b ≡ ₀) → ₁) (λ (_ : b ≡ ₁) → q (x , e)) ≡ q (x , e)
     s ₀ ()
     s ₁ refl = refl
-    t : two-equality-cases (p₀ x) y ≡ q (x , e)
+    t : 𝟚-equality-cases (p₀ x) y ≡ q (x , e)
     t = s (A x) e
-    u : p x ≡ two-equality-cases (p₀ x) y
-    u = ap (two-equality-cases (p₀ x)) r
+    u : p x ≡ 𝟚-equality-cases (p₀ x) y
+    u = ap (𝟚-equality-cases (p₀ x)) r
   
   g : decidable ((x : X) → p x ≡ ₁) → decidable ((σ : Σ \(x : X) → A x ≡ ₁) → q σ ≡ ₁)
   g (inl α) = inl h
@@ -712,7 +711,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
   g (inr u) = inr(contrapositive h u)
    where
     h : ((σ : Σ \(x : X) → A x ≡ ₁) → q σ ≡ ₁) → (x : X) → p x ≡ ₁
-    h β x = two-equality-cases (p-spec₀ x) (λ e → p-spec₁ x e ∙ β (x , e))
+    h β x = 𝟚-equality-cases (p-spec₀ x) (λ e → p-spec₁ x e ∙ β (x , e))
 
 \end{code}
 

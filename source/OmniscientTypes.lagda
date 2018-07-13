@@ -93,7 +93,7 @@ decidable-prop-omniscient : ∀ {U} (X : U ̇) → is-prop X → decidable X →
 decidable-prop-omniscient X isp δ p = g δ
  where
   g : decidable X → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
-  g (inl x) = two-equality-cases b c
+  g (inl x) = 𝟚-equality-cases b c
    where
     b : p x ≡ ₀ → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
     b r = inl (x , r)

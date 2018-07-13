@@ -30,7 +30,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
  where
   claim₀ : (Σ \(y : ℕ∞) → p y ≢ p(Succ y))
           → (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
-  claim₀ e = inl (two-equality-cases case₀ case₁)
+  claim₀ e = inl (𝟚-equality-cases case₀ case₁)
    where
     x : ℕ∞
     x = pr₁ e
@@ -51,7 +51,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
 
   claim₁ : ((y : ℕ∞) → p y ≡ p(Succ y)) →
             (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
-  claim₁ f = two-equality-cases case₀ case₁
+  claim₁ f = 𝟚-equality-cases case₀ case₁
    where
     case₀ : p Zero ≡ ₀ →
             (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)

@@ -86,7 +86,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-is-equiv f (g , 
   fg y = equality-cases (i (inl y)) φ ψ
    where
     φ : (p : inl b ≡ inl y) → i (inl y) ≡ inl p → f (g' y (i (inl y))) ≡ y
-    φ p q = ap (λ d → f (g' y d)) q ∙ inl-injective p
+    φ p q = ap (λ d → f (g' y d)) q ∙ inl-lc p
     ψ : (u : inl b ≢ inl y) → i (inl y) ≡ inr u → f (g' y (i (inl y))) ≡ y
     ψ _ = ap ((λ d → f (g' y d)))
 

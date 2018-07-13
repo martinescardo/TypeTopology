@@ -480,7 +480,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      u = transport (λ g → g ∘ η ≡ f) t r
      
      v : u ≡ s
-     v = is-set-exponential-ideal (fe U V) (λ _ → iss) u s
+     v = Π-is-set (fe U V) (λ _ → iss) u s
 
    go : is-singleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
    go = (f' , r) , c
@@ -789,7 +789,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
   powerset-is-set : ∀ {W} {A : W ̇} → is-set (A → Ω)
-  powerset-is-set {W} = is-set-exponential-ideal (fe W (V ′)) (λ x → Ω-is-set (fe V V) pe)
+  powerset-is-set {W} = Π-is-set (fe W (V ′)) (λ x → Ω-is-set (fe V V) pe)
 
 \end{code}
 
@@ -1093,7 +1093,7 @@ apartness on it.
       u = transport (λ g → g ∘ η ≡ f) t r
 
       v : u ≡ s
-      v = is-set-exponential-ideal (fe U W) (λ _ → iss) u s
+      v = Π-is-set (fe U W) (λ _ → iss) u s
                      
     ic : is-singleton (Σ \(f' : X' → A) → f' ∘ η ≡ f)
     ic = (f' , r) , c

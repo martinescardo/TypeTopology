@@ -102,7 +102,7 @@ S-lc : {y z : 𝟙 + ℕ∞} → S y ≡ S z → y ≡ z
 S-lc r = P-S-id ⁻¹ ∙ ap P r ∙ P-S-id
 
 S-P-id : {u : ℕ∞} → S(P u) ≡ u
-S-P-id {u} = two-equality-cases lemma₀ lemma₁ 
+S-P-id {u} = 𝟚-equality-cases lemma₀ lemma₁ 
  where 
   lemma₀ : positivity u ≡ ₀ → S(P u) ≡ u
   lemma₀ r = claim₁ ∙ (is-Zero-equal-Zero fe r)⁻¹
@@ -143,7 +143,7 @@ alg-mophism-remark₁ p h b = dfunext fe (λ x → ap (λ G → P(G x)) b ∙ P-
 
 
 diagram-commutes : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
-diagram-commutes p h = (P ∘ h ≡ (𝟙+ h) ∘ p)
+diagram-commutes p h =  (P ∘ h ≡ (𝟙+ h) ∘ p)
 
 
 homomorphism-existence : ∀ {U} {X : U ̇} → 
@@ -209,6 +209,11 @@ homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
 
 ℕ∞-corec  : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) 
 ℕ∞-corec p = pr₁(homomorphism-existence p)
+
+ℕ∞-corec-diagram : ∀ {U} {X : U ̇} (p : X → 𝟙 + X)
+                 → diagram-commutes p (ℕ∞-corec p) 
+ℕ∞-corec-diagram p = pr₂(homomorphism-existence p)
+
 
 \end{code}
 
@@ -388,15 +393,28 @@ coalgebra, as claimed:
 Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇ 
 Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
 
-P-is-the-final-coalgebra : ∀ {U} {X : U ̇} → 
-
- (p : X → 𝟙 + X) → Σ! \(h : X → ℕ∞) → diagram-commutes p h 
-
-P-is-the-final-coalgebra {X} p = 
- (homomorphism-existence p) , (homomorphism-uniqueness p)
+P-is-the-final-coalgebra : ∀ {U} {X : U ̇}
+  → (p : X → 𝟙 + X) → Σ! \(h : X → ℕ∞) → diagram-commutes p h 
+P-is-the-final-coalgebra p = homomorphism-existence p , homomorphism-uniqueness p
 
 \end{code}
 
 There is more formalization work to do (2017): By now we know that Σ!
 (a form of unique existence) is better captured by the contractibility
-of Σ type.
+of Σ type. Added 13th July 2018:
+
+\begin{code}
+
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
+
+P-is-the-homotopy-final-coalgebra : ∀ {U} {X : U ̇}
+  → (p : X → 𝟙 + X) → is-singleton(Σ \(h : X → ℕ∞) → diagram-commutes p h)
+P-is-the-homotopy-final-coalgebra {U} {X} p = homomorphism-existence p , γ
+ where
+  γ : (e : Σ \(h' : X → ℕ∞) → diagram-commutes p h') → homomorphism-existence p ≡ e
+  γ (h' , r) = to-Σ-≡'' (homomorphism-uniqueness p (ℕ∞-corec p) h' (ℕ∞-corec-diagram p) r ,
+                         Π-is-set fe (λ (x : X) → +-is-set 𝟙 ℕ∞ (prop-is-set 𝟙-is-prop) (ℕ∞-is-set fe)) _ _)
+
+\end{code}

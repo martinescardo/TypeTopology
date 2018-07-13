@@ -17,15 +17,14 @@ open import UF-Equiv
 open import GenericConvergentSequence
 open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)
-open import UF-InjectiveTypes (fe)
-open import UF-Embedding
-open import ExtendedSumSearchable (fe)
-open import TotallySeparated
+open import UF-InjectiveTypes fe
+open import ExtendedSumSearchable fe
 
 Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
-squashed-sum-searchable : ∀ {U} (X : ℕ → U ̇) → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
+squashed-sum-searchable : ∀ {U} (X : ℕ → U ̇)
+                        → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
 squashed-sum-searchable X ε = extended-sum-searchable
                                 under
                                 (under-embedding (fe U₀ U₀))
@@ -210,7 +209,7 @@ module original-version-and-equivalence-with-new-version where
 \begin{code}
 
  squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ₁ X)
- squashed-sum-searchable' {X} f = sums-preserve-searchability ℕ∞-searchable (extension-searchable {X} f)
+ squashed-sum-searchable' {X} f = Σ-searchable ℕ∞-searchable (extension-searchable {X} f)
 
 \end{code}
 

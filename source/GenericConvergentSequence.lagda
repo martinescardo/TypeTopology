@@ -91,7 +91,7 @@ clni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 clni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) , decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
-ℕ∞-retract-of-Cantor fe = lcni , incl , (clni-incl fe)
+ℕ∞-retract-of-Cantor fe = lcni , incl , clni-incl fe
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤₂ β i
 force-decreasing-is-smaller β zero     p = p
@@ -339,7 +339,7 @@ finite-isolated : funext₀ → (n : ℕ) → isolated (under n)
 finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
  where
   f : (u : ℕ∞) (n : ℕ) → decidable (u ≡ under n)
-  f u 0 = two-equality-cases g₀ g₁
+  f u 0 = 𝟚-equality-cases g₀ g₁
    where 
     g₀ : is-Zero u → decidable (u ≡ Zero)
     g₀ r = inl(is-Zero-equal-Zero fe r)
@@ -348,7 +348,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
      where
       h : u ≡ Zero → is-Zero u
       h r = ap (λ u → incl u 0) r
-  f u (succ n) = two-equality-cases g₀ g₁
+  f u (succ n) = 𝟚-equality-cases g₀ g₁
    where
     g₀ :  u ⊑ n → decidable (u ≡ under(succ n))
     g₀ r = inr(contrapositive g (Lemma[b≡₀→b≢₁] r))
@@ -356,7 +356,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
       g : u ≡ under(succ n) → n ⊏ u
       g r = ap (λ v → incl v n) r ∙ under-diagonal₁ n
     g₁ :  n ⊏ u → decidable (u ≡ under(succ n))
-    g₁ r = two-equality-cases g₁₀ g₁₁
+    g₁ r = 𝟚-equality-cases g₁₀ g₁₁
      where
       g₁₀ : u ⊑ succ n → decidable (u ≡ under(succ n))
       g₁₀ s = inl(Succ-criterion fe r s)

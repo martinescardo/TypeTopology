@@ -140,7 +140,7 @@ module UnivalentChoice (U : Universe)
  open PropositionalTruncation pt public
 
  sei : {X Y : U ̇} → is-set Y → is-set (X → Y)
- sei isy = is-set-exponential-ideal (fe U U) (λ x → isy)
+ sei isy = Π-is-set (fe U U) (λ x → isy)
 
  open TChoice U ∥_∥ ptfunct is-set sei (prop-is-set ptisp)
 

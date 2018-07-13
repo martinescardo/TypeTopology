@@ -128,8 +128,11 @@ data or structure).
 
 \begin{code}
 
+is-h-isolated : ∀ {U} {X : U ̇} (x : X) → U ̇
+is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
+
 is-set : ∀ {U} → U ̇ → U ̇
-is-set X = {x y : X} → is-prop (x ≡ y)
+is-set X = {x : X} → is-h-isolated x
 
 \end{code}
 
@@ -284,6 +287,24 @@ pr₁-lc f p = to-Σ-≡'' (p , (f _ _))
 subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
                     → is-set X → ({x : X} → is-prop(Y x)) → is-set(Σ \(x : X) → Y x)
 subset-of-set-is-set X Y h p = subtype-of-set-is-set pr₁ (pr₁-lc p) h
+
+inl-lc-is-section : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → (p : inl {U} {V} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
+inl-lc-is-section refl = refl
+
+inr-lc-is-section : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → (p : inr {U} {V} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
+inr-lc-is-section refl = refl
+
++-is-set : ∀ {U V} (X : U ̇) (Y : V ̇) → is-set X → is-set Y → is-set (X + Y)
++-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹ 
+ where
+  r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
+  r = ap (ap inl) (i (inl-lc p) (inl-lc q))
++-is-set X Y i j {inl x} {inr y} () q
++-is-set X Y i j {inr y} {inl x} p ()
++-is-set X Y i j {inr y} {inr y'} p q = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹  
+ where
+  r : ap inr (inr-lc p) ≡ ap inr (inr-lc q)
+  r = ap (ap inr) (j (inr-lc p) (inr-lc q))
 
 \end{code}
 
