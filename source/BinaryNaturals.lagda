@@ -456,7 +456,7 @@ double₂-spec (r x) = ap r (double₂-spec x)
 \end{code}
 
 We get a pairing function as follows, using a rather minimal amount of
-number theory (14th July 2018):
+arithmetic (14th July 2018):
 
 We use binary notation to simplify the definition. An alternative
 would be to work with the usual unary notation, using binary
