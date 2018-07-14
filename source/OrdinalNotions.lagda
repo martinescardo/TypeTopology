@@ -140,8 +140,8 @@ extensional-gives-is-set : (∀ U V → funext U V) → is-prop-valued
 extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
-  f {x} {y} p = e x y (transport (λ z → x ≼ z) p (≼-refl {x}))
-                      (transport (λ z → z ≼ x) p (≼-refl {x}))
+  f {x} {y} p = e x y (transport (λ - → x ≼ -) p (≼-refl {x}))
+                      (transport (λ - → - ≼ x) p (≼-refl {x}))
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp x y l l')
                                              (≼-prop-valued-order fe isp y x m m')

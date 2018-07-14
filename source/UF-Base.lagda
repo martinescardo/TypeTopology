@@ -95,7 +95,7 @@ assoc : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ 
 assoc refl refl refl = refl
 
 happly' : ∀ {U V} {X : U ̇} {A : X → V ̇} (f g : Π A) → f ≡ g → f ∼ g
-happly' f g p x = ap (λ h → h x) p
+happly' f g p x = ap (λ - → - x) p
 
 happly : ∀ {U V} {X : U ̇} {A : X → V ̇} {f g : Π A} → f ≡ g → f ∼ g
 happly = happly' _ _
@@ -125,11 +125,11 @@ cancel-left : ∀ {U} {X : U ̇} {x y z : X} {p : x ≡ y} {q r : y ≡ z}
             → p ∙ q ≡ p ∙ r → q ≡ r
 cancel-left {U} {X} {x} {y} {z} {p} {q} {r} s = 
        q              ≡⟨ refl-left-neutral ⁻¹ ⟩
-       refl ∙ q       ≡⟨ ap (λ t → t ∙ q) ((left-inverse p)⁻¹) ⟩
+       refl ∙ q       ≡⟨ ap (λ - → - ∙ q) ((left-inverse p)⁻¹) ⟩
        (p ⁻¹ ∙ p) ∙ q ≡⟨ assoc (p ⁻¹) p q ⟩
-       p ⁻¹ ∙ (p ∙ q) ≡⟨ ap (λ t → p ⁻¹ ∙ t) s ⟩
+       p ⁻¹ ∙ (p ∙ q) ≡⟨ ap (λ - → p ⁻¹ ∙ -) s ⟩
        p ⁻¹ ∙ (p ∙ r) ≡⟨ (assoc (p ⁻¹) p r)⁻¹ ⟩
-       (p ⁻¹ ∙ p) ∙ r ≡⟨ ap (λ t → t ∙ r) (left-inverse p) ⟩
+       (p ⁻¹ ∙ p) ∙ r ≡⟨ ap (λ - → - ∙ r) (left-inverse p) ⟩
        refl ∙ r       ≡⟨ refl-left-neutral ⟩
        r ∎
 
@@ -171,6 +171,6 @@ to-Σ-≡'' (refl , refl) = refl
 
 to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x) 
      → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y') 
-to-Σ-≡' x y y' r = ap (λ y → (x , y)) r
+to-Σ-≡' x y y' r = ap (λ - → (x , -)) r
 
 \end{code}

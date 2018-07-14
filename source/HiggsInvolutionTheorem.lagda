@@ -35,7 +35,7 @@ higgs : (f : Ω → Ω) → left-cancellable f → involutive f
 higgs f cancelf {p} = cancelf (VII p)
   where
    I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤ 
-   I p r s = transport (λ p → f p ≡ ⊤) s r
+   I p r s = transport (λ - → f - ≡ ⊤) s r
    
    II : (p : Ω) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
    II p r s = cancelf (r ∙ s ⁻¹)

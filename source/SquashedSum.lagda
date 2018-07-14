@@ -147,9 +147,9 @@ module original-version-and-equivalence-with-new-version where
    f : {m n : ℕ} → m ≡ n → X m → X n
    f = transport X
    claim₀ : f (under-lc (r ∙ r ⁻¹)) x ≡ f (under-lc refl) x
-   claim₀ = ap (λ t → f (under-lc t) x) (trans-sym' r)
+   claim₀ = ap (λ - → f (under-lc -) x) (trans-sym' r)
    claim₁ : f (under-lc refl) x ≡ x
-   claim₁ = ap (λ t → f t x) (under-lc-refl n)
+   claim₁ = ap (λ - → f - x) (under-lc-refl n)
    s : f (under-lc (r ∙ r ⁻¹)) x ≡ x 
    s = claim₀ ∙ claim₁
 

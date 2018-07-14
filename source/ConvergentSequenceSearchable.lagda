@@ -49,30 +49,30 @@ This is the main theorem proved in this module:
   a = (α , λ i → Lemma[minab≤₂a])
 
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
-  Dagger₀ 0 r =  ap (λ w → incl w 0) r
+  Dagger₀ 0 r =  ap (λ - → incl - 0) r
   Dagger₀ (succ n) r = w ⁻¹ ∙ t ∙ under-diagonal₀ n
    where 
     s : α n ≡ incl (under (succ n)) n
-    s = ap (λ w → incl w n) r
+    s = ap (λ - → incl - n) r
 
     t : α(succ n) ≡ incl (under (succ n)) (succ n)
-    t = ap (λ w → incl w (succ n)) r
+    t = ap (λ - → incl - (succ n)) r
 
     w : α(succ n) ≡ p(under(succ n)) 
-    w = ap (λ b → min𝟚 b (p(under(succ n)))) (s  ∙ under-diagonal₁ n)
+    w = ap (λ - → min𝟚 - (p(under(succ n)))) (s  ∙ under-diagonal₁ n)
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
-  Dagger₁ r 0 = ap (λ w → incl w 0) r
+  Dagger₁ r 0 = ap (λ - → incl - 0) r
   Dagger₁ r (succ n) = w ⁻¹ ∙ t
    where 
     s : α n ≡ ₁
-    s = ap (λ w → incl w n) r
+    s = ap (λ - → incl - n) r
 
     t : α(succ n) ≡ ₁
-    t = ap (λ w → incl w (succ n)) r
+    t = ap (λ - → incl - (succ n)) r
 
     w : α(succ n) ≡ p(under(succ n))
-    w = ap (λ b → min𝟚 b (p(under(succ n)))) s
+    w = ap (λ - → min𝟚 - (p(under(succ n)))) s
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = Lemma[b≡₁→b≢₀] r (Lemma s)

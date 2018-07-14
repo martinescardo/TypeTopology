@@ -164,7 +164,7 @@ local-hedberg {U} {X} x pc y p q = claim₂
   claim₀ : (y : X) (r : x ≡ y) → r ≡ (f x refl)⁻¹ ∙ f y r
   claim₀ _ refl = sym-is-inverse (f x refl)
   claim₁ : (f x refl)⁻¹ ∙ f y p ≡ (f x refl)⁻¹ ∙ f y q
-  claim₁ = ap (λ h → (f x refl)⁻¹ ∙ h) (g y p q)
+  claim₁ = ap (λ - → (f x refl)⁻¹ ∙ -) (g y p q)
   claim₂ : p ≡ q
   claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹ 
 
@@ -194,7 +194,7 @@ local-hedberg' {U} {X} x pc y p q = claim₂
   claim₀ : (y : X) (r : y ≡ x) → r ≡  (f y r) ∙ (f x refl)⁻¹
   claim₀ _ refl = sym-is-inverse' (f x refl)
   claim₁ : f y p ∙ (f x refl)⁻¹  ≡ f y q ∙ (f x refl)⁻¹
-  claim₁ = ap (λ h → h ∙ (f x refl)⁻¹) (g y p q)
+  claim₁ = ap (λ - → - ∙ (f x refl)⁻¹) (g y p q)
   claim₂ : p ≡ q
   claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
 

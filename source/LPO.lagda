@@ -62,7 +62,7 @@ LPO-implies-omniscient-ℕ lpo β = cases a b d
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c) 
       where
         c : α n ≡ ₀
-        c = ap (λ x → incl x n) p ∙ under-diagonal₀ n
+        c = ap (λ - → incl - n) p ∙ under-diagonal₀ n
         
     b : (¬ Σ \(n : ℕ) → x ≡ under n) → A
     b u = inr g
@@ -80,7 +80,7 @@ LPO-implies-omniscient-ℕ lpo β = cases a b d
             l = not-ℕ-is-∞ (fe U₀ U₀) v
             
             e : α n ≡ ₁
-            e = ap (λ x → incl x n) l
+            e = ap (λ - → incl - n) l
 
 omniscient-ℕ→LPO : omniscient ℕ → LPO
 omniscient-ℕ→LPO chlpo x = cases a b d
@@ -106,10 +106,10 @@ omniscient-ℕ→LPO chlpo x = cases a b d
         ψ = uncurry (λ n → Lemma[b≡₁→b≢₀](φ n))
         
         f : (Σ \(n : ℕ) → x ≡ under n) → Σ \(n : ℕ) → β n ≡ ₀
-        f (n , p) = (n , (ap (λ x → incl x n) p ∙ under-diagonal₀ n))
+        f (n , p) = (n , (ap (λ - → incl - n) p ∙ under-diagonal₀ n))
           where
            l : incl x n ≡ incl (under n) n
-           l = ap (λ x → incl x n) p
+           l = ap (λ - → incl - n) p
         
         g : ¬ Σ \(n : ℕ) → x ≡ under n
         g = contrapositive f ψ

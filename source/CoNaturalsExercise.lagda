@@ -52,13 +52,13 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
   retr-spec₀ α r = alg-morphism-Zero p-retr retr retr-spec α * lemma
    where 
     lemma : p-retr α ≡ inl *
-    lemma = ap (λ b → f-retr b (tl α)) r
+    lemma = ap (λ - → f-retr - (tl α)) r
 
   retr-spec₁ : (α : ℕ → 𝟚) → hd α ≡ ₁ → retr α ≡ Succ(retr(tl α))
   retr-spec₁ α r = alg-morphism-Succ p-retr retr retr-spec α (tl α) lemma
    where 
     lemma : p-retr α ≡ inr(tl α)
-    lemma = ap (λ b → f-retr b (tl α)) r
+    lemma = ap (λ - → f-retr - (tl α)) r
 
   R : ℕ∞ → ℕ∞ → U₀ ̇
   R u v = Σ \w → (retr(incl w) ≡ u) × (w ≡ v)

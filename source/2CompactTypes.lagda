@@ -576,7 +576,7 @@ idso X isp d p = g d
     c r = inr (ptrec (𝟘-is-prop) f) 
      where
       f : ¬ Σ \y → p y ≡ ₀
-      f (y , q) = zero-is-not-one (transport (λ x → p x ≡ ₀) (isp y x) q ⁻¹ ∙ r)
+      f (y , q) = zero-is-not-one (transport (λ - → p - ≡ ₀) (isp y x) q ⁻¹ ∙ r)
        
   g (inr u) = inr (ptrec 𝟘-is-prop (λ σ → u(pr₁ σ)))
 
@@ -635,9 +635,9 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     t : 𝟚-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) ≡ (x , e)
     t = s (A x) e
     u : (λ e' → x , e') ≡ (λ _ → x , e)
-    u = dfunext (fe U₀ U) λ e' → ap (λ e → (x , e)) (𝟚-is-set e' e)
+    u = dfunext (fe U₀ U) λ e' → ap (λ - → (x , -)) (𝟚-is-set e' e)
     v : r x ≡ 𝟚-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
-    v = ap (λ f₀ → 𝟚-equality-cases f₀ (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
+    v = ap (λ - → 𝟚-equality-cases - (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
     w : r x ≡ x , e
     w = v ∙ t
 
@@ -1207,7 +1207,7 @@ strongly-𝟚-overt-clopen-projections X c A p a = g (c (λ x → p (a , x)))
   g (inr u) = inr (contrapositive (ptfunct h) u)
    where
     h : (Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ \(x : X) → p (a , x) ≡ ₀
-    h ((a' , x) , (r , s)) = x , transport (λ a' → p (a' , x) ≡ ₀) s r
+    h ((a' , x) , (r , s)) = x , transport (λ - → p (- , x) ≡ ₀) s r
 
 clopen-projections-strongly-𝟚-overt : ∀ {U W} (X : U ̇)
                                     → (∀ {V} (A : V ̇) → is-clopen-map(fst A X))

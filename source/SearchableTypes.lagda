@@ -80,13 +80,13 @@ checking the two possibilities, we can always take x₀ = p ₀.
     x₀ = p ₀
  
     claim : p x₀ ≡ ₁ → p ₀ ≡ ₀ → p ₀ ≡ ₁
-    claim r s = transport (λ x → p x ≡ ₁) s r
+    claim r s = transport (λ - → p - ≡ ₁) s r
 
     lemma₀ : p x₀ ≡ ₁ → p ₀ ≡ ₁
     lemma₀ r = 𝟚-equality-cases (claim r) (λ s → s)
 
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
-    lemma₁ r = transport (λ x → p x ≡ ₁) (lemma₀ r) r
+    lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
 
 open import UF-SetExamples
 
@@ -394,7 +394,7 @@ singleton-searchable : ∀ {U} {X : U ̇} → is-singleton X → searchable X
 singleton-searchable {U} {X} (x , φ) p = x , g
  where
   g : p x ≡ ₁ → (y : X) → p y ≡ ₁
-  g r y = transport (λ v → p v ≡ ₁) (φ y) r
+  g r y = transport (λ - → p - ≡ ₁) (φ y) r
 
 module _ (pt : PropTrunc) where
 

@@ -143,7 +143,7 @@ separated-ideal : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
 separated-ideal fe s f g h = dfunext fe lemma𝟚
  where 
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
-  lemma₀ r x = ap (λ h → h x) r
+  lemma₀ r x = ap (λ - → - x) r
 
   lemma₁ : ∀ x → ¬¬(f x ≡ g x)
   lemma₁ = double-negation-unshift(¬¬-functor lemma₀ h)
@@ -177,7 +177,7 @@ f ♯ g = Σ \x → f x ≢ g x
 
 apart-is-different : ∀ {U V} {X : U ̇} {Y : X → V ̇}
                    → {f g : (x : X) → Y x} → f ♯ g → f ≢ g
-apart-is-different (x , φ) r = φ (ap (λ h → h x) r)
+apart-is-different (x , φ) r = φ (ap (λ - → - x) r)
 
 
 apart-is-symmetric : ∀ {U V} {X : U ̇} → {Y : X → V ̇}

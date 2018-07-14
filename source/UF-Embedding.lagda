@@ -45,7 +45,7 @@ embedding'-embedding {U} {V} {X} {Y} f ise = g
   h : (x : X) → is-prop (fiber' f (f x))
   h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , refl) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎  
   g' : (y : Y) → is-prop (fiber' f y)
-  g' y (x , p) = transport (λ y → is-prop (Σ \(x' : X) → y ≡ f x')) (p ⁻¹) (h x) (x , p)
+  g' y (x , p) = transport (λ - → is-prop (Σ \(x' : X) → - ≡ f x')) (p ⁻¹) (h x) (x , p)
   g : (y : Y) → is-prop (fiber f y)
   g y = left-cancellable-reflects-is-prop
             (pr₁ (fiber-lemma f y))
@@ -57,7 +57,7 @@ pr₁-embedding : ∀ {U V} {X : U ̇} {Y : X → V ̇}
 pr₁-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
  where
   g : (x , y') , refl ≡ (x , y'') , refl
-  g = ap (λ y → (x , y) , refl) (f x y' y'')
+  g = ap (λ - → (x , -) , refl) (f x y' y'')
 
 pr₁-lc-bis : ∀ {U V} {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x)) → left-cancellable pr₁
 pr₁-lc-bis f {u} {v} r = embedding-lc pr₁ (pr₁-embedding (λ x → f {x})) r

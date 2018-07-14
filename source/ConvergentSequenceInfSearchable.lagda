@@ -28,26 +28,26 @@ open import GenericConvergentSequence
   a = (α , λ i → Lemma[minab≤₂a])
 
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
-  Dagger₀ 0 r =  ap (λ w → incl w 0) r
+  Dagger₀ 0 r =  ap (λ - → incl - 0) r
   Dagger₀ (succ n) r = w ∙ t
    where 
     s : α n ≡ ₁
-    s = ap (λ w → incl w n) r ∙ under-diagonal₁ n
+    s = ap (λ - → incl - n) r ∙ under-diagonal₁ n
     t : α(succ n) ≡ ₀
-    t = ap (λ w → incl w(succ n)) r ∙ under-diagonal₀ n
+    t = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀ n
     w : p(under(succ n)) ≡ α(succ n)
-    w = (ap(λ b → min𝟚 b (p(under(succ n)))) s)⁻¹
+    w = (ap (λ - → min𝟚 - (p(under(succ n)))) s)⁻¹
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
-  Dagger₁ r 0 = ap (λ w → incl w 0) r
+  Dagger₁ r 0 = ap (λ - → incl - 0) r
   Dagger₁ r (succ n) = w ∙ t
    where 
     s : α n ≡ ₁
-    s = ap (λ w → incl w n) r
+    s = ap (λ - → incl - n) r
     t : α(succ n) ≡ ₁
-    t = ap (λ w → incl w (succ n)) r
+    t = ap (λ - → incl - (succ n)) r
     w : p(under(succ n)) ≡ α(succ n)
-    w = (ap(λ b → min𝟚 b (p(under(succ n)))) s)⁻¹
+    w = (ap (λ - → min𝟚 - (p(under(succ n)))) s)⁻¹
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = Lemma[b≡₁→b≢₀] r (Lemma s)
@@ -111,5 +111,5 @@ open import GenericConvergentSequence
     lemma₀ : p a ≡ ₀ → l ≼ a
     lemma₀ = lower-bounder a
     lemma₁ : p a ≡ ₁ → l ≼ a
-    lemma₁ r n x = ap (λ a → incl a n) (Claim₁ r)
+    lemma₁ r n x = ap (λ - → incl - n) (Claim₁ r)
 \end{code}

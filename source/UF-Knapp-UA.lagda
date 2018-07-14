@@ -117,15 +117,15 @@ knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
   back-transport-isPIE p = transport-isPIE (p ⁻¹)
 
   back-transport-is-pre-comp'' : ∀ {U} {X X' Y : U ̇} (e : X ⋍ X') (g : X' → Y)
-                              → back-transport (λ Z → Z → Y) (pietoid e) g ≡ g ∘ pr₁ e 
+                              → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e 
   back-transport-is-pre-comp'' {U} {X} {X'} e g = back-transport-is-pre-comp (pietoid e) g ∙ q ∙ r
    where
     φ : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
     φ X .X refl = refl
     q : g ∘ Idtofun (pietoid e) ≡ g ∘ pr₁ (idtopie (pietoid e))
-    q = ap (λ h → g ∘ h) (φ X X' (pr₁ (pr₂ e)))
+    q = ap (λ - → g ∘ -) (φ X X' (pr₁ (pr₂ e)))
     r : g ∘ pr₁ (idtopie (pietoid e)) ≡ g ∘ pr₁ e
-    r = ap (λ h → g ∘ h) (ap pr₁ (idtopie-pietoid e))
+    r = ap (λ - → g ∘ -) (ap pr₁ (idtopie-pietoid e))
 
   preComp-isPIE : {X X' Y : U ̇} (e : X ⋍ X') → isPIE (λ (g : X' → Y) → g ∘ (pr₁ e))
   preComp-isPIE {X} {X'} e = H (back-transport-isPIE (pietoid e)) (back-transport-is-pre-comp'' e)

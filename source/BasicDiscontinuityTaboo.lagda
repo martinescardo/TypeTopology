@@ -68,13 +68,13 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₀ : (r : under n ≡ ∞) → f(under n) ≡ inl r → p(under n) ≡ ₀
     case₀ r s = 𝟘-elim(∞-is-not-ℕ n (r ⁻¹))    
     case₁ : (g : under n ≢ ∞) → f(under n) ≡ inr g → p(under n) ≡ ₀
-    case₁ g = ap (λ t → equality-cases t (λ r s → ₁) (λ r s → ₀))
+    case₁ g = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
   d∞ : p ∞ ≡ ₁
   d∞ = equality-cases (f ∞) case₀ case₁
    where
     case₀ : (r : ∞ ≡ ∞) → f ∞ ≡ inl r → p ∞ ≡ ₁
-    case₀ r = ap (λ t → equality-cases t (λ r s → ₁) (λ r s → ₀))
+    case₀ r = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
     case₁ : (g : ∞ ≢ ∞) → f ∞ ≡ inr g → p ∞ ≡ ₁
     case₁ g = 𝟘-elim(g refl)
 

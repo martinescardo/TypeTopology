@@ -236,7 +236,7 @@ is-vv-equiv-has-adj {U} {V} {X} {Y} g isv = f , η , hass
   gf : (x : X) → g (f x) ≡ x
   gf = pr₂ (pr₁ (is-vv-equiv-is-equiv g isv))
   η : (x : X) (y : Y) → f x ≡ y → g y ≡ x
-  η x y p = transport (λ y → g y ≡ x) p (gf x )
+  η x y p = transport (λ - → g - ≡ x) p (gf x )
   hass : (x : X) (y : Y) → has-section (η x y)
   hass x = Yoneda-section-forth (f x) (η x) (isv x)
 
@@ -463,7 +463,7 @@ yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇}
                → yoneda-elem x A η ≡ yoneda-elem x A θ → η ≈ θ
 yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   η y p                                ≡⟨ (yoneda-lemma x A η y p)⁻¹ ⟩
-  yoneda-nat x A (yoneda-elem x A η) y p ≡⟨ ap (λ e → yoneda-nat x A e y p) q ⟩
+  yoneda-nat x A (yoneda-elem x A η) y p ≡⟨ ap (λ - → yoneda-nat x A - y p) q ⟩
   yoneda-nat x A (yoneda-elem x A θ) y p ≡⟨ yoneda-lemma x A θ y p ⟩
   θ y p ∎
 
@@ -586,7 +586,7 @@ Then of course associativity of path composition follows:
 
 assoc-bis : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
           → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
-assoc-bis {U} {X} {x} {y} p q r = ap (λ f → f x y p q) (ext-assoc r) 
+assoc-bis {U} {X} {x} {y} p q r = ap (λ - → - x y p q) (ext-assoc r) 
 
 left-inverse-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ refl
 left-inverse-bis {U} {X} {x} {y} = yoneda-elem-lc (λ x p → p ⁻¹ ∙ p) (λ x p → refl) refl y
@@ -659,7 +659,7 @@ nats-are-uniquely-transports fe x A = is-equiv-is-vv-equiv (yoneda-nat x A) (yon
 
 adj-obs : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
-        → is-singleton (Σ \(q : g (f x) ≡ x) → (λ y p → transport (λ y → g y ≡ x) p q) ≡ η)
+        → is-singleton (Σ \(q : g (f x) ≡ x) → (λ y p → transport (λ - → g - ≡ x) p q) ≡ η)
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
 
 \end{code}

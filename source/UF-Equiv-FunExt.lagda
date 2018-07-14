@@ -79,7 +79,7 @@ hasr-is-prop-hass' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) = is-singleton-is-
   s : has-section f → fiber (λ h →  f ∘ h) id
   s (h , η) = (h , nfunext fe' η)
   rs : (σ : has-section f) → r (s σ) ≡ σ
-  rs (h , η) = ap (λ η → (h , η)) q
+  rs (h , η) = ap (λ - → (h , -)) q
    where
     q : happly' (f ∘ h) id (nfunext fe' η) ≡ η
     q = happly-funext fe' (f ∘ h) id η
@@ -100,7 +100,7 @@ hass-is-prop-hasr' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) = is-singleton-is-
   s : has-retraction f → fiber (λ h →  h ∘ f) id
   s (h , η) = (h , dfunext fe η) 
   rs : (σ : has-retraction f) → r (s σ) ≡ σ
-  rs (h , η) = ap (λ η → (h , η)) q
+  rs (h , η) = ap (λ - → (h , -)) q
    where
     q : happly' (h ∘ f) id (dfunext fe η) ≡ η
     q = happly-funext fe (h ∘ f) id η

@@ -99,7 +99,7 @@ decidable-prop-omniscient X isp δ p = g δ
     b r = inl (x , r)
 
     c : p x ≡ ₁ → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
-    c r = inr (λ y → transport (λ x → p x ≡ ₁) (isp x y) r)
+    c r = inr (λ y → transport (λ - → p - ≡ ₁) (isp x y) r)
   g (inr u) = inr (λ x → 𝟘-elim (u x))
    
 

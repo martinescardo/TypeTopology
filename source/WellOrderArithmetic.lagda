@@ -217,8 +217,8 @@ module times
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
    f (inl l) (inl m) = inl (t _ _ _ l m)
-   f (inl l) (inr (q , m)) = inl (transport (λ x → a < x) q l)
-   f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
+   f (inl l) (inr (q , m)) = inl (transport (λ - → a < -) q l)
+   f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
 
  extensional : is-well-founded _<_
@@ -274,9 +274,9 @@ module times
    prop-valued (a , b) (x , y) (inl l) (inl m) =
      ap inl (p a x l m)
    prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
+     𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) s l))
    prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
+     𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
      ap inr (×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
 
@@ -401,10 +401,10 @@ that φ is a retraction.
  extensional e u v f g = dfunext fe γ
   where
    f' : (p : P) (x : X p) → x < φ p u → x < φ p v
-   f' p x l = transport (λ x → x < φ p v) (ε p x) n'
+   f' p x l = transport (λ - → - < φ p v) (ε p x) n'
     where
      l' : φ p (ψ p x) < φ p u
-     l' = back-transport (λ x → x < φ p u) (ε p x) l
+     l' = back-transport (λ - → - < φ p u) (ε p x) l
      a : ψ p x ≺ u
      a = p , l'
      m : ψ p x ≺ v
@@ -414,12 +414,12 @@ that φ is a retraction.
      n : φ q (ψ p x) < φ q v
      n = pr₂ m
      n' : φ p (ψ p x) < φ p v
-     n' = transport (λ q → ψ p x q < φ q v) (isp q p) n
+     n' = transport (λ - → ψ p x - < φ - v) (isp q p) n
    g' : (p : P) (x : X p) → x < φ p v → x < φ p u
-   g' p x l = transport (λ x → x < φ p u) (ε p x) n'
+   g' p x l = transport (λ - → - < φ p u) (ε p x) n'
     where
      l' : φ p (ψ p x) < φ p v
-     l' = back-transport (λ x → x < φ p v) (ε p x) l
+     l' = back-transport (λ - → - < φ p v) (ε p x) l
      a : ψ p x ≺ v
      a = p , l'
      m : ψ p x ≺ u
@@ -429,7 +429,7 @@ that φ is a retraction.
      n : φ q (ψ p x) < φ q u
      n = pr₂ m
      n' : φ p (ψ p x) < φ p u
-     n' = transport (λ q → ψ p x q < φ q u) (isp q p) n
+     n' = transport (λ - → ψ p x - < φ - u) (isp q p) n
    δ : (p : P) → φ p u ≡ φ p v
    δ p = e p (φ p u) (φ p v) (f' p) (g' p)
    γ : u ∼ v
@@ -450,7 +450,7 @@ that it is an equivalence (or a retraction or a section).
    f : φ p u < φ p v → φ p v < φ p w → φ p u < φ p w
    f = t p (φ p u) (φ p v) (φ p w)
    m' : φ p v < φ p w
-   m' = transport (λ q → φ q v < φ q w) (isp q p) m
+   m' = transport (λ - → φ - v < φ - w) (isp q p) m
 
 \end{code}
 
@@ -475,10 +475,10 @@ lemma.
      c = retract-accessible _<_ _≺_ (ψ p) (φ p) (η p) f (φ p v) b
       where
        f : (x : X p) (u : Π X) → u ≺ ψ p x → φ p u < x
-       f x u (q , l) = transport (λ x → φ p u < x) (ε p x) l'
+       f x u (q , l) = transport (λ - → φ p u < -) (ε p x) l'
         where
          l' : u p < ψ p x p
-         l' = transport (λ r → u r < ψ p x r) (isp q p) l
+         l' = transport (λ - → u - < ψ p x -) (isp q p) l
      d : is-accessible _≺_ v
      d = transport (is-accessible _≺_) (η p v) c
 
@@ -506,7 +506,7 @@ I am not sure this is going to be useful:
      m : transport X (isp q q) (pr₁ (f q)) < u q
      m = transport (λ p → transport X (isp p q) (pr₁ (f p)) < u q) (isp p q) l
      n : pr₁ (f q) < u q
-     n = transport (λ r → transport X r (pr₁ (f q)) < u q) (prop-is-set isp (isp q q) refl) m
+     n = transport (λ - → transport X - (pr₁ (f q)) < u q) (prop-is-set isp (isp q q) refl) m
  
 \end{code}
 
@@ -563,8 +563,8 @@ module sum
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
    f (inl l) (inl m) = inl (t _ _ _ l m)
-   f (inl l) (inr (q , m)) = inl (transport (λ x → a < x) q l)
-   f (inr (r , l)) (inl m) = inl (back-transport (λ x → x < u) r m)
+   f (inl l) (inr (q , m)) = inl (transport (λ - → a < -) q l)
+   f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
  prop-valued : (∀ U V → funext U V)
@@ -576,9 +576,9 @@ module sum
  prop-valued fe p w e f (a , b) (x , y) (inl l) (inl m) =
    ap inl (p a x l m)
  prop-valued fe p w e f (a , b) (x , y) (inl l) (inr (s , m)) =
-   𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) s l))
+   𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) s l))
  prop-valued fe p w e f (a , b) (x , y) (inr (r , l)) (inl m) =
-   𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → a < x) r m))
+   𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
  prop-valued fe p _ e f (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
    ap inr (to-Σ-≡'' (extensional-gives-is-set _<_ fe p e r s ,
                      (f x (transport Y s b) y _ m)))
@@ -636,16 +636,16 @@ module sum-top
               where
                φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
                φ (r , l) = transport
-                            (λ r → transport Y r v ≺ y)
+                            (λ - → transport Y - v ≺ y)
                             (extensional-gives-is-set _<_ fe ispv e r refl)
                             l
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
-                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → x < a) p l)))
+                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → x < -) p l)))
               λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
                  → transport
-                     (λ q → u ≺ transport Y q b)
+                     (λ - → u ≺ transport Y - b)
                      (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
                      (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
    q : transport Y p b ≡ y
@@ -731,10 +731,10 @@ module sum-cotransitive
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
-                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ a → x < a) p l)))
+                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → x < -) p l)))
               λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
                  → transport
-                     (λ q → u ≺ transport Y q b)
+                     (λ - → u ≺ transport Y - b)
                      (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
                      (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
    q : transport Y p b ≡ y

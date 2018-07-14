@@ -259,11 +259,11 @@ the following particular cases:
     p : Σ Y → 𝟚
     p (u , v) = f (d u x) v
     i : p (a , b) ≡ q (transport Y r b)
-    i = ap (λ δ → f δ b) (discrete-inl d a x r)
+    i = ap (λ - → f - b) (discrete-inl d a x r)
     j : p (a , b) ≡ p (x , y)
     j = φ p
     k : p (x , y) ≡ q (transport Y refl y)
-    k = ap (λ δ → f δ y) (discrete-inl d x x refl)
+    k = ap (λ - → f - y) (discrete-inl d x x refl)
     g : q (transport Y r b) ≡ q y
     g = i ⁻¹ ∙ j ∙ k
   s : transport Y r b ≡ y
@@ -353,7 +353,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡'' (t , r)
    t : x ≡ y
    t = ts (happly s)
    
-   r : transport (λ x → eval x ≡ φ) t p ≡ q
+   r : transport (λ - → eval - ≡ φ) t p ≡ q
    r = totally-separated-is-set fe
          ((X → 𝟚) → 𝟚) (Π-totally-separated fe (λ p → 𝟚-totally-separated)) _ q
 
@@ -477,7 +477,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      t = dfunext (fe U V) (η-induction _ (λ _ → iss) w)
      
      u : f'' ∘ η ≡ f
-     u = transport (λ g → g ∘ η ≡ f) t r
+     u = transport (λ - → - ∘ η ≡ f) t r
      
      v : u ≡ s
      v = Π-is-set (fe U V) (λ _ → iss) u s
@@ -701,7 +701,7 @@ apartness relation _♯₂ is tight:
  not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = contrapositive f
   where
    f : x ♯ y → ¬(x ≡ y)
-   f a p = i y (transport (λ x → x ♯ y) p a)
+   f a p = i y (transport (λ - → - ♯ y) p a)
 
  tight-separated : ∀ {U V} {X : U ̇} → (_♯_ : X → X → V ̇)
                  → apartness _♯_ → tight _♯_ → separated X
@@ -1015,7 +1015,7 @@ apartness on it.
   η-equiv-equal = ♯'t _ _ ∘ contrapositive η-strongly-extensional
 
   η-equal-equiv : {x y : X} → η x ≡ η y → x ~ y
-  η-equal-equiv {x} {y} p a = ♯'i (η y) (transport (λ z → z ♯' η y) p (η-preserves-apartness a))
+  η-equal-equiv {x} {y} p a = ♯'i (η y) (transport (λ - → - ♯' η y) p (η-preserves-apartness a))
 
 \end{code}
 
@@ -1090,7 +1090,7 @@ apartness on it.
       t = dfunext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
 
       u : f'' ∘ η ≡ f
-      u = transport (λ g → g ∘ η ≡ f) t r
+      u = transport (λ - → - ∘ η ≡ f) t r
 
       v : u ≡ s
       v = Π-is-set (fe U W) (λ _ → iss) u s
@@ -1160,7 +1160,7 @@ apartness on it.
       i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
      
       h : ¬(η x ♯' η y)
-      h a = ♯'i (η y) (transport (λ z → z ♯' η y) p a)
+      h a = ♯'i (η y) (transport (λ - → - ♯' η y) p a)
 
     e : is-embedding η
     e = left-cancellable-maps-into-sets-are-embeddings η lc X'-is-set

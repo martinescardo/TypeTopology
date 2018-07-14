@@ -127,11 +127,11 @@ First some commutation properties:
 
 ldiagram : ∀ n → binary(L n) ≡ l(binary n)
 ldiagram zero    = refl
-ldiagram(succ n) = ap (λ m → Succ(Succ m)) (ldiagram n)
+ldiagram(succ n) = ap (λ - → Succ(Succ -)) (ldiagram n)
 
 rdiagram : ∀ n → binary(R n) ≡ r(binary n)
 rdiagram zero    = refl
-rdiagram(succ n) = ap (λ m → Succ(Succ m)) (rdiagram n)
+rdiagram(succ n) = ap (λ - → Succ(Succ -)) (rdiagram n)
 
 sdiagram : ∀ m → unary(Succ m) ≡ succ(unary m)
 sdiagram zero = refl
@@ -250,7 +250,7 @@ ddiagram(succ n) = g
   IH : binary(double n) ≡ Double(binary n)
   IH = ddiagram n
   a : Succ(Succ(binary(double n))) ≡ Succ(Succ(Double(binary n)))
-  a = ap (λ n → Succ(Succ n)) IH
+  a = ap (λ - → Succ(Succ -)) IH
   g : binary(double(succ n)) ≡ Double(binary(succ n))
   g = a ∙ Double-lemma(binary n)
 
@@ -282,7 +282,7 @@ r x  +♭ r y  = r(Succ(x +♭ y))
 +♭-lemma (r m) (l n) = refl
 +♭-lemma zero  (r n) = refl
 +♭-lemma (l m) (r n) = ap r (+♭-lemma m n)
-+♭-lemma (r m) (r n) = ap (λ m → l(Succ m)) (+♭-lemma m n)
++♭-lemma (r m) (r n) = ap (λ - → l(Succ -)) (+♭-lemma m n)
 
 +diagram : ∀ m n → binary(m + n) ≡ binary m +♭ binary n
 +diagram m zero     = refl

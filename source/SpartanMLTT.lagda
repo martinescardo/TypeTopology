@@ -537,7 +537,7 @@ Lemma[b⊕b≡₀] {₀} = refl
 Lemma[b⊕b≡₀] {₁} = refl
 
 Lemma[b≡c→b⊕c≡₀] : {b c : 𝟚} → b ≡ c → b ⊕ c ≡ ₀
-Lemma[b≡c→b⊕c≡₀] {b} {c} r = ap (λ d → b ⊕ d) (r ⁻¹) ∙ (Lemma[b⊕b≡₀] {b})
+Lemma[b≡c→b⊕c≡₀] {b} {c} r = ap (λ - → b ⊕ -) (r ⁻¹) ∙ (Lemma[b⊕b≡₀] {b})
 
 Lemma[b⊕c≡₀→b≡c] : {b c : 𝟚} → b ⊕ c ≡ ₀ → b ≡ c
 Lemma[b⊕c≡₀→b≡c] {₀} {₀} r = refl

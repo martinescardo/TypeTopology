@@ -23,9 +23,9 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   lemma : (x : X) → hp x x ≡ refl
   lemma x = prop-is-set hp (hp x x) refl
   fg : (y : Y a) → transport Y (hp a a) y ≡ y
-  fg y = ap (λ r → transport Y r y) (lemma a)
+  fg y = ap (λ - → transport Y - y) (lemma a)
   gf'' : (φ : Π Y) {x x' : X} → x ≡ x' → transport Y (hp x x') (φ x) ≡ φ x'
-  gf'' t {x} refl = ap (λ d → transport Y d (t x)) (lemma x)
+  gf'' t {x} refl = ap (λ - → transport Y - (t x)) (lemma x)
   gf' : (φ : Π Y) (x : X) → transport Y (hp a x) (φ a) ≡ φ x
   gf' φ x = gf'' φ (hp a x)
   gf : (φ : Π Y) → g(f φ) ≡ φ
@@ -62,7 +62,7 @@ prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
   lemma₁ : (x : X) → hp x x ≡ refl
   lemma₁ x = prop-is-set hp (hp x x) refl
   fg : (y : Y a) → f(a , y) ≡ y
-  fg y = ap (λ r → transport Y r y) (lemma₁ a)
+  fg y = ap (λ - → transport Y - y) (lemma₁ a)
   lemma₂ : (x : X) (y : Y x) → x ≡ a → transport Y (hp a x) (f (x , y)) ≡ y
   lemma₂ _ y refl = fg (f (a , y)) ∙ fg y
   gf : (σ : Σ Y) → g(f σ) ≡ σ

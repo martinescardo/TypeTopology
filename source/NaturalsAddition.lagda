@@ -101,7 +101,7 @@ addition-commutativity n = induction base step
                 lemma₄ = (addition-associativity 1 m n)⁻¹
 
                 lemma₅ : (1 + m) + n ≡ succ m + n
-                lemma₅ = ap (λ x → x + n) ((lemma₀ m)⁻¹)
+                lemma₅ = ap (λ - → - + n) ((lemma₀ m)⁻¹)
 
                 goal : n + succ m ≡ succ m + n
                 goal = lemma₁ ∙ lemma₂ ∙ lemma₃ ∙ lemma₄ ∙ lemma₅
@@ -109,6 +109,6 @@ addition-commutativity n = induction base step
 
 trivial-addition-rearrangement : (x y z : ℕ) → x + y + z ≡ x + z + y
 trivial-addition-rearrangement x y z = 
-        addition-associativity x y z ∙ ap (λ t → x + t) (addition-commutativity y z) ∙ (addition-associativity x z y)⁻¹
+        addition-associativity x y z ∙ ap (λ - → x + -) (addition-commutativity y z) ∙ (addition-associativity x z y)⁻¹
 
 \end{code}

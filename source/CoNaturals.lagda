@@ -132,13 +132,13 @@ P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
 
 alg-mophism-remark₀ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) 
                     → P ∘ h ≡ (𝟙+ h) ∘ p  →  h ≡ S ∘ (𝟙+ h) ∘ p
-alg-mophism-remark₀ {U} p h a = dfunext (fe U U₀) (λ x → S-P-id ⁻¹ ∙ ap (λ F → S(F x)) a)
+alg-mophism-remark₀ {U} p h a = dfunext (fe U U₀) (λ x → S-P-id ⁻¹ ∙ ap (λ - → S(- x)) a)
 
 alg-mophism-remark₁ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) → 
 
  h ≡ S ∘ (𝟙+ h) ∘ p  →  P ∘ h ≡ (𝟙+ h) ∘ p  
 
-alg-mophism-remark₁ {U} p h b = dfunext (fe U U₀) (λ x → ap (λ G → P(G x)) b ∙ P-S-id)
+alg-mophism-remark₁ {U} p h b = dfunext (fe U U₀) (λ x → ap (λ - → P(- x)) b ∙ P-S-id)
 
 
 diagram-commutes : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
@@ -243,7 +243,7 @@ alg-morphism-Zero : ∀ {U} {X : U ̇}
 alg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S claim₃
  where
   claim₁ : P(h x) ≡ (𝟙+ h)(p x) 
-  claim₁ = ap (λ t → t x) a
+  claim₁ = ap (λ - → - x) a
   claim₂ : (𝟙+ h)(p x) ≡ Zero'
   claim₂ = ap (𝟙+ h) c
   claim₃ : P(h x) ≡ inl *
@@ -255,7 +255,7 @@ alg-morphism-Succ : ∀ {U} {X : U ̇}
 alg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S claim₃
  where 
   claim₁ : P(h x) ≡ (𝟙+ h)(p x)
-  claim₁ = ap (λ t → t x) a
+  claim₁ = ap (λ - → - x) a
   claim₂ : (𝟙+ h)(p x) ≡ inr(h x')
   claim₂ = ap (𝟙+ h) c
   claim₃ : P(h x) ≡ inr(h x')

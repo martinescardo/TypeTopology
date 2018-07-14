@@ -183,7 +183,7 @@ unique-fixed-point-of-Succ : funext₀ → (u : ℕ∞) → u ≡ Succ u → u �
 unique-fixed-point-of-Succ fe u r = incl-lc fe claim
  where
   fact : (i : ℕ) → incl u i ≡ incl(Succ u) i 
-  fact i = ap (λ w → incl w i) r
+  fact i = ap (λ - → incl - i) r
   lemma : (i : ℕ) → incl u i ≡ ₁
   lemma 0 = fact 0
   lemma (succ i) = fact(succ i) ∙ lemma i
@@ -279,7 +279,7 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
 
 
 ∞-is-not-ℕ : (n : ℕ) → ∞ ≢ under n
-∞-is-not-ℕ n s = zero-is-not-one ((ap (λ w → incl w n) s ∙ under-diagonal₀ n)⁻¹)
+∞-is-not-ℕ n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
 
 not-ℕ-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
 not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma) 
@@ -315,7 +315,7 @@ under𝟙-embedding : funext₀ → is-embedding under𝟙
 under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-embedding fe) g d
  where
   g : is-embedding (λ _ → ∞)
-  g x (* , p) (* , q) = ap (λ p → * , p) (ℕ∞-is-set fe p q)
+  g x (* , p) (* , q) = ap (λ - → * , -) (ℕ∞-is-set fe p q)
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
   d n _ p = ∞-is-not-ℕ n (p ⁻¹)
 
@@ -347,14 +347,14 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
     g₁ r = inr(contrapositive h (Lemma[b≡₁→b≢₀] r))
      where
       h : u ≡ Zero → is-Zero u
-      h r = ap (λ u → incl u 0) r
+      h r = ap (λ - → incl - 0) r
   f u (succ n) = 𝟚-equality-cases g₀ g₁
    where
     g₀ :  u ⊑ n → decidable (u ≡ under(succ n))
     g₀ r = inr(contrapositive g (Lemma[b≡₀→b≢₁] r))
      where
       g : u ≡ under(succ n) → n ⊏ u
-      g r = ap (λ v → incl v n) r ∙ under-diagonal₁ n
+      g r = ap (λ - → incl - n) r ∙ under-diagonal₁ n
     g₁ :  n ⊏ u → decidable (u ≡ under(succ n))
     g₁ r = 𝟚-equality-cases g₁₀ g₁₁
      where
@@ -364,7 +364,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
       g₁₁ s = inr (contrapositive g (Lemma[b≡₁→b≢₀] s))
        where
         g : u ≡ under(succ n) → u ⊑ succ n
-        g r = ap (λ v → incl v (succ n)) r ∙ under-diagonal₀(succ n)
+        g r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀(succ n)
 
 \end{code}
 

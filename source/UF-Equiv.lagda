@@ -176,9 +176,9 @@ id-homotopies-are-natural : ∀ {U} {X : U ̇} (h : X → X) (η : h ∼ id) {x 
                          → η (h x) ≡ ap h (η x)
 id-homotopies-are-natural h η {x} =
    η (h x)                         ≡⟨ refl ⟩
-   η (h x) ∙ refl                  ≡⟨ ap (λ p → η(h x) ∙ p) ((trans-sym' (η x))⁻¹) ⟩
+   η (h x) ∙ refl                  ≡⟨ ap (λ - → η(h x) ∙ -) ((trans-sym' (η x))⁻¹) ⟩
    η (h x) ∙ (η x ∙ (η x)⁻¹)        ≡⟨ (assoc (η (h x)) (η x) (η x ⁻¹))⁻¹ ⟩
-   η (h x) ∙ η x ∙ (η x)⁻¹          ≡⟨ ap (λ q → η (h x) ∙ q ∙ (η x)⁻¹) ((ap-id-is-id (η x))) ⟩
+   η (h x) ∙ η x ∙ (η x)⁻¹          ≡⟨ ap (λ - → η (h x) ∙ - ∙ (η x)⁻¹) ((ap-id-is-id (η x))) ⟩
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
    ap h (η x)                      ∎
 
@@ -197,17 +197,17 @@ qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         ap g (ap f (η x)) ∎
         
   b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
-  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ p → p ∙ ε (f x)) (ap (ap f) (a x)) ⟩
-        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ p → p ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
+  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x)) ⟩
+        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
         ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹ ⟩
-        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ p → ε (f (g (f x))) ∙ p) (ap-ap f id (η x)) ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x)) ⟩
         ε (f (g (f x))) ∙ ap f (η x)         ∎
         
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
   τ x = ap f (η x)                                         ≡⟨ refl-left-neutral ⁻¹ ⟩
-        refl ∙ ap f (η x)                                   ≡⟨ ap (λ p → p ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
+        refl ∙ ap f (η x)                                   ≡⟨ ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ p → (ε (f (g (f x))))⁻¹ ∙ p) (b x)⁻¹ ⟩        
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹ ⟩        
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                            ∎
 
@@ -228,7 +228,7 @@ identifications-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
 identifications-in-fibers f .(f x) x .x refl p' (refl , r) = g
  where
   g : x , refl ≡ x , p'
-  g = ap (λ p → (x , p)) (r ⁻¹ ∙ refl-left-neutral)
+  g = ap (λ - → (x , -)) (r ⁻¹ ∙ refl-left-neutral)
 
 \end{code}
 
@@ -250,14 +250,14 @@ is-hae-is-vv-equiv {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ≡ ε y
     q = ap f γ ∙ p                         ≡⟨ refl ⟩
-        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ r → r ∙ p) (ap-comp f ((ap g p)⁻¹) (η x)) ⟩
-        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ r → ap f r ∙ ap f (η x) ∙ p) (ap-sym g p) ⟩
-        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ r → ap f (ap g (p ⁻¹)) ∙ r ∙ p) (τ x) ⟩
-        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ r → r ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹)) ⟩
-        ap (f ∘ g) (p ⁻¹) ∙ ε (f x) ∙ p     ≡⟨ ap (λ r → r ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹ ⟩
-        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ r → ε y ∙ r ∙ p) (ap-id-is-id (p ⁻¹))⁻¹ ⟩
+        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ - → - ∙ p) (ap-comp f ((ap g p)⁻¹) (η x)) ⟩
+        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p) ⟩
+        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x) ⟩
+        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹)) ⟩
+        ap (f ∘ g) (p ⁻¹) ∙ ε (f x) ∙ p     ≡⟨ ap (λ - → - ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹ ⟩
+        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))⁻¹ ⟩
         ε y ∙ p ⁻¹ ∙ p                      ≡⟨ assoc (ε y) (p ⁻¹) p ⟩
-        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ r → ε y ∙ r) (trans-sym p) ⟩
+        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ - → ε y ∙ -) (trans-sym p) ⟩
         ε y ∙ refl ≡⟨ refl ⟩
         ε y ∎
 
@@ -364,7 +364,7 @@ pr₁-vv-equiv {U} {V} X Y iss x = g
   p : (y : Y x) → pr₁ (iss x) ≡ y
   p = pr₂ (iss x)
   f : (w : Σ \(σ : Σ Y) → pr₁ σ ≡ x) → c ≡ w
-  f ((.x , y) , refl) = ap (λ y → (x , y) , refl) (p y)
+  f ((.x , y) , refl) = ap (λ - → (x , -) , refl) (p y)
   g : is-singleton (fiber pr₁ x)
   g = c , f
 
@@ -389,11 +389,11 @@ NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
   s : Σ B → Σ A
   s (x , b) = x , pr₁ (pr₁ (ise x)) b
   ζs : (β : Σ B) → (NatΣ ζ ∘ s) β ≡ β
-  ζs (x , b) = ap (λ b → (x , b)) (pr₂ (pr₁ (ise x)) b)
+  ζs (x , b) = ap (λ - → (x , -)) (pr₂ (pr₁ (ise x)) b)
   r : Σ B → Σ A
   r (x , b) = x , (pr₁ (pr₂ (ise x)) b)
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
-  rζ (x , a) = ap (λ a → (x , a)) (pr₂ (pr₂ (ise x)) a)
+  rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (ise x)) a)
   
 NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
             → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
@@ -415,9 +415,9 @@ NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr�
   φγ : (τ : (Σ \(y : Y) → A (g y))) → φ (γ τ) ≡ τ
   φγ (y , a) = to-Σ-≡'' (fg y , q)
    where
-    q : transport (λ y → A (g y)) (fg y) (back-transport A (gf (g y)) a) ≡ a
-    q = transport (λ y → A (g y)) (fg y) (back-transport A (gf (g y)) a) ≡⟨ transport-ap g (fg y) ⟩
-        transport A (ap g (fg y)) (back-transport A (gf (g y)) a)        ≡⟨ ap (λ r → transport A r (back-transport A (gf (g y)) a)) (α y) ⟩
+    q : transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡ a
+    q = transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡⟨ transport-ap g (fg y) ⟩
+        transport A (ap g (fg y)) (back-transport A (gf (g y)) a)        ≡⟨ ap (λ - → transport A - (back-transport A (gf (g y)) a)) (α y) ⟩
         transport A (gf (g y)) (back-transport A (gf (g y)) a)           ≡⟨ back-and-forth-transport (gf (g y)) ⟩
         a ∎
 

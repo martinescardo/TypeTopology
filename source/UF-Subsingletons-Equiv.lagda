@@ -18,9 +18,9 @@ pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
   g : identifications-to x → identifications-from x
   g (y , p) = y , (p ⁻¹) 
   fg : f ∘ g ∼ id
-  fg (y , p) = ap (λ p → y , p) (⁻¹-involutive p)
+  fg (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
   gf : g ∘ f ∼ id
-  gf (y , p) = ap (λ p → y , p) (⁻¹-involutive p)
+  gf (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
 
 identifications-to-singleton : ∀ {U} {X : U ̇} (x : X) → is-singleton(identifications-to x)
 identifications-to-singleton x = retract-of-singleton

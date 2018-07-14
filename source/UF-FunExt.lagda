@@ -64,21 +64,21 @@ transport-funext : ∀ {U V W} {X : U ̇} (A : X → V ̇) (P : (x : X) → A x 
                    (φ : (x : X) → P x (f x))
                    (h : f ∼ g)
                    (x : X)
-                 → (transport (λ (u : Π A) → (x : X) → P x (u x)) (dfunext fe h) φ) x
+                 → (transport (λ - → (x : X) → P x (- x)) (dfunext fe h) φ) x
                  ≡  transport (P x) (h x) (φ x)
 transport-funext A P fe f g φ h x = q ∙ r
  where
   l : (f g : Π A) (φ : ∀ x → P x (f x)) (p : f ≡ g) 
-        → ∀ x → (transport (λ (u : Π A) → ∀ x → P x (u x)) p φ) x
+        → ∀ x → (transport (λ - → ∀ x → P x (- x)) p φ) x
                ≡ transport (P x) (happly p x) (φ x)
   l f .f φ refl x = refl
 
-  q : (transport (λ (u : Π A) → ∀ x → P x (u x)) (dfunext fe h) φ) x
+  q : (transport (λ - → ∀ x → P x (- x)) (dfunext fe h) φ) x
     ≡ transport (P x) (happly (dfunext fe h) x) (φ x)
   q = l f g φ (dfunext fe h) x
 
   r :  transport (P x) (happly (dfunext fe h) x) (φ x) 
      ≡ transport (P x) (h x) (φ x)
-  r = ap (λ h → transport (P x) (h x) (φ x)) (happly-funext fe f g h)
+  r = ap (λ - → transport (P x) (- x) (φ x)) (happly-funext fe f g h)
 
 \end{code}
