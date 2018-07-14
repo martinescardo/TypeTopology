@@ -1,7 +1,5 @@
 Martin Escardo 2012.
 
-(This module needs to be adapted to the univalent foundations.)
-
 We investigate coinduction and corecursion on ℕ∞, the generic
 convergent sequence.
 
@@ -9,8 +7,9 @@ We show that set ℕ∞ satisfies the following universal property for a
 suitable P : ℕ∞ → 𝟙 + ℕ∞, where 𝟙 is the singleton type
 with an element *.
 
-For every set X and every p : X → 𝟙 + X there is a unique h : X → ℕ∞
-such that 
+For every type X and every p : X → 𝟙 + X there is a unique h : X → ℕ∞
+such that
+
                         p
              X ------------------> 𝟙 + X
              |                       |
@@ -70,7 +69,7 @@ bisimulations. This gives a technique for establishing equalities on
 
 open import UF-FunExt
 
-module CoNaturals (fe : ∀ {U V} → funext U V) where
+module CoNaturals (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
 open import GenericConvergentSequence
@@ -105,7 +104,7 @@ S-P-id : {u : ℕ∞} → S(P u) ≡ u
 S-P-id {u} = 𝟚-equality-cases lemma₀ lemma₁ 
  where 
   lemma₀ : positivity u ≡ ₀ → S(P u) ≡ u
-  lemma₀ r = claim₁ ∙ (is-Zero-equal-Zero fe r)⁻¹
+  lemma₀ r = claim₁ ∙ (is-Zero-equal-Zero (fe U₀ U₀) r)⁻¹
     where 
      claim₀ : P u ≡ Zero'
      claim₀ = ap (𝟚-cases Zero' (Pred' u)) r
@@ -121,7 +120,7 @@ S-P-id {u} = 𝟚-equality-cases lemma₀ lemma₁
      claim₂ : u ≢ Zero
      claim₂ s = Lemma[b≡₀→b≢₁](ap positivity s) r
      claim₃ : u ≡ Succ(Pred u)
-     claim₃ = not-Zero-is-Succ fe claim₂
+     claim₃ = not-Zero-is-Succ (fe U₀ U₀) claim₂
 
 P-lc : {u v : ℕ∞} → P u ≡ P v → u ≡ v
 P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
@@ -133,24 +132,22 @@ P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
 
 alg-mophism-remark₀ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) 
                     → P ∘ h ≡ (𝟙+ h) ∘ p  →  h ≡ S ∘ (𝟙+ h) ∘ p
-alg-mophism-remark₀ p h a = dfunext fe (λ x → S-P-id ⁻¹ ∙ ap (λ F → S(F x)) a)
+alg-mophism-remark₀ {U} p h a = dfunext (fe U U₀) (λ x → S-P-id ⁻¹ ∙ ap (λ F → S(F x)) a)
 
 alg-mophism-remark₁ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) → 
 
  h ≡ S ∘ (𝟙+ h) ∘ p  →  P ∘ h ≡ (𝟙+ h) ∘ p  
 
-alg-mophism-remark₁ p h b = dfunext fe (λ x → ap (λ G → P(G x)) b ∙ P-S-id)
+alg-mophism-remark₁ {U} p h b = dfunext (fe U U₀) (λ x → ap (λ G → P(G x)) b ∙ P-S-id)
 
 
 diagram-commutes : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
 diagram-commutes p h =  (P ∘ h ≡ (𝟙+ h) ∘ p)
 
 
-homomorphism-existence : ∀ {U} {X : U ̇} → 
-
- (p : X → 𝟙 + X) → Σ \(h : X → ℕ∞) → diagram-commutes p h
-
-homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
+homomorphism-existence : ∀ {U} {X : U ̇} (p : X → 𝟙 + X)
+                      → Σ \(h : X → ℕ∞) → diagram-commutes p h
+homomorphism-existence {U} {X} p = h , dfunext (fe U U₀) h-spec
  where
   q : 𝟙 + X → 𝟙 + X
   q(inl s) = inl s
@@ -181,7 +178,7 @@ homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
       claim₀ : (𝟙+ h)(p x) ≡ Zero'
       claim₀ = ap (𝟙+ h) r
       claim₁ : h x ≡ Zero
-      claim₁ = is-Zero-equal-Zero fe (ap E r)
+      claim₁ = is-Zero-equal-Zero (fe U₀ U₀) (ap E r)
       claim₂ : P(h x) ≡ Zero'
       claim₂ = ap P claim₁ ∙ P-Zero
 
@@ -201,7 +198,7 @@ homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
       claim₄ 0  = claim₃ 0
       claim₄ (succ i) = claim₃(succ i)
       claim₅ : h x ≡ Succ(h x')
-      claim₅ = incl-lc fe (dfunext fe claim₄)
+      claim₅ = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) claim₄)
 
       claim₆ : P(h x) ≡ inr(h x')
       claim₆ = ap P claim₅
@@ -214,24 +211,20 @@ homomorphism-existence {U} {X} p = h , (dfunext fe h-spec)
                  → diagram-commutes p (ℕ∞-corec p) 
 ℕ∞-corec-diagram p = pr₂(homomorphism-existence p)
 
-
 \end{code}
 
 We now discuss coinduction. We first define bisimulations.
 
 \begin{code}
 
-
 ℕ∞-bisimulation : ∀ {U} → (ℕ∞ → ℕ∞ → U ̇) → U ̇
-ℕ∞-bisimulation R =
- (u v : ℕ∞) → R u v → (positivity u ≡ positivity v)  ×  R(Pred u)(Pred v)
+ℕ∞-bisimulation R = (u v : ℕ∞) → R u v
+                                → (positivity u ≡ positivity v)
+                                ×  R(Pred u)(Pred v)
 
-
-ℕ∞-coinduction : ∀ {U} (R : ℕ∞ → ℕ∞ → U ̇) → ℕ∞-bisimulation R → 
-
-  (u v : ℕ∞) → R u v → u ≡ v
-
-ℕ∞-coinduction R b u v r = incl-lc fe (dfunext fe (lemma u v r))
+ℕ∞-coinduction : ∀ {U} (R : ℕ∞ → ℕ∞ → U ̇) → ℕ∞-bisimulation R
+               → (u v : ℕ∞) → R u v → u ≡ v
+ℕ∞-coinduction R b u v r = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) (lemma u v r))
  where
   lemma : (u v : ℕ∞) → R u v → (i : ℕ) → incl u i ≡ incl v i
   lemma u v r 0 =  pr₁(b u v r)
@@ -244,12 +237,9 @@ coalgebra homomorphisms in more detail.
 
 \begin{code}
 
-alg-morphism-Zero : ∀ {U} {X : U ̇} → 
-
-    (p : X →  𝟙 + X) (h : X → ℕ∞) → diagram-commutes p h
-
- → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
-  
+alg-morphism-Zero : ∀ {U} {X : U ̇}
+    → (p : X →  𝟙 + X) (h : X → ℕ∞) → diagram-commutes p h
+    → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
 alg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S claim₃
  where
   claim₁ : P(h x) ≡ (𝟙+ h)(p x) 
@@ -259,13 +249,9 @@ alg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S claim₃
   claim₃ : P(h x) ≡ inl *
   claim₃ = claim₁ ∙ claim₂
  
-
-alg-morphism-Succ : ∀ {U} {X : U ̇} → 
-
-    (p : X →  𝟙 + X) (h : X → ℕ∞) → diagram-commutes p h
-
- → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
-  
+alg-morphism-Succ : ∀ {U} {X : U ̇}
+    → (p : X →  𝟙 + X) (h : X → ℕ∞) → diagram-commutes p h
+    → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
 alg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S claim₃
  where 
   claim₁ : P(h x) ≡ (𝟙+ h)(p x)
@@ -282,14 +268,10 @@ bisimulation later:
 
 \begin{code}
 
-alg-morphism-positivity : ∀ {U} {X : U ̇} → 
-
-    (p : X →  𝟙 + X) (f g : X → ℕ∞) 
-
- → diagram-commutes p f → diagram-commutes p g
-
- → (x : X) → positivity(f x) ≡ positivity(g x)
-  
+alg-morphism-positivity : ∀ {U} {X : U ̇}
+    → (p : X →  𝟙 + X) (f g : X → ℕ∞) 
+    → diagram-commutes p f → diagram-commutes p g
+    → (x : X) → positivity(f x) ≡ positivity(g x)
 alg-morphism-positivity {U} {X} p f g a b x = 
  equality-cases (p x) lemma₀ lemma₁
  where 
@@ -309,22 +291,16 @@ alg-morphism-positivity {U} {X} p f g a b x =
     g-lemma : positivity(g x) ≡ ₁
     g-lemma = ap positivity(alg-morphism-Succ p g b x x' c)
 
-
-alg-morphism-Pred : ∀ {U} {X : U ̇} → 
-
-    (p : X →  𝟙 + X) (f g : X → ℕ∞) 
-
- → diagram-commutes p f → diagram-commutes p g
-
- → (x : X) (u v : ℕ∞) → u ≡ f x → v ≡ g x
-
- → Σ \(x' : X) → (Pred u ≡ f x')  ×  (Pred v ≡ g x')
-  
+alg-morphism-Pred : ∀ {U} {X : U ̇}
+    → (p : X →  𝟙 + X) (f g : X → ℕ∞) 
+    → diagram-commutes p f → diagram-commutes p g
+    → (x : X) (u v : ℕ∞) → u ≡ f x → v ≡ g x
+    → Σ \(x' : X) → (Pred u ≡ f x')  ×  (Pred v ≡ g x')
 alg-morphism-Pred {U} {X} p f g a b x u v d e = 
  equality-cases (p x) lemma₀ lemma₁
  where 
   lemma₀ : (s : 𝟙) → p x ≡ inl s → Σ \x' → (Pred u ≡ f x') ×  (Pred v ≡ g x')
-  lemma₀ s c = x , ((lemma f a u d) , (lemma g b v e))
+  lemma₀ s c = x , (lemma f a u d , lemma g b v e)
    where 
     lemma : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p 
          → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x
@@ -356,7 +332,7 @@ homomorphism-uniqueness : ∀ {U} {X : U ̇}
                         → (p : X → 𝟙 + X) (f g : X → ℕ∞) 
                         → diagram-commutes p f → diagram-commutes p g 
                         → f ≡ g 
-homomorphism-uniqueness {U} {X} p f g a b = dfunext fe lemma
+homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) lemma
  where
   R : ℕ∞ → ℕ∞ → U ̇
   R u v = Σ \x → (u ≡ f x)  ×  (v ≡ g x)
@@ -415,6 +391,6 @@ P-is-the-homotopy-final-coalgebra {U} {X} p = homomorphism-existence p , γ
  where
   γ : (e : Σ \(h' : X → ℕ∞) → diagram-commutes p h') → homomorphism-existence p ≡ e
   γ (h' , r) = to-Σ-≡'' (homomorphism-uniqueness p (ℕ∞-corec p) h' (ℕ∞-corec-diagram p) r ,
-                         Π-is-set fe (λ (x : X) → +-is-set 𝟙 ℕ∞ (prop-is-set 𝟙-is-prop) (ℕ∞-is-set fe)) _ _)
+                         Π-is-set (fe U U₀) (λ (x : X) → +-is-set 𝟙 ℕ∞ (prop-is-set 𝟙-is-prop) (ℕ∞-is-set (fe U₀ U₀))) _ _)
 
 \end{code}

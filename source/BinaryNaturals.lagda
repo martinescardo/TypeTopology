@@ -8,12 +8,16 @@ hence multiple representations of the same number.
 The isomorphic copy is formally constructed from 0 iterating the
 functions L(n)=2n+1 and R(n)=2n+2.
 
+As an application, we construct a pairing function and hence an
+equivalence ℕ × ℕ ≃ ℕ.
+
 \begin{code}
 
 module BinaryNaturals where
 
-open import SpartanMLTT hiding (_+_) hiding (_×_)
+open import SpartanMLTT hiding (_+_)
 open import UF-Equiv
+open import UF-Base
 
 \end{code}
 
@@ -380,23 +384,23 @@ Now multiplication.
 
 \begin{code}
 
-_×_ : ℕ → ℕ → ℕ
-m × zero = zero
-m × succ n = m × n + m -- m(n+1) = mn + m
+_⋆_ : ℕ → ℕ → ℕ
+m ⋆ zero = zero
+m ⋆ succ n = m ⋆ n + m -- m(n+1) = mn + m
 
-_×♭_ : 𝔹 → 𝔹 → 𝔹
-m ×♭ zero = zero
-m ×♭ l n = Double(m ×♭ n) +♭ m
-m ×♭ r n = Double(m ×♭ n +♭ m)
+_⋆♭_ : 𝔹 → 𝔹 → 𝔹
+m ⋆♭ zero = zero
+m ⋆♭ l n = Double(m ⋆♭ n) +♭ m
+m ⋆♭ r n = Double(m ⋆♭ n +♭ m)
 
-_×₁_ : 𝔹 → 𝔹 → 𝔹
-m    ×₁ zero = zero
-zero ×₁ l n  = zero
-l m  ×₁ l n  = l(Double(m ×₁ n) +₀ m +₀ n) -- (2m+1)(2n+1) = 4mn + 2m + 2n + 1 = 2(2mn+m+n)+1
-r m  ×₁ l n  = r(Double(m ×₁ n +₀ n) +₀ m) -- (2m+2)(2n+1) = 4mn + 2m + 4n + 2 = 2(2(mn+n)+m)+2
-zero ×₁ r n  = zero
-l m  ×₁ r n  = r(Double(m ×₁ n +₀ m) +₀ n) 
-r m  ×₁ r n  = Double(Double(m ×₁ n +₀ (m +₁ n))) -- (2m+2)(2n+2) = 4mn + 4m + 4n + 4 = 4(mn + m + n + 1)
+_⋆₁_ : 𝔹 → 𝔹 → 𝔹
+m    ⋆₁ zero = zero
+zero ⋆₁ l n  = zero
+l m  ⋆₁ l n  = l(Double(m ⋆₁ n) +₀ m +₀ n) -- (2m+1)(2n+1) = 4mn + 2m + 2n + 1 = 2(2mn+m+n)+1
+r m  ⋆₁ l n  = r(Double(m ⋆₁ n +₀ n) +₀ m) -- (2m+2)(2n+1) = 4mn + 2m + 4n + 2 = 2(2(mn+n)+m)+2
+zero ⋆₁ r n  = zero
+l m  ⋆₁ r n  = r(Double(m ⋆₁ n +₀ m) +₀ n) 
+r m  ⋆₁ r n  = Double(Double(m ⋆₁ n +₀ (m +₁ n))) -- (2m+2)(2n+2) = 4mn + 4m + 4n + 4 = 4(mn + m + n + 1)
 
 \end{code}
 
@@ -405,7 +409,7 @@ moment, in the form of an experiment:
 
 \begin{code}
 
-test : unary(binary 172 ×₁ binary 133) ≡ 172 × 133
+test : unary(binary 172 ⋆₁ binary 133) ≡ 172 ⋆ 133
 test = refl
 
 \end{code}
@@ -451,16 +455,109 @@ double₂-spec (r x) = ap r (double₂-spec x)
 
 \end{code}
 
+We get a pairing function as follows, using a rather minimal amount of
+number theory (14th July 2018):
+
+We use binary notation to simplify the definition. An alternative
+would be to work with the usual unary notation, using binary
+induction. However, this would prevent us from using pattern matching,
+which gives a more intuitive definition.
+
+\begin{code}
+
+first' : 𝔹 → ℕ
+first' zero = zero
+first' (l b) = succ (first' b)
+first' (r b) = zero
+
+second' : 𝔹 → 𝔹
+second' zero = zero
+second' (l b) = second' b
+second' (r b) = Succ b
+
+pair' : ℕ → ℕ → 𝔹
+pair' zero zero = zero
+pair' (succ n) zero = l(pair' n zero)
+pair' zero (succ k) = r (binary k)
+pair' (succ n) (succ k) = l (pair' n (succ k))
+
+pair'-claim : (n k : ℕ) → pair' (succ n) k ≡ l(pair' n k)
+pair'-claim n zero = refl
+pair'-claim n (succ k) = refl
+
+first'-lemma : (n k : ℕ) → first'(pair' n k) ≡ n
+first'-lemma zero zero = refl
+first'-lemma zero (succ k) = refl
+first'-lemma (succ n) zero = ap succ (first'-lemma n zero)
+first'-lemma (succ n) (succ k) = ap succ (first'-lemma n (succ k))
+
+second'-lemma : (n k : ℕ) → second'(pair' n k) ≡ binary k
+second'-lemma zero zero = refl
+second'-lemma zero (succ k) = refl
+second'-lemma (succ n) zero = second'-lemma n zero
+second'-lemma (succ n) (succ k) = second'-lemma n (succ k)
+
+pair'-lemma : (b : 𝔹) → pair' (first' b) (unary(second' b)) ≡ b
+pair'-lemma zero = refl
+pair'-lemma (l b) = γ
+ where
+  IH : pair' (first' b) (unary (second' b)) ≡ b
+  IH = pair'-lemma b
+  c : pair' (succ (first' b)) (unary (second' b)) ≡ l (pair' (first' b) (unary (second' b)))
+  c = pair'-claim (first' b) (unary (second' b))
+  γ : pair' (succ (first' b)) (unary (second' b)) ≡ l b
+  γ = c ∙ ap l IH
+pair'-lemma (r b) = γ
+ where
+  p : r (binary (unary b)) ≡ r b
+  p = ap r (binaryunary b)
+  q : pair' zero (succ(unary b)) ≡ r b
+  q = p
+  γ : pair' zero (unary (Succ b)) ≡ r b
+  γ = back-transport (λ - → pair' zero - ≡ r b) (sdiagram b) q
+
+pair : ℕ × ℕ → ℕ
+pair (n , k) = unary(pair' n k)
+
+riap : ℕ → ℕ × ℕ
+riap m = (first' (binary m) , unary(second'(binary m)))
+
+pair-riap : (m : ℕ) → pair(riap m) ≡ m
+pair-riap m = p
+ where
+  p : unary (pair' (first' (binary m)) (unary (second' (binary m)))) ≡ m
+  p = ap unary (pair'-lemma (binary m)) ∙ unarybinary m
+
+riap-pair : (z : ℕ × ℕ) → riap(pair z) ≡ z
+riap-pair (n , k) = ×-≡ a b
+ where
+  p : first' (pair' n k) ≡ n
+  p = first'-lemma n k
+  a : first' (binary (unary(pair' n k))) ≡ n
+  a = back-transport (λ - → first' - ≡ n) (binaryunary (pair' n k)) p
+  s : second' (pair' n k) ≡ binary k
+  s = second'-lemma n k
+  q : unary (second' (pair' n k)) ≡ k
+  q = ap unary s ∙ unarybinary k
+  b : unary (second' (binary ( unary(pair' n k)))) ≡ k
+  b = back-transport (λ - → unary (second' -) ≡ k) (binaryunary (pair' n k)) q
+
+pairing : ℕ × ℕ ≃ ℕ
+pairing = pair , ((riap , pair-riap) , (riap , riap-pair))
+
+\end{code}
+
+
 And finally the fixities assumed above:
 
 \begin{code}
 
 infixl 6 _+_
-infixl 7 _×_
+infixl 7 _⋆_
 infixl 6 _+♭_
-infixl 7 _×♭_
+infixl 7 _⋆♭_
 infixl 6 _+₁_
 infixl 6 _+₀_
-infixl 7 _×₁_
+infixl 7 _⋆₁_
 
 \end{code}

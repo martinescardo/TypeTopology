@@ -6,7 +6,7 @@ Martin Escardo 2011.
 
 open import UF-FunExt
 
-module Sequence (fe : ∀ {U V} → funext U V) where
+module Sequence (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT hiding (_+_)
 open import UF-Retracts
@@ -26,7 +26,7 @@ tl α n = α(succ n)
 
 
 hd-tl-eta : ∀ {U} {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (hd α ∶∶ tl α) ≡ α
-hd-tl-eta {U} {X} = dfunext fe lemma
+hd-tl-eta {U} {X} = dfunext (fe U₀ U) lemma
  where 
   lemma : {α : (n : ℕ) → X n} → (i : ℕ) → (hd α ∶∶ tl α) i ≡ α i
   lemma 0 = refl

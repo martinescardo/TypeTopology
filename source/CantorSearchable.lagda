@@ -13,7 +13,7 @@ and other modules.
 open import SpartanMLTT
 open import UF-FunExt
 
-module CantorSearchable (fe : ∀ {U V} → funext U V) where
+module CantorSearchable (fe : ∀ U V → funext U V) where
 
 open import SearchableTypes
 open import CountableTychonoff (fe)
@@ -51,7 +51,7 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 open import DiscreteAndSeparated
 
 discrete-Cantor→ℕ : discrete((ℕ → 𝟚) → ℕ)
-discrete-Cantor→ℕ = omniscient-discrete-discrete' fe cantor-omniscient ℕ-discrete
+discrete-Cantor→ℕ = omniscient-discrete-discrete' (fe U₀ U₀) cantor-omniscient ℕ-discrete
 
 \end{code}
 
