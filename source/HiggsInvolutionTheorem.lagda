@@ -1,7 +1,7 @@
 Martin Escardo, 15 August 2014.
 
 Higgs' Involution Theorem. In any topos, if f : Ω → Ω is a
-monomorphism, then it is an involution. 
+monomorphism, then it is an involution.
 
 We adapt and prove the result in univalent mathematics, using the
 propositional axiom of univalence. (We don't rely on propositional
@@ -34,9 +34,9 @@ involutive f = ∀{x} → f (f x) ≡ x
 higgs : (f : Ω → Ω) → left-cancellable f → involutive f
 higgs f cancelf {p} = cancelf (VII p)
   where
-   I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤ 
+   I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
    I p r s = transport (λ - → f - ≡ ⊤) s r
-   
+
    II : (p : Ω) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
    II p r s = cancelf (r ∙ s ⁻¹)
 
@@ -57,10 +57,10 @@ higgs f cancelf {p} = cancelf (VII p)
 
      b : f ⊤ ≡ p
      b = (III p r)⁻¹
-     
+
      c : f (f p) ≡ p
      c = a ∙ b
-     
+
      d : f (f (f p)) ≡ f p
      d = ap f c
 

@@ -24,7 +24,7 @@ The module Universes allows us to write e.g. the following instead of
 
 Π : ∀ {U V} {X : U ̇} (Y : X → V ̇) → U ⊔ V ̇
 Π Y = (x : _) → Y x
- 
+
 syntax Π {A} (λ x → B) = Π（ x ∶ A ）, B
 
 \end{code}
@@ -50,7 +50,7 @@ data 𝟘 {U} : U ̇ where
 
 unique-from-𝟘 : ∀ {U V} {A : U ̇} → 𝟘 {V} → A
 unique-from-𝟘 = λ ()
- 
+
 𝟘-elim = unique-from-𝟘
 
 \end{code}
@@ -60,7 +60,7 @@ The one-element type is defined by induction with one case:
 \begin{code}
 
 data 𝟙 {U} : U ̇ where
- * : 𝟙 
+ * : 𝟙
 
 unique-to-𝟙 : ∀ {U V} {A : U ̇} → A → 𝟙 {V}
 unique-to-𝟙 {U} {V} a = * {V}
@@ -136,7 +136,7 @@ Cases z f g = cases f g z
 
 \end{code}
 
-Some basic Curry--Howard logic. 
+Some basic Curry--Howard logic.
 
 \begin{code}
 
@@ -175,7 +175,7 @@ dnu : ∀ {U} {V} {A : U ̇} {B : V ̇} → ¬¬(A × B) → ¬¬ A × ¬¬ B
 dnu φ = (¬¬-functor pr₁ φ) , (¬¬-functor pr₂ φ)
 
 und : ∀ {U} {V} {A : U ̇} {B : V ̇} → ¬¬ A × ¬¬ B → ¬¬(A × B)
-und (φ , γ) w = γ (λ y → φ (λ x → w (x , y))) 
+und (φ , γ) w = γ (λ y → φ (λ x → w (x , y)))
 
 not-Σ-implies-Π-not : ∀ {U V} {X : U ̇} {A : X → V ̇}
                     → ¬(Σ \(x : X) → A x) → (x : X) → ¬(A x)
@@ -369,7 +369,7 @@ Lemma[b≡₁→b≢₀] : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
 Lemma[b≡₁→b≢₀] r s = zero-is-not-one (s ⁻¹ ∙ r)
 
 Lemma[b≢₀→b≡₁] : {b : 𝟚} → b ≢ ₀ → b ≡ ₁
-Lemma[b≢₀→b≡₁] f = 𝟚-equality-cases (𝟘-elim ∘ f) (λ r → r) 
+Lemma[b≢₀→b≡₁] f = 𝟚-equality-cases (𝟘-elim ∘ f) (λ r → r)
 
 Lemma[b≢₁→b≡₀] : {b : 𝟚} → b ≢ ₁ → b ≡ ₀
 Lemma[b≢₁→b≡₀] f = 𝟚-equality-cases (λ r → r) (𝟘-elim ∘ f)
@@ -429,7 +429,7 @@ Natural order of binary numbers:
 \begin{code}
 
 _<₂_ : (a b : 𝟚) → U₀ ̇
-a <₂ b = (a ≡ ₀) × (b ≡ ₁) 
+a <₂ b = (a ≡ ₀) × (b ≡ ₁)
 
 _≤₂_ : (a b : 𝟚) → U₀ ̇
 a ≤₂ b = a ≡ ₁ → b ≡ ₁
@@ -491,7 +491,7 @@ Lemma[min𝟚ab≡₁→a≡₁]  : {a b : 𝟚} → min𝟚 a b ≡ ₁ → a �
 Lemma[min𝟚ab≡₁→a≡₁] {₀} r = r
 Lemma[min𝟚ab≡₁→a≡₁] {₁} r = refl
 
-Lemma[a≡₁→b≡₁→min𝟚ab≡₁] : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → min𝟚 a b ≡ ₁ 
+Lemma[a≡₁→b≡₁→min𝟚ab≡₁] : {a b : 𝟚} → a ≡ ₁ → b ≡ ₁ → min𝟚 a b ≡ ₁
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₀} p q = q
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₀} {₁} p q = p
 Lemma[a≡₁→b≡₁→min𝟚ab≡₁] {₁} {₀} p q = q
@@ -513,7 +513,7 @@ max𝟚-lemma : (a b : 𝟚) → max𝟚 a b ≡ ₁ → (a ≡ ₁) + (b ≡ �
 max𝟚-lemma ₀ b r = inr r
 max𝟚-lemma ₁ b r = inl refl
 
-max𝟚-lemma-converse : (a b : 𝟚) → (a ≡ ₁) + (b ≡ ₁) → max𝟚 a b ≡ ₁ 
+max𝟚-lemma-converse : (a b : 𝟚) → (a ≡ ₁) + (b ≡ ₁) → max𝟚 a b ≡ ₁
 max𝟚-lemma-converse ₀ b (inl r) = unique-from-𝟘 (zero-is-not-one r)
 max𝟚-lemma-converse ₀ b (inr r) = r
 max𝟚-lemma-converse ₁ b x = refl
@@ -542,14 +542,14 @@ Lemma[b≡c→b⊕c≡₀] {b} {c} r = ap (λ - → b ⊕ -) (r ⁻¹) ∙ (Lemm
 Lemma[b⊕c≡₀→b≡c] : {b c : 𝟚} → b ⊕ c ≡ ₀ → b ≡ c
 Lemma[b⊕c≡₀→b≡c] {₀} {₀} r = refl
 Lemma[b⊕c≡₀→b≡c] {₀} {₁} ()
-Lemma[b⊕c≡₀→b≡c] {₁} {₀} () 
+Lemma[b⊕c≡₀→b≡c] {₁} {₀} ()
 Lemma[b⊕c≡₀→b≡c] {₁} {₁} r = refl
 
 Lemma[b≢c→b⊕c≡₁] : {b c : 𝟚} → b ≢ c → b ⊕ c ≡ ₁
 Lemma[b≢c→b⊕c≡₁] = Lemma[b≢₀→b≡₁] ∘ (contrapositive Lemma[b⊕c≡₀→b≡c])
 
 Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
-Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ Lemma[b≡₁→b≢₀]  
+Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ Lemma[b≡₁→b≢₀]
 
 \end{code}
 
@@ -583,9 +583,9 @@ The natural numbers:
 
 \begin{code}
 
-data ℕ : Set where 
-  zero : ℕ              
-  succ : ℕ → ℕ       
+data ℕ : Set where
+  zero : ℕ
+  succ : ℕ → ℕ
 
 {-# BUILTIN NATURAL ℕ #-}
 
@@ -593,7 +593,7 @@ rec : ∀ {U} {X : U ̇} → X → (X → X) → (ℕ → X)
 rec x f zero = x
 rec x f (succ n) = f(rec x f n)
 
-induction : ∀ {U} {A : ℕ → U ̇} → A 0 → ((k : ℕ) → A k → A(succ k)) → (n : ℕ) → A n 
+induction : ∀ {U} {A : ℕ → U ̇} → A 0 → ((k : ℕ) → A k → A(succ k)) → (n : ℕ) → A n
 induction base step 0 = base
 induction base step (succ n) = step n (induction base step n)
 
@@ -616,14 +616,14 @@ Operator fixity and precedences.
 infixr 4 _,_
 infixr 2 _×_
 infixr 1 _+_
-infixl 5 _∘_ 
+infixl 5 _∘_
 infix  50 ¬_
 infix  -1 _⇔_
 infix  0 _≡_
 infix  0 _≢_
 infix  3  _⁻¹
 infix  1 _∎
-infixr 0 _≡⟨_⟩_ 
+infixr 0 _≡⟨_⟩_
 infixl 2 _∙_
 infix  4  _∼_
 infixr 31 _⊕_

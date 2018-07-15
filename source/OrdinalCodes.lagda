@@ -40,9 +40,9 @@
     We proceed in three steps to define addition, multiplication and
     exponentiation, and hence ε₀ and much higher.
 
-    (1): We essentially use Goedel's system T and work with a type 
+    (1): We essentially use Goedel's system T and work with a type
 
-            O X = X → (X → X) → ((ℕ → X) → X) → X 
+            O X = X → (X → X) → ((ℕ → X) → X) → X
 
          of Church encodings of ordinal trees, where X is a parameter,
          and define the basic arithmetic operations on ordinals with
@@ -58,8 +58,8 @@
 
     (2): We use the first universe and dependent products to define
 
-            O' X = Π(n : ℕ) → Oⁿ⁺¹ X 
-  
+            O' X = Π(n : ℕ) → Oⁿ⁺¹ X
+
          and hence the arithmetic operations with uniform types
 
             add', mul', exp' : O' X → O' X → O' X
@@ -82,7 +82,7 @@
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-} 
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module OrdinalCodes where
 
@@ -121,7 +121,7 @@ uniform:
 \begin{code}
 
 add : {X : U₀ ̇} → O X → O X → O X
-add a b = λ z → λ s → λ l → a (b z s l) s l 
+add a b = λ z → λ s → λ l → a (b z s l) s l
 
 mul : {X : U₀ ̇} → O X → O(O X) → O X
 mul a = O-rec zer (λ r → add r a) lim
@@ -136,7 +136,7 @@ the type {X : U₀ ̇} → O X → O(O X) → O X, and then mul would have
 the type {X : U₀ ̇} → O(O X) → O(O X) → O X, with the same
 definition, but the same definition of exp then cannot be typed
 using iterations of O. In step (2) we will consider all finite
-iterations of O to define a type O', and give a uniform type 
+iterations of O to define a type O', and give a uniform type
 {X : U₀ ̇} → O' X → O' X → O' X to add, mul, and exp.
 
 We will not use the following:
@@ -149,7 +149,7 @@ down = O-rec zer suc lim
 \end{code}
 
 There is a term up : {X : U₀ ̇} → O X → O(O X), but no such term has
-the desired behaviour of being a (left or right) inverse of down. 
+the desired behaviour of being a (left or right) inverse of down.
 
 Before using the first universe, we can dominate any ordinal below ε₀.
 
@@ -188,7 +188,7 @@ without universes or W-types or impredicativity etc.
 \end{code}
 
 And so on. Although the definitions look uniform, they are not. In
-fact, the candidate for the recursion step doesn't have type 
+fact, the candidate for the recursion step doesn't have type
 O X → O X, but rather:
 
 \begin{code}
@@ -201,7 +201,7 @@ step = exp ω
 If you try to define
 
   ω-tower : {X : U₀ ̇} → ℕ → O X
-  ω-tower = rec ω (exp ω) 
+  ω-tower = rec ω (exp ω)
 
 then Agda rightfully complains that this would need X = O X, which
 is impossible.
@@ -213,7 +213,7 @@ strictly working in system T we need a different definition of ω in
 each case (with the same raw term but with a different type).
 
 
-Step (2). 
+Step (2).
 
 We now use the first universe to reach ε₀ and beyond.  We
 build a type O' X of ordinals based on O X. It is the definition of
@@ -246,7 +246,7 @@ lim' : {X : U₀ ̇} → (ℕ → O' X) → O' X
 lim' as = λ n → lim(λ i → as i n)
 
 add' : {X : U₀ ̇} → O' X → O' X → O' X
-add' a b = λ n → add (a n) (b n) 
+add' a b = λ n → add (a n) (b n)
 
 mul' : {X : U₀ ̇} → O' X → O' X → O' X
 mul' a b = λ n → mul (a n) (b(succ n))
@@ -258,7 +258,7 @@ exp' a b = λ n → exp (a(succ n)) (b(succ n))
 ω' = λ n → ω
 
 ω-tower' : {X : U₀ ̇} → ℕ → O' X
-ω-tower' = rec ω' (exp' ω') 
+ω-tower' = rec ω' (exp' ω')
 
 \end{code}
 
@@ -301,7 +301,7 @@ But it does type check for some particular a, such as ω in the
 above definition of ω'.
 
 
-Step (3). Brouwer's ordinal trees. 
+Step (3). Brouwer's ordinal trees.
 
 I will use the letters u,v to range over B, and us,vs to range over
 forests, that is, sequences ℕ → B.
@@ -344,7 +344,7 @@ recursion-free definition.
 \begin{code}
 B-rec : {X : U₀ ̇} → X → (X → X) → ((ℕ → X) → X) → B → X
 B-rec {X} z s l = h
- where 
+ where
   h : B → X
   h Z = z
   h(S u) = s(h u)
@@ -382,7 +382,7 @@ B-ω : B
 B-ω = L B-finite
 
 B-ω-tower : ℕ → B
-B-ω-tower = rec B-ω (B-exp B-ω) 
+B-ω-tower = rec B-ω (B-exp B-ω)
 
 B-ε₀-alternative : B
 B-ε₀-alternative = L B-ω-tower
@@ -441,15 +441,15 @@ recursion or iteration B-rec on B):
 
 \begin{code}
 
-B-induction : {A : B → U₀ ̇} → 
-   A Z → 
-  ((u : B) → A u → A(S u)) → 
+B-induction : {A : B → U₀ ̇} →
+   A Z →
+  ((u : B) → A u → A(S u)) →
   ((us : ℕ → B) → ((i : ℕ) → A(us i)) → A(L us)) →
 -----------------------------------------------------------
   ((u : B) → A u)
 
 B-induction {A} z s l = h
- where 
+ where
   h : (u : B) → A u
   h Z = z
   h(S u) = s u (h u)

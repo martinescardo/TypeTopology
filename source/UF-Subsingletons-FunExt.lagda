@@ -19,8 +19,8 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-LeftCancellable
 
-Π-is-prop : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} 
-          → ((x : X) → is-prop (A x)) → is-prop (Π A) 
+Π-is-prop : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇}
+          → ((x : X) → is-prop (A x)) → is-prop (Π A)
 Π-is-prop fe {X} {A} isa f g = dfunext fe (λ x → isa x (f x) (g x))
 
 is-prop-is-prop : ∀ {U} {X : U ̇} → funext U U → is-prop (is-prop X)
@@ -30,8 +30,8 @@ is-prop-is-prop {U} {X} fe f g = claim₁
   lemma = prop-is-set f
   claim : (x y : X) → f x y ≡ g x y
   claim x y = lemma (f x y) (g x y)
-  claim₀ : (x : X) → f x ≡ g x 
-  claim₀ x = dfunext fe (claim x) 
+  claim₀ : (x : X) → f x ≡ g x
+  claim₀ x = dfunext fe (claim x)
   claim₁ : f ≡ g
   claim₁  = dfunext fe claim₀
 
@@ -43,8 +43,8 @@ is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡'' (φ y , dfunext 
   iss : is-set X
   iss = prop-is-set isp
 
-Π-is-set : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} 
-         → ((x : X) → is-set(A x)) → is-set(Π A) 
+Π-is-set : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇}
+         → ((x : X) → is-set(A x)) → is-set(Π A)
 Π-is-set {U} {V} fe {X} {A} isa {f} {g} = b
  where
   a : is-prop (f ∼ g)
@@ -102,11 +102,11 @@ PropExt {U} fe pe {p} {q} f g =
 Ω-is-set {U} fe pe = identification-collapsible-is-set pc
  where
   A : (p q : Ω) → U ̇
-  A p q = (p holds → q holds) × (q holds → p holds) 
+  A p q = (p holds → q holds) × (q holds → p holds)
   A-is-prop : (p q : Ω) → is-prop(A p q)
   A-is-prop p q = Σ-is-prop (Π-is-prop fe
-                                   (λ _ → holds-is-prop q)) 
-                                   (λ _ → Π-is-prop fe (λ _ → holds-is-prop p)) 
+                                   (λ _ → holds-is-prop q))
+                                   (λ _ → Π-is-prop fe (λ _ → holds-is-prop p))
   g : (p q : Ω) → p ≡ q → A p q
   g p q e = (b , c)
    where
@@ -116,17 +116,17 @@ PropExt {U} fe pe {p} {q} f g =
     b = transport (λ X → X) a
     c : q holds → p holds
     c = transport (λ X → X) (a ⁻¹)
-  h  : (p q : Ω) → A p q → p ≡ q 
+  h  : (p q : Ω) → A p q → p ≡ q
   h p q (u , v) = PropExt fe pe u v
   f  : (p q : Ω) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
-  constant-f : (p q : Ω) (d e : p ≡ q) → f p q d ≡ f p q e 
+  constant-f : (p q : Ω) (d e : p ≡ q) → f p q d ≡ f p q e
   constant-f p q d e = ap (h p q) (A-is-prop p q (g p q d) (g p q e))
   pc : {p q : Ω} → Σ \(f : p ≡ q → p ≡ q) → constant f
   pc {p} {q} = (f p q , constant-f p q)
 
 neg-is-prop : ∀ {U} {X : U ̇} → funext U U₀ → is-prop(¬ X)
-neg-is-prop fe u v = dfunext fe (λ x → 𝟘-elim (u x)) 
+neg-is-prop fe u v = dfunext fe (λ x → 𝟘-elim (u x))
 
 \end{code}
 
@@ -150,7 +150,7 @@ true-is-equal-⊤ pe fe P hp x = to-Σ-≡ P 𝟙 hp 𝟙-is-prop (pe hp 𝟙-is
 
 Ω-ext : propext U₀ → funext U₀ U₀ → {p q : Ω}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
-Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ P Q isp isq (pe isp isq I II) (is-prop-is-prop fe _ _ ) 
+Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ P Q isp isq (pe isp isq I II) (is-prop-is-prop fe _ _ )
  where
   I : P → Q
   I x = equal-⊤-is-true Q isq (f (true-is-equal-⊤ pe fe P isp x))

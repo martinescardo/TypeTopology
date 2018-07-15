@@ -15,14 +15,14 @@ open import UF-LeftCancellable
 is-univalent : ∀ U → U ′ ̇
 is-univalent U = (X Y : U ̇) → is-equiv(idtoeq X Y)
 
-eqtoid : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
+eqtoid : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y
 eqtoid ua X Y = pr₁(pr₁(ua X Y))
 
 idtoeq-eqtoid : ∀ {U} (ua : is-univalent U)
               → (X Y : U ̇) (e : X ≃ Y) → idtoeq X Y (eqtoid ua X Y e) ≡ e
 idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
 
-eqtoid' : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y 
+eqtoid' : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y
 eqtoid' ua X Y = pr₁(pr₂(ua X Y))
 
 eqtoid-idtoeq : ∀ {U} (ua : is-univalent U)
@@ -47,7 +47,7 @@ is-univalent-≃ ua X Y = idtoeq X Y , ua X Y
 
 back-transport-is-pre-comp' : ∀ {U} (ua : is-univalent U)
                            → {X X' Y : U ̇} (e : X ≃ X') (g : X' → Y)
-                           → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e 
+                           → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
   q : g ∘ Idtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
@@ -84,7 +84,7 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
 
 Eq-transport : ∀ {U} → is-univalent U
             → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
-Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e 
+Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
 Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
 Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
@@ -113,7 +113,7 @@ JEq-converse {U} jeq' X = γ
   from Peter Lumsdaine, 7 July 2017, when we were both visiting the
   Newton Institute. His original version translated to Agda is here:
   http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
-  
+
   Unfortunately, we couldn't use his result off-the-shelf. The main
   difference is that Peter works with a global identity system on all
   types (of a universe), whereas we work with an identity system on a
@@ -143,7 +143,7 @@ JEq-converse {U} jeq' X = γ
     where
      B : (Y : U ̇) (p : X ≃ Y) → V ̇
      B Y p = Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (ideq X) p) b
-   
+
    jeq : A X (ideq X) → (Y : U ̇) (p : X ≃ Y) → A Y p
    jeq b Y p = pr₁ (h b p)
 
@@ -154,7 +154,7 @@ JEq-converse {U} jeq' X = γ
 
   This is the end of Peter's construction, which we apply to our
   problem as follows:
-   
+
 \begin{code}
 
   φ : (Y : U ̇) → X ≃ Y → X ≡ Y

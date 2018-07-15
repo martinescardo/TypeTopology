@@ -1,7 +1,7 @@
 Martin Escardo 2012.
 
 See my paper "Infinite sets that satisfy the principle of
-omniscience" for a discussion of the type ℕ∞ defined here. 
+omniscience" for a discussion of the type ℕ∞ defined here.
 Essentially, ℕ∞ is ℕ with an added point ∞.
 
 (Added December 2017. What we knew for a long time: The ℕ∞ is a
@@ -35,7 +35,7 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 \begin{code}
 
 decreasing : (ℕ → 𝟚) → U₀ ̇
-decreasing α = (i : ℕ) → α(succ i) ≤₂ α i 
+decreasing α = (i : ℕ) → α(succ i) ≤₂ α i
 
 decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
 decreasing-is-prop fe α = Π-is-prop fe
@@ -53,13 +53,13 @@ decreasing-is-prop-old fe {α} p q = dfunext fe fact₂
     fact₁ : (r : α (succ i) ≡ ₁) → f r ≡ g r
     fact₁ r = 𝟚-is-set (f r) (g r)
   fact₂ : (i : ℕ) → p i ≡ q i
-  fact₂ i = fact₀ i (p i) (q i) 
+  fact₂ i = fact₀ i (p i) (q i)
 
 incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
 
 incl-lc : funext₀ → left-cancellable incl
-incl-lc fe = pr₁-lc (decreasing-is-prop fe _)  
+incl-lc fe = pr₁-lc (decreasing-is-prop fe _)
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0 = β 0
@@ -134,7 +134,7 @@ Zero = ((λ i → ₀) , λ i → id {U₀} {₀ ≡ ₁})
 
 Succ : ℕ∞ → ℕ∞
 Succ (α , d) = (α' , d')
- where 
+ where
   α' : ℕ → 𝟚
   α' 0 = ₁
   α'(succ n) = α n
@@ -161,7 +161,7 @@ positive : ℕ∞ → U₀ ̇
 positive u = 0 ⊏ u
 
 positivity : ℕ∞ → 𝟚
-positivity u = incl u 0 
+positivity u = incl u 0
 
 is-Zero-Zero : is-Zero Zero
 is-Zero-Zero = refl
@@ -173,7 +173,7 @@ Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
 ∞ = ((λ i → ₁) , λ i → id {U₀} {₁ ≡ ₁})
 
 Succ-∞-is-∞ : funext₀ → Succ ∞ ≡ ∞
-Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma) 
+Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma)
  where
    lemma : (i : ℕ) → incl(Succ ∞) i ≡ incl ∞ i
    lemma 0 = refl
@@ -182,7 +182,7 @@ Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma)
 unique-fixed-point-of-Succ : funext₀ → (u : ℕ∞) → u ≡ Succ u → u ≡ ∞
 unique-fixed-point-of-Succ fe u r = incl-lc fe claim
  where
-  fact : (i : ℕ) → incl u i ≡ incl(Succ u) i 
+  fact : (i : ℕ) → incl u i ≡ incl(Succ u) i
   fact i = ap (λ - → incl - i) r
   lemma : (i : ℕ) → incl u i ≡ ₁
   lemma 0 = fact 0
@@ -194,7 +194,7 @@ Pred : ℕ∞ → ℕ∞
 Pred(α , d) = (α ∘ succ , d ∘ succ)
 
 Pred-Zero-is-Zero : Pred Zero ≡ Zero
-Pred-Zero-is-Zero = refl 
+Pred-Zero-is-Zero = refl
 
 Pred-Succ-u-is-u : {u : ℕ∞} → Pred(Succ u) ≡ u
 Pred-Succ-u-is-u {u} = refl
@@ -233,7 +233,7 @@ under-diagonal₀ (succ n) = under-diagonal₀ n
 under-diagonal₁ : (n : ℕ) → n ⊏ under(succ n)
 under-diagonal₁ 0 = refl
 under-diagonal₁ (succ n) = under-diagonal₁ n
- 
+
 is-Zero-equal-Zero : funext₀ → {u : ℕ∞} → is-Zero u → u ≡ Zero
 is-Zero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
  where
@@ -244,7 +244,7 @@ is-Zero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
 not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
 not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
-  lemma : (i : ℕ) → incl u i ≡ incl(Succ(Pred u)) i 
+  lemma : (i : ℕ) → incl u i ≡ incl(Succ(Pred u)) i
   lemma 0 = Lemma[b≢₀→b≡₁] (f ∘ is-Zero-equal-Zero fe)
   lemma (succ i) = refl
 
@@ -260,16 +260,16 @@ positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
 Succ-criterion fe {u} {n} r s = incl-lc fe claim
  where
-  lemma : (u : ℕ∞) (n : ℕ) → n ⊏ u → u ⊑ succ n 
+  lemma : (u : ℕ∞) (n : ℕ) → n ⊏ u → u ⊑ succ n
         → (i : ℕ) → incl u i ≡ incl (Succ(under n)) i
   lemma u 0 r s 0 = r
   lemma u 0 r s (succ i) = lemma₀ i
-     where 
+     where
       lemma₀ : (i : ℕ) → u ⊑ succ i
       lemma₀ 0 = s
       lemma₀ (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u (succ i)) (lemma₀ i)
   lemma u (succ n) r s 0 = lemma₁ (succ n) r
-     where 
+     where
       lemma₁ : (n : ℕ) → n ⊏ u → positive u
       lemma₁ 0 t = t
       lemma₁ (succ n) t = lemma₁ n (pr₂ u n t)
@@ -282,11 +282,11 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
 ∞-is-not-ℕ n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
 
 not-ℕ-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
-not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma) 
+not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (n : ℕ) → n ⊏ u
-  lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r)) 
-  lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r)) 
+  lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r))
+  lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
 ℕ∞-density' : ∀ {U} {Y : U ̇} → funext₀ → separated Y
              → {f g : ℕ∞ → Y}
@@ -324,7 +324,7 @@ under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
  where
   g : u ≢ ∞
   g = f (inr *)
-  h : (n : ℕ) → u ≢ under n 
+  h : (n : ℕ) → u ≢ under n
   h n = f (inl n)
 
 \end{code}
@@ -340,7 +340,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
  where
   f : (u : ℕ∞) (n : ℕ) → decidable (u ≡ under n)
   f u 0 = 𝟚-equality-cases g₀ g₁
-   where 
+   where
     g₀ : is-Zero u → decidable (u ≡ Zero)
     g₀ r = inl(is-Zero-equal-Zero fe r)
     g₁ : positive u → decidable (u ≡ Zero)
@@ -438,7 +438,7 @@ open import NaturalsOrder
 ⊏-back = pr₂
 
 ⊏-trans'' : (u : ℕ∞) (n : ℕ) → (m : ℕ) → m ≤ n → n ⊏ u → m ⊏ u
-⊏-trans'' u = regress (λ n → n ⊏ u) (⊏-back u) 
+⊏-trans'' u = regress (λ n → n ⊏ u) (⊏-back u)
 
 ⊏-trans' : (m : ℕ) (n : ℕ) (u : ℕ∞)  → m < n → n ⊏ u → m ⊏ u
 ⊏-trans' m n u l = ⊏-trans'' u n m (≤-trans m (succ m) n (≤-succ m) l)
@@ -518,7 +518,7 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
       s = Succ-criterion fe {u} {n} q p
 
 ≺-cotransitive : funext₀ → cotransitive _≺_
-≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁) 
+≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁)
  where
   g : decidable(n ⊏ w) → (u ≺ w) + (w ≺ v)
   g (inl a) = inl (n , r , a)
@@ -535,7 +535,7 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
     s : w ≡ under m
     s = pr₂(pr₂ σ)
 
-ℕ∞-𝟚-order-separated : funext₀ → 𝟚-order-separated _≺_ 
+ℕ∞-𝟚-order-separated : funext₀ → 𝟚-order-separated _≺_
 ℕ∞-𝟚-order-separated fe x y (n , r , l) =  p , t , h
  where
   p : ℕ∞ → 𝟚
@@ -554,7 +554,7 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
    where
     c : Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
     c = under-lemma fe u n a
-    
+
   h : (u v : ℕ∞) → (u ≺ v → p u ≤₂ p v) × (p u <₂ p v → u ≺ v)
   h u v = f u v , g u v
 

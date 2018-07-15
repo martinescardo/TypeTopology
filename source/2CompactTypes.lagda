@@ -12,7 +12,7 @@ point n : 𝟚 represents the decidable truth-value or proposition
 n ≡ ₁. The natural order on 𝟚, defined by
 
   m ≤ n = (m ≡ ₁ → n ≡ ₁) ≃ (n ≡ ₀ → m ≡ ₀),
-  
+
 corresponds to the implication order (P ≤ Q = P → Q) of propositions.
 
 Given a dominance 𝕊 and a type X, we consider the map Κ : 𝕊 → (X → 𝕊)
@@ -55,10 +55,10 @@ We take this as our primary definition of 𝟚-compactness and then
 characterize it as the existence of a right adjoint to Κ.  The above
 also shows that strong 𝟚-compactness, defined as strong 𝟚-overtness
 but replacing ∃ by ∀, coincides with 𝟚-compactness.
- 
+
 We consider various closure properties for 𝟚-compact and strongly
 𝟚-overt types, their interaction with discreteness, total separatedess
-and function types, and number of characterizations. 
+and function types, and number of characterizations.
 
 Because 𝟚-compact types are defined in terms of maps into 𝟚, a type is
 𝟚-compact iff its totally separated reflection is 𝟚-compact, since
@@ -210,14 +210,14 @@ cdd {U} {V} {X} {Y} c d f g = h (c p)
  where
   p : X → 𝟚
   p = pr₁ (co-characteristic-function (λ x → d (f x) (g x)))
-  
+
   r : (x : X) → (p x ≡ ₀ → ¬ (f x ≡ g x)) × (p x ≡ ₁ → f x ≡ g x)
   r = pr₂ (co-characteristic-function λ x → d (f x) (g x))
 
   φ : ((x : X) → p x ≡ ₁) → f ≡ g
   φ α = (dfunext (fe U V) (λ x → pr₂ (r x) (α x)))
-  
-  γ : f ≡ g → (x : X) → p x ≡ ₁ 
+
+  γ : f ≡ g → (x : X) → p x ≡ ₁
   γ t x = Lemma[b≢₀→b≡₁] (λ u → pr₁ (r x) u (happly t x))
 
   h : decidable((x : X) → p x ≡ ₁) → decidable (f ≡ g)
@@ -233,7 +233,7 @@ First, to decide Π(p:X→𝟚), p(x)=1, decide p = λ x → ₁:
 
 \begin{code}
 
-d𝟚c : ∀ {U} {X : U ̇} → discrete(X → 𝟚) → 𝟚-compact X 
+d𝟚c : ∀ {U} {X : U ̇} → discrete(X → 𝟚) → 𝟚-compact X
 d𝟚c d = 𝟚-c'c (λ p → d p (λ x → ₁))
 
 \end{code}
@@ -245,13 +245,13 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 \begin{code}
 
-dcc : ∀ {U V} {X : U ̇} {Y : V ̇} → retract 𝟚 of Y → discrete(X → Y) → 𝟚-compact X 
+dcc : ∀ {U V} {X : U ̇} {Y : V ̇} → retract 𝟚 of Y → discrete(X → Y) → 𝟚-compact X
 dcc {U} re d = d𝟚c (retract-discrete-discrete (rpe (fe U U₀) re) d)
 
 ddc' : ∀ {U V} {X : U ̇} {Y : V ̇} (y₀ y₁ : Y) → y₀ ≢ y₁
-    → discrete Y → discrete(X → Y) → 𝟚-compact X 
+    → discrete Y → discrete(X → Y) → 𝟚-compact X
 ddc' y₀ y₁ ne dy = dcc (𝟚-retract-of-discrete ne dy)
-  
+
 \end{code}
 
 So, in summary, if Y is a non-trivial discrete type, then X is
@@ -284,17 +284,17 @@ open import UF-SetExamples
 
 surjection-strongly-𝟚-overt : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                             → is-surjection f → strongly-𝟚-overt X → strongly-𝟚-overt Y
-surjection-strongly-𝟚-overt {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
+surjection-strongly-𝟚-overt {U} {V} {X} {Y} f su c q = g (c (q ∘ f))
  where
   h : (Σ \(x : X) → q(f x) ≡ ₀) → Σ \(y : Y) → q y ≡ ₀
   h (x , r) = (f x , r)
-  
+
   l : (y : Y) → q y ≡ ₀ → (Σ \(x : X) → f x ≡ y) → Σ \(x : X) → q (f x) ≡ ₀
   l y r (x , s) = (x , (ap q s ∙ r))
-  
+
   k : (Σ \(y : Y) → q y ≡ ₀) → ∃ \(x : X) → q (f x) ≡ ₀
   k (y , r) = ptfunct (l y r) (su y)
-  
+
   g : decidable (∃ \(x : X) → q(f x) ≡ ₀) → decidable (∃ \(y : Y) → q y ≡ ₀)
   g (inl s) = inl (ptfunct h s)
   g (inr u) = inr (contrapositive (ptrec ptisp k) u)
@@ -305,7 +305,7 @@ image-strongly-𝟚-overt f = surjection-strongly-𝟚-overt (corestriction f) (
 
 surjection-𝟚-compact : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-surjection f → 𝟚-compact X → 𝟚-compact Y
-surjection-𝟚-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f)) 
+surjection-𝟚-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f))
  where
   g : decidable((x : X) → q (f x) ≡ ₁) → decidable ((x : Y) → q x ≡ ₁)
   g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
@@ -349,7 +349,7 @@ open import TotallySeparated
 module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
 
  open TotallySeparatedReflection {U} fe pt
- 
+
  extension : (X → 𝟚) → (T X → 𝟚)
  extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-totally-separated p))
 
@@ -357,7 +357,7 @@ module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
  extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-totally-separated p)))
 
  sot : strongly-𝟚-overt X → strongly-𝟚-overt (T X)
- sot = surjection-strongly-𝟚-overt η (η-surjection) 
+ sot = surjection-strongly-𝟚-overt η (η-surjection)
 
  tos : strongly-𝟚-overt (T X) → strongly-𝟚-overt X
  tos c p = h (c (extension p))
@@ -369,7 +369,7 @@ module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
 
    g : (Σ \(x : X) → p x ≡ ₀) → Σ \(x' : T X) → extension p x' ≡ ₀
-   g (x , r) = η x , (extension-property p x ∙ r) 
+   g (x , r) = η x , (extension-property p x ∙ r)
 
    h : decidable (∃ \(x' : T X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
    h (inl x) = inl (ptrec ptisp f x)
@@ -383,12 +383,12 @@ module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
   where
    f : ((x' : T X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
    f α x = (extension-property p x) ⁻¹ ∙ α (η x)
-   
+
    g : (α : (x : X) → p x ≡ ₁) → ((x' : T X) → extension p x' ≡ ₁)
    g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
      where
       g' : (x : X) → extension p (η x) ≡ ₁
-      g' x = extension-property p x ∙ α x 
+      g' x = extension-property p x ∙ α x
 
    h : decidable ((x' : T X) → extension p x' ≡ ₁) → decidable ((x : X) → p x ≡ ₁)
    h (inl α) = inl (f α)
@@ -416,16 +416,16 @@ tscd {U} {X} ts c x y = g (a s)
  where
   q : (X → 𝟚) → 𝟚
   q = pr₁ (co-characteristic-function (λ p → 𝟚-discrete (p x) (p y)))
-  
+
   r : (p : X → 𝟚) → (q p ≡ ₀ → p x ≢ p y) × (q p ≡ ₁ → p x ≡ p y)
   r = pr₂ (co-characteristic-function (λ p → 𝟚-discrete (p x) (p y)))
-  
+
   s : decidable ((p : X → 𝟚) → q p ≡ ₁)
   s = c q
-  
+
   b : (p : X → 𝟚) → p x ≡ p y → q p ≡ ₁
   b p u = Lemma[b≢₀→b≡₁] (λ v → pr₁ (r p) v u)
-  
+
   a : decidable ((p : X → 𝟚) → q p ≡ ₁) → decidable((p : X → 𝟚) → p x ≡ p y)
   a (inl f) = inl (λ p → pr₂ (r p) (f p))
   a (inr φ) = inr h
@@ -458,21 +458,21 @@ module _ {U : Universe} {X : U ̇} where
   where
    z : retract (X → 𝟚) of (X → Y)
    z = rpe (fe U U₀) r
-   
+
    a : (T X → 𝟚) ≃ (X → 𝟚)
    a = totally-separated-reflection'' 𝟚-totally-separated
-   
+
    b : retract (T X → 𝟚) of (X → 𝟚)
    b = equiv-retract-l a
-   
+
    d : retract (T X → 𝟚) of (X → Y)
    d = retracts-compose z b
-   
+
    e : 𝟚-compact (T X → 𝟚)
    e = retract-𝟚-compact d c
-   
+
    f : discrete (T X)
-   f = tscd tts e 
+   f = tscd tts e
 
 \end{code}
 
@@ -509,13 +509,13 @@ Closure of compactness under sums (and hence binary products):
  where
   f : ∀ x → decidable (∀ y → p (x , y) ≡ ₁)
   f x = d x (λ y → p (x , y))
-  
+
   q : X → 𝟚
   q = pr₁ (co-characteristic-function f)
-  
+
   q₀ : (x : X) → q x ≡ ₀ → ¬ ((y : Y x) → p (x , y) ≡ ₁)
   q₀ x = pr₁(pr₂ (co-characteristic-function f) x)
-  
+
   q₁ : (x : X) → q x ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁
   q₁ x = pr₂(pr₂ (co-characteristic-function f) x)
 
@@ -546,9 +546,9 @@ information for the moment.
 isod : ∀ {U} (X : U ̇) → is-prop X → strongly-𝟚-overt X → decidable X
 isod X isp c = f a
  where
-  a : decidable ∥ X × (₀ ≡ ₀) ∥ 
+  a : decidable ∥ X × (₀ ≡ ₀) ∥
   a = c (λ x → ₀)
-   
+
   f : decidable ∥ X × (₀ ≡ ₀) ∥ → decidable X
   f (inl s) = inl (ptrec isp pr₁ s)
   f (inr u) = inr (λ x → u ∣ x , refl ∣)
@@ -571,13 +571,13 @@ idso X isp d p = g d
    where
     b : p x ≡ ₀ → decidable (∃ \x → p x ≡ ₀)
     b r = inl ∣ x , r ∣
-     
+
     c : p x ≡ ₁ → decidable (∃ \x → p x ≡ ₀)
-    c r = inr (ptrec (𝟘-is-prop) f) 
+    c r = inr (ptrec (𝟘-is-prop) f)
      where
       f : ¬ Σ \y → p y ≡ ₀
       f (y , q) = zero-is-not-one (transport (λ - → p - ≡ ₀) (isp y x) q ⁻¹ ∙ r)
-       
+
   g (inr u) = inr (ptrec 𝟘-is-prop (λ σ → u(pr₁ σ)))
 
 icdn : ∀ {U} (X : U ̇) → is-prop X → 𝟚-compact X → decidable(¬ X)
@@ -585,7 +585,7 @@ icdn X isp c = f a
  where
   a : decidable (X → ₀ ≡ ₁)
   a = c (λ x → ₀)
-   
+
   f : decidable (X → ₀ ≡ ₁) → decidable (¬ X)
   f (inl u) = inl (zero-is-not-one  ∘ u)
   f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
@@ -596,17 +596,17 @@ emcdn X isp c = Cases a l m
   p : X + ¬ X → 𝟚
   p (inl x) = ₀
   p (inr u) = ₁
-  
+
   a : decidable ((z : X + ¬ X) → p z ≡ ₁)
   a = c p
-  
+
   l : ((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
   l α = inl(λ x → 𝟘-elim (zero-is-not-one (α (inl x))))
-  
+
   α : (u : X → 𝟘) (z : X + ¬ X) → p z ≡ ₁
   α u (inl x) = 𝟘-elim (u x)
   α u (inr v) = refl
-     
+
   m : ¬((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
   m φ = inr(λ u → φ(α u))
 
@@ -625,7 +625,7 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
   r : X → Σ \(x : X) → A x ≡ ₀
   r x = 𝟚-equality-cases (λ(e : A x ≡ ₀) → (x , e)) (λ(e : A x ≡ ₁) → (x₀ , e₀))
-  
+
   rs : (σ : Σ \(x : X) → A x ≡ ₀) → r(pr₁ σ) ≡ σ
   rs (x , e) = w
    where
@@ -636,7 +636,7 @@ detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
     t = s (A x) e
     u : (λ e' → x , e') ≡ (λ _ → x , e)
     u = dfunext (fe U₀ U) λ e' → ap (λ - → (x , -)) (𝟚-is-set e' e)
-    v : r x ≡ 𝟚-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀) 
+    v : r x ≡ 𝟚-equality-cases (λ(_ : A x ≡ ₀) → x , e) (λ (_ : A x ≡ ₁) → x₀ , e₀)
     v = ap (λ - → 𝟚-equality-cases - (λ(_ : A x ≡ ₁) → x₀ , e₀)) u
     w : r x ≡ x , e
     w = v ∙ t
@@ -672,13 +672,13 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
  where
   p₀ : (x : X) → A x ≡ ₀ → 𝟚
   p₀ x e = ₁
-  
+
   p₁ : (x : X) → A x ≡ ₁ → 𝟚
   p₁ x e = q (x , e)
-  
+
   p : X → 𝟚
   p x = 𝟚-equality-cases (p₀ x) (p₁ x)
-  
+
   p-spec₀ : (x : X) → A x ≡ ₀ → p x ≡ ₁
   p-spec₀ x e = s (A x) e (p₁ x)
    where
@@ -686,7 +686,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
       → 𝟚-equality-cases (λ (_ : b ≡ ₀) → ₁) f₁ ≡ ₁
     s ₀ refl = λ f₁ → refl
     s ₁ ()
-    
+
   p-spec₁ : (x : X) (e : A x ≡ ₁) → p x ≡ q (x , e)
   p-spec₁ x e = u ∙ t
    where
@@ -702,7 +702,7 @@ detachable-subset-𝟚-compact {U} {X} A c q = g (c p)
     t = s (A x) e
     u : p x ≡ 𝟚-equality-cases (p₀ x) y
     u = ap (𝟚-equality-cases (p₀ x)) r
-  
+
   g : decidable ((x : X) → p x ≡ ₁) → decidable ((σ : Σ \(x : X) → A x ≡ ₁) → q σ ≡ ₁)
   g (inl α) = inl h
    where
@@ -790,7 +790,7 @@ so-isoore {U} {X} c = g
   h : decidable (∃ \(x : X) → ₀ ≡ ₀) → inhabited-strongly-𝟚-overt X + is-empty X
   h (inl t) = inl (i-and-c-iso (ptfunct pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
-  
+
   g : inhabited-strongly-𝟚-overt X + is-empty X
   g = h (c (λ _ → ₀))
 
@@ -866,7 +866,7 @@ inf₁ : ∀ {U} {X : U ̇} (c : 𝟚-compact X) {p : X → 𝟚}
 inf₁ c {p} r x = pr₁(inf-property c p) x r
 
 inf₁-converse : ∀ {U} {X : U ̇} (c : 𝟚-compact X) {p : X → 𝟚}
-              → (∀ x → p x ≡ ₁) → inf c p ≡ ₁ 
+              → (∀ x → p x ≡ ₁) → inf c p ≡ ₁
 inf₁-converse c {p} α = ₁-maximal (h g)
  where
   h : (∀ x → ₁ ≤₂ p x) → ₁ ≤₂ inf c p
@@ -943,19 +943,19 @@ Right adjoints to Κ are characterized as follows:
       l₂ = l₁
       l₃ : (x : X) → p x ≡ ₁
       l₃ x = l₂ x refl
-      
+
     f₁ : p ≡ (λ x → ₁) → A p ≡ ₁
     f₁ s = l₀ refl
      where
       l₃ : (x : X) → p x ≡ ₁
       l₃ = happly s
       l₂ : (x : X) → ₁ ≤₂ p x
-      l₂ x _ = l₃ x 
+      l₂ x _ = l₃ x
       l₁ : Κ ₁ ≤̇ p
       l₁ = l₂
       l₀ : ₁ ≤₂ A p
       l₀ = pr₁ (φ ₁ p) l₁
-      
+
   g : ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)) → Κ⊣ A
   g γ n p = (g₀ n refl , g₁ n refl)
    where
@@ -967,7 +967,7 @@ Right adjoints to Κ are characterized as follows:
       l₀ x = l x refl
       l₁ : p ≡ (λ x → ₁)
       l₁ = dfunext (fe U U₀) l₀
-      
+
     g₁ : ∀ m → m ≡ n → m ≤₂ A p → Κ m ≤̇ p
     g₁ ₀ r l x ()
     g₁ ₁ refl l x refl = l₀ x
@@ -1001,7 +1001,7 @@ the dominance 𝟚.
     A p = pr₁(l₀ p (c' p))
     l₁ : (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
     l₁ p = pr₂(l₀ p (c' p))
-    
+
   g : ((Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A)) → 𝟚-compact X
   g (A , φ) = 𝟚-c'c c'
    where
@@ -1031,10 +1031,10 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   f : ∀ p → complement (complement (φ (λ x → complement (complement (p x)))))
           ≡ φ (λ x → complement (complement (p x)))
   f p = complement-involutive (φ (λ x → complement (complement (p x))))
-  
+
   g : ∀ p → φ (λ x → complement (complement (p x))) ≡ φ p
   g p = ap φ (dfunext (fe U U₀) (λ x → complement-involutive (p x)))
-  
+
   h : ∀ p → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) p ≡ φ p
   h p = f p ∙ g p
 
@@ -1061,7 +1061,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
          m₂ = m₁
          m₃ : (x : X) → p x ≤₂ n
          m₃ x = complement-both-left (m₂ x)
-         
+
        γ₁ : p ≤̇ Κ n → E p ≤₂ n
        γ₁ l = complement-left m₀
         where
@@ -1083,16 +1083,16 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   g : E ⊣Κ → Κ⊣ A
   g γ = φ
    where
-     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ⇔ n ≤₂ A p 
+     φ : (n : 𝟚) (p : X → 𝟚) → Κ n ≤̇ p ⇔ n ≤₂ A p
      φ n p = (φ₀ , φ₁ )
       where
        φ₀ : Κ n ≤̇ p → n ≤₂ A p
-       φ₀ l = complement-right m₀ 
+       φ₀ l = complement-right m₀
         where
          m₃ : (x : X) → n ≤₂ p x
          m₃ = l
          m₂ : (x : X) → complement (p x) ≤₂ complement n
-         m₂ x = complement-both-right (m₃ x) 
+         m₂ x = complement-both-right (m₃ x)
          m₁ : (λ x → complement (p x)) ≤̇ Κ (complement n)
          m₁ = m₂
          m₀ : E (λ x → complement (p x)) ≤₂ complement n
@@ -1122,7 +1122,7 @@ We have the following corollaries:
  where
   f : (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A) → (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
   f (A , φ) = (𝟚-DeMorgan-dual A , 𝟚-compact-is-𝟚-overt A φ)
-  
+
   g : (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ) → (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A)
   g (E , γ) = (𝟚-DeMorgan-dual E , 𝟚-overt-is-𝟚-compact E γ)
 

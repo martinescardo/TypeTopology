@@ -18,7 +18,7 @@ one because it is more symmetrical.
 \begin{code}
 
 is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-is-equiv f = has-section f × has-retraction f 
+is-equiv f = has-section f × has-retraction f
 
 _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
@@ -77,7 +77,7 @@ equiv-closed-under-∼ {U} {V} {X} {Y} f g (hass , hasr) h = (has-section-closed
 
 equiv-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → is-equiv f → f ∼ g → is-equiv g
 equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
-  
+
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
@@ -93,7 +93,7 @@ is-equiv-qinv {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
 qinv-is-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-equiv f
 qinv-is-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
 
-≃-sym : ∀ {U V} {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X 
+≃-sym : ∀ {U V} {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X
 ≃-sym {U} {V} {X} {Y} (f , e) = (g , d)
  where
   g : Y → X
@@ -103,7 +103,7 @@ qinv-is-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
   d : is-equiv g
   d = qinv-is-equiv g q
 
-equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y 
+equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
 
 equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
@@ -195,19 +195,19 @@ qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
   a x = η (g (f x))      ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
         ap (g ∘ f) (η x)  ≡⟨ (ap-ap f g (η x))⁻¹ ⟩
         ap g (ap f (η x)) ∎
-        
+
   b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
   b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x)) ⟩
         ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
         ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹ ⟩
         ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x)) ⟩
         ε (f (g (f x))) ∙ ap f (η x)         ∎
-        
+
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
   τ x = ap f (η x)                                         ≡⟨ refl-left-neutral ⁻¹ ⟩
         refl ∙ ap f (η x)                                   ≡⟨ ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹ ⟩        
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹ ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                            ∎
 
@@ -242,7 +242,7 @@ is-hae-is-vv-equiv {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁
  where
   c : fiber f y
   c = (g y , ε y)
-  
+
   α : (x : X) (p : f x ≡ y) → c ≡ (x , p)
   α x p = φ
    where
@@ -384,7 +384,7 @@ pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton r (s , rs) 
 
 NatΣ-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
-NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ)) 
+NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
  where
   s : Σ B → Σ A
   s (x , b) = x , pr₁ (pr₁ (ise x)) b
@@ -394,7 +394,7 @@ NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
   r (x , b) = x , (pr₁ (pr₂ (ise x)) b)
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (ise x)) a)
-  
+
 NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
             → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
@@ -406,7 +406,7 @@ NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr�
   γ : (Σ \(y : Y) → A (g y)) → Σ A
   γ (y , a) = (g y , a)
   φ : Σ A → Σ \(y : Y) → A (g y)
-  φ (x , a) = (f x , back-transport A (gf x) a) 
+  φ (x , a) = (f x , back-transport A (gf x) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡'' (gf x , p)
    where

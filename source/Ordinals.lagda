@@ -54,7 +54,7 @@ subsingleton-ordinal P isp = P , subsingleton.order P isp , subsingleton.well-or
 _+ₒ_ : Ord → Ord → Ord
 (X , _<_ , o) +ₒ (Y , _≺_ , p) = (X + Y) ,
                                  plus.order _<_ _≺_ ,
-                                 plus.well-order _<_ _≺_ o p 
+                                 plus.well-order _<_ _≺_ o p
 succₒ : Ord → Ord
 succₒ X = X +ₒ 𝟙ₒ
 
@@ -117,7 +117,7 @@ tis-well-ordered ((X , _<_ , o) , t) = o
 𝟙º = 𝟙ₒ , subsingleton.topped 𝟙 𝟙-is-prop *
 𝟚º = 𝟙ₒ +ₒ 𝟙ₒ ,
      plus.top-preservation (underlying-order 𝟙ₒ) (underlying-order 𝟙ₒ) (topped 𝟙º)
-ℕ∞º = (ℕ∞ₒ , ∞ , ∞-top) 
+ℕ∞º = (ℕ∞ₒ , ∞ , ∞-top)
 
 \end{code}
 
@@ -230,7 +230,7 @@ usearchable τ = searchable ⟪ τ ⟫
              → usearchable τ
              → ((x : ⟪ τ ⟫) → usearchable (υ x))
              → usearchable (∑ {τ} υ)
-∑-usearchable τ υ = Σ-searchable             
+∑-usearchable τ υ = Σ-searchable
 
 +usearchable : (τ υ : Ordᵀ)
               → usearchable τ

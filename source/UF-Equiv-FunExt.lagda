@@ -24,7 +24,7 @@ is-prop-is-vv-equiv fe {U} {V} f = Π-is-prop
                                      (fe V (U ⊔ V))
                                      (λ x → is-prop-is-singleton (fe (U ⊔ V) (U ⊔ V)))
 
-qinv-post' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
+qinv-post' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
           → naive-funext W U → naive-funext W V
           → (f : X → Y) → qinv f → qinv (λ (h : A → X) → f ∘ h)
 qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
@@ -42,7 +42,7 @@ qinv-post : (∀ U V → naive-funext U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V
           → qinv f → qinv (λ (h : A → X) → f ∘ h)
 qinv-post nfe {U} {V} {W} = qinv-post' (nfe W U) (nfe W V)
 
-equiv-post : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} 
+equiv-post : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
           → naive-funext W U → naive-funext W V
           → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 equiv-post nfe nfe' f e = qinv-is-equiv (λ h → f ∘ h) (qinv-post' nfe nfe' f (is-equiv-qinv f e))
@@ -65,7 +65,7 @@ qinv-pre : (∀ U V → naive-funext U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V 
          → qinv f → qinv (λ (h : Y → A) → h ∘ f)
 qinv-pre nfe {U} {V} {W} = qinv-pre' (nfe V W) (nfe U W)
 
-hasr-is-prop-hass' : ∀ {U} {V} {X : U ̇} {Y : V ̇} 
+hasr-is-prop-hass' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
                  → funext V U → funext V V
                  → (f : X → Y) → has-retraction f → is-prop(has-section f)
 hasr-is-prop-hass' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) = is-singleton-is-prop c (h , fh)
@@ -98,7 +98,7 @@ hass-is-prop-hasr' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) = is-singleton-is-
   r : fiber (λ h →  h ∘ f) id → has-retraction f
   r (h , p) = (h , happly' (h ∘ f) id p)
   s : has-retraction f → fiber (λ h →  h ∘ f) id
-  s (h , η) = (h , dfunext fe η) 
+  s (h , η) = (h , dfunext fe η)
   rs : (σ : has-retraction f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ - → (h , -)) q
    where
@@ -119,7 +119,7 @@ is-prop-is-equiv : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇
                 → is-prop(is-equiv f)
 is-prop-is-equiv fe f = ×-prop-criterion (hasr-is-prop-hass fe f , hass-is-prop-hasr fe f)
 
-is-prop-is-equiv' : ∀ {U} {V} {X : U ̇} {Y : V ̇} 
+is-prop-is-equiv' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
                 → funext V U → funext V V → funext U U → funext V U
                 → (f : X → Y) → is-prop(is-equiv f)
 is-prop-is-equiv' fe fe' fe'' fe''' f = ×-prop-criterion (hasr-is-prop-hass' fe fe' f , hass-is-prop-hasr' fe'' fe''' f)
@@ -185,6 +185,6 @@ TT-unchoice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → 
                     → is-equiv TT-unchoice
 TT-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
    (TT-choice , TT-unchoice-choice {U} {V} {W} {X} {Y} {A} fe) ,
-   (TT-choice , TT-choice-unchoice {U} {V} {W} {X} {Y} {A}) 
-                                        
+   (TT-choice , TT-choice-unchoice {U} {V} {W} {X} {Y} {A})
+
 \end{code}

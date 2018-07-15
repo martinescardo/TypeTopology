@@ -62,15 +62,15 @@ Standard examples:
 𝟚-discrete ₁ ₀ = inr(λ ())
 𝟚-discrete ₁ ₁ = inl refl
 
-ℕ-discrete : discrete ℕ 
-ℕ-discrete 0 0 = inl refl 
+ℕ-discrete : discrete ℕ
+ℕ-discrete 0 0 = inl refl
 ℕ-discrete 0 (succ n) = inr (λ())
 ℕ-discrete (succ m) 0 = inr (λ())
 ℕ-discrete (succ m) (succ n) =  step(ℕ-discrete m n)
-  where 
-   step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n) 
+  where
+   step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n)
    step (inl r) = inl(ap succ r)
-   step (inr f) = inr(λ s → f(succ-injective s)) 
+   step (inr f) = inr(λ s → f(succ-injective s))
 
 +discrete : ∀ {U V} {X : U ̇} {Y : V ̇}
           → discrete X → discrete Y → discrete (X + Y)
@@ -98,10 +98,10 @@ General properties:
 discrete-is-cotransitive : ∀ {U} {X : U ̇}
                          → discrete X → {x y z : X} → x ≢ y → (x ≢ z) + (z ≢ y)
 discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
- where 
+ where
   f : (x ≡ z) + (x ≢ z) → (x ≢ z) + (z ≢ y)
-  f (inl r) = inr (λ s → φ(r ∙ s)) 
-  f (inr γ) = inl γ 
+  f (inl r) = inr (λ s → φ(r ∙ s))
+  f (inr γ) = inl γ
 
 retract-discrete-discrete : ∀ {U} {V} {X : U ̇} {Y : V ̇}
                          → retract Y of X → discrete X → discrete Y
@@ -116,18 +116,18 @@ retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
   r : X → 𝟚
   r = pr₁ (characteristic-function (d x₀))
-  
+
   φ : (x : X) → (r x ≡ ₀ → x₀ ≡ x) × (r x ≡ ₁ → ¬ (x₀ ≡ x))
   φ = pr₂ (characteristic-function (d x₀))
-  
+
   s : 𝟚 → X
   s ₀ = x₀
   s ₁ = x₁
-  
+
   rs : (n : 𝟚) → r (s n) ≡ n
   rs ₀ = Lemma[b≢₁→b≡₀] (λ p → pr₂ (φ x₀) p refl)
   rs ₁ = Lemma[b≢₀→b≡₁] λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
-  
+
 \end{code}
 
 Separated types form an exponential ideal, assuming
@@ -141,7 +141,7 @@ separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 separated-ideal : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
                → ((x : X) → separated(Y x)) → separated(Π Y)
 separated-ideal fe s f g h = dfunext fe lemma𝟚
- where 
+ where
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ - → - x) r
 
@@ -149,7 +149,7 @@ separated-ideal fe s f g h = dfunext fe lemma𝟚
   lemma₁ = double-negation-unshift(¬¬-functor lemma₀ h)
 
   lemma𝟚 : ∀ x → f x ≡ g x
-  lemma𝟚 x =  s x (f x) (g x) (lemma₁ x) 
+  lemma𝟚 x =  s x (f x) (g x) (lemma₁ x)
 
 discrete-is-separated : ∀ {U} {X : U ̇} → discrete X → separated X
 discrete-is-separated d x y = ¬¬-elim(d x y)
@@ -182,14 +182,14 @@ apart-is-different (x , φ) r = φ (ap (λ - → - x) r)
 
 apart-is-symmetric : ∀ {U V} {X : U ̇} → {Y : X → V ̇}
                    → {f g : (x : X) → Y x} → f ♯ g → g ♯ f
-apart-is-symmetric (x , φ)  = (x , (φ ∘ _⁻¹)) 
+apart-is-symmetric (x , φ)  = (x , (φ ∘ _⁻¹))
 
 apart-is-cotransitive : ∀ {U V} {X : U ̇} → {Y : X → V ̇}
-                     → ((x : X) → discrete(Y x)) 
+                     → ((x : X) → discrete(Y x))
                      → (f g h : (x : X) → Y x)
                      → f ♯ g → f ♯ h  +  h ♯ g
 apart-is-cotransitive d f g h (x , φ)  = lemma₁(lemma₀ φ)
- where 
+ where
   lemma₀ : f x ≢ g x → (f x ≢ h x)  +  (h x ≢ g x)
   lemma₀ = discrete-is-cotransitive (d x)
 
@@ -209,7 +209,7 @@ tight : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇}
       → (f g : (x : X) → Y x)
       → ¬(f ♯ g) → f ≡ g
 tight fe s f g h = dfunext fe lemma₁
- where 
+ where
   lemma₀ : ∀ x → ¬¬(f x ≡ g x)
   lemma₀ = not-Σ-implies-Π-not h
 
@@ -219,7 +219,7 @@ tight fe s f g h = dfunext fe lemma₁
 
 tight' : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇}
        → ((x : X) → discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
-tight' fe d = tight fe (λ x → discrete-is-separated(d x)) 
+tight' fe d = tight fe (λ x → discrete-is-separated(d x))
 
 \end{code}
 
@@ -230,9 +230,9 @@ easy:
 
 binary-product-separated : ∀ {U V} {X : U ̇} {Y : V ̇}
                          → separated X → separated Y → separated(X × Y)
-binary-product-separated s t (x , y) (x' , y') φ = 
- lemma(lemma₀ φ)(lemma₁ φ) 
- where 
+binary-product-separated s t (x , y) (x' , y') φ =
+ lemma(lemma₀ φ)(lemma₁ φ)
+ where
   lemma₀ : ¬¬((x , y) ≡ (x' , y')) → x ≡ x'
   lemma₀ = (s x x') ∘ ¬¬-functor(ap pr₁)
 
@@ -240,7 +240,7 @@ binary-product-separated s t (x , y) (x' , y') φ =
   lemma₁ = (t y y') ∘ ¬¬-functor(ap pr₂)
 
   lemma : x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
-  lemma = ap₂ (_,_)  
+  lemma = ap₂ (_,_)
 
 \end{code}
 
@@ -252,7 +252,7 @@ special case is also easy:
 
 binary-sum-separated : ∀ {U V} {X : U ̇} {Y : V ̇}
                      → separated X → separated Y → separated(X + Y)
-binary-sum-separated {U} {V} {X} {Y} s t (inl x) (inl x') = lemma 
+binary-sum-separated {U} {V} {X} {Y} s t (inl x) (inl x') = lemma
  where
   claim : inl x ≡ inl x' → x ≡ x'
   claim = ap p
@@ -263,9 +263,9 @@ binary-sum-separated {U} {V} {X} {Y} s t (inl x) (inl x') = lemma
   lemma : ¬¬(inl x ≡ inl x') → inl x ≡ inl x'
   lemma = (ap inl) ∘ (s x x') ∘ ¬¬-functor claim
 
-binary-sum-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )  
-binary-sum-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹)) 
-binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma 
+binary-sum-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
+binary-sum-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹))
+binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma
  where
   claim : inr y ≡ inr y' → y ≡ y'
   claim = ap q
@@ -287,10 +287,10 @@ binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma
       where
         b : p ≢ ⊥
         b u = t (ap f u ∙ r)
-        
+
         c : p ≢ ⊤
         c u = t (ap f u)
-        
+
     g : ∀ p → f p ≡ f ⊤
     g p = s (f p) (f ⊤) (a p)
 
@@ -301,7 +301,7 @@ binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma
 \begin{code}
 
 qinvs-preserve-isolatedness : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → (x : X) → isolated x → isolated (f x)
-qinvs-preserve-isolatedness {U} {V} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y)) 
+qinvs-preserve-isolatedness {U} {V} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y))
  where
   h : decidable (x ≡ g y) → decidable (f x ≡ y)
   h (inl p) = inl (ap f p ∙ fg y)

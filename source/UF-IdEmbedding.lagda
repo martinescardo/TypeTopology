@@ -62,7 +62,7 @@ open import UF-Univalence
 
 \end{code}
 
-The Id Embedding Lemma. The idea is to show that the type 
+The Id Embedding Lemma. The idea is to show that the type
 T := Σ \(x : X) → Id x ≡ A is a proposition by showing that there is a
 left-cancellable map from it to a proposition, namely the contractible
 type Σ A.
@@ -71,7 +71,7 @@ type Σ A.
 
 Id-Embedding-Lemma : (∀ U V → funext U V) → ∀ {U} → {X : U ̇}
                   → ((x y : X) (A : X → U ̇)
-                  → left-cancellable (idtofun (Id x y) (A y))) 
+                  → left-cancellable (idtofun (Id x y) (A y)))
                   → is-embedding(Id {U} {X})
 Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
@@ -96,7 +96,7 @@ Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
       l : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → (x : X) → φ x ≡ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
       g : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → φ ≡ φ'
-      g p = dfunext (fe U (U ′)) (l p) 
+      g p = dfunext (fe U (U ′)) (l p)
   f₂-lc : (x : X) → left-cancellable(f₂ x)
   f₂-lc x {η} {η'} p = dfunext (fe U U) (λ y → dfunext (fe U U) (l y))
     where
@@ -109,16 +109,16 @@ Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
                (f₀-lc x)
                (left-cancellable-closed-under-∘ (f₁ x) (f₂ x) (f₁-lc x) (f₂-lc x))
   g : T → Σ A
-  g = NatΣ f 
+  g = NatΣ f
   g-lc : left-cancellable g
-  g-lc = NatΣ-lc X (λ x → Id x ≡ A) A f f-lc 
+  g-lc = NatΣ-lc X (λ x → Id x ≡ A) A f f-lc
   h : is-prop T
   h = left-cancellable-reflects-is-prop g g-lc (is-singleton-is-prop c)
 
 \end{code}
 
 univalence implies that the function Id {U} {X} : X → (X → U ̇) is an embedding.
-  
+
 The map eqtofun is left-cancellable assuming univalence (and function
 extensionality, which is a consequence of univalence, but we don't
 bother):
@@ -133,14 +133,14 @@ eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
   q = is-prop-is-equiv fe g _ _
   go : f , jef ≡ g , jeg
   go = to-Σ-Id (p , q)
-  
+
 \end{code}
 
 The map idtofun is left-cancellable assuming univalence (and funext):
 
 \begin{code}
 
-is-univalent-idtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V) → (X Y : U ̇) 
+is-univalent-idtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V) → (X Y : U ̇)
                        → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)
@@ -149,7 +149,7 @@ is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
 
 UA-Id-embedding-Theorem : ∀ {U} → is-univalent U → (∀ U V → funext U V)
                        → {X : U ̇} → is-embedding(Id {U} {X})
-UA-Id-embedding-Theorem {U} ua fe {X} = Id-Embedding-Lemma fe 
+UA-Id-embedding-Theorem {U} ua fe {X} = Id-Embedding-Lemma fe
                                             (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
 
 \end{code}
@@ -161,7 +161,7 @@ function Id : X → (X → U) is an embedding.
 
 K-id-embedding-Theorem' : ∀ {U} → K (U ′) → (∀ U V → funext U V)
                        → {X : U ̇} → is-embedding(Id {U} {X})
-K-id-embedding-Theorem' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k) 
+K-id-embedding-Theorem' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
 \end{code}
 

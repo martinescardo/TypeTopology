@@ -40,7 +40,7 @@ LPO-is-prop = Π-is-prop (fe U₀ U₀) f
  where
   a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
   a x (n , p) (m , q) = to-Σ-≡ n m p q (under-lc (p ⁻¹ ∙ q)) (ℕ∞-is-set (fe U₀ U₀)_ _)
-  
+
   f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
   f x = decidable-is-prop (fe U₀ U₀) (a x)
 
@@ -48,37 +48,37 @@ LPO-implies-omniscient-ℕ : LPO → omniscient ℕ
 LPO-implies-omniscient-ℕ lpo β = cases a b d
   where
     A = (Σ \(n : ℕ) → β n ≡ ₀) + (Π \(n : ℕ) → β n ≡ ₁)
-    
+
     α : ℕ → 𝟚
     α = force-decreasing β
-    
+
     x : ℕ∞
     x = (α , force-decreasing-is-decreasing β)
-    
+
     d : decidable(Σ \(n : ℕ) → x ≡ under n)
     d = lpo x
-    
+
     a : (Σ \(n : ℕ) → x ≡ under n) → A
-    a (n , p) = inl (force-decreasing-is-not-much-smaller β n c) 
+    a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
         c : α n ≡ ₀
         c = ap (λ - → incl - n) p ∙ under-diagonal₀ n
-        
+
     b : (¬ Σ \(n : ℕ) → x ≡ under n) → A
     b u = inr g
       where
         v : (n : ℕ) → x ≡ under n → 𝟘
         v = curry u
-        
+
         g : (n : ℕ) → β n ≡ ₁
         g n = force-decreasing-is-smaller β n e
           where
             c : x ≡ under n → 𝟘
             c = v n
-            
+
             l : x ≡ ∞
             l = not-ℕ-is-∞ (fe U₀ U₀) v
-            
+
             e : α n ≡ ₁
             e = ap (λ - → incl - n) l
 
@@ -86,31 +86,31 @@ omniscient-ℕ→LPO : omniscient ℕ → LPO
 omniscient-ℕ→LPO chlpo x = cases a b d
   where
     A = decidable (Σ \(n : ℕ) → x ≡ under n)
-    
+
     β : ℕ → 𝟚
     β = incl x
-    
+
     d : (Σ \(n : ℕ) → β n ≡ ₀) + (Π \(n : ℕ) → β n ≡ ₁)
     d = chlpo β
-    
+
     a : (Σ \(n : ℕ) → β n ≡ ₀) → A
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
         g : Σ \(m : ℕ) → (m ≤ n) × (x ≡ under m)
         g = under-lemma (fe U₀ U₀) x n p
-        
+
     b : (Π \(n : ℕ) → β n ≡ ₁) → A
     b φ = inr g
       where
         ψ : ¬ Σ \(n : ℕ) → β n ≡ ₀
         ψ = uncurry (λ n → Lemma[b≡₁→b≢₀](φ n))
-        
+
         f : (Σ \(n : ℕ) → x ≡ under n) → Σ \(n : ℕ) → β n ≡ ₀
         f (n , p) = (n , (ap (λ - → incl - n) p ∙ under-diagonal₀ n))
           where
            l : incl x n ≡ incl (under n) n
            l = ap (λ - → incl - n) p
-        
+
         g : ¬ Σ \(n : ℕ) → x ≡ under n
         g = contrapositive f ψ
 
@@ -119,7 +119,7 @@ omniscient-ℕ→LPO chlpo x = cases a b d
 Now, if LPO is false, that is, an empty type, then the function type
 
   LPO → ℕ
-  
+
 is isomorphic to the unit type 𝟙, and hence is searchable and
 omniscient. If LPO holds, that is, LPO is isomorphic to 𝟙 because it
 is a univalent proposition, then the function type LPO → ℕ is

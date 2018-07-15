@@ -8,7 +8,7 @@ Martin Escardo, 28 February 2018.
 
 1. Introduction
    ------------
-   
+
 In introductions to the subject for a general audience of
 mathematicians or logicians, the univalence axiom is typically
 explained by handwaving. This gives rise to several misconceptions,
@@ -20,7 +20,7 @@ scratch,
 
  * first written informally but rigorously in mathematical English
    prose, and
- 
+
  * then formally in Agda notation for Martin-Löf type theory.
 
 (Search for "univalenceFromScratch" to jump to the formal version.)
@@ -116,7 +116,7 @@ We also have the type X→Y of functions from X to Y, which is the
 particular case of Π with the constant family A(x):=Y.
 
 We also have the cartesian product X×Y, whose elements are pairs. This
-is the particular case of Σ, again with A(x):=Y. 
+is the particular case of Σ, again with A(x):=Y.
 
 We also have the disjoint sum X+Y, the empty type 𝟘 and the
 one-element type 𝟙, which will not be needed here.
@@ -166,7 +166,7 @@ indexed by elements x,y:X and p:Id(x,y) and any given function
 
     f : Π(x:X), A(x,x,refl(x)),
 
-we have a function 
+we have a function
 
     J(A,f) : Π(x,y:X), Π(p:Id(x,y)), A(x,y,p)
 
@@ -219,7 +219,7 @@ considered to be a function A:X→V for some universe V.
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
 
- Grp := Σ(G:U), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯ 
+ Grp := Σ(G:U), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
 
 Here is-set(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
 univalence, Grp itself will not be a set, but a 1-groupoid instead,
@@ -233,7 +233,7 @@ A and B.
 
 univalence is a property of the identity type Id_U of a universe U. It
 takes a number of steps to define the univalence type.
-  
+
 We say that a type X is a singleton if we have an element c:X with
 Id(c,x) for all x:X. In Curry-Howard logic, this is
 
@@ -315,7 +315,7 @@ Now we use J a second time to define a function
 For X,Y:U and p:Id(X,Y), we set
 
    A(X,Y,p) := Eq(X,Y)
-  
+
 and
 
    f(X) := (id_X , idIsEquiv(X)),
@@ -346,7 +346,7 @@ the inhabitedness of the type is-univalent(U) is undecided.
       Π, Σ, Id, U, U'.
 
     Two universes U:U' suffice, where univalence talks about U.
-  
+
  2. It can be shown, by a very complicated and interesting argument,
     that
 
@@ -396,7 +396,7 @@ the inhabitedness of the type is-univalent(U) is undecided.
     type, one-point type, two-point type, natural numbers, and an
     infinite tower of universes in simplicial sets, thus establishing
     the consistency of the univalence axiom.
-    
+
     The consistency of the univalence axiom shows that, before we
     postulate it, MLTT is "proto-univalent" in the sense that it
     cannot distinguish concrete isomorphic types such as X:=ℕ and
@@ -622,4 +622,4 @@ y₁)) → Id {U} {Σ {U} {U} {X} (λ x₃ → Id {U} {Y} (f x₃) y₁)} c₁ x
 (λ x₃ → Id {U} {Y₁} (f x₃) y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ ,
 refl x₂) , (λ yp → J {U} {U} {X₁} (λ y₁ x₃ p → Id {U} {Σ {U} {U} {X₁}
 (λ y₂ → Id {U} {X₁} y₂ x₃)} (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ ,
-refl x₃)) (pr₁ yp) x₂ (pr₂ yp)))) X Y x₁) y)} c x) 
+refl x₃)) (pr₁ yp) x₂ (pr₂ yp)))) X Y x₁) y)} c x)

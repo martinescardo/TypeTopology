@@ -44,14 +44,14 @@ module _ (pt : PropTrunc) where
 
  double-negation-is-truncation-gives-DNE : ∀ {U} → ((X : U ̇) → ¬¬ X → ∥ X ∥) → DNE U
  double-negation-is-truncation-gives-DNE {U} f P isp u = ptrec isp id (f P u)
- 
+
 fem-proptrunc : ∀ {U} → funext U U₀ → EM U → propositional-truncations-exist U U
 fem-proptrunc fe em X = ¬¬ X ,
                     (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
                      (λ x u → u x) ,
                      λ P isp u φ → EM-DNE em P isp (¬¬-functor u φ))
 
-no-props-other-than-𝟘-or-𝟙 : propext U₀ → ¬ Σ \(P : U₀ ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)  
+no-props-other-than-𝟘-or-𝟙 : propext U₀ → ¬ Σ \(P : U₀ ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
 no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
  where
    u : ¬ P
@@ -72,7 +72,7 @@ no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
 ⊥≠⊤ p = 𝟘-is-not-𝟙 (ap pr₁ p)
 
 no-truth-values-other-than-⊥-or-⊤ : funext U₀ U₀ → propext U₀
-                                   → ¬ Σ \(p : Ω) → (p ≢ ⊥) × (p ≢ ⊤)  
+                                   → ¬ Σ \(p : Ω) → (p ≢ ⊥) × (p ≢ ⊤)
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
  where
    u : ¬ P

@@ -30,7 +30,7 @@ Abstractly, the general situation is
 
                    j
               X ------> Y
-               \       / 
+               \       /
                 \     /
              f   \   / f/j
                   \ /
@@ -48,7 +48,7 @@ commutation up to equivalence:
 
                    j
               X ------> Y
-               \       / 
+               \       /
                 \  ≃  /
              f   \   / f/j
                   \ /
@@ -60,7 +60,7 @@ sense. Otherwise, we only have a right-Kan extension
 
                    j
               X ------> Y
-               \       / 
+               \       /
                 \  <- /
              f   \   / f/j
                   \ /
@@ -81,7 +81,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-} 
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF-FunExt
 
@@ -101,7 +101,7 @@ Here is how we define f/j given f and j.
 
                    j
               X ------> Y
-               \       / 
+               \       /
                 \  <- /
              f   \   / f' := f/j
                   \ /
@@ -164,7 +164,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
     e : Nat g f/j ≃ Nat (g ∘ j) f
     e = ψ g , (φ g , λ η → dfunext (fe U (W ⊔ U)) (λ x → dfunext (fe U W) (ψφ g η x )))
             , (φ g , λ θ → dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe U (U ⊔ V ⊔ W)) (λ C → dfunext (fe (U ⊔ V) W) (φψ g θ y C))))
-  
+
   Σ-extension-left-Kan : (g : Y → U ̇) → Nat f∖j g ≃ Nat f (g ∘ j)
   Σ-extension-left-Kan g = e
    where
@@ -175,7 +175,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
     ψ g θ x B = θ (j x) ((x , refl) , B)
 
     φψ : (g : Y → U ̇) (θ : Nat f∖j g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ≡ θ y B
-    φψ g θ y ((x , refl) , B) = refl 
+    φψ g θ y ((x , refl) , B) = refl
 
     ψφ : (g : Y → U ̇) (η : Nat f (g ∘ j)) (x : X) (B : f x) → ψ g (φ g η) x B ≡ η x B
     ψφ g η x B = refl
@@ -189,10 +189,10 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
   Conjectural conjecture: the type
 
     Σ(f' : Y → U), Π(g : Y → U), Nat g f' = Nat (g∘f) f
-    
+
   should be contractible assuming univalence. Similarly for left can
   extensions as discussed below.
-  
+
   The above formula actually give extensions up to pointwise
   equivalence if j:X→Y is an embedding in the sense of univalent
   mathematics.
@@ -205,7 +205,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
   Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) (e (j x)) (x , refl)
 
   Π-extension-out-of-range : ∀ {W} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {W}
-  Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ) 
+  Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ)
 
   Σ-extension-in-range : is-embedding j → (x : X) → f∖j(j x) ≃ f x
   Σ-extension-in-range e x = prop-indexed-sum (e(j x)) (x , refl)
@@ -234,11 +234,11 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 
 \begin{code}
 
-  Π-observation : is-embedding j → (a : X) → f a ≃ (Π \(x : X) → j x ≡ j a → f x) 
+  Π-observation : is-embedding j → (a : X) → f a ≃ (Π \(x : X) → j x ≡ j a → f x)
   Π-observation e a = ≃-sym (≃-trans (≃-sym (2nd-Π-extension-formula (j a)))
                                       (Π-extension-in-range e a))
 
-  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ \(x : X) → (j x ≡ j a) × f x) 
+  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ \(x : X) → (j x ≡ j a) × f x)
   Σ-observation e a = ≃-sym (≃-trans (≃-sym (2nd-Σ-extension-formula (j a)))
                                       (Σ-extension-in-range e a))
 
@@ -256,16 +256,16 @@ respectively:
     where
       F : Π f → Π f/j
       F φ y (x , p) = φ x
-      
+
       G : Π f/j → Π f
       G ψ x = ψ (j x) (x , refl)
-      
+
       FG' : (ψ : Π f/j) (y : Y) (σ : fiber j y) → F(G ψ) y σ ≡ ψ y σ
       FG' ψ x (_ , refl) = refl
-      
+
       FG : (ψ : Π f/j) → F(G ψ) ≡ ψ
       FG ψ = dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe (U ⊔ V) W) (FG' ψ y))
-      
+
       GF : (φ : Π f) → G(F φ) ≡ φ
       GF φ = refl
 
@@ -274,13 +274,13 @@ respectively:
     where
       F : Σ f → Σ f∖j
       F (x , y) = (j x , (x , refl) , y)
-      
+
       G : Σ f∖j → Σ f
       G (y , (x , p) , y') = (x , y')
-      
+
       FG : (σ : Σ f∖j) → F(G σ) ≡ σ
       FG (x , (_ , refl) , y') = refl
-      
+
       GF : (σ : Σ f) → G(F σ) ≡ σ
       GF (x , y) = refl
 
@@ -315,7 +315,7 @@ A different notation reflects a different view of these processes:
 \begin{code}
 
 inverse-image :  ∀ {U V W} {X : U ̇} {Y : V ̇}
-              → (X → Y) → (Y → W ̇) → (X → W ̇) 
+              → (X → Y) → (Y → W ̇) → (X → W ̇)
 
 inverse-image f v = v ∘ f
 
@@ -332,8 +332,8 @@ inverse-image f v = v ∘ f
 Σ-images of singletons. Another way to see the following is with the
 function same-Σ defined above. This and univalence give
 
- Σ (Id x) ≡ Σ (Id x ∖ j) = Σ-image j (Id x) 
- 
+ Σ (Id x) ≡ Σ (Id x ∖ j) = Σ-image j (Id x)
+
 Hence
 
  is-singleton(Σ (Id x)) ≡ is-singleton(Σ-image j (Id x))
@@ -348,24 +348,24 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
  where
   f : Σ-image j (Id x) y → Id (j x) y
   f ((x , refl) , refl) = refl
-  
+
   g : Id (j x) y → Σ-image j (Id x) y
   g refl = (x , refl) , refl
-  
+
   gf : (i : Σ-image j (Id x) y) → g(f i) ≡ i
   gf ((x , refl) , refl) = refl
-  
+
   fg : (p : Id (j x) y) → f(g p) ≡ p
   fg refl = refl
 
 Σ-image-of-singleton : ∀ {U} {X Y : U ̇}
-                     → is-univalent U 
+                     → is-univalent U
                      → (j : X → Y) (x : X) → Σ-image j (Id x) ≡ Id (j x)
 Σ-image-of-singleton {U} {X} {Y} ua j x = b
   where
    a : (y : Y) → Σ-image j (Id x) y ≡ Id (j x) y
    a y = eqtoid ua (Σ-image j (Id x) y) (Id (j x) y) (Σ-image-of-singleton-lemma j x y)
-   
+
    b : Σ-image j (Id x) ≡ Id (j x)
    b = dfunext (fe U (U ′)) a
 
@@ -394,16 +394,16 @@ retracts-of-injectives {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘
   where
     s : D' → D
     s d' = pr₁ (ρ d')
-    
+
     rs : r ∘ s ∼ id
     rs d' = pr₂(ρ d')
-    
+
     g : Y → D
     g = pr₁(i j e (s ∘ f))
-    
+
     h : g ∘ j ∼ s ∘ f
     h = pr₂(i j e (s ∘ f))
-    
+
     go : r ∘ g ∘ j ∼ f
     go x = ap r (h x) ∙ rs (f x)
 
@@ -422,10 +422,10 @@ power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
     l a = i j e (λ x → f x a)
-    
+
     f' : Y → A → D
     f' y a = pr₁ (l a) y
-    
+
     g : f' ∘ j ∼ f
     g x = dfunext (fe V U) (λ a → pr₂ (l a) x)
 

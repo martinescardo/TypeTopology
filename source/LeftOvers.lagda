@@ -34,13 +34,13 @@ JJ R X = (X → R) → X
 sel-prod : ∀ {U V W} {R : U ̇} {X : V ̇} {Y : X → W ̇}
          → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ \(x : X) → Y x)
 sel-prod {U} {V} {W} {R} {X} {Y} ε δ p = (x₀ , y₀)
-   where 
+   where
     next : (x : X) → Y x
     next x = δ x (λ y → p(x , y))
     x₀ : X
     x₀ = ε(λ x → p(x , next x))
     y₀ : Y x₀
-    y₀ = next x₀ 
+    y₀ = next x₀
 
 \end{code}
 
@@ -54,7 +54,7 @@ overline ε p = p(ε p)
 sel-prod' : ∀ {U V W} {R : U ̇} {X : V ̇} {Y : X → W ̇}
           → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ \(x : X) → Y x)
 sel-prod' {U} {V} {W} {R} {X} {Y} ε δ p = (x₀ , y₀)
-   where 
+   where
     x₀ : X
     x₀ = ε(λ x → overline(δ x) (λ y → p(x , y)))
     y₀ : Y x₀

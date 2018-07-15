@@ -1,4 +1,4 @@
-Chuangjie Xu, 2012. 
+Chuangjie Xu, 2012.
 
 This is an Agda formalization of Theorem 8.2 of the extended version
 of Escardo's paper "Infinite sets that satisfy the principle of
@@ -6,7 +6,7 @@ omniscience in all varieties of constructive mathematics", Journal of
 Symbolic Logic, volume 78, number 3, September 2013, pages 764-784.
 
 The theorem says that, for any p : ℕ∞ → ₂, the proposition
-(n : ℕ) → p(under n) ≡ ₁ is decidable. 
+(n : ℕ) → p(under n) ≡ ₁ is decidable.
 
 \begin{code}
 
@@ -22,7 +22,7 @@ open import ConvergentSequenceSearchable (fe)
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 
-Lemma-8·1 : (p : ℕ∞ → 𝟚) → 
+Lemma-8·1 : (p : ℕ∞ → 𝟚) →
 
    (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
 
@@ -38,12 +38,12 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     ne = pr₂ e
     case₀ : p x ≡ ₀ → Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)
     case₀ r = x , (s , r)
-     where 
+     where
       s : x ≢ ∞
       s t = ne(ap p (t ∙ (Succ-∞-is-∞ fe)⁻¹ ∙ (ap Succ t)⁻¹))
     case₁ : p x ≡ ₁ → Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)
     case₁ r = (Succ x) , (s , s')
-     where 
+     where
       s : Succ x ≢ ∞
       s t = ne (ap p (Succ-lc (t ∙ (Succ-∞-is-∞ fe)⁻¹) ∙ t ⁻¹))
       s' : p(Succ x) ≡ ₀
@@ -78,12 +78,12 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     f = characteristic-function fact
     q : ℕ∞ → 𝟚
     q = pr₁ f
-    g : (Σ \(y : ℕ∞) → q y ≡ ₀) + ((y : ℕ∞) → q y ≡ ₁) 
+    g : (Σ \(y : ℕ∞) → q y ≡ ₀) + ((y : ℕ∞) → q y ≡ ₁)
      → (Σ \(y : ℕ∞) → p y ≢ p(Succ y)) + ((y : ℕ∞) → p y ≡ p(Succ y))
     g(inl(y , r)) = inl(y , (pr₁ (pr₂ f y) r))
-    g(inr h ) = inr(λ y → discrete-is-separated 
-                           𝟚-discrete 
-                           (p y) (p(Succ y)) 
+    g(inr h ) = inr(λ y → discrete-is-separated
+                           𝟚-discrete
+                           (p y) (p(Succ y))
                            (pr₂ (pr₂ f y) (h y)))
 
 

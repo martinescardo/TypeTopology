@@ -33,7 +33,7 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
   g x = universality-equiv x refl (unique-element-is-universal-element
                                          (λ x' → f x ≡ f x')
                                          (pr₁(c x))
-                                         (pr₂(c x))) 
+                                         (pr₂(c x)))
 
 embedding'-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → is-embedding' f → is-embedding f
 embedding'-embedding {U} {V} {X} {Y} f ise = g
@@ -43,7 +43,7 @@ embedding'-embedding {U} {V} {X} {Y} f ise = g
              (x , refl)
              (equiv-universality x refl (ise x))
   h : (x : X) → is-prop (fiber' f (f x))
-  h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , refl) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎  
+  h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , refl) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎
   g' : (y : Y) → is-prop (fiber' f y)
   g' y (x , p) = transport (λ - → is-prop (Σ \(x' : X) → - ≡ f x')) (p ⁻¹) (h x) (x , p)
   g : (y : Y) → is-prop (fiber f y)
@@ -80,7 +80,7 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     go : is-prop(Y x)
     go = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
-K-idtofun-lc : ∀ {U} → K (U ′) 
+K-idtofun-lc : ∀ {U} → K (U ′)
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 

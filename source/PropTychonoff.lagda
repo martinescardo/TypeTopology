@@ -16,10 +16,10 @@ surprising, because
     (𝟙 → Y) = Y^𝟙 ≃ Y (which is searchable if Y is),
 
 and excluded middle for a proposition X amounts to X=𝟘 or X=𝟙, so
-that 
+that
 
     Y^X is searchable if Y is searchable and X is a proposition.
-    
+
 The point is that
 
     (1) We can reach this conclusion without excluded middle.
@@ -39,7 +39,7 @@ we had a convoluted path to this supposedly natural way).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-} 
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -56,14 +56,14 @@ open import SearchableTypes
 
 \end{code}
 
-A crucial lemma is 
+A crucial lemma is
 
     prop-indexed-product : is-prop X → (a : X) → Π Y ≅ Y a
 
 This is proved in the module Prop-indexed-product. Although it has a
 subtle proof, it should be intuitively clear, as X has at most one
 element by hypothesis, and if the element is a:X then the product Π Y
-should be isomorphic to its only factor Y a. 
+should be isomorphic to its only factor Y a.
 
 With this observation, the following proof should be self-contained,
 if we recall again the definition of searchable set from the module
@@ -75,9 +75,9 @@ Recall also that such an a₀ is called a universal witness for the predicate p.
 
 \begin{code}
 
-prop-tychonoff : ∀ {U V} {X : U ̇} {Y : X → V ̇} → is-prop X 
+prop-tychonoff : ∀ {U V} {X : U ̇} {Y : X → V ̇} → is-prop X
                → ((x : X) → searchable(Y x)) → searchable(Π Y)
-prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness 
+prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
  where
   -- hp : is-prop X
   --  ε : (x : X) → searchable(Y x)
@@ -89,7 +89,7 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
   -- The essence of the first part of the proof is this:
   not-useful : X → searchable(Π Y)
   not-useful x = equiv-searchable (≃-sym(hip x)) (ε x)
-  -- But this is very crude for our purposes (or so it seems). 
+  -- But this is very crude for our purposes (or so it seems).
   -- So we instead proceed as follows.
 
   -- The following is what we get from prop-indexed-product, abstractly:
@@ -115,9 +115,9 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
   φ₀ : Π Y
   φ₀ x = pr₁(ε x (q x))
 
-  -- By hypothesis, it satisfies: 
+  -- By hypothesis, it satisfies:
   φ₀-spec : (x : X) → q x (φ₀ x) ≡ ₁ → (y : Y x) → q x y ≡ ₁
-  φ₀-spec x = pr₂(ε x (q x)) 
+  φ₀-spec x = pr₂(ε x (q x))
 
   -- By expanding the definitions, this amounts to:
   φ₀-spec₀ : (x : X) → p(h x (φ₀ x)) ≡ ₁ → (y : Y x) → p(h x y) ≡ ₁
@@ -135,7 +135,7 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
 
   -- Using the fact that g x (f x φ) = φ for any x:X, we get:
   φ₀-is-universal-witness-assuming-X : X → p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
-  φ₀-is-universal-witness-assuming-X x r φ = 
+  φ₀-is-universal-witness-assuming-X x r φ =
      ap p ((hf x φ)⁻¹) ∙ φ₀-spec₁-particular-case x (ap p (hf x φ₀) ∙ r) φ
   -- Notice that the point x:X vanishes from the conclusion, and so we
   -- are able to omit it from the hypothesis, which is crucial for
@@ -143,7 +143,7 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
 
   -- We get the same conclusion if X is empty:
   φ₀-is-universal-witness-assuming-X→𝟘 : (X → 𝟘) → p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
-  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = ap p claim ∙ r 
+  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = ap p claim ∙ r
    where
     claim : φ ≡ φ₀
     claim = dfunext (fe U V) (λ x → unique-from-𝟘(u x))
@@ -185,7 +185,7 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : ∀ {U V} {X : U ̇} {Y : V ̇} → is-prop X 
+prop-tychonoff-corollary : ∀ {U V} {X : U ̇} {Y : V ̇} → is-prop X
                         → searchable Y → searchable(X → Y)
 prop-tychonoff-corollary hp ε = prop-tychonoff hp (λ x → ε)
 
@@ -199,7 +199,7 @@ Better (9 Sep 2015):
 
 \begin{code}
 
-prop-tychonoff-corollary' : ∀ {U V } {X : U ̇} {Y : V ̇} → is-prop X 
+prop-tychonoff-corollary' : ∀ {U V } {X : U ̇} {Y : V ̇} → is-prop X
                           → (X → searchable Y) → searchable(X → Y)
 prop-tychonoff-corollary' hp ε = prop-tychonoff hp ε
 
@@ -218,12 +218,12 @@ proposition P, which is weak excluded middle, which is not provable.
 
 open import OmniscientTypes
 
-omniscient-prop-tychonoff-wem : 
+omniscient-prop-tychonoff-wem :
   ((X : U₀ ̇) (Y : X → U₀ ̇) → is-prop X → ((x : X) → omniscient(Y x)) → omniscient(Π Y))
   → WEM U₀
 omniscient-prop-tychonoff-wem τ P isp = omniscient-decidable (¬ P) ¬P-omniscient
  where
   ¬P-omniscient : omniscient (¬ P)
   ¬P-omniscient = τ P (λ p → 𝟘) isp (λ p → 𝟘-omniscient)
-              
+
 \end{code}

@@ -6,7 +6,7 @@ sense to consider T=¬¬, in connection with the double-negation shift.
 
 Choice in the HoTT book, under the assumption that X is a set and A is
 an X-indexed family of sets is
-      
+
     (Π \(x : X) → ∥ A x ∥) → ∥Π \(x : X) → A x∥
 
 (a set-indexed product of inhabited sets is inhabited).
@@ -45,13 +45,13 @@ module UF-Choice where
 
 module Shift
    (U : Universe)
-   (T : U ̇ → U ̇) 
+   (T : U ̇ → U ̇)
    (T-functor : {X Y : U ̇} → (X → Y) → T X → T Y)
  where
 
 \end{code}
 
-The T-shift for a family A : X → U ̇ is 
+The T-shift for a family A : X → U ̇ is
 
     (Π \(x : X) → T(A x)) →  T(Π \(x : X) → A x).
 
@@ -95,7 +95,7 @@ abstractly, where T may be ∥_∥ and S may be is-set.
 
 module TChoice
    (U : Universe)
-   (T : U ̇ → U ̇)  
+   (T : U ̇ → U ̇)
    (T-functor : {X Y : U ̇} → (X → Y) → T X → T Y)
    (S : U ̇ → U ̇)
    (S-exponential-ideal : {X Y : U ̇} → S Y → S(X → Y))
@@ -164,19 +164,19 @@ module UnivalentChoice (U : Universe)
    -- because X is a set by assumption, so that x ≡ x is a
    -- proposition. Any inhabited type that is a proposition will do,
    -- of course.
-  
+
    g : ∥(Σ \(f : Π Y) → (x : X) → x ≡ x)∥
    g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ptfunct (λ y → y , refl) (f x))
-   
-   h : ∥ Π Y ∥ 
+
+   h : ∥ Π Y ∥
    h = ptfunct pr₁ g
- 
+
  AC'AC : AC' → AC
  AC'AC ac' X A P s t isp f = ptfunct ΠΣ-distributivity g
   where
    ΠΣ-distributivity : (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
    ΠΣ-distributivity φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
-   
+
    g : ∥(Π \(x : X) → Σ \(a : A x) → P x a)∥
    g = ac' X
            (λ x → Σ \(a : A x) → P x a)
@@ -205,7 +205,7 @@ module ChoiceUnderEM₀ (U : Universe)
                       (pt : PropTrunc)
                       (fe : ∀ U V → funext U V)
                       where
-                      
+
  open UnivalentChoice U fe pt
 
  α : {X : U ̇} → ∥ X ∥ → ¬¬ X
@@ -228,7 +228,7 @@ module ChoiceUnderEM₀ (U : Universe)
 
  l : {X : U ̇} → is-set(¬¬ X)
  l {X} = prop-is-set (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
- 
+
  fact : DNS → DNA
  fact = TChoice.theorem U ¬¬ ¬¬-functor is-set sei l
 
@@ -260,7 +260,7 @@ module AC-renders-all-sets-discrete
  open ImageAndSurjection pt
  open import DiscreteAndSeparated
  open import UF-SetExamples
- 
+
  lemma₁ : {X : U ̇} (a : 𝟚 → X)
         → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
@@ -310,10 +310,10 @@ module AC-renders-all-sets-discrete
   where
    A : X → U ̇
    A x = Σ \(i : 𝟚) → a i ≡ x
-   
+
    isa : (x : X) → is-set(A x)
    isa x = subset-of-set-is-set 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
-   
+
    ac'' : AC''
    ac'' = AC'AC'' (ACAC' ac)
 
@@ -349,7 +349,7 @@ module AC-gives-EM
     a : 𝟚 → Ω
     a ₀ = ⊤
     a ₁ = P
-    
+
  ac-gives-em : AC → EM U₀
  ac-gives-em ac P isp = g (lemma ac (P , isp))
   where
@@ -368,18 +368,18 @@ module Observation (U : Universe)
                    (pt : PropTrunc)
                    (fe : ∀ U V → funext U V)
                    where
-                      
+
  open PropositionalTruncation pt
  open import DiscreteAndSeparated
  open import UF-SetExamples
- 
+
  observation : {X : U ̇} (a : 𝟚 → X)
         → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  observation {X} a c = claim (𝟚-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ \(x : X) → ¬¬ (Σ \(i : 𝟚) → a i ≡ x)
-   
+
    r : 𝟚 → Y
    r i = a i , λ u → u (i , refl)
 

@@ -85,10 +85,10 @@ x ≼ y = ∀ u → u < x → u < y
 ≼-trans f g u l = g u (f u l)
 
 is-extensional : U ⊔ V ̇
-is-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y 
+is-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y
 
 is-extensional' : U ⊔ V ̇
-is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y 
+is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y
 
 extensional-extensional' : is-extensional → is-extensional'
 extensional-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
@@ -192,7 +192,7 @@ has-top = Σ \(x : X) → is-top x
 <-coarser-than-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
 <-coarser-than-≤ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≤ x)
-                     (λ x f y l m → f y l x m l) 
+                     (λ x f y l m → f y l x m l)
 
 ≤-refl : (x : X) → is-accessible x → x ≤ x
 ≤-refl x a l = <-coarser-than-≤ x a x l l
@@ -247,7 +247,7 @@ no-minimal-is-empty w P s (x , p) = f s x p
       IH y l = g y (σ y l)
 
   NB : Σ P → ¬((x : X) → P x → Σ \(y : X) → (y < x) × P y)
-  NB (x , p) s = f s x p 
+  NB (x , p) s = f s x p
 
 \end{code}
 
@@ -320,7 +320,7 @@ open import DiscreteAndSeparated
                          (λ (t : ¬(p z ≡ ₀))
                             → inl (pr₂ (φ x z) (r , (Lemma[b≢₀→b≡₁] t))))
 
-\end{code} 
+\end{code}
 
 It seems that this is not going to be useful, because although ℕ∞
 satisfies this property, the property doesn't seem to be preserved by

@@ -30,11 +30,11 @@ We first define an interpretation function Fin : ℕ → U₀ of numbers as
 sets (in the universe U₀) by
 
  (1) Fin   0  = 𝟘,          where 𝟘 is the empty set,
- (2) Fin(n+1) = Fin n + 𝟙,  where 𝟙 is the singleton set, 
+ (2) Fin(n+1) = Fin n + 𝟙,  where 𝟙 is the singleton set,
 
 Then Fin is a semiring homomorphism:
 
- (3) Fin(m + n) ≃ Fin m + Fin n, where "+" in the rhs is disjoint union, 
+ (3) Fin(m + n) ≃ Fin m + Fin n, where "+" in the rhs is disjoint union,
  (4) Fin 1 ≃ 𝟙,
  (5) Fin(m × n) ≃ Fin m × Fin n, where "×" in the rhs is cartesian product,
 
@@ -46,14 +46,14 @@ But instead of proving (3)-(5) after defining addition and
 multiplication, we prove that
 
  (3') For every m,n:ℕ there is k:ℕ with Fin k ≃ Fin m + Fin n.
- (5') For every m,n:ℕ there is k:ℕ with Fin k ≃ Fin m × Fin n. 
+ (5') For every m,n:ℕ there is k:ℕ with Fin k ≃ Fin m × Fin n.
 
 We then define addition and multiplication on ℕ from (3') and (5'),
 from which (3) and (5) follow tautologically.
 
 This relies on type arithmetic. To prove (3'), we use the trivial
 equivalences
- 
+
  X ≃ X + 𝟘,
  (X + Y) + 𝟙 ≃ X + (Y + 𝟙),
 
@@ -91,7 +91,7 @@ m × n = n × m as follows:
             ≃ Fin n × Fin m   by  X × Y ≃ Y × X,
             ≃ Fin(n × m)      by (5),
 
-and so 
+and so
 
  m × n ≃ n × m                by (6).
 
@@ -190,7 +190,7 @@ fsucc = inl
     φ+𝟙 : Fin(succ k) ≃ Fin m + Fin (succ n)
     φ+𝟙 =  Fin k + 𝟙          ≃⟨ Ap+ 𝟙 φ ⟩
            (Fin m + Fin n) + 𝟙 ≃⟨ +assoc ⟩
-           (Fin m + Fin n + 𝟙) ■ 
+           (Fin m + Fin n + 𝟙) ■
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m + Fin (succ n)
     g = succ k , φ+𝟙
 
@@ -246,7 +246,7 @@ Fin-lc (succ m) (succ n) p = ap succ r
   q : Fin m ≃ Fin n
   q = +𝟙-cancellable fe p
   r : m ≡ n
-  r = IH q 
+  r = IH q
 
 \end{code}
 
@@ -316,7 +316,7 @@ Fin×homo m n = pr₂(×construction m n)
 
 \begin{code}
 
-infixl 20 _+'_ 
-infixl 22 _×'_ 
+infixl 20 _+'_
+infixl 22 _×'_
 
 \end{code}

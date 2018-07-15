@@ -19,7 +19,7 @@ open import GenericConvergentSequence
 
 ℕ∞-is-inf-searchable : inf-searchable _≼_
 ℕ∞-is-inf-searchable p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
- where 
+ where
   α : ℕ → 𝟚
   α 0       = p(under 0)
   α(succ n) = min𝟚 (α n) (p(under(succ n)))
@@ -30,7 +30,7 @@ open import GenericConvergentSequence
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
   Dagger₀ 0 r =  ap (λ - → incl - 0) r
   Dagger₀ (succ n) r = w ∙ t
-   where 
+   where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r ∙ under-diagonal₁ n
     t : α(succ n) ≡ ₀
@@ -41,7 +41,7 @@ open import GenericConvergentSequence
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
   Dagger₁ r 0 = ap (λ - → incl - 0) r
   Dagger₁ r (succ n) = w ∙ t
-   where 
+   where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
     t : α(succ n) ≡ ₁
@@ -51,12 +51,12 @@ open import GenericConvergentSequence
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = Lemma[b≡₁→b≢₀] r (Lemma s)
-   where 
+   where
     Lemma : a ≡ under n → p a ≡ ₀
     Lemma t = ap p t ∙ Dagger₀ n t
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
-  Claim₁ r = not-ℕ-is-∞ fe (Claim₀ r) 
+  Claim₁ r = not-ℕ-is-∞ fe (Claim₀ r)
 
   Claim₂ : p a ≡ ₁ → (n : ℕ) → p(under n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)
@@ -69,7 +69,7 @@ open import GenericConvergentSequence
 
   putative-root-lemma : (Σ \u → p u ≡ ₀) → p a ≡ ₀
   putative-root-lemma (x , r) = lemma claim
-   where   
+   where
     lemma : ¬((x : ℕ∞) → p x ≡ ₁) → p a ≡ ₀
     lemma = Lemma[b≢₁→b≡₀] ∘ (contrapositive Lemma)
     claim : ¬((x : ℕ∞) → p x ≡ ₁)
@@ -101,7 +101,7 @@ open import GenericConvergentSequence
     claim₄ : incl u (succ n) ≡ ₀ → p u ≡ ₁
     claim₄ t = claim₃ t ∙ claim₁
     claim₅ : incl u (succ n) ≢ ₀
-    claim₅ t = Lemma[b≡₁→b≢₀] (claim₄ t) r 
+    claim₅ t = Lemma[b≡₁→b≢₀] (claim₄ t) r
     lemma : incl u (succ n) ≡ ₁
     lemma = Lemma[b≢₀→b≡₁] claim₅
 

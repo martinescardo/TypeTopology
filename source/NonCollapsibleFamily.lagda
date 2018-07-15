@@ -11,7 +11,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-KrausLemma
 open import DiscreteAndSeparated
- 
+
 lemma : (X : U₀ ̇) (a : 𝟚 → X) → ((x : X) → collapsible(Σ \(i : 𝟚) → a i ≡ x)) → decidable(a ₀ ≡ a ₁)
 lemma X a c = equal-or-different
  where
@@ -62,10 +62,10 @@ lemma X a c = equal-or-different
   s-a : (i j : 𝟚) → s(r i) ≡ s(r j) → a i ≡ a j
   s-a i j p = r-a i j (s-injective (r i) (r j) p)
 
-  equal-or-different : (a ₀ ≡ a ₁) + (a ₀ ≡ a ₁ → 𝟘) 
+  equal-or-different : (a ₀ ≡ a ₁) + (a ₀ ≡ a ₁ → 𝟘)
   equal-or-different = claim(𝟚-discrete (s(r ₀)) (s(r ₁)))
-   where 
-    claim : (s(r ₀) ≡ s(r ₁)) + (s(r ₀) ≡ s(r ₁) → 𝟘) → (a ₀ ≡ a ₁) + (a ₀ ≡ a ₁ → 𝟘) 
+   where
+    claim : (s(r ₀) ≡ s(r ₁)) + (s(r ₀) ≡ s(r ₁) → 𝟘) → (a ₀ ≡ a ₁) + (a ₀ ≡ a ₁ → 𝟘)
     claim (inl p) = inl (s-a ₀ ₁ p)
     claim (inr u) = inr (λ p → u (a-s ₀ ₁ p))
 

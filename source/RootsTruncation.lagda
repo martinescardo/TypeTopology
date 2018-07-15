@@ -61,13 +61,13 @@ fpo (succ k) α = cases f g (fpo k α)
  where
   f : α has-a-minimal-root< k → FPO (succ k) α
   f (m , p , l , φ) = inl (m , p , ≤-trans (succ m) k (succ k) l (≤-succ k) , φ)
-  
+
   g : α has-no-root< k → FPO (succ k) α
   g φ = cases g₀ g₁ (z-isolated (α k))
    where
     g₀ : α k ≡ z → FPO (succ k) α
     g₀ p = inl (k , p , ≤-refl k , φ)
-    
+
     g₁ : α k ≢ z → FPO (succ k) α
     g₁ u = inr (bounded-∀-next (λ n → α n ≢ z) k u φ)
 
@@ -116,19 +116,19 @@ roots α = Σ \(n : ℕ) → α n ≡ z
   m m' : ℕ
   m  = μρ-root α (n , p)
   m' = μρ-root α (n' , p')
-  
+
   l : m ≤ m'
   l = μρ-root-minimal α n p m' (μρ-root-is-root α (n' , p'))
-  
+
   l' : m' ≤ m
   l' = μρ-root-minimal α n' p' m (μρ-root-is-root α (n , p))
 
   q : m ≡ m'
   q = ≤-anti _ _ l l'
-  
+
   r : μρ α (n , p) ≡ μρ α (n' , p')
   r = to-Σ-≡'' (q , isolated-Id-is-prop z z-isolated _ _ _)
- 
+
 roots-has-prop-truncation : (α : ℕ → Z) → ∀ U → has-prop-truncation U (roots α)
 roots-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)
 
@@ -178,10 +178,10 @@ module ExitRootTruncations (pt : PropTrunc) where
   where
    f : (Σ \(n : ℕ) → α n ≡ z) → fix (μρ α)
    f = to-fix (μρ α) (μρ-constant α)
-   
+
    g : ∥(Σ \(n : ℕ) → α n ≡ z)∥ → fix (μρ α)
    g = ptrec (Kraus-Lemma (μρ α) (μρ-constant α)) f
-   
+
    h : fix (μρ α) → Σ \(n : ℕ) → α n ≡ z
    h = from-fix (μρ α)
 

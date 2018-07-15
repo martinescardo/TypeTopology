@@ -30,7 +30,7 @@ discrete-inl d x y r =
     (λ (p : x ≡ y) (q : d x y ≡ inl p) → q ∙ ap inl (discrete-is-set d p r))
     (λ (h : ¬(x ≡ y)) (q : d x y ≡ inr h) → 𝟘-elim(h r))
 
-discrete-inr : ∀ {U} {X : U ̇} → funext U U₀ 
+discrete-inr : ∀ {U} {X : U ̇} → funext U U₀
             → (d : discrete X) (x y : X) (n : ¬(x ≡ y)) → d x y ≡ inr n
 discrete-inr fe d x y n =
   equality-cases (d x y)
@@ -75,12 +75,12 @@ nonempty X = is-empty(is-empty X)
 
 stable : ∀ {U} → U ̇ → U ̇
 stable X = nonempty X → X
- 
+
 decidable-is-stable : ∀ {U} {X : U ̇} → decidable X → stable X
 decidable-is-stable (inl x) φ = x
 decidable-is-stable (inr u) φ = unique-from-𝟘(φ u)
 
-stable-is-collapsible : ∀ {U} → funext U U₀ → {X : U ̇} → stable X → collapsible X 
+stable-is-collapsible : ∀ {U} → funext U U₀ → {X : U ̇} → stable X → collapsible X
 stable-is-collapsible {U} fe {X} s = (f , g)
  where
   f : X → X
@@ -88,7 +88,7 @@ stable-is-collapsible {U} fe {X} s = (f , g)
   claim₀ : (x y : X) → (u : is-empty X) → u x ≡ u y
   claim₀ x y u = unique-from-𝟘(u x)
   claim₁ : (x y : X) → (λ u → u x) ≡ (λ u → u y)
-  claim₁ x y = dfunext fe (claim₀ x y) 
+  claim₁ x y = dfunext fe (claim₀ x y)
   g : (x y : X) → f x ≡ f y
   g x y = ap s (claim₁ x y)
 
@@ -96,7 +96,7 @@ separated-is-identification-collapsible : ∀ {U} → funext U U₀ → {X : U �
 separated-is-identification-collapsible fe s = stable-is-collapsible fe (s _ _)
 
 separated-is-set : ∀ {U} → funext U U₀ → {X : U ̇} → separated X → is-set X
-separated-is-set fe s = identification-collapsible-is-set (separated-is-identification-collapsible fe s) 
+separated-is-set fe s = identification-collapsible-is-set (separated-is-identification-collapsible fe s)
 
 is-prop-separated : ∀ {U} → funext U U → funext U U₀ → {X : U ̇} → is-prop(separated X)
 is-prop-separated fe fe₀ {X} = iis-prop-is-prop f
@@ -106,5 +106,5 @@ is-prop-separated fe fe₀ {X} = iis-prop-is-prop f
           (λ _ → Π-is-prop fe
                     (λ _ → Π-is-prop fe
                               (λ _ → separated-is-set fe₀ s)))
-                              
+
 \end{code}

@@ -25,12 +25,12 @@ The native induction principle for ℕ:
 
 \begin{code}
 
-ℕ-induction : ∀ {U} → {A : ℕ → U ̇} 
-            → A zero 
-            → (∀ n → A n → A(succ n)) 
+ℕ-induction : ∀ {U} → {A : ℕ → U ̇}
+            → A zero
+            → (∀ n → A n → A(succ n))
             → ∀ n → A n
 ℕ-induction base step zero     = base
-ℕ-induction base step (succ n) = step n (ℕ-induction base step n) 
+ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
 
 \end{code}
 
@@ -66,10 +66,10 @@ data 𝔹 : U₀ ̇ where
  l    : 𝔹 → 𝔹
  r    : 𝔹 → 𝔹
 
-𝔹-induction : ∀ {U} {B : 𝔹 → U ̇} 
-          → B zero 
-          → (∀ m → B m → B(l m)) 
-          → (∀ m → B m → B(r m)) 
+𝔹-induction : ∀ {U} {B : 𝔹 → U ̇}
+          → B zero
+          → (∀ m → B m → B(l m))
+          → (∀ m → B m → B(r m))
           → ∀ m → B m
 𝔹-induction base stepl stepr zero  = base
 𝔹-induction base stepl stepr (l m) = stepl m (𝔹-induction base stepl stepr m)
@@ -83,7 +83,7 @@ The successor function n ↦ n+1 on 𝔹:
 
 Succ : 𝔹 → 𝔹
 Succ zero  = l zero
-Succ(l m)  = r m        
+Succ(l m)  = r m
 Succ(r m)  = l(Succ m)
 
 \end{code}
@@ -172,7 +172,7 @@ binaryunary(r m) = g
   a : r(binary(unary m)) ≡ r m
   a = ap r IH
   g : binary(unary(r m)) ≡ r m
-  g = rdiagram(unary m) ∙ a 
+  g = rdiagram(unary m) ∙ a
 
 binary-unary-equivalence : 𝔹 ≃ ℕ
 binary-unary-equivalence = unary , (binary , unarybinary) , (binary , binaryunary)
@@ -183,9 +183,9 @@ Induction principles induced by the equivalences:
 
 \begin{code}
 
-unary-induction-on-𝔹 : ∀ {U} {B : 𝔹 → U ̇} 
-          → B zero 
-          → (∀ n → B n → B(Succ n)) 
+unary-induction-on-𝔹 : ∀ {U} {B : 𝔹 → U ̇}
+          → B zero
+          → (∀ n → B n → B(Succ n))
           → ∀ n → B n
 unary-induction-on-𝔹 {U} {B} base step = g
  where
@@ -200,12 +200,12 @@ unary-induction-on-𝔹 {U} {B} base step = g
   b : ∀ m → B(binary(unary m))
   b m = a (unary m)
   g : ∀ m → B m
-  g m = transport B (binaryunary m) (b m) 
+  g m = transport B (binaryunary m) (b m)
 
-binary-induction-on-ℕ : ∀ {U} {A : ℕ → U ̇} 
-          → A zero 
-          → (∀ n → A n → A(L n)) 
-          → (∀ n → A n → A(R n)) 
+binary-induction-on-ℕ : ∀ {U} {A : ℕ → U ̇}
+          → A zero
+          → (∀ n → A n → A(L n))
+          → (∀ n → A n → A(R n))
           → ∀ n → A n
 binary-induction-on-ℕ {U} {A} base stepl stepr = g
  where
@@ -267,7 +267,7 @@ x + succ y = succ(x + y)
 _+♭_ : 𝔹 → 𝔹 → 𝔹
 x    +♭ zero = x
 zero +♭ l y  = l y
-l x  +♭ l y  = r(x +♭ y) 
+l x  +♭ l y  = r(x +♭ y)
 r x  +♭ l y  = l(Succ(x +♭ y))
 zero +♭ r y  = r y
 l x  +♭ r y  = l(Succ(x +♭ y))
@@ -318,7 +318,7 @@ Definitions:
 
 x    +₀ zero = x
 zero +₀ l y  = l y
-l x  +₀ l y  = r(x +₀ y) 
+l x  +₀ l y  = r(x +₀ y)
 r x  +₀ l y  = l(x +₁ y)
 zero +₀ r y  = r y
 l x  +₀ r y  = l(x +₁ y)
@@ -399,7 +399,7 @@ zero ⋆₁ l n  = zero
 l m  ⋆₁ l n  = l(Double(m ⋆₁ n) +₀ m +₀ n) -- (2m+1)(2n+1) = 4mn + 2m + 2n + 1 = 2(2mn+m+n)+1
 r m  ⋆₁ l n  = r(Double(m ⋆₁ n +₀ n) +₀ m) -- (2m+2)(2n+1) = 4mn + 2m + 4n + 2 = 2(2(mn+n)+m)+2
 zero ⋆₁ r n  = zero
-l m  ⋆₁ r n  = r(Double(m ⋆₁ n +₀ m) +₀ n) 
+l m  ⋆₁ r n  = r(Double(m ⋆₁ n +₀ m) +₀ n)
 r m  ⋆₁ r n  = Double(Double(m ⋆₁ n +₀ (m +₁ n))) -- (2m+2)(2n+2) = 4mn + 4m + 4n + 4 = 4(mn + m + n + 1)
 
 \end{code}
@@ -443,15 +443,15 @@ double₂(r x) = r(double₂ x)
 
 double₀-spec zero = refl
 double₀-spec (l x) = ap r (double₀-spec x)
-double₀-spec (r x) = ap r (double₁-spec x)   
+double₀-spec (r x) = ap r (double₁-spec x)
 
 double₁-spec zero = refl
 double₁-spec (l x) = ap l (double₁-spec x)
-double₁-spec (r x) = ap l (double₂-spec x)  
+double₁-spec (r x) = ap l (double₂-spec x)
 
 double₂-spec zero = refl
 double₂-spec (l x) = ap r (double₁-spec x)
-double₂-spec (r x) = ap r (double₂-spec x)  
+double₂-spec (r x) = ap r (double₂-spec x)
 
 \end{code}
 

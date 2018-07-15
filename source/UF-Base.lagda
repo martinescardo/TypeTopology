@@ -12,11 +12,11 @@ Idtofun = transport id
 back-Idtofun : ∀ {U} {X Y : U ̇} → X ≡ Y → Y → X
 back-Idtofun = back-transport id
 
-forth-and-back-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
+forth-and-back-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x}
                          → (p : x ≡ y) → back-transport A p (transport A p a) ≡ a
 forth-and-back-transport refl = refl
 
-back-and-forth-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x} 
+back-and-forth-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : A x}
                          → (p : y ≡ x) → transport A p (back-transport A p a) ≡ a
 back-and-forth-transport refl = refl
 
@@ -33,7 +33,7 @@ trans-sym' refl = refl
 transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇}
               (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
              → transport (A ∘ f) p a ≡ transport A (ap f p) a
-transport-ap f refl = refl 
+transport-ap f refl = refl
 
 nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇}
                 (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
@@ -67,11 +67,11 @@ ap-id-is-id refl = refl
 
 ap-comp : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
        → ap f (p ∙ q) ≡ ap f p ∙ ap f q
-ap-comp f refl refl = refl       
+ap-comp f refl refl = refl
 
 ap-sym : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x y : X} (p : x ≡ y)
        → (ap f p) ⁻¹ ≡ ap f (p ⁻¹)
-ap-sym f refl = refl       
+ap-sym f refl = refl
 
 ap-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z) {x x' : X} (r : x ≡ x')
      → ap g (ap f r) ≡ ap (g ∘ f) r
@@ -123,7 +123,7 @@ right-inverse {U} {X} {x} {y} refl = refl
 
 cancel-left : ∀ {U} {X : U ̇} {x y z : X} {p : x ≡ y} {q r : y ≡ z}
             → p ∙ q ≡ p ∙ r → q ≡ r
-cancel-left {U} {X} {x} {y} {z} {p} {q} {r} s = 
+cancel-left {U} {X} {x} {y} {z} {p} {q} {r} s =
        q              ≡⟨ refl-left-neutral ⁻¹ ⟩
        refl ∙ q       ≡⟨ ap (λ - → - ∙ q) ((left-inverse p)⁻¹) ⟩
        (p ⁻¹ ∙ p) ∙ q ≡⟨ assoc (p ⁻¹) p q ⟩
@@ -142,7 +142,7 @@ homotopies-are-natural : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : 
 homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
 ×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
-     → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y') 
+     → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
 ×-≡ refl refl = refl
 
 from-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (u v : Σ Y) (r : u ≡ v)
@@ -161,7 +161,7 @@ from-Σ-≡'' : ∀ {U V} {X : U ̇} {Y : X → V ̇} {u v : Σ Y} (r : u ≡ v)
 from-Σ-≡'' {U} {V} {X} {Y} {u} {v} r = (ap pr₁ r , from-Σ-≡ u v r)
 
 to-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x x' : X) (y : Y x) (y' : Y x')
-     → (p : x ≡ x') → transport Y p y ≡ y' → (x , y) ≡ (x' , y') 
+     → (p : x ≡ x') → transport Y p y ≡ y' → (x , y) ≡ (x' , y')
 to-Σ-≡ .x' x' .y y refl refl = refl
 
 to-Σ-≡'' : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
@@ -169,8 +169,8 @@ to-Σ-≡'' : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
           → σ ≡ τ
 to-Σ-≡'' (refl , refl) = refl
 
-to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x) 
-     → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y') 
+to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
+     → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y')
 to-Σ-≡' x y y' r = ap (λ - → (x , -)) r
 
 \end{code}

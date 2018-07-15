@@ -2,7 +2,7 @@ Martin Escardo, 27 April 2014
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-} 
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UF-PropIndexedPiSigma where
 
@@ -12,7 +12,7 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 
-prop-indexed-product : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇} → is-prop X 
+prop-indexed-product : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇} → is-prop X
                      → (a : X) → Π Y ≃ Y a
 prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
@@ -37,7 +37,7 @@ prop-indexed-product-one {U} {V} {W} {T} fe {X} {Y} v = unique-to-𝟙 , (g , fg
  where
   g : 𝟙 {W} → Π Y
   g * x = unique-from-𝟘 {V} {T} (v x)
-  fg : (u : 𝟙) → * ≡ u 
+  fg : (u : 𝟙) → * ≡ u
   fg * = refl
   gf : (φ : Π Y) → g * ≡ φ
   gf φ = dfunext fe u
@@ -51,7 +51,7 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇} → is-prop X 
+prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇} → is-prop X
                  → (a : X) → Σ Y ≃ Y a
 prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
  where

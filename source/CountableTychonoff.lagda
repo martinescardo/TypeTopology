@@ -17,15 +17,15 @@ open import SpartanMLTT
 open import SearchableTypes
 open import Sequence (fe)
 
-binary-Tychonoff' : ∀ {U} → {X : ℕ → U ̇} → 
+binary-Tychonoff' : ∀ {U} → {X : ℕ → U ̇} →
 
  searchable(X 0) →  searchable((n : ℕ) → X(succ n))
  → searchable((n : ℕ) → X n)
 
 binary-Tychonoff' ε δ =
- retractions-preserve-searchability 
-  cons-retraction 
- (binary-Tychonoff ε δ) 
+ retractions-preserve-searchability
+  cons-retraction
+ (binary-Tychonoff ε δ)
 
 \end{code}
 
@@ -58,7 +58,7 @@ countable-Tychonoff : ∀ {U} → {X : ℕ → U ̇} →
 
  ((n : ℕ) → searchable(X n)) → searchable((n : ℕ) → X n)
 
-countable-Tychonoff {X} ε = 
+countable-Tychonoff {X} ε =
  binary-Tychonoff' (hd ε) (countable-Tychonoff(tl ε))
 
 \end{code}

@@ -35,7 +35,7 @@ module subsingleton
  prop-valued x y = 𝟘-is-prop
 
  extensional : is-extensional _<_
- extensional x y f g = isp x y 
+ extensional x y f g = isp x y
 
  transitive : is-transitive _<_
  transitive x y z ()
@@ -73,7 +73,7 @@ module plus
   (inr y) ⊏ (inr y') = y ≺ y'
 
  order = _⊏_
-  
+
  prop-valued : is-prop-valued _<_
             → is-prop-valued _≺_
             → is-prop-valued _⊏_
@@ -101,7 +101,7 @@ module plus
  transitive t t' (inr y) (inl x') z () m
  transitive t t' (inr y) (inr y') (inl z') l ()
  transitive t t' (inr y) (inr y') (inr z') l m = t' y y' z' l m
-  
+
  well-founded : is-well-founded _<_
               → is-well-founded _≺_
               → is-well-founded _⊏_
@@ -120,7 +120,7 @@ module plus
      τ (inl x) l = φ x (w x)
      τ (inr y') l = γ y' (σ y' l)
    g : is-well-founded _⊏_
-   g (inl x) = φ x (w x) 
+   g (inl x) = φ x (w x)
    g (inr y) = γ y (w' y)
 
  well-order : is-well-order _<_
@@ -137,7 +137,7 @@ module plus
    g : (z : X + Y) → ¬ (inr y ⊏ z)
    g (inl x) ()
    g (inr y') l = f y' l
-   
+
 \end{code}
 
 Successor (probably get rid of it).
@@ -149,11 +149,11 @@ module successor
         {X : U ̇}
         (_<_ : X → X → V ̇)
        where
-  
+
   private
    _≺_ : 𝟙 → 𝟙 → V ̇
    _≺_ = subsingleton.order {U} 𝟙 𝟙-is-prop
-   
+
    _<'_ : X + 𝟙 → X + 𝟙 → V ̇
    _<'_ = plus.order _<_ _≺_
 
@@ -205,8 +205,8 @@ module times
       where
        α : P(x , y')
        α = f y' m
-       p : (x' , y') ≡ (x , y') 
-       p = ×-≡ r refl 
+       p : (x' , y') ≡ (x , y')
+       p = ×-≡ r refl
    φ : (x : X) (y : Y) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y) → P(x , y)) γ
 
@@ -226,7 +226,7 @@ module times
             → is-extensional _<_
             → is-extensional _≺_
             → is-extensional _⊏_
- extensional w w' e e' (a , b) (x , y) f g = ×-≡ p q 
+ extensional w w' e e' (a , b) (x , y) f g = ×-≡ p q
   where
    f' : (u : X) → u < a → u < x
    f' u l = Cases (f (u , y) (inl l))
@@ -247,7 +247,7 @@ module times
                               (λ (σ : (a ≡ a) × (b ≺ b)) → 𝟘-elim (≤-refl _≺_ b (w' b) (pr₂ σ))))))
               (λ (σ : (a ≡ x) × (v ≺ y))
                  → pr₂ σ)
-              
+
    g'' : (v : Y) → v ≺ y → v ≺ b
    g'' v l = Cases (g (x , v) (inr (refl , l)))
               (λ (m : x < a)
@@ -340,7 +340,7 @@ module pip
         (X : P → V ̇)
         (_<_ : {p : P} → X p → X p → W ̇)
        where
- 
+
 \end{code}
 
 We have the following families of equivalences indexed by P,
@@ -350,11 +350,11 @@ constructed in the module UF-PropIndexedPiSigma:
 
  open import UF-Equiv
  open import UF-PropIndexedPiSigma
- 
+
  private
   φ : (p : P) → Π X → X p
   φ p u = u p
- 
+
   ψ : (p : P) → X p → Π X
   ψ p x q = transport X (isp p q) x
 
@@ -507,7 +507,7 @@ I am not sure this is going to be useful:
      m = transport (λ p → transport X (isp p q) (pr₁ (f p)) < u q) (isp p q) l
      n : pr₁ (f q) < u q
      n = transport (λ - → transport X - (pr₁ (f q)) < u q) (prop-is-set isp (isp q q) refl) m
- 
+
 \end{code}
 
 Sum of an ordinal-indexed family of ordinals. To show that
@@ -535,7 +535,7 @@ module sum
 
  order = _⊏_
 
- well-founded : is-well-founded _<_ 
+ well-founded : is-well-founded _<_
              → ((x : X) → is-well-founded (_≺_ {x}))
              → is-well-founded _⊏_
  well-founded w w' (x , y) = φ x y
@@ -551,7 +551,7 @@ module sum
       where
        α : P(x , transport Y r y')
        α = f (transport Y r y') m
-       p : (x' , y') ≡ (x , transport Y r y') 
+       p : (x' , y') ≡ (x , transport Y r y')
        p = to-Σ-≡ x' x y' (transport Y r y') r refl
    φ : (x : X) (y : Y x) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
@@ -662,7 +662,7 @@ module sum-top
                                             e
                                             (λ x → extensionality _≺_ (f x)) ,
                                 transitive t (λ x → transitivity _≺_ (f x))
-                                
+
  top-preservation : has-top _<_ → has-top _⊏_
  top-preservation (x , f) = (x , top x) , g
   where
@@ -751,7 +751,7 @@ module sum-cotransitive
                                             e
                                             (λ x → extensionality _≺_ (f x)) ,
                                 transitive t (λ x → transitivity _≺_ (f x))
-                                
+
 \end{code}
 
 28 June 2018.
@@ -762,7 +762,7 @@ ordinal, then so does every type in the extended family Y/j : A → W.
 
                    j
               X ------> A
-               \       / 
+               \       /
                 \     /
              Y   \   / Y/j
                   \ /
@@ -790,7 +790,7 @@ module extension
         (Y : X → W ̇)
         (j : X → A)
         (ise : is-embedding j)
-        (_<_ : {x : X} → Y x → Y x → W ̇)        
+        (_<_ : {x : X} → Y x → Y x → W ̇)
         (a : A)
        where
 
@@ -798,14 +798,14 @@ module extension
 
  private
   _≺_ : (Y / j) a → (Y / j) a → U ⊔ V ⊔ W ̇
-  u ≺ v = Σ \(p : fiber j a) → u p < v p 
+  u ≺ v = Σ \(p : fiber j a) → u p < v p
 
  order = _≺_
 
  well-order : ((x : X) → is-well-order (_<_ {x}))
            → is-well-order _≺_
- well-order o = pip.well-order 
-              (fe (U ⊔ V) W) 
+ well-order o = pip.well-order
+              (fe (U ⊔ V) W)
               (fiber j a)
               (ise a)
               (λ (p : fiber j a) → Y (pr₁ p))
@@ -855,14 +855,14 @@ module sum¹
   fe₀ = fe U₀ U₀
 
   _◂_ : {w : ℕ∞} → (X / under) w → (X / under) w → U ̇
-  _◂_ {w} = extension.order fe X under (under-embedding fe₀) _<_ w 
+  _◂_ {w} = extension.order fe X under (under-embedding fe₀) _<_ w
 
   well-order-◂ : (w : ℕ∞) → is-well-order (_◂_ {w})
   well-order-◂ w = extension.well-order fe X under (under-embedding fe₀) _<_ w o
 
   top : (u : ℕ∞) → (X / under) u
   top u (n , r) = t n
-  
+
   ist : (u : ℕ∞) → is-top _◂_ (top u)
   ist u y ((n , r) , l) = i n (y (n , r)) l
 

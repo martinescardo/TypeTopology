@@ -47,13 +47,13 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
  is-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
  is-surjection f = ∀ y → ∃ \x → f x ≡ y
 
- c-es  :  ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
+ c-es  :  ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
           → is-vv-equiv f ⇔ is-embedding f × is-surjection f
  c-es f = g , h
   where
-   g : is-vv-equiv f → is-embedding f × is-surjection f 
+   g : is-vv-equiv f → is-embedding f × is-surjection f
    g i = (λ y → pr₁(pr₁ c-es₁ (i y))) , (λ y → pr₂(pr₁ c-es₁ (i y)))
-   
+
    h : is-embedding f × is-surjection f → is-vv-equiv f
    h (e , s) = λ y → pr₂ c-es₁ (e y , s y)
 
@@ -77,14 +77,14 @@ Surjections can be characterized as follows, modulo size:
  imageInduction {W} {U} {V} {X} {Y} f =
                 (P : Y → W ̇) → ((y : Y) → is-prop(P y)) → ((x : X) → P(f x)) → (y : Y) → P y
 
- surjection-induction : ∀ {W U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
-                      → is-surjection f → imageInduction {W} f 
+ surjection-induction : ∀ {W U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                      → is-surjection f → imageInduction {W} f
  surjection-induction f is P isp a y = ptrec (isp y)
                                              (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
-                                             (is y)                
+                                             (is y)
 
- image-surjection-converse : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
-                           → imageInduction f → is-surjection f 
+ image-surjection-converse : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                           → imageInduction f → is-surjection f
  image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ≡ y) ∥)
                                        (λ y → ptisp)
                                        (λ x → ∣ x , refl ∣)
@@ -97,8 +97,8 @@ Surjections can be characterized as follows, modulo size:
  image-induction f = surjection-induction (corestriction f)
                                           (corestriction-surjection f)
 
- retraction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) 
-                       → has-section f → is-surjection f 
+ retraction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                       → has-section f → is-surjection f
  retraction-surjection {U} {V} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
 
 \end{code}

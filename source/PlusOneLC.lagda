@@ -36,14 +36,14 @@ add-and-remove-same-point {U} {X} = f , ((g , fg) , (g , gf))
   gf x = refl
 
 remove-points : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
-remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')        
+remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')
  where
   f' : X ∖ a → Y ∖ (f a)
   f' (x , u) = (f x , λ(p : f x ≡ f a) → u ((gf x)⁻¹ ∙ ap g p ∙ gf a))
   g' : Y ∖ (f a) → X ∖ a
   g' (y , v) = (g y , λ(p : g y ≡ a) → v ((fg y) ⁻¹ ∙ ap f p))
   gf' : g' ∘ f' ∼ id
-  gf' (x , _) = to-Σ-≡'' (gf x , neg-is-prop (fe U U₀) _ _) 
+  gf' (x , _) = to-Σ-≡'' (gf x , neg-is-prop (fe U U₀) _ _)
   fg' : f' ∘ g' ∼ id
   fg' (y , _) = to-Σ-≡'' (fg y , neg-is-prop (fe V U₀) _ _)
   e' : is-equiv f'
@@ -79,7 +79,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-is-equiv f (g , 
     φ p q = r ∙ to-Σ-≡'' (refl , (neg-is-prop (fe V U₀) _ _))
      where
       r : g b ≡ (inr * , +disjoint')
-      r = ap (g' b) q 
+      r = ap (g' b) q
     ψ : (v : inl b ≢ inl b) → i (inl b) ≡ inr v → g (f (inr * , u)) ≡ (inr * , u)
     ψ v q = 𝟘-elim (v refl)
   fg : f ∘ g ∼ id
@@ -99,7 +99,7 @@ add-one-and-remove-isolated-point {V} {Y} (inr *) _ = ≃-sym add-and-remove-sam
   (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
                               (φ (inr *))
                               (equivalences-preserve-isolatedness φ e (inr *) isolated-added-point) ⟩
-   Y ■ 
+   Y ■
 
 \end{code}
 

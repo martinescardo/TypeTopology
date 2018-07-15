@@ -2,7 +2,7 @@ Martin Escardo 2011.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-} 
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF-FunExt
 
@@ -27,7 +27,7 @@ tl α n = α(succ n)
 
 hd-tl-eta : ∀ {U} {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (hd α ∶∶ tl α) ≡ α
 hd-tl-eta {U} {X} = dfunext (fe U₀ U) lemma
- where 
+ where
   lemma : {α : (n : ℕ) → X n} → (i : ℕ) → (hd α ∶∶ tl α) i ≡ α i
   lemma 0 = refl
   lemma (succ i) = refl
@@ -37,7 +37,7 @@ cons : ∀ {U} {X : ℕ → U ̇} → X 0 × ((n : ℕ) → X(succ n)) → ((n :
 cons(x , α) = x ∶∶ α
 
 cons-retraction : ∀ {U} {X : ℕ → U ̇} → retraction(cons {U} {X})
-cons-retraction α = (hd α , tl α) , hd-tl-eta 
+cons-retraction α = (hd α , tl α) , hd-tl-eta
 
 \end{code}
 

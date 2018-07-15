@@ -35,11 +35,11 @@ open import DiscreteAndSeparated
   r : ℕ → 𝟚
   r zero = ₀
   r (succ n) = ₁
-  
+
   s : 𝟚 → ℕ
   s ₀ = zero
   s ₁ = succ zero
-  
+
   rs : (n : 𝟚) → r (s n) ≡ n
   rs ₀ = refl
   rs ₁ = refl

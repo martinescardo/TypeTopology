@@ -7,7 +7,7 @@ GenericConvergentSequence).
 We prove that the generic convergent sequence ℕ∞ is searchable, which
 amounts to Theorem-3·6 of the paper
 
-   http://www.cs.bham.ac.uk/~mhe/papers/omniscient.pdf, 
+   http://www.cs.bham.ac.uk/~mhe/papers/omniscient.pdf,
    http://www.cs.bham.ac.uk/~mhe/.talks/dagstuhl2011/omniscient.pdf
 
 and conclude as a corollary that it is searchable and satisfies the
@@ -40,7 +40,7 @@ This is the main theorem proved in this module:
 
 ℕ∞-searchable : searchable ℕ∞
 ℕ∞-searchable p = a , Lemma
- where 
+ where
   α : ℕ → 𝟚
   α 0       = p(under 0)
   α(succ n) = min𝟚 (α n) (p(under(succ n)))
@@ -51,20 +51,20 @@ This is the main theorem proved in this module:
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
   Dagger₀ 0 r =  ap (λ - → incl - 0) r
   Dagger₀ (succ n) r = w ⁻¹ ∙ t ∙ under-diagonal₀ n
-   where 
+   where
     s : α n ≡ incl (under (succ n)) n
     s = ap (λ - → incl - n) r
 
     t : α(succ n) ≡ incl (under (succ n)) (succ n)
     t = ap (λ - → incl - (succ n)) r
 
-    w : α(succ n) ≡ p(under(succ n)) 
+    w : α(succ n) ≡ p(under(succ n))
     w = ap (λ - → min𝟚 - (p(under(succ n)))) (s  ∙ under-diagonal₁ n)
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
   Dagger₁ r 0 = ap (λ - → incl - 0) r
   Dagger₁ r (succ n) = w ⁻¹ ∙ t
-   where 
+   where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
 
@@ -76,12 +76,12 @@ This is the main theorem proved in this module:
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = Lemma[b≡₁→b≢₀] r (Lemma s)
-   where 
+   where
     Lemma : a ≡ under n → p a ≡ ₀
     Lemma t = ap p t ∙ Dagger₀ n t
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
-  Claim₁ r = not-ℕ-is-∞ fe (Claim₀ r) 
+  Claim₁ r = not-ℕ-is-∞ fe (Claim₀ r)
 
   Claim₂ : p a ≡ ₁ → (n : ℕ) → p(under n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)
@@ -113,7 +113,7 @@ open import DiscreteAndSeparated
 module _ (fe' : ∀ U V → funext U V) (pt : PropTrunc) where
 
  open import 2CompactTypes (fe') (pt)
-  
+
  ℕ∞-is-strongly-𝟚-overt : strongly-𝟚-overt ℕ∞
  ℕ∞-is-strongly-𝟚-overt = omniscient-Compact ℕ∞-omniscient
 

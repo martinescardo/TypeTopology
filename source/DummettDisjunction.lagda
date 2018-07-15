@@ -28,9 +28,9 @@ Dummett disjunction _⊞_ weakens intuitionistic disjunction _+_:
 
 \begin{code}
 
-weaker-than-intuitionistic : (P Q : Set) → P + Q → P ⊞ Q 
+weaker-than-intuitionistic : (P Q : Set) → P + Q → P ⊞ Q
 weaker-than-intuitionistic P Q (inl p) = inL P Q p
-weaker-than-intuitionistic P Q (inr q) = inR P Q q 
+weaker-than-intuitionistic P Q (inr q) = inR P Q q
 
 \end{code}
 
@@ -38,7 +38,7 @@ and strengthens classical disjunction:
 
 \begin{code}
 
-stronger-than-classical : (P Q : Set) → P ⊞ Q → ¬(¬ P × ¬ Q) 
+stronger-than-classical : (P Q : Set) → P ⊞ Q → ¬(¬ P × ¬ Q)
 stronger-than-classical P Q = more-generally 𝟘 𝟘-elim
   where
     more-generally : (R : Set) → (R → P) → P ⊞ Q → ((P → R) × (Q → R)) → R
@@ -145,11 +145,11 @@ Constructivism in Non-Classical Logics and Computer Science (Feb.,
 \begin{code}
 
 skolem : (A B C : Set) → (A → B ⊞ C) → (A → B) ⊞ (A → C)
-skolem A B C h = (λ f a → pr₁(h a) (λ b → f (λ _ → b) a)) , 
+skolem A B C h = (λ f a → pr₁(h a) (λ b → f (λ _ → b) a)) ,
                  (λ g a → pr₂(h a) (λ c → g (λ _ → c) a))
 
 dummett : (A B C : Set) → (A × B → C) → (A → C) ⊞ (B → C)
-dummett A B C h = (λ f b → f (λ a → h (a , b)) b) , 
+dummett A B C h = (λ f b → f (λ a → h (a , b)) b) ,
                   (λ g a → g (λ b → h (a , b)) a)
 
 \end{code}
@@ -198,8 +198,8 @@ The converse holds, but we don't need it:
 PL₀-gives-⊞-EM : PL₀ → ⊞-EM
 PL₀-gives-⊞-EM pl₀ P = more-generally 𝟘 (pl₀ P)
  where
-  more-generally : (Q : Set) → Peirce's-Law P Q → P ⊞ (P → Q) 
-  more-generally Q pl = (λ f p → f p p) , pl 
+  more-generally : (Q : Set) → Peirce's-Law P Q → P ⊞ (P → Q)
+  more-generally Q pl = (λ f p → f p p) , pl
 
 PL : Set₁
 PL = (P Q : Set) → Peirce's-Law P Q
@@ -238,7 +238,7 @@ Dummett or Curry-Howard disjunction are logically equivalent:
 \begin{code}
 
 ⊞-EM-gives-Curry-Howard-EM : ⊞-EM → Curry-Howard-EM
-⊞-EM-gives-Curry-Howard-EM dem = PL-gives-Curry-Howard-EM (PL₀-gives-PL (⊞-EM-gives-PL₀ dem)) 
+⊞-EM-gives-Curry-Howard-EM dem = PL-gives-Curry-Howard-EM (PL₀-gives-PL (⊞-EM-gives-PL₀ dem))
 
 \end{code}
 
@@ -297,19 +297,19 @@ Weak Dummet disjunction:
 \begin{code}
 
 _⊕_ : Set → Set → Set
-P ⊕ Q = (P → Q) → Q 
+P ⊕ Q = (P → Q) → Q
 
 ⊕-inL : (P Q : Set) → P → P ⊕ Q
-⊕-inL P Q p = λ u → u p 
+⊕-inL P Q p = λ u → u p
 
 ⊕-inR : (P Q : Set) → Q → P ⊕ Q
 ⊕-inR P Q q = λ _ → q
 
-⊕-weaker-than-intuitionistic : (P Q : Set) → P + Q → P ⊕ Q 
+⊕-weaker-than-intuitionistic : (P Q : Set) → P + Q → P ⊕ Q
 ⊕-weaker-than-intuitionistic P Q (inl p) = ⊕-inL P Q p
-⊕-weaker-than-intuitionistic P Q (inr q) = ⊕-inR P Q q 
+⊕-weaker-than-intuitionistic P Q (inr q) = ⊕-inR P Q q
 
-⊕-stronger-than-classical : (P Q : Set) → P ⊕ Q → ¬(¬ P × ¬ Q) 
+⊕-stronger-than-classical : (P Q : Set) → P ⊕ Q → ¬(¬ P × ¬ Q)
 ⊕-stronger-than-classical P Q = more-generally 𝟘 𝟘-elim
   where
     more-generally : (R : Set) → (R → Q) → P ⊕ Q → ((P → R) × (Q → R)) → R
@@ -317,7 +317,7 @@ P ⊕ Q = (P → Q) → Q
 
 -- Right excluded middle just holds for this notion of disjunction:
 
-⊕-em-right : (P : Set) → P ⊕ ¬ P 
+⊕-em-right : (P : Set) → P ⊕ ¬ P
 ⊕-em-right P = λ u p → u p p
 
 -- But the lack of commutativity shows here: left ⊕-excluded middle is
@@ -349,14 +349,14 @@ Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left em P = more-generally P (em P)
 -- excluded middle holds:
 
 agreement-gives-Curry-Howard-EM : ((P Q : Set) → P ⊕ Q → P + Q) → Curry-Howard-EM
-agreement-gives-Curry-Howard-EM f P = f P (¬ P) (⊕-em-right P) 
+agreement-gives-Curry-Howard-EM f P = f P (¬ P) (⊕-em-right P)
 
 Curry-Howard-EM-gives-agreement : Curry-Howard-EM → (P Q : Set) → P ⊕ Q → P + Q
 Curry-Howard-EM-gives-agreement em P Q = more-generally P Q (em P)
  where
   more-generally : (P Q : Set) → decidable P → P ⊕ Q → P + Q
   more-generally P Q (inl p) φ = inl p
-  more-generally P Q (inr u) φ = inr (φ (λ p → 𝟘-elim (u p))) 
+  more-generally P Q (inr u) φ = inr (φ (λ p → 𝟘-elim (u p)))
 
 -- Interestingly, also the commutativity of ⊕ is equivalent to excluded middle:
 
@@ -415,11 +415,11 @@ existential quantifier for X non-empty:
 \begin{code}
 
 D-stronger-than-classical : {X : Set} (P : X → Set) → ¬(¬ X) → D P → ¬(∀ x → ¬(P x))
-D-stronger-than-classical P ne d u = ne (λ i → u i (d i (λ x p → 𝟘-elim (u x p)))) 
+D-stronger-than-classical P ne d u = ne (λ i → u i (d i (λ x p → 𝟘-elim (u x p))))
  where
   -- More slowly:
   a : ∀ i x → P x → P i
-  a i x p = 𝟘-elim (u x p) 
+  a i x p = 𝟘-elim (u x p)
   b : ∀ i → P i
   b i = d i (a i)
   c : ∀ i → 𝟘

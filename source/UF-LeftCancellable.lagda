@@ -22,7 +22,7 @@ section-lc : ∀ {U V} {X : U ̇} {A : V ̇} (s : X → A) → has-retraction s 
 section-lc {U} {V} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
 
 is-equiv-lc : ∀ {U} {X Y : U ̇} (f : X → Y) → is-equiv f → left-cancellable f
-is-equiv-lc f (_ , hasr) = section-lc f hasr 
+is-equiv-lc f (_ , hasr) = section-lc f hasr
 
 left-cancellable-closed-under-∘ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
                                 → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)

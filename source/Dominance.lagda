@@ -87,7 +87,7 @@ module DecidableDominance where
 
  decidable-dominance : Dominance
  decidable-dominance = (λ P → is-prop P × decidable P) ,
-                       (λ P → Σ-is-prop 
+                       (λ P → Σ-is-prop
                                  (is-prop-is-prop (fe U U))
                                  (decidable-is-prop (fe U U₀))) ,
                        (λ X → pr₁) ,
@@ -104,7 +104,7 @@ module lift (d : U ̇ → U ̇) (isd : is-dominance d) where
  L X = Σ \(P : U ̇) → d P × (P → X)
 
  LL : ∀ {V} (X : V ̇) → U' ⊔ V ̇
- LL X = L(L X) 
+ LL X = L(L X)
 
  _⇀_ : ∀ {V W} → V ̇ → W ̇ → U' ⊔ V ⊔ W ̇
  X ⇀ Y = X → L Y
@@ -126,14 +126,14 @@ module lift (d : U ̇ → U ̇) (isd : is-dominance d) where
   where
    Q : U ̇
    Q = Σ \(p : P) → isDefined(f(φ p))
-   
+
    isdq : is-dominant D Q
    isdq = dominant-closed-under-Σ D
             P
             (λ p → isDefined(f(φ p)))
             isdp
             (λ p → is-dominantisDefined (f (φ p)))
-            
+
    γ : Q → Y
    γ (p , def) = value(f (φ p)) def
 

@@ -71,7 +71,7 @@ module commutation (U V : Universe)
   y ≼ y' = not(y' ≺ y)
   _⊑_ : Σ Y → Σ Y → U ⊔ V ̇
   _⊑_ = lex-order _≤_ _≼_
-  forth : (x x' : X) (y : Y x) (y' : Y x') → not((x , y) ⊏ (x' , y')) → (x' , y') ⊑ (x , y) 
+  forth : (x x' : X) (y : Y x) (y' : Y x') → not((x , y) ⊏ (x' , y')) → (x' , y') ⊑ (x , y)
   forth x x' y y' f = g , h
    where
     g : not(x < x')

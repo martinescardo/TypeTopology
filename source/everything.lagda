@@ -77,7 +77,7 @@ classical logic) is ℕ ∪ { ∞ }, defined in the following module:
 
 \begin{code}
 
-import GenericConvergentSequence 
+import GenericConvergentSequence
 
 \end{code}
 
@@ -87,7 +87,7 @@ omniscience as a corollary:
 \begin{code}
 
 import SearchableTypes
-import ConvergentSequenceSearchable 
+import ConvergentSequenceSearchable
 
 \end{code}
 
@@ -143,7 +143,7 @@ illustrative example:
 
 \begin{code}
 
-import CoNaturals 
+import CoNaturals
 import CoNaturalsExercise
 
 \end{code}
@@ -155,8 +155,8 @@ corollary:
 
 \begin{code}
 
-import TheTopologyOfTheUniverse 
-import RicesTheoremForTheUniverse 
+import TheTopologyOfTheUniverse
+import RicesTheoremForTheUniverse
 
 \end{code}
 
@@ -168,8 +168,8 @@ we also include runnable experiments in the second module:
 
 \begin{code}
 
-import CountableTychonoff 
-import CantorSearchable 
+import CountableTychonoff
+import CantorSearchable
 
 \end{code}
 
@@ -241,7 +241,7 @@ results.
 import TotallySeparated
 import 2CompactTypes
 import SimpleTypes
-import FailureOfTotalSeparatedness 
+import FailureOfTotalSeparatedness
 
 \end{code}
 

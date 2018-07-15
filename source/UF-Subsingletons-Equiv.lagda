@@ -14,9 +14,9 @@ pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : identifications-from x →
 pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
  where
   f : identifications-from x → identifications-to x
-  f (y , p) = y , (p ⁻¹) 
+  f (y , p) = y , (p ⁻¹)
   g : identifications-to x → identifications-from x
-  g (y , p) = y , (p ⁻¹) 
+  g (y , p) = y , (p ⁻¹)
   fg : f ∘ g ∼ id
   fg (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
   gf : g ∘ f ∼ id

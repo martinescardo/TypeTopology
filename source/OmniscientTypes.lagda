@@ -40,7 +40,7 @@ open import DiscreteAndSeparated
 open import DecidableAndDetachable
 
 apart-or-equal : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇}
-              → omniscient X → ((x : X) → discrete(Y x)) 
+              → omniscient X → ((x : X) → discrete(Y x))
               → (f g : (x : X) → Y x) → (f ♯ g) + (f ≡ g)
 apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
  where
@@ -57,11 +57,11 @@ apart-or-equal {U} {V} {X} fe {Y} φ d f g = lemma₂ lemma₁
   lemma₁ = φ p
 
   lemma₂ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁) → (f ♯ g) + (f ≡ g)
-  lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r)) 
+  lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r))
   lemma₂(inr h) = inr (dfunext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
 
 
-omniscient-discrete-discrete : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇} → 
+omniscient-discrete-discrete : ∀ {U V} {X : U ̇} → funext U V → {Y : X → V ̇} →
 
    omniscient X → ((x : X) → discrete(Y x)) → discrete((x : X) → Y x)
 
@@ -84,7 +84,7 @@ omniscient-decidable X φ = f a
  where
   a : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁)
   a = φ (λ x → ₀)
-  
+
   f : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁) → decidable X
   f (inl (x , _)) = inl x
   f (inr u)       = inr (λ x → zero-is-not-one (u x))
@@ -101,6 +101,6 @@ decidable-prop-omniscient X isp δ p = g δ
     c : p x ≡ ₁ → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
     c r = inr (λ y → transport (λ - → p - ≡ ₁) (isp x y) r)
   g (inr u) = inr (λ x → 𝟘-elim (u x))
-   
+
 
 \end{code}

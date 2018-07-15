@@ -17,13 +17,13 @@ zero-minimal n = *
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
 
-succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n 
+succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n
 succ-order-injective m n l = l
 
 ≤-induction : {U : Universe} (P : (m n : ℕ) (l : m ≤ n) → U ̇)
             → ((n : ℕ) → P zero n (zero-minimal n))
-            → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l)) 
-            → (m n : ℕ) (l : m ≤ n) → P m n l 
+            → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
+            → (m n : ℕ) (l : m ≤ n) → P m n l
 ≤-induction P base step zero n *            = base n
 ≤-induction P base step (succ m) zero ()
 ≤-induction P base step (succ m) (succ n) l = step m n l (≤-induction P base step m n l)
@@ -84,7 +84,7 @@ bounded-∀-next A k a φ n l = cases f g s
   f = φ n
   g : succ n ≡ succ k → A n
   g p = back-transport A (succ-injective p) a
-  
+
 \end{code}
 
 Added 20th June 2018:
@@ -115,11 +115,11 @@ regress : ∀ {U} (P : ℕ → U ̇)
         → (n : ℕ) (m : ℕ) → m ≤ n → P n → P m
 regress P ρ zero m l p = back-transport P (unique-minimal m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
-                                    (λ (r : m ≡ succ n) → back-transport P r p) 
+                                    (λ (r : m ≡ succ n) → back-transport P r p)
                                     (≤-split m n l)
  where
   IH : (m : ℕ) → m ≤ n → P n → P m
-  IH = regress P ρ n 
+  IH = regress P ρ n
 
 <-is-well-founded : (m : ℕ) → is-accessible _<_ m
 <-is-well-founded zero     = next zero     (λ y l → unique-from-𝟘 l)

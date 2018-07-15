@@ -1,6 +1,6 @@
 Martin Escardo, December 2012, based on earlier work, circa 2010.
 
-Searchable ordinals via squashed sums (without using the Cantor space). 
+Searchable ordinals via squashed sums (without using the Cantor space).
 
 We can define plenty of searchable sets by transfinitely iterating
 squashed sums. These are countable sums with an added limit point at
@@ -8,7 +8,7 @@ infinity (see the module SquashedSum).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-} 
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF-FunExt
 
@@ -26,10 +26,10 @@ different from the traditional "Brouwer ordinals".
 \begin{code}
 
 data OE : U₀ ̇ where
- One  : OE 
+ One  : OE
  Add  : OE → OE → OE
  Mul  : OE → OE → OE
- Sum1 : (ℕ → OE) → OE 
+ Sum1 : (ℕ → OE) → OE
 
 \end{code}
 
@@ -54,14 +54,14 @@ open import Ordinals fe
 
 ord : OE → Ordᵀ
 ord      One  = 𝟙º
-ord (Add α β) = ord α +º ord β 
-ord (Mul α β) = ord α ×º  ord β 
+ord (Add α β) = ord α +º ord β
+ord (Mul α β) = ord α ×º  ord β
 ord (Sum1 α)  = ∑¹ \(i : ℕ) → ord(α i)
 
 sord : (α : OE) → usearchable(ord α)
 sord       One = 𝟙-usearchable
 sord (Add α β) = +usearchable (ord α) (ord β) (sord α) (sord β)
-sord (Mul α β) = ×usearchable (ord α) (ord β) (sord α) (sord β) 
+sord (Mul α β) = ×usearchable (ord α) (ord β) (sord α) (sord β)
 sord (Sum1 α)  = ∑¹-usearchable (ord ∘ α) (λ n → sord (α n))
 
 \end{code}
@@ -75,14 +75,14 @@ of the discrete version to the underlying set of the above version.
 
 ord' : OE → Ordᵀ
 ord'        One = 𝟙º
-ord' (Add α β) = ord' α +º ord' β 
-ord' (Mul α β) = ord' α ×º  ord' β 
+ord' (Add α β) = ord' α +º ord' β
+ord' (Mul α β) = ord' α ×º  ord' β
 ord' (Sum1 α)  = ∑₁ \(i : ℕ) → ord'(α i)
 
 dord' : (α : OE) → udiscrete(ord' α)
 dord'      One  = 𝟙-udiscrete
 dord' (Add α β) = +udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
-dord' (Mul α β) = ×udiscrete (ord' α) (ord' β) (dord' α) (dord' β) 
+dord' (Mul α β) = ×udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
 dord' (Sum1 α)  = ∑₁-udiscrete (ord' ∘ α) (λ n → dord' (α n))
 
 {-
@@ -90,7 +90,7 @@ ord'-ord : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
 ord'-ord One = id
 ord'-ord (Add α β) c = {!!}
 ord'-ord (Mul α β) = {!!}
-ord'-ord (Sum-plus-One α) = {!!} 
+ord'-ord (Sum-plus-One α) = {!!}
 -}
 
 \end{code}

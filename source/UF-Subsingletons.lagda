@@ -23,7 +23,7 @@ is-subsingleton : ∀ {U} → U ̇ → U ̇
 is-subsingleton X = (x y : X) → x ≡ y
 
 Ω : ∀ {U} → U ′ ̇
-Ω {U} = Σ \(P : U ̇) → is-subsingleton P 
+Ω {U} = Σ \(P : U ̇) → is-subsingleton P
 
 \end{code}
 
@@ -54,9 +54,9 @@ is-truth-value = is-subsingleton
 
 \begin{code}
 
-Σ-is-prop : ∀ {U V} {X : U ̇} {A : X → V ̇} 
+Σ-is-prop : ∀ {U V} {X : U ̇} {A : X → V ̇}
           → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
-Σ-is-prop {U} {V} {X} {A} isx isa (x , a) (y , b) = 
+Σ-is-prop {U} {V} {X} {A} isx isa (x , a) (y , b) =
   to-Σ-≡ x y a b (isx x y) (isa y (transport A (isx x y) a) b)
 
 \end{code}
@@ -101,7 +101,7 @@ iis-singleton-is-prop {U} {X} φ x = is-singleton-is-prop (φ x) x
 iis-prop-is-prop : ∀ {U} {X : U ̇} → (X → is-prop X) → is-prop X
 iis-prop-is-prop {U} {X} φ x y = φ x x y
 
-inhabited-proposition-is-singleton : ∀ {U} {X : U ̇} → X → is-prop X → is-singleton X 
+inhabited-proposition-is-singleton : ∀ {U} {X : U ̇} → X → is-prop X → is-singleton X
 inhabited-proposition-is-singleton x h = x , h x
 
 \end{code}
@@ -152,8 +152,8 @@ identification-collapsible X = {x y : X} → collapsible(x ≡ y)
 set-is-identification-collapsible : ∀ {U} → {X : U ̇} → is-set X → identification-collapsible X
 set-is-identification-collapsible u = (id , u)
 
-local-hedberg : ∀ {U} {X : U ̇} (x : X) 
-      → ((y : X) → collapsible (x ≡ y)) 
+local-hedberg : ∀ {U} {X : U ̇} (x : X)
+      → ((y : X) → collapsible (x ≡ y))
       → (y : X) → is-prop (x ≡ y)
 local-hedberg {U} {X} x pc y p q = claim₂
  where
@@ -166,7 +166,7 @@ local-hedberg {U} {X} x pc y p q = claim₂
   claim₁ : (f x refl)⁻¹ ∙ f y p ≡ (f x refl)⁻¹ ∙ f y q
   claim₁ = ap (λ - → (f x refl)⁻¹ ∙ -) (g y p q)
   claim₂ : p ≡ q
-  claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹ 
+  claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
 
 identification-collapsible-is-set : ∀ {U} {X : U ̇} → identification-collapsible X → is-set X
 identification-collapsible-is-set {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
@@ -182,8 +182,8 @@ symmetrizing the proof.
 
 \begin{code}
 
-local-hedberg' : ∀ {U} {X : U ̇} (x : X) 
-      → ((y : X) → collapsible (y ≡ x)) 
+local-hedberg' : ∀ {U} {X : U ̇} (x : X)
+      → ((y : X) → collapsible (y ≡ x))
       → (y : X) → is-prop (y ≡ x)
 local-hedberg' {U} {X} x pc y p q = claim₂
  where
@@ -238,9 +238,9 @@ trivial-loop x = (x , refl)
 
 identification-from-trivial-loop : ∀ {U} {X : U ̇} {x x' : X} (r : x ≡ x') → trivial-loop x ≡ (x' , r)
 identification-from-trivial-loop {U} {X} = J A (λ x → refl)
- where 
+ where
   A : (x x' : X) → x ≡ x' → U ̇
-  A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (trivial-loop x) (x' , r) 
+  A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (trivial-loop x) (x' , r)
 
 identifications-from-is-singleton : ∀ {U} {X : U ̇} (x₀ : X) → is-singleton(identifications-from x₀)
 identifications-from-is-singleton x₀ = trivial-loop x₀ , (λ t → identification-from-trivial-loop (pr₂ t))
@@ -284,7 +284,7 @@ subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f ,
 pr₁-lc : ∀ {U V} {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x)) → left-cancellable (pr₁ {U} {V} {X} {Y})
 pr₁-lc f p = to-Σ-≡'' (p , (f _ _))
 
-subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇) 
+subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇)
                     → is-set X → ({x : X} → is-prop(Y x)) → is-set(Σ \(x : X) → Y x)
 subset-of-set-is-set X Y h p = subtype-of-set-is-set pr₁ (pr₁-lc p) h
 
@@ -295,13 +295,13 @@ inr-lc-is-section : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → (p : inr {U} 
 inr-lc-is-section refl = refl
 
 +-is-set : ∀ {U V} (X : U ̇) (Y : V ̇) → is-set X → is-set Y → is-set (X + Y)
-+-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹ 
++-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
  where
   r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
   r = ap (ap inl) (i (inl-lc p) (inl-lc q))
 +-is-set X Y i j {inl x} {inr y} () q
 +-is-set X Y i j {inr y} {inl x} p ()
-+-is-set X Y i j {inr y} {inr y'} p q = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹  
++-is-set X Y i j {inr y} {inr y'} p q = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹
  where
   r : ap inr (inr-lc p) ≡ ap inr (inr-lc q)
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
@@ -321,7 +321,7 @@ Formulation of propositional extensionality:
 
 \begin{code}
 
-propext : ∀ U → U ′ ̇ 
+propext : ∀ U → U ′ ̇
 propext U = {P Q : U ̇} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
 
 \end{code}

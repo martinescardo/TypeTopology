@@ -10,7 +10,7 @@ illustrate how co-recursion and co-induction can be used.
 
 Recall that a retraction is a pair of maps r : X → Y and s : Y → X
 such that r ∘ s : Y → Y is the identity, where r is called the
-retraction and s the section. In this case, it follows that 
+retraction and s the section. In this case, it follows that
 s ∘ r : X → X is idempotent, and s is an injection and r is a
 surjection. When such maps exists one says that Y is a retract of X.
 
@@ -37,7 +37,7 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
 
   f-retr : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
   f-retr ₀ α = inl *
-  f-retr ₁ α = inr α 
+  f-retr ₁ α = inr α
 
   p-retr : (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
   p-retr α = f-retr (hd α) (tl α)
@@ -50,13 +50,13 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
 
   retr-spec₀ : (α : ℕ → 𝟚) → hd α ≡ ₀ → retr α ≡ Zero
   retr-spec₀ α r = alg-morphism-Zero p-retr retr retr-spec α * lemma
-   where 
+   where
     lemma : p-retr α ≡ inl *
     lemma = ap (λ - → f-retr - (tl α)) r
 
   retr-spec₁ : (α : ℕ → 𝟚) → hd α ≡ ₁ → retr α ≡ Succ(retr(tl α))
   retr-spec₁ α r = alg-morphism-Succ p-retr retr retr-spec α (tl α) lemma
-   where 
+   where
     lemma : p-retr α ≡ inr(tl α)
     lemma = ap (λ - → f-retr - (tl α)) r
 
@@ -67,12 +67,12 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
   r u = (u , refl , refl)
 
   R-positivity : (u v : ℕ∞) → R u v → positivity u ≡ positivity v
-  R-positivity u v (w , c , d) = 
-   𝟚-equality-cases lemma₀ lemma₁ 
-   where 
+  R-positivity u v (w , c , d) =
+   𝟚-equality-cases lemma₀ lemma₁
+   where
     lemma₀ : positivity w ≡ ₀ → positivity u ≡ positivity v
     lemma₀ r = ap positivity claim₃
-     where 
+     where
       claim₀ : retr(incl w) ≡ Zero
       claim₀ = retr-spec₀(incl w) r
       claim₁ : v ≡ Zero
@@ -84,10 +84,10 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
 
     lemma₁ : positivity w ≡ ₁ → positivity u ≡ positivity v
     lemma₁ r = claim₂ ∙ claim₄ ⁻¹
-     where 
-      claim₀ : positivity(retr(incl w)) ≡ ₁ 
+     where
+      claim₀ : positivity(retr(incl w)) ≡ ₁
       claim₀ = ap positivity (retr-spec₁(incl w) r)
-      claim₁ : positivity(retr(incl w)) ≡ positivity u 
+      claim₁ : positivity(retr(incl w)) ≡ positivity u
       claim₁ = ap positivity c
       claim₂ : positivity u ≡ ₁
       claim₂ = claim₁ ⁻¹ ∙ claim₀
@@ -106,7 +106,7 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
      claim₀ = ap Pred c
      claim :  retr(incl(Pred w)) ≡ Pred(retr(incl w))
      claim = 𝟚-equality-cases claim₁ claim₂
-      where 
+      where
        claim₁ : is-Zero w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
        claim₁ r = c₃ ∙ c₅ ⁻¹
         where

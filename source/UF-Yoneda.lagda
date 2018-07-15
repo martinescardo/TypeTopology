@@ -45,8 +45,8 @@ The natural transformation induced by an element:
 \begin{code}
 
 yoneda-nat : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
-           → A x → Nat (Id x) A 
-yoneda-nat x A a y p = transport A p a 
+           → A x → Nat (Id x) A
+yoneda-nat x A a y p = transport A p a
 
 Yoneda-nat : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
            → A x → (y : X) → x ≡ y → A y
@@ -62,7 +62,7 @@ its Yoneda element:
 \begin{code}
 
 yoneda-lemma : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
-             → yoneda-nat x A (yoneda-elem x A η) ≈ η 
+             → yoneda-nat x A (yoneda-elem x A η) ≈ η
 yoneda-lemma x A η _ refl = refl
 
 Yoneda-lemma : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
@@ -79,7 +79,7 @@ transformation η is recursively defined.
 
 yoneda-lemma' : (∀ U V → funext U V)
               → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
-              → yoneda-nat x A (yoneda-elem x A η) ≡ η 
+              → yoneda-nat x A (yoneda-elem x A η) ≡ η
 yoneda-lemma' fe {U} {V} x A η = dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe U V) (λ p → yoneda-lemma x A η y p))
 
 \end{code}
@@ -89,11 +89,11 @@ not be taken too seriously:
 
 \begin{code}
 
-Yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x) 
+Yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x)
                    → transport A refl a ≡ a
 Yoneda-computation x A a = refl
 
-yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x) 
+yoneda-computation : ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (a : A x)
                   → yoneda-elem x A (yoneda-nat x A a) ≡ a
 yoneda-computation x A = Yoneda-computation x A
 
@@ -108,7 +108,7 @@ yoneda-nat-is-equiv fe {U} {V} {X} x A = (yoneda-elem x A , yoneda-lemma' fe x A
                                         (yoneda-elem x A , yoneda-computation x A)
 
 yoneda-equivalence : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
-                   → A x ≃ Nat (Id x) A  
+                   → A x ≃ Nat (Id x) A
 yoneda-equivalence fe x A = yoneda-nat x A , yoneda-nat-is-equiv fe x A
 
 Yoneda-equivalence : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇)
@@ -134,7 +134,7 @@ unique-element-is-universal-element : ∀ {U V} {X : U ̇} (A : X → V ̇) (σ 
                                     → is-the-only-element σ
                                     → is-universal-element σ
 unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡'' (φ(y , b))
- 
+
 \end{code}
 
 The following says that if the pair (x,a) is a universal element, then
@@ -148,12 +148,12 @@ considered below.
 
 universality-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                      → is-universal-element (x , a)
-                     → (y : X) → has-section (yoneda-nat x A a y) 
+                     → (y : X) → has-section (yoneda-nat x A a y)
 universality-section {U} {V} {X} {A} x a u y = s y , φ y
  where
   s : (y : X) → A y → x ≡ y
-  s y b = pr₁ (u y b) 
-  φ : (y : X) (b : A y) → yoneda-nat x A a y (s y b) ≡ b 
+  s y b = pr₁ (u y b)
+  φ : (y : X) (b : A y) → yoneda-nat x A a y (s y b) ≡ b
   φ y b = pr₂ (u y b)
 
 section-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
@@ -197,13 +197,13 @@ Yoneda-section-back {U} {V} {X} {A} x η φ = c
   g : ∀ y → has-section (yoneda-nat x A (yoneda-elem x A η) y)
   g y = has-section-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
   u : is-universal-element (x , yoneda-elem x A η)
-  u = section-universality x (yoneda-elem x A η) g 
+  u = section-universality x (yoneda-elem x A η) g
   c : is-singleton (Σ A)
   c = (x , yoneda-elem x A η) , (universal-element-is-the-only-element (x , yoneda-elem x A η) u)
-  
+
 Yoneda-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                → is-singleton (Σ A) ⇔ ((y : X) → has-section (η y))
-Yoneda-section x η = Yoneda-section-forth x η , Yoneda-section-back x η              
+Yoneda-section x η = Yoneda-section-forth x η , Yoneda-section-back x η
 
 \end{code}
 
@@ -213,8 +213,8 @@ Here is a direct application (24th April 2018).
 
 equiv-adj : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X)
               (η : (x : X) (y : Y) → f x ≡ y → g y ≡ x)
-          → ((x : X) (y : Y) → has-section (η x y)) ⇔ is-vv-equiv g 
-equiv-adj f g η = (λ isv x → Yoneda-section-back (f x) (η x) (isv x)) , 
+          → ((x : X) (y : Y) → has-section (η x y)) ⇔ is-vv-equiv g
+equiv-adj f g η = (λ isv x → Yoneda-section-back (f x) (η x) (isv x)) ,
                   (λ φ x → Yoneda-section-forth (f x) (η x) (φ x))
 
 \end{code}
@@ -244,7 +244,7 @@ has-adj-is-vv-equiv : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                        → has-adj g
                        → is-vv-equiv g
 has-adj-is-vv-equiv g (f , η , hass) x = Yoneda-section-back (f x) (η x) (hass x)
-  
+
 \end{code}
 
 A natural transformation of the above kind is an equivalence iff it has a section,
@@ -266,7 +266,7 @@ idemp-is-id {U} {X} {x} e y p idemp = cancel-left (
         e x refl ∙ p     ∎ )
 
 nat-retraction-is-section : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                          → ((y : X) → has-section(η y)) 
+                          → ((y : X) → has-section(η y))
                           → ((y : X) → has-retraction(η y))
 nat-retraction-is-section {U} {V} {X} {A} x η hass = hasr
  where
@@ -291,7 +291,7 @@ The above use of the word "is" is justified by the following:
 
 nat-retraction-is-section-uniquely : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                                      (x : X) (η : Nat (Id x) A)
-                                   → ((y : X) → has-section(η y)) 
+                                   → ((y : X) → has-section(η y))
                                    → ((y : X) → is-singleton(has-retraction(η y)))
 nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-is-singleton
                                                       (nat-retraction-is-section x η hass y)
@@ -299,14 +299,14 @@ nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-is-sin
 
 nat-has-section-is-prop : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {A : X → V ̇}
                         (x : X) (η : Nat (Id x) A)
-                      → is-prop ((y : X) → has-section (η y)) 
+                      → is-prop ((y : X) → has-section (η y))
 nat-has-section-is-prop fe {U} {V} {X} x η φ = Π-is-prop (fe U (U ⊔ V)) γ φ
   where
    γ : (y : X) → is-prop (has-section (η y))
    γ y = hasr-is-prop-hass fe (η y) (nat-retraction-is-section x η φ y)
 
 nat-retraction-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                      → ((y : X) → has-section(η y)) 
+                      → ((y : X) → has-section(η y))
                       → ((y : X) → is-equiv(η y))
 nat-retraction-is-equiv x η hass y = (hass y , nat-retraction-is-section x η hass y)
 
@@ -321,7 +321,7 @@ universality-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → (y : X) → is-equiv(yoneda-nat x A a y)
 universality-equiv {U} {V} {X} {A} x a u = nat-retraction-is-equiv x (yoneda-nat x A a)
                                                                     (universality-section x a u)
-  
+
 equiv-universality : ∀ {U V} {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → ((y : X) → is-equiv(yoneda-nat x A a y))
                    → is-universal-element (x , a)
@@ -352,7 +352,7 @@ isRepresentable A = Σ \x → Id x ≊ A
 
 singleton-representable : ∀ {U V} {X : U ̇} {A : X → V ̇}
                         → is-singleton (Σ A)
-                        → isRepresentable A 
+                        → isRepresentable A
 singleton-representable {U} {V} {X} {A} ((x , a) , cc) = x ,
                                                          yoneda-nat x A a ,
                                                          Yoneda-Theorem-forth x (yoneda-nat x A a) ((x , a) , cc)
@@ -377,7 +377,7 @@ is-vv-equiv-has-adj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
  where
   γ : has-adj g
   γ = is-vv-equiv-has-adj g φ
-  
+
 has-adj-is-vv-equiv' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                      → (Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x))
                      → is-vv-equiv g
@@ -459,7 +459,7 @@ the Yoneda Lemma.
 \begin{code}
 
 yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇}
-                   (η θ : Nat (Id x) A)             
+                   (η θ : Nat (Id x) A)
                → yoneda-elem x A η ≡ yoneda-elem x A θ → η ≈ θ
 yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   η y p                                ≡⟨ (yoneda-lemma x A η y p)⁻¹ ⟩
@@ -467,7 +467,7 @@ yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   yoneda-nat x A (yoneda-elem x A θ) y p ≡⟨ yoneda-lemma x A θ y p ⟩
   θ y p ∎
 
-Yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : (y : X) → x ≡ y → A y)             
+Yoneda-elem-lc : ∀ {U V} {X : U ̇} {x : X} {A : X → V ̇} (η θ : (y : X) → x ≡ y → A y)
               → η x refl ≡ θ x refl → (y : X) (p : x ≡ y) → η y p ≡ θ y p
 Yoneda-elem-lc = yoneda-elem-lc
 
@@ -505,11 +505,11 @@ Yoneda-lemma-Id : ∀ {U} {X : U ̇} (x {y} : X) (η : (z : X) → y ≡ z → x
 Yoneda-lemma-Id = yoneda-lemma-Id
 
 yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : Nat (Id x) (λ _ → B)) (y : X) (p : x ≡ y)
-             → yoneda-elem x (λ _ → B) η ≡ η y p 
+             → yoneda-elem x (λ _ → B) η ≡ η y p
 yoneda-const η = yoneda-elem-lc (λ y p → yoneda-elem _ _ η) η refl
 
 Yoneda-const : ∀ {U V} {X : U ̇} {B : V ̇} {x : X} (η : (y : X) → x ≡ y → B) (y : X) (p : x ≡ y)
-             → η x refl ≡ η y p 
+             → η x refl ≡ η y p
 Yoneda-const = yoneda-const
 
 \end{code}
@@ -577,7 +577,7 @@ ext-assoc : ∀ {U} {X : U ̇} {z t : X} (r : z ≡ t)
 ext-assoc {U} {X} {z} {t} = yoneda-elem-lc (λ z r x y p q → p ∙ q ∙ r)
                                            (λ z r x y p q → p ∙ (q ∙ r))
                                            refl
-                                           t 
+                                           t
 \end{code}
 
 Then of course associativity of path composition follows:
@@ -586,7 +586,7 @@ Then of course associativity of path composition follows:
 
 assoc-bis : ∀ {U} {X : U ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
           → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
-assoc-bis {U} {X} {x} {y} p q r = ap (λ - → - x y p q) (ext-assoc r) 
+assoc-bis {U} {X} {x} {y} p q r = ap (λ - → - x y p q) (ext-assoc r)
 
 left-inverse-bis : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ refl
 left-inverse-bis {U} {X} {x} {y} = yoneda-elem-lc (λ x p → p ⁻¹ ∙ p) (λ x p → refl) refl y
@@ -651,11 +651,11 @@ NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
 
 yoneda-equivalence-Σ : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (A : X → V ̇)
                      → Σ A ≃ Σ \(x : X) → Nat (Id x) A
-yoneda-equivalence-Σ fe A = NatΣ-equiv' A (λ x → Nat (Id x) A) (λ x → yoneda-equivalence fe x A) 
+yoneda-equivalence-Σ fe A = NatΣ-equiv' A (λ x → Nat (Id x) A) (λ x → yoneda-equivalence fe x A)
 
 nats-are-uniquely-transports : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
                             → is-singleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
-nats-are-uniquely-transports fe x A = is-equiv-is-vv-equiv (yoneda-nat x A) (yoneda-nat-is-equiv fe x A) 
+nats-are-uniquely-transports fe x A = is-equiv-is-vv-equiv (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
 adj-obs : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)

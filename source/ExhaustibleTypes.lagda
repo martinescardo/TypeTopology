@@ -24,7 +24,7 @@ Closer to the original definition of exhaustibility in LICS'2007 amd LMCS'2008:
 \begin{code}
 
 exhaustible' : ∀ {U} → U ̇ → U ̇
-exhaustible' X = 
+exhaustible' X =
  Σ \(A : (X → 𝟚) → 𝟚) → (p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁)
 
 \end{code}
@@ -52,11 +52,11 @@ searchable-implies-exhaustible : ∀ {U} {X : U ̇} →
  searchable X → exhaustible X
 
 searchable-implies-exhaustible {U} {X} ε p = y , (lemma₀ , lemma₁)
- where 
+ where
   x₀ : X
   x₀ = pr₁(ε p)
 
-  y : 𝟚 
+  y : 𝟚
   y = p x₀
 
   lemma₀ :  y ≡ ₁ → (x : X) → p x ≡ ₁

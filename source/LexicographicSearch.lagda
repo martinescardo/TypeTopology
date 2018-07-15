@@ -20,7 +20,7 @@ sums-preserve-inf-searchability : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
   → inf-searchable (lex-order _≤_ _≼_)
 sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
- where 
+ where
   lemma-next : (x : X) → Σ \(y₀ : Y x) → ((Σ \(y : Y x) → p(x , y) ≡ ₀) → p (x , y₀) ≡ ₀)
                                         × ((y : Y x) → p(x , y) ≡ ₀ → y₀ ≼ y)
                                         × ((l : Y x) → ((y : Y x) → p(x , y) ≡ ₀ → l ≼ y) → l ≼ y₀)
@@ -34,7 +34,7 @@ sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
                               × ((l : Y x) → ((y : Y x) → p(x , y) ≡ ₀ → l ≼ y) → l ≼ next x)
   next-correctness x = pr₂(lemma-next x)
 
-  lemma-first : Σ \(x₀ : X) → ((Σ \(x : X) → p(x , next x) ≡ ₀) → p (x₀ , next x₀) ≡ ₀) 
+  lemma-first : Σ \(x₀ : X) → ((Σ \(x : X) → p(x , next x) ≡ ₀) → p (x₀ , next x₀) ≡ ₀)
                             × ((x : X) → p(x , next x) ≡ ₀ → x₀ ≤ x)
                             × ((m : X) → ((x : X) → p(x , next x) ≡ ₀ → m ≤ x) → m ≤ x₀)
   lemma-first = ε(λ x → p(x , next x))
@@ -48,13 +48,13 @@ sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
   first-correctness = pr₂ lemma-first
 
   y₀ : Y x₀
-  y₀ = next x₀ 
+  y₀ = next x₀
 
   putative-root-lemma : (Σ \(t : (Σ \(x : X) → Y x)) → p t ≡ ₀) → p(x₀ , y₀) ≡ ₀
   putative-root-lemma ((x , y) , r) = pr₁ first-correctness (x , pr₁(next-correctness x) (y , r))
 
   _⊑_ : Σ Y → Σ Y → U ⊔ W ⊔ T ̇
-  _⊑_ = lex-order _≤_ _≼_ 
+  _⊑_ = lex-order _≤_ _≼_
 
   τ : {x x' : X} → x ≡ x' → Y x → Y x'
   τ = transport Y
@@ -62,9 +62,9 @@ sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
   lower-bound-lemma : (t : (Σ \(x : X) → Y x)) → p t ≡ ₀ → (x₀ , y₀) ⊑ t
   lower-bound-lemma (x , y) r = ≤-lemma , ≼-lemma
    where
-    f : p(x , next x) ≡ ₀ → x₀ ≤ x 
+    f : p(x , next x) ≡ ₀ → x₀ ≤ x
     f = pr₁ (pr₂ first-correctness) x
-    ≤-lemma : x₀ ≤ x 
+    ≤-lemma : x₀ ≤ x
     ≤-lemma = f(pr₁(next-correctness x)(y , r))
     g : next x ≼ y
     g = pr₁ (pr₂(next-correctness x)) y r

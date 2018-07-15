@@ -46,7 +46,7 @@ addition-associativity l n = induction base step
                 goal : (l + n) + 0 ≡ l + (n + 0)
                 goal = lemma₀ ∙ lemma₁
 
-        step : (m : ℕ) → (l + n) + m ≡ l + (n + m) → 
+        step : (m : ℕ) → (l + n) + m ≡ l + (n + m) →
                           (l + n) + succ m ≡ l + (n + succ m)
         step m IH = goal
           where lemma₀ : (l + n) + succ m ≡ succ ((l + n) + m)
@@ -108,7 +108,7 @@ addition-commutativity n = induction base step
 
 
 trivial-addition-rearrangement : (x y z : ℕ) → x + y + z ≡ x + z + y
-trivial-addition-rearrangement x y z = 
+trivial-addition-rearrangement x y z =
         addition-associativity x y z ∙ ap (λ - → x + -) (addition-commutativity y z) ∙ (addition-associativity x z y)⁻¹
 
 \end{code}

@@ -84,7 +84,7 @@ module concrete-example where
  not to refl. In fact, the definition
 
     p : X → 𝟚
-    p x = pr₂ x refl 
+    p x = pr₂ x refl
 
  doesn't type check (Agda says: "(pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
  checking that the expression refl has type pr₁ x ≡ ∞"), and hence we
@@ -101,10 +101,10 @@ module concrete-example where
  failure p = disagreement-taboo fe p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
-   p₀ u = p(u , λ r → ₀) 
+   p₀ u = p(u , λ r → ₀)
 
    p₁ : ℕ∞ → 𝟚
-   p₁ u = p(u , λ r → ₁) 
+   p₁ u = p(u , λ r → ₁)
 
    lemma : (n : ℕ) → p₀(under n) ≡ p₁(under n)
    lemma n = ap (λ - → p(under n , -)) (dfunext (fe U₀ U₀) claim)
@@ -113,7 +113,7 @@ module concrete-example where
      claim s = 𝟘-elim(∞-is-not-ℕ n (s ⁻¹))
 
  open import DiscreteAndSeparated
- 
+
  𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ≡ p ∞₁
  𝟚-indistinguishability nwlpo p = 𝟚-is-separated (p ∞₀) (p ∞₁)
                                     (not-Σ-implies-Π-not
@@ -227,7 +227,7 @@ two embeddings e₀ and e₁:
  Lemma : (x : X) → x ≢ a → e ₀ x ≡ e ₁ x
  Lemma x φ = ap (λ - → (x , -)) claim
   where
-   claim : (λ p → ₀) ≡ (λ p → ₁) 
+   claim : (λ p → ₀) ≡ (λ p → ₁)
    claim = dfunext (fe U U₀) (λ p → 𝟘-elim(φ p))
 
 \end{code}
@@ -260,7 +260,7 @@ module DiscreteAndSeparated.)
    claim₀' x p r = 𝟘-elim (Lemma[b≡₀→b≢₁] fact claim₀)
     where
      fact : f a ≡ ₀
-     fact = ap f (r ⁻¹) ∙ p 
+     fact = ap f (r ⁻¹) ∙ p
 
    claim₁' : (x : X) → f x ≡ ₁ → ¬(x ≢ a)
    claim₁' x p φ = 𝟘-elim(Lemma[b≡₀→b≢₁] fact p)

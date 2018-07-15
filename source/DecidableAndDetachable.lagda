@@ -37,7 +37,7 @@ which-of (inr b) = ₁ , ((λ ()) , (λ r → b))
 Notice that in Agda the term λ () is a proof of an implication that
 holds vacuously, by virtue of the premise being false.  In the above
 example, the first occurrence is a proof of ₀ ≡ ₁ → B, and the second
-one is a proof of ₁ ≡ ₀ → A. 
+one is a proof of ₁ ≡ ₀ → A.
 
 The following is a special case we are interested in:
 
@@ -47,7 +47,7 @@ boolean-value : ∀ {U} {A : U ̇}
             → decidable A → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → ¬ A)
 boolean-value = which-of
 
-\end{code} 
+\end{code}
 
 Notice that this b is unique (Agda exercise) and that the converse
 also holds. In classical mathematics it is posited that all
@@ -81,10 +81,10 @@ slighly non-universal terminology.
 detachable : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇
 detachable A = ∀ x → decidable(A x)
 
-characteristic-function : ∀ {U V} {X : U ̇} {A : X → V ̇}  
+characteristic-function : ∀ {U V} {X : U ̇} {A : X → V ̇}
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
 characteristic-function = indicator
-  
+
 co-characteristic-function : ∀ {U V} {X : U ̇} {A : X → V ̇}
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x)
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
@@ -98,11 +98,11 @@ decidable-closed-under-Σ {U} {V} {X} {Y} isp d e = g d
    where
     φ : Σ Y → Y x
     φ (x' , y) = transport Y (isp x' x) y
-    
+
     h : decidable(Y x) → decidable (Σ Y)
     h (inl y) = inl (x , y)
     h (inr v) = inr (contrapositive φ v)
-    
+
   g (inr u) = inr (contrapositive pr₁ u)
 
 \end{code}

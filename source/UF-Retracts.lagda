@@ -73,7 +73,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   γ : (Σ \(y : Y) → A (g y)) → Σ A
   γ (y , a) = (g y , a)
   φ : Σ A → Σ \(y : Y) → A (g y)
-  φ (x , a) = (f x , back-transport A (gf x) a) 
+  φ (x , a) = (f x , back-transport A (gf x) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡'' (gf x , p)
    where

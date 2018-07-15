@@ -1,13 +1,13 @@
 
 
-  R i c e ' s   T h e o r e m   f o r   t h e   
+  R i c e ' s   T h e o r e m   f o r   t h e
 
   M a r t i n - L o f   u n i v e r s e
 
 
     Martin Escardo, University of Birmingham, UK.
     February 2012, update 06 April 2012.
-    
+
     This is a proof in intensional Martin-Lof type theory,
     extended with the propositional axiom of extensionality as a
     postulate, written in Agda notation. The K-rule or UIP axiom
@@ -87,30 +87,30 @@ different values is a taboo.
 extensional : ∀ {U} → (U ̇ → 𝟚) → U ′ ̇
 extensional P = ∀ X Y → X ≃ Y → P X ≡ P Y
 
-Rice's-Theorem-for-U : 
+Rice's-Theorem-for-U :
 
     ∀ {U} (P : U ̇ → 𝟚) → extensional P → (X Y : U ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
 
 Rice's-Theorem-for-U {U} P e X Y r s = basic-discontinuity-taboo p (p-lemma , p-lemma∞)
- where 
-  Q : ℕ∞ → U ̇ 
+ where
+  Q : ℕ∞ → U ̇
   Q = pr₁ (Universe-Indiscreteness-Theorem (λ i → X) Y)
 
   Q-lemma : (i : ℕ) → Q(under i) ≃ X
-  Q-lemma = pr₁ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y)) 
- 
+  Q-lemma = pr₁ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y))
+
   Q-lemma∞ : Q ∞ ≃ Y
-  Q-lemma∞ = pr₂ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y)) 
- 
+  Q-lemma∞ = pr₂ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y))
+
   p : ℕ∞ → 𝟚
   p u = P(Q u)
 
   p-lemma : (i : ℕ) → p(under i) ≡ ₀
   p-lemma i = e (Q(under i)) X (Q-lemma i) ∙ r
- 
+
   p-lemma∞ : p ∞ ≡ ₁
   p-lemma∞ = e (Q ∞) Y Q-lemma∞ ∙ s
- 
+
 \end{code}
 
 Notice that although the proof uses topological techniques, the
@@ -145,7 +145,7 @@ in the language, and hence the omission of extensionality gives
 the same result. Q.E.D.
 
 
-Added 21 August 2014: 
+Added 21 August 2014:
 
 WLPO amounts to saying that we can solve the halting problem. If we
 cannot, then all 𝟚-valued functions on U ̇ must be constant:

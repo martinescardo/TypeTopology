@@ -15,28 +15,28 @@ open import UF-Subsingletons
 fix : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
 fix f = Σ \x → x ≡ f x
 
-key-lemma : ∀ {U} {X Y : U ̇} (f : X → Y) (g : constant f) {x y : X} (p : x ≡ y) 
+key-lemma : ∀ {U} {X Y : U ̇} (f : X → Y) (g : constant f) {x y : X} (p : x ≡ y)
          → ap f p ≡ (g x x)⁻¹ ∙ g x y
-key-lemma f g {x} refl = sym-is-inverse (g x x) 
+key-lemma f g {x} refl = sym-is-inverse (g x x)
 
 key-insight : ∀ {U} {X Y : U ̇} (f : X → Y) → constant f → {x : X} (p : x ≡ x) → ap f p ≡ refl
 key-insight f g p = key-lemma f g p ∙ (sym-is-inverse(g _ _))⁻¹
 
-transport-identifications-along-identifications : ∀ {U} {X Y : U ̇} {x y : X} (p : x ≡ y) (h k : X → Y) (q : h x ≡ k x) 
+transport-identifications-along-identifications : ∀ {U} {X Y : U ̇} {x y : X} (p : x ≡ y) (h k : X → Y) (q : h x ≡ k x)
                            → transport (λ - → h - ≡ k -) p q ≡ (ap h p)⁻¹ ∙ q ∙ ap k p
 transport-identifications-along-identifications refl h k q = refl-left-neutral ⁻¹
 
-transport-identifications-along-identifications' : ∀ {U} {X : U ̇} {x : X} (p : x ≡ x) (f : X → X) (q : x ≡ f x) 
+transport-identifications-along-identifications' : ∀ {U} {X : U ̇} {x : X} (p : x ≡ x) (f : X → X) (q : x ≡ f x)
                             → transport (λ - → - ≡ f -) p q ≡ (p ⁻¹ ∙ q) ∙ ap f p
 transport-identifications-along-identifications'  p f q = transport-identifications-along-identifications p id f q
                                     ∙ ap (λ - → - ⁻¹ ∙ q ∙ (ap f p)) ((ap-id-is-id p)⁻¹)
 
 Kraus-Lemma : ∀ {U} {X : U ̇} → (f : X → X) → constant f → is-prop(fix f)
-Kraus-Lemma {U} {X} f g (x , p) (y , q) = 
+Kraus-Lemma {U} {X} f g (x , p) (y , q) =
   -- p : x ≡ f x
   -- q : y ≡ f y
   (x , p)        ≡⟨ to-Σ-≡ x y p p' r refl ⟩
-  (y , p')       ≡⟨ to-Σ-≡ y y p' q s t ⟩           
+  (y , p')       ≡⟨ to-Σ-≡ y y p' q s t ⟩
   (y , q) ∎
     where
      r : x ≡ y
@@ -56,8 +56,8 @@ Kraus-Lemma {U} {X} f g (x , p) (y , q) =
      t = q'                        ≡⟨ transport-identifications-along-identifications' s f p' ⟩
          (s ⁻¹ ∙ p') ∙ ap f s      ≡⟨ assoc (s ⁻¹) p' (ap f s) ⟩
          s ⁻¹ ∙ (p' ∙ ap f s)      ≡⟨ ap (λ - → s ⁻¹ ∙ (p' ∙ -)) (key-insight f g s) ⟩
-         s ⁻¹ ∙ (p' ∙ refl)        ≡⟨ ap (λ - → s ⁻¹ ∙ -) ((refl-right-neutral p')⁻¹) ⟩ 
-         s ⁻¹ ∙ p'                 ≡⟨ refl ⟩ 
+         s ⁻¹ ∙ (p' ∙ refl)        ≡⟨ ap (λ - → s ⁻¹ ∙ -) ((refl-right-neutral p')⁻¹) ⟩
+         s ⁻¹ ∙ p'                 ≡⟨ refl ⟩
         (p' ∙ (q ⁻¹))⁻¹ ∙ p'       ≡⟨ ap (λ - → - ∙ p') ((⁻¹-contravariant p' (q ⁻¹))⁻¹) ⟩
         ((q ⁻¹)⁻¹ ∙ (p' ⁻¹)) ∙ p'  ≡⟨ ap (λ - → (- ∙ (p' ⁻¹)) ∙ p') (⁻¹-involutive q) ⟩
         (q ∙ (p' ⁻¹)) ∙ p'         ≡⟨ assoc q (p' ⁻¹) p' ⟩

@@ -107,7 +107,7 @@ function extensionality:
 knapps-funext-criterion : {U : Universe}
             → (∀ {X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g)
             → (∀ {X : U ̇} → isPIE (δ {U} {X}))
-            → ∀ {V} → naive-funext V U 
+            → ∀ {V} → naive-funext V U
 knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
  where
   transport-isPIE : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → isPIE (transport A p)
@@ -117,7 +117,7 @@ knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
   back-transport-isPIE p = transport-isPIE (p ⁻¹)
 
   back-transport-is-pre-comp'' : ∀ {U} {X X' Y : U ̇} (e : X ⋍ X') (g : X' → Y)
-                              → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e 
+                              → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e
   back-transport-is-pre-comp'' {U} {X} {X'} e g = back-transport-is-pre-comp (pietoid e) g ∙ q ∙ r
    where
     φ : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
@@ -133,12 +133,12 @@ knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
   π₁-equals-π₂ : {X : U ̇} → π₁ ≡ π₂
   π₁-equals-π₂ {X} = isPIE-lc (λ(g : Δ X → X) → g ∘ δ) (preComp-isPIE (δ , D)) (πδ X)
 
-  γ : f₁ ≡ f₂ 
+  γ : f₁ ≡ f₂
   γ = f₁                               ≡⟨ refl ⟩
-      (λ x → f₁ x)                    ≡⟨ refl ⟩ 
+      (λ x → f₁ x)                    ≡⟨ refl ⟩
       (λ x → π₁ (f₁ x , f₂ x , h x))  ≡⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) π₁-equals-π₂ ⟩
       (λ x → π₂ (f₁ x , f₂ x , h x))  ≡⟨ refl ⟩
-      (λ x → f₂ x)                    ≡⟨ refl ⟩ 
+      (λ x → f₂ x)                    ≡⟨ refl ⟩
       f₂                               ∎
 
 knapps-funext-Criterion : {U : Universe}
@@ -202,7 +202,7 @@ see from the proof, we can replace qinv by is-equiv:
 
 UA-characterization : ∀ {U}
                    → ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
-                   ⇔ is-univalent U 
+                   ⇔ is-univalent U
 UA-characterization {U} = (forth , back)
  where
   forth : ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent U

@@ -35,12 +35,12 @@ module PropositionalTruncation (pt : PropTrunc) where
  c-es₁ : ∀ {U} {X : U ̇} → is-singleton X ⇔ is-prop X × ∥ X ∥
  c-es₁ {U} {X} = f , g
   where
-   f : is-singleton X → is-prop X × ∥ X ∥ 
+   f : is-singleton X → is-prop X × ∥ X ∥
    f (x , φ) = is-singleton-is-prop (x , φ) , ∣ x ∣
-   
+
    g : is-prop X × ∥ X ∥ → is-singleton X
    g (i , s) = ptrec i id s , i (ptrec i id s)
-   
+
  ptfunct : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ptfunct f = ptrec ptisp (λ x → ∣ f x ∣)
 
@@ -59,7 +59,7 @@ module PropositionalTruncation (pt : PropTrunc) where
  pt-gdn : ∀ {U} {X : U ̇} → ∥ X ∥ → ∀ {V} (P : V ̇) → is-prop P → (X → P) → P
  pt-gdn {U} {X} s {V} P isp u = ptrec isp u s
 
- gdn-pt : ∀ {U} {X : U ̇} → (∀ {V} (P : V ̇) → is-prop P → (X → P) → P) → ∥ X ∥ 
+ gdn-pt : ∀ {U} {X : U ̇} → (∀ {V} (P : V ̇) → is-prop P → (X → P) → P) → ∥ X ∥
  gdn-pt {U} {X} φ = φ ∥ X ∥ ptisp ∣_∣
 
  pt-dn : ∀ {U} {X : U ̇} → ∥ X ∥ → ¬¬ X
@@ -67,7 +67,7 @@ module PropositionalTruncation (pt : PropTrunc) where
 
  binary-choice : ∀ {U V} {X : U ̇} {Y : V ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ptrec ptisp (λ x → ptrec ptisp (λ y → ∣ x , y ∣) t) s
- 
+
  infixr 0 _∨_
  infix 0 ∥_∥
 

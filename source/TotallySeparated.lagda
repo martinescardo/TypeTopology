@@ -81,7 +81,7 @@ An equality defined by a Leibniz principle with 𝟚-valued functions:
 
 \begin{code}
 
-_≡₂_ : ∀ {U} {X : U ̇} → X → X → U ̇ 
+_≡₂_ : ∀ {U} {X : U ̇} → X → X → U ̇
 x ≡₂ y = (p : _ → 𝟚) → p x ≡ p y
 
 \end{code}
@@ -118,16 +118,16 @@ discrete-totally-separated {U} {X} d {x} {y} α = g
   open import DecidableAndDetachable
   p : X → 𝟚
   p = pr₁ (characteristic-function (d x))
-  
+
   φ : (y : X) → (p y ≡ ₀ → x ≡ y) × (p y ≡ ₁ → ¬ (x ≡ y))
   φ = pr₂ (characteristic-function (d x))
-  
+
   b : p x ≡ ₀
   b = Lemma[b≢₁→b≡₀] (λ s → pr₂ (φ x) s refl)
-  
+
   a : p y ≡ ₀
   a = (α p)⁻¹ ∙ b
-  
+
   g : x ≡ y
   g = pr₁ (φ y) a
 
@@ -161,7 +161,7 @@ totally-separated-is-separated X ts = g
    where
     a : (p : X → 𝟚) → ¬¬(p x ≡ p y)
     a p = ¬¬-functor (ap p {x} {y}) φ
-    
+
     h : (p : X → 𝟚) → p x ≡ p y
     h p = 𝟚-is-separated (p x) (p y) (a p)
 
@@ -186,7 +186,7 @@ clause.
 
 is-prop-totally-separated : ∀ {U} → funext U U → funext U U₀
                          → (X : U ̇) → is-prop(totally-separated X)
-is-prop-totally-separated {U} fe fe₀ X = γ 
+is-prop-totally-separated {U} fe fe₀ X = γ
  where
   T : U ̇
   T = (x y : X) → x ≡₂ y → x ≡ y
@@ -214,16 +214,16 @@ totally-separated-is-set' fe X t = identification-collapsible-is-set h
  where
   f : {x y : X} → x ≡ y → x ≡ y
   f r = t(λ p → ap p r)
-  
+
   b : {x y : X} (φ γ : (p : X → 𝟚) → p x ≡ p y) → φ ≡ γ
   b φ γ = dfunext fe (λ p → discrete-is-set 𝟚-discrete (φ p) (γ p))
-  
+
   c : {x y : X} (r s : x ≡ y) → (λ p → ap p r) ≡ (λ p → ap p s)
   c r s = b(λ p → ap p r) (λ p → ap p s)
-  
+
   g : {x y : X} → constant(f {x} {y})
   g r s = ap t (c r s)
-  
+
   h : identification-collapsible X
   h {x} {y} = f , g
 
@@ -309,7 +309,7 @@ The following can also be considered as a special case of Σ (indexed by the typ
  where
    P : (x : X) (p : Y x → 𝟚) → Π Y → 𝟚
    P x p f = p(f x)
-   
+
    h : (x : X) → f x ≡ g x
    h x = t x (λ p → e(P x p))
 
@@ -349,10 +349,10 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡'' (t , r)
   where
    s : eval x ≡ eval y
    s = p ∙ q ⁻¹
-   
+
    t : x ≡ y
    t = ts (happly s)
-   
+
    r : transport (λ - → eval - ≡ φ) t p ≡ q
    r = totally-separated-is-set fe
          ((X → 𝟚) → 𝟚) (Π-totally-separated fe (λ p → 𝟚-totally-separated)) _ q
@@ -362,13 +362,13 @@ ieevalts {U} {X} fe i {x} {y} e = ap pr₁ q
   where
    φ : (X → 𝟚) → 𝟚
    φ = eval x
-   
+
    h : is-prop (fiber eval  φ)
    h = i φ
-   
+
    g : eval y ≡ φ
    g = dfunext fe (λ p → (e p)⁻¹)
-   
+
    q : x , refl ≡ y , g
    q = h (x , refl) (y , g)
 
@@ -398,7 +398,7 @@ We construct the reflection as the image of the evaluation map.
 
  T : U ̇ → U ̇
  T X = image (eval {U} {X})
- 
+
  tts : {X : U ̇} → totally-separated(T X)
  tts {X} {φ , s} {γ , t} = g
   where
@@ -436,49 +436,49 @@ rather than direct proofs (as in the proof of tight reflection below).
 
 \begin{code}
 
- totally-separated-reflection : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
+ totally-separated-reflection : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A
                               → (f : X → A) → is-singleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
  totally-separated-reflection {V} {X} {A} ts f = go
   where
    iss : is-set A
    iss = totally-separated-is-set (fe V U₀) A ts
-   
+
    ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ \(a : A) → eval a ≡ γ)
    ie = tsieeval (fe V U₀) ts
-   
+
    h : (φ : (X → 𝟚) → 𝟚) → (∃ \(x : X) → eval x ≡ φ) → Σ \(a : A) → eval a ≡ (λ q → φ(q ∘ f))
    h φ = ptrec (ie γ) u
     where
      γ : (A → 𝟚) → 𝟚
      γ q = φ (q ∘ f)
-     
+
      u : (Σ \(x : X) → (λ p → p x) ≡ φ) → Σ \(a : A) → eval a ≡ γ
      u (x , r) = f x , dfunext (fe V U₀) (λ q → happly r (q ∘ f))
-     
+
    h' : (x' : T X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
-   
+
    f' : T X → A
    f' (φ , s) = pr₁ (h φ s)
-   
+
    b : (x' : T X) (q : A → 𝟚) → q(f' x') ≡ pr₁ x' (q ∘ f)
    b (φ , s) = happly (pr₂ (h φ s))
-   
+
    r : f' ∘ η ≡ f
    r = dfunext (fe U V) (λ x → ts (b (η x)))
-   
+
    c : (σ : Σ \(f'' : T X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡'' (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
      w = happly (r ∙ s ⁻¹)
-     
+
      t : f' ≡ f''
      t = dfunext (fe U V) (η-induction _ (λ _ → iss) w)
-     
+
      u : f'' ∘ η ≡ f
      u = transport (λ - → - ∘ η ≡ f) t r
-     
+
      v : u ≡ s
      v = Π-is-set (fe U V) (λ _ → iss) u s
 
@@ -492,11 +492,11 @@ We package the above as follows for convenient use elsewhere
 
 \begin{code}
 
- totally-separated-reflection' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
+ totally-separated-reflection' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A
                               → is-equiv (λ (f' : T X → A) → f' ∘ η)
  totally-separated-reflection' ts = is-vv-equiv-is-equiv _ (totally-separated-reflection ts)
 
- totally-separated-reflection'' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A 
+ totally-separated-reflection'' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A
                                → (T X → A) ≃ (X → A)
  totally-separated-reflection'' ts = (λ f' → f' ∘ η) , totally-separated-reflection' ts
 
@@ -549,7 +549,7 @@ module Apartness (pt : PropTrunc) where
 
  prop-valued irreflexive symmetric cotransitive tight apartness
      : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- 
+
  prop-valued  _♯_ = ∀ x y → is-prop(x ♯ y)
  irreflexive  _♯_ = ∀ x → ¬(x ♯ x)
  symmetric    _♯_ = ∀ x y → x ♯ y → y ♯ x
@@ -578,13 +578,13 @@ apartness relation _♯₂ is tight:
     where
      g : ¬ Σ \(p : X → 𝟚) → p x ≢ p x
      g (p , u) = u refl
-     
+
    c : symmetric _♯₂_
    c x y = ptfunct g
     where
      g : (Σ \(p : X → 𝟚) → p x ≢ p y) → Σ \(p : X → 𝟚) → p y ≢ p x
      g (p , u) = p , ≢-sym u
-   
+
    d : cotransitive _♯₂_
    d x y z = ptfunct g
     where
@@ -622,7 +622,7 @@ apartness relation _♯₂ is tight:
 
  reflexive transitive equivalence
      : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
- 
+
  reflexive   _≈_ = ∀ x → x ≈ x
  transitive  _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
  equivalence _≈_ = prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
@@ -641,10 +641,10 @@ apartness relation _♯₂ is tight:
   where
    p : (x y : X) → is-prop (¬ (x ♯ y))
    p x y = neg-is-prop fe
-   
+
    s : (x y : X) → ¬ (x ♯ y) → ¬ (y ♯ x)
    s x y u a = u (♯s y x a)
-   
+
    t : (x y z : X) → ¬ (x ♯ y) → ¬ (y ♯ z) → ¬ (x ♯ z)
    t x y z u v a = v (♯s z y (left-fails-then-right-holds (♯p z y) b u))
     where
@@ -660,7 +660,7 @@ apartness relation _♯₂ is tight:
  \begin{code}
 
  not-apart-have-same-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
-                          → ¬(x ♯ y) → ((z : X) → x ♯ z ⇔ y ♯ z) 
+                          → ¬(x ♯ y) → ((z : X) → x ♯ z ⇔ y ♯ z)
  not-apart-have-same-apart {U} {V} {X} x y _♯_ (p , i , s , c) = g
   where
    g : ¬ (x ♯ y) → (z : X) → x ♯ z ⇔ y ♯ z
@@ -671,10 +671,10 @@ apartness relation _♯₂ is tight:
       where
        b : (x ♯ y) ∨ (z ♯ y)
        b = c x z y a
-       
+
      n' : ¬(y ♯ x)
      n' a = n (s y x a)
-     
+
      g₂ : y ♯ z → x ♯ z
      g₂ a = s z x (left-fails-then-right-holds (p z x) b n')
       where
@@ -745,7 +745,7 @@ apartness relation _♯₂ is tight:
  strongly-extensional : ∀ {U V W T} {X : U ̇} {Y : V ̇}
                       → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
- 
+
 
  preserves : ∀ {U V W T} {X : U ̇} {Y : V ̇}
           → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
@@ -819,7 +819,7 @@ apartness relation _♯₂ is tight:
    where
     f : (z : X) → x ♯ z ⇔ y ♯ z
     f = not-apart-have-same-apart x y _♯_ ♯a na
-     
+
     g : (z : X) → x ♯ z ≡ y ♯ z
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
@@ -835,7 +835,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
   open ImageAndSurjection pt
-   
+
   X' : U ⊔ V ′ ̇
   X' = image apart
 
@@ -899,7 +899,7 @@ apartness on it.
      where
       i : x' ♯ y' → x ♯ y'
       i = idtofun _ _ (ap pr₁ (happly p y'))
-       
+
       j : y' ♯ x → y ♯ x
       j = idtofun _ _ (ap pr₁ (happly q x))
 
@@ -924,7 +924,7 @@ apartness on it.
    where
     induction-step : ∀ x → ¬(η x ♯' η x)
     induction-step x a = ♯i x (η-strongly-extensional a)
-     
+
     by-induction : _
     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
                       (λ _ → Π-is-prop (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-is-prop))
@@ -935,7 +935,7 @@ apartness on it.
    where
     induction-step : ∀ x y → η x ♯' η y → η y ♯' η x
     induction-step x y a = η-preserves-apartness(♯s x y (η-strongly-extensional a))
-     
+
     by-nested-induction : _
     by-nested-induction =
       η-induction (λ x' → ∀ y' → x' ♯' y' → y' ♯' x')
@@ -944,7 +944,7 @@ apartness on it.
        (λ x → η-induction (λ y' → η x ♯' y' → y' ♯' η x)
                 (λ y' → Π-is-prop fuv (λ _ → ♯'p y' (η x)))
                 (induction-step x))
-   
+
   ♯'c : cotransitive _♯'_
   ♯'c = by-nested-induction
    where
@@ -953,10 +953,10 @@ apartness on it.
      where
       a' : x ♯ y
       a' = η-strongly-extensional a
-       
+
       b : x ♯ z ∨ y ♯ z
       b = ♯c x y z a'
-       
+
       c : (x ♯ z) + (y ♯ z) → (η x ♯' η z) + (η y ♯' η z)
       c (inl e) = inl (η-preserves-apartness e)
       c (inr f) = inr (η-preserves-apartness f)
@@ -993,13 +993,13 @@ apartness on it.
      where
       remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
       remark = n
-       
+
       r : x ♯ y → 𝟘
       r a = n ∣ x , y , a , p , q ∣
-      
+
       s : apart x ≡ apart y
       s = apart-lemma x y r
-       
+
       t : u ≡ v
       t = p ⁻¹ ∙ s ∙ q
 
@@ -1038,10 +1038,10 @@ apartness on it.
    where
     iss : is-set A
     iss = tight-set (fe W U₀) _♯ᴬ_ ♯ᴬa ♯ᴬt
-     
+
     i : {x y : X} → x ~ y → f x ≡ f y
     i = ♯ᴬt _ _ ∘ contrapositive se
-     
+
     φ : (x' : X') → is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
     φ = η-induction _ γ induction-step
       where
@@ -1052,7 +1052,7 @@ apartness on it.
            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
            → a ≡ b
          h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
-          
+
          p : a ≡ b
          p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
@@ -1076,7 +1076,7 @@ apartness on it.
 
       j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
       j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
-         
+
       h : (y : X) → f'(η y) ≡ f y
       h y = ptrec iss (j y) (g y)
 
@@ -1094,7 +1094,7 @@ apartness on it.
 
       v : u ≡ s
       v = Π-is-set (fe U W) (λ _ → iss) u s
-                     
+
     ic : is-singleton (Σ \(f' : X' → A) → f' ∘ η ≡ f)
     ic = (f' , r) , c
 
@@ -1122,31 +1122,31 @@ apartness on it.
    where
     u : is-singleton (Σ \(θ : X' → X) → θ ∘ η ≡ id)
     u = tight-reflection X _♯_ ♯a ♯t id id
-    
+
     v : is-singleton (Σ \(ζ : X' → X') → ζ ∘ η ≡ η)
     v = tight-reflection X' _♯'_ ♯'a ♯'t η η-strongly-extensional
 
     θ : X' → X
     θ = pr₁(pr₁ u)
-    
+
     ζ : X' → X'
     ζ = pr₁(pr₁ v)
-    
+
     φ : (ζ' : X' → X') → ζ' ∘ η ≡ η → ζ ≡ ζ'
     φ ζ' p = ap pr₁ (pr₂ v (ζ' , p))
 
     p₀ : θ ∘ η ≡ id
     p₀ = pr₂(pr₁ u)
-    
+
     p₁ : η ∘ θ ∘ η ≡ η
     p₁ = ap (_∘_ η) p₀
 
     p₂ : ζ ≡ η ∘ θ
     p₂ = φ (η ∘ θ) p₁
-    
+
     p₃ : ζ ≡ id
     p₃ = φ id refl
-    
+
     p₄ : η ∘ θ ≡ id
     p₄ = p₂ ⁻¹ ∙ p₃
 
@@ -1158,7 +1158,7 @@ apartness on it.
      where
       i : ¬ (η x ♯' η y) → x ≡ y
       i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
-     
+
       h : ¬(η x ♯' η y)
       h a = ♯'i (η y) (transport (λ - → - ♯' η y) p a)
 
@@ -1170,7 +1170,7 @@ apartness on it.
 
 \end{code}
 
-TODO. 
+TODO.
 
 * The tight reflection has the universal property of the quotient by
   _~_. Conversely, the quotient by _~_ gives the tight reflection.

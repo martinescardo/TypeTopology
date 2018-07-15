@@ -4,11 +4,11 @@
   M a r t i n - L o f   u n i v e r s e
 
 
-    Martin Escardo, University of Birmingham, UK.  
+    Martin Escardo, University of Birmingham, UK.
 
     February 2012, last updated 2 May 2014 to make it way more
     conceptual and concise.
-    
+
     This is a proof in intensional Martin-Lof type theory,
     extended with the propositional axiom of extensionality as a
     postulate, written in Agda notation. The K-rule or UIP axiom
