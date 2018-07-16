@@ -372,8 +372,11 @@ is-finite u = Σ \(n : ℕ) → under n ≡ u
 is-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 is-finite-is-prop = under-embedding
 
-is-finite-Zero : is-finite Zero
-is-finite-Zero = zero , refl
+Zero-is-finite : is-finite Zero
+Zero-is-finite = zero , refl
+
+Zero-is-finite' : funext₀ → (u : ℕ∞) → is-Zero u → is-finite u
+Zero-is-finite' fe u z = back-transport is-finite (is-Zero-equal-Zero fe z) Zero-is-finite
 
 is-finite-down : (u : ℕ∞) → is-finite (Succ u) → is-finite u
 is-finite-down u (zero , r) = 𝟘-elim (Zero-not-Succ r)
@@ -382,9 +385,15 @@ is-finite-down u (succ n , r) = n , Succ-lc r
 is-finite-up : (u : ℕ∞) → is-finite u → is-finite (Succ u)
 is-finite-up u (n , r) = (succ n , ap Succ r)
 
-is-finite-up' : (u : ℕ∞) → positive u → is-finite (Pred u) → is-finite u
-is-finite-up' u p i = transport is-finite {!!} (is-finite-up ? ?)
-
+is-finite-up' : funext₀ → (u : ℕ∞) → is-finite (Pred u) → is-finite u
+is-finite-up' fe u i = 𝟚-equality-cases
+                         (λ (z : is-Zero u)
+                            → Zero-is-finite' fe u z)
+                         (λ (p : positive u)
+                            → back-transport
+                               is-finite
+                               (positive-equal-Succ fe p)
+                               (is-finite-up (Pred u) i))
 
 is-infinite-∞ : ¬(is-finite ∞)
 is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-ℕ n (r ⁻¹))

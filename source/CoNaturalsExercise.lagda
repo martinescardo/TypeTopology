@@ -135,7 +135,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
     lemma₁ = ap Pred d
 
   R-bisimulation : ℕ∞-bisimulation R
-  R-bisimulation u v r = (R-positivity u v r) , (R-Pred u v r)
+  R-bisimulation u v r = (R-positivity u v r , R-Pred u v r)
 
   lemma : (u : ℕ∞) → retr(incl u) ≡ u
   lemma u = ℕ∞-coinduction R R-bisimulation (retr(incl u)) u (r u)

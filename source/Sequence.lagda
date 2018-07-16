@@ -16,7 +16,6 @@ _∶∶_ : ∀ {U} {X : ℕ → U ̇} → X 0 → ((n : ℕ) → X(succ n)) → 
 (x ∶∶ α) 0 = x
 (x ∶∶ α) (succ n) = α n
 
-
 hd : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → X 0
 hd α = α 0
 
@@ -30,7 +29,7 @@ hd-tl-eta {U} {X} = dfunext (fe U₀ U) lemma
   lemma 0 = refl
   lemma (succ i) = refl
 
-cons : ∀ {U} {X : ℕ → U ̇} → X 0 × ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
+private cons : ∀ {U} {X : ℕ → U ̇} → X 0 × ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
 cons(x , α) = x ∶∶ α
 
 cons-retraction : ∀ {U} {X : ℕ → U ̇} → retraction(cons {U} {X})
@@ -38,7 +37,8 @@ cons-retraction α = (hd α , tl α) , hd-tl-eta
 
 \end{code}
 
-(In fact it is an isomorphism, but I won't bother.)
+(In fact it is an equivalence, but I won't bother, until this is
+needed.)
 
 \begin{code}
 
@@ -72,46 +72,28 @@ Todo: replace Σ! ... by is-singleton(Σ ...).
 
 \begin{code}
 
-module _ (fe : ∀ U V → funext U V)
-         {U V : Universe}
+module _ {U V : Universe}
          {A : U ̇}
          {X : V ̇}
          (h : X → A)
          (t : X → X)
        where
 
- seq-corec : X → (ℕ → A)
- seq-corec x zero = h x
- seq-corec x (succ n) = seq-corec (t x) n
-   p : (x : X) → hd (f x) ≡ h x
-   p x = refl
-   q : (x : X) → tl (f x) ≡ f (t x)
-   q x = dfunext (fe U₀ U) (λ n → refl)
-   c : (f f' : X → ℕ → A) →
-         (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t) →
-         (hd ∘ f' ∼ h) × (tl ∘ f' ∼ f' ∘ t) → f ≡ f'
-   c f f' (a , b) (c , d) = dfunext (fe V U) (λ x → dfunext (fe U₀ U) (r x))
-    where
-     r : (x : X) (n : ℕ) → f x n ≡ f' x n
-     r x zero = a x ∙ (c x)⁻¹
-     r x (succ n) = f x (succ n) ≡⟨ ap (λ - → - n) (b x) ⟩
-                    f (t x) n    ≡⟨ r (t x) n ⟩
-                    f' (t x) n   ≡⟨ ( ap (λ - → - n) (d x)) ⁻¹ ⟩
-                    f' x (succ n) ∎
+ private f : X → (ℕ → A)
+ f x zero = h x
+ f x (succ n) = f (t x) n
 
+ seq-corec = f
 
- seq-corec : (∀ U V → funext U V)
-          → ∀ {U V} {A : U ̇} {X : V ̇} (h : X → A) (t : X → X)
-          → Σ! \(f : X → (ℕ → A)) → (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t)
- seq-corec fe {U} {V} {A} {X} h t = (f , p , q) , c
+ seq-corec-hd : hd ∘ f ∼ h
+ seq-corec-hd x = refl
+
+ seq-corec-tl : tl ∘ f ∼ f ∘ t
+ seq-corec-tl x = dfunext (fe U₀ U) (λ n → refl)
+
+ seq-final : Σ! \(f : X → (ℕ → A)) → (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t)
+ seq-final = (seq-corec , seq-corec-hd , seq-corec-tl) , c
   where
-   f : X → ℕ → A
-   f x zero = h x
-   f x (succ n) = f (t x) n
-   p : (x : X) → hd (f x) ≡ h x
-   p x = refl
-   q : (x : X) → tl (f x) ≡ f (t x)
-   q x = dfunext (fe U₀ U) (λ n → refl)
    c : (f f' : X → ℕ → A) →
          (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t) →
          (hd ∘ f' ∼ h) × (tl ∘ f' ∼ f' ∘ t) → f ≡ f'
@@ -123,78 +105,5 @@ module _ (fe : ∀ U V → funext U V)
                     f (t x) n    ≡⟨ r (t x) n ⟩
                     f' (t x) n   ≡⟨ ( ap (λ - → - n) (d x)) ⁻¹ ⟩
                     f' x (succ n) ∎
-
-
- seq-corec : (∀ U V → funext U V)
-          → ∀ {U V} {A : U ̇} {X : V ̇} (h : X → A) (t : X → X)
-          → Σ! \(f : X → (ℕ → A)) → (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t)
- seq-corec fe {U} {V} {A} {X} h t = (f , p , q) , c
-  where
-   f : X → ℕ → A
-   f x zero = h x
-   f x (succ n) = f (t x) n
-   p : (x : X) → hd (f x) ≡ h x
-   p x = refl
-   q : (x : X) → tl (f x) ≡ f (t x)
-   q x = dfunext (fe U₀ U) (λ n → refl)
-   c : (f f' : X → ℕ → A) →
-         (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t) →
-         (hd ∘ f' ∼ h) × (tl ∘ f' ∼ f' ∘ t) → f ≡ f'
-   c f f' (a , b) (c , d) = dfunext (fe V U) (λ x → dfunext (fe U₀ U) (r x))
-    where
-     r : (x : X) (n : ℕ) → f x n ≡ f' x n
-     r x zero = a x ∙ (c x)⁻¹
-     r x (succ n) = f x (succ n) ≡⟨ ap (λ - → - n) (b x) ⟩
-                    f (t x) n    ≡⟨ r (t x) n ⟩
-                    f' (t x) n   ≡⟨ ( ap (λ - → - n) (d x)) ⁻¹ ⟩
-                    f' x (succ n) ∎
-
- seq-corec : (∀ U V → funext U V)
-          → ∀ {U V} {A : U ̇} {X : V ̇} (h : X → A) (t : X → X)
-          → Σ! \(f : X → (ℕ → A)) → (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t)
- seq-corec fe {U} {V} {A} {X} h t = (f , p , q) , c
-  where
-   f : X → ℕ → A
-   f x zero = h x
-   f x (succ n) = f (t x) n
-   p : (x : X) → hd (f x) ≡ h x
-   p x = refl
-   q : (x : X) → tl (f x) ≡ f (t x)
-   q x = dfunext (fe U₀ U) (λ n → refl)
-   c : (f f' : X → ℕ → A) →
-         (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t) →
-         (hd ∘ f' ∼ h) × (tl ∘ f' ∼ f' ∘ t) → f ≡ f'
-   c f f' (a , b) (c , d) = dfunext (fe V U) (λ x → dfunext (fe U₀ U) (r x))
-    where
-     r : (x : X) (n : ℕ) → f x n ≡ f' x n
-     r x zero = a x ∙ (c x)⁻¹
-     r x (succ n) = f x (succ n) ≡⟨ ap (λ - → - n) (b x) ⟩
-                    f (t x) n    ≡⟨ r (t x) n ⟩
-                    f' (t x) n   ≡⟨ ( ap (λ - → - n) (d x)) ⁻¹ ⟩
-                    f' x (succ n) ∎
- seq-corec : (∀ U V → funext U V)
-          → ∀ {U V} {A : U ̇} {X : V ̇} (h : X → A) (t : X → X)
-          → Σ! \(f : X → (ℕ → A)) → (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t)
- seq-corec fe {U} {V} {A} {X} h t = (f , p , q) , c
-  where
-   f : X → ℕ → A
-   f x zero = h x
-   f x (succ n) = f (t x) n
-   p : (x : X) → hd (f x) ≡ h x
-   p x = refl
-   q : (x : X) → tl (f x) ≡ f (t x)
-   q x = dfunext (fe U₀ U) (λ n → refl)
-   c : (f f' : X → ℕ → A) →
-         (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t) →
-         (hd ∘ f' ∼ h) × (tl ∘ f' ∼ f' ∘ t) → f ≡ f'
-   c f f' (a , b) (c , d) = dfunext (fe V U) (λ x → dfunext (fe U₀ U) (r x))
-    where
-     r : (x : X) (n : ℕ) → f x n ≡ f' x n
-     r x zero = a x ∙ (c x)⁻¹
-     r x (succ n) = f x (succ n) ≡⟨ ap (λ - → - n) (b x) ⟩
-                    f (t x) n    ≡⟨ r (t x) n ⟩
-                    f' (t x) n   ≡⟨ ( ap (λ - → - n) (d x)) ⁻¹ ⟩
-                    f' x (succ n) ∎
-
 
  \end{code}
