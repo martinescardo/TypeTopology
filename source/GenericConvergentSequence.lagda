@@ -87,11 +87,11 @@ force-decreasing-unchanged α d (succ i) = g
 lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
-clni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
-clni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) , decreasing-is-prop fe α _ _)
+lcni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
+lcni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) , decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
-ℕ∞-retract-of-Cantor fe = lcni , incl , clni-incl fe
+ℕ∞-retract-of-Cantor fe = lcni , incl , lcni-incl fe
 
 force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing β i ≤₂ β i
 force-decreasing-is-smaller β zero     p = p
@@ -365,6 +365,29 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
        where
         g : u ≡ under(succ n) → u ⊑ succ n
         g r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀(succ n)
+
+is-finite : ℕ∞ → U₀ ̇
+is-finite u = Σ \(n : ℕ) → under n ≡ u
+
+is-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
+is-finite-is-prop = under-embedding
+
+is-finite-Zero : is-finite Zero
+is-finite-Zero = zero , refl
+
+is-finite-down : (u : ℕ∞) → is-finite (Succ u) → is-finite u
+is-finite-down u (zero , r) = 𝟘-elim (Zero-not-Succ r)
+is-finite-down u (succ n , r) = n , Succ-lc r
+
+is-finite-up : (u : ℕ∞) → is-finite u → is-finite (Succ u)
+is-finite-up u (n , r) = (succ n , ap Succ r)
+
+is-finite-up' : (u : ℕ∞) → positive u → is-finite (Pred u) → is-finite u
+is-finite-up' u p i = transport is-finite {!!} (is-finite-up ? ?)
+
+
+is-infinite-∞ : ¬(is-finite ∞)
+is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-ℕ n (r ⁻¹))
 
 \end{code}
 

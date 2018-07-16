@@ -32,9 +32,8 @@ open import GenericConvergentSequence
 open import Sequence (fe)
 
 incl-is-a-section : Σ \(retr : (ℕ → 𝟚) → ℕ∞) → retr ∘ incl ≡ id
-incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
+incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
  where
-
   f-retr : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
   f-retr ₀ α = inl *
   f-retr ₁ α = inr α
@@ -46,7 +45,7 @@ incl-is-a-section  = retr , (dfunext (fe U₀ U₀) lemma)
   retr = ℕ∞-corec p-retr
 
   retr-spec : P ∘ retr ≡ (𝟙+ retr) ∘ p-retr
-  retr-spec = pr₂(homomorphism-existence p-retr)
+  retr-spec = ℕ∞-corec-diagram p-retr
 
   retr-spec₀ : (α : ℕ → 𝟚) → hd α ≡ ₀ → retr α ≡ Zero
   retr-spec₀ α r = alg-morphism-Zero p-retr retr retr-spec α * lemma

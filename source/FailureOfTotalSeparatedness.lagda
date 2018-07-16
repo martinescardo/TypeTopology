@@ -245,7 +245,7 @@ module DiscreteAndSeparated.)
  weakly-isolated x = ∀ x' → decidable(x' ≢ x)
 
  Theorem : (Σ \(g : Y → 𝟚) → g a₀ ≢ g a₁) → weakly-isolated a
- Theorem (g , d) = λ x → two-equality-cases' (claim₀' x) (claim₁' x)
+ Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)
   where
    f : X → 𝟚
    f x = g(e ₀ x) ⊕ g(e ₁ x)

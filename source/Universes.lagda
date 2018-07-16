@@ -43,4 +43,3 @@ precedences:
 infix  0 _̇
 
 \end{code}
-

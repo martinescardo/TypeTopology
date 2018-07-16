@@ -130,20 +130,20 @@ P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
 𝟙+ f (inr x) = inr(f x)
 
 
-alg-mophism-remark₀ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞)
-                    → P ∘ h ≡ (𝟙+ h) ∘ p  →  h ≡ S ∘ (𝟙+ h) ∘ p
-alg-mophism-remark₀ {U} p h a = dfunext (fe U U₀) (λ x → S-P-id ⁻¹ ∙ ap (λ - → S(- x)) a)
-
-alg-mophism-remark₁ : ∀ {U} {X : U ̇} → (p : X → 𝟙 + X) → (h : X → ℕ∞) →
-
- h ≡ S ∘ (𝟙+ h) ∘ p  →  P ∘ h ≡ (𝟙+ h) ∘ p
-
-alg-mophism-remark₁ {U} p h b = dfunext (fe U U₀) (λ x → ap (λ - → P(- x)) b ∙ P-S-id)
-
-
 diagram-commutes : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
-diagram-commutes p h =  (P ∘ h ≡ (𝟙+ h) ∘ p)
+diagram-commutes p h = (P ∘ h ≡ (𝟙+ h) ∘ p)
 
+alg-mophism→ : ∀ {U} {X : U ̇} (p : X → 𝟙 + X) (h : X → ℕ∞)
+             → diagram-commutes p h
+             → h ≡ S ∘ (𝟙+ h) ∘ p
+alg-mophism→ {U} p h a = dfunext (fe U U₀)
+                          (λ x → S-P-id ⁻¹ ∙ ap (λ - → S(- x)) a)
+
+alg-mophism← : ∀ {U} {X : U ̇} (p : X → 𝟙 + X) (h : X → ℕ∞)
+            → h ≡ S ∘ (𝟙+ h) ∘ p
+            → diagram-commutes p h
+alg-mophism← {U} p h b = dfunext (fe U U₀)
+                          (λ x → ap (λ - → P(- x)) b ∙ P-S-id)
 
 homomorphism-existence : ∀ {U} {X : U ̇} (p : X → 𝟙 + X)
                       → Σ \(h : X → ℕ∞) → diagram-commutes p h
@@ -203,7 +203,6 @@ homomorphism-existence {U} {X} p = h , dfunext (fe U U₀) h-spec
       claim₆ : P(h x) ≡ inr(h x')
       claim₆ = ap P claim₅
 
-
 ℕ∞-corec  : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞)
 ℕ∞-corec p = pr₁(homomorphism-existence p)
 
@@ -220,7 +219,7 @@ We now discuss coinduction. We first define bisimulations.
 ℕ∞-bisimulation : ∀ {U} → (ℕ∞ → ℕ∞ → U ̇) → U ̇
 ℕ∞-bisimulation R = (u v : ℕ∞) → R u v
                                 → (positivity u ≡ positivity v)
-                                ×  R(Pred u)(Pred v)
+                                ×  R (Pred u) (Pred v)
 
 ℕ∞-coinduction : ∀ {U} (R : ℕ∞ → ℕ∞ → U ̇) → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
@@ -238,8 +237,9 @@ coalgebra homomorphisms in more detail.
 \begin{code}
 
 alg-morphism-Zero : ∀ {U} {X : U ̇}
-    → (p : X →  𝟙 + X) (h : X → ℕ∞) → diagram-commutes p h
-    → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
+                    (p : X →  𝟙 + X) (h : X → ℕ∞)
+                  → diagram-commutes p h
+                  → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
 alg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S claim₃
  where
   claim₁ : P(h x) ≡ (𝟙+ h)(p x)
@@ -250,8 +250,9 @@ alg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S claim₃
   claim₃ = claim₁ ∙ claim₂
 
 alg-morphism-Succ : ∀ {U} {X : U ̇}
-    → (p : X →  𝟙 + X) (h : X → ℕ∞) → diagram-commutes p h
-    → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
+                    (p : X →  𝟙 + X) (h : X → ℕ∞)
+                  → diagram-commutes p h
+                  → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
 alg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S claim₃
  where
   claim₁ : P(h x) ≡ (𝟙+ h)(p x)
@@ -263,15 +264,16 @@ alg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S claim₃
 
 \end{code}
 
-The following two technical lemmas will be used to construct a
-bisimulation later:
+The following two technical lemmas are used to construct a
+bisimulation:
 
 \begin{code}
 
 alg-morphism-positivity : ∀ {U} {X : U ̇}
-    → (p : X →  𝟙 + X) (f g : X → ℕ∞)
-    → diagram-commutes p f → diagram-commutes p g
-    → (x : X) → positivity(f x) ≡ positivity(g x)
+                          (p : X →  𝟙 + X) (f g : X → ℕ∞)
+                       → diagram-commutes p f
+                       → diagram-commutes p g
+                       → (x : X) → positivity(f x) ≡ positivity(g x)
 alg-morphism-positivity {U} {X} p f g a b x =
  equality-cases (p x) lemma₀ lemma₁
  where
@@ -292,14 +294,18 @@ alg-morphism-positivity {U} {X} p f g a b x =
     g-lemma = ap positivity(alg-morphism-Succ p g b x x' c)
 
 alg-morphism-Pred : ∀ {U} {X : U ̇}
-    → (p : X →  𝟙 + X) (f g : X → ℕ∞)
-    → diagram-commutes p f → diagram-commutes p g
-    → (x : X) (u v : ℕ∞) → u ≡ f x → v ≡ g x
-    → Σ \(x' : X) → (Pred u ≡ f x')  ×  (Pred v ≡ g x')
+                    (p : X →  𝟙 + X) (f g : X → ℕ∞)
+    → diagram-commutes p f
+    → diagram-commutes p g
+    → (x : X) (u v : ℕ∞)
+    → u ≡ f x
+    → v ≡ g x
+    → Σ \(x' : X) → (Pred u ≡ f x') × (Pred v ≡ g x')
 alg-morphism-Pred {U} {X} p f g a b x u v d e =
  equality-cases (p x) lemma₀ lemma₁
  where
-  lemma₀ : (s : 𝟙) → p x ≡ inl s → Σ \x' → (Pred u ≡ f x') ×  (Pred v ≡ g x')
+  lemma₀ : (s : 𝟙) → p x ≡ inl s
+        → Σ \x' → (Pred u ≡ f x') ×  (Pred v ≡ g x')
   lemma₀ s c = x , (lemma f a u d , lemma g b v e)
    where
     lemma : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
@@ -311,7 +317,8 @@ alg-morphism-Pred {U} {X} p f g a b x u v d e =
       claim₁ : Pred u ≡ Zero
       claim₁ = ap Pred (d ∙ claim₀)
 
-  lemma₁ : (x' : X) → p x ≡ inr x' → Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
+  lemma₁ : (x' : X) → p x ≡ inr x'
+        → Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
   lemma₁ x' c = x' , ((lemma f a u d ) , (lemma g b v e ))
    where
     lemma : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
@@ -329,15 +336,16 @@ from p to P.
 \begin{code}
 
 homomorphism-uniqueness : ∀ {U} {X : U ̇}
-                        → (p : X → 𝟙 + X) (f g : X → ℕ∞)
-                        → diagram-commutes p f → diagram-commutes p g
+                          (p : X → 𝟙 + X) (f g : X → ℕ∞)
+                        → diagram-commutes p f
+                        → diagram-commutes p g
                         → f ≡ g
 homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) lemma
  where
   R : ℕ∞ → ℕ∞ → U ̇
   R u v = Σ \x → (u ≡ f x)  ×  (v ≡ g x)
 
-  r : (x : X) → R(f x)(g x)
+  r : (x : X) → R (f x) (g x)
   r x = (x , refl , refl)
 
   R-positivity : (u v : ℕ∞) → R u v → positivity u ≡ positivity v
@@ -346,7 +354,7 @@ homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) lemma
     e : positivity(f x) ≡ positivity(g x)
     e = alg-morphism-positivity {U} {X} p f g a b x
 
-  R-Pred : (u v : ℕ∞) → R u v → R(Pred u)(Pred v)
+  R-Pred : (u v : ℕ∞) → R u v → R (Pred u) (Pred v)
   R-Pred u v (x , c , d) =
    (pr₁ lemma , pr₁(pr₂ lemma) , pr₂(pr₂ lemma))
    where
@@ -356,7 +364,7 @@ homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) lemma
   R-bisimulation : ℕ∞-bisimulation R
   R-bisimulation u v r = (R-positivity u v r) , (R-Pred u v r)
 
-  lemma : (x : X) → f x ≡ g x
+  lemma : f ∼ g
   lemma x = ℕ∞-coinduction R R-bisimulation (f x) (g x) (r x)
 
 \end{code}
@@ -366,9 +374,6 @@ coalgebra, as claimed:
 
 \begin{code}
 
-Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇
-Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
-
 P-is-the-final-coalgebra : ∀ {U} {X : U ̇}
   → (p : X → 𝟙 + X) → Σ! \(h : X → ℕ∞) → diagram-commutes p h
 P-is-the-final-coalgebra p = homomorphism-existence p , homomorphism-uniqueness p
@@ -377,7 +382,7 @@ P-is-the-final-coalgebra p = homomorphism-existence p , homomorphism-uniqueness 
 
 There is more formalization work to do (2017): By now we know that Σ!
 (a form of unique existence) is better captured by the contractibility
-of Σ type. Added 13th July 2018:
+of Σ type (added 13th July 2018):
 
 \begin{code}
 
@@ -385,12 +390,16 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-P-is-the-homotopy-final-coalgebra : ∀ {U} {X : U ̇}
-  → (p : X → 𝟙 + X) → is-singleton(Σ \(h : X → ℕ∞) → diagram-commutes p h)
+P-is-the-homotopy-final-coalgebra : ∀ {U} {X : U ̇} (p : X → 𝟙 + X)
+  → is-singleton(Σ \(h : X → ℕ∞) → diagram-commutes p h)
 P-is-the-homotopy-final-coalgebra {U} {X} p = homomorphism-existence p , γ
  where
   γ : (e : Σ \(h' : X → ℕ∞) → diagram-commutes p h') → homomorphism-existence p ≡ e
-  γ (h' , r) = to-Σ-≡'' (homomorphism-uniqueness p (ℕ∞-corec p) h' (ℕ∞-corec-diagram p) r ,
-                         Π-is-set (fe U U₀) (λ (x : X) → +-is-set 𝟙 ℕ∞ (prop-is-set 𝟙-is-prop) (ℕ∞-is-set (fe U₀ U₀))) _ _)
+  γ (h' , r) = to-Σ-≡''
+                (homomorphism-uniqueness p (ℕ∞-corec p) h' (ℕ∞-corec-diagram p) r ,
+                 Π-is-set (fe U U₀)
+                   (λ _ → +-is-set 𝟙 ℕ∞
+                           (prop-is-set 𝟙-is-prop)
+                           (ℕ∞-is-set (fe U₀ U₀))) _ _)
 
 \end{code}

@@ -267,7 +267,12 @@ left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
 left-cancellable' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
 
+Σ! : ∀ {U V} {X : U ̇} (A : X → V ̇) → U ⊔ V ̇
+Σ! {U} {V} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
+
 \end{code}
+
+Note: Σ! is to be avoided, in favour of the contractibility of Σ, following univalent mathematics.
 
 Standard syntax for equality chain reasoning:
 
@@ -357,13 +362,16 @@ zero-is-not-one ()
 𝟚-cases : ∀ {U} {A : U ̇} → A → A → 𝟚 → A
 𝟚-cases = 𝟚-induction
 
+𝟚-Cases : ∀ {U} {A : U ̇} → 𝟚 → A → A → A
+𝟚-Cases a b c = 𝟚-cases b c a
+
 𝟚-equality-cases : ∀ {U} {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
 𝟚-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
 𝟚-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
 
-two-equality-cases' : ∀ {U} {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
-two-equality-cases' {U} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
-two-equality-cases' {U} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
+𝟚-equality-cases' : ∀ {U} {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
+𝟚-equality-cases' {U} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
+𝟚-equality-cases' {U} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
 
 Lemma[b≡₁→b≢₀] : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
 Lemma[b≡₁→b≢₀] r s = zero-is-not-one (s ⁻¹ ∙ r)
