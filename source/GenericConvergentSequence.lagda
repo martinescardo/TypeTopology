@@ -109,7 +109,7 @@ force-decreasing-is-not-much-smaller β (succ n) p = f c
     f (inr r) = force-decreasing-is-not-much-smaller β n r
 
 Cantor-separated : funext₀ → separated (ℕ → 𝟚)
-Cantor-separated fe = separated-ideal fe (λ _ → 𝟚-is-separated)
+Cantor-separated fe = Π-separated fe (λ _ → 𝟚-is-separated)
 
 ℕ∞-separated : funext₀ → separated ℕ∞
 ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)
@@ -196,8 +196,8 @@ Pred(α , d) = (α ∘ succ , d ∘ succ)
 Pred-Zero-is-Zero : Pred Zero ≡ Zero
 Pred-Zero-is-Zero = refl
 
-Pred-Succ-u-is-u : {u : ℕ∞} → Pred(Succ u) ≡ u
-Pred-Succ-u-is-u {u} = refl
+Pred-Succ : {u : ℕ∞} → Pred(Succ u) ≡ u
+Pred-Succ {u} = refl
 
 Pred-∞-is-∞ : Pred ∞ ≡ ∞
 Pred-∞-is-∞ = refl
@@ -241,6 +241,18 @@ is-Zero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
   lemma 0 = base
   lemma (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u i) (lemma i)
 
+same-positivity : funext₀ → (u v : ℕ∞)
+               → (u ≡ Zero → v ≡ Zero)
+               → (v ≡ Zero → u ≡ Zero)
+               → positivity u ≡ positivity v
+same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-coarser-than-≤₂ a)
+                                      (≤₂'-coarser-than-≤₂ b)
+ where
+  a : is-Zero v → is-Zero u
+  a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl    
+  b : is-Zero u → is-Zero v
+  b p = back-transport is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
+
 not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
 not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
@@ -277,7 +289,6 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
   claim : incl u ≡ incl (Succ (under n))
   claim = dfunext fe (lemma u n r s)
 
-
 ∞-is-not-ℕ : (n : ℕ) → ∞ ≢ under n
 ∞-is-not-ℕ n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
 
@@ -288,25 +299,36 @@ not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
-ℕ∞-density' : ∀ {U} {Y : U ̇} → funext₀ → separated Y
+ℕ∞-ddensity : funext₀ → ∀ {U} {Y : ℕ∞ → U ̇}
+            → ({u : ℕ∞} → separated (Y u))
+            → {f g : Π Y}
+            → ((n : ℕ) → f(under n) ≡ g(under n))
+            → f ∞ ≡ g ∞
+            → (u : ℕ∞) → f u ≡ g u
+ℕ∞-ddensity fe {U} {Y} s {f} {g} h h∞ u = s (f u) (g u) c
+ where
+  a : f u ≢ g u → (n : ℕ) → u ≢ under n
+  a t n = contrapositive (λ (r : u ≡ under n) → back-transport (λ - → f - ≡ g -) r (h n)) t
+  b : f u ≢ g u → u ≢ ∞
+  b = contrapositive (λ (r : u ≡ ∞) → back-transport (λ - → f - ≡ g -) r h∞)
+  c : ¬¬(f u ≡ g u)
+  c = λ t → b t (not-ℕ-is-∞ fe (a t))
+
+ℕ∞-density : funext₀
+             → ∀ {U} {Y : U ̇}
+             → separated Y
              → {f g : ℕ∞ → Y}
              → ((n : ℕ) → f(under n) ≡ g(under n))
              → f ∞ ≡ g ∞
              → (u : ℕ∞) → f u ≡ g u
-ℕ∞-density' {U} {Y} fe s {f} {g} h h∞ u = s (f u) (g u) c
- where
-  a : f u ≢ g u → (n : ℕ) → u ≢ under n
-  a t n = contrapositive (λ (r : u ≡ under n) → back-transport (λ u → f u ≡ g u) r (h n)) t
-  b : f u ≢ g u → u ≢ ∞
-  b = contrapositive (λ (r : u ≡ ∞) → back-transport (λ u → f u ≡ g u) r h∞)
-  c : ¬¬(f u ≡ g u)
-  c = λ t → b t (not-ℕ-is-∞ fe (a t))
+ℕ∞-density fe s = ℕ∞-ddensity fe (λ {_} → s)
 
-ℕ∞-density : funext₀ → {p : ℕ∞ → 𝟚}
-            → ((n : ℕ) → p(under n) ≡ ₁)
-            → p ∞ ≡ ₁
-            → (u : ℕ∞) → p u ≡ ₁
-ℕ∞-density fe = ℕ∞-density' fe 𝟚-is-separated
+ℕ∞-𝟚-density : funext₀
+             → {p : ℕ∞ → 𝟚}
+             → ((n : ℕ) → p(under n) ≡ ₁)
+             → p ∞ ≡ ₁
+             → (u : ℕ∞) → p u ≡ ₁
+ℕ∞-𝟚-density fe = ℕ∞-density fe 𝟚-is-separated
 
 under𝟙 : ℕ + 𝟙 → ℕ∞
 under𝟙 = cases {U₀} {U₀} under (λ _ → ∞)
@@ -513,8 +535,15 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
 ℕ∞-ordinal : funext₀ → is-well-order _≺_
 ℕ∞-ordinal fe = (≺-prop-valued fe) , ≺-well-founded , (≺-extensional fe) , ≺-trans
 
+\end{code}
+
+The following is not needed anymore, as we have the stronger fact,
+proved above, that ≺ is well founded:
+
+\begin{code}
+
 ≺-well-founded₂ : funext₀ → is-well-founded₂ _≺_
-≺-well-founded₂ fe p φ = ℕ∞-density fe a b
+≺-well-founded₂ fe p φ = ℕ∞-𝟚-density fe a b
  where
   γ : (n : ℕ) → ((m : ℕ) → m < n → p (under m) ≡ ₁) → p (under n) ≡ ₁
   γ n g = φ (under n) h

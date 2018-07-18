@@ -12,8 +12,8 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 
-prop-indexed-product : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇} → is-prop X
-                     → (a : X) → Π Y ≃ Y a
+prop-indexed-product : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
+                     → is-prop X → (a : X) → Π Y ≃ Y a
 prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
   f : Π Y → Y a
@@ -51,8 +51,8 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇} → is-prop X
-                 → (a : X) → Σ Y ≃ Y a
+prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇}
+                 → is-prop X → (a : X) → Σ Y ≃ Y a
 prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
   f : Σ Y → Y a

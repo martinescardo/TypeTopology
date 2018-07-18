@@ -66,9 +66,9 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
 
 \begin{code}
 
-Σ-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
+Σ-reindex-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
           → has-section g → retract (Σ A) of (Σ \(y : Y) → A (g y))
-Σ-retract {U} {V} {W} {X} {Y} {A} g (f , gf) = γ , φ , γφ
+Σ-reindex-retract {U} {V} {W} {X} {Y} {A} g (f , gf) = γ , φ , γφ
  where
   γ : (Σ \(y : Y) → A (g y)) → Σ A
   γ (y , a) = (g y , a)
@@ -81,3 +81,28 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
     p = back-and-forth-transport (gf x)
 
 \end{code}
+
+Added 18th July 2018. (Completely routine.)
+
+\begin{code}
+
+Σ-retract : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
+          → ((x : X) → retract (A x) of (B x))
+          → retract (Σ A) of (Σ B)
+Σ-retract {U} {V} {W} {X} A B ρ = r , s , rs
+ where
+  R : (x : X) → B x → A x 
+  R x = pr₁(ρ x)
+  S : (x : X) → A x → B x
+  S x = pr₁(pr₂(ρ x))
+  RS : (x : X) (a : A x) → R x (S x a) ≡ a
+  RS x = pr₂(pr₂(ρ x))
+  r : Σ B → Σ A
+  r = NatΣ R
+  s : Σ A → Σ B
+  s = NatΣ S
+  rs : (σ : Σ A) → r (s σ) ≡ σ
+  rs (x , a) = ap (λ - → (x , -)) (RS x a)
+
+\end{code}
+

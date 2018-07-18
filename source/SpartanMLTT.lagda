@@ -338,6 +338,12 @@ codomain cod : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → V ̇
 codomain {U} {V} {X} {Y} f = Y
 cod = codomain
 
+lhs : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → X
+lhs {U} {X} {x} {y} p = x
+
+rhs : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → X
+rhs {U} {X} {x} {y} p = y
+
 \end{code}
 
 The two-point type (or booleans)

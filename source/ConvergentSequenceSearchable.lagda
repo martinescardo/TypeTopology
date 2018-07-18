@@ -90,7 +90,7 @@ This is the main theorem proved in this module:
   Claim₃ r = (ap p (Claim₁ r))⁻¹ ∙ r
 
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
-  Lemma r = ℕ∞-density fe (Claim₂ r) (Claim₃ r)
+  Lemma r = ℕ∞-𝟚-density fe (Claim₂ r) (Claim₃ r)
 
 \end{code}
 

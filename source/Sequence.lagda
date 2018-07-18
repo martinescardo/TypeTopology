@@ -16,16 +16,16 @@ _∶∶_ : ∀ {U} {X : ℕ → U ̇} → X 0 → ((n : ℕ) → X(succ n)) → 
 (x ∶∶ α) 0 = x
 (x ∶∶ α) (succ n) = α n
 
-hd : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → X 0
-hd α = α 0
+head : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → X 0
+head α = α 0
 
-tl : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → ((n : ℕ) → X(succ n))
-tl α n = α(succ n)
+tail : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → ((n : ℕ) → X(succ n))
+tail α n = α(succ n)
 
-hd-tl-eta : ∀ {U} {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (hd α ∶∶ tl α) ≡ α
-hd-tl-eta {U} {X} = dfunext (fe U₀ U) lemma
+head-tail-eta : ∀ {U} {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (head α ∶∶ tail α) ≡ α
+head-tail-eta {U} {X} = dfunext (fe U₀ U) lemma
  where
-  lemma : {α : (n : ℕ) → X n} → (i : ℕ) → (hd α ∶∶ tl α) i ≡ α i
+  lemma : {α : (n : ℕ) → X n} → (i : ℕ) → (head α ∶∶ tail α) i ≡ α i
   lemma 0 = refl
   lemma (succ i) = refl
 
@@ -33,7 +33,7 @@ private cons : ∀ {U} {X : ℕ → U ̇} → X 0 × ((n : ℕ) → X(succ n)) �
 cons(x , α) = x ∶∶ α
 
 cons-retraction : ∀ {U} {X : ℕ → U ̇} → retraction(cons {U} {X})
-cons-retraction α = (hd α , tl α) , hd-tl-eta
+cons-retraction α = (head α , tail α) , head-tail-eta
 
 \end{code}
 
@@ -58,13 +58,13 @@ Added 16th July 2018. Corecursion on sequences A : ℕ → .
              |                       |
              v                       v
          (ℕ → A) ---------------> A × (ℕ → A)
-                  P = (hd, tl)
+                  P = (head, tail)
 
 
   head (f x) = h x
   tail (f x) = f(t x)
 
-Or equivalently
+Or equivalentaily
 
   f x = cons (h x) (f (t x))
 
@@ -85,18 +85,18 @@ module _ {U V : Universe}
 
  seq-corec = f
 
- seq-corec-hd : hd ∘ f ∼ h
- seq-corec-hd x = refl
+ seq-corec-head : head ∘ f ∼ h
+ seq-corec-head x = refl
 
- seq-corec-tl : tl ∘ f ∼ f ∘ t
- seq-corec-tl x = dfunext (fe U₀ U) (λ n → refl)
+ seq-corec-tail : tail ∘ f ∼ f ∘ t
+ seq-corec-tail x = dfunext (fe U₀ U) (λ n → refl)
 
- seq-final : Σ! \(f : X → (ℕ → A)) → (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t)
- seq-final = (seq-corec , seq-corec-hd , seq-corec-tl) , c
+ seq-final : Σ! \(f : X → (ℕ → A)) → (head ∘ f ∼ h) × (tail ∘ f ∼ f ∘ t)
+ seq-final = (seq-corec , seq-corec-head , seq-corec-tail) , c
   where
    c : (f f' : X → ℕ → A) →
-         (hd ∘ f ∼ h) × (tl ∘ f ∼ f ∘ t) →
-         (hd ∘ f' ∼ h) × (tl ∘ f' ∼ f' ∘ t) → f ≡ f'
+         (head ∘ f ∼ h) × (tail ∘ f ∼ f ∘ t) →
+         (head ∘ f' ∼ h) × (tail ∘ f' ∼ f' ∘ t) → f ≡ f'
    c f f' (a , b) (c , d) = dfunext (fe V U) (λ x → dfunext (fe U₀ U) (r x))
     where
      r : (x : X) (n : ℕ) → f x n ≡ f' x n

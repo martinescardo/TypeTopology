@@ -138,9 +138,9 @@ extensionality. More generally:
 separated : ∀ {U} → U ̇ → U ̇
 separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
-separated-ideal : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
-               → ((x : X) → separated(Y x)) → separated(Π Y)
-separated-ideal fe s f g h = dfunext fe lemma𝟚
+Π-separated : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
+            → ((x : X) → separated(Y x)) → separated(Π Y)
+Π-separated fe s f g h = dfunext fe lemma𝟚
  where
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ - → - x) r

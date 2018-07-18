@@ -39,7 +39,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
   f-retr ₁ α = inr α
 
   p-retr : (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
-  p-retr α = f-retr (hd α) (tl α)
+  p-retr α = f-retr (head α) (tail α)
 
   retr : (ℕ → 𝟚) → ℕ∞
   retr = ℕ∞-corec p-retr
@@ -47,17 +47,17 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
   retr-spec : P ∘ retr ≡ (𝟙+ retr) ∘ p-retr
   retr-spec = ℕ∞-corec-diagram p-retr
 
-  retr-spec₀ : (α : ℕ → 𝟚) → hd α ≡ ₀ → retr α ≡ Zero
-  retr-spec₀ α r = alg-morphism-Zero p-retr retr retr-spec α * lemma
+  retr-spec₀ : (α : ℕ → 𝟚) → head α ≡ ₀ → retr α ≡ Zero
+  retr-spec₀ α r = coalg-morphism-Zero p-retr retr retr-spec α * lemma
    where
     lemma : p-retr α ≡ inl *
-    lemma = ap (λ - → f-retr - (tl α)) r
+    lemma = ap (λ - → f-retr - (tail α)) r
 
-  retr-spec₁ : (α : ℕ → 𝟚) → hd α ≡ ₁ → retr α ≡ Succ(retr(tl α))
-  retr-spec₁ α r = alg-morphism-Succ p-retr retr retr-spec α (tl α) lemma
+  retr-spec₁ : (α : ℕ → 𝟚) → head α ≡ ₁ → retr α ≡ Succ(retr(tail α))
+  retr-spec₁ α r = coalg-morphism-Succ p-retr retr retr-spec α (tail α) lemma
    where
-    lemma : p-retr α ≡ inr(tl α)
-    lemma = ap (λ - → f-retr - (tl α)) r
+    lemma : p-retr α ≡ inr(tail α)
+    lemma = ap (λ - → f-retr - (tail α)) r
 
   R : ℕ∞ → ℕ∞ → U₀ ̇
   R u v = Σ \w → (retr(incl w) ≡ u) × (w ≡ v)
@@ -66,8 +66,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
   r u = (u , refl , refl)
 
   R-positivity : (u v : ℕ∞) → R u v → positivity u ≡ positivity v
-  R-positivity u v (w , c , d) =
-   𝟚-equality-cases lemma₀ lemma₁
+  R-positivity u v (w , c , d) = 𝟚-equality-cases lemma₀ lemma₁
    where
     lemma₀ : positivity w ≡ ₀ → positivity u ≡ positivity v
     lemma₀ r = ap positivity claim₃
@@ -95,7 +94,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
       claim₄ : positivity v ≡ ₁
       claim₄ = claim₃ ⁻¹ ∙ r
 
-  R-Pred : (u v : ℕ∞) → R u v → R(Pred u)(Pred v)
+  R-Pred : (u v : ℕ∞) → R u v → R (Pred u) (Pred v)
   R-Pred u v (w , c , d) = (Pred w , lemma₀ , lemma₁)
    where
     lemma₀ : retr(incl(Pred w)) ≡ Pred u
@@ -114,7 +113,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
          c₁ : Pred w ≡ Zero
          c₁ = ap Pred c₀
          c₂ : incl (Pred w) 0 ≡ ₀
-         c₂ = ap (hd ∘ incl) c₁
+         c₂ = ap (head ∘ incl) c₁
          c₃ : retr(incl (Pred w)) ≡ Zero
          c₃ = retr-spec₀(incl (Pred w)) c₂
          c₄ : retr(incl w) ≡ Zero
@@ -124,11 +123,11 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
        claim₂ : positive w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
        claim₂ r = c₃ ∙ c₁ ⁻¹
         where
-         c₀ : retr(incl w) ≡ Succ(retr(tl(incl w)))
+         c₀ : retr(incl w) ≡ Succ(retr(tail(incl w)))
          c₀ = retr-spec₁ (incl w) r
-         c₁ : Pred(retr(incl w)) ≡ retr(tl(incl w))
-         c₁ = ap Pred c₀ ∙ Pred-Succ-u-is-u
-         c₃ : retr(incl(Pred w)) ≡ retr(tl(incl w))
+         c₁ : Pred(retr(incl w)) ≡ retr(tail(incl w))
+         c₁ = ap Pred c₀ ∙ Pred-Succ
+         c₃ : retr(incl(Pred w)) ≡ retr(tail(incl w))
          c₃ = refl
 
     lemma₁ : Pred w ≡ Pred v

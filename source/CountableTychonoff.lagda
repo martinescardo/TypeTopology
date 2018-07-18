@@ -59,7 +59,7 @@ countable-Tychonoff : ∀ {U} → {X : ℕ → U ̇} →
  ((n : ℕ) → searchable(X n)) → searchable((n : ℕ) → X n)
 
 countable-Tychonoff {X} ε =
- binary-Tychonoff' (hd ε) (countable-Tychonoff(tl ε))
+ binary-Tychonoff' (head ε) (countable-Tychonoff(tail ε))
 
 \end{code}
 

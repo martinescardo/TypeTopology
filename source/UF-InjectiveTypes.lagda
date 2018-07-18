@@ -430,3 +430,30 @@ power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
     g x = dfunext (fe V U) (λ a → pr₂ (l a) x)
 
 \end{code}
+
+Added 18th July 2018. Notice that the function e : X → Y doesn't need
+to be an embedding and that the proof is completely routine.
+
+\begin{code}
+
+retract-extension : ∀ {U V W T} {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
+               → ((x : X) → retract (A x) of (B x))
+               → ((y : Y) → retract ((A / e) y) of ((B / e) y)) 
+retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
+ where
+  R : (x : X) → B x → A x 
+  R x = pr₁(ρ x)
+  S : (x : X) → A x → B x
+  S x = pr₁(pr₂(ρ x))
+  RS : (x : X) (a : A x) → R x (S x a) ≡ a
+  RS x = pr₂(pr₂(ρ x))
+  r : (B / e) y → (A / e) y
+  r v (x , p) = R x (v (x , p))
+  s : (A / e) y → (B / e) y
+  s u (x , p) = S x (u (x , p))
+  h : (u : (A / e) y) (σ : fiber e y) → r (s u) σ ≡ u σ
+  h u (x , p) = RS x (u (x , p))
+  rs : (u : (A / e) y) → r (s u) ≡ u
+  rs u = dfunext (fe (U ⊔ V) W) (h u)
+
+\end{code}
