@@ -134,13 +134,13 @@ sequence α : Cantor is of one of the forms
 
    1ⁿ0β or 1ᵒᵒ,
 
-which is equivalent to to Bishop's LPO (limited principle of
-omniscience). Without LPO, we can we that there is no sequence which
+which is equivalent to Bishop's LPO (limited principle of
+omniscience). Without LPO, we can say that there is no sequence which
 is not of any of these two forms, but this is rather weak.
 
 What we do instead is to extract such a prefix 1ⁿ0 or 1ᵒᵒ, with Head,
 regarded as an element of ℕ∞ (a decreasing sequence), and the
-*partial* prefix, with Tail, which will be total when the prefix if
+*partial* suffix, with Tail, which will be total when the prefix is
 finite.
 
 We define Head by coinduction on ℕ∞, Tail directly, and Cons by
