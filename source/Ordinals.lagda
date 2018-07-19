@@ -93,7 +93,7 @@ Ordᵀ = Σ \(α : Ord) → has-top (underlying-order α)
 [_] : Ordᵀ → Ord
 [ α , t ] = α
 
-⟪_⟫ : (τ : Ordᵀ) → U ̇
+⟪_⟫ : Ordᵀ → U ̇
 ⟪ (X , _<_ , o) , t ⟫ = X
 
 tunderlying-order : (τ : Ordᵀ) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
@@ -137,7 +137,7 @@ Sum of an ordinal indexed family of ordinals:
 
 \end{code}
 
-Addition and multiplication can be reduce to ∑, given the ordinal 𝟚º
+Addition and multiplication can be reduced to ∑, given the ordinal 𝟚º
 defined above:
 
 \begin{code}
@@ -153,9 +153,9 @@ _×º_ : Ordᵀ → Ordᵀ → Ordᵀ
 
 \end{code}
 
-Extension a family X → Ordᵀ along an embedding j : X → A to get a
+Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
-This uses the module InjectiveTypes to calculate Y / j.
+This uses the module UF-InjectiveTypes to calculate Y / j.
 
 \begin{code}
 

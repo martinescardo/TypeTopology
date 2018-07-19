@@ -67,7 +67,8 @@ force-decreasing β (succ i) = min𝟚 (β(succ i)) (force-decreasing β i)
 
 force-decreasing-is-decreasing : (β : ℕ → 𝟚) → decreasing(force-decreasing β)
 force-decreasing-is-decreasing β zero     = Lemma[min𝟚ab≡₁→b≡₁] {β 1} {β zero}
-force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (succ (succ i))} {force-decreasing β (succ i)}
+force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (succ (succ i))}
+                                                             {force-decreasing β (succ i)}
 
 force-decreasing-unchanged : (α : ℕ → 𝟚) → decreasing α → force-decreasing α ∼ α
 force-decreasing-unchanged α d zero     = refl
@@ -88,7 +89,8 @@ lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 lcni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
-lcni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) , decreasing-is-prop fe α _ _)
+lcni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) ,
+                                  decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
 ℕ∞-retract-of-Cantor fe = lcni , incl , lcni-incl fe
@@ -97,7 +99,9 @@ force-decreasing-is-smaller : (β : ℕ → 𝟚) (i : ℕ) → force-decreasing
 force-decreasing-is-smaller β zero     p = p
 force-decreasing-is-smaller β (succ i) p = Lemma[min𝟚ab≡₁→a≡₁] p
 
-force-decreasing-is-not-much-smaller : (β : ℕ → 𝟚) (n : ℕ) → force-decreasing β n ≡ ₀ → (Σ \(m : ℕ) → β m ≡ ₀)
+force-decreasing-is-not-much-smaller : (β : ℕ → 𝟚) (n : ℕ)
+                                     → force-decreasing β n ≡ ₀
+                                     → Σ \(m : ℕ) → β m ≡ ₀
 force-decreasing-is-not-much-smaller β zero  p    = zero , p
 force-decreasing-is-not-much-smaller β (succ n) p = f c
   where
@@ -249,7 +253,7 @@ same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-coarser-than-≤₂ a)
                                       (≤₂'-coarser-than-≤₂ b)
  where
   a : is-Zero v → is-Zero u
-  a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl    
+  a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl
   b : is-Zero u → is-Zero v
   b p = back-transport is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
 
@@ -268,6 +272,11 @@ positive-is-not-Zero {u} r s = lemma r
 
 positive-equal-Succ : funext₀ → {u : ℕ∞} → positive u → u ≡ Succ(Pred u)
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
+
+Zero-or-Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + (u ≡ Succ(Pred u))
+Zero-or-Succ fe₀ u = 𝟚-equality-cases
+                      (λ (z : is-Zero u) → inl (is-Zero-equal-Zero fe₀ z))
+                      (λ (p : positive u) → inr (positive-equal-Succ fe₀ p))
 
 Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
 Succ-criterion fe {u} {n} r s = incl-lc fe claim
@@ -394,8 +403,11 @@ is-finite u = Σ \(n : ℕ) → under n ≡ u
 is-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 is-finite-is-prop = under-embedding
 
+under-is-finite : (n : ℕ) → is-finite(under n)
+under-is-finite n = (n , refl)
+
 Zero-is-finite : is-finite Zero
-Zero-is-finite = zero , refl
+Zero-is-finite = under-is-finite zero
 
 Zero-is-finite' : funext₀ → (u : ℕ∞) → is-Zero u → is-finite u
 Zero-is-finite' fe u z = back-transport is-finite (is-Zero-equal-Zero fe z) Zero-is-finite

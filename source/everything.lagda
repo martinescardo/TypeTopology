@@ -292,6 +292,7 @@ import SearchableTypes
 import Sequence
 import SimpleTypes
 import SpartanMLTT
+import SquashedCantor
 import SquashedSum
 import TheTopologyOfTheUniverse
 import TotallySeparated
