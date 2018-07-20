@@ -454,8 +454,6 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
      t = back-transport-finite p
      t' : is-finite (under n) → is-finite u
      t' = t ∘ is-finite-up (under n)
-     φ' : Cantor[ Succ(under n) ]
-     φ' _ = Cons (under n , φ ∘ t')
      q : Cons (u , φ) ≡ Cons (Succ (under n) , φ ∘ t)
      q = ap-Cantor (λ u φ → Cons (u , φ)) p
      j : is-finite (Head (Cons (Succ (under n) , φ ∘ t)))
