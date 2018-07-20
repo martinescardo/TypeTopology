@@ -33,7 +33,7 @@
    complete. Some routine bells and whistles are missing.
 
    20 July 2018. Completed the proof that the searchable ordinals are
-   retracts of the Cantor space and hence totally separate. This
+   retracts of the Cantor space and hence totally separated. This
    required work on several modules, and in particular the new module
    SquashedCantor.
 

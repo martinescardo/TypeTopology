@@ -90,11 +90,11 @@ transportation of finiteness:
 \begin{code}
 
 tpc : {u v : ℕ∞} (φ : Cantor[ u ]) (p : u ≡ v)
-   → transport-Cantor p φ ≡ φ ∘ back-transport-finite p
+    → transport-Cantor p φ ≡ φ ∘ back-transport-finite p
 tpc φ refl = refl
 
 back-tpc : {u v : ℕ∞} (φ : Cantor[ u ]) (p : v ≡ u)
-        → transport-Cantor p (φ ∘ transport-finite p) ≡ φ
+         → transport-Cantor p (φ ∘ transport-finite p) ≡ φ
 back-tpc φ refl = refl
 
 \end{code}
@@ -240,7 +240,7 @@ tail-step (u , φ) = 𝟚-equality-cases
 Κ = seq-corec head-step tail-step
 
 head-Κ-Zero : (φ : Cantor[ Zero ])
-            → head (Κ (Zero , φ)) ≡ head (φ (Zero-is-finite))
+            → head (Κ (Zero , φ)) ≡ head (φ Zero-is-finite)
 head-Κ-Zero φ = seq-corec-head
                   head-step
                   tail-step
@@ -252,7 +252,7 @@ tail-Κ-Zero : (φ : Cantor[ Zero ])
 tail-Κ-Zero φ = seq-corec-tail head-step tail-step (Zero , φ)
 
 Κ₀ : (φ : Cantor[ Zero ])
-   → Κ (Zero , φ) ≡ φ (Zero-is-finite)
+   → Κ (Zero , φ) ≡ φ Zero-is-finite
 Κ₀ φ = dfunext fe₀ (l φ )
  where
   l : (φ : Cantor[ Zero ]) (n : ℕ)
@@ -312,7 +312,7 @@ Cons₀ : (φ : Cantor[ Zero ]) → Cons (Zero , φ) ≡ ₀ ∶∶ φ Zero-is-f
 Cons₀ φ = Κ₀ (λ i → ₀ ∶∶ φ i)
 
 Cons₁ : (u : ℕ∞) (φ : Cantor[ Succ u ])
-     → Cons (Succ u , φ) ≡ ₁ ∶∶  Cons (u , φ ∘ is-finite-up u)
+      → Cons (Succ u , φ) ≡ ₁ ∶∶  Cons (u , φ ∘ is-finite-up u)
 Cons₁ u φ = Κ₁ u (λ i → ₀ ∶∶ φ i)
 
 tail-Cons-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
@@ -321,7 +321,7 @@ tail-Cons-Succ u φ = tail-Κ-Succ u (λ i → ₀ ∶∶ φ i)
 
 \end{code}
 
-The applying n+1 times the (lower case) function tail to the sequence
+Then applying n+1 times the (lower case) function tail to the sequence
 Cons (under n , φ) we get the sequence φ (under-is-finite n):
 
 \begin{code}
@@ -332,13 +332,13 @@ tail-Cons-under zero φ = ap tail (Cons₀ φ)
 tail-Cons-under (succ n) φ = γ
  where
   IH : Cons (under n , φ ∘ is-finite-up (under n)) ∘ (λ k → k ∔ succ n)
-    ≡ φ (is-finite-up (under n) (under-is-finite n))
+     ≡ φ (is-finite-up (under n) (under-is-finite n))
   IH = tail-Cons-under n (φ ∘ is-finite-up (under n))
   p : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
    ≡ (Cons (under n , φ ∘ is-finite-up (under n))) ∘ (λ k → k ∔ succ n)
   p = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (under n) φ)
   γ : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
-   ≡ φ (under-is-finite (succ n))
+    ≡ φ (under-is-finite (succ n))
   γ = p ∙ IH ∙ ap φ (is-finite-is-prop fe₀ (under (succ n)) _ _)
 
 \end{code}
@@ -413,13 +413,13 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
     → Tail (Cons (u , φ)) i ≡ (φ ∘ Head-finite u φ) i
    γ u φ (zero , r) = Tail (Cons (u , φ)) (zero , r)
                           ≡⟨ ap₂-Tail (zero , r) q ⟩
-                       Tail (Cons (Zero , φ ∘ t)) j
+                      Tail (Cons (Zero , φ ∘ t)) j
                           ≡⟨ ap₂-Tail j (Cons₀ (φ ∘ t)) ⟩
-                       Tail (₀ ∶∶ φ (t Zero-is-finite)) k
+                      Tail (₀ ∶∶ φ (t Zero-is-finite)) k
                           ≡⟨ Tail₀ (φ (t Zero-is-finite)) k ⟩
-                       φ (t Zero-is-finite)
+                      φ (t Zero-is-finite)
                           ≡⟨ ap φ (is-finite-is-prop fe₀ u _ _) ⟩
-                       φ (Head-finite u φ (zero , r)) ∎
+                      φ (Head-finite u φ (zero , r)) ∎
     where
      p : u ≡ Zero
      p = (r ∙ Head-Cons u φ)⁻¹
@@ -434,18 +434,18 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
 
    γ u φ (succ n , r) = Tail (Cons (u , φ)) (succ n , r)
                            ≡⟨ ap₂-Tail (succ n , r) q ⟩
-                         Tail (Cons (Succ (under n) , φ ∘ t)) j
+                        Tail (Cons (Succ (under n) , φ ∘ t)) j
                            ≡⟨ ap₂-Tail j (Cons₁ (under n) (φ ∘ t)) ⟩
-                         Tail (₁ ∶∶ Cons (under n , φ ∘ t')) k
+                        Tail (₁ ∶∶ Cons (under n , φ ∘ t')) k
                            ≡⟨ Tail₁ (Cons (under n , φ ∘ t')) k ⟩
-                         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ size k)
+                        Cons (under n , φ ∘ t') ∘ (λ l → l ∔ size k)
                            ≡⟨ ap (λ - → Cons (under n , φ ∘ t') ∘ (λ l → l ∔ -)) k' ⟩
-                         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ succ n)
+                        Cons (under n , φ ∘ t') ∘ (λ l → l ∔ succ n)
                            ≡⟨ tail-Cons-under n (φ ∘ t') ⟩
-                         φ (t' (under-is-finite n))
+                        φ (t' (under-is-finite n))
                            ≡⟨ ap φ (is-finite-is-prop fe₀ u _ _) ⟩
-                         φ (Head-finite u φ (succ n , r))
-                         ∎
+                        φ (Head-finite u φ (succ n , r))
+                        ∎
     where
      p : u ≡ Succ (under n)
      p = (r ∙ Head-Cons u φ)⁻¹
@@ -560,7 +560,7 @@ pair-seq-retract {U} {X} fe = retracts-compose (retracts-compose c d) b
 
 The last retraction is actually an equivalence, and the second last
 can be made into one, using ℕ+ℕ≃ℕ, proved in the module
-BinarySequences (which is not needed for the moment).
+BinaryNaturals (which is not needed for the moment).
 
 End for the moment. 20 July 2018.
 
