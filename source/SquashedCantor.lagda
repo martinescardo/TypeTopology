@@ -431,6 +431,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
      j = transport (λ - → is-finite (Head -)) q (zero , r)
      k : is-finite (Head (₀ ∶∶ φ (t Zero-is-finite)))
      k = transport (λ - → is-finite (Head -)) (Cons₀ (φ ∘ t)) j
+
    γ u φ (succ n , r) = Tail (Cons (u , φ)) (succ n , r)
                            ≡⟨ ap₂-Tail (succ n , r) q ⟩
                          Tail (Cons (Succ (under n) , φ ∘ t)) j
@@ -561,7 +562,7 @@ The last retraction is actually an equivalence, and the second last
 can be made into one, using ℕ+ℕ≃ℕ, proved in the module
 BinarySequences (which is not needed for the moment).
 
-End for the moment.
+End for the moment. 20 July 2018.
 
 TODO. The corecursion principle for D, which is not needed for the
 moment (but has the above as a corollary by Lambek's Lemma):
