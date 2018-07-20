@@ -1,6 +1,8 @@
 Martin Escardo, 21 June 2018
 
-TODO. Avoid the word "ordinal", reserving it to the module Ordinals.
+Ordinals proper are defined in the module Ordinals, as types equipped
+with well orders. This module forms the basis for that module. We
+still use the terminology "ordinal" here.
 
 \begin{code}
 
@@ -75,8 +77,8 @@ module plus
  order = _⊏_
 
  prop-valued : is-prop-valued _<_
-            → is-prop-valued _≺_
-            → is-prop-valued _⊏_
+             → is-prop-valued _≺_
+             → is-prop-valued _⊏_
  prop-valued p p' (inl x) (inl x') l m = p x x' l m
  prop-valued p p' (inl x) (inr y') * * = refl
  prop-valued p p' (inr y) (inl x') () m
@@ -92,8 +94,8 @@ module plus
  extensional w e e' (inr y) (inr y') f g = ap inr (e' y y' (f ∘ inr) (g ∘ inr))
 
  transitive : is-transitive _<_
-           → is-transitive _≺_
-           → is-transitive _⊏_
+            → is-transitive _≺_
+            → is-transitive _⊏_
  transitive t t' (inl x) (inl x') (inl z) l m = t x x' z l m
  transitive t t' (inl x) (inl x') (inr z') l m = *
  transitive t t' (inl x) (inr y') (inl z) l ()
@@ -124,8 +126,8 @@ module plus
    g (inr y) = γ y (w' y)
 
  well-order : is-well-order _<_
-           → is-well-order _≺_
-           → is-well-order _⊏_
+            → is-well-order _≺_
+            → is-well-order _⊏_
  well-order (p , w , e , t) (p' , w' , e' , t') = prop-valued p p' ,
                                                   well-founded w w' ,
                                                   extensional w e e' ,
@@ -386,7 +388,7 @@ subsingleton-valued.
 \begin{code}
 
  prop-valued : ((p : P) → is-prop-valued (_<_ {p}))
-            → is-prop-valued _≺_
+             → is-prop-valued _≺_
  prop-valued f u v = Σ-is-prop isp (λ p → f p (φ p u) (φ p v))
 
 \end{code}
@@ -397,7 +399,7 @@ that φ is a retraction.
 \begin{code}
 
  extensional : ((p : P) → is-extensional (_<_ {p}))
-                 → is-extensional _≺_
+             → is-extensional _≺_
  extensional e u v f g = dfunext fe γ
   where
    f' : (p : P) (x : X p) → x < φ p u → x < φ p v
@@ -444,7 +446,7 @@ that it is an equivalence (or a retraction or a section).
 \begin{code}
 
  transitive : ((p : P) → is-transitive (_<_ {p}))
-               → is-transitive _≺_
+            → is-transitive _≺_
  transitive t u v w (p , l) (q , m) = p , f l m'
   where
    f : φ p u < φ p v → φ p v < φ p w → φ p u < φ p w
@@ -463,7 +465,7 @@ lemma.
 \begin{code}
 
  well-founded : ((p : P) → is-well-founded (_<_ {p}))
-                 → is-well-founded _≺_
+              → is-well-founded _≺_
  well-founded w u = next u σ
   where
    σ : (v : Π X) → v ≺ u → is-accessible _≺_ v
@@ -483,7 +485,7 @@ lemma.
      d = transport (is-accessible _≺_) (η p v) c
 
  well-order : ((p : P) → is-well-order (_<_ {p}))
-           → is-well-order _≺_
+            → is-well-order _≺_
  well-order o = prop-valued  (λ p → prop-valuedness _<_ (o p)) ,
                 well-founded (λ p → well-foundedness _<_ (o p)) ,
                 extensional  (λ p → extensionality _<_ (o p)) ,
@@ -536,8 +538,8 @@ module sum
  order = _⊏_
 
  well-founded : is-well-founded _<_
-             → ((x : X) → is-well-founded (_≺_ {x}))
-             → is-well-founded _⊏_
+              → ((x : X) → is-well-founded (_≺_ {x}))
+              → is-well-founded _⊏_
  well-founded w w' (x , y) = φ x y
   where
    P : Σ Y → U ⊔ V ⊔ W ⊔ T ̇
@@ -557,8 +559,8 @@ module sum
    φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
 
  transitive : is-transitive _<_
-           → ((x : X) → is-transitive (_≺_ {x}))
-           → is-transitive _⊏_
+            → ((x : X) → is-transitive (_≺_ {x}))
+            → is-transitive _⊏_
  transitive t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
@@ -803,7 +805,7 @@ module extension
  order = _≺_
 
  well-order : ((x : X) → is-well-order (_<_ {x}))
-           → is-well-order _≺_
+            → is-well-order _≺_
  well-order o = pip.well-order
               (fe (U ⊔ V) W)
               (fiber j a)
@@ -819,64 +821,5 @@ module extension
     φ (x , r) = pr₁(f x)
     g : (ψ : (Y / j) a) → ¬ (φ ≺ ψ)
     g ψ ((x , r) , l) = pr₂ (f x) (ψ (x , r)) l
-
-\end{code}
-
-2011, 2013, 21 Jun 2018. Countable sum plus a top limit point, which,
-constructively, is not the same thing as the sum plus one. This is
-crucial to get searchability, but searchability is not addressed in
-this module. We need to assume that each ordinal in the family has top
-element.
-
-This doesn't seem to be needed anymore, as it is subsumed by ∑¹ in the
-module Ordinals:
-
-\begin{code}
-
-{- Delete this eventually:
-module sum¹
-        (fe : ∀ U V → funext U V)
-        {U}
-        (X : ℕ → U ̇)
-        (_<_ : {n : ℕ} → X n → X n → U ̇)
-        (o : (n : ℕ) → is-well-order (_<_ {n}))
-        (t : (n : ℕ) → X n)
-        (i : (n : ℕ) → is-top _<_ (t n))
-       where
-
- open import LexicographicOrder
- open import GenericConvergentSequence
- open import ExtendedSumSearchable (fe)
- open import UF-InjectiveTypes (fe)
- open import SquashedSum (fe)
- open import UF-Embedding
-
- private
-  fe₀ = fe U₀ U₀
-
-  _◂_ : {w : ℕ∞} → (X / under) w → (X / under) w → U ̇
-  _◂_ {w} = extension.order fe X under (under-embedding fe₀) _<_ w
-
-  well-order-◂ : (w : ℕ∞) → is-well-order (_◂_ {w})
-  well-order-◂ w = extension.well-order fe X under (under-embedding fe₀) _<_ w o
-
-  top : (u : ℕ∞) → (X / under) u
-  top u (n , r) = t n
-
-  ist : (u : ℕ∞) → is-top _◂_ (top u)
-  ist u y ((n , r) , l) = i n (y (n , r)) l
-
-  _◃_ : Σ¹ X → Σ¹ X → U ̇
-  _◃_ = sum.order fe _≺_ _◂_ top ist
-
- order = _◃_
-
- well-order : is-well-order _◃_
- well-order = sum.well-order fe _≺_ _◂_ top ist (ℕ∞-ordinal fe₀) well-order-◂
-
- topped : has-top _◃_
- topped = sum.top-preservation fe _≺_ _◂_ top ist (∞ , ∞-top)
-
--}
 
 \end{code}

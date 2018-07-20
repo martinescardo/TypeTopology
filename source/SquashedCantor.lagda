@@ -400,7 +400,7 @@ Head-finite u φ = transport-finite (Head-Cons u φ)
 \end{code}
 
 Notice that the lemma γ in the following theorem is not defined by
-induction, but simply by cases Zero and succ n for the finiteness
+induction, but simply by cases zero and succ n for the finiteness
 witness:
 
 \begin{code}
