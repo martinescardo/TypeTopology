@@ -147,6 +147,8 @@ regarded as an element of ℕ∞ (a decreasing sequence), and the
 *partial* suffix, with Tail, which will be total when the prefix is
 finite.
 
+The Tail of α is defined when the Head of α is finite.
+
 We define Head by coinduction on ℕ∞, Tail directly, and Cons by
 coinduction on Cantor.
 
@@ -165,10 +167,14 @@ Head : Cantor → ℕ∞
 Head = ℕ∞-corec Head-step
 
 Head-step₀ : (α : Cantor) → head α ≡ ₀ → Head-step α ≡ inl *
-Head-step₀ α = ap (λ - → 𝟚-equality-cases (λ (r : - ≡ ₀) → inl *) (λ (r : - ≡ ₁) → inr (tail α)))
+Head-step₀ α = ap (λ - → 𝟚-equality-cases
+                           (λ (r : - ≡ ₀) → inl *)
+                           (λ (r : - ≡ ₁) → inr (tail α)))
 
 Head-step₁ : (α : Cantor) → head α ≡ ₁ → Head-step α ≡ inr (tail α)
-Head-step₁ α = ap (λ - → 𝟚-equality-cases (λ (r : - ≡ ₀) → inl *) (λ (r : - ≡ ₁) → inr (tail α)))
+Head-step₁ α = ap (λ - → 𝟚-equality-cases
+                           (λ (r : - ≡ ₀) → inl *)
+                           (λ (r : - ≡ ₁) → inr (tail α)))
 
 Head₀ : (α : Cantor) → head α ≡ ₀ → Head α ≡ Zero
 Head₀ α r = coalg-morphism-Zero
@@ -193,7 +199,7 @@ Tail₀ α (zero , r) = refl
 Tail₀ α (succ n , r) = 𝟘-elim (Zero-not-Succ ((r ∙ Head₀ (₀ ∶∶ α) refl)⁻¹))
 
 Tail₁ : (α : Cantor) (i : is-finite (Head (₁ ∶∶ α)))
-      → Tail (₁ ∶∶ α) i ≡ α ∘ (λ k → k ++ pr₁ i)
+      → Tail (₁ ∶∶ α) i ≡ α ∘ (λ k → k ++ size i)
 Tail₁ α (zero , r) = 𝟘-elim (Zero-not-Succ (r ∙ Head₁ (₁ ∶∶ α) refl))
 Tail₁ α (succ n , r) = refl
 
@@ -434,7 +440,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
                            ≡⟨ ap₂-Tail j (Cons₁ (under n) (φ ∘ t)) ⟩
                          Tail (₁ ∶∶ Cons (under n , φ ∘ t')) k
                            ≡⟨ Tail₁ (Cons (under n , φ ∘ t')) k ⟩
-                         Cons (under n , φ ∘ t') ∘ (λ l → l ++ pr₁ k)
+                         Cons (under n , φ ∘ t') ∘ (λ l → l ++ size k)
                            ≡⟨ ap (λ - → Cons (under n , φ ∘ t') ∘ (λ l → l ++ -)) k' ⟩
                          Cons (under n , φ ∘ t') ∘ (λ l → l ++ succ n)
                            ≡⟨ tail-Cons-under n (φ ∘ t') ⟩
@@ -457,7 +463,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
      j = transport (λ - → is-finite (Head -)) q (succ n , r)
      k : is-finite (Head (₁ ∶∶ Cons (under n , φ ∘ t')))
      k = transport (λ - → is-finite (Head -)) (Cons₁ (under n) (φ ∘ t)) j
-     k' : pr₁ k ≡ succ n
+     k' : size k ≡ succ n
      k' = under-lc(pr₂ k ∙ Head₁ (₁ ∶∶ Cons (under n , φ ∘ t')) refl ∙ ap Succ (Head-Cons (under n) (φ ∘ t')))
      p' : under n ≡ Head (Cons (under n , φ ∘ t'))
      p' = (Head-Cons (under n) (φ ∘ t'))⁻¹

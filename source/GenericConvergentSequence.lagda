@@ -400,6 +400,9 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
 is-finite : ℕ∞ → U₀ ̇
 is-finite u = Σ \(n : ℕ) → under n ≡ u
 
+size : {u : ℕ∞} → is-finite u → ℕ
+size (n , r) = n
+
 is-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 is-finite-is-prop = under-embedding
 
