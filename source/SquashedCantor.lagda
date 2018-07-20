@@ -26,7 +26,7 @@ open import GenericConvergentSequence
 open import UF-InjectiveTypes fe
 open import UF-Embedding
 open import UF-Retracts
-open import NaturalsAddition renaming (_+_ to _++_)
+open import NaturalsAddition renaming (_+_ to _∔_)
 open import SquashedSum fe
 open import CoNaturals fe
 open import Sequence fe renaming (head to head') renaming (tail to tail') renaming (_∶∶_ to _∶∶'_)
@@ -191,7 +191,7 @@ Tail is defined explicitly:
 \begin{code}
 
 Tail : (α : Cantor) → Cantor[ Head α ]
-Tail α (n , r) k = α (k ++ succ n)
+Tail α (n , r) k = α (k ∔ succ n)
 
 Tail₀ : (α : Cantor) (i : is-finite (Head (₀ ∶∶ α)))
       → Tail (₀ ∶∶ α) i ≡ α
@@ -199,7 +199,7 @@ Tail₀ α (zero , r) = refl
 Tail₀ α (succ n , r) = 𝟘-elim (Zero-not-Succ ((r ∙ Head₀ (₀ ∶∶ α) refl)⁻¹))
 
 Tail₁ : (α : Cantor) (i : is-finite (Head (₁ ∶∶ α)))
-      → Tail (₁ ∶∶ α) i ≡ α ∘ (λ k → k ++ size i)
+      → Tail (₁ ∶∶ α) i ≡ α ∘ (λ k → k ∔ size i)
 Tail₁ α (zero , r) = 𝟘-elim (Zero-not-Succ (r ∙ Head₁ (₁ ∶∶ α) refl))
 Tail₁ α (succ n , r) = refl
 
@@ -227,9 +227,9 @@ inverse Cons for ⟨Head,Tail⟩:
 \begin{code}
 
 head-step : D Cantor → 𝟚
-head-step (u , φ) =  𝟚-equality-cases
-                      (λ (z : is-Zero u) → head (φ (Zero-is-finite' fe₀ u z)))
-                      (λ (p : positive u) → ₁)
+head-step (u , φ) = 𝟚-equality-cases
+                     (λ (z : is-Zero u) → head (φ (Zero-is-finite' fe₀ u z)))
+                     (λ (p : positive u) → ₁)
 
 tail-step : D Cantor → D Cantor
 tail-step (u , φ) = 𝟚-equality-cases
@@ -240,15 +240,15 @@ tail-step (u , φ) = 𝟚-equality-cases
 Κ = seq-corec head-step tail-step
 
 head-Κ-Zero : (φ : Cantor[ Zero ])
-               → head (Κ (Zero , φ)) ≡ head (φ (Zero-is-finite))
+            → head (Κ (Zero , φ)) ≡ head (φ (Zero-is-finite))
 head-Κ-Zero φ = seq-corec-head
-                     head-step
-                     tail-step
-                     (Zero , φ) ∙ ap (λ - → head (φ -))
-                     (is-finite-is-prop fe₀ Zero _ _)
+                  head-step
+                  tail-step
+                  (Zero , φ) ∙ ap (λ - → head (φ -))
+                  (is-finite-is-prop fe₀ Zero _ _)
 
 tail-Κ-Zero : (φ : Cantor[ Zero ])
-               → tail (Κ (Zero , φ)) ≡ Κ (Zero , tail ∘ φ)
+            → tail (Κ (Zero , φ)) ≡ Κ (Zero , tail ∘ φ)
 tail-Κ-Zero φ = seq-corec-tail head-step tail-step (Zero , φ)
 
 Κ₀ : (φ : Cantor[ Zero ])
@@ -270,7 +270,7 @@ head-Κ-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
 head-Κ-Succ u φ = seq-corec-head head-step tail-step (Succ u , φ)
 
 to-Κ-≡ : ({u v} w : ℕ∞) (φ : Cantor[ w ])
-        (p : u ≡ v) {s : is-finite u → is-finite w} {t : is-finite v → is-finite w}
+         (p : u ≡ v) {s : is-finite u → is-finite w} {t : is-finite v → is-finite w}
         → Κ (u , φ ∘ s) ≡ Κ (v , φ ∘ t)
 to-Κ-≡ {u} w φ refl {s} {t} =
   ap (λ - → Κ (u , -))
@@ -308,8 +308,7 @@ to-Cons-≡ : ({u v} w : ℕ∞) (φ : Cantor[ w ])
           → Cons (u , φ ∘ s) ≡ Cons (v , φ ∘ t)
 to-Cons-≡ {u} {v} w φ = to-Κ-≡ {u} {v} w (λ i → ₀ ∶∶ φ i)
 
-Cons₀ : (φ : Cantor[ Zero ])
-      → Cons (Zero , φ) ≡ ₀ ∶∶ φ Zero-is-finite
+Cons₀ : (φ : Cantor[ Zero ]) → Cons (Zero , φ) ≡ ₀ ∶∶ φ Zero-is-finite
 Cons₀ φ = Κ₀ (λ i → ₀ ∶∶ φ i)
 
 Cons₁ : (u : ℕ∞) (φ : Cantor[ Succ u ])
@@ -328,27 +327,24 @@ Cons (under n , φ) we get the sequence φ (under-is-finite n):
 \begin{code}
 
 tail-Cons-under : (n : ℕ) (φ : Cantor[ under n ])
-    → Cons (under n , φ) ∘ (λ k → k ++ succ n) ≡ φ (under-is-finite n)
+                → Cons (under n , φ) ∘ (λ k → k ∔ succ n) ≡ φ (under-is-finite n)
 tail-Cons-under zero φ = ap tail (Cons₀ φ)
 tail-Cons-under (succ n) φ = γ
  where
-  IH : Cons (under n , φ ∘ is-finite-up (under n)) ∘ (λ k → k ++ succ n)
+  IH : Cons (under n , φ ∘ is-finite-up (under n)) ∘ (λ k → k ∔ succ n)
     ≡ φ (is-finite-up (under n) (under-is-finite n))
   IH = tail-Cons-under n (φ ∘ is-finite-up (under n))
-  p : Cons (under (succ n) , φ) ∘ (λ k → k ++ succ (succ n))
-   ≡ (Cons (under n , φ ∘ is-finite-up (under n))) ∘ (λ k → k ++ succ n)
-  p = ap (λ - → - ∘ (λ k → k ++ succ (succ n))) (Cons₁ (under n) φ)
-  γ : Cons (under (succ n) , φ) ∘ (λ k → k ++ succ (succ n))
+  p : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
+   ≡ (Cons (under n , φ ∘ is-finite-up (under n))) ∘ (λ k → k ∔ succ n)
+  p = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (under n) φ)
+  γ : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
    ≡ φ (under-is-finite (succ n))
   γ = p ∙ IH ∙ ap φ (is-finite-is-prop fe₀ (under (succ n)) _ _)
-
-Snoc : Cantor → D Cantor
-Snoc α = (Head α , Tail α)
 
 \end{code}
 
 The following can be proved by coinduction on ℕ∞, but it is more
-direct to prove it using density, which means it is enough to checl
+direct to prove it using density, which means it is enough to check
 the cases u = under n (which we do by induction on ℕ) and u = ∞ (which
 we do using the fact that ∞ is the unique fixed point of Succ).
 
@@ -391,6 +387,7 @@ Head-Cons = λ u φ → ap (λ - → - φ) (γ u)
         Succ (Head (Cons (∞ , φ ∘ is-finite-down ∞ ∘ is-finite-up ∞)))
           ≡⟨ ap (Succ ∘ Head) (to-Cons-≡ ∞ φ refl {is-finite-down ∞ ∘ is-finite-up ∞} {id}) ⟩
         Succ (Head (Cons (∞ , φ))) ∎
+
   γ : (u : ℕ∞) → (λ φ → Head (Cons (u , φ))) ≡ (λ φ → u)
   γ = ℕ∞-ddensity fe₀
         (λ {u} → Π-separated fe₀ (λ φ → ℕ∞-separated fe₀))
@@ -440,9 +437,9 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
                            ≡⟨ ap₂-Tail j (Cons₁ (under n) (φ ∘ t)) ⟩
                          Tail (₁ ∶∶ Cons (under n , φ ∘ t')) k
                            ≡⟨ Tail₁ (Cons (under n , φ ∘ t')) k ⟩
-                         Cons (under n , φ ∘ t') ∘ (λ l → l ++ size k)
-                           ≡⟨ ap (λ - → Cons (under n , φ ∘ t') ∘ (λ l → l ++ -)) k' ⟩
-                         Cons (under n , φ ∘ t') ∘ (λ l → l ++ succ n)
+                         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ size k)
+                           ≡⟨ ap (λ - → Cons (under n , φ ∘ t') ∘ (λ l → l ∔ -)) k' ⟩
+                         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ succ n)
                            ≡⟨ tail-Cons-under n (φ ∘ t') ⟩
                          φ (t' (under-is-finite n))
                            ≡⟨ ap φ (is-finite-is-prop fe₀ u _ _) ⟩
@@ -464,9 +461,9 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
      k : is-finite (Head (₁ ∶∶ Cons (under n , φ ∘ t')))
      k = transport (λ - → is-finite (Head -)) (Cons₁ (under n) (φ ∘ t)) j
      k' : size k ≡ succ n
-     k' = under-lc(pr₂ k ∙ Head₁ (₁ ∶∶ Cons (under n , φ ∘ t')) refl ∙ ap Succ (Head-Cons (under n) (φ ∘ t')))
-     p' : under n ≡ Head (Cons (under n , φ ∘ t'))
-     p' = (Head-Cons (under n) (φ ∘ t'))⁻¹
+     k' = under-lc(pr₂ k ∙
+                   Head₁ (₁ ∶∶ Cons (under n , φ ∘ t')) refl ∙
+                   ap Succ (Head-Cons (under n) (φ ∘ t')))
 
 Tail-Cons' : (u : ℕ∞) (φ : Cantor[ u ])
           → transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ))) ≡ φ
@@ -477,6 +474,15 @@ Tail-Cons' u φ = r ∙ s
   r = ap (transport-Cantor (Head-Cons u φ)) (Tail-Cons u φ)
   s : transport-Cantor (Head-Cons u φ) (φ ∘ Head-finite u φ) ≡ φ
   s = back-tpc φ (Head-Cons u φ)
+
+\end{code}
+
+Hence Cons is left invertible, or has a section:
+
+\begin{code}
+
+Snoc : Cantor → D Cantor
+Snoc α = (Head α , Tail α)
 
 Snoc-Cons : (d : D Cantor) → Snoc (Cons d) ≡ d
 Snoc-Cons (u , φ) = to-Σ-≡'' (Head-Cons u φ , Tail-Cons' u φ)
@@ -490,7 +496,7 @@ D-Cantor-retract-of-Cantor = Snoc , Cons , Snoc-Cons
 
 We actually have an equivalence, not just a retraction (as a
 consequence of Lambek's Lemma - see unfinished code below), but we
-delay a proof of this as it is not needed for our immediate purposes
+delay a proof of this as it is not needed for our immediate purpose
 of showing that our searchable ordinals are totally separated.
 
 \begin{code}
@@ -540,8 +546,8 @@ pair-seq-retract {U} {X} fe = retracts-compose (retracts-compose c d) b
  where
   f : Cantor → Cantor + Cantor
   f α = 𝟚-equality-cases
-          (λ (l : α 0 ≡ ₀) → inl (tail α))
-          (λ (r : α 0 ≡ ₁) → inr (tail α))
+         (λ (l : α 0 ≡ ₀) → inl (tail α))
+         (λ (r : α 0 ≡ ₁) → inr (tail α))
   g : Cantor + Cantor → Cantor
   g (inl α) = ₀ ∶∶ α
   g (inr β) = ₁ ∶∶ β
