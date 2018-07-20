@@ -34,7 +34,7 @@ pdrc : ∀ {U V} {X : U ̇} {Y : V ̇} → X → retract Y of (X → Y)
 pdrc x = ((λ f → f x) , ((λ y x → y) , λ y → refl))
 
 retracts-of-closed-under-exponentials : ∀ {U V W} {X : U ̇} {Y : V ̇} {B : W ̇} → funext W W
-                                      → X → retract B of X → retract B of Y → retract B of (X → Y)
+                                     → X → retract B of X → retract B of Y → retract B of (X → Y)
 retracts-of-closed-under-exponentials {U} {V} {W} {X} {Y} {B} fe x rbx rby = rbxy
  where
   rbbxy : retract (B → B) of (X → Y)
@@ -43,3 +43,10 @@ retracts-of-closed-under-exponentials {U} {V} {W} {X} {Y} {B} fe x rbx rby = rbx
   rbxy = retracts-compose rbbxy (pdrc (pr₁ rbx x))
 
 \end{code}
+
+TODO. Several retractions here are actually equivalences. So some code
+should be generalized and moved to an equivalences module. Similarly,
+some retracts proved here are also shown as equivalences in other
+modules, and hence there is some amount of repetition that should be
+removed. This is the result of (1) merging initially independent
+developments, and (2) work over many years with uncontrolled growth.

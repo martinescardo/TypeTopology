@@ -23,6 +23,9 @@ is-equiv f = has-section f × has-retraction f
 _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
+equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
+equiv-to-fun = pr₁
+
 ideq : ∀ {U} (X : U ̇) → X ≃ X
 ideq X = id , ((id , λ x → refl) , (id , λ x → refl))
 

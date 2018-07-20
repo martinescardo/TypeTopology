@@ -1,5 +1,7 @@
 Martin Escardo, 2012
 
+Expanded on demand whenever a general equivalence is needed.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -153,12 +155,6 @@ equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
        lemma₁ : h'(f' y') ≡ y'
        lemma₁ = hf' y'
 
-\end{code}
-
-March 2018
-
-\begin{code}
-
 +comm : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X + Y) ≃ (Y + X)
 +comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
   where
@@ -216,6 +212,27 @@ March 2018
     η (inl (inl x)) = refl
     η (inl (inr x)) = refl
     η (inr x)       = refl
+
++-cong : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
+      → X ≃ A → Y ≃ B → X + Y ≃ A + B
++-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
+ F , (G , E) , (G' , D)
+ where
+  F : X + Y → A + B
+  F (inl x) = inl (f x)
+  F (inr y) = inr (φ y)
+  G : A + B → X + Y
+  G (inl a) = inl (g a)
+  G (inr b) = inr (γ b)
+  G' : A + B → X + Y
+  G' (inl a) = inl (g' a)
+  G' (inr b) = inr (γ' b)
+  E : (c : A + B) → F (G c) ≡ c
+  E (inl a) = ap inl (e a)
+  E (inr b) = ap inr (ε b)
+  D : (z : X + Y) → G' (F z) ≡ z
+  D (inl x) = ap inl (d x)
+  D (inr y) = ap inr (δ y)
 
 ×𝟘 : ∀ {U V W} {X : U ̇} → 𝟘 ≃ X × 𝟘
 ×𝟘 {U} {V} {W} {X} = f , (g , ε) , (g , η)
@@ -277,4 +294,3 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     η (x , y) = refl
 
 \end{code}
-

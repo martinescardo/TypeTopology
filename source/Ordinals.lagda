@@ -143,10 +143,7 @@ defined above:
 \begin{code}
 
 _+º_ : Ordᵀ → Ordᵀ → Ordᵀ
-τ +º υ = ∑ {𝟚º} φ
- where
-  φ : 𝟙 + 𝟙 → Ordᵀ
-  φ = cases (λ _ → τ) (λ _ → υ)
+τ +º υ = ∑ {𝟚º} (cases (λ _ → τ) (λ _ → υ))
 
 _×º_ : Ordᵀ → Ordᵀ → Ordᵀ
 τ ×º υ = ∑ {τ} \(_ : ⟪ τ ⟫) → υ
@@ -232,21 +229,21 @@ usearchable τ = searchable ⟪ τ ⟫
              → usearchable (∑ {τ} υ)
 ∑-usearchable τ υ = Σ-searchable
 
-+usearchable : (τ υ : Ordᵀ)
++º-usearchable : (τ υ : Ordᵀ)
               → usearchable τ
               → usearchable υ
               → usearchable (τ +º υ)
-+usearchable τ υ ε δ = ∑-usearchable 𝟚º (cases (λ _ → τ) (λ _ → υ)) 𝟚-usearchable g
++º-usearchable τ υ ε δ = ∑-usearchable 𝟚º (cases (λ _ → τ) (λ _ → υ)) 𝟚-usearchable g
  where
   g : (x : 𝟙 + 𝟙) → usearchable (cases (λ _ → τ) (λ _ → υ) x)
   g (inl *) = ε
   g (inr *) = δ
 
-×usearchable : (τ υ : Ordᵀ)
+×º-usearchable : (τ υ : Ordᵀ)
               → usearchable τ
               → usearchable υ
               → usearchable (τ ×º υ)
-×usearchable τ υ ε δ = ∑-usearchable τ (λ _ → υ) ε (λ _ → δ)
+×º-usearchable τ υ ε δ = ∑-usearchable τ (λ _ → υ) ε (λ _ → δ)
 
 ∑¹-usearchable : (τ : ℕ → Ordᵀ)
                → ((n : ℕ) → usearchable (τ n))
@@ -298,7 +295,90 @@ udiscrete τ = discrete ⟪ τ ⟫
 
 \end{code}
 
-TODO. Show that these constructions preserver total separatedness. A
-proof method is to show that it preserves a stronger condition
+It is no use for a type to be searchable if it doesn't have enough
+functions into the booleans to separate the points, that is, if it
+fails to be totally separated.
+
+Our proof method is to show that it preserves a stronger condition
 (interesting on its own right), namely being a retract of the cantor
 type (ℕ → 𝟚), as retractions preserve total separatedness.
+
+A direct proof doesn't seem to be possible, as in general sums don't
+preserve total separatedness, as illustrated by a simple example in
+the module FailureOfTotalSeparatedness.
+
+\begin{code}
+
+open import SquashedCantor fe
+open import UF-Retracts
+open import UF-Retracts-FunExt
+
+Cantor-retract : Ordᵀ → U ̇
+Cantor-retract τ = retract ⟪ τ ⟫ of Cantor
+
+𝟙-Cantor-retract : Cantor-retract 𝟙º
+𝟙-Cantor-retract = (λ _ → *) , (λ _ → λ n → ₀) , (λ x → 𝟙-is-prop * x)
+
+ℕ∞-Cantor-retract : Cantor-retract ℕ∞º
+ℕ∞-Cantor-retract = ℕ∞-retract-of-Cantor fe₀
+
+\end{code}
+
+The complication of the following proof is that the ordinal 𝟚º has
+underlying set 𝟙+𝟙 rather than 𝟚, and that (hence) we defined the
+ordinal +º as a sum indexed by 𝟙+𝟙 rather than as a co-product. This
+saved lots of code elsewhere, but adds labour here (and in some helper
+lemmas/constructions that we added in other modules for this
+purpose). Notice that +' is the sum indexed by 𝟚, defined in the
+module SpartanMLTT.
+
+\begin{code}
+
++º-Cantor-retract : (τ ν : Ordᵀ)
+                 → Cantor-retract τ
+                 → Cantor-retract ν
+                 → Cantor-retract (τ +º ν)
++º-Cantor-retract τ ν ρ σ = retracts-compose d e
+ where
+  a : retract (Cantor +' Cantor) of (Cantor + Cantor)
+  a = +'-retract-of-+
+  b : retract (Cantor +' Cantor) of Cantor
+  b = retracts-compose +-Cantor-retract a
+  c : retract ⟪ τ ⟫ +' ⟪ ν ⟫ of (Cantor +' Cantor)
+  c = +'-retract ρ σ
+  d : retract ⟪ τ ⟫ +' ⟪ ν ⟫ of Cantor
+  d = retracts-compose b c
+  e : retract ⟪ τ +º ν ⟫ of (⟪ τ ⟫ +' ⟪ ν ⟫)
+  e = transport (λ - → retract ⟪ τ +º ν ⟫ of (Σ -)) (dfunext (fe U₀ (U₀ ′)) l) h
+   where
+    f : 𝟚 → 𝟙 + 𝟙
+    f = 𝟚-cases (inl *) (inr *)
+    g : 𝟙 + 𝟙 → 𝟚
+    g = cases (λ x → ₀) (λ x → ₁)
+    fg : (x : 𝟙 + 𝟙) → f (g x) ≡ x
+    fg (inl *) = ap inl refl
+    fg (inr *) = ap inr refl
+    h : retract ⟪ τ +º ν ⟫ of (Σ \(i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → ν) (f i) ⟫)
+    h = Σ-reindex-retract f (g , fg)
+    l : (i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → ν) (f i) ⟫
+                ≡ 𝟚-cases ⟪ τ ⟫ ⟪ ν ⟫ i
+    l ₀ = refl
+    l ₁ = refl
+
+×º-Cantor-retract : (τ ν : Ordᵀ)
+                 → Cantor-retract τ
+                 → Cantor-retract ν
+                 → Cantor-retract (τ ×º ν)
+×º-Cantor-retract τ ν ρ σ = retracts-compose a b
+ where
+  a : retract (Cantor × Cantor) of Cantor
+  a = pair-seq-retract fe₀
+  b : retract ⟪ τ ⟫ × ⟪ ν ⟫ of (Cantor × Cantor)
+  b = ×-retract ρ σ
+
+∑¹-Cantor-retract : (τ : ℕ → Ordᵀ)
+                 → ((n : ℕ) → Cantor-retract (τ n))
+                 → Cantor-retract (∑¹ τ)
+∑¹-Cantor-retract τ = squashed-Cantor-retract (λ n → ⟪ τ n ⟫)
+
+\end{code}

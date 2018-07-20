@@ -497,6 +497,54 @@ squashed-Cantor-retract {U} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
 
 \end{code}
 
+We also need the following retractions (the first with X=ℕ):
+
+\begin{code}
+
+pair-seq-retract : ∀ {U} {X : U ̇} → funext U₀ U
+                → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
+pair-seq-retract {U} {X} fe = retracts-compose (retracts-compose c d) b
+ where
+  open import BinaryNaturals
+  open import UF-Retracts-FunExt
+  a : retract (ℕ → X) of (𝔹 → X)
+  a = crpe fe (unary , binary , unary-binary)
+  b : retract ((ℕ → X) × (ℕ → X)) of ((𝔹 → X) × (𝔹 → X))
+  b = ×-retract a a
+  c : retract (𝔹 → X) of (ℕ → X)
+  c = crpe fe (binary , unary , binary-unary)
+  d : retract ((𝔹 → X) × (𝔹 → X)) of (𝔹 → X)
+  d = (f , g , fg)
+   where
+    f : (𝔹 → X) → (𝔹 → X) × (𝔹 → X)
+    f α = (α ∘ l , α ∘ r)
+    g : (𝔹 → X) × (𝔹 → X) → 𝔹 → X
+    g (α , β) zero = α zero -- irrelevant choice
+    g (α , β) (l b) = α b
+    g (α , β) (r b) = β b
+    fg : (γ : (𝔹 → X) × (𝔹 → X)) → f (g γ) ≡ γ
+    fg (α , β) = refl
+
++-Cantor-retract : retract (Cantor + Cantor) of Cantor
++-Cantor-retract = f , g , fg
+ where
+  f : Cantor → Cantor + Cantor
+  f α = 𝟚-equality-cases
+          (λ (l : α 0 ≡ ₀) → inl (tail α))
+          (λ (r : α 0 ≡ ₁) → inr (tail α))
+  g : Cantor + Cantor → Cantor
+  g (inl α) = ₀ ∶∶ α
+  g (inr β) = ₁ ∶∶ β
+  fg : (z : Cantor + Cantor) → f (g z) ≡ z
+  fg (inl α) = ap inl refl
+  fg (inr β) = ap inr refl
+
+\end{code}
+
+The last retraction is actually an equivalence, and the second last
+can be made into one, using ℕ+ℕ≃ℕ, proved in the module
+BinarySequences (which is not needed for the moment).
+
 End for the moment.
 
 TODO. The corecursion principle for D, which is not needed for the

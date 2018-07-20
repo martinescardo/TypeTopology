@@ -313,6 +313,9 @@ The following can also be considered as a special case of Σ (indexed by the typ
    h : (x : X) → f x ≡ g x
    h x = t x (λ p → e(P x p))
 
+Cantor-totally-separated : funext U₀ U₀ → totally-separated (ℕ → 𝟚)
+Cantor-totally-separated fe = Π-totally-separated fe (λ n → 𝟚-totally-separated)
+
 \end{code}
 
 Closure under /-extensions (see the module InjectiveTypes). Notice

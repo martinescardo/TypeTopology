@@ -17,6 +17,11 @@ module SearchableOrdinals (fe : ∀ U V → funext U V) where
 open import SpartanMLTT
 open import SquashedSum fe
 open import SearchableTypes
+open import TotallySeparated
+open import UF-Retracts
+
+fe₀ : funext U₀ U₀
+fe₀ = fe U₀ U₀
 
 \end{code}
 
@@ -58,13 +63,45 @@ ord (Add α β) = ord α +º ord β
 ord (Mul α β) = ord α ×º  ord β
 ord (Sum1 α)  = ∑¹ \(i : ℕ) → ord(α i)
 
-sord : (α : OE) → usearchable(ord α)
+\end{code}
+
+The underlying sets  of such ordinals are searchable:
+
+\begin{code}
+sord : (α : OE) → searchable ⟪ ord α ⟫
 sord       One = 𝟙-usearchable
-sord (Add α β) = +usearchable (ord α) (ord β) (sord α) (sord β)
-sord (Mul α β) = ×usearchable (ord α) (ord β) (sord α) (sord β)
+sord (Add α β) = +º-usearchable (ord α) (ord β) (sord α) (sord β)
+sord (Mul α β) = ×º-usearchable (ord α) (ord β) (sord α) (sord β)
 sord (Sum1 α)  = ∑¹-usearchable (ord ∘ α) (λ n → sord (α n))
 
 \end{code}
+
+Completed 20th July 2018:
+They are retracts of the Cantor type (ℕ → 𝟚):
+
+\begin{code}
+cord : (α : OE) → retract  ⟪ ord α ⟫ of (ℕ → 𝟚)
+cord       One = 𝟙-Cantor-retract
+cord (Add α β) = +º-Cantor-retract (ord α) (ord β) (cord α) (cord β)
+cord (Mul α β) = ×º-Cantor-retract (ord α) (ord β) (cord α) (cord β)
+cord (Sum1 α)  = ∑¹-Cantor-retract (ord ∘ α) (λ n → cord (α n))
+
+\end{code}
+
+And hence they are totally separated:
+
+\begin{code}
+
+tsord : (α : OE) → totally-separated ⟪ ord α ⟫
+tsord α = retract-totally-separated (cord α) (Cantor-totally-separated fe₀)
+
+\end{code}
+
+Without total separatedness (enough functions into the type 𝟚 of
+booleans), searchability wouldn't be an interesting property. It is
+not possible to prove total separated directly, because this property
+is not closed under Σ, which is used to define +º, ×º and Σ₁, as shown
+in the module FailureOfTotalSeparatedness.
 
 Classically, the squashed sum is the ordinal sum plus 1, and we have a
 semantics with this interpretation, which gives ordinals with discrete

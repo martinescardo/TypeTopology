@@ -62,9 +62,65 @@ retracts-compose : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
 retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
                                                     (s ∘ s' , λ z → ap r' (rs (s' z)) ∙ rs' z)
 
-\end{code}
 
-\begin{code}
+×-retract : ∀ {U V W T} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+           → retract X of A
+           → retract Y of B
+           → retract (X × Y) of (A × B)
+×-retract {U} {V} {W} {T} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) = f , g , fg
+ where
+  f : A × B → X × Y
+  f (a , b) = (r a , t b)
+  g : X × Y → A × B
+  g (x , y) = s x , u y
+  fg : (z : X × Y) → f (g z) ≡ z
+  fg (x , y) = ×-≡ (rs x) (tu y)
+
++-retract : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
+           → retract X of A
+           → retract Y of B
+           → retract (X + Y) of (A + B)
++-retract {U} {V} {W} {T} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) = f , g , fg
+ where
+  f : A + B → X + Y
+  f (inl a) = inl(r a)
+  f (inr b) = inr(t b)
+  g : X + Y → A + B
+  g (inl x) = inl(s x)
+  g (inr y) = inr(u y)
+  fg : (p : X + Y) → f (g p) ≡ p
+  fg (inl x) = ap inl (rs x)
+  fg (inr y) = ap inr (tu y)
+
++'-retract-of-+ : ∀ {U} {X Y : U ̇}
+           → retract (X +' Y) of (X + Y)
++'-retract-of-+ {U} {X} {Y} = f , g , fg
+ where
+  f : X + Y → X +' Y
+  f (inl x) = ₀ , x
+  f (inr y) = ₁ , y
+  g : X +' Y → X + Y
+  g (₀ , x) = inl x
+  g (₁ , y) = inr y
+  fg : (z : X +' Y) → f (g z) ≡ z
+  fg (₀ , x) = refl
+  fg (₁ , y) = refl
+
++'-retract : ∀ {U V} {X Y : U ̇} {A B : V ̇}
+           → retract X of A
+           → retract Y of B
+           → retract (X +' Y) of (A +' B)
++'-retract {U} {V} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) = f , g , fg
+ where
+  f : A +' B → X +' Y
+  f (₀ , a) = ₀ , r a
+  f (₁ , b) = ₁ , t b
+  g : X +' Y → A +' B
+  g (₀ , x) = ₀ , s x
+  g (₁ , y) = ₁ , u y
+  fg : (p : X +' Y) → f (g p) ≡ p
+  fg (₀ , x) = ap (λ - → (₀ , -)) (rs x)
+  fg (₁ , y) = ap (λ - → (₁ , -)) (tu y)
 
 Σ-reindex-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
           → has-section g → retract (Σ A) of (Σ \(y : Y) → A (g y))
@@ -80,18 +136,12 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
     p : transport A (gf x) (back-transport A (gf x) a) ≡ a
     p = back-and-forth-transport (gf x)
 
-\end{code}
-
-Added 18th July 2018. (Completely routine.)
-
-\begin{code}
-
 Σ-retract : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
           → ((x : X) → retract (A x) of (B x))
           → retract (Σ A) of (Σ B)
 Σ-retract {U} {V} {W} {X} A B ρ = r , s , rs
  where
-  R : (x : X) → B x → A x 
+  R : (x : X) → B x → A x
   R x = pr₁(ρ x)
   S : (x : X) → A x → B x
   S x = pr₁(pr₂(ρ x))
@@ -104,5 +154,16 @@ Added 18th July 2018. (Completely routine.)
   rs : (σ : Σ A) → r (s σ) ≡ σ
   rs (x , a) = ap (λ - → (x , -)) (RS x a)
 
+{-
+𝟚-retract : retract 𝟚 of 𝟙 + 𝟙
+𝟚-retract =
+-}
+
 \end{code}
 
+TODO. Several retractions here are actually equivalences. So some code
+should be generalized and moved to an equivalences module. Similarly,
+some retracts proved here are also shown as equivalences in other
+modules, and hence there is some amount of repetition that should be
+removed. This is the result of (1) merging initially independent
+developments, and (2) work over many years with uncontrolled growth.

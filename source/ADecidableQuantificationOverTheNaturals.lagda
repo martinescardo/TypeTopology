@@ -112,65 +112,70 @@ Some examples:
 
 \begin{code}
 
-to-ℕ : ∀ {U} {A : U ̇} → decidable A → ℕ
-to-ℕ (inl _) = 0
-to-ℕ (inr _) = 1
+module examples where
 
--- 0 means that (n : ℕ) → p(under n) ≡ ₁
--- 1 means that ¬((n : ℕ) → p(under n) ≡ ₁)
-eval : (ℕ∞ → 𝟚) → ℕ
-eval p = to-ℕ (Theorem-8·2 p)
-
-p₀ : ℕ∞ → 𝟚
-p₀ _ = ₀
-
-p₁ : ℕ∞ → 𝟚
-p₁ _ = ₁
-
--- If the first boolean is less than or equal to the second#
--- then it returns ₁; otherwise, it returns ₀.
-_<=_ : 𝟚 → 𝟚 → 𝟚
-₀ <= y = ₁
-₁ <= ₀ = ₀
-₁ <= ₁ = ₁
-
-{- -- Changed by Martin Escardo 13 September 2017 as this doesn't come from a case split:
-₀ <= _ = ₁
-_ <= ₁ = ₁
-_ <= _ = ₀
--}
-
--- If the two booleans are equal then it returns ₁;
--- otherwise, it returns ₀.
-_==_ : 𝟚 → 𝟚 → 𝟚
-₀ == ₀ = ₁
-₀ == ₁ = ₀
-₁ == ₀ = ₀
-₁ == ₁ = ₁
-
-{- -- Changed by Martin Escardo 13 September 2017 as this doesn't come from a case split:
-₀ == ₀ = ₁
-₁ == ₁ = ₁
-_ == _ = ₀
--}
-
-p₂ : ℕ∞ → 𝟚
-p₂ (α , _) = α 10 <= α 1
-
-p₃ : ℕ∞ → 𝟚
-p₃ (α , _) = α 0 <= α 1
-
-p₄ : ℕ∞ → 𝟚
-p₄ (α , _) = α 5 == α 100
-
-to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p(under n) ≡ ₁) → (p(under 17) ≡ ₁) + ℕ
-to-something p (inl f) = inl (f 17)
-to-something p (inr _) = inr 1070
-
-eval1 : (p : ℕ∞ → 𝟚) → (p(under 17) ≡ ₁) + ℕ
-eval1 p = to-something p (Theorem-8·2 p)
+    to-ℕ : ∀ {U} {A : U ̇} → decidable A → ℕ
+    to-ℕ (inl _) = 0
+    to-ℕ (inr _) = 1
 
 \end{code}
 
-Despite the fact that we use function extensionality, eval pi
-evaluates to a numeral for i=0,...,4.
+    0 means that (n : ℕ) → p(under n) ≡ ₁
+    1 means that ¬((n : ℕ) → p(under n) ≡ ₁)
+
+\begin{code}
+
+    eval : (ℕ∞ → 𝟚) → ℕ
+    eval p = to-ℕ (Theorem-8·2 p)
+
+    p₀ : ℕ∞ → 𝟚
+    p₀ _ = ₀
+
+    p₁ : ℕ∞ → 𝟚
+    p₁ _ = ₁
+
+\end{code}
+
+    If the first boolean is less than or equal to the second
+    then it has value ₁; otherwise, it has value ₀.
+
+\begin{code}
+
+    _<=_ : 𝟚 → 𝟚 → 𝟚
+    ₀ <= y = ₁
+    ₁ <= ₀ = ₀
+    ₁ <= ₁ = ₁
+
+\end{code}
+
+    If the two booleans are equal then it has value ₁;
+    otherwise, it has value ₀.
+
+\begin{code}
+
+    _==_ : 𝟚 → 𝟚 → 𝟚
+    ₀ == ₀ = ₁
+    ₀ == ₁ = ₀
+    ₁ == ₀ = ₀
+    ₁ == ₁ = ₁
+
+    p₂ : ℕ∞ → 𝟚
+    p₂ (α , _) = α 10 <= α 1
+
+    p₃ : ℕ∞ → 𝟚
+    p₃ (α , _) = α 0 <= α 1
+
+    p₄ : ℕ∞ → 𝟚
+    p₄ (α , _) = α 5 == α 100
+
+    to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p(under n) ≡ ₁) → (p(under 17) ≡ ₁) + ℕ
+    to-something p (inl f) = inl (f 17)
+    to-something p (inr _) = inr 1070
+
+    eval1 : (p : ℕ∞ → 𝟚) → (p(under 17) ≡ ₁) + ℕ
+    eval1 p = to-something p (Theorem-8·2 p)
+
+\end{code}
+
+    Despite the fact that we use function extensionality, eval pi
+    evaluates to a numeral for i=0,...,4.

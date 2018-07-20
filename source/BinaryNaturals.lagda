@@ -15,7 +15,7 @@ equivalence ℕ × ℕ ≃ ℕ.
 
 module BinaryNaturals where
 
-open import SpartanMLTT hiding (_+_)
+open import SpartanMLTT renaming (_+_ to _∔_)
 open import UF-Equiv
 open import UF-Base
 
@@ -144,38 +144,38 @@ The functions unary and binary are mutually inverse:
 
 \begin{code}
 
-unarybinary : ∀ n → unary(binary n) ≡ n
-unarybinary zero    = refl
-unarybinary(succ n) = g
+unary-binary : ∀ n → unary(binary n) ≡ n
+unary-binary zero    = refl
+unary-binary(succ n) = g
  where
   IH : unary(binary n) ≡ n
-  IH = unarybinary n
+  IH = unary-binary n
   a : succ(unary(binary n)) ≡ succ n
   a = ap succ IH
   g : unary(Succ(binary n)) ≡ succ n
   g = sdiagram(binary n) ∙ a
 
-binaryunary : ∀ m → binary(unary m) ≡ m
-binaryunary zero = refl
-binaryunary(l m) = g
+binary-unary : ∀ m → binary(unary m) ≡ m
+binary-unary zero = refl
+binary-unary(l m) = g
  where
   IH : binary(unary m) ≡ m
-  IH = binaryunary m
+  IH = binary-unary m
   a : l(binary(unary m)) ≡ l m
   a = ap l IH
   g : binary(unary(l m)) ≡ l m
   g = ldiagram(unary m) ∙ a
-binaryunary(r m) = g
+binary-unary(r m) = g
  where
   IH : binary(unary m) ≡ m
-  IH = binaryunary m
+  IH = binary-unary m
   a : r(binary(unary m)) ≡ r m
   a = ap r IH
   g : binary(unary(r m)) ≡ r m
   g = rdiagram(unary m) ∙ a
 
-binary-unary-equivalence : 𝔹 ≃ ℕ
-binary-unary-equivalence = unary , (binary , unarybinary) , (binary , binaryunary)
+binary-equiv : 𝔹 ≃ ℕ
+binary-equiv = unary , (binary , unary-binary) , (binary , binary-unary)
 
 \end{code}
 
@@ -200,7 +200,7 @@ unary-induction-on-𝔹 {U} {B} base step = g
   b : ∀ m → B(binary(unary m))
   b m = a (unary m)
   g : ∀ m → B m
-  g m = transport B (binaryunary m) (b m)
+  g m = transport B (binary-unary m) (b m)
 
 binary-induction-on-ℕ : ∀ {U} {A : ℕ → U ̇}
           → A zero
@@ -222,7 +222,7 @@ binary-induction-on-ℕ {U} {A} base stepl stepr = g
   a : ∀ n → A(unary(binary n))
   a n = b (binary n)
   g : ∀ n → A n
-  g n = transport A (unarybinary n) (a n)
+  g n = transport A (unary-binary n) (a n)
 
 \end{code}
 
@@ -510,7 +510,7 @@ pair'-lemma (l b) = γ
 pair'-lemma (r b) = γ
  where
   p : r (binary (unary b)) ≡ r b
-  p = ap r (binaryunary b)
+  p = ap r (binary-unary b)
   q : pair' zero (succ(unary b)) ≡ r b
   q = p
   γ : pair' zero (unary (Succ b)) ≡ r b
@@ -519,34 +519,111 @@ pair'-lemma (r b) = γ
 pair : ℕ × ℕ → ℕ
 pair (n , k) = unary(pair' n k)
 
+first second : ℕ → ℕ
+first = first' ∘ binary
+second = unary ∘ second' ∘ binary
+
+first-pair : (n k : ℕ) → first (unary(pair' n k)) ≡ n
+first-pair n k = back-transport
+                  (λ - → first' - ≡ n)
+                  (binary-unary (pair' n k))
+                  (first'-lemma n k)
+
+second-pair : (n k : ℕ) → second (pair (n , k)) ≡ k
+second-pair n k = back-transport
+                   (λ - → unary (second' -) ≡ k)
+                   (binary-unary (pair' n k))
+                   (ap unary (second'-lemma n k) ∙ unary-binary k)
+
 riap : ℕ → ℕ × ℕ
-riap m = (first' (binary m) , unary(second'(binary m)))
+riap m = (first m , second m)
 
 pair-riap : (m : ℕ) → pair(riap m) ≡ m
-pair-riap m = p
- where
-  p : unary (pair' (first' (binary m)) (unary (second' (binary m)))) ≡ m
-  p = ap unary (pair'-lemma (binary m)) ∙ unarybinary m
+pair-riap m = ap unary (pair'-lemma (binary m)) ∙ unary-binary m
 
 riap-pair : (z : ℕ × ℕ) → riap(pair z) ≡ z
-riap-pair (n , k) = ×-≡ a b
- where
-  p : first' (pair' n k) ≡ n
-  p = first'-lemma n k
-  a : first' (binary (unary(pair' n k))) ≡ n
-  a = back-transport (λ - → first' - ≡ n) (binaryunary (pair' n k)) p
-  s : second' (pair' n k) ≡ binary k
-  s = second'-lemma n k
-  q : unary (second' (pair' n k)) ≡ k
-  q = ap unary s ∙ unarybinary k
-  b : unary (second' (binary ( unary(pair' n k)))) ≡ k
-  b = back-transport (λ - → unary (second' -) ≡ k) (binaryunary (pair' n k)) q
+riap-pair (n , k) = ×-≡ (first-pair n k) (second-pair n k)
 
 pairing : ℕ × ℕ ≃ ℕ
 pairing = pair , ((riap , pair-riap) , (riap , riap-pair))
 
 \end{code}
 
+We now show that ℕ + ℕ ≃ ℕ (July 2018).
+
+\begin{code}
+
+ℕ-plus-𝟙 : ℕ ∔ 𝟙 ≃ ℕ
+ℕ-plus-𝟙 = f , (g , fg) , (g , gf)
+ where
+  f : ℕ ∔ 𝟙 {U₀} → ℕ
+  f (inl n) = succ n
+  f (inr *) = zero
+  g : ℕ → ℕ ∔ 𝟙
+  g zero = inr *
+  g (succ n) = inl n
+  fg : (n : ℕ) → f (g n) ≡ n
+  fg zero = refl
+  fg (succ n) = refl
+  gf : (z : ℕ ∔ 𝟙) → g (f z) ≡ z
+  gf (inl n) = refl
+  gf (inr *) = refl
+
+two-𝔹-plus-𝟙 : 𝔹 ∔ 𝔹 ∔ 𝟙 ≃ 𝔹
+two-𝔹-plus-𝟙 = f , (g , fg) , (g , gf)
+ where
+  f : 𝔹 ∔ 𝔹 ∔ 𝟙 {U₀} → 𝔹
+  f (inl b) = l b
+  f (inr (inl b)) = r b
+  f (inr (inr *)) = zero
+  g : 𝔹 → 𝔹 ∔ 𝔹 ∔ 𝟙
+  g zero = inr (inr *)
+  g (l b) = inl b
+  g (r b) = inr (inl b)
+  fg : (b : 𝔹) → f (g b) ≡ b
+  fg zero = refl
+  fg (l b) = refl
+  fg (r b) = refl
+  gf : (z : 𝔹 ∔ 𝔹 ∔ 𝟙) → g (f z) ≡ z
+  gf (inl b) = refl
+  gf (inr (inl b)) = refl
+  gf (inr (inr *)) = refl
+
+open import UF-EquivalenceExamples
+
+two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
+two-ℕ-plus-𝟙 = ℕ ∔ (ℕ ∔ 𝟙) ≃⟨ +-cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
+                𝔹 ∔ (𝔹 ∔ 𝟙) ≃⟨ two-𝔹-plus-𝟙 ⟩
+                𝔹             ≃⟨ binary-equiv ⟩
+                ℕ ■
+
+two-ℕ : ℕ ∔ ℕ ≃ ℕ
+two-ℕ = ℕ ∔ ℕ        ≃⟨ Ap+ ℕ (≃-sym ℕ-plus-𝟙) ⟩
+        (ℕ ∔ 𝟙) ∔ ℕ  ≃⟨ +comm ⟩
+        ℕ ∔ ℕ ∔ 𝟙    ≃⟨ two-ℕ-plus-𝟙 ⟩
+        ℕ ■
+
+\end{code}
+
+The following examples show that these equivalences compute:
+
+\begin{code}
+
+module examples where
+
+ example-riap : riap 17 ≡ (1 , 4)
+ example-riap = refl
+
+ example-pair : pair (5 , 6) ≡ 415
+ example-pair = refl
+
+ example17 : equiv-to-fun (≃-sym two-ℕ) 17 ≡ inr 8
+ example17 = refl
+
+ example18 : equiv-to-fun (≃-sym two-ℕ) 18 ≡ inl 9
+ example18 = refl
+
+\end{code}
 
 And finally the fixities assumed above:
 

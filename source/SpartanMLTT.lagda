@@ -430,11 +430,7 @@ Alternative coproduct:
 \begin{code}
 
 _+'_ : ∀ {U} → U ̇ → U ̇ → U ̇
-X₀ +' X₁ = Σ \(i : 𝟚) → X i
- where
-  X : 𝟚 → _ ̇
-  X ₀ = X₀
-  X ₁ = X₁
+X₀ +' X₁ = Σ \(i : 𝟚) → 𝟚-cases X₀ X₁ i
 
 \end{code}
 
