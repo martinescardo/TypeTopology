@@ -223,16 +223,16 @@ usearchable τ = searchable ⟪ τ ⟫
 ℕ∞-usearchable = ℕ∞-searchable (fe U U)
 
 ∑-usearchable : (τ : Ordᵀ)
-             → (υ : ⟪ τ ⟫ → Ordᵀ)
-             → usearchable τ
-             → ((x : ⟪ τ ⟫) → usearchable (υ x))
-             → usearchable (∑ {τ} υ)
+              → (υ : ⟪ τ ⟫ → Ordᵀ)
+              → usearchable τ
+              → ((x : ⟪ τ ⟫) → usearchable (υ x))
+              → usearchable (∑ {τ} υ)
 ∑-usearchable τ υ = Σ-searchable
 
 +º-usearchable : (τ υ : Ordᵀ)
-              → usearchable τ
-              → usearchable υ
-              → usearchable (τ +º υ)
+               → usearchable τ
+               → usearchable υ
+               → usearchable (τ +º υ)
 +º-usearchable τ υ ε δ = ∑-usearchable 𝟚º (cases (λ _ → τ) (λ _ → υ)) 𝟚-usearchable g
  where
   g : (x : 𝟙 + 𝟙) → usearchable (cases (λ _ → τ) (λ _ → υ) x)
@@ -240,9 +240,9 @@ usearchable τ = searchable ⟪ τ ⟫
   g (inr *) = δ
 
 ×º-usearchable : (τ υ : Ordᵀ)
-              → usearchable τ
-              → usearchable υ
-              → usearchable (τ ×º υ)
+               → usearchable τ
+               → usearchable υ
+               → usearchable (τ ×º υ)
 ×º-usearchable τ υ ε δ = ∑-usearchable τ (λ _ → υ) ε (λ _ → δ)
 
 ∑¹-usearchable : (τ : ℕ → Ordᵀ)
@@ -283,9 +283,9 @@ udiscrete τ = discrete ⟪ τ ⟫
   g (inr *) = δ
 
 ×udiscrete : (τ υ : Ordᵀ)
-            → udiscrete τ
-            → udiscrete υ
-            → udiscrete (τ ×º υ)
+           → udiscrete τ
+           → udiscrete υ
+           → udiscrete (τ ×º υ)
 ×udiscrete τ υ ε δ = ∑-udiscrete τ (λ _ → υ) ε (λ _ → δ)
 
 ∑₁-udiscrete : (τ : ℕ → Ordᵀ)
@@ -335,9 +335,9 @@ module SpartanMLTT.
 \begin{code}
 
 +º-Cantor-retract : (τ ν : Ordᵀ)
-                 → Cantor-retract τ
-                 → Cantor-retract ν
-                 → Cantor-retract (τ +º ν)
+                  → Cantor-retract τ
+                  → Cantor-retract ν
+                  → Cantor-retract (τ +º ν)
 +º-Cantor-retract τ ν ρ σ = retracts-compose d e
  where
   a : retract (Cantor +' Cantor) of (Cantor + Cantor)
@@ -356,8 +356,8 @@ module SpartanMLTT.
     g : 𝟙 + 𝟙 → 𝟚
     g = cases (λ x → ₀) (λ x → ₁)
     fg : (x : 𝟙 + 𝟙) → f (g x) ≡ x
-    fg (inl *) = ap inl refl
-    fg (inr *) = ap inr refl
+    fg (inl *) = refl
+    fg (inr *) = refl
     h : retract ⟪ τ +º ν ⟫ of (Σ \(i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → ν) (f i) ⟫)
     h = Σ-reindex-retract f (g , fg)
     l : (i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → ν) (f i) ⟫
@@ -366,9 +366,9 @@ module SpartanMLTT.
     l ₁ = refl
 
 ×º-Cantor-retract : (τ ν : Ordᵀ)
-                 → Cantor-retract τ
-                 → Cantor-retract ν
-                 → Cantor-retract (τ ×º ν)
+                  → Cantor-retract τ
+                  → Cantor-retract ν
+                  → Cantor-retract (τ ×º ν)
 ×º-Cantor-retract τ ν ρ σ = retracts-compose a b
  where
   a : retract (Cantor × Cantor) of Cantor
@@ -377,8 +377,8 @@ module SpartanMLTT.
   b = ×-retract ρ σ
 
 ∑¹-Cantor-retract : (τ : ℕ → Ordᵀ)
-                 → ((n : ℕ) → Cantor-retract (τ n))
-                 → Cantor-retract (∑¹ τ)
+                  → ((n : ℕ) → Cantor-retract (τ n))
+                  → Cantor-retract (∑¹ τ)
 ∑¹-Cantor-retract τ = squashed-Cantor-retract (λ n → ⟪ τ n ⟫)
 
 \end{code}

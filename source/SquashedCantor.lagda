@@ -308,7 +308,8 @@ to-Cons-≡ : ({u v} w : ℕ∞) (φ : Cantor[ w ])
           → Cons (u , φ ∘ s) ≡ Cons (v , φ ∘ t)
 to-Cons-≡ {u} {v} w φ = to-Κ-≡ {u} {v} w (λ i → ₀ ∶∶ φ i)
 
-Cons₀ : (φ : Cantor[ Zero ]) → Cons (Zero , φ) ≡ ₀ ∶∶ φ Zero-is-finite
+Cons₀ : (φ : Cantor[ Zero ])
+      → Cons (Zero , φ) ≡ ₀ ∶∶ φ Zero-is-finite
 Cons₀ φ = Κ₀ (λ i → ₀ ∶∶ φ i)
 
 Cons₁ : (u : ℕ∞) (φ : Cantor[ Succ u ])
@@ -553,8 +554,8 @@ pair-seq-retract {U} {X} fe = retracts-compose (retracts-compose c d) b
   g (inl α) = ₀ ∶∶ α
   g (inr β) = ₁ ∶∶ β
   fg : (z : Cantor + Cantor) → f (g z) ≡ z
-  fg (inl α) = ap inl refl
-  fg (inr β) = ap inr refl
+  fg (inl α) = refl
+  fg (inr β) = refl
 
 \end{code}
 
