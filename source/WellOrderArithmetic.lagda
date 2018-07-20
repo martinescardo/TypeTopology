@@ -28,8 +28,9 @@ module subsingleton
         (isp : is-prop P)
        where
 
- private _<_ : P → P → V ̇
- x < y = 𝟘
+ private
+  _<_ : P → P → V ̇
+  x < y = 𝟘
 
  order = _<_
 
@@ -85,9 +86,9 @@ module plus
  prop-valued p p' (inr y) (inr y') l m = p' y y' l m
 
  extensional : is-well-founded _<_
-            → is-extensional _<_
-            → is-extensional _≺_
-            → is-extensional _⊏_
+             → is-extensional _<_
+             → is-extensional _≺_
+             → is-extensional _⊏_
  extensional w e e' (inl x) (inl x') f g = ap inl (e x x' (f ∘ inl) (g ∘ inl))
  extensional w e e' (inl x) (inr y') f g = 𝟘-elim (≤-refl _<_ x (w x) (g (inl x) *))
  extensional w e e' (inr y) (inl x') f g = 𝟘-elim (≤-refl _<_ x' (w x') (f (inl x') *))
@@ -213,8 +214,8 @@ module times
    φ = transfinite-induction _<_ w (λ x → (y : Y) → P(x , y)) γ
 
  transitive : is-transitive _<_
-           → is-transitive _≺_
-           → is-transitive _⊏_
+            → is-transitive _≺_
+            → is-transitive _⊏_
  transitive t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
@@ -224,10 +225,10 @@ module times
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
 
  extensional : is-well-founded _<_
-            → is-well-founded _≺_
-            → is-extensional _<_
-            → is-extensional _≺_
-            → is-extensional _⊏_
+             → is-well-founded _≺_
+             → is-extensional _<_
+             → is-extensional _≺_
+             → is-extensional _⊏_
  extensional w w' e e' (a , b) (x , y) f g = ×-≡ p q
   where
    f' : (u : X) → u < a → u < x
@@ -264,9 +265,9 @@ module times
    q = e' b y f'' g''
 
  well-order : (∀ U V → funext U V)
-           → is-well-order _<_
-           → is-well-order _≺_
-           → is-well-order _⊏_
+            → is-well-order _<_
+            → is-well-order _≺_
+            → is-well-order _⊏_
  well-order fe (p , w , e , t) (p' , w' , e' , t') = prop-valued ,
                                                      well-founded w w' ,
                                                      extensional w w' e e' ,
@@ -608,11 +609,11 @@ module sum-top
  private _⊏_ = order
 
  extensional : is-prop-valued _<_
-            → is-well-founded _<_
-            → ((x : X) → is-well-founded (_≺_ {x}))
-            → is-extensional _<_
-            → ((x : X) → is-extensional (_≺_ {x}))
-            → is-extensional _⊏_
+             → is-well-founded _<_
+             → ((x : X) → is-well-founded (_≺_ {x}))
+             → is-extensional _<_
+             → ((x : X) → is-extensional (_≺_ {x}))
+             → is-extensional _⊏_
  extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
   where
    f' : (u : X) → u < a → u < x
@@ -693,11 +694,11 @@ module sum-cotransitive
  private _⊏_ = order
 
  extensional : is-prop-valued _<_
-            → is-well-founded _<_
-            → ((x : X) → is-well-founded (_≺_ {x}))
-            → is-extensional _<_
-            → ((x : X) → is-extensional (_≺_ {x}))
-            → is-extensional _⊏_
+             → is-well-founded _<_
+             → ((x : X) → is-well-founded (_≺_ {x}))
+             → is-extensional _<_
+             → ((x : X) → is-extensional (_≺_ {x}))
+             → is-extensional _⊏_
  extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
   where
    f' : (u : X) → u < a → u < x
@@ -807,12 +808,12 @@ module extension
  well-order : ((x : X) → is-well-order (_<_ {x}))
             → is-well-order _≺_
  well-order o = pip.well-order
-              (fe (U ⊔ V) W)
-              (fiber j a)
-              (ise a)
-              (λ (p : fiber j a) → Y (pr₁ p))
-              (λ {p : fiber j a} y y' → y < y')
-              (λ (p : fiber j a) → o (pr₁ p))
+                 (fe (U ⊔ V) W)
+                 (fiber j a)
+                 (ise a)
+                 (λ (p : fiber j a) → Y (pr₁ p))
+                 (λ {p : fiber j a} y y' → y < y')
+                 (λ (p : fiber j a) → o (pr₁ p))
 
  top-preservation : ((x : X) → has-top (_<_ {x})) → has-top _≺_
  top-preservation f = φ , g
