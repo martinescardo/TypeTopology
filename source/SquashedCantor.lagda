@@ -55,6 +55,16 @@ Cantor = ℕ → 𝟚
 Cantor[_]   : ℕ∞ → U₀ ̇
 Cantor[ u ] = is-finite u → Cantor
 
+\end{code}
+
+The idea is that Cantor[ u ] is the set of partial elements of the
+Cantor space with domain of definition "is-finite u".
+
+Exercises left to the reader (they are not needed so far):
+(1) Cantor[ under n ] ≃ Cantor, (2) Cantor[ ∞ ] ≃ 𝟙.
+
+\begin{code}
+
 private remark₂ : D Cantor ≡ Σ \(u : ℕ∞) → Cantor[ u ]
 remark₂ = refl
 
@@ -111,12 +121,6 @@ _∶∶_ = _∶∶'_
 
 \end{code}
 
-The idea is that Cantor[ u ] is the set of partial elements of the
-Cantor space with domain of definition "is-finite u".
-
-Exercises left to the reader (they are not needed so far):
-(1) Cantor[ under n ] ≃ Cantor, (2) Cantor[ ∞ ] ≃ 𝟙.
-
 We now define functions
 
    Head : Cantor → ℕ∞
@@ -166,11 +170,11 @@ Head-step₀ α = ap (λ - → 𝟚-equality-cases (λ (r : - ≡ ₀) → inl *
 Head-step₁ : (α : Cantor) → head α ≡ ₁ → Head-step α ≡ inr (tail α)
 Head-step₁ α = ap (λ - → 𝟚-equality-cases (λ (r : - ≡ ₀) → inl *) (λ (r : - ≡ ₁) → inr (tail α)))
 
-Head₀ : (α : ℕ → 𝟚) → head α ≡ ₀ → Head α ≡ Zero
+Head₀ : (α : Cantor) → head α ≡ ₀ → Head α ≡ Zero
 Head₀ α r = coalg-morphism-Zero
              Head-step Head (ℕ∞-corec-diagram Head-step) α * (Head-step₀ α r)
 
-Head₁ : (α : ℕ → 𝟚) → head α ≡ ₁ → Head α ≡ Succ (Head (tail α))
+Head₁ : (α : Cantor) → head α ≡ ₁ → Head α ≡ Succ (Head (tail α))
 Head₁ α r = coalg-morphism-Succ
              Head-step Head (ℕ∞-corec-diagram Head-step) α (tail α) (Head-step₁ α r)
 
