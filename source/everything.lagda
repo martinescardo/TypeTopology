@@ -32,6 +32,11 @@
    29 June 2018. The work on searchable ordinals is essentially
    complete. Some routine bells and whistles are missing.
 
+   20 July 2018. Completed the proof that the searchable ordinals are
+   retracts of the Cantor space and hence totally separate. This
+   required work on several modules, and in particular the new module
+   SquashedCantor.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
