@@ -574,15 +574,9 @@ D-corec : ∀ {U} {X : U ̇} (h : X → ℕ∞) (t : (x : X) → is-finite (h x)
              → Σ \(p : Head ∘ f ∼ h)
                   → ((x : X) (i : is-finite (Head (f x)))
                       → Tail (f x) i ≡ f (t x (transport-finite (p x) i)))
-D-corec {U} {X} h t = f , p , q
- where
-  f : X → Cantor
-  f = {!!}
-  p : (x : X) → Head (f x) ≡ h x
-  p = {!!}
-  q : (x : X) (i : is-finite (Head (f x))) → Tail (f x) i ≡ f (t x (transport-finite (p x) i))
-  q = {!!}
+D-corec {U} {X} h t = ?
 -}
+
 \end{code}
 
 TODO. This follows from D-corec, but may be useful to prove it:
