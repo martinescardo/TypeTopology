@@ -355,7 +355,7 @@ pr₁-equivalence {U} {V} X A iss = (g , prg) , (g , gpr)
   prg : (x : X) → pr₁ (g x) ≡ x
   prg x = refl
   gpr : (σ : Σ A) → g(pr₁ σ) ≡ σ
-  gpr (x , a) = to-Σ-≡'' (prg x , is-singleton-is-prop (iss x) _ _)
+  gpr (x , a) = to-Σ-≡ (prg x , is-singleton-is-prop (iss x) _ _)
 
 pr₁-vv-equiv : ∀ {U V} (X : U ̇) (Y : X → V ̇)
                 → ((x : X) → is-singleton (Y x))
@@ -411,12 +411,12 @@ NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr�
   φ : Σ A → Σ \(y : Y) → A (g y)
   φ (x , a) = (f x , back-transport A (gf x) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡'' (gf x , p)
+  γφ (x , a) = to-Σ-≡ (gf x , p)
    where
     p : transport A (gf x) (back-transport A (gf x) a) ≡ a
     p = back-and-forth-transport (gf x)
   φγ : (τ : (Σ \(y : Y) → A (g y))) → φ (γ τ) ≡ τ
-  φγ (y , a) = to-Σ-≡'' (fg y , q)
+  φγ (y , a) = to-Σ-≡ (fg y , q)
    where
     q : transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡ a
     q = transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡⟨ transport-ap g (fg y) ⟩

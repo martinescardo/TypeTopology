@@ -89,7 +89,7 @@ lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 lcni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
-lcni-incl fe (α , d) = to-Σ-≡'' (dfunext fe (force-decreasing-unchanged α d) ,
+lcni-incl fe (α , d) = to-Σ-≡ (dfunext fe (force-decreasing-unchanged α d) ,
                                   decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
@@ -478,7 +478,7 @@ below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated f
 
 ≺-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≺ v)
 ≺-prop-valued fe u v (n , r , a) (m , s , b) =
-  to-Σ-≡'' (under-lc (r ⁻¹ ∙ s) , to-Σ-≡'' (ℕ∞-is-set fe _ _ , 𝟚-is-set _ _))
+  to-Σ-≡ (under-lc (r ⁻¹ ∙ s) , to-Σ-≡ (ℕ∞-is-set fe _ _ , 𝟚-is-set _ _))
 
 ⊏-coarser-than-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
 ⊏-coarser-than-≺ n u a = n , refl , a

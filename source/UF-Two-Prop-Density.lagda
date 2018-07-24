@@ -103,9 +103,9 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
 𝟚inΩ ₁ = ⊤
 
 𝟚inΩ-embedding : funext U₀ U₀ → propext U₀ → is-embedding 𝟚inΩ
-𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ ₀ ₀ p q refl (Ω-is-set fe pe p q)
+𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ (refl , Ω-is-set fe pe p q)
 𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥≠⊤ (p ∙ q ⁻¹))
 𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥≠⊤ (q ∙ p ⁻¹))
-𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ ₁ ₁ p q refl (Ω-is-set fe pe p q)
+𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ (refl , Ω-is-set fe pe p q)
 
 \end{code}

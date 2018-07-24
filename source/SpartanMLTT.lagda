@@ -143,12 +143,14 @@ Some basic Curry--Howard logic.
 ¬_ : ∀ {U} → U ̇ → U ̇
 ¬ A = A → 𝟘 {U₀}
 
+is-empty : ∀ {U} → U ̇ → U ̇
+is-empty = ¬_
+
 decidable : ∀ {U} → U ̇ → U ̇
 decidable A = A + ¬ A
 
 _⇔_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 A ⇔ B = (A → B) × (B → A)
-
 
 dual : ∀ {U V W} {X : U ̇} {Y : V ̇} (R : W ̇) → (X → Y) → (Y → R) → (X → R)
 dual R f p = p ∘ f

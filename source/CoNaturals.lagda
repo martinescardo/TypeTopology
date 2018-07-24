@@ -395,7 +395,7 @@ P-is-the-homotopy-final-coalgebra : ∀ {U} {X : U ̇} (p : X → 𝟙 + X)
 P-is-the-homotopy-final-coalgebra {U} {X} p = homomorphism-existence p , γ
  where
   γ : (e : Σ \(h' : X → ℕ∞) → diagram-commutes p h') → homomorphism-existence p ≡ e
-  γ (h' , r) = to-Σ-≡''
+  γ (h' , r) = to-Σ-≡
                 (homomorphism-uniqueness p (ℕ∞-corec p) h' (ℕ∞-corec-diagram p) r ,
                  Π-is-set (fe U U₀)
                    (λ _ → +-is-set 𝟙 ℕ∞

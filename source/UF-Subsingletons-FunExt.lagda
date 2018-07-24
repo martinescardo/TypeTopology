@@ -36,7 +36,7 @@ is-prop-is-prop {U} {X} fe f g = claim₁
   claim₁  = dfunext fe claim₀
 
 is-prop-is-singleton : ∀ {U} {X : U ̇} → funext U U → is-prop(is-singleton X)
-is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡'' (φ y , dfunext fe λ z → iss {y} {z} _ _)
+is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
   isp : is-prop X
   isp = is-singleton-is-prop (y , γ)
@@ -96,7 +96,7 @@ decidable-is-prop fe₀ isp = sum-of-contradictory-props
 PropExt : ∀ {U} → funext U U → propext U → {p q : Ω {U}}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt {U} fe pe {p} {q} f g =
-        to-Σ-≡'' ((pe (holds-is-prop p) (holds-is-prop q) f g) , is-prop-is-prop fe _ _)
+        to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , is-prop-is-prop fe _ _)
 
 Ω-is-set : ∀ {U} → funext U U → propext U → is-set (Ω {U})
 Ω-is-set {U} fe pe = identification-collapsible-is-set pc
@@ -145,12 +145,13 @@ equal-⊤-is-true P hp r = f *
 
 true-is-equal-⊤ : propext U₀ → funext U₀ U₀ → (P : U₀ ̇) (hp : is-prop P)
                 → P → (P , hp) ≡ ⊤
-true-is-equal-⊤ pe fe P hp x = to-Σ-≡ P 𝟙 hp 𝟙-is-prop (pe hp 𝟙-is-prop unique-to-𝟙 λ _ → x)
-                                                        (is-prop-is-prop fe _ _)
+true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
+                                        is-prop-is-prop fe _ _)
 
 Ω-ext : propext U₀ → funext U₀ U₀ → {p q : Ω}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
-Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ P Q isp isq (pe isp isq I II) (is-prop-is-prop fe _ _ )
+Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ (pe isp isq I II ,
+                                                   is-prop-is-prop fe _ _ )
  where
   I : P → Q
   I x = equal-⊤-is-true Q isq (f (true-is-equal-⊤ pe fe P isp x))

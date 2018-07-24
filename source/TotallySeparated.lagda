@@ -246,7 +246,7 @@ the following particular cases:
       → discrete X
       → ((x : X) → totally-separated (Y x))
       → totally-separated (Σ Y)
-Σ-dtt X Y d t {a , b} {x , y} φ = to-Σ-≡'' (r , s)
+Σ-dtt X Y d t {a , b} {x , y} φ = to-Σ-≡ (r , s)
  where
   r : a ≡ x
   r = discrete-totally-separated d (λ p → φ (λ z → p (pr₁ z)))
@@ -348,7 +348,7 @@ eval : ∀ {U} {X : U ̇} → X → ((X → 𝟚) → 𝟚)
 eval x = λ p → p x
 
 tsieeval : ∀ {U} {X : U ̇} → funext U U₀ → totally-separated X → is-embedding(eval {U} {X})
-tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡'' (t , r)
+tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡ (t , r)
   where
    s : eval x ≡ eval y
    s = p ∙ q ⁻¹
@@ -409,7 +409,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : T X) → pr₁ x' p)
 
    g : (e : (q : T X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
-   g e = to-Σ-≡'' (dfunext (fe U U₀) (f e), ptisp _ t)
+   g e = to-Σ-≡ (dfunext (fe U U₀) (f e), ptisp _ t)
 
 \end{code}
 
@@ -471,7 +471,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    r = dfunext (fe U V) (λ x → ts (b (η x)))
 
    c : (σ : Σ \(f'' : T X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
-   c (f'' , s) = to-Σ-≡'' (t , v)
+   c (f'' , s) = to-Σ-≡ (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
      w = happly (r ∙ s ⁻¹)
@@ -827,7 +827,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → apart x z ≡ apart y z
-    h z = to-Σ-≡'' (g z , is-prop-is-prop (fe V V) _ _)
+    h z = to-Σ-≡ (g z , is-prop-is-prop (fe V V) _ _)
 
 \end{code}
 
@@ -992,7 +992,7 @@ apartness on it.
   ♯'t (u , e) (v , f) n = ptrec X'-is-set (λ σ → ptrec X'-is-set (h σ) f) e
    where
     h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
-    h (x , p) (y , q) = to-Σ-≡'' (t , ptisp _ _)
+    h (x , p) (y , q) = to-Σ-≡ (t , ptisp _ _)
      where
       remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
       remark = n
@@ -1049,7 +1049,7 @@ apartness on it.
     φ = η-induction _ γ induction-step
       where
        induction-step : (y : X) → is-prop (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
-       induction-step x (a , d) (b , e) = to-Σ-≡'' (p , ptisp _ _)
+       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ptisp _ _)
         where
          h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
@@ -1084,7 +1084,7 @@ apartness on it.
       h y = ptrec iss (j y) (g y)
 
     c : (σ : Σ \(f'' : X' → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
-    c (f'' , s) = to-Σ-≡'' (t , v)
+    c (f'' , s) = to-Σ-≡ (t , v)
      where
       w : ∀ x → f'(η x) ≡ f''(η x)
       w = happly (r ∙ s ⁻¹)

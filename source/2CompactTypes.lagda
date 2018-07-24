@@ -812,7 +812,7 @@ has-inf-is-prop {U} {X} p n (f , g) (f' , g') = ×-≡ r s
   s = dfunext (fe U₀ U) (λ n → dfunext (fe U U₀) (λ φ → dfunext (fe U₀ U₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
 
 at-most-one-inf : ∀ {U} {X : U ̇} (p : X → 𝟚) → is-prop (Σ \(n : 𝟚) → p has-inf n)
-at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡'' (≤₂-anti (g' n f) (g n' f') , has-inf-is-prop p n' _ _)
+at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (g n' f') , has-inf-is-prop p n' _ _)
 
 has-infs : ∀ {U} → U ̇ → U ̇
 has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n

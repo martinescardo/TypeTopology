@@ -128,7 +128,7 @@ is-universal-element {U} {V} {X} {A} (x , a) = ∀ y (b : A y) → Σ \(p : x �
 universal-element-is-the-only-element : ∀ {U V} {X : U ̇} {A : X → V ̇} (σ : Σ A)
                                       → is-universal-element σ
                                       → is-the-only-element σ
-universal-element-is-the-only-element {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-≡'' ((u y) b)
+universal-element-is-the-only-element {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-≡ ((u y) b)
 
 unique-element-is-universal-element : ∀ {U V} {X : U ̇} (A : X → V ̇) (σ : Σ A)
                                     → is-the-only-element σ
@@ -678,4 +678,3 @@ idtofun-agree' : ∀ {U} (X : U ̇) → idtofun X ≈ Idtofun' X
 idtofun-agree' X = yoneda-elem-lc (idtofun X) (Idtofun' X) refl
 
 \end{code}
-

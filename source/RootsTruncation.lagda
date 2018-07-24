@@ -127,7 +127,7 @@ roots α = Σ \(n : ℕ) → α n ≡ z
   q = ≤-anti _ _ l l'
 
   r : μρ α (n , p) ≡ μρ α (n' , p')
-  r = to-Σ-≡'' (q , isolated-Id-is-prop z z-isolated _ _ _)
+  r = to-Σ-≡ (q , isolated-Id-is-prop z z-isolated _ _ _)
 
 roots-has-prop-truncation : (α : ℕ → Z) → ∀ U → has-prop-truncation U (roots α)
 roots-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)

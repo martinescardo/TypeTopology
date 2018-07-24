@@ -555,7 +555,7 @@ module sum
        α : P(x , transport Y r y')
        α = f (transport Y r y') m
        p : (x' , y') ≡ (x , transport Y r y')
-       p = to-Σ-≡ x' x y' (transport Y r y') r refl
+       p = to-Σ-≡ (r , refl)
    φ : (x : X) (y : Y x) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
 
@@ -583,7 +583,7 @@ module sum
  prop-valued fe p w e f (a , b) (x , y) (inr (r , l)) (inl m) =
    𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
  prop-valued fe p _ e f (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-   ap inr (to-Σ-≡'' (extensional-gives-is-set _<_ fe p e r s ,
+   ap inr (to-Σ-≡ (extensional-gives-is-set _<_ fe p e r s ,
                      (f x (transport Y s b) y _ m)))
 
 \end{code}
@@ -614,7 +614,7 @@ module sum-top
              → is-extensional _<_
              → ((x : X) → is-extensional (_≺_ {x}))
              → is-extensional _⊏_
- extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
+ extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡ (p , q)
   where
    f' : (u : X) → u < a → u < x
    f' u l = Cases (f (u , top u) (inl l))
@@ -699,7 +699,7 @@ module sum-cotransitive
              → is-extensional _<_
              → ((x : X) → is-extensional (_≺_ {x}))
              → is-extensional _⊏_
- extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡'' (p , q)
+ extensional ispv w w' e e' (a , b) (x , y) f g = to-Σ-≡ (p , q)
   where
    f' : (u : X) → u < a → u < x
    f' u l = Cases (c u a x l)

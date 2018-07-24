@@ -57,7 +57,7 @@ is-truth-value = is-subsingleton
 Σ-is-prop : ∀ {U V} {X : U ̇} {A : X → V ̇}
           → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
 Σ-is-prop {U} {V} {X} {A} isx isa (x , a) (y , b) =
-  to-Σ-≡ x y a b (isx x y) (isa y (transport A (isx x y) a) b)
+  to-Σ-≡ (isx x y , isa y (transport A (isx x y) a) b)
 
 \end{code}
 
@@ -221,9 +221,6 @@ below, the type X → 𝟘 is equivalent to the type X ≡ 𝟘
 
 \begin{code}
 
-is-empty : ∀ {U} → U ̇ → U ̇
-is-empty X = ¬ X
-
 is-empty-is-collapsible : ∀ {U} {X : U ̇} → is-empty X → collapsible X
 is-empty-is-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 
@@ -263,7 +260,7 @@ identifications-to x = Σ \y → y ≡ x
                                  (λ x y y' → ap pr₂ (isp (x , y) (x  , y')))
 
 ×-prop-criterion : ∀ {U} {X Y : U ̇} → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
-×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡'' (i y x x' , j x _ _)
+×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
 props-closed-× : ∀ {U} {X Y : U ̇} → is-prop X → is-prop Y → is-prop(X × Y)
 props-closed-× i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
@@ -282,7 +279,7 @@ subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f ,
   g r s = ap i (h (ap m r) (ap m s))
 
 pr₁-lc : ∀ {U V} {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x)) → left-cancellable (pr₁ {U} {V} {X} {Y})
-pr₁-lc f p = to-Σ-≡'' (p , (f _ _))
+pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
 subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇)
                     → is-set X → ({x : X} → is-prop(Y x)) → is-set(Σ \(x : X) → Y x)

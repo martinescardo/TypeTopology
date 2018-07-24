@@ -485,7 +485,7 @@ Snoc : Cantor → D Cantor
 Snoc α = (Head α , Tail α)
 
 Snoc-Cons : (d : D Cantor) → Snoc (Cons d) ≡ d
-Snoc-Cons (u , φ) = to-Σ-≡'' (Head-Cons u φ , Tail-Cons' u φ)
+Snoc-Cons (u , φ) = to-Σ-≡ (Head-Cons u φ , Tail-Cons' u φ)
 
 open import UF-Retracts
 

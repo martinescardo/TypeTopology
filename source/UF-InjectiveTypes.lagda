@@ -202,7 +202,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
   open import UF-PropIndexedPiSigma
 
   Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
-  Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) (e (j x)) (x , refl)
+  Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
 
   Π-extension-out-of-range : ∀ {W} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {W}
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ)
@@ -283,14 +283,6 @@ respectively:
 
       GF : (σ : Σ f) → G(F σ) ≡ σ
       GF (x , y) = refl
-
-{-
-  blah : is-embedding j → Σ f → Σ f/j
-  blah e (x , A) = j x , λ (p : fiber j (j x)) → back-transport f (embedding-lc j e (pr₂ p)) A
-
-  blahblah : (e : is-embedding j) → is-embedding (blah e)
-  blahblah e (y , A) ((x , B) , refl) ((x' , B') , p') = {!!}
--}
 
 \end{code}
 
@@ -438,10 +430,10 @@ to be an embedding and that the proof is completely routine.
 
 retract-extension : ∀ {U V W T} {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
                → ((x : X) → retract (A x) of (B x))
-               → ((y : Y) → retract ((A / e) y) of ((B / e) y)) 
+               → ((y : Y) → retract ((A / e) y) of ((B / e) y))
 retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
  where
-  R : (x : X) → B x → A x 
+  R : (x : X) → B x → A x
   R x = pr₁(ρ x)
   S : (x : X) → A x → B x
   S x = pr₁(pr₂(ρ x))
