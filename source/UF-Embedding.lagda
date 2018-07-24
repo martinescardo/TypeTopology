@@ -12,6 +12,7 @@ open import UF-Subsingletons-Retracts
 open import UF-Equiv
 open import UF-LeftCancellable
 open import UF-Yoneda
+open import UF-Retracts
 
 is-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-embedding f = ∀ y → is-prop(fiber f y)
@@ -150,26 +151,24 @@ module _ {U V W T}
  pair-fun : Σ A → Σ B
  pair-fun (x , a) = (f x , g x a)
 
- ap-Σ : {x x' : X} {a : A x} {a' : A x'}
-        (p : x ≡ x')
-      → transport A p a ≡ a'
-      → transport B (ap f p) (g x a) ≡ g x' a'
- ap-Σ refl refl = refl
-
- ap-pair-fun-path : {x x' : X} {a : A x} {a' : A x'}
-      (p : x ≡ x')
-      (q : transport A p a ≡ a')
-    → ap pair-fun (to-Σ-≡(p , q)) ≡ to-Σ-≡ (ap f p , ap-Σ p q)
- ap-pair-fun-path refl refl = refl
-{-
  pair-fun-embedding : is-embedding f
                     → ((x : X) → is-embedding (g x))
                     → is-embedding pair-fun
- pair-fun-embedding e d (y , b) ((x , a) , p) ((x' , a'), p') = γ
+ pair-fun-embedding e d (y , b) = go
   where
-   q : transport B (ap pr₁ p) (g x a) ≡ b
-   q = from-Σ-≡ _ _ p
-   γ : (x , a) , p ≡ (x' , a') , p'
-   γ = to-Σ-≡ ((to-Σ-≡ ({!!} , {!!})) , {!!})
--}
+   Z : U ⊔ V ⊔ W ⊔ T ̇
+   Z = Σ \(w : fiber f y) → fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
+   Z-is-prop : is-prop Z
+   Z-is-prop = subtype-of-prop-is-prop
+                pr₁
+                (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
+                (e y)
+   φ : fiber pair-fun (y , b) → Z
+   φ ((x , a) , refl) = (x , refl) , (a , refl)
+   γ : Z → fiber pair-fun (y , b)
+   γ ((x , refl) , a , refl) = (x , a) , refl
+   γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
+   γφ ((x , a) , refl) = refl
+   go : is-prop (fiber pair-fun (y , b))
+   go = subtype-of-prop-is-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
 \end{code}

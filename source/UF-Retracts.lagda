@@ -15,6 +15,10 @@ has-section r = Σ \s → r ∘ s ∼ id
 has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 has-retraction s = Σ \r → r ∘ s ∼ id
 
+has-retraction-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (s : X → Y)
+                 → has-retraction s → left-cancellable s
+has-retraction-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
+
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 retract Y of X = Σ \(r : X → Y) → has-section r
 
