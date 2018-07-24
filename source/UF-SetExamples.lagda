@@ -57,7 +57,7 @@ isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i
         p' : x ≡ x'
         p' = ap pr₁ r
         q' : transport Y p' y ≡ y'
-        q' = from-Σ-≡ (x , y) (x' , y') r
+        q' = from-Σ-≡ r
         s : p ≡ p'
         s = discrete-is-set d p p'
         q : transport Y p y ≡ y'

@@ -145,52 +145,28 @@ homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
      → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
 ×-≡ refl refl = refl
 
-from-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} (u v : Σ Y) (r : u ≡ v)
+from-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} {u v : Σ Y} (r : u ≡ v)
           → transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
-from-Σ-≡ {U} {V} {X} {Y} u v = J A (λ u → refl) {u} {v}
+from-Σ-≡ {U} {V} {X} {Y} {u} {v} = J A (λ u → refl) {u} {v}
  where
   A : (u v : Σ Y) → u ≡ v → V ̇
   A u v r = transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
 
 from-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
            → (r : (x , y) ≡ (x , y')) → transport Y (ap pr₁ r) y ≡ y'
-from-Σ-≡' x y y' = from-Σ-≡ (x , y) (x , y')
+from-Σ-≡' x y y' = from-Σ-≡
 
 from-Σ-≡'' : ∀ {U V} {X : U ̇} {Y : X → V ̇} {u v : Σ Y} (r : u ≡ v)
           → Σ \(p : pr₁ u ≡ pr₁ v) → transport Y p (pr₂ u) ≡ (pr₂ v)
-from-Σ-≡'' {U} {V} {X} {Y} {u} {v} r = (ap pr₁ r , from-Σ-≡ u v r)
+from-Σ-≡'' {U} {V} {X} {Y} {u} {v} r = (ap pr₁ r , from-Σ-≡ r)
 
 to-Σ-≡ : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
           → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
           → σ ≡ τ
 to-Σ-≡ (refl , refl) = refl
 
-to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x : X) (y y' : Y x)
-     → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y')
-to-Σ-≡' x y y' r = ap (λ - → (x , -)) r
-
-module _ {U V W T}
-         {X : U ̇}
-         {A : X → V ̇}
-         {Y : W ̇}
-         {B : Y → T ̇}
-         (f : X → Y)
-         (g : (x : X) → A x → B (f x))
-       where
-
- pair-fun : Σ A → Σ B
- pair-fun (x , a) = (f x , g x a)
-
- ap-Σ : {x x' : X} {a : A x} {a' : A x'}
-        (p : x ≡ x')
-      → transport A p a ≡ a'
-      → transport B (ap f p) (g x a) ≡ g x' a'
- ap-Σ refl refl = refl
-
- ap-pair-fun-path : {x x' : X} {a : A x} {a' : A x'}
-      (p : x ≡ x')
-      (q : transport A p a ≡ a')
-    → ap pair-fun (to-Σ-≡(p , q)) ≡ to-Σ-≡ (ap f p , ap-Σ p q)
- ap-pair-fun-path refl refl = refl
+to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} {x : X} {y y' : Y x}
+        → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y')
+to-Σ-≡' {U} {V} {X} {Y} {x} = ap (λ - → (x , -))
 
 \end{code}

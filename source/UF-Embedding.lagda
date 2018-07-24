@@ -135,3 +135,41 @@ TODO.
   (2) f : X → Y is an embedding iff its corestriction to its image is an equivalence.
 
 This can be deduced directly from Yoneda.
+
+\begin{code}
+
+module _ {U V W T}
+         {X : U ̇}
+         {A : X → V ̇}
+         {Y : W ̇}
+         {B : Y → T ̇}
+         (f : X → Y)
+         (g : (x : X) → A x → B (f x))
+       where
+
+ pair-fun : Σ A → Σ B
+ pair-fun (x , a) = (f x , g x a)
+
+ ap-Σ : {x x' : X} {a : A x} {a' : A x'}
+        (p : x ≡ x')
+      → transport A p a ≡ a'
+      → transport B (ap f p) (g x a) ≡ g x' a'
+ ap-Σ refl refl = refl
+
+ ap-pair-fun-path : {x x' : X} {a : A x} {a' : A x'}
+      (p : x ≡ x')
+      (q : transport A p a ≡ a')
+    → ap pair-fun (to-Σ-≡(p , q)) ≡ to-Σ-≡ (ap f p , ap-Σ p q)
+ ap-pair-fun-path refl refl = refl
+{-
+ pair-fun-embedding : is-embedding f
+                    → ((x : X) → is-embedding (g x))
+                    → is-embedding pair-fun
+ pair-fun-embedding e d (y , b) ((x , a) , p) ((x' , a'), p') = γ
+  where
+   q : transport B (ap pr₁ p) (g x a) ≡ b
+   q = from-Σ-≡ _ _ p
+   γ : (x , a) , p ≡ (x' , a') , p'
+   γ = to-Σ-≡ ((to-Σ-≡ ({!!} , {!!})) , {!!})
+-}
+\end{code}

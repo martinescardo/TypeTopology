@@ -48,7 +48,7 @@ symbols to get to their definitions.
 
 The module dependency graph: http://www.cs.bham.ac.uk/~mhe/agda-new/manual.pdf
 
-The following module investigates the notion of omniscience set. A
+The following module investigates the notion of omniscient set. A
 set X is omniscient iff
 
    (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁

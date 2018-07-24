@@ -204,6 +204,12 @@ Equality (more in the module UF).
 data _≡_ {U} {X : U ̇} : X → X → U ̇ where
   refl : {x : X} → x ≡ x
 
+lhs : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → X
+lhs {U} {X} {x} {y} p = x
+
+rhs : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → X
+rhs {U} {X} {x} {y} p = y
+
 Id : ∀ {U} {X : U ̇} → X → X → U ̇
 Id = _≡_
 
@@ -227,13 +233,13 @@ transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X}
 transport A refl = id
 
 _∙_ : ∀ {U} {X : U ̇} → {x y z : X} → x ≡ y → y ≡ z → x ≡ z
-p ∙ q = transport (Id _) q p
+p ∙ q = transport (Id (lhs p)) q p
 
 _⁻¹ : ∀ {U} {X : U ̇} → {x y : X} → x ≡ y → y ≡ x
-p ⁻¹ = transport (λ x → x ≡ _) p refl
+p ⁻¹ = transport (λ - → - ≡ lhs p) p refl
 
 ap : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
-ap f p = transport (λ x' → f _ ≡ f x') p refl
+ap f p = transport (λ - → f (lhs p) ≡ f -) p refl
 
 back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
 back-transport B p = transport B (p ⁻¹)
@@ -339,12 +345,6 @@ dom = domain
 codomain cod : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → V ̇
 codomain {U} {V} {X} {Y} f = Y
 cod = codomain
-
-lhs : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → X
-lhs {U} {X} {x} {y} p = x
-
-rhs : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → X
-rhs {U} {X} {x} {y} p = y
 
 \end{code}
 
