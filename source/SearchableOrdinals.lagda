@@ -19,6 +19,8 @@ open import SquashedSum fe
 open import SearchableTypes
 open import TotallySeparated
 open import UF-Retracts
+open import UF-Embedding
+open import DiscreteAndSeparated
 
 fe₀ : funext U₀ U₀
 fe₀ = fe U₀ U₀
@@ -68,6 +70,7 @@ ord (Sum1 α)  = ∑¹ \(i : ℕ) → ord(α i)
 The underlying sets  of such ordinals are searchable:
 
 \begin{code}
+
 sord : (α : OE) → searchable ⟪ ord α ⟫
 sord       One = 𝟙-usearchable
 sord (Add α β) = +º-usearchable (ord α) (ord β) (sord α) (sord β)
@@ -80,6 +83,7 @@ Completed 20th July 2018:
 They are retracts of the Cantor type (ℕ → 𝟚):
 
 \begin{code}
+
 cord : (α : OE) → retract  ⟪ ord α ⟫ of (ℕ → 𝟚)
 cord       One = 𝟙-Cantor-retract
 cord (Add α β) = +º-Cantor-retract (ord α) (ord β) (cord α) (cord β)
@@ -116,18 +120,24 @@ ord' (Add α β) = ord' α +º ord' β
 ord' (Mul α β) = ord' α ×º  ord' β
 ord' (Sum1 α)  = ∑₁ \(i : ℕ) → ord'(α i)
 
-dord' : (α : OE) → udiscrete(ord' α)
+dord' : (α : OE) → discrete ⟪ ord' α ⟫
 dord'      One  = 𝟙-udiscrete
 dord' (Add α β) = +udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
 dord' (Mul α β) = ×udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
 dord' (Sum1 α)  = ∑₁-udiscrete (ord' ∘ α) (λ n → dord' (α n))
 
-{-
+{- TODO
 ord'-ord : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
 ord'-ord One = id
-ord'-ord (Add α β) c = {!!}
-ord'-ord (Mul α β) = {!!}
-ord'-ord (Sum-plus-One α) = {!!}
+ord'-ord (Add α β) = {!!}
+ord'-ord (Mul α β) = pair-fun (ord'-ord α) (λ _ → ord'-ord β)
+ord'-ord (Sum1 α) = {!!}
+
+ord-embedding : (α : OE) → is-embedding (ord'-ord α)
+ord-embedding One = id-is-embedding
+ord-embedding (Add α β) = {!!}
+ord-embedding (Mul α β) = pair-fun-embedding _ _ (ord-embedding α) (λ _ → ord-embedding β)
+ord-embedding (Sum1 α) = {!!}
 -}
 
 \end{code}

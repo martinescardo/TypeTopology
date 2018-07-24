@@ -14,6 +14,7 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
+open import UF-Embedding
 open import GenericConvergentSequence
 open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)
@@ -31,15 +32,22 @@ squashed-sum-searchable X ε = extended-sum-searchable
                                 ε
                                 ℕ∞-searchable
 
-\end{code}
+𝟙-Σ¹-map : ∀ {U} (X : ℕ → U ̇)
+         → 𝟙 {U₀} → Σ¹ X
+𝟙-Σ¹-map X * = ∞ , (λ (w : fiber under ∞) → 𝟘-elim (∞-is-not-ℕ (pr₁ w) ((pr₂ w)⁻¹)))
 
-TODO. Show that the natural map (Σ X) + 𝟙 → Σ¹ X is an embedding whose
-image has empty complement. (2nd July 2018: Better to do part of this
-in the module InjectiveTypes more generally. If we have X→U and j:A→B,
-we should have an embedding Σ X → Σ (X/j). If B' is the complement of
-the image of j, we should also have an embedding B' → Π (X/j), and
-this should give an embedding (Σ X) + B' → Π (X/j) whose image has
-empty complement.)
+𝟙-extension : ∀ {U} → (ℕ → U ̇) → ℕ + 𝟙 → U ̇
+𝟙-extension X = cases (λ (n : ℕ) → X n) (λ (x : 𝟙 {U₀}) → 𝟙)
+
+Σ₁ : ∀ {U} → (ℕ → U ̇) → U ̇
+Σ₁ X = Σ (𝟙-extension X)
+
+{- TODO:
+Σ-up : ∀ {U} (X : ℕ → U ̇) → Σ₁ X → Σ¹ X
+Σ-up X = pair-fun under𝟙 {!!}
+-}
+
+\end{code}
 
 The original version of this, given below was much more convoluted,
 but equivalent, as also shown below.
@@ -71,15 +79,15 @@ numbers ℕ, defined in the module GenericConvergentSequence.
 
 The squashed sum of X : ℕ → U₀ ̇ is defined to be
 
-   Σ₁ X = Σ \(u : ℕ∞) → X [ u ]
+   Σᴵ X = Σ \(u : ℕ∞) → X [ u ]
 
 Intuitively, the squashed sum is the disjoint sum with an added limit
 point at infinity.
 
-Assuming excluded middle, Σ₁ X is isomorphic to (Σ \(n : ℕ) → X n) ⊎ 1
+Assuming excluded middle, Σᴵ X is isomorphic to (Σ \(n : ℕ) → X n) ⊎ 1
 where 1 is the one-point type.
 
-Assuming Brouwerian continuity axioms, Σ₁ X is the one-point
+Assuming Brouwerian continuity axioms, Σᴵ X is the one-point
 compatification of the disjoint sum (Σ \(n : ℕ) → X n).
 
 But we don't assume excluded middle or continuiy axioms here. We work
@@ -93,10 +101,10 @@ module original-version-and-equivalence-with-new-version where
  _[_] : (ℕ → U₀ ̇) → (ℕ∞ → U₀ ̇)
  X [ u ] = (k : ℕ) → under k ≡ u → X k
 
- Σ₁ : (ℕ → U₀ ̇) → U₀ ̇
- Σ₁ X = Σ \(u : ℕ∞) → X [ u ]
+ Σᴵ : (ℕ → U₀ ̇) → U₀ ̇
+ Σᴵ X = Σ \(u : ℕ∞) → X [ u ]
 
- ∞₁ : {X : ℕ → U₀ ̇} → Σ₁ X
+ ∞₁ : {X : ℕ → U₀ ̇} → Σᴵ X
  ∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-ℕ k (r ⁻¹))
 
 \end{code}
@@ -208,7 +216,7 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σ₁ X)
+ squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σᴵ X)
  squashed-sum-searchable' {X} f = Σ-searchable ℕ∞-searchable (extension-searchable {X} f)
 
 \end{code}
@@ -224,7 +232,7 @@ module original-version-and-equivalence-with-new-version where
  agreement-lemma : (X : ℕ → U₀ ̇) (u : ℕ∞) → (X / under) u ≃ Π (λ x → under x ≡ u → X x) -- (X / under) u ≃ (X [ u ])
  agreement-lemma X = 2nd-Π-extension-formula X under
 
- agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σ₁ X
+ agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σᴵ X
  agreement X = Σ-≃-congruence ℕ∞ (X / under) (λ u → X [ u ]) (agreement-lemma X)
 
 \end{code}

@@ -183,6 +183,14 @@ And now with an isolated top element:
 
 \begin{code}
 
+{- TODO
+-∑₁ : (ℕ → Ordᵀ) → Ordᵀ
+-∑₁ τ = {!!}
+ where
+  ν' : ℕ + 𝟙 {U₀} → Ordᵀ
+  ν' = {!!}
+-}
+
 ∑₁ : (ℕ → Ordᵀ) → Ordᵀ
 ∑₁ ν = (((Σ X) + 𝟙) , _<_ , w) ,
        (inr * , ist)
@@ -249,49 +257,6 @@ usearchable τ = searchable ⟪ τ ⟫
                → ((n : ℕ) → usearchable (τ n))
                → usearchable (∑¹ τ)
 ∑¹-usearchable τ = squashed-sum-searchable (λ n → ⟪ τ n ⟫)
-
-\end{code}
-
-Preservation of the discreteness of underlying sets:
-
-\begin{code}
-
-udiscrete : Ordᵀ → U ̇
-udiscrete τ = discrete ⟪ τ ⟫
-
-𝟙-udiscrete : udiscrete 𝟙º
-𝟙-udiscrete = 𝟙-discrete
-
-𝟚-udiscrete : udiscrete 𝟚º
-𝟚-udiscrete = +discrete 𝟙-discrete 𝟙-discrete
-
-∑-udiscrete : (τ : Ordᵀ)
-             → (υ : ⟪ τ ⟫ → Ordᵀ)
-             → udiscrete τ
-             → ((x : ⟪ τ ⟫) → udiscrete (υ x))
-             → udiscrete (∑ {τ} υ)
-∑-udiscrete τ υ = Σ-discrete
-
-+udiscrete : (τ υ : Ordᵀ)
-           → udiscrete τ
-           → udiscrete υ
-           → udiscrete (τ +º υ)
-+udiscrete τ υ ε δ = ∑-udiscrete 𝟚º (cases (λ _ → τ) (λ _ → υ)) 𝟚-udiscrete g
- where
-  g : (x : 𝟙 + 𝟙) → udiscrete (cases (λ _ → τ) (λ _ → υ) x)
-  g (inl *) = ε
-  g (inr *) = δ
-
-×udiscrete : (τ υ : Ordᵀ)
-           → udiscrete τ
-           → udiscrete υ
-           → udiscrete (τ ×º υ)
-×udiscrete τ υ ε δ = ∑-udiscrete τ (λ _ → υ) ε (λ _ → δ)
-
-∑₁-udiscrete : (τ : ℕ → Ordᵀ)
-             → ((n : ℕ) → udiscrete (τ n))
-             → udiscrete (∑₁ τ)
-∑₁-udiscrete τ d = +discrete (Σ-discrete ℕ-discrete d) 𝟙-discrete
 
 \end{code}
 
@@ -380,5 +345,85 @@ module SpartanMLTT.
                   → ((n : ℕ) → Cantor-retract (τ n))
                   → Cantor-retract (∑¹ τ)
 ∑¹-Cantor-retract τ = squashed-Cantor-retract (λ n → ⟪ τ n ⟫)
+
+\end{code}
+
+Preservation of the discreteness of underlying sets:
+
+\begin{code}
+
+udiscrete : Ordᵀ → U ̇
+udiscrete τ = discrete ⟪ τ ⟫
+
+𝟙-udiscrete : udiscrete 𝟙º
+𝟙-udiscrete = 𝟙-discrete
+
+𝟚-udiscrete : udiscrete 𝟚º
+𝟚-udiscrete = +discrete 𝟙-discrete 𝟙-discrete
+
+∑-udiscrete : (τ : Ordᵀ)
+             → (υ : ⟪ τ ⟫ → Ordᵀ)
+             → udiscrete τ
+             → ((x : ⟪ τ ⟫) → udiscrete (υ x))
+             → udiscrete (∑ {τ} υ)
+∑-udiscrete τ υ = Σ-discrete
+
++udiscrete : (τ υ : Ordᵀ)
+           → udiscrete τ
+           → udiscrete υ
+           → udiscrete (τ +º υ)
++udiscrete τ υ ε δ = ∑-udiscrete 𝟚º (cases (λ _ → τ) (λ _ → υ)) 𝟚-udiscrete g
+ where
+  g : (x : 𝟙 + 𝟙) → udiscrete (cases (λ _ → τ) (λ _ → υ) x)
+  g (inl *) = ε
+  g (inr *) = δ
+
+×udiscrete : (τ υ : Ordᵀ)
+           → udiscrete τ
+           → udiscrete υ
+           → udiscrete (τ ×º υ)
+×udiscrete τ υ ε δ = ∑-udiscrete τ (λ _ → υ) ε (λ _ → δ)
+
+∑₁-udiscrete : (τ : ℕ → Ordᵀ)
+             → ((n : ℕ) → udiscrete (τ n))
+             → udiscrete (∑₁ τ)
+∑₁-udiscrete τ d = +discrete (Σ-discrete ℕ-discrete d) 𝟙-discrete
+
+\end{code}
+
+Embedding of underlying sets:
+
+\begin{code}
+{-
+×-map : {τ τ' υ υ' : Ordᵀ}
+     → (⟪ τ ⟫ → ⟪ τ' ⟫)
+     → (⟪ υ ⟫ → ⟪ υ' ⟫)
+     → ⟪ τ ×º υ ⟫ → ⟪ τ' ×º υ' ⟫
+×-map f g = pair-fun f (λ _ → g)
+
+×-embedding : {τ τ' υ υ' : Ordᵀ}
+              (f : ⟪ τ ⟫ → ⟪ τ' ⟫)
+              (g : ⟪ υ ⟫ → ⟪ υ' ⟫)
+           → is-embedding f
+           → is-embedding g
+           → is-embedding (×-map {τ} {τ'} {υ} {υ'} f g)
+×-embedding f g e d = pair-fun-embedding f (λ _ → g) e (λ _ → d)
+
+∑-map : (τ τ' : Ordᵀ)
+        (υ : ⟪ τ ⟫ → Ordᵀ)
+        (υ' : ⟪ τ' ⟫ → Ordᵀ)
+        (f : ⟪ τ ⟫ → ⟪ τ' ⟫)
+     → ((x : ⟪ τ ⟫) → ⟪ υ x ⟫ → ⟪ υ' (f x) ⟫)
+     → ⟪ ∑ {τ} υ ⟫ → ⟪ ∑ {τ'} υ' ⟫
+∑-map τ τ' υ υ' = pair-fun
+
+∑-embedding : (τ τ' : Ordᵀ)
+              (υ : ⟪ τ ⟫ → Ordᵀ)
+              (υ' : ⟪ τ' ⟫ → Ordᵀ)
+              (f : ⟪ τ ⟫ → ⟪ τ' ⟫)
+           → (g : (x : ⟪ τ ⟫) → ⟪ υ x ⟫ → ⟪ υ' (f x) ⟫)
+           → is-embedding (∑-map τ τ' υ υ' f g)
+∑-embedding τ τ' υ υ' f g = pair-fun-embedding {!!} {!!} {!!} {!!}
+-}
 
 \end{code}

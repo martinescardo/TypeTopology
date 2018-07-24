@@ -139,6 +139,16 @@ This can be deduced directly from Yoneda.
 
 \begin{code}
 
+is-full : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-full f = ¬ Σ \y → ¬(fiber f y)
+
+\end{code}
+
+We should find a better home for the above definition, which says that
+the complement of the image of f is empty.
+
+\begin{code}
+
 module _ {U V W T}
          {X : U ̇}
          {A : X → V ̇}
@@ -154,7 +164,7 @@ module _ {U V W T}
  pair-fun-embedding : is-embedding f
                     → ((x : X) → is-embedding (g x))
                     → is-embedding pair-fun
- pair-fun-embedding e d (y , b) = go
+ pair-fun-embedding e d (y , b) = h
   where
    Z : U ⊔ V ⊔ W ⊔ T ̇
    Z = Σ \(w : fiber f y) → fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
@@ -166,9 +176,24 @@ module _ {U V W T}
    φ : fiber pair-fun (y , b) → Z
    φ ((x , a) , refl) = (x , refl) , (a , refl)
    γ : Z → fiber pair-fun (y , b)
-   γ ((x , refl) , a , refl) = (x , a) , refl
+   γ ((x , refl) , (a , refl)) = (x , a) , refl
    γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
    γφ ((x , a) , refl) = refl
-   go : is-prop (fiber pair-fun (y , b))
-   go = subtype-of-prop-is-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
+   h : is-prop (fiber pair-fun (y , b))
+   h = subtype-of-prop-is-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
+
+ pair-fun-full : is-full f
+              → ((x : X) → is-full (g x))
+              → is-full pair-fun
+ pair-fun-full i j = contrapositive γ i
+  where
+   γ : (Σ \(w : Σ B) → ¬(fiber pair-fun w)) → Σ \(y : Y) → ¬(fiber f y)
+   γ ((y , b) , n) = y , m
+    where
+     m : ¬(fiber f y)
+     m (x , refl) = j x (b , l)
+      where
+       l : ¬(fiber (g x) b)
+       l (a , refl) = n ((x , a) , refl)
+
 \end{code}
