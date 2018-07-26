@@ -449,3 +449,29 @@ retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
   rs u = dfunext (fe (U ⊔ V) W) (h u)
 
 \end{code}
+
+Added 25th July 2018.
+
+\begin{code}
+
+iterated-extension : ∀ {U V W T} {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
+                     (j : X → Y) (k : Y → Z)
+                  → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
+iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ
+ where
+  f : ((A / j) / k) z → (A / (k ∘ j)) z
+  f u (x , p) = u (j x , p) (x , refl)
+  g : (A / (k ∘ j)) z → ((A / j) / k) z
+  g v (.(j x) , q) (x , refl) = v (x , q)
+  fg : (v : (A / (k ∘ j)) z) → f (g v) ≡ v
+  fg v = refl
+  gf' : (u : ((A / j) / k) z) (w : fiber k z) (t : fiber j (pr₁ w))
+      → g (f u) w t ≡ u w t
+  gf' u (.(j x) , q) (x , refl) = refl
+  gf : (u : ((A / j) / k) z) → g (f u) ≡ u
+  gf u = dfunext (fe (V ⊔ W) (U ⊔ V ⊔ T))
+          (λ w → dfunext (fe (U ⊔ V) T) (gf' u w))
+  γ : ((A / j) / k) z ≃ (A / (k ∘ j)) z
+  γ = f , ((g , fg) , (g , gf))
+
+\end{code}

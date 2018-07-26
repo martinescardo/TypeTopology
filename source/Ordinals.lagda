@@ -129,7 +129,7 @@ Sum of an ordinal indexed family of ordinals:
 ∑ {(X , _<_ , o) , t} υ = ((Σ \(x : X) → ⟪ υ x ⟫) ,
                             Sum.order ,
                             Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
-                            Sum.top-preservation t
+                          Sum.top-preservation t
  where
   _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → U ̇
   y ≺ z = y ≺⟪ υ _ ⟫ z
@@ -256,7 +256,7 @@ usearchable τ = searchable ⟪ τ ⟫
 ∑¹-usearchable : (τ : ℕ → Ordᵀ)
                → ((n : ℕ) → usearchable (τ n))
                → usearchable (∑¹ τ)
-∑¹-usearchable τ = squashed-sum-searchable (λ n → ⟪ τ n ⟫)
+∑¹-usearchable τ = Σ¹-searchable (λ n → ⟪ τ n ⟫)
 
 \end{code}
 

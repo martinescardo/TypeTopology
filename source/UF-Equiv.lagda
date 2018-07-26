@@ -20,11 +20,26 @@ one because it is more symmetrical.
 is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-equiv f = has-section f × has-retraction f
 
+is-equiv-has-section : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                     → is-equiv f → has-section f
+is-equiv-has-section f = pr₁
+
+is-equiv-has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                       → is-equiv f → has-retraction f
+is-equiv-has-retraction f = pr₂
+
+section-retraction-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                        → has-section f → has-retraction f → is-equiv f
+section-retraction-equiv f hr hs = (hr , hs)
+
 _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
 equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
 equiv-to-fun = pr₁
+
+is-equiv-equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (equiv-to-fun e)
+is-equiv-equiv-to-fun = pr₂
 
 ideq : ∀ {U} (X : U ̇) → X ≃ X
 ideq X = id , ((id , λ x → refl) , (id , λ x → refl))

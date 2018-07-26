@@ -20,6 +20,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-Embedding
+open import UF-Equiv
 open import UF-Retracts
 open import UF-SetExamples
 open import DiscreteAndSeparated
@@ -350,13 +351,13 @@ under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-em
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
   d n _ p = ∞-is-not-ℕ n (p ⁻¹)
 
-under𝟙-dense : funext₀ → ¬ Σ \(u : ℕ∞) → (x : ℕ + 𝟙) → u ≢ under𝟙 x
+under𝟙-dense : funext₀ → is-dense under𝟙
 under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
  where
-  g : u ≢ ∞
-  g = f (inr *)
-  h : (n : ℕ) → u ≢ under n
-  h n = f (inl n)
+  g : ¬(u ≡ ∞)
+  g p = f ((inr *) , (p ⁻¹))
+  h : (n : ℕ) → ¬(u ≡ under n)
+  h n p = f (inl n , (p ⁻¹))
 
 \end{code}
 

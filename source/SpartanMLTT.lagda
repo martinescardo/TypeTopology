@@ -311,8 +311,6 @@ inl-lc refl = refl
 inr-lc : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
 inr-lc refl = refl
 
-
-
 \end{code}
 
 \begin{code}

@@ -17,13 +17,36 @@ open import UF-Retracts
 is-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-embedding f = ∀ y → is-prop(fiber f y)
 
-embedding-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → is-embedding f → left-cancellable f
+is-equiv-is-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                     → is-equiv f → is-embedding f
+is-equiv-is-embedding f e y = is-singleton-is-prop (is-equiv-is-vv-equiv f e y)
+
+_↪_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
+X ↪ Y = Σ \(f : X → Y) → is-embedding f
+
+etofun : ∀ {U V} {X : U ̇} {Y : V ̇} → (X ↪ Y) → X → Y
+etofun = pr₁
+
+is-embedding-etofun : ∀ {U V} {X : U ̇} {Y : V ̇}
+                   → (e : X ↪ Y) → is-embedding(etofun e)
+is-embedding-etofun = pr₂
+
+equiv-embedding : ∀ {U V} {X : U ̇} {Y : V ̇}
+               → X ≃ Y → X ↪ Y
+equiv-embedding e = equiv-to-fun e ,
+                    is-equiv-is-embedding
+                     (equiv-to-fun e)
+                     (is-equiv-equiv-to-fun e)
+
+embedding-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+            → is-embedding f → left-cancellable f
 embedding-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 is-embedding' : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-embedding' f = ∀ x x' → is-equiv (ap f {x} {x'})
 
-embedding-embedding' : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → is-embedding f → is-embedding' f
+embedding-embedding' : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                    → is-embedding f → is-embedding' f
 embedding-embedding' {U} {V} {X} {Y} f ise = g
  where
   b : (x : X) → is-singleton(fiber f (f x))
@@ -139,15 +162,46 @@ This can be deduced directly from Yoneda.
 
 \begin{code}
 
-is-full : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-is-full f = ¬ Σ \y → ¬(fiber f y)
+is-dense : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-dense f = is-empty (Σ \y → ¬(fiber f y))
 
 \end{code}
 
 We should find a better home for the above definition, which says that
-the complement of the image of f is empty.
+the complement of the image of f is empty. Perhaps a better
+terminology would be ¬¬-dense.
 
 \begin{code}
+
+_↪ᵈ_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
+X ↪ᵈ Y = Σ \(f : X → Y) → is-embedding f × is-dense f
+
+module _ {U V} {X : U ̇} {Y : V ̇} where
+
+ retraction-is-dense : (r : X → Y) → has-section r → is-dense r
+ retraction-is-dense r (s , rs) (y , n) = n (s y , rs y)
+
+ equiv-is-dense : (f : X → Y) → is-equiv f → is-dense f
+ equiv-is-dense f e = retraction-is-dense f (is-equiv-has-section f e)
+
+ equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
+ equiv-dense-embedding e = equiv-to-fun e ,
+                            is-equiv-is-embedding
+                              (equiv-to-fun e)
+                              (is-equiv-equiv-to-fun e),
+                            equiv-is-dense
+                              (equiv-to-fun e)
+                              (is-equiv-equiv-to-fun e)
+
+ detofun : (X ↪ᵈ Y) → X → Y
+ detofun = pr₁
+
+ is-embedding-detofun : (e : X ↪ᵈ Y) → is-embedding(detofun e)
+ is-embedding-detofun e = pr₁ (pr₂ e)
+
+ is-dense-detofun : (e : X ↪ᵈ Y) → is-dense(detofun e)
+ is-dense-detofun e = pr₂ (pr₂ e)
+
 
 module _ {U V W T}
          {X : U ̇}
@@ -182,10 +236,10 @@ module _ {U V W T}
    h : is-prop (fiber pair-fun (y , b))
    h = subtype-of-prop-is-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
 
- pair-fun-full : is-full f
-              → ((x : X) → is-full (g x))
-              → is-full pair-fun
- pair-fun-full i j = contrapositive γ i
+ pair-fun-dense : is-dense f
+               → ((x : X) → is-dense (g x))
+               → is-dense pair-fun
+ pair-fun-dense i j = contrapositive γ i
   where
    γ : (Σ \(w : Σ B) → ¬(fiber pair-fun w)) → Σ \(y : Y) → ¬(fiber f y)
    γ ((y , b) , n) = y , m
@@ -195,5 +249,15 @@ module _ {U V W T}
       where
        l : ¬(fiber (g x) b)
        l (a , refl) = n ((x , a) , refl)
+
+inl-embedding : ∀ {U V} (X : U ̇) (Y : V ̇)
+             → is-embedding (inl {U} {V} {X} {Y})
+inl-embedding {U} {V} X Y (inl a) (.a , refl) (.a , refl) = refl
+inl-embedding {U} {V} X Y (inr b) (x , p) (x' , p') = 𝟘-elim (+disjoint p)
+
+inr-embedding : ∀ {U V} (X : U ̇) (Y : V ̇)
+             → is-embedding (inr {U} {V} {X} {Y})
+inr-embedding {U} {V} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
+inr-embedding {U} {V} X Y (inr a) (.a , refl) (.a , refl) = refl
 
 \end{code}

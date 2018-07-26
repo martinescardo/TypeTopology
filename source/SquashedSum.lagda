@@ -20,37 +20,120 @@ open import SearchableTypes
 open import ConvergentSequenceSearchable (fe U₀ U₀)
 open import UF-InjectiveTypes fe
 open import ExtendedSumSearchable fe
+open import DiscreteAndSeparated
+open import UF-SetExamples
+
+\end{code}
+
+Recall that the map under : ℕ → ℕ∞ is the natural embedding. Given a
+type family X : ℕ → U ̇, we take its right Kan extension
+X / under : ℕ∞ → U ̇ and then its sum, which we call the squashed sum
+of X and write Σ¹ X. We have that (X / under) ∞ ≃ 𝟙. What is
+interesting is that if each X n is searchable then so is Σ¹ X.
+
+\begin{code}
 
 Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
-squashed-sum-searchable : ∀ {U} (X : ℕ → U ̇)
-                        → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
-squashed-sum-searchable X ε = extended-sum-searchable
-                                under
-                                (under-embedding (fe U₀ U₀))
-                                ε
-                                ℕ∞-searchable
-
-𝟙-Σ¹-map : ∀ {U} (X : ℕ → U ̇)
-         → 𝟙 {U₀} → Σ¹ X
-𝟙-Σ¹-map X * = ∞ , (λ (w : fiber under ∞) → 𝟘-elim (∞-is-not-ℕ (pr₁ w) ((pr₂ w)⁻¹)))
-
-𝟙-extension : ∀ {U} → (ℕ → U ̇) → ℕ + 𝟙 → U ̇
-𝟙-extension X = cases (λ (n : ℕ) → X n) (λ (x : 𝟙 {U₀}) → 𝟙)
-
-Σ₁ : ∀ {U} → (ℕ → U ̇) → U ̇
-Σ₁ X = Σ (𝟙-extension X)
-
-{- TODO:
-Σ-up : ∀ {U} (X : ℕ → U ̇) → Σ₁ X → Σ¹ X
-Σ-up X = pair-fun under𝟙 {!!}
--}
+Σ¹-searchable : ∀ {U} (X : ℕ → U ̇)
+             → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
+Σ¹-searchable X ε = extended-sum-searchable
+                     under
+                     (under-embedding (fe U₀ U₀))
+                     ε
+                     ℕ∞-searchable
 
 \end{code}
 
-The original version of this, given below was much more convoluted,
-but equivalent, as also shown below.
+We now develop a discrete (but not searchable) version Σ₁ X of Σ¹ X
+with a dense embedding into Σ¹ X, where an embedding is called dense
+if the complement of its image is empty. Recall that the map
+over𝟙 : ℕ + 𝟙 → ℕ∞ is the natural embedding that maps the isolated
+added point to ∞, which is dense.
+
+\begin{code}
+
+over : ℕ → ℕ + 𝟙
+over = inl {U₀} {U₀}
+
+Σ₁ : ∀ {U} → (ℕ → U ̇) → U ̇
+Σ₁ X = Σ (X / over)
+
+under𝟙-over : (n : ℕ) → under𝟙 (over n) ≡ under n
+under𝟙-over n = refl
+
+over-discrete : ∀ {U} (X : ℕ → U ̇)
+             → ((n : ℕ) → discrete (X n))
+             → (z : ℕ + 𝟙) → discrete ((X / over) z)
+over-discrete X d (inl n) = retract-discrete-discrete
+                             (equiv-retract-l
+                               (Π-extension-in-range X over
+                                  (inl-embedding ℕ 𝟙) n))
+                             (d n)
+over-discrete X d (inr *) = retract-discrete-discrete {U₀}
+                             (equiv-retract-l
+                               (Π-extension-out-of-range X over (inr *)
+                                   (λ n → +disjoint)))
+                             𝟙-discrete
+
+
+Σ₁-discrete : ∀ {U} (X : ℕ → U ̇)
+           → ((n : ℕ) → discrete(X n)) → discrete (Σ₁ X)
+Σ₁-discrete X d = Σ-discrete
+                    (+discrete ℕ-discrete 𝟙-discrete)
+                    (over-discrete X d)
+
+over-under : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
+          → (X / over) z ↪ᵈ (X / under) (under𝟙 z)
+over-under X (inl n) = equiv-dense-embedding (
+ (X / over) (over n)   ≃⟨ Π-extension-in-range X over (inl-embedding ℕ 𝟙) n ⟩
+ X n                   ≃⟨ ≃-sym (Π-extension-in-range X under (under-embedding (fe U₀ U₀)) n) ⟩
+ (X / under) (under n) ■)
+over-under X (inr *) = equiv-dense-embedding (
+ (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
+ 𝟙 {U₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X under ∞ (λ n p → ∞-is-not-ℕ n (p ⁻¹))) ⟩
+ (X / under) ∞      ■ )
+
+over-under-map : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
+              → (X / over) z → (X / under) (under𝟙 z)
+over-under-map X z = detofun (over-under X z)
+
+over-under-map-dense : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
+                    → is-dense (over-under-map X z)
+over-under-map-dense X z = is-dense-detofun (over-under X z)
+
+Σ-up : ∀ {U} (X : ℕ → U ̇) → Σ₁ X → Σ¹ X
+Σ-up X = pair-fun under𝟙 (over-under-map X)
+
+Σ-up-embedding : ∀ {U} (X : ℕ → U ̇) → is-embedding (Σ-up X)
+Σ-up-embedding X = pair-fun-embedding
+                    under𝟙
+                    (over-under-map X)
+                    (under𝟙-embedding (fe U₀ U₀))
+                    (λ z → is-embedding-detofun (over-under X z))
+
+Σ-up-dense : ∀ {U} (X : ℕ → U ̇) → is-dense (Σ-up X)
+Σ-up-dense X = pair-fun-dense under𝟙
+                (over-under-map X)
+                (under𝟙-dense (fe U₀ U₀))
+                (λ z → is-dense-detofun (over-under X z))
+
+\end{code}
+
+We don't need this for the moment:
+
+\begin{code}
+
+under𝟙-over-extension : ∀ {U} {X : ℕ → U ̇} (u : ℕ∞)
+                     → ((X / over) / under𝟙) u ≃ (X / under) u
+under𝟙-over-extension = iterated-extension over under𝟙
+
+\end{code}
+
+The original version of the searchability of the squashed sum, given
+below was much more convoluted, as it didn't use injective types, but
+equivalent, as also shown below.
 
 December 2012, going back to work done circa 2010.
 
@@ -233,6 +316,10 @@ module original-version-and-equivalence-with-new-version where
  agreement-lemma X = 2nd-Π-extension-formula X under
 
  agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σᴵ X
- agreement X = Σ-≃-congruence ℕ∞ (X / under) (λ u → X [ u ]) (agreement-lemma X)
+ agreement X = Σ-≃-congruence
+                    ℕ∞
+                    (X / under)
+                    (λ u → X [ u ])
+                    (agreement-lemma X)
 
 \end{code}
