@@ -95,6 +95,11 @@ tunderlying-order ((X , _<_ , o) , t) = _<_
 
 syntax tunderlying-order τ x y = x ≺⟪ τ ⟫ y
 
+tunderlying-rorder : (τ : Ordᵀ) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
+tunderlying-rorder τ x y = ¬(y ≺⟪ τ ⟫ x)
+
+syntax tunderlying-rorder τ x y = x ≼⟪ τ ⟫ y
+
 topped : (τ : Ordᵀ) → has-top (tunderlying-order τ)
 topped (α , t) = t
 

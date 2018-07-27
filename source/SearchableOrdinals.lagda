@@ -175,52 +175,69 @@ Completed 27 July 2018. There is a dense embedding of the discrete
 ordinals into the searchable ordinals, where density means that the
 complement of the image of the embedding is empty.
 
+"eds" stands for "embedding of the discrete ordinals into the
+searchable ordinals".
+
 \begin{code}
 
-ord'-ord        : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
-ord-dense       : (α : OE) → is-dense (ord'-ord α)
-ord-embedding   : (α : OE) → is-embedding (ord'-ord α)
+eds           : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
+eds-dense     : (α : OE) → is-dense (eds α)
+eds-embedding : (α : OE) → is-embedding (eds α)
 
-ord'-ord One = id
-ord'-ord (Add α β) = pair-fun
-                      id
-                      (dep-cases (λ _ → ord'-ord α) (λ _ → ord'-ord β))
+eds One = id
+eds (Add α β) = pair-fun id (dep-cases (λ _ → eds α) (λ _ → eds β))
+eds (Mul α β) = pair-fun (eds α) (λ _ → eds β)
+eds (Sum1 α) = Σ↑ (λ n → ⟪ ord' (α n) ⟫) (λ n → ⟪ ord (α n) ⟫) (eds ∘ α)
 
-ord'-ord (Mul α β) = pair-fun (ord'-ord α) (λ _ → ord'-ord β)
-ord'-ord (Sum1 α) = Σ↑
-                     (λ n → ⟪ ord' (α n) ⟫)
-                     (λ n → ⟪ ord (α n) ⟫)
-                     (ord'-ord ∘ α)
-
-ord-dense One = id-is-dense
-ord-dense (Add α β) = pair-fun-dense
+eds-dense One = id-is-dense
+eds-dense (Add α β) = pair-fun-dense
                        id
-                       (dep-cases (λ _ → ord'-ord α) (λ _ → ord'-ord β))
+                       (dep-cases (λ _ → eds α) (λ _ → eds β))
                        id-is-dense
-                       (dep-cases (λ _ → ord-dense α) (λ _ → ord-dense β))
-ord-dense (Mul α β) = pair-fun-dense _ _ (ord-dense α) (λ _ → ord-dense β)
-ord-dense (Sum1 α) = Σ↑-dense
+                       (dep-cases (λ _ → eds-dense α) (λ _ → eds-dense β))
+eds-dense (Mul α β) = pair-fun-dense _ _ (eds-dense α) (λ _ → eds-dense β)
+eds-dense (Sum1 α) = Σ↑-dense
                       (λ n → ⟪ ord' (α n) ⟫)
                       (λ n → ⟪ ord (α n) ⟫)
-                      (ord'-ord ∘ α)
-                      (ord-dense ∘ α)
+                      (eds ∘ α)
+                      (eds-dense ∘ α)
 
-ord-embedding One = id-is-embedding
-ord-embedding (Add α β) = pair-fun-embedding
+eds-embedding One = id-is-embedding
+eds-embedding (Add α β) = pair-fun-embedding
                            id
-                           (dep-cases (λ _ → ord'-ord α) (λ _ → ord'-ord β))
+                           (dep-cases (λ _ → eds α) (λ _ → eds β))
                            id-is-embedding
-                           (dep-cases (λ _ → ord-embedding α) (λ _ → ord-embedding β))
-ord-embedding (Mul α β) = pair-fun-embedding _ _ (ord-embedding α) (λ _ → ord-embedding β)
-ord-embedding (Sum1 α) = Σ↑-embedding
+                           (dep-cases (λ _ → eds-embedding α) (λ _ → eds-embedding β))
+eds-embedding (Mul α β) = pair-fun-embedding _ _ (eds-embedding α) (λ _ → eds-embedding β)
+eds-embedding (Sum1 α) = Σ↑-embedding
                           (λ n → ⟪ ord' (α n) ⟫)
                           (λ n → ⟪ ord (α n) ⟫)
-                          (ord'-ord ∘ α)
-                          (ord-embedding ∘ α)
+                          (eds ∘ α)
+                          (eds-embedding ∘ α)
+
+{- TODO: The embedding preserves and reflects order.
+eds-preserves-order : (α : OE) (x y : ⟪ ord' α ⟫)
+               → x ≺⟪ ord' α ⟫ y
+               → (eds α x) ≺⟪ ord α ⟫ (eds α y)
+eds-preserves-order = {!!}
+
+eds-reflects-order : (α : OE) (x y : ⟪ ord' α ⟫)
+               → (eds α x) ≺⟪ ord α ⟫ (eds α y)
+               → x ≺⟪ ord' α ⟫ y
+eds-reflects-order = {!!}
+-}
+
+{- TODO: every decidable inhabited subset has a least element.
+open import InfSearchable
+
+ord-inf-searchable : (α : OE) → inf-searchable (λ x y → x ≼⟪ ord α ⟫ y)
+ord-inf-searchable = {!!}
+-}
 
 \end{code}
 
-(TODO: The above discrete ordinals are enumerable.)
+
+TODO: The above discrete ordinals are enumerable.
 
 Brouwer ordinal codes can be mapped to searchable ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is
