@@ -31,9 +31,6 @@ open import SquashedSum fe
 open import CoNaturals fe
 open import Sequence fe renaming (head to head') renaming (tail to tail') renaming (_∶∶_ to _∶∶'_)
 
-fe₀ : funext U₀ U₀
-fe₀ = fe U₀ U₀
-
 \end{code}
 
 A delayed element of X is a "time" u : ℕ∞ together with a partial

@@ -42,7 +42,7 @@ g ∘ f = λ x → g(f x)
 
 \end{code}
 
-Empty type.
+xsEmpty type.
 
 \begin{code}
 

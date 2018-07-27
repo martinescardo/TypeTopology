@@ -1,4 +1,4 @@
-Martin Escardo, 2 May 2014
+Martin Escardo, 2 May 2014.
 
 See remarks below for an explanation.
 
@@ -23,6 +23,9 @@ open import ExtendedSumSearchable fe
 open import DiscreteAndSeparated
 open import UF-SetExamples
 
+fe₀ : funext U₀ U₀
+fe₀ = fe U₀ U₀
+
 \end{code}
 
 Recall that the map under : ℕ → ℕ∞ is the natural embedding. Given a
@@ -37,18 +40,21 @@ interesting is that if each X n is searchable then so is Σ¹ X.
 Σ¹ X = Σ (X / under)
 
 Σ¹-searchable : ∀ {U} (X : ℕ → U ̇)
-             → ((n : ℕ) → searchable(X n)) → searchable(Σ¹ X)
+             → ((n : ℕ) → searchable(X n))
+             → searchable(Σ¹ X)
 Σ¹-searchable X ε = extended-sum-searchable
                      under
-                     (under-embedding (fe U₀ U₀))
+                     (under-embedding fe₀)
                      ε
                      ℕ∞-searchable
 
 \end{code}
 
+Added 26 July 2018 (implementing ideas of several years ago).
+
 We now develop a discrete (but not searchable) version Σ₁ X of Σ¹ X
 with a dense embedding into Σ¹ X, where an embedding is called dense
-if the complement of its image is empty. Recall that the map
+if the complement of its image is empty. Recall that the function
 over𝟙 : ℕ + 𝟙 → ℕ∞ is the natural embedding that maps the isolated
 added point to ∞, which is dense.
 
@@ -56,6 +62,9 @@ added point to ∞, which is dense.
 
 over : ℕ → ℕ + 𝟙
 over = inl {U₀} {U₀}
+
+over-embedding : is-embedding over
+over-embedding = inl-embedding ℕ 𝟙
 
 Σ₁ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ₁ X = Σ (X / over)
@@ -69,7 +78,7 @@ over-discrete : ∀ {U} (X : ℕ → U ̇)
 over-discrete X d (inl n) = retract-discrete-discrete
                              (equiv-retract-l
                                (Π-extension-in-range X over
-                                  (inl-embedding ℕ 𝟙) n))
+                                  over-embedding n))
                              (d n)
 over-discrete X d (inr *) = retract-discrete-discrete {U₀}
                              (equiv-retract-l
@@ -77,18 +86,25 @@ over-discrete X d (inr *) = retract-discrete-discrete {U₀}
                                    (λ n → +disjoint)))
                              𝟙-discrete
 
-
 Σ₁-discrete : ∀ {U} (X : ℕ → U ̇)
-           → ((n : ℕ) → discrete(X n)) → discrete (Σ₁ X)
+           → ((n : ℕ) → discrete(X n))
+           → discrete (Σ₁ X)
 Σ₁-discrete X d = Σ-discrete
                     (+discrete ℕ-discrete 𝟙-discrete)
                     (over-discrete X d)
 
+\end{code}
+
+The type (X / over) z is densely embedded into the type
+(X / under) (under𝟙 z):
+
+\begin{code}
+
 over-under : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
           → (X / over) z ↪ᵈ (X / under) (under𝟙 z)
 over-under X (inl n) = equiv-dense-embedding (
- (X / over) (over n)   ≃⟨ Π-extension-in-range X over (inl-embedding ℕ 𝟙) n ⟩
- X n                   ≃⟨ ≃-sym (Π-extension-in-range X under (under-embedding (fe U₀ U₀)) n) ⟩
+ (X / over) (over n)   ≃⟨ Π-extension-in-range X over over-embedding n ⟩
+ X n                   ≃⟨ ≃-sym (Π-extension-in-range X under (under-embedding fe₀) n) ⟩
  (X / under) (under n) ■)
 over-under X (inr *) = equiv-dense-embedding (
  (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
@@ -103,6 +119,13 @@ over-under-map-dense : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
                     → is-dense (over-under-map X z)
 over-under-map-dense X z = is-dense-detofun (over-under X z)
 
+\end{code}
+
+The discrete type Σ₁ X is densely embedded into
+the searchable type Σ¹ X:
+
+\begin{code}
+
 Σ-up : ∀ {U} (X : ℕ → U ̇) → Σ₁ X → Σ¹ X
 Σ-up X = pair-fun under𝟙 (over-under-map X)
 
@@ -110,14 +133,120 @@ over-under-map-dense X z = is-dense-detofun (over-under X z)
 Σ-up-embedding X = pair-fun-embedding
                     under𝟙
                     (over-under-map X)
-                    (under𝟙-embedding (fe U₀ U₀))
+                    (under𝟙-embedding fe₀)
                     (λ z → is-embedding-detofun (over-under X z))
 
 Σ-up-dense : ∀ {U} (X : ℕ → U ̇) → is-dense (Σ-up X)
 Σ-up-dense X = pair-fun-dense under𝟙
                 (over-under-map X)
-                (under𝟙-dense (fe U₀ U₀))
+                (under𝟙-dense fe₀)
                 (λ z → is-dense-detofun (over-under X z))
+
+\end{code}
+
+But this is not enough: we need a map Σ↑ : Σ₁ X → Σ¹ Y given maps f n
+: X n → Y n, which has to preserve dense embeddings.
+
+\begin{code}
+
+Over : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+       (f : (n : ℕ) → X n → Y n)
+    → (z : ℕ + 𝟙) → (X / over) z → (Y / over) z
+Over X Y f (inl n) =
+  equiv-to-fun (≃-sym (Π-extension-in-range Y over over-embedding n)) ∘
+  f n ∘
+  equiv-to-fun (Π-extension-in-range X over over-embedding n)
+Over X Y f (inr *) =
+  _∘_ {_} {U₀}
+   (equiv-to-fun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ _ → +disjoint))))
+   (equiv-to-fun (Π-extension-out-of-range X over (inr *) (λ _ → +disjoint)))
+
+\end{code}
+
+The following two proofs look complicated, but are rather simple:
+composition preserves dense maps and embeddings, and equivalences are
+dense embeddings.
+
+\begin{code}
+
+Over-dense : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+             (f : (n : ℕ) → X n → Y n)
+          → ((n : ℕ) → is-dense (f n))
+          → (z : ℕ + 𝟙) → is-dense (Over X Y f z)
+Over-dense X Y f d (inl n) =
+ comp-dense
+  (comp-dense
+    (is-equiv-is-dense (equiv-to-fun (Π-extension-in-range X over over-embedding n))
+     (is-equiv-equiv-to-fun (Π-extension-in-range X over over-embedding n)))
+    (d n))
+  (is-equiv-is-dense (equiv-to-fun (≃-sym (Π-extension-in-range Y over over-embedding n)))
+   (is-equiv-equiv-to-fun (≃-sym (Π-extension-in-range Y over over-embedding n))))
+Over-dense X Y f d (inr *) =
+ comp-dense {_} {U₀}
+  (is-equiv-is-dense (equiv-to-fun (Π-extension-out-of-range X over (inr *) (λ x → +disjoint)))
+   (is-equiv-equiv-to-fun (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
+  (is-equiv-is-dense (equiv-to-fun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
+   (is-equiv-equiv-to-fun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+
+Over-embedding : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+                 (f : (n : ℕ) → X n → Y n)
+              → ((n : ℕ) → is-embedding (f n))
+              → (z : ℕ + 𝟙) → is-embedding (Over X Y f z)
+Over-embedding {U} X Y f d (inl n) =
+ comp-embedding
+  (comp-embedding
+    (is-equiv-is-embedding (equiv-to-fun (Π-extension-in-range X over over-embedding n))
+     (is-equiv-equiv-to-fun (Π-extension-in-range X over over-embedding n)))
+    (d n))
+  (is-equiv-is-embedding (equiv-to-fun (≃-sym (Π-extension-in-range Y over over-embedding n)))
+   (is-equiv-equiv-to-fun (≃-sym (Π-extension-in-range Y over over-embedding n))))
+Over-embedding {U} X Y f d (inr *) =
+ comp-embedding {U} {U₀}
+  (is-equiv-is-embedding (equiv-to-fun (Π-extension-out-of-range X over (inr *) (λ x → +disjoint)))
+   (is-equiv-equiv-to-fun (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
+  (is-equiv-is-embedding (equiv-to-fun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
+   (is-equiv-equiv-to-fun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+
+Σ₁-functor : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
+           → Σ₁ X → Σ₁ Y
+Σ₁-functor X Y f = pair-fun id (Over X Y f)
+
+Σ₁-functor-dense : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+                   (f : (n : ℕ) → X n → Y n)
+                → ((n : ℕ) → is-dense (f n))
+                → is-dense (Σ₁-functor X Y f)
+Σ₁-functor-dense X Y f d = pair-fun-dense
+                            id
+                            (Over X Y f)
+                            id-is-dense
+                            (Over-dense X Y f d)
+
+Σ₁-functor-embedding : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+                       (f : (n : ℕ) → X n → Y n)
+                    → ((n : ℕ) → is-embedding (f n))
+                    → is-embedding (Σ₁-functor X Y f)
+Σ₁-functor-embedding X Y f e = pair-fun-embedding
+                                id
+                                (Over X Y f)
+                                id-is-embedding
+                                (Over-embedding X Y f e)
+
+Σ↑ : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+      (f : (n : ℕ) → X n → Y n)
+   → Σ₁ X → Σ¹ Y
+Σ↑ X Y f = Σ-up Y ∘ Σ₁-functor X Y f
+
+Σ↑-dense : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+            (f : (n : ℕ) → X n → Y n)
+         → ((n : ℕ) → is-dense (f n))
+         → is-dense (Σ↑ X Y f)
+Σ↑-dense X Y f d = comp-dense (Σ₁-functor-dense X Y f d) (Σ-up-dense Y)
+
+Σ↑-embedding : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+               (f : (n : ℕ) → X n → Y n)
+            → ((n : ℕ) → is-embedding (f n))
+            → is-embedding (Σ↑ X Y f)
+Σ↑-embedding X Y f d = comp-embedding (Σ₁-functor-embedding X Y f d) (Σ-up-embedding Y)
 
 \end{code}
 
@@ -130,6 +259,8 @@ under𝟙-over-extension : ∀ {U} {X : ℕ → U ̇} (u : ℕ∞)
 under𝟙-over-extension = iterated-extension over under𝟙
 
 \end{code}
+
+End. What follows is an old version of part of the above.
 
 The original version of the searchability of the squashed sum, given
 below was much more convoluted, as it didn't use injective types, but
@@ -197,7 +328,7 @@ module original-version-and-equivalence-with-new-version where
 \begin{code}
 
  H : {X : ℕ → U₀ ̇} → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
- H {X} u r y y' = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s → lemma k s))
+ H {X} u r y y' = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s
    lemma k s = 𝟘-elim(∞-is-not-ℕ k (r ⁻¹ ∙ s ⁻¹))
@@ -215,7 +346,7 @@ module original-version-and-equivalence-with-new-version where
  G n u r y = y n r
 
  FG : {X : ℕ → U₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
- FG {X} n u r y = dfunext (fe U₀ U₀) (λ k → dfunext (fe U₀ U₀) (λ s → lemma k s))
+ FG {X} n u r y = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
    f = transport X
@@ -227,7 +358,7 @@ module original-version-and-equivalence-with-new-version where
    A n k t = (u : ℕ∞) (r : under n ≡ u) (s : under k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
 
    φ : (n : ℕ) → A n n refl
-   φ n = λ u r s y → ap (y n) (ℕ∞-is-set (fe U₀ U₀) r s)
+   φ n = λ u r s y → ap (y n) (ℕ∞-is-set fe₀ r s)
 
    lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
    lemma k s = J A φ {n} {k} (t k s) u r s y
@@ -290,7 +421,7 @@ module original-version-and-equivalence-with-new-version where
    lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
 
    lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-   lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ (fe U₀ U₀) (λ n q → lemma₁' r y s n (q ⁻¹))))
+   lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ fe₀ (λ n q → lemma₁' r y s n (q ⁻¹))))
 
 \end{code}
 
@@ -304,7 +435,7 @@ module original-version-and-equivalence-with-new-version where
 
 \end{code}
 
- Martin Escardo, 2 May 2014
+ Added 2 May 2014.
 
  We show that the old and new squashed sums agree.
 
@@ -312,14 +443,15 @@ module original-version-and-equivalence-with-new-version where
 
  open import UF-EquivalenceExamples
 
- agreement-lemma : (X : ℕ → U₀ ̇) (u : ℕ∞) → (X / under) u ≃ Π (λ x → under x ≡ u → X x) -- (X / under) u ≃ (X [ u ])
+ agreement-lemma : (X : ℕ → U₀ ̇) (u : ℕ∞)
+                → (X / under) u ≃ Π (λ x → under x ≡ u → X x)
  agreement-lemma X = 2nd-Π-extension-formula X under
 
  agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σᴵ X
  agreement X = Σ-≃-congruence
-                    ℕ∞
-                    (X / under)
-                    (λ u → X [ u ])
-                    (agreement-lemma X)
+                 ℕ∞
+                 (X / under)
+                 (λ u → X [ u ])
+                 (agreement-lemma X)
 
 \end{code}

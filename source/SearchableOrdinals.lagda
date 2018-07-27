@@ -21,9 +21,10 @@ open import TotallySeparated
 open import UF-Retracts
 open import UF-Embedding
 open import DiscreteAndSeparated
-
-fe₀ : funext U₀ U₀
-fe₀ = fe U₀ U₀
+open import UF-SetExamples
+open import UF-Subsingletons
+open import SquashedCantor fe
+open import UF-Retracts-FunExt
 
 \end{code}
 
@@ -72,23 +73,63 @@ The underlying sets  of such ordinals are searchable:
 \begin{code}
 
 sord : (α : OE) → searchable ⟪ ord α ⟫
-sord       One = 𝟙-usearchable
-sord (Add α β) = +º-usearchable (ord α) (ord β) (sord α) (sord β)
-sord (Mul α β) = ×º-usearchable (ord α) (ord β) (sord α) (sord β)
-sord (Sum1 α)  = ∑¹-usearchable (ord ∘ α) (λ n → sord (α n))
+sord       One = 𝟙-searchable
+sord (Add α β) = Σ-searchable
+                   𝟙+𝟙-searchable
+                   (dep-cases (λ _ → sord α) (λ _ → sord β))
+sord (Mul α β) = Σ-searchable (sord α) (λ _ → sord β)
+sord (Sum1 α)  = Σ¹-searchable (λ n → ⟪ ord (α n) ⟫) (sord ∘ α)
 
 \end{code}
 
 Completed 20th July 2018:
-They are retracts of the Cantor type (ℕ → 𝟚):
+The searchable ordinals are retracts of the Cantor type (ℕ → 𝟚).
+
+The complication of the following proof in the case for addition is
+that the ordinal 𝟚º has underlying set 𝟙+𝟙 rather than 𝟚, and that
+(hence) we defined the ordinal +º as a sum indexed by 𝟙+𝟙 rather than
+as a co-product. This saved lots of code elsewhere, but adds labour
+here (and in some helper lemmas/constructions that we added in other
+modules for this purpose). Notice that +' is the sum indexed by 𝟚,
+defined in the module SpartanMLTT.
 
 \begin{code}
 
-cord : (α : OE) → retract  ⟪ ord α ⟫ of (ℕ → 𝟚)
-cord       One = 𝟙-Cantor-retract
-cord (Add α β) = +º-Cantor-retract (ord α) (ord β) (cord α) (cord β)
-cord (Mul α β) = ×º-Cantor-retract (ord α) (ord β) (cord α) (cord β)
-cord (Sum1 α)  = ∑¹-Cantor-retract (ord ∘ α) (λ n → cord (α n))
+cord : (α : OE) → retract  ⟪ ord α ⟫ of Cantor
+cord       One = (λ _ → *) , (λ _ → λ n → ₀) , (λ x → 𝟙-is-prop * x)
+cord (Add α β) = retracts-compose d e
+ where
+  a : retract (Cantor +' Cantor) of (Cantor + Cantor)
+  a = +'-retract-of-+
+  b : retract (Cantor +' Cantor) of Cantor
+  b = retracts-compose +-Cantor-retract a
+  c : retract ⟪ ord α ⟫ +' ⟪ ord β ⟫ of (Cantor +' Cantor)
+  c = +'-retract (cord α) (cord β)
+  d : retract ⟪ ord α ⟫ +' ⟪ ord β ⟫ of Cantor
+  d = retracts-compose b c
+  e : retract ⟪ ord α +º ord β ⟫ of (⟪ ord α ⟫ +' ⟪ ord β ⟫)
+  e = transport (λ - → retract ⟪ ord α +º ord β ⟫ of (Σ -)) (dfunext (fe U₀ (U₀ ′)) l) h
+   where
+    f : 𝟚 → 𝟙 + 𝟙
+    f = 𝟚-cases (inl *) (inr *)
+    g : 𝟙 + 𝟙 → 𝟚
+    g = cases (λ x → ₀) (λ x → ₁)
+    fg : (x : 𝟙 + 𝟙) → f (g x) ≡ x
+    fg (inl *) = refl
+    fg (inr *) = refl
+    h : retract ⟪ ord α +º ord β ⟫ of (Σ \(i : 𝟚) → ⟪ cases (λ _ → ord α) (λ _ → ord β) (f i) ⟫)
+    h = Σ-reindex-retract f (g , fg)
+    l : (i : 𝟚) → ⟪ cases (λ _ → ord α) (λ _ → ord β) (f i) ⟫
+                ≡ 𝟚-cases ⟪ ord α ⟫ ⟪ ord β ⟫ i
+    l ₀ = refl
+    l ₁ = refl
+cord (Mul α β) = retracts-compose a b
+ where
+  a : retract (Cantor × Cantor) of Cantor
+  a = pair-seq-retract fe₀
+  b : retract ⟪ ord α ⟫ × ⟪ ord β ⟫ of (Cantor × Cantor)
+  b = ×-retract (cord α) (cord β)
+cord (Sum1 α)  = squashed-Cantor-retract (λ n → ⟪ ord (α n) ⟫) (cord ∘ α)
 
 \end{code}
 
@@ -121,26 +162,65 @@ ord' (Mul α β) = ord' α ×º  ord' β
 ord' (Sum1 α)  = ∑₁ \(i : ℕ) → ord'(α i)
 
 dord' : (α : OE) → discrete ⟪ ord' α ⟫
-dord'      One  = 𝟙-udiscrete
-dord' (Add α β) = +udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
-dord' (Mul α β) = ×udiscrete (ord' α) (ord' β) (dord' α) (dord' β)
-dord' (Sum1 α)  = ∑₁-udiscrete (ord' ∘ α) (λ n → dord' (α n))
-
-{- TODO
-ord'-ord : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
-ord'-ord One = id
-ord'-ord (Add α β) = {!!}
-ord'-ord (Mul α β) = pair-fun (ord'-ord α) (λ _ → ord'-ord β)
-ord'-ord (Sum1 α) = {!!}
-
-ord-embedding : (α : OE) → is-embedding (ord'-ord α)
-ord-embedding One = id-is-embedding
-ord-embedding (Add α β) = {!!}
-ord-embedding (Mul α β) = pair-fun-embedding _ _ (ord-embedding α) (λ _ → ord-embedding β)
-ord-embedding (Sum1 α) = {!!}
--}
+dord'      One  = 𝟙-discrete
+dord' (Add α β) = Σ-discrete
+                    (+discrete 𝟙-discrete 𝟙-discrete)
+                    (dep-cases (λ _ → dord' α) (λ _ → dord' β))
+dord' (Mul α β) = Σ-discrete (dord' α) (λ _ → dord' β)
+dord' (Sum1 α)  = Σ₁-discrete (λ n → ⟪ ord' (α n) ⟫) (dord' ∘ α)
 
 \end{code}
+
+Completed 27 July 2018. There is a dense embedding of the discrete
+ordinals into the searchable ordinals, where density means that the
+complement of the image of the embedding is empty.
+
+\begin{code}
+
+ord'-ord        : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
+ord-dense       : (α : OE) → is-dense (ord'-ord α)
+ord-embedding   : (α : OE) → is-embedding (ord'-ord α)
+
+ord'-ord One = id
+ord'-ord (Add α β) = pair-fun
+                      id
+                      (dep-cases (λ _ → ord'-ord α) (λ _ → ord'-ord β))
+
+ord'-ord (Mul α β) = pair-fun (ord'-ord α) (λ _ → ord'-ord β)
+ord'-ord (Sum1 α) = Σ↑
+                     (λ n → ⟪ ord' (α n) ⟫)
+                     (λ n → ⟪ ord (α n) ⟫)
+                     (ord'-ord ∘ α)
+
+ord-dense One = id-is-dense
+ord-dense (Add α β) = pair-fun-dense
+                       id
+                       (dep-cases (λ _ → ord'-ord α) (λ _ → ord'-ord β))
+                       id-is-dense
+                       (dep-cases (λ _ → ord-dense α) (λ _ → ord-dense β))
+ord-dense (Mul α β) = pair-fun-dense _ _ (ord-dense α) (λ _ → ord-dense β)
+ord-dense (Sum1 α) = Σ↑-dense
+                      (λ n → ⟪ ord' (α n) ⟫)
+                      (λ n → ⟪ ord (α n) ⟫)
+                      (ord'-ord ∘ α)
+                      (ord-dense ∘ α)
+
+ord-embedding One = id-is-embedding
+ord-embedding (Add α β) = pair-fun-embedding
+                           id
+                           (dep-cases (λ _ → ord'-ord α) (λ _ → ord'-ord β))
+                           id-is-embedding
+                           (dep-cases (λ _ → ord-embedding α) (λ _ → ord-embedding β))
+ord-embedding (Mul α β) = pair-fun-embedding _ _ (ord-embedding α) (λ _ → ord-embedding β)
+ord-embedding (Sum1 α) = Σ↑-embedding
+                          (λ n → ⟪ ord' (α n) ⟫)
+                          (λ n → ⟪ ord (α n) ⟫)
+                          (ord'-ord ∘ α)
+                          (ord-embedding ∘ α)
+
+\end{code}
+
+(TODO: The above discrete ordinals are enumerable.)
 
 Brouwer ordinal codes can be mapped to searchable ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is
@@ -165,7 +245,7 @@ ordinal ε₀ (because sums dominate suprema):
 ε₀-upper-bound : Ordᵀ
 ε₀-upper-bound = ord(brouwer-to-oe B-ε₀)
 
-searchable-ε₀-ub : usearchable ε₀-upper-bound
+searchable-ε₀-ub : searchable ⟪ ε₀-upper-bound ⟫
 searchable-ε₀-ub = sord(brouwer-to-oe B-ε₀)
 
 \end{code}

@@ -89,7 +89,7 @@ pr₁-lc-bis f {u} {v} r = embedding-lc pr₁ (pr₁-embedding (λ x → f {x}))
 pr₁-embedding-converse : ∀ {U V} {X : U ̇} {Y : X → V ̇}
                        → is-embedding (pr₁ {U} {V} {X} {Y})
                        → ((x : X) → is-prop(Y x))
-pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
+pr₁-embedding-converse {U} {V} {X} {Y} ie x = h
   where
     e : Σ Y → X
     e = pr₁ {U} {V} {X} {Y}
@@ -101,15 +101,17 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = go
     r ((x , y) , refl) = y
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
-    go : is-prop(Y x)
-    go = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
+    h : is-prop(Y x)
+    h = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
 K-idtofun-lc : ∀ {U} → K (U ′)
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
 left-cancellable-maps-into-sets-are-embeddings : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
-                                               → left-cancellable f → is-set Y → is-embedding f
+                                               → left-cancellable f
+                                               → is-set Y
+                                               → is-embedding f
 left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (r , q)
  where
    r : x ≡ x'
@@ -119,10 +121,34 @@ left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x ,
 
 left-cancellable-maps-are-embeddings-with-K : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
                                             → left-cancellable f → K V → is-embedding f
-left-cancellable-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k = left-cancellable-maps-into-sets-are-embeddings f f-lc (k Y)
+left-cancellable-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k =
+ left-cancellable-maps-into-sets-are-embeddings f f-lc (k Y)
 
 id-is-embedding : ∀ {U} {X : U ̇} → is-embedding (id {U} {X})
 id-is-embedding = identifications-to-is-prop
+
+comp-embedding : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
+                {f : X → Y} {g : Y → Z}
+              → is-embedding f
+              → is-embedding g
+              → is-embedding (g ∘ f)
+comp-embedding {U} {V} {W} {X} {Y} {Z} {f} {g} e d = h
+ where
+  T : (z : Z) → U ⊔ V ⊔ W ̇
+  T z = Σ \(w : fiber g z) → fiber f (pr₁ w)
+  T-is-prop : (z : Z) → is-prop (T z)
+  T-is-prop z = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
+  φ : (z : Z) → fiber (g ∘ f) z → T z
+  φ z (x , p) = (f x , p) , x , refl
+  γ : (z : Z) → T z → fiber (g ∘ f) z
+  γ z ((.(f x) , p) , x , refl) = x , p
+  γφ : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ≡ t
+  γφ .(g (f x)) (x , refl) = refl
+  h : (z : Z) → is-prop (fiber (g ∘ f) z)
+  h z = subtype-of-prop-is-prop
+         (φ z)
+         (has-retraction-lc (φ z) (γ z , (γφ z)))
+         (T-is-prop z)
 
 disjoint-images : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} → (X → A) → (Y → A) → U ⊔ V ⊔ W ̇
 disjoint-images f g = ∀ x y → f x ≢ g y
@@ -163,7 +189,26 @@ This can be deduced directly from Yoneda.
 \begin{code}
 
 is-dense : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
-is-dense f = is-empty (Σ \y → ¬(fiber f y))
+is-dense f = is-empty (Σ \y → ¬ fiber f y)
+
+id-is-dense : ∀ {U} {X : U ̇} → is-dense (id {U} {X})
+id-is-dense (y , n) = n (y , refl)
+
+comp-dense : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
+                {f : X → Y} {g : Y → Z}
+           → is-dense f
+           → is-dense g
+           → is-dense (g ∘ f)
+comp-dense {U} {V} {W} {X} {Y} {Z} {f} {g} e d = h
+ where
+  h : ¬ Σ \(z : Z) → ¬ fiber (g ∘ f) z
+  h (z , n) = d (z , k)
+   where
+    k : ¬ fiber g z
+    k (y , refl) = e (y , l)
+     where
+      l : ¬ fiber f y
+      l (x , refl) = n (x , refl)
 
 \end{code}
 
@@ -181,15 +226,15 @@ module _ {U V} {X : U ̇} {Y : V ̇} where
  retraction-is-dense : (r : X → Y) → has-section r → is-dense r
  retraction-is-dense r (s , rs) (y , n) = n (s y , rs y)
 
- equiv-is-dense : (f : X → Y) → is-equiv f → is-dense f
- equiv-is-dense f e = retraction-is-dense f (is-equiv-has-section f e)
+ is-equiv-is-dense : (f : X → Y) → is-equiv f → is-dense f
+ is-equiv-is-dense f e = retraction-is-dense f (is-equiv-has-section f e)
 
  equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
  equiv-dense-embedding e = equiv-to-fun e ,
                             is-equiv-is-embedding
                               (equiv-to-fun e)
                               (is-equiv-equiv-to-fun e),
-                            equiv-is-dense
+                            is-equiv-is-dense
                               (equiv-to-fun e)
                               (is-equiv-equiv-to-fun e)
 
@@ -241,13 +286,13 @@ module _ {U V W T}
                → is-dense pair-fun
  pair-fun-dense i j = contrapositive γ i
   where
-   γ : (Σ \(w : Σ B) → ¬(fiber pair-fun w)) → Σ \(y : Y) → ¬(fiber f y)
+   γ : (Σ \(w : Σ B) → ¬ fiber pair-fun w) → Σ \(y : Y) → ¬ fiber f y
    γ ((y , b) , n) = y , m
     where
-     m : ¬(fiber f y)
+     m : ¬ fiber f y
      m (x , refl) = j x (b , l)
       where
-       l : ¬(fiber (g x) b)
+       l : ¬ fiber (g x) b
        l (a , refl) = n ((x , a) , refl)
 
 inl-embedding : ∀ {U V} (X : U ̇) (Y : V ̇)
