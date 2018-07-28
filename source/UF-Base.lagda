@@ -30,10 +30,10 @@ trans-sym refl = refl
 trans-sym' : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
 trans-sym' refl = refl
 
-transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : Y → W ̇}
+transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : Y → W ̇)
               (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
              → transport (A ∘ f) p a ≡ transport A (ap f p) a
-transport-ap f refl = refl
+transport-ap A f refl = refl
 
 nat-transport : ∀ {U V W} {X : U ̇} {A : X → V ̇} {B : X → W ̇}
                 (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}

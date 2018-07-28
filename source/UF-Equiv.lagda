@@ -434,7 +434,7 @@ NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr�
   φγ (y , a) = to-Σ-≡ (fg y , q)
    where
     q : transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡ a
-    q = transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡⟨ transport-ap g (fg y) ⟩
+    q = transport (λ - → A (g -)) (fg y) (back-transport A (gf (g y)) a) ≡⟨ transport-ap A g (fg y) ⟩
         transport A (ap g (fg y)) (back-transport A (gf (g y)) a)        ≡⟨ ap (λ - → transport A - (back-transport A (gf (g y)) a)) (α y) ⟩
         transport A (gf (g y)) (back-transport A (gf (g y)) a)           ≡⟨ back-and-forth-transport (gf (g y)) ⟩
         a ∎

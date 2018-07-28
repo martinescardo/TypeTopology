@@ -638,6 +638,12 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
 under-order-preserving : (m n : ℕ) → m < n → under m ≺ under n
 under-order-preserving m n l = m , refl , <-coarser-than-⊏ m n l
 
+under-order-reflecting : (m n : ℕ) → under m ≺ under n → m < n
+under-order-reflecting m n (m' , p , l') = ⊏-coarser-than-< m n l
+ where
+  l : m ⊏ under n
+  l = back-transport (λ - → - ⊏ under n) (under-lc p) l'
+
 {- TODO
 
 <-coarser-than-≺ : (m n : ℕ) → under m ≺ under n → m < n

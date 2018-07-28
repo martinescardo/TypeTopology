@@ -12,6 +12,7 @@ module Ordinals
 
 open import SpartanMLTT
 open import UF-Base
+open import UF-Equiv
 open import UF-Subsingletons
 open import OrdinalNotions
 open import WellOrderArithmetic
@@ -20,6 +21,7 @@ open import NaturalsOrder renaming (_<_ to _≺[ℕ]_)
 open import UF-Embedding
 open import UF-InjectiveTypes fe
 open import SquashedSum fe
+open import UF-Retracts
 
 U = U₀
 V = U₁
@@ -309,4 +311,143 @@ Overᵒ-order-preserving τ υ f p (inr *) x y ((n , ()) , l)
                                  (∑-up υ)
                                  (∑₁-functor-order-preserving τ υ f p)
                                  (∑-up-order-preserving υ)
+\end{code}
+
+And now order reflection.
+
+\begin{code}
+
+order-reflecting : (τ υ : Ordᵀ) →  (⟪ τ ⟫ → ⟪ υ ⟫) → U ̇
+order-reflecting τ υ f = (x y : ⟪ τ ⟫) → f x ≺⟪ υ ⟫ f y → x ≺⟪ τ ⟫ y
+
+open import UF-Embedding
+
+comp-order-reflecting : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
+                     → order-reflecting τ υ f
+                     → order-reflecting υ φ g
+                     → order-reflecting τ φ (g ∘ f)
+comp-order-reflecting τ υ φ f g p q x y l = p x y (q (f x) (f y) l)
+
+pair-fun-order-reflecting : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B : ⟪ υ ⟫ → Ordᵀ)
+                            (f : ⟪ τ ⟫ → ⟪ υ ⟫)
+                            (g  : (x : ⟪ τ ⟫) → ⟪ A x ⟫ → ⟪ B (f x) ⟫)
+                         → order-reflecting τ υ f
+                         → is-embedding f
+                         → ((x : ⟪ τ ⟫) → order-reflecting (A x) (B (f x)) (g x))
+                         → order-reflecting (∑ {τ} A) (∑ {υ} B) (pair-fun f g)
+
+pair-fun-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inl l) = inl (φ x y l)
+pair-fun-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l)) = inr (c r , p)
+ where
+  e' : is-equiv (ap f)
+  e' = embedding-embedding' f e x y
+  c : f x ≡ f y → x ≡ y
+  c = pr₁(pr₁ e')
+  η : (q : f x ≡ f y) → ap f (c q) ≡ q
+  η = pr₂(pr₁ e')
+  i : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a)
+   ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
+  i = transport-ap (λ - → ⟪ B - ⟫) f (c r)
+  j : transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a) ≺⟪ B (f y) ⟫ (g y b)
+  j = back-transport (λ - → transport (λ - → ⟪ B - ⟫) - (g x a) ≺⟪ B (f y) ⟫ (g y b)) (η r) l
+  k : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a) ≺⟪ B (f y) ⟫ (g y b)
+  k = back-transport (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
+  h : {x y : ⟪ τ ⟫} (s : x ≡ y) {a : ⟪ A x ⟫} {b : ⟪ A y ⟫}
+   → transport (λ - → ⟪ B (f -) ⟫) s (g x a) ≺⟪ B (f y) ⟫ (g y b)
+   → transport (λ - → ⟪ A - ⟫) s a ≺⟪ A y ⟫ b
+  h {x} refl {a} {b} = γ x a b
+  p : transport (λ - → ⟪ A - ⟫) (c r) a ≺⟪ A y ⟫ b
+  p = h (c r) k
+
+under𝟙ᵒ-order-reflecting : order-reflecting (succₒ ℕₒ) ℕ∞ᵒ under𝟙ᵒ
+under𝟙ᵒ-order-reflecting (inl n) (inl m) l = under-order-reflecting n m l
+under𝟙ᵒ-order-reflecting (inl n) (inr *) l = *
+under𝟙ᵒ-order-reflecting (inr *) (inl m) (n , (p , l)) = 𝟘-elim (∞-is-not-ℕ n p)
+under𝟙ᵒ-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-ℕ n p)
+
+over-under-map-order-reflecting  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
+                                → order-reflecting
+                                    ((τ ↗ (over , over-embedding)) z)
+                                    ((τ ↗ (under , under-embedding fe₀)) (under𝟙 z))
+                                    (over-under-map (λ n → ⟪ τ n ⟫) z)
+over-under-map-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
+ where
+  x' : ⟪ τ n ⟫
+  x' = over-under-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl)
+  y' : ⟪ τ n ⟫
+  y' = over-under-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
+  r : n , refl ≡ m , p
+  r = under-embedding fe₀ (under n) (n , refl) (m , p)
+  t : ⟪ τ n ⟫ → ⟪ τ m ⟫
+  t = transport (λ - → ⟪ τ (pr₁ -) ⟫) r
+  tr : {w t : fiber under (under n)} (r : w ≡ t)
+     → order-reflecting (τ (pr₁ w)) (τ (pr₁ t)) ((transport (λ - → ⟪ τ (pr₁ -) ⟫) r))
+  tr refl x y l = l
+  a : t x' ≡ over-under-map (λ n → ⟪ τ n ⟫) (inl n) x (m , p)
+  a = apd (over-under-map (λ n → ⟪ τ n ⟫) (inl n) x) r
+  b : t y' ≡ over-under-map (λ n → ⟪ τ n ⟫) (inl n) y (m , p)
+  b = apd (over-under-map (λ n → ⟪ τ n ⟫) (inl n) y) r
+  c : t x' ≺⟪ τ m ⟫ t y'
+  c = back-transport₂ (λ a b → a ≺⟪ τ m ⟫ b) a b l
+  d : x' ≺⟪ τ n ⟫ y'
+  d = tr r _ _ c
+  q : x (n , refl) ≺⟪ τ n ⟫ y (n , refl)
+  q = transport₂
+       (λ a b → a ≺⟪ τ n ⟫ b)
+       (over-under-map-left (λ n → ⟪ τ n ⟫) n x)
+       (over-under-map-left (λ n → ⟪ τ n ⟫) n y)
+       d
+over-under-map-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is-not-ℕ m (p ⁻¹))
+
+∑-up-order-reflecting : (τ : ℕ → Ordᵀ)
+                    → order-reflecting (∑₁ τ) (∑¹ τ) (∑-up τ)
+∑-up-order-reflecting τ  = pair-fun-order-reflecting
+                            (succₒ ℕₒ)
+                            ℕ∞ᵒ
+                            (τ ↗ (over , over-embedding))
+                            (τ  ↗ (under , under-embedding fe₀))
+                            under𝟙ᵒ
+                            (over-under-map (λ n → ⟪ τ n ⟫))
+                            under𝟙ᵒ-order-reflecting
+                            (under𝟙-embedding fe₀)
+                            (over-under-map-order-reflecting τ)
+
+Overᵒ-order-reflecting : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+   → ((n : ℕ) → order-reflecting (τ n) (υ n) (f n))
+   → (z : ℕ + 𝟙) → order-reflecting
+                      ((τ ↗ (over , over-embedding)) z)
+                      ((υ ↗ (over , over-embedding)) z)
+                      (Overᵒ τ υ f z)
+Overᵒ-order-reflecting τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
+Overᵒ-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
+
+∑₁-functor-order-reflecting : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+                            → ((n : ℕ) → order-reflecting (τ n) (υ n) (f n))
+                            → order-reflecting (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
+∑₁-functor-order-reflecting τ υ f p =
+ pair-fun-order-reflecting
+  (succₒ ℕₒ)
+  (succₒ ℕₒ)
+  (τ ↗ (over , over-embedding))
+  (υ ↗ (over , over-embedding))
+  id
+  (Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫) f)
+  (λ x y l → l)
+  id-is-embedding
+  (Overᵒ-order-reflecting τ υ f p)
+
+∑↑-order-reflecting : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+                    → ((n : ℕ) → order-reflecting (τ n) (υ n) (f n))
+                    → order-reflecting (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
+∑↑-order-reflecting τ υ f p = comp-order-reflecting
+                                 (∑₁ τ)
+                                 (∑₁ υ )
+                                 (∑¹ υ)
+                                 (Σ₁-functor
+                                    (λ n → ⟪ τ n ⟫)
+                                    (λ n → ⟪ υ n ⟫)
+                                    f)
+                                 (∑-up υ)
+                                 (∑₁-functor-order-reflecting τ υ f p)
+                                 (∑-up-order-reflecting υ)
 \end{code}

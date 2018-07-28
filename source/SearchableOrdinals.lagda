@@ -1,5 +1,7 @@
 Martin Escardo, December 2012, based on earlier work, circa 2010.
 
+With many additions July 2018.
+
 Searchable ordinals via squashed sums (without using the Cantor space).
 
 We can define plenty of searchable sets by transfinitely iterating
@@ -26,6 +28,7 @@ open import UF-SetExamples
 open import UF-Subsingletons
 open import SquashedCantor fe
 open import UF-Retracts-FunExt
+open import InfSearchable
 
 \end{code}
 
@@ -156,13 +159,14 @@ of the discrete version to the underlying set of the above version.
 
 \begin{code}
 
-ord' : OE → Ordᵀ
+ord'  : OE → Ordᵀ
+dord' : (α : OE) → discrete ⟪ ord' α ⟫
+
 ord' One = 𝟙ᵒ
 ord' (Add α β) = ord' α +ᵒ ord' β
 ord' (Mul α β) = ord' α ×ᵒ  ord' β
 ord' (Sum1 α) = ∑₁ \(i : ℕ) → ord'(α i)
 
-dord' : (α : OE) → discrete ⟪ ord' α ⟫
 dord' One  = 𝟙-discrete
 dord' (Add α β) = Σ-discrete
                     (+discrete 𝟙-discrete 𝟙-discrete)
@@ -174,16 +178,23 @@ dord' (Sum1 α) = Σ₁-discrete (λ n → ⟪ ord' (α n) ⟫) (dord' ∘ α)
 
 Completed 27 July 2018. There is a dense embedding of the discrete
 ordinals into the searchable ordinals, where density means that the
-complement of the image of the embedding is empty.
+complement of the image of the embedding is empty. Moreover, it is
+order preserving and reflecting (28 July 2018).
 
 "eds" stands for "embedding of the discrete ordinals into the
 searchable ordinals".
 
 \begin{code}
 
-eds           : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
-eds-dense     : (α : OE) → is-dense (eds α)
-eds-embedding : (α : OE) → is-embedding (eds α)
+eds                  : (α : OE) → ⟪ ord' α ⟫ → ⟪ ord α ⟫
+eds-dense            : (α : OE) → is-dense (eds α)
+eds-embedding        : (α : OE) → is-embedding (eds α)
+eds-order-preserving : (α : OE) (x y : ⟪ ord' α ⟫)
+                          → x ≺⟪ ord' α ⟫ y
+                          → eds α x ≺⟪ ord α ⟫ eds α y
+eds-order-reflecting : (α : OE) (x y : ⟪ ord' α ⟫)
+                          → eds α x ≺⟪ ord α ⟫ eds α y
+                          → x ≺⟪ ord' α ⟫ y
 
 eds One = id
 eds (Add α β) = pair-fun id (dep-cases (λ _ → eds α) (λ _ → eds β))
@@ -216,9 +227,6 @@ eds-embedding (Sum1 α) = Σ↑-embedding
                           (eds ∘ α)
                           (eds-embedding ∘ α)
 
-eds-order-preserving : (α : OE) (x y : ⟪ ord' α ⟫)
-               → x ≺⟪ ord' α ⟫ y
-               → (eds α x) ≺⟪ ord α ⟫ (eds α y)
 eds-order-preserving One = λ x y l → l
 eds-order-preserving (Add α β) =
  pair-fun-order-preserving
@@ -230,7 +238,6 @@ eds-order-preserving (Add α β) =
    (dep-cases (λ _ → eds α) (λ _ → eds β))
    (λ x y l → l)
    (dep-cases (λ _ → eds-order-preserving α) λ _ → eds-order-preserving β)
-
 eds-order-preserving (Mul α β) =
  pair-fun-order-preserving
   (ord' α)
@@ -248,17 +255,41 @@ eds-order-preserving (Sum1 α)  =
    (eds ∘ α)
    (eds-order-preserving ∘ α)
 
-{- TODO: The embedding preserves and reflects order.
+eds-order-reflecting One = λ x y l → l
+eds-order-reflecting (Add α β) =
+ pair-fun-order-reflecting
+   𝟚ᵒ
+   𝟚ᵒ
+   (cases (λ _ → ord' α) (λ _ → ord' β))
+   (cases (λ _ → ord α) (λ _ → ord β))
+   id
+   (dep-cases (λ _ → eds α) (λ _ → eds β))
+   (λ x y l → l)
+   id-is-embedding
+   (dep-cases (λ _ → eds-order-reflecting α) λ _ → eds-order-reflecting β)
+eds-order-reflecting (Mul α β) =
+ pair-fun-order-reflecting
+  (ord' α)
+  (ord α)
+  (λ _ → ord' β)
+  (λ _ → ord β)
+  (eds α)
+  (λ _ → eds β)
+  (eds-order-reflecting α)
+  (eds-embedding α)
+  (λ _ → eds-order-reflecting β)
+eds-order-reflecting (Sum1 α)  =
+ ∑↑-order-reflecting
+   (ord' ∘ α)
+   (ord ∘ α)
+   (eds ∘ α)
+   (eds-order-reflecting ∘ α)
 
-eds-reflects-order : (α : OE) (x y : ⟪ ord' α ⟫)
-               → (eds α x) ≺⟪ ord α ⟫ (eds α y)
-               → x ≺⟪ ord' α ⟫ y
-eds-reflects-order = {!!}
--}
+\end{code}
 
-{- TODO: every decidable inhabited subset has a least element.
-open import InfSearchable
+\begin{code}
 
+{- TODO
 ord-inf-searchable : (α : OE) → inf-searchable (λ x y → x ≼⟪ ord α ⟫ y)
 ord-inf-searchable = {!!}
 -}
