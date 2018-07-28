@@ -635,9 +635,10 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
   h : (u v : ℕ∞) → (u ≺ v → p u ≤₂ p v) × (p u <₂ p v → u ≺ v)
   h u v = f u v , g u v
 
+under-order-preserving : (m n : ℕ) → m < n → under m ≺ under n
+under-order-preserving m n l = m , refl , <-coarser-than-⊏ m n l
+
 {- TODO
-<-coarser-than-≺ : (m n : ℕ) → m < n → under m ≺ under n
-<-coarser-than-≺ = {!!}
 
 <-coarser-than-≺ : (m n : ℕ) → under m ≺ under n → m < n
 <-coarser-than-≺ = ?

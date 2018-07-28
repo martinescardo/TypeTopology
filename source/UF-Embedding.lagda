@@ -261,8 +261,8 @@ module _ {U V W T}
  pair-fun (x , a) = (f x , g x a)
 
  pair-fun-embedding : is-embedding f
-                    → ((x : X) → is-embedding (g x))
-                    → is-embedding pair-fun
+                   → ((x : X) → is-embedding (g x))
+                   → is-embedding pair-fun
  pair-fun-embedding e d (y , b) = h
   where
    Z : U ⊔ V ⊔ W ⊔ T ̇

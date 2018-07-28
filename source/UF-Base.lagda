@@ -56,7 +56,9 @@ transport-rel' : ∀ {U V W} {X : U ̇} {Y : X → V ̇} (_≺_ : {x : X} → Y 
               → v ≺ back-transport Y r b
 transport-rel' _≺_ a .a b v refl = id
 
-
+transport-const : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y : Y} (p : x ≡ x')
+               → transport (λ (_ : X) → Y) p y ≡ y
+transport-const refl = refl
 
 apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
     (p : x ≡ y) → transport A p (f x) ≡ f y

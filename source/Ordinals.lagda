@@ -45,7 +45,7 @@ subsingleton-ordinal P isp = P , subsingleton.order P isp , subsingleton.well-or
 𝟘ₒ = subsingleton-ordinal 𝟘 𝟘-is-prop
 𝟙ₒ = subsingleton-ordinal 𝟙 𝟙-is-prop
 ℕₒ = (ℕ , _≺[ℕ]_ , ℕ-ordinal)
-ℕ∞ₒ = (ℕ∞ , _≺[ℕ∞]_ , ℕ∞-ordinal (fe U U))
+ℕ∞ₒ = (ℕ∞ , _≺[ℕ∞]_ , ℕ∞-ordinal fe₀)
 
 _+ₒ_ : Ord → Ord → Ord
 (X , _<_ , o) +ₒ (Y , _≺_ , p) = (X + Y) ,
@@ -60,7 +60,7 @@ _×ₒ_ : Ord → Ord → Ord
 prop-indexed-product : {P : U ̇} → is-prop P → (P → Ord) → Ord
 prop-indexed-product {P} isp α = Π X ,
                                  _≺_ ,
-                                 pip.well-order (fe U U) P isp X _<_ (λ p → is-well-ordered (α p))
+                                 pip.well-order fe₀ P isp X _<_ (λ p → is-well-ordered (α p))
  where
   X : P → U ̇
   X p = ⟨ α p ⟩
@@ -119,10 +119,10 @@ succₒ α = α +ₒ 𝟙ₒ  ,
            (underlying-order 𝟙ₒ)
            (subsingleton.topped 𝟙 𝟙-is-prop *)
 
-𝟙º 𝟚º ℕ∞º : Ordᵀ
-𝟙º = 𝟙ₒ , subsingleton.topped 𝟙 𝟙-is-prop *
-𝟚º = succₒ 𝟙ₒ
-ℕ∞º = (ℕ∞ₒ , ∞ , ∞-top)
+𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
+𝟙ᵒ = 𝟙ₒ , subsingleton.topped 𝟙 𝟙-is-prop *
+𝟚ᵒ = succₒ 𝟙ₒ
+ℕ∞ᵒ = (ℕ∞ₒ , ∞ , ∞-top)
 
 \end{code}
 
@@ -142,16 +142,16 @@ Sum of an ordinal indexed family of ordinals:
 
 \end{code}
 
-Addition and multiplication can be reduced to ∑, given the ordinal 𝟚º
+Addition and multiplication can be reduced to ∑, given the ordinal 𝟚ᵒ
 defined above:
 
 \begin{code}
 
-_+º_ : Ordᵀ → Ordᵀ → Ordᵀ
-τ +º υ = ∑ {𝟚º} (cases (λ _ → τ) (λ _ → υ))
+_+ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
+τ +ᵒ υ = ∑ {𝟚ᵒ} (cases (λ _ → τ) (λ _ → υ))
 
-_×º_ : Ordᵀ → Ordᵀ → Ordᵀ
-τ ×º υ = ∑ {τ} \(_ : ⟪ τ ⟫) → υ
+_×ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
+τ ×ᵒ υ = ∑ {τ} \(_ : ⟪ τ ⟫) → υ
 
 \end{code}
 
@@ -180,7 +180,7 @@ ordinals defined above.
 \begin{code}
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
-∑¹ τ = ∑ {ℕ∞º} (τ ↗ (under , under-embedding (fe U U)))
+∑¹ τ = ∑ {ℕ∞ᵒ} (τ ↗ (under , under-embedding fe₀))
 
 \end{code}
 
@@ -191,4 +191,122 @@ And now with an isolated top element:
 ∑₁ : (ℕ → Ordᵀ) → Ordᵀ
 ∑₁ τ = ∑ {succₒ ℕₒ} (τ ↗ (over , over-embedding))
 
+\end{code}
+
+Some maps and their order preservation, used to show that the
+embedding of the discrete ordinals into the searchable ordinals is
+order preserving.
+
+\begin{code}
+
+order-preserving : (τ υ : Ordᵀ) →  (⟪ τ ⟫ → ⟪ υ ⟫) → U ̇
+order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺⟪ υ ⟫ f y
+
+open import UF-Embedding
+
+comp-order-preserving : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
+                     → order-preserving τ υ f
+                     → order-preserving υ φ g
+                     → order-preserving τ φ (g ∘ f)
+comp-order-preserving τ υ φ f g p q x y l = q (f x) (f y) (p x y l)
+
+pair-fun-order-preserving : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B : ⟪ υ ⟫ → Ordᵀ)
+                            (f : ⟪ τ ⟫ → ⟪ υ ⟫)
+                            (g  : (x : ⟪ τ ⟫) → ⟪ A x ⟫ → ⟪ B (f x) ⟫)
+                         → order-preserving τ υ f
+                         → ((x : ⟪ τ ⟫) → order-preserving (A x) (B (f x)) (g x))
+                         → order-preserving (∑ {τ} A) (∑ {υ} B) (pair-fun f g)
+
+pair-fun-order-preserving τ υ A B f g φ γ (x , a) (y , b) (inl l) = inl (φ x y l)
+pair-fun-order-preserving τ υ A B f g φ γ (x , a) (.x , b) (inr (refl , l)) = inr (refl , γ x a b l)
+
+under𝟙ᵒ : ⟪ succₒ ℕₒ ⟫ → ⟪ ℕ∞ᵒ ⟫
+under𝟙ᵒ = under𝟙
+
+under𝟙ᵒ-order-preserving : order-preserving (succₒ ℕₒ) ℕ∞ᵒ under𝟙ᵒ
+under𝟙ᵒ-order-preserving (inl n) (inl m) l = under-order-preserving n m l
+under𝟙ᵒ-order-preserving (inl n) (inr *) * = n , (refl , refl)
+under𝟙ᵒ-order-preserving (inr *) (inl m) ()
+under𝟙ᵒ-order-preserving (inr *) (inr *) ()
+
+over-under-map-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
+                                → order-preserving
+                                    ((τ ↗ (over , over-embedding)) z)
+                                    ((τ ↗ (under , under-embedding fe₀)) (under𝟙 z))
+                                    (over-under-map (λ n → ⟪ τ n ⟫) z)
+over-under-map-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , γ
+ where
+  γ : over-under-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫
+      over-under-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
+  γ = back-transport₂
+        (λ a b → tunderlying-order (τ n) a b)
+        (over-under-map-left (λ n → ⟪ τ n ⟫) n x)
+        (over-under-map-left (λ n → ⟪ τ n ⟫) n y)
+        l
+over-under-map-order-preserving τ (inr *) x y ((n , ()) , l)
+
+∑-up : (τ : ℕ → Ordᵀ) → ⟪ ∑₁ τ ⟫ → ⟪ ∑¹ τ ⟫
+∑-up τ = Σ-up (λ n → ⟪ τ n ⟫)
+
+∑-up-order-preserving : (τ : ℕ → Ordᵀ)
+                    → order-preserving (∑₁ τ) (∑¹ τ) (∑-up τ)
+∑-up-order-preserving τ  = pair-fun-order-preserving
+                            (succₒ ℕₒ)
+                            ℕ∞ᵒ
+                            (τ ↗ (over , over-embedding))
+                            (τ  ↗ (under , under-embedding fe₀))
+                            under𝟙ᵒ
+                            (over-under-map (λ n → ⟪ τ n ⟫))
+                            under𝟙ᵒ-order-preserving
+                            (over-under-map-order-preserving τ)
+
+∑↑ : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+   → ⟪ ∑₁ τ ⟫ → ⟪ ∑¹ υ ⟫
+∑↑ τ υ = Σ↑ (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫)
+
+Overᵒ : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+   → (z : ℕ + 𝟙) → ⟪ (τ ↗ (over , over-embedding)) z ⟫ → ⟪ (υ ↗ (over , over-embedding)) z ⟫
+Overᵒ τ υ = Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫)
+
+Overᵒ-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+   → ((n : ℕ) → order-preserving (τ n) (υ n) (f n))
+   → (z : ℕ + 𝟙) → order-preserving
+                      ((τ ↗ (over , over-embedding)) z)
+                      ((υ ↗ (over , over-embedding)) z)
+                      (Overᵒ τ υ f z)
+Overᵒ-order-preserving τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
+Overᵒ-order-preserving τ υ f p (inr *) x y ((n , ()) , l)
+
+∑₁-functor : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+           → ⟪ ∑₁ τ ⟫ → ⟪ ∑₁ υ ⟫
+∑₁-functor τ ν = Σ₁-functor (λ n → ⟪ τ n ⟫) (λ n → ⟪ ν n ⟫)
+
+∑₁-functor-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+                            → ((n : ℕ) → order-preserving (τ n) (υ n) (f n))
+                            → order-preserving (∑₁ τ) (∑₁ υ) (∑₁-functor τ υ f)
+∑₁-functor-order-preserving τ υ f p =
+ pair-fun-order-preserving
+  (succₒ ℕₒ)
+  (succₒ ℕₒ)
+  (τ ↗ (over , over-embedding))
+  (υ ↗ (over , over-embedding))
+  id
+  (Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫) f)
+  (λ x y l → l)
+  (Overᵒ-order-preserving τ υ f p)
+
+∑↑-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
+                    → ((n : ℕ) → order-preserving (τ n) (υ n) (f n))
+                    → order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
+∑↑-order-preserving τ υ f p = comp-order-preserving
+                                 (∑₁ τ)
+                                 (∑₁ υ )
+                                 (∑¹ υ)
+                                 (Σ₁-functor
+                                    (λ n → ⟪ τ n ⟫)
+                                    (λ n → ⟪ υ n ⟫)
+                                    f)
+                                 (∑-up υ)
+                                 (∑₁-functor-order-preserving τ υ f p)
+                                 (∑-up-order-preserving υ)
 \end{code}

@@ -115,6 +115,28 @@ over-under-map : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
               → (X / over) z → (X / under) (under𝟙 z)
 over-under-map X z = detofun (over-under X z)
 
+over-under-map-left : ∀ {U} (X : ℕ → U ̇) (n : ℕ)
+                     (φ : (w : fiber over (inl n)) → X (pr₁ w))
+                   → over-under-map X (inl n) φ (n , refl)
+                   ≡ φ (n , refl)
+over-under-map-left X n φ =
+ transport
+  (λ - → over-under-map X (inl n) φ (n , refl)
+       ≡ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
+  (prop-is-set
+    (under-embedding fe₀ (under n))
+    (under-embedding fe₀ (under n) (n , refl) (n , refl))
+    refl)
+  (f (n , refl))
+ where
+  -- We define this for the sake of clarity only:
+  f : (t : fiber under (under n))
+    → over-under-map X (inl n) φ t
+    ≡ transport (λ - → X (pr₁ -))
+                 (under-embedding fe₀ (under n) (n , refl) t)
+                 (φ (n , refl))
+  f t = refl
+
 over-under-map-dense : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
                     → is-dense (over-under-map X z)
 over-under-map-dense X z = is-dense-detofun (over-under X z)
@@ -160,6 +182,18 @@ Over X Y f (inr *) =
   _∘_ {_} {U₀}
    (equiv-to-fun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ _ → +disjoint))))
    (equiv-to-fun (Π-extension-out-of-range X over (inr *) (λ _ → +disjoint)))
+
+Over-inl : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
+    → (n : ℕ) → Over X Y f (inl n)
+    ≡ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
+         transport (λ - → Y (pr₁ -))
+                   (inl-embedding ℕ 𝟙 (inl n) (n , refl) w)
+                   (f n (φ (n , refl)))
+Over-inl X Y f n = refl
+
+Over-inr : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
+        → Over X Y f (inr *) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
+Over-inr X Y f = refl
 
 \end{code}
 
