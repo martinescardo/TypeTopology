@@ -126,30 +126,39 @@ open import OrdinalCodes
 open import SquashedSum fe
 open import UF-SetExamples
 
+\end{code}
+
+In the following, ⟪ τ ⟫ denotes the underlying set of an ordinal τ, and
+_≺⟪ τ ⟫_ denotes its underlying order.
+
+\begin{code}
+
 Κ                    : OE → Ordᵀ
 Κ-searchable         : (α : OE) → searchable ⟪ Κ α ⟫
+Κ-Cantor-retract     : (α : OE) → retract ⟪ Κ α ⟫ of (ℕ → 𝟚)
 Κ-totally-separated  : (α : OE) → totally-separated ⟪ Κ α ⟫
-Κ-Cantor-retract     : (α : OE) → retract  ⟪ Κ α ⟫ of (ℕ → 𝟚)
 
 Δ                    : OE → Ordᵀ
 Δ-discrete           : (α : OE) → discrete ⟪ Δ α ⟫
 
-δκ                   : (α : OE) → ⟪ Δ α ⟫ → ⟪ Κ α ⟫
-δκ-dense             : (α : OE) → is-dense (δκ α)
-δκ-embedding         : (α : OE) → is-embedding (δκ α)
-δκ-order-preserving  : (α : OE) (x y : ⟪ Δ α ⟫)
-                          → x ≺⟪ Δ α ⟫ y
-                          → δκ α x ≺⟪ Κ α ⟫ δκ α y
-δκ-order-reflecting  : (α : OE) (x y : ⟪ Δ α ⟫)
-                          → δκ α x ≺⟪ Κ α ⟫ δκ α y
-                          → x ≺⟪ Δ α ⟫ y
+δκ                   : {α : OE} → ⟪ Δ α ⟫ → ⟪ Κ α ⟫
+δκ-dense             : (α : OE) → is-dense (δκ {α})
+δκ-embedding         : (α : OE) → is-embedding (δκ {α})
 
-Κ-inf-searchable     : propext U₀
-                       → (α : OE) → inf-searchable (λ x y → x ≼⟪ Κ α ⟫ y)
+δκ-order-preserving  : (α : OE) (x y : ⟪ Δ α ⟫)
+                          →    x ≺⟪ Δ α ⟫    y
+                          → δκ x ≺⟪ Κ α ⟫ δκ y
+
+δκ-order-reflecting  : (α : OE) (x y : ⟪ Δ α ⟫)
+                          → δκ x ≺⟪ Κ α ⟫ δκ y
+                          →    x ≺⟪ Δ α ⟫    y
+
+Κ-inf-searchable     : propext U₀ → (α : OE) → inf-searchable (λ x y → x ≼⟪ Κ α ⟫ y)
 
 brouwer-to-oe        : B → OE
 ε₀-upper-bound       : Ordᵀ
 searchable-ε₀-ub     : searchable ⟪ ε₀-upper-bound ⟫
+
 \end{code}
 
 The empty ordinal is excluded because it is not searchable. It is
@@ -244,7 +253,6 @@ And hence they are totally separated:
 Κ-totally-separated α = retract-totally-separated
                           (Κ-Cantor-retract α)
                           (Cantor-totally-separated fe₀)
-
 \end{code}
 
 Without total separatedness (enough functions into the type 𝟚 of
@@ -284,16 +292,16 @@ order preserving and reflecting (28 July 2018).
 
 \begin{code}
 
-δκ One = id
-δκ (Add α β) = pair-fun id (dep-cases (λ _ → δκ α) (λ _ → δκ β))
-δκ (Mul α β) = pair-fun (δκ α) (λ _ → δκ β)
-δκ (Sum1 α) = ∑↑ (λ n → Δ (α n)) (λ n → Κ (α n)) (δκ ∘ α)
+δκ {One} = id
+δκ {Add α β} = pair-fun id (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
+δκ {Mul α β} = pair-fun (δκ {α}) (λ _ → δκ {β})
+δκ {Sum1 α} = ∑↑ (λ n → Δ (α n)) (λ n → Κ (α n)) (λ n → δκ {α n})
 
 δκ-dense One = id-is-dense
 δκ-dense (Add α β) =
  pair-fun-dense
   id
-  (dep-cases (λ _ → δκ α) (λ _ → δκ β))
+  (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
   id-is-dense
   (dep-cases (λ _ → δκ-dense α) (λ _ → δκ-dense β))
 δκ-dense (Mul α β) =
@@ -304,14 +312,14 @@ order preserving and reflecting (28 July 2018).
  Σ↑-dense
   (λ n → ⟪ Δ (α n) ⟫)
   (λ n → ⟪ Κ (α n) ⟫)
-  (δκ ∘ α)
+  (λ n → δκ {α n})
   (δκ-dense ∘ α)
 
 δκ-embedding One = id-is-embedding
 δκ-embedding (Add α β) =
  pair-fun-embedding
   id
-  (dep-cases (λ _ → δκ α) (λ _ → δκ β))
+  (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
   id-is-embedding
   (dep-cases (λ _ → δκ-embedding α) (λ _ → δκ-embedding β))
 δκ-embedding (Mul α β) =
@@ -322,7 +330,7 @@ order preserving and reflecting (28 July 2018).
  Σ↑-embedding
   (λ n → ⟪ Δ (α n) ⟫)
   (λ n → ⟪ Κ (α n) ⟫)
-  (δκ ∘ α)
+  (λ n → δκ {α n})
   (δκ-embedding ∘ α)
 
 δκ-order-preserving One = λ x y l → l
@@ -333,7 +341,7 @@ order preserving and reflecting (28 July 2018).
    (cases (λ _ → Δ α) (λ _ → Δ β))
    (cases (λ _ → Κ α) (λ _ → Κ β))
    id
-   (dep-cases (λ _ → δκ α) (λ _ → δκ β))
+   (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
    (λ x y l → l)
    (dep-cases (λ _ → δκ-order-preserving α) λ _ → δκ-order-preserving β)
 δκ-order-preserving (Mul α β) =
@@ -342,15 +350,15 @@ order preserving and reflecting (28 July 2018).
   (Κ α)
   (λ _ → Δ β)
   (λ _ → Κ β)
-  (δκ α)
-  (λ _ → δκ β)
+  (δκ {α})
+  (λ _ → δκ {β})
   (δκ-order-preserving α)
   (λ _ → δκ-order-preserving β)
 δκ-order-preserving (Sum1 α) =
  ∑↑-order-preserving
    (Δ ∘ α)
    (Κ ∘ α)
-   (δκ ∘ α)
+   (λ n → δκ {α n})
    (δκ-order-preserving ∘ α)
 
 δκ-order-reflecting One = λ x y l → l
@@ -361,7 +369,7 @@ order preserving and reflecting (28 July 2018).
    (cases (λ _ → Δ α) (λ _ → Δ β))
    (cases (λ _ → Κ α) (λ _ → Κ β))
    id
-   (dep-cases (λ _ → δκ α) (λ _ → δκ β))
+   (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
    (λ x y l → l)
    id-is-embedding
    (dep-cases (λ _ → δκ-order-reflecting α) λ _ → δκ-order-reflecting β)
@@ -371,8 +379,8 @@ order preserving and reflecting (28 July 2018).
   (Κ α)
   (λ _ → Δ β)
   (λ _ → Κ β)
-  (δκ α)
-  (λ _ → δκ β)
+  (δκ {α})
+  (λ _ → δκ {β})
   (δκ-order-reflecting α)
   (δκ-embedding α)
   (λ _ → δκ-order-reflecting β)
@@ -380,7 +388,7 @@ order preserving and reflecting (28 July 2018).
  ∑↑-order-reflecting
    (Δ ∘ α)
    (Κ ∘ α)
-   (δκ ∘ α)
+   (λ n → δκ {α n})
    (δκ-order-reflecting ∘ α)
 
 \end{code}
