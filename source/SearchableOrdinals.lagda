@@ -6,7 +6,8 @@ Begun December 2012, based on earlier work, circa 2010.
 
 Most of the work has been done later, and coded in July 2018 after a
 long pause to understand univalent foundations, which is what we use
-in this development.
+in this development, and to develop the mathematica basis for this in
+other modules.
 
 Here an ordinal is a type equipped with a well order. This is a
 relation < which is assumed to be
@@ -19,7 +20,7 @@ relation < which is assumed to be
 The extensionality axiom implies that the underlying type of an
 ordinal is a set (or satisfies the K axiom), which is proved in the
 module OrdinalNotions. This seems to be a new observation about the
-univalent notion of ordinal.
+univalent notion of ordinal (as introduced in the HoTT Book).
 
 \begin{code}
 
@@ -56,13 +57,12 @@ Here Ordᵀ is the type of ordinals that have a top element (which, in
 constructive mathematics, are not in general successor
 ordinals). Technically, the top element allows us to prove the closure
 of ordinals under ordinal-indexed sums, paying a crucial role in the
-proof of extensionality of the sum. But also the top element is
-equally crucial for searchability or compactness purposes, dicussed
-below.
+proof of extensionality of the sum. But the top element is equally
+crucial for searchability or compactness purposes, dicussed below.
 
   * The ordinals in the image of Δ are discrete (have decidable equality).
 
-  * Those in the image of Κ are compact (are searchable).
+  * Those in the image of Κ are compact (they are searchable).
 
     Moreover, they are retracts of the Cantor type (ℕ → 𝟚) of binary
     sequences, and hence are totally separated, which means that the
@@ -73,11 +73,20 @@ below.
     infimum, which belongs to the subset iff and only if the subset is
     non-empty (with non-emptiness expressed by a doble negation).
 
+    The discrete ordinals, being countable (either equivalent to ℕ or
+    to some finite type Fin n ≃ 𝟙 + 𝟙 + ⋯ + 𝟙) , cannot be retracts of
+    the Cantor space. This is because the Cantor space is potentially
+    searchable, in the presence of Brouwerian axioms, and
+    searchability is inherited by retracts, which the searchability of
+    the infinite discrete ordinals is equivalent to Bishop's LPO
+    (limited principle of omnscient), which is not provable in any
+    variety of constructive mathematics.
+
 The Δ and Κ interpretation of one, addition and multiplication are as
 expected. They differ only in the interpretation of Sum1.
 
    * In the discrete case, Sum1 is interpreted as simply the sum plus
-     one (written ∑₁).
+     the ordinal 𝟙 (written ∑₁).
 
    * In the compact case, Sum1 is interpreted as the sum with an added
      non-isolated point (written ∑¹). In is this that makes the
@@ -88,13 +97,16 @@ Additionally, we kave a map δκ from the Δ-ordinals to the Κ-ordinals,
 which is
 
   * an embedding (has subsingleton fibers),
-  * is dense (the complement of its image is empty),
+  * dense (the complement of its image is empty),
   * order preserving and reflecting.
 
 Lastly, we have a mapping from our ordinal trees to Brouwer trees that
-allows us to use other peoples constructions to construct very "large"
+allows us to use other people's constructions to get very "large"
 searchable ordinals. As a trivial example, we show how to map a
 Brouwer code of ε₀ to a searchable ordinal that dominates ε₀.
+
+The bulk of the work to perform these constructions and prove their
+properties is developed in the imported modules.
 
 After a brief pause for importing the necessary definitions, we state
 the theorems and constructions to be performed here:
@@ -142,8 +154,9 @@ searchable-ε₀-ub     : searchable ⟪ ε₀-upper-bound ⟫
 
 The empty ordinal is excluded because it is not searchable. It is
 merely exhaustible or omniscient (see the module Searchable for a
-partial discussion of this). The reason why including the empty
-ordinal causes insurmountable problems is discussed in research papers.
+partial discussion of this). The reason why sometimes including the
+empty ordinal causes insurmountable problems regarding closure under
+searchability is discussed in research papers and in other modules.
 
 The interpretation function is the following, with values on topped
 ordinals, where an ordinal is a type equipped with a
@@ -243,9 +256,9 @@ as shown in the module FailureOfTotalSeparatedness.
 Classically, the squashed sum is the ordinal sum plus 1, and now we
 give an alternative semantics of ordinal codes with this
 interpretation, which produces ordinals with discrete underlying
-sets. Moreover, there is a function maps the underlying set of the
-discrete version to the underlying set of the above version, with many
-interesting properties, formulated above and proved below.
+sets. Moreover, there is a function that maps the underlying set of
+the discrete version to the underlying set of the above version, with
+many interesting properties, formulated above and proved below.
 
 \begin{code}
 
@@ -267,9 +280,7 @@ interesting properties, formulated above and proved below.
 Completed 27 July 2018. There is a dense embedding δκ of the discrete
 ordinals into the searchable ordinals, where density means that the
 complement of the image of the embedding is empty. Moreover, it is
-order preserving and reflecting (28 July 2018). Most of the work to
-perform these constructions and prove their properties is developed in
-the imported modules.
+order preserving and reflecting (28 July 2018).
 
 \begin{code}
 
@@ -401,16 +412,24 @@ much easier (given the mathematics we have already developed).
   (Κ ∘ α)
   (Κ-inf-searchable pe ∘ α)
 
+
+\end{code}
+
+We have countability of the discrete ordinals in the following strong
+sense (every such ordinal is either equivalent to ℕ or to some finite
+set F n ≃ 𝟙 + 𝟙 + ⋯ + 𝟙):
+
+\begin{code}
+
 {- TODO
 Δ-countable : (α : OE) → (⟪ Δ α ⟫ ≃ ℕ) + Σ \(n : ℕ) → ⟪ Δ α ⟫ ≃ Fin n
 Δ-countable = {!!}
-
--- Hence the searchability of any infinite discrete ordinal is a
-constructive taboo.
-
 -}
 
 \end{code}
+
+Hence the searchability of any infinite discrete ordinal is a
+constructive taboo, logically equivalent to Bishop's LPO.
 
 Brouwer ordinal codes can be mapped to searchable ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is
@@ -435,5 +454,5 @@ searchable-ε₀-ub = Κ-searchable(brouwer-to-oe B-ε₀)
 
 \end{code}
 
-We can go much higher using the work of many people, including Hancock
-and Setzer.
+We can go much higher using the work of and Setzer, Hancock and
+others.
