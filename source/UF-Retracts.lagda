@@ -158,10 +158,16 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   rs : (σ : Σ A) → r (s σ) ≡ σ
   rs (x , a) = ap (λ - → (x , -)) (RS x a)
 
-{-
-𝟚-retract : retract 𝟚 of 𝟙 + 𝟙
-𝟚-retract =
--}
+retract-𝟙+𝟙-of-𝟚 : retract 𝟙 + 𝟙 of 𝟚
+retract-𝟙+𝟙-of-𝟚 = f , (g , fg)
+ where
+  f : 𝟚 → 𝟙 {U₀} + 𝟙 {U₀}
+  f = 𝟚-cases (inl *) (inr *)
+  g : 𝟙 + 𝟙 → 𝟚
+  g = cases (λ x → ₀) (λ x → ₁)
+  fg : (x : 𝟙 + 𝟙) → f (g x) ≡ x
+  fg (inl *) = refl
+  fg (inr *) = refl
 
 \end{code}
 

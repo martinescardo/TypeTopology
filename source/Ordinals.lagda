@@ -112,7 +112,6 @@ syntax tunderlying-rorder τ x y = x ≼⟪ τ ⟫ y
 ≼-prop-valued : (τ : Ordᵀ) (x y : ⟪ τ ⟫) → is-prop (x ≼⟪ τ ⟫ y)
 ≼-prop-valued τ x y l m = dfunext fe₀ (λ x → 𝟘-elim (m x))
 
-
 topped : (τ : Ordᵀ) → has-top (tunderlying-order τ)
 topped (α , t) = t
 
@@ -178,7 +177,7 @@ _↗_ : {X A : U ̇} → (X → Ordᵀ) → (Σ \(j : X → A) → is-embedding 
 τ ↗ (j , e) = λ a → ((Y / j) a ,
                      Extension.order a ,
                      Extension.well-order a (λ x → tis-well-ordered (τ x))) ,
-                     Extension.top-preservation a (λ x → topped (τ x))
+                    Extension.top-preservation a (λ x → topped (τ x))
  where
   Y : dom τ → U ̇
   Y x = ⟪ τ x ⟫
@@ -218,9 +217,9 @@ order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺�
 open import UF-Embedding
 
 comp-order-preserving : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
-                     → order-preserving τ υ f
-                     → order-preserving υ φ g
-                     → order-preserving τ φ (g ∘ f)
+                      → order-preserving τ υ f
+                      → order-preserving υ φ g
+                      → order-preserving τ φ (g ∘ f)
 comp-order-preserving τ υ φ f g p q x y l = q (f x) (f y) (p x y l)
 
 pair-fun-order-preserving : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B : ⟪ υ ⟫ → Ordᵀ)
@@ -243,7 +242,7 @@ under𝟙ᵒ-order-preserving (inr *) (inl m) ()
 under𝟙ᵒ-order-preserving (inr *) (inr *) ()
 
 over-under-map-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                → order-preserving
+                                 → order-preserving
                                     ((τ ↗ (over , over-embedding)) z)
                                     ((τ ↗ (under , under-embedding fe₀)) (under𝟙 z))
                                     (over-under-map (λ n → ⟪ τ n ⟫) z)
@@ -252,7 +251,7 @@ over-under-map-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl) , 
   γ : over-under-map (λ n → ⟪ τ n ⟫) (inl n) x (n , refl) ≺⟪ τ n ⟫
       over-under-map (λ n → ⟪ τ n ⟫) (inl n) y (n , refl)
   γ = back-transport₂
-        (λ a b → tunderlying-order (τ n) a b)
+        (λ a b → a ≺⟪ τ n ⟫ b)
         (over-under-map-left (λ n → ⟪ τ n ⟫) n x)
         (over-under-map-left (λ n → ⟪ τ n ⟫) n y)
         l
@@ -262,7 +261,7 @@ over-under-map-order-preserving τ (inr *) x y ((n , ()) , l)
 ∑-up τ = Σ-up (λ n → ⟪ τ n ⟫)
 
 ∑-up-order-preserving : (τ : ℕ → Ordᵀ)
-                    → order-preserving (∑₁ τ) (∑¹ τ) (∑-up τ)
+                      → order-preserving (∑₁ τ) (∑¹ τ) (∑-up τ)
 ∑-up-order-preserving τ  = pair-fun-order-preserving
                             (succₒ ℕₒ)
                             ℕ∞ᵒ
@@ -278,7 +277,7 @@ over-under-map-order-preserving τ (inr *) x y ((n , ()) , l)
 ∑↑ τ υ = Σ↑ (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫)
 
 Overᵒ : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
-   → (z : ℕ + 𝟙) → ⟪ (τ ↗ (over , over-embedding)) z ⟫ → ⟪ (υ ↗ (over , over-embedding)) z ⟫
+      → (z : ℕ + 𝟙) → ⟪ (τ ↗ (over , over-embedding)) z ⟫ → ⟪ (υ ↗ (over , over-embedding)) z ⟫
 Overᵒ τ υ = Over (λ n → ⟪ τ n ⟫) (λ n → ⟪ υ n ⟫)
 
 Overᵒ-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
@@ -312,16 +311,16 @@ Overᵒ-order-preserving τ υ f p (inr *) x y ((n , ()) , l)
                     → ((n : ℕ) → order-preserving (τ n) (υ n) (f n))
                     → order-preserving (∑₁ τ) (∑¹ υ) (∑↑ τ υ f)
 ∑↑-order-preserving τ υ f p = comp-order-preserving
-                                 (∑₁ τ)
-                                 (∑₁ υ )
-                                 (∑¹ υ)
-                                 (Σ₁-functor
-                                    (λ n → ⟪ τ n ⟫)
-                                    (λ n → ⟪ υ n ⟫)
-                                    f)
-                                 (∑-up υ)
-                                 (∑₁-functor-order-preserving τ υ f p)
-                                 (∑-up-order-preserving υ)
+                                (∑₁ τ)
+                                (∑₁ υ )
+                                (∑¹ υ)
+                                (Σ₁-functor
+                                   (λ n → ⟪ τ n ⟫)
+                                   (λ n → ⟪ υ n ⟫)
+                                   f)
+                                (∑-up υ)
+                                (∑₁-functor-order-preserving τ υ f p)
+                                (∑-up-order-preserving υ)
 \end{code}
 
 And now order reflection.
@@ -334,9 +333,9 @@ order-reflecting τ υ f = (x y : ⟪ τ ⟫) → f x ≺⟪ υ ⟫ f y → x �
 open import UF-Embedding
 
 comp-order-reflecting : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
-                     → order-reflecting τ υ f
-                     → order-reflecting υ φ g
-                     → order-reflecting τ φ (g ∘ f)
+                      → order-reflecting τ υ f
+                      → order-reflecting υ φ g
+                      → order-reflecting τ φ (g ∘ f)
 comp-order-reflecting τ υ φ f g p q x y l = p x y (q (f x) (f y) l)
 
 pair-fun-order-reflecting : (τ υ : Ordᵀ) (A : ⟪ τ ⟫ → Ordᵀ) (B : ⟪ υ ⟫ → Ordᵀ)
@@ -357,15 +356,15 @@ pair-fun-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l)) = 
   η : (q : f x ≡ f y) → ap f (c q) ≡ q
   η = pr₂(pr₁ e')
   i : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a)
-   ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
+    ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)
   i = transport-ap (λ - → ⟪ B - ⟫) f (c r)
   j : transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a) ≺⟪ B (f y) ⟫ (g y b)
   j = back-transport (λ - → transport (λ - → ⟪ B - ⟫) - (g x a) ≺⟪ B (f y) ⟫ (g y b)) (η r) l
   k : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a) ≺⟪ B (f y) ⟫ (g y b)
   k = back-transport (λ - → - ≺⟪ B (f y) ⟫ (g y b)) i j
   h : {x y : ⟪ τ ⟫} (s : x ≡ y) {a : ⟪ A x ⟫} {b : ⟪ A y ⟫}
-   → transport (λ - → ⟪ B (f -) ⟫) s (g x a) ≺⟪ B (f y) ⟫ (g y b)
-   → transport (λ - → ⟪ A - ⟫) s a ≺⟪ A y ⟫ b
+    → transport (λ - → ⟪ B (f -) ⟫) s (g x a) ≺⟪ B (f y) ⟫ (g y b)
+    → transport (λ - → ⟪ A - ⟫) s a ≺⟪ A y ⟫ b
   h {x} refl {a} {b} = γ x a b
   p : transport (λ - → ⟪ A - ⟫) (c r) a ≺⟪ A y ⟫ b
   p = h (c r) k
@@ -377,10 +376,10 @@ under𝟙ᵒ-order-reflecting (inr *) (inl m) (n , (p , l)) = 𝟘-elim (∞-is-
 under𝟙ᵒ-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-ℕ n p)
 
 over-under-map-order-reflecting  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
-                                → order-reflecting
-                                    ((τ ↗ (over , over-embedding)) z)
-                                    ((τ ↗ (under , under-embedding fe₀)) (under𝟙 z))
-                                    (over-under-map (λ n → ⟪ τ n ⟫) z)
+                                 → order-reflecting
+                                     ((τ ↗ (over , over-embedding)) z)
+                                     ((τ ↗ (under , under-embedding fe₀)) (under𝟙 z))
+                                     (over-under-map (λ n → ⟪ τ n ⟫) z)
 over-under-map-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
  where
   x' : ⟪ τ n ⟫
@@ -411,7 +410,7 @@ over-under-map-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
 over-under-map-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is-not-ℕ m (p ⁻¹))
 
 ∑-up-order-reflecting : (τ : ℕ → Ordᵀ)
-                    → order-reflecting (∑₁ τ) (∑¹ τ) (∑-up τ)
+                      → order-reflecting (∑₁ τ) (∑¹ τ) (∑-up τ)
 ∑-up-order-reflecting τ  = pair-fun-order-reflecting
                             (succₒ ℕₒ)
                             ℕ∞ᵒ
@@ -463,7 +462,7 @@ Overᵒ-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
                                  (∑-up-order-reflecting υ)
 \end{code}
 
-28 July 2018. Inf searchability basics.
+28 July 2018. Inf searchability.
 
 \begin{code}
 
@@ -513,16 +512,16 @@ Overᵒ-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
 
 It is not necessary to use propositional extensionality to prove the
 following, but it is simpler to do so given that we have already
-proved the inf-searchability for various types using different,
+proved the inf-searchability of various types using different,
 logically equivalent orders.
 
 \begin{code}
 
 ∑-inf-searchable : propext U₀
-                → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-                → inf-searchable (λ x y → x ≼⟪ τ ⟫ y)
-                → ((x : ⟪ τ ⟫) → inf-searchable (λ a b → a ≼⟪ υ x ⟫ b))
-                → inf-searchable (λ z t → z ≼⟪ ∑ {τ} υ ⟫ t)
+                 → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                 → inf-searchable (λ x y → x ≼⟪ τ ⟫ y)
+                 → ((x : ⟪ τ ⟫) → inf-searchable (λ a b → a ≼⟪ υ x ⟫ b))
+                 → inf-searchable (λ z t → z ≼⟪ ∑ {τ} υ ⟫ t)
 ∑-inf-searchable pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ {τ} υ ⟫ → ⟪ ∑ {τ} υ ⟫ → U₀ ̇
@@ -530,8 +529,8 @@ logically equivalent orders.
   ≤-prop-valued : (z t : ⟪ ∑ {τ} υ ⟫) → is-prop (z ≤ t)
   ≤-prop-valued (x , a) (y , b) (p , u) (q , v) =
    to-Σ-≡
-    (≼-prop-valued τ x y p q ,
-    dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
+     (≼-prop-valued τ x y p q ,
+     dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
   φ : inf-searchable _≤_
   φ = Σ-inf-searchable ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
   open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {U₀}) hiding (_≤_)
@@ -547,29 +546,29 @@ logically equivalent orders.
   γ = transport inf-searchable l φ
 
 ∑₁-inf-searchable : propext U₀
-                 → (τ : ℕ → Ordᵀ)
-                 → ((n : ℕ) → inf-searchable λ x y → x ≼⟪ τ n ⟫ y)
-                 → inf-searchable (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
-∑₁-inf-searchable pe τ ε =
- ∑-inf-searchable pe
- ℕ∞ᵒ
- (λ (x : ℕ∞) → (τ ↗ (under , under-embedding fe₀)) x)
- a
- b
+                  → (τ : ℕ → Ordᵀ)
+                  → ((n : ℕ) → inf-searchable λ x y → x ≼⟪ τ n ⟫ y)
+                  → inf-searchable (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
+∑₁-inf-searchable pe τ ε = ∑-inf-searchable pe
+                            ℕ∞ᵒ
+                            (λ (x : ℕ∞) → (τ ↗ (under , under-embedding fe₀)) x)
+                            a
+                            b
  where
   p : GenericConvergentSequence._≼_ ≡ tunderlying-rorder ℕ∞ᵒ
   p = dfunext (fe U₀ U₁)
        (λ u → dfunext (fe U₀ U₁)
                 (λ v → pe (≼-is-prop fe₀ u v)
-                           (≼-prop-valued ℕ∞ᵒ u v)
-                           (≼-not-≺ u v)
-                           (not-≺-≼ fe₀ u v)))
+                          (≼-prop-valued ℕ∞ᵒ u v)
+                          (≼-not-≺ u v)
+                          (not-≺-≼ fe₀ u v)))
   a : inf-searchable (tunderlying-rorder ℕ∞ᵒ)
   a = transport inf-searchable p (ℕ∞-inf-searchable fe₀)
   b : (x : ⟪ ℕ∞ᵒ ⟫) → inf-searchable
-                         (tunderlying-rorder
-                         ((τ ↗ (under , under-embedding fe₀)) x))
-  b x = prop-inf-tychonoff fe (under-embedding fe₀ x)
+                        (tunderlying-rorder
+                        ((τ ↗ (under , under-embedding fe₀)) x))
+  b x = prop-inf-tychonoff fe
+         (under-embedding fe₀ x)
          (λ {w} x y → x ≺⟪ τ (pr₁ w) ⟫ y)
          (λ w → ε (pr₁ w))
 
