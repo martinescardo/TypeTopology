@@ -4,6 +4,8 @@ Some operations and constructions on ordinals.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import UF-FunExt
 
 module Ordinals
@@ -14,14 +16,19 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
-open import OrdinalNotions
+open import OrdinalNotions hiding (_≤_)
 open import WellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
-open import NaturalsOrder renaming (_<_ to _≺[ℕ]_)
+open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import UF-Embedding
 open import UF-InjectiveTypes fe
 open import SquashedSum fe
 open import UF-Retracts
+open import InfSearchable
+open import LexicographicOrder
+open import LexicographicSearch
+open import ConvergentSequenceInfSearchable
+open import PropInfTychonoff
 
 U = U₀
 V = U₁
@@ -101,6 +108,10 @@ tunderlying-rorder : (τ : Ordᵀ) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
 tunderlying-rorder τ x y = ¬(y ≺⟪ τ ⟫ x)
 
 syntax tunderlying-rorder τ x y = x ≼⟪ τ ⟫ y
+
+≼-prop-valued : (τ : Ordᵀ) (x y : ⟪ τ ⟫) → is-prop (x ≼⟪ τ ⟫ y)
+≼-prop-valued τ x y l m = dfunext fe₀ (λ x → 𝟘-elim (m x))
+
 
 topped : (τ : Ordᵀ) → has-top (tunderlying-order τ)
 topped (α , t) = t
@@ -450,4 +461,116 @@ Overᵒ-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
                                  (∑-up υ)
                                  (∑₁-functor-order-reflecting τ υ f p)
                                  (∑-up-order-reflecting υ)
+\end{code}
+
+28 July 2018. Inf searchability basics.
+
+\begin{code}
+
+𝟙ᵒ-inf-searchable : inf-searchable (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y)
+𝟙ᵒ-inf-searchable p = * , f , g , h
+ where
+  f : (Σ \(x : 𝟙) → p x ≡ ₀) → p * ≡ ₀
+  f (* , r) = r
+  g : (x : 𝟙) → p x ≡ ₀ → * ≼⟪ 𝟙ᵒ ⟫ x
+  g * r ()
+  h : (x : 𝟙) → root-lower-bound (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y) p x
+    → x ≼⟪ 𝟙ᵒ ⟫ *
+  h * φ ()
+
+𝟚ᵒ-inf-searchable : inf-searchable (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
+𝟚ᵒ-inf-searchable p = 𝟚-equality-cases φ γ
+ where
+  _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → U ̇
+  x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
+  φ : (r : p (inl *) ≡ ₀) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
+  φ r = inl * , f , g , h
+   where
+    f : (Σ \(x : 𝟙 + 𝟙) → p x ≡ ₀) → p (inl *) ≡ ₀
+    f (inl * , s) = s
+    f (inr * , s) = r
+    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inl * ≤ x
+    g (inl *) s ()
+    g (inr *) s ()
+    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inl *
+    h (inl *) φ ()
+    h (inr *) φ * = φ (inl *) r *
+
+  γ : (r : p (inl *) ≡ ₁) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
+  γ r = inr * , f , g , h
+   where
+    f : (Σ \(x : 𝟙 + 𝟙) → p x ≡ ₀) → p (inr *) ≡ ₀
+    f (inl * , s) = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+    f (inr * , s) = s
+    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inr * ≤ x
+    g (inl *) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+    g (inr *) s ()
+    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inr *
+    h (inl *) φ ()
+    h (inr *) φ ()
+
+\end{code}
+
+It is not necessary to use propositional extensionality to prove the
+following, but it is simpler to do so given that we have already
+proved the inf-searchability for various types using different,
+logically equivalent orders.
+
+\begin{code}
+
+∑-inf-searchable : propext U₀
+                → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                → inf-searchable (λ x y → x ≼⟪ τ ⟫ y)
+                → ((x : ⟪ τ ⟫) → inf-searchable (λ a b → a ≼⟪ υ x ⟫ b))
+                → inf-searchable (λ z t → z ≼⟪ ∑ {τ} υ ⟫ t)
+∑-inf-searchable pe τ υ ε δ = γ
+ where
+  _≤_ : ⟪ ∑ {τ} υ ⟫ → ⟪ ∑ {τ} υ ⟫ → U₀ ̇
+  _≤_ = lex-order (λ x y → x ≼⟪ τ ⟫ y) (λ {x} a b → a ≼⟪ υ x ⟫ b)
+  ≤-prop-valued : (z t : ⟪ ∑ {τ} υ ⟫) → is-prop (z ≤ t)
+  ≤-prop-valued (x , a) (y , b) (p , u) (q , v) =
+   to-Σ-≡
+    (≼-prop-valued τ x y p q ,
+    dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
+  φ : inf-searchable _≤_
+  φ = Σ-inf-searchable ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
+  open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {U₀}) hiding (_≤_)
+  i : (z t : ⟪ ∑ {τ} υ ⟫) → z ≤ t → z ≼⟪ ∑ {τ} υ ⟫ t
+  i (x , a) (y , b) = back y x b a
+  j : (z t : ⟪ ∑ {τ} υ ⟫) → z ≼⟪ ∑ {τ} υ ⟫ t → z ≤ t
+  j (x , a) (y , b) = forth y x b a
+  k : (z t : ⟪ ∑ {τ} υ ⟫) → z ≤ t ≡ z ≼⟪ ∑ {τ} υ ⟫ t
+  k z t = pe (≤-prop-valued z t) (≼-prop-valued (∑ {τ} υ) z t) (i z t) (j z t)
+  l : _≤_ ≡ (λ z t → z ≼⟪ ∑ {τ} υ ⟫ t)
+  l = dfunext (fe U₀ U₁) λ z → dfunext (fe U₀ U₁) (k z)
+  γ : inf-searchable (λ z t → z ≼⟪ ∑ {τ} υ ⟫ t)
+  γ = transport inf-searchable l φ
+
+∑₁-inf-searchable : propext U₀
+                 → (τ : ℕ → Ordᵀ)
+                 → ((n : ℕ) → inf-searchable λ x y → x ≼⟪ τ n ⟫ y)
+                 → inf-searchable (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
+∑₁-inf-searchable pe τ ε =
+ ∑-inf-searchable pe
+ ℕ∞ᵒ
+ (λ (x : ℕ∞) → (τ ↗ (under , under-embedding fe₀)) x)
+ a
+ b
+ where
+  p : GenericConvergentSequence._≼_ ≡ tunderlying-rorder ℕ∞ᵒ
+  p = dfunext (fe U₀ U₁)
+       (λ u → dfunext (fe U₀ U₁)
+                (λ v → pe (≼-is-prop fe₀ u v)
+                           (≼-prop-valued ℕ∞ᵒ u v)
+                           (≼-not-≺ u v)
+                           (not-≺-≼ fe₀ u v)))
+  a : inf-searchable (tunderlying-rorder ℕ∞ᵒ)
+  a = transport inf-searchable p (ℕ∞-inf-searchable fe₀)
+  b : (x : ⟪ ℕ∞ᵒ ⟫) → inf-searchable
+                         (tunderlying-rorder
+                         ((τ ↗ (under , under-embedding fe₀)) x))
+  b x = prop-inf-tychonoff fe (under-embedding fe₀ x)
+         (λ {w} x y → x ≺⟪ τ (pr₁ w) ⟫ y)
+         (λ w → ε (pr₁ w))
+
 \end{code}

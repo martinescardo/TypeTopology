@@ -290,6 +290,7 @@ import OrdinalCodes
 import Ordinals
 import PlusOneLC
 import PropTychonoff
+import PropInfTychonoff
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import SearchableOrdinals

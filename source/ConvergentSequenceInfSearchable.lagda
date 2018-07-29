@@ -10,15 +10,15 @@ found.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import UF-FunExt
-
-module ConvergentSequenceInfSearchable (fe : ∀ {U V} → funext U V) where
-
 open import SpartanMLTT
+
+module ConvergentSequenceInfSearchable (fe₀ : funext U₀ U₀) where
+
 open import InfSearchable
 open import GenericConvergentSequence
 
-ℕ∞-is-inf-searchable : inf-searchable _≼_
-ℕ∞-is-inf-searchable p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
+ℕ∞-inf-searchable : inf-searchable _≼_
+ℕ∞-inf-searchable p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
   α : ℕ → 𝟚
   α 0       = p(under 0)
@@ -56,7 +56,7 @@ open import GenericConvergentSequence
     Lemma t = ap p t ∙ Dagger₀ n t
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
-  Claim₁ r = not-ℕ-is-∞ fe (Claim₀ r)
+  Claim₁ r = not-ℕ-is-∞ fe₀ (Claim₀ r)
 
   Claim₂ : p a ≡ ₁ → (n : ℕ) → p(under n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)
@@ -65,7 +65,7 @@ open import GenericConvergentSequence
   Claim₃ r = (ap p (Claim₁ r))⁻¹ ∙ r
 
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
-  Lemma r = ℕ∞-𝟚-density fe (Claim₂ r) (Claim₃ r)
+  Lemma r = ℕ∞-𝟚-density fe₀ (Claim₂ r) (Claim₃ r)
 
   putative-root-lemma : (Σ \u → p u ≡ ₀) → p a ≡ ₀
   putative-root-lemma (x , r) = lemma claim
@@ -79,7 +79,7 @@ open import GenericConvergentSequence
   lower-bound-lemma u r 0 s = lemma
     where
      claim₀ : incl u 0 ≡ ₀ → p u ≡ α 0
-     claim₀ t = ap p (is-Zero-equal-Zero fe t)
+     claim₀ t = ap p (is-Zero-equal-Zero fe₀ t)
      claim₁ : incl u 0 ≡ ₀ → ₀ ≡ ₁
      claim₁ t = r ⁻¹ ∙ claim₀ t ∙ s
      lemma : incl u 0 ≡ ₁
@@ -95,7 +95,7 @@ open import GenericConvergentSequence
     claim₁ : p(under(succ n)) ≡ ₁
     claim₁ = Lemma[min𝟚ab≡₁→b≡₁]{(incl a n)} s
     claim₂ : incl u (succ n) ≡ ₀ → u ≡ under(succ n)
-    claim₂ = Succ-criterion fe claim₀
+    claim₂ = Succ-criterion fe₀ claim₀
     claim₃ : incl u (succ n) ≡ ₀ → p u ≡ p(under(succ n))
     claim₃ t = ap p (claim₂ t)
     claim₄ : incl u (succ n) ≡ ₀ → p u ≡ ₁

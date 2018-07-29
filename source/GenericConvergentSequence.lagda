@@ -516,7 +516,7 @@ open import NaturalsOrder
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
 ⊏-trans m n u a = ⊏-trans' m n u (⊏-coarser-than-< m n a)
 
-open import OrdinalNotions hiding (_≤_) hiding (≤-refl)
+open import OrdinalNotions hiding (_≤_) hiding (≤-refl) hiding (_≼_)
 
 ≺-trans : is-transitive _≺_
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
@@ -662,6 +662,48 @@ Another version of N∞, to be investigated.
 
 Ν∞ : U₁ ̇
 Ν∞ = Σ \(A : ℕ → Ω) → (n : ℕ) → A (succ n) holds → A n holds
+
+\end{code}
+
+Needed 28 July 2018:
+
+\begin{code}
+
+≼-is-prop : funext₀ → (u v : ℕ∞) → is-prop (u ≼ v)
+≼-is-prop fe u v = Π-is-prop fe (λ n → Π-is-prop fe (λ l → 𝟚-is-set))
+
+≼-not-≺ : (u v : ℕ∞) → u ≼ v → ¬(v ≺ u)
+≼-not-≺ u v l (n , (p , m)) = zero-is-not-one (e ⁻¹ ∙ d)
+ where
+  a : v ≺ u
+  a = transport (λ - → - ≺ u) (p ⁻¹) (⊏-coarser-than-≺ n u m)
+  k : ℕ
+  k = pr₁ a
+  b : v ≡ under k
+  b = pr₁ (pr₂ a)
+  c : k ⊏ v
+  c = l k (pr₂ (pr₂ a))
+  d : incl (under k) k ≡ ₁
+  d = transport (λ - → k ⊏ -) b c
+  e : incl (under k) k ≡ ₀
+  e = under-diagonal₀ k
+
+not-≺-≼ : funext₀ → (u v : ℕ∞) → ¬(v ≺ u) → u ≼ v
+not-≺-≼ fe u v φ n l = 𝟚-equality-cases f g
+ where
+  f : v ⊑ n → n ⊏ v
+  f m = 𝟘-elim (φ (k , (p , b)))
+   where
+    k : ℕ
+    k = pr₁(under-lemma fe v n m)
+    a : k ≤ n
+    a = pr₁(pr₂(under-lemma fe v n m))
+    p : v ≡ under k
+    p = pr₂(pr₂(under-lemma fe v n m))
+    b : k ⊏ u
+    b = ⊏-trans'' u n k a l
+  g : n ⊏ v → n ⊏ v
+  g = id
 
 \end{code}
 

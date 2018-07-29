@@ -12,13 +12,13 @@ open import SpartanMLTT
 open import LexicographicOrder
 open import InfSearchable
 
-sums-preserve-inf-searchability : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
+Σ-inf-searchable : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
   → (_≤_ : X → X → W ̇)
   → (_≼_ : {x : X} → Y x → Y x → T ̇)
   → inf-searchable _≤_
   → ((x : X) → inf-searchable (_≼_ {x}))
   → inf-searchable (lex-order _≤_ _≼_)
-sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
+Σ-inf-searchable {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
   lemma-next : (x : X) → Σ \(y₀ : Y x) → ((Σ \(y : Y x) → p(x , y) ≡ ₀) → p (x , y₀) ≡ ₀)
@@ -93,3 +93,9 @@ sums-preserve-inf-searchability {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
     ≼-lemma r = j r (g(λ y' r → ≼-lower-bounder x y' r refl))
 
 \end{code}
+
+Added 28th July 2018.
+
+\end{code}
+
+\begin{code}

@@ -29,6 +29,8 @@ open import UF-Subsingletons
 open import SquashedCantor fe
 open import UF-Retracts-FunExt
 open import InfSearchable
+open import UF-Equiv
+open import ArithmeticViaEquivalence fe hiding (_+'_)
 
 \end{code}
 
@@ -287,17 +289,39 @@ eds-order-reflecting (Sum1 α)  =
 
 \end{code}
 
+As discussed in the module Ordinals, propositional extensionality in
+the following construction is not strictly needed but makes our like
+much easier (given the mathematics we have already developed).
+
 \begin{code}
 
-{- TODO
-ord-inf-searchable : (α : OE) → inf-searchable (λ x y → x ≼⟪ ord α ⟫ y)
-ord-inf-searchable = {!!}
+ord-inf-searchable : propext U₀
+                  → (α : OE) → inf-searchable (λ x y → x ≼⟪ ord α ⟫ y)
+ord-inf-searchable pe One = 𝟙ᵒ-inf-searchable
+ord-inf-searchable pe (Add α β) = ∑-inf-searchable pe
+                                     𝟚ᵒ
+                                     (cases (λ _ → ord α) (λ _ → ord β))
+                                     𝟚ᵒ-inf-searchable
+                                     (dep-cases
+                                       (λ _ → ord-inf-searchable pe α)
+                                       (λ _ → ord-inf-searchable pe β))
+ord-inf-searchable pe (Mul α β) = ∑-inf-searchable pe
+                                    (ord α)
+                                    (λ _ → ord β)
+                                    (ord-inf-searchable pe α)
+                                    (λ _ → ord-inf-searchable pe β)
+ord-inf-searchable pe (Sum1 α) = ∑₁-inf-searchable
+                                  pe
+                                  (ord ∘ α)
+                                  (ord-inf-searchable pe ∘ α)
+
+{-
+ord'-countable : (α : OE) → (⟪ ord' α ⟫ ≃ ℕ) + Σ \(n : ℕ) → ⟪ ord' α ⟫ ≃ Fin n
+ord'-countable = {!!}
 -}
 
 \end{code}
 
-
-TODO: The above discrete ordinals are enumerable.
 
 Brouwer ordinal codes can be mapped to searchable ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is

@@ -385,6 +385,14 @@ zero-is-not-one ()
 𝟚-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
 𝟚-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
 
+𝟚-equality-cases₀ : ∀ {U} {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
+                 → (p : b ≡ ₀) → 𝟚-equality-cases {U} {A} {b} f₀ f₁ ≡ f₀ p
+𝟚-equality-cases₀ {U} {A} {.₀} refl = refl
+
+𝟚-equality-cases₁ : ∀ {U} {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
+                 → (p : b ≡ ₁) → 𝟚-equality-cases {U} {A} {b} f₀ f₁ ≡ f₁ p
+𝟚-equality-cases₁ {U} {A} {.₁} refl = refl
+
 𝟚-equality-cases' : ∀ {U} {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
 𝟚-equality-cases' {U} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
 𝟚-equality-cases' {U} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)

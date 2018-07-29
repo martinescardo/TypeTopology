@@ -54,9 +54,9 @@ follows.
 
 \begin{code}
 
-module commutation (U V : Universe)
-         (X : U ̇)
-         (Y : X → V ̇)
+module commutation {U V : Universe}
+         {X : U ̇}
+         {Y : X → V ̇}
          (_<_ : X → X → U ̇)
          (_≺_ : {x : X} → Y x → Y x → V ̇)
          (R : U₀ ̇)
