@@ -7,8 +7,6 @@ module UF-Retracts where
 open import SpartanMLTT
 open import UF-Base
 
-open import UF-Base
-
 has-section : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 has-section r = Σ \s → r ∘ s ∼ id
 
@@ -126,24 +124,24 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   fg (₀ , x) = ap (λ - → (₀ , -)) (rs x)
   fg (₁ , y) = ap (λ - → (₁ , -)) (tu y)
 
-Σ-reindex-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (g : Y → X)
-          → has-section g → retract (Σ A) of (Σ \(y : Y) → A (g y))
-Σ-reindex-retract {U} {V} {W} {X} {Y} {A} g (f , gf) = γ , φ , γφ
+Σ-reindex-retract : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X → W ̇} (r : Y → X)
+                  → has-section r → retract (Σ A) of (Σ (A ∘ r))
+Σ-reindex-retract {U} {V} {W} {X} {Y} {A} r (s , rs) = γ , φ , γφ
  where
-  γ : (Σ \(y : Y) → A (g y)) → Σ A
-  γ (y , a) = (g y , a)
-  φ : Σ A → Σ \(y : Y) → A (g y)
-  φ (x , a) = (f x , back-transport A (gf x) a)
+  γ : (Σ \(y : Y) → A (r y)) → Σ A
+  γ (y , a) = (r y , a)
+  φ : Σ A → Σ \(y : Y) → A (r y)
+  φ (x , a) = (s x , back-transport A (rs x) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
-  γφ (x , a) = to-Σ-≡ (gf x , p)
+  γφ (x , a) = to-Σ-≡ (rs x , p)
    where
-    p : transport A (gf x) (back-transport A (gf x) a) ≡ a
-    p = back-and-forth-transport (gf x)
+    p : transport A (rs x) (back-transport A (rs x) a) ≡ a
+    p = back-and-forth-transport (rs x)
 
 Σ-retract : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
           → ((x : X) → retract (A x) of (B x))
           → retract (Σ A) of (Σ B)
-Σ-retract {U} {V} {W} {X} A B ρ = r , s , rs
+Σ-retract {U} {V} {W} {X} A B ρ = NatΣ R , NatΣ S , rs
  where
   R : (x : X) → B x → A x
   R x = pr₁(ρ x)
@@ -151,12 +149,8 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   S x = pr₁(pr₂(ρ x))
   RS : (x : X) (a : A x) → R x (S x a) ≡ a
   RS x = pr₂(pr₂(ρ x))
-  r : Σ B → Σ A
-  r = NatΣ R
-  s : Σ A → Σ B
-  s = NatΣ S
-  rs : (σ : Σ A) → r (s σ) ≡ σ
-  rs (x , a) = ap (λ - → (x , -)) (RS x a)
+  rs : (σ : Σ A) → NatΣ R (NatΣ S σ) ≡ σ
+  rs (x , a) = to-Σ-≡' (RS x a)
 
 retract-𝟙+𝟙-of-𝟚 : retract 𝟙 + 𝟙 of 𝟚
 retract-𝟙+𝟙-of-𝟚 = f , (g , fg)
@@ -177,3 +171,42 @@ some retracts proved here are also shown as equivalences in other
 modules, and hence there is some amount of repetition that should be
 removed. This is the result of (1) merging initially independent
 developments, and (2) work over many years with uncontrolled growth.
+
+\begin{code}
+
+Σ-retract₂ : ∀ {U V W T} {X : U ̇} {Y : X → V ̇} {A : W ̇} {B : T ̇}
+           → retract X of A
+           → ((x : X) → retract  (Y x) of B)
+           → retract (Σ Y) of (A × B)
+Σ-retract₂ {U} {V} {W} {T} {X} {Y} {A} {B} (r , s , rs) R = f , g , gf
+ where
+  φ : (x : X) → B → Y x
+  φ x = pr₁ (R x)
+  γ : (x : X) → Y x → B
+  γ x = pr₁ (pr₂ (R x))
+  φγ : (x : X) → (y : Y x) → φ x (γ x y) ≡ y
+  φγ x = pr₂ (pr₂ (R x))
+  f : A × B → Σ Y
+  f (a , b) = r a , φ (r a) b
+  g : Σ Y → A × B
+  g (x , y) = s x , γ x y
+  gf : (z : Σ Y) → f (g z) ≡ z
+  gf (x , y) = to-Σ-≡ (rs x , l (rs x))
+   where
+    l : {x' : X} (p : x' ≡ x) → transport Y p (φ x' (γ x y)) ≡ y
+    l refl = φγ x y
+
+retract-𝟙+𝟙-of-ℕ : retract 𝟙 + 𝟙 of ℕ
+retract-𝟙+𝟙-of-ℕ = r , s , rs
+ where
+  r : ℕ → 𝟙 + 𝟙
+  r zero = inl *
+  r (succ _) = inr *
+  s : 𝟙 + 𝟙 → ℕ
+  s (inl *) = zero
+  s (inr *) = succ zero
+  rs : (z : 𝟙 {U₀} + 𝟙 {U₀}) → r (s z) ≡ z
+  rs (inl *) = refl
+  rs (inr *) = refl
+
+\end{code}

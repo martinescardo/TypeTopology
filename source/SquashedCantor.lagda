@@ -498,10 +498,10 @@ of showing that our searchable ordinals are totally separated.
 
 \begin{code}
 
-squashed-Cantor-retract : ∀ {U} (X : ℕ → U ̇)
+Σ¹-Cantor-retract : ∀ {U} (X : ℕ → U ̇)
                        → ((n : ℕ) → retract (X n) of Cantor)
                        → retract (Σ¹ X) of Cantor
-squashed-Cantor-retract {U} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
+Σ¹-Cantor-retract {U} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
  where
   s : (u : ℕ∞) → retract (X / under) u of ((λ _ → Cantor) / under) u
   s = retract-extension X (λ _ → Cantor) under ρ

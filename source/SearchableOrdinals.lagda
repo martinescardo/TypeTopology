@@ -60,7 +60,9 @@ of ordinals under ordinal-indexed sums, paying a crucial role in the
 proof of extensionality of the sum. But the top element is equally
 crucial for searchability or compactness purposes, dicussed below.
 
-  * The ordinals in the image of Δ are discrete (have decidable equality).
+  * The ordinals in the image of Δ are discrete (have decidable
+    equality) and have countable underlying sets, which are in fact
+    retracts of ℕ.
 
   * Those in the image of Κ are compact (they are searchable).
 
@@ -73,11 +75,10 @@ crucial for searchability or compactness purposes, dicussed below.
     infimum, which belongs to the subset iff and only if the subset is
     non-empty (with non-emptiness expressed by a doble negation).
 
-    The discrete ordinals, being countable (either equivalent to ℕ or
-    to some finite type Fin n ≃ 𝟙 + 𝟙 + ⋯ + 𝟙) , cannot be retracts of
+    The discrete ordinals, being retracts of ℕ, cannot be retracts of
     the Cantor space. This is because the Cantor space is potentially
     searchable, in the presence of Brouwerian axioms, and
-    searchability is inherited by retracts, which the searchability of
+    searchability is inherited by retracts, and the searchability of
     the infinite discrete ordinals is equivalent to Bishop's LPO
     (limited principle of omnscient), which is not provable in any
     variety of constructive mathematics.
@@ -85,11 +86,11 @@ crucial for searchability or compactness purposes, dicussed below.
 The Δ and Κ interpretation of one, addition and multiplication are as
 expected. They differ only in the interpretation of Sum1.
 
-   * In the discrete case, Sum1 is interpreted as simply the sum plus
-     the ordinal 𝟙 (written ∑₁).
+   * In the discrete case, Sum1 is interpreted as simply the countable
+     sum plus the ordinal 𝟙 (written ∑₁).
 
    * In the compact case, Sum1 is interpreted as the sum with an added
-     non-isolated point (written ∑¹). In is this that makes the
+     non-isolated top point (written ∑¹). It is this that makes the
      searchability of the compact ordinals possible. The searchability
      of the discrete ordinals is a contructive taboo.
 
@@ -118,6 +119,7 @@ open import SearchableTypes
 open import TotallySeparated
 open import UF-Retracts
 open import SquashedCantor fe hiding (Κ)
+-- open import SquashedSum
 open import DiscreteAndSeparated
 open import UF-Embedding
 open import UF-Subsingletons
@@ -140,6 +142,7 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 
 Δ                    : OE → Ordᵀ
 Δ-discrete           : (α : OE) → discrete ⟪ Δ α ⟫
+Δ-retract-of-ℕ      : (α : OE) → retract ⟪ Δ α ⟫ of ℕ
 
 δκ                   : {α : OE} → ⟪ Δ α ⟫ → ⟪ Κ α ⟫
 δκ-dense             : (α : OE) → is-dense (δκ {α})
@@ -214,7 +217,7 @@ following construction is performed in the module SquashedCantor.
 
 \begin{code}
 
-Κ-Cantor-retract One = (λ _ → *) , (λ _ → λ n → ₀) , (λ x → 𝟙-is-prop * x)
+Κ-Cantor-retract One = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
 Κ-Cantor-retract (Add α β) = retracts-compose d e
  where
   a : retract (Cantor +' Cantor) of (Cantor + Cantor)
@@ -242,7 +245,7 @@ following construction is performed in the module SquashedCantor.
   a = pair-seq-retract fe₀
   b : retract ⟪ Κ α ⟫ × ⟪ Κ β ⟫ of (Cantor × Cantor)
   b = ×-retract (Κ-Cantor-retract α) (Κ-Cantor-retract β)
-Κ-Cantor-retract (Sum1 α)  = squashed-Cantor-retract (λ n → ⟪ Κ (α n) ⟫) (Κ-Cantor-retract ∘ α)
+Κ-Cantor-retract (Sum1 α)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (α n) ⟫) (Κ-Cantor-retract ∘ α)
 
 \end{code}
 
@@ -420,21 +423,30 @@ much easier (given the mathematics we have already developed).
   (Κ ∘ α)
   (Κ-inf-searchable pe ∘ α)
 
-
 \end{code}
 
-We have countability of the discrete ordinals in the following strong
-sense (every such ordinal is either equivalent to ℕ or to some finite
-set F n ≃ 𝟙 + 𝟙 + ⋯ + 𝟙):
+Added 31 July 2018:
 
 \begin{code}
 
-{- TODO
-Δ-countable : (α : OE) → (⟪ Δ α ⟫ ≃ ℕ) + Σ \(n : ℕ) → ⟪ Δ α ⟫ ≃ Fin n
-Δ-countable = {!!}
--}
+open import UF-Retracts
+open import BinaryNaturals
+
+Δ-retract-of-ℕ One = (λ _ → *) , (λ _ → 0) , 𝟙-is-prop *
+Δ-retract-of-ℕ (Add α β) =
+ Σ-retract-of-ℕ
+  retract-𝟙+𝟙-of-ℕ
+  (dep-cases (λ _ → Δ-retract-of-ℕ α) (λ _ → Δ-retract-of-ℕ β))
+Δ-retract-of-ℕ (Mul α β) =
+ Σ-retract-of-ℕ
+ (Δ-retract-of-ℕ α)
+ (λ _ → Δ-retract-of-ℕ β)
+Δ-retract-of-ℕ (Sum1 α) = Σ₁-ℕ-retract (Δ-retract-of-ℕ ∘ α)
 
 \end{code}
+
+NB. We could have proved that the Δ-ordinals are discrete using the
+above, as discrete types are closed under retracts.
 
 Hence the searchability of any infinite discrete ordinal is a
 constructive taboo, logically equivalent to Bishop's LPO.

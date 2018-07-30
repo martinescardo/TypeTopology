@@ -464,8 +464,8 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- squashed-sum-searchable' : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σᴵ X)
- squashed-sum-searchable' {X} f = Σ-searchable ℕ∞-searchable (extension-searchable {X} f)
+ Σᴵ-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σᴵ X)
+ Σᴵ-searchable {X} f = Σ-searchable ℕ∞-searchable (extension-searchable {X} f)
 
 \end{code}
 
