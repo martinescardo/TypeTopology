@@ -9,8 +9,8 @@ long pause to understand univalent foundations, which is what we use
 in this development, and to develop the mathematica basis for this in
 other modules.
 
-Here an ordinal is a type equipped with a well order. This is a
-relation < which is assumed to be
+Here an ordinal is a type equipped with a well order, namely
+relation < which is
 
   * subsingleton valued,
   * well founded,
@@ -35,7 +35,7 @@ module SearchableOrdinals (fe : ∀ U V → funext U V) where
 
 We work with ordinal encodings, or ordinal expressions, that are
 slightly different from the traditional Brouwer ordinal trees, which
-we also consider towards the end of his article.
+we also consider towards the end of this article.
 
 \begin{code}
 
@@ -48,7 +48,7 @@ data OE : U₀ ̇ where
 \end{code}
 
 We consider two mappings from these ordinal expressions to actual
-ordinals as discussed above.
+ordinals as discussed above:
 
   * Δ : OE → Ordᵀ
   * Κ : OE → Ordᵀ
@@ -56,7 +56,7 @@ ordinals as discussed above.
 Here Ordᵀ is the type of ordinals that have a top element (which, in
 constructive mathematics, are not in general successor
 ordinals). Technically, the top element allows us to prove the closure
-of ordinals under ordinal-indexed sums, paying a crucial role in the
+of ordinals under ordinal-indexed sums, playing a crucial role in the
 proof of extensionality of the sum. But the top element is equally
 crucial for searchability or compactness purposes, dicussed below.
 
@@ -73,18 +73,18 @@ crucial for searchability or compactness purposes, dicussed below.
     And not only the Κ ordinals are searchable, they are also
     inf-searchable, which means that any detachable subset has an
     infimum, which belongs to the subset iff and only if the subset is
-    non-empty (with non-emptiness expressed by a doble negation).
+    non-empty (with non-emptiness expressed by a double negation).
 
     The discrete ordinals, being retracts of ℕ, cannot be retracts of
     the Cantor space. This is because the Cantor space is potentially
-    searchable, in the presence of Brouwerian axioms, and
-    searchability is inherited by retracts, and the searchability of
-    the infinite discrete ordinals is equivalent to Bishop's LPO
-    (limited principle of omnscient), which is not provable in any
-    variety of constructive mathematics.
+    searchable, in the presence of Brouwerian axioms (which we are not
+    assuming), and searchability is inherited by retracts, and the
+    searchability of the infinite discrete ordinals is equivalent to
+    Bishop's LPO (limited principle of omnscient), which is not
+    provable in any variety of constructive mathematics.
 
-The Δ and Κ interpretation of one, addition and multiplication are as
-expected. They differ only in the interpretation of Sum1.
+The Δ and Κ interpretation of One, Add and Mul are as expected. They
+differ only in the interpretation of Sum1.
 
    * In the discrete case, Sum1 is interpreted as simply the countable
      sum plus the ordinal 𝟙 (written ∑₁).
@@ -115,17 +115,16 @@ the theorems and constructions to be performed here:
 \begin{code}
 
 open import Ordinals fe
-open import SearchableTypes
-open import TotallySeparated
-open import UF-Retracts
-open import SquashedCantor fe hiding (Κ)
--- open import SquashedSum
-open import DiscreteAndSeparated
-open import UF-Embedding
-open import UF-Subsingletons
-open import InfSearchable
 open import OrdinalCodes
+open import SearchableTypes
+open import InfSearchable
+open import TotallySeparated
 open import SquashedSum fe
+open import SquashedCantor fe hiding (Κ)
+open import DiscreteAndSeparated
+open import UF-Subsingletons
+open import UF-Retracts
+open import UF-Embedding
 open import UF-SetExamples
 
 \end{code}
