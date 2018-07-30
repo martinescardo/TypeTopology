@@ -583,35 +583,34 @@ We need to find a better home for this:
 
 open import BinaryNaturals hiding (_+_) hiding (r)
 
-Σ₁-ℕ-retract' : retract Σ₁ (λ _ → ℕ) of ℕ
-Σ₁-ℕ-retract' = Σ-retract-of-ℕ
-        (equiv-retract-l ℕ-plus-𝟙)
-        (λ (z : ℕ + 𝟙) → r z , s z , rs z)
- where
-  r : (z : ℕ + 𝟙) → ℕ → ((λ _ → ℕ) / inl) z
-  r (inl n) m w = m
-  r (inr *) m (_ , ())
-  s : (z : ℕ + 𝟙) → ((λ _ → ℕ) / inl) z → ℕ
-  s (inl n) φ = φ (n , refl)
-  s (inr *) φ = 0 -- Any natural number will do here.
-  rs : (z : ℕ + 𝟙) (φ : ((λ _ → ℕ) / inl) z) → r z (s z φ) ≡ φ
-  rs (inl n) φ = dfunext fe₀ g
-   where
-    g : (w : fiber inl (inl n)) → r (inl n) (s (inl n) φ) w ≡ φ w
-    g (n , refl) = refl
-  rs (inr *) φ = dfunext fe₀ g
-   where
-    g : (w : fiber inl (inr *)) → r (inr *) (s (inr *) φ) w ≡ φ w
-    g (n , ())
-
 Σ₁-ℕ-retract : ∀ {U} {X : ℕ → U ̇}
              → ((n : ℕ) → retract (X n) of ℕ)
              → retract (Σ₁ X) of ℕ
-Σ₁-ℕ-retract {U} {X} ρ = retracts-compose Σ₁-ℕ-retract' r
+Σ₁-ℕ-retract {U} {X} ρ = retracts-compose c b
  where
-  s : (z : ℕ + 𝟙) → retract (X / over) z of ((λ _ → ℕ) / over) z
-  s = retract-extension X (λ _ → ℕ) over ρ
-  r : retract (Σ₁ X) of Σ₁ (λ _ → ℕ)
-  r = Σ-retract (X / over) ((λ _ → ℕ) / over) s
+  a : (z : ℕ + 𝟙) → retract (X / over) z of ((λ _ → ℕ) / over) z
+  a = retract-extension X (λ _ → ℕ) over ρ
+  b : retract (Σ₁ X) of Σ₁ (λ _ → ℕ)
+  b = Σ-retract (X / over) ((λ _ → ℕ) / over) a
+  c : retract Σ₁ (λ _ → ℕ) of ℕ
+  c = Σ-retract-of-ℕ
+       (equiv-retract-l ℕ-plus-𝟙)
+       (λ (z : ℕ + 𝟙) → r z , s z , rs z)
+   where
+    r : (z : ℕ + 𝟙) → ℕ → ((λ _ → ℕ) / inl) z
+    r (inl n) m w = m
+    r (inr *) m (k , ())
+    s : (z : ℕ + 𝟙) → ((λ _ → ℕ) / inl) z → ℕ
+    s (inl n) φ = φ (n , refl)
+    s (inr *) φ = 0 -- Any natural number will do here.
+    rs : (z : ℕ + 𝟙) (φ : ((λ _ → ℕ) / inl) z) → r z (s z φ) ≡ φ
+    rs (inl n) φ = dfunext fe₀ g
+     where
+      g : (w : fiber inl (inl n)) → r (inl n) (s (inl n) φ) w ≡ φ w
+      g (n , refl) = refl
+    rs (inr *) φ = dfunext fe₀ g
+     where
+      g : (w : fiber inl (inr *)) → r (inr *) (s (inr *) φ) w ≡ φ w
+      g (k , ())
 
 \end{code}
