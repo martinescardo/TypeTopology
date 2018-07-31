@@ -288,6 +288,7 @@ import OmniscientTypes
 import OrdinalNotions
 import OrdinalCodes
 import Ordinals
+import OrdinalsClosure
 import PlusOneLC
 import PropTychonoff
 import PropInfTychonoff

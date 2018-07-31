@@ -625,25 +625,6 @@ module examples where
 
 \end{code}
 
-This module is probably not the ideal place for this:
-
-\begin{code}
-
-open import UF-Retracts
-
-Σ-retract-of-ℕ : ∀ {U V} {X : U ̇} {Y : X → V ̇}
-               → retract X of ℕ
-               → ((x : X) → retract (Y x) of ℕ)
-               → retract (Σ Y) of ℕ
-Σ-retract-of-ℕ {U} {V} {X} {Y} ρ R = retracts-compose b a
- where
-  a : retract (Σ Y) of (ℕ × ℕ)
-  a = Σ-retract₂ ρ R
-  b : retract (ℕ × ℕ) of ℕ
-  b = equiv-retract-l pairing
-
-\end{code}
-
 And finally the fixities assumed above:
 
 \begin{code}

@@ -115,6 +115,7 @@ the theorems and constructions to be performed here:
 \begin{code}
 
 open import Ordinals fe
+open import OrdinalsClosure fe
 open import OrdinalCodes
 open import SearchableTypes
 open import InfSearchable
@@ -141,7 +142,7 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 
 Δ                    : OE → Ordᵀ
 Δ-discrete           : (α : OE) → discrete ⟪ Δ α ⟫
-Δ-retract-of-ℕ      : (α : OE) → retract ⟪ Δ α ⟫ of ℕ
+Δ-retract-of-ℕ       : (α : OE) → retract ⟪ Δ α ⟫ of ℕ
 
 δκ                   : {α : OE} → ⟪ Δ α ⟫ → ⟪ Κ α ⟫
 δκ-dense             : (α : OE) → is-dense (δκ {α})
@@ -203,47 +204,15 @@ The underlying sets  of such ordinals are searchable:
 \end{code}
 
 Completed 20th July 2018:
+
 The searchable ordinals are retracts of the Cantor type (ℕ → 𝟚).
 
-The complication of the following proof in the case for addition is
-that the ordinal 𝟚ᵒ has underlying set 𝟙+𝟙 rather than 𝟚, and that
-(hence) we defined the ordinal +ᵒ as a sum indexed by 𝟙+𝟙 rather than
-as a co-product. This saved lots of code elsewhere, but adds labour
-here (and in some helper lemmas/constructions that we added in other
-modules for this purpose). Notice that +' is the sum indexed by 𝟚,
-defined in the module SpartanMLTT. The bulk of the work for the
-following construction is performed in the module SquashedCantor.
 
 \begin{code}
 
 Κ-Cantor-retract One = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
-Κ-Cantor-retract (Add α β) = retracts-compose d e
- where
-  a : retract (Cantor +' Cantor) of (Cantor + Cantor)
-  a = +'-retract-of-+
-  b : retract (Cantor +' Cantor) of Cantor
-  b = retracts-compose +-Cantor-retract a
-  c : retract ⟪ Κ α ⟫ +' ⟪ Κ β ⟫ of (Cantor +' Cantor)
-  c = +'-retract (Κ-Cantor-retract α) (Κ-Cantor-retract β)
-  d : retract ⟪ Κ α ⟫ +' ⟪ Κ β ⟫ of Cantor
-  d = retracts-compose b c
-  e : retract ⟪ Κ α +ᵒ Κ β ⟫ of (⟪ Κ α ⟫ +' ⟪ Κ β ⟫)
-  e = transport (λ - → retract ⟪ Κ α +ᵒ Κ β ⟫ of (Σ -)) (dfunext (fe U₀ U₁) l) h
-   where
-    f : 𝟚 → 𝟙 + 𝟙
-    f = pr₁ retract-𝟙+𝟙-of-𝟚
-    h : retract ⟪ Κ α +ᵒ Κ β ⟫ of (Σ \(i : 𝟚) → ⟪ cases (λ _ → Κ α) (λ _ → Κ β) (f i) ⟫)
-    h = Σ-reindex-retract f (pr₂ retract-𝟙+𝟙-of-𝟚)
-    l : (i : 𝟚) → ⟪ cases (λ _ → Κ α) (λ _ → Κ β) (f i) ⟫
-                ≡ 𝟚-cases ⟪ Κ α ⟫ ⟪ Κ β ⟫ i
-    l ₀ = refl
-    l ₁ = refl
-Κ-Cantor-retract (Mul α β) = retracts-compose a b
- where
-  a : retract (Cantor × Cantor) of Cantor
-  a = pair-seq-retract fe₀
-  b : retract ⟪ Κ α ⟫ × ⟪ Κ β ⟫ of (Cantor × Cantor)
-  b = ×-retract (Κ-Cantor-retract α) (Κ-Cantor-retract β)
+Κ-Cantor-retract (Add α β) = +-retract-of-Cantor (Κ α) (Κ β) (Κ-Cantor-retract α) (Κ-Cantor-retract β)
+Κ-Cantor-retract (Mul α β) = ×-retract-of-Cantor (Κ α) (Κ β) (Κ-Cantor-retract α) (Κ-Cantor-retract β)
 Κ-Cantor-retract (Sum1 α)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (α n) ⟫) (Κ-Cantor-retract ∘ α)
 
 \end{code}
@@ -427,9 +396,6 @@ much easier (given the mathematics we have already developed).
 Added 31 July 2018:
 
 \begin{code}
-
-open import UF-Retracts
-open import BinaryNaturals
 
 Δ-retract-of-ℕ One = (λ _ → *) , (λ _ → 0) , 𝟙-is-prop *
 Δ-retract-of-ℕ (Add α β) =
