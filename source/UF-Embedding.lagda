@@ -304,4 +304,16 @@ inr-embedding : ∀ {U V} (X : U ̇) (Y : V ̇)
 inr-embedding {U} {V} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
 inr-embedding {U} {V} X Y (inr a) (.a , refl) (.a , refl) = refl
 
+NatΣ-embedding : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+             → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΣ ζ)
+NatΣ-embedding A B ζ ise (x , b) = retract-of-subsingleton
+                                   (equiv-retract-r (NatΣ-fiber-equiv A B ζ x b))
+                                   (ise x b)
+
+NatΣ-embedding-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                       → is-embedding(NatΣ ζ) → ((x : X) → is-embedding(ζ x))
+NatΣ-embedding-converse A B ζ e x b = retract-of-subsingleton
+                                      (equiv-retract-l (NatΣ-fiber-equiv A B ζ x b))
+                                      (e (x , b))
+
 \end{code}

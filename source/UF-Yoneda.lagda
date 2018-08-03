@@ -649,7 +649,7 @@ NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
 
 yoneda-equivalence-Σ : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (A : X → V ̇)
                      → Σ A ≃ Σ \(x : X) → Nat (Id x) A
-yoneda-equivalence-Σ fe A = NatΣ-equiv' A (λ x → Nat (Id x) A) (λ x → yoneda-equivalence fe x A)
+yoneda-equivalence-Σ fe A = NatΣ-≃ A (λ x → Nat (Id x) A) (λ x → yoneda-equivalence fe x A)
 
 nats-are-uniquely-transports : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
                             → is-singleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)

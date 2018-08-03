@@ -399,9 +399,51 @@ pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton (r , s , rs
     rs : (a : A x) → r(s a) ≡ a
     rs a = refl
 
+NatΣ-fiber-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                → (x : X) (b : B x) → fiber (ζ x) b ≃ fiber (NatΣ ζ) (x , b)
+NatΣ-fiber-equiv A B ζ x b = f b , (g b , fg b) , (g b , gf b)
+ where
+  f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
+  f .(ζ x a) (a , refl) = (x , a) , refl
+  g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
+  g .(ζ x a) ((x' , a) , refl) = a , refl
+  gf : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ≡ w
+  gf .(ζ x a) (a , refl) = refl
+  fg : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
+  fg b (a , refl) = refl
+
+NatΣ-vv-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+             → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΣ ζ)
+NatΣ-vv-equiv A B ζ ise (x , b) = retract-of-singleton
+                                   (equiv-retract-r (NatΣ-fiber-equiv A B ζ x b))
+                                   (ise x b)
+
+NatΣ-vv-equiv-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                       → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
+NatΣ-vv-equiv-converse A B ζ e x b = retract-of-singleton
+                                      (equiv-retract-l (NatΣ-fiber-equiv A B ζ x b))
+                                      (e (x , b))
+
 NatΣ-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+          → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
+NatΣ-equiv A B ζ ise = is-vv-equiv-is-equiv
+                         (NatΣ ζ)
+                         (NatΣ-vv-equiv A B ζ
+                           (λ x → is-equiv-is-vv-equiv (ζ x) (ise x)))
+
+NatΣ-equiv-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                   → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
+NatΣ-equiv-converse A B ζ e x = is-vv-equiv-is-equiv (ζ x)
+                                 (NatΣ-vv-equiv-converse A B ζ
+                                   (is-equiv-is-vv-equiv (NatΣ ζ) e) x)
+
+NatΣ-≃ : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
+            → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
+NatΣ-≃ A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
+
+NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
-NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
+NatΣ-equiv' A B ζ ise = ((s , ζs), (r , rζ))
  where
   s : Σ B → Σ A
   s (x , b) = x , pr₁ (pr₁ (ise x)) b
@@ -411,27 +453,6 @@ NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
   r (x , b) = x , (pr₁ (pr₂ (ise x)) b)
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (ise x)) a)
-
-NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
-            → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
-NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
-
-NatΣ-equiv-converse' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
-                   → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
-NatΣ-equiv-converse' A B ζ e x b = retract-of-singleton (g b , f b , gf b) (e (x , b))
- where
-  f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
-  f .(ζ x a) (a , refl) = (x , a) , refl
-  g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
-  g .(ζ x a) ((x' , a) , refl) = a , refl
-  gf : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ≡ w
-  gf .(ζ x a) (a , refl) = refl
-
-NatΣ-equiv-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
-                   → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
-NatΣ-equiv-converse A B ζ e x = is-vv-equiv-is-equiv (ζ x)
-                                 (NatΣ-equiv-converse' A B ζ
-                                   (is-equiv-is-vv-equiv (NatΣ ζ) e) x)
 
 Σ-change-of-variables' : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → W ̇) (g : Y → X)
                        → is-hae g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
