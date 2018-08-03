@@ -328,7 +328,6 @@ import UF-SetExamples
 import UF-Subsingletons
 import UF-Subsingletons-Equiv
 import UF-Subsingletons-FunExt
-import UF-Subsingletons-Retracts
 import UF-Two-Prop-Density
 import UF-UA-FunExt
 import UF-Univalence

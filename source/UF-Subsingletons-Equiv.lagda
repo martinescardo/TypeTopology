@@ -7,7 +7,7 @@ module UF-Subsingletons-Equiv where
 open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
-open import UF-Subsingletons-Retracts
+open import UF-Retracts
 open import UF-Equiv
 
 pt-pf-equiv : ∀ {U} {X : U ̇} (x : X) → Σ \(f : identifications-from x → identifications-to x) → is-equiv f
@@ -24,8 +24,8 @@ pt-pf-equiv {U} {X} x = f , ((g , fg) , (g , gf))
 
 identifications-to-singleton : ∀ {U} {X : U ̇} (x : X) → is-singleton(identifications-to x)
 identifications-to-singleton x = retract-of-singleton
-                                  (pr₁(pt-pf-equiv x))
-                                  (pr₁(pr₂((pt-pf-equiv x))))
+                                  (pr₁(pt-pf-equiv x) ,
+                                  (pr₁(pr₂((pt-pf-equiv x)))))
                                   (identifications-from-singleton x)
 
 identifications-to-is-prop : ∀ {U} {X : U ̇} (x : X) → is-prop(identifications-to x)

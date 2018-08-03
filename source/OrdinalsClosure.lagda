@@ -149,14 +149,14 @@ More Cantor-retract properties are in the module SquashedCantor.
 
 \end{code}
 
-Preservation of discreteness
+Preservation of discreteness:
 
 \begin{code}
 
 ∑-discrete : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-            → discrete ⟪ τ ⟫
-            → ((x : ⟪ τ ⟫) → discrete ⟪ υ x ⟫)
-            → discrete ⟪ ∑ τ υ ⟫
+           → discrete ⟪ τ ⟫
+           → ((x : ⟪ τ ⟫) → discrete ⟪ υ x ⟫)
+           → discrete ⟪ ∑ τ υ ⟫
 ∑-discrete τ υ ε δ = Σ-discrete ε δ
 
 \end{code}
@@ -477,10 +477,10 @@ logically equivalent orders.
 \begin{code}
 
 ∑-inf-searchable : propext U₀
-                 → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-                 → inf-searchable (λ x y → x ≼⟪ τ ⟫ y)
-                 → ((x : ⟪ τ ⟫) → inf-searchable (λ a b → a ≼⟪ υ x ⟫ b))
-                 → inf-searchable (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
+                → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+                → inf-searchable (λ x y → x ≼⟪ τ ⟫ y)
+                → ((x : ⟪ τ ⟫) → inf-searchable (λ a b → a ≼⟪ υ x ⟫ b))
+                → inf-searchable (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
 ∑-inf-searchable pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → U₀ ̇

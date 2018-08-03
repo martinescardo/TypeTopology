@@ -391,8 +391,6 @@ extensionality holds (happly is an equivalence).
 
 \begin{code}
 
-open import UF-Subsingletons-Retracts
-
 funext-via-singletons : ∀ {U V}
                       → ((X : U ̇) (Y : X → V ̇) → ((x : X) → is-singleton (Y x))
                                                  → is-singleton (Π Y))
@@ -408,7 +406,7 @@ funext-via-singletons {U} {V} φ {X} {Y} f = γ
   r-has-section : has-section r
   r-has-section = TT-choice-has-section
   d : is-singleton (Σ A)
-  d = retract-of-singleton r r-has-section c
+  d = retract-of-singleton (r , r-has-section) c
   η : Nat (Id f) A
   η = happly' f
   γ : (g : Π Y) → is-equiv (happly' f g)

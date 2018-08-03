@@ -6,6 +6,7 @@ module UF-Retracts where
 
 open import SpartanMLTT
 open import UF-Base
+open import UF-Subsingletons
 
 has-section : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 has-section r = Σ \s → r ∘ s ∼ id
@@ -19,6 +20,12 @@ has-retraction-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 retract Y of X = Σ \(r : X → Y) → has-section r
+
+retract-of-singleton : ∀ {U V} {X : U ̇} {Y : V ̇}
+                    → retract Y of X
+                    → is-singleton X
+                    → is-singleton Y
+retract-of-singleton (r , s , rs) (c , φ) = r c , (λ y → ap r (φ (s y)) ∙ rs y)
 
 identity-retraction : ∀ {U} {X : U ̇} → retract X of X
 identity-retraction = id , (id , λ x → refl)

@@ -8,7 +8,6 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-Equiv
-open import UF-Subsingletons-Retracts
 open import UF-Equiv
 open import UF-LeftCancellable
 open import UF-Yoneda
@@ -52,7 +51,7 @@ embedding-embedding' {U} {V} {X} {Y} f ise = g
   b : (x : X) → is-singleton(fiber f (f x))
   b x = (x , refl) , ise (f x) (x , refl)
   c : (x : X) → is-singleton(fiber' f (f x))
-  c x = retract-of-singleton (pr₁ (fiber-lemma f (f x))) (pr₁(pr₂(fiber-lemma f (f x)))) (b x)
+  c x = retract-of-singleton (pr₁ (fiber-lemma f (f x)) , pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → is-equiv(ap f {x} {x'})
   g x = universality-equiv x refl (unique-element-is-universal-element
                                          (λ x' → f x ≡ f x')

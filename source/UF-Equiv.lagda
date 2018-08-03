@@ -8,7 +8,6 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
-open import UF-Subsingletons-Retracts
 
 \end{code}
 
@@ -328,7 +327,7 @@ is-singleton-is-equiv-𝟙 {U} {V} {X} = forth , back
   forth : is-singleton X → X ≃ 𝟙
   forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-* x)⁻¹)) , ((λ _ → x₀) , φ))
   back : X ≃ 𝟙 → is-singleton X
-  back (f , (s , fs) , (r , rf)) = retract-of-singleton r (f , rf) 𝟙-is-singleton
+  back (f , (s , fs) , (r , rf)) = retract-of-singleton (r , f , rf) 𝟙-is-singleton
 
 \end{code}
 
@@ -389,7 +388,7 @@ pr₁-vv-equiv {U} {V} X Y iss x = g
 pr₁-vv-equiv-converse : ∀ {U V} {X : U ̇} {A : X → V ̇}
                      → is-vv-equiv (pr₁ {U} {V} {X} {A})
                      → ((x : X) → is-singleton(A x))
-pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton r (s , rs) (isv x)
+pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
   where
     f : Σ A → X
     f = pr₁ {U} {V} {X} {A}
@@ -416,6 +415,23 @@ NatΣ-equiv A B ζ ise = ((s , ζs), (r , rζ))
 NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
             → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 NatΣ-equiv' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
+
+NatΣ-equiv-converse' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                   → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
+NatΣ-equiv-converse' A B ζ e x b = retract-of-singleton (g b , f b , gf b) (e (x , b))
+ where
+  f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
+  f .(ζ x a) (a , refl) = (x , a) , refl
+  g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
+  g .(ζ x a) ((x' , a) , refl) = a , refl
+  gf : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ≡ w
+  gf .(ζ x a) (a , refl) = refl
+
+NatΣ-equiv-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                   → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
+NatΣ-equiv-converse A B ζ e x = is-vv-equiv-is-equiv (ζ x)
+                                 (NatΣ-equiv-converse' A B ζ
+                                   (is-equiv-is-vv-equiv (NatΣ ζ) e) x)
 
 Σ-change-of-variables' : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → W ̇) (g : Y → X)
                        → is-hae g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ

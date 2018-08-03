@@ -20,13 +20,13 @@ open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Yoneda
 open import UF-Subsingletons
-open import UF-Subsingletons-Retracts
+open import UF-Retracts
 
 naive-funext-gives-funext' : ∀ {U} {V} → naive-funext U (U ⊔ V) → naive-funext U U → funext U V
 naive-funext-gives-funext' {U} {V} nfe nfe' = funext-via-singletons γ
  where
   γ : (X : U ̇) (A : X → V ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
-  γ X A φ = retract-of-singleton r (s , rs) iss
+  γ X A φ = retract-of-singleton (r , s , rs) iss
    where
     f : Σ A → X
     f = pr₁

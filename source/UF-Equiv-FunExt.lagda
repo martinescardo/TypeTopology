@@ -14,7 +14,6 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
-open import UF-Subsingletons-Retracts
 open import UF-FunExt
 open import UF-Equiv
 
@@ -84,7 +83,7 @@ hasr-is-prop-hass' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) = is-singleton-is-
     q : happly' (f ∘ h) id (nfunext fe' η) ≡ η
     q = happly-funext fe' (f ∘ h) id η
   c : is-singleton (has-section f)
-  c = retract-of-singleton r (s , rs) b
+  c = retract-of-singleton (r , s , rs) b
 
 hass-is-prop-hasr' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
                    → funext U U → funext V U
@@ -105,7 +104,7 @@ hass-is-prop-hasr' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) = is-singleton-is-
     q : happly' (h ∘ f) id (dfunext fe η) ≡ η
     q = happly-funext fe (h ∘ f) id η
   c : is-singleton (has-retraction f)
-  c = retract-of-singleton r (s , rs) b
+  c = retract-of-singleton (r , s , rs) b
 
 hasr-is-prop-hass : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
                  → has-retraction f → is-prop(has-section f)
