@@ -13,12 +13,13 @@ module OrdinalsClosure
        where
 
 open import SpartanMLTT
+open import OrdinalArithmetic fe
+open import OrdinalNotions hiding (_≤_)
+open import WellOrderArithmetic
 open import SearchableTypes
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
-open import OrdinalNotions hiding (_≤_)
-open import WellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import UF-Embedding
@@ -31,7 +32,6 @@ open import LexicographicOrder
 open import LexicographicSearch
 open import ConvergentSequenceInfSearchable
 open import PropInfTychonoff
-open import Ordinals fe
 open import DiscreteAndSeparated
 open import UF-SetExamples
 open import BinaryNaturals hiding (_+_) hiding (l) hiding (r)
@@ -167,7 +167,7 @@ order preserving.
 
 \begin{code}
 
-order-preserving : (τ υ : Ordᵀ) →  (⟪ τ ⟫ → ⟪ υ ⟫) → U ̇
+order-preserving : (τ υ : Ordᵀ) →  (⟪ τ ⟫ → ⟪ υ ⟫) → U₀ ̇
 order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺⟪ υ ⟫ f y
 
 open import UF-Embedding
@@ -283,7 +283,7 @@ And now order reflection.
 
 \begin{code}
 
-order-reflecting order-embedding : (τ υ : Ordᵀ) →  (⟪ τ ⟫ → ⟪ υ ⟫) → U ̇
+order-reflecting order-embedding : (τ υ : Ordᵀ) →  (⟪ τ ⟫ → ⟪ υ ⟫) → U₀ ̇
 
 order-reflecting τ υ f = (x y : ⟪ τ ⟫) → f x ≺⟪ υ ⟫ f y → x ≺⟪ τ ⟫ y
 
@@ -439,7 +439,7 @@ Overᵒ-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
 𝟚ᵒ-inf-searchable : inf-searchable (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
 𝟚ᵒ-inf-searchable p = 𝟚-equality-cases φ γ
  where
-  _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → U ̇
+  _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → U₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
   φ : (r : p (inl *) ≡ ₀) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
   φ r = inl * , f , g , h

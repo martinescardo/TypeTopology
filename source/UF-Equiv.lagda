@@ -406,7 +406,7 @@ NatΣ-fiber-equiv A B ζ x b = f b , (g b , fg b) , (g b , gf b)
   f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
   f .(ζ x a) (a , refl) = (x , a) , refl
   g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
-  g .(ζ x a) ((x' , a) , refl) = a , refl
+  g .(ζ x a) ((.x , a) , refl) = a , refl
   gf : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ≡ w
   gf .(ζ x a) (a , refl) = refl
   fg : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
