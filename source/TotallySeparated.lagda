@@ -1166,7 +1166,7 @@ apartness on it.
       h a = ♯'i (η y) (transport (λ - → - ♯' η y) p a)
 
     e : is-embedding η
-    e = left-cancellable-maps-into-sets-are-embeddings η lc X'-is-set
+    e = lc-embedding η lc X'-is-set
 
     cm : is-vv-equiv η
     cm = pr₂ (c-es η) (e , η-surjection)

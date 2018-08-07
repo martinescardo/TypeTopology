@@ -107,21 +107,20 @@ K-idtofun-lc : ∀ {U} → K (U ′)
             → {X : U ̇} (x y : X) (A : X → U ̇) → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
-left-cancellable-maps-into-sets-are-embeddings : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
-                                               → left-cancellable f
-                                               → is-set Y
-                                               → is-embedding f
-left-cancellable-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (r , q)
+lc-embedding : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
+            → left-cancellable f
+            → is-set Y
+            → is-embedding f
+lc-embedding {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (r , q)
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))
    q : yoneda-nat x (λ x → f x ≡ y) p x' r ≡ p'
    q = iss (yoneda-nat x (λ x → f x ≡ y) p x' r) p'
 
-left-cancellable-maps-are-embeddings-with-K : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
-                                            → left-cancellable f → K V → is-embedding f
-left-cancellable-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k =
- left-cancellable-maps-into-sets-are-embeddings f f-lc (k Y)
+lc-embedding-with-K : ∀ {U V} → {X : U ̇} {Y : V ̇} (f : X → Y)
+                   → left-cancellable f → K V → is-embedding f
+lc-embedding-with-K {U} {V} {X} {Y} f f-lc k = lc-embedding f f-lc (k Y)
 
 id-is-embedding : ∀ {U} {X : U ̇} → is-embedding (id {U} {X})
 id-is-embedding = identifications-to-is-prop

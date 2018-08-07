@@ -173,6 +173,6 @@ Id-lc : ∀ {U} {X : U ̇} → left-cancellable (Id {U} {X})
 Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
 K-id-embedding-Theorem : ∀ {U} → K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
-K-id-embedding-Theorem {U} k {X} = left-cancellable-maps-are-embeddings-with-K Id Id-lc k
+K-id-embedding-Theorem {U} k {X} = lc-embedding-with-K Id Id-lc k
 
 \end{code}

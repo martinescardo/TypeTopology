@@ -262,8 +262,8 @@ identifications-to x = Σ \y → y ≡ x
 ×-prop-criterion : ∀ {U} {X Y : U ̇} → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
-props-closed-× : ∀ {U} {X Y : U ̇} → is-prop X → is-prop Y → is-prop(X × Y)
-props-closed-× i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
+×-is-prop : ∀ {U} {X Y : U ̇} → is-prop X → is-prop Y → is-prop(X × Y)
+×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 subtype-of-prop-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
                        → left-cancellable m → is-prop Y → is-prop X

@@ -171,11 +171,11 @@ transitive-is-prop fe isp =
                                        (λ m → isp x z)))))
 
 ordinal-is-prop : (∀ U V → funext U V) → is-prop is-well-order
-ordinal-is-prop fe o = props-closed-× (Π-is-prop (fe U (U ⊔ V))
+ordinal-is-prop fe o = ×-is-prop (Π-is-prop (fe U (U ⊔ V))
                                         λ x → Π-is-prop (fe U V)
                                                 (λ y → is-prop-is-prop (fe V V)))
-                        (props-closed-× (well-founded-is-prop fe)
-                          (props-closed-× (extensional-is-prop fe (pr₁ o))
+                        (×-is-prop (well-founded-is-prop fe)
+                          (×-is-prop (extensional-is-prop fe (pr₁ o))
                                           (transitive-is-prop fe (pr₁ o))))
                        o
 
@@ -278,11 +278,11 @@ is-well-order-gives-is-well-order₂ : is-well-order → is-well-order₂
 is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
 ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-well-order₂
-ordinal₂-is-prop fe isp = props-closed-× (Π-is-prop (fe U (U ⊔ V))
+ordinal₂-is-prop fe isp = ×-is-prop (Π-is-prop (fe U (U ⊔ V))
                                            (λ x → Π-is-prop (fe U V)
                                                      (λ y → is-prop-is-prop (fe V V))))
-                             (props-closed-× (well-founded₂-is-prop fe)
-                               (props-closed-× (extensional-is-prop fe isp)
+                             (×-is-prop (well-founded₂-is-prop fe)
+                               (×-is-prop (extensional-is-prop fe isp)
                                                (transitive-is-prop fe isp)))
 
 \end{code}

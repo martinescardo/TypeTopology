@@ -19,7 +19,7 @@ module OrdinalArithmetic
         (fe : ∀ U V → funext U V)
        where
 
-open import Ordinals U₀ (fe U₀ U₀) public
+open import Ordinals fe
 open import UF-Subsingletons
 open import WellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
@@ -27,6 +27,9 @@ open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import UF-Embedding
 open import UF-InjectiveTypes fe
 open import SquashedSum fe
+
+Ord  = Ordinal  {U₀}
+Ordᵀ = Ordinalᵀ {U₀}
 
 subsingleton-ordinal : (P : U₀ ̇) → is-prop P → Ord
 subsingleton-ordinal P isp = P , subsingleton.order P isp , subsingleton.well-order P isp

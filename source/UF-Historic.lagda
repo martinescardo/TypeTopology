@@ -37,7 +37,7 @@ ip-ie-idtofun {U} fe X = Jbased X B go
    b : is-prop A'
    b = left-cancellable-reflects-is-prop h h-lc a
    go : is-prop(A' × A')
-   go = props-closed-× b b
+   go = ×-is-prop b b
 
 jip : ∀ {U} → is-univalent U → funext U U → {X Y : U ̇}
    → (f : X → Y) → is-prop(is-equiv f)

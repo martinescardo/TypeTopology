@@ -114,6 +114,7 @@ the theorems and constructions to be performed here:
 
 \begin{code}
 
+open import Ordinals fe
 open import OrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
