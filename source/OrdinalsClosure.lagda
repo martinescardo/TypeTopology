@@ -13,7 +13,7 @@ module OrdinalsClosure
        where
 
 open import SpartanMLTT
-open import Ordinals fe
+open import Ordinals fe hiding (order-preserving) hiding (order-reflecting)
 open import OrdinalArithmetic fe
 open import OrdinalNotions hiding (_≤_)
 open import WellOrderArithmetic
@@ -169,6 +169,12 @@ order preserving.
 \begin{code}
 
 open import UF-Embedding
+
+order-preserving  order-reflecting  : (τ υ : Ordᵀ) → (⟪ τ ⟫ → ⟪ υ ⟫) → U₀ ̇
+
+order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺⟪ υ ⟫ f y
+order-reflecting τ υ f = (x y : ⟪ τ ⟫) → f x ≺⟪ υ ⟫ f y → x ≺⟪ τ ⟫ y
+
 
 comp-order-preserving : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
                       → order-preserving τ υ f
