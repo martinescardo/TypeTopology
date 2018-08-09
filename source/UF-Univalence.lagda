@@ -29,6 +29,10 @@ eqtoid-idtoeq : ∀ {U} (ua : is-univalent U)
               → (X Y : U ̇) (p : X ≡ Y) →  eqtoid' ua X Y (idtoeq X Y p) ≡ p
 eqtoid-idtoeq ua X Y = pr₂(pr₂(ua X Y))
 
+eqtoid-idtoeq' : ∀ {U} (ua : is-univalent U)
+              → (X Y : U ̇) (p : X ≡ Y) →  eqtoid ua X Y (idtoeq X Y p) ≡ p
+eqtoid-idtoeq' ua X Y = pr₁(pr₂ (is-equiv-qinv (idtoeq X Y) (ua X Y)))
+
 idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq' X Y p = (Idtofun p , transport-is-equiv p)
 
@@ -55,8 +59,9 @@ back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid
 
 preComp-is-equiv : ∀ {U} (ua : is-univalent U)
                 → {X Y Z : U ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
-preComp-is-equiv ua {X} {Y} f ise = equiv-closed-under-∼' (back-transport-is-equiv (eqtoid ua X Y (f , ise)))
-                                                          (back-transport-is-pre-comp' ua (f , ise))
+preComp-is-equiv ua {X} {Y} f ise =
+ equiv-closed-under-∼' (back-transport-is-equiv (eqtoid ua X Y (f , ise)))
+                        (back-transport-is-pre-comp' ua (f , ise))
 
 \end{code}
 
@@ -196,15 +201,14 @@ is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
   A Y (f , ise) = is-vv-equiv f
   b : A X (ideq X)
   b = identifications-to-singleton
-  g :  (Y : U ̇) (e : X ≃ Y) → A Y e
+  g : (Y : U ̇) (e : X ≃ Y) → A Y e
   g = JEq ua X A b
 
-\end{code}
 
-Added 27 Jun 2018. Type of types equipped with a binary relation.
-
-\begin{code}
-
-
+UA-gives-propext : ∀ {U} → is-univalent U → propext U
+UA-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
+                                       (f ,
+                                       (g , (λ y → j (f (g y)) y)) ,
+                                       (g , (λ x → i (g (f x)) x)))
 
 \end{code}

@@ -37,6 +37,9 @@ X ≃ Y = Σ \(f : X → Y) → is-equiv f
 equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
 equiv-to-fun = pr₁
 
+back-equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
+back-equiv-to-fun e = pr₁ (pr₁ (pr₂ e))
+
 is-equiv-equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (equiv-to-fun e)
 is-equiv-equiv-to-fun = pr₂
 

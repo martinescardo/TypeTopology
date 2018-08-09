@@ -134,6 +134,11 @@ is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
 is-set : ∀ {U} → U ̇ → U ̇
 is-set X = {x : X} → is-h-isolated x
 
+refl-is-set : ∀ {U} (X : U ̇)
+           → ((x : X) (p : x ≡ x) → p ≡ refl)
+           → is-set X
+refl-is-set X r {x} {.x} p refl = r x p
+
 \end{code}
 
 We now consider some machinery for dealing with the above notions:
@@ -142,6 +147,14 @@ We now consider some machinery for dealing with the above notions:
 
 constant : ∀ {U V} {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
 constant f = ∀ x y → f x ≡ f y
+
+constant-pre-comp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+              → constant f → constant (g ∘ f)
+constant-pre-comp f g c x x' = ap g (c x x')
+
+constant-post-comp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+              → constant g → constant (g ∘ f)
+constant-post-comp f g c x x' = c (f x) (f x')
 
 collapsible : ∀ {U} → U ̇ → U ̇
 collapsible X = Σ \(f : X → X) → constant f

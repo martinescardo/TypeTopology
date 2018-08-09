@@ -28,8 +28,8 @@ open import UF-Embedding
 open import UF-InjectiveTypes fe
 open import SquashedSum fe
 
-Ord  = Ordinal  {U₀}
-Ordᵀ = Ordinalᵀ {U₀}
+Ord  = Ordinal  U₀
+Ordᵀ = Ordinalᵀ U₀
 
 subsingleton-ordinal : (P : U₀ ̇) → is-prop P → Ord
 subsingleton-ordinal P isp = P , subsingleton.order P isp , subsingleton.well-order P isp

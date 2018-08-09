@@ -52,7 +52,6 @@ is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe
   b : is-prop(f ≡ g)
   b = left-cancellable-reflects-is-prop happly (section-lc happly (pr₂ (fe f g))) a
 
-
 \end{code}
 
 The meat of the following proof is is-prop-is-set'. The rest of the
