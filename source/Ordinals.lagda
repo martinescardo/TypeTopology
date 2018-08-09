@@ -28,7 +28,11 @@ Ordinal U = Σ \(X : U ̇) → Σ \(_<_ : X → X → U ̇) → is-well-order _<
 underlying-order : ∀ {U} → (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
 underlying-order (X , _<_ , o) = _<_
 
-syntax underlying-order α x y = x ≺⟨ α ⟩ y
+underlying-porder : ∀ {U} → (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
+underlying-porder (X , _<_ , o) = _≼_ _<_
+
+syntax underlying-order  α x y = x ≺⟨ α ⟩ y
+syntax underlying-porder α x y = x ≼⟨ α ⟩ y
 
 is-well-ordered : ∀ {U} → (α : Ordinal U) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o
@@ -117,7 +121,7 @@ _↓_ : ∀ {U} (τ : Ordinal U) → ⟨ τ ⟩ → Ordinal U
 
 segment-inclusion : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
                   → ⟨ τ ↓ a ⟩ → ⟨ τ ⟩
-segment-inclusion τ a (x , _) = x
+segment-inclusion τ a = pr₁
 
 \end{code}
 
@@ -372,7 +376,7 @@ segment-⊴ : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
 segment-⊴ τ a = segment-inclusion τ a , segment-inclusion-simulation τ a
 
 Ordinal-is-set : ∀ {U} → is-univalent U → is-set (Ordinal U)
-Ordinal-is-set {U} ua {τ} {υ} p q = identification-collapsible-is-set {U ′} pc {τ} {υ} p q
+Ordinal-is-set {U} ua = identification-collapsible-is-set pc
  where
   i : (τ υ : Ordinal U) → is-prop (τ ⊴ υ × υ ⊴ τ)
   i τ υ = ×-is-prop (⊴-is-prop τ υ) (⊴-is-prop υ τ)
@@ -384,23 +388,45 @@ Ordinal-is-set {U} ua {τ} {υ} p q = identification-collapsible-is-set {U ′} 
   hc τ υ w t = ap (h τ υ) (i τ υ w t)
   f  : (τ υ : Ordinal U) → τ ≡ υ → τ ≡ υ
   f τ υ p = h τ υ (g τ υ p)
-  constant-f : (τ υ : Ordinal U) (p q : τ ≡ υ) → f τ υ p ≡ f τ υ q
-  constant-f τ υ p q = hc τ υ (g τ υ p) (g τ υ q)
+  fc : (τ υ : Ordinal U) (p q : τ ≡ υ) → f τ υ p ≡ f τ υ q
+  fc τ υ p q = hc τ υ (g τ υ p) (g τ υ q)
   pc : {τ υ : Ordinal U} → Σ \(f : τ ≡ υ → τ ≡ υ) → constant f
-  pc {τ} {υ} = (f τ υ , constant-f τ υ)
+  pc {τ} {υ} = (f τ υ , fc τ υ)
 
 open import UF-Equiv
 
-{- TODO.
+↓-lemma : ∀ {U} (τ : Ordinal U) (a b : ⟨ τ ⟩)
+        → (τ ↓ a)  ⊴  (τ ↓ b )
+        → a ≼⟨ τ ⟩ b
+↓-lemma {U} τ a b (f , s) u l = γ
+ where
+  h : segment-inclusion τ a ∼ segment-inclusion τ b ∘ f
+  h = at-most-one-simulation (τ ↓ a) τ
+        (segment-inclusion τ a)
+        (segment-inclusion τ b ∘ f)
+        (segment-inclusion-simulation τ a)
+        (pr₂ (⊴-trans (τ ↓ a) (τ ↓ b) τ
+                 (f , s)
+                 (segment-⊴ τ b)))
+  v : ⟨ τ ⟩
+  v = segment-inclusion τ b (f (u , l))
+  q : u ≡ v
+  q = h (u , l)
+  m : v ≺⟨ τ ⟩ b
+  m = pr₂ (f (u , l))
+  γ : u ≺⟨ τ ⟩ b
+  γ = back-transport (λ - → - ≺⟨ τ ⟩ b) q m
+
 ↓-lc : ∀ {U} (τ : Ordinal U) (a b : ⟨ τ ⟩)
      → τ ↓ a ≡ τ ↓ b
      → a ≡ b
-↓-lc τ a b p = {!!}
--}
-
-_⊲_ : ∀ {U} → Ordinal U → Ordinal U → U ′ ̇
-τ ⊲ υ = Σ \(b : ⟨ υ ⟩) → τ ≡ υ ↓ b
-
+↓-lc τ a b p =
+ extensionality
+  (underlying-order τ)
+  (is-well-ordered τ)
+  a b
+  (↓-lemma τ a b (transport (λ - → (τ ↓ a) ⊴ -) p (⊴-refl (τ ↓ a))))
+  (↓-lemma τ b a (back-transport (λ - → (τ ↓ b) ⊴ -) p (⊴-refl (τ ↓ b))))
 
 \end{code}
 
