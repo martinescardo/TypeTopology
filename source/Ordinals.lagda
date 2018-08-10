@@ -435,57 +435,58 @@ open import UF-Equiv
 
 \end{code}
 
-We now want to make the type of ordinals into an ordinal.
+We now make the type of ordinals into an ordinal.
 
 \begin{code}
 
-_⊲_ : ∀ {U} → Ordinal U → Ordinal U → U ̇
-τ ⊲ υ = Σ \(b : ⟨ υ ⟩) → (τ ⊴ (υ ↓ b)) × ((υ ↓ b) ⊴ τ)
+_⊲_ : ∀ {U} → Ordinal U → Ordinal U → U ′ ̇
+τ ⊲ υ = Σ \(b : ⟨ υ ⟩) → τ ≡ (υ ↓ b)
 
 ⊲-prop-valued : ∀ {U} → is-univalent U
-              → (τ υ : Ordinal U) → is-prop (τ ⊲ υ)
-⊲-prop-valued {U} ua τ υ  (b , l , m) (b' , l' , m') =
- to-Σ-≡ (r , s)
+               → (τ υ : Ordinal U) → is-prop (τ ⊲ υ)
+⊲-prop-valued {U} ua τ υ  (b , p) (b' , p') = to-Σ-≡ (r , s)
  where
   r : b ≡ b'
-  r = ↓-lc υ b b' (⊴-antisym ua (υ ↓ b) (υ ↓ b')
-                     (⊴-trans (υ ↓ b) τ (υ ↓ b') m l')
-                     (⊴-trans (υ ↓ b') τ (υ ↓ b) m' l))
-  s : transport (λ - → (τ ⊴ (υ ↓ -)) × ((υ ↓ -) ⊴ τ)) r (l , m) ≡ l' , m'
-  s = ×-is-prop (⊴-is-prop τ (υ ↓ b')) (⊴-is-prop (υ ↓ b') τ) _ _
+  r = ↓-lc υ b b' (p ⁻¹ ∙ p')
+  s : transport (λ - → τ ≡ (υ ↓ -)) r p ≡ p'
+  s = Ordinal-is-set ua _ _
 
 \end{code}
 
-We could instead define τ ⊲ υ to mean that we have b with τ ≡ (υ ↓ b),
-by antisymetry. However, this definition would make ⊲ have values in
-the next universe U ′ rather than U itself. We pause briefly to record
-this observation.
+We could instead define τ ⊲ υ to mean that we have b with τ ⊴ (υ ↓ b)
+and (υ ↓ b) ⊴ τ, by antisymetry, and this definition make ⊲ have
+values in the universe U rather than the next universe U ′. We pause
+briefly to record this observation.
 
 \begin{code}
 
-module alterative-⊲ where
+module alterative-⊲' where
 
-    _⊲'_ : ∀ {U} → Ordinal U → Ordinal U → U ′ ̇
-    τ ⊲' υ = Σ \(b : ⟨ υ ⟩) → τ ≡ (υ ↓ b)
+    _⊲'_ : ∀ {U} → Ordinal U → Ordinal U → U ̇
+    τ ⊲' υ = Σ \(b : ⟨ υ ⟩) → (τ ⊴ (υ ↓ b)) × ((υ ↓ b) ⊴ τ)
 
     ⊲'-prop-valued : ∀ {U} → is-univalent U
-                   → (τ υ : Ordinal U) → is-prop (τ ⊲' υ)
-    ⊲'-prop-valued {U} ua τ υ  (b , p) (b' , p') = to-Σ-≡ (r , s)
+                  → (τ υ : Ordinal U) → is-prop (τ ⊲' υ)
+    ⊲'-prop-valued {U} ua τ υ  (b , l , m) (b' , l' , m') =
+     to-Σ-≡ (r , s)
      where
       r : b ≡ b'
-      r = ↓-lc υ b b' (p ⁻¹ ∙ p')
-      s : transport (λ - → τ ≡ (υ ↓ -)) r p ≡ p'
-      s = Ordinal-is-set ua _ _
+      r = ↓-lc υ b b' (⊴-antisym ua (υ ↓ b) (υ ↓ b')
+                         (⊴-trans (υ ↓ b) τ (υ ↓ b') m l')
+                         (⊴-trans (υ ↓ b') τ (υ ↓ b) m' l))
+      s : transport (λ - → (τ ⊴ (υ ↓ -)) × ((υ ↓ -) ⊴ τ)) r (l , m) ≡ l' , m'
+      s = ×-is-prop (⊴-is-prop τ (υ ↓ b')) (⊴-is-prop (υ ↓ b') τ) _ _
 
-    ⊲'-gives-⊲ : ∀ {U} (τ υ : Ordinal U)
-               → τ ⊲' υ → τ ⊲ υ
-    ⊲'-gives-⊲ τ υ (b , p) = b ,
+
+    ⊲-gives-⊲' : ∀ {U} (τ υ : Ordinal U)
+               → τ ⊲ υ → τ ⊲' υ
+    ⊲-gives-⊲' τ υ (b , p) = b ,
                               transport (λ - → τ ⊴ -) p (⊴-refl τ) ,
                               back-transport (λ - → (υ ↓ b) ⊴ -) p (⊴-refl (υ ↓ b))
 
-    ⊲-gives-⊲' : ∀ {U} → is-univalent U → (τ υ : Ordinal U)
-               → τ ⊲ υ → τ ⊲' υ
-    ⊲-gives-⊲' ua τ υ (b , l , m) = b , ⊴-antisym ua τ (υ ↓ b) l m
+    ⊲'-gives-⊲ : ∀ {U} → is-univalent U → (τ υ : Ordinal U)
+               → τ ⊲' υ → τ ⊲ υ
+    ⊲'-gives-⊲ ua τ υ (b , l , m) = b , ⊴-antisym ua τ (υ ↓ b) l m
 
 down : ∀ {U} (τ : Ordinal U) (b u : ⟨ τ ⟩) (l : u ≺⟨ τ ⟩ b)
     → ((τ ↓ b ) ↓ (u , l)) ⊴ (τ ↓ u)
@@ -515,58 +516,109 @@ up {U} τ b u l = f , (i , p)
   p : (t t' : ⟨ τ ↓ u ⟩) → t ≺⟨ τ ↓ u ⟩ t' → f t ≺⟨ (τ ↓ b) ↓ (u , l) ⟩ f t'
   p t t' = id
 
-iterated-↓ : ∀ {U} → is-univalent U → (τ : Ordinal U) (b u : ⟨ τ ⟩) (l : u ≺⟨ τ ⟩ b)
-          → ((τ ↓ b ) ↓ (u , l)) ≡ (τ ↓ u)
-iterated-↓ ua τ b u l = ⊴-antisym ua ((τ ↓ b) ↓ (u , l)) (τ ↓ u) (down τ b u l) (up τ b u l)
+iterated-↓ : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩) (l : b ≺⟨ τ ⟩ a)
+          → ((τ ↓ a ) ↓ (b , l)) ≡ (τ ↓ b)
+iterated-↓ ua τ a b l = ⊴-antisym ua ((τ ↓ a) ↓ (b , l)) (τ ↓ b) (down τ a b l) (up τ a b l)
 
 ↓-⊲-lc : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
         → (τ ↓ a) ⊲ (τ ↓ b)
         → a ≺⟨ τ ⟩ b
-↓-⊲-lc {U} ua τ a b ((u , l) , m , n) = back-transport (λ - → - ≺⟨ τ ⟩ b) r l
+↓-⊲-lc {U} ua τ a b ((u , l) , p) = back-transport (λ - → - ≺⟨ τ ⟩ b) r l
  where
-  p : (τ ↓ a) ≡ ((τ ↓ b) ↓ (u , l))
-  p = ⊴-antisym ua (τ ↓ a) ((τ ↓ b) ↓ (u , l)) m n
   q : (τ ↓ a) ≡ (τ ↓ u)
   q = p ∙ iterated-↓ ua τ b u l
   r : a ≡ u
   r = ↓-lc τ a u q
 
-↓-⊲-op : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
+↓-⊲-op : ∀ {U} → is-univalent U → (τe : Ordinal U) (a b : ⟨ τ ⟩)
         → a ≺⟨ τ ⟩ b
         → (τ ↓ a) ⊲ (τ ↓ b)
-↓-⊲-op ua τ a b l = (a , l) , up τ b a l , down τ b a l
+↓-⊲-op ua τ a b l = (a , l) , ((iterated-↓ ua τ b a l)⁻¹)
 
-
-≺-is-⊲ : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
-       → (a ≺⟨ τ ⟩ b) ≡ ((τ ↓ a) ⊲ (τ ↓ b))
-≺-is-⊲ ua τ a b = UA-gives-propext ua
-                    (Prop-valuedness τ a b)
-                    (⊲-prop-valued ua (τ ↓ a) (τ ↓ b))
-                    (↓-⊲-op ua τ a b)
-                    (↓-⊲-lc ua τ a b)
-
-{- TODO
-↓-accessible : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
+↓-accessible : ∀ {U} → is-univalent U → (τ : Ordinal U) (a : ⟨ τ ⟩)
              → is-accessible _⊲_ (τ ↓ a)
-↓-accessible {U} τ a = γ a (Well-foundedness τ a)
+↓-accessible {U} ua τ a = γ a (Well-foundedness τ a)
  where
   γ : (a : ⟨ τ ⟩) → is-accessible (underlying-order τ) a → is-accessible _⊲_ (τ ↓ a)
   γ a (next .a s) = next (τ ↓ a) g
    where
-    IH : (b : ⟨ τ ⟩) → (τ ↓ b) ⊲ (τ ↓ a) → is-accessible _⊲_ (τ ↓ b)
-    IH b l = γ b (s b (↓-⊲-lc τ b a l))
+    IH : (b : ⟨ τ ⟩) → b ≺⟨ τ ⟩ a → is-accessible _⊲_ (τ ↓ b)
+    IH b l = γ b (s b l)
     g : (υ : Ordinal U) → υ ⊲ (τ ↓ a) → is-accessible _⊲_ υ
-    g υ (b , p) = h
+    g υ ((b , l) , p) = back-transport (is-accessible _⊲_) q (IH b l)
      where
-      q : υ ≡ (τ ↓ a) ↓ b
-      q = p
-      blah : is-accessible _⊲_ ((τ ↓ a) ↓ b)
-      blah = next ((τ ↓ a) ↓ b) (λ y x → {!!})
-      h' : is-accessible _⊲_ ((τ ↓ a) ↓ b)
-      h' = {!!}
-      h : is-accessible _⊲_ υ
-      h = {!!}
--}
+      q : υ ≡ (τ ↓ b)
+      q = p ∙ iterated-↓ ua τ a b l
+
+⊲-well-founded : ∀ {U} → is-univalent U
+             → is-well-founded (_⊲_ {U})
+⊲-well-founded {U} ua τ = next τ g
+ where
+  g : (υ : Ordinal U) → υ ⊲ τ → is-accessible _⊲_ υ
+  g υ (b , p) = back-transport (is-accessible _⊲_) p (↓-accessible ua τ b)
+
+⊲-extensional : ∀ {U} → is-univalent U
+             → is-extensional (_⊲_ {U})
+⊲-extensional {U} ua τ υ f g = ⊴-antisym ua τ υ
+                                 ((λ x → pr₁(φ x)) , i , p)
+                                 ((λ y → pr₁(γ y)) , j , q)
+ where
+  φ : (x : ⟨ τ ⟩) → Σ \(y : ⟨ υ ⟩) → τ ↓ x ≡ υ ↓ y
+  φ x = f (τ ↓ x) (x , refl)
+  γ : (y : ⟨ υ ⟩) → Σ \(x : ⟨ τ ⟩) → υ ↓ y ≡ τ ↓ x
+  γ y = g (υ ↓ y) (y , refl)
+  γφ : (x : ⟨ τ ⟩) → pr₁(γ (pr₁(φ x))) ≡ x
+  γφ x = (↓-lc τ x (pr₁(γ (pr₁(φ x)))) a)⁻¹
+   where
+    a : (τ ↓ x) ≡ (τ ↓ pr₁ (γ (pr₁ (φ x))))
+    a = pr₂(φ x) ∙ pr₂(γ (pr₁(φ x)))
+  φγ : (y : ⟨ υ ⟩) → pr₁(φ (pr₁(γ y))) ≡ y
+  φγ y = (↓-lc υ y (pr₁(φ (pr₁(γ y)))) a)⁻¹
+   where
+    a : (υ ↓ y) ≡ (υ ↓ pr₁ (φ (pr₁ (γ y))))
+    a = pr₂(γ y) ∙ pr₂(φ (pr₁(γ y)))
+  p : is-order-preserving τ υ (λ x → pr₁(φ x))
+  p x x' l = ↓-⊲-lc ua υ (pr₁ (φ x)) (pr₁ (φ x')) b
+   where
+    a : (τ ↓ x) ⊲ (τ ↓ x')
+    a = ↓-⊲-op ua τ x x' l
+    b : (υ ↓ pr₁ (φ x)) ⊲ (υ ↓ pr₁ (φ x'))
+    b = transport₂ _⊲_ (pr₂ (φ x)) (pr₂ (φ x')) a
+  q : is-order-preserving υ τ (λ y → pr₁(γ y))
+  q y y' l = ↓-⊲-lc ua τ (pr₁ (γ y)) (pr₁ (γ y')) b
+   where
+    a : (υ ↓ y) ⊲ (υ ↓ y')
+    a = ↓-⊲-op ua υ y y' l
+    b : (τ ↓ pr₁ (γ y)) ⊲ (τ ↓ pr₁ (γ y'))
+    b = transport₂ _⊲_ (pr₂ (γ y)) (pr₂ (γ y')) a
+  i : is-initial-segment τ υ (λ x → pr₁(φ x))
+  i x y l = pr₁(γ y) , transport (λ - → pr₁ (γ y) ≺⟨ τ ⟩ -) (γφ x) a , φγ y
+   where
+    a : pr₁ (γ y) ≺⟨ τ ⟩ (pr₁ (γ (pr₁ (φ x))))
+    a = q y (pr₁ (φ x)) l
+  j : is-initial-segment υ τ (λ y → pr₁(γ y))
+  j y x l = pr₁(φ x) , transport (λ - → pr₁ (φ x) ≺⟨ υ ⟩ -) (φγ y) a , γφ x
+   where
+    a : pr₁ (φ x) ≺⟨ υ ⟩ (pr₁ (φ (pr₁ (γ y))))
+    a = p x (pr₁ (γ y)) l
+
+⊲-transitive : ∀ {U} → is-univalent U
+             → is-transitive (_⊲_ {U})
+⊲-transitive {U} ua τ υ φ (a , p) (b , q) = pr₁ (transport (λ - → ⟨ - ⟩) q a) , (r ∙ s)
+ where
+  t : (ψ : Ordinal U) (q : υ ≡ ψ) → (υ ↓ a) ≡ ψ ↓ transport (λ - → ⟨ - ⟩) q a
+  t ψ refl = refl
+  r : τ ≡ ((φ ↓ b) ↓ transport (λ - → ⟨ - ⟩) q a)
+  r = p ∙ t (φ ↓ b) q
+  s : ((φ ↓ b) ↓ transport (λ - → ⟨ - ⟩) q a) ≡ (φ ↓ pr₁ (transport (λ - → ⟨ - ⟩) q a))
+  s = iterated-↓ ua φ b (pr₁(transport (λ - → ⟨ - ⟩) q a)) (pr₂(transport (λ - → ⟨ - ⟩) q a))
+
+⊲-well-order : ∀ {U} → is-univalent U
+             → is-well-order (_⊲_ {U})
+⊲-well-order ua = ⊲-prop-valued ua , ⊲-well-founded ua , ⊲-extensional ua , ⊲-transitive ua
+
+ordinal-of-ordinals : ∀ U → is-univalent U → Ordinal (U ′)
+ordinal-of-ordinals U ua = Ordinal U , _⊲_ , ⊲-well-order ua
 
 \end{code}
 
