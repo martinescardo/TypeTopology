@@ -13,7 +13,7 @@ module OrdinalsClosure
        where
 
 open import SpartanMLTT
-open import Ordinals fe hiding (is-order-preserving) hiding (is-order-reflecting)
+open import Ordinals fe
 open import OrdinalArithmetic fe
 open import OrdinalNotions hiding (_≤_)
 open import WellOrderArithmetic

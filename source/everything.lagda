@@ -292,6 +292,7 @@ import OrdinalCodes
 import Ordinals
 import OrdinalArithmetic
 import OrdinalsClosure
+import OrdinalOfOrdinals
 import PlusOneLC
 import PropTychonoff
 import PropInfTychonoff
