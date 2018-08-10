@@ -141,38 +141,38 @@ Maps of ordinals.
 
 \begin{code}
 
-order-preserving
- order-reflecting
- order-embedding
- initial-segment
- simulation
+is-order-preserving
+ is-order-reflecting
+ is-order-embedding
+ is-initial-segment
+ is-simulation
   : ∀ {U} → (τ υ : Ordinal U) → (⟨ τ ⟩ → ⟨ υ ⟩) → U ̇
 
-order-preserving τ υ f = (x y : ⟨ τ ⟩) → x ≺⟨ τ ⟩ y → f x ≺⟨ υ ⟩ f y
-order-reflecting τ υ f = (x y : ⟨ τ ⟩) → f x ≺⟨ υ ⟩ f y → x ≺⟨ τ ⟩ y
-order-embedding  τ υ f = order-preserving τ υ f × order-reflecting τ υ f
-initial-segment  τ υ f = (x : ⟨ τ ⟩) (y : ⟨ υ ⟩)
+is-order-preserving τ υ f = (x y : ⟨ τ ⟩) → x ≺⟨ τ ⟩ y → f x ≺⟨ υ ⟩ f y
+is-order-reflecting τ υ f = (x y : ⟨ τ ⟩) → f x ≺⟨ υ ⟩ f y → x ≺⟨ τ ⟩ y
+is-order-embedding  τ υ f = is-order-preserving τ υ f × is-order-reflecting τ υ f
+is-initial-segment  τ υ f = (x : ⟨ τ ⟩) (y : ⟨ υ ⟩)
                             → y ≺⟨ υ ⟩ f x → Σ \(x' : ⟨ τ ⟩) → (x' ≺⟨ τ ⟩ x) × (f x' ≡ y)
-simulation       τ υ f = initial-segment  τ υ f × order-preserving τ υ f
+is-simulation       τ υ f = is-initial-segment  τ υ f × is-order-preserving τ υ f
 
-order-preserving-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                        → is-prop (order-preserving τ υ f)
-order-preserving-is-prop {U} τ υ f =
+is-order-preserving-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
+                        → is-prop (is-order-preserving τ υ f)
+is-order-preserving-is-prop {U} τ υ f =
  Π-is-prop (fe U U)
    (λ x → Π-is-prop (fe U U)
              (λ y → Π-is-prop (fe U U)
                       (λ l → Prop-valuedness υ (f x) (f y))))
 
-order-reflecting-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                        → is-prop (order-reflecting τ υ f)
-order-reflecting-is-prop {U} τ υ f =
+is-order-reflecting-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
+                        → is-prop (is-order-reflecting τ υ f)
+is-order-reflecting-is-prop {U} τ υ f =
  Π-is-prop (fe U U)
    (λ x → Π-is-prop (fe U U)
              (λ y → Π-is-prop (fe U U)
                       (λ l → Prop-valuedness τ x y)))
 
 iplc : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-    → simulation τ υ f
+    → is-simulation τ υ f
     → left-cancellable f
 iplc τ υ f (i , p) {x} {y} = γ x y (Well-foundedness τ x) (Well-foundedness τ y)
  where
@@ -203,10 +203,10 @@ iplc τ υ f (i , p) {x} {y} = γ x y (Well-foundedness τ x) (Well-foundedness 
       d : u ≺⟨ τ ⟩ x
       d = transport (λ - → - ≺⟨ τ ⟩ x) c (pr₁(pr₂ b))
 
-initial-segment-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                        → order-preserving τ υ f
-                        → is-prop (initial-segment τ υ f)
-initial-segment-is-prop {U} τ υ f p i =
+is-initial-segment-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
+                        → is-order-preserving τ υ f
+                        → is-prop (is-initial-segment τ υ f)
+is-initial-segment-is-prop {U} τ υ f p i =
  (Π-is-prop (fe U U)
     λ x → Π-is-prop (fe U U)
             λ z → Π-is-prop (fe U U)
@@ -231,21 +231,21 @@ initial-segment-is-prop {U} τ υ f p i =
 
 \end{code}
 
-The simulations form a poset:
+The is-simulations form a poset:
 
 \begin{code}
 
-simulation-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                  → is-prop (simulation τ υ f)
-simulation-is-prop τ υ f = ×-prop-criterion
-                            (initial-segment-is-prop τ υ f ,
-                             λ _ → order-preserving-is-prop τ υ f)
+is-simulation-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
+                  → is-prop (is-simulation τ υ f)
+is-simulation-is-prop τ υ f = ×-prop-criterion
+                            (is-initial-segment-is-prop τ υ f ,
+                             λ _ → is-order-preserving-is-prop τ υ f)
 
-at-most-one-simulation : ∀ {U} (τ υ : Ordinal U) (f f' : ⟨ τ ⟩ → ⟨ υ ⟩)
-                      → simulation τ υ f
-                      → simulation τ υ f'
+at-most-one-is-simulation : ∀ {U} (τ υ : Ordinal U) (f f' : ⟨ τ ⟩ → ⟨ υ ⟩)
+                      → is-simulation τ υ f
+                      → is-simulation τ υ f'
                       → f ∼ f'
-at-most-one-simulation τ υ f f' (i , p) (i' , p') x =
+at-most-one-is-simulation τ υ f f' (i , p) (i' , p') x =
  γ x (Well-foundedness τ x)
  where
   γ : ∀ x → is-accessible (underlying-order τ) x → f x ≡ f' x
@@ -277,12 +277,12 @@ at-most-one-simulation τ υ f f' (i , p) (i' , p') x =
       t = IH y (pr₁(pr₂ s)) ∙ pr₂(pr₂ s)
 
 _⊴_ : ∀ {U} → Ordinal U → Ordinal U → U ̇
-τ ⊴ υ = Σ \(f : ⟨ τ ⟩ → ⟨ υ ⟩) → simulation τ υ f
+τ ⊴ υ = Σ \(f : ⟨ τ ⟩ → ⟨ υ ⟩) → is-simulation τ υ f
 
 ⊴-is-prop : ∀ {U} (τ υ : Ordinal U) → is-prop (τ ⊴ υ)
 ⊴-is-prop {U} τ υ (f , s) (g , t) =
- to-Σ-≡ (dfunext (fe U U) (at-most-one-simulation τ υ f g s t) ,
-         simulation-is-prop τ υ g _ _)
+ to-Σ-≡ (dfunext (fe U U) (at-most-one-is-simulation τ υ f g s t) ,
+         is-simulation-is-prop τ υ g _ _)
 
 ⊴-refl : ∀ {U} (τ : Ordinal U) → τ ⊴ τ
 ⊴-refl τ = id ,
@@ -323,14 +323,14 @@ abstract
            → τ ⊴ υ → υ ⊴ τ → τ ≡ υ
  ⊴-antisym {U} ua τ υ (f , s) (g , t) = to-Σ-≡ (p , q)
   where
-   fgs : simulation υ υ (f ∘ g)
+   fgs : is-simulation υ υ (f ∘ g)
    fgs = pr₂ (⊴-trans υ τ υ (g , t) (f , s))
    fg : (y : ⟨ υ ⟩) → f (g y) ≡ y
-   fg = at-most-one-simulation υ υ (f ∘ g) id fgs (pr₂ (⊴-refl υ))
-   gfs : simulation τ τ (g ∘ f)
+   fg = at-most-one-is-simulation υ υ (f ∘ g) id fgs (pr₂ (⊴-refl υ))
+   gfs : is-simulation τ τ (g ∘ f)
    gfs = pr₂ (⊴-trans τ υ τ (f , s) (g , t))
    gf : (x : ⟨ τ ⟩) → g (f x) ≡ x
-   gf = at-most-one-simulation τ τ (g ∘ f) id gfs (pr₂ (⊴-refl τ))
+   gf = at-most-one-is-simulation τ τ (g ∘ f) id gfs (pr₂ (⊴-refl τ))
    e : ⟨ τ ⟩ ≃ ⟨ υ ⟩
    e = (f , ((g , fg) , g , gf))
    p : ⟨ τ ⟩ ≡ ⟨ υ ⟩
@@ -362,18 +362,18 @@ abstract
    q : transport (λ - → Σ \(_<_ : - → - → U ̇) → is-well-order _<_) p (pr₂ τ) ≡ pr₂ υ
    q = h ⟨ τ ⟩ ⟨ υ ⟩ e (pr₂ τ) (pr₂ υ) (pr₂ s) (pr₂ t)
 
-segment-inclusion-simulation : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
-                            → simulation (τ ↓ a) τ (segment-inclusion τ a)
-segment-inclusion-simulation τ a = i , p
+segment-inclusion-is-simulation : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
+                            → is-simulation (τ ↓ a) τ (segment-inclusion τ a)
+segment-inclusion-is-simulation τ a = i , p
  where
-  i : initial-segment (τ ↓ a) τ (segment-inclusion τ a)
+  i : is-initial-segment (τ ↓ a) τ (segment-inclusion τ a)
   i (x , l) z m = (z , Transitivity τ z x a m l) , m , refl
-  p : order-preserving (τ ↓ a) τ (segment-inclusion τ a)
+  p : is-order-preserving (τ ↓ a) τ (segment-inclusion τ a)
   p x y = id
 
 segment-⊴ : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
           → (τ ↓ a) ⊴ τ
-segment-⊴ τ a = segment-inclusion τ a , segment-inclusion-simulation τ a
+segment-⊴ τ a = segment-inclusion τ a , segment-inclusion-is-simulation τ a
 
 \end{code}
 
@@ -409,10 +409,10 @@ open import UF-Equiv
 ↓-⊴-lc {U} τ a b (f , s) u l = γ
  where
   h : segment-inclusion τ a ∼ segment-inclusion τ b ∘ f
-  h = at-most-one-simulation (τ ↓ a) τ
+  h = at-most-one-is-simulation (τ ↓ a) τ
         (segment-inclusion τ a)
         (segment-inclusion τ b ∘ f)
-        (segment-inclusion-simulation τ a)
+        (segment-inclusion-is-simulation τ a)
         (pr₂ (⊴-trans (τ ↓ a) (τ ↓ b) τ
                  (f , s)
                  (segment-⊴ τ b)))
@@ -433,17 +433,59 @@ open import UF-Equiv
   (↓-⊴-lc τ a b (transport (λ - → (τ ↓ a) ⊴ -) p (⊴-refl (τ ↓ a))))
   (↓-⊴-lc τ b a (back-transport (λ - → (τ ↓ b) ⊴ -) p (⊴-refl (τ ↓ b))))
 
-_⊲_ : ∀ {U} → Ordinal U → Ordinal U → U ′ ̇
-τ ⊲ υ = Σ \(b : ⟨ υ ⟩) → τ ≡ (υ ↓ b)
+\end{code}
+
+We now want to make the type of ordinals into an ordinal.
+
+\begin{code}
+
+_⊲_ : ∀ {U} → Ordinal U → Ordinal U → U ̇
+τ ⊲ υ = Σ \(b : ⟨ υ ⟩) → (τ ⊴ (υ ↓ b)) × ((υ ↓ b) ⊴ τ)
 
 ⊲-prop-valued : ∀ {U} → is-univalent U
               → (τ υ : Ordinal U) → is-prop (τ ⊲ υ)
-⊲-prop-valued {U} ua τ υ  (b , p) (b' , p') = to-Σ-≡ (r , s)
+⊲-prop-valued {U} ua τ υ  (b , l , m) (b' , l' , m') =
+ to-Σ-≡ (r , s)
  where
   r : b ≡ b'
-  r = ↓-lc υ b b' (p ⁻¹ ∙ p')
-  s : transport (λ - → τ ≡ (υ ↓ -)) r p ≡ p'
-  s = Ordinal-is-set ua _ _
+  r = ↓-lc υ b b' (⊴-antisym ua (υ ↓ b) (υ ↓ b')
+                     (⊴-trans (υ ↓ b) τ (υ ↓ b') m l')
+                     (⊴-trans (υ ↓ b') τ (υ ↓ b) m' l))
+  s : transport (λ - → (τ ⊴ (υ ↓ -)) × ((υ ↓ -) ⊴ τ)) r (l , m) ≡ l' , m'
+  s = ×-is-prop (⊴-is-prop τ (υ ↓ b')) (⊴-is-prop (υ ↓ b') τ) _ _
+
+\end{code}
+
+We could instead define τ ⊲ υ to mean that we have b with τ ≡ (υ ↓ b),
+by antisymetry. However, this definition would make ⊲ have values in
+the next universe U ′ rather than U itself. We pause briefly to record
+this observation.
+
+\begin{code}
+
+module alterative-⊲ where
+
+    _⊲'_ : ∀ {U} → Ordinal U → Ordinal U → U ′ ̇
+    τ ⊲' υ = Σ \(b : ⟨ υ ⟩) → τ ≡ (υ ↓ b)
+
+    ⊲'-prop-valued : ∀ {U} → is-univalent U
+                   → (τ υ : Ordinal U) → is-prop (τ ⊲' υ)
+    ⊲'-prop-valued {U} ua τ υ  (b , p) (b' , p') = to-Σ-≡ (r , s)
+     where
+      r : b ≡ b'
+      r = ↓-lc υ b b' (p ⁻¹ ∙ p')
+      s : transport (λ - → τ ≡ (υ ↓ -)) r p ≡ p'
+      s = Ordinal-is-set ua _ _
+
+    ⊲'-gives-⊲ : ∀ {U} (τ υ : Ordinal U)
+               → τ ⊲' υ → τ ⊲ υ
+    ⊲'-gives-⊲ τ υ (b , p) = b ,
+                              transport (λ - → τ ⊴ -) p (⊴-refl τ) ,
+                              back-transport (λ - → (υ ↓ b) ⊴ -) p (⊴-refl (υ ↓ b))
+
+    ⊲-gives-⊲' : ∀ {U} → is-univalent U → (τ υ : Ordinal U)
+               → τ ⊲ υ → τ ⊲' υ
+    ⊲-gives-⊲' ua τ υ (b , l , m) = b , ⊴-antisym ua τ (υ ↓ b) l m
 
 down : ∀ {U} (τ : Ordinal U) (b u : ⟨ τ ⟩) (l : u ≺⟨ τ ⟩ b)
     → ((τ ↓ b ) ↓ (u , l)) ⊴ (τ ↓ u)
@@ -480,8 +522,10 @@ iterated-↓ ua τ b u l = ⊴-antisym ua ((τ ↓ b) ↓ (u , l)) (τ ↓ u) (d
 ↓-⊲-lc : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
         → (τ ↓ a) ⊲ (τ ↓ b)
         → a ≺⟨ τ ⟩ b
-↓-⊲-lc {U} ua τ a b ((u , l) , p) = back-transport (λ - → - ≺⟨ τ ⟩ b) r l
+↓-⊲-lc {U} ua τ a b ((u , l) , m , n) = back-transport (λ - → - ≺⟨ τ ⟩ b) r l
  where
+  p : (τ ↓ a) ≡ ((τ ↓ b) ↓ (u , l))
+  p = ⊴-antisym ua (τ ↓ a) ((τ ↓ b) ↓ (u , l)) m n
   q : (τ ↓ a) ≡ (τ ↓ u)
   q = p ∙ iterated-↓ ua τ b u l
   r : a ≡ u
@@ -490,15 +534,18 @@ iterated-↓ ua τ b u l = ⊴-antisym ua ((τ ↓ b) ↓ (u , l)) (τ ↓ u) (d
 ↓-⊲-op : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
         → a ≺⟨ τ ⟩ b
         → (τ ↓ a) ⊲ (τ ↓ b)
-↓-⊲-op ua τ a b l = (a , l) , ((iterated-↓ ua τ b a l)⁻¹)
+↓-⊲-op ua τ a b l = (a , l) , up τ b a l , down τ b a l
 
-{- TODO. Problem with lack of cumulativity
+
 ≺-is-⊲ : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
        → (a ≺⟨ τ ⟩ b) ≡ ((τ ↓ a) ⊲ (τ ↓ b))
-≺-is-⊲ = ?
--}
+≺-is-⊲ ua τ a b = UA-gives-propext ua
+                    (Prop-valuedness τ a b)
+                    (⊲-prop-valued ua (τ ↓ a) (τ ↓ b))
+                    (↓-⊲-op ua τ a b)
+                    (↓-⊲-lc ua τ a b)
 
-{-
+{- TODO
 ↓-accessible : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
              → is-accessible _⊲_ (τ ↓ a)
 ↓-accessible {U} τ a = γ a (Well-foundedness τ a)
@@ -528,9 +575,9 @@ And here are some additional observations:
 \begin{code}
 
 ilcr : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-    → initial-segment τ υ f
+    → is-initial-segment τ υ f
     → left-cancellable f
-    → order-reflecting τ υ f
+    → is-order-reflecting τ υ f
 ilcr τ υ f i c x y l = γ
  where
   a : Σ \(x' : ⟨ τ ⟩) → (x' ≺⟨ τ ⟩ y) × (f x' ≡ f x)
@@ -539,14 +586,14 @@ ilcr τ υ f i c x y l = γ
   γ = transport (λ - → - ≺⟨ τ ⟩ y) (c (pr₂(pr₂ a))) (pr₁(pr₂ a))
 
 ipr : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-   → simulation τ υ f
-   → order-reflecting τ υ f
+   → is-simulation τ υ f
+   → is-order-reflecting τ υ f
 ipr τ υ f (i , p) = ilcr τ υ f i (iplc τ υ f (i , p))
 
-order-embedding-lc : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                  → order-embedding τ υ f
+is-order-embedding-lc : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
+                  → is-order-embedding τ υ f
                   → left-cancellable f
-order-embedding-lc τ υ f (p , r) {x} {y} s = Extensionality τ x y a b
+is-order-embedding-lc τ υ f (p , r) {x} {y} s = Extensionality τ x y a b
  where
   a : (u : ⟨ τ ⟩) → u ≺⟨ τ ⟩ x → u ≺⟨ τ ⟩ y
   a u l = r u y j
@@ -563,12 +610,12 @@ order-embedding-lc τ υ f (p , r) {x} {y} s = Extensionality τ x y a b
     j : f u ≺⟨ υ ⟩ f x
     j = back-transport (λ - → f u ≺⟨ υ ⟩ -) s i
 
-order-embedding-is-embedding : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                             → order-embedding τ υ f
+is-order-embedding-is-embedding : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
+                             → is-order-embedding τ υ f
                              → is-embedding f
-order-embedding-is-embedding τ υ f (p , r) =
+is-order-embedding-is-embedding τ υ f (p , r) =
  lc-embedding f
-  (order-embedding-lc τ υ f (p , r))
+  (is-order-embedding-lc τ υ f (p , r))
   (extensional-gives-is-set
     (underlying-order υ) fe
     (Prop-valuedness υ)

@@ -307,7 +307,7 @@ order preserving and reflecting (28 July 2018).
 
 δκ-order-preserving One = λ x y l → l
 δκ-order-preserving (Add α β) =
- pair-fun-order-preserving
+ pair-fun-is-order-preserving
    𝟚ᵒ
    𝟚ᵒ
    (cases (λ _ → Δ α) (λ _ → Δ β))
@@ -317,7 +317,7 @@ order preserving and reflecting (28 July 2018).
    (λ x y l → l)
    (dep-cases (λ _ → δκ-order-preserving α) λ _ → δκ-order-preserving β)
 δκ-order-preserving (Mul α β) =
- pair-fun-order-preserving
+ pair-fun-is-order-preserving
   (Δ α)
   (Κ α)
   (λ _ → Δ β)
@@ -327,7 +327,7 @@ order preserving and reflecting (28 July 2018).
   (δκ-order-preserving α)
   (λ _ → δκ-order-preserving β)
 δκ-order-preserving (Sum1 α) =
- ∑↑-order-preserving
+ ∑↑-is-order-preserving
    (Δ ∘ α)
    (Κ ∘ α)
    (λ n → δκ {α n})
@@ -335,7 +335,7 @@ order preserving and reflecting (28 July 2018).
 
 δκ-order-reflecting One = λ x y l → l
 δκ-order-reflecting (Add α β) =
- pair-fun-order-reflecting
+ pair-fun-is-order-reflecting
    𝟚ᵒ
    𝟚ᵒ
    (cases (λ _ → Δ α) (λ _ → Δ β))
@@ -346,7 +346,7 @@ order preserving and reflecting (28 July 2018).
    id-is-embedding
    (dep-cases (λ _ → δκ-order-reflecting α) λ _ → δκ-order-reflecting β)
 δκ-order-reflecting (Mul α β) =
- pair-fun-order-reflecting
+ pair-fun-is-order-reflecting
   (Δ α)
   (Κ α)
   (λ _ → Δ β)
@@ -357,7 +357,7 @@ order preserving and reflecting (28 July 2018).
   (δκ-embedding α)
   (λ _ → δκ-order-reflecting β)
 δκ-order-reflecting (Sum1 α)  =
- ∑↑-order-reflecting
+ ∑↑-is-order-reflecting
    (Δ ∘ α)
    (Κ ∘ α)
    (λ n → δκ {α n})
