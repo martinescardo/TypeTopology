@@ -200,7 +200,7 @@ The underlying sets  of such ordinals are searchable:
   𝟙+𝟙-searchable
   (dep-cases (λ _ → Κ-searchable α) (λ _ → Κ-searchable β))
 Κ-searchable (Mul α β) = Σ-searchable (Κ-searchable α) (λ _ → Κ-searchable β)
-Κ-searchable (Sum1 α) = Σ¹-searchable (λ n → ⟪ Κ (α n) ⟫) (Κ-searchable ∘ α)
+Κ-searchable (Sum1 α) = Σ¹-searchable (λ n → ⟪ Κ (α n) ⟫) (λ i → Κ-searchable (α i))
 
 \end{code}
 
@@ -214,7 +214,7 @@ The searchable ordinals are retracts of the Cantor type (ℕ → 𝟚).
 Κ-Cantor-retract One = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
 Κ-Cantor-retract (Add α β) = +-retract-of-Cantor (Κ α) (Κ β) (Κ-Cantor-retract α) (Κ-Cantor-retract β)
 Κ-Cantor-retract (Mul α β) = ×-retract-of-Cantor (Κ α) (Κ β) (Κ-Cantor-retract α) (Κ-Cantor-retract β)
-Κ-Cantor-retract (Sum1 α)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (α n) ⟫) (Κ-Cantor-retract ∘ α)
+Κ-Cantor-retract (Sum1 α)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (α n) ⟫) (λ i → Κ-Cantor-retract (α i))
 
 \end{code}
 
@@ -253,7 +253,7 @@ many interesting properties, formulated above and proved below.
   (+discrete 𝟙-discrete 𝟙-discrete)
   (dep-cases (λ _ → Δ-discrete α) (λ _ → Δ-discrete β))
 Δ-discrete (Mul α β) = Σ-discrete (Δ-discrete α) (λ _ → Δ-discrete β)
-Δ-discrete (Sum1 α) = Σ₁-discrete (λ n → ⟪ Δ (α n) ⟫) (Δ-discrete ∘ α)
+Δ-discrete (Sum1 α) = Σ₁-discrete (λ n → ⟪ Δ (α n) ⟫) (λ i → Δ-discrete (α i))
 
 \end{code}
 
@@ -285,7 +285,7 @@ order preserving and reflecting (28 July 2018).
   (λ n → ⟪ Δ (α n) ⟫)
   (λ n → ⟪ Κ (α n) ⟫)
   (λ n → δκ {α n})
-  (δκ-dense ∘ α)
+  (λ i → δκ-dense (α i))
 
 δκ-embedding One = id-is-embedding
 δκ-embedding (Add α β) =
@@ -303,7 +303,7 @@ order preserving and reflecting (28 July 2018).
   (λ n → ⟪ Δ (α n) ⟫)
   (λ n → ⟪ Κ (α n) ⟫)
   (λ n → δκ {α n})
-  (δκ-embedding ∘ α)
+  (λ i → δκ-embedding (α i))
 
 δκ-order-preserving One = λ x y l → l
 δκ-order-preserving (Add α β) =
@@ -331,7 +331,7 @@ order preserving and reflecting (28 July 2018).
    (Δ ∘ α)
    (Κ ∘ α)
    (λ n → δκ {α n})
-   (δκ-order-preserving ∘ α)
+   (λ i → δκ-order-preserving (α i))
 
 δκ-order-reflecting One = λ x y l → l
 δκ-order-reflecting (Add α β) =
@@ -361,7 +361,7 @@ order preserving and reflecting (28 July 2018).
    (Δ ∘ α)
    (Κ ∘ α)
    (λ n → δκ {α n})
-   (δκ-order-reflecting ∘ α)
+   (λ i → δκ-order-reflecting (α i))
 
 \end{code}
 
@@ -390,7 +390,7 @@ much easier (given the mathematics we have already developed).
  ∑₁-inf-searchable
   pe
   (Κ ∘ α)
-  (Κ-inf-searchable pe ∘ α)
+  (λ i → Κ-inf-searchable pe (α i))
 
 \end{code}
 
@@ -407,7 +407,7 @@ Added 31 July 2018:
  Σ-retract-of-ℕ
  (Δ-retract-of-ℕ α)
  (λ _ → Δ-retract-of-ℕ β)
-Δ-retract-of-ℕ (Sum1 α) = Σ₁-ℕ-retract (Δ-retract-of-ℕ ∘ α)
+Δ-retract-of-ℕ (Sum1 α) = Σ₁-ℕ-retract (λ i → Δ-retract-of-ℕ (α i))
 
 \end{code}
 
