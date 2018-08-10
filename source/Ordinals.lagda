@@ -22,6 +22,13 @@ module Ordinals
 Ordinal : ∀ U → U ′ ̇
 Ordinal U = Σ \(X : U ̇) → Σ \(_<_ : X → X → U ̇) → is-well-order _<_
 
+\end{code}
+
+The underlying type of an ordinal (which happens to to be necessarily
+a set):
+
+\begin{code}
+
 ⟨_⟩ : ∀ {U} → Ordinal U → U ̇
 ⟨ X , _<_ , o ⟩ = X
 
@@ -36,6 +43,18 @@ syntax underlying-porder α x y = x ≼⟨ α ⟩ y
 
 is-well-ordered : ∀ {U} → (α : Ordinal U) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o
+
+Prop-valuedness : ∀ {U} (τ : Ordinal U) → is-prop-valued (underlying-order τ)
+Prop-valuedness τ = prop-valuedness (underlying-order τ) (is-well-ordered τ)
+
+Transitivity : ∀ {U} (τ : Ordinal U) → is-transitive (underlying-order τ)
+Transitivity τ = transitivity (underlying-order τ) (is-well-ordered τ)
+
+Well-foundedness : ∀ {U} (τ : Ordinal U) (x : ⟨ τ ⟩) → is-accessible (underlying-order τ) x
+Well-foundedness τ = well-foundedness (underlying-order τ) (is-well-ordered τ)
+
+Extensionality : ∀ {U} (τ : Ordinal U) → is-extensional (underlying-order τ)
+Extensionality τ = extensionality (underlying-order τ) (is-well-ordered τ)
 
 \end{code}
 
@@ -85,8 +104,8 @@ tis-well-ordered ((X , _<_ , o) , t) = o
 
 \end{code}
 
-Given an ordinal τ and a point x of its underlying set, the lower sets
-forms a (sub-)ordinal:
+Given an ordinal τ and a point x of its underlying set, any lower set
+τ ↓ a of a point a : ⟨ τ ⟩ forms a (sub-)ordinal:
 
 \begin{code}
 
@@ -96,28 +115,21 @@ _↓_ : ∀ {U} (τ : Ordinal U) → ⟨ τ ⟩ → Ordinal U
   _<_ : (Σ \(x : ⟨ τ ⟩) → x ≺⟨ τ ⟩ a) → (Σ \(x : ⟨ τ ⟩) → x ≺⟨ τ ⟩ a) → _ ̇
   (y , _) < (z , _) = y ≺⟨ τ ⟩ z
   p : is-prop-valued _<_
-  p (x , _) (y , _)  = prop-valuedness (underlying-order τ) (is-well-ordered τ) x y
+  p (x , _) (y , _)  = Prop-valuedness τ x y
   w : is-well-founded _<_
-  w (x , l) = γ x (well-foundedness (underlying-order τ) (is-well-ordered τ) x) l
+  w (x , l) = γ x (Well-foundedness τ x) l
    where
     γ : ∀ x → is-accessible (underlying-order τ) x → ∀ l → is-accessible _<_ (x , l)
     γ x (next .x s) l = next (x , l) (λ σ m → γ (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
   e : is-extensional _<_
   e (x , l) (y , m) f g =
    to-Σ-≡
-    (extensionality
-     (underlying-order τ)
-     (is-well-ordered τ)
-     x
-     y
-     (λ u n → f (u , transitivity (underlying-order τ) (is-well-ordered τ) u x a n l) n)
-     (λ u n → g (u , transitivity (underlying-order τ) (is-well-ordered τ) u y a n m) n) ,
-    prop-valuedness (underlying-order τ) (is-well-ordered τ) y a _ _)
+    (Extensionality τ x y
+      (λ u n → f (u , Transitivity τ u x a n l) n)
+      (λ u n → g (u , Transitivity τ u y a n m) n) ,
+    Prop-valuedness τ y a _ _)
   t : is-transitive _<_
-  t (x , _) (y , _) (z , _) l m = transitivity
-                                   (underlying-order τ)
-                                   (is-well-ordered τ)
-                                   x y z l m
+  t (x , _) (y , _) (z , _) l m = Transitivity τ x y z l m
 
 segment-inclusion : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
                   → ⟨ τ ↓ a ⟩ → ⟨ τ ⟩
@@ -139,8 +151,8 @@ order-preserving
 order-preserving τ υ f = (x y : ⟨ τ ⟩) → x ≺⟨ τ ⟩ y → f x ≺⟨ υ ⟩ f y
 order-reflecting τ υ f = (x y : ⟨ τ ⟩) → f x ≺⟨ υ ⟩ f y → x ≺⟨ τ ⟩ y
 order-embedding  τ υ f = order-preserving τ υ f × order-reflecting τ υ f
-initial-segment  τ υ f = (x : ⟨ τ ⟩) (z : ⟨ υ ⟩)
-                            → z ≺⟨ υ ⟩ f x → Σ \(y : ⟨ τ ⟩) → (y ≺⟨ τ ⟩ x) × (f y ≡ z)
+initial-segment  τ υ f = (x : ⟨ τ ⟩) (y : ⟨ υ ⟩)
+                            → y ≺⟨ υ ⟩ f x → Σ \(x' : ⟨ τ ⟩) → (x' ≺⟨ τ ⟩ x) × (f x' ≡ y)
 simulation       τ υ f = initial-segment  τ υ f × order-preserving τ υ f
 
 order-preserving-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
@@ -149,9 +161,7 @@ order-preserving-is-prop {U} τ υ f =
  Π-is-prop (fe U U)
    (λ x → Π-is-prop (fe U U)
              (λ y → Π-is-prop (fe U U)
-                      (λ l → prop-valuedness
-                              (underlying-order υ)
-                              (is-well-ordered υ) (f x) (f y))))
+                      (λ l → Prop-valuedness υ (f x) (f y))))
 
 order-reflecting-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
                         → is-prop (order-reflecting τ υ f)
@@ -159,21 +169,16 @@ order-reflecting-is-prop {U} τ υ f =
  Π-is-prop (fe U U)
    (λ x → Π-is-prop (fe U U)
              (λ y → Π-is-prop (fe U U)
-                      (λ l → prop-valuedness
-                              (underlying-order τ)
-                              (is-well-ordered τ) x y)))
-
+                      (λ l → Prop-valuedness τ x y)))
 
 iplc : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
     → simulation τ υ f
     → left-cancellable f
-iplc τ υ f (i , p) {x} {y} = γ x y
-                              (well-foundedness (underlying-order τ) (is-well-ordered τ) x)
-                              (well-foundedness (underlying-order τ) (is-well-ordered τ) y)
+iplc τ υ f (i , p) {x} {y} = γ x y (Well-foundedness τ x) (Well-foundedness τ y)
  where
   γ : ∀ x y → is-accessible (underlying-order τ) x → is-accessible (underlying-order τ) y
     → f x ≡ f y → x ≡ y
-  γ x y (next .x s) (next .y t) r = extensionality (underlying-order τ) (is-well-ordered τ) x y g h
+  γ x y (next .x s) (next .y t) r = Extensionality τ x y g h
    where
     g : (u : ⟨ τ ⟩) → u ≺⟨ τ ⟩ x → u ≺⟨ τ ⟩ y
     g u l = d
@@ -199,8 +204,8 @@ iplc τ υ f (i , p) {x} {y} = γ x y
       d = transport (λ - → - ≺⟨ τ ⟩ x) c (pr₁(pr₂ b))
 
 initial-segment-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
-                       → order-preserving τ υ f
-                       → is-prop (initial-segment τ υ f)
+                        → order-preserving τ υ f
+                        → is-prop (initial-segment τ υ f)
 initial-segment-is-prop {U} τ υ f p i =
  (Π-is-prop (fe U U)
     λ x → Π-is-prop (fe U U)
@@ -216,19 +221,19 @@ initial-segment-is-prop {U} τ υ f p i =
      a = iplc τ υ f (i , p) c
      b : transport (λ - →  (- ≺⟨ τ ⟩ x) × (f - ≡ z)) a (m , r) ≡ m' , r'
      b = ×-is-prop
-          (prop-valuedness
-            (underlying-order τ)
-            (is-well-ordered τ) y' x)
-            (extensional-gives-is-set
+          (Prop-valuedness τ y' x)
+          (extensional-gives-is-set
               (underlying-order υ) fe
-                (prop-valuedness
-                  (underlying-order υ)
-                    (is-well-ordered υ))
-                (extensionality
-                  (underlying-order υ)
-                  (is-well-ordered υ)))
+              (Prop-valuedness υ)
+              (Extensionality υ))
          (transport (λ - →  (- ≺⟨ τ ⟩ x) × (f - ≡ z)) a (m , r))
          (m' , r')
+
+\end{code}
+
+The simulations form a poset:
+
+\begin{code}
 
 simulation-is-prop : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
                   → is-prop (simulation τ υ f)
@@ -241,10 +246,10 @@ at-most-one-simulation : ∀ {U} (τ υ : Ordinal U) (f f' : ⟨ τ ⟩ → ⟨ 
                       → simulation τ υ f'
                       → f ∼ f'
 at-most-one-simulation τ υ f f' (i , p) (i' , p') x =
- γ x (well-foundedness (underlying-order τ) (is-well-ordered τ) x)
+ γ x (Well-foundedness τ x)
  where
   γ : ∀ x → is-accessible (underlying-order τ) x → f x ≡ f' x
-  γ x (next .x u) = extensionality (underlying-order υ) (is-well-ordered υ) (f x) (f' x) a b
+  γ x (next .x u) = Extensionality υ (f x) (f' x) a b
    where
     IH : ∀ y → y ≺⟨ τ ⟩ x → f y ≡ f' y
     IH y l = γ y (u y l)
@@ -301,17 +306,17 @@ _⊴_ : ∀ {U} → Ordinal U → Ordinal U → U ̇
     b : Σ \(x' : ⟨ τ ⟩) → (x' ≺⟨ τ ⟩ x) × (f x' ≡ y)
     b = i x y (pr₁ (pr₂ a))
 
-open import UF-Univalence
-open import UF-Equiv
-
 \end{code}
 
-A consequence of univalence is that this order is
-antisymmetric. Without abstracting the implementation, the proof that
-the ordinals form a set, given below, doesn't type check in feasible
-time.
+A consequence of univalence is that this order is antisymmetric.
+Without abstracting the implementation, the proof that the ordinals
+form a set, given below, doesn't type check in feasible time (I am not
+sure why).
 
 \begin{code}
+
+open import UF-Univalence
+open import UF-Equiv
 
 abstract
  ⊴-antisym : ∀ {U} → is-univalent U → (τ υ : Ordinal U)
@@ -362,18 +367,21 @@ segment-inclusion-simulation : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
 segment-inclusion-simulation τ a = i , p
  where
   i : initial-segment (τ ↓ a) τ (segment-inclusion τ a)
-  i (x , l) z m = (z , transitivity
-                        (underlying-order τ)
-                        (is-well-ordered τ)
-                        z x a m l) ,
-                  m ,
-                  refl
+  i (x , l) z m = (z , Transitivity τ z x a m l) , m , refl
   p : order-preserving (τ ↓ a) τ (segment-inclusion τ a)
-  p x y l = l
+  p x y = id
 
 segment-⊴ : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
           → (τ ↓ a) ⊴ τ
 segment-⊴ τ a = segment-inclusion τ a , segment-inclusion-simulation τ a
+
+\end{code}
+
+One of the many applications of the univalence axiom is to manufacture
+examples of types which are not sets. Here we use it to prove that a
+certain type is a set.
+
+\begin{code}
 
 Ordinal-is-set : ∀ {U} → is-univalent U → is-set (Ordinal U)
 Ordinal-is-set {U} ua = identification-collapsible-is-set pc
@@ -395,10 +403,10 @@ Ordinal-is-set {U} ua = identification-collapsible-is-set pc
 
 open import UF-Equiv
 
-↓-lemma : ∀ {U} (τ : Ordinal U) (a b : ⟨ τ ⟩)
-        → (τ ↓ a)  ⊴  (τ ↓ b )
-        → a ≼⟨ τ ⟩ b
-↓-lemma {U} τ a b (f , s) u l = γ
+↓-⊴-lc : ∀ {U} (τ : Ordinal U) (a b : ⟨ τ ⟩)
+           → (τ ↓ a)  ⊴  (τ ↓ b )
+           → a ≼⟨ τ ⟩ b
+↓-⊴-lc {U} τ a b (f , s) u l = γ
  where
   h : segment-inclusion τ a ∼ segment-inclusion τ b ∘ f
   h = at-most-one-simulation (τ ↓ a) τ
@@ -410,10 +418,10 @@ open import UF-Equiv
                  (segment-⊴ τ b)))
   v : ⟨ τ ⟩
   v = segment-inclusion τ b (f (u , l))
-  q : u ≡ v
-  q = h (u , l)
   m : v ≺⟨ τ ⟩ b
   m = pr₂ (f (u , l))
+  q : u ≡ v
+  q = h (u , l)
   γ : u ≺⟨ τ ⟩ b
   γ = back-transport (λ - → - ≺⟨ τ ⟩ b) q m
 
@@ -421,12 +429,97 @@ open import UF-Equiv
      → τ ↓ a ≡ τ ↓ b
      → a ≡ b
 ↓-lc τ a b p =
- extensionality
-  (underlying-order τ)
-  (is-well-ordered τ)
-  a b
-  (↓-lemma τ a b (transport (λ - → (τ ↓ a) ⊴ -) p (⊴-refl (τ ↓ a))))
-  (↓-lemma τ b a (back-transport (λ - → (τ ↓ b) ⊴ -) p (⊴-refl (τ ↓ b))))
+ Extensionality τ a b
+  (↓-⊴-lc τ a b (transport (λ - → (τ ↓ a) ⊴ -) p (⊴-refl (τ ↓ a))))
+  (↓-⊴-lc τ b a (back-transport (λ - → (τ ↓ b) ⊴ -) p (⊴-refl (τ ↓ b))))
+
+_⊲_ : ∀ {U} → Ordinal U → Ordinal U → U ′ ̇
+τ ⊲ υ = Σ \(b : ⟨ υ ⟩) → τ ≡ (υ ↓ b)
+
+⊲-prop-valued : ∀ {U} → is-univalent U
+              → (τ υ : Ordinal U) → is-prop (τ ⊲ υ)
+⊲-prop-valued {U} ua τ υ  (b , p) (b' , p') = to-Σ-≡ (r , s)
+ where
+  r : b ≡ b'
+  r = ↓-lc υ b b' (p ⁻¹ ∙ p')
+  s : transport (λ - → τ ≡ (υ ↓ -)) r p ≡ p'
+  s = Ordinal-is-set ua _ _
+
+down : ∀ {U} (τ : Ordinal U) (b u : ⟨ τ ⟩) (l : u ≺⟨ τ ⟩ b)
+    → ((τ ↓ b ) ↓ (u , l)) ⊴ (τ ↓ u)
+down {U} τ b u l = f , (i , p)
+ where
+  f : ⟨ (τ ↓ b) ↓ (u , l) ⟩ → ⟨ τ ↓ u ⟩
+  f ((x , m) , n) = x , n
+  i : (w : ⟨ (τ ↓ b) ↓ (u , l) ⟩) (t : ⟨ τ ↓ u ⟩)
+    → t ≺⟨ τ ↓ u ⟩ f w → Σ \(w' : ⟨ (τ ↓ b) ↓ (u , l) ⟩) → (w' ≺⟨ (τ ↓ b) ↓ (u , l) ⟩ w) × (f w' ≡ t)
+  i ((x , m) , n) (x' , m') n' = ((x' , Transitivity τ x' u b m' l) , m') ,
+                                 (n' , refl)
+  p : (w w' : ⟨ (τ ↓ b) ↓ (u , l) ⟩) → w ≺⟨ (τ ↓ b) ↓ (u , l) ⟩ w' → f w ≺⟨ τ ↓ u ⟩ (f w')
+  p w w' = id
+
+up : ∀ {U} (τ : Ordinal U) (b u : ⟨ τ ⟩) (l : u ≺⟨ τ ⟩ b)
+  → (τ ↓ u) ⊴ ((τ ↓ b ) ↓ (u , l))
+up {U} τ b u l = f , (i , p)
+ where
+  f : ⟨ τ ↓ u ⟩ → ⟨ (τ ↓ b) ↓ (u , l) ⟩
+  f (x , n) = ((x , Transitivity τ x u b n l) , n)
+  i : (t : ⟨ τ ↓ u ⟩) (w : ⟨ (τ ↓ b) ↓ (u , l) ⟩)
+    → w ≺⟨ (τ ↓ b) ↓ (u , l) ⟩ f t → Σ \(t' : ⟨ τ ↓ u ⟩) → (t' ≺⟨ τ ↓ u ⟩ t) × (f t' ≡ w)
+  i (x , n) ((x' , m') , n') o = (x' , n') ,
+                                 (o , to-Σ-≡
+                                       (to-Σ-≡' (Prop-valuedness τ x' b _ _) ,
+                                       Prop-valuedness τ x' u _ _))
+  p : (t t' : ⟨ τ ↓ u ⟩) → t ≺⟨ τ ↓ u ⟩ t' → f t ≺⟨ (τ ↓ b) ↓ (u , l) ⟩ f t'
+  p t t' = id
+
+iterated-↓ : ∀ {U} → is-univalent U → (τ : Ordinal U) (b u : ⟨ τ ⟩) (l : u ≺⟨ τ ⟩ b)
+          → ((τ ↓ b ) ↓ (u , l)) ≡ (τ ↓ u)
+iterated-↓ ua τ b u l = ⊴-antisym ua ((τ ↓ b) ↓ (u , l)) (τ ↓ u) (down τ b u l) (up τ b u l)
+
+↓-⊲-lc : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
+        → (τ ↓ a) ⊲ (τ ↓ b)
+        → a ≺⟨ τ ⟩ b
+↓-⊲-lc {U} ua τ a b ((u , l) , p) = back-transport (λ - → - ≺⟨ τ ⟩ b) r l
+ where
+  q : (τ ↓ a) ≡ (τ ↓ u)
+  q = p ∙ iterated-↓ ua τ b u l
+  r : a ≡ u
+  r = ↓-lc τ a u q
+
+↓-⊲-op : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
+        → a ≺⟨ τ ⟩ b
+        → (τ ↓ a) ⊲ (τ ↓ b)
+↓-⊲-op ua τ a b l = (a , l) , ((iterated-↓ ua τ b a l)⁻¹)
+
+{- TODO. Problem with lack of cumulativity
+≺-is-⊲ : ∀ {U} → is-univalent U → (τ : Ordinal U) (a b : ⟨ τ ⟩)
+       → (a ≺⟨ τ ⟩ b) ≡ ((τ ↓ a) ⊲ (τ ↓ b))
+≺-is-⊲ = ?
+-}
+
+{-
+↓-accessible : ∀ {U} (τ : Ordinal U) (a : ⟨ τ ⟩)
+             → is-accessible _⊲_ (τ ↓ a)
+↓-accessible {U} τ a = γ a (Well-foundedness τ a)
+ where
+  γ : (a : ⟨ τ ⟩) → is-accessible (underlying-order τ) a → is-accessible _⊲_ (τ ↓ a)
+  γ a (next .a s) = next (τ ↓ a) g
+   where
+    IH : (b : ⟨ τ ⟩) → (τ ↓ b) ⊲ (τ ↓ a) → is-accessible _⊲_ (τ ↓ b)
+    IH b l = γ b (s b (↓-⊲-lc τ b a l))
+    g : (υ : Ordinal U) → υ ⊲ (τ ↓ a) → is-accessible _⊲_ υ
+    g υ (b , p) = h
+     where
+      q : υ ≡ (τ ↓ a) ↓ b
+      q = p
+      blah : is-accessible _⊲_ ((τ ↓ a) ↓ b)
+      blah = next ((τ ↓ a) ↓ b) (λ y x → {!!})
+      h' : is-accessible _⊲_ ((τ ↓ a) ↓ b)
+      h' = {!!}
+      h : is-accessible _⊲_ υ
+      h = {!!}
+-}
 
 \end{code}
 
@@ -453,10 +546,7 @@ ipr τ υ f (i , p) = ilcr τ υ f i (iplc τ υ f (i , p))
 order-embedding-lc : ∀ {U} (τ υ : Ordinal U) (f : ⟨ τ ⟩ → ⟨ υ ⟩)
                   → order-embedding τ υ f
                   → left-cancellable f
-order-embedding-lc τ υ f (p , r) {x} {y} s = extensionality
-                                              (underlying-order τ)
-                                              (is-well-ordered τ)
-                                              x y a b
+order-embedding-lc τ υ f (p , r) {x} {y} s = Extensionality τ x y a b
  where
   a : (u : ⟨ τ ⟩) → u ≺⟨ τ ⟩ x → u ≺⟨ τ ⟩ y
   a u l = r u y j
@@ -480,13 +570,8 @@ order-embedding-is-embedding τ υ f (p , r) =
  lc-embedding f
   (order-embedding-lc τ υ f (p , r))
   (extensional-gives-is-set
-    (underlying-order υ)
-    fe
-    (prop-valuedness
-      (underlying-order υ)
-      (is-well-ordered υ))
-    (extensionality
-      (underlying-order υ)
-      (is-well-ordered υ)))
+    (underlying-order υ) fe
+    (Prop-valuedness υ)
+    (Extensionality υ))
 
 \end{code}
