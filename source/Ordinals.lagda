@@ -24,6 +24,12 @@ Ordinal U = Σ \(X : U ̇) → Σ \(_<_ : X → X → U ̇) → is-well-order _<
 
 \end{code}
 
+NB. Perhaps we will eventually need to have two parameters U (the
+universe where the underlying type X lives) and V (the universe where
+_<_ takes values in) for Ordinal.
+
+Ordinals are ranged over by α,β,γ.
+
 The underlying type of an ordinal (which happens to to be necessarily
 a set):
 
@@ -32,29 +38,29 @@ a set):
 ⟨_⟩ : ∀ {U} → Ordinal U → U ̇
 ⟨ X , _<_ , o ⟩ = X
 
-underlying-order : ∀ {U} → (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
+underlying-order : ∀ {U} (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
 underlying-order (X , _<_ , o) = _<_
 
-underlying-porder : ∀ {U} → (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
+underlying-porder : ∀ {U} (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
 underlying-porder (X , _<_ , o) = _≼_ _<_
 
 syntax underlying-order  α x y = x ≺⟨ α ⟩ y
 syntax underlying-porder α x y = x ≼⟨ α ⟩ y
 
-is-well-ordered : ∀ {U} → (α : Ordinal U) → is-well-order (underlying-order α)
+is-well-ordered : ∀ {U} (α : Ordinal U) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o
 
-Prop-valuedness : ∀ {U} (τ : Ordinal U) → is-prop-valued (underlying-order τ)
-Prop-valuedness τ = prop-valuedness (underlying-order τ) (is-well-ordered τ)
+Prop-valuedness : ∀ {U} (α : Ordinal U) → is-prop-valued (underlying-order α)
+Prop-valuedness α = prop-valuedness (underlying-order α) (is-well-ordered α)
 
-Transitivity : ∀ {U} (τ : Ordinal U) → is-transitive (underlying-order τ)
-Transitivity τ = transitivity (underlying-order τ) (is-well-ordered τ)
+Transitivity : ∀ {U} (α : Ordinal U) → is-transitive (underlying-order α)
+Transitivity α = transitivity (underlying-order α) (is-well-ordered α)
 
-Well-foundedness : ∀ {U} (τ : Ordinal U) (x : ⟨ τ ⟩) → is-accessible (underlying-order τ) x
-Well-foundedness τ = well-foundedness (underlying-order τ) (is-well-ordered τ)
+Well-foundedness : ∀ {U} (α : Ordinal U) (x : ⟨ α ⟩) → is-accessible (underlying-order α) x
+Well-foundedness α = well-foundedness (underlying-order α) (is-well-ordered α)
 
-Extensionality : ∀ {U} (τ : Ordinal U) → is-extensional (underlying-order τ)
-Extensionality τ = extensionality (underlying-order τ) (is-well-ordered τ)
+Extensionality : ∀ {U} (α : Ordinal U) → is-extensional (underlying-order α)
+Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 
 \end{code}
 
@@ -77,29 +83,35 @@ Ordinalᵀ U = Σ \(α : Ordinal U) → has-top (underlying-order α)
 ⟪_⟫ : ∀ {U} → Ordinalᵀ U → U ̇
 ⟪ (X , _<_ , o) , t ⟫ = X
 
-tunderlying-order : ∀ {U} → (τ : Ordinalᵀ U) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
+\end{code}
+
+Topped ordinals are ranged over by τ,υ.
+
+\begin{code}
+
+tunderlying-order : ∀ {U} (τ : Ordinalᵀ U) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
 tunderlying-order ((X , _<_ , o) , t) = _<_
 
 syntax tunderlying-order τ x y = x ≺⟪ τ ⟫ y
 
-tunderlying-rorder : ∀ {U} → (τ : Ordinalᵀ U) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
+tunderlying-rorder : ∀ {U} (τ : Ordinalᵀ U) → ⟪ τ ⟫ → ⟪ τ ⟫ → U ̇
 tunderlying-rorder τ x y = ¬(y ≺⟪ τ ⟫ x)
 
 syntax tunderlying-rorder τ x y = x ≼⟪ τ ⟫ y
 
-≼-prop-valued : ∀ {U} → (τ : Ordinalᵀ U) (x y : ⟪ τ ⟫) → is-prop (x ≼⟪ τ ⟫ y)
+≼-prop-valued : ∀ {U} (τ : Ordinalᵀ U) (x y : ⟪ τ ⟫) → is-prop (x ≼⟪ τ ⟫ y)
 ≼-prop-valued {U} τ x y l m = dfunext (fe U U₀) (λ x → 𝟘-elim (m x))
 
-topped : ∀ {U} → (τ : Ordinalᵀ U) → has-top (tunderlying-order τ)
+topped : ∀ {U} (τ : Ordinalᵀ U) → has-top (tunderlying-order τ)
 topped (α , t) = t
 
-top : ∀ {U} → (τ : Ordinalᵀ U) → ⟪ τ ⟫
+top : ∀ {U} (τ : Ordinalᵀ U) → ⟪ τ ⟫
 top (α , (x , i)) = x
 
-top-is-top : ∀ {U} → (τ : Ordinalᵀ U) → is-top (tunderlying-order τ) (top τ)
+top-is-top : ∀ {U} (τ : Ordinalᵀ U) → is-top (tunderlying-order τ) (top τ)
 top-is-top (α , (x , i)) = i
 
-tis-well-ordered : ∀ {U} → (τ : Ordinalᵀ U) → is-well-order (tunderlying-order τ)
+tis-well-ordered : ∀ {U} (τ : Ordinalᵀ U) → is-well-order (tunderlying-order τ)
 tis-well-ordered ((X , _<_ , o) , t) = o
 
 \end{code}
