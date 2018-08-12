@@ -30,39 +30,6 @@ open import UF-Yoneda
 
 \end{code}
 
-Given an ordinal α and a point x of its underlying set, any lower set
-α ↓ a of a point a : ⟨ α ⟩ forms a (sub-)ordinal:
-
-\begin{code}
-
-_↓_ : ∀ {U} (α : Ordinal U) → ⟨ α ⟩ → Ordinal U
-α ↓ a = (Σ \(y : ⟨ α ⟩) → y ≺⟨ α ⟩ a) , _<_ , p , w , e , t
- where
-  _<_ : (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → _ ̇
-  (y , _) < (z , _) = y ≺⟨ α ⟩ z
-  p : is-prop-valued _<_
-  p (x , _) (y , _)  = Prop-valuedness α x y
-  w : is-well-founded _<_
-  w (x , l) = f x (Well-foundedness α x) l
-   where
-    f : ∀ x → is-accessible (underlying-order α) x → ∀ l → is-accessible _<_ (x , l)
-    f x (next .x s) l = next (x , l) (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
-  e : is-extensional _<_
-  e (x , l) (y , m) f g =
-   to-Σ-≡
-    (Extensionality α x y
-      (λ u n → f (u , Transitivity α u x a n l) n)
-      (λ u n → g (u , Transitivity α u y a n m) n) ,
-    Prop-valuedness α y a _ _)
-  t : is-transitive _<_
-  t (x , _) (y , _) (z , _) l m = Transitivity α x y z l m
-
-segment-inclusion : ∀ {U} (α : Ordinal U) (a : ⟨ α ⟩)
-                  → ⟨ α ↓ a ⟩ → ⟨ α ⟩
-segment-inclusion α a = pr₁
-
-\end{code}
-
 Maps of ordinals. A simulation gives a notion of embedding or
 ordinals, making them into a poset, as proved below.
 
@@ -369,6 +336,39 @@ antisymmetric.
 ⊴-antisym : ∀ {U} → is-univalent U → (α β : Ordinal U)
           → α ⊴ β → β ⊴ α → α ≡ β
 ⊴-antisym {U} ua α β l m = eqtoidₒ ua α β (bisimilar-equiv α β l m)
+
+\end{code}
+
+Given an ordinal α and a point x of its underlying set, any lower set
+α ↓ a of a point a : ⟨ α ⟩ forms a (sub-)ordinal:
+
+\begin{code}
+
+_↓_ : ∀ {U} (α : Ordinal U) → ⟨ α ⟩ → Ordinal U
+α ↓ a = (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) , _<_ , p , w , e , t
+ where
+  _<_ : (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → _ ̇
+  (y , _) < (z , _) = y ≺⟨ α ⟩ z
+  p : is-prop-valued _<_
+  p (x , _) (y , _)  = Prop-valuedness α x y
+  w : is-well-founded _<_
+  w (x , l) = f x (Well-foundedness α x) l
+   where
+    f : ∀ x → is-accessible (underlying-order α) x → ∀ l → is-accessible _<_ (x , l)
+    f x (next .x s) l = next (x , l) (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
+  e : is-extensional _<_
+  e (x , l) (y , m) f g =
+   to-Σ-≡
+    (Extensionality α x y
+      (λ u n → f (u , Transitivity α u x a n l) n)
+      (λ u n → g (u , Transitivity α u y a n m) n) ,
+    Prop-valuedness α y a _ _)
+  t : is-transitive _<_
+  t (x , _) (y , _) (z , _) l m = Transitivity α x y z l m
+
+segment-inclusion : ∀ {U} (α : Ordinal U) (a : ⟨ α ⟩)
+                  → ⟨ α ↓ a ⟩ → ⟨ α ⟩
+segment-inclusion α a = pr₁
 
 segment-inclusion-is-simulation : ∀ {U} (α : Ordinal U) (a : ⟨ α ⟩)
                                → is-simulation (α ↓ a) α (segment-inclusion α a)
