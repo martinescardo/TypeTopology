@@ -126,7 +126,7 @@ bother):
 \begin{code}
 
 eqtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V)
-           → (X Y : U ̇) → left-cancellable(eqtofun X Y)
+           → (X Y : U ̇) → left-cancellable(Eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
   q : yoneda-nat f is-equiv jef g p ≡ jeg
@@ -144,7 +144,7 @@ is-univalent-idtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V
                        → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)
-                                        (eqtofun X Y)
+                                        (Eqtofun X Y)
                                         (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
 UA-Id-embedding-Theorem : ∀ {U} → is-univalent U → (∀ U V → funext U V)

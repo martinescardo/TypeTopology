@@ -19,10 +19,16 @@ module Ordinals
        (fe : ∀ U V → funext U V)
        where
 
+OS : ∀ {U} → U ̇ → U ′ ̇
+OS {U} X = Σ \(_<_ : X → X → U ̇) → is-well-order _<_
+
 Ordinal : ∀ U → U ′ ̇
-Ordinal U = Σ \(X : U ̇) → Σ \(_<_ : X → X → U ̇) → is-well-order _<_
+Ordinal U = Σ \(X : U ̇) → OS X
 
 \end{code}
+
+An ordinal is a type equipped with ordinal structure. Such a type is
+automatically a set.
 
 NB. Perhaps we will eventually need to have two parameters U (the
 universe where the underlying type X lives) and V (the universe where
@@ -37,6 +43,9 @@ a set):
 
 ⟨_⟩ : ∀ {U} → Ordinal U → U ̇
 ⟨ X , _<_ , o ⟩ = X
+
+structure : ∀ {U} (α : Ordinal U) → OS ⟨ α ⟩
+structure (X , s) = s
 
 underlying-order : ∀ {U} (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
 underlying-order (X , _<_ , o) = _<_

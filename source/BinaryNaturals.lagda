@@ -617,10 +617,10 @@ module examples where
  example-pair : pair (5 , 6) ≡ 415
  example-pair = refl
 
- example17 : equiv-to-fun (≃-sym two-ℕ) 17 ≡ inr 8
+ example17 : eqtofun (≃-sym two-ℕ) 17 ≡ inr 8
  example17 = refl
 
- example18 : equiv-to-fun (≃-sym two-ℕ) 18 ≡ inl 9
+ example18 : eqtofun (≃-sym two-ℕ) 18 ≡ inl 9
  example18 = refl
 
 \end{code}

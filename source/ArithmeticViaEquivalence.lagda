@@ -235,8 +235,8 @@ left-cancellable:
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
 Fin-lc zero zero p = refl
-Fin-lc (succ m) zero p = 𝟘-elim (eqtofun _ _ p fzero)
-Fin-lc zero (succ n) p = 𝟘-elim (eqtofun _ _ (≃-sym p) fzero)
+Fin-lc (succ m) zero p = 𝟘-elim (eqtofun p fzero)
+Fin-lc zero (succ n) p = 𝟘-elim (eqtofun (≃-sym p) fzero)
 Fin-lc (succ m) (succ n) p = ap succ r
  where
   IH : Fin m ≃ Fin n → m ≡ n

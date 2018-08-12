@@ -187,3 +187,22 @@ TT-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
    (TT-choice , TT-choice-unchoice {U} {V} {W} {X} {Y} {A})
 
 \end{code}
+
+The domain of a function is equivalent to its graph.
+
+\begin{code}
+
+domain-equiv-to-graph : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                     → X ≃ (Σ \(y : Y) → Σ \(x : X) → f x ≡ y)
+domain-equiv-to-graph {U} {V} {X} {Y} f = g , ((h , gh) , (h , hg))
+ where
+  g : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  g x = f x , x , refl
+  h : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  h (.(f x) , x , refl) = x
+  gh : (σ : Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → g (h σ )≡ σ
+  gh (.(f x) , x , refl) = refl
+  hg : (x : X) → h (g x) ≡ x
+  hg x = refl
+
+\end{code}

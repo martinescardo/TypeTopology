@@ -212,3 +212,23 @@ UA-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
                                        (g , (λ x → i (g (f x)) x)))
 
 \end{code}
+
+If the identity function satisfies some property, then all
+equivalences do, assuming univalence. This property need not be
+subsingleton valued.
+
+\begin{code}
+
+ua-all-from-id : ∀ {U V} → is-univalent U
+           → (X : U ̇)
+           → (P : (Y : U ̇) → (X → Y) → V ̇)
+           → P X id
+           → (Y : U ̇) (f : X → Y) → is-equiv f → P Y f
+ua-all-from-id {U} {V} ua X P b Y f e = JEq ua X A b Y (f , e)
+ where
+  A : (Y : U ̇) → X ≃ Y → V ̇
+  A Y (f , _) = P Y f
+
+\end{code}
+
+TODO. The converse. From this we get univalence.

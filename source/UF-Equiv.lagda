@@ -34,15 +34,6 @@ section-retraction-equiv f hr hs = (hr , hs)
 _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
-equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
-equiv-to-fun = pr₁
-
-back-equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
-back-equiv-to-fun e = pr₁ (pr₁ (pr₂ e))
-
-is-equiv-equiv-to-fun : ∀ {U V} {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (equiv-to-fun e)
-is-equiv-equiv-to-fun = pr₂
-
 ideq : ∀ {U} (X : U ̇) → X ≃ X
 ideq X = id , ((id , λ x → refl) , (id , λ x → refl))
 
@@ -64,8 +55,17 @@ _■ = ideq
 Eq : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 Eq = _≃_
 
-eqtofun : ∀ {U V} (X : U ̇) (Y : V ̇) → X ≃ Y → X → Y
-eqtofun X Y (f , _) = f
+Eqtofun : ∀ {U V} (X : U ̇) (Y : V ̇) → X ≃ Y → X → Y
+Eqtofun X Y (f , _) = f
+
+eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
+eqtofun (f , _) = f
+
+is-equiv-eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (eqtofun e)
+is-equiv-eqtofun = pr₂
+
+back-eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
+back-eqtofun e = pr₁ (pr₁ (pr₂ e))
 
 idtoeq : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq X Y p = transport (Eq X) p (ideq X)
@@ -86,7 +86,7 @@ eqtoeq-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y)
 eqtoeq-agreement {U} X _ refl = refl
 
 idtofun : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
-idtofun X Y p = eqtofun X Y (idtoeq X Y p)
+idtofun X Y p = eqtofun (idtoeq X Y p)
 
 idtofun-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
 idtofun-agreement X Y refl = refl
@@ -487,6 +487,12 @@ NatΣ-equiv' A B ζ ise = ((s , ζs), (r , rζ))
   γ = pr₁(Σ-change-of-variables' A g (is-equiv-is-hae g e))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (is-equiv-is-hae g e))
+
+equiv-to-subsingleton : ∀ {U V} {X : U ̇} {Y : V ̇}
+                     → Y ≃ X
+                     → is-subsingleton X
+                     → is-subsingleton Y
+equiv-to-subsingleton e i = retract-of-subsingleton (equiv-retract-l e) i
 
 \end{code}
 

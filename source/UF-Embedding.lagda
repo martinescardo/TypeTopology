@@ -32,10 +32,10 @@ is-embedding-etofun = pr₂
 
 equiv-embedding : ∀ {U V} {X : U ̇} {Y : V ̇}
                → X ≃ Y → X ↪ Y
-equiv-embedding e = equiv-to-fun e ,
+equiv-embedding e = eqtofun e ,
                     is-equiv-is-embedding
-                     (equiv-to-fun e)
-                     (is-equiv-equiv-to-fun e)
+                     (eqtofun e)
+                     (is-equiv-eqtofun e)
 
 embedding-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
             → is-embedding f → left-cancellable f
@@ -228,13 +228,13 @@ module _ {U V} {X : U ̇} {Y : V ̇} where
  is-equiv-is-dense f e = retraction-is-dense f (is-equiv-has-section f e)
 
  equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
- equiv-dense-embedding e = equiv-to-fun e ,
+ equiv-dense-embedding e = eqtofun e ,
                             is-equiv-is-embedding
-                              (equiv-to-fun e)
-                              (is-equiv-equiv-to-fun e),
+                              (eqtofun e)
+                              (is-equiv-eqtofun e),
                             is-equiv-is-dense
-                              (equiv-to-fun e)
-                              (is-equiv-equiv-to-fun e)
+                              (eqtofun e)
+                              (is-equiv-eqtofun e)
 
  detofun : (X ↪ᵈ Y) → X → Y
  detofun = pr₁

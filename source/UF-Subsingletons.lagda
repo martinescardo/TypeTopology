@@ -268,14 +268,17 @@ identifications-from-singleton x = ((x , refl) , singleton-types-are-singletons)
 identifications-to : ∀ {U} {X : U ̇} → X → U ̇
 identifications-to x = Σ \y → y ≡ x
 
-×-prop-criterion-necessity : ∀ {U} {X Y : U ̇} → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
+×-prop-criterion-necessity : ∀ {U V} {X : U ̇} {Y : V ̇}
+                          → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity isp = (λ y x x' → ap pr₁ (isp (x , y) (x' , y ))) ,
                                  (λ x y y' → ap pr₂ (isp (x , y) (x  , y')))
 
-×-prop-criterion : ∀ {U} {X Y : U ̇} → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
+×-prop-criterion : ∀ {U V} {X : U ̇} {Y : V ̇}
+                → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
-×-is-prop : ∀ {U} {X Y : U ̇} → is-prop X → is-prop Y → is-prop(X × Y)
+×-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇}
+         → is-prop X → is-prop Y → is-prop(X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 subtype-of-prop-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
