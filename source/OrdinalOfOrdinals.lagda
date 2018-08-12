@@ -625,8 +625,29 @@ Any ordinal in O is embedded in O:
 
 \end{code}
 
+Any ordinal in O is a lower set of O:
 
-And here are some additional observations:
+\begin{code}
+
+ lowerset-of-O : (α : ⟨ O ⟩) → α ≃ₒ (O ↓ α)
+ lowerset-of-O α = f , p , ((g , fg) , (g , gf)) , q
+  where
+   f : ⟨ α ⟩ → ⟨ O ↓ α ⟩
+   f x = α ↓ x , x , refl
+   p : is-order-preserving α (O ↓ α) f
+   p x y l = (x , l) , ((iterated-↓ ua α y x l)⁻¹)
+   g : ⟨ O ↓ α ⟩ → ⟨ α ⟩
+   g (β , x , r) = x
+   fg : (σ : ⟨ O ↓ α ⟩) → f (g σ) ≡ σ
+   fg (.(α ↓ x) , x , refl) = refl
+   gf : (x : ⟨ α ⟩) → g (f x) ≡ x
+   gf x = refl
+   q : is-order-preserving (O ↓ α) α g
+   q (.(α ↓ x) , x , refl) (.(α ↓ x') , x' , refl) = ↓-⊲-lc ua α x x'
+
+\end{code}
+
+Here are some additional observations about the various maps of ordinals:
 
 \begin{code}
 
