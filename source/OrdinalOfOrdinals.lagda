@@ -3,7 +3,7 @@ Martin Escardo, August 2018
 The ordinal of ordinals. Based on the HoTT Book, with a few
 modifications in some of the arguments.
 
-This is an example where we are studyings sets only, but the
+This is an example where we are studying sets only, but the
 univalence axiom is needed.
 
 \begin{code}
@@ -155,7 +155,7 @@ is-initial-segment-is-prop {U} {V} α β f p i =
 
 \end{code}
 
-The simulations form a poset:
+The simulations make the ordinals into a poset:
 
 \begin{code}
 
