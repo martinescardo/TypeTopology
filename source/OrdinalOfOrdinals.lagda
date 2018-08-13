@@ -1,7 +1,7 @@
 Martin Escardo, August 2018
 
 The ordinal of ordinals. Based on the HoTT Book, with a few
-modifications in some of the arguments.
+modifications in some of the definitions and arguments.
 
 This is an example where we are studying sets only, but the
 univalence axiom is needed.
