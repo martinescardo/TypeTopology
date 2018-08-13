@@ -619,9 +619,9 @@ ordinals:
 \begin{code}
 
 ilcr : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
-    → is-initial-segment α β f
-    → left-cancellable f
-    → is-order-reflecting α β f
+     → is-initial-segment α β f
+     → left-cancellable f
+     → is-order-reflecting α β f
 ilcr α β f i c x y l = m
  where
   a : Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ y) × (f x' ≡ f x)
@@ -630,13 +630,13 @@ ilcr α β f i c x y l = m
   m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂(pr₂ a))) (pr₁(pr₂ a))
 
 ipr : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
-   → is-simulation α β f
-   → is-order-reflecting α β f
+    → is-simulation α β f
+    → is-order-reflecting α β f
 ipr α β f (i , p) = ilcr α β f i (iplc α β f (i , p))
 
 is-order-embedding-lc : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
-                     → is-order-embedding α β f
-                     → left-cancellable f
+                      → is-order-embedding α β f
+                      → left-cancellable f
 is-order-embedding-lc α β f (p , r) {x} {y} s = Extensionality α x y a b
  where
   a : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
@@ -655,8 +655,8 @@ is-order-embedding-lc α β f (p , r) {x} {y} s = Extensionality α x y a b
     j = back-transport (λ - → f u ≺⟨ β ⟩ -) s i
 
 is-order-embedding-is-embedding : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
-                               → is-order-embedding α β f
-                               → is-embedding f
+                                → is-order-embedding α β f
+                                → is-embedding f
 is-order-embedding-is-embedding α β f (p , r) =
  lc-embedding f
   (is-order-embedding-lc α β f (p , r))
