@@ -17,17 +17,17 @@ module OrdinalOfOrdinals
        where
 
 open import SpartanMLTT
+open import OrdinalNotions hiding (_≤_)
+open import Ordinals fe
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
-open import OrdinalNotions hiding (_≤_)
+open import UF-Retracts
 open import UF-Embedding
-open import Ordinals fe
-open import UF-Univalence
 open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Yoneda
-open import UF-Retracts
+open import UF-Univalence
 
 \end{code}
 
@@ -371,8 +371,7 @@ segment-⊴ : ∀ {U} (α : Ordinal U) (a : ⟨ α ⟩)
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
 ↓-⊴-lc : ∀ {U} (α : Ordinal U) (a b : ⟨ α ⟩)
-       → (α ↓ a)  ⊴  (α ↓ b )
-       → a ≼⟨ α ⟩ b
+       → (α ↓ a)  ⊴  (α ↓ b ) → a ≼⟨ α ⟩ b
 ↓-⊴-lc {U} α a b (f , s) u l = n
  where
   h : segment-inclusion α a ∼ segment-inclusion α b ∘ f
@@ -393,8 +392,7 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   n = back-transport (λ - → - ≺⟨ α ⟩ b) q m
 
 ↓-lc : ∀ {U} (α : Ordinal U) (a b : ⟨ α ⟩)
-     → α ↓ a ≡ α ↓ b
-     → a ≡ b
+     → α ↓ a ≡ α ↓ b → a ≡ b
 ↓-lc α a b p =
  Extensionality α a b
   (↓-⊴-lc α a b (transport (λ - → (α ↓ a) ⊴ -) p (⊴-refl (α ↓ a))))
@@ -660,9 +658,6 @@ is-order-embedding-is-embedding : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ �
 is-order-embedding-is-embedding α β f (p , r) =
  lc-embedding f
   (is-order-embedding-lc α β f (p , r))
-  (extensional-gives-is-set
-    (underlying-order β) fe
-    (Prop-valuedness β)
-    (Extensionality β))
+  (ordinal-gives-is-set (underlying-order β) fe (is-well-ordered β))
 
 \end{code}
