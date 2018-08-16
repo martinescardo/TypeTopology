@@ -174,8 +174,8 @@ idtoeqₛ by equivalence induction (the function JEq):
 So far we have used the hypotheses
 
    * S-equiv (to define _≡ₛ_),
-   * S-refl (to define idtoeqₛ),
-   * and ≡-S-structure (to define eqtoidₛ).
+   * S-refl (to define idtoeqₛ), and
+   * ≡-S-structure (to define eqtoidₛ).
 
 Next we use the remaining hypothesis S-transport to show that eqtoidₛ
 is a left-inverse of idtoeqₛ:
@@ -291,8 +291,8 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
  open gsip₀ U (U ⊔ V) ua (λ X → (X → R) → R)
  open gsip₁ (λ A B f e → (λ V → structure A (V ∘ f)) ≡ structure B)
             (λ A → refl)
-            (λ X m n p → p)
-            (λ A m t → refl-left-neutral)
+            (λ X τ σ p → p)
+            (λ A τ t → refl-left-neutral)
 
  fact : (A B : 𝕊)
       → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B)
@@ -310,8 +310,13 @@ Or in perhaps more appealing terms:
 
 \end{code}
 
-If we say that an equivalence f : X → Y is an ∞-homeomorphism when a
-"R-set" V : Y → R is σ-open precisely when its f-inverse image
+Again by function extensionality, structure preservation is equivalent
+to (V : Y → R) → τ(V ∘ f) ≡ σ V. We can read this, at least when R is
+the type Ω of truth-values, by saying that a set V : Y → R is σ-open
+precisely when its inverse image V ∘ f is τ-open.
+
+Thus, if we say that an equivalence f : X → Y is an ∞-homeomorphism
+when a "R-set" V : Y → R is σ-open precisely when its f-inverse image
 V ∘ f : X → R is τ-open, then the above says that two
 ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
 
