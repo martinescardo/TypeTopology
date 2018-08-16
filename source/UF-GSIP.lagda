@@ -68,10 +68,10 @@ projections:
 \begin{code}
 
  ⟨_⟩ : 𝕊 → U ̇
- ⟨ X , m ⟩ = X
+ ⟨ X , s ⟩ = X
 
  structure : (A : 𝕊) → S ⟨ A ⟩
- structure (X , m) = m
+ structure (X , s) = s
 
 \end{code}
 
@@ -95,9 +95,9 @@ projections:
   (2) When f is the identity equivalence, we want the data S-equiv to
       be given, and we name it S-refl.
 
-  (3) Moreover, when f : ⟨ X , m ⟩ → ⟨ X , n ⟩ is the identity
+  (3) Moreover, when f : ⟨ X , s ⟩ → ⟨ X , t ⟩ is the identity
       function, we want the data for (1) to give data for the equality
-      m ≡ n of structures. This is specified by the function
+      s ≡ t of structures. This is specified by the function
       ≡-S-structure.
 
   (4) We need a technical transport condition (which is not
@@ -113,12 +113,12 @@ These assumptions (1)-(4) are given as module parameters for gsip₁:
  module gsip₁
          (S-equiv : (A B : 𝕊) → (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
          (S-refl : (A : 𝕊) → S-equiv A A id (id-is-equiv ⟨ A ⟩))
-         (≡-S-structure : (X : U ̇) (m n : S X) → S-equiv (X , m) (X , n) id (id-is-equiv X) → m ≡ n)
-         (S-transport : (A : 𝕊) (m : S ⟨ A ⟩) (t : S-equiv (⟨ A ⟩ , structure A) (⟨ A ⟩ , m) id (id-is-equiv ⟨ A ⟩))
+         (≡-S-structure : (X : U ̇) (s t : S X) → S-equiv (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
+         (S-transport : (A : 𝕊) (s : S ⟨ A ⟩) (υ : S-equiv (⟨ A ⟩ , structure A) (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
                       → transport (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ ⟨ A ⟩ , - ⟩))
-                               (≡-S-structure ⟨ A ⟩ (structure A) m t)
+                               (≡-S-structure ⟨ A ⟩ (structure A) s υ)
                                (S-refl A)
-                      ≡ t)
+                      ≡ υ)
         where
 
 \end{code}
@@ -162,12 +162,12 @@ idtoeqₛ by equivalence induction (the function JEq):
 
   private
     Ψ : (A : 𝕊) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ′ ⊔ V ̇
-    Ψ A Y (f , e) = (m : S Y) (t : S-equiv A (Y , m) f e) → A ≡ (Y , m)
+    Ψ A Y (f , e) = (s : S Y) → S-equiv A (Y , s) f e → A ≡ (Y , s)
     ψ : (A : 𝕊) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
-    ψ A m t = to-Σ-≡' (≡-S-structure ⟨ A ⟩ (structure A) m t)
+    ψ A s υ = to-Σ-≡' (≡-S-structure ⟨ A ⟩ (structure A) s υ)
 
   eqtoidₛ : (A B : 𝕊) → A ≃ₛ B → A ≡ B
-  eqtoidₛ A B (f , e , t) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) t
+  eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) υ
 
 \end{code}
 
@@ -182,44 +182,44 @@ is a left-inverse of idtoeqₛ:
 
 \begin{code}
 
-  idtoeq-eqtoidₛ : (A B : 𝕊) (ψ : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ψ) ≡ ψ
-  idtoeq-eqtoidₛ A B (f , e , t) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) t
+  idtoeq-eqtoidₛ : (A B : 𝕊) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ≡ ε
+  idtoeq-eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) υ
    where
     Φ : (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⊔ V ̇
     Φ Y (f , e) = (m : S Y)
-                  (t : S-equiv A (Y , m) f e)
-                → idtoeqₛ A (Y , m) (eqtoidₛ A (Y , m) (f , e , t)) ≡ f , e , t
+                  (υ : S-equiv A (Y , m) f e)
+                → idtoeqₛ A (Y , m) (eqtoidₛ A (Y , m) (f , e , υ)) ≡ f , e , υ
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
-    φ m t = γ
+    φ s υ = z
      where
       A' : 𝕊
-      A' = ⟨ A ⟩ , m
+      A' = ⟨ A ⟩ , s
       observation₀ : A ≡ A'
-      observation₀ = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) m t
+      observation₀ = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) s υ
       observation₁ : S-equiv A A' id (id-is-equiv ⟨ A ⟩)
-      observation₁ = t
+      observation₁ = υ
       refl' : A ≃ₛ A'
-      refl' = id , id-is-equiv ⟨ A ⟩ , t
-      observation₂ : eqtoidₛ A A' refl' ≡ JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) m t
+      refl' = id , id-is-equiv ⟨ A ⟩ , υ
+      observation₂ : eqtoidₛ A A' refl' ≡ JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) s υ
       observation₂ = refl
-      p : structure A ≡ m
-      p = ≡-S-structure ⟨ A ⟩ (structure A) m t
-      q : JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) m t ≡ to-Σ-≡' p
-      q = ap (λ h → h m t) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A))
+      p : structure A ≡ s
+      p = ≡-S-structure ⟨ A ⟩ (structure A) s υ
+      q : JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) s υ ≡ to-Σ-≡' p
+      q = ap (λ h → h s υ) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A))
       r : idtoeqₛ A A' (eqtoidₛ A A' refl') ≡ idtoeqₛ A A' (to-Σ-≡' p)
       r = ap (idtoeqₛ A A') q
-      s : structure A ≡ m → S-equiv A A' id (id-is-equiv ⟨ A ⟩)
-      s p = transport (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ ⟨ A ⟩ , - ⟩)) p (S-refl A)
-      u : s p ≡ t
-      u = S-transport A m t
-      v : id , id-is-equiv ⟨ A ⟩ , s p ≡ refl'
-      v = to-Σ-≡' (to-Σ-≡' u)
-      w : (p : structure A ≡ m) → idtoeqₛ A A' (to-Σ-≡' p) ≡ id , id-is-equiv ⟨ A ⟩ , s p
-      w refl = refl
-      x : idtoeqₛ A A' (to-Σ-≡' p) ≡ refl'
-      x = w p ∙ v
-      γ : idtoeqₛ A A' (eqtoidₛ A A' refl') ≡ refl'
-      γ = r ∙ x
+      u : structure A ≡ s → S-equiv A A' id (id-is-equiv ⟨ A ⟩)
+      u p = transport (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ ⟨ A ⟩ , - ⟩)) p (S-refl A)
+      v : u p ≡ υ
+      v = S-transport A s υ
+      w : id , id-is-equiv ⟨ A ⟩ , u p ≡ refl'
+      w = to-Σ-≡' (to-Σ-≡' v)
+      x : (p : structure A ≡ s) → idtoeqₛ A A' (to-Σ-≡' p) ≡ id , id-is-equiv ⟨ A ⟩ , u p
+      x refl = refl
+      y : idtoeqₛ A A' (to-Σ-≡' p) ≡ refl'
+      y = x p ∙ w
+      z : idtoeqₛ A A' (eqtoidₛ A A' refl') ≡ refl'
+      z = r ∙ y
 
 \end{code}
 
