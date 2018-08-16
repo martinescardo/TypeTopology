@@ -252,8 +252,8 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
  open gsip₀ U U ua (λ X → X → X → X)
  open gsip₁ (λ A B f e → (λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x')))
             (λ A → refl)
-            (λ X m n t → t)
-            (λ A m t → refl-left-neutral)
+            (λ X m n → id)
+            (λ A m υ → refl-left-neutral)
 
  fact : (A B : 𝕊)
       → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ x x' → f (structure A x x'))
@@ -291,8 +291,8 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
  open gsip₀ U (U ⊔ V) ua (λ X → (X → R) → R)
  open gsip₁ (λ A B f e → (λ V → structure A (V ∘ f)) ≡ structure B)
             (λ A → refl)
-            (λ X τ σ p → p)
-            (λ A τ t → refl-left-neutral)
+            (λ X τ σ → id)
+            (λ A τ υ → refl-left-neutral)
 
  fact : (A B : 𝕊)
       → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B)
