@@ -97,10 +97,10 @@ is-order-equiv-is-prop α β f = ×-is-prop
                                     (λ e → is-order-preserving-is-prop β α
                                               (back-eqtofun (f , e))))
 
-iplc : ∀ {U V} (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
-     → is-simulation α β f
-     → left-cancellable f
-iplc α β f (i , p) {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
+simulation-lc : ∀ {U V} (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+              → is-simulation α β f
+              → left-cancellable f
+simulation-lc α β f (i , p) {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
  where
   φ : ∀ x y → is-accessible (underlying-order α) x → is-accessible (underlying-order α) y
     → f x ≡ f y → x ≡ y
@@ -144,7 +144,7 @@ is-initial-segment-is-prop {U} {V} α β f p i =
      c : f x' ≡ f x''
      c = r ∙ r' ⁻¹
      a : x' ≡ x''
-     a = iplc α β f (i , p) c
+     a = simulation-lc α β f (i , p) c
      b : transport (λ - →  (- ≺⟨ α ⟩ x) × (f - ≡ y)) a (m , r) ≡ m' , r'
      b = ×-is-prop
           (Prop-valuedness α x'' x)
@@ -248,9 +248,9 @@ equiv-bisimilar α β (f , p , e , q) = (f , order-equiv-simulation α β f (p ,
                                       (g , order-equiv-simulation β α g (q , d , p))
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
-  g = pr₁ (≃-sym (f , e))
+  g = eqtofun (≃-sym (f , e))
   d : is-equiv g
-  d = pr₂ (≃-sym (f , e))
+  d = is-equiv-eqtofun (≃-sym (f , e))
 
 bisimilar-equiv : ∀ {U} (α β : Ordinal U)
                 → α ⊴ β → β ⊴ α → α ≃ₒ β
@@ -266,7 +266,7 @@ bisimilar-equiv α β (f , s) (g , t) = f , pr₂ s , qinv-is-equiv f (g , gf , 
   gf = at-most-one-simulation α α (g ∘ f) id gfs (pr₂ (⊴-refl α))
 
 ≃ₒ-refl : ∀ {U} (α : Ordinal U) → α ≃ₒ α
-≃ₒ-refl α = id , (λ x y → id) , pr₂ (ideq ⟨ α ⟩) , (λ x y → id)
+≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
 
 idtoeqₒ : ∀ {U} (α β : Ordinal U) → α ≡ β → α ≃ₒ β
 idtoeqₒ α .α refl = ≃ₒ-refl α
@@ -280,7 +280,7 @@ eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e
         → is-order-preserving α (Y , σ) (eqtofun e)
         → is-order-preserving (Y , σ) α (back-eqtofun e)
         → α ≡ (Y , σ)
-  a : A ⟨ α ⟩ (ideq ⟨ α ⟩)
+  a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
   a σ φ ψ = g
    where
     b : ∀ x x' → (x ≺⟨ α ⟩ x') ≡ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
@@ -296,8 +296,8 @@ eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e
     g : α ≡ (⟨ α ⟩ , σ)
     g = to-Σ-≡' d
 
-UAₒ : ∀ {U} → is-univalent U → (α β : Ordinal U)
-    → is-equiv (idtoeqₒ α β)
+UAₒ : ∀ {U} → is-univalent U
+   → (α β : Ordinal U) → is-equiv (idtoeqₒ α β)
 UAₒ {U} ua α = nat-retraction-is-equiv α
                  (idtoeqₒ α)
                  (λ β → eqtoidₒ ua α β , η β)
@@ -630,7 +630,7 @@ ilcr α β f i c x y l = m
 ipr : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
     → is-simulation α β f
     → is-order-reflecting α β f
-ipr α β f (i , p) = ilcr α β f i (iplc α β f (i , p))
+ipr α β f (i , p) = ilcr α β f i (simulation-lc α β f (i , p))
 
 is-order-embedding-lc : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
                       → is-order-embedding α β f

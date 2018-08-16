@@ -2,7 +2,7 @@
    constructive univalent mathematics
    written in Agda
 
-   Tested with Agda 2.5.4.1
+   Tested with Agda 2.5.4.1 and 2.5.3
 
    Martin Escardo, 2010--
    Continuously evolving.
@@ -339,5 +339,5 @@ import UF-Yoneda
 import UnivalenceFromScratch
 import WellOrderArithmetic
 import WLPO
-
+import UF-GSIP -- experimental
 \end{code}

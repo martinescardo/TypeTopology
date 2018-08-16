@@ -22,16 +22,13 @@ idtoeq-eqtoid : ∀ {U} (ua : is-univalent U)
               → (X Y : U ̇) (e : X ≃ Y) → idtoeq X Y (eqtoid ua X Y e) ≡ e
 idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
 
-eqtoid' : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y
-eqtoid' ua X Y = pr₁(pr₂(ua X Y))
-
 eqtoid-idtoeq : ∀ {U} (ua : is-univalent U)
-              → (X Y : U ̇) (p : X ≡ Y) →  eqtoid' ua X Y (idtoeq X Y p) ≡ p
-eqtoid-idtoeq ua X Y = pr₂(pr₂(ua X Y))
-
-eqtoid-idtoeq' : ∀ {U} (ua : is-univalent U)
               → (X Y : U ̇) (p : X ≡ Y) →  eqtoid ua X Y (idtoeq X Y p) ≡ p
-eqtoid-idtoeq' ua X Y = pr₁(pr₂ (is-equiv-qinv (idtoeq X Y) (ua X Y)))
+eqtoid-idtoeq ua X Y = pr₁(pr₂ (is-equiv-qinv (idtoeq X Y) (ua X Y)))
+
+eqtoid-refl : ∀ {U} (ua : is-univalent U) (X : U ̇)
+           → eqtoid ua X X (≃-refl X) ≡ refl
+eqtoid-refl ua X = eqtoid-idtoeq ua X X refl
 
 idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq' X Y p = (Idtofun p , transport-is-equiv p)
@@ -73,7 +70,7 @@ show that the identity equivalences satisfy it.
 
 Eq-induction : (U V : Universe) → (U ⊔ V)′ ̇
 Eq-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
-                 → A X (ideq X) → (Y : U ̇) (e : X ≃ Y) → A Y e
+                 → A X (≃-refl X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 
 JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
 JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
@@ -93,7 +90,7 @@ Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
 Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
 Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
-                 → ((X : U ̇) → A X X (ideq X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
+                 → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
 
 JEq' : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
 JEq' ua A f X = JEq ua X (λ Y → A X Y) (f X)
@@ -138,22 +135,22 @@ JEq-converse {U} jeq' X = γ
      B : (T : U ̇) → X ≃ T → V ̇
      B T q = Σ \(f : A Y p → A T q) → left-cancellable f
      C : (T : U ̇) → X ≃ T → V ̇
-     C T p = Σ \(f : A T p → A X (ideq X)) → left-cancellable f
-     b : B X (ideq X)
+     C T p = Σ \(f : A T p → A X (≃-refl X)) → left-cancellable f
+     b : B X (≃-refl X)
      b = jeq' X C ((λ a → a) , λ p → p) _ p
 
-   h : (b : A X (ideq X)) {Y : U ̇} (p : X ≃ Y)
-     → Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (ideq X) p) b
+   h : (b : A X (≃-refl X)) {Y : U ̇} (p : X ≃ Y)
+     → Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (≃-refl X) p) b
    h b p = jeq' X B (b , refl) _ p
     where
      B : (Y : U ̇) (p : X ≃ Y) → V ̇
-     B Y p = Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (ideq X) p) b
+     B Y p = Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (≃-refl X) p) b
 
-   jeq : A X (ideq X) → (Y : U ̇) (p : X ≃ Y) → A Y p
+   jeq : A X (≃-refl X) → (Y : U ̇) (p : X ≃ Y) → A Y p
    jeq b Y p = pr₁ (h b p)
 
-   jeq-comp : (b : A X (ideq X)) → jeq b X (ideq X) ≡ b
-   jeq-comp b = pr₂ (g (ideq X) (ideq X)) (pr₂ (h b (ideq X)))
+   jeq-comp : (b : A X (≃-refl X)) → jeq b X (≃-refl X) ≡ b
+   jeq-comp b = pr₂ (g (≃-refl X) (≃-refl X)) (pr₂ (h b (≃-refl X)))
 
 \end{code}
 
@@ -164,7 +161,7 @@ JEq-converse {U} jeq' X = γ
 
   φ : (Y : U ̇) → X ≃ Y → X ≡ Y
   φ = jeq {U ′} (λ Y p → X ≡ Y) refl
-  φc : φ X (ideq X) ≡ refl
+  φc : φ X (≃-refl X) ≡ refl
   φc = jeq-comp {U ′} (λ Y p → X ≡ Y) refl
   idtoeqφ : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (φ Y e) ≡ e
   idtoeqφ = jeq {U} (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
@@ -199,7 +196,7 @@ is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
  where
   A : (Y : U ̇) → X ≃ Y → U ̇
   A Y (f , ise) = is-vv-equiv f
-  b : A X (ideq X)
+  b : A X (≃-refl X)
   b = identifications-to-singleton
   g : (Y : U ̇) (e : X ≃ Y) → A Y e
   g = JEq ua X A b

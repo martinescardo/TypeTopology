@@ -34,8 +34,11 @@ section-retraction-equiv f hr hs = (hr , hs)
 _≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
-ideq : ∀ {U} (X : U ̇) → X ≃ X
-ideq X = id , ((id , λ x → refl) , (id , λ x → refl))
+id-is-equiv : ∀ {U} (X : U ̇) → is-equiv (id {U} {X})
+id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
+
+≃-refl : ∀ {U} (X : U ̇) → X ≃ X
+≃-refl X = id , id-is-equiv X
 
 ≃-trans : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 ≃-trans {U} {V} {W} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
@@ -50,7 +53,7 @@ _≃⟨_⟩_ : ∀ {U V W} (X : U ̇) {Y : V ̇} {Z : W ̇} → X ≃ Y → Y �
 _ ≃⟨ d ⟩ e = ≃-trans d e
 
 _■ : ∀ {U} (X : U ̇) → X ≃ X
-_■ = ideq
+_■ = ≃-refl
 
 Eq : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 Eq = _≃_
@@ -68,10 +71,10 @@ back-eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
 
 idtoeq : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
-idtoeq X Y p = transport (Eq X) p (ideq X)
+idtoeq X Y p = transport (Eq X) p (≃-refl X)
 
 idtoeq-traditional : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
-idtoeq-traditional X _ refl = ideq X
+idtoeq-traditional X _ refl = ≃-refl X
 
 \end{code}
 
@@ -136,7 +139,7 @@ Equivalence of transports.
 \begin{code}
 
 transport-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → is-equiv (transport A p)
-transport-is-equiv refl =  pr₂ (ideq _)
+transport-is-equiv refl = id-is-equiv _
 
 back-transport-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → is-equiv (back-transport A p)
 back-transport-is-equiv p = transport-is-equiv (p ⁻¹)

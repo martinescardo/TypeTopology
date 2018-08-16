@@ -172,7 +172,7 @@ then univalence holds.
   ε x = refl
 
 isPIE-is-equiv : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f → is-equiv f
-isPIE-is-equiv = PIE-induction is-equiv (pr₂ (ideq _))
+isPIE-is-equiv = PIE-induction is-equiv (pr₂ (≃-refl _))
 
 is-equiv-isPIE-UA : ∀ {U} → ({X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f) → is-univalent U
 is-equiv-isPIE-UA {U} φ X = γ

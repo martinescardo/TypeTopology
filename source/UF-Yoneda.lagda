@@ -133,7 +133,7 @@ universal-element-is-the-only-element {U} {V} {X} {A} (x , a) u (y , b) = to-Σ-
 unique-element-is-universal-element : ∀ {U V} {X : U ̇} (A : X → V ̇) (σ : Σ A)
                                     → is-the-only-element σ
                                     → is-universal-element σ
-unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡'' (φ(y , b))
+unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡ (φ(y , b))
 
 \end{code}
 
@@ -435,11 +435,11 @@ univalence-via-singletons {U} = (f , g)
   f ua X = representable-singleton (X , (idtoeq X , ua X))
 
   g : ((X : U ̇) → is-singleton (Σ (Eq X))) → is-univalent U
-  g φ X = universality-equiv X (ideq X)
+  g φ X = universality-equiv X (≃-refl X)
                                 (unique-element-is-universal-element
                                        (Eq X)
-                                       (X , ideq X)
-                                       (is-singleton-is-prop (φ X) (X , ideq X)))
+                                       (X , ≃-refl X)
+                                       (is-singleton-is-prop (φ X) (X , ≃-refl X)))
 
 \end{code}
 
@@ -667,7 +667,7 @@ We need this elsewhere:
 \begin{code}
 
 idtoeq-bis : ∀ {U} (X : U ̇) → Nat (Id X) (Eq X)
-idtoeq-bis X = yoneda-nat X (Eq X) (ideq X)
+idtoeq-bis X = yoneda-nat X (Eq X) (≃-refl X)
 
 Idtofun' : ∀ {U} (X : U ̇) → Nat (Id X) (λ Y → X → Y)
 Idtofun' X = yoneda-nat X (λ Y → X → Y) id

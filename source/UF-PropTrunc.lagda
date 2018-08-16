@@ -90,16 +90,16 @@ propositional-truncations-exist' U = propositional-truncations-exist U U
 module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist' U) where
 
  ∥_∥ : ∀ {U} → U ̇ → U ̇
- ∥ X ∥ = pr₁ (pt (universeOf X) X)
+ ∥ X ∥ = pr₁ (pt (universe-of X) X)
 
  ptisp : ∀ {U} {X : U ̇} → is-prop(∥ X ∥)
- ptisp {U} {X} = pr₁(pr₂(pt (universeOf X) X))
+ ptisp {U} {X} = pr₁(pr₂(pt (universe-of X) X))
 
  ∣_∣ : ∀ {U} {X : U ̇} → X → ∥ X ∥
- ∣ x ∣ = pr₁(pr₂(pr₂(pt (universeOf(typeOf x)) (typeOf x)))) x
+ ∣ x ∣ = pr₁(pr₂(pr₂(pt (universe-of(type-of x)) (type-of x)))) x
 
  ptrec : ∀ {U} {X Y : U ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
- ptrec {U} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universeOf X) X))) Y isp f
+ ptrec {U} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
 
  ptfunct : ∀ {U} {X Y : U ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ptfunct f = ptrec ptisp (λ x → ∣ f x ∣)

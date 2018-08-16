@@ -299,7 +299,7 @@ Standard syntax for equality chain reasoning:
 _≡⟨_⟩_ : ∀ {U} {X : U ̇} (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
 _ ≡⟨ p ⟩ q = p ∙ q
 
-_∎ : ∀ {U} {X : U ̇} → (x : X) → x ≡ x
+_∎ : ∀ {U} {X : U ̇} (x : X) → x ≡ x
 _∎ _ = refl
 
 \end{code}
@@ -340,11 +340,11 @@ in function definitions.
 
 \begin{code}
 
-typeOf : ∀ {U} {X : U ̇} → X → U ̇
-typeOf {U} {X} x = X
+type-of : ∀ {U} {X : U ̇} → X → U ̇
+type-of {U} {X} x = X
 
-universeOf : ∀ {U} (X : U ̇) → Universe
-universeOf {U} X = U
+universe-of : ∀ {U} (X : U ̇) → Universe
+universe-of {U} X = U
 
 domain dom : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ̇
 domain {U} {V} {X} {Y} f = X
@@ -637,6 +637,26 @@ succ-injective = ap pred
 
 \end{code}
 
+We use the following to indicate the type of a subterm:
+
+\begin{code}
+
+-id : ∀ {U} (X : U ̇) → X → X
+-id X x = x
+
+syntax -id X x = x ∶ X
+
+\end{code}
+
+And the following to make explicit the type of hypotheses:
+
+\begin{code}
+
+have : ∀ {U V} {A : U ̇} {B : V ̇} → A → B → B
+have _ y = y
+
+\end{code}
+
 Operator fixity and precedences.
 
 \begin{code}
@@ -655,5 +675,6 @@ infixr 0 _≡⟨_⟩_
 infixl 2 _∙_
 infix  4  _∼_
 infixr 31 _⊕_
+infixl 0 -id
 
 \end{code}
