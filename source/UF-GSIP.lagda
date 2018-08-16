@@ -257,7 +257,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
  fact : (A B : 𝕊)
       → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ x x' → f (structure A x x'))
-                                                      ≡ (λ x x' → structure B (f x) (f x')))
+                                                       ≡ (λ x x' → structure B (f x) (f x')))
  fact A B = idtoeqₛ A B , uaₛ A B
 
 \end{code}
@@ -316,7 +316,7 @@ the type Ω of truth-values, by saying that a set V : Y → R is σ-open
 precisely when its inverse image V ∘ f is τ-open.
 
 Thus, if we say that an equivalence f : X → Y is an ∞-homeomorphism
-when a "R-set" V : Y → R is σ-open precisely when its f-inverse image
+when an "R-set" V : Y → R is σ-open precisely when its f-inverse image
 V ∘ f : X → R is τ-open, then the above says that two
 ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
 
