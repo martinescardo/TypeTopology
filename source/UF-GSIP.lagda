@@ -24,7 +24,7 @@ module UF-GSIP where
 
 \end{code}
 
-We consider the type 𝕊 of types X : U ̇ equipped with structure m : S X,
+We consider the type 𝕊 of types X : U ̇ equipped with structure s : S X,
 where the universe U is univalent and S : U ̇ → V ̇ is a parameter:
 
 \begin{code}
@@ -84,7 +84,7 @@ projections:
       relating the data specified by the functions ≡-S-structure and
       S-refl.
 
-These assumptions (1)-(4) are given as module parameters for gsip₁:
+ These assumptions (1)-(4) are given as module parameters for gsip₁:
 
 \begin{code}
 
@@ -101,8 +101,8 @@ These assumptions (1)-(4) are given as module parameters for gsip₁:
 
 \end{code}
 
- Under these assumptions, we show that equality in 𝕊 is equivalent
- to _≃ₛ_ defined as follows:
+  Under these assumptions, we show that equality in 𝕊 is equivalent
+  to _≃ₛ_ defined as follows:
 
 \begin{code}
 
@@ -204,7 +204,7 @@ These assumptions (1)-(4) are given as module parameters for gsip₁:
   Being a natural left-inverse of idtoeqₛ, the function eqtoidₛ is
   also a right-inverse, by a general property of the identity type
   (namely the one called nat-retraction-is-equiv in our development
-  (in the module UF-Yoneda):
+  (in the module UF-Yoneda)):
 
 \begin{code}
 
@@ -213,12 +213,13 @@ These assumptions (1)-(4) are given as module parameters for gsip₁:
             (idtoeqₛ A)
             (λ B → eqtoidₛ A B , idtoeq-eqtoidₛ A B)
 
-  eqtoid-idtoeqₛ : (A B : 𝕊) (p : A ≡ B) →  eqtoidₛ A B (idtoeqₛ A B p) ≡ p
+  eqtoid-idtoeqₛ : (A B : 𝕊) (p : A ≡ B) → eqtoidₛ A B (idtoeqₛ A B p) ≡ p
   eqtoid-idtoeqₛ A B = pr₁(pr₂ (is-equiv-qinv (idtoeqₛ A B) (uaₛ A B)))
 
 \end{code}
 
-This completes the proof of the abstract SIP considered here.
+  This completes the proof of the abstract SIP considered here.
+
 
 We now consider some concrete examples to illustrate how this works in
 practice.
@@ -302,6 +303,37 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
  V ∘ f : X → R is τ-open, then the above says that two
  ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
 
+Another example generalizes metric spaces (whem R are the reals) and
+posets (when R is Ω):
+
+\begin{code}
+
+module ∞-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
+
+ open gsip₀ U (U ⊔ V) ua (λ X → X → X → R)
+ open gsip₁ (λ A B f e → structure A ≡ (λ x x' → structure B (f x) (f x')))
+            (λ A → refl)
+            (λ X d e → id)
+            (λ A s υ → refl-left-neutral)
+
+ fact : (A B : 𝕊)
+      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x')))
+ fact A B = idtoeqₛ A B , uaₛ A B
+
+\end{code}
+
+ Or in perhaps more appealing terms:
+
+\begin{code}
+
+ fact' : (X Y : U ̇) (d : X → X → R) (e : Y → Y → R)
+       → ((X , d) ≡ (Y , e)) ≃ Σ \(f : X → Y) → is-equiv f × (d ≡ (λ x x' → e (f x) (f x')))
+ fact' X Y σ τ = fact (X , σ) (Y , τ)
+
+\end{code}
+
+ Notice that here the f equivalences are the isometries (metric case)
+ or order preserving-reflecting maps (ordered case).
 
 Perhaps it is possible to derive the SIP for 1-categories from the
 above SIP for types equipped with structure. But this is not the point
