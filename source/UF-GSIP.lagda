@@ -303,7 +303,7 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
  V ∘ f : X → R is τ-open, then the above says that two
  ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
 
-Another example generalizes metric spaces (whem R are the reals) and
+Another example generalizes metric spaces (when R is the reals) and
 posets (when R is Ω):
 
 \begin{code}
