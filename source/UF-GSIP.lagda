@@ -12,7 +12,7 @@ The abstract development is followed by some concrete examples.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
 open import UF-Base
@@ -21,28 +21,6 @@ open import UF-Univalence
 open import UF-Yoneda
 
 module UF-GSIP where
-
-\end{code}
-
-For the moment we postulate the computation rule for equivalence
-induction JEq (module UF-Univalence) because we haven't proved it yet,
-but it is known to hold (and we have the material needed to show it):
-
-\begin{code}
-
-postulate
- JEq-comp : ∀ {U} (ua : is-univalent U)
-           {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
-        → JEq ua X A b X (≃-refl X) ≡ b
-{-
-JEq-comp ua X A b = γ
- where
-  γ : transport (A X)
-        (idtoeq-eqtoid ua X X (≃-refl X))
-        (Jbased X (λ Y p → A Y (idtoeq X Y p)) b X (eqtoid ua X X (≃-refl X)))
-    ≡ b
-  γ = {!!}
--}
 
 \end{code}
 

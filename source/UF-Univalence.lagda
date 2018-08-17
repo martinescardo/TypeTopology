@@ -11,6 +11,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
 open import UF-LeftCancellable
+open import UF-Subsingletons-Equiv
 
 is-univalent : ∀ U → U ′ ̇
 is-univalent U = (X Y : U ̇) → is-equiv(idtoeq X Y)
@@ -72,8 +73,8 @@ Eq-induction : (U V : Universe) → (U ⊔ V)′ ̇
 Eq-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
                  → A X (≃-refl X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 
-JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
-JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
+private JEq' : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
+JEq' {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
  where
   A' : (Y : U ̇) → X ≡ Y → V ̇
   A' Y p = A Y (idtoeq X Y p)
@@ -84,18 +85,9 @@ JEq {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
   g : A Y (idtoeq X Y (eqtoid ua X Y e))
   g = f' Y (eqtoid ua X Y e)
 
-Eq-transport : ∀ {U} → is-univalent U
-            → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
-Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
-
-Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
-Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
-                 → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
-
-JEq' : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
-JEq' ua A f X = JEq ua X (λ Y → A X Y) (f X)
-
 \end{code}
+
+A public improved version JEq of JEq' is provided below.
 
 Conversely, if the induction principle for equivalences holds, then
 univalence follows. In this construction, the parametric universe V is
@@ -103,32 +95,31 @@ instantiated to the universe U and its successor U ′ only. This was
 produced 18th May 2018 while visiting the Hausdorff Research Institute
 for Mathematics in Bonn.
 
+The following is an adaptation of an 'improvement method' I learned
+from Peter Lumsdaine, 7 July 2017, when we were both visiting the
+Newton Institute. His original version translated to Agda is here:
+http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
+
+Unfortunately, we couldn't use his result off-the-shelf. The main
+difference is that Peter works with a global identity system on all
+types (of a universe), whereas we work with an identity system on a
+single type, namely a universe. As a result, we can't define the
+type of left-cancellable maps using the notion of equality given by
+the identity system, as Peter does. Instead, we define it using the
+native (Martin-Loef) identity type, and with this little
+modification, Peter's argument goes through for the situation
+considered here.
+
 \begin{code}
 
-JEq-converse : ∀ {U} → (∀ {V} → Eq-induction U V) → is-univalent U
-JEq-converse {U} jeq' X = γ
+JEq-improve : ∀ {U V}
+  → (jeq' : Eq-induction U V)
+  → Σ \(jeq : Eq-induction U V)
+            → (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
+            → jeq X A b X (≃-refl X) ≡ b
+JEq-improve {U} {V} jeq' = jeq , jeq-comp
  where
-
-\end{code}
-
-  The following is an adaptation of an 'improvement method' I learned
-  from Peter Lumsdaine, 7 July 2017, when we were both visiting the
-  Newton Institute. His original version translated to Agda is here:
-  http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
-
-  Unfortunately, we couldn't use his result off-the-shelf. The main
-  difference is that Peter works with a global identity system on all
-  types (of a universe), whereas we work with an identity system on a
-  single type, namely a universe. As a result, we can't define the
-  type of left-cancellable maps using the notion of equality given by
-  the identity system, as Peter does. Instead, we define it using the
-  native (Martin-Loef) identity type, and with this little
-  modification, Peter's argument goes through for the situation
-  considered here.
-
-\begin{code}
-
-  module _ {V} (A : (Y : U ̇) → X ≃ Y → V ̇) where
+  module _ (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) where
    g : {Y Z : U ̇} (p : X ≃ Y) (q : X ≃ Z) → Σ \(f : A Y p → A Z q) → left-cancellable f
    g {Y} {Z} p q = jeq' X B b Z q
     where
@@ -154,17 +145,25 @@ JEq-converse {U} jeq' X = γ
 
 \end{code}
 
-  This is the end of Peter's construction, which we apply to our
-  problem as follows:
+This is the end of Peter's construction, which we apply to our problem
+as follows:
 
 \begin{code}
 
+JEq-converse : ∀ {U} → (∀ {V} → Eq-induction U V) → is-univalent U
+JEq-converse {U} jeq' X = γ
+ where
+  jeq : ∀ {V} → Eq-induction U V
+  jeq {V} = pr₁ (JEq-improve (jeq' {V}))
+  jeq-comp : ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
+          → jeq X A b X (≃-refl X) ≡ b
+  jeq-comp {V} = pr₂ (JEq-improve (jeq' {V}))
   φ : (Y : U ̇) → X ≃ Y → X ≡ Y
-  φ = jeq {U ′} (λ Y p → X ≡ Y) refl
+  φ = jeq X (λ Y p → X ≡ Y) refl
   φc : φ X (≃-refl X) ≡ refl
-  φc = jeq-comp {U ′} (λ Y p → X ≡ Y) refl
+  φc = jeq-comp X (λ Y p → X ≡ Y) refl
   idtoeqφ : (Y : U ̇) (e : X ≃ Y) → idtoeq X Y (φ Y e) ≡ e
-  idtoeqφ = jeq {U} (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
+  idtoeqφ = jeq X (λ Y e → idtoeq X Y (φ Y e) ≡ e) (ap (idtoeq X X) φc)
   φidtoeq : (Y : U ̇) (p : X ≡ Y) → φ Y (idtoeq X Y p) ≡ p
   φidtoeq X refl = φc
   γ : (Y : U ̇) → is-equiv(idtoeq X Y)
@@ -172,7 +171,33 @@ JEq-converse {U} jeq' X = γ
 
 \end{code}
 
-This completes the deduction of univalence from equivalence
+This completes the deduction of univalence from equivalence. Now we
+improve our original JEq', to get the computation rule for free (even
+if the computation rule holds for the original JEq').
+
+\begin{code}
+
+JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
+JEq ua = pr₁ (JEq-improve (JEq' ua))
+
+JEq-comp : ∀ {U} (ua : is-univalent U) {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
+        → JEq ua X A b X (≃-refl X) ≡ b
+JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
+
+Eq-transport : ∀ {U} → is-univalent U
+            → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
+Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
+
+Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
+Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
+                 → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
+
+JEqUnbased : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
+JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
+
+
+\end{code}
+
 induction. The following technical lemma is needed elsewhere.
 
 \begin{code}
@@ -187,8 +212,6 @@ more direct proof from equivalence induction (we also give a proof
 without univalence elsewhere, of course):
 
 \begin{code}
-
-open import UF-Subsingletons-Equiv
 
 is-equiv-is-vv-equiv' : ∀ {U} → is-univalent U → {X Y : U ̇} (f : X → Y)
                      → is-equiv f → is-vv-equiv f
