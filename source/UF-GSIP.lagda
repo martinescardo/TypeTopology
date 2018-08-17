@@ -337,7 +337,7 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
 
 \end{code}
 
- Notice that here the f equivalences are the isometries (metric-space case)
+ Notice that here the S-equivalences are the isometries (metric-space case)
  or order preserving-reflecting maps (ordered-set case).
 
 The following example is related to searchable sets:
