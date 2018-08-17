@@ -320,12 +320,6 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
       → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x')))
  fact A B = idtoeqₛ A B , uaₛ A B
 
-\end{code}
-
- Or in perhaps more appealing terms:
-
-\begin{code}
-
  fact' : (X Y : U ̇) (d : X → X → R) (e : Y → Y → R)
        → ((X , d) ≡ (Y , e)) ≃ Σ \(f : X → Y) → is-equiv f × (d ≡ (λ x x' → e (f x) (f x')))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
@@ -334,6 +328,29 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
 
  Notice that here the f equivalences are the isometries (metric case)
  or order preserving-reflecting maps (ordered case).
+
+This example is related to searchable sets:
+
+\begin{code}
+
+module selection-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
+
+ open gsip₀ U (U ⊔ V) ua (λ X → (X → R) → X)
+ open gsip₁ (λ A B f e → (λ V → f (structure A (V ∘ f))) ≡ structure B)
+            (λ A → refl)
+            (λ X ε δ → id)
+            (λ A τ υ → refl-left-neutral)
+
+ fact : (A B : 𝕊)
+      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B)
+ fact A B = idtoeqₛ A B , uaₛ A B
+
+ fact' : (X Y : U ̇) (ε : (X → R) → X) (δ : (Y → R) → Y)
+       → ((X , ε) ≡ (Y , δ)) ≃ Σ \(f : X → Y) → is-equiv f × ((λ V → f(ε (V ∘ f))) ≡ δ)
+ fact' X Y σ τ = fact (X , σ) (Y , τ)
+
+\end{code}
+
 
 Perhaps it is possible to derive the SIP for 1-categories from the
 above SIP for types equipped with structure. But this is not the point
