@@ -308,7 +308,7 @@ posets (when R is Ω):
 
 \begin{code}
 
-module ∞-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
+module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
 
  open gsip₀ U (U ⊔ V) ua (λ X → X → X → R)
  open gsip₁ (λ A B f e → structure A ≡ (λ x x' → structure B (f x) (f x')))
