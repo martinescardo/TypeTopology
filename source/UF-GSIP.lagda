@@ -111,10 +111,10 @@ These assumptions (1)-(4) are given as module parameters for gsip₁:
 
 \end{code}
 
-This defines an 𝕊-equivalence to be an equivalence of underlying sets
-that is an S-structure equivalence in the sense abstractly specified
-by the function S-equiv. Then the assumption S-refl allows us to have
-an equivalence of any element of 𝕊 with itself:
+  This defines an 𝕊-equivalence to be an equivalence of underlying
+  sets that is an S-structure equivalence in the sense abstractly
+  specified by the function S-equiv. Then the assumption S-refl allows
+  us to have an equivalence of any element of 𝕊 with itself:
 
 \begin{code}
 
@@ -123,8 +123,8 @@ an equivalence of any element of 𝕊 with itself:
 
 \end{code}
 
-And hence an equality gives an 𝕊-equivalence by induction in the usual
-way:
+  And hence an equality gives an 𝕊-equivalence by induction in the
+  usual way:
 
 \begin{code}
 
@@ -133,8 +133,8 @@ way:
 
 \end{code}
 
-We use the following auxiliary constructions to define an inverse of
-idtoeqₛ by equivalence induction (the function JEq):
+  We use the following auxiliary constructions to define an inverse of
+  idtoeqₛ by equivalence induction (the function JEq):
 
 \begin{code}
 
@@ -149,14 +149,14 @@ idtoeqₛ by equivalence induction (the function JEq):
 
 \end{code}
 
-So far we have used the hypotheses
+  So far we have used the hypotheses
 
-   * S-equiv (to define _≡ₛ_),
-   * S-refl (to define idtoeqₛ), and
-   * ≡-S-structure (to define eqtoidₛ).
+     * S-equiv (to define _≡ₛ_),
+     * S-refl (to define idtoeqₛ), and
+     * ≡-S-structure (to define eqtoidₛ).
 
-Next we use the remaining hypothesis S-transport to show that eqtoidₛ
-is a left-inverse of idtoeqₛ:
+  Next we use the remaining hypothesis S-transport to show that
+  eqtoidₛ is a left-inverse of idtoeqₛ:
 
 \begin{code}
 
@@ -201,10 +201,10 @@ is a left-inverse of idtoeqₛ:
 
 \end{code}
 
-Being a natural left-inverse of idtoeqₛ, the function eqtoidₛ is also
-a right-inverse, by a general property of the identity type (namely
-the one called nat-retraction-is-equiv in our development (in the
-module UF-Yoneda):
+  Being a natural left-inverse of idtoeqₛ, the function eqtoidₛ is
+  also a right-inverse, by a general property of the identity type
+  (namely the one called nat-retraction-is-equiv in our development
+  (in the module UF-Yoneda):
 
 \begin{code}
 
@@ -218,7 +218,10 @@ module UF-Yoneda):
 
 \end{code}
 
-We now consider some examples to illustrate how this works in practice.
+This completes the proof of the abstract SIP considered here.
+
+We now consider some concrete examples to illustrate how this works in
+practice.
 
 An ∞-magma is a type, not assumed to be a set, equipped with a binary
 operation. The above gives a characterization of equality of ∞-magmas:
@@ -240,7 +243,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
 \end{code}
 
-Perhaps the following reformulation is more appealing:
+ Perhaps the following reformulation is more appealing:
 
 \begin{code}
 
@@ -251,10 +254,11 @@ Perhaps the following reformulation is more appealing:
 
 \end{code}
 
-Of course, the condition (λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x'))
-is equivalent to (x x' : X) → f (m x x') ≡ n (f x) (f x') by function
-extensionality, which is the natural formulation of magma
-homomorphism.
+ Of course, the condition (λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x'))
+ is equivalent to (x x' : X) → f (m x x') ≡ n (f x) (f x') by function
+ extensionality, which is the natural formulation of magma
+ homomorphism.
+
 
 As a second example, a topology on a set X is a set of subsets of X
 satisfying suitable axioms. A set of subsets amounts to a map
@@ -278,7 +282,7 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
 
 \end{code}
 
-Or in perhaps more appealing terms:
+ Or in perhaps more appealing terms:
 
 \begin{code}
 
@@ -288,15 +292,16 @@ Or in perhaps more appealing terms:
 
 \end{code}
 
-Again by function extensionality, structure preservation is equivalent
-to (V : Y → R) → τ(V ∘ f) ≡ σ V. We can read this, at least when R is
-the type Ω of truth-values, by saying that a set V : Y → R is σ-open
-precisely when its inverse image V ∘ f is τ-open.
+ Again by function extensionality, structure preservation is equivalent
+ to (V : Y → R) → τ(V ∘ f) ≡ σ V. We can read this, at least when R is
+ the type Ω of truth-values, by saying that a set V : Y → R is σ-open
+ precisely when its inverse image V ∘ f is τ-open.
 
-Thus, if we say that an equivalence f : X → Y is an ∞-homeomorphism
-when an "R-set" V : Y → R is σ-open precisely when its f-inverse image
-V ∘ f : X → R is τ-open, then the above says that two
-∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
+ Thus, if we say that an equivalence f : X → Y is an ∞-homeomorphism
+ when an "R-set" V : Y → R is σ-open precisely when its f-inverse image
+ V ∘ f : X → R is τ-open, then the above says that two
+ ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
+
 
 Perhaps it is possible to derive the SIP for 1-categories from the
 above SIP for types equipped with structure. But this is not the point
