@@ -76,12 +76,12 @@ projections:
   (3) Moreover, when f : ⟨ X , s ⟩ → ⟨ X , t ⟩ is the identity
       function, we want the data for (1) to give data for the equality
       s ≡ t of structures. This is specified by the function
-      ≡-S-structure.
+      S-≡-structure.
 
   (4) We need a technical transport condition (which is not
       surprising, as equality of Σ-types is given by transport of the
       second component), specified by the function S-transport below,
-      relating the data specified by the functions ≡-S-structure and
+      relating the data specified by the functions S-≡-structure and
       S-refl.
 
  These assumptions (1)-(4) are given as module parameters for gsip₁:
@@ -89,15 +89,23 @@ projections:
 \begin{code}
 
  module gsip₁
-         (S-equiv : (A B : 𝕊) → (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
-         (S-refl : (A : 𝕊) → S-equiv A A id (id-is-equiv ⟨ A ⟩))
-         (≡-S-structure : (X : U ̇) (s t : S X) → S-equiv (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
-         (S-transport : (A : 𝕊) (s : S ⟨ A ⟩) (υ : S-equiv (⟨ A ⟩ , structure A) (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
-                      → transport (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ ⟨ A ⟩ , - ⟩))
-                               (≡-S-structure ⟨ A ⟩ (structure A) s υ)
-                               (S-refl A)
-                      ≡ υ)
-        where
+
+  (S-equiv : (A B : 𝕊) → (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
+
+  (S-refl : (A : 𝕊) → S-equiv A A id (id-is-equiv ⟨ A ⟩))
+
+  (S-≡-structure : (X : U ̇) (s t : S X)
+                 → S-equiv (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
+
+  (S-transport : (A : 𝕊)
+                 (s : S ⟨ A ⟩)
+                 (υ : S-equiv A (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
+               → transport
+                    (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ ⟨ A ⟩ , - ⟩))
+                    (S-≡-structure ⟨ A ⟩ (structure A) s υ)
+                    (S-refl A)
+               ≡ υ)
+  where
 
 \end{code}
 
@@ -142,7 +150,7 @@ projections:
     Ψ : (A : 𝕊) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ′ ⊔ V ̇
     Ψ A Y (f , e) = (s : S Y) → S-equiv A (Y , s) f e → A ≡ (Y , s)
     ψ : (A : 𝕊) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
-    ψ A s υ = to-Σ-≡' (≡-S-structure ⟨ A ⟩ (structure A) s υ)
+    ψ A s υ = to-Σ-≡' (S-≡-structure ⟨ A ⟩ (structure A) s υ)
 
   eqtoidₛ : (A B : 𝕊) → A ≃ₛ B → A ≡ B
   eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) υ
@@ -153,7 +161,7 @@ projections:
 
      * S-equiv (to define _≡ₛ_),
      * S-refl (to define idtoeqₛ), and
-     * ≡-S-structure (to define eqtoidₛ).
+     * S-≡-structure (to define eqtoidₛ).
 
   Next we use the remaining hypothesis S-transport to show that
   eqtoidₛ is a left-inverse of idtoeqₛ:
@@ -181,7 +189,7 @@ projections:
       observation₂ : eqtoidₛ A A' refl' ≡ JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) s υ
       observation₂ = refl
       p : structure A ≡ s
-      p = ≡-S-structure ⟨ A ⟩ (structure A) s υ
+      p = S-≡-structure ⟨ A ⟩ (structure A) s υ
       q : JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ A ⟩ (≃-refl ⟨ A ⟩) s υ ≡ to-Σ-≡' p
       q = ap (λ h → h s υ) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A))
       r : idtoeqₛ A A' (eqtoidₛ A A' refl') ≡ idtoeqₛ A A' (to-Σ-≡' p)
@@ -238,8 +246,9 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
             (λ A m υ → refl-left-neutral)
 
  fact : (A B : 𝕊)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ x x' → f (structure A x x'))
-                                                       ≡ (λ x x' → structure B (f x) (f x')))
+      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
+                       → is-equiv f
+                       × ((λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x')))
  fact A B = idtoeqₛ A B , uaₛ A B
 
 \end{code}
@@ -250,7 +259,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
  fact' : (X Y : U ̇) (m : X → X → X) (n : Y → Y → Y)
        → ((X , m) ≡ (Y , n))
-         ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x')))
+       ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x')))
  fact' X Y m n = fact (X , m) (Y , n)
 
 \end{code}
@@ -278,7 +287,8 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
             (λ A τ υ → refl-left-neutral)
 
  fact : (A B : 𝕊)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B)
+      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
+                       → is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B)
  fact A B = idtoeqₛ A B , uaₛ A B
 
 \end{code}
@@ -303,7 +313,7 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
  V ∘ f : X → R is τ-open, then the above says that two
  ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
 
-Another example generalizes metric spaces (when R is the reals) and
+Another example generalizes metric spaces (when R a type of reals) and
 posets (when R is Ω):
 
 \begin{code}
@@ -317,7 +327,8 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
             (λ A s υ → refl-left-neutral)
 
  fact : (A B : 𝕊)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x')))
+      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
+                        → is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x')))
  fact A B = idtoeqₛ A B , uaₛ A B
 
  fact' : (X Y : U ̇) (d : X → X → R) (e : Y → Y → R)
@@ -327,9 +338,10 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
 \end{code}
 
  Notice that here the f equivalences are the isometries (metric case)
- or order preserving-reflecting maps (ordered case).
+ or order preserving-reflecting maps (ordered case with d=_≺_,
+ reflexive or not).
 
-This example is related to searchable sets:
+The following example is related to searchable sets:
 
 \begin{code}
 
@@ -342,7 +354,8 @@ module selection-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
             (λ A τ υ → refl-left-neutral)
 
  fact : (A B : 𝕊)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B)
+      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
+                        → is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B)
  fact A B = idtoeqₛ A B , uaₛ A B
 
  fact' : (X Y : U ̇) (ε : (X → R) → X) (δ : (Y → R) → Y)
