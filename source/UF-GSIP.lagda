@@ -313,8 +313,8 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
  V ∘ f : X → R is τ-open, then the above says that two
  ∞-proto-topological spaces are equal iff they are ∞-homeomorphic.
 
-Another example generalizes metric spaces (when R a type of reals) and
-posets (when R is Ω):
+Another example generalizes metric spaces (when R is a type of reals)
+and ordered sets (when R is Ω and d=_≺_, reflexive or not):
 
 \begin{code}
 
@@ -337,9 +337,8 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
 
 \end{code}
 
- Notice that here the f equivalences are the isometries (metric case)
- or order preserving-reflecting maps (ordered case with d=_≺_,
- reflexive or not).
+ Notice that here the f equivalences are the isometries (metric-space case)
+ or order preserving-reflecting maps (ordered-set case).
 
 The following example is related to searchable sets:
 
