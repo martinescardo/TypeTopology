@@ -36,7 +36,7 @@ module UF-GSIP where
 
 \end{code}
 
-We consider the type 𝕊 of types X : U ̇ equipped with structure s : S X,
+We consider the type of types X : U ̇ equipped with structure s : S X,
 where the universe U is univalent and S : U ̇ → V ̇ is a parameter:
 
 The underlying set and structure are given by the first and second
