@@ -432,27 +432,26 @@ module gsip-with-axioms
                      (S'-≡-structure ⟨ A' ⟩ (structure A') s' υ')
                      (S'-refl A')
                 ≡ υ'
-   S'-transport (X , s , α) (t , β) υ' = γ
+   S'-transport (X , s , α) (t , β) υ' =
+    f (S'-≡-structure X (s , α) (t , β) υ')          ≡⟨ transport-ap F pr₁ (S'-≡-structure X (s , α) (t , β) υ') ⟩
+    g (ap pr₁ (S'-≡-structure X (s , α) (t , β) υ')) ≡⟨ ap g r ⟩
+    g (S-≡-structure X s t υ')                       ≡⟨ S-transport (X , s) t υ' ⟩
+    υ' ∎
     where
      F : S X → U ⊔ V ̇
      F t = S-equiv (X , s) (X  , t) id (id-is-equiv X)
-     f : s ≡ t → F t
-     f p = transport F p (S-refl (X , s))
-     g : (s , α) ≡ (t , β) → F t
-     g q = transport (F ∘ pr₁) q (S-refl (X , s))
+     f : (s , α) ≡ (t , β) → F t
+     f q = transport (F ∘ pr₁) q (S-refl (X , s))
+     g : s ≡ t → F t
+     g p = transport F p (S-refl (X , s))
      r : ap pr₁ (S'-≡-structure X (s , α) (t , β) υ') ≡ S-≡-structure X s t υ'
      r = ap-pr₁-to-Σ-≡ _
-     γ : g (S'-≡-structure X (s , α) (t , β) υ') ≡ υ'
-     γ = g (S'-≡-structure X (s , α) (t , β) υ')          ≡⟨ transport-ap F pr₁ (S'-≡-structure X (s , α) (t , β) υ') ⟩
-         f (ap pr₁ (S'-≡-structure X (s , α) (t , β) υ')) ≡⟨ ap f r ⟩
-         f (S-≡-structure X s t υ')                       ≡⟨ S-transport (X , s) t υ' ⟩
-         υ' ∎
 
    open gsip U V ua S' S'-equiv S'-refl S'-≡-structure S'-transport public
 
 \end{code}
 
-Let's consider monoids as an application now.
+We consider monoids to illustrate how this can be applied.
 
 \begin{code}
 
