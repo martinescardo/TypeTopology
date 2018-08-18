@@ -27,7 +27,7 @@ Contents:
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-Base hiding (assoc)
+open import UF-Base
 open import UF-Equiv
 open import UF-Univalence
 open import UF-Yoneda
