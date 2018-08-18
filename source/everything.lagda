@@ -317,6 +317,7 @@ import UF-Equiv
 import UF-FunExt
 import UF-FunExt-from-Naive-FunExt
 import UF-FunExt-from-Naive-FunExt-alternate
+import UF-GSIP
 import UF-Historic
 import UF-IdEmbedding
 import UF-ImageAndSurjection
@@ -339,5 +340,4 @@ import UF-Yoneda
 import UnivalenceFromScratch
 import WellOrderArithmetic
 import WLPO
-import UF-GSIP -- experimental
 \end{code}

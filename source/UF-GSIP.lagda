@@ -508,11 +508,11 @@ module monoids (U : Universe) (ua : is-univalent U) where
        (λ { A' m (refl , refl) → refl })
 
  fact : (A B : Monoid)
-     → (A ≡ B)
-     ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-             → is-equiv f
-             × ((λ x x' → f (μ A x x')) ≡ (λ x x' → μ B (f x) (f x')))
-             × (f (η A) ≡ η B)
+      → (A ≡ B)
+      ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
+              → is-equiv f
+              × ((λ x x' → f (μ A x x')) ≡ (λ x x' → μ B (f x) (f x')))
+              × (f (η A) ≡ η B)
  fact = ≡-is-≃ₛ
 
  fact' : (X : U ̇) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
