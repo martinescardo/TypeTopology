@@ -501,11 +501,11 @@ module monoids (U : Universe) (ua : is-univalent U) where
        U U ua S
        Axioms
        Axioms-is-prop
-       (λ A B f e → ((λ x x' → f (mul A x x')) ≡ (λ x x' → mul B (f x) (f x')))
-                  × (f (neutral A) ≡ neutral B))
-       (λ A → refl , refl)
+       (λ A' B' f e → ((λ x x' → f (mul A' x x')) ≡ (λ x x' → mul B' (f x) (f x')))
+                    × (f (neutral A') ≡ neutral B'))
+       (λ A' → refl , refl)
        (λ X m n υ → ×-≡ (pr₁ υ) (pr₂ υ))
-       (λ { A m (refl , refl) → refl })
+       (λ { A' m (refl , refl) → refl })
 
  fact : (A B : Monoid)
      → (A ≡ B)
