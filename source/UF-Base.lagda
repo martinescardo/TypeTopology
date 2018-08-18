@@ -168,6 +168,11 @@ to-Σ-≡ : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
           → σ ≡ τ
 to-Σ-≡ (refl , refl) = refl
 
+ap-pr₁-to-Σ-≡ : ∀ {U V} {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
+                (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+              → ap pr₁ (to-Σ-≡ w) ≡ pr₁ w
+ap-pr₁-to-Σ-≡ (refl , refl) = refl
+
 to-Σ-≡' : ∀ {U V} {X : U ̇} {Y : X → V ̇} {x : X} {y y' : Y x}
         → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y')
 to-Σ-≡' {U} {V} {X} {Y} {x} = ap (λ - → (x , -))
