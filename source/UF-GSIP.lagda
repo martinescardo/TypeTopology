@@ -44,7 +44,6 @@ projections:
 
 \begin{code}
 
-
 ⟨_⟩ : {U V : Universe} {S : U ̇ → V ̇} → Σ S → U ̇
 ⟨_⟩ = pr₁
 
@@ -178,9 +177,9 @@ module gsip
   idtoeq-eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) υ
    where
     Φ : (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⊔ V ̇
-    Φ Y (f , e) = (m : S Y)
-                  (υ : S-equiv A (Y , m) f e)
-                → idtoeqₛ A (Y , m) (eqtoidₛ A (Y , m) (f , e , υ)) ≡ f , e , υ
+    Φ Y (f , e) = (s : S Y)
+                  (υ : S-equiv A (Y , s) f e)
+                → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     φ s υ =
       idtoeqₛ A A' (eqtoidₛ A A' refl') ≡⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
