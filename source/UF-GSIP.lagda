@@ -36,8 +36,8 @@ module UF-GSIP where
 
 \end{code}
 
-We consider the type of types X : U ̇ equipped with structure s : S X,
-where the universe U is univalent and S : U ̇ → V ̇ is a parameter:
+We consider the type Σ S of types X : U ̇ equipped with structure s : S
+X, where the universe U is univalent and S : U ̇ → V ̇ is a parameter:
 
 The underlying set and structure are given by the first and second
 projections:
@@ -54,7 +54,7 @@ structure = pr₂
 \end{code}
 
  If S comes with suitable data, including S-equiv discussed below, we
- can characterize equality in 𝕊 as equivalence of underlying sets
+ can characterize equality in Σ S as equivalence of underlying sets
  subject to a suitable condition involving the data:
 
    (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B f e
