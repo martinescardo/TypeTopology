@@ -482,10 +482,10 @@ module monoids (U : Universe) (ua : is-univalent U) where
                                               (Π-is-prop fe λ x → ×-is-prop i i))
                                           (i , α , ν)
 
- mul : (A : Σ S) → ⟨ A ⟩ → ⟨ A ⟩ → ⟨ A ⟩
+ mul : (A' : Σ S) → ⟨ A' ⟩ → ⟨ A' ⟩ → ⟨ A' ⟩
  mul (X , _·_ , e) = _·_
 
- neutral : (A : Σ S) → ⟨ A ⟩
+ neutral : (A' : Σ S) → ⟨ A' ⟩
  neutral (X , _·_ , e) = e
 
  Monoid : U ′ ̇
