@@ -455,10 +455,9 @@ We consider monoids to illustrate how this can be applied.
 
 \begin{code}
 
-open import UF-FunExt
-
 module monoids (U : Universe) (ua : is-univalent U) where
 
+ open import UF-FunExt
  open import UF-Subsingletons-FunExt
  open import UF-UA-FunExt
 
@@ -490,6 +489,15 @@ module monoids (U : Universe) (ua : is-univalent U) where
  neutral : (A : Σ S) → ⟨ A ⟩
  neutral (X , _·_ , e) = e
 
+ Monoid : U ′ ̇
+ Monoid = Σ \(X : U ̇) → Σ \(s : S X) → Axioms X s
+
+ μ : (A : Monoid) → ⟨ A ⟩ → ⟨ A ⟩ → ⟨ A ⟩
+ μ (X , s , a) = mul (X , s)
+
+ η : (A : Monoid) → ⟨ A ⟩
+ η (X , s , a) = neutral (X , s)
+
  open gsip-with-axioms
        U U ua S
        Axioms
@@ -499,15 +507,6 @@ module monoids (U : Universe) (ua : is-univalent U) where
        (λ A → refl , refl)
        (λ X m n υ → ×-≡ (pr₁ υ) (pr₂ υ))
        (λ { A m (refl , refl) → refl })
-
- Monoid : U ′ ̇
- Monoid = Σ \(X : U ̇) → Σ \(s : S X) → Axioms X s
-
- μ : (A : Monoid) → ⟨ A ⟩ → ⟨ A ⟩ → ⟨ A ⟩
- μ (X , s , a) = mul (X , s)
-
- η : (A : Monoid) → ⟨ A ⟩
- η (X , s , a) = neutral (X , s)
 
  fact : (A B : Monoid)
      → (A ≡ B)
