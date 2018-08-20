@@ -310,6 +310,7 @@ import TotallySeparated
 import Universes
 import UF-Base
 import UF-Choice
+import UF-Classifiers
 import UF-Embedding
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt

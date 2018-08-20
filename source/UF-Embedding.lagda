@@ -12,9 +12,20 @@ open import UF-Equiv
 open import UF-LeftCancellable
 open import UF-Yoneda
 open import UF-Retracts
+open import UF-FunExt
+open import UF-Subsingletons-FunExt
+open import UF-Univalence
+open import UF-UA-FunExt
 
 is-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-embedding f = ∀ y → is-prop(fiber f y)
+
+is-embedding-is-prop : ∀ {U V} → funext V (U ⊔ V) → funext (U ⊔ V) (U ⊔ V)
+                     → {X : U ̇} {Y : V ̇} (f : X → Y)
+                     → is-prop(is-embedding f)
+is-embedding-is-prop {U} {V} fe fe' f = Π-is-prop
+                                          fe
+                                          (λ x → is-prop-is-prop fe')
 
 is-equiv-is-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-equiv f → is-embedding f

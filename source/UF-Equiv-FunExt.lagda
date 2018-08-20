@@ -192,9 +192,9 @@ The domain of a function is equivalent to its graph.
 
 \begin{code}
 
-domain-equiv-to-graph : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
-                     → X ≃ (Σ \(y : Y) → Σ \(x : X) → f x ≡ y)
-domain-equiv-to-graph {U} {V} {X} {Y} f = g , ((h , gh) , (h , hg))
+graph-domain-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+                  → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
+graph-domain-equiv {U} {V} {X} {Y} f = h , ((g , hg) , (g , gh))
  where
   g : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
   g x = f x , x , refl
