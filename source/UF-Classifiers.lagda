@@ -144,6 +144,8 @@ its fibers are all green. Then the maps of Y into green types should
 correspond to the green maps X → Y. This generalizes the above
 situation. In particular, the case green = contractible is of interest
 and describes a previously known situation. Another example is that
-surjections X → Y is in bijection with familities Y → Σ (Z : U ̇) → ∥ Z
-∥), that is, families of inhabited types. It is not necessary that
-"green" is proposition valued. It can be universe valued in general.
+surjections X → Y are in bijection with families
+Y → Σ (Z : U ̇) → ∥ Z ∥), that is, families of inhabited types. It is
+not necessary that "green" is proposition valued. It can be universe
+valued in general. And then of course retractions X → Y are in
+bijections with families of pointed types.
