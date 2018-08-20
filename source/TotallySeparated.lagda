@@ -791,7 +791,7 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
-  powerset-is-set : ∀ {W} {A : W ̇} → is-set (A → Ω)
+  powerset-is-set : ∀ {W} {A : W ̇} → is-set (A → Ω V)
   powerset-is-set {W} = Π-is-set (fe W (V ′)) (λ x → Ω-is-set (fe V V) pe)
 
 \end{code}
@@ -806,7 +806,7 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
-  apart : X → (X → Ω)
+  apart : X → (X → Ω V)
   apart x y = x ♯ y , ♯p x y
 
 \end{code}
@@ -851,7 +851,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subset-of-set-is-set (X → Ω) _ powerset-is-set ptisp
+  X'-is-set = subset-of-set-is-set (X → Ω V) _ powerset-is-set ptisp
 
   η : X → X'
   η = corestriction apart

@@ -24,32 +24,42 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
-module HiggsInvolutionTheorem (fe : funext U₀ U₀)
-                              (pe : propext U₀)
-                              where
+module HiggsInvolutionTheorem
+        (fe : funext U₀ U₀)
+        (pe : propext U₀)
+       where
+
+\end{code}
+
+TODO. Generalize from propositions in the universe U₀ to any universe U.
+
+\begin{code}
+
+Ω₀ : U₁ ̇
+Ω₀ = Ω U₀
 
 involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
 involutive f = ∀{x} → f (f x) ≡ x
 
-higgs : (f : Ω → Ω) → left-cancellable f → involutive f
+higgs : (f : Ω₀ → Ω₀) → left-cancellable f → involutive f
 higgs f cancelf {p} = cancelf (VII p)
   where
-   I : (p : Ω) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
+   I : (p : Ω₀) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
    I p r s = transport (λ - → f - ≡ ⊤) s r
 
-   II : (p : Ω) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
+   II : (p : Ω₀) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
    II p r s = cancelf (r ∙ s ⁻¹)
 
-   III : (p : Ω) → f p ≡ ⊤ → p ≡ f ⊤
+   III : (p : Ω₀) → f p ≡ ⊤ → p ≡ f ⊤
    III p r = Ω-ext pe fe (I p r) (II p r)
 
-   IV : (p : Ω) → f (f p) ≡ ⊤ → p ≡ ⊤
+   IV : (p : Ω₀) → f (f p) ≡ ⊤ → p ≡ ⊤
    IV p r = cancelf (III (f p) r)
 
-   V : (p : Ω) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
+   V : (p : Ω₀) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
    V p r = IV (f p) r
 
-   VI : (p : Ω) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
+   VI : (p : Ω₀) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
    VI p r = d ∙ r
     where
      a : f (f p) ≡ f ⊤
@@ -64,7 +74,7 @@ higgs f cancelf {p} = cancelf (VII p)
      d : f (f (f p)) ≡ f p
      d = ap f c
 
-   VII : (p : Ω) → f (f (f p)) ≡ f p
+   VII : (p : Ω₀) → f (f (f p)) ≡ f p
    VII p = Ω-ext pe fe (V p) (VI p)
 
 \end{code}

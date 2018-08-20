@@ -92,21 +92,21 @@ decidable-is-prop fe₀ isp = sum-of-contradictory-props
                              (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
                              (λ p u → u p)
 
-PropExt : ∀ {U} → funext U U → propext U → {p q : Ω {U}}
+PropExt : ∀ {U} → funext U U → propext U → {p q : Ω U}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt {U} fe pe {p} {q} f g =
         to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , is-prop-is-prop fe _ _)
 
-Ω-is-set : ∀ {U} → funext U U → propext U → is-set (Ω {U})
+Ω-is-set : ∀ {U} → funext U U → propext U → is-set (Ω U)
 Ω-is-set {U} fe pe = identification-collapsible-is-set pc
  where
-  A : (p q : Ω) → U ̇
+  A : (p q : Ω U) → U ̇
   A p q = (p holds → q holds) × (q holds → p holds)
-  A-is-prop : (p q : Ω) → is-prop(A p q)
+  A-is-prop : (p q : Ω U) → is-prop(A p q)
   A-is-prop p q = Σ-is-prop (Π-is-prop fe
                                    (λ _ → holds-is-prop q))
                                    (λ _ → Π-is-prop fe (λ _ → holds-is-prop p))
-  g : (p q : Ω) → p ≡ q → A p q
+  g : (p q : Ω U) → p ≡ q → A p q
   g p q e = (b , c)
    where
     a : p holds ≡ q holds
@@ -115,13 +115,13 @@ PropExt {U} fe pe {p} {q} f g =
     b = transport (λ X → X) a
     c : q holds → p holds
     c = transport (λ X → X) (a ⁻¹)
-  h  : (p q : Ω) → A p q → p ≡ q
+  h  : (p q : Ω U) → A p q → p ≡ q
   h p q (u , v) = PropExt fe pe u v
-  f  : (p q : Ω) → p ≡ q → p ≡ q
+  f  : (p q : Ω U) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
-  constant-f : (p q : Ω) (d e : p ≡ q) → f p q d ≡ f p q e
+  constant-f : (p q : Ω U) (d e : p ≡ q) → f p q d ≡ f p q e
   constant-f p q d e = ap (h p q) (A-is-prop p q (g p q d) (g p q e))
-  pc : {p q : Ω} → Σ \(f : p ≡ q → p ≡ q) → constant f
+  pc : {p q : Ω U} → Σ \(f : p ≡ q → p ≡ q) → constant f
   pc {p} {q} = (f p q , constant-f p q)
 
 neg-is-prop : ∀ {U} {X : U ̇} → funext U U₀ → is-prop(¬ X)
@@ -147,7 +147,7 @@ true-is-equal-⊤ : propext U₀ → funext U₀ U₀ → (P : U₀ ̇) (hp : is
 true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
                                         is-prop-is-prop fe _ _)
 
-Ω-ext : propext U₀ → funext U₀ U₀ → {p q : Ω}
+Ω-ext : propext U₀ → funext U₀ U₀ → {p q : Ω U₀}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
 Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ (pe isp isq I II ,
                                                    is-prop-is-prop fe _ _ )

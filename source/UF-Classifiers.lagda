@@ -1,7 +1,10 @@
 Martin Escardo, 20th August 2018
 
-We consider subtype and type classifiers, and discuss an obvious
+We consider type and subtype classifiers, and discuss an obvious
 generalization which is left undone for the moment.
+
+ * (Σ \(X : U ̇) → X → Y) ≃ (Y → U ̇)
+ * (Σ \(X : U ̇) → X ↪ Y) ≃ (Y → Ω U)
 
 \begin{code}
 
@@ -19,60 +22,11 @@ open import UF-UA-FunExt
 open import UF-FunExt
 open import UF-Embedding
 
-module subtype-classifier {U : Universe} (fe' : funext U (U ′)) (ua : is-univalent U) (Y : U ̇) where
-
- fe : funext U U
- fe = funext-from-univalence ua
-
- χ : (Σ \(X : U ̇) → X ↪ Y)  → (Y → Ω {U})
- χ (X , f , i) y = fiber f y , i y
-
- T : (Y → Ω {U}) → Σ \(X : U ̇) → X ↪ Y
- T P = (Σ \(y : Y) → P y holds) , pr₁ , pr₁-embedding (λ y → holds-is-prop (P y))
-
- χT : (P : Y → Ω {U}) → χ(T P) ≡ P
- χT P = dfunext fe' γ
-  where
-   f : ∀ y → χ (T P) y holds → P y holds
-   f y ((.y , h) , refl) = h
-   g : ∀ y → P y holds → χ (T P) y holds
-   g y h = (y , h) , refl
-   γ : (y : Y) → χ (T P) y ≡ P y
-   γ y = PropExt-from-univalence ua (f y) (g y)
-
- transport-embedding : {X X' Y : U ̇} (e : X ≃ X') (g : X → Y) (i : is-embedding g)
-                    → transport (λ - → - ↪ Y) (eqtoid ua X X' e) (g , i)
-                    ≡ g ∘ eqtofun (≃-sym e) , comp-embedding
-                                                 (is-equiv-is-embedding (eqtofun (≃-sym e))
-                                                                        (is-equiv-eqtofun (≃-sym e))) i
- transport-embedding {X} {X'} {Y} e = JEq ua X A b X' e
-  where
-   A : (X' : U ̇) → X ≃ X' → U ̇
-   A X' e = (g : X → Y) (i : is-embedding g)
-          → transport (λ (- : U ̇) → - ↪ Y) (eqtoid ua X X' e) (g , i)
-          ≡ g ∘ eqtofun (≃-sym e) ,
-            comp-embedding (is-equiv-is-embedding (eqtofun (≃-sym e))
-                           (is-equiv-eqtofun (≃-sym e))) i
-   b : A X (≃-refl X)
-   b g i = transport (λ - → - ↪ Y) (eqtoid ua X X (≃-refl X)) (g , i)
-                  ≡⟨ ap (λ - → transport (λ - → - ↪ Y) - (g , i)) (eqtoid-refl ua X) ⟩
-           g , i
-                  ≡⟨ to-Σ-≡' (is-embedding-is-prop fe fe g _ _) ⟩
-           g , comp-embedding
-               (is-equiv-is-embedding (eqtofun (≃-sym (≃-refl X))) (is-equiv-eqtofun (≃-sym (≃-refl X)))) i ∎
-
- Tχ : (σ : Σ \(X : U ̇) → X ↪ Y) → T(χ σ) ≡ σ
- Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                          (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-embedding i)
-                         ∙ to-Σ-≡' (is-embedding-is-prop fe fe f _ _)))
-
- χ-is-equivalence : is-equiv χ
- χ-is-equivalence = (T , χT) , (T , Tχ)
-
- classification-equivalence : (Σ \(X : U ̇) → X ↪ Y) ≃ (Y → Ω {U})
- classification-equivalence = χ , χ-is-equivalence
-
-module type-classifier {U : Universe} (fe' : funext U (U ′)) (ua : is-univalent U) (Y : U ̇) where
+module type-classifier
+        {U : Universe}
+        (fe' : funext U (U ′))
+        (ua : is-univalent U)
+        (Y : U ̇) where
 
  χ : (Σ \(X : U ̇) → X → Y)  → (Y → U ̇)
  χ (X , f) = fiber f
@@ -120,6 +74,65 @@ module type-classifier {U : Universe} (fe' : funext U (U ′)) (ua : is-univalen
  χ-is-equivalence = (T , χT) , (T , Tχ)
 
  classification-equivalence : (Σ \(X : U ̇) → X → Y) ≃ (Y → U ̇)
+ classification-equivalence = χ , χ-is-equivalence
+
+
+module subtype-classifier
+        {U : Universe}
+        (fe' : funext U (U ′))
+        (ua : is-univalent U)
+        (Y : U ̇)
+       where
+
+ fe : funext U U
+ fe = funext-from-univalence ua
+
+ χ : (Σ \(X : U ̇) → X ↪ Y)  → (Y → Ω U)
+ χ (X , f , i) y = fiber f y , i y
+
+ T : (Y → Ω U) → Σ \(X : U ̇) → X ↪ Y
+ T P = (Σ \(y : Y) → P y holds) , pr₁ , pr₁-embedding (λ y → holds-is-prop (P y))
+
+ χT : (P : Y → Ω U) → χ(T P) ≡ P
+ χT P = dfunext fe' γ
+  where
+   f : ∀ y → χ (T P) y holds → P y holds
+   f y ((.y , h) , refl) = h
+   g : ∀ y → P y holds → χ (T P) y holds
+   g y h = (y , h) , refl
+   γ : (y : Y) → χ (T P) y ≡ P y
+   γ y = PropExt-from-univalence ua (f y) (g y)
+
+ transport-embedding : {X X' Y : U ̇} (e : X ≃ X') (g : X → Y) (i : is-embedding g)
+                    → transport (λ - → - ↪ Y) (eqtoid ua X X' e) (g , i)
+                    ≡ g ∘ eqtofun (≃-sym e) , comp-embedding
+                                                 (is-equiv-is-embedding (eqtofun (≃-sym e))
+                                                                        (is-equiv-eqtofun (≃-sym e))) i
+ transport-embedding {X} {X'} {Y} e = JEq ua X A b X' e
+  where
+   A : (X' : U ̇) → X ≃ X' → U ̇
+   A X' e = (g : X → Y) (i : is-embedding g)
+          → transport (λ (- : U ̇) → - ↪ Y) (eqtoid ua X X' e) (g , i)
+          ≡ g ∘ eqtofun (≃-sym e) ,
+            comp-embedding (is-equiv-is-embedding (eqtofun (≃-sym e))
+                           (is-equiv-eqtofun (≃-sym e))) i
+   b : A X (≃-refl X)
+   b g i = transport (λ - → - ↪ Y) (eqtoid ua X X (≃-refl X)) (g , i)
+                  ≡⟨ ap (λ - → transport (λ - → - ↪ Y) - (g , i)) (eqtoid-refl ua X) ⟩
+           g , i
+                  ≡⟨ to-Σ-≡' (is-embedding-is-prop fe fe g _ _) ⟩
+           g , comp-embedding
+               (is-equiv-is-embedding (eqtofun (≃-sym (≃-refl X))) (is-equiv-eqtofun (≃-sym (≃-refl X)))) i ∎
+
+ Tχ : (σ : Σ \(X : U ̇) → X ↪ Y) → T(χ σ) ≡ σ
+ Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
+                          (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-embedding i)
+                         ∙ to-Σ-≡' (is-embedding-is-prop fe fe f _ _)))
+
+ χ-is-equivalence : is-equiv χ
+ χ-is-equivalence = (T , χT) , (T , Tχ)
+
+ classification-equivalence : (Σ \(X : U ̇) → X ↪ Y) ≃ (Y → Ω U)
  classification-equivalence = χ , χ-is-equivalence
 
 \end{code}

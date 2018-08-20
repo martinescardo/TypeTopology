@@ -72,7 +72,7 @@ no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = φ u
 ⊥≠⊤ p = 𝟘-is-not-𝟙 (ap pr₁ p)
 
 no-truth-values-other-than-⊥-or-⊤ : funext U₀ U₀ → propext U₀
-                                   → ¬ Σ \(p : Ω) → (p ≢ ⊥) × (p ≢ ⊤)
+                                   → ¬ Σ \(p : Ω U₀) → (p ≢ ⊥) × (p ≢ ⊤)
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
  where
    u : ¬ P
@@ -86,8 +86,8 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
        l : (P , isp) ≡ ⊥
        l = PropExt fe pe u unique-from-𝟘
 
-⊥-⊤-density : funext U₀ U₀ → propext U₀ → (f : Ω → 𝟚)
-            → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Ω) → f p ≡ ₁
+⊥-⊤-density : funext U₀ U₀ → propext U₀ → (f : Ω U₀ → 𝟚)
+            → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Ω U₀) → f p ≡ ₁
 ⊥-⊤-density fe pe f r s p = Lemma[b≢₀→b≡₁] a
  where
     a : f p ≢ ₀
@@ -98,7 +98,7 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , isp) , (f , g)) = φ u
         c : p ≢ ⊤
         c u = zero-is-not-one (t ⁻¹ ∙ ap f u ∙ s)
 
-𝟚inΩ : 𝟚 → Ω {U₀}
+𝟚inΩ : 𝟚 → Ω U₀
 𝟚inΩ ₀ = ⊥
 𝟚inΩ ₁ = ⊤
 

@@ -22,8 +22,8 @@ open import UF-Base
 is-subsingleton : ∀ {U} → U ̇ → U ̇
 is-subsingleton X = (x y : X) → x ≡ y
 
-Ω : ∀ {U} → U ′ ̇
-Ω {U} = Σ \(P : U ̇) → is-subsingleton P
+Ω : ∀ U → U ′ ̇
+Ω U = Σ \(P : U ̇) → is-subsingleton P
 
 \end{code}
 
@@ -35,10 +35,10 @@ least for the moment).
 is-prop : ∀ {U} → U ̇ → U ̇
 is-prop = is-subsingleton
 
-_holds : ∀ {U} → Ω → U ̇
+_holds : ∀ {U} → Ω U → U ̇
 _holds = pr₁
 
-holds-is-prop : ∀ {U} → (p : Ω {U}) → is-prop (p holds)
+holds-is-prop : ∀ {U} → (p : Ω U) → is-prop (p holds)
 holds-is-prop = pr₂
 
 \end{code}
@@ -116,7 +116,7 @@ The two prototypical propositions:
 𝟙-is-prop : ∀ {U} → is-prop 𝟙
 𝟙-is-prop {U} * * = refl {U}
 
-⊥ ⊤ : ∀ {U} → Ω {U}
+⊥ ⊤ : ∀ {U} → Ω U
 ⊥ = 𝟘 , 𝟘-is-prop   -- false
 ⊤ = 𝟙 , 𝟙-is-prop   -- true
 

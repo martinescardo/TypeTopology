@@ -88,7 +88,7 @@ funext-from-successive-univalence U = funext-from-univalence' U (U ′)
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-PropExt-from-univalence : ∀ {U} → is-univalent U → {p q : Ω {U}}
+PropExt-from-univalence : ∀ {U} → is-univalent U → {p q : Ω U}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt-from-univalence {U} ua {p} {q} = PropExt
                                           (funext-from-univalence ua)

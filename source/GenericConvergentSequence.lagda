@@ -660,7 +660,7 @@ Another version of N∞, to be investigated.
 \begin{code}
 
 Ν∞ : U₁ ̇
-Ν∞ = Σ \(A : ℕ → Ω) → (n : ℕ) → A (succ n) holds → A n holds
+Ν∞ = Σ \(A : ℕ → Ω U₀) → (n : ℕ) → A (succ n) holds → A n holds
 
 \end{code}
 

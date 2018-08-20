@@ -100,10 +100,10 @@ which is a consequence of univalence):
 
 open import UF-Two-Prop-Density
 
-Ω-searchable : funext U₀ U₀ → propext U₀ → searchable Ω
+Ω-searchable : funext U₀ U₀ → propext U₀ → searchable (Ω U₀)
 Ω-searchable fe pe p = 𝟚-equality-cases a b
   where
-    A = Σ \(x₀ : Ω) → p x₀ ≡ ₁ → (x : Ω) → p x ≡ ₁
+    A = Σ \(x₀ : Ω U₀) → p x₀ ≡ ₁ → (x : Ω U₀) → p x ≡ ₁
 
     a : p ⊥ ≡ ₀ → A
     a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
