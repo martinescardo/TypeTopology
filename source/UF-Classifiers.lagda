@@ -6,6 +6,8 @@ generalization which is left undone for the moment.
  * (Σ \(X : U ̇) → X → Y) ≃ (Y → U ̇)
  * (Σ \(X : U ̇) → X ↪ Y) ≃ (Y → Ω U)
 
+NB. This files takes a long time to typecheck. I am not sure why.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split #-}
@@ -141,4 +143,7 @@ TODO. Consider a property "green" of types, and call a map green if
 its fibers are all green. Then the maps of Y into green types should
 correspond to the green maps X → Y. This generalizes the above
 situation. In particular, the case green = contractible is of interest
-and describes a previously known situation.
+and describes a previously known situation. Another example is that
+surjections X → Y is in bijection with familities Y → Σ (Z : U ̇) → ∥ Z
+∥), that is, families of inhabited types. It is not necessary that
+"green" is proposition valued. It can be universe valued in general.
