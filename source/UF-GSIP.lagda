@@ -52,11 +52,11 @@ structure = pr₂
 
 \end{code}
 
- If S comes with suitable data, including S-equiv discussed below, we
- can characterize equality in Σ S as equivalence of underlying sets
- subject to a suitable condition involving the data:
+ If S comes with suitable data, including S-preserving discussed
+ below, we can characterize equality in Σ S as equivalence of
+ underlying sets subject to a suitable condition involving the data:
 
-   (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B f e
+   (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-preserving A B f e
 
  It is important that such a condition is not necessarily property but
  actually data in general.
@@ -65,12 +65,12 @@ structure = pr₂
 
   (1) For an equivalence f : ⟨ A ⟩ → ⟨ B ⟩ we want data that
       establishes that it is an equivalence in the sense of
-      S-structure, in some abstract sense, specified by S-equiv.
+      S-structure, in some abstract sense, specified by S-preserving.
 
- One possible list of data for S and S-equiv is the following:
+ One possible list of data for S and S-preserving is the following:
 
-  (2) When f is the identity equivalence, we want the data S-equiv to
-      be given, and we name it S-refl.
+  (2) When f is the identity equivalence, we want the data
+      S-preserving to be given, and we name it S-refl.
 
   (3) Moreover, when f : ⟨ X , s ⟩ → ⟨ X , t ⟩ is the identity
       function, we want the data for (1) to give data for the equality
@@ -95,18 +95,18 @@ module gsip
 
   (S : U ̇ → V ̇)
 
-  (S-equiv : (A B : Σ S) (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
+  (S-preserving : (A B : Σ S) (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
 
-  (S-refl : (A : Σ S) → S-equiv A A id (id-is-equiv ⟨ A ⟩))
+  (S-refl : (A : Σ S) → S-preserving A A id (id-is-equiv ⟨ A ⟩))
 
   (S-≡-structure : (X : U ̇) (s t : S X)
-                 → S-equiv (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
+                 → S-preserving (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
 
   (S-transport : (A : Σ S)
                  (s : S ⟨ A ⟩)
-                 (υ : S-equiv A (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
+                 (υ : S-preserving A (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
                → transport
-                    (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ A ⟩))
+                    (λ - → S-preserving A (⟨ A ⟩ , -) id (id-is-equiv ⟨ A ⟩))
                     (S-≡-structure ⟨ A ⟩ (structure A) s υ)
                     (S-refl A)
                ≡ υ)
@@ -120,13 +120,13 @@ module gsip
 \begin{code}
 
   _≃ₛ_ : Σ S → Σ S → U ⊔ V ̇
-  A ≃ₛ B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B f e
+  A ≃ₛ B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-preserving A B f e
 
 \end{code}
 
   This defines an Σ S-equivalence to be an equivalence of underlying
   sets that is an S-structure equivalence in the sense abstractly
-  specified by the function S-equiv. Then the assumption S-refl allows
+  specified by the function S-preserving. Then the assumption S-refl allows
   us to have an equivalence of any element of Σ S with itself:
 
 \begin{code}
@@ -153,7 +153,7 @@ module gsip
 
   private
     Ψ : (A : Σ S) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ′ ⊔ V ̇
-    Ψ A Y (f , e) = (s : S Y) → S-equiv A (Y , s) f e → A ≡ (Y , s)
+    Ψ A Y (f , e) = (s : S Y) → S-preserving A (Y , s) f e → A ≡ (Y , s)
     ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     ψ A s υ = to-Σ-≡' (S-≡-structure ⟨ A ⟩ (structure A) s υ)
 
@@ -164,7 +164,7 @@ module gsip
 
   So far we have used the hypotheses
 
-     * S-equiv (to define _≡ₛ_),
+     * S-preserving (to define _≡ₛ_),
      * S-refl (to define idtoeqₛ), and
      * S-≡-structure (to define eqtoidₛ).
 
@@ -178,7 +178,7 @@ module gsip
    where
     Φ : (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⊔ V ̇
     Φ Y (f , e) = (s : S Y)
-                  (υ : S-equiv A (Y , s) f e)
+                  (υ : S-preserving A (Y , s) f e)
                 → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     φ s υ =
@@ -191,8 +191,8 @@ module gsip
       A' = ⟨ A ⟩ , s
       refl' : A ≃ₛ A'
       refl' = id , id-is-equiv ⟨ A ⟩ , υ
-      g : structure A ≡ s → S-equiv A A' id (id-is-equiv ⟨ A ⟩)
-      g p = transport (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ A ⟩)) p (S-refl A)
+      g : structure A ≡ s → S-preserving A A' id (id-is-equiv ⟨ A ⟩)
+      g p = transport (λ - → S-preserving A (⟨ A ⟩ , -) id (id-is-equiv ⟨ A ⟩)) p (S-refl A)
       h : (p : structure A ≡ s) → idtoeqₛ A A' (to-Σ-≡' p) ≡ id , id-is-equiv ⟨ A ⟩ , g p
       h refl = refl
       p : structure A ≡ s
@@ -393,18 +393,18 @@ module gsip-with-axioms
 
  (Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s))
 
- (S-equiv : (A B : Σ S) (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
+ (S-preserving : (A B : Σ S) (f : ⟨ A ⟩ → ⟨ B ⟩) → is-equiv f → U ⊔ V ̇)
 
- (S-refl : (A : Σ S) → S-equiv A A id (id-is-equiv ⟨ A ⟩))
+ (S-refl : (A : Σ S) → S-preserving A A id (id-is-equiv ⟨ A ⟩))
 
  (S-≡-structure : (X : U ̇) (s t : S X)
-                → S-equiv (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
+                → S-preserving (X , s) (X , t) id (id-is-equiv X) → s ≡ t)
 
  (S-transport : (A : Σ S)
                 (s : S ⟨ A ⟩)
-                (υ : S-equiv A (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
+                (υ : S-preserving A (⟨ A ⟩ , s) id (id-is-equiv ⟨ A ⟩))
               → transport
-                   (λ - → S-equiv A (⟨ A ⟩ , -) id (id-is-equiv ⟨ A ⟩))
+                   (λ - → S-preserving A (⟨ A ⟩ , -) id (id-is-equiv ⟨ A ⟩))
                    (S-≡-structure ⟨ A ⟩ (structure A) s υ)
                    (S-refl A)
               ≡ υ)
@@ -414,7 +414,7 @@ module gsip-with-axioms
    S' X = Σ \(s : S X) → Axioms X s
 
    S'-equiv : (A' B' : Σ S') (f : ⟨ A' ⟩ → ⟨ B' ⟩) → is-equiv f → U ⊔ V ̇
-   S'-equiv (X , s , α) (Y , t , β) f e = S-equiv (X , s) (Y , t) f e
+   S'-equiv (X , s , α) (Y , t , β) f e = S-preserving (X , s) (Y , t) f e
 
    S'-refl : (A' : Σ S') → S'-equiv A' A' id (id-is-equiv ⟨ A' ⟩)
    S'-refl (X , s , α) = S-refl (X , s)
@@ -438,7 +438,7 @@ module gsip-with-axioms
     υ' ∎
     where
      F : S X → U ⊔ V ̇
-     F t = S-equiv (X , s) (X  , t) id (id-is-equiv X)
+     F t = S-preserving (X , s) (X  , t) id (id-is-equiv X)
      f : (s , α) ≡ (t , β) → F t
      f q = transport (F ∘ pr₁) q (S-refl (X , s))
      g : s ≡ t → F t
