@@ -177,24 +177,24 @@ if the computation rule holds for the original JEq').
 
 \begin{code}
 
-JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
-JEq ua = pr₁ (JEq-improve (JEq' ua))
+abstract
+ JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
+ JEq ua = pr₁ (JEq-improve (JEq' ua))
 
-JEq-comp : ∀ {U} (ua : is-univalent U) {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
-        → JEq ua X A b X (≃-refl X) ≡ b
-JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
+ JEq-comp : ∀ {U} (ua : is-univalent U) {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
+         → JEq ua X A b X (≃-refl X) ≡ b
+ JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
 
-Eq-transport : ∀ {U} → is-univalent U
-            → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
-Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
+ Eq-transport : ∀ {U} → is-univalent U
+             → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
+ Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
-Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
-Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
-                 → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
+ Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
+ Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
+                  → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
 
-JEqUnbased : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
-JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
-
+ JEqUnbased : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
+ JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
 
 \end{code}
 

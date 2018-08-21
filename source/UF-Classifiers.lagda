@@ -6,8 +6,6 @@ generalization which is left undone for the moment.
  * (Σ \(X : U ̇) → X → Y) ≃ (Y → U ̇)
  * (Σ \(X : U ̇) → X ↪ Y) ≃ (Y → Ω U)
 
-NB. This files takes a long time to typecheck. I am not sure why.
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split #-}
@@ -50,27 +48,25 @@ module type-classifier
    γ : ∀ y → (Σ \(σ : Σ A) → pr₁ σ ≡ y) ≡ A y
    γ y = eqtoid ua _ _ (f y , ((g y , fg y) , (g y , gf y)))
 
- transport-map : ∀ {U} (ua : is-univalent U)
-                {X X' Y : U ̇} (e : X ≃ X') (g : X → Y)
+ transport-map : {X X' Y : U ̇} (e : X ≃ X') (g : X → Y)
              → transport (λ - → - → Y) (eqtoid ua X X' e) g
              ≡ g ∘ eqtofun (≃-sym e)
 
- transport-map {U} ua {X} {X'} {Y} e = JEq ua X A b X' e
+ transport-map {X} {X'} {Y} e g = τ (eqtoid ua X X' e) refl
   where
-   fe : funext U U
-   fe = funext-from-univalence ua
-   A : (X' : U ̇) → X ≃ X' → U ̇
-   A X' e = (g : X → Y)
-          → transport (λ (- : U ̇) → - → Y) (eqtoid ua X X' e) g
-          ≡ g ∘ eqtofun (≃-sym e)
-   b : A X (≃-refl X)
-   b g = transport (λ - → - → Y) (eqtoid ua X X (≃-refl X)) g
-                  ≡⟨ ap (λ - → transport (λ - → - → Y) - g) (eqtoid-refl ua X) ⟩
-         g ∎
+   τ : (p : X ≡ X')
+     → p ≡ eqtoid ua X X' e
+     → transport (λ - → - → Y) p g ≡ g ∘ eqtofun (≃-sym e)
+   τ refl q = ap (λ h → g ∘ h) s
+    where
+     r : idtoeq X X refl ≡ e
+     r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
+     s : id ≡ eqtofun (≃-sym e)
+     s = ap (λ - → eqtofun (≃-sym -)) r
 
  Tχ : (σ : Σ \(X : U ̇) → X → Y) → T(χ σ) ≡ σ
  Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                       transport-map ua (graph-domain-equiv f) pr₁)
+                       transport-map (graph-domain-equiv f) pr₁)
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
@@ -110,21 +106,21 @@ module subtype-classifier
                     ≡ g ∘ eqtofun (≃-sym e) , comp-embedding
                                                  (is-equiv-is-embedding (eqtofun (≃-sym e))
                                                                         (is-equiv-eqtofun (≃-sym e))) i
- transport-embedding {X} {X'} {Y} e = JEq ua X A b X' e
+ transport-embedding {X} {X'} {Y} e g i = τ (eqtoid ua X X' e) refl
   where
-   A : (X' : U ̇) → X ≃ X' → U ̇
-   A X' e = (g : X → Y) (i : is-embedding g)
-          → transport (λ (- : U ̇) → - ↪ Y) (eqtoid ua X X' e) (g , i)
-          ≡ g ∘ eqtofun (≃-sym e) ,
-            comp-embedding (is-equiv-is-embedding (eqtofun (≃-sym e))
-                           (is-equiv-eqtofun (≃-sym e))) i
-   b : A X (≃-refl X)
-   b g i = transport (λ - → - ↪ Y) (eqtoid ua X X (≃-refl X)) (g , i)
-                  ≡⟨ ap (λ - → transport (λ - → - ↪ Y) - (g , i)) (eqtoid-refl ua X) ⟩
-           g , i
-                  ≡⟨ to-Σ-≡' (is-embedding-is-prop fe fe g _ _) ⟩
-           g , comp-embedding
-               (is-equiv-is-embedding (eqtofun (≃-sym (≃-refl X))) (is-equiv-eqtofun (≃-sym (≃-refl X)))) i ∎
+   τ : (p : X ≡ X')
+     → p ≡ eqtoid ua X X' e
+     → transport (λ - → - ↪ Y) p (g , i)
+     ≡ g ∘ eqtofun (≃-sym e) , comp-embedding
+                                  (is-equiv-is-embedding (eqtofun (≃-sym e))
+                                                         (is-equiv-eqtofun (≃-sym e))) i
+   τ refl q = to-Σ-≡ (ap (λ h → g ∘ h) s ,
+                      is-embedding-is-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
+    where
+     r : idtoeq X X refl ≡ e
+     r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
+     s : id ≡ eqtofun (≃-sym e)
+     s = ap (λ - → eqtofun (≃-sym -)) r
 
  Tχ : (σ : Σ \(X : U ̇) → X ↪ Y) → T(χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
