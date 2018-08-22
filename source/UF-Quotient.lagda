@@ -182,6 +182,15 @@ quotient. What is noteworthy here, regarding universes, is that the
 universal property says that we can eliminate into any type of any
 universe W.
 
+                   η
+              X ------> X/≈
+               \       /
+                \     /
+             f   \   / f'
+                  \ /
+                   v
+                   A
+
 \begin{code}
 
  universal-property : ∀ {W} (A : W ̇)
