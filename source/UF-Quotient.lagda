@@ -1,24 +1,30 @@
-Martin Escardo August 2018.
+Martin Escardo, August 2018.
 
-Quotients in univalent mathematics in Agda.
+Set quotients in univalent mathematics in Agda.
 
-During the Dagstuhl meeting "Formalization of Mathematics in Type
-Theory", because Dan Grayson wanted to see how universe levels work in
-Agda and I thought that this would be a nice example.
+This took place during the Dagstuhl meeting "Formalization of
+Mathematics in Type Theory", because Dan Grayson wanted to see how
+universe levels work in Agda and I thought that this would be a nice
+example to illustrate that.
 
 We assume, in addition to Spartan Martin-Löf type theory,
 
- * function extensionality,
- * propositional extensionality,
- * propositional truncation,
+ * function extensionality
+   (any two pointwise equal functions are equal),
+
+ * propositional extensionality
+   (any two logically equivalent propositions are equal),
+
+ * propositional truncation
+   (any type can be universally mapped into a subsingleton),
 
 and no resizing axioms.
 
-The K axiom is not used (the without-K option). We also make sure
-pattern matching corresponds to Martin-Löf eliminators, using the
-option "exact split". With the option "safe" we make sure that nothing
+The K axiom is not used (the without-K option below). We also make
+sure pattern matching corresponds to Martin-Löf eliminators, using the
+option exact-split. With the option safe we make sure that nothing
 is postulated - any non-MLTT axiom has to be an explicit assumption
-(argument to a function or module).
+(argument to a function or a module).
 
 \begin{code}
 
@@ -51,6 +57,9 @@ themselves.)
 Then, for example, the function is-prop-valued defined below takes
 values in least upper bound of U and V, which is denoted by U ⊔ V.
 
+We first define the type of five functions and then define them, where
+_≈_ is a variable:
+
 \begin{code}
 
 is-prop-valued
@@ -66,17 +75,13 @@ symmetric      _≈_ = ∀ x y → x ≈ y → y ≈ x
 transitive     _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
 equivalence    _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
 
-preserves : ∀ {U V W T} {X : U ̇} {Y : V ̇}
-         → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
-preserves _≈_ _≈'_ f = ∀ {x x'} → x ≈ x' → f x ≈' f x'
-
 \end{code}
 
-Now, using an anonymous module with parameters, we assume
-propositional truncations that stay in the same universe, function
-extensionality for all universes, two universes U and V, propositional
-truncation for the universe V, a type X : U ̇, and an equivalence
-relation _≈_ with values in V ̇.
+Now, using an anonymous module with parameters (corresponding to a
+section in Coq), we assume propositional truncations that stay in the
+same universe, function extensionality for all universes, two
+universes U and V, propositional truncation for the universe V, a type
+X : U ̇, and an equivalence relation _≈_ with values in V ̇.
 
 \begin{code}
 
@@ -103,8 +108,8 @@ h-propositions, or mere propositions, in the universe V, which lives
 in the next universe V ′.
 
 From the relation _≈_ : X → (X → V ̇) we define a relation
-X → (X → Ω V), which of course is formally a function. Then take the
-quotient X/≈ to be the image of this function.
+X → (X → Ω V), which of course is formally a function. We then take
+the quotient X/≈ to be the image of this function.
 
 Of course, it is for constructing the image that we need propositional
 truncations.
@@ -179,15 +184,15 @@ We need the fact that η reflects equality into equivalence:
 
 We are now ready to formulate and prove the universal property of the
 quotient. What is noteworthy here, regarding universes, is that the
-universal property says that we can eliminate into any type of any
+universal property says that we can eliminate into any type A of any
 universe W.
 
                    η
               X ------> X/≈
-               \       /
-                \     /
-             f   \   / f'
-                  \ /
+               \       .
+                \     .
+               f \   . f'
+                  \ .
                    v
                    A
 
@@ -207,8 +212,7 @@ universe W.
       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ptisp _ _)
        where
         h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
-         → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
-         → a ≡ b
+         → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))         → a ≡ b
         h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ pr (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
 
         p : a ≡ b
@@ -255,6 +259,5 @@ universe W.
 
    ic : is-singleton (Σ \(f' : X/≈ → A) → f' ∘ η ≡ f)
    ic = (f' , r) , c
-
 
 \end{code}
