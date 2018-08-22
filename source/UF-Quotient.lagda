@@ -1,6 +1,6 @@
 Martin Escardo, August 2018.
 
-Set quotients in univalent mathematics in Agda.
+Set quotients in univalent mathematics in Agda notation.
 
 This took place during the Dagstuhl meeting "Formalization of
 Mathematics in Type Theory", because Dan Grayson wanted to see how
@@ -16,7 +16,8 @@ We assume, in addition to Spartan Martin-Löf type theory,
    (any two logically equivalent propositions are equal),
 
  * propositional truncation
-   (any type can be universally mapped into a subsingleton),
+   (any type can be universally mapped into a subsingleton in the same
+   universe),
 
 and no resizing axioms.
 
@@ -42,7 +43,7 @@ module UF-Quotient where
 \end{code}
 
 We define when a relation is subsingleton (or proposition) valued,
-reflexive, transitive and an equivalence.
+reflexive, transitive or an equivalence.
 
 What is noteworthy, for the purpose of explaining universes in Agda to
 Dan, is that X is in a universe U, and the value of the relation is in
@@ -55,7 +56,7 @@ also because it places emphasis on levels rather than universes
 themselves.)
 
 Then, for example, the function is-prop-valued defined below takes
-values in least upper bound of U and V, which is denoted by U ⊔ V.
+values in the least upper bound of U and V, which is denoted by U ⊔ V.
 
 We first define the type of five functions and then define them, where
 _≈_ is a variable:
@@ -86,7 +87,7 @@ X : U ̇, and an equivalence relation _≈_ with values in V ̇.
 \begin{code}
 
 module _
-       (pt : PropTrunc)
+       (pt  : PropTrunc)
        (fe  : ∀ U V → funext U V)
        {U V : Universe}
        (pe  : propext V)
@@ -121,7 +122,7 @@ truncations.
 
 \end{code}
 
-Then the quotient lives in the least upper bound of U and V ′, where V
+Then the quotient lives in the least upper bound of U and V ′, where V ′
 is the successor of the universe V:
 
 \begin{code}
@@ -137,10 +138,10 @@ is the successor of the universe V:
 
 \end{code}
 
-Then η is the universal solution to the problem of transforming _≈_
-into equality _≡_ (in Agda the notation for the identity type is _≡_ -
-we can't use _=_ because this is a reserved symbol for definitional
-equality).
+Then η is the universal solution to the problem of transforming
+equivalence _≈_ into equality _≡_ (in Agda the notation for the
+identity type is _≡_ - we can't use _=_ because this is a reserved
+symbol for definitional equality).
 
 By construction, η is a surjection, of course:
 
@@ -152,7 +153,7 @@ By construction, η is a surjection, of course:
 \end{code}
 
 It is convenient to use the following induction principle for
-reasoning about the image. Note that the property we consider has
+reasoning about the image. Notice that the property we consider has
 values in any universe W we please:
 
 \begin{code}
@@ -184,7 +185,7 @@ We need the fact that η reflects equality into equivalence:
 
 We are now ready to formulate and prove the universal property of the
 quotient. What is noteworthy here, regarding universes, is that the
-universal property says that we can eliminate into any type A of any
+universal property says that we can eliminate into any set A of any
 universe W.
 
                    η
@@ -199,11 +200,11 @@ universe W.
 \begin{code}
 
  universal-property : ∀ {W} (A : W ̇)
+                   → is-set A
                    → (f : X → A)
                    → ({x x' : X} → x ≈ x' → f x ≡ f x')
-                   → is-set A
                    → is-singleton (Σ \(f' : X/≈ → A) → f' ∘ η ≡ f)
- universal-property {W} A f pr iss = ic
+ universal-property {W} A iss f pr = ic
   where
    φ : (x' : X/≈) → is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
    φ = η-induction _ γ induction-step
