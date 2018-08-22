@@ -328,6 +328,7 @@ import UF-KrausLemma
 import UF-LeftCancellable
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
+import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
 import UF-SetExamples

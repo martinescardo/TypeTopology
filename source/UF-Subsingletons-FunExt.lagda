@@ -124,6 +124,10 @@ PropExt {U} fe pe {p} {q} f g =
   pc : {p q : Ω U} → Σ \(f : p ≡ q → p ≡ q) → constant f
   pc {p} {q} = (f p q , constant-f p q)
 
+powerset-is-set : ∀ {U V} {A : U ̇} → funext U (V ′) → funext V V → propext V
+                → is-set (A → Ω V)
+powerset-is-set {U} fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
+
 neg-is-prop : ∀ {U} {X : U ̇} → funext U U₀ → is-prop(¬ X)
 neg-is-prop fe u v = dfunext fe (λ x → 𝟘-elim (u x))
 

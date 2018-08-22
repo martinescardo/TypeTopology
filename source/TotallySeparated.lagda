@@ -787,15 +787,6 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-  The following fact plays a crucial role.
-
-\begin{code}
-
-  powerset-is-set : ∀ {W} {A : W ̇} → is-set (A → Ω V)
-  powerset-is-set {W} = Π-is-set (fe W (V ′)) (λ x → Ω-is-set (fe V V) pe)
-
-\end{code}
-
   Initially we tried to work with the function apart : X → (X → V ̇)
   defined by apart = _♯_. However, at some point in the development
   below it was difficult to proceed, when we need that the identity
@@ -851,7 +842,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subset-of-set-is-set (X → Ω V) _ powerset-is-set ptisp
+  X'-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ′)) (fe V V) pe) ptisp
 
   η : X → X'
   η = corestriction apart
