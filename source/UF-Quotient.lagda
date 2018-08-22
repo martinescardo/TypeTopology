@@ -14,11 +14,11 @@ We assume, in addition to Spartan Martin-Löf type theory,
 
 and no resizing axioms.
 
-The K axiom is not used. We also make sure pattern matching correspond
-no Martin-Löf eliminators, using the option "exact split". With the
-option "safe" we make sure that nothing is postulated - any non-MLTT
-axiom has to be an explicit assumption (argument to a function or
-module).
+The K axiom is not used (the without-K option). We also make sure
+pattern matching corresponds to Martin-Löf eliminators, using the
+option "exact split". With the option "safe" we make sure that nothing
+is postulated - any non-MLTT axiom has to be an explicit assumption
+(argument to a function or module).
 
 \begin{code}
 
@@ -49,7 +49,7 @@ also because it places emphasis on levels rather than universes
 themselves.)
 
 Then, for example, the function is-prop-valued defined below takes
-values in the first universe after U and V, which is denoted by U ⊔ V.
+values in least upper bound of U and V, which is denoted by U ⊔ V.
 
 \begin{code}
 
@@ -73,9 +73,10 @@ preserves _≈_ _≈'_ f = ∀ {x x'} → x ≈ x' → f x ≈' f x'
 \end{code}
 
 Now, using an anonymous module with parameters, we assume
-propositional trunctions, function extensionality for all universes,
-two universe U and V, propositional truncation for the universe V, a
-type X : U ̇, and an equivalence relation _≈_ with values in V ̇.
+propositional truncations that stay in the same universe, function
+extensionality for all universes, two universes U and V, propositional
+truncation for the universe V, a type X : U ̇, and an equivalence
+relation _≈_ with values in V ̇.
 
 \begin{code}
 
@@ -102,7 +103,7 @@ h-propositions, or mere propositions, in the universe V, which lives
 in the next universe V ′.
 
 From the relation _≈_ : X → (X → V ̇) we define a relation
-X → (X → Ω V), which of course is formally a function. The take the
+X → (X → Ω V), which of course is formally a function. Then take the
 quotient X/≈ to be the image of this function.
 
 Of course, it is for constructing the image that we need propositional
@@ -115,7 +116,7 @@ truncations.
 
 \end{code}
 
-Then the quotient lives in the first universe after U and V ′, where V
+Then the quotient lives in the least upper bound of U and V ′, where V
 is the successor of the universe V:
 
 \begin{code}
