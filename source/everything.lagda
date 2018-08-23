@@ -37,7 +37,6 @@ import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import InfSearchable
-import LeftOvers
 import LexicographicOrder
 import LexicographicSearch
 import LPO
@@ -79,7 +78,6 @@ import UF-FunExt
 import UF-FunExt-from-Naive-FunExt
 import UF-FunExt-from-Naive-FunExt-alternate
 import UF-GSIP
-import UF-Historic
 import UF-IdEmbedding
 import UF-ImageAndSurjection
 import UF-InjectiveTypes
