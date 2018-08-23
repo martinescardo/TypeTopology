@@ -52,6 +52,7 @@ import Ordinals
 import OrdinalArithmetic
 import OrdinalsClosure
 import OrdinalOfOrdinals
+import OrdinalsWellOrderArithmetic
 import PlusOneLC
 import PropTychonoff
 import PropInfTychonoff
@@ -99,7 +100,6 @@ import UF-UA-FunExt
 import UF-Univalence
 import UF-Yoneda
 import UnivalenceFromScratch
-import WellOrderArithmetic
 import WLPO
 
 \end{code}

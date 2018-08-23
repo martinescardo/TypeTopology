@@ -21,7 +21,7 @@ module OrdinalArithmetic
 
 open import Ordinals fe
 open import UF-Subsingletons
-open import WellOrderArithmetic
+open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import UF-Embedding

@@ -16,7 +16,7 @@ open import SpartanMLTT
 open import Ordinals fe
 open import OrdinalArithmetic fe
 open import OrdinalNotions hiding (_≤_)
-open import WellOrderArithmetic
+open import OrdinalsWellOrderArithmetic
 open import SearchableTypes
 open import UF-Base
 open import UF-Equiv

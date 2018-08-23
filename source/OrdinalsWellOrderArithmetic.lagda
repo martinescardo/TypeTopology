@@ -8,7 +8,7 @@ still use the terminology "ordinal" here.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module WellOrderArithmetic where
+module OrdinalsWellOrderArithmetic where
 
 open import SpartanMLTT
 open import OrdinalNotions hiding (_≤_)
