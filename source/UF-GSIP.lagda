@@ -36,8 +36,8 @@ module UF-GSIP where
 
 \end{code}
 
-We consider the type Σ S of types X : U ̇ equipped with structure s : S
-X, where the universe U is univalent and S : U ̇ → V ̇ is a parameter:
+We consider the type Σ S of types X : U ̇ equipped with structure s : S X,
+where the universe U is univalent and S : U ̇ → V ̇ is a parameter:
 
 The underlying set and structure are given by the first and second
 projections:
@@ -413,21 +413,21 @@ module gsip-with-axioms
    S' : U ̇ → V ̇
    S' X = Σ \(s : S X) → Axioms X s
 
-   S'-equiv : (A' B' : Σ S') (f : ⟨ A' ⟩ → ⟨ B' ⟩) → is-equiv f → U ⊔ V ̇
-   S'-equiv (X , s , α) (Y , t , β) f e = S-preserving (X , s) (Y , t) f e
+   S'-preserving : (A' B' : Σ S') (f : ⟨ A' ⟩ → ⟨ B' ⟩) → is-equiv f → U ⊔ V ̇
+   S'-preserving (X , s , α) (Y , t , β) f e = S-preserving (X , s) (Y , t) f e
 
-   S'-refl : (A' : Σ S') → S'-equiv A' A' id (id-is-equiv ⟨ A' ⟩)
+   S'-refl : (A' : Σ S') → S'-preserving A' A' id (id-is-equiv ⟨ A' ⟩)
    S'-refl (X , s , α) = S-refl (X , s)
 
    S'-≡-structure : (X : U ̇) (s' t' : S' X)
-                  → S'-equiv (X , s') (X , t') id (id-is-equiv X) → s' ≡ t'
+                  → S'-preserving (X , s') (X , t') id (id-is-equiv X) → s' ≡ t'
    S'-≡-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-≡-structure X s t υ' , Axioms-is-prop X t _ _)
 
    S'-transport : (A' : Σ S')
                   (s' : S' ⟨ A' ⟩)
-                  (υ' : S'-equiv A' (⟨ A' ⟩ , s') id (id-is-equiv ⟨ A' ⟩))
+                  (υ' : S'-preserving A' (⟨ A' ⟩ , s') id (id-is-equiv ⟨ A' ⟩))
                 → transport
-                     (λ - → S'-equiv A' (⟨ A' ⟩ , -) id (id-is-equiv ⟨ A' ⟩))
+                     (λ - → S'-preserving A' (⟨ A' ⟩ , -) id (id-is-equiv ⟨ A' ⟩))
                      (S'-≡-structure ⟨ A' ⟩ (structure A') s' υ')
                      (S'-refl A')
                 ≡ υ'
@@ -446,7 +446,7 @@ module gsip-with-axioms
      r : ap pr₁ (S'-≡-structure X (s , α) (t , β) υ') ≡ S-≡-structure X s t υ'
      r = ap-pr₁-to-Σ-≡ _
 
-   open gsip U V ua S' S'-equiv S'-refl S'-≡-structure S'-transport public
+   open gsip U V ua S' S'-preserving S'-refl S'-≡-structure S'-transport public
 
 \end{code}
 
