@@ -9,6 +9,104 @@
 
    https://github.com/martinescardo/TypeTopology
 
+   Clickable index:
+
+\begin{code}
+
+{-# OPTIONS --without-K --exact-split --safe #-}
+
+import 2CompactTypes
+import ADecidableQuantificationOverTheNaturals
+import ArithmeticViaEquivalence
+import BasicDiscontinuityTaboo
+import BinaryNaturals
+import CantorSearchable
+import CoNaturalsExercise
+import CoNaturals
+import ConvergentSequenceInfSearchable
+import ConvergentSequenceSearchable
+import CountableTychonoff
+import DecidabilityOfNonContinuity
+import DecidableAndDetachable
+import DiscreteAndSeparated
+import Dominance
+import DummettDisjunction
+import ExhaustibleTypes
+import ExtendedSumSearchable
+import FailureOfTotalSeparatedness
+import GenericConvergentSequence
+import HiggsInvolutionTheorem
+import InfSearchable
+import LeftOvers
+import LexicographicOrder
+import LexicographicSearch
+import LPO
+import Lumsdaine
+import NaturalsAddition
+import NaturalsOrder
+import NonCollapsibleFamily
+import OmniscientTypes
+import OrdinalNotions
+import OrdinalCodes
+import Ordinals
+import OrdinalArithmetic
+import OrdinalsClosure
+import OrdinalOfOrdinals
+import PlusOneLC
+import PropTychonoff
+import PropInfTychonoff
+import RicesTheoremForTheUniverse
+import RootsTruncation
+import SearchableOrdinals
+import SearchableTypes
+import Sequence
+import SimpleTypes
+import SpartanMLTT
+import SquashedCantor
+import SquashedSum
+import TheTopologyOfTheUniverse
+import TotallySeparated
+import Universes
+import UF-Base
+import UF-Choice
+import UF-Classifiers
+import UF-Embedding
+import UF-EquivalenceExamples
+import UF-Equiv-FunExt
+import UF-Equiv
+import UF-FunExt
+import UF-FunExt-from-Naive-FunExt
+import UF-FunExt-from-Naive-FunExt-alternate
+import UF-GSIP
+import UF-Historic
+import UF-IdEmbedding
+import UF-ImageAndSurjection
+import UF-InjectiveTypes
+import UF-Knapp-UA
+import UF-KrausLemma
+import UF-LeftCancellable
+import UF-PropIndexedPiSigma
+import UF-PropTrunc
+import UF-Quotient
+import UF-Retracts
+import UF-Retracts-FunExt
+import UF-SetExamples
+import UF-Subsingletons
+import UF-Subsingletons-Equiv
+import UF-Subsingletons-FunExt
+import UF-Two-Prop-Density
+import UF-UA-FunExt
+import UF-Univalence
+import UF-Yoneda
+import UnivalenceFromScratch
+import WellOrderArithmetic
+import WLPO
+
+\end{code}
+
+Old blurb. I want to completely rewrite this eventually.
+
+
    September 2017. This version removes the module CurryHoward, so
    that we use the symbols Σ and + rather than ∃ and ∨. This is to be
    compatible with univalent logic. We also make our development more
@@ -38,12 +136,6 @@
    retracts of the Cantor space and hence totally separated. This
    required work on several modules, and in particular the new module
    SquashedCantor.
-
-\begin{code}
-
-{-# OPTIONS --without-K --exact-split --safe #-}
-
-\end{code}
 
 You can navigate this set of files by clicking at words or
 symbols to get to their definitions.
@@ -250,96 +342,4 @@ import 2CompactTypes
 import SimpleTypes
 import FailureOfTotalSeparatedness
 
-\end{code}
-
-All modules, to check compilation.
-
-\begin{code}
-
-import 2CompactTypes
-import ADecidableQuantificationOverTheNaturals
-import ArithmeticViaEquivalence
-import BasicDiscontinuityTaboo
-import BinaryNaturals
-import CantorSearchable
-import CoNaturalsExercise
-import CoNaturals
-import ConvergentSequenceInfSearchable
-import ConvergentSequenceSearchable
-import CountableTychonoff
-import DecidabilityOfNonContinuity
-import DecidableAndDetachable
-import DiscreteAndSeparated
-import Dominance
-import DummettDisjunction
-import ExhaustibleTypes
-import ExtendedSumSearchable
-import FailureOfTotalSeparatedness
-import GenericConvergentSequence
-import HiggsInvolutionTheorem
-import InfSearchable
-import LeftOvers
-import LexicographicOrder
-import LexicographicSearch
-import LPO
-import Lumsdaine
-import NaturalsAddition
-import NaturalsOrder
-import NonCollapsibleFamily
-import OmniscientTypes
-import OrdinalNotions
-import OrdinalCodes
-import Ordinals
-import OrdinalArithmetic
-import OrdinalsClosure
-import OrdinalOfOrdinals
-import PlusOneLC
-import PropTychonoff
-import PropInfTychonoff
-import RicesTheoremForTheUniverse
-import RootsTruncation
-import SearchableOrdinals
-import SearchableTypes
-import Sequence
-import SimpleTypes
-import SpartanMLTT
-import SquashedCantor
-import SquashedSum
-import TheTopologyOfTheUniverse
-import TotallySeparated
-import Universes
-import UF-Base
-import UF-Choice
-import UF-Classifiers
-import UF-Embedding
-import UF-EquivalenceExamples
-import UF-Equiv-FunExt
-import UF-Equiv
-import UF-FunExt
-import UF-FunExt-from-Naive-FunExt
-import UF-FunExt-from-Naive-FunExt-alternate
-import UF-GSIP
-import UF-Historic
-import UF-IdEmbedding
-import UF-ImageAndSurjection
-import UF-InjectiveTypes
-import UF-Knapp-UA
-import UF-KrausLemma
-import UF-LeftCancellable
-import UF-PropIndexedPiSigma
-import UF-PropTrunc
-import UF-Quotient
-import UF-Retracts
-import UF-Retracts-FunExt
-import UF-SetExamples
-import UF-Subsingletons
-import UF-Subsingletons-Equiv
-import UF-Subsingletons-FunExt
-import UF-Two-Prop-Density
-import UF-UA-FunExt
-import UF-Univalence
-import UF-Yoneda
-import UnivalenceFromScratch
-import WellOrderArithmetic
-import WLPO
 \end{code}
