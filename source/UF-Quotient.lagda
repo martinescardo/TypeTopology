@@ -95,8 +95,8 @@ module _
        (_≈_ : X → X → V ̇)
        (≈p  : is-prop-valued _≈_)
        (≈r  : reflexive _≈_)
-       (≈s  : symmetric _≈_)
-       (≈t  : transitive _≈_)
+--     (≈s  : symmetric _≈_)  -- not needed
+--     (≈t  : transitive _≈_) -- not needed
       where
 
  open PropositionalTruncation pt
