@@ -95,8 +95,8 @@ module _
        (_≈_ : X → X → V ̇)
        (≈p  : is-prop-valued _≈_)
        (≈r  : reflexive _≈_)
---     (≈s  : symmetric _≈_)  -- not needed
---     (≈t  : transitive _≈_) -- not needed
+       (≈s  : symmetric _≈_)
+       (≈t  : transitive _≈_)
       where
 
  open PropositionalTruncation pt
@@ -166,7 +166,20 @@ values in any universe W we please:
 
 \end{code}
 
-We need the fact that η reflects equality into equivalence:
+The first part of the universal property of η says that equivalent
+points are mapped to equal points:
+
+\begin{code}
+
+ η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
+ η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe U (V ′))
+                                      (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
+                                                      is-prop-is-prop (fe V V) _ _)) ,
+                                    ptisp _ _)
+
+\end{code}
+
+We also need the fact that η reflects equality into equivalence:
 
 \begin{code}
 
