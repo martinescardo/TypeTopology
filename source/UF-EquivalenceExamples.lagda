@@ -13,10 +13,10 @@ open import UF-FunExt
 
 module UF-EquivalenceExamples where
 
-Curry-Uncurry : (fe : ∀ U V → funext U V)
+curry-uncurry : (fe : ∀ U V → funext U V)
              → ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
-Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
+curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
    where
     c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
     c f x y = f (x , y)
@@ -97,8 +97,8 @@ Curry-Uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
       GF' : (x : X) → H(F w) x ≡ w x
       GF' x = hf x (w x)
 
-equiv[𝟙×Y≃Y] : ∀ {U V} {Y : U ̇} → 𝟙 × Y ≃ Y
-equiv[𝟙×Y≃Y] {U} {V} {Y} = (f , (g , fg) , (g , gf))
+𝟙-lneutral : ∀ {U V} {Y : U ̇} → 𝟙 × Y ≃ Y
+𝟙-lneutral {U} {V} {Y} = (f , (g , fg) , (g , gf))
   where
     f : 𝟙 {V} × Y → Y
     f (* , y) = y
@@ -109,9 +109,8 @@ equiv[𝟙×Y≃Y] {U} {V} {Y} = (f , (g , fg) , (g , gf))
     gf : ∀ z → g (f z) ≡ z
     gf (* , y) = refl
 
-
-equiv[X×Y≃Y×X] : ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
-equiv[X×Y≃Y×X] {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
+×-comm : ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
+×-comm {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
    where
     f : X × Y → Y × X
     f (x , y) = (y , x)
@@ -122,40 +121,13 @@ equiv[X×Y≃Y×X] {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
     gf : ∀ t → g (f t) ≡ t
     gf t = refl
 
-equiv[Y×𝟙≃Y] : ∀ {U V} {Y : U ̇} → Y × 𝟙 ≃ Y
-equiv[Y×𝟙≃Y] {U} {V} {Y} =
-              Y × 𝟙 ≃⟨ equiv[X×Y≃Y×X] ⟩
-              𝟙 × Y ≃⟨ equiv[𝟙×Y≃Y] {U} {V} ⟩
+𝟙-rneutral : ∀ {U V} {Y : U ̇} → Y × 𝟙 ≃ Y
+𝟙-rneutral {U} {V} {Y} =
+              Y × 𝟙 ≃⟨ ×-comm ⟩
+              𝟙 × Y ≃⟨ 𝟙-lneutral {U} {V} ⟩
               Y ■
 
-equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] : ∀ {U V W T} {X : U ̇} {X' : V ̇} {Y : W ̇} {Y' : T ̇}
-                                  → X ≃ X' → Y ≃ Y' → X × Y ≃ X' × Y'
-equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
-                                  (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))
-   = (f'' , (g'' , fg'') , (h'' , hf''))
-   where
-    f'' : X × Y → X' × Y'
-    f'' (x , y) = (f x , f' y)
-    g'' : X' × Y' → X × Y
-    g'' (x' , y') = (g x' , g' y')
-    h'' : X' × Y' → X × Y
-    h'' (x' , y') = (h x' , h' y')
-    fg'' : ∀ z' → f'' (g'' z') ≡ z'
-    fg''(x' , y') = ap₂ _,_ lemma₀ lemma₁
-     where
-      lemma₀ : f(g x') ≡ x'
-      lemma₀ = fg x'
-      lemma₁ : f'(g' y') ≡ y'
-      lemma₁ = fg' y'
-    hf'' : ∀ z → h'' (f'' z) ≡ z
-    hf''(x' , y') = ap₂ _,_ lemma₀ lemma₁
-      where
-       lemma₀ : h(f x') ≡ x'
-       lemma₀ = hf x'
-       lemma₁ : h'(f' y') ≡ y'
-       lemma₁ = hf' y'
-
-+comm : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X + Y) ≃ (Y + X)
++comm : ∀ {U V} {X : U ̇} {Y : V ̇} → X + Y ≃ Y + X
 +comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
   where
     f : X + Y → Y + X
@@ -171,7 +143,7 @@ equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
     η (inl x) = refl
     η (inr y) = refl
 
-𝟘-rneutral : ∀ {U V} {X : U ̇} → X ≃ (X + 𝟘)
+𝟘-rneutral : ∀ {U V} {X : U ̇} → X ≃ X + 𝟘
 𝟘-rneutral {U} {V} {X} = f , (g , ε) , (g , η)
   where
     f : X → X + 𝟘 {V}
@@ -185,15 +157,15 @@ equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
     η : (x : X) → (g ∘ f) x ≡ x
     η x = refl
 
-𝟘-rneutral' : ∀ {U V} {X : U ̇} → (X + 𝟘) ≃ X
+𝟘-rneutral' : ∀ {U V} {X : U ̇} → X + 𝟘 ≃ X
 𝟘-rneutral' {U} {V} = ≃-sym (𝟘-rneutral {U} {V})
 
-𝟘-lneutral : ∀ {U V} {X : U ̇} → (𝟘 + X) ≃ X
+𝟘-lneutral : ∀ {U V} {X : U ̇} → 𝟘 + X ≃ X
 𝟘-lneutral {U} {V} {X} = (𝟘 + X) ≃⟨ +comm ⟩
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {U} {V} ⟩
                          X ■
 
-+assoc : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {Z : W ̇} → ((X + Y) + Z) ≃ (X + (Y + Z))
++assoc : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → (X + Y) + Z ≃ X + (Y + Z)
 +assoc {U} {V} {W} {X} {Y} {Z} = f , (g , ε) , (g , η)
   where
     f : (X + Y) + Z → X + (Y + Z)
@@ -246,7 +218,7 @@ equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
     η : (u : 𝟘) → (g ∘ f) u ≡ u
     η ()
 
-𝟙distr : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} → (X × Y + X) ≃ X × (Y + 𝟙)
+𝟙distr : ∀ {U V W} {X : U ̇} {Y : V ̇} → X × Y + X ≃ X × (Y + 𝟙)
 𝟙distr {U} {V} {W} {X} {Y} = f , (g , ε) , (g , η)
   where
     f : X × Y + X → X × (Y + 𝟙 {W})
@@ -262,7 +234,7 @@ equiv[X≃X'→Y≃Y'→[X×Y]≃[X'×Y']] {U} {V} {W} {T} {X} {X'} {Y} {Y'}
     η (inl (x , y)) = refl
     η (inr x)       = refl
 
-Ap+ : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} (Z : W ̇) → X ≃ Y → (X + Z) ≃ (Y + Z)
+Ap+ : ∀ {U V W} {X : U ̇} {Y : V ̇} (Z : W ̇) → X ≃ Y → X + Z ≃ Y + Z
 Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η')
   where
     f' : X + Z → Y + Z
@@ -281,7 +253,7 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     η' (inl x) = ap inl (η x)
     η' (inr z) = refl
 
-×comm :  ∀ {U} {V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
+×comm :  ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
 ×comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
   where
     f : X × Y → Y × X
@@ -292,5 +264,87 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     ε (y , x) = refl
     η : (u : X × Y) → (g ∘ f) u ≡ u
     η (x , y) = refl
+
+×-cong : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
+      → X ≃ A → Y ≃ B → X × Y ≃ A × B
+×-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
+ F , (G , E) , (G' , D)
+ where
+  F : X × Y → A × B
+  F (x , y) = f x , φ y
+  G : A × B → X × Y
+  G (a , b) = g a , γ b
+  G' : A × B → X × Y
+  G' (a , b) = g' a , γ' b
+  E : (c : A × B) → F (G c) ≡ c
+  E (a , b) = ×-≡ (e a) (ε b)
+  D : (z : X × Y) → G' (F z) ≡ z
+  D (x , y) = ×-≡ (d x) (δ y)
+
+𝟘→ : ∀ {U V W} {X : U ̇} → funext W U
+   → 𝟙 ≃ (𝟘 → X)
+𝟘→ {U} {V} {W} {X} fe = f , (g , ε) , (g , η)
+ where
+  f : 𝟙 {V} → 𝟘 {W} → X
+  f * ()
+  g : (𝟘 → X) → 𝟙
+  g h = *
+  ε : (h : 𝟘 → X) → f (g h) ≡ h
+  ε h = dfunext fe (λ z → 𝟘-elim z)
+  η : (y : 𝟙) → g (f y) ≡ y
+  η * = refl
+
+𝟙→ : ∀ {U V} {X : U ̇} → funext V U
+   → X ≃ (𝟙 → X)
+𝟙→ {U} {V} {X} fe = f , (g , ε) , (g , η)
+ where
+  f : X → 𝟙 {V} → X
+  f x * = x
+  g : (𝟙 → X) → X
+  g h = h *
+  ε : (h : 𝟙 → X) → f (g h) ≡ h
+  ε h = dfunext fe γ
+   where
+    γ : (t : 𝟙) → f (g h) t ≡ h t
+    γ * = refl
+  η : (x : X) → g (f x) ≡ x
+  η x = refl
+
++→ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → funext (U ⊔ V) W
+   → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
++→ {U} {V} {W} {X} {Y} {Z} fe = f , (g , ε) , (g , η)
+ where
+  f : (X + Y → Z) → (X → Z) × (Y → Z)
+  f h = h ∘ inl , h ∘ inr
+  g : (X → Z) × (Y → Z) → X + Y → Z
+  g (l , r) (inl x) = l x
+  g (l , r) (inr y) = r y
+  ε : (w : (X → Z) × (Y → Z)) → f (g w) ≡ w
+  ε (l , r) = refl
+  η : (h : X + Y → Z) → g (f h) ≡ h
+  η h = dfunext fe γ
+   where
+    γ : (t : X + Y) → g (f h) t ≡ h t
+    γ (inl x) = refl
+    γ (inr y) = refl
+
+→-cong : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
+       → funext V T
+       → funext U W
+       → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
+→-cong {U} {V} {W} {T} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =
+ H (is-equiv-qinv f i) (is-equiv-qinv φ j)
+ where
+  H : qinv f → qinv φ → (X → Y) ≃ (A → B)
+  H (g , e , d) (γ , ε , δ) =  F , (G , E) , (G , D)
+   where
+    F : (X → Y) → (A → B)
+    F h = φ ∘ h ∘ g
+    G : (A → B) → (X → Y)
+    G k = γ ∘ k ∘ f
+    E : (k : A → B) → F (G k) ≡ k
+    E k = dfunext fe (λ a → δ (k (f (g a))) ∙ ap k (d a))
+    D : (h : X → Y) → G (F h) ≡ h
+    D h = dfunext fe' (λ x → ε (h (g (f x))) ∙ ap h (e x))
 
 \end{code}

@@ -143,6 +143,9 @@ open import UF-FunExt
 
 module ArithmeticViaEquivalence (fe : ∀ U V → funext U V) where
 
+fe₀ : funext U₀ U₀
+fe₀ = fe U₀ U₀
+
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import PlusOneLC
@@ -187,12 +190,12 @@ fsucc = inl
     k = pr₁ IH
     φ : Fin k ≃ Fin m + Fin n
     φ = pr₂ IH
-    φ+𝟙 : Fin(succ k) ≃ Fin m + Fin (succ n)
-    φ+𝟙 =  Fin k + 𝟙          ≃⟨ Ap+ 𝟙 φ ⟩
-           (Fin m + Fin n) + 𝟙 ≃⟨ +assoc ⟩
-           (Fin m + Fin n + 𝟙) ■
+    φ' : Fin(succ k) ≃ Fin m + Fin (succ n)
+    φ' =  Fin k + 𝟙           ≃⟨ Ap+ 𝟙 φ ⟩
+         (Fin m + Fin n) + 𝟙  ≃⟨ +assoc ⟩
+         (Fin m + Fin n + 𝟙)  ■
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m + Fin (succ n)
-    g = succ k , φ+𝟙
+    g = succ k , φ'
 
 \end{code}
 
@@ -223,8 +226,8 @@ addition-homomorphism:
 
 \begin{code}
 
-Fin+homo' : (m n : ℕ) → Fin(m +' n) ≃ Fin m + Fin n
-Fin+homo' m n = pr₂(+construction m n)
+Fin+homo : (m n : ℕ) → Fin(m +' n) ≃ Fin m + Fin n
+Fin+homo m n = pr₂(+construction m n)
 
 \end{code}
 
@@ -259,13 +262,11 @@ addition:
 \begin{code}
 
 +'-comm : (m n : ℕ) → m +' n ≡ n +' m
-+'-comm m n = Fin-lc (m +' n) (n +' m) p
- where
-  p : Fin(m +' n) ≃ Fin(n +' m)
-  p =  Fin (m +' n)  ≃⟨ Fin+homo' m n ⟩
-       Fin m + Fin n ≃⟨ +comm  ⟩
-       Fin n + Fin m ≃⟨ ≃-sym (Fin+homo' n m) ⟩
-       Fin (n +' m) ■
++'-comm m n = Fin-lc (m +' n) (n +' m)
+ (Fin (m +' n)   ≃⟨ Fin+homo m n ⟩
+  Fin m + Fin n  ≃⟨ +comm  ⟩
+  Fin n + Fin m  ≃⟨ ≃-sym (Fin+homo n m) ⟩
+  Fin (n +' m)   ■)
 
 \end{code}
 
@@ -284,10 +285,10 @@ We now repeat this story for multiplication:
     φ : Fin k ≃ Fin m × Fin n
     φ = pr₂ IH
     φ' : Fin (k +' m) ≃ Fin m × (Fin n + 𝟙)
-    φ' = Fin (k +' m)          ≃⟨ Fin+homo' k m ⟩
+    φ' = Fin (k +' m)          ≃⟨ Fin+homo k m ⟩
          Fin k + Fin m         ≃⟨ Ap+ (Fin m) φ ⟩
          Fin m × Fin n + Fin m ≃⟨ 𝟙distr ⟩
-         Fin m × (Fin n + 𝟙) ■
+         Fin m × (Fin n + 𝟙)   ■
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
     g = (k +' m) , φ'
 
@@ -303,20 +304,84 @@ m ×' n = pr₁(×construction m n)
 Fin×homo : (m n : ℕ) → Fin(m ×' n) ≃ Fin m × Fin n
 Fin×homo m n = pr₂(×construction m n)
 
-×-comm : (m n : ℕ) → m ×' n ≡ n ×' m
-×-comm m n = Fin-lc (m ×' n) (n ×' m) φ
- where
-  φ : Fin(m ×' n) ≃ Fin(n ×' m)
-  φ = Fin (m ×' n)  ≃⟨ Fin×homo m n ⟩
-      Fin m × Fin n ≃⟨ ×comm ⟩
-      Fin n × Fin m ≃⟨ ≃-sym (Fin×homo n m) ⟩
-      Fin (n ×' m) ■
+×'-comm : (m n : ℕ) → m ×' n ≡ n ×' m
+×'-comm m n = Fin-lc (m ×' n) (n ×' m)
+ (Fin (m ×' n)   ≃⟨ Fin×homo m n ⟩
+  Fin m × Fin n  ≃⟨ ×comm ⟩
+  Fin n × Fin m  ≃⟨ ≃-sym (Fin×homo n m) ⟩
+  Fin (n ×' m)   ■)
 
 \end{code}
+
+Added 30th August 2018: Exponentiation. Requires one more induction.
+
+\begin{code}
+
+→construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
+→construction zero n = succ zero ,
+                       (𝟘 + 𝟙        ≃⟨ 𝟘-lneutral ⟩
+                        𝟙            ≃⟨ 𝟘→ fe₀ ⟩
+                        (𝟘 → Fin n)  ■)
+→construction (succ m) n = g
+ where
+  IH : Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
+  IH = →construction m n
+  k : ℕ
+  k = pr₁ IH
+  φ : Fin k ≃ (Fin m → Fin n)
+  φ = pr₂ IH
+  φ' : Fin (k ×' n) ≃ (Fin (succ m) → Fin n)
+  φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n ⟩
+       Fin k × Fin n                  ≃⟨ ×-cong φ (𝟙→ fe₀) ⟩
+       (Fin m → Fin n) × (𝟙 → Fin n)  ≃⟨ ≃-sym (+→ fe₀) ⟩
+       (Fin m + 𝟙 → Fin n)            ■
+  g : Σ \(k' : ℕ) → Fin k' ≃ (Fin (succ m) → Fin n)
+  g = k ×' n , φ'
+
+_^_ : ℕ → ℕ → ℕ
+n ^ m = pr₁(→construction m n)
+
+^base : {n : ℕ} → n ^ zero ≡ succ zero
+^base = refl
+
+^step : {m n : ℕ} → n ^ (succ m) ≡ (n ^ m) ×' n
+^step = refl
+
+Fin^homo : (m n : ℕ) → Fin(n ^ m) ≃ (Fin m → Fin n)
+Fin^homo m n = pr₂(→construction m n)
+
+\end{code}
+
+Then, without the need for induction, we get the exponential laws:
+
+\begin{code}
+
+^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
+^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
+ (Fin (k ^ (m +' n))                 ≃⟨ Fin^homo (m +' n) k ⟩
+  (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k)) ⟩
+  (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀ ⟩
+  (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×-cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
+  Fin (k ^ m) × Fin (k ^ n)          ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n)) ⟩
+  Fin (k ^ m ×' k ^ n)               ■)
+
+iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
+iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
+  (Fin (k ^ (m ×' n))         ≃⟨ Fin^homo (m ×' n) k ⟩
+   (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k)) ⟩
+   (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe ⟩
+   (Fin m → (Fin n → Fin k))  ≃⟨ →-cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
+   (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n)) ⟩
+   Fin (k ^ n ^ m)            ■)
+
+\end{code}
+
+Operator precedences:
 
 \begin{code}
 
 infixl 20 _+'_
 infixl 22 _×'_
+infixl 23 _^_
 
 \end{code}

@@ -220,7 +220,7 @@ module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y)
 \begin{code}
 
   2nd-Π-extension-formula : (y : Y) → f/j(y) ≃ Π \(x : X) → j x ≡ y → f x
-  2nd-Π-extension-formula y = Curry-Uncurry fe
+  2nd-Π-extension-formula y = curry-uncurry fe
 
   2nd-Σ-extension-formula : (y : Y) → f∖j(y) ≃ Σ \(x : X) → (j x ≡ y) × f x
   2nd-Σ-extension-formula y = Σ-assoc
