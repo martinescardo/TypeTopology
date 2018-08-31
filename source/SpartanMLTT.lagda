@@ -632,8 +632,8 @@ pred : ℕ → ℕ
 pred 0 = 0
 pred (succ n) = n
 
-succ-injective : {i j : ℕ} → succ i ≡ succ j → i ≡ j
-succ-injective = ap pred
+succ-lc : {i j : ℕ} → succ i ≡ succ j → i ≡ j
+succ-lc = ap pred
 
 \end{code}
 

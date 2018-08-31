@@ -2,14 +2,48 @@ Martin Escardo, started 5th May 2018
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module NaturalsOrder where
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (_+'_)
+open import UF-Subsingletons
+open import OrdinalNotions hiding (_≤_ ; <-coarser-than-≤ ; ≤-refl)
+open import NaturalsAddition renaming (_+_ to _+'_)
 
 _≤_ : ℕ → ℕ → U₀ ̇
 zero ≤ n        = 𝟙
 succ m ≤ zero   = 𝟘
 succ m ≤ succ n = m ≤ n
+
+≤-is-prop-valued : (m n : ℕ) → is-prop (m ≤ n)
+≤-is-prop-valued zero n = 𝟙-is-prop
+≤-is-prop-valued (succ m) zero = 𝟘-is-prop
+≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
+
+open import UF-Base
+open import UF-SetExamples
+
+subtraction-is-prop : (m n : ℕ) → is-prop (Σ \(k : ℕ) → k +' m ≡ n)
+subtraction-is-prop zero n (.n , refl) (.n , refl) = refl
+subtraction-is-prop (succ m) zero (k , ()) (k' , p')
+subtraction-is-prop (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap pr₁ IH , ℕ-is-set _ _)
+ where
+  IH : k , succ-lc p ≡ k' , succ-lc p'
+  IH = subtraction-is-prop m n (k , succ-lc p) (k' , succ-lc p')
+
+subtraction : (m n : ℕ) → m ≤ n → Σ \(k : ℕ) → k +' m ≡ n
+subtraction zero n l = n , refl
+subtraction (succ m) zero ()
+subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
+ where
+  IH : Σ \(k : ℕ) → k +' m ≡ n
+  IH = subtraction m n l
+
+cosubtraction : (m n : ℕ) → (Σ \(k : ℕ) → k +' m ≡ n) → m ≤ n
+cosubtraction zero n (.n , refl) = *
+cosubtraction (succ m) zero (k , ())
+cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
 
 zero-minimal : (n : ℕ) → zero ≤ n
 zero-minimal n = *
@@ -73,9 +107,9 @@ not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bounded-∀-next : ∀ {U} (A : ℕ → U ̇) (k : ℕ)
-        → A k
-        → ((n : ℕ) → n < k → A n)
-        → (n : ℕ) → n < succ k → A n
+               → A k
+               → ((n : ℕ) → n < k → A n)
+               → (n : ℕ) → n < succ k → A n
 bounded-∀-next A k a φ n l = cases f g s
  where
   s : (n < k) + (succ n ≡ succ k)
@@ -83,7 +117,7 @@ bounded-∀-next A k a φ n l = cases f g s
   f : n < k → A n
   f = φ n
   g : succ n ≡ succ k → A n
-  g p = back-transport A (succ-injective p) a
+  g p = back-transport A (succ-lc p) a
 
 \end{code}
 
@@ -91,14 +125,8 @@ Added 20th June 2018:
 
 \begin{code}
 
-open import UF-Subsingletons
-open import OrdinalNotions hiding (_≤_) hiding (<-coarser-than-≤) hiding (≤-refl)
-
 <-is-prop-valued : (m n : ℕ) → is-prop(m < n)
-<-is-prop-valued zero     zero     = 𝟘-is-prop
-<-is-prop-valued zero    (succ n)  = 𝟙-is-prop
-<-is-prop-valued (succ m) zero     = 𝟘-is-prop
-<-is-prop-valued (succ m) (succ n) = <-is-prop-valued m n
+<-is-prop-valued m n = ≤-is-prop-valued (succ m) n
 
 <-coarser-than-≤ : (m n : ℕ) → m < n → m ≤ n
 <-coarser-than-≤ m n = ≤-trans m (succ m) n (≤-succ m)

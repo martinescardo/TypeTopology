@@ -70,7 +70,7 @@ Standard examples:
   where
    step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n)
    step (inl r) = inl(ap succ r)
-   step (inr f) = inr(λ s → f(succ-injective s))
+   step (inr f) = inr(λ s → f(succ-lc s))
 
 +discrete : ∀ {U V} {X : U ̇} {Y : V ̇}
           → discrete X → discrete Y → discrete (X + Y)

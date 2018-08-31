@@ -30,7 +30,7 @@ add-and-remove-same-point {U} {X} = f , ((g , fg) , (g , gf))
   g (inl x , u) = x
   g (inr * , u) = 𝟘-elim (u refl)
   fg : f ∘ g ∼ id
-  fg (inl x , u) = to-Σ-≡ (refl , neg-is-prop (fe U U₀) _ _)
+  fg (inl x , u) = to-Σ-≡' (neg-is-prop (fe U U₀) _ _)
   fg (inr * , u) = 𝟘-elim (u refl)
   gf : g ∘ f ∼ id
   gf x = refl
@@ -102,6 +102,8 @@ add-one-and-remove-isolated-point {V} {Y} (inr *) _ = ≃-sym add-and-remove-sam
    Y ■
 
 \end{code}
+
+Precedences:
 
 \begin{code}
 
