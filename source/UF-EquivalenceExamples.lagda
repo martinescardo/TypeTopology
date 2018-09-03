@@ -62,10 +62,9 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     HF : (w : Σ Y) → H(F w) ≡ w
     HF (x , y) = to-Σ-≡' (hf x y)
 
-Π-congruence : (fe : ∀ {U V} → funext U V)
-              → ∀ {U V} (X : U ̇) (Y Y' : X → V ̇)
-              → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
-Π-congruence fe X Y Y' φ = (F , (G , FG) , (H , HF))
+Π-≃-congruence : ∀ {U V} → funext U V → (X : U ̇) (Y Y' : X → V ̇)
+               → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
+Π-≃-congruence fe X Y Y' φ = (F , (G , FG) , (H , HF))
    where
     f : (x : X) → Y x → Y' x
     f x = pr₁(φ x)
@@ -96,6 +95,17 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
      where
       GF' : (x : X) → H(F w) x ≡ w x
       GF' x = hf x (w x)
+
+≃-funext₂ : ∀ {U V W} → funext U (V ⊔ W) → funext V W
+      → {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+        (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x → f x ∼ g x)
+≃-funext₂ fe fe' {X} f g =
+ (f ≡ g) ≃⟨ ≃-funext fe f g ⟩
+ (f ∼ g) ≃⟨ Π-≃-congruence fe X
+               (λ x → f x ≡ g x)
+               (λ x → f x ∼ g x)
+               (λ x → ≃-funext fe' (f x) (g x)) ⟩
+ (∀ x → f x ∼ g x) ■
 
 𝟙-lneutral : ∀ {U V} {Y : U ̇} → 𝟙 × Y ≃ Y
 𝟙-lneutral {U} {V} {Y} = (f , (g , fg) , (g , gf))

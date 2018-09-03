@@ -29,9 +29,9 @@ DN-funext U V = {X : U ̇} {A : X → V ̇} {f g : Π A} → f ∼ g → f ≡ g
 funext : ∀ U V → U ′ ⊔ V ′ ̇
 funext U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → is-equiv (happly' f g)
 
-≃-funext : ∀ U V → funext U V → {X : U ̇} {A : X → V ̇} (f g : Π A)
-         → (f ≡ g) ≃ ((x : X) → f x ≡ g x)
-≃-funext U V fe f g = happly' f g , fe f g
+≃-funext : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} (f g : Π A)
+         → (f ≡ g) ≃ (f ∼ g)
+≃-funext fe f g = happly' f g , fe f g
 
 dfunext : ∀ {U V} → funext U V → DN-funext U V
 dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))

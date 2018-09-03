@@ -140,7 +140,7 @@ Added 20th June 2018:
 
 regress : ∀ {U} (P : ℕ → U ̇)
         → ((n : ℕ) → P (succ n) → P n)
-        → (n : ℕ) (m : ℕ) → m ≤ n → P n → P m
+        → (n m : ℕ) → m ≤ n → P n → P m
 regress P ρ zero m l p = back-transport P (unique-minimal m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
                                     (λ (r : m ≡ succ n) → back-transport P r p)

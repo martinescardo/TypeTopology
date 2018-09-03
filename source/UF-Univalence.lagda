@@ -69,11 +69,11 @@ show that the identity equivalences satisfy it.
 
 \begin{code}
 
-Eq-induction : (U V : Universe) → (U ⊔ V)′ ̇
-Eq-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
+≃-induction : (U V : Universe) → (U ⊔ V)′ ̇
+≃-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
                  → A X (≃-refl X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 
-private JEq' : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
+private JEq' : ∀ {U} → is-univalent U → ∀ {V} → ≃-induction U V
 JEq' {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
  where
   A' : (Y : U ̇) → X ≡ Y → V ̇
@@ -113,8 +113,8 @@ considered here.
 \begin{code}
 
 JEq-improve : ∀ {U V}
-  → (jeq' : Eq-induction U V)
-  → Σ \(jeq : Eq-induction U V)
+  → (jeq' : ≃-induction U V)
+  → Σ \(jeq : ≃-induction U V)
             → (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
             → jeq X A b X (≃-refl X) ≡ b
 JEq-improve {U} {V} jeq' = jeq , jeq-comp
@@ -150,10 +150,10 @@ as follows:
 
 \begin{code}
 
-JEq-converse : ∀ {U} → (∀ {V} → Eq-induction U V) → is-univalent U
+JEq-converse : ∀ {U} → (∀ {V} → ≃-induction U V) → is-univalent U
 JEq-converse {U} jeq' X = γ
  where
-  jeq : ∀ {V} → Eq-induction U V
+  jeq : ∀ {V} → ≃-induction U V
   jeq {V} = pr₁ (JEq-improve (jeq' {V}))
   jeq-comp : ∀ {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
           → jeq X A b X (≃-refl X) ≡ b
@@ -177,22 +177,22 @@ if the computation rule holds for the original JEq').
 
 \begin{code}
 
-JEq : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction U V
+JEq : ∀ {U} → is-univalent U → ∀ {V} → ≃-induction U V
 JEq ua = pr₁ (JEq-improve (JEq' ua))
 
 JEq-comp : ∀ {U} (ua : is-univalent U) {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
         → JEq ua X A b X (≃-refl X) ≡ b
 JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
 
-Eq-transport : ∀ {U} → is-univalent U
+≃-transport : ∀ {U} → is-univalent U
             → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
-Eq-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
+≃-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
-Eq-induction' : (U V : Universe) → (U ⊔ V)′ ̇
-Eq-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
+≃-induction' : (U V : Universe) → (U ⊔ V)′ ̇
+≃-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
                  → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
 
-JEqUnbased : ∀ {U} → is-univalent U → ∀ {V} → Eq-induction' U V
+JEqUnbased : ∀ {U} → is-univalent U → ∀ {V} → ≃-induction' U V
 JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
 
 \end{code}
