@@ -260,17 +260,17 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
 \begin{code}
 
- fact' : (X Y : U ̇) (m : X → X → X) (n : Y → Y → Y)
-       → ((X , m) ≡ (Y , n))
-       ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x')))
- fact' X Y m n = fact (X , m) (Y , n)
+ fact' : (X Y : U ̇) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
+       → ((X , _·_) ≡ (Y , _⋆_))
+       ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x'))
+ fact' X Y _·_ _⋆_ = fact (X , _·_) (Y , _⋆_)
 
 \end{code}
 
- Of course, the condition (λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x'))
- is equivalent to (x x' : X) → f (m x x') ≡ n (f x) (f x') by function
- extensionality, which is the natural formulation of magma
- homomorphism:
+ Of course, the condition (λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f
+ x') is equivalent to (x x' : X) → f (x · x') ≡ f x ⋆ f x' by function
+ extensionality (and congruence of the type-theoretic operations),
+ which is the natural formulation of magma homomorphism:
 
 \begin{code}
 
@@ -281,16 +281,20 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
  fe : funext U U
  fe = funext-from-univalence ua
 
- fact'' : (X Y : U ̇) (m : X → X → X) (n : Y → Y → Y)
-        → ((X , m) ≡ (Y , n))
-        ≃ Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (m x x') ≡ n (f x) (f x'))
- fact'' X Y m n = ≃-trans (fact' X Y m n) e
-  where
-   e : (Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (m x x')) ≡ (λ x x' → n (f x) (f x'))))
-     ≃ (Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (m x x') ≡ n (f x) (f x')))
-   e = Σ-≃-congruence _ _ _ (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _))
+ fact'' : (X Y : U ̇) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
+        → ((X , _·_) ≡ (Y , _⋆_))
+        ≃ Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')
+ fact'' X Y _·_ _⋆_ =
+   ((X , _·_) ≡ (Y , _⋆_))
+       ≃⟨ fact' X Y _·_ _⋆_ ⟩
+   (Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
+       ≃⟨ Σ-congruence _ _ _ (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
+   (Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')) ■
 
 \end{code}
+
+ It is automatic that the inverse of f is also magma homomorphism
+ (exercise, perhaps worth adding).
 
 As a second example, a topology on a set X is a set of subsets of X
 satisfying suitable axioms. A set of subsets amounts to a map
