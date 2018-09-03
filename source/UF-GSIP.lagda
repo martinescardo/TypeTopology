@@ -125,10 +125,10 @@ module gsip
 
 \end{code}
 
-  This defines an Σ S-equivalence to be an equivalence of underlying
+  This defines a Σ S - equivalence to be an equivalence of underlying
   sets that is an S-structure equivalence in the sense abstractly
-  specified by the function S-preserving. Then the assumption S-refl allows
-  us to have an equivalence of any element of Σ S with itself:
+  specified by the function S-preserving. Then the assumption S-refl
+  allows us to have an equivalence of any element of Σ S with itself:
 
 \begin{code}
 
@@ -267,8 +267,8 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
 \end{code}
 
- Of course, the condition (λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f
- x') is equivalent to (x x' : X) → f (x · x') ≡ f x ⋆ f x' by function
+ Of course, the condition (λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')
+ is equivalent to (x x' : X) → f (x · x') ≡ f x ⋆ f x' by function
  extensionality (and congruence of the type-theoretic operations),
  which is the natural formulation of magma homomorphism:
 
@@ -402,8 +402,8 @@ module selection-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
 \end{code}
 
 We now continue our abstract development, to account for things such
-as monoids and groups. We consider given axioms on X and its
-structure.
+as monoids and groups and topological spaces. We consider given axioms
+on X and its structure.
 
 \begin{code}
 
@@ -449,7 +449,8 @@ module gsip-with-axioms
 
    S'-≡-structure : (X : U ̇) (s' t' : S' X)
                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
-   S'-≡-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-≡-structure X s t υ' , Axioms-is-prop X t _ _)
+   S'-≡-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-≡-structure X s t υ' ,
+                                                   Axioms-is-prop X t _ _)
 
    S'-transport : (A' : Σ S')
                   (s' : S' ⟨ A' ⟩)
