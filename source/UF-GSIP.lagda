@@ -137,7 +137,7 @@ module gsip
 
 \end{code}
 
-  And hence an identity gives an Σ S-equivalence by induction in the
+  And hence an identity gives a Σ S - equivalence by induction in the
   usual way:
 
 \begin{code}
@@ -179,7 +179,7 @@ module gsip
    where
     Φ : (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⊔ V ̇
     Φ Y (f , e) = (s : S Y)
-                   (υ : S-preserving A (Y , s) (f , e))
+                  (υ : S-preserving A (Y , s) (f , e))
                  → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     φ s υ =
@@ -293,7 +293,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
 \end{code}
 
- It is automatic that the inverse of f is also magma homomorphism
+ It is automatic that the inverse of f is also a magma homomorphism
  (exercise, perhaps worth adding).
 
 As a second example, a topology on a set X is a set of subsets of X
