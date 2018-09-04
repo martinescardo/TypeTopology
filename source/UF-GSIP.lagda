@@ -184,11 +184,11 @@ module gsip
     φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     φ s υ =
       idtoeqₛ A A' (eqtoidₛ A A' refl')
-          ≡⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
+            ≡⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
       idtoeqₛ A A' (to-Σ-≡' p)
-          ≡⟨ h p ⟩
+            ≡⟨ h p ⟩
       pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
-          ≡⟨ to-Σ-≡' (to-Σ-≡' (S-transport A s υ)) ⟩
+            ≡⟨ to-Σ-≡' (to-Σ-≡' (S-transport A s υ)) ⟩
       refl' ∎
      where
       A' : Σ S
@@ -248,7 +248,10 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
        (λ X m n → id)
        (λ A m υ → refl-left-neutral)
 
- fact : (A B : Σ S)
+ ∞-Magma : U ′ ̇
+ ∞-Magma = Σ S
+
+ fact : (A B : ∞-Magma)
       → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
                           → is-equiv f
                           × ((λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x')))
@@ -256,7 +259,9 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
 \end{code}
 
- Perhaps the following reformulation is more appealing:
+ Perhaps the following reformulation is more appealing, where Agda
+ infers that (X , _·_) and (Y , _⋆_) are ∞-Magmas from the *proof*
+ "fact" of "fact'":
 
 \begin{code}
 
@@ -269,8 +274,9 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
  Of course, the condition (λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')
  is equivalent to (x x' : X) → f (x · x') ≡ f x ⋆ f x' by function
- extensionality (and congruence of the type-theoretic operations),
- which is the natural formulation of magma homomorphism:
+ extensionality. Hence the congruence of the type-theoretic operations
+ gives that the identifications of ∞-Magmas are (equivalent to) a
+ homomorphic equivalences:
 
 \begin{code}
 
@@ -288,13 +294,18 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
    ((X , _·_) ≡ (Y , _⋆_))
        ≃⟨ fact' X Y _·_ _⋆_ ⟩
    (Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
-       ≃⟨ Σ-congruence _ _ _ (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
+       ≃⟨ Σ-cong _ _ _ (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
    (Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')) ■
 
 \end{code}
 
  It is automatic that the inverse of f is also a magma homomorphism
- (exercise, perhaps worth adding).
+ (exercise, perhaps worth adding). However, it is not the case, in the
+ absence of the underlying type being sets, that equivalences of
+ ∞-magmas are pairs of mutually inverse homomorphisms, for the same
+ reason that equivalences of types are not in general equivalent to
+ paris of mutually inverse functions (quasi-equivalences, in the
+ terminology of the HoTT book).
 
 As a second example, a topology on a set X is a set of subsets of X
 satisfying suitable axioms. A set of subsets amounts to a map
@@ -467,7 +478,7 @@ module gsip-with-axioms
         ≡⟨ ap g r ⟩
     g (S-≡-structure X s t υ')
         ≡⟨ S-transport (X , s) t υ' ⟩
-    υ' ∎
+    υ'  ∎
     where
      F : S X → U ⊔ V ̇
      F t = S-preserving (X , s) (X  , t) (≃-refl X)
@@ -499,9 +510,9 @@ module monoids (U : Universe) (ua : is-univalent U) where
  S X = (X → X → X) × X
 
  Axioms : (X : U ̇) → S X → U ̇
- Axioms X (_·_ , e) = is-set X ×
-                      ((x y z : X) → (x · y) · z ≡ x · (y · z)) ×
-                      ((x : X) → (e · x ≡ x) × (x · e ≡ x))
+ Axioms X (_·_ , e) = is-set X
+                    × ((x y z : X) → (x · y) · z ≡ x · (y · z))
+                    × ((x : X) → (e · x ≡ x) × (x · e ≡ x))
 
  Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s)
  Axioms-is-prop X (_·_ , e) (i , α , ν) = ×-is-prop

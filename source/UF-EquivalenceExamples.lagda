@@ -36,9 +36,9 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
     u (x , (y , z)) = ((x , y) , z)
 
-Σ-congruence : ∀ {U V} (X : U ̇) (Y Y' : X → V ̇)
-               → ((x : X) → Y x ≃ Y' x) → Σ Y ≃ Σ Y'
-Σ-congruence X Y Y' φ = (F , (G , FG) , (H , HF))
+Σ-cong : ∀ {U V} (X : U ̇) (Y Y' : X → V ̇)
+      → ((x : X) → Y x ≃ Y' x) → Σ Y ≃ Σ Y'
+Σ-cong X Y Y' φ = (F , (G , FG) , (H , HF))
    where
     f : (x : X) → Y x → Y' x
     f x = pr₁(φ x)
@@ -62,9 +62,9 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     HF : (w : Σ Y) → H(F w) ≡ w
     HF (x , y) = to-Σ-≡' (hf x y)
 
-Π-congruence : ∀ {U V} → funext U V → (X : U ̇) (Y Y' : X → V ̇)
-               → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
-Π-congruence fe X Y Y' φ = (F , (G , FG) , (H , HF))
+Π-cong : ∀ {U V} → funext U V → (X : U ̇) (Y Y' : X → V ̇)
+       → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
+Π-cong fe X Y Y' φ = (F , (G , FG) , (H , HF))
    where
     f : (x : X) → Y x → Y' x
     f x = pr₁(φ x)
@@ -97,14 +97,14 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
       GF' x = hf x (w x)
 
 ≃-funext₂ : ∀ {U V W} → funext U (V ⊔ W) → funext V W
-      → {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-        (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x → f x ∼ g x)
+          → {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+            (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
 ≃-funext₂ fe fe' {X} f g =
- (f ≡ g) ≃⟨ ≃-funext fe f g ⟩
- (f ∼ g) ≃⟨ Π-congruence fe X
-               (λ x → f x ≡ g x)
-               (λ x → f x ∼ g x)
-               (λ x → ≃-funext fe' (f x) (g x)) ⟩
+ (f ≡ g)            ≃⟨ ≃-funext fe f g ⟩
+ (f ∼ g)            ≃⟨ Π-cong fe X
+                          (λ x → f x ≡ g x)
+                          (λ x → f x ∼ g x)
+                          (λ x → ≃-funext fe' (f x) (g x))⟩
  (∀ x → f x ∼ g x) ■
 
 𝟙-lneutral : ∀ {U V} {Y : U ̇} → 𝟙 × Y ≃ Y
