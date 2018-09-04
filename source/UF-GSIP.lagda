@@ -70,18 +70,18 @@ structure = pr₂
 
  One possible list of data for S and S-equiv is the following:
 
-  (2) When f is the identity equivalence, we want the data
-      S-equiv to be given, and we name it S-refl.
+  (2) We want data showing that the identity equivalence is an
+      S-equivalence, given by S-refl.
 
   (3) Moreover, when f : ⟨ X , s ⟩ → ⟨ X , t ⟩ is the identity
       function, we want the data for (1) to give data for the identity
       s ≡ t of structures. This is specified by the function
-      S-≡-structure.
+      S-id-structure.
 
   (4) We need a technical transport condition (which is not
       surprising, as identity in Σ-types is given by transport of the
       second component), specified by the function S-transport below,
-      relating the data specified by the functions S-≡-structure and
+      relating the data specified by the functions S-id-structure and
       S-refl.
 
  These assumptions (1)-(4) are given as module parameters for gsip:
@@ -100,15 +100,15 @@ module gsip
 
   (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
-  (S-≡-structure : (X : U ̇) (s t : S X)
-                 → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+  (S-id-structure : (X : U ̇) (s t : S X)
+                  → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
 
   (S-transport : (A : Σ S)
                  (s : S ⟨ A ⟩)
                  (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
                → transport
                     (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
-                    (S-≡-structure ⟨ A ⟩ (structure A) s υ)
+                    (S-id-structure ⟨ A ⟩ (structure A) s υ)
                     (S-refl A)
                ≡ υ)
   where
@@ -156,7 +156,7 @@ module gsip
     Ψ : (A : Σ S) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ′ ⊔ V ̇
     Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ≡ (Y , s)
     ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
-    ψ A s υ = to-Σ-≡' (S-≡-structure ⟨ A ⟩ (structure A) s υ)
+    ψ A s υ = to-Σ-≡' (S-id-structure ⟨ A ⟩ (structure A) s υ)
 
   eqtoidₛ : (A B : Σ S) → A ≃ₛ B → A ≡ B
   eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) υ
@@ -167,7 +167,7 @@ module gsip
 
      * S-equiv (to define _≡ₛ_),
      * S-refl (to define idtoeqₛ), and
-     * S-≡-structure (to define eqtoidₛ).
+     * S-id-structure (to define eqtoidₛ).
 
   Next we use the remaining hypothesis S-transport to show that
   eqtoidₛ is a section of idtoeqₛ:
@@ -201,7 +201,7 @@ module gsip
                                 ≡ pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
       h refl = refl
       p : structure A ≡ s
-      p = S-≡-structure ⟨ A ⟩ (structure A) s υ
+      p = S-id-structure ⟨ A ⟩ (structure A) s υ
 
 \end{code}
 
@@ -304,7 +304,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
  absence of the underlying type being sets, that equivalences of
  ∞-magmas are pairs of mutually inverse homomorphisms, for the same
  reason that equivalences of types are not in general equivalent to
- paris of mutually inverse functions (quasi-equivalences, in the
+ pairs of mutually inverse functions (quasi-equivalences, in the
  terminology of the HoTT book).
 
 As a second example, a topology on a set X is a set of subsets of X
@@ -436,18 +436,24 @@ module gsip-with-axioms
 
  (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
- (S-≡-structure : (X : U ̇) (s t : S X)
-                → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+ (S-id-structure : (X : U ̇) (s t : S X)
+                 → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
 
  (S-transport : (A : Σ S)
                 (s : S ⟨ A ⟩)
                 (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
               → transport
                    (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
-                   (S-≡-structure ⟨ A ⟩ (structure A) s υ)
+                   (S-id-structure ⟨ A ⟩ (structure A) s υ)
                    (S-refl A)
               ≡ υ)
  where
+
+\end{code}
+
+   Our reduction of gsip-with-axioms to gsip is as follows:
+
+\begin{code}
 
    S' : U ̇ → V ̇
    S' X = Σ \(s : S X) → Axioms X s
@@ -458,9 +464,9 @@ module gsip-with-axioms
    S'-refl : (A' : Σ S') → S'-preserving A' A' (≃-refl ⟨ A' ⟩)
    S'-refl (X , s , α) = S-refl (X , s)
 
-   S'-≡-structure : (X : U ̇) (s' t' : S' X)
-                  → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
-   S'-≡-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-≡-structure X s t υ' ,
+   S'-id-structure : (X : U ̇) (s' t' : S' X)
+                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
+   S'-id-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-id-structure X s t υ' ,
                                                    Axioms-is-prop X t _ _)
 
    S'-transport : (A' : Σ S')
@@ -468,15 +474,15 @@ module gsip-with-axioms
                   (υ' : S'-preserving A' (⟨ A' ⟩ , s') (≃-refl ⟨ A' ⟩))
                 → transport
                      (λ - → S'-preserving A' (⟨ A' ⟩ , -) (≃-refl ⟨ A' ⟩))
-                     (S'-≡-structure ⟨ A' ⟩ (structure A') s' υ')
+                     (S'-id-structure ⟨ A' ⟩ (structure A') s' υ')
                      (S'-refl A')
                 ≡ υ'
    S'-transport (X , s , α) (t , β) υ' =
-    f (S'-≡-structure X (s , α) (t , β) υ')
-        ≡⟨ transport-ap F pr₁ (S'-≡-structure X (s , α) (t , β) υ') ⟩
-    g (ap pr₁ (S'-≡-structure X (s , α) (t , β) υ'))
+    f (S'-id-structure X (s , α) (t , β) υ')
+        ≡⟨ transport-ap F pr₁ (S'-id-structure X (s , α) (t , β) υ') ⟩
+    g (ap pr₁ (S'-id-structure X (s , α) (t , β) υ'))
         ≡⟨ ap g r ⟩
-    g (S-≡-structure X s t υ')
+    g (S-id-structure X s t υ')
         ≡⟨ S-transport (X , s) t υ' ⟩
     υ'  ∎
     where
@@ -486,14 +492,22 @@ module gsip-with-axioms
      f q = transport (F ∘ pr₁) q (S-refl (X , s))
      g : s ≡ t → F t
      g p = transport F p (S-refl (X , s))
-     r : ap pr₁ (S'-≡-structure X (s , α) (t , β) υ') ≡ S-≡-structure X s t υ'
+     r : ap pr₁ (S'-id-structure X (s , α) (t , β) υ') ≡ S-id-structure X s t υ'
      r = ap-pr₁-to-Σ-≡ _
-
-   open gsip U V ua S' S'-preserving S'-refl S'-≡-structure S'-transport public
 
 \end{code}
 
-We consider monoids to illustrate how this can be applied.
+   We export gsip with the above data:
+
+\begin{code}
+
+   open gsip U V ua S' S'-preserving S'-refl S'-id-structure S'-transport public
+
+\end{code}
+
+   And this completes the reduction to gsip.
+
+We now consider monoids to illustrate how this can be applied.
 
 \begin{code}
 
@@ -506,13 +520,36 @@ module monoids (U : Universe) (ua : is-univalent U) where
  fe : funext U U
  fe = funext-from-univalence ua
 
+\end{code}
+
+The structure of a monoid with underlying type X consists of a binary
+"multiplication" operation X → X → X and a distinguished point of X,
+the "unit":
+
+\begin{code}
+
  S : U ̇ → U ̇
  S X = (X → X → X) × X
+
+\end{code}
+
+The axioms say that not only multiplication must be associative and
+the unit must be neutral for this operation, but also the underlying
+type X must a set:
+
+\begin{code}
 
  Axioms : (X : U ̇) → S X → U ̇
  Axioms X (_·_ , e) = is-set X
                     × ((x y z : X) → (x · y) · z ≡ x · (y · z))
                     × ((x : X) → (e · x ≡ x) × (x · e ≡ x))
+
+\end{code}
+
+The fact that the underlying type is a set gives that the axioms form
+a proposition:
+
+\begin{code}
 
  Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s)
  Axioms-is-prop X (_·_ , e) (i , α , ν) = ×-is-prop
@@ -524,28 +561,54 @@ module monoids (U : Universe) (ua : is-univalent U) where
                                                                  λ z → i)
                                               (Π-is-prop fe λ x → ×-is-prop i i))
                                           (i , α , ν)
+\end{code}
+
+We use primed capital letters for types equipped with axiomless
+structure. The following to functions extract the multiplication and
+unit:
+
+\begin{code}
 
  mul : (A' : Σ S) → ⟨ A' ⟩ → ⟨ A' ⟩ → ⟨ A' ⟩
  mul (X , _·_ , e) = _·_
 
- neutral : (A' : Σ S) → ⟨ A' ⟩
- neutral (X , _·_ , e) = e
+ unit : (A' : Σ S) → ⟨ A' ⟩
+ unit (X , _·_ , e) = e
+
+\end{code}
+
+A monoid is a type equipped with such structure and witnesses for the
+axioms:
+
+\begin{code}
 
  Monoid : U ′ ̇
  Monoid = Σ \(X : U ̇) → Σ \(s : S X) → Axioms X s
 
+\end{code}
+
+We again have multiplication and unit extraction functions:
+
+\begin{code}
+
  μ : (A : Monoid) → ⟨ A ⟩ → ⟨ A ⟩ → ⟨ A ⟩
- μ (X , s , a) = mul (X , s)
+ μ (X , s , α) = mul (X , s)
 
  η : (A : Monoid) → ⟨ A ⟩
- η (X , s , a) = neutral (X , s)
+ η (X , s , α) = unit (X , s)
+
+\end{code}
+
+And now we are ready to apply gsip-with-axioms to our situation:
+
+\begin{code}
 
  open gsip-with-axioms
        U U ua S
        Axioms
        Axioms-is-prop
        (λ {A' B' (f , e) → ((λ x x' → f (mul A' x x')) ≡ (λ x x' → mul B' (f x) (f x')))
-                         × (f (neutral A') ≡ neutral B')})
+                         × (f (unit A') ≡ unit B')})
        (λ A' → refl , refl)
        (λ X m n υ → ×-≡ (pr₁ υ) (pr₂ υ))
        (λ { A' m (refl , refl) → refl })
