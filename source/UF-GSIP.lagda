@@ -70,8 +70,8 @@ structure = pr₂
 
  One possible list of data for S and S-equiv is the following:
 
-  (2) We want data showing that the identity equivalence is an
-      S-equivalence, given by S-refl.
+  (2) We want data showing that the identity equivalence ≃-refl ⟨ A ⟩
+      is an S-equivalence, given by S-refl.
 
   (3) Moreover, when f : ⟨ X , s ⟩ → ⟨ X , t ⟩ is the identity
       function, we want the data for (1) to give data for the identity
@@ -635,8 +635,9 @@ And now we are ready to apply gsip-with-axioms to our situation:
 Perhaps it is possible to derive the SIP for 1-categories from the
 above SIP for types equipped with structure. But this is not the point
 we are trying to make. The point is to give a criterion for natural
-characterizations of identity of types equipped with structure, before
-we know they form (∞-)categories, and even if they don't.
+characterizations of identity of types equipped with structure, and
+possibly axioms for them, before we know they form (∞-)categories, and
+even if they don't.
 
 Another example that should be accounted for by the methods developed
 here is identity of ordinals (in the module OrdinalOfOrdinals), which
