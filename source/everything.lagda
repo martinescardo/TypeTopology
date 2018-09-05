@@ -37,6 +37,7 @@ import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import InfSearchable
+import LawvereFPT
 import LexicographicOrder
 import LexicographicSearch
 import LPO

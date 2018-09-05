@@ -301,7 +301,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
  It is automatic that the inverse of f is also a magma homomorphism
  (exercise, perhaps worth adding). However, it is not the case, in the
- absence of the underlying type being sets, that equivalences of
+ absence of the underlying types being sets, that equivalences of
  ∞-magmas are pairs of mutually inverse homomorphisms, for the same
  reason that equivalences of types are not in general equivalent to
  pairs of mutually inverse functions (quasi-equivalences, in the
