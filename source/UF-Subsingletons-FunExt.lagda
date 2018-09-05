@@ -161,4 +161,7 @@ true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (�
   II : Q → P
   II y = equal-⊤-is-true P isp (g (true-is-equal-⊤ pe fe Q isq y))
 
+not : ∀ {U} → funext U U₀ → Ω U → Ω U
+not fe (P , i) = (¬ P , Π-is-prop fe λ x → 𝟘-is-prop)
+
 \end{code}
