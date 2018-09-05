@@ -91,6 +91,7 @@ import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
 import UF-SetExamples
+import UF-SubsetIdentity
 import UF-Subsingletons
 import UF-Subsingletons-Equiv
 import UF-Subsingletons-FunExt
