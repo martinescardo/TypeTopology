@@ -5,9 +5,9 @@ http://tac.mta.ca/tac/reprints/articles/15/tr15abs.html
 
 We give an application to Cantor's theorem for the universe.
 
-We begin with split surjections, or retracts, because they can be
+We begin with split surjections, or retractions, because they can be
 formulated in MLTT, and then move to surjections, which need further
-extensions to MLTT, such as propositional truncation.
+extensions of MLTT, or hypotheses, such as propositional truncation.
 
 \begin{code}
 
@@ -64,8 +64,8 @@ module retract-version where
 
  cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇) (r : A → (A → U ̇))
-  → has-pt-section r
-  → (X : U ̇) (f : X → X) → Σ \(x : X) → x ≡ f x
+   → has-pt-section r
+   → (X : U ̇) (f : X → X) → Σ \(x : X) → x ≡ f x
  cantor-theorem-for-universes U V A r (s , rs) X = γ
   where
    open import UF-Equiv
@@ -96,15 +96,16 @@ module retract-version where
 
  Cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇)
-  → (r : A → (A → U ̇)) → has-pt-section r → 𝟘
+   → (r : A → (A → U ̇)) → has-pt-section r → 𝟘
  Cantor-theorem-for-universes U V A r h = pr₁ (cantor-theorem-for-universes U V A r h 𝟘 id)
 
  \end{code}
 
  The original version of Cantor's theorem was for powersets, which
- here are maps into the subtype classifier. Function extensionality is
- needed in order to define negation Ω U → Ω U, to show that P → 𝟘 is a
- proposition.
+ here are maps into the subtype classifier Ω U of the universe U.
+
+ Function extensionality is needed in order to define negation
+ Ω U → Ω U, to show that P → 𝟘 is a proposition.
 
  \begin{code}
 
@@ -113,7 +114,7 @@ module retract-version where
  open import UF-Subsingletons-FunExt
 
  cantor-theorem : (U V : Universe) (A : V ̇)
-               → funext U U₀ → (r : A → (A → Ω U)) → has-pt-section r → 𝟘
+                → funext U U₀ → (r : A → (A → Ω U)) → has-pt-section r → 𝟘
  cantor-theorem U V A fe r (s , rs) = pr₁ γ
   where
    open import UF-Equiv
@@ -131,7 +132,7 @@ module retract-version where
    retr = equiv-retract-r e
    ρ : P → ¬ P
    ρ = pr₁ retr
-   σ : (¬ P) → P
+   σ : ¬ P → P
    σ = pr₁ (section-gives-pt-section ρ (pr₂ retr))
    ρσ : (g : ¬ P) (b : P) → ρ (σ g) b ≡ g b
    ρσ = pr₂ (section-gives-pt-section ρ (pr₂ retr))
@@ -158,8 +159,8 @@ module surjection-version (pt : PropTrunc) where
  open ImageAndSurjection pt
 
  lfpt : ∀ {U V} {A : U ̇} {X : V ̇} (φ : A → (A → X))
-       → is-surjection φ
-       → (f : X → X) → ∃ \(x : X) → x ≡ f x
+      → is-surjection φ
+      → (f : X → X) → ∃ \(x : X) → x ≡ f x
  lfpt {U} {V} {A} {X} φ s f = ptfunct γ e
   where
    g : A → X
@@ -179,9 +180,10 @@ module surjection-version (pt : PropTrunc) where
 
 \end{code}
 
- So in lfpto we have a weaker hypothesis for the theorem, but we need a
- stronger language for formulate and prove it, or else an additional
- hypothesis of the existence of propositional truncations.
+ So in this version of LFPT we have a weaker hypothesis for the
+ theorem, but we need a stronger language to formulate and prove it,
+ or else an additional hypothesis of the existence of propositional
+ truncations.
 
  For the following theorem, we use both the surjection version and the
  retraction version of LFPT.
@@ -190,8 +192,8 @@ module surjection-version (pt : PropTrunc) where
 
  cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇) (φ : A → (A → U ̇))
-  → is-surjection φ
-  → (X : U ̇) (f : X → X) → ∃ \(x : X) → x ≡ f x
+   → is-surjection φ
+   → (X : U ̇) (f : X → X) → ∃ \(x : X) → x ≡ f x
  cantor-theorem-for-universes U V A φ s X f = ptfunct g t
   where
    t : ∃ \(B : U ̇) → B ≡ (B → X)
@@ -214,7 +216,7 @@ module surjection-version (pt : PropTrunc) where
 
  Cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇)
-  → (φ : A → (A → U ̇)) → is-surjection φ → 𝟘
+   → (φ : A → (A → U ̇)) → is-surjection φ → 𝟘
  Cantor-theorem-for-universes U V A r h = ptrec 𝟘-is-prop pr₁ c
   where
    c : ∃ \(x : 𝟘) → x ≡ x
@@ -222,7 +224,7 @@ module surjection-version (pt : PropTrunc) where
 
  cantor-theorem :
      (U V : Universe) (A : V ̇)
-  → funext U U₀ → (φ : A → (A → Ω U)) → ¬(is-surjection φ)
+   → funext U U₀ → (φ : A → (A → Ω U)) → ¬(is-surjection φ)
  cantor-theorem U V A fe φ s = ptrec 𝟘-is-prop g t
   where
    t : ∃ \(B : Ω U) → B ≡ not fe B
@@ -238,15 +240,11 @@ module surjection-version (pt : PropTrunc) where
      e = idtoeq P (¬ P) q
      retr : retract (¬ P) of P
      retr = equiv-retract-r e
-     ρ : P → (¬ P)
+     ρ : P → ¬ P
      ρ = pr₁ retr
-     σ : (¬ P) → P
+     σ : ¬ P → P
      σ = pr₁ (retract-version.section-gives-pt-section ρ (pr₂ retr))
      ρσ : (g : ¬ P) (b : P) → ρ (σ g) b ≡ g b
      ρσ = pr₂ (retract-version.section-gives-pt-section ρ (pr₂ retr))
 
 \end{code}
-
-This argument should be generalized to e.g. the universe of sets and
-the universe of n-types for any n, as well as the universe of groups,
-of topological spaces, etc.

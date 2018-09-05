@@ -62,9 +62,10 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     HF : (w : Σ Y) → H(F w) ≡ w
     HF (x , y) = to-Σ-≡' (hf x y)
 
-Π-cong : ∀ {U V} → funext U V → (X : U ̇) (Y Y' : X → V ̇)
+Π-cong : ∀ {U V W} → funext U V → funext U W
+       → (X : U ̇) (Y : X → V ̇) (Y' : X → W ̇)
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
-Π-cong fe X Y Y' φ = (F , (G , FG) , (H , HF))
+Π-cong fe fe' X Y Y' φ = (F , (G , FG) , (H , HF))
    where
     f : (x : X) → Y x → Y' x
     f x = pr₁(φ x)
@@ -85,7 +86,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     H u' x = h x (u' x)
 
     FG :  (w' : ((x : X) → Y' x)) → F(G w') ≡ w'
-    FG w' = dfunext fe FG'
+    FG w' = dfunext fe' FG'
      where
       FG' : (x : X) → F(G w') x ≡ w' x
       FG' x = fg x (w' x)
@@ -101,7 +102,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
             (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
 ≃-funext₂ fe fe' {X} f g =
  (f ≡ g)            ≃⟨ ≃-funext fe f g ⟩
- (f ∼ g)            ≃⟨ Π-cong fe X
+ (f ∼ g)            ≃⟨ Π-cong fe fe X
                           (λ x → f x ≡ g x)
                           (λ x → f x ∼ g x)
                           (λ x → ≃-funext fe' (f x) (g x))⟩

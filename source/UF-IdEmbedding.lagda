@@ -147,9 +147,9 @@ is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (Eqtofun X Y)
                                         (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
-UA-Id-embedding-Theorem : ∀ {U} → is-univalent U → (∀ U V → funext U V)
-                       → {X : U ̇} → is-embedding(Id {U} {X})
-UA-Id-embedding-Theorem {U} ua fe {X} = Id-Embedding-Lemma fe
+UA-Id-embedding : ∀ {U} → is-univalent U → (∀ U V → funext U V)
+               → {X : U ̇} → is-embedding(Id {U} {X})
+UA-Id-embedding {U} ua fe {X} = Id-Embedding-Lemma fe
                                             (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
 
 \end{code}
@@ -159,9 +159,9 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding-Theorem' : ∀ {U} → K (U ′) → (∀ U V → funext U V)
-                       → {X : U ̇} → is-embedding(Id {U} {X})
-K-id-embedding-Theorem' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
+K-id-embedding' : ∀ {U} → K (U ′) → (∀ U V → funext U V)
+               → {X : U ̇} → is-embedding(Id {U} {X})
+K-id-embedding' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
 \end{code}
 
@@ -172,7 +172,7 @@ But actually function extensionality is not needed for this: K alone suffices.
 Id-lc : ∀ {U} {X : U ̇} → left-cancellable (Id {U} {X})
 Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-id-embedding-Theorem : ∀ {U} → K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
-K-id-embedding-Theorem {U} k {X} = lc-embedding-with-K Id Id-lc k
+K-id-embedding : ∀ {U} → K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
+K-id-embedding {U} k {X} = lc-embedding-with-K Id Id-lc k
 
 \end{code}

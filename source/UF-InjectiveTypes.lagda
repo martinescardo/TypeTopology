@@ -370,19 +370,19 @@ data rather than property):
 
 \begin{code}
 
-injectiveType : ∀ {U V W} → W ̇ → U ′ ⊔ V ′ ⊔ W ̇
-injectiveType {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
+injective-type : ∀ {U V W} → W ̇ → U ′ ⊔ V ′ ⊔ W ̇
+injective-type {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
                        → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
-universes-are-injective-Π : ∀ {U} → is-univalent U → injectiveType {U} {U} (U ̇)
+universes-are-injective-Π : ∀ {U} → is-univalent U → injective-type {U} {U} (U ̇)
 universes-are-injective-Π ua j e f = f / j , λ x → eqtoid ua _ _ (Π-extension-in-range f j e x)
 
-universes-are-injective-Σ : ∀ {U} → is-univalent U → injectiveType {U} {U} (U ̇)
+universes-are-injective-Σ : ∀ {U} → is-univalent U → injective-type {U} {U} (U ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-retracts-of-injectives : ∀ {U V W T} {D : U ̇} {D' : V ̇}
-                       → injectiveType {W} {T} D → retract D' Of D → injectiveType D'
-retracts-of-injectives {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
+retract-of-injective : ∀ {U V W T} {D : U ̇} {D' : V ̇}
+                       → injective-type {W} {T} D → retract D' Of D → injective-type D'
+retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
   where
     s : D' → D
     s d' = pr₁ (ρ d')
@@ -402,14 +402,14 @@ retracts-of-injectives {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘
 open import UF-IdEmbedding
 
 injective-retract-of-power-of-universe : ∀ {U} {D : U ̇} → is-univalent U
-                                       → injectiveType D → retract D Of (D → U ̇)
+                                       → injective-type D → retract D Of (D → U ̇)
 injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
-    a = i Id (UA-Id-embedding-Theorem ua fe) id
+    a = i Id (UA-Id-embedding ua fe) id
 
 power-of-injective : ∀ {U V W T} {D : U ̇} {A : V ̇}
-                   → injectiveType {W} {T} D → injectiveType (A → D)
+                   → injective-type {W} {T} D → injective-type (A → D)
 power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
