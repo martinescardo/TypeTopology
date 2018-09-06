@@ -57,15 +57,11 @@ subset-extensionality : {X : U ̇} (A B : powerset X)
 subset-extensionality {X} A B h k = dfunext fe' φ
  where
   φ : (x : X) → A x ≡ B x
-  φ x = to-Σ-≡ (pe
-                   (holds-is-prop (A x))
-                   (holds-is-prop (B x))
-                   (h x)
-                   (k x) ,
+  φ x = to-Σ-≡ (pe (holds-is-prop (A x)) (holds-is-prop (B x)) (h x) (k x) ,
                 is-prop-is-prop fe (holds-is-prop _) (holds-is-prop _))
 
 \end{code}
 
 So univalence gives the usual mathematical notion of equality for
-subsets of type, despite the fact that it may give a surprising notion
-of equality for types.
+*subsets* of types, despite the fact that it may give a surprising notion
+of equality for *types*.

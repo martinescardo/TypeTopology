@@ -33,7 +33,7 @@ module retract-version where
  has-pt-section r = Σ \(s : cod r → dom r) → ∀ g a → r (s g) a ≡ g a
 
  section-gives-pt-section : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
-                         → has-section r → has-pt-section r
+                          → has-section r → has-pt-section r
  section-gives-pt-section r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
 
  lfpt : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
@@ -247,4 +247,19 @@ module surjection-version (pt : PropTrunc) where
      ρσ : (g : ¬ P) (b : P) → ρ (σ g) b ≡ g b
      ρσ = pr₂ (retract-version.section-gives-pt-section ρ (pr₂ retr))
 
-\end{code}
+ \end{code}
+
+ The Cantor type (ℕ → 𝟚) is uncountable:
+
+ \begin{code}
+
+ cantor-type-uncountable : (φ : ℕ → (ℕ → 𝟚)) → ¬(is-surjection φ)
+ cantor-type-uncountable φ s = ptrec 𝟘-is-prop g t
+  where
+   t : ∃ \(n : 𝟚) → n ≡ complement n
+   t = lfpt φ s (complement)
+   g : (Σ \(n : 𝟚) → n ≡ complement n) → 𝟘
+   g (₀ , p) = zero-is-not-one p
+   g (₁ , p) = zero-is-not-one (p ⁻¹)
+
+ \end{code}
