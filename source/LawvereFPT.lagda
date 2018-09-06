@@ -1,7 +1,10 @@
 Martin Escardo, 5th September 2018.
 
 On Lawvere's Fixed Point Theorem (LFPT).
-http://tac.mta.ca/tac/reprints/articles/15/tr15abs.html
+
+ * http://tac.mta.ca/tac/reprints/articles/15/tr15abs.html
+ * https://ncatlab.org/nlab/show/Lawvere%27s+fixed+point+theorem
+ * http://arxiv.org/abs/math/0305282
 
 We give an application to Cantor's theorem for the universe.
 
@@ -257,9 +260,20 @@ module surjection-version (pt : PropTrunc) where
  cantor-type-uncountable φ s = ptrec 𝟘-is-prop g t
   where
    t : ∃ \(n : 𝟚) → n ≡ complement n
-   t = lfpt φ s (complement)
+   t = lfpt φ s complement
    g : (Σ \(n : 𝟚) → n ≡ complement n) → 𝟘
    g (₀ , p) = zero-is-not-one p
    g (₁ , p) = zero-is-not-one (p ⁻¹)
 
- \end{code}
+ baire-type-uncountable : (φ : ℕ → (ℕ → ℕ)) → ¬(is-surjection φ)
+ baire-type-uncountable φ s = ptrec 𝟘-is-prop g t
+  where
+   t : ∃ \(n : ℕ) → n ≡ succ n
+   t = lfpt φ s succ
+   h : (n : ℕ) → n ≡ succ n → 𝟘
+   h zero ()
+   h (succ n) p = h n (succ-lc p)
+   g : (Σ \(n : ℕ) → n ≡ succ n) → 𝟘
+   g (n , p) = h n p
+
+\end{code}
