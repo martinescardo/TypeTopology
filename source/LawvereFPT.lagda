@@ -252,12 +252,13 @@ module surjection-version (pt : PropTrunc) where
 
  \end{code}
 
- The Cantor type (ℕ → 𝟚) is uncountable:
+ Another corollary is that the Cantor type (ℕ → 𝟚) and the Baire type
+ (ℕ → ℕ) are uncountable:
 
  \begin{code}
 
- cantor-type-uncountable : (φ : ℕ → (ℕ → 𝟚)) → ¬(is-surjection φ)
- cantor-type-uncountable φ s = ptrec 𝟘-is-prop g t
+ cantor-uncountable : (φ : ℕ → (ℕ → 𝟚)) → ¬(is-surjection φ)
+ cantor-uncountable φ s = ptrec 𝟘-is-prop g t
   where
    t : ∃ \(n : 𝟚) → n ≡ complement n
    t = lfpt φ s complement
@@ -265,8 +266,8 @@ module surjection-version (pt : PropTrunc) where
    g (₀ , p) = zero-is-not-one p
    g (₁ , p) = zero-is-not-one (p ⁻¹)
 
- baire-type-uncountable : (φ : ℕ → (ℕ → ℕ)) → ¬(is-surjection φ)
- baire-type-uncountable φ s = ptrec 𝟘-is-prop g t
+ baire-uncountable : (φ : ℕ → (ℕ → ℕ)) → ¬(is-surjection φ)
+ baire-uncountable φ s = ptrec 𝟘-is-prop g t
   where
    t : ∃ \(n : ℕ) → n ≡ succ n
    t = lfpt φ s succ
