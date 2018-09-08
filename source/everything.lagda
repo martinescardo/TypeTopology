@@ -104,7 +104,9 @@ import WLPO
 
 \end{code}
 
-Old blurb. I want to completely rewrite this eventually.
+Old blurb. I want to completely rewrite this eventually, and update
+it, as it is very old. However, the linked files already have
+up-to-date information within them.
 
 
    September 2017. This version removes the module CurryHoward, so
