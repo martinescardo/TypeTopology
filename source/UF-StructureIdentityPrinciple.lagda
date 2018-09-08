@@ -32,7 +32,7 @@ open import UF-Equiv
 open import UF-Univalence
 open import UF-Yoneda
 
-module UF-GSIP where
+module UF-StructureIdentityPrinciple where
 
 \end{code}
 

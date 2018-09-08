@@ -78,7 +78,6 @@ import UF-Equiv
 import UF-FunExt
 import UF-FunExt-from-Naive-FunExt
 import UF-FunExt-from-Naive-FunExt-alternate
-import UF-GSIP
 import UF-IdEmbedding
 import UF-ImageAndSurjection
 import UF-InjectiveTypes
@@ -91,6 +90,7 @@ import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
 import UF-SetExamples
+import UF-StructureIdentityPrinciple
 import UF-SubsetIdentity
 import UF-Subsingletons
 import UF-Subsingletons-Equiv
