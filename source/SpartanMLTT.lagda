@@ -241,21 +241,22 @@ p ⁻¹ = transport (λ - → - ≡ lhs p) p refl
 ap : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
 ap f p = transport (λ - → f (lhs p) ≡ f -) p refl
 
-back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
-back-transport B p = transport B (p ⁻¹)
+\end{code}
 
-≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
-≢-sym u r = u(r ⁻¹)
+Standard syntax for equality chain reasoning:
 
-transport₂ : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → Y → W ̇)
-             {x x' : X} {y y' : Y}
-          → x ≡ x' → y ≡ y' → A x y → A x' y'
-transport₂ A refl refl = id
+\begin{code}
 
-back-transport₂ : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → Y → W ̇)
-             {x x' : X} {y y' : Y}
-          → x ≡ x' → y ≡ y' → A x' y' → A x y
-back-transport₂ A refl refl = id
+_≡⟨_⟩_ : ∀ {U} {X : U ̇} (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
+_ ≡⟨ p ⟩ q = p ∙ q
+
+_∎ : ∀ {U} {X : U ̇} (x : X) → x ≡ x
+_∎ _ = refl
+
+equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
+              → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
+equality-cases (inl x) f g = f x refl
+equality-cases (inr y) f g = g y refl
 
 \end{code}
 
@@ -292,20 +293,8 @@ left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
 
 Note: Σ! is to be avoided, in favour of the contractibility of Σ, following univalent mathematics.
 
-Standard syntax for equality chain reasoning:
-
-\begin{code}
-
-_≡⟨_⟩_ : ∀ {U} {X : U ̇} (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
-_ ≡⟨ p ⟩ q = p ∙ q
-
-_∎ : ∀ {U} {X : U ̇} (x : X) → x ≡ x
-_∎ _ = refl
-
-\end{code}
-
-The following is properly proved using universes, but we don't both at
-the moment:
+The following is properly proved using universes, but we don't bother
+for the moment:
 
 \begin{code}
 
@@ -321,21 +310,12 @@ inl-lc refl = refl
 inr-lc : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → inr {U} {V} {X} {Y} y ≡ inr y' → y ≡ y'
 inr-lc refl = refl
 
-\end{code}
-
-\begin{code}
-
 𝟙-all-* : ∀ {U} (x : 𝟙) → x ≡ *
 𝟙-all-* {U} * = refl {U}
 
-equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
-              → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
-equality-cases (inl x) f g = f x refl
-equality-cases (inr y) f g = g y refl
-
 \end{code}
 
-General utilities to avoid (sometimes) mentionint implicit arguments
+General utilities to avoid (sometimes) mentioning implicit arguments
 in function definitions.
 
 \begin{code}

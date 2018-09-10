@@ -67,6 +67,7 @@ import SquashedCantor
 import SquashedSum
 import TheTopologyOfTheUniverse
 import TotallySeparated
+import Two
 import Universes
 import UF-Base
 import UF-Choice
