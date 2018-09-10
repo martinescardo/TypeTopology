@@ -496,7 +496,7 @@ open import GenericConvergentSequence
 open import WLPO
 
 [ℕ∞→𝟚]-compact-implies-WLPO : 𝟚-compact (ℕ∞ → 𝟚) → WLPO
-[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-WLPO (tscd (ℕ∞-totally-separated (fe U₀ U₀)) c)
+[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-gives-WLPO (tscd (ℕ∞-totally-separated (fe U₀ U₀)) c)
 
 \end{code}
 
