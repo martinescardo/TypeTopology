@@ -72,6 +72,7 @@ open import UF-FunExt
 module CoNaturals (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
+open import Two
 open import GenericConvergentSequence
 
 Zero' : 𝟙 + ℕ∞

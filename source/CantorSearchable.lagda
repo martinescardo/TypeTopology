@@ -11,6 +11,7 @@ and other modules.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Two
 open import UF-FunExt
 
 module CantorSearchable (fe : ∀ U V → funext U V) where

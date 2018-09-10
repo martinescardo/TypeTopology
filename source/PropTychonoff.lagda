@@ -46,13 +46,14 @@ open import UF-FunExt
 
 module PropTychonoff (fe : ∀ U V → funext U V) where
 
+open import SearchableTypes
+open import Two
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-Two-Prop-Density
-open import SearchableTypes
 
 \end{code}
 

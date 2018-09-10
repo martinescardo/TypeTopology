@@ -11,7 +11,7 @@ motivation coming from univalent type theory is discussed at the end.)
 
 module DummettDisjunction where
 
-open import SpartanMLTT hiding (_⊕_)
+open import SpartanMLTT
 
 _⊞_ : Set → Set → Set
 P ⊞ Q = ((P → Q) → Q) × ((Q → P) → P)

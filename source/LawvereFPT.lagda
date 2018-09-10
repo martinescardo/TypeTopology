@@ -105,7 +105,7 @@ module retract-version where
  \end{code}
 
  The original version of Cantor's theorem was for powersets, which
- here are maps into the subtype classifier Ω U of the universe U.
+ here are types of maps into the subtype classifier Ω U of the universe U.
 
  Function extensionality is needed in order to define negation
  Ω U → Ω U, to show that P → 𝟘 is a proposition.
@@ -257,6 +257,8 @@ module surjection-version (pt : PropTrunc) where
 
  \begin{code}
 
+ open import Two
+
  cantor-uncountable : (φ : ℕ → (ℕ → 𝟚)) → ¬(is-surjection φ)
  cantor-uncountable φ s = ptrec 𝟘-is-prop g t
   where
@@ -271,10 +273,7 @@ module surjection-version (pt : PropTrunc) where
   where
    t : ∃ \(n : ℕ) → n ≡ succ n
    t = lfpt φ s succ
-   h : (n : ℕ) → n ≡ succ n → 𝟘
-   h zero ()
-   h (succ n) p = h n (succ-lc p)
    g : (Σ \(n : ℕ) → n ≡ succ n) → 𝟘
-   g (n , p) = h n p
+   g (n , p) = succ-no-fp n p
 
 \end{code}

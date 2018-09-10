@@ -74,6 +74,7 @@ under (non-dependent) function types.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Two
 open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Retracts

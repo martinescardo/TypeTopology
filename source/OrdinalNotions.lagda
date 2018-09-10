@@ -294,6 +294,8 @@ split support).
 
 \begin{code}
 
+open import Two
+
 _≺₂_ : X → X → U ⊔ V ̇
 x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)
                           × ((u v : X) → (u < v → p u ≤₂ p v)

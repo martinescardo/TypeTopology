@@ -40,10 +40,11 @@ open import UF-FunExt
 module FailureOfTotalSeparatedness (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
-open import UF-Base
+open import Two
 open import GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO
+open import UF-Base
 
 \end{code}
 

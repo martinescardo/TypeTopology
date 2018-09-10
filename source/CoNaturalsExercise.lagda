@@ -27,6 +27,7 @@ open import UF-FunExt
 module CoNaturalsExercise (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
+open import Two
 open import CoNaturals (fe)
 open import GenericConvergentSequence
 open import Sequence (fe)

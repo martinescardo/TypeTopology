@@ -13,29 +13,30 @@ module OrdinalsClosure
        where
 
 open import SpartanMLTT
+open import Two
 open import Ordinals fe
 open import OrdinalArithmetic fe
 open import OrdinalNotions hiding (_≤_)
 open import OrdinalsWellOrderArithmetic
 open import SearchableTypes
-open import UF-Base
-open import UF-Equiv
-open import UF-Subsingletons
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
-open import UF-Embedding
-open import UF-InjectiveTypes fe
 open import SquashedSum fe
 open import SquashedCantor fe
-open import UF-Retracts
-open import InfSearchable
 open import LexicographicOrder
 open import LexicographicSearch
 open import ConvergentSequenceInfSearchable
 open import PropInfTychonoff
 open import DiscreteAndSeparated
+open import BinaryNaturals hiding (_+_ ; l ; r)
+open import InfSearchable
+open import UF-Base
+open import UF-Equiv
+open import UF-Subsingletons
+open import UF-Embedding
+open import UF-InjectiveTypes fe
+open import UF-Retracts
 open import UF-SetExamples
-open import BinaryNaturals hiding (_+_) hiding (l) hiding (r)
 
 \end{code}
 

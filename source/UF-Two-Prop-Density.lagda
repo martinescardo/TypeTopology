@@ -7,6 +7,7 @@ Excluded middle related things.
 module UF-Two-Prop-Density where
 
 open import SpartanMLTT
+open import Two
 open import UF-Base
 open import UF-Subsingletons-FunExt
 open import UF-Equiv

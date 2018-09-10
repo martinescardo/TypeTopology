@@ -7,6 +7,7 @@ Martin Escardo 2011.
 module DecidableAndDetachable where
 
 open import SpartanMLTT
+open import Two
 open import UF-Subsingletons
 open import UF-PropTrunc
 

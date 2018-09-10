@@ -13,24 +13,21 @@ amounts to Theorem-3·6 of the paper
 and conclude as a corollary that it is searchable and satisfies the
 principle of omniscience.
 
-\begin{code}
-
-{-# OPTIONS --without-K --exact-split --safe #-}
-
-\end{code}
-
-
 (Continuity axioms and the fan principle are not assumed.)
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 open import UF-FunExt
+
+module ConvergentSequenceSearchable (fe : funext U₀ U₀) where
+
+open import Two
 open import UF-PropTrunc
 open import GenericConvergentSequence
 open import SearchableTypes
-
-module ConvergentSequenceSearchable (fe : funext U₀ U₀) where
 
 \end{code}
 

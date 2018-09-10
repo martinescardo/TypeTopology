@@ -25,6 +25,7 @@ open import UF-FunExt
 module LPO (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
+open import Two
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

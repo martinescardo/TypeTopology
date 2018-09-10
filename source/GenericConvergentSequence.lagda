@@ -15,6 +15,7 @@ lemmas.)
 module GenericConvergentSequence where
 
 open import SpartanMLTT
+open import Two
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

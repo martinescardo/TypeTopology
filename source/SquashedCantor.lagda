@@ -19,17 +19,18 @@ open import UF-FunExt
 module SquashedCantor (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
-open import UF-Base
-open import UF-Subsingletons
-open import UF-Equiv
+open import Two
 open import GenericConvergentSequence
-open import UF-InjectiveTypes fe
-open import UF-Embedding
-open import UF-Retracts
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import SquashedSum fe
 open import CoNaturals fe
-open import Sequence fe renaming (head to head') renaming (tail to tail') renaming (_∶∶_ to _∶∶'_)
+open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _∶∶'_)
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Equiv
+open import UF-InjectiveTypes fe
+open import UF-Embedding
+open import UF-Retracts
 
 \end{code}
 

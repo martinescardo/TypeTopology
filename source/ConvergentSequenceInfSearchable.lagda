@@ -14,6 +14,7 @@ open import SpartanMLTT
 
 module ConvergentSequenceInfSearchable (fe₀ : funext U₀ U₀) where
 
+open import Two
 open import InfSearchable
 open import GenericConvergentSequence
 

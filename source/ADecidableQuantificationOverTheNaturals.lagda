@@ -17,10 +17,14 @@ open import UF-FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : funext U₀ U₀) where
 
+open import Two
 open import GenericConvergentSequence
-open import ConvergentSequenceSearchable (fe)
+open import SearchableTypes
+open import GenericConvergentSequence
+open import ConvergentSequenceSearchable fe
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
+open import UF-PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) →
 

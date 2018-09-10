@@ -23,6 +23,7 @@ open import UF-FunExt
 
 module DecidabilityOfNonContinuity (fe : funext U₀ U₀) where
 
+open import Two
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import ADecidableQuantificationOverTheNaturals (fe)

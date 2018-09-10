@@ -13,6 +13,7 @@ continuous, and searchable sets are secretly compact.
 module SearchableTypes where
 
 open import SpartanMLTT
+open import Two
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Retracts

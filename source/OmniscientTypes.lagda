@@ -7,6 +7,7 @@ Martin Escardo 2011.
 module OmniscientTypes where
 
 open import SpartanMLTT
+open import Two
 open import UF-FunExt
 open import UF-Subsingletons
 

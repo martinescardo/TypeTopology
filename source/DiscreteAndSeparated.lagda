@@ -10,6 +10,7 @@ Martin Escardo 2011.
 module DiscreteAndSeparated where
 
 open import SpartanMLTT
+open import Two
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Two-Prop-Density
