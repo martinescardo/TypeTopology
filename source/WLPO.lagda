@@ -27,23 +27,21 @@ constructively, well, taboos!
 
 module WLPO where
 
-open import GenericConvergentSequence
 open import SpartanMLTT
+open import GenericConvergentSequence
 
 WLPO : U₀ ̇
 WLPO = (u : ℕ∞) → (u ≡ ∞) + (u ≢ ∞)
 
 open import DiscreteAndSeparated
 
-ℕ∞-discrete-WLPO : discrete ℕ∞ → WLPO
-ℕ∞-discrete-WLPO d u = d u ∞
+ℕ∞-discrete-gives-WLPO : discrete ℕ∞ → WLPO
+ℕ∞-discrete-gives-WLPO d u = d u ∞
 
 \end{code}
 
-TODO.
-
-WLPO-[ℕ∞-discrete] : WLPO → discrete ℕ∞
-WLPO-[ℕ∞-discrete] w = {!!}
+We should have that LPO implies that ℕ∞ is discrete, and so the
+discreteness of ℕ∞ is intermediate between WLPO and LPO.
 
 More discussion is included in the modules TheTopologyOfTheUniverse
 and FailureOfTotalSeparatedness.
