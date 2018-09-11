@@ -102,26 +102,26 @@ S-lc : {y z : 𝟙 + ℕ∞} → S y ≡ S z → y ≡ z
 S-lc r = P-S-id ⁻¹ ∙ ap P r ∙ P-S-id
 
 S-P-id : {u : ℕ∞} → S(P u) ≡ u
-S-P-id {u} = 𝟚-equality-cases lemma₀ lemma₁
+S-P-id {u} = 𝟚-equality-cases l₀ l₁
  where
-  lemma₀ : positivity u ≡ ₀ → S(P u) ≡ u
-  lemma₀ r = claim₁ ∙ (is-Zero-equal-Zero (fe U₀ U₀) r)⁻¹
+  l₀ : positivity u ≡ ₀ → S(P u) ≡ u
+  l₀ r = c₁ ∙ (is-Zero-equal-Zero (fe U₀ U₀) r)⁻¹
     where
-     claim₀ : P u ≡ Zero'
-     claim₀ = ap (𝟚-cases Zero' (Pred' u)) r
-     claim₁ : S(P u) ≡ Zero
-     claim₁ = ap S claim₀
-  lemma₁ : positivity u ≡ ₁ → S(P u) ≡ u
-  lemma₁ r = claim₁ ∙ claim₃ ⁻¹
+     c₀ : P u ≡ Zero'
+     c₀ = ap (𝟚-cases Zero' (Pred' u)) r
+     c₁ : S(P u) ≡ Zero
+     c₁ = ap S c₀
+  l₁ : positivity u ≡ ₁ → S(P u) ≡ u
+  l₁ r = c₁ ∙ c₃ ⁻¹
    where
-     claim₀ : P u ≡ Pred' u
-     claim₀ = ap (𝟚-cases Zero' (Pred' u)) r
-     claim₁ : S(P u) ≡ Succ(Pred u)
-     claim₁ = ap S claim₀
-     claim₂ : u ≢ Zero
-     claim₂ s = Lemma[b≡₀→b≢₁](ap positivity s) r
-     claim₃ : u ≡ Succ(Pred u)
-     claim₃ = not-Zero-is-Succ (fe U₀ U₀) claim₂
+     c₀ : P u ≡ Pred' u
+     c₀ = ap (𝟚-cases Zero' (Pred' u)) r
+     c₁ : S(P u) ≡ Succ(Pred u)
+     c₁ = ap S c₀
+     c₂ : u ≢ Zero
+     c₂ s = Lemma[b≡₀→b≢₁](ap positivity s) r
+     c₃ : u ≡ Succ(Pred u)
+     c₃ = not-Zero-is-Succ (fe U₀ U₀) c₂
 
 P-lc : {u v : ℕ∞} → P u ≡ P v → u ≡ v
 P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
@@ -130,24 +130,23 @@ P-lc r = S-P-id ⁻¹ ∙ ap S r ∙ S-P-id
 𝟙+ f (inl s) = inl {U₀} s
 𝟙+ f (inr x) = inr(f x)
 
-
 diagram-commutes : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
 diagram-commutes p h = (P ∘ h ≡ (𝟙+ h) ∘ p)
 
 coalg-mophism→ : ∀ {U} {X : U ̇} (p : X → 𝟙 + X) (h : X → ℕ∞)
-              → diagram-commutes p h
-              → h ≡ S ∘ (𝟙+ h) ∘ p
+               → diagram-commutes p h
+               → h ≡ S ∘ (𝟙+ h) ∘ p
 coalg-mophism→ {U} p h a = dfunext (fe U U₀)
                           (λ x → S-P-id ⁻¹ ∙ ap (λ - → S(- x)) a)
 
 coalg-mophism← : ∀ {U} {X : U ̇} (p : X → 𝟙 + X) (h : X → ℕ∞)
-             → h ≡ S ∘ (𝟙+ h) ∘ p
-             → diagram-commutes p h
+               → h ≡ S ∘ (𝟙+ h) ∘ p
+               → diagram-commutes p h
 coalg-mophism← {U} p h b = dfunext (fe U U₀)
                             (λ x → ap (λ - → P(- x)) b ∙ P-S-id)
 
 homomorphism-existence : ∀ {U} {X : U ̇} (p : X → 𝟙 + X)
-                      → Σ \(h : X → ℕ∞) → diagram-commutes p h
+                       → Σ \(h : X → ℕ∞) → diagram-commutes p h
 homomorphism-existence {U} {X} p = h , dfunext (fe U U₀) h-spec
  where
   q : 𝟙 + X → 𝟙 + X
@@ -162,47 +161,47 @@ homomorphism-existence {U} {X} p = h , dfunext (fe U U₀) h-spec
   E(inl s) = ₀
   E(inr x) = ₁
 
-  h-lemma : (z : 𝟙 + X) → E(q z) ≡ ₁ → E z ≡ ₁
-  h-lemma (inl s) r = r
-  h-lemma (inr x) r = refl
+  hl : (z : 𝟙 + X) → E(q z) ≡ ₁ → E z ≡ ₁
+  hl (inl s) r = r
+  hl (inr x) r = refl
 
   h : X → ℕ∞
   h x = ((λ i → E(Q(succ i) (inr x))) ,
-          λ i → h-lemma(Q(succ i) (inr x)))
+          λ i → hl(Q(succ i) (inr x)))
 
   h-spec : (x : X) → P(h x) ≡ (𝟙+ h)(p x)
-  h-spec x = equality-cases (p x) lemma₀ lemma₁
+  h-spec x = equality-cases (p x) l₀ l₁
    where
-    lemma₀ : (s : 𝟙) → p x ≡ inl s → P(h x) ≡ (𝟙+ h)(p x)
-    lemma₀ * r = claim₂ ∙ claim₀ ⁻¹
+    l₀ : (s : 𝟙) → p x ≡ inl s → P(h x) ≡ (𝟙+ h)(p x)
+    l₀ * r = c₂ ∙ c₀ ⁻¹
      where
-      claim₀ : (𝟙+ h)(p x) ≡ Zero'
-      claim₀ = ap (𝟙+ h) r
-      claim₁ : h x ≡ Zero
-      claim₁ = is-Zero-equal-Zero (fe U₀ U₀) (ap E r)
-      claim₂ : P(h x) ≡ Zero'
-      claim₂ = ap P claim₁ ∙ P-Zero
+      c₀ : (𝟙+ h)(p x) ≡ Zero'
+      c₀ = ap (𝟙+ h) r
+      c₁ : h x ≡ Zero
+      c₁ = is-Zero-equal-Zero (fe U₀ U₀) (ap E r)
+      c₂ : P(h x) ≡ Zero'
+      c₂ = ap P c₁ ∙ P-Zero
 
-    lemma₁ : (x' : X) → p x ≡ inr x' → P(h x) ≡ (𝟙+ h)(p x)
-    lemma₁ x' r = claim₆ ∙ claim₀ ⁻¹
+    l₁ : (x' : X) → p x ≡ inr x' → P(h x) ≡ (𝟙+ h)(p x)
+    l₁ x' r = c₆ ∙ c₀ ⁻¹
      where
-      claim₀ : (𝟙+ h)(p x) ≡ inr(h x')
-      claim₀ = ap (𝟙+ h) r
-      claim₁ : (n : ℕ) → q(Q n (inr x)) ≡ Q n (p x)
-      claim₁ 0 = refl
-      claim₁ (succ n) = ap q (claim₁ n)
-      claim₂ : (n : ℕ) → q(Q n (inr x)) ≡ Q n (inr x')
-      claim₂ n = claim₁ n ∙ ap (Q n) r
-      claim₃ : (n : ℕ) → E(q(Q n (inr x))) ≡ E(Q n (inr x'))
-      claim₃ n = ap E (claim₂ n)
-      claim₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ(h x')) i
-      claim₄ 0  = claim₃ 0
-      claim₄ (succ i) = claim₃(succ i)
-      claim₅ : h x ≡ Succ(h x')
-      claim₅ = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) claim₄)
+      c₀ : (𝟙+ h)(p x) ≡ inr(h x')
+      c₀ = ap (𝟙+ h) r
+      c₁ : (n : ℕ) → q(Q n (inr x)) ≡ Q n (p x)
+      c₁ 0 = refl
+      c₁ (succ n) = ap q (c₁ n)
+      c₂ : (n : ℕ) → q(Q n (inr x)) ≡ Q n (inr x')
+      c₂ n = c₁ n ∙ ap (Q n) r
+      c₃ : (n : ℕ) → E(q(Q n (inr x))) ≡ E(Q n (inr x'))
+      c₃ n = ap E (c₂ n)
+      c₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ(h x')) i
+      c₄ 0  = c₃ 0
+      c₄ (succ i) = c₃(succ i)
+      c₅ : h x ≡ Succ(h x')
+      c₅ = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) c₄)
 
-      claim₆ : P(h x) ≡ inr(h x')
-      claim₆ = ap P claim₅
+      c₆ : P(h x) ≡ inr(h x')
+      c₆ = ap P c₅
 
 ℕ∞-corec  : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞)
 ℕ∞-corec p = pr₁(homomorphism-existence p)
@@ -224,11 +223,11 @@ We now discuss coinduction. We first define bisimulations.
 
 ℕ∞-coinduction : ∀ {U} (R : ℕ∞ → ℕ∞ → U ̇) → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
-ℕ∞-coinduction R b u v r = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) (lemma u v r))
+ℕ∞-coinduction R b u v r = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) (l u v r))
  where
-  lemma : (u v : ℕ∞) → R u v → (i : ℕ) → incl u i ≡ incl v i
-  lemma u v r 0 =  pr₁(b u v r)
-  lemma u v r (succ i) = lemma (Pred u) (Pred v) (pr₂(b u v r)) i
+  l : (u v : ℕ∞) → R u v → (i : ℕ) → incl u i ≡ incl v i
+  l u v r 0 =  pr₁(b u v r)
+  l u v r (succ i) = l (Pred u) (Pred v) (pr₂(b u v r)) i
 
 \end{code}
 
@@ -238,30 +237,30 @@ coalgebra homomorphisms in more detail.
 \begin{code}
 
 coalg-morphism-Zero : ∀ {U} {X : U ̇}
-                     (p : X →  𝟙 + X) (h : X → ℕ∞)
-                   → diagram-commutes p h
-                   → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
-coalg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S claim₃
+                      (p : X →  𝟙 + X) (h : X → ℕ∞)
+                    → diagram-commutes p h
+                    → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
+coalg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S c₃
  where
-  claim₁ : P(h x) ≡ (𝟙+ h)(p x)
-  claim₁ = ap (λ - → - x) a
-  claim₂ : (𝟙+ h)(p x) ≡ Zero'
-  claim₂ = ap (𝟙+ h) c
-  claim₃ : P(h x) ≡ inl *
-  claim₃ = claim₁ ∙ claim₂
+  c₁ : P(h x) ≡ (𝟙+ h)(p x)
+  c₁ = ap (λ - → - x) a
+  c₂ : (𝟙+ h)(p x) ≡ Zero'
+  c₂ = ap (𝟙+ h) c
+  c₃ : P(h x) ≡ inl *
+  c₃ = c₁ ∙ c₂
 
 coalg-morphism-Succ : ∀ {U} {X : U ̇}
-                     (p : X →  𝟙 + X) (h : X → ℕ∞)
-                   → diagram-commutes p h
-                   → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
-coalg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S claim₃
+                      (p : X →  𝟙 + X) (h : X → ℕ∞)
+                    → diagram-commutes p h
+                    → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
+coalg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S c₃
  where
-  claim₁ : P(h x) ≡ (𝟙+ h)(p x)
-  claim₁ = ap (λ - → - x) a
-  claim₂ : (𝟙+ h)(p x) ≡ inr(h x')
-  claim₂ = ap (𝟙+ h) c
-  claim₃ : P(h x) ≡ inr(h x')
-  claim₃ = claim₁ ∙ claim₂
+  c₁ : P(h x) ≡ (𝟙+ h)(p x)
+  c₁ = ap (λ - → - x) a
+  c₂ : (𝟙+ h)(p x) ≡ inr(h x')
+  c₂ = ap (𝟙+ h) c
+  c₃ : P(h x) ≡ inr(h x')
+  c₃ = c₁ ∙ c₂
 
 \end{code}
 
@@ -271,63 +270,63 @@ bisimulation:
 \begin{code}
 
 coalg-morphism-positivity : ∀ {U} {X : U ̇}
-                           (p : X →  𝟙 + X) (f g : X → ℕ∞)
-                        → diagram-commutes p f
-                        → diagram-commutes p g
-                        → (x : X) → positivity(f x) ≡ positivity(g x)
+                            (p : X →  𝟙 + X) (f g : X → ℕ∞)
+                          → diagram-commutes p f
+                          → diagram-commutes p g
+                          → (x : X) → positivity(f x) ≡ positivity(g x)
 coalg-morphism-positivity {U} {X} p f g a b x =
- equality-cases (p x) lemma₀ lemma₁
+ equality-cases (p x) l₀ l₁
  where
-  lemma₀ : (s : 𝟙) → p x ≡ inl s → positivity(f x) ≡ positivity(g x)
-  lemma₀ s c = f-lemma ∙ g-lemma ⁻¹
+  l₀ : (s : 𝟙) → p x ≡ inl s → positivity(f x) ≡ positivity(g x)
+  l₀ s c = fl ∙ gl ⁻¹
    where
-    f-lemma : positivity(f x) ≡ ₀
-    f-lemma = ap positivity(coalg-morphism-Zero p f a x s c)
-    g-lemma : positivity(g x) ≡ ₀
-    g-lemma = ap positivity(coalg-morphism-Zero p g b x s c)
+    fl : positivity(f x) ≡ ₀
+    fl = ap positivity(coalg-morphism-Zero p f a x s c)
+    gl : positivity(g x) ≡ ₀
+    gl = ap positivity(coalg-morphism-Zero p g b x s c)
 
-  lemma₁ : (x' : X) → p x ≡ inr x' → positivity(f x) ≡ positivity(g x)
-  lemma₁ x' c = f-lemma ∙ g-lemma ⁻¹
+  l₁ : (x' : X) → p x ≡ inr x' → positivity(f x) ≡ positivity(g x)
+  l₁ x' c = fl ∙ gl ⁻¹
    where
-    f-lemma : positivity(f x) ≡ ₁
-    f-lemma = ap positivity(coalg-morphism-Succ p f a x x' c)
-    g-lemma : positivity(g x) ≡ ₁
-    g-lemma = ap positivity(coalg-morphism-Succ p g b x x' c)
+    fl : positivity(f x) ≡ ₁
+    fl = ap positivity(coalg-morphism-Succ p f a x x' c)
+    gl : positivity(g x) ≡ ₁
+    gl = ap positivity(coalg-morphism-Succ p g b x x' c)
 
 coalg-morphism-Pred : ∀ {U} {X : U ̇}
-                     (p : X →  𝟙 + X) (f g : X → ℕ∞)
-                   → diagram-commutes p f
-                   → diagram-commutes p g
-                   → (x : X) (u v : ℕ∞)
-                   → u ≡ f x
-                   → v ≡ g x
-                   → Σ \(x' : X) → (Pred u ≡ f x') × (Pred v ≡ g x')
+                      (p : X →  𝟙 + X) (f g : X → ℕ∞)
+                    → diagram-commutes p f
+                    → diagram-commutes p g
+                    → (x : X) (u v : ℕ∞)
+                    → u ≡ f x
+                    → v ≡ g x
+                    → Σ \(x' : X) → (Pred u ≡ f x') × (Pred v ≡ g x')
 coalg-morphism-Pred {U} {X} p f g a b x u v d e =
- equality-cases (p x) lemma₀ lemma₁
+ equality-cases (p x) l₀ l₁
  where
-  lemma₀ : (s : 𝟙) → p x ≡ inl s
-        → Σ \x' → (Pred u ≡ f x') ×  (Pred v ≡ g x')
-  lemma₀ s c = x , (lemma f a u d , lemma g b v e)
+  l₀ : (s : 𝟙) → p x ≡ inl s
+     → Σ \x' → (Pred u ≡ f x') ×  (Pred v ≡ g x')
+  l₀ s c = x , (l f a u d , l g b v e)
    where
-    lemma : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
-         → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x
-    lemma h a u d = claim₁ ∙ claim₀ ⁻¹
+    l : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
+      → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x
+    l h a u d = c₁ ∙ c₀ ⁻¹
      where
-      claim₀ : h x ≡ Zero
-      claim₀ = coalg-morphism-Zero p h a x s c
-      claim₁ : Pred u ≡ Zero
-      claim₁ = ap Pred (d ∙ claim₀)
+      c₀ : h x ≡ Zero
+      c₀ = coalg-morphism-Zero p h a x s c
+      c₁ : Pred u ≡ Zero
+      c₁ = ap Pred (d ∙ c₀)
 
-  lemma₁ : (x' : X) → p x ≡ inr x'
-        → Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
-  lemma₁ x' c = x' , ((lemma f a u d ) , (lemma g b v e ))
+  l₁ : (x' : X) → p x ≡ inr x'
+     → Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
+  l₁ x' c = x' , ((l f a u d ) , (l g b v e ))
    where
-    lemma : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
-         → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x'
-    lemma h a u d = ap Pred d ∙ lemma'
+    l : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
+      → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x'
+    l h a u d = ap Pred d ∙ l'
      where
-      lemma' : Pred(h x) ≡ h x'
-      lemma' = ap Pred(coalg-morphism-Succ p h a x x' c)
+      l' : Pred(h x) ≡ h x'
+      l' = ap Pred(coalg-morphism-Succ p h a x x' c)
 
 \end{code}
 
@@ -341,7 +340,7 @@ homomorphism-uniqueness : ∀ {U} {X : U ̇}
                         → diagram-commutes p f
                         → diagram-commutes p g
                         → f ≡ g
-homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) lemma
+homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) l
  where
   R : ℕ∞ → ℕ∞ → U ̇
   R u v = Σ \x → (u ≡ f x)  ×  (v ≡ g x)
@@ -357,16 +356,16 @@ homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) lemma
 
   R-Pred : (u v : ℕ∞) → R u v → R (Pred u) (Pred v)
   R-Pred u v (x , c , d) =
-   (pr₁ lemma , pr₁(pr₂ lemma) , pr₂(pr₂ lemma))
+   (pr₁ l , pr₁(pr₂ l) , pr₂(pr₂ l))
    where
-    lemma : Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
-    lemma = coalg-morphism-Pred p f g a b x u v c d
+    l : Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
+    l = coalg-morphism-Pred p f g a b x u v c d
 
   R-bisimulation : ℕ∞-bisimulation R
   R-bisimulation u v r = (R-positivity u v r) , (R-Pred u v r)
 
-  lemma : f ∼ g
-  lemma x = ℕ∞-coinduction R R-bisimulation (f x) (g x) (r x)
+  l : f ∼ g
+  l x = ℕ∞-coinduction R R-bisimulation (f x) (g x) (r x)
 
 \end{code}
 

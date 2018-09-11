@@ -107,3 +107,22 @@ module _ {U V : Universe}
                     f' x (succ n) ∎
 
  \end{code}
+
+Added 11th September 2018.
+
+\begin{code}
+
+seq-bisimulation : ∀ {U V} {A : U ̇} → ((ℕ → A) → (ℕ → A) → V ̇) → U ⊔ V ̇
+seq-bisimulation {U} {V} {A} R = (α β : ℕ → A) → R α β
+                                                 → (head α ≡ head β)
+                                                 × R (tail α) (tail β)
+
+seq-coinduction : ∀ {U V} {A : U ̇} (R : (ℕ → A) → (ℕ → A) → V ̇)
+                → seq-bisimulation R → (α β : ℕ → A) → R α β → α ≡ β
+seq-coinduction {U} {V} {A} R b α β r = dfunext (fe U₀ U) (h α β r)
+ where
+  h : (α β : ℕ → A) → R α β → α ∼ β
+  h α β r zero = pr₁ (b α β r)
+  h α β r (succ n) = h (tail α) (tail β) (pr₂ (b α β r)) n
+
+\end{code}

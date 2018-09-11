@@ -108,3 +108,28 @@ is-prop-separated fe fe₀ {X} = iis-prop-is-prop f
                               (λ _ → separated-is-set fe₀ s)))
 
 \end{code}
+
+Find a better home for this:
+
+\begin{code}
+
+𝟚-ℕ-embedding : 𝟚 → ℕ
+𝟚-ℕ-embedding ₀ = 0
+𝟚-ℕ-embedding ₁ = 1
+
+𝟚-ℕ-embedding-lc : left-cancellable 𝟚-ℕ-embedding
+𝟚-ℕ-embedding-lc {₀} {₀} refl = refl
+𝟚-ℕ-embedding-lc {₀} {₁} ()
+𝟚-ℕ-embedding-lc {₁} {₀} ()
+𝟚-ℕ-embedding-lc {₁} {₁} refl = refl
+
+C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
+C-B-embedding α = 𝟚-ℕ-embedding ∘ α
+
+C-B-embedding-lc : funext U₀ U₀ → left-cancellable C-B-embedding
+C-B-embedding-lc fe {α} {β} p = dfunext fe h
+ where
+  h : (n : ℕ) → α n ≡ β n
+  h n = 𝟚-ℕ-embedding-lc (ap (λ - → - n) p)
+
+\end{code}

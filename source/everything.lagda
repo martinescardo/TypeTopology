@@ -21,6 +21,7 @@ import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import CantorSearchable
+import Codistance
 import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceInfSearchable

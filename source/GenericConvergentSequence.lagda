@@ -16,6 +16,7 @@ module GenericConvergentSequence where
 
 open import SpartanMLTT
 open import Two
+open import DiscreteAndSeparated
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -24,7 +25,6 @@ open import UF-Embedding
 open import UF-Equiv
 open import UF-Retracts
 open import UF-SetExamples
-open import DiscreteAndSeparated
 
 funext₀ : U₁ ̇
 funext₀ = funext U₀ U₀
@@ -257,6 +257,12 @@ same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-coarser-than-≤₂ a)
   a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl
   b : is-Zero u → is-Zero v
   b p = back-transport is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
+
+successors-same-positivity : {u u' v v' : ℕ∞}
+                           → u ≡ Succ u'
+                           → v ≡ Succ v'
+                           → positivity u ≡ positivity v
+successors-same-positivity refl refl = refl
 
 not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
 not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)

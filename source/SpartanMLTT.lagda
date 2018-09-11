@@ -258,6 +258,14 @@ equality-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (z : X + Y)
 equality-cases (inl x) f g = f x refl
 equality-cases (inr y) f g = g y refl
 
+Cases-equality-l : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → A) (g : Y → A)
+                 → (z : X + Y) (x : X) → z ≡ inl x → Cases z f g ≡ f x
+Cases-equality-l f g .(inl x) x refl = refl
+
+Cases-equality-r : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → A) (g : Y → A)
+                 → (z : X + Y) (y : Y) → z ≡ inr y → Cases z f g ≡ g y
+Cases-equality-r f g .(inr y) y refl = refl
+
 \end{code}
 
 Some general definitions (perhaps we need to find a better place for
