@@ -14,9 +14,9 @@ That is, two points are equal iff they are infinitely close.  If we
 have c x y ≡ under n for n : ℕ, the intuition is that x and y can be
 distinguished by a finite amount of information of size n.
 
-We then discuss further codistance axioms.
-
 (An application is to show that WLPO holds iff ℕ∞ is discrete.)
+
+We then discuss further codistance axioms.
 
 \begin{code}
 

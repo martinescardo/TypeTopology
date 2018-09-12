@@ -69,4 +69,5 @@ WLPO-gives-ℕ∞-discrete fe wlpo u v =
 \end{code}
 
 More discussion about WLPO is included in the modules
-TheTopologyOfTheUniverse and FailureOfTotalSeparatedness.
+TheTopologyOfTheUniverse and FailureOfTotalSeparatedness, among
+others.
