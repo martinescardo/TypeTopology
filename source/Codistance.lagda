@@ -42,7 +42,9 @@ module sequences
 
 \end{code}
 
-We denote the type of sequences over D by $:
+We denote the type of sequences over D by $, and define a codistance
+function $ → $ → ℕ∞ using the fact that ℕ∞ is the final coalgebra of
+the functor 𝟙 + (-), which we refer to as corecursion.
 
 \begin{code}
 
@@ -60,8 +62,21 @@ We denote the type of sequences over D by $:
    c : $ → $ → ℕ∞
    c α β = ℕ∞-corec p (α , β)
 
+\end{code}
+
+We use the private name "c" in this submodule, which is exported as
+"codistance":
+
+\begin{code}
+
  codistance : $ → $ → ℕ∞
  codistance = c
+
+\end{code}
+
+The two defining properties of the function c are the following:
+
+\begin{code}
 
  codistance-Zero : (α β : $) → head α ≢ head β → c α β ≡ Zero
  codistance-Zero α β n = γ r
@@ -83,8 +98,15 @@ We denote the type of sequences over D by $:
    γ : p (α , β) ≡ inr (tail α , tail β) → c α β ≡ Succ (c (tail α) (tail β))
    γ = coalg-morphism-Succ p (λ {(α , β) → c α β}) (ℕ∞-corec-diagram p) (α , β) (tail α , tail β)
 
- si : (α : $) → c α α ≡ ∞
- si α = ℕ∞-coinduction R b (c α α) ∞ γ
+\end{code}
+
+That any sequence is infinitely close to itself is proved by
+coinduction on ℕ∞ using codistance-Succ:
+
+\begin{code}
+
+ infinitely-close-to-itself : (α : $) → c α α ≡ ∞
+ infinitely-close-to-itself α = ℕ∞-coinduction R b (c α α) ∞ γ
   where
    l : ∀ α → c α α ≡ Succ (c (tail α) (tail α))
    l α = codistance-Succ α α refl
@@ -100,8 +122,16 @@ We denote the type of sequences over D by $:
    γ : R (c α α) ∞
    γ = (α , refl) , refl
 
- iae : (α β : $) → c α β ≡ ∞ → α ≡ β
- iae = seq-coinduction (λ α β → c α β ≡ ∞) b
+\end{code}
+
+That any two infinitely close sequences are equal is proved by
+coinduction on sequences, using both codistance-Zero (to rule out an
+impossible case) and codistance-Succ (to establish the result):
+
+\begin{code}
+
+ infinitely-close-are-equal : (α β : $) → c α β ≡ ∞ → α ≡ β
+ infinitely-close-are-equal = seq-coinduction (λ α β → c α β ≡ ∞) b
   where
    b : (α β : $) → c α β ≡ ∞
                  → (head α ≡ head β) × (c (tail α) (tail β) ≡ ∞)
@@ -125,21 +155,22 @@ We denote the type of sequences over D by $:
 
 \end{code}
 
-We now consider the following two special cases:
+We now consider the following two special cases for the Baire and
+Cantor types:
 
 \begin{code}
 
 open sequences ℕ ℕ-discrete
-      renaming
-        (codistance to Baire-codistance ;
-         si         to Baire-si ;
-         iae        to Baire-iae)
+ renaming
+  (codistance                 to Baire-codistance ;
+   infinitely-close-to-itself to Baire-infinitely-close-to-itself ;
+   infinitely-close-are-equal to Baire-infinitely-close-are-equal)
 
 open sequences 𝟚 𝟚-discrete
-      renaming
-        (codistance to Cantor-codistance ;
-         si         to Cantor-si ;
-         iae        to Cantor-iae)
+ renaming
+  (codistance                 to Cantor-codistance ;
+   infinitely-close-to-itself to Cantor-infinitely-close-to-itself ;
+   infinitely-close-are-equal to Cantor-infinitely-close-are-equal)
 
 \end{code}
 
@@ -151,18 +182,17 @@ convergent sequence:
 ℕ∞-codistance : ℕ∞ → ℕ∞ → ℕ∞
 ℕ∞-codistance u v = Cantor-codistance (incl u) (incl v)
 
-ℕ∞-si : (u : ℕ∞) → ℕ∞-codistance u u ≡ ∞
-ℕ∞-si u = Cantor-si (incl u)
+ℕ∞-infinitely-close-to-itself : (u : ℕ∞) → ℕ∞-codistance u u ≡ ∞
+ℕ∞-infinitely-close-to-itself u = Cantor-infinitely-close-to-itself (incl u)
 
-ℕ∞-si' : (u v : ℕ∞) → u ≡ v → ℕ∞-codistance u v ≡ ∞
-ℕ∞-si' u .u refl = ℕ∞-si u
+ℕ∞-equal-are-infinitely-close : (u v : ℕ∞) → u ≡ v → ℕ∞-codistance u v ≡ ∞
+ℕ∞-equal-are-infinitely-close u .u refl = ℕ∞-infinitely-close-to-itself u
 
-
-ℕ∞-iae : (u v : ℕ∞) → ℕ∞-codistance u v ≡ ∞ → u ≡ v
-ℕ∞-iae u v r = incl-lc (fe U₀ U₀) γ
+ℕ∞-infinitely-close-are-equal : (u v : ℕ∞) → ℕ∞-codistance u v ≡ ∞ → u ≡ v
+ℕ∞-infinitely-close-are-equal u v r = incl-lc (fe U₀ U₀) γ
  where
   γ : incl u ≡ incl v
-  γ = Cantor-iae (incl u) (incl v) r
+  γ = Cantor-infinitely-close-are-equal (incl u) (incl v) r
 
 \end{code}
 
