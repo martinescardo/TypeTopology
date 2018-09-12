@@ -154,6 +154,10 @@ convergent sequence:
 ℕ∞-si : (u : ℕ∞) → ℕ∞-codistance u u ≡ ∞
 ℕ∞-si u = Cantor-si (incl u)
 
+ℕ∞-si' : (u v : ℕ∞) → u ≡ v → ℕ∞-codistance u v ≡ ∞
+ℕ∞-si' u .u refl = ℕ∞-si u
+
+
 ℕ∞-iae : (u v : ℕ∞) → ℕ∞-codistance u v ≡ ∞ → u ≡ v
 ℕ∞-iae u v r = incl-lc (fe U₀ U₀) γ
  where

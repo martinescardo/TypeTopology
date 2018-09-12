@@ -35,13 +35,36 @@ WLPO = (u : ℕ∞) → (u ≡ ∞) + (u ≢ ∞)
 
 open import DiscreteAndSeparated
 
+\end{code}
+
+If ℕ∞ is discrete, i.e. has decidable equality, then WLPO follows:
+
+\begin{code}
+
 ℕ∞-discrete-gives-WLPO : discrete ℕ∞ → WLPO
 ℕ∞-discrete-gives-WLPO d u = d u ∞
 
 \end{code}
 
-We should have that LPO implies that ℕ∞ is discrete, and so the
-discreteness of ℕ∞ is intermediate between WLPO and LPO.
+Conversely, assuming function extensionality, WLPO implies that ℕ∞ is
+discrete. The proof uses a codistance (or closeness) function
+c : ℕ∞ → ℕ∞ → ℕ∞ such that c u v ≡ ∞ ⇔ u ≡ v.
+
+\begin{code}
+
+open import UF-FunExt
+
+WLPO-gives-ℕ∞-discrete : (∀ U V → funext U V) → WLPO → discrete ℕ∞
+WLPO-gives-ℕ∞-discrete fe wlpo u v =
+ Cases (wlpo (ℕ∞-codistance u v))
+  (λ (p : ℕ∞-codistance u v ≡ ∞)
+        → inl (ℕ∞-iae u v p))
+  (λ (n : ℕ∞-codistance u v ≢ ∞)
+        → inr (contrapositive (λ (q : u ≡ v) → ℕ∞-si' u v q) n))
+ where
+  open import Codistance fe
+
+\end{code}
 
 More discussion is included in the modules TheTopologyOfTheUniverse
 and FailureOfTotalSeparatedness.
