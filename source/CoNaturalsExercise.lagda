@@ -45,8 +45,8 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
   retr : (ℕ → 𝟚) → ℕ∞
   retr = ℕ∞-corec p-retr
 
-  retr-spec : P ∘ retr ≡ (𝟙+ retr) ∘ p-retr
-  retr-spec = ℕ∞-corec-diagram p-retr
+  retr-spec : PRED ∘ retr ≡ (𝟙+ retr) ∘ p-retr
+  retr-spec = ℕ∞-corec-homomorphism p-retr
 
   retr-spec₀ : (α : ℕ → 𝟚) → head α ≡ ₀ → retr α ≡ Zero
   retr-spec₀ α r = coalg-morphism-Zero p-retr retr retr-spec α * lemma

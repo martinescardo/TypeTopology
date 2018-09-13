@@ -197,7 +197,7 @@ convergent sequence:
 
 \end{code}
 
-Axioms for codistance.
+Axioms for codistance:
 
 \begin{code}
 
@@ -213,7 +213,7 @@ is-codistance
 indistinguishable-are-equal c = ∀ x y → c x y ≡ ∞ → x ≡ y
 self-indistinguishable      c = ∀ x → c x x ≡ ∞
 is-symmetric                c = ∀ x y → c x y ≡ c y x
-is-ultra                    c = ∀ x y z → min (c x y) (c y z) ≼ c x z
+is-ultra                    c = ∀ x y z → min (c x y , c y z) ≼ c x z
 is-codistance               c = indistinguishable-are-equal c
                               × self-indistinguishable c
                               × is-symmetric c

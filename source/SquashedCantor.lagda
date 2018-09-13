@@ -176,11 +176,11 @@ Head-step₁ α = ap (λ - → 𝟚-equality-cases
 
 Head₀ : (α : Cantor) → head α ≡ ₀ → Head α ≡ Zero
 Head₀ α r = coalg-morphism-Zero
-             Head-step Head (ℕ∞-corec-diagram Head-step) α * (Head-step₀ α r)
+             Head-step Head (ℕ∞-corec-homomorphism Head-step) α * (Head-step₀ α r)
 
 Head₁ : (α : Cantor) → head α ≡ ₁ → Head α ≡ Succ (Head (tail α))
 Head₁ α r = coalg-morphism-Succ
-             Head-step Head (ℕ∞-corec-diagram Head-step) α (tail α) (Head-step₁ α r)
+             Head-step Head (ℕ∞-corec-homomorphism Head-step) α (tail α) (Head-step₁ α r)
 
 \end{code}
 
