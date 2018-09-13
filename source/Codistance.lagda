@@ -49,18 +49,18 @@ the functor 𝟙 + (-), which we refer to as corecursion.
 \begin{code}
 
  private
-   $ : U ̇
-   $ = ℕ → D
-   X : U ̇
-   X = $ × $
-   f : (α β : $) → head α ≡ head β → 𝟙 {U₀} + X
-   f α β q = inr (tail α , tail β)
-   g : (α β : $) → head α ≢ head β → 𝟙 {U₀} + X
-   g α β n = inl *
-   p : X → 𝟙 {U₀} + X
-   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
-   c : $ → $ → ℕ∞
-   c α β = ℕ∞-corec p (α , β)
+  $ : U ̇
+  $ = ℕ → D
+  X : U ̇
+  X = $ × $
+  f : (α β : $) → head α ≡ head β → 𝟙 {U₀} + X
+  f α β q = inr (tail α , tail β)
+  g : (α β : $) → head α ≢ head β → 𝟙 {U₀} + X
+  g α β n = inl *
+  p : X → 𝟙 {U₀} + X
+  p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
+  c : $ → $ → ℕ∞
+  c = curry (ℕ∞-corec p)
 
 \end{code}
 
@@ -78,30 +78,31 @@ The two defining properties of the function c are the following:
 
 \begin{code}
 
- codistance-Zero : (α β : $) → head α ≢ head β → c α β ≡ Zero
- codistance-Zero α β n = γ r
+ codistance-eq₀ : (α β : $) → head α ≢ head β → c α β ≡ Zero
+ codistance-eq₁ : (α β : $) → head α ≡ head β → c α β ≡ Succ (c (tail α) (tail β))
+
+ codistance-eq₀ α β n = γ r
   where
    t : δ (head α) (head β) ≡ inr n
    t = discrete-inr (fe U U₀) δ (head α) (head β) n
    r : p (α , β) ≡ inl *
    r = ap (cases (f α β) (g α β)) t
    γ : p (α , β) ≡ inl * → c α β ≡ Zero
-   γ = coalg-morphism-Zero p (λ {(α , β) → c α β}) (ℕ∞-corec-diagram p) (α , β) *
+   γ = Coalg-morphism-Zero p (α , β) *
 
- codistance-Succ : (α β : $) → head α ≡ head β → c α β ≡ Succ(c (tail α) (tail β))
- codistance-Succ α β q = γ r
+ codistance-eq₁ α β q = γ r
   where
    t : δ (head α) (head β) ≡ inl q
    t = discrete-inl δ (head α) (head β) q
    r : p (α , β) ≡ inr (tail α , tail β)
    r = ap (cases (f α β) (g α β)) t
    γ : p (α , β) ≡ inr (tail α , tail β) → c α β ≡ Succ (c (tail α) (tail β))
-   γ = coalg-morphism-Succ p (λ {(α , β) → c α β}) (ℕ∞-corec-diagram p) (α , β) (tail α , tail β)
+   γ = Coalg-morphism-Succ p (α , β) (tail α , tail β)
 
 \end{code}
 
 That any sequence is infinitely close to itself is proved by
-coinduction on ℕ∞ using codistance-Succ:
+coinduction on ℕ∞ using codistance-eq₁:
 
 \begin{code}
 
@@ -109,7 +110,7 @@ coinduction on ℕ∞ using codistance-Succ:
  infinitely-close-to-itself α = ℕ∞-coinduction R b (c α α) ∞ γ
   where
    l : ∀ α → c α α ≡ Succ (c (tail α) (tail α))
-   l α = codistance-Succ α α refl
+   l α = codistance-eq₁ α α refl
    R : ℕ∞ → ℕ∞ → U ̇
    R u v = (Σ \(α : $) → u ≡ c α α) × (v ≡ ∞)
    b : ℕ∞-bisimulation R
@@ -125,8 +126,8 @@ coinduction on ℕ∞ using codistance-Succ:
 \end{code}
 
 That any two infinitely close sequences are equal is proved by
-coinduction on sequences, using both codistance-Zero (to rule out an
-impossible case) and codistance-Succ (to establish the result):
+coinduction on sequences, using both codistance-eq₀ (to rule out an
+impossible case) and codistance-eq₁ (to establish the result):
 
 \begin{code}
 
@@ -138,7 +139,7 @@ impossible case) and codistance-Succ (to establish the result):
    b α β q = d , e
     where
      l : head α ≢ head β → c α β ≡ Zero
-     l = codistance-Zero α β
+     l = codistance-eq₀ α β
      d : head α ≡ head β
      d = Cases (δ (head α) (head β))
           (λ (p : head α ≡ head β)
@@ -149,7 +150,7 @@ impossible case) and codistance-Succ (to establish the result):
                                          ∞       ≡⟨ (Succ-∞-is-∞ (fe U₀ U₀))⁻¹ ⟩
                                          Succ ∞  ∎)))
      e : c (tail α) (tail β) ≡ ∞
-     e = ap Pred (Succ (c (tail α) (tail β)) ≡⟨ (codistance-Succ α β d)⁻¹ ⟩
+     e = ap Pred (Succ (c (tail α) (tail β)) ≡⟨ (codistance-eq₁ α β d)⁻¹ ⟩
                   c α β                      ≡⟨ q ⟩
                   ∞                          ∎)
 
@@ -196,31 +197,28 @@ convergent sequence:
 
 \end{code}
 
-TODO. Complete the proof of the codistance axioms for the above
-codistances on Baire, Cantor and ℕ∞, according to the following
-initial template:
+Axioms for codistance.
 
 \begin{code}
 
-{-
-minℕ∞ : ℕ∞ → ℕ∞ → ℕ∞
-minℕ∞ = {!!}
--}
+open import CoNaturalsMinimum fe
 
 is-codistance
  indistinguishable-are-equal
  self-indistinguishable
  is-symmetric
- -- is-ultra
+ is-ultra
   : ∀ {U} {X : U ̇} → (X → X → ℕ∞) → U ̇
 
 indistinguishable-are-equal c = ∀ x y → c x y ≡ ∞ → x ≡ y
 self-indistinguishable      c = ∀ x → c x x ≡ ∞
 is-symmetric                c = ∀ x y → c x y ≡ c y x
--- is-ultra                 c = ∀ x y z → minℕ∞ (c x y) (c y z) ≼ c x z
+is-ultra                    c = ∀ x y z → min (c x y) (c y z) ≼ c x z
 is-codistance               c = indistinguishable-are-equal c
                               × self-indistinguishable c
                               × is-symmetric c
---                            × is-ultra c
-
+                              × is-ultra c
 \end{code}
+
+TODO. Show that the above codistances are indeed codistances according
+to this definition.

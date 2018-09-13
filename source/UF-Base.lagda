@@ -6,12 +6,6 @@ module UF-Base where
 
 open import SpartanMLTT
 
-back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
-back-transport B p = transport B (p ⁻¹)
-
-≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
-≢-sym u r = u(r ⁻¹)
-
 transport₂ : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → Y → W ̇)
              {x x' : X} {y y' : Y}
           → x ≡ x' → y ≡ y' → A x y → A x' y'

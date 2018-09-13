@@ -51,7 +51,7 @@ Now p x is either of the form in₀ * or in₁ x' for a unique x' : X, and
 hence the above equation amounts to
 
              h(x) ≡ Zero,           if p x ≡ in₀ *,
-             h(x) ≡ Succ(h x'),     if p x ≡ in₁ x',
+             h(x) ≡ Succ (h x'),    if p x ≡ in₁ x',
 
 once we know the definition of 𝟙 + h. This shows more clearly how the
 diagram can be considered as a (co)recursive definition of h, and
@@ -116,11 +116,11 @@ S-P-id {u} = 𝟚-equality-cases l₀ l₁
    where
      c₀ : P u ≡ Pred' u
      c₀ = ap (𝟚-cases Zero' (Pred' u)) r
-     c₁ : S(P u) ≡ Succ(Pred u)
+     c₁ : S(P u) ≡ Succ (Pred u)
      c₁ = ap S c₀
      c₂ : u ≢ Zero
      c₂ s = Lemma[b≡₀→b≢₁](ap positivity s) r
-     c₃ : u ≡ Succ(Pred u)
+     c₃ : u ≡ Succ (Pred u)
      c₃ = not-Zero-is-Succ (fe U₀ U₀) c₂
 
 P-lc : {u v : ℕ∞} → P u ≡ P v → u ≡ v
@@ -194,10 +194,10 @@ homomorphism-existence {U} {X} p = h , dfunext (fe U U₀) h-spec
       c₂ n = c₁ n ∙ ap (Q n) r
       c₃ : (n : ℕ) → E(q(Q n (inr x))) ≡ E(Q n (inr x'))
       c₃ n = ap E (c₂ n)
-      c₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ(h x')) i
+      c₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ (h x')) i
       c₄ 0  = c₃ 0
       c₄ (succ i) = c₃(succ i)
-      c₅ : h x ≡ Succ(h x')
+      c₅ : h x ≡ Succ (h x')
       c₅ = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) c₄)
 
       c₆ : P(h x) ≡ inr(h x')
@@ -236,8 +236,7 @@ coalgebra homomorphisms in more detail.
 
 \begin{code}
 
-coalg-morphism-Zero : ∀ {U} {X : U ̇}
-                      (p : X →  𝟙 + X) (h : X → ℕ∞)
+coalg-morphism-Zero : ∀ {U} {X : U ̇} (p : X →  𝟙 + X) (h : X → ℕ∞)
                     → diagram-commutes p h
                     → (x : X) (s : 𝟙) → p x ≡ inl s → h x ≡ Zero
 coalg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S c₃
@@ -249,10 +248,14 @@ coalg-morphism-Zero p h a x * c = S-P-id ⁻¹ ∙ ap S c₃
   c₃ : P(h x) ≡ inl *
   c₃ = c₁ ∙ c₂
 
+Coalg-morphism-Zero : ∀ {U} {X : U ̇} (p : X →  𝟙 + X)
+                    → (x : X) (s : 𝟙) → p x ≡ inl s → ℕ∞-corec p x ≡ Zero
+Coalg-morphism-Zero p = coalg-morphism-Zero p (ℕ∞-corec p) (ℕ∞-corec-diagram p)
+
 coalg-morphism-Succ : ∀ {U} {X : U ̇}
                       (p : X →  𝟙 + X) (h : X → ℕ∞)
                     → diagram-commutes p h
-                    → (x x' : X) → p x ≡ inr x' → h x ≡ Succ(h x')
+                    → (x x' : X) → p x ≡ inr x' → h x ≡ Succ (h x')
 coalg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S c₃
  where
   c₁ : P(h x) ≡ (𝟙+ h)(p x)
@@ -261,6 +264,10 @@ coalg-morphism-Succ p h a x x' c = S-P-id ⁻¹ ∙ ap S c₃
   c₂ = ap (𝟙+ h) c
   c₃ : P(h x) ≡ inr(h x')
   c₃ = c₁ ∙ c₂
+
+Coalg-morphism-Succ : ∀ {U} {X : U ̇} (p : X →  𝟙 + X)
+                    → (x x' : X) → p x ≡ inr x' → ℕ∞-corec p x ≡ Succ (ℕ∞-corec p x')
+Coalg-morphism-Succ p = coalg-morphism-Succ p (ℕ∞-corec p) (ℕ∞-corec-diagram p)
 
 \end{code}
 
@@ -319,7 +326,7 @@ coalg-morphism-Pred {U} {X} p f g a b x u v d e =
 
   l₁ : (x' : X) → p x ≡ inr x'
      → Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
-  l₁ x' c = x' , ((l f a u d ) , (l g b v e ))
+  l₁ x' c = x' , (l f a u d , l g b v e)
    where
     l : (h : X → ℕ∞) → P ∘ h ≡ (𝟙+ h) ∘ p
       → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x'
@@ -343,7 +350,7 @@ homomorphism-uniqueness : ∀ {U} {X : U ̇}
 homomorphism-uniqueness {U} {X} p f g a b = dfunext (fe U U₀) l
  where
   R : ℕ∞ → ℕ∞ → U ̇
-  R u v = Σ \x → (u ≡ f x)  ×  (v ≡ g x)
+  R u v = Σ \x → (u ≡ f x) × (v ≡ g x)
 
   r : (x : X) → R (f x) (g x)
   r x = (x , refl , refl)

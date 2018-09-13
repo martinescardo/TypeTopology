@@ -241,6 +241,12 @@ p ⁻¹ = transport (λ - → - ≡ lhs p) p refl
 ap : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
 ap f p = transport (λ - → f (lhs p) ≡ f -) p refl
 
+back-transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X} → x ≡ y → A y → A x
+back-transport B p = transport B (p ⁻¹)
+
+≢-sym : ∀ {U} {X : U ̇} → {x y : X} → x ≢ y → y ≢ x
+≢-sym u r = u(r ⁻¹)
+
 \end{code}
 
 Standard syntax for equality chain reasoning:

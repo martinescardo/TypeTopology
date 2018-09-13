@@ -40,8 +40,8 @@ module retract-version where
  section-gives-pt-section r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
 
  lfpt : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
-      → has-pt-section r
-      → (f : X → X) → Σ \(x : X) → x ≡ f x
+     → has-pt-section r
+     → (f : X → X) → Σ \(x : X) → x ≡ f x
  lfpt {U} {V} {A} {X} r (s , rs) f = x , p
   where
    g : A → X
@@ -98,7 +98,7 @@ module retract-version where
  \begin{code}
 
  Cantor-theorem-for-universes :
-     (U V : Universe) (A : V ̇)
+    (U V : Universe) (A : V ̇)
    → (r : A → (A → U ̇)) → has-pt-section r → 𝟘
  Cantor-theorem-for-universes U V A r h = pr₁ (cantor-theorem-for-universes U V A r h 𝟘 id)
 
@@ -162,8 +162,8 @@ module surjection-version (pt : PropTrunc) where
  open ImageAndSurjection pt
 
  lfpt : ∀ {U V} {A : U ̇} {X : V ̇} (φ : A → (A → X))
-      → is-surjection φ
-      → (f : X → X) → ∃ \(x : X) → x ≡ f x
+     → is-surjection φ
+     → (f : X → X) → ∃ \(x : X) → x ≡ f x
  lfpt {U} {V} {A} {X} φ s f = ptfunct γ e
   where
    g : A → X
