@@ -23,6 +23,7 @@ import BinaryNaturals
 import CantorSearchable
 import Codistance
 import CoNaturalsExercise
+import CoNaturalsMinimum
 import CoNaturals
 import ConvergentSequenceInfSearchable
 import ConvergentSequenceSearchable
