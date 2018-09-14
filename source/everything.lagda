@@ -22,9 +22,9 @@ import BasicDiscontinuityTaboo
 import BinaryNaturals
 import CantorSearchable
 import Codistance
-import CoNaturalsExercise
-import CoNaturalsMinimum
 import CoNaturals
+import CoNaturalsArithmetic
+import CoNaturalsExercise
 import ConvergentSequenceInfSearchable
 import ConvergentSequenceSearchable
 import CountableTychonoff

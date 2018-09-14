@@ -201,7 +201,7 @@ Axioms for codistance:
 
 \begin{code}
 
-open import CoNaturalsMinimum fe
+open import CoNaturalsArithmetic fe
 
 is-codistance
  indistinguishable-are-equal
