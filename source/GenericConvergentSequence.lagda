@@ -285,6 +285,9 @@ Zero-or-Succ fe₀ u = 𝟚-equality-cases
                       (λ (z : is-Zero u) → inl (is-Zero-equal-Zero fe₀ z))
                       (λ (p : positive u) → inr (positive-equal-Succ fe₀ p))
 
+Zero+Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + Σ \(w : ℕ∞) → u ≡ Succ w
+Zero+Succ fe₀ u = Cases (Zero-or-Succ fe₀ u) inl (λ p → inr (Pred u , p))
+
 Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
 Succ-criterion fe {u} {n} r s = incl-lc fe claim
  where
@@ -451,8 +454,18 @@ Order on ℕ∞:
 _≼_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
 
-∞-greatest : (u : ℕ∞) → u ≼ ∞
-∞-greatest u = λ n _ → refl
+∞-maximal : (u : ℕ∞) → u ≼ ∞
+∞-maximal u = λ n _ → refl
+
+Zero-minimal : (u : ℕ∞) → Zero ≼ u
+Zero-minimal u n ()
+
+Succ-monotone : (u v : ℕ∞) → u ≼ v → Succ u ≼ Succ v
+Succ-monotone u v l zero p = p
+Succ-monotone u v l (succ n) p = l n p
+
+Succ-loc : (u v : ℕ∞) → Succ u ≼ Succ v → u ≼ v
+Succ-loc u v l n = l (succ n)
 
 max : ℕ∞ → ℕ∞ → ℕ∞
 max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
@@ -493,8 +506,8 @@ below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated f
 ≺-coarser-than-⊏ : (n : ℕ) (u : ℕ∞) → under n ≺ u → n ⊏ u
 ≺-coarser-than-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (under-lc r) a
 
-∞-maximal : (n : ℕ) → under n ≺ ∞
-∞-maximal n = n , refl , ∞-⊏-maximal n
+∞-≺-maximal : (n : ℕ) → under n ≺ ∞
+∞-≺-maximal n = n , refl , ∞-⊏-maximal n
 
 open import NaturalsOrder
 
