@@ -130,10 +130,10 @@ min-idempotent u = ap (λ - → - u) h-is-corec
 
 \end{code}
 
-(Notice that the above argument actually shows that any function f :
-ℕ∞ × ℕ∞ → ℕ∞ that satisfies f (Zero , Zero) ≡ Zero and f (Succ w ,
-Succ w) = Succ (f w) is idempotent, as would be the cases of the
-maximum function)
+(Notice that the above argument actually shows that any function
+f : ℕ∞ × ℕ∞ → ℕ∞ that satisfies f (Zero , Zero) ≡ Zero and
+f (Succ w , Succ w) = Succ (f w) is idempotent, as would be the cases
+of the maximum function)
 
 Similarly, to prove that min is commutative, we show that the function
 λ (u , v) → min (v , u) satisfies the same "defining equations" as the
