@@ -70,7 +70,7 @@ min-eq₂ = λ u v → Coalg-morphism-Succ κ-min (Succ u , Succ v) (u , v) refl
 
 \end{code}
 
-Maximum:
+Maximum (another version is defined in GenericConvergentSequence):
 
 \begin{code}
 
@@ -87,12 +87,12 @@ private
 max' : ℕ∞ × ℕ∞ → ℕ∞
 max' = ℕ∞-corec κ-max
 
-max-eq₀ :          max' (Zero , Zero) ≡ Zero
+max-eq₀ :         max' (Zero , Zero) ≡ Zero
 max-eq₁ : ∀ v   → max' (Zero , Succ v) ≡ Succ (max' (Zero , v))
 max-eq₂ : ∀ u   → max' (Succ u , Zero) ≡ Succ (max' (u , Zero))
 max-eq₃ : ∀ u v → max' (Succ u , Succ v) ≡ Succ (max' (u , v))
 
-max-eq₀ =          Coalg-morphism-Zero κ-max (Zero , Zero) * refl
+max-eq₀ =         Coalg-morphism-Zero κ-max (Zero , Zero) * refl
 max-eq₁ = λ v   → Coalg-morphism-Succ κ-max (Zero , Succ v) (Zero , v) refl
 max-eq₂ = λ u   → Coalg-morphism-Succ κ-max (Succ u , Zero) (u , Zero) refl
 max-eq₃ = λ u v → Coalg-morphism-Succ κ-max (Succ u , Succ v) (u , v) refl
