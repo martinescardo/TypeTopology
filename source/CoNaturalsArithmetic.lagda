@@ -99,12 +99,70 @@ max-eq₃ = λ u v → Coalg-morphism-Succ κ-max (Succ u , Succ v) (u , v) refl
 
 \end{code}
 
+Addition:
+
+\begin{code}
+
+private
+ κ-add : ℕ∞ × ℕ∞ → 𝟙 {U₀} + ℕ∞ × ℕ∞
+ κ-add (u , v) = 𝟚-Cases (positivity u)
+                   (𝟚-Cases (positivity v)
+                      (inl *)
+                      (inr (Zero , Pred v)))
+                   (inr (Pred u , v))
+
+add : ℕ∞ × ℕ∞ → ℕ∞
+add = ℕ∞-corec κ-add
+
+add-eq₀ :         add (Zero , Zero) ≡ Zero
+add-eq₁ : ∀ v   → add (Zero , Succ v) ≡ Succ (add (Zero , v))
+add-eq₂ : ∀ u v → add (Succ u , v) ≡ Succ (add (u , v))
+
+add-eq₀ =         Coalg-morphism-Zero κ-add (Zero , Zero) * refl
+add-eq₁ = λ v   → Coalg-morphism-Succ κ-add (Zero , Succ v) (Zero , v) refl
+add-eq₂ = λ u v → Coalg-morphism-Succ κ-add (Succ u , v) (u , v) refl
+
+\end{code}
+
 We now prove properties of the minimum function using the
 final-coalgebra property.
 
-Using the equations min-eq₀ and min-eq₂, we have that the function λ u
-→ min (u , u) is an algebra homomorphism from PRED to PRED and hence
-is equal to the identity function:
+We already know that min (Zero , v) ≡ Zero, that is, Zero is
+minimal. We next prove that ∞ is maximal, i.e., min (∞ , v) = v.
+
+Using the equations ..., we have that the function
+λ v → min (∞ , v) is an algebra homomorphism from PRED to PRED and
+hence is equal to the identity function:
+
+
+\begin{code}
+
+min-eq∞ : ∀ v → min (∞ , v) ≡ v
+min-eq∞ v = ap (λ - → - v) h-is-corec
+ where
+  h : ℕ∞ → ℕ∞
+  h v = min (∞ , v)
+  h-homomorphism : is-homomorphism PRED h
+  h-homomorphism = dfunext fe₀ (λ v → φ v (Zero+Succ fe₀ v))
+   where
+    φ : (v : ℕ∞) → (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → PRED (h v) ≡ 𝟙+ h (PRED v)
+    φ v (inl refl) =
+      PRED (min (∞ , Zero))        ≡⟨ ap PRED (min-eq₀ ∞) ⟩
+      PRED Zero                    ≡⟨ refl ⟩
+      𝟙+ h (PRED Zero)             ∎
+    φ v (inr (t , refl)) =
+      PRED (min (∞ , Succ t)) ≡⟨ ap (λ - → PRED (min (- , Succ t))) (Succ-∞-is-∞ fe₀ ⁻¹) ⟩
+      PRED (min (Succ ∞ , Succ t)) ≡⟨ ap PRED (min-eq₂ ∞ t) ⟩
+      PRED (Succ (min (∞ , t)))    ≡⟨ refl ⟩
+      𝟙+ h (PRED (Succ t))         ∎
+  h-is-corec : h ≡ id
+  h-is-corec = homomorphism-uniqueness PRED h id h-homomorphism id-homomorphism
+
+\end{code}
+
+Using the equations min-eq₀ and min-eq₂, we have that the function
+λ u → min (u , u) is an algebra homomorphism from PRED to PRED and
+hence is equal to the identity function:
 
 \begin{code}
 
@@ -130,10 +188,10 @@ min-idempotent u = ap (λ - → - u) h-is-corec
 
 \end{code}
 
-(Notice that the above argument actually shows that any function
-f : ℕ∞ × ℕ∞ → ℕ∞ that satisfies f (Zero , Zero) ≡ Zero and
-f (Succ w , Succ w) = Succ (f w) is idempotent, as would be the cases
-of the maximum function)
+(Notice that the above argument actually shows that any function f :
+ℕ∞ × ℕ∞ → ℕ∞ that satisfies f (Zero , Zero) ≡ Zero and f (Succ w ,
+Succ w) = Succ (f w) is idempotent, as it is the case of the maximum
+function)
 
 Similarly, to prove that min is commutative, we show that the function
 λ (u , v) → min (v , u) satisfies the same "defining equations" as the
@@ -145,9 +203,9 @@ min-eq₁ by cases on whether u is Zero or a Succ(Pred u).
 \begin{code}
 
 eq₃-from-eq₀-and-eq₁ : (h : ℕ∞ × ℕ∞ → ℕ∞)
-                    → (∀ v → h (Zero , v) ≡ Zero)
-                    → (∀ u → h (Succ u , Zero) ≡ Zero)
-                    → (∀ u → h (u , Zero) ≡ Zero)
+                     → (∀ v → h (Zero , v) ≡ Zero)
+                     → (∀ u → h (Succ u , Zero) ≡ Zero)
+                     → (∀ u → h (u , Zero) ≡ Zero)
 eq₃-from-eq₀-and-eq₁ h eq₀ eq₁ u = γ (Zero+Succ fe₀ u)
  where
   γ : (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → h (u , Zero) ≡ Zero
@@ -255,14 +313,14 @@ min-assoc u v w = ap (λ - → - (u , v , w)) p
        → PRED (f (u , v , w)) ≡ 𝟙+ f (k (u , v , w))
       φ (inl refl) _ _ = ap PRED (min-eq₀ (min (v , w)))
       φ (inr (x , refl)) (inl refl) _ =
-        PRED (min (Succ x , min (Zero , w))) ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₀ w) ⟩
-        PRED (min (Succ x , Zero))           ≡⟨ ap PRED (min-eq₃ u) ⟩
-        PRED Zero                            ≡⟨ ap PRED (min-eq₃ u) ⟩
-        𝟙+ f (k (Succ x , Zero , w))         ∎
+        PRED (min (Succ x , min (Zero , w)))        ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₀ w) ⟩
+        PRED (min (Succ x , Zero))                  ≡⟨ ap PRED (min-eq₃ u) ⟩
+        PRED Zero                                   ≡⟨ ap PRED (min-eq₃ u) ⟩
+        𝟙+ f (k (Succ x , Zero , w))                ∎
       φ (inr (x , refl)) (inr (y , refl)) (inl refl) =
-        PRED (min (Succ x , min (Succ y , Zero))) ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₃ (Succ y)) ⟩
-        PRED (min (Succ x , Zero))                ≡⟨ ap PRED (min-eq₃ (Succ x)) ⟩
-        𝟙+ f (k (Succ x , Succ y , Zero))         ∎
+        PRED (min (Succ x , min (Succ y , Zero)))   ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₃ (Succ y)) ⟩
+        PRED (min (Succ x , Zero))                  ≡⟨ ap PRED (min-eq₃ (Succ x)) ⟩
+        𝟙+ f (k (Succ x , Succ y , Zero))           ∎
       φ (inr (x , refl)) (inr (y , refl)) (inr (z , refl)) =
         PRED (min (Succ x , min (Succ y , Succ z))) ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₂ y z) ⟩
         PRED (min (Succ x , Succ (min (y , z))))    ≡⟨ ap PRED (min-eq₂ x (min (y , z))) ⟩
@@ -296,6 +354,9 @@ min-assoc u v w = ap (λ - → - (u , v , w)) p
   p = homomorphism-uniqueness k f g f-homomorphism g-homomorphism
 
 \end{code}
+
+Thus, ℕ∞ equipped with (min , Zero, ∞) is a bounded semilattice with
+bottom Zero and top ∞.
 
 The following two facts invert the equations that characterize min:
 
