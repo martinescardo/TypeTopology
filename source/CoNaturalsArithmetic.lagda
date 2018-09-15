@@ -130,15 +130,15 @@ final-coalgebra property.
 We already know that min (Zero , v) ≡ Zero, that is, Zero is
 minimal. We next prove that ∞ is maximal, i.e., min (∞ , v) = v.
 
-Using the equations ..., we have that the function
+Using the equations min-eq₀ and min-eq₂, we have that the function
 λ v → min (∞ , v) is an algebra homomorphism from PRED to PRED and
 hence is equal to the identity function:
 
 
 \begin{code}
 
-min-eq∞ : ∀ v → min (∞ , v) ≡ v
-min-eq∞ v = ap (λ - → - v) h-is-corec
+min-unit : ∀ v → min (∞ , v) ≡ v
+min-unit v = ap (λ - → - v) h-is-corec
  where
   h : ℕ∞ → ℕ∞
   h v = min (∞ , v)
@@ -188,10 +188,10 @@ min-idempotent u = ap (λ - → - u) h-is-corec
 
 \end{code}
 
-(Notice that the above argument actually shows that any function f :
-ℕ∞ × ℕ∞ → ℕ∞ that satisfies f (Zero , Zero) ≡ Zero and f (Succ w ,
-Succ w) = Succ (f w) is idempotent, as it is the case of the maximum
-function)
+(Notice that the above argument actually shows that any function
+f : ℕ∞ × ℕ∞ → ℕ∞ that satisfies f (Zero , Zero) ≡ Zero and
+f (Succ w , Succ w) = Succ (f w) is idempotent, as it is the case of
+the maximum function)
 
 Similarly, to prove that min is commutative, we show that the function
 λ (u , v) → min (v , u) satisfies the same "defining equations" as the
@@ -222,13 +222,13 @@ coalgebra homomorphism and hence is equal to ℕ∞-corec κ-min.
 
 \begin{code}
 
-equations-characterize-homomorphisms :
+min-equations-characterize-homomorphisms :
     (h : ℕ∞ × ℕ∞ → ℕ∞)
   → (∀ v   → h (Zero , v) ≡ Zero)
   → (∀ u   → h (Succ u , Zero) ≡ Zero)
   → (∀ u v → h (Succ u , Succ v) ≡ Succ (h (u , v)))
   → is-homomorphism κ-min h
-equations-characterize-homomorphisms h eq₀ eq₁ eq₂ = dfunext fe₀ γ
+min-equations-characterize-homomorphisms h eq₀ eq₁ eq₂ = dfunext fe₀ γ
   where
    γ : (w : ℕ∞ × ℕ∞) → PRED (h w) ≡ 𝟙+ h (κ-min w)
    γ (u , v) = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
@@ -257,13 +257,13 @@ h is also a coalgebra homomorphism and hence equal to ℕ∞-corec p:
 \begin{code}
 
 min-commutative : ∀ u v → min (u , v) ≡ min (v , u)
-min-commutative u v = h (v , u)               ≡⟨ ap (λ - → - (v , u)) h-is-corec ⟩
+min-commutative u v = h (v , u)               ≡⟨ ap (λ - → - (v , u)) h-is-min ⟩
                       ℕ∞-corec κ-min (v , u) ∎
  where
   h : ℕ∞ × ℕ∞ → ℕ∞
   h (u , v) = min (v , u)
   h-homomorphism : is-homomorphism κ-min h
-  h-homomorphism = equations-characterize-homomorphisms h h-eq₀ h-eq₁ h-eq₂
+  h-homomorphism = min-equations-characterize-homomorphisms h h-eq₀ h-eq₁ h-eq₂
    where
     h-eq₀ : (v : ℕ∞) → min (v , Zero) ≡ Zero
     h-eq₀ v = min-eq₃ v
@@ -271,9 +271,9 @@ min-commutative u v = h (v , u)               ≡⟨ ap (λ - → - (v , u)) h-i
     h-eq₁ u = min-eq₀ (Succ u)
     h-eq₂ : (u v : ℕ∞) → min (Succ v , Succ u) ≡ Succ (min (v , u))
     h-eq₂ u v = min-eq₂ v u
-  h-is-corec : h ≡ ℕ∞-corec κ-min
-  h-is-corec = homomorphism-uniqueness κ-min h (ℕ∞-corec κ-min)
-                h-homomorphism (ℕ∞-corec-homomorphism κ-min)
+  h-is-min : h ≡ min
+  h-is-min = homomorphism-uniqueness κ-min h (ℕ∞-corec κ-min)
+              h-homomorphism (ℕ∞-corec-homomorphism κ-min)
 
 \end{code}
 
@@ -287,76 +287,92 @@ final coalgebra PRED.
 
 \begin{code}
 
-min-assoc : (u v w : ℕ∞) → min (u , min (v , w)) ≡ min (min (u , v) , w)
-min-assoc u v w = ap (λ - → - (u , v , w)) p
+min-associative : (u v w : ℕ∞) → min (u , min (v , w)) ≡ min (min (u , v) , w)
+min-associative u v w = ap (λ - → - (u , v , w)) p
  where
   f g : ℕ∞ × ℕ∞ × ℕ∞ → ℕ∞
   f (u , v , w) = min (u , min (v , w))
   g (u , v , w) = min (min (u , v) , w)
-  k : ℕ∞ × ℕ∞ × ℕ∞ → 𝟙 + ℕ∞ × ℕ∞ × ℕ∞
-  k (u , v , w) = 𝟚-Cases (positivity u)
+  κ : ℕ∞ × ℕ∞ × ℕ∞ → 𝟙 + ℕ∞ × ℕ∞ × ℕ∞
+  κ (u , v , w) = 𝟚-Cases (positivity u)
                    (inl *)
                    (𝟚-Cases (positivity v)
                      (inl *)
                      (𝟚-Cases (positivity w)
                        (inl *)
                        (inr (Pred u , Pred v , Pred w))))
-  f-homomorphism : is-homomorphism k f
+  f-homomorphism : is-homomorphism κ f
   f-homomorphism = dfunext fe₀ γ
    where
-    γ : (z : ℕ∞ × ℕ∞ × ℕ∞) → PRED (f z) ≡ 𝟙+ f (k z)
+    γ : (z : ℕ∞ × ℕ∞ × ℕ∞) → PRED (f z) ≡ 𝟙+ f (κ z)
     γ (u , v , w) = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v) (Zero+Succ fe₀ w)
      where
       φ : (u ≡ Zero) + (Σ \(x : ℕ∞) → u ≡ Succ x)
        → (v ≡ Zero) + (Σ \(y : ℕ∞) → v ≡ Succ y)
        → (w ≡ Zero) + (Σ \(z : ℕ∞) → w ≡ Succ z)
-       → PRED (f (u , v , w)) ≡ 𝟙+ f (k (u , v , w))
+       → PRED (f (u , v , w)) ≡ 𝟙+ f (κ (u , v , w))
       φ (inl refl) _ _ = ap PRED (min-eq₀ (min (v , w)))
       φ (inr (x , refl)) (inl refl) _ =
         PRED (min (Succ x , min (Zero , w)))        ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₀ w) ⟩
         PRED (min (Succ x , Zero))                  ≡⟨ ap PRED (min-eq₃ u) ⟩
         PRED Zero                                   ≡⟨ ap PRED (min-eq₃ u) ⟩
-        𝟙+ f (k (Succ x , Zero , w))                ∎
+        𝟙+ f (κ (Succ x , Zero , w))                ∎
       φ (inr (x , refl)) (inr (y , refl)) (inl refl) =
         PRED (min (Succ x , min (Succ y , Zero)))   ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₃ (Succ y)) ⟩
         PRED (min (Succ x , Zero))                  ≡⟨ ap PRED (min-eq₃ (Succ x)) ⟩
-        𝟙+ f (k (Succ x , Succ y , Zero))           ∎
+        𝟙+ f (κ (Succ x , Succ y , Zero))           ∎
       φ (inr (x , refl)) (inr (y , refl)) (inr (z , refl)) =
         PRED (min (Succ x , min (Succ y , Succ z))) ≡⟨ ap (λ - → PRED (min (Succ x , -))) (min-eq₂ y z) ⟩
         PRED (min (Succ x , Succ (min (y , z))))    ≡⟨ ap PRED (min-eq₂ x (min (y , z))) ⟩
-        𝟙+ f (k (Succ x , Succ y , Succ z))         ∎
-  g-homomorphism : is-homomorphism k g
+        𝟙+ f (κ (Succ x , Succ y , Succ z))         ∎
+  g-homomorphism : is-homomorphism κ g
   g-homomorphism = dfunext fe₀ γ
    where
-    γ : (z : ℕ∞ × ℕ∞ × ℕ∞) → PRED (g z) ≡ 𝟙+ g (k z)
+    γ : (z : ℕ∞ × ℕ∞ × ℕ∞) → PRED (g z) ≡ 𝟙+ g (κ z)
     γ (u , v , w) = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v) (Zero+Succ fe₀ w)
      where
       φ : (u ≡ Zero) + (Σ \(x : ℕ∞) → u ≡ Succ x)
        → (v ≡ Zero) + (Σ \(y : ℕ∞) → v ≡ Succ y)
        → (w ≡ Zero) + (Σ \(z : ℕ∞) → w ≡ Succ z)
-       → PRED (g (u , v , w)) ≡ 𝟙+ g (k (u , v , w))
+       → PRED (g (u , v , w)) ≡ 𝟙+ g (κ (u , v , w))
       φ (inl refl) _ _ = ap PRED (min-eq₀ (min (v , w)))
       φ (inr (x , refl)) (inl refl) _ =
-        PRED (min (min (Succ x , Zero) , w)) ≡⟨ ap (λ - → PRED (min (- , w))) (min-eq₃ (Succ x)) ⟩
-        PRED (min (Zero , w)) ≡⟨ ap PRED (min-eq₀ w) ⟩
-        PRED Zero ≡⟨ refl ⟩
-        𝟙+ g (k (Succ x , Zero , w)) ∎
+        PRED (min (min (Succ x , Zero) , w))        ≡⟨ ap (λ - → PRED (min (- , w))) (min-eq₃ (Succ x)) ⟩
+        PRED (min (Zero , w))                       ≡⟨ ap PRED (min-eq₀ w) ⟩
+        PRED Zero                                   ≡⟨ refl ⟩
+        𝟙+ g (κ (Succ x , Zero , w))                ∎
       φ (inr (x , refl)) (inr (y , refl)) (inl refl) =
-        PRED (min (min (Succ x , Succ y) , Zero)) ≡⟨ ap PRED (min-eq₃ (min (Succ x , Succ y))) ⟩
-        PRED Zero ≡⟨ refl ⟩
-        𝟙+ g (k (Succ x , Succ y , Zero)) ∎
+        PRED (min (min (Succ x , Succ y) , Zero))   ≡⟨ ap PRED (min-eq₃ (min (Succ x , Succ y))) ⟩
+        PRED Zero                                   ≡⟨ refl ⟩
+        𝟙+ g (κ (Succ x , Succ y , Zero))           ∎
       φ (inr (x , refl)) (inr (y , refl)) (inr (z , refl)) =
         PRED (min (min (Succ x , Succ y) , Succ z)) ≡⟨ ap (λ - → PRED (min (- , Succ z))) (min-eq₂ x y) ⟩
-        PRED (min (Succ (min (x , y)) , Succ z)) ≡⟨ ap PRED (min-eq₂ (min (x , y)) z) ⟩
-        PRED (Succ (min (min (x , y) , z))) ≡⟨ refl ⟩
-        𝟙+ g (k (Succ x , Succ y , Succ z)) ∎
+        PRED (min (Succ (min (x , y)) , Succ z))    ≡⟨ ap PRED (min-eq₂ (min (x , y)) z) ⟩
+        PRED (Succ (min (min (x , y) , z)))         ≡⟨ refl ⟩
+        𝟙+ g (κ (Succ x , Succ y , Succ z))         ∎
   p : f ≡ g
-  p = homomorphism-uniqueness k f g f-homomorphism g-homomorphism
+  p = homomorphism-uniqueness κ f g f-homomorphism g-homomorphism
 
 \end{code}
 
 Thus, ℕ∞ equipped with (min , Zero, ∞) is a bounded semilattice with
 bottom Zero and top ∞.
+
+\begin{code}
+
+min-is-bounded-semilattice :
+   (∀ v     → min (Zero , v) ≡ Zero)
+ × (∀ v     → min (∞ , v) ≡ v)
+ × (∀ u     → min (u , u) ≡ u)
+ × (∀ u v   → min (u , v) ≡ min (v , u))
+ × (∀ u v w → min (u , min (v , w)) ≡ min (min (u , v) , w))
+min-is-bounded-semilattice = min-eq₀ ,
+                             min-unit ,
+                             min-idempotent ,
+                             min-commutative ,
+                             min-associative
+
+\end{code}
 
 The following two facts invert the equations that characterize min:
 
