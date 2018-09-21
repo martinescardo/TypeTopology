@@ -65,10 +65,10 @@ module retract-version where
        → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPTr (r , h) = LFPT r (section-gives-pt-section r h)
 
- LFPTe : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
+ LFPT-Id : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
        → A ≡ (A → X)
        → (f : X → X) → Σ \(x : X) → x ≡ f x
- LFPTe p = LFPTr (Id-retract-r p)
+ LFPT-Id p = LFPTr (Id-retract-r p)
 
  \end{code}
 
@@ -83,7 +83,7 @@ module retract-version where
      (U V : Universe) (A : V ̇) (r : A → (A → U ̇))
    → has-pt-section r
    → (X : U ̇) (f : X → X) → Σ \(x : X) → x ≡ f x
- cantor-theorem-for-universes U V A r h X = LFPTe {U} {U} p
+ cantor-theorem-for-universes U V A r h X = LFPT-Id {U} {U} p
   where
    B : U ̇
    B = pr₁(LFPT r h (λ B → B → X))
@@ -130,7 +130,7 @@ module retract-version where
    q : P ≡ ¬ P
    q = ap pr₁ p
    γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
-   γ = LFPTe q
+   γ = LFPT-Id q
 
  \end{code}
 
@@ -192,7 +192,7 @@ module surjection-version (pt : PropTrunc) where
    t : ∃ \(B : U ̇) → B ≡ (B → X)
    t = LFPT φ s (λ B → B → X)
    g : (Σ \(B : U ̇) → B ≡ (B → X)) → Σ \(x : X) → x ≡ f x
-   g (B , p) = retract-version.LFPTe {U} {U} p f
+   g (B , p) = retract-version.LFPT-Id {U} {U} p f
 
  Cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇)
@@ -215,7 +215,7 @@ module surjection-version (pt : PropTrunc) where
      q : P ≡ ¬ P
      q = ap pr₁ p
      γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
-     γ = retract-version.LFPTe q
+     γ = retract-version.LFPT-Id q
 
  \end{code}
 
