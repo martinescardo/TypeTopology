@@ -264,7 +264,7 @@ is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 
-open import UF-SetExamples
+open import UF-Miscelanea
 
 well-founded₂-is-prop : (∀ U V → funext U V) → is-prop is-well-founded₂
 well-founded₂-is-prop fe = Π-is-prop (fe U (U ⊔ V))

@@ -1,4 +1,4 @@
-   Various new theorems in
+c   Various new theorems in
    constructive univalent mathematics
    written in Agda
 
@@ -87,12 +87,12 @@ import UF-InjectiveTypes
 import UF-Knapp-UA
 import UF-KrausLemma
 import UF-LeftCancellable
+import UF-Miscelanea
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
-import UF-SetExamples
 import UF-StructureIdentityPrinciple
 import UF-SubsetIdentity
 import UF-Subsingletons

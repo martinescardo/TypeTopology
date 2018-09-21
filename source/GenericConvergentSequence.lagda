@@ -16,6 +16,8 @@ module GenericConvergentSequence where
 
 open import SpartanMLTT
 open import Two
+open import NaturalsAddition renaming (_+_ to _∔_)
+open import NaturalsOrder
 open import DiscreteAndSeparated
 open import UF-Base
 open import UF-Subsingletons
@@ -24,7 +26,7 @@ open import UF-FunExt
 open import UF-Embedding
 open import UF-Equiv
 open import UF-Retracts
-open import UF-SetExamples
+open import UF-Miscelanea
 
 funext₀ : U₁ ̇
 funext₀ = funext U₀ U₀
@@ -285,7 +287,10 @@ Zero-or-Succ fe₀ u = 𝟚-equality-cases
                       (λ (z : is-Zero u) → inl (is-Zero-equal-Zero fe₀ z))
                       (λ (p : positive u) → inr (positive-equal-Succ fe₀ p))
 
-Zero+Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + Σ \(w : ℕ∞) → u ≡ Succ w
+is-Succ : ℕ∞ → U₀ ̇
+is-Succ u = Σ \(w : ℕ∞) → u ≡ Succ w
+
+Zero+Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + is-Succ u
 Zero+Succ fe₀ u = Cases (Zero-or-Succ fe₀ u) inl (λ p → inr (Pred u , p))
 
 Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
@@ -459,6 +464,9 @@ u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
 
 Zero-minimal : (u : ℕ∞) → Zero ≼ u
 Zero-minimal u n ()
+
+Succ-not-≼-Zero : (u : ℕ∞) → ¬(Succ u ≼ Zero)
+Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
 
 Succ-monotone : (u v : ℕ∞) → u ≼ v → Succ u ≼ Succ v
 Succ-monotone u v l zero p = p
@@ -723,6 +731,41 @@ not-≺-≼ fe u v φ n l = 𝟚-equality-cases f g
     b = ⊏-trans'' u n k a l
   g : n ⊏ v → n ⊏ v
   g = id
+
+\end{code}
+
+Characterization of ⊏.
+
+\begin{code}
+
+⊏-positive : (n : ℕ) (u : ℕ∞) → n ⊏ u → positive u
+⊏-positive n u = ⊏-trans'' u n 0 (zero-minimal n)
+
+⊏-charac→ : funext₀ → (n : ℕ) (u : ℕ∞)
+           → n ⊏ u → Σ \(v : ℕ∞) → u ≡ (Succ ^ (n ∔ 1)) v
+⊏-charac→ fe₀ zero u l = Pred u , (positive-equal-Succ fe₀ l)
+⊏-charac→ fe₀ (succ n) u l = γ
+ where
+  IH : Σ \(v : ℕ∞) → Pred u ≡ (Succ ^ (n ∔ 1)) v
+  IH = ⊏-charac→ fe₀ n (Pred u) l
+  v : ℕ∞
+  v = pr₁ IH
+  p : u ≡ (Succ ^ (n ∔ 2)) v
+  p = u                   ≡⟨ positive-equal-Succ fe₀ (⊏-positive (succ n) u l) ⟩
+      Succ (Pred u)       ≡⟨ ap Succ (pr₂ IH) ⟩
+      (Succ ^ (n ∔ 2)) v  ∎
+  γ : Σ \(v : ℕ∞) → u ≡ (Succ ^ (n ∔ 2)) v
+  γ = v , p
+
+⊏-charac← : funext₀ → (n : ℕ) (u : ℕ∞)
+           → (Σ \(v : ℕ∞) → u ≡ (Succ ^ (n ∔ 1)) v) → n ⊏ u
+⊏-charac← fe₀ zero u (v , refl) = refl
+⊏-charac← fe₀ (succ n) u (v , refl) = γ
+ where
+  IH : n ⊏ Pred u
+  IH = ⊏-charac← fe₀ n (Pred u) (v , refl)
+  γ : succ n ⊏ u
+  γ = IH
 
 \end{code}
 

@@ -65,6 +65,10 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
+complement-no-fp : ∀ {U} (n : 𝟚) → n ≡ complement n → 𝟘 {U}
+complement-no-fp ₀ ()
+complement-no-fp ₁ ()
+
 complement-involutive : (b : 𝟚) → complement(complement b) ≡ b
 complement-involutive ₀ = refl
 complement-involutive ₁ = refl

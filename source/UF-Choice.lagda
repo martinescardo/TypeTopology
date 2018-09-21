@@ -259,7 +259,7 @@ module AC-renders-all-sets-discrete
  open UnivalentChoice U fe pt public
  open ImageAndSurjection pt
  open import DiscreteAndSeparated
- open import UF-SetExamples
+ open import UF-Miscelanea
 
  lemma₁ : {X : U ̇} (a : 𝟚 → X)
         → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
@@ -371,7 +371,7 @@ module Observation (U : Universe)
 
  open PropositionalTruncation pt
  open import DiscreteAndSeparated
- open import UF-SetExamples
+ open import UF-Miscelanea
 
  observation : {X : U ̇} (a : 𝟚 → X)
         → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)

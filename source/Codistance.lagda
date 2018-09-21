@@ -32,7 +32,7 @@ open import Sequence fe
 open import CoNaturals fe
 open import GenericConvergentSequence
 open import DiscreteAndSeparated
-open import UF-SetExamples
+open import UF-Miscelanea
 
 module sequences
         {U : Universe}

@@ -132,6 +132,12 @@ equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
 equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
 equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
 
+Id-retract-l : ∀ {U} {X Y : U ̇} → X ≡ Y → retract X of Y
+Id-retract-l p = equiv-retract-l (idtoeq (lhs p) (rhs p) p)
+
+Id-retract-r : ∀ {U} {X Y : U ̇} → X ≡ Y → retract Y of X
+Id-retract-r p = equiv-retract-r (idtoeq (lhs p) (rhs p) p)
+
 \end{code}
 
 Equivalence of transports.

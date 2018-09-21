@@ -89,7 +89,7 @@ checking the two possibilities, we can always take x₀ = p ₀.
     lemma₁ : p x₀ ≡ ₁ → p ₁ ≡ ₁
     lemma₁ r = transport (λ - → p - ≡ ₁) (lemma₀ r) r
 
-open import UF-SetExamples
+open import UF-Miscelanea
 
 \end{code}
 

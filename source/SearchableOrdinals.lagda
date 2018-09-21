@@ -127,7 +127,7 @@ open import DiscreteAndSeparated
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Embedding
-open import UF-SetExamples
+open import UF-Miscelanea
 
 \end{code}
 

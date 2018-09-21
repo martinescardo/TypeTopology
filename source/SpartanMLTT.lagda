@@ -390,6 +390,9 @@ rec : ∀ {U} {X : U ̇} → X → (X → X) → (ℕ → X)
 rec x f zero = x
 rec x f (succ n) = f(rec x f n)
 
+_^_ : ∀ {U} {X : U ̇} → (X → X) → ℕ → (X → X)
+(f ^ n) x = rec x f n
+
 induction : ∀ {U} {A : ℕ → U ̇} → A 0 → ((k : ℕ) → A k → A(succ k)) → (n : ℕ) → A n
 induction base step 0 = base
 induction base step (succ n) = step n (induction base step n)

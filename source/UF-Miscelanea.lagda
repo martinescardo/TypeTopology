@@ -4,13 +4,14 @@ UF things that depend on non-UF things.
 
 \begin{code}
 
-module UF-SetExamples where
+module UF-Miscelanea where
 
 open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
+open import UF-Retracts
 
 decidable-is-collapsible : ∀ {U} {X : U ̇} → decidable X → collapsible X
 decidable-is-collapsible (inl x) = inhabited-is-collapsible x
@@ -23,6 +24,19 @@ discrete-is-identification-collapsible d = decidable-is-collapsible (d _ _)
 
 discrete-is-set : ∀ {U} {X : U ̇} → discrete X → is-set X
 discrete-is-set d = identification-collapsible-is-set(discrete-is-identification-collapsible d)
+
+isolated-is-h-isolated : ∀ {U} {X : U ̇} (x : X) → isolated x → is-h-isolated x
+isolated-is-h-isolated {U} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
+ where
+  γ : (y : X) → decidable (x ≡ y) → Σ \(f : x ≡ y → x ≡ y) → constant f
+  γ y (inl p) = (λ _ → p) , (λ q r → refl)
+  γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
+
+isolated-inl : ∀ {U} {X : U ̇} (x : X) (i : isolated x) (y : X) (r : x ≡ y) → i y ≡ inl r
+isolated-inl x i y r =
+  equality-cases (i y)
+    (λ (p : x ≡ y) (q : i y ≡ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
+    (λ (h : ¬(x ≡ y)) (q : i y ≡ inr h) → 𝟘-elim(h r))
 
 discrete-inl : ∀ {U} {X : U ̇} (d : discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
 discrete-inl d x y r =
@@ -131,5 +145,21 @@ C-B-embedding-lc fe {α} {β} p = dfunext fe h
  where
   h : (n : ℕ) → α n ≡ β n
   h n = 𝟚-ℕ-embedding-lc (ap (λ - → - n) p)
+
+Π-projection-has-section : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
+                         → isolated x₀
+                         → Π Y
+                         → has-section (λ (f : Π Y) → f x₀)
+Π-projection-has-section {U} {V} {X} {Y} x₀ i g = s , rs
+ where
+  s : Y x₀ → Π Y
+  s y x = Cases (i x)
+           (λ (p : x₀ ≡ x) → transport Y p y)
+           (λ (_ : ¬(x₀ ≡ x)) → g x)
+  rs : (y : Y x₀) → s y x₀ ≡ y
+  rs y = ap (λ - → Cases - _ _) a
+   where
+    a : i x₀ ≡ inl refl
+    a = isolated-inl x₀ i x₀ refl
 
 \end{code}

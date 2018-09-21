@@ -36,7 +36,7 @@ open import UF-Subsingletons
 open import UF-Embedding
 open import UF-InjectiveTypes fe
 open import UF-Retracts
-open import UF-SetExamples
+open import UF-Miscelanea
 
 \end{code}
 

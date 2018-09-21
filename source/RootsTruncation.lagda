@@ -25,7 +25,7 @@ module RootsTruncation (U : Universe)
 open import NaturalsOrder
 open import UF-Subsingletons
 open import UF-KrausLemma
-open import UF-SetExamples
+open import UF-Miscelanea
 
 \end{code}
 

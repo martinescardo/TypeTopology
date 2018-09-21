@@ -22,7 +22,7 @@ open import ConvergentSequenceSearchable (fe U₀ U₀)
 open import UF-InjectiveTypes fe
 open import ExtendedSumSearchable fe
 open import DiscreteAndSeparated
-open import UF-SetExamples
+open import UF-Miscelanea
 
 fe₀ : funext U₀ U₀
 fe₀ = fe U₀ U₀

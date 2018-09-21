@@ -166,7 +166,7 @@ totally-separated-is-separated X ts = g
     h : (p : X → 𝟚) → p x ≡ p y
     h p = 𝟚-is-separated (p x) (p y) (a p)
 
-open import UF-SetExamples
+open import UF-Miscelanea
 
 totally-separated-is-set : ∀ {U} → funext U U₀ → (X : U ̇) → totally-separated X → is-set X
 totally-separated-is-set fe X t = separated-is-set fe (totally-separated-is-separated X t)

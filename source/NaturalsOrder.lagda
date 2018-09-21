@@ -22,7 +22,7 @@ succ m ≤ succ n = m ≤ n
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
 
 open import UF-Base
-open import UF-SetExamples
+open import UF-Miscelanea
 
 subtraction-is-prop : (m n : ℕ) → is-prop (Σ \(k : ℕ) → k +' m ≡ n)
 subtraction-is-prop zero n (.n , refl) (.n , refl) = refl
