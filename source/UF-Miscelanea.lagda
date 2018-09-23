@@ -146,20 +146,4 @@ C-B-embedding-lc fe {α} {β} p = dfunext fe h
   h : (n : ℕ) → α n ≡ β n
   h n = 𝟚-ℕ-embedding-lc (ap (λ - → - n) p)
 
-Π-projection-has-section : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
-                         → isolated x₀
-                         → Π Y
-                         → has-section (λ (f : Π Y) → f x₀)
-Π-projection-has-section {U} {V} {X} {Y} x₀ i g = s , rs
- where
-  s : Y x₀ → Π Y
-  s y x = Cases (i x)
-           (λ (p : x₀ ≡ x) → transport Y p y)
-           (λ (_ : ¬(x₀ ≡ x)) → g x)
-  rs : (y : Y x₀) → s y x₀ ≡ y
-  rs y = ap (λ - → Cases - _ _) a
-   where
-    a : i x₀ ≡ inl refl
-    a = isolated-inl x₀ i x₀ refl
-
 \end{code}

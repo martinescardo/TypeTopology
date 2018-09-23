@@ -255,6 +255,22 @@ module universe-uncountable (pt : PropTrunc) where
 
  open import DiscreteAndSeparated
 
+ Π-projection-has-section : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
+                          → isolated x₀
+                          → Π Y
+                          → has-section (λ (f : Π Y) → f x₀)
+ Π-projection-has-section {U} {V} {X} {Y} x₀ i g = s , rs
+  where
+   s : Y x₀ → Π Y
+   s y x = Cases (i x)
+            (λ (p : x₀ ≡ x) → transport Y p y)
+            (λ (_ : ¬(x₀ ≡ x)) → g x)
+   rs : (y : Y x₀) → s y x₀ ≡ y
+   rs y = ap (λ - → Cases - _ _) a
+    where
+     a : i x₀ ≡ inl refl
+     a = isolated-inl x₀ i x₀ refl
+
  udr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇) (B : W ̇)
              (a₀ : A)
            → isolated a₀
