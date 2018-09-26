@@ -137,7 +137,7 @@ For the moment we work with U₀ here because 𝟙 and ⊤ live in U₀:
 
 \begin{code}
 
-equal-⊤-is-true : (P : U₀ ̇) (hp : is-prop P)
+equal-⊤-is-true : ∀ {U} (P : U ̇) (hp : is-prop P)
                → (P , hp) ≡ ⊤ → P
 equal-⊤-is-true P hp r = f *
  where
@@ -146,12 +146,12 @@ equal-⊤-is-true P hp r = f *
   f : 𝟙 → P
   f = transport id s
 
-true-is-equal-⊤ : propext U₀ → funext U₀ U₀ → (P : U₀ ̇) (hp : is-prop P)
+true-is-equal-⊤ : ∀ {U} → propext U → funext U U → (P : U ̇) (hp : is-prop P)
                 → P → (P , hp) ≡ ⊤
 true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
                                         is-prop-is-prop fe _ _)
 
-Ω-ext : propext U₀ → funext U₀ U₀ → {p q : Ω U₀}
+Ω-ext : ∀ {U} → propext U → funext U U → {p q : Ω U}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
 Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ (pe isp isq I II ,
                                                    is-prop-is-prop fe _ _ )

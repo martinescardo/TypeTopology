@@ -255,10 +255,11 @@ module universe-uncountable (pt : PropTrunc) where
 
  open import DiscreteAndSeparated
 
- Π-projection-has-section : ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
-                          → isolated x₀
-                          → Π Y
-                          → has-section (λ (f : Π Y) → f x₀)
+ Π-projection-has-section :
+    ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
+  → isolated x₀
+  → Π Y
+  → has-section (λ (f : Π Y) → f x₀)
  Π-projection-has-section {U} {V} {X} {Y} x₀ i g = s , rs
   where
    s : Y x₀ → Π Y
@@ -284,8 +285,9 @@ module universe-uncountable (pt : PropTrunc) where
             retr
             ((λ f → f a₀) , Π-projection-has-section a₀ i (λ a x → b))
 
- universe-discretely-regular' : (U V : Universe) (A : U ̇) (X : A → U ⊔ V ̇)
-              → discrete A → Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≃ B)
+ universe-discretely-regular' :
+    (U V : Universe) (A : U ̇) (X : A → U ⊔ V ̇)
+  → discrete A → Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≃ B)
  universe-discretely-regular' U V A X d  = B , φ
    where
     B : U ⊔ V ̇
@@ -298,9 +300,11 @@ module universe-uncountable (pt : PropTrunc) where
       γ : (f : 𝟚 → 𝟚) → Σ \(b : 𝟚) → b ≡ f b
       γ = udr-lemma X 𝟚 a (d a) ₀ retr
 
- universe-discretely-regular : {U V : Universe} {A : U ̇} (X : A → U ⊔ V ̇)
-                  → discrete A → Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
- universe-discretely-regular {U} {V} {A} X d = γ (universe-discretely-regular' U V A X d)
+ universe-discretely-regular :
+    {U V : Universe} {A : U ̇} (X : A → U ⊔ V ̇)
+  → discrete A → Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
+ universe-discretely-regular {U} {V} {A} X d =
+   γ (universe-discretely-regular' U V A X d)
   where
    γ : (Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≃ B))
      → (Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≡ B))
@@ -321,5 +325,44 @@ module universe-uncountable (pt : PropTrunc) where
 
  Universe-uncountable : {U : Universe} (X : ℕ → U ̇) → ¬(is-surjection X)
  Universe-uncountable X = Universe-discretely-regular X ℕ-discrete
+
+\end{code}
+
+I am not sure this is going to be useful:
+
+\begin{code}
+
+ Π-projection-has-section' :
+    ∀ {U V W} {X : U ̇} {Y : X → V ̇}
+  → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+  → is-set X
+  → (x₀ : X) → has-section (λ (f : (x : X) → Y x → Ω (U ⊔ W)) → f x₀)
+ Π-projection-has-section' {U} {V} {W} {X} {Y} fe fe' pe i x₀ = s , rs
+
+  where
+   s : (Y x₀ → Ω (U ⊔ W)) → ((x : X) → Y x → Ω (U ⊔ W))
+   s φ x y = ∥(Σ \(p : x ≡ x₀) → φ (transport Y p y) holds)∥ , ptisp
+   rs : (φ : Y x₀ → Ω (U ⊔ W)) → s φ x₀ ≡ φ
+   rs φ = dfunext fe γ
+    where
+     a : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ ⊤ → φ y₀ ≡ ⊤
+     a y₀ q = ptrec (Ω-is-set fe' pe) d c
+      where
+       c : ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥
+       c = equal-⊤-is-true _ ptisp q
+       d : (Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds) → φ y₀ ≡ ⊤
+       d (p , h) = true-is-equal-⊤ pe fe' (φ y₀ holds) (holds-is-prop (φ y₀)) (transport (λ - → - holds) t h)
+        where
+         r : p ≡ refl
+         r = i p refl
+         t : φ (transport Y p y₀) ≡ φ y₀
+         t = ap (λ - → φ(transport Y - y₀)) r
+     b : (y₀ : Y x₀) → φ y₀ ≡ ⊤ → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ ⊤
+     b y₀ q = true-is-equal-⊤ pe fe' _ ptisp ∣ refl , c ∣
+      where
+       c : φ y₀ holds
+       c = equal-⊤-is-true _ (holds-is-prop _) q
+     γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ φ y₀
+     γ y₀ = Ω-ext pe fe' (a y₀) (b y₀)
 
 \end{code}
