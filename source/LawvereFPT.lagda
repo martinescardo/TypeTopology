@@ -212,12 +212,7 @@ module surjection-version (pt : PropTrunc) where
    t : ∃ \(B : Ω U) → B ≡ not fe B
    t = LFPT φ s (not fe)
    g : (Σ \(B : Ω U) → B ≡ not fe B) → 𝟘
-   g ((P , i) , p) = pr₁ (γ id)
-    where
-     q : P ≡ ¬ P
-     q = ap pr₁ p
-     γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
-     γ = retract-version.LFPT-Id q
+   g (B , p) = retract-version.not-no-fp fe B p
 
  \end{code}
 
