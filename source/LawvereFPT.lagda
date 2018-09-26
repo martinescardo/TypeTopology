@@ -335,9 +335,8 @@ I am not sure this is going to be useful:
  Π-projection-has-section' :
     ∀ {U V W} {X : U ̇} {Y : X → V ̇}
   → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
-  → is-set X
-  → (x₀ : X) → has-section (λ (f : (x : X) → Y x → Ω (U ⊔ W)) → f x₀)
- Π-projection-has-section' {U} {V} {W} {X} {Y} fe fe' pe i x₀ = s , rs
+  → (x₀ : X) → is-h-isolated x₀ → has-section (λ (f : (x : X) → Y x → Ω (U ⊔ W)) → f x₀)
+ Π-projection-has-section' {U} {V} {W} {X} {Y} fe fe' pe x₀ ish = s , rs
 
   where
    s : (Y x₀ → Ω (U ⊔ W)) → ((x : X) → Y x → Ω (U ⊔ W))
@@ -354,7 +353,7 @@ I am not sure this is going to be useful:
        d (p , h) = true-is-equal-⊤ pe fe' (φ y₀ holds) (holds-is-prop (φ y₀)) (transport (λ - → - holds) t h)
         where
          r : p ≡ refl
-         r = i p refl
+         r = ish p refl
          t : φ (transport Y p y₀) ≡ φ y₀
          t = ap (λ - → φ(transport Y - y₀)) r
      b : (y₀ : Y x₀) → φ y₀ ≡ ⊤ → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ ⊤
