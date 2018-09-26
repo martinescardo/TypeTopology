@@ -117,8 +117,8 @@ module retract-version where
  open import UF-FunExt
  open import UF-Subsingletons-FunExt
 
- not-no-fp : ∀ {U} (fe : funext U U₀) → (B : Ω U) → ¬(B ≡ not fe B)
- not-no-fp {U} fe B p = pr₁(γ id)
+ not-no-fp : ∀ {U} (fe : funext U U₀) → ¬ Σ \(B : Ω U) → B ≡ not fe B
+ not-no-fp {U} fe (B , p) = pr₁(γ id)
   where
    q : B holds ≡ ¬(B holds)
    q = ap _holds p
@@ -127,14 +127,12 @@ module retract-version where
 
  cantor-theorem : (U V : Universe) (A : V ̇)
                 → funext U U₀ → (r : A → (A → Ω U)) → has-pt-section r → 𝟘
- cantor-theorem U V A fe r (s , rs) = not-no-fp fe B p
+ cantor-theorem U V A fe r (s , rs) = not-no-fp fe not-fp
   where
-   B : Ω U
-   B = pr₁ (LFPT r (s , rs) (not fe))
-   p : B ≡ not fe B
-   p = pr₂ (LFPT r (s , rs) (not fe))
+   not-fp : Σ \(B : Ω U) → B ≡ not fe B
+   not-fp = LFPT r (s , rs) (not fe)
 
- \end{code}
+\end{code}
 
 The original LFPT has surjection, rather than retraction, as an
 assumption. The retraction version can be formulated and proved in
@@ -207,12 +205,10 @@ module surjection-version (pt : PropTrunc) where
  cantor-theorem :
      (U V : Universe) (A : V ̇)
    → funext U U₀ → (φ : A → (A → Ω U)) → ¬(is-surjection φ)
- cantor-theorem U V A fe φ s = ptrec 𝟘-is-prop g t
+ cantor-theorem U V A fe φ s = ptrec 𝟘-is-prop (retract-version.not-no-fp fe) t
   where
    t : ∃ \(B : Ω U) → B ≡ not fe B
    t = LFPT φ s (not fe)
-   g : (Σ \(B : Ω U) → B ≡ not fe B) → 𝟘
-   g (B , p) = retract-version.not-no-fp fe B p
 
  \end{code}
 
@@ -384,7 +380,7 @@ A variation:
     B : U ′ ̇
     B = (a : A) → X a → Ω U
     φ : (a : A) → ¬(X a ≃ B)
-    φ a p = retract-version.not-no-fp fe₀ (pr₁ (γ (not fe₀))) (pr₂ (γ (not fe₀)))
+    φ a p = retract-version.not-no-fp fe₀ (γ (not fe₀))
      where
       retr : retract B of (X a)
       retr = equiv-retract-r p
@@ -405,7 +401,7 @@ A variation:
  Universe-set-regular : {U : Universe} {A : U ̇} (X : A → U ′ ̇)
     → funext (U ′) (U ′) → funext U U → funext U U₀ → propext U
     → is-set A → ¬(is-surjection X)
- Universe-set-regular {U} {A} X fe' fe fe₀ pe iss s = ptrec 𝟘-is-prop n e
+ Universe-set-regular {U} {A} X fe' fe fe₀ pe iss s = ptrec 𝟘-is-prop (uncurry φ) e
   where
    B : U ′ ̇
    B = pr₁ (universe-set-regular X fe' fe fe₀ pe iss)
@@ -413,7 +409,5 @@ A variation:
    φ = pr₂ (universe-set-regular X fe' fe fe₀ pe iss)
    e : ∥(Σ \a → X a ≡ B)∥
    e = s B
-   n : (Σ \a → X a ≡ B) → 𝟘
-   n (a , p) = φ a p
 
 \end{code}
