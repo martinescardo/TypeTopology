@@ -117,20 +117,22 @@ module retract-version where
  open import UF-FunExt
  open import UF-Subsingletons-FunExt
 
+ not-no-fp : ∀ {U} (fe : funext U U₀) → (B : Ω U) → ¬(B ≡ not fe B)
+ not-no-fp {U} fe B p = pr₁(γ id)
+  where
+   q : B holds ≡ ¬(B holds)
+   q = ap _holds p
+   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
+   γ = LFPT-Id q
+
  cantor-theorem : (U V : Universe) (A : V ̇)
                 → funext U U₀ → (r : A → (A → Ω U)) → has-pt-section r → 𝟘
- cantor-theorem U V A fe r (s , rs) = pr₁(γ id)
+ cantor-theorem U V A fe r (s , rs) = not-no-fp fe B p
   where
    B : Ω U
    B = pr₁ (LFPT r (s , rs) (not fe))
    p : B ≡ not fe B
    p = pr₂ (LFPT r (s , rs) (not fe))
-   P : U ̇
-   P = pr₁ B
-   q : P ≡ ¬ P
-   q = ap pr₁ p
-   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
-   γ = LFPT-Id q
 
  \end{code}
 
@@ -244,7 +246,8 @@ The following proofs are originally due to Ingo Blechschmidt during
 the Autumn School "Proof and Computation", Fischbachau, 2018, after I
 posed the problem of showing that the universe is uncountable to
 him. This version is an adaptation jointly developed by the two of us
-to use LFTP.
+to use LFTP, also extended to replace "discrete" by "set" at the cost
+of "jumping" a universe.
 
 \begin{code}
 
@@ -328,7 +331,7 @@ module universe-uncountable (pt : PropTrunc) where
 
 \end{code}
 
-I am not sure this is going to be useful:
+A variation:
 
 \begin{code}
 
@@ -363,5 +366,59 @@ I am not sure this is going to be useful:
        c = equal-⊤-is-true _ (holds-is-prop _) q
      γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ φ y₀
      γ y₀ = Ω-ext pe fe' (a y₀) (b y₀)
+
+ udr-lemma' : ∀ {U V W} {A : U ̇} (X : A → V ̇)
+           → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+           → (a₀ : A)
+           → is-h-isolated a₀
+           → retract ((a : A) → X a → Ω (U ⊔ W)) of X a₀
+           → (f : Ω (U ⊔ W) → Ω (U ⊔ W)) → Σ \(b : Ω (U ⊔ W)) → b ≡ f b
+ udr-lemma' {U} {V} {W} {A} X fe fe' pe a₀ i retr = retract-version.LFPTr retr'
+  where
+   retr' : retract (X a₀ → Ω (U ⊔ W)) of X a₀
+   retr' = retracts-compose
+            retr
+            ((λ f → f a₀) , Π-projection-has-section' {U} {V} {W} fe fe' pe a₀ i)
+
+ universe-set-regular' :
+    (U : Universe) (A : U ̇) (X : A → U ′ ̇)
+  → funext (U ′) (U ′) → funext U U → funext U U₀ → propext U
+  → is-set A → Σ \(B : U ′ ̇) → (a : A) → ¬(X a ≃ B)
+ universe-set-regular' U A X fe' fe fe₀ pe iss  = B , φ
+   where
+    B : U ′ ̇
+    B = (a : A) → X a → Ω U
+    φ : (a : A) → ¬(X a ≃ B)
+    φ a p = retract-version.not-no-fp fe₀ (pr₁ (γ (not fe₀))) (pr₂ (γ (not fe₀)))
+     where
+      retr : retract B of (X a)
+      retr = equiv-retract-r p
+      γ : (f : Ω U → Ω U) → Σ \(p : Ω U) → p ≡ f p
+      γ = udr-lemma' {U} {U ′} {U} {A} X fe' fe pe a iss retr
+
+ universe-set-regular :
+    {U : Universe} {A : U ̇} (X : A → U ′ ̇)
+  → funext (U ′) (U ′) → funext U U → funext U U₀ → propext U
+  → is-set A → Σ \(B : U ′ ̇) → (a : A) → ¬(X a ≡ B)
+ universe-set-regular {U} {A} X fe' fe fe₀ pe iss =
+   γ (universe-set-regular' U A X fe' fe fe₀ pe iss)
+  where
+   γ : (Σ \(B : U ′ ̇) → (a : A) → ¬(X a ≃ B))
+     → (Σ \(B : U ′ ̇) → (a : A) → ¬(X a ≡ B))
+   γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
+
+ Universe-set-regular : {U : Universe} {A : U ̇} (X : A → U ′ ̇)
+    → funext (U ′) (U ′) → funext U U → funext U U₀ → propext U
+    → is-set A → ¬(is-surjection X)
+ Universe-set-regular {U} {A} X fe' fe fe₀ pe iss s = ptrec 𝟘-is-prop n e
+  where
+   B : U ′ ̇
+   B = pr₁ (universe-set-regular X fe' fe fe₀ pe iss)
+   φ : ∀ a → ¬(X a ≡ B)
+   φ = pr₂ (universe-set-regular X fe' fe fe₀ pe iss)
+   e : ∥(Σ \a → X a ≡ B)∥
+   e = s B
+   n : (Σ \a → X a ≡ B) → 𝟘
+   n (a , p) = φ a p
 
 \end{code}
