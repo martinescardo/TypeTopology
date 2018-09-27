@@ -35,18 +35,24 @@ open import Two
 
 module retract-version where
 
+\end{code}
 
- has-pt-section : ∀ {U V} {A : U ̇} {X : V ̇} → (A → (A → X)) → U ⊔ V ̇
- has-pt-section r = Σ \(s : cod r → dom r) → ∀ g a → r (s g) a ≡ g a
+We will use the decoration "·" for pointwise versions of notions and
+constructions.
 
- section-gives-pt-section : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
-                          → has-section r → has-pt-section r
- section-gives-pt-section r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
+\begin{code}
 
- LFPT : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
-     → has-pt-section r
-     → (f : X → X) → Σ \(x : X) → x ≡ f x
- LFPT {U} {V} {A} {X} r (s , rs) f = x , p
+ has-section· : ∀ {U V} {A : U ̇} {X : V ̇} → (A → (A → X)) → U ⊔ V ̇
+ has-section· r = Σ \(s : cod r → dom r) → ∀ g a → r (s g) a ≡ g a
+
+ section-gives-section· : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
+                        → has-section r → has-section· r
+ section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
+
+ LFPT· : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
+       → has-section· r
+       → (f : X → X) → Σ \(x : X) → x ≡ f x
+ LFPT· {U} {V} {A} {X} r (s , rs) f = x , p
   where
    g : A → X
    g a = f (r a a)
@@ -60,15 +66,20 @@ module retract-version where
        g a       ≡⟨ refl ⟩
        f x       ∎
 
- LFPTr : ∀ {U V} {A : U ̇} {X : V ̇}
-       → retract (A → X) of A
-       → (f : X → X) → Σ \(x : X) → x ≡ f x
- LFPTr (r , h) = LFPT r (section-gives-pt-section r h)
+ LFPT : ∀ {U V} {A : U ̇} {X : V ̇}
+      → retract (A → X) of A
+      → (f : X → X) → Σ \(x : X) → x ≡ f x
+ LFPT (r , h) = LFPT· r (section-gives-section· r h)
+
+ LFPT-Eq : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
+         → A ≃ (A → X)
+         → (f : X → X) → Σ \(x : X) → x ≡ f x
+ LFPT-Eq p = LFPT (equiv-retract-r p)
 
  LFPT-Id : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
-       → A ≡ (A → X)
-       → (f : X → X) → Σ \(x : X) → x ≡ f x
- LFPT-Id p = LFPTr (Id-retract-r p)
+         → A ≡ (A → X)
+         → (f : X → X) → Σ \(x : X) → x ≡ f x
+ LFPT-Id p = LFPT (Id-retract-r p)
 
  \end{code}
 
@@ -81,14 +92,14 @@ module retract-version where
 
  cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇) (r : A → (A → U ̇))
-   → has-pt-section r
+   → has-section· r
    → (X : U ̇) (f : X → X) → Σ \(x : X) → x ≡ f x
  cantor-theorem-for-universes U V A r h X = LFPT-Id {U} {U} p
   where
    B : U ̇
-   B = pr₁(LFPT r h (λ B → B → X))
+   B = pr₁(LFPT· r h (λ B → B → X))
    p : B ≡ (B → X)
-   p = pr₂(LFPT r h (λ B → B → X))
+   p = pr₂(LFPT· r h (λ B → B → X))
 
  \end{code}
 
@@ -99,8 +110,8 @@ module retract-version where
  \begin{code}
 
  Cantor-theorem-for-universes :
-    (U V : Universe) (A : V ̇)
-   → (r : A → (A → U ̇)) → has-pt-section r → 𝟘
+     (U V : Universe) (A : V ̇)
+   → (r : A → (A → U ̇)) → has-section· r → 𝟘
  Cantor-theorem-for-universes U V A r h = pr₁ (cantor-theorem-for-universes U V A r h 𝟘 id)
 
  \end{code}
@@ -126,11 +137,11 @@ module retract-version where
    γ = LFPT-Id q
 
  cantor-theorem : (U V : Universe) (A : V ̇)
-                → funext U U₀ → (r : A → (A → Ω U)) → has-pt-section r → 𝟘
+                → funext U U₀ → (r : A → (A → Ω U)) → has-section· r → 𝟘
  cantor-theorem U V A fe r (s , rs) = not-no-fp fe not-fp
   where
    not-fp : Σ \(B : Ω U) → B ≡ not fe B
-   not-fp = LFPT r (s , rs) (not fe)
+   not-fp = LFPT· r (s , rs) (not fe)
 
 \end{code}
 
@@ -152,8 +163,8 @@ module surjection-version (pt : PropTrunc) where
  open ImageAndSurjection pt
 
  LFPT : ∀ {U V} {A : U ̇} {X : V ̇} (φ : A → (A → X))
-     → is-surjection φ
-     → (f : X → X) → ∃ \(x : X) → x ≡ f x
+      → is-surjection φ
+      → (f : X → X) → ∃ \(x : X) → x ≡ f x
  LFPT {U} {V} {A} {X} φ s f = ptfunct γ e
   where
    g : A → X
@@ -272,7 +283,7 @@ module universe-uncountable (pt : PropTrunc) where
            → B
            → retract ((a : A) → X a → B) of X a₀
            → (f : B → B) → Σ \(b : B) → b ≡ f b
- udr-lemma X B a₀ i b retr = retract-version.LFPTr retr'
+ udr-lemma X B a₀ i b retr = retract-version.LFPT retr'
   where
    retr' : retract (X a₀ → B) of X a₀
    retr' = retracts-compose
@@ -358,13 +369,13 @@ A variation:
      γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ φ y₀
      γ y₀ = Ω-ext pe fe' (a y₀) (b y₀)
 
- udr-lemma' : ∀ {U V W} {A : U ̇} (X : A → V ̇)
+ usr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇)
            → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
            → (a₀ : A)
            → is-h-isolated a₀
            → retract ((a : A) → X a → Ω (U ⊔ W)) of X a₀
            → (f : Ω (U ⊔ W) → Ω (U ⊔ W)) → Σ \(b : Ω (U ⊔ W)) → b ≡ f b
- udr-lemma' {U} {V} {W} {A} X fe fe' pe a₀ i retr = retract-version.LFPTr retr'
+ usr-lemma {U} {V} {W} {A} X fe fe' pe a₀ i retr = retract-version.LFPT retr'
   where
    retr' : retract (X a₀ → Ω (U ⊔ W)) of X a₀
    retr' = retracts-compose
@@ -405,7 +416,7 @@ NB. If V is U or U', then X : A → U ′ ̇.
        retr : retract B of (X a)
        retr = equiv-retract-r p
        γ : (f : Ω U → Ω U) → Σ \(p : Ω U) → p ≡ f p
-       γ = udr-lemma' {U} {V ⊔ U ′} {U} {A} X fe' fe pe a iss retr
+       γ = usr-lemma {U} {V ⊔ U ′} {U} {A} X fe' fe pe a iss retr
 
   universe-set-regular : Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
   universe-set-regular = γ universe-set-regular'
