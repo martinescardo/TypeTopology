@@ -315,7 +315,7 @@ module universe-uncountable (pt : PropTrunc) where
    e : ∥(Σ \a → X a ≡ B)∥
    e = s B
    n : (Σ \a → X a ≡ B) → 𝟘
-   n (a , p) = φ a p
+   n = uncurry φ
 
  Universe-uncountable : {U : Universe} (X : ℕ → U ̇) → ¬(is-surjection X)
  Universe-uncountable X = Universe-discretely-regular X ℕ-discrete

@@ -26,7 +26,8 @@ module type-classifier
         {U : Universe}
         (fe' : funext U (U ′))
         (ua : is-univalent U)
-        (Y : U ̇) where
+        (Y : U ̇)
+       where
 
  χ : (Σ \(X : U ̇) → X → Y)  → (Y → U ̇)
  χ (X , f) = fiber f

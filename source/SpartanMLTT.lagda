@@ -25,7 +25,7 @@ The module Universes allows us to write e.g. the following instead of
 Π : ∀ {U V} {X : U ̇} (Y : X → V ̇) → U ⊔ V ̇
 Π Y = (x : _) → Y x
 
-syntax Π {A} (λ x → B) = Π（ x ∶ A ）, B
+syntax Π {A} (λ x → B) = Π（ x ∶ A ） B
 
 \end{code}
 
@@ -82,7 +82,7 @@ record Σ {U V} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
 
 open Σ public
 
-syntax Σ {A} (λ x → B) = Σ（ x ∶ A ）, B
+syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B
 
 Σ-elim : ∀ {U V} {X : U ̇} {Y : X → V ̇} {A : Σ Y → U ⊔ V ̇}
        → ((x : X) (y : Y x) → A (x , y)) → Π A
