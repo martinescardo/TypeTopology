@@ -31,6 +31,7 @@ applications:
 open import UF-Retracts
 open import UF-Equiv
 open import UF-Miscelanea
+open import UF-FunExt
 open import Two
 
 module retract-version where
@@ -38,7 +39,8 @@ module retract-version where
 \end{code}
 
 We will use the decoration "·" for pointwise versions of notions and
-constructions.
+constructions (for example, we can read "has-section· r" as saying
+that r has a pointwise section).
 
 \begin{code}
 
@@ -48,6 +50,11 @@ constructions.
  section-gives-section· : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
                         → has-section r → has-section· r
  section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
+
+ section·-gives-section : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
+                        → funext U V
+                        → has-section· r → has-section r
+ section·-gives-section r fe (s , rs·) = s , λ g → dfunext fe (rs· g)
 
  LFPT· : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
        → has-section· r
@@ -71,15 +78,15 @@ constructions.
       → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT (r , h) = LFPT· r (section-gives-section· r h)
 
- LFPT-Eq : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
-         → A ≃ (A → X)
-         → (f : X → X) → Σ \(x : X) → x ≡ f x
- LFPT-Eq p = LFPT (equiv-retract-r p)
+ LFPT-≃ : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
+        → A ≃ (A → X)
+        → (f : X → X) → Σ \(x : X) → x ≡ f x
+ LFPT-≃ p = LFPT (equiv-retract-r p)
 
- LFPT-Id : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
-         → A ≡ (A → X)
-         → (f : X → X) → Σ \(x : X) → x ≡ f x
- LFPT-Id p = LFPT (Id-retract-r p)
+ LFPT-≡ : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
+        → A ≡ (A → X)
+        → (f : X → X) → Σ \(x : X) → x ≡ f x
+ LFPT-≡ p = LFPT (Id-retract-r p)
 
  \end{code}
 
@@ -94,7 +101,7 @@ constructions.
      (U V : Universe) (A : V ̇) (r : A → (A → U ̇))
    → has-section· r
    → (X : U ̇) (f : X → X) → Σ \(x : X) → x ≡ f x
- cantor-theorem-for-universes U V A r h X = LFPT-Id {U} {U} p
+ cantor-theorem-for-universes U V A r h X = LFPT-≡ {U} {U} p
   where
    B : U ̇
    B = pr₁(LFPT· r h (λ B → B → X))
@@ -125,7 +132,6 @@ constructions.
  \begin{code}
 
  open import UF-Subsingletons
- open import UF-FunExt
  open import UF-Subsingletons-FunExt
 
  not-no-fp : ∀ {U} (fe : funext U U₀) → ¬ Σ \(B : Ω U) → B ≡ not fe B
@@ -134,7 +140,7 @@ constructions.
    q : B holds ≡ ¬(B holds)
    q = ap _holds p
    γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
-   γ = LFPT-Id q
+   γ = LFPT-≡ q
 
  cantor-theorem : (U V : Universe) (A : V ̇)
                 → funext U U₀ → (r : A → (A → Ω U)) → has-section· r → 𝟘
@@ -203,7 +209,7 @@ module surjection-version (pt : PropTrunc) where
    t : ∃ \(B : U ̇) → B ≡ (B → X)
    t = LFPT φ s (λ B → B → X)
    g : (Σ \(B : U ̇) → B ≡ (B → X)) → Σ \(x : X) → x ≡ f x
-   g (B , p) = retract-version.LFPT-Id {U} {U} p f
+   g (B , p) = retract-version.LFPT-≡ {U} {U} p f
 
  Cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇)
