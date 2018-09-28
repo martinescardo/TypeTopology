@@ -133,6 +133,10 @@ is-prop-is-prop {X} f g = funext (λ x → funext (c x))
   c : (x y : X) → f x y ≡ g x y
   c x y = K-axiom X (f x y) (g x y)
 
+Π-is-prop : {X : Set} {A : X → Set}
+          → ((x : X) → is-prop (A x)) → is-prop (Π A)
+Π-is-prop i f g = funext (λ x → i x (f x) (g x))
+
 \end{code}
 
 Propositional extensionality axiom:
@@ -150,10 +154,6 @@ define propositional truncations (following Voevodsky):
 
 ∥_∥ : Set → Set
 ∥ X ∥ = (P : Set) → is-prop P → (X → P) → P
-
-Π-is-prop : {X : Set} {A : X → Set}
-          → ((x : X) → is-prop (A x)) → is-prop (Π A)
-Π-is-prop i f g = funext (λ x → i x (f x) (g x))
 
 ∥∥-is-prop : {X : Set} → is-prop ∥ X ∥
 ∥∥-is-prop {X} = Π-is-prop (λ P → Π-is-prop (λ i → Π-is-prop (λ u → i)))
@@ -175,9 +175,6 @@ holds-is-prop = pr₂
 
 𝟘-is-prop : is-prop 𝟘
 𝟘-is-prop ()
-
-𝟙-is-prop : is-prop 𝟙
-𝟙-is-prop * * = refl
 
 ¬_ : Set → Set
 ¬ X = X → 𝟘
@@ -256,7 +253,6 @@ points:
 
 \begin{code}
 
-
 not-no-fp : ¬ Σ \(B : Prop) → B ≡ not B
 not-no-fp (B , p) = pr₁(γ id)
  where
@@ -272,7 +268,7 @@ It is here that we need proposition extensionality in a crucial way:
 \begin{code}
 
 Π-projection-has-section :
-    {X : Set} {Y : X → Set}
+   {X : Set} {Y : X → Set}
  → (x₀ : X) → has-section (λ (f : (x : X) → Y x → Prop) → f x₀)
 Π-projection-has-section {X} {Y} x₀ = s , η
  where
@@ -300,7 +296,7 @@ It is here that we need proposition extensionality in a crucial way:
 usr-lemma : {A : Set} (X : A → Set)
           → (a₀ : A)
           → retract ((a : A) → X a → Prop) of X a₀
-          → (f : Prop → Prop) → Σ \(b : Prop) → b ≡ f b
+          → (f : Prop → Prop) → Σ \(P : Prop) → P ≡ f P
 usr-lemma {A} X a₀ retr = LFPT retr'
  where
   retr' : retract (X a₀ → Prop) of X a₀
@@ -348,8 +344,9 @@ contradiction = families-do-not-have-sections Set id (id , (λ X → refl))
 
 \end{code}
 
-Remark: without assuming type-in-type, we can instead derive a
-contradiction from the existence of a universe U with X:U and X≃U.
+Question: Without assuming type-in-type, can we instead derive a
+contradiction from the existence of a sufficiently large universe U
+with X:U and X≃U?
 
 
 

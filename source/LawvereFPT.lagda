@@ -376,7 +376,7 @@ A variation:
            → (a₀ : A)
            → is-h-isolated a₀
            → retract ((a : A) → X a → Ω (U ⊔ W)) of X a₀
-           → (f : Ω (U ⊔ W) → Ω (U ⊔ W)) → Σ \(b : Ω (U ⊔ W)) → b ≡ f b
+           → (f : Ω (U ⊔ W) → Ω (U ⊔ W)) → Σ \(p : Ω (U ⊔ W)) → p ≡ f p
  usr-lemma {U} {V} {W} {A} X fe fe' pe a₀ i retr = retract-version.LFPT retr'
   where
    retr' : retract (X a₀ → Ω (U ⊔ W)) of X a₀
