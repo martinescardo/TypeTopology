@@ -227,7 +227,7 @@ developed some minimal machinery, we are ready to embark into our
 proof of false.
 
 Our main tool is Lawvere's fixed point theorem (formulated for
-retractions rather than split surjections, for simplicity, as this is
+retractions rather than surjections, for simplicity, as this is
 enough for us):
 
 \begin{code}
@@ -348,6 +348,8 @@ contradiction = families-do-not-have-sections Set id (id , (λ X → refl))
 
 \end{code}
 
+Remark: without assuming type-in-type, we can instead derive a
+contradiction from the existence of a universe U with X:U and X≃U.
 
 
 
