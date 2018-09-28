@@ -355,25 +355,21 @@ A variation:
    rs : (φ : Y x₀ → Ω (U ⊔ W)) → s φ x₀ ≡ φ
    rs φ = dfunext fe γ
     where
-     a : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ ⊤ → φ y₀ ≡ ⊤
-     a y₀ q = ptrec (Ω-is-set fe' pe) d c
+     a : (y₀ : Y x₀) → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ → φ y₀ holds
+     a y₀ = ptrec (holds-is-prop (φ y₀)) f
       where
-       c : ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥
-       c = equal-⊤-is-true _ ptisp q
-       d : (Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds) → φ y₀ ≡ ⊤
-       d (p , h) = true-is-equal-⊤ pe fe' (φ y₀ holds) (holds-is-prop (φ y₀)) (transport (λ - → - holds) t h)
+       f : (Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds) → φ y₀ holds
+       f (p , h) = transport _holds t h
         where
          r : p ≡ refl
          r = ish p refl
          t : φ (transport Y p y₀) ≡ φ y₀
          t = ap (λ - → φ(transport Y - y₀)) r
-     b : (y₀ : Y x₀) → φ y₀ ≡ ⊤ → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ ⊤
-     b y₀ q = true-is-equal-⊤ pe fe' _ ptisp ∣ refl , c ∣
-      where
-       c : φ y₀ holds
-       c = equal-⊤-is-true _ (holds-is-prop _) q
+     b : (y₀ : Y x₀) → φ y₀ holds → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥
+     b y₀ h = ∣ refl , h ∣
      γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ φ y₀
-     γ y₀ = Ω-ext pe fe' (a y₀) (b y₀)
+     γ y₀ = to-Σ-≡ (pe ptisp (holds-is-prop (φ y₀)) (a y₀) (b y₀) ,
+                     is-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ y₀)))
 
  usr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇)
            → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
@@ -387,7 +383,6 @@ A variation:
    retr' = retracts-compose
             retr
             ((λ f → f a₀) , Π-projection-has-section' {U} {V} {W} fe fe' pe a₀ i)
-
 \end{code}
 
 We now work with the following assumptions:

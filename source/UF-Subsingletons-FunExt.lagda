@@ -24,16 +24,16 @@ open import UF-LeftCancellable
 Π-is-prop fe {X} {A} isa f g = dfunext fe (λ x → isa x (f x) (g x))
 
 is-prop-is-prop : ∀ {U} {X : U ̇} → funext U U → is-prop (is-prop X)
-is-prop-is-prop {U} {X} fe f g = claim₁
+is-prop-is-prop {U} {X} fe f g = c₁
  where
-  lemma : is-set X
-  lemma = prop-is-set f
-  claim : (x y : X) → f x y ≡ g x y
-  claim x y = lemma (f x y) (g x y)
-  claim₀ : (x : X) → f x ≡ g x
-  claim₀ x = dfunext fe (claim x)
-  claim₁ : f ≡ g
-  claim₁  = dfunext fe claim₀
+  l : is-set X
+  l = prop-is-set f
+  c : (x y : X) → f x y ≡ g x y
+  c x y = l (f x y) (g x y)
+  c₀ : (x : X) → f x ≡ g x
+  c₀ x = dfunext fe (c x)
+  c₁ : f ≡ g
+  c₁  = dfunext fe c₀
 
 is-prop-is-singleton : ∀ {U} {X : U ̇} → funext U U → is-prop(is-singleton X)
 is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)

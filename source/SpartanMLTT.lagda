@@ -232,7 +232,7 @@ transport : ∀ {U V} {X : U ̇} (A : X → V ̇) {x y : X}
           → x ≡ y → A x → A y
 transport A refl = id
 
-_∙_ : ∀ {U} {X : U ̇} → {x y z : X} → x ≡ y → y ≡ z → x ≡ z
+_∙_ : ∀ {U} {X : U ̇} {x y z : X} → x ≡ y → y ≡ z → x ≡ z
 p ∙ q = transport (Id (lhs p)) q p
 
 _⁻¹ : ∀ {U} {X : U ̇} → {x y : X} → x ≡ y → y ≡ x
