@@ -236,14 +236,14 @@ module surjection-version (pt : PropTrunc) where
 
  open import Two
 
- cantor-uncountable : (φ : ℕ → (ℕ → 𝟚)) → ¬(is-surjection φ)
- cantor-uncountable φ s = ptrec 𝟘-is-prop (uncurry complement-no-fp) t
+ cantor-uncountable : ¬ Σ \(φ : ℕ → (ℕ → 𝟚)) → is-surjection φ
+ cantor-uncountable (φ , s) = ptrec 𝟘-is-prop (uncurry complement-no-fp) t
   where
    t : ∃ \(n : 𝟚) → n ≡ complement n
    t = LFPT φ s complement
 
- baire-uncountable : (φ : ℕ → (ℕ → ℕ)) → ¬(is-surjection φ)
- baire-uncountable φ s = ptrec 𝟘-is-prop (uncurry succ-no-fp) t
+ baire-uncountable : ¬ Σ \(φ : ℕ → (ℕ → ℕ)) → is-surjection φ
+ baire-uncountable (φ , s) = ptrec 𝟘-is-prop (uncurry succ-no-fp) t
   where
    t : ∃ \(n : ℕ) → n ≡ succ n
    t = LFPT φ s succ
@@ -334,8 +334,8 @@ module universe-uncountable (pt : PropTrunc) where
    n : (Σ \a → X a ≡ B) → 𝟘
    n = uncurry φ
 
- Universe-uncountable : {U : Universe} (X : ℕ → U ̇) → ¬(is-surjection X)
- Universe-uncountable X = Universe-discretely-regular X ℕ-discrete
+ Universe-uncountable : {U : Universe} → ¬ Σ \(X : ℕ → U ̇) → is-surjection X
+ Universe-uncountable (X , s) = Universe-discretely-regular X ℕ-discrete s
 
 \end{code}
 
