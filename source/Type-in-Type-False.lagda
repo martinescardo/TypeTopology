@@ -19,7 +19,7 @@ NB. The universe of types is called Set in Agda. This terminology is
 consistent with the K axiom.
 
 We don't use any libraries, not even our own libraries, in order to
-easily check which closure propeties of the universe are needed.
+easily check which closure properties of the universe are needed.
 
 \begin{code}
 
@@ -164,13 +164,13 @@ define propositional truncations (following Voevodsky):
 ∥∥-rec : {X P : Set} → is-prop P → (X → P) → ∥ X ∥ → P
 ∥∥-rec {X} {P} isp φ s = s P isp φ
 
-Prop : Set
-Prop = Σ \(P : Set) → is-prop P
+Ω : Set
+Ω = Σ \(P : Set) → is-prop P
 
-_holds : Prop → Set
+_holds : Ω → Set
 _holds = pr₁
 
-holds-is-prop : (p : Prop) → is-prop (p holds)
+holds-is-prop : (p : Ω) → is-prop (p holds)
 holds-is-prop = pr₂
 
 𝟘-is-prop : is-prop 𝟘
@@ -179,7 +179,7 @@ holds-is-prop = pr₂
 ¬_ : Set → Set
 ¬ X = X → 𝟘
 
-not : Prop → Prop
+not : Ω → Ω
 not (P , i) = (¬ P , Π-is-prop (λ x → 𝟘-is-prop))
 
 \end{code}
@@ -220,11 +220,11 @@ equiv-retract (f , (g , fg) , (h , hf)) = f , g , fg
 \end{code}
 
 Having defined our basic type theory, postulated our axioms, and
-developed some minimal machinery, we are ready to embark into our
+developed some minimal machinery, we are now ready to embark into our
 proof of false.
 
-Our main tool is Lawvere's fixed point theorem (formulated for
-retractions rather than surjections, for simplicity, as this is
+Our main tool is Lawvere's fixed point theorem (formulated and proved
+for retractions rather than surjections, for simplicity, as this is
 enough for us):
 
 \begin{code}
@@ -253,10 +253,10 @@ points:
 
 \begin{code}
 
-not-no-fp : ¬ Σ \(B : Prop) → B ≡ not B
-not-no-fp (B , p) = pr₁(γ id)
+not-no-fp : ¬ Σ \(P : Ω) → P ≡ not P
+not-no-fp (P , p) = pr₁(γ id)
  where
-  q : B holds ≡ ¬(B holds)
+  q : P holds ≡ ¬(P holds)
   q = ap _holds p
   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
   γ = LFPT-≡ q
@@ -269,12 +269,12 @@ It is here that we need proposition extensionality in a crucial way:
 
 Π-projection-has-section :
    {X : Set} {Y : X → Set}
- → (x₀ : X) → has-section (λ (f : (x : X) → Y x → Prop) → f x₀)
+ → (x₀ : X) → has-section (λ (f : (x : X) → Y x → Ω) → f x₀)
 Π-projection-has-section {X} {Y} x₀ = s , η
  where
-  s : (Y x₀ → Prop) → ((x : X) → Y x → Prop)
+  s : (Y x₀ → Ω) → ((x : X) → Y x → Ω)
   s φ x y = ∥(Σ \(p : x ≡ x₀) → φ (transport Y p y) holds)∥ , ∥∥-is-prop
-  η : (φ : Y x₀ → Prop) → s φ x₀ ≡ φ
+  η : (φ : Y x₀ → Ω) → s φ x₀ ≡ φ
   η φ = funext γ
    where
     a : (y₀ : Y x₀) → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ → φ y₀ holds
@@ -293,28 +293,41 @@ It is here that we need proposition extensionality in a crucial way:
     γ y₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ y₀)) (a y₀) (b y₀) ,
                     is-prop-is-prop (holds-is-prop _) (holds-is-prop (φ y₀)) )
 
+\end{code}
+
+And here is the crucial use of LFPT:
+
+\begin{code}
+
 usr-lemma : {A : Set} (X : A → Set)
           → (a₀ : A)
-          → retract ((a : A) → X a → Prop) of X a₀
-          → (f : Prop → Prop) → Σ \(P : Prop) → P ≡ f P
+          → retract ((a : A) → X a → Ω) of X a₀
+          → (f : Ω → Ω) → Σ \(P : Ω) → P ≡ f P
 usr-lemma {A} X a₀ retr = LFPT retr'
  where
-  retr' : retract (X a₀ → Prop) of X a₀
+  retr' : retract (X a₀ → Ω) of X a₀
   retr' = retracts-compose
            retr
            ((λ f → f a₀) , Π-projection-has-section a₀)
+
+\end{code}
+
+Using this, we see that for every family X : A → Set we can construct
+a type not in the image of X:
+
+\begin{code}
 
 universe-regular-≃ : (A : Set) (X : A → Set) → Σ \(B : Set) → (a : A) → ¬(X a ≃ B)
 universe-regular-≃ A X = B , φ
   where
    B : Set
-   B = (a : A) → X a → Prop
+   B = (a : A) → X a → Ω
    φ : (a : A) → ¬(X a ≃ B)
    φ a p = not-no-fp (γ not)
     where
      retr : retract B of (X a)
      retr = equiv-retract p
-     γ : (f : Prop → Prop) → Σ \(P : Prop) → P ≡ f P
+     γ : (f : Ω → Ω) → Σ \(P : Ω) → P ≡ f P
      γ = usr-lemma {A} X a retr
 
 universe-regular : (A : Set) (X : A → Set) → Σ \(B : Set) → (a : A) → ¬(X a ≡ B)
@@ -323,6 +336,12 @@ universe-regular A X = γ (universe-regular-≃ A X)
   γ : (Σ \(B : Set) → (a : A) → ¬(X a ≃ B))
     → (Σ \(B : Set) → (a : A) → ¬(X a ≡ B))
   γ (B , φ) = B , (λ a p → φ a (idtoeq (X a) B p))
+
+\end{code}
+
+And in particular we have that
+
+\begin{code}
 
 families-do-not-have-sections : (A : Set) (X : A → Set) → ¬ has-section X
 families-do-not-have-sections A X (s , η) = φ (s B) (η B)
@@ -346,7 +365,8 @@ contradiction = families-do-not-have-sections Set id (id , (λ X → refl))
 
 Question: Without assuming type-in-type, can we instead derive a
 contradiction from the existence of a sufficiently large universe U
-with X:U and X≃U?
+with a type X:U such that X≃U?
+
 
 
 

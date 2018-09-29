@@ -134,10 +134,10 @@ that r has a pointwise section).
  open import UF-Subsingletons
  open import UF-Subsingletons-FunExt
 
- not-no-fp : ∀ {U} (fe : funext U U₀) → ¬ Σ \(B : Ω U) → B ≡ not fe B
- not-no-fp {U} fe (B , p) = pr₁(γ id)
+ not-no-fp : ∀ {U} (fe : funext U U₀) → ¬ Σ \(P : Ω U) → P ≡ not fe P
+ not-no-fp {U} fe (P , p) = pr₁(γ id)
   where
-   q : B holds ≡ ¬(B holds)
+   q : P holds ≡ ¬(P holds)
    q = ap _holds p
    γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
    γ = LFPT-≡ q
