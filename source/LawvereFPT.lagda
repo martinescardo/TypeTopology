@@ -437,3 +437,5 @@ NB. If V is U or U', then X : A → U ′ ̇.
     e = s B
 
 \end{code}
+
+See also http://www.cs.bham.ac.uk/~mhe/agda-new/Type-in-Type-False.html

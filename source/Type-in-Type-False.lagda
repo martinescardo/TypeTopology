@@ -4,12 +4,13 @@ This is an application of work of Ingo Blechschmidt (see the module
 LavwereFPT) to show that type-in-type, Streicher's K-axiom, functional
 and propositional extensionality are together impossible.
 
-A universe closed under 𝟘, 𝟙, Π, Σ and identity type is enough to get
+A universe closed under 𝟘, Π, Σ and identity type is enough to get
 a contradiction.
 
 In particular, W-types are not needed.
 
-NB. We use the option without-K but then postulate K.
+NB. We use the option without-K but then postulate K, so that the uses
+of K can be seen explicitly.
 
 postulate K-axiom : (X : Set) → is-set X
 postulate funext  : {X : Set} {A : X → Set} {f g : Π A} → f ∼ g → f ≡ g
@@ -29,15 +30,12 @@ module Type-in-Type-False where
 
 \end{code}
 
-We first define 𝟘, 𝟙, Σ and the identity type (written _≡_), and name
+We first define 𝟘, Σ and the identity type (written _≡_), and name
 the predefined construction Π:
 
 \begin{code}
 
 data 𝟘 : Set where
-
-data 𝟙 : Set where
- * : 𝟙
 
 Π : {X : Set} (Y : X → Set) → Set
 Π Y = (x : _) → Y x
@@ -256,7 +254,7 @@ points:
 not-no-fp : ¬ Σ \(P : Ω) → P ≡ not P
 not-no-fp (P , p) = pr₁(γ id)
  where
-  q : P holds ≡ ¬(P holds)
+  q : P holds ≡ ¬ (P holds)
   q = ap _holds p
   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
   γ = LFPT-≡ q
@@ -291,7 +289,7 @@ It is here that we need proposition extensionality in a crucial way:
     b y₀ h = ∣ refl , h ∣
     γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ∥∥-is-prop) ≡ φ y₀
     γ y₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ y₀)) (a y₀) (b y₀) ,
-                    is-prop-is-prop (holds-is-prop _) (holds-is-prop (φ y₀)) )
+                   is-prop-is-prop (holds-is-prop _) (holds-is-prop (φ y₀)) )
 
 \end{code}
 
@@ -366,6 +364,7 @@ contradiction = families-do-not-have-sections Set id (id , (λ X → refl))
 Question: Without assuming type-in-type, can we instead derive a
 contradiction from the existence of a sufficiently large universe U
 with a type X:U such that X≃U?
+
 
 
 
