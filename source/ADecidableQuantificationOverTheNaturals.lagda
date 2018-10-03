@@ -62,7 +62,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
     case₀ r = inl(Zero , (s , r))
      where
       s : Zero ≢ ∞
-      s t = ∞-is-not-ℕ 0 (t ⁻¹)
+      s t = ∞-is-not-finite 0 (t ⁻¹)
     case₁ : p Zero ≡ ₁ →
             (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
     case₁ r = inr by-induction

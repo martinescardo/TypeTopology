@@ -165,8 +165,8 @@ not-⊑-is-⊐ f = Lemma[b≢₀→b≡₁] f
 is-Zero : ℕ∞ → U₀ ̇
 is-Zero u = u ⊑ 0
 
-positive : ℕ∞ → U₀ ̇
-positive u = 0 ⊏ u
+is-positive : ℕ∞ → U₀ ̇
+is-positive u = 0 ⊏ u
 
 positivity : ℕ∞ → 𝟚
 positivity u = incl u 0
@@ -273,19 +273,19 @@ not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma 0 = Lemma[b≢₀→b≡₁] (f ∘ is-Zero-equal-Zero fe)
   lemma (succ i) = refl
 
-positive-is-not-Zero : {u : ℕ∞} → positive u → u ≢ Zero
+positive-is-not-Zero : {u : ℕ∞} → is-positive u → u ≢ Zero
 positive-is-not-Zero {u} r s = lemma r
  where
-  lemma : ¬(positive u)
+  lemma : ¬(is-positive u)
   lemma = Lemma[b≡₀→b≢₁](ap positivity s)
 
-positive-equal-Succ : funext₀ → {u : ℕ∞} → positive u → u ≡ Succ(Pred u)
+positive-equal-Succ : funext₀ → {u : ℕ∞} → is-positive u → u ≡ Succ(Pred u)
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 
 Zero-or-Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + (u ≡ Succ(Pred u))
 Zero-or-Succ fe₀ u = 𝟚-equality-cases
                       (λ (z : is-Zero u) → inl (is-Zero-equal-Zero fe₀ z))
-                      (λ (p : positive u) → inr (positive-equal-Succ fe₀ p))
+                      (λ (p : is-positive u) → inr (positive-equal-Succ fe₀ p))
 
 is-Succ : ℕ∞ → U₀ ̇
 is-Succ u = Σ \(w : ℕ∞) → u ≡ Succ w
@@ -306,15 +306,15 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
       lemma₀ (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u (succ i)) (lemma₀ i)
   lemma u (succ n) r s 0 = lemma₁ (succ n) r
      where
-      lemma₁ : (n : ℕ) → n ⊏ u → positive u
+      lemma₁ : (n : ℕ) → n ⊏ u → is-positive u
       lemma₁ 0 t = t
       lemma₁ (succ n) t = lemma₁ n (pr₂ u n t)
   lemma u (succ n) r s (succ i) = lemma (Pred u) n r s i
   claim : incl u ≡ incl (Succ (under n))
   claim = dfunext fe (lemma u n r s)
 
-∞-is-not-ℕ : (n : ℕ) → ∞ ≢ under n
-∞-is-not-ℕ n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
+∞-is-not-finite : (n : ℕ) → ∞ ≢ under n
+∞-is-not-finite n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
 
 not-ℕ-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
 not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
@@ -363,7 +363,7 @@ under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-em
   g : is-embedding (λ _ → ∞)
   g x (* , p) (* , q) = ap (λ - → * , -) (ℕ∞-is-set fe p q)
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
-  d n _ p = ∞-is-not-ℕ n (p ⁻¹)
+  d n _ p = ∞-is-not-finite n (p ⁻¹)
 
 under𝟙-dense : funext₀ → is-dense under𝟙
 under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
@@ -389,7 +389,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
    where
     g₀ : is-Zero u → decidable (u ≡ Zero)
     g₀ r = inl(is-Zero-equal-Zero fe r)
-    g₁ : positive u → decidable (u ≡ Zero)
+    g₁ : is-positive u → decidable (u ≡ Zero)
     g₁ r = inr(contrapositive h (Lemma[b≡₁→b≢₀] r))
      where
       h : u ≡ Zero → is-Zero u
@@ -441,14 +441,14 @@ is-finite-up' : funext₀ → (u : ℕ∞) → is-finite (Pred u) → is-finite 
 is-finite-up' fe u i = 𝟚-equality-cases
                          (λ (z : is-Zero u)
                             → Zero-is-finite' fe u z)
-                         (λ (p : positive u)
+                         (λ (p : is-positive u)
                             → back-transport
                                is-finite
                                (positive-equal-Succ fe p)
                                (is-finite-up (Pred u) i))
 
 is-infinite-∞ : ¬(is-finite ∞)
-is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-ℕ n (r ⁻¹))
+is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
 
 \end{code}
 
@@ -458,6 +458,12 @@ Order on ℕ∞:
 
 _≼_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
+
+≼-anti : funext₀ → (u v : ℕ∞) → u ≼ v → v ≼ u → u ≡ v
+≼-anti fe u v l m = incl-lc fe γ
+ where
+  γ : incl u ≡ incl v
+  γ = dfunext fe (λ i → ≤₂-anti (l i) (m i))
 
 ∞-maximal : (u : ℕ∞) → u ≼ ∞
 ∞-maximal u = λ n _ → refl
@@ -474,6 +480,30 @@ Succ-monotone u v l (succ n) p = l n p
 
 Succ-loc : (u v : ℕ∞) → Succ u ≼ Succ v → u ≼ v
 Succ-loc u v l n = l (succ n)
+
+above-Succ-is-positive : (u v : ℕ∞) → Succ u ≼ v → is-positive v
+above-Succ-is-positive u v l = l zero refl
+
+≼-unfold-Succ : funext₀ → (u v : ℕ∞) → Succ u ≼ v → Succ u ≼ Succ (Pred v)
+≼-unfold-Succ fe u v l = transport (λ - → Succ u ≼ -)
+                          (positive-equal-Succ fe {v}
+                            (above-Succ-is-positive u v l)) l
+
+≼-unfold : funext₀ → (u v : ℕ∞)
+         → u ≼ v
+         → (u ≡ Zero) + Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)
+≼-unfold fe u v l = φ (Zero+Succ fe u) (Zero+Succ fe v)
+ where
+  φ : (u ≡ Zero) + is-Succ u → (v ≡ Zero) + is-Succ v → _
+  φ (inl p) _ = inl p
+  φ (inr (w , refl)) (inl refl) = 𝟘-elim (Succ-not-≼-Zero w l)
+  φ (inr (w , refl)) (inr (t , refl)) = inr (w , t , refl , refl , Succ-loc w t l)
+
+≼-fold : (u v : ℕ∞)
+       → ((u ≡ Zero) + Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t))
+       → u ≼ v
+≼-fold .Zero v (inl refl) = Zero-minimal v
+≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
 
 max : ℕ∞ → ℕ∞ → ℕ∞
 max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
@@ -499,7 +529,7 @@ _≺_ : ℕ∞ → ℕ∞ → U₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 ∞-top : (u : ℕ∞) → ¬(∞ ≺ u)
-∞-top u (n , r , l) = ∞-is-not-ℕ n r
+∞-top u (n , r , l) = ∞-is-not-finite n r
 
 below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → isolated u
 below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated fe n)
@@ -738,7 +768,7 @@ Characterization of ⊏.
 
 \begin{code}
 
-⊏-positive : (n : ℕ) (u : ℕ∞) → n ⊏ u → positive u
+⊏-positive : (n : ℕ) (u : ℕ∞) → n ⊏ u → is-positive u
 ⊏-positive n u = ⊏-trans'' u n 0 (zero-minimal n)
 
 ⊏-charac→ : funext₀ → (n : ℕ) (u : ℕ∞)

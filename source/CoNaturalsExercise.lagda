@@ -121,7 +121,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
          c₄ = retr-spec₀(incl w) r
          c₅ : Pred(retr(incl w)) ≡ Zero
          c₅ = ap Pred c₄
-       claim₂ : positive w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
+       claim₂ : is-positive w → retr(incl(Pred w)) ≡ Pred(retr(incl w))
        claim₂ r = c₃ ∙ c₁ ⁻¹
         where
          c₀ : retr(incl w) ≡ Succ(retr(tail(incl w)))

@@ -419,24 +419,6 @@ Relation of min with ≼ defined in the module GenericConvergentSequence.
 
 \begin{code}
 
-≼-unfold : (u v : ℕ∞)
-         → u ≼ v
-         → (u ≡ Zero) + Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)
-≼-unfold u v l = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
- where
-  φ : (u ≡ Zero) + is-Succ u → (v ≡ Zero) + is-Succ v → _
-  φ (inl p) _ = inl p
-  φ (inr (w , refl)) (inl refl) = 𝟘-elim (Succ-not-≼-Zero w l)
-  φ (inr (w , refl)) (inr (t , refl)) = inr (w , t , refl , refl , Succ-loc w t l)
-
-
-≼-fold : (u v : ℕ∞)
-       → ((u ≡ Zero) + Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t))
-       → u ≼ v
-≼-fold .Zero v (inl refl) = Zero-minimal v
-≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
-
-
 ≼-min-l : (u v : ℕ∞) → min (u , v) ≼ u
 ≼-min-l u v zero p = γ
  where
@@ -472,31 +454,67 @@ Relation of min with ≼ defined in the module GenericConvergentSequence.
 ≼-from-min→ : (u v : ℕ∞) → min (u , v) ≡ u → u ≼ v
 ≼-from-min→ u v p = transport (λ - → - ≼ v) p (≼-min-r u v)
 
+\end{code}
+
+For the sake of variation, we use another proof technique, namely
+density:
+
+\begin{code}
+
 {-
 ≼-from-min← : (u v : ℕ∞) → u ≼ v → min (u , v) ≡ u
-≼-from-min← u v l = φ (≼-unfold u v l)
+≼-from-min← u v l = ℕ∞-density fe₀ (ℕ∞-separated fe₀) p q u
  where
-  φ :  (u ≡ Zero) + (Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)) → min (u , v) ≡ u
-  φ (inl refl) = min-eq₀ v
-  φ (inr x) = {!!}
-  h : ℕ∞ → ℕ∞
-  h u = min (u , v)
-  h-homomorphism : is-homomorphism PRED h
-  h-homomorphism = dfunext fe₀ (λ v → φ v (Zero+Succ fe₀ v))
-   where
-    φ : (v : ℕ∞) → (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → PRED (h v) ≡ 𝟙+ h (PRED v)
-    φ v (inl refl) =
-      PRED (min (∞ , Zero))        ≡⟨ ap PRED (min-eq₀ ∞) ⟩
-      PRED Zero                    ≡⟨ refl ⟩
-      𝟙+ h (PRED Zero)             ∎
-    φ v (inr (t , refl)) =
-      PRED (min (∞ , Succ t)) ≡⟨ ap (λ - → PRED (min (- , Succ t))) (Succ-∞-is-∞ fe₀ ⁻¹) ⟩
-      PRED (min (Succ ∞ , Succ t)) ≡⟨ ap PRED (min-eq₂ ∞ t) ⟩
-      PRED (Succ (min (∞ , t)))    ≡⟨ refl ⟩
-      𝟙+ h (PRED (Succ t))         ∎
-  h-is-corec : h ≡ id
-  h-is-corec = homomorphism-uniqueness PRED h id h-homomorphism id-homomorphism
+   h : ℕ∞ → ℕ∞
+   h u = min (u , v)
+   p : (n : ℕ) → h (under n) ≡ under n
+   p zero = min-eq₀ v
+   p (succ n) =
+    min (under (succ n) , v) ≡⟨ {!!} ⟩
+    min (under (succ n) , Succ (Pred v)) ≡⟨ {!!} ⟩
+    Succ (min (succ n , Pred v) ≡⟨ {!!} ⟩
+    under (succ n) ∎
+    where
+     a : Succ (h (under n)) ≡ under (succ n)
+     a = ap Succ (p n)
+     r : under (succ n) ≼ Succ (Pred v)
+     r = ≼-unfold-Succ fe₀ (under n) v {!!}
+     γ : h (under (succ n)) ≡ under (succ n)
+     γ = h (under (succ n)) ≡⟨ {!!} ⟩ under (succ n) ∎
+   q : h ∞ ≡ ∞
+   q = {!!}
+-}
 
+{-
+ γ (Zero+Succ fe₀ v)
+ where
+  γ :  (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → min (u , v) ≡ u
+  γ (inl refl) =
+    min (u , v)    ≡⟨ ap (λ - → min (- , v)) (≼-anti fe₀ u Zero l (Zero-minimal u)) ⟩
+    min (Zero , v) ≡⟨ min-eq₀ v ⟩
+    Zero           ≡⟨ ≼-anti fe₀ Zero u (Zero-minimal u) l ⟩
+    u              ∎
+  γ (inr (t , refl)) = ap (λ - → - u) h-is-corec
+   where
+    h : ℕ∞ → ℕ∞
+    h u = min (u , Succ t)
+    h-homomorphism : is-homomorphism PRED h
+    h-homomorphism = dfunext fe₀ (λ u → φ u (Zero+Succ fe₀ u))
+     where
+      φ : (u : ℕ∞) → (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → PRED (h u) ≡ 𝟙+ h (PRED u)
+      φ u (inl refl) =
+        PRED (h Zero)    ≡⟨ ap PRED (min-eq₀ v) ⟩
+        PRED Zero        ≡⟨ refl ⟩
+        𝟙+ h (PRED Zero) ∎
+      φ u (inr (w , refl)) =
+        PRED (h (Succ w)) ≡⟨ refl ⟩
+        PRED (min (Succ w , Succ t)) ≡⟨ ap PRED (min-eq₂ w t) ⟩
+        PRED (Succ (min (w , t))) ≡⟨ {!refl!} ⟩
+        𝟙+ h (PRED (Succ w))         ∎
+    h-is-corec : h ≡ id
+    h-is-corec = homomorphism-uniqueness PRED h id h-homomorphism id-homomorphism
+-}
+{-
 min-glb : (u v w : ℕ∞) → u ≼ v → u ≼ w → u ≼ min (v , w)
 min-glb u v w = {!!}
 -}

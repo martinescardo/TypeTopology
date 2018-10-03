@@ -227,12 +227,12 @@ inverse Cons for ⟨Head,Tail⟩:
 head-step : D Cantor → 𝟚
 head-step (u , φ) = 𝟚-equality-cases
                      (λ (z : is-Zero u) → head (φ (Zero-is-finite' fe₀ u z)))
-                     (λ (p : positive u) → ₁)
+                     (λ (p : is-positive u) → ₁)
 
 tail-step : D Cantor → D Cantor
 tail-step (u , φ) = 𝟚-equality-cases
                      (λ (z : is-Zero u) → u , tail ∘ φ)
-                     (λ (p : positive u) → Pred u , φ ∘ is-finite-up' fe₀ u)
+                     (λ (p : is-positive u) → Pred u , φ ∘ is-finite-up' fe₀ u)
 
 Κ : D Cantor → Cantor
 Κ = seq-corec head-step tail-step

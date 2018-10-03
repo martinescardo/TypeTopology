@@ -330,8 +330,8 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
 under𝟙ᵒ-is-order-reflecting : is-order-reflecting (succₒ ℕₒ) ℕ∞ᵒ under𝟙ᵒ
 under𝟙ᵒ-is-order-reflecting (inl n) (inl m) l = under-order-reflecting n m l
 under𝟙ᵒ-is-order-reflecting (inl n) (inr *) l = *
-under𝟙ᵒ-is-order-reflecting (inr *) (inl m) (n , (p , l)) = 𝟘-elim (∞-is-not-ℕ n p)
-under𝟙ᵒ-is-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-ℕ n p)
+under𝟙ᵒ-is-order-reflecting (inr *) (inl m) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
+under𝟙ᵒ-is-order-reflecting (inr *) (inr *) (n , (p , l)) = 𝟘-elim (∞-is-not-finite n p)
 
 over-under-map-is-order-reflecting  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
                                  → is-order-reflecting
@@ -365,7 +365,7 @@ over-under-map-is-order-reflecting τ (inl n) x y ((m , p) , l) = (n , refl) , q
        (over-under-map-left (λ n → ⟪ τ n ⟫) n x)
        (over-under-map-left (λ n → ⟪ τ n ⟫) n y)
        d
-over-under-map-is-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is-not-ℕ m (p ⁻¹))
+over-under-map-is-order-reflecting τ (inr *) x y ((m , p) , l) = 𝟘-elim (∞-is-not-finite m (p ⁻¹))
 
 ∑-up-is-order-reflecting : (τ : ℕ → Ordᵀ)
                       → is-order-reflecting (∑₁ τ) (∑¹ τ) (∑-up τ)

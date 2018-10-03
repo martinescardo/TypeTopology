@@ -154,3 +154,20 @@ And now with an isolated top element:
 ∑₁ τ = ∑ (succₒ ℕₒ) (τ ↗ (over , over-embedding))
 
 \end{code}
+
+Miscelanea:
+
+\begin{code}
+
+less-is-left : (α : Ord) (x y : ⟨ α +ₒ 𝟙ₒ ⟩) → x ≺⟨ α +ₒ 𝟙ₒ ⟩ y
+             → Σ \(a : ⟨ α ⟩) → x ≡ inl a
+less-is-left α (inl a) y l = a , refl
+less-is-left α (inr *) (inl a) ()
+less-is-left α (inr *) (inr *) ()
+
+left-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩) → ¬(inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
+left-is-not-smaller α (inl a) ()
+left-is-not-smaller α (inr *) ()
+
+
+\end{code}

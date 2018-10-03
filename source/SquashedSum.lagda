@@ -109,7 +109,7 @@ over-under X (inl n) = equiv-dense-embedding (
  (X / under) (under n) ■)
 over-under X (inr *) = equiv-dense-embedding (
  (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
- 𝟙 {U₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X under ∞ (λ n p → ∞-is-not-ℕ n (p ⁻¹))) ⟩
+ 𝟙 {U₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X under ∞ (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
  (X / under) ∞      ■ )
 
 over-under-map : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
@@ -354,7 +354,7 @@ module original-version-and-equivalence-with-new-version where
  Σᴵ X = Σ \(u : ℕ∞) → X [ u ]
 
  ∞₁ : {X : ℕ → U₀ ̇} → Σᴵ X
- ∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-ℕ k (r ⁻¹))
+ ∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-finite k (r ⁻¹))
 
 \end{code}
 
@@ -366,7 +366,7 @@ module original-version-and-equivalence-with-new-version where
  H {X} u r y y' = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s
-   lemma k s = 𝟘-elim(∞-is-not-ℕ k (r ⁻¹ ∙ s ⁻¹))
+   lemma k s = 𝟘-elim(∞-is-not-finite k (r ⁻¹ ∙ s ⁻¹))
 
 \end{code}
 

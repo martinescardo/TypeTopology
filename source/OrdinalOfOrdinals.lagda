@@ -20,7 +20,7 @@ open import SpartanMLTT
 open import OrdinalNotions hiding (_≤_)
 open import Ordinals fe
 open import UF-Base
-open import UF-Subsingletons
+open import UF-Subsingletons hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Embedding
@@ -37,6 +37,7 @@ ordinals, making them into a poset, as proved below.
 \begin{code}
 
 is-order-preserving
+ is-monotone
  is-order-reflecting
  is-order-embedding
  is-order-equiv
@@ -45,13 +46,22 @@ is-order-preserving
   : ∀ {U V} → (α : Ordinal U) (β : Ordinal V) → (⟨ α ⟩ → ⟨ β ⟩) → U ⊔ V ̇
 
 is-order-preserving α β f = (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → f x ≺⟨ β ⟩ f y
+
+is-monotone α β f         = (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → f x ≼⟨ β ⟩ f y
+
 is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
+
 is-order-embedding  α β f = is-order-preserving α β f × is-order-reflecting α β f
+
 is-order-equiv      α β f = is-order-preserving α β f
                           × Σ \(e : is-equiv f) → is-order-preserving β α (back-eqtofun (f , e))
+
 is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
                            → y ≺⟨ β ⟩ f x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+
 is-simulation       α β f = is-initial-segment α β f × is-order-preserving α β f
+
+
 
 order-equiv-simulation : ∀ {U V} (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
                        → is-order-equiv α β f
@@ -232,6 +242,10 @@ _⊴_ : ∀ {U V} → Ordinal U → Ordinal V → U ⊔ V ̇
 
 _≃ₒ_ : ∀ {U V} → Ordinal U → Ordinal V → U ⊔ V ̇
 α ≃ₒ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-equiv α β f
+
+≃ₒ-gives-≃ : ∀ {U V} (α : Ordinal U) (β : Ordinal V) → α ≃ₒ β → ⟨ α ⟩ ≃ ⟨ β ⟩
+≃ₒ-gives-≃ α β (f , p , e , q) = (f , e)
+
 
 ≃ₒ-prop-valued : ∀ {U V} (α : Ordinal U) (β : Ordinal V)
                → is-prop (α ≃ₒ β)
@@ -659,5 +673,89 @@ is-order-embedding-is-embedding α β f (p , r) =
  lc-embedding f
   (is-order-embedding-lc α β f (p , r))
   (ordinal-gives-is-set (underlying-order β) fe (is-well-ordered β))
+
+is-simulation-is-monotone : ∀ {U} (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
+                          → is-simulation α β f
+                          → is-monotone α β f
+is-simulation-is-monotone α β f (i , p) = φ
+ where
+  φ : (x y : ⟨ α ⟩) → ((z : ⟨ α ⟩) → z ≺⟨ α ⟩ x → z ≺⟨ α ⟩ y)
+                    → (t : ⟨ β ⟩) → t ≺⟨ β ⟩ f x → t ≺⟨ β ⟩ f y
+  φ x y ψ t l = transport (λ - → - ≺⟨ β ⟩ f y) b d
+   where
+    z : ⟨ α ⟩
+    z = pr₁ (i x t l)
+    a : z ≺⟨ α ⟩ x
+    a = pr₁(pr₂(i x t l))
+    b : f z ≡ t
+    b = pr₂(pr₂(i x t l))
+    c : z ≺⟨ α ⟩ y
+    c = ψ z a
+    d : f z ≺⟨ β ⟩ f y
+    d = p z y c
+
+\end{code}
+
+Example. Classically, the ordinals ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
+Constructively, we have (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
+other direction implies WLPO.
+
+\begin{code}
+
+module example where
+
+ open import LPO fe
+ open import OrdinalArithmetic fe
+ open import GenericConvergentSequence
+ open import NaturalsOrder
+
+ fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
+ fact = under𝟙 , i , p
+  where
+   α β : Ordinal U₀
+   α = ℕₒ +ₒ 𝟙ₒ
+   β = ℕ∞ₒ
+   i : (x : ⟨ α ⟩) (y : ⟨ β ⟩) → y ≺⟨ β ⟩ under𝟙 x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (under𝟙 x' ≡ y)
+   i (inl m) y (n , r , l) = inl n , ⊏-coarser-than-< n m l , (r ⁻¹)
+   i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
+   p : (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → under𝟙 x ≺⟨ β ⟩ under𝟙 y
+   p (inl n) (inl m) l = under-order-preserving n m l
+   p (inl n) (inr *) * = ∞-≺-maximal n
+   p (inr *) (inl m) ()
+   p (inr *) (inr *) ()
+
+ has-section-under𝟙-gives-LPO : has-section under𝟙 → LPO
+ has-section-under𝟙-gives-LPO (g , ε) u = ψ (g u) refl
+  where
+   ψ : (z : ℕ + 𝟙) → g u ≡ z → decidable(Σ \(n : ℕ) → u ≡ under n)
+   ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
+                           under𝟙 (g u) ≡⟨ ap under𝟙 p ⟩
+                           under n      ∎))
+   ψ (inr *) p = inr γ
+    where
+     γ : ¬ Σ \(n : ℕ) → u ≡ under n
+     γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
+                                    under𝟙 (g u) ≡⟨ ε u ⟩
+                                    u            ≡⟨ q ⟩
+                                    under n      ∎)
+
+ qinv-under𝟙-gives-LPO : qinv under𝟙 → LPO
+ qinv-under𝟙-gives-LPO (g , η , ε) = has-section-under𝟙-gives-LPO (g , ε)
+
+ is-equiv-under𝟙-gives-LPO : is-equiv under𝟙 → LPO
+ is-equiv-under𝟙-gives-LPO e = qinv-under𝟙-gives-LPO (is-equiv-qinv under𝟙 e)
+
+ converse-fails : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
+ converse-fails l =  is-equiv-under𝟙-gives-LPO e
+  where
+   b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
+   b = bisimilar-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
+   e : is-equiv under𝟙
+   e = pr₂(≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
+
+{-
+ converse-fails-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
+ converse-fails-converse = {!!}
+-}
 
 \end{code}

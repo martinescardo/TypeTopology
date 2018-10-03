@@ -111,7 +111,7 @@ module concrete-example where
    lemma n = ap (λ - → p(under n , -)) (dfunext (fe U₀ U₀) claim)
     where
      claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
-     claim s = 𝟘-elim(∞-is-not-ℕ n (s ⁻¹))
+     claim s = 𝟘-elim(∞-is-not-finite n (s ⁻¹))
 
  open import DiscreteAndSeparated
 

@@ -146,8 +146,3 @@ LPO→ℕ-omniscient : omniscient(LPO → ℕ)
 LPO→ℕ-omniscient = searchable-implies-omniscient LPO→ℕ-searchable
 
 \end{code}
-
-TODO.
-
-Added 10 Feb 2018. Another way to get LPO as a proposition, without
-using function extensionality.
