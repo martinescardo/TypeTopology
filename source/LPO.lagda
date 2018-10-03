@@ -45,8 +45,17 @@ LPO-is-prop = Π-is-prop (fe U₀ U₀) f
   f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
   f x = decidable-is-prop (fe U₀ U₀) (a x)
 
-LPO-implies-omniscient-ℕ : LPO → omniscient ℕ
-LPO-implies-omniscient-ℕ lpo β = cases a b d
+\end{code}
+
+We now show that LPO is logically equivalent to its traditional
+formulation, which is the omniscience of ℕ. However, the traditional
+formulation is not a univalent proposition in general, and hence not
+type equivalent.
+
+\begin{code}
+
+LPO-gives-omniscient-ℕ : LPO → omniscient ℕ
+LPO-gives-omniscient-ℕ lpo β = cases a b d
   where
     A = (Σ \(n : ℕ) → β n ≡ ₀) + (Π \(n : ℕ) → β n ≡ ₁)
 
@@ -78,13 +87,13 @@ LPO-implies-omniscient-ℕ lpo β = cases a b d
             c = v n
 
             l : x ≡ ∞
-            l = not-ℕ-is-∞ (fe U₀ U₀) v
+            l = not-finite-is-∞ (fe U₀ U₀) v
 
             e : α n ≡ ₁
             e = ap (λ - → incl - n) l
 
-omniscient-ℕ→LPO : omniscient ℕ → LPO
-omniscient-ℕ→LPO chlpo x = cases a b d
+omniscient-ℕ-gives-LPO : omniscient ℕ → LPO
+omniscient-ℕ-gives-LPO chlpo x = cases a b d
   where
     A = decidable (Σ \(n : ℕ) → x ≡ under n)
 
@@ -136,13 +145,49 @@ knowing whether LPO holds or not!
 open import SearchableTypes
 open import PropTychonoff
 
-LPO→ℕ-searchable : searchable(LPO → ℕ)
-LPO→ℕ-searchable = prop-tychonoff-corollary' fe LPO-is-prop f
+LPO-gives-ℕ-searchable : searchable(LPO → ℕ)
+LPO-gives-ℕ-searchable = prop-tychonoff-corollary' fe LPO-is-prop f
  where
    f : LPO → searchable ℕ
-   f = inhabited-omniscient-implies-searchable 0 ∘ LPO-implies-omniscient-ℕ
+   f = inhabited-omniscient-implies-searchable 0 ∘ LPO-gives-omniscient-ℕ
 
-LPO→ℕ-omniscient : omniscient(LPO → ℕ)
-LPO→ℕ-omniscient = searchable-implies-omniscient LPO→ℕ-searchable
+LPO-gives-ℕ-omniscient : omniscient(LPO → ℕ)
+LPO-gives-ℕ-omniscient = searchable-implies-omniscient LPO-gives-ℕ-searchable
+
+\end{code}
+
+Another condition equivalent to LPO is that under𝟙 has a section:
+
+\begin{code}
+
+has-section-under𝟙-gives-LPO : (Σ \(s : ℕ∞ → ℕ + 𝟙) → under𝟙 ∘ s ∼ id) → LPO
+has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
+ where
+  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ \(n : ℕ) → u ≡ under n)
+  ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
+                          under𝟙 (s u) ≡⟨ ap under𝟙 p ⟩
+                          under n      ∎))
+  ψ (inr *) p = inr γ
+   where
+    γ : ¬ Σ \(n : ℕ) → u ≡ under n
+    γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
+                                   under𝟙 (s u) ≡⟨ ε u ⟩
+                                   u            ≡⟨ q ⟩
+                                   under n      ∎)
+
+under𝟙-inverse : (u : ℕ∞) → decidable(Σ \(n : ℕ) → u ≡ under n) → ℕ + 𝟙 {U₀}
+under𝟙-inverse u (inl (n , refl)) = inl n
+under𝟙-inverse u (inr g) = inr *
+
+LPO-gives-has-section-under𝟙 : LPO → Σ \(s : ℕ∞ → ℕ + 𝟙) → under𝟙 ∘ s ∼ id
+LPO-gives-has-section-under𝟙 lpo = s , ε
+ where
+  s : ℕ∞ → ℕ + 𝟙
+  s u = under𝟙-inverse u (lpo u)
+  φ : (u : ℕ∞) (d : decidable (Σ \(n : ℕ) → u ≡ under n)) → under𝟙 (under𝟙-inverse u d) ≡ u
+  φ .(under n) (inl (n , refl)) = refl
+  φ u (inr g) = (not-finite-is-∞ (fe U₀ U₀) (curry g))⁻¹
+  ε : under𝟙 ∘ s ∼ id
+  ε u = φ u (lpo u)
 
 \end{code}

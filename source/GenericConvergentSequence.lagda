@@ -316,8 +316,8 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
 ∞-is-not-finite : (n : ℕ) → ∞ ≢ under n
 ∞-is-not-finite n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
 
-not-ℕ-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
-not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
+not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
+not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (n : ℕ) → n ⊏ u
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r))
@@ -336,7 +336,7 @@ not-ℕ-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   b : f u ≢ g u → u ≢ ∞
   b = contrapositive (λ (r : u ≡ ∞) → back-transport (λ - → f - ≡ g -) r h∞)
   c : ¬¬(f u ≡ g u)
-  c = λ t → b t (not-ℕ-is-∞ fe (a t))
+  c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
              → ∀ {U} {Y : U ̇}
@@ -366,7 +366,7 @@ under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-em
   d n _ p = ∞-is-not-finite n (p ⁻¹)
 
 under𝟙-dense : funext₀ → is-dense under𝟙
-under𝟙-dense fe (u , f) = g (not-ℕ-is-∞ fe h)
+under𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
  where
   g : ¬(u ≡ ∞)
   g p = f ((inr *) , (p ⁻¹))

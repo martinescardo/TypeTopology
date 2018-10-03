@@ -456,7 +456,7 @@ module original-version-and-equivalence-with-new-version where
    lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
 
    lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-   lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-ℕ-is-∞ fe₀ (λ n q → lemma₁' r y s n (q ⁻¹))))
+   lemma r y = Lemma[b≢₀→b≡₁] (λ s → lemma₂' r y s (not-finite-is-∞ fe₀ (λ n q → lemma₁' r y s n (q ⁻¹))))
 
 \end{code}
 

@@ -709,21 +709,6 @@ module example where
  open import GenericConvergentSequence
  open import NaturalsOrder
 
- has-section-under𝟙-gives-LPO : has-section under𝟙 → LPO
- has-section-under𝟙-gives-LPO (g , ε) u = ψ (g u) refl
-  where
-   ψ : (z : ℕ + 𝟙) → g u ≡ z → decidable(Σ \(n : ℕ) → u ≡ under n)
-   ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
-                           under𝟙 (g u) ≡⟨ ap under𝟙 p ⟩
-                           under n      ∎))
-   ψ (inr *) p = inr γ
-    where
-     γ : ¬ Σ \(n : ℕ) → u ≡ under n
-     γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
-                                    under𝟙 (g u) ≡⟨ ε u ⟩
-                                    u            ≡⟨ q ⟩
-                                    under n      ∎)
-
  qinv-under𝟙-gives-LPO : qinv under𝟙 → LPO
  qinv-under𝟙-gives-LPO (g , η , ε) = has-section-under𝟙-gives-LPO (g , ε)
 
@@ -746,16 +731,26 @@ module example where
    p (inr *) (inr *) ()
 
  converse-fails : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
- converse-fails l =  is-equiv-under𝟙-gives-LPO e
+ converse-fails l = is-equiv-under𝟙-gives-LPO e
   where
    b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
    b = bisimilar-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
    e : is-equiv under𝟙
    e = pr₂(≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
 
-{-
+{- TODO
  converse-fails-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
- converse-fails-converse = {!!}
+ converse-fails-converse lpo = s , (λ x → i x (lpo x)) , p
+  where
+   s : ℕ∞ → ℕ + 𝟙
+   s x = under𝟙-inverse x (lpo x)
+   i : (x : ℕ∞) (d : decidable(Σ \(n : ℕ) → x ≡ under n)) (y : ℕ + 𝟙)
+     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d → Σ \(x' : ℕ∞) → (x' ≺⟨ ℕ∞ₒ ⟩ x) × (s x' ≡ y)
+   i .(under n) (inl (n , refl)) (inl m) l = under m , under-order-preserving m n l , {!!}
+   i .(under n) (inl (n , refl)) (inr m) l = {!!} , {!!} , {!!}
+   i x (inr g) y l = {!!}
+   p : {!!}
+   p = {!!}
 -}
 
 \end{code}

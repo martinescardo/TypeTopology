@@ -78,7 +78,7 @@ This is the main theorem proved in this module:
     Lemma t = ap p t ∙ Dagger₀ n t
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
-  Claim₁ r = not-ℕ-is-∞ fe (Claim₀ r)
+  Claim₁ r = not-finite-is-∞ fe (Claim₀ r)
 
   Claim₂ : p a ≡ ₁ → (n : ℕ) → p(under n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)

@@ -101,7 +101,7 @@ Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
     x : ℕ∞
     x = pr₁ e
     c₀ : ¬((n : ℕ) → x ≢ under n)
-    c₀ = λ g → pr₁(pr₂ e) (not-ℕ-is-∞ fe g)
+    c₀ = λ g → pr₁(pr₂ e) (not-finite-is-∞ fe g)
     c₁ : ¬((n : ℕ) → p(under n) ≡ ₁)
     c₁ g = c₀ d
      where

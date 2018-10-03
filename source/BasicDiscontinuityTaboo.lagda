@@ -42,7 +42,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
   fact₃ t n s = zero-is-not-one ((f n)⁻¹ ∙ (ap p s)⁻¹ ∙ t)
 
   lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
-  lemma₁ t = inl(not-ℕ-is-∞ (fe U₀ U₀) (fact₃ t))
+  lemma₁ t = inl(not-finite-is-∞ (fe U₀ U₀) (fact₃ t))
 
 \end{code}
 
