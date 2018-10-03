@@ -709,21 +709,6 @@ module example where
  open import GenericConvergentSequence
  open import NaturalsOrder
 
- fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
- fact = under𝟙 , i , p
-  where
-   α β : Ordinal U₀
-   α = ℕₒ +ₒ 𝟙ₒ
-   β = ℕ∞ₒ
-   i : (x : ⟨ α ⟩) (y : ⟨ β ⟩) → y ≺⟨ β ⟩ under𝟙 x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (under𝟙 x' ≡ y)
-   i (inl m) y (n , r , l) = inl n , ⊏-coarser-than-< n m l , (r ⁻¹)
-   i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
-   p : (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → under𝟙 x ≺⟨ β ⟩ under𝟙 y
-   p (inl n) (inl m) l = under-order-preserving n m l
-   p (inl n) (inr *) * = ∞-≺-maximal n
-   p (inr *) (inl m) ()
-   p (inr *) (inr *) ()
-
  has-section-under𝟙-gives-LPO : has-section under𝟙 → LPO
  has-section-under𝟙-gives-LPO (g , ε) u = ψ (g u) refl
   where
@@ -744,6 +729,21 @@ module example where
 
  is-equiv-under𝟙-gives-LPO : is-equiv under𝟙 → LPO
  is-equiv-under𝟙-gives-LPO e = qinv-under𝟙-gives-LPO (is-equiv-qinv under𝟙 e)
+
+ fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
+ fact = under𝟙 , i , p
+  where
+   α β : Ordinal U₀
+   α = ℕₒ +ₒ 𝟙ₒ
+   β = ℕ∞ₒ
+   i : (x : ⟨ α ⟩) (y : ⟨ β ⟩) → y ≺⟨ β ⟩ under𝟙 x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (under𝟙 x' ≡ y)
+   i (inl m) y (n , r , l) = inl n , ⊏-coarser-than-< n m l , (r ⁻¹)
+   i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
+   p : (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → under𝟙 x ≺⟨ β ⟩ under𝟙 y
+   p (inl n) (inl m) l = under-order-preserving n m l
+   p (inl n) (inr *) * = ∞-≺-maximal n
+   p (inr *) (inl m) ()
+   p (inr *) (inr *) ()
 
  converse-fails : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
  converse-fails l =  is-equiv-under𝟙-gives-LPO e
