@@ -129,7 +129,10 @@ powerset-is-set : ∀ {U V} {A : U ̇} → funext U (V ′) → funext V V → p
 powerset-is-set {U} fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
 
 neg-is-prop : ∀ {U} {X : U ̇} → funext U U₀ → is-prop(¬ X)
-neg-is-prop fe u v = dfunext fe (λ x → 𝟘-elim (u x))
+neg-is-prop fe = Π-is-prop fe (λ x → 𝟘-is-prop)
+
+not : ∀ {U} → funext U U₀ → Ω U → Ω U
+not fe (P , i) = (¬ P , neg-is-prop fe)
 
 \end{code}
 
@@ -160,9 +163,6 @@ true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (�
   I x = equal-⊤-is-true Q isq (f (true-is-equal-⊤ pe fe P isp x))
   II : Q → P
   II y = equal-⊤-is-true P isp (g (true-is-equal-⊤ pe fe Q isq y))
-
-not : ∀ {U} → funext U U₀ → Ω U → Ω U
-not fe (P , i) = (¬ P , Π-is-prop fe λ x → 𝟘-is-prop)
 
 \end{code}
 

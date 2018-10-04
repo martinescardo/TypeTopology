@@ -55,6 +55,7 @@ import OrdinalArithmetic
 import OrdinalsClosure
 import OrdinalOfOrdinals
 import OrdinalOmega
+import OrdinalsShulmanTaboo
 import OrdinalsWellOrderArithmetic
 import PlusOneLC
 import PropTychonoff
