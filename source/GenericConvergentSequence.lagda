@@ -252,8 +252,8 @@ same-positivity : funext₀ → (u v : ℕ∞)
                → (u ≡ Zero → v ≡ Zero)
                → (v ≡ Zero → u ≡ Zero)
                → positivity u ≡ positivity v
-same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-coarser-than-≤₂ a)
-                                      (≤₂'-coarser-than-≤₂ b)
+same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-gives-≤₂ a)
+                                      (≤₂'-gives-≤₂ b)
  where
   a : is-Zero v → is-Zero u
   a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl
@@ -538,28 +538,28 @@ below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated f
 ≺-prop-valued fe u v (n , r , a) (m , s , b) =
   to-Σ-≡ (under-lc (r ⁻¹ ∙ s) , to-Σ-≡ (ℕ∞-is-set fe _ _ , 𝟚-is-set _ _))
 
-⊏-coarser-than-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
-⊏-coarser-than-≺ n u a = n , refl , a
+⊏-gives-≺ : (n : ℕ) (u : ℕ∞) → n ⊏ u → under n ≺ u
+⊏-gives-≺ n u a = n , refl , a
 
-≺-coarser-than-⊏ : (n : ℕ) (u : ℕ∞) → under n ≺ u → n ⊏ u
-≺-coarser-than-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (under-lc r) a
+≺-gives-⊏ : (n : ℕ) (u : ℕ∞) → under n ≺ u → n ⊏ u
+≺-gives-⊏ n u (m , r , a) = back-transport (λ k → k ⊏ u) (under-lc r) a
 
 ∞-≺-maximal : (n : ℕ) → under n ≺ ∞
 ∞-≺-maximal n = n , refl , ∞-⊏-maximal n
 
 open import NaturalsOrder
 
-<-coarser-than-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
-<-coarser-than-⊏ zero zero ()
-<-coarser-than-⊏ zero (succ n) l = refl
-<-coarser-than-⊏ (succ m) zero ()
-<-coarser-than-⊏ (succ m) (succ n) l = <-coarser-than-⊏ m n l
+<-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
+<-gives-⊏ zero zero ()
+<-gives-⊏ zero (succ n) l = refl
+<-gives-⊏ (succ m) zero ()
+<-gives-⊏ (succ m) (succ n) l = <-gives-⊏ m n l
 
-⊏-coarser-than-< : (m n : ℕ) →  m ⊏ under n → m < n
-⊏-coarser-than-< zero zero ()
-⊏-coarser-than-< zero (succ n) l = zero-minimal n
-⊏-coarser-than-< (succ m) zero ()
-⊏-coarser-than-< (succ m) (succ n) l = ⊏-coarser-than-< m n l
+⊏-gives-< : (m n : ℕ) →  m ⊏ under n → m < n
+⊏-gives-< zero zero ()
+⊏-gives-< zero (succ n) l = zero-minimal n
+⊏-gives-< (succ m) zero ()
+⊏-gives-< (succ m) (succ n) l = ⊏-gives-< m n l
 
 ⊏-back : (u : ℕ∞) (n : ℕ) → succ n ⊏ u → n ⊏ u
 ⊏-back = pr₂
@@ -571,7 +571,7 @@ open import NaturalsOrder
 ⊏-trans' m n u l = ⊏-trans'' u n m (≤-trans m (succ m) n (≤-succ m) l)
 
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
-⊏-trans m n u a = ⊏-trans' m n u (⊏-coarser-than-< m n a)
+⊏-trans m n u a = ⊏-trans' m n u (⊏-gives-< m n a)
 
 open import OrdinalNotions hiding (_≤_) hiding (≤-refl) hiding (_≼_)
 
@@ -585,7 +585,7 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
   φ n σ = next (under n) τ
    where
     τ : (u : ℕ∞) → u ≺ under n → is-accessible _≺_ u
-    τ u (m , r , l) = back-transport (is-accessible _≺_) r (σ m (⊏-coarser-than-< m n l))
+    τ u (m , r , l) = back-transport (is-accessible _≺_) r (σ m (⊏-gives-< m n l))
 
 ≺-well-founded : is-well-founded _≺_
 ≺-well-founded v = next v σ
@@ -597,9 +597,9 @@ finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (un
 ≺-extensional fe u v l m = γ
  where
   f : (i : ℕ) → i ⊏ u → i ⊏ v
-  f i a = ≺-coarser-than-⊏ i v (l (under i) (⊏-coarser-than-≺ i u a))
+  f i a = ≺-gives-⊏ i v (l (under i) (⊏-gives-≺ i u a))
   g : (i : ℕ) → i ⊏ v → i ⊏ u
-  g i a = ≺-coarser-than-⊏ i u (m (under i) (⊏-coarser-than-≺ i v a))
+  g i a = ≺-gives-⊏ i u (m (under i) (⊏-gives-≺ i v a))
   h : (i : ℕ) → incl u i ≡ incl v i
   h i = ≤₂-anti (f i) (g i)
   γ : u ≡ v
@@ -622,7 +622,7 @@ proved above, that ≺ is well founded:
   γ n g = φ (under n) h
    where
     h : (u : ℕ∞) → u ≺ under n → p u ≡ ₁
-    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-coarser-than-< m n l))
+    h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-gives-< m n l))
   a : (n : ℕ) → p(under n) ≡ ₁
   a = course-of-values-induction (λ n → p(under n) ≡ ₁) γ
   f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
@@ -682,7 +682,7 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
     a : p (under n') ≡ ₁
     a = transport (λ z → p z ≡ ₁) r' s
     b : n < n'
-    b = ⊏-coarser-than-< n n' a
+    b = ⊏-gives-< n n' a
   g : (u v : ℕ∞) → p u <₂ p v → u ≺ v
   g u v (a , b) = pr₁ c , pr₂(pr₂ c) , (⊏-trans'' v n (pr₁ c) (pr₁(pr₂ c)) b)
    where
@@ -693,21 +693,21 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
   h u v = f u v , g u v
 
 under-order-preserving : (m n : ℕ) → m < n → under m ≺ under n
-under-order-preserving m n l = m , refl , <-coarser-than-⊏ m n l
+under-order-preserving m n l = m , refl , <-gives-⊏ m n l
 
 under-order-reflecting : (m n : ℕ) → under m ≺ under n → m < n
-under-order-reflecting m n (m' , p , l') = ⊏-coarser-than-< m n l
+under-order-reflecting m n (m' , p , l') = ⊏-gives-< m n l
  where
   l : m ⊏ under n
   l = back-transport (λ - → - ⊏ under n) (under-lc p) l'
 
 {- TODO
 
-<-coarser-than-≺ : (m n : ℕ) → under m ≺ under n → m < n
-<-coarser-than-≺ = ?
+<-gives-≺ : (m n : ℕ) → under m ≺ under n → m < n
+<-gives-≺ = ?
 
-⊏-coarser-than-≺ : (m : ℕ) (u : ℕ∞) → m ⊏ u → under m ≺ u
-⊏-coarser-than-≺ = ?
+⊏-gives-≺ : (m : ℕ) (u : ℕ∞) → m ⊏ u → under m ≺ u
+⊏-gives-≺ = ?
 -}
 
 \end{code}
@@ -733,7 +733,7 @@ Needed 28 July 2018:
 ≼-not-≺ u v l (n , (p , m)) = zero-is-not-one (e ⁻¹ ∙ d)
  where
   a : v ≺ u
-  a = transport (λ - → - ≺ u) (p ⁻¹) (⊏-coarser-than-≺ n u m)
+  a = transport (λ - → - ≺ u) (p ⁻¹) (⊏-gives-≺ n u m)
   k : ℕ
   k = pr₁ a
   b : v ≡ under k

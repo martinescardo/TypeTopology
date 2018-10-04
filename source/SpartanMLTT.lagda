@@ -37,12 +37,13 @@ id : ∀ {U} {X : U ̇} → X → X
 id x = x
 
 _∘_ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : Y → W ̇}
-    → ((y : Y) → Z y) → (f : X → Y) → (x : X) → Z (f x)
+    → ((y : Y) → Z y)
+    → (f : X → Y) (x : X) → Z (f x)
 g ∘ f = λ x → g(f x)
 
 \end{code}
 
-xsEmpty type.
+Empty type.
 
 \begin{code}
 

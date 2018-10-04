@@ -698,7 +698,7 @@ is-simulation-is-monotone α β f (i , p) = φ
 
 Example. Classically, the ordinals ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
 Constructively, we have (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
-other direction implies WLPO.
+other direction is equivalent to WLPO.
 
 \begin{code}
 
@@ -709,12 +709,6 @@ module example where
  open import GenericConvergentSequence
  open import NaturalsOrder
 
- qinv-under𝟙-gives-LPO : qinv under𝟙 → LPO
- qinv-under𝟙-gives-LPO (g , η , ε) = has-section-under𝟙-gives-LPO (g , ε)
-
- is-equiv-under𝟙-gives-LPO : is-equiv under𝟙 → LPO
- is-equiv-under𝟙-gives-LPO e = qinv-under𝟙-gives-LPO (is-equiv-qinv under𝟙 e)
-
  fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
  fact = under𝟙 , i , p
   where
@@ -722,7 +716,7 @@ module example where
    α = ℕₒ +ₒ 𝟙ₒ
    β = ℕ∞ₒ
    i : (x : ⟨ α ⟩) (y : ⟨ β ⟩) → y ≺⟨ β ⟩ under𝟙 x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (under𝟙 x' ≡ y)
-   i (inl m) y (n , r , l) = inl n , ⊏-coarser-than-< n m l , (r ⁻¹)
+   i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
    p : (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → under𝟙 x ≺⟨ β ⟩ under𝟙 y
    p (inl n) (inl m) l = under-order-preserving n m l
@@ -731,26 +725,36 @@ module example where
    p (inr *) (inr *) ()
 
  converse-fails : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
- converse-fails l = is-equiv-under𝟙-gives-LPO e
+ converse-fails l = has-section-under𝟙-gives-LPO (is-equiv-has-section under𝟙 e)
   where
    b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
    b = bisimilar-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
    e : is-equiv under𝟙
    e = pr₂(≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
 
-{- TODO
  converse-fails-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
- converse-fails-converse lpo = s , (λ x → i x (lpo x)) , p
+ converse-fails-converse lpo = (λ x → under𝟙-inverse x (lpo x)) ,
+                               (λ x → i x (lpo x)) ,
+                               (λ x y → p x y (lpo x) (lpo y))
   where
-   s : ℕ∞ → ℕ + 𝟙
-   s x = under𝟙-inverse x (lpo x)
    i : (x : ℕ∞) (d : decidable(Σ \(n : ℕ) → x ≡ under n)) (y : ℕ + 𝟙)
-     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d → Σ \(x' : ℕ∞) → (x' ≺⟨ ℕ∞ₒ ⟩ x) × (s x' ≡ y)
-   i .(under n) (inl (n , refl)) (inl m) l = under m , under-order-preserving m n l , {!!}
-   i .(under n) (inl (n , refl)) (inr m) l = {!!} , {!!} , {!!}
-   i x (inr g) y l = {!!}
-   p : {!!}
-   p = {!!}
--}
+     → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d
+     → Σ \(x' : ℕ∞) → (x' ≺⟨ ℕ∞ₒ ⟩ x) × (under𝟙-inverse x' (lpo x') ≡ y)
+   i .(under n) (inl (n , refl)) (inl m) l =
+     under m , under-order-preserving m n l , under𝟙-inverse-inl (under m) (lpo (under m)) m refl
+   i .(under n) (inl (n , refl)) (inr *) ()
+   i x (inr g) (inl n) * =
+     under n ,
+     transport (underlying-order ℕ∞ₒ (under n)) ((not-finite-is-∞ (fe U₀ U₀) (curry g)) ⁻¹) (∞-≺-maximal n) ,
+     under𝟙-inverse-inl (under n) (lpo (under n)) n refl
+   i x (inr g) (inr *) ()
+
+   p : (x y : ℕ∞)  (d : decidable(Σ \(n : ℕ) → x ≡ under n)) (e : decidable(Σ \(m : ℕ) → y ≡ under m))
+     →  x ≺⟨ ℕ∞ₒ ⟩ y → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
+   p .(under n) .(under m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
+    back-transport (λ - → - < m) (under-lc r) (⊏-gives-< k m l)
+   p .(under n) y (inl (n , refl)) (inr f) l = *
+   p x y (inr f) e (k , r , l) =
+    𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe U₀ U₀) (curry f))⁻¹ ∙ r))
 
 \end{code}

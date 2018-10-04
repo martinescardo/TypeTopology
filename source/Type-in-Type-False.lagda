@@ -64,7 +64,8 @@ id : {X : Set} → X → X
 id x = x
 
 _∘_ : {X Y : Set} {Z : Y → Set}
-    → ((y : Y) → Z y) → (f : X → Y) → (x : X) → Z (f x)
+    → ((y : Y) → Z y)
+    → (f : X → Y) (x : X) → Z (f x)
 g ∘ f = λ x → g(f x)
 
 \end{code}
