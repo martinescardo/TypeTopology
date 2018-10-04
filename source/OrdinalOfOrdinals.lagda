@@ -712,13 +712,12 @@ module example where
  fact : (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ
  fact = under𝟙 , i , p
   where
-   α β : Ordinal U₀
-   α = ℕₒ +ₒ 𝟙ₒ
-   β = ℕ∞ₒ
-   i : (x : ⟨ α ⟩) (y : ⟨ β ⟩) → y ≺⟨ β ⟩ under𝟙 x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (under𝟙 x' ≡ y)
+   i : (x : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
+     → y ≺⟨ ℕ∞ₒ ⟩ under𝟙 x → Σ \(x' : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) → (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (under𝟙 x' ≡ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
-   p : (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → under𝟙 x ≺⟨ β ⟩ under𝟙 y
+
+   p : (x y : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) → x ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ y → under𝟙 x ≺⟨ ℕ∞ₒ ⟩ under𝟙 y
    p (inl n) (inl m) l = under-order-preserving n m l
    p (inl n) (inr *) * = ∞-≺-maximal n
    p (inr *) (inl m) ()
@@ -737,6 +736,11 @@ module example where
                                (λ x → i x (lpo x)) ,
                                (λ x y → p x y (lpo x) (lpo y))
   where
+   under𝟙-inverse-inl : (u : ℕ∞) (d : decidable(Σ \(n : ℕ) → u ≡ under n))
+                      → (m : ℕ) → u ≡ under m → under𝟙-inverse u d ≡ inl m
+   under𝟙-inverse-inl .(under n) (inl (n , refl)) m q = ap inl (under-lc q)
+   under𝟙-inverse-inl u (inr g) m q = 𝟘-elim (g (m , q))
+
    i : (x : ℕ∞) (d : decidable(Σ \(n : ℕ) → x ≡ under n)) (y : ℕ + 𝟙)
      → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d
      → Σ \(x' : ℕ∞) → (x' ≺⟨ ℕ∞ₒ ⟩ x) × (under𝟙-inverse x' (lpo x') ≡ y)

@@ -156,7 +156,8 @@ LPO-gives-ℕ-omniscient = searchable-implies-omniscient LPO-gives-ℕ-searchabl
 
 \end{code}
 
-Another condition equivalent to LPO is that under𝟙 has a section:
+Another condition equivalent to LPO is that the obvious
+embedding under𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 
 \begin{code}
 
@@ -178,12 +179,6 @@ has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
 under𝟙-inverse : (u : ℕ∞) → decidable(Σ \(n : ℕ) → u ≡ under n) → ℕ + 𝟙 {U₀}
 under𝟙-inverse .(under n) (inl (n , refl)) = inl n
 under𝟙-inverse u (inr g) = inr *
-
-under𝟙-inverse-inl : (u : ℕ∞) (d : decidable(Σ \(n : ℕ) → u ≡ under n))
-                   → (m : ℕ) → u ≡ under m → under𝟙-inverse u d ≡ inl m
-under𝟙-inverse-inl .(under n) (inl (n , refl)) m q = ap inl (under-lc q)
-under𝟙-inverse-inl u (inr g) m q = 𝟘-elim (g (m , q))
-
 
 LPO-gives-has-section-under𝟙 : LPO → Σ \(s : ℕ∞ → ℕ + 𝟙) → under𝟙 ∘ s ∼ id
 LPO-gives-has-section-under𝟙 lpo = s , ε
