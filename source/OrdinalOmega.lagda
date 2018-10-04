@@ -1,4 +1,4 @@
-Martin Escardo, October 2018
+Martin Escardo, 4th October 2018
 
 The ordinal of truth values.
 

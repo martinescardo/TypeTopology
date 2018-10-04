@@ -1,4 +1,4 @@
-Martin Escardo, October 2018
+Martin Escardo, 4th October 2018
 
 We worked with ordinals with top in order to be able to construct the
 sum of an ordinal-indexed family of ordinals, with the lexicographic
@@ -69,7 +69,7 @@ _≺_ : X → X → U₁ ̇
 (p , _) ≺ (q , _) = p ≺⟨ Ωₒ ⟩ q
 
 shulmans-taboo : is-extensional _≺_ → EM U₀
-shulmans-taboo e = DNE-EM (fe U₀ U₀) dne
+shulmans-taboo e = DNE-EM fe₀ dne
  where
   i : is-prop X
   i x y = e x y f g
@@ -78,6 +78,7 @@ shulmans-taboo e = DNE-EM (fe U₀ U₀) dne
     f (p , φ) (a , _) = 𝟘-elim (φ a)
     g : (z : X) → z ≺ y → z ≺ x
     g (q , ψ) (b , _) = 𝟘-elim (ψ b)
+
   dne : (P : U₀ ̇) → is-prop P → ¬¬ P → P
   dne P j φ = Idtofun s φ
    where
