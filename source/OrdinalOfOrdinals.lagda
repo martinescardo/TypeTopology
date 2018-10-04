@@ -774,3 +774,8 @@ module example where
  corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}
+
+Question. Do we have (finite or arbitrary) joins of ordinals? Probably not.
+
+Conjecture. We have bounded joins. The construction would be to take
+the joint image in any upper bound.
