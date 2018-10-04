@@ -37,13 +37,19 @@ WEM U = (P : U ̇) → is-prop P → ¬ P + ¬¬ P
 DNE : ∀ U → U ′ ̇
 DNE U = (P : U ̇) → is-prop P → ¬¬ P → P
 
-EM-DNE : ∀ {U} → EM U → DNE U
-EM-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
+EM-gives-DNE : ∀ {U} → EM U → DNE U
+EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
 
-DNE-EM : ∀ {U} → funext U U₀ → DNE U → EM U
-DNE-EM fe dne P isp = dne (P + ¬ P)
-                          (decidable-is-prop fe isp)
-                          (λ u → u (inr (λ p → u (inl p))))
+DNE-gives-EM : ∀ {U} → funext U U₀ → DNE U → EM U
+DNE-gives-EM fe dne P isp = dne (P + ¬ P)
+                             (decidable-is-prop fe isp)
+                             (λ u → u (inr (λ p → u (inl p))))
+
+fem-proptrunc : ∀ {U} → funext U U₀ → EM U → propositional-truncations-exist U U
+fem-proptrunc fe em X = ¬¬ X ,
+                        (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
+                         (λ x u → u x) ,
+                         λ P isp u φ → EM-gives-DNE em P isp (¬¬-functor u φ))
 
 module _ (pt : PropTrunc) where
 
@@ -51,11 +57,5 @@ module _ (pt : PropTrunc) where
 
  double-negation-is-truncation-gives-DNE : ∀ {U} → ((X : U ̇) → ¬¬ X → ∥ X ∥) → DNE U
  double-negation-is-truncation-gives-DNE {U} f P isp u = ptrec isp id (f P u)
-
-fem-proptrunc : ∀ {U} → funext U U₀ → EM U → propositional-truncations-exist U U
-fem-proptrunc fe em X = ¬¬ X ,
-                        (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
-                         (λ x u → u x) ,
-                         λ P isp u φ → EM-DNE em P isp (¬¬-functor u φ))
 
 \end{code}

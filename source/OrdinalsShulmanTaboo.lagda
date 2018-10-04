@@ -69,7 +69,7 @@ _≺_ : X → X → U₁ ̇
 (p , _) ≺ (q , _) = p ≺⟨ Ωₒ ⟩ q
 
 shulmans-taboo : is-extensional _≺_ → EM U₀
-shulmans-taboo e = DNE-EM fe₀ dne
+shulmans-taboo e = DNE-gives-EM fe₀ dne
  where
   i : is-prop X
   i x y = e x y f g

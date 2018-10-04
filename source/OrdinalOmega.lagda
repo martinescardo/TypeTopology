@@ -1,6 +1,6 @@
 Martin Escardo, 4th October 2018
 
-The ordinal of truth values.
+The ordinal of truth values in a universe U.
 
 \begin{code}
 
