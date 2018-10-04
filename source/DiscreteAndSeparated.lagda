@@ -11,13 +11,14 @@ module DiscreteAndSeparated where
 
 open import SpartanMLTT
 open import Two
+open import DecidableAndDetachable
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Two-Prop-Density
 open import UF-Equiv
 open import UF-Retracts
 open import UF-FunExt
-open import DecidableAndDetachable
 
 isolated : ∀ {U} {X : U ̇} → X → U ̇
 isolated x = ∀ y → decidable(x ≡ y)
@@ -278,9 +279,10 @@ binary-sum-separated {U} {V} {X} {Y} s t (inr y) (inr y') = lemma
   lemma : ¬¬(inr y ≡ inr y') → inr y ≡ inr y'
   lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
 
-⊥-⊤-density' : funext U₀ U₀ → propext U₀ → ∀ {U} {X : U ̇}
+⊥-⊤-density' : ∀ {U} → funext U U → propext U
+              → ∀ {V} {X : V ̇}
               → separated X
-              → (f : Ω U₀ → X) → f ⊥ ≡ f ⊤ → constant f
+              → (f : Ω U → X) → f ⊥ ≡ f ⊤ → constant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
     a : ∀ p → ¬¬(f p ≡ f ⊤)

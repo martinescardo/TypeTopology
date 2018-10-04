@@ -54,6 +54,7 @@ import Ordinals
 import OrdinalArithmetic
 import OrdinalsClosure
 import OrdinalOfOrdinals
+import OrdinalOmega
 import OrdinalsWellOrderArithmetic
 import PlusOneLC
 import PropTychonoff
@@ -79,6 +80,7 @@ import UF-Embedding
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt
 import UF-Equiv
+import UF-ExcludedMiddle
 import UF-FunExt
 import UF-FunExt-from-Naive-FunExt
 import UF-FunExt-from-Naive-FunExt-alternate

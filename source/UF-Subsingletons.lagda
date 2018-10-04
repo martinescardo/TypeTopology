@@ -356,3 +356,36 @@ sum-of-contradictory-props {U} {V} {W} {P} {Q} isp isq f = go
    go (inr q) (inr q') = ap inr (isq q q')
 
 \end{code}
+
+Without assuming excluded middle, we have that there are no truth
+values other than 𝟘 and 𝟙:
+
+\begin{code}
+
+no-props-other-than-𝟘-or-𝟙 : ∀ {U} → propext U → ¬ Σ \(P : U ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
+no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = 𝟘-elim(φ u)
+ where
+   u : ¬ P
+   u p = g l
+     where
+       l : P ≡ 𝟙
+       l = pe isp 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+   φ : ¬¬ P
+   φ u = f l
+     where
+       l : P ≡ 𝟘
+       l = pe isp 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
+
+\end{code}
+
+Notice how we used 𝟘-elim above to coerce a hypothetical value in 𝟘
+{U₀}, arising from negation, to a value in 𝟘 {U}. Otherwise "u" would
+have sufficed in place of "λ p → 𝟘-elim (u p)". The same technique is
+used in the following construction.
+
+\begin{code}
+
+𝟘-is-not-𝟙 : ∀ {U} → 𝟘 {U} ≢ 𝟙 {U}
+𝟘-is-not-𝟙 p = 𝟘-elim(Idtofun (p ⁻¹) *)
+
+\end{code}

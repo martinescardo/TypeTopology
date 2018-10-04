@@ -7,8 +7,8 @@ The ordinal of truth values.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-FunExt
 open import OrdinalNotions
+open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 

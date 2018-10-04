@@ -200,6 +200,8 @@ negation shift.
 
 \begin{code}
 
+open import UF-ExcludedMiddle
+
 module ChoiceUnderEM₀ (U : Universe)
                       (em : EM U)
                       (pt : PropTrunc)

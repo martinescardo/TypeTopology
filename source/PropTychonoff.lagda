@@ -218,6 +218,7 @@ proposition P, which is weak excluded middle, which is not provable.
 \begin{code}
 
 open import OmniscientTypes
+open import UF-ExcludedMiddle
 
 omniscient-prop-tychonoff-wem :
   ((X : U₀ ̇) (Y : X → U₀ ̇) → is-prop X → ((x : X) → omniscient(Y x)) → omniscient(Π Y))
