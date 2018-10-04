@@ -47,7 +47,7 @@ module OrdinalsShulmanTaboo
        where
 
 open import Ordinals fe
-open import OrdinalOmega fe U₀ pe
+open import OrdinalOfTruthValues fe U₀ pe
 open import OrdinalNotions
 open import UF-Base
 open import UF-Subsingletons-FunExt
@@ -56,12 +56,27 @@ open import UF-ExcludedMiddle
 fe₀ : funext U₀ U₀
 fe₀ = fe U₀ U₀
 
+\end{code}
+
+The type of truth values is Ω, following topos-theoretic notation, and
+the ordinal of truth values, ordered by p < q iff p ≡ ⊥ and q ≡ ⊤, is
+denoted by Ωₒ (the subscript is the letter "o", for "ordinal", and not
+the number zero). This is parametrized by an arbitrary universe, which
+in this module is instantiated to U₀.
+
+\begin{code}
+
 X : U₁ ̇
 X = Σ \(p : ⟨ Ωₒ ⟩) → ¬(p ≡ ⊥)
 
+recall-that : is-extensional (underlying-order Ωₒ)
+recall-that = Extensionality Ωₒ
+
 \end{code}
 
-We restrict the order of the ordinal Ωₒ of truth-values to X:
+However, the extensionality of the restriction of the underlying order
+of the ordinal Ωₒ of truth values to X is a constructive taboo, as
+shown by Shulman in the message quoted above:
 
 \begin{code}
 

@@ -54,7 +54,7 @@ import Ordinals
 import OrdinalArithmetic
 import OrdinalsClosure
 import OrdinalOfOrdinals
-import OrdinalOmega
+import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
 import OrdinalsWellOrderArithmetic
 import PlusOneLC

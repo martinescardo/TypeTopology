@@ -12,7 +12,7 @@ open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-module OrdinalOmega
+module OrdinalOfTruthValues
        (fe : ∀ U V → funext U V)
        (U  : Universe)
        (pe : propext U)
