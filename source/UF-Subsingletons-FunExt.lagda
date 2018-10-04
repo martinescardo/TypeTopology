@@ -95,7 +95,7 @@ decidable-is-prop fe₀ isp = sum-of-contradictory-props
 PropExt : ∀ {U} → funext U U → propext U → {p q : Ω U}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt {U} fe pe {p} {q} f g =
-        to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , is-prop-is-prop fe _ _)
+ to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , is-prop-is-prop fe _ _)
 
 Ω-is-set : ∀ {U} → funext U U → propext U → is-set (Ω U)
 Ω-is-set {U} fe pe = identification-collapsible-is-set pc
@@ -163,5 +163,22 @@ true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (�
 
 not : ∀ {U} → funext U U₀ → Ω U → Ω U
 not fe (P , i) = (¬ P , Π-is-prop fe λ x → 𝟘-is-prop)
+
+\end{code}
+
+There is a trick in the following definition, which I should exploit
+elsewhere to be able to make universe levels more general. The
+definition
+
+⊥-is-not-⊤ b = Idtofun ((ap _holds b)⁻¹) *
+
+ought to work, but it doesn't because negation uses the empty type 𝟘
+{U₀} of the first universe. But using 𝟘-elim we can coerce the empty
+type of any universe to that one.
+
+\begin{code}
+
+⊥-is-not-⊤ : ∀ {U} → ¬(⊥ {U} ≡ ⊤ {U})
+⊥-is-not-⊤ b = 𝟘-elim (Idtofun ((ap _holds b)⁻¹) *)
 
 \end{code}
