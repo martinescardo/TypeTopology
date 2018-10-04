@@ -761,4 +761,16 @@ module example where
    p x y (inr f) e (k , r , l) =
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe U₀ U₀) (curry f))⁻¹ ∙ r))
 
+ corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ℕₒ +ₒ 𝟙ₒ)
+ corollary₁ lpo = bisimilar-equiv ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (converse-fails-converse lpo) fact
+
+ corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
+ corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
+
+ corollary₃ : is-univalent U₀ → LPO → ℕ∞ₒ ≡ (ℕₒ +ₒ 𝟙ₒ)
+ corollary₃ ua lpo = eqtoidₒ ua ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
+
+ corollary₄ : is-univalent U₀ → LPO → ℕ∞ ≡ (ℕ + 𝟙)
+ corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
+
 \end{code}
