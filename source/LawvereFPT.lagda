@@ -118,8 +118,8 @@ that r has a pointwise section).
 
  Cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇)
-   → (r : A → (A → U ̇)) → has-section· r → 𝟘
- Cantor-theorem-for-universes U V A r h = pr₁ (cantor-theorem-for-universes U V A r h 𝟘 id)
+   → (r : A → (A → U ̇)) → ¬(has-section· r)
+ Cantor-theorem-for-universes U V A r h = 𝟘-elim(pr₁ (cantor-theorem-for-universes U V A r h 𝟘 id))
 
  \end{code}
 
@@ -143,7 +143,7 @@ that r has a pointwise section).
    γ = LFPT-≡ q
 
  cantor-theorem : (U V : Universe) (A : V ̇)
-                → funext U U₀ → (r : A → (A → Ω U)) → has-section· r → 𝟘
+                → funext U U₀ → (r : A → (A → Ω U)) → ¬(has-section· r)
  cantor-theorem U V A fe r (s , rs) = not-no-fp fe not-fp
   where
    not-fp : Σ \(B : Ω U) → B ≡ not fe B
@@ -213,8 +213,8 @@ module surjection-version (pt : PropTrunc) where
 
  Cantor-theorem-for-universes :
      (U V : Universe) (A : V ̇)
-   → (φ : A → (A → U ̇)) → is-surjection φ → 𝟘
- Cantor-theorem-for-universes U V A r h = ptrec 𝟘-is-prop pr₁ c
+   → (φ : A → (A → U ̇)) → ¬(is-surjection φ)
+ Cantor-theorem-for-universes U V A r h = 𝟘-elim(ptrec 𝟘-is-prop pr₁ c)
   where
    c : ∃ \(x : 𝟘) → x ≡ x
    c = cantor-theorem-for-universes U V A r h 𝟘 id
@@ -263,7 +263,6 @@ module universe-uncountable (pt : PropTrunc) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
-
  open import DiscreteAndSeparated
 
  Π-projection-has-section :
@@ -331,7 +330,7 @@ module universe-uncountable (pt : PropTrunc) where
    φ = pr₂(universe-discretely-regular {U} {V} {A} X d)
    e : ∥(Σ \a → X a ≡ B)∥
    e = s B
-   n : (Σ \a → X a ≡ B) → 𝟘
+   n : ¬(Σ \a → X a ≡ B)
    n = uncurry φ
 
  Universe-uncountable : {U : Universe} → ¬ Σ \(X : ℕ → U ̇) → is-surjection X

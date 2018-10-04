@@ -75,8 +75,9 @@ recall-that = Extensionality Ωₒ
 \end{code}
 
 However, the extensionality of the restriction of the underlying order
-of the ordinal Ωₒ of truth values to X is a constructive taboo, as
-shown by Shulman in the message quoted above:
+of the ordinal Ωₒ of truth values to X is a constructive taboo (it
+implies excluded middle), as shown by Shulman in the message quoted
+above:
 
 \begin{code}
 
