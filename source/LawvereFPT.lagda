@@ -338,7 +338,8 @@ module universe-uncountable (pt : PropTrunc) where
 
 \end{code}
 
-A variation:
+A variation, replacing discreteness by set-hood, at the cost of
+"jumping a universe level".
 
 \begin{code}
 

@@ -698,7 +698,7 @@ is-simulation-is-monotone α β f (i , p) = φ
 
 Example. Classically, the ordinals ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ are equal.
 Constructively, we have (ℕₒ +ₒ 𝟙ₒ) ⊴ ℕ∞ₒ, but the inequality in the
-other direction is equivalent to WLPO.
+other direction is equivalent to LPO.
 
 \begin{code}
 
