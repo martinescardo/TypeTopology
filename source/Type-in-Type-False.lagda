@@ -369,9 +369,13 @@ with a type X:U such that X≃U?
 Added 11th October 2018. As is well known, we don't need
 extensionality axioms or the K axiom if we have W-types. The following
 is based on a well-known argument,
+
+ Thierry Coquand, The paradox pf trees in type theory
+ BIT Numerical Mathematics, March 1992, Volume 32, Issue 1, pp 10–14
+
 https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf,
 (see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
-phrased in terms of LFPT.
+but phrased in terms of LFPT.
 
 \begin{code}
 
