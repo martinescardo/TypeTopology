@@ -368,9 +368,10 @@ with a type X:U such that X≃U?
 
 Added 11th October 2018. As is well known, we don't need
 extensionality axioms or the K axiom if we have W-types. The following
-is based on a well-known argument
-(see e.g. http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
-modified to use LFPT and get a definitional fixed point combinator.
+is based on a well-known argument,
+https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf,
+(see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
+phrased in terms of LFPT.
 
 \begin{code}
 
