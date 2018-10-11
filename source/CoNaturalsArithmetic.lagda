@@ -456,6 +456,16 @@ Relation of min with ≼ defined in the module GenericConvergentSequence.
 
 \end{code}
 
+\begin{code}
+
+{-
+min-pointwise : (u v : ℕ∞) (i : ℕ) → incl (min (u , v)) i ≡ min𝟚 (incl u i) (incl v i)
+min-pointwise u v zero = {!!}
+min-pointwise u v (succ i) = {!!}
+-}
+\end{code}
+
+
 For the sake of variation, we use another proof technique, namely
 density:
 

@@ -365,7 +365,7 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
  S X = X → X → R
 
  open gsip
-       U (U ⊔ V) ua (λ X → X → X → R)
+       U (U ⊔ V) ua S
        (λ {A B (f , e) → structure A ≡ (λ x x' → structure B (f x) (f x'))})
        (λ A → refl)
        (λ X d e → id)

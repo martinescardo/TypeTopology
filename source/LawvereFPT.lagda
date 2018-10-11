@@ -90,6 +90,18 @@ that r has a pointwise section).
 
  \end{code}
 
+As a simple application, it follows that negation doesn't have fixed points:
+
+ \begin{code}
+
+ ¬-no-fp : ∀ {U} → ¬ Σ \(X : U ̇) → X ≡ ¬ X
+ ¬-no-fp {U} (X , p) = pr₁(γ id)
+  where
+   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
+   γ = LFPT-≡ p
+
+ \end{code}
+
  We apply LFPT twice to get the following: first every function
  U ̇ → U ̇ has a fixed point, from which for any type X we get a type B
  with B ≡ (B → X), and hence with (B → X) a retract of B, for which we
@@ -135,12 +147,10 @@ that r has a pointwise section).
  open import UF-Subsingletons-FunExt
 
  not-no-fp : ∀ {U} (fe : funext U U₀) → ¬ Σ \(P : Ω U) → P ≡ not fe P
- not-no-fp {U} fe (P , p) = pr₁(γ id)
+ not-no-fp {U} fe (P , p) = ¬-no-fp (P holds , q)
   where
    q : P holds ≡ ¬(P holds)
    q = ap _holds p
-   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
-   γ = LFPT-≡ q
 
  cantor-theorem : (U V : Universe) (A : V ̇)
                 → funext U U₀ → (r : A → (A → Ω U)) → ¬(has-section· r)
@@ -343,33 +353,38 @@ A variation, replacing discreteness by set-hood, at the cost of
 
 \begin{code}
 
- Π-projection-has-section' :
-    ∀ {U V W} {X : U ̇} {Y : X → V ̇}
-  → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
-  → (x₀ : X) → is-h-isolated x₀ → has-section (λ (f : (x : X) → Y x → Ω (U ⊔ W)) → f x₀)
- Π-projection-has-section' {U} {V} {W} {X} {Y} fe fe' pe x₀ ish = s , rs
+module variation (pt : PropTrunc) where
 
+ open PropositionalTruncation pt
+ open ImageAndSurjection pt
+ open import DiscreteAndSeparated
+
+ Π-projection-has-section :
+    ∀ {U V W} {A : U ̇} {X : A → V ̇}
+  → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+  → (a₀ : A) → is-h-isolated a₀ → has-section (λ (f : (a : A) → X a → Ω (U ⊔ W)) → f a₀)
+ Π-projection-has-section {U} {V} {W} {A} {X} fe fe' pe a₀ ish = s , rs
   where
-   s : (Y x₀ → Ω (U ⊔ W)) → ((x : X) → Y x → Ω (U ⊔ W))
-   s φ x y = ∥(Σ \(p : x ≡ x₀) → φ (transport Y p y) holds)∥ , ptisp
-   rs : (φ : Y x₀ → Ω (U ⊔ W)) → s φ x₀ ≡ φ
+   s : (X a₀ → Ω (U ⊔ W)) → ((a : A) → X a → Ω (U ⊔ W))
+   s φ a x = ∥(Σ \(p : a ≡ a₀) → φ (transport X p x) holds)∥ , ptisp
+   rs : (φ : X a₀ → Ω (U ⊔ W)) → s φ a₀ ≡ φ
    rs φ = dfunext fe γ
     where
-     a : (y₀ : Y x₀) → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ → φ y₀ holds
-     a y₀ = ptrec (holds-is-prop (φ y₀)) f
+     a : (x₀ : X a₀) → ∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥ → φ x₀ holds
+     a x₀ = ptrec (holds-is-prop (φ x₀)) f
       where
-       f : (Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds) → φ y₀ holds
+       f : (Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) → φ x₀ holds
        f (p , h) = transport _holds t h
         where
          r : p ≡ refl
          r = ish p refl
-         t : φ (transport Y p y₀) ≡ φ y₀
-         t = ap (λ - → φ(transport Y - y₀)) r
-     b : (y₀ : Y x₀) → φ y₀ holds → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥
-     b y₀ h = ∣ refl , h ∣
-     γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ptisp) ≡ φ y₀
-     γ y₀ = to-Σ-≡ (pe ptisp (holds-is-prop (φ y₀)) (a y₀) (b y₀) ,
-                     is-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ y₀)))
+         t : φ (transport X p x₀) ≡ φ x₀
+         t = ap (λ - → φ(transport X - x₀)) r
+     b : (x₀ : X a₀) → φ x₀ holds → ∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥
+     b x₀ h = ∣ refl , h ∣
+     γ : (x₀ : X a₀) → (∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥ , ptisp) ≡ φ x₀
+     γ x₀ = to-Σ-≡ (pe ptisp (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+                     is-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  usr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇)
            → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
@@ -382,7 +397,7 @@ A variation, replacing discreteness by set-hood, at the cost of
    retr' : retract (X a₀ → Ω (U ⊔ W)) of X a₀
    retr' = retracts-compose
             retr
-            ((λ f → f a₀) , Π-projection-has-section' {U} {V} {W} fe fe' pe a₀ i)
+            ((λ f → f a₀) , Π-projection-has-section {U} {V} {W} fe fe' pe a₀ i)
 \end{code}
 
 We now work with the following assumptions:

@@ -90,12 +90,12 @@ is-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y
 is-extensional' : U ⊔ V ̇
 is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y
 
-extensional-extensional' : is-extensional → is-extensional'
-extensional-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
+extensional-gives-extensional' : is-extensional → is-extensional'
+extensional-gives-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
                                          (λ u l → pr₂ (f u) l)
 
-extensional'-extensional : is-extensional' → is-extensional
-extensional'-extensional e' x y g h = e' x y (λ u → (g u , h u))
+extensional'-gives-extensional : is-extensional' → is-extensional
+extensional'-gives-extensional e' x y g h = e' x y (λ u → (g u , h u))
 
 is-well-order : U ⊔ V ̇
 is-well-order = is-prop-valued × is-well-founded × is-extensional × is-transitive

@@ -267,30 +267,30 @@ It is here that we need proposition extensionality in a crucial way:
 \begin{code}
 
 Π-projection-has-section :
-   {X : Set} {Y : X → Set}
- → (x₀ : X) → has-section (λ (f : (x : X) → Y x → Ω) → f x₀)
-Π-projection-has-section {X} {Y} x₀ = s , η
+   {A : Set} {X : A → Set}
+ → (A₀ : A) → has-section (λ (f : (A : A) → X A → Ω) → f A₀)
+Π-projection-has-section {A} {X} A₀ = s , η
  where
-  s : (Y x₀ → Ω) → ((x : X) → Y x → Ω)
-  s φ x y = ∥(Σ \(p : x ≡ x₀) → φ (transport Y p y) holds)∥ , ∥∥-is-prop
-  η : (φ : Y x₀ → Ω) → s φ x₀ ≡ φ
+  s : (X A₀ → Ω) → ((A : A) → X A → Ω)
+  s φ A x = ∥(Σ \(p : A ≡ A₀) → φ (transport X p x) holds)∥ , ∥∥-is-prop
+  η : (φ : X A₀ → Ω) → s φ A₀ ≡ φ
   η φ = funext γ
    where
-    a : (y₀ : Y x₀) → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ → φ y₀ holds
-    a y₀ = ∥∥-rec (holds-is-prop (φ y₀)) f
+    a : (x₀ : X A₀) → ∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥ → φ x₀ holds
+    a x₀ = ∥∥-rec (holds-is-prop (φ x₀)) f
      where
-      f : (Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds) → φ y₀ holds
+      f : (Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds) → φ x₀ holds
       f (p , h) = transport _holds t h
        where
         r : p ≡ refl
-        r = K-axiom X p refl
-        t : φ (transport Y p y₀) ≡ φ y₀
-        t = ap (λ - → φ(transport Y - y₀)) r
-    b : (y₀ : Y x₀) → φ y₀ holds → ∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥
-    b y₀ h = ∣ refl , h ∣
-    γ : (y₀ : Y x₀) → (∥(Σ \(p : x₀ ≡ x₀) → φ (transport Y p y₀) holds)∥ , ∥∥-is-prop) ≡ φ y₀
-    γ y₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ y₀)) (a y₀) (b y₀) ,
-                   is-prop-is-prop (holds-is-prop _) (holds-is-prop (φ y₀)) )
+        r = K-axiom A p refl
+        t : φ (transport X p x₀) ≡ φ x₀
+        t = ap (λ - → φ(transport X - x₀)) r
+    b : (x₀ : X A₀) → φ x₀ holds → ∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥
+    b x₀ h = ∣ refl , h ∣
+    γ : (x₀ : X A₀) → (∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ≡ φ x₀
+    γ x₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+                   is-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
 
 \end{code}
 
@@ -366,6 +366,47 @@ Question: Without assuming type-in-type, can we instead derive a
 contradiction from the existence of a sufficiently large universe U
 with a type X:U such that X≃U?
 
+Added 11th October 2018. As is well known, we don't need
+extensionality axioms or the K axiom if we have W-types. The following
+is based on a well-known argument
+(see e.g. http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
+modified to use LFPT and get a definitional fixed point combinator.
+
+\begin{code}
+
+Y : {X : Set} → (X → X) → X
+Y {X} f = pr₁ (γ f)
+ where
+  data 𝕎 : Set where
+   sup : (T : Set) → (T → 𝕎) → 𝕎
+  e : 𝕎 → 𝕎 → Set
+  e w (sup T φ) = Σ \(t : T) → w ≡ φ t
+  R : 𝕎
+  R = sup (Σ \(w : 𝕎) → e w w → X) pr₁
+  A : Set
+  A = e R R
+  r : A → (A → X)
+  r ((.R , p) , refl) = p
+  s : (A → X) → A
+  s p = (R , p) , refl
+  rs : (p : A → X) → r (s p) ≡ p
+  rs p = refl
+  γ : (f : X → X) → Σ \(x : X) → x ≡ f x
+  γ = LFPT (r , s , rs)
+
+\end{code}
+
+Then Y is a definitional fixed-point combinator:
+
+\begin{code}
+
+Y-is-fp-combinator : {X : Set} (f : X → X) → f (Y f) ≡ Y f
+Y-is-fp-combinator f = refl
+
+contradiction' : 𝟘
+contradiction' = Y id
+
+\end{code}
 
 
 
