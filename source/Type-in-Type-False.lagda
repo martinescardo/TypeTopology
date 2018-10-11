@@ -373,7 +373,7 @@ is based on a well-known argument,
  Thierry Coquand, The paradox of trees in type theory
  BIT Numerical Mathematics, March 1992, Volume 32, Issue 1, pp 10–14
 
-https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf,
+https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
 (see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
 but phrased in terms of LFPT.
 
@@ -401,7 +401,8 @@ Y {X} f = pr₁ (γ f)
 
 \end{code}
 
-Then Y is a definitional fixed-point combinator:
+Then Y is a definitional fixed-point combinator (because the function
+s is a definitional section of the function r):
 
 \begin{code}
 
