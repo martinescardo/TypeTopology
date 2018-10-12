@@ -468,9 +468,9 @@ We adapt this method of proof to show that there is no type 𝕌 : U ̇
 with U ̇ ≃ 𝕌, without assuming type-in-type.
 
 The construction works in MLTT with empty type 𝟘, identity types, Σ
-types, Π types, and a universe U closed under them. In particular,
-extensionality and univalence are not needed. We again use Lawvere's
-fixed point theorem.
+types, Π types, W types and a universe U closed under them. In
+particular, extensionality and univalence are not needed. We again use
+Lawvere's fixed point theorem.
 
 NB. It should also be possible to replace the diagonal construction of
 Lemma₀ by a second application of LFPT (todo).
@@ -483,11 +483,11 @@ module GeneralizedCoquand where
           (A : U ̇)
           (T : A → U ̇)
           (S : U ̇ → A)
-          (η : {X : U ̇} → T (S X) → X)
-          (ε : {X : U ̇} → X → T (S X))
-          (ηε : {X : U ̇} (x : X) → η (ε x) ≡ x)
+          (ρ : {X : U ̇} → T (S X) → X)
+          (σ : {X : U ̇} → X → T (S X))
+          (η : {X : U ̇} (x : X) → ρ (σ x) ≡ x)
         → 𝟘
- Lemma₀ U A T S η ε ηε = pr₁ (γ 𝟘 id )
+ Lemma₀ U A T S ρ σ η = pr₁ (γ 𝟘 id )
   where
    data 𝕎 : U ̇ where
     sup : {a : A} → (T a → 𝕎) → 𝕎
@@ -499,20 +499,20 @@ module GeneralizedCoquand where
     H : 𝕎 → U ̇
     H w = α w w → X
     R : 𝕎
-    R = sup {S (Σ H)} (pr₁ ∘ η)
+    R = sup {S (Σ H)} (pr₁ ∘ ρ)
     B : U ̇
     B = α R R
     r : B → (B → X)
-    r (t , p) = transport H p (pr₂ (η t))
+    r (t , p) = transport H p (pr₂ (ρ t))
     s : (B → X) → B
-    s f = ε (R , f) , ap pr₁ (ηε (R , f))
+    s f = σ (R , f) , ap pr₁ (η (R , f))
     rs : (f : B → X) → r (s f) ≡ f
     rs f = r (s f)
                    ≡⟨ refl ⟩
-           transport H (ap pr₁ (ηε (R , f))) (pr₂ (η (ε {Σ H} (R , f))))
-                   ≡⟨ (transport-ap H pr₁ (ηε (R , f)))⁻¹ ⟩
-           transport (H ∘ pr₁) (ηε (R , f)) (pr₂ (η (ε {Σ H} (R , f))))
-                   ≡⟨ apd pr₂ (ηε (R , f)) ⟩
+           transport H (ap pr₁ (η (R , f))) (pr₂ (ρ (σ {Σ H} (R , f))))
+                   ≡⟨ (transport-ap H pr₁ (η (R , f)))⁻¹ ⟩
+           transport (H ∘ pr₁) (η (R , f)) (pr₂ (ρ (σ {Σ H} (R , f))))
+                   ≡⟨ apd pr₂ (η (R , f)) ⟩
            pr₂ ((R , f) ∶ Σ H)
                    ≡⟨ refl ⟩
            f       ∎
@@ -555,7 +555,7 @@ And because identitities are equivalences, it follows that
 
 \end{code}
 
-Hence a universe U cannot be a retract of any type in U:
+This means that a universe U cannot be a retract of any type in U:
 
 \begin{code}
 
@@ -564,8 +564,8 @@ Hence a universe U cannot be a retract of any type in U:
 
 \end{code}
 
-And therefore, because equivalences are retractions, no universe U
-can be equivalent to a type in U:
+Therefore, because equivalences are retractions, no universe U can be
+equivalent to a type in U:
 
 \begin{code}
 
