@@ -529,9 +529,9 @@ universe U₀, which is where our negations take values:
 
  Lemma₁ : ∀ U (A : U ̇) (T : A → U ̇) (S : U ̇ → A)
         → ¬((X : U ̇) → retract X of (T (S X)))
- Lemma₁ U A T S ρ = 𝟘-elim (Lemma₀ U A T S (λ {X} → pr₁(ρ X))
-                                           (λ {X} → pr₁(pr₂(ρ X)))
-                                           (λ {X} → pr₂(pr₂(ρ X))))
+ Lemma₁ U A T S retr = 𝟘-elim (Lemma₀ U A T S (λ {X} → pr₁(retr X))
+                                              (λ {X} → pr₁(pr₂(retr X)))
+                                              (λ {X} → pr₂(pr₂(retr X))))
 
 \end{code}
 
