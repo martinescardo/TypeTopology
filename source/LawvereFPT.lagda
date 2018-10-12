@@ -560,7 +560,7 @@ Hence a universe U cannot be a retract of any type in U:
 \begin{code}
 
  Lemma₄ : ∀ U → ¬ Σ \(A : U ̇) → retract U ̇ of A
- Lemma₄ U (A , T , S , TS) = Lemma₃ U A T S (λ X → TS X)
+ Lemma₄ U (A , T , S , TS) = Lemma₃ U A T S TS
 
 \end{code}
 
