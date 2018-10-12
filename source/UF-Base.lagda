@@ -75,9 +75,13 @@ transport-const : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y : Y} (p : x ≡ 
                → transport (λ (_ : X) → Y) p y ≡ y
 transport-const refl = refl
 
+apd' : ∀ {U V} {X : U ̇} (A : X → V ̇) (f : (x : X) → A x) {x y : X}
+    (p : x ≡ y) → transport A p (f x) ≡ f y
+apd' A f refl = refl
+
 apd : ∀ {U V} {X : U ̇} {A : X → V ̇} (f : (x : X) → A x) {x y : X}
     (p : x ≡ y) → transport A p (f x) ≡ f y
-apd f refl = refl
+apd = apd' _
 
 ap-id-is-id : ∀ {U} {X : U ̇} {x y : X} (p : x ≡ y) → p ≡ ap id p
 ap-id-is-id refl = refl

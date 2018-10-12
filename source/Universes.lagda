@@ -40,6 +40,6 @@ precedences:
 
 \begin{code}
 
-infix  0 _̇
+infix  1 _̇
 
 \end{code}

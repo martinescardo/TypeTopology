@@ -269,7 +269,7 @@ of "jumping" a universe.
 
 \begin{code}
 
-module universe-uncountable (pt : PropTrunc) where
+module Blechschmidt (pt : PropTrunc) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
@@ -353,7 +353,7 @@ A variation, replacing discreteness by set-hood, at the cost of
 
 \begin{code}
 
-module variation (pt : PropTrunc) where
+module Blechschmidt' (pt : PropTrunc) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
@@ -454,3 +454,122 @@ NB. If V is U or U', then X : A → U ′ ̇.
 \end{code}
 
 See also http://www.cs.bham.ac.uk/~mhe/agda-new/Type-in-Type-False.html
+
+Added 12 October 2018. The paper
+
+ Thierry Coquand, The paradox of trees in type theory
+ BIT Numerical Mathematics, March 1992, Volume 32, Issue 1, pp 10–14
+ https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
+
+shows that U ̇ : U ̇ (aka type-in-type) is inconsistent if U is closed
+under W types.
+
+We adapt this method of proof to show that there is no type 𝕌 : U ̇
+with U ̇ ≃ 𝕌, without assuming type-in-type.
+
+The construction works in MLTT with empty type 𝟘, identity types, Σ
+types, Π types, and a universe U closed under them. In particular,
+extensionality and univalence are not needed. We again use Lawvere's
+fixed point theorem.
+
+NB. It should also be possible to replace the diagonal construction of
+Lemma₀ by a second application of LFPT (todo).
+
+\begin{code}
+
+module GeneralizedCoquand where
+
+ Lemma₀ : (U : Universe)
+          (A : U ̇)
+          (T : A → U ̇)
+          (S : U ̇ → A)
+          (η : {X : U ̇} → T (S X) → X)
+          (ε : {X : U ̇} → X → T (S X))
+          (ηε : {X : U ̇} (x : X) → η (ε x) ≡ x)
+        → 𝟘
+ Lemma₀ U A T S η ε ηε = pr₁ (γ 𝟘 id )
+  where
+   data 𝕎 : U ̇ where
+    sup : {a : A} → (T a → 𝕎) → 𝕎
+
+   α : 𝕎 → (𝕎 → U ̇)
+   α (sup φ) = fiber φ
+
+   module _ (X : U ̇) where
+    H : 𝕎 → U ̇
+    H w = α w w → X
+    R : 𝕎
+    R = sup {S (Σ H)} (pr₁ ∘ η)
+    B : U ̇
+    B = α R R
+    r : B → (B → X)
+    r (t , p) = transport H p (pr₂ (η t))
+    s : (B → X) → B
+    s f = ε (R , f) , ap pr₁ (ηε (R , f))
+    rs : (f : B → X) → r (s f) ≡ f
+    rs f = r (s f)
+                   ≡⟨ refl ⟩
+           transport H (ap pr₁ (ηε (R , f))) (pr₂ (η (ε {Σ H} (R , f))))
+                   ≡⟨ (transport-ap H pr₁ (ηε (R , f)))⁻¹ ⟩
+           transport (H ∘ pr₁) (ηε (R , f)) (pr₂ (η (ε {Σ H} (R , f))))
+                   ≡⟨ apd pr₂ (ηε (R , f)) ⟩
+           pr₂ ((R , f) ∶ Σ H)
+                   ≡⟨ refl ⟩
+           f       ∎
+    γ : (f : X → X) → Σ \(x : X) → x ≡ f x
+    γ = retract-version.LFPT (r , s , rs)
+
+\end{code}
+
+This can be rephrased as follows, where the use of 𝟘-elim is to
+coerce the empty type in the universe U to the empty type in the
+universe U₀, which is where our negations take values:
+
+\begin{code}
+
+ Lemma₁ : ∀ U (A : U ̇) (T : A → U ̇) (S : U ̇ → A)
+        → ¬((X : U ̇) → retract X of (T (S X)))
+ Lemma₁ U A T S ρ = 𝟘-elim (Lemma₀ U A T S (λ {X} → pr₁(ρ X))
+                                           (λ {X} → pr₁(pr₂(ρ X)))
+                                           (λ {X} → pr₂(pr₂(ρ X))))
+
+\end{code}
+
+Because equivalences are retractions, it follows that
+
+\begin{code}
+
+ Lemma₂ : ∀ U (A : U ̇) (T : A → U ̇) (S : U ̇ → A)
+        → ¬((X : U ̇) → T (S X) ≃ X)
+ Lemma₂ U A T S e = Lemma₁ U A T S (λ X → equiv-retract-r (e X))
+
+\end{code}
+
+And because identitities are equivalences, it follows that
+
+\begin{code}
+
+ Lemma₃ : ∀ U (A : U ̇) (T : A → U ̇) (S : U ̇ → A)
+        → ¬((X : U ̇) → T (S X) ≡ X)
+ Lemma₃ U A T S p = Lemma₂ U A T S (λ X → idtoeq (T (S X)) X (p X))
+
+\end{code}
+
+Hence a universe U cannot be a retract of any type in U:
+
+\begin{code}
+
+ Lemma₄ : ∀ U → ¬ Σ \(A : U ̇) → retract U ̇ of A
+ Lemma₄ U (A , T , S , TS) = Lemma₃ U A T S (λ X → TS X)
+
+\end{code}
+
+And therefore, because equivalences are retractions, no universe U it
+can be equivalent to a type in U:
+
+\begin{code}
+
+ Theorem : ∀ U → ¬ Σ \(𝕌 : U ̇) → U ̇ ≃ 𝕌
+ Theorem U (𝕌 , e) = Lemma₄ U (𝕌 , equiv-retract-l e)
+
+\end{code}

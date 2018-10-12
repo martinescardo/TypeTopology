@@ -21,6 +21,7 @@ consistent with the K axiom.
 
 We don't use any libraries, not even our own libraries, in order to
 easily check which closure properties of the universe are needed.
+This Agda file is self-contained.
 
 \begin{code}
 
@@ -372,8 +373,8 @@ is based on a well-known argument,
 
  Thierry Coquand, The paradox of trees in type theory
  BIT Numerical Mathematics, March 1992, Volume 32, Issue 1, pp 10–14
+ https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
 
-https://pdfs.semanticscholar.org/f2f3/30b27f1d7ca99c2550f96581a4400c209ef8.pdf
 (see also http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html),
 but phrased in terms of LFPT.
 
