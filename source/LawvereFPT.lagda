@@ -573,3 +573,6 @@ equivalent to a type in U:
  Theorem U (𝕌 , e) = Lemma₄ U (𝕌 , equiv-retract-l e)
 
 \end{code}
+
+Starting from Lemma₀, we get weaker and weaker statements, of which
+the weakest, but probably the most meaningful, is the Theorem.
