@@ -564,7 +564,7 @@ Hence a universe U cannot be a retract of any type in U:
 
 \end{code}
 
-And therefore, because equivalences are retractions, no universe U it
+And therefore, because equivalences are retractions, no universe U
 can be equivalent to a type in U:
 
 \begin{code}
