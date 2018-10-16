@@ -55,6 +55,7 @@ import Ordinals
 import OrdinalArithmetic
 import OrdinalsClosure
 import OrdinalOfOrdinals
+import OrdinalNotationInterpretation
 import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
 import OrdinalsWellOrderArithmetic
@@ -63,7 +64,6 @@ import PropTychonoff
 import PropInfTychonoff
 import RicesTheoremForTheUniverse
 import RootsTruncation
-import SearchableOrdinals
 import SearchableTypes
 import Sequence
 import SimpleTypes
@@ -240,7 +240,7 @@ increasingly complex searchable ordinals.
 \begin{code}
 
 import SquashedSum
-import SearchableOrdinals
+import OrdinalNotationInterpretation
 import LexicographicSearch
 import ConvergentSequenceInfSearchable
 

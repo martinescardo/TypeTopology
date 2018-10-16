@@ -29,7 +29,7 @@ univalent notion of ordinal (as introduced in the HoTT Book).
 open import SpartanMLTT
 open import UF-FunExt
 
-module SearchableOrdinals (fe : ∀ U V → funext U V) where
+module OrdinalNotationInterpretation (fe : ∀ U V → funext U V) where
 
 \end{code}
 
@@ -94,7 +94,7 @@ differ only in the interpretation of Sum1.
      searchability of the compact ordinals possible. The searchability
      of the discrete ordinals is a contructive taboo.
 
-Additionally, we kave a map δκ from the Δ-ordinals to the Κ-ordinals,
+Additionally, we kave a map ι from the Δ-ordinals to the Κ-ordinals,
 which is
 
   * an embedding (has subsingleton fibers),
@@ -137,27 +137,27 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 \begin{code}
 
 Κ                    : OE → Ordᵀ
-Κ-searchable         : (α : OE) → searchable ⟪ Κ α ⟫
-Κ-Cantor-retract     : (α : OE) → retract ⟪ Κ α ⟫ of (ℕ → 𝟚)
-Κ-totally-separated  : (α : OE) → totally-separated ⟪ Κ α ⟫
+Κ-searchable         : (ν : OE) → searchable ⟪ Κ ν ⟫
+Κ-Cantor-retract     : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+Κ-totally-separated  : (ν : OE) → totally-separated ⟪ Κ ν ⟫
 
 Δ                    : OE → Ordᵀ
-Δ-discrete           : (α : OE) → discrete ⟪ Δ α ⟫
-Δ-retract-of-ℕ       : (α : OE) → retract ⟪ Δ α ⟫ of ℕ
+Δ-discrete           : (ν : OE) → discrete ⟪ Δ ν ⟫
+Δ-retract-of-ℕ       : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
 
-δκ                   : {α : OE} → ⟪ Δ α ⟫ → ⟪ Κ α ⟫
-δκ-dense             : (α : OE) → is-dense (δκ {α})
-δκ-embedding         : (α : OE) → is-embedding (δκ {α})
+ι                    : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
+ι-dense              : (ν : OE) → is-dense (ι {ν})
+ι-embedding          : (ν : OE) → is-embedding (ι {ν})
 
-δκ-order-preserving  : (α : OE) (x y : ⟪ Δ α ⟫)
-                          →    x ≺⟪ Δ α ⟫    y
-                          → δκ x ≺⟪ Κ α ⟫ δκ y
+ι-order-preserving   : (ν : OE) (x y : ⟪ Δ ν ⟫)
+                          →    x ≺⟪ Δ ν ⟫    y
+                          → ι x ≺⟪ Κ ν ⟫ ι y
 
-δκ-order-reflecting  : (α : OE) (x y : ⟪ Δ α ⟫)
-                          → δκ x ≺⟪ Κ α ⟫ δκ y
-                          →    x ≺⟪ Δ α ⟫    y
+ι-order-reflecting   : (ν : OE) (x y : ⟪ Δ ν ⟫)
+                          → ι x ≺⟪ Κ ν ⟫ ι y
+                          →    x ≺⟪ Δ ν ⟫    y
 
-Κ-inf-searchable     : propext U₀ → (α : OE) → inf-searchable (λ x y → x ≼⟪ Κ α ⟫ y)
+Κ-inf-searchable     : propext U₀ → (ν : OE) → inf-searchable (λ x y → x ≼⟪ Κ ν ⟫ y)
 
 brouwer-to-oe        : B → OE
 ε₀-upper-bound       : Ordᵀ
@@ -184,9 +184,9 @@ construct the order as this was work in progress):
 \begin{code}
 
 Κ One  = 𝟙ᵒ
-Κ (Add α β) = Κ α +ᵒ Κ β
-Κ (Mul α β) = Κ α ×ᵒ  Κ β
-Κ (Sum1 α) = ∑¹ \(i : ℕ) → Κ(α i)
+Κ (Add ν μ) = Κ ν +ᵒ Κ μ
+Κ (Mul ν μ) = Κ ν ×ᵒ  Κ μ
+Κ (Sum1 ν) = ∑¹ \(i : ℕ) → Κ(ν i)
 
 \end{code}
 
@@ -195,12 +195,12 @@ The underlying sets  of such ordinals are searchable:
 \begin{code}
 
 Κ-searchable One = 𝟙-searchable
-Κ-searchable (Add α β) =
+Κ-searchable (Add ν μ) =
  Σ-searchable
   𝟙+𝟙-searchable
-  (dep-cases (λ _ → Κ-searchable α) (λ _ → Κ-searchable β))
-Κ-searchable (Mul α β) = Σ-searchable (Κ-searchable α) (λ _ → Κ-searchable β)
-Κ-searchable (Sum1 α) = Σ¹-searchable (λ n → ⟪ Κ (α n) ⟫) (λ i → Κ-searchable (α i))
+  (dep-cases (λ _ → Κ-searchable ν) (λ _ → Κ-searchable μ))
+Κ-searchable (Mul ν μ) = Σ-searchable (Κ-searchable ν) (λ _ → Κ-searchable μ)
+Κ-searchable (Sum1 ν) = Σ¹-searchable (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-searchable (ν i))
 
 \end{code}
 
@@ -212,9 +212,9 @@ The searchable ordinals are retracts of the Cantor type (ℕ → 𝟚).
 \begin{code}
 
 Κ-Cantor-retract One = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
-Κ-Cantor-retract (Add α β) = +-retract-of-Cantor (Κ α) (Κ β) (Κ-Cantor-retract α) (Κ-Cantor-retract β)
-Κ-Cantor-retract (Mul α β) = ×-retract-of-Cantor (Κ α) (Κ β) (Κ-Cantor-retract α) (Κ-Cantor-retract β)
-Κ-Cantor-retract (Sum1 α)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (α n) ⟫) (λ i → Κ-Cantor-retract (α i))
+Κ-Cantor-retract (Add ν μ) = +-retract-of-Cantor (Κ ν) (Κ μ) (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
+Κ-Cantor-retract (Mul ν μ) = ×-retract-of-Cantor (Κ ν) (Κ μ) (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
+Κ-Cantor-retract (Sum1 ν)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-Cantor-retract (ν i))
 
 \end{code}
 
@@ -222,8 +222,8 @@ And hence they are totally separated:
 
 \begin{code}
 
-Κ-totally-separated α = retract-totally-separated
-                          (Κ-Cantor-retract α)
+Κ-totally-separated ν = retract-totally-separated
+                          (Κ-Cantor-retract ν)
                           (Cantor-totally-separated fe₀)
 \end{code}
 
@@ -243,125 +243,125 @@ many interesting properties, formulated above and proved below.
 \begin{code}
 
 Δ One = 𝟙ᵒ
-Δ (Add α β) = Δ α +ᵒ Δ β
-Δ (Mul α β) = Δ α ×ᵒ  Δ β
-Δ (Sum1 α) = ∑₁ \(i : ℕ) → Δ(α i)
+Δ (Add ν μ) = Δ ν +ᵒ Δ μ
+Δ (Mul ν μ) = Δ ν ×ᵒ  Δ μ
+Δ (Sum1 ν) = ∑₁ \(i : ℕ) → Δ(ν i)
 
 Δ-discrete One  = 𝟙-discrete
-Δ-discrete (Add α β) =
+Δ-discrete (Add ν μ) =
  Σ-discrete
   (+discrete 𝟙-discrete 𝟙-discrete)
-  (dep-cases (λ _ → Δ-discrete α) (λ _ → Δ-discrete β))
-Δ-discrete (Mul α β) = Σ-discrete (Δ-discrete α) (λ _ → Δ-discrete β)
-Δ-discrete (Sum1 α) = Σ₁-discrete (λ n → ⟪ Δ (α n) ⟫) (λ i → Δ-discrete (α i))
+  (dep-cases (λ _ → Δ-discrete ν) (λ _ → Δ-discrete μ))
+Δ-discrete (Mul ν μ) = Σ-discrete (Δ-discrete ν) (λ _ → Δ-discrete μ)
+Δ-discrete (Sum1 ν) = Σ₁-discrete (λ n → ⟪ Δ (ν n) ⟫) (λ i → Δ-discrete (ν i))
 
 \end{code}
 
-Completed 27 July 2018. There is a dense embedding δκ of the discrete
+Completed 27 July 2018. There is a dense embedding ι of the discrete
 ordinals into the searchable ordinals, where density means that the
 complement of the image of the embedding is empty. Moreover, it is
 order preserving and reflecting (28 July 2018).
 
 \begin{code}
 
-δκ {One} = id
-δκ {Add α β} = pair-fun id (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
-δκ {Mul α β} = pair-fun (δκ {α}) (λ _ → δκ {β})
-δκ {Sum1 α} = ∑↑ (λ n → Δ (α n)) (λ n → Κ (α n)) (λ n → δκ {α n})
+ι {One} = id
+ι {Add ν μ} = pair-fun id (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+ι {Mul ν μ} = pair-fun (ι {ν}) (λ _ → ι {μ})
+ι {Sum1 ν} = ∑↑ (λ n → Δ (ν n)) (λ n → Κ (ν n)) (λ n → ι {ν n})
 
-δκ-dense One = id-is-dense
-δκ-dense (Add α β) =
+ι-dense One = id-is-dense
+ι-dense (Add ν μ) =
  pair-fun-dense
   id
-  (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
+  (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
   id-is-dense
-  (dep-cases (λ _ → δκ-dense α) (λ _ → δκ-dense β))
-δκ-dense (Mul α β) =
+  (dep-cases (λ _ → ι-dense ν) (λ _ → ι-dense μ))
+ι-dense (Mul ν μ) =
  pair-fun-dense _ _
-  (δκ-dense α)
-  (λ _ → δκ-dense β)
-δκ-dense (Sum1 α) =
+  (ι-dense ν)
+  (λ _ → ι-dense μ)
+ι-dense (Sum1 ν) =
  Σ↑-dense
-  (λ n → ⟪ Δ (α n) ⟫)
-  (λ n → ⟪ Κ (α n) ⟫)
-  (λ n → δκ {α n})
-  (λ i → δκ-dense (α i))
+  (λ n → ⟪ Δ (ν n) ⟫)
+  (λ n → ⟪ Κ (ν n) ⟫)
+  (λ n → ι {ν n})
+  (λ i → ι-dense (ν i))
 
-δκ-embedding One = id-is-embedding
-δκ-embedding (Add α β) =
+ι-embedding One = id-is-embedding
+ι-embedding (Add ν μ) =
  pair-fun-embedding
   id
-  (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
+  (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
   id-is-embedding
-  (dep-cases (λ _ → δκ-embedding α) (λ _ → δκ-embedding β))
-δκ-embedding (Mul α β) =
+  (dep-cases (λ _ → ι-embedding ν) (λ _ → ι-embedding μ))
+ι-embedding (Mul ν μ) =
  pair-fun-embedding _ _
-  (δκ-embedding α)
-  (λ _ → δκ-embedding β)
-δκ-embedding (Sum1 α) =
+  (ι-embedding ν)
+  (λ _ → ι-embedding μ)
+ι-embedding (Sum1 ν) =
  Σ↑-embedding
-  (λ n → ⟪ Δ (α n) ⟫)
-  (λ n → ⟪ Κ (α n) ⟫)
-  (λ n → δκ {α n})
-  (λ i → δκ-embedding (α i))
+  (λ n → ⟪ Δ (ν n) ⟫)
+  (λ n → ⟪ Κ (ν n) ⟫)
+  (λ n → ι {ν n})
+  (λ i → ι-embedding (ν i))
 
-δκ-order-preserving One = λ x y l → l
-δκ-order-preserving (Add α β) =
+ι-order-preserving One = λ x y l → l
+ι-order-preserving (Add ν μ) =
  pair-fun-is-order-preserving
    𝟚ᵒ
    𝟚ᵒ
-   (cases (λ _ → Δ α) (λ _ → Δ β))
-   (cases (λ _ → Κ α) (λ _ → Κ β))
+   (cases (λ _ → Δ ν) (λ _ → Δ μ))
+   (cases (λ _ → Κ ν) (λ _ → Κ μ))
    id
-   (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
+   (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
    (λ x y l → l)
-   (dep-cases (λ _ → δκ-order-preserving α) λ _ → δκ-order-preserving β)
-δκ-order-preserving (Mul α β) =
+   (dep-cases (λ _ → ι-order-preserving ν) λ _ → ι-order-preserving μ)
+ι-order-preserving (Mul ν μ) =
  pair-fun-is-order-preserving
-  (Δ α)
-  (Κ α)
-  (λ _ → Δ β)
-  (λ _ → Κ β)
-  (δκ {α})
-  (λ _ → δκ {β})
-  (δκ-order-preserving α)
-  (λ _ → δκ-order-preserving β)
-δκ-order-preserving (Sum1 α) =
+  (Δ ν)
+  (Κ ν)
+  (λ _ → Δ μ)
+  (λ _ → Κ μ)
+  (ι {ν})
+  (λ _ → ι {μ})
+  (ι-order-preserving ν)
+  (λ _ → ι-order-preserving μ)
+ι-order-preserving (Sum1 ν) =
  ∑↑-is-order-preserving
-   (Δ ∘ α)
-   (Κ ∘ α)
-   (λ n → δκ {α n})
-   (λ i → δκ-order-preserving (α i))
+   (Δ ∘ ν)
+   (Κ ∘ ν)
+   (λ n → ι {ν n})
+   (λ i → ι-order-preserving (ν i))
 
-δκ-order-reflecting One = λ x y l → l
-δκ-order-reflecting (Add α β) =
+ι-order-reflecting One = λ x y l → l
+ι-order-reflecting (Add ν μ) =
  pair-fun-is-order-reflecting
    𝟚ᵒ
    𝟚ᵒ
-   (cases (λ _ → Δ α) (λ _ → Δ β))
-   (cases (λ _ → Κ α) (λ _ → Κ β))
+   (cases (λ _ → Δ ν) (λ _ → Δ μ))
+   (cases (λ _ → Κ ν) (λ _ → Κ μ))
    id
-   (dep-cases (λ _ → δκ {α}) (λ _ → δκ {β}))
+   (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
    (λ x y l → l)
    id-is-embedding
-   (dep-cases (λ _ → δκ-order-reflecting α) λ _ → δκ-order-reflecting β)
-δκ-order-reflecting (Mul α β) =
+   (dep-cases (λ _ → ι-order-reflecting ν) λ _ → ι-order-reflecting μ)
+ι-order-reflecting (Mul ν μ) =
  pair-fun-is-order-reflecting
-  (Δ α)
-  (Κ α)
-  (λ _ → Δ β)
-  (λ _ → Κ β)
-  (δκ {α})
-  (λ _ → δκ {β})
-  (δκ-order-reflecting α)
-  (δκ-embedding α)
-  (λ _ → δκ-order-reflecting β)
-δκ-order-reflecting (Sum1 α)  =
+  (Δ ν)
+  (Κ ν)
+  (λ _ → Δ μ)
+  (λ _ → Κ μ)
+  (ι {ν})
+  (λ _ → ι {μ})
+  (ι-order-reflecting ν)
+  (ι-embedding ν)
+  (λ _ → ι-order-reflecting μ)
+ι-order-reflecting (Sum1 ν)  =
  ∑↑-is-order-reflecting
-   (Δ ∘ α)
-   (Κ ∘ α)
-   (λ n → δκ {α n})
-   (λ i → δκ-order-reflecting (α i))
+   (Δ ∘ ν)
+   (Κ ∘ ν)
+   (λ n → ι {ν n})
+   (λ i → ι-order-reflecting (ν i))
 
 \end{code}
 
@@ -372,25 +372,25 @@ much easier (given the mathematics we have already developed).
 \begin{code}
 
 Κ-inf-searchable pe One = 𝟙ᵒ-inf-searchable
-Κ-inf-searchable pe (Add α β) =
+Κ-inf-searchable pe (Add ν μ) =
  ∑-inf-searchable pe
   𝟚ᵒ
-  (cases (λ _ → Κ α) (λ _ → Κ β))
+  (cases (λ _ → Κ ν) (λ _ → Κ μ))
   𝟚ᵒ-inf-searchable
   (dep-cases
-    (λ _ → Κ-inf-searchable pe α)
-    (λ _ → Κ-inf-searchable pe β))
-Κ-inf-searchable pe (Mul α β) =
+    (λ _ → Κ-inf-searchable pe ν)
+    (λ _ → Κ-inf-searchable pe μ))
+Κ-inf-searchable pe (Mul ν μ) =
  ∑-inf-searchable pe
-  (Κ α)
-  (λ _ → Κ β)
-  (Κ-inf-searchable pe α)
-  (λ _ → Κ-inf-searchable pe β)
-Κ-inf-searchable pe (Sum1 α) =
+  (Κ ν)
+  (λ _ → Κ μ)
+  (Κ-inf-searchable pe ν)
+  (λ _ → Κ-inf-searchable pe μ)
+Κ-inf-searchable pe (Sum1 ν) =
  ∑₁-inf-searchable
   pe
-  (Κ ∘ α)
-  (λ i → Κ-inf-searchable pe (α i))
+  (Κ ∘ ν)
+  (λ i → Κ-inf-searchable pe (ν i))
 
 \end{code}
 
@@ -399,15 +399,15 @@ Added 31 July 2018:
 \begin{code}
 
 Δ-retract-of-ℕ One = (λ _ → *) , (λ _ → 0) , 𝟙-is-prop *
-Δ-retract-of-ℕ (Add α β) =
+Δ-retract-of-ℕ (Add ν μ) =
  Σ-retract-of-ℕ
   retract-𝟙+𝟙-of-ℕ
-  (dep-cases (λ _ → Δ-retract-of-ℕ α) (λ _ → Δ-retract-of-ℕ β))
-Δ-retract-of-ℕ (Mul α β) =
+  (dep-cases (λ _ → Δ-retract-of-ℕ ν) (λ _ → Δ-retract-of-ℕ μ))
+Δ-retract-of-ℕ (Mul ν μ) =
  Σ-retract-of-ℕ
- (Δ-retract-of-ℕ α)
- (λ _ → Δ-retract-of-ℕ β)
-Δ-retract-of-ℕ (Sum1 α) = Σ₁-ℕ-retract (λ i → Δ-retract-of-ℕ (α i))
+ (Δ-retract-of-ℕ ν)
+ (λ _ → Δ-retract-of-ℕ μ)
+Δ-retract-of-ℕ (Sum1 ν) = Σ₁-ℕ-retract (λ i → Δ-retract-of-ℕ (ν i))
 
 \end{code}
 
@@ -424,8 +424,8 @@ bigger or equal, because sums dominate suprema.
 \begin{code}
 
 brouwer-to-oe    Z  = One
-brouwer-to-oe (S α) = Add One (brouwer-to-oe α)
-brouwer-to-oe (L α) = Sum1(λ i → brouwer-to-oe(α i))
+brouwer-to-oe (S ν) = Add One (brouwer-to-oe ν)
+brouwer-to-oe (L ν) = Sum1(λ i → brouwer-to-oe(ν i))
 
 \end{code}
 
