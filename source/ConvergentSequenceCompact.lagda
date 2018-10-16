@@ -4,14 +4,11 @@ Modified in December 2011 assuming the axiom of extensionality (which
 is not used directly in this module, but instead in
 GenericConvergentSequence).
 
-We prove that the generic convergent sequence ℕ∞ is searchable, which
+We prove that the generic convergent sequence ℕ∞ is compact, which
 amounts to Theorem-3·6 of the paper
 
    http://www.cs.bham.ac.uk/~mhe/papers/omniscient.pdf,
    http://www.cs.bham.ac.uk/~mhe/.talks/dagstuhl2011/omniscient.pdf
-
-and conclude as a corollary that it is searchable and satisfies the
-principle of omniscience.
 
 (Continuity axioms and the fan principle are not assumed.)
 
@@ -22,12 +19,13 @@ principle of omniscience.
 open import SpartanMLTT
 open import UF-FunExt
 
-module ConvergentSequenceSearchable (fe : funext U₀ U₀) where
+module ConvergentSequenceCompact (fe : funext U₀ U₀) where
 
 open import Two
 open import UF-PropTrunc
 open import GenericConvergentSequence
-open import SearchableTypes
+open import CompactTypes
+open import DiscreteAndSeparated
 
 \end{code}
 
@@ -35,8 +33,8 @@ This is the main theorem proved in this module:
 
 \begin{code}
 
-ℕ∞-searchable : searchable ℕ∞
-ℕ∞-searchable p = a , Lemma
+ℕ∞-compact∙ : compact∙ ℕ∞
+ℕ∞-compact∙ p = a , Lemma
  where
   α : ℕ → 𝟚
   α 0       = p(under 0)
@@ -95,26 +93,23 @@ Corollaries:
 
 \begin{code}
 
-open import OmniscientTypes
-open import DiscreteAndSeparated
-
-ℕ∞-omniscient : omniscient ℕ∞
-ℕ∞-omniscient = searchable-implies-omniscient (ℕ∞-searchable)
+ℕ∞-compact : compact ℕ∞
+ℕ∞-compact = compact∙-gives-compact (ℕ∞-compact∙)
 
 ℕ∞→ℕ-discrete : discrete(ℕ∞ → ℕ)
-ℕ∞→ℕ-discrete = omniscient-discrete-discrete fe ℕ∞-omniscient (λ u → ℕ-discrete)
+ℕ∞→ℕ-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → ℕ-discrete)
 
 ℕ∞→𝟚-discrete : discrete(ℕ∞ → 𝟚)
-ℕ∞→𝟚-discrete = omniscient-discrete-discrete fe ℕ∞-omniscient (λ u → 𝟚-discrete)
+ℕ∞→𝟚-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → 𝟚-discrete)
 
 module _ (fe' : ∀ U V → funext U V) (pt : PropTrunc) where
 
- open import 2CompactTypes (fe') (pt)
+ open import WeaklyCompactTypes (fe') (pt)
 
- ℕ∞-is-strongly-𝟚-overt : strongly-𝟚-overt ℕ∞
- ℕ∞-is-strongly-𝟚-overt = omniscient-Compact ℕ∞-omniscient
+ ℕ∞-is-∃-compact : ∃-compact ℕ∞
+ ℕ∞-is-∃-compact = compact-gives-∃-compact ℕ∞-compact
 
- ℕ∞-is-𝟚-compact : 𝟚-compact ℕ∞
- ℕ∞-is-𝟚-compact = 𝟚-so-c ℕ∞-is-strongly-𝟚-overt
+ ℕ∞-is-Π-compact : Π-compact ℕ∞
+ ℕ∞-is-Π-compact = ∃-compact-gives-Π-compact ℕ∞-is-∃-compact
 
 \end{code}

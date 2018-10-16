@@ -17,10 +17,10 @@ open import UF-Subsingletons
 open import UF-Equiv
 open import UF-Embedding
 open import GenericConvergentSequence
-open import SearchableTypes
-open import ConvergentSequenceSearchable (fe U₀ U₀)
+open import CompactTypes
+open import ConvergentSequenceCompact (fe U₀ U₀)
 open import UF-InjectiveTypes fe
-open import ExtendedSumSearchable fe
+open import ExtendedSumCompact fe
 open import DiscreteAndSeparated
 open import UF-Miscelanea
 
@@ -33,27 +33,27 @@ Recall that the map under : ℕ → ℕ∞ is the natural embedding. Given a
 type family X : ℕ → U ̇, we take its right Kan extension
 X / under : ℕ∞ → U ̇ and then its sum, which we call the squashed sum
 of X and write Σ¹ X. We have that (X / under) ∞ ≃ 𝟙. What is
-interesting is that if each X n is searchable then so is Σ¹ X.
+interesting is that if each X n is compact then so is Σ¹ X.
 
 \begin{code}
 
 Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
-Σ¹-searchable : ∀ {U} (X : ℕ → U ̇)
-             → ((n : ℕ) → searchable(X n))
-             → searchable(Σ¹ X)
-Σ¹-searchable X ε = extended-sum-searchable
+Σ¹-compact∙ : ∀ {U} (X : ℕ → U ̇)
+            → ((n : ℕ) → compact∙(X n))
+            → compact∙(Σ¹ X)
+Σ¹-compact∙ X ε = extended-sum-compact∙
                      under
                      (under-embedding fe₀)
                      ε
-                     ℕ∞-searchable
+                     ℕ∞-compact∙
 
 \end{code}
 
 Added 26 July 2018 (implementing ideas of several years ago).
 
-We now develop a discrete (but not searchable) version Σ₁ X of Σ¹ X
+We now develop a discrete (but not compact) version Σ₁ X of Σ¹ X
 with a dense embedding into Σ¹ X, where an embedding is called dense
 if the complement of its image is empty. Recall that the function
 over𝟙 : ℕ + 𝟙 → ℕ∞ is the natural embedding that maps the isolated
@@ -145,7 +145,7 @@ over-under-map-dense X z = is-dense-detofun (over-under X z)
 \end{code}
 
 The discrete type Σ₁ X is densely embedded into
-the searchable type Σ¹ X:
+the compact type Σ¹ X:
 
 \begin{code}
 
@@ -304,7 +304,7 @@ equivalent, as also shown below.
 December 2012, going back to work done circa 2010.
 
 The theorem here is that the "squashed sum" of any countable family of
-searchable sets is itself searchable (see the module Searchable,
+compact∙ sets is itself compact (see the module CompactTypes,
 imported below, for the definition and fundamental facts about the
 notion).
 open import UF-InjectiveTypes (fe)
@@ -412,8 +412,8 @@ module original-version-and-equivalence-with-new-version where
 
 \end{code}
 
- We now can show that the type X [ u ] is searchable for every u : ℕ∞
- provided the type X n is searchable for every n : ℕ. This is tricky,
+ We now can show that the type X [ u ] is compact for every u : ℕ∞
+ provided the type X n is compact for every n : ℕ. This is tricky,
  because a priory it is not enough to consider the cases under n ≡ u and u ≡ ∞.
 
  The above isomorphism is used to prove the correctness of the witness
@@ -422,12 +422,12 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- extension-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → (u : ℕ∞) → searchable(X [ u ])
- extension-searchable {X} ε u p = y₀ , lemma
+ extension-compact∙ : {X : ℕ → U₀ ̇} → ((n : ℕ) → compact∙(X n)) → (u : ℕ∞) → compact∙(X [ u ])
+ extension-compact∙ {X} ε u p = y₀ , lemma
   where
    Y : U₀ ̇
    Y = X [ u ]
-   -- ε : (n : ℕ) → searchable(X n)
+   -- ε : (n : ℕ) → compact∙(X n)
    -- u : ℕ∞
    -- p  : Y → ₂
 
@@ -461,12 +461,12 @@ module original-version-and-equivalence-with-new-version where
 \end{code}
 
  Finally, we can show that the squashed sum of any sequence of
- searchable sets is itself searchable, as claimed above:
+ compact sets is itself compact, as claimed above:
 
 \begin{code}
 
- Σᴵ-searchable : {X : ℕ → U₀ ̇} → ((n : ℕ) → searchable(X n)) → searchable(Σᴵ X)
- Σᴵ-searchable {X} f = Σ-searchable ℕ∞-searchable (extension-searchable {X} f)
+ Σᴵ-compact∙ : {X : ℕ → U₀ ̇} → ((n : ℕ) → compact∙(X n)) → compact∙(Σᴵ X)
+ Σᴵ-compact∙ {X} f = Σ-compact∙ ℕ∞-compact∙ (extension-compact∙ {X} f)
 
 \end{code}
 

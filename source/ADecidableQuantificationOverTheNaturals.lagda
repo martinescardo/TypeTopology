@@ -19,9 +19,9 @@ module ADecidableQuantificationOverTheNaturals (fe : funext U₀ U₀) where
 
 open import Two
 open import GenericConvergentSequence
-open import SearchableTypes
+open import CompactTypes
 open import GenericConvergentSequence
-open import ConvergentSequenceSearchable fe
+open import ConvergentSequenceCompact fe
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import UF-PropTrunc
@@ -72,7 +72,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
       by-induction (succ n) = (f(under n))⁻¹ ∙ by-induction n
 
   claim₂ : (Σ \(y : ℕ∞) → p y ≢ p(Succ y)) + ((y : ℕ∞) → p y ≡ p(Succ y))
-  claim₂ = g(ℕ∞-omniscient q)
+  claim₂ = g(ℕ∞-compact q)
    where
     fact : (y : ℕ∞) → (p y ≢ p(Succ y)) + ¬(p y ≢ p(Succ y))
     fact y = negation-preserves-decidability(𝟚-discrete (p y) (p(Succ y)))

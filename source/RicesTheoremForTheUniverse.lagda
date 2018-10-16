@@ -116,10 +116,10 @@ Rice's-Theorem-for-U {U} P e X Y r s = basic-discontinuity-taboo p (p-lemma , p-
 Notice that although the proof uses topological techniques, the
 formulation of the theorem doesn't mention topology.
 
-One can get more milleage exploiting the fact that ℕ∞ satisfies
-the principle of omniscience, as proved in the module
-GenericConvergentSequence. As a simple example, one can conclude
-LPO rather than WLPO.
+One can get more milleage exploiting the fact that ℕ∞ is compact, in
+the sense that it satisfies Bishop's principle of omniscience, as
+proved in the module GenericConvergentSequence. As a simple example,
+one can conclude LPO rather than WLPO.
 
 The type-inhabitedness predicate is clearly extensional. By the
 above theorem, this means that there is no algorithm within type

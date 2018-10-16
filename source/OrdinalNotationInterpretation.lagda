@@ -1,6 +1,6 @@
 Martin Escardo, 2012, 2018.
 
-Searchable ordinals, discrete ordinals and their relationships.
+Compact ordinals, discrete ordinals and their relationships.
 
 Begun December 2012, based on earlier work, circa 2010.
 
@@ -58,28 +58,28 @@ constructive mathematics, are not in general successor
 ordinals). Technically, the top element allows us to prove the closure
 of ordinals under ordinal-indexed sums, playing a crucial role in the
 proof of extensionality of the sum. But the top element is equally
-crucial for searchability or compactness purposes, dicussed below.
+crucial for compactness purposes, as dicussed below.
 
   * The ordinals in the image of Δ are discrete (have decidable
     equality) and have countable underlying sets, which are in fact
     retracts of ℕ.
 
-  * Those in the image of Κ are compact (they are searchable).
+  * Those in the image of Κ are compact, or "exhaustibly searchable".
 
     Moreover, they are retracts of the Cantor type (ℕ → 𝟚) of binary
     sequences, and hence are totally separated, which means that the
     functions into 𝟚 separate the points.
 
     And not only the Κ ordinals are searchable, they are also
-    inf-searchable, which means that any detachable subset has an
+    inf-compact, which means that any detachable subset has an
     infimum, which belongs to the subset iff and only if the subset is
     non-empty (with non-emptiness expressed by a double negation).
 
     The discrete ordinals, being retracts of ℕ, cannot be retracts of
     the Cantor space. This is because the Cantor space is potentially
-    searchable, in the presence of Brouwerian axioms (which we are not
-    assuming), and searchability is inherited by retracts, and the
-    searchability of the infinite discrete ordinals is equivalent to
+    compact, in the presence of Brouwerian axioms (which we are not
+    assuming), and compactness is inherited by retracts, and the
+    compactnesss of the infinite discrete ordinals is equivalent to
     Bishop's LPO (limited principle of omnscient), which is not
     provable in any variety of constructive mathematics.
 
@@ -103,8 +103,8 @@ which is
 
 Lastly, we have a mapping from our ordinal trees to Brouwer trees that
 allows us to use other people's constructions to get very "large"
-searchable ordinals. As a trivial example, we show how to map a
-Brouwer code of ε₀ to a searchable ordinal that dominates ε₀.
+compact ordinals. As a trivial example, we show how to map a Brouwer
+code of ε₀ to a compact ordinal that dominates ε₀.
 
 The bulk of the work to perform these constructions and prove their
 properties is developed in the imported modules.
@@ -118,8 +118,8 @@ open import Ordinals fe
 open import OrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
-open import SearchableTypes
-open import InfSearchable
+open import CompactTypes
+open import InfCompact
 open import TotallySeparated
 open import SquashedSum fe
 open import SquashedCantor fe hiding (Κ)
@@ -137,7 +137,7 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 \begin{code}
 
 Κ                    : OE → Ordᵀ
-Κ-searchable         : (ν : OE) → searchable ⟪ Κ ν ⟫
+Κ-compact∙           : (ν : OE) → compact∙ ⟪ Κ ν ⟫
 Κ-Cantor-retract     : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
 Κ-totally-separated  : (ν : OE) → totally-separated ⟪ Κ ν ⟫
 
@@ -150,26 +150,20 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 ι-embedding          : (ν : OE) → is-embedding (ι {ν})
 
 ι-order-preserving   : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                          →    x ≺⟪ Δ ν ⟫    y
+                          →   x ≺⟪ Δ ν ⟫   y
                           → ι x ≺⟪ Κ ν ⟫ ι y
 
 ι-order-reflecting   : (ν : OE) (x y : ⟪ Δ ν ⟫)
                           → ι x ≺⟪ Κ ν ⟫ ι y
-                          →    x ≺⟪ Δ ν ⟫    y
+                          →   x ≺⟪ Δ ν ⟫   y
 
-Κ-inf-searchable     : propext U₀ → (ν : OE) → inf-searchable (λ x y → x ≼⟪ Κ ν ⟫ y)
+Κ-inf-compact       : propext U₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
 
 brouwer-to-oe        : B → OE
 ε₀-upper-bound       : Ordᵀ
-searchable-ε₀-ub     : searchable ⟪ ε₀-upper-bound ⟫
+compact∙-ε₀-ub     : compact∙ ⟪ ε₀-upper-bound ⟫
 
 \end{code}
-
-The empty ordinal is excluded because it is not searchable. It is
-merely exhaustible or omniscient (see the module Searchable for a
-partial discussion of this). The reason why sometimes including the
-empty ordinal causes insurmountable problems regarding closure under
-searchability is discussed in research papers and in other modules.
 
 The interpretation function is the following, with values on topped
 ordinals, where an ordinal is a type equipped with a
@@ -190,23 +184,23 @@ construct the order as this was work in progress):
 
 \end{code}
 
-The underlying sets  of such ordinals are searchable:
+The underlying sets  of such ordinals are compact∙:
 
 \begin{code}
 
-Κ-searchable One = 𝟙-searchable
-Κ-searchable (Add ν μ) =
- Σ-searchable
-  𝟙+𝟙-searchable
-  (dep-cases (λ _ → Κ-searchable ν) (λ _ → Κ-searchable μ))
-Κ-searchable (Mul ν μ) = Σ-searchable (Κ-searchable ν) (λ _ → Κ-searchable μ)
-Κ-searchable (Sum1 ν) = Σ¹-searchable (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-searchable (ν i))
+Κ-compact∙ One = 𝟙-compact∙
+Κ-compact∙ (Add ν μ) =
+ Σ-compact∙
+  𝟙+𝟙-compact∙
+  (dep-cases (λ _ → Κ-compact∙ ν) (λ _ → Κ-compact∙ μ))
+Κ-compact∙ (Mul ν μ) = Σ-compact∙ (Κ-compact∙ ν) (λ _ → Κ-compact∙ μ)
+Κ-compact∙ (Sum1 ν) = Σ¹-compact∙ (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-compact∙ (ν i))
 
 \end{code}
 
 Completed 20th July 2018:
 
-The searchable ordinals are retracts of the Cantor type (ℕ → 𝟚).
+The compact∙ ordinals are retracts of the Cantor type (ℕ → 𝟚).
 
 
 \begin{code}
@@ -228,7 +222,7 @@ And hence they are totally separated:
 \end{code}
 
 Without total separatedness (enough functions into the type 𝟚 of
-booleans), searchability wouldn't be an interesting property. It is
+booleans), compactness wouldn't be an interesting property. It is
 not possible to prove total separatedness directly, because this
 property is not closed under Σ, which is used to define +ᵒ, ×ᵒ and Σ₁,
 as shown in the module FailureOfTotalSeparatedness.
@@ -258,7 +252,7 @@ many interesting properties, formulated above and proved below.
 \end{code}
 
 Completed 27 July 2018. There is a dense embedding ι of the discrete
-ordinals into the searchable ordinals, where density means that the
+ordinals into the compact∙ ordinals, where density means that the
 complement of the image of the embedding is empty. Moreover, it is
 order preserving and reflecting (28 July 2018).
 
@@ -371,26 +365,26 @@ much easier (given the mathematics we have already developed).
 
 \begin{code}
 
-Κ-inf-searchable pe One = 𝟙ᵒ-inf-searchable
-Κ-inf-searchable pe (Add ν μ) =
- ∑-inf-searchable pe
+Κ-inf-compact pe One = 𝟙ᵒ-inf-compact
+Κ-inf-compact pe (Add ν μ) =
+ ∑-inf-compact pe
   𝟚ᵒ
   (cases (λ _ → Κ ν) (λ _ → Κ μ))
-  𝟚ᵒ-inf-searchable
+  𝟚ᵒ-inf-compact
   (dep-cases
-    (λ _ → Κ-inf-searchable pe ν)
-    (λ _ → Κ-inf-searchable pe μ))
-Κ-inf-searchable pe (Mul ν μ) =
- ∑-inf-searchable pe
+    (λ _ → Κ-inf-compact pe ν)
+    (λ _ → Κ-inf-compact pe μ))
+Κ-inf-compact pe (Mul ν μ) =
+ ∑-inf-compact pe
   (Κ ν)
   (λ _ → Κ μ)
-  (Κ-inf-searchable pe ν)
-  (λ _ → Κ-inf-searchable pe μ)
-Κ-inf-searchable pe (Sum1 ν) =
- ∑₁-inf-searchable
+  (Κ-inf-compact pe ν)
+  (λ _ → Κ-inf-compact pe μ)
+Κ-inf-compact pe (Sum1 ν) =
+ ∑₁-inf-compact
   pe
   (Κ ∘ ν)
-  (λ i → Κ-inf-searchable pe (ν i))
+  (λ i → Κ-inf-compact pe (ν i))
 
 \end{code}
 
@@ -414,10 +408,10 @@ Added 31 July 2018:
 NB. We could have proved that the Δ-ordinals are discrete using the
 above, as discrete types are closed under retracts.
 
-Hence the searchability of any infinite discrete ordinal is a
+Hence the compactness of any infinite discrete ordinal is a
 constructive taboo, logically equivalent to Bishop's LPO.
 
-Brouwer ordinal codes can be mapped to searchable ordinal codes, so
+Brouwer ordinal codes can be mapped to compact∙ ordinal codes, so
 that the meaning is not necessarily preserved, but so that it is
 bigger or equal, because sums dominate suprema.
 
@@ -436,7 +430,7 @@ ordinal ε₀ (because sums dominate suprema):
 
 ε₀-upper-bound = Κ(brouwer-to-oe B-ε₀)
 
-searchable-ε₀-ub = Κ-searchable(brouwer-to-oe B-ε₀)
+compact∙-ε₀-ub = Κ-compact∙(brouwer-to-oe B-ε₀)
 
 \end{code}
 

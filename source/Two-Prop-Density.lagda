@@ -1,10 +1,10 @@
-Excluded middle related things.
+Martin Escardo
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UF-Two-Prop-Density where
+module Two-Prop-Density where
 
 open import SpartanMLTT
 open import Two

@@ -385,7 +385,8 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
  Notice that here the S-equivalences are the isometries (metric-space case)
  or order preserving-reflecting maps (ordered-set case).
 
-The following example is related to searchable sets:
+The following example is related to compact types (in the sense of the
+module CompactTypes):
 
 \begin{code}
 

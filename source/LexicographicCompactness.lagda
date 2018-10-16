@@ -1,24 +1,24 @@
 Martin Escardo, 20-21 December 2012.
 
-This module is mainly for use in the module SearchableOrdinals.
+This module is mainly for use in the module CompactOrdinals.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module LexicographicSearch where
+module LexicographicCompactness where
 
 open import SpartanMLTT
 open import LexicographicOrder
-open import InfSearchable
+open import InfCompact
 
-Σ-inf-searchable : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
+Σ-inf-compact : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
   → (_≤_ : X → X → W ̇)
   → (_≼_ : {x : X} → Y x → Y x → T ̇)
-  → inf-searchable _≤_
-  → ((x : X) → inf-searchable (_≼_ {x}))
-  → inf-searchable (lex-order _≤_ _≼_)
-Σ-inf-searchable {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
+  → inf-compact _≤_
+  → ((x : X) → inf-compact (_≼_ {x}))
+  → inf-compact (lex-order _≤_ _≼_)
+Σ-inf-compact {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
   lemma-next : (x : X) → Σ \(y₀ : Y x) → ((Σ \(y : Y x) → p(x , y) ≡ ₀) → p (x , y₀) ≡ ₀)

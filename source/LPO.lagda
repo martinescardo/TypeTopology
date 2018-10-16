@@ -1,9 +1,13 @@
 Martin Escardo, December 2017 (but done much earlier on paper)
 
-As discussed in the module Omniscience, Bishop's "limited principle of
-omniscience" amount to the omniscience of the type ℕ, that is,
+As discussed in the module CompactTypes, Bishop's "limited principle
+of omniscience" amount to the compactness of the type ℕ, that is,
 
-  Π \(p : ℕ → 𝟚) → (Σ \(n : ℕ) → p n ≡ ₀) + (Π \(n : ℕ) → p n ≡ ₁).
+  Π \(p : ℕ → 𝟚) → (Σ \(n : ℕ) → p n ≡ ₀) + (Π \(n : ℕ) → p n ≡ ₁),
+
+which fails in contructive mathematics (here in the sense that it is
+independent - it is not provable, and its negation is also not
+provable).
 
 This is in general not a univalent proposition, because there may be
 many n:ℕ with p n ≡ ₀. In univalent mathematics, we may get a
@@ -12,8 +16,8 @@ proposition by truncating the Σ to get the existential quantifier ∃
 truncation directly, and call it LPO.
 
 Using this and the module Prop-Tychonoff, we show that the function
-type LPO→ℕ is searchable and hence omniscient, despite the fact that
-LPO is undecided in our type theory.
+type LPO→ℕ is compact, despite the fact that LPO is undecided in our
+type theory.
 
 (We needed to add new helper lemmas in the module
 GenericConvergentSequence)
@@ -30,7 +34,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import GenericConvergentSequence
-open import OmniscientTypes
+open import CompactTypes
 open import NaturalsOrder
 
 LPO : U₀ ̇
@@ -48,14 +52,14 @@ LPO-is-prop = Π-is-prop (fe U₀ U₀) f
 \end{code}
 
 We now show that LPO is logically equivalent to its traditional
-formulation, which is the omniscience of ℕ. However, the traditional
-formulation is not a univalent proposition in general, and hence not
-type equivalent.
+formulation by Bishop. However, the traditional formulation is not a
+univalent proposition in general, and not type equivalent (in the
+sense of UF) to our formulation.
 
 \begin{code}
 
-LPO-gives-omniscient-ℕ : LPO → omniscient ℕ
-LPO-gives-omniscient-ℕ lpo β = cases a b d
+LPO-gives-compact-ℕ : LPO → compact ℕ
+LPO-gives-compact-ℕ lpo β = cases a b d
   where
     A = (Σ \(n : ℕ) → β n ≡ ₀) + (Π \(n : ℕ) → β n ≡ ₁)
 
@@ -92,8 +96,8 @@ LPO-gives-omniscient-ℕ lpo β = cases a b d
             e : α n ≡ ₁
             e = ap (λ - → incl - n) l
 
-omniscient-ℕ-gives-LPO : omniscient ℕ → LPO
-omniscient-ℕ-gives-LPO chlpo x = cases a b d
+compact-ℕ-gives-LPO : compact ℕ → LPO
+compact-ℕ-gives-LPO chlpo x = cases a b d
   where
     A = decidable (Σ \(n : ℕ) → x ≡ under n)
 
@@ -130,29 +134,27 @@ Now, if LPO is false, that is, an empty type, then the function type
 
   LPO → ℕ
 
-is isomorphic to the unit type 𝟙, and hence is searchable and
-omniscient. If LPO holds, that is, LPO is isomorphic to 𝟙 because it
-is a univalent proposition, then the function type LPO → ℕ is
-isomorphic to ℕ, and hence the type LPO → ℕ is again searchable by
-LPO. So in any case we have that the type LPO → ℕ is
-searchable. However, LPO is an undecided proposition in our type
-theory, so that the nature of the function type LPO → ℕ is
-undecided. Nevertheless, we can show that it is searchable, without
-knowing whether LPO holds or not!
+is isomorphic to the unit type 𝟙, and hence is compact and compact. If
+LPO holds, that is, LPO is isomorphic to 𝟙 because it is a univalent
+proposition, then the function type LPO → ℕ is isomorphic to ℕ, and
+hence the type LPO → ℕ is again compact by LPO. So in any case we have
+that the type LPO → ℕ is compact. However, LPO is an undecided
+proposition in our type theory, so that the nature of the function
+type LPO → ℕ is undecided. Nevertheless, we can show that it is
+compact, without knowing whether LPO holds or not!
 
 \begin{code}
 
-open import SearchableTypes
 open import PropTychonoff
 
-LPO-gives-ℕ-searchable : searchable(LPO → ℕ)
-LPO-gives-ℕ-searchable = prop-tychonoff-corollary' fe LPO-is-prop f
+LPO-gives-ℕ-compact∙ : compact∙(LPO → ℕ)
+LPO-gives-ℕ-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f
  where
-   f : LPO → searchable ℕ
-   f = inhabited-omniscient-implies-searchable 0 ∘ LPO-gives-omniscient-ℕ
+   f : LPO → compact∙ ℕ
+   f lpo = compact-pointed-gives-compact∙ (LPO-gives-compact-ℕ lpo) 0
 
-LPO-gives-ℕ-omniscient : omniscient(LPO → ℕ)
-LPO-gives-ℕ-omniscient = searchable-implies-omniscient LPO-gives-ℕ-searchable
+LPO-gives-ℕ-compact : compact(LPO → ℕ)
+LPO-gives-ℕ-compact = compact∙-gives-compact LPO-gives-ℕ-compact∙
 
 \end{code}
 

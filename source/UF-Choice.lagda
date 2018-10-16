@@ -33,10 +33,10 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Two-Prop-Density
 open import UF-Base
 open import UF-FunExt
 open import UF-PropTrunc
-open import UF-Two-Prop-Density
 open import UF-ImageAndSurjection
 open import UF-LeftCancellable
 open import UF-Equiv

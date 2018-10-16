@@ -26,7 +26,7 @@ data simple-type : U₀ ̇ → U₁ ̇ where
  step : {X Y : U₀ ̇} → simple-type X → simple-type Y → simple-type (X → Y)
 
 open import TotallySeparated
-open import 2CompactTypes (fe) (pt)
+open import WeaklyCompactTypes (fe) (pt) renaming (Π-compact to compact)
 open import DiscreteAndSeparated
 
 𝟚-retract-of-ℕ : retract 𝟚 of ℕ
@@ -65,7 +65,7 @@ simple-types-r rn (step s t) = retracts-of-closed-under-exponentials
                                  (simple-types-r rn t)
 
 cfdbce : {X Y : U₀ ̇} → simple-type X → simple-type Y
-       → 𝟚-compact (X → Y) → discrete X × 𝟚-compact Y
+       → compact (X → Y) → discrete X × compact Y
 cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r 𝟚-retract-of-ℕ t) c ,
                i2c2c (simple-types-pointed s) c)
 
@@ -77,9 +77,9 @@ the original formalution of WLPO by Bishop (written in type theory).
 \begin{code}
 
 WLPO' : U₀ ̇
-WLPO' = 𝟚-compact ℕ
+WLPO' = compact ℕ
 
-stcwlpo : {X : U₀ ̇} → simple-type X → 𝟚-compact X → WLPO'
+stcwlpo : {X : U₀ ̇} → simple-type X → compact X → WLPO'
 stcwlpo base c = c
 stcwlpo (step s t) c = stcwlpo t (pr₂ (cfdbce s t c))
 
@@ -87,7 +87,7 @@ stcwlpo (step s t) c = stcwlpo t (pr₂ (cfdbce s t c))
 
 But, of course, the last consequence can be proved more directly by
 simply showing that ℕ is a retract of every simple type, using the
-fact that 𝟚-compactness is inherited by retracts, which doesn't rely
+fact that compactness is inherited by retracts, which doesn't rely
 on the notion of total separatedness:
 
 \begin{code}
@@ -95,8 +95,8 @@ on the notion of total separatedness:
 simple-types-rℕ : {X : U₀ ̇} → simple-type X → retract ℕ of X
 simple-types-rℕ = simple-types-r identity-retraction
 
-stcwlpo' : {X : U₀ ̇} → simple-type X → 𝟚-compact X → WLPO'
-stcwlpo' s = retract-𝟚-compact (simple-types-rℕ s)
+stcwlpo' : {X : U₀ ̇} → simple-type X → compact X → WLPO'
+stcwlpo' s = retract-Π-compact (simple-types-rℕ s)
 
 \end{code}
 
@@ -142,7 +142,7 @@ simple-types₂-r𝟚 (step s t) = retracts-of-closed-under-exponentials
                                  (simple-types₂-r𝟚 t)
 
 cfdbce₂ : {X Y : U₀ ̇} → simple-type₂ X → simple-type₂ Y
-       → 𝟚-compact (X → Y) → discrete X × 𝟚-compact Y
+       → compact (X → Y) → discrete X × compact Y
 cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-r𝟚 t) c ,
                  i2c2c (simple-types₂-pointed s) c)
 

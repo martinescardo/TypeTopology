@@ -1,24 +1,24 @@
 Martin Escardo 29 April 2014.
 
-A prop-indexed product of searchable sets is itself searchable. But
-the assumption that a prop-indexed product of omniscient sets is
-omniscient gives weak excluded middle (negative propositions are
-decidable).
+A prop-indexed product of pointed compact sets is itself compact. But
+the assumption that a prop-indexed product of compact sets is compact
+gives weak excluded middle (negative propositions are decidable).
 
-The definition of the searchability of a type A is
+The definition of the compactness (or exhaustive searchability) of a
+type A is
 
-    searchable A = (p : A → 𝟚) → Σ \(a₀ : A) → p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact A = (p : A → 𝟚) → Σ \(a₀ : A) → p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
 
 With excluded middle for propositions, the above claim is not
 surprising, because
 
-    (𝟘 → Y) = Y^𝟘 ≃ 𝟙 (which is always searchable),
-    (𝟙 → Y) = Y^𝟙 ≃ Y (which is searchable if Y is),
+    (𝟘 → Y) = Y^𝟘 ≃ 𝟙 (which is always compact),
+    (𝟙 → Y) = Y^𝟙 ≃ Y (which is compact if Y is),
 
 and excluded middle for a proposition X amounts to X=𝟘 or X=𝟙, so
 that
 
-    Y^X is searchable if Y is searchable and X is a proposition.
+    Y^X is compact if Y is compact and X is a proposition.
 
 The point is that
 
@@ -26,8 +26,8 @@ The point is that
 
     (2) This also holds for dependent products:
 
-        Π(x:X).Y x is searchable if X is a proposition and Y x is
-        searchable for every x:X.
+        Π(x:X).Y x is compact if X is a proposition and Y x is
+        compact for every x:X.
 
         (This product is written (x : X) → Y x or Π Y in Agda.)
 
@@ -46,14 +46,14 @@ open import UF-FunExt
 
 module PropTychonoff (fe : ∀ U V → funext U V) where
 
-open import SearchableTypes
+open import CompactTypes
 open import Two
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
-open import UF-Two-Prop-Density
+open import Two-Prop-Density
 
 \end{code}
 
@@ -67,29 +67,29 @@ element by hypothesis, and if the element is a:X then the product Π Y
 should be isomorphic to its only factor Y a.
 
 With this observation, the following proof should be self-contained,
-if we recall again the definition of searchable set from the module
-Searchable:
+if we recall again the definition of compact set from the module
+CompacTypes:
 
-    searchable A = (p : A → 𝟚) → Σ \(a₀ : A) → p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact∙ A = (p : A → 𝟚) → Σ \(a₀ : A) → p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
 
 Recall also that such an a₀ is called a universal witness for the predicate p.
 
 \begin{code}
 
 prop-tychonoff : ∀ {U V} {X : U ̇} {Y : X → V ̇} → is-prop X
-               → ((x : X) → searchable(Y x)) → searchable(Π Y)
+               → ((x : X) → compact∙(Y x)) → compact∙(Π Y)
 prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
  where
   -- hp : is-prop X
-  --  ε : (x : X) → searchable(Y x)
+  --  ε : (x : X) → compact∙(Y x)
   --  p : Π Y → 𝟚
 
   hip : (x : X) → Π Y ≃ Y x
   hip = prop-indexed-product (fe U V) hp
 
   -- The essence of the first part of the proof is this:
-  not-useful : X → searchable(Π Y)
-  not-useful x = equiv-searchable (≃-sym(hip x)) (ε x)
+  not-useful : X → compact∙(Π Y)
+  not-useful x = equiv-compact∙ (≃-sym(hip x)) (ε x)
   -- But this is very crude for our purposes (or so it seems).
   -- So we instead proceed as follows.
 
@@ -187,7 +187,7 @@ A particular case is the following:
 \begin{code}
 
 prop-tychonoff-corollary : ∀ {U V} {X : U ̇} {Y : V ̇} → is-prop X
-                        → searchable Y → searchable(X → Y)
+                        → compact∙ Y → compact∙(X → Y)
 prop-tychonoff-corollary hp ε = prop-tychonoff hp (λ x → ε)
 
 \end{code}
@@ -201,31 +201,31 @@ Better (9 Sep 2015):
 \begin{code}
 
 prop-tychonoff-corollary' : ∀ {U V } {X : U ̇} {Y : V ̇} → is-prop X
-                          → (X → searchable Y) → searchable(X → Y)
+                          → (X → compact∙ Y) → compact∙(X → Y)
 prop-tychonoff-corollary' hp ε = prop-tychonoff hp ε
 
 \end{code}
 
-So the type (LPO → ℕ) is searchable! (See the module LPO for a proof.)
+So the type (LPO → ℕ) is compact! (See the module LPO for a proof.)
 
-The Tychonoff theorem for prop-indexed products of omniscient types
+The Tychonoff theorem for prop-indexed products of compact types
 doesn't hold. To see this, first notice that a proposition is
-omniscient iff it is decidable. Now, the empty type 𝟘 is omniscient
-(but not searchable), and if 𝟘^P, that is, ¬P, where omniscient for a
+compact iff it is decidable. Now, the empty type 𝟘 is compact
+(but not compact‌), and if 𝟘^P, that is, ¬P, where compact for a
 proposition P, this would imply that ¬P is decidable for every
 proposition P, which is weak excluded middle, which is not provable.
 
 \begin{code}
 
-open import OmniscientTypes
+open import CompactTypes
 open import UF-ExcludedMiddle
 
-omniscient-prop-tychonoff-wem :
-  ((X : U₀ ̇) (Y : X → U₀ ̇) → is-prop X → ((x : X) → omniscient(Y x)) → omniscient(Π Y))
+compact-prop-tychonoff-wem :
+  ((X : U₀ ̇) (Y : X → U₀ ̇) → is-prop X → ((x : X) → compact(Y x)) → compact(Π Y))
   → WEM U₀
-omniscient-prop-tychonoff-wem τ P isp = omniscient-decidable (¬ P) ¬P-omniscient
+compact-prop-tychonoff-wem τ P isp = compact-decidable (¬ P) ¬P-compact
  where
-  ¬P-omniscient : omniscient (¬ P)
-  ¬P-omniscient = τ P (λ p → 𝟘) isp (λ p → 𝟘-omniscient)
+  ¬P-compact : compact (¬ P)
+  ¬P-compact = τ P (λ p → 𝟘) isp (λ p → 𝟘-compact)
 
 \end{code}

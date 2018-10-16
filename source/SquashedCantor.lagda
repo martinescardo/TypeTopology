@@ -1,14 +1,14 @@
 Martin Escardo, back-of-the-envelope 2011, done July 2018
 
-The main application of this module is to show that the searchable
-ordinals are totally separated. This is difficult because sums don't
-preserve total separatedness (as shown in the module
-FailureOfTotalSeparatedness). To prove the total separatedness, we
-show that our searchable ordinals are retracts of the Cantor space,
-which is enough as total separatedness is inherited by retracts. The
-crucial step, developed at the end of this module as an application of
-the main development, is to show that the squashed sum of a family of
-Cantor retracts is again a Cantor retract.
+The main application of this module is to show that the compact
+ordinals we construct in other modules are totally separated. This is
+difficult because sums don't preserve total separatedness (as shown in
+the module FailureOfTotalSeparatedness). To prove the total
+separatedness, we show that our compact ordinals are retracts of the
+Cantor type, which is enough as total separatedness is inherited by
+retracts. The crucial step, developed at the end of this module as an
+application of the main development, is to show that the squashed sum
+of a family of Cantor retracts is again a Cantor retract.
 
 \begin{code}
 

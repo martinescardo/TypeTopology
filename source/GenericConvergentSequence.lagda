@@ -1,6 +1,6 @@
 Martin Escardo 2012.
 
-See my paper "Infinite sets that satisfy the principle of
+See my JSL paper "Infinite sets that satisfy the principle of
 omniscience" for a discussion of the type ℕ∞ defined here.
 Essentially, ℕ∞ is ℕ with an added point ∞.
 

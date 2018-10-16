@@ -12,19 +12,19 @@ open import UF-FunExt
 module PropInfTychonoff (fe : ∀ U V → funext U V) where
 
 open import Two
-open import SearchableTypes
-open import InfSearchable
+open import CompactTypes
+open import InfCompact
+open import Two-Prop-Density
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
-open import UF-Two-Prop-Density
 
 prop-inf-tychonoff : ∀ {U V T} {X : U ̇} {Y : X → V ̇} → is-prop X
               → (_≺_ : {x : X} → Y x → Y x → T ̇)
-              → ((x : X) → inf-searchable(λ (y y' : Y x) → ¬(y' ≺ y)))
-              → inf-searchable (λ (φ γ : Π Y) → ¬ Σ \(x : X) → γ x ≺ φ x)
+              → ((x : X) → inf-compact(λ (y y' : Y x) → ¬(y' ≺ y)))
+              → inf-compact (λ (φ γ : Π Y) → ¬ Σ \(x : X) → γ x ≺ φ x)
 prop-inf-tychonoff {U} {V} {T} {X} {Y} hp _≺_ ε p =
  φ₀ , φ₀-is-conditional-root , a , b
  where

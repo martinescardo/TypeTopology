@@ -14,18 +14,18 @@ open import UF-FunExt
 module CountableTychonoff (fe : ∀ U V → funext U V) where
 
 open import SpartanMLTT
-open import SearchableTypes
+open import CompactTypes
 open import Sequence (fe)
 
 binary-Tychonoff' : ∀ {U} → {X : ℕ → U ̇} →
 
- searchable(X 0) →  searchable((n : ℕ) → X(succ n))
- → searchable((n : ℕ) → X n)
+ compact∙(X 0) →  compact∙((n : ℕ) → X(succ n))
+ → compact∙((n : ℕ) → X n)
 
 binary-Tychonoff' ε δ =
- retractions-preserve-searchability
+  retractions-preserve-compactness
   cons-retraction
- (binary-Tychonoff ε δ)
+  (binary-Tychonoff ε δ)
 
 \end{code}
 
@@ -37,7 +37,7 @@ portion of the proof is used, because of continuity.
 
 We emphasize that although continuity is used at the meta-level to
 justify termination, the result is not anti-classical. In fact,
-classically, all sets are searchable! This module just enlarges the
+classically, all sets are compact! This module just enlarges the
 constructive universe a bit, using Brouwerian ideas, but being
 compatible with Bishop in the sense of not contradicting classical
 mathematics.
@@ -54,14 +54,11 @@ checker enabled.) (I plan to actually write down this proof in Agda.)
 \begin{code}
 
 {-# TERMINATING #-}
-countable-Tychonoff : ∀ {U} → {X : ℕ → U ̇} →
-
- ((n : ℕ) → searchable(X n)) → searchable((n : ℕ) → X n)
-
-countable-Tychonoff {X} ε =
- binary-Tychonoff' (head ε) (countable-Tychonoff(tail ε))
+countable-Tychonoff : ∀ {U} → {X : ℕ → U ̇}
+                    → ((n : ℕ) → compact∙(X n)) → compact∙((n : ℕ) → X n)
+countable-Tychonoff {X} ε = binary-Tychonoff' (head ε) (countable-Tychonoff(tail ε))
 
 \end{code}
 
-A corollary is that the Cantor space is searchable, and hence
-omniscient and exhaustible. See the module CantorSearchable.
+A corollary is that the Cantor space is compact. See the module
+CantorCompact.

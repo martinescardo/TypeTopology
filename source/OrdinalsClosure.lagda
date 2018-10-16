@@ -18,18 +18,18 @@ open import Ordinals fe
 open import OrdinalArithmetic fe
 open import OrdinalNotions hiding (_≤_)
 open import OrdinalsWellOrderArithmetic
-open import SearchableTypes
+open import CompactTypes
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import SquashedSum fe
 open import SquashedCantor fe
 open import LexicographicOrder
-open import LexicographicSearch
-open import ConvergentSequenceInfSearchable
+open import LexicographicCompactness
+open import ConvergentSequenceInfCompact
 open import PropInfTychonoff
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; l ; r)
-open import InfSearchable
+open import InfCompact
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
@@ -40,19 +40,19 @@ open import UF-Miscelanea
 
 \end{code}
 
-Ordinal-indexed sums of ordinals are closed under searchability:
+Ordinal-indexed sums of ordinals are closed under compactness:
 
 \begin{code}
 
-∑-searchable : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-            → searchable ⟪ τ ⟫
-            → ((x : ⟪ τ ⟫) → searchable ⟪ υ x ⟫)
-            → searchable ⟪ ∑ τ υ ⟫
-∑-searchable τ υ ε δ = Σ-searchable ε δ
+∑-compact∙ : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+           → compact∙ ⟪ τ ⟫
+           → ((x : ⟪ τ ⟫) → compact∙ ⟪ υ x ⟫)
+           → compact∙ ⟪ ∑ τ υ ⟫
+∑-compact∙ τ υ ε δ = Σ-compact∙ ε δ
 
 \end{code}
 
-More searchability closure properties are in the module SquashedSum.
+More compactness closure properties are in the module SquashedSum.
 
 The complication of the following proof in the case for addition is
 that the ordinal 𝟚ᵒ has underlying set 𝟙+𝟙 rather than 𝟚, and that
@@ -66,9 +66,9 @@ following construction is performed in the module SquashedCantor.
 \begin{code}
 
 +-retract-of-Cantor : (τ : Ordᵀ) (υ : Ordᵀ)
-                   → retract ⟪ τ ⟫ of Cantor
-                   → retract ⟪ υ ⟫ of Cantor
-                   → retract ⟪ τ +ᵒ υ  ⟫ of Cantor
+                    → retract ⟪ τ ⟫ of Cantor
+                    → retract ⟪ υ ⟫ of Cantor
+                    → retract ⟪ τ +ᵒ υ  ⟫ of Cantor
 +-retract-of-Cantor τ υ ε δ = retracts-compose d e
  where
   a : retract (Cantor +' Cantor) of (Cantor + Cantor)
@@ -92,9 +92,9 @@ following construction is performed in the module SquashedCantor.
     l ₁ = refl
 
 ×-retract-of-Cantor : (τ : Ordᵀ) (υ : Ordᵀ)
-                   → retract ⟪ τ ⟫ of Cantor
-                   → retract ⟪ υ ⟫ of Cantor
-                   → retract ⟪ τ ×ᵒ υ  ⟫ of Cantor
+                    → retract ⟪ τ ⟫ of Cantor
+                    → retract ⟪ υ ⟫ of Cantor
+                    → retract ⟪ τ ×ᵒ υ  ⟫ of Cantor
 ×-retract-of-Cantor τ υ ε δ =  retracts-compose a b
  where
   a : retract (Cantor × Cantor) of Cantor
@@ -164,8 +164,8 @@ Preservation of discreteness:
 \end{code}
 
 Some maps and their order preservation, used to show that the
-embedding of the discrete ordinals into the searchable ordinals is
-order preserving.
+embedding of the discrete ordinals into the compact ordinals is order
+preserving.
 
 \begin{code}
 
@@ -420,12 +420,12 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
                                  (∑-up-is-order-reflecting υ)
 \end{code}
 
-28 July 2018. Inf searchability.
+28 July 2018. Inf compactness.
 
 \begin{code}
 
-𝟙ᵒ-inf-searchable : inf-searchable (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y)
-𝟙ᵒ-inf-searchable p = * , f , g , h
+𝟙ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y)
+𝟙ᵒ-inf-compact p = * , f , g , h
  where
   f : (Σ \(x : 𝟙) → p x ≡ ₀) → p * ≡ ₀
   f (* , r) = r
@@ -435,8 +435,8 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
     → x ≼⟪ 𝟙ᵒ ⟫ *
   h * φ ()
 
-𝟚ᵒ-inf-searchable : inf-searchable (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
-𝟚ᵒ-inf-searchable p = 𝟚-equality-cases φ γ
+𝟚ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
+𝟚ᵒ-inf-compact p = 𝟚-equality-cases φ γ
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → U₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
@@ -470,17 +470,17 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
 
 It is not necessary to use propositional extensionality to prove the
 following, but it is simpler to do so given that we have already
-proved the inf-searchability of various types using different,
+proved the inf-compactness of various types using different,
 logically equivalent orders.
 
 \begin{code}
 
-∑-inf-searchable : propext U₀
-                → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-                → inf-searchable (λ x y → x ≼⟪ τ ⟫ y)
-                → ((x : ⟪ τ ⟫) → inf-searchable (λ a b → a ≼⟪ υ x ⟫ b))
-                → inf-searchable (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
-∑-inf-searchable pe τ υ ε δ = γ
+∑-inf-compact : propext U₀
+             → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+             → inf-compact (λ x y → x ≼⟪ τ ⟫ y)
+             → ((x : ⟪ τ ⟫) → inf-compact (λ a b → a ≼⟪ υ x ⟫ b))
+             → inf-compact (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
+∑-inf-compact pe τ υ ε δ = γ
  where
   _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → U₀ ̇
   _≤_ = lex-order (λ x y → x ≼⟪ τ ⟫ y) (λ {x} a b → a ≼⟪ υ x ⟫ b)
@@ -489,8 +489,8 @@ logically equivalent orders.
    to-Σ-≡
      (≼-prop-valued τ x y p q ,
      dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
-  φ : inf-searchable _≤_
-  φ = Σ-inf-searchable ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
+  φ : inf-compact _≤_
+  φ = Σ-inf-compact ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
   open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {U₀}) hiding (_≤_)
   i : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t → z ≼⟪ ∑ τ υ ⟫ t
   i (x , a) (y , b) = back y x b a
@@ -500,14 +500,14 @@ logically equivalent orders.
   k z t = pe (≤-prop-valued z t) (≼-prop-valued (∑ τ υ) z t) (i z t) (j z t)
   l : _≤_ ≡ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
   l = dfunext (fe U₀ U₁) λ z → dfunext (fe U₀ U₁) (k z)
-  γ : inf-searchable (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
-  γ = transport inf-searchable l φ
+  γ : inf-compact (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
+  γ = transport inf-compact l φ
 
-∑₁-inf-searchable : propext U₀
-                  → (τ : ℕ → Ordᵀ)
-                  → ((n : ℕ) → inf-searchable λ x y → x ≼⟪ τ n ⟫ y)
-                  → inf-searchable (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
-∑₁-inf-searchable pe τ ε = ∑-inf-searchable pe
+∑₁-inf-compact : propext U₀
+               → (τ : ℕ → Ordᵀ)
+               → ((n : ℕ) → inf-compact λ x y → x ≼⟪ τ n ⟫ y)
+               → inf-compact (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
+∑₁-inf-compact pe τ ε = ∑-inf-compact pe
                             ℕ∞ᵒ
                             (λ (x : ℕ∞) → (τ ↗ (under , under-embedding fe₀)) x)
                             a
@@ -520,9 +520,9 @@ logically equivalent orders.
                           (≼-prop-valued ℕ∞ᵒ u v)
                           (≼-not-≺ u v)
                           (not-≺-≼ fe₀ u v)))
-  a : inf-searchable (tunderlying-rorder ℕ∞ᵒ)
-  a = transport inf-searchable p (ℕ∞-inf-searchable fe₀)
-  b : (x : ⟪ ℕ∞ᵒ ⟫) → inf-searchable
+  a : inf-compact (tunderlying-rorder ℕ∞ᵒ)
+  a = transport inf-compact p (ℕ∞-inf-compact fe₀)
+  b : (x : ⟪ ℕ∞ᵒ ⟫) → inf-compact
                         (tunderlying-rorder
                         ((τ ↗ (under , under-embedding fe₀)) x))
   b x = prop-inf-tychonoff fe

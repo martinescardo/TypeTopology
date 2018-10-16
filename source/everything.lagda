@@ -16,39 +16,38 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-import 2CompactTypes
 import ADecidableQuantificationOverTheNaturals
 import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
-import CantorSearchable
+import CompactTypes
+import WeaklyCompactTypes
+import CantorCompact
 import Codistance
 import CoNaturals
 import CoNaturalsArithmetic
 import CoNaturalsExercise
-import ConvergentSequenceInfSearchable
-import ConvergentSequenceSearchable
+import ConvergentSequenceInfCompact
+import ConvergentSequenceCompact
 import CountableTychonoff
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DiscreteAndSeparated
 import Dominance
 import DummettDisjunction
-import ExhaustibleTypes
-import ExtendedSumSearchable
+import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
-import InfSearchable
+import InfCompact
 import LawvereFPT
 import LexicographicOrder
-import LexicographicSearch
+import LexicographicCompactness
 import LPO
 import Lumsdaine
 import NaturalsAddition
 import NaturalsOrder
 import NonCollapsibleFamily
-import OmniscientTypes
 import OrdinalNotions
 import OrdinalCodes
 import Ordinals
@@ -64,7 +63,6 @@ import PropTychonoff
 import PropInfTychonoff
 import RicesTheoremForTheUniverse
 import RootsTruncation
-import SearchableTypes
 import Sequence
 import SimpleTypes
 import SpartanMLTT
@@ -74,6 +72,9 @@ import TheTopologyOfTheUniverse
 import TotallySeparated
 import Type-in-Type-False
 import Two
+import Two-Prop-Density
+import WLPO
+
 import Universes
 import UF-Base
 import UF-Choice
@@ -103,12 +104,10 @@ import UF-SubsetIdentity
 import UF-Subsingletons
 import UF-Subsingletons-Equiv
 import UF-Subsingletons-FunExt
-import UF-Two-Prop-Density
 import UF-UA-FunExt
 import UF-Univalence
 import UF-Yoneda
 import UnivalenceFromScratch
-import WLPO
 
 \end{code}
 
@@ -139,10 +138,10 @@ up-to-date information within them.
    before. Now it it has been modularized. We extended the
    Yoneda-Lemma file with new results.
 
-   29 June 2018. The work on searchable ordinals is essentially
+   29 June 2018. The work on compact ordinals is essentially
    complete. Some routine bells and whistles are missing.
 
-   20 July 2018. Completed the proof that the searchable ordinals are
+   20 July 2018. Completed the proof that the compact ordinals are
    retracts of the Cantor space and hence totally separated. This
    required work on several modules, and in particular the new module
    SquashedCantor.
@@ -152,20 +151,14 @@ symbols to get to their definitions.
 
 The module dependency graph: http://www.cs.bham.ac.uk/~mhe/agda-new/manual.pdf
 
-The following module investigates the notion of omniscient set. A
-set X is omniscient iff
+The following module investigates the notion of compact set. A
+set X is compact iff
 
    (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
 
-\begin{code}
-
-import OmniscientTypes
-
-\end{code}
-
-The omniscience of ℕ is a contructive taboo, known as LPO, which is an
+The compactness of ℕ is a contructive taboo, known as LPO, which is an
 undecided proposition in our type theory. Nevertheless, we can show
-that the function type LPO→ℕ is omniscient:
+that the function type LPO→ℕ is compact:
 
 \begin{code}
 
@@ -181,7 +174,7 @@ import WLPO
 
 \end{code}
 
-An example of an omniscient set is ℕ∞, which intuitively (and under
+An example of an compact set is ℕ∞, which intuitively (and under
 classical logic) is ℕ ∪ { ∞ }, defined in the following module:
 
 \begin{code}
@@ -190,17 +183,17 @@ import GenericConvergentSequence
 
 \end{code}
 
-But it is more direct to show that ℕ∞ is searchable, and get
-omniscience as a corollary:
+But it is more direct to show that ℕ∞ is compact, and get
+compactness as a corollary:
 
 \begin{code}
 
-import SearchableTypes
-import ConvergentSequenceSearchable
+import CompactTypes
+import ConvergentSequenceCompact
 
 \end{code}
 
-An interesting consequence of the omniscience of ℕ∞ is that the
+An interesting consequence of the compactness of ℕ∞ is that the
 following property, an instance of WLPO, holds constructively:
 
   (p : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ ₁) + ¬((n : ℕ) → p(under n) ≡ ₁).
@@ -228,21 +221,21 @@ import DecidabilityOfNonContinuity
 
 \end{code}
 
-Another example of searchable set is the type of univalent
-propositions (proved in the above module Searchable).
+Another example of compact set is the type of univalent
+propositions (proved in the above module Compact).
 
-Given countably many searchable sets, one can take the disjoint sum
-with a limit point at infinity, and this is again a searchable
+Given countably many compact sets, one can take the disjoint sum
+with a limit point at infinity, and this is again a compact
 sets. This construction is called the squashed sum of the countable
-family searchable sets. It can be transfinitely iterated to produce
-increasingly complex searchable ordinals.
+family compact sets. It can be transfinitely iterated to produce
+increasingly complex compact ordinals.
 
 \begin{code}
 
 import SquashedSum
 import OrdinalNotationInterpretation
-import LexicographicSearch
-import ConvergentSequenceInfSearchable
+import LexicographicCompactness
+import ConvergentSequenceInfCompact
 
 \end{code}
 
@@ -278,7 +271,7 @@ we also include runnable experiments in the second module:
 \begin{code}
 
 import CountableTychonoff
-import CantorSearchable
+import CantorCompact
 
 \end{code}
 
@@ -312,8 +305,8 @@ import UF-PropIndexedPiSigma
 
 \end{code}
 
-And, more subtly, that a product of searchable sets indexed by a
-univalent proposition is itself searchable:
+And, more subtly, that a product of compact sets indexed by a
+univalent proposition is itself compact:
 
 \begin{code}
 
@@ -335,7 +328,7 @@ and proof, using the injectivity of the universe and the Prop-Tychonoff theorem:
 
 \begin{code}
 
-import ExtendedSumSearchable
+import ExtendedSumCompact
 
 \end{code}
 
@@ -348,7 +341,7 @@ results.
 \begin{code}
 
 import TotallySeparated
-import 2CompactTypes
+import CompactTypes
 import SimpleTypes
 import FailureOfTotalSeparatedness
 

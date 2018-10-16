@@ -1,6 +1,6 @@
 Martin Escardo 2011.
 
-The Cantor space is the type (ℕ → 𝟚). We show it is searchable, under
+The Cantor space is the type (ℕ → 𝟚). We show it is compact, under
 the assumptions discussed in CountableTychonoff.
 
 This module is a set of corollaries of the module CountableTychonoff
@@ -14,21 +14,21 @@ open import SpartanMLTT
 open import Two
 open import UF-FunExt
 
-module CantorSearchable (fe : ∀ U V → funext U V) where
+module CantorCompact (fe : ∀ U V → funext U V) where
 
-open import SearchableTypes
+open import CompactTypes
 open import CountableTychonoff (fe)
-open import OmniscientTypes
-open import ExhaustibleTypes
+open import CompactTypes
+open import WeaklyCompactTypes
 
-cantor-searchable : searchable (ℕ → 𝟚)
-cantor-searchable = countable-Tychonoff (λ i → 𝟚-searchable)
+cantor-compact∙ : compact∙ (ℕ → 𝟚)
+cantor-compact∙ = countable-Tychonoff (λ i → 𝟚-compact∙)
 
-cantor-omniscient : omniscient (ℕ → 𝟚)
-cantor-omniscient = searchable-implies-omniscient cantor-searchable
+cantor-compact : compact (ℕ → 𝟚)
+cantor-compact = compact∙-gives-compact cantor-compact∙
 
-cantor-exhaustible : exhaustible (ℕ → 𝟚)
-cantor-exhaustible = searchable-implies-exhaustible cantor-searchable
+cantor-wcompact : wcompact (ℕ → 𝟚)
+cantor-wcompact = compact-gives-wcompact cantor-compact∙
 
 \end{code}
 
@@ -37,11 +37,8 @@ of the Cantor space:
 
 \begin{code}
 
-open import SpartanMLTT
-open import ExhaustibleTypes
-
 A : ((ℕ → 𝟚) → 𝟚) → 𝟚
-A = pr₁(exhaustible-implies-exhaustible' cantor-exhaustible)
+A = pr₁(wcompact-implies-wcompact' cantor-wcompact)
 
 \end{code}
 
@@ -52,7 +49,7 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 open import DiscreteAndSeparated
 
 discrete-Cantor→ℕ : discrete((ℕ → 𝟚) → ℕ)
-discrete-Cantor→ℕ = omniscient-discrete-discrete' (fe U₀ U₀) cantor-omniscient ℕ-discrete
+discrete-Cantor→ℕ = compact-discrete-discrete' (fe U₀ U₀) cantor-compact ℕ-discrete
 
 \end{code}
 

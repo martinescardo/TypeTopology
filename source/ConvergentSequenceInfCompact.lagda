@@ -1,9 +1,9 @@
 Martin Escardo 20-21 December 2012
 
-Development adapted from the module ConvergentSequenceSearchable:
+Development adapted from the module ConvergentSequenceCompact:
 
-Not only is ℕ∞ searchable, but, moreover, minimal witnesses can be
-found.
+Not only is ℕ∞ compact (or searchable), but, moreover, minimal
+witnesses can be found.
 
 \begin{code}
 
@@ -12,14 +12,14 @@ found.
 open import UF-FunExt
 open import SpartanMLTT
 
-module ConvergentSequenceInfSearchable (fe₀ : funext U₀ U₀) where
+module ConvergentSequenceInfCompact (fe₀ : funext U₀ U₀) where
 
 open import Two
-open import InfSearchable
+open import InfCompact
 open import GenericConvergentSequence
 
-ℕ∞-inf-searchable : inf-searchable _≼_
-ℕ∞-inf-searchable p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
+ℕ∞-inf-compact : inf-compact _≼_
+ℕ∞-inf-compact p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
   α : ℕ → 𝟚
   α 0       = p(under 0)
