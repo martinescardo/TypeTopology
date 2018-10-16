@@ -386,17 +386,17 @@ Y {X} f = pr₁ (γ f)
   data 𝕎 : Set where
    sup : (T : Set) → (T → 𝕎) → 𝕎
   e : 𝕎 → 𝕎 → Set
-  e w (sup T φ) = Σ \(t : T) → w ≡ φ t
+  e (sup T φ) w = Σ \(t : T) → φ t ≡ w
   R : 𝕎
   R = sup (Σ \(w : 𝕎) → e w w → X) pr₁
   A : Set
   A = e R R
   r : A → (A → X)
-  r ((.R , p) , refl) = p
+  r ((.R , f) , refl) = f
   s : (A → X) → A
-  s p = (R , p) , refl
-  rs : (p : A → X) → r (s p) ≡ p
-  rs p = refl
+  s f = (R , f) , refl
+  rs : (f : A → X) → r (s f) ≡ f
+  rs f = refl
   γ : (f : X → X) → Σ \(x : X) → x ≡ f x
   γ = LFPT (r , s , rs)
 
@@ -414,8 +414,6 @@ contradiction' : 𝟘
 contradiction' = Y id
 
 \end{code}
-
-
 
 
 Fixities and precedences:
