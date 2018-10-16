@@ -97,7 +97,7 @@ $x:X$ in type theory simply specifies that $x$ ranges over $X$.
 %
 For example, if $\N$ is the type of natural numbers, we may
 write
-\begin{gather*}  
+\begin{gather*}
     0 : \N, \\
    (0,0) : \N \times  \N.
 \end{gather*}
@@ -105,7 +105,7 @@ However, the following statements are nonsensical and syntactically
 incorrect, rather than false:
 \begin{eqnarray*}
     0 : \N \times  \N & \text{(nonsense)}, \\
-   (0,0) : \N & \text{(nonsense)}.  
+   (0,0) : \N & \text{(nonsense)}.
 \end{eqnarray*}
 This is no different from the situation in the internal language of a
 topos.
@@ -116,7 +116,7 @@ Given a family of types $A(x)$ indexed by elements $x$ of a type $X$, we can
 form its product and sum:
 \begin{gather*}
     \Pi(x:X), A(x), \\
-    \Sigma(x:X), A(x),  
+    \Sigma(x:X), A(x),
 \end{gather*}
 which we also write $\Pi A$ and $\Sigma A$. An element of the type $\Pi A$ is a
 function that maps elements $x:X$ to elements of $A(x)$. An element of the
@@ -175,11 +175,11 @@ indexed by elements $x,y:X$ and $p:\Id(x,y)$ and any given function
 \[
     f : \Pi(x:X), A(x,x,\refl(x)),
 \]
-we have a function 
+we have a function
 \[
  \J(A,f) :  \Pi(x,y:X), \Pi(p:\Id(x,y)), A(x,y,p)
-\]  
-with $\J(A,f)(x,x,\refl(x))$ stipulated to be $f(x)$.  
+\]
+with $\J(A,f)(x,x,\refl(x))$ stipulated to be $f(x)$.
 We will see examples of uses of $\J$ in the steps leading to the
 construction of the univalence type.
 
@@ -281,7 +281,7 @@ In order to do that, we use $\J$ with the type family
 \[
    A(y,x,p) := \Id(\eta(x),(y,p)),
 \]
-and the function 
+and the function
 \begin{eqnarray*}
   f & : & \Pi(x:X), A(x,x,\refl(x)) \\
    f(x) & := & \refl(\eta(x)).
@@ -319,7 +319,7 @@ type $\Id_X$. Now we use $\J$ a second time to define a function
 For $X,Y:\U$ and $p:\Id(X,Y)$, we set
 \[
    A(X,Y,p) := \Eq(X,Y)
-\]  
+\]
 and
 \[
    f(X) := (\id_X , \idIsEquiv(X))
@@ -337,20 +337,20 @@ $\IdToEq(X,Y)$ is itself an equivalence:
 \subsection{The univalence axiom}
 
 The type $\isUnivalent(\U)$ may or may not have an inhabitant. The
-univalence axiom says that it does. The $\K$ axiom implies that it doesn't. 
+univalence axiom says that it does. The $\K$ axiom implies that it doesn't.
 Because both univalence and the $\K$ axiom are consistent, it follows that univalence is undecided in MLTT.
 
 \subsection{Notes}
 
 \begin{enumerate}
-\item 
+\item
  The minimal Martin-L\"of type theory needed to formulate univalence
     has
     \[
       \Pi, \Sigma, \Id, \U, \U'.
     \]
     Two universes $\U :\U'$ suffice, where univalence talks about $\U$.
-  
+
 \item It can be shown, by a very complicated and interesting argument,
     that
     \[
@@ -381,13 +381,13 @@ Because both univalence and the $\K$ axiom are consistent, it follows that univa
     Moreover, the univalence type formulated as above, but using
     $\Iso(f)$ rather than $\isEquiv(f)$, is provably empty, e.g.\ for
     MLTT with $\Pi, \Sigma, \Id$, the empty and two-point types, and
-    three universes, as shown by Shulman~\cite{shulman:e46}. With only
+    two universes, as shown by Shulman~\cite{shulman:e46}. With only
     one universe, the formulation with $\Iso(f)$ is consistent, as
     shown by Hofmann and Streicher's groupoid model~\cite{MR1686862},
     but in this case all elements of the universe are sets and
     $\Iso(f)$ is a subsingleton, and hence equivalent to
     $\isEquiv(f)$.
-    
+
     So, to have a consistent axiom in general, it is crucial to use
     the type $\isEquiv(f)$. It was Voevodsky's insight not only that a
     subsingleton version of $\Iso(f)$ is needed, but also how to
@@ -402,7 +402,7 @@ Because both univalence and the $\K$ axiom are consistent, it follows that univa
     numbers, and an infinite tower of universes in simplicial
     sets~\cite{kapulkin:lumsdaine:voevodsky,kapulkin:lumsdaine}, thus
     establishing the consistency of the univalence axiom.
-    
+
     The consistency of the univalence axiom shows that, before we
     postulate it, MLTT is ``proto-univalent'' in the sense that it
     cannot distinguish concrete isomorphic types such as $X:=\N$ and
@@ -456,7 +456,7 @@ Because both univalence and the $\K$ axiom are consistent, it follows that univa
   I benefitted from input by Andrej Bauer, Marta Bunge, Thierry
   Coquand, Dan Grayson and Mike Shulman on draft versions of these
   notes.
-  
+
 \nocite{escardo:ufs}
 \bibliographystyle{plain}
 \bibliography{UnivalenceFromScratch}
