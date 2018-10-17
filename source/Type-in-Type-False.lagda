@@ -1,4 +1,4 @@
-Martin Escard0, 11th October 2018.
+Martin Escardo, 11th October 2018.
 
 The following is based on a well-known argument,
 
