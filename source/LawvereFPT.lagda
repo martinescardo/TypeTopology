@@ -285,7 +285,7 @@ Lemma₀ by a second application of LFPT (todo).
 
 \begin{code}
 
-module GeneralizedCoquand where
+module Coquand where
 
  Lemma₀ : (U : Universe)
           (A : U ̇)
