@@ -1,15 +1,72 @@
 Martin Escardo 2011, reorganized and expanded 2018.
 
-Compact types.
+Compact types. We shall call a type compact if it is exhaustibly
+searchable. But there are many closely related, but different, notions
+of searchability, and we investigate this phenomenon in this module
+and the module WeaklyCompactTypes.
 
-(This is related to my 2008 LMCS paper "Exhaustible sets in higher-type
-computation", where compact types correspond to "exhaustible sets" and
-compact∙ types (compact-pointed types) correpond to searchable sets.
-It is also related to joint work with Oliva on selection functions in
-proof theory.)
+Perhaps surprisingly, there are infinite searchable sets, such as ℕ∞
+(see the module GenericConvergentSequenceCompact).
 
-Here we don't assume continuity axioms, but all functions are secretly
-continuous, and compact sets are secretly topologically compact.
+It is in general not possible to constructively decide the statement
+
+  Σ \(x : X) → p x ≡ ₀
+
+that a given function p : X → 𝟚 defined on a type X has a root.
+
+We say that a type X is Σ-compact, or simply compact for short, if
+this statement is decidable for every p : X → 𝟚. This is equivalent to
+
+  Π \(p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁).
+
+We can also ask whether the statements
+
+  ∃ \(x : X) → p x ≡ ₀   and   Π \(x : X) → p x ≡ ₀
+
+are decidable for every p, and in these cases we say that X is
+∃-compact and Π-compact respectively. We have
+
+  Σ-compact X → ∃-compact X → Π-compact X.
+
+In this module we study Σ-compactness, and in the module
+WeaklyCompactTypes we study ∃-compact and Π-compact types.
+
+If X is the finite type Fin n for some n : ℕ, then it is
+Σ-compact. But even if X is a subtype of 𝟙 ≃ Fin 1, or a univalent
+proposition, this is not possible in general. Even worse, X may be an
+infinite set such as ℕ, and the Σ-compactness of ℕ amounts to Bishop's
+Limited Principle of Omniscience (LPO), which is not provable in any
+variety of constructive mathematics. It is even disprovable in some
+varieties of constructive mathematics (e.g. if we have continuity or
+computability principles), but not in any variety of constructive
+mathematics compatible with non-constructive mathematics, such as
+ours, in which LPO is an undecided statement. However, even though ℕ∞
+is larger than ℕ, in the sense that we have an embedding ℕ → ℕ∞, it
+does satisfy the principle of omniscience, or, using the above
+terminology, is Σ-compact.
+
+Because of the relation to LPO, we formerly referred to Σ- or
+∃-compact sets as "omniscient" sets:
+
+   Martin H. Escardo, Infinite sets that satisfy the principle of
+   omniscience in any variety of constructive mathematics. The Journal
+   of Symbolic Logic, Vol 78, September 2013, pp. 764-784.
+   https://www.jstor.org/stable/43303679
+
+And because of the connection with computation, we called them
+exhaustively searchable, or exhaustible or searchable:
+
+   Martin Escardo. Exhaustible sets in higher-type computation. Logical
+   Methods in Computer Science, August 27, 2008, Volume 4, Issue 3.
+   https://lmcs.episciences.org/693
+
+The name "compact" is appropriate, because e.g. in the model of
+Kleene-Kreisel spaces for simple types, it does correspond to
+topological compactness, as proved in the above LMCS paper.
+
+We emphasize that here we don't assume continuity axioms, but all
+functions are secretly continuous, and compact sets are secretly
+topologically compact, when one reasons constructively.
 
 \begin{code}
 
@@ -37,14 +94,18 @@ on it, it decidable whether it has a root:
 
 \begin{code}
 
+Σ-compact : ∀ {U} → U ̇ → U ̇
+Σ-compact X = (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
+
 compact : ∀ {U} → U ̇ → U ̇
-compact X = (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
+compact = Σ-compact
 
 \end{code}
 
 Notice that compactness in this sense is not in general a univalent
-proposition (subsingleton). A weaker notion that is always a proposition is
-defined and studied in the module WeaklyCompactTypes.
+proposition (subsingleton). Weaker notions, ∃-compactness and
+Π-compactness, that are always propositions are defined and studied in
+the module WeaklyCompactTypes.
 
 The following notion is logically equivalent to the conjunction of
 compactness and pointedness, and hence the notation "compact∙":
@@ -85,9 +146,14 @@ compact∙-gives-pointed ε = pr₁(ε(λ x → ₀))
 
 \end{code}
 
-For example, every finite set is compact, and in particular the
-set 𝟚 = { ₀ , ₁ } of binary numerals is compact. To find x₀ : 𝟚
-such that
+There are examples where pointedness is crucial. For instance, the
+product of a family of compact-pointed typed indexed by a subsingleton
+is always compact (pointed), but the assumption that this holds
+without the assumption of pointedness implies weak excluded middle
+(the negation of any proposition is decidable).
+
+For example, every finite set is compact, and in particular the set 𝟚
+of binary digits ₀ and ₁ is compact. To find x₀ : 𝟚 such that
 
    (†) p x₀ ≡ ₁ → ∀(x : X) → p x ≡ ₁,
 
@@ -477,10 +543,11 @@ in MLTT:
 
 wcompact-implies-wcompact' : ∀ {U} {X : U ̇} → wcompact X → wcompact' X
 wcompact-implies-wcompact' {U} {X} φ = A , lemma
- where A : (X → 𝟚) → 𝟚
-       A p = pr₁(φ p)
-       lemma : (p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁)
-       lemma p = pr₂(φ p)
+ where
+  A : (X → 𝟚) → 𝟚
+  A p = pr₁(φ p)
+  lemma : (p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁)
+  lemma p = pr₂(φ p)
 
 compact-gives-wcompact : ∀ {U} {X : U ̇} → compact∙ X → wcompact X
 compact-gives-wcompact {U} {X} ε p = y , (lemma₀ , lemma₁)
