@@ -260,8 +260,200 @@ module surjection-version (pt : PropTrunc) where
 
 \end{code}
 
-I asked Ingo Blechschmidt whether he could prove that the universe is
-uncountable, and he could (ask him for a proof).
+The following proofs are originally due to Ingo Blechschmidt during
+the Autumn School "Proof and Computation", Fischbachau, 2018, after I
+posed the problem of showing that the universe is uncountable to
+him. This version is an adaptation jointly developed by the two of us
+to use LFTP, also extended to replace "discrete" by "set" at the cost
+of "jumping" a universe.
+
+\begin{code}
+
+module Blechschmidt (pt : PropTrunc) where
+
+ open PropositionalTruncation pt
+ open ImageAndSurjection pt
+ open import DiscreteAndSeparated
+
+ Π-projection-has-section :
+    ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
+  → isolated x₀
+  → Π Y
+  → has-section (λ (f : Π Y) → f x₀)
+ Π-projection-has-section {U} {V} {X} {Y} x₀ i g = s , rs
+  where
+   s : Y x₀ → Π Y
+   s y x = Cases (i x)
+            (λ (p : x₀ ≡ x) → transport Y p y)
+            (λ (_ : ¬(x₀ ≡ x)) → g x)
+   rs : (y : Y x₀) → s y x₀ ≡ y
+   rs y = ap (λ - → Cases - _ _) a
+    where
+     a : i x₀ ≡ inl refl
+     a = isolated-inl x₀ i x₀ refl
+
+ udr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇) (B : W ̇)
+             (a₀ : A)
+           → isolated a₀
+           → B
+           → retract ((a : A) → X a → B) of X a₀
+           → (f : B → B) → Σ \(b : B) → b ≡ f b
+ udr-lemma X B a₀ i b retr = retract-version.LFPT retr'
+  where
+   retr' : retract (X a₀ → B) of X a₀
+   retr' = retracts-compose
+            retr
+            ((λ f → f a₀) , Π-projection-has-section a₀ i (λ a x → b))
+
+ universe-discretely-regular' :
+    (U V : Universe) (A : U ̇) (X : A → U ⊔ V ̇)
+  → discrete A → Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≃ B)
+ universe-discretely-regular' U V A X d  = B , φ
+   where
+    B : U ⊔ V ̇
+    B = (a : A) → X a → 𝟚
+    φ : (a : A) → ¬ (X a ≃ B)
+    φ a p = uncurry complement-no-fp (γ complement)
+     where
+      retr : retract B of (X a)
+      retr = equiv-retract-r p
+      γ : (f : 𝟚 → 𝟚) → Σ \(b : 𝟚) → b ≡ f b
+      γ = udr-lemma X 𝟚 a (d a) ₀ retr
+
+ universe-discretely-regular :
+    {U V : Universe} {A : U ̇} (X : A → U ⊔ V ̇)
+  → discrete A → Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
+ universe-discretely-regular {U} {V} {A} X d =
+   γ (universe-discretely-regular' U V A X d)
+  where
+   γ : (Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≃ B))
+     → (Σ \(B : U ⊔ V ̇) → (a : A) → ¬(X a ≡ B))
+   γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
+
+ Universe-discretely-regular : {U V : Universe} {A : U ̇} (X : A → U ⊔ V ̇)
+                             → discrete A → ¬(is-surjection X)
+ Universe-discretely-regular {U} {V} {A} X d s = ptrec 𝟘-is-prop n e
+  where
+   B : U ⊔ V ̇
+   B = pr₁(universe-discretely-regular {U} {V} {A} X d)
+   φ : ∀ a → ¬(X a ≡ B)
+   φ = pr₂(universe-discretely-regular {U} {V} {A} X d)
+   e : ∥(Σ \a → X a ≡ B)∥
+   e = s B
+   n : ¬(Σ \a → X a ≡ B)
+   n = uncurry φ
+
+ Universe-uncountable : {U : Universe} → ¬ Σ \(X : ℕ → U ̇) → is-surjection X
+ Universe-uncountable (X , s) = Universe-discretely-regular X ℕ-discrete s
+
+\end{code}
+
+A variation, replacing discreteness by set-hood, at the cost of
+"jumping a universe level".
+
+\begin{code}
+
+module Blechschmidt' (pt : PropTrunc) where
+
+ open PropositionalTruncation pt
+ open ImageAndSurjection pt
+ open import DiscreteAndSeparated
+
+ Π-projection-has-section :
+    ∀ {U V W} {A : U ̇} {X : A → V ̇}
+  → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+  → (a₀ : A) → is-h-isolated a₀ → has-section (λ (f : (a : A) → X a → Ω (U ⊔ W)) → f a₀)
+ Π-projection-has-section {U} {V} {W} {A} {X} fe fe' pe a₀ ish = s , rs
+  where
+   s : (X a₀ → Ω (U ⊔ W)) → ((a : A) → X a → Ω (U ⊔ W))
+   s φ a x = ∥(Σ \(p : a ≡ a₀) → φ (transport X p x) holds)∥ , ptisp
+   rs : (φ : X a₀ → Ω (U ⊔ W)) → s φ a₀ ≡ φ
+   rs φ = dfunext fe γ
+    where
+     a : (x₀ : X a₀) → ∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥ → φ x₀ holds
+     a x₀ = ptrec (holds-is-prop (φ x₀)) f
+      where
+       f : (Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) → φ x₀ holds
+       f (p , h) = transport _holds t h
+        where
+         r : p ≡ refl
+         r = ish p refl
+         t : φ (transport X p x₀) ≡ φ x₀
+         t = ap (λ - → φ(transport X - x₀)) r
+     b : (x₀ : X a₀) → φ x₀ holds → ∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥
+     b x₀ h = ∣ refl , h ∣
+     γ : (x₀ : X a₀) → (∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥ , ptisp) ≡ φ x₀
+     γ x₀ = to-Σ-≡ (pe ptisp (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+                     is-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
+
+ usr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇)
+           → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+           → (a₀ : A)
+           → is-h-isolated a₀
+           → retract ((a : A) → X a → Ω (U ⊔ W)) of X a₀
+           → (f : Ω (U ⊔ W) → Ω (U ⊔ W)) → Σ \(p : Ω (U ⊔ W)) → p ≡ f p
+ usr-lemma {U} {V} {W} {A} X fe fe' pe a₀ i retr = retract-version.LFPT retr'
+  where
+   retr' : retract (X a₀ → Ω (U ⊔ W)) of X a₀
+   retr' = retracts-compose
+            retr
+            ((λ f → f a₀) , Π-projection-has-section {U} {V} {W} fe fe' pe a₀ i)
+\end{code}
+
+We now work with the following assumptions:
+
+\begin{code}
+
+ module _
+   (U V : Universe)
+   (fe' : funext (U ′ ⊔ V) (U ′))
+   (fe  : funext U U)
+   (fe₀ : funext U U₀)
+   (pe  : propext U)
+   (A   : U ̇)
+   (X   : A → U ′ ⊔ V ̇)
+   (iss : is-set A)
+   where
+
+\end{code}
+
+NB. If V is U or U', then X : A → U ′ ̇.
+
+\begin{code}
+
+  universe-set-regular' : Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≃ B)
+  universe-set-regular' = B , φ
+    where
+     B : U ′ ⊔ V ̇
+     B = (a : A) → X a → Ω U
+     φ : (a : A) → ¬(X a ≃ B)
+     φ a p = retract-version.not-no-fp fe₀ (γ (not fe₀))
+      where
+       retr : retract B of (X a)
+       retr = equiv-retract-r p
+       γ : (f : Ω U → Ω U) → Σ \(p : Ω U) → p ≡ f p
+       γ = usr-lemma {U} {V ⊔ U ′} {U} {A} X fe' fe pe a iss retr
+
+  universe-set-regular : Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
+  universe-set-regular = γ universe-set-regular'
+   where
+    γ : (Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≃ B))
+      → (Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≡ B))
+    γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
+
+  Universe-set-regular : ¬(is-surjection X)
+  Universe-set-regular s = ptrec 𝟘-is-prop (uncurry φ) e
+   where
+    B : U ′ ⊔ V ̇
+    B = pr₁ universe-set-regular
+    φ : ∀ a → ¬(X a ≡ B)
+    φ = pr₂ universe-set-regular
+    e : ∥(Σ \a → X a ≡ B)∥
+    e = s B
+
+\end{code}
+
+See also http://www.cs.bham.ac.uk/~mhe/agda-new/Type-in-Type-False.html
 
 Added 12 October 2018. The paper
 
