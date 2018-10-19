@@ -35,6 +35,22 @@ is-prop-is-prop {U} {X} fe f g = c₁
   c₁ : f ≡ g
   c₁  = dfunext fe c₀
 
+equal-to-prop-isprop : ∀ {U} → propext U → funext U U
+                     → (P : U ̇) → is-prop P → (X : U ̇) → is-prop (X ≡ P)
+equal-to-prop-isprop {U} pe fe P i = local-hedberg' P (λ X → g X ∘ f X , k X)
+ where
+  f : (X : U ̇) → X ≡ P → is-prop X × (X ⇔ P)
+  f X refl = i , (id , id)
+  g : (X : U ̇) → is-prop X × (X ⇔ P) → X ≡ P
+  g X (l , φ , γ) = pe l i φ γ
+  j : (X : U ̇) → is-prop (is-prop X × (X ⇔ P))
+  j X = ×-prop-criterion ((λ _ → is-prop-is-prop fe) ,
+                          (λ l → ×-is-prop (Π-is-prop fe (λ x → i))
+                                            (Π-is-prop fe (λ p → l))))
+  k : (X : U ̇) → constant (g X ∘ f X)
+  k X p q = ap (g X) (j X (f X p) (f X q))
+
+
 is-prop-is-singleton : ∀ {U} {X : U ̇} → funext U U → is-prop(is-singleton X)
 is-prop-is-singleton {U} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where

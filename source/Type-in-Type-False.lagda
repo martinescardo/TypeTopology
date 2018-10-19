@@ -13,8 +13,8 @@ but phrased in terms of LFPT. See also the module See the module
 LawvereFPT for a formulation and proof that doesn't assume
 type-in-type.
 
-Part 2 is based on a recent argument by Ingo Blechschmidt. See also
-the module LawvereFPT.
+Part 2 (28th September 2018) is based on a recent argument by Ingo
+Blechschmidt. See also the module LawvereFPT.
 
 \begin{code}
 

@@ -20,7 +20,7 @@ module OrdinalNotions
        where
 
 is-prop-valued : U ⊔ V ̇
-is-prop-valued = ((x y : X) → is-prop(x < y))
+is-prop-valued = (x y : X) → is-prop(x < y)
 
 data is-accessible : X → U ⊔ V ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
