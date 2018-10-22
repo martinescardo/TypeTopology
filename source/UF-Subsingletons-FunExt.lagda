@@ -35,9 +35,9 @@ is-prop-is-prop {U} {X} fe f g = c₁
   c₁ : f ≡ g
   c₁  = dfunext fe c₀
 
-equal-to-prop-isprop : ∀ {U} → propext U → funext U U
+equal-to-prop-is-prop : ∀ {U} → propext U → funext U U
                      → (P : U ̇) → is-prop P → (X : U ̇) → is-prop (X ≡ P)
-equal-to-prop-isprop {U} pe fe P i = local-hedberg' P (λ X → g X ∘ f X , k X)
+equal-to-prop-is-prop {U} pe fe P i = local-hedberg' P (λ X → g X ∘ f X , k X)
  where
   f : (X : U ̇) → X ≡ P → is-prop X × (X ⇔ P)
   f X refl = i , (id , id)
