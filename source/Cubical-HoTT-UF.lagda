@@ -23,6 +23,14 @@ open import Cubical public
            ; refl           -- Unfortunately, pattern matching on refl is not available.
            ; J              -- Until it is, you have to use the induction principle J.
 
+           ; transport      -- As in the HoTT book, defined from J.
+           ; _∙_            -- Path composition, defined from transport.
+           ; _⁻¹            -- Path inversion, defined from transport.
+           ; ap             -- As in the HoTT book, defined from transport.
+
+           ; _≡⟨_⟩_         -- Equational reasoning.
+           ; _∎
+
            ; funext         -- Function extensionality (can also be derived from univalence).
 
            ; Σ              -- Sum type. Needed to define equivalences and univalence.
@@ -32,8 +40,8 @@ open import Cubical public
            ; is-prop        -- The usual notions of proposition, contractible type, set.
            ; is-contr
            ; is-set
-           ; is-equiv       -- A map with contractible fibers (Voevodsky's version of the notion).
 
+           ; is-equiv       -- A map with contractible fibers (Voevodsky's version of the notion).
            ; _≃_            -- The type of equivalences between two given types.
            ; univalence     -- Click to navigate to the adopted formulation of univalence.
 

@@ -40,7 +40,7 @@ work).
 
 \begin{code}
 
-{-# OPTIONS --cubical --exact-split --safe #-}
+{-# OPTIONS --cubical --exact-split #-}
 
 module Cubical where
 
@@ -549,17 +549,22 @@ Basic theory of Id, proved using J:
 \begin{code}
 
 module _ {U} {X : U ̇} where
-  sym : {x y : X} → x ≡ y → y ≡ x
-  sym {x} p = J (λ z _ → z ≡ x) refl p
+
+  transport : ∀ {V} (A : X → V ̇) {x y : X}
+            → x ≡ y → A x → A y
+  transport A {x} {y} p a = J (λ y p → A y) a p
+
+  _∙_ : ∀ {x y z : X} → x ≡ y → y ≡ z → x ≡ z
+  _∙_ {x} {y} {z} p q = transport (λ - → x ≡ -) q p
+
+  _⁻¹ : {x y : X} → x ≡ y → y ≡ x
+  _⁻¹ {x} p = transport (λ - → - ≡ x) p refl
 
   ap : ∀ {V} {A : V ̇} (f : X → A) → ∀ {x y : X} → x ≡ y → f x ≡ f y
-  ap f {x} = J (λ z _ → f x ≡ f z) refl
-
-  trans : ∀ {x y z : X} → x ≡ y → y ≡ z → x ≡ z
-  trans {x} p = J (λ y _ → x ≡ y) p
+  ap f {x} p = transport (λ - → f x ≡ f -) p refl
 
   _≡⟨_⟩_ : (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
-  _ ≡⟨ p ⟩ q = trans p q
+  _ ≡⟨ p ⟩ q = p ∙ q
 
   _∎ : (x : X) → x ≡ x
   _∎ _ = refl
@@ -789,3 +794,45 @@ This also gives the truncation with respect to the identity type:
 ∥∥-induction h f x = ∥∥-inductionᶜ (λ a → is-prop-to-is-propᶜ (h a)) f x
 
 \end{code}
+
+This is from https://github.com/Saizan/cubical-demo/blob/master/src/Cubical/PushOut.agda
+
+\begin{code}
+
+postulate
+  pushout   : ∀ {U} {A B C : U ̇} (f : C → A) (g : C → B) → U ̇
+  pinl      : ∀ {U} {A B C : U ̇} {f : C → A} {g : C → B} → A → pushout f g
+  pinr      : ∀ {U} {A B C : U ̇} {f : C → A} {g : C → B} → B → pushout f g
+  pushᶜ     : ∀ {U} {A B C : U ̇} {f : C → A} {g : C → B}
+            → (c : C) → pinl {U} {A} {B} {C} {f} {g} (f c) ≡ᶜ pinr (g c)
+
+{-# BUILTIN PUSHOUT pushout #-}
+{-# BUILTIN PUSHOUTINL pinl #-}
+{-# BUILTIN PUSHOUTINR pinr #-}
+{-# BUILTIN PUSHOUTPUSH pushᶜ #-}
+
+primitive
+  primPushOutHComp : ∀ {U} {A B C : U ̇} {f : C → A} {g : C → B} (φ : I) (u : (i : I) → Partial φ (pushout f g))
+                   → Sub {U} (pushout f g) φ (u i₀) → pushout f g
+  primPushOutForward : ∀ {U : I → Universe} {A B C : (i : I) → (U i)̇}
+                         {f : ∀ i → C i → A i} {g : ∀ i → C i → B i}
+                     → (r : I) (u : pushout (f r) (g r)) → pushout (f i₁) (g i₁)
+  primPushOutElim : ∀ {U V} {A B C : U ̇} {f : C → A} {g : C → B} (M : pushout f g → V ̇)
+                  → (il : ∀ a → M (pinl a)) (ir : ∀ b → M (pinr b))
+                  → (p : ∀ c → PathP (\ i → M (pushᶜ c i)) (il (f c)) (ir (g c)))
+                  → ∀ x → M x
+
+\end{code}
+
+Pushout with identity type:
+
+\begin{code}
+
+push : ∀ {U} {A B C : U ̇} {f : C → A} {g : C → B}
+         → (c : C) → pinl {U} {A} {B} {C} {f} {g} (f c) ≡ pinr (g c)
+push c = Path-to-Id (pushᶜ c)
+
+\end{code}
+
+TODO.     pushout-induction. Then expose the pushout machinery in Cubical-HoTT-UF.
+QUESTION. Couldn't we instead define a higher-inductive type with 'data'?
