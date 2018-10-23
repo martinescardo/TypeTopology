@@ -40,6 +40,16 @@ trans-sym refl = refl
 trans-sym' : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
 trans-sym' refl = refl
 
+transport-comp : ∀ {U V} {X : U ̇} (A : X → V ̇)
+                   {x y z : X} (q : x ≡ y) (p : y ≡ z) {a : A x}
+               → transport A  (q ∙ p) a ≡ transport A p (transport A q a)
+transport-comp A refl refl = refl
+
+transport-comp' : ∀ {U V} {X : U ̇} (A : X → V ̇)
+                    {x y z : X} (q : x ≡ y) (p : y ≡ z)
+                → transport A  (q ∙ p) ≡ transport A p ∘ transport A q
+transport-comp' A refl refl = refl
+
 transport-ap : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : Y → W ̇)
               (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
              → transport (A ∘ f) p a ≡ transport A (ap f p) a

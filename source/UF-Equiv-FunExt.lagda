@@ -130,6 +130,31 @@ is-prop-is-equiv'' fe = is-prop-is-equiv' fe fe fe fe
 
 \end{code}
 
+Propositional and functional extesionality gives univalence for
+propositions. Notice that P is assumed to be a proposition, but X
+ranges over arbitrary types:
+
+\begin{code}
+
+propext-funext-give-prop-ua : ∀ {U} → propext U → funext U U
+                            → (P : U ̇) → is-prop P
+                            → (X : U ̇) → is-equiv (idtoeq X P)
+propext-funext-give-prop-ua {U} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
+ where
+  l : X ≃ P → is-prop X
+  l (f , _ , (s , fs)) = retract-of-subsingleton (s , (f , fs)) i
+  eqtoid : X ≃ P → X ≡ P
+  eqtoid (f , (r , rf) , h) = pe (l (f , (r , rf) , h)) i f r
+  m : is-prop (X ≃ P)
+  m (f , e) (f' , e') = to-Σ-≡ (dfunext fe (λ x → i (f x) (f' x)) ,
+                                is-prop-is-equiv'' fe f' _ e')
+  η : (e : X ≃ P) → idtoeq X P (eqtoid e) ≡ e
+  η e = m (idtoeq X P (eqtoid e)) e
+  ε : (q : X ≡ P) → eqtoid (idtoeq X P q) ≡ q
+  ε q = equal-to-prop-is-prop pe fe P i X (eqtoid (idtoeq X P q)) q
+
+\end{code}
+
 The so-called type-theoretic axiom of choice:
 
 \begin{code}
