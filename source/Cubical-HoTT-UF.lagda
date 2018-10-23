@@ -33,7 +33,8 @@ open import Cubical public
 
            ; funext         -- Function extensionality (can also be derived from univalence).
 
-           ; Σ              -- Sum type. Needed to define equivalences and univalence.
+           ; Σ              -- Sum type. Needed to define contractible types, equivalences
+           ; _,_            -- and univalence.
            ; pr₁            -- The eta rule is available.
            ; pr₂
 
@@ -63,3 +64,47 @@ open import Cubical public
 If you prefer the traditional universe handling using the keyword
 "Set" and the type "Level", simply hide the above universe constructs
 when importing this module.
+
+Here is an illustration of how function extensionality computes.
+
+\begin{code}
+
+private
+
+  data ℕ : U₀ ̇ where
+   zero : ℕ
+   succ : ℕ → ℕ
+
+  f g : ℕ → ℕ
+
+  f n = n
+
+  g zero = zero
+  g (succ n) = succ (g n)
+
+  h : (n : ℕ) → f n ≡ g n
+  h zero = refl
+  h (succ n) = ap succ (h n)
+
+  p : f ≡ g
+  p = funext h
+
+  five : ℕ
+  five = succ (succ (succ (succ (succ zero))))
+
+  a : Σ \(n : ℕ) → f n ≡ five
+  a = five , refl
+
+  b : Σ \(n : ℕ) → g n ≡ five
+  b = transport (λ - → Σ \(n : ℕ) → - n ≡ five) p a
+
+  c : pr₁ b ≡ five
+  c = refl
+
+\end{code}
+
+If we had funext as a postulate, then the definition of c would not
+type check. Moreover, the term pr₁ b would not evaluate to five, as it
+does with the cubical type theory implementation of funext.
+
+TODO. A similar example with univalence.
