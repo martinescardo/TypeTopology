@@ -26,13 +26,13 @@ open import Cubical public
            ; funext         -- Function extensionality (can also be derived from univalence).
 
            ; Σ              -- Sum type. Needed to define equivalences and univalence.
-           ; pr₁
+           ; pr₁            -- The eta rule is available.
            ; pr₂
 
            ; is-prop        -- The usual notions of proposition, contractible type, set.
            ; is-contr
            ; is-set
-           ; is-equiv       -- A map with contractible fibers (Voevodsky version of the notion).
+           ; is-equiv       -- A map with contractible fibers (Voevodsky's version of the notion).
 
            ; _≃_            -- The type of equivalences between two given types.
            ; univalence     -- Click to navigate to the adopted formulation of univalence.
