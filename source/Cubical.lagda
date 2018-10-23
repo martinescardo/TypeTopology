@@ -25,9 +25,10 @@ Andrea Vezzosi's code https://github.com/agda/cubical.
 * At the moment this needs the development version of Agda.
 
 This is still not fully adapted for our development. We need to
-reorganize our UF-* files and make them compatible with
-this. Moreover, we need to remove all uses of pattern matching on refl
-in our (rather large!) development.
+reorganize our UF-* files and make them compatible with this (and to
+replace the inductive definition of _≡_ with the definition given
+here, which implies removing all pattern matching on refl from those
+files, which is going to be a considerable amount of work).
 
 \begin{code}
 
