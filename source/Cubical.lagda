@@ -1,7 +1,10 @@
-Martin Escardo, 22 October 2018
+Adapted by Martin Escardo, 22 October 2018, from code
+https://github.com/agda/cubical by
 
-This is a small cubical library, adapted from Anders Mörtberg and
-Andrea Vezzosi's code https://github.com/agda/cubical.
+  Anders Mörtberg
+  Andrea Vezzosi
+
+This is a small cubical library.
 
 * Users who want to use this module for the purposes of univalent
   mathematics can work with _≡_ , J , refl as black boxes, ignoring
@@ -41,8 +44,8 @@ work).
 
 module Cubical where
 
-open import Universes
-open import Sigma
+open import Universes public
+open import Sigma public
 
 open import Agda.Builtin.Cubical.Path public
      renaming (_≡_ to _≡ᶜ_)
@@ -392,21 +395,21 @@ infix 4 _≃ᶜ_
 _≃ᶜ_ : ∀ {U V} (A : U ̇) (B : V ̇) → U ⊔ V ̇
 A ≃ᶜ B = Σ \(f : A → B) → is-equivᶜ f
 
-Eqᶜ-to-Fun : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ᶜ B → A → B
-Eqᶜ-to-Fun = pr₁
+Eqᶜ-to-fun : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ᶜ B → A → B
+Eqᶜ-to-fun = pr₁
 
-Eqᶜ-to-Fun-is-equivᶜ : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) → is-equivᶜ (Eqᶜ-to-Fun e)
-Eqᶜ-to-Fun-is-equivᶜ = pr₂
+Eqᶜ-to-fun-is-equivᶜ : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) → is-equivᶜ (Eqᶜ-to-fun e)
+Eqᶜ-to-fun-is-equivᶜ = pr₂
 
-Eqᶜ-to-Fun-pointed-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B) → fiberᶜ (Eqᶜ-to-Fun e) y
-Eqᶜ-to-Fun-pointed-fibers e y = pr₁ (pr₂ e y)
+Eqᶜ-to-fun-pointed-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B) → fiberᶜ (Eqᶜ-to-fun e) y
+Eqᶜ-to-fun-pointed-fibers e y = pr₁ (pr₂ e y)
 
-Eqᶜ-to-Fun-contractible-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B)
-                             → (v : fiberᶜ (Eqᶜ-to-Fun e) y) → Eqᶜ-to-Fun-pointed-fibers e y ≡ᶜ v
-Eqᶜ-to-Fun-contractible-fibers e y = pr₂ (pr₂ e y)
+Eqᶜ-to-fun-contractible-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B)
+                             → (v : fiberᶜ (Eqᶜ-to-fun e) y) → Eqᶜ-to-fun-pointed-fibers e y ≡ᶜ v
+Eqᶜ-to-fun-contractible-fibers e y = pr₂ (pr₂ e y)
 
 {-# BUILTIN EQUIV _≃ᶜ_ #-}
-{-# BUILTIN EQUIVFUN  Eqᶜ-to-Fun #-}
+{-# BUILTIN EQUIVFUN  Eqᶜ-to-fun #-}
 
 module GluePrims where
   primitive
@@ -439,17 +442,17 @@ unglue-is-equivᶜ : ∀ {U} (A : U ̇) (φ : I) (T : Partial φ (U ̇))
                 → is-equivᶜ {U} {U} {Glue A T f} (unglue {U} {U} {A} {φ})
 unglue-is-equivᶜ A φ T f = λ (b : A) →
   let u : I → Partial φ A
-      u i = λ{ (φ = i₁) → pr₂ (Eqᶜ-to-Fun-pointed-fibers (f i₁-is₁) b) i }
+      u i = λ{ (φ = i₁) → pr₂ (Eqᶜ-to-fun-pointed-fibers (f i₁-is₁) b) i }
       ctr : fiberᶜ (unglue {φ = φ}) b
-      ctr = ( glue (λ { (φ = i₁) → pr₁(Eqᶜ-to-Fun-pointed-fibers (f i₁-is₁) b) }) (hcomp u b)
+      ctr = ( glue (λ { (φ = i₁) → pr₁(Eqᶜ-to-fun-pointed-fibers (f i₁-is₁) b) }) (hcomp u b)
             , λ j → hfill u (inc b) j)
   in ( ctr
      , λ (v : fiberᶜ (unglue {φ = φ}) b) i →
          let u' : I → Partial (φ ∨ ~ i ∨ i) A
-             u' j = λ { (φ = i₁) → pr₂(Eqᶜ-to-Fun-contractible-fibers (f i₁-is₁) b v i) j
+             u' j = λ { (φ = i₁) → pr₂(Eqᶜ-to-fun-contractible-fibers (f i₁-is₁) b v i) j
                       ; (i = i₀) → hfill u (inc b) j
                       ; (i = i₁) → pr₂ v j }
-         in ( glue (λ { (φ = i₁) → pr₁(Eqᶜ-to-Fun-contractible-fibers (f i₁-is₁) b v i) }) (hcomp u' b)
+         in ( glue (λ { (φ = i₁) → pr₁(Eqᶜ-to-fun-contractible-fibers (f i₁-is₁) b v i) }) (hcomp u' b)
             , λ j → hfill u' (inc b) j))
 
 \end{code}
@@ -631,14 +634,14 @@ infix 4 _≃_
 _≃_ : ∀ {U V} (A : U ̇) (B : V ̇) → U ⊔ V ̇
 A ≃ B = Σ \(f : A → B) → is-equiv f
 
-Eq-to-Fun : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ B → A → B
-Eq-to-Fun = pr₁
+Eq-to-fun : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ B → A → B
+Eq-to-fun = pr₁
 
-Eq-to-Fun-is-equiv : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ B) → is-equiv (Eq-to-Fun e)
-Eq-to-Fun-is-equiv = pr₂
+Eq-to-fun-is-equiv : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ B) → is-equiv (Eq-to-fun e)
+Eq-to-fun-is-equiv = pr₂
 
-Eq-to-Fun-pointed-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ B) (y : B) → fiber (Eq-to-Fun e) y
-Eq-to-Fun-pointed-fibers e y = pr₁ (pr₂ e y)
+Eq-to-fun-pointed-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ B) (y : B) → fiber (Eq-to-fun e) y
+Eq-to-fun-pointed-fibers e y = pr₁ (pr₂ e y)
 
 \end{code}
 
@@ -694,11 +697,11 @@ retract-of-contr : ∀ {U} {A B : U ̇} (s : A → B) (r : B → A)
                  → (∀ x → r (s x) ≡ᶜ x) → is-contr B → is-contrᶜ A
 retract-of-contr {U} {A} s r h (y , p) = (r y , λ x → Id-to-Path (rem x))
   where
-  rem : (x : A) → r y ≡ x
-  rem x =
-    r y     ≡⟨ ap r (p (s x)) ⟩
-    r (s x) ≡⟨ Path-to-Id (h x) ⟩
-    x       ∎
+   rem : (x : A) → r y ≡ x
+   rem x =
+     r y     ≡⟨ ap r (p (s x)) ⟩
+     r (s x) ≡⟨ Path-to-Id (h x) ⟩
+     x       ∎
 
 \end{code}
 
@@ -742,14 +745,14 @@ univalence for the path type:
 univalence : ∀ {U} (A : U ̇) → is-contr (Σ \(T : U ̇) → T ≃ A)
 univalence A = retract-of-contrᶜ r s rs (univalenceᶜ A)
   where
-  r : ∀ {U} {A : U ̇} → (Σ \(T : U ̇) → T ≃ᶜ A) → Σ \(T : U ̇) → T ≃ A
-  r (x , p) = x , Eqᶜ-to-Eq p
+   r : ∀ {U} {A : U ̇} → (Σ \(T : U ̇) → T ≃ᶜ A) → Σ \(T : U ̇) → T ≃ A
+   r (x , p) = x , Eqᶜ-to-Eq p
 
-  s : ∀ {U} {A : U ̇} → (Σ \(T : U ̇) → T ≃ A) → Σ \(T : U ̇) → T ≃ᶜ A
-  s (x , p) = x , Eq-to-Eqᶜ p
+   s : ∀ {U} {A : U ̇} → (Σ \(T : U ̇) → T ≃ A) → Σ \(T : U ̇) → T ≃ᶜ A
+   s (x , p) = x , Eq-to-Eqᶜ p
 
-  rs : ∀ {U} {A : U ̇} → (y : Σ \(T : U ̇) → T ≃ A) → r (s y) ≡ᶜ y
-  rs (x , p) = λ i → x , Eq-η p i
+   rs : ∀ {U} {A : U ̇} → (y : Σ \(T : U ̇) → T ≃ A) → r (s y) ≡ᶜ y
+   rs (x , p) = λ i → x , Eq-η p i
 
 \end{code}
 
