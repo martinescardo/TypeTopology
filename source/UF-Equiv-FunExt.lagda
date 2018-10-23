@@ -130,7 +130,7 @@ is-prop-is-equiv'' fe = is-prop-is-equiv' fe fe fe fe
 
 \end{code}
 
-Propositional and functional extesionality gives univalence for
+Propositional and functional extesionality give univalence for
 propositions. Notice that P is assumed to be a proposition, but X
 ranges over arbitrary types:
 
