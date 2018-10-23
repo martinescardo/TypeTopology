@@ -8,7 +8,7 @@ This is a small HoTT-UF library based on cubical type theory, where
 the cubical machinery is hidden.
 
 The point is that function extensionality, propositional truncation
-and univalence compute (and example is given below).
+and univalence compute (an example is given below).
 
 For the moment this requires the development version of Agda.
 
