@@ -8,7 +8,7 @@ This is a small HoTT-UF library based on cubical type theory, where
 the cubical machinery is hidden.
 
 The point is that function extensionality, propositional truncation
-and univalence compute.
+and univalence compute (and example is given below).
 
 For the moment this requires the development version of Agda.
 
@@ -23,10 +23,10 @@ open import Cubical public
            ; refl           -- Unfortunately, pattern matching on refl is not available.
            ; J              -- Until it is, you have to use the induction principle J.
 
-           ; transport      -- As in the HoTT book, defined from J.
-           ; _∙_            -- Path composition, defined from transport.
-           ; _⁻¹            -- Path inversion, defined from transport.
-           ; ap             -- As in the HoTT book, defined from transport.
+           ; transport      -- As in the HoTT book, here defined from J.
+           ; _∙_            -- Path composition, here defined from transport.
+           ; _⁻¹            -- Path inversion, here defined from transport.
+           ; ap             -- As in the HoTT book, here defined from transport.
 
            ; _≡⟨_⟩_         -- Equational reasoning.
            ; _∎
@@ -52,7 +52,7 @@ open import Cubical public
            ; ∥∥-recursion    -- Non-dependent elimination.
            ; ∥∥-induction    -- Dependent elimination.
 
-           ; Universe       -- The type of universes (originally called Level).
+           ; Universe       -- The type of universes (originally called Level by the Agda developers).
            ; U₀             -- The first universe (originally called lzero).
            ; _̇              -- We write X : U ̇ to say that X is in the universe U (originally X : Set U).
            ; _′             -- The successor of a universe (originally called lsucc).
@@ -62,8 +62,8 @@ open import Cubical public
 \end{code}
 
 If you prefer the traditional universe handling using the keyword
-"Set" and the type "Level", simply hide the above universe constructs
-when importing this module.
+"Set" and the terminology "Level", simply hide the above universe
+constructs when importing this module.
 
 Here is an illustration of how function extensionality computes.
 
