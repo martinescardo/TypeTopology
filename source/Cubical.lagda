@@ -683,22 +683,22 @@ is-contrᶜ and is-contr:
 
 \begin{code}
 
-retract-of-contrᶜ : ∀ {U} {A B : U ̇} (r : A → B) (s : B → A) (h : ∀ y → r (s y) ≡ᶜ y)
-                  → is-contrᶜ A → is-contr B
+retract-of-contrᶜ : ∀ {U} {A B : U ̇} (r : A → B) (s : B → A)
+                  → (∀ y → r (s y) ≡ᶜ y) → is-contrᶜ A → is-contr B
 retract-of-contrᶜ r s h (x , p) =
   (r x , λ y → Path-to-Id (λ i → hcomp (λ j → λ { (i = i₀) → r x
                                               ; (i = i₁) → h y j })
                                      (r (p (s y) i))))
 
-retract-of-contr : ∀ {U} {A B : U ̇} (s : A → B) (r : B → A) (h : ∀ y → r (s y) ≡ᶜ y)
-                 → is-contr B → is-contrᶜ A
-retract-of-contr {U} {A} s r h (x , p) = (r x , λ y → Id-to-Path (rem y))
+retract-of-contr : ∀ {U} {A B : U ̇} (s : A → B) (r : B → A)
+                 → (∀ x → r (s x) ≡ᶜ x) → is-contr B → is-contrᶜ A
+retract-of-contr {U} {A} s r h (y , p) = (r y , λ x → Id-to-Path (rem x))
   where
-  rem : (y : A) → r x ≡ y
-  rem y =
-    r x     ≡⟨ ap r (p (s y)) ⟩
-    r (s y) ≡⟨ Path-to-Id (h y) ⟩
-    y       ∎
+  rem : (x : A) → r y ≡ x
+  rem x =
+    r y     ≡⟨ ap r (p (s x)) ⟩
+    r (s x) ≡⟨ Path-to-Id (h x) ⟩
+    x       ∎
 
 \end{code}
 
@@ -720,8 +720,7 @@ is-propᶜ-is-contr (a0 , p0) (a1 , p1) j =
                                        (Id-to-Path (p0 (Id-to-Path (p1 x) i)) j))))
 
 is-propᶜ-is-equiv : ∀ {U} {A : U ̇} {B : U ̇} → {f : A → B} → is-propᶜ (is-equiv f)
-is-propᶜ-is-equiv {f = f} h1 h2 i y =
-  is-propᶜ-is-contr {A = fiber f y} (h1 y) (h2 y) i
+is-propᶜ-is-equiv {U} {A} {B} {f} h1 h2 i y = is-propᶜ-is-contr {U} {fiber f y} (h1 y) (h2 y) i
 
 Eqᶜ-to-Eq : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ᶜ B → A ≃ B
 Eqᶜ-to-Eq (f , p) = (f , λ y → retract-of-contrᶜ fiberᶜ-to-fiber fiber-to-fiberᶜ fiber-ε (p y) )
@@ -768,8 +767,7 @@ data ∥_∥ {U} (A : U ̇) : U ̇ where
 
 ∥∥-inductionᶜ : ∀ {U} {A : U ̇} {P : ∥ A ∥ → U ̇} → ((a : ∥ A ∥) → is-propᶜ (P a))
              → ((x : A) → P ∣ x ∣) → (a : ∥ A ∥) → P a
-∥∥-inductionᶜ {P = P} h f a =
-    ∥∥-recursionᶜ (h a) (λ x → transp (λ i → P (∥∥-is-propᶜ ∣ x ∣ a i)) i₀ (f x)) a
+∥∥-inductionᶜ {P = P} h f a = ∥∥-recursionᶜ (h a) (λ x → transp (λ i → P (∥∥-is-propᶜ ∣ x ∣ a i)) i₀ (f x)) a
 
 \end{code}
 
