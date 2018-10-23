@@ -2,7 +2,12 @@
 
 module Universes where
 
-open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _′ ; Level to Universe) public
+open import Agda.Primitive public
+  using (_⊔_)
+  renaming (lzero to U₀ ;
+            lsuc to _′ ;
+            Level to Universe ;
+            Setω to Uω)
 
 \end{code}
 
