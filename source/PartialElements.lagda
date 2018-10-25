@@ -44,9 +44,9 @@ the lifting of X.
 
 \end{code}
 
-Our strategy to show that η is an embedding (has singleton fibers) is
-to exhibit it as the composite of two embeddings (the first of which
-is actually an equivalence).
+Our strategy to show that η is an embedding (has subsingleton fibers)
+is to exhibit it as the composite of two embeddings (the first of
+which is actually an equivalence).
 
 \begin{code}
 
