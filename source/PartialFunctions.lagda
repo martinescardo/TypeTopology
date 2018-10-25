@@ -56,6 +56,14 @@ eml X = NatΣ (ζ X)
                                         (×-≡ (is-prop-is-prop fe _ _)
                                              refl)))
 
+\end{code}
+
+That μ is an equivalence corresponds to the fact that the lifting of
+type X with respect to the dominance is-singleton is equivalent to X
+itself.
+
+\begin{code}
+
 μ-is-equiv : propext V → funext V V → ∀ {U} → funext V U
           → {X : U ̇} → is-equiv (μ {U} {X})
 μ-is-equiv pe fe {U} fe' {X} = qinv-is-equiv μ (ν , (νμ , μν))
@@ -87,6 +95,15 @@ eml X = NatΣ (ζ X)
                → {X : U ̇} → is-embedding (μ {U} {X})
 μ-is-embedding pe fe fe' = is-equiv-is-embedding μ (μ-is-equiv pe fe fe')
 
+\end{code}
+
+The fact that eml is an embedding can be proved by obtaining it as a
+combination of maps that we already know to be embeddings, using
+NatΣ-embedding, ×-embedding, maps-of-props-are-embeddings,
+id-is-embedding.
+
+\begin{code}
+
 eml-is-embedding : funext V V → ∀ {U} (X : U ̇)
                  → is-embedding (eml X)
 eml-is-embedding fe {U} X =
@@ -102,6 +119,12 @@ eml-is-embedding fe {U} X =
                 (is-prop-is-singleton fe)
                 (is-prop-is-prop fe))
              id-is-embedding
+
+\end{code}
+
+Then η is an embedding because it is equal to the composition of two embeddings:
+
+\begin{code}
 
 η-is-embedding : propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
              → {X : U ̇} → is-embedding (η {U} {X})
@@ -122,7 +145,13 @@ value (P , i , φ) = φ
 
 \end{code}
 
-Information "Order" now:
+Next we show that for any l : 𝓛 X,
+
+ fiber η l ≃ is-defined l
+
+For this purpose, it is convenient to work with the information
+"Order" on 𝓛 X, which will really be a (partial) order when X is a
+set:
 
 \begin{code}
 
@@ -131,8 +160,9 @@ l ⊑ m = Σ \(f : is-defined l → is-defined m) → (d : is-defined l) → val
 
 \end{code}
 
-If X is a set, then 𝓛 X should be a poset under _⊑_. In the general
-case, it should be some sort of univalent ∞-category.
+If X is a set, then 𝓛 X is a poset under _⊑_ (TODO). In the general
+case, it should be some sort of univalent ∞-category with
+hom-∞-groupoids x ⊑ y.
 
 \begin{code}
 
@@ -183,12 +213,9 @@ instead of (dfunext fe' ε)⁻¹ in the above proof:
 
 \end{code}
 
-We now use this to show that for any l : 𝓛 X,
-
- fiber η l ≃ is-defined l
+We can now establish the promised fact:
 
 \begin{code}
-
 
 η-fiber-same-as-is-defined :
     propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
@@ -212,9 +239,10 @@ We now use this to show that for any l : 𝓛 X,
 \end{code}
 
 They can't be equal, in the absence of cumulativity, as the lhs lives
-in a universe higher than the rhs, even if U and V are the same
-universe or if U = V ′. (But what if V = U ′? We can't this here as V
-is a fixed module parameter.)
+in a universe higher than the rhs, and equality is defined for
+elements of the same type only, even if U and V are the same universe
+or if U = V ′. (But what if V = U ′? We can't test this here as V is a
+fixed module parameter.)
 
 TODO: Could the map (anti l m) be an equivalence? No. We should
 instead have an equivalence (l ⊑ m) × (m ⊑ l) → (l ≡ m) × (l ≡ m),
@@ -227,7 +255,6 @@ equivalence for each l and m:
 \begin{code}
 
 ⊑-anti' : ∀ {U} → propext V → funext V V → funext V U
-
        → {X : U ̇} (l m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
 ⊑-anti' pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , g) = e
  where
@@ -253,9 +280,8 @@ equivalence for each l and m:
   e : Q , j , γ ≡ P , i , φ
   e = to-Σ-≡ (a , ×-≡ (is-prop-is-prop fe _ i) d)
 
-⊑-anti'-inverse : ∀ {U}
-
-       → {X : U ̇} (l m : 𝓛 X)  → l ≡ m → (l ⊑ m) × (is-defined m → is-defined l)
+⊑-anti'-inverse : ∀ {U}  {X : U ̇} (l m : 𝓛 X)
+                → l ≡ m → (l ⊑ m) × (is-defined m → is-defined l)
 ⊑-anti'-inverse l .l refl = (⊑-id l) , id
 
 η-maximal : ∀ {U} {X : U ̇} (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
@@ -295,3 +321,5 @@ equivalence for each l and m:
 -}
 
 \end{code}
+
+We should also do fixed points of continuous maps.
