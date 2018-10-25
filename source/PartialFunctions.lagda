@@ -191,9 +191,9 @@ hom-∞-groupoids x ⊑ y.
  ⊑-∘ l m n (f , δ) (g , ε) = g ∘ f , (λ d → δ d ∙ ε (f d))
 
  ⊑-anti : ∀ {U} → propext V → funext V V → funext V U
-        → {X : U ̇} (l m : 𝓛 X)
+        → {X : U ̇} {l m : 𝓛 X}
         → (l ⊑ m) × (m ⊑ l) → l ≡ m
- ⊑-anti pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , (g , ε)) = e
+ ⊑-anti pe fe fe' {X} {Q , j , γ} {P , i , φ} ((f , δ) , (g , ε)) = e
   where
    a : Q ≡ P
    a = pe j i f g
@@ -233,32 +233,34 @@ We can now establish the promised fact:
 \begin{code}
 
  η-fiber-same-as-is-defined :
-      propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
+     propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
    → {X : U ̇} (l : 𝓛 X)
    → fiber η l ≃ is-defined l
- η-fiber-same-as-is-defined pe fe {U} fe' fe'' {X} l =
-  f l , ((g l , (λ d → is-defined-is-prop l (f l (g l d)) d)) ,
-         (g l , λ z → η-is-embedding pe fe fe' fe'' l (g l (f l z)) z))
+ η-fiber-same-as-is-defined pe fe {U} fe' fe'' {X} l = f l , ((g l , fg) , (g l , gf))
   where
    f : (l : 𝓛 X) → fiber η l → is-defined l
    f (.𝟙 , .𝟙-is-prop , .(λ _ → x)) (x , refl) = *
-
    g : (l : 𝓛 X) → is-defined l → fiber η l
-   g (P , i , φ) p = φ p , a
+   g (P , i , φ) p = φ p , c
     where
-     a : η (φ p) ≡ (P , i , φ)
-     a = ⊑-anti pe fe fe' (η (φ p))
-                          (P , i , φ)
-                          (((λ _ → p) , (λ _ → refl)) ,
-                           ((λ _ → *) , (λ q → ap φ (i q p))))
+     a : η (φ p) ⊑ (P , i , φ)
+     a = (λ _ → p) , (λ _ → refl)
+     b : (P , i , φ) ⊑ η (φ p)
+     b = (λ _ → *) , (λ q → ap φ (i q p))
+     c : η (φ p) ≡ (P , i , φ)
+     c = ⊑-anti pe fe fe' (a , b)
+   fg : (d : is-defined l) → f l (g l d) ≡ d
+   fg d = is-defined-is-prop l (f l (g l d)) d
+   gf : (z : fiber η l) → g l (f l z) ≡ z
+   gf z = η-is-embedding pe fe fe' fe'' l (g l (f l z)) z
 
 \end{code}
 
-They can't be equal, in the absence of cumulativity, as the lhs lives
-in a universe higher than the rhs, and equality is well-typed only for
-elements of the same type (here of the same universe). This can be
-seen by adding type annotations to the formulation of the above
-equivalence:
+They can't be equal, in the absence of cumulativity (and propositional
+resizing), as the lhs lives in a universe higher than the rhs, and
+equality is well-typed only for elements of the same type (here of the
+same universe). This can be seen by adding type annotations to the
+formulation of the above equivalence:
 
 \begin{code}
 
@@ -287,8 +289,8 @@ which should be an equivalence for each l and m:
 \begin{code}
 
  ⊑-anti' : ∀ {U} → propext V → funext V V → funext V U
-        → {X : U ̇} (l m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
- ⊑-anti' pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , g) = e
+        → {X : U ̇} {l m : 𝓛 X} → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
+ ⊑-anti' pe fe fe' {X} {Q , j , γ} {P , i , φ} ((f , δ) , g) = e
   where
    ε' : (p : P) → γ (g p) ≡ φ p
    ε' p = δ (g p) ∙ ap φ (i (f (g p)) p)
