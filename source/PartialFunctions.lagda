@@ -46,7 +46,7 @@ equivalence).
  μ x = 𝟙 , 𝟙-is-singleton , (λ _ → x)
 
  ζ : ∀ {U} (X : U ̇) (P : V ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
- ζ X P (i , φ) = (is-singleton-is-prop i) , φ
+ ζ X P (i , φ) = is-singleton-is-prop i , φ
 
  𝓜-to-𝓛 : ∀ {U} (X : U ̇) → 𝓜 X → 𝓛 X
  𝓜-to-𝓛 X = NatΣ (ζ X)
@@ -79,7 +79,7 @@ NatΣ-embedding.:
                            id-is-embedding
 
  𝓜-to-𝓛-is-embedding : funext V V → ∀ {U} (X : U ̇)
-                  → is-embedding (𝓜-to-𝓛 X)
+                     → is-embedding (𝓜-to-𝓛 X)
  𝓜-to-𝓛-is-embedding fe {U} X = NatΣ-embedding
                                   (λ P → is-singleton P × (P → X))
                                   (λ P → is-prop P × (P → X))
@@ -87,26 +87,26 @@ NatΣ-embedding.:
                                   (ζ-is-embedding fe X)
 \end{code}
 
-That μ is an equivalence corresponds to the fact that the lifting of
+That μ is an equivalence corresponds to the fact that the lifting of a
 type X with respect to the dominance is-singleton is equivalent to X
 itself.
 
 \begin{code}
 
  μ-is-equiv : propext V → funext V V → ∀ {U} → funext V U
-           → {X : U ̇} → is-equiv (μ {U} {X})
+            → {X : U ̇} → is-equiv (μ {U} {X})
  μ-is-equiv pe fe {U} fe' {X} = qinv-is-equiv μ (ν , (νμ , μν))
   where
    ν : ∀ {U} {X : U ̇} → 𝓜 X → X
    ν (P , i , φ) = φ (is-singleton-pointed i)
-   νμ : ∀ {U} {X : U ̇} → (x : X) → ν (μ x) ≡ x
+   νμ : ∀ {U} {X : U ̇} (x : X) → ν (μ x) ≡ x
    νμ x = refl
    μν : (m : 𝓜 X) → μ (ν m) ≡ m
    μν (P , i , φ) = to-Σ-≡ (t , s)
     where
      t : 𝟙 ≡ P
      t = pe 𝟙-is-prop (is-singleton-is-prop i) (λ _ → is-singleton-pointed i) (λ p → *)
-     u :  transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i)) ≡ φ
+     u : transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i)) ≡ φ
      u = transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i))
              ≡⟨ transport-is-pre-comp t (λ _ → φ (is-singleton-pointed i)) ⟩
          (λ _ → φ (is-singleton-pointed i))
@@ -134,10 +134,16 @@ two embeddings:
  η-is-embedding : propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
                 → {X : U ̇} → is-embedding (η {U} {X})
  η-is-embedding pe fe fe' fe'' {X} =
-  back-transport
-   is-embedding
-   (η-composite fe fe'')
+   back-transport
+    is-embedding
+    (η-composite fe fe'')
    (comp-embedding (μ-is-embedding pe fe fe') (𝓜-to-𝓛-is-embedding fe X))
+
+\end{code}
+
+We now give meaningful names to the projections:
+
+\begin{code}
 
  is-defined : ∀ {U} {X : U ̇} → 𝓛 X → V ̇
  is-defined (P , i , φ) = P
@@ -152,11 +158,14 @@ two embeddings:
 
 Next we show that for any l : 𝓛 X,
 
- fiber η l ≃ is-defined l
+ fiber η l ≃ is-defined l,
+
+using the fact that the fiber is a projection by virtue of η being an
+embedding.
 
 For this purpose, it is convenient to work with the information
-"Order" on 𝓛 X, which will really be a (partial) order when X is a
-set:
+"Order" on 𝓛 X, which will really be a (partial) order only when X is
+a set:
 
 \begin{code}
 
@@ -246,8 +255,10 @@ We can now establish the promised fact:
 \end{code}
 
 They can't be equal, in the absence of cumulativity, as the lhs lives
-in a universe higher than the rhs. This can be seen by adding type
-annotations to the formulation of the above equivalence:
+in a universe higher than the rhs, and equality is well-typed only for
+elements of the same type (here of the same universe). This can be
+seen by adding type annotations to the formulation of the above
+equivalence:
 
 \begin{code}
 
@@ -322,7 +333,8 @@ which should be an equivalence for each l and m:
  η-⊑-gives-≡ (f , δ) = δ *
 
  η-≡-gives-⊑-is-equiv : ∀ {U} → funext V V → funext V U
-                      → {X : U ̇} {x y : X} → is-equiv (η-≡-gives-⊑ {U} {X} {x} {y})
+                      → {X : U ̇} {x y : X}
+                      → is-equiv (η-≡-gives-⊑ {U} {X} {x} {y})
  η-≡-gives-⊑-is-equiv {U} fe fe' {X} {x} {y} = qinv-is-equiv η-≡-gives-⊑ (η-⊑-gives-≡ , α , β)
   where
    α : {x y : X} (p : x ≡ y) →  η-⊑-gives-≡ (η-≡-gives-⊑ p) ≡ p
@@ -343,4 +355,4 @@ which should be an equivalence for each l and m:
 
 \end{code}
 
-We should also do fixed points of continuous maps.
+We should also do least fixed points of continuous maps.
