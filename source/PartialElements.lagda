@@ -1,9 +1,10 @@
 Martin Escardo 25th October 2018.
 
-Only lifting for the moment. We will then discuss partial functions
-(cf. my former student Cory Knapp's PhD thesis).
+The type of partial elements of a type (or lifting).
 
-We focuse, to begin with, on the fact that the canonical map into the
+(Cf. my former student Cory Knapp's PhD thesis).
+
+We focus, to begin with, on the fact that the canonical map into the
 lifting is an embedding, which is easy for sets, but seems hard for
 arbitrary types.
 
@@ -13,7 +14,7 @@ arbitrary types.
 
 open import SpartanMLTT
 
-module PartialFunctions where
+module PartialElements where
 
 open import UF-Base
 open import UF-Subsingletons hiding (⊥)
@@ -25,17 +26,27 @@ open import UF-Retracts
 
 module _ {V : Universe} where
 
+\end{code}
+
+We discuss the type 𝓛 X of partial elements of a type X, also called
+the lifting of X.
+
+\begin{code}
+
  𝓛 : ∀ {U} → U ̇ → U ⊔ V ′ ̇
- 𝓛 {U} X = Σ \(P : V ̇) → is-prop P × (P → X)
+ 𝓛 X = Σ \(P : V ̇) → is-prop P × (P → X)
 
  η : ∀ {U} {X : U ̇} → X → 𝓛 X
  η x = 𝟙 , 𝟙-is-prop , (λ _ → x)
 
+ ⊥ : ∀ {U} {X : U ̇} → 𝓛 X
+ ⊥ = 𝟘 , 𝟘-is-prop , unique-from-𝟘
+
 \end{code}
 
-Our strategy to show that η is an embedding is to exhibit it as the
-composite of two embeddings (the first of which is actually an
-equivalence).
+Our strategy to show that η is an embedding (has singleton fibers) is
+to exhibit it as the composite of two embeddings (the first of which
+is actually an equivalence).
 
 \begin{code}
 
@@ -164,7 +175,7 @@ using the fact that the fiber is a proposition by virtue of η being an
 embedding.
 
 For this purpose, it is convenient to work with the information
-"Order" on 𝓛 X, which will really be a (partial) order only when X is
+"order" on 𝓛 X, which will really be a (partial) order only when X is
 a set:
 
 \begin{code}
@@ -319,9 +330,6 @@ which should be an equivalence for each l and m:
 
  η-maximal : ∀ {U} {X : U ̇} (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
  η-maximal x (P , i , γ) (f , δ) = (λ p → *) , (λ p → ap γ (i p (f *)) ∙ (δ *)⁻¹)
-
- ⊥ : ∀ {U} {X : U ̇} → 𝓛 X
- ⊥ = 𝟘 , 𝟘-is-prop , unique-from-𝟘
 
  ⊥-least : ∀ {U} {X : U ̇} (x : X) → ⊥ ⊑ η x
  ⊥-least x = unique-from-𝟘 , λ z → unique-from-𝟘 z
