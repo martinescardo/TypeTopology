@@ -77,6 +77,9 @@ is-the-only-element c = ∀ x → c ≡ x
 is-singleton : ∀ {U} → U ̇ → U ̇
 is-singleton X = Σ \(c : X) → is-the-only-element c
 
+is-singleton-pointed : ∀ {U} {X : U ̇} → is-singleton X → X
+is-singleton-pointed = pr₁
+
 \end{code}
 
 For compatibility with the homotopical terminology:

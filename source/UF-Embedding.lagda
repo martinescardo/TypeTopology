@@ -314,6 +314,26 @@ inr-embedding : ∀ {U V} (X : U ̇) (Y : V ̇)
 inr-embedding {U} {V} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
 inr-embedding {U} {V} X Y (inr a) (.a , refl) (.a , refl) = refl
 
+maps-of-props-are-embeddings : ∀ {U V} {P : U ̇} {Q : V ̇} (f : P → Q)
+                             → is-prop P → is-prop Q → is-embedding f
+maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
+                                                                prop-is-set j _ s')
+
+×-embedding : ∀ {U V W T} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+               (f : X → A ) (g : Y → B)
+           → is-embedding f
+           → is-embedding g
+           → is-embedding (λ (z : X × Y) → (f (pr₁ z) , g (pr₂ z)))
+×-embedding f g i j (a , b) = retract-of-subsingleton (r , (s , rs))
+                                                      (×-is-prop (i a) (j b))
+ where
+  r : fiber f a × fiber g b → fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)
+  r ((x , s) , (y , t)) = (x , y) , ×-≡ s t
+  s : fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b) → fiber f a × fiber g b
+  s ((x , y) , p) = (x , ap pr₁ p) , (y , ap pr₂ p)
+  rs : (φ : fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)) → r (s φ) ≡ φ
+  rs ((x , y) , refl) = refl
+
 NatΣ-embedding : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
              → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΣ ζ)
 NatΣ-embedding A B ζ ise (x , b) = retract-of-subsingleton

@@ -15,38 +15,43 @@ has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 has-retraction s = Σ \r → r ∘ s ∼ id
 
 has-retraction-lc : ∀ {U V} {X : U ̇} {Y : V ̇} (s : X → Y)
-                 → has-retraction s → left-cancellable s
+                  → has-retraction s → left-cancellable s
 has-retraction-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
 retract Y of X = Σ \(r : X → Y) → has-section r
 
 retract-of-singleton : ∀ {U V} {X : U ̇} {Y : V ̇}
-                    → retract Y of X
-                    → is-singleton X
-                    → is-singleton Y
+                     → retract Y of X
+                     → is-singleton X
+                     → is-singleton Y
 retract-of-singleton (r , s , rs) (c , φ) = r c , (λ y → ap r (φ (s y)) ∙ rs y)
 
 retract-of-subsingleton : ∀ {U V} {X : U ̇} {Y : V ̇}
-                    → retract Y of X
-                    → is-subsingleton X
-                    → is-subsingleton Y
+                        → retract Y of X
+                        → is-subsingleton X
+                        → is-subsingleton Y
 retract-of-subsingleton (r , s , rs) = subtype-of-prop-is-prop s
                                         (has-retraction-lc s (r , rs))
 
 identity-retraction : ∀ {U} {X : U ̇} → retract X of X
 identity-retraction = id , (id , λ x → refl)
 
-has-section-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → has-section f →  g ∼ f  → has-section g
-has-section-closed-under-∼ {U} {V} {X} {Y} f g (s , fs) h = (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
+has-section-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y)
+                           → has-section f →  g ∼ f  → has-section g
+has-section-closed-under-∼ {U} {V} {X} {Y} f g (s , fs) h =
+ (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
 
-has-section-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → has-section f → f ∼ g → has-section g
+has-section-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y}
+                            → has-section f → f ∼ g → has-section g
 has-section-closed-under-∼' ise h = has-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
-has-retraction-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → has-retraction f →  g ∼ f  → has-retraction g
+has-retraction-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y)
+                              → has-retraction f →  g ∼ f  → has-retraction g
 has-retraction-closed-under-∼ {U} {V} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
 
-has-retraction-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → has-retraction f → f ∼ g → has-retraction g
+has-retraction-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y}
+                               → has-retraction f → f ∼ g → has-retraction g
 has-retraction-closed-under-∼' ise h = has-retraction-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 \end{code}
@@ -76,13 +81,14 @@ retract-Of-retract-of {U} {V} {X} {Y} (f , hass) = (f , φ)
 retracts-compose : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇}
                  → retract Y of X → retract Z of Y → retract Z of X
 retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
-                                                    (s ∘ s' , λ z → ap r' (rs (s' z)) ∙ rs' z)
+                                                    s ∘ s' ,
+                                                    λ z → ap r' (rs (s' z)) ∙ rs' z
 
 
 ×-retract : ∀ {U V W T} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
-           → retract X of A
-           → retract Y of B
-           → retract (X × Y) of (A × B)
+          → retract X of A
+          → retract Y of B
+          → retract (X × Y) of (A × B)
 ×-retract {U} {V} {W} {T} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) = f , g , fg
  where
   f : A × B → X × Y

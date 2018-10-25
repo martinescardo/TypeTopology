@@ -30,15 +30,25 @@ back-and-forth-transport : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} {a : 
                          → (p : y ≡ x) → transport A p (back-transport A p a) ≡ a
 back-and-forth-transport refl = refl
 
-back-transport-is-pre-comp : ∀ {U} {X X' Y : U ̇} (p : X ≡ X') (g : X' → Y)
-                          → back-transport (λ Z → Z → Y) p g ≡ g ∘ Idtofun p
+back-transport-is-pre-comp : ∀ {U V} {X X' : U ̇} {Y : V ̇} (p : X ≡ X') (g : X' → Y)
+                          → back-transport (λ - → - → Y) p g ≡ g ∘ Idtofun p
 back-transport-is-pre-comp refl g = refl
+
+transport-is-pre-comp : ∀ {U V} {X X' : U ̇} {Y : V ̇} (p : X ≡ X') (g : X → Y)
+                      → transport (λ - → - → Y) p g ≡ g ∘ Idtofun (p ⁻¹)
+transport-is-pre-comp refl g = refl
 
 trans-sym : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ⁻¹ ∙ r ≡ refl
 trans-sym refl = refl
 
 trans-sym' : ∀ {U} {X : U ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
 trans-sym' refl = refl
+
+transport-× : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
+                {x y : X} {c : A x × B x} (p : x ≡ y)
+            → transport (λ x → A x × B x) p c
+            ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
+transport-× A B refl = refl
 
 transport-comp : ∀ {U V} {X : U ̇} (A : X → V ̇)
                    {x y z : X} (q : x ≡ y) (p : y ≡ z) {a : A x}
@@ -175,6 +185,10 @@ homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 ×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
      → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
 ×-≡ refl refl = refl
+
+×-≡' : ∀ {U V} {X : U ̇} {Y : V ̇} {z z' : X × Y}
+     → pr₁ z ≡ pr₁ z' → pr₂ z ≡ pr₂ z' → z ≡ z'
+×-≡' refl refl = refl
 
 from-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} {σ τ : Σ Y} (r : σ ≡ τ)
           → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)

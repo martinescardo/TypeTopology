@@ -31,7 +31,8 @@ open import Cubical public
            ; _≡⟨_⟩_         -- Equational reasoning.
            ; _∎
 
-           ; funext         -- Function extensionality (can also be derived from univalence).
+           ; funext         -- Function extensionality
+                            -- (can also be derived from univalence).
 
            ; Σ              -- Sum type. Needed to define contractible types, equivalences
            ; _,_            -- and univalence.
@@ -42,7 +43,8 @@ open import Cubical public
            ; is-contr
            ; is-set
 
-           ; is-equiv       -- A map with contractible fibers (Voevodsky's version of the notion).
+           ; is-equiv       -- A map with contractible fibers
+                            -- (Voevodsky's version of the notion).
            ; _≃_            -- The type of equivalences between two given types.
            ; univalence     -- Click to navigate to the adopted formulation of univalence.
 
@@ -52,9 +54,10 @@ open import Cubical public
            ; ∥∥-recursion    -- Non-dependent elimination.
            ; ∥∥-induction    -- Dependent elimination.
 
-           ; Universe       -- The type of universes (originally called Level by the Agda developers).
+           ; Universe       -- The type of universes (originally called Level).
            ; U₀             -- The first universe (originally called lzero).
-           ; _̇              -- We write X : U ̇ to say that X is in the universe U (originally X : Set U).
+           ; _̇              -- We write X : U ̇ to say that X is in the universe U
+                            -- (originally X : Set U).
            ; _′             -- The successor of a universe (originally called lsucc).
            ; _⊔_            -- U ⊔ V is the first universe above or equal U and V.
            )
@@ -62,8 +65,8 @@ open import Cubical public
 \end{code}
 
 If you prefer the traditional universe handling using the keyword
-"Set" and the terminology "Level", simply hide the above universe
-constructs when importing this module.
+"Set" and the terminology "Level", simply hide or rename the above
+universe constructs when importing this module.
 
 Here is an illustration of how function extensionality computes.
 

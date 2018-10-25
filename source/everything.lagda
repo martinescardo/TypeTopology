@@ -109,6 +109,8 @@ import UF-Univalence
 import UF-Yoneda
 import UnivalenceFromScratch
 
+import PartialFunctions -- Under development.
+
 import Cubical          -- Not yet used in this development.  Remove
 import Cubical-HoTT-UF  -- these imports if you don't have the
                         -- development version of Agda (22 October 2018).
