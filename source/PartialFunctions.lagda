@@ -53,10 +53,11 @@ equivalence).
 
  η-composite : funext V V → ∀ {U} → funext U (V ′ ⊔ U)
             → {X : U ̇} → η ≡ 𝓜-to-𝓛 X ∘ μ
- η-composite fe fe' = dfunext fe'
-                          (λ x → to-Σ-≡ (refl ,
-                                         (×-≡ (is-prop-is-prop fe _ _)
-                                              refl)))
+ η-composite fe fe' {X} = dfunext fe' h
+  where
+   h : (x : X) → (𝟙 , 𝟙-is-prop , λ _ → x) ≡ (𝟙 , is-singleton-is-prop (𝟙-is-singleton) , λ _ → x)
+   h x = to-Σ-≡ (refl , ×-≡ (is-prop-is-prop fe _ _) refl)
+
 \end{code}
 
 The fact that 𝓜-to-𝓛 is an embedding can be proved by obtaining it as
