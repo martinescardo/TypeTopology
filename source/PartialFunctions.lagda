@@ -129,7 +129,7 @@ Then η is an embedding because it is equal to the composition of two embeddings
 \begin{code}
 
  η-is-embedding : propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
-              → {X : U ̇} → is-embedding (η {U} {X})
+                → {X : U ̇} → is-embedding (η {U} {X})
  η-is-embedding pe fe fe' fe'' {X} =
   back-transport
    is-embedding
@@ -254,7 +254,10 @@ annotations to the formulation of the above equivalence:
 
 \end{code}
 
-For no choice of universes U and V can we have V ' ⊔ U to coincide with V.
+For no choice of universes U and V can we have V ' ⊔ U to coincide
+with V. However, for dominances other than is-prop, then it will be
+possible to have the equality beyween the fiber of l and the
+definedness of l.
 
 TODO: Could the map (anti l m) be an equivalence? No. We should
 instead have an equivalence (l ⊑ m) × (m ⊑ l) → (l ≡ m) × (l ≡ m),
@@ -294,7 +297,7 @@ which should be an equivalence for each l and m:
 
  ⊑-anti'-inverse : ∀ {U}  {X : U ̇} (l m : 𝓛 X)
                  → l ≡ m → (l ⊑ m) × (is-defined m → is-defined l)
- ⊑-anti'-inverse l .l refl = (⊑-id l) , id
+ ⊑-anti'-inverse l .l refl = ⊑-id l , id
 
  η-maximal : ∀ {U} {X : U ̇} (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
  η-maximal x (P , i , γ) (f , δ) = (λ p → *) , (λ p → ap γ (i p (f *)) ∙ (δ *)⁻¹)
@@ -319,7 +322,7 @@ which should be an equivalence for each l and m:
    α : {x y : X} (p : x ≡ y) →  η-⊑-gives-≡ (η-≡-gives-⊑ p) ≡ p
    α p = refl
 
-   β : {x y : X} (a : η x ⊑ η y) → η-≡-gives-⊑ (η-⊑-gives-≡ a) ≡ a
+   β : {x y : X} (q : η x ⊑ η y) → η-≡-gives-⊑ (η-⊑-gives-≡ q) ≡ q
    β (f , δ) = ×-≡ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
                    (dfunext fe' (λ x → ap δ (𝟙-is-prop * x)))
 
