@@ -33,7 +33,7 @@ module _ {V : Universe} where
 
 \end{code}
 
-Our strategy to show that η is an embedding is to show that it is the
+Our strategy to show that η is an embedding is to exhibit it as the
 composite of two embeddings (the first of which is actually an
 equivalence).
 
@@ -80,7 +80,7 @@ NatΣ-embedding.:
 
  𝓜-to-𝓛-is-embedding : funext V V → ∀ {U} (X : U ̇)
                      → is-embedding (𝓜-to-𝓛 X)
- 𝓜-to-𝓛-is-embedding fe {U} X = NatΣ-embedding
+ 𝓜-to-𝓛-is-embedding fe {U} X = NatΣ-is-embedding
                                   (λ P → is-singleton P × (P → X))
                                   (λ P → is-prop P × (P → X))
                                   (ζ X)
@@ -235,20 +235,18 @@ We can now establish the promised fact:
  η-fiber-same-as-is-defined :
      propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
    → {X : U ̇} (l : 𝓛 X)
-   → fiber η l ≃ is-defined l
- η-fiber-same-as-is-defined pe fe {U} fe' fe'' {X} l = f l , ((g l , fg) , (g l , gf))
+   → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
+ η-fiber-same-as-is-defined pe fe fe' fe'' {X} l = f l , ((g l , fg) , (g l , gf))
   where
    f : (l : 𝓛 X) → fiber η l → is-defined l
    f (.𝟙 , .𝟙-is-prop , .(λ _ → x)) (x , refl) = *
    g : (l : 𝓛 X) → is-defined l → fiber η l
-   g (P , i , φ) p = φ p , c
+   g (P , i , φ) p = φ p , ⊑-anti pe fe fe' (a , b)
     where
      a : η (φ p) ⊑ (P , i , φ)
      a = (λ _ → p) , (λ _ → refl)
      b : (P , i , φ) ⊑ η (φ p)
      b = (λ _ → *) , (λ q → ap φ (i q p))
-     c : η (φ p) ≡ (P , i , φ)
-     c = ⊑-anti pe fe fe' (a , b)
    fg : (d : is-defined l) → f l (g l d) ≡ d
    fg d = is-defined-is-prop l (f l (g l d)) d
    gf : (z : fiber η l) → g l (f l z) ≡ z
@@ -289,8 +287,8 @@ which should be an equivalence for each l and m:
 \begin{code}
 
  ⊑-anti' : ∀ {U} → propext V → funext V V → funext V U
-        → {X : U ̇} {l m : 𝓛 X} → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
- ⊑-anti' pe fe fe' {X} {Q , j , γ} {P , i , φ} ((f , δ) , g) = e
+        → {X : U ̇} (l m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
+ ⊑-anti' pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , g) = e
   where
    ε' : (p : P) → γ (g p) ≡ φ p
    ε' p = δ (g p) ∙ ap φ (i (f (g p)) p)
@@ -313,6 +311,7 @@ which should be an equivalence for each l and m:
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
    e = to-Σ-≡ (a , to-×-≡ (is-prop-is-prop fe _ i) d)
+
 
  ⊑-anti'-inverse : ∀ {U}  {X : U ̇} (l m : 𝓛 X)
                  → l ≡ m → (l ⊑ m) × (is-defined m → is-defined l)

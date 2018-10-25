@@ -334,16 +334,16 @@ maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
   rs : (φ : fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)) → r (s φ) ≡ φ
   rs ((x , y) , refl) = refl
 
-NatΣ-embedding : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
-             → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΣ ζ)
-NatΣ-embedding A B ζ ise (x , b) = retract-of-subsingleton
-                                   (equiv-retract-r (NatΣ-fiber-equiv A B ζ x b))
-                                   (ise x b)
+NatΣ-is-embedding : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                  → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΣ ζ)
+NatΣ-is-embedding A B ζ ise (x , b) = retract-of-subsingleton
+                                       (equiv-retract-r (NatΣ-fiber-equiv A B ζ x b))
+                                       (ise x b)
 
-NatΣ-embedding-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
-                       → is-embedding(NatΣ ζ) → ((x : X) → is-embedding(ζ x))
-NatΣ-embedding-converse A B ζ e x b = retract-of-subsingleton
-                                      (equiv-retract-l (NatΣ-fiber-equiv A B ζ x b))
-                                      (e (x , b))
+NatΣ-is-embedding-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+                           → is-embedding(NatΣ ζ) → ((x : X) → is-embedding(ζ x))
+NatΣ-is-embedding-converse A B ζ e x b = retract-of-subsingleton
+                                          (equiv-retract-l (NatΣ-fiber-equiv A B ζ x b))
+                                          (e (x , b))
 
 \end{code}
