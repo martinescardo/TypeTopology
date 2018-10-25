@@ -50,22 +50,20 @@ eml : ∀ {U} (X : U ̇) → 𝓜 X → 𝓛 X
 eml X = NatΣ (ζ X)
 
 η-composite : funext V V → ∀ {U} → funext U (V ′ ⊔ U)
-               → {X : U ̇} → η ≡ eml X ∘ μ
+           → {X : U ̇} → η ≡ eml X ∘ μ
 η-composite fe fe' = dfunext fe'
                          (λ x → to-Σ-≡ (refl ,
                                         (×-≡ (is-prop-is-prop fe _ _)
                                              refl)))
 
-ν : ∀ {U} {X : U ̇} → 𝓜 X → X
-ν (P , i , φ) = φ (is-singleton-pointed i)
-
-νμ : ∀ {U} {X : U ̇} → (x : X) → ν (μ x) ≡ x
-νμ x = refl
-
 μ-is-equiv : propext V → funext V V → ∀ {U} → funext V U
           → {X : U ̇} → is-equiv (μ {U} {X})
 μ-is-equiv pe fe {U} fe' {X} = qinv-is-equiv μ (ν , (νμ , μν))
  where
+  ν : ∀ {U} {X : U ̇} → 𝓜 X → X
+  ν (P , i , φ) = φ (is-singleton-pointed i)
+  νμ : ∀ {U} {X : U ̇} → (x : X) → ν (μ x) ≡ x
+  νμ x = refl
   μν : (m : 𝓜 X) → μ (ν m) ≡ m
   μν (P , i , φ) = to-Σ-≡ (t , s)
    where
@@ -85,13 +83,9 @@ eml X = NatΣ (ζ X)
              ≡⟨ ×-≡ (is-prop-is-singleton fe _ i) u ⟩
         i , φ ∎
 
-
 μ-is-embedding : propext V → funext V V → ∀ {U} → funext V U
-          → {X : U ̇} → is-embedding (μ {U} {X})
+               → {X : U ̇} → is-embedding (μ {U} {X})
 μ-is-embedding pe fe fe' = is-equiv-is-embedding μ (μ-is-equiv pe fe fe')
-
-
-
 
 eml-is-embedding : funext V V → ∀ {U} (X : U ̇)
                  → is-embedding (eml X)
@@ -127,8 +121,6 @@ value : ∀ {U} {X : U ̇} (l : 𝓛  X) → is-defined l → X
 value (P , i , φ) = φ
 
 \end{code}
-
-
 
 Information "Order" now:
 
