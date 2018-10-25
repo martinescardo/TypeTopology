@@ -1,7 +1,6 @@
 Martin Escardo 25th October 2018.
 
 The type of partial elements of a type (or lifting).
-
 (Cf. my former student Cory Knapp's PhD thesis).
 
 We focus, to begin with, on the fact that the canonical map into the
@@ -36,8 +35,20 @@ the lifting of X.
  𝓛 : ∀ {U} → U ̇ → U ⊔ V ′ ̇
  𝓛 X = Σ \(P : V ̇) → is-prop P × (P → X)
 
+\end{code}
+
+The "total" elements of 𝓛 X:
+
+\begin{code}
+
  η : ∀ {U} {X : U ̇} → X → 𝓛 X
  η x = 𝟙 , 𝟙-is-prop , (λ _ → x)
+
+\end{code}
+
+Its "undefined" element:
+
+\begin{code}
 
  ⊥ : ∀ {U} {X : U ̇} → 𝓛 X
  ⊥ = 𝟘 , 𝟘-is-prop , unique-from-𝟘
@@ -99,7 +110,7 @@ NatΣ-embedding.:
 \end{code}
 
 That μ is an equivalence corresponds to the fact that the lifting of a
-type X with respect to the dominance is-singleton is equivalent to X
+type X with respect to the dominance "is-singleton" is equivalent to X
 itself.
 
 \begin{code}
@@ -229,7 +240,7 @@ hom-∞-groupoids x ⊑ y.
 \end{code}
 
 We haven't used δ in the above proof. But we could use it instead of
-ε, by definiting ε' from δ as follows, and then using (dfunext fe' ε')
+ε, by defining ε' from δ as follows, and then using (dfunext fe' ε')
 instead of (dfunext fe' ε)⁻¹ in the above proof:
 
 \begin{code}
@@ -283,9 +294,8 @@ formulation of the above equivalence:
 \end{code}
 
 For no choice of universes U and V can we have V ' ⊔ U to coincide
-with V. However, for dominances other than is-prop, then it will be
-possible to have the equality beyween the fiber of l and the
-definedness of l.
+with V. However, for dominances other than is-prop, it is possible to
+have the equality beyween the fiber of l and the definedness of l.
 
 TODO: Could the map (anti l m) be an equivalence? No. We should
 instead have an equivalence (l ⊑ m) × (m ⊑ l) → (l ≡ m) × (l ≡ m),
