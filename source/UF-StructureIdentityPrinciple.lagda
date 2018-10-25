@@ -611,7 +611,7 @@ And now we are ready to apply gsip-with-axioms to our situation:
        (λ {A' B' (f , e) → ((λ x x' → f (mul A' x x')) ≡ (λ x x' → mul B' (f x) (f x')))
                          × (f (unit A') ≡ unit B')})
        (λ A' → refl , refl)
-       (λ X m n υ → ×-≡ (pr₁ υ) (pr₂ υ))
+       (λ X m n υ → to-×-≡ (pr₁ υ) (pr₂ υ))
        (λ { A' m (refl , refl) → refl })
 
  fact : (A B : Monoid)

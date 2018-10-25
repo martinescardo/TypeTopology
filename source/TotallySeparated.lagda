@@ -240,8 +240,8 @@ the following particular cases:
                     → totally-separated Y
                     → totally-separated (X × Y)
 ×-totally-separated X Y t u {a , b} {x , y} φ =
-   ×-≡ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
-        (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
+   to-×-≡ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
+          (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
 
 Σ-dtt : ∀ {U V} (X : U ̇) (Y : X → V ̇)
       → discrete X

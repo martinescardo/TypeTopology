@@ -288,9 +288,9 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
   G' : A × B → X × Y
   G' (a , b) = g' a , γ' b
   E : (c : A × B) → F (G c) ≡ c
-  E (a , b) = ×-≡ (e a) (ε b)
+  E (a , b) = to-×-≡ (e a) (ε b)
   D : (z : X × Y) → G' (F z) ≡ z
-  D (x , y) = ×-≡ (d x) (δ y)
+  D (x , y) = to-×-≡ (d x) (δ y)
 
 𝟘→ : ∀ {U V W} {X : U ̇} → funext W U
    → 𝟙 ≃ (𝟘 → X)

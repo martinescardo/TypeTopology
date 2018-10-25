@@ -209,7 +209,7 @@ module times
        α : P(x , y')
        α = f y' m
        p : (x' , y') ≡ (x , y')
-       p = ×-≡ r refl
+       p = to-×-≡ r refl
    φ : (x : X) (y : Y) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y) → P(x , y)) γ
 
@@ -229,7 +229,7 @@ module times
              → is-extensional _<_
              → is-extensional _≺_
              → is-extensional _⊏_
- extensional w w' e e' (a , b) (x , y) f g = ×-≡ p q
+ extensional w w' e e' (a , b) (x , y) f g = to-×-≡ p q
   where
    f' : (u : X) → u < a → u < x
    f' u l = Cases (f (u , y) (inl l))
@@ -281,7 +281,7 @@ module times
    prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
      𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-     ap inr (×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
+     ap inr (to-×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
 
  top-preservation : has-top _<_ → has-top _≺_ → has-top _⊏_
  top-preservation (x , f) (y , g) = (x , y) , h

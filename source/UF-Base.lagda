@@ -182,13 +182,13 @@ homotopies-are-natural : ∀ {U} {V} {X : U ̇} {A : V ̇} (f g : X → A) (H : 
                       → H x ∙ ap g p ≡ ap f p ∙ H y
 homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
-×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
+to-×-≡ : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
      → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
-×-≡ refl refl = refl
+to-×-≡ refl refl = refl
 
-×-≡' : ∀ {U V} {X : U ̇} {Y : V ̇} {z z' : X × Y}
+to-×-≡' : ∀ {U V} {X : U ̇} {Y : V ̇} {z z' : X × Y}
      → pr₁ z ≡ pr₁ z' → pr₂ z ≡ pr₂ z' → z ≡ z'
-×-≡' refl refl = refl
+to-×-≡' refl refl = refl
 
 from-Σ-≡ : ∀ {U V} {X : U ̇} {Y : X → V ̇} {σ τ : Σ Y} (r : σ ≡ τ)
           → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)

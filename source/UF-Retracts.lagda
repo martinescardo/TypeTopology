@@ -96,7 +96,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   g : X × Y → A × B
   g (x , y) = s x , u y
   fg : (z : X × Y) → f (g z) ≡ z
-  fg (x , y) = ×-≡ (rs x) (tu y)
+  fg (x , y) = to-×-≡ (rs x) (tu y)
 
 +-retract : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
            → retract X of A

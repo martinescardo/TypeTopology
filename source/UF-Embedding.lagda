@@ -328,7 +328,7 @@ maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
                                                       (×-is-prop (i a) (j b))
  where
   r : fiber f a × fiber g b → fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)
-  r ((x , s) , (y , t)) = (x , y) , ×-≡ s t
+  r ((x , s) , (y , t)) = (x , y) , to-×-≡ s t
   s : fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b) → fiber f a × fiber g b
   s ((x , y) , p) = (x , ap pr₁ p) , (y , ap pr₂ p)
   rs : (φ : fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)) → r (s φ) ≡ φ

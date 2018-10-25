@@ -685,7 +685,7 @@ _has-inf_ : ∀ {U} {X : U ̇} → (X → 𝟚) → 𝟚 → U ̇
 p has-inf n = (∀ x → n ≤₂ p x) × (∀ m → (∀ x → m ≤₂ p x) → m ≤₂ n)
 
 has-inf-is-prop : ∀ {U} {X : U ̇} (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
-has-inf-is-prop {U} {X} p n (f , g) (f' , g') = ×-≡ r s
+has-inf-is-prop {U} {X} p n (f , g) (f' , g') = to-×-≡ r s
  where
   r : f ≡ f'
   r = dfunext (fe U U₀) (λ x → dfunext (fe U₀ U₀) (λ r → 𝟚-is-set (f x r) (f' x r)))

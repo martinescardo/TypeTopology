@@ -52,11 +52,12 @@ equivalence).
  𝓜-to-𝓛 X = NatΣ (ζ X)
 
  η-composite : funext V V → ∀ {U} → funext U (V ′ ⊔ U)
-            → {X : U ̇} → η ≡ 𝓜-to-𝓛 X ∘ μ
+             → {X : U ̇} → η ≡ 𝓜-to-𝓛 X ∘ μ
  η-composite fe fe' {X} = dfunext fe' h
   where
-   h : (x : X) → (𝟙 , 𝟙-is-prop , λ _ → x) ≡ (𝟙 , is-singleton-is-prop (𝟙-is-singleton) , λ _ → x)
-   h x = to-Σ-≡ (refl , ×-≡ (is-prop-is-prop fe _ _) refl)
+   h : (x : X) → (𝟙 , 𝟙-is-prop ,                             λ _ → x)
+               ≡ (𝟙 , is-singleton-is-prop (𝟙-is-singleton) , λ _ → x)
+   h x = to-Σ-≡ (refl , to-×-≡ (is-prop-is-prop fe _ _) refl)
 
 \end{code}
 
@@ -116,7 +117,7 @@ itself.
      s = transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
               ≡⟨ transport-× is-singleton (λ - → - → X) t ⟩
          transport is-singleton t 𝟙-is-singleton , transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i))
-              ≡⟨ ×-≡ (is-prop-is-singleton fe _ i) u ⟩
+              ≡⟨ to-×-≡ (is-prop-is-singleton fe _ i) u ⟩
          i , φ ∎
 
  μ-is-embedding : propext V → funext V V → ∀ {U} → funext V U
@@ -203,7 +204,7 @@ hom-∞-groupoids x ⊑ y.
              ≡⟨ (dfunext fe' ε)⁻¹ ⟩
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
-   e = to-Σ-≡ (a , ×-≡ (is-prop-is-prop fe _ i) d)
+   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-prop fe _ i) d)
 
 \end{code}
 
@@ -298,7 +299,7 @@ which should be an equivalence for each l and m:
              ≡⟨ dfunext fe' ε' ⟩
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
-   e = to-Σ-≡ (a , ×-≡ (is-prop-is-prop fe _ i) d)
+   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-prop fe _ i) d)
 
  ⊑-anti'-inverse : ∀ {U}  {X : U ̇} (l m : 𝓛 X)
                  → l ≡ m → (l ⊑ m) × (is-defined m → is-defined l)
@@ -328,8 +329,8 @@ which should be an equivalence for each l and m:
    α p = refl
 
    β : {x y : X} (q : η x ⊑ η y) → η-≡-gives-⊑ (η-⊑-gives-≡ q) ≡ q
-   β (f , δ) = ×-≡ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
-                   (dfunext fe' (λ x → ap δ (𝟙-is-prop * x)))
+   β (f , δ) = to-×-≡ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
+                      (dfunext fe' (λ x → ap δ (𝟙-is-prop * x)))
 
 
 {- TODO
