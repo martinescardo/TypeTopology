@@ -48,16 +48,41 @@ equivalence).
  ζ : ∀ {U} (X : U ̇) (P : V ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
  ζ X P (i , φ) = (is-singleton-is-prop i) , φ
 
- eml : ∀ {U} (X : U ̇) → 𝓜 X → 𝓛 X
- eml X = NatΣ (ζ X)
+ 𝓜-to-𝓛 : ∀ {U} (X : U ̇) → 𝓜 X → 𝓛 X
+ 𝓜-to-𝓛 X = NatΣ (ζ X)
 
  η-composite : funext V V → ∀ {U} → funext U (V ′ ⊔ U)
-            → {X : U ̇} → η ≡ eml X ∘ μ
+            → {X : U ̇} → η ≡ 𝓜-to-𝓛 X ∘ μ
  η-composite fe fe' = dfunext fe'
                           (λ x → to-Σ-≡ (refl ,
                                          (×-≡ (is-prop-is-prop fe _ _)
                                               refl)))
+\end{code}
 
+The fact that 𝓜-to-𝓛 is an embedding can be proved by obtaining it as
+a combination of maps that we already know to be embeddings, using
+×-embedding, maps-of-props-are-embeddings, id-is-embedding, and
+NatΣ-embedding.:
+
+\begin{code}
+
+ ζ-is-embedding : funext V V → ∀ {U} (X : U ̇) (P : V ̇) → is-embedding (ζ X P)
+ ζ-is-embedding fe X P = ×-embedding
+                           is-singleton-is-prop
+                           id
+                           (maps-of-props-are-embeddings
+                              is-singleton-is-prop
+                              (is-prop-is-singleton fe)
+                              (is-prop-is-prop fe))
+                           id-is-embedding
+
+ 𝓜-to-𝓛-is-embedding : funext V V → ∀ {U} (X : U ̇)
+                  → is-embedding (𝓜-to-𝓛 X)
+ 𝓜-to-𝓛-is-embedding fe {U} X = NatΣ-embedding
+                                  (λ P → is-singleton P × (P → X))
+                                  (λ P → is-prop P × (P → X))
+                                  (ζ X)
+                                  (ζ-is-embedding fe X)
 \end{code}
 
 That μ is an equivalence corresponds to the fact that the lifting of
@@ -99,32 +124,8 @@ itself.
 
 \end{code}
 
-The fact that eml is an embedding can be proved by obtaining it as a
-combination of maps that we already know to be embeddings, using
-NatΣ-embedding, ×-embedding, maps-of-props-are-embeddings,
-id-is-embedding.
-
-\begin{code}
-
- eml-is-embedding : funext V V → ∀ {U} (X : U ̇)
-                  → is-embedding (eml X)
- eml-is-embedding fe {U} X =
-   NatΣ-embedding
-    (λ P → is-singleton P × (P → X))
-    (λ P → is-prop P × (P → X))
-    (ζ X)
-    λ P → ×-embedding
-              is-singleton-is-prop
-              id
-              (maps-of-props-are-embeddings
-                 is-singleton-is-prop
-                 (is-prop-is-singleton fe)
-                 (is-prop-is-prop fe))
-              id-is-embedding
-
-\end{code}
-
-Then η is an embedding because it is equal to the composition of two embeddings:
+Finally, η is an embedding because it is equal to the composition of
+two embeddings:
 
 \begin{code}
 
@@ -134,7 +135,7 @@ Then η is an embedding because it is equal to the composition of two embeddings
   back-transport
    is-embedding
    (η-composite fe fe'')
-   (comp-embedding (μ-is-embedding pe fe fe') (eml-is-embedding fe X))
+   (comp-embedding (μ-is-embedding pe fe fe') (𝓜-to-𝓛-is-embedding fe X))
 
  is-defined : ∀ {U} {X : U ̇} → 𝓛 X → V ̇
  is-defined (P , i , φ) = P
@@ -179,7 +180,8 @@ hom-∞-groupoids x ⊑ y.
  ⊑-∘ l m n (f , δ) (g , ε) = g ∘ f , (λ d → δ d ∙ ε (f d))
 
  ⊑-anti : ∀ {U} → propext V → funext V V → funext V U
-        → {X : U ̇} (l m : 𝓛 X) → (l ⊑ m) × (m ⊑ l) → l ≡ m
+        → {X : U ̇} (l m : 𝓛 X)
+        → (l ⊑ m) × (m ⊑ l) → l ≡ m
  ⊑-anti pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , (g , ε)) = e
   where
    a : Q ≡ P
@@ -220,8 +222,9 @@ We can now establish the promised fact:
 \begin{code}
 
  η-fiber-same-as-is-defined :
-     propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
-  → {X : U ̇} (l : 𝓛 X) → fiber η l ≃ is-defined l
+      propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
+   → {X : U ̇} (l : 𝓛 X)
+   → fiber η l ≃ is-defined l
  η-fiber-same-as-is-defined pe fe {U} fe' fe'' {X} l =
   f l , ((g l , (λ d → is-defined-is-prop l (f l (g l d)) d)) ,
          (g l , λ z → η-is-embedding pe fe fe' fe'' l (g l (f l z)) z))
@@ -248,8 +251,9 @@ annotations to the formulation of the above equivalence:
 
  private
   η-fiber-same-as-is-defined' :
-      propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
-   → {X : U ̇} (l : 𝓛 X) → (fiber η l ∶ V ′ ⊔ U ̇) ≃ (is-defined l ∶ V ̇)
+       propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
+    → {X : U ̇} (l : 𝓛 X)
+    → (fiber η l ∶ V ′ ⊔ U ̇) ≃ (is-defined l ∶ V ̇)
   η-fiber-same-as-is-defined' = η-fiber-same-as-is-defined
 
 \end{code}
