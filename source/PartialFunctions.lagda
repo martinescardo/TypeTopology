@@ -1,4 +1,4 @@
-Martin Escardo 26th October 2018.
+Martin Escardo 25th October 2018.
 
 Only lifting for the moment. We will then discuss partial functions
 (cf. my former student Cory Knapp's PhD thesis).
@@ -160,7 +160,7 @@ Next we show that for any l : 𝓛 X,
 
  fiber η l ≃ is-defined l,
 
-using the fact that the fiber is a projection by virtue of η being an
+using the fact that the fiber is a proposition by virtue of η being an
 embedding.
 
 For this purpose, it is convenient to work with the information
