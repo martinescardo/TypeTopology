@@ -34,12 +34,14 @@ open import DecidableAndDetachable
 ∃-compact X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
 
 ∃-compact-is-prop : {X : U ̇} → is-prop (∃-compact X)
-∃-compact-is-prop {U} = Π-is-prop (fe U U)
+∃-compact-is-prop {U} {X} = Π-is-prop (fe U U)
                                 (λ _ → decidable-is-prop (fe U U₀) ptisp)
 
 ∃-compact-Markov : {X : U ̇}
                  → ∃-compact X
-                 → (p : X → 𝟚) → ¬¬(∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+                 → (p : X → 𝟚)
+                 → ¬¬(∃ \(x : X) → p x ≡ ₀)
+                 → ∃ \(x : X) → p x ≡ ₀
 ∃-compact-Markov {U} {X} c p φ = g (c p)
  where
   g : decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
@@ -78,6 +80,23 @@ empty-Π-compact : {X : U ̇} → is-empty X → Π-compact X
 empty-Π-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
+
+The ∃-compactness, and hence Π-compactness, of compact sets (and hence
+of ℕ∞, for example):
+
+\begin{code}
+
+compact-gives-∃-compact : {X : U ̇} → compact X → ∃-compact X
+compact-gives-∃-compact {U} {X} φ p = g (φ p)
+ where
+  g : ((Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
+  g (inl (x , r)) = inl ∣ x , r ∣
+  g (inr α) = inr (forall₁-implies-not-exists₀ pt p α)
+
+\end{code}
+
+But notice that the Π-compactness of ℕ is WLPO and its ∃-compactness
+is amounts to LPO.
 
 The Π-compactness of X is equivalent to the isolatedness of the boolean
 predicate λ x → ₁:
@@ -120,8 +139,7 @@ without the need of any assumption:
 
 \begin{code}
 
-cdd : {X : U ̇} {Y : V ̇}
-    → Π-compact X → discrete Y → discrete(X → Y)
+cdd : {X : U ̇} {Y : V ̇} → Π-compact X → discrete Y → discrete(X → Y)
 cdd {U} {V} {X} {Y} c d f g = h (c p)
  where
   p : X → 𝟚
@@ -161,29 +179,13 @@ dcc : {X : U ̇} {Y : V ̇} → retract 𝟚 of Y → discrete(X → Y) → Π-c
 dcc {U} re d = d𝟚-Πc (retract-discrete-discrete (rpe (fe U U₀) re) d)
 
 ddc' : {X : U ̇} {Y : V ̇} (y₀ y₁ : Y) → y₀ ≢ y₁
-    → discrete Y → discrete(X → Y) → Π-compact X
+     → discrete Y → discrete(X → Y) → Π-compact X
 ddc' y₀ y₁ ne dy = dcc (𝟚-retract-of-discrete ne dy)
 
 \end{code}
 
 So, in summary, if Y is a non-trivial discrete type, then X is
 Π-compact iff (X → Y) is discrete.
-
-The ∃-compactness, and hence Π-compactness, of compact sets (and hence
-of ℕ∞, for example):
-
-\begin{code}
-
-compact-gives-∃-compact : {X : U ̇} → compact X → ∃-compact X
-compact-gives-∃-compact {U} {X} φ p = g (φ p)
- where
-  g : ((Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
-  g (inl (x , r)) = inl ∣ x , r ∣
-  g (inr α) = inr (forall₁-implies-not-exists₀ pt p α)
-
-\end{code}
-
-But notice that the Π-compactness of ℕ is (literally) WLPO.
 
 Compactness of images:
 
@@ -247,9 +249,9 @@ i2c2c x = retract-Π-compact (pdrc x)
 \end{code}
 
 A main reason to consider the notion of total separatedness is that
-the totally separated reflection T X of X has the same supply of
+the totally separated reflection 𝓣 X of X has the same supply of
 boolean predicates as X, and hence X is ∃-compact (respectively
-Π-compact) iff T X is, as we show now.
+Π-compact) iff 𝓣 X is, as we show now.
 
 \begin{code}
 
@@ -289,7 +291,7 @@ module TStronglyOvertnessAndCompactness (X : U ̇) where
  tc c p = h (c (extension p))
   where
    f : ((x' : 𝓣 X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
-   f α x = (extension-property p x) ⁻¹ ∙ α (η x)
+   f α x = (extension-property p x)⁻¹ ∙ α (η x)
 
    g : (α : (x : X) → p x ≡ ₁) → ((x' : 𝓣 X) → extension p x' ≡ ₁)
    g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
@@ -353,7 +355,7 @@ tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (rpe (fe U₀ U₀) r) c)
 open TotallySeparatedReflection fe pt
 
 tscd₁ : {X : U ̇} {Y : V ̇} → retract 𝟚 of Y
-     → Π-compact (X → Y) → discrete (𝓣 X)
+      → Π-compact (X → Y) → discrete (𝓣 X)
 tscd₁ {U} {V} {X} {Y} r c = f
  where
   z : retract (X → 𝟚) of (X → Y)
@@ -395,7 +397,8 @@ Closure of compactness under sums (and hence binary products):
 \begin{code}
 
 Π-compact-closed-under-Σ : {X : U ̇} {Y : X → V ̇}
-                         → Π-compact X → ((x : X) → Π-compact (Y x)) → Π-compact (Σ Y)
+                         → Π-compact X → ((x : X) → Π-compact (Y x))
+                         → Π-compact (Σ Y)
 Π-compact-closed-under-Σ {U} {V} {X} {Y} c d p = g e
  where
   f : ∀ x → decidable (∀ y → p (x , y) ≡ ₁)
@@ -506,7 +509,8 @@ module.
 \begin{code}
 
 detachable-subset-retract : {X : U ̇} {A : X → 𝟚}
-  → (Σ \(x : X) → A(x) ≡ ₀) → retract (Σ \(x : X) → A(x) ≡ ₀) of X
+                          → (Σ \(x : X) → A(x) ≡ ₀)
+                          → retract (Σ \(x : X) → A(x) ≡ ₀) of X
 detachable-subset-retract {U} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
   r : X → Σ \(x : X) → A x ≡ ₀
@@ -536,7 +540,8 @@ allows us to decide inhabitedness, and ∃-compactness is a proposition.
 \begin{code}
 
 detachable-subset-∃-compact : {X : U ̇} (A : X → 𝟚)
-                            → ∃-compact X → ∃-compact(Σ \(x : X) → A(x) ≡ ₀)
+                            → ∃-compact X
+                            → ∃-compact(Σ \(x : X) → A(x) ≡ ₀)
 detachable-subset-∃-compact {U} {X} A c = g (c A)
  where
   g : decidable (∃ \(x : X) → A x ≡ ₀) → ∃-compact(Σ \(x : X) → A(x) ≡ ₀)
@@ -595,7 +600,7 @@ detachable-subset-Π-compact {U} {X} A c q = g (c p)
 
 \end{code}
 
-20 Jan 2017.
+20 Jan 2018.
 
 We now consider a truncated version of pointed compactness (see the
 module CompactTypes).
@@ -1057,7 +1062,7 @@ Image f A = λ y → ∃ \x → A x × (f x ≡ y)
 
 is-clopen-map : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-clopen-map {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y)
-                              → decidable (Image f (λ x → p x ≡ ₀) y)
+                                → decidable (Image f (λ x → p x ≡ ₀) y)
 
 is-clopen-map-is-prop : {X : U ̇} {Y : V ̇} → (∀ U V → funext U V)
                    → (f : X → Y) → is-prop(is-clopen-map f)
