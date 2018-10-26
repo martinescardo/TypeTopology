@@ -13,6 +13,9 @@ open import UF-FunExt
 
 module UF-EquivalenceExamples where
 
+private
+ variable T : Universe
+
 curry-uncurry : (fe : ∀ U V → funext U V)
              → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
@@ -202,7 +205,7 @@ curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
     η (inl (inr x)) = refl
     η (inr x)       = refl
 
-+-cong : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
++-cong : {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
       → X ≃ A → Y ≃ B → X + Y ≃ A + B
 +-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
@@ -282,7 +285,7 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     η : (u : X × Y) → (g ∘ f) u ≡ u
     η (x , y) = refl
 
-×-cong : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+×-cong : {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
       → X ≃ A → Y ≃ B → X × Y ≃ A × B
 ×-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
@@ -345,7 +348,7 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     γ (inl x) = refl
     γ (inr y) = refl
 
-→-cong : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+→-cong : {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
        → funext W T → funext U V
        → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
 →-cong {U} {V} {W} {T} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =

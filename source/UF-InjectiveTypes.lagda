@@ -113,7 +113,7 @@ triangles to make sense.
 
 \begin{code}
 
-module _ {U V W : Universe} {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
+module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
 
   Π-extension Σ-extension : Y → U ⊔ V ⊔ W ̇
   Π-extension y = Π \(w : fiber j y) → f(pr₁ w)
@@ -380,7 +380,10 @@ universes-are-injective-Π ua j e f = f / j , λ x → eqtoid ua _ _ (Π-extensi
 universes-are-injective-Σ : is-univalent U → injective-type {U} {U} (U ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-retract-of-injective : {T : Universe} {D : U ̇} {D' : V ̇}
+private
+ variable T : Universe
+
+retract-of-injective : {D : U ̇} {D' : V ̇}
                        → injective-type {W} {T} D → retract D' Of D → injective-type D'
 retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
   where
@@ -408,7 +411,7 @@ injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a 
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
 
-power-of-injective : {T : Universe} {D : U ̇} {A : V ̇}
+power-of-injective : {D : U ̇} {A : V ̇}
                    → injective-type {W} {T} D → injective-type (A → D)
 power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
   where
@@ -428,7 +431,7 @@ to be an embedding and that the proof is completely routine.
 
 \begin{code}
 
-retract-extension : {T : Universe} {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
+retract-extension : {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
                → ((x : X) → retract (A x) of (B x))
                → ((y : Y) → retract ((A / e) y) of ((B / e) y))
 retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
@@ -454,7 +457,7 @@ Added 25th July 2018.
 
 \begin{code}
 
-iterated-extension : {T : Universe} {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
+iterated-extension : {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
                      (j : X → Y) (k : Y → Z)
                   → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
 iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ

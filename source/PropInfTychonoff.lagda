@@ -21,17 +21,17 @@ open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
 
-prop-inf-tychonoff : ∀ {U V T} {X : U ̇} {Y : X → V ̇} → is-prop X
-              → (_≺_ : {x : X} → Y x → Y x → T ̇)
+prop-inf-tychonoff : {X : U ̇} {Y : X → V ̇} → is-prop X
+              → (_≺_ : {x : X} → Y x → Y x → W ̇)
               → ((x : X) → inf-compact(λ (y y' : Y x) → ¬(y' ≺ y)))
               → inf-compact (λ (φ γ : Π Y) → ¬ Σ \(x : X) → γ x ≺ φ x)
-prop-inf-tychonoff {U} {V} {T} {X} {Y} hp _≺_ ε p =
+prop-inf-tychonoff {U} {V} {W} {X} {Y} hp _≺_ ε p =
  φ₀ , φ₀-is-conditional-root , a , b
  where
-  _≼_ : {x : X} → Y x → Y x → T ̇
+  _≼_ : {x : X} → Y x → Y x → W ̇
   y ≼ y' = ¬(y' ≺ y)
 
-  _≤_ : Π Y → Π Y → U ⊔ T ̇
+  _≤_ : Π Y → Π Y → U ⊔ W ̇
   φ ≤ γ = ¬ Σ \(x : X) → γ x ≺ φ x
 
   hip : (x : X) → Π Y ≃ Y x

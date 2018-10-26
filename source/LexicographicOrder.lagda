@@ -19,7 +19,7 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 
-lex-order : {T : Universe} {X : U ̇} {Y : X → V ̇} →  (X → X → W ̇) → ({x : X} → Y x → Y x → T ̇) → (Σ Y → Σ Y → U ⊔ W ⊔ T ̇)
+lex-order : ∀ {T} {X : U ̇} {Y : X → V ̇} →  (X → X → W ̇) → ({x : X} → Y x → Y x → T ̇) → (Σ Y → Σ Y → U ⊔ W ⊔ T ̇)
 lex-order _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ≡ x') → transport _ r y ≼ y')
 
 \end{code}

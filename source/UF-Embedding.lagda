@@ -319,8 +319,8 @@ maps-of-props-are-embeddings : {P : U ̇} {Q : V ̇} (f : P → Q)
 maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
                                                                 prop-is-set j _ s')
 
-×-embedding : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
-               (f : X → A ) (g : Y → B)
+×-embedding : ∀ {T} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+                (f : X → A ) (g : Y → B)
            → is-embedding f
            → is-embedding g
            → is-embedding (λ (z : X × Y) → (f (pr₁ z) , g (pr₂ z)))

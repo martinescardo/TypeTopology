@@ -110,9 +110,9 @@ import UnivalenceFromScratch
 
 import PartialElements  -- Under development.
 
-import Cubical          -- Not yet used in this development.  Remove
-import Cubical-HoTT-UF  -- these imports if you don't have the
-                        -- development version of Agda (22 October 2018).
+import Cubical          -- Not yet used in this development.
+import Cubical-HoTT-UF
+
 
 \end{code}
 

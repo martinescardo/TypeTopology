@@ -746,12 +746,11 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- strongly-extensional : {T : Universe} {X : U ̇} {Y : V ̇}
+ strongly-extensional : ∀ {T} {X : U ̇} {Y : V ̇}
                       → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
 
-
- preserves : ∀ {T : Universe} {X : U ̇} {Y : V ̇}
+ preserves : ∀ {T} {X : U ̇} {Y : V ̇}
           → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  preserves R S f = ∀ {x x'} → R x x' → S (f x) (f x')
 
@@ -1022,7 +1021,7 @@ apartness on it.
 
 \begin{code}
 
-  tight-reflection : {T : Universe} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
+  tight-reflection : ∀ {T} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
                    → apartness _♯ᴬ_
                    → tight _♯ᴬ_
                    → (f : X → A)

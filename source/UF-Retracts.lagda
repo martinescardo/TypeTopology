@@ -85,7 +85,10 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
                                                     λ z → ap r' (rs (s' z)) ∙ rs' z
 
 
-×-retract : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+private
+ variable T : Universe
+
+×-retract : {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
           → retract X of A
           → retract Y of B
           → retract (X × Y) of (A × B)
@@ -98,7 +101,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   fg : (z : X × Y) → f (g z) ≡ z
   fg (x , y) = to-×-≡ (rs x) (tu y)
 
-+-retract : {T : Universe} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
++-retract : {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
            → retract X of A
            → retract Y of B
            → retract (X + Y) of (A + B)
@@ -194,7 +197,7 @@ developments, and (2) work over many years with uncontrolled growth.
 
 \begin{code}
 
-Σ-retract₂ : {T : Universe} {X : U ̇} {Y : X → V ̇} {A : W ̇} {B : T ̇}
+Σ-retract₂ : {X : U ̇} {Y : X → V ̇} {A : W ̇} {B : T ̇}
            → retract X of A
            → ((x : X) → retract  (Y x) of B)
            → retract (Σ Y) of (A × B)
