@@ -30,6 +30,9 @@ V. An element of X is of the form x ↥ for x an element of X.
 
 \begin{code}
 
+variable
+ U V W : Universe
+
 record _↑ {U V} (X : U ̇) : U ⊔ V ̇ where
  constructor _↥
  field _↧ : X

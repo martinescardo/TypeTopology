@@ -23,6 +23,13 @@ open import UF-Equiv
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
 
+\end{code}
+
+The domain of definition of a partial element is taken to be in an
+arbitrary universe V.
+
+\begin{code}
+
 module _ {V : Universe} where
 
 \end{code}
@@ -32,7 +39,7 @@ the lifting of X.
 
 \begin{code}
 
- 𝓛 : ∀ {U} → U ̇ → U ⊔ V ′ ̇
+ 𝓛 : U ̇ → U ⊔ V ′ ̇
  𝓛 X = Σ \(P : V ̇) → is-prop P × (P → X)
 
 \end{code}
@@ -41,7 +48,7 @@ The "total" elements of 𝓛 X:
 
 \begin{code}
 
- η : ∀ {U} {X : U ̇} → X → 𝓛 X
+ η : {X : U ̇} → X → 𝓛 X
  η x = 𝟙 , 𝟙-is-prop , (λ _ → x)
 
 \end{code}
@@ -50,7 +57,7 @@ Its "undefined" element:
 
 \begin{code}
 
- ⊥ : ∀ {U} {X : U ̇} → 𝓛 X
+ ⊥ : {X : U ̇} → 𝓛 X
  ⊥ = 𝟘 , 𝟘-is-prop , unique-from-𝟘
 
 \end{code}
@@ -61,19 +68,19 @@ which is actually an equivalence).
 
 \begin{code}
 
- 𝓜 : ∀ {U} → U ̇ → U ⊔ V ′ ̇
- 𝓜 {U} X = Σ \(P : V ̇) → is-singleton P × (P → X)
+ 𝓜 : U ̇ → U ⊔ V ′ ̇
+ 𝓜 X = Σ \(P : V ̇) → is-singleton P × (P → X)
 
- μ : ∀ {U} {X : U ̇} → X → 𝓜 X
+ μ : {X : U ̇} → X → 𝓜 X
  μ x = 𝟙 , 𝟙-is-singleton , (λ _ → x)
 
- ζ : ∀ {U} (X : U ̇) (P : V ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
+ ζ : (X : U ̇) (P : V ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
  ζ X P (i , φ) = is-singleton-is-prop i , φ
 
- 𝓜-to-𝓛 : ∀ {U} (X : U ̇) → 𝓜 X → 𝓛 X
+ 𝓜-to-𝓛 : (X : U ̇) → 𝓜 X → 𝓛 X
  𝓜-to-𝓛 X = NatΣ (ζ X)
 
- η-composite : funext V V → ∀ {U} → funext U (V ′ ⊔ U)
+ η-composite : funext V V → funext U (V ′ ⊔ U)
              → {X : U ̇} → η ≡ 𝓜-to-𝓛 X ∘ μ
  η-composite fe fe' {X} = dfunext fe' h
   where
@@ -90,7 +97,7 @@ NatΣ-embedding.:
 
 \begin{code}
 
- ζ-is-embedding : funext V V → ∀ {U} (X : U ̇) (P : V ̇) → is-embedding (ζ X P)
+ ζ-is-embedding : funext V V → (X : U ̇) (P : V ̇) → is-embedding (ζ X P)
  ζ-is-embedding fe X P = ×-embedding
                            is-singleton-is-prop
                            id
@@ -100,9 +107,9 @@ NatΣ-embedding.:
                               (is-prop-is-prop fe))
                            id-is-embedding
 
- 𝓜-to-𝓛-is-embedding : funext V V → ∀ {U} (X : U ̇)
-                     → is-embedding (𝓜-to-𝓛 X)
- 𝓜-to-𝓛-is-embedding fe {U} X = NatΣ-is-embedding
+ 𝓜-to-𝓛-is-embedding : funext V V
+                     → (X : U ̇) → is-embedding (𝓜-to-𝓛 X)
+ 𝓜-to-𝓛-is-embedding fe X = NatΣ-is-embedding
                                   (λ P → is-singleton P × (P → X))
                                   (λ P → is-prop P × (P → X))
                                   (ζ X)
@@ -115,13 +122,13 @@ itself.
 
 \begin{code}
 
- μ-is-equiv : propext V → funext V V → ∀ {U} → funext V U
+ μ-is-equiv : propext V → funext V V → funext V U
             → {X : U ̇} → is-equiv (μ {U} {X})
- μ-is-equiv pe fe {U} fe' {X} = qinv-is-equiv μ (ν , (νμ , μν))
+ μ-is-equiv {U} pe fe fe' {X} = qinv-is-equiv μ (ν , (νμ , μν))
   where
-   ν : ∀ {U} {X : U ̇} → 𝓜 X → X
+   ν : {X : U ̇} → 𝓜 X → X
    ν (P , i , φ) = φ (is-singleton-pointed i)
-   νμ : ∀ {U} {X : U ̇} (x : X) → ν (μ x) ≡ x
+   νμ : {X : U ̇} (x : X) → ν (μ x) ≡ x
    νμ x = refl
    μν : (m : 𝓜 X) → μ (ν m) ≡ m
    μν (P , i , φ) = to-Σ-≡ (t , s)
@@ -142,7 +149,7 @@ itself.
               ≡⟨ to-×-≡ (is-prop-is-singleton fe _ i) u ⟩
          i , φ ∎
 
- μ-is-embedding : propext V → funext V V → ∀ {U} → funext V U
+ μ-is-embedding : propext V → funext V V → funext V U
                 → {X : U ̇} → is-embedding (μ {U} {X})
  μ-is-embedding pe fe fe' = is-equiv-is-embedding μ (μ-is-equiv pe fe fe')
 
@@ -153,13 +160,13 @@ two embeddings:
 
 \begin{code}
 
- η-is-embedding : propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
+ η-is-embedding : propext V → funext V V → funext V U → funext U (V ′ ⊔ U)
                 → {X : U ̇} → is-embedding (η {U} {X})
  η-is-embedding pe fe fe' fe'' {X} =
    back-transport
     is-embedding
     (η-composite fe fe'')
-   (comp-embedding (μ-is-embedding pe fe fe') (𝓜-to-𝓛-is-embedding fe X))
+    (comp-embedding (μ-is-embedding pe fe fe') (𝓜-to-𝓛-is-embedding fe X))
 
 \end{code}
 
@@ -167,13 +174,13 @@ We now give meaningful names to the projections:
 
 \begin{code}
 
- is-defined : ∀ {U} {X : U ̇} → 𝓛 X → V ̇
+ is-defined : {X : U ̇} → 𝓛 X → V ̇
  is-defined (P , i , φ) = P
 
- is-defined-is-prop : ∀ {U} {X : U ̇} (l : 𝓛  X) → is-prop (is-defined l)
+ is-defined-is-prop : {X : U ̇} (l : 𝓛  X) → is-prop (is-defined l)
  is-defined-is-prop (P , i , φ) = i
 
- value : ∀ {U} {X : U ̇} (l : 𝓛  X) → is-defined l → X
+ value : {X : U ̇} (l : 𝓛  X) → is-defined l → X
  value (P , i , φ) = φ
 
 \end{code}
@@ -191,7 +198,7 @@ a set:
 
 \begin{code}
 
- _⊑_ : ∀ {U} {X : U ̇} → 𝓛 X → 𝓛 X → U ⊔ V ̇
+ _⊑_ : {X : U ̇} → 𝓛 X → 𝓛 X → U ⊔ V ̇
  l ⊑ m = Σ \(f : is-defined l → is-defined m) → (d : is-defined l) → value l d ≡ value m (f d)
 
 \end{code}
@@ -202,17 +209,17 @@ hom-∞-groupoids x ⊑ y.
 
 \begin{code}
 
- ⊑-id : ∀ {U} {X : U ̇} (l : 𝓛 X) → l ⊑ l
+ ⊑-id : {X : U ̇} (l : 𝓛 X) → l ⊑ l
  ⊑-id (P , i , φ) = id , (λ x → refl)
 
- ⊑-id' : ∀ {U} {X : U ̇} (l m : 𝓛 X) → l ≡ m → l ⊑ m
+ ⊑-id' : {X : U ̇} (l m : 𝓛 X) → l ≡ m → l ⊑ m
  ⊑-id' l m p = transport (λ - → l ⊑ -) p (⊑-id l)
 
- ⊑-∘ : ∀ {U} {X : U ̇} (l m n : 𝓛 X)
+ ⊑-∘ : {X : U ̇} (l m n : 𝓛 X)
      → l ⊑ m → m ⊑ n → l ⊑ n
  ⊑-∘ l m n (f , δ) (g , ε) = g ∘ f , (λ d → δ d ∙ ε (f d))
 
- ⊑-anti : ∀ {U} → propext V → funext V V → funext V U
+ ⊑-anti : propext V → funext V V → funext V U
         → {X : U ̇} {l m : 𝓛 X}
         → (l ⊑ m) × (m ⊑ l) → l ≡ m
  ⊑-anti pe fe fe' {X} {Q , j , γ} {P , i , φ} ((f , δ) , (g , ε)) = e
@@ -255,7 +262,7 @@ We can now establish the promised fact:
 \begin{code}
 
  η-fiber-same-as-is-defined :
-     propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
+     propext V → funext V V → funext V U → funext U (V ′ ⊔ U)
    → {X : U ̇} (l : 𝓛 X)
    → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
  η-fiber-same-as-is-defined pe fe fe' fe'' {X} l = f l , ((g l , fg) , (g l , gf))
@@ -286,7 +293,7 @@ formulation of the above equivalence:
 
  private
   η-fiber-same-as-is-defined' :
-       propext V → funext V V → ∀ {U} → funext V U → funext U (V ′ ⊔ U)
+       propext V → funext V V → funext V U → funext U (V ′ ⊔ U)
     → {X : U ̇} (l : 𝓛 X)
     → (fiber η l ∶ V ′ ⊔ U ̇) ≃ (is-defined l ∶ V ̇)
   η-fiber-same-as-is-defined' = η-fiber-same-as-is-defined
@@ -307,7 +314,7 @@ which should be an equivalence for each l and m:
 
 \begin{code}
 
- ⊑-anti' : ∀ {U} → propext V → funext V V → funext V U
+ ⊑-anti' : propext V → funext V V → funext V U
         → {X : U ̇} (l m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
  ⊑-anti' pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , g) = e
   where
@@ -334,24 +341,24 @@ which should be an equivalence for each l and m:
    e = to-Σ-≡ (a , to-×-≡ (is-prop-is-prop fe _ i) d)
 
 
- ⊑-anti'-inverse : ∀ {U}  {X : U ̇} (l m : 𝓛 X)
+ ⊑-anti'-inverse :  {X : U ̇} (l m : 𝓛 X)
                  → l ≡ m → (l ⊑ m) × (is-defined m → is-defined l)
  ⊑-anti'-inverse l .l refl = ⊑-id l , id
 
- η-maximal : ∀ {U} {X : U ̇} (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
+ η-maximal : {X : U ̇} (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
  η-maximal x (P , i , γ) (f , δ) = (λ p → *) , (λ p → ap γ (i p (f *)) ∙ (δ *)⁻¹)
 
- ⊥-least : ∀ {U} {X : U ̇} (x : X) → ⊥ ⊑ η x
+ ⊥-least : {X : U ̇} (x : X) → ⊥ ⊑ η x
  ⊥-least x = unique-from-𝟘 , λ z → unique-from-𝟘 z
 
 
- η-≡-gives-⊑ : ∀ {U} {X : U ̇} {x y : X} → x ≡ y → η x ⊑ η y
+ η-≡-gives-⊑ : {X : U ̇} {x y : X} → x ≡ y → η x ⊑ η y
  η-≡-gives-⊑ {U} {X} {x} {y} p = id , (λ d → p)
 
- η-⊑-gives-≡ : ∀ {U} {X : U ̇} {x y : X} → η x ⊑ η y → x ≡ y
+ η-⊑-gives-≡ : {X : U ̇} {x y : X} → η x ⊑ η y → x ≡ y
  η-⊑-gives-≡ (f , δ) = δ *
 
- η-≡-gives-⊑-is-equiv : ∀ {U} → funext V V → funext V U
+ η-≡-gives-⊑-is-equiv : funext V V → funext V U
                       → {X : U ̇} {x y : X}
                       → is-equiv (η-≡-gives-⊑ {U} {X} {x} {y})
  η-≡-gives-⊑-is-equiv {U} fe fe' {X} {x} {y} = qinv-is-equiv η-≡-gives-⊑ (η-⊑-gives-≡ , α , β)
@@ -365,7 +372,7 @@ which should be an equivalence for each l and m:
 
 
 {- TODO
-⊑-directed-complete : ∀ {U} {X I : U ̇} (l : I → 𝓛 X)
+⊑-directed-complete : {X I : U ̇} (l : I → 𝓛 X)
                     → ((i j : I) → Σ \(k : I) → (l i ⊑ l k) × (l j ⊑ l k))
                     → Σ \(m : 𝓛 X) → ((i : I) → l i ⊑ m)
                                    × ((n : 𝓛 X) → ((i : I) → l i ⊑ n) → m ⊑ n)

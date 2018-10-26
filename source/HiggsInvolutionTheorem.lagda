@@ -56,8 +56,8 @@ higgs f cancelf {p} = cancelf (VII p)
    IV : (p : Ω₀) → f (f p) ≡ ⊤ → p ≡ ⊤
    IV p r = cancelf (III (f p) r)
 
-   V : (p : Ω₀) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
-   V p r = IV (f p) r
+   V' : (p : Ω₀) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
+   V' p r = IV (f p) r
 
    VI : (p : Ω₀) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
    VI p r = d ∙ r
@@ -75,6 +75,6 @@ higgs f cancelf {p} = cancelf (VII p)
      d = ap f c
 
    VII : (p : Ω₀) → f (f (f p)) ≡ f p
-   VII p = Ω-ext pe fe (V p) (VI p)
+   VII p = Ω-ext pe fe (V' p) (VI p)
 
 \end{code}

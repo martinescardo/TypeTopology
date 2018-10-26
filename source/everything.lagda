@@ -2,8 +2,7 @@
    constructive univalent mathematics
    written in Agda
 
-
-   Tested with Agda 2.5.4.1.
+   Tested with the development version 2.6.0 of Agda.
 
    Martin Escardo, 2010--
    Continuously evolving.

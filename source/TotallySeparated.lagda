@@ -82,7 +82,7 @@ An equality defined by a Leibniz principle with 𝟚-valued functions:
 
 \begin{code}
 
-_≡₂_ : ∀ {U} {X : U ̇} → X → X → U ̇
+_≡₂_ : {X : U ̇} → X → X → U ̇
 x ≡₂ y = (p : _ → 𝟚) → p x ≡ p y
 
 \end{code}
@@ -94,7 +94,7 @@ equal. This notion in topology is called total separatedness.)
 
 \begin{code}
 
-totally-separated : ∀ {U} → U ̇ → U ̇
+totally-separated : U ̇ → U ̇
 totally-separated X = {x y : X} → x ≡₂ y → x ≡ y
 
 \end{code}
@@ -103,7 +103,7 @@ Synonym:
 
 \begin{code}
 
-𝟚-separated : ∀ {U} → U ̇ → U ̇
+𝟚-separated : U ̇ → U ̇
 𝟚-separated = totally-separated
 
 \end{code}
@@ -113,7 +113,7 @@ separated:
 
 \begin{code}
 
-discrete-totally-separated : ∀ {U} {X : U ̇} → discrete X → totally-separated X
+discrete-totally-separated : {X : U ̇} → discrete X → totally-separated X
 discrete-totally-separated {U} {X} d {x} {y} α = g
  where
   open import DecidableAndDetachable
@@ -139,7 +139,7 @@ separated, but its discreteness amounts to WLPO.
 
 \begin{code}
 
-retract-totally-separated : ∀ {U V} {X : U ̇} {Y : V ̇}
+retract-totally-separated : {X : U ̇} {Y : V ̇}
                          → retract Y of X → totally-separated X → totally-separated Y
 retract-totally-separated (r , (s , rs)) ts {y} {y'} α = section-lc s (r , rs) h
  where
@@ -154,7 +154,7 @@ set.
 
 \begin{code}
 
-totally-separated-is-separated : ∀ {U} (X : U ̇) → totally-separated X → separated X
+totally-separated-is-separated : (X : U ̇) → totally-separated X → separated X
 totally-separated-is-separated X ts = g
  where
   g : (x y : X) → ¬¬(x ≡ y) → x ≡ y
@@ -168,7 +168,7 @@ totally-separated-is-separated X ts = g
 
 open import UF-Miscelanea
 
-totally-separated-is-set : ∀ {U} → funext U U₀ → (X : U ̇) → totally-separated X → is-set X
+totally-separated-is-set : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
 totally-separated-is-set fe X t = separated-is-set fe (totally-separated-is-separated X t)
 
 \end{code}
@@ -185,7 +185,7 @@ clause.
 
 \begin{code}
 
-is-prop-totally-separated : ∀ {U} → funext U U → funext U U₀
+is-prop-totally-separated : funext U U → funext U U₀
                          → (X : U ̇) → is-prop(totally-separated X)
 is-prop-totally-separated {U} fe fe₀ X = γ
  where
@@ -210,7 +210,7 @@ Old proof which by-passes the step via separatedness:
 
 \begin{code}
 
-totally-separated-is-set' : ∀ {U} → funext U U₀ → (X : U ̇) → totally-separated X → is-set X
+totally-separated-is-set' : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
 totally-separated-is-set' fe X t = identification-collapsible-is-set h
  where
   f : {x y : X} → x ≡ y → x ≡ y
@@ -235,7 +235,7 @@ the following particular cases:
 
 \begin{code}
 
-×-totally-separated : ∀ {U V} (X : U ̇) (Y : V ̇)
+×-totally-separated : (X : U ̇) (Y : V ̇)
                     → totally-separated X
                     → totally-separated Y
                     → totally-separated (X × Y)
@@ -243,7 +243,7 @@ the following particular cases:
    to-×-≡ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
           (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
 
-Σ-dtt : ∀ {U V} (X : U ̇) (Y : X → V ̇)
+Σ-dtt : (X : U ̇) (Y : X → V ̇)
       → discrete X
       → ((x : X) → totally-separated (Y x))
       → totally-separated (Σ Y)
@@ -284,7 +284,7 @@ The following can also be considered as a special case of Σ (indexed by the typ
 
 \begin{code}
 
-+-totally-separated : ∀ {U V} (X : U ̇) (Y : V ̇)
++-totally-separated : (X : U ̇) (Y : V ̇)
                     → totally-separated X
                     → totally-separated Y
                     → totally-separated (X + Y)
@@ -304,7 +304,7 @@ The following can also be considered as a special case of Σ (indexed by the typ
 𝟚-totally-separated : totally-separated 𝟚
 𝟚-totally-separated e = e id
 
-Π-totally-separated : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
+Π-totally-separated : funext U V → {X : U ̇} {Y : X → V ̇}
                    → ((x : X) → totally-separated(Y x)) → totally-separated(Π Y)
 Π-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where
@@ -329,9 +329,9 @@ module _ (fe : ∀ U V → funext U V)  where
 
  open import UF-InjectiveTypes fe
 
- /-totally-separated : ∀ {U V W} {X : U ̇} {A : V ̇}
-                         (j : X → A)
-                         (Y : X → W ̇)
+ /-totally-separated : {X : U ̇} {A : V ̇}
+                       (j : X → A)
+                       (Y : X → W ̇)
                     → ((x : X) → totally-separated (Y x))
                     → (a : A) → totally-separated ((Y / j) a)
  /-totally-separated {U} {V} {W} j Y t a = Π-totally-separated (fe (U ⊔ V) W)
@@ -345,10 +345,10 @@ separated reflections.
 
 \begin{code}
 
-eval : ∀ {U} {X : U ̇} → X → ((X → 𝟚) → 𝟚)
+eval : {X : U ̇} → X → ((X → 𝟚) → 𝟚)
 eval x = λ p → p x
 
-tsieeval : ∀ {U} {X : U ̇} → funext U U₀ → totally-separated X → is-embedding(eval {U} {X})
+tsieeval : {X : U ̇} → funext U U₀ → totally-separated X → is-embedding(eval {U} {X})
 tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡ (t , r)
   where
    s : eval x ≡ eval y
@@ -361,7 +361,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡ (t , r)
    r = totally-separated-is-set fe
          ((X → 𝟚) → 𝟚) (Π-totally-separated fe (λ p → 𝟚-totally-separated)) _ q
 
-ieevalts : ∀ {U} {X : U ̇} → funext U U₀ → is-embedding(eval {U} {X}) → totally-separated X
+ieevalts : {X : U ̇} → funext U U₀ → is-embedding(eval {U} {X}) → totally-separated X
 ieevalts {U} {X} fe i {x} {y} e = ap pr₁ q
   where
    φ : (X → 𝟚) → 𝟚
@@ -386,7 +386,7 @@ ieevalts {U} {X} fe i {x} {y} e = ap pr₁ q
 \begin{code}
 
 module TotallySeparatedReflection
-         {U  : Universe}
+         {U : Universe}
          (fe : ∀ U V → funext U V)
          (pt : PropTrunc)
  where
@@ -427,7 +427,7 @@ the reflector.
  η-surjection : {X : U ̇} → is-surjection(η {X})
  η-surjection = corestriction-surjection eval
 
- η-induction : ∀ {W} {X : U ̇} (P : T X → W ̇)
+ η-induction :  {X : U ̇} (P : T X → W ̇)
              → ((x' : T X) → is-prop(P x'))
              → ((x : X) → P(η x))
              → (x' : T X) → P x'
@@ -440,7 +440,7 @@ rather than direct proofs (as in the proof of tight reflection below).
 
 \begin{code}
 
- totally-separated-reflection : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A
+ totally-separated-reflection : {X : U ̇} {A : V ̇} → totally-separated A
                               → (f : X → A) → is-singleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
  totally-separated-reflection {V} {X} {A} ts f = go
   where
@@ -496,11 +496,11 @@ We package the above as follows for convenient use elsewhere
 
 \begin{code}
 
- totally-separated-reflection' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A
+ totally-separated-reflection' : {X : U ̇} {A : V ̇} → totally-separated A
                               → is-equiv (λ (f' : T X → A) → f' ∘ η)
  totally-separated-reflection' ts = is-vv-equiv-is-equiv _ (totally-separated-reflection ts)
 
- totally-separated-reflection'' : ∀ {V} {X : U ̇} {A : V ̇} → totally-separated A
+ totally-separated-reflection'' : {X : U ̇} {A : V ̇} → totally-separated A
                                → (T X → A) ≃ (X → A)
  totally-separated-reflection'' ts = (λ f' → f' ∘ η) , totally-separated-reflection' ts
 
@@ -515,7 +515,7 @@ open neighbourhoods are equal).
 
 \begin{code}
 
-𝟚-sober : ∀ {U W} → W ̇ → U ′ ⊔ W ̇
+𝟚-sober : W ̇ → U ′ ⊔ W ̇
 𝟚-sober {U} {W} A = 𝟚-separated A × ((X : U ̇) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
 
 \end{code}
@@ -552,7 +552,7 @@ module Apartness (pt : PropTrunc) where
  open PropositionalTruncation (pt)
 
  prop-valued irreflexive symmetric cotransitive tight apartness
-     : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
+     : {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
 
  prop-valued  _♯_ = ∀ x y → is-prop(x ♯ y)
  irreflexive  _♯_ = ∀ x → ¬(x ♯ x)
@@ -568,10 +568,10 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- _♯₂_ : ∀ {U} {X : U ̇} → X → X → U ̇
+ _♯₂_ : {X : U ̇} → X → X → U ̇
  x ♯₂ y = ∃ \(p : _ → 𝟚) → p x ≢ p y
 
- ♯₂-is-apartness : ∀ {U} {X : U ̇} → apartness (_♯₂_ {U} {X})
+ ♯₂-is-apartness : {X : U ̇} → apartness (_♯₂_ {U} {X})
  ♯₂-is-apartness {U} {X} = a , b , c , d
   where
    a : prop-valued _♯₂_
@@ -599,13 +599,13 @@ apartness relation _♯₂ is tight:
        h (inl u) = inl ∣ p , u ∣
        h (inr v) = inr ∣ p , ≢-sym v ∣
 
- ♯₂-tight-ts : ∀ {U} {X : U ̇} → tight (_♯₂_ {U} {X}) → totally-separated X
+ ♯₂-tight-ts : {X : U ̇} → tight (_♯₂_ {U} {X}) → totally-separated X
  ♯₂-tight-ts {U} {X} t {x} {y} α = t x y (ptrec 𝟘-is-prop h)
   where
    h : ¬ Σ \(p : X → 𝟚) → p x ≢ p y
    h (p , u) = u (α p)
 
- ts-♯₂-tight : ∀ {U} {X : U ̇} → totally-separated X → tight (_♯₂_ {U} {X})
+ ts-♯₂-tight : {X : U ̇} → totally-separated X → tight (_♯₂_ {U} {X})
  ts-♯₂-tight {U} {X} ts x y na = ts α
   where
    h : ¬ Σ \(p : X → 𝟚) → p x ≢ p y
@@ -625,7 +625,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
  reflexive transitive equivalence
-     : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
+     : {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
 
  reflexive   _≈_ = ∀ x → x ≈ x
  transitive  _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
@@ -639,7 +639,7 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- neg-apart-is-equiv : ∀ {U} {X : U ̇} → funext U U₀
+ neg-apart-is-equiv : {X : U ̇} → funext U U₀
                     → (_♯_ : X → X → U ̇) → apartness _♯_ → equivalence (λ x y → ¬(x ♯ y))
  neg-apart-is-equiv {U} {X} fe _♯_ (♯p , ♯i , ♯s , ♯c) = p , ♯i , s , t
   where
@@ -663,7 +663,7 @@ apartness relation _♯₂ is tight:
 
  \begin{code}
 
- not-apart-have-same-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
+ not-apart-have-same-apart : {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
                           → ¬(x ♯ y) → ((z : X) → x ♯ z ⇔ y ♯ z)
  not-apart-have-same-apart {U} {V} {X} x y _♯_ (p , i , s , c) = g
   where
@@ -685,7 +685,7 @@ apartness relation _♯₂ is tight:
        b : (y ♯ x) ∨ (z ♯ x)
        b = c y z x a
 
- have-same-apart-are-not-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
+ have-same-apart-are-not-apart : {X : U ̇} (x y : X) (_♯_ : X → X → V ̇) → apartness _♯_
                                → ((z : X) → x ♯ z ⇔ y ♯ z) → ¬(x ♯ y)
  have-same-apart-are-not-apart {U} {V} {X} x y _♯_ (p , i , s , c) = f
   where
@@ -700,21 +700,21 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- not-not-equal-not-apart : ∀ {U V} {X : U ̇} (x y : X) (_♯_ : X → X → V ̇)
+ not-not-equal-not-apart : {X : U ̇} (x y : X) (_♯_ : X → X → V ̇)
                          → apartness _♯_ → ¬¬(x ≡ y) → ¬(x ♯ y)
  not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = contrapositive f
   where
    f : x ♯ y → ¬(x ≡ y)
    f a p = i y (transport (λ - → - ♯ y) p a)
 
- tight-separated : ∀ {U V} {X : U ̇} → (_♯_ : X → X → V ̇)
+ tight-separated : {X : U ̇} → (_♯_ : X → X → V ̇)
                  → apartness _♯_ → tight _♯_ → separated X
  tight-separated _♯_ a t = f
   where
    f : ∀ x y → ¬¬(x ≡ y) → x ≡ y
    f x y φ = t x y (not-not-equal-not-apart x y _♯_ a φ)
 
- tight-set : ∀ {U V} {X : U ̇} → funext U U₀
+ tight-set : {X : U ̇} → funext U U₀
            → (_♯_ : X → X → V ̇) → apartness _♯_ → tight _♯_ → is-set X
  tight-set fe _♯_ a t = separated-is-set fe (tight-separated _♯_ a t)
 
@@ -726,14 +726,14 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- tight-separated' : ∀ {U} {X : U ̇} → funext U U → funext U U₀
+ tight-separated' : {X : U ̇} → funext U U → funext U U₀
                  → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → separated X
  tight-separated' {U} {X} fe fe₀ = ptrec (is-prop-separated fe fe₀) f
    where
     f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → separated X
     f (_♯_ , a , t) = tight-separated _♯_ a t
 
- tight-set' : ∀ {U} {X : U ̇} → funext U U → funext U U₀
+ tight-set' : {X : U ̇} → funext U U → funext U U₀
            → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
  tight-set' {U} {X} fe fe₀ = ptrec (is-prop-is-set fe) f
    where
@@ -746,17 +746,16 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- strongly-extensional : ∀ {U V W T} {X : U ̇} {Y : V ̇}
+ strongly-extensional : {T : Universe} {X : U ̇} {Y : V ̇}
                       → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
 
 
- preserves : ∀ {U V W T} {X : U ̇} {Y : V ̇}
+ preserves : ∀ {T : Universe} {X : U ̇} {Y : V ̇}
           → (X → X → W ̇) → (Y → Y → T ̇) → (X → Y) → U ⊔ W ⊔ T ̇
  preserves R S f = ∀ {x x'} → R x x' → S (f x) (f x')
 
  module TightReflection
-          {U V : Universe}
           (fe : ∀ U V → funext U V)
           (pe : propext V)
           (X : U ̇)
@@ -861,7 +860,7 @@ apartness on it.
   η-surjection : is-surjection η
   η-surjection = corestriction-surjection apart
 
-  η-induction : ∀ {W} (P : X' → W ̇)
+  η-induction : (P : X' → W ̇)
              → ((x' : X') → is-prop(P x'))
              → ((x : X) → P(η x))
              → (x' : X') → P x'
@@ -1023,7 +1022,7 @@ apartness on it.
 
 \begin{code}
 
-  tight-reflection : ∀ {W T} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
+  tight-reflection : {T : Universe} (A : W ̇) (_♯ᴬ_ : A → A → T ̇)
                    → apartness _♯ᴬ_
                    → tight _♯ᴬ_
                    → (f : X → A)

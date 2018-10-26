@@ -19,7 +19,7 @@ open import UF-Base
 
 \begin{code}
 
-is-subsingleton : ∀ {U} → U ̇ → U ̇
+is-subsingleton : U ̇ → U ̇
 is-subsingleton X = (x y : X) → x ≡ y
 
 Ω : ∀ U → U ′ ̇
@@ -32,13 +32,13 @@ least for the moment).
 
 \begin{code}
 
-is-prop : ∀ {U} → U ̇ → U ̇
+is-prop : U ̇ → U ̇
 is-prop = is-subsingleton
 
-_holds : ∀ {U} → Ω U → U ̇
+_holds : Ω U → U ̇
 _holds = pr₁
 
-holds-is-prop : ∀ {U} → (p : Ω U) → is-prop (p holds)
+holds-is-prop : (p : Ω U) → is-prop (p holds)
 holds-is-prop = pr₂
 
 \end{code}
@@ -47,14 +47,14 @@ And of course we could adopt a terminology borrowed from topos logic:
 
 \begin{code}
 
-is-truth-value : ∀ {U} → U ̇ → U ̇
+is-truth-value : U ̇ → U ̇
 is-truth-value = is-subsingleton
 
 \end{code}
 
 \begin{code}
 
-Σ-is-prop : ∀ {U V} {X : U ̇} {A : X → V ̇}
+Σ-is-prop : {X : U ̇} {A : X → V ̇}
           → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
 Σ-is-prop {U} {V} {X} {A} isx isa (x , a) (y , b) =
   to-Σ-≡ (isx x y , isa y (transport A (isx x y) a) b)
@@ -71,13 +71,13 @@ univalent type theory.
 
 \begin{code}
 
-is-the-only-element : ∀ {U} {X : U ̇} → X → U ̇
+is-the-only-element : {X : U ̇} → X → U ̇
 is-the-only-element c = ∀ x → c ≡ x
 
-is-singleton : ∀ {U} → U ̇ → U ̇
+is-singleton : U ̇ → U ̇
 is-singleton X = Σ \(c : X) → is-the-only-element c
 
-is-singleton-pointed : ∀ {U} {X : U ̇} → is-singleton X → X
+is-singleton-pointed : {X : U ̇} → is-singleton X → X
 is-singleton-pointed = pr₁
 
 \end{code}
@@ -86,25 +86,25 @@ For compatibility with the homotopical terminology:
 
 \begin{code}
 
-is-center-of-contraction : ∀ {U} {X : U ̇} → X → U ̇
+is-center-of-contraction : {X : U ̇} → X → U ̇
 is-center-of-contraction = is-the-only-element
 
-is-contr : ∀ {U} → U ̇ → U ̇
+is-contr : U ̇ → U ̇
 is-contr = is-singleton
 
-𝟙-is-singleton : ∀ {U} → is-singleton 𝟙
-𝟙-is-singleton {U} = * , (λ (x : 𝟙 {U}) → (𝟙-all-* x)⁻¹)
+𝟙-is-singleton : is-singleton (𝟙 {U})
+𝟙-is-singleton {U} = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
 
-is-singleton-is-prop : ∀ {U} {X : U ̇} → is-singleton X → is-prop X
+is-singleton-is-prop : {X : U ̇} → is-singleton X → is-prop X
 is-singleton-is-prop {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
 
-iis-singleton-is-prop : ∀ {U} {X : U ̇} → (X → is-singleton X) → is-prop X
+iis-singleton-is-prop : {X : U ̇} → (X → is-singleton X) → is-prop X
 iis-singleton-is-prop {U} {X} φ x = is-singleton-is-prop (φ x) x
 
-iis-prop-is-prop : ∀ {U} {X : U ̇} → (X → is-prop X) → is-prop X
+iis-prop-is-prop : {X : U ̇} → (X → is-prop X) → is-prop X
 iis-prop-is-prop {U} {X} φ x y = φ x x y
 
-inhabited-proposition-is-singleton : ∀ {U} {X : U ̇} → X → is-prop X → is-singleton X
+inhabited-proposition-is-singleton : {X : U ̇} → X → is-prop X → is-singleton X
 inhabited-proposition-is-singleton x h = x , h x
 
 \end{code}
@@ -113,13 +113,13 @@ The two prototypical propositions:
 
 \begin{code}
 
-𝟘-is-prop : ∀ {U} → is-prop 𝟘
+𝟘-is-prop : is-prop (𝟘 {U})
 𝟘-is-prop {U} x y = unique-from-𝟘 {U} {U} x
 
-𝟙-is-prop : ∀ {U} → is-prop 𝟙
+𝟙-is-prop : is-prop (𝟙 {U})
 𝟙-is-prop {U} * * = refl {U}
 
-⊥ ⊤ : ∀ {U} → Ω U
+⊥ ⊤ : Ω U
 ⊥ = 𝟘 , 𝟘-is-prop   -- false
 ⊤ = 𝟙 , 𝟙-is-prop   -- true
 
@@ -131,13 +131,13 @@ data or structure).
 
 \begin{code}
 
-is-h-isolated : ∀ {U} {X : U ̇} (x : X) → U ̇
+is-h-isolated : {X : U ̇} (x : X) → U ̇
 is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
 
-is-set : ∀ {U} → U ̇ → U ̇
+is-set : U ̇ → U ̇
 is-set X = {x : X} → is-h-isolated x
 
-refl-is-set : ∀ {U} (X : U ̇)
+refl-is-set : (X : U ̇)
            → ((x : X) (p : x ≡ x) → p ≡ refl)
            → is-set X
 refl-is-set X r {x} {.x} p refl = r x p
@@ -148,27 +148,27 @@ We now consider some machinery for dealing with the above notions:
 
 \begin{code}
 
-constant : ∀ {U V} {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
+constant : {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
 constant f = ∀ x y → f x ≡ f y
 
-constant-pre-comp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+constant-pre-comp : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
               → constant f → constant (g ∘ f)
 constant-pre-comp f g c x x' = ap g (c x x')
 
-constant-post-comp : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+constant-post-comp : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
               → constant g → constant (g ∘ f)
 constant-post-comp f g c x x' = c (f x) (f x')
 
-collapsible : ∀ {U} → U ̇ → U ̇
+collapsible : U ̇ → U ̇
 collapsible X = Σ \(f : X → X) → constant f
 
-identification-collapsible : ∀ {U} → U ̇ → U ̇
+identification-collapsible : U ̇ → U ̇
 identification-collapsible X = {x y : X} → collapsible(x ≡ y)
 
-set-is-identification-collapsible : ∀ {U} → {X : U ̇} → is-set X → identification-collapsible X
+set-is-identification-collapsible : {X : U ̇} → is-set X → identification-collapsible X
 set-is-identification-collapsible u = (id , u)
 
-local-hedberg : ∀ {U} {X : U ̇} (x : X)
+local-hedberg : {X : U ̇} (x : X)
       → ((y : X) → collapsible (x ≡ y))
       → (y : X) → is-prop (x ≡ y)
 local-hedberg {U} {X} x pc y p q = claim₂
@@ -184,7 +184,7 @@ local-hedberg {U} {X} x pc y p q = claim₂
   claim₂ : p ≡ q
   claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
 
-identification-collapsible-is-set : ∀ {U} {X : U ̇} → identification-collapsible X → is-set X
+identification-collapsible-is-set : {X : U ̇} → identification-collapsible X → is-set X
 identification-collapsible-is-set {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
 
 \end{code}
@@ -198,7 +198,7 @@ symmetrizing the proof.
 
 \begin{code}
 
-local-hedberg' : ∀ {U} {X : U ̇} (x : X)
+local-hedberg' : {X : U ̇} (x : X)
       → ((y : X) → collapsible (y ≡ x))
       → (y : X) → is-prop (y ≡ x)
 local-hedberg' {U} {X} x pc y p q = claim₂
@@ -214,16 +214,16 @@ local-hedberg' {U} {X} x pc y p q = claim₂
   claim₂ : p ≡ q
   claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
 
-prop-is-identification-collapsible : ∀ {U} {X : U ̇} → is-prop X → identification-collapsible X
+prop-is-identification-collapsible : {X : U ̇} → is-prop X → identification-collapsible X
 prop-is-identification-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → refl))
 
-prop-is-set : ∀ {U} {X : U ̇} → is-prop X → is-set X
+prop-is-set : {X : U ̇} → is-prop X → is-set X
 prop-is-set h = identification-collapsible-is-set(prop-is-identification-collapsible h)
 
-𝟘-is-collapsible : ∀ {U} → collapsible 𝟘
-𝟘-is-collapsible {U} = (id {U} {𝟘} , (λ x → λ ()))
+𝟘-is-collapsible : collapsible (𝟘 {U})
+𝟘-is-collapsible {U} = (id , (λ x → λ ()))
 
-inhabited-is-collapsible : ∀ {U} {X : U ̇} → X → collapsible X
+inhabited-is-collapsible : {X : U ̇} → X → collapsible X
 inhabited-is-collapsible x = ((λ y → x) , λ y y' → refl)
 
 \end{code}
@@ -237,58 +237,58 @@ below, the type X → 𝟘 is equivalent to the type X ≡ 𝟘
 
 \begin{code}
 
-is-empty-is-collapsible : ∀ {U} {X : U ̇} → is-empty X → collapsible X
+is-empty-is-collapsible : {X : U ̇} → is-empty X → collapsible X
 is-empty-is-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 
 𝟘-is-collapsible-as-a-particular-case : collapsible 𝟘
 𝟘-is-collapsible-as-a-particular-case = is-empty-is-collapsible id
 
-identifications-from : ∀ {U} {X : U ̇} (x : X) → U ̇
+identifications-from : {X : U ̇} (x : X) → U ̇
 identifications-from x = Σ \y → x ≡ y
 
-trivial-loop : ∀ {U} {X : U ̇} (x : X) → identifications-from x
+trivial-loop : {X : U ̇} (x : X) → identifications-from x
 trivial-loop x = (x , refl)
 
-identification-from-trivial-loop : ∀ {U} {X : U ̇} {x x' : X} (r : x ≡ x') → trivial-loop x ≡ (x' , r)
+identification-from-trivial-loop : {X : U ̇} {x x' : X} (r : x ≡ x') → trivial-loop x ≡ (x' , r)
 identification-from-trivial-loop {U} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → U ̇
   A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (trivial-loop x) (x' , r)
 
-identifications-from-is-singleton : ∀ {U} {X : U ̇} (x₀ : X) → is-singleton(identifications-from x₀)
+identifications-from-is-singleton : {X : U ̇} (x₀ : X) → is-singleton(identifications-from x₀)
 identifications-from-is-singleton x₀ = trivial-loop x₀ , (λ t → identification-from-trivial-loop (pr₂ t))
 
-identifications-from-is-prop : ∀ {U} {X : U ̇} (x : X) → is-prop(identifications-from x)
+identifications-from-is-prop : {X : U ̇} (x : X) → is-prop(identifications-from x)
 identifications-from-is-prop x = is-singleton-is-prop (identifications-from-is-singleton x)
 
-singleton-types-are-singletons : ∀ {U} {X : U ̇} {x : X}
+singleton-types-are-singletons : {X : U ̇} {x : X}
                         → is-the-only-element {U} {identifications-from x} (x , refl)
 singleton-types-are-singletons {U} {X} (y , refl) = refl
 
-identifications-from-singleton : ∀ {U} {X : U ̇} (x : X) → is-singleton(identifications-from x)
+identifications-from-singleton : {X : U ̇} (x : X) → is-singleton(identifications-from x)
 identifications-from-singleton x = ((x , refl) , singleton-types-are-singletons)
 
-identifications-to : ∀ {U} {X : U ̇} → X → U ̇
+identifications-to : {X : U ̇} → X → U ̇
 identifications-to x = Σ \y → y ≡ x
 
-×-prop-criterion-necessity : ∀ {U V} {X : U ̇} {Y : V ̇}
+×-prop-criterion-necessity : {X : U ̇} {Y : V ̇}
                           → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity isp = (λ y x x' → ap pr₁ (isp (x , y) (x' , y ))) ,
                                  (λ x y y' → ap pr₂ (isp (x , y) (x  , y')))
 
-×-prop-criterion : ∀ {U V} {X : U ̇} {Y : V ̇}
+×-prop-criterion : {X : U ̇} {Y : V ̇}
                 → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
-×-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇}
+×-is-prop : {X : U ̇} {Y : V ̇}
          → is-prop X → is-prop Y → is-prop(X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
-subtype-of-prop-is-prop : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
+subtype-of-prop-is-prop : {X : U ̇} {Y : V ̇} (m : X → Y)
                        → left-cancellable m → is-prop Y → is-prop X
 subtype-of-prop-is-prop {U} {V} {X} m lc isp x x' = lc (isp (m x) (m x'))
 
-subtype-of-set-is-set : ∀ {U V} {X : U ̇} {Y : V ̇} (m : X → Y)
+subtype-of-set-is-set : {X : U ̇} {Y : V ̇} (m : X → Y)
                      → left-cancellable m → is-set Y → is-set X
 subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f , g)
  where
@@ -297,20 +297,20 @@ subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f ,
   g : {x x' : X} (r s : x ≡ x') → f r ≡ f s
   g r s = ap i (h (ap m r) (ap m s))
 
-pr₁-lc : ∀ {U V} {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x)) → left-cancellable (pr₁ {U} {V} {X} {Y})
+pr₁-lc : {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x)) → left-cancellable (pr₁ {U} {V} {X} {Y})
 pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
-subset-of-set-is-set : ∀ {U V} (X : U ̇) (Y : X → V ̇)
+subset-of-set-is-set : (X : U ̇) (Y : X → V ̇)
                     → is-set X → ({x : X} → is-prop(Y x)) → is-set(Σ \(x : X) → Y x)
 subset-of-set-is-set X Y h p = subtype-of-set-is-set pr₁ (pr₁-lc p) h
 
-inl-lc-is-section : ∀ {U V} {X : U ̇} {Y : V ̇} {x x' : X} → (p : inl {U} {V} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
+inl-lc-is-section : {X : U ̇} {Y : V ̇} {x x' : X} → (p : inl {U} {V} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
 inl-lc-is-section refl = refl
 
-inr-lc-is-section : ∀ {U V} {X : U ̇} {Y : V ̇} {y y' : Y} → (p : inr {U} {V} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
+inr-lc-is-section : {X : U ̇} {Y : V ̇} {y y' : Y} → (p : inr {U} {V} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
 inr-lc-is-section refl = refl
 
-+-is-set : ∀ {U V} (X : U ̇) (Y : V ̇) → is-set X → is-set Y → is-set (X + Y)
++-is-set : (X : U ̇) (Y : V ̇) → is-set X → is-set Y → is-set (X + Y)
 +-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
  where
   r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
@@ -348,8 +348,8 @@ proposition is a proposition:
 
 \begin{code}
 
-sum-of-contradictory-props : ∀ {U V W} {P : U ̇} {Q : V ̇}
-                           → is-prop P → is-prop Q → (P → Q → 𝟘) → is-prop(P + Q)
+sum-of-contradictory-props : {P : U ̇} {Q : V ̇}
+                           → is-prop P → is-prop Q → (P → Q → 𝟘 {W}) → is-prop(P + Q)
 sum-of-contradictory-props {U} {V} {W} {P} {Q} isp isq f = go
   where
    go : (x y : P + Q) → x ≡ y
@@ -365,7 +365,7 @@ values other than 𝟘 and 𝟙:
 
 \begin{code}
 
-no-props-other-than-𝟘-or-𝟙 : ∀ {U} → propext U → ¬ Σ \(P : U ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
+no-props-other-than-𝟘-or-𝟙 : propext U → ¬ Σ \(P : U ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
 no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = 𝟘-elim(φ u)
  where
    u : ¬ P
@@ -388,7 +388,7 @@ used in the following construction.
 
 \begin{code}
 
-𝟘-is-not-𝟙 : ∀ {U} → 𝟘 {U} ≢ 𝟙 {U}
+𝟘-is-not-𝟙 : 𝟘 {U} ≢ 𝟙 {U}
 𝟘-is-not-𝟙 p = 𝟘-elim(Idtofun (p ⁻¹) *)
 
 \end{code}

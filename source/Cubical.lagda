@@ -85,19 +85,19 @@ open import Agda.Builtin.Cubical.Id public
   Introduced with lambda abstraction and eliminated with application,
   just like function types.
 
-    PathP : ∀ {U} (A : I → U ̇) → A i0 → A i₁ → U ̇
+    PathP : (A : I → U ̇) → A i0 → A i₁ → U ̇
 
   Non dependent path types:
 
 \begin{code}
 
-Path : ∀ {U} (A : U ̇) → A → A → U ̇
+Path : (A : U ̇) → A → A → U ̇
 Path A a b = PathP (λ _ → A) a b
 
 \end{code}
 
 PathP (\ i → A) x y amounts to x ≡ᶜ y when A does not mention i.
-   _≡ᶜ_ : ∀ {U} {A : U ̇} → A → A → U ̇
+   _≡ᶜ_ : {A : U ̇} → A → A → U ̇
    _≡ᶜ_ = PathP (λ _ → A)
 
 * "is₁ r" represents the constraint "r = i₁".
@@ -118,8 +118,8 @@ PathP (\ i → A) x y amounts to x ≡ᶜ y when A does not mention i.
 
   "PartialP φ A" allows "A" to be defined only on "φ".
 
-    Partial : ∀ {U} → U ̇ → I → Uω
-    PartialP : ∀ {U} → (φ : I) → Partial (U ̇) φ → Uω
+    Partial : U ̇ → I → Uω
+    PartialP : (φ : I) → Partial (U ̇) φ → Uω
 
 Partial elements are introduced by pattern matching with (r = i0)
 or (r = i₁) constraints, like so:
@@ -170,7 +170,7 @@ When the cases overlap they must agree:
 
 \begin{code}
 
-_[_↦_] : ∀ {U} (A : U ̇) (φ : I) (u : Partial φ A) → Uω
+_[_↦_] : (A : U ̇) (φ : I) (u : Partial φ A) → Uω
 A [ φ ↦ u ] = Sub A φ u
 
 \end{code}
@@ -178,13 +178,13 @@ A [ φ ↦ u ] = Sub A φ u
 Any element u : A can be seen as an element of A [ φ ↦ u ] which
 agrees with u on φ:
 
-    inc : ∀ {U} {A : U ̇} {φ} (u : A) → A [ φ ↦ (λ _ → u) ]
+    inc : {A : U ̇} {φ} (u : A) → A [ φ ↦ (λ _ → u) ]
 
 One can also forget that an element agrees with u on φ:
 
 \begin{code}
 
-ouc : ∀ {U} {A : U ̇} {φ : I} {u : Partial φ A} → A [ φ ↦ u ] → A
+ouc : {A : U ̇} {φ : I} {u : Partial φ A} → A [ φ ↦ u ] → A
 ouc = primSubOut
 
 \end{code}
@@ -192,7 +192,7 @@ ouc = primSubOut
 * Composition operation according to [CCHM 18].  When calling "comp A
   φ u a" Agda makes sure that "a" agrees with "u i₀" on "φ".
 
-    compCCHM : ∀ {U} (A : I → U ̇) (φ : I)
+    compCCHM : (A : I → U ̇) (φ : I)
             → (∀ i → Partial (A i) φ) → A i₀ → A i₁
 
   Note. This is not recommended to use. Instead use the CHM
@@ -204,18 +204,18 @@ ouc = primSubOut
   When calling "transp A φ a" Agda makes sure that "A" is constant on
   "φ":
 
-    transp : ∀ {U} (A : (i : I) → U ̇) (φ : I) (a : A i₀) → A i₁
+    transp : (A : (i : I) → U ̇) (φ : I) (a : A i₀) → A i₁
 
   When calling "hcomp A φ u a" Agda makes sure that "a" agrees with "u
   i₀" on "φ".
 
-    hcomp : ∀ {U} {A : U ̇} {φ : I} (u : I → Partial A φ) (a : A) → A
+    hcomp : {A : U ̇} {φ : I} (u : I → Partial A φ) (a : A) → A
 
 Homogeneous filling:
 
 \begin{code}
 
-hfill : ∀ {U} {A : U ̇} {φ : I}
+hfill : {A : U ̇} {φ : I}
           (u : ∀ i → Partial φ A)
           (u0 : A [ φ ↦ u i₀ ]) (i : I) → A
 hfill {φ = φ} u u0 i =
@@ -229,7 +229,7 @@ Heterogeneous composition defined as in CHM:
 
 \begin{code}
 
-comp : ∀ {U} (A : I → U ̇) {φ : I}
+comp : (A : I → U ̇) {φ : I}
          (u : ∀ i → Partial φ (A i))
          (u0 : A i₀ [ φ ↦ u i₀ ]) → A i₁
 comp A {φ = φ} u u0 =
@@ -242,7 +242,7 @@ Heterogeneous filling defined using comp:
 
 \begin{code}
 
-fill : ∀ {U} (A : I → U ̇) {φ : I}
+fill : (A : I → U ̇) {φ : I}
          (u : ∀ i → Partial φ (A i))
          (u0 : A i₀ [ φ ↦ u i₀ ])
      → PathP A (ouc u0) (comp A u u0)
@@ -259,7 +259,7 @@ tell Agda that the type is constant (like in CHM):
 
 \begin{code}
 
-transp-fill : ∀ {U} {A' : U ̇} (φ : I)
+transp-fill : {A' : U ̇} (φ : I)
                 (A : (i : I) → (U ̇) [ φ ↦ (\ _ → A') ])
                 (u0 : ouc (A i₀))
             → PathP (λ i → ouc (A i)) u0 (transp (λ i → ouc (A i)) φ u0)
@@ -271,7 +271,7 @@ Basic theory of paths.
 
 \begin{code}
 
-module _ {U} {X : U ̇} where
+module _ {X : U ̇} where
 
   reflᶜ : {x : X} → x ≡ᶜ x
   reflᶜ {x} = λ _ → x
@@ -279,9 +279,9 @@ module _ {U} {X : U ̇} where
   symᶜ : {x y : X} → x ≡ᶜ y → y ≡ᶜ x
   symᶜ p = λ i → p (~ i)
 
-  apᶜ : ∀ {V} {A : X → V ̇} {x y : X}
-          (f : (x : X) → A x) (p : x ≡ᶜ y)
-      → PathP (λ i → A (p i)) (f x) (f y)
+  apᶜ : {A : X → V ̇} {x y : X}
+       (f : (x : X) → A x) (p : x ≡ᶜ y)
+    → PathP (λ i → A (p i)) (f x) (f y)
   apᶜ f p = λ i → f (p i)
 
 \end{code}
@@ -305,7 +305,7 @@ with transp:
   infix  1 _∎ᶜ
   infixr 0 _≡ᶜ⟨_⟩_
 
-module _ {U V} {A : U ̇} {B : A → V ̇} where
+module _ {A : U ̇} {B : A → V ̇} where
   transportᶜ : {a b : A} (p : a ≡ᶜ b) → B a → B b
   transportᶜ p pa = transp (λ i → B (p i)) i₀ pa
 
@@ -322,7 +322,7 @@ path. If we had regularity this would be definitional:
 
 \begin{code}
 
-transp-refl : ∀ {U} (A : U ̇) (u0 : A)
+transp-refl : (A : U ̇) (u0 : A)
             → PathP (λ _ → A) (transp (λ _ → A) i₀ u0) u0
 transp-refl A u0 i = transp (λ _ → A) i u0
 
@@ -332,8 +332,7 @@ J for paths and its (non-definitional) computation rule:
 
 \begin{code}
 
-module _ {U V}
-         {A : U ̇}
+module _ {A : U ̇}
          {x : A}
          (P : ∀ y → x ≡ᶜ y → V ̇)
          (d : P x reflᶜ)
@@ -385,27 +384,27 @@ module _ {U} where
   is-setᶜ : U ̇ → U ̇
   is-setᶜ A = (x y : A) → is-propᶜ (x ≡ᶜ y)
 
-fiberᶜ : ∀ {U V} {A : U ̇} {B : V ̇} (f : A → B) (y : B) → U ⊔ V ̇
+fiberᶜ : {A : U ̇} {B : V ̇} (f : A → B) (y : B) → U ⊔ V ̇
 fiberᶜ {A = A} f y = Σ \(x : A) → y ≡ᶜ f x
 
-is-equivᶜ : ∀ {U V} {A : U ̇} {B : V ̇} (f : A → B) → U ⊔ V ̇
+is-equivᶜ : {A : U ̇} {B : V ̇} (f : A → B) → U ⊔ V ̇
 is-equivᶜ f = ∀ y → is-contrᶜ (fiberᶜ f y)
 
 infix 4 _≃ᶜ_
 
-_≃ᶜ_ : ∀ {U V} (A : U ̇) (B : V ̇) → U ⊔ V ̇
+_≃ᶜ_ : (A : U ̇) (B : V ̇) → U ⊔ V ̇
 A ≃ᶜ B = Σ \(f : A → B) → is-equivᶜ f
 
-Eqᶜ-to-fun : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ᶜ B → A → B
+Eqᶜ-to-fun : {A : U ̇} {B : V ̇} → A ≃ᶜ B → A → B
 Eqᶜ-to-fun = pr₁
 
-Eqᶜ-to-fun-is-equivᶜ : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) → is-equivᶜ (Eqᶜ-to-fun e)
+Eqᶜ-to-fun-is-equivᶜ : {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) → is-equivᶜ (Eqᶜ-to-fun e)
 Eqᶜ-to-fun-is-equivᶜ = pr₂
 
-Eqᶜ-to-fun-pointed-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B) → fiberᶜ (Eqᶜ-to-fun e) y
+Eqᶜ-to-fun-pointed-fibers : {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B) → fiberᶜ (Eqᶜ-to-fun e) y
 Eqᶜ-to-fun-pointed-fibers e y = pr₁ (pr₂ e y)
 
-Eqᶜ-to-fun-contractible-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B)
+Eqᶜ-to-fun-contractible-fibers : {A : U ̇} {B : V ̇} (e : A ≃ᶜ B) (y : B)
                              → (v : fiberᶜ (Eqᶜ-to-fun e) y) → Eqᶜ-to-fun-pointed-fibers e y ≡ᶜ v
 Eqᶜ-to-fun-contractible-fibers e y = pr₂ (pr₂ e y)
 
@@ -414,13 +413,13 @@ Eqᶜ-to-fun-contractible-fibers e y = pr₂ (pr₂ e y)
 
 module GluePrims where
   primitive
-    primGlue    : ∀ {U V} (A : U ̇) {φ : I}
+    primGlue    : (A : U ̇) {φ : I}
       → (T : Partial φ (V ̇)) → (e : PartialP φ (λ o → T o ≃ᶜ A))
       → V ̇
-    prim^glue   : ∀ {U V} {A : U ̇} {φ : I}
+    prim^glue   : {A : U ̇} {φ : I}
       → {T : Partial φ (V ̇)} → {e : PartialP φ (λ o → T o ≃ᶜ A)}
       → PartialP φ T → A → primGlue A T e
-    prim^unglue : ∀ {U V} {A : U ̇} {φ : I}
+    prim^unglue : {A : U ̇} {φ : I}
       → {T : Partial φ (V ̇)} → {e : PartialP φ (λ o → T o ≃ᶜ A)}
       → primGlue A T e → A
 
@@ -429,16 +428,16 @@ open GluePrims public
            ; prim^glue to glue
            ; prim^unglue to unglue)
 
-≃ᶜ-refl : ∀ {U} (A : U ̇) → A ≃ᶜ A
+≃ᶜ-refl : (A : U ̇) → A ≃ᶜ A
 ≃ᶜ-refl A = (λ a → a) , λ y → (y , reflᶜ) , λ z → singletonᶜ-is-contrᶜ (pr₂ z)
 
-Eqᶜ-to-Path : ∀ {U} {A B : U ̇} → A ≃ᶜ B → A ≡ᶜ B
+Eqᶜ-to-Path : {A B : U ̇} → A ≃ᶜ B → A ≡ᶜ B
 Eqᶜ-to-Path {_} {A} {B} e i =
   Glue B
        (λ {(i = i₀) → _ ; (i = i₁) → _})
        (λ {(i = i₀) → e ; (i = i₁) → ≃ᶜ-refl B})
 
-unglue-is-equivᶜ : ∀ {U} (A : U ̇) (φ : I) (T : Partial φ (U ̇))
+unglue-is-equivᶜ : (A : U ̇) (φ : I) (T : Partial φ (U ̇))
                   (f : PartialP φ (λ o → T o ≃ᶜ A))
                 → is-equivᶜ {U} {U} {Glue A T f} (unglue {U} {U} {A} {φ})
 unglue-is-equivᶜ A φ T f = λ (b : A) →
@@ -463,7 +462,7 @@ from Glue [ φ ↦ (T,f) ] A to A:
 
 \begin{code}
 
-unglue-equiv : ∀ {U} (A : U ̇) (φ : I)
+unglue-equiv : (A : U ̇) (φ : I)
                  (T : Partial φ (U ̇))
                  (f : PartialP φ (λ o → T o ≃ᶜ A))
              → Glue A T f ≃ᶜ A
@@ -475,7 +474,7 @@ A form of the cubical univalence theorem:
 
 \begin{code}
 
-univalenceᶜ : ∀ {U} (A : U ̇) → is-contrᶜ (Σ \(T : U ̇) → T ≃ᶜ A)
+univalenceᶜ : (A : U ̇) → is-contrᶜ (Σ \(T : U ̇) → T ≃ᶜ A)
 univalenceᶜ {U} A = ( A , ≃ᶜ-refl A)
                , λ w i → let T : Partial (~ i ∨ i) (U ̇)
                              T = λ { (i = i₀) → A ; (i = i₁) → pr₁ w }
@@ -492,7 +491,7 @@ We now work with the identity type _≡_ instead of the path type _≡ᶜ_:
 
 {- BUILTIN ID Id -}
 
-_≡_ : ∀ {U} {A : U ̇} → A → A → U ̇
+_≡_ : {A : U ̇} → A → A → U ̇
 _≡_ = Id
 
 \end{code}
@@ -502,12 +501,12 @@ is sometimes useful when it is needed for typechecking (see J below).
 
 \begin{code}
 
-conId : ∀ {U} {A : U ̇} {x : A} (φ : I) (y : A [ φ ↦ (λ _ → x) ])
+conId : {A : U ̇} {x : A} (φ : I) (y : A [ φ ↦ (λ _ → x) ])
       → (Path _ x (ouc y)) [ φ ↦ (λ { (φ = i₁) → λ _ → x}) ]
       → x ≡ ouc y
 conId φ _ w = conid φ (ouc w)
 
-refl : ∀ {U} {A : U ̇} {x : A} → x ≡ x
+refl : {A : U ̇} {x : A} → x ≡ x
 refl {U} {A} {x} = conid i₁ (λ _ → x)
 
 \end{code}
@@ -518,7 +517,7 @@ Direct eliminator for Id:
 
 module IdPrims where
   primitive
-    primIdElim : ∀ {U V} {A : U ̇} {x : A}
+    primIdElim : {A : U ̇} {x : A}
                    (P : (y : A) → x ≡ y → V ̇)
                    (h : (φ : I) (y : A [ φ ↦ (λ _ → x) ])
                         (w : (Path _ x (ouc y)) [ φ ↦ (λ { (φ = i₁) → λ _ → x}) ])
@@ -609,7 +608,7 @@ and Id:
 
 \begin{code}
 
-funext : ∀ {U V} {A : U ̇} {B : A → V ̇} {f g : (x : A) → B x}
+funext : {A : U ̇} {B : A → V ̇} {f g : (x : A) → B x}
        → ((x : A) → f x ≡ g x) → f ≡ g
 funext p = Path-to-Id (λ i x → Id-to-Path (p x) i)
 
@@ -620,7 +619,7 @@ types _≡ᶜ_:
 
 \begin{code}
 
-fiber : ∀ {U V} {A : U ̇} {B : V ̇} (f : A → B) (y : B) → U ⊔ V ̇
+fiber : {A : U ̇} {B : V ̇} (f : A → B) (y : B) → U ⊔ V ̇
 fiber f y = Σ \x  → y ≡ f x
 
 module _ {U} where
@@ -634,22 +633,22 @@ module _ {U} where
   is-set : U ̇ → U ̇
   is-set A = (x y : A) → is-prop (x ≡ y)
 
-is-equiv : ∀ {U V} {A : U ̇} {B : V ̇} (f : A → B) → U ⊔ V ̇
+is-equiv : {A : U ̇} {B : V ̇} (f : A → B) → U ⊔ V ̇
 is-equiv f = ∀ y → is-contr (fiber f y)
 
 infix 4 _≃_
 
-_≃_ : ∀ {U V} (A : U ̇) (B : V ̇) → U ⊔ V ̇
+_≃_ : (A : U ̇) (B : V ̇) → U ⊔ V ̇
 A ≃ B = Σ \(f : A → B) → is-equiv f
 
-Eq-to-fun : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ B → A → B
+Eq-to-fun : {A : U ̇} {B : V ̇} → A ≃ B → A → B
 Eq-to-fun = pr₁
 
-Eq-to-fun-is-equiv : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ B)
+Eq-to-fun-is-equiv : {A : U ̇} {B : V ̇} (e : A ≃ B)
                    → is-equiv (Eq-to-fun e)
 Eq-to-fun-is-equiv = pr₂
 
-Eq-to-fun-pointed-fibers : ∀ {U V} {A : U ̇} {B : V ̇} (e : A ≃ B) (y : B)
+Eq-to-fun-pointed-fibers : {A : U ̇} {B : V ̇} (e : A ≃ B) (y : B)
                          → fiber (Eq-to-fun e) y
 Eq-to-fun-pointed-fibers e y = pr₁ (pr₂ e y)
 
@@ -661,32 +660,32 @@ forth along them.
 
 \begin{code}
 
-fiberᶜ-to-fiber : ∀ {U V} {A : U ̇} {B : V ̇} {f : A → B} {y : B}
+fiberᶜ-to-fiber : {A : U ̇} {B : V ̇} {f : A → B} {y : B}
                 → fiberᶜ f y → fiber f y
 fiberᶜ-to-fiber (x , p) = (x , Path-to-Id p)
 
-fiber-to-fiberᶜ : ∀ {U V} {A : U ̇} {B : V ̇} {f : A → B} {y : B}
+fiber-to-fiberᶜ : {A : U ̇} {B : V ̇} {f : A → B} {y : B}
                 → fiber f y → fiberᶜ f y
 fiber-to-fiberᶜ (x , p) = (x , Id-to-Path p)
 
-fiber-ε : ∀ {U V} {A : U ̇} {B : V ̇} {f : A → B} {y : B} (p : fiber f y)
+fiber-ε : {A : U ̇} {B : V ̇} {f : A → B} {y : B} (p : fiber f y)
         → fiberᶜ-to-fiber (fiber-to-fiberᶜ p) ≡ᶜ p
 fiber-ε (x , p) = λ i → x , Path-to-Id-ε p i
 
-fiber-η : ∀ {U V} {A : U ̇} {B : V ̇} {f : A → B} {y : B} (p : fiberᶜ f y)
+fiber-η : {A : U ̇} {B : V ̇} {f : A → B} {y : B} (p : fiberᶜ f y)
         → fiber-to-fiberᶜ (fiberᶜ-to-fiber p) ≡ᶜ p
 fiber-η (x , p) = λ i → x , Path-to-Id-η p i
 
-is-contrᶜ-to-is-contr : ∀ {U} {A : U ̇} → is-contrᶜ A → is-contr A
+is-contrᶜ-to-is-contr : {A : U ̇} → is-contrᶜ A → is-contr A
 is-contrᶜ-to-is-contr (ctr , p) = (ctr , λ y → Path-to-Id (p y))
 
-is-contr-to-is-contrᶜ : ∀ {U} {A : U ̇} → is-contr A → is-contrᶜ A
+is-contr-to-is-contrᶜ : {A : U ̇} → is-contr A → is-contrᶜ A
 is-contr-to-is-contrᶜ (ctr , p) = (ctr , λ y → Id-to-Path (p y))
 
-is-propᶜ-to-is-prop : ∀ {U} {A : U ̇} → is-propᶜ A → is-prop A
+is-propᶜ-to-is-prop : {A : U ̇} → is-propᶜ A → is-prop A
 is-propᶜ-to-is-prop h x y = Path-to-Id (h x y)
 
-is-prop-to-is-propᶜ : ∀ {U} {A : U ̇} → is-prop A → is-propᶜ A
+is-prop-to-is-propᶜ : {A : U ̇} → is-prop A → is-propᶜ A
 is-prop-to-is-propᶜ h x y i = Id-to-Path (h x y) i
 
 \end{code}
@@ -696,14 +695,14 @@ is-contrᶜ and is-contr:
 
 \begin{code}
 
-retract-of-contrᶜ : ∀ {U} {A B : U ̇} (r : A → B) (s : B → A)
+retract-of-contrᶜ : {A B : U ̇} (r : A → B) (s : B → A)
                   → (∀ y → r (s y) ≡ᶜ y) → is-contrᶜ A → is-contr B
 retract-of-contrᶜ r s h (x , p) =
   (r x , λ y → Path-to-Id (λ i → hcomp (λ j → λ { (i = i₀) → r x
                                               ; (i = i₁) → h y j })
                                        (r (p (s y) i))))
 
-retract-of-contr : ∀ {U} {A B : U ̇} (s : A → B) (r : B → A)
+retract-of-contr : {A B : U ̇} (s : A → B) (r : B → A)
                  → (∀ x → r (s x) ≡ᶜ x) → is-contr B → is-contrᶜ A
 retract-of-contr {U} {A} s r h (y , p) = (r y , λ x → Id-to-Path (rem x))
   where
@@ -721,7 +720,7 @@ conversion functions. It is still nice that is works like this though.
 
 \begin{code}
 
-is-propᶜ-is-contr : ∀ {U} {A : U ̇} → is-propᶜ (is-contr A)
+is-propᶜ-is-contr : {A : U ̇} → is-propᶜ (is-contr A)
 is-propᶜ-is-contr (a0 , p0) (a1 , p1) j =
  (Id-to-Path (p0 a1) j ,
   hcomp (λ i → λ { (j = i₀) →  λ x → Path-to-Id-ε (p0 x) i
@@ -732,17 +731,17 @@ is-propᶜ-is-contr (a0 , p0) (a1 , p1) j =
                                               ; (j = i₁) → Id-to-Path (p1 x) i })
                                        (Id-to-Path (p0 (Id-to-Path (p1 x) i)) j))))
 
-is-propᶜ-is-equiv : ∀ {U} {A : U ̇} {B : U ̇} {f : A → B}
+is-propᶜ-is-equiv : {A : U ̇} {B : U ̇} {f : A → B}
                   → is-propᶜ (is-equiv f)
 is-propᶜ-is-equiv {U} {A} {B} {f} h1 h2 i y = is-propᶜ-is-contr {U} {fiber f y} (h1 y) (h2 y) i
 
-Eqᶜ-to-Eq : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ᶜ B → A ≃ B
+Eqᶜ-to-Eq : {A : U ̇} {B : V ̇} → A ≃ᶜ B → A ≃ B
 Eqᶜ-to-Eq (f , p) = (f , λ y → retract-of-contrᶜ fiberᶜ-to-fiber fiber-to-fiberᶜ fiber-ε (p y) )
 
-Eq-to-Eqᶜ : ∀ {U V} {A : U ̇} {B : V ̇} → A ≃ B → A ≃ᶜ B
+Eq-to-Eqᶜ : {A : U ̇} {B : V ̇} → A ≃ B → A ≃ᶜ B
 Eq-to-Eqᶜ (f , p) = (f , λ y → retract-of-contr fiberᶜ-to-fiber fiber-to-fiberᶜ fiber-η (p y))
 
-Eq-η : ∀ {U} {A : U ̇} {B : U ̇} (p : A ≃ B)
+Eq-η : {A : U ̇} {B : U ̇} (p : A ≃ B)
      → Eqᶜ-to-Eq (Eq-to-Eqᶜ p) ≡ᶜ p
 Eq-η (f , p) i = (f , is-propᶜ-is-equiv (λ y → retract-of-contrᶜ fiberᶜ-to-fiber fiber-to-fiberᶜ fiber-ε
                                                (retract-of-contr fiberᶜ-to-fiber fiber-to-fiberᶜ fiber-η (p y))) p i)
@@ -754,16 +753,16 @@ univalence for the path type:
 
 \begin{code}
 
-univalence : ∀ {U} (A : U ̇) → is-contr (Σ \(T : U ̇) → T ≃ A)
+univalence : (A : U ̇) → is-contr (Σ \(T : U ̇) → T ≃ A)
 univalence A = retract-of-contrᶜ r s rs (univalenceᶜ A)
   where
-   r : ∀ {U} {A : U ̇} → (Σ \(T : U ̇) → T ≃ᶜ A) → Σ \(T : U ̇) → T ≃ A
+   r : {A : U ̇} → (Σ \(T : U ̇) → T ≃ᶜ A) → Σ \(T : U ̇) → T ≃ A
    r (x , p) = x , Eqᶜ-to-Eq p
 
-   s : ∀ {U} {A : U ̇} → (Σ \(T : U ̇) → T ≃ A) → Σ \(T : U ̇) → T ≃ᶜ A
+   s : {A : U ̇} → (Σ \(T : U ̇) → T ≃ A) → Σ \(T : U ̇) → T ≃ᶜ A
    s (x , p) = x , Eq-to-Eqᶜ p
 
-   rs : ∀ {U} {A : U ̇} → (y : Σ \(T : U ̇) → T ≃ A) → r (s y) ≡ᶜ y
+   rs : {A : U ̇} → (y : Σ \(T : U ̇) → T ≃ A) → r (s y) ≡ᶜ y
    rs (x , p) = λ i → x , Eq-η p i
 
 \end{code}
@@ -776,11 +775,11 @@ data ∥_∥ {U} (A : U ̇) : U ̇ where
   ∣_∣ : A → ∥ A ∥
   ∥∥-is-propᶜ : (x y : ∥ A ∥) → x ≡ᶜ y
 
-∥∥-recursionᶜ : ∀ {U} {A : U ̇} {P : U ̇} → is-propᶜ P → (A → P) → ∥ A ∥ → P
+∥∥-recursionᶜ : {A : U ̇} {P : U ̇} → is-propᶜ P → (A → P) → ∥ A ∥ → P
 ∥∥-recursionᶜ _ f ∣ x ∣ = f x
 ∥∥-recursionᶜ h f (∥∥-is-propᶜ x y i) = h (∥∥-recursionᶜ h f x) (∥∥-recursionᶜ h f y) i
 
-∥∥-inductionᶜ : ∀ {U} {A : U ̇} {P : ∥ A ∥ → U ̇} → ((a : ∥ A ∥) → is-propᶜ (P a))
+∥∥-inductionᶜ : {A : U ̇} {P : ∥ A ∥ → U ̇} → ((a : ∥ A ∥) → is-propᶜ (P a))
              → ((x : A) → P ∣ x ∣) → (a : ∥ A ∥) → P a
 ∥∥-inductionᶜ {P = P} h f a = ∥∥-recursionᶜ (h a) (λ x → transp (λ i → P (∥∥-is-propᶜ ∣ x ∣ a i)) i₀ (f x)) a
 
@@ -790,13 +789,13 @@ This also gives the truncation with respect to the identity type:
 
 \begin{code}
 
-∥∥-is-prop : ∀ {U} {A : U ̇} → is-prop ∥ A ∥
+∥∥-is-prop : {A : U ̇} → is-prop ∥ A ∥
 ∥∥-is-prop x y = Path-to-Id (∥∥-is-propᶜ x y)
 
-∥∥-recursion : ∀ {U} {A : U ̇} {P : U ̇} → is-prop P → (A → P) → ∥ A ∥ → P
+∥∥-recursion : {A : U ̇} {P : U ̇} → is-prop P → (A → P) → ∥ A ∥ → P
 ∥∥-recursion h f x = ∥∥-recursionᶜ (is-prop-to-is-propᶜ h) f x
 
-∥∥-induction : ∀ {U} {A : U ̇} {P : ∥ A ∥ → U ̇} → ((a : ∥ A ∥) → is-prop (P a))
+∥∥-induction : {A : U ̇} {P : ∥ A ∥ → U ̇} → ((a : ∥ A ∥) → is-prop (P a))
              → ((x : A) → P ∣ x ∣) → (a : ∥ A ∥) → P a
 ∥∥-induction h f x = ∥∥-inductionᶜ (λ a → is-prop-to-is-propᶜ (h a)) f x
 

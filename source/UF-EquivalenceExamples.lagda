@@ -14,9 +14,9 @@ open import UF-FunExt
 module UF-EquivalenceExamples where
 
 curry-uncurry : (fe : ∀ U V → funext U V)
-             → ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
+             → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
-curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
+curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
    where
     c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
     c f x y = f (x , y)
@@ -27,7 +27,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     uc : ∀ f → u (c f) ≡ f
     uc f = dfunext (fe (U ⊔ V) W) (λ w → refl)
 
-Σ-assoc : ∀ {U V W} → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
+Σ-assoc : {X : U ̇} {Y : X → V ̇} {Z : Σ Y → W ̇}
         → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))
 Σ-assoc {U} {V} {W} {X} {Y} {Z} = c , (u , λ τ → refl) , (u , λ σ → refl)
    where
@@ -36,7 +36,13 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
     u (x , (y , z)) = ((x , y) , z)
 
-Σ-cong : ∀ {U V} (X : U ̇) (Y Y' : X → V ̇)
+{- TODO (easy).
+Σ-flip : (X : U ̇) (Y : V ̇) (A : X → Y → W ̇)
+       → (Σ \(x : X) → Σ \(y : Y) → A x y) ≃ (Σ \(y : Y) → Σ \(x : X) → A x y)
+Σ-flip = {!!}
+-}
+
+Σ-cong : (X : U ̇) (Y Y' : X → V ̇)
       → ((x : X) → Y x ≃ Y' x) → Σ Y ≃ Σ Y'
 Σ-cong X Y Y' φ = (F , (G , FG) , (H , HF))
    where
@@ -62,7 +68,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     HF : (w : Σ Y) → H(F w) ≡ w
     HF (x , y) = to-Σ-≡' (hf x y)
 
-Π-cong : ∀ {U V W} → funext U V → funext U W
+Π-cong : funext U V → funext U W
        → (X : U ̇) (Y : X → V ̇) (Y' : X → W ̇)
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 Π-cong fe fe' X Y Y' φ = (F , (G , FG) , (H , HF))
@@ -97,7 +103,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
       GF' : (x : X) → H(F w) x ≡ w x
       GF' x = hf x (w x)
 
-≃-funext₂ : ∀ {U V W} → funext U (V ⊔ W) → funext V W
+≃-funext₂ : funext U (V ⊔ W) → funext V W
           → {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
             (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
 ≃-funext₂ fe fe' {X} f g =
@@ -108,10 +114,10 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
                           (λ x → ≃-funext fe' (f x) (g x))⟩
  (∀ x → f x ∼ g x) ■
 
-𝟙-lneutral : ∀ {U V} {Y : U ̇} → 𝟙 × Y ≃ Y
+𝟙-lneutral : {Y : U ̇} → 𝟙 {V} × Y ≃ Y
 𝟙-lneutral {U} {V} {Y} = (f , (g , fg) , (g , gf))
   where
-    f : 𝟙 {V} × Y → Y
+    f : 𝟙 × Y → Y
     f (* , y) = y
     g : Y → 𝟙 × Y
     g y = (* , y)
@@ -120,7 +126,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     gf : ∀ z → g (f z) ≡ z
     gf (* , y) = refl
 
-×-comm : ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
+×-comm : {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
 ×-comm {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
    where
     f : X × Y → Y × X
@@ -132,13 +138,13 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     gf : ∀ t → g (f t) ≡ t
     gf t = refl
 
-𝟙-rneutral : ∀ {U V} {Y : U ̇} → Y × 𝟙 ≃ Y
+𝟙-rneutral : {Y : U ̇} → Y × 𝟙 {V} ≃ Y
 𝟙-rneutral {U} {V} {Y} =
               Y × 𝟙 ≃⟨ ×-comm ⟩
               𝟙 × Y ≃⟨ 𝟙-lneutral {U} {V} ⟩
               Y ■
 
-+comm : ∀ {U V} {X : U ̇} {Y : V ̇} → X + Y ≃ Y + X
++comm : {X : U ̇} {Y : V ̇} → X + Y ≃ Y + X
 +comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
   where
     f : X + Y → Y + X
@@ -154,10 +160,10 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     η (inl x) = refl
     η (inr y) = refl
 
-𝟘-rneutral : ∀ {U V} {X : U ̇} → X ≃ X + 𝟘
+𝟘-rneutral : {X : U ̇} → X ≃ X + 𝟘 {V}
 𝟘-rneutral {U} {V} {X} = f , (g , ε) , (g , η)
   where
-    f : X → X + 𝟘 {V}
+    f : X → X + 𝟘
     f = inl
     g : X + 𝟘 → X
     g (inl x) = x
@@ -168,15 +174,15 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     η : (x : X) → (g ∘ f) x ≡ x
     η x = refl
 
-𝟘-rneutral' : ∀ {U V} {X : U ̇} → X + 𝟘 ≃ X
+𝟘-rneutral' : {X : U ̇} → X + 𝟘 {V} ≃ X
 𝟘-rneutral' {U} {V} = ≃-sym (𝟘-rneutral {U} {V})
 
-𝟘-lneutral : ∀ {U V} {X : U ̇} → 𝟘 + X ≃ X
+𝟘-lneutral : {X : U ̇} → 𝟘 {V} + X ≃ X
 𝟘-lneutral {U} {V} {X} = (𝟘 + X) ≃⟨ +comm ⟩
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {U} {V} ⟩
                          X ■
 
-+assoc : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → (X + Y) + Z ≃ X + (Y + Z)
++assoc : {X : U ̇} {Y : V ̇} {Z : W ̇} → (X + Y) + Z ≃ X + (Y + Z)
 +assoc {U} {V} {W} {X} {Y} {Z} = f , (g , ε) , (g , η)
   where
     f : (X + Y) + Z → X + (Y + Z)
@@ -196,7 +202,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     η (inl (inr x)) = refl
     η (inr x)       = refl
 
-+-cong : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
++-cong : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
       → X ≃ A → Y ≃ B → X + Y ≃ A + B
 +-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
@@ -217,10 +223,10 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
   D (inl x) = ap inl (d x)
   D (inr y) = ap inr (δ y)
 
-×𝟘 : ∀ {U V W} {X : U ̇} → 𝟘 ≃ X × 𝟘
+×𝟘 : {X : U ̇} → 𝟘 {V} ≃ X × 𝟘 {W}
 ×𝟘 {U} {V} {W} {X} = f , (g , ε) , (g , η)
   where
-    f : 𝟘 {V} → X × 𝟘 {W}
+    f : 𝟘 → X × 𝟘
     f ()
     g : X × 𝟘 → 𝟘
     g (x , ())
@@ -229,10 +235,10 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     η : (u : 𝟘) → (g ∘ f) u ≡ u
     η ()
 
-𝟙distr : ∀ {U V W} {X : U ̇} {Y : V ̇} → X × Y + X ≃ X × (Y + 𝟙)
+𝟙distr : {X : U ̇} {Y : V ̇} → X × Y + X ≃ X × (Y + 𝟙 {W})
 𝟙distr {U} {V} {W} {X} {Y} = f , (g , ε) , (g , η)
   where
-    f : X × Y + X → X × (Y + 𝟙 {W})
+    f : X × Y + X → X × (Y + 𝟙)
     f (inl (x , y)) = x , inl y
     f (inr x)       = x , inr *
     g : X × (Y + 𝟙) → X × Y + X
@@ -245,7 +251,7 @@ curry-uncurry fe {U} {V} {W} {X} {Y} {Z} = c , (u , cu) , (u , uc)
     η (inl (x , y)) = refl
     η (inr x)       = refl
 
-Ap+ : ∀ {U V W} {X : U ̇} {Y : V ̇} (Z : W ̇) → X ≃ Y → X + Z ≃ Y + Z
+Ap+ : {X : U ̇} {Y : V ̇} (Z : W ̇) → X ≃ Y → X + Z ≃ Y + Z
 Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η')
   where
     f' : X + Z → Y + Z
@@ -264,7 +270,7 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     η' (inl x) = ap inl (η x)
     η' (inr z) = refl
 
-×comm :  ∀ {U V} {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
+×comm : {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
 ×comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
   where
     f : X × Y → Y × X
@@ -276,7 +282,7 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     η : (u : X × Y) → (g ∘ f) u ≡ u
     η (x , y) = refl
 
-×-cong : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
+×-cong : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
       → X ≃ A → Y ≃ B → X × Y ≃ A × B
 ×-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
@@ -292,11 +298,11 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
   D : (z : X × Y) → G' (F z) ≡ z
   D (x , y) = to-×-≡ (d x) (δ y)
 
-𝟘→ : ∀ {U V W} {X : U ̇} → funext W U
-   → 𝟙 ≃ (𝟘 → X)
+𝟘→ : {X : U ̇} → funext W U
+   → 𝟙 {V} ≃ (𝟘 {W} → X)
 𝟘→ {U} {V} {W} {X} fe = f , (g , ε) , (g , η)
  where
-  f : 𝟙 {V} → 𝟘 {W} → X
+  f : 𝟙 → 𝟘 → X
   f * ()
   g : (𝟘 → X) → 𝟙
   g h = *
@@ -305,11 +311,11 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
   η : (y : 𝟙) → g (f y) ≡ y
   η * = refl
 
-𝟙→ : ∀ {U V} {X : U ̇} → funext V U
-   → X ≃ (𝟙 → X)
+𝟙→ : {X : U ̇} → funext V U
+   → X ≃ (𝟙 {V} → X)
 𝟙→ {U} {V} {X} fe = f , (g , ε) , (g , η)
  where
-  f : X → 𝟙 {V} → X
+  f : X → 𝟙 → X
   f x * = x
   g : (𝟙 → X) → X
   g h = h *
@@ -321,7 +327,7 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
   η : (x : X) → g (f x) ≡ x
   η x = refl
 
-+→ : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → funext (U ⊔ V) W
++→ : ∀ {X : U ̇} {Y : V ̇} {Z : W ̇} → funext (U ⊔ V) W
    → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
 +→ {U} {V} {W} {X} {Y} {Z} fe = f , (g , ε) , (g , η)
  where
@@ -339,9 +345,8 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     γ (inl x) = refl
     γ (inr y) = refl
 
-→-cong : ∀ {U V W T} {X : U ̇} {Y : W ̇} {A : V ̇} {B : T ̇}
-       → funext V T
-       → funext U W
+→-cong : {T : Universe} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
+       → funext W T → funext U V
        → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
 →-cong {U} {V} {W} {T} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =
  H (is-equiv-qinv f i) (is-equiv-qinv φ j)
