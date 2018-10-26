@@ -10,6 +10,9 @@ open import Agda.Primitive public
           ; Setω to Uω
           )
 
+variable
+ U V W : Universe
+
 \end{code}
 
 The following should be the only use of the Agda keyword 'Set' in this
@@ -29,9 +32,6 @@ Lift a type X in the universe U to a type X ↑ in the universe U ⊔
 V. An element of X is of the form x ↥ for x an element of X.
 
 \begin{code}
-
-variable
- U V W : Universe
 
 record _↑ {U V} (X : U ̇) : U ⊔ V ̇ where
  constructor _↥

@@ -386,7 +386,6 @@ ieevalts {U} {X} fe i {x} {y} e = ap pr₁ q
 \begin{code}
 
 module TotallySeparatedReflection
-         {U : Universe}
          (fe : ∀ U V → funext U V)
          (pt : PropTrunc)
  where
@@ -400,16 +399,16 @@ We construct the reflection as the image of the evaluation map.
 
 \begin{code}
 
- T : U ̇ → U ̇
- T X = image (eval {U} {X})
+ 𝓣 : U ̇ → U ̇
+ 𝓣 {U} X = image (eval {U} {X})
 
- tts : {X : U ̇} → totally-separated(T X)
- tts {X} {φ , s} {γ , t} = g
+ tts : {X : U ̇} → totally-separated(𝓣 X)
+ tts {U} {X} {φ , s} {γ , t} = g
   where
-   f : (e : (q : T X → 𝟚) → q (φ , s) ≡ q (γ , t)) (p : X → 𝟚) → φ p ≡ γ p
-   f e p = e (λ (x' : T X) → pr₁ x' p)
+   f : (e : (q : 𝓣 X → 𝟚) → q (φ , s) ≡ q (γ , t)) (p : X → 𝟚) → φ p ≡ γ p
+   f e p = e (λ (x' : 𝓣 X) → pr₁ x' p)
 
-   g : (e : (q : T X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
+   g : (e : (q : 𝓣 X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
    g e = to-Σ-≡ (dfunext (fe U U₀) (f e), ptisp _ t)
 
 \end{code}
@@ -421,16 +420,16 @@ the reflector.
 \begin{code}
 
 
- η : {X : U ̇} → X → T X
- η {X} = corestriction (eval {U} {X})
+ η : {X : U ̇} → X → 𝓣 X
+ η {X} = corestriction (eval {X})
 
- η-surjection : {X : U ̇} → is-surjection(η {X})
+ η-surjection : {X : U ̇} → is-surjection(η {U} {X})
  η-surjection = corestriction-surjection eval
 
- η-induction :  {X : U ̇} (P : T X → W ̇)
-             → ((x' : T X) → is-prop(P x'))
+ η-induction :  {X : U ̇} (P : 𝓣 X → W ̇)
+             → ((x' : 𝓣 X) → is-prop(P x'))
              → ((x : X) → P(η x))
-             → (x' : T X) → P x'
+             → (x' : 𝓣 X) → P x'
  η-induction = surjection-induction η η-surjection
 
 \end{code}
@@ -441,8 +440,8 @@ rather than direct proofs (as in the proof of tight reflection below).
 \begin{code}
 
  totally-separated-reflection : {X : U ̇} {A : V ̇} → totally-separated A
-                              → (f : X → A) → is-singleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
- totally-separated-reflection {V} {X} {A} ts f = go
+                              → (f : X → A) → is-singleton (Σ \(f' : 𝓣 X → A) → f' ∘ η ≡ f)
+ totally-separated-reflection {U} {V} {X} {A} ts f = go
   where
    iss : is-set A
    iss = totally-separated-is-set (fe V U₀) A ts
@@ -459,19 +458,19 @@ rather than direct proofs (as in the proof of tight reflection below).
      u : (Σ \(x : X) → (λ p → p x) ≡ φ) → Σ \(a : A) → eval a ≡ γ
      u (x , r) = f x , dfunext (fe V U₀) (λ q → happly r (q ∘ f))
 
-   h' : (x' : T X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
+   h' : (x' : 𝓣 X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
 
-   f' : T X → A
+   f' : 𝓣 X → A
    f' (φ , s) = pr₁ (h φ s)
 
-   b : (x' : T X) (q : A → 𝟚) → q(f' x') ≡ pr₁ x' (q ∘ f)
+   b : (x' : 𝓣 X) (q : A → 𝟚) → q(f' x') ≡ pr₁ x' (q ∘ f)
    b (φ , s) = happly (pr₂ (h φ s))
 
    r : f' ∘ η ≡ f
    r = dfunext (fe U V) (λ x → ts (b (η x)))
 
-   c : (σ : Σ \(f'' : T X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c : (σ : Σ \(f'' : 𝓣 X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡ (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
@@ -486,7 +485,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      v : u ≡ s
      v = Π-is-set (fe U V) (λ _ → iss) u s
 
-   go : is-singleton (Σ \(f' : T X → A) → f' ∘ η ≡ f)
+   go : is-singleton (Σ \(f' : 𝓣 X → A) → f' ∘ η ≡ f)
    go = (f' , r) , c
 
 \end{code}
@@ -497,16 +496,16 @@ We package the above as follows for convenient use elsewhere
 \begin{code}
 
  totally-separated-reflection' : {X : U ̇} {A : V ̇} → totally-separated A
-                              → is-equiv (λ (f' : T X → A) → f' ∘ η)
+                              → is-equiv (λ (f' : 𝓣 X → A) → f' ∘ η)
  totally-separated-reflection' ts = is-vv-equiv-is-equiv _ (totally-separated-reflection ts)
 
  totally-separated-reflection'' : {X : U ̇} {A : V ̇} → totally-separated A
-                               → (T X → A) ≃ (X → A)
+                               → (𝓣 X → A) ≃ (X → A)
  totally-separated-reflection'' ts = (λ f' → f' ∘ η) , totally-separated-reflection' ts
 
 \end{code}
 
-In particular, because 𝟚 is totally separated, T X and X have the same
+In particular, because 𝟚 is totally separated, 𝓣 X and X have the same
 boolean predicates (which we exploit in the module 2CompactTypes).
 
 The notion of total separatedness (or 𝟚-separatedness) is analogous to

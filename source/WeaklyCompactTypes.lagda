@@ -253,51 +253,51 @@ boolean predicates as X, and hence X is ∃-compact (respectively
 
 \begin{code}
 
-module TStronglyOvertnessAndCompactness {U : Universe} (X : U ̇) where
+module TStronglyOvertnessAndCompactness (X : U ̇) where
 
- open TotallySeparatedReflection {U} fe pt
+ open TotallySeparatedReflection fe pt
 
- extension : (X → 𝟚) → (T X → 𝟚)
+ extension : (X → 𝟚) → (𝓣 X → 𝟚)
  extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-totally-separated p))
 
  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
  extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-totally-separated p)))
 
- sot : ∃-compact X → ∃-compact (T X)
+ sot : ∃-compact X → ∃-compact (𝓣 X)
  sot = surjection-∃-compact η (η-surjection)
 
- tos : ∃-compact (T X) → ∃-compact X
+ tos : ∃-compact (𝓣 X) → ∃-compact X
  tos c p = h (c (extension p))
   where
-   f : (Σ \(x' : T X) → extension p x' ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+   f : (Σ \(x' : 𝓣 X) → extension p x' ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
    f (x' , r) = ptfunct f' (η-surjection x')
     where
      f' : (Σ \(x : X) → η x ≡ x') → Σ \(x : X) → p x ≡ ₀
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
 
-   g : (Σ \(x : X) → p x ≡ ₀) → Σ \(x' : T X) → extension p x' ≡ ₀
+   g : (Σ \(x : X) → p x ≡ ₀) → Σ \(x' : 𝓣 X) → extension p x' ≡ ₀
    g (x , r) = η x , (extension-property p x ∙ r)
 
-   h : decidable (∃ \(x' : T X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
+   h : decidable (∃ \(x' : 𝓣 X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
    h (inl x) = inl (ptrec ptisp f x)
    h (inr u) = inr (contrapositive (ptfunct g) u)
 
- ct : Π-compact X → Π-compact (T X)
+ ct : Π-compact X → Π-compact (𝓣 X)
  ct = surjection-Π-compact η (η-surjection)
 
- tc : Π-compact (T X) → Π-compact X
+ tc : Π-compact (𝓣 X) → Π-compact X
  tc c p = h (c (extension p))
   where
-   f : ((x' : T X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
+   f : ((x' : 𝓣 X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
    f α x = (extension-property p x) ⁻¹ ∙ α (η x)
 
-   g : (α : (x : X) → p x ≡ ₁) → ((x' : T X) → extension p x' ≡ ₁)
+   g : (α : (x : X) → p x ≡ ₁) → ((x' : 𝓣 X) → extension p x' ≡ ₁)
    g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
      where
       g' : (x : X) → extension p (η x) ≡ ₁
       g' x = extension-property p x ∙ α x
 
-   h : decidable ((x' : T X) → extension p x' ≡ ₁) → decidable ((x : X) → p x ≡ ₁)
+   h : decidable ((x' : 𝓣 X) → extension p x' ≡ ₁) → decidable ((x : X) → p x ≡ ₁)
    h (inl α) = inl (f α)
    h (inr u) = inr (contrapositive g u)
 
@@ -350,26 +350,24 @@ tscd₀ : {X : U₀ ̇} {Y : U₀ ̇} → totally-separated X → retract 𝟚 o
      → Π-compact (X → Y) → discrete X
 tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (rpe (fe U₀ U₀) r) c)
 
-module _ {U : Universe} {X : U ̇} where
+open TotallySeparatedReflection fe pt
 
- open TotallySeparatedReflection {U} fe pt
-
- tscd₁ : ∀ {V} {Y : V ̇} → retract 𝟚 of Y
-      → Π-compact (X → Y) → discrete (T X)
- tscd₁ {V} {Y} r c = f
-  where
-   z : retract (X → 𝟚) of (X → Y)
-   z = rpe (fe U U₀) r
-   a : (T X → 𝟚) ≃ (X → 𝟚)
-   a = totally-separated-reflection'' 𝟚-totally-separated
-   b : retract (T X → 𝟚) of (X → 𝟚)
-   b = equiv-retract-l a
-   d : retract (T X → 𝟚) of (X → Y)
-   d = retracts-compose z b
-   e : Π-compact (T X → 𝟚)
-   e = retract-Π-compact d c
-   f : discrete (T X)
-   f = tscd tts e
+tscd₁ : {X : U ̇} {Y : V ̇} → retract 𝟚 of Y
+     → Π-compact (X → Y) → discrete (𝓣 X)
+tscd₁ {U} {V} {X} {Y} r c = f
+ where
+  z : retract (X → 𝟚) of (X → Y)
+  z = rpe (fe U U₀) r
+  a : (𝓣 X → 𝟚) ≃ (X → 𝟚)
+  a = totally-separated-reflection'' 𝟚-totally-separated
+  b : retract (𝓣 X → 𝟚) of (X → 𝟚)
+  b = equiv-retract-l a
+  d : retract (𝓣 X → 𝟚) of (X → Y)
+  d = retracts-compose z b
+  e : Π-compact (𝓣 X → 𝟚)
+  e = retract-Π-compact d c
+  f : discrete (𝓣 X)
+  f = tscd tts e
 
 \end{code}
 

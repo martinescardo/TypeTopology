@@ -31,7 +31,7 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf : (φ : Π Y) → g(f φ) ≡ φ
   gf φ = dfunext fe (gf' φ)
 
-prop-indexed-product-one : ∀ {T} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘 {W})
+prop-indexed-product-one : {T : Universe} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘 {W})
                          → Π Y ≃ 𝟙 {T}
 prop-indexed-product-one {U} {V} {W} {T} fe {X} {Y} v = unique-to-𝟙 , (g , fg) , (g , gf)
  where

@@ -384,7 +384,9 @@ private
  variable T : Universe
 
 retract-of-injective : {D : U ̇} {D' : V ̇}
-                       → injective-type {W} {T} D → retract D' Of D → injective-type D'
+                     → injective-type {W} {T} D
+                     → retract D' Of D
+                     → injective-type D'
 retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
   where
     s : D' → D
@@ -412,7 +414,8 @@ injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a 
     a = i Id (UA-Id-embedding ua fe) id
 
 power-of-injective : {D : U ̇} {A : V ̇}
-                   → injective-type {W} {T} D → injective-type (A → D)
+                   → injective-type {W} {T} D
+                   → injective-type (A → D)
 power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
@@ -459,7 +462,7 @@ Added 25th July 2018.
 
 iterated-extension : {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
                      (j : X → Y) (k : Y → Z)
-                  → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
+                   → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
 iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ
  where
   f : ((A / j) / k) z → (A / (k ∘ j)) z
