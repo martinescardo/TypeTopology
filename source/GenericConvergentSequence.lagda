@@ -323,13 +323,13 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
-ℕ∞-ddensity : funext₀ → ∀ {U} {Y : ℕ∞ → U ̇}
+ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → U ̇}
             → ({u : ℕ∞} → separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f(under n) ≡ g(under n))
             → f ∞ ≡ g ∞
             → (u : ℕ∞) → f u ≡ g u
-ℕ∞-ddensity fe {U} {Y} s {f} {g} h h∞ u = s (f u) (g u) c
+ℕ∞-ddensity {U} fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
  where
   a : f u ≢ g u → (n : ℕ) → u ≢ under n
   a t n = contrapositive (λ (r : u ≡ under n) → back-transport (λ - → f - ≡ g -) r (h n)) t
@@ -339,7 +339,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
-             → ∀ {U} {Y : U ̇}
+             → {Y : U ̇}
              → separated Y
              → {f g : ℕ∞ → Y}
              → ((n : ℕ) → f(under n) ≡ g(under n))

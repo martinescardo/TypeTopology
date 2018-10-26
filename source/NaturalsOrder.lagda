@@ -106,7 +106,7 @@ not-less-bigger-or-equal zero n u = zero-minimal n
 not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
-bounded-∀-next : ∀ {U} (A : ℕ → U ̇) (k : ℕ)
+bounded-∀-next : (A : ℕ → U ̇) (k : ℕ)
                → A k
                → ((n : ℕ) → n < k → A n)
                → (n : ℕ) → n < succ k → A n
@@ -138,7 +138,7 @@ Added 20th June 2018:
 <-split m zero     l = inr (unique-minimal m l)
 <-split m (succ n) l = ≤-split m n l
 
-regress : ∀ {U} (P : ℕ → U ̇)
+regress : (P : ℕ → U ̇)
         → ((n : ℕ) → P (succ n) → P n)
         → (n m : ℕ) → m ≤ n → P n → P m
 regress P ρ zero m l p = back-transport P (unique-minimal m l) p
@@ -158,7 +158,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
                   (λ (p : n ≡ m) → back-transport (is-accessible _<_) p a)
                   (<-split n m u)
 
-course-of-values-induction : ∀ {U} (P : ℕ → U ̇)
+course-of-values-induction : (P : ℕ → U ̇)
                            → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded

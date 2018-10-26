@@ -208,7 +208,7 @@ is-codistance
  self-indistinguishable
  is-symmetric
  is-ultra
-  : ∀ {U} {X : U ̇} → (X → X → ℕ∞) → U ̇
+  : {X : U ̇} → (X → X → ℕ∞) → U ̇
 
 indistinguishable-are-equal c = ∀ x y → c x y ≡ ∞ → x ≡ y
 self-indistinguishable      c = ∀ x → c x x ≡ ∞

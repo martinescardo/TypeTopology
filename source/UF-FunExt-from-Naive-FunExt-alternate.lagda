@@ -30,7 +30,7 @@ equiv-post-comp-closure : ∀ U V W → (U ⊔ V ⊔ W) ′ ̇
 equiv-post-comp-closure U V W = {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
                               → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 
-equiv-post-gives-funext' : ∀ {U V} → equiv-post-comp-closure (U ⊔ V) U U → funext U V
+equiv-post-gives-funext' : equiv-post-comp-closure (U ⊔ V) U U → funext U V
 equiv-post-gives-funext' {U} {V} eqc = funext-via-singletons γ
   where
   γ : (X : U ̇) (A : X → V ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
@@ -53,10 +53,10 @@ equiv-post-gives-funext' {U} {V} eqc = funext-via-singletons γ
    rs : ∀ φ → r (s φ) ≡ φ
    rs φ = refl
 
-naive-funext-gives-funext' : ∀ {U} {V} → naive-funext U (U ⊔ V) → naive-funext U U → funext U V
-naive-funext-gives-funext' {U} {V} nfe nfe' = equiv-post-gives-funext' (equiv-post nfe nfe')
+naive-funext-gives-funext' : naive-funext U (U ⊔ V) → naive-funext U U → funext U V
+naive-funext-gives-funext' nfe nfe' = equiv-post-gives-funext' (equiv-post nfe nfe')
 
-naive-funext-gives-funext : ∀ {U} → naive-funext U U → funext U U
+naive-funext-gives-funext : naive-funext U U → funext U U
 naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 
 \end{code}

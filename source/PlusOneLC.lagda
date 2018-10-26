@@ -18,10 +18,10 @@ open import UF-Subsingletons-FunExt
 
 module PlusOneLC (fe : ∀ U V → funext U V) where
 
-_∖_ : ∀ {U} (X : U ̇) (a : X) → U ̇
+_∖_ : (X : U ̇) (a : X) → U ̇
 X ∖ a = Σ \(x : X) → x ≢ a
 
-add-and-remove-same-point : ∀ {U} {X : U ̇} →  X ≃ (X + 𝟙) ∖ (inr *)
+add-and-remove-same-point : {X : U ̇} →  X ≃ (X + 𝟙) ∖ (inr *)
 add-and-remove-same-point {U} {X} = f , ((g , fg) , (g , gf))
  where
   f : X → (X + 𝟙 {U}) ∖ inr *
@@ -35,7 +35,7 @@ add-and-remove-same-point {U} {X} = f , ((g , fg) , (g , gf))
   gf : g ∘ f ∼ id
   gf x = refl
 
-remove-points : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
+remove-points : {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
 remove-points {U} {V} {X} {Y} f (g , (gf , fg)) a = (f' , e')
  where
   f' : X ∖ a → Y ∖ (f a)
@@ -92,7 +92,7 @@ add-one-and-remove-isolated-point {V} {Y} (inl b) i = (f , qinv-is-equiv f (g , 
 
 add-one-and-remove-isolated-point {V} {Y} (inr *) _ = ≃-sym add-and-remove-same-point
 
-+𝟙-cancellable : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
++𝟙-cancellable : {X : U ̇} {Y : V ̇} → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
 +𝟙-cancellable {U} {V} {X} {Y} (φ , e) =
    X                  ≃⟨ add-and-remove-same-point ⟩
   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (is-equiv-qinv φ e) (inr *) ⟩

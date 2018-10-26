@@ -78,17 +78,17 @@ data _+_ {U V} (X : U ̇) (Y : V ̇) : U ⊔ V ̇ where
   inl : X → X + Y
   inr : Y → X + Y
 
-dep-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : X + Y → W ̇}
+dep-cases : {X : U ̇} {Y : V ̇} {A : X + Y → W ̇}
           → ((x : X) → A(inl x))
           → ((y : Y) → A(inr y))
           → ((z : X + Y) → A z)
 dep-cases f g (inl x) = f x
 dep-cases f g (inr y) = g y
 
-cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} → (X → A) → (Y → A) → X + Y → A
+cases : {X : U ̇} {Y : V ̇} {A : W ̇} → (X → A) → (Y → A) → X + Y → A
 cases = dep-cases
 
-Cases : ∀ {U V W} {X : U ̇} {Y : V ̇} {A : W ̇} → X + Y → (X → A) → (Y → A) → A
+Cases : {X : U ̇} {Y : V ̇} {A : W ̇} → X + Y → (X → A) → (Y → A) → A
 Cases z f g = cases f g z
 
 +-commutative : {A : U ̇} {B : V ̇} → A + B → B + A
@@ -112,7 +112,7 @@ decidable A = A + ¬ A
 _⇔_ : U ̇ → V ̇ → U ⊔ V ̇
 A ⇔ B = (A → B) × (B → A)
 
-dual : ∀ {U V W} {X : U ̇} {Y : V ̇} (R : W ̇) → (X → Y) → (Y → R) → (X → R)
+dual : {X : U ̇} {Y : V ̇} (R : W ̇) → (X → Y) → (Y → R) → (X → R)
 dual R f p = p ∘ f
 
 contrapositive : {A : U ̇} {B : V ̇} → (A → B) → ¬ B → ¬ A

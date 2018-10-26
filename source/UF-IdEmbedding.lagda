@@ -69,11 +69,11 @@ type Σ A.
 
 \begin{code}
 
-Id-Embedding-Lemma : (∀ U V → funext U V) → ∀ {U} → {X : U ̇}
+Id-Embedding-Lemma : (∀ U V → funext U V) → {X : U ̇}
                   → ((x y : X) (A : X → U ̇)
                   → left-cancellable (idtofun (Id x y) (A y)))
                   → is-embedding(Id {U} {X})
-Id-Embedding-Lemma fe {U} {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
+Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
   T = Σ \(x : X) → Id x ≡ A
   q : Σ (Id x₀) ≡ Σ A
@@ -125,7 +125,7 @@ bother):
 
 \begin{code}
 
-eqtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V)
+eqtofun-lc : is-univalent U → (∀ U V → funext U V)
            → (X Y : U ̇) → left-cancellable(Eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
@@ -140,14 +140,14 @@ The map idtofun is left-cancellable assuming univalence (and funext):
 
 \begin{code}
 
-is-univalent-idtofun-lc : ∀ {U} → is-univalent U → (∀ U V → funext U V) → (X Y : U ̇)
+is-univalent-idtofun-lc : is-univalent U → (∀ U V → funext U V) → (X Y : U ̇)
                        → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)
                                         (Eqtofun X Y)
                                         (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
-UA-Id-embedding : ∀ {U} → is-univalent U → (∀ U V → funext U V)
+UA-Id-embedding : is-univalent U → (∀ U V → funext U V)
                → {X : U ̇} → is-embedding(Id {U} {X})
 UA-Id-embedding {U} ua fe {X} = Id-Embedding-Lemma fe
                                             (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
@@ -159,7 +159,7 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding' : ∀ {U} → K (U ′) → (∀ U V → funext U V)
+K-id-embedding' : K (U ′) → (∀ U V → funext U V)
                → {X : U ̇} → is-embedding(Id {U} {X})
 K-id-embedding' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
@@ -169,10 +169,10 @@ But actually function extensionality is not needed for this: K alone suffices.
 
 \begin{code}
 
-Id-lc : ∀ {U} {X : U ̇} → left-cancellable (Id {U} {X})
+Id-lc : {X : U ̇} → left-cancellable (Id {U} {X})
 Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-id-embedding : ∀ {U} → K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
+K-id-embedding : K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
 K-id-embedding {U} k {X} = lc-embedding-with-K Id Id-lc k
 
 \end{code}

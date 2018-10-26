@@ -37,10 +37,10 @@ interesting is that if each X n is compact then so is Σ¹ X.
 
 \begin{code}
 
-Σ¹ : ∀ {U} → (ℕ → U ̇) → U ̇
+Σ¹ :(ℕ → U ̇) → U ̇
 Σ¹ X = Σ (X / under)
 
-Σ¹-compact∙ : ∀ {U} (X : ℕ → U ̇)
+Σ¹-compact∙ : (X : ℕ → U ̇)
             → ((n : ℕ) → compact∙(X n))
             → compact∙(Σ¹ X)
 Σ¹-compact∙ X ε = extended-sum-compact∙
@@ -67,13 +67,13 @@ over = inl {U₀} {U₀}
 over-embedding : is-embedding over
 over-embedding = inl-embedding ℕ 𝟙
 
-Σ₁ : ∀ {U} → (ℕ → U ̇) → U ̇
+Σ₁ :(ℕ → U ̇) → U ̇
 Σ₁ X = Σ (X / over)
 
 under𝟙-over : (n : ℕ) → under𝟙 (over n) ≡ under n
 under𝟙-over n = refl
 
-over-discrete : ∀ {U} (X : ℕ → U ̇)
+over-discrete : (X : ℕ → U ̇)
              → ((n : ℕ) → discrete (X n))
              → (z : ℕ + 𝟙) → discrete ((X / over) z)
 over-discrete X d (inl n) = retract-discrete-discrete
@@ -87,7 +87,7 @@ over-discrete X d (inr *) = retract-discrete-discrete {U₀}
                                    (λ n → +disjoint)))
                              𝟙-discrete
 
-Σ₁-discrete : ∀ {U} (X : ℕ → U ̇)
+Σ₁-discrete : (X : ℕ → U ̇)
            → ((n : ℕ) → discrete(X n))
            → discrete (Σ₁ X)
 Σ₁-discrete X d = Σ-discrete
@@ -101,7 +101,7 @@ The type (X / over) z is densely embedded into the type
 
 \begin{code}
 
-over-under : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
+over-under : (X : ℕ → U ̇) (z : ℕ + 𝟙)
           → (X / over) z ↪ᵈ (X / under) (under𝟙 z)
 over-under X (inl n) = equiv-dense-embedding (
  (X / over) (over n)   ≃⟨ Π-extension-in-range X over over-embedding n ⟩
@@ -112,11 +112,11 @@ over-under X (inr *) = equiv-dense-embedding (
  𝟙 {U₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X under ∞ (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
  (X / under) ∞      ■ )
 
-over-under-map : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
+over-under-map : (X : ℕ → U ̇) (z : ℕ + 𝟙)
               → (X / over) z → (X / under) (under𝟙 z)
 over-under-map X z = detofun (over-under X z)
 
-over-under-map-left : ∀ {U} (X : ℕ → U ̇) (n : ℕ)
+over-under-map-left : (X : ℕ → U ̇) (n : ℕ)
                      (φ : (w : fiber over (inl n)) → X (pr₁ w))
                    → over-under-map X (inl n) φ (n , refl)
                    ≡ φ (n , refl)
@@ -138,7 +138,7 @@ over-under-map-left X n φ =
                  (φ (n , refl))
   f t = refl
 
-over-under-map-dense : ∀ {U} (X : ℕ → U ̇) (z : ℕ + 𝟙)
+over-under-map-dense : (X : ℕ → U ̇) (z : ℕ + 𝟙)
                     → is-dense (over-under-map X z)
 over-under-map-dense X z = is-dense-detofun (over-under X z)
 
@@ -149,17 +149,17 @@ the compact type Σ¹ X:
 
 \begin{code}
 
-Σ-up : ∀ {U} (X : ℕ → U ̇) → Σ₁ X → Σ¹ X
+Σ-up : (X : ℕ → U ̇) → Σ₁ X → Σ¹ X
 Σ-up X = pair-fun under𝟙 (over-under-map X)
 
-Σ-up-embedding : ∀ {U} (X : ℕ → U ̇) → is-embedding (Σ-up X)
+Σ-up-embedding : (X : ℕ → U ̇) → is-embedding (Σ-up X)
 Σ-up-embedding X = pair-fun-embedding
                     under𝟙
                     (over-under-map X)
                     (under𝟙-embedding fe₀)
                     (λ z → is-embedding-detofun (over-under X z))
 
-Σ-up-dense : ∀ {U} (X : ℕ → U ̇) → is-dense (Σ-up X)
+Σ-up-dense : (X : ℕ → U ̇) → is-dense (Σ-up X)
 Σ-up-dense X = pair-fun-dense under𝟙
                 (over-under-map X)
                 (under𝟙-dense fe₀)
@@ -172,7 +172,7 @@ But this is not enough: we need a map Σ↑ : Σ₁ X → Σ¹ Y given maps f n
 
 \begin{code}
 
-Over : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Over : (X : ℕ → U ̇) (Y : ℕ → U ̇)
        (f : (n : ℕ) → X n → Y n)
     → (z : ℕ + 𝟙) → (X / over) z → (Y / over) z
 Over X Y f (inl n) =
@@ -184,7 +184,7 @@ Over X Y f (inr *) =
    (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ _ → +disjoint))))
    (eqtofun (Π-extension-out-of-range X over (inr *) (λ _ → +disjoint)))
 
-Over-inl : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
+Over-inl : (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
     → (n : ℕ) → Over X Y f (inl n)
     ≡ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
          transport (λ - → Y (pr₁ -))
@@ -192,7 +192,7 @@ Over-inl : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n 
                    (f n (φ (n , refl)))
 Over-inl X Y f n = refl
 
-Over-inr : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
+Over-inr : (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
         → Over X Y f (inr *) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
 Over-inr X Y f = refl
 
@@ -204,7 +204,7 @@ dense embeddings.
 
 \begin{code}
 
-Over-dense : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Over-dense : (X : ℕ → U ̇) (Y : ℕ → U ̇)
              (f : (n : ℕ) → X n → Y n)
           → ((n : ℕ) → is-dense (f n))
           → (z : ℕ + 𝟙) → is-dense (Over X Y f z)
@@ -223,7 +223,7 @@ Over-dense X Y f d (inr *) =
   (is-equiv-is-dense (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
    (is-equiv-eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
 
-Over-embedding : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Over-embedding : (X : ℕ → U ̇) (Y : ℕ → U ̇)
                  (f : (n : ℕ) → X n → Y n)
               → ((n : ℕ) → is-embedding (f n))
               → (z : ℕ + 𝟙) → is-embedding (Over X Y f z)
@@ -242,11 +242,11 @@ Over-embedding {U} X Y f d (inr *) =
   (is-equiv-is-embedding (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
    (is-equiv-eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
 
-Σ₁-functor : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
+Σ₁-functor : (X : ℕ → U ̇) (Y : ℕ → U ̇) (f : (n : ℕ) → X n → Y n)
            → Σ₁ X → Σ₁ Y
 Σ₁-functor X Y f = pair-fun id (Over X Y f)
 
-Σ₁-functor-dense : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Σ₁-functor-dense : (X : ℕ → U ̇) (Y : ℕ → U ̇)
                    (f : (n : ℕ) → X n → Y n)
                 → ((n : ℕ) → is-dense (f n))
                 → is-dense (Σ₁-functor X Y f)
@@ -256,7 +256,7 @@ Over-embedding {U} X Y f d (inr *) =
                             id-is-dense
                             (Over-dense X Y f d)
 
-Σ₁-functor-embedding : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Σ₁-functor-embedding : (X : ℕ → U ̇) (Y : ℕ → U ̇)
                        (f : (n : ℕ) → X n → Y n)
                     → ((n : ℕ) → is-embedding (f n))
                     → is-embedding (Σ₁-functor X Y f)
@@ -266,18 +266,18 @@ Over-embedding {U} X Y f d (inr *) =
                                 id-is-embedding
                                 (Over-embedding X Y f e)
 
-Σ↑ : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Σ↑ : (X : ℕ → U ̇) (Y : ℕ → U ̇)
       (f : (n : ℕ) → X n → Y n)
    → Σ₁ X → Σ¹ Y
 Σ↑ X Y f = Σ-up Y ∘ Σ₁-functor X Y f
 
-Σ↑-dense : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Σ↑-dense : (X : ℕ → U ̇) (Y : ℕ → U ̇)
             (f : (n : ℕ) → X n → Y n)
          → ((n : ℕ) → is-dense (f n))
          → is-dense (Σ↑ X Y f)
 Σ↑-dense X Y f d = comp-dense (Σ₁-functor-dense X Y f d) (Σ-up-dense Y)
 
-Σ↑-embedding : ∀ {U} (X : ℕ → U ̇) (Y : ℕ → U ̇)
+Σ↑-embedding : (X : ℕ → U ̇) (Y : ℕ → U ̇)
                (f : (n : ℕ) → X n → Y n)
             → ((n : ℕ) → is-embedding (f n))
             → is-embedding (Σ↑ X Y f)
@@ -289,7 +289,7 @@ We don't need this for the moment:
 
 \begin{code}
 
-under𝟙-over-extension : ∀ {U} {X : ℕ → U ̇} (u : ℕ∞)
+under𝟙-over-extension : {X : ℕ → U ̇} (u : ℕ∞)
                      → ((X / over) / under𝟙) u ≃ (X / under) u
 under𝟙-over-extension = iterated-extension over under𝟙
 

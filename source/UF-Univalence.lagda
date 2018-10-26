@@ -16,38 +16,38 @@ open import UF-Subsingletons-Equiv
 is-univalent : ∀ U → U ′ ̇
 is-univalent U = (X Y : U ̇) → is-equiv(idtoeq X Y)
 
-eqtoid : ∀ {U} → is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y
+eqtoid : is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y
 eqtoid ua X Y = pr₁(pr₁(ua X Y))
 
-idtoeq-eqtoid : ∀ {U} (ua : is-univalent U)
+idtoeq-eqtoid : (ua : is-univalent U)
               → (X Y : U ̇) (e : X ≃ Y) → idtoeq X Y (eqtoid ua X Y e) ≡ e
 idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
 
-eqtoid-idtoeq : ∀ {U} (ua : is-univalent U)
+eqtoid-idtoeq : (ua : is-univalent U)
               → (X Y : U ̇) (p : X ≡ Y) →  eqtoid ua X Y (idtoeq X Y p) ≡ p
 eqtoid-idtoeq ua X Y = pr₁(pr₂ (is-equiv-qinv (idtoeq X Y) (ua X Y)))
 
-eqtoid-refl : ∀ {U} (ua : is-univalent U) (X : U ̇)
+eqtoid-refl : (ua : is-univalent U) (X : U ̇)
            → eqtoid ua X X (≃-refl X) ≡ refl
 eqtoid-refl ua X = eqtoid-idtoeq ua X X refl
 
-idtoeq' : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
+idtoeq' : (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq' X Y p = (Idtofun p , transport-is-equiv p)
 
-idtoEqs-agree : ∀ {U} (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
+idtoEqs-agree : (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X _ refl = refl
 
-idtoeq'-eqtoid : ∀ {U} (ua : is-univalent U)
+idtoeq'-eqtoid : (ua : is-univalent U)
                → (X Y : U ̇) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
 idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
 
-Idtofun-is-equiv : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → is-equiv(idtofun X Y p)
+Idtofun-is-equiv : (X Y : U ̇) (p : X ≡ Y) → is-equiv(idtofun X Y p)
 Idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
 
-is-univalent-≃ : ∀ {U} → is-univalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
+is-univalent-≃ : is-univalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
 is-univalent-≃ ua X Y = idtoeq X Y , ua X Y
 
-back-transport-is-pre-comp' : ∀ {U} (ua : is-univalent U)
+back-transport-is-pre-comp' : (ua : is-univalent U)
                            → {X X' Y : U ̇} (e : X ≃ X') (g : X' → Y)
                            → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
@@ -55,7 +55,7 @@ back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid
   q : g ∘ Idtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
   q = ap (λ - → g ∘ -) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
 
-preComp-is-equiv : ∀ {U} (ua : is-univalent U)
+preComp-is-equiv : (ua : is-univalent U)
                 → {X Y Z : U ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
 preComp-is-equiv ua {X} {Y} f ise =
  equiv-closed-under-∼' (back-transport-is-equiv (eqtoid ua X Y (f , ise)))
@@ -73,7 +73,7 @@ show that the identity equivalences satisfy it.
 ≃-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
                  → A X (≃-refl X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 
-private JEq' : ∀ {U} → is-univalent U → ∀ {V} → ≃-induction U V
+private JEq' : is-univalent U → ∀ {V} → ≃-induction U V
 JEq' {U} ua {V} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
  where
   A' : (Y : U ̇) → X ≡ Y → V ̇
@@ -150,7 +150,7 @@ as follows:
 
 \begin{code}
 
-JEq-converse : ∀ {U} → (∀ {V} → ≃-induction U V) → is-univalent U
+JEq-converse :(∀ {V} → ≃-induction U V) → is-univalent U
 JEq-converse {U} jeq' X = γ
  where
   jeq : ∀ {V} → ≃-induction U V
@@ -177,14 +177,14 @@ if the computation rule holds for the original JEq').
 
 \begin{code}
 
-JEq : ∀ {U} → is-univalent U → ∀ {V} → ≃-induction U V
+JEq : is-univalent U → ∀ {V} → ≃-induction U V
 JEq ua = pr₁ (JEq-improve (JEq' ua))
 
-JEq-comp : ∀ {U} (ua : is-univalent U) {V} (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
+JEq-comp : (ua : is-univalent U) (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇) (b : A X (≃-refl X))
         → JEq ua X A b X (≃-refl X) ≡ b
 JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
 
-≃-transport : ∀ {U} → is-univalent U
+≃-transport : is-univalent U
             → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
 ≃-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
@@ -192,7 +192,7 @@ JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
 ≃-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
                  → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
 
-JEqUnbased : ∀ {U} → is-univalent U → ∀ {V} → ≃-induction' U V
+JEqUnbased : is-univalent U → ∀ {V} → ≃-induction' U V
 JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
 
 \end{code}
@@ -201,7 +201,7 @@ induction. The following technical lemma is needed elsewhere.
 
 \begin{code}
 
-is-univalent-idtoeq-lc : ∀ {U} → is-univalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
+is-univalent-idtoeq-lc : is-univalent U → (X Y : U ̇) → left-cancellable(idtoeq X Y)
 is-univalent-idtoeq-lc ua X Y = section-lc (idtoeq X Y) (pr₂ (ua X Y))
 
 \end{code}
@@ -212,7 +212,7 @@ without univalence elsewhere, of course):
 
 \begin{code}
 
-is-equiv-is-vv-equiv' : ∀ {U} → is-univalent U → {X Y : U ̇} (f : X → Y)
+is-equiv-is-vv-equiv' : is-univalent U → {X Y : U ̇} (f : X → Y)
                      → is-equiv f → is-vv-equiv f
 is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
  where
@@ -224,7 +224,7 @@ is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
   g = JEq ua X A b
 
 
-UA-gives-propext : ∀ {U} → is-univalent U → propext U
+UA-gives-propext : is-univalent U → propext U
 UA-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
                                        (f ,
                                        (g , (λ y → j (f (g y)) y)) ,
@@ -238,7 +238,7 @@ subsingleton valued.
 
 \begin{code}
 
-ua-all-from-id : ∀ {U V} → is-univalent U
+ua-all-from-id : is-univalent U
            → (X : U ̇)
            → (P : (Y : U ̇) → (X → Y) → V ̇)
            → P X id

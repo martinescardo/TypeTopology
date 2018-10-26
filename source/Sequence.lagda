@@ -12,27 +12,27 @@ open import SpartanMLTT hiding (_+_)
 open import UF-Retracts
 open import NaturalsAddition
 
-_∶∶_ : ∀ {U} {X : ℕ → U ̇} → X 0 → ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
+_∶∶_ : {X : ℕ → U ̇} → X 0 → ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
 (x ∶∶ α) 0 = x
 (x ∶∶ α) (succ n) = α n
 
-head : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → X 0
+head : {X : ℕ → U ̇} → ((n : ℕ) → X n) → X 0
 head α = α 0
 
-tail : ∀ {U} {X : ℕ → U ̇} → ((n : ℕ) → X n) → ((n : ℕ) → X(succ n))
+tail : {X : ℕ → U ̇} → ((n : ℕ) → X n) → ((n : ℕ) → X(succ n))
 tail α n = α(succ n)
 
-head-tail-eta : ∀ {U} {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (head α ∶∶ tail α) ≡ α
+head-tail-eta : {X : ℕ → U ̇} {α : (n : ℕ) → X n} → (head α ∶∶ tail α) ≡ α
 head-tail-eta {U} {X} = dfunext (fe U₀ U) lemma
  where
   lemma : {α : (n : ℕ) → X n} → (i : ℕ) → (head α ∶∶ tail α) i ≡ α i
   lemma 0 = refl
   lemma (succ i) = refl
 
-private cons : ∀ {U} {X : ℕ → U ̇} → X 0 × ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
+private cons : {X : ℕ → U ̇} → X 0 × ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
 cons(x , α) = x ∶∶ α
 
-cons-retraction : ∀ {U} {X : ℕ → U ̇} → retraction(cons {U} {X})
+cons-retraction : {X : ℕ → U ̇} → retraction(cons {U} {X})
 cons-retraction α = (head α , tail α) , head-tail-eta
 
 \end{code}
@@ -42,7 +42,7 @@ needed.)
 
 \begin{code}
 
-itail : ∀ {U} {X : ℕ → U ̇} → (n : ℕ) → ((i : ℕ) → X i) → ((i : ℕ) → X(i + n))
+itail : {X : ℕ → U ̇} → (n : ℕ) → ((i : ℕ) → X i) → ((i : ℕ) → X(i + n))
 itail n α i = α(i + n)
 
 \end{code}
@@ -112,12 +112,12 @@ Added 11th September 2018.
 
 \begin{code}
 
-seq-bisimulation : ∀ {U V} {A : U ̇} → ((ℕ → A) → (ℕ → A) → V ̇) → U ⊔ V ̇
+seq-bisimulation : {A : U ̇} → ((ℕ → A) → (ℕ → A) → V ̇) → U ⊔ V ̇
 seq-bisimulation {U} {V} {A} R = (α β : ℕ → A) → R α β
                                                  → (head α ≡ head β)
                                                  × R (tail α) (tail β)
 
-seq-coinduction : ∀ {U V} {A : U ̇} (R : (ℕ → A) → (ℕ → A) → V ̇)
+seq-coinduction : {A : U ̇} (R : (ℕ → A) → (ℕ → A) → V ̇)
                 → seq-bisimulation R → (α β : ℕ → A) → R α β → α ≡ β
 seq-coinduction {U} {V} {A} R b α β r = dfunext (fe U₀ U) (h α β r)
  where

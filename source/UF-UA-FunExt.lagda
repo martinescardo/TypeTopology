@@ -23,7 +23,7 @@ open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
 
-naive-funext-from-univalence : ∀ {U} → is-univalent U → ∀ {V} → naive-funext V U
+naive-funext-from-univalence : is-univalent U → ∀ {V} → naive-funext V U
 naive-funext-from-univalence {U} ua {V} {X} {Y} {f₁} {f₂} h = γ
  where
   Δ : U ̇ → U ̇
@@ -65,7 +65,7 @@ Added 19th May 2018:
 
 \begin{code}
 
-funext-from-univalence : ∀ {U} → is-univalent U → funext U U
+funext-from-univalence : is-univalent U → funext U U
 funext-from-univalence ua = naive-funext-gives-funext (naive-funext-from-univalence ua)
 
 \end{code}
@@ -88,7 +88,7 @@ funext-from-successive-univalence U = funext-from-univalence' U (U ′)
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-PropExt-from-univalence : ∀ {U} → is-univalent U → {p q : Ω U}
+PropExt-from-univalence : is-univalent U → {p q : Ω U}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt-from-univalence {U} ua {p} {q} = PropExt
                                           (funext-from-univalence ua)

@@ -12,7 +12,7 @@ open import SpartanMLTT
 open import LexicographicOrder
 open import InfCompact
 
-Σ-inf-compact : ∀ {U V W T} {X : U ̇} {Y : X → V ̇}
+Σ-inf-compact : {T : Universe} {X : U ̇} {Y : X → V ̇}
   → (_≤_ : X → X → W ̇)
   → (_≼_ : {x : X} → Y x → Y x → T ̇)
   → inf-compact _≤_

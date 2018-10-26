@@ -118,7 +118,7 @@ Some examples:
 
 module examples where
 
-    to-ℕ : ∀ {U} {A : U ̇} → decidable A → ℕ
+    to-ℕ : {A : U ̇} → decidable A → ℕ
     to-ℕ (inl _) = 0
     to-ℕ (inr _) = 1
 

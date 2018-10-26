@@ -17,13 +17,13 @@ open import UF-Retracts
 open import UF-FunExt
 open import UF-Equiv
 
-is-prop-is-vv-equiv : (∀ U V → funext U V) → ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-prop-is-vv-equiv : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
                    → is-prop(is-vv-equiv f)
-is-prop-is-vv-equiv fe {U} {V} f = Π-is-prop
+is-prop-is-vv-equiv {U} {V} fe f = Π-is-prop
                                      (fe V (U ⊔ V))
                                      (λ x → is-prop-is-singleton (fe (U ⊔ V) (U ⊔ V)))
 
-qinv-post' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
+qinv-post' : {X : U ̇} {Y : V ̇} {A : W ̇}
           → naive-funext W U → naive-funext W V
           → (f : X → Y) → qinv f → qinv (λ (h : A → X) → f ∘ h)
 qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
@@ -37,16 +37,16 @@ qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
   ε' : (k : A → Y) → f' (g' k) ≡ k
   ε' k = nfe' (ε ∘ k)
 
-qinv-post : (∀ U V → naive-funext U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+qinv-post : (∀ U V → naive-funext U V) → {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
           → qinv f → qinv (λ (h : A → X) → f ∘ h)
-qinv-post nfe {U} {V} {W} = qinv-post' (nfe W U) (nfe W V)
+qinv-post {U} {V} {W} nfe = qinv-post' (nfe W U) (nfe W V)
 
-equiv-post : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
-          → naive-funext W U → naive-funext W V
-          → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
+equiv-post : {X : U ̇} {Y : V ̇} {A : W ̇}
+           → naive-funext W U → naive-funext W V
+           → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 equiv-post nfe nfe' f e = qinv-is-equiv (λ h → f ∘ h) (qinv-post' nfe nfe' f (is-equiv-qinv f e))
 
-qinv-pre' : ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇}
+qinv-pre' : {X : U ̇} {Y : V ̇} {A : W ̇}
           → naive-funext V W → naive-funext U W
           → (f : X → Y) → qinv f → qinv (λ (h : Y → A) → h ∘ f)
 qinv-pre' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
@@ -60,11 +60,11 @@ qinv-pre' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
   ε' : (k : X → A) → f' (g' k) ≡ k
   ε' k = nfe' (λ x → ap k (η x))
 
-qinv-pre : (∀ U V → naive-funext U V) → ∀ {U} {V} {W} {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+qinv-pre : (∀ U V → naive-funext U V) → {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
          → qinv f → qinv (λ (h : Y → A) → h ∘ f)
-qinv-pre nfe {U} {V} {W} = qinv-pre' (nfe V W) (nfe U W)
+qinv-pre {U} {V} {W} nfe = qinv-pre' (nfe V W) (nfe U W)
 
-hasr-is-prop-hass' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
+hasr-is-prop-hass' : {X : U ̇} {Y : V ̇}
                  → funext V U → funext V V
                  → (f : X → Y) → has-retraction f → is-prop(has-section f)
 hasr-is-prop-hass' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) = is-singleton-is-prop c (h , fh)
@@ -85,7 +85,7 @@ hasr-is-prop-hass' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) = is-singleton-is-
   c : is-singleton (has-section f)
   c = retract-of-singleton (r , s , rs) b
 
-hass-is-prop-hasr' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
+hass-is-prop-hasr' : {X : U ̇} {Y : V ̇}
                    → funext U U → funext V U
                    → (f : X → Y) → has-section f → is-prop(has-retraction f)
 hass-is-prop-hasr' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) = is-singleton-is-prop c (h , hf)
@@ -106,24 +106,24 @@ hass-is-prop-hasr' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) = is-singleton-is-
   c : is-singleton (has-retraction f)
   c = retract-of-singleton (r , s , rs) b
 
-hasr-is-prop-hass : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+hasr-is-prop-hass : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
                  → has-retraction f → is-prop(has-section f)
-hasr-is-prop-hass fe {U} {V} = hasr-is-prop-hass' (fe V U) (fe V V)
+hasr-is-prop-hass {U} {V} fe = hasr-is-prop-hass' (fe V U) (fe V V)
 
-hass-is-prop-hasr : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+hass-is-prop-hasr : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
                  → has-section f → is-prop(has-retraction f)
-hass-is-prop-hasr fe {U} {V} = hass-is-prop-hasr' (fe U U) (fe V U)
+hass-is-prop-hasr {U} {V} fe = hass-is-prop-hasr' (fe U U) (fe V U)
 
-is-prop-is-equiv : (∀ U V → funext U V) → ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-prop-is-equiv : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
                 → is-prop(is-equiv f)
 is-prop-is-equiv fe f = ×-prop-criterion (hasr-is-prop-hass fe f , hass-is-prop-hasr fe f)
 
-is-prop-is-equiv' : ∀ {U} {V} {X : U ̇} {Y : V ̇}
+is-prop-is-equiv' : {X : U ̇} {Y : V ̇}
                 → funext V U → funext V V → funext U U → funext V U
                 → (f : X → Y) → is-prop(is-equiv f)
 is-prop-is-equiv' fe fe' fe'' fe''' f = ×-prop-criterion (hasr-is-prop-hass' fe fe' f , hass-is-prop-hasr' fe'' fe''' f)
 
-is-prop-is-equiv'' : ∀ {U} {X Y : U ̇}
+is-prop-is-equiv'' : {X Y : U ̇}
                    → funext U U
                    → (f : X → Y) → is-prop(is-equiv f)
 is-prop-is-equiv'' fe = is-prop-is-equiv' fe fe fe fe
@@ -136,7 +136,7 @@ ranges over arbitrary types:
 
 \begin{code}
 
-propext-funext-give-prop-ua : ∀ {U} → propext U → funext U U
+propext-funext-give-prop-ua : propext U → funext U U
                             → (P : U ̇) → is-prop P
                             → (X : U ̇) → is-equiv (idtoeq X P)
 propext-funext-give-prop-ua {U} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
@@ -159,7 +159,7 @@ The so-called type-theoretic axiom of choice:
 
 \begin{code}
 
-TT-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
           → (Π \(x : X) → Σ \(y : Y x) → A x y)
           → Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x)
 TT-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
@@ -170,7 +170,7 @@ Its inverse:
 
 \begin{code}
 
-TT-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
            → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
            → Π \(x : X) → Σ \(y : Y x) → A x y
 TT-unchoice (f , g) x = (f x) , (g x)
@@ -182,29 +182,29 @@ function extensionality.
 
 \begin{code}
 
-TT-choice-unchoice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice-unchoice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                   → (t : Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
                   → TT-choice (TT-unchoice {U} {V} {W} {X} {Y} {A} t) ≡ t
 TT-choice-unchoice t = refl
 
-TT-choice-has-section : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice-has-section : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                     → has-section (TT-choice {U} {V} {W} {X} {Y} {A})
 TT-choice-has-section {U} {V} {W} {X} {Y} {A} = TT-unchoice ,
                                                 TT-choice-unchoice {U} {V} {W} {X} {Y} {A}
 
-TT-unchoice-choice : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice-choice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
      → funext U (V ⊔ W)
      → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
      → TT-unchoice (TT-choice φ) ≡ φ
 TT-unchoice-choice fe φ = dfunext fe (λ x → refl)
 
-TT-choice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice-is-equiv : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                    → funext U (V ⊔ W)
                    → is-equiv TT-choice
 TT-choice-is-equiv {U} {V} {W} {X} {Y} {A} fe = TT-choice-has-section {U} {V} {W} {X} {Y} {A} ,
                                                 (TT-unchoice , TT-unchoice-choice fe)
 
-TT-unchoice-is-equiv : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice-is-equiv : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
                     → funext U (V ⊔ W)
                     → is-equiv TT-unchoice
 TT-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
@@ -217,7 +217,7 @@ The domain of a function is equivalent to its graph.
 
 \begin{code}
 
-graph-domain-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+graph-domain-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                   → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
 graph-domain-equiv {U} {V} {X} {Y} f = h , ((g , hg) , (g , gh))
  where

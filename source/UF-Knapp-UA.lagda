@@ -33,35 +33,34 @@ of path-induced equivalences.
 
 \begin{code}
 
-isPIE : ∀ {U} {X Y : U ̇} → (X → Y) → U ′ ̇
+isPIE : {X Y : U ̇} → (X → Y) → U ′ ̇
 isPIE {U} {X} {Y} = fiber (idtofun X Y)
 
-isPIE-remark : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f ≡ Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
+isPIE-remark : {X Y : U ̇} (f : X → Y) → isPIE f ≡ Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
 isPIE-remark f = refl
 
-_⋍_ : ∀ {U} → U ̇ → U ̇ → U ′ ̇
+_⋍_ : U ̇ → U ̇ → U ′ ̇
 X ⋍ Y = Σ \(f : X → Y) → isPIE f
 
-idtopie : ∀ {U} {X Y : U ̇} → X ≡ Y → X ⋍ Y
+idtopie : {X Y : U ̇} → X ≡ Y → X ⋍ Y
 idtopie p = (idtofun _ _ p , p , refl)
 
-pietofun : ∀ {U} {X Y : U ̇} → X ⋍ Y → X → Y
+pietofun : {X Y : U ̇} → X ⋍ Y → X → Y
 pietofun (f , (p , q)) = f
 
-pietoid : ∀ {U} {X Y : U ̇} → X ⋍ Y → X ≡ Y
+pietoid : {X Y : U ̇} → X ⋍ Y → X ≡ Y
 pietoid (f , (p , q)) = p
 
-pietofun-factors-through-idtofun : ∀ {U} {X Y : U ̇}
-                                 → (e : X ⋍ Y) → idtofun X Y (pietoid e) ≡ pietofun e
+pietofun-factors-through-idtofun : {X Y : U ̇} (e : X ⋍ Y) → idtofun X Y (pietoid e) ≡ pietofun e
 pietofun-factors-through-idtofun (f , (p , q)) = q
 
-pietoid-idtopie : ∀ {U} {X Y : U ̇} (p : X ≡ Y) → pietoid (idtopie p) ≡ p
+pietoid-idtopie : {X Y : U ̇} (p : X ≡ Y) → pietoid (idtopie p) ≡ p
 pietoid-idtopie refl = refl
 
-idtopie-pietoid : ∀ {U} {X Y : U ̇} (e : X ⋍ Y) → idtopie (pietoid e) ≡ e
+idtopie-pietoid : {X Y : U ̇} (e : X ⋍ Y) → idtopie (pietoid e) ≡ e
 idtopie-pietoid (_ , refl , refl) = refl
 
-PIE-induction : ∀ {U V} {X : U ̇} (A : {Y : U ̇} → (X → Y) → V ̇)
+PIE-induction : {X : U ̇} (A : {Y : U ̇} → (X → Y) → V ̇)
               → A (id {U} {X}) → {Y : U ̇} (f : X → Y) → isPIE f → A f
 PIE-induction {U} {V} {X} A g {Y} f (p , q) = transport A r (φ p)
   where
@@ -70,7 +69,7 @@ PIE-induction {U} {V} {X} A g {Y} f (p , q) = transport A r (φ p)
    r : idtofun _ _ p ≡ f
    r = ap pr₁ (idtopie-pietoid (f , p , q))
 
-isPIE-lc : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f → left-cancellable f
+isPIE-lc : {X Y : U ̇} (f : X → Y) → isPIE f → left-cancellable f
 isPIE-lc = PIE-induction left-cancellable (λ {x} {x'} (p : id x ≡ id x') → p)
 
 \end{code}
@@ -82,19 +81,19 @@ http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf:
 
 \begin{code}
 
-Δ : ∀ {U} → U ̇ → U ̇
+Δ : U ̇ → U ̇
 Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y
 
-δ : ∀ {U} {X : U ̇} → X → Δ X
+δ : {X : U ̇} → X → Δ X
 δ x = (x , x , refl)
 
-π₁ : ∀ {U} {X : U ̇} → Δ X → X
+π₁ : {X : U ̇} → Δ X → X
 π₁ (x , _ , _) = x
 
-π₂ : ∀ {U} {X : U ̇} → Δ X → X
+π₂ : {X : U ̇} → Δ X → X
 π₂ (_ , y , _) = y
 
-πδ : ∀ {U} (X : U ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
+πδ : (X : U ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
 πδ {U} X = refl {U} {X → X}
 
 \end{code}
@@ -104,9 +103,9 @@ function extensionality:
 
 \begin{code}
 
-knapps-funext-criterion : {U : Universe}
-            → (∀ {X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g)
-            → (∀ {X : U ̇} → isPIE (δ {U} {X}))
+knapps-funext-criterion :
+              ({X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g)
+            → ({X : U ̇} → isPIE (δ {U} {X}))
             → ∀ {V} → naive-funext V U
 knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
  where
@@ -141,9 +140,9 @@ knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
       (λ x → f₂ x)                    ≡⟨ refl ⟩
       f₂                               ∎
 
-knapps-funext-Criterion : {U : Universe}
-            → (∀ {X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g)
-            → (∀ {X : U ̇} → isPIE (δ {U} {X}))
+knapps-funext-Criterion :
+              ({X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g)
+            → ({X : U ̇} → isPIE (δ {U} {X}))
             → funext U U
 knapps-funext-Criterion H D = naive-funext-gives-funext (knapps-funext-criterion H D)
 
@@ -153,7 +152,7 @@ Clearly, if univalence holds, then every equivalence is path induced:
 
 \begin{code}
 
-UA-is-equiv-isPIE : ∀ {U} → is-univalent U → {X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f
+UA-is-equiv-isPIE : is-univalent U → {X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f
 UA-is-equiv-isPIE ua f ise = (eqtoid ua _ _ (f , ise) , ap pr₁ (idtoeq-eqtoid ua _ _ (f , ise)))
 
 \end{code}
@@ -163,7 +162,7 @@ then univalence holds.
 
 \begin{code}
 
-δ-is-equiv : ∀ {U} {X : U ̇} → is-equiv (δ {U} {X})
+δ-is-equiv : {X : U ̇} → is-equiv (δ {U} {X})
 δ-is-equiv {U} {X} = (π₁ , η) , (π₁ , ε)
  where
   η : (d : Δ X) → δ (π₁ d) ≡ d
@@ -171,15 +170,15 @@ then univalence holds.
   ε : (x : X) → π₁ (δ x) ≡ x
   ε x = refl
 
-isPIE-is-equiv : ∀ {U} {X Y : U ̇} (f : X → Y) → isPIE f → is-equiv f
+isPIE-is-equiv : {X Y : U ̇} (f : X → Y) → isPIE f → is-equiv f
 isPIE-is-equiv = PIE-induction is-equiv (pr₂ (≃-refl _))
 
-is-equiv-isPIE-UA : ∀ {U} → ({X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f) → is-univalent U
+is-equiv-isPIE-UA : ({X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f) → is-univalent U
 is-equiv-isPIE-UA {U} φ X = γ
  where
-  H : ∀ {X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g
+  H : {X Y : U ̇} {f : X → Y} {g : X → Y} → isPIE f → f ∼ g → isPIE g
   H {X} {Y} {f} {g} isp h = φ g (equiv-closed-under-∼ f g (isPIE-is-equiv f isp) λ x → (h x)⁻¹)
-  D : ∀ {X : U ̇} → isPIE (δ {U} {X})
+  D : {X : U ̇} → isPIE (δ {U} {X})
   D = φ δ δ-is-equiv
   k : funext U U
   k = knapps-funext-Criterion {U} H D
@@ -200,8 +199,8 @@ see from the proof, we can replace qinv by is-equiv:
 
 \begin{code}
 
-UA-characterization : ∀ {U}
-                   → ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+UA-characterization :
+                     ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
                    ⇔ is-univalent U
 UA-characterization {U} = (forth , back)
  where

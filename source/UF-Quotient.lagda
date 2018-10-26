@@ -68,7 +68,7 @@ is-prop-valued
  symmetric
  transitive
  equivalence
-   : ∀ {U V} {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
+   : {X : U ̇} → (X → X → V ̇) → U ⊔ V ̇
 
 is-prop-valued _≈_ = ∀ x y → is-prop(x ≈ y)
 reflexive      _≈_ = ∀ x → x ≈ x

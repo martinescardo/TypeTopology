@@ -41,10 +41,10 @@ family λ (_ : ℕ) → X).
 
 \begin{code}
 
-D : ∀ {U} → U ̇ → U ̇
+D : U ̇ → U ̇
 D X = Σ \(u : ℕ∞) → is-finite u → X
 
-private remark₁ : ∀ {U} (X : U ̇) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
+private remark₁ : (X : U ̇) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
 remark₁ X = refl
 
 Cantor : U₀ ̇
@@ -75,7 +75,7 @@ transport-finite = transport is-finite
 back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-finite u
 back-transport-finite = back-transport is-finite
 
-ap-Cantor : ∀ {U} {X : U ̇} (f : (u : ℕ∞) → Cantor[ u ] → X)
+ap-Cantor : {X : U ̇} (f : (u : ℕ∞) → Cantor[ u ] → X)
            {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}
          → f u φ ≡ f v (φ ∘ back-transport-finite p)
 ap-Cantor f refl = refl
@@ -499,7 +499,7 @@ of showing that our searchable ordinals are totally separated.
 
 \begin{code}
 
-Σ¹-Cantor-retract : ∀ {U} (X : ℕ → U ̇)
+Σ¹-Cantor-retract : (X : ℕ → U ̇)
                        → ((n : ℕ) → retract (X n) of Cantor)
                        → retract (Σ¹ X) of Cantor
 Σ¹-Cantor-retract {U} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
@@ -515,7 +515,7 @@ We also need the following retractions (the first with X=ℕ):
 
 \begin{code}
 
-pair-seq-retract : ∀ {U} {X : U ̇} → funext U₀ U
+pair-seq-retract : {X : U ̇} → funext U₀ U
                 → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
 pair-seq-retract {U} {X} fe = retracts-compose (retracts-compose c d) b
  where
@@ -566,7 +566,7 @@ moment (but has the above as a corollary by Lambek's Lemma):
 
 \begin{code}
 {-
-D-corec : ∀ {U} {X : U ̇} (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
+D-corec : {X : U ̇} (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
         → Σ \(f : X → Cantor)
              → Σ \(p : Head ∘ f ∼ h)
                   → ((x : X) (i : is-finite (Head (f x)))

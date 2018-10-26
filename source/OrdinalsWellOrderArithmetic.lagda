@@ -299,7 +299,7 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : ∀ {U V W T} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
+retract-accessible : {T : Universe} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
                        (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
@@ -317,7 +317,7 @@ retract-accessible {U} {V} {W} {T} {X} {Y} _<_ _≺_ r s η φ = transfinite-ind
       m : is-accessible _≺_ (r (s y))
       m = τ (s y) (φ x y l)
 
-retract-well-founded : ∀ {U V W T} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
+retract-well-founded : {T : Universe} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
                        (r : X → Y) (s : Y → X)
                     → ((y : Y) → r(s y) ≡ y)
                     → ((x : X) (y : Y) → y ≺ r x → s y < x)

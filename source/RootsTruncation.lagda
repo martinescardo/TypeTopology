@@ -147,9 +147,9 @@ roots-truncation-is-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
 roots-η : (α : ℕ → Z) → roots α → roots-truncation α
 roots-η α = to-fix (μρ α) (μρ-constant α)
 
-roots-universal : (α : ℕ → Z) → ∀ {U} (P : U ̇)
+roots-universal : (α : ℕ → Z) (P : U ̇)
                 → is-prop P → (roots α → P) → roots-truncation α → P
-roots-universal α {U} P _ f t = f (from-fix (μρ α) t)
+roots-universal α P _ f t = f (from-fix (μρ α) t)
 
 \end{code}
 

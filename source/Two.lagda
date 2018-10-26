@@ -11,22 +11,22 @@ module Two where
 
 open import SpartanMLTT
 
-𝟚-Cases : ∀ {U} {A : U ̇} → 𝟚 → A → A → A
+𝟚-Cases : {A : U ̇} → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a
 
-𝟚-equality-cases : ∀ {U} {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
+𝟚-equality-cases : {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
 𝟚-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
 𝟚-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
 
-𝟚-equality-cases₀ : ∀ {U} {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
+𝟚-equality-cases₀ : {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
                  → (p : b ≡ ₀) → 𝟚-equality-cases {U} {A} {b} f₀ f₁ ≡ f₀ p
 𝟚-equality-cases₀ {U} {A} {.₀} refl = refl
 
-𝟚-equality-cases₁ : ∀ {U} {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
+𝟚-equality-cases₁ : {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
                  → (p : b ≡ ₁) → 𝟚-equality-cases {U} {A} {b} f₀ f₁ ≡ f₁ p
 𝟚-equality-cases₁ {U} {A} {.₁} refl = refl
 
-𝟚-equality-cases' : ∀ {U} {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
+𝟚-equality-cases' : {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
 𝟚-equality-cases' {U} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
 𝟚-equality-cases' {U} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
 
@@ -65,7 +65,7 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
-complement-no-fp : ∀ {U} (n : 𝟚) → n ≡ complement n → 𝟘 {U}
+complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {U}
 complement-no-fp ₀ ()
 complement-no-fp ₁ ()
 

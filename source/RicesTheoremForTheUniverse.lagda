@@ -84,12 +84,12 @@ different values is a taboo.
 
 \begin{code}
 
-extensional : ∀ {U} → (U ̇ → 𝟚) → U ′ ̇
+extensional :(U ̇ → 𝟚) → U ′ ̇
 extensional P = ∀ X Y → X ≃ Y → P X ≡ P Y
 
 Rice's-Theorem-for-U :
 
-    ∀ {U} (P : U ̇ → 𝟚) → extensional P → (X Y : U ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
+    (P : U ̇ → 𝟚) → extensional P → (X Y : U ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
 
 Rice's-Theorem-for-U {U} P e X Y r s = basic-discontinuity-taboo p (p-lemma , p-lemma∞)
  where

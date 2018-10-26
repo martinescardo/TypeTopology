@@ -27,15 +27,15 @@ open Σ public
 
 syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B
 
-Σ-elim : ∀ {U V} {X : U ̇} {Y : X → V ̇} {A : Σ Y → U ⊔ V ̇}
+Σ-elim : {X : U ̇} {Y : X → V ̇} {A : Σ Y → U ⊔ V ̇}
        → ((x : X) (y : Y x) → A (x , y)) → (σ : Σ Y) → A σ
 Σ-elim f (x , y) = f x y
 
-uncurry : ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : W ̇}
+uncurry : {X : U ̇} {Y : X → V ̇} {Z : W ̇}
         → ((x : X) → Y x → Z) → Σ Y → Z
 uncurry f (x , y) = f x y
 
-curry :  ∀ {U V W} {X : U ̇} {Y : X → V ̇} {Z : W ̇}
+curry :  {X : U ̇} {Y : X → V ̇} {Z : W ̇}
       → (Σ Y → Z) → ((x : X) → Y x → Z)
 curry f x y = f (x , y)
 
@@ -48,7 +48,7 @@ dependent sums.
 
 \begin{code}
 
-_×_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
+_×_ : U ̇ → V ̇ → U ⊔ V ̇
 X × Y = Σ \(x : X) → Y
 
 \end{code}

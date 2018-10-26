@@ -22,7 +22,7 @@ open import UF-Yoneda
 open import UF-Subsingletons
 open import UF-Retracts
 
-naive-funext-gives-funext' : ∀ {U} {V} → naive-funext U (U ⊔ V) → naive-funext U U → funext U V
+naive-funext-gives-funext' : naive-funext U (U ⊔ V) → naive-funext U U → funext U V
 naive-funext-gives-funext' {U} {V} nfe nfe' = funext-via-singletons γ
  where
   γ : (X : U ̇) (A : X → V ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
@@ -45,7 +45,7 @@ naive-funext-gives-funext' {U} {V} nfe nfe' = funext-via-singletons γ
     rs : ∀ φ → r (s φ) ≡ φ
     rs φ = refl
 
-naive-funext-gives-funext : ∀ {U} → naive-funext U U → funext U U
+naive-funext-gives-funext : naive-funext U U → funext U U
 naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 
 \end{code}

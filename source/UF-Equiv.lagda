@@ -16,31 +16,31 @@ one because it is more symmetrical.
 
 \begin{code}
 
-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-equiv : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-equiv f = has-section f × has-retraction f
 
-is-equiv-has-section : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-equiv-has-section : {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-equiv f → has-section f
 is-equiv-has-section f = pr₁
 
-is-equiv-has-retraction : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-equiv-has-retraction : {X : U ̇} {Y : V ̇} (f : X → Y)
                        → is-equiv f → has-retraction f
 is-equiv-has-retraction f = pr₂
 
-section-retraction-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+section-retraction-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                         → has-section f → has-retraction f → is-equiv f
 section-retraction-equiv f hr hs = (hr , hs)
 
-_≃_ : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
+_≃_ : U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
-id-is-equiv : ∀ {U} (X : U ̇) → is-equiv (id {U} {X})
+id-is-equiv : (X : U ̇) → is-equiv (id {U} {X})
 id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
 
-≃-refl : ∀ {U} (X : U ̇) → X ≃ X
+≃-refl : (X : U ̇) → X ≃ X
 ≃-refl X = id , id-is-equiv X
 
-≃-trans : ∀ {U V W} {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+≃-trans : {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 ≃-trans {U} {V} {W} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
   f' ∘ f , (g ∘ g' , fg'') , (h ∘ h' , hf'')
  where
@@ -49,31 +49,31 @@ id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
     hf'' : (x : X) → h(h'(f'(f x))) ≡ x
     hf'' x = ap h (hf' (f x)) ∙ hf x
 
-_≃⟨_⟩_ : ∀ {U V W} (X : U ̇) {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+_≃⟨_⟩_ : (X : U ̇) {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 _ ≃⟨ d ⟩ e = ≃-trans d e
 
-_■ : ∀ {U} (X : U ̇) → X ≃ X
+_■ : (X : U ̇) → X ≃ X
 _■ = ≃-refl
 
-Eq : ∀ {U V} → U ̇ → V ̇ → U ⊔ V ̇
+Eq : U ̇ → V ̇ → U ⊔ V ̇
 Eq = _≃_
 
-Eqtofun : ∀ {U V} (X : U ̇) (Y : V ̇) → X ≃ Y → X → Y
+Eqtofun : (X : U ̇) (Y : V ̇) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
-eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
+eqtofun : {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
 eqtofun (f , _) = f
 
-is-equiv-eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (eqtofun e)
+is-equiv-eqtofun : {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (eqtofun e)
 is-equiv-eqtofun = pr₂
 
-back-eqtofun : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
+back-eqtofun : {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
 
-idtoeq : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
+idtoeq : (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq X Y p = transport (Eq X) p (≃-refl X)
 
-idtoeq-traditional : ∀ {U} (X Y : U ̇) → X ≡ Y → X ≃ Y
+idtoeq-traditional : (X Y : U ̇) → X ≡ Y → X ≃ Y
 idtoeq-traditional X _ refl = ≃-refl X
 
 \end{code}
@@ -84,21 +84,21 @@ don't with the current definition:
 
 \begin{code}
 
-eqtoeq-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y)
+eqtoeq-agreement : (X Y : U ̇) (p : X ≡ Y)
                  → idtoeq X Y p ≡ idtoeq-traditional X Y p
 eqtoeq-agreement {U} X _ refl = refl
 
-idtofun : ∀ {U} (X Y : U ̇) → X ≡ Y → X → Y
+idtofun : (X Y : U ̇) → X ≡ Y → X → Y
 idtofun X Y p = eqtofun (idtoeq X Y p)
 
-idtofun-agreement : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
+idtofun-agreement : (X Y : U ̇) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
 idtofun-agreement X Y refl = refl
 
-equiv-closed-under-∼ : ∀ {U V} {X : U ̇} {Y : V ̇} (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
+equiv-closed-under-∼ : {X : U ̇} {Y : V ̇} (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
 equiv-closed-under-∼ {U} {V} {X} {Y} f g (hass , hasr) h = (has-section-closed-under-∼ f g hass h) ,
                                                            (has-retraction-closed-under-∼ f g hasr h)
 
-equiv-closed-under-∼' : ∀ {U V} {X : U ̇} {Y : V ̇} {f g : X → Y} → is-equiv f → f ∼ g → is-equiv g
+equiv-closed-under-∼' : {X : U ̇} {Y : V ̇} {f g : X → Y} → is-equiv f → f ∼ g → is-equiv g
 equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
@@ -116,7 +116,7 @@ is-equiv-qinv {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
 qinv-is-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-equiv f
 qinv-is-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
 
-≃-sym : ∀ {U V} {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X
+≃-sym : {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X
 ≃-sym {U} {V} {X} {Y} (f , e) = (g , d)
  where
   g : Y → X
@@ -126,16 +126,16 @@ qinv-is-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
   d : is-equiv g
   d = qinv-is-equiv g q
 
-equiv-retract-l : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y
+equiv-retract-l : {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
 
-equiv-retract-r : ∀ {U V} {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
+equiv-retract-r : {X : U ̇} {Y : V ̇} → X ≃ Y → retract Y of X
 equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
 
-Id-retract-l : ∀ {U} {X Y : U ̇} → X ≡ Y → retract X of Y
+Id-retract-l : {X Y : U ̇} → X ≡ Y → retract X of Y
 Id-retract-l p = equiv-retract-l (idtoeq (lhs p) (rhs p) p)
 
-Id-retract-r : ∀ {U} {X Y : U ̇} → X ≡ Y → retract Y of X
+Id-retract-r : {X Y : U ̇} → X ≡ Y → retract Y of X
 Id-retract-r p = equiv-retract-r (idtoeq (lhs p) (rhs p) p)
 
 \end{code}
@@ -144,23 +144,23 @@ Equivalence of transports.
 
 \begin{code}
 
-transport-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → is-equiv (transport A p)
+transport-is-equiv : {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → is-equiv (transport A p)
 transport-is-equiv refl = id-is-equiv _
 
-back-transport-is-equiv : ∀ {U V} {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → is-equiv (back-transport A p)
+back-transport-is-equiv : {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y) → is-equiv (back-transport A p)
 back-transport-is-equiv p = transport-is-equiv (p ⁻¹)
 
 \end{code}
 
 \begin{code}
 
-fiber : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
+fiber : {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber f y = Σ \x → f x ≡ y
 
-is-vv-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-vv-equiv : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-vv-equiv f = ∀ y → is-singleton (fiber f y)
 
-is-vv-equiv-is-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-vv-equiv-is-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-vv-equiv f → is-equiv f
 is-vv-equiv-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
  where
@@ -179,10 +179,10 @@ is-vv-equiv-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
   gf : (x : X) → g (f x) ≡ x
   gf x = ap pr₁ (e x)
 
-fiber' : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
+fiber' : {X : U ̇} {Y : V ̇} (f : X → Y) → Y → U ⊔ V ̇
 fiber' f y = Σ \x → y ≡ f x
 
-fiber-lemma : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y) (y : Y) → fiber f y ≃ fiber' f y
+fiber-lemma : {X : U ̇} {Y : V ̇} (f : X → Y) (y : Y) → fiber f y ≃ fiber' f y
 fiber-lemma f y = g , (h , gh) , (h , hg)
  where
   g : fiber f y → fiber' f y
@@ -194,14 +194,14 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   gh : ∀ τ → g(h τ) ≡ τ
   gh (x , refl) = refl
 
-is-hae : ∀ {U} {V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-hae : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-hae {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id) → (x : X) → ap f (η x) ≡ ε (f x)
 
-is-hae-is-equiv : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-hae-is-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                → is-hae f → is-equiv f
 is-hae-is-equiv {U} {V} {X} f (g , η , ε , τ) = qinv-is-equiv f (g , η , ε)
 
-id-homotopies-are-natural : ∀ {U} {X : U ̇} (h : X → X) (η : h ∼ id) {x : X}
+id-homotopies-are-natural : {X : U ̇} (h : X → X) (η : h ∼ id) {x : X}
                          → η (h x) ≡ ap h (η x)
 id-homotopies-are-natural h η {x} =
    η (h x)                         ≡⟨ refl ⟩
@@ -211,7 +211,7 @@ id-homotopies-are-natural h η {x} =
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹  ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
    ap h (η x)                      ∎
 
-qinv-is-hae : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-hae f
+qinv-is-hae : {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-hae f
 qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
  where
   ε' : f ∘ g ∼ id
@@ -240,7 +240,7 @@ qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                            ∎
 
-is-equiv-is-hae : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-equiv-is-hae : {X : U ̇} {Y : V ̇} (f : X → Y)
               → is-equiv f → is-hae f
 is-equiv-is-hae f e = qinv-is-hae f (is-equiv-qinv f e)
 
@@ -251,7 +251,7 @@ but a proof by path induction is direct:
 
 \begin{code}
 
-identifications-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+identifications-in-fibers : {X : U ̇} {Y : V ̇} (f : X → Y)
                    (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                 → (Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
 identifications-in-fibers f .(f x) x .x refl p' (refl , r) = g
@@ -265,7 +265,7 @@ Using this we see that half adjoint equivalences have singleton fibers:
 
 \begin{code}
 
-is-hae-is-vv-equiv : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-hae-is-vv-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                   → is-hae f → is-vv-equiv f
 is-hae-is-vv-equiv {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁ σ) (pr₂ σ))
  where
@@ -299,11 +299,11 @@ Here are some corollaries:
 
 \begin{code}
 
-qinv-is-vv-equiv : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+qinv-is-vv-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                  → qinv f → is-vv-equiv f
 qinv-is-vv-equiv f q = is-hae-is-vv-equiv f (qinv-is-hae f q)
 
-is-equiv-is-vv-equiv : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+is-equiv-is-vv-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-equiv f → is-vv-equiv f
 is-equiv-is-vv-equiv f ie = qinv-is-vv-equiv f (is-equiv-qinv f ie)
 
@@ -314,14 +314,14 @@ is-empty X are synonyms for the function type X → 𝟘.
 
 \begin{code}
 
-equiv-can-assume-pointed-codomain : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+equiv-can-assume-pointed-codomain : {X : U ̇} {Y : V ̇} (f : X → Y)
                                   → (Y → is-vv-equiv f) → is-vv-equiv f
 equiv-can-assume-pointed-codomain f φ y = φ y y
 
-maps-to-𝟘-are-equivs : ∀ {U} {X : U ̇} (f : ¬ X) → is-vv-equiv f
+maps-to-𝟘-are-equivs : {X : U ̇} (f : ¬ X) → is-vv-equiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
-negation-is-equiv-𝟘 : ∀ {U} {X : U ̇} → is-empty X ⇔ X ≃ 𝟘
+negation-is-equiv-𝟘 : {X : U ̇} → is-empty X ⇔ X ≃ 𝟘
 negation-is-equiv-𝟘 = (λ f → f , is-vv-equiv-is-equiv f (maps-to-𝟘-are-equivs f)), pr₁
 
 \end{code}
@@ -333,7 +333,7 @@ And similarly, with similar a observation:
 
 \begin{code}
 
-is-singleton-is-equiv-𝟙 : ∀ {U V} {X : U ̇} → is-singleton X ⇔ X ≃ 𝟙 {V}
+is-singleton-is-equiv-𝟙 : {X : U ̇} → is-singleton X ⇔ X ≃ 𝟙 {V}
 is-singleton-is-equiv-𝟙 {U} {V} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙
@@ -348,12 +348,12 @@ have:
 
 \begin{code}
 
-from-identifications-in-fibers : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+from-identifications-in-fibers : {X : U ̇} {Y : V ̇} (f : X → Y)
                        (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                      → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
 from-identifications-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
-η-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+η-pif : {X : U ̇} {Y : V ̇} (f : X → Y)
         (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
         (σ : Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p)
       → from-identifications-in-fibers f y x x' p p' (identifications-in-fibers f y x x' p p' σ) ≡ σ
@@ -365,13 +365,13 @@ Then the following is a consequence of natural-section-has-retraction,
 but also has a direct proof by path induction:
 
 \begin{code}
-ε-pif : ∀ {U} {V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ε-pif : {X : U ̇} {Y : V ̇} (f : X → Y)
         (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
         (q : (x , p) ≡ (x' , p'))
       → identifications-in-fibers f y x x' p p' (from-identifications-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
 
-pr₁-equivalence : ∀ {U V} (X : U ̇) (A : X → V ̇)
+pr₁-equivalence : (X : U ̇) (A : X → V ̇)
                → ((x : X) → is-singleton (A x))
                → is-equiv (pr₁ {U} {V} {X} {A})
 pr₁-equivalence {U} {V} X A iss = (g , prg) , (g , gpr)
@@ -383,7 +383,7 @@ pr₁-equivalence {U} {V} X A iss = (g , prg) , (g , gpr)
   gpr : (σ : Σ A) → g(pr₁ σ) ≡ σ
   gpr (x , a) = to-Σ-≡ (prg x , is-singleton-is-prop (iss x) _ _)
 
-pr₁-vv-equiv : ∀ {U V} (X : U ̇) (Y : X → V ̇)
+pr₁-vv-equiv : (X : U ̇) (Y : X → V ̇)
                 → ((x : X) → is-singleton (Y x))
                 → is-vv-equiv (pr₁ {U} {V} {X} {Y})
 pr₁-vv-equiv {U} {V} X Y iss x = g
@@ -397,7 +397,7 @@ pr₁-vv-equiv {U} {V} X Y iss x = g
   g : is-singleton (fiber pr₁ x)
   g = c , f
 
-pr₁-vv-equiv-converse : ∀ {U V} {X : U ̇} {A : X → V ̇}
+pr₁-vv-equiv-converse : {X : U ̇} {A : X → V ̇}
                      → is-vv-equiv (pr₁ {U} {V} {X} {A})
                      → ((x : X) → is-singleton(A x))
 pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
@@ -411,7 +411,7 @@ pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton (r , s , rs
     rs : (a : A x) → r(s a) ≡ a
     rs a = refl
 
-NatΣ-fiber-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-fiber-equiv : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
                 → (x : X) (b : B x) → fiber (ζ x) b ≃ fiber (NatΣ ζ) (x , b)
 NatΣ-fiber-equiv A B ζ x b = f b , (g b , fg b) , (g b , gf b)
  where
@@ -424,36 +424,36 @@ NatΣ-fiber-equiv A B ζ x b = f b , (g b , fg b) , (g b , gf b)
   fg : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
   fg b (a , refl) = refl
 
-NatΣ-vv-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-vv-equiv : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
              → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΣ ζ)
 NatΣ-vv-equiv A B ζ ise (x , b) = retract-of-singleton
                                    (equiv-retract-r (NatΣ-fiber-equiv A B ζ x b))
                                    (ise x b)
 
-NatΣ-vv-equiv-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-vv-equiv-converse : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
                        → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
 NatΣ-vv-equiv-converse A B ζ e x b = retract-of-singleton
                                       (equiv-retract-l (NatΣ-fiber-equiv A B ζ x b))
                                       (e (x , b))
 
-NatΣ-equiv : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-equiv : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
           → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
 NatΣ-equiv A B ζ ise = is-vv-equiv-is-equiv
                          (NatΣ ζ)
                          (NatΣ-vv-equiv A B ζ
                            (λ x → is-equiv-is-vv-equiv (ζ x) (ise x)))
 
-NatΣ-equiv-converse : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-equiv-converse : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
                    → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
 NatΣ-equiv-converse A B ζ e x = is-vv-equiv-is-equiv (ζ x)
                                  (NatΣ-vv-equiv-converse A B ζ
                                    (is-equiv-is-vv-equiv (NatΣ ζ) e) x)
 
-NatΣ-≃ : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇)
+NatΣ-≃ : {X : U ̇} (A : X → V ̇) (B : X → W ̇)
             → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 NatΣ-≃ A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
 
-NatΣ-equiv' : ∀ {U V W} {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
+NatΣ-equiv' : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
 NatΣ-equiv' A B ζ ise = ((s , ζs), (r , rζ))
  where
@@ -466,7 +466,7 @@ NatΣ-equiv' A B ζ ise = ((s , ζs), (r , rζ))
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (ise x)) a)
 
-Σ-change-of-variables' : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → W ̇) (g : Y → X)
+Σ-change-of-variables' : {X : U ̇} {Y : V ̇} (A : X → W ̇) (g : Y → X)
                        → is-hae g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
 Σ-change-of-variables' {U} {V} {W} {X} {Y} A g (f , fg , gf , α) = γ , φ , φγ , γφ
  where
@@ -488,7 +488,7 @@ NatΣ-equiv' A B ζ ise = ((s , ζs), (r , rζ))
         transport A (gf (g y)) (back-transport A (gf (g y)) a)           ≡⟨ back-and-forth-transport (gf (g y)) ⟩
         a ∎
 
-Σ-change-of-variables : ∀ {U V W} {X : U ̇} {Y : V ̇} (A : X → W ̇) (g : Y → X)
+Σ-change-of-variables : {X : U ̇} {Y : V ̇} (A : X → W ̇) (g : Y → X)
                       → is-equiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
 Σ-change-of-variables {U} {V} {W} {X} {Y} A g e = γ , qinv-is-equiv γ q
  where
@@ -497,7 +497,7 @@ NatΣ-equiv' A B ζ ise = ((s , ζs), (r , rζ))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (is-equiv-is-hae g e))
 
-equiv-to-subsingleton : ∀ {U V} {X : U ̇} {Y : V ̇}
+equiv-to-subsingleton : {X : U ̇} {Y : V ̇}
                      → Y ≃ X
                      → is-subsingleton X
                      → is-subsingleton Y

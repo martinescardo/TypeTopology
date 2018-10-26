@@ -108,7 +108,7 @@ More Cantor-retract properties are in the module SquashedCantor.
 
 \begin{code}
 
-Σ-retract-of-ℕ : ∀ {U V} {X : U ̇} {Y : X → V ̇}
+Σ-retract-of-ℕ : {X : U ̇} {Y : X → V ̇}
                → retract X of ℕ
                → ((x : X) → retract (Y x) of ℕ)
                → retract (Σ Y) of ℕ
@@ -119,7 +119,7 @@ More Cantor-retract properties are in the module SquashedCantor.
   b : retract (ℕ × ℕ) of ℕ
   b = equiv-retract-l pairing
 
-Σ₁-ℕ-retract : ∀ {U} {X : ℕ → U ̇}
+Σ₁-ℕ-retract : {X : ℕ → U ̇}
              → ((n : ℕ) → retract (X n) of ℕ)
              → retract (Σ₁ X) of ℕ
 Σ₁-ℕ-retract {U} {X} ρ = retracts-compose c b

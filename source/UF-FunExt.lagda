@@ -29,26 +29,26 @@ DN-funext U V = {X : U ̇} {A : X → V ̇} {f g : Π A} → f ∼ g → f ≡ g
 funext : ∀ U V → U ′ ⊔ V ′ ̇
 funext U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → is-equiv (happly' f g)
 
-≃-funext : ∀ {U V} → funext U V → {X : U ̇} {A : X → V ̇} (f g : Π A)
+≃-funext : funext U V → {X : U ̇} {A : X → V ̇} (f g : Π A)
          → (f ≡ g) ≃ (f ∼ g)
 ≃-funext fe f g = happly' f g , fe f g
 
-dfunext : ∀ {U V} → funext U V → DN-funext U V
+dfunext : funext U V → DN-funext U V
 dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 
-nfunext : ∀ {U V} → funext U V → naive-funext U V
+nfunext : funext U V → naive-funext U V
 nfunext fe = dfunext fe
 
-happly-funext : ∀ {U V} {X : U ̇} {A : X → V ̇}
+happly-funext : {X : U ̇} {A : X → V ̇}
                 (fe : funext U V) (f g : Π A) (h : f ∼ g)
               → happly (dfunext fe h) ≡ h
 happly-funext fe f g = pr₂(pr₁(fe f g))
 
-funext-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : funext U V)
+funext-lc : {X : U ̇} {A : X → V ̇} (fe : funext U V)
          → (f g : Π A) → left-cancellable (dfunext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
 
-happly-lc : ∀ {U V} {X : U ̇} {A : X → V ̇} (fe : funext U V) (f g : Π A)
+happly-lc : {X : U ̇} {A : X → V ̇} (fe : funext U V) (f g : Π A)
          → left-cancellable(happly' f g)
 happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
 
@@ -59,7 +59,7 @@ https://groups.google.com/forum/#!msg/homotopytypetheory/VaLJM7S4d18/Lezr_ZhJl6U
 
 \begin{code}
 
-transport-funext : ∀ {U V W} {X : U ̇} (A : X → V ̇) (P : (x : X) → A x → W ̇) (fe : funext U V)
+transport-funext : {X : U ̇} (A : X → V ̇) (P : (x : X) → A x → W ̇) (fe : funext U V)
                    (f g : Π A)
                    (φ : (x : X) → P x (f x))
                    (h : f ∼ g)

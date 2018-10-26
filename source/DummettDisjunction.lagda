@@ -265,7 +265,7 @@ Then disjunction, of -1-types, is defined by
 
 One can consider a variation of the definition of -1-truncation that
 preserves the universe level, by working with a family of -1-types
-P : I → U with I:U:
+P : I → U with I: U:
 
   J X = (i : I) → (X → P i) → P i.
 

@@ -137,7 +137,7 @@ lemmas needed to establish that).
 
 \begin{code}
 
-Universe-Indiscreteness-Theorem : ∀ {U} (X : ℕ → U ̇) (X∞ : U ̇)
+Universe-Indiscreteness-Theorem : (X : ℕ → U ̇) (X∞ : U ̇)
 
   → Σ \(Y : ℕ∞ → U ̇) → ((i : ℕ) → Y (under i) ≃ X i)  ×  (Y ∞ ≃ X∞)
 

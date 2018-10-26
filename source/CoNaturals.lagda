@@ -128,33 +128,33 @@ SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
 PRED-lc : {u v : ℕ∞} → PRED u ≡ PRED v → u ≡ v
 PRED-lc r = SUCC-PRED ⁻¹ ∙ ap SUCC r ∙ SUCC-PRED
 
-𝟙+ : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → 𝟙 + X → 𝟙 + Y
+𝟙+ : {X : U ̇} {Y : V ̇} → (X → Y) → 𝟙 + X → 𝟙 + Y
 𝟙+ f (inl s) = inl {U₀} s
 𝟙+ f (inr x) = inr(f x)
 
-𝟙+id-is-id : ∀ {U} {X : U ̇} → 𝟙+ id ∼ id {U} {𝟙 + X}
+𝟙+id-is-id : {X : U ̇} → 𝟙+ id ∼ id {U} {𝟙 + X}
 𝟙+id-is-id {U} {X} (inl *) = refl
 𝟙+id-is-id {U} {X} (inr x) = refl
 
-is-homomorphism : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
+is-homomorphism : {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞) → U ̇
 is-homomorphism c h = (PRED ∘ h ≡ (𝟙+ h) ∘ c)
 
 id-homomorphism : is-homomorphism PRED id
 id-homomorphism = dfunext (fe U₀ U₀) (λ u → (𝟙+id-is-id (PRED u))⁻¹)
 
-coalg-mophism→ : ∀ {U} {X : U ̇} (κ : X → 𝟙 + X) (h : X → ℕ∞)
+coalg-mophism→ : {X : U ̇} (κ : X → 𝟙 + X) (h : X → ℕ∞)
                → is-homomorphism κ h
                → h ≡ SUCC ∘ (𝟙+ h) ∘ κ
 coalg-mophism→ {U} κ h a = dfunext (fe U U₀)
                              (λ x → SUCC-PRED ⁻¹ ∙ ap (λ - → SUCC(- x)) a)
 
-coalg-mophism← : ∀ {U} {X : U ̇} (κ : X → 𝟙 + X) (h : X → ℕ∞)
+coalg-mophism← : {X : U ̇} (κ : X → 𝟙 + X) (h : X → ℕ∞)
                → h ≡ SUCC ∘ (𝟙+ h) ∘ κ
                → is-homomorphism κ h
 coalg-mophism← {U} κ h b = dfunext (fe U U₀)
                             (λ x → ap (λ - → PRED(- x)) b ∙ PRED-SUCC)
 
-homomorphism-existence : ∀ {U} {X : U ̇} (κ : X → 𝟙 + X)
+homomorphism-existence : {X : U ̇} (κ : X → 𝟙 + X)
                        → Σ \(h : X → ℕ∞) → is-homomorphism κ h
 homomorphism-existence {U} {X} κ = h , dfunext (fe U U₀) h-spec
  where
@@ -212,10 +212,10 @@ homomorphism-existence {U} {X} κ = h , dfunext (fe U U₀) h-spec
       c₆ : PRED(h x) ≡ inr(h x')
       c₆ = ap PRED c₅
 
-ℕ∞-corec  : ∀ {U} {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞)
+ℕ∞-corec  : {X : U ̇} → (X → 𝟙 + X) → (X → ℕ∞)
 ℕ∞-corec c = pr₁(homomorphism-existence c)
 
-ℕ∞-corec-homomorphism : ∀ {U} {X : U ̇} (κ : X → 𝟙 + X)
+ℕ∞-corec-homomorphism : {X : U ̇} (κ : X → 𝟙 + X)
                       → is-homomorphism κ (ℕ∞-corec κ)
 ℕ∞-corec-homomorphism κ = pr₂(homomorphism-existence κ)
 
@@ -225,12 +225,12 @@ We now discuss coinduction. We first define bisimulations.
 
 \begin{code}
 
-ℕ∞-bisimulation : ∀ {U} → (ℕ∞ → ℕ∞ → U ̇) → U ̇
+ℕ∞-bisimulation :(ℕ∞ → ℕ∞ → U ̇) → U ̇
 ℕ∞-bisimulation R = (u v : ℕ∞) → R u v
                                 → (positivity u ≡ positivity v)
                                 ×  R (Pred u) (Pred v)
 
-ℕ∞-coinduction : ∀ {U} (R : ℕ∞ → ℕ∞ → U ̇) → ℕ∞-bisimulation R
+ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → U ̇) → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
 ℕ∞-coinduction R b u v r = incl-lc (fe U₀ U₀) (dfunext (fe U₀ U₀) (l u v r))
  where
@@ -245,7 +245,7 @@ coalgebra homomorphisms in more detail.
 
 \begin{code}
 
-coalg-morphism-Zero : ∀ {U} {X : U ̇} (κ : X →  𝟙 + X) (h : X → ℕ∞)
+coalg-morphism-Zero : {X : U ̇} (κ : X →  𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → h x ≡ Zero
 coalg-morphism-Zero p h a x * κ = SUCC-PRED ⁻¹ ∙ ap SUCC c₃
@@ -257,11 +257,11 @@ coalg-morphism-Zero p h a x * κ = SUCC-PRED ⁻¹ ∙ ap SUCC c₃
   c₃ : PRED(h x) ≡ inl *
   c₃ = c₁ ∙ c₂
 
-Coalg-morphism-Zero : ∀ {U} {X : U ̇} (κ : X →  𝟙 + X)
+Coalg-morphism-Zero : {X : U ̇} (κ : X →  𝟙 + X)
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → ℕ∞-corec κ x ≡ Zero
 Coalg-morphism-Zero κ = coalg-morphism-Zero κ (ℕ∞-corec κ) (ℕ∞-corec-homomorphism κ)
 
-coalg-morphism-Succ : ∀ {U} {X : U ̇}
+coalg-morphism-Succ : {X : U ̇}
                       (κ : X →  𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x x' : X) → κ x ≡ inr x' → h x ≡ Succ (h x')
@@ -274,7 +274,7 @@ coalg-morphism-Succ κ h a x x' q = SUCC-PRED ⁻¹ ∙ ap SUCC c₃
   c₃ : PRED(h x) ≡ inr(h x')
   c₃ = c₁ ∙ c₂
 
-Coalg-morphism-Succ : ∀ {U} {X : U ̇} (κ : X →  𝟙 + X)
+Coalg-morphism-Succ : {X : U ̇} (κ : X →  𝟙 + X)
                     → (x x' : X) → κ x ≡ inr x' → ℕ∞-corec κ x ≡ Succ (ℕ∞-corec κ x')
 Coalg-morphism-Succ κ = coalg-morphism-Succ κ (ℕ∞-corec κ) (ℕ∞-corec-homomorphism κ)
 
@@ -285,7 +285,7 @@ bisimulation:
 
 \begin{code}
 
-coalg-morphism-positivity : ∀ {U} {X : U ̇}
+coalg-morphism-positivity : {X : U ̇}
                             (κ : X →  𝟙 + X) (f g : X → ℕ∞)
                           → is-homomorphism κ f
                           → is-homomorphism κ g
@@ -309,7 +309,7 @@ coalg-morphism-positivity {U} {X} κ f g a b x =
     gl : positivity(g x) ≡ ₁
     gl = ap positivity(coalg-morphism-Succ κ g b x x' q)
 
-coalg-morphism-Pred : ∀ {U} {X : U ̇}
+coalg-morphism-Pred : {X : U ̇}
                       (κ : X →  𝟙 + X) (f g : X → ℕ∞)
                     → is-homomorphism κ f
                     → is-homomorphism κ g
@@ -351,7 +351,7 @@ from p to PRED.
 
 \begin{code}
 
-homomorphism-uniqueness : ∀ {U} {X : U ̇}
+homomorphism-uniqueness : {X : U ̇}
                           (κ : X → 𝟙 + X) (f g : X → ℕ∞)
                         → is-homomorphism κ f
                         → is-homomorphism κ g
@@ -390,7 +390,7 @@ coalgebra, as claimed:
 
 \begin{code}
 
-PRED-is-the-final-coalgebra : ∀ {U} {X : U ̇}
+PRED-is-the-final-coalgebra : {X : U ̇}
   → (κ : X → 𝟙 + X) → Σ! \(h : X → ℕ∞) → is-homomorphism κ h
 PRED-is-the-final-coalgebra κ = homomorphism-existence κ , homomorphism-uniqueness κ
 
@@ -406,7 +406,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-PRED-is-the-homotopy-final-coalgebra : ∀ {U} {X : U ̇} (κ : X → 𝟙 + X)
+PRED-is-the-homotopy-final-coalgebra : {X : U ̇} (κ : X → 𝟙 + X)
   → is-singleton(Σ \(h : X → ℕ∞) → is-homomorphism κ h)
 PRED-is-the-homotopy-final-coalgebra {U} {X} κ = homomorphism-existence κ , γ
  where

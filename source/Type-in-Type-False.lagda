@@ -426,7 +426,7 @@ module blechschmidt where
 
  Question: Without assuming type-in-type, can we instead derive a
  contradiction from the existence of a sufficiently large universe U
- with a type X:U such that X≃U?
+ with a type X: U such that X≃U?
 
  Fixities and precedences:
 

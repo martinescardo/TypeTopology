@@ -22,19 +22,19 @@ module ImageAndSurjection (pt : PropTrunc) where
 
  open PropositionalTruncation (pt)
 
- image : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+ image : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
  image f = Σ \y → ∃ \x → f x ≡ y
 
- restriction : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ restriction : {X : U ̇} {Y : V ̇} (f : X → Y)
             → image f → Y
  restriction f (y , _) = y
 
- restriction-embedding : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ restriction-embedding : {X : U ̇} {Y : V ̇} (f : X → Y)
                       → is-embedding(restriction f)
  restriction-embedding f = pr₁-embedding (λ y → ptisp)
 
 
- corestriction : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ corestriction : {X : U ̇} {Y : V ̇} (f : X → Y)
              → X → image f
  corestriction f x = f x , ∣ x , refl ∣
 
@@ -44,10 +44,10 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
 
 \begin{code}
 
- is-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+ is-surjection : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
  is-surjection f = ∀ y → ∃ \x → f x ≡ y
 
- c-es  :  ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ c-es  :  {X : U ̇} {Y : V ̇} (f : X → Y)
           → is-vv-equiv f ⇔ is-embedding f × is-surjection f
  c-es f = g , h
   where
@@ -57,14 +57,14 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
    h : is-embedding f × is-surjection f → is-vv-equiv f
    h (e , s) = λ y → pr₂ c-es₁ (e y , s y)
 
- corestriction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ corestriction-surjection : {X : U ̇} {Y : V ̇} (f : X → Y)
                          → is-surjection (corestriction f)
  corestriction-surjection f (y , s) = ptfunct g s
   where
    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
    g (x , p) = x , to-Σ-≡ (p , ptisp _ _)
 
- pt-is-surjection : ∀ {U} {X : U ̇} → is-surjection(λ(x : X) → ∣ x ∣)
+ pt-is-surjection : {X : U ̇} → is-surjection(λ(x : X) → ∣ x ∣)
  pt-is-surjection t = ptrec ptisp (λ x → ∣ x , ptisp (∣ x ∣) t ∣) t
 
 \end{code}
@@ -83,7 +83,7 @@ Surjections can be characterized as follows, modulo size:
                                              (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
                                              (is y)
 
- image-surjection-converse : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ image-surjection-converse : {X : U ̇} {Y : V ̇} (f : X → Y)
                            → imageInduction f → is-surjection f
  image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ≡ y) ∥)
                                        (λ y → ptisp)
@@ -97,7 +97,7 @@ Surjections can be characterized as follows, modulo size:
  image-induction f = surjection-induction (corestriction f)
                                           (corestriction-surjection f)
 
- retraction-surjection : ∀ {U V} {X : U ̇} {Y : V ̇} (f : X → Y)
+ retraction-surjection : {X : U ̇} {Y : V ̇} (f : X → Y)
                        → has-section f → is-surjection f
  retraction-surjection {U} {V} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
 

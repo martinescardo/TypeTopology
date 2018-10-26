@@ -38,7 +38,7 @@ TODO. Generalize from propositions in the universe U₀ to any universe U.
 Ω₀ : U₁ ̇
 Ω₀ = Ω U₀
 
-involutive : ∀ {U} {X : U ̇} → (f : X → X) → U ̇
+involutive : {X : U ̇} → (f : X → X) → U ̇
 involutive f = ∀{x} → f (f x) ≡ x
 
 higgs : (f : Ω₀ → Ω₀) → left-cancellable f → involutive f

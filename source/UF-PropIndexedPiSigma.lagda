@@ -12,7 +12,7 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 
-prop-indexed-product : ∀ {U V} → funext U V → {X : U ̇} {Y : X → V ̇}
+prop-indexed-product : funext U V → {X : U ̇} {Y : X → V ̇}
                      → is-prop X → (a : X) → Π Y ≃ Y a
 prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
@@ -31,12 +31,12 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf : (φ : Π Y) → g(f φ) ≡ φ
   gf φ = dfunext fe (gf' φ)
 
-prop-indexed-product-one : ∀ {U V W T} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
-                         → Π Y ≃ 𝟙
+prop-indexed-product-one : {T : Universe} → funext U V → {X : U ̇} {Y : X → V ̇} → (X → 𝟘 {W})
+                         → Π Y ≃ 𝟙 {T}
 prop-indexed-product-one {U} {V} {W} {T} fe {X} {Y} v = unique-to-𝟙 , (g , fg) , (g , gf)
  where
-  g : 𝟙 {W} → Π Y
-  g * x = unique-from-𝟘 {V} {T} (v x)
+  g : 𝟙 {T} → Π Y
+  g * x = unique-from-𝟘 {V} {W} (v x)
   fg : (u : 𝟙) → * ≡ u
   fg * = refl
   gf : (φ : Π Y) → g * ≡ φ
@@ -51,7 +51,7 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum : ∀ {U V} → {X : U ̇} {Y : X → V ̇}
+prop-indexed-sum :{X : U ̇} {Y : X → V ̇}
                  → is-prop X → (a : X) → Σ Y ≃ Y a
 prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
  where
@@ -68,8 +68,8 @@ prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
   gf : (σ : Σ Y) → g(f σ) ≡ σ
   gf (x , y) = to-Σ-≡ (hp a x , lemma₂ x y (hp x a))
 
-prop-indexed-sum-zero : ∀ {U V W} {X : U ̇} {Y : X → V ̇} → (X → 𝟘)
-                      → Σ Y ≃ 𝟘
+prop-indexed-sum-zero : {X : U ̇} {Y : X → V ̇} → (X → (𝟘 {W}))
+                      → Σ Y ≃ (𝟘 {W})
 prop-indexed-sum-zero {U} {V} {W} {X} {Y} φ = f , (g , fg) , (g , gf)
  where
   f : Σ Y → 𝟘 {W}

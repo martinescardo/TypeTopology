@@ -25,7 +25,7 @@ The native induction principle for ℕ:
 
 \begin{code}
 
-ℕ-induction : ∀ {U} → {A : ℕ → U ̇}
+ℕ-induction :{A : ℕ → U ̇}
             → A zero
             → (∀ n → A n → A(succ n))
             → ∀ n → A n
@@ -66,7 +66,7 @@ data 𝔹 : U₀ ̇ where
  l    : 𝔹 → 𝔹
  r    : 𝔹 → 𝔹
 
-𝔹-induction : ∀ {U} {B : 𝔹 → U ̇}
+𝔹-induction : {B : 𝔹 → U ̇}
           → B zero
           → (∀ m → B m → B(l m))
           → (∀ m → B m → B(r m))
@@ -183,7 +183,7 @@ Induction principles induced by the equivalences:
 
 \begin{code}
 
-unary-induction-on-𝔹 : ∀ {U} {B : 𝔹 → U ̇}
+unary-induction-on-𝔹 : {B : 𝔹 → U ̇}
           → B zero
           → (∀ n → B n → B(Succ n))
           → ∀ n → B n
@@ -202,7 +202,7 @@ unary-induction-on-𝔹 {U} {B} base step = g
   g : ∀ m → B m
   g m = transport B (binary-unary m) (b m)
 
-binary-induction-on-ℕ : ∀ {U} {A : ℕ → U ̇}
+binary-induction-on-ℕ : {A : ℕ → U ̇}
           → A zero
           → (∀ n → A n → A(L n))
           → (∀ n → A n → A(R n))

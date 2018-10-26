@@ -30,7 +30,7 @@ private
 
   open Σ
 
-  id : ∀ {U} {X : U ̇}  → X → X
+  id : {X : U ̇}  → X → X
   id x = x
 
   lc-maps : (X Y : U ̇) → U ̇

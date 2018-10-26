@@ -14,7 +14,7 @@ open import CompactTypes
 open import UF-InjectiveTypes (fe)
 open import PropTychonoff (fe)
 
-extended-sum-compact∙ : ∀ {U V W} {X : U ̇} {K : V ̇} {Y : X → W ̇} (j : X → K) → is-embedding j
+extended-sum-compact∙ : {X : U ̇} {K : V ̇} {Y : X → W ̇} (j : X → K) → is-embedding j
                         → ((x : X) → compact∙(Y x)) → compact∙ K → compact∙(Σ(Y / j))
 extended-sum-compact∙ j e ε δ = Σ-compact∙ δ (λ k → prop-tychonoff (e k) (ε ∘ pr₁))
 

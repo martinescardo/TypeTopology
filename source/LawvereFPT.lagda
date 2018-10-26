@@ -44,19 +44,19 @@ that r has a pointwise section).
 
 \begin{code}
 
- has-section· : ∀ {U V} {A : U ̇} {X : V ̇} → (A → (A → X)) → U ⊔ V ̇
+ has-section· : {A : U ̇} {X : V ̇} → (A → (A → X)) → U ⊔ V ̇
  has-section· r = Σ \(s : cod r → dom r) → ∀ g a → r (s g) a ≡ g a
 
- section-gives-section· : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
+ section-gives-section· : {A : U ̇} {X : V ̇} (r : A → (A → X))
                         → has-section r → has-section· r
  section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
 
- section·-gives-section : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
+ section·-gives-section : {A : U ̇} {X : V ̇} (r : A → (A → X))
                         → funext U V
                         → has-section· r → has-section r
  section·-gives-section r fe (s , rs·) = s , λ g → dfunext fe (rs· g)
 
- LFPT· : ∀ {U V} {A : U ̇} {X : V ̇} (r : A → (A → X))
+ LFPT· : {A : U ̇} {X : V ̇} (r : A → (A → X))
        → has-section· r
        → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT· {U} {V} {A} {X} r (s , rs) f = x , p
@@ -73,17 +73,17 @@ that r has a pointwise section).
        g a       ≡⟨ refl ⟩
        f x       ∎
 
- LFPT : ∀ {U V} {A : U ̇} {X : V ̇}
+ LFPT : {A : U ̇} {X : V ̇}
       → retract (A → X) of A
       → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT (r , h) = LFPT· r (section-gives-section· r h)
 
- LFPT-≃ : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
+ LFPT-≃ : {A : U ⊔ V ̇} {X : U ̇}
         → A ≃ (A → X)
         → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT-≃ p = LFPT (equiv-retract-r p)
 
- LFPT-≡ : ∀ {U V} {A : U ⊔ V ̇} {X : U ̇}
+ LFPT-≡ : {A : U ⊔ V ̇} {X : U ̇}
         → A ≡ (A → X)
         → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT-≡ p = LFPT (Id-retract-r p)
@@ -94,7 +94,7 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- ¬-no-fp : ∀ {U} → ¬ Σ \(X : U ̇) → X ≡ ¬ X
+ ¬-no-fp : ¬ Σ \(X : U ̇) → X ≡ ¬ X
  ¬-no-fp {U} (X , p) = pr₁(γ id)
   where
    γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
@@ -146,7 +146,7 @@ As a simple application, it follows that negation doesn't have fixed points:
  open import UF-Subsingletons
  open import UF-Subsingletons-FunExt
 
- not-no-fp : ∀ {U} (fe : funext U U₀) → ¬ Σ \(P : Ω U) → P ≡ not fe P
+ not-no-fp : (fe : funext U U₀) → ¬ Σ \(P : Ω U) → P ≡ not fe P
  not-no-fp {U} fe (P , p) = ¬-no-fp (P holds , q)
   where
    q : P holds ≡ ¬(P holds)
@@ -178,7 +178,7 @@ module surjection-version (pt : PropTrunc) where
  open PropositionalTruncation pt
  open ImageAndSurjection pt
 
- LFPT : ∀ {U V} {A : U ̇} {X : V ̇} (φ : A → (A → X))
+ LFPT : {A : U ̇} {X : V ̇} (φ : A → (A → X))
       → is-surjection φ
       → (f : X → X) → ∃ \(x : X) → x ≡ f x
  LFPT {U} {V} {A} {X} φ s f = ptfunct γ e
@@ -276,7 +276,7 @@ module Blechschmidt (pt : PropTrunc) where
  open import DiscreteAndSeparated
 
  Π-projection-has-section :
-    ∀ {U V} {X : U ̇} {Y : X → V ̇} (x₀ : X)
+    {X : U ̇} {Y : X → V ̇} (x₀ : X)
   → isolated x₀
   → Π Y
   → has-section (λ (f : Π Y) → f x₀)
@@ -292,7 +292,7 @@ module Blechschmidt (pt : PropTrunc) where
      a : i x₀ ≡ inl refl
      a = isolated-inl x₀ i x₀ refl
 
- udr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇) (B : W ̇)
+ udr-lemma : {A : U ̇} (X : A → V ̇) (B : W ̇)
              (a₀ : A)
            → isolated a₀
            → B
@@ -360,7 +360,7 @@ module Blechschmidt' (pt : PropTrunc) where
  open import DiscreteAndSeparated
 
  Π-projection-has-section :
-    ∀ {U V W} {A : U ̇} {X : A → V ̇}
+    {A : U ̇} {X : A → V ̇}
   → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
   → (a₀ : A) → is-h-isolated a₀ → has-section (λ (f : (a : A) → X a → Ω (U ⊔ W)) → f a₀)
  Π-projection-has-section {U} {V} {W} {A} {X} fe fe' pe a₀ ish = s , rs
@@ -386,7 +386,7 @@ module Blechschmidt' (pt : PropTrunc) where
      γ x₀ = to-Σ-≡ (pe ptisp (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                      is-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
- usr-lemma : ∀ {U V W} {A : U ̇} (X : A → V ̇)
+ usr-lemma : {A : U ̇} (X : A → V ̇)
            → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
            → (a₀ : A)
            → is-h-isolated a₀

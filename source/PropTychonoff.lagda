@@ -76,7 +76,7 @@ Recall also that such an a₀ is called a universal witness for the predicate p.
 
 \begin{code}
 
-prop-tychonoff : ∀ {U V} {X : U ̇} {Y : X → V ̇} → is-prop X
+prop-tychonoff : {X : U ̇} {Y : X → V ̇} → is-prop X
                → ((x : X) → compact∙(Y x)) → compact∙(Π Y)
 prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
  where
@@ -186,7 +186,7 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : ∀ {U V} {X : U ̇} {Y : V ̇} → is-prop X
+prop-tychonoff-corollary : {X : U ̇} {Y : V ̇} → is-prop X
                         → compact∙ Y → compact∙(X → Y)
 prop-tychonoff-corollary hp ε = prop-tychonoff hp (λ x → ε)
 

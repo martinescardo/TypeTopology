@@ -293,7 +293,7 @@ We now introduce the notations f / j and f ∖ j for the Π- and
 
 \begin{code}
 
-_/_ _∖_ :  ∀ {U V W} {X : U ̇} {Y : V ̇}
+_/_ _∖_ :  {X : U ̇} {Y : V ̇}
         → (X → W ̇) → (X → Y) → (Y → U ⊔ V ⊔ W ̇)
 f / j = Π-extension f j
 f ∖ j = Σ-extension f j
@@ -306,13 +306,13 @@ A different notation reflects a different view of these processes:
 
 \begin{code}
 
-inverse-image :  ∀ {U V W} {X : U ̇} {Y : V ̇}
+inverse-image :  {X : U ̇} {Y : V ̇}
               → (X → Y) → (Y → W ̇) → (X → W ̇)
 
 inverse-image f v = v ∘ f
 
 
-Π-image Σ-image :  ∀ {U V W} {X : U ̇} {Y : V ̇}
+Π-image Σ-image :  {X : U ̇} {Y : V ̇}
                 → (X → Y) → ((X → W ̇) → (Y → U ⊔ V ⊔ W ̇))
 
 Π-image j = λ f → Π-extension f j
@@ -334,7 +334,7 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
 
 \begin{code}
 
-Σ-image-of-singleton-lemma : ∀ {U V} {X : U ̇} {Y : V ̇} → (j : X → Y) (x : X) (y : Y)
+Σ-image-of-singleton-lemma : {X : U ̇} {Y : V ̇} → (j : X → Y) (x : X) (y : Y)
                            → Σ-image j (Id x) y ≃ Id (j x) y
 Σ-image-of-singleton-lemma {U} {V} {X} {Y} j x y = (f , (g , fg) , (g , gf))
  where
@@ -350,7 +350,7 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
   fg : (p : Id (j x) y) → f(g p) ≡ p
   fg refl = refl
 
-Σ-image-of-singleton : ∀ {U} {X Y : U ̇}
+Σ-image-of-singleton : {X Y : U ̇}
                      → is-univalent U
                      → (j : X → Y) (x : X) → Σ-image j (Id x) ≡ Id (j x)
 Σ-image-of-singleton {U} {X} {Y} ua j x = b
@@ -370,17 +370,17 @@ data rather than property):
 
 \begin{code}
 
-injective-type : ∀ {U V W} → W ̇ → U ′ ⊔ V ′ ⊔ W ̇
+injective-type : W ̇ → U ′ ⊔ V ′ ⊔ W ̇
 injective-type {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
                        → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
-universes-are-injective-Π : ∀ {U} → is-univalent U → injective-type {U} {U} (U ̇)
+universes-are-injective-Π : is-univalent U → injective-type {U} {U} (U ̇)
 universes-are-injective-Π ua j e f = f / j , λ x → eqtoid ua _ _ (Π-extension-in-range f j e x)
 
-universes-are-injective-Σ : ∀ {U} → is-univalent U → injective-type {U} {U} (U ̇)
+universes-are-injective-Σ : is-univalent U → injective-type {U} {U} (U ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-retract-of-injective : ∀ {U V W T} {D : U ̇} {D' : V ̇}
+retract-of-injective : {T : Universe} {D : U ̇} {D' : V ̇}
                        → injective-type {W} {T} D → retract D' Of D → injective-type D'
 retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
   where
@@ -401,14 +401,14 @@ retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g
 
 open import UF-IdEmbedding
 
-injective-retract-of-power-of-universe : ∀ {U} {D : U ̇} → is-univalent U
+injective-retract-of-power-of-universe : {D : U ̇} → is-univalent U
                                        → injective-type D → retract D Of (D → U ̇)
 injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
 
-power-of-injective : ∀ {U V W T} {D : U ̇} {A : V ̇}
+power-of-injective : {T : Universe} {D : U ̇} {A : V ̇}
                    → injective-type {W} {T} D → injective-type (A → D)
 power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
   where
@@ -428,7 +428,7 @@ to be an embedding and that the proof is completely routine.
 
 \begin{code}
 
-retract-extension : ∀ {U V W T} {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
+retract-extension : {T : Universe} {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
                → ((x : X) → retract (A x) of (B x))
                → ((y : Y) → retract ((A / e) y) of ((B / e) y))
 retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
@@ -454,7 +454,7 @@ Added 25th July 2018.
 
 \begin{code}
 
-iterated-extension : ∀ {U V W T} {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
+iterated-extension : {T : Universe} {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
                      (j : X → Y) (k : Y → Z)
                   → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
 iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ

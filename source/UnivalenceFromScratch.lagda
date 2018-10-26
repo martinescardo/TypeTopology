@@ -213,13 +213,13 @@ universe. It is common to assume a tower of universes U₀, U₁, U₂,
    U₂ : U₃,
    ⋮
 
-When we have universes, a type family A indexed by a type X:U may be
+When we have universes, a type family A indexed by a type X: U may be
 considered to be a function A:X→V for some universe V.
 
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
 
- Grp := Σ(G:U), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
+ Grp := Σ(G: U), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
 
 Here is-set(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
 univalence, Grp itself will not be a set, but a 1-groupoid instead,
@@ -251,7 +251,7 @@ singletons:
 
     is-equiv(f) := Π(y:Y), is-singleton(f⁻¹(y)).
 
-The type of equivalences from X:U to Y:U is
+The type of equivalences from X: U to Y:U is
 
     Eq(X,Y) := Σ(f:X→Y), is-equiv(f).
 
@@ -303,16 +303,16 @@ singleton type defined above, which we proved to be a singleton. We
 need to name this function, because it is needed in the formulation of
 the univalence of U:
 
-   idIsEquiv : Π(X:U), is-equiv(id_X).
+   idIsEquiv : Π(X: U), is-equiv(id_X).
 
 (The identity function id_X should not be confused with the identity
 type Id_X.)
 
 Now we use J a second time to define a function
 
-   IdToEq : Π(X,Y:U), Id(X,Y) → Eq(X,Y).
+   IdToEq : Π(X,Y: U), Id(X,Y) → Eq(X,Y).
 
-For X,Y:U and p:Id(X,Y), we set
+For X,Y: U and p:Id(X,Y), we set
 
    A(X,Y,p) := Eq(X,Y)
 
@@ -327,7 +327,7 @@ and
 Finally, we say that the universe U is univalent if the map
 IdToEq(X,Y) is itself an equivalence:
 
-   is-univalent(U) := Π(X,Y:U), is-equiv(IdToEq(X,Y)).
+   is-univalent(U) := Π(X,Y: U), is-equiv(IdToEq(X,Y)).
 
 * The univalence axiom
   --------------------
@@ -345,7 +345,7 @@ the inhabitedness of the type is-univalent(U) is undecided.
 
       Π, Σ, Id, U, U'.
 
-    Two universes U:U' suffice, where univalence talks about U.
+    Two universes U: U' suffice, where univalence talks about U.
 
  2. It can be shown, by a very complicated and interesting argument,
     that
@@ -400,11 +400,11 @@ the inhabitedness of the type is-univalent(U) is undecided.
     The consistency of the univalence axiom shows that, before we
     postulate it, MLTT is "proto-univalent" in the sense that it
     cannot distinguish concrete isomorphic types such as X:=ℕ and
-    Y:=ℕ×ℕ by a property P:U→U such that P(X) holds but P(Y) doesn't.
+    Y:=ℕ×ℕ by a property P: U→U such that P(X) holds but P(Y) doesn't.
     This is because, being isomorphic, X and Y are equivalent. But
     then univalence implies Id(X,Y), which in turn implies P(X) ⇔ P(Y)
     using J.  Because univalence is consistent, it follows that for
-    any given concrete P:U→U, it is impossible to prove that P(X)
+    any given concrete P: U→U, it is impossible to prove that P(X)
     holds but P(Y) doesn't.
 
     So MLTT is invariant under isomorphism in this doubly negative,
@@ -416,7 +416,7 @@ the inhabitedness of the type is-univalent(U) is undecided.
     misleading) slogan "isomorphic types are equal".
 
     What the consistency of the univalence axiom says is that one
-    possible understanding of the identity type Id(X,Y) for X,Y:U is
+    possible understanding of the identity type Id(X,Y) for X,Y: U is
     as precisely the type Eq(X,Y) of equivalences, in the sense of
     being in one-to-one correspondence with it. Without univalence,
     the nature of the identity type of the universe in MLTT is fairly
