@@ -138,8 +138,8 @@ is-set : U ̇ → U ̇
 is-set X = {x : X} → is-h-isolated x
 
 refl-is-set : (X : U ̇)
-           → ((x : X) (p : x ≡ x) → p ≡ refl)
-           → is-set X
+            → ((x : X) (p : x ≡ x) → p ≡ refl)
+            → is-set X
 refl-is-set X r {x} {.x} p refl = r x p
 
 \end{code}
@@ -152,11 +152,11 @@ constant : {X : U ̇} {Y : V ̇} → (f : X → Y) → U ⊔ V ̇
 constant f = ∀ x y → f x ≡ f y
 
 constant-pre-comp : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
-              → constant f → constant (g ∘ f)
+                  → constant f → constant (g ∘ f)
 constant-pre-comp f g c x x' = ap g (c x x')
 
 constant-post-comp : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
-              → constant g → constant (g ∘ f)
+                   → constant g → constant (g ∘ f)
 constant-post-comp f g c x x' = c (f x) (f x')
 
 collapsible : U ̇ → U ̇
@@ -169,8 +169,8 @@ set-is-identification-collapsible : {X : U ̇} → is-set X → identification-c
 set-is-identification-collapsible u = (id , u)
 
 local-hedberg : {X : U ̇} (x : X)
-      → ((y : X) → collapsible (x ≡ y))
-      → (y : X) → is-prop (x ≡ y)
+              → ((y : X) → collapsible (x ≡ y))
+              → (y : X) → is-prop (x ≡ y)
 local-hedberg {U} {X} x pc y p q = claim₂
  where
   f : (y : X) → x ≡ y → x ≡ y
@@ -199,8 +199,8 @@ symmetrizing the proof.
 \begin{code}
 
 local-hedberg' : {X : U ̇} (x : X)
-      → ((y : X) → collapsible (y ≡ x))
-      → (y : X) → is-prop (y ≡ x)
+               → ((y : X) → collapsible (y ≡ x))
+               → (y : X) → is-prop (y ≡ x)
 local-hedberg' {U} {X} x pc y p q = claim₂
  where
   f : (y : X) → y ≡ x → y ≡ x
@@ -262,7 +262,7 @@ identifications-from-is-prop : {X : U ̇} (x : X) → is-prop(identifications-fr
 identifications-from-is-prop x = is-singleton-is-prop (identifications-from-is-singleton x)
 
 singleton-types-are-singletons : {X : U ̇} {x : X}
-                        → is-the-only-element {U} {identifications-from x} (x , refl)
+  → is-the-only-element {U} {identifications-from x} (x , refl)
 singleton-types-are-singletons {U} {X} (y , refl) = refl
 
 identifications-from-singleton : {X : U ̇} (x : X) → is-singleton(identifications-from x)
@@ -272,24 +272,24 @@ identifications-to : {X : U ̇} → X → U ̇
 identifications-to x = Σ \y → y ≡ x
 
 ×-prop-criterion-necessity : {X : U ̇} {Y : V ̇}
-                          → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
+                           → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity isp = (λ y x x' → ap pr₁ (isp (x , y) (x' , y ))) ,
                                  (λ x y y' → ap pr₂ (isp (x , y) (x  , y')))
 
 ×-prop-criterion : {X : U ̇} {Y : V ̇}
-                → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
+                 → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
 ×-is-prop : {X : U ̇} {Y : V ̇}
-         → is-prop X → is-prop Y → is-prop(X × Y)
+          → is-prop X → is-prop Y → is-prop(X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 subtype-of-prop-is-prop : {X : U ̇} {Y : V ̇} (m : X → Y)
-                       → left-cancellable m → is-prop Y → is-prop X
+                        → left-cancellable m → is-prop Y → is-prop X
 subtype-of-prop-is-prop {U} {V} {X} m lc isp x x' = lc (isp (m x) (m x'))
 
 subtype-of-set-is-set : {X : U ̇} {Y : V ̇} (m : X → Y)
-                     → left-cancellable m → is-set Y → is-set X
+                      → left-cancellable m → is-set Y → is-set X
 subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f , g)
  where
   f : {x x' : X} → x ≡ x' → x ≡ x'
@@ -297,11 +297,14 @@ subtype-of-set-is-set {U} {V} {X} m i h = identification-collapsible-is-set (f ,
   g : {x x' : X} (r s : x ≡ x') → f r ≡ f s
   g r s = ap i (h (ap m r) (ap m s))
 
-pr₁-lc : {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x)) → left-cancellable (pr₁ {U} {V} {X} {Y})
+pr₁-lc : {X : U ̇} {Y : X → V ̇} → ({x : X} → is-prop(Y x))
+       → left-cancellable (pr₁ {U} {V} {X} {Y})
 pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
 subset-of-set-is-set : (X : U ̇) (Y : X → V ̇)
-                    → is-set X → ({x : X} → is-prop(Y x)) → is-set(Σ \(x : X) → Y x)
+                     → is-set X
+                     → ({x : X} → is-prop(Y x))
+                     → is-set(Σ \(x : X) → Y x)
 subset-of-set-is-set X Y h p = subtype-of-set-is-set pr₁ (pr₁-lc p) h
 
 inl-lc-is-section : {X : U ̇} {Y : V ̇} {x x' : X} → (p : inl {U} {V} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
@@ -351,12 +354,12 @@ proposition is a proposition:
 sum-of-contradictory-props : {P : U ̇} {Q : V ̇}
                            → is-prop P → is-prop Q → (P → Q → 𝟘 {W}) → is-prop(P + Q)
 sum-of-contradictory-props {U} {V} {W} {P} {Q} isp isq f = go
-  where
-   go : (x y : P + Q) → x ≡ y
-   go (inl p) (inl p') = ap inl (isp p p')
-   go (inl p) (inr q)  = 𝟘-elim {U ⊔ V} {W} (f p q)
-   go (inr q) (inl p)  = 𝟘-elim (f p q)
-   go (inr q) (inr q') = ap inr (isq q q')
+ where
+  go : (x y : P + Q) → x ≡ y
+  go (inl p) (inl p') = ap inl (isp p p')
+  go (inl p) (inr q)  = 𝟘-elim {U ⊔ V} {W} (f p q)
+  go (inr q) (inl p)  = 𝟘-elim (f p q)
+  go (inr q) (inr q') = ap inr (isq q q')
 
 \end{code}
 

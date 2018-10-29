@@ -271,18 +271,16 @@ Basic theory of paths.
 
 \begin{code}
 
-module _ {X : U ̇} where
+reflᶜ : {X : U ̇} {x : X} → x ≡ᶜ x
+reflᶜ {U} {X} {x} = λ _ → x
 
-  reflᶜ : {x : X} → x ≡ᶜ x
-  reflᶜ {x} = λ _ → x
+symᶜ : {X : U ̇} {x y : X} → x ≡ᶜ y → y ≡ᶜ x
+symᶜ p = λ i → p (~ i)
 
-  symᶜ : {x y : X} → x ≡ᶜ y → y ≡ᶜ x
-  symᶜ p = λ i → p (~ i)
-
-  apᶜ : {A : X → V ̇} {x y : X}
-       (f : (x : X) → A x) (p : x ≡ᶜ y)
-    → PathP (λ i → A (p i)) (f x) (f y)
-  apᶜ f p = λ i → f (p i)
+apᶜ : {X : U ̇} {A : X → V ̇} {x y : X}
+     (f : (x : X) → A x) (p : x ≡ᶜ y)
+  → PathP (λ i → A (p i)) (f x) (f y)
+apᶜ f p = λ i → f (p i)
 
 \end{code}
 
@@ -291,21 +289,22 @@ with transp:
 
 \begin{code}
 
-  path-comp : {x y z : X} → x ≡ᶜ y → y ≡ᶜ z → x ≡ᶜ z
-  path-comp {x = x} p q i =
-    hcomp (λ j → λ { (i = i₀) → x
-                   ; (i = i₁) → q j }) (p i)
+path-comp : {X : U ̇} {x y z : X} → x ≡ᶜ y → y ≡ᶜ z → x ≡ᶜ z
+path-comp {U} {X} {x} p q i =
+  hcomp (λ j → λ { (i = i₀) → x
+                 ; (i = i₁) → q j }) (p i)
 
-  _≡ᶜ⟨_⟩_ : (x : X) {y z : X} → x ≡ᶜ y → y ≡ᶜ z → x ≡ᶜ z
-  _ ≡ᶜ⟨ p ⟩ q = path-comp p q
+_≡ᶜ⟨_⟩_ : {X : U ̇} (x : X) {y z : X} → x ≡ᶜ y → y ≡ᶜ z → x ≡ᶜ z
+_ ≡ᶜ⟨ p ⟩ q = path-comp p q
 
-  _∎ᶜ : (x : X) → x ≡ᶜ x
-  _∎ᶜ _ = reflᶜ
+_∎ᶜ : {X : U ̇} (x : X) → x ≡ᶜ x
+_∎ᶜ _ = reflᶜ
 
-  infix  1 _∎ᶜ
-  infixr 0 _≡ᶜ⟨_⟩_
+infix  1 _∎ᶜ
+infixr 0 _≡ᶜ⟨_⟩_
 
 module _ {A : U ̇} {B : A → V ̇} where
+
   transportᶜ : {a b : A} (p : a ≡ᶜ b) → B a → B b
   transportᶜ p pa = transp (λ i → B (p i)) i₀ pa
 
@@ -332,10 +331,7 @@ J for paths and its (non-definitional) computation rule:
 
 \begin{code}
 
-module _ {A : U ̇}
-         {x : A}
-         (P : ∀ y → x ≡ᶜ y → V ̇)
-         (d : P x reflᶜ)
+module _ {A : U ̇} {x : A} (P : ∀ y → x ≡ᶜ y → V ̇) (d : P x reflᶜ)
       where
 
   Jᶜ : {y : A} → (p : x ≡ᶜ y) → P y p
@@ -344,13 +340,11 @@ module _ {A : U ̇}
   Jᶜ-refl : Jᶜ reflᶜ ≡ᶜ d
   Jᶜ-refl i = transp (λ _ → P x reflᶜ) i d
 
-module _ {U} {A : U ̇} where
+singletonᶜ : {A : U ̇} (a : A) → U ̇
+singletonᶜ a = Σ \x → a ≡ᶜ x
 
-  singletonᶜ : (a : A) → U ̇
-  singletonᶜ a = Σ \(x : A) → a ≡ᶜ x
-
-  singletonᶜ-is-contrᶜ : {a b : A} (p : a ≡ᶜ b) → Path (singletonᶜ a) (a , reflᶜ) (b , p)
-  singletonᶜ-is-contrᶜ p i = (p i , λ j → p (i ∧ j))
+singletonᶜ-is-contrᶜ : {A : U ̇} {a b : A} (p : a ≡ᶜ b) → Path (singletonᶜ a) (a , reflᶜ) (b , p)
+singletonᶜ-is-contrᶜ p i = (p i , λ j → p (i ∧ j))
 
 \end{code}
 
@@ -358,7 +352,7 @@ Converting to and from a PathP:
 
 \begin{code}
 
-module _ {U} {A : I → U ̇} {x : A i₀} {y : A i₁} where
+module _ {A : I → U ̇} {x : A i₀} {y : A i₁} where
 
   to-PathP : transp A i₀ x ≡ᶜ y → PathP A x y
   to-PathP p i = hcomp (λ j → λ { (i = i₀) → x ; (i = i₁) → p j })
@@ -373,21 +367,19 @@ Lower h-levels defined in terms of paths:
 
 \begin{code}
 
-module _ {U} where
+is-contrᶜ : U ̇ → U ̇
+is-contrᶜ A = Σ \(x : A) → ∀ y → x ≡ᶜ y
 
-  is-contrᶜ : U ̇ → U ̇
-  is-contrᶜ A = Σ \(x : A) → ∀ y → x ≡ᶜ y
+is-propᶜ : U ̇ → U ̇
+is-propᶜ A = (x y : A) → x ≡ᶜ y
 
-  is-propᶜ : U ̇ → U ̇
-  is-propᶜ A = (x y : A) → x ≡ᶜ y
+is-setᶜ : U ̇ → U ̇
+is-setᶜ A = (x y : A) → is-propᶜ (x ≡ᶜ y)
 
-  is-setᶜ : U ̇ → U ̇
-  is-setᶜ A = (x y : A) → is-propᶜ (x ≡ᶜ y)
+fiberᶜ : {A : U ̇} {B : V ̇} → (A → B) → B → U ⊔ V ̇
+fiberᶜ f y = Σ \x → y ≡ᶜ f x
 
-fiberᶜ : {A : U ̇} {B : V ̇} (f : A → B) (y : B) → U ⊔ V ̇
-fiberᶜ {A = A} f y = Σ \(x : A) → y ≡ᶜ f x
-
-is-equivᶜ : {A : U ̇} {B : V ̇} (f : A → B) → U ⊔ V ̇
+is-equivᶜ : {A : U ̇} {B : V ̇} → (A → B) → U ⊔ V ̇
 is-equivᶜ f = ∀ y → is-contrᶜ (fiberᶜ f y)
 
 infix 4 _≃ᶜ_
@@ -550,29 +542,27 @@ Basic theory of Id, proved using J:
 
 \begin{code}
 
-module _ {U} {X : U ̇} where
+transport : {X : U ̇} (A : X → V ̇) {x y : X}
+          → x ≡ y → A x → A y
+transport A {x} p a = J (λ y p → A y) a p
 
-  transport : ∀ {V} (A : X → V ̇) {x y : X}
-            → x ≡ y → A x → A y
-  transport A {x} {y} p a = J (λ y p → A y) a p
+_∙_ : {X : U ̇} {x y z : X} → x ≡ y → y ≡ z → x ≡ z
+_∙_ {U} {X} {x} {y} {z} p q = transport (λ - → x ≡ -) q p
 
-  _∙_ : {x y z : X} → x ≡ y → y ≡ z → x ≡ z
-  _∙_ {x} {y} {z} p q = transport (λ - → x ≡ -) q p
+_⁻¹ : {X : U ̇} {x y : X} → x ≡ y → y ≡ x
+_⁻¹ {U} {X} {x} p = transport (λ - → - ≡ x) p refl
 
-  _⁻¹ : {x y : X} → x ≡ y → y ≡ x
-  _⁻¹ {x} p = transport (λ - → - ≡ x) p refl
+ap : {X : U ̇} {A : V ̇} (f : X → A) {x y : X} → x ≡ y → f x ≡ f y
+ap f {x} p = transport (λ - → f x ≡ f -) p refl
 
-  ap : ∀ {V} {A : V ̇} (f : X → A) {x y : X} → x ≡ y → f x ≡ f y
-  ap f {x} p = transport (λ - → f x ≡ f -) p refl
+_≡⟨_⟩_ : {X : U ̇} (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
+_ ≡⟨ p ⟩ q = p ∙ q
 
-  _≡⟨_⟩_ : (x : X) {y z : X} → x ≡ y → y ≡ z → x ≡ z
-  _ ≡⟨ p ⟩ q = p ∙ q
+_∎ : {X : U ̇} (x : X) → x ≡ x
+_∎ _ = refl
 
-  _∎ : (x : X) → x ≡ x
-  _∎ _ = refl
-
-  infix  1 _∎
-  infixr 0 _≡⟨_⟩_
+infix  1 _∎
+infixr 0 _≡⟨_⟩_
 
 \end{code}
 
@@ -580,26 +570,24 @@ Conversion between Path and Id:
 
 \begin{code}
 
-module _ {U} {X : U ̇} where
+Path-to-Id : {X : U ̇} {x y : X} → x ≡ᶜ y → x ≡ y
+Path-to-Id {U} {X} {x} = Jᶜ (λ y _ → x ≡ y) refl
 
-  Path-to-Id : {x y : X} → x ≡ᶜ y → x ≡ y
-  Path-to-Id {x} = Jᶜ (λ y _ → x ≡ y) refl
+Path-to-Id-refl : {X : U ̇} {x : X} → Path-to-Id (λ _ → x) ≡ᶜ refl
+Path-to-Id-refl {U} {X} {x} = Jᶜ-refl (λ y _ → x ≡ y) refl
 
-  Path-to-Id-refl : {x : X} → Path-to-Id (λ _ → x) ≡ᶜ refl
-  Path-to-Id-refl {x} = Jᶜ-refl (λ y _ → x ≡ y) refl
+Id-to-Path : {X : U ̇} {x y : X} → x ≡ y → x ≡ᶜ y
+Id-to-Path {U} {X} {x} = J (λ y _ → x ≡ᶜ y) (λ _ → x)
 
-  Id-to-Path : {x y : X} → x ≡ y → x ≡ᶜ y
-  Id-to-Path {x} = J (λ y _ → x ≡ᶜ y) (λ _ → x)
+Id-to-Path-refl : {X : U ̇} {x : X} → Id-to-Path refl ≡ᶜ reflᶜ
+Id-to-Path-refl {x} _ _ = x
 
-  Id-to-Path-refl : {x : X} → Id-to-Path {x} refl ≡ᶜ reflᶜ
-  Id-to-Path-refl {x} _ _ = x
+Path-to-Id-η : {X : U ̇} {x y : X} (p : x ≡ᶜ y) → Id-to-Path (Path-to-Id p) ≡ᶜ p
+Path-to-Id-η {x} = Jᶜ (λ y p → Path _ (Id-to-Path (Path-to-Id p)) p)
+                      (λ i → Id-to-Path (Path-to-Id-refl i))
 
-  Path-to-Id-η : {x y : X} (p : x ≡ᶜ y) → Id-to-Path (Path-to-Id p) ≡ᶜ p
-  Path-to-Id-η {x} = Jᶜ (λ y p → Path _ (Id-to-Path (Path-to-Id p)) p)
-                        (λ i → Id-to-Path (Path-to-Id-refl i))
-
-  Path-to-Id-ε : {x y : X} (p : x ≡ y) → Path-to-Id (Id-to-Path p) ≡ᶜ p
-  Path-to-Id-ε {x} = J (λ b p → Path _ (Path-to-Id (Id-to-Path p)) p) Path-to-Id-refl
+Path-to-Id-ε : {X : U ̇} {x y : X} (p : x ≡ y) → Path-to-Id (Id-to-Path p) ≡ᶜ p
+Path-to-Id-ε {x} = J (λ b p → Path _ (Path-to-Id (Id-to-Path p)) p) Path-to-Id-refl
 
 \end{code}
 
@@ -622,16 +610,14 @@ types _≡ᶜ_:
 fiber : {A : U ̇} {B : V ̇} (f : A → B) (y : B) → U ⊔ V ̇
 fiber f y = Σ \x  → y ≡ f x
 
-module _ {U} where
+is-contr : U ̇ → U ̇
+is-contr A = Σ \(x : A) → ∀ y → x ≡ y
 
-  is-contr : U ̇ → U ̇
-  is-contr A = Σ \(x : A) → ∀ y → x ≡ y
+is-prop : U ̇ → U ̇
+is-prop A = (x y : A) → x ≡ y
 
-  is-prop : U ̇ → U ̇
-  is-prop A = (x y : A) → x ≡ y
-
-  is-set : U ̇ → U ̇
-  is-set A = (x y : A) → is-prop (x ≡ y)
+is-set : U ̇ → U ̇
+is-set A = (x y : A) → is-prop (x ≡ y)
 
 is-equiv : {A : U ̇} {B : V ̇} (f : A → B) → U ⊔ V ̇
 is-equiv f = ∀ y → is-contr (fiber f y)

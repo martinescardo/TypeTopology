@@ -26,14 +26,12 @@ open import DecidableAndDetachable
 open import DiscreteAndSeparated
 open import UF-PropTrunc
 
-Lemma-8·1 : (p : ℕ∞ → 𝟚) →
-
-   (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
-
+Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀))
+                         + ((n : ℕ) → p(under n) ≡ ₁)
 Lemma-8·1 p = cases claim₀ claim₁ claim₂
  where
   claim₀ : (Σ \(y : ℕ∞) → p y ≢ p(Succ y))
-          → (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
+         → (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
   claim₀ e = inl (𝟚-equality-cases case₀ case₁)
    where
     x : ℕ∞

@@ -10,6 +10,7 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
+open import UF-Subsingletons
 
 module UF-EquivalenceExamples where
 
@@ -17,94 +18,101 @@ private
  variable T : Universe
 
 curry-uncurry : (fe : ∀ U V → funext U V)
-             → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
-             → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
+              → {X : U ̇} {Y : X → V ̇} {Z : (Σ \(x : X) → Y x) → W ̇}
+              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
 curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
-   where
-    c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
-    c f x y = f (x , y)
-    u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
-    u g (x , y) = g x y
-    cu : ∀ g → c (u g) ≡ g
-    cu g = dfunext (fe U (V ⊔ W)) (λ x → dfunext (fe V W) (λ y → refl))
-    uc : ∀ f → u (c f) ≡ f
-    uc f = dfunext (fe (U ⊔ V) W) (λ w → refl)
+ where
+  c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
+  c f x y = f (x , y)
+  u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
+  u g (x , y) = g x y
+  cu : ∀ g → c (u g) ≡ g
+  cu g = dfunext (fe U (V ⊔ W)) (λ x → dfunext (fe V W) (λ y → refl))
+  uc : ∀ f → u (c f) ≡ f
+  uc f = dfunext (fe (U ⊔ V) W) (λ w → refl)
 
 Σ-assoc : {X : U ̇} {Y : X → V ̇} {Z : Σ Y → W ̇}
         → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))
 Σ-assoc {U} {V} {W} {X} {Y} {Z} = c , (u , λ τ → refl) , (u , λ σ → refl)
-   where
-    c : Σ Z → Σ \x → Σ \y → Z (x , y)
-    c ((x , y) , z) = (x , (y , z))
-    u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
-    u (x , (y , z)) = ((x , y) , z)
+ where
+  c : Σ Z → Σ \x → Σ \y → Z (x , y)
+  c ((x , y) , z) = (x , (y , z))
+  u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
+  u (x , (y , z)) = ((x , y) , z)
 
-{- TODO (easy).
 Σ-flip : (X : U ̇) (Y : V ̇) (A : X → Y → W ̇)
        → (Σ \(x : X) → Σ \(y : Y) → A x y) ≃ (Σ \(y : Y) → Σ \(x : X) → A x y)
-Σ-flip = {!!}
--}
+Σ-flip {U} {V} X Y A = f , (g , η) , (g , ε)
+ where
+  f : (Σ \(x : X) → Σ \(y : Y) → A x y) → (Σ \(y : Y) → Σ \(x : X) → A x y)
+  f (x , y , p) = y , x , p
+  g : (Σ \(y : Y) → Σ \(x : X) → A x y) → (Σ \(x : X) → Σ \(y : Y) → A x y)
+  g (y , x , p) = x , y , p
+  ε : ∀ σ → g (f σ) ≡ σ
+  ε (x , y , p) = refl
+  η : ∀ τ → f (g τ) ≡ τ
+  η (y , x , p) = refl
 
 Σ-cong : (X : U ̇) (Y Y' : X → V ̇)
       → ((x : X) → Y x ≃ Y' x) → Σ Y ≃ Σ Y'
 Σ-cong X Y Y' φ = (F , (G , FG) , (H , HF))
-   where
-    f : (x : X) → Y x → Y' x
-    f x = pr₁(φ x)
-    g : (x : X) → Y' x → Y x
-    g x = pr₁(pr₁(pr₂(φ x)))
-    fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
-    fg x = pr₂(pr₁(pr₂(φ x)))
-    h : (x : X) → Y' x → Y x
-    h x = pr₁(pr₂(pr₂(φ x)))
-    hf : (x : X) (y : Y x) → h x (f x y) ≡ y
-    hf x = pr₂(pr₂(pr₂(φ x)))
+ where
+  f : (x : X) → Y x → Y' x
+  f x = pr₁(φ x)
+  g : (x : X) → Y' x → Y x
+  g x = pr₁(pr₁(pr₂(φ x)))
+  fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
+  fg x = pr₂(pr₁(pr₂(φ x)))
+  h : (x : X) → Y' x → Y x
+  h x = pr₁(pr₂(pr₂(φ x)))
+  hf : (x : X) (y : Y x) → h x (f x y) ≡ y
+  hf x = pr₂(pr₂(pr₂(φ x)))
 
-    F : Σ Y → Σ Y'
-    F (x , y) = x , f x y
-    G : Σ Y' → Σ Y
-    G (x , y') = x , (g x y')
-    H : Σ Y' → Σ Y
-    H (x , y') = x , h x y'
-    FG : (w' : Σ Y') → F(G w') ≡ w'
-    FG (x , y') = to-Σ-≡' (fg x y')
-    HF : (w : Σ Y) → H(F w) ≡ w
-    HF (x , y) = to-Σ-≡' (hf x y)
+  F : Σ Y → Σ Y'
+  F (x , y) = x , f x y
+  G : Σ Y' → Σ Y
+  G (x , y') = x , (g x y')
+  H : Σ Y' → Σ Y
+  H (x , y') = x , h x y'
+  FG : (w' : Σ Y') → F(G w') ≡ w'
+  FG (x , y') = to-Σ-≡' (fg x y')
+  HF : (w : Σ Y) → H(F w) ≡ w
+  HF (x , y) = to-Σ-≡' (hf x y)
 
 Π-cong : funext U V → funext U W
        → (X : U ̇) (Y : X → V ̇) (Y' : X → W ̇)
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 Π-cong fe fe' X Y Y' φ = (F , (G , FG) , (H , HF))
+ where
+  f : (x : X) → Y x → Y' x
+  f x = pr₁(φ x)
+  g : (x : X) → Y' x → Y x
+  g x =  pr₁(pr₁(pr₂(φ x)))
+  fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
+  fg x = pr₂(pr₁(pr₂(φ x)))
+  h : (x : X) → Y' x → Y x
+  h x = pr₁(pr₂(pr₂(φ x)))
+  hf : (x : X) (y : Y x) → h x (f x y) ≡ y
+  hf x = pr₂(pr₂(pr₂(φ x)))
+
+  F : ((x : X) → Y x) → ((x : X) → Y' x)
+  F = λ z x → pr₁ (φ x) (z x)
+  G : ((x : X) → Y' x) → (x : X) → Y x
+  G u x = g x (u x)
+  H : ((x : X) → Y' x) → (x : X) → Y x
+  H u' x = h x (u' x)
+
+  FG :  (w' : ((x : X) → Y' x)) → F(G w') ≡ w'
+  FG w' = dfunext fe' FG'
    where
-    f : (x : X) → Y x → Y' x
-    f x = pr₁(φ x)
-    g : (x : X) → Y' x → Y x
-    g x =  pr₁(pr₁(pr₂(φ x)))
-    fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
-    fg x = pr₂(pr₁(pr₂(φ x)))
-    h : (x : X) → Y' x → Y x
-    h x = pr₁(pr₂(pr₂(φ x)))
-    hf : (x : X) (y : Y x) → h x (f x y) ≡ y
-    hf x = pr₂(pr₂(pr₂(φ x)))
+    FG' : (x : X) → F(G w') x ≡ w' x
+    FG' x = fg x (w' x)
 
-    F : ((x : X) → Y x) → ((x : X) → Y' x)
-    F = λ z x → pr₁ (φ x) (z x)
-    G : ((x : X) → Y' x) → (x : X) → Y x
-    G u x = g x (u x)
-    H : ((x : X) → Y' x) → (x : X) → Y x
-    H u' x = h x (u' x)
-
-    FG :  (w' : ((x : X) → Y' x)) → F(G w') ≡ w'
-    FG w' = dfunext fe' FG'
-     where
-      FG' : (x : X) → F(G w') x ≡ w' x
-      FG' x = fg x (w' x)
-
-    HF : (w : ((x : X) → Y x)) → H(F w) ≡ w
-    HF w = dfunext fe GF'
-     where
-      GF' : (x : X) → H(F w) x ≡ w x
-      GF' x = hf x (w x)
+  HF : (w : ((x : X) → Y x)) → H(F w) ≡ w
+  HF w = dfunext fe GF'
+   where
+    GF' : (x : X) → H(F w) x ≡ w x
+    GF' x = hf x (w x)
 
 ≃-funext₂ : funext U (V ⊔ W) → funext V W
           → {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
@@ -119,63 +127,62 @@ curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
 
 𝟙-lneutral : {Y : U ̇} → 𝟙 {V} × Y ≃ Y
 𝟙-lneutral {U} {V} {Y} = (f , (g , fg) , (g , gf))
-  where
-    f : 𝟙 × Y → Y
-    f (* , y) = y
-    g : Y → 𝟙 × Y
-    g y = (* , y)
-    fg : ∀ x → f (g x) ≡ x
-    fg y = refl
-    gf : ∀ z → g (f z) ≡ z
-    gf (* , y) = refl
+ where
+   f : 𝟙 × Y → Y
+   f (* , y) = y
+   g : Y → 𝟙 × Y
+   g y = (* , y)
+   fg : ∀ x → f (g x) ≡ x
+   fg y = refl
+   gf : ∀ z → g (f z) ≡ z
+   gf (* , y) = refl
 
 ×-comm : {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
 ×-comm {U} {V} {X} {Y} = (f , (g , fg) , (g , gf))
-   where
-    f : X × Y → Y × X
-    f (x , y) = (y , x)
-    g : Y × X → X × Y
-    g (y , x) = (x , y)
-    fg : ∀ z → f (g z) ≡ z
-    fg z = refl
-    gf : ∀ t → g (f t) ≡ t
-    gf t = refl
+ where
+  f : X × Y → Y × X
+  f (x , y) = (y , x)
+  g : Y × X → X × Y
+  g (y , x) = (x , y)
+  fg : ∀ z → f (g z) ≡ z
+  fg z = refl
+  gf : ∀ t → g (f t) ≡ t
+  gf t = refl
 
 𝟙-rneutral : {Y : U ̇} → Y × 𝟙 {V} ≃ Y
-𝟙-rneutral {U} {V} {Y} =
-              Y × 𝟙 ≃⟨ ×-comm ⟩
-              𝟙 × Y ≃⟨ 𝟙-lneutral {U} {V} ⟩
-              Y ■
+𝟙-rneutral {U} {V} {Y} = Y × 𝟙 ≃⟨ ×-comm ⟩
+                         𝟙 × Y ≃⟨ 𝟙-lneutral {U} {V} ⟩
+                         Y     ■
 
 +comm : {X : U ̇} {Y : V ̇} → X + Y ≃ Y + X
 +comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
-  where
-    f : X + Y → Y + X
-    f (inl x) = inr x
-    f (inr y) = inl y
-    g : Y + X → X + Y
-    g (inl y) = inr y
-    g (inr x) = inl x
-    ε : (t : Y + X) → (f ∘ g) t ≡ t
-    ε (inl y) = refl
-    ε (inr x) = refl
-    η : (u : X + Y) → (g ∘ f) u ≡ u
-    η (inl x) = refl
-    η (inr y) = refl
+ where
+   f : X + Y → Y + X
+   f (inl x) = inr x
+   f (inr y) = inl y
+   g : Y + X → X + Y
+   g (inl y) = inr y
+   g (inr x) = inl x
+   ε : (t : Y + X) → (f ∘ g) t ≡ t
+   ε (inl y) = refl
+   ε (inr x) = refl
+   η : (u : X + Y) → (g ∘ f) u ≡ u
+   η (inl x) = refl
+   η (inr y) = refl
 
 𝟘-rneutral : {X : U ̇} → X ≃ X + 𝟘 {V}
 𝟘-rneutral {U} {V} {X} = f , (g , ε) , (g , η)
-  where
-    f : X → X + 𝟘
-    f = inl
-    g : X + 𝟘 → X
-    g (inl x) = x
-    g (inr ())
-    ε : (y : X + 𝟘) → (f ∘ g) y ≡ y
-    ε (inl x) = refl
-    ε (inr ())
-    η : (x : X) → (g ∘ f) x ≡ x
-    η x = refl
+ where
+   f : X → X + 𝟘
+   f = inl
+   g : X + 𝟘 → X
+   g (inl x) = x
+   g (inr ())
+   ε : (y : X + 𝟘) → (f ∘ g) y ≡ y
+   ε (inl x) = refl
+   ε (inr ())
+   η : (x : X) → (g ∘ f) x ≡ x
+   η x = refl
 
 𝟘-rneutral' : {X : U ̇} → X + 𝟘 {V} ≃ X
 𝟘-rneutral' {U} {V} = ≃-sym (𝟘-rneutral {U} {V})
@@ -183,30 +190,30 @@ curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
 𝟘-lneutral : {X : U ̇} → 𝟘 {V} + X ≃ X
 𝟘-lneutral {U} {V} {X} = (𝟘 + X) ≃⟨ +comm ⟩
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {U} {V} ⟩
-                         X ■
+                          X      ■
 
 +assoc : {X : U ̇} {Y : V ̇} {Z : W ̇} → (X + Y) + Z ≃ X + (Y + Z)
 +assoc {U} {V} {W} {X} {Y} {Z} = f , (g , ε) , (g , η)
-  where
-    f : (X + Y) + Z → X + (Y + Z)
-    f (inl (inl x)) = inl x
-    f (inl (inr y)) = inr (inl y)
-    f (inr z)       = inr (inr z)
-    g : X + (Y + Z) → (X + Y) + Z
-    g (inl x)       = inl (inl x)
-    g (inr (inl y)) = inl (inr y)
-    g (inr (inr z)) = inr z
-    ε : (t : X + (Y + Z)) → (f ∘ g) t ≡ t
-    ε (inl x)       = refl
-    ε (inr (inl y)) = refl
-    ε (inr (inr z)) = refl
-    η : (u : (X + Y) + Z) → (g ∘ f) u ≡ u
-    η (inl (inl x)) = refl
-    η (inl (inr x)) = refl
-    η (inr x)       = refl
+ where
+   f : (X + Y) + Z → X + (Y + Z)
+   f (inl (inl x)) = inl x
+   f (inl (inr y)) = inr (inl y)
+   f (inr z)       = inr (inr z)
+   g : X + (Y + Z) → (X + Y) + Z
+   g (inl x)       = inl (inl x)
+   g (inr (inl y)) = inl (inr y)
+   g (inr (inr z)) = inr z
+   ε : (t : X + (Y + Z)) → (f ∘ g) t ≡ t
+   ε (inl x)       = refl
+   ε (inr (inl y)) = refl
+   ε (inr (inr z)) = refl
+   η : (u : (X + Y) + Z) → (g ∘ f) u ≡ u
+   η (inl (inl x)) = refl
+   η (inl (inr x)) = refl
+   η (inr x)       = refl
 
 +-cong : {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
-      → X ≃ A → Y ≃ B → X + Y ≃ A + B
+       → X ≃ A → Y ≃ B → X + Y ≃ A + B
 +-cong {U} {V} {W} {T} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
  where
@@ -228,62 +235,62 @@ curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
 
 ×𝟘 : {X : U ̇} → 𝟘 {V} ≃ X × 𝟘 {W}
 ×𝟘 {U} {V} {W} {X} = f , (g , ε) , (g , η)
-  where
-    f : 𝟘 → X × 𝟘
-    f ()
-    g : X × 𝟘 → 𝟘
-    g (x , ())
-    ε : (t : X × 𝟘) → (f ∘ g) t ≡ t
-    ε (x , ())
-    η : (u : 𝟘) → (g ∘ f) u ≡ u
-    η ()
+ where
+   f : 𝟘 → X × 𝟘
+   f ()
+   g : X × 𝟘 → 𝟘
+   g (x , ())
+   ε : (t : X × 𝟘) → (f ∘ g) t ≡ t
+   ε (x , ())
+   η : (u : 𝟘) → (g ∘ f) u ≡ u
+   η ()
 
 𝟙distr : {X : U ̇} {Y : V ̇} → X × Y + X ≃ X × (Y + 𝟙 {W})
 𝟙distr {U} {V} {W} {X} {Y} = f , (g , ε) , (g , η)
-  where
-    f : X × Y + X → X × (Y + 𝟙)
-    f (inl (x , y)) = x , inl y
-    f (inr x)       = x , inr *
-    g : X × (Y + 𝟙) → X × Y + X
-    g (x , inl y) = inl (x , y)
-    g (x , inr O) = inr x
-    ε : (t : X × (Y + 𝟙)) → (f ∘ g) t ≡ t
-    ε (x , inl y) = refl
-    ε (x , inr *) = refl
-    η : (u : X × Y + X) → (g ∘ f) u ≡ u
-    η (inl (x , y)) = refl
-    η (inr x)       = refl
+ where
+   f : X × Y + X → X × (Y + 𝟙)
+   f (inl (x , y)) = x , inl y
+   f (inr x)       = x , inr *
+   g : X × (Y + 𝟙) → X × Y + X
+   g (x , inl y) = inl (x , y)
+   g (x , inr O) = inr x
+   ε : (t : X × (Y + 𝟙)) → (f ∘ g) t ≡ t
+   ε (x , inl y) = refl
+   ε (x , inr *) = refl
+   η : (u : X × Y + X) → (g ∘ f) u ≡ u
+   η (inl (x , y)) = refl
+   η (inr x)       = refl
 
 Ap+ : {X : U ̇} {Y : V ̇} (Z : W ̇) → X ≃ Y → X + Z ≃ Y + Z
 Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η')
-  where
-    f' : X + Z → Y + Z
-    f' (inl x) = inl (f x)
-    f' (inr z) = inr z
-    g' : Y + Z → X + Z
-    g' (inl y) = inl (g y)
-    g' (inr z) = inr z
-    h' : Y + Z → X + Z
-    h' (inl y) = inl (h y)
-    h' (inr z) = inr z
-    ε' : (t : Y + Z) → (f' ∘ g') t ≡ t
-    ε' (inl y) = ap inl (ε y)
-    ε' (inr z) = refl
-    η' : (u : X + Z) → (h' ∘ f') u ≡ u
-    η' (inl x) = ap inl (η x)
-    η' (inr z) = refl
+ where
+   f' : X + Z → Y + Z
+   f' (inl x) = inl (f x)
+   f' (inr z) = inr z
+   g' : Y + Z → X + Z
+   g' (inl y) = inl (g y)
+   g' (inr z) = inr z
+   h' : Y + Z → X + Z
+   h' (inl y) = inl (h y)
+   h' (inr z) = inr z
+   ε' : (t : Y + Z) → (f' ∘ g') t ≡ t
+   ε' (inl y) = ap inl (ε y)
+   ε' (inr z) = refl
+   η' : (u : X + Z) → (h' ∘ f') u ≡ u
+   η' (inl x) = ap inl (η x)
+   η' (inr z) = refl
 
 ×comm : {X : U ̇} {Y : V ̇} → X × Y ≃ Y × X
 ×comm {U} {V} {X} {Y} = f , (g , ε) , (g , η)
-  where
-    f : X × Y → Y × X
-    f (x , y) = (y , x)
-    g : Y × X → X × Y
-    g (y , x) = (x , y)
-    ε : (t : Y × X) → (f ∘ g) t ≡ t
-    ε (y , x) = refl
-    η : (u : X × Y) → (g ∘ f) u ≡ u
-    η (x , y) = refl
+ where
+   f : X × Y → Y × X
+   f (x , y) = (y , x)
+   g : Y × X → X × Y
+   g (y , x) = (x , y)
+   ε : (t : Y × X) → (f ∘ g) t ≡ t
+   ε (y , x) = refl
+   η : (u : X × Y) → (g ∘ f) u ≡ u
+   η (x , y) = refl
 
 ×-cong : {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
       → X ≃ A → Y ≃ B → X × Y ≃ A × B
@@ -365,5 +372,21 @@ Ap+ {U} {V} {W} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η
     E k = dfunext fe (λ a → δ (k (f (g a))) ∙ ap k (d a))
     D : (h : X → Y) → G (F h) ≡ h
     D h = dfunext fe' (λ x → ε (h (g (f x))) ∙ ap h (e x))
+
+{-
+singleton-𝟙 : (X : U ̇) → is-singleton X → X ≃ 𝟙 {V}
+singleton-𝟙 {U} {V} {X} = {!!}
+
+sum-of-fibers : (X : U ̇) (Y : V ̇) (f : X → Y) → X ≃ Σ (fiber f)
+sum-of-fibers {U} {V} X Y f =
+  X                                   ≃⟨ ≃-sym 𝟙-lneutral ⟩
+  𝟙 × X                               ≃⟨ ×-comm ⟩
+  X × 𝟙                               ≃⟨ Σ-cong X (λ x → 𝟙) (λ x → Σ \(y : Y) → f x ≡ y) e ⟩
+  (Σ \(x : X) → Σ \(y : Y) → f x ≡ y) ≃⟨ Σ-flip X Y (λ x y → f x ≡ y) ⟩
+  (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ■
+ where
+  e : (x : X) → 𝟙 ≃ Σ \(y : Y) → f x ≡ y
+  e = {!!}
+-}
 
 \end{code}
