@@ -97,6 +97,14 @@ extensional-gives-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
 extensional'-gives-extensional : is-extensional' → is-extensional
 extensional'-gives-extensional e' x y g h = e' x y (λ u → (g u , h u))
 
+\end{code}
+
+The HoTT Book additionally requires that the underlying type is a set
+in the following definition, but this actually follows from the
+extensionality condition (see below):
+
+\begin{code}
+
 is-well-order : U ⊔ V ̇
 is-well-order = is-prop-valued × is-well-founded × is-extensional × is-transitive
 

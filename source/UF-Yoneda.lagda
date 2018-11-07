@@ -12,6 +12,7 @@ open import UF-Retracts
 open import UF-Equiv
 open import UF-FunExt
 open import UF-Equiv-FunExt
+open import UF-EquivalenceExamples
 
 \end{code}
 
@@ -622,9 +623,9 @@ to-Σ-Id' : {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
          → σ ≡ τ
 to-Σ-Id' = to-Σ-Id
 
-NatΣ-lc : (X : U ̇) (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
-        → ((x : X) → left-cancellable(ζ x)) → left-cancellable(NatΣ ζ)
-NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
+NatΣ-lc' : {X : U ̇} {A : X → V ̇} {B : X → W ̇} (ζ : Nat A B)
+         → ((x : X) → left-cancellable(ζ x)) → left-cancellable(NatΣ ζ)
+NatΣ-lc' {U} {V} {W} {X} {A} {B} ζ ζ-lc {(x , a)} {(y , b)} pq = g
   where
     p : x ≡ y
     p = pr₁ (from-Σ-Id pq)
@@ -649,7 +650,8 @@ NatΣ-lc X A B ζ ζ-lc {(x , a)} {(y , b)} pq = g
 
 yoneda-equivalence-Σ : (∀ U V → funext U V) → {X : U ̇} (A : X → V ̇)
                      → Σ A ≃ Σ \(x : X) → Nat (Id x) A
-yoneda-equivalence-Σ fe A = NatΣ-≃ A (λ x → Nat (Id x) A) (λ x → yoneda-equivalence fe x A)
+yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
+
 
 nats-are-uniquely-transports : (∀ U V → funext U V) → {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
                             → is-singleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)

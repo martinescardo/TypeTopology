@@ -483,6 +483,6 @@ module original-version-and-equivalence-with-new-version where
  agreement-lemma X = 2nd-Π-extension-formula X under
 
  agreement : (X : ℕ → U₀ ̇) → Σ¹ X ≃ Σᴵ X
- agreement X = Σ-cong ℕ∞ (X / under) (λ u → X [ u ]) (agreement-lemma X)
+ agreement X = Σ-cong (agreement-lemma X)
 
 \end{code}

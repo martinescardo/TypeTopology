@@ -157,11 +157,11 @@ _≺⟪ τ ⟫_ denotes its underlying order.
                           → ι x ≺⟪ Κ ν ⟫ ι y
                           →   x ≺⟪ Δ ν ⟫   y
 
-Κ-inf-compact       : propext U₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
+Κ-inf-compact        : propext U₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
 
 brouwer-to-oe        : B → OE
 ε₀-upper-bound       : Ordᵀ
-compact∙-ε₀-ub     : compact∙ ⟪ ε₀-upper-bound ⟫
+compact∙-ε₀-ub       : compact∙ ⟪ ε₀-upper-bound ⟫
 
 \end{code}
 

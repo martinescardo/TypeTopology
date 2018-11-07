@@ -56,18 +56,18 @@ transport-comp : {X : U ̇} (A : X → V ̇)
 transport-comp A refl refl = refl
 
 transport-comp' : {X : U ̇} (A : X → V ̇)
-                    {x y z : X} (q : x ≡ y) (p : y ≡ z)
+                  {x y z : X} (q : x ≡ y) (p : y ≡ z)
                 → transport A  (q ∙ p) ≡ transport A p ∘ transport A q
 transport-comp' A refl refl = refl
 
 transport-ap : {X : U ̇} {Y : V ̇} (A : Y → W ̇)
-              (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+               (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
              → transport (A ∘ f) p a ≡ transport A (ap f p) a
 transport-ap A f refl = refl
 
 transport-ap' : {X : U ̇} {Y : V ̇} (A : Y → W ̇)
-              (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
-             → transport (A ∘ f) p ≡ transport A (ap f p)
+                (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+              → transport (A ∘ f) p ≡ transport A (ap f p)
 transport-ap' A f refl = refl
 
 nat-transport : {X : U ̇} {A : X → V ̇} {B : X → W ̇}

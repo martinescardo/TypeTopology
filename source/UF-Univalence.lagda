@@ -48,16 +48,16 @@ is-univalent-≃ : is-univalent U → (X Y : U ̇) → (X ≡ Y) ≃ (X ≃ Y)
 is-univalent-≃ ua X Y = idtoeq X Y , ua X Y
 
 back-transport-is-pre-comp' : (ua : is-univalent U)
-                           → {X X' Y : U ̇} (e : X ≃ X') (g : X' → Y)
-                           → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e
+                            → {X X' Y : U ̇} (e : X ≃ X') (g : X' → Y)
+                            → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ e
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
   q : g ∘ Idtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
   q = ap (λ - → g ∘ -) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
 
-preComp-is-equiv : (ua : is-univalent U)
-                → {X Y Z : U ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
-preComp-is-equiv ua {X} {Y} f ise =
+pre-comp-is-equiv : (ua : is-univalent U)
+                  → {X Y Z : U ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
+pre-comp-is-equiv ua {X} {Y} f ise =
  equiv-closed-under-∼' (back-transport-is-equiv (eqtoid ua X Y (f , ise)))
                         (back-transport-is-pre-comp' ua (f , ise))
 

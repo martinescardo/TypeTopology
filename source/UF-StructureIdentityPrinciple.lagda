@@ -294,7 +294,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
    ((X , _·_) ≡ (Y , _⋆_))
        ≃⟨ fact' X Y _·_ _⋆_ ⟩
    (Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
-       ≃⟨ Σ-cong _ _ _ (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
+       ≃⟨ Σ-cong (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
    (Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')) ■
 
 \end{code}

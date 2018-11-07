@@ -21,7 +21,11 @@ open import UF-LeftCancellable
 
 Π-is-prop : funext U V → {X : U ̇} {A : X → V ̇}
           → ((x : X) → is-prop (A x)) → is-prop (Π A)
-Π-is-prop fe {X} {A} isa f g = dfunext fe (λ x → isa x (f x) (g x))
+Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
+
+Π-is-singleton : funext U V → {X : U ̇} {A : X → V ̇}
+               → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
+Π-is-singleton fe i = (λ x → pr₁ (i x)) , (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
 
 is-prop-is-prop : {X : U ̇} → funext U U → is-prop (is-prop X)
 is-prop-is-prop {U} {X} fe f g = c₁

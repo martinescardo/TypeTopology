@@ -49,7 +49,7 @@ naive-funext-from-univalence {U} ua {V} {X} {Y} {f₁} {f₂} h = γ
 
   π₁-equals-π₂ : {X : U ̇} → π₁ ≡ π₂
   π₁-equals-π₂ {X} = is-equiv-lc (λ(g : Δ X → X) → g ∘ δ)
-                                 (preComp-is-equiv ua δ δ-is-equiv) (πδ X)
+                                 (pre-comp-is-equiv ua δ δ-is-equiv) (πδ X)
 
   γ : f₁ ≡ f₂
   γ = f₁                              ≡⟨ refl ⟩

@@ -150,7 +150,7 @@ module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
   Π-extension-right-Kan g = e
    where
     φ : (g : Y → U ̇) → Nat (g ∘ j) f → Nat g f/j
-    φ g η y C (x , p) = η x (transport g (p ⁻¹) C)
+    φ g η y C (x , p) = η x (back-transport g p C)
 
     ψ : (g : Y → U ̇) → Nat g f/j → Nat (g ∘ j) f
     ψ g θ x C = θ (j x) C (x , refl)
@@ -190,7 +190,7 @@ module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
 
     Σ(f' : Y → U), Π(g : Y → U), Nat g f' = Nat (g∘f) f
 
-  should be contractible assuming univalence. Similarly for left can
+  should be contractible assuming univalence. Similarly for left Kan
   extensions as discussed below.
 
   The above formula actually give extensions up to pointwise
@@ -203,6 +203,9 @@ module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
 
   Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
+
+  Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (λ (c : f/j (j x)) → c (x , refl))
+  Π-extension-equivalence e x = pr₂ (Π-extension-in-range e x)
 
   Π-extension-out-of-range : ∀ {W} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {W}
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ)
@@ -221,6 +224,9 @@ module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
 
   2nd-Π-extension-formula : (y : Y) → f/j(y) ≃ Π \(x : X) → j x ≡ y → f x
   2nd-Π-extension-formula y = curry-uncurry fe
+
+  2nd-Π-extension-formula' : (y : Y) → f/j(y) ≃ Nat (λ x → j x ≡ y) f
+  2nd-Π-extension-formula' = 2nd-Π-extension-formula
 
   2nd-Σ-extension-formula : (y : Y) → f∖j(y) ≃ Σ \(x : X) → (j x ≡ y) × f x
   2nd-Σ-extension-formula y = Σ-assoc
@@ -286,7 +292,8 @@ respectively:
 
 \end{code}
 
-(Conjectural conjecture (2nd July 2018): if j is an embedding, then we have an embedding Σ f → Σ f/j.)
+(Conjectural conjecture (2nd July 2018): if j is an embedding, then we
+have an embedding Σ f → Σ f/j.)
 
 We now introduce the notations f / j and f ∖ j for the Π- and
 Σ-extensions, outside the above anonymous module.
@@ -350,6 +357,10 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
   fg : (p : Id (j x) y) → f(g p) ≡ p
   fg refl = refl
 
+Σ-image-of-singleton-lemma' : {X : U ̇} {Y : V ̇} → (j : X → Y) (x : X) (y : Y)
+                            → (((Id x) ∖ j) y) ≃ (j x ≡ y)
+Σ-image-of-singleton-lemma' = Σ-image-of-singleton-lemma
+
 Σ-image-of-singleton : {X Y : U ̇}
                      → is-univalent U
                      → (j : X → Y) (x : X) → Σ-image j (Id x) ≡ Id (j x)
@@ -361,9 +372,35 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
    b : Σ-image j (Id x) ≡ Id (j x)
    b = dfunext (fe U (U ′)) a
 
+Σ-image-of-singleton' : {X Y : U ̇}
+                      → is-univalent U
+                      → (j : X → Y) (x : X) → (Id x) ∖ j ≡ Id (j x)
+Σ-image-of-singleton' = Σ-image-of-singleton
+
 \end{code}
 
 There is more to do about this.
+
+\begin{code}
+
+Π-extension-is-extension : is-univalent U → {X Y : U ̇} (j : X → Y)
+                         → is-embedding j
+                         → (f : X → U ̇) → (f / j) ∘ j ∼ f
+Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-in-range f j e x)
+
+Π-extension-is-extension' : is-univalent U → funext U (U ′)
+                          → {X Y : U ̇} (j : X → Y)
+                          → is-embedding j
+                          → (f : X → U ̇) → (f / j) ∘ j ≡ f
+Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
+
+Π-extension-is-extension'' : is-univalent U → funext U (U ′) → funext (U ′) (U ′)
+                           → {X Y : U ̇} (j : X → Y)
+                           → is-embedding j
+                           → (λ f → (f / j) ∘ j) ≡ id
+Π-extension-is-extension'' ua fe fe' j e = dfunext fe' (Π-extension-is-extension' ua fe j e)
+
+\end{code}
 
 We now consider injectivity, defined with Σ rather than ∃ (that is, as
 data rather than property):
@@ -372,10 +409,10 @@ data rather than property):
 
 injective-type : W ̇ → U ′ ⊔ V ′ ⊔ W ̇
 injective-type {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
-                       → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
+                         → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
 universes-are-injective-Π : is-univalent U → injective-type {U} {U} (U ̇)
-universes-are-injective-Π ua j e f = f / j , λ x → eqtoid ua _ _ (Π-extension-in-range f j e x)
+universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 
 universes-are-injective-Σ : is-univalent U → injective-type {U} {U} (U ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)

@@ -28,9 +28,19 @@ left-cancellable-closed-under-∘ : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → 
                                 → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
 left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 
+NatΣ-lc : {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B)
+        → ((x : X) → left-cancellable(f x))
+        → left-cancellable (NatΣ f)
+NatΣ-lc {U} {V} {W} {X} {A} {B} f flc {x , a} {x' , a'} p = to-Σ-≡ (ap pr₁ p , γ)
+ where
+  γ : transport A (ap pr₁ p) a ≡ a'
+  γ = flc x' (f x' (transport A (ap pr₁ p) a) ≡⟨ nat-transport f (ap pr₁ p) ⟩
+              transport B (ap pr₁ p) (f x a)  ≡⟨ from-Σ-≡' p ⟩
+              f x' a'                         ∎)
+
 NatΠ-lc : {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B)
-    → ((x : X) → left-cancellable(f x))
-    → {g g' : Π A} → NatΠ f g ≡ NatΠ f g' → g ∼ g'
+        → ((x : X) → left-cancellable(f x))
+        → {g g' : Π A} → NatΠ f g ≡ NatΠ f g' → g ∼ g'
 NatΠ-lc f flc {g} {g'} p x = flc x (happly p x)
 
 \end{code}

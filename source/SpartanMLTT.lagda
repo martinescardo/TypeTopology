@@ -254,6 +254,14 @@ NatΣ ζ (x , a) = (x , ζ x a)
 NatΠ : {X : U ̇} {A : X → V ̇} {B : X → W ̇} → Nat A B → Π A → Π B
 NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
 
+ΠΣ-distr : {X : U ̇} {A : X → V ̇} {P : (x : X) → A x → W ̇}
+         → (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
+ΠΣ-distr φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
+
+ΠΣ-distr-back : {X : U ̇} {A : X → V ̇} {P : (x : X) → A x → W ̇}
+              → (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
+ΠΣ-distr-back (f , φ) x = f x , φ x
+
 left-cancellable : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
 
@@ -408,6 +416,6 @@ infix  1 _∎
 infixr 0 _≡⟨_⟩_
 infixl 2 _∙_
 infix  4  _∼_
-infixl 0 -id
+infix 0 -id
 
 \end{code}
