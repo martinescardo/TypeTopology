@@ -82,8 +82,8 @@ funext-from-univalence' U V ua ua' = naive-funext-gives-funext'
 global-funext-from-univalence : (∀ U → is-univalent U) → ∀ U V → funext U V
 global-funext-from-univalence ua U V = funext-from-univalence' U V (ua U) (ua (U ⊔ V))
 
-funext-from-successive-univalence : ∀ U → is-univalent U → is-univalent (U ′) → funext U (U ′)
-funext-from-successive-univalence U = funext-from-univalence' U (U ′)
+funext-from-successive-univalence : ∀ U → is-univalent U → is-univalent (U ⁺) → funext U (U ⁺)
+funext-from-successive-univalence U = funext-from-univalence' U (U ⁺)
 
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

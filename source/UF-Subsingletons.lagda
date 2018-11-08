@@ -22,7 +22,7 @@ open import UF-Base
 is-subsingleton : U ̇ → U ̇
 is-subsingleton X = (x y : X) → x ≡ y
 
-Ω : ∀ U → U ′ ̇
+Ω : ∀ U → U ⁺ ̇
 Ω U = Σ \(P : U ̇) → is-subsingleton P
 
 \end{code}
@@ -331,7 +331,7 @@ Formulation of the K axiom for a universe U.
 
 \begin{code}
 
-K : ∀ U → U ′ ̇
+K : ∀ U → U ⁺ ̇
 K U = (X : U ̇) → is-set X
 
 \end{code}
@@ -340,7 +340,7 @@ Formulation of propositional extensionality:
 
 \begin{code}
 
-propext : ∀ U → U ′ ̇
+propext : ∀ U → U ⁺ ̇
 propext U = {P Q : U ̇} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
 
 \end{code}

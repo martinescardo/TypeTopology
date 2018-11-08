@@ -84,7 +84,7 @@ different values is a taboo.
 
 \begin{code}
 
-extensional :(U ̇ → 𝟚) → U ′ ̇
+extensional :(U ̇ → 𝟚) → U ⁺ ̇
 extensional P = ∀ X Y → X ≃ Y → P X ≡ P Y
 
 Rice's-Theorem-for-U :

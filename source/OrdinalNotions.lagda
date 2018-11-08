@@ -54,7 +54,7 @@ transfinite-induction' P f = accessible-induction (λ x _ → P x)
 is-well-founded : U ⊔ V ̇
 is-well-founded = (x : X) → is-accessible x
 
-Well-founded : ∀ {W} → U ⊔ V ⊔ W ′ ̇
+Well-founded : ∀ {W} → U ⊔ V ⊔ W ⁺ ̇
 Well-founded {W} = (P : X → W ̇) → ((x : X) → ((y : X) → y < x → P y) → P x)
                                 → (x : X) → P x
 

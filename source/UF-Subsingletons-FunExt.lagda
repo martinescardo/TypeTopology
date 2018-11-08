@@ -144,7 +144,7 @@ PropExt {U} fe pe {p} {q} f g =
   pc : {p q : Ω U} → Σ \(f : p ≡ q → p ≡ q) → constant f
   pc {p} {q} = (f p q , constant-f p q)
 
-powerset-is-set : {A : U ̇} → funext U (V ′) → funext V V → propext V
+powerset-is-set : {A : U ̇} → funext U (V ⁺) → funext V V → propext V
                 → is-set (A → Ω V)
 powerset-is-set {U} fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
 
@@ -160,8 +160,8 @@ For the moment we work with U₀ here because 𝟙 and ⊤ live in U₀:
 
 \begin{code}
 
-equal-⊤-is-true : (P : U ̇) (hp : is-prop P)
-               → (P , hp) ≡ ⊤ → P
+equal-⊤-is-true : (P : U ̇) (i : is-prop P)
+               → (P , i) ≡ ⊤ → P
 equal-⊤-is-true P hp r = f *
  where
   s : 𝟙 ≡ P
@@ -169,20 +169,20 @@ equal-⊤-is-true P hp r = f *
   f : 𝟙 → P
   f = transport id s
 
-true-is-equal-⊤ : propext U → funext U U → (P : U ̇) (hp : is-prop P)
-                → P → (P , hp) ≡ ⊤
-true-is-equal-⊤ pe fe P hp x = to-Σ-≡ (pe hp 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
+true-is-equal-⊤ : propext U → funext U U → (P : U ̇) (i : is-prop P)
+                → P → (P , i) ≡ ⊤
+true-is-equal-⊤ pe fe P i x = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
                                         is-prop-is-prop fe _ _)
 
 Ω-ext : propext U → funext U U → {p q : Ω U}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
-Ω-ext pe fe {(P , isp)} {(Q , isq)} f g = to-Σ-≡ (pe isp isq I II ,
-                                                   is-prop-is-prop fe _ _ )
+Ω-ext pe fe {(P , i)} {(Q , j)} f g = to-Σ-≡ (pe i j I II ,
+                                              is-prop-is-prop fe _ _ )
  where
   I : P → Q
-  I x = equal-⊤-is-true Q isq (f (true-is-equal-⊤ pe fe P isp x))
+  I x = equal-⊤-is-true Q j (f (true-is-equal-⊤ pe fe P i x))
   II : Q → P
-  II y = equal-⊤-is-true P isp (g (true-is-equal-⊤ pe fe Q isq y))
+  II y = equal-⊤-is-true P i (g (true-is-equal-⊤ pe fe Q j y))
 
 \end{code}
 

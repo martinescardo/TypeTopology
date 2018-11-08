@@ -155,7 +155,8 @@ propext-funext-give-prop-ua {U} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
 
 \end{code}
 
-The so-called type-theoretic axiom of choice:
+The so-called type-theoretic axiom of choice (already defined in
+SpartanMLTT with another name - TODO):
 
 \begin{code}
 
@@ -166,7 +167,7 @@ TT-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
 
 \end{code}
 
-Its inverse:
+Its inverse (also already defined - TODO):
 
 \begin{code}
 
@@ -178,7 +179,8 @@ TT-unchoice (f , g) x = (f x) , (g x)
 \end{code}
 
 The proof that they are mutually inverse, where one direction requires
-function extensionality.
+function extensionality (this already occurs in UF-EquivalenceExamples
+- TODO):
 
 \begin{code}
 
@@ -210,24 +212,5 @@ TT-unchoice-is-equiv : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇
 TT-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
    (TT-choice , TT-unchoice-choice {U} {V} {W} {X} {Y} {A} fe) ,
    (TT-choice , TT-choice-unchoice {U} {V} {W} {X} {Y} {A})
-
-\end{code}
-
-The domain of a function is equivalent to its graph.
-
-\begin{code}
-
-graph-domain-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
-                  → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
-graph-domain-equiv {U} {V} {X} {Y} f = h , ((g , hg) , (g , gh))
- where
-  g : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
-  g x = f x , x , refl
-  h : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
-  h (.(f x) , x , refl) = x
-  gh : (σ : Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → g (h σ )≡ σ
-  gh (.(f x) , x , refl) = refl
-  hg : (x : X) → h (g x) ≡ x
-  hg x = refl
 
 \end{code}

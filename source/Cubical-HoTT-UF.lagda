@@ -58,7 +58,7 @@ open import Cubical public
            ; U₀             -- The first universe (originally called lzero).
            ; _̇              -- We write X : U ̇ to say that X is in the universe U
                             -- (originally X : Set U).
-           ; _′             -- The successor of a universe (originally called lsucc).
+           ; _⁺             -- The successor of a universe (originally called lsucc).
            ; _⊔_            -- U ⊔ V is the first universe above or equal U and V.
            )
 

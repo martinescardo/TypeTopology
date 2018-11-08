@@ -19,10 +19,10 @@ module Ordinals
        (fe : ∀ U V → funext U V)
        where
 
-OS : U ̇ → U ′ ̇
+OS : U ̇ → U ⁺ ̇
 OS {U} X = Σ \(_<_ : X → X → U ̇) → is-well-order _<_
 
-Ordinal : ∀ U → U ′ ̇
+Ordinal : ∀ U → U ⁺ ̇
 Ordinal U = Σ \(X : U ̇) → OS X
 
 \end{code}
@@ -83,7 +83,7 @@ isolated.
 
 \begin{code}
 
-Ordinalᵀ : ∀ U → U ′ ̇
+Ordinalᵀ : ∀ U → U ⁺ ̇
 Ordinalᵀ U = Σ \(α : Ordinal U) → has-top (underlying-order α)
 
 [_] : Ordinalᵀ U → Ordinal U

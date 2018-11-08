@@ -370,7 +370,7 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
    a y = eqtoid ua (Σ-image j (Id x) y) (Id (j x) y) (Σ-image-of-singleton-lemma j x y)
 
    b : Σ-image j (Id x) ≡ Id (j x)
-   b = dfunext (fe U (U ′)) a
+   b = dfunext (fe U (U ⁺)) a
 
 Σ-image-of-singleton' : {X Y : U ̇}
                       → is-univalent U
@@ -388,13 +388,13 @@ There is more to do about this.
                          → (f : X → U ̇) → (f / j) ∘ j ∼ f
 Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-in-range f j e x)
 
-Π-extension-is-extension' : is-univalent U → funext U (U ′)
+Π-extension-is-extension' : is-univalent U → funext U (U ⁺)
                           → {X Y : U ̇} (j : X → Y)
                           → is-embedding j
                           → (f : X → U ̇) → (f / j) ∘ j ≡ f
 Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
 
-Π-extension-is-extension'' : is-univalent U → funext U (U ′) → funext (U ′) (U ′)
+Π-extension-is-extension'' : is-univalent U → funext U (U ⁺) → funext (U ⁺) (U ⁺)
                            → {X Y : U ̇} (j : X → Y)
                            → is-embedding j
                            → (λ f → (f / j) ∘ j) ≡ id
@@ -407,7 +407,7 @@ data rather than property):
 
 \begin{code}
 
-injective-type : W ̇ → U ′ ⊔ V ′ ⊔ W ̇
+injective-type : W ̇ → U ⁺ ⊔ V ⁺ ⊔ W ̇
 injective-type {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
                          → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 

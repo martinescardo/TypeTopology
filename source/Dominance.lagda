@@ -14,7 +14,7 @@ open import UF-FunExt
 
 module Dominance (U : Universe) (fe : ∀ U V → funext U V) where
 
-U' = U ′
+U⁺ = U ⁺
 
 data 𝟙 : U ̇ where
  ⋆ : 𝟙
@@ -22,22 +22,22 @@ data 𝟙 : U ̇ where
 𝟙-is-prop : is-prop 𝟙
 𝟙-is-prop ⋆ ⋆ = refl
 
-D2 : (U ̇ → U ̇) → U' ̇
+D2 : (U ̇ → U ̇) → U⁺ ̇
 D2 d = (X : U ̇) → is-prop(d X)
 
-D3 : (U ̇ → U ̇) → U' ̇
+D3 : (U ̇ → U ̇) → U⁺ ̇
 D3 d = (X : U ̇) → d X → is-prop X
 
 D4 : (U ̇ → U ̇) → U ̇
 D4 d = d 𝟙
 
-D5 : (U ̇ → U ̇) → U' ̇
+D5 : (U ̇ → U ̇) → U⁺ ̇
 D5 d = (P : U ̇) (Q : P → U ̇) → d P → ((p : P) → d(Q p)) → d(Σ Q)
 
-is-dominance : (U ̇ → U ̇) → U' ̇
+is-dominance : (U ̇ → U ̇) → U⁺ ̇
 is-dominance d = D2 d × D3 d × D4 d × D5 d
 
-Dominance : U' ̇
+Dominance : U⁺ ̇
 Dominance = Σ is-dominance
 
 is-dominant : (D : Dominance) → U ̇ → U ̇
@@ -61,15 +61,15 @@ is-dominance-is-prop d = iis-prop-is-prop lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
-               (Π-is-prop (fe U' U) λ _ → is-prop-is-prop (fe U U))
+               (Π-is-prop (fe U⁺ U) λ _ → is-prop-is-prop (fe U U))
                λ _ → Σ-is-prop
-                       (Π-is-prop (fe U' U)
+                       (Π-is-prop (fe U⁺ U)
                           λ _ → Π-is-prop (fe U U)
                                    λ _ → is-prop-is-prop (fe U U))
                        λ _ → Σ-is-prop
                                (being-dominant-is-prop (d , isd) 𝟙)
-                               λ _ → Π-is-prop (fe U' U')
-                                        λ _ → Π-is-prop (fe U' U)
+                               λ _ → Π-is-prop (fe U⁺ U⁺)
+                                        λ _ → Π-is-prop (fe U⁺ U)
                                                  λ Q → Π-is-prop (fe U U)
                                                           λ _ → Π-is-prop (fe U U)
                                                                    λ _ → being-dominant-is-prop (d , isd) (Σ Q)
@@ -100,13 +100,13 @@ module lift (d : U ̇ → U ̇) (isd : is-dominance d) where
  D : Dominance
  D = (d , isd)
 
- L : ∀ {V} (X : V ̇) → U' ⊔ V ̇
+ L : ∀ {V} (X : V ̇) → U⁺ ⊔ V ̇
  L X = Σ \(P : U ̇) → d P × (P → X)
 
- LL : ∀ {V} (X : V ̇) → U' ⊔ V ̇
+ LL : ∀ {V} (X : V ̇) → U⁺ ⊔ V ̇
  LL X = L(L X)
 
- _⇀_ : ∀ {V W} → V ̇ → W ̇ → U' ⊔ V ⊔ W ̇
+ _⇀_ : ∀ {V W} → V ̇ → W ̇ → U⁺ ⊔ V ⊔ W ̇
  X ⇀ Y = X → L Y
 
  isDefined : ∀ {V} {X : V ̇} → L X → U ̇

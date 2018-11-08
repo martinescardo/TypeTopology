@@ -80,11 +80,11 @@ extra parameter in everything. So we are not using this anymore.
 
 \begin{code}
 
-propositional-truncations-exist : ∀ U V → U ′ ⊔ V ′ ̇
+propositional-truncations-exist : ∀ U V → U ⁺ ⊔ V ⁺ ̇
 propositional-truncations-exist U V = (X : U ̇) → Σ \(X' : U ̇) → is-prop X' × (X → X')
                                         × ((P : V ̇) → is-prop P → (X → P) → X' → P)
 
-propositional-truncations-exist' : ∀ U → U ′ ̇
+propositional-truncations-exist' : ∀ U → U ⁺ ̇
 propositional-truncations-exist' U = propositional-truncations-exist U U
 
 module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist' U) where

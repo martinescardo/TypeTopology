@@ -106,7 +106,7 @@ module _
 
 Now, Ω V is the type of subsingletons, or propositions, or
 h-propositions, or mere propositions, in the universe V, which lives
-in the next universe V ′.
+in the next universe V ⁺.
 
 From the relation _≈_ : X → (X → V ̇) we define a relation
 X → (X → Ω V), which of course is formally a function. We then take
@@ -122,16 +122,16 @@ truncations.
 
 \end{code}
 
-Then the quotient lives in the least upper bound of U and V ′, where V ′
+Then the quotient lives in the least upper bound of U and V ⁺, where V ⁺
 is the successor of the universe V:
 
 \begin{code}
 
- X/≈ : U ⊔ (V ′) ̇
+ X/≈ : U ⊔ (V ⁺) ̇
  X/≈ = image equiv-rel
 
  X/≈-is-set : is-set X/≈
- X/≈-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ′)) (fe V V) pe) ptisp
+ X/≈-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ⁺)) (fe V V) pe) ptisp
 
  η : X → X/≈
  η = corestriction equiv-rel
@@ -172,7 +172,7 @@ points are mapped to equal points:
 \begin{code}
 
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
- η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe U (V ′))
+ η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe U (V ⁺))
                                       (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
                                                       is-prop-is-prop (fe V V) _ _)) ,
                                     ptisp _ _)
@@ -233,7 +233,7 @@ universe W.
         p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
       γ : (x' : X/≈) → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-      γ x' = is-prop-is-prop (fe (U ⊔ (V ′) ⊔ W) (U ⊔ (V ′) ⊔ W))
+      γ x' = is-prop-is-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
 
    k : (x' : X/≈) → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step
@@ -263,7 +263,7 @@ universe W.
      w = happly (r ∙ s ⁻¹)
 
      t : f' ≡ f''
-     t = dfunext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
+     t = dfunext (fe (U ⊔ V ⁺) W) (η-induction _ (λ _ → iss) w)
 
      u : f'' ∘ η ≡ f
      u = transport (λ - → - ∘ η ≡ f) t r

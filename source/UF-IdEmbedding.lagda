@@ -89,14 +89,14 @@ Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   f : (x : X) → Id x ≡ A → A x
   f x = f₂ x ∘ f₁ x ∘ f₀ x
   f₀-lc : (x : X) → left-cancellable(f₀ x)
-  f₀-lc x = happly-lc (fe U (U ′)) (Id x) A
+  f₀-lc x = happly-lc (fe U (U ⁺)) (Id x) A
   f₁-lc : (x : X) → left-cancellable(f₁ x)
   f₁-lc x = g
     where
       l : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → (x : X) → φ x ≡ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
       g : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → φ ≡ φ'
-      g p = dfunext (fe U (U ′)) (l p)
+      g p = dfunext (fe U (U ⁺)) (l p)
   f₂-lc : (x : X) → left-cancellable(f₂ x)
   f₂-lc x {η} {η'} p = dfunext (fe U U) (λ y → dfunext (fe U U) (l y))
     where
@@ -159,7 +159,7 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding' : K (U ′) → (∀ U V → funext U V)
+K-id-embedding' : K (U ⁺) → (∀ U V → funext U V)
                → {X : U ̇} → is-embedding(Id {U} {X})
 K-id-embedding' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
@@ -172,7 +172,7 @@ But actually function extensionality is not needed for this: K alone suffices.
 Id-lc : {X : U ̇} → left-cancellable (Id {U} {X})
 Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-id-embedding : K (U ′) → {X : U ̇} → is-embedding(Id {U} {X})
+K-id-embedding : K (U ⁺) → {X : U ̇} → is-embedding(Id {U} {X})
 K-id-embedding {U} k {X} = lc-embedding-with-K Id Id-lc k
 
 \end{code}

@@ -32,6 +32,24 @@ curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
   uc : ∀ f → u (c f) ≡ f
   uc f = dfunext (fe (U ⊔ V) W) (λ w → refl)
 
+Σ-≡-≃ : {X : U ̇} {A : X → V ̇} {σ τ : Σ A}
+      → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+Σ-≡-≃ {U} {V} {X} {A} {x , a} {y , b} = from-Σ-≡ , (to-Σ-≡ , η) , (to-Σ-≡ , ε)
+ where
+  η : (σ : Σ \(p : x ≡ y) → transport A p a ≡ b) → from-Σ-≡ (to-Σ-≡ σ) ≡ σ
+  η (refl , refl) = refl
+  ε : (q : x , a ≡ y , b) → to-Σ-≡ (from-Σ-≡ q) ≡ q
+  ε refl = refl
+
+×-≡-≃ : {X : U ̇} {A : V ̇} {σ τ : X × A}
+      → (σ ≡ τ) ≃ (pr₁ σ ≡ pr₁ τ) × (pr₂ σ ≡ pr₂ τ)
+×-≡-≃ {U} {V} {X} {A} {x , a} {y , b} = from-×-≡' , (to-×-≡' , η) , (to-×-≡' , ε)
+ where
+  η : (t : (x ≡ y) × (a ≡ b)) → from-×-≡' (to-×-≡' t) ≡ t
+  η (refl , refl) = refl
+  ε : (u : x , a ≡ y , b) → to-×-≡' (from-×-≡' u) ≡ u
+  ε refl = refl
+
 Σ-assoc : {X : U ̇} {Y : X → V ̇} {Z : Σ Y → W ̇}
         → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))
 Σ-assoc {U} {V} {W} {X} {Y} {Z} = c , (u , λ τ → refl) , (u , λ σ → refl)
@@ -41,9 +59,9 @@ curry-uncurry {U} {V} {W} fe {X} {Y} {Z} = c , (u , cu) , (u , uc)
   u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
   u (x , (y , z)) = ((x , y) , z)
 
-Σ-flip : (X : U ̇) (Y : V ̇) (A : X → Y → W ̇)
+Σ-flip : {X : U ̇} {Y : V ̇} {A : X → Y → W ̇}
        → (Σ \(x : X) → Σ \(y : Y) → A x y) ≃ (Σ \(y : Y) → Σ \(x : X) → A x y)
-Σ-flip {U} {V} X Y A = f , (g , η) , (g , ε)
+Σ-flip {U} {V} {W} {X} {Y} {A} = f , (g , η) , (g , ε)
  where
   f : (Σ \(x : X) → Σ \(y : Y) → A x y) → (Σ \(y : Y) → Σ \(x : X) → A x y)
   f (x , y , p) = y , x , p
@@ -511,20 +529,65 @@ NatΠ-equiv A B ζ fe fe' i = is-vv-equiv-is-equiv
         → ((x : X) → A x ≃ B x) → Π A ≃ Π B
 Π-cong' A B fe fe' e = NatΠ (λ x → pr₁(e x)) , NatΠ-equiv A B (λ x → pr₁(e x)) fe fe' (λ x → pr₂(e x))
 
-{-
-singleton-𝟙 : (X : U ̇) → is-singleton X → X ≃ 𝟙 {V}
-singleton-𝟙 {U} {V} {X} = {!!}
+≡-cong : {X : U ̇} (x y : X) {x' y' : X} → x ≡ x' → y ≡ y' → (x ≡ y) ≃ (x' ≡ y')
+≡-cong x y refl refl = ≃-refl (x ≡ y)
+
+≡-cong-l : {X : U ̇} (x y : X) {x' : X} → x ≡ x' → (x ≡ y) ≃ (x' ≡ y)
+≡-cong-l x y refl = ≃-refl (x ≡ y)
+
+≡-cong-r : {X : U ̇} (x y : X) {y' : X} → y ≡ y' → (x ≡ y) ≃ (x ≡ y')
+≡-cong-r x y refl = ≃-refl (x ≡ y)
+
+≡-flip : {X : U ̇} {x y : X} → (x ≡ y) ≃ (y ≡ x)
+≡-flip = _⁻¹ , (_⁻¹ , ⁻¹-involutive) , (_⁻¹ , ⁻¹-involutive)
+
+singleton-≃ : {X : U ̇} {Y : V ̇} → is-singleton X → is-singleton Y → X ≃ Y
+singleton-≃ {U} {V} (c , φ) (d , γ) = (λ _ → d) , ((λ _ → c) , γ) , ((λ _ → c) , φ)
+
+{- TODO: probably remove this.
+singleton-𝟙 : {X : U ̇} → is-singleton X → X ≃ 𝟙 {V}
+singleton-𝟙 i = singleton-≃ i 𝟙-is-singleton
+
+singleton-𝟙' : {X : U ̇} → is-singleton X → 𝟙 {V} ≃ X
+singleton-𝟙' = singleton-≃ 𝟙-is-singleton
+-}
+
+𝟙-≡-≃ : (P : U ̇) → funext U U → propext U
+      → is-prop P → (𝟙 ≡ P) ≃ P
+𝟙-≡-≃ P fe pe i = (λ q → Idtofun q *) , (f , η) , (f , ε)
+ where
+  f : P → 𝟙 ≡ P
+  f p = pe 𝟙-is-prop i (λ _ → p) unique-to-𝟙
+  η : (p : P) → Idtofun (f p) * ≡ p
+  η p = i (Idtofun (f p) *) p
+  ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
+  ε q = equal-to-prop-is-prop pe fe P i 𝟙 (f (Idtofun q *)) q
 
 sum-of-fibers : (X : U ̇) (Y : V ̇) (f : X → Y) → X ≃ Σ (fiber f)
 sum-of-fibers {U} {V} X Y f =
-  X                                   ≃⟨ ≃-sym 𝟙-lneutral ⟩
-  𝟙 × X                               ≃⟨ ×-comm ⟩
-  X × 𝟙                               ≃⟨ Σ-cong X (λ x → 𝟙) (λ x → Σ \(y : Y) → f x ≡ y) e ⟩
-  (Σ \(x : X) → Σ \(y : Y) → f x ≡ y) ≃⟨ Σ-flip X Y (λ x y → f x ≡ y) ⟩
+  X                                   ≃⟨ ≃-sym (𝟙-rneutral {U} {U}) ⟩
+  X × 𝟙                               ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton
+                                                (identifications-from-singleton (f x))) ⟩
+  (Σ \(x : X) → Σ \(y : Y) → f x ≡ y) ≃⟨ Σ-flip ⟩
   (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ■
+
+\end{code}
+
+Alternatively, where we should change the name of this function:
+
+\begin{code}
+
+graph-domain-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
+                   → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
+graph-domain-equiv {U} {V} {X} {Y} f = h , ((g , hg) , (g , gh))
  where
-  e : (x : X) → 𝟙 ≃ Σ \(y : Y) → f x ≡ y
-  e = {!!}
--}
+  g : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  g x = f x , x , refl
+  h : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  h (.(f x) , x , refl) = x
+  gh : (σ : Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → g (h σ )≡ σ
+  gh (.(f x) , x , refl) = refl
+  hg : (x : X) → h (g x) ≡ x
+  hg x = refl
 
 \end{code}

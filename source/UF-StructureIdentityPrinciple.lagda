@@ -153,7 +153,7 @@ module gsip
 \begin{code}
 
   private
-    Ψ : (A : Σ S) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ′ ⊔ V ̇
+    Ψ : (A : Σ S) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⁺ ⊔ V ̇
     Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ≡ (Y , s)
     ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     ψ A s υ = to-Σ-≡' (S-id-structure ⟨ A ⟩ (structure A) s υ)
@@ -248,7 +248,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
        (λ X m n → id)
        (λ A m υ → refl-left-neutral)
 
- ∞-Magma : U ′ ̇
+ ∞-Magma : U ⁺ ̇
  ∞-Magma = Σ S
 
  fact : (A B : ∞-Magma)
@@ -583,7 +583,7 @@ axioms:
 
 \begin{code}
 
- Monoid : U ′ ̇
+ Monoid : U ⁺ ̇
  Monoid = Σ \(X : U ̇) → Σ \(s : S X) → Axioms X s
 
 \end{code}

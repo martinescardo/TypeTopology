@@ -361,7 +361,7 @@ module Blechschmidt' (pt : PropTrunc) where
 
  Π-projection-has-section :
     {A : U ̇} {X : A → V ̇}
-  → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+  → funext V ((U ⊔ W)⁺) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
   → (a₀ : A) → is-h-isolated a₀ → has-section (λ (f : (a : A) → X a → Ω (U ⊔ W)) → f a₀)
  Π-projection-has-section {U} {V} {W} {A} {X} fe fe' pe a₀ ish = s , rs
   where
@@ -387,7 +387,7 @@ module Blechschmidt' (pt : PropTrunc) where
                      is-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  usr-lemma : {A : U ̇} (X : A → V ̇)
-           → funext V ((U ⊔ W)′) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
+           → funext V ((U ⊔ W)⁺) → funext (U ⊔ W) (U ⊔ W) → propext (U ⊔ W)
            → (a₀ : A)
            → is-h-isolated a₀
            → retract ((a : A) → X a → Ω (U ⊔ W)) of X a₀
@@ -406,25 +406,25 @@ We now work with the following assumptions:
 
  module _
    (U V : Universe)
-   (fe' : funext (U ′ ⊔ V) (U ′))
+   (fe' : funext (U ⁺ ⊔ V) (U ⁺))
    (fe  : funext U U)
    (fe₀ : funext U U₀)
    (pe  : propext U)
    (A   : U ̇)
-   (X   : A → U ′ ⊔ V ̇)
+   (X   : A → U ⁺ ⊔ V ̇)
    (iss : is-set A)
    where
 
 \end{code}
 
-NB. If V is U or U', then X : A → U ′ ̇.
+NB. If V is U or U', then X : A → U ⁺ ̇.
 
 \begin{code}
 
-  universe-set-regular' : Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≃ B)
+  universe-set-regular' : Σ \(B : U ⁺ ⊔ V ̇) → (a : A) → ¬(X a ≃ B)
   universe-set-regular' = B , φ
     where
-     B : U ′ ⊔ V ̇
+     B : U ⁺ ⊔ V ̇
      B = (a : A) → X a → Ω U
      φ : (a : A) → ¬(X a ≃ B)
      φ a p = retract-version.not-no-fp fe₀ (γ (not fe₀))
@@ -432,19 +432,19 @@ NB. If V is U or U', then X : A → U ′ ̇.
        retr : retract B of (X a)
        retr = equiv-retract-r p
        γ : (f : Ω U → Ω U) → Σ \(p : Ω U) → p ≡ f p
-       γ = usr-lemma {U} {V ⊔ U ′} {U} {A} X fe' fe pe a iss retr
+       γ = usr-lemma {U} {V ⊔ U ⁺} {U} {A} X fe' fe pe a iss retr
 
-  universe-set-regular : Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
+  universe-set-regular : Σ \(B : U ⁺ ⊔ V ̇) → (a : A) → ¬(X a ≡ B)
   universe-set-regular = γ universe-set-regular'
    where
-    γ : (Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≃ B))
-      → (Σ \(B : U ′ ⊔ V ̇) → (a : A) → ¬(X a ≡ B))
+    γ : (Σ \(B : U ⁺ ⊔ V ̇) → (a : A) → ¬(X a ≃ B))
+      → (Σ \(B : U ⁺ ⊔ V ̇) → (a : A) → ¬(X a ≡ B))
     γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
   Universe-set-regular : ¬(is-surjection X)
   Universe-set-regular s = ptrec 𝟘-is-prop (uncurry φ) e
    where
-    B : U ′ ⊔ V ̇
+    B : U ⁺ ⊔ V ̇
     B = pr₁ universe-set-regular
     φ : ∀ a → ¬(X a ≡ B)
     φ = pr₂ universe-set-regular

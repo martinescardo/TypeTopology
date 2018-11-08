@@ -20,13 +20,13 @@ naive-funext here.
 
 \begin{code}
 
-naive-funext : ∀ U V → U ′ ⊔ V ′ ̇
+naive-funext : ∀ U V → U ⁺ ⊔ V ⁺ ̇
 naive-funext U V = {X : U ̇} {Y : V ̇} {f g : X → Y} → f ∼ g → f ≡ g
 
-DN-funext : ∀ U V → U ′ ⊔ V ′ ̇
+DN-funext : ∀ U V → U ⁺ ⊔ V ⁺ ̇
 DN-funext U V = {X : U ̇} {A : X → V ̇} {f g : Π A} → f ∼ g → f ≡ g
 
-funext : ∀ U V → U ′ ⊔ V ′ ̇
+funext : ∀ U V → U ⁺ ⊔ V ⁺ ̇
 funext U V = {X : U ̇} {A : X → V ̇} (f g : Π A) → is-equiv (happly' f g)
 
 ≃-funext : funext U V → {X : U ̇} {A : X → V ̇} (f g : Π A)

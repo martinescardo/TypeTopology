@@ -13,7 +13,7 @@ open import UF-Equiv
 open import UF-LeftCancellable
 open import UF-Subsingletons-Equiv
 
-is-univalent : ∀ U → U ′ ̇
+is-univalent : ∀ U → U ⁺ ̇
 is-univalent U = (X Y : U ̇) → is-equiv(idtoeq X Y)
 
 eqtoid : is-univalent U → (X Y : U ̇) → X ≃ Y → X ≡ Y
@@ -69,7 +69,7 @@ show that the identity equivalences satisfy it.
 
 \begin{code}
 
-≃-induction : (U V : Universe) → (U ⊔ V)′ ̇
+≃-induction : (U V : Universe) → (U ⊔ V)⁺ ̇
 ≃-induction U V = (X : U ̇) (A : (Y : U ̇) → X ≃ Y → V ̇)
                  → A X (≃-refl X) → (Y : U ̇) (e : X ≃ Y) → A Y e
 
@@ -91,7 +91,7 @@ A public improved version JEq of JEq' is provided below.
 
 Conversely, if the induction principle for equivalences holds, then
 univalence follows. In this construction, the parametric universe V is
-instantiated to the universe U and its successor U ′ only. This was
+instantiated to the universe U and its successor U ⁺ only. This was
 produced 18th May 2018 while visiting the Hausdorff Research Institute
 for Mathematics in Bonn.
 
@@ -188,7 +188,7 @@ JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
             → ∀ {V} (A : U ̇ → V ̇) {X Y : U ̇} → X ≃ Y → A X → A Y
 ≃-transport {U} ua {V} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
-≃-induction' : (U V : Universe) → (U ⊔ V)′ ̇
+≃-induction' : (U V : Universe) → (U ⊔ V)⁺ ̇
 ≃-induction' U V = (A : (X Y : U ̇) → X ≃ Y → V ̇)
                  → ((X : U ̇) → A X X (≃-refl X)) → (X Y : U ̇) (e : X ≃ Y) → A X Y e
 

@@ -289,7 +289,7 @@ eqtoidₒ : is-univalent U → (α β : Ordinal U)
         → α ≃ₒ β → α ≡ β
 eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
  where
-  A : (Y : U ̇) → ⟨ α ⟩ ≃ Y → U ′ ̇
+  A : (Y : U ̇) → ⟨ α ⟩ ≃ Y → U ⁺ ̇
   A Y e = (σ : OS Y)
         → is-order-preserving α (Y , σ) (eqtofun e)
         → is-order-preserving (Y , σ) α (back-eqtofun e)
@@ -304,7 +304,7 @@ eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e
               (φ x x')
               (ψ x x')
     c : underlying-order α ≡ underlying-order (⟨ α ⟩ , σ)
-    c = dfunext (fe U (U ′)) (λ x → dfunext (fe U (U ′)) (b x))
+    c = dfunext (fe U (U ⁺)) (λ x → dfunext (fe U (U ⁺)) (b x))
     d : structure α ≡ σ
     d = pr₁-lc (λ {_<_} → ordinal-is-prop _<_ fe) c
     g : α ≡ (⟨ α ⟩ , σ)
@@ -421,7 +421,7 @@ a univalent universe U.
 
 module ordinal-of-ordinals {U} (ua : is-univalent U) where
 
- _⊲_ : Ordinal U → Ordinal U → U ′ ̇
+ _⊲_ : Ordinal U → Ordinal U → U ⁺ ̇
  α ⊲ β = Σ \(b : ⟨ β ⟩) → α ≡ (β ↓ b)
 
  ⊲-prop-valued : (α β : Ordinal U) → is-prop (α ⊲ β)
@@ -437,7 +437,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
  NB. We could instead define α ⊲ β to mean that we have b with
  α ≃ₒ (β ↓ b), or with α ⊴ (β ↓ b) and (β ↓ b) ⊴ α, by antisymmetry,
  and these two alternative, equivalent, definitions make ⊲ to have
- values in the universe U rather than the next universe U ′.
+ values in the universe U rather than the next universe U ⁺.
 
  A lower set of a lower set is a lower set:
 
@@ -582,11 +582,11 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
 \end{code}
 
  We denote the ordinal of ordinals in the universe U by O. It lives in
- the next universe U ′.
+ the next universe U ⁺.
 
 \begin{code}
 
- O : Ordinal (U ′)
+ O : Ordinal (U ⁺)
  O = Ordinal U , _⊲_ , ⊲-well-order
 
 \end{code}

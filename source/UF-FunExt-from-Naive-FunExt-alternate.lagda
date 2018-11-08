@@ -27,7 +27,7 @@ open import UF-Yoneda
 open import UF-Subsingletons
 open import UF-Retracts
 
-equiv-post-comp-closure : ∀ U V W → (U ⊔ V ⊔ W) ′ ̇
+equiv-post-comp-closure : ∀ U V W → (U ⊔ V ⊔ W) ⁺ ̇
 equiv-post-comp-closure U V W = {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
                               → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 

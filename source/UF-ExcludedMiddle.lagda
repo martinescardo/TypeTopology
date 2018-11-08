@@ -28,13 +28,13 @@ which we refer to as the density of the decidable truth values.
 
 \begin{code}
 
-EM : ∀ U → U ′ ̇
+EM : ∀ U → U ⁺ ̇
 EM U = (P : U ̇) → is-prop P → P + ¬ P
 
-WEM : ∀ U → U ′ ̇
+WEM : ∀ U → U ⁺ ̇
 WEM U = (P : U ̇) → is-prop P → ¬ P + ¬¬ P
 
-DNE : ∀ U → U ′ ̇
+DNE : ∀ U → U ⁺ ̇
 DNE U = (P : U ̇) → is-prop P → ¬¬ P → P
 
 EM-gives-DNE : EM U → DNE U

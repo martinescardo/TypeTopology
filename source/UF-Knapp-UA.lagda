@@ -33,13 +33,13 @@ of path-induced equivalences.
 
 \begin{code}
 
-isPIE : {X Y : U ̇} → (X → Y) → U ′ ̇
+isPIE : {X Y : U ̇} → (X → Y) → U ⁺ ̇
 isPIE {U} {X} {Y} = fiber (idtofun X Y)
 
 isPIE-remark : {X Y : U ̇} (f : X → Y) → isPIE f ≡ Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
 isPIE-remark f = refl
 
-_⋍_ : U ̇ → U ̇ → U ′ ̇
+_⋍_ : U ̇ → U ̇ → U ⁺ ̇
 X ⋍ Y = Σ \(f : X → Y) → isPIE f
 
 idtopie : {X Y : U ̇} → X ≡ Y → X ⋍ Y

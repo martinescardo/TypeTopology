@@ -120,7 +120,7 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = h
     h : is-prop(Y x)
     h = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
-K-idtofun-lc : K (U ′) → {X : U ̇} (x y : X) (A : X → U ̇)
+K-idtofun-lc : K (U ⁺) → {X : U ̇} (x y : X) (A : X → U ̇)
              → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 

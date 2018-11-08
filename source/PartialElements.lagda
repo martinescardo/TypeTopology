@@ -30,17 +30,17 @@ arbitrary universe V.
 
 \begin{code}
 
-module _ {V : Universe} where
+module _ (T : Universe) where
 
 \end{code}
 
-We discuss the type 𝓛 X of partial elements of a type X, also called
+Te discuss the type 𝓛 X of partial elements of a type X, also called
 the lifting of X.
 
 \begin{code}
 
- 𝓛 : U ̇ → U ⊔ V ′ ̇
- 𝓛 X = Σ \(P : V ̇) → is-prop P × (P → X)
+ 𝓛 : U ̇ → U ⊔ T ⁺ ̇
+ 𝓛 X = Σ \(P : T ̇) → is-prop P × (P → X)
 
 \end{code}
 
@@ -68,20 +68,20 @@ which is actually an equivalence).
 
 \begin{code}
 
- 𝓜 : U ̇ → U ⊔ V ′ ̇
- 𝓜 X = Σ \(P : V ̇) → is-singleton P × (P → X)
+ 𝓚 : U ̇ → U ⊔ T ⁺ ̇
+ 𝓚 X = Σ \(P : T ̇) → is-singleton P × (P → X)
 
- μ : {X : U ̇} → X → 𝓜 X
- μ x = 𝟙 , 𝟙-is-singleton , (λ _ → x)
+ κ : {X : U ̇} → X → 𝓚 X
+ κ x = 𝟙 , 𝟙-is-singleton , (λ _ → x)
 
- ζ : (X : U ̇) (P : V ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
+ ζ : (X : U ̇) (P : T ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
  ζ X P (i , φ) = is-singleton-is-prop i , φ
 
- 𝓜-to-𝓛 : (X : U ̇) → 𝓜 X → 𝓛 X
- 𝓜-to-𝓛 X = NatΣ (ζ X)
+ 𝓚-to-𝓛 : (X : U ̇) → 𝓚 X → 𝓛 X
+ 𝓚-to-𝓛 X = NatΣ (ζ X)
 
- η-composite : funext V V → funext U (V ′ ⊔ U)
-             → {X : U ̇} → η ≡ 𝓜-to-𝓛 X ∘ μ
+ η-composite : funext T T → funext U (T ⁺ ⊔ U)
+             → {X : U ̇} → η ≡ 𝓚-to-𝓛 X ∘ κ
  η-composite fe fe' {X} = dfunext fe' h
   where
    h : (x : X) → (𝟙 , 𝟙-is-prop ,                             λ _ → x)
@@ -90,14 +90,14 @@ which is actually an equivalence).
 
 \end{code}
 
-The fact that 𝓜-to-𝓛 is an embedding can be proved by obtaining it as
+The fact that 𝓚-to-𝓛 is an embedding can be proved by obtaining it as
 a combination of maps that we already know to be embeddings, using
 ×-embedding, maps-of-props-are-embeddings, id-is-embedding, and
 NatΣ-embedding.:
 
 \begin{code}
 
- ζ-is-embedding : funext V V → (X : U ̇) (P : V ̇) → is-embedding (ζ X P)
+ ζ-is-embedding : funext T T → (X : U ̇) (P : T ̇) → is-embedding (ζ X P)
  ζ-is-embedding fe X P = ×-embedding
                            is-singleton-is-prop
                            id
@@ -107,31 +107,31 @@ NatΣ-embedding.:
                               (is-prop-is-prop fe))
                            id-is-embedding
 
- 𝓜-to-𝓛-is-embedding : funext V V
-                     → (X : U ̇) → is-embedding (𝓜-to-𝓛 X)
- 𝓜-to-𝓛-is-embedding fe X = NatΣ-is-embedding
+ 𝓚-to-𝓛-is-embedding : funext T T
+                     → (X : U ̇) → is-embedding (𝓚-to-𝓛 X)
+ 𝓚-to-𝓛-is-embedding fe X = NatΣ-is-embedding
                                   (λ P → is-singleton P × (P → X))
                                   (λ P → is-prop P × (P → X))
                                   (ζ X)
                                   (ζ-is-embedding fe X)
 \end{code}
 
-That μ is an equivalence corresponds to the fact that the lifting of a
+That κ is an equivalence corresponds to the fact that the lifting of a
 type X with respect to the dominance "is-singleton" is equivalent to X
 itself.
 
 \begin{code}
 
- μ-is-equiv : propext V → funext V V → funext V U
-            → {X : U ̇} → is-equiv (μ {U} {X})
- μ-is-equiv {U} pe fe fe' {X} = qinv-is-equiv μ (ν , (νμ , μν))
+ κ-is-equiv : propext T → funext T T → funext T U
+            → {X : U ̇} → is-equiv (κ {U} {X})
+ κ-is-equiv {U} pe fe fe' {X} = qinv-is-equiv κ (ν , (νκ , κν))
   where
-   ν : {X : U ̇} → 𝓜 X → X
+   ν : {X : U ̇} → 𝓚 X → X
    ν (P , i , φ) = φ (is-singleton-pointed i)
-   νμ : {X : U ̇} (x : X) → ν (μ x) ≡ x
-   νμ x = refl
-   μν : (m : 𝓜 X) → μ (ν m) ≡ m
-   μν (P , i , φ) = to-Σ-≡ (t , s)
+   νκ : {X : U ̇} (x : X) → ν (κ x) ≡ x
+   νκ x = refl
+   κν : (m : 𝓚 X) → κ (ν m) ≡ m
+   κν (P , i , φ) = to-Σ-≡ (t , s)
     where
      t : 𝟙 ≡ P
      t = pe 𝟙-is-prop (is-singleton-is-prop i) (λ _ → is-singleton-pointed i) (λ p → *)
@@ -149,9 +149,9 @@ itself.
               ≡⟨ to-×-≡ (is-prop-is-singleton fe _ i) u ⟩
          i , φ ∎
 
- μ-is-embedding : propext V → funext V V → funext V U
-                → {X : U ̇} → is-embedding (μ {U} {X})
- μ-is-embedding pe fe fe' = is-equiv-is-embedding μ (μ-is-equiv pe fe fe')
+ κ-is-embedding : propext T → funext T T → funext T U
+                → {X : U ̇} → is-embedding (κ {U} {X})
+ κ-is-embedding pe fe fe' = is-equiv-is-embedding κ (κ-is-equiv pe fe fe')
 
 \end{code}
 
@@ -160,21 +160,21 @@ two embeddings:
 
 \begin{code}
 
- η-is-embedding : propext V → funext V V → funext V U → funext U (V ′ ⊔ U)
-                → {X : U ̇} → is-embedding (η {U} {X})
- η-is-embedding pe fe fe' fe'' {X} =
-   back-transport
-    is-embedding
-    (η-composite fe fe'')
-    (comp-embedding (μ-is-embedding pe fe fe') (𝓜-to-𝓛-is-embedding fe X))
-
+ abstract
+  η-is-embedding : propext T → funext T T → funext T U → funext U (T ⁺ ⊔ U)
+                 → {X : U ̇} → is-embedding (η {U} {X})
+  η-is-embedding pe fe fe' fe'' {X} =
+    back-transport
+     is-embedding
+     (η-composite fe fe'')
+     (comp-embedding (κ-is-embedding pe fe fe') (𝓚-to-𝓛-is-embedding fe X))
 \end{code}
 
-We now give meaningful names to the projections:
+Te now give meaningful names to the projections:
 
 \begin{code}
 
- is-defined : {X : U ̇} → 𝓛 X → V ̇
+ is-defined : {X : U ̇} → 𝓛 X → T ̇
  is-defined (P , i , φ) = P
 
  is-defined-is-prop : {X : U ̇} (l : 𝓛  X) → is-prop (is-defined l)
@@ -198,7 +198,7 @@ a set:
 
 \begin{code}
 
- _⊑_ : {X : U ̇} → 𝓛 X → 𝓛 X → U ⊔ V ̇
+ _⊑_ : {X : U ̇} → 𝓛 X → 𝓛 X → U ⊔ T ̇
  l ⊑ m = Σ \(f : is-defined l → is-defined m) → (d : is-defined l) → value l d ≡ value m (f d)
 
 \end{code}
@@ -219,7 +219,7 @@ hom-∞-groupoids x ⊑ y.
      → l ⊑ m → m ⊑ n → l ⊑ n
  ⊑-∘ l m n (f , δ) (g , ε) = g ∘ f , (λ d → δ d ∙ ε (f d))
 
- ⊑-anti : propext V → funext V V → funext V U
+ ⊑-anti : propext T → funext T T → funext T U
         → {X : U ̇} {l m : 𝓛 X}
         → (l ⊑ m) × (m ⊑ l) → l ≡ m
  ⊑-anti pe fe fe' {X} {Q , j , γ} {P , i , φ} ((f , δ) , (g , ε)) = e
@@ -246,7 +246,7 @@ hom-∞-groupoids x ⊑ y.
 
 \end{code}
 
-We haven't used δ in the above proof. But we could use it instead of
+Te haven't used δ in the above proof. But we could use it instead of
 ε, by defining ε' from δ as follows, and then using (dfunext fe' ε')
 instead of (dfunext fe' ε)⁻¹ in the above proof:
 
@@ -257,12 +257,12 @@ instead of (dfunext fe' ε)⁻¹ in the above proof:
 
 \end{code}
 
-We can now establish the promised fact:
+Te can now establish the promised fact:
 
 \begin{code}
 
  η-fiber-same-as-is-defined :
-     propext V → funext V V → funext V U → funext U (V ′ ⊔ U)
+     propext T → funext T T → funext T U → funext U (T ⁺ ⊔ U)
    → {X : U ̇} (l : 𝓛 X)
    → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
  η-fiber-same-as-is-defined pe fe fe' fe'' {X} l = f l , ((g l , fg) , (g l , gf))
@@ -293,18 +293,18 @@ formulation of the above equivalence:
 
  private
   η-fiber-same-as-is-defined' :
-       propext V → funext V V → funext V U → funext U (V ′ ⊔ U)
+       propext T → funext T T → funext T U → funext U (T ⁺ ⊔ U)
     → {X : U ̇} (l : 𝓛 X)
-    → (fiber η l ∶ V ′ ⊔ U ̇) ≃ (is-defined l ∶ V ̇)
+    → (fiber η l ∶ T ⁺ ⊔ U ̇) ≃ (is-defined l ∶ T ̇)
   η-fiber-same-as-is-defined' = η-fiber-same-as-is-defined
 
 \end{code}
 
-For no choice of universes U and V can we have V ' ⊔ U to coincide
-with V. However, for dominances other than is-prop, it is possible to
+For no choice of universes U and T can we have T ' ⊔ U to coincide
+with T. However, for dominances other than is-prop, it is possible to
 have the equality beyween the fiber of l and the definedness of l.
 
-TODO: Could the map (anti l m) be an equivalence? No. We should
+TODO: Could the map (anti l m) be an equivalence? No. Te should
 instead have an equivalence (l ⊑ m) × (m ⊑ l) → (l ≡ m) × (l ≡ m),
 reflecting the fact that there were two candidate proofs for the
 equality, as discussed above.
@@ -314,7 +314,7 @@ which should be an equivalence for each l and m:
 
 \begin{code}
 
- ⊑-anti' : propext V → funext V V → funext V U
+ ⊑-anti' : propext T → funext T T → funext T U
         → {X : U ̇} (l m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l) → l ≡ m
  ⊑-anti' pe fe fe' {X} (Q , j , γ) (P , i , φ) ((f , δ) , g) = e
   where
@@ -358,7 +358,7 @@ which should be an equivalence for each l and m:
  η-⊑-gives-≡ : {X : U ̇} {x y : X} → η x ⊑ η y → x ≡ y
  η-⊑-gives-≡ (f , δ) = δ *
 
- η-≡-gives-⊑-is-equiv : funext V V → funext V U
+ η-≡-gives-⊑-is-equiv : funext T T → funext T U
                       → {X : U ̇} {x y : X}
                       → is-equiv (η-≡-gives-⊑ {U} {X} {x} {y})
  η-≡-gives-⊑-is-equiv {U} fe fe' {X} {x} {y} = qinv-is-equiv η-≡-gives-⊑ (η-⊑-gives-≡ , α , β)
@@ -381,4 +381,52 @@ which should be an equivalence for each l and m:
 
 \end{code}
 
-We should also do least fixed points of continuous maps.
+Te should also do least fixed points of continuous maps.
+
+Added 7th November 2018. 'Monad' structure on 𝓛.
+
+\begin{code}
+
+private
+ variable
+  T T' : Universe
+
+𝓛-lift : ∀ T {X : U ̇} {Y : V ̇} → (X → 𝓛 T Y) → (𝓛 T X → 𝓛 T Y)
+𝓛-lift T f (P , i , φ) = (Σ \(p : P) → is-defined T (f (φ p))) ,
+                          Σ-is-prop i (λ p → is-defined-is-prop T (f (φ p))) ,
+                          λ σ → value T (f (φ (pr₁ σ))) (pr₂ σ)
+
+𝓛- : ∀ T {X : U ̇} {Y : V ̇} → (X → Y) → 𝓛 T X → 𝓛 T Y
+𝓛- T f (P , i , φ) = P , i , f ∘ φ
+
+𝓛-id : ∀ T {X : U ̇} → 𝓛- T id ≡ id
+𝓛-id {U} T {X} = refl {U ⊔ (T ⁺)} {𝓛 T X → 𝓛 T X}
+
+𝓛-∘ : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+    → 𝓛- T (g ∘ f) ≡ 𝓛- T g ∘ 𝓛- T f
+𝓛-∘ f g = refl
+
+η-natural : {X : U ̇} {Y : V ̇} (f : X → Y) → η T ∘ f ≡ 𝓛- T f ∘ η T
+η-natural f = refl
+
+
+μ : (T T' : Universe) {X : U ̇} → 𝓛 T (𝓛 T X) → 𝓛  T X
+μ {U} T T' {X} = 𝓛-lift T id
+
+𝓛* : {X : U ̇} {Y : V ̇} (f : X → Y) → is-embedding f → 𝓛 T Y → 𝓛 (U ⊔ V ⊔ T) X
+𝓛* f e (Q , j , γ) = (Σ \(q : Q) → fiber f (γ q)) , Σ-is-prop j (e ∘ γ) , λ p → pr₁ (pr₂ p)
+
+μ* : (T T' : Universe) {X : U ̇} → funext T T → funext T' T' → funext T' U → funext U (U ⊔ (T' ⁺)) → propext T'
+  → 𝓛 T (𝓛 T' X) → 𝓛  (U ⊔ T ⊔ (T' ⁺)) X
+μ* {U} T T' {X} fe fe' fe'' fe''' pe = 𝓛* (η T') (η-is-embedding T' pe fe' fe'' fe''')
+
+{-
+μ-natural : (T T' : Universe) (fe : funext T T) (fe' : funext T' T') (fe'' : funext T' U) (fe''' : funext U (U ⊔ (T' ⁺))) (pe : propext T')
+          → {X : U ̇} {Y : U ̇} (f : X → Y) → 𝓛- (U ⊔ T ⊔ (T' ⁺)) f ∘ μ T T' fe fe' fe'' fe''' pe
+                                            ≡ μ T T' fe fe' fe'' fe''' pe ∘ 𝓛- T (𝓛- T' f)
+μ-natural T T' fe fe' fe'' fe''' pe f = {!refl!}
+-}
+
+\end{code}
+
+To be continued.

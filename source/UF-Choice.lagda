@@ -172,11 +172,8 @@ module UnivalentChoice (U : Universe)
    h = ptfunct pr₁ g
 
  AC'AC : AC' → AC
- AC'AC ac' X A P s t isp f = ptfunct ΠΣ-distributivity g
+ AC'AC ac' X A P s t isp f = ptfunct ΠΣ-distr g
   where
-   ΠΣ-distributivity : (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
-   ΠΣ-distributivity φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
-
    g : ∥(Π \(x : X) → Σ \(a : A x) → P x a)∥
    g = ac' X
            (λ x → Σ \(a : A x) → P x a)

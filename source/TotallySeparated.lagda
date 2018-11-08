@@ -514,7 +514,7 @@ open neighbourhoods are equal).
 
 \begin{code}
 
-𝟚-sober : W ̇ → U ′ ⊔ W ̇
+𝟚-sober : W ̇ → U ⁺ ⊔ W ̇
 𝟚-sober {U} {W} A = 𝟚-separated A × ((X : U ̇) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
 
 \end{code}
@@ -807,7 +807,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
   apart-lemma : (x y : X) → x ~ y → apart x ≡ apart y
-  apart-lemma x y na = dfunext (fe U (V ′)) h
+  apart-lemma x y na = dfunext (fe U (V ⁺)) h
    where
     f : (z : X) → x ♯ z ⇔ y ♯ z
     f = not-apart-have-same-apart x y _♯_ ♯a na
@@ -828,7 +828,7 @@ apartness relation _♯₂ is tight:
 
   open ImageAndSurjection pt
 
-  X' : U ⊔ V ′ ̇
+  X' : U ⊔ V ⁺ ̇
   X' = image apart
 
 \end{code}
@@ -840,7 +840,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ′)) (fe V V) pe) ptisp
+  X'-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ⁺)) (fe V V) pe) ptisp
 
   η : X → X'
   η = corestriction apart
@@ -870,7 +870,7 @@ apartness on it.
 
 \begin{code}
 
-  _♯'_ : X' → X' → U ⊔ V ′ ̇
+  _♯'_ : X' → X' → U ⊔ V ⁺ ̇
   (u , _) ♯' (v , _) = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
 
 \end{code}
@@ -905,8 +905,8 @@ apartness on it.
 
 \begin{code}
 
-  fuv : funext (U ⊔ V ′) (U ⊔ V ′)
-  fuv = fe (U ⊔ V ′) (U ⊔ V ′)
+  fuv : funext (U ⊔ V ⁺) (U ⊔ V ⁺)
+  fuv = fe (U ⊔ V ⁺) (U ⊔ V ⁺)
 
   ♯'p : prop-valued _♯'_
   ♯'p _ _ = ptisp
@@ -919,7 +919,7 @@ apartness on it.
 
     by-induction : _
     by-induction = η-induction (λ x' → ¬ (x' ♯' x'))
-                      (λ _ → Π-is-prop (fe (U ⊔ V ′) U₀) (λ _ → 𝟘-is-prop))
+                      (λ _ → Π-is-prop (fe (U ⊔ V ⁺) U₀) (λ _ → 𝟘-is-prop))
                       induction-step
 
   ♯'s : symmetric _♯'_
@@ -1049,7 +1049,7 @@ apartness on it.
          p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
        γ : (x' : X') → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-       γ x' = is-prop-is-prop (fe (U ⊔ (V ′) ⊔ W) (U ⊔ (V ′) ⊔ W))
+       γ x' = is-prop-is-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
 
     k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step
@@ -1079,7 +1079,7 @@ apartness on it.
       w = happly (r ∙ s ⁻¹)
 
       t : f' ≡ f''
-      t = dfunext (fe (U ⊔ V ′) W) (η-induction _ (λ _ → iss) w)
+      t = dfunext (fe (U ⊔ V ⁺) W) (η-induction _ (λ _ → iss) w)
 
       u : f'' ∘ η ≡ f
       u = transport (λ - → - ∘ η ≡ f) t r

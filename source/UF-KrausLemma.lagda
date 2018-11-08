@@ -78,7 +78,7 @@ has a constant endfunction then it has a propositional truncation.
 
 \begin{code}
 
-has-split-support : U ̇ → U ′ ̇
+has-split-support : U ̇ → U ⁺ ̇
 has-split-support {U} X = Σ \(P : U ̇) → is-prop P × (X ⇔ P)
 
 fix-has-split-support : {X : U ̇}
@@ -89,7 +89,7 @@ fix-has-split-support {U} {X} (f , κ) = fix f ,
                                       to-fix f κ ,
                                       from-fix f
 
-has-prop-truncation : (V : Universe) → U ̇ → (U ′) ⊔ (V ′) ̇
+has-prop-truncation : (V : Universe) → U ̇ → (U ⁺) ⊔ (V ⁺) ̇
 has-prop-truncation {U} V X = Σ \(X' : U ̇) → is-prop X'
                                           × (X → X')
                                           × ((P : V ̇) → is-prop P → (X → P) → X' → P)

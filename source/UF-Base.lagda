@@ -187,8 +187,12 @@ to-×-≡ : {X : U ̇} {Y : V ̇} {x x' : X} {y y' : Y}
 to-×-≡ refl refl = refl
 
 to-×-≡' : {X : U ̇} {Y : V ̇} {z z' : X × Y}
-     → pr₁ z ≡ pr₁ z' → pr₂ z ≡ pr₂ z' → z ≡ z'
-to-×-≡' refl refl = refl
+     → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z') → z ≡ z'
+to-×-≡' (refl , refl) = refl
+
+from-×-≡' : {X : U ̇} {Y : V ̇} {z z' : X × Y}
+     → z ≡ z' → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z' )
+from-×-≡' refl = (refl , refl)
 
 from-Σ-≡ : {X : U ̇} {Y : X → V ̇} {σ τ : Σ Y} (r : σ ≡ τ)
           → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)

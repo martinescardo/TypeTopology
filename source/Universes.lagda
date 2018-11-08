@@ -5,13 +5,13 @@ module Universes where
 open import Agda.Primitive public
   using (_⊔_)
   renaming (lzero to U₀
-          ; lsuc to _′
+          ; lsuc to _⁺
           ; Level to Universe
           ; Setω to Uω
           )
 
 variable
- U V W : Universe
+ U V W U' V' W' : Universe
 
 \end{code}
 
@@ -23,8 +23,8 @@ development:
 _̇ : (U : Universe) → _
 U ̇ = Set U
 
-U₁ = U₀ ′
-U₂ = U₁ ′
+U₁ = U₀ ⁺
+U₂ = U₁ ⁺
 
 \end{code}
 

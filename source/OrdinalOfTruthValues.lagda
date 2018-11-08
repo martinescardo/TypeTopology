@@ -20,10 +20,10 @@ module OrdinalOfTruthValues
 
 open import Ordinals fe
 
-Ωₒ : Ordinal (U ′)
+Ωₒ : Ordinal (U ⁺)
 Ωₒ = Ω U , _≺_ , pv , w , e , t
  where
-  _≺_ : Ω U → Ω U → U ′ ̇
+  _≺_ : Ω U → Ω U → U ⁺ ̇
   p ≺ q = (p ≡ ⊥) × (q ≡ ⊤)
 
   pv : is-prop-valued _≺_

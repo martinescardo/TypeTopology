@@ -19,7 +19,7 @@ open import UF-Univalence
 module UF-SubsetIdentity
         (U : Universe)
         (ua : is-univalent U)
-        (ua' : is-univalent (U ′))
+        (ua' : is-univalent (U ⁺))
        where
 
 open import UF-Base
@@ -30,13 +30,13 @@ open import UF-Subsingletons-FunExt
 fe : funext U U
 fe = funext-from-univalence ua
 
-fe' : funext U (U ′)
-fe' = funext-from-univalence' U (U ′) ua ua'
+fe' : funext U (U ⁺)
+fe' = funext-from-univalence' U (U ⁺) ua ua'
 
 pe : propext U
 pe = UA-gives-propext ua
 
-powerset : U ̇ → U ′ ̇
+powerset : U ̇ → U ⁺ ̇
 powerset X = X → Ω U
 
 _∈_ : {X : U ̇} → X → powerset X → U ̇

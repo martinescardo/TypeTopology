@@ -15,6 +15,7 @@ module UF-Classifiers where
 open import SpartanMLTT
 open import UF-Subsingletons
 open import UF-Equiv
+open import UF-EquivalenceExamples
 open import UF-Equiv-FunExt
 open import UF-Base
 open import UF-Univalence
@@ -24,7 +25,7 @@ open import UF-Embedding
 
 module type-classifier
         {U : Universe}
-        (fe' : funext U (U ′))
+        (fe' : funext U (U ⁺))
         (ua : is-univalent U)
         (Y : U ̇)
        where
@@ -78,7 +79,7 @@ module type-classifier
 
 module subtype-classifier
         {U : Universe}
-        (fe' : funext U (U ′))
+        (fe' : funext U (U ⁺))
         (ua : is-univalent U)
         (Y : U ̇)
        where
