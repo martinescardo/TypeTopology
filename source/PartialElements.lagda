@@ -4,7 +4,7 @@ The type of partial elements of a type (or lifting).
 (Cf. my former student Cory Knapp's PhD thesis).
 
 We focus, to begin with, on the fact that the canonical map into the
-lifting is an embedding, which is easy for sets, but seems hard for
+lifting is an embedding, which is easy for sets, but seems less easy for
 arbitrary types.
 
 \begin{code}
@@ -131,23 +131,18 @@ itself.
    νκ : {X : U ̇} (x : X) → ν (κ x) ≡ x
    νκ x = refl
    κν : (m : 𝓚 X) → κ (ν m) ≡ m
-   κν (P , i , φ) = to-Σ-≡ (t , s)
+   κν (P , i , φ) = to-Σ-≡ (t , s t)
     where
      t : 𝟙 ≡ P
-     t = pe 𝟙-is-prop (is-singleton-is-prop i) (λ _ → is-singleton-pointed i) (λ p → *)
-     u : transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i)) ≡ φ
-     u = transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i))
-             ≡⟨ transport-is-pre-comp t (λ _ → φ (is-singleton-pointed i)) ⟩
-         (λ _ → φ (is-singleton-pointed i))
-             ≡⟨ dfunext fe' (λ p → ap φ (is-singleton-is-prop i (is-singleton-pointed i) p)) ⟩
-         φ   ∎
-     s : transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
+     t = pe 𝟙-is-prop (is-singleton-is-prop i) (λ _ → is-singleton-pointed i) unique-to-𝟙
+     s : (t : 𝟙 ≡ P)
+       → transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
        ≡ i , φ
-     s = transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
-              ≡⟨ transport-× is-singleton (λ - → - → X) t ⟩
-         transport is-singleton t 𝟙-is-singleton , transport (λ - → - → X) t (λ _ → φ (is-singleton-pointed i))
-              ≡⟨ to-×-≡ (is-prop-is-singleton fe _ i) u ⟩
-         i , φ ∎
+     s refl = to-×-≡ (is-singleton-is-prop (inhabited-proposition-is-singleton
+                                                 𝟙-is-singleton
+                                                 (is-prop-is-singleton fe))
+                                           𝟙-is-singleton i)
+                     (dfunext fe' (λ x → ap φ (𝟙-is-prop (is-singleton-pointed i) x)))
 
  κ-is-embedding : propext T → funext T T → funext T U
                 → {X : U ̇} → is-embedding (κ {U} {X})
@@ -160,14 +155,13 @@ two embeddings:
 
 \begin{code}
 
- abstract
-  η-is-embedding : propext T → funext T T → funext T U → funext U (T ⁺ ⊔ U)
-                 → {X : U ̇} → is-embedding (η {U} {X})
-  η-is-embedding pe fe fe' fe'' {X} =
-    back-transport
-     is-embedding
-     (η-composite fe fe'')
-     (comp-embedding (κ-is-embedding pe fe fe') (𝓚-to-𝓛-is-embedding fe X))
+ η-is-embedding : propext T → funext T T → funext T U → funext U (T ⁺ ⊔ U)
+                → {X : U ̇} → is-embedding (η {U} {X})
+ η-is-embedding pe fe fe' fe'' {X} =
+   back-transport
+    is-embedding
+    (η-composite fe fe'')
+    (comp-embedding (κ-is-embedding pe fe fe') (𝓚-to-𝓛-is-embedding fe X))
 \end{code}
 
 Te now give meaningful names to the projections:
