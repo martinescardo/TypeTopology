@@ -403,15 +403,14 @@ private
 η-natural : {X : U ̇} {Y : V ̇} (f : X → Y) → η T ∘ f ≡ 𝓛- T f ∘ η T
 η-natural f = refl
 
-
-μ : (T T' : Universe) {X : U ̇} → 𝓛 T (𝓛 T X) → 𝓛  T X
-μ {U} T T' {X} = 𝓛-lift T id
+μ : (T : Universe) {X : U ̇} → 𝓛 T (𝓛 T X) → 𝓛 T X
+μ {U} T {X} = 𝓛-lift T id
 
 𝓛* : {X : U ̇} {Y : V ̇} (f : X → Y) → is-embedding f → 𝓛 T Y → 𝓛 (U ⊔ V ⊔ T) X
 𝓛* f e (Q , j , γ) = (Σ \(q : Q) → fiber f (γ q)) , Σ-is-prop j (e ∘ γ) , λ p → pr₁ (pr₂ p)
 
 μ* : (T T' : Universe) {X : U ̇} → funext T T → funext T' T' → funext T' U → funext U (U ⊔ (T' ⁺)) → propext T'
-  → 𝓛 T (𝓛 T' X) → 𝓛  (U ⊔ T ⊔ (T' ⁺)) X
+  → 𝓛 T (𝓛 T' X) → 𝓛 (U ⊔ T ⊔ (T' ⁺)) X
 μ* {U} T T' {X} fe fe' fe'' fe''' pe = 𝓛* (η T') (η-is-embedding T' pe fe' fe'' fe''')
 
 {-
@@ -423,4 +422,28 @@ private
 
 \end{code}
 
-To be continued.
+Lift monad to be continued in due course.
+
+Added 8th November 2018.
+
+\begin{code}
+
+pus : (T : Universe) {X : U ̇} {P : T ̇} → 𝓛 T X → (P → 𝓛 T X)
+pus T l p = l
+
+sup : (T : Universe) {X : U ̇} {P : T ̇} → is-prop P → (P → 𝓛 T X) → 𝓛 T X
+sup T {X} {P} i φ = μ T (P , i , φ)
+
+{-
+sup-adj : (T : Universe) {X : U ̇} (P : T ̇) (i : is-prop P) (φ : P → 𝓛 T X) (l : 𝓛 T X)
+        → (_⊑_ T (sup T i φ) l) ≃ ((p : P) → _⊑_ T (φ p) l)
+sup-adj = {!!}
+
+sup-reflective : (T : Universe) {X : U ̇} (P : T ̇) (i : is-prop P) (φ : P → 𝓛 T X) (l : 𝓛 T X)
+               → (p : P) → φ p ≡ sup T i φ
+sup-reflective T P i φ l p = {!!}
+-}
+
+\end{code}
+
+This has a connection with injectivity.
