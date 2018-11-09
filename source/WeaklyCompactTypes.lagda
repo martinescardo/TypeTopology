@@ -35,7 +35,7 @@ open import DecidableAndDetachable
 
 ∃-compact-is-prop : {X : U ̇} → is-prop (∃-compact X)
 ∃-compact-is-prop {U} {X} = Π-is-prop (fe U U)
-                                (λ _ → decidable-is-prop (fe U U₀) ptisp)
+                                (λ _ → decidable-types-are-props (fe U U₀) ptisp)
 
 ∃-compact-Markov : {X : U ̇}
                  → ∃-compact X
@@ -60,7 +60,7 @@ LPO with WLPO.
 
 Π-compact-is-prop : {X : U ̇} → is-prop (Π-compact X)
 Π-compact-is-prop {U} = Π-is-prop (fe U U)
-                         (λ _ → decidable-is-prop (fe U U₀)
+                         (λ _ → decidable-types-are-props (fe U U₀)
                                   (Π-is-prop (fe U U₀) λ _ → 𝟚-is-set))
 
 ∃-compact-gives-Π-compact : {X : U ̇} → ∃-compact X → Π-compact X
@@ -108,7 +108,7 @@ predicate λ x → ₁:
 
 Π-compact'-is-prop : {X : U ̇} → is-prop(Π-compact' X)
 Π-compact'-is-prop {U} = Π-is-prop (fe U U)
-                          (λ p → decidable-is-prop (fe U U₀)
+                          (λ p → decidable-types-are-props (fe U U₀)
                                    (Π-is-set (fe U U₀) (λ x → 𝟚-is-set)))
 
 Π-compact'-gives-Π-compact : {X : U ̇} → Π-compact' X → Π-compact X
@@ -621,7 +621,7 @@ replaced by non-emptiness in the following results:
 \begin{code}
 
 iso-i-and-c : {X : U ̇} → ∃-compact∙ X → ∥ X ∥ × ∃-compact X
-iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-is-prop (fe U U₀) ptisp) (g₂ p) (c p))
+iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-types-are-props (fe U U₀) ptisp) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
@@ -1068,7 +1068,7 @@ is-clopen-map-is-prop : {X : U ̇} {Y : V ̇} → (∀ U V → funext U V)
                    → (f : X → Y) → is-prop(is-clopen-map f)
 is-clopen-map-is-prop {U} {V} fe f = Π-is-prop (fe U (U ⊔ V))
                                       (λ p → Π-is-prop (fe V (U ⊔ V))
-                                               (λ y → decidable-is-prop (fe (U ⊔ V) U₀) ptisp))
+                                               (λ y → decidable-types-are-props (fe (U ⊔ V) U₀) ptisp))
 
 fst : (A : U ̇) (X : V ̇) → A × X → A
 fst _ _ = pr₁

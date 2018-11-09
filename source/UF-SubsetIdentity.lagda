@@ -58,7 +58,7 @@ subset-extensionality {X} A B h k = dfunext fe' φ
  where
   φ : (x : X) → A x ≡ B x
   φ x = to-Σ-≡ (pe (holds-is-prop (A x)) (holds-is-prop (B x)) (h x) (k x) ,
-                is-prop-is-prop fe (holds-is-prop _) (holds-is-prop _))
+                is-prop-is-a-prop fe (holds-is-prop _) (holds-is-prop _))
 
 \end{code}
 

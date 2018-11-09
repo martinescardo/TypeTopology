@@ -66,7 +66,7 @@ is-simulation       α β f = is-initial-segment α β f × is-order-preserving 
 order-equiv-simulation : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
                        → is-order-equiv α β f
                        → is-simulation α β f
-order-equiv-simulation α β f (p , e , q) = h (is-equiv-qinv f e) q , p
+order-equiv-simulation α β f (p , e , q) = h (equivs-are-qinvs f e) q , p
  where
   h : (d : qinv f)
     → is-order-preserving β α (pr₁ d)
@@ -103,7 +103,7 @@ is-order-equiv-is-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → �
 is-order-equiv-is-prop α β f = ×-is-prop
                                  (is-order-preserving-is-prop α β f)
                                  (Σ-is-prop
-                                    (is-prop-is-equiv fe f)
+                                    (is-equiv-is-a-prop fe f)
                                     (λ e → is-order-preserving-is-prop β α
                                               (back-eqtofun (f , e))))
 
@@ -264,11 +264,11 @@ equiv-bisimilar α β (f , p , e , q) = (f , order-equiv-simulation α β f (p ,
   g : ⟨ β ⟩ → ⟨ α ⟩
   g = eqtofun (≃-sym (f , e))
   d : is-equiv g
-  d = is-equiv-eqtofun (≃-sym (f , e))
+  d = eqtofun-is-an-equiv (≃-sym (f , e))
 
 bisimilar-equiv : (α β : Ordinal U)
                 → α ⊴ β → β ⊴ α → α ≃ₒ β
-bisimilar-equiv α β (f , s) (g , t) = f , pr₂ s , qinv-is-equiv f (g , gf , fg) , pr₂ t
+bisimilar-equiv α β (f , s) (g , t) = f , pr₂ s , qinvs-are-equivs f (g , gf , fg) , pr₂ t
  where
   fgs : is-simulation β β (f ∘ g)
   fgs = pr₂ (⊴-trans β α β (g , t) (f , s))
@@ -280,7 +280,7 @@ bisimilar-equiv α β (f , s) (g , t) = f , pr₂ s , qinv-is-equiv f (g , gf , 
   gf = at-most-one-simulation α α (g ∘ f) id gfs (pr₂ (⊴-refl α))
 
 ≃ₒ-refl : (α : Ordinal U) → α ≃ₒ α
-≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
+≃ₒ-refl α = id , (λ x y → id) , id-is-an-equiv ⟨ α ⟩ , (λ x y → id)
 
 idtoeqₒ : (α β : Ordinal U) → α ≡ β → α ≃ₒ β
 idtoeqₒ α .α refl = ≃ₒ-refl α

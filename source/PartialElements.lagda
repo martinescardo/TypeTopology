@@ -75,7 +75,7 @@ which is actually an equivalence).
  κ x = 𝟙 , 𝟙-is-singleton , (λ _ → x)
 
  ζ : (X : U ̇) (P : T ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
- ζ X P (i , φ) = is-singleton-is-prop i , φ
+ ζ X P (i , φ) = singletons-are-propositions i , φ
 
  𝓚-to-𝓛 : (X : U ̇) → 𝓚 X → 𝓛 X
  𝓚-to-𝓛 X = NatΣ (ζ X)
@@ -85,8 +85,8 @@ which is actually an equivalence).
  η-composite fe fe' {X} = dfunext fe' h
   where
    h : (x : X) → (𝟙 , 𝟙-is-prop ,                             λ _ → x)
-               ≡ (𝟙 , is-singleton-is-prop (𝟙-is-singleton) , λ _ → x)
-   h x = to-Σ-≡ (refl , to-×-≡ (is-prop-is-prop fe _ _) refl)
+               ≡ (𝟙 , singletons-are-propositions (𝟙-is-singleton) , λ _ → x)
+   h x = to-Σ-≡ (refl , to-×-≡ (is-prop-is-a-prop fe _ _) refl)
 
 \end{code}
 
@@ -99,12 +99,12 @@ NatΣ-embedding.:
 
  ζ-is-embedding : funext T T → (X : U ̇) (P : T ̇) → is-embedding (ζ X P)
  ζ-is-embedding fe X P = ×-embedding
-                           is-singleton-is-prop
+                           singletons-are-propositions
                            id
                            (maps-of-props-are-embeddings
-                              is-singleton-is-prop
-                              (is-prop-is-singleton fe)
-                              (is-prop-is-prop fe))
+                              singletons-are-propositions
+                              (is-singleton-is-a-prop fe)
+                              (is-prop-is-a-prop fe))
                            id-is-embedding
 
  𝓚-to-𝓛-is-embedding : funext T T
@@ -124,25 +124,29 @@ itself.
 
  κ-is-equiv : propext T → funext T T → funext T U
             → {X : U ̇} → is-equiv (κ {U} {X})
- κ-is-equiv {U} pe fe fe' {X} = qinv-is-equiv κ (ν , (νκ , κν))
+ κ-is-equiv {U} pe fe fe' {X} = qinvs-are-equivs κ (ν , (νκ , κν))
   where
    ν : {X : U ̇} → 𝓚 X → X
    ν (P , i , φ) = φ (is-singleton-pointed i)
    νκ : {X : U ̇} (x : X) → ν (κ x) ≡ x
    νκ x = refl
    κν : (m : 𝓚 X) → κ (ν m) ≡ m
-   κν (P , i , φ) = to-Σ-≡ (t , s t)
+   κν (P , i , φ) = u
     where
      t : 𝟙 ≡ P
-     t = pe 𝟙-is-prop (is-singleton-is-prop i) (λ _ → is-singleton-pointed i) unique-to-𝟙
+     t = pe 𝟙-is-prop (singletons-are-propositions i) (λ _ → is-singleton-pointed i) unique-to-𝟙
      s : (t : 𝟙 ≡ P)
        → transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
        ≡ i , φ
-     s refl = to-×-≡ (is-singleton-is-prop (inhabited-proposition-is-singleton
-                                                 𝟙-is-singleton
-                                                 (is-prop-is-singleton fe))
-                                           𝟙-is-singleton i)
-                     (dfunext fe' (λ x → ap φ (𝟙-is-prop (is-singleton-pointed i) x)))
+     s refl = to-×-≡ a b
+       where
+        a : 𝟙-is-singleton ≡ i
+        a = (singletons-are-propositions (pointed-props-are-singletons 𝟙-is-singleton (is-singleton-is-a-prop fe))
+                                  𝟙-is-singleton i)
+        b : (λ x → φ (is-singleton-pointed i)) ≡ φ
+        b = dfunext fe' (λ x → ap φ (𝟙-is-prop (is-singleton-pointed i) x))
+     u : 𝟙 , 𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)) ≡ P , i , φ
+     u = to-Σ-≡ (t , s t)
 
  κ-is-embedding : propext T → funext T T → funext T U
                 → {X : U ̇} → is-embedding (κ {U} {X})
@@ -236,7 +240,7 @@ hom-∞-groupoids x ⊑ y.
              ≡⟨ (dfunext fe' ε)⁻¹ ⟩
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
-   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-prop fe _ i) d)
+   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-a-prop fe _ i) d)
 
 \end{code}
 
@@ -332,7 +336,7 @@ which should be an equivalence for each l and m:
              ≡⟨ dfunext fe' ε' ⟩
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
-   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-prop fe _ i) d)
+   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-a-prop fe _ i) d)
 
 
  ⊑-anti'-inverse :  {X : U ̇} (l m : 𝓛 X)
@@ -355,7 +359,7 @@ which should be an equivalence for each l and m:
  η-≡-gives-⊑-is-equiv : funext T T → funext T U
                       → {X : U ̇} {x y : X}
                       → is-equiv (η-≡-gives-⊑ {U} {X} {x} {y})
- η-≡-gives-⊑-is-equiv {U} fe fe' {X} {x} {y} = qinv-is-equiv η-≡-gives-⊑ (η-⊑-gives-≡ , α , β)
+ η-≡-gives-⊑-is-equiv {U} fe fe' {X} {x} {y} = qinvs-are-equivs η-≡-gives-⊑ (η-⊑-gives-≡ , α , β)
   where
    α : {x y : X} (p : x ≡ y) →  η-⊑-gives-≡ (η-≡-gives-⊑ p) ≡ p
    α p = refl
@@ -407,7 +411,9 @@ private
 μ {U} T {X} = 𝓛-lift T id
 
 𝓛* : {X : U ̇} {Y : V ̇} (f : X → Y) → is-embedding f → 𝓛 T Y → 𝓛 (U ⊔ V ⊔ T) X
-𝓛* f e (Q , j , γ) = (Σ \(q : Q) → fiber f (γ q)) , Σ-is-prop j (e ∘ γ) , λ p → pr₁ (pr₂ p)
+𝓛* f e (Q , j , γ) = (Σ \(q : Q) → fiber f (γ q)) ,
+                      Σ-is-prop j (e ∘ γ) ,
+                      λ p → pr₁ (pr₂ p)
 
 μ* : (T T' : Universe) {X : U ̇} → funext T T → funext T' T' → funext T' U → funext U (U ⊔ (T' ⁺)) → propext T'
   → 𝓛 T (𝓛 T' X) → 𝓛 (U ⊔ T ⊔ (T' ⁺)) X

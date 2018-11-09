@@ -27,7 +27,7 @@ open import Ordinals fe
   p ≺ q = (p ≡ ⊥) × (q ≡ ⊤)
 
   pv : is-prop-valued _≺_
-  pv p q = ×-is-prop (Ω-is-set (fe U U) pe) (Ω-is-set (fe U U) pe)
+  pv p q = ×-is-prop (Ω-is-a-set (fe U U) pe) (Ω-is-a-set (fe U U) pe)
 
   w : is-well-founded _≺_
   w p = next p s

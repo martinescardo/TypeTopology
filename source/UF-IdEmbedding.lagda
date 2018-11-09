@@ -113,7 +113,7 @@ Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   g-lc : left-cancellable g
   g-lc = NatΣ-lc f f-lc
   h : is-prop T
-  h = left-cancellable-reflects-is-prop g g-lc (is-singleton-is-prop c)
+  h = left-cancellable-reflects-is-prop g g-lc (singletons-are-propositions c)
 
 \end{code}
 
@@ -130,7 +130,7 @@ eqtofun-lc : is-univalent U → (∀ U V → funext U V)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
   q : yoneda-nat f is-equiv jef g p ≡ jeg
-  q = is-prop-is-equiv fe g _ _
+  q = is-equiv-is-a-prop fe g _ _
   go : f , jef ≡ g , jeg
   go = to-Σ-Id (p , q)
 

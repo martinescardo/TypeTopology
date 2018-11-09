@@ -185,7 +185,7 @@ is-equiv-isPIE-UA {U} φ X = γ
   s : (Y : U ̇) → X ≃ Y → X ≡ Y
   s Y (f , ise) = pietoid (f , φ f ise)
   η : {Y : U ̇} (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
-  η {Y} (f , ise) = to-Σ-≡ (p , is-prop-is-equiv'' k f _ _)
+  η {Y} (f , ise) = to-Σ-≡ (p , is-equiv-is-a-prop'' k f _ _)
    where
     p : pr₁ (idtoeq X Y (s Y (f , ise))) ≡ f
     p = pietofun-factors-through-idtofun (f , φ f ise)
@@ -211,16 +211,16 @@ UA-characterization {U} = (forth , back)
     φ {X} {Y} f ise = p , r
      where
       p : X ≡ Y
-      p = pr₁ (γ f (is-equiv-qinv f ise))
+      p = pr₁ (γ f (equivs-are-qinvs f ise))
       q : transport id p ≡ f
-      q = pr₂ (γ f (is-equiv-qinv f ise))
+      q = pr₂ (γ f (equivs-are-qinvs f ise))
       r : idtofun X Y p ≡ f
       r = idtofun-agreement X Y p ∙ q
   back : is-univalent U → ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
   back ua {X} {Y} f q = p , s
    where
     σ : Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
-    σ = UA-is-equiv-isPIE ua f (qinv-is-equiv f q)
+    σ = UA-is-equiv-isPIE ua f (qinvs-are-equivs f q)
     p : X ≡ Y
     p = pr₁ σ
     r : idtofun X Y p ≡ f

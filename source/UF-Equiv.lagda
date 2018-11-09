@@ -34,11 +34,11 @@ section-retraction-equiv f hr hs = (hr , hs)
 _≃_ : U ̇ → V ̇ → U ⊔ V ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
-id-is-equiv : (X : U ̇) → is-equiv (id {U} {X})
-id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
+id-is-an-equiv : (X : U ̇) → is-equiv (id {U} {X})
+id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 
 ≃-refl : (X : U ̇) → X ≃ X
-≃-refl X = id , id-is-equiv X
+≃-refl X = id , id-is-an-equiv X
 
 ≃-trans : {X : U ̇} {Y : V ̇} {Z : W ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 ≃-trans {U} {V} {W} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
@@ -64,8 +64,8 @@ Eqtofun X Y (f , _) = f
 eqtofun : {X : U ̇} {Y : V ̇} → X ≃ Y → X → Y
 eqtofun (f , _) = f
 
-is-equiv-eqtofun : {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (eqtofun e)
-is-equiv-eqtofun = pr₂
+eqtofun-is-an-equiv : {X : U ̇} {Y : V ̇} (e : X ≃ Y) → is-equiv (eqtofun e)
+eqtofun-is-an-equiv = pr₂
 
 back-eqtofun : {X : U ̇} {Y : V ̇} → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
@@ -104,8 +104,8 @@ equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)�
 qinv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
-is-equiv-qinv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → is-equiv f → qinv f
-is-equiv-qinv {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
+equivs-are-qinvs : {X : U ̇} {Y : V ̇} (f : X → Y) → is-equiv f → qinv f
+equivs-are-qinvs {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
   sf : (x : X) → s(f x) ≡ x
   sf x = s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
@@ -113,18 +113,21 @@ is-equiv-qinv {U} {V} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
          r(f x)       ≡⟨ rf x ⟩
          x            ∎
 
-qinv-is-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-equiv f
-qinv-is-equiv f (g , (gf , fg)) = (g , fg) , (g , gf)
+qinvs-are-equivs : {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-equiv f
+qinvs-are-equivs f (g , (gf , fg)) = (g , fg) , (g , gf)
+
+qinveq : {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → X ≃ Y
+qinveq f q = (f , qinvs-are-equivs f q)
 
 ≃-sym : {X : U ̇} {Y : V ̇}  → X ≃ Y → Y ≃ X
 ≃-sym {U} {V} {X} {Y} (f , e) = (g , d)
  where
   g : Y → X
-  g = pr₁(is-equiv-qinv f e)
+  g = pr₁(equivs-are-qinvs f e)
   q : qinv g
-  q = f , pr₂(pr₂(is-equiv-qinv f e)) , pr₁(pr₂(is-equiv-qinv f e))
+  q = f , pr₂(pr₂(equivs-are-qinvs f e)) , pr₁(pr₂(equivs-are-qinvs f e))
   d : is-equiv g
-  d = qinv-is-equiv g q
+  d = qinvs-are-equivs g q
 
 equiv-retract-l : {X : U ̇} {Y : V ̇} → X ≃ Y → retract X of Y
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
@@ -156,13 +159,13 @@ Equivalence of transports.
 
 \begin{code}
 
-transport-is-equiv : {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y)
+transports-are-equivs : {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y)
                    → is-equiv (transport A p)
-transport-is-equiv refl = id-is-equiv _
+transports-are-equivs refl = id-is-an-equiv _
 
-back-transport-is-equiv : {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y)
+back-transports-are-equivs : {X : U ̇} {A : X → V ̇} {x y : X} (p : x ≡ y)
                         → is-equiv (back-transport A p)
-back-transport-is-equiv p = transport-is-equiv (p ⁻¹)
+back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 
 \end{code}
 
@@ -174,9 +177,9 @@ fiber f y = Σ \x → f x ≡ y
 is-vv-equiv : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-vv-equiv f = ∀ y → is-singleton (fiber f y)
 
-is-vv-equiv-is-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
+vv-equivs-are-equivs : {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-vv-equiv f → is-equiv f
-is-vv-equiv-is-equiv {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
+vv-equivs-are-equivs {U} {V} {X} {Y} f φ = (g , fg) , (g , gf)
  where
   φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
   φ' = φ
@@ -212,9 +215,9 @@ is-hae : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-hae {U} {V} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id)
                             → Π \(x : X) → ap f (η x) ≡ ε (f x)
 
-is-hae-is-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
+haes-are-equivs : {X : U ̇} {Y : V ̇} (f : X → Y)
                 → is-hae f → is-equiv f
-is-hae-is-equiv {U} {V} {X} f (g , η , ε , τ) = qinv-is-equiv f (g , η , ε)
+haes-are-equivs {U} {V} {X} f (g , η , ε , τ) = qinvs-are-equivs f (g , η , ε)
 
 id-homotopies-are-natural : {X : U ̇} (h : X → X) (η : h ∼ id) {x : X}
                           → η (h x) ≡ ap h (η x)
@@ -226,8 +229,8 @@ id-homotopies-are-natural h η {x} =
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹ ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
    ap h (η x)                      ∎
 
-qinv-is-hae : {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-hae f
-qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
+qinvs-are-haes : {X : U ̇} {Y : V ̇} (f : X → Y) → qinv f → is-hae f
+qinvs-are-haes {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
  where
   ε' : f ∘ g ∼ id
   ε' y = f (g y)         ≡⟨ (ε (f (g y)))⁻¹ ⟩
@@ -255,9 +258,9 @@ qinv-is-hae {U} {V} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                            ∎
 
-is-equiv-is-hae : {X : U ̇} {Y : V ̇} (f : X → Y)
+equivs-are-haes : {X : U ̇} {Y : V ̇} (f : X → Y)
                 → is-equiv f → is-hae f
-is-equiv-is-hae f e = qinv-is-hae f (is-equiv-qinv f e)
+equivs-are-haes f e = qinvs-are-haes f (equivs-are-qinvs f e)
 
 \end{code}
 
@@ -280,9 +283,9 @@ Using this we see that half adjoint equivalences have singleton fibers:
 
 \begin{code}
 
-is-hae-is-vv-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
+haes-are-vv-equivs : {X : U ̇} {Y : V ̇} (f : X → Y)
                    → is-hae f → is-vv-equiv f
-is-hae-is-vv-equiv {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁ σ) (pr₂ σ))
+haes-are-vv-equivs {U} {V} {X} f (g , η , ε , τ) y = (c , λ σ → α (pr₁ σ) (pr₂ σ))
  where
   c : fiber f y
   c = (g y , ε y)
@@ -314,13 +317,13 @@ Here are some corollaries:
 
 \begin{code}
 
-qinv-is-vv-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
+qinvs-are-vv-equivs : {X : U ̇} {Y : V ̇} (f : X → Y)
                  → qinv f → is-vv-equiv f
-qinv-is-vv-equiv f q = is-hae-is-vv-equiv f (qinv-is-hae f q)
+qinvs-are-vv-equivs f q = haes-are-vv-equivs f (qinvs-are-haes f q)
 
-is-equiv-is-vv-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
+equivs-are-vv-equivs : {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-equiv f → is-vv-equiv f
-is-equiv-is-vv-equiv f ie = qinv-is-vv-equiv f (is-equiv-qinv f ie)
+equivs-are-vv-equivs f ie = qinvs-are-vv-equivs f (equivs-are-qinvs f ie)
 
 \end{code}
 
@@ -336,8 +339,8 @@ equiv-can-assume-pointed-codomain f φ y = φ y y
 maps-to-𝟘-are-equivs : {X : U ̇} (f : ¬ X) → is-vv-equiv f
 maps-to-𝟘-are-equivs f = equiv-can-assume-pointed-codomain f 𝟘-elim
 
-negation-is-equiv-𝟘 : {X : U ̇} → is-empty X ⇔ X ≃ 𝟘
-negation-is-equiv-𝟘 = (λ f → f , is-vv-equiv-is-equiv f (maps-to-𝟘-are-equivs f)), pr₁
+negations-are-equiv-to-𝟘 : {X : U ̇} → is-empty X ⇔ X ≃ 𝟘
+negations-are-equiv-to-𝟘 = (λ f → f , vv-equivs-are-equivs f (maps-to-𝟘-are-equivs f)), pr₁
 
 \end{code}
 
@@ -348,8 +351,8 @@ And similarly, with similar a observation:
 
 \begin{code}
 
-is-singleton-is-equiv-𝟙 : {X : U ̇} → is-singleton X ⇔ X ≃ 𝟙 {V}
-is-singleton-is-equiv-𝟙 {U} {V} {X} = forth , back
+singletons-are-equiv-to-𝟙 : {X : U ̇} → is-singleton X ⇔ X ≃ 𝟙 {V}
+singletons-are-equiv-to-𝟙 {U} {V} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙
   forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-* x)⁻¹)) , ((λ _ → x₀) , φ))
@@ -386,10 +389,10 @@ but also has a direct proof by path induction:
       → identifications-in-fibers f y x x' p p' (from-identifications-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
 
-pr₁-vv-equiv : (X : U ̇) (Y : X → V ̇)
+pr₁-is-vv-equiv : (X : U ̇) (Y : X → V ̇)
              → ((x : X) → is-singleton (Y x))
              → is-vv-equiv (pr₁ {U} {V} {X} {Y})
-pr₁-vv-equiv {U} {V} X Y iss x = g
+pr₁-is-vv-equiv {U} {V} X Y iss x = g
  where
   c : fiber pr₁ x
   c = (x , pr₁ (iss x)) , refl
@@ -400,10 +403,10 @@ pr₁-vv-equiv {U} {V} X Y iss x = g
   g : is-singleton (fiber pr₁ x)
   g = c , f
 
-pr₁-vv-equiv-converse : {X : U ̇} {A : X → V ̇}
+pr₁-is-vv-equiv-converse : {X : U ̇} {A : X → V ̇}
                       → is-vv-equiv (pr₁ {U} {V} {X} {A})
                       → ((x : X) → is-singleton(A x))
-pr₁-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
+pr₁-is-vv-equiv-converse {U} {V} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
   where
     f : Σ A → X
     f = pr₁ {U} {V} {X} {A}

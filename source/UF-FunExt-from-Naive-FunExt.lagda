@@ -38,7 +38,7 @@ naive-funext-gives-funext' {U} {V} nfe nfe' = funext-via-singletons γ
     eqg : is-equiv g
     eqg = equiv-post nfe nfe' f eqf
     iss : is-singleton (Σ \(h : X → Σ A) →  f ∘ h ≡ id)
-    iss = is-equiv-is-vv-equiv g eqg id
+    iss = equivs-are-vv-equivs g eqg id
     r : (Σ \(h : X → Σ A) → f ∘ h ≡ id) → Π A
     r (h , p) x = transport A (happly p x) (pr₂ (h x))
     s : Π A → (Σ \(h : X → Σ A) →  f ∘ h ≡ id)

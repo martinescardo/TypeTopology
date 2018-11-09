@@ -47,7 +47,7 @@ LPO-is-prop = Π-is-prop (fe U₀ U₀) f
   a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe U₀ U₀)_ _)
 
   f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
-  f x = decidable-is-prop (fe U₀ U₀) (a x)
+  f x = decidable-types-are-props (fe U₀ U₀) (a x)
 
 \end{code}
 

@@ -509,7 +509,7 @@ I am not sure this is going to be useful:
      m : transport X (isp q q) (pr₁ (f q)) < u q
      m = transport (λ p → transport X (isp p q) (pr₁ (f p)) < u q) (isp p q) l
      n : pr₁ (f q) < u q
-     n = transport (λ - → transport X - (pr₁ (f q)) < u q) (prop-is-set isp (isp q q) refl) m
+     n = transport (λ - → transport X - (pr₁ (f q)) < u q) (props-are-sets isp (isp q q) refl) m
 
 \end{code}
 

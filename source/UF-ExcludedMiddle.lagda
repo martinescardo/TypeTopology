@@ -42,7 +42,7 @@ EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P 
 
 DNE-gives-EM : funext U U₀ → DNE U → EM U
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
-                             (decidable-is-prop fe isp)
+                             (decidable-types-are-props fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
 
 fem-proptrunc : funext U U₀ → EM U → propositional-truncations-exist U U

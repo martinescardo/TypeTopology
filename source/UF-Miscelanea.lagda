@@ -14,16 +14,16 @@ open import UF-Subsingletons-FunExt
 open import UF-Retracts
 
 decidable-is-collapsible : {X : U ̇} → decidable X → collapsible X
-decidable-is-collapsible (inl x) = inhabited-is-collapsible x
-decidable-is-collapsible (inr u) = is-empty-is-collapsible u
+decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
+decidable-is-collapsible (inr u) = empty-types-are-collapsible u
 
 open import DiscreteAndSeparated
 
-discrete-is-identification-collapsible : {X : U ̇} → discrete X → identification-collapsible X
-discrete-is-identification-collapsible d = decidable-is-collapsible (d _ _)
+discrete-is-Id-collapsible : {X : U ̇} → discrete X → Id-collapsible X
+discrete-is-Id-collapsible d = decidable-is-collapsible (d _ _)
 
 discrete-is-set : {X : U ̇} → discrete X → is-set X
-discrete-is-set d = identification-collapsible-is-set(discrete-is-identification-collapsible d)
+discrete-is-set d = Id-collapsibles-are-sets(discrete-is-Id-collapsible d)
 
 isolated-is-h-isolated : {X : U ̇} (x : X) → isolated x → is-h-isolated x
 isolated-is-h-isolated {U} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
@@ -106,14 +106,14 @@ stable-is-collapsible {U} fe {X} s = (f , g)
   g : (x y : X) → f x ≡ f y
   g x y = ap s (claim₁ x y)
 
-separated-is-identification-collapsible : funext U U₀ → {X : U ̇} → separated X → identification-collapsible X
-separated-is-identification-collapsible fe s = stable-is-collapsible fe (s _ _)
+separated-is-Id-collapsible : funext U U₀ → {X : U ̇} → separated X → Id-collapsible X
+separated-is-Id-collapsible fe s = stable-is-collapsible fe (s _ _)
 
 separated-is-set : funext U U₀ → {X : U ̇} → separated X → is-set X
-separated-is-set fe s = identification-collapsible-is-set (separated-is-identification-collapsible fe s)
+separated-is-set fe s = Id-collapsibles-are-sets (separated-is-Id-collapsible fe s)
 
 is-prop-separated : funext U U → funext U U₀ → {X : U ̇} → is-prop(separated X)
-is-prop-separated fe fe₀ {X} = iis-prop-is-prop f
+is-prop-separated fe fe₀ {X} = iprops-are-propositions f
  where
   f : separated X → is-prop(separated X)
   f s = Π-is-prop fe

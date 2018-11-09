@@ -415,7 +415,7 @@ PRED-is-the-homotopy-final-coalgebra {U} {X} κ = homomorphism-existence κ , γ
                 (homomorphism-uniqueness κ (ℕ∞-corec κ) h' (ℕ∞-corec-homomorphism κ) r ,
                  Π-is-set (fe U U₀)
                    (λ _ → +-is-set 𝟙 ℕ∞
-                           (prop-is-set 𝟙-is-prop)
+                           (props-are-sets 𝟙-is-prop)
                            (ℕ∞-is-set (fe U₀ U₀))) _ _)
 
 \end{code}

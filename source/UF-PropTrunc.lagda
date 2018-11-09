@@ -30,13 +30,13 @@ module PropositionalTruncation (pt : PropTrunc) where
    ptrec : {X : U ̇} {Y : V ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
 
  is-singleton'-is-prop : {X : U ̇} → funext U U → is-prop(is-prop X × ∥ X ∥)
- is-singleton'-is-prop fe = Σ-is-prop (is-prop-is-prop fe) (λ _ → ptisp)
+ is-singleton'-is-prop fe = Σ-is-prop (is-prop-is-a-prop fe) (λ _ → ptisp)
 
  c-es₁ : {X : U ̇} → is-singleton X ⇔ is-prop X × ∥ X ∥
  c-es₁ {U} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥
-   f (x , φ) = is-singleton-is-prop (x , φ) , ∣ x ∣
+   f (x , φ) = singletons-are-propositions (x , φ) , ∣ x ∣
 
    g : is-prop X × ∥ X ∥ → is-singleton X
    g (i , s) = ptrec i id s , i (ptrec i id s)

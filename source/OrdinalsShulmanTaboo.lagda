@@ -99,7 +99,7 @@ shulmans-taboo e = DNE-gives-EM fe₀ dne
   dne P j φ = Idtofun s φ
    where
     p q : X
-    p = (¬¬ P , neg-is-prop fe₀) ,
+    p = (¬¬ P , negations-are-props fe₀) ,
         (λ r → Idtofun (ap pr₁ r) φ)
     q = (P , j) ,
         (λ r → φ (Idtofun (ap pr₁ r)))

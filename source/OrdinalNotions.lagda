@@ -145,7 +145,7 @@ well-founded-is-prop fe = Π-is-prop (fe U (U ⊔ V)) (is-accessible-is-prop fe)
 
 extensional-gives-is-set : (∀ U V → funext U V) → is-prop-valued
                          → is-extensional → is-set X
-extensional-gives-is-set fe isp e = identification-collapsible-is-set (f , κ)
+extensional-gives-is-set fe isp e = Id-collapsibles-are-sets (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
   f {x} {y} p = e x y (transport (λ - → x ≼ -) p (≼-refl {x}))
@@ -181,7 +181,7 @@ transitive-is-prop fe isp =
 ordinal-is-prop : (∀ U V → funext U V) → is-prop is-well-order
 ordinal-is-prop fe o = ×-is-prop (Π-is-prop (fe U (U ⊔ V))
                                         λ x → Π-is-prop (fe U V)
-                                                (λ y → is-prop-is-prop (fe V V)))
+                                                (λ y → is-prop-is-a-prop (fe V V)))
                         (×-is-prop (well-founded-is-prop fe)
                           (×-is-prop (extensional-is-prop fe (pr₁ o))
                                           (transitive-is-prop fe (pr₁ o))))
@@ -288,7 +288,7 @@ is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfou
 ordinal₂-is-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-well-order₂
 ordinal₂-is-prop fe isp = ×-is-prop (Π-is-prop (fe U (U ⊔ V))
                                            (λ x → Π-is-prop (fe U V)
-                                                     (λ y → is-prop-is-prop (fe V V))))
+                                                     (λ y → is-prop-is-a-prop (fe V V))))
                              (×-is-prop (well-founded₂-is-prop fe)
                                (×-is-prop (extensional-is-prop fe isp)
                                                (transitive-is-prop fe isp)))

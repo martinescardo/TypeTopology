@@ -29,6 +29,6 @@ identifications-to-singleton x = retract-of-singleton
                                   (identifications-from-singleton x)
 
 identifications-to-is-prop : {X : U ̇} (x : X) → is-prop(identifications-to x)
-identifications-to-is-prop x = is-singleton-is-prop (identifications-to-singleton x)
+identifications-to-is-prop x = singletons-are-propositions (identifications-to-singleton x)
 
 \end{code}

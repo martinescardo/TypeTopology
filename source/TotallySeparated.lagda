@@ -211,7 +211,7 @@ Old proof which by-passes the step via separatedness:
 \begin{code}
 
 totally-separated-is-set' : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
-totally-separated-is-set' fe X t = identification-collapsible-is-set h
+totally-separated-is-set' fe X t = Id-collapsibles-are-sets h
  where
   f : {x y : X} → x ≡ y → x ≡ y
   f r = t(λ p → ap p r)
@@ -225,7 +225,7 @@ totally-separated-is-set' fe X t = identification-collapsible-is-set h
   g : {x y : X} → constant(f {x} {y})
   g r s = ap t (c r s)
 
-  h : identification-collapsible X
+  h : Id-collapsible X
   h {x} {y} = f , g
 
 \end{code}
@@ -497,7 +497,7 @@ We package the above as follows for convenient use elsewhere
 
  totally-separated-reflection' : {X : U ̇} {A : V ̇} → totally-separated A
                               → is-equiv (λ (f' : 𝓣 X → A) → f' ∘ η)
- totally-separated-reflection' ts = is-vv-equiv-is-equiv _ (totally-separated-reflection ts)
+ totally-separated-reflection' ts = vv-equivs-are-equivs _ (totally-separated-reflection ts)
 
  totally-separated-reflection'' : {X : U ̇} {A : V ̇} → totally-separated A
                                → (𝓣 X → A) ≃ (X → A)
@@ -643,7 +643,7 @@ apartness relation _♯₂ is tight:
  neg-apart-is-equiv {U} {X} fe _♯_ (♯p , ♯i , ♯s , ♯c) = p , ♯i , s , t
   where
    p : (x y : X) → is-prop (¬ (x ♯ y))
-   p x y = neg-is-prop fe
+   p x y = negations-are-props fe
 
    s : (x y : X) → ¬ (x ♯ y) → ¬ (y ♯ x)
    s x y u a = u (♯s y x a)
@@ -734,7 +734,7 @@ apartness relation _♯₂ is tight:
 
  tight-set' : {X : U ̇} → funext U U → funext U U₀
            → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
- tight-set' {U} {X} fe fe₀ = ptrec (is-prop-is-set fe) f
+ tight-set' {U} {X} fe fe₀ = ptrec (is-set-is-a-prop fe) f
    where
     f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-set fe₀ _♯_ a t
@@ -816,7 +816,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → apart x z ≡ apart y z
-    h z = to-Σ-≡ (g z , is-prop-is-prop (fe V V) _ _)
+    h z = to-Σ-≡ (g z , is-prop-is-a-prop (fe V V) _ _)
 
 \end{code}
 
@@ -840,7 +840,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ⁺)) (fe V V) pe) ptisp
+  X'-is-set = subsets-of-sets-are-sets (X → Ω V) _ (powersets-are-sets (fe U (V ⁺)) (fe V V) pe) ptisp
 
   η : X → X'
   η = corestriction apart
@@ -1049,7 +1049,7 @@ apartness on it.
          p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
        γ : (x' : X') → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-       γ x' = is-prop-is-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
+       γ x' = is-prop-is-a-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
 
     k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step
@@ -1143,7 +1143,7 @@ apartness on it.
     p₄ = p₂ ⁻¹ ∙ p₃
 
   tight-η-equiv-direct : tight _♯_ → X ≃ X'
-  tight-η-equiv-direct t = (η , is-vv-equiv-is-equiv η cm)
+  tight-η-equiv-direct t = (η , vv-equivs-are-equivs η cm)
    where
     lc : left-cancellable η
     lc {x} {y} p = i h

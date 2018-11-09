@@ -25,14 +25,14 @@ idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
 
 eqtoid-idtoeq : (ua : is-univalent U)
               → (X Y : U ̇) (p : X ≡ Y) →  eqtoid ua X Y (idtoeq X Y p) ≡ p
-eqtoid-idtoeq ua X Y = pr₁(pr₂ (is-equiv-qinv (idtoeq X Y) (ua X Y)))
+eqtoid-idtoeq ua X Y = pr₁(pr₂ (equivs-are-qinvs (idtoeq X Y) (ua X Y)))
 
 eqtoid-refl : (ua : is-univalent U) (X : U ̇)
            → eqtoid ua X X (≃-refl X) ≡ refl
 eqtoid-refl ua X = eqtoid-idtoeq ua X X refl
 
 idtoeq' : (X Y : U ̇) → X ≡ Y → X ≃ Y
-idtoeq' X Y p = (Idtofun p , transport-is-equiv p)
+idtoeq' X Y p = (Idtofun p , transports-are-equivs p)
 
 idtoEqs-agree : (X Y : U ̇) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X _ refl = refl
@@ -58,7 +58,7 @@ back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid
 pre-comp-is-equiv : (ua : is-univalent U)
                   → {X Y Z : U ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
 pre-comp-is-equiv ua {X} {Y} f ise =
- equiv-closed-under-∼' (back-transport-is-equiv (eqtoid ua X Y (f , ise)))
+ equiv-closed-under-∼' (back-transports-are-equivs (eqtoid ua X Y (f , ise)))
                         (back-transport-is-pre-comp' ua (f , ise))
 
 \end{code}
@@ -212,9 +212,9 @@ without univalence elsewhere, of course):
 
 \begin{code}
 
-is-equiv-is-vv-equiv' : is-univalent U → {X Y : U ̇} (f : X → Y)
+equivs-are-vv-equivs' : is-univalent U → {X Y : U ̇} (f : X → Y)
                      → is-equiv f → is-vv-equiv f
-is-equiv-is-vv-equiv' {U} ua {X} {Y} f ise = g Y (f , ise)
+equivs-are-vv-equivs' {U} ua {X} {Y} f ise = g Y (f , ise)
  where
   A : (Y : U ̇) → X ≃ Y → U ̇
   A Y (f , ise) = is-vv-equiv f

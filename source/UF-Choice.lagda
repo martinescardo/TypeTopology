@@ -142,7 +142,7 @@ module UnivalentChoice (U : Universe)
  sei : {X Y : U ̇} → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe U U) (λ x → isy)
 
- open TChoice U ∥_∥ ptfunct is-set sei (prop-is-set ptisp)
+ open TChoice U ∥_∥ ptfunct is-set sei (props-are-sets ptisp)
 
  AC   = (X : U ̇) (A : X → U ̇) (P : (x : X) → A x → U ̇)
      → is-set X
@@ -178,7 +178,7 @@ module UnivalentChoice (U : Universe)
    g = ac' X
            (λ x → Σ \(a : A x) → P x a)
            s
-           (λ x → subset-of-set-is-set (A x) (P x) (t x) (λ {a} → isp x a))
+           (λ x → subsets-of-sets-are-sets (A x) (P x) (t x) (λ {a} → isp x a))
            f
 
  AC'AC'' : AC' → AC''
@@ -226,7 +226,7 @@ module ChoiceUnderEM₀ (U : Universe)
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
  l : {X : U ̇} → is-set(¬¬ X)
- l {X} = prop-is-set (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
+ l {X} = props-are-sets (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
 
  fact : DNS → DNA
  fact = TChoice.theorem U ¬¬ ¬¬-functor is-set sei l
@@ -302,7 +302,7 @@ module AC-renders-all-sets-discrete
  lemma₂ : {X : U ̇} → is-set X → (a : 𝟚 → X)
         → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
- lemma₂ is a = ptrec (decidable-is-prop (fe U U₀) is) (lemma₁ a)
+ lemma₂ is a = ptrec (decidable-types-are-props (fe U U₀) is) (lemma₁ a)
 
  ac-discrete-sets : AC → (X : U ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
@@ -311,7 +311,7 @@ module AC-renders-all-sets-discrete
    A x = Σ \(i : 𝟚) → a i ≡ x
 
    isa : (x : X) → is-set(A x)
-   isa x = subset-of-set-is-set 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
+   isa x = subsets-of-sets-are-sets 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
 
    ac'' : AC''
    ac'' = AC'AC'' (ACAC' ac)
@@ -343,7 +343,7 @@ module AC-gives-EM
  open  AC-renders-all-sets-discrete U₁ pt fe
 
  lemma : AC → (P : Ω U₀) → decidable(⊤ ≡ P)
- lemma ac P = ac-discrete-sets ac (Ω U₀) (Ω-is-set (fe U₀ U₀) pe) a
+ lemma ac P = ac-discrete-sets ac (Ω U₀) (Ω-is-a-set (fe U₀ U₀) pe) a
    where
     a : 𝟚 → Ω U₀
     a ₀ = ⊤
@@ -386,7 +386,7 @@ module Observation (U : Universe)
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , (to-Σ-≡ (p , neg-is-prop (fe U U₀) _ t))
+     f (i , p) = i , (to-Σ-≡ (p , negations-are-props (fe U U₀) _ t))
 
    s : Y → 𝟚
    s y = pr₁(r-splits y)
@@ -398,7 +398,7 @@ module Observation (U : Universe)
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , neg-is-prop (fe U U₀) _ _)
+   a-r p = to-Σ-≡ (p , negations-are-props (fe U U₀) _ _)
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁

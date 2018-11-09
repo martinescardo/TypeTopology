@@ -131,7 +131,7 @@ is the successor of the universe V:
  X/≈ = image equiv-rel
 
  X/≈-is-set : is-set X/≈
- X/≈-is-set = subset-of-set-is-set (X → Ω V) _ (powerset-is-set (fe U (V ⁺)) (fe V V) pe) ptisp
+ X/≈-is-set = subsets-of-sets-are-sets (X → Ω V) _ (powersets-are-sets (fe U (V ⁺)) (fe V V) pe) ptisp
 
  η : X → X/≈
  η = corestriction equiv-rel
@@ -174,7 +174,7 @@ points are mapped to equal points:
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe U (V ⁺))
                                       (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                                                      is-prop-is-prop (fe V V) _ _)) ,
+                                                      is-prop-is-a-prop (fe V V) _ _)) ,
                                     ptisp _ _)
 
 \end{code}
@@ -233,7 +233,7 @@ universe W.
         p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
       γ : (x' : X/≈) → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-      γ x' = is-prop-is-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
+      γ x' = is-prop-is-a-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
 
    k : (x' : X/≈) → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step

@@ -21,7 +21,7 @@ prop-indexed-product {U} {V} fe {X} {Y} hp a = f , (g , fg) , (g , gf)
   g : Y a → Π Y
   g y x = transport Y (hp a x) y
   lemma : (x : X) → hp x x ≡ refl
-  lemma x = prop-is-set hp (hp x x) refl
+  lemma x = props-are-sets hp (hp x x) refl
   fg : (y : Y a) → transport Y (hp a a) y ≡ y
   fg y = ap (λ - → transport Y - y) (lemma a)
   gf'' : (φ : Π Y) {x x' : X} → x ≡ x' → transport Y (hp x x') (φ x) ≡ φ x'
@@ -60,7 +60,7 @@ prop-indexed-sum {U} {V} {X} {Y} hp a = f , (g , fg) , (g , gf)
   g : Y a → Σ Y
   g y = a , y
   lemma₁ : (x : X) → hp x x ≡ refl
-  lemma₁ x = prop-is-set hp (hp x x) refl
+  lemma₁ x = props-are-sets hp (hp x x) refl
   fg : (y : Y a) → f(a , y) ≡ y
   fg y = ap (λ - → transport Y - y) (lemma₁ a)
   lemma₂ : (x : X) (y : Y x) → x ≡ a → transport Y (hp a x) (f (x , y)) ≡ y

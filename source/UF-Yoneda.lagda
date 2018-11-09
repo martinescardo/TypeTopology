@@ -182,7 +182,7 @@ Yoneda-section-forth : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
 Yoneda-section-forth {U} {V} {X} {A} x η iss y = g
  where
   u : is-universal-element (x , yoneda-elem x A η)
-  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (is-singleton-is-prop iss (x , yoneda-elem x A η))
+  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (singletons-are-propositions iss (x , yoneda-elem x A η))
   h : yoneda-nat x A (yoneda-elem x A η) y ∼ η y
   h = yoneda-lemma x A η y
   g : has-section (η y)
@@ -233,9 +233,9 @@ is-vv-equiv-has-adj : {X : U ̇} {Y : V ̇} (g : Y → X)
 is-vv-equiv-has-adj {U} {V} {X} {Y} g isv = f , η , hass
  where
   f : X → Y
-  f = pr₁ (pr₁ (is-vv-equiv-is-equiv g isv))
+  f = pr₁ (pr₁ (vv-equivs-are-equivs g isv))
   gf : (x : X) → g (f x) ≡ x
-  gf = pr₂ (pr₁ (is-vv-equiv-is-equiv g isv))
+  gf = pr₂ (pr₁ (vv-equivs-are-equivs g isv))
   η : (x : X) (y : Y) → f x ≡ y → g y ≡ x
   η x y p = transport (λ - → g - ≡ x) p (gf x )
   hass : (x : X) (y : Y) → has-section (η x y)
@@ -294,9 +294,9 @@ nat-retraction-is-section-uniquely : (∀ U V → funext U V) → {X : U ̇} {A 
                                      (x : X) (η : Nat (Id x) A)
                                    → ((y : X) → has-section(η y))
                                    → ((y : X) → is-singleton(has-retraction(η y)))
-nat-retraction-is-section-uniquely fe x η hass y = inhabited-proposition-is-singleton
+nat-retraction-is-section-uniquely fe x η hass y = pointed-props-are-singletons
                                                       (nat-retraction-is-section x η hass y)
-                                                      (hass-is-prop-hasr fe (η y) (hass y))
+                                                      (sections-have-at-most-one-retraction fe (η y) (hass y))
 
 nat-has-section-is-prop : (∀ U V → funext U V) → {X : U ̇} {A : X → V ̇}
                         (x : X) (η : Nat (Id x) A)
@@ -304,7 +304,7 @@ nat-has-section-is-prop : (∀ U V → funext U V) → {X : U ̇} {A : X → V �
 nat-has-section-is-prop {U} {V} fe {X} x η φ = Π-is-prop (fe U (U ⊔ V)) γ φ
   where
    γ : (y : X) → is-prop (has-section (η y))
-   γ y = hasr-is-prop-hass fe (η y) (nat-retraction-is-section x η φ y)
+   γ y = retractions-have-at-most-one-section fe (η y) (nat-retraction-is-section x η φ y)
 
 nat-retraction-is-equiv : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                       → ((y : X) → has-section(η y))
@@ -440,7 +440,7 @@ univalence-via-singletons {U} = (f , g)
                                 (unique-element-is-universal-element
                                        (Eq X)
                                        (X , ≃-refl X)
-                                       (is-singleton-is-prop (φ X) (X , ≃-refl X)))
+                                       (singletons-are-propositions (φ X) (X , ≃-refl X)))
 
 \end{code}
 
@@ -655,7 +655,7 @@ yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
 
 nats-are-uniquely-transports : (∀ U V → funext U V) → {X : U ̇} (x : X) (A : X → V ̇) (η : Nat (Id x) A)
                             → is-singleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
-nats-are-uniquely-transports fe x A = is-equiv-is-vv-equiv (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
+nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
 adj-obs : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)

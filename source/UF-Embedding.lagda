@@ -26,7 +26,7 @@ is-embedding-is-prop : funext V (U ⊔ V) → funext (U ⊔ V) (U ⊔ V)
                      → is-prop(is-embedding f)
 is-embedding-is-prop {U} {V} fe fe' f = Π-is-prop
                                           fe
-                                          (λ x → is-prop-is-prop fe')
+                                          (λ x → is-prop-is-a-prop fe')
 
 embedding-criterion : {X : U ̇} {Y : V ̇} (f : X → Y)
                     → ((x : X) → is-prop (fiber f (f x)))
@@ -35,7 +35,7 @@ embedding-criterion f φ .(f x) (x , refl) = φ x (x , refl)
 
 is-equiv-is-embedding : {X : U ̇} {Y : V ̇} (f : X → Y)
                       → is-equiv f → is-embedding f
-is-equiv-is-embedding f e y = is-singleton-is-prop (is-equiv-is-vv-equiv f e y)
+is-equiv-is-embedding f e y = singletons-are-propositions (equivs-are-vv-equivs f e y)
 
 _↪_ : U ̇ → V ̇ → U ⊔ V ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
@@ -52,7 +52,7 @@ equiv-embedding : {X : U ̇} {Y : V ̇}
 equiv-embedding e = eqtofun e ,
                     is-equiv-is-embedding
                      (eqtofun e)
-                     (is-equiv-eqtofun e)
+                     (eqtofun-is-an-equiv e)
 
 embedding-lc : {X : U ̇} {Y : V ̇} (f : X → Y)
              → is-embedding f → left-cancellable f
@@ -248,10 +248,10 @@ module _ {U V} {X : U ̇} {Y : V ̇} where
  equiv-dense-embedding e = eqtofun e ,
                             is-equiv-is-embedding
                               (eqtofun e)
-                              (is-equiv-eqtofun e),
+                              (eqtofun-is-an-equiv e),
                             is-equiv-is-dense
                               (eqtofun e)
-                              (is-equiv-eqtofun e)
+                              (eqtofun-is-an-equiv e)
 
  detofun : (X ↪ᵈ Y) → X → Y
  detofun = pr₁
@@ -323,7 +323,7 @@ inr-embedding {U} {V} X Y (inr a) (.a , refl) (.a , refl) = refl
 maps-of-props-are-embeddings : {P : U ̇} {Q : V ̇} (f : P → Q)
                              → is-prop P → is-prop Q → is-embedding f
 maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
-                                                                prop-is-set j _ s')
+                                                                props-are-sets j _ s')
 
 ×-embedding : ∀ {T} {X : U ̇} {Y : V ̇} {A : W ̇} {B : T ̇}
                 (f : X → A ) (g : Y → B)

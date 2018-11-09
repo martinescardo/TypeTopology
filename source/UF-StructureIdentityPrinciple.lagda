@@ -218,7 +218,7 @@ module gsip
             (λ B → eqtoidₛ A B , idtoeq-eqtoidₛ A B)
 
   eqtoid-idtoeqₛ : (A B : Σ S) (p : A ≡ B) → eqtoidₛ A B (idtoeqₛ A B p) ≡ p
-  eqtoid-idtoeqₛ A B = pr₁(pr₂ (is-equiv-qinv (idtoeqₛ A B) (uaₛ A B)))
+  eqtoid-idtoeqₛ A B = pr₁(pr₂ (equivs-are-qinvs (idtoeqₛ A B) (uaₛ A B)))
 
   ≡-is-≃ₛ : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ B)
   ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
@@ -554,7 +554,7 @@ a proposition:
 
  Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s)
  Axioms-is-prop X (_·_ , e) (i , α , ν) = ×-is-prop
-                                           (is-prop-is-set fe)
+                                           (is-set-is-a-prop fe)
                                            (×-is-prop
                                               (Π-is-prop fe
                                                  λ x → Π-is-prop fe
