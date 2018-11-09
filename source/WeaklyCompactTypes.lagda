@@ -33,8 +33,8 @@ open import DecidableAndDetachable
 ∃-compact : U ̇ → U ̇
 ∃-compact X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
 
-∃-compact-is-prop : {X : U ̇} → is-prop (∃-compact X)
-∃-compact-is-prop {U} {X} = Π-is-prop (fe U U)
+∃-compactness-is-a-prop : {X : U ̇} → is-prop (∃-compact X)
+∃-compactness-is-a-prop {U} {X} = Π-is-prop (fe U U)
                                 (λ _ → decidable-types-are-props (fe U U₀) ptisp)
 
 ∃-compact-Markov : {X : U ̇}
@@ -58,8 +58,8 @@ LPO with WLPO.
 Π-compact : U ̇ → U ̇
 Π-compact X = (p : X → 𝟚) → decidable ((x : X) → p x ≡ ₁)
 
-Π-compact-is-prop : {X : U ̇} → is-prop (Π-compact X)
-Π-compact-is-prop {U} = Π-is-prop (fe U U)
+Π-compactness-is-a-prop : {X : U ̇} → is-prop (Π-compact X)
+Π-compactness-is-a-prop {U} = Π-is-prop (fe U U)
                          (λ _ → decidable-types-are-props (fe U U₀)
                                   (Π-is-prop (fe U U₀) λ _ → 𝟚-is-set))
 
@@ -106,10 +106,10 @@ predicate λ x → ₁:
 Π-compact' : U ̇ → U ̇
 Π-compact' X = (p : X → 𝟚) → decidable (p ≡ λ x → ₁)
 
-Π-compact'-is-prop : {X : U ̇} → is-prop(Π-compact' X)
-Π-compact'-is-prop {U} = Π-is-prop (fe U U)
-                          (λ p → decidable-types-are-props (fe U U₀)
-                                   (Π-is-set (fe U U₀) (λ x → 𝟚-is-set)))
+Π-compactness'-is-a-prop : {X : U ̇} → is-prop(Π-compact' X)
+Π-compactness'-is-a-prop {U} = Π-is-prop (fe U U)
+                                (λ p → decidable-types-are-props (fe U U₀)
+                                         (Π-is-set (fe U U₀) (λ x → 𝟚-is-set)))
 
 Π-compact'-gives-Π-compact : {X : U ̇} → Π-compact' X → Π-compact X
 Π-compact'-gives-Π-compact {U} {X} c' p = g (c' p)
@@ -228,7 +228,7 @@ retract-∃-compact (f , hass) = surjection-∃-compact f (retraction-surjection
 
 retract-∃-compact' : {X : U ̇} {Y : V ̇}
                    → ∥ retract Y of X ∥ → ∃-compact X → ∃-compact Y
-retract-∃-compact' t c = ptrec ∃-compact-is-prop (λ r → retract-∃-compact r c) t
+retract-∃-compact' t c = ptrec ∃-compactness-is-a-prop (λ r → retract-∃-compact r c) t
 
 image-Π-compact : {X : U ̇} {Y : V ̇} (f : X → Y)
                 → Π-compact X → Π-compact (image f)
@@ -240,7 +240,7 @@ retract-Π-compact (f , hass) = surjection-Π-compact f (retraction-surjection f
 
 retract-Π-compact' : {X : U ̇} {Y : V ̇}
                   → ∥ retract Y of X ∥ → Π-compact X → Π-compact Y
-retract-Π-compact' t c = ptrec Π-compact-is-prop (λ r → retract-Π-compact r c) t
+retract-Π-compact' t c = ptrec Π-compactness-is-a-prop (λ r → retract-Π-compact r c) t
 
 i2c2c : {X : U ̇} {Y : V ̇}
       → X → Π-compact (X → Y) → Π-compact Y
@@ -610,8 +610,8 @@ module CompactTypes).
 ∃-compact∙ : U ̇ → U ̇
 ∃-compact∙ X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
-∃-compact∙-is-prop : {X : U ̇} → is-prop (∃-compact∙ X)
-∃-compact∙-is-prop {U} = Π-is-prop (fe U U) (λ _ → ptisp)
+∃-compactness∙-is-a-prop : {X : U ̇} → is-prop (∃-compact∙ X)
+∃-compactness∙-is-a-prop {U} = Π-is-prop (fe U U) (λ _ → ptisp)
 
 \end{code}
 
@@ -658,11 +658,11 @@ that are ∃-compact∙ or empty:
 
 \begin{code}
 
-is-prop-isoore : {X : U ̇} → is-prop(∃-compact∙ X + is-empty X)
-is-prop-isoore {U} {X} = sum-of-contradictory-props
-                           ∃-compact∙-is-prop
-                             (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
-                                (λ c u → ptrec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
+isoore-is-a-prop : {X : U ̇} → is-prop(∃-compact∙ X + is-empty X)
+isoore-is-a-prop {U} {X} = sum-of-contradictory-props
+                            ∃-compactness∙-is-a-prop
+                              (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
+                                 (λ c u → ptrec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
 
 isoore-so : {X : U ̇} → ∃-compact∙ X + is-empty X → ∃-compact X
 isoore-so (inl c) = pr₂(iso-i-and-c c)

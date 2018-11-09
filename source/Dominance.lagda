@@ -7,20 +7,14 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 
 -- open import UF -- hiding (𝟙) hiding (𝟙-is-prop) hiding (⊤)
 
-open import SpartanMLTT hiding (𝟙)
-open import UF-Subsingletons hiding (𝟙-is-prop) hiding (⊤)
+open import SpartanMLTT
+open import UF-Subsingletons hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 
 module Dominance (U : Universe) (fe : ∀ U V → funext U V) where
 
 U⁺ = U ⁺
-
-data 𝟙 : U ̇ where
- ⋆ : 𝟙
-
-𝟙-is-prop : is-prop 𝟙
-𝟙-is-prop ⋆ ⋆ = refl
 
 D2 : (U ̇ → U ̇) → U⁺ ̇
 D2 d = (X : U ̇) → is-prop(d X)
@@ -43,11 +37,11 @@ Dominance = Σ is-dominance
 is-dominant : (D : Dominance) → U ̇ → U ̇
 is-dominant (d , _) = d
 
-being-dominant-is-prop : (D : Dominance) → (X : U ̇) → is-prop (is-dominant D X)
-being-dominant-is-prop (_ , (isp , _)) = isp
+being-dominant-is-a-prop : (D : Dominance) → (X : U ̇) → is-prop (is-dominant D X)
+being-dominant-is-a-prop (_ , (isp , _)) = isp
 
-dominant-type-is-prop : (D : Dominance) → (X : U ̇) → is-dominant D X → is-prop X
-dominant-type-is-prop (_ , (_ , (disp , _))) = disp
+dominant-types-are-props : (D : Dominance) → (X : U ̇) → is-dominant D X → is-prop X
+dominant-types-are-props (_ , (_ , (disp , _))) = disp
 
 𝟙-is-dominant : (D : Dominance) → is-dominant D 𝟙
 𝟙-is-dominant (_ , (_ , (_ , (oisd , _)))) = oisd
@@ -56,8 +50,8 @@ dominant-closed-under-Σ : (D : Dominance) → (P : U ̇) (Q : P → U ̇)
                         → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
-is-dominance-is-prop : (d : U ̇ → U ̇) → is-prop (is-dominance d)
-is-dominance-is-prop d = iprops-are-propositions lemma
+being-a-dominance-is-a-prop : (d : U ̇ → U ̇) → is-prop (is-dominance d)
+being-a-dominance-is-a-prop d = iprops-are-propositions lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
@@ -67,12 +61,12 @@ is-dominance-is-prop d = iprops-are-propositions lemma
                           λ _ → Π-is-prop (fe U U)
                                    λ _ → is-prop-is-a-prop (fe U U))
                        λ _ → Σ-is-prop
-                               (being-dominant-is-prop (d , isd) 𝟙)
+                               (being-dominant-is-a-prop (d , isd) 𝟙)
                                λ _ → Π-is-prop (fe U⁺ U⁺)
                                         λ _ → Π-is-prop (fe U⁺ U)
                                                  λ Q → Π-is-prop (fe U U)
                                                           λ _ → Π-is-prop (fe U U)
-                                                                   λ _ → being-dominant-is-prop (d , isd) (Σ Q)
+                                                                   λ _ → being-dominant-is-a-prop (d , isd) (Σ Q)
 
 
 \end{code}
@@ -91,7 +85,7 @@ module DecidableDominance where
                                  (is-prop-is-a-prop (fe U U))
                                  (decidable-types-are-props (fe U U₀))) ,
                        (λ X → pr₁) ,
-                       (𝟙-is-prop , inl ⋆) ,
+                       (𝟙-is-prop , inl *) ,
                        λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁(dQ p)) ,
                                       decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
 

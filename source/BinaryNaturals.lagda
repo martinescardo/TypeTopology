@@ -18,19 +18,7 @@ module BinaryNaturals where
 open import SpartanMLTT renaming (_+_ to _∔_)
 open import UF-Equiv
 open import UF-Base
-
-\end{code}
-
-The native induction principle for ℕ:
-
-\begin{code}
-
-ℕ-induction :{A : ℕ → U ̇}
-            → A zero
-            → (∀ n → A n → A(succ n))
-            → ∀ n → A n
-ℕ-induction base step zero     = base
-ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
+open import UF-EquivalenceExamples
 
 \end{code}
 
@@ -66,15 +54,6 @@ data 𝔹 : U₀ ̇ where
  l    : 𝔹 → 𝔹
  r    : 𝔹 → 𝔹
 
-𝔹-induction : {B : 𝔹 → U ̇}
-          → B zero
-          → (∀ m → B m → B(l m))
-          → (∀ m → B m → B(r m))
-          → ∀ m → B m
-𝔹-induction base stepl stepr zero  = base
-𝔹-induction base stepl stepr (l m) = stepl m (𝔹-induction base stepl stepr m)
-𝔹-induction base stepl stepr (r m) = stepr m (𝔹-induction base stepl stepr m)
-
 \end{code}
 
 The successor function n ↦ n+1 on 𝔹:
@@ -103,8 +82,8 @@ binary(succ n) = Succ(binary n)
 
 \end{code}
 
-The size of a (binary) number and version of the base 2 logarithm of a
-(unary) number:
+The size of a (binary) number and the base 2 logarithm of a (unary)
+number. We have lg2 ((2^n)-1) = n (TODO).
 
 \begin{code}
 
@@ -113,8 +92,8 @@ size zero  = zero
 size (l m) = succ (size m)
 size (r m) = succ (size m)
 
-log2 : ℕ → ℕ
-log2 n = size(binary n)
+lg2 : ℕ → ℕ
+lg2 n = size(binary n)
 
 \end{code}
 
@@ -175,7 +154,7 @@ binary-unary(r m) = g
   g = rdiagram(unary m) ∙ a
 
 binary-equiv : 𝔹 ≃ ℕ
-binary-equiv = unary , (binary , unary-binary) , (binary , binary-unary)
+binary-equiv = qinveq unary (binary , binary-unary , unary-binary)
 
 \end{code}
 
@@ -183,10 +162,26 @@ Induction principles induced by the equivalences:
 
 \begin{code}
 
+ℕ-induction : {A : ℕ → U ̇}
+            → A zero
+            → (∀ n → A n → A(succ n))
+            → ∀ n → A n
+ℕ-induction base step zero     = base
+ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
+
+𝔹-induction : {B : 𝔹 → U ̇}
+            → B zero
+            → (∀ m → B m → B(l m))
+            → (∀ m → B m → B(r m))
+            → ∀ m → B m
+𝔹-induction base stepl stepr zero  = base
+𝔹-induction base stepl stepr (l m) = stepl m (𝔹-induction base stepl stepr m)
+𝔹-induction base stepl stepr (r m) = stepr m (𝔹-induction base stepl stepr m)
+
 unary-induction-on-𝔹 : {B : 𝔹 → U ̇}
-          → B zero
-          → (∀ n → B n → B(Succ n))
-          → ∀ n → B n
+                     → B zero
+                     → (∀ n → B n → B(Succ n))
+                     → ∀ n → B n
 unary-induction-on-𝔹 {U} {B} base step = g
  where
   A : ℕ → U ̇
@@ -203,10 +198,10 @@ unary-induction-on-𝔹 {U} {B} base step = g
   g m = transport B (binary-unary m) (b m)
 
 binary-induction-on-ℕ : {A : ℕ → U ̇}
-          → A zero
-          → (∀ n → A n → A(L n))
-          → (∀ n → A n → A(R n))
-          → ∀ n → A n
+                     → A zero
+                     → (∀ n → A n → A(L n))
+                     → (∀ n → A n → A(R n))
+                     → ∀ n → A n
 binary-induction-on-ℕ {U} {A} base stepl stepr = g
  where
   B : 𝔹 → U ̇
@@ -545,7 +540,7 @@ riap-pair : (z : ℕ × ℕ) → riap(pair z) ≡ z
 riap-pair (n , k) = to-×-≡ (first-pair n k) (second-pair n k)
 
 pairing : ℕ × ℕ ≃ ℕ
-pairing = pair , ((riap , pair-riap) , (riap , riap-pair))
+pairing = qinveq pair  (riap , riap-pair , pair-riap)
 
 \end{code}
 
@@ -554,7 +549,7 @@ We now show that ℕ + ℕ ≃ ℕ (July 2018).
 \begin{code}
 
 ℕ-plus-𝟙 : ℕ ∔ 𝟙 ≃ ℕ
-ℕ-plus-𝟙 = f , (g , fg) , (g , gf)
+ℕ-plus-𝟙 = qinveq f (g , ε , η)
  where
   f : ℕ ∔ 𝟙 {U₀} → ℕ
   f (inl n) = succ n
@@ -562,15 +557,15 @@ We now show that ℕ + ℕ ≃ ℕ (July 2018).
   g : ℕ → ℕ ∔ 𝟙
   g zero = inr *
   g (succ n) = inl n
-  fg : (n : ℕ) → f (g n) ≡ n
-  fg zero = refl
-  fg (succ n) = refl
-  gf : (z : ℕ ∔ 𝟙) → g (f z) ≡ z
-  gf (inl n) = refl
-  gf (inr *) = refl
+  η : (n : ℕ) → f (g n) ≡ n
+  η zero = refl
+  η (succ n) = refl
+  ε : (z : ℕ ∔ 𝟙) → g (f z) ≡ z
+  ε (inl n) = refl
+  ε (inr *) = refl
 
 two-𝔹-plus-𝟙 : 𝔹 ∔ 𝔹 ∔ 𝟙 ≃ 𝔹
-two-𝔹-plus-𝟙 = f , (g , fg) , (g , gf)
+two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
  where
   f : 𝔹 ∔ 𝔹 ∔ 𝟙 {U₀} → 𝔹
   f (inl b) = l b
@@ -580,28 +575,28 @@ two-𝔹-plus-𝟙 = f , (g , fg) , (g , gf)
   g zero = inr (inr *)
   g (l b) = inl b
   g (r b) = inr (inl b)
-  fg : (b : 𝔹) → f (g b) ≡ b
-  fg zero = refl
-  fg (l b) = refl
-  fg (r b) = refl
-  gf : (z : 𝔹 ∔ 𝔹 ∔ 𝟙) → g (f z) ≡ z
-  gf (inl b) = refl
-  gf (inr (inl b)) = refl
-  gf (inr (inr *)) = refl
-
-open import UF-EquivalenceExamples
+  η : (b : 𝔹) → f (g b) ≡ b
+  η zero = refl
+  η (l b) = refl
+  η (r b) = refl
+  ε : (z : 𝔹 ∔ 𝔹 ∔ 𝟙) → g (f z) ≡ z
+  ε (inl b) = refl
+  ε (inr (inl b)) = refl
+  ε (inr (inr *)) = refl
 
 two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
-two-ℕ-plus-𝟙 = ℕ ∔ (ℕ ∔ 𝟙) ≃⟨ +-cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
-                𝔹 ∔ (𝔹 ∔ 𝟙) ≃⟨ two-𝔹-plus-𝟙 ⟩
-                𝔹             ≃⟨ binary-equiv ⟩
-                ℕ ■
+two-ℕ-plus-𝟙 =
+    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +-cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
+    𝔹 ∔ (𝔹 ∔ 𝟙)  ≃⟨ two-𝔹-plus-𝟙 ⟩
+    𝔹             ≃⟨ binary-equiv ⟩
+    ℕ ■
 
 two-ℕ : ℕ ∔ ℕ ≃ ℕ
-two-ℕ = ℕ ∔ ℕ        ≃⟨ Ap+ ℕ (≃-sym ℕ-plus-𝟙) ⟩
-        (ℕ ∔ 𝟙) ∔ ℕ  ≃⟨ +comm ⟩
-        ℕ ∔ ℕ ∔ 𝟙    ≃⟨ two-ℕ-plus-𝟙 ⟩
-        ℕ ■
+two-ℕ =
+   ℕ ∔ ℕ        ≃⟨ Ap+ ℕ (≃-sym ℕ-plus-𝟙) ⟩
+   (ℕ ∔ 𝟙) ∔ ℕ  ≃⟨ +comm ⟩
+   ℕ ∔ ℕ ∔ 𝟙    ≃⟨ two-ℕ-plus-𝟙 ⟩
+   ℕ ■
 
 \end{code}
 
@@ -617,11 +612,11 @@ module examples where
  example-pair : pair (5 , 6) ≡ 415
  example-pair = refl
 
- example17 : eqtofun (≃-sym two-ℕ) 17 ≡ inr 8
- example17 = refl
+ ex17 : eqtofun (≃-sym two-ℕ) 17 ≡ inr 8
+ ex17 = refl
 
- example18 : eqtofun (≃-sym two-ℕ) 18 ≡ inl 9
- example18 = refl
+ ex18 : eqtofun (≃-sym two-ℕ) 18 ≡ inl 9
+ ex18 = refl
 
 \end{code}
 
