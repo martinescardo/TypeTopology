@@ -154,8 +154,8 @@ set.
 
 \begin{code}
 
-totally-separated-is-separated : (X : U ̇) → totally-separated X → separated X
-totally-separated-is-separated X ts = g
+totally-separated-types-are-separated : (X : U ̇) → totally-separated X → separated X
+totally-separated-types-are-separated X ts = g
  where
   g : (x y : X) → ¬¬(x ≡ y) → x ≡ y
   g x y φ  = ts h
@@ -168,8 +168,8 @@ totally-separated-is-separated X ts = g
 
 open import UF-Miscelanea
 
-totally-separated-is-set : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
-totally-separated-is-set fe X t = separated-is-set fe (totally-separated-is-separated X t)
+totally-separated-types-are-sets : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
+totally-separated-types-are-sets fe X t = separated-types-are-sets fe (totally-separated-types-are-separated X t)
 
 \end{code}
 
@@ -185,9 +185,9 @@ clause.
 
 \begin{code}
 
-is-prop-totally-separated : funext U U → funext U U₀
-                         → (X : U ̇) → is-prop(totally-separated X)
-is-prop-totally-separated {U} fe fe₀ X = γ
+total-separatedness-is-a-prop : funext U U → funext U U₀
+                              → (X : U ̇) → is-prop(totally-separated X)
+total-separatedness-is-a-prop {U} fe fe₀ X = γ
  where
   T : U ̇
   T = (x y : X) → x ≡₂ y → x ≡ y
@@ -199,25 +199,25 @@ is-prop-totally-separated {U} fe fe₀ X = γ
   p t = Π-is-prop fe
            (λ x → Π-is-prop fe
                     (λ y → Π-is-prop fe
-                              (λ p → totally-separated-is-set fe₀ X (f t))))
+                              (λ p → totally-separated-types-are-sets fe₀ X (f t))))
         t
 
   γ : is-prop (totally-separated X)
-  γ = subtype-of-prop-is-prop g (λ {t} {u} (q : g t ≡ g u) → ap f q) p
+  γ = subtype-of-prop-is-a-prop g (λ {t} {u} (q : g t ≡ g u) → ap f q) p
 \end{code}
 
 Old proof which by-passes the step via separatedness:
 
 \begin{code}
 
-totally-separated-is-set' : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
-totally-separated-is-set' fe X t = Id-collapsibles-are-sets h
+totally-separated-types-are-sets' : funext U U₀ → (X : U ̇) → totally-separated X → is-set X
+totally-separated-types-are-sets' fe X t = Id-collapsibles-are-sets h
  where
   f : {x y : X} → x ≡ y → x ≡ y
   f r = t(λ p → ap p r)
 
   b : {x y : X} (φ γ : (p : X → 𝟚) → p x ≡ p y) → φ ≡ γ
-  b φ γ = dfunext fe (λ p → discrete-is-set 𝟚-discrete (φ p) (γ p))
+  b φ γ = dfunext fe (λ p → discrete-types-are-sets 𝟚-discrete (φ p) (γ p))
 
   c : {x y : X} (r s : x ≡ y) → (λ p → ap p r) ≡ (λ p → ap p s)
   c r s = b(λ p → ap p r) (λ p → ap p s)
@@ -358,7 +358,7 @@ tsieeval {U} {X} fe ts φ (x , p) (y , q) = to-Σ-≡ (t , r)
    t = ts (happly s)
 
    r : transport (λ - → eval - ≡ φ) t p ≡ q
-   r = totally-separated-is-set fe
+   r = totally-separated-types-are-sets fe
          ((X → 𝟚) → 𝟚) (Π-totally-separated fe (λ p → 𝟚-totally-separated)) _ q
 
 ieevalts : {X : U ̇} → funext U U₀ → is-embedding(eval {U} {X}) → totally-separated X
@@ -409,7 +409,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : 𝓣 X) → pr₁ x' p)
 
    g : (e : (q : 𝓣 X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
-   g e = to-Σ-≡ (dfunext (fe U U₀) (f e), ptisp _ t)
+   g e = to-Σ-≡ (dfunext (fe U U₀) (f e), propositional-truncation-is-a-prop _ t)
 
 \end{code}
 
@@ -444,7 +444,7 @@ rather than direct proofs (as in the proof of tight reflection below).
  totally-separated-reflection {U} {V} {X} {A} ts f = go
   where
    iss : is-set A
-   iss = totally-separated-is-set (fe V U₀) A ts
+   iss = totally-separated-types-are-sets (fe V U₀) A ts
 
    ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ \(a : A) → eval a ≡ γ)
    ie = tsieeval (fe V U₀) ts
@@ -574,7 +574,7 @@ apartness relation _♯₂ is tight:
  ♯₂-is-apartness {U} {X} = a , b , c , d
   where
    a : prop-valued _♯₂_
-   a x y = ptisp
+   a x y = propositional-truncation-is-a-prop
 
    b : irreflexive _♯₂_
    b x = ptrec 𝟘-is-prop g
@@ -715,7 +715,7 @@ apartness relation _♯₂ is tight:
 
  tight-set : {X : U ̇} → funext U U₀
            → (_♯_ : X → X → V ̇) → apartness _♯_ → tight _♯_ → is-set X
- tight-set fe _♯_ a t = separated-is-set fe (tight-separated _♯_ a t)
+ tight-set fe _♯_ a t = separated-types-are-sets fe (tight-separated _♯_ a t)
 
 \end{code}
 
@@ -734,7 +734,7 @@ apartness relation _♯₂ is tight:
 
  tight-set' : {X : U ̇} → funext U U → funext U U₀
            → (∃ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
- tight-set' {U} {X} fe fe₀ = ptrec (is-set-is-a-prop fe) f
+ tight-set' {U} {X} fe fe₀ = ptrec (being-set-is-a-prop fe) f
    where
     f : (Σ \(_♯_ : X → X → U ̇) → apartness _♯_ × tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-set fe₀ _♯_ a t
@@ -816,7 +816,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → apart x z ≡ apart y z
-    h z = to-Σ-≡ (g z , is-prop-is-a-prop (fe V V) _ _)
+    h z = to-Σ-≡ (g z , being-a-prop-is-a-prop (fe V V) _ _)
 
 \end{code}
 
@@ -840,7 +840,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subsets-of-sets-are-sets (X → Ω V) _ (powersets-are-sets (fe U (V ⁺)) (fe V V) pe) ptisp
+  X'-is-set = subsets-of-sets-are-sets (X → Ω V) _ (powersets-are-sets (fe U (V ⁺)) (fe V V) pe) propositional-truncation-is-a-prop
 
   η : X → X'
   η = corestriction apart
@@ -909,7 +909,7 @@ apartness on it.
   fuv = fe (U ⊔ V ⁺) (U ⊔ V ⁺)
 
   ♯'p : prop-valued _♯'_
-  ♯'p _ _ = ptisp
+  ♯'p _ _ = propositional-truncation-is-a-prop
 
   ♯'i : irreflexive _♯'_
   ♯'i = by-induction
@@ -958,12 +958,12 @@ apartness on it.
       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
        (λ _ → Π-is-prop fuv
                 (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → ptisp))))
+                         (λ _ → Π-is-prop fuv (λ _ → propositional-truncation-is-a-prop))))
        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
                 (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → ptisp)))
+                         (λ _ → Π-is-prop fuv (λ _ → propositional-truncation-is-a-prop)))
                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                         (λ _ → Π-is-prop fuv (λ _ → ptisp))
+                         (λ _ → Π-is-prop fuv (λ _ → propositional-truncation-is-a-prop))
                          (induction-step x y)))
 
   ♯'a : apartness _♯'_
@@ -981,7 +981,7 @@ apartness on it.
   ♯'t (u , e) (v , f) n = ptrec X'-is-set (λ σ → ptrec X'-is-set (h σ) f) e
    where
     h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
-    h (x , p) (y , q) = to-Σ-≡ (t , ptisp _ _)
+    h (x , p) (y , q) = to-Σ-≡ (t , propositional-truncation-is-a-prop _ _)
      where
       remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
       remark = n
@@ -1038,7 +1038,7 @@ apartness on it.
     φ = η-induction _ γ induction-step
       where
        induction-step : (y : X) → is-prop (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
-       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ptisp _ _)
+       induction-step x (a , d) (b , e) = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
         where
          h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
@@ -1049,7 +1049,7 @@ apartness on it.
          p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
        γ : (x' : X') → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-       γ x' = is-prop-is-a-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
+       γ x' = being-a-prop-is-a-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
 
     k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step

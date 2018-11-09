@@ -131,7 +131,9 @@ is the successor of the universe V:
  X/≈ = image equiv-rel
 
  X/≈-is-set : is-set X/≈
- X/≈-is-set = subsets-of-sets-are-sets (X → Ω V) _ (powersets-are-sets (fe U (V ⁺)) (fe V V) pe) ptisp
+ X/≈-is-set = subsets-of-sets-are-sets (X → Ω V) _
+                (powersets-are-sets (fe U (V ⁺)) (fe V V) pe)
+                propositional-truncation-is-a-prop
 
  η : X → X/≈
  η = corestriction equiv-rel
@@ -159,9 +161,9 @@ values in any universe W we please:
 \begin{code}
 
  η-induction : ∀ {W} (P : X/≈ → W ̇)
-            → ((x' : X/≈) → is-prop(P x'))
-            → ((x : X) → P(η x))
-            → (x' : X/≈) → P x'
+             → ((x' : X/≈) → is-prop(P x'))
+             → ((x : X) → P(η x))
+             → (x' : X/≈) → P x'
  η-induction = surjection-induction η η-surjection
 
 \end{code}
@@ -174,8 +176,8 @@ points are mapped to equal points:
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe U (V ⁺))
                                       (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                                                      is-prop-is-a-prop (fe V V) _ _)) ,
-                                    ptisp _ _)
+                                                      being-a-prop-is-a-prop (fe V V) _ _)) ,
+                                    propositional-truncation-is-a-prop _ _)
 
 \end{code}
 
@@ -213,17 +215,17 @@ universe W.
 \begin{code}
 
  universal-property : ∀ {W} (A : W ̇)
-                   → is-set A
-                   → (f : X → A)
-                   → ({x x' : X} → x ≈ x' → f x ≡ f x')
-                   → is-singleton (Σ \(f' : X/≈ → A) → f' ∘ η ≡ f)
+                    → is-set A
+                    → (f : X → A)
+                    → ({x x' : X} → x ≈ x' → f x ≡ f x')
+                    → is-singleton (Σ \(f' : X/≈ → A) → f' ∘ η ≡ f)
  universal-property {W} A iss f pr = ic
   where
    φ : (x' : X/≈) → is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
    φ = η-induction _ γ induction-step
      where
       induction-step : (y : X) → is-prop (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
-      induction-step x (a , d) (b , e) = to-Σ-≡ (p , ptisp _ _)
+      induction-step x (a , d) (b , e) = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
        where
         h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
          → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))         → a ≡ b
@@ -233,7 +235,7 @@ universe W.
         p = ptrec iss (λ σ → ptrec iss (h σ) e) d
 
       γ : (x' : X/≈) → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
-      γ x' = is-prop-is-a-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
+      γ x' = being-a-prop-is-a-prop (fe (U ⊔ (V ⁺) ⊔ W) (U ⊔ (V ⁺) ⊔ W))
 
    k : (x' : X/≈) → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step

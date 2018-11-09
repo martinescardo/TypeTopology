@@ -31,7 +31,7 @@ retract-of-subsingleton : {X : U ̇} {Y : V ̇}
                         → retract Y of X
                         → is-subsingleton X
                         → is-subsingleton Y
-retract-of-subsingleton (r , s , rs) = subtype-of-prop-is-prop s
+retract-of-subsingleton (r , s , rs) = subtype-of-prop-is-a-prop s
                                         (has-retraction-lc s (r , rs))
 
 identity-retraction : {X : U ̇} → retract X of X

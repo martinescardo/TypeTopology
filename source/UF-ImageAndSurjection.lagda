@@ -31,7 +31,7 @@ module ImageAndSurjection (pt : PropTrunc) where
 
  restriction-embedding : {X : U ̇} {Y : V ̇} (f : X → Y)
                       → is-embedding(restriction f)
- restriction-embedding f = pr₁-embedding (λ y → ptisp)
+ restriction-embedding f = pr₁-embedding (λ y → propositional-truncation-is-a-prop)
 
 
  corestriction : {X : U ̇} {Y : V ̇} (f : X → Y)
@@ -62,10 +62,10 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
  corestriction-surjection f (y , s) = ptfunct g s
   where
    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
-   g (x , p) = x , to-Σ-≡ (p , ptisp _ _)
+   g (x , p) = x , to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
 
  pt-is-surjection : {X : U ̇} → is-surjection(λ(x : X) → ∣ x ∣)
- pt-is-surjection t = ptrec ptisp (λ x → ∣ x , ptisp (∣ x ∣) t ∣) t
+ pt-is-surjection t = ptrec propositional-truncation-is-a-prop (λ x → ∣ x , propositional-truncation-is-a-prop (∣ x ∣) t ∣) t
 
 \end{code}
 
@@ -86,7 +86,7 @@ Surjections can be characterized as follows, modulo size:
  image-surjection-converse : {X : U ̇} {Y : V ̇} (f : X → Y)
                            → imageInduction f → is-surjection f
  image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ≡ y) ∥)
-                                       (λ y → ptisp)
+                                       (λ y → propositional-truncation-is-a-prop)
                                        (λ x → ∣ x , refl ∣)
 
  image-induction : ∀ {W U V} {X : U ̇} {Y : V ̇}

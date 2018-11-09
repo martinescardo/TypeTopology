@@ -24,13 +24,13 @@ succ m ≤ succ n = m ≤ n
 open import UF-Base
 open import UF-Miscelanea
 
-subtraction-is-prop : (m n : ℕ) → is-prop (Σ \(k : ℕ) → k +' m ≡ n)
-subtraction-is-prop zero n (.n , refl) (.n , refl) = refl
-subtraction-is-prop (succ m) zero (k , ()) (k' , p')
-subtraction-is-prop (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap pr₁ IH , ℕ-is-set _ _)
+right-addition-is-embedding : (m n : ℕ) → is-prop (Σ \(k : ℕ) → k +' m ≡ n)
+right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl
+right-addition-is-embedding (succ m) zero (k , ()) (k' , p')
+right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap pr₁ IH , ℕ-is-set _ _)
  where
   IH : k , succ-lc p ≡ k' , succ-lc p'
-  IH = subtraction-is-prop m n (k , succ-lc p) (k' , succ-lc p')
+  IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
 
 subtraction : (m n : ℕ) → m ≤ n → Σ \(k : ℕ) → k +' m ≡ n
 subtraction zero n l = n , refl

@@ -258,8 +258,8 @@ Id-from-trivial-loop {U} {X} = J A (λ x → refl)
 identifications-from-are-singletons : {X : U ̇} (x₀ : X) → is-singleton(identifications-from x₀)
 identifications-from-are-singletons x₀ = trivial-loop x₀ , (λ t → Id-from-trivial-loop (pr₂ t))
 
-identifications-from-is-prop : {X : U ̇} (x : X) → is-prop(identifications-from x)
-identifications-from-is-prop x = singletons-are-propositions (identifications-from-are-singletons x)
+identifications-from-is-a-prop : {X : U ̇} (x : X) → is-prop(identifications-from x)
+identifications-from-is-a-prop x = singletons-are-propositions (identifications-from-are-singletons x)
 
 singleton-types-are-singletons : {X : U ̇} {x : X}
   → is-the-only-element {U} {identifications-from x} (x , refl)
@@ -284,9 +284,9 @@ identifications-to x = Σ \y → y ≡ x
           → is-prop X → is-prop Y → is-prop(X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
-subtype-of-prop-is-prop : {X : U ̇} {Y : V ̇} (m : X → Y)
+subtype-of-prop-is-a-prop : {X : U ̇} {Y : V ̇} (m : X → Y)
                         → left-cancellable m → is-prop Y → is-prop X
-subtype-of-prop-is-prop {U} {V} {X} m lc isp x x' = lc (isp (m x) (m x'))
+subtype-of-prop-is-a-prop {U} {V} {X} m lc isp x x' = lc (isp (m x) (m x'))
 
 subtypes-of-sets-are-sets : {X : U ̇} {Y : V ̇} (m : X → Y)
                       → left-cancellable m → is-set Y → is-set X

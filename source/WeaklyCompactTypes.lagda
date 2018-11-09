@@ -35,7 +35,7 @@ open import DecidableAndDetachable
 
 ∃-compactness-is-a-prop : {X : U ̇} → is-prop (∃-compact X)
 ∃-compactness-is-a-prop {U} {X} = Π-is-prop (fe U U)
-                                (λ _ → decidable-types-are-props (fe U U₀) ptisp)
+                                (λ _ → decidable-types-are-props (fe U U₀) propositional-truncation-is-a-prop)
 
 ∃-compact-Markov : {X : U ̇}
                  → ∃-compact X
@@ -208,7 +208,7 @@ surjection-∃-compact {U} {V} {X} {Y} f su c q = g (c (q ∘ f))
 
   g : decidable (∃ \(x : X) → q(f x) ≡ ₀) → decidable (∃ \(y : Y) → q y ≡ ₀)
   g (inl s) = inl (ptfunct h s)
-  g (inr u) = inr (contrapositive (ptrec ptisp k) u)
+  g (inr u) = inr (contrapositive (ptrec propositional-truncation-is-a-prop k) u)
 
 image-∃-compact : {X : U ̇} {Y : V ̇} (f : X → Y)
                → ∃-compact X → ∃-compact (image f)
@@ -281,7 +281,7 @@ module TStronglyOvertnessAndCompactness (X : U ̇) where
    g (x , r) = η x , (extension-property p x ∙ r)
 
    h : decidable (∃ \(x' : 𝓣 X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
-   h (inl x) = inl (ptrec ptisp f x)
+   h (inl x) = inl (ptrec propositional-truncation-is-a-prop f x)
    h (inr u) = inr (contrapositive (ptfunct g) u)
 
  ct : Π-compact X → Π-compact (𝓣 X)
@@ -443,7 +443,7 @@ isod X isp c = f a
   f (inr u) = inr (λ x → u ∣ x , refl ∣)
 
 isod-corollary : {X : U ̇} → ∃-compact X → decidable ∥ X ∥
-isod-corollary {U} {X} c = isod ∥ X ∥ ptisp (surjection-∃-compact ∣_∣ pt-is-surjection c)
+isod-corollary {U} {X} c = isod ∥ X ∥ propositional-truncation-is-a-prop (surjection-∃-compact ∣_∣ pt-is-surjection c)
 
 isdni : {X : U ̇} → ∃-compact X → ¬¬ X → ∥ X ∥
 isdni {U} {X} c φ = g (isod-corollary c)
@@ -611,7 +611,7 @@ module CompactTypes).
 ∃-compact∙ X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
 ∃-compactness∙-is-a-prop : {X : U ̇} → is-prop (∃-compact∙ X)
-∃-compactness∙-is-a-prop {U} = Π-is-prop (fe U U) (λ _ → ptisp)
+∃-compactness∙-is-a-prop {U} = Π-is-prop (fe U U) (λ _ → propositional-truncation-is-a-prop)
 
 \end{code}
 
@@ -621,7 +621,7 @@ replaced by non-emptiness in the following results:
 \begin{code}
 
 iso-i-and-c : {X : U ̇} → ∃-compact∙ X → ∥ X ∥ × ∃-compact X
-iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-types-are-props (fe U U₀) ptisp) (g₂ p) (c p))
+iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-types-are-props (fe U U₀) propositional-truncation-is-a-prop) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
@@ -637,7 +637,7 @@ iso-i-and-c {U} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-types-ar
     h (inr u) = inl ∣ x₀ , (Lemma[b≢₁→b≡₀] u) ∣
 
 i-and-c-iso : {X : U ̇} → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
-i-and-c-iso {U} {X} (t , c) p = ptrec ptisp f t
+i-and-c-iso {U} {X} (t , c) p = ptrec propositional-truncation-is-a-prop f t
  where
   f : X → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
   f x₀ = g (𝟚-discrete (p x₀) ₀) (c p)
@@ -687,8 +687,8 @@ so-isoore {U} {X} c = g
 _has-inf_ : {X : U ̇} → (X → 𝟚) → 𝟚 → U ̇
 p has-inf n = (∀ x → n ≤₂ p x) × (∀ m → (∀ x → m ≤₂ p x) → m ≤₂ n)
 
-has-inf-is-prop : {X : U ̇} (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
-has-inf-is-prop {U} {X} p n (f , g) (f' , g') = to-×-≡ r s
+having-inf-is-a-prop : {X : U ̇} (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
+having-inf-is-a-prop {U} {X} p n (f , g) (f' , g') = to-×-≡ r s
  where
   r : f ≡ f'
   r = dfunext (fe U U₀) (λ x → dfunext (fe U₀ U₀) (λ r → 𝟚-is-set (f x r) (f' x r)))
@@ -696,13 +696,13 @@ has-inf-is-prop {U} {X} p n (f , g) (f' , g') = to-×-≡ r s
   s = dfunext (fe U₀ U) (λ n → dfunext (fe U U₀) (λ φ → dfunext (fe U₀ U₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
 
 at-most-one-inf : {X : U ̇} (p : X → 𝟚) → is-prop (Σ \(n : 𝟚) → p has-inf n)
-at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (g n' f') , has-inf-is-prop p n' _ _)
+at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (g n' f') , having-inf-is-a-prop p n' _ _)
 
 has-infs : U ̇ → U ̇
 has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
 
-has-infs-is-prop : {X : U ̇} → is-prop(has-infs X)
-has-infs-is-prop {U} {X} = Π-is-prop (fe U U) at-most-one-inf
+having-infs-is-a-prop : {X : U ̇} → is-prop(has-infs X)
+having-infs-is-a-prop {U} {X} = Π-is-prop (fe U U) at-most-one-inf
 
 Π-compact-has-infs : {X : U ̇} → Π-compact X → has-infs X
 Π-compact-has-infs c p = g (c p)
@@ -1064,11 +1064,12 @@ is-clopen-map : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-clopen-map {U} {V} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
-is-clopen-map-is-prop : {X : U ̇} {Y : V ̇} → (∀ U V → funext U V)
-                   → (f : X → Y) → is-prop(is-clopen-map f)
-is-clopen-map-is-prop {U} {V} fe f = Π-is-prop (fe U (U ⊔ V))
-                                      (λ p → Π-is-prop (fe V (U ⊔ V))
-                                               (λ y → decidable-types-are-props (fe (U ⊔ V) U₀) ptisp))
+being-clopen-map-is-a-prop : {X : U ̇} {Y : V ̇} → (∀ U V → funext U V)
+                           → (f : X → Y) → is-prop(is-clopen-map f)
+being-clopen-map-is-a-prop {U} {V} fe f =
+ Π-is-prop (fe U (U ⊔ V))
+   (λ p → Π-is-prop (fe V (U ⊔ V))
+            (λ y → decidable-types-are-props (fe (U ⊔ V) U₀) propositional-truncation-is-a-prop))
 
 fst : (A : U ̇) (X : V ̇) → A × X → A
 fst _ _ = pr₁

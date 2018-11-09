@@ -95,16 +95,16 @@ Yoneda-computation : {X : U ̇} (x : X) (A : X → V ̇) (a : A x)
 Yoneda-computation x A a = refl
 
 yoneda-computation : {X : U ̇} (x : X) (A : X → V ̇) (a : A x)
-                  → yoneda-elem x A (yoneda-nat x A a) ≡ a
+                   → yoneda-elem x A (yoneda-nat x A a) ≡ a
 yoneda-computation x A = Yoneda-computation x A
 
 yoneda-elem-is-equiv : (∀ U V → funext U V) → {X : U ̇} (x : X) (A : X → V ̇)
-                   → is-equiv (yoneda-elem x A)
+                     → is-equiv (yoneda-elem x A)
 yoneda-elem-is-equiv {U} {V} fe {X} x A = (yoneda-nat x A , yoneda-computation x A) ,
                                          (yoneda-nat x A , yoneda-lemma' fe x A)
 
 yoneda-nat-is-equiv : (∀ U V → funext U V) → {X : U ̇} (x : X) (A : X → V ̇)
-                   → is-equiv (yoneda-nat x A)
+                    → is-equiv (yoneda-nat x A)
 yoneda-nat-is-equiv {U} {V} fe {X} x A = (yoneda-elem x A , yoneda-lemma' fe x A) ,
                                         (yoneda-elem x A , yoneda-computation x A)
 
@@ -298,18 +298,18 @@ nat-retraction-is-section-uniquely fe x η hass y = pointed-props-are-singletons
                                                       (nat-retraction-is-section x η hass y)
                                                       (sections-have-at-most-one-retraction fe (η y) (hass y))
 
-nat-has-section-is-prop : (∀ U V → funext U V) → {X : U ̇} {A : X → V ̇}
-                        (x : X) (η : Nat (Id x) A)
-                      → is-prop ((y : X) → has-section (η y))
-nat-has-section-is-prop {U} {V} fe {X} x η φ = Π-is-prop (fe U (U ⊔ V)) γ φ
+nat-having-section-is-a-prop : (∀ U V → funext U V) → {X : U ̇} {A : X → V ̇}
+                               (x : X) (η : Nat (Id x) A)
+                             → is-prop ((y : X) → has-section (η y))
+nat-having-section-is-a-prop {U} {V} fe {X} x η φ = Π-is-prop (fe U (U ⊔ V)) γ φ
   where
    γ : (y : X) → is-prop (has-section (η y))
    γ y = retractions-have-at-most-one-section fe (η y) (nat-retraction-is-section x η φ y)
 
-nat-retraction-is-equiv : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
-                      → ((y : X) → has-section(η y))
-                      → ((y : X) → is-equiv(η y))
-nat-retraction-is-equiv x η hass y = (hass y , nat-retraction-is-section x η hass y)
+nats-with-sections-are-equivs : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
+                              → ((y : X) → has-section(η y))
+                              → ((y : X) → is-equiv(η y))
+nats-with-sections-are-equivs x η hass y = (hass y , nat-retraction-is-section x η hass y)
 
 \end{code}
 
@@ -320,8 +320,8 @@ We are interested in the following corollaries:
 universality-equiv : {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → is-universal-element (x , a)
                    → (y : X) → is-equiv(yoneda-nat x A a y)
-universality-equiv {U} {V} {X} {A} x a u = nat-retraction-is-equiv x (yoneda-nat x A a)
-                                                                    (universality-section x a u)
+universality-equiv {U} {V} {X} {A} x a u = nats-with-sections-are-equivs x (yoneda-nat x A a)
+                                                                           (universality-section x a u)
 
 equiv-universality : {X : U ̇} {A : X → V ̇} (x : X) (a : A x)
                    → ((y : X) → is-equiv(yoneda-nat x A a y))
@@ -331,7 +331,7 @@ equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 Yoneda-Theorem-forth : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                     → is-singleton (Σ A)
                     → (y : X) → is-equiv (η y)
-Yoneda-Theorem-forth x η iss = nat-retraction-is-equiv x η (Yoneda-section-forth x η iss)
+Yoneda-Theorem-forth x η iss = nats-with-sections-are-equivs x η (Yoneda-section-forth x η iss)
 
 Yoneda-Theorem-back : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
                    → ((y : X) → is-equiv (η y))
@@ -374,7 +374,8 @@ is-vv-equiv-has-adj' : ∀ {U V : Universe} {X : U ̇} {Y : V ̇} (g : Y → X)
                      → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
 is-vv-equiv-has-adj' {U} {V} {X} {Y} g φ = (pr₁ γ) ,
                                                λ x y → (pr₁ (pr₂ γ) x y) ,
-                                                       (nat-retraction-is-equiv (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
+                                                       (nats-with-sections-are-equivs
+                                                         (pr₁ γ x) (pr₁ (pr₂ γ) x) (pr₂ (pr₂ γ) x) y)
  where
   γ : has-adj g
   γ = is-vv-equiv-has-adj g φ
@@ -428,8 +429,8 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Univalence
 
-univalence-via-singletons :
-  is-univalent U   ⇔   ((X : U ̇) → is-singleton (Σ \(Y : U ̇) → X ≃ Y))
+univalence-via-singletons : is-univalent U
+                          ⇔ ((X : U ̇) → is-singleton (Σ \(Y : U ̇) → X ≃ Y))
 univalence-via-singletons {U} = (f , g)
  where
   f : is-univalent U → (X : U ̇) → is-singleton (Σ (Eq X))
@@ -458,7 +459,7 @@ the Yoneda Lemma.
 \begin{code}
 
 yoneda-elem-lc : {X : U ̇} {x : X} {A : X → V ̇}
-                   (η θ : Nat (Id x) A)
+                 (η θ : Nat (Id x) A)
                → yoneda-elem x A η ≡ yoneda-elem x A θ → η ≈ θ
 yoneda-elem-lc {U} {V} {X} {x} {A} η θ q y p =
   η y p                                ≡⟨ (yoneda-lemma x A η y p)⁻¹ ⟩

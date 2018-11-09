@@ -516,7 +516,7 @@ logically equivalent orders.
   p : GenericConvergentSequence._≼_ ≡ tunderlying-rorder ℕ∞ᵒ
   p = dfunext (fe U₀ U₁)
        (λ u → dfunext (fe U₀ U₁)
-                (λ v → pe (≼-is-prop fe₀ u v)
+                (λ v → pe (≼-is-prop-valued fe₀ u v)
                           (≼-prop-valued ℕ∞ᵒ u v)
                           (≼-not-≺ u v)
                           (not-≺-≼ fe₀ u v)))

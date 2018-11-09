@@ -22,8 +22,8 @@ open import DiscreteAndSeparated
 discrete-is-Id-collapsible : {X : U ̇} → discrete X → Id-collapsible X
 discrete-is-Id-collapsible d = decidable-is-collapsible (d _ _)
 
-discrete-is-set : {X : U ̇} → discrete X → is-set X
-discrete-is-set d = Id-collapsibles-are-sets(discrete-is-Id-collapsible d)
+discrete-types-are-sets : {X : U ̇} → discrete X → is-set X
+discrete-types-are-sets d = Id-collapsibles-are-sets(discrete-is-Id-collapsible d)
 
 isolated-is-h-isolated : {X : U ̇} (x : X) → isolated x → is-h-isolated x
 isolated-is-h-isolated {U} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
@@ -41,7 +41,7 @@ isolated-inl x i y r =
 discrete-inl : {X : U ̇} (d : discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
 discrete-inl d x y r =
   equality-cases (d x y)
-    (λ (p : x ≡ y) (q : d x y ≡ inl p) → q ∙ ap inl (discrete-is-set d p r))
+    (λ (p : x ≡ y) (q : d x y ≡ inl p) → q ∙ ap inl (discrete-types-are-sets d p r))
     (λ (h : ¬(x ≡ y)) (q : d x y ≡ inr h) → 𝟘-elim(h r))
 
 discrete-inr : {X : U ̇} → funext U U₀
@@ -73,16 +73,16 @@ isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i
         q' : transport Y p' y ≡ y'
         q' = from-Σ-≡' r
         s : p ≡ p'
-        s = discrete-is-set d p p'
+        s = discrete-types-are-sets d p p'
         q : transport Y p y ≡ y'
         q = ap (λ - → transport Y - y) s ∙ q'
   g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
 𝟚-is-set : is-set 𝟚
-𝟚-is-set = discrete-is-set 𝟚-discrete
+𝟚-is-set = discrete-types-are-sets 𝟚-discrete
 
 ℕ-is-set : is-set ℕ
-ℕ-is-set = discrete-is-set ℕ-discrete
+ℕ-is-set = discrete-types-are-sets ℕ-discrete
 
 nonempty : U ̇ → U ̇
 nonempty X = is-empty(is-empty X)
@@ -109,8 +109,8 @@ stable-is-collapsible {U} fe {X} s = (f , g)
 separated-is-Id-collapsible : funext U U₀ → {X : U ̇} → separated X → Id-collapsible X
 separated-is-Id-collapsible fe s = stable-is-collapsible fe (s _ _)
 
-separated-is-set : funext U U₀ → {X : U ̇} → separated X → is-set X
-separated-is-set fe s = Id-collapsibles-are-sets (separated-is-Id-collapsible fe s)
+separated-types-are-sets : funext U U₀ → {X : U ̇} → separated X → is-set X
+separated-types-are-sets fe s = Id-collapsibles-are-sets (separated-is-Id-collapsible fe s)
 
 is-prop-separated : funext U U → funext U U₀ → {X : U ̇} → is-prop(separated X)
 is-prop-separated fe fe₀ {X} = iprops-are-propositions f
@@ -119,7 +119,7 @@ is-prop-separated fe fe₀ {X} = iprops-are-propositions f
   f s = Π-is-prop fe
           (λ _ → Π-is-prop fe
                     (λ _ → Π-is-prop fe
-                              (λ _ → separated-is-set fe₀ s)))
+                              (λ _ → separated-types-are-sets fe₀ s)))
 
 \end{code}
 

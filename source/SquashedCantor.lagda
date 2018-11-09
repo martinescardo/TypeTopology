@@ -243,7 +243,7 @@ head-Κ-Zero φ = seq-corec-head
                   head-step
                   tail-step
                   (Zero , φ) ∙ ap (λ - → head (φ -))
-                  (is-finite-is-prop fe₀ Zero _ _)
+                  (being-finite-is-a-prop fe₀ Zero _ _)
 
 tail-Κ-Zero : (φ : Cantor[ Zero ])
             → tail (Κ (Zero , φ)) ≡ Κ (Zero , tail ∘ φ)
@@ -272,7 +272,7 @@ to-Κ-≡ : ({u v} w : ℕ∞) (φ : Cantor[ w ])
         → Κ (u , φ ∘ s) ≡ Κ (v , φ ∘ t)
 to-Κ-≡ {u} w φ refl {s} {t} =
   ap (λ - → Κ (u , -))
-     (dfunext fe₀ (λ (i : is-finite u) → ap φ (is-finite-is-prop fe₀ w (s i) (t i))))
+     (dfunext fe₀ (λ (i : is-finite u) → ap φ (being-finite-is-a-prop fe₀ w (s i) (t i))))
 
 tail-Κ-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
             → tail (Κ (Succ u , φ)) ≡ Κ (u , φ ∘ is-finite-up u)
@@ -338,7 +338,7 @@ tail-Cons-under (succ n) φ = γ
   p = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (under n) φ)
   γ : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
     ≡ φ (under-is-finite (succ n))
-  γ = p ∙ IH ∙ ap φ (is-finite-is-prop fe₀ (under (succ n)) _ _)
+  γ = p ∙ IH ∙ ap φ (being-finite-is-a-prop fe₀ (under (succ n)) _ _)
 
 \end{code}
 
@@ -417,7 +417,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
                       Tail (₀ ∶∶ φ (t Zero-is-finite)) k
                           ≡⟨ Tail₀ (φ (t Zero-is-finite)) k ⟩
                       φ (t Zero-is-finite)
-                          ≡⟨ ap φ (is-finite-is-prop fe₀ u _ _) ⟩
+                          ≡⟨ ap φ (being-finite-is-a-prop fe₀ u _ _) ⟩
                       φ (Head-finite u φ (zero , r)) ∎
     where
      p : u ≡ Zero
@@ -442,7 +442,7 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
                         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ succ n)
                            ≡⟨ tail-Cons-under n (φ ∘ t') ⟩
                         φ (t' (under-is-finite n))
-                           ≡⟨ ap φ (is-finite-is-prop fe₀ u _ _) ⟩
+                           ≡⟨ ap φ (being-finite-is-a-prop fe₀ u _ _) ⟩
                         φ (Head-finite u φ (succ n , r))
                         ∎
     where

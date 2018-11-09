@@ -40,8 +40,8 @@ open import NaturalsOrder
 LPO : U₀ ̇
 LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
 
-LPO-is-prop : is-prop LPO
-LPO-is-prop = Π-is-prop (fe U₀ U₀) f
+LPO-is-a-prop : is-prop LPO
+LPO-is-a-prop = Π-is-prop (fe U₀ U₀) f
  where
   a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
   a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe U₀ U₀)_ _)
@@ -148,7 +148,7 @@ compact, without knowing whether LPO holds or not!
 open import PropTychonoff
 
 LPO-gives-ℕ-compact∙ : compact∙(LPO → ℕ)
-LPO-gives-ℕ-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f
+LPO-gives-ℕ-compact∙ = prop-tychonoff-corollary' fe LPO-is-a-prop f
  where
    f : LPO → compact∙ ℕ
    f lpo = compact-pointed-gives-compact∙ (LPO-gives-compact-ℕ lpo) 0

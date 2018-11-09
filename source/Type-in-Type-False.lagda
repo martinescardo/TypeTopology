@@ -188,8 +188,8 @@ module blechschmidt where
  Set-is-set : is-set Set
  Set-is-set = K-axiom Set
 
- is-prop-is-a-prop : {X : Set} → is-prop (is-prop X)
- is-prop-is-a-prop {X} f g = funext (λ x → funext (c x))
+ being-a-prop-is-a-prop : {X : Set} → is-prop (is-prop X)
+ being-a-prop-is-a-prop {X} f g = funext (λ x → funext (c x))
   where
    c : (x y : X) → f x y ≡ g x y
    c x y = K-axiom X (f x y) (g x y)
@@ -352,7 +352,7 @@ module blechschmidt where
      b x₀ h = ∣ refl , h ∣
      γ : (x₀ : X A₀) → (∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ≡ φ x₀
      γ x₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
-                    is-prop-is-a-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
+                    being-a-prop-is-a-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
 
  \end{code}
 

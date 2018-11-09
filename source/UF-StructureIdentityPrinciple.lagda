@@ -213,7 +213,7 @@ module gsip
 \begin{code}
 
   uaₛ : (A B : Σ S) → is-equiv (idtoeqₛ A B)
-  uaₛ A = nat-retraction-is-equiv A
+  uaₛ A = nats-with-sections-are-equivs A
             (idtoeqₛ A)
             (λ B → eqtoidₛ A B , idtoeq-eqtoidₛ A B)
 
@@ -554,7 +554,7 @@ a proposition:
 
  Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s)
  Axioms-is-prop X (_·_ , e) (i , α , ν) = ×-is-prop
-                                           (is-set-is-a-prop fe)
+                                           (being-set-is-a-prop fe)
                                            (×-is-prop
                                               (Π-is-prop fe
                                                  λ x → Π-is-prop fe

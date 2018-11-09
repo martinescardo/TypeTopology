@@ -281,7 +281,7 @@ module times
    prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
      𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-     ap inr (to-×-≡ (ordinal-gives-is-set _<_ fe (p , w , e , t) r s) (p' b y l m))
+     ap inr (to-×-≡ (well-ordered-types-are-sets _<_ fe (p , w , e , t) r s) (p' b y l m))
 
  top-preservation : has-top _<_ → has-top _≺_ → has-top _⊏_
  top-preservation (x , f) (y , g) = (x , y) , h
@@ -583,7 +583,7 @@ module sum
  prop-valued fe p w e f (a , b) (x , y) (inr (r , l)) (inl m) =
    𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
  prop-valued fe p _ e f (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
-   ap inr (to-Σ-≡ (extensional-gives-is-set _<_ fe p e r s ,
+   ap inr (to-Σ-≡ (extensionally-ordered-types-are-sets _<_ fe p e r s ,
                      (f x (transport Y s b) y _ m)))
 
 \end{code}
@@ -640,7 +640,7 @@ module sum-top
                φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
                φ (r , l) = transport
                             (λ - → transport Y - v ≺ y)
-                            (extensional-gives-is-set _<_ fe ispv e r refl)
+                            (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
                             l
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
@@ -649,7 +649,7 @@ module sum-top
               λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
-                     (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
+                     (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
                      (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
@@ -729,7 +729,7 @@ module sum-cotransitive
                φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
                φ (r , l) = transport
                             (λ r → transport Y r v ≺ y)
-                            (extensional-gives-is-set _<_ fe ispv e r refl)
+                            (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
                             l
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
@@ -738,7 +738,7 @@ module sum-cotransitive
               λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
-                     (extensional-gives-is-set _<_ fe ispv e ((pr₁ σ)⁻¹) p)
+                     (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
                      (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''

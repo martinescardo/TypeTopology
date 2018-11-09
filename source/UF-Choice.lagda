@@ -142,7 +142,7 @@ module UnivalentChoice (U : Universe)
  sei : {X Y : U ̇} → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe U U) (λ x → isy)
 
- open TChoice U ∥_∥ ptfunct is-set sei (props-are-sets ptisp)
+ open TChoice U ∥_∥ ptfunct is-set sei (props-are-sets propositional-truncation-is-a-prop)
 
  AC   = (X : U ̇) (A : X → U ̇) (P : (x : X) → A x → U ̇)
      → is-set X
@@ -211,7 +211,7 @@ module ChoiceUnderEM₀ (U : Universe)
  α s u = ptrec 𝟘-is-prop u s
 
  β : {X : U ̇} → ¬¬ X → ∥ X ∥
- β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ptisp)
+ β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ propositional-truncation-is-a-prop)
 
  DNS = (X : U ̇) (A : X → U ̇) → is-set X → ((x : X) → is-set (A x))
      → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
@@ -272,7 +272,7 @@ module AC-renders-all-sets-discrete
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , to-Σ-≡ (p , ptisp _ t)
+     f (i , p) = i , to-Σ-≡ (p , propositional-truncation-is-a-prop _ t)
 
    s : image a → 𝟚
    s y = pr₁(r-splits y)
@@ -284,7 +284,7 @@ module AC-renders-all-sets-discrete
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , ptisp _ _)
+   a-r p = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁

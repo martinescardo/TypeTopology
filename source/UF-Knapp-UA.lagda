@@ -185,12 +185,12 @@ is-equiv-isPIE-UA {U} φ X = γ
   s : (Y : U ̇) → X ≃ Y → X ≡ Y
   s Y (f , ise) = pietoid (f , φ f ise)
   η : {Y : U ̇} (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
-  η {Y} (f , ise) = to-Σ-≡ (p , is-equiv-is-a-prop'' k f _ _)
+  η {Y} (f , ise) = to-Σ-≡ (p , being-equiv-is-a-prop'' k f _ _)
    where
     p : pr₁ (idtoeq X Y (s Y (f , ise))) ≡ f
     p = pietofun-factors-through-idtofun (f , φ f ise)
   γ : (Y : U ̇) → is-equiv (idtoeq X Y)
-  γ = nat-retraction-is-equiv X (idtoeq X) (λ Y → (s Y) , η)
+  γ = nats-with-sections-are-equivs X (idtoeq X) (λ Y → (s Y) , η)
 
 \end{code}
 

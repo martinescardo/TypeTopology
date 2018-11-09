@@ -141,8 +141,8 @@ Explicitly (and repeating the construction of roots-has-prop-truncation):
 roots-truncation : (ℕ → Z) → U ̇
 roots-truncation α = Σ \(r : roots α) → r ≡ μρ α r
 
-roots-truncation-is-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
-roots-truncation-is-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
+roots-truncation-is-a-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
+roots-truncation-is-a-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
 
 roots-η : (α : ℕ → Z) → roots α → roots-truncation α
 roots-η α = to-fix (μρ α) (μρ-constant α)

@@ -41,29 +41,17 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 decreasing : (ℕ → 𝟚) → U₀ ̇
 decreasing α = (i : ℕ) → α(succ i) ≤₂ α i
 
-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
-decreasing-is-prop fe α = Π-is-prop fe
-                            (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
+being-decreasing-is-a-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
+being-decreasing-is-a-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
 ℕ∞ : U₀ ̇
 ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α
-
-decreasing-is-prop-old : funext₀ → {α : ℕ → 𝟚} → is-prop(decreasing α)
-decreasing-is-prop-old fe {α} p q = dfunext fe fact₂
- where
-  fact₀ : (i : ℕ) (f g : α(succ i) ≡ ₁ → α i ≡ ₁) → f ≡ g
-  fact₀ i f g = nfunext fe fact₁
-   where
-    fact₁ : (r : α (succ i) ≡ ₁) → f r ≡ g r
-    fact₁ r = 𝟚-is-set (f r) (g r)
-  fact₂ : (i : ℕ) → p i ≡ q i
-  fact₂ i = fact₀ i (p i) (q i)
 
 incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
 
 incl-lc : funext₀ → left-cancellable incl
-incl-lc fe = pr₁-lc (decreasing-is-prop fe _)
+incl-lc fe = pr₁-lc (being-decreasing-is-a-prop fe _)
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0 = β 0
@@ -94,7 +82,7 @@ lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 lcni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 lcni-incl fe (α , d) = to-Σ-≡ (dfunext fe (force-decreasing-unchanged α d) ,
-                                  decreasing-is-prop fe α _ _)
+                               being-decreasing-is-a-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
 ℕ∞-retract-of-Cantor fe = lcni , incl , lcni-incl fe
@@ -123,7 +111,7 @@ Cantor-separated fe = Π-separated fe (λ _ → 𝟚-is-separated)
 ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)
 
 ℕ∞-is-set : funext₀ → is-set ℕ∞
-ℕ∞-is-set fe = separated-is-set fe (ℕ∞-separated fe)
+ℕ∞-is-set fe = separated-types-are-sets fe (ℕ∞-separated fe)
 
 open import TotallySeparated
 
@@ -418,8 +406,8 @@ is-finite u = Σ \(n : ℕ) → under n ≡ u
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
 
-is-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
-is-finite-is-prop = under-embedding
+being-finite-is-a-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
+being-finite-is-a-prop = under-embedding
 
 under-is-finite : (n : ℕ) → is-finite(under n)
 under-is-finite n = (n , refl)
@@ -726,8 +714,8 @@ Needed 28 July 2018:
 
 \begin{code}
 
-≼-is-prop : funext₀ → (u v : ℕ∞) → is-prop (u ≼ v)
-≼-is-prop fe u v = Π-is-prop fe (λ n → Π-is-prop fe (λ l → 𝟚-is-set))
+≼-is-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≼ v)
+≼-is-prop-valued fe u v = Π-is-prop fe (λ n → Π-is-prop fe (λ l → 𝟚-is-set))
 
 ≼-not-≺ : (u v : ℕ∞) → u ≼ v → ¬(v ≺ u)
 ≼-not-≺ u v l (n , (p , m)) = zero-is-not-one (e ⁻¹ ∙ d)

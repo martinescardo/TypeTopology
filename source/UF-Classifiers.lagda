@@ -117,7 +117,7 @@ module subtype-classifier
                                   (is-equiv-is-embedding (eqtofun (≃-sym e))
                                                          (eqtofun-is-an-equiv (≃-sym e))) i
    τ refl q = to-Σ-≡ (ap (λ h → g ∘ h) s ,
-                      is-embedding-is-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
+                      being-embedding-is-a-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
     where
      r : idtoeq X X refl ≡ e
      r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
@@ -127,7 +127,7 @@ module subtype-classifier
  Tχ : (σ : Σ \(X : U ̇) → X ↪ Y) → T(χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
                           (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-embedding i)
-                         ∙ to-Σ-≡' (is-embedding-is-prop fe fe f _ _)))
+                         ∙ to-Σ-≡' (being-embedding-is-a-prop fe fe f _ _)))
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)

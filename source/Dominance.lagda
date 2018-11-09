@@ -55,11 +55,11 @@ being-a-dominance-is-a-prop d = iprops-are-propositions lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
-               (Π-is-prop (fe U⁺ U) λ _ → is-prop-is-a-prop (fe U U))
+               (Π-is-prop (fe U⁺ U) λ _ → being-a-prop-is-a-prop (fe U U))
                λ _ → Σ-is-prop
                        (Π-is-prop (fe U⁺ U)
                           λ _ → Π-is-prop (fe U U)
-                                   λ _ → is-prop-is-a-prop (fe U U))
+                                   λ _ → being-a-prop-is-a-prop (fe U U))
                        λ _ → Σ-is-prop
                                (being-dominant-is-a-prop (d , isd) 𝟙)
                                λ _ → Π-is-prop (fe U⁺ U⁺)
@@ -82,7 +82,7 @@ module DecidableDominance where
  decidable-dominance : Dominance
  decidable-dominance = (λ P → is-prop P × decidable P) ,
                        (λ P → Σ-is-prop
-                                 (is-prop-is-a-prop (fe U U))
+                                 (being-a-prop-is-a-prop (fe U U))
                                  (decidable-types-are-props (fe U U₀))) ,
                        (λ X → pr₁) ,
                        (𝟙-is-prop , inl *) ,

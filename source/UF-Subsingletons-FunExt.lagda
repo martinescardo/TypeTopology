@@ -27,8 +27,8 @@ open import UF-LeftCancellable
                → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
 Π-is-singleton fe i = (λ x → pr₁ (i x)) , (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
 
-is-prop-is-a-prop : {X : U ̇} → funext U U → is-prop (is-prop X)
-is-prop-is-a-prop {U} {X} fe f g = c₁
+being-a-prop-is-a-prop : {X : U ̇} → funext U U → is-prop (is-prop X)
+being-a-prop-is-a-prop {U} {X} fe f g = c₁
  where
   l : is-set X
   l = props-are-sets f
@@ -49,7 +49,7 @@ identifications-of-props-are-props {U} pe fe P i = local-hedberg' P (λ X → g 
   g : (X : U ̇) → is-prop X × (X ⇔ P) → X ≡ P
   g X (l , φ , γ) = pe l i φ γ
   j : (X : U ̇) → is-prop (is-prop X × (X ⇔ P))
-  j X = ×-prop-criterion ((λ _ → is-prop-is-a-prop fe) ,
+  j X = ×-prop-criterion ((λ _ → being-a-prop-is-a-prop fe) ,
                           (λ l → ×-is-prop (Π-is-prop fe (λ x → i))
                                             (Π-is-prop fe (λ p → l))))
   k : (X : U ̇) → constant (g X ∘ f X)
@@ -74,7 +74,7 @@ is-singleton-is-a-prop {U} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext 
 
 \end{code}
 
-The meat of the following proof is is-set-is-a-prop'. The rest of the
+The meat of the following proof is being-set-is-a-prop'. The rest of the
 code is to deal with implicit arguments in conjunction with function
 extensionality. The solution is not ideal. Ideally, functions with
 implicit parameters should be the same as their versions with explicit
@@ -82,16 +82,16 @@ parameters.
 
 \begin{code}
 
-is-set-is-a-prop : {X : U ̇} → funext U U → is-prop (is-set X)
-is-set-is-a-prop {U} {X} fe = h
+being-set-is-a-prop : {X : U ̇} → funext U U → is-prop (is-set X)
+being-set-is-a-prop {U} {X} fe = h
  where
   is-set' : U ̇ → U ̇
   is-set' X = (x y : X) → is-prop(x ≡ y)
 
-  is-set-is-a-prop' : {X : U ̇} → funext U U → is-prop (is-set' X)
-  is-set-is-a-prop' fe = Π-is-prop fe
+  being-set-is-a-prop' : {X : U ̇} → funext U U → is-prop (is-set' X)
+  being-set-is-a-prop' fe = Π-is-prop fe
                          (λ x → Π-is-prop fe
-                         (λ y → is-prop-is-a-prop fe))
+                         (λ y → being-a-prop-is-a-prop fe))
 
   f : {X : U ̇} → is-set' X → is-set X
   f s {x} {y} = s x y
@@ -100,7 +100,7 @@ is-set-is-a-prop {U} {X} fe = h
   g s x y = s {x} {y}
 
   h : is-prop (is-set X)
-  h = subtype-of-prop-is-prop g (ap f) (is-set-is-a-prop' fe)
+  h = subtype-of-prop-is-a-prop g (ap f) (being-set-is-a-prop' fe)
 
 \end{code}
 
@@ -115,7 +115,7 @@ decidable-types-are-props fe₀ isp = sum-of-contradictory-props
 PropExt : funext U U → propext U → {p q : Ω U}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 PropExt {U} fe pe {p} {q} f g =
- to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , is-prop-is-a-prop fe _ _)
+ to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , being-a-prop-is-a-prop fe _ _)
 
 Ω-is-a-set : funext U U → propext U → is-set (Ω U)
 Ω-is-a-set {U} fe pe = Id-collapsibles-are-sets pc
@@ -172,12 +172,12 @@ equal-⊤-is-true P hp r = f *
 true-is-equal-⊤ : propext U → funext U U → (P : U ̇) (i : is-prop P)
                 → P → (P , i) ≡ ⊤
 true-is-equal-⊤ pe fe P i x = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
-                                        is-prop-is-a-prop fe _ _)
+                                        being-a-prop-is-a-prop fe _ _)
 
 Ω-ext : propext U → funext U U → {p q : Ω U}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
 Ω-ext pe fe {(P , i)} {(Q , j)} f g = to-Σ-≡ (pe i j I II ,
-                                              is-prop-is-a-prop fe _ _ )
+                                              being-a-prop-is-a-prop fe _ _ )
  where
   I : P → Q
   I x = equal-⊤-is-true Q j (f (true-is-equal-⊤ pe fe P i x))

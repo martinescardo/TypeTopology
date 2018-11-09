@@ -25,12 +25,12 @@ module PropositionalTruncation (pt : PropTrunc) where
 
  postulate
    ∥_∥ : U ̇ → U ̇
-   ptisp : {X : U ̇} → is-prop ∥ X ∥
+   propositional-truncation-is-a-prop : {X : U ̇} → is-prop ∥ X ∥
    ∣_∣ : {X : U ̇} → X → ∥ X ∥
    ptrec : {X : U ̇} {Y : V ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
 
  is-singleton'-is-prop : {X : U ̇} → funext U U → is-prop(is-prop X × ∥ X ∥)
- is-singleton'-is-prop fe = Σ-is-prop (is-prop-is-a-prop fe) (λ _ → ptisp)
+ is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-a-prop fe) (λ _ → propositional-truncation-is-a-prop)
 
  c-es₁ : {X : U ̇} → is-singleton X ⇔ is-prop X × ∥ X ∥
  c-es₁ {U} {X} = f , g
@@ -42,7 +42,7 @@ module PropositionalTruncation (pt : PropTrunc) where
    g (i , s) = ptrec i id s , i (ptrec i id s)
 
  ptfunct : {X : U ̇} {Y : V ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
- ptfunct f = ptrec ptisp (λ x → ∣ f x ∣)
+ ptfunct f = ptrec propositional-truncation-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : U ̇} → (Y : X → V ̇) → U ⊔ V ̇
  ∃ Y = ∥ Σ Y ∥
@@ -60,13 +60,13 @@ module PropositionalTruncation (pt : PropTrunc) where
  pt-gdn {U} {X} s {V} P isp u = ptrec isp u s
 
  gdn-pt : {X : U ̇} → (∀ {V} (P : V ̇) → is-prop P → (X → P) → P) → ∥ X ∥
- gdn-pt {U} {X} φ = φ ∥ X ∥ ptisp ∣_∣
+ gdn-pt {U} {X} φ = φ ∥ X ∥ propositional-truncation-is-a-prop ∣_∣
 
  pt-dn : {X : U ̇} → ∥ X ∥ → ¬¬ X
  pt-dn s = pt-gdn s 𝟘 𝟘-is-prop
 
  binary-choice : {X : U ̇} {Y : V ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
- binary-choice s t = ptrec ptisp (λ x → ptrec ptisp (λ y → ∣ x , y ∣) t) s
+ binary-choice s t = ptrec propositional-truncation-is-a-prop (λ x → ptrec propositional-truncation-is-a-prop (λ y → ∣ x , y ∣) t) s
 
  infixr 0 _∨_
  infix 0 ∥_∥
@@ -92,8 +92,8 @@ module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist'
  ∥_∥ : U ̇ → U ̇
  ∥ X ∥ = pr₁ (pt (universe-of X) X)
 
- ptisp : {X : U ̇} → is-prop(∥ X ∥)
- ptisp {U} {X} = pr₁(pr₂(pt (universe-of X) X))
+ propositional-truncation-is-a-prop : {X : U ̇} → is-prop(∥ X ∥)
+ propositional-truncation-is-a-prop {U} {X} = pr₁(pr₂(pt (universe-of X) X))
 
  ∣_∣ : {X : U ̇} → X → ∥ X ∥
  ∣ x ∣ = pr₁(pr₂(pr₂(pt (universe-of(type-of x)) (type-of x)))) x
@@ -102,7 +102,7 @@ module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist'
  ptrec {U} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
 
  ptfunct : {X Y : U ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
- ptfunct f = ptrec ptisp (λ x → ∣ f x ∣)
+ ptfunct f = ptrec propositional-truncation-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : U ̇} → (Y : X → V ̇) → U ⊔ V ̇
  ∃ Y = ∥ Σ Y ∥

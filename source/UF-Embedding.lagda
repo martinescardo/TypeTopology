@@ -21,12 +21,10 @@ open import UF-UA-FunExt
 is-embedding : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-embedding f = ∀ y → is-prop(fiber f y)
 
-is-embedding-is-prop : funext V (U ⊔ V) → funext (U ⊔ V) (U ⊔ V)
-                     → {X : U ̇} {Y : V ̇} (f : X → Y)
-                     → is-prop(is-embedding f)
-is-embedding-is-prop {U} {V} fe fe' f = Π-is-prop
-                                          fe
-                                          (λ x → is-prop-is-a-prop fe')
+being-embedding-is-a-prop : funext V (U ⊔ V) → funext (U ⊔ V) (U ⊔ V)
+                          → {X : U ̇} {Y : V ̇} (f : X → Y)
+                          → is-prop(is-embedding f)
+being-embedding-is-a-prop {U} {V} fe fe' f = Π-is-prop fe (λ x → being-a-prop-is-a-prop fe')
 
 embedding-criterion : {X : U ̇} {Y : V ̇} (f : X → Y)
                     → ((x : X) → is-prop (fiber f (f x)))
@@ -152,7 +150,7 @@ comp-embedding {U} {V} {W} {X} {Y} {Z} {f} {g} e d = h
   T : (z : Z) → U ⊔ V ⊔ W ̇
   T z = Σ \(w : fiber g z) → fiber f (pr₁ w)
   T-is-prop : (z : Z) → is-prop (T z)
-  T-is-prop z = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
+  T-is-prop z = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
   φ : (z : Z) → fiber (g ∘ f) z → T z
   φ z (x , p) = (f x , p) , x , refl
   γ : (z : Z) → T z → fiber (g ∘ f) z
@@ -160,7 +158,7 @@ comp-embedding {U} {V} {W} {X} {Y} {Z} {f} {g} e d = h
   γφ : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ≡ t
   γφ .(g (f x)) (x , refl) = refl
   h : (z : Z) → is-prop (fiber (g ∘ f) z)
-  h z = subtype-of-prop-is-prop
+  h z = subtype-of-prop-is-a-prop
          (φ z)
          (has-retraction-lc (φ z) (γ z , (γφ z)))
          (T-is-prop z)
@@ -283,7 +281,7 @@ module _ {U V W T}
    Z : U ⊔ V ⊔ W ⊔ T ̇
    Z = Σ \(w : fiber f y) → fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
    Z-is-prop : is-prop Z
-   Z-is-prop = subtype-of-prop-is-prop
+   Z-is-prop = subtype-of-prop-is-a-prop
                 pr₁
                 (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
                 (e y)
@@ -294,7 +292,7 @@ module _ {U V W T}
    γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
    γφ ((x , a) , refl) = refl
    h : is-prop (fiber pair-fun (y , b))
-   h = subtype-of-prop-is-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
+   h = subtype-of-prop-is-a-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
 
  pair-fun-dense : is-dense f
                → ((x : X) → is-dense (g x))

@@ -86,7 +86,7 @@ which is actually an equivalence).
   where
    h : (x : X) → (𝟙 , 𝟙-is-prop ,                             λ _ → x)
                ≡ (𝟙 , singletons-are-propositions (𝟙-is-singleton) , λ _ → x)
-   h x = to-Σ-≡ (refl , to-×-≡ (is-prop-is-a-prop fe _ _) refl)
+   h x = to-Σ-≡ (refl , to-×-≡ (being-a-prop-is-a-prop fe _ _) refl)
 
 \end{code}
 
@@ -104,7 +104,7 @@ NatΣ-embedding.:
                            (maps-of-props-are-embeddings
                               singletons-are-propositions
                               (is-singleton-is-a-prop fe)
-                              (is-prop-is-a-prop fe))
+                              (being-a-prop-is-a-prop fe))
                            id-is-embedding
 
  𝓚-to-𝓛-is-embedding : funext T T
@@ -175,8 +175,8 @@ Te now give meaningful names to the projections:
  is-defined : {X : U ̇} → 𝓛 X → T ̇
  is-defined (P , i , φ) = P
 
- is-defined-is-prop : {X : U ̇} (l : 𝓛  X) → is-prop (is-defined l)
- is-defined-is-prop (P , i , φ) = i
+ being-defined-is-a-prop : {X : U ̇} (l : 𝓛  X) → is-prop (is-defined l)
+ being-defined-is-a-prop (P , i , φ) = i
 
  value : {X : U ̇} (l : 𝓛  X) → is-defined l → X
  value (P , i , φ) = φ
@@ -240,7 +240,7 @@ hom-∞-groupoids x ⊑ y.
              ≡⟨ (dfunext fe' ε)⁻¹ ⟩
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
-   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-a-prop fe _ i) d)
+   e = to-Σ-≡ (a , to-×-≡ (being-a-prop-is-a-prop fe _ i) d)
 
 \end{code}
 
@@ -275,7 +275,7 @@ Te can now establish the promised fact:
      b : (P , i , φ) ⊑ η (φ p)
      b = (λ _ → *) , (λ q → ap φ (i q p))
    fg : (d : is-defined l) → f l (g l d) ≡ d
-   fg d = is-defined-is-prop l (f l (g l d)) d
+   fg d = being-defined-is-a-prop l (f l (g l d)) d
    gf : (z : fiber η l) → g l (f l z) ≡ z
    gf z = η-is-embedding pe fe fe' fe'' l (g l (f l z)) z
 
@@ -336,7 +336,7 @@ which should be an equivalence for each l and m:
              ≡⟨ dfunext fe' ε' ⟩
        φ     ∎
    e : Q , j , γ ≡ P , i , φ
-   e = to-Σ-≡ (a , to-×-≡ (is-prop-is-a-prop fe _ i) d)
+   e = to-Σ-≡ (a , to-×-≡ (being-a-prop-is-a-prop fe _ i) d)
 
 
  ⊑-anti'-inverse :  {X : U ̇} (l m : 𝓛 X)
@@ -391,7 +391,7 @@ private
 
 𝓛-lift : ∀ T {X : U ̇} {Y : V ̇} → (X → 𝓛 T Y) → (𝓛 T X → 𝓛 T Y)
 𝓛-lift T f (P , i , φ) = (Σ \(p : P) → is-defined T (f (φ p))) ,
-                          Σ-is-prop i (λ p → is-defined-is-prop T (f (φ p))) ,
+                          Σ-is-prop i (λ p → being-defined-is-a-prop T (f (φ p))) ,
                           λ σ → value T (f (φ (pr₁ σ))) (pr₂ σ)
 
 𝓛- : ∀ T {X : U ̇} {Y : V ̇} → (X → Y) → 𝓛 T X → 𝓛 T Y

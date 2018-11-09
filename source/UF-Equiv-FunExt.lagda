@@ -116,20 +116,20 @@ sections-have-at-most-one-retraction : (∀ U V → funext U V) → {X : U ̇} {
                                      → has-section f → is-prop(has-retraction f)
 sections-have-at-most-one-retraction {U} {V} fe = sections-have-at-most-one-retraction' (fe U U) (fe V U)
 
-is-equiv-is-a-prop : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
+being-equiv-is-a-prop : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
                    → is-prop(is-equiv f)
-is-equiv-is-a-prop fe f = ×-prop-criterion (retractions-have-at-most-one-section fe f , sections-have-at-most-one-retraction fe f)
+being-equiv-is-a-prop fe f = ×-prop-criterion (retractions-have-at-most-one-section fe f , sections-have-at-most-one-retraction fe f)
 
-is-equiv-is-a-prop' : {X : U ̇} {Y : V ̇}
+being-equiv-is-a-prop' : {X : U ̇} {Y : V ̇}
                     → funext V U → funext V V → funext U U → funext V U
                     → (f : X → Y) → is-prop(is-equiv f)
-is-equiv-is-a-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
+being-equiv-is-a-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
                                                             sections-have-at-most-one-retraction' fe'' fe''' f)
 
-is-equiv-is-a-prop'' : {X Y : U ̇}
+being-equiv-is-a-prop'' : {X Y : U ̇}
                      → funext U U
                      → (f : X → Y) → is-prop(is-equiv f)
-is-equiv-is-a-prop'' fe = is-equiv-is-a-prop' fe fe fe fe
+being-equiv-is-a-prop'' fe = being-equiv-is-a-prop' fe fe fe fe
 
 \end{code}
 
@@ -150,7 +150,7 @@ propext-funext-gives-prop-ua {U} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
   eqtoid (f , (r , rf) , h) = pe (l (f , (r , rf) , h)) i f r
   m : is-prop (X ≃ P)
   m (f , e) (f' , e') = to-Σ-≡ (dfunext fe (λ x → i (f x) (f' x)) ,
-                                is-equiv-is-a-prop'' fe f' _ e')
+                                being-equiv-is-a-prop'' fe f' _ e')
   η : (e : X ≃ P) → idtoeq X P (eqtoid e) ≡ e
   η e = m (idtoeq X P (eqtoid e)) e
   ε : (q : X ≡ P) → eqtoid (idtoeq X P q) ≡ q
