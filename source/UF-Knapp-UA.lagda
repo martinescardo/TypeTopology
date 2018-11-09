@@ -61,7 +61,7 @@ idtopie-pietoid : {X Y : U ̇} (e : X ⋍ Y) → idtopie (pietoid e) ≡ e
 idtopie-pietoid (_ , refl , refl) = refl
 
 PIE-induction : {X : U ̇} (A : {Y : U ̇} → (X → Y) → V ̇)
-              → A (id {U} {X}) → {Y : U ̇} (f : X → Y) → isPIE f → A f
+              → A id → {Y : U ̇} (f : X → Y) → isPIE f → A f
 PIE-induction {U} {V} {X} A g {Y} f (p , q) = transport A r (φ p)
   where
    φ : {Y : U ̇} (p : X ≡ Y) → A (idtofun _ _ p)
@@ -116,7 +116,7 @@ knapps-funext-criterion {U} H D {V} {X} {Y} {f₁} {f₂} h = γ
   back-transport-isPIE p = transport-isPIE (p ⁻¹)
 
   back-transport-is-pre-comp'' : ∀ {U} {X X' Y : U ̇} (e : X ⋍ X') (g : X' → Y)
-                              → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e
+                               → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e
   back-transport-is-pre-comp'' {U} {X} {X'} e g = back-transport-is-pre-comp (pietoid e) g ∙ q ∙ r
    where
     φ : ∀ {U} (X Y : U ̇) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
@@ -153,7 +153,7 @@ Clearly, if univalence holds, then every equivalence is path induced:
 \begin{code}
 
 UA-is-equiv-isPIE : is-univalent U → {X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f
-UA-is-equiv-isPIE ua f ise = (eqtoid ua _ _ (f , ise) , ap pr₁ (idtoeq-eqtoid ua _ _ (f , ise)))
+UA-is-equiv-isPIE ua f i = (eqtoid ua _ _ (f , i) , ap pr₁ (idtoeq-eqtoid ua _ _ (f , i)))
 
 \end{code}
 
@@ -183,12 +183,12 @@ is-equiv-isPIE-UA {U} φ X = γ
   k : funext U U
   k = knapps-funext-Criterion {U} H D
   s : (Y : U ̇) → X ≃ Y → X ≡ Y
-  s Y (f , ise) = pietoid (f , φ f ise)
+  s Y (f , i) = pietoid (f , φ f i)
   η : {Y : U ̇} (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
-  η {Y} (f , ise) = to-Σ-≡ (p , being-equiv-is-a-prop'' k f _ _)
+  η {Y} (f , i) = to-Σ-≡ (p , being-equiv-is-a-prop'' k f _ _)
    where
-    p : pr₁ (idtoeq X Y (s Y (f , ise))) ≡ f
-    p = pietofun-factors-through-idtofun (f , φ f ise)
+    p : pr₁ (idtoeq X Y (s Y (f , i))) ≡ f
+    p = pietofun-factors-through-idtofun (f , φ f i)
   γ : (Y : U ̇) → is-equiv (idtoeq X Y)
   γ = nats-with-sections-are-equivs X (idtoeq X) (λ Y → (s Y) , η)
 
@@ -200,24 +200,24 @@ see from the proof, we can replace qinv by is-equiv:
 \begin{code}
 
 UA-characterization :
-                     ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+                     ((X Y : U ̇) (f : X → Y) → qinv f → fiber (transport id) f)
                    ⇔ is-univalent U
 UA-characterization {U} = (forth , back)
  where
-  forth : ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent U
-  forth γ  = is-equiv-isPIE-UA φ
+  forth : ((X Y : U ̇) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent U
+  forth γ = is-equiv-isPIE-UA (λ {X} {Y} → φ X Y)
    where
-    φ : {X Y : U ̇} (f : X → Y) → is-equiv f → isPIE f
-    φ {X} {Y} f ise = p , r
+    φ : (X Y : U ̇) (f : X → Y) → is-equiv f → isPIE f
+    φ X Y f i = p , r
      where
       p : X ≡ Y
-      p = pr₁ (γ f (equivs-are-qinvs f ise))
+      p = pr₁ (γ X Y f (equivs-are-qinvs f i))
       q : transport id p ≡ f
-      q = pr₂ (γ f (equivs-are-qinvs f ise))
+      q = pr₂ (γ X Y f (equivs-are-qinvs f i))
       r : idtofun X Y p ≡ f
       r = idtofun-agreement X Y p ∙ q
-  back : is-univalent U → ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
-  back ua {X} {Y} f q = p , s
+  back : is-univalent U → ((X Y : U ̇) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+  back ua X Y f q = p , s
    where
     σ : Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
     σ = UA-is-equiv-isPIE ua f (qinvs-are-equivs f q)
@@ -232,7 +232,7 @@ UA-characterization {U} = (forth , back)
 
 TODO: Show that for any U, the type
 
-  ({X Y : U ̇} (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+  ({X Y : U ̇} (f : X → Y) → qinv f →  fiber (transport id) f))
 
 is a proposition. Or give a counter-example or counter-model.
 

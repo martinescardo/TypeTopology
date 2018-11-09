@@ -36,7 +36,7 @@ module PropositionalTruncation (pt : PropTrunc) where
  c-es₁ {U} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥
-   f (x , φ) = singletons-are-propositions (x , φ) , ∣ x ∣
+   f (x , φ) = singletons-are-props (x , φ) , ∣ x ∣
 
    g : is-prop X × ∥ X ∥ → is-singleton X
    g (i , s) = ptrec i id s , i (ptrec i id s)

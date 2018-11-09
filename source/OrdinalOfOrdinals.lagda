@@ -290,7 +290,7 @@ eqtoidₒ : is-univalent U → (α β : Ordinal U)
 eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
  where
   A : (Y : U ̇) → ⟨ α ⟩ ≃ Y → U ⁺ ̇
-  A Y e = (σ : OS Y)
+  A Y e = (σ : OrdinalStructure Y)
         → is-order-preserving α (Y , σ) (eqtofun e)
         → is-order-preserving (Y , σ) α (back-eqtofun e)
         → α ≡ (Y , σ)

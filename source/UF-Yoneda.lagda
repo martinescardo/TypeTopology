@@ -182,7 +182,7 @@ Yoneda-section-forth : {X : U ̇} {A : X → V ̇} (x : X) (η : Nat (Id x) A)
 Yoneda-section-forth {U} {V} {X} {A} x η iss y = g
  where
   u : is-universal-element (x , yoneda-elem x A η)
-  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (singletons-are-propositions iss (x , yoneda-elem x A η))
+  u = unique-element-is-universal-element A (x , yoneda-elem x A η) (singletons-are-props iss (x , yoneda-elem x A η))
   h : yoneda-nat x A (yoneda-elem x A η) y ∼ η y
   h = yoneda-lemma x A η y
   g : has-section (η y)
@@ -441,7 +441,7 @@ univalence-via-singletons {U} = (f , g)
                                 (unique-element-is-universal-element
                                        (Eq X)
                                        (X , ≃-refl X)
-                                       (singletons-are-propositions (φ X) (X , ≃-refl X)))
+                                       (singletons-are-props (φ X) (X , ≃-refl X)))
 
 \end{code}
 

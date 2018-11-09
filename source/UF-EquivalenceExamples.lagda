@@ -417,7 +417,7 @@ pr₁-equivalence {U} {V} X A iss = qinvs-are-equivs pr₁ (g , ε , η)
   η : (x : X) → pr₁ (g x) ≡ x
   η x = refl
   ε : (σ : Σ A) → g(pr₁ σ) ≡ σ
-  ε (x , a) = to-Σ-≡ (η x , singletons-are-propositions (iss x) _ _)
+  ε (x , a) = to-Σ-≡ (η x , singletons-are-props (iss x) _ _)
 
 NatΣ-fiber-equiv : {X : U ̇} (A : X → V ̇) (B : X → W ̇) (ζ : Nat A B)
                  → (x : X) (b : B x) → fiber (ζ x) b ≃ fiber (NatΣ ζ) (x , b)

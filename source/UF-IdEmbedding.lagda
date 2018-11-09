@@ -113,7 +113,7 @@ Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   g-lc : left-cancellable g
   g-lc = NatΣ-lc f f-lc
   h : is-prop T
-  h = left-cancellable-reflects-is-prop g g-lc (singletons-are-propositions c)
+  h = left-cancellable-reflects-is-prop g g-lc (singletons-are-props c)
 
 \end{code}
 

@@ -518,3 +518,43 @@ iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ
   γ = f , ((g , fg) , (g , gf))
 
 \end{code}
+
+Added 9th November 2018.
+
+We want to show that f ↦ f/j is an embedding of (X → U) into (Y → U)
+if j is an embedding.
+
+                   j
+              X ------> Y
+               \       /
+                \     /
+             f   \   / f/j
+                  \ /
+                   v
+                   U
+
+The simplest case is X = P and Y = 𝟙, where P is a proposition. Then
+any map 𝟙 → P is a proposition (there is of course at most one).
+
+                   j
+              P ------> 𝟙
+               \       /
+                \     /
+              f  \   / (f / j) (x) = Π (w : fiber j x) → f(pr₁ w)
+                  \ /              ≃ Π (p : P) → j p ≡ x → f p
+                   v               ≃ Π (p : P) → f p
+                   U
+
+So in essence we are considering the map E : (P → U) → U defined by
+
+   E f = Π (p : P) → f p.
+
+Then, for any A : U,
+
+  fiber E A = Σ \(f : P → U) → Π (p : P) → f p
+
+
+
+\begin{code}
+
+\end{code}

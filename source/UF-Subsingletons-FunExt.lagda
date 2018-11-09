@@ -59,7 +59,7 @@ is-singleton-is-a-prop : {X : U ̇} → funext U U → is-prop(is-singleton X)
 is-singleton-is-a-prop {U} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
   isp : is-prop X
-  isp = singletons-are-propositions (y , γ)
+  isp = singletons-are-props (y , γ)
   iss : is-set X
   iss = props-are-sets isp
 

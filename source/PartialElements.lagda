@@ -75,7 +75,7 @@ which is actually an equivalence).
  κ x = 𝟙 , 𝟙-is-singleton , (λ _ → x)
 
  ζ : (X : U ̇) (P : T ̇) → is-singleton P × (P → X) → is-prop P × (P → X)
- ζ X P (i , φ) = singletons-are-propositions i , φ
+ ζ X P (i , φ) = singletons-are-props i , φ
 
  𝓚-to-𝓛 : (X : U ̇) → 𝓚 X → 𝓛 X
  𝓚-to-𝓛 X = NatΣ (ζ X)
@@ -85,7 +85,7 @@ which is actually an equivalence).
  η-composite fe fe' {X} = dfunext fe' h
   where
    h : (x : X) → (𝟙 , 𝟙-is-prop ,                             λ _ → x)
-               ≡ (𝟙 , singletons-are-propositions (𝟙-is-singleton) , λ _ → x)
+               ≡ (𝟙 , singletons-are-props (𝟙-is-singleton) , λ _ → x)
    h x = to-Σ-≡ (refl , to-×-≡ (being-a-prop-is-a-prop fe _ _) refl)
 
 \end{code}
@@ -99,10 +99,10 @@ NatΣ-embedding.:
 
  ζ-is-embedding : funext T T → (X : U ̇) (P : T ̇) → is-embedding (ζ X P)
  ζ-is-embedding fe X P = ×-embedding
-                           singletons-are-propositions
+                           singletons-are-props
                            id
                            (maps-of-props-are-embeddings
-                              singletons-are-propositions
+                              singletons-are-props
                               (is-singleton-is-a-prop fe)
                               (being-a-prop-is-a-prop fe))
                            id-is-embedding
@@ -134,14 +134,14 @@ itself.
    κν (P , i , φ) = u
     where
      t : 𝟙 ≡ P
-     t = pe 𝟙-is-prop (singletons-are-propositions i) (λ _ → is-singleton-pointed i) unique-to-𝟙
+     t = pe 𝟙-is-prop (singletons-are-props i) (λ _ → is-singleton-pointed i) unique-to-𝟙
      s : (t : 𝟙 ≡ P)
        → transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
        ≡ i , φ
      s refl = to-×-≡ a b
        where
         a : 𝟙-is-singleton ≡ i
-        a = (singletons-are-propositions (pointed-props-are-singletons 𝟙-is-singleton (is-singleton-is-a-prop fe))
+        a = (singletons-are-props (pointed-props-are-singletons 𝟙-is-singleton (is-singleton-is-a-prop fe))
                                   𝟙-is-singleton i)
         b : (λ x → φ (is-singleton-pointed i)) ≡ φ
         b = dfunext fe' (λ x → ap φ (𝟙-is-prop (is-singleton-pointed i) x))

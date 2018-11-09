@@ -95,11 +95,11 @@ is-contr = is-singleton
 𝟙-is-singleton : is-singleton (𝟙 {U})
 𝟙-is-singleton {U} = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
 
-singletons-are-propositions : {X : U ̇} → is-singleton X → is-prop X
-singletons-are-propositions {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
+singletons-are-props : {X : U ̇} → is-singleton X → is-prop X
+singletons-are-props {U} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
 
-isingletons-are-propositions : {X : U ̇} → (X → is-singleton X) → is-prop X
-isingletons-are-propositions {U} {X} φ x = singletons-are-propositions (φ x) x
+isingletons-are-props : {X : U ̇} → (X → is-singleton X) → is-prop X
+isingletons-are-props {U} {X} φ x = singletons-are-props (φ x) x
 
 iprops-are-propositions : {X : U ̇} → (X → is-prop X) → is-prop X
 iprops-are-propositions {U} {X} φ x y = φ x x y
@@ -259,7 +259,7 @@ identifications-from-are-singletons : {X : U ̇} (x₀ : X) → is-singleton(ide
 identifications-from-are-singletons x₀ = trivial-loop x₀ , (λ t → Id-from-trivial-loop (pr₂ t))
 
 identifications-from-is-a-prop : {X : U ̇} (x : X) → is-prop(identifications-from x)
-identifications-from-is-a-prop x = singletons-are-propositions (identifications-from-are-singletons x)
+identifications-from-is-a-prop x = singletons-are-props (identifications-from-are-singletons x)
 
 singleton-types-are-singletons : {X : U ̇} {x : X}
   → is-the-only-element {U} {identifications-from x} (x , refl)

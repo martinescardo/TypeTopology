@@ -68,7 +68,7 @@ retractions-have-at-most-one-section' : {X : U ̇} {Y : V ̇}
                                       → funext V U → funext V V
                                       → (f : X → Y) → has-retraction f → is-prop(has-section f)
 retractions-have-at-most-one-section' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) =
- singletons-are-propositions c (h , fh)
+ singletons-are-props c (h , fh)
  where
   a : qinv f
   a = equivs-are-qinvs f ((h , fh) , g , gf)
@@ -90,7 +90,7 @@ sections-have-at-most-one-retraction' : {X : U ̇} {Y : V ̇}
                                       → funext U U → funext V U
                                       → (f : X → Y) → has-section f → is-prop(has-retraction f)
 sections-have-at-most-one-retraction' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) =
- singletons-are-propositions c (h , hf)
+ singletons-are-props c (h , hf)
  where
   a : qinv f
   a = equivs-are-qinvs f ((g , fg) , (h , hf))

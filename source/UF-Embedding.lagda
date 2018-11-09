@@ -33,7 +33,7 @@ embedding-criterion f φ .(f x) (x , refl) = φ x (x , refl)
 
 is-equiv-is-embedding : {X : U ̇} {Y : V ̇} (f : X → Y)
                       → is-equiv f → is-embedding f
-is-equiv-is-embedding f e y = singletons-are-propositions (equivs-are-vv-equivs f e y)
+is-equiv-is-embedding f e y = singletons-are-props (equivs-are-vv-equivs f e y)
 
 _↪_ : U ̇ → V ̇ → U ⊔ V ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f

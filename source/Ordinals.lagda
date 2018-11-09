@@ -19,11 +19,11 @@ module Ordinals
        (fe : ∀ U V → funext U V)
        where
 
-OS : U ̇ → U ⁺ ̇
-OS {U} X = Σ \(_<_ : X → X → U ̇) → is-well-order _<_
+OrdinalStructure : U ̇ → U ⁺ ̇
+OrdinalStructure {U} X = Σ \(_<_ : X → X → U ̇) → is-well-order _<_
 
 Ordinal : ∀ U → U ⁺ ̇
-Ordinal U = Σ \(X : U ̇) → OS X
+Ordinal U = Σ \(X : U ̇) → OrdinalStructure X
 
 \end{code}
 
@@ -44,7 +44,7 @@ a set):
 ⟨_⟩ : Ordinal U → U ̇
 ⟨ X , _<_ , o ⟩ = X
 
-structure : (α : Ordinal U) → OS ⟨ α ⟩
+structure : (α : Ordinal U) → OrdinalStructure ⟨ α ⟩
 structure (X , s) = s
 
 underlying-order : (α : Ordinal U) → ⟨ α ⟩ → ⟨ α ⟩ → U ̇
