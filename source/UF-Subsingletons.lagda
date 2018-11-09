@@ -331,8 +331,8 @@ Formulation of the K axiom for a universe U.
 
 \begin{code}
 
-K : ∀ U → U ⁺ ̇
-K U = (X : U ̇) → is-set X
+K-axiom : ∀ U → U ⁺ ̇
+K-axiom U = (X : U ̇) → is-set X
 
 \end{code}
 

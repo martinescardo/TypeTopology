@@ -215,7 +215,7 @@ under-lc {succ m} {0} r = 𝟘-elim(Zero-not-Succ (r ⁻¹))
 under-lc {succ m} {succ n} r = ap succ (under-lc {m} {n} (Succ-lc r))
 
 under-embedding : funext₀ → is-embedding under
-under-embedding fe = lc-embedding under under-lc (ℕ∞-is-set fe)
+under-embedding fe = lc-maps-into-sets-are-embeddings under under-lc (ℕ∞-is-set fe)
 
 under-lc-refl : (k : ℕ) → under-lc refl ≡ refl {_} {ℕ} {k}
 under-lc-refl 0 = refl

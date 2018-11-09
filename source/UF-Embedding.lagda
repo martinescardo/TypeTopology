@@ -118,24 +118,26 @@ pr₁-embedding-converse {U} {V} {X} {Y} ie x = h
     h : is-prop(Y x)
     h = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
-K-idtofun-lc : K (U ⁺) → {X : U ̇} (x y : X) (A : X → U ̇)
+K-idtofun-lc : K-axiom (U ⁺) → {X : U ̇} (x y : X) (A : X → U ̇)
              → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {U} k {X} x y A {p} {q} r = k (Set U) p q
 
-lc-embedding :{X : U ̇} {Y : V ̇} (f : X → Y)
-             → left-cancellable f
-             → is-set Y
-             → is-embedding f
-lc-embedding {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (r , q)
+lc-maps-into-sets-are-embeddings : {X : U ̇} {Y : V ̇} (f : X → Y)
+                                 → left-cancellable f
+                                 → is-set Y
+                                 → is-embedding f
+lc-maps-into-sets-are-embeddings {U} {V} {X} {Y} f f-lc iss y (x , p) (x' , p') = to-Σ-Id (r , q)
  where
    r : x ≡ x'
    r = f-lc (p ∙ (p' ⁻¹))
    q : yoneda-nat x (λ x → f x ≡ y) p x' r ≡ p'
    q = iss (yoneda-nat x (λ x → f x ≡ y) p x' r) p'
 
-lc-embedding-with-K : {X : U ̇} {Y : V ̇} (f : X → Y)
-                    → left-cancellable f → K V → is-embedding f
-lc-embedding-with-K {U} {V} {X} {Y} f f-lc k = lc-embedding f f-lc (k Y)
+lc-maps-are-embeddings-with-K :
+    {X : U ̇} {Y : V ̇} (f : X → Y)
+  → left-cancellable f → K-axiom V → is-embedding f
+lc-maps-are-embeddings-with-K {U} {V} {X} {Y} f f-lc k =
+    lc-maps-into-sets-are-embeddings f f-lc (k Y)
 
 id-is-embedding : {X : U ̇} → is-embedding (id {U} {X})
 id-is-embedding = identifications-to-is-prop
