@@ -197,7 +197,7 @@ JEqUnbased ua A f X = JEq ua X (λ Y → A X Y) (f X)
 
 \end{code}
 
-induction. The following technical lemma is needed elsewhere.
+The following technical lemma is needed elsewhere.
 
 \begin{code}
 
@@ -213,7 +213,7 @@ without univalence elsewhere, of course):
 \begin{code}
 
 equivs-are-vv-equivs' : is-univalent U → {X Y : U ̇} (f : X → Y)
-                     → is-equiv f → is-vv-equiv f
+                      → is-equiv f → is-vv-equiv f
 equivs-are-vv-equivs' {U} ua {X} {Y} f ise = g Y (f , ise)
  where
   A : (Y : U ̇) → X ≃ Y → U ̇
