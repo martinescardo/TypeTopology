@@ -211,8 +211,8 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
 _⊴_ : Ordinal U → Ordinal V → U ⊔ V ̇
 α ⊴ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-simulation α β f
 
-⊴-is-prop-valued : (α : Ordinal U) (β : Ordinal V) → is-prop (α ⊴ β)
-⊴-is-prop-valued {U} {V} α β (f , s) (g , t) =
+⊴--prop-valued : (α : Ordinal U) (β : Ordinal V) → is-prop (α ⊴ β)
+⊴--prop-valued {U} {V} α β (f , s) (g , t) =
  to-Σ-≡ (dfunext (fe U V) (at-most-one-simulation α β f g s t) ,
          being-simulation-is-a-prop α β g _ _)
 
@@ -223,10 +223,9 @@ _⊴_ : Ordinal U → Ordinal V → U ⊔ V ̇
 
 ⊴-trans : (α : Ordinal U) (β : Ordinal V) (γ : Ordinal W)
         → α ⊴ β → β ⊴ γ → α ⊴ γ
-⊴-trans α β γ (f , i , p) (g , j , q) =
- g ∘ f ,
- k ,
- (λ x y l → q (f x) (f y) (p x y l))
+⊴-trans α β γ (f , i , p) (g , j , q) = g ∘ f ,
+                                        k ,
+                                        (λ x y l → q (f x) (f y) (p x y l))
  where
   k : (x : ⟨ α ⟩) (z : ⟨ γ ⟩) →  z ≺⟨ γ ⟩ (g (f x))
     → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (g (f x') ≡ z)
@@ -358,11 +357,10 @@ _↓_ : (α : Ordinal U) → ⟨ α ⟩ → Ordinal U
     f x (next .x s) l = next (x , l) (λ σ m → f (pr₁ σ) (s (pr₁ σ) m) (pr₂ σ))
   e : is-extensional _<_
   e (x , l) (y , m) f g =
-   to-Σ-≡
-    (Extensionality α x y
-      (λ u n → f (u , Transitivity α u x a n l) n)
-      (λ u n → g (u , Transitivity α u y a n m) n) ,
-    Prop-valuedness α y a _ _)
+   to-Σ-≡ (Extensionality α x y
+             (λ u n → f (u , Transitivity α u x a n l) n)
+             (λ u n → g (u , Transitivity α u y a n m) n) ,
+          Prop-valuedness α y a _ _)
   t : is-transitive _<_
   t (x , _) (y , _) (z , _) l m = Transitivity α x y z l m
 
@@ -469,9 +467,8 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
      i : (t : ⟨ α ↓ u ⟩) (w : ⟨ (α ↓ b) ↓ (u , l) ⟩)
        → w ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t → Σ \(t' : ⟨ α ↓ u ⟩) → (t' ≺⟨ α ↓ u ⟩ t) × (f t' ≡ w)
      i (x , n) ((x' , m') , n') o = (x' , n') ,
-                                    (o , to-Σ-≡
-                                          (to-Σ-≡' (Prop-valuedness α x' b _ _) ,
-                                          Prop-valuedness α x' u _ _))
+                                    (o , to-Σ-≡ (to-Σ-≡' (Prop-valuedness α x' b _ _) ,
+                                                Prop-valuedness α x' u _ _))
      p : (t t' : ⟨ α ↓ u ⟩) → t ≺⟨ α ↓ u ⟩ t' → f t ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t'
      p t t' = id
 
@@ -724,7 +721,7 @@ module example where
    p (inr *) (inr *) ()
 
  converse-fails-constructively : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
- converse-fails-constructively l = has-section-under𝟙-gives-LPO (is-equiv-has-section under𝟙 e)
+ converse-fails-constructively l = has-section-under𝟙-gives-LPO (equivs-have-sections under𝟙 e)
   where
    b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
    b = bisimilarity-gives-ordinal-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l

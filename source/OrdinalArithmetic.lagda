@@ -32,7 +32,7 @@ Ord  = Ordinal  U₀
 Ordᵀ = Ordinalᵀ U₀
 
 subsingleton-ordinal : (P : U₀ ̇) → is-prop P → Ord
-subsingleton-ordinal P isp = P , subsingleton.order P isp , subsingleton.well-order P isp
+subsingleton-ordinal P i = P , subsingleton.order P i , subsingleton.well-order P i
 
 𝟘ₒ 𝟙ₒ ℕₒ ℕ∞ₒ : Ord
 𝟘ₒ = subsingleton-ordinal 𝟘 𝟘-is-prop
@@ -51,9 +51,9 @@ _×ₒ_ : Ord → Ord → Ord
                                  times.well-order _<_ _≺_ fe o p
 
 prop-indexed-product : {P : U₀ ̇} → is-prop P → (P → Ord) → Ord
-prop-indexed-product {P} isp α = Π X ,
-                                 _≺_ ,
-                                 pip.well-order fe₀ P isp X _<_ (λ p → is-well-ordered (α p))
+prop-indexed-product {P} i α = Π X ,
+                               _≺_ ,
+                               pip.well-order fe₀ P i X _<_ (λ p → is-well-ordered (α p))
  where
   X : P → U₀ ̇
   X p = ⟨ α p ⟩
@@ -88,14 +88,14 @@ succₒ α = α +ₒ 𝟙ₒ  ,
 
 \end{code}
 
-Sum of an ordinal indexed family of ordinals:
+Sum of an ordinal-indexed family of ordinals:
 
 \begin{code}
 
 ∑ : (τ : Ordᵀ) → (⟪ τ ⟫ → Ordᵀ) → Ordᵀ
 ∑ ((X , _<_ , o) , t) υ = ((Σ \(x : X) → ⟪ υ x ⟫) ,
-                           Sum.order ,
-                           Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
+                              Sum.order ,
+                              Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
                           Sum.top-preservation t
  where
   _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → U₀ ̇
@@ -165,9 +165,9 @@ less-is-left α (inl a) y l = a , refl
 less-is-left α (inr *) (inl a) ()
 less-is-left α (inr *) (inr *) ()
 
-left-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩) → ¬(inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
-left-is-not-smaller α (inl a) ()
-left-is-not-smaller α (inr *) ()
+right-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩) → ¬(inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
+right-is-not-smaller α (inl a) ()
+right-is-not-smaller α (inr *) ()
 
 
 \end{code}

@@ -19,13 +19,13 @@ one because it is more symmetrical.
 is-equiv : {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
 is-equiv f = has-section f × has-retraction f
 
-is-equiv-has-section : {X : U ̇} {Y : V ̇} (f : X → Y)
+equivs-have-sections : {X : U ̇} {Y : V ̇} (f : X → Y)
                      → is-equiv f → has-section f
-is-equiv-has-section f = pr₁
+equivs-have-sections f = pr₁
 
-is-equiv-has-retraction : {X : U ̇} {Y : V ̇} (f : X → Y)
+equivs-have-retractions : {X : U ̇} {Y : V ̇} (f : X → Y)
                         → is-equiv f → has-retraction f
-is-equiv-has-retraction f = pr₂
+equivs-have-retractions f = pr₂
 
 section-retraction-equiv : {X : U ̇} {Y : V ̇} (f : X → Y)
                          → has-section f → has-retraction f → is-equiv f
