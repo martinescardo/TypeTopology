@@ -14,7 +14,7 @@ open import SpartanMLTT
 open import Two
 open import UF-FunExt
 
-module CantorCompact (fe : ∀ U V → funext U V) where
+module CantorCompact (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import CompactTypes
 open import CountableTychonoff (fe)
@@ -49,7 +49,7 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 open import DiscreteAndSeparated
 
 discrete-Cantor→ℕ : discrete((ℕ → 𝟚) → ℕ)
-discrete-Cantor→ℕ = compact-discrete-discrete' (fe U₀ U₀) cantor-compact ℕ-discrete
+discrete-Cantor→ℕ = compact-discrete-discrete' (fe 𝓤₀ 𝓤₀) cantor-compact ℕ-discrete
 
 \end{code}
 

@@ -12,13 +12,13 @@ open import SpartanMLTT
 open import LexicographicOrder
 open import InfCompact
 
-Σ-inf-compact : ∀ {T} {X : U ̇} {Y : X → V ̇}
-  → (_≤_ : X → X → W ̇)
-  → (_≼_ : {x : X} → Y x → Y x → T ̇)
+Σ-inf-compact : ∀ {𝓣} {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+  → (_≤_ : X → X → 𝓦 ̇)
+  → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇)
   → inf-compact _≤_
   → ((x : X) → inf-compact (_≼_ {x}))
   → inf-compact (lex-order _≤_ _≼_)
-Σ-inf-compact {U} {V} {W} {T} {X} {Y} _≤_ _≼_ ε δ p =
+Σ-inf-compact {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
   lemma-next : (x : X) → Σ \(y₀ : Y x) → ((Σ \(y : Y x) → p(x , y) ≡ ₀) → p (x , y₀) ≡ ₀)
@@ -53,7 +53,7 @@ open import InfCompact
   putative-root-lemma : (Σ \(t : (Σ \(x : X) → Y x)) → p t ≡ ₀) → p(x₀ , y₀) ≡ ₀
   putative-root-lemma ((x , y) , r) = pr₁ first-correctness (x , pr₁(next-correctness x) (y , r))
 
-  _⊑_ : Σ Y → Σ Y → U ⊔ W ⊔ T ̇
+  _⊑_ : Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
   _⊑_ = lex-order _≤_ _≼_
 
   τ : {x x' : X} → x ≡ x' → Y x → Y x'

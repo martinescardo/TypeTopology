@@ -28,24 +28,24 @@ which we refer to as the density of the decidable truth values.
 
 \begin{code}
 
-EM : ∀ U → U ⁺ ̇
-EM U = (P : U ̇) → is-prop P → P + ¬ P
+EM : ∀ 𝓤 → 𝓤 ⁺ ̇
+EM 𝓤 = (P : 𝓤 ̇) → is-prop P → P + ¬ P
 
-WEM : ∀ U → U ⁺ ̇
-WEM U = (P : U ̇) → is-prop P → ¬ P + ¬¬ P
+WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
+WEM 𝓤 = (P : 𝓤 ̇) → is-prop P → ¬ P + ¬¬ P
 
-DNE : ∀ U → U ⁺ ̇
-DNE U = (P : U ̇) → is-prop P → ¬¬ P → P
+DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
+DNE 𝓤 = (P : 𝓤 ̇) → is-prop P → ¬¬ P → P
 
-EM-gives-DNE : EM U → DNE U
+EM-gives-DNE : EM 𝓤 → DNE 𝓤
 EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
 
-DNE-gives-EM : funext U U₀ → DNE U → EM U
+DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidable-types-are-props fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
 
-fem-proptrunc : funext U U₀ → EM U → propositional-truncations-exist U U
+fem-proptrunc : funext 𝓤 𝓤₀ → EM 𝓤 → propositional-truncations-exist 𝓤 𝓤
 fem-proptrunc fe em X = ¬¬ X ,
                         (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
                          (λ x u → u x) ,
@@ -55,7 +55,7 @@ module _ (pt : PropTrunc) where
 
  open PropositionalTruncation pt
 
- double-negation-is-truncation-gives-DNE :((X : U ̇) → ¬¬ X → ∥ X ∥) → DNE U
- double-negation-is-truncation-gives-DNE {U} f P isp u = ptrec isp id (f P u)
+ double-negation-is-truncation-gives-DNE :((X : 𝓤 ̇) → ¬¬ X → ∥ X ∥) → DNE 𝓤
+ double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ptrec isp id (f P u)
 
 \end{code}

@@ -118,7 +118,7 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 open import UF-FunExt
 
-module TheTopologyOfTheUniverse (fe : ∀ U V → funext U V) where
+module TheTopologyOfTheUniverse (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import UF-Equiv
@@ -137,17 +137,17 @@ lemmas needed to establish that).
 
 \begin{code}
 
-Universe-Indiscreteness-Theorem : (X : ℕ → U ̇) (X∞ : U ̇)
+Universe-Indiscreteness-Theorem : (X : ℕ → 𝓤 ̇) (X∞ : 𝓤 ̇)
 
-  → Σ \(Y : ℕ∞ → U ̇) → ((i : ℕ) → Y (under i) ≃ X i)  ×  (Y ∞ ≃ X∞)
+  → Σ \(Y : ℕ∞ → 𝓤 ̇) → ((i : ℕ) → Y (under i) ≃ X i)  ×  (Y ∞ ≃ X∞)
 
-Universe-Indiscreteness-Theorem {U} X X∞ = Y , (λ i → a (inl i)) , (a (inr *))
+Universe-Indiscreteness-Theorem {𝓤} X X∞ = Y , (λ i → a (inl i)) , (a (inr *))
  where
-  X' : ℕ + 𝟙 → U ̇
+  X' : ℕ + 𝟙 → 𝓤 ̇
   X' = cases X (λ _ → X∞)
-  Y : ℕ∞ → U ̇
+  Y : ℕ∞ → 𝓤 ̇
   Y = X' / under𝟙
   a : (z : ℕ + 𝟙) → Y (under𝟙 z) ≃ X' z
-  a z = Π-extension-in-range X' under𝟙 (under𝟙-embedding (fe U₀ U₀)) z
+  a z = Π-extension-in-range X' under𝟙 (under𝟙-embedding (fe 𝓤₀ 𝓤₀)) z
 
 \end{code}

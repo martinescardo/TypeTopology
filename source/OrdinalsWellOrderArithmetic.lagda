@@ -23,13 +23,13 @@ Any proposition is an ordinal under the empty ordering.
 \begin{code}
 
 module subsingleton
-        {U V}
-        (P : U ̇)
+        {𝓤 𝓥}
+        (P : 𝓤 ̇)
         (isp : is-prop P)
        where
 
  private
-  _<_ : P → P → V ̇
+  _<_ : P → P → 𝓥 ̇
   x < y = 𝟘
 
  order = _<_
@@ -61,15 +61,15 @@ The sum of two ordinals.
 \begin{code}
 
 module plus
-        {U V W}
-        {X : U ̇}
-        {Y : V ̇}
-        (_<_ : X → X → W ̇)
-        (_≺_ : Y → Y → W ̇)
+        {𝓤 𝓥 𝓦}
+        {X : 𝓤 ̇}
+        {Y : 𝓥 ̇}
+        (_<_ : X → X → 𝓦 ̇)
+        (_≺_ : Y → Y → 𝓦 ̇)
        where
 
  private
-  _⊏_ : X + Y → X + Y → W ̇
+  _⊏_ : X + Y → X + Y → 𝓦 ̇
   (inl x) ⊏ (inl x') = x < x'
   (inl x) ⊏ (inr y') = 𝟙
   (inr y) ⊏ (inl x') = 𝟘
@@ -148,16 +148,16 @@ Successor (probably get rid of it).
 \begin{code}
 
 module successor
-        {U V}
-        {X : U ̇}
-        (_<_ : X → X → V ̇)
+        {𝓤 𝓥}
+        {X : 𝓤 ̇}
+        (_<_ : X → X → 𝓥 ̇)
        where
 
   private
-   _≺_ : 𝟙 → 𝟙 → V ̇
-   _≺_ = subsingleton.order {U} 𝟙 𝟙-is-prop
+   _≺_ : 𝟙 → 𝟙 → 𝓥 ̇
+   _≺_ = subsingleton.order {𝓤} 𝟙 𝟙-is-prop
 
-   _<'_ : X + 𝟙 → X + 𝟙 → V ̇
+   _<'_ : X + 𝟙 → X + 𝟙 → 𝓥 ̇
    _<'_ = plus.order _<_ _≺_
 
   order = _<'_
@@ -179,15 +179,15 @@ Multiplication. Cartesian product with the lexicographic order.
 \begin{code}
 
 module times
-        {U V W T}
-        {X : U ̇}
-        {Y : V ̇}
-        (_<_ : X → X → W ̇)
-        (_≺_ : Y → Y → T ̇)
+        {𝓤 𝓥 𝓦 𝓣}
+        {X : 𝓤 ̇}
+        {Y : 𝓥 ̇}
+        (_<_ : X → X → 𝓦 ̇)
+        (_≺_ : Y → Y → 𝓣 ̇)
        where
 
  private
-  _⊏_ : X × Y → X × Y → U ⊔ W ⊔ T ̇
+  _⊏_ : X × Y → X × Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
   (a , b) ⊏ (x , y) = (a < x) + ((a ≡ x) × (b ≺ y))
 
  order = _⊏_
@@ -197,7 +197,7 @@ module times
               → is-well-founded _⊏_
  well-founded w w' (x , y) = φ x y
   where
-   P : X × Y → U ⊔ V ⊔ W ⊔ T ̇
+   P : X × Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P(x' , y')) → (y : Y) → P(x , y)
    γ x step = transfinite-induction _≺_ w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
@@ -264,7 +264,7 @@ module times
    q : b ≡ y
    q = e' b y f'' g''
 
- well-order : (∀ U V → funext U V)
+ well-order : (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
             → is-well-order _<_
             → is-well-order _≺_
             → is-well-order _⊏_
@@ -299,14 +299,14 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : ∀ {T} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
+retract-accessible : ∀ {𝓣} {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇) (_≺_ : Y → Y → 𝓣 ̇)
                        (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
                    → (x : X) → is-accessible _<_ x → is-accessible _≺_ (r x)
-retract-accessible {U} {V} {W} {T} {X} {Y} _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
+retract-accessible {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
  where
-  P : (x : X) → V ⊔ T ̇
+  P : (x : X) → 𝓥 ⊔ 𝓣 ̇
   P x = is-accessible _≺_ (r x)
   γ : (x : X) → ((x' : X) → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
   γ x τ = next (r x) σ
@@ -317,12 +317,12 @@ retract-accessible {U} {V} {W} {T} {X} {Y} _<_ _≺_ r s η φ = transfinite-ind
       m : is-accessible _≺_ (r (s y))
       m = τ (s y) (φ x y l)
 
-retract-well-founded : {T : Universe} {X : U ̇} {Y : V ̇} (_<_ : X → X → W ̇) (_≺_ : Y → Y → T ̇)
+retract-well-founded : {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇) (_≺_ : Y → Y → 𝓣 ̇)
                        (r : X → Y) (s : Y → X)
                     → ((y : Y) → r(s y) ≡ y)
                     → ((x : X) (y : Y) → y ≺ r x → s y < x)
                     → is-well-founded _<_ → is-well-founded _≺_
-retract-well-founded {U} {V} {W} {T} {X} {Y} _<_ _≺_ r s η φ w = w'
+retract-well-founded {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ w = w'
  where
   wr : (x : X) → is-accessible _≺_ (r x)
   wr x = retract-accessible _<_ _≺_ r s η φ x (w x)
@@ -336,12 +336,12 @@ The product of a proposition-indexed family of ordinals (pip):
 \begin{code}
 
 module pip
-        {U V W}
-        (fe : funext U V)
-        (P : U ̇)
+        {𝓤 𝓥 𝓦}
+        (fe : funext 𝓤 𝓥)
+        (P : 𝓤 ̇)
         (isp : is-prop P)
-        (X : P → V ̇)
-        (_<_ : {p : P} → X p → X p → W ̇)
+        (X : P → 𝓥 ̇)
+        (_<_ : {p : P} → X p → X p → 𝓦 ̇)
        where
 
 \end{code}
@@ -375,7 +375,7 @@ the components:
 \begin{code}
 
  private
-   _≺_ : Π X → Π X → U ⊔ W ̇
+   _≺_ : Π X → Π X → 𝓤 ⊔ 𝓦 ̇
    u ≺ v = Σ \(p : P) → φ p u < φ p v
 
  order = _≺_
@@ -523,17 +523,17 @@ sum submodules, the first one without assumptions.
 \begin{code}
 
 module sum
-        {U V W T}
-        {X : U ̇}
-        {Y : X → V ̇}
-        (_<_ : X → X → W ̇)
-        (_≺_ : {x : X} → Y x → Y x → T ̇)
+        {𝓤 𝓥 𝓦 𝓣}
+        {X : 𝓤 ̇}
+        {Y : X → 𝓥 ̇}
+        (_<_ : X → X → 𝓦 ̇)
+        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇)
       where
 
  open import LexicographicOrder
 
  private
-  _⊏_ : Σ Y → Σ Y → U ⊔ W ⊔ T ̇
+  _⊏_ : Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
   _⊏_ = slex-order _<_ _≺_
 
  order = _⊏_
@@ -543,7 +543,7 @@ module sum
               → is-well-founded _⊏_
  well-founded w w' (x , y) = φ x y
   where
-   P : Σ Y → U ⊔ V ⊔ W ⊔ T ̇
+   P : Σ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
    γ x step = transfinite-induction _≺_ (w' x) (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
@@ -570,7 +570,7 @@ module sum
    f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
- prop-valued : (∀ U V → funext U V)
+ prop-valued : (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
              → is-prop-valued _<_
              → is-well-founded _<_
              → is-extensional _<_
@@ -594,17 +594,17 @@ assuming cotransitivity. We do this in the following two modules.
 \begin{code}
 
 module sum-top
-        (fe : (∀ U V → funext U V))
-        {U V W T}
-        {X : U ̇}
-        {Y : X → V ̇}
-        (_<_ : X → X → W ̇)
-        (_≺_ : {x : X} → Y x → Y x → T ̇)
+        (fe : (∀ 𝓤 𝓥 → funext 𝓤 𝓥))
+        {𝓤 𝓥 𝓦 𝓣}
+        {X : 𝓤 ̇}
+        {Y : X → 𝓥 ̇}
+        (_<_ : X → X → 𝓦 ̇)
+        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇)
         (top : Π Y)
         (ist : (x : X) → is-top _≺_ (top x))
       where
 
- open sum {U} {V} {W} {T} {X} {Y} _<_  _≺_ public
+ open sum {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_  _≺_ public
 
  private _⊏_ = order
 
@@ -680,16 +680,16 @@ module sum-top
 open import DiscreteAndSeparated
 
 module sum-cotransitive
-        (fe : (∀ U V → funext U V))
-        {U V W T}
-        {X : U ̇}
-        {Y : X → V ̇}
-        (_<_ : X → X → W ̇)
-        (_≺_ : {x : X} → Y x → Y x → T ̇)
+        (fe : (∀ 𝓤 𝓥 → funext 𝓤 𝓥))
+        {𝓤 𝓥 𝓦 𝓣}
+        {X : 𝓤 ̇}
+        {Y : X → 𝓥 ̇}
+        (_<_ : X → X → 𝓦 ̇)
+        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇)
         (c : cotransitive _<_)
       where
 
- open sum {U} {V} {W} {T} {X} {Y} _<_  _≺_ public
+ open sum {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_  _≺_ public
 
  private _⊏_ = order
 
@@ -777,7 +777,7 @@ OrdinalArithmetic.prop-indexed-product-of-ordinals.
 
 This assumes X : W, A : W, and that the given ordinal structure is
 W-valued. More generally, we have the following typing, for which the
-above triangle no longer makes sense, because Y / j : A → U ⊔ V ⊔ W,
+above triangle no longer makes sense, because Y / j : A → 𝓤 ⊔ 𝓥 ⊔ W,
 but the constructions still work.
 
 \begin{code}
@@ -786,21 +786,21 @@ open import UF-Embedding
 open import UF-Equiv
 
 module extension
-        (fe : ∀ U V → funext U V)
-        {U V W}
-        {X : U ̇}
-        {A : V ̇}
-        (Y : X → W ̇)
+        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+        {𝓤 𝓥 𝓦}
+        {X : 𝓤 ̇}
+        {A : 𝓥 ̇}
+        (Y : X → 𝓦 ̇)
         (j : X → A)
         (ise : is-embedding j)
-        (_<_ : {x : X} → Y x → Y x → W ̇)
+        (_<_ : {x : X} → Y x → Y x → 𝓦 ̇)
         (a : A)
        where
 
  open import UF-InjectiveTypes (fe)
 
  private
-  _≺_ : (Y / j) a → (Y / j) a → U ⊔ V ⊔ W ̇
+  _≺_ : (Y / j) a → (Y / j) a → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   u ≺ v = Σ \(p : fiber j a) → u p < v p
 
  order = _≺_
@@ -808,7 +808,7 @@ module extension
  well-order : ((x : X) → is-well-order (_<_ {x}))
             → is-well-order _≺_
  well-order o = pip.well-order
-                 (fe (U ⊔ V) W)
+                 (fe (𝓤 ⊔ 𝓥) 𝓦)
                  (fiber j a)
                  (ise a)
                  (λ (p : fiber j a) → Y (pr₁ p))

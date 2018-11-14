@@ -4,14 +4,14 @@ module Universes where
 
 open import Agda.Primitive public
   using (_⊔_)
-  renaming (lzero to U₀
+  renaming (lzero to 𝓤₀
           ; lsuc to _⁺
           ; Level to Universe
           ; Setω to Uω
           )
 
 variable
- U V W U' V' W' : Universe
+ 𝓤 𝓥 𝓦 𝓣 𝓤' 𝓥' 𝓦' 𝓣' : Universe
 
 \end{code}
 
@@ -20,11 +20,11 @@ development:
 
 \begin{code}
 
-_̇ : (U : Universe) → _
-U ̇ = Set U
+_̇ : (𝓤 : Universe) → _
+𝓤 ̇ = Set 𝓤
 
-U₁ = U₀ ⁺
-U₂ = U₁ ⁺
+𝓤₁ = 𝓤₀ ⁺
+𝓤₂ = 𝓤₁ ⁺
 
 \end{code}
 
@@ -33,7 +33,7 @@ V. An element of X is of the form x ↥ for x an element of X.
 
 \begin{code}
 
-record _↑ {U V} (X : U ̇) : U ⊔ V ̇ where
+record _↑ {𝓤 𝓥} (X : 𝓤 ̇) : 𝓤 ⊔ 𝓥 ̇ where
  constructor _↥
  field _↧ : X
  infix 0 _↧

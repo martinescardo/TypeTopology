@@ -23,10 +23,10 @@ open import UF-Subsingletons
 open import UF-Retracts
 open import UF-EquivalenceExamples
 
-naive-funext-gives-funext' : naive-funext U (U ⊔ V) → naive-funext U U → funext U V
-naive-funext-gives-funext' {U} {V} nfe nfe' = funext-via-singletons γ
+naive-funext-gives-funext' : naive-funext 𝓤 (𝓤 ⊔ 𝓥) → naive-funext 𝓤 𝓤 → funext 𝓤 𝓥
+naive-funext-gives-funext' {𝓤} {𝓥} nfe nfe' = funext-via-singletons γ
  where
-  γ : (X : U ̇) (A : X → V ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
+  γ : (X : 𝓤 ̇) (A : X → 𝓥 ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
   γ X A φ = retract-of-singleton (r , s , rs) iss
    where
     f : Σ A → X
@@ -46,7 +46,7 @@ naive-funext-gives-funext' {U} {V} nfe nfe' = funext-via-singletons γ
     rs : ∀ φ → r (s φ) ≡ φ
     rs φ = refl
 
-naive-funext-gives-funext : naive-funext U U → funext U U
+naive-funext-gives-funext : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤
 naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 
 \end{code}

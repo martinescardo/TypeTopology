@@ -23,20 +23,20 @@ open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
 
-naive-funext-from-univalence : is-univalent U → ∀ {V} → naive-funext V U
-naive-funext-from-univalence {U} ua {V} {X} {Y} {f₁} {f₂} h = γ
+naive-funext-from-univalence : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
+naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₁} {f₂} h = γ
  where
-  Δ : U ̇ → U ̇
+  Δ : 𝓤 ̇ → 𝓤 ̇
   Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y
 
-  δ : {X : U ̇} → X → Δ X
+  δ : {X : 𝓤 ̇} → X → Δ X
   δ x = (x , x , refl)
 
-  π₁ π₂ : {X : U ̇} → Δ X → X
+  π₁ π₂ : {X : 𝓤 ̇} → Δ X → X
   π₁ (x , _ , _) = x
   π₂ (_ , y , _) = y
 
-  δ-is-equiv : {X : U ̇} → is-equiv δ
+  δ-is-equiv : {X : 𝓤 ̇} → is-equiv δ
   δ-is-equiv {X} = (π₁ , η) , (π₁ , ε)
    where
     η : (d : Δ X) → δ (π₁ d) ≡ d
@@ -44,10 +44,10 @@ naive-funext-from-univalence {U} ua {V} {X} {Y} {f₁} {f₂} h = γ
     ε : (x : X) → π₁ (δ x) ≡ x
     ε x = refl
 
-  πδ : (X : U ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
+  πδ : (X : 𝓤 ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
   πδ X = refl
 
-  π₁-equals-π₂ : {X : U ̇} → π₁ ≡ π₂
+  π₁-equals-π₂ : {X : 𝓤 ̇} → π₁ ≡ π₂
   π₁-equals-π₂ {X} = is-equiv-lc (λ(g : Δ X → X) → g ∘ δ)
                                  (pre-comp-is-equiv ua δ δ-is-equiv) (πδ X)
 
@@ -65,7 +65,7 @@ Added 19th May 2018:
 
 \begin{code}
 
-funext-from-univalence : is-univalent U → funext U U
+funext-from-univalence : is-univalent 𝓤 → funext 𝓤 𝓤
 funext-from-univalence ua = naive-funext-gives-funext (naive-funext-from-univalence ua)
 
 \end{code}
@@ -74,25 +74,23 @@ Added 27 Jun 2018:
 
 \begin{code}
 
-funext-from-univalence' : ∀ U V → is-univalent U → is-univalent (U ⊔ V) → funext U V
-funext-from-univalence' U V ua ua' = naive-funext-gives-funext'
+funext-from-univalence' : ∀ 𝓤 𝓥 → is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 𝓥
+funext-from-univalence' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
                                        (naive-funext-from-univalence ua')
                                        (naive-funext-from-univalence ua)
 
-global-funext-from-univalence : (∀ U → is-univalent U) → ∀ U V → funext U V
-global-funext-from-univalence ua U V = funext-from-univalence' U V (ua U) (ua (U ⊔ V))
+global-funext-from-univalence : (∀ 𝓤 → is-univalent 𝓤) → ∀ 𝓤 𝓥 → funext 𝓤 𝓥
+global-funext-from-univalence ua 𝓤 𝓥 = funext-from-univalence' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
-funext-from-successive-univalence : ∀ U → is-univalent U → is-univalent (U ⁺) → funext U (U ⁺)
-funext-from-successive-univalence U = funext-from-univalence' U (U ⁺)
+funext-from-successive-univalence : ∀ 𝓤 → is-univalent 𝓤 → is-univalent (𝓤 ⁺) → funext 𝓤 (𝓤 ⁺)
+funext-from-successive-univalence 𝓤 = funext-from-univalence' 𝓤 (𝓤 ⁺)
 
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-PropExt-from-univalence : is-univalent U → {p q : Ω U}
-        → (p holds → q holds) → (q holds → p holds) → p ≡ q
-PropExt-from-univalence {U} ua {p} {q} = PropExt
-                                          (funext-from-univalence ua)
-                                          (UA-gives-propext ua)
+PropExt-from-univalence : is-univalent 𝓤
+                        → {p q : Ω 𝓤} → (p holds → q holds) → (q holds → p holds) → p ≡ q
+PropExt-from-univalence {𝓤} ua {p} {q} = PropExt (funext-from-univalence ua) (UA-gives-propext ua)
 
 
 \end{code}

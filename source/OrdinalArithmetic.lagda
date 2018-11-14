@@ -2,9 +2,9 @@ Martin Escardo, 29 June 2018
 
 Some operations and constructions on ordinals.
 
-TODO. Generalize this from U₀ to an arbitrary universe. The
+TODO. Generalize this from 𝓤₀ to an arbitrary universe. The
 (practical) problem is that the type of natural numbers is defined at
-U₀. We could (1) either using universe lifting, or (2) define the type
+𝓤₀. We could (1) either using universe lifting, or (2) define the type
 in any universe (like we did for the the types 𝟘 and 𝟙). But (1) is
 cumbersome and (2) requires much work in other modules.
 
@@ -16,7 +16,7 @@ open import SpartanMLTT
 open import UF-FunExt
 
 module OrdinalArithmetic
-        (fe : ∀ U V → funext U V)
+        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
        where
 
 open import Ordinals fe
@@ -28,10 +28,10 @@ open import UF-Embedding
 open import UF-InjectiveTypes fe
 open import SquashedSum fe
 
-Ord  = Ordinal  U₀
-Ordᵀ = Ordinalᵀ U₀
+Ord  = Ordinal  𝓤₀
+Ordᵀ = Ordinalᵀ 𝓤₀
 
-subsingleton-ordinal : (P : U₀ ̇) → is-prop P → Ord
+subsingleton-ordinal : (P : 𝓤₀ ̇) → is-prop P → Ord
 subsingleton-ordinal P i = P , subsingleton.order P i , subsingleton.well-order P i
 
 𝟘ₒ 𝟙ₒ ℕₒ ℕ∞ₒ : Ord
@@ -50,16 +50,16 @@ _×ₒ_ : Ord → Ord → Ord
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
 
-prop-indexed-product : {P : U₀ ̇} → is-prop P → (P → Ord) → Ord
+prop-indexed-product : {P : 𝓤₀ ̇} → is-prop P → (P → Ord) → Ord
 prop-indexed-product {P} i α = Π X ,
                                _≺_ ,
                                pip.well-order fe₀ P i X _<_ (λ p → is-well-ordered (α p))
  where
-  X : P → U₀ ̇
+  X : P → 𝓤₀ ̇
   X p = ⟨ α p ⟩
-  _<_ : {p : P} → X p → X p → U₀ ̇
+  _<_ : {p : P} → X p → X p → 𝓤₀ ̇
   _<_ {p} x y = x ≺⟨ α p ⟩ y
-  _≺_ : Π X → Π X → U₀ ̇
+  _≺_ : Π X → Π X → 𝓤₀ ̇
   f ≺ g = Σ \(p : P) → f p < g p
 
 \end{code}
@@ -98,7 +98,7 @@ Sum of an ordinal-indexed family of ordinals:
                               Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
                           Sum.top-preservation t
  where
-  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → U₀ ̇
+  _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤₀ ̇
   y ≺ z = y ≺⟪ υ _ ⟫ z
   module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
 
@@ -119,17 +119,17 @@ _×ᵒ_ : Ordᵀ → Ordᵀ → Ordᵀ
 
 Extension of a family X → Ordᵀ along an embedding j : X → A to get a
 family A → Ordᵀ. (This can also be done for Ord-valued families.)
-This uses the module U₀F-InjectiveTypes to calculate Y / j.
+This uses the module 𝓤₀F-InjectiveTypes to calculate Y / j.
 
 \begin{code}
 
-_↗_ : {X A : U₀ ̇} → (X → Ordᵀ) → (Σ \(j : X → A) → is-embedding j) → (A → Ordᵀ)
+_↗_ : {X A : 𝓤₀ ̇} → (X → Ordᵀ) → (Σ \(j : X → A) → is-embedding j) → (A → Ordᵀ)
 τ ↗ (j , e) = λ a → ((Y / j) a ,
                      Extension.order a ,
                      Extension.well-order a (λ x → tis-well-ordered (τ x))) ,
                     Extension.top-preservation a (λ x → topped (τ x))
  where
-  Y : dom τ → U₀ ̇
+  Y : dom τ → 𝓤₀ ̇
   Y x = ⟪ τ x ⟫
   module Extension = extension fe Y j e (λ {x} → tunderlying-order (τ x))
 

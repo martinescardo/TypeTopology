@@ -16,7 +16,7 @@ of a family of Cantor retracts is again a Cantor retract.
 
 open import UF-FunExt
 
-module SquashedCantor (fe : ∀ U V → funext U V) where
+module SquashedCantor (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import Two
@@ -41,16 +41,16 @@ family λ (_ : ℕ) → X).
 
 \begin{code}
 
-D : U ̇ → U ̇
+D : 𝓤 ̇ → 𝓤 ̇
 D X = Σ \(u : ℕ∞) → is-finite u → X
 
-private remark₁ : (X : U ̇) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
+private remark₁ : (X : 𝓤 ̇) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
 remark₁ X = refl
 
-Cantor : U₀ ̇
+Cantor : 𝓤₀ ̇
 Cantor = ℕ → 𝟚
 
-Cantor[_]   : ℕ∞ → U₀ ̇
+Cantor[_]   : ℕ∞ → 𝓤₀ ̇
 Cantor[ u ] = is-finite u → Cantor
 
 \end{code}
@@ -75,7 +75,7 @@ transport-finite = transport is-finite
 back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-finite u
 back-transport-finite = back-transport is-finite
 
-ap-Cantor : {X : U ̇} (f : (u : ℕ∞) → Cantor[ u ] → X)
+ap-Cantor : {X : 𝓤 ̇} (f : (u : ℕ∞) → Cantor[ u ] → X)
            {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}
          → f u φ ≡ f v (φ ∘ back-transport-finite p)
 ap-Cantor f refl = refl
@@ -156,7 +156,7 @@ following coinductive definition (see the module CoNaturals).
 
 \begin{code}
 
-Head-step : Cantor → 𝟙 {U₀} + Cantor
+Head-step : Cantor → 𝟙 {𝓤₀} + Cantor
 Head-step α = 𝟚-equality-cases
                 (λ (r : head α ≡ ₀) → inl *)
                 (λ (r : head α ≡ ₁) → inr (tail α))
@@ -499,10 +499,10 @@ of showing that our searchable ordinals are totally separated.
 
 \begin{code}
 
-Σ¹-Cantor-retract : (X : ℕ → U ̇)
+Σ¹-Cantor-retract : (X : ℕ → 𝓤 ̇)
                        → ((n : ℕ) → retract (X n) of Cantor)
                        → retract (Σ¹ X) of Cantor
-Σ¹-Cantor-retract {U} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
+Σ¹-Cantor-retract {𝓤} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
  where
   s : (u : ℕ∞) → retract (X / under) u of ((λ _ → Cantor) / under) u
   s = retract-extension X (λ _ → Cantor) under ρ
@@ -515,9 +515,9 @@ We also need the following retractions (the first with X=ℕ):
 
 \begin{code}
 
-pair-seq-retract : {X : U ̇} → funext U₀ U
+pair-seq-retract : {X : 𝓤 ̇} → funext 𝓤₀ 𝓤
                 → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
-pair-seq-retract {U} {X} fe = retracts-compose (retracts-compose c d) b
+pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
   open import BinaryNaturals
   open import UF-Retracts-FunExt
@@ -566,12 +566,12 @@ moment (but has the above as a corollary by Lambek's Lemma):
 
 \begin{code}
 {-
-D-corec : {X : U ̇} (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
+D-corec : {X : 𝓤 ̇} (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
         → Σ \(f : X → Cantor)
              → Σ \(p : Head ∘ f ∼ h)
                   → ((x : X) (i : is-finite (Head (f x)))
                       → Tail (f x) i ≡ f (t x (transport-finite (p x) i)))
-D-corec {U} {X} h t = ?
+D-corec {𝓤} {X} h t = ?
 -}
 
 \end{code}

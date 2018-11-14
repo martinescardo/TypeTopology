@@ -17,7 +17,7 @@ such cases.
 
 \begin{code}
 
-record Σ {U V} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
+record Σ {𝓤 𝓥} {X : 𝓤 ̇} (Y : X → 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
   constructor _,_
   field
    pr₁ : X
@@ -27,15 +27,15 @@ open Σ public
 
 syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B
 
-Σ-elim : {X : U ̇} {Y : X → V ̇} {A : Σ Y → U ⊔ V ̇}
+Σ-elim : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : Σ Y → 𝓤 ⊔ 𝓥 ̇}
        → ((x : X) (y : Y x) → A (x , y)) → (σ : Σ Y) → A σ
 Σ-elim f (x , y) = f x y
 
-uncurry : {X : U ̇} {Y : X → V ̇} {Z : W ̇}
+uncurry : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : 𝓦 ̇}
         → ((x : X) → Y x → Z) → Σ Y → Z
 uncurry f (x , y) = f x y
 
-curry :  {X : U ̇} {Y : X → V ̇} {Z : W ̇}
+curry :  {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : 𝓦 ̇}
       → (Σ Y → Z) → ((x : X) → Y x → Z)
 curry f x y = f (x , y)
 
@@ -48,7 +48,7 @@ dependent sums.
 
 \begin{code}
 
-_×_ : U ̇ → V ̇ → U ⊔ V ̇
+_×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X × Y = Σ \(x : X) → Y
 
 \end{code}

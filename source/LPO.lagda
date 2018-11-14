@@ -26,7 +26,7 @@ GenericConvergentSequence)
 
 open import UF-FunExt
 
-module LPO (fe : ∀ U V → funext U V) where
+module LPO (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import Two
@@ -37,17 +37,17 @@ open import GenericConvergentSequence
 open import CompactTypes
 open import NaturalsOrder
 
-LPO : U₀ ̇
+LPO : 𝓤₀ ̇
 LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
 
 LPO-is-a-prop : is-prop LPO
-LPO-is-a-prop = Π-is-prop (fe U₀ U₀) f
+LPO-is-a-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
  where
   a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
-  a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe U₀ U₀)_ _)
+  a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe 𝓤₀ 𝓤₀)_ _)
 
   f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
-  f x = decidable-types-are-props (fe U₀ U₀) (a x)
+  f x = decidable-types-are-props (fe 𝓤₀ 𝓤₀) (a x)
 
 \end{code}
 
@@ -91,7 +91,7 @@ LPO-gives-compact-ℕ lpo β = cases a b d
             c = v n
 
             l : x ≡ ∞
-            l = not-finite-is-∞ (fe U₀ U₀) v
+            l = not-finite-is-∞ (fe 𝓤₀ 𝓤₀) v
 
             e : α n ≡ ₁
             e = ap (λ - → incl - n) l
@@ -111,7 +111,7 @@ compact-ℕ-gives-LPO chlpo x = cases a b d
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
         g : Σ \(m : ℕ) → (m ≤ n) × (x ≡ under m)
-        g = under-lemma (fe U₀ U₀) x n p
+        g = under-lemma (fe 𝓤₀ 𝓤₀) x n p
 
     b : (Π \(n : ℕ) → β n ≡ ₁) → A
     b φ = inr g
@@ -178,7 +178,7 @@ has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
                                    u            ≡⟨ q ⟩
                                    under n      ∎)
 
-under𝟙-inverse : (u : ℕ∞) → decidable(Σ \(n : ℕ) → u ≡ under n) → ℕ + 𝟙 {U₀}
+under𝟙-inverse : (u : ℕ∞) → decidable(Σ \(n : ℕ) → u ≡ under n) → ℕ + 𝟙 {𝓤₀}
 under𝟙-inverse .(under n) (inl (n , refl)) = inl n
 under𝟙-inverse u (inr g) = inr *
 
@@ -189,7 +189,7 @@ LPO-gives-has-section-under𝟙 lpo = s , ε
   s u = under𝟙-inverse u (lpo u)
   φ : (u : ℕ∞) (d : decidable (Σ \(n : ℕ) → u ≡ under n)) → under𝟙 (under𝟙-inverse u d) ≡ u
   φ .(under n) (inl (n , refl)) = refl
-  φ u (inr g) = (not-finite-is-∞ (fe U₀ U₀) (curry g))⁻¹
+  φ u (inr g) = (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g))⁻¹
   ε : under𝟙 ∘ s ∼ id
   ε u = φ u (lpo u)
 

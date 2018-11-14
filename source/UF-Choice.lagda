@@ -17,13 +17,13 @@ We show that, under the same assumptions, this is equivalent
 
 Notice that, as shown in the HoTT book, the statement
 
-    ∀ (B : U ̇) → ∥ B ∥ → B
+    ∀ (B : 𝓤 ̇) → ∥ B ∥ → B
 
 is in contradiction with the univalence axiom (we cannot reveal
 secrets in general). However, univalent choice is consistent with the
 univalent axiom, and, moreover, gives that
 
-   ∥∀ (B : U ̇) → ∥ ∥ B ∥ → B ∥
+   ∥∀ (B : 𝓤 ̇) → ∥ ∥ B ∥ → B ∥
 
 (one can secretly reveal secrets always), which is equivalent to
 choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
@@ -44,14 +44,14 @@ open import UF-Equiv
 module UF-Choice where
 
 module Shift
-   (U : Universe)
-   (T : U ̇ → U ̇)
-   (T-functor : {X Y : U ̇} → (X → Y) → T X → T Y)
+   (𝓤 : Universe)
+   (T : 𝓤 ̇ → 𝓤 ̇)
+   (T-functor : {X Y : 𝓤 ̇} → (X → Y) → T X → T Y)
  where
 
 \end{code}
 
-The T-shift for a family A : X → U ̇ is
+The T-shift for a family A : X → 𝓤 ̇ is
 
     (Π \(x : X) → T(A x)) →  T(Π \(x : X) → A x).
 
@@ -70,11 +70,11 @@ or
 
 \begin{code}
 
- Shift = (X : U ̇) (A : X → U ̇) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
+ Shift = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
 
- Shift' = (X : U ̇) (A : X → U ̇) → T(Π \(x : X) → T(A x) → A x)
+ Shift' = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → T(Π \(x : X) → T(A x) → A x)
 
- lemma : Shift → (X : U ̇) → T(T X → X)
+ lemma : Shift → (X : 𝓤 ̇) → T(T X → X)
  lemma shift X = shift (T X) (λ _ → X) (λ x → x)
 
  theorem : Shift → Shift'
@@ -94,22 +94,22 @@ abstractly, where T may be ∥_∥ and S may be is-set.
 \begin{code}
 
 module TChoice
-   (U : Universe)
-   (T : U ̇ → U ̇)
-   (T-functor : {X Y : U ̇} → (X → Y) → T X → T Y)
-   (S : U ̇ → U ̇)
-   (S-exponential-ideal : {X Y : U ̇} → S Y → S(X → Y))
-   (T-is-S : {X : U ̇} → S(T X))
+   (𝓤 : Universe)
+   (T : 𝓤 ̇ → 𝓤 ̇)
+   (T-functor : {X Y : 𝓤 ̇} → (X → Y) → T X → T Y)
+   (S : 𝓤 ̇ → 𝓤 ̇)
+   (S-exponential-ideal : {X Y : 𝓤 ̇} → S Y → S(X → Y))
+   (T-is-S : {X : 𝓤 ̇} → S(T X))
  where
 
- Shift : (X : U ̇) → (X → U ̇) → U ̇
+ Shift : (X : 𝓤 ̇) → (X → 𝓤 ̇) → 𝓤 ̇
  Shift X A = ((x : X) → T(A x)) → T(Π \(x : X) → A x)
 
- Choice = (X : U ̇) (A : X → U ̇) → S X → (Π \(x : X) → S(A x)) → Shift X A
+ Choice = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → Shift X A
 
- Choice' = (X : U ̇) (A : X → U ̇) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
+ Choice' = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
 
- lemma : Choice → (X : U ̇) → S X → T(T X → X)
+ lemma : Choice → (X : 𝓤 ̇) → S X → T(T X → X)
  lemma choice X s = choice (T X) (λ _ → X) T-is-S  (λ x → s) (λ x → x)
 
  theorem : Choice → Choice'
@@ -132,35 +132,35 @@ Univalent Choice.
 
 \begin{code}
 
-module UnivalentChoice (U : Universe)
-                       (fe : ∀ U V → funext U V)
+module UnivalentChoice (𝓤 : Universe)
+                       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                        (pt : PropTrunc)
                        where
 
  open PropositionalTruncation pt public
 
- sei : {X Y : U ̇} → is-set Y → is-set (X → Y)
- sei isy = Π-is-set (fe U U) (λ x → isy)
+ sei : {X Y : 𝓤 ̇} → is-set Y → is-set (X → Y)
+ sei isy = Π-is-set (fe 𝓤 𝓤) (λ x → isy)
 
- open TChoice U ∥_∥ ptfunct is-set sei (props-are-sets propositional-truncation-is-a-prop)
+ open TChoice 𝓤 ∥_∥ ptfunct is-set sei (props-are-sets propositional-truncation-is-a-prop)
 
- AC   = (X : U ̇) (A : X → U ̇) (P : (x : X) → A x → U ̇)
+ AC   = (X : 𝓤 ̇) (A : X → 𝓤 ̇) (P : (x : X) → A x → 𝓤 ̇)
      → is-set X
      → ((x : X) → is-set (A x))
      → ((x : X) (a : A x) → is-prop (P x a))
      → (∀ (x : X) → ∃ \(a : A x) → P x a) → ∃ \(f : Π A) → ∀ (x : X) → P x (f x)
 
- AC'  = (X : U ̇) (Y : X → U ̇) → is-set X → ((x : X) → is-set (Y x))
+ AC'  = (X : 𝓤 ̇) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
      → (Π \(x : X) → ∥ Y x ∥) → ∥(Π \(x : X) → Y x)∥
 
- AC'' = (X : U ̇) (Y : X → U ̇) → is-set X → ((x : X) → is-set (Y x))
+ AC'' = (X : 𝓤 ̇) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
      → ∥(Π \(x : X) → ∥ Y x ∥ → Y x)∥
 
  ACAC' : AC → AC'
  ACAC' ac X Y isx isy f = h
   where
    -- NB. We use the type x ≡ x rather than the type 𝟙 because 𝟙 is in
-   -- the first universe U₀ and we don't have cumulativity. This works
+   -- the first universe 𝓤₀ and we don't have cumulativity. This works
    -- because X is a set by assumption, so that x ≡ x is a
    -- proposition. Any inhabited type that is a proposition will do,
    -- of course.
@@ -187,7 +187,7 @@ module UnivalentChoice (U : Universe)
  AC''AC' : AC'' → AC'
  AC''AC' = theorem'
 
- secretly-revealing-secrets : AC' → (B : U ̇) → is-set B → ∥(∥ B ∥ → B)∥
+ secretly-revealing-secrets : AC' → (B : 𝓤 ̇) → is-set B → ∥(∥ B ∥ → B)∥
  secretly-revealing-secrets = lemma
 
 \end{code}
@@ -199,24 +199,24 @@ negation shift.
 
 open import UF-ExcludedMiddle
 
-module ChoiceUnderEM₀ (U : Universe)
-                      (em : EM U)
+module ChoiceUnderEM₀ (𝓤 : Universe)
+                      (em : EM 𝓤)
                       (pt : PropTrunc)
-                      (fe : ∀ U V → funext U V)
+                      (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                       where
 
- open UnivalentChoice U fe pt
+ open UnivalentChoice 𝓤 fe pt
 
- α : {X : U ̇} → ∥ X ∥ → ¬¬ X
+ α : {X : 𝓤 ̇} → ∥ X ∥ → ¬¬ X
  α s u = ptrec 𝟘-is-prop u s
 
- β : {X : U ̇} → ¬¬ X → ∥ X ∥
+ β : {X : 𝓤 ̇} → ¬¬ X → ∥ X ∥
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ propositional-truncation-is-a-prop)
 
- DNS = (X : U ̇) (A : X → U ̇) → is-set X → ((x : X) → is-set (A x))
+ DNS = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
      → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
 
- DNA = (X : U ̇) (A : X → U ̇) → is-set X → ((x : X) → is-set (A x))
+ DNA = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
      → ¬¬(Π \(x : X) → ¬¬(A x) → A x)
 
  Fact : AC' → DNS
@@ -225,14 +225,14 @@ module ChoiceUnderEM₀ (U : Universe)
  Fact' : DNS → AC'
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
- l : {X : U ̇} → is-set(¬¬ X)
- l {X} = props-are-sets (Π-is-prop (fe U U₀) (λ _ → 𝟘-is-prop))
+ l : {X : 𝓤 ̇} → is-set(¬¬ X)
+ l {X} = props-are-sets (Π-is-prop (fe 𝓤 𝓤₀) (λ _ → 𝟘-is-prop))
 
  fact : DNS → DNA
- fact = TChoice.theorem U ¬¬ ¬¬-functor is-set sei l
+ fact = TChoice.theorem 𝓤 ¬¬ ¬¬-functor is-set sei l
 
  fact' : DNA → DNS
- fact' = TChoice.theorem' U ¬¬ ¬¬-functor is-set sei l
+ fact' = TChoice.theorem' 𝓤 ¬¬ ¬¬-functor is-set sei l
 
 \end{code}
 
@@ -250,17 +250,17 @@ with values a ₀ = a₀ and a ₁ = a₁.
 \begin{code}
 
 module AC-renders-all-sets-discrete
-                      (U : Universe)
+                      (𝓤 : Universe)
                       (pt : PropTrunc)
-                      (fe : ∀ U V → funext U V)
+                      (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                       where
 
- open UnivalentChoice U fe pt public
+ open UnivalentChoice 𝓤 fe pt public
  open ImageAndSurjection pt
  open import DiscreteAndSeparated
  open import UF-Miscelanea
 
- lemma₁ : {X : U ̇} (a : 𝟚 → X)
+ lemma₁ : {X : 𝓤 ̇} (a : 𝟚 → X)
         → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  lemma₁ a c = claim (𝟚-discrete (s(r ₀)) (s(r ₁)))
@@ -299,15 +299,15 @@ module AC-renders-all-sets-discrete
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
- lemma₂ : {X : U ̇} → is-set X → (a : 𝟚 → X)
+ lemma₂ : {X : 𝓤 ̇} → is-set X → (a : 𝟚 → X)
         → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
- lemma₂ is a = ptrec (decidable-types-are-props (fe U U₀) is) (lemma₁ a)
+ lemma₂ is a = ptrec (decidable-types-are-props (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
- ac-discrete-sets : AC → (X : U ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
+ ac-discrete-sets : AC → (X : 𝓤 ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
   where
-   A : X → U ̇
+   A : X → 𝓤 ̇
    A x = Σ \(i : 𝟚) → a i ≡ x
 
    isa : (x : X) → is-set(A x)
@@ -319,15 +319,15 @@ module AC-renders-all-sets-discrete
 \end{code}
 
 Is there a way to define the quotient 𝟚/P for an arbitrary proposition
-P, in the universe U, using propositional truncation as the only HIT,
+P, in the universe 𝓤, using propositional truncation as the only HIT,
 and funext, propext? We could allow, more generally, univalence.
 
 If so, then, under these conditions, AC is equivalent to excluded
 middle together with the double-negation shift for set-indexed
 families of sets.
 
-If we assume choice for U₁ we get excluded middle at U₀. This is
-because the quotient 𝟚/P, for a proposition P in U₀, exists in U₁. In
+If we assume choice for 𝓤₁ we get excluded middle at 𝓤₀. This is
+because the quotient 𝟚/P, for a proposition P in 𝓤₀, exists in 𝓤₁. In
 fact, it is the image of the map 𝟚→Prop that sends ₀ to 𝟙 and ₁ to P,
 because (𝟙≡P)≡P.
 
@@ -336,25 +336,25 @@ because (𝟙≡P)≡P.
 
 module AC-gives-EM
                       (pt : PropTrunc)
-                      (pe : propext U₀)
-                      (fe : ∀ U V → funext U V)
+                      (pe : propext 𝓤₀)
+                      (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                       where
 
- open  AC-renders-all-sets-discrete U₁ pt fe
+ open  AC-renders-all-sets-discrete 𝓤₁ pt fe
 
- lemma : AC → (P : Ω U₀) → decidable(⊤ ≡ P)
- lemma ac P = ac-discrete-sets ac (Ω U₀) (Ω-is-a-set (fe U₀ U₀) pe) a
+ lemma : AC → (P : Ω 𝓤₀) → decidable(⊤ ≡ P)
+ lemma ac P = ac-discrete-sets ac (Ω 𝓤₀) (Ω-is-a-set (fe 𝓤₀ 𝓤₀) pe) a
    where
-    a : 𝟚 → Ω U₀
+    a : 𝟚 → Ω 𝓤₀
     a ₀ = ⊤
     a ₁ = P
 
- ac-gives-em : AC → EM U₀
+ ac-gives-em : AC → EM 𝓤₀
  ac-gives-em ac P isp = g (lemma ac (P , isp))
   where
    g : decidable (⊤ ≡ (P , isp)) → decidable P
    g (inl r) = inl (idtofun 𝟙 P (ap pr₁ r) *)
-   g (inr u) = inr (contrapositive (λ p → PropExt (fe U₀ U₀) pe (λ _ → p) (λ _ → *)) u)
+   g (inr u) = inr (contrapositive (λ p → PropExt (fe 𝓤₀ 𝓤₀) pe (λ _ → p) (λ _ → *)) u)
 
 \end{code}
 
@@ -363,16 +363,16 @@ The following is probably not going to be useful for anything here:
 
 \begin{code}
 
-module Observation (U : Universe)
+module Observation (𝓤 : Universe)
                    (pt : PropTrunc)
-                   (fe : ∀ U V → funext U V)
+                   (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                    where
 
  open PropositionalTruncation pt
  open import DiscreteAndSeparated
  open import UF-Miscelanea
 
- observation : {X : U ̇} (a : 𝟚 → X)
+ observation : {X : 𝓤 ̇} (a : 𝟚 → X)
         → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  observation {X} a c = claim (𝟚-discrete (s(r ₀)) (s(r ₁)))
@@ -386,7 +386,7 @@ module Observation (U : Universe)
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , (to-Σ-≡ (p , negations-are-props (fe U U₀) _ t))
+     f (i , p) = i , (to-Σ-≡ (p , negations-are-props (fe 𝓤 𝓤₀) _ t))
 
    s : Y → 𝟚
    s y = pr₁(r-splits y)
@@ -398,7 +398,7 @@ module Observation (U : Universe)
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , negations-are-props (fe U U₀) _ _)
+   a-r p = to-Σ-≡ (p , negations-are-props (fe 𝓤 𝓤₀) _ _)
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁

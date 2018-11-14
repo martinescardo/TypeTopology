@@ -3,14 +3,14 @@ Martin Escardo, 2015, formalized December 2017.
 Id : X → (X → U) is an embedding assuming functional extensionality,
 and either univalence or K, in fact the Yoneda Embedding.
 
-The Id-fiber of A:X→U ̇ says that A is representable, which is
+The Id-fiber of A:X→𝓤 ̇ says that A is representable, which is
 equivalent to the contractibility of ΣA, which is a
 proposition. (Hence the injective types are the retracts of the
 exponential powers of the universe.)
 
 This works as follows in outline:
 
-If A : X → U ̇ then the Id-fiber of A is Σ \(x : X) → Id x ≡ A.
+If A : X → 𝓤 ̇ then the Id-fiber of A is Σ \(x : X) → Id x ≡ A.
 
 If the pair (x,p) is in the fiber for x : X and p : Id x = A, then
 
@@ -69,11 +69,11 @@ type Σ A.
 
 \begin{code}
 
-Id-Embedding-Lemma : (∀ U V → funext U V) → {X : U ̇}
-                  → ((x y : X) (A : X → U ̇)
+Id-Embedding-Lemma : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇}
+                  → ((x y : X) (A : X → 𝓤 ̇)
                   → left-cancellable (idtofun (Id x y) (A y)))
-                  → is-embedding(Id {U} {X})
-Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
+                  → is-embedding(Id {𝓤} {X})
+Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
   T = Σ \(x : X) → Id x ≡ A
   q : Σ (Id x₀) ≡ Σ A
@@ -89,16 +89,16 @@ Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   f : (x : X) → Id x ≡ A → A x
   f x = f₂ x ∘ f₁ x ∘ f₀ x
   f₀-lc : (x : X) → left-cancellable(f₀ x)
-  f₀-lc x = happly-lc (fe U (U ⁺)) (Id x) A
+  f₀-lc x = happly-lc (fe 𝓤 (𝓤 ⁺)) (Id x) A
   f₁-lc : (x : X) → left-cancellable(f₁ x)
   f₁-lc x = g
     where
       l : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → (x : X) → φ x ≡ φ' x
       l {φ} {φ'} = NatΠ-lc (λ y → idtofun (Id x y) (A y)) (λ y → iflc x y A)
       g : ∀ {φ φ'} → f₁ x φ ≡ f₁ x φ' → φ ≡ φ'
-      g p = dfunext (fe U (U ⁺)) (l p)
+      g p = dfunext (fe 𝓤 (𝓤 ⁺)) (l p)
   f₂-lc : (x : X) → left-cancellable(f₂ x)
-  f₂-lc x {η} {η'} p = dfunext (fe U U) (λ y → dfunext (fe U U) (l y))
+  f₂-lc x {η} {η'} p = dfunext (fe 𝓤 𝓤) (λ y → dfunext (fe 𝓤 𝓤) (l y))
     where
       l : η ≈ η'
       l = yoneda-elem-lc η η' p
@@ -117,7 +117,7 @@ Id-Embedding-Lemma {U} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
 
 \end{code}
 
-univalence implies that the function Id {U} {X} : X → (X → U ̇) is an embedding.
+univalence implies that the function Id {𝓤} {X} : X → (X → 𝓤 ̇) is an embedding.
 
 The map eqtofun is left-cancellable assuming univalence (and function
 extensionality, which is a consequence of univalence, but we don't
@@ -125,8 +125,8 @@ bother):
 
 \begin{code}
 
-eqtofun-lc : is-univalent U → (∀ U V → funext U V)
-           → (X Y : U ̇) → left-cancellable(Eqtofun X Y)
+eqtofun-lc : is-univalent 𝓤 → (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+           → (X Y : 𝓤 ̇) → left-cancellable(Eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
   q : yoneda-nat f is-equiv jef g p ≡ jeg
@@ -140,16 +140,16 @@ The map idtofun is left-cancellable assuming univalence (and funext):
 
 \begin{code}
 
-is-univalent-idtofun-lc : is-univalent U → (∀ U V → funext U V) → (X Y : U ̇)
+is-univalent-idtofun-lc : is-univalent 𝓤 → (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → (X Y : 𝓤 ̇)
                        → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)
                                         (Eqtofun X Y)
                                         (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
-UA-Id-embedding : is-univalent U → (∀ U V → funext U V)
-               → {X : U ̇} → is-embedding(Id {U} {X})
-UA-Id-embedding {U} ua fe {X} = Id-Embedding-Lemma fe
+UA-Id-embedding : is-univalent 𝓤 → (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+               → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+UA-Id-embedding {𝓤} ua fe {X} = Id-Embedding-Lemma fe
                                             (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
 
 \end{code}
@@ -159,9 +159,9 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding' : K-axiom (U ⁺) → (∀ U V → funext U V)
-               → {X : U ̇} → is-embedding(Id {U} {X})
-K-id-embedding' {U} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
+K-id-embedding' : K-axiom (𝓤 ⁺) → (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+               → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+K-id-embedding' {𝓤} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
 \end{code}
 
@@ -169,10 +169,10 @@ But actually function extensionality is not needed for this: K alone suffices.
 
 \begin{code}
 
-Id-lc : {X : U ̇} → left-cancellable (Id {U} {X})
-Id-lc {U} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
+Id-lc : {X : 𝓤 ̇} → left-cancellable (Id {𝓤} {X})
+Id-lc {𝓤} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-id-embedding : K-axiom (U ⁺) → {X : U ̇} → is-embedding(Id {U} {X})
-K-id-embedding {U} k {X} = lc-maps-are-embeddings-with-K Id Id-lc k
+K-id-embedding : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+K-id-embedding {𝓤} k {X} = lc-maps-are-embeddings-with-K Id Id-lc k
 
 \end{code}

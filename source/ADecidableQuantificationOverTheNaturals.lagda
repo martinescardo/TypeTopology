@@ -15,7 +15,7 @@ The theorem says that, for any p : ℕ∞ → ₂, the proposition
 open import SpartanMLTT
 open import UF-FunExt
 
-module ADecidableQuantificationOverTheNaturals (fe : funext U₀ U₀) where
+module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
 open import Two
 open import GenericConvergentSequence
@@ -116,7 +116,7 @@ Some examples:
 
 module examples where
 
-    to-ℕ : {A : U ̇} → decidable A → ℕ
+    to-ℕ : {A : 𝓤 ̇} → decidable A → ℕ
     to-ℕ (inl _) = 0
     to-ℕ (inr _) = 1
 

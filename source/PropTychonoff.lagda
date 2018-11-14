@@ -44,7 +44,7 @@ we had a convoluted path to this supposedly natural way).
 open import SpartanMLTT
 open import UF-FunExt
 
-module PropTychonoff (fe : ∀ U V → funext U V) where
+module PropTychonoff (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import CompactTypes
 open import Two
@@ -76,16 +76,16 @@ Recall also that such an a₀ is called a universal witness for the predicate p.
 
 \begin{code}
 
-prop-tychonoff : {X : U ̇} {Y : X → V ̇} → is-prop X
+prop-tychonoff : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → is-prop X
                → ((x : X) → compact∙(Y x)) → compact∙(Π Y)
-prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
+prop-tychonoff {𝓤} {𝓥} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
  where
   -- hp : is-prop X
   --  ε : (x : X) → compact∙(Y x)
   --  p : Π Y → 𝟚
 
   hip : (x : X) → Π Y ≃ Y x
-  hip = prop-indexed-product (fe U V) hp
+  hip = prop-indexed-product (fe 𝓤 𝓥) hp
 
   -- The essence of the first part of the proof is this:
   not-useful : X → compact∙(Π Y)
@@ -147,7 +147,7 @@ prop-tychonoff {U} {V} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witness
   φ₀-is-universal-witness-assuming-X→𝟘 u r φ = ap p claim ∙ r
    where
     claim : φ ≡ φ₀
-    claim = dfunext (fe U V) (λ x → unique-from-𝟘(u x))
+    claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘(u x))
 
   -- So we would get what we want if we had excluded middle, because
   -- the above shows that both X and X→𝟘 give the desired conclusion
@@ -186,7 +186,7 @@ A particular case is the following:
 
 \begin{code}
 
-prop-tychonoff-corollary : {X : U ̇} {Y : V ̇} → is-prop X
+prop-tychonoff-corollary : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-prop X
                         → compact∙ Y → compact∙(X → Y)
 prop-tychonoff-corollary hp ε = prop-tychonoff hp (λ x → ε)
 
@@ -200,7 +200,7 @@ Better (9 Sep 2015):
 
 \begin{code}
 
-prop-tychonoff-corollary' : ∀ {U V } {X : U ̇} {Y : V ̇} → is-prop X
+prop-tychonoff-corollary' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-prop X
                           → (X → compact∙ Y) → compact∙(X → Y)
 prop-tychonoff-corollary' hp ε = prop-tychonoff hp ε
 
@@ -221,8 +221,8 @@ open import CompactTypes
 open import UF-ExcludedMiddle
 
 compact-prop-tychonoff-wem :
-  ((X : U₀ ̇) (Y : X → U₀ ̇) → is-prop X → ((x : X) → compact(Y x)) → compact(Π Y))
-  → WEM U₀
+  ((X : 𝓤₀ ̇) (Y : X → 𝓤₀ ̇) → is-prop X → ((x : X) → compact(Y x)) → compact(Π Y))
+  → WEM 𝓤₀
 compact-prop-tychonoff-wem τ P isp = compact-decidable (¬ P) ¬P-compact
  where
   ¬P-compact : compact (¬ P)

@@ -24,7 +24,7 @@ this took.
 
 open import UF-FunExt
 
-module CoNaturalsExercise (fe : ∀ U V → funext U V) where
+module CoNaturalsExercise (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import Two
@@ -33,7 +33,7 @@ open import GenericConvergentSequence
 open import Sequence (fe)
 
 incl-is-a-section : Σ \(retr : (ℕ → 𝟚) → ℕ∞) → retr ∘ incl ≡ id
-incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
+incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
  where
   f-retr : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
   f-retr ₀ α = inl *
@@ -60,7 +60,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
     lemma : p-retr α ≡ inr(tail α)
     lemma = ap (λ - → f-retr - (tail α)) r
 
-  R : ℕ∞ → ℕ∞ → U₀ ̇
+  R : ℕ∞ → ℕ∞ → 𝓤₀ ̇
   R u v = Σ \w → (retr(incl w) ≡ u) × (w ≡ v)
 
   r : (u : ℕ∞) → R (retr(incl u)) u
@@ -75,7 +75,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
       claim₀ : retr(incl w) ≡ Zero
       claim₀ = retr-spec₀(incl w) r
       claim₁ : v ≡ Zero
-      claim₁ = d ⁻¹ ∙ is-Zero-equal-Zero (fe U₀ U₀) r
+      claim₁ = d ⁻¹ ∙ is-Zero-equal-Zero (fe 𝓤₀ 𝓤₀) r
       claim₂ : retr(incl w) ≡ v
       claim₂ = claim₀ ∙ claim₁ ⁻¹
       claim₃ : u ≡ v
@@ -110,7 +110,7 @@ incl-is-a-section  = retr , dfunext (fe U₀ U₀) lemma
        claim₁ r = c₃ ∙ c₅ ⁻¹
         where
          c₀ : w ≡ Zero
-         c₀ = is-Zero-equal-Zero (fe U₀ U₀) r
+         c₀ = is-Zero-equal-Zero (fe 𝓤₀ 𝓤₀) r
          c₁ : Pred w ≡ Zero
          c₁ = ap Pred c₀
          c₂ : incl (Pred w) 0 ≡ ₀

@@ -25,20 +25,20 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
 module HiggsInvolutionTheorem
-        (fe : funext U₀ U₀)
-        (pe : propext U₀)
+        (fe : funext 𝓤₀ 𝓤₀)
+        (pe : propext 𝓤₀)
        where
 
 \end{code}
 
-TODO. Generalize from propositions in the universe U₀ to any universe U.
+TODO. Generalize from propositions in the universe 𝓤₀ to any universe U.
 
 \begin{code}
 
-Ω₀ : U₁ ̇
-Ω₀ = Ω U₀
+Ω₀ : 𝓤₁ ̇
+Ω₀ = Ω 𝓤₀
 
-involutive : {X : U ̇} → (f : X → X) → U ̇
+involutive : {X : 𝓤 ̇} → (f : X → X) → 𝓤 ̇
 involutive f = ∀{x} → f (f x) ≡ x
 
 higgs : (f : Ω₀ → Ω₀) → left-cancellable f → involutive f

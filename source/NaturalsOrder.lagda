@@ -11,7 +11,7 @@ open import UF-Subsingletons
 open import OrdinalNotions hiding (_≤_ ; <-coarser-than-≤ ; ≤-refl)
 open import NaturalsAddition renaming (_+_ to _+'_)
 
-_≤_ : ℕ → ℕ → U₀ ̇
+_≤_ : ℕ → ℕ → 𝓤₀ ̇
 zero ≤ n        = 𝟙
 succ m ≤ zero   = 𝟘
 succ m ≤ succ n = m ≤ n
@@ -54,7 +54,7 @@ succ-monotone m n l = l
 succ-order-injective : (m n : ℕ) → succ m ≤ succ n → m ≤ n
 succ-order-injective m n l = l
 
-≤-induction : {U : Universe} (P : (m n : ℕ) (l : m ≤ n) → U ̇)
+≤-induction : (P : (m n : ℕ) (l : m ≤ n) → 𝓤 ̇)
             → ((n : ℕ) → P zero n (zero-minimal n))
             → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
@@ -98,7 +98,7 @@ unique-minimal (succ n) ()
 ≤-join m n (inl l) = ≤-trans m n (succ n) l (≤-succ n)
 ≤-join .(succ n) n (inr refl) = ≤-refl n
 
-_<_ : ℕ → ℕ → U₀ ̇
+_<_ : ℕ → ℕ → 𝓤₀ ̇
 m < n = succ m ≤ n
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → m ≤ n
@@ -106,7 +106,7 @@ not-less-bigger-or-equal zero n u = zero-minimal n
 not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
-bounded-∀-next : (A : ℕ → U ̇) (k : ℕ)
+bounded-∀-next : (A : ℕ → 𝓤 ̇) (k : ℕ)
                → A k
                → ((n : ℕ) → n < k → A n)
                → (n : ℕ) → n < succ k → A n
@@ -138,7 +138,7 @@ Added 20th June 2018:
 <-split m zero     l = inr (unique-minimal m l)
 <-split m (succ n) l = ≤-split m n l
 
-regress : (P : ℕ → U ̇)
+regress : (P : ℕ → 𝓤 ̇)
         → ((n : ℕ) → P (succ n) → P n)
         → (n m : ℕ) → m ≤ n → P n → P m
 regress P ρ zero m l p = back-transport P (unique-minimal m l) p
@@ -158,7 +158,7 @@ regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
                   (λ (p : n ≡ m) → back-transport (is-accessible _<_) p a)
                   (<-split n m u)
 
-course-of-values-induction : (P : ℕ → U ̇)
+course-of-values-induction : (P : ℕ → 𝓤 ̇)
                            → ((n : ℕ) → ((m : ℕ) → m < n → P m) → P n)
                            → (n : ℕ) → P n
 course-of-values-induction = transfinite-induction _<_ <-is-well-founded

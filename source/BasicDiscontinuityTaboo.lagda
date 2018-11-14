@@ -14,13 +14,13 @@ be eventually constant (which we don't postulate).
 open import SpartanMLTT
 open import UF-FunExt
 
-module BasicDiscontinuityTaboo (fe : ∀ U V → funext U V) where
+module BasicDiscontinuityTaboo (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import Two
 open import GenericConvergentSequence
 open import WLPO
 
-basic-discontinuity : (ℕ∞ → 𝟚) → U₀ ̇
+basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
 basic-discontinuity p = ((n : ℕ) → p(under n) ≡ ₀) × (p ∞ ≡ ₁)
 
 basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
@@ -42,7 +42,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
   fact₃ t n s = zero-is-not-one ((f n)⁻¹ ∙ (ap p s)⁻¹ ∙ t)
 
   lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
-  lemma₁ t = inl(not-finite-is-∞ (fe U₀ U₀) (fact₃ t))
+  lemma₁ t = inl(not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
 
 \end{code}
 

@@ -205,25 +205,25 @@ mathematics here).
   ---------
 
 Our final ingredient is a "large" type of "small" types, called a
-universe. It is common to assume a tower of universes U₀, U₁, U₂,
+universe. It is common to assume a tower of universes 𝓤₀, 𝓤₁, 𝓤₂,
 ... of "larger and larger" types, with
 
-   U₀ : U₁,
-   U₁ : U₂,
-   U₂ : U₃,
+   𝓤₀ : 𝓤₁,
+   𝓤₁ : 𝓤₂,
+   𝓤₂ : 𝓤₃,
    ⋮
 
-When we have universes, a type family A indexed by a type X: U may be
-considered to be a function A:X→V for some universe V.
+When we have universes, a type family A indexed by a type X: 𝓤 may be
+considered to be a function A:X→𝓥 for some universe 𝓥.
 
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
 
- Grp := Σ(G: U), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
+ Grp := Σ(G: 𝓤), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
 
 Here is-set(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
 univalence, Grp itself will not be a set, but a 1-groupoid instead,
-namely a type whose identity types are all sets. Moreover, if U
+namely a type whose identity types are all sets. Moreover, if 𝓤
 satisfies the univalence axiom, then for A,B:Grp, the identity type
 Id(A,B) can be shown to be in bijection with the group isomorphisms of
 A and B.
@@ -231,7 +231,7 @@ A and B.
 * univalence
   ----------
 
-univalence is a property of the identity type Id_U of a universe U. It
+univalence is a property of the identity type Id_𝓤 of a universe 𝓤. It
 takes a number of steps to define the univalence type.
 
 We say that a type X is a singleton if we have an element c:X with
@@ -251,7 +251,7 @@ singletons:
 
     is-equiv(f) := Π(y:Y), is-singleton(f⁻¹(y)).
 
-The type of equivalences from X: U to Y:U is
+The type of equivalences from X: 𝓤 to Y:𝓤 is
 
     Eq(X,Y) := Σ(f:X→Y), is-equiv(f).
 
@@ -301,18 +301,18 @@ Now, for any type X, its identity function id_X, defined by
 is an equivalence. This is because the fiber id⁻¹(x) is simply the
 singleton type defined above, which we proved to be a singleton. We
 need to name this function, because it is needed in the formulation of
-the univalence of U:
+the univalence of 𝓤:
 
-   idIsEquiv : Π(X: U), is-equiv(id_X).
+   idIsEquiv : Π(X: 𝓤), is-equiv(id_X).
 
 (The identity function id_X should not be confused with the identity
 type Id_X.)
 
 Now we use J a second time to define a function
 
-   IdToEq : Π(X,Y: U), Id(X,Y) → Eq(X,Y).
+   IdToEq : Π(X,Y: 𝓤), Id(X,Y) → Eq(X,Y).
 
-For X,Y: U and p:Id(X,Y), we set
+For X,Y: 𝓤 and p:Id(X,Y), we set
 
    A(X,Y,p) := Eq(X,Y)
 
@@ -324,18 +324,18 @@ and
 
    IdToEq := J(A,f).
 
-Finally, we say that the universe U is univalent if the map
+Finally, we say that the universe 𝓤 is univalent if the map
 IdToEq(X,Y) is itself an equivalence:
 
-   is-univalent(U) := Π(X,Y: U), is-equiv(IdToEq(X,Y)).
+   is-univalent(𝓤) := Π(X,Y: 𝓤), is-equiv(IdToEq(X,Y)).
 
 * The univalence axiom
   --------------------
 
-The type is-univalent(U) may or may not have an inhabitant. The
+The type is-univalent(𝓤) may or may not have an inhabitant. The
 univalence axiom says that it does. Without the univalence axiom (or
-some other axiom such as the assertion that K(U) has an inhabitant),
-the inhabitedness of the type is-univalent(U) is undecided.
+some other axiom such as the assertion that K(𝓤) has an inhabitant),
+the inhabitedness of the type is-univalent(𝓤) is undecided.
 
 * Notes
   -----
@@ -343,20 +343,20 @@ the inhabitedness of the type is-univalent(U) is undecided.
  1. The minimal Martin-Löf type theory needed to formulate univalence
     has
 
-      Π, Σ, Id, U, U'.
+      Π, Σ, Id, 𝓤, 𝓤'.
 
-    Two universes U: U' suffice, where univalence talks about U.
+    Two universes 𝓤: 𝓤' suffice, where univalence talks about 𝓤.
 
  2. It can be shown, by a very complicated and interesting argument,
     that
 
-     Π(u,v: is-univalent(U)), Id(u,v).
+     Π(u,v: is-univalent(𝓤)), Id(u,v).
 
     This says that univalence is a subsingleton type (any two of its
     elements are identified). In the first step we use u (or v) to get
     function extensionality (any two pointwise identified functions
     are identified), which is *not* provable in MLTT, but is provable
-    from the assumption that U is univalent. Then, using this, one
+    from the assumption that 𝓤 is univalent. Then, using this, one
     shows that being an equivalence is a subsingleton type. Finally,
     again using function extensionality, we get that a product of
     subsingletons is a subsingleton. But then Id(u,v) holds, which is
@@ -400,11 +400,11 @@ the inhabitedness of the type is-univalent(U) is undecided.
     The consistency of the univalence axiom shows that, before we
     postulate it, MLTT is "proto-univalent" in the sense that it
     cannot distinguish concrete isomorphic types such as X:=ℕ and
-    Y:=ℕ×ℕ by a property P: U→U such that P(X) holds but P(Y) doesn't.
+    Y:=ℕ×ℕ by a property P: 𝓤→𝓤 such that P(X) holds but P(Y) doesn't.
     This is because, being isomorphic, X and Y are equivalent. But
     then univalence implies Id(X,Y), which in turn implies P(X) ⇔ P(Y)
     using J.  Because univalence is consistent, it follows that for
-    any given concrete P: U→U, it is impossible to prove that P(X)
+    any given concrete P: 𝓤→𝓤, it is impossible to prove that P(X)
     holds but P(Y) doesn't.
 
     So MLTT is invariant under isomorphism in this doubly negative,
@@ -416,7 +416,7 @@ the inhabitedness of the type is-univalent(U) is undecided.
     misleading) slogan "isomorphic types are equal".
 
     What the consistency of the univalence axiom says is that one
-    possible understanding of the identity type Id(X,Y) for X,Y: U is
+    possible understanding of the identity type Id(X,Y) for X,Y: 𝓤 is
     as precisely the type Eq(X,Y) of equivalences, in the sense of
     being in one-to-one correspondence with it. Without univalence,
     the nature of the identity type of the universe in MLTT is fairly
@@ -487,9 +487,9 @@ definition of J. Finally, notice that in Agda one constructs things by
 first specifying their types and then giving a definition with the
 equality sign.
 
-The letters U, V, W range over universes, the successor of a universe
-U is written U ⁺, and the first universe after the universes U and V
-is written U ⊔ V, to avoid subscripts.
+The letters 𝓤, 𝓥, 𝓦 range over universes, the successor of a universe
+𝓤 is written 𝓤 ⁺, and the first universe after the universes 𝓤 and 𝓥
+is written 𝓤 ⊔ 𝓥, to avoid subscripts.
 
 \begin{code}
 
@@ -497,47 +497,47 @@ is written U ⊔ V, to avoid subscripts.
 
 module UnivalenceFromScratch where
 
-open import Agda.Primitive using (_⊔_) renaming (lzero to U₀ ; lsuc to _⁺ ; Level to Universe)
+open import Agda.Primitive using (_⊔_) renaming (lzero to 𝓤₀ ; lsuc to _⁺ ; Level to Universe)
 
-_̇ : (U : Universe) → _
-U ̇ = Set U -- This should be the only use of the Agda keyword 'Set' in this development.
+_̇ : (𝓤 : Universe) → _
+𝓤 ̇ = Set 𝓤 -- This should be the only use of the Agda keyword 'Set' in this development.
 
 infix  0 _̇
 
-data Σ {U V : Universe} {X : U ̇} (Y : X → V ̇) : U ⊔ V ̇ where
+data Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
   _,_ : (x : X) (y : Y x) → Σ Y
 
-data Id {U : Universe} {X : U ̇} : X → X → U ̇ where
+data Id {𝓤 : Universe} {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
   refl : (x : X) → Id x x
 
-J : {U V : Universe} {X : U ̇}
-  → (A : (x y : X) → Id x y → V ̇)
+J : {𝓤 𝓥 : Universe} {X : 𝓤 ̇}
+  → (A : (x y : X) → Id x y → 𝓥 ̇)
   → ((x : X) → A x x (refl x))
   → (x y : X) (p : Id x y) → A x y p
 J A f x .x (refl .x) = f x
 
-is-singleton : {U : Universe} → U ̇ → U ̇
+is-singleton : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → Id c x
 
-fiber : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → Y → U ⊔ V ̇
+fiber : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber f y = Σ \x → Id (f x) y
 
-is-equiv : {U V : Universe} {X : U ̇} {Y : V ̇} → (X → Y) → U ⊔ V ̇
+is-equiv : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : _) → is-singleton(fiber f y)
 
-Eq : {U V : Universe} → U ̇ → V ̇ → U ⊔ V ̇
+Eq : {𝓤 𝓥 : Universe} → 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Eq X Y = Σ \(f : X → Y) → is-equiv f
 
-singletonType : {U : Universe} {X : U ̇} → X → U ̇
+singletonType : {𝓤 : Universe} {X : 𝓤 ̇} → X → 𝓤 ̇
 singletonType x = Σ \y → Id y x
 
-η : {U : Universe} {X : U ̇} (x : X) → singletonType x
+η : {𝓤 : Universe} {X : 𝓤 ̇} (x : X) → singletonType x
 η x = (x , refl x)
 
-singletonTypesAreSingletons : {U : Universe} {X : U ̇} (x : X) → is-singleton(singletonType x)
-singletonTypesAreSingletons {U} {X} = h
+singletonTypesAreSingletons : {𝓤 : Universe} {X : 𝓤 ̇} (x : X) → is-singleton(singletonType x)
+singletonTypesAreSingletons {𝓤} {X} = h
  where
-  A : (y x : X) → Id y x → U ̇
+  A : (y x : X) → Id y x → 𝓤 ̇
   A y x p = Id (η x) (y , p)
   f : (x : X) → A x x (refl x)
   f x = refl (η x)
@@ -548,25 +548,25 @@ singletonTypesAreSingletons {U} {X} = h
   h : (x : X) → Σ \(c : singletonType x) → (σ : singletonType x) → Id c σ
   h x = (η x , g x)
 
-id : {U : Universe} (X : U ̇) → X → X
+id : {𝓤 : Universe} (X : 𝓤 ̇) → X → X
 id X x = x
 
-idIsEquiv : {U : Universe} (X : U ̇) → is-equiv(id X)
+idIsEquiv : {𝓤 : Universe} (X : 𝓤 ̇) → is-equiv(id X)
 idIsEquiv X = g
  where
   g : (x : X) → is-singleton (fiber (id X) x)
   g = singletonTypesAreSingletons
 
-IdToEq : {U : Universe} (X Y : U ̇) → Id X Y → Eq X Y
-IdToEq {U} = J A f
+IdToEq : {𝓤 : Universe} (X Y : 𝓤 ̇) → Id X Y → Eq X Y
+IdToEq {𝓤} = J A f
  where
-  A : (X Y : U ̇) → Id X Y → U ̇
+  A : (X Y : 𝓤 ̇) → Id X Y → 𝓤 ̇
   A X Y p = Eq X Y
-  f : (X : U ̇) → A X X (refl X)
+  f : (X : 𝓤 ̇) → A X X (refl X)
   f X = (id X , idIsEquiv X)
 
-is-univalent : (U : Universe) → U ⁺ ̇
-is-univalent U = (X Y : U ̇) → is-equiv(IdToEq X Y)
+is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
+is-univalent 𝓤 = (X Y : 𝓤 ̇) → is-equiv(IdToEq X Y)
 
 \end{code}
 
@@ -577,7 +577,7 @@ Using projections pr₁ and pr₂ rather than pattern matching on Σ types
 (by defining Σ as a record type), Agda calculates the following normal
 form for the term is-univalent:
 
-λ U → (X Y : Set U) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
+λ 𝓤 → (X Y : Set 𝓤) (y : Σ (λ f → (y₁ : Y) → Σ (λ c →
 (x : Σ (λ x₁ → Id (f x₁) y₁)) → Id c x))) →
 Σ (λ c → (x : Σ (λ x₁ → Id (J (λ X₁ Y₁ p → Σ (λ f →
 (y₁ : Y₁) → Σ (λ c₁ → (x₂ : Σ (λ x₃ → Id (f x₃) y₁)) → Id c₁ x₂)))
@@ -588,38 +588,38 @@ Id (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ , refl x₃))
 This is with lots of subterms elided. With all of them explicitly
 given, the normal form of is-univalent is
 
-λ U → (X Y : U ̇) (y : Σ {U} {U} {X → Y} (λ f → (y₁ : Y) → Σ {U} {U}
-{Σ {U} {U} {X} (λ x → Id {U} {Y} (f x) y₁)} (λ c → (x : Σ {U} {U} {X}
-(λ x₁ → Id {U} {Y} (f x₁) y₁)) → Id {U} {Σ {U} {U} {X} (λ x₁ → Id {U} {Y}
-(f x₁) y₁)} c x))) → Σ {U ⁺} {U ⁺} {Σ {U ⁺} {U} {Id {U ′} {U ̇} X Y}
-(λ x → Id {U} {Σ {U} {U} {X → Y} (λ f → (y₁ : Y) → Σ {U} {U}
-{Σ {U} {U} {X} (λ x₁ → Id {U} {Y} (f x₁) y₁)} (λ c → (x₁ : Σ {U} {U} {X}
-(λ x₂ → Id {U} {Y} (f x₂) y₁)) → Id {U} {Σ {U} {U} {X} (λ x₂ → Id {U} {Y}
-(f x₂) y₁)} c x₁))} (J {U ⁺} {U} {U ̇} (λ X₁ Y₁ p → Σ {U} {U} {X₁ → Y₁}
-(λ f → (y₁ : Y₁) → Σ {U} {U} {Σ {U} {U} {X₁} (λ x₁ → Id {U} {Y₁} (f x₁) y₁)}
-(λ c → (x₁ : Σ {U} {U} {X₁} (λ x₂ → Id {U} {Y₁} (f x₂) y₁)) → Id {U}
-{Σ {U} {U} {X₁} (λ x₂ → Id {U} {Y₁} (f x₂) y₁)} c x₁))) (λ X₁ → (λ x₁ → x₁)
-, (λ x₁ → (x₁ , refl x₁) , (λ yp → J {U} {U} {X₁} (λ y₁ x₂ p → Id {U}
-{Σ {U} {U} {X₁} (λ y₂ → Id {U} {X₁} y₂ x₂)} (x₂ , refl x₂) (y₁ , p))
+λ 𝓤 → (X Y : 𝓤 ̇) (y : Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤}
+{Σ {𝓤} {𝓤} {X} (λ x → Id {𝓤} {Y} (f x) y₁)} (λ c → (x : Σ {𝓤} {𝓤} {X}
+(λ x₁ → Id {𝓤} {Y} (f x₁) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₁ → Id {𝓤} {Y}
+(f x₁) y₁)} c x))) → Σ {𝓤 ⁺} {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ′} {𝓤 ̇} X Y}
+(λ x → Id {𝓤} {Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤}
+{Σ {𝓤} {𝓤} {X} (λ x₁ → Id {𝓤} {Y} (f x₁) y₁)} (λ c → (x₁ : Σ {𝓤} {𝓤} {X}
+(λ x₂ → Id {𝓤} {Y} (f x₂) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₂ → Id {𝓤} {Y}
+(f x₂) y₁)} c x₁))} (J {𝓤 ⁺} {𝓤} {𝓤 ̇} (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁}
+(λ f → (y₁ : Y₁) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ x₁ → Id {𝓤} {Y₁} (f x₁) y₁)}
+(λ c → (x₁ : Σ {𝓤} {𝓤} {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)) → Id {𝓤}
+{Σ {𝓤} {𝓤} {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)} c x₁))) (λ X₁ → (λ x₁ → x₁)
+, (λ x₁ → (x₁ , refl x₁) , (λ yp → J {𝓤} {𝓤} {X₁} (λ y₁ x₂ p → Id {𝓤}
+{Σ {𝓤} {𝓤} {X₁} (λ y₂ → Id {𝓤} {X₁} y₂ x₂)} (x₂ , refl x₂) (y₁ , p))
 (λ x₂ → refl (x₂ , refl x₂)) (pr₁ yp) x₁ (pr₂ yp)))) X Y x) y)} (λ c →
-(x : Σ {U ⁺} {U} {Id {U ⁺} {U ̇} X Y} (λ x₁ → Id {U} {Σ {U} {U} {X → Y}
-(λ f → (y₁ : Y) → Σ {U} {U} {Σ {U} {U} {X} (λ x₂ → Id {U} {Y} (f x₂) y₁)}
-(λ c₁ → (x₂ : Σ {U} {U} {X} (λ x₃ → Id {U} {Y} (f x₃) y₁)) → Id {U}
-{Σ {U} {U} {X} (λ x₃ → Id {U} {Y} (f x₃) y₁)} c₁ x₂))} (J {U ⁺} {U} {U ̇}
-(λ X₁ Y₁ p → Σ {U} {U} {X₁ → Y₁} (λ f → (y₁ : Y₁) → Σ {U} {U} {Σ {U} {U}
-{X₁} (λ x₂ → Id {U} {Y₁} (f x₂) y₁)} (λ c₁ → (x₂ : Σ {U} {U} {X₁} (λ x₃ →
-Id {U} {Y₁} (f x₃) y₁)) → Id {U} {Σ {U} {U} {X₁} (λ x₃ → Id {U} {Y₁} (f x₃)
-y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ , refl x₂) , (λ yp → J {U}
-{U} {X₁} (λ y₁ x₃ p → Id {U} {Σ {U} {U} {X₁} (λ y₂ → Id {U} {X₁} y₂ x₃)}
+(x : Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ⁺} {𝓤 ̇} X Y} (λ x₁ → Id {𝓤} {Σ {𝓤} {𝓤} {X → Y}
+(λ f → (y₁ : Y) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₂ → Id {𝓤} {Y} (f x₂) y₁)}
+(λ c₁ → (x₂ : Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)) → Id {𝓤}
+{Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)} c₁ x₂))} (J {𝓤 ⁺} {𝓤} {𝓤 ̇}
+(λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁} (λ f → (y₁ : Y₁) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤}
+{X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)} (λ c₁ → (x₂ : Σ {𝓤} {𝓤} {X₁} (λ x₃ →
+Id {𝓤} {Y₁} (f x₃) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ x₃ → Id {𝓤} {Y₁} (f x₃)
+y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ , refl x₂) , (λ yp → J {𝓤}
+{𝓤} {X₁} (λ y₁ x₃ p → Id {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ y₂ → Id {𝓤} {X₁} y₂ x₃)}
 (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ , refl x₃)) (pr₁ yp) x₂ (pr₂ yp))))
-X Y x₁) y)) → Id {U ⁺} {Σ {U ⁺} {U} {Id {U ⁺} {U ̇} X Y} (λ x₁ → Id {U}
-{Σ {U} {U} {X → Y} (λ f → (y₁ : Y) → Σ {U} {U} {Σ {U} {U} {X} (λ x₂ →
-Id {U} {Y} (f x₂) y₁)} (λ c₁ → (x₂ : Σ {U} {U} {X} (λ x₃ → Id {U} {Y} (f x₃)
-y₁)) → Id {U} {Σ {U} {U} {X} (λ x₃ → Id {U} {Y} (f x₃) y₁)} c₁ x₂))}
-(J {U ⁺} {U} {U ̇} (λ X₁ Y₁ p → Σ {U} {U} {X₁ → Y₁} (λ f → (y₁ : Y₁) →
-Σ {U} {U} {Σ {U} {U} {X₁} (λ x₂ → Id {U} {Y₁} (f x₂) y₁)} (λ c₁ →
-(x₂ : Σ {U} {U} {X₁} (λ x₃ → Id {U} {Y₁} (f x₃) y₁)) → Id {U} {Σ {U} {U} {X₁}
-(λ x₃ → Id {U} {Y₁} (f x₃) y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ ,
-refl x₂) , (λ yp → J {U} {U} {X₁} (λ y₁ x₃ p → Id {U} {Σ {U} {U} {X₁}
-(λ y₂ → Id {U} {X₁} y₂ x₃)} (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ ,
+X Y x₁) y)) → Id {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ⁺} {𝓤 ̇} X Y} (λ x₁ → Id {𝓤}
+{Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₂ →
+Id {𝓤} {Y} (f x₂) y₁)} (λ c₁ → (x₂ : Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃)
+y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)} c₁ x₂))}
+(J {𝓤 ⁺} {𝓤} {𝓤 ̇} (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁} (λ f → (y₁ : Y₁) →
+Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)} (λ c₁ →
+(x₂ : Σ {𝓤} {𝓤} {X₁} (λ x₃ → Id {𝓤} {Y₁} (f x₃) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X₁}
+(λ x₃ → Id {𝓤} {Y₁} (f x₃) y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ ,
+refl x₂) , (λ yp → J {𝓤} {𝓤} {X₁} (λ y₁ x₃ p → Id {𝓤} {Σ {𝓤} {𝓤} {X₁}
+(λ y₂ → Id {𝓤} {X₁} y₂ x₃)} (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ ,
 refl x₃)) (pr₁ yp) x₂ (pr₂ yp)))) X Y x₁) y)} c x)

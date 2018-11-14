@@ -17,16 +17,16 @@ open import UF-Retracts
 open import UF-FunExt
 open import UF-Equiv
 
-is-vv-equiv-is-a-prop : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
+is-vv-equiv-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                    → is-prop(is-vv-equiv f)
-is-vv-equiv-is-a-prop {U} {V} fe f = Π-is-prop
-                                     (fe V (U ⊔ V))
-                                     (λ x → is-singleton-is-a-prop (fe (U ⊔ V) (U ⊔ V)))
+is-vv-equiv-is-a-prop {𝓤} {𝓥} fe f = Π-is-prop
+                                     (fe 𝓥 (𝓤 ⊔ 𝓥))
+                                     (λ x → is-singleton-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
 
-qinv-post' : {X : U ̇} {Y : V ̇} {A : W ̇}
-          → naive-funext W U → naive-funext W V
+qinv-post' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
+          → naive-funext 𝓦 𝓤 → naive-funext 𝓦 𝓥
           → (f : X → Y) → qinv f → qinv (λ (h : A → X) → f ∘ h)
-qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
+qinv-post' {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (A → X) → (A → Y)
   f' h = f ∘ h
@@ -37,19 +37,19 @@ qinv-post' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
   ε' : (k : A → Y) → f' (g' k) ≡ k
   ε' k = nfe' (ε ∘ k)
 
-qinv-post : (∀ U V → naive-funext U V) → {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+qinv-post : (∀ 𝓤 𝓥 → naive-funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} (f : X → Y)
           → qinv f → qinv (λ (h : A → X) → f ∘ h)
-qinv-post {U} {V} {W} nfe = qinv-post' (nfe W U) (nfe W V)
+qinv-post {𝓤} {𝓥} {𝓦} nfe = qinv-post' (nfe 𝓦 𝓤) (nfe 𝓦 𝓥)
 
-equiv-post : {X : U ̇} {Y : V ̇} {A : W ̇}
-           → naive-funext W U → naive-funext W V
+equiv-post : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
+           → naive-funext 𝓦 𝓤 → naive-funext 𝓦 𝓥
            → (f : X → Y) → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 equiv-post nfe nfe' f e = qinvs-are-equivs (λ h → f ∘ h) (qinv-post' nfe nfe' f (equivs-are-qinvs f e))
 
-qinv-pre' : {X : U ̇} {Y : V ̇} {A : W ̇}
-          → naive-funext V W → naive-funext U W
+qinv-pre' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
+          → naive-funext 𝓥 𝓦 → naive-funext 𝓤 𝓦
           → (f : X → Y) → qinv f → qinv (λ (h : Y → A) → h ∘ f)
-qinv-pre' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
+qinv-pre' {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
  where
   f' : (Y → A) → (X → A)
   f' h = h ∘ f
@@ -60,14 +60,14 @@ qinv-pre' {U} {V} {W} {X} {Y} {A} nfe nfe' f (g , η , ε) = (g' , η' , ε')
   ε' : (k : X → A) → f' (g' k) ≡ k
   ε' k = nfe' (λ x → ap k (η x))
 
-qinv-pre : (∀ U V → naive-funext U V) → {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
+qinv-pre : (∀ 𝓤 𝓥 → naive-funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} (f : X → Y)
          → qinv f → qinv (λ (h : Y → A) → h ∘ f)
-qinv-pre {U} {V} {W} nfe = qinv-pre' (nfe V W) (nfe U W)
+qinv-pre {𝓤} {𝓥} {𝓦} nfe = qinv-pre' (nfe 𝓥 𝓦) (nfe 𝓤 𝓦)
 
-retractions-have-at-most-one-section' : {X : U ̇} {Y : V ̇}
-                                      → funext V U → funext V V
+retractions-have-at-most-one-section' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                                      → funext 𝓥 𝓤 → funext 𝓥 𝓥
                                       → (f : X → Y) → has-retraction f → is-prop(has-section f)
-retractions-have-at-most-one-section' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh) =
+retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h , fh) =
  singletons-are-props c (h , fh)
  where
   a : qinv f
@@ -86,10 +86,10 @@ retractions-have-at-most-one-section' {U} {V} {X} {Y} fe fe' f (g , gf) (h , fh)
   c : is-singleton (has-section f)
   c = retract-of-singleton (r , s , rs) b
 
-sections-have-at-most-one-retraction' : {X : U ̇} {Y : V ̇}
-                                      → funext U U → funext V U
+sections-have-at-most-one-retraction' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                                      → funext 𝓤 𝓤 → funext 𝓥 𝓤
                                       → (f : X → Y) → has-section f → is-prop(has-retraction f)
-sections-have-at-most-one-retraction' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf) =
+sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h , hf) =
  singletons-are-props c (h , hf)
  where
   a : qinv f
@@ -108,26 +108,26 @@ sections-have-at-most-one-retraction' {U} {V} {X} {Y} fe fe' f (g , fg) (h , hf)
   c : is-singleton (has-retraction f)
   c = retract-of-singleton (r , s , rs) b
 
-retractions-have-at-most-one-section : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
+retractions-have-at-most-one-section : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                      → has-retraction f → is-prop(has-section f)
-retractions-have-at-most-one-section {U} {V} fe = retractions-have-at-most-one-section' (fe V U) (fe V V)
+retractions-have-at-most-one-section {𝓤} {𝓥} fe = retractions-have-at-most-one-section' (fe 𝓥 𝓤) (fe 𝓥 𝓥)
 
-sections-have-at-most-one-retraction : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
+sections-have-at-most-one-retraction : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                      → has-section f → is-prop(has-retraction f)
-sections-have-at-most-one-retraction {U} {V} fe = sections-have-at-most-one-retraction' (fe U U) (fe V U)
+sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
-being-equiv-is-a-prop : (∀ U V → funext U V) → {X : U ̇} {Y : V ̇} (f : X → Y)
+being-equiv-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                    → is-prop(is-equiv f)
 being-equiv-is-a-prop fe f = ×-prop-criterion (retractions-have-at-most-one-section fe f , sections-have-at-most-one-retraction fe f)
 
-being-equiv-is-a-prop' : {X : U ̇} {Y : V ̇}
-                    → funext V U → funext V V → funext U U → funext V U
+being-equiv-is-a-prop' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                    → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
                     → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-a-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
                                                             sections-have-at-most-one-retraction' fe'' fe''' f)
 
-being-equiv-is-a-prop'' : {X Y : U ̇}
-                     → funext U U
+being-equiv-is-a-prop'' : {X Y : 𝓤 ̇}
+                     → funext 𝓤 𝓤
                      → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-a-prop'' fe = being-equiv-is-a-prop' fe fe fe fe
 
@@ -139,10 +139,10 @@ ranges over arbitrary types:
 
 \begin{code}
 
-propext-funext-gives-prop-ua : propext U → funext U U
-                             → (P : U ̇) → is-prop P
-                             → (X : U ̇) → is-equiv (idtoeq X P)
-propext-funext-gives-prop-ua {U} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
+propext-funext-gives-prop-ua : propext 𝓤 → funext 𝓤 𝓤
+                             → (P : 𝓤 ̇) → is-prop P
+                             → (X : 𝓤 ̇) → is-equiv (idtoeq X P)
+propext-funext-gives-prop-ua {𝓤} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
   l (f , _ , (s , fs)) = retract-of-subsingleton (s , (f , fs)) i
@@ -163,7 +163,7 @@ SpartanMLTT with another name - TODO):
 
 \begin{code}
 
-TT-choice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
           → (Π \(x : X) → Σ \(y : Y x) → A x y)
           → Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x)
 TT-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
@@ -174,7 +174,7 @@ Its inverse (also already defined - TODO):
 
 \begin{code}
 
-TT-unchoice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-unchoice : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
            → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
            → Π \(x : X) → Σ \(y : Y x) → A x y
 TT-unchoice (f , g) x = (f x) , (g x)
@@ -187,33 +187,33 @@ function extensionality (this already occurs in UF-EquivalenceExamples
 
 \begin{code}
 
-TT-choice-unchoice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
+TT-choice-unchoice : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
                   → (t : Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-                  → TT-choice (TT-unchoice {U} {V} {W} {X} {Y} {A} t) ≡ t
+                  → TT-choice (TT-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A} t) ≡ t
 TT-choice-unchoice t = refl
 
-TT-choice-has-section : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-                    → has-section (TT-choice {U} {V} {W} {X} {Y} {A})
-TT-choice-has-section {U} {V} {W} {X} {Y} {A} = TT-unchoice ,
-                                                TT-choice-unchoice {U} {V} {W} {X} {Y} {A}
+TT-choice-has-section : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
+                    → has-section (TT-choice {𝓤} {𝓥} {𝓦} {X} {Y} {A})
+TT-choice-has-section {𝓤} {𝓥} {𝓦} {X} {Y} {A} = TT-unchoice ,
+                                                TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A}
 
-TT-unchoice-choice : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-     → funext U (V ⊔ W)
+TT-unchoice-choice : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
+     → funext 𝓤 (𝓥 ⊔ 𝓦)
      → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
      → TT-unchoice (TT-choice φ) ≡ φ
 TT-unchoice-choice fe φ = dfunext fe (λ x → refl)
 
-TT-choice-is-equiv : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-                   → funext U (V ⊔ W)
+TT-choice-is-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
+                   → funext 𝓤 (𝓥 ⊔ 𝓦)
                    → is-equiv TT-choice
-TT-choice-is-equiv {U} {V} {W} {X} {Y} {A} fe = TT-choice-has-section {U} {V} {W} {X} {Y} {A} ,
+TT-choice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe = TT-choice-has-section {𝓤} {𝓥} {𝓦} {X} {Y} {A} ,
                                                 (TT-unchoice , TT-unchoice-choice fe)
 
-TT-unchoice-is-equiv : {X : U ̇} {Y : X → V ̇} {A : (x : X) → Y x → W ̇}
-                    → funext U (V ⊔ W)
+TT-unchoice-is-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
+                    → funext 𝓤 (𝓥 ⊔ 𝓦)
                     → is-equiv TT-unchoice
-TT-unchoice-is-equiv {U} {V} {W} {X} {Y} {A} fe =
-   (TT-choice , TT-unchoice-choice {U} {V} {W} {X} {Y} {A} fe) ,
-   (TT-choice , TT-choice-unchoice {U} {V} {W} {X} {Y} {A})
+TT-unchoice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe =
+   (TT-choice , TT-unchoice-choice {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe) ,
+   (TT-choice , TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A})
 
 \end{code}

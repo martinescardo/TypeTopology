@@ -12,7 +12,7 @@ witnesses can be found.
 open import UF-FunExt
 open import SpartanMLTT
 
-module ConvergentSequenceInfCompact (fe₀ : funext U₀ U₀) where
+module ConvergentSequenceInfCompact (fe₀ : funext 𝓤₀ 𝓤₀) where
 
 open import Two
 open import InfCompact

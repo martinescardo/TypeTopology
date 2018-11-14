@@ -42,19 +42,19 @@ open import UF-FunExt
 open import UF-Subsingletons
 
 module OrdinalsShulmanTaboo
-       (fe : ∀ U V → funext U V)
-       (pe : propext U₀)
+       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+       (pe : propext 𝓤₀)
        where
 
 open import Ordinals fe
-open import OrdinalOfTruthValues fe U₀ pe
+open import OrdinalOfTruthValues fe 𝓤₀ pe
 open import OrdinalNotions
 open import UF-Base
 open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
 
-fe₀ : funext U₀ U₀
-fe₀ = fe U₀ U₀
+fe₀ : funext 𝓤₀ 𝓤₀
+fe₀ = fe 𝓤₀ 𝓤₀
 
 \end{code}
 
@@ -62,11 +62,11 @@ The type of truth values is Ω, following topos-theoretic notation, and
 the ordinal of truth values, ordered by p < q iff p ≡ ⊥ and q ≡ ⊤, is
 denoted by Ωₒ (the subscript is the letter "o", for "ordinal", and not
 the number zero). This is parametrized by an arbitrary universe, which
-in this module is instantiated to U₀.
+in this module is instantiated to 𝓤₀.
 
 \begin{code}
 
-X : U₁ ̇
+X : 𝓤₁ ̇
 X = Σ \(p : ⟨ Ωₒ ⟩) → ¬(p ≡ ⊥)
 
 recall-that : is-extensional (underlying-order Ωₒ)
@@ -81,10 +81,10 @@ above:
 
 \begin{code}
 
-_≺_ : X → X → U₁ ̇
+_≺_ : X → X → 𝓤₁ ̇
 (p , _) ≺ (q , _) = p ≺⟨ Ωₒ ⟩ q
 
-shulmans-taboo : is-extensional _≺_ → EM U₀
+shulmans-taboo : is-extensional _≺_ → EM 𝓤₀
 shulmans-taboo e = DNE-gives-EM fe₀ dne
  where
   i : is-prop X
@@ -95,7 +95,7 @@ shulmans-taboo e = DNE-gives-EM fe₀ dne
     g : (z : X) → z ≺ y → z ≺ x
     g (q , ψ) (b , _) = 𝟘-elim (ψ b)
 
-  dne : (P : U₀ ̇) → is-prop P → ¬¬ P → P
+  dne : (P : 𝓤₀ ̇) → is-prop P → ¬¬ P → P
   dne P j φ = Idtofun s φ
    where
     p q : X

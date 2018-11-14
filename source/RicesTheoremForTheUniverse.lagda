@@ -66,7 +66,7 @@ that module (or in fact any axiom other than extensionality).
 
 open import UF-FunExt
 
-module RicesTheoremForTheUniverse (fe : ∀ U V → funext U V) where
+module RicesTheoremForTheUniverse (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import UF-Equiv
@@ -84,16 +84,16 @@ different values is a taboo.
 
 \begin{code}
 
-extensional :(U ̇ → 𝟚) → U ⁺ ̇
+extensional :(𝓤 ̇ → 𝟚) → 𝓤 ⁺ ̇
 extensional P = ∀ X Y → X ≃ Y → P X ≡ P Y
 
 Rice's-Theorem-for-U :
 
-    (P : U ̇ → 𝟚) → extensional P → (X Y : U ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
+    (P : 𝓤 ̇ → 𝟚) → extensional P → (X Y : 𝓤 ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
 
-Rice's-Theorem-for-U {U} P e X Y r s = basic-discontinuity-taboo p (p-lemma , p-lemma∞)
+Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma , p-lemma∞)
  where
-  Q : ℕ∞ → U ̇
+  Q : ℕ∞ → 𝓤 ̇
   Q = pr₁ (Universe-Indiscreteness-Theorem (λ i → X) Y)
 
   Q-lemma : (i : ℕ) → Q(under i) ≃ X
@@ -134,7 +134,7 @@ theory.
 We have the following meta-theorem as a corollary, *without*
 assuming the propositional axiom of extensionality:
 
-  For all closed terms P: U ̇ → 𝟚 and X,Y: U ̇ with a given proof of
+  For all closed terms P: 𝓤 ̇ → 𝟚 and X,Y: 𝓤 ̇ with a given proof of
   extensionality of P, there is no closed term of type P(X) ≠ P(Y).
 
 Proof. Assuming the axiom of extensionality, there can't be such
@@ -148,23 +148,23 @@ the same result. Q.E.D.
 Added 21 August 2014:
 
 WLPO amounts to saying that we can solve the halting problem. If we
-cannot, then all 𝟚-valued functions on U ̇ must be constant:
+cannot, then all 𝟚-valued functions on 𝓤 ̇ must be constant:
 
 \begin{code}
 
-Rice's-contrapositive : ∀ {U}
+Rice's-contrapositive : ∀ {𝓤}
 
- → ¬ WLPO → (P : U ̇ → 𝟚) → extensional P → (X Y : U ̇) → P X ≡ P Y
+ → ¬ WLPO → (P : 𝓤 ̇ → 𝟚) → extensional P → (X Y : 𝓤 ̇) → P X ≡ P Y
 
-Rice's-contrapositive {U} nwlpo P e = f
+Rice's-contrapositive {𝓤} nwlpo P e = f
  where
-  a : (X Y : U ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
+  a : (X Y : 𝓤 ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
   a X Y = Rice's-Theorem-for-U P e X Y
-  b : (X Y : U ̇) (m n : 𝟚) → P X ≡ m → P Y ≡ n → m ≡ n
+  b : (X Y : 𝓤 ̇) (m n : 𝟚) → P X ≡ m → P Y ≡ n → m ≡ n
   b X Y ₀ ₀ p q = refl
   b X Y ₀ ₁ p q = 𝟘-elim (nwlpo (a X Y p q))
   b X Y ₁ ₀ p q = 𝟘-elim (nwlpo (a Y X q p))
   b X Y ₁ ₁ p q = refl
-  f : (X Y : U ̇) → P X ≡ P Y
+  f : (X Y : 𝓤 ̇) → P X ≡ P Y
   f X Y = b X Y (P X) (P Y) refl refl
 \end{code}

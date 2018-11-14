@@ -11,13 +11,13 @@ indication of termination.
 
 open import UF-FunExt
 
-module CountableTychonoff (fe : ∀ U V → funext U V) where
+module CountableTychonoff (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import CompactTypes
 open import Sequence (fe)
 
-binary-Tychonoff' :{X : ℕ → U ̇} →
+binary-Tychonoff' :{X : ℕ → 𝓤 ̇} →
 
  compact∙(X 0) →  compact∙((n : ℕ) → X(succ n))
  → compact∙((n : ℕ) → X n)
@@ -54,7 +54,7 @@ checker enabled.) (I plan to actually write down this proof in Agda.)
 \begin{code}
 
 {-# TERMINATING #-}
-countable-Tychonoff :{X : ℕ → U ̇}
+countable-Tychonoff :{X : ℕ → 𝓤 ̇}
                     → ((n : ℕ) → compact∙(X n)) → compact∙((n : ℕ) → X n)
 countable-Tychonoff {X} ε = binary-Tychonoff' (head ε) (countable-Tychonoff(tail ε))
 

@@ -49,7 +49,7 @@ induction principle:
 
 \begin{code}
 
-data 𝔹 : U₀ ̇ where
+data 𝔹 : 𝓤₀ ̇ where
  zero : 𝔹
  l    : 𝔹 → 𝔹
  r    : 𝔹 → 𝔹
@@ -162,14 +162,14 @@ Induction principles induced by the equivalences:
 
 \begin{code}
 
-ℕ-induction : {A : ℕ → U ̇}
+ℕ-induction : {A : ℕ → 𝓤 ̇}
             → A zero
             → (∀ n → A n → A(succ n))
             → ∀ n → A n
 ℕ-induction base step zero     = base
 ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
 
-𝔹-induction : {B : 𝔹 → U ̇}
+𝔹-induction : {B : 𝔹 → 𝓤 ̇}
             → B zero
             → (∀ m → B m → B(l m))
             → (∀ m → B m → B(r m))
@@ -178,13 +178,13 @@ Induction principles induced by the equivalences:
 𝔹-induction base stepl stepr (l m) = stepl m (𝔹-induction base stepl stepr m)
 𝔹-induction base stepl stepr (r m) = stepr m (𝔹-induction base stepl stepr m)
 
-unary-induction-on-𝔹 : {B : 𝔹 → U ̇}
+unary-induction-on-𝔹 : {B : 𝔹 → 𝓤 ̇}
                      → B zero
                      → (∀ n → B n → B(Succ n))
                      → ∀ n → B n
-unary-induction-on-𝔹 {U} {B} base step = g
+unary-induction-on-𝔹 {𝓤} {B} base step = g
  where
-  A : ℕ → U ̇
+  A : ℕ → 𝓤 ̇
   A n = B (binary n)
   base' : A zero
   base' = base
@@ -197,14 +197,14 @@ unary-induction-on-𝔹 {U} {B} base step = g
   g : ∀ m → B m
   g m = transport B (binary-unary m) (b m)
 
-binary-induction-on-ℕ : {A : ℕ → U ̇}
+binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇}
                      → A zero
                      → (∀ n → A n → A(L n))
                      → (∀ n → A n → A(R n))
                      → ∀ n → A n
-binary-induction-on-ℕ {U} {A} base stepl stepr = g
+binary-induction-on-ℕ {𝓤} {A} base stepl stepr = g
  where
-  B : 𝔹 → U ̇
+  B : 𝔹 → 𝓤 ̇
   B m = A (unary m)
   base' : B zero
   base' = base
@@ -551,7 +551,7 @@ We now show that ℕ + ℕ ≃ ℕ (July 2018).
 ℕ-plus-𝟙 : ℕ ∔ 𝟙 ≃ ℕ
 ℕ-plus-𝟙 = qinveq f (g , ε , η)
  where
-  f : ℕ ∔ 𝟙 {U₀} → ℕ
+  f : ℕ ∔ 𝟙 {𝓤₀} → ℕ
   f (inl n) = succ n
   f (inr *) = zero
   g : ℕ → ℕ ∔ 𝟙
@@ -567,7 +567,7 @@ We now show that ℕ + ℕ ≃ ℕ (July 2018).
 two-𝔹-plus-𝟙 : 𝔹 ∔ 𝔹 ∔ 𝟙 ≃ 𝔹
 two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
  where
-  f : 𝔹 ∔ 𝔹 ∔ 𝟙 {U₀} → 𝔹
+  f : 𝔹 ∔ 𝔹 ∔ 𝟙 {𝓤₀} → 𝔹
   f (inl b) = l b
   f (inr (inl b)) = r b
   f (inr (inr *)) = zero

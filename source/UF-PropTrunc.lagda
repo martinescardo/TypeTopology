@@ -19,21 +19,21 @@ propositional truncation.
 
 \begin{code}
 
-postulate PropTrunc : U₀ ̇
+postulate PropTrunc : 𝓤₀ ̇
 
 module PropositionalTruncation (pt : PropTrunc) where
 
  postulate
-   ∥_∥ : U ̇ → U ̇
-   propositional-truncation-is-a-prop : {X : U ̇} → is-prop ∥ X ∥
-   ∣_∣ : {X : U ̇} → X → ∥ X ∥
-   ptrec : {X : U ̇} {Y : V ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
+   ∥_∥ : 𝓤 ̇ → 𝓤 ̇
+   propositional-truncation-is-a-prop : {X : 𝓤 ̇} → is-prop ∥ X ∥
+   ∣_∣ : {X : 𝓤 ̇} → X → ∥ X ∥
+   ptrec : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
 
- is-singleton'-is-prop : {X : U ̇} → funext U U → is-prop(is-prop X × ∥ X ∥)
+ is-singleton'-is-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-a-prop fe) (λ _ → propositional-truncation-is-a-prop)
 
- c-es₁ : {X : U ̇} → is-singleton X ⇔ is-prop X × ∥ X ∥
- c-es₁ {U} {X} = f , g
+ c-es₁ : {X : 𝓤 ̇} → is-singleton X ⇔ is-prop X × ∥ X ∥
+ c-es₁ {𝓤} {X} = f , g
   where
    f : is-singleton X → is-prop X × ∥ X ∥
    f (x , φ) = singletons-are-props (x , φ) , ∣ x ∣
@@ -41,31 +41,31 @@ module PropositionalTruncation (pt : PropTrunc) where
    g : is-prop X × ∥ X ∥ → is-singleton X
    g (i , s) = ptrec i id s , i (ptrec i id s)
 
- ptfunct : {X : U ̇} {Y : V ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ptfunct : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ptfunct f = ptrec propositional-truncation-is-a-prop (λ x → ∣ f x ∣)
 
- ∃ : {X : U ̇} → (Y : X → V ̇) → U ⊔ V ̇
+ ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
 
- _∨_  : U ̇ → V ̇ → U ⊔ V ̇
+ _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥
 
- left-fails-then-right-holds : {P : U ̇} {Q : V ̇} → is-prop Q → P ∨ Q → ¬ P → Q
+ left-fails-then-right-holds : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-prop Q → P ∨ Q → ¬ P → Q
  left-fails-then-right-holds i d u = ptrec i (λ d → Left-fails-then-right-holds d u) d
 
- right-fails-then-left-holds : {P : U ̇} {Q : V ̇} → is-prop P → P ∨ Q → ¬ Q → P
+ right-fails-then-left-holds : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-prop P → P ∨ Q → ¬ Q → P
  right-fails-then-left-holds i d u = ptrec i (λ d → Right-fails-then-left-holds d u) d
 
- pt-gdn : {X : U ̇} → ∥ X ∥ → ∀ {V} (P : V ̇) → is-prop P → (X → P) → P
- pt-gdn {U} {X} s {V} P isp u = ptrec isp u s
+ pt-gdn : {X : 𝓤 ̇} → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇) → is-prop P → (X → P) → P
+ pt-gdn {𝓤} {X} s {𝓥} P isp u = ptrec isp u s
 
- gdn-pt : {X : U ̇} → (∀ {V} (P : V ̇) → is-prop P → (X → P) → P) → ∥ X ∥
- gdn-pt {U} {X} φ = φ ∥ X ∥ propositional-truncation-is-a-prop ∣_∣
+ gdn-pt : {X : 𝓤 ̇} → (∀ {𝓥} (P : 𝓥 ̇) → is-prop P → (X → P) → P) → ∥ X ∥
+ gdn-pt {𝓤} {X} φ = φ ∥ X ∥ propositional-truncation-is-a-prop ∣_∣
 
- pt-dn : {X : U ̇} → ∥ X ∥ → ¬¬ X
+ pt-dn : {X : 𝓤 ̇} → ∥ X ∥ → ¬¬ X
  pt-dn s = pt-gdn s 𝟘 𝟘-is-prop
 
- binary-choice : {X : U ̇} {Y : V ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
+ binary-choice : {X : 𝓤 ̇} {Y : 𝓥 ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ptrec propositional-truncation-is-a-prop (λ x → ptrec propositional-truncation-is-a-prop (λ y → ∣ x , y ∣) t) s
 
  infixr 0 _∨_
@@ -80,34 +80,34 @@ extra parameter in everything. So we are not using this anymore.
 
 \begin{code}
 
-propositional-truncations-exist : ∀ U V → U ⁺ ⊔ V ⁺ ̇
-propositional-truncations-exist U V = (X : U ̇) → Σ \(X' : U ̇) → is-prop X' × (X → X')
-                                        × ((P : V ̇) → is-prop P → (X → P) → X' → P)
+propositional-truncations-exist : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+propositional-truncations-exist 𝓤  𝓥 = (X : 𝓤 ̇) → Σ \(X' : 𝓤 ̇) → is-prop X' × (X → X')
+                                        × ((P : 𝓥 ̇) → is-prop P → (X → P) → X' → P)
 
-propositional-truncations-exist' : ∀ U → U ⁺ ̇
-propositional-truncations-exist' U = propositional-truncations-exist U U
+propositional-truncations-exist' : ∀ 𝓤 → 𝓤 ⁺ ̇
+propositional-truncations-exist' 𝓤 = propositional-truncations-exist 𝓤 𝓤
 
-module PropositionalTruncation' (pt : ∀ U → propositional-truncations-exist' U) where
+module PropositionalTruncation' (pt : ∀ 𝓤 → propositional-truncations-exist' 𝓤) where
 
- ∥_∥ : U ̇ → U ̇
+ ∥_∥ : 𝓤 ̇ → 𝓤 ̇
  ∥ X ∥ = pr₁ (pt (universe-of X) X)
 
- propositional-truncation-is-a-prop : {X : U ̇} → is-prop(∥ X ∥)
- propositional-truncation-is-a-prop {U} {X} = pr₁(pr₂(pt (universe-of X) X))
+ propositional-truncation-is-a-prop : {X : 𝓤 ̇} → is-prop(∥ X ∥)
+ propositional-truncation-is-a-prop {𝓤} {X} = pr₁(pr₂(pt (universe-of X) X))
 
- ∣_∣ : {X : U ̇} → X → ∥ X ∥
+ ∣_∣ : {X : 𝓤 ̇} → X → ∥ X ∥
  ∣ x ∣ = pr₁(pr₂(pr₂(pt (universe-of(type-of x)) (type-of x)))) x
 
- ptrec : {X Y : U ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
- ptrec {U} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
+ ptrec : {X Y : 𝓤 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
+ ptrec {𝓤} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
 
- ptfunct : {X Y : U ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ptfunct : {X Y : 𝓤 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ptfunct f = ptrec propositional-truncation-is-a-prop (λ x → ∣ f x ∣)
 
- ∃ : {X : U ̇} → (Y : X → V ̇) → U ⊔ V ̇
+ ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
 
- _∨_  : U ̇ → V ̇ → U ⊔ V ̇
+ _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥
 
  infixr 0 _∨_

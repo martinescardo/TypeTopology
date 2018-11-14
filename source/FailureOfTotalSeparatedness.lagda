@@ -37,7 +37,7 @@ a theorem rather than a metatheorem.
 
 open import UF-FunExt
 
-module FailureOfTotalSeparatedness (fe : ∀ U V → funext U V) where
+module FailureOfTotalSeparatedness (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import Two
@@ -59,7 +59,7 @@ more transparent and conceptual argument.)
 
 module concrete-example where
 
- X : U₀ ̇
+ X : 𝓤₀ ̇
  X = Σ \(u : ℕ∞) → u ≡ ∞ → 𝟚
 
  ∞₀ : X
@@ -108,7 +108,7 @@ module concrete-example where
    p₁ u = p(u , λ r → ₁)
 
    lemma : (n : ℕ) → p₀(under n) ≡ p₁(under n)
-   lemma n = ap (λ - → p(under n , -)) (dfunext (fe U₀ U₀) claim)
+   lemma n = ap (λ - → p(under n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
     where
      claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
      claim s = 𝟘-elim(∞-is-not-finite n (s ⁻¹))
@@ -144,7 +144,7 @@ module concrete-example where
    claim₁ = ap (λ - → - refl) claim₀
 
    fact : refl ≡ p
-   fact = ℕ∞-is-set (fe U₀ U₀) refl p
+   fact = ℕ∞-is-set (fe 𝓤₀ 𝓤₀) refl p
 
    claim₂ : ₀ ≡ φ p (λ _ → ₀) refl
    claim₂ = ap (λ - → φ - (λ _ → ₀) refl) fact
@@ -180,9 +180,9 @@ unchanged.
 
 \begin{code}
 
-module general-example (U : Universe) (X : U ̇) (a : X) where
+module general-example (𝓤 : Universe) (X : 𝓤 ̇) (a : X) where
 
- Y : U ̇
+ Y : 𝓤 ̇
  Y = Σ \(x : X) → x ≡ a → 𝟚
 
  e : 𝟚 → X → Y
@@ -197,7 +197,7 @@ module general-example (U : Universe) (X : U ̇) (a : X) where
  Proposition : a₀ ≢ a₁
  Proposition r = zero-is-not-one zero-is-one
   where
-   P : Y → U ̇
+   P : Y → 𝓤 ̇
    P (x , f) = Σ \(q : x ≡ a) → f q ≡ ₁
 
    observation₀ : P a₀ ≡ (a ≡ a) × (₀ ≡ ₁)
@@ -229,7 +229,7 @@ two embeddings e₀ and e₁:
  Lemma x φ = ap (λ - → (x , -)) claim
   where
    claim : (λ p → ₀) ≡ (λ p → ₁)
-   claim = dfunext (fe U U₀) (λ p → 𝟘-elim(φ p))
+   claim = dfunext (fe 𝓤 𝓤₀) (λ p → 𝟘-elim(φ p))
 
 \end{code}
 
@@ -242,7 +242,7 @@ module DiscreteAndSeparated.)
 
 \begin{code}
 
- weakly-isolated : {X : U ̇} (x : X) → U ̇
+ weakly-isolated : {X : 𝓤 ̇} (x : X) → 𝓤 ̇
  weakly-isolated x = ∀ x' → decidable(x' ≢ x)
 
  Theorem : (Σ \(g : Y → 𝟚) → g a₀ ≢ g a₁) → weakly-isolated a

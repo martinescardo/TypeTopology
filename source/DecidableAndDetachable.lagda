@@ -18,16 +18,16 @@ We look at decidable propositions and subsets (using the terminogy
 
 \begin{code}
 
-¬¬-elim : {A : U ̇} → decidable A → ¬¬ A → A
+¬¬-elim : {A : 𝓤 ̇} → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)
 
-negation-preserves-decidability : {A : U ̇}
+negation-preserves-decidability : {A : 𝓤 ̇}
                                 → decidable A → decidable(¬ A)
 negation-preserves-decidability (inl a) = inr (λ f → f a)
 negation-preserves-decidability (inr g) = inl g
 
-which-of : {A : U ̇} {B : V ̇}
+which-of : {A : 𝓤 ̇} {B : 𝓥 ̇}
         → A + B → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → B)
 
 which-of (inl a) = ₀ , ((λ r → a) , (λ ()))
@@ -44,7 +44,7 @@ The following is a special case we are interested in:
 
 \begin{code}
 
-boolean-value : {A : U ̇}
+boolean-value : {A : 𝓤 ̇}
             → decidable A → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → ¬ A)
 boolean-value = which-of
 
@@ -59,10 +59,10 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 \begin{code}
 
-indicator : {X : U ̇} → {A B : X → V ̇}
+indicator : {X : 𝓤 ̇} → {A B : X → 𝓥 ̇}
           → ((x : X) → A x + B x)
           → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x)
-indicator {U} {V} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
+indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
   lemma₀ : (x : X) → (A x + B x) → Σ \b → (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
   lemma₀ x = which-of
@@ -79,20 +79,20 @@ slighly non-universal terminology.
 
  \begin{code}
 
-detachable : {X : U ̇} (A : X → V ̇) → U ⊔ V ̇
+detachable : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
 detachable A = ∀ x → decidable(A x)
 
-characteristic-function : {X : U ̇} {A : X → V ̇}
+characteristic-function : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
 characteristic-function = indicator
 
-co-characteristic-function : {X : U ̇} {A : X → V ̇}
+co-characteristic-function : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x)
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
-decidable-closed-under-Σ : {X : U ̇} {Y : X → V ̇} → is-prop X
+decidable-closed-under-Σ : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → is-prop X
                          → decidable X → ((x : X) → decidable (Y x)) → decidable (Σ Y)
-decidable-closed-under-Σ {U} {V} {X} {Y} isp d e = g d
+decidable-closed-under-Σ {𝓤} {𝓥} {X} {Y} isp d e = g d
  where
   g : decidable X → decidable (Σ Y)
   g (inl x) = h (e x)
@@ -119,11 +119,11 @@ module _ (pt : PropTrunc) where
 
  open PropositionalTruncation (pt)
 
- not-exists₀-implies-forall₁ : {X : U ̇} (p : X → 𝟚)
+ not-exists₀-implies-forall₁ : {X : 𝓤 ̇} (p : X → 𝟚)
                             → ¬ (∃ \(x : X) → p x ≡ ₀) → (∀ (x : X) → p x ≡ ₁)
  not-exists₀-implies-forall₁ p u x = Lemma[b≢₀→b≡₁] (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
 
- forall₁-implies-not-exists₀ : {X : U ̇} (p : X → 𝟚)
+ forall₁-implies-not-exists₀ : {X : 𝓤 ̇} (p : X → 𝟚)
                             → (∀ (x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀
  forall₁-implies-not-exists₀ p α = ptrec 𝟘-is-prop h
   where

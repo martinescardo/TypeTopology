@@ -21,7 +21,7 @@ called "Decidability of non-continuity".
 open import SpartanMLTT
 open import UF-FunExt
 
-module DecidabilityOfNonContinuity (fe : funext U₀ U₀) where
+module DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 
 open import Two
 open import DiscreteAndSeparated
@@ -33,7 +33,7 @@ Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
           → decidable((m : ℕ) → ¬((n : ℕ) → q (under m) (under n) ≡ ₁))
 Lemma-3·1 q = claim₄
  where
-  A : ℕ∞ → U₀ ̇
+  A : ℕ∞ → 𝓤₀ ̇
   A u = (n : ℕ) → q u (under n) ≡ ₁
   claim₀ :  (u : ℕ∞) → decidable(A u)
   claim₀ u = Theorem-8·2 (q u)
@@ -78,7 +78,7 @@ and its negation to
 
 \begin{code}
 
-non-continuous : (ℕ∞ → ℕ) → U₀ ̇
+non-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 non-continuous f = (m : ℕ) → ¬((n : ℕ) → f(max (under m) (under n)) ≡[ℕ] f ∞)
 
 Theorem-3·2 : (f : ℕ∞ → ℕ) → decidable(non-continuous f)
@@ -100,7 +100,7 @@ For future use:
 
 \begin{code}
 
-continuous : (ℕ∞ → ℕ) → U₀ ̇
+continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
 continuous f = Σ \(m : ℕ) → (n : ℕ) → f(max (under m) (under n)) ≡ f ∞
 
 \end{code}

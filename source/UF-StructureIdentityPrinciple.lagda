@@ -36,18 +36,18 @@ module UF-StructureIdentityPrinciple where
 
 \end{code}
 
-We consider the type Σ S of types X : U ̇ equipped with structure s : S X,
-where the universe U is univalent and S : U ̇ → V ̇ is a parameter.
+We consider the type Σ S of types X : 𝓤 ̇ equipped with structure s : S X,
+where the universe U is univalent and S : 𝓤 ̇ → 𝓥 ̇ is a parameter.
 
 The underlying set and structure are given by the first and second
 projections:
 
 \begin{code}
 
-⟨_⟩ : {U V : Universe} {S : U ̇ → V ̇} → Σ S → U ̇
+⟨_⟩ : {𝓤 𝓥 : Universe} {S : 𝓤 ̇ → 𝓥 ̇} → Σ S → 𝓤 ̇
 ⟨_⟩ = pr₁
 
-structure : {U V : Universe} {S : U ̇ → V ̇} (A : Σ S) → S ⟨ A ⟩
+structure : {𝓤 𝓥 : Universe} {S : 𝓤 ̇ → 𝓥 ̇} (A : Σ S) → S ⟨ A ⟩
 structure = pr₂
 
 \end{code}
@@ -90,17 +90,17 @@ structure = pr₂
 
 module gsip
 
-  (U V : Universe)
+  (𝓤 𝓥 : Universe)
 
-  (ua : is-univalent U)
+  (ua : is-univalent 𝓤)
 
-  (S : U ̇ → V ̇)
+  (S : 𝓤 ̇ → 𝓥 ̇)
 
-  (S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → U ⊔ V ̇)
+  (S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇)
 
   (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
-  (S-id-structure : (X : U ̇) (s t : S X)
+  (S-id-structure : (X : 𝓤 ̇) (s t : S X)
                   → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
 
   (S-transport : (A : Σ S)
@@ -120,7 +120,7 @@ module gsip
 
 \begin{code}
 
-  _≃ₛ_ : Σ S → Σ S → U ⊔ V ̇
+  _≃ₛ_ : Σ S → Σ S → 𝓤 ⊔ 𝓥 ̇
   A ≃ₛ B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B (f , e)
 
 \end{code}
@@ -153,7 +153,7 @@ module gsip
 \begin{code}
 
   private
-    Ψ : (A : Σ S) (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⁺ ⊔ V ̇
+    Ψ : (A : Σ S) (Y : 𝓤 ̇) → ⟨ A ⟩ ≃ Y → 𝓤 ⁺ ⊔ 𝓥 ̇
     Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ≡ (Y , s)
     ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
     ψ A s υ = to-Σ-≡' (S-id-structure ⟨ A ⟩ (structure A) s υ)
@@ -177,7 +177,7 @@ module gsip
   idtoeq-eqtoidₛ : (A B : Σ S) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ≡ ε
   idtoeq-eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) υ
    where
-    Φ : (Y : U ̇) → ⟨ A ⟩ ≃ Y → U ⊔ V ̇
+    Φ : (Y : 𝓤 ̇) → ⟨ A ⟩ ≃ Y → 𝓤 ⊔ 𝓥 ̇
     Φ Y (f , e) = (s : S Y)
                   (υ : S-equiv A (Y , s) (f , e))
                  → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
@@ -236,19 +236,19 @@ operation. The above gives a characterization of identity of ∞-magmas:
 
 \begin{code}
 
-module ∞-magma (U : Universe) (ua : is-univalent U) where
+module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
- S : U ̇ → U ̇
+ S : 𝓤 ̇ → 𝓤 ̇
  S X = X → X → X
 
  open gsip
-       U U ua S
+       𝓤 𝓤 ua S
        (λ {A B (f , e) → (λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x'))})
        (λ A → refl)
        (λ X m n → id)
        (λ A m υ → refl-left-neutral)
 
- ∞-Magma : U ⁺ ̇
+ ∞-Magma : 𝓤 ⁺ ̇
  ∞-Magma = Σ S
 
  fact : (A B : ∞-Magma)
@@ -265,7 +265,7 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
 
 \begin{code}
 
- fact' : (X Y : U ̇) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
+ fact' : (X Y : 𝓤 ̇) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
        → ((X , _·_) ≡ (Y , _⋆_))
        ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x'))
  fact' X Y _·_ _⋆_ = fact (X , _·_) (Y , _⋆_)
@@ -284,10 +284,10 @@ module ∞-magma (U : Universe) (ua : is-univalent U) where
  open import UF-UA-FunExt
  open import UF-EquivalenceExamples
 
- fe : funext U U
+ fe : funext 𝓤 𝓤
  fe = funext-from-univalence ua
 
- fact'' : (X Y : U ̇) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
+ fact'' : (X Y : 𝓤 ̇) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
         → ((X , _·_) ≡ (Y , _⋆_))
         ≃ Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')
  fact'' X Y _·_ _⋆_ =
@@ -315,13 +315,13 @@ get ∞-proto-topological spaces.
 
 \begin{code}
 
-module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
+module ∞-proto-topological-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : 𝓥 ̇) where
 
- S : U ̇ → U ⊔ V ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = (X → R) → R
 
  open gsip
-       U (U ⊔ V) ua S
+       𝓤 (𝓤 ⊔ 𝓥) ua S
        (λ {A B (f , e) → (λ V → structure A (V ∘ f)) ≡ structure B})
        (λ A → refl)
        (λ X τ σ → id)
@@ -338,7 +338,7 @@ module ∞-proto-topological-spaces (U V : Universe) (ua : is-univalent U) (R : 
 
 \begin{code}
 
- fact' : (X Y : U ̇) (τ : (X → R) → R) (σ : (Y → R) → R)
+ fact' : (X Y : 𝓤 ̇) (τ : (X → R) → R) (σ : (Y → R) → R)
        → ((X , τ) ≡ (Y , σ)) ≃ Σ \(f : X → Y) → is-equiv f × ((λ V → τ (V ∘ f)) ≡ σ)
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
@@ -359,13 +359,13 @@ and ordered sets (when R is Ω and d=_≺_, reflexive or not):
 
 \begin{code}
 
-module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
+module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : 𝓥 ̇) where
 
- S : U ̇ → U ⊔ V ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = X → X → R
 
  open gsip
-       U (U ⊔ V) ua S
+       𝓤 (𝓤 ⊔ 𝓥) ua S
        (λ {A B (f , e) → structure A ≡ (λ x x' → structure B (f x) (f x'))})
        (λ A → refl)
        (λ X d e → id)
@@ -376,7 +376,7 @@ module ∞-proto-metric-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇)
                         → is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x')))
  fact = ≡-is-≃ₛ
 
- fact' : (X Y : U ̇) (d : X → X → R) (e : Y → Y → R)
+ fact' : (X Y : 𝓤 ̇) (d : X → X → R) (e : Y → Y → R)
        → ((X , d) ≡ (Y , e)) ≃ Σ \(f : X → Y) → is-equiv f × (d ≡ (λ x x' → e (f x) (f x')))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
@@ -390,13 +390,13 @@ module CompactTypes):
 
 \begin{code}
 
-module selection-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
+module selection-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : 𝓥 ̇) where
 
- S : U ̇ → U ⊔ V ̇
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
  S X = (X → R) → X
 
  open gsip
-       U (U ⊔ V) ua S
+       𝓤 (𝓤 ⊔ 𝓥) ua S
        (λ {A B (f , e) → (λ V → f (structure A (V ∘ f))) ≡ structure B})
        (λ A → refl)
        (λ X ε δ → id)
@@ -407,7 +407,7 @@ module selection-spaces (U V : Universe) (ua : is-univalent U) (R : V ̇) where
                         → is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B)
  fact = ≡-is-≃ₛ
 
- fact' : (X Y : U ̇) (ε : (X → R) → X) (δ : (Y → R) → Y)
+ fact' : (X Y : 𝓤 ̇) (ε : (X → R) → X) (δ : (Y → R) → Y)
        → ((X , ε) ≡ (Y , δ)) ≃ Σ \(f : X → Y) → is-equiv f × ((λ V → f (ε (V ∘ f))) ≡ δ)
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
@@ -423,21 +423,21 @@ open import UF-Subsingletons
 
 module gsip-with-axioms
 
- (U V : Universe)
+ (𝓤 𝓥 : Universe)
 
- (ua : is-univalent U)
+ (ua : is-univalent 𝓤)
 
- (S : U ̇ → V ̇)
+ (S : 𝓤 ̇ → 𝓥 ̇)
 
- (Axioms : (X : U ̇) → S X → V ̇)
+ (Axioms : (X : 𝓤 ̇) → S X → 𝓥 ̇)
 
- (Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s))
+ (Axioms-is-prop : (X : 𝓤 ̇) (s : S X) → is-prop (Axioms X s))
 
- (S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → U ⊔ V ̇)
+ (S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇)
 
  (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
 
- (S-id-structure : (X : U ̇) (s t : S X)
+ (S-id-structure : (X : 𝓤 ̇) (s t : S X)
                  → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
 
  (S-transport : (A : Σ S)
@@ -456,16 +456,16 @@ module gsip-with-axioms
 
 \begin{code}
 
-   S' : U ̇ → V ̇
+   S' : 𝓤 ̇ → 𝓥 ̇
    S' X = Σ \(s : S X) → Axioms X s
 
-   S'-preserving : (A' B' : Σ S') → ⟨ A' ⟩ ≃ ⟨ B' ⟩ → U ⊔ V ̇
+   S'-preserving : (A' B' : Σ S') → ⟨ A' ⟩ ≃ ⟨ B' ⟩ → 𝓤 ⊔ 𝓥 ̇
    S'-preserving (X , s , α) (Y , t , β) = S-equiv (X , s) (Y , t)
 
    S'-refl : (A' : Σ S') → S'-preserving A' A' (≃-refl ⟨ A' ⟩)
    S'-refl (X , s , α) = S-refl (X , s)
 
-   S'-id-structure : (X : U ̇) (s' t' : S' X)
+   S'-id-structure : (X : 𝓤 ̇) (s' t' : S' X)
                    → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
    S'-id-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-id-structure X s t υ' ,
                                                    Axioms-is-prop X t _ _)
@@ -487,7 +487,7 @@ module gsip-with-axioms
         ≡⟨ S-transport (X , s) t υ' ⟩
     υ'  ∎
     where
-     F : S X → U ⊔ V ̇
+     F : S X → 𝓤 ⊔ 𝓥 ̇
      F t = S-equiv (X , s) (X  , t) (≃-refl X)
      f : (s , α) ≡ (t , β) → F t
      f q = transport (F ∘ pr₁) q (S-refl (X , s))
@@ -502,7 +502,7 @@ module gsip-with-axioms
 
 \begin{code}
 
-   open gsip U V ua S' S'-preserving S'-refl S'-id-structure S'-transport public
+   open gsip 𝓤 𝓥 ua S' S'-preserving S'-refl S'-id-structure S'-transport public
 
 \end{code}
 
@@ -512,13 +512,13 @@ We now consider monoids to illustrate how this can be applied.
 
 \begin{code}
 
-module monoids (U : Universe) (ua : is-univalent U) where
+module monoids (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  open import UF-FunExt
  open import UF-Subsingletons-FunExt
  open import UF-UA-FunExt
 
- fe : funext U U
+ fe : funext 𝓤 𝓤
  fe = funext-from-univalence ua
 
 \end{code}
@@ -529,7 +529,7 @@ the "unit":
 
 \begin{code}
 
- S : U ̇ → U ̇
+ S : 𝓤 ̇ → 𝓤 ̇
  S X = (X → X → X) × X
 
 \end{code}
@@ -540,7 +540,7 @@ type X must a set:
 
 \begin{code}
 
- Axioms : (X : U ̇) → S X → U ̇
+ Axioms : (X : 𝓤 ̇) → S X → 𝓤 ̇
  Axioms X (_·_ , e) = is-set X
                     × ((x y z : X) → (x · y) · z ≡ x · (y · z))
                     × ((x : X) → (e · x ≡ x) × (x · e ≡ x))
@@ -552,7 +552,7 @@ a proposition:
 
 \begin{code}
 
- Axioms-is-prop : (X : U ̇) (s : S X) → is-prop (Axioms X s)
+ Axioms-is-prop : (X : 𝓤 ̇) (s : S X) → is-prop (Axioms X s)
  Axioms-is-prop X (_·_ , e) (i , α , ν) = ×-is-prop
                                            (being-set-is-a-prop fe)
                                            (×-is-prop
@@ -583,8 +583,8 @@ axioms:
 
 \begin{code}
 
- Monoid : U ⁺ ̇
- Monoid = Σ \(X : U ̇) → Σ \(s : S X) → Axioms X s
+ Monoid : 𝓤 ⁺ ̇
+ Monoid = Σ \(X : 𝓤 ̇) → Σ \(s : S X) → Axioms X s
 
 \end{code}
 
@@ -605,7 +605,7 @@ And now we are ready to apply gsip-with-axioms to our situation:
 \begin{code}
 
  open gsip-with-axioms
-       U U ua S
+       𝓤 𝓤 ua S
        Axioms
        Axioms-is-prop
        (λ {A' B' (f , e) → ((λ x x' → f (mul A' x x')) ≡ (λ x x' → mul B' (f x) (f x')))
@@ -622,8 +622,8 @@ And now we are ready to apply gsip-with-axioms to our situation:
               × (f (η A) ≡ η B)
  fact = ≡-is-≃ₛ
 
- fact' : (X : U ̇) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
-         (Y : U ̇) (_⋆_ : Y → Y → Y) (e : Y) (β : Axioms Y (_⋆_ , e))
+ fact' : (X : 𝓤 ̇) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
+         (Y : 𝓤 ̇) (_⋆_ : Y → Y → Y) (e : Y) (β : Axioms Y (_⋆_ , e))
        → ((X , (_·_ , d) , α) ≡ (Y , (_⋆_ , e) , β))
        ≃ Σ \(f : X → Y)
                → is-equiv f

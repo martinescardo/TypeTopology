@@ -14,31 +14,31 @@ open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv
 
-left-cancellable-reflects-is-prop : {X : U ̇} {Y : V ̇} (f : X → Y)
+left-cancellable-reflects-is-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                  → left-cancellable f → is-prop Y → is-prop X
 left-cancellable-reflects-is-prop f lc i x x' = lc (i (f x) (f x'))
 
-section-lc : {X : U ̇} {A : V ̇} (s : X → A) → has-retraction s → left-cancellable s
-section-lc {U} {V} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
+section-lc : {X : 𝓤 ̇} {A : 𝓥 ̇} (s : X → A) → has-retraction s → left-cancellable s
+section-lc {𝓤} {𝓥} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
 
-is-equiv-lc : {X Y : U ̇} (f : X → Y) → is-equiv f → left-cancellable f
+is-equiv-lc : {X Y : 𝓤 ̇} (f : X → Y) → is-equiv f → left-cancellable f
 is-equiv-lc f (_ , hasr) = section-lc f hasr
 
-left-cancellable-closed-under-∘ : {X : U ̇} {Y : V ̇} {Z : W ̇} (f : X → Y) (g : Y → Z)
+left-cancellable-closed-under-∘ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
                                 → left-cancellable f → left-cancellable g → left-cancellable (g ∘ f)
 left-cancellable-closed-under-∘ f g lcf lcg = lcf ∘ lcg
 
-NatΣ-lc : {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B)
+NatΣ-lc : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇} (f : Nat A B)
         → ((x : X) → left-cancellable(f x))
         → left-cancellable (NatΣ f)
-NatΣ-lc {U} {V} {W} {X} {A} {B} f flc {x , a} {x' , a'} p = to-Σ-≡ (ap pr₁ p , γ)
+NatΣ-lc {𝓤} {𝓥} {𝓦} {X} {A} {B} f flc {x , a} {x' , a'} p = to-Σ-≡ (ap pr₁ p , γ)
  where
   γ : transport A (ap pr₁ p) a ≡ a'
   γ = flc x' (f x' (transport A (ap pr₁ p) a) ≡⟨ nat-transport f (ap pr₁ p) ⟩
               transport B (ap pr₁ p) (f x a)  ≡⟨ from-Σ-≡' p ⟩
               f x' a'                         ∎)
 
-NatΠ-lc : {X : U ̇} {A : X → V ̇} {B : X → W ̇} (f : Nat A B)
+NatΠ-lc : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇} (f : Nat A B)
         → ((x : X) → left-cancellable(f x))
         → {g g' : Π A} → NatΠ f g ≡ NatΠ f g' → g ∼ g'
 NatΠ-lc f flc {g} {g'} p x = flc x (happly p x)

@@ -19,7 +19,7 @@ amounts to Theorem-3·6 of the paper
 open import SpartanMLTT
 open import UF-FunExt
 
-module ConvergentSequenceCompact (fe : funext U₀ U₀) where
+module ConvergentSequenceCompact (fe : funext 𝓤₀ 𝓤₀) where
 
 open import Two
 open import UF-PropTrunc
@@ -102,7 +102,7 @@ Corollaries:
 ℕ∞→𝟚-discrete : discrete(ℕ∞ → 𝟚)
 ℕ∞→𝟚-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → 𝟚-discrete)
 
-module _ (fe' : ∀ U V → funext U V) (pt : PropTrunc) where
+module _ (fe' : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropTrunc) where
 
  open import WeaklyCompactTypes (fe') (pt)
 

@@ -26,15 +26,16 @@ codistances) is minimum.
 open import SpartanMLTT
 open import UF-FunExt
 
-module CoNaturalsArithmetic (fe : ∀ U V → funext U V) where
+module CoNaturalsArithmetic (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+
+private
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two
 open import GenericConvergentSequence
 open import CoNaturals fe
 open import UF-Base
-
-fe₀ : funext U₀ U₀
-fe₀ = fe U₀ U₀
 
 \end{code}
 
@@ -44,7 +45,7 @@ homomorphism to the final coalgebra PRED : ℕ∞ → 𝟙 + ℕ∞ on ℕ∞.
 \begin{code}
 
 private
- κ-min : ℕ∞ × ℕ∞ → 𝟙 {U₀} + ℕ∞ × ℕ∞
+ κ-min : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-min (u , v) = 𝟚-Cases (positivity u)
                   (inl *)
                   (𝟚-Cases (positivity v)
@@ -75,7 +76,7 @@ Maximum (another version is defined in GenericConvergentSequence):
 \begin{code}
 
 private
- κ-max : ℕ∞ × ℕ∞ → 𝟙 {U₀} + ℕ∞ × ℕ∞
+ κ-max : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-max (u , v) = 𝟚-Cases (positivity u)
                    (𝟚-Cases (positivity v)
                       (inl *)
@@ -104,7 +105,7 @@ Addition:
 \begin{code}
 
 private
- κ-add : ℕ∞ × ℕ∞ → 𝟙 {U₀} + ℕ∞ × ℕ∞
+ κ-add : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-add (u , v) = 𝟚-Cases (positivity u)
                    (𝟚-Cases (positivity v)
                       (inl *)

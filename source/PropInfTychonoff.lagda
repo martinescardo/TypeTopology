@@ -9,7 +9,7 @@ Adapted from the module PropTychnoff to take order into account.
 open import SpartanMLTT
 open import UF-FunExt
 
-module PropInfTychonoff (fe : ∀ U V → funext U V) where
+module PropInfTychonoff (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import Two
 open import CompactTypes
@@ -21,21 +21,21 @@ open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
 
-prop-inf-tychonoff : {X : U ̇} {Y : X → V ̇} → is-prop X
-              → (_≺_ : {x : X} → Y x → Y x → W ̇)
+prop-inf-tychonoff : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → is-prop X
+              → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇)
               → ((x : X) → inf-compact(λ (y y' : Y x) → ¬(y' ≺ y)))
               → inf-compact (λ (φ γ : Π Y) → ¬ Σ \(x : X) → γ x ≺ φ x)
-prop-inf-tychonoff {U} {V} {W} {X} {Y} hp _≺_ ε p =
+prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} hp _≺_ ε p =
  φ₀ , φ₀-is-conditional-root , a , b
  where
-  _≼_ : {x : X} → Y x → Y x → W ̇
+  _≼_ : {x : X} → Y x → Y x → 𝓦 ̇
   y ≼ y' = ¬(y' ≺ y)
 
-  _≤_ : Π Y → Π Y → U ⊔ W ̇
+  _≤_ : Π Y → Π Y → 𝓤 ⊔ 𝓦 ̇
   φ ≤ γ = ¬ Σ \(x : X) → γ x ≺ φ x
 
   hip : (x : X) → Π Y ≃ Y x
-  hip = prop-indexed-product (fe U V) hp
+  hip = prop-indexed-product (fe 𝓤 𝓥) hp
 
   h : (x : X) → Y x → Π Y
   h x = pr₁(pr₂(pr₂(hip x)))
@@ -67,7 +67,7 @@ prop-inf-tychonoff {U} {V} {W} {X} {Y} hp _≺_ ε p =
   φ₀-is-conditional-root-assuming-X-empty u (φ , r) = ap p c ∙ r
    where
     c : φ₀ ≡ φ
-    c = dfunext (fe U V) (λ x → unique-from-𝟘(u x))
+    c = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘(u x))
 
   c₀ : (Σ \(φ : Π Y) → p φ ≡ ₀) → X → p φ₀ ≡ ₀
   c₀ σ x = φ₀-is-conditional-root-assuming-X x σ

@@ -8,7 +8,7 @@ of a given type.
 
 A subset of a type X in a universe U is an embedding of some given
 type into X, or, equivalently, a map of X into the subtype classifier
-Ω U of the universe U (see the module UF-Classifiers).
+Ω 𝓤 of the universe U (see the module UF-Classifiers).
 
 \begin{code}
 
@@ -17,9 +17,9 @@ open import UF-FunExt
 open import UF-Univalence
 
 module UF-SubsetIdentity
-        (U : Universe)
-        (ua : is-univalent U)
-        (ua' : is-univalent (U ⁺))
+        (𝓤 : Universe)
+        (ua : is-univalent 𝓤)
+        (ua' : is-univalent (𝓤 ⁺))
        where
 
 open import UF-Base
@@ -27,32 +27,32 @@ open import UF-Subsingletons
 open import UF-UA-FunExt
 open import UF-Subsingletons-FunExt
 
-fe : funext U U
+fe : funext 𝓤 𝓤
 fe = funext-from-univalence ua
 
-fe' : funext U (U ⁺)
-fe' = funext-from-univalence' U (U ⁺) ua ua'
+fe' : funext 𝓤 (𝓤 ⁺)
+fe' = funext-from-univalence' 𝓤 (𝓤 ⁺) ua ua'
 
-pe : propext U
+pe : propext 𝓤
 pe = UA-gives-propext ua
 
-powerset : U ̇ → U ⁺ ̇
-powerset X = X → Ω U
+powerset : 𝓤 ̇ → 𝓤 ⁺ ̇
+powerset X = X → Ω 𝓤
 
-_∈_ : {X : U ̇} → X → powerset X → U ̇
+_∈_ : {X : 𝓤 ̇} → X → powerset X → 𝓤 ̇
 x ∈ A = A x holds
 
-_⊆_ : {X : U ̇} → powerset X → powerset X → U ̇
+_⊆_ : {X : 𝓤 ̇} → powerset X → powerset X → 𝓤 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
-⊆-refl : {X : U ̇} (A : powerset X) → A ⊆ A
+⊆-refl : {X : 𝓤 ̇} (A : powerset X) → A ⊆ A
 ⊆-refl A x = id
 
-⊆-refl-consequence : {X : U ̇} (A B : powerset X)
+⊆-refl-consequence : {X : 𝓤 ̇} (A B : powerset X)
                    → A ≡ B → (A ⊆ B) × (B ⊆ A)
 ⊆-refl-consequence {X} A .A refl = ⊆-refl A , ⊆-refl A
 
-subset-extensionality : {X : U ̇} (A B : powerset X)
+subset-extensionality : {X : 𝓤 ̇} (A B : powerset X)
                      → A ⊆ B → B ⊆ A → A ≡ B
 subset-extensionality {X} A B h k = dfunext fe' φ
  where

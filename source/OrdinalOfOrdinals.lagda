@@ -13,7 +13,7 @@ univalence axiom is needed.
 open import UF-FunExt
 
 module OrdinalOfOrdinals
-       (fe : ∀ U V → funext U V)
+       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
        where
 
 open import SpartanMLTT
@@ -42,7 +42,7 @@ is-order-preserving
  is-order-embedding
  is-order-equiv
  is-initial-segment
- is-simulation       : (α : Ordinal U) (β : Ordinal V) → (⟨ α ⟩ → ⟨ β ⟩) → U ⊔ V ̇
+ is-simulation       : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 
 is-order-preserving α β f = (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → f x ≺⟨ β ⟩ f y
 
@@ -62,7 +62,7 @@ is-simulation       α β f = is-initial-segment α β f × is-order-preserving 
 
 
 
-order-equivs-are-simulations : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-equivs-are-simulations : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                              → is-order-equiv α β f
                              → is-simulation α β f
 order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , p
@@ -75,29 +75,29 @@ order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , 
     m : g y ≺⟨ α ⟩ g (f x)
     m = q y (f x) l
 
-order-preservation-is-a-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-preservation-is-a-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                              → is-prop (is-order-preserving α β f)
-order-preservation-is-a-prop {U} {V} α β f =
- Π-is-prop (fe U (U ⊔ V))
-   (λ x → Π-is-prop (fe U (U ⊔ V))
-             (λ y → Π-is-prop (fe U V)
+order-preservation-is-a-prop {𝓤} {𝓥} α β f =
+ Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+   (λ x → Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+             (λ y → Π-is-prop (fe 𝓤 𝓥)
                       (λ l → Prop-valuedness β (f x) (f y))))
 
-order-reflection-is-a-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-reflection-is-a-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                            → is-prop (is-order-reflecting α β f)
-order-reflection-is-a-prop {U} {V} α β f =
- Π-is-prop (fe U (U ⊔ V))
-   (λ x → Π-is-prop (fe U (U ⊔ V))
-             (λ y → Π-is-prop (fe V U)
+order-reflection-is-a-prop {𝓤} {𝓥} α β f =
+ Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+   (λ x → Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+             (λ y → Π-is-prop (fe 𝓥 𝓤)
                       (λ l → Prop-valuedness α x y)))
 
-being-order-embedding-is-a-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+being-order-embedding-is-a-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                                 → is-prop (is-order-embedding α β f)
 being-order-embedding-is-a-prop α β f = ×-is-prop
                                           (order-preservation-is-a-prop α β f)
                                           (order-reflection-is-a-prop α β f)
 
-being-order-equiv-is-a-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+being-order-equiv-is-a-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                             → is-prop (is-order-equiv α β f)
 being-order-equiv-is-a-prop α β f = ×-is-prop
                                       (order-preservation-is-a-prop α β f)
@@ -106,7 +106,7 @@ being-order-equiv-is-a-prop α β f = ×-is-prop
                                          (λ e → order-preservation-is-a-prop β α
                                                    (back-eqtofun (f , e))))
 
-simulations-are-lc : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+simulations-are-lc : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                    → is-simulation α β f
                    → left-cancellable f
 simulations-are-lc α β f (i , p) {x} {y} = φ x y (Well-foundedness α x) (Well-foundedness α y)
@@ -138,13 +138,13 @@ simulations-are-lc α β f (i , p) {x} {y} = φ x y (Well-foundedness α x) (Wel
       d : u ≺⟨ α ⟩ x
       d = transport (λ - → - ≺⟨ α ⟩ x) c (pr₁(pr₂ b))
 
-being-initial-segment-is-a-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+being-initial-segment-is-a-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                                 → is-order-preserving α β f
                                 → is-prop (is-initial-segment α β f)
-being-initial-segment-is-a-prop {U} {V} α β f p i =
- (Π-is-prop (fe U (U ⊔ V))
-    λ x → Π-is-prop (fe V (U ⊔ V))
-            λ z → Π-is-prop (fe V (U ⊔ V))
+being-initial-segment-is-a-prop {𝓤} {𝓥} α β f p i =
+ (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+    λ x → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
+            λ z → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
                     λ l → φ x z l) i
   where
    φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop(Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
@@ -168,13 +168,13 @@ The simulations make the ordinals into a poset:
 
 \begin{code}
 
-being-simulation-is-a-prop : (α : Ordinal U) (β : Ordinal V) (f : ⟨ α ⟩ → ⟨ β ⟩)
+being-simulation-is-a-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                            → is-prop (is-simulation α β f)
 being-simulation-is-a-prop α β f = ×-prop-criterion
                                      (being-initial-segment-is-a-prop α β f ,
                                       λ _ → order-preservation-is-a-prop α β f)
 
-at-most-one-simulation : (α : Ordinal U) (β : Ordinal V) (f f' : ⟨ α ⟩ → ⟨ β ⟩)
+at-most-one-simulation : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f f' : ⟨ α ⟩ → ⟨ β ⟩)
                        → is-simulation α β f
                        → is-simulation α β f'
                        → f ∼ f'
@@ -208,20 +208,20 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
       t : f y ≡ z
       t = IH y (pr₁(pr₂ s)) ∙ pr₂(pr₂ s)
 
-_⊴_ : Ordinal U → Ordinal V → U ⊔ V ̇
+_⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-simulation α β f
 
-⊴--prop-valued : (α : Ordinal U) (β : Ordinal V) → is-prop (α ⊴ β)
-⊴--prop-valued {U} {V} α β (f , s) (g , t) =
- to-Σ-≡ (dfunext (fe U V) (at-most-one-simulation α β f g s t) ,
+⊴--prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
+⊴--prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
+ to-Σ-≡ (dfunext (fe 𝓤 𝓥) (at-most-one-simulation α β f g s t) ,
          being-simulation-is-a-prop α β g _ _)
 
-⊴-refl : (α : Ordinal U) → α ⊴ α
+⊴-refl : (α : Ordinal 𝓤) → α ⊴ α
 ⊴-refl α = id ,
            (λ x z l → z , l , refl) ,
            (λ x y l → l)
 
-⊴-trans : (α : Ordinal U) (β : Ordinal V) (γ : Ordinal W)
+⊴-trans : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (γ : Ordinal 𝓦)
         → α ⊴ β → β ⊴ γ → α ⊴ γ
 ⊴-trans α β γ (f , i , p) (g , j , q) = g ∘ f ,
                                         k ,
@@ -238,21 +238,21 @@ _⊴_ : Ordinal U → Ordinal V → U ⊔ V ̇
     b : Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
     b = i x y (pr₁ (pr₂ a))
 
-_≃ₒ_ : Ordinal U → Ordinal V → U ⊔ V ̇
+_≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₒ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-equiv α β f
 
-≃ₒ-gives-≃ : (α : Ordinal U) (β : Ordinal V) → α ≃ₒ β → ⟨ α ⟩ ≃ ⟨ β ⟩
+≃ₒ-gives-≃ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → ⟨ α ⟩ ≃ ⟨ β ⟩
 ≃ₒ-gives-≃ α β (f , p , e , q) = (f , e)
 
-≃ₒ-prop-valued : (α : Ordinal U) (β : Ordinal V)
+≃ₒ-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                → is-prop (α ≃ₒ β)
-≃ₒ-prop-valued {U} {V} α β (f , p , e , q) (f' , p' , e' , q')  =
-  to-Σ-≡ (dfunext (fe U V) (at-most-one-simulation α β f f'
+≃ₒ-prop-valued {𝓤} {𝓥} α β (f , p , e , q) (f' , p' , e' , q')  =
+  to-Σ-≡ (dfunext (fe 𝓤 𝓥) (at-most-one-simulation α β f f'
                            (order-equivs-are-simulations α β f  (p  , e ,  q))
                            (order-equivs-are-simulations α β f' (p' , e' , q'))) ,
          being-order-equiv-is-a-prop α β _ _ _)
 
-ordinal-equiv-gives-bisimilarity : (α β : Ordinal U)
+ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
                                  → α ≃ₒ β → (α ⊴ β) × (β ⊴ α)
 ordinal-equiv-gives-bisimilarity α β (f , p , e , q) =
  (f , order-equivs-are-simulations α β f (p , e , q)) ,
@@ -263,7 +263,7 @@ ordinal-equiv-gives-bisimilarity α β (f , p , e , q) =
   d : is-equiv g
   d = eqtofun-is-an-equiv (≃-sym (f , e))
 
-bisimilarity-gives-ordinal-equiv : (α β : Ordinal U)
+bisimilarity-gives-ordinal-equiv : (α β : Ordinal 𝓤)
                                  → α ⊴ β → β ⊴ α → α ≃ₒ β
 bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) =
  f , pr₂ s , qinvs-are-equivs f (g , ε , η) , pr₂ t
@@ -277,17 +277,17 @@ bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) =
   ε : (x : ⟨ α ⟩) → g (f x) ≡ x
   ε = at-most-one-simulation α α (g ∘ f) id εs (pr₂ (⊴-refl α))
 
-≃ₒ-refl : (α : Ordinal U) → α ≃ₒ α
+≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
 ≃ₒ-refl α = id , (λ x y → id) , id-is-an-equiv ⟨ α ⟩ , (λ x y → id)
 
-idtoeqₒ : (α β : Ordinal U) → α ≡ β → α ≃ₒ β
+idtoeqₒ : (α β : Ordinal 𝓤) → α ≡ β → α ≃ₒ β
 idtoeqₒ α .α refl = ≃ₒ-refl α
 
-eqtoidₒ : is-univalent U → (α β : Ordinal U)
+eqtoidₒ : is-univalent 𝓤 → (α β : Ordinal 𝓤)
         → α ≃ₒ β → α ≡ β
-eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
+eqtoidₒ {𝓤} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e) (structure β) p q
  where
-  A : (Y : U ̇) → ⟨ α ⟩ ≃ Y → U ⁺ ̇
+  A : (Y : 𝓤 ̇) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
   A Y e = (σ : OrdinalStructure Y)
         → is-order-preserving α (Y , σ) (eqtofun e)
         → is-order-preserving (Y , σ) α (back-eqtofun e)
@@ -302,24 +302,24 @@ eqtoidₒ {U} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f , e
               (φ x x')
               (ψ x x')
     c : underlying-order α ≡ underlying-order (⟨ α ⟩ , σ)
-    c = dfunext (fe U (U ⁺)) (λ x → dfunext (fe U (U ⁺)) (b x))
+    c = dfunext (fe 𝓤 (𝓤 ⁺)) (λ x → dfunext (fe 𝓤 (𝓤 ⁺)) (b x))
     d : structure α ≡ σ
     d = pr₁-lc (λ {_<_} → being-well-order-is-a-prop _<_ fe) c
     g : α ≡ (⟨ α ⟩ , σ)
     g = to-Σ-≡' d
 
-UAₒ : is-univalent U
-    → (α β : Ordinal U) → is-equiv (idtoeqₒ α β)
-UAₒ {U} ua α = nats-with-sections-are-equivs α
+UAₒ : is-univalent 𝓤
+    → (α β : Ordinal 𝓤) → is-equiv (idtoeqₒ α β)
+UAₒ {𝓤} ua α = nats-with-sections-are-equivs α
                  (idtoeqₒ α)
                  (λ β → eqtoidₒ ua α β , η β)
  where
-  η : (β : Ordinal U) (e : α ≃ₒ β)
+  η : (β : Ordinal 𝓤) (e : α ≃ₒ β)
     → idtoeqₒ α β (eqtoidₒ ua α β e) ≡ e
   η β e = ≃ₒ-prop-valued α β (idtoeqₒ α β (eqtoidₒ ua α β e)) e
 
-type-of-ordinals-is-a-set : is-univalent U → is-set (Ordinal U)
-type-of-ordinals-is-a-set {U} ua {α} {β} = equiv-to-subsingleton
+type-of-ordinals-is-a-set : is-univalent 𝓤 → is-set (Ordinal 𝓤)
+type-of-ordinals-is-a-set {𝓤} ua {α} {β} = equiv-to-subsingleton
                                              (idtoeqₒ α β , UAₒ ua α β)
                                              (≃ₒ-prop-valued α β)
 \end{code}
@@ -333,9 +333,9 @@ antisymmetric.
 
 \begin{code}
 
-⊴-antisym : is-univalent U → (α β : Ordinal U)
+⊴-antisym : is-univalent 𝓤 → (α β : Ordinal 𝓤)
           → α ⊴ β → β ⊴ α → α ≡ β
-⊴-antisym {U} ua α β l m = eqtoidₒ ua α β (bisimilarity-gives-ordinal-equiv α β l m)
+⊴-antisym {𝓤} ua α β l m = eqtoidₒ ua α β (bisimilarity-gives-ordinal-equiv α β l m)
 
 \end{code}
 
@@ -343,7 +343,7 @@ Any lower set α ↓ a of a point a : ⟨ α ⟩ forms a (sub-)ordinal:
 
 \begin{code}
 
-_↓_ : (α : Ordinal U) → ⟨ α ⟩ → Ordinal U
+_↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
 α ↓ a = (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) , _<_ , p , w , e , t
  where
   _<_ : (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → _ ̇
@@ -364,11 +364,11 @@ _↓_ : (α : Ordinal U) → ⟨ α ⟩ → Ordinal U
   t : is-transitive _<_
   t (x , _) (y , _) (z , _) l m = Transitivity α x y z l m
 
-segment-inclusion : (α : Ordinal U) (a : ⟨ α ⟩)
+segment-inclusion : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                   → ⟨ α ↓ a ⟩ → ⟨ α ⟩
 segment-inclusion α a = pr₁
 
-segment-inclusion-is-simulation : (α : Ordinal U) (a : ⟨ α ⟩)
+segment-inclusion-is-simulation : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
                                 → is-simulation (α ↓ a) α (segment-inclusion α a)
 segment-inclusion-is-simulation α a = i , p
  where
@@ -377,13 +377,13 @@ segment-inclusion-is-simulation α a = i , p
   p : is-order-preserving (α ↓ a) α (segment-inclusion α a)
   p x x' = id
 
-segment-⊴ : (α : Ordinal U) (a : ⟨ α ⟩)
+segment-⊴ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
           → (α ↓ a) ⊴ α
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
-↓-⊴-lc : (α : Ordinal U) (a b : ⟨ α ⟩)
+↓-⊴-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
        → (α ↓ a)  ⊴  (α ↓ b ) → a ≼⟨ α ⟩ b
-↓-⊴-lc {U} α a b (f , s) u l = n
+↓-⊴-lc {𝓤} α a b (f , s) u l = n
  where
   h : segment-inclusion α a ∼ segment-inclusion α b ∘ f
   h = at-most-one-simulation (α ↓ a) α
@@ -402,7 +402,7 @@ segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
   n : u ≺⟨ α ⟩ b
   n = back-transport (λ - → - ≺⟨ α ⟩ b) q m
 
-↓-lc : (α : Ordinal U) (a b : ⟨ α ⟩)
+↓-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
      → α ↓ a ≡ α ↓ b → a ≡ b
 ↓-lc α a b p =
  Extensionality α a b
@@ -416,12 +416,12 @@ a univalent universe U.
 
 \begin{code}
 
-module ordinal-of-ordinals {U} (ua : is-univalent U) where
+module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
 
- _⊲_ : Ordinal U → Ordinal U → U ⁺ ̇
+ _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
  α ⊲ β = Σ \(b : ⟨ β ⟩) → α ≡ (β ↓ b)
 
- ⊲-prop-valued : (α β : Ordinal U) → is-prop (α ⊲ β)
+ ⊲-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
  ⊲-prop-valued α β (b , p) (b' , p') = to-Σ-≡ (r , s)
   where
    r : b ≡ b'
@@ -434,17 +434,17 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
  NB. We could instead define α ⊲ β to mean that we have b with
  α ≃ₒ (β ↓ b), or with α ⊴ (β ↓ b) and (β ↓ b) ⊴ α, by antisymmetry,
  and these two alternative, equivalent, definitions make ⊲ to have
- values in the universe U rather than the next universe U ⁺.
+ values in the universe U rather than the next universe 𝓤 ⁺.
 
  A lower set of a lower set is a lower set:
 
 \begin{code}
 
- iterated-↓ : (α : Ordinal U) (a b : ⟨ α ⟩) (l : b ≺⟨ α ⟩ a)
+ iterated-↓ : (α : Ordinal 𝓤) (a b : ⟨ α ⟩) (l : b ≺⟨ α ⟩ a)
             → ((α ↓ a ) ↓ (b , l)) ≡ (α ↓ b)
  iterated-↓ α a b l = ⊴-antisym ua ((α ↓ a) ↓ (b , l)) (α ↓ b) (φ α a b l) (ψ α a b l)
   where
-   φ : (α : Ordinal U) (b u : ⟨ α ⟩) (l : u ≺⟨ α ⟩ b)
+   φ : (α : Ordinal 𝓤) (b u : ⟨ α ⟩) (l : u ≺⟨ α ⟩ b)
      → ((α ↓ b ) ↓ (u , l)) ⊴ (α ↓ u)
    φ α b u l = f , (i , p)
     where
@@ -458,7 +458,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
      p : (w w' : ⟨ (α ↓ b) ↓ (u , l) ⟩) → w ≺⟨ (α ↓ b) ↓ (u , l) ⟩ w' → f w ≺⟨ α ↓ u ⟩ (f w')
      p w w' = id
 
-   ψ : (α : Ordinal U) (b u : ⟨ α ⟩) (l : u ≺⟨ α ⟩ b)
+   ψ : (α : Ordinal 𝓤) (b u : ⟨ α ⟩) (l : u ≺⟨ α ⟩ b)
      → (α ↓ u) ⊴ ((α ↓ b ) ↓ (u , l))
    ψ α b u l = f , (i , p)
     where
@@ -478,7 +478,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
 
 \begin{code}
 
- ↓-reflects-order : (α : Ordinal U) (a b : ⟨ α ⟩)
+ ↓-reflects-order : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
                   → (α ↓ a) ⊲ (α ↓ b) → a ≺⟨ α ⟩ b
  ↓-reflects-order α a b ((u , l) , p) = back-transport (λ - → - ≺⟨ α ⟩ b) r l
   where
@@ -487,7 +487,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
    r : a ≡ u
    r = ↓-lc α a u q
 
- ↓-preserves-order : (α : Ordinal U) (a b : ⟨ α ⟩)
+ ↓-preserves-order : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
                    → a ≺⟨ α ⟩ b → (α ↓ a) ⊲ (α ↓ b)
  ↓-preserves-order α a b l = (a , l) , ((iterated-↓ α b a l)⁻¹)
 
@@ -497,7 +497,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
 
 \begin{code}
 
- ↓-accessible : (α : Ordinal U) (a : ⟨ α ⟩)
+ ↓-accessible : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
               → is-accessible _⊲_ (α ↓ a)
  ↓-accessible α a = f a (Well-foundedness α a)
   where
@@ -506,7 +506,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
     where
      IH : (b : ⟨ α ⟩) → b ≺⟨ α ⟩ a → is-accessible _⊲_ (α ↓ b)
      IH b l = f b (s b l)
-     g : (β : Ordinal U) → β ⊲ (α ↓ a) → is-accessible _⊲_ β
+     g : (β : Ordinal 𝓤) → β ⊲ (α ↓ a) → is-accessible _⊲_ β
      g β ((b , l) , p) = back-transport (is-accessible _⊲_) q (IH b l)
       where
        q : β ≡ (α ↓ b)
@@ -515,7 +515,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
  ⊲-well-founded : is-well-founded _⊲_
  ⊲-well-founded α = next α g
   where
-   g : (β : Ordinal U) → β ⊲ α → is-accessible _⊲_ β
+   g : (β : Ordinal 𝓤) → β ⊲ α → is-accessible _⊲_ β
    g β (b , p) = back-transport (is-accessible _⊲_) p (↓-accessible α b)
 
  ⊲-extensional : is-extensional _⊲_
@@ -565,7 +565,7 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
  ⊲-transitive : is-transitive _⊲_
  ⊲-transitive α β φ (a , p) (b , q) = pr₁ (transport (λ - → ⟨ - ⟩) q a) , (r ∙ s)
   where
-   t : (ψ : Ordinal U) (q : β ≡ ψ) → (β ↓ a) ≡ ψ ↓ transport (λ - → ⟨ - ⟩) q a
+   t : (ψ : Ordinal 𝓤) (q : β ≡ ψ) → (β ↓ a) ≡ ψ ↓ transport (λ - → ⟨ - ⟩) q a
    t ψ refl = refl
    r : α ≡ ((φ ↓ b) ↓ transport (λ - → ⟨ - ⟩) q a)
    r = p ∙ t (φ ↓ b) q
@@ -578,12 +578,12 @@ module ordinal-of-ordinals {U} (ua : is-univalent U) where
 \end{code}
 
  We denote the ordinal of ordinals in the universe U by O. It lives in
- the next universe U ⁺.
+ the next universe 𝓤 ⁺.
 
 \begin{code}
 
- O : Ordinal (U ⁺)
- O = Ordinal U , _⊲_ , ⊲-well-order
+ O : Ordinal (𝓤 ⁺)
+ O = Ordinal 𝓤 , _⊲_ , ⊲-well-order
 
 \end{code}
 
@@ -626,7 +626,7 @@ ordinals:
 
 \begin{code}
 
-lc-initial-segments-are-order-reflecting : (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
+lc-initial-segments-are-order-reflecting : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                                          → is-initial-segment α β f
                                          → left-cancellable f
                                          → is-order-reflecting α β f
@@ -637,13 +637,13 @@ lc-initial-segments-are-order-reflecting α β f i c x y l = m
   m : x ≺⟨ α ⟩ y
   m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂(pr₂ a))) (pr₁(pr₂ a))
 
-simulations-are-order-reflecting : (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
+simulations-are-order-reflecting : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                                  → is-simulation α β f
                                  → is-order-reflecting α β f
 simulations-are-order-reflecting α β f (i , p) = lc-initial-segments-are-order-reflecting α β f i
                                                    (simulations-are-lc α β f (i , p))
 
-order-embeddings-are-lc : (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-embeddings-are-lc : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                         → is-order-embedding α β f
                         → left-cancellable f
 order-embeddings-are-lc α β f (p , r) {x} {y} s = Extensionality α x y a b
@@ -663,7 +663,7 @@ order-embeddings-are-lc α β f (p , r) {x} {y} s = Extensionality α x y a b
     j : f u ≺⟨ β ⟩ f x
     j = back-transport (λ - → f u ≺⟨ β ⟩ -) s i
 
-order-embedings-are-embeddings : (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-embedings-are-embeddings : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                                → is-order-embedding α β f
                                → is-embedding f
 order-embedings-are-embeddings α β f (p , r) =
@@ -671,7 +671,7 @@ order-embedings-are-embeddings α β f (p , r) =
      (order-embeddings-are-lc α β f (p , r))
      (well-ordered-types-are-sets (underlying-order β) fe (is-well-ordered β))
 
-simulations-are-monotone : (α β : Ordinal U) (f : ⟨ α ⟩ → ⟨ β ⟩)
+simulations-are-monotone : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                          → is-simulation α β f
                          → is-monotone α β f
 simulations-are-monotone α β f (i , p) = φ
@@ -746,7 +746,7 @@ module example where
    i .(under n) (inl (n , refl)) (inr *) ()
    i x (inr g) (inl n) * =
      under n ,
-     transport (underlying-order ℕ∞ₒ (under n)) ((not-finite-is-∞ (fe U₀ U₀) (curry g)) ⁻¹) (∞-≺-maximal n) ,
+     transport (underlying-order ℕ∞ₒ (under n)) ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g)) ⁻¹) (∞-≺-maximal n) ,
      under𝟙-inverse-inl (under n) (lpo (under n)) n refl
    i x (inr g) (inr *) ()
 
@@ -756,7 +756,7 @@ module example where
     back-transport (λ - → - < m) (under-lc r) (⊏-gives-< k m l)
    p .(under n) y (inl (n , refl)) (inr f) l = *
    p x y (inr f) e (k , r , l) =
-    𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe U₀ U₀) (curry f))⁻¹ ∙ r))
+    𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
 
  corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ℕₒ +ₒ 𝟙ₒ)
  corollary₁ lpo = bisimilarity-gives-ordinal-equiv ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (converse-fails-constructively-converse lpo) fact
@@ -764,10 +764,10 @@ module example where
  corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
  corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₃ : is-univalent U₀ → LPO → ℕ∞ₒ ≡ (ℕₒ +ₒ 𝟙ₒ)
+ corollary₃ : is-univalent 𝓤₀ → LPO → ℕ∞ₒ ≡ (ℕₒ +ₒ 𝟙ₒ)
  corollary₃ ua lpo = eqtoidₒ ua ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)
 
- corollary₄ : is-univalent U₀ → LPO → ℕ∞ ≡ (ℕ + 𝟙)
+ corollary₄ : is-univalent 𝓤₀ → LPO → ℕ∞ ≡ (ℕ + 𝟙)
  corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}

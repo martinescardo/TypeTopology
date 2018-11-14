@@ -29,7 +29,7 @@ univalent notion of ordinal (as introduced in the HoTT Book).
 open import SpartanMLTT
 open import UF-FunExt
 
-module OrdinalNotationInterpretation (fe : ∀ U V → funext U V) where
+module OrdinalNotationInterpretation (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 \end{code}
 
@@ -39,7 +39,7 @@ we also consider towards the end of this article.
 
 \begin{code}
 
-data OE : U₀ ̇ where
+data OE : 𝓤₀ ̇ where
  One  : OE
  Add  : OE → OE → OE
  Mul  : OE → OE → OE
@@ -157,7 +157,7 @@ _≺⟪ τ ⟫_ denotes its underlying order.
                           → ι x ≺⟪ Κ ν ⟫ ι y
                           →   x ≺⟪ Δ ν ⟫   y
 
-Κ-inf-compact        : propext U₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
+Κ-inf-compact        : propext 𝓤₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
 
 brouwer-to-oe        : B → OE
 ε₀-upper-bound       : Ordᵀ

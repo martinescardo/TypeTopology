@@ -26,8 +26,8 @@ the coordinates, and doing this doesn't change the number of pebbles.
 How can this proof be formally rendered, as faithfully as possible to
 the intuition?
 
-We first define an interpretation function Fin : ℕ → U₀ of numbers as
-sets (in the universe U₀) by
+We first define an interpretation function Fin : ℕ → 𝓤₀ of numbers as
+sets (in the universe 𝓤₀) by
 
  (1) Fin   0  = 𝟘,          where 𝟘 is the empty set,
  (2) Fin(n+1) = Fin n + 𝟙,  where 𝟙 is the singleton set,
@@ -105,7 +105,7 @@ using (3) and the equivalence
 
 Among all these constructions, we use induction on ℕ only in
 
-  * the definition (1-2) of the function Fin : ℕ → U₀,
+  * the definition (1-2) of the function Fin : ℕ → 𝓤₀,
 
   * the existence (3')-(5') of addition and multiplication, and
 
@@ -141,10 +141,10 @@ foundations in Agda notation).
 open import SpartanMLTT hiding (_+'_ ; _^_)
 open import UF-FunExt
 
-module ArithmeticViaEquivalence (fe : ∀ U V → funext U V) where
+module ArithmeticViaEquivalence (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
-fe₀ : funext U₀ U₀
-fe₀ = fe U₀ U₀
+fe₀ : funext 𝓤₀ 𝓤₀
+fe₀ = fe 𝓤₀ 𝓤₀
 
 open import UF-Equiv
 open import UF-EquivalenceExamples
@@ -158,7 +158,7 @@ which defines the meaning of numbers as types.
 
 \begin{code}
 
-Fin : ℕ → U₀ ̇
+Fin : ℕ → 𝓤₀ ̇
 Fin zero     = 𝟘
 Fin (succ n) = Fin n + 𝟙
 
@@ -221,7 +221,7 @@ characterizing equations from Peano arithmetic:
 
 \end{code}
 
-Tautologically, we get that Fin : ℕ → U₀ is an
+Tautologically, we get that Fin : ℕ → 𝓤₀ is an
 addition-homomorphism:
 
 \begin{code}
@@ -231,7 +231,7 @@ Fin+homo m n = pr₂(+construction m n)
 
 \end{code}
 
-3rd and last definition by induction. The function Fin : ℕ → U₀ is
+3rd and last definition by induction. The function Fin : ℕ → 𝓤₀ is
 left-cancellable:
 
 \begin{code}

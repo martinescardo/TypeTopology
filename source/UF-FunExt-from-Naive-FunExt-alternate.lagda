@@ -27,14 +27,14 @@ open import UF-Yoneda
 open import UF-Subsingletons
 open import UF-Retracts
 
-equiv-post-comp-closure : ∀ U V W → (U ⊔ V ⊔ W) ⁺ ̇
-equiv-post-comp-closure U V W = {X : U ̇} {Y : V ̇} {A : W ̇} (f : X → Y)
-                              → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
+equiv-post-comp-closure : ∀ 𝓤 𝓦 𝓥 → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ⁺ ̇
+equiv-post-comp-closure 𝓤 𝓥 𝓦 = {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} (f : X → Y)
+                                → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 
-equiv-post-gives-funext' : equiv-post-comp-closure (U ⊔ V) U U → funext U V
-equiv-post-gives-funext' {U} {V} eqc = funext-via-singletons γ
+equiv-post-gives-funext' : equiv-post-comp-closure (𝓤 ⊔ 𝓥) 𝓤 𝓤 → funext 𝓤 𝓥
+equiv-post-gives-funext' {𝓤} {𝓥} eqc = funext-via-singletons γ
   where
-  γ : (X : U ̇) (A : X → V ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
+  γ : (X : 𝓤 ̇) (A : X → 𝓥 ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
   γ X A φ = retract-of-singleton (r , s , rs) iss
    where
    f : Σ A → X
@@ -54,10 +54,10 @@ equiv-post-gives-funext' {U} {V} eqc = funext-via-singletons γ
    rs : ∀ φ → r (s φ) ≡ φ
    rs φ = refl
 
-naive-funext-gives-funext' : naive-funext U (U ⊔ V) → naive-funext U U → funext U V
+naive-funext-gives-funext' : naive-funext 𝓤 (𝓤 ⊔ 𝓥) → naive-funext 𝓤 𝓤 → funext 𝓤 𝓥
 naive-funext-gives-funext' nfe nfe' = equiv-post-gives-funext' (equiv-post nfe nfe')
 
-naive-funext-gives-funext : naive-funext U U → funext U U
+naive-funext-gives-funext : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤
 naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 
 \end{code}

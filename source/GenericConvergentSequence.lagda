@@ -28,8 +28,8 @@ open import UF-Equiv
 open import UF-Retracts
 open import UF-Miscelanea
 
-funext₀ : U₁ ̇
-funext₀ = funext U₀ U₀
+funext₀ : 𝓤₁ ̇
+funext₀ = funext 𝓤₀ 𝓤₀
 
 \end{code}
 
@@ -38,13 +38,13 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 
 \begin{code}
 
-decreasing : (ℕ → 𝟚) → U₀ ̇
+decreasing : (ℕ → 𝟚) → 𝓤₀ ̇
 decreasing α = (i : ℕ) → α(succ i) ≤₂ α i
 
 being-decreasing-is-a-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
 being-decreasing-is-a-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
-ℕ∞ : U₀ ̇
+ℕ∞ : 𝓤₀ ̇
 ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α
 
 incl : ℕ∞ → (ℕ → 𝟚)
@@ -126,7 +126,7 @@ open import TotallySeparated
   g = incl-lc fe l
 
 Zero : ℕ∞
-Zero = ((λ i → ₀) , λ i → id {U₀} {₀ ≡ ₁})
+Zero = ((λ i → ₀) , λ i → id {𝓤₀} {₀ ≡ ₁})
 
 Succ : ℕ∞ → ℕ∞
 Succ (α , d) = (α' , d')
@@ -138,10 +138,10 @@ Succ (α , d) = (α' , d')
   d' 0 = λ r → refl
   d' (succ i) = d i
 
-_⊑_ : ℕ∞ → ℕ → U₀ ̇
+_⊑_ : ℕ∞ → ℕ → 𝓤₀ ̇
 u ⊑ n = incl u n ≡ ₀
 
-_⊏_ : ℕ → ℕ∞ → U₀ ̇
+_⊏_ : ℕ → ℕ∞ → 𝓤₀ ̇
 n ⊏ u = incl u n ≡ ₁
 
 not-⊏-is-⊒ : {m : ℕ} {u : ℕ∞} → ¬(m ⊏ u) → u ⊑ m
@@ -150,10 +150,10 @@ not-⊏-is-⊒ f = Lemma[b≢₁→b≡₀] f
 not-⊑-is-⊐ : {m : ℕ} {u : ℕ∞} → ¬(u ⊑ m) → m ⊏ u
 not-⊑-is-⊐ f = Lemma[b≢₀→b≡₁] f
 
-is-Zero : ℕ∞ → U₀ ̇
+is-Zero : ℕ∞ → 𝓤₀ ̇
 is-Zero u = u ⊑ 0
 
-is-positive : ℕ∞ → U₀ ̇
+is-positive : ℕ∞ → 𝓤₀ ̇
 is-positive u = 0 ⊏ u
 
 positivity : ℕ∞ → 𝟚
@@ -166,7 +166,7 @@ Zero-not-Succ : {u : ℕ∞} → Zero ≢ Succ u
 Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
 
 ∞ : ℕ∞
-∞ = ((λ i → ₁) , λ i → id {U₀} {₁ ≡ ₁})
+∞ = ((λ i → ₁) , λ i → id {𝓤₀} {₁ ≡ ₁})
 
 Succ-∞-is-∞ : funext₀ → Succ ∞ ≡ ∞
 Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma)
@@ -205,7 +205,7 @@ under : ℕ → ℕ∞
 under 0 = Zero
 under (succ n) = Succ(under n)
 
-_≣_ : ℕ∞ → ℕ → U₀ ̇
+_≣_ : ℕ∞ → ℕ → 𝓤₀ ̇
 u ≣ n = u ≡ under n
 
 under-lc : left-cancellable under
@@ -275,7 +275,7 @@ Zero-or-Succ fe₀ u = 𝟚-equality-cases
                       (λ (z : is-Zero u) → inl (is-Zero-equal-Zero fe₀ z))
                       (λ (p : is-positive u) → inr (positive-equal-Succ fe₀ p))
 
-is-Succ : ℕ∞ → U₀ ̇
+is-Succ : ℕ∞ → 𝓤₀ ̇
 is-Succ u = Σ \(w : ℕ∞) → u ≡ Succ w
 
 Zero+Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + is-Succ u
@@ -311,13 +311,13 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
-ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → U ̇}
+ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇}
             → ({u : ℕ∞} → separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f(under n) ≡ g(under n))
             → f ∞ ≡ g ∞
             → (u : ℕ∞) → f u ≡ g u
-ℕ∞-ddensity {U} fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
+ℕ∞-ddensity {𝓤} fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
  where
   a : f u ≢ g u → (n : ℕ) → u ≢ under n
   a t n = contrapositive (λ (r : u ≡ under n) → back-transport (λ - → f - ≡ g -) r (h n)) t
@@ -327,7 +327,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
-             → {Y : U ̇}
+             → {Y : 𝓤 ̇}
              → separated Y
              → {f g : ℕ∞ → Y}
              → ((n : ℕ) → f(under n) ≡ g(under n))
@@ -343,7 +343,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
 ℕ∞-𝟚-density fe = ℕ∞-density fe 𝟚-is-separated
 
 under𝟙 : ℕ + 𝟙 → ℕ∞
-under𝟙 = cases {U₀} {U₀} under (λ _ → ∞)
+under𝟙 = cases {𝓤₀} {𝓤₀} under (λ _ → ∞)
 
 under𝟙-embedding : funext₀ → is-embedding under𝟙
 under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-embedding fe) g d
@@ -400,7 +400,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
         g : u ≡ under(succ n) → u ⊑ succ n
         g r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀(succ n)
 
-is-finite : ℕ∞ → U₀ ̇
+is-finite : ℕ∞ → 𝓤₀ ̇
 is-finite u = Σ \(n : ℕ) → under n ≡ u
 
 size : {u : ℕ∞} → is-finite u → ℕ
@@ -444,7 +444,7 @@ Order on ℕ∞:
 
 \begin{code}
 
-_≼_ : ℕ∞ → ℕ∞ → U₀ ̇
+_≼_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
 
 ≼-anti : funext₀ → (u v : ℕ∞) → u ≼ v → v ≼ u → u ≡ v
@@ -513,7 +513,7 @@ as the need arises.
 ∞-⊏-maximal : (n : ℕ) → n ⊏ ∞
 ∞-⊏-maximal n = refl
 
-_≺_ : ℕ∞ → ℕ∞ → U₀ ̇
+_≺_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 
 ∞-top : (u : ℕ∞) → ¬(∞ ≺ u)
@@ -705,8 +705,8 @@ Another version of N∞, to be investigated.
 
 \begin{code}
 
-Ν∞ : U₁ ̇
-Ν∞ = Σ \(A : ℕ → Ω U₀) → (n : ℕ) → A (succ n) holds → A n holds
+Ν∞ : 𝓤₁ ̇
+Ν∞ = Σ \(A : ℕ → Ω 𝓤₀) → (n : ℕ) → A (succ n) holds → A n holds
 
 \end{code}
 

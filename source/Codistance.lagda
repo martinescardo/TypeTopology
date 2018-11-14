@@ -25,7 +25,7 @@ We then discuss further codistance axioms.
 open import SpartanMLTT
 open import UF-FunExt
 
-module Codistance (fe : ∀ U V → funext U V) where
+module Codistance (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import Two
 open import Sequence fe
@@ -35,8 +35,8 @@ open import DiscreteAndSeparated
 open import UF-Miscelanea
 
 module sequences
-        {U : Universe}
-        (D : U ̇)
+        {𝓤 : Universe}
+        (D : 𝓤 ̇)
         (δ : discrete D)
        where
 
@@ -49,17 +49,17 @@ the functor 𝟙 + (-), which we refer to as corecursion.
 \begin{code}
 
  private
-  $ : U ̇
-  $ = ℕ → D
-  X : U ̇
-  X = $ × $
-  f : (α β : $) → head α ≡ head β → 𝟙 {U₀} + X
+  𝓢 : 𝓤 ̇
+  𝓢 = ℕ → D
+  X : 𝓤 ̇
+  X = 𝓢 × 𝓢
+  f : (α β : 𝓢) → head α ≡ head β → 𝟙 {𝓤₀} + X
   f α β q = inr (tail α , tail β)
-  g : (α β : $) → head α ≢ head β → 𝟙 {U₀} + X
+  g : (α β : 𝓢) → head α ≢ head β → 𝟙 {𝓤₀} + X
   g α β n = inl *
-  p : X → 𝟙 {U₀} + X
+  p : X → 𝟙 {𝓤₀} + X
   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
-  c : $ → $ → ℕ∞
+  c : 𝓢 → 𝓢 → ℕ∞
   c = curry (ℕ∞-corec p)
 
 \end{code}
@@ -69,7 +69,7 @@ We use the private name "c" in this submodule, which is exported as
 
 \begin{code}
 
- codistance : $ → $ → ℕ∞
+ codistance : 𝓢 → 𝓢 → ℕ∞
  codistance = c
 
 \end{code}
@@ -78,13 +78,13 @@ The two defining properties of the function c are the following:
 
 \begin{code}
 
- codistance-eq₀ : (α β : $) → head α ≢ head β → c α β ≡ Zero
- codistance-eq₁ : (α β : $) → head α ≡ head β → c α β ≡ Succ (c (tail α) (tail β))
+ codistance-eq₀ : (α β : 𝓢) → head α ≢ head β → c α β ≡ Zero
+ codistance-eq₁ : (α β : 𝓢) → head α ≡ head β → c α β ≡ Succ (c (tail α) (tail β))
 
  codistance-eq₀ α β n = γ r
   where
    t : δ (head α) (head β) ≡ inr n
-   t = discrete-inr (fe U U₀) δ (head α) (head β) n
+   t = discrete-inr (fe 𝓤 𝓤₀) δ (head α) (head β) n
    r : p (α , β) ≡ inl *
    r = ap (cases (f α β) (g α β)) t
    γ : p (α , β) ≡ inl * → c α β ≡ Zero
@@ -106,19 +106,19 @@ coinduction on ℕ∞ using codistance-eq₁:
 
 \begin{code}
 
- infinitely-close-to-itself : (α : $) → c α α ≡ ∞
+ infinitely-close-to-itself : (α : 𝓢) → c α α ≡ ∞
  infinitely-close-to-itself α = ℕ∞-coinduction R b (c α α) ∞ γ
   where
    l : ∀ α → c α α ≡ Succ (c (tail α) (tail α))
    l α = codistance-eq₁ α α refl
-   R : ℕ∞ → ℕ∞ → U ̇
-   R u v = (Σ \(α : $) → u ≡ c α α) × (v ≡ ∞)
+   R : ℕ∞ → ℕ∞ → 𝓤 ̇
+   R u v = (Σ \(α : 𝓢) → u ≡ c α α) × (v ≡ ∞)
    b : ℕ∞-bisimulation R
    b .(c α α) .∞ ((α , refl) , refl) = s , t , Pred-∞-is-∞
     where
      s : positivity (c α α) ≡ positivity ∞
-     s = successors-same-positivity (l α) ((Succ-∞-is-∞ (fe U₀ U₀))⁻¹)
-     t : Σ (\(α' : $) → Pred (c α α) ≡ c α' α')
+     s = successors-same-positivity (l α) ((Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹)
+     t : Σ (\(α' : 𝓢) → Pred (c α α) ≡ c α' α')
      t = tail α , (ap Pred (l α) ∙ Pred-Succ)
    γ : R (c α α) ∞
    γ = (α , refl) , refl
@@ -131,10 +131,10 @@ impossible case) and codistance-eq₁ (to establish the result):
 
 \begin{code}
 
- infinitely-close-are-equal : (α β : $) → c α β ≡ ∞ → α ≡ β
+ infinitely-close-are-equal : (α β : 𝓢) → c α β ≡ ∞ → α ≡ β
  infinitely-close-are-equal = seq-coinduction (λ α β → c α β ≡ ∞) b
   where
-   b : (α β : $) → c α β ≡ ∞
+   b : (α β : 𝓢) → c α β ≡ ∞
                  → (head α ≡ head β) × (c (tail α) (tail β) ≡ ∞)
    b α β q = d , e
     where
@@ -147,7 +147,7 @@ impossible case) and codistance-eq₁ (to establish the result):
           (λ (n : head α ≢ head β)
                 → 𝟘-elim (Zero-not-Succ (Zero    ≡⟨ (l n)⁻¹ ⟩
                                          c α β   ≡⟨ q ⟩
-                                         ∞       ≡⟨ (Succ-∞-is-∞ (fe U₀ U₀))⁻¹ ⟩
+                                         ∞       ≡⟨ (Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹ ⟩
                                          Succ ∞  ∎)))
      e : c (tail α) (tail β) ≡ ∞
      e = ap Pred (Succ (c (tail α) (tail β)) ≡⟨ (codistance-eq₁ α β d)⁻¹ ⟩
@@ -190,7 +190,7 @@ convergent sequence:
 ℕ∞-equal-are-infinitely-close u .u refl = ℕ∞-infinitely-close-to-itself u
 
 ℕ∞-infinitely-close-are-equal : (u v : ℕ∞) → ℕ∞-codistance u v ≡ ∞ → u ≡ v
-ℕ∞-infinitely-close-are-equal u v r = incl-lc (fe U₀ U₀) γ
+ℕ∞-infinitely-close-are-equal u v r = incl-lc (fe 𝓤₀ 𝓤₀) γ
  where
   γ : incl u ≡ incl v
   γ = Cantor-infinitely-close-are-equal (incl u) (incl v) r
@@ -208,7 +208,7 @@ is-codistance
  self-indistinguishable
  is-symmetric
  is-ultra
-  : {X : U ̇} → (X → X → ℕ∞) → U ̇
+  : {X : 𝓤 ̇} → (X → X → ℕ∞) → 𝓤 ̇
 
 indistinguishable-are-equal c = ∀ x y → c x y ≡ ∞ → x ≡ y
 self-indistinguishable      c = ∀ x → c x x ≡ ∞

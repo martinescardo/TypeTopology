@@ -8,32 +8,32 @@ open import SpartanMLTT
 
 module LeftOvers where
 
-KK : U ̇ → V ̇ → U ⊔ V ̇
+KK : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 KK R X = (X → R) → R
 
-K-functor : {R : U ̇} {X : V ̇} {Y : W ̇} → (X → Y) → KK R X → KK R Y
+K-functor : {R : 𝓤 ̇} {X : 𝓥 ̇} {Y : 𝓦 ̇} → (X → Y) → KK R X → KK R Y
 K-functor = dual _ ∘ dual _
 
-ηK : {R : U ̇} {X : V ̇} → X → KK R X
+ηK : {R : 𝓤 ̇} {X : 𝓥 ̇} → X → KK R X
 ηK x p = p x
 
-K-unshift : {R : U ̇} {X : V ̇} {Y : X → W ̇}
+K-unshift : {R : 𝓤 ̇} {X : 𝓥 ̇} {Y : X → 𝓦 ̇}
    → KK R ((x : X) → Y x) → (x : X) → KK R (Y x)
 K-unshift = λ f x g → f(λ h → g(h x))
 
-ku : {R : U ̇} {X : V ̇} {Y : W ̇} → KK R (X × Y) → KK R X × KK R Y
+ku : {R : 𝓤 ̇} {X : 𝓥 ̇} {Y : 𝓦 ̇} → KK R (X × Y) → KK R X × KK R Y
 ku φ = (K-functor pr₁ φ , K-functor pr₂ φ)
 
-quant-prod : {X R : U ̇} {Y : X → V ̇}
+quant-prod : {X R : 𝓤 ̇} {Y : X → 𝓥 ̇}
     → KK R X → ((x : X)  → KK R (Y x)) → KK R ((Σ \(x : X)  → Y x))
 quant-prod φ γ p = φ(λ x → γ x (λ y → p(x , y)))
 
-JJ : U ̇ → V ̇ → U ⊔ V ̇
+JJ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 JJ R X = (X → R) → X
 
-sel-prod : {R : U ̇} {X : V ̇} {Y : X → W ̇}
+sel-prod : {R : 𝓤 ̇} {X : 𝓥 ̇} {Y : X → 𝓦 ̇}
          → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ \(x : X) → Y x)
-sel-prod {U} {V} {W} {R} {X} {Y} ε δ p = (x₀ , y₀)
+sel-prod {𝓤} {𝓥} {𝓦} {R} {X} {Y} ε δ p = (x₀ , y₀)
    where
     next : (x : X) → Y x
     next x = δ x (λ y → p(x , y))
@@ -48,12 +48,12 @@ Alternative, equivalent, construction:
 
 \begin{code}
 
-overline : {R : U ̇} {X : V ̇} → JJ R X → KK R X
+overline : {R : 𝓤 ̇} {X : 𝓥 ̇} → JJ R X → KK R X
 overline ε p = p(ε p)
 
-sel-prod' : {R : U ̇} {X : V ̇} {Y : X → W ̇}
+sel-prod' : {R : 𝓤 ̇} {X : 𝓥 ̇} {Y : X → 𝓦 ̇}
           → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ \(x : X) → Y x)
-sel-prod' {U} {V} {W} {R} {X} {Y} ε δ p = (x₀ , y₀)
+sel-prod' {𝓤} {𝓥} {𝓦} {R} {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X
     x₀ = ε(λ x → overline(δ x) (λ y → p(x , y)))

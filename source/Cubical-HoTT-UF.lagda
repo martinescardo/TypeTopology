@@ -55,11 +55,11 @@ open import Cubical public
            ; ∥∥-induction    -- Dependent elimination.
 
            ; Universe       -- The type of universes (originally called Level).
-           ; U₀             -- The first universe (originally called lzero).
-           ; _̇              -- We write X : U ̇ to say that X is in the universe U
+           ; 𝓤₀             -- The first universe (originally called lzero).
+           ; _̇              -- We write X : 𝓤 ̇ to say that X is in the universe U
                             -- (originally X : Set U).
            ; _⁺             -- The successor of a universe (originally called lsucc).
-           ; _⊔_            -- U ⊔ V is the first universe above or equal U and V.
+           ; _⊔_            -- 𝓤 ⊔ 𝓥 is the first universe above or equal U and V.
            )
 
 \end{code}
@@ -74,7 +74,7 @@ Here is an illustration of how function extensionality computes.
 
 private
 
-  data ℕ : U₀ ̇ where
+  data ℕ : 𝓤₀ ̇ where
    zero : ℕ
    succ : ℕ → ℕ
 

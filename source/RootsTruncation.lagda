@@ -16,8 +16,8 @@ open import SpartanMLTT
 open import UF-Base
 open import DiscreteAndSeparated
 
-module RootsTruncation (U : Universe)
-                       (Z : U ̇)
+module RootsTruncation (𝓤 : Universe)
+                       (Z : 𝓤 ̇)
                        (z : Z)
                        (z-isolated : isolated' z)
                        where
@@ -35,15 +35,15 @@ n ≡ z.
 
 \begin{code}
 
-_has-no-root<_ : (ℕ → Z) → ℕ → U ̇
+_has-no-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
 α has-no-root< k = (n : ℕ) → n < k → α n ≢ z
 
-_has-a-minimal-root<_ : (ℕ → Z) → ℕ → U ̇
+_has-a-minimal-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
 α has-a-minimal-root< k = Σ \(m : ℕ) → (α m ≡ z)
                                      × (m < k)
                                      × α has-no-root< m
 
-FPO : ℕ → (ℕ → Z) → U ̇
+FPO : ℕ → (ℕ → Z) → 𝓤 ̇
 FPO k α = α has-a-minimal-root< k
         + α has-no-root< k
 
@@ -91,7 +91,7 @@ be empty, and still the function is well defined.
 
 \begin{code}
 
-roots : (ℕ → Z) → U ̇
+roots : (ℕ → Z) → 𝓤 ̇
 roots α = Σ \(n : ℕ) → α n ≡ z
 
 μρ : (α : ℕ → Z) → roots α → roots α
@@ -129,7 +129,7 @@ roots α = Σ \(n : ℕ) → α n ≡ z
   r : μρ α (n , p) ≡ μρ α (n' , p')
   r = to-Σ-≡ (q , isolated-Id-is-prop z z-isolated _ _ _)
 
-roots-has-prop-truncation : (α : ℕ → Z) → ∀ U → has-prop-truncation U (roots α)
+roots-has-prop-truncation : (α : ℕ → Z) → ∀ 𝓤 → has-prop-truncation 𝓤 (roots α)
 roots-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)
 
 \end{code}
@@ -138,7 +138,7 @@ Explicitly (and repeating the construction of roots-has-prop-truncation):
 
 \begin{code}
 
-roots-truncation : (ℕ → Z) → U ̇
+roots-truncation : (ℕ → Z) → 𝓤 ̇
 roots-truncation α = Σ \(r : roots α) → r ≡ μρ α r
 
 roots-truncation-is-a-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
@@ -147,7 +147,7 @@ roots-truncation-is-a-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
 roots-η : (α : ℕ → Z) → roots α → roots-truncation α
 roots-η α = to-fix (μρ α) (μρ-constant α)
 
-roots-universal : (α : ℕ → Z) (P : U ̇)
+roots-universal : (α : ℕ → Z) (P : 𝓤 ̇)
                 → is-prop P → (roots α → P) → roots-truncation α → P
 roots-universal α P _ f t = f (from-fix (μρ α) t)
 

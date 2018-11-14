@@ -11,24 +11,24 @@ module Two where
 
 open import SpartanMLTT
 
-𝟚-Cases : {A : U ̇} → 𝟚 → A → A → A
+𝟚-Cases : {A : 𝓤 ̇} → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a
 
-𝟚-equality-cases : {A : U ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
-𝟚-equality-cases {U} {A} {₀} f₀ f₁ = f₀ refl
-𝟚-equality-cases {U} {A} {₁} f₀ f₁ = f₁ refl
+𝟚-equality-cases : {A : 𝓤 ̇} {b : 𝟚} → (b ≡ ₀ → A) → (b ≡ ₁ → A) → A
+𝟚-equality-cases {𝓤} {A} {₀} f₀ f₁ = f₀ refl
+𝟚-equality-cases {𝓤} {A} {₁} f₀ f₁ = f₁ refl
 
-𝟚-equality-cases₀ : {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
-                 → (p : b ≡ ₀) → 𝟚-equality-cases {U} {A} {b} f₀ f₁ ≡ f₀ p
-𝟚-equality-cases₀ {U} {A} {.₀} refl = refl
+𝟚-equality-cases₀ : {A : 𝓤 ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
+                 → (p : b ≡ ₀) → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ≡ f₀ p
+𝟚-equality-cases₀ {𝓤} {A} {.₀} refl = refl
 
-𝟚-equality-cases₁ : {A : U ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
-                 → (p : b ≡ ₁) → 𝟚-equality-cases {U} {A} {b} f₀ f₁ ≡ f₁ p
-𝟚-equality-cases₁ {U} {A} {.₁} refl = refl
+𝟚-equality-cases₁ : {A : 𝓤 ̇} {b : 𝟚} {f₀ : b ≡ ₀ → A} {f₁ : b ≡ ₁ → A}
+                 → (p : b ≡ ₁) → 𝟚-equality-cases {𝓤} {A} {b} f₀ f₁ ≡ f₁ p
+𝟚-equality-cases₁ {𝓤} {A} {.₁} refl = refl
 
-𝟚-equality-cases' : {A₀ A₁ : U ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
-𝟚-equality-cases' {U} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
-𝟚-equality-cases' {U} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
+𝟚-equality-cases' : {A₀ A₁ : 𝓤 ̇} {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
+𝟚-equality-cases' {𝓤} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
+𝟚-equality-cases' {𝓤} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
 
 𝟚-possibilities : (b : 𝟚) → (b ≡ ₀) + (b ≡ ₁)
 𝟚-possibilities ₀ = inl refl
@@ -65,7 +65,7 @@ complement : 𝟚 → 𝟚
 complement ₀ = ₁
 complement ₁ = ₀
 
-complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {U}
+complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {𝓤}
 complement-no-fp ₀ ()
 complement-no-fp ₁ ()
 
@@ -91,10 +91,10 @@ Natural order of binary numbers:
 
 \begin{code}
 
-_<₂_ : (a b : 𝟚) → U₀ ̇
+_<₂_ : (a b : 𝟚) → 𝓤₀ ̇
 a <₂ b = (a ≡ ₀) × (b ≡ ₁)
 
-_≤₂_ : (a b : 𝟚) → U₀ ̇
+_≤₂_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≤₂ b = a ≡ ₁ → b ≡ ₁
 
 <₂-gives-≤₂ : {a b : 𝟚} → a <₂ b → a ≤₂ b
@@ -106,7 +106,7 @@ a ≤₂ b = a ≡ ₁ → b ≡ ₁
 ₀-bottom : {b : 𝟚} → ₀ ≤₂ b
 ₀-bottom ()
 
-_≤₂'_ : (a b : 𝟚) → U₀ ̇
+_≤₂'_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≤₂' b = b ≡ ₀ → a ≡ ₀
 
 ≤₂-gives-≤₂' : {a b : 𝟚} → a ≤₂ b → a ≤₂' b
@@ -129,7 +129,7 @@ a ≤₂' b = b ≡ ₀ → a ≡ ₀
 ₁-maximal : {b : 𝟚} → ₁ ≤₂ b → b ≡ ₁
 ₁-maximal = ≤₂-anti ₁-top
 
-_≥₂_ : (a b : 𝟚) → U₀ ̇
+_≥₂_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≥₂ b = b ≤₂ a
 
 min𝟚 : 𝟚 → 𝟚 → 𝟚

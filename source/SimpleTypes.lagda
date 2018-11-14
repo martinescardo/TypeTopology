@@ -16,14 +16,14 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes (fe : ∀ U V → funext U V) (pt : PropTrunc) where
+module SimpleTypes (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropTrunc) where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt
 
-data simple-type : U₀ ̇ → U₁ ̇ where
+data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base : simple-type ℕ
- step : {X Y : U₀ ̇} → simple-type X → simple-type Y → simple-type (X → Y)
+ step : {X Y : 𝓤₀ ̇} → simple-type X → simple-type Y → simple-type (X → Y)
 
 open import TotallySeparated
 open import WeaklyCompactTypes (fe) (pt) renaming (Π-compact to compact)
@@ -47,24 +47,24 @@ open import DiscreteAndSeparated
 ℕ-totally-separated : totally-separated ℕ
 ℕ-totally-separated = discrete-totally-separated (ℕ-discrete)
 
-simple-types-totally-separated : {X : U₀ ̇} → simple-type X → totally-separated X
+simple-types-totally-separated : {X : 𝓤₀ ̇} → simple-type X → totally-separated X
 simple-types-totally-separated base       = ℕ-totally-separated
-simple-types-totally-separated (step s t) = Π-totally-separated (fe U₀ U₀)
+simple-types-totally-separated (step s t) = Π-totally-separated (fe 𝓤₀ 𝓤₀)
                                               λ _ → simple-types-totally-separated t
 
-simple-types-pointed : {X : U₀ ̇} → simple-type X → X
+simple-types-pointed : {X : 𝓤₀ ̇} → simple-type X → X
 simple-types-pointed base       = zero
 simple-types-pointed (step s t) = λ x → simple-types-pointed t
 
-simple-types-r : {X A : U₀ ̇} → retract A of ℕ → simple-type X → retract A of X
+simple-types-r : {X A : 𝓤₀ ̇} → retract A of ℕ → simple-type X → retract A of X
 simple-types-r rn base       = rn
 simple-types-r rn (step s t) = retracts-of-closed-under-exponentials
-                                 (fe U₀ U₀)
+                                 (fe 𝓤₀ 𝓤₀)
                                  (simple-types-pointed s)
                                  (simple-types-r rn s)
                                  (simple-types-r rn t)
 
-cfdbce : {X Y : U₀ ̇} → simple-type X → simple-type Y
+cfdbce : {X Y : 𝓤₀ ̇} → simple-type X → simple-type Y
        → compact (X → Y) → discrete X × compact Y
 cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r 𝟚-retract-of-ℕ t) c ,
                i2c2c (simple-types-pointed s) c)
@@ -76,10 +76,10 @@ the original formalution of WLPO by Bishop (written in type theory).
 
 \begin{code}
 
-WLPO' : U₀ ̇
+WLPO' : 𝓤₀ ̇
 WLPO' = compact ℕ
 
-stcwlpo : {X : U₀ ̇} → simple-type X → compact X → WLPO'
+stcwlpo : {X : 𝓤₀ ̇} → simple-type X → compact X → WLPO'
 stcwlpo base c = c
 stcwlpo (step s t) c = stcwlpo t (pr₂ (cfdbce s t c))
 
@@ -92,10 +92,10 @@ on the notion of total separatedness:
 
 \begin{code}
 
-simple-types-rℕ : {X : U₀ ̇} → simple-type X → retract ℕ of X
+simple-types-rℕ : {X : 𝓤₀ ̇} → simple-type X → retract ℕ of X
 simple-types-rℕ = simple-types-r identity-retraction
 
-stcwlpo' : {X : U₀ ̇} → simple-type X → compact X → WLPO'
+stcwlpo' : {X : 𝓤₀ ̇} → simple-type X → compact X → WLPO'
 stcwlpo' s = retract-Π-compact (simple-types-rℕ s)
 
 \end{code}
@@ -105,10 +105,10 @@ definition of simple types:
 
 \begin{code}
 
-data simple-type₂ : U₀ ̇ → U₁ ̇ where
+data simple-type₂ : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base₂ : simple-type₂ 𝟚
  base : simple-type₂ ℕ
- step : {X Y : U₀ ̇} → simple-type₂ X → simple-type₂ Y → simple-type₂ (X → Y)
+ step : {X Y : 𝓤₀ ̇} → simple-type₂ X → simple-type₂ Y → simple-type₂ (X → Y)
 
 \end{code}
 
@@ -121,27 +121,27 @@ compact, it is necessary that X is discrete and Y is compact.
 
 \begin{code}
 
-simple-types₂-totally-separated : {X : U₀ ̇} → simple-type₂ X → totally-separated X
+simple-types₂-totally-separated : {X : 𝓤₀ ̇} → simple-type₂ X → totally-separated X
 simple-types₂-totally-separated base₂       = 𝟚-totally-separated
 simple-types₂-totally-separated base        = ℕ-totally-separated
-simple-types₂-totally-separated (step s t)  = Π-totally-separated (fe U₀ U₀)
+simple-types₂-totally-separated (step s t)  = Π-totally-separated (fe 𝓤₀ 𝓤₀)
                                                λ _ → simple-types₂-totally-separated t
 
-simple-types₂-pointed : {X : U₀ ̇} → simple-type₂ X → X
+simple-types₂-pointed : {X : 𝓤₀ ̇} → simple-type₂ X → X
 simple-types₂-pointed base₂      = ₀
 simple-types₂-pointed base       = zero
 simple-types₂-pointed (step s t) = λ x → simple-types₂-pointed t
 
-simple-types₂-r𝟚 : {X : U₀ ̇} → simple-type₂ X → retract 𝟚 of X
+simple-types₂-r𝟚 : {X : 𝓤₀ ̇} → simple-type₂ X → retract 𝟚 of X
 simple-types₂-r𝟚 base₂      = identity-retraction
 simple-types₂-r𝟚 base       = 𝟚-retract-of-ℕ
 simple-types₂-r𝟚 (step s t) = retracts-of-closed-under-exponentials
-                                 (fe U₀ U₀)
+                                 (fe 𝓤₀ 𝓤₀)
                                  (simple-types₂-pointed s)
                                  (simple-types₂-r𝟚 s)
                                  (simple-types₂-r𝟚 t)
 
-cfdbce₂ : {X Y : U₀ ̇} → simple-type₂ X → simple-type₂ Y
+cfdbce₂ : {X Y : 𝓤₀ ̇} → simple-type₂ X → simple-type₂ Y
        → compact (X → Y) → discrete X × compact Y
 cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-r𝟚 t) c ,
                  i2c2c (simple-types₂-pointed s) c)

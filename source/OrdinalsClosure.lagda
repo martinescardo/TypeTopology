@@ -9,7 +9,7 @@ Closure properties of some ordinal construnctions.
 open import UF-FunExt
 
 module OrdinalsClosure
-        (fe : ∀ U V → funext U V)
+        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
        where
 
 open import SpartanMLTT
@@ -80,7 +80,7 @@ following construction is performed in the module SquashedCantor.
   d : retract ⟪ τ ⟫ +' ⟪ υ ⟫ of Cantor
   d = retracts-compose b c
   e : retract ⟪ τ +ᵒ υ ⟫ of (⟪ τ ⟫ +' ⟪ υ ⟫)
-  e = transport (λ - → retract ⟪ τ +ᵒ υ ⟫ of (Σ -)) (dfunext (fe U₀ U₁) l) h
+  e = transport (λ - → retract ⟪ τ +ᵒ υ ⟫ of (Σ -)) (dfunext (fe 𝓤₀ 𝓤₁) l) h
    where
     f : 𝟚 → 𝟙 + 𝟙
     f = pr₁ retract-𝟙+𝟙-of-𝟚
@@ -108,21 +108,21 @@ More Cantor-retract properties are in the module SquashedCantor.
 
 \begin{code}
 
-Σ-retract-of-ℕ : {X : U ̇} {Y : X → V ̇}
+Σ-retract-of-ℕ : {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
                → retract X of ℕ
                → ((x : X) → retract (Y x) of ℕ)
                → retract (Σ Y) of ℕ
-Σ-retract-of-ℕ {U} {V} {X} {Y} ρ R = retracts-compose b a
+Σ-retract-of-ℕ {𝓤} {𝓥} {X} {Y} ρ R = retracts-compose b a
  where
   a : retract (Σ Y) of (ℕ × ℕ)
   a = Σ-retract₂ ρ R
   b : retract (ℕ × ℕ) of ℕ
   b = equiv-retract-l pairing
 
-Σ₁-ℕ-retract : {X : ℕ → U ̇}
+Σ₁-ℕ-retract : {X : ℕ → 𝓤 ̇}
              → ((n : ℕ) → retract (X n) of ℕ)
              → retract (Σ₁ X) of ℕ
-Σ₁-ℕ-retract {U} {X} ρ = retracts-compose c b
+Σ₁-ℕ-retract {𝓤} {X} ρ = retracts-compose c b
  where
   a : (z : ℕ + 𝟙) → retract (X / over) z of ((λ _ → ℕ) / over) z
   a = retract-extension X (λ _ → ℕ) over ρ
@@ -171,7 +171,7 @@ preserving.
 
 open import UF-Embedding
 
-is-order-preserving  is-order-reflecting  : (τ υ : Ordᵀ) → (⟪ τ ⟫ → ⟪ υ ⟫) → U₀ ̇
+is-order-preserving  is-order-reflecting  : (τ υ : Ordᵀ) → (⟪ τ ⟫ → ⟪ υ ⟫) → 𝓤₀ ̇
 
 is-order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺⟪ υ ⟫ f y
 is-order-reflecting τ υ f = (x y : ⟪ τ ⟫) → f x ≺⟪ υ ⟫ f y → x ≺⟪ τ ⟫ y
@@ -438,7 +438,7 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
 𝟚ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
 𝟚ᵒ-inf-compact p = 𝟚-equality-cases φ γ
  where
-  _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → U₀ ̇
+  _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
   φ : (r : p (inl *) ≡ ₀) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
   φ r = inl * , f , g , h
@@ -475,14 +475,14 @@ logically equivalent orders.
 
 \begin{code}
 
-∑-inf-compact : propext U₀
+∑-inf-compact : propext 𝓤₀
              → (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
              → inf-compact (λ x y → x ≼⟪ τ ⟫ y)
              → ((x : ⟪ τ ⟫) → inf-compact (λ a b → a ≼⟪ υ x ⟫ b))
              → inf-compact (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
 ∑-inf-compact pe τ υ ε δ = γ
  where
-  _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → U₀ ̇
+  _≤_ : ⟪ ∑ τ υ ⟫ → ⟪ ∑ τ υ ⟫ → 𝓤₀ ̇
   _≤_ = lex-order (λ x y → x ≼⟪ τ ⟫ y) (λ {x} a b → a ≼⟪ υ x ⟫ b)
   ≤-prop-valued : (z t : ⟪ ∑ τ υ ⟫) → is-prop (z ≤ t)
   ≤-prop-valued (x , a) (y , b) (p , u) (q , v) =
@@ -491,7 +491,7 @@ logically equivalent orders.
      dfunext fe₀ (λ r → ≼-prop-valued (υ y) _ _ _ _))
   φ : inf-compact _≤_
   φ = Σ-inf-compact ((λ x y → x ≼⟪ τ ⟫ y)) ((λ {x} a b → a ≼⟪ υ x ⟫ b)) ε δ
-  open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {U₀}) hiding (_≤_)
+  open commutation (tunderlying-order τ) (λ {x} → tunderlying-order (υ x)) (𝟘 {𝓤₀}) hiding (_≤_)
   i : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t → z ≼⟪ ∑ τ υ ⟫ t
   i (x , a) (y , b) = back y x b a
   j : (z t : ⟪ ∑ τ υ ⟫) → z ≼⟪ ∑ τ υ ⟫ t → z ≤ t
@@ -499,11 +499,11 @@ logically equivalent orders.
   k : (z t : ⟪ ∑ τ υ ⟫) → z ≤ t ≡ z ≼⟪ ∑ τ υ ⟫ t
   k z t = pe (≤-prop-valued z t) (≼-prop-valued (∑ τ υ) z t) (i z t) (j z t)
   l : _≤_ ≡ (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
-  l = dfunext (fe U₀ U₁) λ z → dfunext (fe U₀ U₁) (k z)
+  l = dfunext (fe 𝓤₀ 𝓤₁) λ z → dfunext (fe 𝓤₀ 𝓤₁) (k z)
   γ : inf-compact (λ z t → z ≼⟪ ∑ τ υ ⟫ t)
   γ = transport inf-compact l φ
 
-∑₁-inf-compact : propext U₀
+∑₁-inf-compact : propext 𝓤₀
                → (τ : ℕ → Ordᵀ)
                → ((n : ℕ) → inf-compact λ x y → x ≼⟪ τ n ⟫ y)
                → inf-compact (λ z t → z ≼⟪ ∑¹ τ ⟫ t)
@@ -514,8 +514,8 @@ logically equivalent orders.
                             b
  where
   p : GenericConvergentSequence._≼_ ≡ tunderlying-rorder ℕ∞ᵒ
-  p = dfunext (fe U₀ U₁)
-       (λ u → dfunext (fe U₀ U₁)
+  p = dfunext (fe 𝓤₀ 𝓤₁)
+       (λ u → dfunext (fe 𝓤₀ 𝓤₁)
                 (λ v → pe (≼-is-prop-valued fe₀ u v)
                           (≼-prop-valued ℕ∞ᵒ u v)
                           (≼-not-≺ u v)

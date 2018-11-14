@@ -14,18 +14,18 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
 module OrdinalNotions
-        {U V : Universe}
-        {X : U ̇}
-        (_<_ : X → X → V ̇)
+        {𝓤 𝓥 : Universe}
+        {X : 𝓤 ̇}
+        (_<_ : X → X → 𝓥 ̇)
        where
 
-is-prop-valued : U ⊔ V ̇
+is-prop-valued : 𝓤 ⊔ 𝓥 ̇
 is-prop-valued = (x y : X) → is-prop(x < y)
 
-data is-accessible : X → U ⊔ V ̇ where
+data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
 
-accessible-induction : ∀ {W} (P : (x : X) → is-accessible x → W ̇)
+accessible-induction : ∀ {𝓦} (P : (x : X) → is-accessible x → 𝓦 ̇)
                      → ((x : X) (σ : (y : X) → y < x → is-accessible y)
                          → ((y : X) (l : y < x) → P y (σ y l))
                          → P x (next x σ))
@@ -45,38 +45,38 @@ prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y) → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
-transfinite-induction' :  ∀ {W} (P : X → W ̇)
+transfinite-induction' :  ∀ {𝓦} (P : X → 𝓦 ̇)
                        → ((x : X) → (∀(y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction (λ x _ → P x)
                                                   (λ x _ → f x)
 
-is-well-founded : U ⊔ V ̇
+is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
-Well-founded : ∀ {W} → U ⊔ V ⊔ W ⁺ ̇
-Well-founded {W} = (P : X → W ̇) → ((x : X) → ((y : X) → y < x → P y) → P x)
+Well-founded : ∀ {𝓦} → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
+Well-founded {𝓦} = (P : X → 𝓦 ̇) → ((x : X) → ((y : X) → y < x → P y) → P x)
                                 → (x : X) → P x
 
-transfinite-induction : is-well-founded → ∀ {W} → Well-founded {W}
+transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
 
-transfinite-induction-converse : Well-founded {U ⊔ V} → is-well-founded
+transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
 transfinite-induction-converse φ = φ is-accessible next
 
-transfinite-recursion : is-well-founded → ∀ {W} {Y : W ̇}
+transfinite-recursion : is-well-founded → ∀ {𝓦} {Y : 𝓦 ̇}
                       → ((x : X) → ((y : X) → y < x → Y) → Y) → X → Y
-transfinite-recursion w {W} {Y} = transfinite-induction w (λ x → Y)
+transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 
-is-transitive : U ⊔ V ̇
+is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
-_≼_ : X → X → U ⊔ V ̇
+_≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued-order : (∀ U V → funext U V) → is-prop-valued → (x y : X) → is-prop(x ≼ y)
-≼-prop-valued-order fe isp x y = Π-is-prop (fe U V)
-                                  (λ u → Π-is-prop (fe V V) (λ l → isp u y))
+≼-prop-valued-order : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop-valued → (x y : X) → is-prop(x ≼ y)
+≼-prop-valued-order fe isp x y = Π-is-prop (fe 𝓤 𝓥)
+                                  (λ u → Π-is-prop (fe 𝓥 𝓥) (λ l → isp u y))
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -84,10 +84,10 @@ x ≼ y = ∀ u → u < x → u < y
 ≼-trans : {x y z : X} → x ≼ y → y ≼ z → x ≼ z
 ≼-trans f g u l = g u (f u l)
 
-is-extensional : U ⊔ V ̇
+is-extensional : 𝓤 ⊔ 𝓥 ̇
 is-extensional = (x y : X) → x ≼ y → y ≼ x → x ≡ y
 
-is-extensional' : U ⊔ V ̇
+is-extensional' : 𝓤 ⊔ 𝓥 ̇
 is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y
 
 extensional-gives-extensional' : is-extensional → is-extensional'
@@ -105,7 +105,7 @@ extensionality condition (see below):
 
 \begin{code}
 
-is-well-order : U ⊔ V ̇
+is-well-order : 𝓤 ⊔ 𝓥 ̇
 is-well-order = is-prop-valued × is-well-founded × is-extensional × is-transitive
 
 prop-valuedness : is-well-order → is-prop-valued
@@ -120,18 +120,18 @@ extensionality (p , w , e , t) = e
 transitivity : is-well-order → is-transitive
 transitivity (p , w , e , t) = t
 
-accessibility-is-a-prop : (∀ U V → funext U V)
+accessibility-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                         → (x : X) → is-prop(is-accessible x)
 accessibility-is-a-prop fe = accessible-induction P φ
  where
-  P : (x : X) → is-accessible x → U ⊔ V ̇
+  P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
   P x a = (b : is-accessible x) → a ≡ b
 
   φ : (x : X) (σ : (y : X) → y < x → is-accessible y)
     → ((y : X) (l : y < x) (a : is-accessible y) → σ y l ≡ a)
     → (b : is-accessible x) → next x σ ≡ b
   φ x σ IH b = next x σ ≡⟨ ap (next x)
-                              (dfunext (fe U (U ⊔ V)) (λ y → dfunext (fe V (U ⊔ V)) (h y))) ⟩
+                              (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y))) ⟩
                next x τ ≡⟨ prev-behaviour x b ⟩
                b ∎
    where
@@ -140,10 +140,10 @@ accessibility-is-a-prop fe = accessible-induction P φ
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
-well-foundedness-is-a-prop : (∀ U V → funext U V) → is-prop is-well-founded
-well-foundedness-is-a-prop fe = Π-is-prop (fe U (U ⊔ V)) (accessibility-is-a-prop fe)
+well-foundedness-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop is-well-founded
+well-foundedness-is-a-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (accessibility-is-a-prop fe)
 
-extensionally-ordered-types-are-sets : (∀ U V → funext U V) → is-prop-valued
+extensionally-ordered-types-are-sets : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop-valued
                          → is-extensional → is-set X
 extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ)
  where
@@ -156,44 +156,44 @@ extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
-well-ordered-types-are-sets : (∀ U V → funext U V) → is-well-order → is-set X
+well-ordered-types-are-sets : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-well-order → is-set X
 well-ordered-types-are-sets fe (p , w , e , t) = extensionally-ordered-types-are-sets fe p e
 
-extensionality-is-a-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-extensional
+extensionality-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop-valued → is-prop is-extensional
 extensionality-is-a-prop fe isp e e' =
- dfunext (fe U (U ⊔ V))
-   (λ x → dfunext (fe U (U ⊔ V))
-             (λ y → Π-is-prop (fe (U ⊔ V) (U ⊔ V))
-                      (λ l → Π-is-prop (fe (U ⊔ V) U)
+ dfunext (fe 𝓤 (𝓤 ⊔ 𝓥))
+   (λ x → dfunext (fe 𝓤 (𝓤 ⊔ 𝓥))
+             (λ y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
+                      (λ l → Π-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤)
                                (λ m → extensionally-ordered-types-are-sets fe isp e))
                       (e x y)
                       (e' x y)))
 
-transitivity-is-a-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-transitive
+transitivity-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop-valued → is-prop is-transitive
 transitivity-is-a-prop fe isp =
- Π-is-prop (fe U (U ⊔ V))
-   (λ x → Π-is-prop (fe U (U ⊔ V))
-            (λ y → Π-is-prop (fe U V)
-                     (λ z → Π-is-prop (fe V V)
-                              (λ l → Π-is-prop (fe V V)
+ Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+   (λ x → Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+            (λ y → Π-is-prop (fe 𝓤 𝓥)
+                     (λ z → Π-is-prop (fe 𝓥 𝓥)
+                              (λ l → Π-is-prop (fe 𝓥 𝓥)
                                        (λ m → isp x z)))))
 
-being-well-order-is-a-prop : (∀ U V → funext U V) → is-prop is-well-order
-being-well-order-is-a-prop fe o = ×-is-prop (Π-is-prop (fe U (U ⊔ V))
-                                                            λ x → Π-is-prop (fe U V)
-                                                                    (λ y → being-a-prop-is-a-prop (fe V V)))
+being-well-order-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop is-well-order
+being-well-order-is-a-prop fe o = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+                                                            λ x → Π-is-prop (fe 𝓤 𝓥)
+                                                                    (λ y → being-a-prop-is-a-prop (fe 𝓥 𝓥)))
                                             (×-is-prop (well-foundedness-is-a-prop fe)
                                               (×-is-prop (extensionality-is-a-prop fe (pr₁ o))
                                                               (transitivity-is-a-prop fe (pr₁ o))))
                                             o
 
-_≤_ : X → X → V ̇
+_≤_ : X → X → 𝓥 ̇
 x ≤ y = ¬(y < x)
 
-is-top : X → U ⊔ V ̇
+is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≤ x
 
-has-top : U ⊔ V ̇
+has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ \(x : X) → is-top x
 
 <-coarser-than-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
@@ -216,7 +216,7 @@ non-strict-trans = transfinite-induction'
 ≼-coarser-than-≤ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≤ y
 ≼-coarser-than-≤ y a x f l = ≤-refl y a (f y l)
 
-trichotomous : U ⊔ V ̇
+trichotomous : 𝓤 ⊔ 𝓥 ̇
 trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
 
 \end{code}
@@ -230,7 +230,7 @@ proposition valued.
 
 \begin{code}
 
-cotransitive : U ⊔ V ̇
+cotransitive : 𝓤 ⊔ 𝓥 ̇
 cotransitive = (x y z : X) → x < y → x < z + z < y
 
 cotransitive-≤-coarser-than-≼ : cotransitive → (x y : X) → x ≤ y → x ≼ y
@@ -240,7 +240,7 @@ cotransitive-≤-coarser-than-≼ c x y n u l = γ (c u x y l)
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
 
-no-minimal-is-empty : is-well-founded → ∀ {W} (P : X → W ̇)
+no-minimal-is-empty : is-well-founded → ∀ {𝓦} (P : X → 𝓦 ̇)
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where
@@ -264,7 +264,7 @@ needed any longer:
 
 \begin{code}
 
-is-well-founded₂ : U ⊔ V ̇
+is-well-founded₂ : 𝓤 ⊔ 𝓥 ̇
 is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
                               → (x : X) → p x ≡ ₁
 
@@ -273,21 +273,21 @@ well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 
 open import UF-Miscelanea
 
-being-well-founded₂-is-a-prop : (∀ U V → funext U V) → is-prop is-well-founded₂
-being-well-founded₂-is-a-prop fe = Π-is-prop (fe U (U ⊔ V))
-                                    (λ p → Π-is-prop (fe (U ⊔ V) U)
-                                             (λ s → Π-is-prop (fe U U₀) (λ x → 𝟚-is-set)))
+being-well-founded₂-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop is-well-founded₂
+being-well-founded₂-is-a-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+                                    (λ p → Π-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤)
+                                             (λ s → Π-is-prop (fe 𝓤 𝓤₀) (λ x → 𝟚-is-set)))
 
-is-well-order₂ : U ⊔ V ̇
+is-well-order₂ : 𝓤 ⊔ 𝓥 ̇
 is-well-order₂ = is-prop-valued × is-well-founded₂ × is-extensional × is-transitive
 
 is-well-order-gives-is-well-order₂ : is-well-order → is-well-order₂
 is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
-being-well-order₂-is-a-prop : (∀ U V → funext U V) → is-prop-valued → is-prop is-well-order₂
-being-well-order₂-is-a-prop fe isp = ×-is-prop (Π-is-prop (fe U (U ⊔ V))
-                                                             (λ x → Π-is-prop (fe U V)
-                                                                       (λ y → being-a-prop-is-a-prop (fe V V))))
+being-well-order₂-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → is-prop-valued → is-prop is-well-order₂
+being-well-order₂-is-a-prop fe isp = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
+                                                             (λ x → Π-is-prop (fe 𝓤 𝓥)
+                                                                       (λ y → being-a-prop-is-a-prop (fe 𝓥 𝓥))))
                                                (×-is-prop (being-well-founded₂-is-a-prop fe)
                                                  (×-is-prop (extensionality-is-a-prop fe isp)
                                                                  (transitivity-is-a-prop fe isp)))
@@ -303,7 +303,7 @@ split support).
 
 open import Two
 
-_≺₂_ : X → X → U ⊔ V ̇
+_≺₂_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)
                           × ((u v : X) → (u < v → p u ≤₂ p v)
                                        × (p u <₂ p v → u < v))
@@ -311,7 +311,7 @@ x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)
 ≺₂-courser-than-< : (x y : X) → x ≺₂ y → x < y
 ≺₂-courser-than-< x y (p , l , φ) = pr₂(φ x y) l
 
-𝟚-order-separated : U ⊔ V ̇
+𝟚-order-separated : 𝓤 ⊔ 𝓥 ̇
 𝟚-order-separated = (x y : X) → x < y → x ≺₂ y
 
 open import DiscreteAndSeparated

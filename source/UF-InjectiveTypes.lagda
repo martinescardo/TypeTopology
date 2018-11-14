@@ -85,7 +85,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF-FunExt
 
-module UF-InjectiveTypes (fe : ∀ U V → funext U V) where
+module UF-InjectiveTypes (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 
 open import SpartanMLTT
 open import UF-Base
@@ -113,13 +113,13 @@ triangles to make sense.
 
 \begin{code}
 
-module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
+module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
 
-  Π-extension Σ-extension : Y → U ⊔ V ⊔ W ̇
+  Π-extension Σ-extension : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   Π-extension y = Π \(w : fiber j y) → f(pr₁ w)
   Σ-extension y = Σ \(w : fiber j y) → f(pr₁ w)
 
-  private f/j f∖j : Y → U ⊔ V ⊔ W ̇
+  private f/j f∖j : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   f/j = Π-extension
   f∖j = Σ-extension
 
@@ -146,49 +146,49 @@ module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
 
 \begin{code}
 
-  Π-extension-right-Kan : (g : Y → U ̇) → Nat g f/j ≃ Nat (g ∘ j) f
+  Π-extension-right-Kan : (g : Y → 𝓤 ̇) → Nat g f/j ≃ Nat (g ∘ j) f
   Π-extension-right-Kan g = e
    where
-    φ : (g : Y → U ̇) → Nat (g ∘ j) f → Nat g f/j
+    φ : (g : Y → 𝓤 ̇) → Nat (g ∘ j) f → Nat g f/j
     φ g η y C (x , p) = η x (back-transport g p C)
 
-    ψ : (g : Y → U ̇) → Nat g f/j → Nat (g ∘ j) f
+    ψ : (g : Y → 𝓤 ̇) → Nat g f/j → Nat (g ∘ j) f
     ψ g θ x C = θ (j x) C (x , refl)
 
-    ψφ : (g : Y → U ̇) (η : Nat (g ∘ j) f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ≡ η x C
+    ψφ : (g : Y → 𝓤 ̇) (η : Nat (g ∘ j) f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ≡ η x C
     ψφ g η x C = refl
 
-    φψ : (g : Y → U ̇) (θ : Nat g f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ≡ θ y C w
+    φψ : (g : Y → 𝓤 ̇) (θ : Nat g f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ≡ θ y C w
     φψ g θ y C (x , refl) = refl
 
     e : Nat g f/j ≃ Nat (g ∘ j) f
-    e = ψ g , (φ g , λ η → dfunext (fe U (W ⊔ U)) (λ x → dfunext (fe U W) (ψφ g η x )))
-            , (φ g , λ θ → dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe U (U ⊔ V ⊔ W)) (λ C → dfunext (fe (U ⊔ V) W) (φψ g θ y C))))
+    e = ψ g , (φ g , λ η → dfunext (fe 𝓤 (𝓦 ⊔ 𝓤)) (λ x → dfunext (fe 𝓤 𝓦) (ψφ g η x )))
+            , (φ g , λ θ → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ C → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (φψ g θ y C))))
 
-  Σ-extension-left-Kan : (g : Y → U ̇) → Nat f∖j g ≃ Nat f (g ∘ j)
+  Σ-extension-left-Kan : (g : Y → 𝓤 ̇) → Nat f∖j g ≃ Nat f (g ∘ j)
   Σ-extension-left-Kan g = e
    where
-    φ : (g : Y → U ̇) → Nat f (g ∘ j) → Nat f∖j g
+    φ : (g : Y → 𝓤 ̇) → Nat f (g ∘ j) → Nat f∖j g
     φ g η y ((x , p) , C) = transport g p (η x C)
 
-    ψ : (g : Y → U ̇) → Nat f∖j g → Nat f (g ∘ j)
+    ψ : (g : Y → 𝓤 ̇) → Nat f∖j g → Nat f (g ∘ j)
     ψ g θ x B = θ (j x) ((x , refl) , B)
 
-    φψ : (g : Y → U ̇) (θ : Nat f∖j g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ≡ θ y B
+    φψ : (g : Y → 𝓤 ̇) (θ : Nat f∖j g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ≡ θ y B
     φψ g θ y ((x , refl) , B) = refl
 
-    ψφ : (g : Y → U ̇) (η : Nat f (g ∘ j)) (x : X) (B : f x) → ψ g (φ g η) x B ≡ η x B
+    ψφ : (g : Y → 𝓤 ̇) (η : Nat f (g ∘ j)) (x : X) (B : f x) → ψ g (φ g η) x B ≡ η x B
     ψφ g η x B = refl
 
     e : Nat f∖j g ≃ Nat f (g ∘ j)
-    e = ψ g , (φ g , λ η → dfunext (fe U (U ⊔ W)) (λ x → dfunext (fe W U) (λ B → ψφ g η x B)))
-            , (φ g , λ θ → dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe (U ⊔ V ⊔ W) U) (λ C → φψ g θ y C)))
+    e = ψ g , (φ g , λ η → dfunext (fe 𝓤 (𝓤 ⊔ 𝓦)) (λ x → dfunext (fe 𝓦 𝓤) (λ B → ψφ g η x B)))
+            , (φ g , λ θ → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥 ⊔ 𝓦) 𝓤) (λ C → φψ g θ y C)))
 
 \end{code}
 
   Conjectural conjecture: the type
 
-    Σ(f' : Y → U), Π(g : Y → U), Nat g f' = Nat (g∘f) f
+    Σ(f' : Y → 𝓤), Π(g : Y → 𝓤), Nat g f' = Nat (g∘f) f
 
   should be contractible assuming univalence. Similarly for left Kan
   extensions as discussed below.
@@ -202,13 +202,13 @@ module _ {X : U ̇} {Y : V ̇} (f : X → W ̇) (j : X → Y) where
   open import UF-PropIndexedPiSigma
 
   Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
-  Π-extension-in-range e x = prop-indexed-product (fe (U ⊔ V) W) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
+  Π-extension-in-range e x = prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
 
   Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (λ (c : f/j (j x)) → c (x , refl))
   Π-extension-equivalence e x = pr₂ (Π-extension-in-range e x)
 
-  Π-extension-out-of-range : ∀ {W} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {W}
-  Π-extension-out-of-range y φ = prop-indexed-product-one (fe (U ⊔ V) W) (uncurry φ)
+  Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {𝓦}
+  Π-extension-out-of-range y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
   Σ-extension-in-range : is-embedding j → (x : X) → f∖j(j x) ≃ f x
   Σ-extension-in-range e x = prop-indexed-sum (e(j x)) (x , refl)
@@ -270,7 +270,7 @@ respectively:
       FG' ψ x (_ , refl) = refl
 
       FG : (ψ : Π f/j) → F(G ψ) ≡ ψ
-      FG ψ = dfunext (fe V (U ⊔ V ⊔ W)) (λ y → dfunext (fe (U ⊔ V) W) (FG' ψ y))
+      FG ψ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (FG' ψ y))
 
       GF : (φ : Π f) → G(F φ) ≡ φ
       GF φ = refl
@@ -300,8 +300,8 @@ We now introduce the notations f / j and f ∖ j for the Π- and
 
 \begin{code}
 
-_/_ _∖_ :  {X : U ̇} {Y : V ̇}
-        → (X → W ̇) → (X → Y) → (Y → U ⊔ V ⊔ W ̇)
+_/_ _∖_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇}
+        → (X → 𝓦 ̇) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
 f / j = Π-extension f j
 f ∖ j = Σ-extension f j
 
@@ -313,14 +313,14 @@ A different notation reflects a different view of these processes:
 
 \begin{code}
 
-inverse-image :  {X : U ̇} {Y : V ̇}
-              → (X → Y) → (Y → W ̇) → (X → W ̇)
+inverse-image :  {X : 𝓤 ̇} {Y : 𝓥 ̇}
+              → (X → Y) → (Y → 𝓦 ̇) → (X → 𝓦 ̇)
 
 inverse-image f v = v ∘ f
 
 
-Π-image Σ-image :  {X : U ̇} {Y : V ̇}
-                → (X → Y) → ((X → W ̇) → (Y → U ⊔ V ⊔ W ̇))
+Π-image Σ-image :  {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                → (X → Y) → ((X → 𝓦 ̇) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇))
 
 Π-image j = λ f → Π-extension f j
 
@@ -341,9 +341,9 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
 
 \begin{code}
 
-Σ-image-of-singleton-lemma : {X : U ̇} {Y : V ̇} → (j : X → Y) (x : X) (y : Y)
+Σ-image-of-singleton-lemma : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (j : X → Y) (x : X) (y : Y)
                            → Σ-image j (Id x) y ≃ Id (j x) y
-Σ-image-of-singleton-lemma {U} {V} {X} {Y} j x y = (f , (g , fg) , (g , gf))
+Σ-image-of-singleton-lemma {𝓤} {𝓥} {X} {Y} j x y = (f , (g , fg) , (g , gf))
  where
   f : Σ-image j (Id x) y → Id (j x) y
   f ((x , refl) , refl) = refl
@@ -357,23 +357,23 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
   fg : (p : Id (j x) y) → f(g p) ≡ p
   fg refl = refl
 
-Σ-image-of-singleton-lemma' : {X : U ̇} {Y : V ̇} → (j : X → Y) (x : X) (y : Y)
+Σ-image-of-singleton-lemma' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (j : X → Y) (x : X) (y : Y)
                             → (((Id x) ∖ j) y) ≃ (j x ≡ y)
 Σ-image-of-singleton-lemma' = Σ-image-of-singleton-lemma
 
-Σ-image-of-singleton : {X Y : U ̇}
-                     → is-univalent U
+Σ-image-of-singleton : {X Y : 𝓤 ̇}
+                     → is-univalent 𝓤
                      → (j : X → Y) (x : X) → Σ-image j (Id x) ≡ Id (j x)
-Σ-image-of-singleton {U} {X} {Y} ua j x = b
+Σ-image-of-singleton {𝓤} {X} {Y} ua j x = b
   where
    a : (y : Y) → Σ-image j (Id x) y ≡ Id (j x) y
    a y = eqtoid ua (Σ-image j (Id x) y) (Id (j x) y) (Σ-image-of-singleton-lemma j x y)
 
    b : Σ-image j (Id x) ≡ Id (j x)
-   b = dfunext (fe U (U ⁺)) a
+   b = dfunext (fe 𝓤 (𝓤 ⁺)) a
 
-Σ-image-of-singleton' : {X Y : U ̇}
-                      → is-univalent U
+Σ-image-of-singleton' : {X Y : 𝓤 ̇}
+                      → is-univalent 𝓤
                       → (j : X → Y) (x : X) → (Id x) ∖ j ≡ Id (j x)
 Σ-image-of-singleton' = Σ-image-of-singleton
 
@@ -383,19 +383,19 @@ There is more to do about this.
 
 \begin{code}
 
-Π-extension-is-extension : is-univalent U → {X Y : U ̇} (j : X → Y)
+Π-extension-is-extension : is-univalent 𝓤 → {X Y : 𝓤 ̇} (j : X → Y)
                          → is-embedding j
-                         → (f : X → U ̇) → (f / j) ∘ j ∼ f
+                         → (f : X → 𝓤 ̇) → (f / j) ∘ j ∼ f
 Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-in-range f j e x)
 
-Π-extension-is-extension' : is-univalent U → funext U (U ⁺)
-                          → {X Y : U ̇} (j : X → Y)
+Π-extension-is-extension' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                          → {X Y : 𝓤 ̇} (j : X → Y)
                           → is-embedding j
-                          → (f : X → U ̇) → (f / j) ∘ j ≡ f
+                          → (f : X → 𝓤 ̇) → (f / j) ∘ j ≡ f
 Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
 
-Π-extension-is-extension'' : is-univalent U → funext U (U ⁺) → funext (U ⁺) (U ⁺)
-                           → {X Y : U ̇} (j : X → Y)
+Π-extension-is-extension'' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → funext (𝓤 ⁺) (𝓤 ⁺)
+                           → {X Y : 𝓤 ̇} (j : X → Y)
                            → is-embedding j
                            → (λ f → (f / j) ∘ j) ≡ id
 Π-extension-is-extension'' ua fe fe' j e = dfunext fe' (Π-extension-is-extension' ua fe j e)
@@ -407,24 +407,21 @@ data rather than property):
 
 \begin{code}
 
-injective-type : W ̇ → U ⁺ ⊔ V ⁺ ⊔ W ̇
-injective-type {U} {V} D = {X : U ̇} {Y : V ̇} (j : X → Y) → is-embedding j
+injective-type : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+injective-type {𝓤} {𝓥} D = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                          → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
-universes-are-injective-Π : is-univalent U → injective-type {U} {U} (U ̇)
+universes-are-injective-Π : is-univalent 𝓤 → injective-type {𝓤} {𝓤} (𝓤 ̇)
 universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 
-universes-are-injective-Σ : is-univalent U → injective-type {U} {U} (U ̇)
+universes-are-injective-Σ : is-univalent 𝓤 → injective-type {𝓤} {𝓤} (𝓤 ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-private
- variable T : Universe
-
-retract-of-injective : {D : U ̇} {D' : V ̇}
-                     → injective-type {W} {T} D
+retract-of-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+                     → injective-type {𝓦} {𝓣} D
                      → retract D' Of D
                      → injective-type D'
-retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
+retract-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
   where
     s : D' → D
     s d' = pr₁ (ρ d')
@@ -443,17 +440,17 @@ retract-of-injective {U} {V} {W} {T} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g
 
 open import UF-IdEmbedding
 
-injective-retract-of-power-of-universe : {D : U ̇} → is-univalent U
-                                       → injective-type D → retract D Of (D → U ̇)
+injective-retract-of-power-of-universe : {D : 𝓤 ̇} → is-univalent 𝓤
+                                       → injective-type D → retract D Of (D → 𝓤 ̇)
 injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
 
-power-of-injective : {D : U ̇} {A : V ̇}
-                   → injective-type {W} {T} D
+power-of-injective : {D : 𝓤 ̇} {A : 𝓥 ̇}
+                   → injective-type {𝓦} {𝓣} D
                    → injective-type (A → D)
-power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
+power-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {A} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
     l a = i j e (λ x → f x a)
@@ -462,7 +459,7 @@ power-of-injective {U} {V} {W} {T} {D} {A} i {X} {Y} j e f = f' , g
     f' y a = pr₁ (l a) y
 
     g : f' ∘ j ∼ f
-    g x = dfunext (fe V U) (λ a → pr₂ (l a) x)
+    g x = dfunext (fe 𝓥 𝓤) (λ a → pr₂ (l a) x)
 
 \end{code}
 
@@ -471,10 +468,10 @@ to be an embedding and that the proof is completely routine.
 
 \begin{code}
 
-retract-extension : {X : U ̇} {Y : V ̇} (A : X → W ̇) (B : X → T ̇) (e : X → Y)
+retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇) (B : X → 𝓣 ̇) (e : X → Y)
                → ((x : X) → retract (A x) of (B x))
                → ((y : Y) → retract ((A / e) y) of ((B / e) y))
-retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
+retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
  where
   R : (x : X) → B x → A x
   R x = pr₁(ρ x)
@@ -489,7 +486,7 @@ retract-extension {U} {V} {W} {T} {X} {Y} A B e ρ y = r , s , rs
   h : (u : (A / e) y) (σ : fiber e y) → r (s u) σ ≡ u σ
   h u (x , p) = RS x (u (x , p))
   rs : (u : (A / e) y) → r (s u) ≡ u
-  rs u = dfunext (fe (U ⊔ V) W) (h u)
+  rs u = dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (h u)
 
 \end{code}
 
@@ -497,10 +494,10 @@ Added 25th July 2018.
 
 \begin{code}
 
-iterated-extension : {X : U ̇} {Y : V ̇} {Z : W ̇} {A : X → T ̇}
+iterated-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {A : X → 𝓣 ̇}
                      (j : X → Y) (k : Y → Z)
                    → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
-iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ
+iterated-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {Z} {A} j k z = γ
  where
   f : ((A / j) / k) z → (A / (k ∘ j)) z
   f u (x , p) = u (j x , p) (x , refl)
@@ -512,8 +509,8 @@ iterated-extension {U} {V} {W} {T} {X} {Y} {Z} {A} j k z = γ
       → g (f u) w t ≡ u w t
   gf' u (.(j x) , q) (x , refl) = refl
   gf : (u : ((A / j) / k) z) → g (f u) ≡ u
-  gf u = dfunext (fe (V ⊔ W) (U ⊔ V ⊔ T))
-          (λ w → dfunext (fe (U ⊔ V) T) (gf' u w))
+  gf u = dfunext (fe (𝓥 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓣))
+          (λ w → dfunext (fe (𝓤 ⊔ 𝓥) 𝓣) (gf' u w))
   γ : ((A / j) / k) z ≃ (A / (k ∘ j)) z
   γ = f , ((g , fg) , (g , gf))
 
