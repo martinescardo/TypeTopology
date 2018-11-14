@@ -136,32 +136,32 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 
 \begin{code}
 
-Κ                    : OE → Ordᵀ
-Κ-compact∙           : (ν : OE) → compact∙ ⟪ Κ ν ⟫
-Κ-Cantor-retract     : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
-Κ-totally-separated  : (ν : OE) → totally-separated ⟪ Κ ν ⟫
+Κ                      : OE → Ordᵀ
+Κ-compact∙             : (ν : OE) → compact∙ ⟪ Κ ν ⟫
+Κ-Cantor-retract       : (ν : OE) → retract ⟪ Κ ν ⟫ of (ℕ → 𝟚)
+Κ-is-totally-separated : (ν : OE) → is-totally-separated ⟪ Κ ν ⟫
 
-Δ                    : OE → Ordᵀ
-Δ-discrete           : (ν : OE) → discrete ⟪ Δ ν ⟫
-Δ-retract-of-ℕ       : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
+Δ                      : OE → Ordᵀ
+Δ-is-discrete          : (ν : OE) → is-discrete ⟪ Δ ν ⟫
+Δ-retract-of-ℕ         : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
 
-ι                    : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
-ι-dense              : (ν : OE) → is-dense (ι {ν})
-ι-embedding          : (ν : OE) → is-embedding (ι {ν})
+ι                      : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
+ι-dense                : (ν : OE) → is-dense (ι {ν})
+ι-embedding            : (ν : OE) → is-embedding (ι {ν})
 
-ι-order-preserving   : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                          →   x ≺⟪ Δ ν ⟫   y
-                          → ι x ≺⟪ Κ ν ⟫ ι y
+ι-order-preserving     : (ν : OE) (x y : ⟪ Δ ν ⟫)
+                            →   x ≺⟪ Δ ν ⟫   y
+                            → ι x ≺⟪ Κ ν ⟫ ι y
 
-ι-order-reflecting   : (ν : OE) (x y : ⟪ Δ ν ⟫)
-                          → ι x ≺⟪ Κ ν ⟫ ι y
-                          →   x ≺⟪ Δ ν ⟫   y
+ι-order-reflecting     : (ν : OE) (x y : ⟪ Δ ν ⟫)
+                            → ι x ≺⟪ Κ ν ⟫ ι y
+                            →   x ≺⟪ Δ ν ⟫   y
 
-Κ-inf-compact        : propext 𝓤₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
+Κ-inf-compact          : propext 𝓤₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
 
-brouwer-to-oe        : B → OE
-ε₀-upper-bound       : Ordᵀ
-compact∙-ε₀-ub       : compact∙ ⟪ ε₀-upper-bound ⟫
+brouwer-to-oe          : B → OE
+ε₀-upper-bound         : Ordᵀ
+compact∙-ε₀-ub         : compact∙ ⟪ ε₀-upper-bound ⟫
 
 \end{code}
 
@@ -216,9 +216,9 @@ And hence they are totally separated:
 
 \begin{code}
 
-Κ-totally-separated ν = retract-totally-separated
-                          (Κ-Cantor-retract ν)
-                          (Cantor-totally-separated fe₀)
+Κ-is-totally-separated ν = retract-totally-separated
+                             (Κ-Cantor-retract ν)
+                             (Cantor-is-totally-separated fe₀)
 \end{code}
 
 Without total separatedness (enough functions into the type 𝟚 of
@@ -241,13 +241,13 @@ many interesting properties, formulated above and proved below.
 Δ (Mul ν μ) = Δ ν ×ᵒ  Δ μ
 Δ (Sum1 ν) = ∑₁ \(i : ℕ) → Δ(ν i)
 
-Δ-discrete One  = 𝟙-discrete
-Δ-discrete (Add ν μ) =
- Σ-discrete
-  (+discrete 𝟙-discrete 𝟙-discrete)
-  (dep-cases (λ _ → Δ-discrete ν) (λ _ → Δ-discrete μ))
-Δ-discrete (Mul ν μ) = Σ-discrete (Δ-discrete ν) (λ _ → Δ-discrete μ)
-Δ-discrete (Sum1 ν) = Σ₁-discrete (λ n → ⟪ Δ (ν n) ⟫) (λ i → Δ-discrete (ν i))
+Δ-is-discrete One  = 𝟙-is-discrete
+Δ-is-discrete (Add ν μ) =
+ Σ-is-discrete
+  (+discrete 𝟙-is-discrete 𝟙-is-discrete)
+  (dep-cases (λ _ → Δ-is-discrete ν) (λ _ → Δ-is-discrete μ))
+Δ-is-discrete (Mul ν μ) = Σ-is-discrete (Δ-is-discrete ν) (λ _ → Δ-is-discrete μ)
+Δ-is-discrete (Sum1 ν) = Σ₁-is-discrete (λ n → ⟪ Δ (ν n) ⟫) (λ i → Δ-is-discrete (ν i))
 
 \end{code}
 

@@ -37,7 +37,7 @@ open import UF-Miscelanea
 module sequences
         {𝓤 : Universe}
         (D : 𝓤 ̇)
-        (δ : discrete D)
+        (δ : is-discrete D)
        where
 
 \end{code}
@@ -161,13 +161,13 @@ Cantor types:
 
 \begin{code}
 
-open sequences ℕ ℕ-discrete
+open sequences ℕ ℕ-is-discrete
  renaming
   (codistance                 to Baire-codistance ;
    infinitely-close-to-itself to Baire-infinitely-close-to-itself ;
    infinitely-close-are-equal to Baire-infinitely-close-are-equal)
 
-open sequences 𝟚 𝟚-discrete
+open sequences 𝟚 𝟚-is-discrete
  renaming
   (codistance                 to Cantor-codistance ;
    infinitely-close-to-itself to Cantor-infinitely-close-to-itself ;

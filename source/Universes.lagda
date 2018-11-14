@@ -28,8 +28,8 @@ _̇ : (𝓤 : Universe) → _
 
 \end{code}
 
-Lift a type X in the universe U to a type X ↑ in the universe U ⊔
-V. An element of X is of the form x ↥ for x an element of X.
+Lift a type X in the universe U to a type X ↑ in the universe 𝓤 ⊔ 𝓥.
+An element of X is of the form x ↥ for x an element of X.
 
 \begin{code}
 

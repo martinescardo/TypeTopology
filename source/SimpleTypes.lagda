@@ -44,12 +44,12 @@ open import DiscreteAndSeparated
   rs ₀ = refl
   rs ₁ = refl
 
-ℕ-totally-separated : totally-separated ℕ
-ℕ-totally-separated = discrete-totally-separated (ℕ-discrete)
+ℕ-is-totally-separated : is-totally-separated ℕ
+ℕ-is-totally-separated = discrete-totally-separated (ℕ-is-discrete)
 
-simple-types-totally-separated : {X : 𝓤₀ ̇} → simple-type X → totally-separated X
-simple-types-totally-separated base       = ℕ-totally-separated
-simple-types-totally-separated (step s t) = Π-totally-separated (fe 𝓤₀ 𝓤₀)
+simple-types-totally-separated : {X : 𝓤₀ ̇} → simple-type X → is-totally-separated X
+simple-types-totally-separated base       = ℕ-is-totally-separated
+simple-types-totally-separated (step s t) = Π-is-totally-separated (fe 𝓤₀ 𝓤₀)
                                               λ _ → simple-types-totally-separated t
 
 simple-types-pointed : {X : 𝓤₀ ̇} → simple-type X → X
@@ -65,7 +65,7 @@ simple-types-r rn (step s t) = retracts-of-closed-under-exponentials
                                  (simple-types-r rn t)
 
 cfdbce : {X Y : 𝓤₀ ̇} → simple-type X → simple-type Y
-       → compact (X → Y) → discrete X × compact Y
+       → compact (X → Y) → is-discrete X × compact Y
 cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r 𝟚-retract-of-ℕ t) c ,
                i2c2c (simple-types-pointed s) c)
 
@@ -121,10 +121,10 @@ compact, it is necessary that X is discrete and Y is compact.
 
 \begin{code}
 
-simple-types₂-totally-separated : {X : 𝓤₀ ̇} → simple-type₂ X → totally-separated X
-simple-types₂-totally-separated base₂       = 𝟚-totally-separated
-simple-types₂-totally-separated base        = ℕ-totally-separated
-simple-types₂-totally-separated (step s t)  = Π-totally-separated (fe 𝓤₀ 𝓤₀)
+simple-types₂-totally-separated : {X : 𝓤₀ ̇} → simple-type₂ X → is-totally-separated X
+simple-types₂-totally-separated base₂       = 𝟚-is-totally-separated
+simple-types₂-totally-separated base        = ℕ-is-totally-separated
+simple-types₂-totally-separated (step s t)  = Π-is-totally-separated (fe 𝓤₀ 𝓤₀)
                                                λ _ → simple-types₂-totally-separated t
 
 simple-types₂-pointed : {X : 𝓤₀ ̇} → simple-type₂ X → X
@@ -142,7 +142,7 @@ simple-types₂-r𝟚 (step s t) = retracts-of-closed-under-exponentials
                                  (simple-types₂-r𝟚 t)
 
 cfdbce₂ : {X Y : 𝓤₀ ̇} → simple-type₂ X → simple-type₂ Y
-       → compact (X → Y) → discrete X × compact Y
+        → compact (X → Y) → is-discrete X × compact Y
 cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-r𝟚 t) c ,
                  i2c2c (simple-types₂-pointed s) c)
 

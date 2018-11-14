@@ -161,7 +161,7 @@ module concrete-example where
 
  open import TotallySeparated
 
- Failure : totally-separated X → ¬¬ WLPO
+ Failure : is-totally-separated X → ¬¬ WLPO
  Failure ts nwlpo = g (𝟚-indistinguishability nwlpo)
   where
    g : ¬ ((p : X → 𝟚) → p ∞₀ ≡ p ∞₁)

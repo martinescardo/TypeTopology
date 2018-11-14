@@ -263,7 +263,7 @@ module AC-renders-all-sets-discrete
  lemma₁ : {X : 𝓤 ̇} (a : 𝟚 → X)
         → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
- lemma₁ a c = claim (𝟚-discrete (s(r ₀)) (s(r ₁)))
+ lemma₁ a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    r : 𝟚 → image a
    r = corestriction a
@@ -375,7 +375,7 @@ module Observation (𝓤 : Universe)
  observation : {X : 𝓤 ̇} (a : 𝟚 → X)
         → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
- observation {X} a c = claim (𝟚-discrete (s(r ₀)) (s(r ₁)))
+ observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    Y = Σ \(x : X) → ¬¬ (Σ \(i : 𝟚) → a i ≡ x)
 

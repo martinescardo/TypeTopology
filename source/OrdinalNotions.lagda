@@ -323,7 +323,7 @@ open import DiscreteAndSeparated
                           × ((u v : X) → (u < v → p u ≤₂ p v)
                                        × (p u <₂ p v → u < v)))
     → (x < z) + (z < y)
-  g (p , (r , s) , φ) = Cases (𝟚-discrete (p z) ₀)
+  g (p , (r , s) , φ) = Cases (𝟚-is-discrete (p z) ₀)
                          (λ (t : p z ≡ ₀)
                             → inr (pr₂ (φ z y) (t , s)))
                          (λ (t : ¬(p z ≡ ₀))

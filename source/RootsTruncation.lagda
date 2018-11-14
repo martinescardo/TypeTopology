@@ -19,7 +19,7 @@ open import DiscreteAndSeparated
 module RootsTruncation (𝓤 : Universe)
                        (Z : 𝓤 ̇)
                        (z : Z)
-                       (z-isolated : isolated' z)
+                       (z-is-isolated : is-isolated' z)
                        where
 
 open import NaturalsOrder
@@ -63,7 +63,7 @@ fpo (succ k) α = cases f g (fpo k α)
   f (m , p , l , φ) = inl (m , p , ≤-trans (succ m) k (succ k) l (≤-succ k) , φ)
 
   g : α has-no-root< k → FPO (succ k) α
-  g φ = cases g₀ g₁ (z-isolated (α k))
+  g φ = cases g₀ g₁ (z-is-isolated (α k))
    where
     g₀ : α k ≡ z → FPO (succ k) α
     g₀ p = inl (k , p , ≤-refl k , φ)
@@ -127,7 +127,7 @@ roots α = Σ \(n : ℕ) → α n ≡ z
   q = ≤-anti _ _ l l'
 
   r : μρ α (n , p) ≡ μρ α (n' , p')
-  r = to-Σ-≡ (q , isolated-Id-is-prop z z-isolated _ _ _)
+  r = to-Σ-≡ (q , isolated-Id-is-prop z z-is-isolated _ _ _)
 
 roots-has-prop-truncation : (α : ℕ → Z) → ∀ 𝓤 → has-prop-truncation 𝓤 (roots α)
 roots-has-prop-truncation α = collapsible-has-prop-truncation (μρ α , μρ-constant α)

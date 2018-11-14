@@ -48,8 +48,8 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 
 open import DiscreteAndSeparated
 
-discrete-Cantor→ℕ : discrete((ℕ → 𝟚) → ℕ)
-discrete-Cantor→ℕ = compact-discrete-discrete' (fe 𝓤₀ 𝓤₀) cantor-compact ℕ-discrete
+Cantor→ℕ-is-discrete : is-discrete((ℕ → 𝟚) → ℕ)
+Cantor→ℕ-is-discrete = compact-discrete-discrete' (fe 𝓤₀ 𝓤₀) cantor-compact ℕ-is-discrete
 
 \end{code}
 
@@ -61,7 +61,7 @@ open import DecidableAndDetachable
 
 equal : ((ℕ → 𝟚) → ℕ) → ((ℕ → 𝟚) → ℕ) → 𝟚
 
-equal f  = pr₁(characteristic-function(discrete-Cantor→ℕ f))
+equal f  = pr₁(characteristic-function(Cantor→ℕ-is-discrete f))
 
 \end{code}
 

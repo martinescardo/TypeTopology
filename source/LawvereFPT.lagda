@@ -277,7 +277,7 @@ module Blechschmidt (pt : PropTrunc) where
 
  Π-projection-has-section :
     {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x₀ : X)
-  → isolated x₀
+  → is-isolated x₀
   → Π Y
   → has-section (λ (f : Π Y) → f x₀)
  Π-projection-has-section {𝓤} {𝓥} {X} {Y} x₀ i g = s , rs
@@ -294,7 +294,7 @@ module Blechschmidt (pt : PropTrunc) where
 
  udr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇) (B : 𝓦 ̇)
              (a₀ : A)
-           → isolated a₀
+           → is-isolated a₀
            → B
            → retract ((a : A) → X a → B) of X a₀
            → (f : B → B) → Σ \(b : B) → b ≡ f b
@@ -307,7 +307,7 @@ module Blechschmidt (pt : PropTrunc) where
 
  universe-discretely-regular' :
     (𝓤 𝓥 : Universe) (A : 𝓤 ̇) (X : A → 𝓤 ⊔ 𝓥 ̇)
-  → discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≃ B)
+  → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≃ B)
  universe-discretely-regular' 𝓤 𝓥 A X d  = B , φ
    where
     B : 𝓤 ⊔ 𝓥 ̇
@@ -322,7 +322,7 @@ module Blechschmidt (pt : PropTrunc) where
 
  universe-discretely-regular :
     {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇)
-  → discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B)
+  → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B)
  universe-discretely-regular {𝓤} {𝓥} {A} X d =
    γ (universe-discretely-regular' 𝓤 𝓥 A X d)
   where
@@ -331,7 +331,7 @@ module Blechschmidt (pt : PropTrunc) where
    γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
  Universe-discretely-regular : {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇)
-                             → discrete A → ¬(is-surjection X)
+                             → is-discrete A → ¬(is-surjection X)
  Universe-discretely-regular {𝓤} {𝓥} {A} X d s = ptrec 𝟘-is-prop n e
   where
    B : 𝓤 ⊔ 𝓥 ̇
@@ -344,7 +344,7 @@ module Blechschmidt (pt : PropTrunc) where
    n = uncurry φ
 
  Universe-uncountable : {𝓤 : Universe} → ¬ Σ \(X : ℕ → 𝓤 ̇) → is-surjection X
- Universe-uncountable (X , s) = Universe-discretely-regular X ℕ-discrete s
+ Universe-uncountable (X , s) = Universe-discretely-regular X ℕ-is-discrete s
 
 \end{code}
 

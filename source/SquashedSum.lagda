@@ -73,26 +73,26 @@ over-embedding = inl-embedding ℕ 𝟙
 under𝟙-over : (n : ℕ) → under𝟙 (over n) ≡ under n
 under𝟙-over n = refl
 
-over-discrete : (X : ℕ → 𝓤 ̇)
-             → ((n : ℕ) → discrete (X n))
-             → (z : ℕ + 𝟙) → discrete ((X / over) z)
-over-discrete X d (inl n) = retract-discrete-discrete
-                             (equiv-retract-l
-                               (Π-extension-in-range X over
-                                  over-embedding n))
-                             (d n)
-over-discrete X d (inr *) = retract-discrete-discrete {𝓤₀}
-                             (equiv-retract-l
-                               (Π-extension-out-of-range X over (inr *)
-                                   (λ n → +disjoint)))
-                             𝟙-discrete
+over-is-discrete : (X : ℕ → 𝓤 ̇)
+                 → ((n : ℕ) → is-discrete (X n))
+                 → (z : ℕ + 𝟙) → is-discrete ((X / over) z)
+over-is-discrete X d (inl n) = retract-discrete-discrete
+                                 (equiv-retract-l
+                                   (Π-extension-in-range X over
+                                      over-embedding n))
+                                 (d n)
+over-is-discrete X d (inr *) = retract-discrete-discrete {𝓤₀}
+                                 (equiv-retract-l
+                                   (Π-extension-out-of-range X over (inr *)
+                                       (λ n → +disjoint)))
+                                 𝟙-is-discrete
 
-Σ₁-discrete : (X : ℕ → 𝓤 ̇)
-           → ((n : ℕ) → discrete(X n))
-           → discrete (Σ₁ X)
-Σ₁-discrete X d = Σ-discrete
-                    (+discrete ℕ-discrete 𝟙-discrete)
-                    (over-discrete X d)
+Σ₁-is-discrete : (X : ℕ → 𝓤 ̇)
+           → ((n : ℕ) → is-discrete(X n))
+           → is-discrete (Σ₁ X)
+Σ₁-is-discrete X d = Σ-is-discrete
+                       (+discrete ℕ-is-discrete 𝟙-is-discrete)
+                       (over-is-discrete X d)
 
 \end{code}
 

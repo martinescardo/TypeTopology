@@ -139,7 +139,7 @@ without the need of any assumption:
 
 \begin{code}
 
-cdd : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Π-compact X → discrete Y → discrete(X → Y)
+cdd : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Π-compact X → is-discrete Y → is-discrete(X → Y)
 cdd {𝓤} {𝓥} {X} {Y} c d f g = h (c p)
  where
   p : X → 𝟚
@@ -163,7 +163,7 @@ First, to decide Π(p:X→𝟚), p(x)=1, decide p = λ x → ₁:
 
 \begin{code}
 
-d𝟚-Πc : {X : 𝓤 ̇} → discrete(X → 𝟚) → Π-compact X
+d𝟚-Πc : {X : 𝓤 ̇} → is-discrete(X → 𝟚) → Π-compact X
 d𝟚-Πc d = Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
 
 \end{code}
@@ -175,11 +175,11 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 \begin{code}
 
-dcc : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract 𝟚 of Y → discrete(X → Y) → Π-compact X
+dcc : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
 dcc {𝓤} re d = d𝟚-Πc (retract-discrete-discrete (rpe (fe 𝓤 𝓤₀) re) d)
 
 ddc' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (y₀ y₁ : Y) → y₀ ≢ y₁
-     → discrete Y → discrete(X → Y) → Π-compact X
+     → is-discrete Y → is-discrete(X → Y) → Π-compact X
 ddc' y₀ y₁ ne dy = dcc (𝟚-retract-of-discrete ne dy)
 
 \end{code}
@@ -260,10 +260,10 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇) where
  open TotallySeparatedReflection fe pt
 
  extension : (X → 𝟚) → (𝕋 X → 𝟚)
- extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-totally-separated p))
+ extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p))
 
  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
- extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-totally-separated p)))
+ extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
 
  sot : ∃-compact X → ∃-compact (𝕋 X)
  sot = surjection-∃-compact η (η-surjection)
@@ -320,13 +320,13 @@ discrete.
 
 \begin{code}
 
-tscd : {X : 𝓤 ̇} → totally-separated X → Π-compact (X → 𝟚) → discrete X
+tscd : {X : 𝓤 ̇} → is-totally-separated X → Π-compact (X → 𝟚) → is-discrete X
 tscd {𝓤} {X} ts c x y = g (a s)
  where
   q : (X → 𝟚) → 𝟚
-  q = pr₁ (co-characteristic-function (λ p → 𝟚-discrete (p x) (p y)))
+  q = pr₁ (co-characteristic-function (λ p → 𝟚-is-discrete (p x) (p y)))
   r : (p : X → 𝟚) → (q p ≡ ₀ → p x ≢ p y) × (q p ≡ ₁ → p x ≡ p y)
-  r = pr₂ (co-characteristic-function (λ p → 𝟚-discrete (p x) (p y)))
+  r = pr₂ (co-characteristic-function (λ p → 𝟚-is-discrete (p x) (p y)))
   s : decidable ((p : X → 𝟚) → q p ≡ ₁)
   s = c q
   b : (p : X → 𝟚) → p x ≡ p y → q p ≡ ₁
@@ -348,27 +348,27 @@ corollaries:
 
 \begin{code}
 
-tscd₀ : {X : 𝓤₀ ̇} {Y : 𝓤₀ ̇} → totally-separated X → retract 𝟚 of Y
-     → Π-compact (X → Y) → discrete X
+tscd₀ : {X : 𝓤₀ ̇} {Y : 𝓤₀ ̇} → is-totally-separated X → retract 𝟚 of Y
+     → Π-compact (X → Y) → is-discrete X
 tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (rpe (fe 𝓤₀ 𝓤₀) r) c)
 
 open TotallySeparatedReflection fe pt
 
 tscd₁ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract 𝟚 of Y
-      → Π-compact (X → Y) → discrete (𝕋 X)
+      → Π-compact (X → Y) → is-discrete (𝕋 X)
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
   z : retract (X → 𝟚) of (X → Y)
   z = rpe (fe 𝓤 𝓤₀) r
   a : (𝕋 X → 𝟚) ≃ (X → 𝟚)
-  a = totally-separated-reflection'' 𝟚-totally-separated
+  a = totally-separated-reflection'' 𝟚-is-totally-separated
   b : retract (𝕋 X → 𝟚) of (X → 𝟚)
   b = equiv-retract-l a
   d : retract (𝕋 X → 𝟚) of (X → Y)
   d = retracts-compose z b
   e : Π-compact (𝕋 X → 𝟚)
   e = retract-Π-compact d c
-  f : discrete (𝕋 X)
+  f : is-discrete (𝕋 X)
   f = tscd tts e
 
 \end{code}
@@ -388,7 +388,7 @@ and constructively.
 \begin{code}
 
 [ℕ∞→𝟚]-compact-implies-WLPO : Π-compact (ℕ∞ → 𝟚) → WLPO
-[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-gives-WLPO (tscd (ℕ∞-totally-separated (fe 𝓤₀ 𝓤₀)) c)
+[ℕ∞→𝟚]-compact-implies-WLPO c = ℕ∞-discrete-gives-WLPO (tscd (ℕ∞-is-totally-separated (fe 𝓤₀ 𝓤₀)) c)
 
 \end{code}
 
@@ -627,7 +627,7 @@ iso-i-and-c {𝓤} {X} c = (ptfunct pr₁ g₁ , λ p → ptrec (decidable-types
   g₁ = c (λ x → ₀)
 
   g₂ : (p : X → 𝟚) → (Σ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁) → decidable (∃ \(x : X) → p x ≡ ₀)
-  g₂ p (x₀ , φ) = h (𝟚-discrete (p x₀) ₁)
+  g₂ p (x₀ , φ) = h (𝟚-is-discrete (p x₀) ₁)
    where
     h : decidable(p x₀ ≡ ₁) → decidable (∃ \(x : X) → p x ≡ ₀)
     h (inl r) = inr (ptrec 𝟘-is-prop f)
@@ -640,7 +640,7 @@ i-and-c-iso : {X : 𝓤 ̇} → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
 i-and-c-iso {𝓤} {X} (t , c) p = ptrec propositional-truncation-is-a-prop f t
  where
   f : X → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
-  f x₀ = g (𝟚-discrete (p x₀) ₀) (c p)
+  f x₀ = g (𝟚-is-discrete (p x₀) ₀) (c p)
    where
     g : decidable(p x₀ ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
     g (inl r) e = ∣ x₀ , (λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))) ∣
@@ -891,7 +891,7 @@ the dominance 𝟚.
     l₀ p (inl r) = inl (pr₁ (l₁ p) r)
     l₀ p (inr u) = inr (contrapositive (pr₂ (l₁ p)) u)
     c' : (p : X → 𝟚) → decidable (p ≡ (λ x → ₁))
-    c' p = l₀ p (𝟚-discrete (A p) ₁)
+    c' p = l₀ p (𝟚-is-discrete (A p) ₁)
 
 \end{code}
 

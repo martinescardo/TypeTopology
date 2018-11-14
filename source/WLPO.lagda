@@ -41,7 +41,7 @@ If ℕ∞ is discrete, i.e. has decidable equality, then WLPO follows:
 
 \begin{code}
 
-ℕ∞-discrete-gives-WLPO : discrete ℕ∞ → WLPO
+ℕ∞-discrete-gives-WLPO : is-discrete ℕ∞ → WLPO
 ℕ∞-discrete-gives-WLPO d u = d u ∞
 
 \end{code}
@@ -56,7 +56,7 @@ c : ℕ∞ → ℕ∞ → ℕ∞ such that c u v ≡ ∞ ⇔ u ≡ v.
 
 open import UF-FunExt
 
-WLPO-gives-ℕ∞-discrete : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → WLPO → discrete ℕ∞
+WLPO-gives-ℕ∞-discrete : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → WLPO → is-discrete ℕ∞
 WLPO-gives-ℕ∞-discrete fe wlpo u v =
  Cases (wlpo (ℕ∞-codistance u v))
   (λ (p : ℕ∞-codistance u v ≡ ∞)

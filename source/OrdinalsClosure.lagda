@@ -155,11 +155,11 @@ Preservation of discreteness:
 
 \begin{code}
 
-∑-discrete : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
-           → discrete ⟪ τ ⟫
-           → ((x : ⟪ τ ⟫) → discrete ⟪ υ x ⟫)
-           → discrete ⟪ ∑ τ υ ⟫
-∑-discrete τ υ ε δ = Σ-discrete ε δ
+∑-is-discrete : (τ : Ordᵀ) (υ : ⟪ τ ⟫ → Ordᵀ)
+              → is-discrete ⟪ τ ⟫
+              → ((x : ⟪ τ ⟫) → is-discrete ⟪ υ x ⟫)
+              → is-discrete ⟪ ∑ τ υ ⟫
+∑-is-discrete τ υ ε δ = Σ-is-discrete ε δ
 
 \end{code}
 

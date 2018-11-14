@@ -104,19 +104,19 @@ force-decreasing-is-not-much-smaller β (succ n) p = f c
     f (inl q) = succ n , q
     f (inr r) = force-decreasing-is-not-much-smaller β n r
 
-Cantor-separated : funext₀ → separated (ℕ → 𝟚)
-Cantor-separated fe = Π-separated fe (λ _ → 𝟚-is-separated)
+Cantor-is-separated : funext₀ → is-separated (ℕ → 𝟚)
+Cantor-is-separated fe = Π-is-separated fe (λ _ → 𝟚-is-separated)
 
-ℕ∞-separated : funext₀ → separated ℕ∞
-ℕ∞-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-separated fe)
+ℕ∞-is-separated : funext₀ → is-separated ℕ∞
+ℕ∞-is-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-is-separated fe)
 
 ℕ∞-is-set : funext₀ → is-set ℕ∞
-ℕ∞-is-set fe = separated-types-are-sets fe (ℕ∞-separated fe)
+ℕ∞-is-set fe = separated-types-are-sets fe (ℕ∞-is-separated fe)
 
 open import TotallySeparated
 
-ℕ∞-totally-separated : funext₀ → totally-separated ℕ∞
-ℕ∞-totally-separated fe {x} {y} α = g
+ℕ∞-is-totally-separated : funext₀ → is-totally-separated ℕ∞
+ℕ∞-is-totally-separated fe {x} {y} α = g
  where
   p : ℕ → (ℕ∞ → 𝟚)
   p i x = incl x i
@@ -312,7 +312,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
 ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇}
-            → ({u : ℕ∞} → separated (Y u))
+            → ({u : ℕ∞} → is-separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f(under n) ≡ g(under n))
             → f ∞ ≡ g ∞
@@ -328,7 +328,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
 
 ℕ∞-density : funext₀
              → {Y : 𝓤 ̇}
-             → separated Y
+             → is-separated Y
              → {f g : ℕ∞ → Y}
              → ((n : ℕ) → f(under n) ≡ g(under n))
              → f ∞ ≡ g ∞
@@ -369,7 +369,7 @@ u ≡ under(n+1) if and only if n ⊏ u ⊑ n+1.
 
 \begin{code}
 
-finite-isolated : funext₀ → (n : ℕ) → isolated (under n)
+finite-isolated : funext₀ → (n : ℕ) → is-isolated (under n)
 finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
  where
   f : (u : ℕ∞) (n : ℕ) → decidable (u ≡ under n)
@@ -519,8 +519,8 @@ u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
 ∞-top : (u : ℕ∞) → ¬(∞ ≺ u)
 ∞-top u (n , r , l) = ∞-is-not-finite n r
 
-below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → isolated u
-below-isolated fe u v (n , r , l) = back-transport isolated r (finite-isolated fe n)
+below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → is-isolated u
+below-isolated fe u v (n , r , l) = back-transport is-isolated r (finite-isolated fe n)
 
 ≺-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≺ v)
 ≺-prop-valued fe u v (n , r , a) (m , s , b) =
@@ -626,7 +626,7 @@ proved above, that ≺ is well founded:
 
 under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
 under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
-under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
+under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
  where
   IH : u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
   IH = under-lemma fe u n
@@ -640,7 +640,7 @@ under-lemma fe u (succ n) p = g (𝟚-discrete (incl u n) ₀)
       s = Succ-criterion fe {u} {n} q p
 
 ≺-cotransitive : funext₀ → cotransitive _≺_
-≺-cotransitive fe u v w (n , r , a) = g (𝟚-discrete (incl w n) ₁)
+≺-cotransitive fe u v w (n , r , a) = g (𝟚-is-discrete (incl w n) ₁)
  where
   g : decidable(n ⊏ w) → (u ≺ w) + (w ≺ v)
   g (inl a) = inl (n , r , a)

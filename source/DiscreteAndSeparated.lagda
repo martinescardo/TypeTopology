@@ -20,31 +20,31 @@ open import UF-Equiv
 open import UF-Retracts
 open import UF-FunExt
 
-isolated : {X : 𝓤 ̇} → X → 𝓤 ̇
-isolated x = ∀ y → decidable(x ≡ y)
+is-isolated : {X : 𝓤 ̇} → X → 𝓤 ̇
+is-isolated x = ∀ y → decidable(x ≡ y)
 
-isolated' : {X : 𝓤 ̇} → X → 𝓤 ̇
-isolated' x = ∀ y → decidable(y ≡ x)
+is-isolated' : {X : 𝓤 ̇} → X → 𝓤 ̇
+is-isolated' x = ∀ y → decidable(y ≡ x)
 
 decidable-eq-sym : {X : 𝓤 ̇} (x y : X) → decidable (x ≡ y) → decidable (y ≡ x)
 decidable-eq-sym x y = cases
                         (λ (p : x ≡ y) → inl (p ⁻¹))
                         (λ (n : ¬(x ≡ y)) → inr (λ (q : y ≡ x) → n (q ⁻¹)))
 
--isolated'-gives-isolated : {X : 𝓤 ̇} (x : X) → isolated' x → isolated x
--isolated'-gives-isolated x i' y = cases
+-is-isolated'-gives-is-isolated : {X : 𝓤 ̇} (x : X) → is-isolated' x → is-isolated x
+-is-isolated'-gives-is-isolated x i' y = cases
                                    (λ (p : y ≡ x) → inl (p ⁻¹))
                                    (λ (n : ¬(y ≡ x)) → inr (λ (p : x ≡ y) → n (p ⁻¹)))
                                    (i' y)
 
-isolated'-gives-isolated : {X : 𝓤 ̇} (x : X) → isolated' x → isolated x
-isolated'-gives-isolated x i' y = decidable-eq-sym y x (i' y)
+is-isolated'-gives-is-isolated : {X : 𝓤 ̇} (x : X) → is-isolated' x → is-isolated x
+is-isolated'-gives-is-isolated x i' y = decidable-eq-sym y x (i' y)
 
-isolated-gives-isolated' : {X : 𝓤 ̇} (x : X) → isolated x → isolated' x
-isolated-gives-isolated' x i y = decidable-eq-sym x y (i y)
+is-isolated-gives-is-isolated' : {X : 𝓤 ̇} (x : X) → is-isolated x → is-isolated' x
+is-isolated-gives-is-isolated' x i y = decidable-eq-sym x y (i y)
 
-discrete : 𝓤 ̇ → 𝓤 ̇
-discrete X = (x : X) → isolated x
+is-discrete : 𝓤 ̇ → 𝓤 ̇
+is-discrete X = (x : X) → is-isolated x
 
 \end{code}
 
@@ -52,30 +52,30 @@ Standard examples:
 
 \begin{code}
 
-𝟘-discrete : discrete (𝟘 {𝓤})
-𝟘-discrete ()
+𝟘-is-discrete : is-discrete (𝟘 {𝓤})
+𝟘-is-discrete ()
 
-𝟙-discrete : discrete (𝟙 {𝓤})
-𝟙-discrete * * = inl refl
+𝟙-is-discrete : is-discrete (𝟙 {𝓤})
+𝟙-is-discrete * * = inl refl
 
-𝟚-discrete : discrete 𝟚
-𝟚-discrete ₀ ₀ = inl refl
-𝟚-discrete ₀ ₁ = inr(λ ())
-𝟚-discrete ₁ ₀ = inr(λ ())
-𝟚-discrete ₁ ₁ = inl refl
+𝟚-is-discrete : is-discrete 𝟚
+𝟚-is-discrete ₀ ₀ = inl refl
+𝟚-is-discrete ₀ ₁ = inr(λ ())
+𝟚-is-discrete ₁ ₀ = inr(λ ())
+𝟚-is-discrete ₁ ₁ = inl refl
 
-ℕ-discrete : discrete ℕ
-ℕ-discrete 0 0 = inl refl
-ℕ-discrete 0 (succ n) = inr (λ())
-ℕ-discrete (succ m) 0 = inr (λ())
-ℕ-discrete (succ m) (succ n) =  step(ℕ-discrete m n)
+ℕ-is-discrete : is-discrete ℕ
+ℕ-is-discrete 0 0 = inl refl
+ℕ-is-discrete 0 (succ n) = inr (λ())
+ℕ-is-discrete (succ m) 0 = inr (λ())
+ℕ-is-discrete (succ m) (succ n) =  step(ℕ-is-discrete m n)
   where
    step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n)
    step (inl r) = inl(ap succ r)
    step (inr f) = inr(λ s → f(succ-lc s))
 
 +discrete : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-          → discrete X → discrete Y → discrete (X + Y)
+          → is-discrete X → is-discrete Y → is-discrete (X + Y)
 +discrete d e (inl x) (inl x') =
     Cases (d x x')
      (λ (p : x ≡ x') → inl(ap inl p))
@@ -98,7 +98,7 @@ General properties:
 \begin{code}
 
 discrete-is-cotransitive : {X : 𝓤 ̇}
-                         → discrete X → {x y z : X} → x ≢ y → (x ≢ z) + (z ≢ y)
+                         → is-discrete X → {x y z : X} → x ≢ y → (x ≢ z) + (z ≢ y)
 discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
  where
   f : (x ≡ z) + (x ≢ z) → (x ≢ z) + (z ≢ y)
@@ -106,14 +106,14 @@ discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
   f (inr γ) = inl γ
 
 retract-discrete-discrete : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                         → retract Y of X → discrete X → discrete Y
+                         → retract Y of X → is-discrete X → is-discrete Y
 retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
   g : decidable (s y ≡ s y') → decidable (y ≡ y')
   g (inl p) = inl ((φ y) ⁻¹ ∙ ap f p ∙ φ y')
   g (inr u) = inr (contrapositive (ap s) u)
 
-𝟚-retract-of-discrete : {X : 𝓤 ̇} {x₀ x₁ : X} → x₀ ≢ x₁ → discrete X → retract 𝟚 of X
+𝟚-retract-of-discrete : {X : 𝓤 ̇} {x₀ x₁ : X} → x₀ ≢ x₁ → is-discrete X → retract 𝟚 of X
 𝟚-retract-of-discrete {𝓤} {X} {x₀} {x₁} ne d = r , (s , rs)
  where
   r : X → 𝟚
@@ -137,12 +137,12 @@ extensionality. More generally:
 
 \begin{code}
 
-separated : 𝓤 ̇ → 𝓤 ̇
-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
+is-separated : 𝓤 ̇ → 𝓤 ̇
+is-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
-Π-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
-            → ((x : X) → separated(Y x)) → separated(Π Y)
-Π-separated fe s f g h = dfunext fe lemma𝟚
+Π-is-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+            → ((x : X) → is-separated(Y x)) → is-separated(Π Y)
+Π-is-separated fe s f g h = dfunext fe lemma𝟚
  where
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ - → - x) r
@@ -153,14 +153,14 @@ separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
   lemma𝟚 : ∀ x → f x ≡ g x
   lemma𝟚 x =  s x (f x) (g x) (lemma₁ x)
 
-discrete-is-separated : {X : 𝓤 ̇} → discrete X → separated X
+discrete-is-separated : {X : 𝓤 ̇} → is-discrete X → is-separated X
 discrete-is-separated d x y = ¬¬-elim(d x y)
 
-𝟚-is-separated : separated 𝟚
-𝟚-is-separated = discrete-is-separated 𝟚-discrete
+𝟚-is-separated : is-separated 𝟚
+𝟚-is-separated = discrete-is-separated 𝟚-is-discrete
 
 subtype-of-separated-is-separated : {X : 𝓤 ̇} {Y : 𝓥 ̇} (m : X → Y)
-                                  → left-cancellable m → separated Y → separated X
+                                  → left-cancellable m → is-separated Y → is-separated X
 subtype-of-separated-is-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
 
 \end{code}
@@ -187,7 +187,7 @@ apart-is-symmetric : {X : 𝓤 ̇} → {Y : X → 𝓥 ̇}
 apart-is-symmetric (x , φ)  = (x , (φ ∘ _⁻¹))
 
 apart-is-cotransitive : {X : 𝓤 ̇} → {Y : X → 𝓥 ̇}
-                     → ((x : X) → discrete(Y x))
+                     → ((x : X) → is-discrete(Y x))
                      → (f g h : (x : X) → Y x)
                      → f ♯ g → f ♯ h  +  h ♯ g
 apart-is-cotransitive d f g h (x , φ)  = lemma₁(lemma₀ φ)
@@ -207,7 +207,7 @@ assuming extensionality:
 \begin{code}
 
 tight : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
-      → ((x : X) → separated(Y x))
+      → ((x : X) → is-separated(Y x))
       → (f g : (x : X) → Y x)
       → ¬(f ♯ g) → f ≡ g
 tight fe s f g h = dfunext fe lemma₁
@@ -220,7 +220,7 @@ tight fe s f g h = dfunext fe lemma₁
 
 
 tight' : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
-       → ((x : X) → discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
+       → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
 tight' fe d = tight fe (λ x → discrete-is-separated(d x))
 
 \end{code}
@@ -230,9 +230,9 @@ easy:
 
 \begin{code}
 
-binary-product-separated : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                         → separated X → separated Y → separated(X × Y)
-binary-product-separated s t (x , y) (x' , y') φ =
+binary-product-is-separated : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                            → is-separated X → is-separated Y → is-separated(X × Y)
+binary-product-is-separated s t (x , y) (x' , y') φ =
  lemma(lemma₀ φ)(lemma₁ φ)
  where
   lemma₀ : ¬¬((x , y) ≡ (x' , y')) → x ≡ x'
@@ -252,9 +252,9 @@ special case is also easy:
 
 \begin{code}
 
-binary-sum-separated : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                     → separated X → separated Y → separated(X + Y)
-binary-sum-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
+binary-sum-is-separated : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+                        → is-separated X → is-separated Y → is-separated(X + Y)
+binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
  where
   claim : inl x ≡ inl x' → x ≡ x'
   claim = ap p
@@ -265,9 +265,9 @@ binary-sum-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
   lemma : ¬¬(inl x ≡ inl x') → inl x ≡ inl x'
   lemma = (ap inl) ∘ (s x x') ∘ ¬¬-functor claim
 
-binary-sum-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
-binary-sum-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹))
-binary-sum-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
+binary-sum-is-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
+binary-sum-is-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹))
+binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
  where
   claim : inr y ≡ inr y' → y ≡ y'
   claim = ap q
@@ -281,7 +281,7 @@ binary-sum-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
 
 ⊥-⊤-density' : funext 𝓤 𝓤 → propext 𝓤
               → ∀ {𝓥} {X : 𝓥 ̇}
-              → separated X
+              → is-separated X
               → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤ → constant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
@@ -303,18 +303,20 @@ binary-sum-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
 
 \begin{code}
 
-qinvs-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → (x : X) → isolated x → isolated (f x)
+qinvs-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f
+                            → (x : X) → is-isolated x → is-isolated (f x)
 qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y))
  where
   h : decidable (x ≡ g y) → decidable (f x ≡ y)
   h (inl p) = inl (ap f p ∙ fg y)
   h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (gf x) ⁻¹ ∙ ap g q) u)
 
-equivalences-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-equiv f → (x : X) → isolated x → isolated (f x)
+equivalences-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-equiv f
+                                   → (x : X) → is-isolated x → is-isolated (f x)
 equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qinvs f e)
 
-isolated-added-point : {X : 𝓤 ̇} → isolated (inr (* ∶ 𝟙 {𝓥}))
-isolated-added-point {𝓤} {𝓥} {X} = h
+is-isolated-added-point : {X : 𝓤 ̇} → is-isolated (inr (* ∶ 𝟙 {𝓥}))
+is-isolated-added-point {𝓤} {𝓥} {X} = h
  where
   h :  (y : X + 𝟙) → decidable {𝓤 ⊔ 𝓥} (inr * ≡ y)
   h (inl x) = inr (λ ())
@@ -326,7 +328,7 @@ Back to old stuff:
 \begin{code}
 
 ≡-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≢ n) × (p n ≡ ₁ → m ≡ n)
-≡-indicator m = co-characteristic-function (ℕ-discrete m)
+≡-indicator m = co-characteristic-function (ℕ-is-discrete m)
 
 χ≡ : ℕ → ℕ → 𝟚
 χ≡ m = pr₁ (≡-indicator m)
@@ -343,7 +345,7 @@ infix  30 _≡[ℕ]_
 ≡-agrees-with-≡[ℕ] m n = (λ r → Lemma[b≢₀→b≡₁] (λ s → pr₁(χ≡-spec m n) s r)) , pr₂(χ≡-spec m n)
 
 ≢-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≡ n) × (p n ≡ ₁ → m ≢ n)
-≢-indicator m = indicator(ℕ-discrete m)
+≢-indicator m = indicator(ℕ-is-discrete m)
 
 χ≢ : ℕ → ℕ → 𝟚
 χ≢ m = pr₁ (≢-indicator m)

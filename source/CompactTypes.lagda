@@ -296,7 +296,7 @@ is called discreteness. More generally we have:
 \begin{code}
 
 apart-or-equal : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
-              → compact X → ((x : X) → discrete(Y x))
+              → compact X → ((x : X) → is-discrete(Y x))
               → (f g : (x : X) → Y x) → (f ♯ g) + (f ≡ g)
 apart-or-equal {𝓤} {𝓥} {X} fe {Y} φ d f g = lemma₂ lemma₁
  where
@@ -314,7 +314,7 @@ apart-or-equal {𝓤} {𝓥} {X} fe {Y} φ d f g = lemma₂ lemma₁
 
 compact-discrete-discrete : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇} →
 
-   compact X → ((x : X) → discrete(Y x)) → discrete((x : X) → Y x)
+   compact X → ((x : X) → is-discrete(Y x)) → is-discrete((x : X) → Y x)
 
 compact-discrete-discrete fe φ d f g = h(apart-or-equal fe φ d f g)
  where
@@ -323,7 +323,7 @@ compact-discrete-discrete fe φ d f g = h(apart-or-equal fe φ d f g)
   h(inr r) = inl r
 
 compact-discrete-discrete' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → funext 𝓤 𝓥
-                             → compact X → discrete Y → discrete(X → Y)
+                           → compact X → is-discrete Y → is-discrete(X → Y)
 compact-discrete-discrete' fe φ d = compact-discrete-discrete fe φ (λ x → d)
 
 𝟘-compact : compact (𝟘 {𝓤})

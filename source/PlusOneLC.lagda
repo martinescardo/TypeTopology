@@ -48,7 +48,7 @@ remove-points {𝓤} {𝓥} {X} {Y} f (g , (ε , η)) a = qinveq f' (g' , ε' , 
   η' : f' ∘ g' ∼ id
   η' (y , _) = to-Σ-≡ (η y , negations-are-props (fe 𝓥 𝓤₀) _ _)
 
-add-one-and-remove-isolated-point : ∀ {𝓥} {Y : 𝓥 ̇} (z : Y + 𝟙) → isolated z → ((Y + 𝟙) ∖ z) ≃ Y
+add-one-and-remove-isolated-point : ∀ {𝓥} {Y : 𝓥 ̇} (z : Y + 𝟙) → is-isolated z → ((Y + 𝟙) ∖ z) ≃ Y
 add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
  where
   f : (Y + 𝟙) ∖ (inl b) → Y
@@ -95,7 +95,7 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-
   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *) ⟩
   (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
                               (φ (inr *))
-                              (equivalences-preserve-isolatedness φ e (inr *) isolated-added-point) ⟩
+                              (equivalences-preserve-isolatedness φ e (inr *) is-isolated-added-point) ⟩
    Y ■
 
 \end{code}
