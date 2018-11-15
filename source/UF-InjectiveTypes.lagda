@@ -544,11 +544,11 @@ the map P → 𝟙 is an embedding.
 
 So in essence we are considering the map E : (P → 𝓤) → 𝓤 defined by
 
-   E f = Π (p : P) → f p.
+   s f = Π (p : P) → f p.
 
 Then, for any A : 𝓤,
 
-  fiber E A = Σ \(f : P → 𝓤) → Π (p : P) → f p
+  fiber s A = Σ \(f : P → 𝓤) → (Π (p : P) → f p) ≡ A.
 
 A few days pause. Now 15th Nov 2018 after a discussion in the HoTT list.
 https://groups.google.com/d/topic/homotopytypetheory/xvx5hOEPnDs/discussion
