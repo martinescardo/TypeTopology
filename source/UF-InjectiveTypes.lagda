@@ -580,16 +580,14 @@ module extension-is-embedding-special-case
  M = Σ \(X : 𝓤 ̇) → is-equiv (κ X)
 
  φ : (P → 𝓤 ̇) → M
- φ A = s A , qinvs-are-equivs α (β , βα , αβ)
+ φ A = s A , qinvs-are-equivs (κ (s A)) (δ , ε , η)
   where
-   α : s A → (P → s A)
-   α u p = u
-   β : (P → s A) → s A
-   β v p = v p p
-   αβ : (v : P → s A) → (λ p → β v) ≡ v
-   αβ v = dfunext (fe 𝓤 𝓤) (λ p → dfunext (fe 𝓤 𝓤) (λ q → ap (λ - → v - q) (i q p)))
-   βα : (u : Π A) → β (λ p → u) ≡ u
-   βα u = refl
+   δ : (P → s A) → s A
+   δ v p = v p p
+   η : (v : P → s A) → κ (s A) (δ v) ≡ v
+   η v = dfunext (fe 𝓤 𝓤) (λ p → dfunext (fe 𝓤 𝓤) (λ q → ap (λ - → v - q) (i q p)))
+   ε : (u : Π A) → δ (κ (s A) u) ≡ u
+   ε u = refl
 
  γ : M → (P → 𝓤 ̇)
  γ (X , i) p = X
