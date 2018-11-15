@@ -118,14 +118,11 @@ retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
   r : X → 𝟚
   r = pr₁ (characteristic-function (d x₀))
-
   φ : (x : X) → (r x ≡ ₀ → x₀ ≡ x) × (r x ≡ ₁ → ¬ (x₀ ≡ x))
   φ = pr₂ (characteristic-function (d x₀))
-
   s : 𝟚 → X
   s ₀ = x₀
   s ₁ = x₁
-
   rs : (n : 𝟚) → r (s n) ≡ n
   rs ₀ = Lemma[b≢₁→b≡₀] (λ p → pr₂ (φ x₀) p refl)
   rs ₁ = Lemma[b≢₀→b≡₁] λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
@@ -141,17 +138,15 @@ is-separated : 𝓤 ̇ → 𝓤 ̇
 is-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
 Π-is-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
-            → ((x : X) → is-separated(Y x)) → is-separated(Π Y)
-Π-is-separated fe s f g h = dfunext fe lemma𝟚
+               → ((x : X) → is-separated(Y x)) → is-separated(Π Y)
+Π-is-separated fe s f g h = dfunext fe lemma₂
  where
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ - → - x) r
-
   lemma₁ : ∀ x → ¬¬(f x ≡ g x)
   lemma₁ = double-negation-unshift(¬¬-functor lemma₀ h)
-
-  lemma𝟚 : ∀ x → f x ≡ g x
-  lemma𝟚 x =  s x (f x) (g x) (lemma₁ x)
+  lemma₂ : ∀ x → f x ≡ g x
+  lemma₂ x =  s x (f x) (g x) (lemma₁ x)
 
 discrete-is-separated : {X : 𝓤 ̇} → is-discrete X → is-separated X
 discrete-is-separated d x y = ¬¬-elim(d x y)
@@ -194,7 +189,6 @@ apart-is-cotransitive d f g h (x , φ)  = lemma₁(lemma₀ φ)
  where
   lemma₀ : f x ≢ g x → (f x ≢ h x)  +  (h x ≢ g x)
   lemma₀ = discrete-is-cotransitive (d x)
-
   lemma₁ : (f x ≢ h x) + (h x ≢ g x) → f ♯ h  +  h ♯ g
   lemma₁ (inl γ) = inl (x , γ)
   lemma₁ (inr δ) = inr (x , δ)
@@ -214,10 +208,8 @@ tight fe s f g h = dfunext fe lemma₁
  where
   lemma₀ : ∀ x → ¬¬(f x ≡ g x)
   lemma₀ = not-Σ-implies-Π-not h
-
   lemma₁ : ∀ x → f x ≡ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
-
 
 tight' : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
        → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
@@ -237,17 +229,15 @@ binary-product-is-separated s t (x , y) (x' , y') φ =
  where
   lemma₀ : ¬¬((x , y) ≡ (x' , y')) → x ≡ x'
   lemma₀ = (s x x') ∘ ¬¬-functor(ap pr₁)
-
   lemma₁ : ¬¬((x , y) ≡ (x' , y')) → y ≡ y'
   lemma₁ = (t y y') ∘ ¬¬-functor(ap pr₂)
-
   lemma : x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
   lemma = ap₂ (_,_)
 
 \end{code}
 
 This proof doesn't work for general dependent sums, because, among
-other things, (ap π₁) doesn't make sense in that case.  A different
+other things, (ap pr₁) doesn't make sense in that case.  A different
 special case is also easy:
 
 \begin{code}
@@ -258,12 +248,12 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
  where
   claim : inl x ≡ inl x' → x ≡ x'
   claim = ap p
-   where p : X + Y → X
-         p(inl u) = u
-         p(inr v) = x
-
+   where
+    p : X + Y → X
+    p(inl u) = u
+    p(inr v) = x
   lemma : ¬¬(inl x ≡ inl x') → inl x ≡ inl x'
-  lemma = (ap inl) ∘ (s x x') ∘ ¬¬-functor claim
+  lemma = ap inl ∘ s x x' ∘ ¬¬-functor claim
 
 binary-sum-is-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
 binary-sum-is-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹))
@@ -272,17 +262,16 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
   claim : inr y ≡ inr y' → y ≡ y'
   claim = ap q
    where
-     q : X + Y → Y
-     q(inl u) = y
-     q(inr v) = v
-
+    q : X + Y → Y
+    q(inl u) = y
+    q(inr v) = v
   lemma : ¬¬(inr y ≡ inr y') → inr y ≡ inr y'
   lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
 
 ⊥-⊤-density' : funext 𝓤 𝓤 → propext 𝓤
-              → ∀ {𝓥} {X : 𝓥 ̇}
-              → is-separated X
-              → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤ → constant f
+             → ∀ {𝓥} {X : 𝓥 ̇}
+             → is-separated X
+             → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤ → constant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
     a : ∀ p → ¬¬(f p ≡ f ⊤)
@@ -290,10 +279,8 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
       where
         b : p ≢ ⊥
         b u = t (ap f u ∙ r)
-
         c : p ≢ ⊤
         c u = t (ap f u)
-
     g : ∀ p → f p ≡ f ⊤
     g p = s (f p) (f ⊤) (a p)
 
@@ -305,20 +292,20 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
 
 qinvs-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f
                             → (x : X) → is-isolated x → is-isolated (f x)
-qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , (gf , fg)) x i y = h (i (g y))
+qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , ε , η) x i y = h (i (g y))
  where
   h : decidable (x ≡ g y) → decidable (f x ≡ y)
-  h (inl p) = inl (ap f p ∙ fg y)
-  h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (gf x) ⁻¹ ∙ ap g q) u)
+  h (inl p) = inl (ap f p ∙ η y)
+  h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (ε x)⁻¹ ∙ ap g q) u)
 
 equivalences-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-equiv f
                                    → (x : X) → is-isolated x → is-isolated (f x)
 equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qinvs f e)
 
-is-isolated-added-point : {X : 𝓤 ̇} → is-isolated (inr (* ∶ 𝟙 {𝓥}))
+is-isolated-added-point : {X : 𝓤 ̇} → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr *)
 is-isolated-added-point {𝓤} {𝓥} {X} = h
  where
-  h :  (y : X + 𝟙) → decidable {𝓤 ⊔ 𝓥} (inr * ≡ y)
+  h :  (y : X + 𝟙) → decidable (inr * ≡ y)
   h (inl x) = inr (λ ())
   h (inr *) = inl refl
 \end{code}

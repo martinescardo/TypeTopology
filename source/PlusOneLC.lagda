@@ -37,7 +37,7 @@ add-and-remove-same-point {𝓤} {X} = qinveq f (g , ε , η)
   ε x = refl
 
 remove-points : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
-remove-points {𝓤} {𝓥} {X} {Y} f (g , (ε , η)) a = qinveq f' (g' , ε' , η')
+remove-points {𝓤} {𝓥} {X} {Y} f (g , ε , η) a = qinveq f' (g' , ε' , η')
  where
   f' : X ∖ a → Y ∖ (f a)
   f' (x , u) = (f x , λ(p : f x ≡ f a) → u ((ε x)⁻¹ ∙ ap g p ∙ ε a))
@@ -56,7 +56,7 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
   f (inr * , u) = b
   g' : (y : Y) → decidable (inl b ≡ inl y) → (Y + 𝟙) ∖ (inl b)
   g' y (inl p) = (inr * , +disjoint')
-  g' y (inr u) = (inl y , contrapositive (λ p → p ⁻¹) u)
+  g' y (inr u) = (inl y , contrapositive (_⁻¹) u)
   g : Y → (Y + 𝟙) ∖ (inl b)
   g y = g' y (i (inl y))
   ε : g ∘ f ∼ id
