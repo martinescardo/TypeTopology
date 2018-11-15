@@ -42,7 +42,7 @@ is, f = f/j ∘ j). Of course, this "extension property" is not always
 possible, and it depends on properties of f, j and D. Usually, one
 requires j to be an embedding (of some sort).
 
-Here I consider the case that D=U, a universe, in which case, if one
+Here I consider the case that D=𝓤, a universe, in which case, if one
 doesn't want to assume univalence, then it makes sense to consider
 commutation up to equivalence:
 
@@ -53,7 +53,7 @@ commutation up to equivalence:
              f   \   / f/j
                   \ /
                    v
-                   U
+                   𝓤
 
 But this can be the case only if j is an embedding in a suitable
 sense. Otherwise, we only have a right-Kan extension
@@ -65,10 +65,10 @@ sense. Otherwise, we only have a right-Kan extension
              f   \   / f/j
                   \ /
                    v
-                   U
+                   𝓤
 
 in the sense that the natural transformations from "presheaves"
-g : Y → U to the "presheaf" f/j are naturally equivalent to the
+g : Y → 𝓤 to the "presheaf" f/j are naturally equivalent to the
 natural transformations from g ∘ j to f:
 
      Nat g f/j ≃ Nat (g ∘ j) f
@@ -106,9 +106,9 @@ Here is how we define f/j given f and j.
              f   \   / f' := f/j
                   \ /
                    v
-                   U
+                   𝓤
 
-We have to apply the following constructions for U=V=W for the above
+We have to apply the following constructions for 𝓤=𝓥=𝓦 for the above
 triangles to make sense.
 
 \begin{code}
@@ -518,7 +518,7 @@ iterated-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {Z} {A} j k z = γ
 
 Added 9th November 2018.
 
-We want to show that f ↦ f/j is an embedding of (X → U) into (Y → U)
+We want to show that f ↦ f/j is an embedding of (X → 𝓤) into (Y → 𝓤)
 if j is an embedding.
 
                    j
@@ -528,10 +528,10 @@ if j is an embedding.
              f   \   / f/j
                   \ /
                    v
-                   U
+                   𝓤
 
 The simplest case is X = P and Y = 𝟙, where P is a proposition. Then
-any map 𝟙 → P is a proposition (there is of course at most one).
+the map P → 𝟙 is an embedding.
 
                    j
               P ------> 𝟙
@@ -540,18 +540,104 @@ any map 𝟙 → P is a proposition (there is of course at most one).
               f  \   / (f / j) (x) = Π (w : fiber j x) → f(pr₁ w)
                   \ /              ≃ Π (p : P) → j p ≡ x → f p
                    v               ≃ Π (p : P) → f p
-                   U
+                   𝓤
 
-So in essence we are considering the map E : (P → U) → U defined by
+So in essence we are considering the map E : (P → 𝓤) → 𝓤 defined by
 
    E f = Π (p : P) → f p.
 
-Then, for any A : U,
+Then, for any A : 𝓤,
 
-  fiber E A = Σ \(f : P → U) → Π (p : P) → f p
+  fiber E A = Σ \(f : P → 𝓤) → Π (p : P) → f p
 
+A few days pause. Now 15th Nov 2018 after a discussion in the HoTT list.
+https://groups.google.com/d/topic/homotopytypetheory/xvx5hOEPnDs/discussion
 
+Here is my take on the outcome of the discussion, following
+independent solutions by Shulman and Capriotti.
 
 \begin{code}
 
+open import UF-Subsingletons
+
+module extension-is-embedding-special-case
+         (P : 𝓤 ̇)
+         (i : is-prop P)
+         (ua : is-univalent 𝓤)
+ where
+
+ open import UF-PropIndexedPiSigma
+ open import UF-Equiv-FunExt
+
+ s : (P → 𝓤 ̇) → 𝓤 ̇
+ s = Π
+
+ κ : (X : 𝓤 ̇) → X → (P → X)
+ κ X x p = x
+
+ M : 𝓤 ⁺ ̇
+
+ M = Σ \(X : 𝓤 ̇) → is-equiv (κ X)
+
+ φ : (P → 𝓤 ̇) → M
+ φ A = s A , qinvs-are-equivs α (β , βα , αβ)
+  where
+   α : s A → (P → s A)
+   α u p = u
+   β : (P → s A) → s A
+   β v p = v p p
+   αβ : (v : P → s A) → (λ p → β v) ≡ v
+   αβ v = dfunext (fe 𝓤 𝓤) (λ p → dfunext (fe 𝓤 𝓤) (λ q → ap (λ - → v - q) (i q p)))
+   βα : (u : Π A) → β (λ p → u) ≡ u
+   βα u = refl
+
+ γ : M → (P → 𝓤 ̇)
+ γ (X , i) p = X
+
+ φγ : ∀ σ → φ (γ σ) ≡ σ
+ φγ (X , i) = to-Σ-≡ (eqtoid ua (P → X) X (≃-sym (κ X , i)) ,
+                      being-equiv-is-a-prop fe (κ X) _ i)
+
+ γφ : ∀ A → γ (φ A) ≡ A
+ γφ A = dfunext (fe 𝓤 (𝓤 ⁺)) (λ p → eqtoid ua (s A) (A p) (prop-indexed-product (fe 𝓤 𝓤) i p))
+
+ φ-is-equiv : is-equiv φ
+ φ-is-equiv = qinvs-are-equivs φ (γ , γφ , φγ)
+
+ φ-is-embedding : is-embedding φ
+ φ-is-embedding = equivs-are-embeddings φ φ-is-equiv
+
+ ψ : M → 𝓤 ̇
+ ψ = pr₁
+
+ ψ-is-embedding : is-embedding ψ
+ ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (λ x p → x))
+
+ s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp = refl
+
+ s-is-embedding  : is-embedding s
+ s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+
 \end{code}
+
+Additional information.
+
+\begin{code}
+
+ r :  𝓤 ̇ → (P → 𝓤 ̇)
+ r X p = X
+
+ rs : ∀ A → r (s A) ≡ A
+ rs = γφ
+
+ sr : ∀ X → s (r X) ≡ (P → X)
+ sr X = refl
+
+\end{code}
+
+In general, sections are not embeddings (see Theorem 3.10 of Shulman's
+paper "Idempotents in intensional type theory" https://arxiv.org/abs/1507.03634),
+but in this case the section s : (P → 𝓤 ̇) → 𝓤 ̇ happens to be an embedding.
+
+To be continued, now using this to prove that f ↦ f / j is an embedding for any embedding j:X→Y.

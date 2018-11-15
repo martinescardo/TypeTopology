@@ -230,16 +230,16 @@ Over-embedding : (X : ℕ → 𝓤 ̇) (Y : ℕ → 𝓤 ̇)
 Over-embedding {𝓤} X Y f d (inl n) =
  comp-embedding
   (comp-embedding
-    (is-equiv-is-embedding (eqtofun (Π-extension-in-range X over over-embedding n))
+    (equivs-are-embeddings (eqtofun (Π-extension-in-range X over over-embedding n))
      (eqtofun-is-an-equiv (Π-extension-in-range X over over-embedding n)))
     (d n))
-  (is-equiv-is-embedding (eqtofun (≃-sym (Π-extension-in-range Y over over-embedding n)))
+  (equivs-are-embeddings (eqtofun (≃-sym (Π-extension-in-range Y over over-embedding n)))
    (eqtofun-is-an-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
 Over-embedding {𝓤} X Y f d (inr *) =
  comp-embedding {𝓤} {𝓤₀}
-  (is-equiv-is-embedding (eqtofun (Π-extension-out-of-range X over (inr *) (λ x → +disjoint)))
+  (equivs-are-embeddings (eqtofun (Π-extension-out-of-range X over (inr *) (λ x → +disjoint)))
    (eqtofun-is-an-equiv (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
-  (is-equiv-is-embedding (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
+  (equivs-are-embeddings (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
    (eqtofun-is-an-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
 
 Σ₁-functor : (X : ℕ → 𝓤 ̇) (Y : ℕ → 𝓤 ̇) (f : (n : ℕ) → X n → Y n)

@@ -150,7 +150,7 @@ itself.
 
  κ-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
                 → {X : 𝓤 ̇} → is-embedding (κ {𝓤} {X})
- κ-is-embedding pe fe fe' = is-equiv-is-embedding κ (κ-is-equiv pe fe fe')
+ κ-is-embedding pe fe fe' = equivs-are-embeddings κ (κ-is-equiv pe fe fe')
 
 \end{code}
 

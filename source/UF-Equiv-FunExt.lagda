@@ -17,11 +17,11 @@ open import UF-Retracts
 open import UF-FunExt
 open import UF-Equiv
 
-is-vv-equiv-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
-                   → is-prop(is-vv-equiv f)
-is-vv-equiv-is-a-prop {𝓤} {𝓥} fe f = Π-is-prop
-                                     (fe 𝓥 (𝓤 ⊔ 𝓥))
-                                     (λ x → is-singleton-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+being-vv-equiv-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+                         → is-prop(is-vv-equiv f)
+being-vv-equiv-is-a-prop {𝓤} {𝓥} fe f = Π-is-prop
+                                          (fe 𝓥 (𝓤 ⊔ 𝓥))
+                                          (λ x → is-singleton-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
 
 qinv-post' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
           → naive-funext 𝓦 𝓤 → naive-funext 𝓦 𝓥
@@ -117,18 +117,18 @@ sections-have-at-most-one-retraction : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → 
 sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
 being-equiv-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
-                   → is-prop(is-equiv f)
+                      → is-prop(is-equiv f)
 being-equiv-is-a-prop fe f = ×-prop-criterion (retractions-have-at-most-one-section fe f , sections-have-at-most-one-retraction fe f)
 
 being-equiv-is-a-prop' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                    → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                    → (f : X → Y) → is-prop(is-equiv f)
+                       → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
+                       → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-a-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
                                                             sections-have-at-most-one-retraction' fe'' fe''' f)
 
 being-equiv-is-a-prop'' : {X Y : 𝓤 ̇}
-                     → funext 𝓤 𝓤
-                     → (f : X → Y) → is-prop(is-equiv f)
+                        → funext 𝓤 𝓤
+                        → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-a-prop'' fe = being-equiv-is-a-prop' fe fe fe fe
 
 \end{code}
@@ -175,8 +175,8 @@ Its inverse (also already defined - TODO):
 \begin{code}
 
 TT-unchoice : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
-           → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-           → Π \(x : X) → Σ \(y : Y x) → A x y
+            → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
+            → Π \(x : X) → Σ \(y : Y x) → A x y
 TT-unchoice (f , g) x = (f x) , (g x)
 
 \end{code}
@@ -198,9 +198,9 @@ TT-choice-has-section {𝓤} {𝓥} {𝓦} {X} {Y} {A} = TT-unchoice ,
                                                 TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A}
 
 TT-unchoice-choice : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
-     → funext 𝓤 (𝓥 ⊔ 𝓦)
-     → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
-     → TT-unchoice (TT-choice φ) ≡ φ
+                   → funext 𝓤 (𝓥 ⊔ 𝓦)
+                   → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
+                   → TT-unchoice (TT-choice φ) ≡ φ
 TT-unchoice-choice fe φ = dfunext fe (λ x → refl)
 
 TT-choice-is-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
@@ -210,8 +210,8 @@ TT-choice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe = TT-choice-has-section {
                                                 (TT-unchoice , TT-unchoice-choice fe)
 
 TT-unchoice-is-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
-                    → funext 𝓤 (𝓥 ⊔ 𝓦)
-                    → is-equiv TT-unchoice
+                     → funext 𝓤 (𝓥 ⊔ 𝓦)
+                     → is-equiv TT-unchoice
 TT-unchoice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe =
    (TT-choice , TT-unchoice-choice {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe) ,
    (TT-choice , TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A})

@@ -31,9 +31,9 @@ embedding-criterion : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                     → is-embedding f
 embedding-criterion f φ .(f x) (x , refl) = φ x (x , refl)
 
-is-equiv-is-embedding : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+equivs-are-embeddings : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                       → is-equiv f → is-embedding f
-is-equiv-is-embedding f e y = singletons-are-props (equivs-are-vv-equivs f e y)
+equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
 
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ \(f : X → Y) → is-embedding f
@@ -46,9 +46,9 @@ is-embedding-etofun : {X : 𝓤 ̇} {Y : 𝓥 ̇}
 is-embedding-etofun = pr₂
 
 equiv-embedding : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-               → X ≃ Y → X ↪ Y
+                → X ≃ Y → X ↪ Y
 equiv-embedding e = eqtofun e ,
-                    is-equiv-is-embedding
+                    equivs-are-embeddings
                      (eqtofun e)
                      (eqtofun-is-an-equiv e)
 
@@ -246,7 +246,7 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇} {Y : 𝓥 ̇} where
 
  equiv-dense-embedding : X ≃ Y → X ↪ᵈ Y
  equiv-dense-embedding e = eqtofun e ,
-                            is-equiv-is-embedding
+                            equivs-are-embeddings
                               (eqtofun e)
                               (eqtofun-is-an-equiv e),
                             is-equiv-is-dense
