@@ -560,7 +560,7 @@ independent solutions by Shulman and Capriotti.
 
 open import UF-Subsingletons
 
-module extension-is-embedding-special-case
+module /-extension-is-embedding-special-case
          (P : 𝓤 ̇)
          (i : is-prop P)
          (ua : is-univalent 𝓤)
@@ -576,7 +576,6 @@ module extension-is-embedding-special-case
  κ X x p = x
 
  M : 𝓤 ⁺ ̇
-
  M = Σ \(X : 𝓤 ̇) → is-equiv (κ X)
 
  φ : (P → 𝓤 ̇) → M
@@ -636,8 +635,73 @@ Additional information.
 
 \end{code}
 
-In general, sections are not embeddings (see Theorem 3.10 of Shulman's
-paper "Idempotents in intensional type theory" https://arxiv.org/abs/1507.03634),
-but in this case the section s : (P → 𝓤 ̇) → 𝓤 ̇ happens to be an embedding.
+Also 15th Nov 2018. We have a dual situation:
 
-To be continued, now using this to prove that f ↦ f / j is an embedding for any embedding j:X→Y.
+\begin{code}
+
+module ∖-extension-is-embedding-special-case
+         (P : 𝓤 ̇)
+         (i : is-prop P)
+         (ua : is-univalent 𝓤)
+ where
+
+ open import UF-PropIndexedPiSigma
+ open import UF-Equiv-FunExt
+
+ s : (P → 𝓤 ̇) → 𝓤 ̇
+ s = Σ
+
+ r :  𝓤 ̇ → (P → 𝓤 ̇)
+ r X p = X
+
+ rs : ∀ A → r (s A) ≡ A
+ rs A = dfunext (fe 𝓤 (𝓤 ⁺)) (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum i p))
+
+ sr : ∀ X → s (r X) ≡ P × X
+ sr X = refl
+
+ κ : (X : 𝓤 ̇) → s (r X) → X
+ κ X = pr₂
+
+ C : 𝓤 ⁺ ̇
+ C = Σ \(X : 𝓤 ̇) → is-equiv (κ X)
+
+ φ : (P → 𝓤 ̇) → C
+ φ A = s A , qinvs-are-equivs (κ (s A)) (δ , ε , η)
+  where
+   δ : s A → P × s A
+   δ (p , a) = p , p , a
+   η : (σ : s A) → κ (s A) (δ σ) ≡ σ
+   η σ = refl
+   ε : (τ : P × s A) → δ (κ (s A) τ) ≡ τ
+   ε (p , q , a) = to-×-≡ (i q p) refl
+
+ γ : C → (P → 𝓤 ̇)
+ γ (X , i) p = X
+
+ φγ : (c : C) → φ (γ c) ≡ c
+ φγ (X , i) = to-Σ-≡ (eqtoid ua (P × X) X (κ X , i) ,
+                     (being-equiv-is-a-prop fe (κ X) _ i))
+
+ γφ : (A : P → 𝓤 ̇) → γ (φ A) ≡ A
+ γφ = rs
+
+ φ-is-equiv : is-equiv φ
+ φ-is-equiv = qinvs-are-equivs φ (γ , γφ , φγ)
+
+ φ-is-embedding : is-embedding φ
+ φ-is-embedding = equivs-are-embeddings φ φ-is-equiv
+
+ ψ : C → 𝓤 ̇
+ ψ = pr₁
+
+ ψ-is-embedding : is-embedding ψ
+ ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (κ X))
+
+ s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp = refl
+
+ s-is-embedding : is-embedding s
+ s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+
+\end{code}
