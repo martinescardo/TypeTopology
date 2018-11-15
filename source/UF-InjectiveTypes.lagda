@@ -213,7 +213,7 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
   Σ-extension-in-range : is-embedding j → (x : X) → f∖j(j x) ≃ f x
   Σ-extension-in-range e x = prop-indexed-sum (e(j x)) (x , refl)
 
-  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j(y) ≃ 𝟘
+  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j(y) ≃ 𝟘 {𝓦}
   Σ-extension-out-of-range y φ = prop-indexed-sum-zero (uncurry φ)
 
 \end{code}
@@ -614,7 +614,7 @@ module extension-is-embedding-special-case
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
 
- s-is-embedding  : is-embedding s
+ s-is-embedding : is-embedding s
  s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
@@ -631,6 +631,8 @@ Additional information.
 
  sr : ∀ X → s (r X) ≡ (P → X)
  sr X = refl
+
+ notice-that = κ ∶ ((X : 𝓤 ̇) → X → s(r X))
 
 \end{code}
 
