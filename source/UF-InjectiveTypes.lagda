@@ -592,11 +592,11 @@ module extension-is-embedding-special-case
  γ : M → (P → 𝓤 ̇)
  γ (X , i) p = X
 
- φγ : ∀ σ → φ (γ σ) ≡ σ
+ φγ : (m : M) → φ (γ m) ≡ m
  φγ (X , i) = to-Σ-≡ (eqtoid ua (P → X) X (≃-sym (κ X , i)) ,
                       being-equiv-is-a-prop fe (κ X) _ i)
 
- γφ : ∀ A → γ (φ A) ≡ A
+ γφ : (A : P → 𝓤 ̇) → γ (φ A) ≡ A
  γφ A = dfunext (fe 𝓤 (𝓤 ⁺)) (λ p → eqtoid ua (s A) (A p) (prop-indexed-product (fe 𝓤 𝓤) i p))
 
  φ-is-equiv : is-equiv φ
