@@ -611,7 +611,7 @@ module extension-is-embedding-special-case
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (λ x p → x))
+ ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (κ X))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
