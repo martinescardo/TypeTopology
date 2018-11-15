@@ -542,13 +542,13 @@ the map P → 𝟙 is an embedding.
                    v               ≃ Π (p : P) → f p
                    𝓤
 
-So in essence we are considering the map E : (P → 𝓤) → 𝓤 defined by
+So in essence we are considering the map s : (P → 𝓤) → 𝓤 defined by
 
    s f = Π (p : P) → f p.
 
-Then, for any A : 𝓤,
+Then, for any X : 𝓤,
 
-  fiber s A = Σ \(f : P → 𝓤) → (Π (p : P) → f p) ≡ A.
+  fiber s X = Σ \(f : P → 𝓤) → (Π (p : P) → f p) ≡ X.
 
 A few days pause. Now 15th Nov 2018 after a discussion in the HoTT list.
 https://groups.google.com/d/topic/homotopytypetheory/xvx5hOEPnDs/discussion
