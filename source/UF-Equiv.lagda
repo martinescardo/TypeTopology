@@ -177,6 +177,9 @@ fiber f y = Σ \x → f x ≡ y
 is-vv-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-vv-equiv f = ∀ y → is-singleton (fiber f y)
 
+is-vv-equiv-NB : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-vv-equiv f ≡ Π \(y : Y) → ∃! \(x : X) → f x ≡ y
+is-vv-equiv-NB f = refl
+
 vv-equivs-are-equivs : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                      → is-vv-equiv f → is-equiv f
 vv-equivs-are-equivs {𝓤} {𝓥} {X} {Y} f φ = (g , fg) , (g , gf)

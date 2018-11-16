@@ -188,8 +188,7 @@ equivalent to η being a natural retraction, and we start with it:
 \begin{code}
 
 Yoneda-section-forth : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
-                     → is-singleton (Σ A)
-                     → (y : X) → has-section (η y)
+                     → ∃! A → (y : X) → has-section (η y)
 Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
  where
   u : is-universal-element (x , yoneda-elem x A η)
@@ -202,8 +201,7 @@ Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
   g = has-section-closed-under-∼' (universality-section x (yoneda-elem x A η) u y) h
 
 Yoneda-section-back : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
-                    → ((y : X) → has-section (η y))
-                    → is-singleton (Σ A)
+                    → ((y : X) → has-section (η y)) → ∃! A
 Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
  where
   h : ∀ y → yoneda-nat x A (yoneda-elem x A η) y ∼ η y
@@ -212,11 +210,11 @@ Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
   g y = has-section-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
   u : is-universal-element (x , yoneda-elem x A η)
   u = section-universality x (yoneda-elem x A η) g
-  c : is-singleton (Σ A)
+  c : ∃! A
   c = (x , yoneda-elem x A η) , (universal-element-is-the-only-element (x , yoneda-elem x A η) u)
 
 Yoneda-section : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
-               → is-singleton (Σ A) ⇔ ((y : X) → has-section (η y))
+               → ∃! A ⇔ ((y : X) → has-section (η y))
 Yoneda-section x η = Yoneda-section-forth x η , Yoneda-section-back x η
 
 \end{code}
@@ -341,13 +339,11 @@ equiv-universality : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 Yoneda-Theorem-forth : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
-                     → is-singleton (Σ A)
-                     → (y : X) → is-equiv (η y)
+                     → ∃! A → (y : X) → is-equiv (η y)
 Yoneda-Theorem-forth x η i = nats-with-sections-are-equivs x η (Yoneda-section-forth x η i)
 
 Yoneda-Theorem-back : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
-                    → ((y : X) → is-equiv (η y))
-                    → is-singleton (Σ A)
+                    → ((y : X) → is-equiv (η y)) → ∃! A
 Yoneda-Theorem-back x η φ = Yoneda-section-back x η (λ y → pr₁(φ y))
 
 \end{code}
@@ -364,14 +360,12 @@ is-representable : {X : 𝓤 ̇} → (X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
 is-representable A = Σ \x → Id x ≊ A
 
 singleton-representable : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
-                        → is-singleton (Σ A)
-                        → is-representable A
+                        → ∃! A → is-representable A
 singleton-representable {𝓤} {𝓥} {X} {A} ((x , a) , cc) =
   x , yoneda-nat x A a , Yoneda-Theorem-forth x (yoneda-nat x A a) ((x , a) , cc)
 
 representable-singleton : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
-                        → is-representable A
-                        → is-singleton (Σ A)
+                        → is-representable A → ∃! A
 representable-singleton (x , (η , φ)) = Yoneda-Theorem-back x η φ
 
 \end{code}
@@ -418,7 +412,7 @@ funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
   r = TT-choice
   r-has-section : has-section r
   r-has-section = TT-choice-has-section
-  d : is-singleton (Σ A)
+  d : ∃! A
   d = retract-of-singleton (r , r-has-section) c
   η : Nat (Id f) A
   η = happly' f
@@ -440,14 +434,13 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Univalence
 
-univalence-via-singletons : is-univalent 𝓤
-                          ⇔ ((X : 𝓤 ̇) → is-singleton (Σ \(Y : 𝓤 ̇) → X ≃ Y))
+univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇) → ∃! \(Y : 𝓤 ̇) → X ≃ Y)
 univalence-via-singletons = (f , g)
  where
-  f : is-univalent 𝓤 → (X : 𝓤 ̇) → is-singleton (Σ (Eq X))
+  f : is-univalent 𝓤 → (X : 𝓤 ̇) → ∃! (Eq X)
   f ua X = representable-singleton (X , (idtoeq X , ua X))
 
-  g : ((X : 𝓤 ̇) → is-singleton (Σ (Eq X))) → is-univalent 𝓤
+  g : ((X : 𝓤 ̇) → ∃! (Eq X)) → is-univalent 𝓤
   g φ X = universality-equiv X (≃-refl X)
                                (unique-element-is-universal-element
                                   (Eq X)
@@ -666,12 +659,12 @@ yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
 
 
 nats-are-uniquely-transports : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
-                            → is-singleton (Σ \(a : A x) → (λ y p → transport A p a) ≡ η)
+                             → ∃! \(a : A x) → (λ y p → transport A p a) ≡ η
 nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
 adj-obs : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
-        → is-singleton (Σ \(q : g (f x) ≡ x) → (λ y p → transport (λ - → g - ≡ x) p q) ≡ η)
+        → ∃! \(q : g (f x) ≡ x) → (λ y p → transport (λ - → g - ≡ x) p q) ≡ η
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
 
 \end{code}

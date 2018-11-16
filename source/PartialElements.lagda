@@ -103,7 +103,7 @@ NatΣ-embedding.:
                            id
                            (maps-of-props-are-embeddings
                               singletons-are-props
-                              (is-singleton-is-a-prop fe)
+                              (being-a-singleton-is-a-prop fe)
                               (being-a-prop-is-a-prop fe))
                            id-is-embedding
 
@@ -127,25 +127,25 @@ itself.
  κ-is-equiv {𝓤} pe fe fe' {X} = qinvs-are-equivs κ (ν , (νκ , κν))
   where
    ν : {X : 𝓤 ̇} → 𝓚 X → X
-   ν (P , i , φ) = φ (is-singleton-pointed i)
+   ν (P , i , φ) = φ (singleton-types-are-pointed i)
    νκ : {X : 𝓤 ̇} (x : X) → ν (κ x) ≡ x
    νκ x = refl
    κν : (m : 𝓚 X) → κ (ν m) ≡ m
    κν (P , i , φ) = u
     where
      t : 𝟙 ≡ P
-     t = pe 𝟙-is-prop (singletons-are-props i) (λ _ → is-singleton-pointed i) unique-to-𝟙
+     t = pe 𝟙-is-prop (singletons-are-props i) (λ _ → singleton-types-are-pointed i) unique-to-𝟙
      s : (t : 𝟙 ≡ P)
-       → transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)))
+       → transport (λ - → is-singleton - × (- → X)) t (𝟙-is-singleton , (λ _ → φ (singleton-types-are-pointed i)))
        ≡ i , φ
      s refl = to-×-≡ a b
        where
         a : 𝟙-is-singleton ≡ i
-        a = (singletons-are-props (pointed-props-are-singletons 𝟙-is-singleton (is-singleton-is-a-prop fe))
+        a = (singletons-are-props (pointed-props-are-singletons 𝟙-is-singleton (being-a-singleton-is-a-prop fe))
                                   𝟙-is-singleton i)
-        b : (λ x → φ (is-singleton-pointed i)) ≡ φ
-        b = dfunext fe' (λ x → ap φ (𝟙-is-prop (is-singleton-pointed i) x))
-     u : 𝟙 , 𝟙-is-singleton , (λ _ → φ (is-singleton-pointed i)) ≡ P , i , φ
+        b : (λ x → φ (singleton-types-are-pointed i)) ≡ φ
+        b = dfunext fe' (λ x → ap φ (𝟙-is-prop (singleton-types-are-pointed i) x))
+     u : 𝟙 , 𝟙-is-singleton , (λ _ → φ (singleton-types-are-pointed i)) ≡ P , i , φ
      u = to-Σ-≡ (t , s t)
 
  κ-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤

@@ -47,7 +47,7 @@ itail n α i = α(i + n)
 
 \end{code}
 
-Added 16th July 2018. Corecursion on sequences A : ℕ → .
+Added 16th July 2018. Corecursion on sequences ℕ → A.
 
                     p = (h,t)
              X ------------------> A × X
@@ -67,8 +67,6 @@ Added 16th July 2018. Corecursion on sequences A : ℕ → .
 Or equivalentaily
 
   f x = cons (h x) (f (t x))
-
-Todo: replace Σ! ... by is-singleton(Σ ...).
 
 \begin{code}
 

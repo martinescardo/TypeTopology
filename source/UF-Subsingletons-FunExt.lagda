@@ -55,8 +55,8 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
   k : (X : 𝓤 ̇) → constant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
-is-singleton-is-a-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-singleton X)
-is-singleton-is-a-prop {𝓤} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
+being-a-singleton-is-a-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-singleton X)
+being-a-singleton-is-a-prop {𝓤} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
   i : is-prop X
   i = singletons-are-props (y , γ)

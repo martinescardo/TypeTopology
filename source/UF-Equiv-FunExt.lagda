@@ -21,7 +21,7 @@ being-vv-equiv-is-a-prop : (∀ 𝓤 𝓥 → funext 𝓤 𝓥) → {X : 𝓤 ̇
                          → is-prop(is-vv-equiv f)
 being-vv-equiv-is-a-prop {𝓤} {𝓥} fe f = Π-is-prop
                                           (fe 𝓥 (𝓤 ⊔ 𝓥))
-                                          (λ x → is-singleton-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+                                          (λ x → being-a-singleton-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
 
 qinv-post' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇}
           → naive-funext 𝓦 𝓤 → naive-funext 𝓦 𝓥

@@ -56,8 +56,8 @@ is-truth-value = is-subsingleton
 
 Σ-is-prop : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
           → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
-Σ-is-prop {𝓤} {𝓥} {X} {A} isx isa (x , a) (y , b) =
-  to-Σ-≡ (isx x y , isa y (transport A (isx x y) a) b)
+Σ-is-prop {𝓤} {𝓥} {X} {A} i j (x , a) (y , b) =
+  to-Σ-≡ (i x y , j y (transport A (i x y) a) b)
 
 \end{code}
 
@@ -77,8 +77,8 @@ is-the-only-element c = ∀ x → c ≡ x
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → is-the-only-element c
 
-is-singleton-pointed : {X : 𝓤 ̇} → is-singleton X → X
-is-singleton-pointed = pr₁
+singleton-types-are-pointed : {X : 𝓤 ̇} → is-singleton X → X
+singleton-types-are-pointed = pr₁
 
 \end{code}
 
@@ -269,8 +269,8 @@ singleton-type' x = Σ \y → y ≡ x
 
 ×-prop-criterion-necessity : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                            → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
-×-prop-criterion-necessity isp = (λ y x x' → ap pr₁ (isp (x , y) (x' , y ))) ,
-                                 (λ x y y' → ap pr₂ (isp (x , y) (x  , y')))
+×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y ))) ,
+                               (λ x y y' → ap pr₂ (i (x , y) (x  , y')))
 
 ×-prop-criterion : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                  → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
@@ -281,11 +281,11 @@ singleton-type' x = Σ \y → y ≡ x
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 subtype-of-prop-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} (m : X → Y)
-                        → left-cancellable m → is-prop Y → is-prop X
-subtype-of-prop-is-a-prop {𝓤} {𝓥} {X} m lc isp x x' = lc (isp (m x) (m x'))
+                          → left-cancellable m → is-prop Y → is-prop X
+subtype-of-prop-is-a-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
 
 subtypes-of-sets-are-sets : {X : 𝓤 ̇} {Y : 𝓥 ̇} (m : X → Y)
-                      → left-cancellable m → is-set Y → is-set X
+                          → left-cancellable m → is-set Y → is-set X
 subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f , g)
  where
   f : {x x' : X} → x ≡ x' → x ≡ x'
@@ -298,9 +298,9 @@ pr₁-lc : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → ({x : X} → is-prop(Y x))
 pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
 subsets-of-sets-are-sets : (X : 𝓤 ̇) (Y : X → 𝓥 ̇)
-                     → is-set X
-                     → ({x : X} → is-prop(Y x))
-                     → is-set(Σ \(x : X) → Y x)
+                         → is-set X
+                         → ({x : X} → is-prop(Y x))
+                         → is-set(Σ \(x : X) → Y x)
 subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 inl-lc-is-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
@@ -349,13 +349,13 @@ proposition is a proposition:
 
 sum-of-contradictory-props : {P : 𝓤 ̇} {Q : 𝓥 ̇}
                            → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop(P + Q)
-sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} isp isq f = go
+sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = go
  where
   go : (x y : P + Q) → x ≡ y
-  go (inl p) (inl p') = ap inl (isp p p')
+  go (inl p) (inl p') = ap inl (i p p')
   go (inl p) (inr q)  = 𝟘-elim {𝓤 ⊔ 𝓥} {𝓦} (f p q)
   go (inr q) (inl p)  = 𝟘-elim (f p q)
-  go (inr q) (inr q') = ap inr (isq q q')
+  go (inr q) (inr q') = ap inr (j q q')
 
 \end{code}
 
@@ -365,18 +365,18 @@ values other than 𝟘 and 𝟙:
 \begin{code}
 
 no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ Σ \(P : 𝓤 ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
-no-props-other-than-𝟘-or-𝟙 pe (P , (isp , f , g)) = 𝟘-elim(φ u)
+no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim(φ u)
  where
    u : ¬ P
    u p = g l
      where
        l : P ≡ 𝟙
-       l = pe isp 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+       l = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
    φ : ¬¬ P
    φ u = f l
      where
        l : P ≡ 𝟘
-       l = pe isp 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
+       l = pe i 𝟘-is-prop (λ p → 𝟘-elim (u p)) 𝟘-elim
 
 \end{code}
 
@@ -389,5 +389,29 @@ used in the following construction.
 
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≢ 𝟙 {𝓤}
 𝟘-is-not-𝟙 p = 𝟘-elim(Idtofun (p ⁻¹) *)
+
+\end{code}
+
+Unique existence
+
+\begin{code}
+
+∃! : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+∃! A = is-singleton (Σ A)
+
+∃!-intro : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x) → ((σ : Σ A) → (x , a) ≡ σ) → ∃! A
+∃!-intro x a o = (x , a) , o
+
+∃!-witness : {X : 𝓤 ̇} {A : X → 𝓥 ̇} → ∃! A → X
+∃!-witness ((x , a) , o) = x
+
+∃!-is-witness : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (u : ∃! A) → A(∃!-witness u)
+∃!-is-witness ((x , a) , o) = a
+
+description : {X : 𝓤 ̇} {A : X → 𝓥 ̇} → ∃! A → Σ A
+description (σ , o) = σ
+
+∃!-uniqueness : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (u : ∃! A) → (σ : Σ A) → description u ≡ σ
+∃!-uniqueness ((x , a) , o) = o
 
 \end{code}

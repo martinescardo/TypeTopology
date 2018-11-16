@@ -440,7 +440,7 @@ rather than direct proofs (as in the proof of tight reflection below).
 \begin{code}
 
  totally-separated-reflection : {X : 𝓤 ̇} {A : 𝓥 ̇} → is-totally-separated A
-                              → (f : X → A) → is-singleton (Σ \(f' : 𝕋 X → A) → f' ∘ η ≡ f)
+                              → (f : X → A) → ∃! \(f' : 𝕋 X → A) → f' ∘ η ≡ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} ts f = go
   where
    iss : is-set A
@@ -485,7 +485,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      v : u ≡ s
      v = Π-is-set (fe 𝓤 𝓥) (λ _ → iss) u s
 
-   go : is-singleton (Σ \(f' : 𝕋 X → A) → f' ∘ η ≡ f)
+   go : ∃! \(f' : 𝕋 X → A) → f' ∘ η ≡ f
    go = (f' , r) , c
 
 \end{code}
@@ -1025,7 +1025,7 @@ apartness on it.
                    → is-tight _♯ᴬ_
                    → (f : X → A)
                    → strongly-extensional _♯_ _♯ᴬ_ f
-                   → is-singleton (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+                   → ∃! \(f' : X' → A) → f' ∘ η ≡ f
   tight-reflection {𝓦} {𝓣} A  _♯ᴬ_  ♯ᴬa  ♯ᴬt  f  se = ic
    where
     iss : is-set A
@@ -1087,7 +1087,7 @@ apartness on it.
       v : u ≡ s
       v = Π-is-set (fe 𝓤 𝓦) (λ _ → iss) u s
 
-    ic : is-singleton (Σ \(f' : X' → A) → f' ∘ η ≡ f)
+    ic : ∃! \(f' : X' → A) → f' ∘ η ≡ f
     ic = (f' , r) , c
 
 \end{code}
@@ -1112,10 +1112,10 @@ apartness on it.
   tight-η-equiv-abstract-nonsense : is-tight _♯_ → X ≃ X'
   tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly p₄) , (θ , happly p₀)
    where
-    u : is-singleton (Σ \(θ : X' → X) → θ ∘ η ≡ id)
+    u : ∃! \(θ : X' → X) → θ ∘ η ≡ id
     u = tight-reflection X _♯_ ♯a ♯t id id
 
-    v : is-singleton (Σ \(ζ : X' → X') → ζ ∘ η ≡ η)
+    v : ∃! \(ζ : X' → X') → ζ ∘ η ≡ η
     v = tight-reflection X' _♯'_ ♯'a ♯'t η η-strongly-extensional
 
     θ : X' → X

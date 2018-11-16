@@ -410,7 +410,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 PRED-is-the-homotopy-final-coalgebra : {X : 𝓤 ̇} (κ : X → 𝟙 + X)
-  → is-singleton(Σ \(h : X → ℕ∞) → is-homomorphism κ h)
+                                     → ∃! \(h : X → ℕ∞) → is-homomorphism κ h
 PRED-is-the-homotopy-final-coalgebra {𝓤} {X} κ = homomorphism-existence κ , γ
  where
   γ : (e : Σ \(h' : X → ℕ∞) → is-homomorphism κ h') → homomorphism-existence κ ≡ e
