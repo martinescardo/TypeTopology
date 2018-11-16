@@ -219,7 +219,7 @@ equivs-are-vv-equivs' {𝓤} ua {X} {Y} f ise = g Y (f , ise)
   A : (Y : 𝓤 ̇) → X ≃ Y → 𝓤 ̇
   A Y (f , ise) = is-vv-equiv f
   b : A X (≃-refl X)
-  b = identifications-to-singleton
+  b = singleton-types'-are-singletons
   g : (Y : 𝓤 ̇) (e : X ≃ Y) → A Y e
   g = JEq ua X A b
 

@@ -24,7 +24,7 @@ is-embedding f = ∀ y → is-prop(fiber f y)
 being-embedding-is-a-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                           → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                           → is-prop(is-embedding f)
-being-embedding-is-a-prop {𝓤} {𝓥} fe fe' f = Π-is-prop fe (λ x → being-a-prop-is-a-prop fe')
+being-embedding-is-a-prop fe fe' f = Π-is-prop fe (λ x → being-a-prop-is-a-prop fe')
 
 embedding-criterion : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                     → ((x : X) → is-prop (fiber f (f x)))
@@ -140,7 +140,7 @@ lc-maps-are-embeddings-with-K {𝓤} {𝓥} {X} {Y} f f-lc k =
     lc-maps-into-sets-are-embeddings f f-lc (k Y)
 
 id-is-embedding : {X : 𝓤 ̇} → is-embedding (id {𝓤} {X})
-id-is-embedding = identifications-to-is-prop
+id-is-embedding = singleton-types'-are-props
 
 comp-embedding : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
                 {f : X → Y} {g : Y → Z}

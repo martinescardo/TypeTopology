@@ -570,7 +570,7 @@ sum-of-fibers : (X : 𝓤 ̇) (Y : 𝓥 ̇) (f : X → Y) → X ≃ Σ (fiber f)
 sum-of-fibers {𝓤} {𝓥} X Y f =
   X                                   ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
   X × 𝟙                               ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton
-                                                (identifications-from-singleton (f x))) ⟩
+                                                (singleton-types-are-singletons (f x))) ⟩
   (Σ \(x : X) → Σ \(y : Y) → f x ≡ y) ≃⟨ Σ-flip ⟩
   (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ■
 

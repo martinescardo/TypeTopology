@@ -79,7 +79,7 @@ Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
   q : Σ (Id x₀) ≡ Σ A
   q = ap Σ p₀
   c : is-singleton(Σ A)
-  c = yoneda-nat (identifications-from x₀) is-singleton (identifications-from-singleton x₀) (Σ A) q
+  c = yoneda-nat (singleton-type x₀) is-singleton (singleton-types-are-singletons x₀) (Σ A) q
   f₀ : (x : X) → Id x ≡ A → (y : X) → Id x y ≡ A y
   f₀ x = happly
   f₁ : (x : X) → ((y : X) → Id x y ≡ A y) → Nat (Id x) A

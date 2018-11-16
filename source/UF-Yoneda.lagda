@@ -411,7 +411,7 @@ funext-via-singletons :
 funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
  where
   c : is-singleton (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
-  c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → identifications-from-singleton (f x))
+  c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → singleton-types-are-singletons (f x))
   A : Π Y → 𝓤 ⊔ 𝓥 ̇
   A g = (x : X) → f x ≡ g x
   r : (Π \(x : X) → Σ \(y : Y x) → f x ≡ y) → Σ A
@@ -536,7 +536,7 @@ singleton-types-are-singletons-bis : {X : 𝓤 ̇} (x : X)
                                   → is-the-only-element (x , refl)
 singleton-types-are-singletons-bis {𝓤} {X} x (y , p) = yoneda-const η y p
  where
-  η : (y : X) → x ≡ y → identifications-from x
+  η : (y : X) → x ≡ y → singleton-type x
   η y p = (y , p)
 
 \end{code}
@@ -547,9 +547,9 @@ that the latter can be recovered from the former.
 
 \begin{code}
 
-Jbased'' : {X : 𝓤 ̇} (x : X) (A : identifications-from x → 𝓥 ̇)
+Jbased'' : {X : 𝓤 ̇} (x : X) (A : singleton-type x → 𝓥 ̇)
          → A (x , refl) → Π A
-Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons w)
+Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons' w)
 
 Jbased' : {X : 𝓤 ̇} (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇)
         → B x refl → (y : X) → Π (B y)

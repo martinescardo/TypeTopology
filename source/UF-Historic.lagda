@@ -24,7 +24,7 @@ ip-ie-idtofun {𝓤} fe X = Jbased X B go
    B Y p = is-prop(is-equiv(idtofun X Y p))
    A = Σ \(f : X → X) → f ≡ id
    a : is-prop A
-   a = singletons-are-props (identifications-to-singleton id)
+   a = singletons-are-props (singleton-types'-are-singletons id)
    A' = Σ \(f : X → X) → f ∼ id
    η : (f : X → X) → f ∼ id → f ≡ id
    η f = dfunext fe

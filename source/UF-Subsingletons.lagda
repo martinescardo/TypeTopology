@@ -243,33 +243,29 @@ empty-types-are-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 𝟘-is-collapsible' : collapsible 𝟘
 𝟘-is-collapsible' = empty-types-are-collapsible id
 
-identifications-from : {X : 𝓤 ̇} (x : X) → 𝓤 ̇
-identifications-from x = Σ \y → x ≡ y
+singleton-type : {X : 𝓤 ̇} (x : X) → 𝓤 ̇
+singleton-type x = Σ \y → x ≡ y
 
-trivial-loop : {X : 𝓤 ̇} (x : X) → identifications-from x
-trivial-loop x = (x , refl)
+singleton-inclusion : {X : 𝓤 ̇} (x : X) → singleton-type x
+singleton-inclusion x = (x , refl)
 
-Id-from-trivial-loop : {X : 𝓤 ̇} {x x' : X} (r : x ≡ x') → trivial-loop x ≡ (x' , r)
-Id-from-trivial-loop {𝓤} {X} = J A (λ x → refl)
+singleton-types-are-singletons'' : {X : 𝓤 ̇} {x x' : X} (r : x ≡ x') → singleton-inclusion x ≡ (x' , r)
+singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → 𝓤 ̇
-  A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (trivial-loop x) (x' , r)
+  A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (singleton-inclusion x) (x' , r)
 
-identifications-from-are-singletons : {X : 𝓤 ̇} (x₀ : X) → is-singleton(identifications-from x₀)
-identifications-from-are-singletons x₀ = trivial-loop x₀ , (λ t → Id-from-trivial-loop (pr₂ t))
+singleton-types-are-singletons : {X : 𝓤 ̇} (x₀ : X) → is-singleton(singleton-type x₀)
+singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
 
-identifications-from-is-a-prop : {X : 𝓤 ̇} (x : X) → is-prop(identifications-from x)
-identifications-from-is-a-prop x = singletons-are-props (identifications-from-are-singletons x)
+singleton-types-are-singletons' : {X : 𝓤 ̇} {x : X} → is-the-only-element {𝓤} {singleton-type x} (x , refl)
+singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
 
-singleton-types-are-singletons : {X : 𝓤 ̇} {x : X}
-  → is-the-only-element {𝓤} {identifications-from x} (x , refl)
-singleton-types-are-singletons {𝓤} {X} (y , refl) = refl
+singleton-types-are-props : {X : 𝓤 ̇} (x : X) → is-prop(singleton-type x)
+singleton-types-are-props x = singletons-are-props (singleton-types-are-singletons x)
 
-identifications-from-singleton : {X : 𝓤 ̇} (x : X) → is-singleton(identifications-from x)
-identifications-from-singleton x = ((x , refl) , singleton-types-are-singletons)
-
-identifications-to : {X : 𝓤 ̇} → X → 𝓤 ̇
-identifications-to x = Σ \y → y ≡ x
+singleton-type' : {X : 𝓤 ̇} → X → 𝓤 ̇
+singleton-type' x = Σ \y → y ≡ x
 
 ×-prop-criterion-necessity : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                            → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
