@@ -411,7 +411,10 @@ Unique existence
 description : {X : 𝓤 ̇} {A : X → 𝓥 ̇} → ∃! A → Σ A
 description (σ , o) = σ
 
-∃!-uniqueness : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (u : ∃! A) → (σ : Σ A) → description u ≡ σ
-∃!-uniqueness ((x , a) , o) = o
+∃!-uniqueness' : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (u : ∃! A) → (σ : Σ A) → description u ≡ σ
+∃!-uniqueness' ((x , a) , o) = o
+
+∃!-uniqueness : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (u : ∃! A) → (x : X) (a : A x) → description u ≡ (x , a)
+∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
 
 \end{code}

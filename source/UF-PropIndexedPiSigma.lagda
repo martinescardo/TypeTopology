@@ -12,24 +12,30 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 
+Π-proj : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (a : X) → Π Y → Y a
+Π-proj a f = f a
+
+Π-incl : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → is-prop X → (a : X) → Y a → Π Y
+Π-incl {𝓤} {𝓥} {X} {Y} i a y x = transport Y (i a x) y
+
+Π-proj-is-equiv : funext 𝓤 𝓥 → {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+                → is-prop X → (a : X) → is-equiv (Π-proj a)
+Π-proj-is-equiv {𝓤} {𝓥} fe {X} {Y} i a = qinvs-are-equivs (Π-proj a) (Π-incl i a , ε , η)
+ where
+  l : (x : X) → i x x ≡ refl
+  l x = props-are-sets i (i x x) refl
+  η : (y : Y a) → transport Y (i a a) y ≡ y
+  η y = ap (λ - → transport Y - y) (l a)
+  ε'' : (f : Π Y) {x x' : X} → x ≡ x' → transport Y (i x x') (f x) ≡ f x'
+  ε'' t {x} refl = ap (λ - → transport Y - (t x)) (l x)
+  ε' : (f : Π Y) (x : X) → transport Y (i a x) (f a) ≡ f x
+  ε' f x = ε'' f (i a x)
+  ε : (f : Π Y) → Π-incl i a (Π-proj a f) ≡ f
+  ε φ = dfunext fe (ε' φ)
+
 prop-indexed-product : funext 𝓤 𝓥 → {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
                      → is-prop X → (a : X) → Π Y ≃ Y a
-prop-indexed-product {𝓤} {𝓥} fe {X} {Y} hp a = qinveq f (g , ε , η)
- where
-  f : Π Y → Y a
-  f φ = φ a
-  g : Y a → Π Y
-  g y x = transport Y (hp a x) y
-  lemma : (x : X) → hp x x ≡ refl
-  lemma x = props-are-sets hp (hp x x) refl
-  η : (y : Y a) → transport Y (hp a a) y ≡ y
-  η y = ap (λ - → transport Y - y) (lemma a)
-  ε'' : (φ : Π Y) {x x' : X} → x ≡ x' → transport Y (hp x x') (φ x) ≡ φ x'
-  ε'' t {x} refl = ap (λ - → transport Y - (t x)) (lemma x)
-  ε' : (φ : Π Y) (x : X) → transport Y (hp a x) (φ a) ≡ φ x
-  ε' φ x = ε'' φ (hp a x)
-  ε : (φ : Π Y) → g(f φ) ≡ φ
-  ε φ = dfunext fe (ε' φ)
+prop-indexed-product fe i a = Π-proj a , Π-proj-is-equiv fe i a
 
 prop-indexed-product-one : funext 𝓤 𝓥 → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → (X → 𝟘 {𝓦})
                          → Π Y ≃ 𝟙 {𝓣}
@@ -53,20 +59,20 @@ Added 18th December 2017.
 
 prop-indexed-sum :{X : 𝓤 ̇} {Y : X → 𝓥 ̇}
                  → is-prop X → (a : X) → Σ Y ≃ Y a
-prop-indexed-sum {𝓤} {𝓥} {X} {Y} hp a = qinveq f (g , ε , η)
+prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
  where
   f : Σ Y → Y a
-  f (x , y) = transport Y (hp x a) y
+  f (x , y) = transport Y (i x a) y
   g : Y a → Σ Y
   g y = a , y
-  lemma₁ : (x : X) → hp x x ≡ refl
-  lemma₁ x = props-are-sets hp (hp x x) refl
+  l : (x : X) → i x x ≡ refl
+  l x = props-are-sets i (i x x) refl
   η : (y : Y a) → f(a , y) ≡ y
-  η y = ap (λ - → transport Y - y) (lemma₁ a)
-  lemma₂ : (x : X) (y : Y x) → x ≡ a → transport Y (hp a x) (f (x , y)) ≡ y
-  lemma₂ _ y refl = η (f (a , y)) ∙ η y
+  η y = ap (λ - → transport Y - y) (l a)
+  c : (x : X) (y : Y x) → x ≡ a → transport Y (i a x) (f (x , y)) ≡ y
+  c _ y refl = η (f (a , y)) ∙ η y
   ε : (σ : Σ Y) → g(f σ) ≡ σ
-  ε (x , y) = to-Σ-≡ (hp a x , lemma₂ x y (hp x a))
+  ε (x , y) = to-Σ-≡ (i a x , c x y (i x a))
 
 prop-indexed-sum-zero : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → (X → 𝟘 {𝓦})
                       → Σ Y ≃ (𝟘 {𝓣})

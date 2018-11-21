@@ -61,17 +61,21 @@ sense. Otherwise, we only have a right-Kan extension
                    j
               X ------> Y
                \       /
-                \  <- /
+                \  ≳  /
              f   \   / f/j
                   \ /
                    v
                    𝓤
 
-in the sense that the natural transformations from "presheaves"
-g : Y → 𝓤 to the "presheaf" f/j are naturally equivalent to the
-natural transformations from g ∘ j to f:
+in the sense that the type of natural transformations from "presheaves"
+g : Y → 𝓤 to the "presheaf" f/j, written
 
-     Nat g f/j ≃ Nat (g ∘ j) f
+     g ≾ f/j,
+
+is naturally equivalent to the type g∘j ≾ f of natural
+transformations from g∘j to f:
+
+     g ≾ f/j ≃ g∘j ≾ f
 
 If j is an embedding (in the sense of univalent mathematics), then,
 for any f, we can find f/j which is both a right-Kan extension and a
@@ -102,8 +106,8 @@ Here is how we define f/j given f and j.
                    j
               X ------> Y
                \       /
-                \  <- /
-             f   \   / f' := f/j
+                \  ≳  /
+             f   \   / f/j
                   \ /
                    v
                    𝓤
@@ -112,6 +116,9 @@ We have to apply the following constructions for 𝓤=𝓥=𝓦 for the above
 triangles to make sense.
 
 \begin{code}
+
+_≾_ = Nat
+infixr 4 _≾_
 
 module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
 
@@ -123,7 +130,7 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
   f/j = Π-extension
   f∖j = Σ-extension
 
-  Σ→Π : is-embedding j → Nat f∖j f/j
+  Σ→Π : is-embedding j → f∖j ≾ f/j
   Σ→Π e y ((x , p) , B) (x' , p') = transport f (embedding-lc j e (p ∙ p' ⁻¹)) B
 
 \end{code}
@@ -133,10 +140,10 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
 
 \begin{code}
 
-  ηΠ : Nat (f/j ∘ j) f
+  ηΠ : f/j ∘ j ≾ f
   ηΠ x C = C(x , refl)
 
-  ηΣ : Nat f (f∖j ∘ j)
+  ηΣ : f ≾ f∖j ∘ j
   ηΣ x B = (x , refl) , B
 
 \end{code}
@@ -146,41 +153,43 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
 
 \begin{code}
 
-  Π-extension-right-Kan : (g : Y → 𝓤 ̇) → Nat g f/j ≃ Nat (g ∘ j) f
-  Π-extension-right-Kan g = e
+  Π-extension-right-Kan : (g : Y → 𝓤 ̇) → g ≾ f/j  ≃  g ∘ j ≾ f
+  Π-extension-right-Kan g = qinveq (ψ g) (φ g , φψ' g , ψφ' g)
    where
-    φ : (g : Y → 𝓤 ̇) → Nat (g ∘ j) f → Nat g f/j
+    φ : (g : Y → 𝓤 ̇) → g ∘ j ≾ f → g ≾ f/j
     φ g η y C (x , p) = η x (back-transport g p C)
 
-    ψ : (g : Y → 𝓤 ̇) → Nat g f/j → Nat (g ∘ j) f
+    ψ : (g : Y → 𝓤 ̇) → g ≾ f/j → g ∘ j ≾ f
     ψ g θ x C = θ (j x) C (x , refl)
 
-    ψφ : (g : Y → 𝓤 ̇) (η : Nat (g ∘ j) f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ≡ η x C
+    ψφ : (g : Y → 𝓤 ̇) (η : g ∘ j ≾ f) (x : X) (C : g (j x)) → ψ g (φ g η) x C ≡ η x C
     ψφ g η x C = refl
 
-    φψ : (g : Y → 𝓤 ̇) (θ : Nat g f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ≡ θ y C w
+    ψφ' : (g : Y → 𝓤 ̇) (η : g ∘ j ≾ f) → ψ g (φ g η) ≡ η
+    ψφ' g η = dfunext (fe 𝓤 (𝓦 ⊔ 𝓤)) (λ x → dfunext (fe 𝓤 𝓦) (ψφ g η x))
+
+    φψ : (g : Y → 𝓤 ̇) (θ : g ≾ f/j) (y : Y) (C : g y) (w : fiber j y) → φ g (ψ g θ) y C w ≡ θ y C w
     φψ g θ y C (x , refl) = refl
 
-    e : Nat g f/j ≃ Nat (g ∘ j) f
-    e = ψ g , (φ g , λ η → dfunext (fe 𝓤 (𝓦 ⊔ 𝓤)) (λ x → dfunext (fe 𝓤 𝓦) (ψφ g η x )))
-            , (φ g , λ θ → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ C → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (φψ g θ y C))))
+    φψ' : (g : Y → 𝓤 ̇) (θ : g ≾ f/j) → φ g (ψ g θ) ≡ θ
+    φψ' g θ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe 𝓤 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ C → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (φψ g θ y C)))
 
-  Σ-extension-left-Kan : (g : Y → 𝓤 ̇) → Nat f∖j g ≃ Nat f (g ∘ j)
+  Σ-extension-left-Kan : (g : Y → 𝓤 ̇) → f∖j ≾ g ≃ f ≾ g ∘ j
   Σ-extension-left-Kan g = e
    where
-    φ : (g : Y → 𝓤 ̇) → Nat f (g ∘ j) → Nat f∖j g
+    φ : (g : Y → 𝓤 ̇) → f ≾ g ∘ j → f∖j ≾ g
     φ g η y ((x , p) , C) = transport g p (η x C)
 
-    ψ : (g : Y → 𝓤 ̇) → Nat f∖j g → Nat f (g ∘ j)
+    ψ : (g : Y → 𝓤 ̇) → f∖j ≾ g → f ≾ g ∘ j
     ψ g θ x B = θ (j x) ((x , refl) , B)
 
-    φψ : (g : Y → 𝓤 ̇) (θ : Nat f∖j g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ≡ θ y B
+    φψ : (g : Y → 𝓤 ̇) (θ : f∖j ≾ g) (y : Y) (B : f∖j y) → φ g (ψ g θ) y B ≡ θ y B
     φψ g θ y ((x , refl) , B) = refl
 
-    ψφ : (g : Y → 𝓤 ̇) (η : Nat f (g ∘ j)) (x : X) (B : f x) → ψ g (φ g η) x B ≡ η x B
+    ψφ : (g : Y → 𝓤 ̇) (η : f ≾ g ∘ j) (x : X) (B : f x) → ψ g (φ g η) x B ≡ η x B
     ψφ g η x B = refl
 
-    e : Nat f∖j g ≃ Nat f (g ∘ j)
+    e : f∖j ≾ g ≃ f ≾ g ∘ j
     e = ψ g , (φ g , λ η → dfunext (fe 𝓤 (𝓤 ⊔ 𝓦)) (λ x → dfunext (fe 𝓦 𝓤) (λ B → ψφ g η x B)))
             , (φ g , λ θ → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥 ⊔ 𝓦) 𝓤) (λ C → φψ g θ y C)))
 
@@ -188,7 +197,7 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
 
   Conjectural conjecture: the type
 
-    Σ(f' : Y → 𝓤), Π(g : Y → 𝓤), Nat g f' = Nat (g∘f) f
+    Σ(f' : Y → 𝓤), Π(g : Y → 𝓤), g ≾ f' ≃ g∘j ≾ f
 
   should be contractible assuming univalence. Similarly for left Kan
   extensions as discussed below.
@@ -204,7 +213,7 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
   Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
 
-  Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (λ (c : f/j (j x)) → c (x , refl))
+  Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (Π-proj (x , refl))
   Π-extension-equivalence e x = pr₂ (Π-extension-in-range e x)
 
   Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {𝓦}
@@ -225,7 +234,7 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
   2nd-Π-extension-formula : (y : Y) → f/j(y) ≃ Π \(x : X) → j x ≡ y → f x
   2nd-Π-extension-formula y = curry-uncurry fe
 
-  2nd-Π-extension-formula' : (y : Y) → f/j(y) ≃ Nat (λ x → j x ≡ y) f
+  2nd-Π-extension-formula' : (y : Y) → f/j(y) ≃ (λ x → j x ≡ y) ≾ f
   2nd-Π-extension-formula' = 2nd-Π-extension-formula
 
   2nd-Σ-extension-formula : (y : Y) → f∖j(y) ≃ Σ \(x : X) → (j x ≡ y) × f x
@@ -304,6 +313,8 @@ _/_ _∖_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇}
         → (X → 𝓦 ̇) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
 f / j = Π-extension f j
 f ∖ j = Σ-extension f j
+
+infix 7 _/_
 
 \end{code}
 
@@ -469,8 +480,8 @@ to be an embedding and that the proof is completely routine.
 \begin{code}
 
 retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇) (B : X → 𝓣 ̇) (e : X → Y)
-               → ((x : X) → retract (A x) of (B x))
-               → ((y : Y) → retract ((A / e) y) of ((B / e) y))
+                  → ((x : X) → retract (A x) of (B x))
+                  → ((y : Y) → retract ((A / e) y) of ((B / e) y))
 retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
  where
   R : (x : X) → B x → A x
@@ -564,7 +575,7 @@ module /-extension-is-embedding-special-case
          (P : 𝓤 ̇)
          (i : is-prop P)
          (ua : is-univalent 𝓤)
- where
+       where
 
  open import UF-PropIndexedPiSigma
  open import UF-Equiv-FunExt
@@ -643,7 +654,7 @@ module ∖-extension-is-embedding-special-case
          (P : 𝓤 ̇)
          (i : is-prop P)
          (ua : is-univalent 𝓤)
- where
+       where
 
  open import UF-PropIndexedPiSigma
  open import UF-Equiv-FunExt
@@ -697,6 +708,103 @@ module ∖-extension-is-embedding-special-case
 
  ψ-is-embedding : is-embedding ψ
  ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (κ X))
+
+ s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp = refl
+
+ s-is-embedding : is-embedding s
+ s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+
+\end{code}
+
+Added 20th November 2018.
+
+\begin{code}
+
+module /-extension-is-embedding
+         (X Y : 𝓤 ̇)
+         (j : X → Y)
+         (i : is-embedding j)
+         (fe' : funext 𝓤 (𝓤 ⁺))
+         (ua : is-univalent 𝓤)
+       where
+
+ open import UF-PropIndexedPiSigma
+ open import UF-Equiv-FunExt
+ open import UF-Subsingletons-FunExt
+ open import UF-UA-FunExt
+
+ feuu : funext 𝓤 𝓤
+ feuu = funext-from-univalence ua
+
+ s : (X → 𝓤 ̇) → (Y → 𝓤 ̇)
+ s f = f / j
+
+ r : (Y → 𝓤 ̇) → (X → 𝓤 ̇)
+ r g = g ∘ j
+
+ rs : ∀ f → r (s f) ≡ f
+ rs = Π-extension-is-extension' ua fe' j i
+
+ sr : ∀ g → s (r g) ≡ (g ∘ j) / j
+ sr g = refl
+
+ κ : (g : Y → 𝓤 ̇) → g ≾ s (r g)
+ κ g y C (x , p) = back-transport g p C
+
+ M : (𝓤 ⁺) ̇
+ M = Σ \(g : Y → 𝓤 ̇) → (y : Y) → is-equiv (κ g y)
+
+ φ : (X → 𝓤 ̇) → M
+ φ f = s f , e
+  where
+   e : (y : Y) → is-equiv (κ (s f) y)
+   e y = qinvs-are-equivs (κ (s f) y) (δ , ε , η)
+    where
+     δ : (((f / j) ∘ j) / j) y → (f / j) y
+     δ C (x , p) = C (x , p) (x , refl)
+     η : (C : ((f / j ∘ j) / j) y) → κ (s f) y (δ C) ≡ C
+     η C = dfunext feuu g
+      where
+       g : (w : fiber j y) → κ (s f) y (δ C) w ≡ C w
+       g (x , refl) = dfunext feuu h
+        where
+         h : (t : fiber j (j x)) → C t (pr₁ t , refl) ≡ C (x , refl) t
+         h (x' , p') = transport (λ - → C - (pr₁ - , refl) ≡ C (x , refl) -) q refl
+          where
+           q : (x , refl) ≡ (x' , p')
+           q = i (j x) (x , refl) (x' , p')
+     ε : (a : (f / j) y) → δ (κ (s f) y a) ≡ a
+     ε a = dfunext feuu g
+      where
+       g : (w : fiber j y) → δ (κ (s f) y a) w ≡ a w
+       g (x , refl) = refl
+
+ γ : M → (X → 𝓤 ̇)
+ γ (g , e) = r g
+
+ φγ : ∀ m → φ (γ m) ≡ m
+ φγ (g , e) = to-Σ-≡
+               (dfunext fe' h ,
+                Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)) _ e)
+  where
+   h : (y : Y) → ((g ∘ j) / j) y ≡ g y
+   h y = eqtoid ua (((g ∘ j) / j) y) (g y) (≃-sym (κ g y , e y))
+
+ γφ : ∀ f → γ (φ f) ≡ f
+ γφ = rs
+
+ φ-is-equiv : is-equiv φ
+ φ-is-equiv = qinvs-are-equivs φ (γ , γφ , φγ)
+
+ φ-is-embedding : is-embedding φ
+ φ-is-embedding = equivs-are-embeddings φ φ-is-equiv
+
+ ψ : M → (Y → 𝓤 ̇)
+ ψ = pr₁
+
+ ψ-is-embedding : is-embedding ψ
+ ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
