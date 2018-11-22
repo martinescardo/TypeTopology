@@ -411,6 +411,23 @@ There is more to do about this.
                            → (λ f → (f / j) ∘ j) ≡ id
 Π-extension-is-extension'' ua fe fe' j e = dfunext fe' (Π-extension-is-extension' ua fe j e)
 
+Σ-extension-is-extension : is-univalent 𝓤 → {X Y : 𝓤 ̇} (j : X → Y)
+                         → is-embedding j
+                         → (f : X → 𝓤 ̇) → (f ∖ j) ∘ j ∼ f
+Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-in-range f j e x)
+
+Σ-extension-is-extension' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                          → {X Y : 𝓤 ̇} (j : X → Y)
+                          → is-embedding j
+                          → (f : X → 𝓤 ̇) → (f ∖ j) ∘ j ≡ f
+Σ-extension-is-extension' ua fe j e f = dfunext fe (Σ-extension-is-extension ua j e f)
+
+Σ-extension-is-extension'' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → funext (𝓤 ⁺) (𝓤 ⁺)
+                           → {X Y : 𝓤 ̇} (j : X → Y)
+                           → is-embedding j
+                           → (λ f → (f ∖ j) ∘ j) ≡ id
+Σ-extension-is-extension'' ua fe fe' j e = dfunext fe' (Σ-extension-is-extension' ua fe j e)
+
 \end{code}
 
 We now consider injectivity, defined with Σ rather than ∃ (that is, as
@@ -574,16 +591,30 @@ open import UF-Subsingletons
 module /-extension-is-embedding-special-case
          (P : 𝓤 ̇)
          (i : is-prop P)
+         (fe' : funext 𝓤 (𝓤 ⁺))
          (ua : is-univalent 𝓤)
        where
 
  open import UF-PropIndexedPiSigma
  open import UF-Equiv-FunExt
+ open import UF-UA-FunExt
+
+ feuu : funext 𝓤 𝓤
+ feuu = funext-from-univalence ua
+
+ r :  𝓤 ̇ → (P → 𝓤 ̇)
+ r X p = X
 
  s : (P → 𝓤 ̇) → 𝓤 ̇
  s = Π
 
- κ : (X : 𝓤 ̇) → X → (P → X)
+ rs : ∀ A → r (s A) ≡ A
+ rs A = dfunext fe' (λ p → eqtoid ua (s A) (A p) (prop-indexed-product feuu i p))
+
+ sr : ∀ X → s (r X) ≡ (P → X)
+ sr X = refl
+
+ κ : (X : 𝓤 ̇) → X → s (r X)
  κ X x p = x
 
  M : 𝓤 ⁺ ̇
@@ -595,19 +626,19 @@ module /-extension-is-embedding-special-case
    δ : (P → s A) → s A
    δ v p = v p p
    η : (v : P → s A) → κ (s A) (δ v) ≡ v
-   η v = dfunext (fe 𝓤 𝓤) (λ p → dfunext (fe 𝓤 𝓤) (λ q → ap (λ - → v - q) (i q p)))
+   η v = dfunext feuu (λ p → dfunext feuu (λ q → ap (λ - → v - q) (i q p)))
    ε : (u : Π A) → δ (κ (s A) u) ≡ u
    ε u = refl
 
  γ : M → (P → 𝓤 ̇)
- γ (X , i) p = X
+ γ (X , i) = r X
 
  φγ : (m : M) → φ (γ m) ≡ m
  φγ (X , i) = to-Σ-≡ (eqtoid ua (P → X) X (≃-sym (κ X , i)) ,
                       being-equiv-is-a-prop fe (κ X) _ i)
 
  γφ : (A : P → 𝓤 ̇) → γ (φ A) ≡ A
- γφ A = dfunext (fe 𝓤 (𝓤 ⁺)) (λ p → eqtoid ua (s A) (A p) (prop-indexed-product (fe 𝓤 𝓤) i p))
+ γφ = rs
 
  φ-is-equiv : is-equiv φ
  φ-is-equiv = qinvs-are-equivs φ (γ , γφ , φγ)
@@ -629,23 +660,6 @@ module /-extension-is-embedding-special-case
 
 \end{code}
 
-Additional information.
-
-\begin{code}
-
- r :  𝓤 ̇ → (P → 𝓤 ̇)
- r X p = X
-
- rs : ∀ A → r (s A) ≡ A
- rs = γφ
-
- sr : ∀ X → s (r X) ≡ (P → X)
- sr X = refl
-
- notice-that = κ ∶ ((X : 𝓤 ̇) → X → s(r X))
-
-\end{code}
-
 Also 15th Nov 2018. We have a dual situation:
 
 \begin{code}
@@ -653,6 +667,7 @@ Also 15th Nov 2018. We have a dual situation:
 module ∖-extension-is-embedding-special-case
          (P : 𝓤 ̇)
          (i : is-prop P)
+         (fe' : funext 𝓤 (𝓤 ⁺))
          (ua : is-univalent 𝓤)
        where
 
@@ -666,7 +681,7 @@ module ∖-extension-is-embedding-special-case
  r X p = X
 
  rs : ∀ A → r (s A) ≡ A
- rs A = dfunext (fe 𝓤 (𝓤 ⁺)) (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum i p))
+ rs A = dfunext fe' (λ p → eqtoid ua (Σ A) (A p) (prop-indexed-sum i p))
 
  sr : ∀ X → s (r X) ≡ P × X
  sr X = refl
@@ -688,7 +703,7 @@ module ∖-extension-is-embedding-special-case
    ε (p , q , a) = to-×-≡ (i q p) refl
 
  γ : C → (P → 𝓤 ̇)
- γ (X , i) p = X
+ γ (X , i) = r X
 
  φγ : (c : C) → φ (γ c) ≡ c
  φγ (X , i) = to-Σ-≡ (eqtoid ua (P × X) X (κ X , i) ,
@@ -785,11 +800,101 @@ module /-extension-is-embedding
 
  φγ : ∀ m → φ (γ m) ≡ m
  φγ (g , e) = to-Σ-≡
-               (dfunext fe' h ,
+               (dfunext fe' (λ y → eqtoid ua (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
                 Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)) _ e)
+
+ γφ : ∀ f → γ (φ f) ≡ f
+ γφ = rs
+
+ φ-is-equiv : is-equiv φ
+ φ-is-equiv = qinvs-are-equivs φ (γ , γφ , φγ)
+
+ φ-is-embedding : is-embedding φ
+ φ-is-embedding = equivs-are-embeddings φ φ-is-equiv
+
+ ψ : M → (Y → 𝓤 ̇)
+ ψ = pr₁
+
+ ψ-is-embedding : is-embedding ψ
+ ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
+
+ s-is-comp : s ≡ ψ ∘ φ
+ s-is-comp = refl
+
+ s-is-embedding : is-embedding s
+ s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+
+\end{code}
+
+Added 21th November 2018.
+
+\begin{code}
+
+module ∖-extension-is-embedding
+         (X Y : 𝓤 ̇)
+         (j : X → Y)
+         (ej : is-embedding j)
+         (fe' : funext 𝓤 (𝓤 ⁺))
+         (ua : is-univalent 𝓤)
+       where
+
+ open import UF-PropIndexedPiSigma
+ open import UF-Equiv-FunExt
+ open import UF-Subsingletons-FunExt
+ open import UF-UA-FunExt
+
+ feuu : funext 𝓤 𝓤
+ feuu = funext-from-univalence ua
+
+ s : (X → 𝓤 ̇) → (Y → 𝓤 ̇)
+ s f = f ∖ j
+
+ r : (Y → 𝓤 ̇) → (X → 𝓤 ̇)
+ r g = g ∘ j
+
+ rs : ∀ f → r (s f) ≡ f
+ rs = Σ-extension-is-extension' ua fe' j ej
+
+ sr : ∀ g → s (r g) ≡ (g ∘ j) ∖ j
+ sr g = refl
+
+ κ : (g : Y → 𝓤 ̇) → s (r g) ≾ g
+ κ g y ((x , p) , C) = transport g p C
+
+ M : (𝓤 ⁺) ̇
+ M = Σ \(g : Y → 𝓤 ̇) → (y : Y) → is-equiv (κ g y)
+ φ : (X → 𝓤 ̇) → M
+ φ f = s f , e
   where
-   h : (y : Y) → ((g ∘ j) / j) y ≡ g y
-   h y = eqtoid ua (((g ∘ j) / j) y) (g y) (≃-sym (κ g y , e y))
+   e : (y : Y) → is-equiv (κ (s f) y)
+   e y = qinvs-are-equivs (κ (s f) y) (δ , ε , η)
+    where
+     δ : (Σ \(w : fiber j y) → f(pr₁ w))
+       → Σ \(t : fiber j y) → Σ (\(w : fiber j (j (pr₁ t))) → f (pr₁ w))
+     δ ((x , p) , C) = (x , p) , (x , refl) , C
+     η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
+     η ((x , refl) , C) = refl
+     ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ≡ τ
+     ε ((x , refl) , (x' , p') , C) = t x x' (pa x' x p') p' C (appa x x' p')
+      where
+        t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → (ap j u ≡ p) →
+            ((x' , p)    , (x' , refl) , C)
+         ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
+        t x .x refl p C refl = refl
+        ej' : ∀ x x' → qinv (ap j {x} {x'})
+        ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j ej x x')
+        pa : ∀ x x' → j x ≡ j x' → x ≡ x'
+        pa x x' = pr₁ (ej' x x')
+        appa : ∀ x x' p' → ap j (pa x' x p') ≡ p'
+        appa x x' = pr₂ (pr₂ (ej' x' x))
+
+ γ : M → (X → 𝓤 ̇)
+ γ (g , e) = r g
+
+ φγ : ∀ m → φ (γ m) ≡ m
+ φγ (g , e) = to-Σ-≡
+               (dfunext fe' (λ y → eqtoid ua (s (r g) y) (g y) (κ g y , e y)) ,
+                Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)) _ e)
 
  γφ : ∀ f → γ (φ f) ≡ f
  γφ = rs
