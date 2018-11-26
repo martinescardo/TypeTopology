@@ -46,17 +46,17 @@ We define when a relation is subsingleton (or proposition) valued,
 reflexive, transitive or an equivalence.
 
 What is noteworthy, for the purpose of explaining universes in Agda to
-Dan, is that X is in a universe U, and the value of the relation is in
-a universe V, where U and V are arbitrary.
+Dan, is that X is in a universe 𝓤, and the value of the relation is in
+a universe 𝓥, where 𝓤 and 𝓥 are arbitrary.
 
 (NB. The Agda library uses the word "Level" for universes, and then
-what we write "𝓤 ̇" here is written "Set U". This is not good for
+what we write "𝓤 ̇" here is written "Set 𝓤". This is not good for
 univalent mathematics, because the types in 𝓤 ̇ need not be sets, and
 also because it places emphasis on levels rather than universes
 themselves.)
 
 Then, for example, the function is-prop-valued defined below takes
-values in the least upper bound of U and V, which is denoted by 𝓤 ⊔ 𝓥.
+values in the least upper bound of 𝓤 and 𝓥, which is denoted by 𝓤 ⊔ 𝓥.
 
 We first define the type of five functions and then define them, where
 _≈_ is a variable:
@@ -81,7 +81,7 @@ equivalence    _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈
 Now, using an anonymous module with parameters (corresponding to a
 section in Coq), we assume propositional truncations that stay in the
 same universe, function extensionality for all universes, two
-universes U and V, propositional truncation for the universe V, a type
+universes 𝓤 and 𝓥, propositional truncation for the universe 𝓥, a type
 X : 𝓤 ̇, and an equivalence relation _≈_ with values in 𝓥 ̇.
 
 \begin{code}
@@ -105,8 +105,8 @@ module _
 \end{code}
 
 Now, Ω 𝓥 is the type of subsingletons, or propositions, or
-h-propositions, or mere propositions, in the universe V, which lives
-in the next universe V  ⁺.
+h-propositions, or mere propositions, in the universe 𝓥, which lives
+in the next universe 𝓥  ⁺.
 
 From the relation _≈_ : X → (X → 𝓥 ̇) we define a relation
 X → (X → Ω 𝓥), which of course is formally a function. We then take
@@ -122,8 +122,8 @@ truncations.
 
 \end{code}
 
-Then the quotient lives in the least upper bound of U and V  ⁺, where V  ⁺
-is the successor of the universe V:
+Then the quotient lives in the least upper bound of 𝓤 and 𝓥  ⁺, where 𝓥  ⁺
+is the successor of the universe 𝓥:
 
 \begin{code}
 

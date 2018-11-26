@@ -918,3 +918,34 @@ module ∖-extension-is-embedding
  s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
+
+Added 23rd Nov 2018.
+
+\begin{code}
+
+module more-general-extension
+        (D : 𝓦 ̇)
+        (s : (P : 𝓤 ̇) → is-prop P → (P → D) → D)
+        (rs : (P : 𝓤 ̇) (i : is-prop P) (A : P → D) → (λ (p : P) → s P i A) ≡ A)
+        (X : 𝓤 ̇)
+        (Y : 𝓤 ̇)
+        (j : X → Y)
+        (e : is-embedding j)
+       where
+
+ s-extension : (X → D) → (Y → D)
+ s-extension f y = s (fiber j y) (e y) (λ (w : fiber j y) → f (pr₁ w))
+ is-extension : (f : X → D) (x : X) → s-extension f (j x) ≡ f x
+ is-extension f x = γ
+  where
+   P = fiber j (j x)
+   φ : (λ (p : P) → s P (e (j x)) (λ w → f (pr₁ w))) ≡ (λ w → f (pr₁ w))
+   φ = rs P (e (j x)) (λ w → f (pr₁ w))
+
+   γ : s P (e (j x)) (λ w → f (pr₁ w)) ≡ f x
+   γ = ap (λ - → - (x , refl)) φ
+
+\end{code}
+
+TODO (done on paper). The injective types are precisely the
+(underlying types of) the algebras of the lifting monad.
