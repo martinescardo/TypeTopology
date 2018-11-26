@@ -228,7 +228,8 @@ universe 𝓦.
       induction-step x (a , d) (b , e) = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
        where
         h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
-          → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))         → a ≡ b
+          → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
+          → a ≡ b
         h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ pr (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
 
         p : a ≡ b
