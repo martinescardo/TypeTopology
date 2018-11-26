@@ -106,7 +106,7 @@ module _
 
 Now, Ω 𝓥 is the type of subsingletons, or propositions, or
 h-propositions, or mere propositions, in the universe 𝓥, which lives
-in the next universe 𝓥  ⁺.
+in the next universe 𝓥 ⁺.
 
 From the relation _≈_ : X → (X → 𝓥 ̇) we define a relation
 X → (X → Ω 𝓥), which of course is formally a function. We then take
@@ -122,17 +122,17 @@ truncations.
 
 \end{code}
 
-Then the quotient lives in the least upper bound of 𝓤 and 𝓥  ⁺, where 𝓥  ⁺
+Then the quotient lives in the least upper bound of 𝓤 and 𝓥 ⁺, where 𝓥 ⁺
 is the successor of the universe 𝓥:
 
 \begin{code}
 
- X/≈ : 𝓤 ⊔ (𝓥  ⁺) ̇
+ X/≈ : 𝓤 ⊔ (𝓥 ⁺) ̇
  X/≈ = image equiv-rel
 
  X/≈-is-set : is-set X/≈
  X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-                (powersets-are-sets (fe 𝓤 (𝓥  ⁺)) (fe 𝓥 𝓥) pe)
+                (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe)
                 propositional-truncation-is-a-prop
 
  η : X → X/≈
@@ -176,8 +176,8 @@ points are mapped to equal points:
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe 𝓤 (𝓥 ⁺))
                                       (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                                                      being-a-prop-is-a-prop (fe 𝓥 𝓥) _ _)) ,
-                                    propositional-truncation-is-a-prop _ _)
+                                                     being-a-prop-is-a-prop (fe 𝓥 𝓥) _ _)) ,
+                                   propositional-truncation-is-a-prop _ _)
 
 \end{code}
 
@@ -228,7 +228,7 @@ universe 𝓦.
       induction-step x (a , d) (b , e) = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
        where
         h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
-         → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))         → a ≡ b
+          → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))         → a ≡ b
         h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ pr (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
 
         p : a ≡ b
