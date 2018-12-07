@@ -12,7 +12,7 @@ other modules.
 Here an ordinal is a type equipped with a well order, namely
 relation < which is
 
-  * subsingleton valued,
+  * prop valued,
   * well founded,
   * transitive, and
   * extensional (any two elements with the same lower set are equal).
@@ -97,7 +97,7 @@ differ only in the interpretation of Sum1.
 Additionally, we kave a map ι from the Δ-ordinals to the Κ-ordinals,
 which is
 
-  * an embedding (has subsingleton fibers),
+  * an embedding (has prop fibers),
   * dense (the complement of its image is empty),
   * order preserving and reflecting.
 
@@ -167,7 +167,7 @@ compact∙-ε₀-ub         : compact∙ ⟪ ε₀-upper-bound ⟫
 
 The interpretation function is the following, with values on topped
 ordinals, where an ordinal is a type equipped with a
-subsingleton-valued, well-founded, transitive and extensional relation
+prop-valued, well-founded, transitive and extensional relation
 (and such a type is automatically a set). "Topped" means that there is
 a top element in the order
 

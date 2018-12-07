@@ -141,16 +141,10 @@ Id-retract-l p = equiv-retract-l (idtoeq (lhs p) (rhs p) p)
 Id-retract-r : {X Y : 𝓤 ̇} → X ≡ Y → retract Y of X
 Id-retract-r p = equiv-retract-r (idtoeq (lhs p) (rhs p) p)
 
-equiv-to-subsingleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                      → Y ≃ X
-                      → is-subsingleton X
-                      → is-subsingleton Y
-equiv-to-subsingleton e = retract-of-subsingleton (equiv-retract-l e)
+equiv-to-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Y ≃ X → is-prop X → is-prop Y
+equiv-to-prop e = retract-of-prop (equiv-retract-l e)
 
-equiv-to-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                   → Y ≃ X
-                   → is-singleton X
-                   → is-singleton Y
+equiv-to-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Y ≃ X → is-singleton X → is-singleton Y
 equiv-to-singleton e = retract-of-singleton (equiv-retract-l e)
 
 \end{code}

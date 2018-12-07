@@ -145,7 +145,7 @@ propext-funext-gives-prop-ua : propext 𝓤 → funext 𝓤 𝓤
 propext-funext-gives-prop-ua {𝓤} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
-  l (f , _ , (s , fs)) = retract-of-subsingleton (s , (f , fs)) i
+  l (f , _ , (s , fs)) = retract-of-prop (s , (f , fs)) i
   eqtoid : X ≃ P → X ≡ P
   eqtoid (f , (r , rf) , h) = pe (l (f , (r , rf) , h)) i f r
   m : is-prop (X ≃ P)

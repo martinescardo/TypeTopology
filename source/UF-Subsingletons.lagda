@@ -1,5 +1,5 @@
 In univalent logic, as opposed to Curry-Howard logic, a proposition is
-a subsingleton or a type such that any two of its elements are
+a prop or a type such that any two of its elements are
 identified.
 
 https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
@@ -14,26 +14,11 @@ module UF-Subsingletons where
 open import SpartanMLTT
 open import UF-Base
 
-\end{code}
-
-
-\begin{code}
-
-is-subsingleton : 𝓤 ̇ → 𝓤 ̇
-is-subsingleton X = (x y : X) → x ≡ y
+is-prop : 𝓤 ̇ → 𝓤 ̇
+is-prop X = (x y : X) → x ≡ y
 
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ \(P : 𝓤 ̇) → is-subsingleton P
-
-\end{code}
-
-I prefer the above terminology, but I will stick to the following (at
-least for the moment).
-
-\begin{code}
-
-is-prop : 𝓤 ̇ → 𝓤 ̇
-is-prop = is-subsingleton
+Ω 𝓤 = Σ \(P : 𝓤 ̇) → is-prop P
 
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds = pr₁
@@ -48,7 +33,7 @@ And of course we could adopt a terminology borrowed from topos logic:
 \begin{code}
 
 is-truth-value : 𝓤 ̇ → 𝓤 ̇
-is-truth-value = is-subsingleton
+is-truth-value = is-prop
 
 \end{code}
 
@@ -125,7 +110,7 @@ The two prototypical propositions:
 
 \end{code}
 
-A type is a set if all its identity types are subsingletons. In other
+A type is a set if all its identity types are props. In other
 words, sets are types for which equality is a proposition (rather than
 data or structure).
 

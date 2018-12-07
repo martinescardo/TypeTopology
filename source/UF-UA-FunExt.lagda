@@ -90,7 +90,6 @@ open import UF-Subsingletons-FunExt
 
 PropExt-from-univalence : is-univalent 𝓤
                         → {p q : Ω 𝓤} → (p holds → q holds) → (q holds → p holds) → p ≡ q
-PropExt-from-univalence {𝓤} ua {p} {q} = PropExt (funext-from-univalence ua) (UA-gives-propext ua)
-
+PropExt-from-univalence {𝓤} ua {p} {q} = PropExt (funext-from-univalence ua) (propext-from-univalence ua)
 
 \end{code}

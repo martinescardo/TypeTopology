@@ -919,19 +919,23 @@ module ∖-extension-is-embedding
 
 \end{code}
 
-Added 23rd Nov 2018.
+Added 23rd Nov 2018 (think of more meaningful names for the
+definitions in this module):
 
 \begin{code}
 
 module more-general-extension
         (D : 𝓦 ̇)
         (s : (P : 𝓤 ̇) → is-prop P → (P → D) → D)
-        (rs : (P : 𝓤 ̇) (i : is-prop P) (A : P → D) → (λ (p : P) → s P i A) ≡ A)
+        (rs : (P : 𝓤 ̇) (i : is-prop P) (α : P → D) → (λ (p : P) → s P i α) ≡ α)
         (X : 𝓤 ̇)
         (Y : 𝓤 ̇)
         (j : X → Y)
         (e : is-embedding j)
        where
+
+ r : (P : 𝓤 ̇) → D → (P → D)
+ r P d p = d
 
  s-extension : (X → D) → (Y → D)
  s-extension f y = s (fiber j y) (e y) (λ (w : fiber j y) → f (pr₁ w))
@@ -944,6 +948,17 @@ module more-general-extension
 
    γ : s P (e (j x)) (λ w → f (pr₁ w)) ≡ f x
    γ = ap (λ - → - (x , refl)) φ
+
+{-
+ extension-embedding : ((P : 𝓤 ̇) (i : is-prop P) → is-embedding (s P i)) → is-embedding s-extension
+ extension-embedding es g = γ
+  where
+   q : (Σ \(f : X → D) → s-extension f ≡ g) ≃ {!!}
+   q = {!!}
+   P = Σ \(f : X → D) → s-extension f ≡ g
+   γ : is-prop P
+   γ = {!!}
+-}
 
 \end{code}
 

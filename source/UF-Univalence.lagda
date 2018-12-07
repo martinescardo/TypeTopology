@@ -53,13 +53,13 @@ back-transport-is-pre-comp' : (ua : is-univalent 𝓤)
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
   q : g ∘ Idtofun (eqtoid ua X X' e) ≡ g ∘ (pr₁ e)
-  q = ap (λ - → g ∘ -) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
+  q = ap (g ∘_) (ap pr₁ (idtoeq'-eqtoid ua X X' e))
 
 pre-comp-is-equiv : (ua : is-univalent 𝓤)
                   → {X Y Z : 𝓤 ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
 pre-comp-is-equiv ua {X} {Y} f ise =
  equiv-closed-under-∼' (back-transports-are-equivs (eqtoid ua X Y (f , ise)))
-                        (back-transport-is-pre-comp' ua (f , ise))
+                       (back-transport-is-pre-comp' ua (f , ise))
 
 \end{code}
 
@@ -73,21 +73,41 @@ show that the identity equivalences satisfy it.
 ≃-induction 𝓤 𝓥 = (X : 𝓤 ̇) (A : (Y : 𝓤 ̇) → X ≃ Y → 𝓥 ̇)
                  → A X (≃-refl X) → (Y : 𝓤 ̇) (e : X ≃ Y) → A Y e
 
-private JEq' : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction 𝓤 𝓥
-JEq' {𝓤} ua {𝓥} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
+private
+ JEq' : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction 𝓤 𝓥
+ JEq' {𝓤} ua {𝓥} X A b Y e = transport (A Y) (idtoeq-eqtoid ua X Y e) g
+  where
+   A' : (Y : 𝓤 ̇) → X ≡ Y → 𝓥 ̇
+   A' Y p = A Y (idtoeq X Y p)
+   b' : A' X refl
+   b' = b
+   f' : (Y : 𝓤 ̇) (p : X ≡ Y) → A' Y p
+   f' = Jbased X A' b'
+   g : A Y (idtoeq X Y (eqtoid ua X Y e))
+   g = f' Y (eqtoid ua X Y e)
+
+eqtoid-inverse : (ua : is-univalent 𝓤) {X X' : 𝓤 ̇} (e : X ≃ X')
+               → (eqtoid ua X X' e)⁻¹ ≡ eqtoid ua X' X (≃-sym e)
+eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ≡ eqtoid ua X' X (≃-sym e)) p X'
  where
-  A' : (Y : 𝓤 ̇) → X ≡ Y → 𝓥 ̇
-  A' Y p = A Y (idtoeq X Y p)
-  b' : A' X refl
-  b' = b
-  f' : (Y : 𝓤 ̇) (p : X ≡ Y) → A' Y p
-  f' = Jbased X A' b'
-  g : A Y (idtoeq X Y (eqtoid ua X Y e))
-  g = f' Y (eqtoid ua X Y e)
+  p : (eqtoid ua X X (≃-refl X))⁻¹ ≡ eqtoid ua X X (≃-sym (≃-refl X))
+  p = ap _⁻¹ (eqtoid-refl ua X) ∙ (eqtoid-refl ua X)⁻¹
+
+transport-is-pre-comp' : (ua : is-univalent 𝓤)
+                       → {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X → Y)
+                       → transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ (≃-sym e)
+transport-is-pre-comp' ua {X} {X'} e g = transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
+ where
+  b : Idtofun ((eqtoid ua X X' e)⁻¹) ≡ Idtofun (eqtoid ua X' X (≃-sym e))
+  b = ap Idtofun (eqtoid-inverse ua e)
+  c : Idtofun (eqtoid ua X' X (≃-sym e)) ≡ pr₁ (≃-sym e)
+  c = ap pr₁ (idtoeq'-eqtoid ua X' X (≃-sym e))
+  q : g ∘ Idtofun ((eqtoid ua X X' e)⁻¹) ≡ g ∘ pr₁ (≃-sym e)
+  q = ap (g ∘_) (b ∙ c)
 
 \end{code}
 
-A public improved version JEq of JEq' is provided below.
+A public, improved version JEq of JEq' is provided below.
 
 Conversely, if the induction principle for equivalences holds, then
 univalence follows. In this construction, the parametric universe V is
@@ -113,10 +133,10 @@ considered here.
 \begin{code}
 
 JEq-improve : ∀ {𝓤 𝓥}
-  → (jeq' : ≃-induction 𝓤 𝓥)
-  → Σ \(jeq : ≃-induction 𝓤 𝓥)
-            → (X : 𝓤 ̇) (A : (Y : 𝓤 ̇) → X ≃ Y → 𝓥 ̇) (b : A X (≃-refl X))
-            → jeq X A b X (≃-refl X) ≡ b
+            → (jeq' : ≃-induction 𝓤 𝓥)
+            → Σ \(jeq : ≃-induction 𝓤 𝓥)
+                      → (X : 𝓤 ̇) (A : (Y : 𝓤 ̇) → X ≃ Y → 𝓥 ̇) (b : A X (≃-refl X))
+                      → jeq X A b X (≃-refl X) ≡ b
 JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
  where
   module _ (X : 𝓤 ̇) (A : (Y : 𝓤 ̇) → X ≃ Y → 𝓥 ̇) where
@@ -224,8 +244,8 @@ equivs-are-vv-equivs' {𝓤} ua {X} {Y} f ise = g Y (f , ise)
   g = JEq ua X A b
 
 
-UA-gives-propext : is-univalent 𝓤 → propext 𝓤
-UA-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
+propext-from-univalence : is-univalent 𝓤 → propext 𝓤
+propext-from-univalence ua {P} {Q} i j f g = eqtoid ua P Q
                                        (f ,
                                        (g , (λ y → j (f (g y)) y)) ,
                                        (g , (λ x → i (g (f x)) x)))
@@ -234,15 +254,15 @@ UA-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
 
 If the identity function satisfies some property, then all
 equivalences do, assuming univalence. This property need not be
-subsingleton valued.
+prop valued.
 
 \begin{code}
 
 ua-all-from-id : is-univalent 𝓤
-           → (X : 𝓤 ̇)
-           → (P : (Y : 𝓤 ̇) → (X → Y) → 𝓥 ̇)
-           → P X id
-           → (Y : 𝓤 ̇) (f : X → Y) → is-equiv f → P Y f
+               → (X : 𝓤 ̇)
+               → (P : (Y : 𝓤 ̇) → (X → Y) → 𝓥 ̇)
+               → P X id
+               → (Y : 𝓤 ̇) (f : X → Y) → is-equiv f → P Y f
 ua-all-from-id {𝓤} {𝓥} ua X P b Y f e = JEq ua X A b Y (f , e)
  where
   A : (Y : 𝓤 ̇) → X ≃ Y → 𝓥 ̇

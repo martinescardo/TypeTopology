@@ -296,7 +296,7 @@ eqtoidₒ {𝓤} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f 
   a σ φ ψ = g
    where
     b : ∀ x x' → (x ≺⟨ α ⟩ x') ≡ (x ≺⟨ ⟨ α ⟩ , σ ⟩ x')
-    b x x' = UA-gives-propext ua
+    b x x' = propext-from-univalence ua
               (Prop-valuedness α x x')
               (Prop-valuedness (⟨ α ⟩ , σ) x x')
               (φ x x')
@@ -319,7 +319,7 @@ UAₒ {𝓤} ua α = nats-with-sections-are-equivs α
   η β e = ≃ₒ-prop-valued α β (idtoeqₒ α β (eqtoidₒ ua α β e)) e
 
 type-of-ordinals-is-a-set : is-univalent 𝓤 → is-set (Ordinal 𝓤)
-type-of-ordinals-is-a-set {𝓤} ua {α} {β} = equiv-to-subsingleton
+type-of-ordinals-is-a-set {𝓤} ua {α} {β} = equiv-to-prop
                                              (idtoeqₒ α β , UAₒ ua α β)
                                              (≃ₒ-prop-valued α β)
 \end{code}

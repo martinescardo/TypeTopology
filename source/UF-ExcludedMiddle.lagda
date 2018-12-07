@@ -5,7 +5,7 @@ Excluded middle related things.
 In the Curry-Howard interpretation, excluded middle say that every
 type has an inhabitant or os empty. In univalent foundations, where
 one works with propositions as subsimgletons, excluded middle is the
-principle that every subsingleton type is inhabited or empty.
+principle that every prop type is inhabited or empty.
 
 \begin{code}
 

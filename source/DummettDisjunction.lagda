@@ -254,7 +254,7 @@ In univalent foundations, the -1-truncation of a type X can be defined as
 
    ∥ X ∥ = (P : U) → is--1-type P → (X → P) → P.
 
-A -1-type (or a subsingleton) is a type whose elements are all equal
+A -1-type (or a prop) is a type whose elements are all equal
 in the sense of the identity type.
 
 (If X lives in a universe U then ∥ X ∥ lives in the next universe.)

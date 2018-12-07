@@ -160,13 +160,13 @@ An application of Π-cong is the following:
 𝟙-lneutral {𝓤} {𝓥} {Y} = qinveq f (g , ε , η)
  where
    f : 𝟙 × Y → Y
-   f (* , y) = y
+   f (o , y) = y
    g : Y → 𝟙 × Y
    g y = (* , y)
    η : ∀ x → f (g x) ≡ x
    η y = refl
    ε : ∀ z → g (f z) ≡ z
-   ε (* , y) = refl
+   ε (o , y) = ap (_, y) (𝟙-is-prop * o)
 
 ×-comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X × Y ≃ Y × X
 ×-comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , ε , η)
@@ -182,8 +182,8 @@ An application of Π-cong is the following:
 
 𝟙-rneutral : {Y : 𝓤 ̇} → Y × 𝟙 {𝓥} ≃ Y
 𝟙-rneutral {𝓤} {𝓥} {Y} = Y × 𝟙 ≃⟨ ×-comm ⟩
-                         𝟙 × Y ≃⟨ 𝟙-lneutral {𝓤} {𝓥} ⟩
-                         Y     ■
+                          𝟙 × Y ≃⟨ 𝟙-lneutral {𝓤} {𝓥} ⟩
+                          Y     ■
 
 +comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X + Y ≃ Y + X
 +comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , η , ε)

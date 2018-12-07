@@ -27,11 +27,11 @@ retract-of-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                      → is-singleton Y
 retract-of-singleton (r , s , rs) (c , φ) = r c , (λ y → ap r (φ (s y)) ∙ rs y)
 
-retract-of-subsingleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-of-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                         → retract Y of X
-                        → is-subsingleton X
-                        → is-subsingleton Y
-retract-of-subsingleton (r , s , rs) = subtype-of-prop-is-a-prop s
+                        → is-prop X
+                        → is-prop Y
+retract-of-prop (r , s , rs) = subtype-of-prop-is-a-prop s
                                         (has-retraction-lc s (r , rs))
 
 identity-retraction : {X : 𝓤 ̇} → retract X of X

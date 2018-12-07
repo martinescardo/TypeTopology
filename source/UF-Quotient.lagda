@@ -16,7 +16,7 @@ We assume, in addition to Spartan Martin-Löf type theory,
    (any two logically equivalent propositions are equal),
 
  * propositional truncation
-   (any type can be universally mapped into a subsingleton in the same
+   (any type can be universally mapped into a prop in the same
    universe),
 
 and no resizing axioms.
@@ -42,7 +42,7 @@ module UF-Quotient where
 
 \end{code}
 
-We define when a relation is subsingleton (or proposition) valued,
+We define when a relation is prop (or proposition) valued,
 reflexive, transitive or an equivalence.
 
 What is noteworthy, for the purpose of explaining universes in Agda to
@@ -104,7 +104,7 @@ module _
 
 \end{code}
 
-Now, Ω 𝓥 is the type of subsingletons, or propositions, or
+Now, Ω 𝓥 is the type of props, or propositions, or
 h-propositions, or mere propositions, in the universe 𝓥, which lives
 in the next universe 𝓥 ⁺.
 

@@ -31,6 +31,15 @@ embedding-criterion : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                     → is-embedding f
 embedding-criterion f φ .(f x) (x , refl) = φ x (x , refl)
 
+embedding-criterion' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+                    → ((x x' : X) → (f x ≡ f x') ≃ (x ≡ x'))
+                    → is-embedding f
+embedding-criterion' {𝓤} {𝓥} {X} {Y} f e =
+ embedding-criterion f (λ x' → equiv-to-prop (a x') (singleton-types'-are-props x'))
+ where
+  a : (x' : X) → fiber f (f x') ≃ (Σ \(x : X) → x ≡ x')
+  a x' = Σ-cong (λ x → e x x')
+
 equivs-are-embeddings : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                       → is-equiv f → is-embedding f
 equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
@@ -330,7 +339,7 @@ maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
             → is-embedding f
             → is-embedding g
             → is-embedding (λ (z : X × Y) → (f (pr₁ z) , g (pr₂ z)))
-×-embedding f g i j (a , b) = retract-of-subsingleton (r , (s , rs))
+×-embedding f g i j (a , b) = retract-of-prop (r , (s , rs))
                                                       (×-is-prop (i a) (j b))
  where
   r : fiber f a × fiber g b → fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)
@@ -342,20 +351,20 @@ maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
 
 NatΣ-is-embedding : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
                   → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΣ ζ)
-NatΣ-is-embedding A B ζ i (x , b) = equiv-to-subsingleton
+NatΣ-is-embedding A B ζ i (x , b) = equiv-to-prop
                                      (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                      (i x b)
 
 NatΣ-is-embedding-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
                            → is-embedding(NatΣ ζ) → ((x : X) → is-embedding(ζ x))
-NatΣ-is-embedding-converse A B ζ e x b = equiv-to-subsingleton
+NatΣ-is-embedding-converse A B ζ e x b = equiv-to-prop
                                           (NatΣ-fiber-equiv A B ζ x b)
                                           (e (x , b))
 
 NatΠ-is-embedding : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
                   → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
                   → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΠ ζ)
-NatΠ-is-embedding A B ζ fe fe' i g = equiv-to-subsingleton
+NatΠ-is-embedding A B ζ fe fe' i g = equiv-to-prop
                                       (≃-sym (NatΠ-fiber-equiv A B ζ fe g))
                                       (Π-is-prop fe' (λ x → i x (g x)))
 

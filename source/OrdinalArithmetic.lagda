@@ -31,12 +31,12 @@ open import SquashedSum fe
 Ord  = Ordinal  𝓤₀
 Ordᵀ = Ordinalᵀ 𝓤₀
 
-subsingleton-ordinal : (P : 𝓤₀ ̇) → is-prop P → Ord
-subsingleton-ordinal P i = P , subsingleton.order P i , subsingleton.well-order P i
+prop-ordinal : (P : 𝓤₀ ̇) → is-prop P → Ord
+prop-ordinal P i = P , prop.order P i , prop.well-order P i
 
 𝟘ₒ 𝟙ₒ ℕₒ ℕ∞ₒ : Ord
-𝟘ₒ = subsingleton-ordinal 𝟘 𝟘-is-prop
-𝟙ₒ = subsingleton-ordinal 𝟙 𝟙-is-prop
+𝟘ₒ = prop-ordinal 𝟘 𝟘-is-prop
+𝟙ₒ = prop-ordinal 𝟙 𝟙-is-prop
 ℕₒ = (ℕ , _≺[ℕ]_ , ℕ-ordinal)
 ℕ∞ₒ = (ℕ∞ , _≺[ℕ∞]_ , ℕ∞-ordinal fe₀)
 
@@ -79,10 +79,10 @@ succₒ α = α +ₒ 𝟙ₒ  ,
           plus.top-preservation
            (underlying-order α)
            (underlying-order 𝟙ₒ)
-           (subsingleton.topped 𝟙 𝟙-is-prop *)
+           (prop.topped 𝟙 𝟙-is-prop *)
 
 𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
-𝟙ᵒ = 𝟙ₒ , subsingleton.topped 𝟙 𝟙-is-prop *
+𝟙ᵒ = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop *
 𝟚ᵒ = succₒ 𝟙ₒ
 ℕ∞ᵒ = (ℕ∞ₒ , ∞ , ∞-top)
 

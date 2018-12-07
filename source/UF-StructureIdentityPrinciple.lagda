@@ -31,6 +31,7 @@ open import UF-Base
 open import UF-Equiv
 open import UF-Univalence
 open import UF-Yoneda
+open import UF-EquivalenceExamples
 
 module UF-StructureIdentityPrinciple where
 
@@ -222,6 +223,15 @@ module gsip
 
   ≡-is-≃ₛ : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ B)
   ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
+
+  _≃ₛ'_ : Σ S → Σ S → 𝓤 ⊔ 𝓥 ̇
+  A ≃ₛ' B = Σ \(p : ⟨ A ⟩ ≃ ⟨ B ⟩) → S-equiv A B (pr₁ p , pr₂ p)
+
+  ≃ₛ-is-≃ₛ' : (A B : Σ S) → (A ≃ₛ B) ≃ (A ≃ₛ' B)
+  ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
+
+  ≡-is-≃ₛ' : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ' B)
+  ≡-is-≃ₛ' A B = ≃-trans (≡-is-≃ₛ A B) (≃ₛ-is-≃ₛ' A B)
 
 \end{code}
 

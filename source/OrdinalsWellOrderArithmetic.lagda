@@ -22,7 +22,7 @@ Any proposition is an ordinal under the empty ordering.
 
 \begin{code}
 
-module subsingleton
+module prop
         {𝓤 𝓥}
         (P : 𝓤 ̇)
         (isp : is-prop P)
@@ -155,7 +155,7 @@ module successor
 
   private
    _≺_ : 𝟙 → 𝟙 → 𝓥 ̇
-   _≺_ = subsingleton.order {𝓤} 𝟙 𝟙-is-prop
+   _≺_ = prop.order {𝓤} 𝟙 𝟙-is-prop
 
    _<'_ : X + 𝟙 → X + 𝟙 → 𝓥 ̇
    _<'_ = plus.order _<_ _≺_
@@ -163,7 +163,7 @@ module successor
   order = _<'_
 
   well-order : is-well-order _<_ → is-well-order _<'_
-  well-order o = plus.well-order _<_ _≺_ o (subsingleton.well-order 𝟙 𝟙-is-prop)
+  well-order o = plus.well-order _<_ _≺_ o (prop.well-order 𝟙 𝟙-is-prop)
 
   top : has-top _<'_
   top = inr * , g
@@ -292,7 +292,7 @@ module times
 
 \end{code}
 
-Added 27 June 2018. A product of ordinals indexed by a subsingleton is
+Added 27 June 2018. A product of ordinals indexed by a prop is
 an ordinal. Here "is" is used to indicate a construction, not a
 proposition. We begin with a general lemma (and a corollary, which is
 not used for our purposes).
@@ -382,9 +382,9 @@ the components:
 
 \end{code}
 
-That it is subsingleton-valued depends only on the fact that the given
+That it is prop-valued depends only on the fact that the given
 order _<_ {p} on the components of the product are
-subsingleton-valued.
+prop-valued.
 
 \begin{code}
 

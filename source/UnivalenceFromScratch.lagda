@@ -140,9 +140,9 @@ linguistic device, which is (deliberately) not reflected in the
 formalism.
 
 We remark that in univalent mathematics the terminology
-*proposition* is reserved for subsingleton types (types whose
+*proposition* is reserved for prop types (types whose
 elements are all identified). The propositions that arise in the
-construction of the univalence type are all subsingletons.
+construction of the univalence type are all props.
 
 * The identity type
   -----------------
@@ -177,7 +177,7 @@ construction of the univalence type.
 
 Then, in summary, the identity type is given by the data Id,refl,J.
 With this, the exact nature of the type Id(x,y) is fairly
-under-specified. It is consistent that it is always a subsingleton in
+under-specified. It is consistent that it is always a prop in
 the sense that K(X) holds, where
 
    K(X) := Π(x,y:X), Π(p,q:Id(x,y)), Id(p,q).
@@ -352,14 +352,14 @@ the inhabitedness of the type is-univalent(𝓤) is undecided.
 
      Π(u,v: is-univalent(𝓤)), Id(u,v).
 
-    This says that univalence is a subsingleton type (any two of its
+    This says that univalence is a prop type (any two of its
     elements are identified). In the first step we use u (or v) to get
     function extensionality (any two pointwise identified functions
     are identified), which is *not* provable in MLTT, but is provable
     from the assumption that 𝓤 is univalent. Then, using this, one
-    shows that being an equivalence is a subsingleton type. Finally,
+    shows that being an equivalence is a prop type. Finally,
     again using function extensionality, we get that a product of
-    subsingletons is a subsingleton. But then Id(u,v) holds, which is
+    props is a prop. But then Id(u,v) holds, which is
     what we wanted to show. But this of course omits the proof that
     univalence implies function extensionality (originally due to
     Voevodsky), which is fairly elaborate.
@@ -370,7 +370,7 @@ the inhabitedness of the type is-univalent(𝓤) is undecided.
 
     We have functions r:Iso(f)→is-equiv(f) and
     s:is-equiv(f)→Iso(f). However, the type is-equiv(f) is always a
-    subsingleton, assuming function extensionality, whereas the type
+    prop, assuming function extensionality, whereas the type
     Iso(f) need not be. What we do have is that the function r is a
     retraction with section s.
 
@@ -380,12 +380,12 @@ the inhabitedness of the type is-univalent(𝓤) is undecided.
     as shown by Shulman. With only one universe, the formulation with
     Iso(f) is consistent, as shown by Hofmann and Streicher's groupoid
     model, but in this case all elements of the universe are sets and
-    Iso(f) is a subsingleton, and hence equivalent to is-equiv(f).
+    Iso(f) is a prop, and hence equivalent to is-equiv(f).
 
 
     So, to have a consistent axiom in general, it is crucial to use
     the type is-equiv(f). It was Voevodsky's insight that not only a
-    subsingleton version of Iso(f) is needed, but also how to
+    prop version of Iso(f) is needed, but also how to
     construct it. The construction of is-equiv(f) is very simple and
     elegant, and motivated by homotopical models of the theory, where
     it corresponds to the concept with the same name. But the

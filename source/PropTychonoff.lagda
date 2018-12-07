@@ -179,7 +179,7 @@ prop-tychonoff {𝓤} {𝓥} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witnes
 \end{code}
 
 And we are done. (9 Sep 2015: We can generalize from X being a
-subsingleton (a proposition) to X being subfinite (embedded into a
+prop (a proposition) to X being subfinite (embedded into a
 finite type).)
 
 A particular case is the following:

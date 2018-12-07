@@ -103,7 +103,7 @@ compact = Σ-compact
 \end{code}
 
 Notice that compactness in this sense is not in general a univalent
-proposition (subsingleton). Weaker notions, ∃-compactness and
+proposition (prop). Weaker notions, ∃-compactness and
 Π-compactness, that are always propositions are defined and studied in
 the module WeaklyCompactTypes.
 
@@ -147,7 +147,7 @@ compact∙-gives-pointed ε = pr₁(ε(λ x → ₀))
 \end{code}
 
 There are examples where pointedness is crucial. For instance, the
-product of a family of compact-pointed typed indexed by a subsingleton
+product of a family of compact-pointed typed indexed by a prop
 is always compact (pointed), but the assumption that this holds
 without the assumption of pointedness implies weak excluded middle
 (the negation of any proposition is decidable).

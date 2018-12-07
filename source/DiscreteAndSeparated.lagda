@@ -302,8 +302,8 @@ equivalences-preserve-isolatedness : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) �
                                    → (x : X) → is-isolated x → is-isolated (f x)
 equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qinvs f e)
 
-is-isolated-added-point : {X : 𝓤 ̇} → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr *)
-is-isolated-added-point {𝓤} {𝓥} {X} = h
+new-point-is-isolated : {X : 𝓤 ̇} → is-isolated {𝓤 ⊔ 𝓥} {X + 𝟙 {𝓥}} (inr *)
+new-point-is-isolated {𝓤} {𝓥} {X} = h
  where
   h :  (y : X + 𝟙) → decidable (inr * ≡ y)
   h (inl x) = inr (λ ())

@@ -13,7 +13,7 @@ On 22/07/18 06:17, Michael Shulman wrote:
 > P such that ~~P is true.  Then False \notin A, so given any Q \in A,
 > we cannot have any P \in A with P < Q.  Thus the hypothesis of
 > extensionality for A is vacuous, so to say that A is extensional is
-> to say that it is a subsingleton.  But True \in A, so this is to say
+> to say that it is a prop.  But True \in A, so this is to say
 > that ~~P -> (P = True), i.e. DNE holds, hence LEM.
 >
 > On Fri, Jul 20, 2018 at 3:42 PM, Martin Escardo <m.escardo@cs.bham.ac.uk> wrote:
@@ -24,9 +24,9 @@ On 22/07/18 06:17, Michael Shulman wrote:
 >> No. But here is an idea that made me to give up trying to prove
 >> extensionality of the lexicographic order on Sigma.
 >>
->> Any subsingleton is an ordinal in a unique way (with the empty order).
+>> Any prop is an ordinal in a unique way (with the empty order).
 >>
->> Now suppose that X is an ordinal, and consider P:X->U subsingleton
+>> Now suppose that X is an ordinal, and consider P:X->U prop
 >> valued.  Then the lexicographic order on the sum Sigma(x:X),P(x) is
 >> nothing but a subset of X. While classically the subset will remain
 >> extensional (for if we have x and y not equal, then either x<y or

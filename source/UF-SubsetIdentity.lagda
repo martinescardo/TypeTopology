@@ -34,7 +34,7 @@ fe' : funext 𝓤 (𝓤 ⁺)
 fe' = funext-from-univalence' 𝓤 (𝓤 ⁺) ua ua'
 
 pe : propext 𝓤
-pe = UA-gives-propext ua
+pe = propext-from-univalence ua
 
 powerset : 𝓤 ̇ → 𝓤 ⁺ ̇
 powerset X = X → Ω 𝓤

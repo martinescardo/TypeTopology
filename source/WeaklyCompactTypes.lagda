@@ -1121,7 +1121,7 @@ TODO.
 * Non-classical cotaboos Every Π-compact subtype of ℕ is finite. Every
   Π-compact subtype of a discrete type is finite. What are the
   cotaboos necessary (and sufficient) to prove that the type of
-  decidable subsingletons of ℕ∞→ℕ is Π-compact?  Continuity principles
+  decidable props of ℕ∞→ℕ is Π-compact?  Continuity principles
   are enough.
 
 * 𝟚-subspace: e:X→Y such that every clopen X→𝟚 extends to some clopen

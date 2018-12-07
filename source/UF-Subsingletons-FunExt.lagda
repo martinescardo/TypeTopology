@@ -1,5 +1,5 @@
 In univalent logic, as opposed to Curry-Howard logic, a proposition is
-a subsingleton or a type such that any two of its elements are
+a prop or a type such that any two of its elements are
 identified.
 
 https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
@@ -40,8 +40,8 @@ being-a-prop-is-a-prop {𝓤} {X} fe f g = c₁
   c₁  = dfunext fe c₀
 
 identifications-of-props-are-props : propext 𝓤 → funext 𝓤 𝓤
-                      → (P : 𝓤 ̇) → is-prop P
-                      → (X : 𝓤 ̇) → is-prop (X ≡ P)
+                                   → (P : 𝓤 ̇) → is-prop P
+                                   → (X : 𝓤 ̇) → is-prop (X ≡ P)
 identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X → g X ∘ f X , k X)
  where
   f : (X : 𝓤 ̇) → X ≡ P → is-prop X × (X ⇔ P)
@@ -55,13 +55,13 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
   k : (X : 𝓤 ̇) → constant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
-being-a-singleton-is-a-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-singleton X)
-being-a-singleton-is-a-prop {𝓤} {X} fe (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
+being-a-singleton-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop(is-singleton X)
+being-a-singleton-is-a-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
-  i : is-prop X
-  i = singletons-are-props (y , γ)
+  isp : is-prop X
+  isp = singletons-are-props (y , γ)
   iss : is-set X
-  iss = props-are-sets i
+  iss = props-are-sets isp
 
 Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
          → ((x : X) → is-set(A x)) → is-set(Π A)
@@ -82,8 +82,8 @@ parameters.
 
 \begin{code}
 
-being-set-is-a-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop (is-set X)
-being-set-is-a-prop {𝓤} {X} fe = h
+being-set-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop (is-set X)
+being-set-is-a-prop {𝓤} fe {X} = h
  where
   is-set' : 𝓤 ̇ → 𝓤 ̇
   is-set' X = (x y : X) → is-prop(x ≡ y)
@@ -106,7 +106,7 @@ being-set-is-a-prop {𝓤} {X} fe = h
 
 \begin{code}
 
-decidable-types-are-props : {P : 𝓤 ̇} → funext 𝓤 𝓤₀ → is-prop P → is-prop(P + ¬ P)
+decidable-types-are-props : funext 𝓤 𝓤₀ → {P : 𝓤 ̇} → is-prop P → is-prop(P + ¬ P)
 decidable-types-are-props fe₀ i = sum-of-contradictory-props
                                       i
                                       (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
@@ -144,8 +144,8 @@ PropExt {𝓤} fe pe {p} {q} f g =
   pc : {p q : Ω 𝓤} → Σ \(f : p ≡ q → p ≡ q) → constant f
   pc {p} {q} = (f p q , constant-f p q)
 
-powersets-are-sets : {A : 𝓤 ̇} → funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
-                   → is-set (A → Ω 𝓥)
+powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
+                   → {A : 𝓤 ̇} → is-set (A → Ω 𝓥)
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 
 negations-are-props : {X : 𝓤 ̇} → funext 𝓤 𝓤₀ → is-prop(¬ X)
@@ -154,14 +154,7 @@ negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
 not fe (P , i) = (¬ P , negations-are-props fe)
 
-\end{code}
-
-For the moment we work with 𝓤₀ here because 𝟙 and ⊤ live in U₀:
-
-\begin{code}
-
-equal-⊤-is-true : (P : 𝓤 ̇) (i : is-prop P)
-                → (P , i) ≡ ⊤ → P
+equal-⊤-is-true : (P : 𝓤 ̇) (i : is-prop P) → (P , i) ≡ ⊤ → P
 equal-⊤-is-true P hp r = f *
  where
   s : 𝟙 ≡ P

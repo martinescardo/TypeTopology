@@ -22,8 +22,8 @@ module PlusOneLC (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
 _∖_ : (X : 𝓤 ̇) (a : X) → 𝓤 ̇
 X ∖ a = Σ \(x : X) → x ≢ a
 
-add-and-remove-same-point : {X : 𝓤 ̇} →  X ≃ (X + 𝟙) ∖ (inr *)
-add-and-remove-same-point {𝓤} {X} = qinveq f (g , ε , η)
+add-and-remove-point : {X : 𝓤 ̇} →  X ≃ (X + 𝟙) ∖ (inr *)
+add-and-remove-point {𝓤} {X} = qinveq f (g , ε , η)
  where
   f : X → (X + 𝟙 {𝓤}) ∖ inr *
   f x = (inl x , λ ())
@@ -48,7 +48,7 @@ remove-points {𝓤} {𝓥} {X} {Y} f (g , ε , η) a = qinveq f' (g' , ε' , η
   η' : f' ∘ g' ∼ id
   η' (y , _) = to-Σ-≡ (η y , negations-are-props (fe 𝓥 𝓤₀) _ _)
 
-add-one-and-remove-isolated-point : ∀ {𝓥} {Y : 𝓥 ̇} (z : Y + 𝟙) → is-isolated z → ((Y + 𝟙) ∖ z) ≃ Y
+add-one-and-remove-isolated-point : {Y : 𝓥 ̇} (z : Y + 𝟙) → is-isolated z → ((Y + 𝟙) ∖ z) ≃ Y
 add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
  where
   f : (Y + 𝟙) ∖ (inl b) → Y
@@ -87,15 +87,15 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
     ψ : (u : inl b ≢ inl y) → i (inl y) ≡ inr u → f (g' y (i (inl y))) ≡ y
     ψ _ = ap ((λ d → f (g' y d)))
 
-add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-same-point
+add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-point
 
 +𝟙-cancellable : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
 +𝟙-cancellable {𝓤} {𝓥} {X} {Y} (φ , e) =
-   X                  ≃⟨ add-and-remove-same-point ⟩
+   X                  ≃⟨ add-and-remove-point ⟩
   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *) ⟩
   (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
                               (φ (inr *))
-                              (equivalences-preserve-isolatedness φ e (inr *) is-isolated-added-point) ⟩
+                              (equivalences-preserve-isolatedness φ e (inr *) new-point-is-isolated) ⟩
    Y ■
 
 \end{code}
