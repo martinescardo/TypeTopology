@@ -19,6 +19,10 @@ one because it is more symmetrical.
 is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = has-section f × has-retraction f
 
+inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+        → is-equiv f → (Y → X)
+inverse f = pr₁ ∘ pr₁
+
 equivs-have-sections : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                      → is-equiv f → has-section f
 equivs-have-sections f = pr₁

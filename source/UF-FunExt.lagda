@@ -52,6 +52,14 @@ happly-lc : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (fe : funext 𝓤 𝓥) (f g : Π 
          → left-cancellable(happly' f g)
 happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
 
+ap-funext : {X : 𝓥 ̇} {Y : 𝓦 ̇} (f g : X → Y) {A : 𝓦' ̇} (k : Y → A) (h : f ∼ g)
+          → (fe : funext 𝓥 𝓦) (x : X) → ap (λ (- : X → Y) → k (- x)) (dfunext fe h) ≡ ap k (h x)
+ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ≡⟨ refl ⟩
+                         ap (k ∘ (λ - → - x)) (dfunext fe h)  ≡⟨ (ap-ap (λ - → - x) k (dfunext fe h))⁻¹ ⟩
+                         ap k (ap (λ - → - x) (dfunext fe h)) ≡⟨ refl ⟩
+                         ap k (happly (dfunext fe h) x)       ≡⟨ ap (λ - → ap k (- x)) (happly-funext fe f g h) ⟩
+                         ap k (h x) ∎
+
 \end{code}
 
 The following is taken from this thread:
@@ -64,21 +72,21 @@ transport-funext : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (P : (x : X) → A x → �
                    (φ : (x : X) → P x (f x))
                    (h : f ∼ g)
                    (x : X)
-                 → (transport (λ - → (x : X) → P x (- x)) (dfunext fe h) φ) x
-                 ≡  transport (P x) (h x) (φ x)
+                 → transport (λ - → (x : X) → P x (- x)) (dfunext fe h) φ x
+                 ≡ transport (P x) (h x) (φ x)
 transport-funext A P fe f g φ h x = q ∙ r
  where
   l : (f g : Π A) (φ : ∀ x → P x (f x)) (p : f ≡ g)
-        → ∀ x → (transport (λ - → ∀ x → P x (- x)) p φ) x
-               ≡ transport (P x) (happly p x) (φ x)
+        → ∀ x → transport (λ - → ∀ x → P x (- x)) p φ x
+              ≡ transport (P x) (happly p x) (φ x)
   l f .f φ refl x = refl
 
-  q : (transport (λ - → ∀ x → P x (- x)) (dfunext fe h) φ) x
+  q : transport (λ - → ∀ x → P x (- x)) (dfunext fe h) φ x
     ≡ transport (P x) (happly (dfunext fe h) x) (φ x)
   q = l f g φ (dfunext fe h) x
 
-  r :  transport (P x) (happly (dfunext fe h) x) (φ x)
-     ≡ transport (P x) (h x) (φ x)
+  r : transport (P x) (happly (dfunext fe h) x) (φ x)
+    ≡ transport (P x) (h x) (φ x)
   r = ap (λ - → transport (P x) (- x) (φ x)) (happly-funext fe f g h)
 
 \end{code}

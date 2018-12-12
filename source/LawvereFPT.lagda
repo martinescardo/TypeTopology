@@ -45,7 +45,7 @@ that r has a pointwise section).
 \begin{code}
 
  has-section· : {A : 𝓤 ̇} {X : 𝓥 ̇} → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
- has-section· r = Σ \(s : cod r → dom r) → ∀ g a → r (s g) a ≡ g a
+ has-section· r = Σ \(s : codomain r → domain r) → ∀ g a → r (s g) a ≡ g a
 
  section-gives-section· : {A : 𝓤 ̇} {X : 𝓥 ̇} (r : A → (A → X))
                         → has-section r → has-section· r

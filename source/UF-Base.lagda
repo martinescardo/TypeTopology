@@ -6,6 +6,9 @@ module UF-Base where
 
 open import SpartanMLTT
 
+ap-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} (y : Y) {x x' : X} (p : x ≡ x') → ap (λ _ → y) p ≡ refl
+ap-const y refl = refl
+
 transport₂ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → Y → 𝓦 ̇)
              {x x' : X} {y y' : Y}
           → x ≡ x' → y ≡ y' → A x y → A x' y'
@@ -75,9 +78,9 @@ nat-transport : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇}
               → f y (transport A p a) ≡ transport B p (f x a)
 nat-transport f refl = refl
 
-transport-prop : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (P : {x : X} → Y x → 𝓦 ̇)
+transport-fam : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (P : {x : X} → Y x → 𝓦 ̇)
                (x : X) (y : Y x) → P y → (x' : X) (r : x ≡ x') → P(transport Y r y)
-transport-prop P x y p .x refl = p
+transport-fam P x y p .x refl = p
 
 transport-rel : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇)
               → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)

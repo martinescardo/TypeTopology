@@ -621,13 +621,13 @@ module sum-top
              (λ (m : u < x)
                 → m)
              (λ (σ : Σ \(r : u ≡ x) → transport Y r (top u) ≺ y)
-                → 𝟘-elim (transport-prop (is-top _≺_) u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
+                → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g (u , top u) (inl l))
              (λ (m : u < a)
                 → m)
              (λ (σ : Σ \(r : u ≡ a) → transport Y r (top u) ≺ b)
-                → 𝟘-elim (transport-prop (is-top _≺_) u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
+                → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
    p : a ≡ x
    p =  e a x f' g'
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y

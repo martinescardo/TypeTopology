@@ -236,7 +236,9 @@ This motivates the following definition.
 \begin{code}
 
 has-adj : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (Y → X) → 𝓤 ⊔ 𝓥 ̇
-has-adj g = Σ \(f : cod g → dom g) → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x) → ∀ x y → has-section(η x y)
+has-adj g = Σ \(f : codomain g → domain g)
+                  → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x)
+                          → ∀ x y → has-section(η x y)
 
 is-vv-equiv-has-adj : {X : 𝓤 ̇} {Y : 𝓥 ̇} (g : Y → X)
                     → is-vv-equiv g → has-adj g

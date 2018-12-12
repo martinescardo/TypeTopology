@@ -129,7 +129,7 @@ _↗_ : {X A : 𝓤₀ ̇} → (X → Ordᵀ) → (Σ \(j : X → A) → is-embe
                      Extension.well-order a (λ x → tis-well-ordered (τ x))) ,
                     Extension.top-preservation a (λ x → topped (τ x))
  where
-  Y : dom τ → 𝓤₀ ̇
+  Y : domain τ → 𝓤₀ ̇
   Y x = ⟪ τ x ⟫
   module Extension = extension fe Y j e (λ {x} → tunderlying-order (τ x))
 

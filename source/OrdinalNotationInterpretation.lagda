@@ -97,7 +97,7 @@ differ only in the interpretation of Sum1.
 Additionally, we kave a map ι from the Δ-ordinals to the Κ-ordinals,
 which is
 
-  * an embedding (has prop fibers),
+  * an embedding (has subsingleton fibers),
   * dense (the complement of its image is empty),
   * order preserving and reflecting.
 

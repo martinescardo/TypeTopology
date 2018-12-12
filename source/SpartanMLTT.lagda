@@ -308,13 +308,11 @@ type-of {𝓤} {X} x = X
 universe-of : (X : 𝓤 ̇) → Universe
 universe-of {𝓤} X = 𝓤
 
-domain dom : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ̇
+domain : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ̇
 domain {𝓤} {𝓥} {X} {Y} f = X
-dom = domain
 
-codomain cod : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓥 ̇
+codomain : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓥 ̇
 codomain {𝓤} {𝓥} {X} {Y} f = Y
-cod = codomain
 
 \end{code}
 

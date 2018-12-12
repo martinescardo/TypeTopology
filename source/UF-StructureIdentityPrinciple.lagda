@@ -653,3 +653,179 @@ even if they don't.
 Another example that should be accounted for by the methods developed
 here is identity of ordinals (in the module OrdinalOfOrdinals), which
 is what prompted us to think about the subject of this module.
+
+Added 8th December 2018. I came across a situation where the universe
+levels don't work if the axioms apply only to the underlying set (and
+not to the structure). Here is a version that addresses that:
+
+\begin{code}
+
+module gsip'
+
+  (𝓤 𝓥 𝓦 : Universe)
+
+  (ua : is-univalent 𝓤)
+
+  (S : 𝓤 ̇ → 𝓥 ̇)
+
+  (S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇)
+
+  (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
+
+  (S-id-structure : (X : 𝓤 ̇) (s t : S X)
+                  → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+
+  (S-transport : (A : Σ S)
+                 (s : S ⟨ A ⟩)
+                 (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+               → transport
+                    (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
+                    (S-id-structure ⟨ A ⟩ (structure A) s υ)
+                    (S-refl A)
+               ≡ υ)
+  where
+
+  _≃ₛ_ : Σ S → Σ S → 𝓤 ⊔ 𝓦 ̇
+  A ≃ₛ B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B (f , e)
+
+  ≃ₛ-refl : (A : Σ S) → A ≃ₛ A
+  ≃ₛ-refl A = pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , S-refl A
+
+  idtoeqₛ : (A B : Σ S) → A ≡ B → A ≃ₛ B
+  idtoeqₛ A .A refl = ≃ₛ-refl A
+
+  private
+    Ψ : (A : Σ S) (Y : 𝓤 ̇) → ⟨ A ⟩ ≃ Y → 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ̇
+    Ψ A Y e = (s : S Y) → S-equiv A (Y , s) e → A ≡ (Y , s)
+    ψ : (A : Σ S) → Ψ A ⟨ A ⟩ (≃-refl ⟨ A ⟩)
+    ψ A s υ = to-Σ-≡' (S-id-structure ⟨ A ⟩ (structure A) s υ)
+
+  eqtoidₛ : (A B : Σ S) → A ≃ₛ B → A ≡ B
+  eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ (Ψ A) (ψ A) ⟨ B ⟩ (f , e) (structure B) υ
+
+  idtoeq-eqtoidₛ : (A B : Σ S) (ε : A ≃ₛ B) → idtoeqₛ A B (eqtoidₛ A B ε) ≡ ε
+  idtoeq-eqtoidₛ A B (f , e , υ) = JEq ua ⟨ A ⟩ Φ φ ⟨ B ⟩ (f , e) (structure B) υ
+   where
+    Φ : (Y : 𝓤 ̇) → ⟨ A ⟩ ≃ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+    Φ Y (f , e) = (s : S Y)
+                  (υ : S-equiv A (Y , s) (f , e))
+                 → idtoeqₛ A (Y , s) (eqtoidₛ A (Y , s) (f , e , υ)) ≡ f , e , υ
+    φ : Φ ⟨ A ⟩ (≃-refl ⟨ A ⟩)
+    φ s υ =
+      idtoeqₛ A A' (eqtoidₛ A A' refl')
+            ≡⟨ ap (λ h → idtoeqₛ A A' (h s υ)) (JEq-comp ua ⟨ A ⟩ (Ψ A) (ψ A)) ⟩
+      idtoeqₛ A A' (to-Σ-≡' p)
+            ≡⟨ h p ⟩
+      pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
+            ≡⟨ to-Σ-≡' (to-Σ-≡' (S-transport A s υ)) ⟩
+      refl' ∎
+     where
+      A' : Σ S
+      A' = ⟨ A ⟩ , s
+      refl' : A ≃ₛ A'
+      refl' = pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , υ
+      g : structure A ≡ s → S-equiv A A' (≃-refl ⟨ A ⟩)
+      g p = transport (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩)) p (S-refl A)
+      h : (p : structure A ≡ s) → idtoeqₛ A A' (to-Σ-≡' p)
+                                ≡ pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , g p
+      h refl = refl
+      p : structure A ≡ s
+      p = S-id-structure ⟨ A ⟩ (structure A) s υ
+
+  uaₛ : (A B : Σ S) → is-equiv (idtoeqₛ A B)
+  uaₛ A = nats-with-sections-are-equivs A
+            (idtoeqₛ A)
+            (λ B → eqtoidₛ A B , idtoeq-eqtoidₛ A B)
+
+  eqtoid-idtoeqₛ : (A B : Σ S) (p : A ≡ B) → eqtoidₛ A B (idtoeqₛ A B p) ≡ p
+  eqtoid-idtoeqₛ A B = pr₁(pr₂ (equivs-are-qinvs (idtoeqₛ A B) (uaₛ A B)))
+
+  ≡-is-≃ₛ : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ B)
+  ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
+
+  _≃ₛ'_ : Σ S → Σ S → 𝓤 ⊔ 𝓦 ̇
+  A ≃ₛ' B = Σ \(p : ⟨ A ⟩ ≃ ⟨ B ⟩) → S-equiv A B (pr₁ p , pr₂ p)
+
+  ≃ₛ-is-≃ₛ' : (A B : Σ S) → (A ≃ₛ B) ≃ (A ≃ₛ' B)
+  ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
+
+  ≡-is-≃ₛ' : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ' B)
+  ≡-is-≃ₛ' A B = ≃-trans (≡-is-≃ₛ A B) (≃ₛ-is-≃ₛ' A B)
+
+module gsip-with-axioms'
+
+ (𝓤 𝓥 𝓦 𝓣 : Universe)
+
+ (ua : is-univalent 𝓤)
+
+ (S : 𝓤 ̇ → 𝓥 ̇)
+
+ (Axioms : (X : 𝓤 ̇) → S X → 𝓣 ̇)
+
+ (Axioms-is-prop : (X : 𝓤 ̇) (s : S X) → is-prop (Axioms X s))
+
+ (S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇)
+
+ (S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩))
+
+ (S-id-structure : (X : 𝓤 ̇) (s t : S X)
+                 → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t)
+
+ (S-transport : (A : Σ S)
+                (s : S ⟨ A ⟩)
+                (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+              → transport
+                   (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
+                   (S-id-structure ⟨ A ⟩ (structure A) s υ)
+                   (S-refl A)
+              ≡ υ)
+ where
+
+   S' : 𝓤 ̇ → 𝓥 ⊔ 𝓣 ̇
+   S' X = Σ \(s : S X) → Axioms X s
+
+   S'-preserving : (A' B' : Σ S') → ⟨ A' ⟩ ≃ ⟨ B' ⟩ → 𝓦 ̇
+   S'-preserving (X , s , α) (Y , t , β) = S-equiv (X , s) (Y , t)
+
+   S'-refl : (A' : Σ S') → S'-preserving A' A' (≃-refl ⟨ A' ⟩)
+   S'-refl (X , s , α) = S-refl (X , s)
+
+   S'-id-structure : (X : 𝓤 ̇) (s' t' : S' X)
+                   → S'-preserving (X , s') (X , t') (≃-refl X) → s' ≡ t'
+   S'-id-structure X (s , α) (t , β) υ' = to-Σ-≡ (S-id-structure X s t υ' ,
+                                                   Axioms-is-prop X t _ _)
+
+   S'-transport : (A' : Σ S')
+                  (s' : S' ⟨ A' ⟩)
+                  (υ' : S'-preserving A' (⟨ A' ⟩ , s') (≃-refl ⟨ A' ⟩))
+                → transport
+                     (λ - → S'-preserving A' (⟨ A' ⟩ , -) (≃-refl ⟨ A' ⟩))
+                     (S'-id-structure ⟨ A' ⟩ (structure A') s' υ')
+                     (S'-refl A')
+                ≡ υ'
+   S'-transport (X , s , α) (t , β) υ' =
+    f (S'-id-structure X (s , α) (t , β) υ')
+        ≡⟨ transport-ap F pr₁ (S'-id-structure X (s , α) (t , β) υ') ⟩
+    g (ap pr₁ (S'-id-structure X (s , α) (t , β) υ'))
+        ≡⟨ ap g r ⟩
+    g (S-id-structure X s t υ')
+        ≡⟨ S-transport (X , s) t υ' ⟩
+    υ'  ∎
+    where
+     F : S X → 𝓦 ̇
+     F t = S-equiv (X , s) (X  , t) (≃-refl X)
+     f : (s , α) ≡ (t , β) → F t
+     f q = transport (F ∘ pr₁) q (S-refl (X , s))
+     g : s ≡ t → F t
+     g p = transport F p (S-refl (X , s))
+     r : ap pr₁ (S'-id-structure X (s , α) (t , β) υ') ≡ S-id-structure X s t υ'
+     r = ap-pr₁-to-Σ-≡ _
+
+   open gsip' 𝓤 (𝓥 ⊔ 𝓣) 𝓦 ua S' S'-preserving S'-refl S'-id-structure S'-transport public
+
+\end{code}
+
+TODO. Maybe replace the original versions by this last version. This
+requires changing the existing code that uses the original, less
+general, version. Or redefining the original version as an instance of
+the new version.

@@ -547,13 +547,11 @@ NatΠ-equiv A B ζ fe fe' i = vv-equivs-are-equivs
 singleton-≃ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-singleton X → is-singleton Y → X ≃ Y
 singleton-≃ {𝓤} {𝓥} (c , φ) (d , γ) = (λ _ → d) , ((λ _ → c) , γ) , ((λ _ → c) , φ)
 
-{- TODO: probably remove this.
 singleton-𝟙 : {X : 𝓤 ̇} → is-singleton X → X ≃ 𝟙 {𝓥}
 singleton-𝟙 i = singleton-≃ i 𝟙-is-singleton
 
 singleton-𝟙' : {X : 𝓤 ̇} → is-singleton X → 𝟙 {𝓥} ≃ X
 singleton-𝟙' = singleton-≃ 𝟙-is-singleton
--}
 
 𝟙-≡-≃ : (P : 𝓤 ̇) → funext 𝓤 𝓤 → propext 𝓤
       → is-prop P → (𝟙 ≡ P) ≃ P
