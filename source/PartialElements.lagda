@@ -559,10 +559,11 @@ Using this we have the following, as promised:
     fe : funext 𝓣 𝓣
     fe = funext-from-univalence ua
     s : (is-defined l → is-defined m → is-defined l) ≃ 𝟙 {𝓤}
-    s = singleton-𝟙 ((λ d e → d) ,
-                     (λ h → dfunext fe
-                              (λ d → dfunext fe
-                                      (λ e → being-defined-is-a-prop l d (h d e)))))
+    s = singleton-≃-𝟙 ((λ d e → d) ,
+                       Π-is-prop fe
+                         (λ d → Π-is-prop fe
+                                  (λ e → being-defined-is-a-prop l)) (λ d e → d))
+
     a = ⊑-open fe fe₀ fe₂ l m
     b =  ≃-sym 𝟙-rneutral
     c = ×-cong (≃-refl _) (≃-sym s)
