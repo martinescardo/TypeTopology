@@ -554,7 +554,7 @@ Using this we have the following, as promised:
    ((is-defined l → l ⊑ m) × 𝟙)                                          ≃⟨ c ⟩
    (is-defined l → l ⊑ m) × (is-defined l → is-defined m → is-defined l) ≃⟨ d ⟩
    (is-defined l → (l ⊑ m) × (is-defined m → is-defined l))              ≃⟨ e ⟩
-   (is-defined l → l ≡ m) ■
+   (is-defined l → l ≡ m)                                                ■
    where
     fe : funext 𝓣 𝓣
     fe = funext-from-univalence ua
@@ -568,6 +568,13 @@ Using this we have the following, as promised:
     c = ×-cong (≃-refl _) (≃-sym s)
     d = ≃-sym ΠΣ-distr-≃
     e = →-cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
+
+  ⊑-lift : is-univalent 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤) → funext 𝓣 (𝓣 ⊔ 𝓤)
+         → (l m : 𝓛 X) → l ⊑ m → 𝓛 (l ≡ m)
+  ⊑-lift ua fe₀ fe₁ fe₂ l m α = is-defined l ,
+                                eqtofun (⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m) α ,
+                                being-defined-is-a-prop l
+
 
 \end{code}
 
