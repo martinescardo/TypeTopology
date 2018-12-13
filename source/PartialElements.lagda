@@ -1,9 +1,10 @@
+
 Martin Escardo 25th October 2018.
 
 The type of partial elements of a type (or lifting).
 (Cf. my former student Cory Knapp's PhD thesis).
 
-Under construction.
+Under development.
 
 \begin{code}
 
@@ -136,14 +137,14 @@ itself.
 
  κ-is-equiv : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
             → {X : 𝓤 ̇} → is-equiv (κ {𝓤} {X})
- κ-is-equiv {𝓤} pe fe fe' {X} = qinvs-are-equivs κ (ν , (νκ , κν))
+ κ-is-equiv {𝓤} pe fe fe' {X} = qinvs-are-equivs κ (ρ , (ρκ , κρ))
   where
-   ν : {X : 𝓤 ̇} → 𝓚 X → X
-   ν (P , φ , i) = φ (singleton-types-are-pointed i)
-   νκ : {X : 𝓤 ̇} (x : X) → ν (κ x) ≡ x
-   νκ x = refl
-   κν : (m : 𝓚 X) → κ (ν m) ≡ m
-   κν (P , φ , i) = u
+   ρ : {X : 𝓤 ̇} → 𝓚 X → X
+   ρ (P , φ , i) = φ (singleton-types-are-pointed i)
+   ρκ : {X : 𝓤 ̇} (x : X) → ρ (κ x) ≡ x
+   ρκ x = refl
+   κρ : (m : 𝓚 X) → κ (ρ m) ≡ m
+   κρ (P , φ , i) = u
     where
      t : 𝟙 ≡ P
      t = pe 𝟙-is-prop (singletons-are-props i) (λ _ → singleton-types-are-pointed i) unique-to-𝟙
@@ -235,7 +236,7 @@ pointwise equality, and hence we also consider:
   l ⋍· m = Σ \(e : is-defined l ≃ is-defined m) → value l ∼ value m ∘ eqtofun e
 
   𝓛-Id· : is-univalent 𝓣 → funext 𝓣 𝓤
-              → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍· m)
+        → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍· m)
   𝓛-Id· ua fe l m = ≃-trans (𝓛-Id ua l m)
                             (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ eqtofun e)))
 
@@ -275,14 +276,15 @@ The associativity law in this precategory is that of function
 composition in the first component (where it hence holds
 definitionally) and that of path composition in the first
 component. (Hence this precategory should qualify as an ∞-category,
-with all coherence laws satisfied automatically.)
+with all coherence laws satisfied automatically, except that there is
+at present no definition of ∞-category in univalent type theory.)
 
 \begin{code}
 
   𝓛-comp-assoc : funext 𝓣 𝓤 → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
                →  𝓛-comp l n o (𝓛-comp l m n α β) γ ≡ 𝓛-comp l m o α (𝓛-comp m n o β γ)
   𝓛-comp-assoc fe (f , δ) (g , ε) (h , ζ) =
-    to-Σ-≡ (refl , dfunext fe (λ p → assoc (δ p) (ε (f p)) (ζ (g (f p)))))
+     to-Σ-≡ (refl , dfunext fe (λ p → assoc (δ p) (ε (f p)) (ζ (g (f p)))))
 
 \end{code}
 
@@ -302,7 +304,6 @@ If X is a set, _⊑_ is a partial order:
 
 TODO. This order is directed complete (easy). We should also do least
 fixed points of continuous maps.
-
 
 Next we show that for any l : 𝓛 X,
 
@@ -327,22 +328,17 @@ embedding.
       ≡ (transport (λ - → - → X) a ψ , transport is-prop a j)
     c = transport-× (λ - → - → X) is-prop a
     d : pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ≡ φ
-    d = pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j))
-              ≡⟨ ap pr₁ c ⟩
-        transport (λ - → - → X) a ψ
-              ≡⟨ transport-is-pre-comp a ψ ⟩
-        ψ ∘ Idtofun (a ⁻¹)
-              ≡⟨ ap (λ - → ψ ∘ -) b ⟩
-        ψ ∘ g
-              ≡⟨ dfunext fe' ε ⟩
+    d = pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ≡⟨ ap pr₁ c ⟩
+        transport (λ - → - → X) a ψ                           ≡⟨ transport-is-pre-comp a ψ ⟩
+        ψ ∘ Idtofun (a ⁻¹)                                    ≡⟨ ap (λ - → ψ ∘ -) b ⟩
+        ψ ∘ g                                                 ≡⟨ dfunext fe' ε ⟩
         φ     ∎
     e : Q , ψ , j ≡ P , φ , i
     e = to-Σ-≡ (a , to-×-≡ d (being-a-prop-is-a-prop fe _ i))
 
   ⊑-anti : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
          → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
-  ⊑-anti pe fe fe' ((f , δ) , (g , ε)) =
-    ⊑-anti-lemma pe fe fe' (f , δ) g
+  ⊑-anti pe fe fe' ((f , δ) , (g , ε)) = ⊑-anti-lemma pe fe fe' (f , δ) g
 
 \end{code}
 
@@ -351,9 +347,9 @@ We can now establish the promised fact:
 \begin{code}
 
   η-fiber-same-as-is-defined :
-      propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-    → (l : 𝓛 X) → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
-  η-fiber-same-as-is-defined pe fe fe' fe'' l = f l , ((g l , fg) , (g l , gf))
+      propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤) → (l : 𝓛 X)
+    → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
+  η-fiber-same-as-is-defined pe fe fe' fe'' l = qinveq (f l) (g l , gf , fg)
    where
     f : (l : 𝓛 X) → fiber η l → is-defined l
     f (.𝟙 , .(λ _ → x) , .𝟙-is-prop) (x , refl) = *
@@ -391,6 +387,7 @@ For no choice of universes 𝓤 and 𝓣 can we have 𝓣 ' ⊔ 𝓤 to coincide
 with 𝓣. However, for some dominances other than is-prop, it is possible to
 have the equality between the fiber of l and the definedness of l.
 
+
 The following simplified version of ⊑-anti uses the SIP.
 
 \begin{code}
@@ -407,12 +404,9 @@ The following simplified version of ⊑-anti uses the SIP.
 
 \end{code}
 
-Again, this proof doesn't use ε.
-
 Could the map (anti l m) be an equivalence? No. instead have an
 equivalence (l ⊑ m) × (m ⊑ l) → (l ≡ m) × (l ≡ m), reflecting the fact
-that there were two candidate proofs for the equality, as discussed
-above, as we now show.
+that there were two candidate proofs for the equality.
 
 \begin{code}
 
@@ -486,67 +480,94 @@ above, as we now show.
 Next we show that (l ⊑ m) ≃ (is-defined l → l ≡ m). So l ⊑ m is a
 partial element of the identity type l ≡ m.
 
+We begin with the following auxiliary construction, which shows that
+the type l ⊑ m is modal for the open modality induced by the
+proposition "is-defined l", and gave me a headache:
+
 \begin{code}
 
-  F : (l m : 𝓛 X) → (is-defined l → l ⊑ m) → l ⊑ m
-  F l m h = (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d)
+  ⊑-open : funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⊔ 𝓤)
+         → (l m : 𝓛 X) → (l ⊑ m) ≃ (is-defined l → l ⊑ m)
+  ⊑-open fe fe' fe'' (Q , ψ , j) (P , φ , i) = qinveq π (ρ , ρπ , πρ)
+   where
+    l = (Q , ψ , j)
+    m = (P , φ , i)
+    π : l ⊑ m → (is-defined l → l ⊑ m)
+    π α d = α
+    ρ : (is-defined l → l ⊑ m) → l ⊑ m
+    ρ h = (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d)
+    ρπ : ρ ∘ π ∼ id
+    ρπ α = refl
+    ρ-lemma : (h : is-defined l → l ⊑ m) (q : is-defined l) → ρ h ≡ h q
+    ρ-lemma h q = γ
+     where
+      remark = h q  ≡⟨ refl ⟩  (λ d → pr₁ (h q) d) , (λ d → pr₂ (h q) d) ∎
+      k : (d : Q) → pr₁ (h d) d ≡ pr₁ (h q) d
+      k d = ap (λ - → pr₁ (h -) d) (j d q)
+      a : (λ d → pr₁ (h d) d) ≡ pr₁ (h q)
+      a = dfunext fe k
+      t : {f g : Q → P} (r : f ≡ g) (h : ψ ∼ φ ∘ f)
+        → transport (λ (- : Q → P) → ψ ∼ φ ∘ -) r h
+        ≡ λ q → h q ∙ ap (λ - → φ (- q)) r
+      t refl h = refl
+      u : (d : Q) {f g : Q → P} (k : f ∼ g)
+        → ap (λ (- : Q → P) → φ (- d)) (dfunext fe k)
+        ≡ ap φ (k d)
+      u d {f} {g} k = ap-funext f g φ k fe d
+      v : (d : Q) → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a
+                  ≡ pr₂ (h q) d
+      v d = pr₂ (h d) d ∙ ap (λ - → φ (- d)) a                   ≡⟨ using-u ⟩
+            pr₂ (h d) d ∙ ap φ (ap (λ - → pr₁ (h -) d) (j d q))  ≡⟨ ap-ap-is-ap-of-∘ ⟩
+            pr₂ (h d) d ∙ ap (λ - → φ (pr₁ (h -) d)) (j d q)     ≡⟨ by-naturality ⟩
+            ap (λ _ → ψ d) (j d q) ∙ pr₂ (h q) d                 ≡⟨ ap-const-is-refl ⟩
+            refl ∙ pr₂ (h q) d                                   ≡⟨ refl-left-neutral ⟩
+            pr₂ (h q) d                                          ∎
+       where
+        using-u = ap (λ - → pr₂ (h d) d ∙ -) (u d k)
+        ap-ap-is-ap-of-∘ = ap (λ - → pr₂ (h d) d ∙ -) (ap-ap (λ - → pr₁ (h -) d) φ (j d q))
+        by-naturality = homotopies-are-natural
+                         (λ _ → ψ d) (λ - → φ (pr₁ (h -) d)) (λ - → pr₂ (h -) d)
+                         {d} {q} {j d q}
+        ap-const-is-refl = ap (λ - → - ∙ pr₂ (h q) d) (ap-const (ψ d) (j d q))
 
-  G : (l m : 𝓛 X) → l ⊑ m → (is-defined l → l ⊑ m)
-  G l m α d = α
+      b = transport (λ - → ψ ∼ φ ∘ -) a (λ d → pr₂ (h d) d) ≡⟨ t a (λ d → pr₂ (h d) d) ⟩
+          (λ d → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a)        ≡⟨ dfunext fe' v ⟩
+          pr₂ (h q)                                         ∎
 
-  FG : (l m : 𝓛 X) → F l m ∘ G l m ∼ id
-  FG l m α = refl
+      γ : (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d) ≡ h q
+      γ = to-Σ-≡ (a , b)
+
+    πρ :  π ∘ ρ ∼ id
+    πρ h = dfunext fe'' (ρ-lemma h)
 
 \end{code}
 
-This proof gave a headache:
+Using this we have the following, as promised:
 
 \begin{code}
 
-
-  GF-lemma : funext 𝓣 𝓣 → funext 𝓣 𝓤 → (l m : 𝓛 X) (h : is-defined l → l ⊑ m)
-           → (q : is-defined l) → F l m h ≡ h q
-  GF-lemma fe fe' (Q , ψ , j) (P , φ , i) h q = γ
+  ⊑-in-terms-of-≡ : is-univalent 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤) → funext 𝓣 (𝓣 ⊔ 𝓤)
+                  → (l m : 𝓛 X) → (l ⊑ m) ≃ (is-defined l → l ≡ m)
+  ⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m =
+   l ⊑ m                                                                 ≃⟨ a ⟩
+   (is-defined l → l ⊑ m)                                                ≃⟨ b ⟩
+   ((is-defined l → l ⊑ m) × 𝟙)                                          ≃⟨ c ⟩
+   (is-defined l → l ⊑ m) × (is-defined l → is-defined m → is-defined l) ≃⟨ d ⟩
+   (is-defined l → (l ⊑ m) × (is-defined m → is-defined l))              ≃⟨ e ⟩
+   (is-defined l → l ≡ m) ■
    where
-    k : (d : Q) → pr₁ (h d) d ≡ pr₁ (h q) d
-    k = (λ d → ap (λ - → pr₁ (h -) d) (j d q))
-    a : (λ d → pr₁ (h d) d) ≡ pr₁ (h q)
-    a = dfunext fe k
-    t : {f g : Q → P} (r : f ≡ g) (h : ψ ∼ φ ∘ f)
-      → transport (λ (- : Q → P) → ψ ∼ φ ∘ -) r h
-      ≡ λ q → h q ∙ ap (λ - → φ (- q)) r
-    t refl h = refl
-    u : (d : Q) {f g : Q → P} (k : f ∼ g)
-      → ap (λ (- : Q → P) → φ (- d)) (dfunext fe k)
-      ≡ ap φ (k d)
-    u d {f} {g} k = ap-funext f g φ k fe d
-    v : (d : Q) → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a
-                ≡ pr₂ (h q) d
-    v d = pr₂ (h d) d ∙ ap (λ - → φ (- d)) a
-              ≡⟨ ap (λ - → pr₂ (h d) d ∙ -) (u d k) ⟩
-          pr₂ (h d) d ∙ ap φ (ap (λ - → pr₁ (h -) d) (j d q))
-              ≡⟨ ap (λ - → pr₂ (h d) d ∙ -) (ap-ap (λ - → pr₁ (h -) d) φ (j d q)) ⟩
-          pr₂ (h d) d ∙ ap (λ - → φ (pr₁ (h -) d)) (j d q)
-              ≡⟨ homotopies-are-natural (λ _ → ψ d)
-                                        (λ - → φ (pr₁ (h -) d))
-                                        (λ - → pr₂ (h -) d)
-                                        {d} {q} {j d q} ⟩
-          ap (λ _ → ψ d) (j d q) ∙ pr₂ (h q) d
-              ≡⟨ ap (λ - → - ∙ pr₂ (h q) d) (ap-const (ψ d) (j d q)) ⟩
-          refl ∙ pr₂ (h q) d
-              ≡⟨ refl-left-neutral ⟩
-          pr₂ (h q) d ∎
-    b : transport (λ (- : Q → P) → ψ ∼ φ ∘ -) a (λ d → pr₂ (h d) d)
-      ≡ pr₂ (h q)
-    b = transport (λ - → ψ ∼ φ ∘ -) a (λ d → pr₂ (h d) d) ≡⟨ t a (λ d → pr₂ (h d) d) ⟩
-        (λ d → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a)        ≡⟨ dfunext fe' v ⟩
-        pr₂ (h q) ∎
-    γ : (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d) ≡ h q
-    γ = to-Σ-≡ (a , b)
-
-  GF :  funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⊔ 𝓤)
-     → (l m : 𝓛 X) → G l m ∘ F l m ∼ id
-  GF fe fe' fe'' l m h = dfunext fe'' (GF-lemma fe fe' l m h)
+    fe : funext 𝓣 𝓣
+    fe = funext-from-univalence ua
+    s : (is-defined l → is-defined m → is-defined l) ≃ 𝟙 {𝓤}
+    s = singleton-𝟙 ((λ d e → d) ,
+                     (λ h → dfunext fe
+                              (λ d → dfunext fe
+                                      (λ e → being-defined-is-a-prop l d (h d e)))))
+    a = ⊑-open fe fe₀ fe₂ l m
+    b =  ≃-sym 𝟙-rneutral
+    c = ×-cong (≃-refl _) (≃-sym s)
+    d = ≃-sym ΠΣ-distr-≃
+    e = →-cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
 
 \end{code}
 
