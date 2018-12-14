@@ -426,6 +426,13 @@ pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r
     rs : (a : A x) → r(s a) ≡ a
     rs a = refl
 
+logically-equivalent-props-are-equivalent : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-prop P → is-prop Q
+                                          → (P → Q) → (Q → P) → P ≃ Q
+logically-equivalent-props-are-equivalent i j f g = qinveq f (g , (λ p → i (g (f p)) p) ,
+                                                                  (λ q → j (f (g q)) q))
+
+
+
 \end{code}
 
 Associativities and precedences.

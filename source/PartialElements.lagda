@@ -608,33 +608,30 @@ universe 𝓣 is univalent and we have enough function extensionality for
     β : m ⊑ l
     β = inverse u (e l) (𝓛-id l)
 
-  lemma : (l n : 𝓛 X) (α : l ⊑ l) → pr₁ α ≡ id
-        → Σ \(δ : (q : is-defined l) → value l q ≡ value l q)
-                → 𝓛-pre-comp-with l l α n ∼ λ β → pr₁ β , (λ q → δ q ∙ pr₂ β q)
-  lemma l n (.id , δ) refl = δ , λ β → refl
-
-  lemma' : (l m n : 𝓛 X) (α : l ⊑ m) (r : l ≡ m) → pr₁ α ≡ Idtofun (ap is-defined r)
-        → Σ \(δ : (q : is-defined l) → value l q ≡ value m (transport is-defined r q))
-                → 𝓛-pre-comp-with l m α n ∼ λ β → (λ q → pr₁ β (transport is-defined r q)) ,
-                                                   λ q → δ q ∙ pr₂ β (transport is-defined r q)
-  lemma' l m n (.id , δ) refl refl = δ , (λ β → refl)
-
-  is-𝓛-equiv←' : funext 𝓣 𝓣 → funext 𝓣 𝓤
-               → (l : 𝓛 X) (α : l ⊑ l) → is-equiv (pr₁ α) → is-𝓛-equiv l l α
-  is-𝓛-equiv←' fe fe' l α e n = equiv-closed-under-∼ u (𝓛-pre-comp-with l l α n) i h
+  is-𝓛-equiv← : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+               → (l m : 𝓛 X) (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+  is-𝓛-equiv← pe fe fe' l m α e = γ
    where
-    s : pr₁ α ≡ id
-    s = dfunext fe (λ q → being-defined-is-a-prop l (pr₁ α q) q)
-    δ : (q : is-defined l) → value l q ≡ value l q
-    δ = pr₁ (lemma l n α s)
-    u : l ⊑ n → l ⊑ n
-    u β = pr₁ β , λ q → δ q ∙ pr₂ β q
+    r : l ≡ m
+    r = ⊑-anti-lemma pe fe fe' α (inverse (pr₁ α) e)
 
-    h :  𝓛-pre-comp-with l l α n ∼ u
-    h = pr₂ (lemma l n α s)
-    i : is-equiv u
-    i = qinvs-are-equivs u (v , vu , uv)
+    π : (l n : 𝓛 X) (α : l ⊑ l) → pr₁ α ≡ id
+      → Σ \(δ : (q : is-defined l) → value l q ≡ value l q)
+              → 𝓛-pre-comp-with l l α n
+              ∼ λ β → pr₁ β , (λ q → δ q ∙ pr₂ β q)
+    π l n (.id , δ) refl = δ , λ β → refl
+
+    ρ : (l : 𝓛 X) (α : l ⊑ l) → is-equiv (pr₁ α) → is-𝓛-equiv l l α
+    ρ l α e n = equiv-closed-under-∼ u (𝓛-pre-comp-with l l α n) i h
      where
+      s : pr₁ α ≡ id
+      s = dfunext fe (λ q → being-defined-is-a-prop l (pr₁ α q) q)
+      δ : (q : is-defined l) → value l q ≡ value l q
+      δ = pr₁ (π l n α s)
+      u : l ⊑ n → l ⊑ n
+      u β = pr₁ β , λ q → δ q ∙ pr₂ β q
+      h :  𝓛-pre-comp-with l l α n ∼ u
+      h = pr₂ (π l n α s)
       v : l ⊑ n → l ⊑ n
       v γ = pr₁ γ , (λ p → (δ p)⁻¹ ∙ pr₂ γ p)
       vu : v ∘ u ∼ id
@@ -651,40 +648,64 @@ universe 𝓣 is univalent and we have enough function extensionality for
                                (δ q ∙ ((δ q)⁻¹)) ∙ ε q ≡⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse' (δ q))⁻¹)⟩
                                 refl ∙ ε q             ≡⟨ refl-left-neutral ⟩
                                 ε q                    ∎)
+      i : is-equiv u
+      i = qinvs-are-equivs u (v , vu , uv)
 
-  is-𝓛-equiv←'' : funext 𝓣 𝓣 → funext 𝓣 𝓤
-               → (l m : 𝓛 X)  → l ≡ m
-               → (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
-  is-𝓛-equiv←'' fe fe' l .l refl = is-𝓛-equiv←' fe fe' l
+    σ : (l m : 𝓛 X)  → l ≡ m → (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+    σ l .l refl = ρ l
 
-  is-𝓛-equiv← : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
-               → (l m : 𝓛 X) → (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
-  is-𝓛-equiv← pe fe fe' l m α e = is-𝓛-equiv←'' fe fe' l m r α e
-   where
-    r : l ≡ m
-    r = ⊑-anti-lemma pe fe fe' α (inverse (pr₁ α) e)
+    γ : is-𝓛-equiv l m α
+    γ = σ l m r α e
+
+  is-𝓛-equiv-charac : propext 𝓣
+                    → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
+                    → (l m : 𝓛 X) (α : l ⊑ m)
+                    → is-𝓛-equiv l m α ≃ is-equiv (pr₁ α)
+  is-𝓛-equiv-charac pe fe₀ fe₁ fe₂ fe₃ l m α =
+    logically-equivalent-props-are-equivalent
+      (being-𝓛-equiv-is-a-prop fe₂ fe₃ l m α)
+      (being-equiv-is-a-prop'' fe₀ (pr₁ α))
+      (is-𝓛-equiv→ l m α)
+      (is-𝓛-equiv← pe fe₀ fe₁ l m α)
 
   _≃ₗ_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
   l ≃ₗ m = Σ \(α : l ⊑ m) → is-𝓛-equiv l m α
 
+  ≃ₗ-charac : propext 𝓣
+            → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
+            → (l m : 𝓛 X)
+            → (l ≃ₗ m) ≃ Σ \(α : l ⊑ m) → is-equiv (pr₁ α)
+  ≃ₗ-charac pe fe₀ fe₁ fe₂ fe₃ l m = Σ-cong (is-𝓛-equiv-charac pe fe₀ fe₁ fe₂ fe₃ l m)
+
+{-
+  ≃ₗ-is-≡ : propext 𝓣
+            → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
+            → (l m : 𝓛 X)
+            → (l ≃ₗ m) ≃ (l ≡ m)
+  ≃ₗ-is-≡ pe fe₀ fe₁ fe₂ fe₃ l m = ?
+-}
+
   𝓛-id-is-𝓛-equiv : funext 𝓣 𝓤 → (l : 𝓛 X) → is-𝓛-equiv l l (𝓛-id l)
   𝓛-id-is-𝓛-equiv fe l n = (id , h) , (id , h)
    where
-    h : (α : l ⊑ n) → 𝓛-pre-comp-with l l (𝓛-id l) n α ≡ α
+    h : 𝓛-pre-comp-with l l (𝓛-id l) n ∼ id
     h (f , δ) = to-Σ-≡ (refl , dfunext fe (λ p → refl-left-neutral))
-{-
-  Id-to-𝓛-eq : (l m : 𝓛 X) → l ≡ m → l ≃ₗ m
-  Id-to-𝓛-eq l .l refl = 𝓛-id l , 𝓛-id-is-𝓛-equiv {!!} l
 
-  𝓛-eq-to-Id : (l m : 𝓛 X) → l ≃ₗ m → l ≡ m
-  𝓛-eq-to-Id l m (α , e) = ⊑-anti-lemma {!!} {!!} {!!} α (pr₁ β)
+  Id-to-𝓛-eq : funext 𝓣 𝓤 → (l m : 𝓛 X) → l ≡ m → l ≃ₗ m
+  Id-to-𝓛-eq fe l .l refl = 𝓛-id l , 𝓛-id-is-𝓛-equiv fe l
+
+  𝓛-eq-to-Id : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+             → (l m : 𝓛 X) → l ≃ₗ m → l ≡ m
+  𝓛-eq-to-Id pe fe fe' l m (α , e) = ⊑-anti-lemma pe fe fe' α (pr₁ β)
    where
     u : m ⊑ l → l ⊑ l
     u = 𝓛-pre-comp-with l m α l
     β : m ⊑ l
     β = inverse u (e l) (𝓛-id l)
+{-
+  𝓛-is-univalent : (fe : funext 𝓣 𝓤) (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq fe l m)
+  𝓛-is-univalent fe l m = {!!}
 -}
-
 \end{code}
 
 Yet another equivalence:
