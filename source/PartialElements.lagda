@@ -1,8 +1,11 @@
-
 Martin Escardo 25th October 2018.
 
 The type of partial elements of a type (or lifting).
-(Cf. my former student Cory Knapp's PhD thesis).
+
+Cf. my former student Cory Knapp's PhD thesis and our CSL'2017 paper
+https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
+But there are also new results and observations here, as well as
+different approaches.
 
 Under development.
 
@@ -10,22 +13,22 @@ Under development.
 
 {-# OPTIONS --without-K --exact-split #-}
 
-open import SpartanMLTT
-
 module PartialElements where
 
+open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons hiding (⊥)
-open import UF-Embedding
-open import UF-FunExt
-open import UF-Equiv
-open import UF-Equiv-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Subsingletons-Equiv
 open import UF-Retracts
+open import UF-Embedding
+open import UF-Equiv
+open import UF-Equiv-FunExt
 open import UF-EquivalenceExamples
+open import UF-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
+open import UF-StructureIdentityPrinciple
 
 \end{code}
 
@@ -115,17 +118,17 @@ NatΣ-embedding.:
                            singletons-are-props
                            id-is-embedding
                            (maps-of-props-are-embeddings
-                              singletons-are-props
-                              (being-a-singleton-is-a-prop fe)
-                              (being-a-prop-is-a-prop fe))
+                             singletons-are-props
+                             (being-a-singleton-is-a-prop fe)
+                             (being-a-prop-is-a-prop fe))
 
  𝓚→𝓛-is-embedding : funext 𝓣 𝓣
-                       → (X : 𝓤 ̇) → is-embedding (𝓚→𝓛 X)
+                   → (X : 𝓤 ̇) → is-embedding (𝓚→𝓛 X)
  𝓚→𝓛-is-embedding fe X = NatΣ-is-embedding
-                                  (λ P → (P → X) × is-singleton P)
-                                  (λ P → (P → X) × is-prop P)
-                                  (ζ X)
-                                  (ζ-is-embedding fe X)
+                           (λ P → (P → X) × is-singleton P)
+                           (λ P → (P → X) × is-prop P)
+                           (ζ X)
+                           (ζ-is-embedding fe X)
 
 \end{code}
 
@@ -147,16 +150,21 @@ itself.
    κρ (P , φ , i) = u
     where
      t : 𝟙 ≡ P
-     t = pe 𝟙-is-prop (singletons-are-props i) (λ _ → singleton-types-are-pointed i) unique-to-𝟙
+     t = pe 𝟙-is-prop (singletons-are-props i)
+                      (λ _ → singleton-types-are-pointed i)
+                      unique-to-𝟙
      s : (t : 𝟙 ≡ P)
-       → transport (λ - → (- → X) × is-singleton -) t ((λ _ → φ (singleton-types-are-pointed i)), 𝟙-is-singleton)
+       → transport (λ - → (- → X) × is-singleton -)
+                   t ((λ _ → φ (singleton-types-are-pointed i)),
+         𝟙-is-singleton)
        ≡ φ , i
      s refl = to-×-≡ a b
       where
        a : (λ x → φ (singleton-types-are-pointed i)) ≡ φ
        a = dfunext fe' (λ x → ap φ (𝟙-is-prop (singleton-types-are-pointed i) x))
        b : 𝟙-is-singleton ≡ i
-       b = (singletons-are-props (pointed-props-are-singletons 𝟙-is-singleton (being-a-singleton-is-a-prop fe))
+       b = (singletons-are-props (pointed-props-are-singletons
+                                    𝟙-is-singleton (being-a-singleton-is-a-prop fe))
                                   𝟙-is-singleton i)
      u : 𝟙 , (λ _ → φ (singleton-types-are-pointed i)) , 𝟙-is-singleton ≡ P , φ , i
      u = to-Σ-≡ (t , s t)
@@ -196,8 +204,6 @@ assuming univalence rather than just propositional extensionality
   𝓛-Id : is-univalent 𝓣 → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍ m)
   𝓛-Id ua = ≡-is-≃ₛ'
    where
-    open import UF-UA-FunExt
-    open import UF-StructureIdentityPrinciple
     open gsip-with-axioms'
           𝓣 (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤) 𝓣 ua
           (λ P → P → X)
@@ -211,19 +217,19 @@ assuming univalence rather than just propositional extensionality
     η-is-embedding' : is-univalent 𝓣 → funext 𝓣 𝓤 → is-embedding (η {𝓤} {X})
     η-is-embedding' ua fe = embedding-criterion' η c
      where
-      a : (𝟙 ≃ 𝟙) ≃ 𝟙
       a = (𝟙 ≃ 𝟙) ≃⟨ ≃-sym (is-univalent-≃ ua 𝟙 𝟙) ⟩
-          (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (funext-from-univalence ua) (propext-from-univalence ua) 𝟙-is-prop ⟩
+          (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (funext-from-univalence ua)
+                             (propext-from-univalence ua) 𝟙-is-prop ⟩
           𝟙       ■
-      b : (x y : X) → ((λ (_ : 𝟙) → x) ≡ (λ (_ : 𝟙) → y)) ≃ (x ≡ y)
-      b x y = ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
-              (𝟙 → x ≡ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
-              (x ≡ y)                 ■
-      c : (x y : X) → (η x ≡ η y) ≃ (x ≡ y)
-      c x y = (η x ≡ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
-              (𝟙 ≃ 𝟙) × ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩
-              𝟙 × (x ≡ y)                       ≃⟨ 𝟙-lneutral ⟩
-              (x ≡ y)                           ■
+
+      b = λ x y → ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
+                  (𝟙 → x ≡ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
+                  (x ≡ y)                 ■
+
+      c = λ x y → (η x ≡ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
+                  (𝟙 ≃ 𝟙) × ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩
+                  𝟙 × (x ≡ y)                       ≃⟨ 𝟙-lneutral ⟩
+                  (x ≡ y)                           ■
 
 \end{code}
 
@@ -270,17 +276,6 @@ The type 𝓛 X forms a univalent precategory with hom types l ⊑ m.
   𝓛-comp-unit-left : funext 𝓣 𝓤 → (l m : 𝓛 X) (α : l ⊑ m) → 𝓛-comp l l m (𝓛-id l) α ≡ α
   𝓛-comp-unit-left fe l m α = to-Σ-≡ (refl , dfunext fe λ p → refl-left-neutral)
 
-\end{code}
-
-The associativity law in this precategory is that of function
-composition in the first component (where it hence holds
-definitionally) and that of path composition in the first
-component. (Hence this precategory should qualify as an ∞-category,
-with all coherence laws satisfied automatically, except that there is
-at present no definition of ∞-category in univalent type theory.)
-
-\begin{code}
-
   𝓛-comp-assoc : funext 𝓣 𝓤 → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
                →  𝓛-comp l n o (𝓛-comp l m n α β) γ ≡ 𝓛-comp l m o α (𝓛-comp m n o β γ)
   𝓛-comp-assoc fe (f , δ) (g , ε) (h , ζ) =
@@ -288,16 +283,21 @@ at present no definition of ∞-category in univalent type theory.)
 
 \end{code}
 
-\end{code}
+Thus, the associativity law in this precategory is that of function
+composition in the first component (where it hence holds
+definitionally) and that of path composition in the first
+component. (Hence this precategory should qualify as an ∞-category,
+with all coherence laws satisfied automatically, except that there is
+at present no definition of ∞-category in univalent type theory.)
 
-If X is a set, _⊑_ is a partial order:
+It follows that if X is a set, then _⊑_ is a partial order:
 
 \begin{code}
 
   ⊑-prop-valued : funext 𝓣 𝓣 → funext 𝓣 𝓤
                 → is-set X → (l m : 𝓛 X) → is-prop (l ⊑ m)
-  ⊑-prop-valued fe fe' s (P , φ , i) (Q , ψ , j) (f , δ) (g , ε) =
-    to-Σ-≡ (dfunext fe (λ p → j (f p) (g p)) ,
+  ⊑-prop-valued fe fe' s l m (f , δ) (g , ε) =
+    to-Σ-≡ (dfunext fe (λ p → being-defined-is-a-prop m (f p) (g p)) ,
             Π-is-prop fe' (λ d → s) _ ε)
 
 \end{code}
@@ -327,7 +327,6 @@ embedding.
     c : transport (λ - → (- → X) × is-prop -) a (ψ , j)
       ≡ (transport (λ - → - → X) a ψ , transport is-prop a j)
     c = transport-× (λ - → - → X) is-prop a
-    d : pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ≡ φ
     d = pr₁ (transport (λ - → (- → X) × is-prop -) a (ψ , j)) ≡⟨ ap pr₁ c ⟩
         transport (λ - → - → X) a ψ                           ≡⟨ transport-is-pre-comp a ψ ⟩
         ψ ∘ Idtofun (a ⁻¹)                                    ≡⟨ ap (λ - → ψ ∘ -) b ⟩
@@ -346,9 +345,8 @@ We can now establish the promised fact:
 
 \begin{code}
 
-  η-fiber-same-as-is-defined :
-      propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤) → (l : 𝓛 X)
-    → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
+  η-fiber-same-as-is-defined : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
+                             → (l : 𝓛 X) → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
   η-fiber-same-as-is-defined pe fe fe' fe'' l = qinveq (f l) (g l , gf , fg)
    where
     f : (l : 𝓛 X) → fiber η l → is-defined l
@@ -376,9 +374,9 @@ formulation of the above equivalence:
 \begin{code}
 
   private
-   η-fiber-same-as-is-defined' :
-        propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-     → (l : 𝓛 X) → (fiber η l ∶ 𝓣 ⁺ ⊔ 𝓤 ̇) ≃ (is-defined l ∶ 𝓣 ̇)
+   η-fiber-same-as-is-defined' : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
+                               → (l : 𝓛 X) → (fiber η l    ∶ 𝓣 ⁺ ⊔ 𝓤 ̇)
+                                           ≃ (is-defined l ∶ 𝓣 ̇)
    η-fiber-same-as-is-defined' = η-fiber-same-as-is-defined
 
 \end{code}
@@ -388,7 +386,7 @@ with 𝓣. However, for some dominances other than is-prop, it is possible to
 have the equality between the fiber of l and the definedness of l.
 
 
-The following simplified version of ⊑-anti uses the SIP.
+The following simplified proof of ⊑-anti uses the SIP.
 
 \begin{code}
 
@@ -469,9 +467,11 @@ that there were two candidate proofs for the equality.
        uv (((f , δ) , h) , ((g , ε) , k)) = t
         where
          r : g ≡ h
-         r = dfunext (funext-from-univalence ua) (λ p → being-defined-is-a-prop l (g p) (h p))
+         r = dfunext (funext-from-univalence ua)
+                     (λ p → being-defined-is-a-prop l (g p) (h p))
          s : f ≡ k
-         s = dfunext (funext-from-univalence ua) (λ p → being-defined-is-a-prop m (f p) (k p))
+         s = dfunext (funext-from-univalence ua)
+                     (λ p → being-defined-is-a-prop m (f p) (k p))
          t : ((f , δ) , g) , (g , ε) , f ≡ ((f , δ) , h) , (g , ε) , k
          t = ap₂ (λ -₀ -₁ → ((f , δ) , -₀) , (g , ε) , -₁) r s
 
@@ -482,7 +482,7 @@ partial element of the identity type l ≡ m.
 
 We begin with the following auxiliary construction, which shows that
 the type l ⊑ m is modal for the open modality induced by the
-proposition "is-defined l", and gave me a headache:
+proposition "is-defined l" (and gave me a headache):
 
 \begin{code}
 
@@ -506,22 +506,18 @@ proposition "is-defined l", and gave me a headache:
       k d = ap (λ - → pr₁ (h -) d) (j d q)
       a : (λ d → pr₁ (h d) d) ≡ pr₁ (h q)
       a = dfunext fe k
-      t : {f g : Q → P} (r : f ≡ g) (h : ψ ∼ φ ∘ f)
-        → transport (λ (- : Q → P) → ψ ∼ φ ∘ -) r h
-        ≡ λ q → h q ∙ ap (λ - → φ (- q)) r
-      t refl h = refl
       u : (d : Q) {f g : Q → P} (k : f ∼ g)
         → ap (λ (- : Q → P) → φ (- d)) (dfunext fe k)
         ≡ ap φ (k d)
       u d {f} {g} k = ap-funext f g φ k fe d
       v : (d : Q) → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a
                   ≡ pr₂ (h q) d
-      v d = pr₂ (h d) d ∙ ap (λ - → φ (- d)) a                   ≡⟨ using-u ⟩
-            pr₂ (h d) d ∙ ap φ (ap (λ - → pr₁ (h -) d) (j d q))  ≡⟨ ap-ap-is-ap-of-∘ ⟩
-            pr₂ (h d) d ∙ ap (λ - → φ (pr₁ (h -) d)) (j d q)     ≡⟨ by-naturality ⟩
-            ap (λ _ → ψ d) (j d q) ∙ pr₂ (h q) d                 ≡⟨ ap-const-is-refl ⟩
-            refl ∙ pr₂ (h q) d                                   ≡⟨ refl-left-neutral ⟩
-            pr₂ (h q) d                                          ∎
+      v d = pr₂ (h d) d ∙ ap (λ - → φ (- d)) a                  ≡⟨ using-u ⟩
+            pr₂ (h d) d ∙ ap φ (ap (λ - → pr₁ (h -) d) (j d q)) ≡⟨ ap-ap-is-ap-of-∘ ⟩
+            pr₂ (h d) d ∙ ap (λ - → φ (pr₁ (h -) d)) (j d q)    ≡⟨ by-naturality ⟩
+            ap (λ _ → ψ d) (j d q) ∙ pr₂ (h q) d                ≡⟨ ap-const-is-refl ⟩
+            refl ∙ pr₂ (h q) d                                  ≡⟨ refl-left-neutral ⟩
+            pr₂ (h q) d                                         ∎
        where
         using-u = ap (λ - → pr₂ (h d) d ∙ -) (u d k)
         ap-ap-is-ap-of-∘ = ap (λ - → pr₂ (h d) d ∙ -) (ap-ap (λ - → pr₁ (h -) d) φ (j d q))
@@ -529,6 +525,11 @@ proposition "is-defined l", and gave me a headache:
                          (λ _ → ψ d) (λ - → φ (pr₁ (h -) d)) (λ - → pr₂ (h -) d)
                          {d} {q} {j d q}
         ap-const-is-refl = ap (λ - → - ∙ pr₂ (h q) d) (ap-const (ψ d) (j d q))
+
+      t : {f g : Q → P} (r : f ≡ g) (h : ψ ∼ φ ∘ f)
+        → transport (λ - → ψ ∼ φ ∘ -) r h
+        ≡ λ q → h q ∙ ap (λ - → φ (- q)) r
+      t refl h = refl
 
       b = transport (λ - → ψ ∼ φ ∘ -) a (λ d → pr₂ (h d) d) ≡⟨ t a (λ d → pr₂ (h d) d) ⟩
           (λ d → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a)        ≡⟨ dfunext fe' v ⟩
@@ -596,40 +597,73 @@ universe 𝓣 is univalent and we have enough function extensionality for
   being-𝓛-equiv-is-a-prop fe fe' l m α =
    Π-is-prop fe (λ n → being-equiv-is-a-prop'' fe' (𝓛-pre-comp-with l m α n))
 
-  is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m) → is-𝓛-equiv l m α → (is-defined m → is-defined l)
-  is-𝓛-equiv→ l m α e = pr₁ β
+  is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m) → is-𝓛-equiv l m α → is-equiv (pr₁ α)
+  is-𝓛-equiv→ l m α e = qinvs-are-equivs (pr₁ α)
+                                         (pr₁ β ,
+                                          (λ p → being-defined-is-a-prop l (pr₁ β (pr₁ α p)) p) ,
+                                          (λ q → being-defined-is-a-prop m (pr₁ α (pr₁ β q)) q))
    where
     u : m ⊑ l → l ⊑ l
     u = 𝓛-pre-comp-with l m α l
     β : m ⊑ l
     β = inverse u (e l) (𝓛-id l)
-{-
-  is-𝓛-equiv← : is-univalent 𝓣
-              → (l m : 𝓛 X) (α : l ⊑ m) → (is-defined m → is-defined l) → is-𝓛-equiv l m α
-  is-𝓛-equiv← ua l m α g n = (h , u) , {!!}
-   where
-    a : l ⋍· m
-    a = to-⋍· l m (α , g)
-    a₁ : is-defined l ≃ is-defined m
-    a₁ = pr₁ a
-    a₂ : value l ∼ value m ∘ pr₁ α
-    a₂ = pr₂ a
-    h : l ⊑ n → m ⊑ n
-    h (f , δ) = f ∘ g , k
-     where
-      k : value m ∼ (λ x → value n (f (g x)))
-      k p = value m p             ≡⟨ ap (value m) (being-defined-is-a-prop m _ _) ⟩
-            value m (pr₁ α (g p)) ≡⟨ (a₂ (g p))⁻¹ ⟩
-            value l (g p)         ≡⟨ δ (g p) ⟩
-            value n (f (g p))     ∎
 
-    haha : (γ : m ⊑ n) → 𝓛-pre-comp-with l m α n γ
-         ≡ (λ x → pr₁ γ (pr₁ α x)) , (λ p → pr₂ α p ∙ pr₂ γ (pr₁ α p))
-    haha γ = refl
-    u : (λ β → 𝓛-pre-comp-with l m α n (h β)) ∼ id
-    u (f , δ) = to-Σ-≡ (dfunext {!!} (λ p → ap f (being-defined-is-a-prop l _ _)) ,
-                        dfunext {!!} (λ p → {!!}))
--}
+  lemma : (l n : 𝓛 X) (α : l ⊑ l) → pr₁ α ≡ id
+        → Σ \(δ : (q : is-defined l) → value l q ≡ value l q)
+                → 𝓛-pre-comp-with l l α n ∼ λ β → pr₁ β , (λ q → δ q ∙ pr₂ β q)
+  lemma l n (.id , δ) refl = δ , λ β → refl
+
+  lemma' : (l m n : 𝓛 X) (α : l ⊑ m) (r : l ≡ m) → pr₁ α ≡ Idtofun (ap is-defined r)
+        → Σ \(δ : (q : is-defined l) → value l q ≡ value m (transport is-defined r q))
+                → 𝓛-pre-comp-with l m α n ∼ λ β → (λ q → pr₁ β (transport is-defined r q)) ,
+                                                   λ q → δ q ∙ pr₂ β (transport is-defined r q)
+  lemma' l m n (.id , δ) refl refl = δ , (λ β → refl)
+
+  is-𝓛-equiv←' : funext 𝓣 𝓣 → funext 𝓣 𝓤
+               → (l : 𝓛 X) (α : l ⊑ l) → is-equiv (pr₁ α) → is-𝓛-equiv l l α
+  is-𝓛-equiv←' fe fe' l α e n = equiv-closed-under-∼ u (𝓛-pre-comp-with l l α n) i h
+   where
+    s : pr₁ α ≡ id
+    s = dfunext fe (λ q → being-defined-is-a-prop l (pr₁ α q) q)
+    δ : (q : is-defined l) → value l q ≡ value l q
+    δ = pr₁ (lemma l n α s)
+    u : l ⊑ n → l ⊑ n
+    u β = pr₁ β , λ q → δ q ∙ pr₂ β q
+
+    h :  𝓛-pre-comp-with l l α n ∼ u
+    h = pr₂ (lemma l n α s)
+    i : is-equiv u
+    i = qinvs-are-equivs u (v , vu , uv)
+     where
+      v : l ⊑ n → l ⊑ n
+      v γ = pr₁ γ , (λ p → (δ p)⁻¹ ∙ pr₂ γ p)
+      vu : v ∘ u ∼ id
+      vu (g , ε) = to-Σ-≡ (refl , a)
+       where
+        a = dfunext fe' (λ q →  (δ q)⁻¹ ∙ (δ q ∙ ε q)  ≡⟨ (assoc ((δ q)⁻¹) (δ q) (ε q))⁻¹ ⟩
+                               ((δ q)⁻¹ ∙ δ q) ∙ ε q   ≡⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse (δ q))⁻¹)⟩
+                                 refl ∙ ε q            ≡⟨ refl-left-neutral ⟩
+                                 ε q                   ∎)
+      uv : u ∘ v ∼ id
+      uv (g , ε) = to-Σ-≡ (refl , a)
+       where
+        a = dfunext fe' (λ q →  δ q ∙ ((δ q)⁻¹ ∙ ε q)  ≡⟨ (assoc (δ q) ((δ q)⁻¹) (ε q))⁻¹ ⟩
+                               (δ q ∙ ((δ q)⁻¹)) ∙ ε q ≡⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse' (δ q))⁻¹)⟩
+                                refl ∙ ε q             ≡⟨ refl-left-neutral ⟩
+                                ε q                    ∎)
+
+  is-𝓛-equiv←'' : funext 𝓣 𝓣 → funext 𝓣 𝓤
+               → (l m : 𝓛 X)  → l ≡ m
+               → (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+  is-𝓛-equiv←'' fe fe' l .l refl = is-𝓛-equiv←' fe fe' l
+
+  is-𝓛-equiv← : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+               → (l m : 𝓛 X) → (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+  is-𝓛-equiv← pe fe fe' l m α e = is-𝓛-equiv←'' fe fe' l m r α e
+   where
+    r : l ≡ m
+    r = ⊑-anti-lemma pe fe fe' α (inverse (pr₁ α) e)
+
   _≃ₗ_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
   l ≃ₗ m = Σ \(α : l ⊑ m) → is-𝓛-equiv l m α
 
@@ -689,7 +723,7 @@ Yet another equivalence:
 
 \end{code}
 
-Added 7th November 2018. 'Monad' structure on 𝓛.
+Added 7th November 2018. (Strong) 'Monad' structure on 𝓛.
 
 \begin{code}
 
@@ -701,18 +735,24 @@ Added 7th November 2018. 'Monad' structure on 𝓛.
                      (λ σ → value (f (φ (pr₁ σ))) (pr₂ σ)) ,
                      Σ-is-prop i (λ p → being-defined-is-a-prop (f (φ p)))
 
+ μ : {X : 𝓤 ̇} → 𝓛 (𝓛 X) → 𝓛 X
+ μ = id ♯
+
+\end{code}
+
+Laws:
+
+\begin{code}
+
  𝓛→-id : {X : 𝓤 ̇} → 𝓛→ id ≡ id
  𝓛→-id {𝓤} {X} = refl {𝓤 ⊔ (𝓣 ⁺)} {𝓛 X → 𝓛 X}
 
  𝓛→-∘ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
-     → 𝓛→ (g ∘ f) ≡ 𝓛→ g ∘ 𝓛→ f
+      → 𝓛→ (g ∘ f) ≡ 𝓛→ g ∘ 𝓛→ f
  𝓛→-∘ f g = refl
 
  η-natural : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → η ∘ f ≡ 𝓛→ f ∘ η
  η-natural f = refl
-
- μ : {X : 𝓤 ̇} → 𝓛 (𝓛 X) → 𝓛 X
- μ = id ♯
 
  μ-natural : {X : 𝓤 ̇} {Y : 𝓤 ̇} (f : X → Y) → 𝓛→ f ∘ μ ∼ μ ∘ 𝓛→ (𝓛→ f)
  μ-natural f _ = refl
@@ -734,11 +774,31 @@ Added 7th November 2018. 'Monad' structure on 𝓛.
 
 \end{code}
 
+Strength:
+
+\begin{code}
+
+ 𝓛-σ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X × 𝓛 Y → 𝓛 (X × Y)
+ 𝓛-σ (x , m) = 𝓛→ (λ y → (x , y)) m
+
+ 𝓛-τ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → 𝓛 X × Y → 𝓛 (X × Y)
+ 𝓛-τ (l , y) = 𝓛→ (λ x → (x , y)) l
+
+ 𝓛-comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} {l : 𝓛 X × 𝓛 Y}
+                 → μ (𝓛→ 𝓛-σ (𝓛-τ l)) ⋍· μ (𝓛→ 𝓛-τ (𝓛-σ l))
+ 𝓛-comm = ×-comm , (λ z → refl)
+
+ 𝓛-m : {X : 𝓤 ̇} {Y : 𝓥 ̇} → 𝓛 X × 𝓛 Y → 𝓛 (X × Y)
+ 𝓛-m (l , m) = ((λ x → curry 𝓛-σ x m)♯) l
+
+\end{code}
+
+TODO. Write down and prove the strength laws.
+
 Or we can use the Kleisli-triple presentation of the monad, but the
 proofs / constructions are essentially the same:
 
 \begin{code}
-
 
  kleisli-law₀ : {X : 𝓤 ̇} (l : 𝓛 X) → (η ♯) l ⋍ l
  kleisli-law₀ (P , φ) = 𝟙-rneutral , refl
@@ -749,7 +809,6 @@ proofs / constructions are essentially the same:
  kleisli-law₂ : {X : 𝓥 ̇} {Y : 𝓦 ̇} {Z : 𝓣 ̇} (f : X → 𝓛 Y) (g : Y → 𝓛 Z) (l : 𝓛 X)
               → (g ♯ ∘ f ♯) l ⋍ ((g ♯ ∘ f)♯) l
  kleisli-law₂ f g l = Σ-assoc , refl
-
 
  𝓛→' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓛 X → 𝓛 Y
  𝓛→' f = (η ∘ f)♯

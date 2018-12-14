@@ -117,6 +117,14 @@ equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
          r(f x)       ≡⟨ rf x ⟩
          x            ∎
 
+inverse-is-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
+                   → f ∘ inverse f e ∼ id
+inverse-is-section f ((s , fs) , (r , rf)) = fs
+
+inverse-is-retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
+                      → inverse f e ∘ f ∼ id
+inverse-is-retraction f e = pr₁ (pr₂(equivs-are-qinvs f e))
+
 qinvs-are-equivs : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → is-equiv f
 qinvs-are-equivs f (g , (gf , fg)) = (g , fg) , (g , gf)
 
