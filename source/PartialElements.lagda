@@ -657,56 +657,86 @@ universe 𝓣 is univalent and we have enough function extensionality for
     γ : is-𝓛-equiv l m α
     γ = σ l m r α e
 
-  is-𝓛-equiv-charac : propext 𝓣
-                    → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
-                    → (l m : 𝓛 X) (α : l ⊑ m)
-                    → is-𝓛-equiv l m α ≃ is-equiv (pr₁ α)
-  is-𝓛-equiv-charac pe fe₀ fe₁ fe₂ fe₃ l m α =
-    logically-equivalent-props-are-equivalent
-      (being-𝓛-equiv-is-a-prop fe₂ fe₃ l m α)
-      (being-equiv-is-a-prop'' fe₀ (pr₁ α))
-      (is-𝓛-equiv→ l m α)
-      (is-𝓛-equiv← pe fe₀ fe₁ l m α)
-
-  _≃ₗ_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
-  l ≃ₗ m = Σ \(α : l ⊑ m) → is-𝓛-equiv l m α
-
-  ≃ₗ-charac : propext 𝓣
-            → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
-            → (l m : 𝓛 X)
-            → (l ≃ₗ m) ≃ Σ \(α : l ⊑ m) → is-equiv (pr₁ α)
-  ≃ₗ-charac pe fe₀ fe₁ fe₂ fe₃ l m = Σ-cong (is-𝓛-equiv-charac pe fe₀ fe₁ fe₂ fe₃ l m)
-
-{-
-  ≃ₗ-is-≡ : propext 𝓣
-            → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
-            → (l m : 𝓛 X)
-            → (l ≃ₗ m) ≃ (l ≡ m)
-  ≃ₗ-is-≡ pe fe₀ fe₁ fe₂ fe₃ l m = ?
--}
-
-  𝓛-id-is-𝓛-equiv : funext 𝓣 𝓤 → (l : 𝓛 X) → is-𝓛-equiv l l (𝓛-id l)
-  𝓛-id-is-𝓛-equiv fe l n = (id , h) , (id , h)
-   where
-    h : 𝓛-pre-comp-with l l (𝓛-id l) n ∼ id
-    h (f , δ) = to-Σ-≡ (refl , dfunext fe (λ p → refl-left-neutral))
-
-  Id-to-𝓛-eq : funext 𝓣 𝓤 → (l m : 𝓛 X) → l ≡ m → l ≃ₗ m
-  Id-to-𝓛-eq fe l .l refl = 𝓛-id l , 𝓛-id-is-𝓛-equiv fe l
-
-  𝓛-eq-to-Id : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
-             → (l m : 𝓛 X) → l ≃ₗ m → l ≡ m
-  𝓛-eq-to-Id pe fe fe' l m (α , e) = ⊑-anti-lemma pe fe fe' α (pr₁ β)
-   where
-    u : m ⊑ l → l ⊑ l
-    u = 𝓛-pre-comp-with l m α l
-    β : m ⊑ l
-    β = inverse u (e l) (𝓛-id l)
-{-
-  𝓛-is-univalent : (fe : funext 𝓣 𝓤) (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq fe l m)
-  𝓛-is-univalent fe l m = {!!}
--}
 \end{code}
+
+With this and Yoneda we can now easily derive the univalence of the
+pre-category 𝓛 X.
+
+The univalence of 𝓣 is more than we need in the
+following. Propositional extensionality for propositions in 𝓣
+suffices, but the wat we proved this using a general SIP relies on
+univalence (we could prove a specialized version of the SIP, but this
+is probably not worth the trouble (we'll see)).
+
+\begin{code}
+
+  module univalence-of-𝓛 (ua : is-univalent 𝓣)
+                         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+         where
+
+   pe : propext 𝓣
+   pe = propext-from-univalence ua
+
+   is-𝓛-equiv-charac : (l m : 𝓛 X) (α : l ⊑ m)
+                     → is-𝓛-equiv l m α ≃ (is-defined m → is-defined l)
+   is-𝓛-equiv-charac l m α = is-𝓛-equiv l m α             ≃⟨ a ⟩
+                             is-equiv (pr₁ α)              ≃⟨ b ⟩
+                             (is-defined m → is-defined l) ■
+    where
+     a = logically-equivalent-props-are-equivalent
+          (being-𝓛-equiv-is-a-prop fe fe l m α)
+          (being-equiv-is-a-prop'' fe (pr₁ α))
+          (is-𝓛-equiv→ l m α)
+          (is-𝓛-equiv← pe fe fe l m α)
+
+     b = logically-equivalent-props-are-equivalent
+          (being-equiv-is-a-prop'' fe (pr₁ α))
+          (Π-is-prop fe (λ p → being-defined-is-a-prop l))
+          (inverse (pr₁ α))
+          (λ g → qinvs-are-equivs (pr₁ α)
+                                  (g , (λ q → being-defined-is-a-prop l (g (pr₁ α q)) q) ,
+                                       (λ p → being-defined-is-a-prop m (pr₁ α (g p)) p)))
+
+   _≃⟨𝓛⟩_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
+   l ≃⟨𝓛⟩ m = Σ \(α : l ⊑ m) → is-𝓛-equiv l m α
+
+   ≃⟨𝓛⟩-charac : (l m : 𝓛 X)
+               → (l ≃⟨𝓛⟩ m) ≃ (l ⊑ m) × (is-defined m → is-defined l)
+   ≃⟨𝓛⟩-charac l m = Σ-cong (is-𝓛-equiv-charac l m)
+
+   ≃⟨𝓛⟩-is-Id : (l m : 𝓛 X)
+              → (l ≃⟨𝓛⟩ m) ≃ (l ≡ m)
+   ≃⟨𝓛⟩-is-Id l m = ≃-trans (≃⟨𝓛⟩-charac l m)
+                            (⊑-anti-equiv-lemma ua fe l m)
+
+   𝓛-is-univalent' : (l : 𝓛 X) → ∃! \(m : 𝓛 X) → (l ≃⟨𝓛⟩ m)
+   𝓛-is-univalent' l = equiv-to-singleton e (singleton-types-are-singletons l)
+    where
+      e : (Σ \(m : 𝓛 X) → l ≃⟨𝓛⟩ m) ≃ (Σ \(m : 𝓛 X) → l ≡ m)
+      e = Σ-cong (≃⟨𝓛⟩-is-Id l)
+
+   𝓛-id-is-𝓛-equiv : (l : 𝓛 X) → is-𝓛-equiv l l (𝓛-id l)
+   𝓛-id-is-𝓛-equiv l n = (id , h) , (id , h)
+    where
+     h : 𝓛-pre-comp-with l l (𝓛-id l) n ∼ id
+     h (f , δ) = to-Σ-≡ (refl , dfunext fe (λ p → refl-left-neutral))
+
+   𝓛-refl : (l : 𝓛 X) → l ≃⟨𝓛⟩ l
+   𝓛-refl l = 𝓛-id l , 𝓛-id-is-𝓛-equiv l
+
+   Id-to-𝓛-eq : (l m : 𝓛 X) → l ≡ m → l ≃⟨𝓛⟩ m
+   Id-to-𝓛-eq l m r = transport (l ≃⟨𝓛⟩_) r (𝓛-refl l)
+
+   𝓛-is-univalent : (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq l m)
+   𝓛-is-univalent l = universality-equiv l (𝓛-refl l)
+                        (unique-element-is-universal-element (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
+                          (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
+    where
+     open import UF-Yoneda
+
+ \end{code}
+
+This completes the univalence submodule.
 
 Yet another equivalence:
 
@@ -715,14 +745,13 @@ Yet another equivalence:
   η-maximal : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
   η-maximal x (P , ψ , i) (f , δ) = (λ p → *) , (λ p → ap ψ (i p (f *)) ∙ (δ *)⁻¹)
 
-  ⊥-least : (x : X) → ⊥ ⊑ η x
-  ⊥-least x = unique-from-𝟘 , λ z → unique-from-𝟘 z
+  ⊥-least : (l : 𝓛 X) → ⊥ ⊑ l
+  ⊥-least l = unique-from-𝟘 , λ z → unique-from-𝟘 z
 
-  ⊥-least' : funext 𝓣 𝓣 → funext 𝓣 𝓤
-           → (x : X) → is-singleton(⊥ ⊑ η x)
-  ⊥-least' fe fe' x = ⊥-least x ,
-                      (λ α → to-Σ-≡ (dfunext fe (λ z → unique-from-𝟘 z) ,
-                                     dfunext fe'(λ z → unique-from-𝟘 z)))
+  ⊥-initial : funext 𝓣 𝓣 → funext 𝓣 𝓤 → (l : 𝓛 X) → is-singleton(⊥ ⊑ l)
+  ⊥-initial fe fe' l = ⊥-least l ,
+                       (λ α → to-Σ-≡ (dfunext fe (λ z → unique-from-𝟘 z) ,
+                                      dfunext fe'(λ z → unique-from-𝟘 z)))
 
   η-≡-gives-⊑ : {x y : X} → x ≡ y → η x ⊑ η y
   η-≡-gives-⊑ {x} {y} p = id , (λ d → p)
@@ -745,6 +774,7 @@ Yet another equivalence:
 \end{code}
 
 Added 7th November 2018. (Strong) 'Monad' structure on 𝓛.
+(Again the proofs are simplified by the use of SIP.)
 
 \begin{code}
 
@@ -838,10 +868,9 @@ proofs / constructions are essentially the same:
               → 𝓛→' f l ⋍· 𝓛→ f l
  𝓛→-agreement {𝓤} {𝓥} {X} {Y} f (P , i , φ) = 𝟙-rneutral , λ _ → refl
 
-
 \end{code}
 
-Added 8th November 2018.
+Added 8th November 2018. This has a connection with type injectivity.
 
 \begin{code}
 
@@ -863,9 +892,7 @@ sup-reflective 𝓣 P i φ l p = {!!}
 
 \end{code}
 
-This has a connection with injectivity.
-
-Another way to define μ, which has different universe level:
+Another way to define μ, which has a different universe level:
 
 \begin{code}
 
@@ -879,27 +906,3 @@ Another way to define μ, which has different universe level:
 μ* {𝓤} 𝓣 𝓣' {X} fe fe' fe'' fe''' pe = 𝓛* (η 𝓣') (η-is-embedding 𝓣' pe fe' fe'' fe''')
 
 \end{code}
-
-Probably get rid of this:
-
-{-
-
-  ⊑-anti-equiv-corollary₀ : is-univalent 𝓣 → funext 𝓣 𝓤
-           → (l : 𝓛 X)
-           → ∃! \(m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l)
-  ⊑-anti-equiv-corollary₀ ua fe l = equiv-to-singleton e (singleton-types-are-singletons l)
-   where
-    e : (Σ \(m : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l))
-      ≃ (Σ \(m : 𝓛 X) → (l ≡ m))
-    e = Σ-cong (⊑-anti-equiv-lemma ua fe l)
-
-  ⊑-anti-equiv-corollary₁ : is-univalent 𝓣 → funext 𝓣 𝓤
-           → (m : 𝓛 X)
-           → ∃! \(l : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l)
-  ⊑-anti-equiv-corollary₁ ua fe m = equiv-to-singleton e (singleton-types'-are-singletons m)
-   where
-    e : (Σ \(l : 𝓛 X) → (l ⊑ m) × (is-defined m → is-defined l))
-      ≃ (Σ \(l : 𝓛 X) → (l ≡ m))
-    e = Σ-cong (λ l → ⊑-anti-equiv-lemma ua fe l m)
-
--}
