@@ -477,8 +477,8 @@ that there were two candidate proofs for the equality.
 
 \end{code}
 
-Next we show that (l ⊑ m) ≃ (is-defined l → l ≡ m). So l ⊑ m is a
-partial element of the identity type l ≡ m.
+Next we show that (l ⊑ m) ≃ (is-defined l → l ≡ m). So that elements
+of l ⊑ m can be seen as partial elements of the identity type l ≡ m.
 
 We begin with the following auxiliary construction, which shows that
 the type l ⊑ m is modal for the open modality induced by the
@@ -580,9 +580,8 @@ Using this we have the following, as promised:
 
 \end{code}
 
-We now try to show that the pre-category 𝓛 X is univalent if the
-universe 𝓣 is univalent and we have enough function extensionality for
-𝓣 and 𝓤.
+We now show that the pre-category 𝓛 X is univalent if the universe 𝓣
+is univalent and we have enough function extensionality for 𝓣 and 𝓤.
 
 \begin{code}
 
@@ -609,7 +608,7 @@ universe 𝓣 is univalent and we have enough function extensionality for
     β = inverse u (e l) (𝓛-id l)
 
   is-𝓛-equiv← : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
-               → (l m : 𝓛 X) (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
+              → (l m : 𝓛 X) (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
   is-𝓛-equiv← pe fe fe' l m α e = γ
    where
     r : l ≡ m
@@ -630,7 +629,7 @@ universe 𝓣 is univalent and we have enough function extensionality for
       δ = pr₁ (π l n α s)
       u : l ⊑ n → l ⊑ n
       u β = pr₁ β , λ q → δ q ∙ pr₂ β q
-      h :  𝓛-pre-comp-with l l α n ∼ u
+      h : 𝓛-pre-comp-with l l α n ∼ u
       h = pr₂ (π l n α s)
       v : l ⊑ n → l ⊑ n
       v γ = pr₁ γ , (λ p → (δ p)⁻¹ ∙ pr₂ γ p)
@@ -679,7 +678,7 @@ is probably not worth the trouble (we'll see)).
 
    is-𝓛-equiv-charac : (l m : 𝓛 X) (α : l ⊑ m)
                      → is-𝓛-equiv l m α ≃ (is-defined m → is-defined l)
-   is-𝓛-equiv-charac l m α = is-𝓛-equiv l m α             ≃⟨ a ⟩
+   is-𝓛-equiv-charac l m α = is-𝓛-equiv l m α              ≃⟨ a ⟩
                              is-equiv (pr₁ α)              ≃⟨ b ⟩
                              (is-defined m → is-defined l) ■
     where
@@ -778,8 +777,8 @@ Added 7th November 2018. (Strong) 'Monad' structure on 𝓛.
 
 \begin{code}
 
- 𝓛→ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓛 X → 𝓛 Y
- 𝓛→ f (P , φ , i) = P , f ∘ φ , i
+ 𝓛̇ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓛 X → 𝓛 Y
+ 𝓛̇ f (P , φ , i) = P , f ∘ φ , i
 
  _♯ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → 𝓛 Y) → (𝓛 X → 𝓛 Y)
  _♯ f (P , φ , i) = (Σ \(p : P) → is-defined (f (φ p))) ,
@@ -795,20 +794,20 @@ Laws:
 
 \begin{code}
 
- 𝓛→-id : {X : 𝓤 ̇} → 𝓛→ id ≡ id
- 𝓛→-id {𝓤} {X} = refl {𝓤 ⊔ (𝓣 ⁺)} {𝓛 X → 𝓛 X}
+ 𝓛̇-id : {X : 𝓤 ̇} → 𝓛̇ id ≡ id
+ 𝓛̇-id {𝓤} {X} = refl {𝓤 ⊔ (𝓣 ⁺)} {𝓛 X → 𝓛 X}
 
- 𝓛→-∘ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
-      → 𝓛→ (g ∘ f) ≡ 𝓛→ g ∘ 𝓛→ f
- 𝓛→-∘ f g = refl
+ 𝓛̇-∘ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
+      → 𝓛̇ (g ∘ f) ≡ 𝓛̇ g ∘ 𝓛̇ f
+ 𝓛̇-∘ f g = refl
 
- η-natural : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → η ∘ f ≡ 𝓛→ f ∘ η
+ η-natural : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → η ∘ f ≡ 𝓛̇ f ∘ η
  η-natural f = refl
 
- μ-natural : {X : 𝓤 ̇} {Y : 𝓤 ̇} (f : X → Y) → 𝓛→ f ∘ μ ∼ μ ∘ 𝓛→ (𝓛→ f)
+ μ-natural : {X : 𝓤 ̇} {Y : 𝓤 ̇} (f : X → Y) → 𝓛̇ f ∘ μ ∼ μ ∘ 𝓛̇ (𝓛̇ f)
  μ-natural f _ = refl
 
- 𝓛-unit-right : {X : 𝓤 ̇} (l : 𝓛 X) → μ (𝓛→ η l) ⋍ l
+ 𝓛-unit-right : {X : 𝓤 ̇} (l : 𝓛 X) → μ (𝓛̇ η l) ⋍ l
  𝓛-unit-right (P , φ , i) = e , refl
   where
    e : P × 𝟙 ≃ P
@@ -820,7 +819,7 @@ Laws:
    e : 𝟙 × P ≃ P
    e = 𝟙-lneutral
 
- 𝓛-assoc : {X : 𝓤 ̇} (l : 𝓛 (𝓛 (𝓛 X))) → μ (μ l) ⋍ μ (𝓛→ μ l)
+ 𝓛-assoc : {X : 𝓤 ̇} (l : 𝓛 (𝓛 (𝓛 X))) → μ (μ l) ⋍ μ (𝓛̇ μ l)
  𝓛-assoc (P , φ) = Σ-assoc , refl
 
 \end{code}
@@ -830,13 +829,13 @@ Strength:
 \begin{code}
 
  𝓛-σ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X × 𝓛 Y → 𝓛 (X × Y)
- 𝓛-σ (x , m) = 𝓛→ (λ y → (x , y)) m
+ 𝓛-σ (x , m) = 𝓛̇ (λ y → (x , y)) m
 
  𝓛-τ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → 𝓛 X × Y → 𝓛 (X × Y)
- 𝓛-τ (l , y) = 𝓛→ (λ x → (x , y)) l
+ 𝓛-τ (l , y) = 𝓛̇ (λ x → (x , y)) l
 
  𝓛-comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} {l : 𝓛 X × 𝓛 Y}
-                 → μ (𝓛→ 𝓛-σ (𝓛-τ l)) ⋍· μ (𝓛→ 𝓛-τ (𝓛-σ l))
+        → μ (𝓛̇ 𝓛-σ (𝓛-τ l)) ⋍· μ (𝓛̇ 𝓛-τ (𝓛-σ l))
  𝓛-comm = ×-comm , (λ z → refl)
 
  𝓛-m : {X : 𝓤 ̇} {Y : 𝓥 ̇} → 𝓛 X × 𝓛 Y → 𝓛 (X × Y)
@@ -861,12 +860,12 @@ proofs / constructions are essentially the same:
               → (g ♯ ∘ f ♯) l ⋍ ((g ♯ ∘ f)♯) l
  kleisli-law₂ f g l = Σ-assoc , refl
 
- 𝓛→' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓛 X → 𝓛 Y
- 𝓛→' f = (η ∘ f)♯
+ 𝓛̇' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓛 X → 𝓛 Y
+ 𝓛̇' f = (η ∘ f)♯
 
- 𝓛→-agreement : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (l : 𝓛 X)
-              → 𝓛→' f l ⋍· 𝓛→ f l
- 𝓛→-agreement {𝓤} {𝓥} {X} {Y} f (P , i , φ) = 𝟙-rneutral , λ _ → refl
+ 𝓛̇-agreement : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (l : 𝓛 X)
+              → 𝓛̇' f l ⋍· 𝓛̇ f l
+ 𝓛̇-agreement {𝓤} {𝓥} {X} {Y} f (P , i , φ) = 𝟙-rneutral , λ _ → refl
 
 \end{code}
 
