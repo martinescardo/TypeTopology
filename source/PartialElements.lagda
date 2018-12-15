@@ -381,7 +381,7 @@ formulation of the above equivalence:
 
 \end{code}
 
-For no choice of universes 𝓤 and 𝓣 can we have 𝓣 ' ⊔ 𝓤 to coincide
+For no choice of universes 𝓤 and 𝓣 can we have 𝓣 ⁺ ⊔ 𝓤 to coincide
 with 𝓣. However, for some dominances other than is-prop, it is possible to
 have the equality between the fiber of l and the definedness of l.
 
@@ -477,7 +477,7 @@ that there were two candidate proofs for the equality.
 
 \end{code}
 
-Next we show that (l ⊑ m) ≃ (is-defined l → l ≡ m). So that elements
+Next we show that (l ⊑ m) ≃ (is-defined l → l ≡ m), so that elements
 of l ⊑ m can be seen as partial elements of the identity type l ≡ m.
 
 We begin with the following auxiliary construction, which shows that
@@ -663,7 +663,7 @@ pre-category 𝓛 X.
 
 The univalence of 𝓣 is more than we need in the
 following. Propositional extensionality for propositions in 𝓣
-suffices, but the wat we proved this using a general SIP relies on
+suffices, but the what we proved this using a general SIP relies on
 univalence (we could prove a specialized version of the SIP, but this
 is probably not worth the trouble (we'll see)).
 
