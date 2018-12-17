@@ -1,5 +1,5 @@
 In univalent logic, as opposed to Curry-Howard logic, a proposition is
-a prop or a type such that any two of its elements are
+a subsingleton or a type such that any two of its elements are
 identified.
 
 https://www.newton.ac.uk/files/seminar/20170711100011001-1009756.pdf
@@ -110,7 +110,7 @@ The two prototypical propositions:
 
 \end{code}
 
-A type is a set if all its identity types are props. In other
+A type is a set if all its identity types are subsingletons. In other
 words, sets are types for which equality is a proposition (rather than
 data or structure).
 

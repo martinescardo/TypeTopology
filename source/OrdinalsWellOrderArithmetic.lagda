@@ -18,7 +18,8 @@ open import UF-FunExt
 
 \end{code}
 
-Any proposition is an ordinal under the empty ordering.
+Any proposition (i.e. subsingleton) is an ordinal under the empty
+ordering.
 
 \begin{code}
 
@@ -382,9 +383,8 @@ the components:
 
 \end{code}
 
-That it is prop-valued depends only on the fact that the given
-order _<_ {p} on the components of the product are
-prop-valued.
+That it is prop-valued depends only on the fact that the given order
+_<_ {p} on the components of the product are prop-valued.
 
 \begin{code}
 

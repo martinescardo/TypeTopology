@@ -124,7 +124,7 @@ being-equiv-is-a-prop' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                        → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
                        → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-a-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
-                                                            sections-have-at-most-one-retraction' fe'' fe''' f)
+                                                               sections-have-at-most-one-retraction' fe'' fe''' f)
 
 being-equiv-is-a-prop'' : {X Y : 𝓤 ̇}
                         → funext 𝓤 𝓤
@@ -139,10 +139,10 @@ ranges over arbitrary types:
 
 \begin{code}
 
-propext-funext-gives-prop-ua : propext 𝓤 → funext 𝓤 𝓤
-                             → (P : 𝓤 ̇) → is-prop P
-                             → (X : 𝓤 ̇) → is-equiv (idtoeq X P)
-propext-funext-gives-prop-ua {𝓤} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
+propext-funext-give-prop-ua : propext 𝓤 → funext 𝓤 𝓤
+                            → (P : 𝓤 ̇) → is-prop P
+                            → (X : 𝓤 ̇) → is-equiv (idtoeq X P)
+propext-funext-give-prop-ua {𝓤} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
   l (f , _ , (s , fs)) = retract-of-prop (s , (f , fs)) i

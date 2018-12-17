@@ -443,7 +443,8 @@ isod X isp c = f a
   f (inr u) = inr (λ x → u ∣ x , refl ∣)
 
 isod-corollary : {X : 𝓤 ̇} → ∃-compact X → decidable ∥ X ∥
-isod-corollary {𝓤} {X} c = isod ∥ X ∥ propositional-truncation-is-a-prop (surjection-∃-compact ∣_∣ pt-is-surjection c)
+isod-corollary {𝓤} {X} c = isod ∥ X ∥ propositional-truncation-is-a-prop
+                                      (surjection-∃-compact ∣_∣ pt-is-surjection c)
 
 isdni : {X : 𝓤 ̇} → ∃-compact X → ¬¬ X → ∥ X ∥
 isdni {𝓤} {X} c φ = g (isod-corollary c)
@@ -1121,7 +1122,7 @@ TODO.
 * Non-classical cotaboos Every Π-compact subtype of ℕ is finite. Every
   Π-compact subtype of a discrete type is finite. What are the
   cotaboos necessary (and sufficient) to prove that the type of
-  decidable props of ℕ∞→ℕ is Π-compact?  Continuity principles
+  decidable subsingletons of ℕ∞→ℕ is Π-compact?  Continuity principles
   are enough.
 
 * 𝟚-subspace: e:X→Y such that every clopen X→𝟚 extends to some clopen

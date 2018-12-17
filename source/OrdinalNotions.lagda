@@ -295,9 +295,9 @@ being-well-order₂-is-a-prop fe isp = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔
 \end{code}
 
 Experimental ideas. We don't truncate the Σ, at least not for the
-moment, so x <₂ y won't be a proposition in general. However, given
-𝟚-order-separation, this is logically equivalent to a proposition (has
-split support).
+moment, so x <₂ y won't be a proposition (i.e. subsingleton) in
+general. However, given 𝟚-order-separation, this is logically
+equivalent to a proposition (has split support).
 
 \begin{code}
 
