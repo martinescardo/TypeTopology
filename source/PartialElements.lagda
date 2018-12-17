@@ -891,7 +891,66 @@ sup-reflective 𝓣 P i φ l p = {!!}
 
 \end{code}
 
-Another way to define μ, which has a different universe level:
+Added 17th December 2018.
+
+\begin{code}
+
+ double-𝓛-charac : (X : 𝓤 ̇)
+                 → 𝓛 (𝓛 X) ≃ Σ \(P : 𝓣 ̇)
+                                    → (Σ \(Q : P → 𝓣 ̇) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
+                                    × is-prop P
+ double-𝓛-charac X = Σ-cong (λ P → ×-cong (γ X P) (≃-refl (is-prop P)))
+  where
+   γ : (X : 𝓤 ̇) (P : 𝓣 ̇) → (P → 𝓛 X) ≃ (Σ \(Q : P → 𝓣 ̇) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
+   γ X P = (P → Σ \(Q : 𝓣 ̇) → (Q → X) × is-prop Q)                               ≃⟨ ΠΣ-distr-≃ ⟩
+           (Σ \(Q : P → 𝓣 ̇) → (p : P) → ((Q p → X) × is-prop (Q p)))             ≃⟨ Σ-cong (λ Q → →×) ⟩
+           (Σ \(Q : P → 𝓣 ̇) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p))) ■
+
+ 𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-algebra X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ 𝓛̇ s ∼ s ∘ μ)
+
+ 𝓛-algebra' : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-algebra' X =
+   Σ \(sup : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
+           → ((x : X) → sup 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x)
+           × ((P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
+                 → sup i (λ p → sup (j p) (λ q → f (p , q))) ≡ sup (Σ-is-prop i j) f)
+
+\end{code}
+
+We could write a proof of the following by composing equivalences as
+above, but it seems more direct, and just as clear, to write a direct
+proof, by construction of the equivalence and its inverse. This also
+emphasizes that the equivalence is definitional, in the sense that the
+two required equations hold definitionally.
+
+\begin{code}
+
+ 𝓛-algebra-charac' : (X : 𝓤 ̇) → 𝓛-algebra X ≃ 𝓛-algebra' X
+ 𝓛-algebra-charac' X = qinveq f (g , gf , fg)
+  where
+   f : 𝓛-algebra X → 𝓛-algebra' X
+   f (s , a , b) = (λ {P} i u → s (P , u , i)) ,
+                   a ,
+                   (λ P Q i j f → b (P , (λ p → Q p , (λ q → f (p , q)) , j p) , i))
+   g : 𝓛-algebra' X → 𝓛-algebra X
+   g (sup , a , c) = s , a , b
+    where
+     s : 𝓛 X → X
+     s (P , f , i) = sup i f
+     b : (l : 𝓛 (𝓛 X)) → s (𝓛̇ s l) ≡ s (μ l)
+     b (P , g , i) = c P (pr₁ ∘ g) i (λ p → pr₂ (pr₂ (g p))) (λ r → pr₁ (pr₂ (g (pr₁ r))) (pr₂ r))
+   gf : g ∘ f ∼ id
+   gf _ = refl
+   fg : f ∘ g ∼ id
+   fg _ = refl
+
+\end{code}
+
+TODO (easy). The morphisms are the maps that preserve sups.
+
+Remark. Another equivalent way to define μ, which has a different
+universe level:
 
 \begin{code}
 

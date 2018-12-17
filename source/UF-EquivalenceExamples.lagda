@@ -15,6 +15,7 @@ open import UF-Subsingletons-FunExt
 
 module UF-EquivalenceExamples where
 
+
 curry-uncurry : (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
               → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
               → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
@@ -385,6 +386,21 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
     γ : (t : X + Y) → g (f h) t ≡ h t
     γ (inl x) = refl
     γ (inr y) = refl
+
+→× : ∀ {A : 𝓤 ̇} {X : A → 𝓥 ̇} {Y : A → 𝓦 ̇}
+   → ((a : A) → X a × Y a)  ≃ Π X × Π Y
+→× {𝓤} {𝓥} {𝓦} {A} {X} {Y} = qinveq f (g , ε , η)
+ where
+  f : ((a : A) → X a × Y a) → Π X × Π Y
+  f φ = (λ a → pr₁ (φ a)) , (λ a → pr₂ (φ a))
+  g : Π X × Π Y → (a : A) → X a × Y a
+  g (γ , δ) a = γ a , δ a
+  ε : (φ : (a : A) → X a × Y a) → g (f φ) ≡ φ
+  ε φ = refl
+  η : (α : Π X × Π Y) → f (g α) ≡ α
+  η (γ , δ) = refl
+
+
 
 →-cong : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
        → funext 𝓦 𝓣 → funext 𝓤 𝓥
