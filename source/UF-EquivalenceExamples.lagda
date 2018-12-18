@@ -16,19 +16,24 @@ open import UF-Subsingletons-FunExt
 module UF-EquivalenceExamples where
 
 
-curry-uncurry : (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
-              → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
-              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
-curry-uncurry {𝓤} {𝓥} {𝓦} fe {X} {Y} {Z} = qinveq c (u , uc , cu)
+curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦 → funext (𝓤 ⊔ 𝓥) 𝓦
+               → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
+               → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
+curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc , cu)
  where
   c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
   c f x y = f (x , y)
   u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
   u g (x , y) = g x y
   cu : ∀ g → c (u g) ≡ g
-  cu g = dfunext (fe 𝓤 (𝓥 ⊔ 𝓦)) (λ x → dfunext (fe 𝓥 𝓦) (λ y → refl))
+  cu g = dfunext fe (λ x → dfunext fe' (λ y → refl))
   uc : ∀ f → u (c f) ≡ f
-  uc f = dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (λ w → refl)
+  uc f = dfunext fe'' (λ w → refl)
+
+curry-uncurry : (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+              → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
+              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
+curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe 𝓥 𝓦) (fe (𝓤 ⊔ 𝓥) 𝓦)
 
 Σ-≡-≃ : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {σ τ : Σ A}
       → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)

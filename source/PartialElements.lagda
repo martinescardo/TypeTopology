@@ -38,7 +38,7 @@ taken to be in an arbitrary, fixed universe 𝓣.
 
 \begin{code}
 
-module _ (𝓣 : Universe) where
+module lifting (𝓣 : Universe) where
 
  𝓛 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
  𝓛 X = Σ \(P : 𝓣 ̇) → (P → X) × is-prop P
@@ -884,19 +884,29 @@ Added 17th December 2018. This has a connection with injectivity.
            (Σ \(Q : P → 𝓣 ̇) → (p : P) → ((Q p → X) × is-prop (Q p)))             ≃⟨ Σ-cong (λ Q → →×) ⟩
            (Σ \(Q : P → 𝓣 ̇) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p))) ■
 
- 𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
- 𝓛-algebra X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ 𝓛̇ s ∼ s ∘ μ)
+ 𝓛-algebra-official : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-algebra-official X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ 𝓛̇ s ∼ s ∘ μ)
 
- 𝓛-algebra' : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
- 𝓛-algebra' X =
+ 𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-algebra X =
    Σ \(sup : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
            → ((x : X) → sup 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x)
            × ((P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
                  → sup i (λ p → sup (j p) (λ q → f (p , q))) ≡ sup (Σ-is-prop i j) f)
 
+ sup : {X : 𝓤 ̇} → 𝓛-algebra X → {P : 𝓣 ̇} → is-prop P → (P → X) → X
+ sup (s , κ , ι) = s
+
+ const : {X : 𝓤 ̇} (A : 𝓛-algebra X) → (x : X) → sup A 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
+ const (s , κ , ι) = κ
+
+ iterated : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p))
+            (f : Σ Q → X) → sup A i (λ p → sup A (j p) (λ q → f (p , q))) ≡ sup A (Σ-is-prop i j) f
+ iterated (s , κ , ι) = ι
+
 \end{code}
 
-TODO. Rename "sup" to something else.
+TODO (maybe). Rename "sup" to something else ("lim"?).
 
 We could write a proof of the following by composing equivalences as
 above, but it seems more direct, and just as clear, to write a direct
@@ -906,20 +916,20 @@ two required equations hold definitionally.
 
 \begin{code}
 
- 𝓛-algebra-charac' : (X : 𝓤 ̇) → 𝓛-algebra X ≃ 𝓛-algebra' X
+ 𝓛-algebra-charac' : (X : 𝓤 ̇) → 𝓛-algebra-official X ≃ 𝓛-algebra X
  𝓛-algebra-charac' X = qinveq f (g , gf , fg)
   where
-   f : 𝓛-algebra X → 𝓛-algebra' X
-   f (s , a , b) = (λ {P} i u → s (P , u , i)) ,
-                   a ,
-                   (λ P Q i j f → b (P , (λ p → Q p , (λ q → f (p , q)) , j p) , i))
-   g : 𝓛-algebra' X → 𝓛-algebra X
-   g (sup , a , c) = s , a , b
+   f : 𝓛-algebra-official X → 𝓛-algebra X
+   f (s' , κ , ι') = (λ {P} i u → s' (P , u , i)) ,
+                   κ ,
+                   (λ P Q i j f → ι' (P , (λ p → Q p , (λ q → f (p , q)) , j p) , i))
+   g : 𝓛-algebra X → 𝓛-algebra-official X
+   g (s , κ , ι) = s' , κ , ι'
     where
-     s : 𝓛 X → X
-     s (P , f , i) = sup i f
-     b : (l : 𝓛 (𝓛 X)) → s (𝓛̇ s l) ≡ s (μ l)
-     b (P , g , i) = c P (pr₁ ∘ g) i (λ p → pr₂ (pr₂ (g p))) (λ r → pr₁ (pr₂ (g (pr₁ r))) (pr₂ r))
+     s' : 𝓛 X → X
+     s' (P , f , i) = s i f
+     ι' : (l : 𝓛 (𝓛 X)) → s' (𝓛̇ s' l) ≡ s' (μ l)
+     ι' (P , g , i) = ι P (pr₁ ∘ g) i (λ p → pr₂ (pr₂ (g p))) (λ r → pr₁ (pr₂ (g (pr₁ r))) (pr₂ r))
    gf : g ∘ f ∼ id
    gf _ = refl
    fg : f ∘ g ∼ id
@@ -929,11 +939,43 @@ two required equations hold definitionally.
 
 TODO (easy). The morphisms are the maps that preserve sups.
 
+Some laws for structure maps:
+
+\begin{code}
+
+ change-domain : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (i : is-prop P) (Q : 𝓣 ̇) (j : is-prop Q)
+                 (h : P → Q) (k : Q → P) (f : P → X)
+               → is-univalent 𝓣 → sup A i f ≡ sup A j (f ∘ k)
+ change-domain (s , κ , ι) P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → s j (f ∘ -)) a
+  where
+   cd : (r : Q ≡ P) → s i f ≡ s j (f ∘ Idtofun r)
+   cd refl = ap (λ - → s - f) (being-a-prop-is-a-prop (funext-from-univalence ua) i j)
+   e : Q ≃ P
+   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
+   a : Idtofun (eqtoid ua Q P e) ≡ k
+   a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
+
+
+ comm : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (Q : 𝓣 ̇) (i : is-prop P) (j : is-prop Q)
+        (f : P × Q → X)
+      → is-univalent 𝓣 → sup A i (λ p → sup A j (λ q → f (p , q))) ≡ sup A j (λ q → sup A i (λ p → f (p , q)))
+ comm A P Q i j f ua = sup A i (λ p → sup A j (λ q → f (p , q)))                 ≡⟨ a ⟩
+                       sup A (Σ-is-prop i (λ p → j)) f                           ≡⟨ c ⟩
+                       sup A (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨ (b ⁻¹) ⟩
+                       sup A j (λ q → sup A i (λ p → f (p , q)))                 ∎
+  where
+   a = iterated A P (λ _ → Q) i (λ p → j) f
+   b = iterated A Q (λ _ → P) j (λ p → i) (λ t → f (pr₂ t , pr₁ t))
+   c = change-domain A (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
+                     (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
+
+\end{code}
+
 Crucial examples for injectivity.
 
 \begin{code}
 
- universe-is-algebra-Σ : is-univalent 𝓣 → 𝓛-algebra' (𝓣 ̇)
+ universe-is-algebra-Σ : is-univalent 𝓣 → 𝓛-algebra (𝓣 ̇)
  universe-is-algebra-Σ ua = s , u , a
   where
    s : {P : 𝓣 ̇} → is-prop P → (P → 𝓣 ̇) → 𝓣 ̇
@@ -945,10 +987,11 @@ Crucial examples for injectivity.
          s i (λ p → s (j p) (λ q → f (p , q))) ≡ s (Σ-is-prop i j) f
    a P Q i j f = (eqtoid ua (Σ f) (Σ \(p : P) → Σ \(q : Q p) → f(p , q)) Σ-assoc)⁻¹
 
- universe-is-algebra-Π : (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) -- TODO. Remove this assumption.
-                       → is-univalent 𝓣 → 𝓛-algebra' (𝓣 ̇)
- universe-is-algebra-Π fe ua = s , u , a
+ universe-is-algebra-Π : is-univalent 𝓣 → 𝓛-algebra (𝓣 ̇)
+ universe-is-algebra-Π ua = s , u , a
   where
+   fe : funext 𝓣 𝓣
+   fe = funext-from-univalence ua
    s : {P : 𝓣 ̇} → is-prop P → (P → 𝓣 ̇) → 𝓣 ̇
    s {P} i f = Π f
    u : (X : 𝓣 ̇) → s 𝟙-is-prop (λ p → X) ≡ X
@@ -956,7 +999,9 @@ Crucial examples for injectivity.
    a : (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P)
          (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇) →
          s i (λ p → s (j p) (λ q → f (p , q))) ≡ s (Σ-is-prop i j) f
-   a P Q i j f = (eqtoid ua (Π f) (Π \(p : P) → Π \(q : Q p) → f(p , q)) (curry-uncurry fe))⁻¹
+   a P Q i j f = (eqtoid ua (Π f) (Π \(p : P) → Π \(q : Q p) → f(p , q))
+                         (curry-uncurry' fe fe fe))⁻¹
+
 
 \end{code}
 
@@ -969,6 +1014,8 @@ Remark. Another equivalent way to define μ, which has a different
 universe level:
 
 \begin{code}
+
+open lifting
 
 𝓛* : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X
 𝓛* f e (Q , ψ , j) = (Σ \(q : Q) → fiber f (ψ q)) ,
