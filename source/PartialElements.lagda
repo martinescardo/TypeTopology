@@ -869,29 +869,7 @@ proofs / constructions are essentially the same:
 
 \end{code}
 
-Added 8th November 2018. This has a connection with type injectivity.
-
-\begin{code}
-
- pus : {X : 𝓤 ̇} {P : 𝓣 ̇} → 𝓛 X → (P → 𝓛 X)
- pus l p = l
-
- sup : {X : 𝓤 ̇} {P : 𝓣 ̇} → is-prop P → (P → 𝓛 X) → 𝓛 X
- sup {𝓤} {X} {P} i φ = μ (P , φ , i)
-
-{-
-sup-adj : (𝓣 : Universe) {X : 𝓤 ̇} (P : 𝓣 ̇) (i : is-prop P) (φ : P → 𝓛 𝓣 X) (l : 𝓛 𝓣 X)
-        → (_⊑_ 𝓣 (sup 𝓣 i φ) l) ≃ ((p : P) → _⊑_ 𝓣 (φ p) l)
-sup-adj = {!!}
-
-sup-reflective : (𝓣 : Universe) {X : 𝓤 ̇} (P : 𝓣 ̇) (i : is-prop P) (φ : P → 𝓛 𝓣 X) (l : 𝓛 𝓣 X)
-               → (p : P) → φ p ≡ sup 𝓣 i φ
-sup-reflective 𝓣 P i φ l p = {!!}
--}
-
-\end{code}
-
-Added 17th December 2018.
+Added 17th December 2018. This has a connection with injectivity.
 
 \begin{code}
 
@@ -917,6 +895,8 @@ Added 17th December 2018.
                  → sup i (λ p → sup (j p) (λ q → f (p , q))) ≡ sup (Σ-is-prop i j) f)
 
 \end{code}
+
+TODO. Rename "sup" to something else.
 
 We could write a proof of the following by composing equivalences as
 above, but it seems more direct, and just as clear, to write a direct
@@ -948,6 +928,42 @@ two required equations hold definitionally.
 \end{code}
 
 TODO (easy). The morphisms are the maps that preserve sups.
+
+Crucial examples for injectivity.
+
+\begin{code}
+
+ universe-is-algebra-Σ : is-univalent 𝓣 → 𝓛-algebra' (𝓣 ̇)
+ universe-is-algebra-Σ ua = s , u , a
+  where
+   s : {P : 𝓣 ̇} → is-prop P → (P → 𝓣 ̇) → 𝓣 ̇
+   s {P} i f = Σ f
+   u : (X : 𝓣 ̇) → s 𝟙-is-prop (λ p → X) ≡ X
+   u X = eqtoid ua (𝟙 × X) X 𝟙-lneutral
+   a : (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P)
+         (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇) →
+         s i (λ p → s (j p) (λ q → f (p , q))) ≡ s (Σ-is-prop i j) f
+   a P Q i j f = (eqtoid ua (Σ f) (Σ \(p : P) → Σ \(q : Q p) → f(p , q)) Σ-assoc)⁻¹
+
+ universe-is-algebra-Π : (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) -- TODO. Remove this assumption.
+                       → is-univalent 𝓣 → 𝓛-algebra' (𝓣 ̇)
+ universe-is-algebra-Π fe ua = s , u , a
+  where
+   s : {P : 𝓣 ̇} → is-prop P → (P → 𝓣 ̇) → 𝓣 ̇
+   s {P} i f = Π f
+   u : (X : 𝓣 ̇) → s 𝟙-is-prop (λ p → X) ≡ X
+   u X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (funext-from-univalence ua)))
+   a : (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P)
+         (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇) →
+         s i (λ p → s (j p) (λ q → f (p , q))) ≡ s (Σ-is-prop i j) f
+   a P Q i j f = (eqtoid ua (Π f) (Π \(p : P) → Π \(q : Q p) → f(p , q)) (curry-uncurry fe))⁻¹
+
+\end{code}
+
+TODO. The second algebra law corresponds the law for iterated
+extensions proved in the injectivity module.
+
+TODO soon. We also need that retracts of algebras are algebras.
 
 Remark. Another equivalent way to define μ, which has a different
 universe level:
