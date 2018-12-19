@@ -887,12 +887,78 @@ Added 17th December 2018. This has a connection with injectivity.
  𝓛-algebra-official : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
  𝓛-algebra-official X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ 𝓛̇ s ∼ s ∘ μ)
 
+ 𝓛-algebra₀ : {X : 𝓤 ̇} → ({P : 𝓣 ̇} → is-prop P → (P → X) → X) → 𝓤 ̇
+ 𝓛-algebra₀ {𝓤} {X} s = (x : X) → s 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
+
+ 𝓛-algebra₁ : {X : 𝓤 ̇} → ({P : 𝓣 ̇} → is-prop P → (P → X) → X) → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-algebra₁ {𝓤} {X} s = (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
+                           → s i (λ p → s (j p) (λ q → f (p , q))) ≡ s (Σ-is-prop i j) f
+
+ 𝓛-algebra₁' : {X : 𝓤 ̇} → ({P : 𝓣 ̇} → is-prop P → (P → X) → X) → 𝓣 ⁺ ⊔ 𝓤 ̇
+ 𝓛-algebra₁' {𝓤} {X} s = (P Q : 𝓣 ̇) (i : is-prop P) (j : is-prop Q) (f : P × Q → X)
+                              → s i (λ p → s j (λ q → f (p , q))) ≡ s (×-is-prop i j) f
+
+ change-domain : {X : 𝓤 ̇} (s : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
+                 (P : 𝓣 ̇) (i : is-prop P) (Q : 𝓣 ̇) (j : is-prop Q)
+                 (h : P → Q) (k : Q → P) (f : P → X)
+               → is-univalent 𝓣 → s {P} i f ≡ s {Q} j (f ∘ k)
+ change-domain s P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → s j (f ∘ -)) a
+  where
+   cd : (r : Q ≡ P) → s i f ≡ s j (f ∘ Idtofun r)
+   cd refl = ap (λ - → s - f) (being-a-prop-is-a-prop (funext-from-univalence ua) i j)
+   e : Q ≃ P
+   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
+   a : Idtofun (eqtoid ua Q P e) ≡ k
+   a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
+
+ comm : {X : 𝓤 ̇} (s : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
+        (P : 𝓣 ̇) (Q : 𝓣 ̇) (i : is-prop P) (j : is-prop Q) (f : P × Q → X)
+      → is-univalent 𝓣
+      → 𝓛-algebra₁' s
+      → s i (λ p → s j (λ q → f (p , q))) ≡ s j (λ q → s i (λ p → f (p , q)))
+ comm s P Q i j f ua a₁ = s i (λ p → s j (λ q → f (p , q)))                     ≡⟨ a ⟩
+                          s (Σ-is-prop i (λ p → j)) f                           ≡⟨ c ⟩
+                          s (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨ (b ⁻¹) ⟩
+                          s j (λ q → s i (λ p → f (p , q)))                     ∎
+  where
+   a = a₁ P Q i j f
+   b = a₁ Q P j i (λ t → f (pr₂ t , pr₁ t))
+   c = change-domain s (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
+                     (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
+
+ 𝓛-algebra₁-gives₁' : {X : 𝓤 ̇} (s : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
+                     → is-univalent 𝓣 → funext 𝓣 𝓤
+                     → 𝓛-algebra₁ s → 𝓛-algebra₁' s
+ 𝓛-algebra₁-gives₁' {𝓤} {X} s ua fe a P Q i j = a P (λ _ → Q) i (λ p → j)
+
+ 𝓛-algebra₁'-gives₁ : {X : 𝓤 ̇} (s : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
+                     → is-univalent 𝓣 → funext 𝓣 𝓤
+                     → 𝓛-algebra₁' s → 𝓛-algebra₁ s
+ 𝓛-algebra₁'-gives₁ {𝓤} {X} s ua fe a P Q i j f =
+  s {P} i (λ p → s {Q p} (j p) (λ q → f (p , q)))                   ≡⟨ b ⟩
+  s {P} i (λ p → s {Σ Q} (Σ-is-prop i j) ((λ σ → f (p , σ)) ∘ k p)) ≡⟨ c ⟩
+  s {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) f'                      ≡⟨ d ⟩
+  s {Σ Q} (Σ-is-prop i j) (f' ∘ k')                                 ≡⟨ e ⟩
+  s {Σ Q} (Σ-is-prop i j) f ∎
+  where
+   h : (p : P) → Q p → Σ Q
+   h p q = (p , q)
+   k : (p : P) → Σ Q → Q p
+   k p (p' , q) = transport Q (i p' p) q
+   f' : P × Σ Q → X
+   f' (p , p' , q) = f (p , k p (p' , q))
+   k' : Σ Q → P × Σ Q
+   k' (p , q) = p , p , q
+   H : f' ∘ k' ∼ f
+   H (p , q) = ap (λ - → f (p , -)) (j p _ _)
+   b = ap (s {P} i) (dfunext fe (λ p → change-domain s (Q p) (j p) (Σ Q) (Σ-is-prop i j)
+                                                       (h p) (k p) (λ σ → f (p , σ)) ua))
+   c = a P (Σ Q) i (Σ-is-prop i j) (λ z → f (pr₁ z , k (pr₁ z) (pr₂ z)))
+   d = change-domain s (P × Σ Q) (×-is-prop i (Σ-is-prop i j)) (Σ Q) (Σ-is-prop i j) pr₂ k' f' ua
+   e = ap (s {Σ Q} (Σ-is-prop i j)) (dfunext fe H)
+
  𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
- 𝓛-algebra X =
-   Σ \(sup : {P : 𝓣 ̇} → is-prop P → (P → X) → X)
-           → ((x : X) → sup 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x)
-           × ((P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
-                 → sup i (λ p → sup (j p) (λ q → f (p , q))) ≡ sup (Σ-is-prop i j) f)
+ 𝓛-algebra X = Σ \(s : {P : 𝓣 ̇} → is-prop P → (P → X) → X) → 𝓛-algebra₀ s × 𝓛-algebra₁ s
 
  sup : {X : 𝓤 ̇} → 𝓛-algebra X → {P : 𝓣 ̇} → is-prop P → (P → X) → X
  sup (s , κ , ι) = s
@@ -943,10 +1009,10 @@ Some laws for structure maps:
 
 \begin{code}
 
- change-domain : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (i : is-prop P) (Q : 𝓣 ̇) (j : is-prop Q)
+ change-domain' : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (i : is-prop P) (Q : 𝓣 ̇) (j : is-prop Q)
                  (h : P → Q) (k : Q → P) (f : P → X)
                → is-univalent 𝓣 → sup A i f ≡ sup A j (f ∘ k)
- change-domain (s , κ , ι) P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → s j (f ∘ -)) a
+ change-domain' (s , κ , ι) P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → s j (f ∘ -)) a
   where
    cd : (r : Q ≡ P) → s i f ≡ s j (f ∘ Idtofun r)
    cd refl = ap (λ - → s - f) (being-a-prop-is-a-prop (funext-from-univalence ua) i j)
@@ -956,17 +1022,17 @@ Some laws for structure maps:
    a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
 
 
- comm : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (Q : 𝓣 ̇) (i : is-prop P) (j : is-prop Q)
+ comm' : {X : 𝓤 ̇} (A : 𝓛-algebra X) (P : 𝓣 ̇) (Q : 𝓣 ̇) (i : is-prop P) (j : is-prop Q)
         (f : P × Q → X)
       → is-univalent 𝓣 → sup A i (λ p → sup A j (λ q → f (p , q))) ≡ sup A j (λ q → sup A i (λ p → f (p , q)))
- comm A P Q i j f ua = sup A i (λ p → sup A j (λ q → f (p , q)))                 ≡⟨ a ⟩
+ comm' A P Q i j f ua = sup A i (λ p → sup A j (λ q → f (p , q)))                 ≡⟨ a ⟩
                        sup A (Σ-is-prop i (λ p → j)) f                           ≡⟨ c ⟩
                        sup A (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨ (b ⁻¹) ⟩
                        sup A j (λ q → sup A i (λ p → f (p , q)))                 ∎
   where
    a = iterated A P (λ _ → Q) i (λ p → j) f
    b = iterated A Q (λ _ → P) j (λ p → i) (λ t → f (pr₂ t , pr₁ t))
-   c = change-domain A (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
+   c = change-domain' A (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
                      (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
 
 \end{code}
