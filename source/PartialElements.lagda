@@ -995,21 +995,6 @@ equations hold definitionally.
  𝓛-alg-charac : {X : 𝓤 ̇} → 𝓛-algebra X ≃ 𝓛-alg X
  𝓛-alg-charac = qinveq 𝓛-algebra-gives-alg (𝓛-alg-gives-algebra , ((λ _ → refl) , (λ _ → refl)))
 
- change-of-variables-in-join : {X : 𝓤 ̇} (∐ : joinop X)
-                               (P : 𝓣 ̇) (i : is-prop P)
-                               (Q : 𝓣 ̇) (j : is-prop Q)
-                               (h : P → Q) (k : Q → P) (f : P → X)
-                             → is-univalent 𝓣
-                             → ∐ i f ≡ ∐ j (f ∘ k)
-
- change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (f ∘ -)) a
-  where
-   cd : (r : Q ≡ P) → ∐ i f ≡ ∐ j (f ∘ Idtofun r)
-   cd refl = ap (λ - → ∐ - f) (being-a-prop-is-a-prop (funext-from-univalence ua) i j)
-   e : Q ≃ P
-   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
-   a : Idtofun (eqtoid ua Q P e) ≡ k
-   a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
 
 \end{code}
 
@@ -1030,10 +1015,27 @@ equivalent to 𝓛-alg-Law₁:
 
 \end{code}
 
-To establish the converse we need the following commutativity lemma
-for joins, which is interesting on its own right:
+To establish the converse we need the following lemma for joins, which
+is interesting on its own right and also gives commutativity of joins:
 
 \begin{code}
+
+ change-of-variables-in-join : {X : 𝓤 ̇} (∐ : joinop X)
+                               (P : 𝓣 ̇) (i : is-prop P)
+                               (Q : 𝓣 ̇) (j : is-prop Q)
+                               (h : P → Q) (k : Q → P) (f : P → X)
+                             → is-univalent 𝓣
+                             → ∐ i f ≡ ∐ j (f ∘ k)
+
+ change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (f ∘ -)) a
+  where
+   cd : (r : Q ≡ P) → ∐ i f ≡ ∐ j (f ∘ Idtofun r)
+   cd refl = ap (λ - → ∐ - f) (being-a-prop-is-a-prop (funext-from-univalence ua) i j)
+   e : Q ≃ P
+   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
+   a : Idtofun (eqtoid ua Q P e) ≡ k
+   a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
+
 
  𝓛-alg-comm : {X : 𝓤 ̇} (∐ : joinop X)
               (P : 𝓣 ̇) (i : is-prop P)
@@ -1051,8 +1053,7 @@ for joins, which is interesting on its own right:
    a = l₁' P Q i j f
    b = l₁' Q P j i (λ t → f (pr₂ t , pr₁ t))
    c = change-of-variables-in-join ∐ (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
-                     (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
-
+                                   (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
 
  𝓛-alg-Law₁'-gives₁ : {X : 𝓤 ̇} (∐ : joinop X)
                      → is-univalent 𝓣 → funext 𝓣 𝓤
@@ -1111,7 +1112,6 @@ Crucial examples for injectivity.
        (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇)
      → Π (λ p → Π (λ q → f (p , q))) ≡ Π f
    ι P Q i j f = (eqtoid ua _ _ (curry-uncurry' fe fe fe))⁻¹
-
 
 \end{code}
 
