@@ -73,6 +73,8 @@ Its "undefined" element:
 
 \end{code}
 
+##
+
 Our strategy to show that η is an embedding (has subsingleton fibers)
 is to exhibit it as the composite of two embeddings (the first of
 which is actually an equivalence).
@@ -215,22 +217,22 @@ assuming univalence rather than just propositional extensionality
           (λ P ε δ → id)
           (λ A τ υ → refl-left-neutral)
 
-    η-is-embedding' : is-univalent 𝓣 → funext 𝓣 𝓤 → is-embedding (η {𝓤} {X})
-    η-is-embedding' ua fe = embedding-criterion' η c
-     where
-      a = (𝟙 ≃ 𝟙) ≃⟨ ≃-sym (is-univalent-≃ ua 𝟙 𝟙) ⟩
-          (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (funext-from-univalence ua)
-                             (propext-from-univalence ua) 𝟙-is-prop ⟩
-          𝟙       ■
+  η-is-embedding' : is-univalent 𝓣 → funext 𝓣 𝓤 → is-embedding (η {𝓤} {X})
+  η-is-embedding' ua fe = embedding-criterion' η c
+   where
+    a = (𝟙 ≃ 𝟙) ≃⟨ ≃-sym (is-univalent-≃ ua 𝟙 𝟙) ⟩
+        (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (funext-from-univalence ua)
+                           (propext-from-univalence ua) 𝟙-is-prop ⟩
+        𝟙       ■
 
-      b = λ x y → ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
-                  (𝟙 → x ≡ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
-                  (x ≡ y)                 ■
+    b = λ x y → ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩
+                (𝟙 → x ≡ y)             ≃⟨ ≃-sym (𝟙→ fe) ⟩
+                (x ≡ y)                 ■
 
-      c = λ x y → (η x ≡ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
-                  (𝟙 ≃ 𝟙) × ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩
-                  𝟙 × (x ≡ y)                       ≃⟨ 𝟙-lneutral ⟩
-                  (x ≡ y)                           ■
+    c = λ x y → (η x ≡ η y)                       ≃⟨ 𝓛-Id ua (η x) (η y) ⟩
+                (𝟙 ≃ 𝟙) × ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ×-cong a (b x y) ⟩
+                𝟙 × (x ≡ y)                       ≃⟨ 𝟙-lneutral ⟩
+                (x ≡ y)                           ■
 
 \end{code}
 
@@ -771,6 +773,10 @@ Yet another equivalence:
     β (f , δ) = to-×-≡ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
                        (dfunext fe' (λ x → ap δ (𝟙-is-prop * x)))
 
+  Id-via-lifting : funext 𝓣 𝓣 → funext 𝓣 𝓤
+                 → {x y : X} → (x ≡ y) ≃ (η x ⊑ η y)
+  Id-via-lifting fe fe' = η-≡-gives-⊑ , η-≡-gives-⊑-is-equiv fe fe'
+
 \end{code}
 
 Added 7th November 2018. (Strong) 'Monad' structure on 𝓛.
@@ -1010,7 +1016,7 @@ equivalent to 𝓛-alg-Law₁:
 
 
  𝓛-alg-Law₁-gives₁' : {X : 𝓤 ̇} (∐ : joinop X)
-                     → 𝓛-alg-Law₁ ∐ → 𝓛-alg-Law₁' ∐
+                    → 𝓛-alg-Law₁ ∐ → 𝓛-alg-Law₁' ∐
  𝓛-alg-Law₁-gives₁' {𝓤} {X} ∐ a P Q i j = a P (λ _ → Q) i (λ p → j)
 
 \end{code}
@@ -1120,15 +1126,20 @@ universe level:
 
 \begin{code}
 
-open lifting
+module another-way-to-define-μ where
 
-𝓛* : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X
-𝓛* f e (Q , ψ , j) = (Σ \(q : Q) → fiber f (ψ q)) ,
-                      (λ p → pr₁ (pr₂ p)) ,
-                      Σ-is-prop j (e ∘ ψ)
+ open lifting
 
-μ* : (𝓣 𝓣' : Universe) {X : 𝓤 ̇} → funext 𝓣 𝓣 → funext 𝓣' 𝓣' → funext 𝓣' 𝓤 → funext 𝓤 (𝓤 ⊔ (𝓣' ⁺)) → propext 𝓣'
-  → 𝓛 𝓣 (𝓛 𝓣' X) → 𝓛 (𝓤 ⊔ 𝓣 ⊔ (𝓣' ⁺)) X
-μ* {𝓤} 𝓣 𝓣' {X} fe fe' fe'' fe''' pe = 𝓛* (η 𝓣') (η-is-embedding 𝓣' pe fe' fe'' fe''')
+ 𝓛* : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X
+ 𝓛* f e (Q , ψ , j) = (Σ \(q : Q) → fiber f (ψ q)) ,
+                       (λ p → pr₁ (pr₂ p)) ,
+                       Σ-is-prop j (e ∘ ψ)
+
+ μ* : (𝓣 𝓣' : Universe) {X : 𝓤 ̇} → funext 𝓣 𝓣 → funext 𝓣' 𝓣' → funext 𝓣' 𝓤 → funext 𝓤 (𝓤 ⊔ (𝓣' ⁺)) → propext 𝓣'
+   → 𝓛 𝓣 (𝓛 𝓣' X) → 𝓛 (𝓤 ⊔ 𝓣 ⊔ (𝓣' ⁺)) X
+ μ* {𝓤} 𝓣 𝓣' {X} fe fe' fe'' fe''' pe = 𝓛* (η 𝓣') (η-is-embedding 𝓣' pe fe' fe'' fe''')
 
 \end{code}
+
+Suppose that A is injective. Then A a is a retract of a power of a universe.
+It is also a retract of an algebra
