@@ -1,9 +1,7 @@
 Martin Escardo 7th November 2018.
 
 (Strong) 'Monad' structure on 𝓛.
-(Again the proofs are simplified by the use of SIP.)
-
-Constructions:
+Again the proofs are simplified by the use of SIP.
 
 \begin{code}
 
@@ -25,6 +23,12 @@ open import UF-UA-FunExt
 open import Lifting 𝓣
 open import LiftingIdentityViaSIP 𝓣
 
+\end{code}
+
+Constructions:
+
+\begin{code}
+
 𝓛̇ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓛 X → 𝓛 Y
 𝓛̇ f (P , φ , i) = P , f ∘ φ , i
 
@@ -38,7 +42,9 @@ _♯ f (P , φ , i) = (Σ \(p : P) → is-defined (f (φ p))) ,
 
 \end{code}
 
-Laws:
+We now give the monad laws.
+
+Functoriality holds definitionally:
 
 \begin{code}
 
@@ -49,11 +55,25 @@ Laws:
      → 𝓛̇ (g ∘ f) ≡ 𝓛̇ g ∘ 𝓛̇ f
 𝓛̇-∘ f g = refl
 
+\end{code}
+
+And so do the naturality laws if we use appropriate notions of
+equality in each case. The second is of course equivalent to identity,
+but not definitionally.
+
+\begin{code}
+
 η-natural : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → η ∘ f ≡ 𝓛̇ f ∘ η
 η-natural f = refl
 
 μ-natural : {X : 𝓤 ̇} {Y : 𝓤 ̇} (f : X → Y) → 𝓛̇ f ∘ μ ∼ μ ∘ 𝓛̇ (𝓛̇ f)
 μ-natural f _ = refl
+
+\end{code}
+
+We unit laws amount to the laws P × 𝟙 ≃ P and 𝟙 × P ≃ P:
+
+\begin{code}
 
 𝓛-unit-right : {X : 𝓤 ̇} (l : 𝓛 X) → μ (𝓛̇ η l) ⋍ l
 𝓛-unit-right (P , φ , i) = e , refl
@@ -67,12 +87,18 @@ Laws:
   e : 𝟙 × P ≃ P
   e = 𝟙-lneutral
 
+\end{code}
+
+The associativity of multiplication amounts to the associativity of Σ:
+
+\begin{code}
+
 𝓛-assoc : {X : 𝓤 ̇} (l : 𝓛 (𝓛 (𝓛 X))) → μ (μ l) ⋍ μ (𝓛̇ μ l)
 𝓛-assoc (P , φ) = Σ-assoc , refl
 
 \end{code}
 
-Strength:
+Strengths:
 
 \begin{code}
 
@@ -81,6 +107,13 @@ Strength:
 
 𝓛-τ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → 𝓛 X × Y → 𝓛 (X × Y)
 𝓛-τ (l , y) = 𝓛̇ (λ x → (x , y)) l
+
+\end{code}
+
+The monad is commutative, with its commutativity amounting to that of
+_×_:
+
+\begin{code}
 
 𝓛-comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} {l : 𝓛 X × 𝓛 Y}
        → μ (𝓛̇ 𝓛-σ (𝓛-τ l)) ⋍· μ (𝓛̇ 𝓛-τ (𝓛-σ l))
