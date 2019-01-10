@@ -43,6 +43,14 @@ import InfCompact
 import LawvereFPT
 import LexicographicOrder
 import LexicographicCompactness
+import Lifting
+import LiftingEmbeddingDirectly
+import LiftingIdentityViaSIP
+import LiftingEmbeddingViaSIP
+import LiftingUnivalentPrecategory
+import LiftingMonad
+import LiftingMonadVariation
+import LiftingAlgebras
 import LPO
 import Lumsdaine
 import NaturalsAddition
