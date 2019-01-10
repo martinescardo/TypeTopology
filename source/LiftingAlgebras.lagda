@@ -25,7 +25,6 @@ open import LiftingMonad 𝓣
 
 \end{code}
 
-
 An element of 𝓛(𝓛 X) amounts to a family of partial elements of X
 indexed by a proposition:
 
@@ -48,18 +47,33 @@ The usual definition of algebra of a monad:
 
 \begin{code}
 
-
 𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-algebra X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ 𝓛̇ s ∼ s ∘ μ)
 
 \end{code}
 
-Which we will describe in terms of "join" operations subject to two laws:
+We can describe algebras in terms of "join" operations subject to two
+laws:
 
 \begin{code}
 
 joinop : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 joinop X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
+
+\end{code}
+
+The intuitive idea is that a "join" operation on X consists of, for
+each proposition P, a map (P → X) → X that "puts together" the
+elements of a family f : X → P to get an element ∐ f of X.
+
+Unfortunately, we won't be able to write simply ∐ f in Agda notation,
+as the witness that P is a proposition can almost never be
+automatically inferred and hence has to be written explicitly.
+
+To characterize algebras, the join operations have two satisfy the
+following two laws:
+
+\begin{code}
 
 𝓛-alg-Law₀ : {X : 𝓤 ̇} → joinop X → 𝓤 ̇
 𝓛-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
@@ -68,13 +82,30 @@ joinop X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
 𝓛-alg-Law₁ {𝓤} {X} ∐ = (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
                           → ∐ i (λ p → ∐ (j p) (λ q → f (p , q))) ≡ ∐ (Σ-is-prop i j) f
 
+\end{code}
+
+Omitting the witnesses of proposition-hood, the above two laws can be
+written in more standard mathematical notation as follows.
+
+    ∐  x = x
+   p:𝟙
+
+    ∐   ∐   f (p , q) =   ∐          f r
+   p:P q:Q              r : Σ {P} Q
+
+
+\begin{code}
+
 𝓛-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg X = Σ \(∐ : joinop X) → 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
 \end{code}
 
-Before proving that we have an equivalence 𝓛-algebra X ≃ 𝓛-alg X, we
-characterize the algebra morphisms in terms of joins (unfortunately
+Before proving that we have an equivalence
+
+  𝓛-algebra X ≃ 𝓛-alg X,
+
+we characterize the algebra morphisms in terms of joins (unfortunately
 overloading is not available):
 
 \begin{code}
@@ -90,7 +121,14 @@ overloading is not available):
 
 \end{code}
 
-The algebra morphisms are the maps that preserve joins.
+The algebra morphisms are the maps that preserve joins. Omitting the
+first argument of ⋁, the following says that the morphisms are the
+maps h : X → Y with
+
+ h (⋁ f) ≡ ⋁ h (f p)
+           p:P
+
+for all f:P→X.
 
 \begin{code}
 
@@ -98,7 +136,8 @@ The algebra morphisms are the maps that preserve joins.
                     (s : 𝓛 X → X) (t : 𝓛 Y → Y)
                     (h : X → Y)
 
-   → (h ∘ s ∼ t ∘ 𝓛̇ h) ≃ ({P : 𝓣 ̇} (i : is-prop P) (f : P → X) → h (⋁ s i f) ≡ ⋁ t i (λ p → h (f p)))
+                  → (h ∘ s ∼ t ∘ 𝓛̇ h)
+                  ≃ ({P : 𝓣 ̇} (i : is-prop P) (f : P → X) → h (⋁ s i f) ≡ ⋁ t i (λ p → h (f p)))
 𝓛-morphism-charac s t h = qinveq (λ H {P} i f → H (P , f , i))
                                  ((λ {π (P , f , i) → π {P} i f}) ,
                                  (λ _ → refl) ,
@@ -157,6 +196,18 @@ equivalent to 𝓛-alg-Law₁:
 𝓛-alg-Law₁' {𝓤} {X} ∐ = (P Q : 𝓣 ̇) (i : is-prop P) (j : is-prop Q) (f : P × Q → X)
                              → ∐ i (λ p → ∐ j (λ q → f (p , q))) ≡ ∐ (×-is-prop i j) f
 
+\end{code}
+
+The difference with 𝓛-alg-Law₁ is that the family f has type P × Q → X
+rather than Σ {P} Q, and so the modified, logically equivalent law
+amounts to
+
+    ∐   ∐   f (p , q) =   ∐        f r
+   p:P q:Q              r : P × Q
+
+One direction of the logical equivalence is trivial:
+
+\begin{code}
 
 𝓛-alg-Law₁-gives₁' : {X : 𝓤 ̇} (∐ : joinop X)
                    → 𝓛-alg-Law₁ ∐ → 𝓛-alg-Law₁' ∐
@@ -165,7 +216,16 @@ equivalent to 𝓛-alg-Law₁:
 \end{code}
 
 To establish the converse we need the following lemma for joins, which
-is interesting on its own right and also gives commutativity of joins:
+is interesting on its own right,
+
+  ∐  f p ≡ ∐  f (k q),
+ p:P      q:Q
+
+and also gives self-distributivity of joins:
+
+  ∐   ∐  f (p , q) =   ∐   ∐  f (p , q)
+ p:P q:Q              q:Q p:P
+
 
 \begin{code}
 
@@ -185,24 +245,29 @@ change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (
   a : Idtofun (eqtoid ua Q P e) ≡ k
   a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
 
+𝓛-alg-self-distr : {X : 𝓤 ̇} (∐ : joinop X)
+                   (P : 𝓣 ̇) (i : is-prop P)
+                   (Q : 𝓣 ̇) (j : is-prop Q)
+                 → is-univalent 𝓣
+                 → 𝓛-alg-Law₁' ∐
+                 → (f : P × Q → X) → ∐ i (λ p → ∐ j (λ q → f (p , q)))
+                                   ≡ ∐ j (λ q → ∐ i (λ p → f (p , q)))
 
-𝓛-alg-comm : {X : 𝓤 ̇} (∐ : joinop X)
-             (P : 𝓣 ̇) (i : is-prop P)
-             (Q : 𝓣 ̇) (j : is-prop Q)
-           → is-univalent 𝓣
-           → 𝓛-alg-Law₁' ∐
-           → (f : P × Q → X) → ∐ i (λ p → ∐ j (λ q → f (p , q)))
-                             ≡ ∐ j (λ q → ∐ i (λ p → f (p , q)))
-
-𝓛-alg-comm ∐ P i Q j ua l₁' f = ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ≡⟨ a ⟩
-                                ∐ (Σ-is-prop i (λ p → j)) f                           ≡⟨ c ⟩
-                                ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨(b ⁻¹)⟩
-                                ∐ j (λ q → ∐ i (λ p → f (p , q)))                     ∎
+𝓛-alg-self-distr ∐ P i Q j ua l₁' f = ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ≡⟨ a ⟩
+                                      ∐ (Σ-is-prop i (λ p → j)) f                           ≡⟨ c ⟩
+                                      ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨(b ⁻¹)⟩
+                                      ∐ j (λ q → ∐ i (λ p → f (p , q)))                     ∎
  where
   a = l₁' P Q i j f
   b = l₁' Q P j i (λ t → f (pr₂ t , pr₁ t))
   c = change-of-variables-in-join ∐ (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
                                   (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
+
+\end{code}
+
+Using this we can prove the other direction of the logical equivalence claimed above:
+
+\begin{code}
 
 𝓛-alg-Law₁'-gives₁ : {X : 𝓤 ̇} (∐ : joinop X)
                     → is-univalent 𝓣 → funext 𝓣 𝓤
@@ -232,7 +297,9 @@ change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (
 
 \end{code}
 
-Crucial examples for injectivity.
+The following examples are crucial for injectivity. They say that the
+universe is an algebra in at least two ways, with ∐ = Σ and ∐ = Π
+respectively.
 
 \begin{code}
 

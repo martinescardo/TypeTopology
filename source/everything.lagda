@@ -10,6 +10,9 @@
 
    https://github.com/martinescardo/TypeTopology
 
+   A module dependency graph (updated manually from time to time) is
+   available at https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf
+
    Clickable index:
 
 \begin{code}
