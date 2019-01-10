@@ -1140,6 +1140,3 @@ module another-way-to-define-μ where
  μ* {𝓤} 𝓣 𝓣' {X} fe fe' fe'' fe''' pe = 𝓛* (η 𝓣') (η-is-embedding 𝓣' pe fe' fe'' fe''')
 
 \end{code}
-
-Suppose that A is injective. Then A a is a retract of a power of a universe.
-It is also a retract of an algebra
