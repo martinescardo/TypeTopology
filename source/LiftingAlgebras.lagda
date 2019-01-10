@@ -85,7 +85,7 @@ following two laws:
 \end{code}
 
 Omitting the witnesses of proposition-hood, the above two laws can be
-written in more standard mathematical notation as follows.
+written in more standard mathematical notation as follows:
 
     ∐  x = x
    p:𝟙
@@ -125,8 +125,8 @@ The algebra morphisms are the maps that preserve joins. Omitting the
 first argument of ⋁, the following says that the morphisms are the
 maps h : X → Y with
 
- h (⋁ f) ≡ ⋁ h (f p)
-           p:P
+  h (⋁ f) ≡ ⋁ h (f p)
+            p:P
 
 for all f:P→X.
 
@@ -199,7 +199,7 @@ equivalent to 𝓛-alg-Law₁:
 \end{code}
 
 The difference with 𝓛-alg-Law₁ is that the family f has type P × Q → X
-rather than Σ {P} Q, and so the modified, logically equivalent law
+rather than Σ {P} Q → X, and so the modified, logically equivalent law
 amounts to
 
     ∐   ∐   f (p , q) =   ∐        f r
