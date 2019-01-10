@@ -1,7 +1,11 @@
 Martin Escardo December 2018.
 
-The lifting of a type forms a univalent precategory with hom types l ⊑
-m, which is a partial order if the type is a set.
+The lifting of a type forms a univalent precategory with hom types l ⊑ m,
+which is a partial order if the type is a set.
+
+At the moment we don't have categories in this development, but this
+doesn't prevent us from giving this particular example of a univalent
+category.
 
 \begin{code}
 
@@ -30,6 +34,12 @@ open import UF-StructureIdentityPrinciple
 
 open import Lifting 𝓣
 open import LiftingIdentityViaSIP 𝓣
+\end{code}
+
+We define l ⊑ m to mean that if l is defined than so is m with the
+same value:
+
+\begin{code}
 
 _⊑_ : 𝓛 X → 𝓛 X → 𝓤 ⊔ 𝓣 ̇
 l ⊑ m = Σ \(f : is-defined l → is-defined m) → value l ∼ value m ∘ f
@@ -69,7 +79,7 @@ component. (Hence this precategory should qualify as an ∞-category,
 with all coherence laws satisfied automatically, except that there is
 at present no definition of ∞-category in univalent type theory.)
 
-It follows that if X is a set, then _⊑_ is a partial order:
+If X is a set, then _⊑_ is a partial order:
 
 \begin{code}
 
@@ -166,7 +176,8 @@ For no choice of universes 𝓤 and 𝓣 can we have 𝓣 ⁺ ⊔ 𝓤 to coinci
 with 𝓣. However, for some dominances other than is-prop, it is possible to
 have the equality between the fiber of l and the definedness of l.
 
-The following simplified proof of ⊑-anti uses the SIP.
+The following simplified proof of ⊑-anti uses the SIP via the
+construction of _⋍·_ in another module:
 
 \begin{code}
 
@@ -351,6 +362,14 @@ Using this we have the following, as promised:
   d = ≃-sym ΠΣ-distr-≃
   e = →-cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
 
+\end{code}
+
+And we also get the promised map l ⊑ m → 𝓛 (l ≡ m) that regards
+elements of hom-type l ⊑ m as partial element of identity the type l ≡ m.
+(Conjectural conjecture: this map is an embedding.)
+
+\begin{code}
+
 ⊑-lift : is-univalent 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤) → funext 𝓣 (𝓣 ⊔ 𝓤)
        → (l m : 𝓛 X) → l ⊑ m → 𝓛 (l ≡ m)
 ⊑-lift ua fe₀ fe₁ fe₂ l m α = is-defined l ,
@@ -443,7 +462,7 @@ pre-category 𝓛 X.
 
 The univalence of 𝓣 is more than we need in the
 following. Propositional extensionality for propositions in 𝓣
-suffices, but the what we proved this using a general SIP relies on
+suffices, but the way we proved this using a general SIP relies on
 univalence (we could prove a specialized version of the SIP, but this
 is probably not worth the trouble (we'll see)).
 
