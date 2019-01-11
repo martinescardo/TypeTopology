@@ -119,6 +119,13 @@ overloading is not available):
 ∐ : {X : 𝓤 ̇} → 𝓛-alg X → joinop X
 ∐ (∐ , κ , ι) = ∐
 
+law₀ : {X : 𝓤 ̇} (a : 𝓛-alg X) → 𝓛-alg-Law₀ (∐ a)
+law₀ (∐ , κ , ι) = κ
+
+law₁ : {X : 𝓤 ̇} (a : 𝓛-alg X) → 𝓛-alg-Law₁ (∐ a)
+law₁ (∐ , κ , ι) = ι
+
+
 \end{code}
 
 The algebra morphisms are the maps that preserve joins. Omitting the
@@ -307,17 +314,17 @@ operations. More generally:
          → ((x : X) → 𝓛-alg (A x)) → 𝓛-alg (Π A)
 Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
  where
-  ∐· : joinop (Π A)
-  ∐· i f x = pr₁ (α x) i (λ p → f p x)
+  ∐· : {P : 𝓣 ̇} → is-prop P → (P → Π A) → Π A
+  ∐· i f x = ∐ (α x) i (λ p → f p x)
   l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ≡ φ
-  l₀ φ = dfunext fe (λ x → pr₁ (pr₂ (α x)) (φ x))
+  l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
   l₁ : (P : 𝓣 ̇) (Q : P → 𝓣 ̇)
        (i : is-prop P) (j : (p : P) → is-prop (Q p))
        (f : Σ Q → Π A)
       →
         ∐· i (λ p → ∐· (j p) (λ q → f (p , q)))
       ≡ ∐· (Σ-is-prop i j) f
-  l₁ P Q i j f = dfunext fe (λ x → pr₂ (pr₂ (α x)) P Q i j (λ σ → f σ x))
+  l₁ P Q i j f = dfunext fe (λ x → law₁ (α x) P Q i j (λ σ → f σ x))
 
 \end{code}
 
