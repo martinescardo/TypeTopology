@@ -297,6 +297,33 @@ Using this we can prove the other direction of the logical equivalence claimed a
 
 \end{code}
 
+The algebras form an exponential ideal with the pointwise
+operations. More generally:
+
+\begin{code}
+
+Π-is-alg : funext 𝓤 𝓥
+         → {X : 𝓤 ̇} (A : X → 𝓥 ̇)
+         → ((x : X) → 𝓛-alg (A x)) → 𝓛-alg (Π A)
+Π-is-alg {𝓤} {𝓥} fe {X} A α = ∐· , l₀ , l₁
+ where
+  ∐· : joinop (Π A)
+  ∐· i f x = pr₁ (α x) i (λ p → f p x)
+  l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ≡ φ
+  l₀ φ = dfunext fe (λ x → pr₁ (pr₂ (α x)) (φ x))
+  l₁ : (P : 𝓣 ̇) (Q : P → 𝓣 ̇)
+       (i : is-prop P) (j : (p : P) → is-prop (Q p))
+       (f : Σ Q → Π A)
+      →
+        ∐· i (λ p → ∐· (j p) (λ q → f (p , q)))
+      ≡ ∐· (Σ-is-prop i j) f
+  l₁ P Q i j f = dfunext fe (λ x → pr₂ (pr₂ (α x)) P Q i j (λ σ → f σ x))
+
+\end{code}
+
+This is the case for any monad, but the way we proved this above with
+using our characterizations of the algebras applies only to our monad.
+
 The following examples are crucial for injectivity. They say that the
 universe is an algebra in at least two ways, with ∐ = Σ and ∐ = Π
 respectively.
