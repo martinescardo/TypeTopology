@@ -1,4 +1,4 @@
-Martin Escardo, 27 April 2014, with later additions, 2017, `2018, 2019.
+Martin Escardo, 27 April 2014, with later additions, 2017, 2018, 2019.
 
 We show that the injective types are the retracts of the exponential
 powers of universes, where an exponential power of a type D is a type
@@ -435,9 +435,12 @@ data rather than property):
 
 \begin{code}
 
+injective_over_ : 𝓦 ̇ → {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+injective D over j = (f : domain j → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
+
 injective-type : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 injective-type {𝓤} {𝓥} D = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                         → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
+                         → injective D over j
 
 universes-are-injective-Π : is-univalent 𝓤 → injective-type {𝓤} {𝓤} (𝓤 ̇)
 universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
@@ -915,48 +918,61 @@ module ∖-extension-is-embedding
 
 \end{code}
 
-Added 23rd Nov 2018 (think of more meaningful names for the
-definitions in this module):
+Added 23rd Nov 2018, version of 21st January 2017:
 
 \begin{code}
 
-module more-general-extension
-        (D : 𝓦 ̇)
-        (s : (P : 𝓤 ̇) → is-prop P → (P → D) → D)
-        (rs : (P : 𝓤 ̇) (i : is-prop P) (α : P → D) → (λ (p : P) → s P i α) ≡ α)
-        (X : 𝓤 ̇)
-        (Y : 𝓤 ̇)
-        (j : X → Y)
-        (e : is-embedding j)
-       where
+Flabby : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓦 ⊔ (𝓤 ⁺) ⊔ 𝓥 ̇
+Flabby D 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → injective D over (λ (p : P) → * {𝓥})
 
- r : (P : 𝓤 ̇) → D → (P → D)
- r P d p = d
-
- s-extension : (X → D) → (Y → D)
- s-extension f y = s (fiber j y) (e y) (λ (w : fiber j y) → f (pr₁ w))
- is-extension : (f : X → D) (x : X) → s-extension f (j x) ≡ f x
- is-extension f x = γ
-  where
-   P = fiber j (j x)
-   φ : (λ (p : P) → s P (e (j x)) (λ w → f (pr₁ w))) ≡ (λ w → f (pr₁ w))
-   φ = rs P (e (j x)) (λ w → f (pr₁ w))
-
-   γ : s P (e (j x)) (λ w → f (pr₁ w)) ≡ f x
-   γ = ap (λ - → - (x , refl)) φ
+injective-types-are-Flabby : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → Flabby D 𝓤 𝓥
+injective-types-are-Flabby {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) ,
+                                                     pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
 
 {-
- extension-embedding : ((P : 𝓤 ̇) (i : is-prop P) → is-embedding (s P i)) → is-embedding s-extension
- extension-embedding es g = γ
-  where
-   q : (Σ \(f : X → D) → s-extension f ≡ g) ≃ {!!}
-   q = {!!}
-   P = Σ \(f : X → D) → s-extension f ≡ g
-   γ : is-prop P
-   γ = {!!}
+Flabby-types-are-injective : (D : 𝓦 ̇) → Flabby D 𝓤 𝓥 → injective-type {𝓤} {𝓥} D
+Flabby-types-are-injective {𝓤} {𝓥} {𝓦} D φ P isp f = {!!}
 -}
 
+flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
+flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
+
+injective-types-are-flabby' : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → flabby D 𝓤
+injective-types-are-flabby' {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
+                                                      pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
+
 \end{code}
+
+This is all very well, but we want more general universe levels:
+
+\begin{code}
+
+{-
+injective-types-are-flabby : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → flabby D (𝓤 ⊔ 𝓥)
+injective-types-are-flabby {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i j {!!} {!!}) {!!} ,
+                                                     {!!}
+ where
+  j : 𝟙 {𝓤} × {!!} → 𝟙 {𝓥}
+  j = {!!}
+  e : {!!}
+  e = {!!}
+-}
+
+flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type {𝓤} {𝓥} D
+flabby-types-are-injective D φ {X} {Y} j e f = f' , p
+ where
+  f' : Y → D
+  f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
+  p : (x : X) → f' (j x) ≡ f x
+  p x = q (x , refl)
+   where
+    q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
+    q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
+
+\end{code}
+
+TODO. Show that the extension induced by flabbiness is an embedding of
+function types.
 
 Added 21st January 2019.
 
@@ -1025,6 +1041,9 @@ module ∃-injective (pt : PropTrunc) where
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D
    φ = retract-Of-injective (power-of-injective (universes-are-injective-Π ua))
+
+ ∃-flabby : 𝓦 ̇ → (𝓣 : Universe) → 𝓦 ⊔ 𝓣 ⁺ ̇
+ ∃-flabby D 𝓣 = (P : 𝓣 ̇) → is-prop P → (f : P → D) → ∃ \(d : D) → (p : P) → f p ≡ d
 
 \end{code}
 
