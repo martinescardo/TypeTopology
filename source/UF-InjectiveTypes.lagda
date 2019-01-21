@@ -961,6 +961,3 @@ module more-general-extension
 -}
 
 \end{code}
-
-TODO (done on paper). The injective types are precisely the
-(underlying types of) the algebras of the lifting monad.
