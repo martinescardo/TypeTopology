@@ -1,4 +1,4 @@
-Martin Escardo, 27 April 2014, with later additions, completed in December 2017
+Martin Escardo, 27 April 2014, with later additions, 2017, `2018, 2019.
 
 We show that the injective types are the retracts of the exponential
 powers of universes, where an exponential power of a type D is a type
@@ -1028,4 +1028,7 @@ module ∃-injective (pt : PropTrunc) where
 
 \end{code}
 
-TODO. Improve the universe levels in the last few facts.
+TODO. Improve the universe levels in the last few facts. (Using
+propositional resizing, the lifting of a type lives in the same
+universe as the type. Because the lifting is always injective and
+embeds the type, we can use it in place of (D → 𝓤 ̇) to host D.)
