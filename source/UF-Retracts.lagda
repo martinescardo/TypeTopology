@@ -33,7 +33,6 @@ retract-of-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                         → is-prop Y
 retract-of-prop (r , s , rs) = subtype-of-prop-is-a-prop s
                                         (has-retraction-lc s (r , rs))
-
 identity-retraction : {X : 𝓤 ̇} → retract X of X
 identity-retraction = id , (id , λ x → refl)
 

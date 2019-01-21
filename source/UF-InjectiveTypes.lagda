@@ -445,26 +445,22 @@ universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 universes-are-injective-Σ : is-univalent 𝓤 → injective-type {𝓤} {𝓤} (𝓤 ̇)
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-retract-of-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+retract-Of-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
                      → injective-type {𝓦} {𝓣} D
                      → retract D' Of D
                      → injective-type D'
-retract-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , go
+retract-Of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , γ
   where
     s : D' → D
     s d' = pr₁ (ρ d')
-
     rs : r ∘ s ∼ id
     rs d' = pr₂(ρ d')
-
     g : Y → D
     g = pr₁(i j e (s ∘ f))
-
     h : g ∘ j ∼ s ∘ f
     h = pr₂(i j e (s ∘ f))
-
-    go : r ∘ g ∘ j ∼ f
-    go x = ap r (h x) ∙ rs (f x)
+    γ : r ∘ g ∘ j ∼ f
+    γ x = ap r (h x) ∙ rs (f x)
 
 open import UF-IdEmbedding
 
@@ -961,3 +957,75 @@ module more-general-extension
 -}
 
 \end{code}
+
+Added 21st January 2019.
+
+\begin{code}
+
+open import UF-PropTrunc
+
+module ∃-injective (pt : PropTrunc) where
+
+ open PropositionalTruncation pt
+
+ ∃-injective-type : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+ ∃-injective-type {𝓤} {𝓥} D = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+                             → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
+
+
+ ∃-injectivity-is-a-prop : (D : 𝓦 ̇) → is-prop (∃-injective-type {𝓤} {𝓥} D)
+ ∃-injectivity-is-a-prop {𝓤} {𝓥} {𝓦} D = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+                                            (λ X → Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                              (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                                (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                                  (λ e → Π-is-prop (fe (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                                    (λ f → propositional-truncation-is-a-prop)))))
+
+
+ injective-gives-∃-injective : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → ∃-injective-type {𝓤} {𝓥} D
+ injective-gives-∃-injective D i j e f = ∣ i j e f ∣
+
+ ∥injective∥-gives-∃-injective : (D : 𝓦 ̇) → ∥ injective-type {𝓤} {𝓥} D ∥ → ∃-injective-type {𝓤} {𝓥} D
+ ∥injective∥-gives-∃-injective D = ptrec (∃-injectivity-is-a-prop D) (injective-gives-∃-injective D)
+
+ retract-of-∃-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+                        → ∃-injective-type {𝓦} {𝓣} D
+                        → retract D' of D
+                        → ∃-injective-type {𝓦} {𝓣} D'
+ retract-of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , (s , rs)) {X} {Y} j e f = γ
+  where
+   i' : ∃ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f
+   i' = i j e (s ∘ f)
+   φ : (Σ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f) → Σ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
+   φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
+   γ : ∃ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
+   γ = ptfunct φ i'
+
+ retract-Of-∃-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+                        → ∃-injective-type {𝓦} {𝓣} D
+                        → ∥ retract D' Of D ∥
+                        → ∃-injective-type {𝓦} {𝓣} D'
+ retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i = ptrec (∃-injectivity-is-a-prop D')
+                                                             (retract-of-∃-injective i ∘ retract-Of-retract-of)
+
+ ∃-injective-retract-of-power-of-universe : {D : 𝓤 ̇} → is-univalent 𝓤
+                                          → ∃-injective-type D → ∥ retract D Of (D → 𝓤 ̇) ∥
+ ∃-injective-retract-of-power-of-universe ua i = ptfunct retract-of-retract-Of γ
+  where
+    a : ∃ \r  → r ∘ Id ∼ id
+    a = i Id (UA-Id-embedding ua fe) id
+    φ : (Σ \r  → r ∘ Id ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
+    φ (r , p) = r , Id , p
+    γ : ∃ \r  → Σ \s → r ∘ s ∼ id
+    γ = ptfunct φ a
+
+ ∃-injective-gives-∥injective∥ : is-univalent 𝓤
+                              → (D : 𝓤 ̇) → ∃-injective-type {𝓤} {𝓤 ⁺} D → ∥ injective-type {𝓤} {𝓤} D ∥
+ ∃-injective-gives-∥injective∥ {𝓤} ua D i = ptfunct φ (∃-injective-retract-of-power-of-universe ua i)
+  where
+   φ : retract D Of (D → 𝓤 ̇) → injective-type D
+   φ = retract-Of-injective (power-of-injective (universes-are-injective-Π ua))
+
+\end{code}
+
+TODO. Improve the universe levels in the last few facts.
