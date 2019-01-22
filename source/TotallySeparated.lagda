@@ -515,7 +515,7 @@ open neighbourhoods are equal).
 \begin{code}
 
 𝟚-sober : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓦 ̇
-𝟚-sober {𝓤} {𝓦} A = 𝟚-separated A × ((X : 𝓤 ̇) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
+𝟚-sober {𝓦} {𝓤} A = 𝟚-separated A × ((X : 𝓤 ̇) (e : A → X) → is-equiv(dual 𝟚 e) → is-equiv e)
 
 \end{code}
 

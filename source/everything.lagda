@@ -120,12 +120,8 @@ import UF-Univalence
 import UF-Yoneda
 import UnivalenceFromScratch
 
-import FamiliesMonad    -- Under development.
 import PartialElements
-
-import Cubical          -- Not yet used in this development.
-import Cubical-HoTT-UF
-
+import FamiliesMonad    -- Under development.
 
 \end{code}
 

@@ -438,20 +438,21 @@ data rather than property):
 injective_over_ : 𝓦 ̇ → {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 injective D over j = (f : domain j → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
 
-injective-type : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
-injective-type {𝓤} {𝓥} D = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                         → injective D over j
+injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+                      → injective D over j
 
-universes-are-injective-Π : is-univalent 𝓤 → injective-type {𝓤} {𝓤} (𝓤 ̇)
+
+universes-are-injective-Π : is-univalent 𝓤 → injective-type (𝓤 ̇) 𝓤 𝓤
 universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 
-universes-are-injective-Σ : is-univalent 𝓤 → injective-type {𝓤} {𝓤} (𝓤 ̇)
+universes-are-injective-Σ : is-univalent 𝓤 → injective-type (𝓤 ̇) 𝓤 𝓤
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
 retract-Of-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
-                     → injective-type {𝓦} {𝓣} D
+                     → injective-type D 𝓦 𝓣
                      → retract D' Of D
-                     → injective-type D'
+                     → injective-type D' 𝓦 𝓣
 retract-Of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , γ
   where
     s : D' → D
@@ -468,15 +469,15 @@ retract-Of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e
 open import UF-IdEmbedding
 
 injective-retract-of-power-of-universe : {D : 𝓤 ̇} → is-univalent 𝓤
-                                       → injective-type D → retract D Of (D → 𝓤 ̇)
+                                       → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
 injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
 
 power-of-injective : {D : 𝓤 ̇} {A : 𝓥 ̇}
-                   → injective-type {𝓦} {𝓣} D
-                   → injective-type (A → D)
+                   → injective-type D 𝓦 𝓣
+                   → injective-type (A → D) 𝓦 𝓣
 power-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {A} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
@@ -925,10 +926,11 @@ Added 23rd Nov 2018, version of 21st January 2017:
 Flabby : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓦 ⊔ (𝓤 ⁺) ⊔ 𝓥 ̇
 Flabby D 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → injective D over (λ (p : P) → * {𝓥})
 
-injective-types-are-Flabby : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → Flabby D 𝓤 𝓥
+{-
+injective-types-are-Flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → Flabby D 𝓤 𝓥
 injective-types-are-Flabby {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) ,
                                                      pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
-
+-}
 {-
 Flabby-types-are-injective : (D : 𝓦 ̇) → Flabby D 𝓤 𝓥 → injective-type {𝓤} {𝓥} D
 Flabby-types-are-injective {𝓤} {𝓥} {𝓦} D φ P isp f = {!!}
@@ -937,9 +939,11 @@ Flabby-types-are-injective {𝓤} {𝓥} {𝓦} D φ P isp f = {!!}
 flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
 flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
 
-injective-types-are-flabby' : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → flabby D 𝓤
+{-
+injective-types-are-flabby' : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → flabby D 𝓤
 injective-types-are-flabby' {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
                                                       pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
+-}
 
 \end{code}
 
@@ -958,7 +962,7 @@ injective-types-are-flabby {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i j {!!} {!
   e = {!!}
 -}
 
-flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type {𝓤} {𝓥} D
+flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
 flabby-types-are-injective D φ {X} {Y} j e f = f' , p
  where
   f' : Y → D
@@ -984,30 +988,31 @@ module ∃-injective (pt : PropTrunc) where
 
  open PropositionalTruncation pt
 
- ∃-injective-type : 𝓦 ̇ → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
- ∃-injective-type {𝓤} {𝓥} D = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                             → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
+ ∃-injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+ ∃-injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+                         → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 
 
- ∃-injectivity-is-a-prop : (D : 𝓦 ̇) → is-prop (∃-injective-type {𝓤} {𝓥} D)
- ∃-injectivity-is-a-prop {𝓤} {𝓥} {𝓦} D = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
-                                            (λ X → Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-                                              (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-                                                (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-                                                  (λ e → Π-is-prop (fe (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-                                                    (λ f → propositional-truncation-is-a-prop)))))
+ ∃-injectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → is-prop (∃-injective-type D 𝓤 𝓥)
+ ∃-injectivity-is-a-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+                                        (λ X → Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                          (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                            (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                              (λ e → Π-is-prop (fe (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
+                                                (λ f → propositional-truncation-is-a-prop)))))
 
 
- injective-gives-∃-injective : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → ∃-injective-type {𝓤} {𝓥} D
+ injective-gives-∃-injective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → ∃-injective-type D 𝓤 𝓥
  injective-gives-∃-injective D i j e f = ∣ i j e f ∣
 
- ∥injective∥-gives-∃-injective : (D : 𝓦 ̇) → ∥ injective-type {𝓤} {𝓥} D ∥ → ∃-injective-type {𝓤} {𝓥} D
- ∥injective∥-gives-∃-injective D = ptrec (∃-injectivity-is-a-prop D) (injective-gives-∃-injective D)
+ ∥injective∥-gives-∃-injective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥ → ∃-injective-type D 𝓤 𝓥
+ ∥injective∥-gives-∃-injective {𝓦} {𝓤} {𝓥} D = ptrec (∃-injectivity-is-a-prop D 𝓤 𝓥)
+                                                     (injective-gives-∃-injective D)
 
  retract-of-∃-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
-                        → ∃-injective-type {𝓦} {𝓣} D
+                        → ∃-injective-type D 𝓦 𝓣
                         → retract D' of D
-                        → ∃-injective-type {𝓦} {𝓣} D'
+                        → ∃-injective-type D' 𝓦 𝓣
  retract-of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , (s , rs)) {X} {Y} j e f = γ
   where
    i' : ∃ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f
@@ -1018,14 +1023,14 @@ module ∃-injective (pt : PropTrunc) where
    γ = ptfunct φ i'
 
  retract-Of-∃-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
-                        → ∃-injective-type {𝓦} {𝓣} D
+                        → ∃-injective-type D 𝓦 𝓣
                         → ∥ retract D' Of D ∥
-                        → ∃-injective-type {𝓦} {𝓣} D'
- retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i = ptrec (∃-injectivity-is-a-prop D')
+                        → ∃-injective-type D' 𝓦 𝓣
+ retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i = ptrec (∃-injectivity-is-a-prop D' 𝓦 𝓣)
                                                              (retract-of-∃-injective i ∘ retract-Of-retract-of)
 
  ∃-injective-retract-of-power-of-universe : {D : 𝓤 ̇} → is-univalent 𝓤
-                                          → ∃-injective-type D → ∥ retract D Of (D → 𝓤 ̇) ∥
+                                          → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ retract D Of (D → 𝓤 ̇) ∥
  ∃-injective-retract-of-power-of-universe ua i = ptfunct retract-of-retract-Of γ
   where
     a : ∃ \r  → r ∘ Id ∼ id
@@ -1036,10 +1041,10 @@ module ∃-injective (pt : PropTrunc) where
     γ = ptfunct φ a
 
  ∃-injective-gives-∥injective∥ : is-univalent 𝓤
-                              → (D : 𝓤 ̇) → ∃-injective-type {𝓤} {𝓤 ⁺} D → ∥ injective-type {𝓤} {𝓤} D ∥
+                              → (D : 𝓤 ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥
  ∃-injective-gives-∥injective∥ {𝓤} ua D i = ptfunct φ (∃-injective-retract-of-power-of-universe ua i)
   where
-   φ : retract D Of (D → 𝓤 ̇) → injective-type D
+   φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
    φ = retract-Of-injective (power-of-injective (universes-are-injective-Π ua))
 
  ∃-flabby : 𝓦 ̇ → (𝓣 : Universe) → 𝓦 ⊔ 𝓣 ⁺ ̇
