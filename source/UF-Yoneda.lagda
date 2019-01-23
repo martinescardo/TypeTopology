@@ -133,18 +133,18 @@ universal elements in the sense of category theory.
 
 \begin{code}
 
-is-universal-element : {X : 𝓤 ̇} {A : X → 𝓥 ̇} → Σ A → 𝓤 ⊔ 𝓥 ̇
-is-universal-element {𝓤} {𝓥} {X} {A} (x , a) =
+is-universal-element-of : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → Σ A → 𝓤 ⊔ 𝓥 ̇
+is-universal-element-of {𝓤} {𝓥} {X} A (x , a) =
    (y : X) (b : A y) → Σ \(p : x ≡ y) → yoneda-nat x A a y p ≡ b
 
 universal-element-is-the-only-element : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (σ : Σ A)
-                                      → is-universal-element σ
-                                      → is-the-only-element σ
+                                      → is-universal-element-of A σ
+                                      → is-the-only-element-of (Σ A) σ
 universal-element-is-the-only-element (x , a) u (y , b) = to-Σ-≡ (u y b)
 
 unique-element-is-universal-element : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (σ : Σ A)
-                                    → is-the-only-element σ
-                                    → is-universal-element σ
+                                    → is-the-only-element-of (Σ A) σ
+                                    → is-universal-element-of A σ
 unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡ (φ(y , b))
 
 \end{code}
@@ -158,9 +158,8 @@ considered below.
 
 \begin{code}
 
-universality-section : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
-                       {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
-                     → is-universal-element (x , a)
+universality-section : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+                     → is-universal-element-of A (x , a)
                      → (y : X) → has-section (yoneda-nat x A a y)
 universality-section {𝓤} {𝓥} {X} {A} x a u y = s y , φ y
  where
@@ -169,10 +168,9 @@ universality-section {𝓤} {𝓥} {X} {A} x a u y = s y , φ y
   φ : (y : X) (b : A y) → yoneda-nat x A a y (s y b) ≡ b
   φ y b = pr₂ (u y b)
 
-section-universality : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
-                       {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+section-universality : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
                      → ((y : X) → has-section(yoneda-nat x A a y))
-                     → is-universal-element (x , a)
+                     → is-universal-element-of A (x , a)
 section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
 
 \end{code}
@@ -193,7 +191,7 @@ Yoneda-section-forth : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x
                      → ∃! A → (y : X) → has-section (η y)
 Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
  where
-  u : is-universal-element (x , yoneda-elem x A η)
+  u : is-universal-element-of A (x , yoneda-elem x A η)
   u = unique-element-is-universal-element A
         (x , yoneda-elem x A η)
         (singletons-are-props i (x , yoneda-elem x A η))
@@ -210,7 +208,7 @@ Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
   h = yoneda-lemma x A η
   g : ∀ y → has-section (yoneda-nat x A (yoneda-elem x A η) y)
   g y = has-section-closed-under-∼ (η y) (yoneda-nat x A (yoneda-elem x A η) y) (φ y) (h y)
-  u : is-universal-element (x , yoneda-elem x A η)
+  u : is-universal-element-of A (x , yoneda-elem x A η)
   u = section-universality x (yoneda-elem x A η) g
   c : ∃! A
   c = (x , yoneda-elem x A η) , (universal-element-is-the-only-element (x , yoneda-elem x A η) u)
@@ -330,18 +328,16 @@ We are interested in the following corollaries:
 
 \begin{code}
 
-universality-equiv : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
-                     {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
-                   → is-universal-element (x , a)
+universality-equiv : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+                   → is-universal-element-of A (x , a)
                    → (y : X) → is-equiv(yoneda-nat x A a y)
 universality-equiv {𝓤} {𝓥} {X} {A} x a u = nats-with-sections-are-equivs x
                                              (yoneda-nat x A a)
                                              (universality-section x a u)
 
-equiv-universality : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
-                     {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+equiv-universality : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
                    → ((y : X) → is-equiv(yoneda-nat x A a y))
-                   → is-universal-element (x , a)
+                   → is-universal-element-of A (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 Yoneda-Theorem-forth : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
@@ -531,9 +527,8 @@ illustration.
 
 \begin{code}
 
-singleton-types-are-singletons-bis : ∀ {𝓤} → -- remove this when issue #3516 is fixed
-                                     {X : 𝓤 ̇} (x : X)
-                                  → is-the-only-element (x , refl)
+singleton-types-are-singletons-bis : {X : 𝓤 ̇} (x : X)
+                                   → is-the-only-element-of (singleton-type x) (x , refl)
 singleton-types-are-singletons-bis {𝓤} {X} x (y , p) = yoneda-const η y p
  where
   η : (y : X) → x ≡ y → singleton-type x

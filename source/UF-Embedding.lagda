@@ -85,12 +85,12 @@ embedding-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
 embedding'-embedding : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → is-embedding' f → is-embedding f
 embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
-  e : (x x' : X) → is-the-only-element (x , refl)
-  e x x' = universal-element-is-the-only-element
-             (x , refl)
-             (equiv-universality x refl (ise x))
+  e : (x : X) → is-the-only-element-of (Σ \(x' : X) → f x ≡ f x') (x , refl)
+  e x = universal-element-is-the-only-element
+         (x , refl)
+         (equiv-universality x refl (ise x))
   h : (x : X) → is-prop (fiber' f (f x))
-  h x σ τ = σ ≡⟨ (e x (pr₁ σ) σ)⁻¹ ⟩ (x , refl) ≡⟨ e x (pr₁ τ) τ ⟩ τ ∎
+  h x σ τ = σ ≡⟨ (e x σ)⁻¹ ⟩ (x , refl) ≡⟨ e x τ ⟩ τ ∎
   g' : (y : Y) → is-prop (fiber' f y)
   g' y (x , p) = transport (λ - → is-prop (Σ \(x' : X) → - ≡ f x')) (p ⁻¹) (h x) (x , p)
   g : (y : Y) → is-prop (fiber f y)

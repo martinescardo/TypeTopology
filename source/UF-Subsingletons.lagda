@@ -56,11 +56,11 @@ univalent type theory.
 
 \begin{code}
 
-is-the-only-element : {X : 𝓤 ̇} → X → 𝓤 ̇
-is-the-only-element c = ∀ x → c ≡ x
+is-the-only-element-of : (X : 𝓤 ̇) → X → 𝓤 ̇
+is-the-only-element-of X c = (x : X) → c ≡ x
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ \(c : X) → is-the-only-element c
+is-singleton X = Σ \(c : X) → is-the-only-element-of X c
 
 singleton-types-are-pointed : {X : 𝓤 ̇} → is-singleton X → X
 singleton-types-are-pointed = pr₁
@@ -71,8 +71,8 @@ For compatibility with the homotopical terminology:
 
 \begin{code}
 
-is-center-of-contraction : {X : 𝓤 ̇} → X → 𝓤 ̇
-is-center-of-contraction = is-the-only-element
+is-center-of-contraction-of : (X : 𝓤 ̇) → X → 𝓤 ̇
+is-center-of-contraction-of = is-the-only-element-of
 
 is-contr : 𝓤 ̇ → 𝓤 ̇
 is-contr = is-singleton
@@ -243,7 +243,7 @@ singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
 singleton-types-are-singletons : {X : 𝓤 ̇} (x₀ : X) → is-singleton(singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
 
-singleton-types-are-singletons' : {X : 𝓤 ̇} {x : X} → is-the-only-element {𝓤} {singleton-type x} (x , refl)
+singleton-types-are-singletons' : {X : 𝓤 ̇} {x : X} → is-the-only-element-of (singleton-type x) (x , refl)
 singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
 
 singleton-types-are-props : {X : 𝓤 ̇} (x : X) → is-prop(singleton-type x)
