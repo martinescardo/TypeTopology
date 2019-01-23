@@ -125,7 +125,7 @@ module _ (pt : propositional-truncations-exist) where
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇} (p : X → 𝟚)
                             → (∀ (x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀
- forall₁-implies-not-exists₀ p α = ptrec 𝟘-is-prop h
+ forall₁-implies-not-exists₀ p α = ∥∥-rec 𝟘-is-prop h
   where
    h : (Σ \x → p x ≡ ₀) → 𝟘
    h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)

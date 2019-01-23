@@ -19,7 +19,6 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇) → is-equiv(idtoeq X Y)
 global-univalence : Uω
 global-univalence = (𝓤 : Universe) → is-univalent 𝓤
 
-
 eqtoid : is-univalent 𝓤 → (X Y : 𝓤 ̇) → X ≃ Y → X ≡ Y
 eqtoid ua X Y = pr₁(pr₁(ua X Y))
 

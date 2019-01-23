@@ -1010,14 +1010,14 @@ module ∃-injective (pt : propositional-truncations-exist) where
                                           (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                             (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                               (λ e → Π-is-prop (fe (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-                                                (λ f → propositional-truncation-is-a-prop)))))
+                                                (λ f → ∥∥-is-a-prop)))))
 
 
  injective-gives-∃-injective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → ∃-injective-type D 𝓤 𝓥
  injective-gives-∃-injective D i j e f = ∣ i j e f ∣
 
  ∥injective∥-gives-∃-injective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥ → ∃-injective-type D 𝓤 𝓥
- ∥injective∥-gives-∃-injective {𝓦} {𝓤} {𝓥} D = ptrec (∃-injectivity-is-a-prop D 𝓤 𝓥)
+ ∥injective∥-gives-∃-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (∃-injectivity-is-a-prop D 𝓤 𝓥)
                                                      (injective-gives-∃-injective D)
 
  retract-of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
@@ -1031,29 +1031,29 @@ module ∃-injective (pt : propositional-truncations-exist) where
    φ : (Σ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f) → Σ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
    γ : ∃ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
-   γ = ptfunct φ i'
+   γ = ∥∥-funct φ i'
 
  retract-Of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                         → ∃-injective-type D 𝓦 𝓣
                         → ∥ retract D' Of D ∥
                         → ∃-injective-type D' 𝓦 𝓣
- retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} D' D i = ptrec (∃-injectivity-is-a-prop D' 𝓦 𝓣)
+ retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} D' D i = ∥∥-rec (∃-injectivity-is-a-prop D' 𝓦 𝓣)
                                                        (retract-of-∃-injective D' D i ∘ retract-Of-retract-of)
 
  ∃-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                           → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ retract D Of (D → 𝓤 ̇) ∥
- ∃-injective-retract-of-power-of-universe D ua i = ptfunct retract-of-retract-Of γ
+ ∃-injective-retract-of-power-of-universe D ua i = ∥∥-funct retract-of-retract-Of γ
   where
     a : ∃ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
     φ : (Σ \r  → r ∘ Id ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
     φ (r , p) = r , Id , p
     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
-    γ = ptfunct φ a
+    γ = ∥∥-funct φ a
 
  ∃-injective-gives-∥injective∥ : is-univalent 𝓤
                               → (D : 𝓤 ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥
- ∃-injective-gives-∥injective∥ {𝓤} ua D i = ptfunct φ (∃-injective-retract-of-power-of-universe D ua i)
+ ∃-injective-gives-∥injective∥ {𝓤} ua D i = ∥∥-funct φ (∃-injective-retract-of-power-of-universe D ua i)
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
    φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))

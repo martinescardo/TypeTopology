@@ -34,17 +34,17 @@ module PropositionalTruncation' (pt : ∀ 𝓤 → propositional-truncations-exi
  ∥_∥ : 𝓤 ̇ → 𝓤 ̇
  ∥ X ∥ = pr₁ (pt (universe-of X) X)
 
- propositional-truncation-is-a-prop : {X : 𝓤 ̇} → is-prop(∥ X ∥)
- propositional-truncation-is-a-prop {𝓤} {X} = pr₁(pr₂(pt (universe-of X) X))
+ ∥∥-is-a-prop : {X : 𝓤 ̇} → is-prop(∥ X ∥)
+ ∥∥-is-a-prop {𝓤} {X} = pr₁(pr₂(pt (universe-of X) X))
 
  ∣_∣ : {X : 𝓤 ̇} → X → ∥ X ∥
  ∣ x ∣ = pr₁(pr₂(pr₂(pt (universe-of(type-of x)) (type-of x)))) x
 
- ptrec : {X Y : 𝓤 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
- ptrec {𝓤} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
+ ∥∥-rec : {X Y : 𝓤 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
+ ∥∥-rec {𝓤} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
 
- ptfunct : {X Y : 𝓤 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
- ptfunct f = ptrec propositional-truncation-is-a-prop (λ x → ∣ f x ∣)
+ ∥∥-funct : {X Y : 𝓤 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ∥∥-funct f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥

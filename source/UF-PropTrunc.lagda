@@ -23,9 +23,9 @@ assumption.
 record propositional-truncations-exist : Uω where
  field
   ∥_∥ : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
-  propositional-truncation-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇} → is-prop ∥ X ∥
+  ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇} → is-prop ∥ X ∥
   ∣_∣ : {𝓤 : Universe} {X : 𝓤 ̇} → X → ∥ X ∥
-  ptrec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
+  ∥∥-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
  infix 0 ∥_∥
  infix 0 ∣_∣
 
@@ -34,7 +34,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  open propositional-truncations-exist pt public
 
  is-singleton'-is-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
- is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-a-prop fe) (λ _ → propositional-truncation-is-a-prop)
+ is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-a-prop fe) (λ _ → ∥∥-is-a-prop)
 
  c-es₁ : {X : 𝓤 ̇} → is-singleton X ⇔ is-prop X × ∥ X ∥
  c-es₁ {𝓤} {X} = f , g
@@ -43,10 +43,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    f (x , φ) = singletons-are-props (x , φ) , ∣ x ∣
 
    g : is-prop X × ∥ X ∥ → is-singleton X
-   g (i , s) = ptrec i id s , i (ptrec i id s)
+   g (i , s) = ∥∥-rec i id s , i (∥∥-rec i id s)
 
- ptfunct : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
- ptfunct f = ptrec propositional-truncation-is-a-prop (λ x → ∣ f x ∣)
+ ∥∥-funct : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ∥∥-funct f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
@@ -55,22 +55,22 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  P ∨ Q = ∥ P + Q ∥
 
  left-fails-then-right-holds : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-prop Q → P ∨ Q → ¬ P → Q
- left-fails-then-right-holds i d u = ptrec i (λ d → Left-fails-then-right-holds d u) d
+ left-fails-then-right-holds i d u = ∥∥-rec i (λ d → Left-fails-then-right-holds d u) d
 
  right-fails-then-left-holds : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-prop P → P ∨ Q → ¬ Q → P
- right-fails-then-left-holds i d u = ptrec i (λ d → Right-fails-then-left-holds d u) d
+ right-fails-then-left-holds i d u = ∥∥-rec i (λ d → Right-fails-then-left-holds d u) d
 
  pt-gdn : {X : 𝓤 ̇} → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇) → is-prop P → (X → P) → P
- pt-gdn {𝓤} {X} s {𝓥} P isp u = ptrec isp u s
+ pt-gdn {𝓤} {X} s {𝓥} P isp u = ∥∥-rec isp u s
 
  gdn-pt : {X : 𝓤 ̇} → (∀ {𝓥} (P : 𝓥 ̇) → is-prop P → (X → P) → P) → ∥ X ∥
- gdn-pt {𝓤} {X} φ = φ ∥ X ∥ propositional-truncation-is-a-prop ∣_∣
+ gdn-pt {𝓤} {X} φ = φ ∥ X ∥ ∥∥-is-a-prop ∣_∣
 
  pt-dn : {X : 𝓤 ̇} → ∥ X ∥ → ¬¬ X
  pt-dn s = pt-gdn s 𝟘 𝟘-is-prop
 
  binary-choice : {X : 𝓤 ̇} {Y : 𝓥 ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
- binary-choice s t = ptrec propositional-truncation-is-a-prop (λ x → ptrec propositional-truncation-is-a-prop (λ y → ∣ x , y ∣) t) s
+ binary-choice s t = ∥∥-rec ∥∥-is-a-prop (λ x → ∥∥-rec ∥∥-is-a-prop (λ y → ∣ x , y ∣) t) s
 
  infixr 0 _∨_
 

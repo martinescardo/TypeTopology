@@ -31,7 +31,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
 
  restriction-embedding : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                       → is-embedding(restriction f)
- restriction-embedding f = pr₁-embedding (λ y → propositional-truncation-is-a-prop)
+ restriction-embedding f = pr₁-embedding (λ y → ∥∥-is-a-prop)
 
 
  corestriction : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
@@ -59,13 +59,13 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
 
  corestriction-surjection : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                          → is-surjection (corestriction f)
- corestriction-surjection f (y , s) = ptfunct g s
+ corestriction-surjection f (y , s) = ∥∥-funct g s
   where
    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
-   g (x , p) = x , to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
+   g (x , p) = x , to-Σ-≡ (p , ∥∥-is-a-prop _ _)
 
  pt-is-surjection : {X : 𝓤 ̇} → is-surjection(λ(x : X) → ∣ x ∣)
- pt-is-surjection t = ptrec propositional-truncation-is-a-prop (λ x → ∣ x , propositional-truncation-is-a-prop (∣ x ∣) t ∣) t
+ pt-is-surjection t = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ x , ∥∥-is-a-prop (∣ x ∣) t ∣) t
 
 \end{code}
 
@@ -79,14 +79,14 @@ Surjections can be characterized as follows, modulo size:
 
  surjection-induction : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                       → is-surjection f → imageInduction {𝓦} f
- surjection-induction f is P isp a y = ptrec (isp y)
+ surjection-induction f is P isp a y = ∥∥-rec (isp y)
                                              (λ σ → transport P (pr₂ σ) (a (pr₁ σ)))
                                              (is y)
 
  image-surjection-converse : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                            → imageInduction f → is-surjection f
  image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ≡ y) ∥)
-                                       (λ y → propositional-truncation-is-a-prop)
+                                       (λ y → ∥∥-is-a-prop)
                                        (λ x → ∣ x , refl ∣)
 
  image-induction : ∀ {𝓦} {X : 𝓤 ̇} {Y : 𝓥 ̇}

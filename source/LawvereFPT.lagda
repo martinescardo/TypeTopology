@@ -181,7 +181,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  LFPT : {A : 𝓤 ̇} {X : 𝓥 ̇} (φ : A → (A → X))
       → is-surjection φ
       → (f : X → X) → ∃ \(x : X) → x ≡ f x
- LFPT {𝓤} {𝓥} {A} {X} φ s f = ptfunct γ e
+ LFPT {𝓤} {𝓥} {A} {X} φ s f = ∥∥-funct γ e
   where
    g : A → X
    g a = f (φ a a)
@@ -214,7 +214,7 @@ module surjection-version (pt : propositional-truncations-exist) where
      (𝓤 𝓥 : Universe) (A : 𝓥 ̇) (φ : A → (A → 𝓤 ̇))
    → is-surjection φ
    → (X : 𝓤 ̇) (f : X → X) → ∃ \(x : X) → x ≡ f x
- cantor-theorem-for-universes 𝓤 𝓥 A φ s X f = ptfunct g t
+ cantor-theorem-for-universes 𝓤 𝓥 A φ s X f = ∥∥-funct g t
   where
    t : ∃ \(B : 𝓤 ̇) → B ≡ (B → X)
    t = LFPT φ s (λ B → B → X)
@@ -224,7 +224,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  Cantor-theorem-for-universes :
      (𝓤 𝓥 : Universe) (A : 𝓥 ̇)
    → (φ : A → (A → 𝓤 ̇)) → ¬(is-surjection φ)
- Cantor-theorem-for-universes 𝓤 𝓥 A r h = 𝟘-elim(ptrec 𝟘-is-prop pr₁ c)
+ Cantor-theorem-for-universes 𝓤 𝓥 A r h = 𝟘-elim(∥∥-rec 𝟘-is-prop pr₁ c)
   where
    c : ∃ \(x : 𝟘) → x ≡ x
    c = cantor-theorem-for-universes 𝓤 𝓥 A r h 𝟘 id
@@ -232,7 +232,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  cantor-theorem :
      (𝓤 𝓥 : Universe) (A : 𝓥 ̇)
    → funext 𝓤 𝓤₀ → (φ : A → (A → Ω 𝓤)) → ¬(is-surjection φ)
- cantor-theorem 𝓤 𝓥 A fe φ s = ptrec 𝟘-is-prop (retract-version.not-no-fp fe) t
+ cantor-theorem 𝓤 𝓥 A fe φ s = ∥∥-rec 𝟘-is-prop (retract-version.not-no-fp fe) t
   where
    t : ∃ \(B : Ω 𝓤) → B ≡ not fe B
    t = LFPT φ s (not fe)
@@ -247,13 +247,13 @@ module surjection-version (pt : propositional-truncations-exist) where
  open import Two
 
  cantor-uncountable : ¬ Σ \(φ : ℕ → (ℕ → 𝟚)) → is-surjection φ
- cantor-uncountable (φ , s) = ptrec 𝟘-is-prop (uncurry complement-no-fp) t
+ cantor-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry complement-no-fp) t
   where
    t : ∃ \(n : 𝟚) → n ≡ complement n
    t = LFPT φ s complement
 
  baire-uncountable : ¬ Σ \(φ : ℕ → (ℕ → ℕ)) → is-surjection φ
- baire-uncountable (φ , s) = ptrec 𝟘-is-prop (uncurry succ-no-fp) t
+ baire-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry succ-no-fp) t
   where
    t : ∃ \(n : ℕ) → n ≡ succ n
    t = LFPT φ s succ
@@ -332,13 +332,13 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  Universe-discretely-regular : {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇)
                              → is-discrete A → ¬(is-surjection X)
- Universe-discretely-regular {𝓤} {𝓥} {A} X d s = ptrec 𝟘-is-prop n e
+ Universe-discretely-regular {𝓤} {𝓥} {A} X d s = ∥∥-rec 𝟘-is-prop n e
   where
    B : 𝓤 ⊔ 𝓥 ̇
    B = pr₁(universe-discretely-regular {𝓤} {𝓥} {A} X d)
    φ : ∀ a → ¬(X a ≡ B)
    φ = pr₂(universe-discretely-regular {𝓤} {𝓥} {A} X d)
-   e : ∥(Σ \a → X a ≡ B)∥
+   e : ∃ \a → X a ≡ B
    e = s B
    n : ¬(Σ \a → X a ≡ B)
    n = uncurry φ
@@ -366,12 +366,12 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
  Π-projection-has-section {𝓤} {𝓥} {𝓦} {A} {X} fe fe' pe a₀ ish = s , rs
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
-   s φ a x = ∥(Σ \(p : a ≡ a₀) → φ (transport X p x) holds)∥ , propositional-truncation-is-a-prop
+   s φ a x = (∃ \(p : a ≡ a₀) → φ (transport X p x) holds) , ∥∥-is-a-prop
    rs : (φ : X a₀ → Ω (𝓤 ⊔ 𝓦)) → s φ a₀ ≡ φ
    rs φ = dfunext fe γ
     where
-     a : (x₀ : X a₀) → ∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥ → φ x₀ holds
-     a x₀ = ptrec (holds-is-prop (φ x₀)) f
+     a : (x₀ : X a₀) → (∃ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) → φ x₀ holds
+     a x₀ = ∥∥-rec (holds-is-prop (φ x₀)) f
       where
        f : (Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) → φ x₀ holds
        f (p , h) = transport _holds t h
@@ -380,10 +380,10 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
          r = ish p refl
          t : φ (transport X p x₀) ≡ φ x₀
          t = ap (λ - → φ(transport X - x₀)) r
-     b : (x₀ : X a₀) → φ x₀ holds → ∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥
+     b : (x₀ : X a₀) → φ x₀ holds → ∃ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds
      b x₀ h = ∣ refl , h ∣
-     γ : (x₀ : X a₀) → (∥(Σ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds)∥ , propositional-truncation-is-a-prop) ≡ φ x₀
-     γ x₀ = to-Σ-≡ (pe propositional-truncation-is-a-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+     γ : (x₀ : X a₀) → (∃ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) , ∥∥-is-a-prop ≡ φ x₀
+     γ x₀ = to-Σ-≡ (pe ∥∥-is-a-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                      being-a-prop-is-a-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  usr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇)
@@ -442,13 +442,13 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
     γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
   Universe-set-regular : ¬(is-surjection X)
-  Universe-set-regular s = ptrec 𝟘-is-prop (uncurry φ) e
+  Universe-set-regular s = ∥∥-rec 𝟘-is-prop (uncurry φ) e
    where
     B : 𝓤 ⁺ ⊔ 𝓥 ̇
     B = pr₁ universe-set-regular
     φ : ∀ a → ¬(X a ≡ B)
     φ = pr₂ universe-set-regular
-    e : ∥(Σ \a → X a ≡ B)∥
+    e : ∃ \a → X a ≡ B
     e = s B
 
 \end{code}

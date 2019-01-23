@@ -409,7 +409,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : 𝕋 X) → pr₁ x' p)
 
    g : (e : (q : 𝕋 X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
-   g e = to-Σ-≡ (dfunext (fe 𝓤 𝓤₀) (f e), propositional-truncation-is-a-prop _ t)
+   g e = to-Σ-≡ (dfunext (fe 𝓤 𝓤₀) (f e), ∥∥-is-a-prop _ t)
 
 \end{code}
 
@@ -450,7 +450,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    ie = tsieeval (fe 𝓥 𝓤₀) ts
 
    h : (φ : (X → 𝟚) → 𝟚) → (∃ \(x : X) → eval x ≡ φ) → Σ \(a : A) → eval a ≡ (λ q → φ(q ∘ f))
-   h φ = ptrec (ie γ) u
+   h φ = ∥∥-rec (ie γ) u
     where
      γ : (A → 𝟚) → 𝟚
      γ q = φ (q ∘ f)
@@ -574,22 +574,22 @@ apartness relation _♯₂ is tight:
  ♯₂-is-apartness {𝓤} {X} = a , b , c , d
   where
    a : is-prop-valued _♯₂_
-   a x y = propositional-truncation-is-a-prop
+   a x y = ∥∥-is-a-prop
 
    b : is-irreflexive _♯₂_
-   b x = ptrec 𝟘-is-prop g
+   b x = ∥∥-rec 𝟘-is-prop g
     where
      g : ¬ Σ \(p : X → 𝟚) → p x ≢ p x
      g (p , u) = u refl
 
    c : is-symmetric _♯₂_
-   c x y = ptfunct g
+   c x y = ∥∥-funct g
     where
      g : (Σ \(p : X → 𝟚) → p x ≢ p y) → Σ \(p : X → 𝟚) → p y ≢ p x
      g (p , u) = p , ≢-sym u
 
    d : is-cotransitive _♯₂_
-   d x y z = ptfunct g
+   d x y z = ∥∥-funct g
     where
      g : (Σ \(p : X → 𝟚) → p x ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
      g (p , u) = h (discrete-is-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
@@ -599,7 +599,7 @@ apartness relation _♯₂ is tight:
        h (inr v) = inr ∣ p , ≢-sym v ∣
 
  ♯₂-is-tight-ts : {X : 𝓤 ̇} → is-tight (_♯₂_ {𝓤} {X}) → is-totally-separated X
- ♯₂-is-tight-ts {𝓤} {X} t {x} {y} α = t x y (ptrec 𝟘-is-prop h)
+ ♯₂-is-tight-ts {𝓤} {X} t {x} {y} α = t x y (∥∥-rec 𝟘-is-prop h)
   where
    h : ¬ Σ \(p : X → 𝟚) → p x ≢ p y
    h (p , u) = u (α p)
@@ -727,14 +727,14 @@ apartness relation _♯₂ is tight:
 
  tight-separated' : {X : 𝓤 ̇} → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
                  → (∃ \(_♯_ : X → X → 𝓤 ̇) → is-apartness _♯_ × is-tight _♯_) → is-separated X
- tight-separated' {𝓤} {X} fe fe₀ = ptrec (is-prop-separated fe fe₀) f
+ tight-separated' {𝓤} {X} fe fe₀ = ∥∥-rec (is-prop-separated fe fe₀) f
    where
     f : (Σ \(_♯_ : X → X → 𝓤 ̇) → is-apartness _♯_ × is-tight _♯_) → is-separated X
     f (_♯_ , a , t) = tight-is-separated _♯_ a t
 
  tight-is-set' : {X : 𝓤 ̇} → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
            → (∃ \(_♯_ : X → X → 𝓤 ̇) → is-apartness _♯_ × is-tight _♯_) → is-set X
- tight-is-set' {𝓤} {X} fe fe₀ = ptrec (being-set-is-a-prop fe) f
+ tight-is-set' {𝓤} {X} fe fe₀ = ∥∥-rec (being-set-is-a-prop fe) f
    where
     f : (Σ \(_♯_ : X → X → 𝓤 ̇) → is-apartness _♯_ × is-tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-is-set fe₀ _♯_ a t
@@ -840,7 +840,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _ (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) propositional-truncation-is-a-prop
+  X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _ (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-a-prop
 
   η : X → X'
   η = corestriction apart
@@ -883,7 +883,7 @@ apartness on it.
   η-preserves-apartness {x} {y} a = ∣ x , y , a , refl , refl ∣
 
   η-strongly-extensional : strongly-extensional _♯_ _♯'_ η
-  η-strongly-extensional {x} {y} = ptrec (♯p x y) g
+  η-strongly-extensional {x} {y} = ∥∥-rec (♯p x y) g
    where
     g : (Σ \(x' : X) → Σ \(y' : X) → (x' ♯ y') × (apart x' ≡ apart x) × (apart y' ≡ apart y))
       → x ♯ y
@@ -909,7 +909,7 @@ apartness on it.
   fuv = fe (𝓤 ⊔ 𝓥 ⁺) (𝓤 ⊔ 𝓥 ⁺)
 
   ♯'p : is-prop-valued _♯'_
-  ♯'p _ _ = propositional-truncation-is-a-prop
+  ♯'p _ _ = ∥∥-is-a-prop
 
   ♯'i : is-irreflexive _♯'_
   ♯'i = by-induction
@@ -941,7 +941,7 @@ apartness on it.
   ♯'c = by-nested-induction
    where
     induction-step : ∀ x y z → η x ♯' η y → η x ♯' η z ∨ η y ♯' η z
-    induction-step x y z a = ptfunct c b
+    induction-step x y z a = ∥∥-funct c b
      where
       a' : x ♯ y
       a' = η-strongly-extensional a
@@ -958,12 +958,12 @@ apartness on it.
       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
        (λ _ → Π-is-prop fuv
                 (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → propositional-truncation-is-a-prop))))
+                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-a-prop))))
        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
                 (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → propositional-truncation-is-a-prop)))
+                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-a-prop)))
                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                         (λ _ → Π-is-prop fuv (λ _ → propositional-truncation-is-a-prop))
+                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-a-prop))
                          (induction-step x y)))
 
   ♯'a : is-apartness _♯'_
@@ -978,12 +978,12 @@ apartness on it.
 \begin{code}
 
   ♯'t : is-tight _♯'_
-  ♯'t (u , e) (v , f) n = ptrec X'-is-set (λ σ → ptrec X'-is-set (h σ) f) e
+  ♯'t (u , e) (v , f) n = ∥∥-rec X'-is-set (λ σ → ∥∥-rec X'-is-set (h σ) f) e
    where
     h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
-    h (x , p) (y , q) = to-Σ-≡ (t , propositional-truncation-is-a-prop _ _)
+    h (x , p) (y , q) = to-Σ-≡ (t , ∥∥-is-a-prop _ _)
      where
-      remark : ∥(Σ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v))∥ → 𝟘
+      remark : (∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)) → 𝟘
       remark = n
 
       r : x ♯ y → 𝟘
@@ -1038,7 +1038,7 @@ apartness on it.
     φ = η-induction _ γ induction-step
       where
        induction-step : (y : X) → is-prop (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
-       induction-step x (a , d) (b , e) = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
+       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-a-prop _ _)
         where
          h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
            → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
@@ -1046,7 +1046,7 @@ apartness on it.
          h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
 
          p : a ≡ b
-         p = ptrec iss (λ σ → ptrec iss (h σ) e) d
+         p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
        γ : (x' : X') → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
        γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
@@ -1070,7 +1070,7 @@ apartness on it.
       j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
 
       h : (y : X) → f'(η y) ≡ f y
-      h y = ptrec iss (j y) (g y)
+      h y = ∥∥-rec iss (j y) (g y)
 
     c : (σ : Σ \(f'' : X' → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
     c (f'' , s) = to-Σ-≡ (t , v)

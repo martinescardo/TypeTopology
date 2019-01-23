@@ -142,7 +142,7 @@ module UnivalentChoice (𝓤 : Universe)
  sei : {X Y : 𝓤 ̇} → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe 𝓤 𝓤) (λ x → isy)
 
- open TChoice 𝓤 ∥_∥ ptfunct is-set sei (props-are-sets propositional-truncation-is-a-prop)
+ open TChoice 𝓤 ∥_∥ ∥∥-funct is-set sei (props-are-sets ∥∥-is-a-prop)
 
  AC   = (X : 𝓤 ̇) (A : X → 𝓤 ̇) (P : (x : X) → A x → 𝓤 ̇)
      → is-set X
@@ -165,14 +165,14 @@ module UnivalentChoice (𝓤 : Universe)
    -- proposition. Any inhabited type that is a proposition will do,
    -- of course.
 
-   g : ∥(Σ \(f : Π Y) → (x : X) → x ≡ x)∥
-   g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ptfunct (λ y → y , refl) (f x))
+   g : ∃ \(f : Π Y) → (x : X) → x ≡ x
+   g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ∥∥-funct (λ y → y , refl) (f x))
 
    h : ∥ Π Y ∥
-   h = ptfunct pr₁ g
+   h = ∥∥-funct pr₁ g
 
  AC'AC : AC' → AC
- AC'AC ac' X A P s t isp f = ptfunct ΠΣ-distr g
+ AC'AC ac' X A P s t isp f = ∥∥-funct ΠΣ-distr g
   where
    g : ∥(Π \(x : X) → Σ \(a : A x) → P x a)∥
    g = ac' X
@@ -208,10 +208,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  open UnivalentChoice 𝓤 fe pt
 
  α : {X : 𝓤 ̇} → ∥ X ∥ → ¬¬ X
- α s u = ptrec 𝟘-is-prop u s
+ α s u = ∥∥-rec 𝟘-is-prop u s
 
  β : {X : 𝓤 ̇} → ¬¬ X → ∥ X ∥
- β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ propositional-truncation-is-a-prop)
+ β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-a-prop)
 
  DNS = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
      → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
@@ -272,7 +272,7 @@ module AC-renders-all-sets-discrete
    r-splits (x , t) = f (c x t)
     where
      f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
-     f (i , p) = i , to-Σ-≡ (p , propositional-truncation-is-a-prop _ t)
+     f (i , p) = i , to-Σ-≡ (p , ∥∥-is-a-prop _ t)
 
    s : image a → 𝟚
    s y = pr₁(r-splits y)
@@ -284,7 +284,7 @@ module AC-renders-all-sets-discrete
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , propositional-truncation-is-a-prop _ _)
+   a-r p = to-Σ-≡ (p , ∥∥-is-a-prop _ _)
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁
@@ -302,7 +302,7 @@ module AC-renders-all-sets-discrete
  lemma₂ : {X : 𝓤 ̇} → is-set X → (a : 𝟚 → X)
         → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
- lemma₂ is a = ptrec (decidable-types-are-props (fe 𝓤 𝓤₀) is) (lemma₁ a)
+ lemma₂ is a = ∥∥-rec (decidable-types-are-props (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
  ac-discrete-sets : AC → (X : 𝓤 ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
