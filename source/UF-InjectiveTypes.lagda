@@ -1031,7 +1031,7 @@ module ∃-injective (pt : propositional-truncations-exist) where
    φ : (Σ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f) → Σ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
    γ : ∃ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
-   γ = ∥∥-funct φ i'
+   γ = ∥∥-functor φ i'
 
  retract-Of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                         → ∃-injective-type D 𝓦 𝓣
@@ -1042,18 +1042,18 @@ module ∃-injective (pt : propositional-truncations-exist) where
 
  ∃-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                           → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ retract D Of (D → 𝓤 ̇) ∥
- ∃-injective-retract-of-power-of-universe D ua i = ∥∥-funct retract-of-retract-Of γ
+ ∃-injective-retract-of-power-of-universe D ua i = ∥∥-functor retract-of-retract-Of γ
   where
     a : ∃ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
     φ : (Σ \r  → r ∘ Id ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
     φ (r , p) = r , Id , p
     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
-    γ = ∥∥-funct φ a
+    γ = ∥∥-functor φ a
 
  ∃-injective-gives-∥injective∥ : is-univalent 𝓤
                               → (D : 𝓤 ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥
- ∃-injective-gives-∥injective∥ {𝓤} ua D i = ∥∥-funct φ (∃-injective-retract-of-power-of-universe D ua i)
+ ∃-injective-gives-∥injective∥ {𝓤} ua D i = ∥∥-functor φ (∃-injective-retract-of-power-of-universe D ua i)
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
    φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))

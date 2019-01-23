@@ -45,8 +45,8 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    g : is-prop X × ∥ X ∥ → is-singleton X
    g (i , s) = ∥∥-rec i id s , i (∥∥-rec i id s)
 
- ∥∥-funct : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
- ∥∥-funct f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
+ ∥∥-functor : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥

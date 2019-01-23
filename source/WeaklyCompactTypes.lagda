@@ -204,10 +204,10 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   l y r (x , s) = (x , (ap q s ∙ r))
 
   k : (Σ \(y : Y) → q y ≡ ₀) → ∃ \(x : X) → q (f x) ≡ ₀
-  k (y , r) = ∥∥-funct (l y r) (su y)
+  k (y , r) = ∥∥-functor (l y r) (su y)
 
   g : decidable (∃ \(x : X) → q(f x) ≡ ₀) → decidable (∃ \(y : Y) → q y ≡ ₀)
-  g (inl s) = inl (∥∥-funct h s)
+  g (inl s) = inl (∥∥-functor h s)
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-a-prop k) u)
 
 image-∃-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
@@ -272,7 +272,7 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇) where
  tos c p = h (c (extension p))
   where
    f : (Σ \(x' : 𝕋 X) → extension p x' ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
-   f (x' , r) = ∥∥-funct f' (η-surjection x')
+   f (x' , r) = ∥∥-functor f' (η-surjection x')
     where
      f' : (Σ \(x : X) → η x ≡ x') → Σ \(x : X) → p x ≡ ₀
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
@@ -282,7 +282,7 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇) where
 
    h : decidable (∃ \(x' : 𝕋 X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
    h (inl x) = inl (∥∥-rec ∥∥-is-a-prop f x)
-   h (inr u) = inr (contrapositive (∥∥-funct g) u)
+   h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
  ct : Π-compact X → Π-compact (𝕋 X)
  ct = surjection-Π-compact η (η-surjection)
@@ -546,7 +546,7 @@ detachable-subset-∃-compact : {X : 𝓤 ̇} (A : X → 𝟚)
 detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
  where
   g : decidable (∃ \(x : X) → A x ≡ ₀) → ∃-compact(Σ \(x : X) → A(x) ≡ ₀)
-  g (inl e) = retract-∃-compact' (∥∥-funct detachable-subset-retract e) c
+  g (inl e) = retract-∃-compact' (∥∥-functor detachable-subset-retract e) c
   g (inr u) = is-empty-∃-compact (contrapositive ∣_∣ u)
 
 \end{code}
@@ -622,7 +622,7 @@ replaced by non-emptiness in the following results:
 \begin{code}
 
 iso-i-and-c : {X : 𝓤 ̇} → ∃-compact∙ X → ∥ X ∥ × ∃-compact X
-iso-i-and-c {𝓤} {X} c = (∥∥-funct pr₁ g₁ , λ p → ∥∥-rec (decidable-types-are-props (fe 𝓤 𝓤₀) ∥∥-is-a-prop) (g₂ p) (c p))
+iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (decidable-types-are-props (fe 𝓤 𝓤₀) ∥∥-is-a-prop) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
@@ -645,7 +645,7 @@ i-and-c-iso {𝓤} {X} (t , c) p = ∥∥-rec ∥∥-is-a-prop f t
    where
     g : decidable(p x₀ ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
     g (inl r) e = ∣ x₀ , (λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))) ∣
-    g (inr _) (inl t) = ∥∥-funct h t
+    g (inr _) (inl t) = ∥∥-functor h t
      where
       h : (Σ \(x : X) → p x ≡ ₀) → Σ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
       h (x , r) = x , λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
@@ -673,7 +673,7 @@ so-isoore : {X : 𝓤 ̇} → ∃-compact X → ∃-compact∙ X + is-empty X
 so-isoore {𝓤} {X} c = g
  where
   h : decidable (∃ \(x : X) → ₀ ≡ ₀) → ∃-compact∙ X + is-empty X
-  h (inl t) = inl (i-and-c-iso (∥∥-funct pr₁ t , c))
+  h (inl t) = inl (i-and-c-iso (∥∥-functor pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
 
   g : ∃-compact∙ X + is-empty X
@@ -1082,11 +1082,11 @@ fst _ _ = pr₁
  where
   g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
     → decidable (∃ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a))
-  g (inl e) = inl ((∥∥-funct h) e)
+  g (inl e) = inl ((∥∥-functor h) e)
    where
     h : (Σ \(x : X) → p (a , x) ≡ ₀) → Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)
     h (x , r) =  (a , x) , (r , refl)
-  g (inr u) = inr (contrapositive (∥∥-funct h) u)
+  g (inr u) = inr (contrapositive (∥∥-functor h) u)
    where
     h : (Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ \(x : X) → p (a , x) ≡ ₀
     h ((a' , x) , (r , s)) = x , transport (λ - → p (- , x) ≡ ₀) s r
@@ -1098,11 +1098,11 @@ clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p(pr�
  where
   g : decidable (∃ \(z : 𝟙 {𝓦} × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
     → decidable (∃ \(x : X) → p x ≡ ₀)
-  g (inl e) = inl (∥∥-funct h e)
+  g (inl e) = inl (∥∥-functor h e)
    where
     h : (Σ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)) → Σ \(x : X) → p x ≡ ₀
     h ((* , x) , r , _) = x , r
-  g (inr u) = inr(contrapositive (∥∥-funct h) u)
+  g (inr u) = inr(contrapositive (∥∥-functor h) u)
    where
     h : (Σ \(x : X) → p x ≡ ₀) → Σ \(z : 𝟙 × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)
     h (x , r) = (* , x) , (r , refl)

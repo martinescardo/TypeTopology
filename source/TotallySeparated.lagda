@@ -583,13 +583,13 @@ apartness relation _♯₂ is tight:
      g (p , u) = u refl
 
    c : is-symmetric _♯₂_
-   c x y = ∥∥-funct g
+   c x y = ∥∥-functor g
     where
      g : (Σ \(p : X → 𝟚) → p x ≢ p y) → Σ \(p : X → 𝟚) → p y ≢ p x
      g (p , u) = p , ≢-sym u
 
    d : is-cotransitive _♯₂_
-   d x y z = ∥∥-funct g
+   d x y z = ∥∥-functor g
     where
      g : (Σ \(p : X → 𝟚) → p x ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
      g (p , u) = h (discrete-is-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
@@ -941,7 +941,7 @@ apartness on it.
   ♯'c = by-nested-induction
    where
     induction-step : ∀ x y z → η x ♯' η y → η x ♯' η z ∨ η y ♯' η z
-    induction-step x y z a = ∥∥-funct c b
+    induction-step x y z a = ∥∥-functor c b
      where
       a' : x ♯ y
       a' = η-strongly-extensional a

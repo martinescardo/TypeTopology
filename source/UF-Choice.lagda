@@ -142,7 +142,7 @@ module UnivalentChoice (𝓤 : Universe)
  sei : {X Y : 𝓤 ̇} → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe 𝓤 𝓤) (λ x → isy)
 
- open TChoice 𝓤 ∥_∥ ∥∥-funct is-set sei (props-are-sets ∥∥-is-a-prop)
+ open TChoice 𝓤 ∥_∥ ∥∥-functor is-set sei (props-are-sets ∥∥-is-a-prop)
 
  AC   = (X : 𝓤 ̇) (A : X → 𝓤 ̇) (P : (x : X) → A x → 𝓤 ̇)
      → is-set X
@@ -166,13 +166,13 @@ module UnivalentChoice (𝓤 : Universe)
    -- of course.
 
    g : ∃ \(f : Π Y) → (x : X) → x ≡ x
-   g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ∥∥-funct (λ y → y , refl) (f x))
+   g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ∥∥-functor (λ y → y , refl) (f x))
 
    h : ∥ Π Y ∥
-   h = ∥∥-funct pr₁ g
+   h = ∥∥-functor pr₁ g
 
  AC'AC : AC' → AC
- AC'AC ac' X A P s t isp f = ∥∥-funct ΠΣ-distr g
+ AC'AC ac' X A P s t isp f = ∥∥-functor ΠΣ-distr g
   where
    g : ∥(Π \(x : X) → Σ \(a : A x) → P x a)∥
    g = ac' X

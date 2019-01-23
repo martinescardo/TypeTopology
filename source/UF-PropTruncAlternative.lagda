@@ -43,8 +43,8 @@ module PropositionalTruncation' (pt : ∀ 𝓤 → propositional-truncations-exi
  ∥∥-rec : {X Y : 𝓤 ̇} → is-prop Y → (X → Y) → ∥ X ∥ → Y
  ∥∥-rec {𝓤} {X} {Y} isp f = pr₂(pr₂(pr₂(pt (universe-of X) X))) Y isp f
 
- ∥∥-funct : {X Y : 𝓤 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
- ∥∥-funct f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
+ ∥∥-functor : {X Y : 𝓤 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥

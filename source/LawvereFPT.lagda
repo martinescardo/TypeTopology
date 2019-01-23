@@ -181,7 +181,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  LFPT : {A : 𝓤 ̇} {X : 𝓥 ̇} (φ : A → (A → X))
       → is-surjection φ
       → (f : X → X) → ∃ \(x : X) → x ≡ f x
- LFPT {𝓤} {𝓥} {A} {X} φ s f = ∥∥-funct γ e
+ LFPT {𝓤} {𝓥} {A} {X} φ s f = ∥∥-functor γ e
   where
    g : A → X
    g a = f (φ a a)
@@ -214,7 +214,7 @@ module surjection-version (pt : propositional-truncations-exist) where
      (𝓤 𝓥 : Universe) (A : 𝓥 ̇) (φ : A → (A → 𝓤 ̇))
    → is-surjection φ
    → (X : 𝓤 ̇) (f : X → X) → ∃ \(x : X) → x ≡ f x
- cantor-theorem-for-universes 𝓤 𝓥 A φ s X f = ∥∥-funct g t
+ cantor-theorem-for-universes 𝓤 𝓥 A φ s X f = ∥∥-functor g t
   where
    t : ∃ \(B : 𝓤 ̇) → B ≡ (B → X)
    t = LFPT φ s (λ B → B → X)

@@ -59,7 +59,7 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
 
  corestriction-surjection : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                          → is-surjection (corestriction f)
- corestriction-surjection f (y , s) = ∥∥-funct g s
+ corestriction-surjection f (y , s) = ∥∥-functor g s
   where
    g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-a-prop _ _)
