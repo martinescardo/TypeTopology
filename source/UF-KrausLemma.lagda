@@ -54,13 +54,13 @@ Kraus-Lemma {𝓤} {X} f g (x , p) (y , q) =
      q' = transport (λ - → - ≡ f -) s p'
      t : q' ≡ q
      t = q'                        ≡⟨ transport-identifications-along-identifications' s f p' ⟩
-         (s ⁻¹ ∙ p') ∙ ap f s      ≡⟨ assoc (s ⁻¹) p' (ap f s) ⟩
+         (s ⁻¹ ∙ p') ∙ ap f s      ≡⟨ ∙assoc (s ⁻¹) p' (ap f s) ⟩
          s ⁻¹ ∙ (p' ∙ ap f s)      ≡⟨ ap (λ - → s ⁻¹ ∙ (p' ∙ -)) (key-insight f g s) ⟩
          s ⁻¹ ∙ (p' ∙ refl)        ≡⟨ ap (λ - → s ⁻¹ ∙ -) ((refl-right-neutral p')⁻¹) ⟩
          s ⁻¹ ∙ p'                 ≡⟨ refl ⟩
         (p' ∙ (q ⁻¹))⁻¹ ∙ p'       ≡⟨ ap (λ - → - ∙ p') ((⁻¹-contravariant p' (q ⁻¹))⁻¹) ⟩
         ((q ⁻¹)⁻¹ ∙ (p' ⁻¹)) ∙ p'  ≡⟨ ap (λ - → (- ∙ (p' ⁻¹)) ∙ p') (⁻¹-involutive q) ⟩
-        (q ∙ (p' ⁻¹)) ∙ p'         ≡⟨ assoc q (p' ⁻¹) p' ⟩
+        (q ∙ (p' ⁻¹)) ∙ p'         ≡⟨ ∙assoc q (p' ⁻¹) p' ⟩
          q ∙ ((p' ⁻¹) ∙ p')        ≡⟨ ap (λ - → q ∙ -) ((sym-is-inverse p')⁻¹) ⟩
          q ∙ refl                  ≡⟨ (refl-right-neutral q)⁻¹ ⟩
          q  ∎

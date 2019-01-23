@@ -68,7 +68,7 @@ cod {l} {m} α = m
 𝓛-comp-assoc : funext 𝓣 𝓤 → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
              →  𝓛-comp l n o (𝓛-comp l m n α β) γ ≡ 𝓛-comp l m o α (𝓛-comp m n o β γ)
 𝓛-comp-assoc fe (f , δ) (g , ε) (h , ζ) =
-   to-Σ-≡ (refl , dfunext fe (λ p → assoc (δ p) (ε (f p)) (ζ (g (f p)))))
+   to-Σ-≡ (refl , dfunext fe (λ p → ∙assoc (δ p) (ε (f p)) (ζ (g (f p)))))
 
 \end{code}
 
@@ -435,14 +435,14 @@ is-𝓛-equiv← pe fe fe' l m α e = γ
     vu : v ∘ u ∼ id
     vu (g , ε) = to-Σ-≡ (refl , a)
      where
-      a = dfunext fe' (λ q →  (δ q)⁻¹ ∙ (δ q ∙ ε q)  ≡⟨ (assoc ((δ q)⁻¹) (δ q) (ε q))⁻¹ ⟩
+      a = dfunext fe' (λ q →  (δ q)⁻¹ ∙ (δ q ∙ ε q)  ≡⟨ (∙assoc ((δ q)⁻¹) (δ q) (ε q))⁻¹ ⟩
                              ((δ q)⁻¹ ∙ δ q) ∙ ε q   ≡⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse (δ q))⁻¹)⟩
                                refl ∙ ε q            ≡⟨ refl-left-neutral ⟩
                                ε q                   ∎)
     uv : u ∘ v ∼ id
     uv (g , ε) = to-Σ-≡ (refl , a)
      where
-      a = dfunext fe' (λ q →  δ q ∙ ((δ q)⁻¹ ∙ ε q)  ≡⟨ (assoc (δ q) ((δ q)⁻¹) (ε q))⁻¹ ⟩
+      a = dfunext fe' (λ q →  δ q ∙ ((δ q)⁻¹ ∙ ε q)  ≡⟨ (∙assoc (δ q) ((δ q)⁻¹) (ε q))⁻¹ ⟩
                              (δ q ∙ ((δ q)⁻¹)) ∙ ε q ≡⟨ ap (λ - → - ∙ ε q) ((sym-is-inverse' (δ q))⁻¹)⟩
                               refl ∙ ε q             ≡⟨ refl-left-neutral ⟩
                               ε q                    ∎)
