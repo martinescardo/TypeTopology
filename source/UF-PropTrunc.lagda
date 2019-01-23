@@ -1,3 +1,5 @@
+Martin Escardo
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -12,14 +14,13 @@ open import UF-Subsingletons-FunExt public
 
 \end{code}
 
-To use propositional truncation, one needs to assume an element of
-PropTrunc, which is a postulated type with no postulated element. This
-is use to keep track of which modules or functions depend on
-propositional truncation.
+We use the existence of propositional truncations as an
+assumption. The following type collects the data that constitutes this
+assumption.
 
 \begin{code}
 
-record PropTrunc : Uω where
+record PropositionalTruncationsExist : Uω where
  field
   ∥_∥ : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   propositional-truncation-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇} → is-prop ∥ X ∥
@@ -28,9 +29,9 @@ record PropTrunc : Uω where
  infix 0 ∥_∥
  infix 0 ∣_∣
 
-module PropositionalTruncation (pt : PropTrunc) where
+module PropositionalTruncation (pt : PropositionalTruncationsExist) where
 
- open PropTrunc pt public
+ open PropositionalTruncationsExist pt public
 
  is-singleton'-is-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-a-prop fe) (λ _ → propositional-truncation-is-a-prop)

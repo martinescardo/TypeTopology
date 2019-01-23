@@ -24,7 +24,7 @@ open import UF-Miscelanea
 
 module WeaklyCompactTypes
         (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
-        (pt : PropTrunc)
+        (pt : PropositionalTruncationsExist)
        where
 
 open PropositionalTruncation (pt)

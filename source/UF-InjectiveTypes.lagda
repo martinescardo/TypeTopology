@@ -995,7 +995,7 @@ Added 21st January 2019.
 
 open import UF-PropTrunc
 
-module ∃-injective (pt : PropTrunc) where
+module ∃-injective (pt : PropositionalTruncationsExist) where
 
  open PropositionalTruncation pt
 

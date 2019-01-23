@@ -16,7 +16,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropTrunc) where
+module SimpleTypes (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropositionalTruncationsExist) where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt

@@ -102,7 +102,7 @@ Corollaries:
 ℕ∞→𝟚-is-discrete : is-discrete(ℕ∞ → 𝟚)
 ℕ∞→𝟚-is-discrete = compact-discrete-discrete fe ℕ∞-compact (λ u → 𝟚-is-discrete)
 
-module _ (fe' : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropTrunc) where
+module _ (fe' : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropositionalTruncationsExist) where
 
  open import WeaklyCompactTypes (fe') (pt)
 

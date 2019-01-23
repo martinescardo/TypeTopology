@@ -171,7 +171,7 @@ root truncations using the above technique.
 
 open import UF-PropTrunc
 
-module ExitRootTruncations (pt : PropTrunc) where
+module ExitRootTruncations (pt : PropositionalTruncationsExist) where
 
  open PropositionalTruncation pt
 

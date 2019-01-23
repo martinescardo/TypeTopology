@@ -53,7 +53,7 @@ fem-proptrunc fe em X = ¬¬ X ,
                          (λ x u → u x) ,
                          λ P isp u φ → EM-gives-DNE em P isp (¬¬-functor u φ))
 
-module _ (pt : PropTrunc) where
+module _ (pt : PropositionalTruncationsExist) where
 
  open PropositionalTruncation pt
 

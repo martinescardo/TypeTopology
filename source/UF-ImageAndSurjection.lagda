@@ -18,7 +18,7 @@ define images and surjections:
 
 \begin{code}
 
-module ImageAndSurjection (pt : PropTrunc) where
+module ImageAndSurjection (pt : PropositionalTruncationsExist) where
 
  open PropositionalTruncation (pt)
 

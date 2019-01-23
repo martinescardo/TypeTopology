@@ -134,7 +134,7 @@ Univalent Choice.
 
 module UnivalentChoice (𝓤 : Universe)
                        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
-                       (pt : PropTrunc)
+                       (pt : PropositionalTruncationsExist)
                        where
 
  open PropositionalTruncation pt public
@@ -201,7 +201,7 @@ open import UF-ExcludedMiddle
 
 module ChoiceUnderEM₀ (𝓤 : Universe)
                       (em : EM 𝓤)
-                      (pt : PropTrunc)
+                      (pt : PropositionalTruncationsExist)
                       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                       where
 
@@ -251,7 +251,7 @@ with values a ₀ = a₀ and a ₁ = a₁.
 
 module AC-renders-all-sets-discrete
                       (𝓤 : Universe)
-                      (pt : PropTrunc)
+                      (pt : PropositionalTruncationsExist)
                       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                       where
 
@@ -335,7 +335,7 @@ because (𝟙≡P)≡P.
 \begin{code}
 
 module AC-gives-EM
-                      (pt : PropTrunc)
+                      (pt : PropositionalTruncationsExist)
                       (pe : propext 𝓤₀)
                       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                       where
@@ -364,7 +364,7 @@ The following is probably not going to be useful for anything here:
 \begin{code}
 
 module Observation (𝓤 : Universe)
-                   (pt : PropTrunc)
+                   (pt : PropositionalTruncationsExist)
                    (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
                    where
 

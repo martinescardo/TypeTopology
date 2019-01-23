@@ -487,7 +487,7 @@ singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
   g : p x ≡ ₁ → (y : X) → p y ≡ ₁
   g r y = transport (λ - → p - ≡ ₁) (φ y) r
 
-module _ (pt : PropTrunc) where
+module _ (pt : PropositionalTruncationsExist) where
 
  open ImageAndSurjection (pt)
 

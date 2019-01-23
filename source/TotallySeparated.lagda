@@ -387,7 +387,7 @@ ieevalts {𝓤} {X} fe i {x} {y} e = ap pr₁ q
 
 module TotallySeparatedReflection
          (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
-         (pt : PropTrunc)
+         (pt : PropositionalTruncationsExist)
  where
 
  open PropositionalTruncation pt
@@ -546,7 +546,7 @@ for the moment.
 
 \begin{code}
 
-module Apartness (pt : PropTrunc) where
+module Apartness (pt : PropositionalTruncationsExist) where
 
  open PropositionalTruncation (pt)
 
