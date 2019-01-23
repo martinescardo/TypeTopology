@@ -201,8 +201,8 @@ equations hold definitionally.
 
 \end{code}
 
-We now consider a non-dependent version of 𝓛-alg-Law₀, and show that it is
-equivalent to 𝓛-alg-Law₀:
+We now consider an equivalent of 𝓛-alg-Law₀ (which is useful e.g. for
+type injectivity purposes).
 
 \begin{code}
 
