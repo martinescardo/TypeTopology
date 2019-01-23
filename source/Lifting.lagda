@@ -5,7 +5,7 @@ properties of lifting are discussed in other modules.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
 

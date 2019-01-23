@@ -6,7 +6,7 @@ is in the module LiftingEmbeddingDirectly.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
 

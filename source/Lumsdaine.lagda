@@ -11,6 +11,8 @@ J'-comp) with a "propositional computation rule" J'-comp for J'.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import Universes
 
 module Lumsdaine

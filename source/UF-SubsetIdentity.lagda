@@ -12,6 +12,8 @@ type into X, or, equivalently, a map of X into the subtype classifier
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 open import UF-FunExt
 open import UF-Univalence

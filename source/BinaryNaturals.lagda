@@ -13,6 +13,8 @@ equivalence ℕ × ℕ ≃ ℕ.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module BinaryNaturals where
 
 open import SpartanMLTT renaming (_+_ to _∔_)

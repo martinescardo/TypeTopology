@@ -9,6 +9,8 @@ motivation coming from univalent type theory is discussed at the end.)
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module DummettDisjunction where
 
 open import SpartanMLTT

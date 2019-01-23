@@ -11,7 +11,7 @@ depend on univalence.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UF-UA-FunExt where
 

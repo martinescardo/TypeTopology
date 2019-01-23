@@ -4,6 +4,8 @@ We have a look at the algebras of the lifting monad.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 
 module LiftingAlgebras

@@ -4,6 +4,8 @@ UF things that depend on non-UF things.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module UF-Miscelanea where
 
 open import SpartanMLTT

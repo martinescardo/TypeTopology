@@ -47,6 +47,8 @@ idea (*) in the weakened form discussed above.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module UF-IdEmbedding where
 
 open import SpartanMLTT

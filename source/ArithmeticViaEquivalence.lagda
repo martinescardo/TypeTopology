@@ -136,7 +136,7 @@ foundations in Agda notation).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT hiding (_+'_ ; _^_)
 open import UF-FunExt

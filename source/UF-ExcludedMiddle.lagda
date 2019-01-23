@@ -9,7 +9,7 @@ principle that every subsingleton type is inhabited or empty.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UF-ExcludedMiddle where
 
@@ -44,6 +44,8 @@ DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidable-types-are-props fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
+
+open import UF-PropTruncAlternative
 
 fem-proptrunc : funext 𝓤 𝓤₀ → EM 𝓤 → propositional-truncations-exist 𝓤 𝓤
 fem-proptrunc fe em X = ¬¬ X ,

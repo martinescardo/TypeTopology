@@ -5,6 +5,8 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 -- open import UF -- hiding (𝟙) hiding (𝟙-is-prop) hiding (⊤)
 
 open import SpartanMLTT

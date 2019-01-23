@@ -8,7 +8,7 @@ The proof may be new (or not).
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
 open import UF-Base

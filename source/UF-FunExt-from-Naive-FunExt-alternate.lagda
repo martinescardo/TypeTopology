@@ -15,6 +15,8 @@ Point 2. is already proved in UF-Equiv-Funext.lagda
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module UF-FunExt-from-Naive-FunExt-alternate where
 
 open import SpartanMLTT

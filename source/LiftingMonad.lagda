@@ -5,6 +5,8 @@ Again the proofs are simplified by the use of SIP.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 
 module LiftingMonad

@@ -11,6 +11,8 @@ Here is an Agda version.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module UF-FunExt-from-Naive-FunExt where
 
 open import SpartanMLTT

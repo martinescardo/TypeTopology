@@ -1,6 +1,6 @@
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UF-Yoneda where
 
@@ -158,7 +158,8 @@ considered below.
 
 \begin{code}
 
-universality-section : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+universality-section : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
+                       {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
                      → is-universal-element (x , a)
                      → (y : X) → has-section (yoneda-nat x A a y)
 universality-section {𝓤} {𝓥} {X} {A} x a u y = s y , φ y
@@ -168,7 +169,8 @@ universality-section {𝓤} {𝓥} {X} {A} x a u y = s y , φ y
   φ : (y : X) (b : A y) → yoneda-nat x A a y (s y b) ≡ b
   φ y b = pr₂ (u y b)
 
-section-universality : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+section-universality : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
+                       {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
                      → ((y : X) → has-section(yoneda-nat x A a y))
                      → is-universal-element (x , a)
 section-universality x a φ y b = pr₁(φ y) b , pr₂(φ y) b
@@ -328,14 +330,16 @@ We are interested in the following corollaries:
 
 \begin{code}
 
-universality-equiv : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+universality-equiv : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
+                     {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
                    → is-universal-element (x , a)
                    → (y : X) → is-equiv(yoneda-nat x A a y)
 universality-equiv {𝓤} {𝓥} {X} {A} x a u = nats-with-sections-are-equivs x
                                              (yoneda-nat x A a)
                                              (universality-section x a u)
 
-equiv-universality : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
+equiv-universality : ∀ {𝓤} {𝓥} → -- remove this when issue #3516 is fixed
+                     {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x)
                    → ((y : X) → is-equiv(yoneda-nat x A a y))
                    → is-universal-element (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
@@ -527,7 +531,8 @@ illustration.
 
 \begin{code}
 
-singleton-types-are-singletons-bis : {X : 𝓤 ̇} (x : X)
+singleton-types-are-singletons-bis : ∀ {𝓤} → -- remove this when issue #3516 is fixed
+                                     {X : 𝓤 ̇} (x : X)
                                   → is-the-only-element (x , refl)
 singleton-types-are-singletons-bis {𝓤} {X} x (y , p) = yoneda-const η y p
  where

@@ -5,6 +5,8 @@ a different universe level:
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 
 module LiftingMonadVariation where

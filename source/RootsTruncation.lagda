@@ -12,6 +12,8 @@ equality with any other point of the type is decidable.
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 open import UF-Base
 open import DiscreteAndSeparated

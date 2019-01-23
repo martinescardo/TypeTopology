@@ -2,7 +2,7 @@ Martin Escardo
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module Two-Prop-Density where
 
