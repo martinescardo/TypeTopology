@@ -2,7 +2,7 @@ Formulation of function extensionality
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UF-FunExt where
 

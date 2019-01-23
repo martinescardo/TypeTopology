@@ -9,7 +9,7 @@ About (sub)singletons using function extensionality.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split #-}
+{-# OPTIONS --without-K --exact-split --safe #-}
 
 module UF-Subsingletons-FunExt where
 

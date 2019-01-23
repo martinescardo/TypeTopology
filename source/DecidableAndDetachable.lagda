@@ -117,7 +117,7 @@ Don't really have a good place to put this:
 
 module _ (pt : PropTrunc) where
 
- open PropositionalTruncation (pt)
+ open PropositionalTruncation pt
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇} (p : X → 𝟚)
                             → ¬ (∃ \(x : X) → p x ≡ ₀) → (∀ (x : X) → p x ≡ ₁)

@@ -1,5 +1,7 @@
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module Universes where
 
 open import Agda.Primitive public
