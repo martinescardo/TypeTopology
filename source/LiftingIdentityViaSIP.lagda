@@ -43,6 +43,9 @@ l ⋍ m = Σ \(e : is-defined l ≃ is-defined m) → value l ≡ value m ∘ eq
         (λ P ε δ → id)
         (λ A τ υ → refl-left-neutral)
 
+⋍-gives-≡ : is-univalent 𝓣 → {l m : 𝓛 X} → (l ⋍ m) → l ≡ m
+⋍-gives-≡ ua = eqtofun (≃-sym (𝓛-Id ua _ _))
+
 \end{code}
 
 When dealing with functions it is often more convenient to work with

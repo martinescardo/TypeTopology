@@ -249,9 +249,9 @@ i2c2c x = retract-Π-compact (pdrc x)
 \end{code}
 
 A main reason to consider the notion of total separatedness is that
-the totally separated reflection 𝓣 X of X has the same supply of
+the totally separated reflection 𝕋 X of X has the same supply of
 boolean predicates as X, and hence X is ∃-compact (respectively
-Π-compact) iff 𝓣 X is, as we show now.
+Π-compact) iff 𝕋 X is, as we show now.
 
 \begin{code}
 

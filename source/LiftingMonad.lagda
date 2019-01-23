@@ -3,6 +3,11 @@ Martin Escardo 7th November 2018.
 (Strong) 'Monad' structure on 𝓛.
 Again the proofs are simplified by the use of SIP.
 
+We prove the laws for the various notions of equality because
+different ones are more convenient in different situations, and
+because they requires different assumptions (function extensionality
+or univalence).
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -50,7 +55,8 @@ Functoriality holds definitionally:
 
 \begin{code}
 
-𝓛̇-id : {X : 𝓤 ̇} → 𝓛̇ id ≡ id
+𝓛̇-id : {X : 𝓤 ̇}
+      → 𝓛̇ id ≡ id
 𝓛̇-id {𝓤} {X} = refl {𝓤 ⊔ (𝓣 ⁺)} {𝓛 X → 𝓛 X}
 
 𝓛̇-∘ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
@@ -65,11 +71,21 @@ but not definitionally.
 
 \begin{code}
 
-η-natural : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → η ∘ f ≡ 𝓛̇ f ∘ η
+η-natural : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+          → η ∘ f ≡ 𝓛̇ f ∘ η
 η-natural f = refl
 
-μ-natural : {X : 𝓤 ̇} {Y : 𝓤 ̇} (f : X → Y) → 𝓛̇ f ∘ μ ∼ μ ∘ 𝓛̇ (𝓛̇ f)
-μ-natural f _ = refl
+η-natural∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+           → η ∘ f ∼ 𝓛̇ f ∘ η
+η-natural∼ f _ = refl
+
+μ-natural∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+           → 𝓛̇ f ∘ μ ∼ μ ∘ 𝓛̇ (𝓛̇ f)
+μ-natural∼ f _ = refl
+
+μ-natural : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⁺ ⊔ 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+          → 𝓛̇ f ∘ μ ≡ μ ∘ 𝓛̇ (𝓛̇ f)
+μ-natural fe f = dfunext fe (μ-natural∼ f)
 
 \end{code}
 
@@ -77,17 +93,27 @@ We unit laws amount to the laws P × 𝟙 ≃ P and 𝟙 × P ≃ P:
 
 \begin{code}
 
-𝓛-unit-right : {X : 𝓤 ̇} (l : 𝓛 X) → μ (𝓛̇ η l) ⋍ l
-𝓛-unit-right (P , φ , i) = e , refl
+𝓛-unit-right⋍ : {X : 𝓤 ̇} (l : 𝓛 X)
+              → μ (𝓛̇ η l) ⋍ l
+𝓛-unit-right⋍ (P , φ , i) = e , refl
  where
   e : P × 𝟙 ≃ P
   e = 𝟙-rneutral
 
-𝓛-unit-left : {X : 𝓤 ̇} (l : 𝓛 X) → μ (η l) ⋍ l
-𝓛-unit-left (P , φ) = e , refl
+𝓛-unit-left⋍ : {X : 𝓤 ̇} (l : 𝓛 X)
+             → μ (η l) ⋍ l
+𝓛-unit-left⋍ (P , φ) = e , refl
  where
   e : 𝟙 × P ≃ P
   e = 𝟙-lneutral
+
+𝓛-unit-right∼ : is-univalent 𝓣 → {X : 𝓤 ̇}
+              → μ ∘ 𝓛̇ η ∼ id
+𝓛-unit-right∼ {𝓤} ua {X} l = ⋍-gives-≡ ua (𝓛-unit-right⋍ {𝓤} {X} l)
+
+𝓛-unit-left∼ : is-univalent 𝓣 → {X : 𝓤 ̇}
+              → μ ∘ η ∼ id
+𝓛-unit-left∼ {𝓤} ua {X} l = ⋍-gives-≡ ua (𝓛-unit-left⋍ {𝓤} {X} l)
 
 \end{code}
 
@@ -95,8 +121,11 @@ The associativity of multiplication amounts to the associativity of Σ:
 
 \begin{code}
 
-𝓛-assoc : {X : 𝓤 ̇} (l : 𝓛 (𝓛 (𝓛 X))) → μ (μ l) ⋍ μ (𝓛̇ μ l)
-𝓛-assoc (P , φ) = Σ-assoc , refl
+𝓛-assoc⋍ : {X : 𝓤 ̇} (l : 𝓛 (𝓛 (𝓛 X))) → μ (μ l) ⋍ μ (𝓛̇ μ l)
+𝓛-assoc⋍ (P , φ) = Σ-assoc , refl
+
+𝓛-assoc∼ : is-univalent 𝓣 → {X : 𝓤 ̇} → μ ∘ μ ∼ μ ∘ 𝓛̇ μ
+𝓛-assoc∼ {𝓤} ua {X} l = ⋍-gives-≡ ua (𝓛-assoc⋍ {𝓤} {X} l)
 
 \end{code}
 

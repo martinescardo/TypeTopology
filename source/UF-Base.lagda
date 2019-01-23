@@ -134,9 +134,9 @@ refl-left-neutral {𝓤} {X} {x} {_} {refl} = refl
 refl-right-neutral : {X : 𝓤 ̇} {x y : X} (p : x ≡ y) → p ≡ p ∙ refl
 refl-right-neutral p = refl
 
-assoc : {X : 𝓤 ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
+∙assoc : {X : 𝓤 ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
       → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
-assoc refl refl refl = refl
+∙assoc refl refl refl = refl
 
 happly' : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (f g : Π A) → f ≡ g → f ∼ g
 happly' f g p x = ap (λ - → - x) p
@@ -170,9 +170,9 @@ cancel-left : {X : 𝓤 ̇} {x y z : X} {p : x ≡ y} {q r : y ≡ z}
 cancel-left {𝓤} {X} {x} {y} {z} {p} {q} {r} s =
        q              ≡⟨ refl-left-neutral ⁻¹ ⟩
        refl ∙ q       ≡⟨ ap (λ - → - ∙ q) ((left-inverse p)⁻¹) ⟩
-       (p ⁻¹ ∙ p) ∙ q ≡⟨ assoc (p ⁻¹) p q ⟩
+       (p ⁻¹ ∙ p) ∙ q ≡⟨ ∙assoc (p ⁻¹) p q ⟩
        p ⁻¹ ∙ (p ∙ q) ≡⟨ ap (λ - → p ⁻¹ ∙ -) s ⟩
-       p ⁻¹ ∙ (p ∙ r) ≡⟨ (assoc (p ⁻¹) p r)⁻¹ ⟩
+       p ⁻¹ ∙ (p ∙ r) ≡⟨ (∙assoc (p ⁻¹) p r)⁻¹ ⟩
        (p ⁻¹ ∙ p) ∙ r ≡⟨ ap (λ - → - ∙ r) (left-inverse p) ⟩
        refl ∙ r       ≡⟨ refl-left-neutral ⟩
        r ∎
