@@ -201,6 +201,37 @@ equations hold definitionally.
 
 \end{code}
 
+We now consider a non-dependent version of 𝓛-alg-Law₀, and show that it is
+equivalent to 𝓛-alg-Law₀:
+
+\begin{code}
+
+𝓛-alg-Law₀' : {X : 𝓤 ̇} → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇) (i : is-prop P) (f : P → X) (p : P) → ∐ i f ≡ f p
+
+
+𝓛-alg-Law₀-gives₀' : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+                   → {X : 𝓤 ̇} (∐ : joinop X)
+                   → 𝓛-alg-Law₀ ∐ → 𝓛-alg-Law₀' ∐
+𝓛-alg-Law₀-gives₀' pe fe fe' {X} ∐ κ P i f p = γ
+ where
+  r : f ≡ λ (_ : P) → f p
+  r = dfunext fe' (λ p' → ap f (i p' p))
+  s : (r : P ≡ 𝟙) → ∐ {P} i f ≡ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
+  s refl = ap₂ ∐ (being-a-prop-is-a-prop fe i 𝟙-is-prop) r
+  t : P ≡ 𝟙
+  t = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+  γ : ∐ i f ≡ f p
+  γ = ∐ {P} i f                   ≡⟨ s t ⟩
+      ∐ 𝟙-is-prop (f ∘ (λ _ → p)) ≡⟨ κ (f p) ⟩
+      f p                         ∎
+
+𝓛-alg-Law₀'-gives₀ : {X : 𝓤 ̇} (∐ : joinop X)
+                    → 𝓛-alg-Law₀' ∐ → 𝓛-alg-Law₀ ∐
+𝓛-alg-Law₀'-gives₀ {𝓤} {X} ∐ φ x = φ 𝟙 𝟙-is-prop (λ _ → x) *
+
+\end{code}
+
 We now consider a non-dependent version of 𝓛-alg-Law₁, and show that it is
 equivalent to 𝓛-alg-Law₁:
 

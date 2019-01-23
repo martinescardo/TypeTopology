@@ -1076,16 +1076,25 @@ module injectivity-of-lifting (𝓣 : Universe) where
 
  open import Lifting 𝓣
  open import LiftingAlgebras 𝓣
+ open import UF-UA-FunExt
 
-{- TODO. It is easy to complete this now:
- 𝓛-algebra-flabby : {A : 𝓤 ̇} → 𝓛-alg A → flabby A {!!}
- 𝓛-algebra-flabby = {!!}
+ 𝓛-alg-flabby : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+              → {A : 𝓤 ̇} → 𝓛-alg A → flabby A 𝓣
+ 𝓛-alg-flabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
+  where
+   γ : (p : P) → ∐ i f ≡ f p
+   γ p = 𝓛-alg-Law₀-gives₀' pe fe fe' ∐ κ P i f p
 
- 𝓛-algebra-injective : {A : 𝓤 ̇} → 𝓛-alg A → injective-type A {!!} {!!}
- 𝓛-algebra-injective = {!!}
+ 𝓛-alg-injective : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+                 → (A : 𝓤 ̇) → 𝓛-alg A → injective-type A 𝓣 𝓣
+ 𝓛-alg-injective pe fe fe' A α = flabby-types-are-injective A (𝓛-alg-flabby pe fe fe' α)
 
- 𝓛-injective : {X : 𝓤 ̇} → injective-type (𝓛 X) {!!} {!!}
- 𝓛-injective = {!!}
--}
-
+ free-𝓛-algebra-injective : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺)
+                          → (X : 𝓣 ̇) → injective-type (𝓛 X) 𝓣 𝓣
+ free-𝓛-algebra-injective ua fe X = 𝓛-alg-injective
+                                       (propext-from-univalence ua)
+                                       (funext-from-univalence ua)
+                                       fe
+                                       (𝓛 X)
+                                       (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
 \end{code}
