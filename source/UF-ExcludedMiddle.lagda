@@ -47,13 +47,13 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
 
 open import UF-PropTruncAlternative
 
-fem-proptrunc : funext 𝓤 𝓤₀ → EM 𝓤 → propositional-truncations-exist 𝓤 𝓤
+fem-proptrunc : funext 𝓤 𝓤₀ → EM 𝓤 → propositional-truncations-exist' 𝓤 𝓤
 fem-proptrunc fe em X = ¬¬ X ,
                         (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
                          (λ x u → u x) ,
                          λ P isp u φ → EM-gives-DNE em P isp (¬¬-functor u φ))
 
-module _ (pt : PropositionalTruncationsExist) where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 

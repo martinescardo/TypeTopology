@@ -24,13 +24,13 @@ this took.
 
 open import UF-FunExt
 
-module CoNaturalsExercise (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module CoNaturalsExercise (fe : global-funext) where
 
 open import SpartanMLTT
 open import Two
-open import CoNaturals (fe)
+open import CoNaturals fe
 open import GenericConvergentSequence
-open import Sequence (fe)
+open import Sequence fe
 
 incl-is-a-section : Σ \(retr : (ℕ → 𝟚) → ℕ∞) → retr ∘ incl ≡ id
 incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma

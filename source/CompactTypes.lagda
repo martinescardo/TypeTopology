@@ -487,9 +487,9 @@ singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
   g : p x ≡ ₁ → (y : X) → p y ≡ ₁
   g r y = transport (λ - → p - ≡ ₁) (φ y) r
 
-module _ (pt : PropositionalTruncationsExist) where
+module _ (pt : propositional-truncations-exist) where
 
- open ImageAndSurjection (pt)
+ open ImageAndSurjection pt
 
  surjection-compact∙ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                      → is-surjection f → compact∙ X → compact∙ Y

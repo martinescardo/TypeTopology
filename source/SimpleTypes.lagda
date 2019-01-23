@@ -16,7 +16,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) (pt : PropositionalTruncationsExist) where
+module SimpleTypes (fe : global-funext) (pt : propositional-truncations-exist) where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt
@@ -26,7 +26,7 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
  step : {X Y : 𝓤₀ ̇} → simple-type X → simple-type Y → simple-type (X → Y)
 
 open import TotallySeparated
-open import WeaklyCompactTypes (fe) (pt) renaming (Π-compact to compact)
+open import WeaklyCompactTypes fe pt renaming (Π-compact to compact)
 open import DiscreteAndSeparated
 
 𝟚-retract-of-ℕ : retract 𝟚 of ℕ

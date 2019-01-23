@@ -71,7 +71,7 @@ bisimulations. This gives a technique for establishing equalities on
 
 open import UF-FunExt
 
-module CoNaturals (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module CoNaturals (fe : global-funext) where
 open import SpartanMLTT
 open import Two
 open import GenericConvergentSequence

@@ -28,7 +28,7 @@ GenericConvergentSequence)
 
 open import UF-FunExt
 
-module LPO (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module LPO (fe : global-funext) where
 
 open import SpartanMLTT
 open import Two

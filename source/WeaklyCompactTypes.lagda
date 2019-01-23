@@ -23,11 +23,11 @@ open import UF-Equiv
 open import UF-Miscelanea
 
 module WeaklyCompactTypes
-        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
-        (pt : PropositionalTruncationsExist)
+        (fe : global-funext)
+        (pt : propositional-truncations-exist)
        where
 
-open PropositionalTruncation (pt)
+open PropositionalTruncation pt
 open import DecidableAndDetachable
 
 ∃-compact : 𝓤 ̇ → 𝓤 ̇
@@ -191,7 +191,7 @@ Compactness of images:
 
 \begin{code}
 
-open ImageAndSurjection (pt)
+open ImageAndSurjection pt
 
 surjection-∃-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                      → is-surjection f → ∃-compact X → ∃-compact Y
@@ -1065,7 +1065,7 @@ is-clopen-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
-being-clopen-map-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+being-clopen-map-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (global-funext)
                            → (f : X → Y) → is-prop(is-clopen-map f)
 being-clopen-map-is-a-prop {𝓤} {𝓥} fe f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))

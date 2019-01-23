@@ -26,7 +26,7 @@ module DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 open import Two
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
-open import ADecidableQuantificationOverTheNaturals (fe)
+open import ADecidableQuantificationOverTheNaturals fe
 open import DecidableAndDetachable
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)

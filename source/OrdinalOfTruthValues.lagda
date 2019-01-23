@@ -13,7 +13,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 module OrdinalOfTruthValues
-       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+       (fe : global-funext)
        (𝓤  : Universe)
        (pe : propext 𝓤)
        where

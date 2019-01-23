@@ -11,11 +11,11 @@ indication of termination.
 
 open import UF-FunExt
 
-module CountableTychonoff (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module CountableTychonoff (fe : global-funext) where
 
 open import SpartanMLTT
 open import CompactTypes
-open import Sequence (fe)
+open import Sequence fe
 
 binary-Tychonoff' :{X : ℕ → 𝓤 ̇} →
 

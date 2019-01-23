@@ -14,7 +14,7 @@ be eventually constant (which we don't postulate).
 open import SpartanMLTT
 open import UF-FunExt
 
-module BasicDiscontinuityTaboo (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module BasicDiscontinuityTaboo (fe : global-funext) where
 
 open import Two
 open import GenericConvergentSequence

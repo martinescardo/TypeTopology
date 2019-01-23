@@ -29,6 +29,9 @@ DN-funext 𝓤 𝓥 = {X : 𝓤 ̇} {A : X → 𝓥 ̇} {f g : Π A} → f ∼ g
 funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇} {A : X → 𝓥 ̇} (f g : Π A) → is-equiv (happly' f g)
 
+global-funext : Uω
+global-funext = (𝓤 𝓥 : Universe) → funext 𝓤 𝓥
+
 ≃-funext : funext 𝓤 𝓥 → {X : 𝓤 ̇} {A : X → 𝓥 ̇} (f g : Π A)
          → (f ≡ g) ≃ (f ∼ g)
 ≃-funext fe f g = happly' f g , fe f g

@@ -87,8 +87,8 @@ X : 𝓤 ̇, and an equivalence relation _≈_ with values in 𝓥 ̇.
 \begin{code}
 
 module _
-       (pt  : PropositionalTruncationsExist)
-       (fe  : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+       (pt  : propositional-truncations-exist)
+       (fe  : global-funext)
        {𝓤 𝓥 : Universe}
        (pe  : propext 𝓥)
        (X   : 𝓤 ̇)

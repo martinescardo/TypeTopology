@@ -22,14 +22,14 @@ we could now, given that Uω has become available).
 
 \begin{code}
 
-propositional-truncations-exist : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
-propositional-truncations-exist 𝓤  𝓥 = (X : 𝓤 ̇) → Σ \(X' : 𝓤 ̇) → is-prop X' × (X → X')
-                                        × ((P : 𝓥 ̇) → is-prop P → (X → P) → X' → P)
+propositional-truncations-exist' : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+propositional-truncations-exist' 𝓤  𝓥 = (X : 𝓤 ̇) → Σ \(X' : 𝓤 ̇) → is-prop X' × (X → X')
+                                                                    × ((P : 𝓥 ̇) → is-prop P → (X → P) → X' → P)
 
-propositional-truncations-exist' : ∀ 𝓤 → 𝓤 ⁺ ̇
-propositional-truncations-exist' 𝓤 = propositional-truncations-exist 𝓤 𝓤
+propositional-truncations-exist'' : ∀ 𝓤 → 𝓤 ⁺ ̇
+propositional-truncations-exist'' 𝓤 = propositional-truncations-exist' 𝓤 𝓤
 
-module PropositionalTruncation' (pt : ∀ 𝓤 → propositional-truncations-exist' 𝓤) where
+module PropositionalTruncation' (pt : ∀ 𝓤 → propositional-truncations-exist'' 𝓤) where
 
  ∥_∥ : 𝓤 ̇ → 𝓤 ̇
  ∥ X ∥ = pr₁ (pt (universe-of X) X)

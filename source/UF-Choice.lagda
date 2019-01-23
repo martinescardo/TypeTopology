@@ -133,8 +133,8 @@ Univalent Choice.
 \begin{code}
 
 module UnivalentChoice (𝓤 : Universe)
-                       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
-                       (pt : PropositionalTruncationsExist)
+                       (fe : global-funext)
+                       (pt : propositional-truncations-exist)
                        where
 
  open PropositionalTruncation pt public
@@ -201,8 +201,8 @@ open import UF-ExcludedMiddle
 
 module ChoiceUnderEM₀ (𝓤 : Universe)
                       (em : EM 𝓤)
-                      (pt : PropositionalTruncationsExist)
-                      (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+                      (pt : propositional-truncations-exist)
+                      (fe : global-funext)
                       where
 
  open UnivalentChoice 𝓤 fe pt
@@ -251,8 +251,8 @@ with values a ₀ = a₀ and a ₁ = a₁.
 
 module AC-renders-all-sets-discrete
                       (𝓤 : Universe)
-                      (pt : PropositionalTruncationsExist)
-                      (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+                      (pt : propositional-truncations-exist)
+                      (fe : global-funext)
                       where
 
  open UnivalentChoice 𝓤 fe pt public
@@ -335,9 +335,9 @@ because (𝟙≡P)≡P.
 \begin{code}
 
 module AC-gives-EM
-                      (pt : PropositionalTruncationsExist)
+                      (pt : propositional-truncations-exist)
                       (pe : propext 𝓤₀)
-                      (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+                      (fe : global-funext)
                       where
 
  open  AC-renders-all-sets-discrete 𝓤₁ pt fe
@@ -364,8 +364,8 @@ The following is probably not going to be useful for anything here:
 \begin{code}
 
 module Observation (𝓤 : Universe)
-                   (pt : PropositionalTruncationsExist)
-                   (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+                   (pt : propositional-truncations-exist)
+                   (fe : global-funext)
                    where
 
  open PropositionalTruncation pt

@@ -13,7 +13,7 @@ univalence axiom is needed.
 open import UF-FunExt
 
 module OrdinalOfOrdinals
-       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+       (fe : global-funext)
        where
 
 open import SpartanMLTT

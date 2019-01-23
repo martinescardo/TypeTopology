@@ -42,7 +42,7 @@ open import UF-FunExt
 open import UF-Subsingletons
 
 module OrdinalsShulmanTaboo
-       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+       (fe : global-funext)
        (pe : propext 𝓤₀)
        where
 

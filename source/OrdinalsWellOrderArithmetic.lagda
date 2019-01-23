@@ -265,7 +265,7 @@ module times
    q : b ≡ y
    q = e' b y f'' g''
 
- well-order : (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+ well-order : (global-funext)
             → is-well-order _<_
             → is-well-order _≺_
             → is-well-order _⊏_
@@ -570,7 +570,7 @@ module sum
    f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
- prop-valued : (∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+ prop-valued : (global-funext)
              → is-prop-valued _<_
              → is-well-founded _<_
              → is-extensional _<_
@@ -594,7 +594,7 @@ assuming cotransitivity. We do this in the following two modules.
 \begin{code}
 
 module sum-top
-        (fe : (∀ 𝓤 𝓥 → funext 𝓤 𝓥))
+        (fe : (global-funext))
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
@@ -680,7 +680,7 @@ module sum-top
 open import DiscreteAndSeparated
 
 module sum-cotransitive
-        (fe : (∀ 𝓤 𝓥 → funext 𝓤 𝓥))
+        (fe : (global-funext))
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
@@ -786,7 +786,7 @@ open import UF-Embedding
 open import UF-Equiv
 
 module extension
-        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+        (fe : global-funext)
         {𝓤 𝓥 𝓦}
         {X : 𝓤 ̇}
         {A : 𝓥 ̇}
@@ -797,7 +797,7 @@ module extension
         (a : A)
        where
 
- open import UF-InjectiveTypes (fe)
+ open import UF-InjectiveTypes fe
 
  private
   _≺_ : (Y / j) a → (Y / j) a → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇

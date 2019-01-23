@@ -173,7 +173,7 @@ module. This time a pointwise weakening of surjection is not enough.
 open import UF-PropTrunc
 open import UF-ImageAndSurjection
 
-module surjection-version (pt : PropositionalTruncationsExist) where
+module surjection-version (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
@@ -269,7 +269,7 @@ of "jumping" a universe.
 
 \begin{code}
 
-module Blechschmidt (pt : PropositionalTruncationsExist) where
+module Blechschmidt (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt
@@ -353,7 +353,7 @@ A variation, replacing discreteness by set-hood, at the cost of
 
 \begin{code}
 
-module Blechschmidt' (pt : PropositionalTruncationsExist) where
+module Blechschmidt' (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
  open ImageAndSurjection pt

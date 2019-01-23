@@ -8,11 +8,11 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-Embedding
 
-module ExtendedSumCompact (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module ExtendedSumCompact (fe : global-funext) where
 
 open import CompactTypes
-open import UF-InjectiveTypes (fe)
-open import PropTychonoff (fe)
+open import UF-InjectiveTypes fe
+open import PropTychonoff fe
 
 extended-sum-compact∙ : {X : 𝓤 ̇} {K : 𝓥 ̇} {Y : X → 𝓦 ̇} (j : X → K) → is-embedding j
                         → ((x : X) → compact∙(Y x)) → compact∙ K → compact∙(Σ(Y / j))

@@ -16,7 +16,7 @@ open import OrdinalNotions hiding (_≤_)
 open import UF-Embedding
 
 module Ordinals
-       (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+       (fe : global-funext)
        where
 
 OrdinalStructure : 𝓤 ̇ → 𝓤 ⁺ ̇

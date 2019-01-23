@@ -16,7 +16,7 @@ open import SpartanMLTT
 open import UF-FunExt
 
 module OrdinalArithmetic
-        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+        (fe : global-funext)
        where
 
 open import Ordinals fe

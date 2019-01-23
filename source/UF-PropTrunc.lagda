@@ -20,7 +20,7 @@ assumption.
 
 \begin{code}
 
-record PropositionalTruncationsExist : Uω where
+record propositional-truncations-exist : Uω where
  field
   ∥_∥ : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   propositional-truncation-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇} → is-prop ∥ X ∥
@@ -29,9 +29,9 @@ record PropositionalTruncationsExist : Uω where
  infix 0 ∥_∥
  infix 0 ∣_∣
 
-module PropositionalTruncation (pt : PropositionalTruncationsExist) where
+module PropositionalTruncation (pt : propositional-truncations-exist) where
 
- open PropositionalTruncationsExist pt public
+ open propositional-truncations-exist pt public
 
  is-singleton'-is-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-a-prop fe) (λ _ → propositional-truncation-is-a-prop)

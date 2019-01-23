@@ -37,7 +37,7 @@ a theorem rather than a metatheorem.
 
 open import UF-FunExt
 
-module FailureOfTotalSeparatedness (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module FailureOfTotalSeparatedness (fe : global-funext) where
 
 open import SpartanMLTT
 open import Two

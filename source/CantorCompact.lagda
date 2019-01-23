@@ -14,10 +14,10 @@ open import SpartanMLTT
 open import Two
 open import UF-FunExt
 
-module CantorCompact (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module CantorCompact (fe : global-funext) where
 
 open import CompactTypes
-open import CountableTychonoff (fe)
+open import CountableTychonoff fe
 open import CompactTypes
 open import WeaklyCompactTypes
 

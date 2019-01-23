@@ -118,12 +118,12 @@ them, so to speak. This is Rice's Theorem for the universe U.
 
 open import UF-FunExt
 
-module TheTopologyOfTheUniverse (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module TheTopologyOfTheUniverse (fe : global-funext) where
 
 open import SpartanMLTT
 open import UF-Equiv
 open import GenericConvergentSequence
-open import UF-InjectiveTypes (fe)
+open import UF-InjectiveTypes fe
 
 \end{code}
 

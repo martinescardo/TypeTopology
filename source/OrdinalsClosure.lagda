@@ -9,7 +9,7 @@ Closure properties of some ordinal construnctions.
 open import UF-FunExt
 
 module OrdinalsClosure
-        (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥)
+        (fe : global-funext)
        where
 
 open import SpartanMLTT

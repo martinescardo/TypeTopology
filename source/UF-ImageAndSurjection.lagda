@@ -18,9 +18,9 @@ define images and surjections:
 
 \begin{code}
 
-module ImageAndSurjection (pt : PropositionalTruncationsExist) where
+module ImageAndSurjection (pt : propositional-truncations-exist) where
 
- open PropositionalTruncation (pt)
+ open PropositionalTruncation pt
 
  image : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
  image f = Σ \y → ∃ \x → f x ≡ y

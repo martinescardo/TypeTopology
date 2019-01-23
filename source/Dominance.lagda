@@ -14,7 +14,7 @@ open import UF-Subsingletons hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 
-module Dominance (𝓤 : Universe) (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module Dominance (𝓤 : Universe) (fe : global-funext) where
 
 𝓤⁺ = 𝓤 ⁺
 

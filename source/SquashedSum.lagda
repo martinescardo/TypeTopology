@@ -9,7 +9,7 @@ See remarks below for an explanation.
 open import SpartanMLTT
 open import UF-FunExt
 
-module SquashedSum (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module SquashedSum (fe : global-funext) where
 
 fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = fe 𝓤₀ 𝓤₀
@@ -307,7 +307,7 @@ The theorem here is that the "squashed sum" of any countable family of
 compact∙ sets is itself compact (see the module CompactTypes,
 imported below, for the definition and fundamental facts about the
 notion).
-open import UF-InjectiveTypes (fe)
+open import UF-InjectiveTypes fe
 
 (The terminology "squashed sum" comes from the paper "Infinite sets
 that satisfy the principle of omniscience in all varieties of

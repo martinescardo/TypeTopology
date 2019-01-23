@@ -115,7 +115,7 @@ Don't really have a good place to put this:
 
 \begin{code}
 
-module _ (pt : PropositionalTruncationsExist) where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 

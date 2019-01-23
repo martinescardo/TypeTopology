@@ -9,7 +9,7 @@ Adapted from the module PropTychnoff to take order into account.
 open import SpartanMLTT
 open import UF-FunExt
 
-module PropInfTychonoff (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module PropInfTychonoff (fe : global-funext) where
 
 open import Two
 open import CompactTypes

@@ -89,7 +89,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF-FunExt
 
-module UF-InjectiveTypes (fe : ∀ 𝓤 𝓥 → funext 𝓤 𝓥) where
+module UF-InjectiveTypes (fe : global-funext) where
 
 open import SpartanMLTT
 open import UF-Base
@@ -995,7 +995,7 @@ Added 21st January 2019.
 
 open import UF-PropTrunc
 
-module ∃-injective (pt : PropositionalTruncationsExist) where
+module ∃-injective (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
