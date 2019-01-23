@@ -50,6 +50,11 @@ The usual definition of algebra of a monad:
 𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-algebra X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ 𝓛̇ s ∼ s ∘ μ)
 
+{- TODO:
+free-𝓛-algebra : (X : 𝓤 ̇) → 𝓛-algebra (𝓛 X)
+free-𝓛-algebra X = μ , {!!} , {!!}
+-}
+
 \end{code}
 
 We can describe algebras in terms of "join" operations subject to two

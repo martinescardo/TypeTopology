@@ -57,7 +57,7 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum :{X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+prop-indexed-sum : {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
                  → is-prop X → (a : X) → Σ Y ≃ Y a
 prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
  where

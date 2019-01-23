@@ -126,9 +126,10 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
   Π-extension y = Π \(w : fiber j y) → f(pr₁ w)
   Σ-extension y = Σ \(w : fiber j y) → f(pr₁ w)
 
-  private f/j f∖j : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  f/j = Π-extension
-  f∖j = Σ-extension
+  private
+   f/j f∖j : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+   f/j = Π-extension
+   f∖j = Σ-extension
 
   Σ→Π : is-embedding j → f∖j ≾ f/j
   Σ→Π e y ((x , p) , B) (x' , p') = transport f (embedding-lc j e (p ∙ p' ⁻¹)) B
@@ -394,36 +395,36 @@ There is more to do about this.
 
 \begin{code}
 
-Π-extension-is-extension : is-univalent 𝓤 → {X Y : 𝓤 ̇} (j : X → Y)
+Π-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y)
                          → is-embedding j
-                         → (f : X → 𝓤 ̇) → (f / j) ∘ j ∼ f
+                         → (f : X → 𝓤 ⊔ 𝓥 ̇) → (f / j) ∘ j ∼ f
 Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-in-range f j e x)
 
-Π-extension-is-extension' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
-                          → {X Y : 𝓤 ̇} (j : X → Y)
+Π-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+                          → {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y)
                           → is-embedding j
-                          → (f : X → 𝓤 ̇) → (f / j) ∘ j ≡ f
+                          → (f : X → 𝓤 ⊔ 𝓥 ̇) → (f / j) ∘ j ≡ f
 Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
 
-Π-extension-is-extension'' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → funext (𝓤 ⁺) (𝓤 ⁺)
-                           → {X Y : 𝓤 ̇} (j : X → Y)
+Π-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺) → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
+                           → {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y)
                            → is-embedding j
                            → (λ f → (f / j) ∘ j) ≡ id
 Π-extension-is-extension'' ua fe fe' j e = dfunext fe' (Π-extension-is-extension' ua fe j e)
 
-Σ-extension-is-extension : is-univalent 𝓤 → {X Y : 𝓤 ̇} (j : X → Y)
+Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y)
                          → is-embedding j
-                         → (f : X → 𝓤 ̇) → (f ∖ j) ∘ j ∼ f
+                         → (f : X → 𝓤 ⊔ 𝓥 ̇) → (f ∖ j) ∘ j ∼ f
 Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-Σ-extension-is-extension' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
-                          → {X Y : 𝓤 ̇} (j : X → Y)
+Σ-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+                          → {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y)
                           → is-embedding j
-                          → (f : X → 𝓤 ̇) → (f ∖ j) ∘ j ≡ f
+                          → (f : X → 𝓤 ⊔ 𝓥 ̇) → (f ∖ j) ∘ j ≡ f
 Σ-extension-is-extension' ua fe j e f = dfunext fe (Σ-extension-is-extension ua j e f)
 
-Σ-extension-is-extension'' : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → funext (𝓤 ⁺) (𝓤 ⁺)
-                           → {X Y : 𝓤 ̇} (j : X → Y)
+Σ-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺) → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
+                           → {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y)
                            → is-embedding j
                            → (λ f → (f ∖ j) ∘ j) ≡ id
 Σ-extension-is-extension'' ua fe fe' j e = dfunext fe' (Σ-extension-is-extension' ua fe j e)
@@ -443,17 +444,20 @@ injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-em
                       → injective D over j
 
 
-universes-are-injective-Π : is-univalent 𝓤 → injective-type (𝓤 ̇) 𝓤 𝓤
+universes-are-injective-Π : is-univalent (𝓤 ⊔ 𝓥) → injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
 universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 
-universes-are-injective-Σ : is-univalent 𝓤 → injective-type (𝓤 ̇) 𝓤 𝓤
+universes-are-injective-Π' : is-univalent 𝓤 → injective-type (𝓤 ̇) 𝓤 𝓤
+universes-are-injective-Π' = universes-are-injective-Π
+
+universes-are-injective-Σ : is-univalent (𝓤 ⊔ 𝓥) → injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-retract-Of-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+retract-Of-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                      → injective-type D 𝓦 𝓣
                      → retract D' Of D
                      → injective-type D' 𝓦 𝓣
-retract-Of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e f = r ∘ g , γ
+retract-Of-injective D' D i (r , ρ) {X} {Y} j e f = r ∘ g , γ
   where
     s : D' → D
     s d' = pr₁ (ρ d')
@@ -468,9 +472,9 @@ retract-Of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , ρ) {X} {Y} j e
 
 open import UF-IdEmbedding
 
-injective-retract-of-power-of-universe : {D : 𝓤 ̇} → is-univalent 𝓤
+injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                        → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
-injective-retract-of-power-of-universe ua i = pr₁ a , λ y → Id y , pr₂ a y
+injective-retract-of-power-of-universe D ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
@@ -488,6 +492,13 @@ power-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {A} i {X} {Y} j e f = f' , g
 
     g : f' ∘ j ∼ f
     g x = dfunext (fe 𝓥 𝓤) (λ a → pr₂ (l a) x)
+
+injective-resize : is-univalent 𝓤
+                → (D : 𝓤 ̇) → injective-type D 𝓤 (𝓤 ⁺) → injective-type D 𝓤 𝓤
+injective-resize {𝓤} ua D i = φ (injective-retract-of-power-of-universe D ua i)
+ where
+  φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
+  φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
 
 \end{code}
 
@@ -1009,11 +1020,11 @@ module ∃-injective (pt : PropTrunc) where
  ∥injective∥-gives-∃-injective {𝓦} {𝓤} {𝓥} D = ptrec (∃-injectivity-is-a-prop D 𝓤 𝓥)
                                                      (injective-gives-∃-injective D)
 
- retract-of-∃-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+ retract-of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                         → ∃-injective-type D 𝓦 𝓣
                         → retract D' of D
                         → ∃-injective-type D' 𝓦 𝓣
- retract-of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i (r , (s , rs)) {X} {Y} j e f = γ
+ retract-of-∃-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
    i' : ∃ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f
    i' = i j e (s ∘ f)
@@ -1022,16 +1033,16 @@ module ∃-injective (pt : PropTrunc) where
    γ : ∃ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
    γ = ptfunct φ i'
 
- retract-Of-∃-injective : {D : 𝓤 ̇} {D' : 𝓥 ̇}
+ retract-Of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                         → ∃-injective-type D 𝓦 𝓣
                         → ∥ retract D' Of D ∥
                         → ∃-injective-type D' 𝓦 𝓣
- retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {D'} i = ptrec (∃-injectivity-is-a-prop D' 𝓦 𝓣)
-                                                             (retract-of-∃-injective i ∘ retract-Of-retract-of)
+ retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} D' D i = ptrec (∃-injectivity-is-a-prop D' 𝓦 𝓣)
+                                                       (retract-of-∃-injective D' D i ∘ retract-Of-retract-of)
 
- ∃-injective-retract-of-power-of-universe : {D : 𝓤 ̇} → is-univalent 𝓤
+ ∃-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                           → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ retract D Of (D → 𝓤 ̇) ∥
- ∃-injective-retract-of-power-of-universe ua i = ptfunct retract-of-retract-Of γ
+ ∃-injective-retract-of-power-of-universe D ua i = ptfunct retract-of-retract-Of γ
   where
     a : ∃ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
@@ -1042,10 +1053,10 @@ module ∃-injective (pt : PropTrunc) where
 
  ∃-injective-gives-∥injective∥ : is-univalent 𝓤
                               → (D : 𝓤 ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥
- ∃-injective-gives-∥injective∥ {𝓤} ua D i = ptfunct φ (∃-injective-retract-of-power-of-universe ua i)
+ ∃-injective-gives-∥injective∥ {𝓤} ua D i = ptfunct φ (∃-injective-retract-of-power-of-universe D ua i)
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
-   φ = retract-Of-injective (power-of-injective (universes-are-injective-Π ua))
+   φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
 
  ∃-flabby : 𝓦 ̇ → (𝓣 : Universe) → 𝓦 ⊔ 𝓣 ⁺ ̇
  ∃-flabby D 𝓣 = (P : 𝓣 ̇) → is-prop P → (f : P → D) → ∃ \(d : D) → (p : P) → f p ≡ d
@@ -1054,5 +1065,27 @@ module ∃-injective (pt : PropTrunc) where
 
 TODO. Improve the universe levels in the last few facts. (Using
 propositional resizing, the lifting of a type lives in the same
-universe as the type. Because the lifting is always injective and
-embeds the type, we can use it in place of (D → 𝓤 ̇) to host D.)
+universe as the type. Because the lifting is always an injective type
+and embeds the type, we can use it in place of (D → 𝓤 ̇) to host D.)
+
+Added 23rd January 2019:
+
+\begin{code}
+
+module injectivity-of-lifting (𝓣 : Universe) where
+
+ open import Lifting 𝓣
+ open import LiftingAlgebras 𝓣
+
+{- TODO. It is easy to complete this now:
+ 𝓛-algebra-flabby : {A : 𝓤 ̇} → 𝓛-alg A → flabby A {!!}
+ 𝓛-algebra-flabby = {!!}
+
+ 𝓛-algebra-injective : {A : 𝓤 ̇} → 𝓛-alg A → injective-type A {!!} {!!}
+ 𝓛-algebra-injective = {!!}
+
+ 𝓛-injective : {X : 𝓤 ̇} → injective-type (𝓛 X) {!!} {!!}
+ 𝓛-injective = {!!}
+-}
+
+\end{code}
