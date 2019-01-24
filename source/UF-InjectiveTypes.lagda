@@ -934,47 +934,16 @@ Added 23rd Nov 2018, version of 21st January 2017:
 
 \begin{code}
 
-Flabby : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓦 ⊔ (𝓤 ⁺) ⊔ 𝓥 ̇
-Flabby D 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → injective D over (λ (p : P) → * {𝓥})
-
-{-
-injective-types-are-Flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → Flabby D 𝓤 𝓥
-injective-types-are-Flabby {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) ,
-                                                     pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
--}
-{-
-Flabby-types-are-injective : (D : 𝓦 ̇) → Flabby D 𝓤 𝓥 → injective-type {𝓤} {𝓥} D
-Flabby-types-are-injective {𝓤} {𝓥} {𝓦} D φ P isp f = {!!}
--}
-
 flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
 flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
 
-{-
-injective-types-are-flabby' : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → flabby D 𝓤
-injective-types-are-flabby' {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
-                                                      pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
--}
+injective-types-are-flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → flabby D 𝓤
+injective-types-are-flabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
+                                                     pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
 
-\end{code}
 
-This is all very well, but we want more general universe levels:
-
-\begin{code}
-
-{-
-injective-types-are-flabby : (D : 𝓦 ̇) → injective-type {𝓤} {𝓥} D → flabby D (𝓤 ⊔ 𝓥)
-injective-types-are-flabby {𝓤} {𝓥} {𝓦} D i P isp f = pr₁ (i j {!!} {!!}) {!!} ,
-                                                     {!!}
- where
-  j : 𝟙 {𝓤} × {!!} → 𝟙 {𝓥}
-  j = {!!}
-  e : {!!}
-  e = {!!}
--}
-
-flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
-flabby-types-are-injective D φ {X} {Y} j e f = f' , p
+flabby-types-are-injective : ∀ {𝓦} {𝓤} {𝓥} → (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
+flabby-types-are-injective {𝓦} {𝓤} {𝓥} D φ {X} {Y} j e f = f' , p
  where
   f' : Y → D
   f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
@@ -1076,7 +1045,9 @@ module injectivity-of-lifting (𝓣 : Universe) where
 
  open import Lifting 𝓣
  open import LiftingAlgebras 𝓣
+ open import LiftingEmbeddingViaSIP 𝓣
  open import UF-UA-FunExt
+
 
  𝓛-alg-flabby : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
               → {A : 𝓤 ̇} → 𝓛-alg A → flabby A 𝓣
@@ -1097,4 +1068,12 @@ module injectivity-of-lifting (𝓣 : Universe) where
                                        fe
                                        (𝓛 X)
                                        (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
+
+ injective-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → is-univalent 𝓣
+                                     → injective-type D 𝓣  (𝓣 ⁺) → retract D Of (𝓛 D)
+ injective-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → η γ , pr₂ a γ
+   where
+     a : Σ \r  → r ∘ η ∼ id
+     a = i η (η-is-embedding' 𝓣 D ua (funext-from-univalence ua)) id
+
 \end{code}

@@ -375,6 +375,6 @@ For any proposition P, the unique map P → 𝟙 is an embedding:
 \begin{code}
 
 prop-embedding : (P : 𝓤 ̇) → is-prop P → ∀ 𝓥 → is-embedding (λ (p : P) → * {𝓥})
-prop-embedding {𝓤} P i 𝓥 * (p , q) (p' , q') = to-×-≡ (i p p')
-                                                      (props-are-sets 𝟙-is-prop q q')
+prop-embedding P i 𝓥 * (p , r) (p' , r') = to-×-≡ (i p p')
+                                                  (props-are-sets 𝟙-is-prop r r')
 \end{code}
