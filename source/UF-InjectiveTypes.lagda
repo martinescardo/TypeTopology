@@ -472,9 +472,9 @@ retract-Of-injective D' D i (r , ρ) {X} {Y} j e f = r ∘ g , γ
 
 open import UF-IdEmbedding
 
-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
-                                       → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
-injective-retract-of-power-of-universe D ua i = pr₁ a , λ y → Id y , pr₂ a y
+injective-is-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
+                                          → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
+injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → Id y , pr₂ a y
   where
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
@@ -493,14 +493,24 @@ power-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {A} i {X} {Y} j e f = f' , g
     g : f' ∘ j ∼ f
     g x = dfunext (fe 𝓥 𝓤) (λ a → pr₂ (l a) x)
 
-injective-resize : is-univalent 𝓤
-                → (D : 𝓤 ̇) → injective-type D 𝓤 (𝓤 ⁺) → injective-type D 𝓤 𝓤
-injective-resize {𝓤} ua D i = φ (injective-retract-of-power-of-universe D ua i)
+\end{code}
+
+The following is the first of a number of injectivity resizing
+constructions:
+
+\begin{code}
+
+injective-resizing₀ : is-univalent 𝓤
+                    → (D : 𝓤 ̇) → injective-type D 𝓤 (𝓤 ⁺) → injective-type D 𝓤 𝓤
+injective-resizing₀ {𝓤} ua D i = φ (injective-is-retract-of-power-of-universe D ua i)
  where
   φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
   φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
 
 \end{code}
+
+Propositional resizing gives a much more general injectivity resizing
+(see below).
 
 Added 18th July 2018. Notice that the function e : X → Y doesn't need
 to be an embedding and that the proof is completely routine.
@@ -932,6 +942,8 @@ module ∖-extension-is-embedding
 
 Added 23rd Nov 2018, version of 21st January 2017:
 
+The notion of flabbiness used in topos theory is defined with truncated Σ.
+
 \begin{code}
 
 flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
@@ -941,9 +953,8 @@ injective-types-are-flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → fl
 injective-types-are-flabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
                                                      pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
 
-
-flabby-types-are-injective : ∀ {𝓦} {𝓤} {𝓥} → (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
-flabby-types-are-injective {𝓦} {𝓤} {𝓥} D φ {X} {Y} j e f = f' , p
+flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
+flabby-types-are-injective D φ {X} {Y} j e f = f' , p
  where
   f' : Y → D
   f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
@@ -952,6 +963,68 @@ flabby-types-are-injective {𝓦} {𝓤} {𝓥} D φ {X} {Y} j e f = f' , p
    where
     q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
     q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
+
+injective-resizing₁ : (D : 𝓦 ̇) → injective-type D (𝓤 ⊔ 𝓣) 𝓥 → injective-type D 𝓤 𝓣
+injective-resizing₁ D i j e f = flabby-types-are-injective D (injective-types-are-flabby D i) j e f
+
+injective-resizing₂ : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓤
+injective-resizing₂ = injective-resizing₁
+
+\end{code}
+
+
+Added 24th January 2019.
+
+The following resizing principle is a weaking of Voevodsky's resizing
+rules. Notice that this is consistent as it is implied by excluded
+middle, which is known to be consistent with univalent
+foundations. The consistency of Voevodsky's resizing rules is open at
+the time of writing (24th January 2019).
+
+\begin{code}
+
+weak-propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+weak-propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → Σ \(Q : 𝓥 ̇) → is-prop Q × (P → Q) × (Q → P)
+
+\end{code}
+
+With propositional resizing, as soon as D is flabby with respect to
+some universe, it is flabby with respect to all universes:
+
+\begin{code}
+
+flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-propositional-resizing 𝓤 𝓥
+                   → flabby D 𝓥 → flabby D 𝓤
+flabiness-resizing D 𝓤 𝓥 ρ φ P isp f = d , h
+ where
+  Q : 𝓥 ̇
+  Q = pr₁ (ρ P isp)
+  isq : is-prop Q
+  isq = pr₁ (pr₂ (ρ P isp))
+  a : P → Q
+  a = pr₁ (pr₂ (pr₂ (ρ P isp)))
+  b : Q → P
+  b = pr₂ (pr₂ (pr₂ (ρ P isp)))
+  d : D
+  d = pr₁ (φ Q isq (f ∘ b))
+  k : (q : Q) → d ≡ f (b q)
+  k = pr₂ (φ Q isq (f ∘ b))
+  h : (p : P) → d ≡ f p
+  h p = k (a p) ∙ ap f (isp (b (a p)) p)
+
+\end{code}
+
+And from this it follows that the injectivity of a type with respect
+to two given universes implies its injectivity with respect to all
+universes:
+
+\begin{code}
+
+injective-resizing : ∀ 𝓤 𝓥 𝓤' 𝓥' 𝓦 → weak-propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
+                  → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
+injective-resizing 𝓤 𝓥 𝓤' 𝓥' 𝓦 ρ D i j e f = flabby-types-are-injective D
+                                                   (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
+                                                     (injective-types-are-flabby D i)) j e f
 
 \end{code}
 
@@ -1032,10 +1105,11 @@ module ∃-injective (pt : propositional-truncations-exist) where
 
 \end{code}
 
-TODO. Improve the universe levels in the last few facts. (Using
-propositional resizing, the lifting of a type lives in the same
-universe as the type. Because the lifting is always an injective type
-and embeds the type, we can use it in place of (D → 𝓤 ̇) to host D.)
+TODO. Improve the universe levels in the last few facts using
+propositional resizing. Also, using propositional resizing, the
+lifting of a type lives in the same universe as the type. Because the
+lifting is always an injective type and embeds the type, we can use it
+in place of (D → 𝓤 ̇) to host D.
 
 Added 23rd January 2019:
 
@@ -1069,11 +1143,14 @@ module injectivity-of-lifting (𝓣 : Universe) where
                                        (𝓛 X)
                                        (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
 
- injective-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → is-univalent 𝓣
-                                     → injective-type D 𝓣  (𝓣 ⁺) → retract D Of (𝓛 D)
- injective-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → η γ , pr₂ a γ
+ injective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → is-univalent 𝓣
+                                        → injective-type D 𝓣 (𝓣 ⁺) → retract D Of (𝓛 D)
+ injective-is-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → η γ , pr₂ a γ
    where
      a : Σ \r  → r ∘ η ∼ id
      a = i η (η-is-embedding' 𝓣 D ua (funext-from-univalence ua)) id
 
 \end{code}
+
+With resizing axioms, 𝓛 D lives in the same universe as D, and hence
+the hypothesis becomes "injective-type D 𝓣 𝓣".
