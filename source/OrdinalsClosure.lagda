@@ -34,7 +34,7 @@ open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
 open import UF-Embedding
-open import UF-InjectiveTypes fe
+open import InjectiveTypes fe
 open import UF-Retracts
 open import UF-Miscelanea
 

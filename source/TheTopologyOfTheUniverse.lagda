@@ -123,7 +123,7 @@ module TheTopologyOfTheUniverse (fe : global-funext) where
 open import SpartanMLTT
 open import UF-Equiv
 open import GenericConvergentSequence
-open import UF-InjectiveTypes fe
+open import InjectiveTypes fe
 
 \end{code}
 

@@ -89,7 +89,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF-FunExt
 
-module UF-InjectiveTypes (fe : global-funext) where
+module InjectiveTypes (fe : global-funext) where
 
 open import SpartanMLTT
 open import UF-Base
@@ -975,23 +975,12 @@ injective-resizing₂ = injective-resizing₁
 
 Added 24th January 2019.
 
-The following resizing principle is a weaking of Voevodsky's resizing
-rules. Notice that this is consistent as it is implied by excluded
-middle, which is known to be consistent with univalent
-foundations. The consistency of Voevodsky's resizing rules is open at
-the time of writing (24th January 2019).
-
-\begin{code}
-
-weak-propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-weak-propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → Σ \(Q : 𝓥 ̇) → is-prop Q × (P → Q) × (Q → P)
-
-\end{code}
-
 With propositional resizing, as soon as D is flabby with respect to
 some universe, it is flabby with respect to all universes:
 
 \begin{code}
+
+open import UF-Resizing
 
 flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-propositional-resizing 𝓤 𝓥
                    → flabby D 𝓥 → flabby D 𝓤

@@ -22,7 +22,7 @@ open import UF-Embedding
 open import GenericConvergentSequence
 open import CompactTypes
 open import ConvergentSequenceCompact fe₀
-open import UF-InjectiveTypes fe
+open import InjectiveTypes fe
 open import ExtendedSumCompact fe
 open import DiscreteAndSeparated
 open import UF-Miscelanea

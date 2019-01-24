@@ -11,7 +11,7 @@ open import UF-Embedding
 module ExtendedSumCompact (fe : global-funext) where
 
 open import CompactTypes
-open import UF-InjectiveTypes fe
+open import InjectiveTypes fe
 open import PropTychonoff fe
 
 extended-sum-compact∙ : {X : 𝓤 ̇} {K : 𝓥 ̇} {Y : X → 𝓦 ̇} (j : X → K) → is-embedding j

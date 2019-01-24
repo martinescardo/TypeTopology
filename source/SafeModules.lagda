@@ -31,6 +31,7 @@ import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import InfCompact
+import InjectiveTypes
 import LawvereFPT
 import LexicographicOrder
 import LexicographicCompactness
@@ -89,7 +90,6 @@ import UF-FunExt-from-Naive-FunExt
 import UF-FunExt-from-Naive-FunExt-alternate
 import UF-IdEmbedding
 import UF-ImageAndSurjection
-import UF-InjectiveTypes
 import UF-Knapp-UA
 import UF-KrausLemma
 import UF-LeftCancellable
@@ -99,6 +99,7 @@ import UF-PropTrunc
 import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
+import UF-Resizing
 import UF-StructureIdentityPrinciple
 import UF-SubsetIdentity
 import UF-Subsingletons
@@ -293,7 +294,7 @@ universes:
 
 \begin{code}
 
-import UF-InjectiveTypes
+import InjectiveTypes
 
 \end{code}
 

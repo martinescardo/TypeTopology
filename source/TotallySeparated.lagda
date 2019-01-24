@@ -327,7 +327,7 @@ is merely a Kan extension rather than a proper extension).
 
 module _ (fe : global-funext)  where
 
- open import UF-InjectiveTypes fe
+ open import InjectiveTypes fe
 
  /-is-totally-separated : {X : 𝓤 ̇} {A : 𝓥 ̇}
                           (j : X → A)

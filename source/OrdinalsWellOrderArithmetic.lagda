@@ -797,7 +797,7 @@ module extension
         (a : A)
        where
 
- open import UF-InjectiveTypes fe
+ open import InjectiveTypes fe
 
  private
   _≺_ : (Y / j) a → (Y / j) a → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇

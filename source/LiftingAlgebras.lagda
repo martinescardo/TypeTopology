@@ -70,7 +70,7 @@ joinop X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
 
 The intuitive idea is that a "join" operation on X consists of, for
 each proposition P, a map (P → X) → X that "puts together" the
-elements of a family f : X → P to get an element ∐ f of X.
+elements of a family f : P → X to get an element ∐ f of X.
 
 Unfortunately, we won't be able to write simply ∐ f in Agda notation,
 as the witness that P is a proposition can almost never be
@@ -217,7 +217,7 @@ type injectivity purposes).
  where
   r : f ≡ λ (_ : P) → f p
   r = dfunext fe' (λ p' → ap f (i p' p))
-  s : (r : P ≡ 𝟙) → ∐ {P} i f ≡ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
+  s : P ≡ 𝟙 → ∐ {P} i f ≡ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
   s refl = ap₂ ∐ (being-a-prop-is-a-prop fe i 𝟙-is-prop) r
   t : P ≡ 𝟙
   t = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
@@ -298,15 +298,15 @@ change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (
                  → (f : P × Q → X) → ∐ i (λ p → ∐ j (λ q → f (p , q)))
                                    ≡ ∐ j (λ q → ∐ i (λ p → f (p , q)))
 
-𝓛-alg-self-distr ∐ P i Q j ua l₁' f = ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ≡⟨ a ⁻¹ ⟩
-                                      ∐ (Σ-is-prop i (λ p → j)) f                           ≡⟨ c ⟩
-                                      ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨ b ⟩
+𝓛-alg-self-distr ∐ P i Q j ua l₁' f = ∐ i (λ p → ∐ j (λ q → f (p , q)))                     ≡⟨ a ⟩
+                                      ∐ (Σ-is-prop i (λ p → j)) f                           ≡⟨ b ⟩
+                                      ∐ (Σ-is-prop j (λ p → i)) (f ∘ (λ t → pr₂ t , pr₁ t)) ≡⟨ c ⟩
                                       ∐ j (λ q → ∐ i (λ p → f (p , q)))                     ∎
  where
-  a = l₁' P Q i j f
-  b = l₁' Q P j i (λ t → f (pr₂ t , pr₁ t))
-  c = change-of-variables-in-join ∐ (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
+  a = (l₁' P Q i j f)⁻¹
+  b = change-of-variables-in-join ∐ (P × Q) (Σ-is-prop i (λ p → j)) (Q × P) (Σ-is-prop j (λ p → i))
                                   (λ t → pr₂ t , pr₁ t) (λ t → pr₂ t , pr₁ t) f ua
+  c = l₁' Q P j i (λ t → f (pr₂ t , pr₁ t))
 
 \end{code}
 
@@ -318,10 +318,10 @@ Using this we can prove the other direction of the logical equivalence claimed a
                     → is-univalent 𝓣 → funext 𝓣 𝓤
                     → 𝓛-alg-Law₁' ∐ → 𝓛-alg-Law₁ ∐
 𝓛-alg-Law₁'-gives₁ {𝓤} {X} ∐ ua fe a P Q i j f =
- ∐ {Σ Q} (Σ-is-prop i j) f                                         ≡⟨ e ⁻¹ ⟩
- ∐ {Σ Q} (Σ-is-prop i j) (f' ∘ k')                                 ≡⟨ d ⁻¹ ⟩
- ∐ {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) f'                      ≡⟨ c ⟩
- ∐ {P} i (λ p → ∐ {Σ Q} (Σ-is-prop i j) ((λ σ → f (p , σ)) ∘ k p)) ≡⟨ b ⁻¹ ⟩
+ ∐ {Σ Q} (Σ-is-prop i j) f                                         ≡⟨ b ⟩
+ ∐ {Σ Q} (Σ-is-prop i j) (f' ∘ k')                                 ≡⟨ c ⟩
+ ∐ {P × Σ Q} (×-is-prop i (Σ-is-prop i j)) f'                      ≡⟨ d ⟩
+ ∐ {P} i (λ p → ∐ {Σ Q} (Σ-is-prop i j) ((λ σ → f (p , σ)) ∘ k p)) ≡⟨ e ⟩
  ∐ {P} i (λ p → ∐ {Q p} (j p) (λ q → f (p , q)))                   ∎
 
  where
@@ -335,11 +335,11 @@ Using this we can prove the other direction of the logical equivalence claimed a
   k' (p , q) = p , p , q
   H : f' ∘ k' ∼ f
   H (p , q) = ap (λ - → f (p , -)) (j p _ _)
-  b = ap (∐ {P} i) (dfunext fe (λ p → change-of-variables-in-join ∐ (Q p) (j p) (Σ Q) (Σ-is-prop i j)
-                                                                 (h p) (k p) (λ σ → f (p , σ)) ua))
-  c = a P (Σ Q) i (Σ-is-prop i j) (λ z → f (pr₁ z , k (pr₁ z) (pr₂ z)))
-  d = change-of-variables-in-join ∐ (P × Σ Q) (×-is-prop i (Σ-is-prop i j)) (Σ Q) (Σ-is-prop i j) pr₂ k' f' ua
-  e = ap (∐ {Σ Q} (Σ-is-prop i j)) (dfunext fe H)
+  b = (ap (∐ {Σ Q} (Σ-is-prop i j)) (dfunext fe H))⁻¹
+  c = (change-of-variables-in-join ∐ (P × Σ Q) (×-is-prop i (Σ-is-prop i j)) (Σ Q) (Σ-is-prop i j) pr₂ k' f' ua)⁻¹
+  d = a P (Σ Q) i (Σ-is-prop i j) (λ z → f (pr₁ z , k (pr₁ z) (pr₂ z)))
+  e = (ap (∐ {P} i) (dfunext fe (λ p → change-of-variables-in-join ∐ (Q p) (j p) (Σ Q) (Σ-is-prop i j)
+                                                                  (h p) (k p) (λ σ → f (p , σ)) ua)))⁻¹
 
 \end{code}
 
@@ -367,8 +367,9 @@ operations. More generally:
 
 \end{code}
 
-This is the case for any monad, but the way we proved this above with
-using our characterizations of the algebras applies only to our monad.
+This is the case for any monad of a certain kind, but the way we
+proved this above with using our characterizations of the algebras
+applies only to our monad.
 
 The following examples are crucial for injectivity. They say that the
 universe is an algebra in at least two ways, with ∐ = Σ and ∐ = Π

@@ -28,7 +28,7 @@ open import Sequence fe renaming (head to head' ; tail to tail' ; _∶∶_ to _�
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
-open import UF-InjectiveTypes fe
+open import InjectiveTypes fe
 open import UF-Embedding
 open import UF-Retracts
 
