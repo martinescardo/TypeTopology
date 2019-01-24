@@ -984,23 +984,24 @@ open import UF-Resizing
 
 flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-propositional-resizing 𝓤 𝓥
                    → flabby D 𝓥 → flabby D 𝓤
-flabiness-resizing D 𝓤 𝓥 ρ φ P isp f = d , h
+flabiness-resizing D 𝓤 𝓥 ρ φ P i f = d , h
  where
-  open Weak-propositional-resizing (ρ P isp)
   Q : 𝓥 ̇
-  Q = resized
-  isq : is-prop Q
-  isq = resized-is-prop
-  a : P → Q
-  a = to-resized
-  b : Q → P
-  b = from-resized
+  Q = resize ρ P i
+  j : is-prop Q
+  j = resize-is-prop ρ P i
+  α : P → Q
+  α = to-resize ρ P i
+  β : Q → P
+  β = from-resize ρ P i
   d : D
-  d = pr₁ (φ Q isq (f ∘ b))
-  k : (q : Q) → d ≡ f (b q)
-  k = pr₂ (φ Q isq (f ∘ b))
+  d = pr₁ (φ Q j (f ∘ β))
+  k : (q : Q) → d ≡ f (β q)
+  k = pr₂ (φ Q j (f ∘ β))
   h : (p : P) → d ≡ f p
-  h p = k (a p) ∙ ap f (isp (b (a p)) p)
+  h p = d           ≡⟨ k (α p) ⟩
+        f (β (α p)) ≡⟨ ap f (i (β (α p)) p) ⟩
+        f p         ∎
 
 \end{code}
 
