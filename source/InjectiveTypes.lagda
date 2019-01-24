@@ -986,14 +986,15 @@ flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-propositional
                    → flabby D 𝓥 → flabby D 𝓤
 flabiness-resizing D 𝓤 𝓥 ρ φ P isp f = d , h
  where
+  open Weak-propositional-resizing (ρ P isp)
   Q : 𝓥 ̇
-  Q = pr₁ (ρ P isp)
+  Q = resized
   isq : is-prop Q
-  isq = pr₁ (pr₂ (ρ P isp))
+  isq = resized-is-prop
   a : P → Q
-  a = pr₁ (pr₂ (pr₂ (ρ P isp)))
+  a = to-resized
   b : Q → P
-  b = pr₂ (pr₂ (pr₂ (ρ P isp)))
+  b = from-resized
   d : D
   d = pr₁ (φ Q isq (f ∘ b))
   k : (q : Q) → d ≡ f (b q)

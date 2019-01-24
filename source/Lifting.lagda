@@ -45,3 +45,19 @@ Its "undefined" element:
 ⊥ = 𝟘 , unique-from-𝟘 , 𝟘-is-prop
 
 \end{code}
+
+Size matters:
+
+\begin{code}
+
+open import UF-Resizing
+open import UF-Equiv
+
+the-size-of-𝓛 : (X : 𝓤 ̇) → (𝓛 X) has-size (𝓣 ⁺ ⊔ 𝓤)
+the-size-of-𝓛 X = 𝓛 X , ≃-refl (𝓛 X)
+
+the-size-of-𝓛𝓛 : (X : 𝓤 ̇) → (𝓛(𝓛 X)) has-size (𝓣 ⁺ ⊔ 𝓤)
+the-size-of-𝓛𝓛 X = 𝓛(𝓛 X) , ≃-refl (𝓛(𝓛 X))
+
+
+\end{code}
