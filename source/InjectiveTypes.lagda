@@ -1170,6 +1170,13 @@ module injectivity-of-lifting (𝓣 : Universe) where
      a : Σ \r  → r ∘ η ∼ id
      a = i η (η-is-embedding' 𝓣 D ua (funext-from-univalence ua)) id
 
+\end{code}
+
+With resizing axioms, 𝓛 D lives in the same universe as D, and hence
+the hypothesis becomes "injective-type D 𝓣 𝓣". Therefore:
+
+\begin{code}
+
  injective-𝓛-characterization : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺) → weak-prop-resizing (𝓣 ⁺) 𝓣
                               → (D : 𝓣 ̇) → injective-type D 𝓣 𝓣
                                           ⇔ Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
@@ -1181,6 +1188,3 @@ module injectivity-of-lifting (𝓣 : Universe) where
    b (X , r) = retract-Of-injective D (𝓛 X) (free-𝓛-algebra-injective ua fe X) r
 
 \end{code}
-
-With resizing axioms, 𝓛 D lives in the same universe as D, and hence
-the hypothesis becomes "injective-type D 𝓣 𝓣".
