@@ -942,7 +942,7 @@ module ∖-extension-is-embedding
 
 Added 23rd Nov 2018, version of 21st January 2017:
 
-The notion of flabbiness used in topos theory is defined with truncated Σ.
+NB. The notion of flabbiness used in topos theory is defined with truncated Σ.
 
 \begin{code}
 
@@ -1148,10 +1148,11 @@ What we really would like to have is
 
   ∃-injective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
 
-but this requires further thought. (It may be easy given the above development. Or not.)
+but this requires further thought. (It may be easy given the above
+development. Or hard or impossible.)
 
-
-We haven't studied this notion yet:
+We haven't studied this notion yet, but we record it for possible
+future investigation:
 
 \begin{code}
 
@@ -1221,8 +1222,9 @@ injective types are retracts of underlying objects of free algebras:
 
 \end{code}
 
-With propositional resizing, the injective types are the retracts of
-the underlying objects of free algebras of the lifting monad:
+With propositional resizing, the injective types are precisely the
+retracts of the underlying objects of free algebras of the lifting
+monad:
 
 \begin{code}
 
