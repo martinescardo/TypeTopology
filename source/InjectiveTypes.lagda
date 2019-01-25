@@ -1011,11 +1011,35 @@ universes:
 
 \begin{code}
 
-injective-resizing : ∀ 𝓤 𝓥 𝓤' 𝓥' 𝓦 → weak-prop-resizing (𝓤' ⊔ 𝓥') 𝓤
+injective-resizing : ∀ {𝓤 𝓥 𝓤' 𝓥' 𝓦} → weak-prop-resizing (𝓤' ⊔ 𝓥') 𝓤
                   → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
-injective-resizing 𝓤 𝓥 𝓤' 𝓥' 𝓦 ρ D i j e f = flabby-types-are-injective D
-                                                   (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
-                                                     (injective-types-are-flabby D i)) j e f
+injective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} ρ D i j e f = flabby-types-are-injective D
+                                                          (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
+                                                            (injective-types-are-flabby D i)) j e f
+\end{code}
+
+Added 25th January 2019. From this we get the following
+characterization of injective types (as a logical equivalence, not a
+type equivalence), which can be read as saying that the injective
+types in a universe 𝓦 are precisely the retracts of exponential powers
+of 𝓦.
+
+\begin{code}
+
+injective-characterization : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤
+                           → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤
+                                      ⇔ Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
+injective-characterization {𝓤} ua ρ D = a , b
+ where
+  a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
+  a i = D , injective-is-retract-of-power-of-universe D ua (injective-resizing ρ D i)
+  b : (Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)) → injective-type D 𝓤 𝓤
+  b (X , r) = d
+   where
+    c : injective-type (X → 𝓤 ̇) 𝓤 𝓤
+    c = power-of-injective (universes-are-injective-Σ ua)
+    d : injective-type D 𝓤 𝓤
+    d = retract-Of-injective D (X → 𝓤 ̇) c r
 
 \end{code}
 
