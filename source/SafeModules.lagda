@@ -75,6 +75,7 @@ import TotallySeparated
 import Two
 import Two-Prop-Density
 import WLPO
+import W
 
 import Universes
 import UF-Base

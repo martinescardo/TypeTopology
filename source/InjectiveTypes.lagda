@@ -1051,7 +1051,8 @@ injective-characterization {𝓤} ua ρ D = a , b
 TODO. Show that the extension induced by flabbiness is an embedding of
 function types.
 
-Added 21st January 2019.
+Added 21st January 2019. We now consider injectivity as property
+rather than data.
 
 \begin{code}
 
