@@ -1182,6 +1182,13 @@ module injectivity-of-lifting (𝓣 : Universe) where
 
  open import UF-UA-FunExt
 
+\end{code}
+
+Algebras of the lifting monad are flabby, and hence injective, and so
+in particular free 𝓛-algebras are injective.
+
+\begin{code}
+
  𝓛-alg-flabby : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
               → {A : 𝓤 ̇} → 𝓛-alg A → flabby A 𝓣
  𝓛-alg-flabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
@@ -1201,6 +1208,12 @@ module injectivity-of-lifting (𝓣 : Universe) where
                                        fe
                                        (𝓛 X)
                                        (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
+\end{code}
+
+Because the unit of the lifting monad is an embedding, it follows that
+injective types are retracts of free algebras:
+
+\begin{code}
 
  injective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → is-univalent 𝓣
                                         → injective-type D 𝓣 (𝓣 ⁺) → retract D Of (𝓛 D)
@@ -1214,7 +1227,7 @@ module injectivity-of-lifting (𝓣 : Universe) where
 With resizing axioms, 𝓛 D lives in the same universe as D, and hence
 the hypothesis becomes "injective-type D 𝓣 𝓣". Therefore the injective
 types are the retracts of the underlying objects of free
-algebras of the 𝓛-lifting monad:
+algebras of the lifting monad:
 
 \begin{code}
 
