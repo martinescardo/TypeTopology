@@ -325,7 +325,7 @@ is merely a Kan extension rather than a proper extension).
 
 \begin{code}
 
-module _ (fe : global-funext)  where
+module _ (fe : FunExt)  where
 
  open import InjectiveTypes fe
 
@@ -386,7 +386,7 @@ ieevalts {𝓤} {X} fe i {x} {y} e = ap pr₁ q
 \begin{code}
 
 module TotallySeparatedReflection
-         (fe : global-funext)
+         (fe : FunExt)
          (pt : propositional-truncations-exist)
  where
 
@@ -754,7 +754,7 @@ apartness relation _♯₂ is tight:
  preserves R S f = ∀ {x x'} → R x x' → S (f x) (f x')
 
  module TightReflection
-          (fe : global-funext)
+          (fe : FunExt)
           (pe : propext 𝓥)
           (X : 𝓤 ̇)
           (_♯_ : X → X → 𝓥 ̇)

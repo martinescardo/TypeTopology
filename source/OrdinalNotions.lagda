@@ -74,7 +74,7 @@ is-transitive = (x y z : X) → x < y → y < z → x < z
 _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued-order : global-funext → is-prop-valued → (x y : X) → is-prop(x ≼ y)
+≼-prop-valued-order : FunExt → is-prop-valued → (x y : X) → is-prop(x ≼ y)
 ≼-prop-valued-order fe isp x y = Π-is-prop (fe 𝓤 𝓥)
                                   (λ u → Π-is-prop (fe 𝓥 𝓥) (λ l → isp u y))
 
@@ -120,7 +120,7 @@ extensionality (p , w , e , t) = e
 transitivity : is-well-order → is-transitive
 transitivity (p , w , e , t) = t
 
-accessibility-is-a-prop : global-funext
+accessibility-is-a-prop : FunExt
                         → (x : X) → is-prop(is-accessible x)
 accessibility-is-a-prop fe = accessible-induction P φ
  where
@@ -140,10 +140,10 @@ accessibility-is-a-prop fe = accessible-induction P φ
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
-well-foundedness-is-a-prop : global-funext → is-prop is-well-founded
+well-foundedness-is-a-prop : FunExt → is-prop is-well-founded
 well-foundedness-is-a-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (accessibility-is-a-prop fe)
 
-extensionally-ordered-types-are-sets : global-funext → is-prop-valued
+extensionally-ordered-types-are-sets : FunExt → is-prop-valued
                          → is-extensional → is-set X
 extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ)
  where
@@ -156,10 +156,10 @@ extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ
   κ : {x y : X} → constant (f {x} {y})
   κ p q = ec
 
-well-ordered-types-are-sets : global-funext → is-well-order → is-set X
+well-ordered-types-are-sets : FunExt → is-well-order → is-set X
 well-ordered-types-are-sets fe (p , w , e , t) = extensionally-ordered-types-are-sets fe p e
 
-extensionality-is-a-prop : global-funext → is-prop-valued → is-prop is-extensional
+extensionality-is-a-prop : FunExt → is-prop-valued → is-prop is-extensional
 extensionality-is-a-prop fe isp e e' =
  dfunext (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ x → dfunext (fe 𝓤 (𝓤 ⊔ 𝓥))
@@ -169,7 +169,7 @@ extensionality-is-a-prop fe isp e e' =
                       (e x y)
                       (e' x y)))
 
-transitivity-is-a-prop : global-funext → is-prop-valued → is-prop is-transitive
+transitivity-is-a-prop : FunExt → is-prop-valued → is-prop is-transitive
 transitivity-is-a-prop fe isp =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ x → Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
@@ -178,7 +178,7 @@ transitivity-is-a-prop fe isp =
                               (λ l → Π-is-prop (fe 𝓥 𝓥)
                                        (λ m → isp x z)))))
 
-being-well-order-is-a-prop : global-funext → is-prop is-well-order
+being-well-order-is-a-prop : FunExt → is-prop is-well-order
 being-well-order-is-a-prop fe o = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
                                                             λ x → Π-is-prop (fe 𝓤 𝓥)
                                                                     (λ y → being-a-prop-is-a-prop (fe 𝓥 𝓥)))
@@ -273,7 +273,7 @@ well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
 
 open import UF-Miscelanea
 
-being-well-founded₂-is-a-prop : global-funext → is-prop is-well-founded₂
+being-well-founded₂-is-a-prop : FunExt → is-prop is-well-founded₂
 being-well-founded₂-is-a-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
                                     (λ p → Π-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤)
                                              (λ s → Π-is-prop (fe 𝓤 𝓤₀) (λ x → 𝟚-is-set)))
@@ -284,7 +284,7 @@ is-well-order₂ = is-prop-valued × is-well-founded₂ × is-extensional × is-
 is-well-order-gives-is-well-order₂ : is-well-order → is-well-order₂
 is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfounded₂ w) , e , t
 
-being-well-order₂-is-a-prop : global-funext → is-prop-valued → is-prop is-well-order₂
+being-well-order₂-is-a-prop : FunExt → is-prop-valued → is-prop is-well-order₂
 being-well-order₂-is-a-prop fe isp = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
                                                              (λ x → Π-is-prop (fe 𝓤 𝓥)
                                                                        (λ y → being-a-prop-is-a-prop (fe 𝓥 𝓥))))

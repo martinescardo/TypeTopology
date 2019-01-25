@@ -11,7 +11,7 @@ indication of termination.
 
 open import UF-FunExt
 
-module CountableTychonoff (fe : global-funext) where
+module CountableTychonoff (fe : FunExt) where
 
 open import SpartanMLTT
 open import CompactTypes

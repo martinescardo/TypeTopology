@@ -14,7 +14,7 @@ open import SpartanMLTT
 open import Two
 open import UF-FunExt
 
-module CantorCompact (fe : global-funext) where
+module CantorCompact (fe : FunExt) where
 
 open import CompactTypes
 open import CountableTychonoff fe

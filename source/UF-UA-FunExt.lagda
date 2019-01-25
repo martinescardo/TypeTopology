@@ -79,8 +79,8 @@ funext-from-univalence' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
                                        (naive-funext-from-univalence ua')
                                        (naive-funext-from-univalence ua)
 
-global-funext-from-univalence : global-univalence → global-funext
-global-funext-from-univalence ua 𝓤 𝓥 = funext-from-univalence' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+FunExt-from-univalence : Univalence → FunExt
+FunExt-from-univalence ua 𝓤 𝓥 = funext-from-univalence' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 funext-from-successive-univalence : ∀ 𝓤 → is-univalent 𝓤 → is-univalent (𝓤 ⁺) → funext 𝓤 (𝓤 ⁺)
 funext-from-successive-univalence 𝓤 = funext-from-univalence' 𝓤 (𝓤 ⁺)
@@ -88,8 +88,8 @@ funext-from-successive-univalence 𝓤 = funext-from-univalence' 𝓤 (𝓤 ⁺)
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-PropExt-from-univalence : is-univalent 𝓤
+Ω-ext-from-univalence : is-univalent 𝓤
                         → {p q : Ω 𝓤} → (p holds → q holds) → (q holds → p holds) → p ≡ q
-PropExt-from-univalence {𝓤} ua {p} {q} = PropExt (funext-from-univalence ua) (propext-from-univalence ua)
+Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-ext (funext-from-univalence ua) (propext-from-univalence ua)
 
 \end{code}

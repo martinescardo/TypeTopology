@@ -71,7 +71,7 @@ type Σ A.
 
 \begin{code}
 
-Id-Embedding-Lemma : global-funext → {X : 𝓤 ̇}
+Id-Embedding-Lemma : FunExt → {X : 𝓤 ̇}
                   → ((x y : X) (A : X → 𝓤 ̇)
                   → left-cancellable (idtofun (Id x y) (A y)))
                   → is-embedding(Id {𝓤} {X})
@@ -127,7 +127,7 @@ bother):
 
 \begin{code}
 
-eqtofun-lc : is-univalent 𝓤 → global-funext
+eqtofun-lc : is-univalent 𝓤 → FunExt
            → (X Y : 𝓤 ̇) → left-cancellable(Eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
@@ -142,14 +142,14 @@ The map idtofun is left-cancellable assuming univalence (and funext):
 
 \begin{code}
 
-is-univalent-idtofun-lc : is-univalent 𝓤 → global-funext → (X Y : 𝓤 ̇)
+is-univalent-idtofun-lc : is-univalent 𝓤 → FunExt → (X Y : 𝓤 ̇)
                        → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)
                                         (Eqtofun X Y)
                                         (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
-UA-Id-embedding : is-univalent 𝓤 → global-funext
+UA-Id-embedding : is-univalent 𝓤 → FunExt
                → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
 UA-Id-embedding {𝓤} ua fe {X} = Id-Embedding-Lemma fe
                                             (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
@@ -161,7 +161,7 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding' : K-axiom (𝓤 ⁺) → global-funext
+K-id-embedding' : K-axiom (𝓤 ⁺) → FunExt
                → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
 K-id-embedding' {𝓤} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 

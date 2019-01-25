@@ -13,7 +13,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 module OrdinalOfTruthValues
-       (fe : global-funext)
+       (fe : FunExt)
        (𝓤  : Universe)
        (pe : propext 𝓤)
        where
@@ -40,7 +40,7 @@ open import Ordinals fe
     s .⊥ (refl , b) = ⊥-accessible
 
   e : is-extensional _≺_
-  e p q f g = Ω-ext pe (fe 𝓤 𝓤) φ ψ
+  e p q f g = Ω-ext' pe (fe 𝓤 𝓤) φ ψ
    where
     φ : p ≡ ⊤ → q ≡ ⊤
     φ a = pr₂ (f ⊥ (refl , a))

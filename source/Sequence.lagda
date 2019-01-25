@@ -6,7 +6,7 @@ Martin Escardo 2011.
 
 open import UF-FunExt
 
-module Sequence (fe : global-funext) where
+module Sequence (fe : FunExt) where
 
 open import SpartanMLTT hiding (_+_)
 open import UF-Retracts

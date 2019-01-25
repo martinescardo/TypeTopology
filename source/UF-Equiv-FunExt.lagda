@@ -17,7 +17,7 @@ open import UF-Retracts
 open import UF-FunExt
 open import UF-Equiv
 
-being-vv-equiv-is-a-prop : global-funext → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+being-vv-equiv-is-a-prop : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                          → is-prop(is-vv-equiv f)
 being-vv-equiv-is-a-prop {𝓤} {𝓥} fe f = Π-is-prop
                                           (fe 𝓥 (𝓤 ⊔ 𝓥))
@@ -108,15 +108,15 @@ sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h
   c : is-singleton (has-retraction f)
   c = retract-of-singleton (r , s , rs) b
 
-retractions-have-at-most-one-section : global-funext → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+retractions-have-at-most-one-section : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                      → has-retraction f → is-prop(has-section f)
 retractions-have-at-most-one-section {𝓤} {𝓥} fe = retractions-have-at-most-one-section' (fe 𝓥 𝓤) (fe 𝓥 𝓥)
 
-sections-have-at-most-one-retraction : global-funext → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+sections-have-at-most-one-retraction : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                      → has-section f → is-prop(has-retraction f)
 sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
-being-equiv-is-a-prop : global-funext → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+being-equiv-is-a-prop : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                       → is-prop(is-equiv f)
 being-equiv-is-a-prop fe f = ×-prop-criterion (retractions-have-at-most-one-section fe f , sections-have-at-most-one-retraction fe f)
 

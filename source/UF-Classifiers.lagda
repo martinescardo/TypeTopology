@@ -101,7 +101,7 @@ module subtype-classifier
    g : ∀ y → P y holds → χ (T P) y holds
    g y h = (y , h) , refl
    γ : (y : Y) → χ (T P) y ≡ P y
-   γ y = PropExt-from-univalence ua (f y) (g y)
+   γ y = Ω-ext-from-univalence ua (f y) (g y)
 
  transport-embedding : {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X → Y) (i : is-embedding g)
                     → transport (λ - → - ↪ Y) (eqtoid ua X X' e) (g , i)

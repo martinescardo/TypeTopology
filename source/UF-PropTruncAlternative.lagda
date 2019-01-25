@@ -18,7 +18,7 @@ We can work with propositional truncation as an assumption, but the
 drawback is that we can only eliminate in the same universe we
 truncate, at least if we don't want to pass the target universe as an
 extra parameter in everything. So we are not using this anymore (but
-we could now, given that Uω has become available).
+we could now, given that 𝓤ω has become available).
 
 \begin{code}
 

@@ -17,7 +17,7 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import DiscreteAndSeparated
 
-module PlusOneLC (fe : global-funext) where
+module PlusOneLC (fe : FunExt) where
 
 _∖_ : (X : 𝓤 ̇) (a : X) → 𝓤 ̇
 X ∖ a = Σ \(x : X) → x ≢ a

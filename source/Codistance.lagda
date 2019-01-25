@@ -25,7 +25,7 @@ We then discuss further codistance axioms.
 open import SpartanMLTT
 open import UF-FunExt
 
-module Codistance (fe : global-funext) where
+module Codistance (fe : FunExt) where
 
 open import Two
 open import Sequence fe

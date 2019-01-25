@@ -8,7 +8,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-Embedding
 
-module ExtendedSumCompact (fe : global-funext) where
+module ExtendedSumCompact (fe : FunExt) where
 
 open import CompactTypes
 open import InjectiveTypes fe

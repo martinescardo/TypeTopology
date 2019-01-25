@@ -16,7 +16,7 @@ of a family of Cantor retracts is again a Cantor retract.
 
 open import UF-FunExt
 
-module SquashedCantor (fe : global-funext) where
+module SquashedCantor (fe : FunExt) where
 
 open import SpartanMLTT
 open import Two

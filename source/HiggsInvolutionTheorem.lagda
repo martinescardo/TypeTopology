@@ -14,6 +14,9 @@ The proof given here is based on an exercise in page 160 of Lambek and
 Scott's Introduction to Higher-Order Categorical Logic, attributed to
 Scedrov. Thanks to Phil Scott for bringing my attention to this proof.
 
+TODO. Generalize from propositions in the universe 𝓤₀ to any universe
+U (easy).
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -29,15 +32,6 @@ module HiggsInvolutionTheorem
         (pe : propext 𝓤₀)
        where
 
-\end{code}
-
-TODO. Generalize from propositions in the universe 𝓤₀ to any universe U.
-
-\begin{code}
-
-Ω₀ : 𝓤₁ ̇
-Ω₀ = Ω 𝓤₀
-
 involutive : {X : 𝓤 ̇} → (f : X → X) → 𝓤 ̇
 involutive f = ∀{x} → f (f x) ≡ x
 
@@ -51,7 +45,7 @@ higgs f cancelf {p} = cancelf (VII p)
    II p r s = cancelf (r ∙ s ⁻¹)
 
    III : (p : Ω₀) → f p ≡ ⊤ → p ≡ f ⊤
-   III p r = Ω-ext pe fe (I p r) (II p r)
+   III p r = Ω-ext' pe fe (I p r) (II p r)
 
    IV : (p : Ω₀) → f (f p) ≡ ⊤ → p ≡ ⊤
    IV p r = cancelf (III (f p) r)
@@ -75,6 +69,6 @@ higgs f cancelf {p} = cancelf (VII p)
      d = ap f c
 
    VII : (p : Ω₀) → f (f (f p)) ≡ f p
-   VII p = Ω-ext pe fe (V- p) (VI p)
+   VII p = Ω-ext' pe fe (V- p) (VI p)
 
 \end{code}

@@ -44,7 +44,7 @@ we had a convoluted path to this supposedly natural way).
 open import SpartanMLTT
 open import UF-FunExt
 
-module PropTychonoff (fe : global-funext) where
+module PropTychonoff (fe : FunExt) where
 
 open import CompactTypes
 open import Two

@@ -89,7 +89,7 @@ All this dualizes with Π replaced by Σ and right replaced by left.
 
 open import UF-FunExt
 
-module InjectiveTypes (fe : global-funext) where
+module InjectiveTypes (fe : FunExt) where
 
 open import SpartanMLTT
 open import UF-Base

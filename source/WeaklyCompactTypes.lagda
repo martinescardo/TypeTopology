@@ -23,7 +23,7 @@ open import UF-Equiv
 open import UF-Miscelanea
 
 module WeaklyCompactTypes
-        (fe : global-funext)
+        (fe : FunExt)
         (pt : propositional-truncations-exist)
        where
 
@@ -1065,7 +1065,7 @@ is-clopen-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
-being-clopen-map-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → global-funext
+being-clopen-map-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → FunExt
                            → (f : X → Y) → is-prop(is-clopen-map f)
 being-clopen-map-is-a-prop {𝓤} {𝓥} fe f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))

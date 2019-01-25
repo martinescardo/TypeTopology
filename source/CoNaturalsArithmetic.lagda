@@ -26,7 +26,7 @@ codistances) is minimum.
 open import SpartanMLTT
 open import UF-FunExt
 
-module CoNaturalsArithmetic (fe : global-funext) where
+module CoNaturalsArithmetic (fe : FunExt) where
 
 private
  fe₀ : funext 𝓤₀ 𝓤₀

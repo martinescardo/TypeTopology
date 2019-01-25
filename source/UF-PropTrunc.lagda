@@ -20,7 +20,7 @@ assumption.
 
 \begin{code}
 
-record propositional-truncations-exist : Uω where
+record propositional-truncations-exist : 𝓤ω where
  field
   ∥_∥ : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇} → is-prop ∥ X ∥

@@ -24,7 +24,7 @@ this took.
 
 open import UF-FunExt
 
-module CoNaturalsExercise (fe : global-funext) where
+module CoNaturalsExercise (fe : FunExt) where
 
 open import SpartanMLTT
 open import Two

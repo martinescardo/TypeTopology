@@ -133,7 +133,7 @@ Univalent Choice.
 \begin{code}
 
 module UnivalentChoice (𝓤 : Universe)
-                       (fe : global-funext)
+                       (fe : FunExt)
                        (pt : propositional-truncations-exist)
                        where
 
@@ -202,7 +202,7 @@ open import UF-ExcludedMiddle
 module ChoiceUnderEM₀ (𝓤 : Universe)
                       (em : EM 𝓤)
                       (pt : propositional-truncations-exist)
-                      (fe : global-funext)
+                      (fe : FunExt)
                       where
 
  open UnivalentChoice 𝓤 fe pt
@@ -252,7 +252,7 @@ with values a ₀ = a₀ and a ₁ = a₁.
 module AC-renders-all-sets-discrete
                       (𝓤 : Universe)
                       (pt : propositional-truncations-exist)
-                      (fe : global-funext)
+                      (fe : FunExt)
                       where
 
  open UnivalentChoice 𝓤 fe pt public
@@ -337,7 +337,7 @@ because (𝟙≡P)≡P.
 module AC-gives-EM
                       (pt : propositional-truncations-exist)
                       (pe : propext 𝓤₀)
-                      (fe : global-funext)
+                      (fe : FunExt)
                       where
 
  open  AC-renders-all-sets-discrete 𝓤₁ pt fe
@@ -354,7 +354,7 @@ module AC-gives-EM
   where
    g : decidable (⊤ ≡ (P , isp)) → decidable P
    g (inl r) = inl (idtofun 𝟙 P (ap pr₁ r) *)
-   g (inr u) = inr (contrapositive (λ p → PropExt (fe 𝓤₀ 𝓤₀) pe (λ _ → p) (λ _ → *)) u)
+   g (inr u) = inr (contrapositive (λ p → Ω-ext (fe 𝓤₀ 𝓤₀) pe (λ _ → p) (λ _ → *)) u)
 
 \end{code}
 
@@ -365,7 +365,7 @@ The following is probably not going to be useful for anything here:
 
 module Observation (𝓤 : Universe)
                    (pt : propositional-truncations-exist)
-                   (fe : global-funext)
+                   (fe : FunExt)
                    where
 
  open PropositionalTruncation pt

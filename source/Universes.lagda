@@ -9,7 +9,7 @@ open import Agda.Primitive public
   renaming (lzero to 𝓤₀
           ; lsuc to _⁺
           ; Level to Universe
-          ; Setω to Uω
+          ; Setω to 𝓤ω
           )
 
 variable

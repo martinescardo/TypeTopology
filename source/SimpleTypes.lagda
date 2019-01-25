@@ -16,7 +16,7 @@ open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes (fe : global-funext) (pt : propositional-truncations-exist) where
+module SimpleTypes (fe : FunExt) (pt : propositional-truncations-exist) where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt

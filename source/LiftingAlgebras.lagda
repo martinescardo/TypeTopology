@@ -96,8 +96,8 @@ written in more standard mathematical notation as follows:
     ∐  x = x
    p:𝟙
 
-    ∐          f r  =  ∐   ∐   f (p , q)
-  r : Σ {P} Q         p:P q:Q
+    ∐          f r  =  ∐   ∐     f (p , q)
+  r : Σ {P} Q         p:P q:Q(p)
 
 
 \begin{code}

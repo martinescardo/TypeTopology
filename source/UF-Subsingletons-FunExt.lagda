@@ -120,9 +120,9 @@ decidable-types-are-props fe₀ i = sum-of-contradictory-props
                                       (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
                                       (λ p u → u p)
 
-PropExt : funext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
+Ω-ext : funext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
-PropExt {𝓤} fe pe {p} {q} f g =
+Ω-ext {𝓤} fe pe {p} {q} f g =
  to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , being-a-prop-is-a-prop fe _ _)
 
 Ω-is-a-set : funext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
@@ -144,7 +144,7 @@ PropExt {𝓤} fe pe {p} {q} f g =
     c : q holds → p holds
     c = transport (λ X → X) (a ⁻¹)
   h  : (p q : Ω 𝓤) → A p q → p ≡ q
-  h p q (u , v) = PropExt fe pe u v
+  h p q (u , v) = Ω-ext fe pe u v
   f  : (p q : Ω 𝓤) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
   constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
@@ -170,14 +170,25 @@ equal-⊤-is-true P hp r = f *
   f : 𝟙 → P
   f = transport id s
 
+\end{code}
+
+TODO. In the following, rather than using a P and i, use a p = (P , i) in Ω 𝓤.
+
+\begin{code}
+
 true-is-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇) (i : is-prop P)
                 → P → (P , i) ≡ ⊤
-true-is-equal-⊤ pe fe P i x = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → x) ,
-                                        being-a-prop-is-a-prop fe _ _)
+true-is-equal-⊤ pe fe P i p = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p) ,
+                                      being-a-prop-is-a-prop fe _ _)
 
-Ω-ext : propext 𝓤 → funext 𝓤 𝓤 → {p q : Ω 𝓤}
+false-is-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇) (i : is-prop P)
+                 → ¬ P → (P , i) ≡ ⊥
+false-is-equal-⊥ pe fe P i f = to-Σ-≡ (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
+                                       being-a-prop-is-a-prop fe _ _)
+
+Ω-ext' : propext 𝓤 → funext 𝓤 𝓤 → {p q : Ω 𝓤}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
-Ω-ext pe fe {(P , i)} {(Q , j)} f g = to-Σ-≡ (pe i j I II ,
+Ω-ext' pe fe {(P , i)} {(Q , j)} f g = to-Σ-≡ (pe i j I II ,
                                               being-a-prop-is-a-prop fe _ _ )
  where
   I : P → Q
@@ -195,16 +206,16 @@ no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤 → propext 𝓤
                                    → ¬ Σ \(p : Ω 𝓤) → (p ≢ ⊥) × (p ≢ ⊤)
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
-   u : ¬ P
-   u p = g l
-     where
-       l : (P , i) ≡ ⊤
-       l = PropExt fe pe unique-to-𝟙 (λ _ → p)
-   φ : ¬¬ P
-   φ u = f l
-     where
-       l : (P , i) ≡ ⊥
-       l = PropExt fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
+  u : ¬ P
+  u p = g l
+    where
+     l : (P , i) ≡ ⊤
+     l = Ω-ext fe pe unique-to-𝟙 (λ _ → p)
+  φ : ¬¬ P
+  φ u = f l
+    where
+     l : (P , i) ≡ ⊥
+     l = Ω-ext fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
 \end{code}
 

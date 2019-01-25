@@ -20,6 +20,9 @@ is-prop X = (x y : X) → x ≡ y
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ \(P : 𝓤 ̇) → is-prop P
 
+Ω₀ = Ω 𝓤₀
+Ω₁ = Ω 𝓤₁
+
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds = pr₁
 
@@ -323,6 +326,9 @@ Formulation of propositional extensionality:
 
 propext : ∀ 𝓤 → 𝓤 ⁺ ̇
 propext 𝓤 = {P Q : 𝓤 ̇} → is-prop P → is-prop Q → (P → Q) → (Q → P) → P ≡ Q
+
+PropExt : 𝓤ω
+PropExt = ∀ 𝓤 → propext 𝓤
 
 \end{code}
 

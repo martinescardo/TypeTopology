@@ -265,7 +265,7 @@ module times
    q : b ≡ y
    q = e' b y f'' g''
 
- well-order : global-funext
+ well-order : FunExt
             → is-well-order _<_
             → is-well-order _≺_
             → is-well-order _⊏_
@@ -570,7 +570,7 @@ module sum
    f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
- prop-valued : global-funext
+ prop-valued : FunExt
              → is-prop-valued _<_
              → is-well-founded _<_
              → is-extensional _<_
@@ -594,7 +594,7 @@ assuming cotransitivity. We do this in the following two modules.
 \begin{code}
 
 module sum-top
-        (fe : global-funext)
+        (fe : FunExt)
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
@@ -680,7 +680,7 @@ module sum-top
 open import DiscreteAndSeparated
 
 module sum-cotransitive
-        (fe : global-funext)
+        (fe : FunExt)
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
@@ -786,7 +786,7 @@ open import UF-Embedding
 open import UF-Equiv
 
 module extension
-        (fe : global-funext)
+        (fe : FunExt)
         {𝓤 𝓥 𝓦}
         {X : 𝓤 ̇}
         {A : 𝓥 ̇}

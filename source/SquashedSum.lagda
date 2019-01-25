@@ -9,7 +9,7 @@ See remarks below for an explanation.
 open import SpartanMLTT
 open import UF-FunExt
 
-module SquashedSum (fe : global-funext) where
+module SquashedSum (fe : FunExt) where
 
 fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = fe 𝓤₀ 𝓤₀

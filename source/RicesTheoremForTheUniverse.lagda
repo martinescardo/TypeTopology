@@ -66,7 +66,7 @@ that module (or in fact any axiom other than extensionality).
 
 open import UF-FunExt
 
-module RicesTheoremForTheUniverse (fe : global-funext) where
+module RicesTheoremForTheUniverse (fe : FunExt) where
 
 open import SpartanMLTT
 open import UF-Equiv

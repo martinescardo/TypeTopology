@@ -30,7 +30,7 @@ curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc ,
   uc : ∀ f → u (c f) ≡ f
   uc f = dfunext fe'' (λ w → refl)
 
-curry-uncurry : (fe : global-funext)
+curry-uncurry : (fe : FunExt)
               → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
               → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
 curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe 𝓥 𝓦) (fe (𝓤 ⊔ 𝓥) 𝓦)

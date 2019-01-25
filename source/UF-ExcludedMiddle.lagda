@@ -15,6 +15,7 @@ module UF-ExcludedMiddle where
 
 open import SpartanMLTT
 open import UF-Base
+open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Embedding
@@ -30,6 +31,9 @@ which we refer to as the density of the decidable truth values.
 
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM 𝓤 = (P : 𝓤 ̇) → is-prop P → P + ¬ P
+
+LEM : ∀ 𝓤 → 𝓤 ⁺ ̇
+LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬(p holds)
 
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 WEM 𝓤 = (P : 𝓤 ̇) → is-prop P → ¬ P + ¬¬ P

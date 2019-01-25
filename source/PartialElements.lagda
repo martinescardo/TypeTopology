@@ -22,5 +22,6 @@ import LiftingUnivalentPrecategory
 import LiftingMonad
 import LiftingMonadVariation
 import LiftingAlgebras
+import LiftingSize
 
 \end{code}

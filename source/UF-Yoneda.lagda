@@ -78,7 +78,7 @@ transformation η is recursively defined.
 
 \begin{code}
 
-yoneda-lemma' : global-funext
+yoneda-lemma' : FunExt
               → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
               → yoneda-nat x A (yoneda-elem x A η) ≡ η
 yoneda-lemma' {𝓤} {𝓥} fe x A η = dfunext (fe 𝓤 (𝓤 ⊔ 𝓥))
@@ -100,7 +100,7 @@ yoneda-computation : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (a : A x)
                    → yoneda-elem x A (yoneda-nat x A a) ≡ a
 yoneda-computation x A = Yoneda-computation x A
 
-yoneda-elem-is-equiv : global-funext
+yoneda-elem-is-equiv : FunExt
                      → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
                      → is-equiv (yoneda-elem x A)
 yoneda-elem-is-equiv fe x A = qinvs-are-equivs (yoneda-elem x A)
@@ -108,7 +108,7 @@ yoneda-elem-is-equiv fe x A = qinvs-are-equivs (yoneda-elem x A)
                                                 yoneda-lemma' fe x A ,
                                                 yoneda-computation x A)
 
-yoneda-nat-is-equiv : global-funext
+yoneda-nat-is-equiv : FunExt
                     → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
                     → is-equiv (yoneda-nat x A)
 yoneda-nat-is-equiv fe {X} x A = qinvs-are-equivs (yoneda-nat x A)
@@ -116,12 +116,12 @@ yoneda-nat-is-equiv fe {X} x A = qinvs-are-equivs (yoneda-nat x A)
                                                    yoneda-computation x A ,
                                                    yoneda-lemma' fe x A)
 
-yoneda-equivalence : global-funext
+yoneda-equivalence : FunExt
                    → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
                    → A x ≃ Nat (Id x) A
 yoneda-equivalence fe x A = yoneda-nat x A , yoneda-nat-is-equiv fe x A
 
-Yoneda-equivalence : global-funext
+Yoneda-equivalence : FunExt
                    → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
                    → A x ≃ (∀ y → x ≡ y → A y)
 Yoneda-equivalence = yoneda-equivalence
@@ -301,7 +301,7 @@ The above use of the word "is" is justified by the following:
 
 \begin{code}
 
-nat-retraction-is-section-uniquely : global-funext → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+nat-retraction-is-section-uniquely : FunExt → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
                                      (x : X) (η : Nat (Id x) A)
                                    → ((y : X) → has-section(η y))
                                    → ((y : X) → is-singleton(has-retraction(η y)))
@@ -309,7 +309,7 @@ nat-retraction-is-section-uniquely fe x η hs y = pointed-props-are-singletons
                                                   (nat-retraction-is-section x η hs y)
                                                   (sections-have-at-most-one-retraction fe (η y) (hs y))
 
-nat-having-section-is-a-prop : global-funext → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+nat-having-section-is-a-prop : FunExt → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
                                (x : X) (η : Nat (Id x) A)
                              → is-prop ((y : X) → has-section (η y))
 nat-having-section-is-a-prop {𝓤} {𝓥} fe {X} x η φ = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) γ φ
@@ -489,7 +489,7 @@ yoneda-nat-Id x {y} = yoneda-nat y (Id x)
 Yoneda-nat-Id : {X : 𝓤 ̇} (x {y} : X) → x ≡ y → (z : X) → y ≡ z → x ≡ z
 Yoneda-nat-Id = yoneda-nat-Id
 
-Id-charac : global-funext
+Id-charac : FunExt
           → {X : 𝓤 ̇} (x {y} : X) → (x ≡ y) ≃ Nat (Id y) (Id x)
 Id-charac fe {X} x {y} = yoneda-equivalence fe y (Id x)
 
@@ -655,16 +655,16 @@ NatΣ-lc' {𝓤} {𝓥} {𝓦} {X} {A} {B} ζ ζ-lc {(x , a)} {(y , b)} pq = g
     g : x , a ≡ y , b
     g = to-Σ-Id (p , t)
 
-yoneda-equivalence-Σ : global-funext → {X : 𝓤 ̇} (A : X → 𝓥 ̇)
+yoneda-equivalence-Σ : FunExt → {X : 𝓤 ̇} (A : X → 𝓥 ̇)
                      → Σ A ≃ Σ \(x : X) → Nat (Id x) A
 yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
 
 
-nats-are-uniquely-transports : global-funext → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
+nats-are-uniquely-transports : FunExt → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
                              → ∃! \(a : A x) → (λ y p → transport A p a) ≡ η
 nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
-adj-obs : global-funext → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (g : Y → X) (x : X)
+adj-obs : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
         → ∃! \(q : g (f x) ≡ x) → (λ y p → transport (λ - → g - ≡ x) p q) ≡ η
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)

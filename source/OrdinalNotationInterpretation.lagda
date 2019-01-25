@@ -29,7 +29,7 @@ univalent notion of ordinal (as introduced in the HoTT Book).
 open import SpartanMLTT
 open import UF-FunExt
 
-module OrdinalNotationInterpretation (fe : global-funext) where
+module OrdinalNotationInterpretation (fe : FunExt) where
 
 \end{code}
 
