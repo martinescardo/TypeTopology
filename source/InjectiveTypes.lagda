@@ -1179,8 +1179,8 @@ module injectivity-of-lifting (𝓣 : Universe) where
  open import Lifting 𝓣
  open import LiftingAlgebras 𝓣
  open import LiftingEmbeddingViaSIP 𝓣
- open import UF-UA-FunExt
 
+ open import UF-UA-FunExt
 
  𝓛-alg-flabby : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
               → {A : 𝓤 ̇} → 𝓛-alg A → flabby A 𝓣
@@ -1213,14 +1213,14 @@ module injectivity-of-lifting (𝓣 : Universe) where
 
 With resizing axioms, 𝓛 D lives in the same universe as D, and hence
 the hypothesis becomes "injective-type D 𝓣 𝓣". Therefore the injective
-types are the retracts of the underlying objects of free lift
-algebras:
+types are the retracts of the underlying objects of free
+algebras of the 𝓛-lifting monad:
 
 \begin{code}
 
- injective-𝓛-characterization : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺) → weak-prop-resizing (𝓣 ⁺) 𝓣 → (D : 𝓣 ̇)
-                              → injective-type D 𝓣 𝓣 ⇔ Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
- injective-𝓛-characterization ua fe ρ D = a , b
+ injectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺) → weak-prop-resizing (𝓣 ⁺) 𝓣 → (D : 𝓣 ̇)
+                                        → injective-type D 𝓣 𝓣 ⇔ Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
+ injectives-in-terms-of-free-𝓛-algebras ua fe ρ D = a , b
   where
    a : injective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
    a i = D , injective-is-retract-of-free-𝓛-algebra D ua (injective-resizing ρ D i)
