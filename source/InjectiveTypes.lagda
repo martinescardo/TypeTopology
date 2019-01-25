@@ -1152,7 +1152,7 @@ What we really would like to have is
 
   ∃-injective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
 
-but this requires further thought. (It may be easy given the above development. Or not.c)
+but this requires further thought. (It may be easy given the above development. Or not.)
 
 
 We haven't studied this notion yet:
