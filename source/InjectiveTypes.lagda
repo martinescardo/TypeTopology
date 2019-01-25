@@ -1025,9 +1025,8 @@ of 𝓦.
 
 \begin{code}
 
-injective-characterization : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤
-                           → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤
-                                      ⇔ Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
+injective-characterization : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
+                           → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
 injective-characterization {𝓤} ua ρ D = a , b
  where
   a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
@@ -1138,9 +1137,8 @@ injectivity.
 
 \begin{code}
 
- ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤
-                                       → (D : 𝓤  ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺)
-                                                ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+ ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
+                                       → ∃-injective-type D 𝓤 (𝓤 ⁺) ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
  ∃-injectivity-in-terms-of-injectivity {𝓤} ua ρ D = a , b
   where
    a : ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
@@ -1214,13 +1212,14 @@ module injectivity-of-lifting (𝓣 : Universe) where
 \end{code}
 
 With resizing axioms, 𝓛 D lives in the same universe as D, and hence
-the hypothesis becomes "injective-type D 𝓣 𝓣". Therefore:
+the hypothesis becomes "injective-type D 𝓣 𝓣". Therefore the injective
+types are the retracts of the underlying objects of free lift
+algebras:
 
 \begin{code}
 
- injective-𝓛-characterization : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺) → weak-prop-resizing (𝓣 ⁺) 𝓣
-                              → (D : 𝓣 ̇) → injective-type D 𝓣 𝓣
-                                          ⇔ Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
+ injective-𝓛-characterization : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺) → weak-prop-resizing (𝓣 ⁺) 𝓣 → (D : 𝓣 ̇)
+                              → injective-type D 𝓣 𝓣 ⇔ Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
  injective-𝓛-characterization ua fe ρ D = a , b
   where
    a : injective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
