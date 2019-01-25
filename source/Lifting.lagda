@@ -46,18 +46,42 @@ Its "undefined" element:
 
 \end{code}
 
-Size matters:
+Size matters.
+
+As one can see from the definition of 𝓛, we have:
+
+\begin{code}
+
+the-universe-of-𝓛 : (X : 𝓤 ̇) → universe-of (𝓛 X) ≡ 𝓣 ⁺ ⊔ 𝓤
+the-universe-of-𝓛 X = refl
+
+\end{code}
+
+So 𝓛 increases the size of its argument, in general. However, if the
+argument is in 𝓣 ⁺ ⊔ 𝓤, then the size doesn't increase:
+
+\begin{code}
+
+𝓛-universe-preservation : (X : 𝓣 ⁺ ⊔ 𝓤 ̇) → universe-of (𝓛 X) ≡ universe-of X
+𝓛-universe-preservation X = refl
+
+\end{code}
+
+In particular, after the first application of 𝓛, further applications
+don't increase the size:
+
+\begin{code}
+
+the-universe-of-𝓛𝓛 : (X : 𝓤 ̇) → universe-of(𝓛(𝓛 X)) ≡ universe-of (𝓛 X)
+the-universe-of-𝓛𝓛 X = refl
+
+\end{code}
+
+TODO. Assuming weak propositional resizing ...
 
 \begin{code}
 
 open import UF-Resizing
 open import UF-Equiv
-
-the-size-of-𝓛 : (X : 𝓤 ̇) → (𝓛 X) has-size (𝓣 ⁺ ⊔ 𝓤)
-the-size-of-𝓛 X = 𝓛 X , ≃-refl (𝓛 X)
-
-the-size-of-𝓛𝓛 : (X : 𝓤 ̇) → (𝓛(𝓛 X)) has-size (𝓣 ⁺ ⊔ 𝓤)
-the-size-of-𝓛𝓛 X = 𝓛(𝓛 X) , ≃-refl (𝓛(𝓛 X))
-
 
 \end{code}
