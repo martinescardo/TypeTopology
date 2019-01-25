@@ -104,7 +104,7 @@ is-impredicative+ : (𝓤 : Universe) → 𝓤ω
 is-impredicative+ 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size (𝓥 ⁺)
 
 universes-are-impredicative+ : Weak-prop-resizing → PropExt → FunExt
-                                       → is-impredicative+ 𝓤
+                             → is-impredicative+ 𝓤
 universes-are-impredicative+ {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γφ , φγ)
  where
   φ : Ω 𝓥 → Ω 𝓤
@@ -119,7 +119,6 @@ universes-are-impredicative+ {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γ
   γφ (Q , j) = Ω-ext (fe 𝓥 𝓥) (pe 𝓥)
                (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
                (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j)
-
 
 \end{code}
 
