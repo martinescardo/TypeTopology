@@ -972,7 +972,6 @@ injective-resizing₂ = injective-resizing₁
 
 \end{code}
 
-
 Added 24th January 2019.
 
 With propositional resizing, as soon as D is flabby with respect to
@@ -1170,6 +1169,16 @@ module injectivity-of-lifting (𝓣 : Universe) where
    where
      a : Σ \r  → r ∘ η ∼ id
      a = i η (η-is-embedding' 𝓣 D ua (funext-from-univalence ua)) id
+
+ injective-𝓛-characterization : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺) → weak-prop-resizing (𝓣 ⁺) 𝓣
+                              → (D : 𝓣 ̇) → injective-type D 𝓣 𝓣
+                                          ⇔ Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
+ injective-𝓛-characterization ua fe ρ D = a , b
+  where
+   a : injective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)
+   a i = D , injective-is-retract-of-free-𝓛-algebra D ua (injective-resizing ρ D i)
+   b : (Σ \(X : 𝓣 ̇) → retract D Of (𝓛 X)) → injective-type D 𝓣 𝓣
+   b (X , r) = retract-Of-injective D (𝓛 X) (free-𝓛-algebra-injective ua fe X) r
 
 \end{code}
 
