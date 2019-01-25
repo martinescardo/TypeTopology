@@ -1032,7 +1032,13 @@ injective-characterization : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺)
 injective-characterization {𝓤} ua ρ D = a , b
  where
   a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
-  a i = D , injective-is-retract-of-power-of-universe D ua (injective-resizing ρ D i)
+  a i = D , d
+   where
+    c : injective-type D 𝓤 (𝓤 ⁺)
+    c = injective-resizing ρ D i
+    d : retract D Of (D → 𝓤 ̇)
+    d = injective-is-retract-of-power-of-universe D ua c
+
   b : (Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)) → injective-type D 𝓤 𝓤
   b (X , r) = d
    where
