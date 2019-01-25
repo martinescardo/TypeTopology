@@ -982,7 +982,7 @@ some universe, it is flabby with respect to all universes:
 
 open import UF-Resizing
 
-flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-propositional-resizing 𝓤 𝓥
+flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-prop-resizing 𝓤 𝓥
                    → flabby D 𝓥 → flabby D 𝓤
 flabiness-resizing D 𝓤 𝓥 ρ φ P i f = d , h
  where
@@ -1011,7 +1011,7 @@ universes:
 
 \begin{code}
 
-injective-resizing : ∀ 𝓤 𝓥 𝓤' 𝓥' 𝓦 → weak-propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
+injective-resizing : ∀ 𝓤 𝓥 𝓤' 𝓥' 𝓦 → weak-prop-resizing (𝓤' ⊔ 𝓥') 𝓤
                   → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
 injective-resizing 𝓤 𝓥 𝓤' 𝓥' 𝓦 ρ D i j e f = flabby-types-are-injective D
                                                    (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
