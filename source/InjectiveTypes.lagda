@@ -1089,11 +1089,11 @@ module ∃-injective (pt : propositional-truncations-exist) where
                         → ∃-injective-type D' 𝓦 𝓣
  retract-of-∃-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
-   i' : ∃ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f
+   i' : ∃ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
-   φ : (Σ \(f' : Y → D) → (λ x → f' (j x)) ∼ s ∘ f) → Σ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
+   φ : (Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f) → Σ \(f'' : Y → D') → f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
-   γ : ∃ \(f'' : Y → D') → (λ x → f'' (j x)) ∼ f
+   γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
  retract-Of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
@@ -1120,6 +1120,46 @@ module ∃-injective (pt : propositional-truncations-exist) where
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
    φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
+
+\end{code}
+
+So, in summary, regarding the relationship between ∃-injectivity and
+truncated injectivity, so far we know that
+
+  ∥ injective-type D 𝓤 𝓥 ∥ → ∃-injective-type D 𝓤 𝓥
+
+and
+
+  ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥,
+
+and hence, using propositional resizing, we get the following
+characterization of a particular case of ∃-injectivity in terms of
+injectivity.
+
+\begin{code}
+
+ ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤
+                                       → (D : 𝓤  ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺)
+                                                ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+ ∃-injectivity-in-terms-of-injectivity {𝓤} ua ρ D = a , b
+  where
+   a : ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+   a = ∥∥-functor (injective-resizing ρ D) ∘ ∃-injective-gives-∥injective∥ ua D
+   b : ∥ injective-type D 𝓤 (𝓤 ⁺) ∥ → ∃-injective-type D 𝓤 (𝓤 ⁺)
+   b = ∥injective∥-gives-∃-injective D
+
+\end{code}
+
+What we really would like to have is
+
+  ∃-injective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
+
+but this requires further thought. (It may be easy given the above development. Or not.c)
+
+
+We haven't studied this notion yet:
+
+\begin{code}
 
  ∃-flabby : 𝓦 ̇ → (𝓣 : Universe) → 𝓦 ⊔ 𝓣 ⁺ ̇
  ∃-flabby D 𝓣 = (P : 𝓣 ̇) → is-prop P → (f : P → D) → ∃ \(d : D) → (p : P) → f p ≡ d
