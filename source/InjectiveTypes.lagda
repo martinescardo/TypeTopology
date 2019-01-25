@@ -1,5 +1,7 @@
 Martin Escardo, 27 April 2014, with later additions, 2017, 2018, 2019.
 
+This introduction is incomplete.
+
 We show that the injective types are the retracts of the exponential
 powers of universes, where an exponential power of a type D is a type
 of the form A → D for some type A. Injectivity is defined as
