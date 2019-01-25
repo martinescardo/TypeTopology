@@ -100,6 +100,11 @@ open import UF-Embedding
 open import UF-Retracts
 open import UF-EquivalenceExamples
 open import UF-Univalence
+open import UF-IdEmbedding
+open import UF-PropIndexedPiSigma
+open import UF-Subsingletons
+open import UF-Resizing
+open import UF-PropTrunc
 
 \end{code}
 
@@ -210,8 +215,6 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
   mathematics.
 
 \begin{code}
-
-  open import UF-PropIndexedPiSigma
 
   Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
@@ -472,8 +475,6 @@ retract-Of-injective D' D i (r , ρ) {X} {Y} j e f = r ∘ g , γ
     γ : r ∘ g ∘ j ∼ f
     γ x = ap r (h x) ∙ rs (f x)
 
-open import UF-IdEmbedding
-
 injective-is-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                           → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
 injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → Id y , pr₂ a y
@@ -609,8 +610,6 @@ independent solutions by Shulman and Capriotti.
 
 \begin{code}
 
-open import UF-Subsingletons
-
 module /-extension-is-embedding-special-case
          (P : 𝓤 ̇)
          (i : is-prop P)
@@ -618,7 +617,6 @@ module /-extension-is-embedding-special-case
          (ua : is-univalent 𝓤)
        where
 
- open import UF-PropIndexedPiSigma
  open import UF-Equiv-FunExt
  open import UF-UA-FunExt
 
@@ -981,8 +979,6 @@ some universe, it is flabby with respect to all universes:
 
 \begin{code}
 
-open import UF-Resizing
-
 flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-prop-resizing 𝓤 𝓥
                    → flabby D 𝓥 → flabby D 𝓤
 flabiness-resizing D 𝓤 𝓥 ρ φ P i f = d , h
@@ -1056,8 +1052,6 @@ Added 21st January 2019. We now consider injectivity as property
 rather than data.
 
 \begin{code}
-
-open import UF-PropTrunc
 
 module ∃-injective (pt : propositional-truncations-exist) where
 
