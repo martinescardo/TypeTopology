@@ -107,6 +107,7 @@ import UF-Subsingletons
 import UF-Subsingletons-Equiv
 import UF-Subsingletons-FunExt
 import UF-UA-FunExt
+import UF-UniverseEmbedding
 import UF-Univalence
 import UF-Yoneda
 import UnivalenceFromScratch

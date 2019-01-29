@@ -105,6 +105,7 @@ open import UF-PropIndexedPiSigma
 open import UF-Subsingletons
 open import UF-Resizing
 open import UF-PropTrunc
+open import UF-UniverseEmbedding
 
 \end{code}
 
@@ -1029,30 +1030,26 @@ injective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} ρ D i j e f = flabby-ty
                                                           (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
                                                             (injective-types-are-flabby D i)) j e f
 
-universe-up : (𝓤 𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-universe-up 𝓤 𝓥 X = X × 𝟙 {𝓥}
 
-{- TODO (assuming univalence)
-universe-up-is-embedding : is-embedding (universe-up 𝓤 𝓥)
-universe-up-is-embedding = {!!}
--}
+\end{code}
 
-universe-retract : (𝓤 𝓥 : Universe) → is-univalent 𝓤 → weak-prop-resizing ((𝓤 ⊔ 𝓥 )⁺) 𝓤
-                 → is-embedding (universe-up 𝓤 𝓥) -- This should be the case.
+As an application of this and of injectivity of universes, we have
+that any universe is a retract of any larger universe:
+
+\begin{code}
+
+universe-retract : Univalence → Weak-prop-resizing
+                 → (𝓤 𝓥 : Universe)
                  → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
-universe-retract 𝓤 𝓥 ua ρ e = b e (injective-resizing ρ (𝓤 ̇) a)
+universe-retract ua ρ 𝓤 𝓥 = b universe-up-is-embedding (injective-resizing ρ (𝓤 ̇) a)
  where
+  open UF-UniverseEmbedding.example ua
   a : injective-type (𝓤 ̇) 𝓤 𝓤
-  a = universes-are-injective-Π {𝓤} {𝓤} ua
+  a = universes-are-injective-Π {𝓤} {𝓤} (ua 𝓤)
   b : is-embedding (universe-up 𝓤 𝓥)
         → injective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
         → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
   b = embedding-retract (𝓤 ̇) (𝓤 ⊔ 𝓥 ̇) (universe-up 𝓤 𝓥)
-
-universe-retract' : (𝓤 : Universe) → is-univalent 𝓤 → weak-prop-resizing ((𝓤 ⁺)⁺) 𝓤
-                  → is-embedding (universe-up 𝓤 (𝓤 ⁺))
-                  → retract 𝓤 ̇ of (𝓤 ⁺ ̇)
-universe-retract' 𝓤 = universe-retract 𝓤 (𝓤 ⁺)
 
 \end{code}
 

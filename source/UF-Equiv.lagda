@@ -44,14 +44,18 @@ id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 ≃-refl : (X : 𝓤 ̇) → X ≃ X
 ≃-refl X = id , id-is-an-equiv X
 
-≃-trans : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
-≃-trans {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , (g , fg) , (h , hf)) (f' , (g' , fg') , (h' , hf'))  =
-  f' ∘ f , (g ∘ g' , fg'') , (h ∘ h' , hf'')
+comp-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {f : X → Y} {f' : Y → Z}
+              → is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
+comp-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf'))  =
+  (g ∘ g' , fg'') , (h ∘ h' , hf'')
  where
-    fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
-    fg'' z =  ap f' (fg (g' z)) ∙ fg' z
-    hf'' : (x : X) → h(h'(f'(f x))) ≡ x
-    hf'' x = ap h (hf' (f x)) ∙ hf x
+  fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
+  fg'' z =  ap f' (fg (g' z)) ∙ fg' z
+  hf'' : (x : X) → h(h'(f'(f x))) ≡ x
+  hf'' x = ap h (hf' (f x)) ∙ hf x
+
+≃-trans : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+≃-trans {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , comp-is-equiv d e
 
 _≃⟨_⟩_ : (X : 𝓤 ̇) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 _ ≃⟨ d ⟩ e = ≃-trans d e
@@ -125,6 +129,11 @@ inverse-is-retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv 
                       → inverse f e ∘ f ∼ id
 inverse-is-retraction f e = pr₁ (pr₂(equivs-are-qinvs f e))
 
+inverse-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
+                 → is-equiv (inverse f e)
+
+inverse-is-equiv f e = (f , inverse-is-retraction f e) , (f , inverse-is-section f e)
+
 qinvs-are-equivs : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → is-equiv f
 qinvs-are-equivs f (g , (gf , fg)) = (g , fg) , (g , gf)
 
@@ -132,14 +141,7 @@ qinveq : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → X ≃ Y
 qinveq f q = (f , qinvs-are-equivs f q)
 
 ≃-sym : {X : 𝓤 ̇} {Y : 𝓥 ̇}  → X ≃ Y → Y ≃ X
-≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = (g , d)
- where
-  g : Y → X
-  g = pr₁(equivs-are-qinvs f e)
-  q : qinv g
-  q = f , pr₂(pr₂(equivs-are-qinvs f e)) , pr₁(pr₂(equivs-are-qinvs f e))
-  d : is-equiv g
-  d = qinvs-are-equivs g q
+≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverse-is-equiv f e
 
 equiv-retract-l : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X ≃ Y → retract X of Y
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
