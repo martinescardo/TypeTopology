@@ -9,8 +9,8 @@ Moreover, any map f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ with f X ≃ X for all X : �
 embedding, for example X ↦ X + 𝟘 {𝓥}.
 
 (Here the notion of a map being an embedding is stronger than that of
-left-cancellability, namely that the fibers of the map are
-propositions or subsingletons, as in HoTT/UF.)
+being left-cancellable, and it means that the fibers of the map are
+propositions, or subsingletons, as in HoTT/UF.)
 
 \begin{code}
 
