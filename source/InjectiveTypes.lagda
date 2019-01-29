@@ -1053,6 +1053,10 @@ universe-retract ua ρ 𝓤 𝓥 = b universe-up-is-embedding (injective-resizin
 
 \end{code}
 
+(We can see from the proof that the section (namely universe-up) is an
+embedding. Perhaps this should be made explicit either in the
+statement of the result or in another result that projects this out.)
+
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a
 type equivalence), which can be read as saying that the injective
