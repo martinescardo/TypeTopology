@@ -562,6 +562,9 @@ This means that a universe 𝓤 cannot be a retract of any type in 𝓤:
  Lemma₄ : ∀ 𝓤 → ¬ Σ \(A : 𝓤 ̇) → retract 𝓤 ̇ of A
  Lemma₄ 𝓤 (A , T , S , TS) = Lemma₃ 𝓤 A T S TS
 
+ corollary : ∀ 𝓤 → ¬ (retract 𝓤 ⁺ ̇ of (𝓤 ̇))
+ corollary 𝓤 ρ = Lemma₄ (𝓤 ⁺) ((𝓤 ̇) , ρ)
+
 \end{code}
 
 Therefore, because equivalences are retractions, no universe 𝓤 can be
