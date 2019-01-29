@@ -58,7 +58,6 @@ l ⋍· m = Σ \(e : is-defined l ≃ is-defined m) → value l ∼ value m ∘ 
 
 𝓛-Id· : is-univalent 𝓣 → funext 𝓣 𝓤
       → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍· m)
-𝓛-Id· ua fe l m = ≃-trans (𝓛-Id ua l m)
-                          (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ eqtofun e)))
+𝓛-Id· ua fe l m = (𝓛-Id ua l m) ● (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ eqtofun e)))
 
 \end{code}

@@ -80,7 +80,7 @@ equivalence as primary.
 
 ≃-sym-is-left-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
                       → (κ : X ≃ Y) (δ : Y ≃ Z)
-                      → ≃-trans (≃-sym κ) (≃-trans κ δ) ≡ δ
+                      → (≃-sym κ) ● (κ ● δ) ≡ δ
 ≃-sym-is-left-inverse (f , e) (g , d) = to-Σ-≡ (p , being-equiv-is-a-prop fe g _ d)
    where
     p : g ∘ f ∘ inverse f e ≡ g
@@ -88,15 +88,15 @@ equivalence as primary.
 
 ≃-sym-is-right-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
                        → (κ : X ≃ Y) (ε : X ≃ Z)
-                       → ≃-trans κ (≃-trans (≃-sym κ) ε) ≡ ε
+                       → κ ● ((≃-sym κ) ● ε) ≡ ε
 ≃-sym-is-right-inverse (f , e) (h , c) = to-Σ-≡ (p , being-equiv-is-a-prop fe h _ c)
    where
     p : h ∘ inverse f e ∘ f ≡ h
     p = ap (h ∘_) (nfe (inverse-is-retraction f e))
 
-≃-Trans : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
+≃-Comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
         → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-Trans κ = qinveq (≃-trans κ) (≃-trans (≃-sym κ) , ≃-sym-is-left-inverse κ , ≃-sym-is-right-inverse κ)
+≃-Comp κ = qinveq (κ ●_) (((≃-sym κ) ●_), ≃-sym-is-left-inverse κ , ≃-sym-is-right-inverse κ)
 
 \end{code}
 
@@ -112,9 +112,9 @@ Id-is-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
                     → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
 Id-is-Eq-congruence {𝓤} {𝓥} X Y A B d e =
  (X ≡ Y) ≃⟨ is-univalent-≃ (ua 𝓤) X Y ⟩
- (X ≃ Y) ≃⟨ ≃-Trans (≃-sym d) ⟩
+ (X ≃ Y) ≃⟨ ≃-Comp (≃-sym d) ⟩
  (A ≃ Y) ≃⟨ ≃-Sym ⟩
- (Y ≃ A) ≃⟨ ≃-Trans (≃-sym e) ⟩
+ (Y ≃ A) ≃⟨ ≃-Comp (≃-sym e) ⟩
  (B ≃ A) ≃⟨ ≃-Sym ⟩
  (A ≃ B) ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓥) A B) ⟩
  (A ≡ B)  ■

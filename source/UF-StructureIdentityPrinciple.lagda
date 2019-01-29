@@ -231,7 +231,7 @@ module gsip
   ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
 
   ≡-is-≃ₛ' : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ' B)
-  ≡-is-≃ₛ' A B = ≃-trans (≡-is-≃ₛ A B) (≃ₛ-is-≃ₛ' A B)
+  ≡-is-≃ₛ' A B = (≡-is-≃ₛ A B) ● (≃ₛ-is-≃ₛ' A B)
 
 \end{code}
 
@@ -750,7 +750,7 @@ module gsip'
   ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
 
   ≡-is-≃ₛ' : (A B : Σ S) → (A ≡ B) ≃ (A ≃ₛ' B)
-  ≡-is-≃ₛ' A B = ≃-trans (≡-is-≃ₛ A B) (≃ₛ-is-≃ₛ' A B)
+  ≡-is-≃ₛ' A B = (≡-is-≃ₛ A B) ● (≃ₛ-is-≃ₛ' A B)
 
 module gsip-with-axioms'
 

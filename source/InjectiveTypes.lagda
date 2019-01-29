@@ -257,11 +257,11 @@ module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
 \begin{code}
 
   Π-observation : is-embedding j → (a : X) → f a ≃ (Π \(x : X) → j x ≡ j a → f x)
-  Π-observation e a = ≃-sym (≃-trans (≃-sym (2nd-Π-extension-formula (j a)))
+  Π-observation e a = ≃-sym ((≃-sym (2nd-Π-extension-formula (j a))) ●
                                       (Π-extension-in-range e a))
 
   Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ \(x : X) → (j x ≡ j a) × f x)
-  Σ-observation e a = ≃-sym (≃-trans (≃-sym (2nd-Σ-extension-formula (j a)))
+  Σ-observation e a = ≃-sym ((≃-sym (2nd-Σ-extension-formula (j a))) ●
                                       (Σ-extension-in-range e a))
 
 \end{code}

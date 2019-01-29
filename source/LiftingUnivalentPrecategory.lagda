@@ -233,14 +233,14 @@ to-from fe l m ((f , δ) , g) = b
                    → (l m : 𝓛 X)
                    → (l ⊑ m) × (is-defined m → is-defined l) ≃ (l ≡ m)
 ⊑-anti-equiv-lemma ua fe l m =
-  ≃-trans (⊑-anti-equiv-lemma' (funext-from-univalence ua) l m)
-          (≃-sym (𝓛-Id· ua fe l m))
+  (⊑-anti-equiv-lemma' (funext-from-univalence ua) l m)
+  ● (≃-sym (𝓛-Id· ua fe l m))
 
 ⊑-anti-equiv : is-univalent 𝓣 → funext 𝓣 𝓤
              → (l m : 𝓛 X)
              → (l ⊑ m) × (m ⊑ l) ≃ (l ≡ m) × (m ≡ l)
-⊑-anti-equiv ua fe l m = ≃-trans γ (×-cong (⊑-anti-equiv-lemma ua fe l m)
-                                           (⊑-anti-equiv-lemma ua fe m l))
+⊑-anti-equiv ua fe l m = γ ● (×-cong (⊑-anti-equiv-lemma ua fe l m)
+                                     (⊑-anti-equiv-lemma ua fe m l))
  where
   A = (l ⊑ m) × (m ⊑ l)
   B = ((l ⊑ m) × (is-defined m → is-defined l))
@@ -504,8 +504,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
 
  ≃⟨𝓛⟩-is-Id : (l m : 𝓛 X)
             → (l ≃⟨𝓛⟩ m) ≃ (l ≡ m)
- ≃⟨𝓛⟩-is-Id l m = ≃-trans (≃⟨𝓛⟩-charac l m)
-                          (⊑-anti-equiv-lemma ua fe l m)
+ ≃⟨𝓛⟩-is-Id l m = (≃⟨𝓛⟩-charac l m) ● (⊑-anti-equiv-lemma ua fe l m)
 
  𝓛-is-univalent' : (l : 𝓛 X) → ∃! \(m : 𝓛 X) → (l ≃⟨𝓛⟩ m)
  𝓛-is-univalent' l = equiv-to-singleton e (singleton-types-are-singletons l)
