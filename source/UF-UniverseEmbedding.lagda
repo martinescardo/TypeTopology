@@ -3,11 +3,14 @@ Martin Escardo, 29th January 2019
 If univalence holds, then any universe is embedded into any larger universe.
 
 We do this without cumulativity, because it is not available in the
-Martin-Loef type theory that we are working with in Agda.
+Martin-Löf type theory that we are working with in Agda.
 
-Moreover, any map (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇) with f X ≃ X for all X : 𝓤 is an
+Moreover, any map f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ with f X ≃ X for all X : 𝓤 ̇ is an
 embedding, for example X ↦ X + 𝟘 {𝓥}.
 
+(Here the notion of a map being an embedding is stronger than that of
+left-cancellability, namely that the fibers of the map are
+propositions or subsingletons, as in HoTT/UF.)
 
 \begin{code}
 
@@ -47,9 +50,9 @@ private
 \end{code}
 
 We begin with some general results about equivalences which probably
-should be move to other univalent foundations modules in the future as
-they are potentially of general use independently of the particular
-application developed here.
+should be moved to other univalent foundations modules in the future
+as they are potentially of general use, independently of the
+particular application developed here.
 
 \begin{code}
 
@@ -72,7 +75,7 @@ equivalence as primary.
   p = inverse-involutive f e
 
 ≃-Sym : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-    → (X ≃ Y) ≃ (Y ≃ X)
+      → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym {𝓤} {𝓥} {X} {Y} = qinveq ≃-sym (≃-sym , ≃-sym-involutive , ≃-sym-involutive)
 
 ≃-sym-is-left-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
@@ -146,4 +149,4 @@ module example where
 But, of course, there are many other naturally occurring embeddings
 
 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇, such as e.g. X ↦ X × 𝟙 {𝓥}, or the one provided in the
-Agda standard library (called 'Lift').
+Agda standard library (called 'Lift'), defined as a record.
