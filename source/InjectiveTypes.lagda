@@ -448,6 +448,13 @@ injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ �
 injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                       → injective D over j
 
+embedding-retract : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥
+                  → retract D of Y
+embedding-retract D Y j e i = pr₁ a , j , pr₂ a
+ where
+  a : Σ \(f' : Y → D) → f' ∘ j ∼ id
+  a = i j e id
+
 universes-are-injective-Π : is-univalent (𝓤 ⊔ 𝓥) → injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
 universes-are-injective-Π ua j e f = f / j , Π-extension-is-extension ua j e f
 
@@ -966,8 +973,17 @@ flabby-types-are-injective D φ {X} {Y} j e f = f' , p
 injective-resizing₁ : (D : 𝓦 ̇) → injective-type D (𝓤 ⊔ 𝓣) 𝓥 → injective-type D 𝓤 𝓣
 injective-resizing₁ D i j e f = flabby-types-are-injective D (injective-types-are-flabby D i) j e f
 
+\end{code}
+
+In particular:
+
+\begin{code}
+
 injective-resizing₂ : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓤
 injective-resizing₂ = injective-resizing₁
+
+injective-resizing₃ : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤₀ 𝓤
+injective-resizing₃ = injective-resizing₁
 
 \end{code}
 
@@ -1012,6 +1028,32 @@ injective-resizing : ∀ {𝓤 𝓥 𝓤' 𝓥' 𝓦} → weak-prop-resizing (�
 injective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} ρ D i j e f = flabby-types-are-injective D
                                                           (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
                                                             (injective-types-are-flabby D i)) j e f
+
+universe-up : (𝓤 𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+universe-up 𝓤 𝓥 X = X × 𝟙 {𝓥}
+
+{- TODO (assuming univalence)
+universe-up-is-embedding : is-embedding (universe-up 𝓤 𝓥)
+universe-up-is-embedding = {!!}
+-}
+
+universe-retract : (𝓤 𝓥 : Universe) → is-univalent 𝓤 → weak-prop-resizing ((𝓤 ⊔ 𝓥 )⁺) 𝓤
+                 → is-embedding (universe-up 𝓤 𝓥) -- This should be the case.
+                 → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
+universe-retract 𝓤 𝓥 ua ρ e = b e (injective-resizing ρ (𝓤 ̇) a)
+ where
+  a : injective-type (𝓤 ̇) 𝓤 𝓤
+  a = universes-are-injective-Π {𝓤} {𝓤} ua
+  b : is-embedding (universe-up 𝓤 𝓥)
+        → injective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
+        → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
+  b = embedding-retract (𝓤 ̇) (𝓤 ⊔ 𝓥 ̇) (universe-up 𝓤 𝓥)
+
+universe-retract' : (𝓤 : Universe) → is-univalent 𝓤 → weak-prop-resizing ((𝓤 ⁺)⁺) 𝓤
+                  → is-embedding (universe-up 𝓤 (𝓤 ⁺))
+                  → retract 𝓤 ̇ of (𝓤 ⁺ ̇)
+universe-retract' 𝓤 = universe-retract 𝓤 (𝓤 ⁺)
+
 \end{code}
 
 Added 25th January 2019. From this we get the following
