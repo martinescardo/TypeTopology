@@ -98,6 +98,16 @@ equivalence as primary.
         → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 ≃-Trans κ = qinveq (≃-trans κ) (≃-trans (≃-sym κ) , ≃-sym-is-left-inverse κ , ≃-sym-is-right-inverse κ)
 
+\end{code}
+
+One could be tempted to attempt prove the following by instead
+assuming, with the aid of univalence, X ≡ A and Y ≡ B and then using
+identity-type induction. However, in the absence of cumulativity, the
+expressions "X ≡ A" and "Y ≡ B" don't make sense as they are not
+well-typed. A similar remark applies to the above development.
+
+\begin{code}
+
 Id-is-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
                     → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
 Id-is-Eq-congruence {𝓤} {𝓥} X Y A B d e =
