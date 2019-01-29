@@ -126,7 +126,8 @@ universe-embedding-criterion 𝓤 𝓥 f i = embedding-criterion' f γ
 
 \end{code}
 
-For instance:
+For instance, the function X ↦ X + 𝟘 is an embedding of the universe 𝓤
+into the universe 𝓤 ⊔ 𝓥, where 𝟘 is taken to live in the universe 𝓥:
 
 \begin{code}
 
@@ -141,3 +142,8 @@ module example where
                                       (λ X → 𝟘-rneutral' {𝓤} {𝓥} {X})
 
 \end{code}
+
+But, of course, there are many other naturally occurring embeddings
+
+𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇, such as e.g. X ↦ X × 𝟙 {𝓥}, or the one provided in the
+Agda standard library (called 'Lift').
