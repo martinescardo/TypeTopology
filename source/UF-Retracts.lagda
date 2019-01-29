@@ -28,13 +28,14 @@ retract-of-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
 retract-of-singleton (r , s , rs) (c , φ) = r c , (λ y → ap r (φ (s y)) ∙ rs y)
 
 retract-of-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                        → retract Y of X
-                        → is-prop X
-                        → is-prop Y
+                → retract Y of X
+                → is-prop X
+                → is-prop Y
 retract-of-prop (r , s , rs) = subtype-of-prop-is-a-prop s
                                         (has-retraction-lc s (r , rs))
+
 identity-retraction : {X : 𝓤 ̇} → retract X of X
-identity-retraction = id , (id , λ x → refl)
+identity-retraction = id , id , λ x → refl
 
 has-section-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y)
                            → has-section f →  g ∼ f  → has-section g
@@ -59,7 +60,7 @@ Surjection expressed in Curry-Howard logic amounts to retraction.
 
 \begin{code}
 
-retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
 retraction f = ∀ y → Σ \x → f x ≡ y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -114,7 +115,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
   fg (inr y) = ap inr (tu y)
 
 +'-retract-of-+ : {X Y : 𝓤 ̇}
-           → retract (X +' Y) of (X + Y)
+                → retract (X +' Y) of (X + Y)
 +'-retract-of-+ {𝓤} {X} {Y} = f , g , fg
  where
   f : X + Y → X +' Y
