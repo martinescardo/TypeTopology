@@ -572,7 +572,7 @@ equivalent to a type in 𝓤:
 
 \begin{code}
 
- Theorem : ∀ 𝓤 → ¬ Σ \(U : 𝓤 ̇) → 𝓤 ̇ ≃ U
- Theorem 𝓤 (U , e) = Lemma₄ 𝓤 (U , equiv-retract-l e)
+ Theorem : ∀ 𝓤 → ¬ Σ \(𝕌 : 𝓤 ̇) → 𝓤 ̇ ≃ 𝕌
+ Theorem 𝓤 (𝕌 , e) = Lemma₄ 𝓤 (𝕌 , equiv-retract-l e)
 
 \end{code}
