@@ -57,9 +57,9 @@ application developed here.
 
 \begin{code}
 
-inverse-involutive : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
-                   → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
-inverse-involutive f e = refl
+inversion-involutive : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
+                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
+inversion-involutive f e = refl
 
 \end{code}
 
@@ -98,10 +98,8 @@ a neutral element for ordinary function composition, definitionally:
 ≃-refl-right α = to-Σ-≡ (refl , being-equiv-is-a-prop fe _ _ _)
 
 ≃-sym-involutive : {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
-≃-sym-involutive (f , a) = to-Σ-≡ (p , being-equiv-is-a-prop fe f _ a)
- where
-  p : inverse (inverse f a) (inverse-is-equiv f a) ≡ f
-  p = inverse-involutive f a
+≃-sym-involutive (f , a) = to-Σ-≡ (inversion-involutive f a ,
+                                   being-equiv-is-a-prop fe f _ a)
 
 ≃-Sym : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym = qinveq ≃-sym (≃-sym , ≃-sym-involutive , ≃-sym-involutive)
@@ -142,7 +140,7 @@ well-typed. A similar remark applies to the above development.
 \begin{code}
 
 Id-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
-                    → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
+                 → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
 Id-Eq-congruence {𝓤} {𝓥} X Y A B α β =
  (X ≡ Y) ≃⟨ is-univalent-≃ (ua 𝓤) X Y ⟩
  (X ≃ Y) ≃⟨ ≃-Comp (≃-sym α) ⟩
@@ -160,7 +158,7 @@ following reformulation of its statement:
 \begin{code}
 
 Id-Eq-congruence' : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
-                     → Eq X A → Eq Y B → Eq (Id X Y) (Id A B)
+                  → Eq X A → Eq Y B → Eq (Id X Y) (Id A B)
 Id-Eq-congruence' = Id-Eq-congruence
 
 \end{code}
