@@ -54,8 +54,8 @@ consistent:
 
 \begin{code}
 
-EM-gives-WPR : EM 𝓤 → propositional-resizing 𝓤 𝓥
-EM-gives-WPR {𝓤} {𝓥} em = record {
+EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
+EM-gives-PR {𝓤} {𝓥} em = record {
    resize         = λ P i → Q P i (em P i)
  ; resize-is-prop = λ P i → j P i (em P i)
  ; to-resize      = λ P i → f P i (em P i)
