@@ -13,7 +13,7 @@ middle.
 
 The consistency of the resizing rules is an open problem at the time
 of writing (30th January 2018), but the resizing principle is
-consitent relative to ZFC with Grothendieck universes, because it
+consistent relative to ZFC with Grothendieck universes, because it
 follows from excluded middle, which is known to be validated by the
 simplicial-set model (assuming classical logic in its development).
 
