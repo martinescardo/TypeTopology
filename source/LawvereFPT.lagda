@@ -298,12 +298,10 @@ module Blechschmidt (pt : propositional-truncations-exist) where
            → B
            → retract ((a : A) → X a → B) of X a₀
            → (f : B → B) → Σ \(b : B) → b ≡ f b
- udr-lemma X B a₀ i b retr = retract-version.LFPT retr'
+ udr-lemma X B a₀ i b ρ = retract-version.LFPT ρ'
   where
-   retr' : retract (X a₀ → B) of X a₀
-   retr' = retracts-compose
-            retr
-            ((λ f → f a₀) , Π-projection-has-section a₀ i (λ a x → b))
+   ρ' : retract (X a₀ → B) of X a₀
+   ρ' = retracts-compose ρ ((λ f → f a₀) , Π-projection-has-section a₀ i (λ a x → b))
 
  universe-discretely-regular' :
     (𝓤 𝓥 : Universe) (A : 𝓤 ̇) (X : A → 𝓤 ⊔ 𝓥 ̇)
@@ -315,10 +313,10 @@ module Blechschmidt (pt : propositional-truncations-exist) where
     φ : (a : A) → ¬ (X a ≃ B)
     φ a p = uncurry complement-no-fp (γ complement)
      where
-      retr : retract B of (X a)
-      retr = equiv-retract-r p
+      ρ : retract B of (X a)
+      ρ = equiv-retract-r p
       γ : (f : 𝟚 → 𝟚) → Σ \(b : 𝟚) → b ≡ f b
-      γ = udr-lemma X 𝟚 a (d a) ₀ retr
+      γ = udr-lemma X 𝟚 a (d a) ₀ ρ
 
  universe-discretely-regular :
     {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇)
@@ -392,12 +390,10 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
            → is-h-isolated a₀
            → retract ((a : A) → X a → Ω (𝓤 ⊔ 𝓦)) of X a₀
            → (f : Ω (𝓤 ⊔ 𝓦) → Ω (𝓤 ⊔ 𝓦)) → Σ \(p : Ω (𝓤 ⊔ 𝓦)) → p ≡ f p
- usr-lemma {𝓤} {𝓥} {𝓦} {A} X fe fe' pe a₀ i retr = retract-version.LFPT retr'
+ usr-lemma {𝓤} {𝓥} {𝓦} {A} X fe fe' pe a₀ i ρ = retract-version.LFPT ρ'
   where
-   retr' : retract (X a₀ → Ω (𝓤 ⊔ 𝓦)) of X a₀
-   retr' = retracts-compose
-            retr
-            ((λ f → f a₀) , Π-projection-has-section {𝓤} {𝓥} {𝓦} fe fe' pe a₀ i)
+   ρ' : retract (X a₀ → Ω (𝓤 ⊔ 𝓦)) of X a₀
+   ρ' = retracts-compose ρ ((λ f → f a₀) , Π-projection-has-section {𝓤} {𝓥} {𝓦} fe fe' pe a₀ i)
 \end{code}
 
 We now work with the following assumptions:
@@ -429,10 +425,10 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
      φ : (a : A) → ¬(X a ≃ B)
      φ a p = retract-version.not-no-fp fe₀ (γ (not fe₀))
       where
-       retr : retract B of (X a)
-       retr = equiv-retract-r p
+       ρ : retract B of (X a)
+       ρ = equiv-retract-r p
        γ : (f : Ω 𝓤 → Ω 𝓤) → Σ \(p : Ω 𝓤) → p ≡ f p
-       γ = usr-lemma {𝓤} {𝓥 ⊔ 𝓤 ⁺} {𝓤} {A} X fe' fe pe a iss retr
+       γ = usr-lemma {𝓤} {𝓥 ⊔ 𝓤 ⁺} {𝓤} {A} X fe' fe pe a iss ρ
 
   universe-set-regular : Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B)
   universe-set-regular = γ universe-set-regular'
@@ -529,9 +525,10 @@ universe 𝓤₀, which is where our negations take values:
 
  Lemma₁ : ∀ 𝓤 (A : 𝓤 ̇) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
         → ¬((X : 𝓤 ̇) → retract X of (T (S X)))
- Lemma₁ 𝓤 A T S retr = 𝟘-elim (Lemma₀ 𝓤 A T S (λ {X} → pr₁(retr X))
-                                              (λ {X} → pr₁(pr₂(retr X)))
-                                              (λ {X} → pr₂(pr₂(retr X))))
+ Lemma₁ 𝓤 A T S ρ = 𝟘-elim (Lemma₀ 𝓤 A T S
+                              (λ {X} → retraction-of (ρ X))
+                              (λ {X} → section-of (ρ X))
+                              (λ {X} → retract-condition (ρ X)))
 
 \end{code}
 
