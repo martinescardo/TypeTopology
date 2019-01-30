@@ -142,24 +142,13 @@ well-typed. A similar remark applies to the above development.
 Id-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
                  → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
 Id-Eq-congruence {𝓤} {𝓥} X Y A B α β =
- (X ≡ Y) ≃⟨ is-univalent-≃ (ua 𝓤) X Y ⟩
- (X ≃ Y) ≃⟨ ≃-Comp (≃-sym α) ⟩
- (A ≃ Y) ≃⟨ ≃-Sym ⟩
- (Y ≃ A) ≃⟨ ≃-Comp (≃-sym β) ⟩
- (B ≃ A) ≃⟨ ≃-Sym ⟩
- (A ≃ B) ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓥) A B) ⟩
+ (X ≡ Y)  ≃⟨ is-univalent-≃ (ua 𝓤) X Y ⟩
+ (X ≃ Y)  ≃⟨ ≃-Comp (≃-sym α) ⟩
+ (A ≃ Y)  ≃⟨ ≃-Sym ⟩
+ (Y ≃ A)  ≃⟨ ≃-Comp (≃-sym β) ⟩
+ (B ≃ A)  ≃⟨ ≃-Sym ⟩
+ (A ≃ B)  ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓥) A B) ⟩
  (A ≡ B)  ■
-
-\end{code}
-
-The terminology for the above construction is perhaps clearer with the
-following reformulation of its statement:
-
-\begin{code}
-
-Id-Eq-congruence' : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
-                  → Eq X A → Eq Y B → Eq (Id X Y) (Id A B)
-Id-Eq-congruence' = Id-Eq-congruence
 
 \end{code}
 
