@@ -23,10 +23,10 @@ open import UF-ExcludedMiddle
 
 record weak-prop-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
-  resize : (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
+  resize         : (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
   resize-is-prop : (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize P i)
-  to-resize : (P : 𝓤 ̇) (i : is-prop P) → P → resize P i
-  from-resize : (P : 𝓤 ̇) (i : is-prop P) → resize P i → P
+  to-resize      : (P : 𝓤 ̇) (i : is-prop P) → P → resize P i
+  from-resize    : (P : 𝓤 ̇) (i : is-prop P) → resize P i → P
 
 open weak-prop-resizing public
 
@@ -67,7 +67,8 @@ EM-gives-WPR {𝓤} {𝓥} em = record {
 
 \end{code}
 
-We say that a type X has size 𝓥 if it is equivalent to a type in the universe 𝓥:
+We say that a type X has size 𝓥 if it is equivalent to a type in the
+universe 𝓥:
 
 \begin{code}
 
@@ -90,7 +91,6 @@ resize-prop 𝓤 𝓥 ρ P i = resize ρ P i ,
                                 (to-resize ρ P i ,
                                  (λ r → resize-is-prop ρ P i _ r) ,
                                  (λ p → i _ p))
-
 
 \end{code}
 
@@ -180,7 +180,7 @@ is-impredicative₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
 is-impredicative₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
 
 universes-impredicative-from-EM₀ : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
-                                → is-impredicative₀ 𝓤
+                                 → is-impredicative₀ 𝓤
 universes-impredicative-from-EM₀ {𝓤} em pe fe = universes-impredicative-from-EM em pe fe 𝓤₀
 
 \end{code}
@@ -195,7 +195,7 @@ is-impredicative₁ : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓤₂ ̇
 is-impredicative₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
 
 all-universes-are-impredicative₁ : Weak-prop-resizing → PropExt → FunExt
-                                → is-impredicative₁ 𝓤
+                                 → is-impredicative₁ 𝓤
 all-universes-are-impredicative₁ {𝓤} ρ pe fe = universes-are-impredicative+ ρ pe fe 𝓤₀
 
 All-universes-are-impredicative₁ : Weak-prop-resizing → PropExt → FunExt

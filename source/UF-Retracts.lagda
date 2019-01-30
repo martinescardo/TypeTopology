@@ -21,6 +21,15 @@ has-retraction-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y of X = Σ \(r : X → Y) → has-section r
 
+retraction-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (Y → X)
+retraction-of (r , s , rs) = r
+
+section-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (X → Y)
+section-of (r , s , rs) = s
+
+retract-condition : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (ρ : retract X of Y) → retraction-of ρ ∘ section-of ρ ∼ id
+retract-condition (r , s , rs) = rs
+
 retract-of-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                      → retract Y of X
                      → is-singleton X
@@ -67,16 +76,16 @@ retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ \(f : X → Y) → retraction f
 
 retract-of-retract-Of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y of X → retract Y Of X
-retract-of-retract-Of {𝓤} {𝓥} {X} {Y} (f , φ)= (f , hass)
+retract-of-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction-of ρ , hass)
  where
-  hass : (y : Y) → Σ \(x : X) → f x ≡ y
-  hass y = pr₁ φ y , pr₂ φ y
+  hass : (y : Y) → Σ \(x : X) → retraction-of ρ x ≡ y
+  hass y = section-of ρ y , retract-condition ρ y
 
 retract-Of-retract-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y Of X → retract Y of X
 retract-Of-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
  where
   φ : Σ \(s : Y → X) → f ∘ s ∼ id
-  φ = (λ y → pr₁ (hass y)) , λ y → pr₂ (hass y)
+  φ = (λ y → pr₁ (hass y)) , (λ y → pr₂ (hass y))
 
 retracts-compose : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
                  → retract Y of X → retract Z of Y → retract Z of X
@@ -164,11 +173,11 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
 Σ-retract {𝓤} {𝓥} {𝓦} {X} A B ρ = NatΣ R , NatΣ S , rs
  where
   R : (x : X) → B x → A x
-  R x = pr₁(ρ x)
+  R x = retraction-of (ρ x)
   S : (x : X) → A x → B x
-  S x = pr₁(pr₂(ρ x))
+  S x = section-of (ρ x)
   RS : (x : X) (a : A x) → R x (S x a) ≡ a
-  RS x = pr₂(pr₂(ρ x))
+  RS x = retract-condition (ρ x)
   rs : (σ : Σ A) → NatΣ R (NatΣ S σ) ≡ σ
   rs (x , a) = to-Σ-≡' (RS x a)
 
@@ -201,11 +210,11 @@ developments, and (2) work over many years with uncontrolled growth.
 Σ-retract₂ {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (r , s , rs) R = f , g , gf
  where
   φ : (x : X) → B → Y x
-  φ x = pr₁ (R x)
+  φ x = retraction-of (R x)
   γ : (x : X) → Y x → B
-  γ x = pr₁ (pr₂ (R x))
+  γ x = section-of (R x)
   φγ : (x : X) → (y : Y x) → φ x (γ x y) ≡ y
-  φγ x = pr₂ (pr₂ (R x))
+  φγ x = retract-condition (R x)
   f : A × B → Σ Y
   f (a , b) = r a , φ (r a) b
   g : Σ Y → A × B

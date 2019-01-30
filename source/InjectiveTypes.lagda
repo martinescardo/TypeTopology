@@ -1,6 +1,6 @@
 Martin Escardo, 27 April 2014, with later additions, 2017, 2018, 2019.
 
-This introduction is incomplete.
+This introduction is incomplete and outdated.
 
 We show that the injective types are the retracts of the exponential
 powers of universes, where an exponential power of a type D is a type
@@ -123,12 +123,22 @@ Here is how we define f/j given f and j.
 We have to apply the following constructions for 𝓤=𝓥=𝓦 for the above
 triangles to make sense.
 
+We rename the type of natural transformations:
+
 \begin{code}
 
+_≾_ : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 _≾_ = Nat
-infixr 4 _≾_
 
-module _ {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) where
+_≾_-explicitly : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
+               → A ≾ B ≡ ((x : X) → A x → B x)
+_≾_-explicitly A B = refl
+
+module _ {X : 𝓤 ̇}
+         {Y : 𝓥 ̇}
+         (f : X → 𝓦 ̇)
+         (j : X → Y)
+       where
 
   Π-extension Σ-extension : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   Π-extension y = Π \(w : fiber j y) → f(pr₁ w)
@@ -484,7 +494,7 @@ retract-Of-injective D' D i (r , ρ) {X} {Y} j e f = r ∘ g , γ
 
 injective-is-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                           → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
-injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → Id y , pr₂ a y
+injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → (Id y , pr₂ a y)
   where
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
@@ -533,11 +543,11 @@ retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇) (B : X → �
 retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
  where
   R : (x : X) → B x → A x
-  R x = pr₁(ρ x)
+  R x = retraction-of (ρ x)
   S : (x : X) → A x → B x
-  S x = pr₁(pr₂(ρ x))
+  S x = section-of (ρ x)
   RS : (x : X) (a : A x) → R x (S x a) ≡ a
-  RS x = pr₂(pr₂(ρ x))
+  RS x = retract-condition (ρ x)
   r : (B / e) y → (A / e) y
   r v (x , p) = R x (v (x , p))
   s : (A / e) y → (B / e) y
@@ -971,6 +981,12 @@ flabby-types-are-injective D φ {X} {Y} j e f = f' , p
     q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
     q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
 
+\end{code}
+
+Without resizing axioms, we have the following resizing construction:
+
+\begin{code}
+
 injective-resizing₁ : (D : 𝓦 ̇) → injective-type D (𝓤 ⊔ 𝓣) 𝓥 → injective-type D 𝓤 𝓣
 injective-resizing₁ D i j e f = flabby-types-are-injective D (injective-types-are-flabby D i) j e f
 
@@ -997,16 +1013,16 @@ some universe, it is flabby with respect to all universes:
 
 flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-prop-resizing 𝓤 𝓥
                    → flabby D 𝓥 → flabby D 𝓤
-flabiness-resizing D 𝓤 𝓥 ρ φ P i f = d , h
+flabiness-resizing D 𝓤 𝓥 R φ P i f = d , h
  where
   Q : 𝓥 ̇
-  Q = resize ρ P i
+  Q = resize R P i
   j : is-prop Q
-  j = resize-is-prop ρ P i
+  j = resize-is-prop R P i
   α : P → Q
-  α = to-resize ρ P i
+  α = to-resize R P i
   β : Q → P
-  β = from-resize ρ P i
+  β = from-resize R P i
   d : D
   d = pr₁ (φ Q j (f ∘ β))
   k : (q : Q) → d ≡ f (β q)
@@ -1025,31 +1041,35 @@ universes:
 \begin{code}
 
 injective-resizing : ∀ {𝓤 𝓥 𝓤' 𝓥' 𝓦} → weak-prop-resizing (𝓤' ⊔ 𝓥') 𝓤
-                  → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
-injective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} ρ D i j e f = flabby-types-are-injective D
-                                                          (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 ρ
+                   → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
+injective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} R D i j e f = flabby-types-are-injective D
+                                                          (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R
                                                             (injective-types-are-flabby D i)) j e f
-
 
 \end{code}
 
 As an application of this and of injectivity of universes, we have
-that any universe is a retract of any larger universe:
+that any universe is a retract of any larger universe.
+
+We remark that for types that are not sets, sections are not
+automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
 
 \begin{code}
 
 universe-retract : Univalence → Weak-prop-resizing
                  → (𝓤 𝓥 : Universe)
-                 → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
-universe-retract ua ρ 𝓤 𝓥 = b universe-up-is-embedding (injective-resizing ρ (𝓤 ̇) a)
+                 → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section-of ρ)
+universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
  where
   open UF-UniverseEmbedding.example ua
   a : injective-type (𝓤 ̇) 𝓤 𝓤
   a = universes-are-injective-Π {𝓤} {𝓤} (ua 𝓤)
   b : is-embedding (universe-up 𝓤 𝓥)
-        → injective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
-        → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
+    → injective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
+    → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
   b = embedding-retract (𝓤 ̇) (𝓤 ⊔ 𝓥 ̇) (universe-up 𝓤 𝓥)
+  ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
+  ρ = b universe-up-is-embedding (injective-resizing R (𝓤 ̇) a)
 
 \end{code}
 
@@ -1067,13 +1087,13 @@ of 𝓦.
 
 injective-characterization : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
                            → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
-injective-characterization {𝓤} ua ρ D = a , b
+injective-characterization {𝓤} ua R D = a , b
  where
   a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
   a i = D , d
    where
     c : injective-type D 𝓤 (𝓤 ⁺)
-    c = injective-resizing ρ D i
+    c = injective-resizing R D i
     d : retract D Of (D → 𝓤 ̇)
     d = injective-is-retract-of-power-of-universe D ua c
 
@@ -1177,10 +1197,10 @@ injectivity.
 
  ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
                                        → ∃-injective-type D 𝓤 (𝓤 ⁺) ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
- ∃-injectivity-in-terms-of-injectivity {𝓤} ua ρ D = a , b
+ ∃-injectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
   where
    a : ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
-   a = ∥∥-functor (injective-resizing ρ D) ∘ ∃-injective-gives-∥injective∥ ua D
+   a = ∥∥-functor (injective-resizing R D) ∘ ∃-injective-gives-∥injective∥ ua D
    b : ∥ injective-type D 𝓤 (𝓤 ⁺) ∥ → ∃-injective-type D 𝓤 (𝓤 ⁺)
    b = ∥injective∥-gives-∃-injective D
 
@@ -1257,7 +1277,7 @@ injective types are retracts of underlying objects of free algebras:
 
  injective-is-retract-of-free-𝓛-algebra : (D : 𝓤 ̇) → is-univalent 𝓤
                                         → injective-type D 𝓤 (𝓤 ⁺) → retract D Of (𝓛 D)
- injective-is-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → η γ , pr₂ a γ
+ injective-is-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → (η γ , pr₂ a γ)
    where
      a : Σ \r  → r ∘ η ∼ id
      a = i η (η-is-embedding' 𝓤 D ua (funext-from-univalence ua)) id
@@ -1272,11 +1292,19 @@ monad:
 
  injectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
                                         → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
- injectives-in-terms-of-free-𝓛-algebras ua fe ρ D = a , b
+ injectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
   where
    a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
-   a i = D , injective-is-retract-of-free-𝓛-algebra D ua (injective-resizing ρ D i)
+   a i = D , injective-is-retract-of-free-𝓛-algebra D ua (injective-resizing R D i)
    b : (Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)) → injective-type D 𝓤 𝓤
    b (X , r) = retract-Of-injective D (𝓛 X) (free-𝓛-algebra-injective ua fe X) r
+
+\end{code}
+
+Fixities:
+
+\begin{code}
+
+infixr 4 _≾_
 
 \end{code}
