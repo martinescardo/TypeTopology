@@ -137,6 +137,9 @@ identity-type induction. However, in the absence of cumulativity, the
 expressions "X ≡ A" and "Y ≡ B" don't make sense as they are not
 well-typed. A similar remark applies to the above development.
 
+This is the first result of thus module that invokes full univalence
+rather than just its function-extensionality consequence:
+
 \begin{code}
 
 Id-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
