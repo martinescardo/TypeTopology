@@ -1,3 +1,5 @@
+Martin Escardo
+
 In univalent logic, as opposed to Curry-Howard logic, a proposition is
 a subsingleton or a type such that any two of its elements are
 identified.
