@@ -54,7 +54,7 @@ Next we define singleton (or contractible types). The terminology
 "singleton type", because it makes more sense when we consider
 univalent type theory as interesting on its own right independently of
 its homotopical (originally motivating) models. Also it emphasizes
-that we don't required homotopy theory as a prerequisite to understand
+that we don't require homotopy theory as a prerequisite to understand
 univalent type theory.
 
 \begin{code}
@@ -159,18 +159,18 @@ sets-are-Id-collapsible u = (id , u)
 local-hedberg : {X : 𝓤 ̇} (x : X)
               → ((y : X) → collapsible (x ≡ y))
               → (y : X) → is-prop (x ≡ y)
-local-hedberg {𝓤} {X} x pc y p q = claim₂
+local-hedberg {𝓤} {X} x pc y p q =
+ p                    ≡⟨ c y p ⟩
+ f x refl ⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x refl)⁻¹ ∙ -) (κ y p q) ⟩
+ f x refl ⁻¹ ∙ f y q  ≡⟨ (c y q)⁻¹ ⟩
+ q                    ∎
  where
   f : (y : X) → x ≡ y → x ≡ y
   f y = pr₁ (pc y)
-  g : (y : X) (p q : x ≡ y) → f y p ≡ f y q
-  g y = pr₂ (pc y)
-  claim₀ : (y : X) (r : x ≡ y) → r ≡ (f x refl)⁻¹ ∙ f y r
-  claim₀ _ refl = sym-is-inverse (f x refl)
-  claim₁ : (f x refl)⁻¹ ∙ f y p ≡ (f x refl)⁻¹ ∙ f y q
-  claim₁ = ap (λ - → (f x refl)⁻¹ ∙ -) (g y p q)
-  claim₂ : p ≡ q
-  claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
+  κ : (y : X) (p q : x ≡ y) → f y p ≡ f y q
+  κ y = pr₂ (pc y)
+  c : (y : X) (r : x ≡ y) → r ≡ (f x refl)⁻¹ ∙ f y r
+  c _ refl = sym-is-inverse (f x refl)
 
 Id-collapsibles-are-sets : {X : 𝓤 ̇} → Id-collapsible X → is-set X
 Id-collapsibles-are-sets {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
@@ -180,7 +180,7 @@ Id-collapsibles-are-sets {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(p
 We also need the following symmetrical version of local Hedberg, which
 can be proved by reduction to the above (using the fact that
 collapsible types are closed under equivalence), but at this point we
-don't have the machinery at this disposal (which is developed in
+don't have the machinery at our disposal (which is developed in
 modules that depend on this one), and hence we prove it directly by
 symmetrizing the proof.
 
@@ -189,18 +189,18 @@ symmetrizing the proof.
 local-hedberg' : {X : 𝓤 ̇} (x : X)
                → ((y : X) → collapsible (y ≡ x))
                → (y : X) → is-prop (y ≡ x)
-local-hedberg' {𝓤} {X} x pc y p q = claim₂
+local-hedberg' {𝓤} {X} x pc y p q =
+  p                     ≡⟨ c y p ⟩
+  f y p ∙ (f x refl)⁻¹  ≡⟨  ap (λ - → - ∙ (f x refl)⁻¹) (κ y p q) ⟩
+  f y q ∙ (f x refl)⁻¹  ≡⟨ (c y q)⁻¹ ⟩
+  q                     ∎
  where
   f : (y : X) → y ≡ x → y ≡ x
   f y = pr₁ (pc y)
-  g : (y : X) (p q : y ≡ x) → f y p ≡ f y q
-  g y = pr₂ (pc y)
-  claim₀ : (y : X) (r : y ≡ x) → r ≡  (f y r) ∙ (f x refl)⁻¹
-  claim₀ _ refl = sym-is-inverse' (f x refl)
-  claim₁ : f y p ∙ (f x refl)⁻¹  ≡ f y q ∙ (f x refl)⁻¹
-  claim₁ = ap (λ - → - ∙ (f x refl)⁻¹) (g y p q)
-  claim₂ : p ≡ q
-  claim₂ = (claim₀ y p) ∙ claim₁ ∙ (claim₀ y q)⁻¹
+  κ : (y : X) (p q : y ≡ x) → f y p ≡ f y q
+  κ y = pr₂ (pc y)
+  c : (y : X) (r : y ≡ x) → r ≡  (f y r) ∙ (f x refl)⁻¹
+  c _ refl = sym-is-inverse' (f x refl)
 
 props-are-Id-collapsible : {X : 𝓤 ̇} → is-prop X → Id-collapsible X
 props-are-Id-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → refl))

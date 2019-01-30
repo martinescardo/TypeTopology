@@ -1117,7 +1117,7 @@ module ∃-injective (pt : propositional-truncations-exist) where
 
  ∃-injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
  ∃-injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                         → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
+                        → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 
 
  ∃-injectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → is-prop (∃-injective-type D 𝓤 𝓥)
@@ -1134,7 +1134,7 @@ module ∃-injective (pt : propositional-truncations-exist) where
 
  ∥injective∥-gives-∃-injective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥ → ∃-injective-type D 𝓤 𝓥
  ∥injective∥-gives-∃-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (∃-injectivity-is-a-prop D 𝓤 𝓥)
-                                                     (injective-gives-∃-injective D)
+                                                      (injective-gives-∃-injective D)
 
  retract-of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                         → ∃-injective-type D 𝓦 𝓣
