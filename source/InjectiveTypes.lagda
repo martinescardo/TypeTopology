@@ -968,7 +968,7 @@ flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) �
 
 injective-types-are-flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → flabby D 𝓤
 injective-types-are-flabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
-                                                     pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
+                                                      pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
 
 flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
 flabby-types-are-injective D φ {X} {Y} j e f = f' , p
@@ -1072,10 +1072,6 @@ universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
   ρ = b universe-up-is-embedding (injective-resizing R (𝓤 ̇) a)
 
 \end{code}
-
-(We can see from the proof that the section (namely universe-up) is an
-embedding. Perhaps this should be made explicit either in the
-statement of the result or in another result that projects this out.)
 
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a
