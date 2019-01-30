@@ -983,6 +983,9 @@ flabby-types-are-injective D φ {X} {Y} j e f = f' , p
 
 \end{code}
 
+TODO. Show that the extension induced by flabbiness is an embedding of
+function types.
+
 Without resizing axioms, we have the following resizing construction:
 
 \begin{code}
@@ -1076,8 +1079,8 @@ universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a
 type equivalence), which can be read as saying that the injective
-types in a universe 𝓦 are precisely the retracts of exponential powers
-of 𝓦.
+types in a universe 𝓤 are precisely the retracts of exponential powers
+of 𝓤.
 
 \begin{code}
 
@@ -1102,9 +1105,6 @@ injective-characterization {𝓤} ua R D = a , b
     d = retract-Of-injective D (X → 𝓤 ̇) c r
 
 \end{code}
-
-TODO. Show that the extension induced by flabbiness is an embedding of
-function types.
 
 Added 21st January 2019. We now consider injectivity as property
 rather than data.
