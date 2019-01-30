@@ -12,6 +12,9 @@ We begin with split surjections, or retractions, because they can be
 formulated in MLTT, and then move to surjections, which need further
 extensions of MLTT, or hypotheses, such as propositional truncation.
 
+Many other things have been added since the above abstract was
+written.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}

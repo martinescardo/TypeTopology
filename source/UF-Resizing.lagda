@@ -1,10 +1,15 @@
 Martin Escardo, 24th January 2019.
 
-The following resizing principle is a weaking of Voevodsky's resizing
-rules (Types'2011). Notice that this is consistent as it is implied by
-excluded middle, which is known to be consistent with univalent
-foundations. The consistency of Voevodsky's resizing rules is open at
-the time of writing (24th January 2019).
+Voedvodsky (Types'2011) considered resizing rules for a type theory
+for univalent foundations. These rules govern the syntax of the formal
+system, and hence are of a meta-mathematical nature.
+
+Here we instead formulate, in our type theory without such rules, a
+mathematical resizing principle. This principle is provable in the
+system with Voevodsky's rules. But we don't postulate this principle
+as an axiom. Instead, we use it an assumption, when needed, or as a
+conclusion, when it follows from stronger principles, such as excluded
+middle.
 
 \begin{code}
 
@@ -21,17 +26,17 @@ open import UF-FunExt
 open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
 
-record weak-prop-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
+record propositional-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
   resize         : (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
   resize-is-prop : (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize P i)
   to-resize      : (P : 𝓤 ̇) (i : is-prop P) → P → resize P i
   from-resize    : (P : 𝓤 ̇) (i : is-prop P) → resize P i → P
 
-open weak-prop-resizing public
+open propositional-resizing public
 
-Weak-prop-resizing : 𝓤ω
-Weak-prop-resizing = {𝓤 𝓥 : Universe} → weak-prop-resizing 𝓤 𝓥
+Propositional-resizing : 𝓤ω
+Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 
 \end{code}
 
@@ -43,7 +48,7 @@ consistent:
 
 \begin{code}
 
-EM-gives-WPR : EM 𝓤 → weak-prop-resizing 𝓤 𝓥
+EM-gives-WPR : EM 𝓤 → propositional-resizing 𝓤 𝓥
 EM-gives-WPR {𝓤} {𝓥} em = record {
    resize         = λ P i → Q P i (em P i)
  ; resize-is-prop = λ P i → j P i (em P i)
@@ -84,7 +89,7 @@ univalence (it is contractible if 𝓥 is 𝓤 and 𝓤 is univalent).
 size-upper-closed : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
 size-upper-closed {𝓤} {𝓥} X = (X × 𝟙 {𝓥}) , 𝟙-rneutral
 
-resize-prop : (𝓤 𝓥 : Universe) → weak-prop-resizing 𝓤 𝓥
+resize-prop : (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
             → (P : 𝓤 ̇) → is-prop P → P has-size 𝓥
 resize-prop 𝓤 𝓥 ρ P i = resize ρ P i ,
                          qinveq (from-resize ρ P i)
@@ -103,7 +108,7 @@ universe (i.e. in all universes except the first).
 is-impredicative+ : (𝓤 : Universe) → 𝓤ω
 is-impredicative+ 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size (𝓥 ⁺)
 
-universes-are-impredicative+ : Weak-prop-resizing → PropExt → FunExt
+universes-are-impredicative+ : Propositional-resizing → PropExt → FunExt
                              → is-impredicative+ 𝓤
 universes-are-impredicative+ {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γφ , φγ)
  where
@@ -138,7 +143,7 @@ impredicative, but it does imply that all other, successor, universes
 
 \begin{code}
 
-successor-universes-are-impredicative : Weak-prop-resizing → PropExt → FunExt
+successor-universes-are-impredicative : Propositional-resizing → PropExt → FunExt
                                       → is-impredicative (𝓤 ⁺)
 successor-universes-are-impredicative {𝓤} ρ pe fe = universes-are-impredicative+ ρ pe fe 𝓤
 
@@ -194,11 +199,11 @@ the second universe 𝓤₁:
 is-impredicative₁ : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓤₂ ̇
 is-impredicative₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
 
-all-universes-are-impredicative₁ : Weak-prop-resizing → PropExt → FunExt
+all-universes-are-impredicative₁ : Propositional-resizing → PropExt → FunExt
                                  → is-impredicative₁ 𝓤
 all-universes-are-impredicative₁ {𝓤} ρ pe fe = universes-are-impredicative+ ρ pe fe 𝓤₀
 
-All-universes-are-impredicative₁ : Weak-prop-resizing → PropExt → FunExt
+All-universes-are-impredicative₁ : Propositional-resizing → PropExt → FunExt
                                  → Ω 𝓤 ≃ Ω 𝓤₀
 All-universes-are-impredicative₁ {𝓤} ρ pe fe = ≃-sym (pr₂ (all-universes-are-impredicative₁ {𝓤} ρ pe fe))
 

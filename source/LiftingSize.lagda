@@ -82,7 +82,7 @@ module _ (𝓤 : Universe)
          (ua : is-univalent 𝓣)
          (ua' : is-univalent 𝓤)
          (X : 𝓤 ⁺ ̇)
-         (ρ : Weak-prop-resizing)
+         (ρ : Propositional-resizing)
        where
 
  𝓛-size : (𝓛 X) has-size (universe-of X)

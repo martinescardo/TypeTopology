@@ -1014,7 +1014,7 @@ some universe, it is flabby with respect to all universes:
 
 \begin{code}
 
-flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → weak-prop-resizing 𝓤 𝓥
+flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
                    → flabby D 𝓥 → flabby D 𝓤
 flabiness-resizing D 𝓤 𝓥 R φ P i f = d , h
  where
@@ -1043,7 +1043,7 @@ universes:
 
 \begin{code}
 
-injective-resizing : ∀ {𝓤 𝓥 𝓤' 𝓥' 𝓦} → weak-prop-resizing (𝓤' ⊔ 𝓥') 𝓤
+injective-resizing : ∀ {𝓤 𝓥 𝓤' 𝓥' 𝓦} → propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
                    → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
 injective-resizing {𝓤} {𝓥} {𝓤'} {𝓥'} {𝓦} R D i j e f = flabby-types-are-injective D
                                                           (flabiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R
@@ -1059,7 +1059,7 @@ automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
 
 \begin{code}
 
-universe-retract : Univalence → Weak-prop-resizing
+universe-retract : Univalence → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section-of ρ)
 universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
@@ -1083,17 +1083,15 @@ a direct definition of the above retraction:
 
 module universe-retract-unfolded
         (ua : Univalence)
-        (R  : Weak-prop-resizing)
+        (R  : Propositional-resizing)
         (𝓤 𝓥 : Universe)
       where
-
-  open UF-UniverseEmbedding.example ua
 
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   s X = X + 𝟘 {𝓥}
 
   e : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (fiber s Y)
-  e = universe-up-is-embedding
+  e = UF-UniverseEmbedding.example.universe-up-is-embedding ua
 
   P : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   P Y = resize R (fiber s Y) (e Y)
@@ -1126,6 +1124,9 @@ module universe-retract-unfolded
 
 \end{code}
 
+Question. If we assume that we have such a retraction, does weak
+propositional resizing follow?
+
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a
 type equivalence), which can be read as saying that the injective
@@ -1134,7 +1135,7 @@ of 𝓤.
 
 \begin{code}
 
-injective-characterization : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
+injective-characterization : is-univalent 𝓤 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
                            → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (X → 𝓤 ̇)
 injective-characterization {𝓤} ua R D = a , b
  where
@@ -1241,7 +1242,7 @@ injectivity.
 
 \begin{code}
 
- ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
+ ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
                                        → ∃-injective-type D 𝓤 (𝓤 ⁺) ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
  ∃-injectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
   where
@@ -1336,7 +1337,7 @@ monad:
 
 \begin{code}
 
- injectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → weak-prop-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
+ injectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
                                         → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
  injectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
   where
