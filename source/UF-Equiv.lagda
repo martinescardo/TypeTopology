@@ -44,9 +44,9 @@ id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 ≃-refl : (X : 𝓤 ̇) → X ≃ X
 ≃-refl X = id , id-is-an-equiv X
 
-comp-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {f : X → Y} {f' : Y → Z}
-              → is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
-comp-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf'))  =
+∘-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {f : X → Y} {f' : Y → Z}
+           → is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
+∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf'))  =
   (g ∘ g' , fg'') , (h ∘ h' , hf'')
  where
   fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
@@ -55,7 +55,7 @@ comp-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((
   hf'' x = ap h (hf' (f x)) ∙ hf x
 
 ≃-comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
-≃-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , comp-is-equiv d e
+≃-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , ∘-is-equiv d e
 
 _●_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 _●_ = ≃-comp
@@ -447,5 +447,6 @@ Associativities and precedences.
 infix  0 _≃_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
+infixl 2 _●_
 
 \end{code}

@@ -68,36 +68,68 @@ equivalence as primary.
 
 \begin{code}
 
-≃-sym-involutive : {X : 𝓤 ̇} {Y : 𝓥 ̇} (ε : X ≃ Y)
-                 → ≃-sym (≃-sym ε) ≡ ε
-≃-sym-involutive (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe f _ e)
+≃-assoc : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {T : 𝓣 ̇}
+          (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
+        → α ● (β ● γ) ≡ (α ● β) ● γ
+≃-assoc (f , a) (g , b) (h , c) = to-Σ-≡ (p , q)
  where
-  p : inverse (inverse f e) (inverse-is-equiv f e) ≡ f
-  p = inverse-involutive f e
+  p : (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
+  p = refl
 
-≃-Sym : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-      → (X ≃ Y) ≃ (Y ≃ X)
+  d e : is-equiv (h ∘ g ∘ f)
+  d = ∘-is-equiv a (∘-is-equiv b c)
+  e = ∘-is-equiv (∘-is-equiv a b) c
+
+  q : transport is-equiv p d ≡ e
+  q = being-equiv-is-a-prop fe (h ∘ g ∘ f) _ _
+
+\end{code}
+
+The above proof can be condensed to one line in the style of the
+following two proofs, which exploit the fact that the identity map is
+a neutral element for ordinary function composition, definitionally:
+
+\begin{code}
+
+≃-refl-left : {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-refl X ● α ≡ α
+≃-refl-left α = to-Σ-≡ (refl , being-equiv-is-a-prop fe _ _ _)
+
+≃-refl-right : {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → α ● ≃-refl Y ≡ α
+≃-refl-right α = to-Σ-≡ (refl , being-equiv-is-a-prop fe _ _ _)
+
+≃-sym-involutive : {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
+≃-sym-involutive (f , a) = to-Σ-≡ (p , being-equiv-is-a-prop fe f _ a)
+ where
+  p : inverse (inverse f a) (inverse-is-equiv f a) ≡ f
+  p = inverse-involutive f a
+
+≃-Sym : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym = qinveq ≃-sym (≃-sym , ≃-sym-involutive , ≃-sym-involutive)
 
-≃-sym-is-left-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
-                      → (κ : X ≃ Y) (δ : Y ≃ Z)
-                      → (≃-sym κ) ● (κ ● δ) ≡ δ
-≃-sym-is-left-inverse (f , e) (g , d) = to-Σ-≡ (p , being-equiv-is-a-prop fe g _ d)
+≃-sym-left-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-sym α ● α ≡ ≃-refl Y
+≃-sym-left-inverse (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe _ _ _)
  where
-  p : g ∘ f ∘ inverse f e ≡ g
-  p = ap (g ∘_) (nfe (inverse-is-section f e))
+  p : f ∘ inverse f e ≡ id
+  p = nfe (inverse-is-section f e)
 
-≃-sym-is-right-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
-                       → (κ : X ≃ Y) (ε : X ≃ Z)
-                       → κ ● (≃-sym κ ● ε) ≡ ε
-≃-sym-is-right-inverse (f , e) (h , c) = to-Σ-≡ (p , being-equiv-is-a-prop fe h _ c)
+≃-sym-right-inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → α ● ≃-sym α ≡ ≃-refl X
+≃-sym-right-inverse (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe _ _ _)
  where
-  p : h ∘ inverse f e ∘ f ≡ h
-  p = ap (h ∘_) (nfe (inverse-is-retraction f e))
+  p : inverse f e ∘ f ≡ id
+  p = nfe (inverse-is-retraction f e)
 
-≃-Comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
-       → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-Comp κ = qinveq (κ ●_) ((≃-sym κ ●_), ≃-sym-is-left-inverse κ , ≃-sym-is-right-inverse κ)
+≃-Comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+≃-Comp α = qinveq (α ●_) ((≃-sym α ●_), p , q)
+ where
+  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc (≃-sym α) α β ⟩
+            (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse α) ⟩
+            ≃-refl _ ● β      ≡⟨ ≃-refl-left _ ⟩
+            β                 ∎
+
+  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse α) ⟩
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left _ ⟩
+            γ ∎
 
 \end{code}
 
@@ -109,13 +141,13 @@ well-typed. A similar remark applies to the above development.
 
 \begin{code}
 
-Id-is-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
+Id-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
                     → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
-Id-is-Eq-congruence {𝓤} {𝓥} X Y A B d e =
+Id-Eq-congruence {𝓤} {𝓥} X Y A B α β =
  (X ≡ Y) ≃⟨ is-univalent-≃ (ua 𝓤) X Y ⟩
- (X ≃ Y) ≃⟨ ≃-Comp (≃-sym d) ⟩
+ (X ≃ Y) ≃⟨ ≃-Comp (≃-sym α) ⟩
  (A ≃ Y) ≃⟨ ≃-Sym ⟩
- (Y ≃ A) ≃⟨ ≃-Comp (≃-sym e) ⟩
+ (Y ≃ A) ≃⟨ ≃-Comp (≃-sym β) ⟩
  (B ≃ A) ≃⟨ ≃-Sym ⟩
  (A ≃ B) ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓥) A B) ⟩
  (A ≡ B)  ■
@@ -127,9 +159,9 @@ following reformulation of its statement:
 
 \begin{code}
 
-Id-is-Eq-congruence' : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
+Id-Eq-congruence' : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
                      → Eq X A → Eq Y B → Eq (Id X Y) (Id A B)
-Id-is-Eq-congruence' = Id-is-Eq-congruence
+Id-Eq-congruence' = Id-Eq-congruence
 
 \end{code}
 
@@ -143,7 +175,7 @@ universe-embedding-criterion : (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 
 universe-embedding-criterion 𝓤 𝓥 f i = embedding-criterion' f γ
  where
   γ : (X X' : 𝓤 ̇) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' = Id-is-Eq-congruence (f X) (f X') X X' (i X) (i X')
+  γ X X' = Id-Eq-congruence (f X) (f X') X X' (i X) (i X')
 
 \end{code}
 
