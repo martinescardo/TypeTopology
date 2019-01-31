@@ -92,7 +92,7 @@ X has-size 𝓥 = Σ \(Y : 𝓥 ̇) → Y ≃ X
 
 has-size-is-a-prop : Univalence
                    → (X : 𝓤 ̇) (𝓥 :  Universe)
-                   → is-prop(Σ \(Y : 𝓥 ̇) → Y ≃ X)
+                   → is-prop (X has-size 𝓥)
 has-size-is-a-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
