@@ -50,8 +50,7 @@ hence is an embedding:
 lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
 lift 𝓥 X = X + 𝟘 {𝓥}
 
-lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇)
-              → lift 𝓥 X ≃ X
+lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇) → lift 𝓥 X ≃ X
 lift-≃ 𝓥 X = 𝟘-rneutral'
 
 lift-is-embedding : Univalence → is-embedding (lift {𝓤} 𝓥)
