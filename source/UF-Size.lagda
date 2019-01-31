@@ -17,6 +17,10 @@ consistent relative to ZFC with Grothendieck universes, because it
 follows from excluded middle, which is known to be validated by the
 simplicial-set model (assuming classical logic in its development).
 
+We develop some consequences of propositional resizing here, such as
+every universe is a retract of any higher universe, where the section
+is an embedding (its fibers are all propositions).
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
