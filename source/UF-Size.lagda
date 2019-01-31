@@ -235,8 +235,10 @@ All-universes-are-impredicative₁ {𝓤} ρ pe fe = ≃-sym (pr₂ (all-univers
 
 \end{code}
 
-A more conceptual version of the following construction is in the
-module InjectiveTypes.
+With propositional resizing, we have that any universe is a retract of
+any larger universe. We remark that for types that are not sets,
+sections are not automatically embeddings (Shulman 2015,
+https://arxiv.org/abs/1507.03634).
 
 \begin{code}
 
@@ -246,45 +248,45 @@ universe-retract' : Univalence
                   → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section-of ρ)
 universe-retract' ua R 𝓤 𝓥 = (r , s , rs) , e
  where
-  fe : FunExt
-  fe = FunExt-from-Univalence ua
-
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   s = lift 𝓥
-
-  e : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (fiber s Y)
+  e : is-embedding s
   e = lift-is-embedding ua
-
-  P : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
-  P Y = resize R (fiber s Y) (e Y)
-
-  f : (Y : 𝓤 ⊔ 𝓥 ̇) → P Y → fiber s Y
+  F : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
+  F Y = resize R (fiber s Y) (e Y)
+  f : (Y : 𝓤 ⊔ 𝓥 ̇) → F Y → fiber s Y
   f Y = from-resize R (fiber s Y) (e Y)
-
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
-  r Y = Π \(p : P Y) → pr₁ (f Y p)
-
-  g : (Y : 𝓤 ⊔ 𝓥 ̇) → fiber s Y → P Y
-  g Y = to-resize R (fiber s Y) (e Y)
-
-  h : (X : 𝓤 ̇) → P (s X)
-  h X = g (s X) (X , refl)
-
+  r Y = Π \(p : F Y) → pr₁ (f Y p)
   rs : (X : 𝓤 ̇) → r (s X) ≡ X
-  rs X = eqtoid (ua 𝓤) (r (s X)) X d
+  rs X = γ
    where
-    i : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (P Y)
+    g : (Y : 𝓤 ⊔ 𝓥 ̇) → fiber s Y → F Y
+    g Y = to-resize R (fiber s Y) (e Y)
+    u : F (s X)
+    u = g (s X) (X , refl)
+    v : fiber s (s X)
+    v = f (s X) u
+    i : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (F Y)
     i Y = resize-is-prop R (fiber s Y) (e Y)
-    a : r (s X) ≃ pr₁ (f (s X) (h X))
-    a = prop-indexed-product (fe 𝓤 𝓤) (i (s X)) (h X)
-    b : s (pr₁ (f (s X) (h X))) ≡ s X
-    b = pr₂ (f (s X) (h X))
-    c : pr₁ (f (s X) (h X)) ≡ X
+    X' : 𝓤 ̇
+    X' = pr₁ v
+    a : r (s X) ≃ X'
+    a = prop-indexed-product (FunExt-from-Univalence ua 𝓤 𝓤) (i (s X)) u
+    b : s X' ≡ s X
+    b = pr₂ v
+    c : X' ≡ X
     c = embedding-lc s e b
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
+    γ : r (s X) ≡ X
+    γ = eqtoid (ua 𝓤) (r (s X)) X d
 
 \end{code}
+
+A more conceptual version of the above construction is in the module
+InjectiveTypes (which was discovered first - this is just an unfolding
+of that construction).
 
 Question. If we assume that we have such a retraction, does weak
 propositional resizing follow?
