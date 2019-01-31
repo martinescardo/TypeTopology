@@ -1067,10 +1067,10 @@ universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
   open UF-UniverseEmbedding.example ua
   a : injective-type (𝓤 ̇) 𝓤 𝓤
   a = universes-are-injective-Π {𝓤} {𝓤} (ua 𝓤)
-  b : is-embedding (universe-up 𝓤 𝓥)
+  b : is-embedding (universe-up 𝓥)
     → injective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
-  b = embedding-retract (𝓤 ̇) (𝓤 ⊔ 𝓥 ̇) (universe-up 𝓤 𝓥)
+  b = embedding-retract (𝓤 ̇) (𝓤 ⊔ 𝓥 ̇) (universe-up 𝓥)
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
   ρ = b universe-up-is-embedding (injective-resizing R (𝓤 ̇) a)
 

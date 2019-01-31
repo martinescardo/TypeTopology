@@ -116,8 +116,8 @@ a neutral element for ordinary function composition, definitionally:
   p : inverse f e ∘ f ≡ id
   p = nfe (inverse-is-retraction f e)
 
-≃-Comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
-≃-Comp α = qinveq (α ●_) ((≃-sym α ●_), p , q)
+≃-Comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+≃-Comp Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
  where
   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse α) ⟩
@@ -146,9 +146,9 @@ Id-Eq-congruence : (X Y : 𝓤 ̇) (A B : 𝓥 ̇)
                  → X ≃ A → Y ≃ B → (X ≡ Y) ≃ (A ≡ B)
 Id-Eq-congruence {𝓤} {𝓥} X Y A B α β =
  (X ≡ Y)  ≃⟨ is-univalent-≃ (ua 𝓤) X Y ⟩
- (X ≃ Y)  ≃⟨ ≃-Comp (≃-sym α) ⟩
+ (X ≃ Y)  ≃⟨ ≃-Comp Y (≃-sym α)⟩
  (A ≃ Y)  ≃⟨ ≃-Sym ⟩
- (Y ≃ A)  ≃⟨ ≃-Comp (≃-sym β) ⟩
+ (Y ≃ A)  ≃⟨ ≃-Comp A (≃-sym β)⟩
  (B ≃ A)  ≃⟨ ≃-Sym ⟩
  (A ≃ B)  ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓥) A B) ⟩
  (A ≡ B)  ■
@@ -176,13 +176,35 @@ into the universe 𝓤 ⊔ 𝓥, where 𝟘 is taken to live in the universe �
 
 module example where
 
- universe-up : (𝓤 𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
- universe-up 𝓤 𝓥 X = X + 𝟘 {𝓥}
+ universe-up : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ universe-up 𝓥 X = X + 𝟘 {𝓥}
 
- universe-up-is-embedding : is-embedding (universe-up 𝓤 𝓥)
+ universe-up-identity : (𝓥 : Universe) (X : 𝓤 ̇)
+                      → universe-up 𝓥 X ≃ X
+ universe-up-identity 𝓥 X = 𝟘-rneutral'
+
+ universe-up-is-embedding : is-embedding (universe-up {𝓤} 𝓥)
  universe-up-is-embedding {𝓤} {𝓥} = universe-embedding-criterion 𝓤 𝓥
-                                      (universe-up 𝓤 𝓥)
-                                      (λ X → 𝟘-rneutral' {𝓤} {𝓥} {X})
+                                      (universe-up 𝓥)
+                                      (universe-up-identity 𝓥)
+ open import UF-Subsingletons
+
+ has-size-is-a-prop : (X : 𝓤 ̇) (𝓥 :  Universe)
+                    → is-prop(Σ \(Y : 𝓥 ̇) → Y ≃ X)
+ has-size-is-a-prop {𝓤} X 𝓥 = c
+  where
+   a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (universe-up 𝓤 Y ≡ universe-up 𝓥 X)
+   a Y = (Y ≃ X)                               ≃⟨ ≃-Comp X (universe-up-identity 𝓤 Y) ⟩
+         (universe-up 𝓤 Y ≃ X)                ≃⟨ ≃-Sym ⟩
+         (X ≃ universe-up 𝓤 Y)                ≃⟨ ≃-Comp (universe-up 𝓤 Y) (universe-up-identity 𝓥 X) ⟩
+         (universe-up 𝓥 X ≃ universe-up 𝓤 Y)  ≃⟨ ≃-Sym ⟩
+         (universe-up 𝓤 Y ≃ universe-up 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
+         (universe-up 𝓤 Y ≡ universe-up 𝓥 X)  ■
+   b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → universe-up 𝓤 Y ≡ universe-up 𝓥 X)
+   b = Σ-cong a
+   c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
+   c = equiv-to-prop b (universe-up-is-embedding (universe-up 𝓥 X))
+
 
 \end{code}
 
