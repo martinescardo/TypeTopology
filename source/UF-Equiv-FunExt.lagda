@@ -17,7 +17,8 @@ open import UF-Retracts
 open import UF-FunExt
 open import UF-Equiv
 
-being-vv-equiv-is-a-prop : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+being-vv-equiv-is-a-prop : FunExt
+                         → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                          → is-prop(is-vv-equiv f)
 being-vv-equiv-is-a-prop {𝓤} {𝓥} fe f = Π-is-prop
                                           (fe 𝓥 (𝓤 ⊔ 𝓥))
@@ -130,6 +131,78 @@ being-equiv-is-a-prop'' : {X Y : 𝓤 ̇}
                         → funext 𝓤 𝓤
                         → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-a-prop'' fe = being-equiv-is-a-prop' fe fe fe fe
+
+≃-assoc : FunExt
+        → {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {T : 𝓣 ̇}
+          (α : X ≃ Y) (β : Y ≃ Z) (γ : Z ≃ T)
+        → α ● (β ● γ) ≡ (α ● β) ● γ
+≃-assoc fe (f , a) (g , b) (h , c) = to-Σ-≡ (p , q)
+ where
+  p : (h ∘ g) ∘ f ≡ h ∘ (g ∘ f)
+  p = refl
+
+  d e : is-equiv (h ∘ g ∘ f)
+  d = ∘-is-equiv a (∘-is-equiv b c)
+  e = ∘-is-equiv (∘-is-equiv a b) c
+
+  q : transport is-equiv p d ≡ e
+  q = being-equiv-is-a-prop fe (h ∘ g ∘ f) _ _
+
+\end{code}
+
+The above proof can be condensed to one line in the style of the
+following two proofs, which exploit the fact that the identity map is
+a neutral element for ordinary function composition, definitionally:
+
+\begin{code}
+
+≃-refl-left : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-refl X ● α ≡ α
+≃-refl-left fe α = to-Σ-≡ (refl , being-equiv-is-a-prop fe _ _ _)
+
+≃-refl-right : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → α ● ≃-refl Y ≡ α
+≃-refl-right fe α = to-Σ-≡ (refl , being-equiv-is-a-prop fe _ _ _)
+
+≃-sym-involutive : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
+≃-sym-involutive fe (f , a) = to-Σ-≡ (inversion-involutive f a ,
+                                   being-equiv-is-a-prop fe f _ a)
+
+≃-Sym : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ≃ Y) ≃ (Y ≃ X)
+≃-Sym fe = qinveq ≃-sym (≃-sym , ≃-sym-involutive fe , ≃-sym-involutive fe)
+
+≃-sym-left-inverse : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → ≃-sym α ● α ≡ ≃-refl Y
+≃-sym-left-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe _ _ _)
+ where
+  p : f ∘ inverse f e ≡ id
+  p = dfunext (fe 𝓥 𝓥) (inverse-is-section f e)
+
+≃-sym-right-inverse : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (α : X ≃ Y) → α ● ≃-sym α ≡ ≃-refl X
+≃-sym-right-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe _ _ _)
+ where
+  p : inverse f e ∘ f ≡ id
+  p = dfunext (fe 𝓤 𝓤) (inverse-is-retraction f e)
+
+≃-Comp : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
+ where
+  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
+            (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
+            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _ ⟩
+            β                 ∎
+
+  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
+            (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
+            γ ∎
+
+Eq-Eq-cong : FunExt
+           → {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
+           → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+Eq-Eq-cong fe {X} {Y} {A} {B} α β =
+ (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α)⟩
+ (A ≃ Y)  ≃⟨ ≃-Sym fe ⟩
+ (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β)⟩
+ (B ≃ A)  ≃⟨ ≃-Sym fe ⟩
+ (A ≃ B)  ■
 
 \end{code}
 

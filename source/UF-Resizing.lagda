@@ -25,12 +25,16 @@ module UF-Resizing where
 
 open import SpartanMLTT
 open import UF-Base
+open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
-open import UF-FunExt
+open import UF-Equiv-FunExt
 open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
+open import UF-Univalence
+open import UF-UA-FunExt
+open import UF-UniverseEmbedding
 
 record propositional-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
@@ -85,12 +89,22 @@ universe 𝓥:
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇) → Y ≃ X
-\end{code}
 
-TODO. The type "X has-size 𝓥" should be a proposition assuming
-univalence (it is contractible if 𝓥 is 𝓤 and 𝓤 is univalent).
-
-\begin{code}
+has-size-is-a-prop : Univalence
+                   → (X : 𝓤 ̇) (𝓥 :  Universe)
+                   → is-prop(Σ \(Y : 𝓥 ̇) → Y ≃ X)
+has-size-is-a-prop {𝓤} ua X 𝓥 = c
+ where
+  fe : FunExt
+  fe = FunExt-from-univalence ua
+  a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
+  a Y = (Y ≃ X)                 ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
+        (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
+        (lift 𝓤 Y ≡ lift 𝓥 X)  ■
+  b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
+  b = Σ-cong a
+  c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
+  c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
 
 size-upper-closed : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
 size-upper-closed {𝓤} {𝓥} X = (X × 𝟙 {𝓥}) , 𝟙-rneutral

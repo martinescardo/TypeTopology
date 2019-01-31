@@ -137,6 +137,17 @@ inverse-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
 
 inverse-is-equiv f e = (f , inverse-is-retraction f e) , (f , inverse-is-section f e)
 
+inversion-involutive : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (e : is-equiv f)
+                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
+inversion-involutive f e = refl
+
+\end{code}
+
+That the above proof is refl is an accident of our choice of notion of
+equivalence as primary.
+
+\begin{code}
+
 qinvs-are-equivs : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → is-equiv f
 qinvs-are-equivs f (g , (gf , fg)) = (g , fg) , (g , gf)
 
