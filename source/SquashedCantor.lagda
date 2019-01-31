@@ -29,7 +29,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
 open import InjectiveTypes fe
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Retracts
 
 \end{code}

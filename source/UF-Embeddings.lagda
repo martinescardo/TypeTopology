@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module UF-Embedding where
+module UF-Embeddings where
 
 open import SpartanMLTT
 open import UF-Base

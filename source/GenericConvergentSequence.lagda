@@ -23,7 +23,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Equiv
 open import UF-Retracts
 open import UF-Miscelanea

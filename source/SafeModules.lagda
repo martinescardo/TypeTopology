@@ -81,7 +81,7 @@ import Universes
 import UF-Base
 import UF-Choice
 import UF-Classifiers
-import UF-Embedding
+import UF-Embeddings
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt
 import UF-Equiv
@@ -100,8 +100,8 @@ import UF-PropTrunc
 import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
-import UF-Resizing
 import UF-StructureIdentityPrinciple
+import UF-Size
 import UF-SubsetIdentity
 import UF-Subsingletons
 import UF-Subsingletons-Equiv

@@ -12,7 +12,7 @@ open import SpartanMLTT
 module LiftingMonadVariation where
 
 open import UF-Subsingletons
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Equiv
 open import UF-FunExt
 

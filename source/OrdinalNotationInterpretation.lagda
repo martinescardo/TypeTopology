@@ -126,7 +126,7 @@ open import SquashedCantor fe hiding (Κ)
 open import DiscreteAndSeparated
 open import UF-Subsingletons
 open import UF-Retracts
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Miscelanea
 
 \end{code}

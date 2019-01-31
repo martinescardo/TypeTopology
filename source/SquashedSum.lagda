@@ -18,7 +18,7 @@ open import Two
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
-open import UF-Embedding
+open import UF-Embeddings
 open import GenericConvergentSequence
 open import CompactTypes
 open import ConvergentSequenceCompact fe₀

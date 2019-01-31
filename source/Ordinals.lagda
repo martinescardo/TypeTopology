@@ -13,7 +13,7 @@ open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import OrdinalNotions hiding (_≤_)
-open import UF-Embedding
+open import UF-Embeddings
 
 module Ordinals
        (fe : FunExt)

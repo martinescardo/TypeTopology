@@ -33,7 +33,7 @@ open import InfCompact
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
-open import UF-Embedding
+open import UF-Embeddings
 open import InjectiveTypes fe
 open import UF-Retracts
 open import UF-Miscelanea
@@ -169,7 +169,7 @@ preserving.
 
 \begin{code}
 
-open import UF-Embedding
+open import UF-Embeddings
 
 is-order-preserving  is-order-reflecting  : (τ υ : Ordᵀ) → (⟪ τ ⟫ → ⟪ υ ⟫) → 𝓤₀ ̇
 
@@ -288,7 +288,7 @@ And now order reflection.
 
 \begin{code}
 
-open import UF-Embedding
+open import UF-Embeddings
 
 comp-is-order-reflecting : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
                       → is-order-reflecting τ υ f

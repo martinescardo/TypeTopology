@@ -21,7 +21,7 @@ simplicial-set model (assuming classical logic in its development).
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module UF-Resizing where
+module UF-Size where
 
 open import SpartanMLTT
 open import UF-Base
@@ -30,11 +30,14 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Equiv-FunExt
+open import UF-Retracts
+open import UF-Embeddings
 open import UF-EquivalenceExamples
 open import UF-ExcludedMiddle
 open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-UniverseEmbedding
+open import UF-PropIndexedPiSigma
 
 record propositional-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
@@ -96,7 +99,7 @@ has-size-is-a-prop : Univalence
 has-size-is-a-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
-  fe = FunExt-from-univalence ua
+  fe = FunExt-from-Univalence ua
   a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
   a Y = (Y ≃ X)                 ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
@@ -231,3 +234,57 @@ All-universes-are-impredicative₁ {𝓤} ρ pe fe = ≃-sym (pr₂ (all-univers
 Ω-𝓤₀-lives-in-𝓤₁ = refl
 
 \end{code}
+
+A more conceptual version of the following construction is in the
+module InjectiveTypes.
+
+\begin{code}
+
+universe-retract' : Univalence
+                  → Propositional-resizing
+                  → (𝓤 𝓥 : Universe)
+                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section-of ρ)
+universe-retract' ua R 𝓤 𝓥 = (r , s , rs) , e
+ where
+  fe : FunExt
+  fe = FunExt-from-Univalence ua
+
+  s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+  s = lift 𝓥
+
+  e : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (fiber s Y)
+  e = lift-is-embedding ua
+
+  P : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
+  P Y = resize R (fiber s Y) (e Y)
+
+  f : (Y : 𝓤 ⊔ 𝓥 ̇) → P Y → fiber s Y
+  f Y = from-resize R (fiber s Y) (e Y)
+
+  r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
+  r Y = Π \(p : P Y) → pr₁ (f Y p)
+
+  g : (Y : 𝓤 ⊔ 𝓥 ̇) → fiber s Y → P Y
+  g Y = to-resize R (fiber s Y) (e Y)
+
+  h : (X : 𝓤 ̇) → P (s X)
+  h X = g (s X) (X , refl)
+
+  rs : (X : 𝓤 ̇) → r (s X) ≡ X
+  rs X = eqtoid (ua 𝓤) (r (s X)) X d
+   where
+    i : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (P Y)
+    i Y = resize-is-prop R (fiber s Y) (e Y)
+    a : r (s X) ≃ pr₁ (f (s X) (h X))
+    a = prop-indexed-product (fe 𝓤 𝓤) (i (s X)) (h X)
+    b : s (pr₁ (f (s X) (h X))) ≡ s X
+    b = pr₂ (f (s X) (h X))
+    c : pr₁ (f (s X) (h X)) ≡ X
+    c = embedding-lc s e b
+    d : r (s X) ≃ X
+    d = transport (λ - → r (s X) ≃ -) c a
+
+\end{code}
+
+Question. If we assume that we have such a retraction, does weak
+propositional resizing follow?

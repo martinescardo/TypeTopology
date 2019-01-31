@@ -96,14 +96,14 @@ module InjectiveTypes (fe : FunExt) where
 open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Retracts
 open import UF-EquivalenceExamples
 open import UF-Univalence
 open import UF-IdEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-Subsingletons
-open import UF-Resizing
+open import UF-Size
 open import UF-PropTrunc
 open import UF-UniverseEmbedding
 
@@ -1075,56 +1075,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
 
 \end{code}
 
-Here is an informal unfolding of the above constructions to provide
-a direct definition of the above retraction:
-
-\begin{code}
-
-module universe-retract-unfolded
-        (ua : Univalence)
-        (R  : Propositional-resizing)
-        (𝓤 𝓥 : Universe)
-      where
-
-  s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-  s X = X + 𝟘 {𝓥}
-
-  e : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (fiber s Y)
-  e = lift-is-embedding ua
-
-  P : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
-  P Y = resize R (fiber s Y) (e Y)
-
-  f : (Y : 𝓤 ⊔ 𝓥 ̇) → P Y → fiber s Y
-  f Y = from-resize R (fiber s Y) (e Y)
-
-  r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
-  r Y = Π \(p : P Y) → pr₁ (f Y p)
-
-  g : (Y : 𝓤 ⊔ 𝓥 ̇) → fiber s Y → P Y
-  g Y = to-resize R (fiber s Y) (e Y)
-
-  h : (X : 𝓤 ̇) → P (s X)
-  h X = g (s X) (X , refl)
-
-  rs : (X : 𝓤 ̇) → r (s X) ≡ X
-  rs X = eqtoid (ua 𝓤) (r (s X)) X d
-   where
-    i : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (P Y)
-    i Y = resize-is-prop R (fiber s Y) (e Y)
-    a : r (s X) ≃ pr₁ (f (s X) (h X))
-    a = prop-indexed-product (fe 𝓤 𝓤) (i (s X)) (h X)
-    b : s (pr₁ (f (s X) (h X))) ≡ s X
-    b = pr₂ (f (s X) (h X))
-    c : pr₁ (f (s X) (h X)) ≡ X
-    c = embedding-lc s e b
-    d : r (s X) ≃ X
-    d = transport (λ - → r (s X) ≃ -) c a
-
-\end{code}
-
-Question. If we assume that we have such a retraction, does weak
-propositional resizing follow?
+And unfolding of the above construction is in the module UF-Size.
 
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a

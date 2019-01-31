@@ -79,8 +79,8 @@ funext-from-univalence' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
                                        (naive-funext-from-univalence ua')
                                        (naive-funext-from-univalence ua)
 
-FunExt-from-univalence : Univalence → FunExt
-FunExt-from-univalence ua 𝓤 𝓥 = funext-from-univalence' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+FunExt-from-Univalence : Univalence → FunExt
+FunExt-from-Univalence ua 𝓤 𝓥 = funext-from-univalence' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 funext-from-successive-univalence : ∀ 𝓤 → is-univalent 𝓤 → is-univalent (𝓤 ⁺) → funext 𝓤 (𝓤 ⁺)
 funext-from-successive-univalence 𝓤 = funext-from-univalence' 𝓤 (𝓤 ⁺)

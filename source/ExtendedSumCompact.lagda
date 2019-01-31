@@ -6,7 +6,7 @@ Martin Escardo 29 April 2014.
 
 open import SpartanMLTT
 open import UF-FunExt
-open import UF-Embedding
+open import UF-Embeddings
 
 module ExtendedSumCompact (fe : FunExt) where
 

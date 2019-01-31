@@ -7,7 +7,7 @@ module UF-ImageAndSurjection where
 open import SpartanMLTT
 open import UF-Base public
 open import UF-Equiv
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-PropTrunc
 open import UF-Retracts
 

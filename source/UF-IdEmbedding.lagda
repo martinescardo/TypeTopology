@@ -57,7 +57,7 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 open import UF-Equiv-FunExt
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Yoneda
 open import UF-LeftCancellable
 open import UF-Univalence

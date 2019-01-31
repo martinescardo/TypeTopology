@@ -782,7 +782,7 @@ but the constructions still work.
 
 \begin{code}
 
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Equiv
 
 module extension

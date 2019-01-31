@@ -11,7 +11,7 @@ open import Two
 open import UF-Base
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-PropTrunc
 open import UF-ExcludedMiddle
 

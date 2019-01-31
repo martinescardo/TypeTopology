@@ -18,7 +18,7 @@ module LiftingEmbeddingViaSIP
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-FunExt

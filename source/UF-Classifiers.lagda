@@ -21,7 +21,7 @@ open import UF-Base
 open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-FunExt
-open import UF-Embedding
+open import UF-Embeddings
 
 module type-classifier
         {𝓤 : Universe}

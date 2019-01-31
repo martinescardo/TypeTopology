@@ -21,7 +21,7 @@ open import UF-Univalence
 module UF-UniverseEmbedding where
 
 open import SpartanMLTT
-open import UF-Embedding
+open import UF-Embeddings
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-FunExt
@@ -36,7 +36,7 @@ universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion' f γ
  where
   γ : (X X' : 𝓤 ̇) → (f X ≡ f X') ≃ (X ≡ X')
   γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
-            (f X ≃ f X')  ≃⟨ Eq-Eq-cong (FunExt-from-univalence ua) (i X) (i X') ⟩
+            (f X ≃ f X')  ≃⟨ Eq-Eq-cong (FunExt-from-Univalence ua) (i X) (i X') ⟩
             (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓤) X X') ⟩
             (X ≡ X')      ■
 

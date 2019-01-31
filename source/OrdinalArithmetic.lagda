@@ -24,7 +24,7 @@ open import UF-Subsingletons
 open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
-open import UF-Embedding
+open import UF-Embeddings
 open import InjectiveTypes fe
 open import SquashedSum fe
 
