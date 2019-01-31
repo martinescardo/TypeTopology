@@ -1062,9 +1062,8 @@ automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
 universe-retract : Univalence → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section-of ρ)
-universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
+universe-retract ua R 𝓤 𝓥 = ρ , (universe-up-is-embedding ua)
  where
-  open UF-UniverseEmbedding.example ua
   a : injective-type (𝓤 ̇) 𝓤 𝓤
   a = universes-are-injective-Π {𝓤} {𝓤} (ua 𝓤)
   b : is-embedding (universe-up 𝓥)
@@ -1072,7 +1071,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , universe-up-is-embedding
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
   b = embedding-retract (𝓤 ̇) (𝓤 ⊔ 𝓥 ̇) (universe-up 𝓥)
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
-  ρ = b universe-up-is-embedding (injective-resizing R (𝓤 ̇) a)
+  ρ = b (universe-up-is-embedding ua) (injective-resizing R (𝓤 ̇) a)
 
 \end{code}
 
@@ -1091,7 +1090,7 @@ module universe-retract-unfolded
   s X = X + 𝟘 {𝓥}
 
   e : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (fiber s Y)
-  e = UF-UniverseEmbedding.example.universe-up-is-embedding ua
+  e = universe-up-is-embedding ua
 
   P : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   P Y = resize R (fiber s Y) (e Y)
