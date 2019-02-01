@@ -177,6 +177,6 @@ Kleisli-Law₂ f g l = Σ-assoc , refl
 
 𝓛̇-agreement : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) (l : 𝓛 X)
              → 𝓛̇' f l ⋍· 𝓛̇ f l
-𝓛̇-agreement {𝓤} {𝓥} {X} {Y} f (P , i , φ) = 𝟙-rneutral , λ _ → refl
+𝓛̇-agreement {𝓤} {𝓥} {X} {Y} f (P , φ , i) = 𝟙-rneutral , λ _ → refl
 
 \end{code}

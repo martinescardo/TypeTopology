@@ -403,32 +403,4 @@ universe-is-algebra-Π ua = prod , k , ι
     → Π f ≡ Π (λ p → Π (λ q → f (p , q)))
   ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe fe)
 
-{- Not true without additional hypotheses:
-retract-of-𝓛-alg : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y of X → 𝓛-alg X → 𝓛-alg Y
-retract-of-𝓛-alg {𝓤} {𝓥} {X} {Y} (ρ , σ , ρσ) (∐ , u , a) = (∐' , u' , a')
- where
-  ∐' : {P : 𝓣 ̇} → is-prop P → (P → Y) → Y
-  ∐' {P} i f = ρ (∐ i (σ ∘ f))
-  u' : (y : Y) → ∐' 𝟙-is-prop (λ p → y) ≡ y
-  u' y = ap ρ (u (σ y)) ∙ ρσ y
-  a' : (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P)
-       (j : (p : P) → is-prop (Q p)) (f : Σ Q → Y)
-          → ∐' i (λ p → ∐' (j p) (λ q → f (p , q))) ≡ ∐' (Σ-is-prop i j) f
-  a' P Q i j f = {!!}
-    where
-     bb : (p : P) → σ (ρ (∐ (j p) (λ q → σ (f (p , q)))))
-                  ≡       ∐ (j p) (λ q → σ (f (p , q)))
-     bb = {!!}
-     aa : ∐ i (λ p → σ (∐' (j p) (λ q → f (p , q))))
-        ≡ ∐ (Σ-is-prop i j) (σ ∘ f)
-     aa = ∐ i (λ p → σ (∐' (j p) (λ q → f (p , q)))) ≡⟨ ap (∐ i) (dfunext {!!} bb) ⟩
-          ∐ i (λ z → ∐ (j z) (λ q → σ (f (z , q)))) ≡⟨ {!!} ⟩
-          {!!} ≡⟨ {!!} ⟩
-          ∐ i (λ p → ∐ (j p) (λ q → σ (f (p , q))))  ≡⟨ a P Q i j (σ ∘ f) ⟩
-          ∐ (Σ-is-prop i j) (σ ∘ f) ∎
-     cc : ρ (∐ i (λ p → σ (∐' (j p) (λ q → f (p , q))))) ≡
-            ρ (∐ (Σ-is-prop i j) (σ ∘ f))
-     cc = ap ρ aa
--}
-
 \end{code}

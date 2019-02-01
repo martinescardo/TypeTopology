@@ -59,7 +59,11 @@ import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
 import OrdinalsWellOrderArithmetic
 import PartialElements
-import FamiliesMonad    -- Under development. Like PartialElements, but droping is-prop
+import Family
+import FamilyIdentityViaSIP
+import FamilyMonad
+import FamilyAlgebras
+import FamilyEmbedding
 import PlusOneLC
 import PropTychonoff
 import PropInfTychonoff

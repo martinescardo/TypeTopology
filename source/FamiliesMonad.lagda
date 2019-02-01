@@ -1,4 +1,3 @@
-
 Martin Escardo 6th December 2018.
 
 \begin{code}
