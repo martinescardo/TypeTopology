@@ -24,7 +24,7 @@ binary-Tychonoff' :{X : ℕ → 𝓤 ̇} →
 
 binary-Tychonoff' ε δ =
   retractions-preserve-compactness
-  cons-retraction
+  cons-has-section'
   (binary-Tychonoff ε δ)
 
 \end{code}

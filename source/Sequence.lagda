@@ -32,8 +32,8 @@ head-tail-eta {𝓤} {X} = dfunext (fe 𝓤₀ 𝓤) lemma
 private cons : {X : ℕ → 𝓤 ̇} → X 0 × ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
 cons(x , α) = x ∶∶ α
 
-cons-retraction : {X : ℕ → 𝓤 ̇} → retraction(cons {𝓤} {X})
-cons-retraction α = (head α , tail α) , head-tail-eta
+cons-has-section' : {X : ℕ → 𝓤 ̇} → has-section'(cons {𝓤} {X})
+cons-has-section' α = (head α , tail α) , head-tail-eta
 
 \end{code}
 

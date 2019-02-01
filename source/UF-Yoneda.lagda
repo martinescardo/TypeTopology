@@ -279,7 +279,7 @@ idemp-is-id {𝓤} {X} {x} e y p idemp = cancel-left (
 
 nat-retraction-is-section : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (η : Nat (Id x) A)
                           → ((y : X) → has-section(η y))
-                          → ((y : X) → has-retraction(η y))
+                          → ((y : X) → is-section(η y))
 nat-retraction-is-section {𝓤} {𝓥} {X} {A} x η hs = hr
  where
   s : (y : X) → A y → x ≡ y
@@ -292,7 +292,7 @@ nat-retraction-is-section {𝓤} {𝓥} {X} {A} x η hs = hr
   idemp y p = ap (s y) (ηs (η y p))
   i : (y : X) (p : x ≡ y) → e y p ≡ p
   i y p = idemp-is-id e y p (idemp y p)
-  hr : (y : X) → has-retraction(η y)
+  hr : (y : X) → is-section(η y)
   hr y = s y , i y
 
 \end{code}
@@ -304,7 +304,7 @@ The above use of the word "is" is justified by the following:
 nat-retraction-is-section-uniquely : FunExt → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
                                      (x : X) (η : Nat (Id x) A)
                                    → ((y : X) → has-section(η y))
-                                   → ((y : X) → is-singleton(has-retraction(η y)))
+                                   → ((y : X) → is-singleton(is-section(η y)))
 nat-retraction-is-section-uniquely fe x η hs y = pointed-props-are-singletons
                                                   (nat-retraction-is-section x η hs y)
                                                   (sections-have-at-most-one-retraction fe (η y) (hs y))

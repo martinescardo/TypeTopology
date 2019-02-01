@@ -103,7 +103,7 @@ open import UF-Univalence
 open import UF-IdEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-Subsingletons
-open import UF-Size
+open import UF-Resize
 open import UF-PropTrunc
 open import UF-UniverseEmbedding
 
@@ -543,9 +543,9 @@ retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇) (B : X → �
 retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
  where
   R : (x : X) → B x → A x
-  R x = retraction-of (ρ x)
+  R x = retraction (ρ x)
   S : (x : X) → A x → B x
-  S x = section-of (ρ x)
+  S x = section (ρ x)
   RS : (x : X) (a : A x) → R x (S x a) ≡ a
   RS x = retract-condition (ρ x)
   r : (B / e) y → (A / e) y
@@ -1061,7 +1061,7 @@ automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
 
 universe-retract : Univalence → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
-                 → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section-of ρ)
+                 → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section ρ)
 universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
  where
   a : injective-type (𝓤 ̇) 𝓤 𝓤
@@ -1075,7 +1075,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
 
 \end{code}
 
-And unfolding of the above construction is in the module UF-Size.
+And unfolding of the above construction is in the module UF-Resize.
 
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a

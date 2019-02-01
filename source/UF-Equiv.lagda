@@ -17,7 +17,7 @@ one because it is more symmetrical.
 \begin{code}
 
 is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-equiv f = has-section f × has-retraction f
+is-equiv f = has-section f × is-section f
 
 inverse : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
         → is-equiv f → (Y → X)
@@ -28,11 +28,11 @@ equivs-have-sections : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
 equivs-have-sections f = pr₁
 
 equivs-have-retractions : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
-                        → is-equiv f → has-retraction f
+                        → is-equiv f → is-section f
 equivs-have-retractions f = pr₂
 
 section-retraction-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
-                         → has-section f → has-retraction f → is-equiv f
+                         → has-section f → is-section f → is-equiv f
 section-retraction-equiv f hr hs = (hr , hs)
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -107,7 +107,7 @@ idtofun-agreement X Y refl = refl
 
 equiv-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
 equiv-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (hass , hasr) h = (has-section-closed-under-∼ f g hass h) ,
-                                                           (has-retraction-closed-under-∼ f g hasr h)
+                                                           (is-section-closed-under-∼ f g hasr h)
 
 equiv-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f g : X → Y} → is-equiv f → f ∼ g → is-equiv g
 equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
@@ -404,7 +404,7 @@ from-identifications-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
 \end{code}
 
-Then the following is a consequence of natural-section-has-retraction,
+Then the following is a consequence of natural-section-is-section,
 but also has a direct proof by path induction:
 
 \begin{code}

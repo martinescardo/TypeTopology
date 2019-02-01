@@ -18,7 +18,7 @@ left-cancellable-reflects-is-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                  → left-cancellable f → is-prop Y → is-prop X
 left-cancellable-reflects-is-prop f lc i x x' = lc (i (f x) (f x'))
 
-section-lc : {X : 𝓤 ̇} {A : 𝓥 ̇} (s : X → A) → has-retraction s → left-cancellable s
+section-lc : {X : 𝓤 ̇} {A : 𝓥 ̇} (s : X → A) → is-section s → left-cancellable s
 section-lc {𝓤} {𝓥} {X} {Y} s (r , rs) {x} {y} p = (rs x)⁻¹ ∙ ap r p ∙ rs y
 
 is-equiv-lc : {X Y : 𝓤 ̇} (f : X → Y) → is-equiv f → left-cancellable f

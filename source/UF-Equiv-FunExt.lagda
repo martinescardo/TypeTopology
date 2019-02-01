@@ -67,7 +67,7 @@ qinv-pre {𝓤} {𝓥} {𝓦} nfe = qinv-pre' (nfe 𝓥 𝓦) (nfe 𝓤 𝓦)
 
 retractions-have-at-most-one-section' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                                       → funext 𝓥 𝓤 → funext 𝓥 𝓥
-                                      → (f : X → Y) → has-retraction f → is-prop(has-section f)
+                                      → (f : X → Y) → is-section f → is-prop(has-section f)
 retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h , fh) =
  singletons-are-props c (h , fh)
  where
@@ -89,7 +89,7 @@ retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h
 
 sections-have-at-most-one-retraction' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                                       → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                                      → (f : X → Y) → has-section f → is-prop(has-retraction f)
+                                      → (f : X → Y) → has-section f → is-prop(is-section f)
 sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h , hf) =
  singletons-are-props c (h , hf)
  where
@@ -97,24 +97,24 @@ sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h
   a = equivs-are-qinvs f ((g , fg) , (h , hf))
   b : is-singleton(fiber (λ h →  h ∘ f) id)
   b = qinvs-are-vv-equivs (λ h →  h ∘ f) (qinv-pre' (nfunext fe') (nfunext fe) f a) id
-  r : fiber (λ h →  h ∘ f) id → has-retraction f
+  r : fiber (λ h →  h ∘ f) id → is-section f
   r (h , p) = (h , happly' (h ∘ f) id p)
-  s : has-retraction f → fiber (λ h →  h ∘ f) id
+  s : is-section f → fiber (λ h →  h ∘ f) id
   s (h , η) = (h , dfunext fe η)
-  rs : (σ : has-retraction f) → r (s σ) ≡ σ
+  rs : (σ : is-section f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ - → (h , -)) q
    where
     q : happly' (h ∘ f) id (dfunext fe η) ≡ η
     q = happly-funext fe (h ∘ f) id η
-  c : is-singleton (has-retraction f)
+  c : is-singleton (is-section f)
   c = retract-of-singleton (r , s , rs) b
 
 retractions-have-at-most-one-section : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
-                                     → has-retraction f → is-prop(has-section f)
+                                     → is-section f → is-prop(has-section f)
 retractions-have-at-most-one-section {𝓤} {𝓥} fe = retractions-have-at-most-one-section' (fe 𝓥 𝓤) (fe 𝓥 𝓥)
 
 sections-have-at-most-one-retraction : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
-                                     → has-section f → is-prop(has-retraction f)
+                                     → has-section f → is-prop(is-section f)
 sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
 being-equiv-is-a-prop : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)

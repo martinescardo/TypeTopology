@@ -171,7 +171,7 @@ comp-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
   h : (z : Z) → is-prop (fiber (g ∘ f) z)
   h z = subtype-of-prop-is-a-prop
          (φ z)
-         (has-retraction-lc (φ z) (γ z , (γφ z)))
+         (sections-are-lc (φ z) (γ z , (γφ z)))
          (T-is-prop z)
 
 disjoint-images : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} → (X → A) → (Y → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -303,7 +303,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
    γφ ((x , a) , refl) = refl
    h : is-prop (fiber pair-fun (y , b))
-   h = subtype-of-prop-is-a-prop φ (has-retraction-lc φ (γ , γφ)) Z-is-prop
+   h = subtype-of-prop-is-a-prop φ (sections-are-lc φ (γ , γφ)) Z-is-prop
 
  pair-fun-dense : is-dense f
                → ((x : X) → is-dense (g x))

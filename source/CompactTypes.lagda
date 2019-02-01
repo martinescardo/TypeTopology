@@ -443,7 +443,7 @@ binary-Σ-compact∙' {𝓤} {X₀} {X₁} ε₀ ε₁ = Σ-compact∙ 𝟚-comp
   ε ₁ = ε₁
 
 retractions-preserve-compactness : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
-                                 → retraction f → compact∙ X → compact∙ Y
+                                 → has-section' f → compact∙ X → compact∙ Y
 retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
   where
    p : X → 𝟚

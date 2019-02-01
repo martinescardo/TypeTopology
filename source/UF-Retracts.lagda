@@ -11,23 +11,23 @@ open import UF-Subsingletons
 has-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ \s → r ∘ s ∼ id
 
-has-retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-retraction s = Σ \r → r ∘ s ∼ id
+is-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-section s = Σ \r → r ∘ s ∼ id
 
-has-retraction-lc : {X : 𝓤 ̇} {Y : 𝓥 ̇} (s : X → Y)
-                  → has-retraction s → left-cancellable s
-has-retraction-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
+sections-are-lc : {X : 𝓤 ̇} {Y : 𝓥 ̇} (s : X → Y)
+                  → is-section s → left-cancellable s
+sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y of X = Σ \(r : X → Y) → has-section r
 
-retraction-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (Y → X)
-retraction-of (r , s , rs) = r
+retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (Y → X)
+retraction (r , s , rs) = r
 
-section-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (X → Y)
-section-of (r , s , rs) = s
+section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (X → Y)
+section (r , s , rs) = s
 
-retract-condition : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (ρ : retract X of Y) → retraction-of ρ ∘ section-of ρ ∼ id
+retract-condition : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (ρ : retract X of Y) → retraction ρ ∘ section ρ ∼ id
 retract-condition (r , s , rs) = rs
 
 retract-of-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
@@ -41,7 +41,7 @@ retract-of-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇}
                 → is-prop X
                 → is-prop Y
 retract-of-prop (r , s , rs) = subtype-of-prop-is-a-prop s
-                                        (has-retraction-lc s (r , rs))
+                                        (sections-are-lc s (r , rs))
 
 identity-retraction : {X : 𝓤 ̇} → retract X of X
 identity-retraction = id , id , λ x → refl
@@ -55,13 +55,13 @@ has-section-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f g : X → Y}
                             → has-section f → f ∼ g → has-section g
 has-section-closed-under-∼' ise h = has-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
-has-retraction-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y)
-                              → has-retraction f →  g ∼ f  → has-retraction g
-has-retraction-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
+is-section-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y)
+                              → is-section f →  g ∼ f  → is-section g
+is-section-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
 
-has-retraction-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f g : X → Y}
-                               → has-retraction f → f ∼ g → has-retraction g
-has-retraction-closed-under-∼' ise h = has-retraction-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+is-section-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f g : X → Y}
+                               → is-section f → f ∼ g → is-section g
+is-section-closed-under-∼' ise h = is-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 \end{code}
 
@@ -69,17 +69,17 @@ Surjection expressed in Curry-Howard logic amounts to retraction.
 
 \begin{code}
 
-retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
-retraction f = ∀ y → Σ \x → f x ≡ y
+has-section' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-section' f = ∀ y → Σ \x → f x ≡ y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-retract Y Of X = Σ \(f : X → Y) → retraction f
+retract Y Of X = Σ \(f : X → Y) → has-section' f
 
 retract-of-retract-Of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y of X → retract Y Of X
-retract-of-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction-of ρ , hass)
+retract-of-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
  where
-  hass : (y : Y) → Σ \(x : X) → retraction-of ρ x ≡ y
-  hass y = section-of ρ y , retract-condition ρ y
+  hass : (y : Y) → Σ \(x : X) → retraction ρ x ≡ y
+  hass y = section ρ y , retract-condition ρ y
 
 retract-Of-retract-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y Of X → retract Y of X
 retract-Of-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
@@ -173,9 +173,9 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
 Σ-retract {𝓤} {𝓥} {𝓦} {X} A B ρ = NatΣ R , NatΣ S , rs
  where
   R : (x : X) → B x → A x
-  R x = retraction-of (ρ x)
+  R x = retraction (ρ x)
   S : (x : X) → A x → B x
-  S x = section-of (ρ x)
+  S x = section (ρ x)
   RS : (x : X) (a : A x) → R x (S x a) ≡ a
   RS x = retract-condition (ρ x)
   rs : (σ : Σ A) → NatΣ R (NatΣ S σ) ≡ σ
@@ -210,9 +210,9 @@ developments, and (2) work over many years with uncontrolled growth.
 Σ-retract₂ {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (r , s , rs) R = f , g , gf
  where
   φ : (x : X) → B → Y x
-  φ x = retraction-of (R x)
+  φ x = retraction (R x)
   γ : (x : X) → Y x → B
-  γ x = section-of (R x)
+  γ x = section (R x)
   φγ : (x : X) → (y : Y x) → φ x (γ x y) ≡ y
   φγ x = retract-condition (R x)
   f : A × B → Σ Y

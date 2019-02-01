@@ -263,11 +263,11 @@ module blechschmidt where
  Id-retract : {X Y : Set} → X ≡ Y → retract Y of X
  Id-retract refl = id , id , (λ y → refl)
 
- has-retraction : {X Y : Set} → (X → Y) → Set
- has-retraction s = Σ \r → r ∘ s ∼ id
+ is-section : {X Y : Set} → (X → Y) → Set
+ is-section s = Σ \r → r ∘ s ∼ id
 
  is-equiv : {X Y : Set} → (X → Y) → Set
- is-equiv f = has-section f × has-retraction f
+ is-equiv f = has-section f × is-section f
 
  _≃_ : Set → Set → Set
  X ≃ Y = Σ \(f : X → Y) → is-equiv f
