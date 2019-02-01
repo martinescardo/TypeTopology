@@ -97,6 +97,9 @@ universe 𝓥:
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
 X has-size 𝓥 = Σ \(Y : 𝓥 ̇) → Y ≃ X
 
+size-upper-closed : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
+size-upper-closed {𝓤} {𝓥} X = lift 𝓥 X , lift-≃ 𝓥 X
+
 has-size-is-a-prop : Univalence
                    → (X : 𝓤 ̇) (𝓥 :  Universe)
                    → is-prop (X has-size 𝓥)
@@ -112,9 +115,6 @@ has-size-is-a-prop {𝓤} ua X 𝓥 = c
   b = Σ-cong a
   c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
-
-size-upper-closed : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
-size-upper-closed {𝓤} {𝓥} X = (X × 𝟙 {𝓥}) , 𝟙-rneutral
 
 resize-prop : (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
             → (P : 𝓤 ̇) → is-prop P → P has-size 𝓥
@@ -261,7 +261,7 @@ universe-retract' ua R 𝓤 𝓥 = (r , s , rs) , e
   f : (Y : 𝓤 ⊔ 𝓥 ̇) → F Y → fiber s Y
   f Y = from-resize R (fiber s Y) (e Y)
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
-  r Y = Π \(p : F Y) → pr₁ (f Y p)
+  r Y = (p : F Y) → pr₁ (f Y p)
   rs : (X : 𝓤 ̇) → r (s X) ≡ X
   rs X = γ
    where
