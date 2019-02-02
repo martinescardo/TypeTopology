@@ -49,13 +49,12 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidable-types-are-props fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
 
-open import UF-PropTruncAlternative
-
-fem-proptrunc : funext 𝓤 𝓤₀ → EM 𝓤 → propositional-truncations-exist' 𝓤 𝓤
-fem-proptrunc fe em X = ¬¬ X ,
-                        (Π-is-prop fe (λ _ → 𝟘-is-prop) ,
-                         (λ x u → u x) ,
-                         λ P isp u φ → EM-gives-DNE em P isp (¬¬-functor u φ))
+fem-proptrunc : FunExt → (∀ 𝓤 → EM 𝓤 )→ propositional-truncations-exist
+fem-proptrunc fe em = record {
+  ∥_∥          = λ X → ¬¬ X ;
+  ∥∥-is-a-prop = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
+  ∣_∣         = λ x u → u x ;
+  ∥∥-rec       = λ i u φ → EM-gives-DNE (em _) _ i (¬¬-functor u φ) }
 
 module _ (pt : propositional-truncations-exist) where
 
