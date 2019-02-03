@@ -70,7 +70,7 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
 
 \begin{code}
 
-open import UF-Resize
+open import UF-Resizing
 open import UF-Equiv
 open import UF-Univalence
 open import UF-FunExt

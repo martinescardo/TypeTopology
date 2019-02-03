@@ -25,7 +25,7 @@ where the section is an embedding (its fibers are all propositions).
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module UF-Resize where
+module UF-Resizing where
 
 open import SpartanMLTT
 open import UF-Base
