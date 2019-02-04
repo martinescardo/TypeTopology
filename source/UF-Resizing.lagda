@@ -42,6 +42,7 @@ open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-UniverseEmbedding
 open import UF-PropIndexedPiSigma
+open import UF-PropTrunc
 
 record propositional-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
  field
@@ -310,3 +311,68 @@ of that construction).
 
 Question. If we assume that we have such a retraction, does weak
 propositional resizing follow?
+
+The following construction is due to Voevodsky, but we use the
+resizing axiom rather than his rules (and we work with non-cumulative
+universes).
+
+\begin{code}
+
+∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
+∥ X ∥⁺ = (P : universe-of X ̇) → is-prop P → (X → P) → P
+
+∥∥⁺-is-a-prop : FunExt → {X : 𝓤 ̇} → is-prop (∥ X ∥⁺)
+∥∥⁺-is-a-prop fe = Π-is-prop (fe _ _)
+                 (λ P → Π-is-prop (fe _ _)
+                         (λ i → Π-is-prop (fe _ _) λ u → i))
+
+∣_∣⁺ : {X : 𝓤 ̇} → X → ∥ X ∥⁺
+∣ x ∣⁺ = λ P i u → u x
+
+∥∥⁺-rec : {X P : 𝓤 ̇} → is-prop P → (X → P) → ∥ X ∥⁺ → P
+∥∥⁺-rec {𝓤} {X} {P} i u s = s P i u
+
+resizing-truncation : FunExt → Propositional-resizing → propositional-truncations-exist
+resizing-truncation fe R = record {
+    ∥_∥          = λ {𝓤} X → resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe)
+  ; ∥∥-is-a-prop = λ {𝓤} {X} → resize-is-prop R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe)
+  ; ∣_∣         = λ {𝓤} {X} x → to-resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe) ∣ x ∣⁺
+  ; ∥∥-rec       = λ {𝓤} {𝓥} {X} {P} i u s → from-resize R P i
+                                              (∥∥⁺-rec (resize-is-prop R P i)
+                                                       (to-resize R P i ∘ u)
+                                                       (from-resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe) s))
+  }
+
+\end{code}
+
+Images:
+
+\begin{code}
+
+module Image
+        {𝓤 𝓥 : Universe}
+        {X : 𝓤 ̇}
+        {Y : 𝓥 ̇}
+        (fe : FunExt)
+        (R : Propositional-resizing)
+       where
+
+ open PropositionalTruncation (resizing-truncation fe R)
+
+ image : (X → Y) → 𝓥 ̇
+ image f = Σ \y → resize (R {𝓤 ⊔ 𝓥} {𝓥}) (∃ \x → f x ≡ y) ∥∥-is-a-prop
+
+ restriction : (f : X → Y) → image f → Y
+ restriction f (y , _) = y
+
+ restriction-embedding : (f : X → Y) → is-embedding(restriction f)
+ restriction-embedding f = pr₁-embedding (λ y → resize-is-prop R _ _)
+
+ corestriction : (f : X → Y) → X → image f
+ corestriction f x = f x , to-resize R _ _ ∣ x , refl ∣
+
+\end{code}
+
+TODO. Prove the properties / perform the constructions in
+UF-ImageAndSurjection. Better: reorganize the code so that reproving
+is not necessary.
