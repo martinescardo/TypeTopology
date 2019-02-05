@@ -475,10 +475,10 @@ universes-are-injective-Π' = universes-are-injective-Π
 universes-are-injective-Σ : is-univalent (𝓤 ⊔ 𝓥) → injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
 universes-are-injective-Σ ua j e f = f ∖ j , λ x → eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-retract-Of-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                     → injective-type D 𝓦 𝓣
+retract-Of-injective : (D' : 𝓦' ̇) (D : 𝓦 ̇)
+                     → injective-type D 𝓤 𝓥
                      → retract D' Of D
-                     → injective-type D' 𝓦 𝓣
+                     → injective-type D' 𝓤 𝓥
 retract-Of-injective D' D i (r , ρ) {X} {Y} j e f = r ∘ g , γ
   where
     s : D' → D
@@ -499,10 +499,10 @@ injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → (Id y , pr
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
 
-power-of-injective : {D : 𝓤 ̇} {A : 𝓥 ̇}
-                   → injective-type D 𝓦 𝓣
-                   → injective-type (A → D) 𝓦 𝓣
-power-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {A} i {X} {Y} j e f = f' , g
+power-of-injective : {D : 𝓦 ̇} {A : 𝓣 ̇}
+                   → injective-type D 𝓤 𝓥
+                   → injective-type (A → D) 𝓤 𝓥
+power-of-injective {𝓦} {𝓣} {𝓤} {𝓥} {D} {A} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
     l a = i j e (λ x → f x a)
@@ -511,7 +511,7 @@ power-of-injective {𝓤} {𝓥} {𝓦} {𝓣} {D} {A} i {X} {Y} j e f = f' , g
     f' y a = pr₁ (l a) y
 
     g : f' ∘ j ∼ f
-    g x = dfunext (fe 𝓥 𝓤) (λ a → pr₂ (l a) x)
+    g x = dfunext (fe 𝓣 𝓦) (λ a → pr₂ (l a) x)
 
 \end{code}
 
@@ -1112,17 +1112,18 @@ rather than data.
 
 \begin{code}
 
-module ∃-injective (pt : propositional-truncations-exist) where
+module anonymously-injective (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- ∃-injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
- ∃-injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                        → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
+ anonymously-injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+ anonymously-injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+                                  → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 
 
- ∃-injectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → is-prop (∃-injective-type D 𝓤 𝓥)
- ∃-injectivity-is-a-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+ anonymously-injectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe)
+                                   → is-prop (anonymously-injective-type D 𝓤 𝓥)
+ anonymously-injectivity-is-a-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
                                         (λ X → Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                           (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                             (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
@@ -1130,18 +1131,20 @@ module ∃-injective (pt : propositional-truncations-exist) where
                                                 (λ f → ∥∥-is-a-prop)))))
 
 
- injective-gives-∃-injective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → ∃-injective-type D 𝓤 𝓥
- injective-gives-∃-injective D i j e f = ∣ i j e f ∣
+ injective-gives-anonymously-injective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥
+                                       → anonymously-injective-type D 𝓤 𝓥
+ injective-gives-anonymously-injective D i j e f = ∣ i j e f ∣
 
- ∥injective∥-gives-∃-injective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥ → ∃-injective-type D 𝓤 𝓥
- ∥injective∥-gives-∃-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (∃-injectivity-is-a-prop D 𝓤 𝓥)
-                                                      (injective-gives-∃-injective D)
+ ∥injective∥-gives-anonymously-injective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥
+                                        → anonymously-injective-type D 𝓤 𝓥
+ ∥injective∥-gives-anonymously-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (anonymously-injectivity-is-a-prop D 𝓤 𝓥)
+                                                                (injective-gives-anonymously-injective D)
 
- retract-of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                        → ∃-injective-type D 𝓦 𝓣
-                        → retract D' of D
-                        → ∃-injective-type D' 𝓦 𝓣
- retract-of-∃-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
+ retract-of-anonymously-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
+                                  → anonymously-injective-type D 𝓦 𝓣
+                                  → retract D' of D
+                                  → anonymously-injective-type D' 𝓦 𝓣
+ retract-of-anonymously-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
    i' : ∃ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
@@ -1150,16 +1153,18 @@ module ∃-injective (pt : propositional-truncations-exist) where
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
- retract-Of-∃-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                        → ∃-injective-type D 𝓦 𝓣
-                        → ∥ retract D' Of D ∥
-                        → ∃-injective-type D' 𝓦 𝓣
- retract-Of-∃-injective {𝓤} {𝓥} {𝓦} {𝓣} D' D i = ∥∥-rec (∃-injectivity-is-a-prop D' 𝓦 𝓣)
-                                                       (retract-of-∃-injective D' D i ∘ retract-Of-retract-of)
+ retract-Of-anonymously-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
+                                  → anonymously-injective-type D 𝓦 𝓣
+                                  → ∥ retract D' Of D ∥
+                                  → anonymously-injective-type D' 𝓦 𝓣
+ retract-Of-anonymously-injective {𝓤} {𝓥} {𝓦} {𝓣} D' D i =
+   ∥∥-rec (anonymously-injectivity-is-a-prop D' 𝓦 𝓣)
+          (retract-of-anonymously-injective D' D i ∘ retract-Of-retract-of)
 
- ∃-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
-                                          → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ retract D Of (D → 𝓤 ̇) ∥
- ∃-injective-retract-of-power-of-universe D ua i = ∥∥-functor retract-of-retract-Of γ
+ anonymously-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
+                                                    → anonymously-injective-type D 𝓤 (𝓤 ⁺)
+                                                    → ∥ retract D Of (D → 𝓤 ̇) ∥
+ anonymously-injective-retract-of-power-of-universe D ua i = ∥∥-functor retract-of-retract-Of γ
   where
     a : ∃ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
@@ -1168,44 +1173,49 @@ module ∃-injective (pt : propositional-truncations-exist) where
     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
     γ = ∥∥-functor φ a
 
- ∃-injective-gives-∥injective∥ : is-univalent 𝓤
-                              → (D : 𝓤 ̇) → ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥
- ∃-injective-gives-∥injective∥ {𝓤} ua D i = ∥∥-functor φ (∃-injective-retract-of-power-of-universe D ua i)
+ anonymously-injective-gives-∥injective∥ : is-univalent 𝓤
+                                         → (D : 𝓤 ̇)
+                                         → anonymously-injective-type D 𝓤 (𝓤 ⁺)
+                                         → ∥ injective-type D 𝓤 𝓤 ∥
+ anonymously-injective-gives-∥injective∥ {𝓤} ua D i =
+  ∥∥-functor φ (anonymously-injective-retract-of-power-of-universe D ua i)
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
    φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
 
 \end{code}
 
-So, in summary, regarding the relationship between ∃-injectivity and
+So, in summary, regarding the relationship between anonymously-injectivity and
 truncated injectivity, so far we know that
 
-  ∥ injective-type D 𝓤 𝓥 ∥ → ∃-injective-type D 𝓤 𝓥
+  ∥ injective-type D 𝓤 𝓥 ∥ → anonymously-injective-type D 𝓤 𝓥
 
 and
 
-  ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥,
+  anonymously-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥,
 
 and hence, using propositional resizing, we get the following
-characterization of a particular case of ∃-injectivity in terms of
+characterization of a particular case of anonymously-injectivity in terms of
 injectivity.
 
 \begin{code}
 
- ∃-injectivity-in-terms-of-injectivity : is-univalent 𝓤 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
-                                       → ∃-injective-type D 𝓤 (𝓤 ⁺) ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
- ∃-injectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
+ anonymously-injectivity-in-terms-of-injectivity : is-univalent 𝓤
+                                                 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
+                                                 → anonymously-injective-type D 𝓤 (𝓤 ⁺)
+                                                 ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+ anonymously-injectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
   where
-   a : ∃-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
-   a = ∥∥-functor (injective-resizing R D) ∘ ∃-injective-gives-∥injective∥ ua D
-   b : ∥ injective-type D 𝓤 (𝓤 ⁺) ∥ → ∃-injective-type D 𝓤 (𝓤 ⁺)
-   b = ∥injective∥-gives-∃-injective D
+   a : anonymously-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+   a = ∥∥-functor (injective-resizing R D) ∘ anonymously-injective-gives-∥injective∥ ua D
+   b : ∥ injective-type D 𝓤 (𝓤 ⁺) ∥ → anonymously-injective-type D 𝓤 (𝓤 ⁺)
+   b = ∥injective∥-gives-anonymously-injective D
 
 \end{code}
 
 What we really would like to have is
 
-  ∃-injective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
+  anonymously-injective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
 
 but this requires further thought. (It may be easy given the above
 development. Or hard or impossible.)
