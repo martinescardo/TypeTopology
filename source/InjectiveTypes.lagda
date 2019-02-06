@@ -1021,7 +1021,8 @@ whereas the injectivity of the universe requires full univalence.
 
 Added 6th Feb 2019.
 
-The injectivity of all types is equivalence to excluded middle:
+The injectivity of all types is logically equivalent to excluded middle
+(even though excluded middle is a proposition but injectivity is data):
 
 \begin{code}
 
@@ -1066,6 +1067,8 @@ pointed-types-injective-gives-EM : ((D : 𝓦 ̇) → D → injective-type D �
 pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → injective-types-are-flabby D (α D d))
 
 \end{code}
+
+End of 6th Feb addition.
 
 TODO. Show that the extension induced by flabbiness is an embedding of
 function types.
