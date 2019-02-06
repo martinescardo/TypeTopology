@@ -106,6 +106,7 @@ open import UF-Subsingletons
 open import UF-Resizing
 open import UF-PropTrunc
 open import UF-UniverseEmbedding
+open import UF-ExcludedMiddle
 
 \end{code}
 
@@ -493,7 +494,8 @@ retract-Of-injective D' D i (r , ρ) {X} {Y} j e f = r ∘ g , γ
     γ x = ap r (h x) ∙ rs (f x)
 
 injective-is-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
-                                          → injective-type D 𝓤  (𝓤 ⁺) → retract D Of (D → 𝓤 ̇)
+                                          → injective-type D 𝓤  (𝓤 ⁺)
+                                          → retract D Of (D → 𝓤 ̇)
 injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → (Id y , pr₂ a y)
   where
     a : Σ \r  → r ∘ Id ∼ id
@@ -966,6 +968,10 @@ NB. The notion of flabbiness used in topos theory is defined with truncated Σ.
 flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
 flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
 
+flabby-pointed : (D : 𝓦 ̇) → flabby D 𝓤 → D
+flabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
+
+
 injective-types-are-flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → flabby D 𝓤
 injective-types-are-flabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
                                                       pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
@@ -980,6 +986,46 @@ flabby-types-are-injective D φ {X} {Y} j e f = f' , p
    where
     q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
     q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
+
+EM-gives-pointed-types-flabby : (D : 𝓦 ̇) → EM 𝓤 → D → flabby D 𝓤
+EM-gives-pointed-types-flabby {𝓦} {𝓤} D em d P i f = h (em P i)
+ where
+  h : P + ¬ P → Σ \(d : D) → (p : P) → d ≡ f p
+  h (inl p) = f p , (λ q → ap f (i p q))
+  h (inr n) = d , (λ p → 𝟘-elim (n p))
+
+pointed-types-flabby-gives-EM : ((D : 𝓦 ̇) → D → flabby D 𝓦) → EM 𝓦
+pointed-types-flabby-gives-EM {𝓦} α P i = γ
+ where
+  D = (P + ¬ P) + 𝟙 {𝓦}
+  f : P + ¬ P → D
+  f (inl p) = inl (inl p)
+  f (inr n) = inl (inr n)
+  d : D
+  d = pr₁ (α D (inr *) (P + ¬ P) (decidable-types-are-props (fe 𝓦 𝓤₀) i) f)
+  φ : (z : P + ¬ P) → d ≡ f z
+  φ = pr₂ (α D (inr *) (P + ¬ P) (decidable-types-are-props (fe 𝓦 𝓤₀) i) f)
+  a : (p : P) → d ≡ inl (inl p)
+  a p = φ (inl p)
+  b : (n : ¬ P) → d ≡ inl (inr n)
+  b n = φ (inr n)
+  δ : (d' : D) → d ≡ d' → P + ¬ P
+  δ (inl (inl p)) r = inl p
+  δ (inl (inr n)) r = inr n
+  δ (inr *)       r = 𝟘-elim (m n)
+   where
+    n : ¬ P
+    n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
+    m : ¬¬ P
+    m n = 𝟘-elim (+disjoint ((b n)⁻¹ ∙ r))
+  γ : P + ¬ P
+  γ = δ d refl
+
+EM-gives-pointed-types-injective : (D : 𝓦 ̇) → EM (𝓤 ⊔ 𝓥) → D → injective-type D 𝓤 𝓥
+EM-gives-pointed-types-injective D em d = flabby-types-are-injective D (EM-gives-pointed-types-flabby D em d)
+
+pointed-types-injective-gives-EM : ((D : 𝓦 ̇) → D → injective-type D 𝓦 𝓤) → EM 𝓦
+pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → injective-types-are-flabby D (α D d))
 
 \end{code}
 
