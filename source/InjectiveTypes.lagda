@@ -993,7 +993,7 @@ Because Ω is a retract of 𝓤 via propositional truncation, it is
 injective. But we can prove this directly without assumming
 propositional truncations, and propositional and functional
 extensionality (which give to propositional univalence) are enough,
-whereas the injectivity of the universe requires univalence.
+whereas the injectivity of the universe requires full univalence.
 
 \begin{code}
 
@@ -1005,7 +1005,7 @@ whereas the injectivity of the universe requires univalence.
   j : is-prop Q
   j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
   c : (p : P) → Q , j ≡ f p
-  c p = to-Σ-≡ (t , being-a-prop-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (transport is-prop t j) (holds-is-prop (f p)))
+  c p = to-Σ-≡ (t , being-a-prop-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
    where
       g : Q → f p holds
       g q = q p
@@ -1018,6 +1018,8 @@ whereas the injectivity of the universe requires univalence.
 Ω-injective {𝓤} {𝓥} pe = flabby-types-are-injective (Ω (𝓤 ⊔ 𝓥)) (Ω-flabby {𝓤 ⊔ 𝓥} {𝓤} pe)
 
 \end{code}
+
+Added 6th Feb 2019.
 
 The injectivity of all types is equivalence to excluded middle:
 
