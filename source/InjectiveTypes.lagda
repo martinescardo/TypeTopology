@@ -987,6 +987,42 @@ flabby-types-are-injective D φ {X} {Y} j e f = f' , p
     q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
     q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
 
+\end{code}
+
+Because Ω is a retract of 𝓤 via propositional truncation, it is
+injective. But we can prove this directly without assumming
+propositional truncations, and propositional and functional
+extensionality (which give to propositional univalence) are enough,
+whereas the injectivity of the universe requires univalence.
+
+\begin{code}
+
+Ω-flabby : {𝓤 𝓥 : Universe} → propext (𝓤 ⊔ 𝓥) → flabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
+Ω-flabby {𝓤} {𝓥} pe P i f = (Q , j) , c
+ where
+  Q : 𝓤 ⊔ 𝓥 ̇
+  Q = (p : P) → f p holds
+  j : is-prop Q
+  j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
+  c : (p : P) → Q , j ≡ f p
+  c p = to-Σ-≡ (t , being-a-prop-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (transport is-prop t j) (holds-is-prop (f p)))
+   where
+      g : Q → f p holds
+      g q = q p
+      h : f p holds → Q
+      h r p' = transport (λ - → f - holds) (i p p') r
+      t : Q ≡ f p holds
+      t = pe j (holds-is-prop (f p)) g h
+
+Ω-injective : {𝓤 𝓥 : Universe} → propext (𝓤 ⊔ 𝓥) → injective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
+Ω-injective {𝓤} {𝓥} pe = flabby-types-are-injective (Ω (𝓤 ⊔ 𝓥)) (Ω-flabby {𝓤 ⊔ 𝓥} {𝓤} pe)
+
+\end{code}
+
+The injectivity of all types is equivalence to excluded middle:
+
+\begin{code}
+
 EM-gives-pointed-types-flabby : (D : 𝓦 ̇) → EM 𝓤 → D → flabby D 𝓤
 EM-gives-pointed-types-flabby {𝓦} {𝓤} D em d P i f = h (em P i)
  where
