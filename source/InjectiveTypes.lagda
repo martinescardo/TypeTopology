@@ -1246,6 +1246,31 @@ module anonymously-injective (pt : propositional-truncations-exist) where
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
+\end{code}
+
+The give proof of power-of-injective doesn't adapt to the following,
+so we need a new proof, but also new universe assumptions.
+
+\begin{code}
+
+ power-of-anonymously-injective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
+                                → anonymously-injective-type D (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                                → anonymously-injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+ power-of-anonymously-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
+  where
+   g : X × A → D
+   g = uncurry f
+   k : X × A → Y × A
+   k (x , a) = j x , a
+   c : is-embedding k
+   c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
+   ψ : ∃ \(g' : Y × A → D) → g' ∘ k ∼ g
+   ψ = i k c g
+   φ : (Σ \(g' : Y × A → D) → g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
+   φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 (𝓣 ⊔ 𝓦)) (λ a → h (x , a)))
+   γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
+   γ = ∥∥-functor φ ψ
+
  retract-Of-anonymously-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                                   → anonymously-injective-type D 𝓦 𝓣
                                   → ∥ retract D' Of D ∥
