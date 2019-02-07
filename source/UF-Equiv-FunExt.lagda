@@ -213,9 +213,8 @@ ranges over arbitrary types:
 \begin{code}
 
 propext-funext-give-prop-ua : propext 𝓤 → funext 𝓤 𝓤
-                            → (P : 𝓤 ̇) → is-prop P
-                            → (X : 𝓤 ̇) → is-equiv (idtoeq X P)
-propext-funext-give-prop-ua {𝓤} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
+                            → (X : 𝓤 ̇) (P : 𝓤 ̇) → is-prop P → is-equiv (idtoeq X P)
+propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
   l (f , _ , (s , fs)) = retract-of-prop (s , (f , fs)) i
@@ -228,6 +227,10 @@ propext-funext-give-prop-ua {𝓤} pe fe P i X = (eqtoid , η) , (eqtoid , ε)
   η e = m (idtoeq X P (eqtoid e)) e
   ε : (q : X ≡ P) → eqtoid (idtoeq X P q) ≡ q
   ε q = identifications-of-props-are-props pe fe P i X (eqtoid (idtoeq X P q)) q
+
+prop-univalent-≃ : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇) → is-prop P → (X ≡ P) ≃ (X ≃ P)
+prop-univalent-≃ pe fe X P i = idtoeq X P , propext-funext-give-prop-ua pe fe X P i
+
 
 \end{code}
 

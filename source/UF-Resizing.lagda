@@ -118,39 +118,64 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 To show that propositional resizing is itself a proposition, we use
 univalence.
 
-Question: Are propositional and function extensionality enough for
-that? Univalence in the following proof is used indirectly to show
-that the function lift is an embedding of universes. But maybe it is
-enough to show that the fibers of lift on propositions are
-propositions, and perhaps propositional and functional extensionality
-are enough for that.
-
 \begin{code}
 
-module _ (ua : Univalence) where
 
- private
+has-size-is-a-prop : Univalence → (X : 𝓤 ̇) (𝓥 :  Universe)
+                   → is-prop (X has-size 𝓥)
+has-size-is-a-prop {𝓤} ua X 𝓥 = c
+ where
+  fe : FunExt
+  fe = FunExt-from-Univalence ua
+  a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
+  a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
+        (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
+        (lift 𝓤 Y ≡ lift 𝓥 X)  ■
+  b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
+  b = Σ-cong a
+  c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
+  c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
+
+propositional-resizing-is-a-prop : Univalence → (𝓤 𝓥 : Universe)
+                                 → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-a-prop ua 𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+                                             (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+                                             (λ i → has-size-is-a-prop ua P 𝓥))
+ where
   fe : FunExt
   fe = FunExt-from-Univalence ua
 
- has-size-is-a-prop : (X : 𝓤 ̇) (𝓥 :  Universe)
-                    → is-prop (X has-size 𝓥)
- has-size-is-a-prop {𝓤} X 𝓥 = c
-  where
-   a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
-   a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
-         (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
-         (lift 𝓤 Y ≡ lift 𝓥 X)  ■
-   b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
-   b = Σ-cong a
-   c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
-   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
+\end{code}
 
- propositional-resizing-is-a-prop : (𝓤 𝓥 : Universe)
-                                  → is-prop (propositional-resizing 𝓤 𝓥)
- propositional-resizing-is-a-prop 𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-                                           (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                           (λ i → has-size-is-a-prop P 𝓥))
+And here is a proof that the axiom of propositional resizing is a
+itself proposition using propositional and functional extensionality
+instead of univalence:
+
+\begin{code}
+
+has-size-is-a-prop' : PropExt
+                    → FunExt
+                    → (P : 𝓤 ̇)
+                    → is-prop P
+                    → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
+has-size-is-a-prop' {𝓤} pe fe P i 𝓥 = c
+ where
+  j : is-prop (lift 𝓥 P)
+  j = equiv-to-prop (lift-≃ 𝓥 P) i
+  a : (Y : 𝓥 ̇) → (Y ≃ P) ≃ (lift 𝓤 Y ≡ lift 𝓥 P)
+  a Y = (Y ≃ P)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 P)) ⟩
+        (lift 𝓤 Y ≃ lift 𝓥 P)  ≃⟨ ≃-sym (prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (lift 𝓤 Y) (lift 𝓥 P) j) ⟩
+        (lift 𝓤 Y ≡ lift 𝓥 P)  ■
+  b : (Σ \(Y : 𝓥 ̇) → Y ≃ P) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 P)
+  b = Σ-cong a
+  c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ P)
+  c = equiv-to-prop b (prop-fiber-lift pe fe (lift 𝓥 P) j)
+
+propositional-resizing-is-a-prop' : PropExt → FunExt → (𝓤 𝓥 : Universe)
+                                 → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-a-prop' pe fe  𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+                                                  (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+                                                  (λ i → has-size-is-a-prop' pe fe P i 𝓥))
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the

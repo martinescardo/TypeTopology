@@ -21,6 +21,8 @@ open import UF-Univalence
 module UF-UniverseEmbedding where
 
 open import SpartanMLTT
+open import UF-Subsingletons
+open import UF-Subsingletons-Equiv
 open import UF-Embeddings
 open import UF-Equiv
 open import UF-EquivalenceExamples
@@ -55,5 +57,40 @@ lift-≃ 𝓥 X = 𝟘-rneutral'
 
 lift-is-embedding : Univalence → is-embedding (lift {𝓤} 𝓥)
 lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (lift 𝓥) (lift-≃ 𝓥)
+
+\end{code}
+
+Added 7th Feb 2019. Assuming propositional and functional
+extensionality instead of univalence univalence, the lift fibers of
+propositions are propositions. (For use in the module UF-Resize.)
+
+\begin{code}
+
+prop-fiber-criterion : PropExt
+                     → FunExt
+                     → (𝓤 𝓥 : Universe)
+                     → (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇)
+                     → ((X : 𝓤 ̇) → f X ≃ X)
+                     → (Q : 𝓤 ⊔ 𝓥 ̇) → is-prop Q → is-prop (fiber f Q)
+prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
+ where
+  k : is-prop (f P)
+  k = back-transport is-prop r j
+  l : is-prop P
+  l = equiv-to-prop (≃-sym (i P)) k
+  a : (X : 𝓤 ̇) → (f X ≡ f P) ≃ (X ≡ P)
+  a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (f X) (f P) k ⟩
+        (f X ≃ f P)  ≃⟨ Eq-Eq-cong fe (i X) (i P) ⟩
+        (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
+        (X ≡ P)      ■
+  b : (Σ \(X : 𝓤 ̇) → f X ≡ f P) ≃ (Σ \(X : 𝓤 ̇) → X ≡ P)
+  b = Σ-cong a
+  c : is-prop (Σ \(X : 𝓤 ̇) → f X ≡ f P)
+  c = equiv-to-prop b (singleton-types'-are-props P)
+  d : is-prop (Σ \(X : 𝓤 ̇) → f X ≡ Q)
+  d = transport (λ - → is-prop (Σ \(X : 𝓤 ̇) → f X ≡ -)) r c
+
+prop-fiber-lift : PropExt → FunExt → (Q : 𝓤 ⊔ 𝓥 ̇) → is-prop Q → is-prop (fiber (lift 𝓥) Q)
+prop-fiber-lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 𝓥 (lift {𝓤} 𝓥) (lift-≃ 𝓥)
 
 \end{code}
