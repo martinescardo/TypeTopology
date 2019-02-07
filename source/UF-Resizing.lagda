@@ -136,11 +136,10 @@ has-size-is-a-prop {𝓤} ua X 𝓥 = c
   c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
 
-propositional-resizing-is-a-prop : Univalence → (𝓤 𝓥 : Universe)
-                                 → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-a-prop ua 𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-                                             (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                             (λ i → has-size-is-a-prop ua P 𝓥))
+propositional-resizing-is-a-prop : Univalence → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-a-prop {𝓤} {𝓥} ua =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+                                                (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+                                                (λ i → has-size-is-a-prop ua P 𝓥))
  where
   fe : FunExt
   fe = FunExt-from-Univalence ua
@@ -171,11 +170,10 @@ has-size-is-a-prop' {𝓤} pe fe P i 𝓥 = c
   c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ P)
   c = equiv-to-prop b (prop-fiber-lift pe fe (lift 𝓥 P) j)
 
-propositional-resizing-is-a-prop' : PropExt → FunExt → (𝓤 𝓥 : Universe)
-                                  → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-a-prop' pe fe  𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-                                                  (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                                  (λ i → has-size-is-a-prop' pe fe P i 𝓥))
+propositional-resizing-is-a-prop' : PropExt → FunExt → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-a-prop' {𝓤} {𝓥} pe fe =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+                                                     (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+                                                     (λ i → has-size-is-a-prop' pe fe P i 𝓥))
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the
