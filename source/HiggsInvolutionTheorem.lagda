@@ -4,8 +4,8 @@ Higgs' Involution Theorem. In any topos, if f : Ω → Ω is a
 monomorphism, then it is an involution.
 
 We adapt and prove the result in univalent mathematics, using
-univalence for propositions. (We don't rely on propositional resizing
-(or impredicativity).)
+propositional and functional extensionality. (We don't rely on
+propositional resizing (or impredicativity).)
 
 There is a proof by diagram chasing with iterated pullbacks, in page
 65 of Johnstone's Sketches of an Elephant, volume 1.
