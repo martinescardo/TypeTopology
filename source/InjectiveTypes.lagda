@@ -501,19 +501,24 @@ injective-is-retract-of-power-of-universe D ua i = pr₁ a , λ y → (Id y , pr
     a : Σ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
 
-power-of-injective : {D : 𝓦 ̇} {A : 𝓣 ̇}
-                   → injective-type D 𝓤 𝓥
-                   → injective-type (A → D) 𝓤 𝓥
-power-of-injective {𝓦} {𝓣} {𝓤} {𝓥} {D} {A} i {X} {Y} j e f = f' , g
+product-of-injective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
+                     → ((a : A) → injective-type (D a) 𝓤 𝓥)
+                     → injective-type (Π D) 𝓤 𝓥
+product-of-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
   where
-    l : (a : A) → Σ \(h : Y → D) → h ∘ j ∼ (λ x → f x a)
-    l a = i j e (λ x → f x a)
+    l : (a : A) → Σ \(h : Y → D a) → h ∘ j ∼ (λ x → f x a)
+    l a = (i a) j e (λ x → f x a)
 
-    f' : Y → A → D
+    f' : Y → (a : A) → D a
     f' y a = pr₁ (l a) y
 
     g : f' ∘ j ∼ f
     g x = dfunext (fe 𝓣 𝓦) (λ a → pr₂ (l a) x)
+
+power-of-injective : {A : 𝓣 ̇} {D : 𝓦 ̇}
+                   → injective-type D 𝓤 𝓥
+                   → injective-type (A → D) 𝓤 𝓥
+power-of-injective i = product-of-injective (λ a → i)
 
 \end{code}
 
@@ -1069,7 +1074,7 @@ pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → 
 \end{code}
 
 End of 6th Feb addition. But this is not the end of the story. What
-happens with anonymous injectivity?
+happens with anonymous injectivity (defined and studied below)?
 
 TODO. Show that the extension induced by flabbiness is an embedding of
 function types.

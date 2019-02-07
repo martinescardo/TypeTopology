@@ -152,12 +152,12 @@ of univalence:
 
 \begin{code}
 
-has-size-is-a-prop' : PropExt
-                    → FunExt
-                    → (P : 𝓤 ̇)
-                    → is-prop P
-                    → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
-has-size-is-a-prop' {𝓤} pe fe P i 𝓥 = c
+prop-has-size-is-a-prop : PropExt
+                        → FunExt
+                        → (P : 𝓤 ̇)
+                        → is-prop P
+                        → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
+prop-has-size-is-a-prop {𝓤} pe fe P i 𝓥 = c
  where
   j : is-prop (lift 𝓥 P)
   j = equiv-to-prop (lift-≃ 𝓥 P) i
@@ -173,7 +173,7 @@ has-size-is-a-prop' {𝓤} pe fe P i 𝓥 = c
 propositional-resizing-is-a-prop' : PropExt → FunExt → is-prop (propositional-resizing 𝓤 𝓥)
 propositional-resizing-is-a-prop' {𝓤} {𝓥} pe fe =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
                                                      (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                                     (λ i → has-size-is-a-prop' pe fe P i 𝓥))
+                                                     (λ i → prop-has-size-is-a-prop pe fe P i 𝓥))
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the
