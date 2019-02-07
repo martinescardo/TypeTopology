@@ -33,10 +33,10 @@ module HiggsInvolutionTheorem
        where
 
 involutive : {X : 𝓤 ̇} → (f : X → X) → 𝓤 ̇
-involutive f = ∀{x} → f (f x) ≡ x
+involutive f = ∀ x → f (f x) ≡ x
 
 higgs : (f : Ω₀ → Ω₀) → left-cancellable f → involutive f
-higgs f cancelf {p} = cancelf (VII p)
+higgs f cancelf p = cancelf (VII p)
   where
    I : (p : Ω₀) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
    I p r s = transport (λ - → f - ≡ ⊤) s r
