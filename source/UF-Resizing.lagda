@@ -44,37 +44,60 @@ open import UF-UniverseEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-PropTrunc
 
-record propositional-resizing (𝓤 𝓥 : Universe) : (𝓤 ⊔ 𝓥)⁺ ̇ where
- field
-  resize         : (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
-  resize-is-prop : (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize P i)
-  to-resize      : (P : 𝓤 ̇) (i : is-prop P) → P → resize P i
-  from-resize    : (P : 𝓤 ̇) (i : is-prop P) → resize P i → P
+\end{code}
 
-open propositional-resizing public
+We say that a type X has size 𝓥 if it is equivalent to a type in the
+universe 𝓥:
+
+\begin{code}
+
+_has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
+X has-size 𝓥 = Σ \(Y : 𝓥 ̇) → Y ≃ X
+
+propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → P has-size 𝓥
+
+\end{code}
+
+Propositional resizing from a universe to a higher universe just holds, of course:
+
+\begin{code}
+
+resize-up : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
+resize-up {𝓤} {𝓥} X = lift 𝓥 X , lift-≃ 𝓥 X
+
+resize-up-proposition : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
+resize-up-proposition {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
+
+\end{code}
+
+We use the following to work with propositional resizing more abstractly:
+
+\begin{code}
+
+resize         : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
+resize-is-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize ρ P i)
+to-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → P → resize ρ P i
+from-resize    : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → resize ρ P i → P
+
+resize         ρ P i = pr₁ (ρ P i)
+resize-is-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
+to-resize      ρ P i = eqtofun (≃-sym(pr₂ (ρ P i)))
+from-resize    ρ P i = eqtofun (pr₂ (ρ P i))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 
 \end{code}
 
-This says that any proposition P in the universe 𝓤 ̇ is logically
-equivalent to a (resized) proposition in the universe 𝓥.
-
-It is consistent, because it is implied by excluded middle, which is
-consistent:
+Propositional resizing is consistent, because it is implied by
+excluded middle, which is consistent (with or without univalence):
 
 \begin{code}
 
 EM-gives-PR : EM 𝓤 → propositional-resizing 𝓤 𝓥
-EM-gives-PR {𝓤} {𝓥} em = record {
-   resize         = λ P i → Q P i (em P i)
- ; resize-is-prop = λ P i → j P i (em P i)
- ; to-resize      = λ P i → f P i (em P i)
- ; from-resize    = λ P i → g P i (em P i)
- }
+EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
  where
-  module _ (P : 𝓤 ̇) (i : is-prop P) where
    Q : decidable P → 𝓥 ̇
    Q (inl p) = 𝟙
    Q (inr n) = 𝟘
@@ -87,44 +110,47 @@ EM-gives-PR {𝓤} {𝓥} em = record {
    g : (d : decidable P) → Q d → P
    g (inl p) q = p
    g (inr n) q = 𝟘-elim q
+   e : Q (em P i) ≃ P
+   e = logically-equivalent-props-are-equivalent (j (em P i)) i (g (em P i)) (f (em P i))
 
 \end{code}
 
-We say that a type X has size 𝓥 if it is equivalent to a type in the
-universe 𝓥:
+To show that propositional resizing is itself a proposition, we use
+univalence.
+
+Question: Are propositional and function extensionality enough for
+that? Univalence in the following proof is used indirectly to show
+that the function lift is an embedding of universes. But maybe it is
+enough to show that the fibers of lift on propositions are
+propositions, and perhaps propositional and functional extensionality
+are enough for that.
 
 \begin{code}
 
-_has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-X has-size 𝓥 = Σ \(Y : 𝓥 ̇) → Y ≃ X
+module _ (ua : Univalence) where
 
-size-upper-closed : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
-size-upper-closed {𝓤} {𝓥} X = lift 𝓥 X , lift-≃ 𝓥 X
-
-has-size-is-a-prop : Univalence
-                   → (X : 𝓤 ̇) (𝓥 :  Universe)
-                   → is-prop (X has-size 𝓥)
-has-size-is-a-prop {𝓤} ua X 𝓥 = c
- where
+ private
   fe : FunExt
   fe = FunExt-from-Univalence ua
-  a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
-  a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
-        (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
-        (lift 𝓤 Y ≡ lift 𝓥 X)  ■
-  b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
-  b = Σ-cong a
-  c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
-  c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
 
-resize-prop : (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
-            → (P : 𝓤 ̇) → is-prop P → P has-size 𝓥
-resize-prop 𝓤 𝓥 ρ P i = resize ρ P i ,
-                         qinveq (from-resize ρ P i)
-                                (to-resize ρ P i ,
-                                 (λ r → resize-is-prop ρ P i _ r) ,
-                                 (λ p → i _ p))
+ has-size-is-a-prop : (X : 𝓤 ̇) (𝓥 :  Universe)
+                    → is-prop (X has-size 𝓥)
+ has-size-is-a-prop {𝓤} X 𝓥 = c
+  where
+   a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
+   a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
+         (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
+         (lift 𝓤 Y ≡ lift 𝓥 X)  ■
+   b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
+   b = Σ-cong a
+   c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
+   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
 
+ propositional-resizing-is-a-prop : (𝓤 𝓥 : Universe)
+                                  → is-prop (propositional-resizing 𝓤 𝓥)
+ propositional-resizing-is-a-prop 𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+                                           (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+                                           (λ i → has-size-is-a-prop P 𝓥))
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the
@@ -376,3 +402,5 @@ module Image
 TODO. Prove the properties / perform the constructions in
 UF-ImageAndSurjection. Better: reorganize the code so that reproving
 is not necessary.
+
+\end{code}

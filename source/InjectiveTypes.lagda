@@ -1068,7 +1068,8 @@ pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → 
 
 \end{code}
 
-End of 6th Feb addition.
+End of 6th Feb addition. But this is not the end of the story. What
+happens with anonymous injectivity?
 
 TODO. Show that the extension induced by flabbiness is an embedding of
 function types.
