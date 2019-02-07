@@ -51,7 +51,7 @@ etofun : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X ↪ Y) → X → Y
 etofun = pr₁
 
 is-embedding-etofun : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-                    → (e : X ↪ Y) → is-embedding(etofun e)
+                    → (e : X ↪ Y) → is-embedding (etofun e)
 is-embedding-etofun = pr₂
 
 equiv-embedding : {X : 𝓤 ̇} {Y : 𝓥 ̇}

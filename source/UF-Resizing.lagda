@@ -75,15 +75,15 @@ We use the following to work with propositional resizing more abstractly:
 
 \begin{code}
 
-resize         : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
-resize-is-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize ρ P i)
-to-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → P → resize ρ P i
-from-resize    : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → resize ρ P i → P
+resize           : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
+resize-is-a-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize ρ P i)
+to-resize        : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → P → resize ρ P i
+from-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → resize ρ P i → P
 
-resize         ρ P i = pr₁ (ρ P i)
-resize-is-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
-to-resize      ρ P i = eqtofun (≃-sym(pr₂ (ρ P i)))
-from-resize    ρ P i = eqtofun (pr₂ (ρ P i))
+resize         ρ P i   = pr₁ (ρ P i)
+resize-is-a-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
+to-resize      ρ P i   = eqtofun (≃-sym(pr₂ (ρ P i)))
+from-resize    ρ P i   = eqtofun (pr₂ (ρ P i))
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -120,7 +120,6 @@ proposition, we use univalence.
 
 \begin{code}
 
-
 has-size-is-a-prop : Univalence → (X : 𝓤 ̇) (𝓥 :  Universe)
                    → is-prop (X has-size 𝓥)
 has-size-is-a-prop {𝓤} ua X 𝓥 = c
@@ -147,8 +146,8 @@ propositional-resizing-is-a-prop {𝓤} {𝓥} ua =  Π-is-prop (fe (𝓤 ⁺) (
 \end{code}
 
 And here is a proof that the axiom of propositional resizing is itself
-proposition using propositional and functional extensionality instead
-of univalence:
+a proposition using propositional and functional extensionality
+instead of univalence:
 
 \begin{code}
 
@@ -190,17 +189,17 @@ universes-are-impredicative+ : Propositional-resizing → PropExt → FunExt
 universes-are-impredicative+ {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γφ , φγ)
  where
   φ : Ω 𝓥 → Ω 𝓤
-  φ (Q , j) = resize ρ Q j , resize-is-prop ρ Q j
+  φ (Q , j) = resize ρ Q j , resize-is-a-prop ρ Q j
   γ : Ω 𝓤 → Ω 𝓥
-  γ (P , i) = resize ρ P i , resize-is-prop ρ P i
+  γ (P , i) = resize ρ P i , resize-is-a-prop ρ P i
   φγ : (p : Ω 𝓤) → φ (γ p) ≡ p
   φγ (P , i) = Ω-ext (fe 𝓤 𝓤) (pe 𝓤)
-               (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
-               (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘ to-resize ρ P i)
+               (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i))
+               (to-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ∘ to-resize ρ P i)
   γφ : (q : Ω 𝓥) → γ (φ q) ≡ q
   γφ (Q , j) = Ω-ext (fe 𝓥 𝓥) (pe 𝓥)
-               (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
-               (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j)
+               (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j))
+               (to-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ∘ to-resize ρ Q j)
 
 \end{code}
 
@@ -320,7 +319,7 @@ lift-is-section ua R 𝓤 𝓥 = (r , rs)
     v : fiber s (s X)
     v = f (s X) u
     i : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (F Y)
-    i Y = resize-is-prop R (fiber s Y) (e Y)
+    i Y = resize-is-a-prop R (fiber s Y) (e Y)
     X' : 𝓤 ̇
     X' = pr₁ v
     a : r (s X) ≃ X'
@@ -372,8 +371,9 @@ universes).
 
 ∥∥⁺-is-a-prop : FunExt → {X : 𝓤 ̇} → is-prop (∥ X ∥⁺)
 ∥∥⁺-is-a-prop fe = Π-is-prop (fe _ _)
-                 (λ P → Π-is-prop (fe _ _)
-                         (λ i → Π-is-prop (fe _ _) λ u → i))
+                   (λ P → Π-is-prop (fe _ _)
+                           (λ i → Π-is-prop (fe _ _)
+                                    (λ u → i)))
 
 ∣_∣⁺ : {X : 𝓤 ̇} → X → ∥ X ∥⁺
 ∣ x ∣⁺ = λ P i u → u x
@@ -384,10 +384,10 @@ universes).
 resizing-truncation : FunExt → Propositional-resizing → propositional-truncations-exist
 resizing-truncation fe R = record {
     ∥_∥          = λ {𝓤} X → resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe)
-  ; ∥∥-is-a-prop = λ {𝓤} {X} → resize-is-prop R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe)
-  ; ∣_∣         = λ {𝓤} {X} x → to-resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe) ∣ x ∣⁺
+  ; ∥∥-is-a-prop = λ {𝓤} {X} → resize-is-a-prop R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe)
+  ; ∣_∣          = λ {𝓤} {X} x → to-resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe) ∣ x ∣⁺
   ; ∥∥-rec       = λ {𝓤} {𝓥} {X} {P} i u s → from-resize R P i
-                                              (∥∥⁺-rec (resize-is-prop R P i)
+                                              (∥∥⁺-rec (resize-is-a-prop R P i)
                                                        (to-resize R P i ∘ u)
                                                        (from-resize R ∥ X ∥⁺ (∥∥⁺-is-a-prop fe) s))
   }
@@ -415,7 +415,7 @@ module Image
  restriction f (y , _) = y
 
  restriction-embedding : (f : X → Y) → is-embedding(restriction f)
- restriction-embedding f = pr₁-embedding (λ y → resize-is-prop R _ _)
+ restriction-embedding f = pr₁-embedding (λ y → resize-is-a-prop R _ _)
 
  corestriction : (f : X → Y) → X → image f
  corestriction f x = f x , to-resize R _ _ ∣ x , refl ∣

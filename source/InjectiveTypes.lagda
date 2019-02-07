@@ -1114,7 +1114,7 @@ flabiness-resizing D 𝓤 𝓥 R φ P i f = d , h
   Q : 𝓥 ̇
   Q = resize R P i
   j : is-prop Q
-  j = resize-is-prop R P i
+  j = resize-is-a-prop R P i
   α : P → Q
   α = to-resize R P i
   β : Q → P
@@ -1281,14 +1281,14 @@ module anonymously-injective (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- anonymously-injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
- anonymously-injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                                  → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
+ ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+ ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+                       → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 
 
- anonymously-injectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe)
-                                   → is-prop (anonymously-injective-type D 𝓤 𝓥)
- anonymously-injectivity-is-a-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+ ainjectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe)
+                        → is-prop (ainjective-type D 𝓤 𝓥)
+ ainjectivity-is-a-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
                                         (λ X → Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                           (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                             (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
@@ -1296,20 +1296,18 @@ module anonymously-injective (pt : propositional-truncations-exist) where
                                                 (λ f → ∥∥-is-a-prop)))))
 
 
- injective-gives-anonymously-injective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥
-                                       → anonymously-injective-type D 𝓤 𝓥
- injective-gives-anonymously-injective D i j e f = ∣ i j e f ∣
+ injective-gives-ainjective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → ainjective-type D 𝓤 𝓥
+ injective-gives-ainjective D i j e f = ∣ i j e f ∣
 
- ∥injective∥-gives-anonymously-injective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥
-                                        → anonymously-injective-type D 𝓤 𝓥
- ∥injective∥-gives-anonymously-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (anonymously-injectivity-is-a-prop D 𝓤 𝓥)
-                                                                (injective-gives-anonymously-injective D)
+ ∥injective∥-gives-ainjective : (D : 𝓦 ̇) → ∥ injective-type D 𝓤 𝓥 ∥ → ainjective-type D 𝓤 𝓥
+ ∥injective∥-gives-ainjective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (ainjectivity-is-a-prop D 𝓤 𝓥)
+                                                     (injective-gives-ainjective D)
 
- retract-of-anonymously-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                                  → anonymously-injective-type D 𝓦 𝓣
-                                  → retract D' of D
-                                  → anonymously-injective-type D' 𝓦 𝓣
- retract-of-anonymously-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
+ retract-of-ainjective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
+                       → ainjective-type D 𝓦 𝓣
+                       → retract D' of D
+                       → ainjective-type D' 𝓦 𝓣
+ retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
    i' : ∃ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
@@ -1318,6 +1316,14 @@ module anonymously-injective (pt : propositional-truncations-exist) where
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
+ retract-Of-ainjective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
+                       → ainjective-type D 𝓦 𝓣
+                       → ∥ retract D' Of D ∥
+                       → ainjective-type D' 𝓦 𝓣
+ retract-Of-ainjective {𝓤} {𝓥} {𝓦} {𝓣} D' D i =
+   ∥∥-rec (ainjectivity-is-a-prop D' 𝓦 𝓣)
+          (retract-of-ainjective D' D i ∘ retract-Of-retract-of)
+
 \end{code}
 
 The give proof of power-of-injective doesn't adapt to the following,
@@ -1325,10 +1331,10 @@ so we need a new proof, but also new universe assumptions.
 
 \begin{code}
 
- power-of-anonymously-injective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
-                                → anonymously-injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
-                                → anonymously-injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
- power-of-anonymously-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
+ power-of-ainjective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
+                     → ainjective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                     → ainjective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+ power-of-ainjective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
    g : X × A → D
    g = uncurry f
@@ -1343,18 +1349,10 @@ so we need a new proof, but also new universe assumptions.
    γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
- retract-Of-anonymously-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                                  → anonymously-injective-type D 𝓦 𝓣
-                                  → ∥ retract D' Of D ∥
-                                  → anonymously-injective-type D' 𝓦 𝓣
- retract-Of-anonymously-injective {𝓤} {𝓥} {𝓦} {𝓣} D' D i =
-   ∥∥-rec (anonymously-injectivity-is-a-prop D' 𝓦 𝓣)
-          (retract-of-anonymously-injective D' D i ∘ retract-Of-retract-of)
-
- anonymously-injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
-                                                    → anonymously-injective-type D 𝓤 (𝓤 ⁺)
-                                                    → ∥ retract D Of (D → 𝓤 ̇) ∥
- anonymously-injective-retract-of-power-of-universe D ua i = ∥∥-functor retract-of-retract-Of γ
+ ainjective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
+                                         → ainjective-type D 𝓤 (𝓤 ⁺)
+                                         → ∥ retract D Of (D → 𝓤 ̇) ∥
+ ainjective-retract-of-power-of-universe D ua i = ∥∥-functor retract-of-retract-Of γ
   where
     a : ∃ \r  → r ∘ Id ∼ id
     a = i Id (UA-Id-embedding ua fe) id
@@ -1363,78 +1361,65 @@ so we need a new proof, but also new universe assumptions.
     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
     γ = ∥∥-functor φ a
 
- -anonymously-injective-gives-∥injective∥ : is-univalent 𝓤
-                                         → (D : 𝓤 ̇)
-                                         → anonymously-injective-type D 𝓤 (𝓤 ⁺)
-                                         → ∥ injective-type D 𝓤 𝓤 ∥
- -anonymously-injective-gives-∥injective∥ {𝓤} ua D i =
-  ∥∥-functor φ (anonymously-injective-retract-of-power-of-universe D ua i)
+ ainjective-gives-∥injective∥ : is-univalent 𝓤
+                             → (D : 𝓤 ̇)
+                             → ainjective-type D 𝓤 (𝓤 ⁺)
+                             → ∥ injective-type D 𝓤 𝓤 ∥
+ ainjective-gives-∥injective∥ {𝓤} ua D i = γ
   where
    φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
    φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
-
- anonymously-injective-gives-∥injective∥ : is-univalent 𝓤
-                                         → (D : 𝓤 ̇)
-                                         → anonymously-injective-type D 𝓤 (𝓤 ⁺)
-                                         → ∥ injective-type D 𝓤 𝓤 ∥
- anonymously-injective-gives-∥injective∥ {𝓤} ua D i =
-  ∥∥-functor φ (anonymously-injective-retract-of-power-of-universe D ua i)
-  where
-   φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
-   φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
+   γ : ∥ injective-type D 𝓤 𝓤 ∥
+   γ = ∥∥-functor φ (ainjective-retract-of-power-of-universe D ua i)
 
 \end{code}
 
-So, in summary, regarding the relationship between anonymously-injectivity and
+So, in summary, regarding the relationship between ainjectivity and
 truncated injectivity, so far we know that
 
-  ∥ injective-type D 𝓤 𝓥 ∥ → anonymously-injective-type D 𝓤 𝓥
+  ∥ injective-type D 𝓤 𝓥 ∥ → ainjective-type D 𝓤 𝓥
 
 and
 
-  anonymously-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥,
+  ainjective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 𝓤 ∥,
 
 and hence, using propositional resizing, we get the following
-characterization of a particular case of anonymously-injectivity in terms of
+characterization of a particular case of ainjectivity in terms of
 injectivity.
 
 \begin{code}
 
- anonymously-injectivity-in-terms-of-injectivity : is-univalent 𝓤
-                                                 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤  ̇)
-                                                 → anonymously-injective-type D 𝓤 (𝓤 ⁺)
-                                                 ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
- anonymously-injectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
+ ainjectivity-in-terms-of-injectivity : is-univalent 𝓤
+                                      → propositional-resizing (𝓤 ⁺) 𝓤
+                                      → (D : 𝓤  ̇) → ainjective-type D 𝓤 (𝓤 ⁺)
+                                                   ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+ ainjectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
   where
-   a : anonymously-injective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
-   a = ∥∥-functor (injective-resizing R D) ∘ anonymously-injective-gives-∥injective∥ ua D
-   b : ∥ injective-type D 𝓤 (𝓤 ⁺) ∥ → anonymously-injective-type D 𝓤 (𝓤 ⁺)
-   b = ∥injective∥-gives-anonymously-injective D
+   a : ainjective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
+   a = ∥∥-functor (injective-resizing R D) ∘ ainjective-gives-∥injective∥ ua D
+   b : ∥ injective-type D 𝓤 (𝓤 ⁺) ∥ → ainjective-type D 𝓤 (𝓤 ⁺)
+   b = ∥injective∥-gives-ainjective D
 
 \end{code}
 
-What we really would like to have is
+What we really would like to have for D : 𝓤 is
 
-  anonymously-injective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
+  ainjective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
+
+and, perhaps, more generally, also
+
+  ainjective-type D 𝓥 𝓦 ⇔ ∥ injective-type D 𝓤 𝓦 ∥,
 
 but this requires further thought. (It may be easy given the above
 development. Or hard or impossible.)
 
-We haven't studied this notion yet, but we record it for possible
-future investigation:
+TODO. I think that, with resizing, for a *set* D:𝓤 in universe 𝓤 other
+than 𝓤₀ (that is, of the form 𝓥 ⁺) we do have
 
-\begin{code}
+  ainjective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
 
- ∃-flabby : 𝓦 ̇ → (𝓣 : Universe) → 𝓦 ⊔ 𝓣 ⁺ ̇
- ∃-flabby D 𝓣 = (P : 𝓣 ̇) → is-prop P → (f : P → D) → ∃ \(d : D) → (p : P) → f p ≡ d
-
-\end{code}
-
-TODO. Improve the universe levels in the last few facts using
-propositional resizing. Also, using propositional resizing, the
-lifting of a type lives in the same universe as the type. Because the
-lifting is always an injective type and embeds the type, we can use it
-in place of (D → 𝓤 ̇) to host D.
+The reason is that the embedding Id : D → (D → 𝓤) factors through (D →
+Ω₀) because D is a set and propositional resizing holds.
 
 Fixities:
 
