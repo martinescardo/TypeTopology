@@ -36,42 +36,42 @@ involutive : {X : 𝓤 ̇} → (f : X → X) → 𝓤 ̇
 involutive f = ∀ x → f (f x) ≡ x
 
 higgs : (f : Ω₀ → Ω₀) → left-cancellable f → involutive f
-higgs f cancelf p = VIII
+higgs f c = VIII
   where
    I : (p : Ω₀) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
    I p r s = transport (λ - → f - ≡ ⊤) s r
 
    II : (p : Ω₀) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
-   II p r s = cancelf (r ∙ s ⁻¹)
+   II p r s = c (r ∙ s ⁻¹)
 
    III : (p : Ω₀) → f p ≡ ⊤ → p ≡ f ⊤
    III p r = Ω-ext' pe fe (I p r) (II p r)
 
    IV : (p : Ω₀) → f (f p) ≡ ⊤ → p ≡ ⊤
-   IV p r = cancelf (III (f p) r)
+   IV p r = c (III (f p) r)
 
    V : (p : Ω₀) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
-   V p r = IV (f p) r
+   V p = IV (f p)
 
    VI : (p : Ω₀) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
-   VI p r = d ∙ r
+   VI p r = iv ∙ r
     where
-     a : f (f p) ≡ f ⊤
-     a = ap f r
+     i : f (f p) ≡ f ⊤
+     i = ap f r
 
-     b : f ⊤ ≡ p
-     b = (III p r)⁻¹
+     ii : f ⊤ ≡ p
+     ii = (III p r)⁻¹
 
-     c : f (f p) ≡ p
-     c = a ∙ b
+     iii : f (f p) ≡ p
+     iii = i ∙ ii
 
-     d : f (f (f p)) ≡ f p
-     d = ap f c
+     iv : f (f (f p)) ≡ f p
+     iv = ap f iii
 
    VII : (p : Ω₀) → f (f (f p)) ≡ f p
    VII p = Ω-ext' pe fe (V p) (VI p)
 
-   VIII : f (f p) ≡ p
-   VIII = cancelf (VII p)
+   VIII : (p : Ω₀) → f (f p) ≡ p
+   VIII p = c (VII p)
 
 \end{code}
