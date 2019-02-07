@@ -1200,6 +1200,78 @@ injective-characterization {𝓤} ua R D = a , b
 
 \end{code}
 
+Added 23rd January 2019:
+
+\begin{code}
+
+module injectivity-of-lifting (𝓤 : Universe) where
+
+ open import Lifting 𝓤
+ open import LiftingAlgebras 𝓤
+ open import LiftingEmbeddingViaSIP 𝓤
+
+ open import UF-UA-FunExt
+
+\end{code}
+
+The underlying types of algebras of the lifting monad are flabby, and
+hence injective, and so in particular the underlying objects of the
+free 𝓛-algebras are injective.
+
+\begin{code}
+
+ 𝓛-alg-flabby : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 𝓥
+              → {A : 𝓥 ̇} → 𝓛-alg A → flabby A 𝓤
+ 𝓛-alg-flabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
+  where
+   γ : (p : P) → ∐ i f ≡ f p
+   γ p = 𝓛-alg-Law₀-gives₀' pe fe fe' ∐ κ P i f p
+
+ 𝓛-alg-injective : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 𝓥
+                 → (A : 𝓥 ̇) → 𝓛-alg A → injective-type A 𝓤 𝓤
+ 𝓛-alg-injective pe fe fe' A α = flabby-types-are-injective A (𝓛-alg-flabby pe fe fe' α)
+
+ free-𝓛-algebra-injective : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                          → (X : 𝓤 ̇) → injective-type (𝓛 X) 𝓤 𝓤
+ free-𝓛-algebra-injective ua fe X = 𝓛-alg-injective
+                                       (propext-from-univalence ua)
+                                       (funext-from-univalence ua)
+                                       fe
+                                       (𝓛 X)
+                                       (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
+\end{code}
+
+Because the unit of the lifting monad is an embedding, it follows that
+injective types are retracts of underlying objects of free algebras:
+
+\begin{code}
+
+ injective-is-retract-of-free-𝓛-algebra : (D : 𝓤 ̇) → is-univalent 𝓤
+                                        → injective-type D 𝓤 (𝓤 ⁺) → retract D Of (𝓛 D)
+ injective-is-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → (η γ , pr₂ a γ)
+   where
+     a : Σ \r  → r ∘ η ∼ id
+     a = i η (η-is-embedding' 𝓤 D ua (funext-from-univalence ua)) id
+
+\end{code}
+
+With propositional resizing, the injective types are precisely the
+retracts of the underlying objects of free algebras of the lifting
+monad:
+
+\begin{code}
+
+ injectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → propositional-resizing (𝓤 ⁺) 𝓤
+                                        → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
+ injectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
+  where
+   a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
+   a i = D , injective-is-retract-of-free-𝓛-algebra D ua (injective-resizing R D i)
+   b : (Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)) → injective-type D 𝓤 𝓤
+   b (X , r) = retract-Of-injective D (𝓛 X) (free-𝓛-algebra-injective ua fe X) r
+
+\end{code}
+
 Added 21st January 2019. We now consider injectivity as property
 rather than data.
 
@@ -1254,7 +1326,7 @@ so we need a new proof, but also new universe assumptions.
 \begin{code}
 
  power-of-anonymously-injective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
-                                → anonymously-injective-type D (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                                → anonymously-injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
                                 → anonymously-injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
  power-of-anonymously-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
@@ -1290,6 +1362,16 @@ so we need a new proof, but also new universe assumptions.
     φ (r , p) = r , Id , p
     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
     γ = ∥∥-functor φ a
+
+ -anonymously-injective-gives-∥injective∥ : is-univalent 𝓤
+                                         → (D : 𝓤 ̇)
+                                         → anonymously-injective-type D 𝓤 (𝓤 ⁺)
+                                         → ∥ injective-type D 𝓤 𝓤 ∥
+ -anonymously-injective-gives-∥injective∥ {𝓤} ua D i =
+  ∥∥-functor φ (anonymously-injective-retract-of-power-of-universe D ua i)
+  where
+   φ : retract D Of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
+   φ = retract-Of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective-Π ua))
 
  anonymously-injective-gives-∥injective∥ : is-univalent 𝓤
                                          → (D : 𝓤 ̇)
@@ -1353,78 +1435,6 @@ propositional resizing. Also, using propositional resizing, the
 lifting of a type lives in the same universe as the type. Because the
 lifting is always an injective type and embeds the type, we can use it
 in place of (D → 𝓤 ̇) to host D.
-
-Added 23rd January 2019:
-
-\begin{code}
-
-module injectivity-of-lifting (𝓤 : Universe) where
-
- open import Lifting 𝓤
- open import LiftingAlgebras 𝓤
- open import LiftingEmbeddingViaSIP 𝓤
-
- open import UF-UA-FunExt
-
-\end{code}
-
-The underlying types of algebras of the lifting monad are flabby, and
-hence injective, and so in particular the underlying objects of the
-free 𝓛-algebras are injective.
-
-\begin{code}
-
- 𝓛-alg-flabby : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 𝓥
-              → {A : 𝓥 ̇} → 𝓛-alg A → flabby A 𝓤
- 𝓛-alg-flabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
-  where
-   γ : (p : P) → ∐ i f ≡ f p
-   γ p = 𝓛-alg-Law₀-gives₀' pe fe fe' ∐ κ P i f p
-
- 𝓛-alg-injective : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 𝓥
-                 → (A : 𝓥 ̇) → 𝓛-alg A → injective-type A 𝓤 𝓤
- 𝓛-alg-injective pe fe fe' A α = flabby-types-are-injective A (𝓛-alg-flabby pe fe fe' α)
-
- free-𝓛-algebra-injective : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
-                          → (X : 𝓤 ̇) → injective-type (𝓛 X) 𝓤 𝓤
- free-𝓛-algebra-injective ua fe X = 𝓛-alg-injective
-                                       (propext-from-univalence ua)
-                                       (funext-from-univalence ua)
-                                       fe
-                                       (𝓛 X)
-                                       (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
-\end{code}
-
-Because the unit of the lifting monad is an embedding, it follows that
-injective types are retracts of underlying objects of free algebras:
-
-\begin{code}
-
- injective-is-retract-of-free-𝓛-algebra : (D : 𝓤 ̇) → is-univalent 𝓤
-                                        → injective-type D 𝓤 (𝓤 ⁺) → retract D Of (𝓛 D)
- injective-is-retract-of-free-𝓛-algebra D ua i = pr₁ a , λ γ → (η γ , pr₂ a γ)
-   where
-     a : Σ \r  → r ∘ η ∼ id
-     a = i η (η-is-embedding' 𝓤 D ua (funext-from-univalence ua)) id
-
-\end{code}
-
-With propositional resizing, the injective types are precisely the
-retracts of the underlying objects of free algebras of the lifting
-monad:
-
-\begin{code}
-
- injectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
-                                        → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
- injectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
-  where
-   a : injective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)
-   a i = D , injective-is-retract-of-free-𝓛-algebra D ua (injective-resizing R D i)
-   b : (Σ \(X : 𝓤 ̇) → retract D Of (𝓛 X)) → injective-type D 𝓤 𝓤
-   b (X , r) = retract-Of-injective D (𝓛 X) (free-𝓛-algebra-injective ua fe X) r
-
-\end{code}
 
 Fixities:
 
