@@ -115,8 +115,8 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 
 \end{code}
 
-To show that propositional resizing is itself a proposition, we use
-univalence.
+To show that the axiom of propositional resizing is itself a
+proposition, we use univalence.
 
 \begin{code}
 
@@ -147,9 +147,9 @@ propositional-resizing-is-a-prop ua 𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥
 
 \end{code}
 
-And here is a proof that the axiom of propositional resizing is a
-itself proposition using propositional and functional extensionality
-instead of univalence:
+And here is a proof that the axiom of propositional resizing is itself
+proposition using propositional and functional extensionality instead
+of univalence:
 
 \begin{code}
 
@@ -172,7 +172,7 @@ has-size-is-a-prop' {𝓤} pe fe P i 𝓥 = c
   c = equiv-to-prop b (prop-fiber-lift pe fe (lift 𝓥 P) j)
 
 propositional-resizing-is-a-prop' : PropExt → FunExt → (𝓤 𝓥 : Universe)
-                                 → is-prop (propositional-resizing 𝓤 𝓥)
+                                  → is-prop (propositional-resizing 𝓤 𝓥)
 propositional-resizing-is-a-prop' pe fe  𝓤 𝓥 =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
                                                   (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
                                                   (λ i → has-size-is-a-prop' pe fe P i 𝓥))
