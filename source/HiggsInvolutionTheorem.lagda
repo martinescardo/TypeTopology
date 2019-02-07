@@ -36,7 +36,7 @@ involutive : {X : 𝓤 ̇} → (f : X → X) → 𝓤 ̇
 involutive f = ∀ x → f (f x) ≡ x
 
 higgs : (f : Ω₀ → Ω₀) → left-cancellable f → involutive f
-higgs f cancelf p = cancelf (VII p)
+higgs f cancelf p = VIII
   where
    I : (p : Ω₀) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
    I p r s = transport (λ - → f - ≡ ⊤) s r
@@ -70,5 +70,8 @@ higgs f cancelf p = cancelf (VII p)
 
    VII : (p : Ω₀) → f (f (f p)) ≡ f p
    VII p = Ω-ext' pe fe (V p) (VI p)
+
+   VIII : f (f p) ≡ p
+   VIII = cancelf (VII p)
 
 \end{code}
