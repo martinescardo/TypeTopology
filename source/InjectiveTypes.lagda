@@ -1415,7 +1415,7 @@ development. Or hard or impossible.)
 
 Added 7th Feb 2019.
 
-However, we do have that, with resizing, for a *set* D:𝓤 in a universe
+However, we do have that, with resizing, for a *set* D : 𝓥 in a universe
 𝓥 other than 𝓤₀ (that is, of the form 𝓤 ⁺) we do have
 
   ainjective-type D 𝓥 𝓥 ⇔ ∥ injective-type D 𝓥 𝓥 ∥,
