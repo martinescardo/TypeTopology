@@ -54,6 +54,7 @@ module UF-IdEmbedding where
 open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-Equiv
 open import UF-Equiv-FunExt
@@ -61,6 +62,8 @@ open import UF-Embeddings
 open import UF-Yoneda
 open import UF-LeftCancellable
 open import UF-Univalence
+open import UF-EquivalenceExamples
+open import UF-Resizing
 
 \end{code}
 
@@ -161,9 +164,9 @@ function Id : X → (X → U) is an embedding.
 
 \begin{code}
 
-K-id-embedding' : K-axiom (𝓤 ⁺) → FunExt
+K-Id-embedding' : K-axiom (𝓤 ⁺) → FunExt
                → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
-K-id-embedding' {𝓤} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
+K-Id-embedding' {𝓤} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
 \end{code}
 
@@ -174,7 +177,57 @@ But actually function extensionality is not needed for this: K alone suffices.
 Id-lc : {X : 𝓤 ̇} → left-cancellable (Id {𝓤} {X})
 Id-lc {𝓤} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-id-embedding : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
-K-id-embedding {𝓤} k {X} = lc-maps-are-embeddings-with-K Id Id-lc k
+K-Id-embedding : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+K-Id-embedding {𝓤} k {X} = lc-maps-are-embeddings-with-K Id Id-lc k
 
+\end{code}
+
+Added 7th Feb 2019.
+
+\begin{code}
+
+Id-set : {X : 𝓤 ̇} → is-set X → X → (X → Ω 𝓤)
+Id-set i x y = (x ≡ y) , i
+
+Id-set-lc : funext  𝓤 (𝓤 ⁺) → {X : 𝓤 ̇} (i : is-set X)
+          → left-cancellable (Id-set i)
+Id-set-lc fe {X} i {x} {y} e = Id-lc d
+ where
+  d : Id x ≡ Id y
+  d = dfunext fe (λ z → ap pr₁ (happly e z))
+
+Id-set-is-embedding : funext  𝓤 𝓤 → funext  𝓤 (𝓤 ⁺) → propext 𝓤
+                    → {X : 𝓤 ̇} (i : is-set X) → is-embedding (Id-set i)
+Id-set-is-embedding fe fe' pe {X} i = lc-maps-into-sets-are-embeddings
+                                        (Id-set i)
+                                        (Id-set-lc fe' i)
+                                        (Π-is-set fe' (λ x → Ω-is-a-set fe pe))
+
+module Id-set₀-embedding
+         (pe : PropExt)
+         (fe : FunExt)
+         (R : Propositional-resizing)
+         {𝓤 : Universe}
+         (X : 𝓤 ̇)
+         (i : is-set X)
+       where
+
+ powerset-down-≃ : (X → Ω 𝓤) ≃ (X → Ω 𝓤₀)
+ powerset-down-≃ = →-cong' (fe 𝓤 𝓤₁) (fe 𝓤 (𝓤 ⁺)) (All-universes-are-impredicative₁ R pe fe)
+
+ powerset-down : (X → Ω 𝓤) → (X → Ω 𝓤₀)
+ powerset-down = eqtofun powerset-down-≃
+
+ powerset-down-is-embedding : is-embedding powerset-down
+ powerset-down-is-embedding = equivs-are-embeddings
+                                powerset-down
+                                (eqtofun-is-an-equiv powerset-down-≃)
+
+ Id-set₀ : X → (X → Ω 𝓤₀)
+ Id-set₀ = powerset-down ∘ Id-set i
+
+ Id-set₀-is-embedding : is-embedding Id-set₀
+ Id-set₀-is-embedding = comp-embedding
+                            (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
+                            powerset-down-is-embedding
 \end{code}

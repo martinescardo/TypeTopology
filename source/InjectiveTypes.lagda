@@ -1413,13 +1413,75 @@ and, perhaps, more generally, also
 but this requires further thought. (It may be easy given the above
 development. Or hard or impossible.)
 
-TODO. I think that, with resizing, for a *set* D:𝓤 in universe 𝓤 other
-than 𝓤₀ (that is, of the form 𝓥 ⁺) we do have
+Added 7th Feb 2019.
 
-  ainjective-type D 𝓤 𝓤 ⇔ ∥ injective-type D 𝓤 𝓤 ∥,
+However, we do have that, with resizing, for a *set* D:𝓤 in universe 𝓥 other
+than 𝓤₀ (that is, of the form 𝓤 ⁺) we do have
 
-The reason is that the embedding Id : D → (D → 𝓤) factors through (D →
-Ω₀) because D is a set and propositional resizing holds.
+  ainjective-type D 𝓥 𝓥 ⇔ ∥ injective-type D 𝓥 𝓥 ∥,
+
+The reason is that the embedding Id : D → (D → 𝓤) factors through
+(D → Ω₀) because D is a set and propositional resizing holds (as shown
+in the module UF-IdEmbedding).
+
+\begin{code}
+
+ module ainjectivity-of-sets-in-terms-of-injectivity
+          (pe : PropExt)
+          (fe : FunExt)
+          (R : Propositional-resizing)
+          {𝓤 : Universe}
+          (D : 𝓤 ⁺ ̇)
+          (i : is-set D)
+        where
+
+  𝓤⁺ : Universe
+  𝓤⁺ = 𝓤 ⁺
+
+  open Id-set₀-embedding pe fe R D i
+
+  ainjective-set-retract-of-powerset : ainjective-type D 𝓤⁺ 𝓤⁺
+                                     → ∥ retract D Of (D → Ω 𝓤₀) ∥
+  ainjective-set-retract-of-powerset j = ∥∥-functor retract-of-retract-Of γ
+   where
+     a : ∃ \r  → r ∘ Id-set₀ ∼ id
+     a = j Id-set₀ Id-set₀-is-embedding id
+     φ : (Σ \r  → r ∘ Id-set₀ ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
+     φ (r , p) = r , Id-set₀ , p
+     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
+     γ = ∥∥-functor φ a
+
+  ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤⁺ 𝓤⁺
+                                   → ∥ injective-type D 𝓤⁺ 𝓤⁺ ∥
+  ainjective-set-gives-∥injective∥ j = γ
+   where
+    φ : retract D Of (D → Ω 𝓤₀) → injective-type D 𝓤⁺ 𝓤⁺
+    φ = retract-Of-injective D (D → Ω 𝓤₀)
+         (power-of-injective (injective-resizing R (Ω 𝓤₀) (Ω-injective (pe 𝓤₀))))
+    γ : ∥ injective-type D 𝓤⁺ 𝓤⁺ ∥
+    γ = ∥∥-functor φ (ainjective-set-retract-of-powerset j)
+
+\end{code}
+
+Therefore, as claimed, a set in a universe 𝓤⁺ is anonymously injective
+over embeddings in 𝓤⁺ if and only if it is injective over such
+embeddings:
+
+\begin{code}
+
+  set-ainjectivity-in-terms-of-injectivity : ainjective-type D 𝓤⁺ 𝓤⁺
+                                           ⇔ ∥ injective-type D 𝓤⁺ 𝓤⁺ ∥
+  set-ainjectivity-in-terms-of-injectivity = a , b
+   where
+    a : ainjective-type D 𝓤⁺ 𝓤⁺ → ∥ injective-type D 𝓤⁺ 𝓤⁺ ∥
+    a = ∥∥-functor (injective-resizing R D) ∘ ainjective-set-gives-∥injective∥
+    b : ∥ injective-type D 𝓤⁺ 𝓤⁺ ∥ → ainjective-type D 𝓤⁺ 𝓤⁺
+    b = ∥injective∥-gives-ainjective D
+
+\end{code}
+
+NB. We could extend this to the first universe 𝓤₀ by having a stronger
+resizing axiom making Ω 𝓤₀ to have a copy in 𝓤₀ itself.
 
 Fixities:
 
