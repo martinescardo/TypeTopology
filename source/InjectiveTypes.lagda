@@ -1350,8 +1350,8 @@ so we need a new proof, but hence also new universe assumptions.
  ainjective-retract-of-power-of-universe {𝓤} D ua = embedding-∥retract∥ D (D → 𝓤 ̇) Id (UA-Id-embedding ua fe)
 
  ainjective-gives-∥injective∥ : is-univalent 𝓤
-                             → (D : 𝓤 ̇)
-                             → ainjective-type D 𝓤 (𝓤 ⁺)
+                              → (D : 𝓤 ̇)
+                              → ainjective-type D 𝓤 (𝓤 ⁺)
                              → ∥ injective-type D 𝓤 𝓤 ∥
  ainjective-gives-∥injective∥ {𝓤} ua D i = γ
   where
@@ -1398,7 +1398,7 @@ and, perhaps, more generally, also
 
   ainjective-type D 𝓥 𝓦 ⇔ ∥ injective-type D 𝓤 𝓦 ∥.
 
-This show now answered 8th Feb (see below).
+This is now answered 8th Feb (see below).
 
 Added 7th Feb 2019.
 
