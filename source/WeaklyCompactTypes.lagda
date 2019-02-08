@@ -35,7 +35,7 @@ open import DecidableAndDetachable
 
 ∃-compactness-is-a-prop : {X : 𝓤 ̇} → is-prop (∃-compact X)
 ∃-compactness-is-a-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤)
-                                (λ _ → decidable-types-are-props (fe 𝓤 𝓤₀) ∥∥-is-a-prop)
+                                (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀) ∥∥-is-a-prop)
 
 ∃-compact-Markov : {X : 𝓤 ̇}
                  → ∃-compact X
@@ -60,7 +60,7 @@ LPO with WLPO.
 
 Π-compactness-is-a-prop : {X : 𝓤 ̇} → is-prop (Π-compact X)
 Π-compactness-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
-                         (λ _ → decidable-types-are-props (fe 𝓤 𝓤₀)
+                         (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
                                   (Π-is-prop (fe 𝓤 𝓤₀) λ _ → 𝟚-is-set))
 
 ∃-compact-gives-Π-compact : {X : 𝓤 ̇} → ∃-compact X → Π-compact X
@@ -108,7 +108,7 @@ predicate λ x → ₁:
 
 Π-compactness'-is-a-prop : {X : 𝓤 ̇} → is-prop(Π-compact' X)
 Π-compactness'-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
-                                (λ p → decidable-types-are-props (fe 𝓤 𝓤₀)
+                                (λ p → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
                                          (Π-is-set (fe 𝓤 𝓤₀) (λ x → 𝟚-is-set)))
 
 Π-compact'-gives-Π-compact : {X : 𝓤 ̇} → Π-compact' X → Π-compact X
@@ -622,7 +622,7 @@ replaced by non-emptiness in the following results:
 \begin{code}
 
 iso-i-and-c : {X : 𝓤 ̇} → ∃-compact∙ X → ∥ X ∥ × ∃-compact X
-iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (decidable-types-are-props (fe 𝓤 𝓤₀) ∥∥-is-a-prop) (g₂ p) (c p))
+iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) ∥∥-is-a-prop) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
@@ -1070,7 +1070,7 @@ being-clopen-map-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → FunExt
 being-clopen-map-is-a-prop {𝓤} {𝓥} fe f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ p → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
-            (λ y → decidable-types-are-props (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-a-prop))
+            (λ y → decidability-of-prop-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-a-prop))
 
 fst : (A : 𝓤 ̇) (X : 𝓥 ̇) → A × X → A
 fst _ _ = pr₁

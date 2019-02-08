@@ -1035,21 +1035,21 @@ EM-gives-pointed-types-flabby {𝓦} {𝓤} D em d P i f = h (em P i)
   h (inl p) = f p , (λ q → ap f (i p q))
   h (inr n) = d , (λ p → 𝟘-elim (n p))
 
-pointed-types-flabby-gives-EM : ((D : 𝓦 ̇) → D → flabby D 𝓦) → EM 𝓦
-pointed-types-flabby-gives-EM {𝓦} α P i = γ
+flabby-EM-lemma : (P : 𝓦 ̇) → is-prop P → flabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
+flabby-EM-lemma {𝓦} P i φ = γ
  where
   D = (P + ¬ P) + 𝟙 {𝓦}
   f : P + ¬ P → D
   f (inl p) = inl (inl p)
   f (inr n) = inl (inr n)
   d : D
-  d = pr₁ (α D (inr *) (P + ¬ P) (decidable-types-are-props (fe 𝓦 𝓤₀) i) f)
-  φ : (z : P + ¬ P) → d ≡ f z
-  φ = pr₂ (α D (inr *) (P + ¬ P) (decidable-types-are-props (fe 𝓦 𝓤₀) i) f)
+  d = pr₁ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+  κ : (z : P + ¬ P) → d ≡ f z
+  κ = pr₂ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
   a : (p : P) → d ≡ inl (inl p)
-  a p = φ (inl p)
+  a p = κ (inl p)
   b : (n : ¬ P) → d ≡ inl (inr n)
-  b n = φ (inr n)
+  b n = κ (inr n)
   δ : (d' : D) → d ≡ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
@@ -1062,8 +1062,11 @@ pointed-types-flabby-gives-EM {𝓦} α P i = γ
   γ : P + ¬ P
   γ = δ d refl
 
-EM-gives-pointed-types-injective : (D : 𝓦 ̇) → EM (𝓤 ⊔ 𝓥) → D → injective-type D 𝓤 𝓥
-EM-gives-pointed-types-injective D em d = flabby-types-are-injective D (EM-gives-pointed-types-flabby D em d)
+pointed-types-flabby-gives-EM : ((D : 𝓦 ̇) → D → flabby D 𝓦) → EM 𝓦
+pointed-types-flabby-gives-EM {𝓦} α P i = flabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+
+EM-gives-pointed-types-injective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → injective-type D 𝓤 𝓥
+EM-gives-pointed-types-injective em D d = flabby-types-are-injective D (EM-gives-pointed-types-flabby D em d)
 
 pointed-types-injective-gives-EM : ((D : 𝓦 ̇) → D → injective-type D 𝓦 𝓤) → EM 𝓦
 pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → injective-types-are-flabby D (α D d))
@@ -1400,7 +1403,7 @@ and, perhaps, more generally, also
 
 This is now answered 8th Feb (see below).
 
-Added 7th Feb 2019.
+Added 7th Feb 2019. (Preliminary answer.)
 
 However, with Ω₀-resizing, for a *set* D : 𝓤 we do have
 
@@ -1411,14 +1414,11 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
 
 \begin{code}
 
- set-ainjectivity-in-terms-of-injectivity :
-          Ω-resizing₀ 𝓤
-          → PropExt
-          → (D  : 𝓤 ̇) (i  : is-set D) → ainjective-type D 𝓤 𝓤
-                                      ⇔ ∥ injective-type D 𝓤 𝓤 ∥
- set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe D i =
-  ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
-
+ set-ainjectivity-in-terms-of-injectivity : Ω-resizing₀ 𝓤
+                                          → PropExt
+                                          → (D  : 𝓤 ̇) (i  : is-set D) → ainjective-type D 𝓤 𝓤
+                                                                      ⇔ ∥ injective-type D 𝓤 𝓤 ∥
+ set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe D i = γ , ∥injective∥-gives-ainjective D
   where
    Ω₀ : 𝓤₀ ̇
    Ω₀ = pr₁ ω₀
@@ -1449,8 +1449,8 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
    Ω₀-injective : injective-type Ω₀ 𝓤 𝓤
    Ω₀-injective = equiv-to-injective Ω₀ (Ω 𝓤) (Ω-injective (pe 𝓤)) e₀
 
-   ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
-   ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-set-retract-of-powerset j)
+   γ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
+   γ j = ∥∥-functor φ (ainjective-set-retract-of-powerset j)
     where
      φ : retract D of (D → Ω₀) → injective-type D 𝓤 𝓤
      φ = retract-of-injective D (D → Ω₀) (power-of-injective Ω₀-injective)
@@ -1461,14 +1461,11 @@ Added 8th Feb. Solves a question above.
 
 \begin{code}
 
- ainjectivity-in-terms-of-injectivity :
-            Ω-resizing₀ 𝓤
-          → is-univalent 𝓤
-          → (D  : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
-                      ⇔ ∥ injective-type D 𝓤 𝓤 ∥
- ainjectivity-in-terms-of-injectivity {𝓤} ω₀ ua D =
-  ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
-
+ ainjectivity-in-terms-of-injectivity : Ω-resizing₀ 𝓤
+                                      → is-univalent 𝓤
+                                      → (D  : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
+                                                  ⇔ ∥ injective-type D 𝓤 𝓤 ∥
+ ainjectivity-in-terms-of-injectivity {𝓤} ω₀ ua D = γ , ∥injective∥-gives-ainjective D
   where
    open import LiftingSize 𝓤
    open injectivity-of-lifting 𝓤
@@ -1485,7 +1482,6 @@ Added 8th Feb. Solves a question above.
    down-is-embedding : is-embedding down
    down-is-embedding = equivs-are-embeddings down (eqtofun-is-an-equiv e)
 
-
    ε : D → L
    ε = down ∘ η
 
@@ -1498,11 +1494,49 @@ Added 8th Feb. Solves a question above.
    L-injective : injective-type L 𝓤 𝓤
    L-injective = equiv-to-injective L (𝓛 D) (free-𝓛-algebra-injective ua (fe 𝓤 (𝓤 ⁺)) D) (≃-sym e)
 
-   ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
-   ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-retract-of-L j)
+   γ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
+   γ j = ∥∥-functor φ (ainjective-retract-of-L j)
     where
      φ : retract D of L → injective-type D 𝓤 𝓤
      φ = retract-of-injective D L L-injective
+
+\end{code}
+
+Here are some corollaries:
+
+\begin{code}
+
+ ainjective-resizing : is-univalent 𝓤 → Ω-resizing₀ 𝓤
+                     → (D : 𝓤 ̇)
+                     → ainjective-type D 𝓤 𝓤
+                     → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → ainjective-type D 𝓥 𝓦
+ ainjective-resizing {𝓤} ua ω₀ D i 𝓥 𝓦 R = c
+  where
+   a : ∥ injective-type D 𝓤 𝓤 ∥
+   a = pr₁ (ainjectivity-in-terms-of-injectivity ω₀ ua D) i
+   b : ∥ injective-type D 𝓥 𝓦 ∥
+   b = ∥∥-functor (injective-resizing R D) a
+   c : ainjective-type D 𝓥 𝓦
+   c = ∥injective∥-gives-ainjective D b
+
+ EM-gives-pointed-types-ainjective : EM 𝓤 → (D : 𝓤 ̇) → D → ainjective-type D 𝓤 𝓤
+ EM-gives-pointed-types-ainjective {𝓤} em D d = injective-gives-ainjective D
+                                                  (EM-gives-pointed-types-injective em D d)
+
+ pointed-types-ainjective-gives-EM : Ω-resizing₀ 𝓤 → is-univalent 𝓤
+                                   → ((D : 𝓤 ̇) → D → ainjective-type D 𝓤 𝓤) → EM 𝓤
+ pointed-types-ainjective-gives-EM {𝓤} R ua β P i = e
+  where
+   a : ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
+   a = β ((P + ¬ P) + 𝟙) (inr *)
+   b : ∥ injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
+   b = pr₁ (ainjectivity-in-terms-of-injectivity R ua ((P + ¬ P) + 𝟙)) a
+   c : ∥ flabby ((P + ¬ P) + 𝟙) 𝓤 ∥
+   c = ∥∥-functor (injective-types-are-flabby ((P + ¬ P) + 𝟙)) b
+   d : ∥ P + ¬ P ∥
+   d = ∥∥-functor (flabby-EM-lemma P i) c
+   e : P + ¬ P
+   e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
 
 \end{code}
 

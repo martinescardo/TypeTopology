@@ -85,7 +85,7 @@ module DecidableDominance where
  decidable-dominance = (λ P → is-prop P × decidable P) ,
                        (λ P → Σ-is-prop
                                  (being-a-prop-is-a-prop (fe 𝓤 𝓤))
-                                 (decidable-types-are-props (fe 𝓤 𝓤₀))) ,
+                                 (decidability-of-prop-is-prop (fe 𝓤 𝓤₀))) ,
                        (λ X → pr₁) ,
                        (𝟙-is-prop , inl *) ,
                        λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁(dQ p)) ,

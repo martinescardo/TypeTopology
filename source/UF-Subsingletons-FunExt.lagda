@@ -114,8 +114,8 @@ being-set-is-a-prop {𝓤} fe {X} = h
 
 \begin{code}
 
-decidable-types-are-props : funext 𝓤 𝓤₀ → {P : 𝓤 ̇} → is-prop P → is-prop(P + ¬ P)
-decidable-types-are-props fe₀ i = sum-of-contradictory-props
+decidability-of-prop-is-prop : funext 𝓤 𝓤₀ → {P : 𝓤 ̇} → is-prop P → is-prop(P + ¬ P)
+decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
                                       i
                                       (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
                                       (λ p u → u p)

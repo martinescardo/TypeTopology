@@ -302,7 +302,7 @@ module AC-renders-all-sets-discrete
  lemma₂ : {X : 𝓤 ̇} → is-set X → (a : 𝟚 → X)
         → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
- lemma₂ is a = ∥∥-rec (decidable-types-are-props (fe 𝓤 𝓤₀) is) (lemma₁ a)
+ lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
  ac-discrete-sets : AC → (X : 𝓤 ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)

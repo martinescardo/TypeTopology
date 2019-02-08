@@ -32,6 +32,11 @@ which we refer to as the density of the decidable truth values.
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM 𝓤 = (P : 𝓤 ̇) → is-prop P → P + ¬ P
 
+EM-is-prop : FunExt → is-prop (EM 𝓤)
+EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
+                      (λ P → Π-is-prop (fe 𝓤 𝓤)
+                               (decidability-of-prop-is-prop (fe 𝓤 𝓤₀)))
+
 LEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬(p holds)
 
@@ -46,7 +51,7 @@ EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P 
 
 DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
-                             (decidable-types-are-props fe isp)
+                             (decidability-of-prop-is-prop fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
 
 fem-proptrunc : FunExt → (∀ 𝓤 → EM 𝓤 )→ propositional-truncations-exist
