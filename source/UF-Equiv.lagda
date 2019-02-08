@@ -451,8 +451,10 @@ logically-equivalent-props-are-equivalent : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-p
 logically-equivalent-props-are-equivalent i j f g = qinveq f (g , (λ p → i (g (f p)) p) ,
                                                                   (λ q → j (f (g q)) q))
 
-
-
+equiv-to-set : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X ≃ Y → is-set Y → is-set X
+equiv-to-set e = subtypes-of-sets-are-sets
+                   (eqtofun e)
+                   (equivs-are-lc (eqtofun e) (eqtofun-is-an-equiv e))
 \end{code}
 
 Associativities and precedences.

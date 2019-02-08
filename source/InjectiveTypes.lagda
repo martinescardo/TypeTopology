@@ -1,6 +1,7 @@
 Martin Escardo, 27 April 2014, with later additions, 2017, 2018, 2019.
 
-This introduction is incomplete and outdated.
+This introduction is incomplete and outdated / obsolete. Much more has
+been done since 2014 that is not reported here.
 
 We show that the injective types are the retracts of the exponential
 powers of universes, where an exponential power of a type D is a type
@@ -1451,7 +1452,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
 
 \end{code}
 
-Added 8th Feb. Solves a question above.
+Added 8th Feb. Solves a problem formulated above.
 
 \begin{code}
 
@@ -1533,8 +1534,6 @@ Here are some corollaries:
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
 
 \end{code}
-
-
 
 Fixities:
 
