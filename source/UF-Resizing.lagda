@@ -116,7 +116,8 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 \end{code}
 
 To show that the axiom of propositional resizing is itself a
-proposition, we use univalence.
+proposition, we use univalence here (and there is a proof with weaker
+hypotheses below).
 
 \begin{code}
 
@@ -365,6 +366,8 @@ We remark that for types that are not sets, sections are not
 automatically embeddings (Shulman 2015, Logical Methods in Computer
 Science, April 27, 2017, Volume 12, Issue 3,
 https://lmcs.episciences.org/2027 , Theorem 3.10).
+
+Hence it is worth stating this explicitly:
 
 \begin{code}
 
