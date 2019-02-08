@@ -19,7 +19,8 @@ simplicial-set model (assuming classical logic in its development).
 
 We develop some consequences of propositional resizing here, such as
 the fact that every universe is a retract of any higher universe,
-where the section is an embedding (its fibers are all propositions).
+where the section is an embedding (its fibers are all propositions),
+which seems to be a new result.
 
 \begin{code}
 
