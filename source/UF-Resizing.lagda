@@ -303,11 +303,11 @@ the second universe 𝓤₁:
 Ω-resizing₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
 
 Ω-resizing₁-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
-                                 → Ω-resizing₁ 𝓤
+                          → Ω-resizing₁ 𝓤
 Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤₀
 
 Ω-resizing₁-≃-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
-                                 → Ω 𝓤 ≃ Ω 𝓤₀
+                            → Ω 𝓤 ≃ Ω 𝓤₀
 Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe = ≃-sym (pr₂ (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
 Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ≡ 𝓤₁
@@ -316,7 +316,7 @@ the second universe 𝓤₁:
 \end{code}
 
 With propositional resizing, we have that any universe is a retract of
-any larger universe.
+any larger universe (this seems to be a new result).
 
 \begin{code}
 
