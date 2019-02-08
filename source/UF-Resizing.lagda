@@ -181,12 +181,12 @@ universe (i.e. in all universes except the first).
 
 \begin{code}
 
-is-impredicative+ : (𝓤 : Universe) → 𝓤ω
-is-impredicative+ 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size (𝓥 ⁺)
+Ω⁺-resizing : (𝓤 : Universe) → 𝓤ω
+Ω⁺-resizing 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size (𝓥 ⁺)
 
-universes-are-impredicative+ : Propositional-resizing → PropExt → FunExt
-                             → is-impredicative+ 𝓤
-universes-are-impredicative+ {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γφ , φγ)
+Ω⁺-resizing-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+                          → Ω⁺-resizing 𝓤
+Ω⁺-resizing-from-pr-pe-fe {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γφ , φγ)
  where
   φ : Ω 𝓥 → Ω 𝓤
   φ (Q , j) = resize ρ Q j , resize-is-a-prop ρ Q j
@@ -208,8 +208,8 @@ truth-values in the universe 𝓤 itself lives in 𝓤.
 
 \begin{code}
 
-is-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
-is-impredicative 𝓤 = (Ω 𝓤) has-size 𝓤
+Ω-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω-resizing 𝓤 = (Ω 𝓤) has-size 𝓤
 
 \end{code}
 
@@ -219,9 +219,9 @@ impredicative, but it does imply that all other, successor, universes
 
 \begin{code}
 
-successor-universes-are-impredicative : Propositional-resizing → PropExt → FunExt
-                                      → is-impredicative (𝓤 ⁺)
-successor-universes-are-impredicative {𝓤} ρ pe fe = universes-are-impredicative+ ρ pe fe 𝓤
+Ω-resizing⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+                          → Ω-resizing (𝓤 ⁺)
+Ω-resizing⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
 
 \end{code}
 
@@ -230,12 +230,12 @@ universe, and of all other universes, of course:
 
 \begin{code}
 
-is-globally-impredicative : (𝓤 : Universe) → 𝓤ω
-is-globally-impredicative 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size 𝓥
+Ω-global-resizing : (𝓤 : Universe) → 𝓤ω
+Ω-global-resizing 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size 𝓥
 
-universes-impredicative-from-EM : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
-                                → is-globally-impredicative 𝓤
-universes-impredicative-from-EM {𝓤} em pe fe 𝓥 =
+Ω-global-resizing-from-em-pe-fe : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
+                                → Ω-global-resizing 𝓤
+Ω-global-resizing-from-em-pe-fe {𝓤} em pe fe 𝓥 =
  (𝟙 {𝓥} + 𝟙 {𝓥}) ,
  qinveq φ
  ((λ p → γ p (em p)) ,
@@ -257,12 +257,12 @@ universes-impredicative-from-EM {𝓤} em pe fe 𝓥 =
   φγ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
   φγ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
 
-is-impredicative₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-is-impredicative₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
+Ω-resizing₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω-resizing₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
 
-universes-impredicative-from-EM₀ : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
-                                 → is-impredicative₀ 𝓤
-universes-impredicative-from-EM₀ {𝓤} em pe fe = universes-impredicative-from-EM em pe fe 𝓤₀
+Ω-resizing-from-em-pe-fe₀ : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
+                          → Ω-resizing₀ 𝓤
+Ω-resizing-from-em-pe-fe₀ {𝓤} em pe fe = Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
 
 \end{code}
 
@@ -272,16 +272,16 @@ the second universe 𝓤₁:
 
 \begin{code}
 
-is-impredicative₁ : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓤₂ ̇
-is-impredicative₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
+Ω-resizing₁ : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓤₂ ̇
+Ω-resizing₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
 
-all-universes-are-impredicative₁ : Propositional-resizing → PropExt → FunExt
-                                 → is-impredicative₁ 𝓤
-all-universes-are-impredicative₁ {𝓤} ρ pe fe = universes-are-impredicative+ ρ pe fe 𝓤₀
+Ω-resizing₁-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+                                 → Ω-resizing₁ 𝓤
+Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤₀
 
-All-universes-are-impredicative₁ : Propositional-resizing → PropExt → FunExt
+Ω-resizing₁-≃-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
                                  → Ω 𝓤 ≃ Ω 𝓤₀
-All-universes-are-impredicative₁ {𝓤} ρ pe fe = ≃-sym (pr₂ (all-universes-are-impredicative₁ {𝓤} ρ pe fe))
+Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe = ≃-sym (pr₂ (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
 Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ≡ 𝓤₁
 Ω-𝓤₀-lives-in-𝓤₁ = refl
