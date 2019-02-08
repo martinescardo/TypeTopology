@@ -22,9 +22,6 @@ is-prop X = (x y : X) → x ≡ y
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ \(P : 𝓤 ̇) → is-prop P
 
-Ω₀ = Ω 𝓤₀
-Ω₁ = Ω 𝓤₁
-
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds = pr₁
 

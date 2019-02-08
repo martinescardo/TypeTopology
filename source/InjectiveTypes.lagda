@@ -1438,7 +1438,24 @@ in the module UF-IdEmbedding).
   𝓤⁺ : Universe
   𝓤⁺ = 𝓤 ⁺
 
-  open Id-set₀-embedding pe fe R D i
+  powerset-down-≃ : (D → Ω 𝓤⁺) ≃ (D → Ω 𝓤₀)
+  powerset-down-≃ = →-cong' (fe 𝓤⁺ 𝓤₁) (fe 𝓤⁺ (𝓤⁺ ⁺)) (All-universes-are-impredicative₁ R pe fe)
+
+  powerset-down : (D → Ω 𝓤⁺) → (D → Ω 𝓤₀)
+  powerset-down = eqtofun powerset-down-≃
+
+  powerset-down-is-embedding : is-embedding powerset-down
+  powerset-down-is-embedding = equivs-are-embeddings
+                                 powerset-down
+                                 (eqtofun-is-an-equiv powerset-down-≃)
+
+  Id-set₀ : D → (D → Ω 𝓤₀)
+  Id-set₀ = powerset-down ∘ Id-set i
+
+  Id-set₀-is-embedding : is-embedding Id-set₀
+  Id-set₀-is-embedding = comp-embedding
+                          (Id-set-is-embedding (fe 𝓤⁺ 𝓤⁺) (fe 𝓤⁺ (𝓤⁺ ⁺)) (pe 𝓤⁺) i)
+                          powerset-down-is-embedding
 
   ainjective-set-retract-of-powerset : ainjective-type D 𝓤⁺ 𝓤⁺
                                      → ∥ retract D Of (D → Ω 𝓤₀) ∥

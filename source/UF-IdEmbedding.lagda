@@ -63,7 +63,6 @@ open import UF-Yoneda
 open import UF-LeftCancellable
 open import UF-Univalence
 open import UF-EquivalenceExamples
-open import UF-Resizing
 
 \end{code}
 
@@ -203,31 +202,4 @@ Id-set-is-embedding fe fe' pe {X} i = lc-maps-into-sets-are-embeddings
                                         (Id-set-lc fe' i)
                                         (Π-is-set fe' (λ x → Ω-is-a-set fe pe))
 
-module Id-set₀-embedding
-         (pe : PropExt)
-         (fe : FunExt)
-         (R : Propositional-resizing)
-         {𝓤 : Universe}
-         (X : 𝓤 ̇)
-         (i : is-set X)
-       where
-
- powerset-down-≃ : (X → Ω 𝓤) ≃ (X → Ω 𝓤₀)
- powerset-down-≃ = →-cong' (fe 𝓤 𝓤₁) (fe 𝓤 (𝓤 ⁺)) (All-universes-are-impredicative₁ R pe fe)
-
- powerset-down : (X → Ω 𝓤) → (X → Ω 𝓤₀)
- powerset-down = eqtofun powerset-down-≃
-
- powerset-down-is-embedding : is-embedding powerset-down
- powerset-down-is-embedding = equivs-are-embeddings
-                                powerset-down
-                                (eqtofun-is-an-equiv powerset-down-≃)
-
- Id-set₀ : X → (X → Ω 𝓤₀)
- Id-set₀ = powerset-down ∘ Id-set i
-
- Id-set₀-is-embedding : is-embedding Id-set₀
- Id-set₀-is-embedding = comp-embedding
-                            (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
-                            powerset-down-is-embedding
 \end{code}
