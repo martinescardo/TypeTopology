@@ -1203,9 +1203,9 @@ Added 23rd January 2019:
 
 module injectivity-of-lifting (𝓤 : Universe) where
 
- open import Lifting 𝓤
+ open import Lifting 𝓤 public
  open import LiftingAlgebras 𝓤
- open import LiftingEmbeddingViaSIP 𝓤
+ open import LiftingEmbeddingViaSIP 𝓤 public
 
  open import UF-UA-FunExt
 
@@ -1377,11 +1377,11 @@ injectivity.
 
 \begin{code}
 
- ainjectivity-in-terms-of-injectivity : is-univalent 𝓤
+ ainjectivity-in-terms-of-injectivity' : is-univalent 𝓤
                                       → propositional-resizing (𝓤 ⁺) 𝓤
                                       → (D : 𝓤  ̇) → ainjective-type D 𝓤 (𝓤 ⁺)
                                                    ⇔ ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
- ainjectivity-in-terms-of-injectivity {𝓤} ua R D = a , b
+ ainjectivity-in-terms-of-injectivity' {𝓤} ua R D = a , b
   where
    a : ainjective-type D 𝓤 (𝓤 ⁺) → ∥ injective-type D 𝓤 (𝓤 ⁺) ∥
    a = ∥∥-functor (injective-resizing R D) ∘ ainjective-gives-∥injective∥ ua D
@@ -1396,12 +1396,11 @@ What we really would like to have for D : 𝓤 is
 
 and, perhaps, more generally, also
 
-  ainjective-type D 𝓥 𝓦 ⇔ ∥ injective-type D 𝓤 𝓦 ∥,
+  ainjective-type D 𝓥 𝓦 ⇔ ∥ injective-type D 𝓤 𝓦 ∥.
 
-but this requires further thought. (It may be easy given the above
-development. Or hard or impossible.)
+This show now answered 8th Feb (see below).
 
-Added 7th Feb 2019 (improved 8th Feb).
+Added 7th Feb 2019.
 
 However, with Ω₀-resizing, for a *set* D : 𝓤 we do have
 
@@ -1415,10 +1414,9 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
  set-ainjectivity-in-terms-of-injectivity :
           Ω-resizing₀ 𝓤
           → PropExt
-          → FunExt
           → (D  : 𝓤 ̇) (i  : is-set D) → ainjective-type D 𝓤 𝓤
                                        ⇔ ∥ injective-type D 𝓤 𝓤 ∥
- set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe fe D i =
+ set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe D i =
   ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
 
   where
@@ -1428,40 +1426,86 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
    e₀ : Ω₀ ≃ Ω 𝓤
    e₀ = pr₂ ω₀
 
-   Ω₀-injective : injective-type Ω₀ 𝓤 𝓤
-   Ω₀-injective = equiv-to-injective Ω₀ (Ω 𝓤) (Ω-injective (pe 𝓤)) e₀
+   down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
+   down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
 
-   powerset-down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
-   powerset-down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
+   down : (D → Ω 𝓤) → (D → Ω₀)
+   down = eqtofun down-≃
 
-   powerset-down : (D → Ω 𝓤) → (D → Ω₀)
-   powerset-down = eqtofun powerset-down-≃
-
-   powerset-down-is-embedding : is-embedding powerset-down
-   powerset-down-is-embedding = equivs-are-embeddings
-                                  powerset-down
-                                  (eqtofun-is-an-equiv powerset-down-≃)
+   down-is-embedding : is-embedding down
+   down-is-embedding = equivs-are-embeddings down (eqtofun-is-an-equiv down-≃)
 
    Id-set₀ : D → (D → Ω₀)
-   Id-set₀ = powerset-down ∘ Id-set i
+   Id-set₀ = down ∘ Id-set i
 
    Id-set₀-is-embedding : is-embedding Id-set₀
    Id-set₀-is-embedding = comp-embedding
                            (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
-                           powerset-down-is-embedding
+                           down-is-embedding
 
-   ainjective-set-retract-of-powerset : ainjective-type D 𝓤 𝓤
-                                      → ∥ retract D of (D → Ω₀) ∥
+   ainjective-set-retract-of-powerset : ainjective-type D 𝓤 𝓤 → ∥ retract D of (D → Ω₀) ∥
    ainjective-set-retract-of-powerset = embedding-∥retract∥ D (D → Ω₀) Id-set₀ Id-set₀-is-embedding
 
-   ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤
-                                    → ∥ injective-type D 𝓤 𝓤 ∥
+   Ω₀-injective : injective-type Ω₀ 𝓤 𝓤
+   Ω₀-injective = equiv-to-injective Ω₀ (Ω 𝓤) (Ω-injective (pe 𝓤)) e₀
+
+   ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
    ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-set-retract-of-powerset j)
     where
      φ : retract D of (D → Ω₀) → injective-type D 𝓤 𝓤
      φ = retract-of-injective D (D → Ω₀) (power-of-injective Ω₀-injective)
 
 \end{code}
+
+Added 8th Feb. Solves a question above.
+
+\begin{code}
+
+ ainjectivity-in-terms-of-injectivity :
+            Ω-resizing₀ 𝓤
+          → is-univalent 𝓤
+          → (D  : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
+                       ⇔ ∥ injective-type D 𝓤 𝓤 ∥
+ ainjectivity-in-terms-of-injectivity {𝓤} ω₀ ua D =
+  ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
+
+  where
+   open import LiftingSize 𝓤
+   open injectivity-of-lifting 𝓤
+   L : 𝓤 ̇
+   L = pr₁ (𝓛-resize₀ ω₀ D)
+
+   e : 𝓛 D ≃ L
+   e = ≃-sym(pr₂ (𝓛-resize₀ ω₀ D))
+
+   down : 𝓛 D → L
+   down = eqtofun e
+
+   down-is-embedding : is-embedding down
+   down-is-embedding = equivs-are-embeddings down (eqtofun-is-an-equiv e)
+
+
+   ε : D → L
+   ε = down ∘ η
+
+   ε-is-embedding : is-embedding ε
+   ε-is-embedding = comp-embedding (η-is-embedding' 𝓤 D ua (fe 𝓤 𝓤)) down-is-embedding
+
+   ainjective-set-retract-of-L : ainjective-type D 𝓤 𝓤 → ∥ retract D of L ∥
+   ainjective-set-retract-of-L = embedding-∥retract∥ D L ε ε-is-embedding
+
+   L-injective : injective-type L 𝓤 𝓤
+   L-injective = equiv-to-injective L (𝓛 D) (free-𝓛-algebra-injective ua (fe 𝓤 (𝓤 ⁺)) D) (≃-sym e)
+
+   ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
+   ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-set-retract-of-L j)
+    where
+     φ : retract D of L → injective-type D 𝓤 𝓤
+     φ = retract-of-injective D L L-injective
+
+\end{code}
+
+
 
 Fixities:
 
