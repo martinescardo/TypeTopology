@@ -1418,14 +1418,8 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
                                           → PropExt
                                           → (D  : 𝓤 ̇) (i  : is-set D) → ainjective-type D 𝓤 𝓤
                                                                       ⇔ ∥ injective-type D 𝓤 𝓤 ∥
- set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe D i = γ , ∥injective∥-gives-ainjective D
+ set-ainjectivity-in-terms-of-injectivity {𝓤} (Ω₀ , e₀) pe D i = γ , ∥injective∥-gives-ainjective D
   where
-   Ω₀ : 𝓤₀ ̇
-   Ω₀ = pr₁ ω₀
-
-   e₀ : Ω₀ ≃ Ω 𝓤
-   e₀ = pr₂ ω₀
-
    down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
    down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
 

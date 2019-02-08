@@ -127,16 +127,13 @@ Added 8th Feb 2019.
 \begin{code}
 
 𝓛-resize₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
-𝓛-resize₀ ω₀ X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
+𝓛-resize₀ (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
  where
-  Ω₀ : 𝓤₀ ̇
-  Ω₀ = pr₁ ω₀
-
   up : Ω₀ → Ω 𝓣
-  up = eqtofun (pr₂ ω₀)
+  up = eqtofun e₀
 
   up-is-equiv : is-equiv up
-  up-is-equiv = eqtofun-is-an-equiv (pr₂ ω₀)
+  up-is-equiv = eqtofun-is-an-equiv e₀
 
   d : (Σ \(p : Ω₀) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
   d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv

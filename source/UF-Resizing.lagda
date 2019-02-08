@@ -208,8 +208,8 @@ truth-values in the universe 𝓤 itself lives in 𝓤.
 
 \begin{code}
 
-Ω-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω-resizing 𝓤 = (Ω 𝓤) has-size 𝓤
+Ω-self-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω-self-resizing 𝓤 = (Ω 𝓤) has-size 𝓤
 
 \end{code}
 
@@ -219,9 +219,9 @@ impredicative, but it does imply that all other, successor, universes
 
 \begin{code}
 
-Ω-resizing⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
-                          → Ω-resizing (𝓤 ⁺)
-Ω-resizing⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
+Ω-self-resizing⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+                               → Ω-self-resizing (𝓤 ⁺)
+Ω-self-resizing⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
 
 \end{code}
 
@@ -230,11 +230,33 @@ universe, and of all other universes, of course:
 
 \begin{code}
 
-Ω-global-resizing : (𝓤 : Universe) → 𝓤ω
-Ω-global-resizing 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size 𝓥
+Ω-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Ω-resizing 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+
+Ω-resizing-gives-propositional-resizing : Ω-resizing 𝓤 𝓥 → propext 𝓤 → funext 𝓤 𝓤
+                                        → propositional-resizing 𝓤 𝓥
+Ω-resizing-gives-propositional-resizing {𝓤} {𝓥} (O , e) pe fe P i = Q , ε
+
+ where
+  up : O → Ω 𝓤
+  up = eqtofun e
+  down : Ω 𝓤 → O
+  down = eqtofun (≃-sym e)
+  O-is-set : is-set O
+  O-is-set = subtypes-of-sets-are-sets up (equivs-are-lc up (eqtofun-is-an-equiv e)) (Ω-is-a-set fe pe)
+  Q : 𝓥 ̇
+  Q = down (𝟙 , 𝟙-is-prop) ≡ down (P , i)
+  j : is-prop Q
+  j = O-is-set
+  φ : Q → P
+  φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (eqtofun-is-an-equiv (≃-sym e)) q)) *
+  γ : P → Q
+  γ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) , being-a-prop-is-a-prop fe _ _))
+  ε : Q ≃ P
+  ε = logically-equivalent-props-are-equivalent j i φ γ
 
 Ω-global-resizing-from-em-pe-fe : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
-                                → Ω-global-resizing 𝓤
+                                → (𝓥 : Universe) → Ω-resizing 𝓤 𝓥
 Ω-global-resizing-from-em-pe-fe {𝓤} em pe fe 𝓥 =
  (𝟙 {𝓥} + 𝟙 {𝓥}) ,
  qinveq φ
@@ -260,9 +282,9 @@ universe, and of all other universes, of course:
 Ω-resizing₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω-resizing₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
 
-Ω-resizing-from-em-pe-fe₀ : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
+Ω-resizing₀-from-em-pe-fe₀ : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
                           → Ω-resizing₀ 𝓤
-Ω-resizing-from-em-pe-fe₀ {𝓤} em pe fe = Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
+Ω-resizing₀-from-em-pe-fe₀ {𝓤} em pe fe = Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
 
 \end{code}
 

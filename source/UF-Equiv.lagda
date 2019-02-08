@@ -27,13 +27,17 @@ equivs-have-sections : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                      → is-equiv f → has-section f
 equivs-have-sections f = pr₁
 
-equivs-have-retractions : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+equivs-are-sections : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                         → is-equiv f → is-section f
-equivs-have-retractions f = pr₂
+equivs-are-sections f = pr₂
 
 section-retraction-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                          → has-section f → is-section f → is-equiv f
 section-retraction-equiv f hr hs = (hr , hs)
+
+equivs-are-lc : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+              → is-equiv f → left-cancellable f
+equivs-are-lc f e = sections-are-lc f (equivs-are-sections f e)
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
