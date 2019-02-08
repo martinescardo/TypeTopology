@@ -1415,7 +1415,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
           Ω-resizing₀ 𝓤
           → PropExt
           → (D  : 𝓤 ̇) (i  : is-set D) → ainjective-type D 𝓤 𝓤
-                                       ⇔ ∥ injective-type D 𝓤 𝓤 ∥
+                                      ⇔ ∥ injective-type D 𝓤 𝓤 ∥
  set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe D i =
   ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
 
@@ -1465,13 +1465,14 @@ Added 8th Feb. Solves a question above.
             Ω-resizing₀ 𝓤
           → is-univalent 𝓤
           → (D  : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
-                       ⇔ ∥ injective-type D 𝓤 𝓤 ∥
+                      ⇔ ∥ injective-type D 𝓤 𝓤 ∥
  ainjectivity-in-terms-of-injectivity {𝓤} ω₀ ua D =
   ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
 
   where
    open import LiftingSize 𝓤
    open injectivity-of-lifting 𝓤
+
    L : 𝓤 ̇
    L = pr₁ (𝓛-resize₀ ω₀ D)
 
@@ -1491,14 +1492,14 @@ Added 8th Feb. Solves a question above.
    ε-is-embedding : is-embedding ε
    ε-is-embedding = comp-embedding (η-is-embedding' 𝓤 D ua (fe 𝓤 𝓤)) down-is-embedding
 
-   ainjective-set-retract-of-L : ainjective-type D 𝓤 𝓤 → ∥ retract D of L ∥
-   ainjective-set-retract-of-L = embedding-∥retract∥ D L ε ε-is-embedding
+   ainjective-retract-of-L : ainjective-type D 𝓤 𝓤 → ∥ retract D of L ∥
+   ainjective-retract-of-L = embedding-∥retract∥ D L ε ε-is-embedding
 
    L-injective : injective-type L 𝓤 𝓤
    L-injective = equiv-to-injective L (𝓛 D) (free-𝓛-algebra-injective ua (fe 𝓤 (𝓤 ⁺)) D) (≃-sym e)
 
    ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤 → ∥ injective-type D 𝓤 𝓤 ∥
-   ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-set-retract-of-L j)
+   ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-retract-of-L j)
     where
      φ : retract D of L → injective-type D 𝓤 𝓤
      φ = retract-of-injective D L L-injective
