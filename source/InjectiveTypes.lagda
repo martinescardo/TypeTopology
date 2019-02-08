@@ -1415,8 +1415,8 @@ development. Or hard or impossible.)
 
 Added 7th Feb 2019.
 
-However, we do have that, with resizing, for a *set* D:𝓤 in universe 𝓥 other
-than 𝓤₀ (that is, of the form 𝓤 ⁺) we do have
+However, we do have that, with resizing, for a *set* D:𝓤 in a universe
+𝓥 other than 𝓤₀ (that is, of the form 𝓤 ⁺) we do have
 
   ainjective-type D 𝓥 𝓥 ⇔ ∥ injective-type D 𝓥 𝓥 ∥,
 
@@ -1427,12 +1427,12 @@ in the module UF-IdEmbedding).
 \begin{code}
 
  module ainjectivity-of-sets-in-terms-of-injectivity
-          (pe : PropExt)
-          (fe : FunExt)
-          (R : Propositional-resizing)
           {𝓤 : Universe}
           (D : 𝓤 ⁺ ̇)
+          (R : Propositional-resizing)
           (i : is-set D)
+          (pe : PropExt)
+          (fe : FunExt)
         where
 
   𝓤⁺ : Universe
@@ -1497,8 +1497,8 @@ embeddings:
 
 \end{code}
 
-NB. We could extend this to the first universe 𝓤₀ by having a stronger
-resizing axiom making Ω 𝓤₀ to have a copy in 𝓤₀ itself.
+TODO. We could extend this to the first universe 𝓤₀ by having a
+stronger resizing axiom making Ω 𝓤₀ to have a copy in 𝓤₀ itself.
 
 Fixities:
 
