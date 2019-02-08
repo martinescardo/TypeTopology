@@ -245,7 +245,7 @@ universe, and of all other universes, of course:
   O-is-set : is-set O
   O-is-set = subtypes-of-sets-are-sets up (equivs-are-lc up (eqtofun-is-an-equiv e)) (Ω-is-a-set fe pe)
   Q : 𝓥 ̇
-  Q = down (𝟙 , 𝟙-is-prop) ≡ down (P , i)
+  Q = down ⊤ ≡ down (P , i)
   j : is-prop Q
   j = O-is-set
   φ : Q → P
