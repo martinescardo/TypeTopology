@@ -1297,6 +1297,15 @@ module anonymously-injective (pt : propositional-truncations-exist) where
  ∥injective∥-gives-ainjective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (ainjectivity-is-a-prop D 𝓤 𝓥)
                                                      (injective-gives-ainjective D)
 
+ embedding-∥retract∥ : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → ainjective-type D 𝓦 𝓥
+                     → ∥ retract D of Y ∥
+ embedding-∥retract∥ D Y j e i = ∥∥-functor φ a
+  where
+   a : ∃ \r  → r ∘ j ∼ id
+   a = i j e id
+   φ : (Σ \r  → r ∘ j ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
+   φ (r , p) = r , j , p
+
  retract-of-ainjective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
                        → ainjective-type D 𝓦 𝓣
                        → retract D' of D
@@ -1310,19 +1319,10 @@ module anonymously-injective (pt : propositional-truncations-exist) where
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
-{-
- retract-Of-ainjective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                       → ainjective-type D 𝓦 𝓣
-                       → ∥ retract D' Of D ∥
-                       → ainjective-type D' 𝓦 𝓣
- retract-Of-ainjective {𝓤} {𝓥} {𝓦} {𝓣} D' D i =
-   ∥∥-rec (ainjectivity-is-a-prop D' 𝓦 𝓣)
-          (retract-of-ainjective D' D i ∘ retract-Of-retract-of)
--}
 \end{code}
 
-The give proof of power-of-injective doesn't adapt to the following,
-so we need a new proof, but also new universe assumptions.
+The given proof of power-of-injective doesn't adapt to the following,
+so we need a new proof, but hence also new universe assumptions.
 
 \begin{code}
 
@@ -1347,14 +1347,7 @@ so we need a new proof, but also new universe assumptions.
  ainjective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                          → ainjective-type D 𝓤 (𝓤 ⁺)
                                          → ∥ retract D of (D → 𝓤 ̇) ∥
- ainjective-retract-of-power-of-universe D ua i = γ
-  where
-    a : ∃ \r  → r ∘ Id ∼ id
-    a = i Id (UA-Id-embedding ua fe) id
-    φ : (Σ \r  → r ∘ Id ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
-    φ (r , p) = r , Id , p
-    γ : ∃ \r  → Σ \s → r ∘ s ∼ id
-    γ = ∥∥-functor φ a
+ ainjective-retract-of-power-of-universe {𝓤} D ua = embedding-∥retract∥ D (D → 𝓤 ̇) Id (UA-Id-embedding ua fe)
 
  ainjective-gives-∥injective∥ : is-univalent 𝓤
                              → (D : 𝓤 ̇)
@@ -1419,76 +1412,54 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
 
 \begin{code}
 
- module ainjectivity-of-sets-in-terms-of-injectivity
-          {𝓤  : Universe}
-          (D  : 𝓤 ̇)
-          (ω₀ : Ω-resizing₀ 𝓤)
-          (i  : is-set D)
-          (pe : PropExt)
-          (fe : FunExt)
-        where
+ set-ainjectivity-in-terms-of-injectivity :
+          Ω-resizing₀ 𝓤
+          → PropExt
+          → FunExt
+          → (D  : 𝓤 ̇) (i  : is-set D) → ainjective-type D 𝓤 𝓤
+                                       ⇔ ∥ injective-type D 𝓤 𝓤 ∥
+ set-ainjectivity-in-terms-of-injectivity {𝓤} ω₀ pe fe D i =
+  ainjective-set-gives-∥injective∥ , ∥injective∥-gives-ainjective D
 
-  Ω₀ : 𝓤₀ ̇
-  Ω₀ = pr₁ ω₀
+  where
+   Ω₀ : 𝓤₀ ̇
+   Ω₀ = pr₁ ω₀
 
-  e₀ : Ω₀ ≃ Ω 𝓤
-  e₀ = pr₂ ω₀
+   e₀ : Ω₀ ≃ Ω 𝓤
+   e₀ = pr₂ ω₀
 
-  Ω₀-injective : injective-type Ω₀ 𝓤 𝓤
-  Ω₀-injective = equiv-to-injective Ω₀ (Ω 𝓤) (Ω-injective (pe 𝓤)) e₀
+   Ω₀-injective : injective-type Ω₀ 𝓤 𝓤
+   Ω₀-injective = equiv-to-injective Ω₀ (Ω 𝓤) (Ω-injective (pe 𝓤)) e₀
 
-  powerset-down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
-  powerset-down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
+   powerset-down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
+   powerset-down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
 
-  powerset-down : (D → Ω 𝓤) → (D → Ω₀)
-  powerset-down = eqtofun powerset-down-≃
+   powerset-down : (D → Ω 𝓤) → (D → Ω₀)
+   powerset-down = eqtofun powerset-down-≃
 
-  powerset-down-is-embedding : is-embedding powerset-down
-  powerset-down-is-embedding = equivs-are-embeddings
-                                 powerset-down
-                                 (eqtofun-is-an-equiv powerset-down-≃)
+   powerset-down-is-embedding : is-embedding powerset-down
+   powerset-down-is-embedding = equivs-are-embeddings
+                                  powerset-down
+                                  (eqtofun-is-an-equiv powerset-down-≃)
 
-  Id-set₀ : D → (D → Ω₀)
-  Id-set₀ = powerset-down ∘ Id-set i
+   Id-set₀ : D → (D → Ω₀)
+   Id-set₀ = powerset-down ∘ Id-set i
 
-  Id-set₀-is-embedding : is-embedding Id-set₀
-  Id-set₀-is-embedding = comp-embedding
-                          (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
-                          powerset-down-is-embedding
+   Id-set₀-is-embedding : is-embedding Id-set₀
+   Id-set₀-is-embedding = comp-embedding
+                           (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
+                           powerset-down-is-embedding
 
-  ainjective-set-retract-of-powerset : ainjective-type D 𝓤 𝓤
-                                     → ∥ retract D of (D → Ω₀) ∥
-  ainjective-set-retract-of-powerset j = γ
-   where
-     a : ∃ \r  → r ∘ Id-set₀ ∼ id
-     a = j Id-set₀ Id-set₀-is-embedding id
-     φ : (Σ \r  → r ∘ Id-set₀ ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
-     φ (r , p) = r , Id-set₀ , p
-     γ : ∃ \r  → Σ \s → r ∘ s ∼ id
-     γ = ∥∥-functor φ a
+   ainjective-set-retract-of-powerset : ainjective-type D 𝓤 𝓤
+                                      → ∥ retract D of (D → Ω₀) ∥
+   ainjective-set-retract-of-powerset = embedding-∥retract∥ D (D → Ω₀) Id-set₀ Id-set₀-is-embedding
 
-  ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤
-                                   → ∥ injective-type D 𝓤 𝓤 ∥
-  ainjective-set-gives-∥injective∥ j = γ
-   where
-    φ : retract D of (D → Ω₀) → injective-type D 𝓤 𝓤
-    φ = retract-of-injective D (D → Ω₀)
-         (power-of-injective Ω₀-injective)
-    γ : ∥ injective-type D 𝓤 𝓤 ∥
-    γ = ∥∥-functor φ (ainjective-set-retract-of-powerset j)
-
-\end{code}
-
-Therefore, as claimed, a set in a universe 𝓤 is anonymously injective
-over embeddings in 𝓤 if and only if it is injective over such
-embeddings:
-
-\begin{code}
-
-  set-ainjectivity-in-terms-of-injectivity : ainjective-type D 𝓤 𝓤
-                                           ⇔ ∥ injective-type D 𝓤 𝓤 ∥
-  set-ainjectivity-in-terms-of-injectivity = ainjective-set-gives-∥injective∥ ,
-                                             ∥injective∥-gives-ainjective D
+   ainjective-set-gives-∥injective∥ : ainjective-type D 𝓤 𝓤
+                                    → ∥ injective-type D 𝓤 𝓤 ∥
+   ainjective-set-gives-∥injective∥ j = ∥∥-functor φ (ainjective-set-retract-of-powerset j)
+    where
+     φ : retract D of (D → Ω₀) → injective-type D 𝓤 𝓤
+     φ = retract-of-injective D (D → Ω₀) (power-of-injective Ω₀-injective)
 
 \end{code}
 
