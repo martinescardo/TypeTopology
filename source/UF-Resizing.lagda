@@ -268,8 +268,6 @@ universes:
                                         → propositional-resizing 𝓤 𝓥
 Ω-resizing-gives-propositional-resizing {𝓤} {𝓥} (O , e) pe fe P i = Q , ε
  where
-  up : O → Ω 𝓤
-  up = eqtofun e
   down : Ω 𝓤 → O
   down = eqtofun (≃-sym e)
   O-is-set : is-set O
