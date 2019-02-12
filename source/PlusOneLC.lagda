@@ -11,6 +11,8 @@ The proof may be new (or not).
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Negation
+open import Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt

@@ -29,6 +29,7 @@ which seems to be a new result.
 module UF-Resizing where
 
 open import SpartanMLTT
+open import Negation
 open import UF-Base
 open import UF-FunExt
 open import UF-Subsingletons

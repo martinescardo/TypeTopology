@@ -75,8 +75,11 @@ topologically compact, when one reasons constructively.
 module CompactTypes where
 
 open import SpartanMLTT
-open import Two
+open import Negation
+open import Two-Properties
 open import Two-Prop-Density
+open import Plus-Properties
+open import AlternativePlus
 open import DiscreteAndSeparated
 open import DecidableAndDetachable
 open import UF-Subsingletons

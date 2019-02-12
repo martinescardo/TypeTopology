@@ -31,7 +31,8 @@ open import UF-FunExt
 module LPO (fe : FunExt) where
 
 open import SpartanMLTT
-open import Two
+open import Negation
+open import Two-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt

@@ -8,6 +8,7 @@ ordinals with a top element.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Negation
 open import UF-Base
 open import UF-FunExt
 open import UF-Subsingletons

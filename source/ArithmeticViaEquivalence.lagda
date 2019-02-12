@@ -138,7 +138,7 @@ foundations in Agda notation).
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT hiding (_+'_ ; _^_)
+open import SpartanMLTT hiding (_^_)
 open import UF-FunExt
 
 module ArithmeticViaEquivalence (fe : FunExt) where

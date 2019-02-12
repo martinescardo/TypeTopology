@@ -64,7 +64,8 @@ apartness relation is a set, and so this reflection is always a set.
 module TotallySeparated where
 
 open import SpartanMLTT
-open import Two
+open import Negation
+open import Two-Properties
 open import DiscreteAndSeparated hiding (tight)
 open import UF-Base
 open import UF-Subsingletons

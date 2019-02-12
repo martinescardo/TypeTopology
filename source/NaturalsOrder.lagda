@@ -6,10 +6,12 @@ Martin Escardo, started 5th May 2018
 
 module NaturalsOrder where
 
-open import SpartanMLTT hiding (_+'_)
+open import SpartanMLTT
+open import Negation
 open import UF-Subsingletons
 open import OrdinalNotions hiding (_≤_ ; <-coarser-than-≤ ; ≤-refl)
 open import NaturalsAddition renaming (_+_ to _+'_)
+open import NaturalNumbers-Properties
 
 _≤_ : ℕ → ℕ → 𝓤₀ ̇
 zero ≤ n        = 𝟙

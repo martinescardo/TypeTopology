@@ -9,6 +9,7 @@ explaining part of what we do in this development.
 
 module SafeModules where
 
+import AlternativePlus
 import ADecidableQuantificationOverTheNaturals
 import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
@@ -30,6 +31,7 @@ import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
+import Id
 import InfCompact
 import InjectiveTypes
 import LawvereFPT
@@ -45,9 +47,14 @@ import LiftingMonadVariation
 import LiftingAlgebras
 import LPO
 import Lumsdaine
+import NaturalNumbers
+import NaturalNumbers-Properties
 import NaturalsAddition
 import NaturalsOrder
+import Negation
 import NonCollapsibleFamily
+import One
+import One-Properties
 import OrdinalNotions
 import OrdinalCodes
 import Ordinals
@@ -59,6 +66,9 @@ import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
 import OrdinalsWellOrderArithmetic
 import PartialElements
+import Pi
+import Plus
+import Plus-Properties
 import Family
 import FamilyIdentityViaSIP
 import FamilyMonad
@@ -77,6 +87,7 @@ import SquashedSum
 import TheTopologyOfTheUniverse
 import TotallySeparated
 import Two
+import Two-Properties
 import Two-Prop-Density
 import WLPO
 import W

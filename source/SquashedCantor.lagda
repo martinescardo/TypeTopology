@@ -19,7 +19,7 @@ open import UF-FunExt
 module SquashedCantor (fe : FunExt) where
 
 open import SpartanMLTT
-open import Two
+open import Two-Properties
 open import GenericConvergentSequence
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import SquashedSum fe

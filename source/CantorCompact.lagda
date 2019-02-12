@@ -11,7 +11,7 @@ and other modules.
 {-# OPTIONS --without-K --exact-split #-}
 
 open import SpartanMLTT
-open import Two
+open import Two-Properties
 open import UF-FunExt
 
 module CantorCompact (fe : FunExt) where

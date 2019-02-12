@@ -10,6 +10,7 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 -- open import UF -- hiding (𝟙) hiding (𝟙-is-prop) hiding (⊤)
 
 open import SpartanMLTT
+open import Negation
 open import UF-Subsingletons hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt

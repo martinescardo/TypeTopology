@@ -95,6 +95,8 @@ open import UF-FunExt
 module InjectiveTypes (fe : FunExt) where
 
 open import SpartanMLTT
+open import Negation
+open import Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-Embeddings

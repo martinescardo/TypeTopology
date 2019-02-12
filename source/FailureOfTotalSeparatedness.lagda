@@ -40,7 +40,8 @@ open import UF-FunExt
 module FailureOfTotalSeparatedness (fe : FunExt) where
 
 open import SpartanMLTT
-open import Two
+open import Negation
+open import Two-Properties
 open import GenericConvergentSequence
 open import BasicDiscontinuityTaboo
 open import WLPO

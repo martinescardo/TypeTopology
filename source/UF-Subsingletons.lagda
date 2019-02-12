@@ -14,6 +14,9 @@ https://unimath.github.io/bham2017/uf.pdf
 module UF-Subsingletons where
 
 open import SpartanMLTT
+open import One-Properties
+open import Negation
+open import Plus-Properties
 open import UF-Base
 
 is-prop : 𝓤 ̇ → 𝓤 ̇

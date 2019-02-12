@@ -15,6 +15,7 @@ equality with any other point of the type is decidable.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Negation
 open import UF-Base
 open import DiscreteAndSeparated
 
@@ -24,6 +25,7 @@ module RootsTruncation (𝓤 : Universe)
                        (z-is-isolated : is-isolated' z)
                        where
 
+open import Plus-Properties
 open import NaturalsOrder
 open import UF-Subsingletons
 open import UF-KrausLemma

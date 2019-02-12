@@ -42,12 +42,13 @@ we had a convoluted path to this supposedly natural way).
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Negation
 open import UF-FunExt
 
 module PropTychonoff (fe : FunExt) where
 
 open import CompactTypes
-open import Two
+open import Two-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma

@@ -10,7 +10,10 @@ Martin Escardo 2011.
 module DiscreteAndSeparated where
 
 open import SpartanMLTT
-open import Two
+open import Negation
+open import Two-Properties
+open import Plus-Properties
+open import NaturalNumbers-Properties
 open import DecidableAndDetachable
 open import Two-Prop-Density
 open import UF-Base

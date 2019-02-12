@@ -8,6 +8,7 @@ Ordinals like in the HoTT book and variations.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Negation
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
@@ -301,7 +302,7 @@ equivalent to a proposition (has split support).
 
 \begin{code}
 
-open import Two
+open import Two-Properties
 
 _≺₂_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)

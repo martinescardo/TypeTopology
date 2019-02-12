@@ -11,7 +11,8 @@ open import UF-FunExt
 
 module PropInfTychonoff (fe : FunExt) where
 
-open import Two
+open import Negation
+open import Two-Properties
 open import CompactTypes
 open import InfCompact
 open import Two-Prop-Density

@@ -15,7 +15,8 @@ lemmas.)
 module GenericConvergentSequence where
 
 open import SpartanMLTT
-open import Two
+open import Negation
+open import Two-Properties
 open import NaturalsAddition renaming (_+_ to _∔_)
 open import NaturalsOrder
 open import DiscreteAndSeparated

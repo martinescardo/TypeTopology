@@ -5,6 +5,8 @@
 module UF-Embeddings where
 
 open import SpartanMLTT
+open import Negation
+open import Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-Equiv

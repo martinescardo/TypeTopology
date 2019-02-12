@@ -14,7 +14,9 @@ module SquashedSum (fe : FunExt) where
 fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = fe 𝓤₀ 𝓤₀
 
-open import Two
+open import Two-Properties
+open import Negation
+open import Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv

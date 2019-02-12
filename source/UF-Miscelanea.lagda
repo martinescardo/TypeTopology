@@ -9,6 +9,8 @@ UF things that depend on non-UF things.
 module UF-Miscelanea where
 
 open import SpartanMLTT
+open import Negation
+open import Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt

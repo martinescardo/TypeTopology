@@ -1,5 +1,3 @@
-Martin Escardo
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -25,11 +23,8 @@ record Σ {𝓤 𝓥} {X : 𝓤 ̇} (Y : X → 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
 
 open Σ public
 
-syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B
-
-Σ-elim : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : Σ Y → 𝓤 ⊔ 𝓥 ̇}
-       → ((x : X) (y : Y x) → A (x , y)) → (σ : Σ Y) → A σ
-Σ-elim f (x , y) = f x y
+_×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X × Y = Σ \(x : X) → Y
 
 uncurry : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : 𝓦 ̇}
         → ((x : X) → Y x → Z) → Σ Y → Z
@@ -46,12 +41,6 @@ Equivalently, Σ-elim f t = f (pr₁ t) (pr₂ t).
 As usual in type theory, binary products are particular cases of
 dependent sums.
 
-\begin{code}
-
-_×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X × Y = Σ \(x : X) → Y
-
-\end{code}
 
 Fixities:
 
@@ -61,3 +50,7 @@ infixr 4 _,_
 infixr 2 _×_
 
 \end{code}
+
+Not used anymore, kept just in case we change our minds:
+
+  syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B

@@ -8,6 +8,8 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
+open import Negation
+open import One-Properties
 
 \end{code}
 

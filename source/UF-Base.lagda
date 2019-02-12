@@ -6,6 +6,36 @@ module UF-Base where
 
 open import SpartanMLTT
 
+Nat : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+Nat A B = Π \x → A x → B x
+
+NatΣ : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇} → Nat A B → Σ A → Σ B
+NatΣ ζ (x , a) = (x , ζ x a)
+
+NatΠ : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇} → Nat A B → Π A → Π B
+NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
+
+ΠΣ-distr : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {P : (x : X) → A x → 𝓦 ̇}
+         → (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
+ΠΣ-distr φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
+
+ΠΣ-distr-back : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {P : (x : X) → A x → 𝓦 ̇}
+              → (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
+ΠΣ-distr-back (f , φ) x = f x , φ x
+
+left-cancellable : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
+
+left-cancellable' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
+
+_≈_ : {X : 𝓤 ̇} {x : X} {A : X → 𝓥 ̇} → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
+η ≈ θ = ∀ y → η y ∼ θ y
+
+Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (τ : Nat A B)
+                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
+Nats-are-natural A B τ refl = refl
+
 ap-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} (y : Y) {x x' : X} (p : x ≡ x') → ap (λ _ → y) p ≡ refl
 ap-const y refl = refl
 
