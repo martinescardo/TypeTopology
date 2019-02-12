@@ -127,7 +127,7 @@ SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
      c₁ : SUCC(PRED u) ≡ Succ (Pred u)
      c₁ = ap SUCC c₀
      c₂ : u ≢ Zero
-     c₂ s = Lemma[b≡₀→b≢₁](ap positivity s) r
+     c₂ s = equal-₀-different-from-₁(ap positivity s) r
      c₃ : u ≡ Succ (Pred u)
      c₃ = not-Zero-is-Succ fe₀ c₂
 

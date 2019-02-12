@@ -71,7 +71,7 @@ This is the main theorem proved in this module:
     w = ap (λ - → min𝟚 - (p(under(succ n)))) s
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
-  Claim₀ r n s = Lemma[b≡₁→b≢₀] r (Lemma s)
+  Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
     Lemma : a ≡ under n → p a ≡ ₀
     Lemma t = ap p t ∙ Dagger₀ n t

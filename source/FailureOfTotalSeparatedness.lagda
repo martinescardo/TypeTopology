@@ -259,13 +259,13 @@ module DiscreteAndSeparated.)
    claim₁ x φ = Lemma[b≡c→b⊕c≡₀] (ap g (Lemma x φ))
 
    claim₀' : (x : X) → f x ≡ ₀ → x ≢ a
-   claim₀' x p r = 𝟘-elim (Lemma[b≡₀→b≢₁] fact claim₀)
+   claim₀' x p r = 𝟘-elim (equal-₀-different-from-₁ fact claim₀)
     where
      fact : f a ≡ ₀
      fact = ap f (r ⁻¹) ∙ p
 
    claim₁' : (x : X) → f x ≡ ₁ → ¬(x ≢ a)
-   claim₁' x p φ = 𝟘-elim(Lemma[b≡₀→b≢₁] fact p)
+   claim₁' x p φ = 𝟘-elim(equal-₀-different-from-₁ fact p)
     where
      fact : f x ≡ ₀
      fact = claim₁ x φ

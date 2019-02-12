@@ -52,7 +52,7 @@ open import GenericConvergentSequence
     w = (ap (λ - → min𝟚 - (p(under(succ n)))) s)⁻¹
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
-  Claim₀ r n s = Lemma[b≡₁→b≢₀] r (Lemma s)
+  Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
     Lemma : a ≡ under n → p a ≡ ₀
     Lemma t = ap p t ∙ Dagger₀ n t
@@ -73,9 +73,9 @@ open import GenericConvergentSequence
   putative-root-lemma (x , r) = lemma claim
    where
     lemma : ¬((x : ℕ∞) → p x ≡ ₁) → p a ≡ ₀
-    lemma = Lemma[b≢₁→b≡₀] ∘ (contrapositive Lemma)
+    lemma = different-from-₁-equal-₀ ∘ (contrapositive Lemma)
     claim : ¬((x : ℕ∞) → p x ≡ ₁)
-    claim f = Lemma[b≡₁→b≢₀] (f x) r
+    claim f = equal-₁-different-from-₀ (f x) r
 
   lower-bound-lemma : (u : ℕ∞)→ p u ≡ ₀ → a ≼ u
   lower-bound-lemma u r 0 s = lemma
@@ -85,7 +85,7 @@ open import GenericConvergentSequence
      claim₁ : incl u 0 ≡ ₀ → ₀ ≡ ₁
      claim₁ t = r ⁻¹ ∙ claim₀ t ∙ s
      lemma : incl u 0 ≡ ₁
-     lemma = Lemma[b≢₀→b≡₁] (contrapositive claim₁ zero-is-not-one)
+     lemma = different-from-₀-equal-₁ (contrapositive claim₁ zero-is-not-one)
 
   lower-bound-lemma u r (succ n) s = lemma
    where
@@ -103,9 +103,9 @@ open import GenericConvergentSequence
     claim₄ : incl u (succ n) ≡ ₀ → p u ≡ ₁
     claim₄ t = claim₃ t ∙ claim₁
     claim₅ : incl u (succ n) ≢ ₀
-    claim₅ t = Lemma[b≡₁→b≢₀] (claim₄ t) r
+    claim₅ t = equal-₁-different-from-₀ (claim₄ t) r
     lemma : incl u (succ n) ≡ ₁
-    lemma = Lemma[b≢₀→b≡₁] claim₅
+    lemma = different-from-₀-equal-₁ claim₅
 
   uborlb-lemma : (l : ℕ∞) → ((x : ℕ∞) → p x ≡ ₀ → l ≼ x) → l ≼ a
   uborlb-lemma l lower-bounder = 𝟚-equality-cases lemma₀ lemma₁

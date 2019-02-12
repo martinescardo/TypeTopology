@@ -328,7 +328,7 @@ open import DiscreteAndSeparated
                          (λ (t : p z ≡ ₀)
                             → inr (pr₂ (φ z y) (t , s)))
                          (λ (t : ¬(p z ≡ ₀))
-                            → inl (pr₂ (φ x z) (r , (Lemma[b≢₀→b≡₁] t))))
+                            → inl (pr₂ (φ x z) (r , (different-from-₀-equal-₁ t))))
 
 \end{code}
 

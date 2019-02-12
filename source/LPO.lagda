@@ -120,7 +120,7 @@ compact-ℕ-gives-LPO chlpo x = cases a b d
     b φ = inr g
       where
         ψ : ¬ Σ \(n : ℕ) → β n ≡ ₀
-        ψ = uncurry (λ n → Lemma[b≡₁→b≢₀](φ n))
+        ψ = uncurry (λ n → equal-₁-different-from-₀(φ n))
 
         f : (Σ \(n : ℕ) → x ≡ under n) → Σ \(n : ℕ) → β n ≡ ₀
         f (n , p) = (n , (ap (λ - → incl - n) p ∙ under-diagonal₀ n))

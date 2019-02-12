@@ -123,7 +123,7 @@ module _ (pt : propositional-truncations-exist) where
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇} (p : X → 𝟚)
                             → ¬ (∃ \(x : X) → p x ≡ ₀) → (∀ (x : X) → p x ≡ ₁)
- not-exists₀-implies-forall₁ p u x = Lemma[b≢₀→b≡₁] (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
+ not-exists₀-implies-forall₁ p u x = different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇} (p : X → 𝟚)
                             → (∀ (x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀

@@ -125,7 +125,7 @@ discrete-totally-separated {𝓤} {X} d {x} {y} α = g
   φ = pr₂ (characteristic-function (d x))
 
   b : p x ≡ ₀
-  b = Lemma[b≢₁→b≡₀] (λ s → pr₂ (φ x) s refl)
+  b = different-from-₁-equal-₀ (λ s → pr₂ (φ x) s refl)
 
   a : p y ≡ ₀
   a = (α p)⁻¹ ∙ b

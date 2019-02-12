@@ -74,7 +74,7 @@ prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} hp _≺_ ε p =
   c₀ σ x = φ₀-is-conditional-root-assuming-X x σ
 
   C₁ : (Σ \(φ : Π Y) → p φ ≡ ₀) → p φ₀ ≡ ₁ → ¬ X
-  C₁ σ = contrapositive(c₀ σ) ∘ Lemma[b≡₁→b≢₀]
+  C₁ σ = contrapositive(c₀ σ) ∘ equal-₁-different-from-₀
 
   C₂ : (Σ \(φ : Π Y) → p φ ≡ ₀) → ¬ X → p φ₀ ≡ ₀
   C₂ σ u = φ₀-is-conditional-root-assuming-X-empty u σ

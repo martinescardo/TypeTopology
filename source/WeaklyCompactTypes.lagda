@@ -150,7 +150,7 @@ cdd {𝓤} {𝓥} {X} {Y} c d f g = h (c p)
   φ : ((x : X) → p x ≡ ₁) → f ≡ g
   φ α = (dfunext (fe 𝓤 𝓥) (λ x → pr₂ (r x) (α x)))
   γ : f ≡ g → (x : X) → p x ≡ ₁
-  γ t x = Lemma[b≢₀→b≡₁] (λ u → pr₁ (r x) u (happly t x))
+  γ t x = different-from-₀-equal-₁ (λ u → pr₁ (r x) u (happly t x))
   h : decidable((x : X) → p x ≡ ₁) → decidable (f ≡ g)
   h (inl α) = inl (φ α)
   h (inr u) = inr (contrapositive γ u)
@@ -331,7 +331,7 @@ tscd {𝓤} {X} ts c x y = g (a s)
   s : decidable ((p : X → 𝟚) → q p ≡ ₁)
   s = c q
   b : (p : X → 𝟚) → p x ≡ p y → q p ≡ ₁
-  b p u = Lemma[b≢₀→b≡₁] (λ v → pr₁ (r p) v u)
+  b p u = different-from-₀-equal-₁ (λ v → pr₁ (r p) v u)
   a : decidable ((p : X → 𝟚) → q p ≡ ₁) → decidable((p : X → 𝟚) → p x ≡ p y)
   a (inl f) = inl (λ p → pr₂ (r p) (f p))
   a (inr φ) = inr h
@@ -420,7 +420,7 @@ Closure of compactness under sums (and hence binary products):
   g (inr u) = inr (contrapositive h u)
    where
     h : ((σ : Σ Y) → p σ ≡ ₁) → (x : X) → q x ≡ ₁
-    h β x = Lemma[b≢₀→b≡₁] (λ r → q₀ x r (λ y → β (x , y)))
+    h β x = different-from-₀-equal-₁ (λ r → q₀ x r (λ y → β (x , y)))
 
 \end{code}
 
@@ -636,7 +636,7 @@ iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (dec
      where
       f : ¬ Σ \(x : X) → p x ≡ ₀
       f (x , s) = zero-is-not-one (s ⁻¹ ∙ φ r x)
-    h (inr u) = inl ∣ x₀ , (Lemma[b≢₁→b≡₀] u) ∣
+    h (inr u) = inl ∣ x₀ , (different-from-₁-equal-₀ u) ∣
 
 i-and-c-iso : {X : 𝓤 ̇} → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
 i-and-c-iso {𝓤} {X} (t , c) p = ∥∥-rec ∥∥-is-a-prop f t

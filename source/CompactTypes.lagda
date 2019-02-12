@@ -129,7 +129,7 @@ compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = lemma(φ p)
  where
   lemma : (Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁) →
            Σ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
-  lemma (inl(x , r)) = x , (λ s → 𝟘-elim(Lemma[b≡₀→b≢₁] r s))
+  lemma (inl(x , r)) = x , (λ s → 𝟘-elim(equal-₀-different-from-₁ r s))
   lemma (inr f) = x₀ , (λ r → f)
 
 compact∙-gives-compact : {X : 𝓤 ̇} → compact∙ X → compact X
@@ -248,11 +248,11 @@ putative-root {𝓤} {X} ε p = x₀ , (lemma₀ , lemma₁)
   x₀ : X
   x₀ = pr₁(ε p)
   lemma : ¬((x : X) → p x ≡ ₁) → p x₀ ≡ ₀
-  lemma = Lemma[b≢₁→b≡₀] ∘ contrapositive(pr₂(ε p))
+  lemma = different-from-₁-equal-₀ ∘ contrapositive(pr₂(ε p))
   lemma₀ : p has-a-root → x₀ is-a-root-of p
   lemma₀ (x , r) = lemma claim
    where claim : ¬((x : X) → p x ≡ ₁)
-         claim f = Lemma[b≡₁→b≢₀] (f x) r
+         claim f = equal-₁-different-from-₀ (f x) r
   lemma₁ : x₀ is-a-root-of p → p has-a-root
   lemma₁ h = x₀ , h
 \end{code}

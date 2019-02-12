@@ -162,7 +162,7 @@ prop-tychonoff {𝓤} {𝓥} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witnes
   -- and use the fact that if a point of the two-point type 𝟚 is ₀,
   -- then it is not ₁:
   Claim₁ : p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₀ → (X → 𝟘)
-  Claim₁ r φ = contrapositive(claim₀ r φ) ∘ Lemma[b≡₀→b≢₁]
+  Claim₁ r φ = contrapositive(claim₀ r φ) ∘ equal-₀-different-from-₁
   -- This concludes the first part of the argument.
 
   -- We now shuffle the arguments of φ₀-is-universal-witness-assuming-X→𝟘:

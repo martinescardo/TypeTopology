@@ -127,8 +127,8 @@ retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
   s ₀ = x₀
   s ₁ = x₁
   rs : (n : 𝟚) → r (s n) ≡ n
-  rs ₀ = Lemma[b≢₁→b≡₀] (λ p → pr₂ (φ x₀) p refl)
-  rs ₁ = Lemma[b≢₀→b≡₁] λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
+  rs ₀ = different-from-₁-equal-₀ (λ p → pr₂ (φ x₀) p refl)
+  rs ₁ = different-from-₀-equal-₁ λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
 
 \end{code}
 
@@ -332,7 +332,7 @@ m ≡[ℕ] n = (χ≡ m n) ≡ ₁
 infix  30 _≡[ℕ]_
 
 ≡-agrees-with-≡[ℕ] : (m n : ℕ) → m ≡ n ⇔ m ≡[ℕ] n
-≡-agrees-with-≡[ℕ] m n = (λ r → Lemma[b≢₀→b≡₁] (λ s → pr₁(χ≡-spec m n) s r)) , pr₂(χ≡-spec m n)
+≡-agrees-with-≡[ℕ] m n = (λ r → different-from-₀-equal-₁ (λ s → pr₁(χ≡-spec m n) s r)) , pr₂(χ≡-spec m n)
 
 ≢-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≡ n) × (p n ≡ ₁ → m ≢ n)
 ≢-indicator m = indicator(ℕ-is-discrete m)
@@ -349,6 +349,6 @@ m ≠ n = (χ≢ m n) ≡ ₁
 infix  30 _≠_
 
 ≠-agrees-with-≢ : (m n : ℕ) → m ≠ n ⇔ m ≢ n
-≠-agrees-with-≢ m n = pr₂(χ≢-spec m n) , (λ d → Lemma[b≢₀→b≡₁] (contrapositive(pr₁(χ≢-spec m n)) d))
+≠-agrees-with-≢ m n = pr₂(χ≢-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive(pr₁(χ≢-spec m n)) d))
 
 \end{code}

@@ -18,7 +18,7 @@ open import UF-ExcludedMiddle
 
 ⊥-⊤-density : funext 𝓤 𝓤 → propext 𝓤 → (f : Ω 𝓤 → 𝟚)
             → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Ω 𝓤) → f p ≡ ₁
-⊥-⊤-density fe pe f r s p = Lemma[b≢₀→b≡₁] a
+⊥-⊤-density fe pe f r s p = different-from-₀-equal-₁ a
  where
     a : f p ≢ ₀
     a t = 𝟘-elim(no-truth-values-other-than-⊥-or-⊤ fe pe (p , (b , c)))

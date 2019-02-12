@@ -35,7 +35,7 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
   fact₁ = contrapositive fact₀
 
   fact₂ : p u ≡ ₀ → u ≢ ∞
-  fact₂ = fact₁ ∘ Lemma[b≡₀→b≢₁]
+  fact₂ = fact₁ ∘ equal-₀-different-from-₁
 
   lemma₀ : p u ≡ ₀ → (u ≡ ∞) + (u ≢ ∞)
   lemma₀ s = inr(fact₂ s)

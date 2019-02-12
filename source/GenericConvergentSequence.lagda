@@ -146,10 +146,10 @@ _⊏_ : ℕ → ℕ∞ → 𝓤₀ ̇
 n ⊏ u = incl u n ≡ ₁
 
 not-⊏-is-⊒ : {m : ℕ} {u : ℕ∞} → ¬(m ⊏ u) → u ⊑ m
-not-⊏-is-⊒ f = Lemma[b≢₁→b≡₀] f
+not-⊏-is-⊒ f = different-from-₁-equal-₀ f
 
 not-⊑-is-⊐ : {m : ℕ} {u : ℕ∞} → ¬(u ⊑ m) → m ⊏ u
-not-⊑-is-⊐ f = Lemma[b≢₀→b≡₁] f
+not-⊑-is-⊐ f = different-from-₀-equal-₁ f
 
 is-Zero : ℕ∞ → 𝓤₀ ̇
 is-Zero u = u ⊑ 0
@@ -235,7 +235,7 @@ is-Zero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → incl u i ≡ incl Zero i
   lemma 0 = base
-  lemma (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u i) (lemma i)
+  lemma (succ i) = [a≡₁→b≡₁]-gives-[b≡₀→a≡₀] (pr₂ u i) (lemma i)
 
 same-positivity : funext₀ → (u v : ℕ∞)
                → (u ≡ Zero → v ≡ Zero)
@@ -259,14 +259,14 @@ not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred
 not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (i : ℕ) → incl u i ≡ incl(Succ(Pred u)) i
-  lemma 0 = Lemma[b≢₀→b≡₁] (f ∘ is-Zero-equal-Zero fe)
+  lemma 0 = different-from-₀-equal-₁ (f ∘ is-Zero-equal-Zero fe)
   lemma (succ i) = refl
 
 positive-is-not-Zero : {u : ℕ∞} → is-positive u → u ≢ Zero
 positive-is-not-Zero {u} r s = lemma r
  where
   lemma : ¬(is-positive u)
-  lemma = Lemma[b≡₀→b≢₁](ap positivity s)
+  lemma = equal-₀-different-from-₁(ap positivity s)
 
 positive-equal-Succ : funext₀ → {u : ℕ∞} → is-positive u → u ≡ Succ(Pred u)
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
@@ -292,7 +292,7 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
      where
       lemma₀ : (i : ℕ) → u ⊑ succ i
       lemma₀ 0 = s
-      lemma₀ (succ i) = Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] (pr₂ u (succ i)) (lemma₀ i)
+      lemma₀ (succ i) = [a≡₁→b≡₁]-gives-[b≡₀→a≡₀] (pr₂ u (succ i)) (lemma₀ i)
   lemma u (succ n) r s 0 = lemma₁ (succ n) r
      where
       lemma₁ : (n : ℕ) → n ⊏ u → is-positive u
@@ -309,8 +309,8 @@ not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n)
 not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (n : ℕ) → n ⊏ u
-  lemma 0 = Lemma[b≢₀→b≡₁](λ r → f 0 (is-Zero-equal-Zero fe r))
-  lemma (succ n) = Lemma[b≢₀→b≡₁](λ r → f(succ n)(Succ-criterion fe (lemma n) r))
+  lemma 0 = different-from-₀-equal-₁(λ r → f 0 (is-Zero-equal-Zero fe r))
+  lemma (succ n) = different-from-₀-equal-₁(λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
 ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇}
             → ({u : ℕ∞} → is-separated (Y u))
@@ -379,14 +379,14 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
     g₀ : is-Zero u → decidable (u ≡ Zero)
     g₀ r = inl(is-Zero-equal-Zero fe r)
     g₁ : is-positive u → decidable (u ≡ Zero)
-    g₁ r = inr(contrapositive h (Lemma[b≡₁→b≢₀] r))
+    g₁ r = inr(contrapositive h (equal-₁-different-from-₀ r))
      where
       h : u ≡ Zero → is-Zero u
       h r = ap (λ - → incl - 0) r
   f u (succ n) = 𝟚-equality-cases g₀ g₁
    where
     g₀ :  u ⊑ n → decidable (u ≡ under(succ n))
-    g₀ r = inr(contrapositive g (Lemma[b≡₀→b≢₁] r))
+    g₀ r = inr(contrapositive g (equal-₀-different-from-₁ r))
      where
       g : u ≡ under(succ n) → n ⊏ u
       g r = ap (λ - → incl - n) r ∙ under-diagonal₁ n
@@ -396,7 +396,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
       g₁₀ : u ⊑ succ n → decidable (u ≡ under(succ n))
       g₁₀ s = inl(Succ-criterion fe r s)
       g₁₁ : succ n ⊏ u → decidable (u ≡ under(succ n))
-      g₁₁ s = inr (contrapositive g (Lemma[b≡₁→b≢₀] s))
+      g₁₁ s = inr (contrapositive g (equal-₁-different-from-₀ s))
        where
         g : u ≡ under(succ n) → u ⊑ succ n
         g r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀(succ n)
@@ -636,7 +636,7 @@ under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
   g (inr φ) = succ n , ≤-refl n , s
     where
       q : n ⊏ u
-      q = Lemma[b≢₀→b≡₁] φ
+      q = different-from-₀-equal-₁ φ
       s : u ≡ Succ (under n)
       s = Succ-criterion fe {u} {n} q p
 

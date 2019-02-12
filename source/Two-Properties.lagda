@@ -38,23 +38,23 @@ open import Negation
 zero-is-not-one : ₀ ≢ ₁
 zero-is-not-one ()
 
-Lemma[b≡₁→b≢₀] : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
-Lemma[b≡₁→b≢₀] r s = zero-is-not-one (s ⁻¹ ∙ r)
+equal-₁-different-from-₀ : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
+equal-₁-different-from-₀ r s = zero-is-not-one (s ⁻¹ ∙ r)
 
-Lemma[b≢₀→b≡₁] : {b : 𝟚} → b ≢ ₀ → b ≡ ₁
-Lemma[b≢₀→b≡₁] f = 𝟚-equality-cases (𝟘-elim ∘ f) (λ r → r)
+different-from-₀-equal-₁ : {b : 𝟚} → b ≢ ₀ → b ≡ ₁
+different-from-₀-equal-₁ f = 𝟚-equality-cases (𝟘-elim ∘ f) (λ r → r)
 
-Lemma[b≢₁→b≡₀] : {b : 𝟚} → b ≢ ₁ → b ≡ ₀
-Lemma[b≢₁→b≡₀] f = 𝟚-equality-cases (λ r → r) (𝟘-elim ∘ f)
+different-from-₁-equal-₀ : {b : 𝟚} → b ≢ ₁ → b ≡ ₀
+different-from-₁-equal-₀ f = 𝟚-equality-cases (λ r → r) (𝟘-elim ∘ f)
 
-Lemma[b≡₀→b≢₁] : {b : 𝟚} → b ≡ ₀ → b ≢ ₁
-Lemma[b≡₀→b≢₁] r s = zero-is-not-one (r ⁻¹ ∙ s)
+equal-₀-different-from-₁ : {b : 𝟚} → b ≡ ₀ → b ≢ ₁
+equal-₀-different-from-₁ r s = zero-is-not-one (r ⁻¹ ∙ s)
 
-Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] : {a b : 𝟚} → (a ≡ ₁ → b ≡ ₁) → b ≡ ₀ → a ≡ ₀
-Lemma[[a≡₁→b≡₁]→b≡₀→a≡₀] f = Lemma[b≢₁→b≡₀] ∘ (contrapositive f) ∘ Lemma[b≡₀→b≢₁]
+[a≡₁→b≡₁]-gives-[b≡₀→a≡₀] : {a b : 𝟚} → (a ≡ ₁ → b ≡ ₁) → b ≡ ₀ → a ≡ ₀
+[a≡₁→b≡₁]-gives-[b≡₀→a≡₀] f = different-from-₁-equal-₀ ∘ (contrapositive f) ∘ equal-₀-different-from-₁
 
-Lemma[[a≡₀→b≡₀]→b≡₁→a≡₁] : {a b : 𝟚} → (a ≡ ₀ → b ≡ ₀) → b ≡ ₁ → a ≡ ₁
-Lemma[[a≡₀→b≡₀]→b≡₁→a≡₁] f = Lemma[b≢₀→b≡₁] ∘ (contrapositive f) ∘ Lemma[b≡₁→b≢₀]
+[a≡₀→b≡₀]-gives-[b≡₁→a≡₁] : {a b : 𝟚} → (a ≡ ₀ → b ≡ ₀) → b ≡ ₁ → a ≡ ₁
+[a≡₀→b≡₀]-gives-[b≡₁→a≡₁] f = different-from-₀-equal-₁ ∘ (contrapositive f) ∘ equal-₁-different-from-₀
 
 \end{code}
 
@@ -138,11 +138,11 @@ min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
 
 Lemma[minab≤₂a] : {a b : 𝟚} → min𝟚 a b ≤₂ a
-Lemma[minab≤₂a] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
+Lemma[minab≤₂a] {₀} {b} r = 𝟘-elim(equal-₁-different-from-₀ r refl)
 Lemma[minab≤₂a] {₁} {b} r = refl
 
 Lemma[minab≤₂b] : {a b : 𝟚} → min𝟚 a b ≤₂ b
-Lemma[minab≤₂b] {₀} {b} r = 𝟘-elim(Lemma[b≡₁→b≢₀] r refl)
+Lemma[minab≤₂b] {₀} {b} r = 𝟘-elim(equal-₁-different-from-₀ r refl)
 Lemma[minab≤₂b] {₁} {b} r = r
 
 Lemma[min𝟚ab≡₁→b≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → b ≡ ₁
@@ -210,10 +210,10 @@ Lemma[b⊕c≡₀→b≡c] {₁} {₀} ()
 Lemma[b⊕c≡₀→b≡c] {₁} {₁} r = refl
 
 Lemma[b≢c→b⊕c≡₁] : {b c : 𝟚} → b ≢ c → b ⊕ c ≡ ₁
-Lemma[b≢c→b⊕c≡₁] = Lemma[b≢₀→b≡₁] ∘ (contrapositive Lemma[b⊕c≡₀→b≡c])
+Lemma[b≢c→b⊕c≡₁] = different-from-₀-equal-₁ ∘ (contrapositive Lemma[b⊕c≡₀→b≡c])
 
 Lemma[b⊕c≡₁→b≢c] : {b c : 𝟚} → b ⊕ c ≡ ₁ → b ≢ c
-Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ Lemma[b≡₁→b≢₀]
+Lemma[b⊕c≡₁→b≢c] = (contrapositive Lemma[b≡c→b⊕c≡₀]) ∘ equal-₁-different-from-₀
 
 \end{code}
 

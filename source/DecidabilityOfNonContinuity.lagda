@@ -45,7 +45,7 @@ Lemma-3·1 q = claim₄
   claim₁ : decidable((n : ℕ) → p(under n) ≡ ₁)
   claim₁ = Theorem-8·2 p
   claim₂ : ((n : ℕ) → ¬ A (under n)) → (n : ℕ) → p(under n) ≡ ₁
-  claim₂ φ n = Lemma[b≢₀→b≡₁] (λ v → φ n (pr₁ (p-spec (under n)) v))
+  claim₂ φ n = different-from-₀-equal-₁ (λ v → φ n (pr₁ (p-spec (under n)) v))
   claim₃ : decidable((n : ℕ) → p(under n) ≡ ₁) → decidable((n : ℕ) → ¬(A(under n)))
   claim₃ (inl f) = inl (λ n → pr₂ (p-spec (under n)) (f n))
   claim₃ (inr u) = inr (contrapositive claim₂ u)

@@ -50,7 +50,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
       s : Succ x ≢ ∞
       s t = ne (ap p (Succ-lc (t ∙ (Succ-∞-is-∞ fe)⁻¹) ∙ t ⁻¹))
       s' : p(Succ x) ≡ ₀
-      s' = Lemma[b≢₁→b≡₀] (λ t → ne (r ∙ t ⁻¹))
+      s' = different-from-₁-equal-₀ (λ t → ne (r ∙ t ⁻¹))
 
   claim₁ : ((y : ℕ∞) → p y ≡ p(Succ y)) →
             (Σ \(x : ℕ∞) → (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p(under n) ≡ ₁)
@@ -105,7 +105,7 @@ Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
     c₁ g = c₀ d
      where
       d : (n : ℕ) → x ≢ under n
-      d n r = Lemma[b≡₀→b≢₁] (pr₂(pr₂ e)) (ap p r ∙ g n)
+      d n r = equal-₀-different-from-₁ (pr₂(pr₂ e)) (ap p r ∙ g n)
   claim₁ : ((n : ℕ) → p(under n) ≡ ₁) → decidable((n : ℕ) → p(under n) ≡ ₁)
   claim₁ f = inl f
 
