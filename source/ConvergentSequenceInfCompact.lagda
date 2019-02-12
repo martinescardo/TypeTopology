@@ -14,7 +14,7 @@ open import SpartanMLTT
 
 module ConvergentSequenceInfCompact (fe₀ : funext 𝓤₀ 𝓤₀) where
 
-open import Negation
+
 open import Two-Properties
 open import InfCompact
 open import GenericConvergentSequence

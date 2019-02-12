@@ -75,7 +75,7 @@ module CoNaturals (fe : FunExt) where
 
 open import SpartanMLTT
 open import GenericConvergentSequence
-open import Negation
+
 open import Two-Properties
 open import Plus-Properties
 

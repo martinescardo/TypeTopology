@@ -1,3 +1,5 @@
+This file needs reorganization and clean-up.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -8,6 +10,10 @@ open import SpartanMLTT
 
 Nat : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Nat A B = Π \x → A x → B x
+
+Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (τ : Nat A B)
+                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
+Nats-are-natural A B τ refl = refl
 
 NatΣ : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇} → Nat A B → Σ A → Σ B
 NatΣ ζ (x , a) = (x , ζ x a)
@@ -31,10 +37,6 @@ left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
 
 _≈_ : {X : 𝓤 ̇} {x : X} {A : X → 𝓥 ̇} → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
 η ≈ θ = ∀ y → η y ∼ θ y
-
-Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (τ : Nat A B)
-                 → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
-Nats-are-natural A B τ refl = refl
 
 ap-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} (y : Y) {x x' : X} (p : x ≡ x') → ap (λ _ → y) p ≡ refl
 ap-const y refl = refl
@@ -104,7 +106,7 @@ transport-ap' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : Y → 𝓦 ̇)
 transport-ap' A f refl = refl
 
 nat-transport : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇}
-                (f : (x : X) → A x → B x) {x y : X} (p : x ≡ y) {a : A x}
+                (f : Nat A B) {x y : X} (p : x ≡ y) {a : A x}
               → f y (transport A p a) ≡ transport B p (f x a)
 nat-transport f refl = refl
 
@@ -125,22 +127,22 @@ transport-rel' : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (_≺_ : {x : X} → Y x → 
 transport-rel' _≺_ a .a b v refl = id
 
 transport-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {x x' : X} {y : Y} (p : x ≡ x')
-               → transport (λ (_ : X) → Y) p y ≡ y
+                → transport (λ (_ : X) → Y) p y ≡ y
 transport-const refl = refl
 
 apd' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (f : (x : X) → A x) {x y : X}
-    (p : x ≡ y) → transport A p (f x) ≡ f y
+       (p : x ≡ y) → transport A p (f x) ≡ f y
 apd' A f refl = refl
 
 apd : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (f : (x : X) → A x) {x y : X}
-    (p : x ≡ y) → transport A p (f x) ≡ f y
+      (p : x ≡ y) → transport A p (f x) ≡ f y
 apd = apd' _
 
 ap-id-is-id : {X : 𝓤 ̇} {x y : X} (p : x ≡ y) → p ≡ ap id p
 ap-id-is-id refl = refl
 
 ap-comp : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
-       → ap f (p ∙ q) ≡ ap f p ∙ ap f q
+        → ap f (p ∙ q) ≡ ap f p ∙ ap f q
 ap-comp f refl refl = refl
 
 ap-sym : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) {x y : X} (p : x ≡ y)
@@ -148,7 +150,7 @@ ap-sym : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) {x y : X} (p : x ≡ y)
 ap-sym f refl = refl
 
 ap-ap : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z) {x x' : X} (r : x ≡ x')
-     → ap g (ap f r) ≡ ap (g ∘ f) r
+      → ap g (ap f r) ≡ ap (g ∘ f) r
 ap-ap {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → 𝓦 ̇
@@ -165,7 +167,7 @@ refl-right-neutral : {X : 𝓤 ̇} {x y : X} (p : x ≡ y) → p ≡ p ∙ refl
 refl-right-neutral p = refl
 
 ∙assoc : {X : 𝓤 ̇} {x y z t : X} (p : x ≡ y) (q : y ≡ z) (r : z ≡ t)
-      → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
+       → (p ∙ q) ∙ r ≡ p ∙ (q ∙ r)
 ∙assoc refl refl refl = refl
 
 happly' : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (f g : Π A) → f ≡ g → f ∼ g
@@ -179,14 +181,14 @@ sym-is-inverse : {X : 𝓤 ̇} {x y : X} (p : x ≡ y)
 sym-is-inverse = J (λ x y p → refl ≡ p ⁻¹ ∙ p) (λ x → refl)
 
 sym-is-inverse' : {X : 𝓤 ̇} {x y : X} (p : x ≡ y)
-               → refl ≡ p ∙ p ⁻¹
+                → refl ≡ p ∙ p ⁻¹
 sym-is-inverse' refl = refl
 
 ⁻¹-involutive : {X : 𝓤 ̇} {x y : X} (p : x ≡ y) → (p ⁻¹)⁻¹ ≡ p
 ⁻¹-involutive refl = refl
 
 ⁻¹-contravariant : {X : 𝓤 ̇} {x y : X} (p : x ≡ y) {z : X} (q : y ≡ z)
-                → q ⁻¹ ∙ p ⁻¹ ≡ (p ∙ q)⁻¹
+                 → q ⁻¹ ∙ p ⁻¹ ≡ (p ∙ q)⁻¹
 ⁻¹-contravariant refl refl = refl
 
 left-inverse : {X : 𝓤 ̇} {x y : X} (p : x ≡ y) → p ⁻¹ ∙ p ≡ refl
@@ -216,19 +218,19 @@ homotopies-are-natural : {X : 𝓤 ̇} {A : 𝓥 ̇} (f g : X → A) (H : f ∼ 
 homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
 to-×-≡ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {x x' : X} {y y' : Y}
-     → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
+       → x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
 to-×-≡ refl refl = refl
 
 to-×-≡' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {z z' : X × Y}
-     → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z') → z ≡ z'
+        → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z') → z ≡ z'
 to-×-≡' (refl , refl) = refl
 
 from-×-≡' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {z z' : X × Y}
-     → z ≡ z' → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z' )
+          → z ≡ z' → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z' )
 from-×-≡' refl = (refl , refl)
 
 from-Σ-≡ : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {σ τ : Σ Y} (r : σ ≡ τ)
-          → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)
+         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)
 from-Σ-≡ refl = refl , refl
 
 from-Σ-≡' : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {u v : Σ Y} (r : u ≡ v)

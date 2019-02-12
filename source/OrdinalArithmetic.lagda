@@ -19,7 +19,7 @@ module OrdinalArithmetic
         (fe : FunExt)
        where
 
-open import Negation
+
 open import Ordinals fe
 open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)

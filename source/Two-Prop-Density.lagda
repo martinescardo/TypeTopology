@@ -7,7 +7,7 @@ Martin Escardo
 module Two-Prop-Density where
 
 open import SpartanMLTT
-open import Negation
+
 open import Two-Properties
 open import UF-Base
 open import UF-Subsingletons-FunExt

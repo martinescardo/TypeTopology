@@ -16,7 +16,7 @@ open import UF-FunExt
 
 module BasicDiscontinuityTaboo (fe : FunExt) where
 
-open import Negation
+
 open import Two-Properties
 open import Plus-Properties
 open import GenericConvergentSequence

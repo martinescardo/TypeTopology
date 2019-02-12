@@ -10,7 +10,7 @@ in the module SpartanMLTT. Here we develop some general machinery.
 module Two-Properties where
 
 open import SpartanMLTT
-open import Negation
+
 
 𝟚-Cases : {A : 𝓤 ̇} → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a

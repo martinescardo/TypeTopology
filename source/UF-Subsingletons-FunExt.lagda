@@ -14,7 +14,7 @@ About (sub)singletons using function extensionality.
 module UF-Subsingletons-FunExt where
 
 open import SpartanMLTT
-open import Negation
+
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt

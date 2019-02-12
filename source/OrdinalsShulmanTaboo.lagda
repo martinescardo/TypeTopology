@@ -38,7 +38,7 @@ On 22/07/18 06:17, Michael Shulman wrote:
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import Negation
+
 open import UF-FunExt
 open import UF-Subsingletons
 

@@ -16,8 +16,9 @@ Here we have definitions and proofs in Agda notation, which assume a
 univalent mathematics background (e.g. given by the HoTT book),
 preceded by informal (rigorous) discussion.
 
-We show that the universe is (right-Kan) injective wrt embeddings. An
-embedding is a map j:X→Y whose fibers are all univalent propositions.
+We show that the universe is (pointwise right-Kan) injective wrt
+embeddings. An embedding is a map j:X→Y whose fibers are all univalent
+propositions.
 
 In the remote past, I looked at injectivity in categories of spaces
 and locales, with respect to various kinds of maps, and I wrote
@@ -95,7 +96,7 @@ open import UF-FunExt
 module InjectiveTypes (fe : FunExt) where
 
 open import SpartanMLTT
-open import Negation
+
 open import Plus-Properties
 open import UF-Base
 open import UF-Equiv
@@ -137,6 +138,37 @@ _≾_ = Nat
 _≾_-explicitly : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
                → A ≾ B ≡ ((x : X) → A x → B x)
 _≾_-explicitly A B = refl
+
+\end{code}
+
+We think of A and B as some sort ∞-presheaves, with the category of
+sets replaced by a universe of ∞-groupoids.
+
+Natural transformations are automatically natural: for all x,y: A and
+p : x ≡ y,
+
+                        τ x
+               A x --------------→ B x
+                |                   |
+                |                   |
+           A[p] |                   | B[p]
+                |                   |
+                |                   |
+                ↓                   ↓
+               A y --------------→ B y
+                        τ y
+
+\begin{code}
+
+≾-naturality : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (τ : A ≾ B)
+             → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
+≾-naturality = Nats-are-natural
+
+\end{code}
+
+We now work with the following assumptions:
+
+\begin{code}
 
 module _ {X : 𝓤 ̇}
          {Y : 𝓥 ̇}

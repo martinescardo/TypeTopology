@@ -11,7 +11,7 @@ still use the terminology "ordinal" here.
 module OrdinalsWellOrderArithmetic where
 
 open import SpartanMLTT
-open import Negation
+
 open import OrdinalNotions hiding (_≤_)
 open import UF-Base
 open import UF-Subsingletons

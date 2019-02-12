@@ -42,7 +42,7 @@ we had a convoluted path to this supposedly natural way).
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import Negation
+
 open import UF-FunExt
 
 module PropTychonoff (fe : FunExt) where

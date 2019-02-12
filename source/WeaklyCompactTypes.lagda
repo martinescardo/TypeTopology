@@ -8,7 +8,7 @@ the module CompactTypes for the strong notion.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import Negation
+
 open import CompactTypes
 open import TotallySeparated
 open import Two-Properties

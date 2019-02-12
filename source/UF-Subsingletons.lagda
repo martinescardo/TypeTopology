@@ -15,7 +15,7 @@ module UF-Subsingletons where
 
 open import SpartanMLTT
 open import One-Properties
-open import Negation
+
 open import Plus-Properties
 open import UF-Base
 

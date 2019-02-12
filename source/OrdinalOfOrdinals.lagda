@@ -17,7 +17,7 @@ module OrdinalOfOrdinals
        where
 
 open import SpartanMLTT
-open import Negation
+
 open import OrdinalNotions hiding (_≤_)
 open import Ordinals fe
 open import UF-Base

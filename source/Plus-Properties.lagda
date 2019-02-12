@@ -11,7 +11,6 @@ open import Universes
 open import Negation
 open import Id
 open import Empty
-open import Negation
 
 +-commutative : {A : 𝓤 ̇} {B : 𝓥 ̇} → A + B → B + A
 +-commutative = cases inr inl

@@ -29,6 +29,7 @@ import Dominance
 import DummettDisjunction
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness
+import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id

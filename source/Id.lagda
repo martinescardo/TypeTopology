@@ -35,7 +35,7 @@ transport' A {x} {y} p a = Jbased x (λ y p → A y) a y p
 
 transport : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X}
           → x ≡ y → A x → A y
-transport A refl = λ a → a
+transport A refl = id
 
 _∙_ : {X : 𝓤 ̇} {x y z : X} → x ≡ y → y ≡ z → x ≡ z
 p ∙ q = transport (Id (lhs p)) q p

@@ -7,7 +7,7 @@ Martin Escardo 2011.
 module DecidableAndDetachable where
 
 open import SpartanMLTT
-open import Negation
+
 open import Plus-Properties
 open import Two-Properties
 open import UF-Subsingletons

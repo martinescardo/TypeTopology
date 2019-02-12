@@ -23,7 +23,7 @@ open import UF-FunExt
 
 module DecidabilityOfNonContinuity (fe : funext 𝓤₀ 𝓤₀) where
 
-open import Negation
+
 open import Two-Properties
 open import DiscreteAndSeparated
 open import GenericConvergentSequence

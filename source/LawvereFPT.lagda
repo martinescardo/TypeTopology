@@ -31,7 +31,7 @@ applications:
 
 \begin{code}
 
-open import Negation
+
 open import Two-Properties
 open import NaturalNumbers-Properties
 open import UF-Retracts

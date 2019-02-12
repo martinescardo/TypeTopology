@@ -21,7 +21,7 @@ open import UF-FunExt
 
 module ConvergentSequenceCompact (fe : funext 𝓤₀ 𝓤₀) where
 
-open import Negation
+
 open import Two-Properties
 open import UF-PropTrunc
 open import GenericConvergentSequence

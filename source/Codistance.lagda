@@ -27,7 +27,7 @@ open import UF-FunExt
 
 module Codistance (fe : FunExt) where
 
-open import Negation
+
 open import Sequence fe
 open import CoNaturals fe
 open import GenericConvergentSequence

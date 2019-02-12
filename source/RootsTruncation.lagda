@@ -15,7 +15,7 @@ equality with any other point of the type is decidable.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import Negation
+
 open import UF-Base
 open import DiscreteAndSeparated
 

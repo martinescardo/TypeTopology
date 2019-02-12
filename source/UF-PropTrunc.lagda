@@ -7,7 +7,7 @@ Martin Escardo
 module UF-PropTrunc where
 
 open import SpartanMLTT
-open import Negation
+
 open import Plus-Properties
 open import UF-Base public
 open import UF-Subsingletons public

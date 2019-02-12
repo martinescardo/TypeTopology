@@ -14,7 +14,7 @@ motivation coming from univalent type theory is discussed at the end.)
 module DummettDisjunction where
 
 open import SpartanMLTT
-open import Negation
+
 
 _⊞_ : Set → Set → Set
 P ⊞ Q = ((P → Q) → Q) × ((Q → P) → P)

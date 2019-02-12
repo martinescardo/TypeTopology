@@ -69,7 +69,7 @@ open import UF-FunExt
 module RicesTheoremForTheUniverse (fe : FunExt) where
 
 open import SpartanMLTT
-open import Negation
+
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import TheTopologyOfTheUniverse fe
