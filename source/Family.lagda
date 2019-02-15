@@ -26,3 +26,17 @@ family (I , φ) = φ
 η x = 𝟙 , (λ _ → x)
 
 \end{code}
+
+\begin{code}
+
+Sigma : {X : 𝓤 ̇} → 𝓕  X → 𝓣 ̇
+Sigma (I , φ) = I
+
+Pi : {X : 𝓤 ̇} → 𝓕  X → 𝓣 ⊔ 𝓤 ̇
+Pi {𝓤} {X} (I , φ) = Σ \(s : X → I) → φ ∘ s ≡ id
+
+open import UF-Classifiers
+
+
+
+\end{code}

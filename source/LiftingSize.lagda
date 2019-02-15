@@ -126,8 +126,8 @@ Added 8th Feb 2019.
 
 \begin{code}
 
-𝓛-resize₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
-𝓛-resize₀ (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
+𝓛-resizing₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
+𝓛-resizing₀ (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
  where
   up : Ω₀ → Ω 𝓣
   up = eqtofun e₀
@@ -143,4 +143,30 @@ Added 8th Feb 2019.
              ((λ {(P , f , i) → (P , i) , f}) ,
               (λ _ → refl) ,
               (λ _ → refl))
+
+\end{code}
+
+Added 15th Feb 2019. The proof is literally the same, the assumption is
+more parsimonious.
+
+\begin{code}
+
+𝓛-impredicative-resizing : Ω-impredicative 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
+𝓛-impredicative-resizing (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
+ where
+  up : Ω₀ → Ω 𝓣
+  up = eqtofun e₀
+
+  up-is-equiv : is-equiv up
+  up-is-equiv = eqtofun-is-an-equiv e₀
+
+  d : (Σ \(p : Ω₀) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
+  d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
+
+  e : (Σ \(p : Ω 𝓣) → p holds → X) ≃ 𝓛 X
+  e = qinveq (λ {((P , i) , f) → P , f , i})
+             ((λ {(P , f , i) → (P , i) , f}) ,
+              (λ _ → refl) ,
+              (λ _ → refl))
+
 \end{code}

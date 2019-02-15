@@ -211,8 +211,8 @@ truth-values in the universe 𝓤 itself lives in 𝓤.
 
 \begin{code}
 
-Ω-self-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω-self-resizing 𝓤 = (Ω 𝓤) has-size 𝓤
+Ω-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω-impredicative 𝓤 = (Ω 𝓤) has-size 𝓤
 
 \end{code}
 
@@ -222,9 +222,9 @@ impredicative, but it does imply that all other, successor, universes
 
 \begin{code}
 
-Ω-self-resizing⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
-                               → Ω-self-resizing (𝓤 ⁺)
-Ω-self-resizing⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
+Ω-impredicative⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+                               → Ω-impredicative (𝓤 ⁺)
+Ω-impredicative⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
 
 \end{code}
 
