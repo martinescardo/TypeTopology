@@ -35,6 +35,7 @@ import HiggsInvolutionTheorem
 import Id
 import InfCompact
 import InjectiveTypes
+import InjectiveTypes-article
 import LawvereFPT
 import LexicographicOrder
 import LexicographicCompactness
