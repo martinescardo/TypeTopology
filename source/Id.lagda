@@ -27,7 +27,7 @@ Jbased x A b .x refl = b
 
 J : {X : 𝓤 ̇} (A : (x y : X) → x ≡ y → 𝓥 ̇)
   → ((x : X) → A x x refl) → {x y : X} (r : x ≡ y) → A x y r
-J A f {x} {y} = Jbased x (λ y p → A x y p) (f x) y
+J A f {x} {y} = Jbased x (A x) (f x) y
 
 transport' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X}
           → x ≡ y → A x → A y

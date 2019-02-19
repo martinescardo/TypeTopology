@@ -1,5 +1,12 @@
 Martin Escardo, 27 April 2014, with later additions, 2017, 2018, 2019.
 
+This is a "blackboard" Agda file, which means that the ideas are
+reported in the order they come to mind (with the very bad ideas
+deleted, and with some intermediate useful ideas kept, even if they
+are not intended to make their way to publication). See the
+forthcoming file InjectiveTypes-paper for an organized presentation,
+which is currently under preparation.
+
 This introduction is incomplete and outdated / obsolete. Much more has
 been done since 2014 that is not reported here.
 
