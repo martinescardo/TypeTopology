@@ -1,4 +1,4 @@
-Martin Escardo, 19th Feb 2019.
+wMartin Escardo, 19th Feb 2019.
 
 Injective types in univalent mathematics.
 
@@ -27,6 +27,7 @@ their blackboard (verified) proofs.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
+open import SpartanMLTT
 open import UF-Univalence
 open import UF-PropTrunc
 
@@ -37,7 +38,6 @@ module InjectiveTypes-article
 
 open PropositionalTruncation pt
 
-open import SpartanMLTT
 open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-Embeddings
@@ -57,8 +57,9 @@ module blackboard = InjectiveTypes fe
 
 \end{code}
 
-We first define injective types, moderately injective types, and
-weakly injective types as follows.
+We study the notions of injective type (data), moderately injective
+type (property), and weakly injective types (property) and their
+relationships.
 
 \begin{code}
 
@@ -74,7 +75,7 @@ winjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-e
                       → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 \end{code}
 
-Universes are injective:
+Universes are injective, in at least two ways:
 
 \begin{code}
 
@@ -171,10 +172,9 @@ injective-resizing₀ {𝓤} D i = φ (injective-is-retract-of-power-of-universe
 
 \end{code}
 
-TODO. Include the stuff about the lifting monad regarding injectives.
-
 A further injective resizing for-free construction is possible by
-considering a "proof-relevant" notion of flabiness.
+considering a notion of flabiness as data (rather than as property, as
+in the 1-topos literature).
 
 \begin{code}
 
@@ -453,6 +453,76 @@ winjectivity-in-terms-of-injectivity' {𝓤} = blackboard.weakly-injective.winje
 
 We we would like to do better than this. For that purpose, we consider
 the lifting monad in conjunction with resizing.
+
+TODO. Include the stuff about the lifting monad regarding injectives.
+
+\begin{code}
+
+import Lifting
+import LiftingAlgebras
+import LiftingEmbeddingViaSIP
+
+𝓛 : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+𝓛 {𝓣} {𝓤} X = Σ \(P : 𝓣 ̇) → (P → X) × is-prop P
+
+𝓛-unit : {𝓣 𝓤 : Universe} (X : 𝓤 ̇) → X → 𝓛 {𝓣} X
+𝓛-unit X x = 𝟙 , (λ _ → x) , 𝟙-is-prop
+
+𝓛-unit-is-embedding : (X : 𝓤 ̇) → is-embedding (𝓛-unit {𝓣} X)
+𝓛-unit-is-embedding {𝓤} {𝓣} X = LiftingEmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X (ua 𝓣) (fe 𝓣 𝓤)
+
+joinop : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
+joinop {𝓣} {𝓤} X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
+
+𝓛-alg-Law₀ : {𝓣 𝓤 : Universe} {X : 𝓤 ̇} → joinop {𝓣} X → 𝓤 ̇
+𝓛-alg-Law₀ {𝓣} {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
+
+𝓛-alg-Law₁ : {𝓣 𝓤 : Universe} {X : 𝓤 ̇} → joinop {𝓣} X → (𝓣 ⁺) ⊔ 𝓤 ̇
+𝓛-alg-Law₁ {𝓣} {𝓤} {X} ∐ = (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
+                                → ∐ (Σ-is-prop i j) f ≡ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
+
+𝓛-alg : {𝓣 𝓤 : Universe} → 𝓤 ̇ → (𝓣 ⁺) ⊔ 𝓤 ̇
+𝓛-alg {𝓣} {𝓤} X = Σ \(∐ : joinop {𝓣} X) → 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
+
+𝓛-alg-flabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg {𝓣} A → flabby A 𝓣
+𝓛-alg-flabby {𝓣} {𝓤} = blackboard.injectivity-of-lifting.𝓛-alg-flabby 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤)
+
+𝓛-alg-injective : (A : 𝓤 ̇) → 𝓛-alg {𝓣} A → injective-type A 𝓣 𝓣
+𝓛-alg-injective A α = flabby-types-are-injective A (𝓛-alg-flabby α)
+
+free-𝓛-algebra-injective : (X : 𝓣 ̇) → injective-type (𝓛 {𝓣} X) 𝓣 𝓣
+free-𝓛-algebra-injective {𝓣} X = 𝓛-alg-injective (𝓛 X)
+                                   (LiftingAlgebras.𝓛-algebra-gives-alg 𝓣
+                                     (LiftingAlgebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
+\end{code}
+
+Because the unit of the lifting monad is an embedding, it follows that
+injective types are retracts of underlying objects of free algebras:
+
+\begin{code}
+
+injective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → injective-type D 𝓣 (𝓣 ⁺) → retract D of (𝓛 {𝓣} D)
+injective-is-retract-of-free-𝓛-algebra D i = injective-retract-of-subtype D i (𝓛 D)
+                                               (𝓛-unit D , 𝓛-unit-is-embedding D)
+\end{code}
+
+With propositional resizing, the injective types are precisely the
+retracts of the underlying objects of free algebras of the lifting
+monad:
+
+\begin{code}
+
+injectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇) → propositional-resizing (𝓣 ⁺) 𝓣
+                                       → injective-type D 𝓣 𝓣
+                                       ⇔ Σ \(X : 𝓣 ̇) → retract D of (𝓛 {𝓣} X)
+injectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
+  where
+   a : injective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)
+   a i = D , injective-is-retract-of-free-𝓛-algebra D (injective-resizing R D i)
+   b : (Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)) → injective-type D 𝓣 𝓣
+   b (X , r) = retract-of-injective D (𝓛 X) (free-𝓛-algebra-injective X) r
+
+\end{code}
 
 TODO. Discuss the lifting monad. What is crucial is that (1) the unit
 is an embedding, (2) with impredicativity the lifting construction
