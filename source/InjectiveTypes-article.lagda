@@ -42,8 +42,9 @@ open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-Embeddings
 open import UF-Retracts
-open import UF-IdEmbedding
+open import UF-Equiv
 open import UF-UniverseEmbedding
+open import UF-PropIndexedPiSigma
 
 import InjectiveTypes
 
@@ -58,7 +59,7 @@ module blackboard = InjectiveTypes fe
 \end{code}
 
 We study the notions of injective type (data), moderately injective
-type (property), and weakly injective types (property) and their
+type (property), and weakly injective type (property) and their
 relationships.
 
 \begin{code}
@@ -75,20 +76,140 @@ winjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-e
                       → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 \end{code}
 
-Universes are injective, in at least two ways:
+Universes are injective, in at least two ways.
 
 \begin{code}
 
+_╲_ _╱_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → 𝓦 ̇) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
+(f ╲ j) y = Σ \(w : fiber j y) → f(pr₁ w)
+(f ╱ j) y = Π \(w : fiber j y) → f(pr₁ w)
+
+
+\end{code}
+
+The crucial idea behind the following two statements is that a sum
+indexed by a proposition (the fiber) is (equivalent, and hence) equal,
+to any of its summands, and a product indexed by a proposition is
+equal to any of its factors, and the fiber is a propositino when j is
+an embedding.
+
+\begin{code}
+
+╲-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+               → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ╲ j ∘ j ∼ f
+╲-is-extension {𝓤} {𝓥} = blackboard.Σ-extension-is-extension (ua (𝓤 ⊔ 𝓥))
+
+╱-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+               → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ╱ j ∘ j ∼ f
+╱-is-extension {𝓤} {𝓥} = blackboard.Π-extension-is-extension (ua (𝓤 ⊔ 𝓥))
+
+universes-are-injective-Σ : injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
+universes-are-injective-Σ {𝓤} {𝓥} j e f = (f ╲ j , ╲-is-extension j e f)
+
+universes-are-injective-Π : injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
+universes-are-injective-Π {𝓤} {𝓥} j e f = (f ╱ j , ╱-is-extension j e f)
+
 universes-are-injective : injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-injective {𝓤} {𝓥} = blackboard.universes-are-injective-Π (ua (𝓤 ⊔ 𝓥))
+universes-are-injective = universes-are-injective-Σ
 
 universes-are-injective-particular : injective-type (𝓤 ̇) 𝓤 𝓤
 universes-are-injective-particular = universes-are-injective
 
 \end{code}
 
-We will rehearse the above construction to get more information below
-(still using what is developed in the blackboard). (Kan extensions.)
+For y:Y not in the image of j, the extensions give 𝟘 and 𝟙 respectively:
+
+\begin{code}
+
+Σ-extension-out-of-range : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
+                         → (y : Y) → ((x : X) → j x ≢ y)
+                         → (f ╲ j) y ≃ 𝟘 {𝓣}
+Σ-extension-out-of-range f j y φ = prop-indexed-sum-zero (uncurry φ)
+
+
+Π-extension-out-of-range : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
+                         → (y : Y) → ((x : X) → j x ≢ y)
+                         → (f ╱ j) y ≃ 𝟙 {𝓣}
+Π-extension-out-of-range {𝓤} {𝓥} {𝓦} f j y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
+
+\end{code}
+
+With excluded middle, this would give that Σ and Π extensions have the
+same sum and product as the non-extended maps, respectively, but
+excluded middle is not needed:
+
+\begin{code}
+
+same-Σ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
+       → Σ f ≃ Σ (f ╲ j)
+same-Σ = blackboard.same-Σ
+
+same-Π : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
+       → Π f ≃ Π (f ╱ j)
+same-Π = blackboard.same-Π
+
+\end{code}
+
+These two extensions are left and right (pointwise) Kan extensions in
+the following sense. First, A map X → 𝓤, when X is viewed as a
+∞-groupoid and hence an ∞-category, and when 𝓤 is viewed as the
+∞-generalization of the category of sets, can be considered as a sort
+of ∞-presheaf, because its functoriality is automatic. Then we can
+consider natural transformations between such ∞-presheafs. But again
+the naturality condition is automatic.  We denote by _≾_ the type of
+natural transformations between such ∞-presheafs.
+
+\begin{code}
+
+_[_] : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y : X} → Id x y → f x → f y
+f [ refl ] = id
+
+functoriality∙ : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y z : X} (p : Id x y) (q : Id y z)
+               → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
+functoriality∙ f refl refl = refl
+
+_≾_ : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+f ≾ g = (x : domain f) → f x → g x
+
+naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (g : X → 𝓦 ̇) (τ : f ≾ g) {x y : X} (p : x ≡ y)
+           → τ y ∘ f [ p ] ≡ g [ p ] ∘ τ x
+naturality f g τ refl = refl
+
+\end{code}
+
+With this notation, we have:
+
+\begin{code}
+
+
+ηΣ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
+   → f ≾ f ╲ j ∘ j
+ηΣ f j x B = (x , refl) , B
+
+
+ηΠ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
+  → (f ╱ j) ∘ j ≾ f
+ηΠ f j x A = A (x , refl)
+
+\end{code}
+
+These actually follow from the following more general facts:
+
+\begin{code}
+
+Σ-extension-left-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
+                     → (f ╲ j ≾ g) ≃ (f ≾ g ∘ j)
+Σ-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
+
+Π-extension-right-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
+                      → (g ≾ f ╱ j) ≃ (g ∘ j ≾ f)
+Π-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
+
+\end{code}
+
+TODO: Add the iterated-extension and retract-extension properties.
+
+This completes our discussion of extensions of maps into the universe.
 
 Retracts of injective are injective:
 
@@ -140,6 +261,8 @@ The identity-type former Id is an embedding X → (X → 𝓤):
 
 Id-is-embedding : {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
 Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
+ where
+  open import UF-IdEmbedding
 
 \end{code}
 
@@ -569,16 +692,18 @@ pointed-types-winjective-gives-EM {𝓤} i = blackboard.weakly-injective.pointed
 
 \end{code}
 
-TODO. Add the Kan extension properties of the universe and related
-things, including that they are themselves embedding (but not only
-that). This is actually at the beginning the the injectivity file.
-
-TODO. Add the iterated-extension property.
-
-TODO. Add the retract-extension property.
-
-And I think the list of TODO's includes pretty much what is left to
-have a complete article.
+I think the list of TODO's includes pretty much what is left to have a
+complete article.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
 InjectiveTypes file.
+
+Fixities:
+
+\begin{code}
+
+infix  7 _╲_
+infix  7 _╱_
+infixr 4 _≾_
+
+\end{code}
