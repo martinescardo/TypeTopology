@@ -540,10 +540,10 @@ injective-is-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                           → retract D of (D → 𝓤 ̇)
 injective-is-retract-of-power-of-universe {𝓤} D ua = embedding-retract D (D → 𝓤 ̇) Id (UA-Id-embedding ua fe)
 
-product-of-injective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
+Π-injective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
                      → ((a : A) → injective-type (D a) 𝓤 𝓥)
                      → injective-type (Π D) 𝓤 𝓥
-product-of-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
+Π-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
   where
     l : (a : A) → Σ \(h : Y → D a) → h ∘ j ∼ (λ x → f x a)
     l a = (i a) j e (λ x → f x a)
@@ -557,7 +557,7 @@ product-of-injective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' ,
 power-of-injective : {A : 𝓣 ̇} {D : 𝓦 ̇}
                    → injective-type D 𝓤 𝓥
                    → injective-type (A → D) 𝓤 𝓥
-power-of-injective i = product-of-injective (λ a → i)
+power-of-injective i = Π-injective (λ a → i)
 
 \end{code}
 
@@ -1041,7 +1041,7 @@ whereas the injectivity of the universe requires full univalence.
 
 \begin{code}
 
-Ω-flabby : {𝓤 𝓥 : Universe} → propext (𝓤 ⊔ 𝓥) → flabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
+Ω-flabby : propext (𝓤 ⊔ 𝓥) → flabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
 Ω-flabby {𝓤} {𝓥} pe P i f = (Q , j) , c
  where
   Q : 𝓤 ⊔ 𝓥 ̇
@@ -1058,7 +1058,7 @@ whereas the injectivity of the universe requires full univalence.
       t : Q ≡ f p holds
       t = pe j (holds-is-prop (f p)) g h
 
-Ω-injective : {𝓤 𝓥 : Universe} → propext (𝓤 ⊔ 𝓥) → injective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
+Ω-injective : propext (𝓤 ⊔ 𝓥) → injective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
 Ω-injective {𝓤} {𝓥} pe = flabby-types-are-injective (Ω (𝓤 ⊔ 𝓥)) (Ω-flabby {𝓤 ⊔ 𝓥} {𝓤} pe)
 
 \end{code}
@@ -1374,7 +1374,7 @@ so we need a new proof, but hence also new universe assumptions.
  power-of-winjective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
                      → winjective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
                      → winjective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
- power-of-winjective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
+ power-of-winjective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
    g : X × A → D
    g = uncurry f
