@@ -150,14 +150,14 @@ same-Π = blackboard.same-Π
 
 \end{code}
 
-These two extensions are left and right (pointwise) Kan extensions in
-the following sense. First, A map X → 𝓤, when X is viewed as a
-∞-groupoid and hence an ∞-category, and when 𝓤 is viewed as the
-∞-generalization of the category of sets, can be considered as a sort
-of ∞-presheaf, because its functoriality is automatic. Then we can
-consider natural transformations between such ∞-presheafs. But again
-the naturality condition is automatic.  We denote by _≾_ the type of
-natural transformations between such ∞-presheafs.
+These two extensions are left and right Kan extensions in the
+following sense. First, A map X → 𝓤, when X is viewed as a ∞-groupoid
+and hence an ∞-category, and when 𝓤 is viewed as the ∞-generalization
+of the category of sets, can be considered as a sort of ∞-presheaf,
+because its functoriality is automatic. Then we can consider natural
+transformations between such ∞-presheafs. But again the naturality
+condition is automatic.  We denote by _≾_ the type of natural
+transformations between such ∞-presheafs.
 
 \begin{code}
 
@@ -197,19 +197,53 @@ These actually follow from the following more general facts:
 
 \begin{code}
 
-Σ-extension-left-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
+╲-extension-left-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
                      → (f ╲ j ≾ g) ≃ (f ≾ g ∘ j)
-Σ-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
+╲-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
 
-Π-extension-right-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
+╱-extension-right-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
                       → (g ≾ f ╱ j) ≃ (g ∘ j ≾ f)
-Π-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
+╱-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
 
 \end{code}
 
-TODO: Add the iterated-extension and retract-extension properties.
+We also have that if j is an embedding then so are the extension maps
+f ↦ f ╲ j and f ↦ f ╱ j.
 
-This completes our discussion of extensions of maps into the universe.
+\begin{code}
+
+╲-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j
+                         → is-embedding (λ (f : X → 𝓤 ̇) → f ╲ j)
+╲-extension-is-embedding {𝓤} X Y j i = blackboard.∖-extension-is-embedding.s-is-embedding
+                                         X Y j i (fe 𝓤 (𝓤 ⁺)) (ua 𝓤)
+
+╱-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j
+                         → is-embedding (λ (f : X → 𝓤 ̇) → f ╱ j)
+╱-extension-is-embedding {𝓤} X Y j i = blackboard./-extension-is-embedding.s-is-embedding
+                                         X Y j i (fe 𝓤 (𝓤 ⁺)) (ua 𝓤)
+
+\end{code}
+
+We need the following two somewhat technical results in work on
+compact ordinals (reported in this repository but not in this
+article).
+
+\begin{code}
+
+iterated-╱ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇) (j : X → Y) (k : Y → Z)
+           → ((f ╱ j) ╱ k) ∼ (f ╱ (k ∘ j))
+iterated-╱ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (((f ╱ j) ╱ k) z) ((f ╱ (k ∘ j)) z)
+                                   (blackboard.iterated-extension j k z)
+
+
+retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (g : X → 𝓣 ̇) (j : X → Y)
+                  → ((x : X) → retract (f x) of (g x))
+                  → ((y : Y) → retract ((f ╱ j) y) of ((g ╱ j) y))
+retract-extension = blackboard.retract-extension
+
+\end{code}
+
+This completes our discussion of extensions of maps into universes.
 
 Retracts of injective are injective:
 
