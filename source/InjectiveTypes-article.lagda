@@ -150,14 +150,30 @@ same-Π = blackboard.same-Π
 
 \end{code}
 
-These two extensions are left and right Kan extensions in the
-following sense. First, A map X → 𝓤, when X is viewed as a ∞-groupoid
-and hence an ∞-category, and when 𝓤 is viewed as the ∞-generalization
-of the category of sets, can be considered as a sort of ∞-presheaf,
-because its functoriality is automatic. Then we can consider natural
-transformations between such ∞-presheafs. But again the naturality
-condition is automatic.  We denote by _≾_ the type of natural
-transformations between such ∞-presheafs.
+We also have that if j is an embedding then so are the extension maps
+f ↦ f ╲ j and f ↦ f ╱ j.
+
+\begin{code}
+
+╲-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j → is-embedding (_╲ j)
+╲-extension-is-embedding {𝓤} X Y j i = blackboard.∖-extension-is-embedding.s-is-embedding
+                                         X Y j i (fe 𝓤 (𝓤 ⁺)) (ua 𝓤)
+
+╱-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j → is-embedding (_╱ j)
+╱-extension-is-embedding {𝓤} X Y j i = blackboard./-extension-is-embedding.s-is-embedding
+                                         X Y j i (fe 𝓤 (𝓤 ⁺)) (ua 𝓤)
+
+\end{code}
+
+The two extensions are left and right Kan extensions in the following
+sense, without the need to assume that j is an embedding. First, a
+map X → 𝓤, when X is viewed as a ∞-groupoid and hence an ∞-category,
+and when 𝓤 is viewed as the ∞-generalization of the category of sets,
+can be considered as a sort of ∞-presheaf, because its functoriality
+is automatic. Then we can consider natural transformations between
+such ∞-presheafs. But again the naturality condition is automatic.  We
+denote by _≾_ the type of natural transformations between such
+∞-presheafs.
 
 \begin{code}
 
@@ -188,12 +204,14 @@ With this notation, we have:
 
 
 ηΠ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
-  → (f ╱ j) ∘ j ≾ f
+   → f ╱ j ∘ j ≾ f
 ηΠ f j x A = A (x , refl)
 
 \end{code}
 
-These actually follow from the following more general facts:
+These actually follow from the following more general facts, which say
+that the extension operators are left and right adjoint to the
+restriction map g ↦ g ∘ j.
 
 \begin{code}
 
@@ -207,26 +225,9 @@ These actually follow from the following more general facts:
 
 \end{code}
 
-We also have that if j is an embedding then so are the extension maps
-f ↦ f ╲ j and f ↦ f ╱ j.
-
-\begin{code}
-
-╲-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j
-                         → is-embedding (λ (f : X → 𝓤 ̇) → f ╲ j)
-╲-extension-is-embedding {𝓤} X Y j i = blackboard.∖-extension-is-embedding.s-is-embedding
-                                         X Y j i (fe 𝓤 (𝓤 ⁺)) (ua 𝓤)
-
-╱-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j
-                         → is-embedding (λ (f : X → 𝓤 ̇) → f ╱ j)
-╱-extension-is-embedding {𝓤} X Y j i = blackboard./-extension-is-embedding.s-is-embedding
-                                         X Y j i (fe 𝓤 (𝓤 ⁺)) (ua 𝓤)
-
-\end{code}
-
-We need the following two somewhat technical results in work on
-compact ordinals (reported in this repository but not in this
-article).
+We need the following two somewhat technical results in applications
+of injectivity to work on compact ordinals (reported in this
+repository but not in this article).
 
 \begin{code}
 
@@ -370,8 +371,6 @@ flabby-types-are-injective = blackboard.flabby-types-are-injective
 
 \end{code}
 
-TODO. Explain this verbally or reproduce the proof (or both).
-
 We then get this resizing theorem by composing the conversions between
 flabiness and injectivity:
 
@@ -475,8 +474,6 @@ flabiness-resizing = blackboard.flabiness-resizing
 
 \end{code}
 
-TODO. Explain the (simple) idea behind it.
-
 And from this it follows that the injectivity of a type with respect
 to two given universes 𝓤 and 𝓥 implies its injectivity with respect to
 all universes 𝓤' and 𝓥': we convert back-and-forth between injectivity
@@ -509,9 +506,9 @@ universe-retract = blackboard.universe-retract ua
 \end{code}
 
 Here are are using the fact that every injective type is a retract of
-any type in which it is embedded into, in conjunction with resizing,
-and that there is an embedding of any universe into any larger
-universe, assuming univalence.
+any type in which it is embedded, in conjunction with resizing, and
+that there is an embedding of any universe into any larger universe,
+assuming univalence.
 
 As mentioned above, we almost have that the injective types are
 precisely the retracts of exponential powers of universes, upto a
@@ -526,7 +523,7 @@ injective-characterization {𝓤} = blackboard.injective-characterization (ua �
 
 \end{code}
 
-We now discuss moderate and weak injectivity as defined above in
+We now discuss moderate and weak injectivity, as defined above, in
 relation to injectivity.
 
 \begin{code}
@@ -608,7 +605,7 @@ winjectivity-in-terms-of-injectivity' {𝓤} = blackboard.weakly-injective.winje
 
 \end{code}
 
-We we would like to do better than this. For that purpose, we consider
+We would like to do better than this. For that purpose, we consider
 the lifting monad in conjunction with resizing.
 
 \begin{code}
@@ -715,9 +712,6 @@ pointed-types-winjective-gives-EM {𝓤} i = blackboard.weakly-injective.pointed
                                             pt i (ua 𝓤)
 
 \end{code}
-
-I think the list of TODO's includes pretty much what is left to have a
-complete article.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
 InjectiveTypes file.
