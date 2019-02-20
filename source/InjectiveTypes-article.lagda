@@ -180,6 +180,7 @@ considering a "proof-relevant" notion of flabiness.
 
 flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
 flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
+
 \end{code}
 
 Flabby types are pointed:
@@ -239,6 +240,7 @@ injective-resizing₃ = injective-resizing₁
 This is resizing down.
 
 The type Ω 𝓤 of propositions of a universe 𝓤 is flabby. More generally:
+
 \begin{code}
 
 Ω-flabby : {𝓤 𝓥 : Universe} → flabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
@@ -250,8 +252,8 @@ Therefore it is injective:
 
 \begin{code}
 
-Ω-injective : propext (𝓤 ⊔ 𝓥) → injective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
-Ω-injective {𝓤} {𝓥} pe = flabby-types-are-injective (Ω (𝓤 ⊔ 𝓥)) (Ω-flabby {𝓤 ⊔ 𝓥} {𝓤})
+Ω-injective : injective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
+Ω-injective {𝓤} {𝓥} = flabby-types-are-injective (Ω (𝓤 ⊔ 𝓥)) (Ω-flabby {𝓤 ⊔ 𝓥} {𝓤})
 
 \end{code}
 
@@ -296,7 +298,7 @@ pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → 
 \end{code}
 
 Returning to size issues, we now apply flabiness to show that
-propositional resizing gives injective resizing.
+propositional resizing gives unrestricted injective resizing.
 
 The propositional resizing principle, from 𝓤 to 𝓥, that we consider
 here says that every proposition in the universe 𝓤 has an equivalent
@@ -361,8 +363,8 @@ resizing:
 
 \begin{code}
 
-injective-characterization : propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇)
-                           → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
+injective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
+                           → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
 injective-characterization {𝓤} = blackboard.injective-characterization (ua 𝓤)
 
 \end{code}
@@ -407,11 +409,11 @@ power-of-winjective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
                     → winjective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
 power-of-winjective {𝓣} {𝓦} {𝓤} {𝓥} = blackboard.weakly-injective.power-of-winjective pt {𝓣} {𝓦} {𝓤} {𝓥}
 
-winjective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
+winjective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇)
                                           → winjective-type D 𝓤 (𝓤 ⁺)
                                           → ∥ retract D of (D → 𝓤 ̇) ∥
-winjective-∥retract∥-of-power-of-universe = blackboard.weakly-injective.winjective-retract-of-power-of-universe pt
-
+winjective-∥retract∥-of-power-of-universe {𝓤} D = blackboard.weakly-injective.winjective-retract-of-power-of-universe
+                                                    pt D (ua 𝓤)
 \end{code}
 
 With this we get a partial converse to the fact that moderately
@@ -419,11 +421,10 @@ injectives are weakly injective:
 
 \begin{code}
 
-winjective-gives-minjective : is-univalent 𝓤
-                             → (D : 𝓤 ̇)
+winjective-gives-minjective : (D : 𝓤 ̇)
                              → winjective-type D 𝓤 (𝓤 ⁺)
                              → minjective-type D 𝓤 𝓤
-winjective-gives-minjective = blackboard.weakly-injective.winjective-gives-∥injective∥ pt
+winjective-gives-minjective {𝓤} = blackboard.weakly-injective.winjective-gives-∥injective∥ pt (ua 𝓤)
 
 \end{code}
 
@@ -470,10 +471,10 @@ UF-Resizing).
 \begin{code}
 
 winjectivity-in-terms-of-injectivity : Ω-impredicative 𝓤
-                                     → is-univalent 𝓤
                                      → (D  : 𝓤 ̇) → winjective-type D 𝓤 𝓤
                                                   ⇔ minjective-type D 𝓤 𝓤
-winjectivity-in-terms-of-injectivity = blackboard.weakly-injective.winjectivity-in-terms-of-injectivity pt
+winjectivity-in-terms-of-injectivity {𝓤} i = blackboard.weakly-injective.winjectivity-in-terms-of-injectivity
+                                               pt i (ua 𝓤)
 
 \end{code}
 
@@ -491,9 +492,10 @@ EM-gives-pointed-types-winjective : EM 𝓤 → (D : 𝓤 ̇) → D → winjecti
 EM-gives-pointed-types-winjective {𝓤} em D d = injective-gives-winjective D
                                                  (EM-gives-pointed-types-injective em D d)
 
-pointed-types-winjective-gives-EM : Ω-impredicative 𝓤 → is-univalent 𝓤
+pointed-types-winjective-gives-EM : Ω-impredicative 𝓤
                                   → ((D : 𝓤 ̇) → D → winjective-type D 𝓤 𝓤) → EM 𝓤
-pointed-types-winjective-gives-EM = blackboard.weakly-injective.pointed-types-winjective-gives-EM pt
+pointed-types-winjective-gives-EM {𝓤} i = blackboard.weakly-injective.pointed-types-winjective-gives-EM
+                                            pt i (ua 𝓤)
 
 \end{code}
 
@@ -507,3 +509,6 @@ TODO. Add the retract-extension property.
 
 And I think the list of TODO's includes pretty much what is left to
 have a complete article.
+
+TODO. To make sure, go over every single line of the 1586 lines of the
+InjectiveTypes file.
