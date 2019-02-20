@@ -577,8 +577,6 @@ winjectivity-in-terms-of-injectivity' {𝓤} = blackboard.weakly-injective.winje
 We we would like to do better than this. For that purpose, we consider
 the lifting monad in conjunction with resizing.
 
-TODO. Include the stuff about the lifting monad regarding injectives.
-
 \begin{code}
 
 import Lifting
@@ -646,14 +644,6 @@ injectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
    b (X , r) = retract-of-injective D (𝓛 X) (free-𝓛-algebra-injective X) r
 
 \end{code}
-
-TODO. Discuss the lifting monad. What is crucial is that (1) the unit
-is an embedding, (2) with impredicativity the lifting construction
-remains in the same universe, and (3) lifted types are injective
-(because they are flabby - in fact all algebras, not just the free
-algebras of the lifting monad as flabby (the algebra structure adds
-equations to flabiness)). For the moment we just quote the results
-that rely on this.
 
 Instead of propositional resizing, we consider the impredicativity of
 the universe 𝓤, which says that the type of propositions in 𝓤, which
