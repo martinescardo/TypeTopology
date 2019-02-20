@@ -2,8 +2,7 @@ Martin Escardo, 19th Feb 2019.
 
 Injective types in univalent mathematics.
 
-This is an article-style version of the blackboard-style version
-InjectiveTypes.
+This is an article-style version of the blackboard-style version.
 
 This is based on the "blackboard" Agda file InjectiveTypes, which
 presents the ideas as they have been developed, rather than the way
