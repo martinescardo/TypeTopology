@@ -2,26 +2,22 @@ wMartin Escardo, 19th Feb 2019.
 
 Injective types in univalent mathematics.
 
-This is an article-style version of the blackboard-style version.
-
-This is based on the "blackboard" Agda file InjectiveTypes, which
-presents the ideas as they have been developed, rather than the way
-they should be presented for a mathematical audience, but still in a
-fully verified way with the computer as the referee.
+This is an article-style version of the blackboard-style version
+InjectiveTypes.lagda. The blackboard presents the ideas as they have
+been developed, rather than the way they should be presented in an
+article submitted for publication, but still in a fully verified way.
 
 Here we tell the story, referring to the blackboard file for the
-proofs (which can be followed as links in the html version of this
-file).
+routine proofs (which can be followed as links in the html version of
+this file). We have include the non-routine proofs, and the some
+routine proofs that we feel should be added. We repeat the definitions
+of the notions studies here (in a definitionally equal way).
 
 The blackboard file likely has more information than that reported
 here. In particular, it keeps track better of what univalent
-assumptions are used in each construction (univalence, function
-extensionality, propositional extensionality, existence of
+foundations assumptions are used in each construction (univalence,
+function extensionality, propositional extensionality, existence of
 propositional truncations).
-
-Here we repeat the main definitions (in a definitionally equal way,
-even with the same names) and state the main theorems with links to
-their blackboard (verified) proofs.
 
 \begin{code}
 
@@ -65,18 +61,27 @@ module blackboard = InjectiveTypes fe
 We study the notions of algebraically injective type (data), injective
 type (property) and their relationships.
 
+Algebraic injectivity stipulates a given section f ↦ f' of the
+restriction map g ↦ g ∘ j:
+
 \begin{code}
 
 ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                      → (f : X → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
+                      → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
+
+\end{code}
+
+Injectivity stipulates that the restriction map is a surjection:
+
+\begin{code}
 
 injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                      → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
+                      → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
 \end{code}
 
-Universes are injective, in at least two ways.
+Universes are algebraicly injective, in at least two ways.
 
 \begin{code}
 
@@ -392,7 +397,7 @@ retract-extension = blackboard.retract-extension
 
 This completes our discussion of extensions of maps into universes.
 
-Retracts of injective are injective:
+Algebraically injectives are closed under retracts:
 
 \begin{code}
 
@@ -415,7 +420,7 @@ equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (equiv-retract-l e)
 
 \end{code}
 
-Products of injectives are injectives:
+And under products:
 
 \begin{code}
 
@@ -433,7 +438,7 @@ Products of injectives are injectives:
 
 \end{code}
 
-Hence exponential powers of injectives are injective.
+And hence exponential powers:
 
 \begin{code}
 
@@ -444,7 +449,8 @@ power-of-ainjective i = Π-ainjective (λ a → i)
 
 \end{code}
 
-An injective type is a retract of every type it is embedded into:
+An algebraically injective type is a retract of every type it is
+embedded into:
 
 \begin{code}
 
@@ -467,7 +473,8 @@ Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
 
 \end{code}
 
-From this we conclude that injective types are powers of universes:
+From this we conclude that algebraically injective types are powers of
+universes:
 
 \begin{code}
 
@@ -480,8 +487,9 @@ ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-su
 \end{code}
 
 The above results, when combined together in the obvious way, almost
-give directly that the injective types are precisely the retracts of
-exponential powers of universes, but there is a universe mismatch.
+give directly that the algebraically injective types are precisely the
+retracts of exponential powers of universes, but there is a universe
+mismatch.
 
 Keeping track of the universes to avoid the mismatch, what we get
 instead is a resizing theorem:
@@ -496,14 +504,13 @@ ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-univer
 
 \end{code}
 
-A further injective resizing for-free construction is possible by
-considering a notion of flabiness as data (rather than as property, as
-in the 1-topos literature).
+A further resizing for-free construction is possible by considering a
+notion of flabbiness as data (rather than as property, as in the
+1-topos literature).
 
 The notion of flabbiness used in topos theory is defined with
 truncated Σ, that is, ∃. We refer to the notion defined with Σ as
 algebraic flabiness.
-
 
 \begin{code}
 
@@ -521,8 +528,9 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 \end{code}
 
-And injective types (in the proof-relevant way we have defined them)
-are aflabby, because maps P → 𝟙 from propositions P are embeddings:
+And algebraically injective types (in the proof-relevant way we have
+defined them) are aflabby, because maps P → 𝟙 from propositions P are
+embeddings:
 
 \begin{code}
 
@@ -535,7 +543,8 @@ ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p →
 
 The interesting thing is that the universe 𝓥 is forgotten in this
 construction, with only 𝓤 remaining, particularly regarding this
-converse, which says that aflabby types are injective:
+converse, which says that algebraically flabby types are algebraically
+injective:
 
 \begin{code}
 
@@ -553,7 +562,7 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
 \end{code}
 
 We then get this resizing theorem by composing the conversions between
-flabiness and injectivity:
+algebraic flabiness and injectivity:
 
 \begin{code}
 
@@ -576,7 +585,8 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 This is resizing down.
 
-The type Ω 𝓤 of propositions of a universe 𝓤 is aflabby. More generally:
+The type Ω 𝓤 of propositions of a universe 𝓤 is algebraically
+flabby. More generally:
 
 \begin{code}
 
@@ -611,8 +621,8 @@ Therefore it is injective:
 Another way to see this is that it is a retract of the universe by
 propositional truncation. (Exercise, not included.)
 
-Flabiness can also be applied to show that all types are injective iff
-excluded middle holds.
+Algebraic flabiness can also be applied to show that all types are
+injective iff excluded middle holds.
 
 \begin{code}
 
@@ -628,7 +638,7 @@ EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
 \end{code}
 
 For the converse, we consider, given a proposition P, the type P + ¬ P + 𝟙,
-which, if it is aflabby, gives the decidability of P.
+which, if it is algebraically flabby, gives the decidability of P.
 
 \begin{code}
 
@@ -677,8 +687,9 @@ pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM
 
 \end{code}
 
-Returning to size issues, we now apply flabiness to show that
-propositional resizing gives unrestricted injective resizing.
+Returning to size issues, we now apply algebraic flabiness to show
+that propositional resizing gives unrestricted algebraic injective
+resizing.
 
 The propositional resizing principle, from 𝓤 to 𝓥, that we consider
 here says that every proposition in the universe 𝓤 has an equivalent
@@ -715,10 +726,10 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
 
 \end{code}
 
-And from this it follows that the injectivity of a type with respect
-to two given universes 𝓤 and 𝓥 implies its injectivity with respect to
-all universes 𝓤' and 𝓥': we convert back-and-forth between injectivity
-and aflabbiness:
+And from this it follows that the algebraic injectivity of a type with
+respect to two given universes 𝓤 and 𝓥 implies its algebraic
+injectivity with respect to all universes 𝓤' and 𝓥': we convert
+back-and-forth between ainjectivity and aflabbiness:
 
 \begin{code}
 
@@ -730,7 +741,7 @@ ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i j e f = aflabby-t
 
 \end{code}
 
-As an application of this and of injectivity of universes, we have
+As an application of this and of the algebraic injectivity of universes, we have
 that any universe is a retract of any larger universe.
 
 We remark that for types that are not sets, sections are not
@@ -763,13 +774,13 @@ that there is an embedding of any universe into any larger universe,
 assuming univalence.
 
 It may be of interest to unfold the above proof to see a direct
-argument avoiding injectivity:
+argument avoiding flabiness and injectivity:
 
 \begin{code}
 
 universe-retract-unfolded : Propositional-resizing
-                  → (𝓤 𝓥 : Universe)
-                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section ρ)
+                          → (𝓤 𝓥 : Universe)
+                          → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section ρ)
 universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding ua
  where
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -808,15 +819,16 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding
 
 \end{code}
 
-As mentioned above, we almost have that the injective types are
-precisely the retracts of exponential powers of universes, upto a
-universe mismatch. This mismatch is side-steped by propositional
-resizing:
+As mentioned above, we almost have that the algebraically injective
+types are precisely the retracts of exponential powers of universes,
+upto a universe mismatch. This mismatch is side-steped by
+propositional resizing:
 
 \begin{code}
 
 ainjective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
-                           → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
+                           → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
+                                       ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
 ainjective-characterization {𝓤} R D = a , b
  where
   a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
@@ -837,13 +849,13 @@ ainjective-characterization {𝓤} R D = a , b
 
 \end{code}
 
-We now discuss injectivity, as defined above, in relation to
-ainjectivity.
+We now discuss injectivity, as defined above, in relation to algebraic
+injectivity.
 
 \begin{code}
 
 injectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe)
-                       → is-prop (injective-type D 𝓤 𝓥)
+                      → is-prop (injective-type D 𝓤 𝓥)
 injectivity-is-a-prop = blackboard.injective.injectivity-is-a-prop pt
 
 \end{code}
@@ -916,8 +928,8 @@ injective-∥retract∥-of-power-of-universe {𝓤} D = embedding-∥retract∥ 
 
 \end{code}
 
-With this we get a partial converse to the fact that moderately
-injectives are weakly injective:
+With this we get a partial converse to the fact that truncated
+algebraic injectivity implies injectivity:
 
 \begin{code}
 
@@ -937,15 +949,15 @@ injective-gives-∥ainjective∥ {𝓤} D i = γ
 So, in summary, regarding the relationship between injectivity and
 truncated injectivity, so far we know that
 
-  mainjective-type D 𝓤 𝓥  → injective-type D 𝓤 𝓥
+  ∥ ainjective-type D 𝓤 𝓥  ∥ → injective-type D 𝓤 𝓥
 
 and
 
-  injective-type D 𝓤 (𝓤 ⁺) → mainjective-type D 𝓤 𝓤,
+  injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 𝓤 ∥,
 
 and hence, using propositional resizing, we get the following
 characterization of a particular case of injectivity in terms of
-injectivity.
+algebraic injectivity.
 
 \begin{code}
 
@@ -1008,7 +1020,8 @@ free-𝓛-algebra-ainjective {𝓣} X = 𝓛-alg-ainjective (𝓛 X)
 \end{code}
 
 Because the unit of the lifting monad is an embedding, it follows that
-injective types are retracts of underlying objects of free algebras:
+algebraically injective types are retracts of underlying objects of
+free algebras:
 
 \begin{code}
 
@@ -1017,9 +1030,9 @@ ainjective-is-retract-of-free-𝓛-algebra D i = ainjective-retract-of-subtype D
                                                 (𝓛-unit D , 𝓛-unit-is-embedding D)
 \end{code}
 
-With propositional resizing, the injective types are precisely the
-retracts of the underlying objects of free algebras of the lifting
-monad:
+With propositional resizing, the algebraically injective types are
+precisely the retracts of the underlying objects of free algebras of
+the lifting monad:
 
 \begin{code}
 
@@ -1035,11 +1048,11 @@ ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
 
 \end{code}
 
-Instead of propositional resizing, we consider the impredicativity of
-the universe 𝓤, which says that the type of propositions in 𝓤, which
-lives in the next universe 𝓤 ⁺, has an equivalent copy in 𝓤 (for the
-relationship between resizing and impredicativity, see the module
-UF-Resizing).
+Now, instead of propositional resizing, we consider the
+impredicativity of the universe 𝓤, which says that the type of
+propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
+equivalent copy in 𝓤 (for the relationship between resizing and
+impredicativity, see the module UF-Resizing).
 
 \begin{code}
 
@@ -1085,11 +1098,10 @@ Here are some corollaries:
 
 \begin{code}
 
-injective-resizing : Ω-impredicative 𝓤
+injective-resizing : Ω-impredicative 𝓤 → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤
                    → (D : 𝓤 ̇)
-                   → injective-type D 𝓤 𝓤
-                   → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → injective-type D 𝓥 𝓦
-injective-resizing {𝓤} ω₀ D i 𝓥 𝓦 R = c
+                   → injective-type D 𝓤 𝓤 → injective-type D 𝓥 𝓦
+injective-resizing {𝓤} ω₀ 𝓥 𝓦 R D i = c
   where
    a : ∥ ainjective-type D 𝓤 𝓤 ∥
    a = pr₁ (injectivity-in-terms-of-ainjectivity ω₀ D) i
@@ -1110,7 +1122,8 @@ pointed-types-injective-gives-EM {𝓤} i = blackboard.injective.pointed-types-i
 \end{code}
 
 TODO. To make sure, go over every single line of the 1586 lines of the
-InjectiveTypes file.
+InjectiveTypes file to check we haven't forgotten to include anything
+relevant.
 
 Fixities:
 
