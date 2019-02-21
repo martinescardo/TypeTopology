@@ -29,28 +29,34 @@ Remark about the contents and organization of this Agda file.
        keep track of resizing here explicitly: it is not a global
        assumption.
 
-Abstract. We study the injective types and the algebraically injective
-types in univalent mathematics, both in the absence and the presence
-of propositional resizing. Injectivity is defined by the surjectivity
-of the restriction map along any embedding. Algebraic injectivity is
-defined by the existence of a section of the restriction map along any
-embedding. For the sake of generality, we work without assuming (or
-rejecting) the principle of excluded middle, and hence without
-assuming the axiom of choice. Moreover, the principle of excluded
-middle holds if and only if all types are algebraicly injective, and
-so there is nothing interesting to say in its presence. In the
-presence of resizing, the main results are easy to state and pleasing:
-(1) Injectivity is equivalent to the propositional truncation of
-algebraic injectivity (which can be seen as form of choice that just
-holds). (2) The algebraically injective types are precisely the
-retracts of exponential powers of type universes. (2') The
-algebraically injective sets are precisely the retracts of power sets,
-(2'') The algebraically injective n+1-types are precisely retracts of
-exponential powers of universes of n-types. (3) The algebraically
-injective types are also precisely the underlying objects of algebras
-of the partial map classifier monad. In the absence of propositional
-resizing, we have similar results but they have subtler statements and
-proofs that need to keep track universe levels rather explicitly.
+Abstract/introduction. We study the injective types and the
+algebraically injective types in univalent mathematics, both in the
+absence and the presence of propositional resizing. Injectivity is
+defined by the surjectivity of the restriction map along any
+embedding. Algebraic injectivity is defined by a given section of the
+restriction map along any embedding. For the sake of generality, we
+work without assuming (or rejecting) the principle of excluded middle,
+and hence without assuming the axiom of choice either. Moreover, the
+principle of excluded middle holds if and only if all types are
+algebraicly injective, if and only if all types are injective, and so
+there is nothing interesting to say in its presence. In the presence
+of resizing, the main results are easy to state and pleasing: (1)
+Injectivity is equivalent to the propositional truncation of algebraic
+injectivity (this can be seen as form of choice that just holds). (2)
+The algebraically injective types are precisely the retracts of
+exponential powers of type universes. (2') The algebraically injective
+sets are precisely the retracts of powersets, (2'') The algebraically
+injective n+1-types are precisely retracts of exponential powers of
+the universes of n-types. (3) The algebraically injective types are
+also precisely the underlying objects of algebras of the partial map
+classifier monad. A corollary of the above is that any universe is
+embedded as a retract of any larger universe in the presence of
+propositional resizing. In the absence of propositional resizing, we
+have similar results but they have subtler statements and proofs that
+need to keep track of universe levels rather explicitly. Most
+constructions developed here are in the absense of propositional
+resizing. We apply them, with the aid of a notion of algebraic
+flabbiness, to derive the results mentioned above.
 
 \begin{code}
 
@@ -1165,6 +1171,9 @@ pointed-types-injective-gives-EM {𝓤} i = blackboard.injective.pointed-types-i
                                             pt i (ua 𝓤)
 
 \end{code}
+
+TODO. Code the results about injective sets and injective n+1-types
+stated in the abstract.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
 InjectiveTypes file to check we haven't forgotten to include anything
