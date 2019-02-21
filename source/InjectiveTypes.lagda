@@ -496,7 +496,7 @@ data rather than property), called algebraic injectivity.
 
 ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                      → (f : domain j → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
+                      → (f : X → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
 
 embedding-retract : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → ainjective-type D 𝓦 𝓥
                   → retract D of Y
@@ -913,7 +913,7 @@ Added 21th November 2018.
 module ∖-extension-is-embedding
          (X Y : 𝓤 ̇)
          (j : X → Y)
-         (ej : is-embedding j)
+         (i : is-embedding j)
          (fe' : funext 𝓤 (𝓤 ⁺))
          (ua : is-univalent 𝓤)
        where
@@ -933,7 +933,7 @@ module ∖-extension-is-embedding
  r g = g ∘ j
 
  rs : ∀ f → r (s f) ≡ f
- rs = Σ-extension-is-extension' ua fe' j ej
+ rs = Σ-extension-is-extension' ua fe' j i
 
  sr : ∀ g → s (r g) ≡ (g ∘ j) ∖ j
  sr g = refl
@@ -943,6 +943,7 @@ module ∖-extension-is-embedding
 
  M : (𝓤 ⁺) ̇
  M = Σ \(g : Y → 𝓤 ̇) → (y : Y) → is-equiv (κ g y)
+
  φ : (X → 𝓤 ̇) → M
  φ f = s f , e
   where
@@ -962,7 +963,7 @@ module ∖-extension-is-embedding
          ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
         t x .x refl p C refl = refl
         ej' : ∀ x x' → qinv (ap j {x} {x'})
-        ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j ej x x')
+        ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
         pa : ∀ x x' → j x ≡ j x' → x ≡ x'
         pa x x' = pr₁ (ej' x x')
         appa : ∀ x x' p' → ap j (pa x' x p') ≡ p'
@@ -1016,7 +1017,7 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
 ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
-                                                      pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
+                                                       pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
 
 aflabby-types-are-ainjective : (D : 𝓦 ̇) → aflabby D (𝓤 ⊔ 𝓥) → ainjective-type D 𝓤 𝓥
 aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
@@ -1387,21 +1388,21 @@ so we need a new proof, but hence also new universe assumptions.
    γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
- injective-retract-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
+ injective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇) → is-univalent 𝓤
                                          → injective-type D 𝓤 (𝓤 ⁺)
                                          → ∥ retract D of (D → 𝓤 ̇) ∥
- injective-retract-of-power-of-universe {𝓤} D ua = embedding-∥retract∥ D (D → 𝓤 ̇) Id (UA-Id-embedding ua fe)
+ injective-∥retract∥-of-power-of-universe {𝓤} D ua = embedding-∥retract∥ D (D → 𝓤 ̇) Id (UA-Id-embedding ua fe)
 
- injective-gives-∥injective∥ : is-univalent 𝓤
+ injective-gives-∥ainjective∥ : is-univalent 𝓤
                               → (D : 𝓤 ̇)
                               → injective-type D 𝓤 (𝓤 ⁺)
                              → ∥ ainjective-type D 𝓤 𝓤 ∥
- injective-gives-∥injective∥ {𝓤} ua D i = γ
+ injective-gives-∥ainjective∥ {𝓤} ua D i = γ
   where
    φ : retract D of (D → 𝓤 ̇) → ainjective-type D 𝓤 𝓤
    φ = retract-of-ainjective D (D → 𝓤 ̇) (power-of-ainjective (universes-are-ainjective-Π ua))
    γ : ∥ ainjective-type D 𝓤 𝓤 ∥
-   γ = ∥∥-functor φ (injective-retract-of-power-of-universe D ua i)
+   γ = ∥∥-functor φ (injective-∥retract∥-of-power-of-universe D ua i)
 
 \end{code}
 
@@ -1427,7 +1428,7 @@ injectivity.
  injectivity-in-terms-of-ainjectivity' {𝓤} ua R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
-   a = ∥∥-functor (ainjective-resizing R D) ∘ injective-gives-∥injective∥ ua D
+   a = ∥∥-functor (ainjective-resizing R D) ∘ injective-gives-∥ainjective∥ ua D
    b : ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥ → injective-type D 𝓤 (𝓤 ⁺)
    b = ∥ainjective∥-gives-injective D
 
