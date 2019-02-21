@@ -5,19 +5,19 @@ Injective types in univalent mathematics
 
 Remark about the contents and organization of this Agda file.
 
-       This is an article-style version of the blackboard-style
-       version InjectiveTypes.lagda, to be submitted for
-       publication. The blackboard presents the ideas as they have
-       been developed, rather than the way they should be presented in
-       an article submitted for publication, but still in a fully
-       verified way.
+       This file InjectiveTypes-article is an article-style version of
+       the blackboard-style version InjectiveTypes.lagda, to be
+       submitted for publication. The blackboard presents the ideas as
+       they have been developed, rather than the way they should be
+       presented in an article submitted for publication, but still in
+       a fully verified way.
 
        Here we tell the story, referring to the blackboard file for
        the routine proofs (which can be followed as links by cliking
-       at them). We have included the non-routine proofs, and some
-       routine proofs that we feel should be added for the sake of
-       flow of the text. We repeat the definitions of the notions
-       studied here (in a definitionally equal way).
+       at them). We have included the non-routine proofs here, and
+       some routine proofs that we feel should be added for the sake
+       of flow of the text. We repeat the definitions of the notions
+       studied here, in a definitionally equal way.
 
        The blackboard file likely has more information than that
        reported here. In particular, it keeps track better of what
