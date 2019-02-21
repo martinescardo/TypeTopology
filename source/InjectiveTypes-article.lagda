@@ -45,9 +45,8 @@ and only if all types are algebraicly injective, if and only if all
 types are injective, and so there is nothing interesting to say in its
 presence.
 
-In the presence of propositional resizing (any proposition of any
-universe has an equivalent copy in any other universe), the main
-results are easy to state and pleasing:
+In the presence of propositional resizing principles, the main results
+are easy to state and pleasing:
 
    (1) Injectivity is equivalent to the propositional truncation of
        algebraic injectivity (this can be seen as a form of choice
