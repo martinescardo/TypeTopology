@@ -58,21 +58,17 @@ module blackboard = InjectiveTypes fe
 
 \end{code}
 
-We study the notions of injective type (data), moderately injective
-type (property), and weakly injective type (property) and their
-relationships.
+We study the notions of algebraicly injective type (data), injective
+type (property) and their relationships.
 
 \begin{code}
 
+ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+                      → (f : domain j → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
+
 injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                     → (f : domain j → D) → Σ \(f' : codomain j → D) → f' ∘ j ∼ f
-
-minjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
-minjective-type D 𝓤 𝓥 = ∥ injective-type D 𝓤 𝓥 ∥
-
-winjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
-winjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                       → (f : X → D) → ∃ \(f' : Y → D) → f' ∘ j ∼ f
 \end{code}
 
@@ -103,17 +99,17 @@ an embedding.
                → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ╱ j ∘ j ∼ f
 ╱-is-extension {𝓤} {𝓥} = blackboard.Π-extension-is-extension (ua (𝓤 ⊔ 𝓥))
 
-universes-are-injective-Σ : injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-injective-Σ {𝓤} {𝓥} j e f = (f ╲ j , ╲-is-extension j e f)
+universes-are-ainjective-Σ : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
+universes-are-ainjective-Σ {𝓤} {𝓥} j e f = (f ╲ j , ╲-is-extension j e f)
 
-universes-are-injective-Π : injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-injective-Π {𝓤} {𝓥} j e f = (f ╱ j , ╱-is-extension j e f)
+universes-are-ainjective-Π : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
+universes-are-ainjective-Π {𝓤} {𝓥} j e f = (f ╱ j , ╱-is-extension j e f)
 
-universes-are-injective : injective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-injective = universes-are-injective-Σ
+universes-are-ainjective : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
+universes-are-ainjective = universes-are-ainjective-Σ
 
-universes-are-injective-particular : injective-type (𝓤 ̇) 𝓤 𝓤
-universes-are-injective-particular = universes-are-injective
+universes-are-ainjective-particular : ainjective-type (𝓤 ̇) 𝓤 𝓤
+universes-are-ainjective-particular = universes-are-ainjective
 
 \end{code}
 
@@ -197,7 +193,6 @@ With this notation, we have:
 
 \begin{code}
 
-
 ηΣ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
    → f ≾ f ╲ j ∘ j
 ηΣ f j x B = (x , refl) , B
@@ -250,11 +245,11 @@ Retracts of injective are injective:
 
 \begin{code}
 
-retract-of-injective : (D' : 𝓦' ̇) (D : 𝓦 ̇)
-                     → injective-type D 𝓤 𝓥
-                     → retract D' of D
-                     → injective-type D' 𝓤 𝓥
-retract-of-injective = blackboard.retract-of-injective
+retract-of-ainjective : (D' : 𝓦' ̇) (D : 𝓦 ̇)
+                      → ainjective-type D 𝓤 𝓥
+                      → retract D' of D
+                      → ainjective-type D' 𝓤 𝓥
+retract-of-ainjective = blackboard.retract-of-ainjective
 
 \end{code}
 
@@ -262,10 +257,10 @@ Products of injectives are injectives:
 
 \begin{code}
 
-Π-injective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
-            → ((a : A) → injective-type (D a) 𝓤 𝓥)
-            → injective-type (Π D) 𝓤 𝓥
-Π-injective = blackboard.Π-injective
+Π-ainjective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
+             → ((a : A) → ainjective-type (D a) 𝓤 𝓥)
+             → ainjective-type (Π D) 𝓤 𝓥
+Π-ainjective = blackboard.Π-ainjective
 
 \end{code}
 
@@ -273,10 +268,10 @@ Hence exponential powers of injectives are injective.
 
 \begin{code}
 
-power-of-injective : {A : 𝓣 ̇} {D : 𝓦 ̇}
-                   → injective-type D 𝓤 𝓥
-                   → injective-type (A → D) 𝓤 𝓥
-power-of-injective i = Π-injective (λ a → i)
+power-of-ainjective : {A : 𝓣 ̇} {D : 𝓦 ̇}
+                    → ainjective-type D 𝓤 𝓥
+                    → ainjective-type (A → D) 𝓤 𝓥
+power-of-ainjective i = Π-ainjective (λ a → i)
 
 \end{code}
 
@@ -284,9 +279,9 @@ An injective type is a retract of every type it is embedded into:
 
 \begin{code}
 
-injective-retract-of-subtype : (D : 𝓦 ̇) → injective-type D 𝓦 𝓥
-                             → (Y : 𝓥 ̇) → D ↪ Y → retract D of Y
-injective-retract-of-subtype D i Y (j , e) = blackboard.embedding-retract D Y j e i
+ainjective-retract-of-subtype : (D : 𝓦 ̇) → ainjective-type D 𝓦 𝓥
+                              → (Y : 𝓥 ̇) → D ↪ Y → retract D of Y
+ainjective-retract-of-subtype D i Y (j , e) = blackboard.embedding-retract D Y j e i
 
 \end{code}
 
@@ -305,10 +300,10 @@ From this we conclude that injective types are powers of universes:
 
 \begin{code}
 
-injective-is-retract-of-power-of-universe : (D : 𝓤 ̇)
-                                          → injective-type D 𝓤  (𝓤 ⁺)
-                                          → retract D of (D → 𝓤 ̇)
-injective-is-retract-of-power-of-universe {𝓤} D i = injective-retract-of-subtype D i (D → 𝓤 ̇)
+ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇)
+                                           → ainjective-type D 𝓤  (𝓤 ⁺)
+                                           → retract D of (D → 𝓤 ̇)
+ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-subtype D i (D → 𝓤 ̇)
                                                       (Id , Id-is-embedding)
 
 \end{code}
@@ -322,11 +317,11 @@ instead is a resizing theorem:
 
 \begin{code}
 
-injective-resizing₀ : (D : 𝓤 ̇) → injective-type D 𝓤 (𝓤 ⁺) → injective-type D 𝓤 𝓤
-injective-resizing₀ {𝓤} D i = φ (injective-is-retract-of-power-of-universe D i)
+ainjective-resizing₀ : (D : 𝓤 ̇) → ainjective-type D 𝓤 (𝓤 ⁺) → ainjective-type D 𝓤 𝓤
+ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-universe D i)
  where
-  φ : retract D of (D → 𝓤 ̇) → injective-type D 𝓤 𝓤
-  φ = retract-of-injective D (D → 𝓤 ̇) (power-of-injective (universes-are-injective))
+  φ : retract D of (D → 𝓤 ̇) → ainjective-type D 𝓤 𝓤
+  φ = retract-of-ainjective D (D → 𝓤 ̇) (power-of-ainjective (universes-are-ainjective))
 
 \end{code}
 
@@ -334,40 +329,45 @@ A further injective resizing for-free construction is possible by
 considering a notion of flabiness as data (rather than as property, as
 in the 1-topos literature).
 
+The notion of flabbiness used in topos theory is defined with
+truncated Σ, that is, ∃. We refer to the notion defined with Σ as
+algebraic flabiness.
+
+
 \begin{code}
 
-flabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
-flabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
+aflabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
+aflabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
 
 \end{code}
 
-Flabby types are pointed:
+Algebraically flabby types are pointed:
 
 \begin{code}
 
-flabby-pointed : (D : 𝓦 ̇) → flabby D 𝓤 → D
-flabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
+aflabby-pointed : (D : 𝓦 ̇) → aflabby D 𝓤 → D
+aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 \end{code}
 
 And injective types (in the proof-relevant way we have defined them)
-are flabby, because maps P → 𝟙 from propositions P are embeddings:
+are aflabby, because maps P → 𝟙 from propositions P are embeddings:
 
 \begin{code}
 
-injective-types-are-flabby : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → flabby D 𝓤
-injective-types-are-flabby = blackboard.injective-types-are-flabby
+ainjective-types-are-aflabby : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
+ainjective-types-are-aflabby = blackboard.ainjective-types-are-aflabby
 
 \end{code}
 
 The interesting thing is that the universe 𝓥 is forgotten in this
 construction, with only 𝓤 remaining, particularly regarding this
-converse, which says that flabby types are injective:
+converse, which says that aflabby types are injective:
 
 \begin{code}
 
-flabby-types-are-injective : (D : 𝓦 ̇) → flabby D (𝓤 ⊔ 𝓥) → injective-type D 𝓤 𝓥
-flabby-types-are-injective = blackboard.flabby-types-are-injective
+aflabby-types-are-ainjective : (D : 𝓦 ̇) → aflabby D (𝓤 ⊔ 𝓥) → ainjective-type D 𝓤 𝓥
+aflabby-types-are-ainjective = blackboard.aflabby-types-are-ainjective
 
 \end{code}
 
@@ -376,8 +376,8 @@ flabiness and injectivity:
 
 \begin{code}
 
-injective-resizing₁ : (D : 𝓦 ̇) → injective-type D (𝓤 ⊔ 𝓣) 𝓥 → injective-type D 𝓤 𝓣
-injective-resizing₁ D i j e f = flabby-types-are-injective D (injective-types-are-flabby D i) j e f
+ainjective-resizing₁ : (D : 𝓦 ̇) → ainjective-type D (𝓤 ⊔ 𝓣) 𝓥 → ainjective-type D 𝓤 𝓣
+ainjective-resizing₁ D i j e f = aflabby-types-are-ainjective D (ainjective-types-are-aflabby D i) j e f
 
 \end{code}
 
@@ -385,22 +385,22 @@ We record two particular cases that may make this clearer:
 
 \begin{code}
 
-injective-resizing₂ : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓤
-injective-resizing₂ = injective-resizing₁
+ainjective-resizing₂ : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤 𝓤
+ainjective-resizing₂ = ainjective-resizing₁
 
-injective-resizing₃ : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤₀ 𝓤
-injective-resizing₃ = injective-resizing₁
+ainjective-resizing₃ : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤₀ 𝓤
+ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
 This is resizing down.
 
-The type Ω 𝓤 of propositions of a universe 𝓤 is flabby. More generally:
+The type Ω 𝓤 of propositions of a universe 𝓤 is aflabby. More generally:
 
 \begin{code}
 
-Ω-flabby : {𝓤 𝓥 : Universe} → flabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
-Ω-flabby {𝓤} {𝓥} = blackboard.Ω-flabby {𝓤} {𝓥} (pe (𝓤 ⊔ 𝓥))
+Ω-aflabby : {𝓤 𝓥 : Universe} → aflabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
+Ω-aflabby {𝓤} {𝓥} = blackboard.Ω-aflabby {𝓤} {𝓥} (pe (𝓤 ⊔ 𝓥))
 
 \end{code}
 
@@ -408,8 +408,8 @@ Therefore it is injective:
 
 \begin{code}
 
-Ω-injective : injective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
-Ω-injective {𝓤} {𝓥} = flabby-types-are-injective (Ω (𝓤 ⊔ 𝓥)) (Ω-flabby {𝓤 ⊔ 𝓥} {𝓤})
+Ω-ainjective : ainjective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
+Ω-ainjective {𝓤} {𝓥} = aflabby-types-are-ainjective (Ω (𝓤 ⊔ 𝓥)) (Ω-aflabby {𝓤 ⊔ 𝓥} {𝓤})
 
 \end{code}
 
@@ -423,18 +423,18 @@ excluded middle holds.
 
 open import UF-ExcludedMiddle
 
-EM-gives-pointed-types-flabby : (D : 𝓦 ̇) → EM 𝓤 → D → flabby D 𝓤
-EM-gives-pointed-types-flabby = blackboard.EM-gives-pointed-types-flabby
+EM-gives-pointed-types-aflabby : (D : 𝓦 ̇) → EM 𝓤 → D → aflabby D 𝓤
+EM-gives-pointed-types-aflabby = blackboard.EM-gives-pointed-types-aflabby
 
 \end{code}
 
 For the converse, we consider, given a proposition P, the type P + ¬ P + 𝟙,
-which, if it is flabby, gives the decidability of P.
+which, if it is aflabby, gives the decidability of P.
 
 \begin{code}
 
-flabby-EM-lemma : (P : 𝓦 ̇) → is-prop P → flabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
-flabby-EM-lemma = blackboard.flabby-EM-lemma
+aflabby-EM-lemma : (P : 𝓦 ̇) → is-prop P → aflabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
+aflabby-EM-lemma = blackboard.aflabby-EM-lemma
 
 \end{code}
 
@@ -442,14 +442,14 @@ From this we conclude:
 
 \begin{code}
 
-pointed-types-flabby-gives-EM : ((D : 𝓦 ̇) → D → flabby D 𝓦) → EM 𝓦
-pointed-types-flabby-gives-EM {𝓦} α P i = flabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇) → D → aflabby D 𝓦) → EM 𝓦
+pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
 
-EM-gives-pointed-types-injective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → injective-type D 𝓤 𝓥
-EM-gives-pointed-types-injective em D d = flabby-types-are-injective D (EM-gives-pointed-types-flabby D em d)
+EM-gives-pointed-types-ainjective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → ainjective-type D 𝓤 𝓥
+EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D (EM-gives-pointed-types-aflabby D em d)
 
-pointed-types-injective-gives-EM : ((D : 𝓦 ̇) → D → injective-type D 𝓦 𝓤) → EM 𝓦
-pointed-types-injective-gives-EM α = pointed-types-flabby-gives-EM (λ D d → injective-types-are-flabby D (α D d))
+pointed-types-ainjective-gives-EM : ((D : 𝓦 ̇) → D → ainjective-type D 𝓦 𝓤) → EM 𝓦
+pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM (λ D d → ainjective-types-are-aflabby D (α D d))
 
 \end{code}
 
@@ -468,22 +468,22 @@ We begin with this lemma:
 
 open import UF-Resizing
 
-flabiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
-                   → flabby D 𝓥 → flabby D 𝓤
-flabiness-resizing = blackboard.flabiness-resizing
+aflabbiness-resizing : (D : 𝓦 ̇) (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
+                     → aflabby D 𝓥 → aflabby D 𝓤
+aflabbiness-resizing = blackboard.aflabbiness-resizing
 
 \end{code}
 
 And from this it follows that the injectivity of a type with respect
 to two given universes 𝓤 and 𝓥 implies its injectivity with respect to
 all universes 𝓤' and 𝓥': we convert back-and-forth between injectivity
-and flabiness:
+and aflabbiness:
 
 \begin{code}
 
-injective-resizing : propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
-                   → (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → injective-type D 𝓤' 𝓥'
-injective-resizing = blackboard.injective-resizing
+ainjective-resizing : propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
+                    → (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤' 𝓥'
+ainjective-resizing = blackboard.ainjective-resizing
 
 \end{code}
 
@@ -518,8 +518,8 @@ resizing:
 \begin{code}
 
 injective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
-                           → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
-injective-characterization {𝓤} = blackboard.injective-characterization (ua 𝓤)
+                           → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
+injective-characterization {𝓤} = blackboard.ainjective-characterization (ua 𝓤)
 
 \end{code}
 
@@ -529,44 +529,44 @@ relation to injectivity.
 \begin{code}
 
 winjectivity-is-a-prop : (D : 𝓦 ̇) (𝓤 𝓥 : Universe)
-                       → is-prop (winjective-type D 𝓤 𝓥)
-winjectivity-is-a-prop = blackboard.weakly-injective.winjectivity-is-a-prop pt
+                       → is-prop (injective-type D 𝓤 𝓥)
+winjectivity-is-a-prop = blackboard.injective.injectivity-is-a-prop pt
 
-injective-gives-winjective : (D : 𝓦 ̇) → injective-type D 𝓤 𝓥 → winjective-type D 𝓤 𝓥
-injective-gives-winjective = blackboard.weakly-injective.injective-gives-winjective pt
+ainjective-gives-injective : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓥
+ainjective-gives-injective = blackboard.injective.ainjective-gives-injective pt
 
-minjective-gives-winjective : (D : 𝓦 ̇) → minjective-type D 𝓤 𝓥  → winjective-type D 𝓤 𝓥
-minjective-gives-winjective = blackboard.weakly-injective.∥injective∥-gives-winjective pt
+minjective-gives-injective : (D : 𝓦 ̇) → ∥ ainjective-type D 𝓤 𝓥  ∥ → injective-type D 𝓤 𝓥
+minjective-gives-injective = blackboard.injective.∥ainjective∥-gives-injective pt
 
 \end{code}
 
-In order to relate weak injectivity to moderate injectivity, we first
-prove some facts we already proved for injectivity for weak
-injectivity. These facts cannot be obtained by reduction (in
-particular products of weakly injectives are not necessarily weakly
-injectives, but exponential powers are).
+In order to relate injectivity to the propositional truncation of
+algebraic injectivity, we first prove some facts we already proved for
+algebraic injectivity for injectivity. These facts cannot be obtained
+by reduction (in particular products of injectives are not necessarily
+injectives, in the absence of choice, but exponential powers are).
 
 \begin{code}
 
-embedding-∥retract∥ : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → winjective-type D 𝓦 𝓥
+embedding-∥retract∥ : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥
                    → ∥ retract D of Y ∥
-embedding-∥retract∥ = blackboard.weakly-injective.embedding-∥retract∥ pt
+embedding-∥retract∥ = blackboard.injective.embedding-∥retract∥ pt
 
-retract-of-winjective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
-                      → winjective-type D 𝓦 𝓣
-                      → retract D' of D
-                      → winjective-type D' 𝓦 𝓣
-retract-of-winjective = blackboard.weakly-injective.retract-of-winjective pt
+retract-of-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
+                     → injective-type D 𝓦 𝓣
+                     → retract D' of D
+                     → injective-type D' 𝓦 𝓣
+retract-of-injective = blackboard.injective.retract-of-injective pt
 
-power-of-winjective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
-                    → winjective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
-                    → winjective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
-power-of-winjective {𝓣} {𝓦} {𝓤} {𝓥} = blackboard.weakly-injective.power-of-winjective pt {𝓣} {𝓦} {𝓤} {𝓥}
+power-of-injective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
+                   → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+                   → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} = blackboard.injective.power-of-injective pt {𝓣} {𝓦} {𝓤} {𝓥}
 
-winjective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇)
-                                          → winjective-type D 𝓤 (𝓤 ⁺)
-                                          → ∥ retract D of (D → 𝓤 ̇) ∥
-winjective-∥retract∥-of-power-of-universe {𝓤} D = blackboard.weakly-injective.winjective-retract-of-power-of-universe
+injective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇)
+                                        → injective-type D 𝓤 (𝓤 ⁺)
+                                        → ∥ retract D of (D → 𝓤 ̇) ∥
+injective-∥retract∥-of-power-of-universe {𝓤} D = blackboard.injective.injective-retract-of-power-of-universe
                                                     pt D (ua 𝓤)
 \end{code}
 
@@ -575,21 +575,21 @@ injectives are weakly injective:
 
 \begin{code}
 
-winjective-gives-minjective : (D : 𝓤 ̇)
-                             → winjective-type D 𝓤 (𝓤 ⁺)
-                             → minjective-type D 𝓤 𝓤
-winjective-gives-minjective {𝓤} = blackboard.weakly-injective.winjective-gives-∥injective∥ pt (ua 𝓤)
+injective-gives-∥ainjective∥ : (D : 𝓤 ̇)
+                           → injective-type D 𝓤 (𝓤 ⁺)
+                           → ∥ ainjective-type D 𝓤 𝓤 ∥
+injective-gives-∥ainjective∥ {𝓤} = blackboard.injective.injective-gives-∥injective∥ pt (ua 𝓤)
 
 \end{code}
 
 So, in summary, regarding the relationship between winjectivity and
 truncated injectivity, so far we know that
 
-  minjective-type D 𝓤 𝓥  → winjective-type D 𝓤 𝓥
+  mainjective-type D 𝓤 𝓥  → injective-type D 𝓤 𝓥
 
 and
 
-  winjective-type D 𝓤 (𝓤 ⁺) → minjective-type D 𝓤 𝓤,
+  injective-type D 𝓤 (𝓤 ⁺) → mainjective-type D 𝓤 𝓤,
 
 and hence, using propositional resizing, we get the following
 characterization of a particular case of winjectivity in terms of
@@ -597,10 +597,10 @@ injectivity.
 
 \begin{code}
 
-winjectivity-in-terms-of-injectivity' : propositional-resizing (𝓤 ⁺) 𝓤
-                                      → (D : 𝓤  ̇) → winjective-type D 𝓤 (𝓤 ⁺)
-                                                   ⇔ minjective-type D 𝓤 (𝓤 ⁺)
-winjectivity-in-terms-of-injectivity' {𝓤} = blackboard.weakly-injective.winjectivity-in-terms-of-injectivity' pt
+injectivity-in-terms-of-ainjectivity' : propositional-resizing (𝓤 ⁺) 𝓤
+                                      → (D : 𝓤  ̇) → injective-type D 𝓤 (𝓤 ⁺)
+                                                   ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+injectivity-in-terms-of-ainjectivity' {𝓤} = blackboard.injective.injectivity-in-terms-of-ainjectivity' pt
                                              (ua 𝓤)
 
 \end{code}
@@ -636,16 +636,16 @@ joinop {𝓣} {𝓤} X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
 𝓛-alg : {𝓣 𝓤 : Universe} → 𝓤 ̇ → (𝓣 ⁺) ⊔ 𝓤 ̇
 𝓛-alg {𝓣} {𝓤} X = Σ \(∐ : joinop {𝓣} X) → 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
-𝓛-alg-flabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg {𝓣} A → flabby A 𝓣
-𝓛-alg-flabby {𝓣} {𝓤} = blackboard.injectivity-of-lifting.𝓛-alg-flabby 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤)
+𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg {𝓣} A → aflabby A 𝓣
+𝓛-alg-aflabby {𝓣} {𝓤} = blackboard.ainjectivity-of-lifting.𝓛-alg-aflabby 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤)
 
-𝓛-alg-injective : (A : 𝓤 ̇) → 𝓛-alg {𝓣} A → injective-type A 𝓣 𝓣
-𝓛-alg-injective A α = flabby-types-are-injective A (𝓛-alg-flabby α)
+𝓛-alg-ainjective : (A : 𝓤 ̇) → 𝓛-alg {𝓣} A → ainjective-type A 𝓣 𝓣
+𝓛-alg-ainjective A α = aflabby-types-are-ainjective A (𝓛-alg-aflabby α)
 
-free-𝓛-algebra-injective : (X : 𝓣 ̇) → injective-type (𝓛 {𝓣} X) 𝓣 𝓣
-free-𝓛-algebra-injective {𝓣} X = 𝓛-alg-injective (𝓛 X)
-                                   (LiftingAlgebras.𝓛-algebra-gives-alg 𝓣
-                                     (LiftingAlgebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
+free-𝓛-algebra-ainjective : (X : 𝓣 ̇) → ainjective-type (𝓛 {𝓣} X) 𝓣 𝓣
+free-𝓛-algebra-ainjective {𝓣} X = 𝓛-alg-ainjective (𝓛 X)
+                                    (LiftingAlgebras.𝓛-algebra-gives-alg 𝓣
+                                      (LiftingAlgebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
 \end{code}
 
 Because the unit of the lifting monad is an embedding, it follows that
@@ -653,9 +653,9 @@ injective types are retracts of underlying objects of free algebras:
 
 \begin{code}
 
-injective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → injective-type D 𝓣 (𝓣 ⁺) → retract D of (𝓛 {𝓣} D)
-injective-is-retract-of-free-𝓛-algebra D i = injective-retract-of-subtype D i (𝓛 D)
-                                               (𝓛-unit D , 𝓛-unit-is-embedding D)
+ainjective-is-retract-of-free-𝓛-algebra : (D : 𝓣 ̇) → ainjective-type D 𝓣 (𝓣 ⁺) → retract D of (𝓛 {𝓣} D)
+ainjective-is-retract-of-free-𝓛-algebra D i = ainjective-retract-of-subtype D i (𝓛 D)
+                                                (𝓛-unit D , 𝓛-unit-is-embedding D)
 \end{code}
 
 With propositional resizing, the injective types are precisely the
@@ -664,15 +664,15 @@ monad:
 
 \begin{code}
 
-injectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇) → propositional-resizing (𝓣 ⁺) 𝓣
-                                       → injective-type D 𝓣 𝓣
-                                       ⇔ Σ \(X : 𝓣 ̇) → retract D of (𝓛 {𝓣} X)
-injectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
+ainjectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇) → propositional-resizing (𝓣 ⁺) 𝓣
+                                        → ainjective-type D 𝓣 𝓣
+                                        ⇔ Σ \(X : 𝓣 ̇) → retract D of (𝓛 {𝓣} X)
+ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
   where
-   a : injective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)
-   a i = D , injective-is-retract-of-free-𝓛-algebra D (injective-resizing R D i)
-   b : (Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)) → injective-type D 𝓣 𝓣
-   b (X , r) = retract-of-injective D (𝓛 X) (free-𝓛-algebra-injective X) r
+   a : ainjective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)
+   a i = D , ainjective-is-retract-of-free-𝓛-algebra D (ainjective-resizing R D i)
+   b : (Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)) → ainjective-type D 𝓣 𝓣
+   b (X , r) = retract-of-ainjective D (𝓛 X) (free-𝓛-algebra-ainjective X) r
 
 \end{code}
 
@@ -684,10 +684,10 @@ UF-Resizing).
 
 \begin{code}
 
-winjectivity-in-terms-of-injectivity : Ω-impredicative 𝓤
-                                     → (D  : 𝓤 ̇) → winjective-type D 𝓤 𝓤
-                                                  ⇔ minjective-type D 𝓤 𝓤
-winjectivity-in-terms-of-injectivity {𝓤} i = blackboard.weakly-injective.winjectivity-in-terms-of-injectivity
+injectivity-in-terms-of-ainjectivity : Ω-impredicative 𝓤
+                                     → (D  : 𝓤 ̇) → injective-type D 𝓤 𝓤
+                                                  ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+injectivity-in-terms-of-ainjectivity {𝓤} i = blackboard.injective.injectivity-in-terms-of-ainjectivity
                                                pt i (ua 𝓤)
 
 \end{code}
@@ -696,19 +696,19 @@ Here are some corollaries:
 
 \begin{code}
 
-winjective-resizing : Ω-impredicative 𝓤
-                    → (D : 𝓤 ̇)
-                    → winjective-type D 𝓤 𝓤
-                    → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → winjective-type D 𝓥 𝓦
-winjective-resizing {𝓤} = blackboard.weakly-injective.winjective-resizing pt (ua 𝓤)
+injective-resizing : Ω-impredicative 𝓤
+                   → (D : 𝓤 ̇)
+                   → injective-type D 𝓤 𝓤
+                   → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → injective-type D 𝓥 𝓦
+injective-resizing {𝓤} = blackboard.injective.injective-resizing pt (ua 𝓤)
 
-EM-gives-pointed-types-winjective : EM 𝓤 → (D : 𝓤 ̇) → D → winjective-type D 𝓤 𝓤
-EM-gives-pointed-types-winjective {𝓤} em D d = injective-gives-winjective D
-                                                 (EM-gives-pointed-types-injective em D d)
+EM-gives-pointed-types-injective : EM 𝓤 → (D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤
+EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
+                                                 (EM-gives-pointed-types-ainjective em D d)
 
-pointed-types-winjective-gives-EM : Ω-impredicative 𝓤
-                                  → ((D : 𝓤 ̇) → D → winjective-type D 𝓤 𝓤) → EM 𝓤
-pointed-types-winjective-gives-EM {𝓤} i = blackboard.weakly-injective.pointed-types-winjective-gives-EM
+pointed-types-injective-gives-EM : Ω-impredicative 𝓤
+                                  → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
+pointed-types-injective-gives-EM {𝓤} i = blackboard.injective.pointed-types-injective-gives-EM
                                             pt i (ua 𝓤)
 
 \end{code}
