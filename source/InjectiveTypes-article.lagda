@@ -58,7 +58,7 @@ module blackboard = InjectiveTypes fe
 
 \end{code}
 
-We study the notions of algebraicly injective type (data), injective
+We study the notions of algebraically injective type (data), injective
 type (property) and their relationships.
 
 \begin{code}
