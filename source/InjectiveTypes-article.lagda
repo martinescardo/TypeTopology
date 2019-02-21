@@ -29,34 +29,150 @@ Remark about the contents and organization of this Agda file.
        keep track of resizing here explicitly: it is not a global
        assumption.
 
-Abstract/introduction. We study the injective types and the
-algebraically injective types in univalent mathematics, both in the
-absence and the presence of propositional resizing. Injectivity is
-defined by the surjectivity of the restriction map along any
-embedding. Algebraic injectivity is defined by a given section of the
-restriction map along any embedding. For the sake of generality, we
-work without assuming (or rejecting) the principle of excluded middle,
-and hence without assuming the axiom of choice either. Moreover, the
-principle of excluded middle holds if and only if all types are
-algebraicly injective, if and only if all types are injective, and so
-there is nothing interesting to say in its presence. In the presence
-of resizing, the main results are easy to state and pleasing: (1)
-Injectivity is equivalent to the propositional truncation of algebraic
-injectivity (this can be seen as form of choice that just holds). (2)
-The algebraically injective types are precisely the retracts of
-exponential powers of type universes. (2') The algebraically injective
-sets are precisely the retracts of powersets, (2'') The algebraically
-injective n+1-types are precisely retracts of exponential powers of
-the universes of n-types. (3) The algebraically injective types are
-also precisely the underlying objects of algebras of the partial map
-classifier monad. A corollary of the above is that any universe is
-embedded as a retract of any larger universe in the presence of
-propositional resizing. In the absence of propositional resizing, we
-have similar results but they have subtler statements and proofs that
-need to keep track of universe levels rather explicitly. Most
-constructions developed here are in the absense of propositional
+Introduction
+------------
+
+We study the injective types and the algebraically injective types in
+univalent mathematics, both in the absence and the presence of
+propositional resizing. Injectivity is defined by the surjectivity of
+the restriction map along any embedding. Algebraic injectivity is
+defined by a given section of the restriction map along any
+embedding.
+
+For the sake of generality, we work without assuming (or rejecting)
+the principle of excluded middle, and hence without assuming the axiom
+of choice either. Moreover, the principle of excluded middle holds if
+and only if all types are algebraicly injective, if and only if all
+types are injective, and so there is nothing interesting to say in its
+presence.
+
+In the presence of propositional resizing (any proposition of any
+universe has an equivalent copy in any other universe), the main
+results are easy to state and pleasing:
+
+   (1) Injectivity is equivalent to the propositional truncation of
+       algebraic injectivity (this can be seen as form of choice that
+       just holds).
+
+   (2) The algebraically injective types are precisely the retracts of
+       exponential powers of type universes.
+
+       (2') The algebraically injective sets are precisely the retracts of
+            powersets.
+
+       (2'') The algebraically injective n+1-types are precisely retracts
+             of exponential powers of the universes of n-types.
+
+   (3) The algebraically injective types are also precisely the
+       underlying objects of algebras of the partial map classifier
+       monad.
+
+A corollary of the above is that any universe is embedded as a retract
+of any larger universe in the presence of propositional resizing.
+
+In the absence of propositional resizing, we have similar results but
+they have subtler statements and proofs that need to keep track of
+universe levels rather explicitly.
+
+Most constructions developed here are in the absense of propositional
 resizing. We apply them, with the aid of a notion of algebraic
 flabbiness, to derive the results mentioned above.
+
+Acknowledgements. Mike Shulman acted as a sounding board over the
+years, with many helpful remarks, including the terminology
+'algebraically injective' for the notion we consider here.
+
+Our type theory
+---------------
+
+Because the way we handle universes is different from the HoTT Book
+[https://homotopytypetheory.org/book/] and probably unfamiliar to
+readers not acquainted with Agda, we explicitly state it here.
+
+Our underlying formal system can be considered as a subset
+of that used in UniMath [https://github.com/UniMath/UniMath].
+
+* We work with a Martin-Löf type theory with types 𝟘 (empty type), 𝟙
+  (one-element type), and type formers _+_ (disjoint sum), Π and Σ,
+  and hierarchy of type universes closed under them in a suitable
+  sense discussed below.
+
+  We take these as required closure properties of our formal system,
+  rather than as an inductive definition. For example, we could have a
+  type ℕ of natural numbers, but we don't mention it as is it not
+  needed for our purposes.
+
+* We assume a universe 𝓤₀, and for each universe 𝓤 we assume a
+  successor universe 𝓤⁺ with 𝓤 : 𝓤⁺, and for any two universes 𝓤,𝓥 a
+  least upper bound 𝓤 ⊔ 𝓥. We have 𝓤₀ ⊔ 𝓤 = 𝓤 and 𝓤 ⊔ 𝓤⁺ = 𝓤⁺
+  definitionally, and the operation _⊔_ is definitionally idempotent,
+  commutative, and associative, and the successor operation (-)⁺
+  distributes over _⊔_ definitionally.
+
+  (In Agda we here we write X : 𝓤 ̇ (with a dot), rather than X:𝓤
+  (without the dot).)
+
+* We stipulate that we have copies 𝟘 {𝓤} and 𝟙 {𝓥} of the
+  empty and singleton types in each universe 𝓤} (with the subscripts
+  often elided).
+
+* We don't assume that the universes are cumulative (in the sense that
+  from X : 𝓤 we would be able to deduce that X : 𝓤 ⊔ 𝓥 for any 𝓥), but
+  we also don't assume that they are not. However, from the
+  assumptions formulated below, it follows that for any two universes
+  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → U ⊔ 𝓥, for instance X ↦ X + 𝟘 {𝓥},
+  which is an embedding with lift X ≃ X if univalence holds (we cannot
+  write the identity type lift X = X, as the lhs and rhs are live in
+  the different types 𝓤 and 𝓤 ⊔ 𝓥, which are not (definitionally) the
+  same in general).
+
+* We stipulate that if X : 𝓤 and Y : 𝓥, then X+Y : 𝓤 ⊔ 𝓥.
+
+* We stipulate that if X : 𝓤 and A : X → 𝓥 then Π {X} A : 𝓤 ⊔ 𝓥. We
+  abbreviate this product type as Π A when X can be inferred from A,
+  and sometimes we write it verbosely as Π (x:X), A x. (Which in Agda
+  is written Π \(x : X) → A x or (x : X) → A x.)
+
+  In particular, for types X : 𝓤 and Y : 𝓥, we have the function
+  type X → Y : 𝓤 ⊔ 𝓥.
+
+* The same type stipulations as for Π, and the same syntactical
+  conventions apply to the sum type former Σ.
+
+  In particular, for types X : 𝓤 and Y : 𝓥, we have the cartesian
+  product X × Y : 𝓤 ⊔ 𝓥.
+
+* We assume the η conversion rules for Π and Σ.
+
+* For a type X:𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y is
+  abbreviated as Id x y and often written x =_X y or x = y. (In Agda :
+  x ≡ y.)
+
+  The elements of the identity type x=y are called identifications or
+  paths from x to y.
+
+* We tacitly assume univalence as in the HoTT Book (link above).
+
+* We work with the existence of propositional truncations as an
+  assumption, also tacit.  The HoTT Book, instead,
+  defines *rules* for propositional truncation as a syntactical
+  construct of the formal system. Here we take propositional
+  truncation as a principle for a pair of universes 𝓤,𝓥:
+
+  Π (X:𝓤),  Σ (∥X∥ : 𝓤), ∥{X}∥ is a proposition × (X → ∥X∥)
+          × Π (P : 𝓥), P is a proposition → (X → P) → ∥X∥ → P.
+
+  The universe 𝓤 is that of types we truncate, and 𝓥 is the universe
+  where the propositions we eliminate into live.  Because the
+  existence of propositional truncations is an assumption rather than
+  a type formation rule, its so-called ``computation'' rule doesn't
+  hold definitionally, of course.
+
+Assumptions
+-----------
+
+No K axiom (all types would be sets), a Spartan MLTT as described
+above, univalence and propositional truncation.
 
 \begin{code}
 
@@ -66,19 +182,18 @@ open import SpartanMLTT
 open import UF-Univalence
 open import UF-PropTrunc
 
-\end{code}
-
-We assume univalence and propositional truncation globally in this
-article:
-
-\begin{code}
-
 module InjectiveTypes-article
         (ua : Univalence)
         (pt : propositional-truncations-exist)
        where
 
 open PropositionalTruncation pt
+
+\end{code}
+
+We use auxiliary definitions and results from the following modules:
+
+\begin{code}
 
 open import Plus-Properties
 open import UF-FunExt
@@ -94,7 +209,8 @@ open import UF-IdEmbedding
 
 \end{code}
 
-Hence we get function extensionality and propositional extensionality:
+From univalence we get function extensionality and propositional
+extensionality:
 
 \begin{code}
 
@@ -109,11 +225,15 @@ module blackboard = InjectiveTypes fe
 
 \end{code}
 
-We study the notions of algebraically injective type (data), injective
-type (property) and their relationships.
+Precise definition of the notions of injectivity and algebraic injectivity
+--------------------------------------------------------------------------
+
+As discussed in the introduction, we study the notions of
+algebraically injective type (data), injective type (property) and
+their relationships.
 
 Algebraic injectivity stipulates a given section f ↦ f' of the
-restriction map g ↦ g ∘ j:
+restriction map _∘ j:
 
 \begin{code}
 
@@ -123,6 +243,11 @@ ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-e
 
 \end{code}
 
+This defines the algebraic injectivity of a type D in a universe 𝓦
+with respect to embeddings with domain in the universe 𝓤 and codomain
+in the universes 𝓥. As discussed in the introduction, such tracking of
+universes is needed in the absence of propositional resizing.
+
 Injectivity stipulates that the restriction map is a surjection:
 
 \begin{code}
@@ -131,6 +256,9 @@ injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ �
 injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                       → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
 \end{code}
+
+The algebraic injectivity of universes
+--------------------------------------
 
 Universes are algebraicly injective, in at least two ways.
 
@@ -448,6 +576,10 @@ retract-extension = blackboard.retract-extension
 
 This completes our discussion of extensions of maps into universes.
 
+
+Closure properties of algebraic injectivity
+-------------------------------------------
+
 Algebraically injectives are closed under retracts:
 
 \begin{code}
@@ -537,6 +669,9 @@ ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-su
 
 \end{code}
 
+Resizing theorems and algebraic flabbiness
+------------------------------------------
+
 The above results, when combined together in the obvious way, almost
 give directly that the algebraically injective types are precisely the
 retracts of exponential powers of universes, but there is a universe
@@ -588,7 +723,6 @@ embeddings:
 ainjective-types-are-aflabby : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
 ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p → *) (prop-embedding P h 𝓥) f) * ,
                                                      pr₂ (i (λ p → *) (prop-embedding P h 𝓥) f)
-
 
 \end{code}
 
@@ -672,6 +806,9 @@ Therefore it is injective:
 Another way to see this is that it is a retract of the universe by
 propositional truncation. (Exercise, not included.)
 
+The equivalence of algebraic injectivity and excluded middle
+------------------------------------------------------------
+
 Algebraic flabiness can also be applied to show that all types are
 injective iff excluded middle holds.
 
@@ -737,6 +874,9 @@ pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM
                                        (λ D d → ainjective-types-are-aflabby D (α D d))
 
 \end{code}
+
+Algebraic injectivity and flabbiness in the presence of propositional resizing
+------------------------------------------------------------------------------
 
 Returning to size issues, we now apply algebraic flabiness to show
 that propositional resizing gives unrestricted algebraic injective
@@ -900,6 +1040,9 @@ ainjective-characterization {𝓤} R D = a , b
 
 \end{code}
 
+Injectivity versus algebraic injectivity in the absence of resizing
+-------------------------------------------------------------------
+
 We now discuss injectivity, as defined above, in relation to algebraic
 injectivity.
 
@@ -1010,6 +1153,9 @@ and hence, using propositional resizing, we get the following
 characterization of a particular case of injectivity in terms of
 algebraic injectivity.
 
+Injectivity versus algebraic injectivity in the presence of resizing I
+----------------------------------------------------------------------
+
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity' : propositional-resizing (𝓤 ⁺) 𝓤
@@ -1023,6 +1169,10 @@ injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
    b = ∥ainjective∥-gives-injective D
 
 \end{code}
+
+
+Algebraic flabiness and injectivity in terms of the lifting monad
+-----------------------------------------------------------------
 
 We would like to do better than this. For that purpose, we consider
 the lifting monad in conjunction with resizing.
@@ -1105,6 +1255,9 @@ propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
 equivalent copy in 𝓤 (for the relationship between resizing and
 impredicativity, see the module UF-Resizing).
 
+Injectivity versus algebraic injectivity in the presence of resizing II
+-----------------------------------------------------------------------
+
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity : Ω-impredicative 𝓤
@@ -1169,15 +1322,14 @@ pointed-types-injective-gives-EM : Ω-impredicative 𝓤
                                   → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
 pointed-types-injective-gives-EM {𝓤} i = blackboard.injective.pointed-types-injective-gives-EM
                                             pt i (ua 𝓤)
-
 \end{code}
 
 TODO. Code the results about injective sets and injective n+1-types
 stated in the abstract.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
-InjectiveTypes file to check we haven't forgotten to include anything
-relevant.
+InjectiveTypes blacboard file to check we haven't forgotten to include
+anything relevant.
 
 Fixities:
 
