@@ -1,25 +1,23 @@
-wMartin Escardo, 19th Feb 2019.
+Martin Escardo, 19th Feb 2019.
 
 Injective types in univalent mathematics
 ----------------------------------------
 
 Remark about the contents and organization of this Agda file.
 
-       This is supposed to match precisely an article to be submitted
-       for publication.
-
        This is an article-style version of the blackboard-style
-       version InjectiveTypes.lagda. The blackboard presents the ideas
-       as they have been developed, rather than the way they should be
-       presented in an article submitted for publication, but still in
-       a fully verified way.
+       version InjectiveTypes.lagda, to be submitted for
+       publication. The blackboard presents the ideas as they have
+       been developed, rather than the way they should be presented in
+       an article submitted for publication, but still in a fully
+       verified way.
 
        Here we tell the story, referring to the blackboard file for
-       the routine proofs (which can be followed as links in the html
-       version of this file). We have included the non-routine proofs,
-       and some routine proofs that we feel should be added for the
-       sake of flow of the text. We repeat the definitions of the
-       notions studied here (in a definitionally equal way).
+       the routine proofs (which can be followed as links by cliking
+       at them). We have included the non-routine proofs, and some
+       routine proofs that we feel should be added for the sake of
+       flow of the text. We repeat the definitions of the notions
+       studied here (in a definitionally equal way).
 
        The blackboard file likely has more information than that
        reported here. In particular, it keeps track better of what
@@ -37,7 +35,7 @@ univalent mathematics, both in the absence and the presence of
 propositional resizing. Injectivity is defined by the surjectivity of
 the restriction map along any embedding. Algebraic injectivity is
 defined by a given section of the restriction map along any
-embedding.
+embedding [John Bourke, 2017, https://arxiv.org/abs/1712.02523].
 
 For the sake of generality, we work without assuming (or rejecting)
 the principle of excluded middle, and hence without assuming the axiom
@@ -51,11 +49,12 @@ universe has an equivalent copy in any other universe), the main
 results are easy to state and pleasing:
 
    (1) Injectivity is equivalent to the propositional truncation of
-       algebraic injectivity (this can be seen as form of choice that
-       just holds).
+       algebraic injectivity (this can be seen as a form of choice
+       that just holds, and may be related to
+       [Toby Kenney, 2011, https://www.sciencedirect.com/science/article/pii/S0022404910000782]).
 
    (2) The algebraically injective types are precisely the retracts of
-       exponential powers of type universes.
+       exponential powers of type universes. In particular,
 
        (2') The algebraically injective sets are precisely the retracts of
             powersets.
@@ -64,23 +63,24 @@ results are easy to state and pleasing:
              of exponential powers of the universes of n-types.
 
    (3) The algebraically injective types are also precisely the
-       underlying objects of algebras of the partial map classifier
-       monad.
+       underlying objects of the algebras of the partial map
+       classifier monad.
 
 A corollary of the above is that any universe is embedded as a retract
 of any larger universe in the presence of propositional resizing.
 
-In the absence of propositional resizing, we have similar results but
-they have subtler statements and proofs that need to keep track of
+In the absence of propositional resizing, we have similar results
+which have subtler statements and proofs that need to keep track of
 universe levels rather explicitly.
 
 Most constructions developed here are in the absense of propositional
 resizing. We apply them, with the aid of a notion of algebraic
-flabbiness, to derive the results mentioned above.
+flabbiness, to derive the results that rely on resizing mentioned
+above.
 
 Acknowledgements. Mike Shulman acted as a sounding board over the
-years, with many helpful remarks, including the terminology
-'algebraically injective' for the notion we consider here.
+years, with many helpful remarks, including in particular the
+terminology 'algebraically injective' for the notion we consider here.
 
 Our type theory
 ---------------
@@ -93,9 +93,9 @@ Our underlying formal system can be considered as a subset
 of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * We work with a Martin-Löf type theory with types 𝟘 (empty type), 𝟙
-  (one-element type), and type formers _+_ (disjoint sum), Π and Σ,
-  and hierarchy of type universes closed under them in a suitable
-  sense discussed below.
+  (one-element type), and type formers _+_ (disjoint sum), Π (product)
+  and Σ (sum), and hierarchy of type universes closed under them in a
+  suitable sense discussed below.
 
   We take these as required closure properties of our formal system,
   rather than as an inductive definition. For example, we could have a
@@ -109,18 +109,17 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   commutative, and associative, and the successor operation (-)⁺
   distributes over _⊔_ definitionally.
 
-  (In Agda we here we write X : 𝓤 ̇ (with a dot), rather than X:𝓤
-  (without the dot).)
+  (In Agda we here we write X : 𝓤 ̇ (with a superscript, almost
+  invisible, dot), rather than X:𝓤 (without the dot).)
 
-* We stipulate that we have copies 𝟘 {𝓤} and 𝟙 {𝓥} of the
-  empty and singleton types in each universe 𝓤} (with the subscripts
-  often elided).
+* We stipulate that we have copies 𝟘 {𝓤} and 𝟙 {𝓤} of the empty and
+  singleton types in each universe 𝓤.
 
 * We don't assume that the universes are cumulative (in the sense that
   from X : 𝓤 we would be able to deduce that X : 𝓤 ⊔ 𝓥 for any 𝓥), but
   we also don't assume that they are not. However, from the
   assumptions formulated below, it follows that for any two universes
-  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → U ⊔ 𝓥, for instance X ↦ X + 𝟘 {𝓥},
+  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → 𝓤 ⊔ 𝓥, for instance X ↦ X + 𝟘 {𝓥},
   which is an embedding with lift X ≃ X if univalence holds (we cannot
   write the identity type lift X = X, as the lhs and rhs are live in
   the different types 𝓤 and 𝓤 ⊔ 𝓥, which are not (definitionally) the
@@ -145,7 +144,7 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 * We assume the η conversion rules for Π and Σ.
 
 * For a type X:𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y is
-  abbreviated as Id x y and often written x =_X y or x = y. (In Agda :
+  abbreviated as Id x y and often written x =_X y or x = y. (In Agda:
   x ≡ y.)
 
   The elements of the identity type x=y are called identifications or
@@ -154,12 +153,12 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 * We tacitly assume univalence as in the HoTT Book (link above).
 
 * We work with the existence of propositional truncations as an
-  assumption, also tacit.  The HoTT Book, instead,
-  defines *rules* for propositional truncation as a syntactical
-  construct of the formal system. Here we take propositional
-  truncation as a principle for a pair of universes 𝓤,𝓥:
+  assumption, also tacit. The HoTT Book, instead, defines *rules* for
+  propositional truncation as a syntactical construct of the formal
+  system. Here we take propositional truncation as a principle for a
+  pair of universes 𝓤,𝓥:
 
-  Π (X:𝓤),  Σ (∥X∥ : 𝓤), ∥{X}∥ is a proposition × (X → ∥X∥)
+  Π (X:𝓤),  Σ (∥X∥ : 𝓤), ∥X∥ is a proposition × (X → ∥X∥)
           × Π (P : 𝓥), P is a proposition → (X → P) → ∥X∥ → P.
 
   The universe 𝓤 is that of types we truncate, and 𝓥 is the universe
@@ -173,6 +172,9 @@ Assumptions
 
 No K axiom (all types would be sets), a Spartan MLTT as described
 above, univalence and propositional truncation.
+
+The assumptions of univalence and existence of propositional
+truncations are pameters for this module.
 
 \begin{code}
 
@@ -191,7 +193,8 @@ open PropositionalTruncation pt
 
 \end{code}
 
-We use auxiliary definitions and results from the following modules:
+We use auxiliary definitions and results from the following modules
+(and modules referred to from these modules):
 
 \begin{code}
 
@@ -225,8 +228,8 @@ module blackboard = InjectiveTypes fe
 
 \end{code}
 
-Precise definition of the notions of injectivity and algebraic injectivity
---------------------------------------------------------------------------
+The notions of injectivity and algebraic injectivity
+----------------------------------------------------
 
 As discussed in the introduction, we study the notions of
 algebraically injective type (data), injective type (property) and
@@ -242,6 +245,9 @@ ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-e
                       → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
 \end{code}
+
+Recall that _∼_ denotes pointwise equality of functions (you can click
+at a symbol or name in the Agda code to navigate to its definition).
 
 This defines the algebraic injectivity of a type D in a universe 𝓦
 with respect to embeddings with domain in the universe 𝓤 and codomain
@@ -260,7 +266,8 @@ injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-em
 The algebraic injectivity of universes
 --------------------------------------
 
-Universes are algebraicly injective, in at least two ways.
+Universes are algebraically injective, in at least two ways, defined
+by the following two extension operators:
 
 \begin{code}
 
@@ -268,14 +275,17 @@ _╲_ _╱_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → 𝓦 ̇) → (X → Y) →
 (f ╲ j) y = Σ \(w : fiber j y) → f(pr₁ w)
 (f ╱ j) y = Π \(w : fiber j y) → f(pr₁ w)
 
-
 \end{code}
 
-The crucial idea behind the following two statements is that a sum
-indexed by a proposition (the fiber) is (equivalent, and hence) equal,
-to any of its summands, and a product indexed by a proposition is
-equal to any of its factors, and the fiber is a propositino when j is
-an embedding.
+We are mostly interested in the case when j is an embedding, which in
+univalent mathematics amounts to saying that its fibers are all
+propositions, but here we also investigate what happens in the absence
+of this assumption.
+
+The crucial idea behind the above definitions, under the assumption
+that j is an embedding, is that a sum indexed by a proposition (the
+fiber) is (equivalent, and hence) equal, to any of its summands, and a
+product indexed by a proposition is equal to any of its factors.
 
 \begin{code}
 
@@ -337,14 +347,16 @@ same-Π = blackboard.same-Π
 The proofs of the above are routine.
 
 The two extensions are left and right Kan extensions in the following
-sense, without the need to assume that j is an embedding. First, a
-map X → 𝓤, when X is viewed as a ∞-groupoid and hence an ∞-category,
-and when 𝓤 is viewed as the ∞-generalization of the category of sets,
-can be considered as a sort of ∞-presheaf, because its functoriality
-is automatic. Then we can consider natural transformations between
-such ∞-presheafs. But again the naturality condition is automatic.  We
+sense, without the need to assume that j is an embedding. First, a map
+X → 𝓤, when X is viewed as an ∞-groupoid and hence an ∞-category, and
+when 𝓤 is viewed as the ∞-generalization of the category of sets, can
+be considered as a sort of ∞-presheaf, because its functoriality is
+automatic. Then we can consider natural transformations between such
+∞-presheafs. But again the naturality condition is automatic.  We
 denote by _≾_ the type of natural transformations between such
 ∞-presheafs.
+
+We record the following known constructions and facts:
 
 \begin{code}
 
@@ -379,9 +391,9 @@ With this notation, we have:
 
 \end{code}
 
-These actually follow from the following more general facts, which say
-that the extension operators are left and right adjoint to the
-restriction map g ↦ g ∘ j.
+These are particular cases of the following facts, which say that the
+extension operators are left and right adjoint to the restriction map
+g ↦ g ∘ j.
 
 \begin{code}
 
@@ -398,7 +410,8 @@ restriction map g ↦ g ∘ j.
 The proofs of the above are routine.
 
 We also have that if j is an embedding then so are the extension maps
-f ↦ f ╲ j and f ↦ f ╱ j:
+f ↦ f ╲ j and f ↦ f ╱ j from the function type (X → 𝓤) to the function
+type (Y → 𝓤):
 
 \begin{code}
 
@@ -576,7 +589,6 @@ retract-extension = blackboard.retract-extension
 
 This completes our discussion of extensions of maps into universes.
 
-
 Closure properties of algebraic injectivity
 -------------------------------------------
 
@@ -603,7 +615,7 @@ equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (equiv-retract-l e)
 
 \end{code}
 
-And under products:
+And under products, were we perform the extension poinwise:
 
 \begin{code}
 
@@ -633,7 +645,8 @@ power-of-ainjective i = Π-ainjective (λ a → i)
 \end{code}
 
 An algebraically injective type is a retract of every type it is
-embedded into:
+embedded into, where we use _↪_ for the type of embeddings. We symply
+extend the identity function to get the retraction:
 
 \begin{code}
 
@@ -690,13 +703,20 @@ ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-univer
 
 \end{code}
 
-A further resizing for-free construction is possible by considering a
-notion of flabbiness as data (rather than as property, as in the
-1-topos literature).
+This is resizing down.
 
-The notion of flabbiness used in topos theory is defined with
-truncated Σ, that is, ∃. We refer to the notion defined with Σ as
-algebraic flabiness.
+A further resizing-for-free construction is possible by considering a
+notion of flabbiness as data, rather than as property, as in the
+1-topos literature. The notion of flabbiness considered in topos
+theory (see e.g. [Ingo Blechschmidt, 2018,
+https://arxiv.org/abs/1810.12708]) is defined with truncated Σ, that
+is, the existential ∃ with values in the subobject classifier Ω. We
+refer to the notion defined with untruncated Σ as algebraic
+flabbiness, by analogy with the notion of algebraic injectivity. But
+this is more than a mere analogy: notice that flabbiness and algebraic
+flabbiness amount to simply injectivity and algebraic injectivity with
+respect to the class of embeddings P → 𝟙 with P ranging over
+propositions.
 
 \begin{code}
 
@@ -705,7 +725,7 @@ aflabby D 𝓤 = (P : 𝓤 ̇) → is-prop P → (f : P → D) → Σ \(d : D) �
 
 \end{code}
 
-Algebraically flabby types are pointed:
+Algebraically flabby types are pointed by considering P=𝟘:
 
 \begin{code}
 
@@ -714,9 +734,8 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 \end{code}
 
-And algebraically injective types (in the proof-relevant way we have
-defined them) are aflabby, because maps P → 𝟙 from propositions P are
-embeddings:
+And algebraically injective types because maps P → 𝟙 from propositions
+P are embeddings as alluded above:
 
 \begin{code}
 
@@ -727,9 +746,9 @@ ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p →
 \end{code}
 
 The interesting thing is that the universe 𝓥 is forgotten in this
-construction, with only 𝓤 remaining, particularly regarding this
-converse, which says that algebraically flabby types are algebraically
-injective:
+construction, with only 𝓤 remaining, particularly regarding the
+following converse, which says that algebraically flabby types are
+algebraically injective:
 
 \begin{code}
 
@@ -746,8 +765,8 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
 
 \end{code}
 
-We then get this resizing theorem by composing the conversions between
-algebraic flabiness and injectivity:
+We then get the following resizing theorem by composing the above
+conversions between algebraic flabbiness and injectivity:
 
 \begin{code}
 
@@ -768,7 +787,7 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
-This is resizing down.
+This is resizing down again.
 
 The type Ω 𝓤 of propositions of a universe 𝓤 is algebraically
 flabby. More generally:
@@ -809,7 +828,7 @@ propositional truncation. (Exercise, not included.)
 The equivalence of algebraic injectivity and excluded middle
 ------------------------------------------------------------
 
-Algebraic flabiness can also be applied to show that all types are
+Algebraic flabbiness can also be applied to show that all types are
 injective iff excluded middle holds.
 
 \begin{code}
@@ -859,12 +878,20 @@ aflabby-EM-lemma {𝓦} P i φ = γ
 
 \end{code}
 
-From this we conclude:
+From this we conclude that if all types are algebraically flabby then
+excluded middle holds:
 
 \begin{code}
 
 pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇) → D → aflabby D 𝓦) → EM 𝓦
 pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+
+\end{code}
+
+And then we have the same situation for algebraically injective types,
+by reduction to algebraic flabiness:
+
+\begin{code}
 
 EM-gives-pointed-types-ainjective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → ainjective-type D 𝓤 𝓥
 EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D (EM-gives-pointed-types-aflabby D em d)
@@ -878,17 +905,22 @@ pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM
 Algebraic injectivity and flabbiness in the presence of propositional resizing
 ------------------------------------------------------------------------------
 
-Returning to size issues, we now apply algebraic flabiness to show
+Returning to size issues, we now apply algebraic flabbiness to show
 that propositional resizing gives unrestricted algebraic injective
 resizing.
 
 The propositional resizing principle, from 𝓤 to 𝓥, that we consider
 here says that every proposition in the universe 𝓤 has an equivalent
-copy in the universe 𝓥 (this is consistent because it is implied by
+copy in the universe 𝓥. This is consistent because it is implied by
 excluded middle, but, as far as we are aware, there is no known
-computational interpretation of this axiom).
+computational interpretation of this axiom. A model in which excluded
+middle fails but propositional resizing holds is given by Shulman
+[Univalence for inverse EI diagrams. Homology, Homotopy and
+Applications, 19:2 (2017), p219–249, DOI. Also available at
+https://arxiv.org/abs/1508.02410.].
 
-We begin with this lemma:
+We begin with this lemma, which says that algebraic flabbiness is
+universe independent in the presence of propositional resizing:
 
 \begin{code}
 
@@ -917,10 +949,10 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
 
 \end{code}
 
-And from this it follows that the algebraic injectivity of a type with
-respect to two given universes 𝓤 and 𝓥 implies its algebraic
-injectivity with respect to all universes 𝓤' and 𝓥': we convert
-back-and-forth between ainjectivity and aflabbiness:
+And from this it follows that the algebraic injectivity is also
+universe independent in the presence of propositional resizing: we
+convert back-and-forth between algebraic injectivity and algebraic
+flabbiness:
 
 \begin{code}
 
@@ -932,14 +964,13 @@ ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i j e f = aflabby-t
 
 \end{code}
 
-As an application of this and of the algebraic injectivity of universes, we have
-that any universe is a retract of any larger universe.
-
-We remark that for types that are not sets, sections are not
-automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
-
-But we can choose the retraction so that the section is an embedding,
-in this case.
+As an application of this and of the algebraic injectivity of
+universes, we have that any universe is a retract of any larger
+universe.  We remark that for types that are not sets, sections are
+not automatically embeddings [Shulman, Logical Methods in Computer
+Science Vol 12 No. 3. (2017), also available at
+https://arxiv.org/abs/1507.03634]. But we can choose the retraction so
+that the section is an embedding, in this case.
 
 \begin{code}
 
@@ -965,7 +996,7 @@ that there is an embedding of any universe into any larger universe,
 assuming univalence.
 
 It may be of interest to unfold the above proof to see a direct
-argument avoiding flabiness and injectivity:
+argument from first principles avoiding flabbiness and injectivity:
 
 \begin{code}
 
@@ -1012,7 +1043,7 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding
 
 As mentioned above, we almost have that the algebraically injective
 types are precisely the retracts of exponential powers of universes,
-upto a universe mismatch. This mismatch is side-steped by
+upto a universe mismatch. This mismatch is side-stepped by
 propositional resizing:
 
 \begin{code}
@@ -1054,7 +1085,7 @@ injectivity-is-a-prop = blackboard.injective.injectivity-is-a-prop pt
 
 \end{code}
 
-This is routine, using that propositions are closed under Π.
+This is routine, using the fact that propositions are closed under Π.
 
 \begin{code}
 
@@ -1122,8 +1153,9 @@ injective-∥retract∥-of-power-of-universe {𝓤} D = embedding-∥retract∥ 
 
 \end{code}
 
-With this we get a partial converse to the fact that truncated
-algebraic injectivity implies injectivity:
+With this we get an almost converse to the fact that truncated
+algebraic injectivity implies injectivity: the universe levels are
+different in the converse:
 
 \begin{code}
 
@@ -1171,7 +1203,7 @@ injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
 \end{code}
 
 
-Algebraic flabiness and injectivity in terms of the lifting monad
+Algebraic flabbiness and injectivity in terms of the lifting monad
 -----------------------------------------------------------------
 
 We would like to do better than this. For that purpose, we consider
@@ -1249,28 +1281,29 @@ ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
 
 \end{code}
 
+
+Injectivity versus algebraic injectivity in the presence of resizing II
+-----------------------------------------------------------------------
+
 Now, instead of propositional resizing, we consider the
 impredicativity of the universe 𝓤, which says that the type of
 propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
 equivalent copy in 𝓤 (for the relationship between resizing and
 impredicativity, see the module UF-Resizing).
 
-Injectivity versus algebraic injectivity in the presence of resizing II
------------------------------------------------------------------------
-
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity : Ω-impredicative 𝓤
                                      → (D  : 𝓤 ̇) → injective-type D 𝓤 𝓤
                                                  ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
-injectivity-in-terms-of-ainjectivity {𝓤} ω₀ D = γ , ∥ainjective∥-gives-injective D
+injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-injective D
  where
   open import LiftingSize 𝓤
   L : 𝓤 ̇
-  L = pr₁ (𝓛-impredicative-resizing ω₀ D)
+  L = pr₁ (𝓛-impredicative-resizing ω D)
 
   e : 𝓛 D ≃ L
-  e = ≃-sym(pr₂ (𝓛-impredicative-resizing ω₀ D))
+  e = ≃-sym(pr₂ (𝓛-impredicative-resizing ω D))
 
   down : 𝓛 D → L
   down = eqtofun e
@@ -1298,7 +1331,8 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω₀ D = γ , ∥ainjective∥-give
 
 \end{code}
 
-Here are some corollaries:
+Here are some corollaries, by reduction of the above results about algebraic
+injectivity:
 
 \begin{code}
 
@@ -1320,18 +1354,71 @@ EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
 
 pointed-types-injective-gives-EM : Ω-impredicative 𝓤
                                   → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
-pointed-types-injective-gives-EM {𝓤} i = blackboard.injective.pointed-types-injective-gives-EM
-                                            pt i (ua 𝓤)
+pointed-types-injective-gives-EM {𝓤} ω β P i = e
+  where
+   a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
+   a = β ((P + ¬ P) + 𝟙) (inr *)
+   b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
+   b = pr₁ (injectivity-in-terms-of-ainjectivity ω ((P + ¬ P) + 𝟙)) a
+   c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓤 ∥
+   c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
+   d : ∥ P + ¬ P ∥
+   d = ∥∥-functor (aflabby-EM-lemma P i) c
+   e : P + ¬ P
+   e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
+
 \end{code}
 
-TODO. Code the results about injective sets and injective n+1-types
-stated in the abstract.
+TODO. Connect the above results on injectivity of universes to the
+fact that they are algebras of the lifting monad, in at least two
+ways, with Σ and Π are structure maps (already formulated and proved
+in the lifting files available in this development).
+
+TODO. Formulate and code the results about injective sets and
+injective n+1-types stated in the abstract.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
-InjectiveTypes blacboard file to check we haven't forgotten to include
+InjectiveTypes blackboard file to check we haven't forgotten to include
 anything relevant.
 
+
+References (in the order they are cited above)
+----------
+
+John Bourke, 2017, Equipping weak equivalences with algebraic structure.
+                   https://arxiv.org/abs/1712.02523.
+
+Toby Kenney, 2011, Injective power objects and the axiom of choice.
+                  Journal of Pure and Applied Algebra Volume 215,
+                  Issue 2, February 2011, Pages 131-144
+                  https://www.sciencedirect.com/science/article/pii/S0022404910000782
+
+The Univalent Foundations Program, 2013,
+                  Homotopy Type Theory: Univalent Foundations of Mathematics. (HoTT Book)
+                  Institute for Advanced Study,
+                  https://homotopytypetheory.org/book/
+
+Voevodsky, Vladimir and Ahrens, Benedikt and Grayson, Daniel and others.
+                  2014--present--future,
+                  UniMath.
+                  https://github.com/UniMath/UniMath
+
+Ingo Blechschmidt, 2018,
+                  Flabby and injective objects in toposes.
+                  https://arxiv.org/abs/1810.12708 https://arxiv.org/abs/1810.12708
+
+Michael Shulman, 2017, Univalence for inverse EI diagrams.
+                  Homology, Homotopy and Applications, 19:2 (2017),
+                  p219–249.
+                  https://arxiv.org/abs/1508.02410.
+
+Michal Shulman, 2017, Idempotents in intensional type theory,
+                  Logical Methods in Computer Science Vol 12 No. 3. (2017).
+                  https://arxiv.org/abs/1507.03634
+
+
 Fixities:
+---------
 
 \begin{code}
 

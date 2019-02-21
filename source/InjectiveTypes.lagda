@@ -1560,12 +1560,12 @@ Here are some corollaries:
 
  pointed-types-injective-gives-EM : Ω-impredicative 𝓤 → is-univalent 𝓤
                                    → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
- pointed-types-injective-gives-EM {𝓤} R ua β P i = e
+ pointed-types-injective-gives-EM {𝓤} ω ua β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
    a = β ((P + ¬ P) + 𝟙) (inr *)
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
-   b = pr₁ (injectivity-in-terms-of-ainjectivity R ua ((P + ¬ P) + 𝟙)) a
+   b = pr₁ (injectivity-in-terms-of-ainjectivity ω ua ((P + ¬ P) + 𝟙)) a
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓤 ∥
    c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
    d : ∥ P + ¬ P ∥
