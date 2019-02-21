@@ -9,15 +9,16 @@ article submitted for publication, but still in a fully verified way.
 
 Here we tell the story, referring to the blackboard file for the
 routine proofs (which can be followed as links in the html version of
-this file). We have include the non-routine proofs, and the some
-routine proofs that we feel should be added. We repeat the definitions
-of the notions studies here (in a definitionally equal way).
+this file). We have included the non-routine proofs, and some routine
+proofs that we feel should be added. We repeat the definitions of the
+notions studied here (in a definitionally equal way).
 
 The blackboard file likely has more information than that reported
 here. In particular, it keeps track better of what univalent
 foundations assumptions are used in each construction (univalence,
 function extensionality, propositional extensionality, existence of
-propositional truncations).
+propositional truncations). We do keep track of resizing here
+explicitly: it is not a global assumption.
 
 \begin{code}
 
