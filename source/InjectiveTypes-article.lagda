@@ -85,9 +85,10 @@ terminology 'algebraically injective' for the notion we consider here.
 Our type theory
 ---------------
 
-Because the way we handle universes is different from the HoTT Book
-[https://homotopytypetheory.org/book/] and probably unfamiliar to
-readers not acquainted with Agda, we explicitly state it here.
+Because the way we handle universes is different from that of the HoTT
+Book [https://homotopytypetheory.org/book/] and Coq, and probably
+unfamiliar to readers not acquainted with Agda, we explicitly state it
+here.
 
 Our underlying formal system can be considered as a subset
 of that used in UniMath [https://github.com/UniMath/UniMath].
