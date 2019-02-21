@@ -1,24 +1,56 @@
 wMartin Escardo, 19th Feb 2019.
 
-Injective types in univalent mathematics.
+Injective types in univalent mathematics
+----------------------------------------
 
-This is an article-style version of the blackboard-style version
-InjectiveTypes.lagda. The blackboard presents the ideas as they have
-been developed, rather than the way they should be presented in an
-article submitted for publication, but still in a fully verified way.
+Remark about the contents and organization of this Agda file.
 
-Here we tell the story, referring to the blackboard file for the
-routine proofs (which can be followed as links in the html version of
-this file). We have included the non-routine proofs, and some routine
-proofs that we feel should be added. We repeat the definitions of the
-notions studied here (in a definitionally equal way).
+       This is supposed to match precisely an article to be submitted
+       for publication.
 
-The blackboard file likely has more information than that reported
-here. In particular, it keeps track better of what univalent
-foundations assumptions are used in each construction (univalence,
-function extensionality, propositional extensionality, existence of
-propositional truncations). We do keep track of resizing here
-explicitly: it is not a global assumption.
+       This is an article-style version of the blackboard-style
+       version InjectiveTypes.lagda. The blackboard presents the ideas
+       as they have been developed, rather than the way they should be
+       presented in an article submitted for publication, but still in
+       a fully verified way.
+
+       Here we tell the story, referring to the blackboard file for
+       the routine proofs (which can be followed as links in the html
+       version of this file). We have included the non-routine proofs,
+       and some routine proofs that we feel should be added for the
+       sake of flow of the text. We repeat the definitions of the
+       notions studied here (in a definitionally equal way).
+
+       The blackboard file likely has more information than that
+       reported here. In particular, it keeps track better of what
+       univalent foundations assumptions are used in each construction
+       (univalence, function extensionality, propositional
+       extensionality, existence of propositional truncations). We do
+       keep track of resizing here explicitly: it is not a global
+       assumption.
+
+Abstract. We study the injective types and the algebraically injective
+types in univalent mathematics, both in the absence and the presence
+of propositional resizing. Injectivity is defined by the surjectivity
+of the restriction map along any embedding. Algebraic injectivity is
+defined by the existence of a section of the restriction map along any
+embedding. For the sake of generality, we work without assuming (or
+rejecting) the principle of excluded middle, and hence without
+assuming the axiom of choice. Moreover, the principle of excluded
+middle holds if and only if all types are algebraicly injective, and
+so there is nothing interesting to say in its presence. In the
+presence of resizing, the main results are easy to state and pleasing:
+(1) Injectivity is equivalent to the propositional truncation of
+algebraic injectivity (which can be seen as form of choice that just
+holds). (2) The algebraically injective types are precisely the
+retracts of exponential powers of type universes. (2') The
+algebraically injective sets are precisely the retracts of power sets,
+(2'') The algebraically injective n+1-types are precisely retracts of
+exponential powers of universes of n-types. (3) The algebraically
+injective types are also precisely the underlying objects of algebras
+of the partial map classifier monad. In the absence of propositional
+resizing, we have similar results but they have subtler statements and
+proofs that need to keep track universe levels rather explicitly.
 
 \begin{code}
 
@@ -27,6 +59,13 @@ explicitly: it is not a global assumption.
 open import SpartanMLTT
 open import UF-Univalence
 open import UF-PropTrunc
+
+\end{code}
+
+We assume univalence and propositional truncation globally in this
+article:
+
+\begin{code}
 
 module InjectiveTypes-article
         (ua : Univalence)
@@ -47,7 +86,11 @@ open import UF-UniverseEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-IdEmbedding
 
-import InjectiveTypes
+\end{code}
+
+Hence we get function extensionality and propositional extensionality:
+
+\begin{code}
 
 fe : FunExt
 fe = FunExt-from-Univalence ua
@@ -55,6 +98,7 @@ fe = FunExt-from-Univalence ua
 pe : PropExt
 pe 𝓤 = propext-from-univalence (ua 𝓤)
 
+import InjectiveTypes
 module blackboard = InjectiveTypes fe
 
 \end{code}
