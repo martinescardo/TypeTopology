@@ -24,8 +24,9 @@ Remark about the contents and organization of this Agda file.
        univalent foundations assumptions are used in each construction
        (univalence, function extensionality, propositional
        extensionality, existence of propositional truncations). We do
-       keep track of resizing here explicitly: it is not a global
-       assumption.
+       keep track of resizing in this article version explicitly: it
+       is not a global assumption.
+
 
 Introduction
 ------------
