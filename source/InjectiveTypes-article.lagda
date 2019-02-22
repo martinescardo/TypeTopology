@@ -834,8 +834,8 @@ Therefore it is injective:
 Another way to see this is that it is a retract of the universe by
 propositional truncation. (Exercise, not included.)
 
-The equivalence of algebraic injectivity and excluded middle
-------------------------------------------------------------
+The equivalence of algebraic injectivity of all pointed types and excluded middle
+---------------------------------------------------------------------------------
 
 Algebraic flabbiness can also be applied to show that all pointed
 types are injective iff excluded middle holds.
