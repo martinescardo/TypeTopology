@@ -108,11 +108,11 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   successor universe 𝓤⁺ with 𝓤 : 𝓤⁺, and for any two universes 𝓤,𝓥 a
   least upper bound 𝓤 ⊔ 𝓥. We have 𝓤₀ ⊔ 𝓤 = 𝓤 and 𝓤 ⊔ 𝓤⁺ = 𝓤⁺
   definitionally, and the operation _⊔_ is definitionally idempotent,
-  commutative, and associative, and the successor operation (-)⁺
+  commutative, and associative, and the successor operation _⁺
   distributes over _⊔_ definitionally.
 
-  (In Agda we here we write X : 𝓤 ̇ (with a superscript, almost
-  invisible, dot), rather than X:𝓤 (without the dot).)
+  (In Agda we here we write X : 𝓤 ̇ (with an almost invisible
+  superscript dot), rather than X:𝓤 (without the dot).)
 
 * We stipulate that we have copies 𝟘 {𝓤} and 𝟙 {𝓤} of the empty and
   singleton types in each universe 𝓤.
