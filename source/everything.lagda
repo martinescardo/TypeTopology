@@ -25,7 +25,7 @@ import UnsafeModules
 \end{code}
 
 There are only three, periferal, unsafe modules. One of them is to get
-a constradiction from type-in-type. The other two assume
+a contradiction from type-in-type. The other two assume
 (meta-theoretically) the Brouwerian axiom "all functions are
 continuous" to prove a countable Tychonoff theorem and a form of the
 compactness of the Cantor type/space.

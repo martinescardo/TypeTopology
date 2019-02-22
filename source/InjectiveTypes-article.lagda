@@ -1342,7 +1342,7 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
 
 \end{code}
 
-Here are some corollaries, by reduction of the above results about algebraic
+Here are some corollaries, by reduction to the above results about algebraic
 injectivity:
 
 \begin{code}

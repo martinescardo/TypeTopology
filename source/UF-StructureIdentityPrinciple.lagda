@@ -13,7 +13,7 @@ Contents:
  * The submodule gsip has a very abstract version of sip.
 
  * This is followed by various submodules that consider more concrete
-   examples such as ∞-magmas.
+   examples such as ∞-magmas and much more.
 
  * The submodule gsip-with-axioms considers structures subject to
    axioms, to easily account for mathematical structures such as
