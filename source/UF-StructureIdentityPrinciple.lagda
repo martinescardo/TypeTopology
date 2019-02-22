@@ -251,12 +251,26 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  S : 𝓤 ̇ → 𝓤 ̇
  S X = X → X → X
 
- open gsip
-       𝓤 𝓤 ua S
-       (λ {A B (f , e) → (λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x'))})
-       (λ A → refl)
-       (λ X m n → id)
-       (λ A m υ → refl-left-neutral)
+ S-equiv : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ̇
+ S-equiv A B (f , e) = (λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x'))
+
+ S-refl : (A : Σ S) → S-equiv A A (≃-refl ⟨ A ⟩)
+ S-refl A = refl
+
+ S-id-structure : (X : 𝓤 ̇) (s t : S X) → S-equiv (X , s) (X , t) (≃-refl X) → s ≡ t
+ S-id-structure X m n = id
+
+ S-transport : (A : Σ S)
+                 (s : S ⟨ A ⟩)
+                 (υ : S-equiv A (⟨ A ⟩ , s) (≃-refl ⟨ A ⟩))
+               → transport
+                    (λ - → S-equiv A (⟨ A ⟩ , -) (≃-refl ⟨ A ⟩))
+                    (S-id-structure ⟨ A ⟩ (structure A) s υ)
+                    (S-refl A)
+               ≡ υ
+ S-transport A m υ = refl-left-neutral
+
+ open gsip 𝓤 𝓤 ua S S-equiv S-refl S-id-structure S-transport
 
  ∞-Magma : 𝓤 ⁺ ̇
  ∞-Magma = Σ S

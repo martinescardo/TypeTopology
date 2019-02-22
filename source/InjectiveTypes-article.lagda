@@ -57,11 +57,12 @@ are easy to state and pleasing:
    (2) The algebraically injective types are precisely the retracts of
        exponential powers of type universes. In particular,
 
-       (2') The algebraically injective sets are precisely the retracts of
-            powersets.
+       (i) The algebraically injective sets are precisely the retracts
+           of powersets.
 
-       (2'') The algebraically injective n+1-types are precisely retracts
-             of exponential powers of the universes of n-types.
+       (ii) The algebraically injective n+1-types are precisely
+            retracts of exponential powers of the universes of
+            n-types.
 
    (3) The algebraically injective types are also precisely the
        underlying objects of the algebras of the partial map
@@ -121,9 +122,9 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   from X : 𝓤 we would be able to deduce that X : 𝓤 ⊔ 𝓥 for any 𝓥), but
   we also don't assume that they are not. However, from the
   assumptions formulated below, it follows that for any two universes
-  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → 𝓤 ⊔ 𝓥, for instance X ↦ X + 𝟘
-  {𝓥}, which is an embedding with lift 𝓥 X ≃ X if univalence holds (we
-  cannot write the identity type lift 𝓥 X = X, as the lhs and rhs are
+  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → 𝓤 ⊔ 𝓥, for instance X ↦ X + 𝟘 {𝓥},
+  which is an embedding with lift 𝓥 X ≃ X if univalence holds (we
+  cannot write the identity type lift 𝓥 X = X, as the lhs and rhs
   live in the different types 𝓤 and 𝓤 ⊔ 𝓥, which are not
   (definitionally) the same in general).
 
@@ -442,7 +443,7 @@ type (Y → 𝓤):
   κ : (g : Y → 𝓤 ̇) → s (r g) ≾ g
   κ g y ((x , p) , C) = transport g p C
 
-  M : (𝓤 ⁺) ̇
+  M : 𝓤 ⁺ ̇
   M = Σ \(g : Y → 𝓤 ̇) → (y : Y) → is-equiv (κ g y)
 
   φ : (X → 𝓤 ̇) → M
@@ -518,7 +519,7 @@ type (Y → 𝓤):
   κ : (g : Y → 𝓤 ̇) → g ≾ s (r g)
   κ g y C (x , p) = back-transport g p C
 
-  M : (𝓤 ⁺) ̇
+  M : 𝓤 ⁺ ̇
   M = Σ \(g : Y → 𝓤 ̇) → (y : Y) → is-equiv (κ g y)
 
   φ : (X → 𝓤 ̇) → M
@@ -601,7 +602,7 @@ This completes our discussion of extensions of maps into universes.
 Closure properties of algebraic injectivity
 -------------------------------------------
 
-Algebraically injectives are closed under retracts:
+Algebraic injectives are closed under retracts:
 
 \begin{code}
 
@@ -679,8 +680,8 @@ Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
 
 \end{code}
 
-From this we conclude that algebraically injective types are powers of
-universes:
+From this we conclude that algebraically injective types are retracts
+of powers of universes:
 
 \begin{code}
 
@@ -797,8 +798,6 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
-This is resizing down again.
-
 The type Ω 𝓤 of propositions of a universe 𝓤 is algebraically
 flabby. More generally:
 
@@ -838,8 +837,8 @@ propositional truncation. (Exercise, not included.)
 The equivalence of algebraic injectivity and excluded middle
 ------------------------------------------------------------
 
-Algebraic flabbiness can also be applied to show that all types are
-injective iff excluded middle holds.
+Algebraic flabbiness can also be applied to show that all pointed
+types are injective iff excluded middle holds.
 
 \begin{code}
 
@@ -925,8 +924,9 @@ copy in the universe 𝓥. This is consistent because it is implied by
 excluded middle, but, as far as we are aware, there is no known
 computational interpretation of this axiom. A model in which excluded
 middle fails but propositional resizing holds is given by Shulman
-[Univalence for inverse EI diagrams. Homology, Homotopy and
-Applications, 19:2 (2017), p219–249. https://arxiv.org/abs/1508.02410.].
+[Univalence for inverse diagrams and homotopy canonicity. Mathematical
+Structures in Computer Science, 25:05 (2015), p1203–1277,
+http://arxiv.org/abs/1203.3253].
 
 We begin with the following lemma, which says that algebraic
 flabbiness is universe independent in the presence of propositional
@@ -1245,7 +1245,7 @@ joinop {𝓣} {𝓤} X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
 𝓛-alg-Law₁ {𝓣} {𝓤} {X} ∐ = (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
                                 → ∐ (Σ-is-prop i j) f ≡ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
 
-𝓛-alg : {𝓣 𝓤 : Universe} → 𝓤 ̇ → (𝓣 ⁺) ⊔ 𝓤 ̇
+𝓛-alg : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
 𝓛-alg {𝓣} {𝓤} X = Σ \(∐ : joinop {𝓣} X) → 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
 𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg {𝓣} A → aflabby A 𝓣
@@ -1384,11 +1384,11 @@ TODO. Replace pointed by inhabited in the last two facts.
 
 TODO. Connect the above results on injectivity of universes to the
 fact that they are algebras of the lifting monad, in at least two
-ways, with Σ and Π are structure maps (already formulated and proved
+ways, with Σ and Π as structure maps (already formulated and proved
 in the lifting files available in this development).
 
 TODO. Formulate and code the results about injective sets and
-injective n+1-types stated in the abstract.
+injective n+1-types stated in the introduction.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
 InjectiveTypes blackboard file to check we haven't forgotten to include
@@ -1402,32 +1402,31 @@ John Bourke, 2017, Equipping weak equivalences with algebraic structure.
                    https://arxiv.org/abs/1712.02523.
 
 Toby Kenney, 2011, Injective power objects and the axiom of choice.
-                  Journal of Pure and Applied Algebra Volume 215,
-                  Issue 2, February 2011, Pages 131-144
-                  https://www.sciencedirect.com/science/article/pii/S0022404910000782
+                   Journal of Pure and Applied Algebra Volume 215,
+                   Issue 2, February 2011, Pages 131-144
+                   https://www.sciencedirect.com/science/article/pii/S0022404910000782
 
 The Univalent Foundations Program, 2013,
-                  Homotopy Type Theory: Univalent Foundations of Mathematics. (HoTT Book)
-                  Institute for Advanced Study,
-                  https://homotopytypetheory.org/book/
+                   Homotopy Type Theory: Univalent Foundations of Mathematics. (HoTT Book)
+                   Institute for Advanced Study,
+                   https://homotopytypetheory.org/book/
 
 Voevodsky, Vladimir and Ahrens, Benedikt and Grayson, Daniel and others.
-                  2014--present--future,
-                  UniMath --- a computer-checked library of univalent mathematics
-                  https://github.com/UniMath/UniMath
+                   2014--present--future,
+                   UniMath --- a computer-checked library of univalent mathematics
+                   https://github.com/UniMath/UniMath
 
-Ingo Blechschmidt, 2018,
-                  Flabby and injective objects in toposes.
-                  https://arxiv.org/abs/1810.12708 https://arxiv.org/abs/1810.12708
+Ingo Blechschmidt, 2018, Flabby and injective objects in toposes.
+                   https://arxiv.org/abs/1810.12708 https://arxiv.org/abs/1810.12708
 
-Michael Shulman, 2017, Univalence for inverse EI diagrams.
-                  Homology, Homotopy and Applications, 19:2 (2017),
-                  p219–249.
-                  https://arxiv.org/abs/1508.02410.
+Michael Shulman, 2015, Univalence for inverse diagrams and homotopy canonicity.
+                   Mathematical Structures in Computer Science, 25:05 (2015), p1203–1277.
+                   http://arxiv.org/abs/1203.3253
+                   https://home.sandiego.edu/~shulman/papers/invdia-errata.pdf (errata)
 
-Michal Shulman, 2017, Idempotents in intensional type theory,
-                  Logical Methods in Computer Science Vol 12 No. 3. (2017).
-                  https://arxiv.org/abs/1507.03634
+Michael Shulman, 2017, Idempotents in intensional type theory,
+                   Logical Methods in Computer Science Vol 12 No. 3. (2017).
+                   https://arxiv.org/abs/1507.03634
 
 
 Fixities:
