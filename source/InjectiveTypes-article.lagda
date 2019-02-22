@@ -256,7 +256,7 @@ at a symbol or name in the Agda code to navigate to its definition).
 
 This defines the algebraic injectivity of a type D in a universe 𝓦
 with respect to embeddings with domain in the universe 𝓤 and codomain
-in the universes 𝓥. As discussed in the introduction, such tracking of
+in the universe 𝓥. As discussed in the introduction, such tracking of
 universes is crucial in the absence of propositional resizing.
 
 Injectivity stipulates that the restriction map is a surjection:
@@ -318,10 +318,11 @@ universes-are-ainjective-particular = universes-are-ainjective-Π
 
 The last statement says that the universe 𝓤 is injective with respect
 to embeddings with domain and codomain in 𝓤. But, of course, 𝓤 itself
-doesn't live in 𝓤.
+doesn't live in 𝓤 and doesn't even have a copy in 𝓤 (see the module
+LawvereFTP).
 
-For y:Y not in the image of j, the extensions give 𝟘 and 𝟙
-respectively, and this is easy to see:
+For y:Y not in the image of j, it is easy to see that the extensions
+give 𝟘 and 𝟙 respectively:
 
 \begin{code}
 
@@ -364,7 +365,7 @@ automatic. Then we can consider natural transformations between such
 denote by _≾_ the type of natural transformations between such
 ∞-presheafs.
 
-We record the following known constructions and facts:
+We record the following known constructions and facts mentioned above:
 
 \begin{code}
 
@@ -653,7 +654,7 @@ power-of-ainjective i = Π-ainjective (λ a → i)
 \end{code}
 
 An algebraically injective type is a retract of every type it is
-embedded into, where we use _↪_ for the type of embeddings. We symply
+embedded into, where we use _↪_ for the type of embeddings. We simply
 extend the identity function to get the retraction:
 
 \begin{code}
