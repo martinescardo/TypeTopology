@@ -121,11 +121,11 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   from X : 𝓤 we would be able to deduce that X : 𝓤 ⊔ 𝓥 for any 𝓥), but
   we also don't assume that they are not. However, from the
   assumptions formulated below, it follows that for any two universes
-  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → 𝓤 ⊔ 𝓥, for instance X ↦ X + 𝟘 {𝓥},
-  which is an embedding with lift X ≃ X if univalence holds (we cannot
-  write the identity type lift X = X, as the lhs and rhs are live in
-  the different types 𝓤 and 𝓤 ⊔ 𝓥, which are not (definitionally) the
-  same in general).
+  𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → 𝓤 ⊔ 𝓥, for instance X ↦ X + 𝟘
+  {𝓥}, which is an embedding with lift 𝓥 X ≃ X if univalence holds (we
+  cannot write the identity type lift 𝓥 X = X, as the lhs and rhs are
+  live in the different types 𝓤 and 𝓤 ⊔ 𝓥, which are not
+  (definitionally) the same in general).
 
 * We stipulate that if X : 𝓤 and Y : 𝓥, then X+Y : 𝓤 ⊔ 𝓥.
 
