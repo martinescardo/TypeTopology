@@ -102,8 +102,8 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 
   We take these as required closure properties of our formal system,
   rather than as an inductive definition. For example, we could have a
-  type ℕ of natural numbers, but we don't mention it as is it not
-  needed for our purposes.
+  type ℕ of natural numbers, but we don't mention it as it not needed
+  for our purposes.
 
 * We assume a universe 𝓤₀, and for each universe 𝓤 we assume a
   successor universe 𝓤⁺ with 𝓤 : 𝓤⁺, and for any two universes 𝓤,𝓥 a
@@ -290,7 +290,7 @@ of this assumption.
 
 The crucial idea behind the above definitions, under the assumption
 that j is an embedding, is that a sum indexed by a proposition (the
-fiber) is (equivalent, and hence) equal, to any of its summands, and a
+fiber) is (equivalent, and hence) equal to any of its summands, and a
 product indexed by a proposition is equal to any of its factors.
 
 \begin{code}
@@ -380,7 +380,7 @@ functoriality∙ f refl refl = refl
 _≾_ : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 f ≾ g = (x : domain f) → f x → g x
 
-naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (g : X → 𝓦 ̇) (τ : f ≾ g) {x y : X} (p : x ≡ y)
+naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (g : X → 𝓦 ̇) (τ : f ≾ g) {x y : X} (p : Id x y)
            → τ y ∘ f [ p ] ≡ g [ p ] ∘ τ x
 naturality f g τ refl = refl
 
