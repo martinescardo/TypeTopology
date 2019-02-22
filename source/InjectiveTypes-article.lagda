@@ -111,7 +111,7 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   commutative, and associative, and the successor operation _⁺
   distributes over _⊔_ definitionally.
 
-  (In Agda we here we write X : 𝓤 ̇ (with an almost invisible
+  (In Agda here we write X : 𝓤 ̇ (with an almost invisible
   superscript dot), rather than X:𝓤 (without the dot).)
 
 * We stipulate that we have copies 𝟘 {𝓤} and 𝟙 {𝓤} of the empty and
@@ -265,7 +265,7 @@ Injectivity stipulates that the restriction map is a surjection:
 
 injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-                      → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
+                     → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
 \end{code}
 
 The algebraic injectivity of universes
@@ -624,14 +624,14 @@ equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (equiv-retract-l e)
 
 \end{code}
 
-And under products, where we perform the extension poinwise:
+And under products, where we perform the extension pointwise:
 
 \begin{code}
 
 Π-ainjective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
              → ((a : A) → ainjective-type (D a) 𝓤 𝓥)
              → ainjective-type (Π D) 𝓤 𝓥
-Π-ainjective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
+Π-ainjective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
  where
   l : (a : A) → Σ \(h : Y → D a) → h ∘ j ∼ (λ x → f x a)
   l a = (i a) j e (λ x → f x a)
@@ -855,7 +855,7 @@ EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
 \end{code}
 
 For the converse, we consider, given a proposition P, the type P + ¬ P + 𝟙,
-which, whose algebraic flabbiness gives the decidability of P.
+whose algebraic flabbiness gives the decidability of P.
 
 \begin{code}
 
@@ -888,7 +888,7 @@ aflabby-EM-lemma {𝓦} P i φ = γ
 
 \end{code}
 
-From this we conclude that if all types are algebraically flabby then
+From this we conclude that if all pointed types are algebraically flabby then
 excluded middle holds:
 
 \begin{code}
@@ -899,7 +899,7 @@ pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-EM-lemma P i (α ((P + ¬
 \end{code}
 
 And then we have the same situation for algebraically injective types,
-by reduction to algebraic flabiness:
+by reduction to algebraic flabbiness:
 
 \begin{code}
 
@@ -926,8 +926,7 @@ excluded middle, but, as far as we are aware, there is no known
 computational interpretation of this axiom. A model in which excluded
 middle fails but propositional resizing holds is given by Shulman
 [Univalence for inverse EI diagrams. Homology, Homotopy and
-Applications, 19:2 (2017),
-p219–249. https://arxiv.org/abs/1508.02410.].
+Applications, 19:2 (2017), p219–249. https://arxiv.org/abs/1508.02410.].
 
 We begin with the following lemma, which says that algebraic
 flabbiness is universe independent in the presence of propositional
@@ -1059,7 +1058,7 @@ propositional resizing:
 \begin{code}
 
 ainjective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
-                           → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
+                            → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
                                        ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
 ainjective-characterization {𝓤} R D = a , b
  where
@@ -1119,7 +1118,7 @@ powers are).
 \begin{code}
 
 embedding-∥retract∥ : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥
-                   → ∥ retract D of Y ∥
+                    → ∥ retract D of Y ∥
 embedding-∥retract∥ D Y j e i = ∥∥-functor φ a
   where
    a : ∃ \r  → r ∘ j ∼ id
@@ -1381,6 +1380,8 @@ pointed-types-injective-gives-EM {𝓤} ω β P i = e
 
 \end{code}
 
+TODO. Replace pointed by inhabited in the last two facts.
+
 TODO. Connect the above results on injectivity of universes to the
 fact that they are algebras of the lifting monad, in at least two
 ways, with Σ and Π are structure maps (already formulated and proved
@@ -1412,7 +1413,7 @@ The Univalent Foundations Program, 2013,
 
 Voevodsky, Vladimir and Ahrens, Benedikt and Grayson, Daniel and others.
                   2014--present--future,
-                  UniMath.
+                  UniMath --- a computer-checked library of univalent mathematics
                   https://github.com/UniMath/UniMath
 
 Ingo Blechschmidt, 2018,
