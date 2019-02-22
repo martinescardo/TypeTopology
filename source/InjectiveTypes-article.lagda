@@ -41,10 +41,10 @@ embedding [John Bourke, 2017, https://arxiv.org/abs/1712.02523].
 
 For the sake of generality, we work without assuming (or rejecting)
 the principle of excluded middle, and hence without assuming the axiom
-of choice either. Moreover, the principle of excluded middle holds if
-and only if all pointed types are algebraicly injective, if and only
-if all inhabited types are injective, and so there is nothing
-interesting to say in its presence.
+of choice either. Moreover, we show that the principle of excluded
+middle holds if and only if all pointed types are algebraicly
+injective, if and only if all inhabited types are injective, and so
+there is nothing interesting to say about injectivity in its presence.
 
 In the presence of propositional resizing principles, the main results
 are easy to state and pleasing:
