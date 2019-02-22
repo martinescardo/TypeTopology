@@ -32,12 +32,12 @@ Remark about the contents and organization of this Agda file.
 Introduction
 ------------
 
-We study the injective types and the algebraically injective types in
-univalent mathematics, both in the absence and the presence of
-propositional resizing. Injectivity is defined by the surjectivity of
-the restriction map along any embedding. Algebraic injectivity is
-defined by a given section of the restriction map along any
-embedding [John Bourke, 2017, https://arxiv.org/abs/1712.02523].
+We investigate the injective types and the algebraically injective
+types in univalent mathematics, both in the absence and the presence
+of propositional resizing. Injectivity is defined by the surjectivity
+of the restriction map along any embedding. Algebraic injectivity is
+defined by a given section of the restriction map along any embedding
+[John Bourke, 2017, https://arxiv.org/abs/1712.02523].
 
 For the sake of generality, we work without assuming (or rejecting)
 the principle of excluded middle, and hence without assuming the axiom
@@ -146,9 +146,9 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * We assume the η conversion rules for Π and Σ.
 
-* For a type X:𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y is
-  abbreviated as Id x y and often written x =_X y or x = y. (In Agda:
-  x ≡ y.)
+* For a type X:𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y of
+  type 𝓤 is abbreviated as Id x y and often written x =_X y or x = y.
+  (In Agda: x ≡ y.)
 
   The elements of the identity type x=y are called identifications or
   paths from x to y.
@@ -317,10 +317,10 @@ universes-are-ainjective-particular = universes-are-ainjective-Π
 
 \end{code}
 
-The last statement says that the universe 𝓤 is injective with respect
-to embeddings with domain and codomain in 𝓤. But, of course, 𝓤 itself
-doesn't live in 𝓤 and doesn't even have a copy in 𝓤 (see the module
-LawvereFTP).
+The last statement says that the universe 𝓤 is algebraically injective
+with respect to embeddings with domain and codomain in 𝓤. But, of
+course, 𝓤 itself doesn't live in 𝓤 and doesn't even have a copy in 𝓤
+(see the module LawvereFTP).
 
 For y:Y not in the image of j, it is easy to see that the extensions
 give 𝟘 and 𝟙 respectively:
@@ -373,16 +373,16 @@ We record the following known constructions and facts mentioned above:
 _[_] : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y : X} → Id x y → f x → f y
 f [ refl ] = id
 
-functoriality∙ : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y z : X} (p : Id x y) (q : Id y z)
-               → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
-functoriality∙ f refl refl = refl
+automatic-functoriality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y z : X} (p : Id x y) (q : Id y z)
+                        → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
+automatic-functoriality f refl refl = refl
 
 _≾_ : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 f ≾ g = (x : domain f) → f x → g x
 
-naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (g : X → 𝓦 ̇) (τ : f ≾ g) {x y : X} (p : Id x y)
-           → τ y ∘ f [ p ] ≡ g [ p ] ∘ τ x
-naturality f g τ refl = refl
+automatic-naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (g : X → 𝓦 ̇) (τ : f ≾ g) {x y : X} (p : Id x y)
+                     → τ y ∘ f [ p ] ≡ g [ p ] ∘ τ x
+automatic-naturality f g τ refl = refl
 
 \end{code}
 
@@ -858,8 +858,8 @@ whose algebraic flabbiness gives the decidability of P.
 
 \begin{code}
 
-aflabby-EM-lemma : (P : 𝓦 ̇) → is-prop P → aflabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
-aflabby-EM-lemma {𝓦} P i φ = γ
+aflabby-decidability-lemma : (P : 𝓦 ̇) → is-prop P → aflabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
+aflabby-decidability-lemma {𝓦} P i φ = γ
  where
   D = (P + ¬ P) + 𝟙 {𝓦}
   f : P + ¬ P → D
@@ -893,7 +893,7 @@ excluded middle holds:
 \begin{code}
 
 pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇) → D → aflabby D 𝓦) → EM 𝓦
-pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
 
 \end{code}
 
@@ -974,7 +974,7 @@ ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i j e f = aflabby-t
 \end{code}
 
 As an application of this and of the algebraic injectivity of
-universes, we have that any universe is a retract of any larger
+universes, we get that any universe is a retract of any larger
 universe.  We remark that for types that are not sets, sections are
 not automatically embeddings [Shulman, Logical Methods in Computer
 Science Vol 12 No. 3. (2017), https://arxiv.org/abs/1507.03634]. But
@@ -1296,11 +1296,12 @@ ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
 Injectivity versus algebraic injectivity in the presence of resizing II
 -----------------------------------------------------------------------
 
-Now, instead of propositional resizing, we consider the
+Now, instead of propositional resizing, we consider the propositional
 impredicativity of the universe 𝓤, which says that the type of
 propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
 equivalent copy in 𝓤 (for the relationship between propositional
-resizing and impredicativity, see the module UF-Resizing).
+resizing and propositional impredicativity, see the module
+UF-Resizing).
 
 \begin{code}
 
@@ -1374,13 +1375,13 @@ pointed-types-injective-gives-EM {𝓤} ω β P i = e
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓤 ∥
    c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
    d : ∥ P + ¬ P ∥
-   d = ∥∥-functor (aflabby-EM-lemma P i) c
+   d = ∥∥-functor (aflabby-decidability-lemma P i) c
    e : P + ¬ P
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
 
 \end{code}
 
-TODO. Replace pointed by inhabited in the last two facts.
+TODO. Replace pointed by inhabited in the last two facts (probably).
 
 TODO. Connect the above results on injectivity of universes to the
 fact that they are algebras of the lifting monad, in at least two
@@ -1417,7 +1418,7 @@ Voevodsky, Vladimir and Ahrens, Benedikt and Grayson, Daniel and others.
                    https://github.com/UniMath/UniMath
 
 Ingo Blechschmidt, 2018, Flabby and injective objects in toposes.
-                   https://arxiv.org/abs/1810.12708 https://arxiv.org/abs/1810.12708
+                   https://arxiv.org/abs/1810.12708
 
 Michael Shulman, 2015, Univalence for inverse diagrams and homotopy canonicity.
                    Mathematical Structures in Computer Science, 25:05 (2015), p1203–1277.
