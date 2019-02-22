@@ -41,9 +41,9 @@ embedding [John Bourke, 2017, https://arxiv.org/abs/1712.02523].
 For the sake of generality, we work without assuming (or rejecting)
 the principle of excluded middle, and hence without assuming the axiom
 of choice either. Moreover, the principle of excluded middle holds if
-and only if all types are algebraicly injective, if and only if all
-types are injective, and so there is nothing interesting to say in its
-presence.
+and only if all pointed types are algebraicly injective, if and only
+if all inhabited types are injective, and so there is nothing
+interesting to say in its presence.
 
 In the presence of propositional resizing principles, the main results
 are easy to state and pleasing:
@@ -95,8 +95,8 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * We work with a Martin-Löf type theory with types 𝟘 (empty type), 𝟙
   (one-element type), and type formers _+_ (disjoint sum), Π (product)
-  and Σ (sum), and hierarchy of type universes closed under them in a
-  suitable sense discussed below.
+  and Σ (sum), and a hierarchy of type universes closed under them in
+  a suitable sense discussed below.
 
   We take these as required closure properties of our formal system,
   rather than as an inductive definition. For example, we could have a
@@ -151,7 +151,7 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   The elements of the identity type x=y are called identifications or
   paths from x to y.
 
-* We tacitly assume univalence as in the HoTT Book (link above).
+* We tacitly assume univalence as in the HoTT Book.
 
 * We work with the existence of propositional truncations as an
   assumption, also tacit. The HoTT Book, instead, defines *rules* for
@@ -159,8 +159,8 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   system. Here we take propositional truncation as a principle for a
   pair of universes 𝓤,𝓥:
 
-  Π (X:𝓤),  Σ (∥X∥ : 𝓤), ∥X∥ is a proposition × (X → ∥X∥)
-          × Π (P : 𝓥), P is a proposition → (X → P) → ∥X∥ → P.
+  Π (X:𝓤),  Σ (∥ X ∥ : 𝓤), ∥ X ∥ is a proposition × (X → ∥ X ∥)
+          × Π (P : 𝓥), P is a proposition → (X → P) → ∥ X ∥ → P.
 
   The universe 𝓤 is that of types we truncate, and 𝓥 is the universe
   where the propositions we eliminate into live.  Because the
@@ -171,11 +171,13 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 Assumptions
 -----------
 
-No K axiom (all types would be sets), a Spartan MLTT as described
-above, univalence and propositional truncation.
+We don't assume the K axiom (all types would be sets), we work with a
+Spartan MLTT as described above, and we assume univalence and
+existence of propositional truncations.
 
-The assumptions of univalence and existence of propositional
-truncations are pameters for this module.
+The K axiom is disabled by an Agda option, and the assumptions of
+univalence and existence of propositional truncations are pameters for
+this module.
 
 \begin{code}
 
@@ -253,7 +255,7 @@ at a symbol or name in the Agda code to navigate to its definition).
 This defines the algebraic injectivity of a type D in a universe 𝓦
 with respect to embeddings with domain in the universe 𝓤 and codomain
 in the universes 𝓥. As discussed in the introduction, such tracking of
-universes is needed in the absence of propositional resizing.
+universes is crucial in the absence of propositional resizing.
 
 Injectivity stipulates that the restriction map is a surjection:
 
@@ -312,7 +314,12 @@ universes-are-ainjective-particular = universes-are-ainjective-Π
 
 \end{code}
 
-For y:Y not in the image of j, the extensions give 𝟘 and 𝟙 respectively:
+The last statement says that the universe 𝓤 is injective with respect
+to embeddings with domain and codomain in 𝓤. But, of course, 𝓤 itself
+doesn't live in 𝓤.
+
+For y:Y not in the image of j, the extensions give 𝟘 and 𝟙
+respectively, and this is easy to see:
 
 \begin{code}
 
@@ -331,7 +338,7 @@ For y:Y not in the image of j, the extensions give 𝟘 and 𝟙 respectively:
 
 With excluded middle, this would give that the Σ and Π extensions have
 the same sum and product as the non-extended maps, respectively, but
-excluded middle is not needed:
+excluded middle is not needed, as it is not hard to see:
 
 \begin{code}
 
@@ -344,8 +351,6 @@ same-Π : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
 same-Π = blackboard.same-Π
 
 \end{code}
-
-The proofs of the above are routine.
 
 The two extensions are left and right Kan extensions in the following
 sense, without the need to assume that j is an embedding. First, a map
@@ -616,7 +621,7 @@ equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (equiv-retract-l e)
 
 \end{code}
 
-And under products, were we perform the extension poinwise:
+And under products, where we perform the extension poinwise:
 
 \begin{code}
 
@@ -634,7 +639,7 @@ And under products, were we perform the extension poinwise:
 
 \end{code}
 
-And hence exponential powers:
+And hence under exponential powers:
 
 \begin{code}
 
@@ -661,7 +666,8 @@ ainjective-retract-of-subtype D i Y (j , e) = pr₁ a , j , pr₂ a
 \end{code}
 
 The identity-type former Id is an embedding X → (X → 𝓤). The proof
-requires some insight and can be found in another module.
+requires some insight and can be found in another module by following
+the link.
 
 \begin{code}
 
@@ -676,7 +682,7 @@ universes:
 \begin{code}
 
 ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇)
-                                           → ainjective-type D 𝓤  (𝓤 ⁺)
+                                           → ainjective-type D 𝓤 (𝓤 ⁺)
                                            → retract D of (D → 𝓤 ̇)
 ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-subtype D i (D → 𝓤 ̇)
                                                       (Id , Id-is-embedding)
@@ -707,17 +713,17 @@ ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-univer
 This is resizing down.
 
 A further resizing-for-free construction is possible by considering a
-notion of flabbiness as data, rather than as property, as in the
+notion of flabbiness as data, rather than as property as in the
 1-topos literature. The notion of flabbiness considered in topos
 theory (see e.g. [Ingo Blechschmidt, 2018,
 https://arxiv.org/abs/1810.12708]) is defined with truncated Σ, that
-is, the existential ∃ with values in the subobject classifier Ω. We
-refer to the notion defined with untruncated Σ as algebraic
-flabbiness, by analogy with the notion of algebraic injectivity. But
-this is more than a mere analogy: notice that flabbiness and algebraic
-flabbiness amount to simply injectivity and algebraic injectivity with
-respect to the class of embeddings P → 𝟙 with P ranging over
-propositions.
+is, the existential quantifier ∃ with values in the subobject
+classifier Ω. We refer to the notion defined with untruncated Σ as
+algebraic flabbiness, by analogy with the notion of algebraic
+injectivity. But this is more than a mere analogy: notice that
+flabbiness and algebraic flabbiness amount to simply injectivity and
+algebraic injectivity with respect to the class of embeddings P → 𝟙
+with P ranging over propositions.
 
 \begin{code}
 
@@ -735,8 +741,8 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 \end{code}
 
-And algebraically injective types because maps P → 𝟙 from propositions
-P are embeddings as alluded above:
+And algebraically injective types are algebraicly flabby because maps
+P → 𝟙 from propositions P are embeddings, as alluded above:
 
 \begin{code}
 
@@ -846,7 +852,7 @@ EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
 \end{code}
 
 For the converse, we consider, given a proposition P, the type P + ¬ P + 𝟙,
-which, if it is algebraically flabby, gives the decidability of P.
+which, whose algebraic flabbiness gives the decidability of P.
 
 \begin{code}
 
@@ -917,11 +923,12 @@ excluded middle, but, as far as we are aware, there is no known
 computational interpretation of this axiom. A model in which excluded
 middle fails but propositional resizing holds is given by Shulman
 [Univalence for inverse EI diagrams. Homology, Homotopy and
-Applications, 19:2 (2017), p219–249, DOI. Also available at
-https://arxiv.org/abs/1508.02410.].
+Applications, 19:2 (2017),
+p219–249. https://arxiv.org/abs/1508.02410.].
 
-We begin with this lemma, which says that algebraic flabbiness is
-universe independent in the presence of propositional resizing:
+We begin with the following lemma, which says that algebraic
+flabbiness is universe independent in the presence of propositional
+resizing:
 
 \begin{code}
 
@@ -950,10 +957,9 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
 
 \end{code}
 
-And from this it follows that the algebraic injectivity is also
-universe independent in the presence of propositional resizing: we
-convert back-and-forth between algebraic injectivity and algebraic
-flabbiness:
+And from this it follows that algebraic injectivity is also universe
+independent in the presence of propositional resizing: we convert
+back-and-forth between algebraic injectivity and algebraic flabbiness:
 
 \begin{code}
 
@@ -969,16 +975,16 @@ As an application of this and of the algebraic injectivity of
 universes, we have that any universe is a retract of any larger
 universe.  We remark that for types that are not sets, sections are
 not automatically embeddings [Shulman, Logical Methods in Computer
-Science Vol 12 No. 3. (2017), also available at
-https://arxiv.org/abs/1507.03634]. But we can choose the retraction so
-that the section is an embedding, in this case.
+Science Vol 12 No. 3. (2017), https://arxiv.org/abs/1507.03634]. But
+we can choose the retraction so that the section is an embedding in
+our situation.
 
 \begin{code}
 
 universe-retract : Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section ρ)
-universe-retract R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
+universe-retract R 𝓤 𝓥 = ρ , lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤}
@@ -994,7 +1000,7 @@ universe-retract R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
 Here are are using the fact that every injective type is a retract of
 any type in which it is embedded, in conjunction with resizing, and
 that there is an embedding of any universe into any larger universe,
-assuming univalence.
+assuming univalence (the map lift).
 
 It may be of interest to unfold the above proof to see a direct
 argument from first principles avoiding flabbiness and injectivity:
@@ -1075,8 +1081,9 @@ ainjective-characterization {𝓤} R D = a , b
 Injectivity versus algebraic injectivity in the absence of resizing
 -------------------------------------------------------------------
 
-We now discuss injectivity, as defined above, in relation to algebraic
-injectivity.
+We now compare injectivity with algebraic injectivity.
+
+The following is routine, using the fact that propositions are closed under Π.
 
 \begin{code}
 
@@ -1086,7 +1093,7 @@ injectivity-is-a-prop = blackboard.injective.injectivity-is-a-prop pt
 
 \end{code}
 
-This is routine, using the fact that propositions are closed under Π.
+From this we get the following.
 
 \begin{code}
 
@@ -1100,10 +1107,11 @@ ainjective-gives-injective D i j e f = ∣ i j e f ∣
 \end{code}
 
 In order to relate injectivity to the propositional truncation of
-algebraic injectivity, we first prove some facts we already proved for
-algebraic injectivity for injectivity. These facts cannot be obtained
-by reduction (in particular products of injectives are not necessarily
-injectives, in the absence of choice, but exponential powers are).
+algebraic injectivity, we first prove some facts about injectivity
+that we already proved for algebraic injectivity. These facts cannot
+be obtained by reduction (in particular products of injectives are not
+necessarily injectives, in the absence of choice, but exponential
+powers are).
 
 \begin{code}
 
@@ -1174,7 +1182,7 @@ injective-gives-∥ainjective∥ {𝓤} D i = γ
 \end{code}
 
 So, in summary, regarding the relationship between injectivity and
-truncated injectivity, so far we know that
+truncated algebraic injectivity, so far we know that
 
   ∥ ainjective-type D 𝓤 𝓥  ∥ → injective-type D 𝓤 𝓥
 
@@ -1289,8 +1297,8 @@ Injectivity versus algebraic injectivity in the presence of resizing II
 Now, instead of propositional resizing, we consider the
 impredicativity of the universe 𝓤, which says that the type of
 propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
-equivalent copy in 𝓤 (for the relationship between resizing and
-impredicativity, see the module UF-Resizing).
+equivalent copy in 𝓤 (for the relationship between propositional
+resizing and impredicativity, see the module UF-Resizing).
 
 \begin{code}
 
