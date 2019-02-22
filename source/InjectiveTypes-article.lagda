@@ -42,7 +42,7 @@ embedding [John Bourke, 2017, https://arxiv.org/abs/1712.02523].
 For the sake of generality, we work without assuming (or rejecting)
 the principle of excluded middle, and hence without assuming the axiom
 of choice either. Moreover, we show that the principle of excluded
-middle holds if and only if all pointed types are algebraicly
+middle holds if and only if all pointed types are algebraically
 injective, if and only if all inhabited types are injective, and so
 there is nothing interesting to say about injectivity in its presence.
 
@@ -744,8 +744,8 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 \end{code}
 
-And algebraically injective types are algebraicly flabby because maps
-P → 𝟙 from propositions P are embeddings, as alluded above:
+And algebraically injective types are algebraically flabby because
+maps P → 𝟙 from propositions P are embeddings, as alluded above:
 
 \begin{code}
 
