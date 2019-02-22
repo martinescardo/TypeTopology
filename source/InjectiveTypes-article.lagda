@@ -17,7 +17,8 @@ Remark about the contents and organization of this Agda file.
        at them). We have included the non-routine proofs here, and
        some routine proofs that we feel should be added for the sake
        of flow of the text. We repeat the definitions of the notions
-       studied here, in a definitionally equal way.
+       studied here, in a definitionally equal way so that we can
+       invoke the blackboard.
 
        The blackboard file likely has more information than that
        reported here. In particular, it keeps track better of what
