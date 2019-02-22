@@ -198,7 +198,8 @@ open PropositionalTruncation pt
 \end{code}
 
 We use auxiliary definitions and results from the following modules
-(and modules referred to from these modules):
+(and modules referred to from these modules), and other modules
+imported later.
 
 \begin{code}
 
