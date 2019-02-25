@@ -188,11 +188,11 @@ Equivalence of transports.
 \begin{code}
 
 transports-are-equivs : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {x y : X} (p : x ≡ y)
-                   → is-equiv (transport A p)
+                      → is-equiv (transport A p)
 transports-are-equivs refl = id-is-an-equiv _
 
 back-transports-are-equivs : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {x y : X} (p : x ≡ y)
-                        → is-equiv (back-transport A p)
+                           → is-equiv (back-transport A p)
 back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 
 \end{code}

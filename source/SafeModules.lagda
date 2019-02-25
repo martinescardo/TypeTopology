@@ -71,11 +71,6 @@ import PartialElements
 import Pi
 import Plus
 import Plus-Properties
-import Family
-import FamilyIdentityViaSIP
-import FamilyMonad
-import FamilyAlgebras
-import FamilyEmbedding
 import PlusOneLC
 import PropTychonoff
 import PropInfTychonoff
@@ -83,6 +78,11 @@ import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
 import SimpleTypes
+import Slice
+import SliceIdentityViaSIP
+import SliceMonad
+import SliceAlgebras
+import SliceEmbedding
 import SpartanMLTT
 import SquashedCantor
 import SquashedSum

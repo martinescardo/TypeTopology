@@ -578,9 +578,9 @@ type (Y → 𝓤):
 
 \end{code}
 
-We need the following two somewhat technical results in applications
-of injectivity to work on compact ordinals (reported in this
-repository but not in this article). Their proofs are routine.
+We need the following in applications of injectivity to work on
+compact ordinals (reported in this repository but not in this
+article). Their proofs are routine.
 
 \begin{code}
 

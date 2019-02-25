@@ -6,7 +6,7 @@ Martin Escardo 31 Jan 2019
 
 open import SpartanMLTT
 
-module FamilyAlgebras
+module SliceAlgebras
         (𝓣 : Universe)
        where
 
@@ -19,9 +19,9 @@ open import UF-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
 
-open import Family 𝓣
-open import FamilyIdentityViaSIP 𝓣
-open import FamilyMonad 𝓣
+open import Slice 𝓣
+open import SliceIdentityViaSIP 𝓣
+open import SliceMonad 𝓣
 
 double-𝓕-charac : (X : 𝓤 ̇)
                 → 𝓕 (𝓕 X) ≃ Σ \(I : 𝓣 ̇) → (Σ \(J : I → 𝓣 ̇) → (i : I) → J i → X)

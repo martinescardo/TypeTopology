@@ -615,4 +615,22 @@ graph-domain-equiv {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
   η : (x : X) → h (g x) ≡ x
   η x = refl
 
+left-Id-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x : X) → (Σ \(x' : X) → (x' ≡ x) × Y x') ≃ Y x
+left-Id-equiv {𝓤} {𝓥} {X} {Y} x = qinveq f (g , gf , fg)
+ where
+  f : (Σ \(x' : X) → (x' ≡ x) × Y x') → Y x
+  f (.x , refl , y) = y
+  g : (y : Y x) → Σ (λ x' → (x' ≡ x) × Y x')
+  g y = x , refl , y
+  gf : (σ : Σ \(x' : X) → (x' ≡ x) × Y x') → g (f σ) ≡ σ
+  gf (.x , refl , y) = refl
+  fg : (y : Y x) → f (g y) ≡ y
+  fg y = refl
+
+fiber-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
+fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ Σ-assoc ⟩
+                                (Σ \(x' : X) → Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
+                                (Σ \(x' : X) →  (x' ≡ x) × Y x') ≃⟨ left-Id-equiv x ⟩
+                                Y x                              ■
+
 \end{code}

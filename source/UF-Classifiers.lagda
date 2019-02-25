@@ -51,8 +51,8 @@ module type-classifier
    γ y = eqtoid ua _ _ (f y , ((g y , fg y) , (g y , gf y)))
 
  transport-map : {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X → Y)
-             → transport (λ - → - → Y) (eqtoid ua X X' e) g
-             ≡ g ∘ eqtofun (≃-sym e)
+               → transport (λ - → - → Y) (eqtoid ua X X' e) g
+               ≡ g ∘ eqtofun (≃-sym e)
 
  transport-map {X} {X'} {Y} e g = τ (eqtoid ua X X' e) refl
   where
