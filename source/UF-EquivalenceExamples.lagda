@@ -630,7 +630,7 @@ left-Id-equiv {𝓤} {𝓥} {X} {Y} x = qinveq f (g , gf , fg)
 fiber-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
 fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ Σ-assoc ⟩
                                 (Σ \(x' : X) → Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
-                                (Σ \(x' : X) →  (x' ≡ x) × Y x') ≃⟨ left-Id-equiv x ⟩
+                                (Σ \(x' : X) → (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
                                 Y x                              ■
 
 \end{code}
