@@ -7,7 +7,7 @@ explaining part of what we do in this development.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module SafeModules where
+module SafeModulesIndex where
 
 import AlternativePlus
 import ADecidableQuantificationOverTheNaturals

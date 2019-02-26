@@ -4,7 +4,7 @@ Martin Escardo
 
 {-# OPTIONS --without-K --exact-split #-}
 
-module UnsafeModules where
+module UnsafeModulesIndex where
 
 import CountableTychonoff    -- uses TERMINATING
 import CantorCompact         -- uses CountableTychonoff

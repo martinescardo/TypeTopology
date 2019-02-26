@@ -19,8 +19,8 @@
 
 {-# OPTIONS --without-K --exact-split #-}
 
-import SafeModules
-import UnsafeModules
+import SafeModulesIndex
+import UnsafeModulesIndex
 
 \end{code}
 
