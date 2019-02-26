@@ -148,13 +148,13 @@ It may happen that a non-trivial type has no nonconstant function into
 the type \m{\Two} of booleans so that it is trivially compact. For
 example, this would be the case for a type \m{\R} of real numbers
 under Brouwerian continuity axioms. Under such axioms, such types are
-compact but in a uninteresting way. We say that a type is \df{totally
+compact, but in a uninteresting way. We say that a type is \df{totally
   separated}, again borrowing a
 \href{https://www.encyclopediaofmath.org/index.php/Totally_separated_space}{terminology
   from topology}, if the functions into the booleans separate the
 points, in the sense that it satisfies the \df{boolean Leibniz principle}
 that says that any two points that satisfy the same boolean-valued
-predicates are equal. Such a type is automatically a set, or
+predicates are equal. Such a type is automatically a set, or a
 \m{0}-groupoid, in the sense of univalent mathematics. We construct a
 totally separated reflection for any type, and show that a type is
 compact, in any of the three senses, if and only if its totally
@@ -165,11 +165,11 @@ We show that compact types, totally separated types, discrete types
 and function types interact in very much the same way as the
 topological concepts with the same names, where arbitrary functions in
 type theory play the role of continuous maps in topology, \df{without}
-assuming Brouwerian continuity axioms. For instance, if \m{X \to Y}
-and \m{Y} are discrete then \m{X} is \m{\Pi}-compact, and if \m{X \to
-  Y} is \m{\Pi}-compact, and \m{X} is totally separated and~\m{Y} is
-discrete, then \m{X} is discrete, too. The simple types are all
-totally separated, which agrees with the situation with
+assuming Brouwerian continuity axioms. For instance, if the types \m{X
+  \to Y} and \m{Y} are discrete then \m{X} is \m{\Pi}-compact, and if
+\m{X \to Y} is \m{\Pi}-compact, and \m{X} is totally separated
+and~\m{Y} is discrete, then \m{X} is discrete, too. The simple types
+are all totally separated, which agrees with the situation with
 Kleene--Kreisel spaces, but it is easy to construct types which fail
 to be totally separated (e.g.\ the homotopical circle) or whose total
 separated gives a constructive taboo (e.g.\ \m{\Sigma (x : \NI), x =
@@ -177,9 +177,11 @@ separated gives a constructive taboo (e.g.\ \m{\Sigma (x : \NI), x =
 at infinity).
 
 \paragraph{Notation for discrete and compact ordinals.}
-We define infinitary ordinal codes, or expressions, similar to so-called \href{http://www.cse.chalmers.se/~coquand/ordinal.ps}{Brouwer
-ordinals}, including one, addition, multiplication, and countable sum
-with an added top point.
+We define infinitary ordinal codes, or expressions, similar to the
+so-called
+\href{http://www.cse.chalmers.se/~coquand/ordinal.ps}{Brouwer
+  ordinals}, including one, addition, multiplication, and countable
+sum with an added top point.
 
 We interpret these trees in two ways, getting discrete and compact
 ordinals respectively. In both cases, addition and multiplication
