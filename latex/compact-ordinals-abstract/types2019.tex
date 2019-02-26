@@ -1,0 +1,211 @@
+\documentclass[a4paper]{easychair}
+
+\title{Compact, totally separated, and well-ordered types in univalent mathematics}
+\author{Mart{\'\i}n H\"otzel Escard\'o}
+\authorrunning{Mart{\'\i}n H\"otzel Escard\'o}
+\titlerunning{Compact, totally separated, and well-ordered types}
+\institute{School of Computer Science, Universe of Birmingham, UK \\ \email{m.escardo@cs.bham.ac.uk}}
+
+\usepackage{amssymb,bbm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\definecolor{darkblue}{rgb}{0,0,0.4}
+\definecolor{links}{rgb}{0.47, 0.27, 0.23}
+
+\hypersetup{
+    colorlinks, linkcolor={links},
+    citecolor={links}, urlcolor={links}
+}
+
+\newcommand{\db}{\textcolor{darkblue}}
+\newcommand{\Kappa}{K}
+\newcommand{\df}[1]{\emph{\db{#1}}}
+\newcommand{\m}[1]{\db{$#1$}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\NI}{\N_\infty}
+\newcommand{\WW}{\operatorname{W}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\U}{\mathcal{U}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\W}{\mathcal{W}}
+\newcommand{\Zero}{\mathbbm{O}}
+\newcommand{\One}{\mathbbm{1}}
+\newcommand{\Two}{\mathbbm{2}}
+\newcommand{\Id}{\operatorname{Id}}
+\newcommand{\refl}{\operatorname{refl}}
+\newcommand{\J}{\operatorname{J}}
+
+\begin{document}
+
+\maketitle
+
+\paragraph{Our univalent type theory.}
+We work with an
+\href{https://www.sciencedirect.com/science/article/pii/S0049237X08719451}{intensional
+  Martin-L\"of type theory} with an empty type \m{\Zero}, a one
+element type \m{\One}, a type \m{\Two} with points \m{0} and \m{1}, a
+type \m{\N} of natural numbers, and type formers \m{+} (disjoint sum),
+\m{\Pi} (product), \m{\Sigma} (sum), \m{\WW} types, and \m{\Id}
+(identity type), and a hierarchy of type universes closed under them,
+ranged over by \m{\U,\V,\W}. On top of that we add Voevodsky's
+\href{https://homotopytypetheory.org/2018/03/07/a-self-contained-brief-and-complete-formulation-of-voevodskys-univalence-axiom/}{univalence}
+axiom and a \href{https://homotopytypetheory.org/book}{propositional
+  truncation} axiom.
+
+A formal version of the development discussed here is available in our
+github repository
+\href{https://github.com/martinescardo/TypeTopology}{TypeTopology}, in
+\href{https://wiki.portal.chalmers.se/agda/pmwiki.php}{Agda} with the
+option
+\href{https://www.cambridge.org/core/journals/journal-of-functional-programming/article/eliminating-dependent-pattern-matching-without-k/4BC4EA2D02D801E5ABED264FE5FB177A}{--without-K}. We
+are considering porting this to
+\href{https://homotopytypetheory.org/2018/12/06/cubical-agda/}{cubical
+  Agda}, so that no axioms are used and our results get a
+computational interpretation.
+
+By a proposition we mean a type with at most one element (any two of
+its elements are equal in the sense of the identity type). The
+existential quantification symbol \m{\exists} denotes the
+propositional truncation of \m{\Sigma}. We denote the identity type
+\m{\Id \, X \, x \, y} by \m{x = y} with \m{X} elided.  We assume the
+notation and terminology of the
+\href{https://homotopytypetheory.org/book/}{HoTT Book} unless
+otherwise stated.
+
+\paragraph{Compact types.}
+We consider three notions of exhaustively searchable type.  We say
+that a type \m{X} is \df{compact}, or sometimes
+\m{\Sigma}-\df{compact} for emphasis, if the type \m{\Sigma (x : X), p
+  \, x = 0} is decidable for every \m{p : X \to \Two}, so that we can
+decide whether \m{p} has a root. We also consider two
+successively weaker notions, namely \m{\exists}-\df{compactness} (it
+is decidable whether there is an unspecified root) and
+\m{\Pi}-\df{compactness} (it is decidable whether all points of \m{X} are
+roots), obtained by replacing \m{\Sigma} by \m{\exists} and
+\m{\Pi} in the definition of compactness.
+
+For the model of simple types consisting of
+\href{https://www.springer.com/gb/book/9783662479919}{Kleene--Kreisel
+  spaces}, these notions of compactness agree and
+\href{https://lmcs.episciences.org/693}{coincide with topological
+  compactness} under classical logic, but we reason constructively
+here, meaning that we don't invoke (univalent) choice or excluded
+middle.
+
+Finite types of the form \m{\One + \One + \cdots + \One} are clearly
+compact. The compactness of \m{\N} is
+\href{https://plato.stanford.edu/entries/mathematics-constructive/}{LPO}
+(limited principle of omniscience), which happens to be equivalent to
+its \m{\exists}-compactness, and its \m{\Pi}-compactness is equivalent
+to
+\href{https://journals.openedition.org/philosophiascientiae/406}{WLPO}
+(weak LPO), and hence all forms of compactness for \m{\N} are not
+provable or disprovable in our classically/constructively-neutral
+foundation.
+
+An example of an \df{infinite} compact type is that of conatural
+numbers, \m{\NI}, also known as the \df{generic convergent sequence}
+(this was presented in
+\href{https://sites.google.com/site/types2011/program}{Types'2011} in
+Bergen).  This type, the final coalgebra of \m{- + \One}, is not
+directly available in our type theory, but can be constructed as the
+type of
+\href{https://www.cambridge.org/core/journals/journal-of-symbolic-logic/article/infinite-sets-that-satisfy-the-principle-of-omniscience-in-any-variety-of-constructive-mathematics/0D204ADE629B703578B848B8573FC83D}{decreasing
+  infinite binary sequences}.
+
+We are able to construct plenty of compact types, and it turns out
+they all can be equipped with well-orders making them into ordinals.
+
+\paragraph{Ordinals.}
+An \href{https://homotopytypetheory.org/book/}{ordinal} is a type
+\m{X} equipped with a proposition-valued binary relation
+\m{{-}\,{<}\,{-} : X \to X \to \U} which is transitive, well-ordered
+(satisfies transfinite induction), and extensional (any two elements
+with the same predecessors are equal). The HoTT Book additionally
+requires the type \m{X} to be a set, but we show that this follows
+automatically from extensionality. For example, the types of natural
+and conatural numbers are ordinals. By univalence, the type of
+ordinals in a universe \href{https://homotopytypetheory.org/book/}{is
+  itself an ordinal} in the next universe, and in particular is a set.
+
+Addition is implemented by the type former \m{-+-}, and multiplication
+by the type former \m{\Sigma} with the lexicographic order. The
+compact ordinals we construct are, moreover, order-compact in the
+sense that a minimal element of \m{\Sigma (x : X), p\,x = 0} is found,
+or else we are told that this type is empty.  Additionally, we have a
+selection function of type \m{(X \to \Two) \to X} which gives the
+infimum of the set of roots of any \m{p : X \to \Two}, and in
+particular our compact ordinals have a top element by considering \m{p
+  = \lambda x. 1}.
+
+\paragraph{Discrete types.}
+We say that a type is \df{discrete} if it has decidable equality.
+
+\paragraph{Totally separated types.}
+It may happen that a non-trivial type has no nonconstant function into
+the type \m{\Two} of booleans so that it is trivially compact. For
+example, this would be the case for a type \m{\R} of real numbers
+under Brouwerian continuity axioms. Under such axioms, such types are
+compact but in a uninteresting way. We say that a type is \df{totally
+  separated}, again borrowing a
+\href{https://www.encyclopediaofmath.org/index.php/Totally_separated_space}{terminology
+  from topology}, if the functions into the booleans separate the
+points, in the sense that it satisfies the boolean Leibniz principle
+that says that any two points that satisfy the same boolean-valued
+predicates are equal. Such a type is automatically a set, or
+\m{0}-groupoid, in the sense of univalent mathematics. We construct a
+totally separated reflection for any type, and show that a type is
+compact, in any of the three senses, if and only if its totally
+separated reflection is compact in the same sense.
+
+\paragraph{Interplay between the notions.}
+We show that compact types, totally separated types, discrete types
+and function types interact in very much the same way as the
+topological concepts with the same names, where arbitrary functions in
+type theory play the role of continuous maps in topology, \df{without}
+assuming Brouwerian continuity axioms. For instance, if \m{X \to Y}
+and \m{Y} are discrete then \m{X} is \m{\Pi}-compact, and if \m{X \to
+  Y} is \m{\Pi}-compact, and \m{X} is totally separated and~\m{Y} is
+discrete, then \m{X} is discrete, too. The simple types are all
+totally separated, which agrees with the situation with
+Kleene--Kreisel spaces, but it is easy to construct types which fail
+to be totally separated (e.g.\ the homotopical circle) or whose total
+separated gives a constructive taboo (e.g.\ \m{\Sigma (x : \NI), x =
+  \infty \to \Two}, where the idea is to get two copies of the point
+at infinity).
+
+\paragraph{Notation for discrete and compact ordinals.}
+We define infinitary ordinal codes, or expressions, similar to Brouwer
+ordinals, including one, addition, multiplication, and countable sum
+with an added top point.
+
+We interpret these trees in two ways, getting discrete and compact
+ordinals respectively. In both cases, addition and multiplication
+nodes are interpreted as ordinal addition and multiplication. But in
+the countable sum with a top point, the top point is added with
+\m{-+\One} in one case, and so is isolated, and by a limit-point
+construction in the other case (given our sequence \m{\N \to \U} of
+types, we extend it to a family \m{\NI \to \U} so that it
+maps~\m{\infty} to a singleton type, by a certain type
+\href{https://en.wikipedia.org/wiki/Injective_object}{injectivity}
+construction, and then take its sum).
+
+We denote the above interpretations of ordinal notations \m{\nu} by
+\m{\Delta_\nu} and \m{\Kappa_\nu}. The types in the image of
+\m{\Delta} are discrete and retracts of \m{\N}, and those in the image
+of \m{\Kappa} are compact, totally separated and retracts of the
+Cantor type \m{\N \to \Two}.  Moreover, there is an order preserving
+and reflecting embedding \m{\Delta_\nu \to \Kappa_\nu}, which is an
+isomorphism if and only \db{LPO} holds, but whose image always has
+empty complement for all ordinal notations \m{\nu}. An example of such
+a situation is the evident embedding \m{\N + \One \to \NI} (this
+inclusion is merely a monomorphism, rather than a topological
+embedding, in topological models -- the word \df{embedding} in
+univalent mathematics refers to the appropriate notion for
+\m{\infty}-groupoids, which in this example are \m{0}-groupoids).  By
+transfinite iteration of the countable sum, one can get
+\href{http://www.cs.swan.ac.uk/~csetzer/articles/weor0.pdf}{rather
+  large} compact ordinals.
+
+\end{document}
