@@ -1,9 +1,9 @@
 \documentclass[a4paper]{easychair}
 
-\title{Compact, totally separated, and well-ordered types in univalent mathematics}
+\title{Compact, totally separated and well-ordered types in univalent mathematics}
 \author{Mart{\'\i}n H\"otzel Escard\'o}
 \authorrunning{Mart{\'\i}n H\"otzel Escard\'o}
-\titlerunning{Compact, totally separated, and well-ordered types}
+\titlerunning{Compact, totally separated and well-ordered types}
 \institute{School of Computer Science, Universe of Birmingham, UK \\ \email{m.escardo@cs.bham.ac.uk}}
 
 \usepackage{amssymb,bbm}
@@ -121,7 +121,7 @@ ordinals.
 \paragraph{Ordinals.}
 An \href{https://homotopytypetheory.org/book/}{ordinal} is a type
 \m{X} equipped with a proposition-valued binary relation
-\m{{-}\,{<}\,{-} : X \to X \to \U} which is transitive, well-ordered
+\m{{-}\,{<}\,{-} : X \to X \to \U} which is transitive, well-founded
 (satisfies transfinite induction), and extensional (any two elements
 with the same predecessors are equal). The HoTT Book additionally
 requires the type \m{X} to be a set, but we show that this follows
@@ -146,15 +146,14 @@ We say that a type is \df{discrete} if it has decidable equality.
 \paragraph{Totally separated types.}
 It may happen that a non-trivial type has no nonconstant function into
 the type \m{\Two} of booleans so that it is trivially compact. For
-example, this would be the case for a type \m{\R} of real numbers
+example, this would be the case for a type of real numbers
 under Brouwerian continuity axioms. Under such axioms, such types are
 compact, but in a uninteresting way. We say that a type is \df{totally
   separated}, again borrowing a
 \href{https://www.encyclopediaofmath.org/index.php/Totally_separated_space}{terminology
   from topology}, if the functions into the booleans separate the
-points, in the sense that it satisfies the \df{boolean Leibniz principle}
-that says that any two points that satisfy the same boolean-valued
-predicates are equal. Such a type is automatically a set, or a
+points, in the sense that any two points that satisfy the same boolean-valued
+predicates are equal. This can be seen as a boolean-valued Leibniz principle. Such a type is automatically a set, or a
 \m{0}-groupoid, in the sense of univalent mathematics. We construct a
 totally separated reflection for any type, and show that a type is
 compact, in any of the three senses, if and only if its totally
@@ -173,7 +172,7 @@ are all totally separated, which agrees with the situation with
 Kleene--Kreisel spaces, but it is easy to construct types which fail
 to be totally separated (e.g.\ the homotopical circle) or whose total
 separatedness gives a constructive taboo (e.g.\ \m{\Sigma (x : \NI), x =
-  \infty \to \Two}, where we get two clones of the point \m{\infty}).
+  \infty \to \Two}, where we get two copies of the point \m{\infty}).
 
 \paragraph{Notation for discrete and compact ordinals.}
 We define infinitary ordinal codes, or expression trees, similar to
@@ -189,7 +188,7 @@ the countable sum with a top point, the top point is added with
 \m{-+\One} in one case, and so is isolated, and by a limit-point
 construction in the other case (given our sequence \m{\N \to \U} of
 types, we extend it to a family \m{\NI \to \U} so that it
-maps~\m{\infty} to a singleton type, by a certain type
+maps~\m{\infty} to a singleton type, by a certain universe
 \href{https://en.wikipedia.org/wiki/Injective_object}{injectivity}
 construction, and then take its sum).
 
