@@ -1104,7 +1104,7 @@ reflective-subuniverse-Π {𝓤} {𝓣} R A φ α κ = ainjective-retract-of-sub
 
 \end{code}
 
-In particular:
+In particular (and maybe the Σ version gives n-truncations?):
 
 \begin{code}
 
