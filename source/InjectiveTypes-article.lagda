@@ -900,14 +900,14 @@ Therefore the subuniverse of n-types is flabby and hence injective.
 
 open import UF-hlevels ua
 
-ℍ-aflabby : (n : ℕ) → aflabby (ℍ n 𝓤) 𝓤
+ℍ-aflabby : (n : ℕ) → aflabby (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) 𝓤
 ℍ-aflabby {𝓤} n = subuniverse-aflabby-Π
                     (_is-of-hlevel n)
                     (hlevel-relation-is-a-prop n)
                     (props-have-all-hlevels n)
                     (λ X Y _ → hlevels-closed-under-Π n X Y)
 
-ℍ-ainjective : (n : ℕ) → ainjective-type (ℍ n 𝓤) 𝓤 𝓤
+ℍ-ainjective : (n : ℕ) → ainjective-type (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) 𝓤 𝓤
 ℍ-ainjective {𝓤} n = aflabby-types-are-ainjective (ℍ n 𝓤) (ℍ-aflabby n)
 
 \end{code}
@@ -1108,17 +1108,25 @@ In particular:
 
 \begin{code}
 
-reflective-n-type-subuniverse : Propositional-resizing
-                              → (n : ℕ) → retract (ℍ n 𝓤) of (𝓤 ̇)
-reflective-n-type-subuniverse R n = reflective-subuniverse-Π R
-                                      (_is-of-hlevel n)
-                                      (hlevel-relation-is-a-prop n)
-                                      (props-have-all-hlevels n)
-                                      (λ X Y _ → hlevels-closed-under-Π n X Y)
+reflective-n-type-subuniverse-Σ : Propositional-resizing
+                              → (n : ℕ) → retract (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) of (𝓤 ̇)
+reflective-n-type-subuniverse-Σ R n = reflective-subuniverse-Σ R
+                                       (_is-of-hlevel n)
+                                       (hlevel-relation-is-a-prop n)
+                                       (props-have-all-hlevels n)
+                                       (hlevels-closed-under-Σ n)
+
+reflective-n-type-subuniverse-Π : Propositional-resizing
+                              → (n : ℕ) → retract (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) of (𝓤 ̇)
+reflective-n-type-subuniverse-Π R n = reflective-subuniverse-Π R
+                                       (_is-of-hlevel n)
+                                       (hlevel-relation-is-a-prop n)
+                                       (props-have-all-hlevels n)
+                                       (λ X Y _ → hlevels-closed-under-Π n X Y)
 
 reflective-Ω : Propositional-resizing
              → retract (Ω 𝓤) of (𝓤 ̇)
-reflective-Ω R = reflective-n-type-subuniverse R zero
+reflective-Ω R = reflective-n-type-subuniverse-Σ R zero
 
 \end{code}
 
@@ -1198,7 +1206,7 @@ ainjective-ntype-characterization : Propositional-resizing
                                   → (D : 𝓤 ̇)
                                   → (n : ℕ)
                                   → D is-of-hlevel (succ n)
-                                  → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → ℍ n 𝓤)
+                                  → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → Σ \(X : 𝓤 ̇) → X is-of-hlevel n)
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
   a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D of (X → ℍ n 𝓤 )
