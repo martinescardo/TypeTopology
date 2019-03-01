@@ -1,7 +1,6 @@
 Minimal development of hlevels. For simplicity, for the moment we
-assume univalence globally, although it is not necessary for
-everything. Our convention is that propositions are at level zero
-(apologies).
+assume univalence globally, although it is not necessary. Our
+convention here is that propositions are at level zero (apologies).
 
 \begin{code}
 
