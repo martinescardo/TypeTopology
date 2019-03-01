@@ -176,6 +176,37 @@ comp-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
          (sections-are-lc (φ z) (γ z , (γφ z)))
          (T-is-prop z)
 
+embedding-exponential : FunExt
+                      → {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} (f : X → Y)
+                      → is-embedding f
+                      → is-embedding (λ (φ : A → X) → f ∘ φ)
+embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = embedding-criterion' (λ φ → f ∘ φ) k
+ where
+  g : (φ φ' : A → X) (a : A) → (φ a ≡ φ' a) ≃ (f(φ a) ≡ f(φ' a))
+  g φ φ' a = ap f {φ a} {φ' a} , embedding-embedding' f i (φ a) (φ' a)
+  h : (φ φ' : A → X) → φ ∼ φ' ≃ f ∘ φ ∼ f ∘ φ'
+  h φ φ' = Π-cong (fe 𝓦 𝓤) (fe 𝓦 𝓥) A (λ a → φ a ≡ φ' a) (λ a → f (φ a) ≡ f (φ' a)) (g φ φ')
+  k : (φ φ' : A → X) → (f ∘ φ ≡ f ∘ φ') ≃ (φ ≡ φ')
+  k φ φ' = (f ∘ φ ≡ f ∘ φ') ≃⟨ ≃-funext (fe 𝓦 𝓥) (f ∘ φ) (f ∘ φ') ⟩
+           (f ∘ φ ∼ f ∘ φ') ≃⟨ ≃-sym (h φ φ') ⟩
+           (φ ∼ φ')         ≃⟨ ≃-sym (≃-funext (fe 𝓦 𝓤) φ φ') ⟩
+           (φ ≡ φ') ■
+
+embedding-factor : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
+                 → is-embedding (g ∘ f)
+                 → is-embedding g
+                 → is-embedding f
+embedding-factor {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = embedding-criterion' f c
+ where
+  a : (x x' : X) → (x ≡ x')  ≃ (g (f x) ≡ g (f x'))
+  a x x' = ap (g ∘ f) {x} {x'} , embedding-embedding' (g ∘ f) i x x'
+  b : (y y' : Y) → (y ≡ y') ≃ (g y ≡ g y')
+  b y y' = ap g {y} {y'} , (embedding-embedding' g j y y')
+  c : (x x' : X) → (f x ≡ f x') ≃ (x ≡ x')
+  c x x' = (f x ≡ f x')         ≃⟨ b (f x) (f x') ⟩
+           (g (f x) ≡ g (f x')) ≃⟨ ≃-sym (a x x') ⟩
+           (x ≡ x')             ■
+
 disjoint-images : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} → (X → A) → (Y → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 disjoint-images f g = ∀ x y → f x ≢ g y
 
