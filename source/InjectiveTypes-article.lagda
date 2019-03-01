@@ -1321,11 +1321,11 @@ injective-resizing {𝓤} ω₀ 𝓥 𝓦 R D i = c
 
 \end{code}
 
-The equivalence of excluded middle with the algebraic injectivity of all pointed types
---------------------------------------------------------------------------------------
+The equivalence of excluded middle with the (algebraic) injectivity of pointed types
+------------------------------------------------------------------------------------
 
 Algebraic flabbiness can also be applied to show that all pointed
-types are algebraically injective iff excluded middle holds.
+types are (algebraically) injective iff excluded middle holds.
 
 \begin{code}
 
