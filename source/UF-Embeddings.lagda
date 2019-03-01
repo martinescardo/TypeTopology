@@ -176,6 +176,12 @@ comp-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
          (sections-are-lc (φ z) (γ z , (γφ z)))
          (T-is-prop z)
 
+\end{code}
+
+TODO. Redo the above proof using the technique of the following proof.
+
+\begin{code}
+
 embedding-factor : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
                  → is-embedding (g ∘ f)
                  → is-embedding g
