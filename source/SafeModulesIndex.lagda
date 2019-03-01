@@ -107,6 +107,7 @@ import UF-FunExt
 import UF-FunExt-from-Naive-FunExt
 import UF-FunExt-from-Naive-FunExt-alternate
 import UF-IdEmbedding
+import UF-hlevels
 import UF-ImageAndSurjection
 import UF-Knapp-UA
 import UF-KrausLemma
