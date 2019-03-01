@@ -43,33 +43,37 @@ For the sake of generality, we work without assuming (or rejecting)
 the principle of excluded middle, and hence without assuming the axiom
 of choice either. Moreover, we show that the principle of excluded
 middle holds if and only if all pointed types are algebraically
-injective, if and only if all inhabited types are injective, and so
+injective, if and only if all inhabited types are injective, so that
 there is nothing interesting to say about injectivity in its presence.
 
-In the presence of propositional resizing principles, the main results
+Under propositional resizing principles, the main results
 are easy to state and pleasing:
 
    (1) Injectivity is equivalent to the propositional truncation of
-       algebraic injectivity (this can be seen as a form of choice
-       that just holds, and may be related to
-       [Toby Kenney, 2011, https://www.sciencedirect.com/science/article/pii/S0022404910000782]).
+       algebraic injectivity. (This can be seen as a form of choice
+       that just holds, as its moves a propositional truncation inside
+       a \m{\Pi}-type to outside the \m{\Pi}-type, and may be related
+       to [Toby Kenney, 2011,
+       https://www.sciencedirect.com/science/article/pii/S0022404910000782]).
 
    (2) The algebraically injective types are precisely the retracts of
        exponential powers of type universes. In particular,
 
-       (i) The algebraically injective sets are precisely the retracts
-           of powersets.
+         (a) The algebraically injective sets are precisely the
+             retracts of powersets.
 
-       (ii) The algebraically injective n+1-types are precisely
-            retracts of exponential powers of the universes of
-            n-types.
+         (b) The algebraically injective n+1-types are precisely
+             retracts of exponential powers of the universes of
+             n-types.
+
+       Another consequence is that any universe is embedded as a
+       retract of any larger universe.
+
 
    (3) The algebraically injective types are also precisely the
        underlying objects of the algebras of the partial map
        classifier monad.
 
-A corollary of the above is that any universe is embedded as a retract
-of any larger universe in the presence of propositional resizing.
 
 In the absence of propositional resizing, we have similar results
 which have subtler statements and proofs that need to keep track of
@@ -82,7 +86,7 @@ above.
 
 Acknowledgements. Mike Shulman acted as a sounding board over the
 years, with many helpful remarks, including in particular the
-terminology 'algebraically injective' for the notion we consider here.
+terminology 'algebraic injectivity' for the notion we consider here.
 
 Our type theory
 ---------------
@@ -92,11 +96,11 @@ Book [https://homotopytypetheory.org/book/] and Coq, and probably
 unfamiliar to readers not acquainted with Agda, we explicitly state it
 here.
 
-Our underlying formal system can be considered as a subset
+Our underlying formal system can be considered as a subsystem
 of that used in UniMath [https://github.com/UniMath/UniMath].
 
-* We work with a Martin-Löf type theory with types 𝟘 (empty type), 𝟙
-  (one-element type), and type formers _+_ (disjoint sum), Π (product)
+* We work within a Martin-Löf type theory with types 𝟘 (empty type), 𝟙
+  (one-element type), and type formers _+_ (binary sum), Π (product)
   and Σ (sum), and a hierarchy of type universes closed under them in
   a suitable sense discussed below.
 
@@ -107,10 +111,10 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * We assume a universe 𝓤₀, and for each universe 𝓤 we assume a
   successor universe 𝓤⁺ with 𝓤 : 𝓤⁺, and for any two universes 𝓤,𝓥 a
-  least upper bound 𝓤 ⊔ 𝓥. We have 𝓤₀ ⊔ 𝓤 = 𝓤 and 𝓤 ⊔ 𝓤⁺ = 𝓤⁺
-  definitionally, and the operation _⊔_ is definitionally idempotent,
-  commutative, and associative, and the successor operation _⁺
-  distributes over _⊔_ definitionally.
+  least upper bound 𝓤 ⊔ 𝓥. We stipulate that we have 𝓤₀ ⊔ 𝓤 = 𝓤 and
+  𝓤 ⊔ 𝓤⁺ = 𝓤⁺ definitionally, and that the operation _⊔_ is
+  definitionally idempotent, commutative, and associative, and that
+  the successor operation _⁺ distributes over _⊔_ definitionally.
 
   (In Agda here we write X : 𝓤 ̇ (with an almost invisible
   superscript dot), rather than X:𝓤 (without the dot).)
@@ -118,8 +122,8 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 * We stipulate that we have copies 𝟘 {𝓤} and 𝟙 {𝓤} of the empty and
   singleton types in each universe 𝓤.
 
-* We don't assume that the universes are cumulative (in the sense that
-  from X : 𝓤 we would be able to deduce that X : 𝓤 ⊔ 𝓥 for any 𝓥), but
+* We don't assume that the universes are cumulative, in the sense that
+  from X : 𝓤 we would be able to deduce that X : 𝓤 ⊔ 𝓥 for any 𝓥, but
   we also don't assume that they are not. However, from the
   assumptions formulated below, it follows that for any two universes
   𝓤,𝓥 there is a map lift {𝓤} 𝓥 : 𝓤 → 𝓤 ⊔ 𝓥, for instance X ↦ X + 𝟘 {𝓥},
@@ -277,9 +281,9 @@ by the following two extension operators:
 
 \begin{code}
 
-_╲_ _╱_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → 𝓦 ̇) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
-(f ╲ j) y = Σ \(w : fiber j y) → f(pr₁ w)
-(f ╱ j) y = Π \(w : fiber j y) → f(pr₁ w)
+_↓_ _↑_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → 𝓦 ̇) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
+(f ↓ j) y = Σ \(w : fiber j y) → f(pr₁ w)
+(f ↑ j) y = Π \(w : fiber j y) → f(pr₁ w)
 
 \end{code}
 
@@ -295,22 +299,22 @@ product indexed by a proposition is equal to any of its factors.
 
 \begin{code}
 
-╲-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-               → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ╲ j ∘ j ∼ f
-╲-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ╲ j ∘ j) x) (f x)
+↓-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+               → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ↓ j ∘ j ∼ f
+↓-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ↓ j ∘ j) x) (f x)
                                    (prop-indexed-sum (i (j x)) (x , refl))
 
-╱-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
-               → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ╱ j ∘ j ∼ f
-╱-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ╱ j ∘ j) x) (f x)
+↑-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+               → (f : X → 𝓤 ⊔ 𝓥 ̇) → f ↑ j ∘ j ∼ f
+↑-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ↑ j ∘ j) x) (f x)
                                    (prop-indexed-product (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
                                                          (i (j x)) (x , refl))
 
 universes-are-ainjective-Σ : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-ainjective-Σ {𝓤} {𝓥} j e f = (f ╲ j , ╲-is-extension j e f)
+universes-are-ainjective-Σ {𝓤} {𝓥} j e f = (f ↓ j , ↓-is-extension j e f)
 
 universes-are-ainjective-Π : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-ainjective-Π {𝓤} {𝓥} j e f = (f ╱ j , ╱-is-extension j e f)
+universes-are-ainjective-Π {𝓤} {𝓥} j e f = (f ↑ j , ↑-is-extension j e f)
 
 universes-are-ainjective-particular : ainjective-type (𝓤 ̇) 𝓤 𝓤
 universes-are-ainjective-particular = universes-are-ainjective-Π
@@ -329,13 +333,13 @@ give 𝟘 and 𝟙 respectively:
 
 Σ-extension-out-of-range : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
                          → (y : Y) → ((x : X) → j x ≢ y)
-                         → (f ╲ j) y ≃ 𝟘 {𝓣}
+                         → (f ↓ j) y ≃ 𝟘 {𝓣}
 Σ-extension-out-of-range f j y φ = prop-indexed-sum-zero (uncurry φ)
 
 
 Π-extension-out-of-range : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
                          → (y : Y) → ((x : X) → j x ≢ y)
-                         → (f ╱ j) y ≃ 𝟙 {𝓣}
+                         → (f ↑ j) y ≃ 𝟙 {𝓣}
 Π-extension-out-of-range {𝓤} {𝓥} {𝓦} f j y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
 \end{code}
@@ -347,11 +351,11 @@ excluded middle is not needed, as it is not hard to see:
 \begin{code}
 
 same-Σ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
-       → Σ f ≃ Σ (f ╲ j)
+       → Σ f ≃ Σ (f ↓ j)
 same-Σ = blackboard.same-Σ
 
 same-Π : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
-       → Π f ≃ Π (f ╱ j)
+       → Π f ≃ Π (f ↑ j)
 same-Π = blackboard.same-Π
 
 \end{code}
@@ -371,18 +375,29 @@ We record the following known constructions and facts mentioned above:
 \begin{code}
 
 _[_] : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y : X} → Id x y → f x → f y
-f [ refl ] = id
+f [ p ] = transport f p
 
-automatic-functoriality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y z : X} (p : Id x y) (q : Id y z)
-                        → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
-automatic-functoriality f refl refl = refl
+\end{code}
+
+We append the symbol "─" for a variant of a definition with some of the
+implicit arguments made explicit:
+
+\begin{code}
+
+automatic-functoriality-id : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x : X}
+                           → f [ refl─ x ] ≡ id─ (f x)
+automatic-functoriality-id f = refl
+
+automatic-functoriality-∘ : {X : 𝓤 ̇} (f : X → 𝓥 ̇) {x y z : X} (p : Id x y) (q : Id y z)
+                          → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
+automatic-functoriality-∘ f refl refl = refl
 
 _≾_ : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 f ≾ g = (x : domain f) → f x → g x
 
-automatic-naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (g : X → 𝓦 ̇) (τ : f ≾ g) {x y : X} (p : Id x y)
-                     → τ y ∘ f [ p ] ≡ g [ p ] ∘ τ x
-automatic-naturality f g τ refl = refl
+automatic-naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇) (f' : X → 𝓦' ̇) (τ : f ≾ f') {x y : X} (p : Id x y)
+                     → τ y ∘ f [ p ] ≡ f' [ p ] ∘ τ x
+automatic-naturality f f' τ refl = refl
 
 \end{code}
 
@@ -391,12 +406,12 @@ With this notation, we have:
 \begin{code}
 
 ηΣ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
-   → f ≾ f ╲ j ∘ j
+   → f ≾ f ↓ j ∘ j
 ηΣ f j x B = (x , refl) , B
 
 
 ηΠ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
-   → f ╱ j ∘ j ≾ f
+   → f ↑ j ∘ j ≾ f
 ηΠ f j x A = A (x , refl)
 
 \end{code}
@@ -407,37 +422,36 @@ g ↦ g ∘ j.
 
 \begin{code}
 
-╲-extension-left-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
-                     → (f ╲ j ≾ g) ≃ (f ≾ g ∘ j)
-╲-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
+↓-extension-left-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
+                     → (f ↓ j ≾ g) ≃ (f ≾ g ∘ j)
+↓-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
 
-╱-extension-right-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
-                      → (g ≾ f ╱ j) ≃ (g ∘ j ≾ f)
-╱-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
+↑-extension-right-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y) (g : Y → 𝓣 ̇)
+                      → (g ≾ f ↑ j) ≃ (g ∘ j ≾ f)
+↑-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
 
 \end{code}
 
 The proofs of the above are routine.
 
-We also have that if j is an embedding then so are the extension maps
-f ↦ f ╲ j and f ↦ f ╱ j from the function type (X → 𝓤) to the function
-type (Y → 𝓤):
+We also have that the left and right Kan extension operators along a
+embedding are themselves embeddings.
 
 \begin{code}
 
-╲-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j → is-embedding (_╲ j)
-╲-extension-is-embedding {𝓤} X Y j i = s-is-embedding
+↓-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j → is-embedding (_↓ j)
+↓-extension-is-embedding {𝓤} X Y j i = s-is-embedding
  where
   s : (X → 𝓤 ̇) → (Y → 𝓤 ̇)
-  s f = f ╲ j
+  s f = f ↓ j
 
   r : (Y → 𝓤 ̇) → (X → 𝓤 ̇)
   r g = g ∘ j
 
   rs : ∀ f → r (s f) ≡ f
-  rs f = dfunext (fe 𝓤 (𝓤 ⁺)) (╲-is-extension j i f)
+  rs f = dfunext (fe 𝓤 (𝓤 ⁺)) (↓-is-extension j i f)
 
-  sr : ∀ g → s (r g) ≡ (g ∘ j) ╲ j
+  sr : ∀ g → s (r g) ≡ (g ∘ j) ↓ j
   sr g = refl
 
   κ : (g : Y → 𝓤 ̇) → s (r g) ≾ g
@@ -501,19 +515,19 @@ type (Y → 𝓤):
   s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
 
 
-╱-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j → is-embedding (_╱ j)
-╱-extension-is-embedding {𝓤} X Y j i = s-is-embedding
+↑-extension-is-embedding : (X Y : 𝓤 ̇) (j : X → Y) → is-embedding j → is-embedding (_↑ j)
+↑-extension-is-embedding {𝓤} X Y j i = s-is-embedding
  where
   s : (X → 𝓤 ̇) → (Y → 𝓤 ̇)
-  s f = f ╱ j
+  s f = f ↑ j
 
   r : (Y → 𝓤 ̇) → (X → 𝓤 ̇)
   r g = g ∘ j
 
   rs : ∀ f → r (s f) ≡ f
-  rs f = dfunext (fe 𝓤 (𝓤 ⁺)) (╱-is-extension j i f)
+  rs f = dfunext (fe 𝓤 (𝓤 ⁺)) (↑-is-extension j i f)
 
-  sr : ∀ g → s (r g) ≡ (g ∘ j) ╱ j
+  sr : ∀ g → s (r g) ≡ (g ∘ j) ↑ j
   sr g = refl
 
   κ : (g : Y → 𝓤 ̇) → g ≾ s (r g)
@@ -528,9 +542,9 @@ type (Y → 𝓤):
     e : (y : Y) → is-equiv (κ (s f) y)
     e y = qinvs-are-equivs (κ (s f) y) (δ , ε , η)
      where
-      δ : (((f ╱ j) ∘ j) ╱ j) y → (f ╱ j) y
+      δ : (((f ↑ j) ∘ j) ↑ j) y → (f ↑ j) y
       δ C (x , p) = C (x , p) (x , refl)
-      η : (C : ((f ╱ j ∘ j) ╱ j) y) → κ (s f) y (δ C) ≡ C
+      η : (C : ((f ↑ j ∘ j) ↑ j) y) → κ (s f) y (δ C) ≡ C
       η C = dfunext (fe 𝓤 𝓤) g
        where
         g : (w : fiber j y) → κ (s f) y (δ C) w ≡ C w
@@ -541,7 +555,7 @@ type (Y → 𝓤):
            where
             q : (x , refl) ≡ (x' , p')
             q = i (j x) (x , refl) (x' , p')
-      ε : (a : (f ╱ j) y) → δ (κ (s f) y a) ≡ a
+      ε : (a : (f ↑ j) y) → δ (κ (s f) y a) ≡ a
       ε a = dfunext (fe 𝓤 𝓤) g
        where
         g : (w : fiber j y) → δ (κ (s f) y a) w ≡ a w
@@ -584,23 +598,27 @@ article). Their proofs are routine.
 
 \begin{code}
 
-iterated-╱ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇) (j : X → Y) (k : Y → Z)
-           → ((f ╱ j) ╱ k) ∼ (f ╱ (k ∘ j))
-iterated-╱ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (((f ╱ j) ╱ k) z) ((f ╱ (k ∘ j)) z)
+iterated-↑ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇) (j : X → Y) (k : Y → Z)
+           → (f ↑ j) ↑ k ∼ f ↑ (k ∘ j)
+iterated-↑ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (((f ↑ j) ↑ k) z) ((f ↑ (k ∘ j)) z)
                                    (blackboard.iterated-extension j k z)
 
 
-retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (g : X → 𝓣 ̇) (j : X → Y)
-                  → ((x : X) → retract (f x) of (g x))
-                  → ((y : Y) → retract ((f ╱ j) y) of ((g ╱ j) y))
+retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (f' : X → 𝓦' ̇) (j : X → Y)
+                  → ((x : X) → retract (f x) of (f' x))
+                  → ((y : Y) → retract ((f ↑ j) y) of ((f' ↑ j) y))
 retract-extension = blackboard.retract-extension
 
 \end{code}
 
+
+Presumably such constructions can be performed for left Kan extensions
+too, but we haven't paused to checked this.
+
 This completes our discussion of extensions of maps into universes.
 
-Closure properties of algebraic injectivity
--------------------------------------------
+Constructions with algebraically injective types
+------------------------------------------------
 
 Algebraic injectives are closed under retracts:
 
@@ -693,16 +711,16 @@ ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-su
 
 \end{code}
 
-Resizing theorems and algebraic flabbiness
-------------------------------------------
+Resizing constructions and algebraic flabbiness
+-----------------------------------------------
 
-The above results, when combined together in the obvious way, almost
-give directly that the algebraically injective types are precisely the
-retracts of exponential powers of universes, but there is a universe
-mismatch.
-
-Keeping track of the universes to avoid the mismatch, what we get
-instead is a resizing theorem:
+We now discuss resizing constructions that don't assume resizing
+axioms. The above results, when combined together in the obvious way,
+almost give directly that the algebraically injective types are
+precisely the retracts of exponential powers of universes, but there
+is a universe mismatch. Keeping track of the universes to avoid the
+mismatch, what we get instead is a resizing construction without the
+need to resizing axioms:
 
 \begin{code}
 
@@ -714,20 +732,22 @@ ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-univer
 
 \end{code}
 
-This is resizing down.
+This is resizing down and so is not surprising.
 
-A further resizing-for-free construction is possible by considering a
-notion of flabbiness as data, rather than as property as in the
-1-topos literature. The notion of flabbiness considered in topos
-theory (see e.g. [Ingo Blechschmidt, 2018,
-https://arxiv.org/abs/1810.12708]) is defined with truncated Σ, that
-is, the existential quantifier ∃ with values in the subobject
-classifier Ω. We refer to the notion defined with untruncated Σ as
-algebraic flabbiness, by analogy with the notion of algebraic
-injectivity. But this is more than a mere analogy: notice that
-flabbiness and algebraic flabbiness amount to simply injectivity and
-algebraic injectivity with respect to the class of embeddings P → 𝟙
-with P ranging over propositions.
+Of course, such a contruction can be performed directly by considering
+an embedding 𝓤 → 𝓤 ⁺, but the idea is to generalize it to obtain
+further resizing resizing-for-free constructions. We achieve this by
+considering a notion of flabbiness as data, rather than as property as
+in the 1-topos literature (see e.g. [Ingo Blechschmidt, 2018,
+https://arxiv.org/abs/1810.12708]). The notion of flabbiness
+considered in topos theory is defined with truncated Σ, that is, the
+existential quantifier ∃ with values in the subobject classifier Ω. We
+refer to the notion defined with untruncated Σ as algebraic
+flabbiness, by analogy with the notion of algebraic injectivity. But
+this is more than a mere analogy: notice that flabbiness and algebraic
+flabbiness amount to simply injectivity and algebraic injectivity with
+respect to the class of embeddings P → 𝟙 with P ranging over
+propositions.
 
 \begin{code}
 
@@ -756,10 +776,9 @@ ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p →
 
 \end{code}
 
-The interesting thing is that the universe 𝓥 is forgotten in this
-construction, with only 𝓤 remaining, particularly regarding the
-following converse, which says that algebraically flabby types are
-algebraically injective:
+The interesting thing about the following construction is that the
+universe 𝓥 is forgotten, with only 𝓤 remaining, particularly regarding
+the converse formulated after it.
 
 \begin{code}
 
@@ -776,8 +795,8 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
 
 \end{code}
 
-We then get the following resizing theorem by composing the above
-conversions between algebraic flabbiness and injectivity:
+We then get the following resizing construction by composing the above
+two conversions between algebraic flabbiness and injectivity:
 
 \begin{code}
 
@@ -793,6 +812,12 @@ We record two particular cases that may make this clearer:
 ainjective-resizing₂ : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤 𝓤
 ainjective-resizing₂ = ainjective-resizing₁
 
+\end{code}
+
+So this is no longer necessarily resizing down.
+
+\begin{code}
+
 ainjective-resizing₃ : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤₀ 𝓤
 ainjective-resizing₃ = ainjective-resizing₁
 
@@ -803,7 +828,7 @@ flabby. More generally:
 
 \begin{code}
 
-Ω-aflabby : {𝓤 𝓥 : Universe} → aflabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
+Ω-aflabby : aflabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
 Ω-aflabby {𝓤} {𝓥} P i f = (Q , j) , c
  where
   Q : 𝓤 ⊔ 𝓥 ̇
@@ -832,87 +857,10 @@ Therefore it is injective:
 \end{code}
 
 Another way to see this is that it is a retract of the universe by
-propositional truncation. (Exercise, not included.)
+propositional truncation (exercise, not included).
 
-The equivalence of algebraic injectivity of all pointed types and excluded middle
----------------------------------------------------------------------------------
-
-Algebraic flabbiness can also be applied to show that all pointed
-types are injective iff excluded middle holds.
-
-\begin{code}
-
-open import UF-ExcludedMiddle
-
-EM-gives-pointed-types-aflabby : (D : 𝓦 ̇) → EM 𝓤 → D → aflabby D 𝓤
-EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
- where
-  h : P + ¬ P → Σ \(d : D) → (p : P) → d ≡ f p
-  h (inl p) = f p , (λ q → ap f (i p q))
-  h (inr n) = d , (λ p → 𝟘-elim (n p))
-
-\end{code}
-
-For the converse, we consider, given a proposition P, the type P + ¬ P + 𝟙,
-whose algebraic flabbiness gives the decidability of P.
-
-\begin{code}
-
-aflabby-decidability-lemma : (P : 𝓦 ̇) → is-prop P → aflabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
-aflabby-decidability-lemma {𝓦} P i φ = γ
- where
-  D = (P + ¬ P) + 𝟙 {𝓦}
-  f : P + ¬ P → D
-  f (inl p) = inl (inl p)
-  f (inr n) = inl (inr n)
-  d : D
-  d = pr₁ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
-  κ : (z : P + ¬ P) → d ≡ f z
-  κ = pr₂ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
-  a : (p : P) → d ≡ inl (inl p)
-  a p = κ (inl p)
-  b : (n : ¬ P) → d ≡ inl (inr n)
-  b n = κ (inr n)
-  δ : (d' : D) → d ≡ d' → P + ¬ P
-  δ (inl (inl p)) r = inl p
-  δ (inl (inr n)) r = inr n
-  δ (inr *)       r = 𝟘-elim (m n)
-   where
-    n : ¬ P
-    n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
-    m : ¬¬ P
-    m n = 𝟘-elim (+disjoint ((b n)⁻¹ ∙ r))
-  γ : P + ¬ P
-  γ = δ d refl
-
-\end{code}
-
-From this we conclude that if all pointed types are algebraically flabby then
-excluded middle holds:
-
-\begin{code}
-
-pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇) → D → aflabby D 𝓦) → EM 𝓦
-pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
-
-\end{code}
-
-And then we have the same situation for algebraically injective types,
-by reduction to algebraic flabbiness:
-
-\begin{code}
-
-EM-gives-pointed-types-ainjective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → ainjective-type D 𝓤 𝓥
-EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D (EM-gives-pointed-types-aflabby D em d)
-
-pointed-types-ainjective-gives-EM : ((D : 𝓦 ̇) → D → ainjective-type D 𝓦 𝓤) → EM 𝓦
-pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM
-                                       (λ D d → ainjective-types-are-aflabby D (α D d))
-
-\end{code}
-
-Algebraic injectivity and flabbiness in the presence of propositional resizing
-------------------------------------------------------------------------------
+Algebraic injectivity and flabbiness in the presence of propositional resizing axioms
+-------------------------------------------------------------------------------------
 
 Returning to size issues, we now apply algebraic flabbiness to show
 that propositional resizing gives unrestricted algebraic injective
@@ -928,7 +876,7 @@ middle fails but propositional resizing holds is given by Shulman
 Structures in Computer Science, 25:05 (2015), p1203–1277,
 http://arxiv.org/abs/1203.3253].
 
-We begin with the following lemma, which says that algebraic
+We begin with the following construction, which says that algebraic
 flabbiness is universe independent in the presence of propositional
 resizing:
 
@@ -1080,12 +1028,23 @@ ainjective-characterization {𝓤} R D = a , b
 
 \end{code}
 
+We emphasize that is a logical equivalence ``if and only if'' rather
+than an ∞-groupoid equivalence ``≃''.
+
+
 Injectivity versus algebraic injectivity in the absence of resizing
 -------------------------------------------------------------------
 
 We now compare injectivity with algebraic injectivity.
 
-The following is routine, using the fact that propositions are closed under Π.
+\begin{code}
+
+ainjective-gives-injective : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓥
+ainjective-gives-injective D i j e f = ∣ i j e f ∣
+
+\end{code}
+
+The following is routine, using the fact that propositions are closed under products.
 
 \begin{code}
 
@@ -1095,12 +1054,11 @@ injectivity-is-a-prop = blackboard.injective.injectivity-is-a-prop pt
 
 \end{code}
 
+(But of course algebraic injectivity is not.)
+
 From this we get the following.
 
 \begin{code}
-
-ainjective-gives-injective : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓥
-ainjective-gives-injective D i j e f = ∣ i j e f ∣
 
 ∥ainjective∥-gives-injective : (D : 𝓦 ̇) → ∥ ainjective-type D 𝓤 𝓥  ∥ → injective-type D 𝓤 𝓥
 ∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-a-prop D 𝓤 𝓥)
@@ -1109,17 +1067,18 @@ ainjective-gives-injective D i j e f = ∣ i j e f ∣
 \end{code}
 
 In order to relate injectivity to the propositional truncation of
-algebraic injectivity, we first prove some facts about injectivity
-that we already proved for algebraic injectivity. These facts cannot
-be obtained by reduction (in particular products of injectives are not
-necessarily injectives, in the absence of choice, but exponential
-powers are).
+algebraic injectivity in the other direction, we first establish some
+facts about injectivity that we already proved for algebraic
+injectivity. These facts cannot be obtained by reduction (in
+particular products of injectives are not necessarily injectives, in
+the absence of choice, but exponential powers are).
 
 \begin{code}
 
-embedding-∥retract∥ : (D : 𝓦 ̇) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥
+embedding-∥retract∥ : (D : 𝓦 ̇) → injective-type D 𝓦 𝓥
+                    → (Y : 𝓥 ̇) (j : D → Y) → is-embedding j
                     → ∥ retract D of Y ∥
-embedding-∥retract∥ D Y j e i = ∥∥-functor φ a
+embedding-∥retract∥ D i Y j e = ∥∥-functor φ a
   where
    a : ∃ \r  → r ∘ j ∼ id
    a = i j e id
@@ -1160,7 +1119,7 @@ power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
 injective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇)
                                         → injective-type D 𝓤 (𝓤 ⁺)
                                         → ∥ retract D of (D → 𝓤 ̇) ∥
-injective-∥retract∥-of-power-of-universe {𝓤} D = embedding-∥retract∥ D (D → 𝓤 ̇) Id Id-is-embedding
+injective-∥retract∥-of-power-of-universe {𝓤} D i = embedding-∥retract∥ D i (D → 𝓤 ̇) Id Id-is-embedding
 
 \end{code}
 
@@ -1330,7 +1289,7 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
   ε-is-embedding = comp-embedding (𝓛-unit-is-embedding D) down-is-embedding
 
   injective-retract-of-L : injective-type D 𝓤 𝓤 → ∥ retract D of L ∥
-  injective-retract-of-L = embedding-∥retract∥ D L ε ε-is-embedding
+  injective-retract-of-L i = embedding-∥retract∥ D i L ε ε-is-embedding
 
   L-injective : ainjective-type L 𝓤 𝓤
   L-injective = equiv-to-ainjective L (𝓛 D) (free-𝓛-algebra-ainjective D) (≃-sym e)
@@ -1343,8 +1302,8 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
 
 \end{code}
 
-Here are some corollaries, by reduction to the above results about algebraic
-injectivity:
+As a corollary, by reduction to the above results about algebraic
+injectivity, we have that
 
 \begin{code}
 
@@ -1359,6 +1318,89 @@ injective-resizing {𝓤} ω₀ 𝓥 𝓦 R D i = c
    b = ∥∥-functor (ainjective-resizing R D) a
    c : injective-type D 𝓥 𝓦
    c = ∥ainjective∥-gives-injective D b
+
+\end{code}
+
+The equivalence of excluded middle with the algebraic injectivity of all pointed types
+--------------------------------------------------------------------------------------
+
+Algebraic flabbiness can also be applied to show that all pointed
+types are algebraically injective iff excluded middle holds.
+
+\begin{code}
+
+open import UF-ExcludedMiddle
+
+EM-gives-pointed-types-aflabby : (D : 𝓦 ̇) → EM 𝓤 → D → aflabby D 𝓤
+EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
+ where
+  h : P + ¬ P → Σ \(d : D) → (p : P) → d ≡ f p
+  h (inl p) = f p , (λ q → ap f (i p q))
+  h (inr n) = d , (λ p → 𝟘-elim (n p))
+
+\end{code}
+
+For the converse, we consider, given a proposition P, the type P + ¬ P + 𝟙,
+whose algebraic flabbiness gives the decidability of P.
+
+\begin{code}
+
+aflabby-decidability-lemma : (P : 𝓦 ̇) → is-prop P → aflabby ((P + ¬ P) + 𝟙) 𝓦 → P + ¬ P
+aflabby-decidability-lemma {𝓦} P i φ = γ
+ where
+  D = (P + ¬ P) + 𝟙 {𝓦}
+  f : P + ¬ P → D
+  f (inl p) = inl (inl p)
+  f (inr n) = inl (inr n)
+  d : D
+  d = pr₁ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+  κ : (z : P + ¬ P) → d ≡ f z
+  κ = pr₂ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+  a : (p : P) → d ≡ inl (inl p)
+  a p = κ (inl p)
+  b : (n : ¬ P) → d ≡ inl (inr n)
+  b n = κ (inr n)
+  δ : (d' : D) → d ≡ d' → P + ¬ P
+  δ (inl (inl p)) r = inl p
+  δ (inl (inr n)) r = inr n
+  δ (inr *)       r = 𝟘-elim (m n)
+   where
+    n : ¬ P
+    n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
+    m : ¬¬ P
+    m n = 𝟘-elim (+disjoint ((b n)⁻¹ ∙ r))
+  γ : P + ¬ P
+  γ = δ d refl
+
+\end{code}
+
+From this we conclude that if all pointed types are algebraically flabby then
+excluded middle holds:
+
+\begin{code}
+
+pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇) → D → aflabby D 𝓦) → EM 𝓦
+pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+
+\end{code}
+
+And then we have the same situation for algebraically injective types,
+by reduction to algebraic flabbiness:
+
+\begin{code}
+
+EM-gives-pointed-types-ainjective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → ainjective-type D 𝓤 𝓥
+EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D (EM-gives-pointed-types-aflabby D em d)
+
+pointed-types-ainjective-gives-EM : ((D : 𝓦 ̇) → D → ainjective-type D 𝓦 𝓤) → EM 𝓦
+pointed-types-ainjective-gives-EM α = pointed-types-aflabby-gives-EM
+                                       (λ D d → ainjective-types-are-aflabby D (α D d))
+
+\end{code}
+
+And with injective types:
+
+\begin{code}
 
 EM-gives-pointed-types-injective : EM 𝓤 → (D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤
 EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
@@ -1435,8 +1477,8 @@ Fixities:
 
 \begin{code}
 
-infix  7 _╲_
-infix  7 _╱_
+infix  7 _↓_
+infix  7 _↑_
 infixr 4 _≾_
 
 \end{code}
