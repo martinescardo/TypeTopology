@@ -28,6 +28,9 @@ Remark about the contents and organization of this Agda file.
        keep track of resizing in this article version explicitly: it
        is not a global assumption.
 
+       1st Mar 2019: By now this file has things that are not in the
+       blackboard.
+
 
 Introduction
 ------------
@@ -100,14 +103,12 @@ Our underlying formal system can be considered as a subsystem
 of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * We work within a Martin-Löf type theory with types 𝟘 (empty type), 𝟙
-  (one-element type), and type formers _+_ (binary sum), Π (product)
-  and Σ (sum), and a hierarchy of type universes closed under them in
-  a suitable sense discussed below.
+  (one-element type), ℕ (natural numbers), and type formers _+_
+  (binary sum), Π (product) and Σ (sum), and a hierarchy of type
+  universes closed under them in a suitable sense discussed below.
 
   We take these as required closure properties of our formal system,
-  rather than as an inductive definition. For example, we could have a
-  type ℕ of natural numbers, but we don't mention it as it not needed
-  for our purposes.
+  rather than as an inductive definition.
 
 * We assume a universe 𝓤₀, and for each universe 𝓤 we assume a
   successor universe 𝓤⁺ with 𝓤 : 𝓤⁺, and for any two universes 𝓤,𝓥 a
@@ -893,59 +894,34 @@ subuniverse-ainjective-Π {𝓤} {𝓣} A φ α κ = aflabby-types-are-ainjectiv
 
 \end{code}
 
-Therefore the subuniverse of n-types is flabby and hence injective. We
-prove this for -1-types:
+Therefore the subuniverse of n-types is flabby and hence injective.
 
 \begin{code}
 
-Ω-aflabby' : aflabby (Ω 𝓤) 𝓤
-Ω-aflabby' {𝓤} = subuniverse-aflabby-Σ
-                    is-prop
-                    (λ X → being-a-prop-is-a-prop (fe 𝓤 𝓤))
-                    (λ P → id)
-                    (λ X Y → Σ-is-prop)
+open import UF-hlevels ua
 
-Ω-ainjective' : ainjective-type (Ω 𝓤) 𝓤 𝓤
-Ω-ainjective' {𝓤} = aflabby-types-are-ainjective (Ω 𝓤) Ω-aflabby'
+ℍ-aflabby : (n : ℕ) → aflabby (ℍ n 𝓤) 𝓤
+ℍ-aflabby {𝓤} n = subuniverse-aflabby-Π
+                    (_is-of-hlevel n)
+                    (hlevel-relation-is-a-prop n)
+                    (props-have-all-hlevels n)
+                    (λ X Y _ → hlevels-closed-under-Π n X Y)
+
+ℍ-ainjective : (n : ℕ) → ainjective-type (ℍ n 𝓤) 𝓤 𝓤
+ℍ-ainjective {𝓤} n = aflabby-types-are-ainjective (ℍ n 𝓤) (ℍ-aflabby n)
 
 \end{code}
 
-Remark. If we prove this directly we get more general universe
-assignments. This is because is-prop is universe polymorphic, but the
-parameter A of the general contruction works for particular universes,
-even if they are arbitrary. (It is actually possible in Agda to have a
-universe polymorphic function so that we can give the more general
-type to A, using a universe 𝓤ω, but we hesitate to use this extension
-of the type theory as it hasn't been investigated in publications, as
-fas as we know.)
+In particular, the type Ω 𝓤 of propositions in the universe 𝓤 is
+algebraically flabby and injective:
 
 \begin{code}
 
-Ω-aflabby : aflabby (Ω (𝓤 ⊔ 𝓥)) 𝓤
-Ω-aflabby {𝓤} {𝓥} P i f = (Q , j) , c
- where
-  Q : 𝓤 ⊔ 𝓥 ̇
-  Q = (p : P) → f p holds
-  j : is-prop Q
-  j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
-  c : (p : P) → Q , j ≡ f p
-  c p = to-Σ-≡ (t , being-a-prop-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
-   where
-      g : Q → f p holds
-      g q = q p
-      h : f p holds → Q
-      h r p' = transport (λ - → f - holds) (i p p') r
-      t : Q ≡ f p holds
-      t = pe (𝓤 ⊔ 𝓥) j (holds-is-prop (f p)) g h
+Ω-aflabby : aflabby (Ω 𝓤) 𝓤
+Ω-aflabby = ℍ-aflabby zero
 
-\end{code}
-
-Therefore it is injective:
-
-\begin{code}
-
-Ω-ainjective : ainjective-type (Ω (𝓤 ⊔ 𝓥)) 𝓤 𝓥
-Ω-ainjective {𝓤} {𝓥} = aflabby-types-are-ainjective (Ω (𝓤 ⊔ 𝓥)) (Ω-aflabby {𝓤 ⊔ 𝓥} {𝓤})
+Ω-ainjective : ainjective-type (Ω 𝓤) 𝓤 𝓤
+Ω-ainjective = ℍ-ainjective zero
 
 \end{code}
 
@@ -1091,8 +1067,8 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding
 
 \end{code}
 
-We also have that any subuniverse closed under propositions and Σ or Π
-is a retract of 𝓤:
+We also have that any subuniverse closed under propositions and under
+Σ or Π is a retract of 𝓤:
 
 \begin{code}
 
@@ -1128,8 +1104,23 @@ reflective-subuniverse-Π {𝓤} {𝓣} R A φ α κ = ainjective-retract-of-sub
 
 \end{code}
 
-This gives, in particular, n-truncations for any n under propositional
-resizing.
+In particular:
+
+\begin{code}
+
+reflective-n-type-subuniverse : Propositional-resizing
+                              → (n : ℕ) → retract (ℍ n 𝓤) of (𝓤 ̇)
+reflective-n-type-subuniverse R n = reflective-subuniverse-Π R
+                                      (_is-of-hlevel n)
+                                      (hlevel-relation-is-a-prop n)
+                                      (props-have-all-hlevels n)
+                                      (λ X Y _ → hlevels-closed-under-Π n X Y)
+
+reflective-Ω : Propositional-resizing
+             → retract (Ω 𝓤) of (𝓤 ̇)
+reflective-Ω R = reflective-n-type-subuniverse R zero
+
+\end{code}
 
 As mentioned above, we almost have that the algebraically injective
 types are precisely the retracts of exponential powers of universes,
@@ -1164,8 +1155,9 @@ ainjective-characterization {𝓤} R D = a , b
 We emphasize that is a logical equivalence ``if and only if'' rather
 than an ∞-groupoid equivalence ``≃''.
 
-We also have that an injective (n+1)-type is a retract of the universe
-of n-types. We prove something more general.
+We also have that an injective (n+1)-type is a retract of an
+exponential power of the universe of n-types. We prove something more
+general.
 
 \begin{code}
 
@@ -1202,8 +1194,6 @@ retracts of exponential powers of the universe of n-types.
 
 \begin{code}
 
-open import UF-hlevels ua
-
 ainjective-ntype-characterization : Propositional-resizing
                                   → (D : 𝓤 ̇)
                                   → (n : ℕ)
@@ -1218,11 +1208,7 @@ ainjective-ntype-characterization {𝓤} R D n h = (a , b)
   b (X , r) = d
    where
     e : ainjective-type (ℍ n 𝓤) 𝓤 𝓤
-    e = subuniverse-ainjective-Π
-           (λ X → X is-of-hlevel n)
-           (hlevel-relation-is-a-prop n)
-           (props-have-all-hlevels n)
-           (λ X Y l → hlevels-closed-under-Π n X Y)
+    e = ℍ-ainjective n
     c : ainjective-type (X → ℍ n 𝓤) 𝓤 𝓤
     c = power-of-ainjective e
     d : ainjective-type D 𝓤 𝓤
