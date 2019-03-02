@@ -13,7 +13,7 @@ Remark about the contents and organization of this Agda file.
        a fully verified way.
 
        Here we tell the story, referring to the blackboard file for
-       the routine proofs (which can be followed as links by cliking
+       the routine proofs (which can be followed as links by clicking
        at them). We have included the non-routine proofs here, and
        some routine proofs that we feel should be added for the sake
        of flow of the text. We repeat the definitions of the notions
@@ -65,7 +65,7 @@ are easy to state and pleasing:
          (a) The algebraically injective sets are precisely the
              retracts of powersets.
 
-         (b) The algebraically injective n+1-types are precisely
+         (b) The algebraically injective (n+1)-types are precisely
              retracts of exponential powers of the universes of
              n-types.
 
@@ -82,7 +82,7 @@ In the absence of propositional resizing, we have similar results
 which have subtler statements and proofs that need to keep track of
 universe levels rather explicitly.
 
-Most constructions developed here are in the absense of propositional
+Most constructions developed here are in the absence of propositional
 resizing. We apply them, with the aid of a notion of algebraic
 flabbiness, to derive the results that rely on resizing mentioned
 above.
@@ -155,7 +155,7 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   type 𝓤 is abbreviated as Id x y and often written x =_X y or x = y.
   (In Agda: x ≡ y.)
 
-  The elements of the identity type x=y are called identifications or
+  The elements of the identity type x = y are called identifications or
   paths from x to y.
 
 * We tacitly assume univalence as in the HoTT Book.
@@ -183,7 +183,7 @@ Spartan MLTT as described above, and we assume univalence and
 existence of propositional truncations.
 
 The K axiom is disabled by an Agda option, and the assumptions of
-univalence and existence of propositional truncations are pameters for
+univalence and existence of propositional truncations are parameters for
 this module.
 
 \begin{code}
@@ -367,9 +367,9 @@ X → 𝓤, when X is viewed as an ∞-groupoid and hence an ∞-category, and
 when 𝓤 is viewed as the ∞-generalization of the category of sets, can
 be considered as a sort of ∞-presheaf, because its functoriality is
 automatic. Then we can consider natural transformations between such
-∞-presheafs. But again the naturality condition is automatic.  We
+∞-presheaves. But again the naturality condition is automatic.  We
 denote by _≾_ the type of natural transformations between such
-∞-presheafs.
+∞-presheaves.
 
 We record the following known constructions and facts mentioned above:
 
@@ -735,7 +735,7 @@ ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-univer
 
 This is resizing down and so is not surprising.
 
-Of course, such a contruction can be performed directly by considering
+Of course, such a construction can be performed directly by considering
 an embedding 𝓤 → 𝓤 ⁺, but the idea is to generalize it to obtain
 further resizing resizing-for-free constructions. We achieve this by
 considering a notion of flabbiness as data, rather than as property as
@@ -845,7 +845,7 @@ subuniverse-aflabby-Σ {𝓤} {𝓣} A φ α κ P i f = (X , a) , c
 \end{code}
 
 TODO. What this is really saying is that a subtype of an algebraically
-flabby type closed under flabiness is itself an algebraically flabby
+flabby type closed under flabbiness is itself an algebraically flabby
 type with the restriction of the algebraic structure. This would avoid
 us reproving the following:
 
@@ -943,7 +943,7 @@ computational interpretation of this axiom. A model in which excluded
 middle fails but propositional resizing holds is given by Shulman
 [Univalence for inverse diagrams and homotopy canonicity. Mathematical
 Structures in Computer Science, 25:05 (2015), p1203–1277,
-http://arxiv.org/abs/1203.3253].
+https://arxiv.org/abs/1203.3253].
 
 We begin with the following construction, which says that algebraic
 flabbiness is universe independent in the presence of propositional
@@ -1132,7 +1132,7 @@ reflective-Ω R = reflective-n-type-subuniverse-Σ R zero
 
 As mentioned above, we almost have that the algebraically injective
 types are precisely the retracts of exponential powers of universes,
-upto a universe mismatch. This mismatch is side-stepped by
+up to a universe mismatch. This mismatch is side-stepped by
 propositional resizing:
 
 \begin{code}
@@ -1197,7 +1197,7 @@ injective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subtyp
 
 \end{code}
 
-Using this, we get that the algebraically injective n+1-types are the
+Using this, we get that the algebraically injective (n+1)-types are the
 retracts of exponential powers of the universe of n-types.
 
 \begin{code}
@@ -1508,7 +1508,7 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
 \end{code}
 
 As a corollary, by reduction to the above results about algebraic
-injectivity, we have that
+injectivity, we have that:
 
 \begin{code}
 
@@ -1669,7 +1669,7 @@ Ingo Blechschmidt, 2018, Flabby and injective objects in toposes.
 
 Michael Shulman, 2015, Univalence for inverse diagrams and homotopy canonicity.
                    Mathematical Structures in Computer Science, 25:05 (2015), p1203–1277.
-                   http://arxiv.org/abs/1203.3253
+                   https://arxiv.org/abs/1203.3253
                    https://home.sandiego.edu/~shulman/papers/invdia-errata.pdf (errata)
 
 Michael Shulman, 2017, Idempotents in intensional type theory,
