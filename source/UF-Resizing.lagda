@@ -211,8 +211,8 @@ truth-values in the universe 𝓤 itself lives in 𝓤.
 
 \begin{code}
 
-Ω-impredicative : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Ω-impredicative 𝓤 = (Ω 𝓤) has-size 𝓤
+Ω-resizing : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Ω-resizing 𝓤 = (Ω 𝓤) has-size 𝓤
 
 \end{code}
 
@@ -222,9 +222,9 @@ impredicative, but it does imply that all other, successor, universes
 
 \begin{code}
 
-Ω-impredicative⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
-                               → Ω-impredicative (𝓤 ⁺)
-Ω-impredicative⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
+Ω-resizing⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+                          → Ω-resizing (𝓤 ⁺)
+Ω-resizing⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
 
 \end{code}
 
@@ -233,11 +233,11 @@ universe, and of all other universes, of course:
 
 \begin{code}
 
-Ω-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
-Ω-resizing 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
+Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
+Ω-Resizing 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
 
 Ω-global-resizing-from-em-pe-fe : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
-                                → (𝓥 : Universe) → Ω-resizing 𝓤 𝓥
+                                → (𝓥 : Universe) → Ω-Resizing 𝓤 𝓥
 Ω-global-resizing-from-em-pe-fe {𝓤} em pe fe 𝓥 =
  (𝟙 {𝓥} + 𝟙 {𝓥}) ,
  qinveq φ
@@ -267,7 +267,7 @@ universes:
 
 \begin{code}
 
-Ω-resizing-gives-propositional-resizing : Ω-resizing 𝓤 𝓥 → propext 𝓤 → funext 𝓤 𝓤
+Ω-resizing-gives-propositional-resizing : Ω-Resizing 𝓤 𝓥 → propext 𝓤 → funext 𝓤 𝓤
                                         → propositional-resizing 𝓤 𝓥
 Ω-resizing-gives-propositional-resizing {𝓤} {𝓥} (O , e) pe fe P i = Q , ε
  where

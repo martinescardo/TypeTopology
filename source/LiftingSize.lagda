@@ -151,16 +151,16 @@ more parsimonious.
 
 \begin{code}
 
-𝓛-impredicative-resizing : Ω-impredicative 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
-𝓛-impredicative-resizing (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
+𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
+𝓛-resizing (O , ε) X = (Σ \(p : O) → up p holds → X) , ≃-comp d e
  where
-  up : Ω₀ → Ω 𝓣
-  up = eqtofun e₀
+  up : O → Ω 𝓣
+  up = eqtofun ε
 
   up-is-equiv : is-equiv up
-  up-is-equiv = eqtofun-is-an-equiv e₀
+  up-is-equiv = eqtofun-is-an-equiv ε
 
-  d : (Σ \(p : Ω₀) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
+  d : (Σ \(p : O) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
   d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
 
   e : (Σ \(p : Ω 𝓣) → p holds → X) ≃ 𝓛 X

@@ -1460,20 +1460,20 @@ impredicativity of the universe 𝓤, which says that the type of
 propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
 equivalent copy in 𝓤 (for the relationship between propositional
 resizing and propositional impredicativity, see the module
-UF-Resizing).
+UF-Resizing). We refer to this kind of impredicativity as Ω-resizing.
 
 \begin{code}
 
-injectivity-in-terms-of-ainjectivity : Ω-impredicative 𝓤
+injectivity-in-terms-of-ainjectivity : Ω-resizing 𝓤
                                      → (D  : 𝓤 ̇) → injective-type D 𝓤 𝓤 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
 injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-injective D
  where
   open import LiftingSize 𝓤
   L : 𝓤 ̇
-  L = pr₁ (𝓛-impredicative-resizing ω D)
+  L = pr₁ (𝓛-resizing ω D)
 
   e : 𝓛 D ≃ L
-  e = ≃-sym(pr₂ (𝓛-impredicative-resizing ω D))
+  e = ≃-sym(pr₂ (𝓛-resizing ω D))
 
   down : 𝓛 D → L
   down = eqtofun e
@@ -1506,7 +1506,7 @@ injectivity, we have the following.
 
 \begin{code}
 
-injective-resizing : Ω-impredicative 𝓤 → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤
+injective-resizing : Ω-resizing 𝓤 → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤
                    → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤 → injective-type D 𝓥 𝓦
 injective-resizing {𝓤} ω₀ 𝓥 𝓦 R D i = c
   where
@@ -1604,7 +1604,7 @@ EM-gives-pointed-types-injective : EM 𝓤 → (D : 𝓤 ̇) → D → injective
 EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
                                                  (EM-gives-pointed-types-ainjective em D d)
 
-pointed-types-injective-gives-EM : Ω-impredicative 𝓤
+pointed-types-injective-gives-EM : Ω-resizing 𝓤
                                  → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
 pointed-types-injective-gives-EM {𝓤} ω β P i = e
   where

@@ -1496,7 +1496,7 @@ Added 8th Feb. Solves a problem formulated above.
 
 \begin{code}
 
- injectivity-in-terms-of-ainjectivity : Ω-impredicative 𝓤
+ injectivity-in-terms-of-ainjectivity : Ω-resizing 𝓤
                                       → is-univalent 𝓤
                                       → (D  : 𝓤 ̇) → injective-type D 𝓤 𝓤
                                                   ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
@@ -1506,10 +1506,10 @@ Added 8th Feb. Solves a problem formulated above.
    open ainjectivity-of-lifting 𝓤
 
    L : 𝓤 ̇
-   L = pr₁ (𝓛-impredicative-resizing ω₀ D)
+   L = pr₁ (𝓛-resizing ω₀ D)
 
    e : 𝓛 D ≃ L
-   e = ≃-sym(pr₂ (𝓛-impredicative-resizing ω₀ D))
+   e = ≃-sym(pr₂ (𝓛-resizing ω₀ D))
 
    down : 𝓛 D → L
    down = eqtofun e
@@ -1541,7 +1541,7 @@ Here are some corollaries:
 
 \begin{code}
 
- injective-resizing : is-univalent 𝓤 → Ω-impredicative 𝓤
+ injective-resizing : is-univalent 𝓤 → Ω-resizing 𝓤
                      → (D : 𝓤 ̇)
                      → injective-type D 𝓤 𝓤
                      → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → injective-type D 𝓥 𝓦
@@ -1558,7 +1558,7 @@ Here are some corollaries:
  EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
                                                   (EM-gives-pointed-types-ainjective em D d)
 
- pointed-types-injective-gives-EM : Ω-impredicative 𝓤 → is-univalent 𝓤
+ pointed-types-injective-gives-EM : Ω-resizing 𝓤 → is-univalent 𝓤
                                    → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
  pointed-types-injective-gives-EM {𝓤} ω ua β P i = e
   where
