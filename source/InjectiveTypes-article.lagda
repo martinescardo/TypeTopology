@@ -1162,20 +1162,20 @@ ainjective-characterization {𝓤} R D = a , b
 We emphasize that this is a logical equivalence ``if and only if''
 rather than an ∞-groupoid equivalence ``≃''.
 
-We also have that an injective (n+1)-type is a retract of an
-exponential power of the universe of n-types. We prove something more
-general first.
+We also have that an algebraically injective (n+1)-type is a retract
+of an exponential power of the universe of n-types. We prove something
+more general first.
 
 \begin{code}
 
-injective-retract-sub : Propositional-resizing
-                      → (A : 𝓤 ̇ → 𝓣 ̇)
-                      → ((X : 𝓤 ̇) → is-prop (A X))
-                      → (X : 𝓤 ̇)
-                      → ((x x' : X) → A (x ≡ x'))
-                      → ainjective-type X 𝓤 𝓤
-                      → retract X of (X → Σ A)
-injective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subtype X d (X → Σ A) (l , c)
+ainjective-retract-sub : Propositional-resizing
+                       → (A : 𝓤 ̇ → 𝓣 ̇)
+                       → ((X : 𝓤 ̇) → is-prop (A X))
+                       → (X : 𝓤 ̇)
+                       → ((x x' : X) → A (x ≡ x'))
+                       → ainjective-type X 𝓤 𝓤
+                       → retract X of (X → Σ A)
+ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subtype X d (X → Σ A) (l , c)
  where
   j : Σ A → 𝓤 ̇
   j = pr₁
@@ -1197,7 +1197,7 @@ injective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subtyp
 \end{code}
 
 Using this, we get that the algebraically injective (n+1)-types are the
-retracts of exponential powers of the universe of n-types.
+retracts of exponential powers of the subuniverse of n-types.
 
 \begin{code}
 
@@ -1210,7 +1210,7 @@ ainjective-ntype-characterization : Propositional-resizing
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
   a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D of (X → ℍ n 𝓤 )
-  a i = D , injective-retract-sub R (_is-of-hlevel n) (hlevel-relation-is-a-prop n) D h i
+  a i = D , ainjective-retract-sub R (_is-of-hlevel n) (hlevel-relation-is-a-prop n) D h i
 
   b : (Σ \(X : 𝓤 ̇) → retract D of (X → ℍ n 𝓤)) → ainjective-type D 𝓤 𝓤
   b (X , r) = d
@@ -1624,6 +1624,9 @@ pointed-types-injective-gives-EM {𝓤} ω β P i = e
 \end{code}
 
 TODO. Replace pointed by inhabited in the last two facts (probably).
+
+TODO. Use the fact that EM gives resizing to improve the universal
+levels of the above.
 
 TODO. Connect the above results on injectivity of universes to the
 fact that they are algebras of the lifting monad, in at least two
