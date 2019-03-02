@@ -53,10 +53,12 @@ Under propositional resizing principles, the main results
 are easy to state:
 
    (1) Injectivity is equivalent to the propositional truncation of
-       algebraic injectivity. (This can be seen as a form of choice
-       that just holds, as its moves a propositional truncation inside
-       a \m{\Pi}-type to outside the \m{\Pi}-type, and may be related
-       to [Toby Kenney, 2011,
+       algebraic injectivity.
+
+       (This can be seen as a form of choice that just holds, as its
+       moves a propositional truncation inside a \m{\Pi}-type to
+       outside the \m{\Pi}-type, and may be related to [Toby Kenney,
+       2011,
        https://www.sciencedirect.com/science/article/pii/S0022404910000782]).
 
    (2) The algebraically injective types are precisely the retracts of
@@ -434,7 +436,7 @@ g ↦ g ∘ j.
 
 The proofs of the above are routine.
 
-We also have that the left and right Kan extension operators along a
+We also have that the left and right Kan extension operators along an
 embedding are themselves embeddings.
 
 \begin{code}
@@ -771,7 +773,7 @@ maps P → 𝟙 from propositions P are embeddings, as alluded above:
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
 ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p → *) (prop-embedding P h 𝓥) f) * ,
-                                                         pr₂ (i (λ p → *) (prop-embedding P h 𝓥) f)
+                                                     pr₂ (i (λ p → *) (prop-embedding P h 𝓥) f)
 
 \end{code}
 
