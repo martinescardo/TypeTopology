@@ -50,7 +50,7 @@ injective, if and only if all inhabited types are injective, so that
 there is nothing interesting to say about injectivity in its presence.
 
 Under propositional resizing principles, the main results
-are easy to state and pleasing:
+are easy to state:
 
    (1) Injectivity is equivalent to the propositional truncation of
        algebraic injectivity. (This can be seen as a form of choice
@@ -71,7 +71,6 @@ are easy to state and pleasing:
 
        Another consequence is that any universe is embedded as a
        retract of any larger universe.
-
 
    (3) The algebraically injective types are also precisely the
        underlying objects of the algebras of the partial map
@@ -133,7 +132,7 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
   live in the different types 𝓤 and 𝓤 ⊔ 𝓥, which are not
   (definitionally) the same in general).
 
-* We stipulate that if X : 𝓤 and Y : 𝓥, then X+Y : 𝓤 ⊔ 𝓥.
+* We stipulate that if X : 𝓤 and Y : 𝓥, then X + Y : 𝓤 ⊔ 𝓥.
 
 * We stipulate that if X : 𝓤 and A : X → 𝓥 then Π {X} A : 𝓤 ⊔ 𝓥. We
   abbreviate this product type as Π A when X can be inferred from A,
@@ -151,8 +150,8 @@ of that used in UniMath [https://github.com/UniMath/UniMath].
 
 * We assume the η conversion rules for Π and Σ.
 
-* For a type X:𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y of
-  type 𝓤 is abbreviated as Id x y and often written x =_X y or x = y.
+* For a type X : 𝓤 and points x,y:X, the identity type Id {𝓤} {X} x y
+  of type 𝓤 is abbreviated as Id x y and often written x =_X y or x =   y.
   (In Agda: x ≡ y.)
 
   The elements of the identity type x = y are called identifications or
@@ -251,14 +250,15 @@ restriction map _∘ j:
 
 \begin{code}
 
-ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
+ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ̇
 ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                       → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
 \end{code}
 
-Recall that _∼_ denotes pointwise equality of functions (you can click
-at a symbol or name in the Agda code to navigate to its definition).
+Recall that _∼_ denotes pointwise equality of functions (the reader
+can click at a symbol or name in the Agda code to navigate to its
+definition).
 
 This defines the algebraic injectivity of a type D in a universe 𝓦
 with respect to embeddings with domain in the universe 𝓤 and codomain
@@ -312,10 +312,10 @@ product indexed by a proposition is equal to any of its factors.
                                                          (i (j x)) (x , refl))
 
 universes-are-ainjective-Σ : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-ainjective-Σ {𝓤} {𝓥} j e f = (f ↓ j , ↓-is-extension j e f)
+universes-are-ainjective-Σ j e f = (f ↓ j , ↓-is-extension j e f)
 
 universes-are-ainjective-Π : ainjective-type (𝓤 ⊔ 𝓥 ̇) 𝓤 𝓥
-universes-are-ainjective-Π {𝓤} {𝓥} j e f = (f ↑ j , ↑-is-extension j e f)
+universes-are-ainjective-Π j e f = (f ↑ j , ↑-is-extension j e f)
 
 universes-are-ainjective-particular : ainjective-type (𝓤 ̇) 𝓤 𝓤
 universes-are-ainjective-particular = universes-are-ainjective-Π
@@ -409,7 +409,6 @@ With this notation, we have:
 ηΣ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
    → f ≾ f ↓ j ∘ j
 ηΣ f j x B = (x , refl) , B
-
 
 ηΠ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (j : X → Y)
    → f ↑ j ∘ j ≾ f
@@ -602,7 +601,7 @@ article). Their proofs are routine.
 iterated-↑ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇) (j : X → Y) (k : Y → Z)
            → (f ↑ j) ↑ k ∼ f ↑ (k ∘ j)
 iterated-↑ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (((f ↑ j) ↑ k) z) ((f ↑ (k ∘ j)) z)
-                                   (blackboard.iterated-extension j k z)
+                                      (blackboard.iterated-extension j k z)
 
 
 retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇) (f' : X → 𝓦' ̇) (j : X → Y)
@@ -612,16 +611,15 @@ retract-extension = blackboard.retract-extension
 
 \end{code}
 
-
 Presumably such constructions can be performed for left Kan extensions
-too, but we haven't paused to checked this.
+too, but we haven't paused to check this.
 
 This completes our discussion of extensions of maps into universes.
 
 Constructions with algebraically injective types
 ------------------------------------------------
 
-Algebraic injectives are closed under retracts:
+Algebraic injectives are closed under retracts and hence equivalences:
 
 \begin{code}
 
@@ -708,7 +706,7 @@ ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇)
                                            → ainjective-type D 𝓤 (𝓤 ⁺)
                                            → retract D of (D → 𝓤 ̇)
 ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-subtype D i (D → 𝓤 ̇)
-                                                      (Id , Id-is-embedding)
+                                                        (Id , Id-is-embedding)
 
 \end{code}
 
@@ -773,13 +771,13 @@ maps P → 𝟙 from propositions P are embeddings, as alluded above:
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
 ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p → *) (prop-embedding P h 𝓥) f) * ,
-                                                     pr₂ (i (λ p → *) (prop-embedding P h 𝓥) f)
+                                                         pr₂ (i (λ p → *) (prop-embedding P h 𝓥) f)
 
 \end{code}
 
-The interesting thing about the following construction is that the
+The interesting thing about the above construction is that the
 universe 𝓥 is forgotten, with only 𝓤 remaining, particularly regarding
-the converse formulated after it.
+the following.
 
 \begin{code}
 
@@ -818,8 +816,8 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
-We now show that any subuniverse closed under Σ or Π is
-also injective.
+We now show that any subuniverse closed under propositions and Σ or Π
+is also injective.
 
 \begin{code}
 
@@ -901,11 +899,11 @@ Therefore the subuniverse of n-types is flabby and hence injective.
 open import UF-hlevels ua
 
 ℍ-aflabby : (n : ℕ) → aflabby (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) 𝓤
-ℍ-aflabby {𝓤} n = subuniverse-aflabby-Π
-                    (_is-of-hlevel n)
-                    (hlevel-relation-is-a-prop n)
-                    (props-have-all-hlevels n)
-                    (λ X Y _ → hlevels-closed-under-Π n X Y)
+ℍ-aflabby n = subuniverse-aflabby-Π
+                (_is-of-hlevel n)
+                (hlevel-relation-is-a-prop n)
+                (props-have-all-hlevels n)
+                (λ X Y _ → hlevels-closed-under-Π n X Y)
 
 ℍ-ainjective : (n : ℕ) → ainjective-type (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) 𝓤 𝓤
 ℍ-ainjective {𝓤} n = aflabby-types-are-ainjective (ℍ n 𝓤) (ℍ-aflabby n)
@@ -985,7 +983,7 @@ back-and-forth between algebraic injectivity and algebraic flabbiness:
 ainjective-resizing : propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
                     → (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤' 𝓥'
 ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i j e f = aflabby-types-are-ainjective D
-                                                            (aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R
+                                                              (aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R
                                                               (ainjective-types-are-aflabby D i)) j e f
 
 \end{code}
@@ -1067,8 +1065,8 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding
 
 \end{code}
 
-We also have that any subuniverse closed under propositions and under
-Σ or Π is a retract of 𝓤:
+We also have that any subuniverse closed under propositions and Σ or Π
+is a retract of 𝓤:
 
 \begin{code}
 
@@ -1109,7 +1107,7 @@ In particular (and maybe the Σ version gives n-truncations?):
 \begin{code}
 
 reflective-n-type-subuniverse-Σ : Propositional-resizing
-                              → (n : ℕ) → retract (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) of (𝓤 ̇)
+                                → (n : ℕ) → retract (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) of (𝓤 ̇)
 reflective-n-type-subuniverse-Σ R n = reflective-subuniverse-Σ R
                                        (_is-of-hlevel n)
                                        (hlevel-relation-is-a-prop n)
@@ -1117,7 +1115,7 @@ reflective-n-type-subuniverse-Σ R n = reflective-subuniverse-Σ R
                                        (hlevels-closed-under-Σ n)
 
 reflective-n-type-subuniverse-Π : Propositional-resizing
-                              → (n : ℕ) → retract (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) of (𝓤 ̇)
+                                → (n : ℕ) → retract (Σ \(X : 𝓤 ̇) → X is-of-hlevel n) of (𝓤 ̇)
 reflective-n-type-subuniverse-Π R n = reflective-subuniverse-Π R
                                        (_is-of-hlevel n)
                                        (hlevel-relation-is-a-prop n)
@@ -1138,8 +1136,7 @@ propositional resizing:
 \begin{code}
 
 ainjective-characterization : propositional-resizing (𝓤 ⁺) 𝓤
-                            → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤
-                                       ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
+                            → (D : 𝓤 ̇) → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
 ainjective-characterization {𝓤} R D = a , b
  where
   a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D of (X → 𝓤 ̇)
@@ -1160,12 +1157,12 @@ ainjective-characterization {𝓤} R D = a , b
 
 \end{code}
 
-We emphasize that is a logical equivalence ``if and only if'' rather
-than an ∞-groupoid equivalence ``≃''.
+We emphasize that this is a logical equivalence ``if and only if''
+rather than an ∞-groupoid equivalence ``≃''.
 
 We also have that an injective (n+1)-type is a retract of an
 exponential power of the universe of n-types. We prove something more
-general.
+general first.
 
 \begin{code}
 
@@ -1206,7 +1203,8 @@ ainjective-ntype-characterization : Propositional-resizing
                                   → (D : 𝓤 ̇)
                                   → (n : ℕ)
                                   → D is-of-hlevel (succ n)
-                                  → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → Σ \(X : 𝓤 ̇) → X is-of-hlevel n)
+                                  → ainjective-type D 𝓤 𝓤
+                                     ⇔ Σ \(X : 𝓤 ̇) → retract D of (X → Σ \(X : 𝓤 ̇) → X is-of-hlevel n)
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
   a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇) → retract D of (X → ℍ n 𝓤 )
@@ -1275,7 +1273,7 @@ In order to relate injectivity to the propositional truncation of
 algebraic injectivity in the other direction, we first establish some
 facts about injectivity that we already proved for algebraic
 injectivity. These facts cannot be obtained by reduction (in
-particular products of injectives are not necessarily injectives, in
+particular products of injectives are not necessarily injective, in
 the absence of choice, but exponential powers are).
 
 \begin{code}
@@ -1344,7 +1342,6 @@ injective-gives-∥ainjective∥ {𝓤} D i = γ
    γ : ∥ ainjective-type D 𝓤 𝓤 ∥
    γ = ∥∥-functor φ (injective-∥retract∥-of-power-of-universe D i)
 
-
 \end{code}
 
 So, in summary, regarding the relationship between injectivity and
@@ -1366,8 +1363,7 @@ Injectivity versus algebraic injectivity in the presence of resizing I
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity' : propositional-resizing (𝓤 ⁺) 𝓤
-                                      → (D : 𝓤  ̇) → injective-type D 𝓤 (𝓤 ⁺)
-                                                   ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
+                                      → (D : 𝓤  ̇) → injective-type D 𝓤 (𝓤 ⁺) ⇔ ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
 injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
@@ -1424,7 +1420,7 @@ joinop {𝓣} {𝓤} X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
 free-𝓛-algebra-ainjective : (X : 𝓣 ̇) → ainjective-type (𝓛 {𝓣} X) 𝓣 𝓣
 free-𝓛-algebra-ainjective {𝓣} X = 𝓛-alg-ainjective (𝓛 X)
                                     (LiftingAlgebras.𝓛-algebra-gives-alg 𝓣
-                                      (LiftingAlgebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
+                                    (LiftingAlgebras.free-𝓛-algebra 𝓣 (ua 𝓣) X))
 \end{code}
 
 Because the unit of the lifting monad is an embedding, it follows that
@@ -1445,8 +1441,7 @@ the lifting monad:
 \begin{code}
 
 ainjectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇) → propositional-resizing (𝓣 ⁺) 𝓣
-                                        → ainjective-type D 𝓣 𝓣
-                                        ⇔ Σ \(X : 𝓣 ̇) → retract D of (𝓛 {𝓣} X)
+                                        → ainjective-type D 𝓣 𝓣 ⇔ Σ \(X : 𝓣 ̇) → retract D of (𝓛 {𝓣} X)
 ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
   where
    a : ainjective-type D 𝓣 𝓣 → Σ \(X : 𝓣 ̇) → retract D of (𝓛 X)
@@ -1470,8 +1465,7 @@ UF-Resizing).
 \begin{code}
 
 injectivity-in-terms-of-ainjectivity : Ω-impredicative 𝓤
-                                     → (D  : 𝓤 ̇) → injective-type D 𝓤 𝓤
-                                                 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+                                     → (D  : 𝓤 ̇) → injective-type D 𝓤 𝓤 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
 injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-injective D
  where
   open import LiftingSize 𝓤
@@ -1499,22 +1493,21 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
   L-injective : ainjective-type L 𝓤 𝓤
   L-injective = equiv-to-ainjective L (𝓛 D) (free-𝓛-algebra-ainjective D) (≃-sym e)
 
+  φ : retract D of L → ainjective-type D 𝓤 𝓤
+  φ = retract-of-ainjective D L L-injective
+
   γ : injective-type D 𝓤 𝓤 → ∥ ainjective-type D 𝓤 𝓤 ∥
   γ j = ∥∥-functor φ (injective-retract-of-L j)
-   where
-    φ : retract D of L → ainjective-type D 𝓤 𝓤
-    φ = retract-of-ainjective D L L-injective
 
 \end{code}
 
 As a corollary, by reduction to the above results about algebraic
-injectivity, we have that:
+injectivity, we have the following.
 
 \begin{code}
 
 injective-resizing : Ω-impredicative 𝓤 → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤
-                   → (D : 𝓤 ̇)
-                   → injective-type D 𝓤 𝓤 → injective-type D 𝓥 𝓦
+                   → (D : 𝓤 ̇) → injective-type D 𝓤 𝓤 → injective-type D 𝓥 𝓦
 injective-resizing {𝓤} ω₀ 𝓥 𝓦 R D i = c
   where
    a : ∥ ainjective-type D 𝓤 𝓤 ∥
@@ -1612,7 +1605,7 @@ EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
                                                  (EM-gives-pointed-types-ainjective em D d)
 
 pointed-types-injective-gives-EM : Ω-impredicative 𝓤
-                                  → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
+                                 → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
 pointed-types-injective-gives-EM {𝓤} ω β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
@@ -1635,8 +1628,7 @@ fact that they are algebras of the lifting monad, in at least two
 ways, with Σ and Π as structure maps (already formulated and proved
 in the lifting files available in this development).
 
-TODO. Show how to get the indiscreteness of the universe as a
-corollary.
+TODO. Show how to get the indiscreteness of universes as a corollary.
 
 TODO. To make sure, go over every single line of the 1586 lines of the
 InjectiveTypes blackboard file to check we haven't forgotten to include
