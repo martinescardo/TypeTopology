@@ -41,6 +41,12 @@ EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
 LEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬(p holds)
 
+EM-gives-LEM : EM 𝓤 → LEM 𝓤
+EM-gives-LEM em p = em (p holds) (holds-is-prop p)
+
+LEM-gives-LEM : LEM 𝓤 → EM 𝓤
+LEM-gives-LEM lem P i = lem (P , i)
+
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 WEM 𝓤 = (P : 𝓤 ̇) → is-prop P → ¬ P + ¬¬ P
 

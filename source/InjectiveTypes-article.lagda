@@ -818,8 +818,8 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
-We now show that any subuniverse closed under propositions and Σ or Π
-is also injective.
+We now apply algebraic flabbiness to show that any subuniverse closed
+under propositions and Σ or Π is also injective.
 
 \begin{code}
 
@@ -1602,13 +1602,37 @@ And with injective types:
 
 \begin{code}
 
-EM-gives-pointed-types-injective : EM 𝓤 → (D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤
-EM-gives-pointed-types-injective {𝓤} em D d = ainjective-gives-injective D
-                                                 (EM-gives-pointed-types-ainjective em D d)
+EM-gives-pointed-types-injective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇) → D → injective-type D 𝓤 𝓥
+EM-gives-pointed-types-injective {𝓦} {𝓤} {𝓥} em D d = ainjective-gives-injective D
+                                                        (EM-gives-pointed-types-ainjective em D d)
 
-pointed-types-injective-gives-EM : Ω-resizing 𝓤
+pointed-types-injective-gives-EM : ((D : 𝓦 ̇) → D → injective-type D 𝓦 (𝓦 ⁺)) → EM 𝓦
+pointed-types-injective-gives-EM {𝓦} β P i = e
+  where
+   a : injective-type ((P + ¬ P) + 𝟙 {𝓦}) 𝓦 (𝓦 ⁺)
+   a = β ((P + ¬ P) + 𝟙) (inr *)
+   b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓦 𝓦 ∥
+   b = injective-gives-∥ainjective∥ ((P + ¬ P) + 𝟙) a
+   c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓦 ∥
+   c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
+   d : ∥ P + ¬ P ∥
+   d = ∥∥-functor (aflabby-decidability-lemma P i) c
+   e : P + ¬ P
+   e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) id d
+
+pointed-types-injective-gives-EM' : ((𝓤 𝓥 : Universe) → (D : 𝓦 ̇) → D → injective-type D 𝓤 𝓥) → EM 𝓦
+pointed-types-injective-gives-EM' {𝓦} β = pointed-types-injective-gives-EM (β 𝓦 (𝓦 ⁺))
+
+\end{code}
+
+Alternative, assuming resizing, we can be more parimonius with the injectivity assumption:
+
+\begin{code}
+
+
+pointed-types-injective-gives-EM'' : Ω-resizing 𝓤
                                  → ((D : 𝓤 ̇) → D → injective-type D 𝓤 𝓤) → EM 𝓤
-pointed-types-injective-gives-EM {𝓤} ω β P i = e
+pointed-types-injective-gives-EM'' {𝓤} ω β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
    a = β ((P + ¬ P) + 𝟙) (inr *)
@@ -1623,10 +1647,14 @@ pointed-types-injective-gives-EM {𝓤} ω β P i = e
 
 \end{code}
 
-TODO. Replace pointed by inhabited in the last two facts (probably).
+We can avoid the assumption by strengthening the injectivity hypothesis:
 
-TODO. Use the fact that EM gives resizing to improve the universal
-levels of the above.
+\begin{code}
+
+
+\end{code}
+
+TODO. Replace pointed by inhabited in the last two facts (probably).
 
 TODO. Connect the above results on injectivity of universes to the
 fact that they are algebras of the lifting monad, in at least two

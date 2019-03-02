@@ -236,15 +236,17 @@ universe, and of all other universes, of course:
 Ω-Resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥 )⁺ ̇
 Ω-Resizing 𝓤 𝓥 = (Ω 𝓤) has-size 𝓥
 
-Ω-global-resizing-from-em-pe-fe : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
+Ω-global-resizing-from-em-pe-fe : EM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
                                 → (𝓥 : Universe) → Ω-Resizing 𝓤 𝓥
-Ω-global-resizing-from-em-pe-fe {𝓤} em pe fe 𝓥 =
+Ω-global-resizing-from-em-pe-fe {𝓤} lem pe fe 𝓥 =
  (𝟙 {𝓥} + 𝟙 {𝓥}) ,
  qinveq φ
  ((λ p → γ p (em p)) ,
   (λ z → γφ z (em (φ z))) ,
   (λ p → φγ p (em p)))
  where
+  em : LEM 𝓤
+  em = EM-gives-LEM lem
   φ : 𝟙 + 𝟙 → Ω 𝓤
   φ (inl x) = ⊥
   φ (inr y) = ⊤
@@ -289,7 +291,7 @@ universes:
 Ω-resizing₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω-resizing₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
 
-Ω-resizing₀-from-em-pe-fe₀ : LEM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
+Ω-resizing₀-from-em-pe-fe₀ : EM 𝓤 → propext 𝓤 → funext 𝓤 𝓤
                           → Ω-resizing₀ 𝓤
 Ω-resizing₀-from-em-pe-fe₀ {𝓤} em pe fe = Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
 
