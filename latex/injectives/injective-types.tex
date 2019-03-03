@@ -116,14 +116,14 @@
   (2)~The algebraically injective types are precisely the retracts of
   exponential powers of universes. (2a)~The algebraically injective
   sets are precisely the retracts of powersets. (2b)~The algebraically
-  injective \m{(n+1)}-types are precisely the retracts of universes of
-  \m{n}-types. (3)~The algebraically injective types are also
-  precisely the retracts of algebras of the partial-map
+  injective \m{(n+1)}-types are precisely the retracts of exponential
+  powers of universes of \m{n}-types. (3)~The algebraically injective
+  types are also precisely the retracts of algebras of the partial-map
   classifier. From~(2) it follows that any universe is embedded as a
   retract of any larger universe.  In the absence of propositional
-  resizing, we have similar results which have subtler statements and
-  proofs that need to keep track of universe levels rather explicitly,
-  and are applied to get the results that require resizing.
+  resizing, we have similar results which have subtler statements that
+  need to keep track of universe levels rather explicitly, and are
+  applied to get the results that require resizing.
 \end{abstract}
 
 \section{Introduction}
@@ -195,8 +195,8 @@ are easy to state:
        classifier.
 \end{enumerate}
 In the absence of propositional resizing, we have similar results
-which have subtler statements and proofs that need to keep track of
-universe levels rather explicitly.
+which have subtler statements that need to keep track of universe
+levels rather explicitly.
 %
 Most constructions developed in this paper are in the absence of
 propositional resizing. We apply them, with the aid of a notion of
@@ -223,13 +223,11 @@ used in UniMath~\cite{unimath}.
 \item We work within an intensional Martin-L\"of type theory with types
   \m{\Zero} (empty type), \m{\One} (one-element type with \m{\one:\One}) and type formers
   \m{+} (binary sum), \m{\Pi} (product) and \m{\Sigma} (sum), and
-  hierarchy of type universes ranged over by \m{\U,\V,\W,\T}, closed
+  a hierarchy of type universes ranged over by \m{\U,\V,\W,\T}, closed
   under them in a suitable sense discussed below.
 
   We take these as required closure properties of our formal system,
-  rather than as an inductive definition. For example, we could have a
-  type \m{\N} of natural numbers, but we don't mention it as is it not
-  needed for our purposes.
+  rather than as an inductive definition.
 
 \item We assume a universe \m{\U_0}, and for each universe \m{\U} we
   assume a successor universe \m{\U^+} with \m{\U : \U^+}, and for any
@@ -390,7 +388,7 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
 
  Similarly, we say that such an \m{f} is an embedding if for every
  \m{y:Y} there is at most one \m{x:X} with \m{f(x)=y}. In passing, we
- remark that, in general, this is weaker than \m{f} being
+ remark that, in general, this is stronger than \m{f} being
  left-cancellable, but coincides with left-cancellability if the type
  \m{Y} is a set (its identity types are all subsingletons).
 
@@ -1778,7 +1776,7 @@ And we have a similar situation with injective types.
 \end{proof}
 \noindent With resizing we can do better:
 \begin{numbered}
-  Under \m{\Omega}-resizing, if then every inhabited type in a universe \m{\U} is
+  Under \m{\Omega}-resizing, if every inhabited type in a universe \m{\U} is
   \m{\U,\U}-injective, then excluded middle holds in \m{\U}.
 \end{numbered}
 \begin{proof}
@@ -1789,7 +1787,6 @@ And we have a similar situation with injective types.
   unspecified way.  By the lemma, \m{P} is decidable in an unspecified
   way, and hence decidable.
 \end{proof}
-\noindent Putting the above together with some specializations, we get the following.
 \begin{theorem} \df{(The equivalence of injectivity with excluded middle.)} \\
   Under \m{\Omega}-resizing, all pointed types in a universe \m{\U} are
   \m{\U,\U}-injective if and only if excluded middled
