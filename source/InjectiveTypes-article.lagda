@@ -712,7 +712,7 @@ ainjective-is-retract-of-power-of-universe {𝓤} D i = ainjective-retract-of-su
 
 \end{code}
 
-Resizing constructions and algebraic flabbiness
+Algebraic flabbiness and resizing constructions
 -----------------------------------------------
 
 We now discuss resizing constructions that don't assume resizing
@@ -735,20 +735,20 @@ ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-univer
 
 This is resizing down and so is not surprising.
 
-Of course, such a construction can be performed directly by considering
-an embedding 𝓤 → 𝓤 ⁺, but the idea is to generalize it to obtain
-further resizing resizing-for-free constructions. We achieve this by
-considering a notion of flabbiness as data, rather than as property as
-in the 1-topos literature (see e.g. [Ingo Blechschmidt, 2018,
+Of course, such a construction can be performed directly by
+considering an embedding 𝓤 → 𝓤 ⁺, but the idea is to generalize it to
+obtain further resizing-for-free constructions, and, later,
+resizing-for-a-price constructions. We achieve this by considering a
+notion of flabbiness as data, rather than as property as in the
+1-topos literature (see e.g. [Ingo Blechschmidt, 2018,
 https://arxiv.org/abs/1810.12708]). The notion of flabbiness
 considered in topos theory is defined with truncated Σ, that is, the
 existential quantifier ∃ with values in the subobject classifier Ω. We
 refer to the notion defined with untruncated Σ as algebraic
-flabbiness, by analogy with the notion of algebraic injectivity. But
-this is more than a mere analogy: notice that flabbiness and algebraic
-flabbiness amount to simply injectivity and algebraic injectivity with
-respect to the class of embeddings P → 𝟙 with P ranging over
-propositions.
+flabbiness.  This terminology is more than a mere analogy: notice that
+flabbiness and algebraic flabbiness amount to simply injectivity and
+algebraic injectivity with respect to the class of embeddings P → 𝟙
+with P ranging over propositions.
 
 \begin{code}
 
@@ -772,14 +772,14 @@ maps P → 𝟙 from propositions P are embeddings, as alluded above:
 \begin{code}
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
-ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i (λ p → *) (prop-embedding P h 𝓥) f) * ,
-                                                     pr₂ (i (λ p → *) (prop-embedding P h 𝓥) f)
+ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i unique-to-𝟙 (prop-embedding P h 𝓥) f) * ,
+                                                     pr₂ (i unique-to-𝟙 (prop-embedding P h 𝓥) f)
 
 \end{code}
 
-The interesting thing about the above construction is that the
-universe 𝓥 is forgotten, with only 𝓤 remaining, particularly regarding
-the following.
+The interesting thing about this is that the
+universe~\m{\V} is forgotten, and the we can put any other universe
+below \m{\U} back, as follows.
 
 \begin{code}
 
@@ -818,8 +818,14 @@ ainjective-resizing₃ = ainjective-resizing₁
 
 \end{code}
 
+In particular, algebraic 𝓤,𝓥-injectivity gives algebraic 𝓤,𝓤- and
+𝓤₀,𝓤-injectivity.  So this is no longer necessarily resizing down, by
+taking 𝓥 to be the e.g. first universe 𝓤₀.
+
 We now apply algebraic flabbiness to show that any subuniverse closed
-under propositions and Σ or Π is also injective.
+under subsingletons and under sums, or alternatively under products,
+is also algebraically injective.
+
 
 \begin{code}
 
@@ -895,6 +901,11 @@ subuniverse-ainjective-Π {𝓤} {𝓣} A φ α κ = aflabby-types-are-ainjectiv
 \end{code}
 
 Therefore the subuniverse of n-types is flabby and hence injective.
+
+NB. Our hlevels in this formalization unashamedly start from 0 with
+propositions. We omit the singleton or contractible types from our
+level indexing. We may change this in the future, but the current
+choice is based on the fact that we get more uniform proofs.
 
 \begin{code}
 
@@ -984,9 +995,14 @@ back-and-forth between algebraic injectivity and algebraic flabbiness:
 
 ainjective-resizing : propositional-resizing (𝓤' ⊔ 𝓥') 𝓤
                     → (D : 𝓦 ̇) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤' 𝓥'
-ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i j e f = aflabby-types-are-ainjective D
-                                                              (aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R
-                                                              (ainjective-types-are-aflabby D i)) j e f
+ainjective-resizing {𝓤'} {𝓥'} {𝓤} {𝓦} {𝓥} R D i = c
+ where
+  a : aflabby D 𝓤
+  a = ainjective-types-are-aflabby D i
+  b : aflabby D (𝓤' ⊔ 𝓥')
+  b = aflabbiness-resizing D (𝓤' ⊔ 𝓥') 𝓤 R a
+  c :  ainjective-type D 𝓤' 𝓥'
+  c = aflabby-types-are-ainjective D b
 
 \end{code}
 
@@ -1007,12 +1023,13 @@ universe-retract R 𝓤 𝓥 = ρ , lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤}
-  b : is-embedding (lift 𝓥)
-    → ainjective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
+  b : ainjective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥)⁺)
+  b = ainjective-resizing R (𝓤 ̇) a
+  c : ainjective-type (𝓤 ̇) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
-  b e i = ainjective-retract-of-subtype (𝓤 ̇) i (𝓤 ⊔ 𝓥 ̇) (lift 𝓥 , e)
+  c i = ainjective-retract-of-subtype (𝓤 ̇) i (𝓤 ⊔ 𝓥 ̇) (lift 𝓥 , lift-is-embedding ua)
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)
-  ρ = b (lift-is-embedding ua) (ainjective-resizing R (𝓤 ̇) a)
+  ρ = c b
 
 \end{code}
 
@@ -1022,7 +1039,9 @@ that there is an embedding of any universe into any larger universe,
 assuming univalence (the map lift).
 
 It may be of interest to unfold the above proof to see a direct
-argument from first principles avoiding flabbiness and injectivity:
+argument from first principles avoiding flabbiness and injectivity (we
+will probably not include this in the paper submitted for
+publication):
 
 \begin{code}
 
@@ -1160,7 +1179,8 @@ ainjective-characterization {𝓤} R D = a , b
 \end{code}
 
 We emphasize that this is a logical equivalence ``if and only if''
-rather than an ∞-groupoid equivalence ``≃''.
+rather than an ∞-groupoid equivalence ``≃''. So this characterizes the
+types that *can* be equipped with algebraic-injective structure.
 
 We also have that an algebraically injective (n+1)-type is a retract
 of an exponential power of the universe of n-types. We prove something
@@ -1182,7 +1202,7 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subty
   a : is-embedding j
   a = pr₁-embedding φ
   k : (X → Σ A) → (X → 𝓤 ̇)
-  k φ = j ∘ φ
+  k = j ∘_
   b : is-embedding k
   b = embedding-exponential fe j a
   l : X → (X → Σ A)
@@ -1285,12 +1305,12 @@ embedding-∥retract∥ : (D : 𝓦 ̇) → injective-type D 𝓦 𝓥
                     → ∥ retract D of Y ∥
 embedding-∥retract∥ D i Y j e = ∥∥-functor φ a
   where
-   a : ∃ \r  → r ∘ j ∼ id
+   a : ∃ \(r : Y → D)  → r ∘ j ∼ id
    a = i j e id
-   φ : (Σ \r  → r ∘ j ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
+   φ : (Σ \(r : Y → D) → r ∘ j ∼ id) → Σ \(r : Y → D) → Σ \s → r ∘ s ∼ id
    φ (r , p) = r , j , p
 
-retract-of-injective : (D' : 𝓤 ̇) (D : 𝓥 ̇)
+retract-of-injective : (D' : 𝓤' ̇) (D : 𝓤 ̇)
                      → injective-type D 𝓦 𝓣
                      → retract D' of D
                      → injective-type D' 𝓦 𝓣
@@ -1359,8 +1379,8 @@ and hence, using propositional resizing, we get the following
 characterization of a particular case of injectivity in terms of
 algebraic injectivity.
 
-Injectivity versus algebraic injectivity in the presence of resizing I
-----------------------------------------------------------------------
+Injectivity in terms of algebraic injectivity in the presence of resizing I
+---------------------------------------------------------------------------
 
 \begin{code}
 
@@ -1376,8 +1396,8 @@ injectivity-in-terms-of-ainjectivity' {𝓤} R D = a , b
 \end{code}
 
 
-Algebraic flabbiness and injectivity in terms of the lifting monad
------------------------------------------------------------------
+Algebraic flabbiness and injectivity via the lifting monad
+----------------------------------------------------------
 
 We would like to do better than this. For that purpose, we consider
 the lifting monad in conjunction with resizing.
@@ -1385,7 +1405,7 @@ the lifting monad in conjunction with resizing.
 \begin{code}
 
 import Lifting
-import LiftingAlgebras
+open import LiftingAlgebras
 import LiftingEmbeddingViaSIP
 
 𝓛 : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
@@ -1397,26 +1417,13 @@ import LiftingEmbeddingViaSIP
 𝓛-unit-is-embedding : (X : 𝓤 ̇) → is-embedding (𝓛-unit {𝓣} X)
 𝓛-unit-is-embedding {𝓤} {𝓣} X = LiftingEmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X (ua 𝓣) (fe 𝓣 𝓤)
 
-joinop : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-joinop {𝓣} {𝓤} X = {P : 𝓣 ̇} → is-prop P → (P → X) → X
-
-𝓛-alg-Law₀ : {𝓣 𝓤 : Universe} {X : 𝓤 ̇} → joinop {𝓣} X → 𝓤 ̇
-𝓛-alg-Law₀ {𝓣} {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
-
-𝓛-alg-Law₁ : {𝓣 𝓤 : Universe} {X : 𝓤 ̇} → joinop {𝓣} X → (𝓣 ⁺) ⊔ 𝓤 ̇
-𝓛-alg-Law₁ {𝓣} {𝓤} {X} ∐ = (P : 𝓣 ̇) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
-                                → ∐ (Σ-is-prop i j) f ≡ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
-
-𝓛-alg : {𝓣 𝓤 : Universe} → 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-alg {𝓣} {𝓤} X = Σ \(∐ : joinop {𝓣} X) → 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
-
-𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg {𝓣} A → aflabby A 𝓣
+𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg 𝓣 A → aflabby A 𝓣
 𝓛-alg-aflabby {𝓣} {𝓤} (∐ , κ , ι) P i f = ∐ i f , γ
  where
   γ : (p : P) → ∐ i f ≡ f p
   γ p = LiftingAlgebras.𝓛-alg-Law₀-gives₀' 𝓣 (pe 𝓣) (fe 𝓣 𝓣) (fe 𝓣 𝓤) ∐ κ P i f p
 
-𝓛-alg-ainjective : (A : 𝓤 ̇) → 𝓛-alg {𝓣} A → ainjective-type A 𝓣 𝓣
+𝓛-alg-ainjective : (A : 𝓤 ̇) → 𝓛-alg 𝓣 A → ainjective-type A 𝓣 𝓣
 𝓛-alg-ainjective A α = aflabby-types-are-ainjective A (𝓛-alg-aflabby α)
 
 free-𝓛-algebra-ainjective : (X : 𝓣 ̇) → ainjective-type (𝓛 {𝓣} X) 𝓣 𝓣
@@ -1454,8 +1461,8 @@ ainjectives-in-terms-of-free-𝓛-algebras {𝓣} D R =  a , b
 \end{code}
 
 
-Injectivity versus algebraic injectivity in the presence of resizing II
------------------------------------------------------------------------
+Injectivity in terms of algebraic injectivity in the presence of resizing II
+----------------------------------------------------------------------------
 
 Now, instead of propositional resizing, we consider the propositional
 impredicativity of the universe 𝓤, which says that the type of

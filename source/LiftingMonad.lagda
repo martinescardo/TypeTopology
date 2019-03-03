@@ -47,6 +47,10 @@ _♯ f (P , φ , i) = (Σ \(p : P) → is-defined (f (φ p))) ,
 μ : {X : 𝓤 ̇} → 𝓛 (𝓛 X) → 𝓛 X
 μ = id ♯
 
+-μ : {X : 𝓤 ̇} (P : 𝓣 ̇) (Φ : P → 𝓛 X) (i : is-prop P)
+  → μ (P , Φ , i) ≡ Σ (λ p → is-defined (Φ p)) , (λ σ → value (Φ (pr₁ σ)) (pr₂ σ)) , {!Σ-is-prop i (λ p → being-defined-is-a-prop (Φ p))!}
+-μ P Φ i = refl
+
 \end{code}
 
 We now give the monad laws.
