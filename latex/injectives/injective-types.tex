@@ -1353,7 +1353,7 @@ and hence, using propositional resizing, we get the following
 characterization of a particular case of injectivity in terms of
 algebraic injectivity.
 
-\begin{numbered} \df{(Injectivity in terms of algebraic injectivity.)}
+\begin{numbered} \label{worse} \df{(Injectivity in terms of algebraic injectivity.)}
   If propositional resizing holds, then a type \m{D : \U} is \m{\U,\U^+}-injective if and only if it is algebraically \m{\U,\U^+}-injective in an unspecified way.
 \end{numbered}
 
@@ -1584,7 +1584,8 @@ for the first universe too.
 The following characterizes injectivity in terms of algebraic
 injectivity.
 
-\begin{theorem} (Characterization of injectivity in terms of algebraic injectivity.)
+\begin{theorem} \label{better}
+  (Characterization of injectivity in terms of algebraic injectivity.)
   In the presence of \m{\Omega}-resizing, the
   \m{\T,\T}-injectivity of a type \m{D} in a universe \m{\T} is
   equivalent to the propositional truncation of
@@ -1619,86 +1620,171 @@ injectivity, we have the following.
   unspecified way, and hence it is \m{\U,\V}-injective.
 \end{proof}
 
-\section{The equivalence of  excluded middle with the algebraic injectivity of all pointed types}
+\section{The equivalence of  excluded middle with the (algebraic) injectivity of all pointed types}
 
 Algebraic flabbiness can also be applied to show that all pointed
-types are algebraically injective if and only if excluded middle
-holds.
+types are (algebraically) injective if and only if excluded middle
+holds, where for injectivity resizing is needed as an assumption, but
+for algebraic injectivity it is not.
 
 The decidability of a type \m{X} is defined to be the assertion \m{X +
   (X \to \Zero)}, which says that we can exhibit a point of \m{X} or
-else tell that this is impossible. If \m{X} is a subsingleton, then,
-under functional and propositional extensionality, the decidability of
-\m{X} is equivalent to the proposition \M{(X = \One) + (X = \Zero).}
+else tell that this is impossible.
+% If \m{X} is a subsingleton, then,
+% under functional and propositional extensionality, the decidability of
+% \m{X} is equivalent to the proposition \M{(X = \One) + (X = \Zero).}
 The principle of excluded middle in univalent mathematics, for the
 universe \m{\U}, is taken to mean that all subsingleton types in
 \m{\U} are decidable:
 %
 \M{
-  \EM_\U \eqdef \Pi (P : \U), \text{\m{X} is a subsingleton \m{\to X + (X \to \Zero)}.}
+  \EM_\U \eqdef \Pi (P : \U), \text{\m{P} is a subsingleton \m{\to P + (P \to \Zero)}.}
 }
 %
-As discussed in the introduction, we are not
-assuming or rejecting this principle, which is independent from the
-other axioms.  We remark that it is easy to prove that, under functional
-and propositional extensionality, it is impossible for a subsingleton
-\m{X} to be anything other than \m{\Zero} or \m{\One}. But this is
-quite different from saying that given any \m{X} we can automatically
-infer which one of these two possibilities it would be, which is what
-the (so-called) principle of excluded middle posits, or even that
-these are the only two possibilities, as a positive statement.  There
-are two appealing ways to begin to understand this: the algorithmic
-view observes that there is no procedure to perform the decision,
-whereas the topological view observes that there is no continuous way
-to perform the decision. Excluded middle is the mother of all
-discontinuous functions. Without it, the existence of discontinuous
-functions can't be established or ruled out. But the situation is
-subtler than that, because there are propositions, such as univalence,
-which are independent of our base type theory but excluded middle
-claims to be able to decide one way or the other, whereas in really
-the choice of univalence or its negation (say via the K axiom), or
-even leaving it undecided, is a choice of foundational framework, or
-view of mathematical reality, rather than an absolute determination of
-the truth value of univalence.  By now it is understood that leaving
-the principle of excluded middle undecided allows one to account for
-more ``mathematical realities'', including a number of varieties of
-constructive mathematics, but not only them.
+As discussed in the introduction, we are not assuming or rejecting
+this principle, which is independent from the other axioms. Notice
+that, in presence of function extensionality, this principle is
+a subsingleton, because products of subsingletons are subsingletons and
+because \m{P + (P \to \Zero)} is a subsingleton for any
+subsingleton \m{P}. So in the following we get data out of a proposition.
+% We remark that it is easy to prove that, under functional
+% and propositional extensionality, it is impossible for a subsingleton
+% \m{X} to be anything other than \m{\Zero} or \m{\One}. But this is
+% quite different from saying that given any \m{X} we can automatically
+% infer which one of these two possibilities it would be, which is what
+% the (so-called) principle of excluded middle posits, or even that
+% these are the only two possibilities, as a positive statement.  There
+% are two appealing ways to begin to understand this: the algorithmic
+% view observes that there is no procedure to perform the decision,
+% whereas the topological view observes that there is no continuous way
+% to perform the decision. Excluded middle is the mother of all
+% discontinuous functions. Without it, the existence of discontinuous
+% functions can't be established or ruled out. But the situation is
+% subtler than that, because there are propositions, such as univalence,
+% which are independent of our base type theory but excluded middle
+% claims to be able to decide one way or the other, whereas in really
+% the choice of univalence or its negation (say via the K axiom), or
+% even leaving it undecided, is a choice of foundational framework, or
+% view of mathematical reality, rather than an absolute determination of
+% the truth value of univalence.  By now it is understood that leaving
+% the principle of excluded middle undecided allows one to account for
+% more ``mathematical realities'', including a number of varieties of
+% constructive mathematics, but not only them.
+
 
 \begin{numbered}
   If excluded middle holds in the universe \m{\U}, then every pointed
   type \m{D} in any universe \m{\W} is algebraically \m{\U}-flabby.
 \end{numbered}
-
-For the converse, we consider, given a subsingleton \m{P}, the type \m{P + ¬ P + \One},
-whose algebraic flabbiness gives the decidability of P.
-
+\begin{proof}
+  Let \m{d} be a point of \m{D} and \m{f : P \to D} be a function with
+  subsingleton domain. If we have a point \m{p : P}, then we can take
+  \m{f \, p} as the flabbiness witness. Otherwise, if \m{P \to \Zero},
+  we can take \m{d} as the flabbiness witness.
+\end{proof}
+\noindent
+For the converse, we use the following.
 \begin{lemma}
-  For any subsingleton \m{P} in a universe \m{\W}, if the type \m{P +
-    (P \to \Zero)} is algebraically \m{\W}-flabby, then \m{P} is
-  decidable.
+  If the type \m{P + (P \to \Zero) + \One} is algebraically
+  \m{\W}-flabby for a given subsingleton \m{P} in a universe \m{\W},
+  then \m{P} is decidable.
 \end{lemma}
-
-From this we conclude that if all pointed types are algebraically flabby then
-excluded middle holds:
-
+\begin{proof}
+  Denote by \m{D} the type \m{P + (P \to \Zero) + \One} and let \m{f :
+    P + (P \to \Zero) \to D} be the inclusion. Because \m{P + (P \to
+    \Zero)} is a subsingleton, the algebraic flabbiness of \m{D} gives
+  \m{d : D} with \m{d = f \, z} for all \m{z : P + (P \to \Zero)}.
+  Now, by definition of binary sum, \m{d} must be in one of the three
+  components of the sum that defines~\m{D}.  If it were in the third
+  component, namely \m{\One}, then \m{P} couldn't hold, because if it
+  did we would have \m{p:P} and hence, omitting the inclusions into
+  sums, and considering \m{z=p}, we would have, \m{d = f p = p},
+  because \m{f} is the inclusion, which is not in the \m{\One}
+  component. But also \m{P \to \Zero} couldn't hold, because if it did
+  we would have \m{\phi:P \to \Zero} and hence, again omitting the
+  inclusion, and considering \m{z=\phi}, we would have \m{d = f \,
+    \phi = \phi}, which again is in not in the \m{\One} component. But
+  it is impossible for both \m{P} and \m{P \to \Zero} to fail to hold,
+  because this would mean that we would have functions \m{P \to \Zero}
+  (the failure of \m{P} to hold) and \m{(P \to \Zero) \to \Zero}
+  (the failure of \m{P \to \Zero} to hold), and so we could apply the
+  second to the first to get a point of the empty type, which is not
+  available. Therefore \m{d} can't be in the third component, and so
+  it must be in the first or the second, which means that \m{P} is
+  decidable.
+\end{proof}
+\noindent From this we immediately conclude the following:
 \begin{numbered}
   If all pointed type in a universe \m{\W} are algebraically \m{\W}-flabby, then excluded middle holds in~\m{\W}.
 \end{numbered}
-
+% \begin{proof}
+%   Give a proposition \m{P}, apply the lemma to the pointed type \m{P +
+%     (P \to \Zero) + \One}.
+% \end{proof}
+\noindent
 And then we have the same situation for algebraically injective types,
 by reduction to algebraic flabbiness:
-
 \begin{numbered}
   If excluded middle holds in the universe \m{\U \sqcup \V}, then any
   pointed type \m{D} in any universe \m{\W} is algebraically
   \m{\U,\V}-injective.
 \end{numbered}
-
-\begin{numbered}
-  For any universe \m{\U}, if every pointed type in the universe
-  \m{\W} is algebraically \m{\W,\U}-injective, then excluded middle
-  holds in \m{\W}.
+% \begin{proof}
+%   Simply because, as we have seen, algebraic flabbiness gives
+%   algebraic injectivity.
+% \end{proof}
+\noindent Putting this together with some universe specializations, we
+have the following construction.
+\begin{numbered} \df{(Logical equivalence of algebraic injectivity with excluded middle.)} \\
+  All pointed types in a universe \m{\U} are algebraically \m{\U,\U}-injective if and only if excluded middled holds in~\m{\U}.
 \end{numbered}
+
+\noindent
+And we have the same situation with injective types.
+\begin{numbered}
+  If excluded middle holds, then every inhabited type of any universe is
+  injective with respect to any two universes.
+\end{numbered}
+\begin{proof}
+  Because excluded middle gives algebraic injectivity, which gives
+  injectivity.
+\end{proof}
+\noindent Without resizing we have the following.
+\begin{numbered}
+  If every inhabited type \m{D:\W} is \m{\W,\W^+}-injective, then
+  excluded middle holds in the universe \m{\W}.
+\end{numbered}
+\begin{proof}
+  Given a proposition \m{P}, we have that the type \m{D \eqdef P + (P
+    \to \Zero) + \One_{\W}} is injective by the assumption. Hence it
+  is injective in an unspecified way by Proposition~\ref{worse}. And
+  so it is algebraically flabby in an unspecified way.  By the lemma,
+  \m{P} is decidable in an unspecified way, but then it is decidable
+  because the decidability of a proposition is a proposition.
+\end{proof}
+\noindent With resizing we can do better:
+\begin{numbered}
+  Under \m{\Omega}-resizing, if then every inhabited type in a universe \m{\U} is
+  \m{\U,\U}-injective, then excluded middle holds in \m{\U}.
+\end{numbered}
+\begin{proof}
+  Given a proposition \m{P}, we have that the type \m{D \eqdef P + (P
+    \to \Zero) + \One_{\U}} is injective by the assumption. Hence it
+  is injective in an unspecified way by
+  Theorem~\ref{better}. And so it is algebraically flabby in an
+  unspecified way.  By the lemma, \m{P} is decidable in an unspecified
+  way, and hence decidable.
+\end{proof}
+\noindent Putting the above together with some specializations, we get the following.
+\begin{theorem} \df{(The equivalence of injectivity with excluded middle.)} \\
+  Under \m{\Omega}-resizing, all pointed types in a universe \m{\U} are
+  \m{\U,\U}-injective if and only if excluded middled
+  holds in~\m{\U}.
+\end{theorem}
+It would be interesting to get rid of the resizing assumption, which,
+as we have seen, is not needed for the equivalence of the algebraic
+injectivity of all pointed types with excluded middle.
+
 
 \bibliographystyle{plain}
 \bibliography{references}
