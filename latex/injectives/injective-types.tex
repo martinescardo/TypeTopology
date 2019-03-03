@@ -110,10 +110,10 @@
   presence of propositional resizing. Injectivity is defined by the
   surjectivity of the restriction map along any embedding, and
   algebraic injectivity is defined by a given section of the
-  restriction map along any embedding. Under propositional resizing,
-  the main results are easy to state: (1)~Injectivity is equivalent to
-  the propositional truncation of algebraic injectivity.  (2)~The
-  algebraically injective types are precisely the retracts of
+  restriction map along any embedding. Under propositional resizing
+  axioms, the main results are easy to state: (1)~Injectivity is
+  equivalent to the propositional truncation of algebraic injectivity.
+  (2)~The algebraically injective types are precisely the retracts of
   exponential powers of universes. (2a)~The algebraically injective
   sets are precisely the retracts of powersets. (2b)~The algebraically
   injective \m{(n+1)}-types are precisely the retracts of universes of
@@ -122,7 +122,8 @@
   classifier. From~(2) it follows that any universe is embedded as a
   retract of any larger universe.  In the absence of propositional
   resizing, we have similar results which have subtler statements and
-  proofs that need to keep track of universe levels rather explicitly.
+  proofs that need to keep track of universe levels rather explicitly,
+  and are applied to get the results that require resizing.
 \end{abstract}
 
 \section{Introduction}
@@ -160,12 +161,13 @@ this amounts to
 %
 so that we get a \emph{designated} extension~\m{f \mid j} of~\m{f} along~\m{j}.
 
-For the sake of generality, we work without assuming or rejecting
-the principle of excluded middle, and hence without assuming the axiom
-of choice either. Moreover, we show that the principle of excluded
-middle holds if and only if all pointed types are algebraically
-injective, if and only if all inhabited types are injective, so
-that there is nothing interesting to say about injectivity in its presence.
+For the sake of generality, we work without assuming or rejecting the
+principle of excluded middle, and hence without assuming the axiom of
+choice either. Moreover, we show that the principle of excluded middle
+holds if and only if all pointed types are algebraically injective,
+and, assuming resizing, if and only if all inhabited types are
+injective, so that there is nothing interesting to say about
+(algebraic) injectivity in its presence.
 
 Under propositional resizing principles, the main results
 are easy to state:
@@ -195,11 +197,11 @@ are easy to state:
 In the absence of propositional resizing, we have similar results
 which have subtler statements and proofs that need to keep track of
 universe levels rather explicitly.
-
-Most constructions developed in this paper are in the absence of propositional
-resizing. We apply them, with the aid of a notion of algebraic
-flabbiness, to derive the results that rely on resizing mentioned
-above.
+%
+Most constructions developed in this paper are in the absence of
+propositional resizing. We apply them, with the aid of a notion of
+algebraic flabbiness, which is related to the partial-map classifier,
+to derive the results that rely on resizing mentioned above.
 
 \paragraph{Acknowledgements.} Mike Shulman has acted as a sounding
 board over the years, with many helpful remarks, including in
@@ -456,30 +458,30 @@ routine, unenlightening ones. The blackboard version also has
 additional information that we have chosen not to include in the
 article version of the Agda development or this paper.
 
-An advantage of the availability of a formal version is that whatever
-steps we have we have ommitted here because we considered them to be
+An advantage of the availability of a formal version is that, whatever
+steps we have we have omitted here because we considered them to be
 obvious or routine, can be found there, in case of doubt.
 
-% % Maybe not?:
-We would like to explain how we found the computer formalization
-useful in practice. Firstly, we trust ourselves to be able to write
-correct proofs on paper. However, this doesn't mean that other
-people should trust us, and this is why refereeing is needed for
-mathematical publications, of course. But having the formal proofs
-before human refereeing helped us to discuss our results with the
-community while they were being developed, with confidence from each
-party about their mathematical correctness.  But, more importantly,
-because these results were developed intermittently in a span of
-several years, we didn't need to check again the proofs every time
-we came back to the subject, as usually happens with
-pencil-and-paper developments. When we decided to write this paper,
-the constructions and results where all there in complete, if
-disorganized, form (the blackboard version). Then we first wrote an
-organized version of the formal development (the article style
-version), and finally wrote this paper.  And, lastly, a major
-motivation for writing the proofs in the computer, given our
-inclinations, is that they are constructive and hence they can be
-literally run as programs if we so wish.
+% % % Maybe not?:
+% We would like to explain how we found the computer formalization
+% useful in practice. Firstly, we trust ourselves to be able to write
+% correct proofs on paper. However, this doesn't mean that other
+% people should trust us, and this is why refereeing is needed for
+% mathematical publications, of course. But having the formal proofs
+% before human refereeing helped us to discuss our results with the
+% community while they were being developed, with confidence from each
+% party about their mathematical correctness.  But, more importantly,
+% because these results were developed intermittently in a span of
+% several years, we didn't need to check again the proofs every time
+% we came back to the subject, as usually happens with
+% pencil-and-paper developments. When we decided to write this paper,
+% the constructions and results where all there in complete, if
+% disorganized, form (the blackboard version). Then we first wrote an
+% organized version of the formal development (the article style
+% version), and finally wrote this paper.  And, lastly, a major
+% motivation for writing the proofs in the computer, given our
+% inclinations, is that they are constructive and hence they can be
+% literally run as programs if we so wish.
 
 \section{Injectivity with universe levels}
 
@@ -1082,8 +1084,7 @@ We index \m{n}-types from \m{n=-2} as in the HoTT Book, where the
   and products.
 \end{proof}
 
-\section{Algebraic injectivity and flabbiness in the presence of
-  propositional resizing axioms}
+\section{Algebraic flabbiness with resizing axioms}
 
 Returning to size issues, we now apply algebraic flabbiness to show
 that propositional resizing gives unrestricted algebraic injective
@@ -1360,10 +1361,11 @@ algebraic injectivity.
 We would like to do better than this. For that purpose, we consider
 the lifting monad in conjunction with resizing.
 
-\section{Algebraic flabbiness and injectivity via the partial-map classifier}
+\section{Algebraic flabbiness via the partial-map classifier}
 
 The lifting \m{\Lift_{\T,\U} \, X : \T^+ \sqcup \U} of a type \m{X:\U}
-with respect to a universe \m{\T} for truth-values is defined by
+with respect to a universe \m{\T} % for truth-values
+is defined by
 %
 \M{ \Lift_{\T,\U}\, X \eqdef \Sigma (P : \T), (P \to X) \times
   \text{\m{P} is a subsingleton}.  }
@@ -1405,15 +1407,14 @@ where \m{A \emb X} is the type of embeddings, then for any \m{X,Y :
   \simeq (X \to \Lift_{\T} \, Y),
 }
 %
-so that the \m{\Lift_{\T}} is the map classifier for the universe
+so that the \m{\Lift_{\T}} is the partial-map classifier for the universe
 \m{\T}.  When the universe~\m{\U} is not necessarily the same
-as~\m{\T}, the lifting classifies partial maps in \m{\U} whose
-embeddings have fibers with copies in the universe~\m{\T}.
+as~\m{\T}, the lifting classifies partial maps in~\m{\U} whose
+embeddings have fibers with copies in~\m{\T}.
 
 This is a sort of an \m{\infty}-monad ``across
 universes''~\cite{TypeTopology}, and modulo providing coherence data,
-which we haven't done, but the full monad structure is not needed for
-our purposes.
+which we haven't done, and is not needed for our purposes.
 
 In order to discuss the lifting in more detail, we first chatacterize
 its equality types. We denote the projections from \m{\Lift_{\T}
@@ -1459,27 +1460,32 @@ where \m{i} is a proof that \m{\One} is a proposition.
 defined by
 %
 \M{
-\Lift_\T f (P , \phi , i) = (P , f \comp \phi , i).
+\Lift_\T f (P , \phi , i) = (P , f \comp \phi , i),
 }
 %
-For \m{X:\U} and \m{Y : \V} and \m{f : X \to \Lift_\T Y}, define \m{f^\sharp : \Lift_\T X \to \Lift_\T Y} by
+so that is functorial by construction.
 %
-\M{
-  \begin{array}{lll}
-  \delta (f^\sharp (P , \phi , i)) & \eqdef & \Sigma (p : P), \delta (f (\phi \, p)), \\
-  \upsilon (f^\sharp (P , \phi , i)) & \eqdef & (p , q) \mapsto \upsilon (f (\phi \, p)) \, q , \\
-  \sigma (f^\sharp (P , \phi , i)) & \eqdef & \text{from the fact that subsingletons are closed under sums.} \\
-  \end{array}
-}
+% For \m{X:\U} and \m{Y : \V} and \m{f : X \to \Lift_\T Y}, define \m{f^\sharp : \Lift_\T X \to \Lift_\T Y} by
+% %
+% \M{
+%   \begin{array}{lll}
+%   \delta (f^\sharp (P , \phi , i)) & \eqdef & \Sigma (p : P), \delta (f (\phi \, p)), \\
+%   \upsilon (f^\sharp (P , \phi , i)) & \eqdef & (p , q) \mapsto \upsilon (f (\phi \, p)) \, q , \\
+%   \sigma (f^\sharp (P , \phi , i)) & \eqdef & \text{from the fact that subsingletons are closed under sums.} \\
+%   \end{array}
+% }
+% %
+% Then we let the multiplication \m{\mu : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\T}\, X}
+% be the \m{\Lift_\T} extension of the identity of \m{\Lift_{\T}\, X}, which amounts to saying that
 %
-Then we let the multiplication \m{\mu : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\T}\, X}
-be the \m{\Lift_\T} extension of the identity of \m{\Lift_{\T}\, X}, which amounts to saying that
+
+We define the multiplication \m{\mu_X : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\T}\, X} by
 %
 \M{
   \begin{array}{lll}
   \delta (\mu (P , \phi , i)) & \eqdef & \Sigma (p : P), \delta (\phi \, p), \\
   \upsilon (\mu (P , \phi , i)) & \eqdef & (p , q) \mapsto \upsilon (\phi \, p) \, q , \\
-  \sigma (\mu (P , \phi , i)) & \eqdef & \text{from the fact that subsingletons are closed under sums.} \\
+  \sigma (\mu (P , \phi , i)) & \eqdef & \text{using that subsingletons are closed under sums.} \\
   \end{array}
 }
 %
@@ -1494,9 +1500,9 @@ be the \m{\Lift_\T} extension of the identity of \m{\Lift_{\T}\, X}, which amoun
     \Sigma (q : Q \, p), R(p,q))}.
 \end{proof}
 
-\noindent The functoriality and naturality conditions are even easier
-to check, and we omit the verification. We now turn to algebras. We
-omit the asy verification of the following.
+\noindent The naturality conditions for the unit and multiplication are
+even easier to check, and we omit the verification. We now turn to
+algebras. We omit the direct verification of the following.
 
 \begin{numbered} Let \m{X:\U} be any type.
   \begin{enumerate}
@@ -1520,9 +1526,13 @@ omit the asy verification of the following.
     %
 
 
-    \medskip Therefore a functor algebra satisfying the unit law amounts to the same thing as algebraic flabiness data. In other words, the algebraically \m{\T}-flabby types are the algebras of the pointed functor \m{(\Lift_\T,\eta)}. In particular, monad algebras are algebraically flabby.
+    \medskip Therefore a functor algebra satisfying the unit law
+    amounts to the same thing as algebraic flabbiness data. In other
+    words, the algebraically \m{\T}-flabby types are the algebras of
+    the pointed functor \m{(\Lift_\T,\eta)}. In particular,
+    (underlying objects of) monad algebras are algebraically flabby.
   \item The associativity law for monad algebras amounts to, for any subsingleton \m{P :
-      \T} and family \m{Q : P \to \T} of subsingletons and any \m{\phi : \Sigma \, Q \to X},
+      \T} and family \m{Q : P \to \T} of subsingletons, and any \m{\phi : \Sigma \, Q \to X},
     %
     \M{
       \bigsqcup_{t : \Sigma Q} \phi \, t = \bigsqcup_{p : P} \bigsqcup_{q : Q p} \phi (p ,q)
@@ -1530,15 +1540,18 @@ omit the asy verification of the following.
     %
   \end{enumerate}
 \end{numbered}
-\noindent So the associativity law for algebras plays no role in flabiness. But
-of course we can have algebraic flabiness data that is associative,
-such as not only the free algebra \m{\Lift_\T X}, but also the
-following two examples that connect to the opening development of this
-paper on the injectivity of universes.
+\noindent So the associativity law for algebras plays no role in
+flabbiness. But of course we can have algebraic flabiness data that is
+associative, such as not only the free algebra \m{\Lift_\T X}, but
+also the following two examples that connect to the opening
+development of this paper on the injectivity of universes.
 \begin{numbered} The universe \m{\T} is a monad algebra of
   \m{\Lift_\T} in at least two ways, with \m{\bigsqcup = \Sigma} and
   \m{\bigsqcup = \Pi}.
 \end{numbered}
+
+
+We now apply these ideas to injectivity.
 \begin{numbered}
   Any algebraically \m{\T,\T^+}-injective type \m{D:\T} is a retract of \m{\Lift_\T D}.
 \end{numbered}
@@ -1581,8 +1594,8 @@ for the first universe too.
   We can take \m{\Sigma (p : \Omega'), \fst(\rho \, p) \to X} where \m{\rho : \Omega' \to \Omega_\T} is the given equivalence.
 \end{proof}
 
-The following characterizes injectivity in terms of algebraic
-injectivity.
+We apply this lifting machinery to get the following, which doesn't
+mention lifting in its formulation.
 
 \begin{theorem} \label{better}
   (Characterization of injectivity in terms of algebraic injectivity.)
@@ -1606,7 +1619,7 @@ injectivity.
   unspecified way, by the functoriality of truncation on objects.
 \end{proof}
 
-As a corollary, by reduction to the above results about algebraic
+As an immediate consequence, by reduction to the above results about algebraic
 injectivity, we have the following.
 \begin{corollary}
   Under \m{\Omega}-resizing and propositional resizing, if a type
@@ -1614,10 +1627,11 @@ injectivity, we have the following.
   \m{\U,\V}-injective for any universes \m{\U} and \m{\V}.
 \end{corollary}
 \begin{proof}
-  The \m{D} algebraically \m{\T,\T}-injective in an unspecified way,
-  and so by functoriality of truncation on objects and algebraic
-  injective resizing, it is algebraically \m{\U,\V}-injective in an
-  unspecified way, and hence it is \m{\U,\V}-injective.
+  The type \m{D} is algebraically \m{\T,\T}-injective in an
+  unspecified way, and so by functoriality of truncation on objects
+  and algebraic injective resizing, it is algebraically
+  \m{\U,\V}-injective in an unspecified way, and hence it is
+  \m{\U,\V}-injective.
 \end{proof}
 
 \section{The equivalence of  excluded middle with the (algebraic) injectivity of all pointed types}
@@ -1740,13 +1754,13 @@ have the following construction.
 \end{numbered}
 
 \noindent
-And we have the same situation with injective types.
+And we have a similar situation with injective types.
 \begin{numbered}
   If excluded middle holds, then every inhabited type of any universe is
   injective with respect to any two universes.
 \end{numbered}
 \begin{proof}
-  Because excluded middle gives algebraic injectivity, which gives
+  Because excluded middle gives algebraic injectivity, which in turn gives
   injectivity.
 \end{proof}
 \noindent Without resizing we have the following.
@@ -1784,7 +1798,6 @@ And we have the same situation with injective types.
 It would be interesting to get rid of the resizing assumption, which,
 as we have seen, is not needed for the equivalence of the algebraic
 injectivity of all pointed types with excluded middle.
-
 
 \bibliographystyle{plain}
 \bibliography{references}
