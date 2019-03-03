@@ -1499,11 +1499,11 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
   injective-retract-of-L : injective-type D 𝓤 𝓤 → ∥ retract D of L ∥
   injective-retract-of-L i = embedding-∥retract∥ D i L ε ε-is-embedding
 
-  L-injective : ainjective-type L 𝓤 𝓤
-  L-injective = equiv-to-ainjective L (𝓛 D) (free-𝓛-algebra-ainjective D) (≃-sym e)
+  L-ainjective : ainjective-type L 𝓤 𝓤
+  L-ainjective = equiv-to-ainjective L (𝓛 D) (free-𝓛-algebra-ainjective D) (≃-sym e)
 
   φ : retract D of L → ainjective-type D 𝓤 𝓤
-  φ = retract-of-ainjective D L L-injective
+  φ = retract-of-ainjective D L L-ainjective
 
   γ : injective-type D 𝓤 𝓤 → ∥ ainjective-type D 𝓤 𝓤 ∥
   γ j = ∥∥-functor φ (injective-retract-of-L j)
