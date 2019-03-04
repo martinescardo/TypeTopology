@@ -255,7 +255,7 @@ used in UniMath~\cite{unimath}.
   \m{X : \U \sqcup \V} for any \m{\V}, but we also don't assume that they
   are not. However, from the assumptions formulated below, it follows
   that for any two universes \m{\U,\V} there is a map
-  \m{\lift_{\U,\V} : \U \to U \sqcup \V}, for instance
+  \m{\lift_{\U,\V} : \U \to \U \sqcup \V}, for instance
   \m{X \mapsto X + \Zero_\V}, which is an embedding with
   \m{\lift X \simeq X} if univalence holds (we cannot write the identity
   type \m{\lift X = X}, as the left- and right-hand sides live in the different
@@ -417,13 +417,13 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
   and a designated pointwise identification \m{r \comp s \sim \id}.
 
   Similarly, we don't reserve the word \df{proof} for constructions of
-  elements of subsingleton type, and all our constructions are
+  elements of subsingleton types, and all our constructions are
   indicated by the word proof, including the construction of data or
   structure.  We will, however, reserve the words \df{theorem} and
   \df{proposition} for statements that are subsingletons, although a
   \df{lemma} can be an auxiliary construction and a \df{corollary} can
   be a special case of a construction or an easily derived
-  constructions. We use numbered statements without qualifications for
+  construction. We use numbered statements without qualifications for
   statements that are not subsingletons are require constructions,
   with the word \df{proof} preceding the construction.
 
@@ -448,7 +448,7 @@ and paper scribbles, but mostly directly in the computer with the aid
 of Agda's interactive features. This paper is an unformalization of
 that development. We emphasize that not only numbered statements in
 this paper have formal counterparts, but also the comments in passing,
-and that the formal version has much more information than what we
+and that the formal version has more information than what we
 choose to report here.
 
 We have two versions. One of them~\cite{injective:blackboard} is in
@@ -960,7 +960,7 @@ almost give directly that the algebraically injective types are
 precisely the retracts of exponential powers of universes, but there
 is a universe mismatch.  Keeping track of the universes to avoid the
 mismatch, what we get instead is a resizing construction without the
-need of resizing axioms:
+need for resizing axioms:
 \begin{numbered}
   Algebraically \m{\U,\U^+}-injective types \m{D:\U} are
   algebraically \m{\U,\U}-injective too.
@@ -1000,7 +1000,7 @@ untruncated \m{\Sigma} as algebraic flabbiness.
 algebraic injectivity: notice that flabbiness and algebraic flabbiness
 amount to simply injectivity and algebraic injectivity with respect to
 the class of embeddings \m{P \to \One} with \m{P} ranging over
-subsingletons.
+subsingletons. Notice that an algebraically flabby type \m{D} is pointed, by considering the unique map \m{\Zero \to D}.
 
 \begin{numbered}
   If a type \m{D} in the universe \m{\W} is algebraically
@@ -1256,13 +1256,13 @@ more general first.
   embeddings. Now consider the map \m{l : X \to (X \to \Sigma \, A)}
   defined by \m{x \mapsto (x' \mapsto (x=x', p \, x \, x')}, where
   \m{p \, x \, x' : A(x=x')} is given by the assumption. We have that
-  \m{k \comp l = \Id_X} by construction. Hence \m{k} is an embedding
+  \m{k \comp l = \Id_X} by construction. Hence \m{l} is an embedding
   because \m{l} and \m{\Id_X} are, where we are using the general fact
   that if \m{g \comp f} and \m{g} are embeddings then so is the
   factor~\m{f}.  But \m{X}, being algebraically \m{\U,\U}-injective by
   assumption, is algebraically \m{\U,(\U^+ \sqcup \T)}-injective by
   resizing, and hence we get the desired retraction by extending its
-  identity map along \m{k}.
+  identity map along~\m{l}.
 \end{proof}
 
 Using this, we get the following as an immediate consequence.
