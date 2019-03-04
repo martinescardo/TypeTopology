@@ -6,7 +6,7 @@
 
 \date{{\sc Draft version of} \today}
 
-\usepackage{amsmath,stmaryrd,amssymb,amsthm,enumerate,bbm,url,scalerel,mathtools}
+\usepackage{amsmath,stmaryrd,amssymb,amsthm,enumerate,bbm,url,hyperref,scalerel,mathtools}
 
 \usepackage[nohug]{diagrams}
 \newarrow{Into}{C}{-}{-}{-}{>}
@@ -26,6 +26,13 @@
 \newcommand{\grey}{\textcolor{grey}}
 \definecolor{darkred}{rgb}{0.5,0,0}
 \newcommand{\dr}{\textcolor{darkred}}
+
+\definecolor{links}{rgb}{0.47, 0.27, 0.23}
+
+\hypersetup{
+    colorlinks, linkcolor={links},
+    citecolor={links}, urlcolor={links}
+}
 
 \newcommand{\emb}{\hookrightarrow}
 \newcommand{\partialto}{\rightharpoonup}
@@ -1726,7 +1733,7 @@ For the converse, we use the following.
 \end{proof}
 \noindent From this we immediately conclude the following:
 \begin{numbered}
-  If all pointed type in a universe \m{\W} are algebraically \m{\W}-flabby, then excluded middle holds in~\m{\W}.
+  If all pointed types in a universe \m{\W} are algebraically \m{\W}-flabby, then excluded middle holds in~\m{\W}.
 \end{numbered}
 % \begin{proof}
 %   Give a proposition \m{P}, apply the lemma to the pointed type \m{P +
@@ -1768,10 +1775,11 @@ And we have a similar situation with injective types.
 \begin{proof}
   Given a proposition \m{P}, we have that the type \m{D \eqdef P + (P
     \to \Zero) + \One_{\W}} is injective by the assumption. Hence it
-  is injective in an unspecified way by Proposition~\ref{worse}. And
-  so it is algebraically flabby in an unspecified way.  By the lemma,
-  \m{P} is decidable in an unspecified way, but then it is decidable
-  because the decidability of a proposition is a proposition.
+  is algebraically injective in an unspecified way by
+  Proposition~\ref{worse}. And so it is algebraically flabby in an
+  unspecified way.  By the lemma, \m{P} is decidable in an unspecified
+  way, but then it is decidable because the decidability of a
+  proposition is a proposition.
 \end{proof}
 \noindent With resizing we can do better:
 \begin{numbered}
@@ -1787,7 +1795,7 @@ And we have a similar situation with injective types.
   way, and hence decidable.
 \end{proof}
 \begin{theorem} \df{(The equivalence of injectivity with excluded middle.)} \\
-  Under \m{\Omega}-resizing, all pointed types in a universe \m{\U} are
+  Under \m{\Omega}-resizing, all inhabited types in a universe \m{\U} are
   \m{\U,\U}-injective if and only if excluded middled
   holds in~\m{\U}.
 \end{theorem}
