@@ -131,6 +131,10 @@
   resizing, we have similar results which have subtler statements that
   need to keep track of universe levels rather explicitly, and are
   applied to get the results that require resizing.
+
+  \medskip \noindent {\bf keywords:} Injective type, flabby type, Kan extension, partial-map classifier, univalent mathematics, univalence axiom.
+
+  \medskip \noindent {\bf MSC 2010.} 03B15, 03B35, 03G30, 18A40, 18C15.
 \end{abstract}
 
 \section{Introduction}
@@ -224,7 +228,7 @@ readers not acquainted with Agda~\cite{agda}, we explicitly state it here.
 
 \subsection{Our univalent type theory}
 
-Our underlying formal system can be considered to be a subystem of that
+Our underlying formal system can be considered to be a subsystem of that
 used in UniMath~\cite{unimath}.
 \begin{enumerate}
 \item We work within an intensional Martin-L\"of type theory with
@@ -254,7 +258,7 @@ used in UniMath~\cite{unimath}.
   \m{\lift_{\U,\V} : \U \to U \sqcup \V}, for instance
   \m{X \mapsto X + \Zero_\V}, which is an embedding with
   \m{\lift X \simeq X} if univalence holds (we cannot write the identity
-  type \m{\lift X = X}, as the lhs and rhs live in the different
+  type \m{\lift X = X}, as the left- and right-hand sides live in the different
   types \m{\U} and \m{\U \sqcup \V}, which are not (definitionally) the
   same in general).
 
