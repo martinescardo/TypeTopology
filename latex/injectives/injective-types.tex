@@ -465,7 +465,7 @@ additional information that we have chosen not to include in the
 article version of the Agda development or this paper.
 
 An advantage of the availability of a formal version is that, whatever
-steps we have we have omitted here because we considered them to be
+steps we have omitted here because we considered them to be
 obvious or routine, can be found there, in case of doubt.
 
 % % % Maybe not?:
@@ -556,7 +556,7 @@ its fibers are all subsingletons.
 \begin{numbered}
   The universe \m{\U \sqcup \V} is algebraically \m{\U,\V}-injective, in at least two ways.
 \end{numbered}
-And in particular, e.g.\ \m{\U} is \m{\U,\U}-injective, but of course
+\noindent And in particular, e.g.\ \m{\U} is \m{\U,\U}-injective, but of course
 \m{\U} doesn't live in \m{\U} and doesn't even have a copy in
 \m{\U}. For the following, we say that \m{y : Y} is not in the image
 of \m{j} to mean that \m{j \, x \ne y} for all \m{x:X}.
@@ -977,7 +977,7 @@ subsingletons.
 \end{proof}
 The interesting thing about this is that the
 universe~\m{\V} is forgotten, and then we can put any other universe
-below \m{\U} back, as follows
+below \m{\U} back, as follows.
 
 \begin{numbered}
   If a type \m{D} in the universe \m{\W} is algebraically \m{\U \sqcup
@@ -1041,7 +1041,7 @@ equivalence into a sum type followed by the first projection).
 \end{numbered}
 \begin{proof}
   Let \m{\Sigma\,A} be a subuniverse of \m{\U}, let \m{P:\U} be a
-  subsingleton \m{f : P \to \Sigma \, A} be given. Then define
+  subsingleton and \m{f : P \to \Sigma \, A} be given. Then define
   \begin{quote}
   (1)~\m{ X \eqdef \Sigma (\fst \comp f)} \qquad or \qquad (2)~\m{X \eqdef \Pi (\fst \comp f)}
   \end{quote}
@@ -1076,7 +1076,7 @@ We index \m{n}-types from \m{n=-2} as in the HoTT Book, where the
 
   (Another way to see that \m{\Omega_\U} is algebraically injective is
   that it is a retract of the universe by propositional
-  truncation. The same would be the has for \m{n}-types if we were
+  truncation. The same would be the case for \m{n}-types if we were
   assuming \m{n}-truncations, which we are not.)
 
 \item Powersets, being exponential powers of \m{\Omega_\U}, are
@@ -1112,18 +1112,18 @@ flabbiness is universe independent in the presence of propositional
 resizing:
 
 \begin{numbered}
-  If propositional resizing holds, then the algebraic \m{\V}-flabiness
-  of a type in any universe gives its algebraic \m{\U}-flabiness.
+  If propositional resizing holds, then the algebraic \m{\V}-flabbiness
+  of a type in any universe gives its algebraic \m{\U}-flabbiness.
 \end{numbered}
 \begin{proof}
   Let \m{D:\W} be a type in any universe \m{\W}, let \m{P : \U} be a
   proposition and \m{f : P \to D}. By resizing, we have an equivalence
   \m{\beta : Q \to P} for a suitable proposition \m{Q:\V}.  Then the
-  algebraic \m{\V}-flabiness of \m{D} gives a point \m{d:D} with \m{d
+  algebraic \m{\V}-flabbiness of \m{D} gives a point \m{d:D} with \m{d
     = (f \comp \beta) \, q} for all \m{q : Q}, and hence with \m{d = f
     \, p} for all \m{p : P}, because we have \m{p=\beta \, q} for \m{q
     = \alpha \, p} where \m{\alpha} is a quasi-inverse of \m{\beta},
-  which establishes the algebraic \m{\U}-flabiness of~\m{D}.
+  which establishes the algebraic \m{\U}-flabbiness of~\m{D}.
 \end{proof}
 
 And from this it follows that algebraic injectivity is also universe
@@ -1363,7 +1363,7 @@ algebraic injectivity.
   If propositional resizing holds, then a type \m{D : \U} is \m{\U,\U^+}-injective if and only if it is algebraically \m{\U,\U^+}-injective in an unspecified way.
 \end{numbered}
 \noindent We would like to do better than this. For that purpose, we consider
-the lifting monad in conjunction with flabiness and resizing.
+the lifting monad in conjunction with flabbiness and resizing.
 
 \section{Algebraic flabbiness via the partial-map classifier}
 
@@ -1546,7 +1546,7 @@ algebras. We omit the direct verification of the following.
   \end{enumerate}
 \end{numbered}
 \noindent So the associativity law for algebras plays no role in
-flabbiness. But of course we can have algebraic flabiness data that is
+flabbiness. But of course we can have algebraic flabbiness data that is
 associative, such as not only the free algebra \m{\Lift_\T X}, but
 also the following two examples that connect to the opening
 development of this paper on the injectivity of universes.
