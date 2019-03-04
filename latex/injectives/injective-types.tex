@@ -1417,7 +1417,7 @@ component of the triple is omitted, we have the familiar
 correspondence
 %
 \M{
-  (X \to \T) \simeq (\Sigma (P : \T), P \to X))
+  (X \to \T) \simeq (\Sigma (P : \T), P \to X)
 }
 %
 that maps \m{A : X \to \T} to \m{P \eqdef \Sigma \, A} and the
@@ -1425,7 +1425,7 @@ projection \m{\Sigma \, A \to X}.  If the universe~\m{\U} is not
 necessarily the same as \m{\T}, then the equivalence becomes
 %
 \M{
-  (\Sigma (A : X \to \T \sqcup \U), \Sigma(T : \T), T \simeq \Sigma \, A) \simeq (\Sigma (P : \T), P \to X)).
+  (\Sigma (A : X \to \T \sqcup \U), \Sigma(T : \T), T \simeq \Sigma \, A) \simeq (\Sigma (P : \T), P \to X).
 }
 %
 This says that although the total space \m{\Sigma \, A} doesn't not
@@ -1433,7 +1433,7 @@ live in the universe \m{\T}, it must have a copy in \m{\T}.
 
 What the third component of the triple does is to restrict the above
 equivalences to the subtype of those \m{A} whose total space \m{\Sigma
-  \, A} is a subsingleton. If we define the type of partial maps by
+  \, A} are subsingletons. If we define the type of partial maps by
 %
 \M{(X \partialto Y) \eqdef \Sigma (A : \T), (A \emb X) \times (A \to Y),
 }
@@ -1473,18 +1473,18 @@ For \m{l , m : \Lift_{\T} \, X}, define
 \[
   (l \backsimeq m) \eqdef \Sigma (e : \delta \, l \simeq \delta \, m), \upsilon \, l = \upsilon \, m \comp e.
 \]
-\begin{numbered}
+\begin{lemma}
   The canonical transformation \m{(l = m) \to (l \backsimeq m)} that
   sends \m{\refl_l} to the identity equivalence paired with \m{\refl_{\upsilon \,
       l}} is an equivalence.
-\end{numbered}
+\end{lemma}
 
 The unit \m{\eta : X
   \to \Lift_\T X} is given by \M{\eta_X \, x = (\One, (p \mapsto x), i)}
 where \m{i} is a proof that \m{\One} is a proposition.
-\begin{numbered}
+\begin{lemma}
   The unit \m{\eta_X : X\to\Lift_\T X} is an embedding.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   This is easily proved using the above characterization of equality.
 \end{proof}
@@ -1570,7 +1570,7 @@ algebras. We omit the direct verification of the following.
     amounts to the same thing as algebraic flabbiness data. In other
     words, the algebraically \m{\T}-flabby types are the algebras of
     the pointed functor \m{(\Lift_\T,\eta)}. In particular,
-    (underlying objects of) monad algebras are algebraically flabby.
+    monad algebras are algebraically flabby.
   \item The associativity law for monad algebras amounts to, for any subsingleton \m{P :
       \T} and family \m{Q : P \to \T} of subsingletons, and any \m{\phi : \Sigma \, Q \to X},
     %
@@ -1602,7 +1602,7 @@ We now apply these ideas to injectivity.
 
 \begin{numbered} \df{(Second characterization of algebraic injectives.)}
   With propositional resizing, a type \m{D:\T} is algebraically
-  \m{\T,\T}-injective if and only if it is a retract of a free monad
+  \m{\T,\T}-injective if and only if it is a retract of a monad
   algebra of \m{\Lift_\T}.
 \end{numbered}
 \begin{proof}
@@ -1697,7 +1697,7 @@ universe \m{\U}, is taken to mean that all subsingleton types in
 }
 %
 As discussed in the introduction, we are not assuming or rejecting
-this principle, which is independent from the other axioms. Notice
+this principle, which is independent of the other axioms. Notice
 that, in presence of function extensionality, this principle is
 a subsingleton, because products of subsingletons are subsingletons and
 because \m{P + (P \to \Zero)} is a subsingleton for any
@@ -1804,7 +1804,7 @@ And we have a similar situation with injective types.
   Because excluded middle gives algebraic injectivity, which in turn gives
   injectivity.
 \end{proof}
-\noindent Without resizing we have the following.
+\noindent Without resizing, we have the following.
 \begin{numbered}
   If every inhabited type \m{D:\W} is \m{\W,\W^+}-injective, then
   excluded middle holds in the universe \m{\W}.
