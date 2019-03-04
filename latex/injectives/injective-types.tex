@@ -2,9 +2,9 @@
 
 \title{Injectives types in univalent mathematics}
 
-\author{Mart\'{\i}n H\"otzel Escard\'o}
+\author{Mart\'{\i}n H\"otzel Escard\'o \\ School of Computer Science \\ University of Birmingham, UK}
 
-\date{{\sc Draft version of} \today}
+\date{{\sc Version of} \today}
 
 \usepackage{amsmath,stmaryrd,amssymb,amsthm,enumerate,bbm,url,hyperref,scalerel,mathtools}
 
@@ -187,7 +187,7 @@ are easy to state:
   \m{\Pi}-type to outside the \m{\Pi}-type, and may be related to
   \cite{kenney:2011}.)
    \item The algebraically injective types are precisely the retracts of
-     exponential powers of type universes. In particular,
+     exponential powers of universes. In particular,
        \begin{enumerate}
        \item The algebraically injective sets are precisely the
          retracts of powersets.
@@ -547,7 +547,7 @@ and hence extensions up to equality if \m{\W} is taken to be \m{\U \sqcup \V}, b
 \end{numbered}
 \noindent Notice that if \m{\W} is kept arbitrary, then univalence cannot be applied because equality is defined only for elements of the same type.
 \begin{proof}
-Because a sum indexed by a subsingleton is canonically equivalent to any of its
+Because a sum indexed by a subsingleton is equivalent to any of its
 summands, and similarly a product indexed by a subsingleton is equivalent to
 any of its factors, and because a map is an embedding precisely when
 its fibers are all subsingletons.
@@ -784,7 +784,7 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, the right Kan extens
 The left and Kan extensions trivially satisfy \m{f \edown \id \sim f}
 and \m{f \eup \id \sim f} because the identity map is an embedding, by
 the extension property, and so are contravariantly functorial in view
-of the following:
+of the following.
 \begin{numbered} \label{iterated}
   For types \m{X : \U}, \m{Y : \V} and \m{Z : \W}, and functions \m{j : X \to Y}, \m{k : Y \to Z} and \m{f : X \to \U \sqcup \V \sqcup \W}, we have that
 %
@@ -811,7 +811,7 @@ of the following:
 % }
 \end{numbered}
 \begin{proof}
-This is direct consequence of the laws
+This is a direct consequence of the laws
   %
   \M{
     \begin{array}{lll}
@@ -835,7 +835,7 @@ compact ordinals (reported in our repository~\cite{TypeTopology}).
   retract of \m{(f' \eup j) \, y} for any \m{y : Y}.
 \end{numbered}
 
-\noindent The construction is routine, and presumably it can also be
+\noindent The construction is routine, and presumably can be
 performed for left Kan extensions too, but we haven't paused to check
 this.
 
