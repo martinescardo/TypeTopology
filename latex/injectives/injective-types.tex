@@ -781,23 +781,52 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, the right Kan extens
   and \m{\delta} are mutually inverse, which concludes the proof.
 \end{proof}
 
-The following two evident, routine constructions are applied in work on
-compact ordinals (reported in our repository~\cite{TypeTopology}).
-\begin{numbered}
+The left and Kan extensions trivially satisfy \m{f \edown \id \sim f}
+and \m{f \eup \id \sim f} because the identity map is an embedding, by
+the extension property, and so are contravariantly functorial in view
+of the following:
+\begin{numbered} \label{iterated}
   For types \m{X : \U}, \m{Y : \V} and \m{Z : \W}, and functions \m{j : X \to Y}, \m{k : Y \to Z} and \m{f : X \to \U \sqcup \V \sqcup \W}, we have that
 %
   \M{
-    (f \eup j) \eup k \sim f \eup (k \comp j),
+    \begin{array}{lll}
+      f \edown (k \comp j)  & \sim & (f \edown j) \edown k, \\
+    f \eup (k \comp j)  & \sim & (f \eup j) \eup k.
+    \end{array}
   }
   %
-  as illustrated in the following diagram:
-\db{\begin{diagram}
-X &  \rTo^j &  Y & \rTo^k & Z \\
-  & \rdTo_f^{\succsim} & \dTo_{f\eup j} & \ldTo_{(f\eup j)\eup k \sim f\eup(k \comp j)}^{\succsim} \\
-  &         &  D.         &
-\end{diagram}}
+%   as illustrated in the following diagrams:
+%   \M{
+%     \begin{diagram}
+% X &  \rTo^j &  Y & \rTo^k & Z \\
+%   & \rdTo_f^{\precsim} & \dTo_{f\edown j} & \ldTo_{(f\edown j)\eup k \sim f\edown (k \comp j)}^{\precsim} \\
+%   &         &  D,         &
+% \end{diagram}
+% \qquad
+% \begin{diagram}
+% X &  \rTo^j &  Y & \rTo^k & Z \\
+%   & \rdTo_f^{\succsim} & \dTo_{f\eup j} & \ldTo_{(f\eup j)\eup k \sim f\eup(k \comp j)}^{\succsim} \\
+%   &         &  D.         &
+% \end{diagram}
+% }
 \end{numbered}
+\begin{proof}
+This is direct consequence of the laws
+  %
+  \M{
+    \begin{array}{lll}
+      (\Sigma (t : \Sigma (t : \Sigma B) , C \, t) \simeq (\Sigma (a : A)\,
+    \Sigma (b : B \, a), C(a,b)) \\
+      (\Pi (t : \Sigma (t : \Sigma B) , C \, t) \simeq (\Pi (a : A)\,
+    \Pi (b : B \, a), C(a,b))
+    \end{array}
+  }
+  %
+  for arbitrary universes \m{\U,\V,\W} and \m{A:\U}, \m{B: X \to \V}, and \m{C : \Sigma \, B \to \W}.
+\end{proof}
 
+The above and the following are applied in work on
+compact ordinals (reported in our repository~\cite{TypeTopology}).
 \begin{numbered}
   For types \m{X : \U} and \m{Y : \V}, and functions \m{j : X \to Y}, \m{f : X \to \W}
   and \m{f' : X \to \W'}, if the type \m{f \, x} is a retract of \m{f'
@@ -806,8 +835,9 @@ X &  \rTo^j &  Y & \rTo^k & Z \\
   retract of \m{(f' \eup j) \, y} for any \m{y : Y}.
 \end{numbered}
 
-\noindent Presumably such constructions can be performed for left Kan extensions
-too, but we haven't paused to check this.
+\noindent The construction is routine, and presumably it can also be
+performed for left Kan extensions too, but we haven't paused to check
+this.
 
 \section{Constructions with algebraically injective types}
 
@@ -820,7 +850,7 @@ Algebraic injectives are closed under retracts:
 \noindent In particular, any type equivalent to an algebraically injective type
 is itself algebraically injective, without the need to invoke univalence.
 \begin{proof}
-\db{\begin{diagram}
+\M{\begin{diagram}
 X &	 	& \rTo^j  & 		   & Y 	\\
   & \rdTo^f\rdTo(2,4)_{s \comp f} 	&   	       & \ldEto^{f \mid j}\ldTo(2,4)_{(s \comp f) \mid j}       & 	\\
   & 		& D'	       & 		   &    \\
@@ -859,7 +889,7 @@ operators \m{(-)\mid_a(-)} of the algebraically injective types
   of any type \m{Y:\V} in which it is embedded into.
 \end{numbered}
 \begin{proof}
-\db{\begin{diagram}
+\M{\begin{diagram}
   D & & \rInto^j & & Y  \\
   & \rdTo_\id &  & \ldEto_{r \eqdef \id \mid j} & \\
   & & D. & &
@@ -907,7 +937,7 @@ the type \m{\Sigma A} is itself a singleton.  Hence we have
   If a type \m{D} in a universe \m{\U} is \m{\U,\U^+}-injective, then \m{D} is a retract of the exponential power \m{D \to \U} of \m{\U}.
 \end{numbered}
 \begin{proof}
-\db{\begin{diagram}
+\M{\begin{diagram}
   D & & \rInto^\Id & & (D \to \U)  \\
   & \rdTo_\id &  & \ldEto_{r \eqdef \id \mid \Id} & \\
   & & D. & &
@@ -1546,10 +1576,11 @@ algebras. We omit the direct verification of the following.
   \end{enumerate}
 \end{numbered}
 \noindent So the associativity law for algebras plays no role in
-flabbiness. But of course we can have algebraic flabbiness data that is
-associative, such as not only the free algebra \m{\Lift_\T X}, but
+flabbiness. But of course we can have algebraic flabbiness data that
+is associative, such as not only the free algebra \m{\Lift_\T X}, but
 also the following two examples that connect to the opening
-development of this paper on the injectivity of universes.
+development of this paper on the injectivity of universes, in
+particular the construction~\ref{iterated}:
 \begin{numbered} The universe \m{\T} is a monad algebra of
   \m{\Lift_\T} in at least two ways, with \m{\bigsqcup = \Sigma} and
   \m{\bigsqcup = \Pi}.
