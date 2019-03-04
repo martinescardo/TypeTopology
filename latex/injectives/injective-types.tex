@@ -408,15 +408,15 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
   elements of subsingleton type, and all our constructions are
   indicated by the word proof, including the construction of data or
   structure.  We will, however, reserve the words \df{theorem} and
-  \df{propositions} for statements that are subsingletons, although a
-  \df{lemma} can be an auxiliary construction and a corollary can be a
-  special case of a construction or an easily derived
+  \df{proposition} for statements that are subsingletons, although a
+  \df{lemma} can be an auxiliary construction and a \df{corollary} can
+  be a special case of a construction or an easily derived
   constructions. We use numbered statements without qualifications for
   statements that are not subsingletons are require constructions,
   with the word \df{proof} preceeding the construction.
 
   Because \df{proposition} is a semantical rather than syntactical
-  notion, we often have situations when we know that something is a
+  notion, we often have situations when we know that a type is a
   proposition only much later in the mathematical development. An
   example of this is univalence. To know that is a proposition, we
   first need to state and prove many lemmas, and even if these lemmas
@@ -535,9 +535,9 @@ Let \m{\U,\V,\W} be universes, \m{X:\U} and \m{Y : \V} be types, and
 
 \begin{numbered}
     If \m{j} is an embedding, then both \m{f \edown j} and \m{f \eup j} are extensions of \m{f} along~\m{j} up to equivalence, in the sense that \M{(f \edown j \comp j) \, x \simeq f x \simeq (f \eup j \comp j) \, x,}
-and hence are extensions up to equality if \m{\W} is taken to be \m{\U \sqcup \V}, by univalence.
+and hence extensions up to equality if \m{\W} is taken to be \m{\U \sqcup \V}, by univalence.
 \end{numbered}
-\noindent (Notice that if \m{\W} is kept arbitrary, then univalence cannot be applied because equality is defined only for elements of the same type.)
+\noindent Notice that if \m{\W} is kept arbitrary, then univalence cannot be applied because equality is defined only for elements of the same type.
 \begin{proof}
 Because a sum indexed by a subsingleton is canonically equivalent to any of its
 summands, and similarly a product indexed by a subsingleton is equivalent to
@@ -704,7 +704,7 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, left Kan extension a
 
 The proof of the theorem below follows the same pattern as the
 previous one with some portions ``dualized'' in some sense, and so we
-are more economic with its formulation this time.
+are slightly more economic with its formulation this time.
 
 \begin{theorem}
 For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, the right Kan extension operation along \m{j} is an embedding of the function type \m{X \to \U} into the function type \m{Y \to \U}.
@@ -896,7 +896,7 @@ the type \m{\Sigma A} is itself a singleton.  Hence we have
     : X), \Id \, x = A} of~\m{A}.
 \end{proof}
 \begin{numbered}
-  If a type \m{D} in a univalent universe \m{\U} is \m{\U,\U^+}-injective, then \m{D} is a retract of the exponential power \m{D \to \U} of \m{\U}.
+  If a type \m{D} in a universe \m{\U} is \m{\U,\U^+}-injective, then \m{D} is a retract of the exponential power \m{D \to \U} of \m{\U}.
 \end{numbered}
 \begin{proof}
 \db{\begin{diagram}
@@ -918,7 +918,7 @@ almost give directly that the algebraically injective types are
 precisely the retracts of exponential powers of universes, but there
 is a universe mismatch.  Keeping track of the universes to avoid the
 mismatch, what we get instead is a resizing construction without the
-need to resizing axioms:
+need of resizing axioms:
 \begin{numbered}
   Algebraically \m{\U,\U^+}-injective types \m{D:\U} are
   algebraically \m{\U,\U}-injective too.
@@ -968,7 +968,7 @@ subsingletons.
   Give a subsingleton \m{P} and a map \m{f : P \to D}, we can take its extension \m{f \mid \operatorname{!}: \One \to D} along the unique map \m{!:P \to \One}, because it is an embedding, and then we let \m{d \eqdef f \, \one}, and the extension property gives \m{d = f \, p} for any \m{p}.
 \end{proof}
 The interesting thing about this is that the
-universe~\m{\V} is forgotten, and the we can put any other universe
+universe~\m{\V} is forgotten, and then we can put any other universe
 below \m{\U} back, as follows
 
 \begin{numbered}
@@ -1020,7 +1020,7 @@ is also algebraically injective.
   with \m{\Pi} in place of \m{\Sigma}.
 \end{definition}
 \noindent Notice that \m{A} being subsingleton-valued is
-precisely what is needed for the projection being an embedding, and
+precisely what is needed for the projection to be an embedding, and
 that all embeddings are of this form up to equivalence (more
 precisely, every embedding of any two types is the composition of an
 equivalence into a sum type followed by the first projection).
@@ -1057,7 +1057,7 @@ equivalence into a sum type followed by the first projection).
 We index \m{n}-types from \m{n=-2} as in the HoTT Book, where the
 \m{-2}-types are the singletons.
 \begin{corollary}
-  The subuniverse of \m{n}-types a universe \m{\U} is algebraically
+  The subuniverse of \m{n}-types in a universe \m{\U} is algebraically
   \m{\U}-flabby, in at least two ways, and hence algebraically
   \m{\U,\U}-injective.
 \end{corollary}
@@ -1107,15 +1107,14 @@ resizing:
   If propositional resizing holds, then the algebraic \m{\V}-flabiness
   of a type in any universe gives its algebraic \m{\U}-flabiness.
 \end{numbered}
-Notice the universe contravariance.
 \begin{proof}
   Let \m{D:\W} be a type in any universe \m{\W}, let \m{P : \U} be a
   proposition and \m{f : P \to D}. By resizing, we have an equivalence
   \m{\beta : Q \to P} for a suitable proposition \m{Q:\V}.  Then the
-  algebraic \m{\V}-flabiness of \m{D} gives \m{d:D} with \m{d = (f
-    \comp \beta) \, q} for all \m{q : Q}, and hence with \m{d = f \,
-    p} for all \m{p : P}, because we have \m{p=\beta \, q} for \m{q =
-    \alpha \, p} where \m{\alpha} is a quasi-inverse of \m{\beta},
+  algebraic \m{\V}-flabiness of \m{D} gives a point \m{d:D} with \m{d
+    = (f \comp \beta) \, q} for all \m{q : Q}, and hence with \m{d = f
+    \, p} for all \m{p : P}, because we have \m{p=\beta \, q} for \m{q
+    = \alpha \, p} where \m{\alpha} is a quasi-inverse of \m{\beta},
   which establishes the algebraic \m{\U}-flabiness of~\m{D}.
 \end{proof}
 
@@ -1146,11 +1145,11 @@ retraction so that the section is an embedding in our situation.
 \begin{proof}
   For example, we have the embedding given by \m{X \mapsto X +
     \Zero_\V}. We don't consider an argument that this is indeed an
-  embedding, in the absence of universe cumulativity, to be routine
-  without a significant amount of experience in univalent mathematics,
-  even if it seems obvious. Nevertheless, it is certainly safe to
-  leave it as a challenge to the reader, and a proof can be found
-  in~\cite{injective:article} in case of doubt.
+  embedding, in the absence of universe cumulativity, to be entirely
+  routine without a significant amount of experience in univalent
+  mathematics, even if it seems obvious. Nevertheless, it is certainly
+  safe to leave it as a challenge to the reader, and a proof can be
+  found in~\cite{injective:article} in case of doubt.
 \end{proof}
 
 \begin{numbered}
@@ -1173,10 +1172,11 @@ types are precisely the retracts of exponential powers of universes,
 up to a universe mismatch. This mismatch is side-stepped by
 propositional resizing.
 
-\begin{numbered} \df{(First characterization of algebraic injectives).}
-  If propositional resizing holds, then a type \m{D} in \m{\U} is
-  algebraically \m{\U,\U}-injective if and only if \m{D} is a retract
-  of an exponential power of \m{\U} with exponent in \m{\U}.
+\begin{numbered} \df{(First characterization of algebraic
+    injectives).}  If propositional resizing holds, then a type \m{D}
+  in a universe \m{\U} is algebraically \m{\U,\U}-injective if and
+  only if \m{D} is a retract of an exponential power of \m{\U} with
+  exponent in \m{\U}.
 \end{numbered}
 \noindent We emphasize that this is a logical equivalence ``if and
 only if'' rather than an \m{\infty}-groupoid equivalence
@@ -1196,7 +1196,7 @@ only if'' rather than an \m{\infty}-groupoid equivalence
   is a retract of this power.
 \end{proof}
 
-We also have that an algebraically injective \m{(n+1)}-type is a retract
+We also have that any algebraically injective \m{(n+1)}-type is a retract
 of an exponential power of the universe of \m{n}-types. We prove something
 more general first.
 
@@ -1223,8 +1223,7 @@ more general first.
   identity map along \m{k}.
 \end{proof}
 
-Using this, we get that the algebraically injective \m{(n+1)}-types are the
-retracts of exponential powers of the subuniverse of \m{n}-types.
+Using this, we get the following as an immediate consequence.
 
 \begin{numbered} \df{(Characterization of algebraic injective \m{n+1}-types).}  If propositional resizing holds, then an
   \m{(n+1)}-type \m{D} in \m{\U} is algebraically \m{\U,\U}-injective
@@ -1254,7 +1253,7 @@ closed under products.
 \begin{numbered}
   Injectivity is a proposition.
 \end{numbered}
-But of course algebraic injectivity is not. From this we immediately
+\noindent But of course algebraic injectivity is not. From this we immediately
 get the following by the universal property of propositional
 truncation:
 
@@ -1348,29 +1347,25 @@ and, not quite conversely,
 \begin{quote}
   if \m{D} is \m{\U,\U^+}-injective then it is algebraically \m{\U,\U}-injective.
 \end{quote}
-and hence, using propositional resizing, we get the following
+Therefore, using propositional resizing, we get the following
 characterization of a particular case of injectivity in terms of
 algebraic injectivity.
 
 \begin{numbered} \label{worse} \df{(Injectivity in terms of algebraic injectivity.)}
   If propositional resizing holds, then a type \m{D : \U} is \m{\U,\U^+}-injective if and only if it is algebraically \m{\U,\U^+}-injective in an unspecified way.
 \end{numbered}
-
-We would like to do better than this. For that purpose, we consider
-the lifting monad in conjunction with resizing.
+\noindent We would like to do better than this. For that purpose, we consider
+the lifting monad in conjunction with flabiness and resizing.
 
 \section{Algebraic flabbiness via the partial-map classifier}
 
-The lifting \m{\Lift_{\T,\U} \, X : \T^+ \sqcup \U} of a type \m{X:\U}
+The lifting \m{\Lift_{\T} \, X : \T^+ \sqcup \U} of a type \m{X:\U}
 with respect to a universe \m{\T} % for truth-values
 is defined by
 %
-\M{ \Lift_{\T,\U}\, X \eqdef \Sigma (P : \T), (P \to X) \times
+\M{ \Lift_{\T}\, X \eqdef \Sigma (P : \T), (P \to X) \times
   \text{\m{P} is a subsingleton}.  }
 %
-We will omit the second universe parameter \m{\U} from \m{\Lift} when
-it can be infered from the argument \m{X}.
-
 When the universes \m{\T} and \m{\U} are the same and the last
 component of the triple is omitted, we have the familiar
 correspondence
@@ -1412,7 +1407,9 @@ embeddings have fibers with copies in~\m{\T}.
 
 This is a sort of an \m{\infty}-monad ``across
 universes''~\cite{TypeTopology}, and modulo providing coherence data,
-which we haven't done, and is not needed for our purposes.
+which we haven't done at the time of writing, but which is not needed
+for our purposes. We could call this a ``wild monad'', but we will
+refer to it as simply a monad with this warning.
 
 In order to discuss the lifting in more detail, we first chatacterize
 its equality types. We denote the projections from \m{\Lift_{\T}
@@ -1458,10 +1455,10 @@ where \m{i} is a proof that \m{\One} is a proposition.
 defined by
 %
 \M{
-\Lift_\T f (P , \phi , i) = (P , f \comp \phi , i),
+\Lift_\T f (P , \phi , i) = (P , f \comp \phi , i).
 }
 %
-so that is functorial by construction.
+This commutes with identities and composition definitionally.
 %
 % For \m{X:\U} and \m{Y : \V} and \m{f : X \to \Lift_\T Y}, define \m{f^\sharp : \Lift_\T X \to \Lift_\T Y} by
 % %
@@ -1476,14 +1473,13 @@ so that is functorial by construction.
 % Then we let the multiplication \m{\mu : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\T}\, X}
 % be the \m{\Lift_\T} extension of the identity of \m{\Lift_{\T}\, X}, which amounts to saying that
 %
-
 We define the multiplication \m{\mu_X : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\T}\, X} by
 %
 \M{
   \begin{array}{lll}
   \delta (\mu (P , \phi , i)) & \eqdef & \Sigma (p : P), \delta (\phi \, p), \\
   \upsilon (\mu (P , \phi , i)) & \eqdef & (p , q) \mapsto \upsilon (\phi \, p) \, q , \\
-  \sigma (\mu (P , \phi , i)) & \eqdef & \text{using that subsingletons are closed under sums.} \\
+  \sigma (\mu (P , \phi , i)) & \eqdef & \text{because subsingletons are closed under sums.} \\
   \end{array}
 }
 %
@@ -1610,11 +1606,11 @@ mention lifting in its formulation.
   \m{D \to L}, because embeddings are closed under composition and
   equivalences are embeddings.  Hence \m{D} is a retract of \m{L} in
   an unspecified way by the injectivity of~\m{D}, by extending its
-  identity.  But \m{L}, being equivalent of a free algebra, is
-  algebraically injective, hence, because retracts of algebraically
-  injectives are algebraically injective, being a retract of \m{L} in
-  an unspecified way, \m{D} is algebraically injective in an
-  unspecified way, by the functoriality of truncation on objects.
+  identity.  But \m{L}, being equivalent to a free algebra, is
+  algebraically injective, and hence, being a retract of \m{L} in an
+  unspecified way, \m{D} is algebraically injective in an unspecified
+  way, because retracts of algebraically injectives are algebraically
+  injective, by the functoriality of truncation on objects.
 \end{proof}
 
 As an immediate consequence, by reduction to the above results about algebraic
@@ -1792,7 +1788,7 @@ And we have a similar situation with injective types.
   \m{\U,\U}-injective if and only if excluded middled
   holds in~\m{\U}.
 \end{theorem}
-It would be interesting to get rid of the resizing assumption, which,
+\noindent It would be interesting to get rid of the resizing assumption, which,
 as we have seen, is not needed for the equivalence of the algebraic
 injectivity of all pointed types with excluded middle.
 
