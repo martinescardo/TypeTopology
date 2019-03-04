@@ -362,7 +362,7 @@ Book.
   retract of the type \m{B} in an unspecified way, what we mean is that
   \m{\trunc{\text{\m{A} is a retract of \m{B}}}}.
 
-\item Phrases such as ``there exists'', ``there is'', ``there is some'', ``for some'' etc.\ indicate a propositionally truncated \m{\Sigma}, and symbollically we write  \[ (\exists (x:X), A \, x) \eqdef  \trunc{\Sigma (x:X), A \, x}.\]
+\item Phrases such as ``there exists'', ``there is'', ``there is some'', ``for some'' etc.\ indicate a propositionally truncated \m{\Sigma}, and symbolically we write  \[ (\exists (x:X), A \, x) \eqdef  \trunc{\Sigma (x:X), A \, x}.\]
 For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
 
   When the meaning of existence is intended to be (untruncated)
@@ -411,7 +411,7 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
 \item Contrarily to an existing convention among some practitioners,
   we will not reserve the word \df{is} for mathematical statements
   that are subsingleton types. For example, we say that a type is
-  algebraicly injective to mean that it comes equipped with suitable
+  algebraically injective to mean that it comes equipped with suitable
   data, or that a type \m{X} is a retract of a type \m{Y} to mean that
   there are designated functions \m{s : X \to Y} and \m{r : Y \to X},
   and a designated pointwise identification \m{r \comp s \sim \id}.
@@ -425,7 +425,7 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
   be a special case of a construction or an easily derived
   constructions. We use numbered statements without qualifications for
   statements that are not subsingletons are require constructions,
-  with the word \df{proof} preceeding the construction.
+  with the word \df{proof} preceding the construction.
 
   Because \df{proposition} is a semantical rather than syntactical
   notion, we often have situations when we know that a type is a
@@ -599,7 +599,7 @@ of type \m{f\, x \to f\, y} for \m{p : \Id \, x \, y}, then for
   [p].
 }
 Then we can consider the type of transformations between such
-\m{\infty}-presheafs \m{f : X \to \W} and \m{f' : X \to \W'} defined by
+\m{\infty}-presheaves \m{f : X \to \W} and \m{f' : X \to \W'} defined by
 %
 \M{
   f \preceq f' \eqdef \Pi (x : X), f \, x \to  f' x,
@@ -680,7 +680,7 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, left Kan extension a
   %
   where \m{\varepsilon \, f} is a proof that the map \m{\kappa \, (s
     f) \, y} is an equivalence for every \m{y : Y}, to be constructed
-  shortly.  Before we know this contruction, we can see that \m{\gamma
+  shortly.  Before we know this construction, we can see that \m{\gamma
     (\phi \, f) = r (s \, f) = f} so that \m{\gamma \comp \phi \sim
     \id}, and that \m{\phi (\gamma (g , e)) = (s(r g) , \varepsilon (r
     g))}.  To check that the pairs \m{(s(r g) , \varepsilon (r g))}
@@ -975,7 +975,7 @@ algebraically \m{\U,\U}-injective.
 \end{proof}
 This is resizing down and so is not surprising.
 %
-Of course, such a contruction can be performed directly by considering
+Of course, such a construction can be performed directly by considering
 an embedding \m{\U \to \U^+}, but the idea is to generalize it to
 obtain further resizing-for-free constructions, and, later,
 resizing-for-a-price constructions.  We achieve this by considering a
@@ -1052,7 +1052,7 @@ is also algebraically injective.
 \begin{definition}
   By a \df{subuniverse} of \m{\U} we mean a projection \m{\Sigma \, A
     \to \U} with \m{A : \U \to \T} subsingleton-valued and the
-  universe \m{\T} arbitrary. By a costumary abuse of language, we also
+  universe \m{\T} arbitrary. By a customary abuse of language, we also
   sometimes refer to the domain of the projection as the
   subuniverse. Closure under subsingletons means that \m{A\,P} holds
   for any subsingleton \m{P:\U}. Closure under sums amounts to
@@ -1070,7 +1070,7 @@ equivalence into a sum type followed by the first projection).
 \begin{numbered}
   Any subuniverse of \m{\U} which is closed
   under subsingletons and sums, or alternatively under subsingletons and
-  products, is algebraicaly \m{\U}-flabby and hence
+  products, is algebraically \m{\U}-flabby and hence
   algebraically \m{\U,\U}-injective.
 \end{numbered}
 \begin{proof}
@@ -1172,7 +1172,7 @@ back-and-forth between algebraic injectivity and algebraic flabbiness.
 \begin{proof}
   We first get the \m{\U}-flabbiness of \m{D}, and then, by resizing, its
   \m{\U' \sqcup \V'}-flabbiness, and finally its algebraic
-  \m{\U',\V'}-injectivivity.
+  \m{\U',\V'}-injectivity.
 \end{proof}
 
 As an application of this and of the algebraic injectivity of
@@ -1343,7 +1343,7 @@ the absence of choice, but exponential powers are).
 \end{proof}
 
 
-The universe assignements in the following are probably not very
+The universe assignments in the following are probably not very
 friendly, but we are aiming for maximum generality.
 \begin{numbered}
  If a type \m{D : \T \sqcup \W} is \m{(\U \sqcup \T),(\V \sqcup \T)}-injective, then so is the exponential power \m{A \to D} for any \m{A:\T}.
@@ -1456,7 +1456,7 @@ which we haven't done at the time of writing, but which is not needed
 for our purposes. We could call this a ``wild monad'', but we will
 refer to it as simply a monad with this warning.
 
-In order to discuss the lifting in more detail, we first chatacterize
+In order to discuss the lifting in more detail, we first characterize
 its equality types. We denote the projections from \m{\Lift_{\T}
   \, X} by
 %
@@ -1790,7 +1790,7 @@ by reduction to algebraic flabbiness:
 \noindent Putting this together with some universe specializations, we
 have the following construction.
 \begin{numbered} % \df{(Logical equivalence of algebraic injectivity of all pointed types with excluded middle.)} \\
-  All pointed types in a universe \m{\U} are algebraically \m{\U,\U}-injective if and only if excluded middled holds in~\m{\U}.
+  All pointed types in a universe \m{\U} are algebraically \m{\U,\U}-injective if and only if excluded middle holds in~\m{\U}.
 \end{numbered}
 
 \noindent
@@ -1832,7 +1832,7 @@ And we have a similar situation with injective types.
 \end{proof}
 \begin{theorem} % \df{(The equivalence of injectivity with excluded middle.)} \\
   Under \m{\Omega}-resizing, all inhabited types in a universe \m{\U} are
-  \m{\U,\U}-injective if and only if excluded middled
+  \m{\U,\U}-injective if and only if excluded middles
   holds in~\m{\U}.
 \end{theorem}
 \noindent It would be interesting to get rid of the resizing assumption, which,
