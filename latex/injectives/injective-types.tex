@@ -1205,7 +1205,7 @@ only if'' rather than an \m{\infty}-groupoid equivalence
 \end{proof}
 
 We also have that any algebraically injective \m{(n+1)}-type is a retract
-of an exponential power of the universe of \m{n}-types. We prove something
+of an exponential power of the universe of \m{n}-types. We establish something
 more general first.
 
 \begin{numbered}
@@ -1233,7 +1233,7 @@ more general first.
 
 Using this, we get the following as an immediate consequence.
 
-\begin{numbered} \df{(Characterization of algebraic injective \m{n+1}-types).}  If propositional resizing holds, then an
+\begin{numbered} \df{(Characterization of algebraic injective \m{(n+1)}-types).}  If propositional resizing holds, then an
   \m{(n+1)}-type \m{D} in \m{\U} is algebraically \m{\U,\U}-injective
   if and only if \m{D} is a retract of an exponential power of the
   universe of \m{n}-types \m{\U} with exponent in \m{\U}.
@@ -1495,13 +1495,13 @@ We define the multiplication \m{\mu_X : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\
 }
 %
 \begin{numbered}
-  The multiplication satisfies the associativity equation for a monad
+  The multiplication satisfies the associativity equation for a monad.
 \end{numbered}
 \begin{proof}
   Using the above characterization of equality, we see that this
   amounts to the associativity of \m{\Sigma}, which says that for
   \m{P:\T}, \m{Q: X \to \T}, \m{R : \Sigma \, Q \to \T} we have
-   \m{(\Sigma (t : \Sigma \, Q)\, R \, t) \simeq (\Sigma (p : P)\,
+   \m{(\Sigma (t : \Sigma \, Q), R \, t) \simeq (\Sigma (p : P)\,
     \Sigma (q : Q \, p), R(p,q))}.
 \end{proof}
 
@@ -1540,7 +1540,7 @@ algebras. We omit the direct verification of the following.
       \T} and family \m{Q : P \to \T} of subsingletons, and any \m{\phi : \Sigma \, Q \to X},
     %
     \M{
-      \bigsqcup_{t : \Sigma Q} \phi \, t = \bigsqcup_{p : P} \bigsqcup_{q : Q p} \phi (p ,q).
+      \bigsqcup_{t : \Sigma Q} \phi \, t = \bigsqcup_{p : P} \bigsqcup_{q : Q \, p} \phi (p ,q).
     }
     %
   \end{enumerate}
@@ -1564,7 +1564,7 @@ We now apply these ideas to injectivity.
   Because the unit is an embedding, and so we can extend the identity of~\m{D} along it.
 \end{proof}
 
-\begin{numbered} \df{(Second characterization of algebraic injectives).}
+\begin{numbered} \df{(Second characterization of algebraic injectives.)}
   With propositional resizing, a type \m{D:\T} is algebraically
   \m{\T,\T}-injective if and only if it is a retract of a free monad
   algebra of \m{\Lift_\T}.
@@ -1586,7 +1586,7 @@ universe \m{\U^+}, has an equivalent copy in \m{\U}. We refer to this
 kind of impredicativity as \m{\Omega}-resizing. It is not hard to see
 that propositional resizing implies \m{\Omega}-resizing for all
 universes other than the first one~\cite{TypeTopology}, and so all
-the upgraded assumption of \m{\Omega}-resizing does is to account
+the assumption of \m{\Omega}-resizing does is to account
 for the first universe too.
 
 %
@@ -1723,11 +1723,11 @@ For the converse, we use the following.
   we would have \m{\phi:P \to \Zero} and hence, again omitting the
   inclusion, and considering \m{z=\phi}, we would have \m{d = f \,
     \phi = \phi}, which again is in not in the \m{\One} component. But
-  it is impossible for both \m{P} and \m{P \to \Zero} to fail to hold,
-  because this would mean that we would have functions \m{P \to \Zero}
-  (the failure of \m{P} to hold) and \m{(P \to \Zero) \to \Zero}
-  (the failure of \m{P \to \Zero} to hold), and so we could apply the
-  second to the first to get a point of the empty type, which is not
+  it is impossible for both \m{P} and \m{P \to \Zero} to fail, because
+  this would mean that we would have functions \m{P \to \Zero} (the
+  failure of \m{P}) and \m{(P \to \Zero) \to \Zero} (the failure of
+  \m{P \to \Zero}), and so we could apply the second function to the
+  first to get a point of the empty type, which is not
   available. Therefore \m{d} can't be in the third component, and so
   it must be in the first or the second, which means that \m{P} is
   decidable.
@@ -1754,7 +1754,7 @@ by reduction to algebraic flabbiness:
 % \end{proof}
 \noindent Putting this together with some universe specializations, we
 have the following construction.
-\begin{numbered} \df{(Logical equivalence of algebraic injectivity with excluded middle.)} \\
+\begin{numbered} % \df{(Logical equivalence of algebraic injectivity of all pointed types with excluded middle.)} \\
   All pointed types in a universe \m{\U} are algebraically \m{\U,\U}-injective if and only if excluded middled holds in~\m{\U}.
 \end{numbered}
 
@@ -1795,7 +1795,7 @@ And we have a similar situation with injective types.
   unspecified way.  By the lemma, \m{P} is decidable in an unspecified
   way, and hence decidable.
 \end{proof}
-\begin{theorem} \df{(The equivalence of injectivity with excluded middle.)} \\
+\begin{theorem} % \df{(The equivalence of injectivity with excluded middle.)} \\
   Under \m{\Omega}-resizing, all inhabited types in a universe \m{\U} are
   \m{\U,\U}-injective if and only if excluded middled
   holds in~\m{\U}.
