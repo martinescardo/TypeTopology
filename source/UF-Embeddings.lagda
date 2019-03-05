@@ -9,7 +9,6 @@ open import SpartanMLTT
 open import Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
-open import UF-Subsingletons-Equiv
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-LeftCancellable

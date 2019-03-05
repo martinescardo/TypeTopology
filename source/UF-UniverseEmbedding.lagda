@@ -22,7 +22,6 @@ module UF-UniverseEmbedding where
 
 open import SpartanMLTT
 open import UF-Subsingletons
-open import UF-Subsingletons-Equiv
 open import UF-Embeddings
 open import UF-Equiv
 open import UF-EquivalenceExamples

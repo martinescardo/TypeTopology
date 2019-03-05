@@ -240,3 +240,29 @@ retract-𝟙+𝟙-of-ℕ = r , s , rs
   rs (inr *) = refl
 
 \end{code}
+
+Added 5th March 2019. Notation for composing retracts. I should have
+added this ages ago to make the above proofs more readable.
+
+\begin{code}
+
+_◁_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+Y ◁ X = retract Y of X
+
+_◁⟨_⟩_ : (X : 𝓤 ̇) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
+_ ◁⟨ d ⟩ e = retracts-compose e d
+
+_◀ : (X : 𝓤 ̇) → X ◁ X
+X ◀ = identity-retraction {universe-of X} {X}
+
+\end{code}
+
+Fixities:
+
+\begin{code}
+
+infix  0 _◁_
+infix  1 _◀
+infixr 0 _◁⟨_⟩_
+
+\end{code}

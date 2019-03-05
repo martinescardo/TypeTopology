@@ -181,6 +181,27 @@ equiv-to-prop e = retract-of-prop (equiv-retract-l e)
 equiv-to-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Y ≃ X → is-singleton X → is-singleton Y
 equiv-to-singleton e = retract-of-singleton (equiv-retract-l e)
 
+pt-pf-equiv : {X : 𝓤 ̇} (x : X) → singleton-type x ≃ singleton-type' x
+pt-pf-equiv x = f , ((g , fg) , (g , gf))
+ where
+  f : singleton-type x → singleton-type' x
+  f (y , p) = y , (p ⁻¹)
+  g : singleton-type' x → singleton-type x
+  g (y , p) = y , (p ⁻¹)
+  fg : f ∘ g ∼ id
+  fg (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
+  gf : g ∘ f ∼ id
+  gf (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
+
+singleton-types'-are-singletons : {X : 𝓤 ̇} (x : X) → is-singleton(singleton-type' x)
+singleton-types'-are-singletons x = retract-of-singleton
+                                      (pr₁(pt-pf-equiv x) ,
+                                      (pr₁(pr₂((pt-pf-equiv x)))))
+                                      (singleton-types-are-singletons x)
+
+singleton-types'-are-props : {X : 𝓤 ̇} (x : X) → is-prop(singleton-type' x)
+singleton-types'-are-props x = singletons-are-props (singleton-types'-are-singletons x)
+
 \end{code}
 
 Equivalence of transports.
@@ -457,6 +478,35 @@ equiv-to-set : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X ≃ Y → is-set Y → is-set X
 equiv-to-set e = subtypes-of-sets-are-sets
                    (eqtofun e)
                    (equivs-are-lc (eqtofun e) (eqtofun-is-an-equiv e))
+\end{code}
+
+5th March 2019. A more direct proof the quasi-invertible maps
+are Voevodky equivalences (have contractible fibers).
+
+\begin{code}
+
+qinv-is-vv-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → qinv f → is-vv-equiv f
+qinv-is-vv-equiv {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
+ where
+  a : (y : Y) → (f (g y) ≡ y₀) ◁ (y ≡ y₀)
+  a y = r , s , rs
+   where
+    r : y ≡ y₀ → f (g y) ≡ y₀
+    r p = ε y ∙ p
+    s : f (g y) ≡ y₀ → y ≡ y₀
+    s q = (ε y)⁻¹ ∙ q
+    rs : (q : f (g y) ≡ y₀) → r (s q) ≡ q
+    rs q = ε y ∙ ((ε y)⁻¹ ∙ q) ≡⟨ (∙assoc (ε y) ((ε y)⁻¹) q)⁻¹ ⟩
+           (ε y ∙ (ε y)⁻¹) ∙ q ≡⟨ ap (_∙ q) ((sym-is-inverse' (ε y))⁻¹) ⟩
+           refl ∙ q            ≡⟨ refl-left-neutral ⟩
+           q                   ∎
+  b : fiber f y₀ ◁ singleton-type' y₀
+  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retract g (f , η) ⟩
+      (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
+      (Σ \(y : Y) → y ≡ y₀)       ◀
+  γ : is-contr (fiber f y₀)
+  γ = retract-of-singleton b (singleton-types'-are-singletons y₀)
+
 \end{code}
 
 Associativities and precedences.
