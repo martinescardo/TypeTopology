@@ -36,8 +36,6 @@ curry f x y = f (x , y)
 
 \end{code}
 
-Equivalently, Σ-elim f t = f (pr₁ t) (pr₂ t).
-
 As usual in type theory, binary products are particular cases of
 dependent sums.
 

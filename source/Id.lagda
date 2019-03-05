@@ -41,10 +41,10 @@ transport : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X}
 transport A refl = id
 
 _∙_ : {X : 𝓤 ̇} {x y z : X} → x ≡ y → y ≡ z → x ≡ z
-p ∙ q = transport (Id (lhs p)) q p
+p ∙ q = transport (lhs p ≡_) q p
 
 _⁻¹ : {X : 𝓤 ̇} → {x y : X} → x ≡ y → y ≡ x
-p ⁻¹ = transport (λ - → - ≡ lhs p) p refl
+p ⁻¹ = transport (_≡ lhs p) p refl
 
 ap : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) {x x' : X} → x ≡ x' → f x ≡ f x'
 ap f p = transport (λ - → f (lhs p) ≡ f -) p refl

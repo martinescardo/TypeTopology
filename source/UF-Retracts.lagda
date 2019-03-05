@@ -28,7 +28,7 @@ retraction (r , s , rs) = r
 section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (X → Y)
 section (r , s , rs) = s
 
-retract-condition : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (ρ : retract X of Y) → retraction ρ ∘ section ρ ∼ id
+retract-condition : {X : 𝓤 ̇} {Y : 𝓥 ̇} (ρ : retract X of Y) → retraction ρ ∘ section ρ ∼ id
 retract-condition (r , s , rs) = rs
 
 retract-of-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
@@ -90,10 +90,11 @@ retract-Of-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
 
 retracts-compose : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
                  → retract Y of X → retract Z of Y → retract Z of X
-retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r ,
-                                                    s ∘ s' ,
-                                                    λ z → ap r' (rs (s' z)) ∙ rs' z
-
+retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
+ where
+  p = λ z → r' (r (s (s' z))) ≡⟨ ap r' (rs (s' z)) ⟩
+            r' (s' z)         ≡⟨ rs' z ⟩
+            z                 ∎
 
 ×-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
           → retract X of A

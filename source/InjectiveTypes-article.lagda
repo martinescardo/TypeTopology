@@ -1,5 +1,7 @@
 Martin Escardo, 19th Feb 2019.
 
+Works in the development 2.6.0 only, because of the use of "variables".
+
 Injective types in univalent mathematics
 ----------------------------------------
 
