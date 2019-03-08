@@ -46,8 +46,14 @@ naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
   πδ : π₀ ∘ δ ≡ π₁ ∘ δ
   πδ = refl
 
+  φ : (Δ → Y) → (Y → Y)
+  φ π = π ∘ δ
+
+  φ-is-equiv : is-equiv φ
+  φ-is-equiv = pre-comp-is-equiv ua δ δ-is-equiv
+
   π₀-equals-π₁ : π₀ ≡ π₁
-  π₀-equals-π₁ = is-equiv-lc (λ(g : Δ → Y) → g ∘ δ) (pre-comp-is-equiv ua δ δ-is-equiv) πδ
+  π₀-equals-π₁ = is-equiv-lc φ φ-is-equiv πδ
 
   γ : f₀ ≡ f₁
   γ = f₀                              ≡⟨ refl ⟩
