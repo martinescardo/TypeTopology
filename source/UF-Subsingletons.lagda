@@ -175,7 +175,7 @@ local-hedberg {𝓤} {X} x pc y p q =
   c _ refl = sym-is-inverse (f x refl)
 
 Id-collapsibles-are-sets : {X : 𝓤 ̇} → Id-collapsible X → is-set X
-Id-collapsibles-are-sets {X} pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
+Id-collapsibles-are-sets pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
 
 \end{code}
 

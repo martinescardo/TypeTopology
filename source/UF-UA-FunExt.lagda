@@ -24,40 +24,38 @@ open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
 
 naive-funext-from-univalence : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
-naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₁} {f₂} h = γ
+naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
  where
-  Δ : 𝓤 ̇ → 𝓤 ̇
-  Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y
+  Δ = Σ \(y₀ : Y) → Σ \(y₁ : Y) → y₀ ≡ y₁
 
-  δ : {X : 𝓤 ̇} → X → Δ X
-  δ x = (x , x , refl)
+  δ : Y → Δ
+  δ y = (y , y , refl)
 
-  π₁ π₂ : {X : 𝓤 ̇} → Δ X → X
-  π₁ (x , _ , _) = x
-  π₂ (_ , y , _) = y
+  π₀ π₁ : Δ → Y
+  π₀ (y₀ , y₁ , p) = y₀
+  π₁ (y₀ , y₁ , p) = y₁
 
-  δ-is-equiv : {X : 𝓤 ̇} → is-equiv δ
-  δ-is-equiv {X} = (π₁ , η) , (π₁ , ε)
+  δ-is-equiv : is-equiv δ
+  δ-is-equiv = (π₀ , η) , (π₀ , ε)
    where
-    η : (d : Δ X) → δ (π₁ d) ≡ d
-    η (x , _ , refl) = refl
-    ε : (x : X) → π₁ (δ x) ≡ x
-    ε x = refl
+    η : (d : Δ) → δ (π₀ d) ≡ d
+    η (y₀ , y₁ , refl) = refl
+    ε : (y : Y) → π₀ (δ y) ≡ y
+    ε y = refl
 
-  πδ : (X : 𝓤 ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
-  πδ X = refl
+  πδ : π₀ ∘ δ ≡ π₁ ∘ δ
+  πδ = refl
 
-  π₁-equals-π₂ : {X : 𝓤 ̇} → π₁ ≡ π₂
-  π₁-equals-π₂ {X} = is-equiv-lc (λ(g : Δ X → X) → g ∘ δ)
-                                 (pre-comp-is-equiv ua δ δ-is-equiv) (πδ X)
+  π₀-equals-π₁ : π₀ ≡ π₁
+  π₀-equals-π₁ = is-equiv-lc (λ(g : Δ → Y) → g ∘ δ) (pre-comp-is-equiv ua δ δ-is-equiv) πδ
 
-  γ : f₁ ≡ f₂
-  γ = f₁                              ≡⟨ refl ⟩
+  γ : f₀ ≡ f₁
+  γ = f₀                              ≡⟨ refl ⟩
+      (λ x → f₀ x)                    ≡⟨ refl ⟩
+      (λ x → π₀ (f₀ x , f₁ x , h x))  ≡⟨ ap (λ π x → π (f₀ x , f₁ x , h x)) π₀-equals-π₁ ⟩
+      (λ x → π₁ (f₀ x , f₁ x , h x))  ≡⟨ refl ⟩
       (λ x → f₁ x)                    ≡⟨ refl ⟩
-      (λ x → π₁ (f₁ x , f₂ x , h x))  ≡⟨ ap (λ π x → π (f₁ x , f₂ x , h x)) π₁-equals-π₂ ⟩
-      (λ x → π₂ (f₁ x , f₂ x , h x))  ≡⟨ refl ⟩
-      (λ x → f₂ x)                    ≡⟨ refl ⟩
-      f₂                              ∎
+      f₁                              ∎
 
 \end{code}
 
