@@ -79,7 +79,7 @@ defined below, are often known as decidable subsets. Agda doesn't
 allow overloading of terminology, and hence we gladly accept the
 slighly non-universal terminology.
 
- \begin{code}
+\begin{code}
 
 detachable : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
 detachable A = ∀ x → decidable(A x)

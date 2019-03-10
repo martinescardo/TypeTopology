@@ -212,8 +212,8 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊴ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-simulation α β f
 
-⊴--prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
-⊴--prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
+⊴-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
+⊴-prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
  to-Σ-≡ (dfunext (fe 𝓤 𝓥) (at-most-one-simulation α β f g s t) ,
          being-simulation-is-a-prop α β g _ _)
 

@@ -402,7 +402,8 @@ extensionality holds (happly is an equivalence).
 \begin{code}
 
 funext-via-singletons :
-    ((X : 𝓤 ̇) (Y : X → 𝓥 ̇) → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
+    ((X : 𝓤 ̇) (Y : X → 𝓥 ̇)
+  → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
   → funext 𝓤 𝓥
 funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
  where
