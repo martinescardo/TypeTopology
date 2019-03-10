@@ -1,9 +1,10 @@
 {-
    Agda illiterator.
 
-   This Haskell program converts from .lagda files to .agda files
-   keeps only what is within code environments. It it a unix pipe.
-   There are no command-line options.
+   This Haskell program converts from .lagda files to .agda files.
+   Keeps only what is within code environments, removing lines which
+   consist of comments without code. It it a unix pipe. There are
+   no command-line options.
 
    Typical usage:
 

@@ -1,5 +1,4 @@
 #!/bin/bash
-mkdir -p tmp
 mkdir -p tmp/tmp-illiterate
 ghc --make illiterator.hs
 rm -f tmp/tmp-illiterate/*agda
