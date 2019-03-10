@@ -1,0 +1,9 @@
+#!/bin/bash
+mkdir -p tmp
+mkdir -p tmp/tmp-illiterate
+ghc --make illiterator.hs
+rm -f tmp/tmp-illiterate/*agda
+
+for i in $( ls | grep ".lagda" | grep -v "~" ); do
+    cat ${i} | ./illiterator > tmp/tmp-illiterate/${i%%.*}.agda
+done
