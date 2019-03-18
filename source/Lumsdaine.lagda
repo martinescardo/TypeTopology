@@ -17,14 +17,14 @@ open import Universes
 
 module Lumsdaine
         {𝓤}
-        (Id : ∀ {X : 𝓤 ̇} → X → X → 𝓤 ̇ )
-        (refl : ∀ {X : 𝓤 ̇} {x : X} → Id x x)
-        (J : ∀ {X : 𝓤 ̇} (x : X) (A : (y : X) → Id x y → 𝓤 ̇ )
+        (Id : ∀ {X : 𝓤 ̇ } → X → X → 𝓤 ̇ )
+        (refl : ∀ {X : 𝓤 ̇ } {x : X} → Id x x)
+        (J : ∀ {X : 𝓤 ̇ } (x : X) (A : (y : X) → Id x y → 𝓤 ̇ )
            → A x refl → (y : X) (p : Id x y) → A y p)
         where
 
 private
-  record Σ {𝓤 𝓥 } {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+  record Σ {𝓤 𝓥 } {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
    constructor _,_
    field
     pr₁ : X
@@ -32,16 +32,16 @@ private
 
   open Σ
 
-  id : {X : 𝓤 ̇}  → X → X
+  id : {X : 𝓤 ̇ }  → X → X
   id x = x
 
   lc-maps : (X Y : 𝓤 ̇ ) → 𝓤 ̇
   lc-maps X Y = Σ \(f : X → Y) → {x x' : X} → Id (f x) (f x') → Id x x'
 
-  id-lc-maps : {X : 𝓤 ̇} → lc-maps X X
+  id-lc-maps : {X : 𝓤 ̇ } → lc-maps X X
   id-lc-maps = (id , id)
 
-module _ {X : 𝓤 ̇}
+module _ {X : 𝓤 ̇ }
          {x : X}
          (A : (y : X) → Id x y → 𝓤 ̇ )
  where

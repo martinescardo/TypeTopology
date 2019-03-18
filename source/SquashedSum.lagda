@@ -291,7 +291,7 @@ We don't need this for the moment:
 
 \begin{code}
 
-under𝟙-over-extension : {X : ℕ → 𝓤 ̇} (u : ℕ∞)
+under𝟙-over-extension : {X : ℕ → 𝓤 ̇ } (u : ℕ∞)
                      → ((X / over) / under𝟙) u ≃ (X / under) u
 under𝟙-over-extension = iterated-extension over under𝟙
 
@@ -355,7 +355,7 @@ module original-version-and-equivalence-with-new-version where
  Σᴵ : (ℕ → 𝓤₀ ̇ ) → 𝓤₀ ̇
  Σᴵ X = Σ \(u : ℕ∞) → X [ u ]
 
- ∞₁ : {X : ℕ → 𝓤₀ ̇} → Σᴵ X
+ ∞₁ : {X : ℕ → 𝓤₀ ̇ } → Σᴵ X
  ∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-finite k (r ⁻¹))
 
 \end{code}
@@ -364,7 +364,7 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- H : {X : ℕ → 𝓤₀ ̇} → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
+ H : {X : ℕ → 𝓤₀ ̇ } → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
  H {X} u r y y' = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s
@@ -376,13 +376,13 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- F : {X : ℕ → 𝓤₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X n → X [ u ]
+ F : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → under n ≡ u → X n → X [ u ]
  F {X} n u r x k s = transport X (under-lc (r ∙ s ⁻¹)) x
 
- G : {X : ℕ → 𝓤₀ ̇} (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] → X n
+ G : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] → X n
  G n u r y = y n r
 
- FG : {X : ℕ → 𝓤₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
+ FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
  FG {X} n u r y = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
@@ -400,7 +400,7 @@ module original-version-and-equivalence-with-new-version where
    lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
    lemma k s = J A φ {n} {k} (t k s) u r s y
 
- GF : {X : ℕ → 𝓤₀ ̇} (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
+ GF : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
  GF {X} n u r x = s
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
@@ -424,7 +424,7 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- extension-compact∙ : {X : ℕ → 𝓤₀ ̇} → ((n : ℕ) → compact∙(X n)) → (u : ℕ∞) → compact∙(X [ u ])
+ extension-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → compact∙(X n)) → (u : ℕ∞) → compact∙(X [ u ])
  extension-compact∙ {X} ε u p = y₀ , lemma
   where
    Y : 𝓤₀ ̇
@@ -467,7 +467,7 @@ module original-version-and-equivalence-with-new-version where
 
 \begin{code}
 
- Σᴵ-compact∙ : {X : ℕ → 𝓤₀ ̇} → ((n : ℕ) → compact∙(X n)) → compact∙(Σᴵ X)
+ Σᴵ-compact∙ : {X : ℕ → 𝓤₀ ̇ } → ((n : ℕ) → compact∙(X n)) → compact∙(Σᴵ X)
  Σᴵ-compact∙ {X} f = Σ-compact∙ ℕ∞-compact∙ (extension-compact∙ {X} f)
 
 \end{code}

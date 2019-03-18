@@ -21,22 +21,22 @@ open import UF-FunExt
 open import UF-LeftCancellable
 open import UF-Retracts
 
-Π-is-prop : funext 𝓤 𝓥 → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+Π-is-prop : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
           → ((x : X) → is-prop (A x)) → is-prop (Π A)
 Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
 
-Π-is-prop' : funext 𝓤 𝓥 → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+Π-is-prop' : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
         → ((x : X) → is-prop (A x)) → is-prop ({x : X} → A x)
 Π-is-prop' fe {X} {A} i = retract-of-prop retr (Π-is-prop fe i)
  where
   retr : retract ({x : X} → A x) of Π A
   retr = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
 
-Π-is-singleton : funext 𝓤 𝓥 → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+Π-is-singleton : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
                → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
 Π-is-singleton fe i = (λ x → pr₁ (i x)) , (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
 
-being-a-prop-is-a-prop : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop (is-prop X)
+being-a-prop-is-a-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X)
 being-a-prop-is-a-prop {𝓤} {X} fe f g = c₁
  where
   l : is-set X
@@ -64,7 +64,7 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
   k : (X : 𝓤 ̇ ) → constant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
-being-a-singleton-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop(is-singleton X)
+being-a-singleton-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop(is-singleton X)
 being-a-singleton-is-a-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
   isp : is-prop X
@@ -72,7 +72,7 @@ being-a-singleton-is-a-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext
   iss : is-set X
   iss = props-are-sets isp
 
-Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇} {A : X → 𝓥 ̇}
+Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
          → ((x : X) → is-set(A x)) → is-set(Π A)
 Π-is-set {𝓤} {𝓥} fe {X} {A} isa {f} {g} = b
  where
@@ -91,21 +91,21 @@ parameters.
 
 \begin{code}
 
-being-set-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop (is-set X)
+being-set-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-set X)
 being-set-is-a-prop {𝓤} fe {X} = h
  where
   is-set' : 𝓤 ̇ → 𝓤 ̇
   is-set' X = (x y : X) → is-prop(x ≡ y)
 
-  being-set-is-a-prop' : {X : 𝓤 ̇} → funext 𝓤 𝓤 → is-prop (is-set' X)
+  being-set-is-a-prop' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-set' X)
   being-set-is-a-prop' fe = Π-is-prop fe
                               (λ x → Π-is-prop fe
                               (λ y → being-a-prop-is-a-prop fe))
 
-  f : {X : 𝓤 ̇} → is-set' X → is-set X
+  f : {X : 𝓤 ̇ } → is-set' X → is-set X
   f s {x} {y} = s x y
 
-  g : {X : 𝓤 ̇} → is-set X → is-set' X
+  g : {X : 𝓤 ̇ } → is-set X → is-set' X
   g s x y = s {x} {y}
 
   h : is-prop (is-set X)
@@ -115,7 +115,7 @@ being-set-is-a-prop {𝓤} fe {X} = h
 
 \begin{code}
 
-decidability-of-prop-is-prop : funext 𝓤 𝓤₀ → {P : 𝓤 ̇} → is-prop P → is-prop(P + ¬ P)
+decidability-of-prop-is-prop : funext 𝓤 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → is-prop(P + ¬ P)
 decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
                                       i
                                       (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
@@ -154,10 +154,10 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
   pc {p} {q} = (f p q , constant-f p q)
 
 powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
-                   → {A : 𝓤 ̇} → is-set (A → Ω 𝓥)
+                   → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 
-negations-are-props : {X : 𝓤 ̇} → funext 𝓤 𝓤₀ → is-prop(¬ X)
+negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop(¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤

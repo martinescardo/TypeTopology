@@ -64,8 +64,8 @@ The sum of two ordinals.
 
 module plus
         {𝓤 𝓥 𝓦}
-        {X : 𝓤 ̇}
-        {Y : 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {Y : 𝓥 ̇ }
         (_<_ : X → X → 𝓦 ̇ )
         (_≺_ : Y → Y → 𝓦 ̇ )
        where
@@ -151,7 +151,7 @@ Successor (probably get rid of it).
 
 module successor
         {𝓤 𝓥}
-        {X : 𝓤 ̇}
+        {X : 𝓤 ̇ }
         (_<_ : X → X → 𝓥 ̇ )
        where
 
@@ -182,8 +182,8 @@ Multiplication. Cartesian product with the lexicographic order.
 
 module times
         {𝓤 𝓥 𝓦 𝓣}
-        {X : 𝓤 ̇}
-        {Y : 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {Y : 𝓥 ̇ }
         (_<_ : X → X → 𝓦 ̇ )
         (_≺_ : Y → Y → 𝓣 ̇ )
        where
@@ -301,7 +301,7 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : ∀ {𝓣} {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
+retract-accessible : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
                        (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
@@ -319,7 +319,7 @@ retract-accessible {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ = tra
       m : is-accessible _≺_ (r (s y))
       m = τ (s y) (φ x y l)
 
-retract-well-founded : {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
+retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
                        (r : X → Y) (s : Y → X)
                     → ((y : Y) → r(s y) ≡ y)
                     → ((x : X) (y : Y) → y ≺ r x → s y < x)
@@ -525,8 +525,8 @@ sum submodules, the first one without assumptions.
 
 module sum
         {𝓤 𝓥 𝓦 𝓣}
-        {X : 𝓤 ̇}
-        {Y : X → 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {Y : X → 𝓥 ̇ }
         (_<_ : X → X → 𝓦 ̇ )
         (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
       where
@@ -597,8 +597,8 @@ assuming cotransitivity. We do this in the following two modules.
 module sum-top
         (fe : FunExt)
         {𝓤 𝓥 𝓦 𝓣}
-        {X : 𝓤 ̇}
-        {Y : X → 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {Y : X → 𝓥 ̇ }
         (_<_ : X → X → 𝓦 ̇ )
         (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
         (top : Π Y)
@@ -683,8 +683,8 @@ open import DiscreteAndSeparated
 module sum-cotransitive
         (fe : FunExt)
         {𝓤 𝓥 𝓦 𝓣}
-        {X : 𝓤 ̇}
-        {Y : X → 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {Y : X → 𝓥 ̇ }
         (_<_ : X → X → 𝓦 ̇ )
         (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
         (c : cotransitive _<_)
@@ -789,8 +789,8 @@ open import UF-Equiv
 module extension
         (fe : FunExt)
         {𝓤 𝓥 𝓦}
-        {X : 𝓤 ̇}
-        {A : 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {A : 𝓥 ̇ }
         (Y : X → 𝓦 ̇ )
         (j : X → A)
         (ise : is-embedding j)

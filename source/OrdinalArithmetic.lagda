@@ -51,7 +51,7 @@ _×ₒ_ : Ord → Ord → Ord
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
 
-prop-indexed-product : {P : 𝓤₀ ̇} → is-prop P → (P → Ord) → Ord
+prop-indexed-product : {P : 𝓤₀ ̇ } → is-prop P → (P → Ord) → Ord
 prop-indexed-product {P} i α = Π X ,
                                _≺_ ,
                                pip.well-order fe₀ P i X _<_ (λ p → is-well-ordered (α p))
@@ -124,7 +124,7 @@ This uses the module 𝓤₀F-InjectiveTypes to calculate Y / j.
 
 \begin{code}
 
-_↗_ : {X A : 𝓤₀ ̇} → (X → Ordᵀ) → (Σ \(j : X → A) → is-embedding j) → (A → Ordᵀ)
+_↗_ : {X A : 𝓤₀ ̇ } → (X → Ordᵀ) → (Σ \(j : X → A) → is-embedding j) → (A → Ordᵀ)
 τ ↗ (j , e) = λ a → ((Y / j) a ,
                      Extension.order a ,
                      Extension.well-order a (λ x → tis-well-ordered (τ x))) ,

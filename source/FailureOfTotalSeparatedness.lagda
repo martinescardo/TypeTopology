@@ -243,7 +243,7 @@ module DiscreteAndSeparated.)
 
 \begin{code}
 
- weakly-isolated : {X : 𝓤 ̇} (x : X) → 𝓤 ̇
+ weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
  weakly-isolated x = ∀ x' → decidable(x' ≢ x)
 
  Theorem : (Σ \(g : Y → 𝟚) → g a₀ ≢ g a₁) → weakly-isolated a

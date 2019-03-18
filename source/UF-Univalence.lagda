@@ -50,7 +50,7 @@ is-univalent-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X �
 is-univalent-≃ ua X Y = idtoeq X Y , ua X Y
 
 back-transport-is-pre-comp' : (ua : is-univalent 𝓤)
-                            → {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X' → Y)
+                            → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X' → Y)
                             → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ eqtofun e
 back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
@@ -58,7 +58,7 @@ back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid
   q = ap (g ∘_) (ap eqtofun (idtoeq'-eqtoid ua X X' e))
 
 pre-comp-is-equiv : (ua : is-univalent 𝓤)
-                  → {X Y Z : 𝓤 ̇} (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
+                  → {X Y Z : 𝓤 ̇ } (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
 pre-comp-is-equiv ua {X} {Y} f ise =
  equiv-closed-under-∼' (back-transports-are-equivs (eqtoid ua X Y (f , ise)))
                        (back-transport-is-pre-comp' ua (f , ise))
@@ -88,7 +88,7 @@ private
    g : A Y (idtoeq X Y (eqtoid ua X Y e))
    g = f' Y (eqtoid ua X Y e)
 
-eqtoid-inverse : (ua : is-univalent 𝓤) {X X' : 𝓤 ̇} (e : X ≃ X')
+eqtoid-inverse : (ua : is-univalent 𝓤) {X X' : 𝓤 ̇ } (e : X ≃ X')
                → (eqtoid ua X X' e)⁻¹ ≡ eqtoid ua X' X (≃-sym e)
 eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ≡ eqtoid ua X' X (≃-sym e)) p X'
  where
@@ -96,7 +96,7 @@ eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ≡ 
   p = ap _⁻¹ (eqtoid-refl ua X) ∙ (eqtoid-refl ua X)⁻¹
 
 transport-is-pre-comp' : (ua : is-univalent 𝓤)
-                       → {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X → Y)
+                       → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
                        → transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ (≃-sym e)
 transport-is-pre-comp' ua {X} {X'} e g = transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
@@ -142,7 +142,7 @@ JEq-improve : ∀ {𝓤 𝓥}
 JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
  where
   module _ (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇) → X ≃ Y → 𝓥 ̇) where
-   g : {Y Z : 𝓤 ̇} (p : X ≃ Y) (q : X ≃ Z) → Σ \(f : A Y p → A Z q) → left-cancellable f
+   g : {Y Z : 𝓤 ̇ } (p : X ≃ Y) (q : X ≃ Z) → Σ \(f : A Y p → A Z q) → left-cancellable f
    g {Y} {Z} p q = jeq' X B b Z q
     where
      B : (T : 𝓤 ̇ ) → X ≃ T → 𝓥 ̇
@@ -152,7 +152,7 @@ JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
      b : B X (≃-refl X)
      b = jeq' X C ((λ a → a) , λ p → p) _ p
 
-   h : (b : A X (≃-refl X)) {Y : 𝓤 ̇} (p : X ≃ Y)
+   h : (b : A X (≃-refl X)) {Y : 𝓤 ̇ } (p : X ≃ Y)
      → Σ \(a : A Y p) → pr₁ (g p p) a ≡ pr₁ (g (≃-refl X) p) b
    h b p = jeq' X B (b , refl) _ p
     where
@@ -207,7 +207,7 @@ JEq-comp : (ua : is-univalent 𝓤) (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇) → X ≃ 
 JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
 
 ≃-transport : is-univalent 𝓤
-            → ∀ {𝓥} (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇} → X ≃ Y → A X → A Y
+            → ∀ {𝓥} (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇ } → X ≃ Y → A X → A Y
 ≃-transport {𝓤} ua {𝓥} A {X} {Y} e a = JEq ua X (λ Z e → A Z) a Y e
 
 ≃-induction' : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
@@ -234,7 +234,7 @@ without univalence elsewhere, of course):
 
 \begin{code}
 
-equivs-are-vv-equivs' : is-univalent 𝓤 → {X Y : 𝓤 ̇} (f : X → Y)
+equivs-are-vv-equivs' : is-univalent 𝓤 → {X Y : 𝓤 ̇ } (f : X → Y)
                       → is-equiv f → is-vv-equiv f
 equivs-are-vv-equivs' {𝓤} ua {X} {Y} f ise = g Y (f , ise)
  where

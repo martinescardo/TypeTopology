@@ -402,16 +402,16 @@ universes).
 ∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
 ∥ X ∥⁺ = (P : universe-of X ̇ ) → is-prop P → (X → P) → P
 
-∥∥⁺-is-a-prop : FunExt → {X : 𝓤 ̇} → is-prop (∥ X ∥⁺)
+∥∥⁺-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∥ X ∥⁺)
 ∥∥⁺-is-a-prop fe = Π-is-prop (fe _ _)
                    (λ P → Π-is-prop (fe _ _)
                            (λ i → Π-is-prop (fe _ _)
                                     (λ u → i)))
 
-∣_∣⁺ : {X : 𝓤 ̇} → X → ∥ X ∥⁺
+∣_∣⁺ : {X : 𝓤 ̇ } → X → ∥ X ∥⁺
 ∣ x ∣⁺ = λ P i u → u x
 
-∥∥⁺-rec : {X P : 𝓤 ̇} → is-prop P → (X → P) → ∥ X ∥⁺ → P
+∥∥⁺-rec : {X P : 𝓤 ̇ } → is-prop P → (X → P) → ∥ X ∥⁺ → P
 ∥∥⁺-rec {𝓤} {X} {P} i u s = s P i u
 
 resizing-truncation : FunExt → Propositional-resizing → propositional-truncations-exist
@@ -433,8 +433,8 @@ Images:
 
 module Image
         {𝓤 𝓥 : Universe}
-        {X : 𝓤 ̇}
-        {Y : 𝓥 ̇}
+        {X : 𝓤 ̇ }
+        {Y : 𝓥 ̇ }
         (fe : FunExt)
         (R : Propositional-resizing)
        where

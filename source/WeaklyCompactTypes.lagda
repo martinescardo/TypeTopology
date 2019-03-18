@@ -34,11 +34,11 @@ open import DecidableAndDetachable
 ∃-compact : 𝓤 ̇ → 𝓤 ̇
 ∃-compact X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
 
-∃-compactness-is-a-prop : {X : 𝓤 ̇} → is-prop (∃-compact X)
+∃-compactness-is-a-prop : {X : 𝓤 ̇ } → is-prop (∃-compact X)
 ∃-compactness-is-a-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤)
                                 (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀) ∥∥-is-a-prop)
 
-∃-compact-Markov : {X : 𝓤 ̇}
+∃-compact-Markov : {X : 𝓤 ̇ }
                  → ∃-compact X
                  → (p : X → 𝟚)
                  → ¬¬(∃ \(x : X) → p x ≡ ₀)
@@ -59,12 +59,12 @@ LPO with WLPO.
 Π-compact : 𝓤 ̇ → 𝓤 ̇
 Π-compact X = (p : X → 𝟚) → decidable ((x : X) → p x ≡ ₁)
 
-Π-compactness-is-a-prop : {X : 𝓤 ̇} → is-prop (Π-compact X)
+Π-compactness-is-a-prop : {X : 𝓤 ̇ } → is-prop (Π-compact X)
 Π-compactness-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
                          (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
                                   (Π-is-prop (fe 𝓤 𝓤₀) λ _ → 𝟚-is-set))
 
-∃-compact-gives-Π-compact : {X : 𝓤 ̇} → ∃-compact X → Π-compact X
+∃-compact-gives-Π-compact : {X : 𝓤 ̇ } → ∃-compact X → Π-compact X
 ∃-compact-gives-Π-compact {𝓤} {X} c p = f (c p)
  where
   f : decidable (∃ \(x : X) → p x ≡ ₀) → decidable (Π \(x : X) → p x ≡ ₁)
@@ -74,10 +74,10 @@ LPO with WLPO.
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
   f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
 
-is-empty-∃-compact : {X : 𝓤 ̇} → is-empty X → ∃-compact X
+is-empty-∃-compact : {X : 𝓤 ̇ } → is-empty X → ∃-compact X
 is-empty-∃-compact u p = inr (∥∥-rec 𝟘-is-prop λ σ → u (pr₁ σ))
 
-empty-Π-compact : {X : 𝓤 ̇} → is-empty X → Π-compact X
+empty-Π-compact : {X : 𝓤 ̇ } → is-empty X → Π-compact X
 empty-Π-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
@@ -87,7 +87,7 @@ of ℕ∞, for example):
 
 \begin{code}
 
-compact-gives-∃-compact : {X : 𝓤 ̇} → compact X → ∃-compact X
+compact-gives-∃-compact : {X : 𝓤 ̇ } → compact X → ∃-compact X
 compact-gives-∃-compact {𝓤} {X} φ p = g (φ p)
  where
   g : ((Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
@@ -107,19 +107,19 @@ predicate λ x → ₁:
 Π-compact' : 𝓤 ̇ → 𝓤 ̇
 Π-compact' X = (p : X → 𝟚) → decidable (p ≡ λ x → ₁)
 
-Π-compactness'-is-a-prop : {X : 𝓤 ̇} → is-prop(Π-compact' X)
+Π-compactness'-is-a-prop : {X : 𝓤 ̇ } → is-prop(Π-compact' X)
 Π-compactness'-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
                                 (λ p → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
                                          (Π-is-set (fe 𝓤 𝓤₀) (λ x → 𝟚-is-set)))
 
-Π-compact'-gives-Π-compact : {X : 𝓤 ̇} → Π-compact' X → Π-compact X
+Π-compact'-gives-Π-compact : {X : 𝓤 ̇ } → Π-compact' X → Π-compact X
 Π-compact'-gives-Π-compact {𝓤} {X} c' p = g (c' p)
  where
   g : decidable (p ≡ λ x → ₁) → decidable ((x : X) → p x ≡ ₁)
   g (inl r) = inl (happly r)
   g (inr u) = inr (contrapositive (dfunext (fe 𝓤 𝓤₀)) u)
 
-Π-compact-gives-Π-compact' : {X : 𝓤 ̇} → Π-compact X → Π-compact' X
+Π-compact-gives-Π-compact' : {X : 𝓤 ̇ } → Π-compact X → Π-compact' X
 Π-compact-gives-Π-compact' {𝓤} {X} c p = g (c p)
  where
   g : decidable ((x : X) → p x ≡ ₁) → decidable (p ≡ λ x → ₁)
@@ -140,7 +140,7 @@ without the need of any assumption:
 
 \begin{code}
 
-cdd : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Π-compact X → is-discrete Y → is-discrete(X → Y)
+cdd : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → Π-compact X → is-discrete Y → is-discrete(X → Y)
 cdd {𝓤} {𝓥} {X} {Y} c d f g = h (c p)
  where
   p : X → 𝟚
@@ -164,7 +164,7 @@ First, to decide Π(p:X→𝟚), p(x)=1, decide p = λ x → ₁:
 
 \begin{code}
 
-d𝟚-Πc : {X : 𝓤 ̇} → is-discrete(X → 𝟚) → Π-compact X
+d𝟚-Πc : {X : 𝓤 ̇ } → is-discrete(X → 𝟚) → Π-compact X
 d𝟚-Πc d = Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
 
 \end{code}
@@ -176,10 +176,10 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 \begin{code}
 
-dcc : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
+dcc : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
 dcc {𝓤} re d = d𝟚-Πc (retract-discrete-discrete (rpe (fe 𝓤 𝓤₀) re) d)
 
-ddc' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (y₀ y₁ : Y) → y₀ ≢ y₁
+ddc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (y₀ y₁ : Y) → y₀ ≢ y₁
      → is-discrete Y → is-discrete(X → Y) → Π-compact X
 ddc' y₀ y₁ ne dy = dcc (𝟚-retract-of-discrete ne dy)
 
@@ -194,7 +194,7 @@ Compactness of images:
 
 open ImageAndSurjection pt
 
-surjection-∃-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                      → is-surjection f → ∃-compact X → ∃-compact Y
 surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
  where
@@ -211,11 +211,11 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (∥∥-functor h s)
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-a-prop k) u)
 
-image-∃-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                → ∃-compact X → ∃-compact (image f)
 image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-surjection f)
 
-surjection-Π-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                      → is-surjection f → Π-compact X → Π-compact Y
 surjection-Π-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
  where
@@ -223,27 +223,27 @@ surjection-Π-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
-retract-∃-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                   → retract Y of X → ∃-compact X → ∃-compact Y
 retract-∃-compact (f , hass) = surjection-∃-compact f (retraction-surjection f hass)
 
-retract-∃-compact' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-∃-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                    → ∥ retract Y of X ∥ → ∃-compact X → ∃-compact Y
 retract-∃-compact' t c = ∥∥-rec ∃-compactness-is-a-prop (λ r → retract-∃-compact r c) t
 
-image-Π-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                 → Π-compact X → Π-compact (image f)
 image-Π-compact f = surjection-Π-compact (corestriction f) (corestriction-surjection f)
 
-retract-Π-compact : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                   → retract Y of X → Π-compact X → Π-compact Y
 retract-Π-compact (f , hass) = surjection-Π-compact f (retraction-surjection f hass)
 
-retract-Π-compact' : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                   → ∥ retract Y of X ∥ → Π-compact X → Π-compact Y
 retract-Π-compact' t c = ∥∥-rec Π-compactness-is-a-prop (λ r → retract-Π-compact r c) t
 
-i2c2c : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+i2c2c : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
       → X → Π-compact (X → Y) → Π-compact Y
 i2c2c x = retract-Π-compact (pdrc x)
 
@@ -321,7 +321,7 @@ discrete.
 
 \begin{code}
 
-tscd : {X : 𝓤 ̇} → is-totally-separated X → Π-compact (X → 𝟚) → is-discrete X
+tscd : {X : 𝓤 ̇ } → is-totally-separated X → Π-compact (X → 𝟚) → is-discrete X
 tscd {𝓤} {X} ts c x y = g (a s)
  where
   q : (X → 𝟚) → 𝟚
@@ -349,13 +349,13 @@ corollaries:
 
 \begin{code}
 
-tscd₀ : {X : 𝓤₀ ̇} {Y : 𝓤₀ ̇} → is-totally-separated X → retract 𝟚 of Y
+tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇} → is-totally-separated X → retract 𝟚 of Y
      → Π-compact (X → Y) → is-discrete X
 tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (rpe (fe 𝓤₀ 𝓤₀) r) c)
 
 open TotallySeparatedReflection fe pt
 
-tscd₁ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract 𝟚 of Y
+tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract 𝟚 of Y
       → Π-compact (X → Y) → is-discrete (𝕋 X)
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
@@ -397,7 +397,7 @@ Closure of compactness under sums (and hence binary products):
 
 \begin{code}
 
-Π-compact-closed-under-Σ : {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+Π-compact-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
                          → Π-compact X → ((x : X) → Π-compact (Y x))
                          → Π-compact (Σ Y)
 Π-compact-closed-under-Σ {𝓤} {𝓥} {X} {Y} c d p = g e
@@ -443,11 +443,11 @@ isod X isp c = f a
   f (inl s) = inl (∥∥-rec isp pr₁ s)
   f (inr u) = inr (λ x → u ∣ x , refl ∣)
 
-isod-corollary : {X : 𝓤 ̇} → ∃-compact X → decidable ∥ X ∥
+isod-corollary : {X : 𝓤 ̇ } → ∃-compact X → decidable ∥ X ∥
 isod-corollary {𝓤} {X} c = isod ∥ X ∥ ∥∥-is-a-prop
                                       (surjection-∃-compact ∣_∣ pt-is-surjection c)
 
-isdni : {X : 𝓤 ̇} → ∃-compact X → ¬¬ X → ∥ X ∥
+isdni : {X : 𝓤 ̇ } → ∃-compact X → ¬¬ X → ∥ X ∥
 isdni {𝓤} {X} c φ = g (isod-corollary c)
  where
   g : decidable ∥ X ∥ → ∥ X ∥
@@ -510,7 +510,7 @@ module.
 
 \begin{code}
 
-detachable-subset-retract : {X : 𝓤 ̇} {A : X → 𝟚}
+detachable-subset-retract : {X : 𝓤 ̇ } {A : X → 𝟚}
                           → (Σ \(x : X) → A(x) ≡ ₀)
                           → retract (Σ \(x : X) → A(x) ≡ ₀) of X
 detachable-subset-retract {𝓤} {X} {A} (x₀ , e₀) = r , pr₁ , rs
@@ -541,7 +541,7 @@ allows us to decide inhabitedness, and ∃-compactness is a proposition.
 
 \begin{code}
 
-detachable-subset-∃-compact : {X : 𝓤 ̇} (A : X → 𝟚)
+detachable-subset-∃-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → ∃-compact X
                             → ∃-compact(Σ \(x : X) → A(x) ≡ ₀)
 detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
@@ -558,7 +558,7 @@ ingredients (and with a longer proof (is there a shorter one?)).
 
 \begin{code}
 
-detachable-subset-Π-compact : {X : 𝓤 ̇} (A : X → 𝟚)
+detachable-subset-Π-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → Π-compact X → Π-compact(Σ \(x : X) → A(x) ≡ ₁)
 detachable-subset-Π-compact {𝓤} {X} A c q = g (c p)
  where
@@ -612,7 +612,7 @@ module CompactTypes).
 ∃-compact∙ : 𝓤 ̇ → 𝓤 ̇
 ∃-compact∙ X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
-∃-compactness∙-is-a-prop : {X : 𝓤 ̇} → is-prop (∃-compact∙ X)
+∃-compactness∙-is-a-prop : {X : 𝓤 ̇ } → is-prop (∃-compact∙ X)
 ∃-compactness∙-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤) (λ _ → ∥∥-is-a-prop)
 
 \end{code}
@@ -622,7 +622,7 @@ replaced by non-emptiness in the following results:
 
 \begin{code}
 
-iso-i-and-c : {X : 𝓤 ̇} → ∃-compact∙ X → ∥ X ∥ × ∃-compact X
+iso-i-and-c : {X : 𝓤 ̇ } → ∃-compact∙ X → ∥ X ∥ × ∃-compact X
 iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) ∥∥-is-a-prop) (g₂ p) (c p))
  where
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
@@ -638,7 +638,7 @@ iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (dec
       f (x , s) = zero-is-not-one (s ⁻¹ ∙ φ r x)
     h (inr u) = inl ∣ x₀ , (different-from-₁-equal-₀ u) ∣
 
-i-and-c-iso : {X : 𝓤 ̇} → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
+i-and-c-iso : {X : 𝓤 ̇ } → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
 i-and-c-iso {𝓤} {X} (t , c) p = ∥∥-rec ∥∥-is-a-prop f t
  where
   f : X → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
@@ -660,17 +660,17 @@ that are ∃-compact∙ or empty:
 
 \begin{code}
 
-isoore-is-a-prop : {X : 𝓤 ̇} → is-prop(∃-compact∙ X + is-empty X)
+isoore-is-a-prop : {X : 𝓤 ̇ } → is-prop(∃-compact∙ X + is-empty X)
 isoore-is-a-prop {𝓤} {X} = sum-of-contradictory-props
                             ∃-compactness∙-is-a-prop
                               (Π-is-prop (fe 𝓤 𝓤₀) (λ _ → 𝟘-is-prop))
                                  (λ c u → ∥∥-rec 𝟘-is-prop (contrapositive pr₁ u) (c (λ _ → ₀)))
 
-isoore-so : {X : 𝓤 ̇} → ∃-compact∙ X + is-empty X → ∃-compact X
+isoore-so : {X : 𝓤 ̇ } → ∃-compact∙ X + is-empty X → ∃-compact X
 isoore-so (inl c) = pr₂(iso-i-and-c c)
 isoore-so (inr u) = is-empty-∃-compact u
 
-so-isoore : {X : 𝓤 ̇} → ∃-compact X → ∃-compact∙ X + is-empty X
+so-isoore : {X : 𝓤 ̇ } → ∃-compact X → ∃-compact∙ X + is-empty X
 so-isoore {𝓤} {X} c = g
  where
   h : decidable (∃ \(x : X) → ₀ ≡ ₀) → ∃-compact∙ X + is-empty X
@@ -686,10 +686,10 @@ so-isoore {𝓤} {X} c = g
 
 \begin{code}
 
-_has-inf_ : {X : 𝓤 ̇} → (X → 𝟚) → 𝟚 → 𝓤 ̇
+_has-inf_ : {X : 𝓤 ̇ } → (X → 𝟚) → 𝟚 → 𝓤 ̇
 p has-inf n = (∀ x → n ≤₂ p x) × (∀ m → (∀ x → m ≤₂ p x) → m ≤₂ n)
 
-having-inf-is-a-prop : {X : 𝓤 ̇} (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
+having-inf-is-a-prop : {X : 𝓤 ̇ } (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
 having-inf-is-a-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-≡ r s
  where
   r : f ≡ f'
@@ -697,16 +697,16 @@ having-inf-is-a-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-≡ r s
   s : g ≡ g'
   s = dfunext (fe 𝓤₀ 𝓤) (λ n → dfunext (fe 𝓤 𝓤₀) (λ φ → dfunext (fe 𝓤₀ 𝓤₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
 
-at-most-one-inf : {X : 𝓤 ̇} (p : X → 𝟚) → is-prop (Σ \(n : 𝟚) → p has-inf n)
+at-most-one-inf : {X : 𝓤 ̇ } (p : X → 𝟚) → is-prop (Σ \(n : 𝟚) → p has-inf n)
 at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (g n' f') , having-inf-is-a-prop p n' _ _)
 
 has-infs : 𝓤 ̇ → 𝓤 ̇
 has-infs X = ∀(p : X → 𝟚) → Σ \(n : 𝟚) → p has-inf n
 
-having-infs-is-a-prop : {X : 𝓤 ̇} → is-prop(has-infs X)
+having-infs-is-a-prop : {X : 𝓤 ̇ } → is-prop(has-infs X)
 having-infs-is-a-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
 
-Π-compact-has-infs : {X : 𝓤 ̇} → Π-compact X → has-infs X
+Π-compact-has-infs : {X : 𝓤 ̇ } → Π-compact X → has-infs X
 Π-compact-has-infs c p = g (c p)
  where
   g : decidable (∀ x → p x ≡ ₁) → Σ \(n : 𝟚) → p has-inf n
@@ -719,7 +719,7 @@ having-infs-is-a-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
       α : ∀ x → p x ≡ ₁
       α x = φ x r
 
-has-infs-Π-compact : {X : 𝓤 ̇} → has-infs X → Π-compact X
+has-infs-Π-compact : {X : 𝓤 ̇ } → has-infs X → Π-compact X
 has-infs-Π-compact h p = f (h p)
  where
   f : (Σ \(n : 𝟚) → p has-inf n) → decidable (∀ x → p x ≡ ₁)
@@ -741,17 +741,17 @@ Implicit application of type-theoretical choice:
 
 \begin{code}
 
-inf : {X : 𝓤 ̇} → Π-compact X → (X → 𝟚) → 𝟚
+inf : {X : 𝓤 ̇ } → Π-compact X → (X → 𝟚) → 𝟚
 inf c p = pr₁(Π-compact-has-infs c p)
 
-inf-property : {X : 𝓤 ̇} → (c : Π-compact X) (p : X → 𝟚) → p has-inf (inf c p)
+inf-property : {X : 𝓤 ̇ } → (c : Π-compact X) (p : X → 𝟚) → p has-inf (inf c p)
 inf-property c p = pr₂(Π-compact-has-infs c p)
 
-inf₁ : {X : 𝓤 ̇} (c : Π-compact X) {p : X → 𝟚}
+inf₁ : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
      → inf c p ≡ ₁ → ∀ x → p x ≡ ₁
 inf₁ c {p} r x = pr₁(inf-property c p) x r
 
-inf₁-converse : {X : 𝓤 ̇} (c : Π-compact X) {p : X → 𝟚}
+inf₁-converse : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
               → (∀ x → p x ≡ ₁) → inf c p ≡ ₁
 inf₁-converse c {p} α = ₁-maximal (h g)
  where
@@ -777,7 +777,7 @@ E : (X → 𝟚) → 𝟚.
 
 \begin{code}
 
-Κ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → Y → (X → Y)
+Κ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → Y → (X → Y)
 Κ y x = y
 
 \end{code}
@@ -786,7 +786,7 @@ The pointwise order on boolean predicates:
 
 \begin{code}
 
-_≤̇_ : {X : 𝓤 ̇} → (X → 𝟚) → (X → 𝟚) → 𝓤 ̇
+_≤̇_ : {X : 𝓤 ̇ } → (X → 𝟚) → (X → 𝟚) → 𝓤 ̇
 p ≤̇ q = ∀ x → p x ≤₂ q x
 
 \end{code}
@@ -796,10 +796,10 @@ is Κ with Y=𝟚, for simplicity, rather than in full generality:
 
 \begin{code}
 
-Κ⊣ : {X : 𝓤 ̇} → ((X → 𝟚) → 𝟚) → 𝓤 ̇
+Κ⊣ : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → 𝓤 ̇
 Κ⊣ A = (n : 𝟚) (p : _ → 𝟚) → Κ n ≤̇ p ⇔ n ≤₂ A p
 
-_⊣Κ : {X : 𝓤 ̇} → ((X → 𝟚) → 𝟚) → 𝓤 ̇
+_⊣Κ : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → 𝓤 ̇
 E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤₂ n ⇔ p ≤̇ Κ n
 
 \end{code}
@@ -811,7 +811,7 @@ Right adjoints to Κ are characterized as follows:
 
 \begin{code}
 
-Κ⊣-charac : {X : 𝓤 ̇} → (A : (X → 𝟚) → 𝟚)
+Κ⊣-charac : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
            → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁))
 Κ⊣-charac {𝓤} {X} A = f , g
  where
@@ -868,7 +868,7 @@ the dominance 𝟚.
 
 \begin{code}
 
-Π-compact-iff-Κ-has-right-adjoint : {X : 𝓤 ̇}
+Π-compact-iff-Κ-has-right-adjoint : {X : 𝓤 ̇ }
                                   → Π-compact X ⇔ (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A)
 Π-compact-iff-Κ-has-right-adjoint {𝓤} {X} = (f , g)
  where
@@ -903,10 +903,10 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
 
 \begin{code}
 
-𝟚-DeMorgan-dual : {X : 𝓤 ̇} → ((X → 𝟚) → 𝟚) → ((X → 𝟚) → 𝟚)
+𝟚-DeMorgan-dual : {X : 𝓤 ̇ } → ((X → 𝟚) → 𝟚) → ((X → 𝟚) → 𝟚)
 𝟚-DeMorgan-dual φ = λ p → complement(φ(λ x → complement(p x)))
 
-𝟚-DeMorgan-dual-involutive :{X : 𝓤 ̇} → (φ : (X → 𝟚) → 𝟚)
+𝟚-DeMorgan-dual-involutive :{X : 𝓤 ̇ } → (φ : (X → 𝟚) → 𝟚)
                            → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) ≡ φ
 𝟚-DeMorgan-dual-involutive {𝓤} φ = dfunext (fe 𝓤 𝓤₀) h
  where
@@ -920,7 +920,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   h : ∀ p → 𝟚-DeMorgan-dual(𝟚-DeMorgan-dual φ) p ≡ φ p
   h p = f p ∙ g p
 
-Π-compact-is-𝟚-overt : {X : 𝓤 ̇} → (A : (X → 𝟚) → 𝟚)
+Π-compact-is-𝟚-overt : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
                       → Κ⊣ A → (𝟚-DeMorgan-dual A) ⊣Κ
 Π-compact-is-𝟚-overt {𝓤} {X} A = f
  where
@@ -956,7 +956,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
          m₀ : complement n ≤₂ A (λ x → complement (p x))
          m₀ = pr₁ (φ (complement n) (λ x → complement (p x))) m₁
 
-𝟚-overt-is-Π-compact : {X : 𝓤 ̇} → (E : (X → 𝟚) → 𝟚)
+𝟚-overt-is-Π-compact : {X : 𝓤 ̇ } → (E : (X → 𝟚) → 𝟚)
                      → E ⊣Κ → Κ⊣ (𝟚-DeMorgan-dual E)
 𝟚-overt-is-Π-compact {𝓤} {X} E = g
  where
@@ -998,7 +998,7 @@ We have the following corollaries:
 
 \begin{code}
 
-Π-compact-iff-𝟚-overt : {X : 𝓤 ̇}
+Π-compact-iff-𝟚-overt : {X : 𝓤 ̇ }
                       → (Σ \(A : (X → 𝟚) → 𝟚) → Κ⊣ A) ⇔ (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
 Π-compact-iff-𝟚-overt {𝓤} {X} = (f , g)
  where
@@ -1015,7 +1015,7 @@ is 𝟚-overt:
 
 \begin{code}
 
-Π-compact-iff-Κ-has-left-adjoint : {X : 𝓤 ̇}
+Π-compact-iff-Κ-has-left-adjoint : {X : 𝓤 ̇ }
                                  → Π-compact X ⇔ (Σ \(E : (X → 𝟚) → 𝟚) → E ⊣Κ)
 Π-compact-iff-Κ-has-left-adjoint {𝓤} {X} = (f , g)
  where
@@ -1058,15 +1058,15 @@ Images with upper case:
 
 \begin{code}
 
-Image : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+Image : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
      → (X → Y) → (X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
 Image f A = λ y → ∃ \x → A x × (f x ≡ y)
 
-is-clopen-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-clopen-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
-being-clopen-map-is-a-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇} → FunExt
+being-clopen-map-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → FunExt
                            → (f : X → Y) → is-prop(is-clopen-map f)
 being-clopen-map-is-a-prop {𝓤} {𝓥} fe f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))

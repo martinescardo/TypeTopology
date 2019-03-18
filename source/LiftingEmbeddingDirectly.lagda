@@ -32,7 +32,7 @@ of which is actually an equivalence).
 𝓚 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
 𝓚 X = Σ \(P : 𝓣 ̇ ) → (P → X) × is-singleton P
 
-κ : {X : 𝓤 ̇} → X → 𝓚 X
+κ : {X : 𝓤 ̇ } → X → 𝓚 X
 κ x = 𝟙 , (λ _ → x) , 𝟙-is-singleton
 
 ζ : (X : 𝓤 ̇ ) (P : 𝓣 ̇) → (P → X) × is-singleton P → (P → X) × is-prop P
@@ -42,7 +42,7 @@ of which is actually an equivalence).
 𝓚→𝓛 X = NatΣ (ζ X)
 
 η-composite : funext 𝓣 𝓣 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-            → {X : 𝓤 ̇} → η ≡ 𝓚→𝓛 X ∘ κ
+            → {X : 𝓤 ̇ } → η ≡ 𝓚→𝓛 X ∘ κ
 η-composite fe fe' {X} = dfunext fe' h
  where
   h : (x : X) → (𝟙 , (λ _ → x) , 𝟙-is-prop)
@@ -85,12 +85,12 @@ itself.
 \begin{code}
 
 κ-is-equiv : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
-           → {X : 𝓤 ̇} → is-equiv (κ {𝓤} {X})
+           → {X : 𝓤 ̇ } → is-equiv (κ {𝓤} {X})
 κ-is-equiv {𝓤} pe fe fe' {X} = qinvs-are-equivs κ (ρ , (ρκ , κρ))
  where
-  ρ : {X : 𝓤 ̇} → 𝓚 X → X
+  ρ : {X : 𝓤 ̇ } → 𝓚 X → X
   ρ (P , φ , i) = φ (singleton-types-are-pointed i)
-  ρκ : {X : 𝓤 ̇} (x : X) → ρ (κ x) ≡ x
+  ρκ : {X : 𝓤 ̇ } (x : X) → ρ (κ x) ≡ x
   ρκ x = refl
   κρ : (m : 𝓚 X) → κ (ρ m) ≡ m
   κρ (P , φ , i) = u
@@ -116,7 +116,7 @@ itself.
     u = to-Σ-≡ (t , s t)
 
 κ-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
-               → {X : 𝓤 ̇} → is-embedding (κ {𝓤} {X})
+               → {X : 𝓤 ̇ } → is-embedding (κ {𝓤} {X})
 κ-is-embedding pe fe fe' = equivs-are-embeddings κ (κ-is-equiv pe fe fe')
 
 \end{code}
@@ -127,7 +127,7 @@ two embeddings:
 \begin{code}
 
 η-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-               → {X : 𝓤 ̇} → is-embedding (η {𝓤} {X})
+               → {X : 𝓤 ̇ } → is-embedding (η {𝓤} {X})
 η-is-embedding pe fe fe' fe'' {X} =
   back-transport
    is-embedding

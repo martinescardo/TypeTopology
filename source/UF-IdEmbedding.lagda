@@ -73,7 +73,7 @@ type Σ A.
 
 \begin{code}
 
-Id-Embedding-Lemma : FunExt → {X : 𝓤 ̇}
+Id-Embedding-Lemma : FunExt → {X : 𝓤 ̇ }
                   → ((x y : X) (A : X → 𝓤 ̇ )
                   → left-cancellable (idtofun (Id x y) (A y)))
                   → is-embedding(Id {𝓤} {X})
@@ -152,7 +152,7 @@ is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (is-univalent-idtoeq-lc ua X Y) (eqtofun-lc ua fe X Y)
 
 UA-Id-embedding : is-univalent 𝓤 → FunExt
-               → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+               → {X : 𝓤 ̇ } → is-embedding(Id {𝓤} {X})
 UA-Id-embedding {𝓤} ua fe {X} = Id-Embedding-Lemma fe
                                             (λ x y a → is-univalent-idtofun-lc ua fe (Id x y) (a y))
 
@@ -164,7 +164,7 @@ function Id : X → (X → U) is an embedding.
 \begin{code}
 
 K-Id-embedding' : K-axiom (𝓤 ⁺) → FunExt
-               → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+               → {X : 𝓤 ̇ } → is-embedding(Id {𝓤} {X})
 K-Id-embedding' {𝓤} k fe {X} = Id-Embedding-Lemma fe (K-idtofun-lc k)
 
 \end{code}
@@ -173,10 +173,10 @@ But actually function extensionality is not needed for this: K alone suffices.
 
 \begin{code}
 
-Id-lc : {X : 𝓤 ̇} → left-cancellable (Id {𝓤} {X})
+Id-lc : {X : 𝓤 ̇ } → left-cancellable (Id {𝓤} {X})
 Id-lc {𝓤} {X} {x} {y} p = idtofun (Id y y) (Id x y) (happly (p ⁻¹) y) refl
 
-K-Id-embedding : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+K-Id-embedding : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇ } → is-embedding(Id {𝓤} {X})
 K-Id-embedding {𝓤} k {X} = lc-maps-are-embeddings-with-K Id Id-lc k
 
 \end{code}
@@ -185,10 +185,10 @@ Added 7th Feb 2019.
 
 \begin{code}
 
-Id-set : {X : 𝓤 ̇} → is-set X → X → (X → Ω 𝓤)
+Id-set : {X : 𝓤 ̇ } → is-set X → X → (X → Ω 𝓤)
 Id-set i x y = (x ≡ y) , i
 
-Id-set-lc : funext  𝓤 (𝓤 ⁺) → {X : 𝓤 ̇} (i : is-set X)
+Id-set-lc : funext  𝓤 (𝓤 ⁺) → {X : 𝓤 ̇ } (i : is-set X)
           → left-cancellable (Id-set i)
 Id-set-lc fe {X} i {x} {y} e = Id-lc d
  where
@@ -196,7 +196,7 @@ Id-set-lc fe {X} i {x} {y} e = Id-lc d
   d = dfunext fe (λ z → ap pr₁ (happly e z))
 
 Id-set-is-embedding : funext  𝓤 𝓤 → funext  𝓤 (𝓤 ⁺) → propext 𝓤
-                    → {X : 𝓤 ̇} (i : is-set X) → is-embedding (Id-set i)
+                    → {X : 𝓤 ̇ } (i : is-set X) → is-embedding (Id-set i)
 Id-set-is-embedding fe fe' pe {X} i = lc-maps-into-sets-are-embeddings
                                         (Id-set i)
                                         (Id-set-lc fe' i)

@@ -164,14 +164,14 @@ Induction principles induced by the equivalences:
 
 \begin{code}
 
-ℕ-induction : {A : ℕ → 𝓤 ̇}
+ℕ-induction : {A : ℕ → 𝓤 ̇ }
             → A zero
             → (∀ n → A n → A(succ n))
             → ∀ n → A n
 ℕ-induction base step zero     = base
 ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
 
-𝔹-induction : {B : 𝔹 → 𝓤 ̇}
+𝔹-induction : {B : 𝔹 → 𝓤 ̇ }
             → B zero
             → (∀ m → B m → B(l m))
             → (∀ m → B m → B(r m))
@@ -180,7 +180,7 @@ Induction principles induced by the equivalences:
 𝔹-induction base stepl stepr (l m) = stepl m (𝔹-induction base stepl stepr m)
 𝔹-induction base stepl stepr (r m) = stepr m (𝔹-induction base stepl stepr m)
 
-unary-induction-on-𝔹 : {B : 𝔹 → 𝓤 ̇}
+unary-induction-on-𝔹 : {B : 𝔹 → 𝓤 ̇ }
                      → B zero
                      → (∀ n → B n → B(Succ n))
                      → ∀ n → B n
@@ -199,7 +199,7 @@ unary-induction-on-𝔹 {𝓤} {B} base step = g
   g : ∀ m → B m
   g m = transport B (binary-unary m) (b m)
 
-binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇}
+binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇ }
                      → A zero
                      → (∀ n → A n → A(L n))
                      → (∀ n → A n → A(R n))

@@ -9,7 +9,7 @@ open import SpartanMLTT
 module SliceIdentityViaSIP
         (𝓣 : Universe)
         {𝓤 : Universe}
-        {X : 𝓤 ̇}
+        {X : 𝓤 ̇ }
        where
 
 open import UF-Base

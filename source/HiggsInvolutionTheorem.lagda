@@ -32,7 +32,7 @@ module HiggsInvolutionTheorem
         (pe : propext 𝓤₀)
        where
 
-involutive : {X : 𝓤 ̇} → (f : X → X) → 𝓤 ̇
+involutive : {X : 𝓤 ̇ } → (f : X → X) → 𝓤 ̇
 involutive f = ∀ x → f (f x) ≡ x
 
 higgs : (f : Ω 𝓤₀ → Ω 𝓤₀) → left-cancellable f → involutive f

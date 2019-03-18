@@ -17,7 +17,7 @@ open import SpartanMLTT
 open import CompactTypes
 open import Sequence fe
 
-binary-Tychonoff' :{X : ℕ → 𝓤 ̇} →
+binary-Tychonoff' :{X : ℕ → 𝓤 ̇ } →
 
  compact∙(X 0) →  compact∙((n : ℕ) → X(succ n))
  → compact∙((n : ℕ) → X n)
@@ -54,7 +54,7 @@ checker enabled.) (I plan to actually write down this proof in Agda.)
 \begin{code}
 
 {-# TERMINATING #-}
-countable-Tychonoff :{X : ℕ → 𝓤 ̇}
+countable-Tychonoff :{X : ℕ → 𝓤 ̇ }
                     → ((n : ℕ) → compact∙(X n)) → compact∙((n : ℕ) → X n)
 countable-Tychonoff {X} ε = binary-Tychonoff' (head ε) (countable-Tychonoff(tail ε))
 

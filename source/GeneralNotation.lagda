@@ -20,7 +20,7 @@ This is to avoid naming implicit arguments:
 
 \begin{code}
 
-type-of : {X : 𝓤 ̇} → X → 𝓤 ̇
+type-of : {X : 𝓤 ̇ } → X → 𝓤 ̇
 type-of {𝓤} {X} x = X
 
 \end{code}
@@ -40,7 +40,7 @@ And the following to make explicit the type of hypotheses:
 
 \begin{code}
 
-have : {A : 𝓤 ̇} {B : 𝓥 ̇} → A → B → B
+have : {A : 𝓤 ̇ } {B : 𝓥 ̇} → A → B → B
 have _ y = y
 
 \end{code}
@@ -49,7 +49,7 @@ Get rid of this:
 
 \begin{code}
 
-Σ! : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+Σ! : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Σ! {𝓤} {𝓥} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
 
 \end{code}

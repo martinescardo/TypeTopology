@@ -19,7 +19,7 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 
-lex-order : ∀ {𝓣} {X : 𝓤 ̇} {Y : X → 𝓥 ̇} →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇)
+lex-order : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇)
 lex-order _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ≡ x') → transport _ r y ≼ y')
 
 \end{code}
@@ -32,7 +32,7 @@ However, for a strict order, it makes sense to define
 
 \begin{code}
 
-slex-order : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇)
+slex-order : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇)
 slex-order _<_ _≺_ (x , y) (x' , y') = (x < x') + Σ \(r : x ≡ x') → transport _ r y ≺ y'
 
 \end{code}
@@ -55,8 +55,8 @@ follows.
 \begin{code}
 
 module commutation
-         {X : 𝓤 ̇}
-         {Y : X → 𝓥 ̇}
+         {X : 𝓤 ̇ }
+         {Y : X → 𝓥 ̇ }
          (_<_ : X → X → 𝓦 ̇ )
          (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
          (R : 𝓤₀ ̇ )

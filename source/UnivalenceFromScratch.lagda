@@ -504,13 +504,13 @@ _̇ : (𝓤 : Universe) → _
 
 infix  0 _̇
 
-data Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+data Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
   _,_ : (x : X) (y : Y x) → Σ Y
 
-data Id {𝓤 : Universe} {X : 𝓤 ̇} : X → X → 𝓤 ̇  where
+data Id {𝓤 : Universe} {X : 𝓤 ̇ } : X → X → 𝓤 ̇  where
   refl : (x : X) → Id x x
 
-J : {𝓤 𝓥 : Universe} {X : 𝓤 ̇}
+J : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ }
   → (A : (x y : X) → Id x y → 𝓥 ̇ )
   → ((x : X) → A x x (refl x))
   → (x y : X) (p : Id x y) → A x y p
@@ -519,22 +519,22 @@ J A f x .x (refl .x) = f x
 is-singleton : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → Id c x
 
-fiber : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
+fiber : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber f y = Σ \x → Id (f x) y
 
-is-equiv : {𝓤 𝓥 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-equiv : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : _) → is-singleton(fiber f y)
 
 Eq : {𝓤 𝓥 : Universe} → 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Eq X Y = Σ \(f : X → Y) → is-equiv f
 
-singletonType : {𝓤 : Universe} {X : 𝓤 ̇} → X → 𝓤 ̇
+singletonType : {𝓤 : Universe} {X : 𝓤 ̇ } → X → 𝓤 ̇
 singletonType x = Σ \y → Id y x
 
-η : {𝓤 : Universe} {X : 𝓤 ̇} (x : X) → singletonType x
+η : {𝓤 : Universe} {X : 𝓤 ̇ } (x : X) → singletonType x
 η x = (x , refl x)
 
-singletonTypesAreSingletons : {𝓤 : Universe} {X : 𝓤 ̇} (x : X) → is-singleton(singletonType x)
+singletonTypesAreSingletons : {𝓤 : Universe} {X : 𝓤 ̇ } (x : X) → is-singleton(singletonType x)
 singletonTypesAreSingletons {𝓤} {X} = h
  where
   A : (y x : X) → Id y x → 𝓤 ̇
@@ -591,32 +591,32 @@ given, the normal form of is-univalent is
 λ 𝓤 → (X Y : 𝓤 ̇ ) (y : Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤}
 {Σ {𝓤} {𝓤} {X} (λ x → Id {𝓤} {Y} (f x) y₁)} (λ c → (x : Σ {𝓤} {𝓤} {X}
 (λ x₁ → Id {𝓤} {Y} (f x₁) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₁ → Id {𝓤} {Y}
-(f x₁) y₁)} c x))) → Σ {𝓤 ⁺} {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ′} {𝓤 ̇} X Y}
+(f x₁) y₁)} c x))) → Σ {𝓤 ⁺} {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ′} {𝓤 ̇ } X Y}
 (λ x → Id {𝓤} {Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤}
 {Σ {𝓤} {𝓤} {X} (λ x₁ → Id {𝓤} {Y} (f x₁) y₁)} (λ c → (x₁ : Σ {𝓤} {𝓤} {X}
 (λ x₂ → Id {𝓤} {Y} (f x₂) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₂ → Id {𝓤} {Y}
-(f x₂) y₁)} c x₁))} (J {𝓤 ⁺} {𝓤} {𝓤 ̇} (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁}
+(f x₂) y₁)} c x₁))} (J {𝓤 ⁺} {𝓤} {𝓤 ̇ } (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁}
 (λ f → (y₁ : Y₁) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ x₁ → Id {𝓤} {Y₁} (f x₁) y₁)}
 (λ c → (x₁ : Σ {𝓤} {𝓤} {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)) → Id {𝓤}
 {Σ {𝓤} {𝓤} {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)} c x₁))) (λ X₁ → (λ x₁ → x₁)
 , (λ x₁ → (x₁ , refl x₁) , (λ yp → J {𝓤} {𝓤} {X₁} (λ y₁ x₂ p → Id {𝓤}
 {Σ {𝓤} {𝓤} {X₁} (λ y₂ → Id {𝓤} {X₁} y₂ x₂)} (x₂ , refl x₂) (y₁ , p))
 (λ x₂ → refl (x₂ , refl x₂)) (pr₁ yp) x₁ (pr₂ yp)))) X Y x) y)} (λ c →
-(x : Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ⁺} {𝓤 ̇} X Y} (λ x₁ → Id {𝓤} {Σ {𝓤} {𝓤} {X → Y}
+(x : Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ⁺} {𝓤 ̇ } X Y} (λ x₁ → Id {𝓤} {Σ {𝓤} {𝓤} {X → Y}
 (λ f → (y₁ : Y) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₂ → Id {𝓤} {Y} (f x₂) y₁)}
 (λ c₁ → (x₂ : Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)) → Id {𝓤}
-{Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)} c₁ x₂))} (J {𝓤 ⁺} {𝓤} {𝓤 ̇}
+{Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)} c₁ x₂))} (J {𝓤 ⁺} {𝓤} {𝓤 ̇ }
 (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁} (λ f → (y₁ : Y₁) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤}
 {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)} (λ c₁ → (x₂ : Σ {𝓤} {𝓤} {X₁} (λ x₃ →
 Id {𝓤} {Y₁} (f x₃) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ x₃ → Id {𝓤} {Y₁} (f x₃)
 y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ , refl x₂) , (λ yp → J {𝓤}
 {𝓤} {X₁} (λ y₁ x₃ p → Id {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ y₂ → Id {𝓤} {X₁} y₂ x₃)}
 (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ , refl x₃)) (pr₁ yp) x₂ (pr₂ yp))))
-X Y x₁) y)) → Id {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ⁺} {𝓤 ̇} X Y} (λ x₁ → Id {𝓤}
+X Y x₁) y)) → Id {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ⁺} {𝓤 ̇ } X Y} (λ x₁ → Id {𝓤}
 {Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₂ →
 Id {𝓤} {Y} (f x₂) y₁)} (λ c₁ → (x₂ : Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃)
 y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₃ → Id {𝓤} {Y} (f x₃) y₁)} c₁ x₂))}
-(J {𝓤 ⁺} {𝓤} {𝓤 ̇} (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁} (λ f → (y₁ : Y₁) →
+(J {𝓤 ⁺} {𝓤} {𝓤 ̇ } (λ X₁ Y₁ p → Σ {𝓤} {𝓤} {X₁ → Y₁} (λ f → (y₁ : Y₁) →
 Σ {𝓤} {𝓤} {Σ {𝓤} {𝓤} {X₁} (λ x₂ → Id {𝓤} {Y₁} (f x₂) y₁)} (λ c₁ →
 (x₂ : Σ {𝓤} {𝓤} {X₁} (λ x₃ → Id {𝓤} {Y₁} (f x₃) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X₁}
 (λ x₃ → Id {𝓤} {Y₁} (f x₃) y₁)} c₁ x₂))) (λ X₁ → (λ x₂ → x₂) , (λ x₂ → (x₂ ,

@@ -75,7 +75,7 @@ transport-finite = transport is-finite
 back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-finite u
 back-transport-finite = back-transport is-finite
 
-ap-Cantor : {X : 𝓤 ̇} (f : (u : ℕ∞) → Cantor[ u ] → X)
+ap-Cantor : {X : 𝓤 ̇ } (f : (u : ℕ∞) → Cantor[ u ] → X)
            {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}
          → f u φ ≡ f v (φ ∘ back-transport-finite p)
 ap-Cantor f refl = refl
@@ -515,7 +515,7 @@ We also need the following retractions (the first with X=ℕ):
 
 \begin{code}
 
-pair-seq-retract : {X : 𝓤 ̇} → funext 𝓤₀ 𝓤
+pair-seq-retract : {X : 𝓤 ̇ } → funext 𝓤₀ 𝓤
                 → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
 pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
@@ -566,7 +566,7 @@ moment (but has the above as a corollary by Lambek's Lemma):
 
 \begin{code}
 {-
-D-corec : {X : 𝓤 ̇} (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
+D-corec : {X : 𝓤 ̇ } (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
         → Σ \(f : X → Cantor)
              → Σ \(p : Head ∘ f ∼ h)
                   → ((x : X) (i : is-finite (Head (f x)))

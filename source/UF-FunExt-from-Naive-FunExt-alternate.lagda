@@ -30,7 +30,7 @@ open import UF-Subsingletons
 open import UF-Retracts
 
 equiv-post-comp-closure : ∀ 𝓤 𝓦 𝓥 → (𝓤 ⊔ 𝓥 ⊔ 𝓦) ⁺ ̇
-equiv-post-comp-closure 𝓤 𝓥 𝓦 = {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} (f : X → Y)
+equiv-post-comp-closure 𝓤 𝓥 𝓦 = {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇} (f : X → Y)
                                 → is-equiv f → is-equiv (λ (h : A → X) → f ∘ h)
 
 equiv-post-gives-funext' : equiv-post-comp-closure (𝓤 ⊔ 𝓥) 𝓤 𝓤 → funext 𝓤 𝓥

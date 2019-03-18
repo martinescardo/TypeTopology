@@ -8,7 +8,7 @@ module W where
 
 open import SpartanMLTT
 
-data W {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+data W {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
  sup : {x : X} → (Y x → W Y) → W Y
 
 \end{code}

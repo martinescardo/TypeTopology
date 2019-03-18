@@ -39,7 +39,7 @@ ip-ie-idtofun {𝓤} fe X = Jbased X B go
    go : is-prop(A' × A')
    go = ×-is-prop b b
 
-jip : is-univalent 𝓤 → funext 𝓤 𝓤 → {X Y : 𝓤 ̇}
+jip : is-univalent 𝓤 → funext 𝓤 𝓤 → {X Y : 𝓤 ̇ }
    → (f : X → Y) → is-prop(is-equiv f)
 jip {𝓤} ua fe {X} {Y} f ije = h ije
   where

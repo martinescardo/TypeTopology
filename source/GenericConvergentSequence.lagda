@@ -312,7 +312,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma 0 = different-from-₀-equal-₁(λ r → f 0 (is-Zero-equal-Zero fe r))
   lemma (succ n) = different-from-₀-equal-₁(λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
-ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇}
+ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇ }
             → ({u : ℕ∞} → is-separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f(under n) ≡ g(under n))
@@ -328,7 +328,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
-             → {Y : 𝓤 ̇}
+             → {Y : 𝓤 ̇ }
              → is-separated Y
              → {f g : ℕ∞ → Y}
              → ((n : ℕ) → f(under n) ≡ g(under n))

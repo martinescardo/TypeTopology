@@ -9,58 +9,58 @@ open import UF-Base
 open import UF-Subsingletons
 open import AlternativePlus
 
-has-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section r = Σ \s → r ∘ s ∼ id
 
-is-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-section s = Σ \r → r ∘ s ∼ id
 
-sections-are-lc : {X : 𝓤 ̇} {Y : 𝓥 ̇} (s : X → Y)
+sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (s : X → Y)
                   → is-section s → left-cancellable s
 sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y of X = Σ \(r : X → Y) → has-section r
 
-retraction : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (Y → X)
+retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract X of Y → (Y → X)
 retraction (r , s , rs) = r
 
-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract X of Y → (X → Y)
+section : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract X of Y → (X → Y)
 section (r , s , rs) = s
 
-retract-condition : {X : 𝓤 ̇} {Y : 𝓥 ̇} (ρ : retract X of Y) → retraction ρ ∘ section ρ ∼ id
+retract-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (ρ : retract X of Y) → retraction ρ ∘ section ρ ∼ id
 retract-condition (r , s , rs) = rs
 
-retract-of-singleton : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                      → retract Y of X
                      → is-singleton X
                      → is-singleton Y
 retract-of-singleton (r , s , rs) (c , φ) = r c , (λ y → ap r (φ (s y)) ∙ rs y)
 
-retract-of-prop : {X : 𝓤 ̇} {Y : 𝓥 ̇}
+retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                 → retract Y of X
                 → is-prop X
                 → is-prop Y
 retract-of-prop (r , s , rs) = subtype-of-prop-is-a-prop s
                                         (sections-are-lc s (r , rs))
 
-identity-retraction : {X : 𝓤 ̇} → retract X of X
+identity-retraction : {X : 𝓤 ̇ } → retract X of X
 identity-retraction = id , id , λ x → refl
 
-has-section-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y)
+has-section-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f g : X → Y)
                            → has-section f →  g ∼ f  → has-section g
 has-section-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (s , fs) h =
  (s , λ y → g (s y) ≡⟨ h (s y) ⟩ f (s y) ≡⟨ fs y ⟩ y ∎)
 
-has-section-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f g : X → Y}
+has-section-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {f g : X → Y}
                             → has-section f → f ∼ g → has-section g
 has-section-closed-under-∼' ise h = has-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
-is-section-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y)
+is-section-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f g : X → Y)
                               → is-section f →  g ∼ f  → is-section g
 is-section-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (r , rf) h = (r , λ x → r (g x) ≡⟨ ap r (h x) ⟩ r (f x) ≡⟨ rf x ⟩ x ∎)
 
-is-section-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f g : X → Y}
+is-section-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {f g : X → Y}
                                → is-section f → f ∼ g → is-section g
 is-section-closed-under-∼' ise h = is-section-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
@@ -70,25 +70,25 @@ Surjection expressed in Curry-Howard logic amounts to retraction.
 
 \begin{code}
 
-has-section' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section' f = ∀ y → Σ \x → f x ≡ y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ \(f : X → Y) → has-section' f
 
-retract-of-retract-Of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y of X → retract Y Of X
+retract-of-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract Y of X → retract Y Of X
 retract-of-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
  where
   hass : (y : Y) → Σ \(x : X) → retraction ρ x ≡ y
   hass y = section ρ y , retract-condition ρ y
 
-retract-Of-retract-of : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y Of X → retract Y of X
+retract-Of-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract Y Of X → retract Y of X
 retract-Of-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
  where
   φ : Σ \(s : Y → X) → f ∘ s ∼ id
   φ = (λ y → pr₁ (hass y)) , (λ y → pr₂ (hass y))
 
-retracts-compose : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇}
+retracts-compose : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇}
                  → retract Y of X → retract Z of Y → retract Z of X
 retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
  where
@@ -96,7 +96,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
             r' (s' z)         ≡⟨ rs' z ⟩
             z                 ∎
 
-×-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
+×-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
           → retract X of A
           → retract Y of B
           → retract (X × Y) of (A × B)
@@ -109,7 +109,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
   fg : (z : X × Y) → f (g z) ≡ z
   fg (x , y) = to-×-≡ (rs x) (tu y)
 
-+-retract : {X : 𝓤 ̇} {Y : 𝓦 ̇} {A : 𝓥 ̇} {B : 𝓣 ̇}
++-retract : {X : 𝓤 ̇ } {Y : 𝓦 ̇} {A : 𝓥 ̇} {B : 𝓣 ̇}
            → retract X of A
            → retract Y of B
            → retract (X + Y) of (A + B)
@@ -125,7 +125,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
   fg (inl x) = ap inl (rs x)
   fg (inr y) = ap inr (tu y)
 
-+'-retract-of-+ : {X Y : 𝓤 ̇}
++'-retract-of-+ : {X Y : 𝓤 ̇ }
                 → retract (X +' Y) of (X + Y)
 +'-retract-of-+ {𝓤} {X} {Y} = f , g , fg
  where
@@ -139,7 +139,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
   fg (₀ , x) = refl
   fg (₁ , y) = refl
 
-+'-retract : {X Y : 𝓤 ̇} {A B : 𝓥 ̇}
++'-retract : {X Y : 𝓤 ̇ } {A B : 𝓥 ̇}
            → retract X of A
            → retract Y of B
            → retract (X +' Y) of (A +' B)
@@ -155,7 +155,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
   fg (₀ , x) = ap (λ - → (₀ , -)) (rs x)
   fg (₁ , y) = ap (λ - → (₁ , -)) (tu y)
 
-Σ-reindex-retract : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : X → 𝓦 ̇} (r : Y → X)
+Σ-reindex-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : X → 𝓦 ̇} (r : Y → X)
                   → has-section r → retract (Σ A) of (Σ (A ∘ r))
 Σ-reindex-retract {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , rs) = γ , φ , γφ
  where
@@ -169,7 +169,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
     p : transport A (rs x) (back-transport A (rs x) a) ≡ a
     p = back-and-forth-transport (rs x)
 
-Σ-retract : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
+Σ-retract : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
           → ((x : X) → retract (A x) of (B x))
           → retract (Σ A) of (Σ B)
 Σ-retract {𝓤} {𝓥} {𝓦} {X} A B ρ = NatΣ R , NatΣ S , rs
@@ -205,7 +205,7 @@ developments, and (2) work over many years with uncontrolled growth.
 
 \begin{code}
 
-Σ-retract₂ : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
+Σ-retract₂ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
            → retract X of A
            → ((x : X) → retract  (Y x) of B)
            → retract (Σ Y) of (A × B)
@@ -250,7 +250,7 @@ added this ages ago to make the above proofs more readable.
 _◁_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Y ◁ X = retract Y of X
 
-_◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
+_◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
 _ ◁⟨ d ⟩ e = retracts-compose e d
 
 _◀ : (X : 𝓤 ̇ ) → X ◁ X

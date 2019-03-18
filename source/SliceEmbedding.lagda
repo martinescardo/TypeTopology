@@ -23,7 +23,7 @@ open import UF-UA-FunExt
 open import Slice 𝓣
 open import SliceIdentityViaSIP 𝓣
 
-η-is-embedding : {X : 𝓤 ̇} → is-embedding (η {𝓤} {X})
+η-is-embedding : {X : 𝓤 ̇ } → is-embedding (η {𝓤} {X})
 η-is-embedding {X} = embedding-criterion' η c
   where
    a : (𝟙 ≃ 𝟙) ≃ 𝟙

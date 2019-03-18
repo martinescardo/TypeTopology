@@ -16,7 +16,7 @@ open import UF-Subsingletons-FunExt
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
-        {X : 𝓤 ̇}
+        {X : 𝓤 ̇ }
         (_<_ : X → X → 𝓥 ̇ )
        where
 
@@ -65,7 +65,7 @@ transfinite-induction w P f x = transfinite-induction' P f x (w x)
 transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
 transfinite-induction-converse φ = φ is-accessible next
 
-transfinite-recursion : is-well-founded → ∀ {𝓦} {Y : 𝓦 ̇}
+transfinite-recursion : is-well-founded → ∀ {𝓦} {Y : 𝓦 ̇ }
                       → ((x : X) → ((y : X) → y < x → Y) → Y) → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 

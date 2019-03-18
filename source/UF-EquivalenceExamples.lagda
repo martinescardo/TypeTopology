@@ -17,7 +17,7 @@ module UF-EquivalenceExamples where
 
 
 curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦 → funext (𝓤 ⊔ 𝓥) 𝓦
-               → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
+               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
                → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
 curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc , cu)
  where
@@ -31,11 +31,11 @@ curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc ,
   uc f = dfunext fe'' (λ w → refl)
 
 curry-uncurry : (fe : FunExt)
-              → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
+              → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} {Z : (Σ \(x : X) → Y x) → 𝓦 ̇}
               → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
 curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe 𝓥 𝓦) (fe (𝓤 ⊔ 𝓥) 𝓦)
 
-Σ-≡-≃ : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {σ τ : Σ A}
+Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {σ τ : Σ A}
       → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
 Σ-≡-≃ {𝓤} {𝓥} {X} {A} {x , a} {y , b} = qinveq from-Σ-≡ (to-Σ-≡ , ε , η)
  where
@@ -44,7 +44,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε : (q : x , a ≡ y , b) → to-Σ-≡ (from-Σ-≡ q) ≡ q
   ε refl = refl
 
-×-≡-≃ : {X : 𝓤 ̇} {A : 𝓥 ̇} {σ τ : X × A}
+×-≡-≃ : {X : 𝓤 ̇ } {A : 𝓥 ̇} {σ τ : X × A}
       → (σ ≡ τ) ≃ (pr₁ σ ≡ pr₁ τ) × (pr₂ σ ≡ pr₂ τ)
 ×-≡-≃ {𝓤} {𝓥} {X} {A} {x , a} {y , b} = qinveq from-×-≡' (to-×-≡' , (ε , η))
  where
@@ -53,7 +53,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε : (u : x , a ≡ y , b) → to-×-≡' (from-×-≡' u) ≡ u
   ε refl = refl
 
-Σ-assoc : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Z : Σ Y → 𝓦 ̇}
+Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} {Z : Σ Y → 𝓦 ̇}
         → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))
 Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq c (u , (λ τ → refl) , (λ σ → refl))
  where
@@ -62,7 +62,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
   u (x , (y , z)) = ((x , y) , z)
 
-Σ-flip : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : X → Y → 𝓦 ̇}
+Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : X → Y → 𝓦 ̇}
        → (Σ \(x : X) → Σ \(y : Y) → A x y) ≃ (Σ \(y : Y) → Σ \(x : X) → A x y)
 Σ-flip {𝓤} {𝓥} {𝓦} {X} {Y} {A} = qinveq f (g , ε , η)
  where
@@ -75,7 +75,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   η : ∀ τ → f (g τ) ≡ τ
   η (y , x , p) = refl
 
-Σ-cong : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {Y' : X → 𝓦 ̇}
+Σ-cong : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} {Y' : X → 𝓦 ̇}
        → ((x : X) → Y x ≃ Y' x) → Σ Y ≃ Σ Y'
 Σ-cong {𝓤} {𝓥} {𝓦} {X} {Y} {Y'} φ = (F , (G , FG) , (H , HF))
  where
@@ -101,7 +101,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   HF : (w : Σ Y) → H(F w) ≡ w
   HF (x , y) = to-Σ-≡' (hf x y)
 
-ΠΣ-distr-≃ : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {P : (x : X) → A x → 𝓦 ̇}
+ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {P : (x : X) → A x → 𝓦 ̇}
            → (Π \(x : X) → Σ \(a : A x) → P x a) ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
 ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = qinveq ΠΣ-distr (ΠΣ-distr-back , ε , η)
  where
@@ -152,7 +152,7 @@ An application of Π-cong is the following:
 \begin{code}
 
 ≃-funext₂ : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦
-          → {X : 𝓤 ̇} {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
+          → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} {A : (x : X) → Y x → 𝓦 ̇}
             (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
 ≃-funext₂ fe fe' {X} f g =
  (f ≡ g)            ≃⟨ ≃-funext fe f g ⟩
@@ -162,7 +162,7 @@ An application of Π-cong is the following:
                           (λ x → ≃-funext fe' (f x) (g x))⟩
  (∀ x → f x ∼ g x) ■
 
-𝟙-lneutral : {Y : 𝓤 ̇} → 𝟙 {𝓥} × Y ≃ Y
+𝟙-lneutral : {Y : 𝓤 ̇ } → 𝟙 {𝓥} × Y ≃ Y
 𝟙-lneutral {𝓤} {𝓥} {Y} = qinveq f (g , ε , η)
  where
    f : 𝟙 × Y → Y
@@ -174,7 +174,7 @@ An application of Π-cong is the following:
    ε : ∀ z → g (f z) ≡ z
    ε (o , y) = ap (_, y) (𝟙-is-prop * o)
 
-×-comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X × Y ≃ Y × X
+×-comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → X × Y ≃ Y × X
 ×-comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , ε , η)
  where
   f : X × Y → Y × X
@@ -186,12 +186,12 @@ An application of Π-cong is the following:
   ε : ∀ t → g (f t) ≡ t
   ε t = refl
 
-𝟙-rneutral : {Y : 𝓤 ̇} → Y × 𝟙 {𝓥} ≃ Y
+𝟙-rneutral : {Y : 𝓤 ̇ } → Y × 𝟙 {𝓥} ≃ Y
 𝟙-rneutral {𝓤} {𝓥} {Y} = Y × 𝟙 ≃⟨ ×-comm ⟩
                           𝟙 × Y ≃⟨ 𝟙-lneutral {𝓤} {𝓥} ⟩
                           Y     ■
 
-+comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X + Y ≃ Y + X
++comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → X + Y ≃ Y + X
 +comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , η , ε)
  where
    f : X + Y → Y + X
@@ -207,7 +207,7 @@ An application of Π-cong is the following:
    η (inl x) = refl
    η (inr y) = refl
 
-𝟘-rneutral : {X : 𝓤 ̇} → X ≃ X + 𝟘 {𝓥}
+𝟘-rneutral : {X : 𝓤 ̇ } → X ≃ X + 𝟘 {𝓥}
 𝟘-rneutral {𝓤} {𝓥} {X} = qinveq f (g , η , ε)
  where
    f : X → X + 𝟘
@@ -221,15 +221,15 @@ An application of Π-cong is the following:
    η : (x : X) → (g ∘ f) x ≡ x
    η x = refl
 
-𝟘-rneutral' : {X : 𝓤 ̇} → X + 𝟘 {𝓥} ≃ X
+𝟘-rneutral' : {X : 𝓤 ̇ } → X + 𝟘 {𝓥} ≃ X
 𝟘-rneutral' {𝓤} {𝓥} = ≃-sym (𝟘-rneutral {𝓤} {𝓥})
 
-𝟘-lneutral : {X : 𝓤 ̇} → 𝟘 {𝓥} + X ≃ X
+𝟘-lneutral : {X : 𝓤 ̇ } → 𝟘 {𝓥} + X ≃ X
 𝟘-lneutral {𝓤} {𝓥} {X} = (𝟘 + X) ≃⟨ +comm ⟩
                          (X + 𝟘) ≃⟨ 𝟘-rneutral' {𝓤} {𝓥} ⟩
                           X      ■
 
-+assoc : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → (X + Y) + Z ≃ X + (Y + Z)
++assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇} → (X + Y) + Z ≃ X + (Y + Z)
 +assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq f (g , η , ε)
  where
    f : (X + Y) + Z → X + (Y + Z)
@@ -249,7 +249,7 @@ An application of Π-cong is the following:
    η (inl (inr x)) = refl
    η (inr x)       = refl
 
-+-cong : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
++-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
        → X ≃ A → Y ≃ B → X + Y ≃ A + B
 +-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
@@ -270,7 +270,7 @@ An application of Π-cong is the following:
   D (inl x) = ap inl (d x)
   D (inr y) = ap inr (δ y)
 
-×𝟘 : {X : 𝓤 ̇} → 𝟘 {𝓥} ≃ X × 𝟘 {𝓦}
+×𝟘 : {X : 𝓤 ̇ } → 𝟘 {𝓥} ≃ X × 𝟘 {𝓦}
 ×𝟘 {𝓤} {𝓥} {𝓦} {X} = qinveq f (g , η , ε)
  where
    f : 𝟘 → X × 𝟘
@@ -282,7 +282,7 @@ An application of Π-cong is the following:
    η : (u : 𝟘) → (g ∘ f) u ≡ u
    η ()
 
-𝟙distr : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X × Y + X ≃ X × (Y + 𝟙 {𝓦})
+𝟙distr : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → X × Y + X ≃ X × (Y + 𝟙 {𝓦})
 𝟙distr {𝓤} {𝓥} {𝓦} {X} {Y} = f , (g , ε) , (g , η)
  where
    f : X × Y + X → X × (Y + 𝟙)
@@ -298,7 +298,7 @@ An application of Π-cong is the following:
    η (inl (x , y)) = refl
    η (inr x)       = refl
 
-Ap+ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇ ) → X ≃ Y → X + Z ≃ Y + Z
+Ap+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (Z : 𝓦 ̇ ) → X ≃ Y → X + Z ≃ Y + Z
 Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η')
  where
    f' : X + Z → Y + Z
@@ -317,7 +317,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
    η' (inl x) = ap inl (η x)
    η' (inr z) = refl
 
-×comm : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X × Y ≃ Y × X
+×comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → X × Y ≃ Y × X
 ×comm {𝓤} {𝓥} {X} {Y} = f , (g , ε) , (g , η)
  where
    f : X × Y → Y × X
@@ -329,7 +329,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
    η : (u : X × Y) → (g ∘ f) u ≡ u
    η (x , y) = refl
 
-×-cong : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
+×-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
       → X ≃ A → Y ≃ B → X × Y ≃ A × B
 ×-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  F , (G , E) , (G' , D)
@@ -345,7 +345,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   D : (z : X × Y) → G' (F z) ≡ z
   D (x , y) = to-×-≡ (d x) (δ y)
 
-𝟘→ : {X : 𝓤 ̇} → funext 𝓦 𝓤
+𝟘→ : {X : 𝓤 ̇ } → funext 𝓦 𝓤
    → 𝟙 {𝓥} ≃ (𝟘 {𝓦} → X)
 𝟘→ {𝓤} {𝓥} {𝓦} {X} fe = qinveq f (g , ε , η)
  where
@@ -358,7 +358,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   ε : (y : 𝟙) → g (f y) ≡ y
   ε * = refl
 
-𝟙→ : {X : 𝓤 ̇} → funext 𝓥 𝓤
+𝟙→ : {X : 𝓤 ̇ } → funext 𝓥 𝓤
    → X ≃ (𝟙 {𝓥} → X)
 𝟙→ {𝓤} {𝓥} {X} fe = qinveq f (g , ε , η)
  where
@@ -374,7 +374,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   ε : (x : X) → g (f x) ≡ x
   ε x = refl
 
-+→ : ∀ {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → funext (𝓤 ⊔ 𝓥) 𝓦
++→ : ∀ {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇} → funext (𝓤 ⊔ 𝓥) 𝓦
    → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
 +→ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} fe = qinveq f (g , ε , η)
  where
@@ -392,7 +392,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
     γ (inl x) = refl
     γ (inr y) = refl
 
-→× : ∀ {A : 𝓤 ̇} {X : A → 𝓥 ̇} {Y : A → 𝓦 ̇}
+→× : ∀ {A : 𝓤 ̇ } {X : A → 𝓥 ̇} {Y : A → 𝓦 ̇}
    → ((a : A) → X a × Y a)  ≃ Π X × Π Y
 →× {𝓤} {𝓥} {𝓦} {A} {X} {Y} = qinveq f (g , ε , η)
  where
@@ -405,7 +405,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   η : (α : Π X × Π Y) → f (g α) ≡ α
   η (γ , δ) = refl
 
-→-cong : {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
+→-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {A : 𝓦 ̇} {B : 𝓣 ̇}
        → funext 𝓦 𝓣 → funext 𝓤 𝓥
        → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
 →-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =
@@ -423,7 +423,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
     D : (h : X → Y) → G (F h) ≡ h
     D h = dfunext fe' (λ x → ε (h (g (f x))) ∙ ap h (e x))
 
-→-cong' : {X : 𝓤 ̇} {Y : 𝓥 ̇} {B : 𝓣 ̇}
+→-cong' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {B : 𝓣 ̇}
        → funext 𝓤 𝓣 → funext 𝓤 𝓥
        → Y ≃ B → (X → Y) ≃ (X → B)
 →-cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →-cong fe fe' (≃-refl X)
@@ -440,7 +440,7 @@ pr₁-equivalence {𝓤} {𝓥} X A iss = qinvs-are-equivs pr₁ (g , ε , η)
   ε : (σ : Σ A) → g(pr₁ σ) ≡ σ
   ε (x , a) = to-Σ-≡ (η x , singletons-are-props (iss x) _ _)
 
-NatΣ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                  → (x : X) (b : B x) → fiber (ζ x) b ≃ fiber (NatΣ ζ) (x , b)
 NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
  where
@@ -453,36 +453,36 @@ NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
   η : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
   η b (a , refl) = refl
 
-NatΣ-vv-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
               → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΣ ζ)
 NatΣ-vv-equiv A B ζ i (x , b) = equiv-to-singleton
                                    (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                    (i x b)
 
-NatΣ-vv-equiv-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-vv-equiv-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                        → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
 NatΣ-vv-equiv-converse A B ζ e x b = equiv-to-singleton
                                       (NatΣ-fiber-equiv A B ζ x b)
                                       (e (x , b))
 
-NatΣ-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
 NatΣ-equiv A B ζ i = vv-equivs-are-equivs
                          (NatΣ ζ)
                          (NatΣ-vv-equiv A B ζ
                            (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-NatΣ-equiv-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-equiv-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                     → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
 NatΣ-equiv-converse A B ζ e x = vv-equivs-are-equivs (ζ x)
                                  (NatΣ-vv-equiv-converse A B ζ
                                    (equivs-are-vv-equivs (NatΣ ζ) e) x)
 
-Σ-cong' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
+Σ-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
         → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 Σ-cong' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
 
-NatΣ-equiv' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-equiv' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
             → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
 NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
  where
@@ -495,7 +495,7 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (i x)) a)
 
-Σ-change-of-variables' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (g : Y → X)
+Σ-change-of-variables' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (g : Y → X)
                        → is-hae g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
 Σ-change-of-variables' {𝓤} {𝓥} {𝓦} {X} {Y} A g (f , η , ε , α) = γ , φ , φγ , γφ
  where
@@ -517,7 +517,7 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
         transport A (ε (g y)) (back-transport A (ε (g y)) a)           ≡⟨ back-and-forth-transport (ε (g y)) ⟩
         a                                                              ∎
 
-Σ-change-of-variables : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (g : Y → X)
+Σ-change-of-variables : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (g : Y → X)
                       → is-equiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
 Σ-change-of-variables {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
@@ -526,7 +526,7 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
 
-NatΠ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                  → funext 𝓤 𝓦
                  → (g : Π B) → (Π \(x : X) → fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
@@ -536,14 +536,14 @@ NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
   (Σ \(f : Π A) → (λ x → ζ x (f x)) ≡ g)        ≃⟨ ≃-refl _ ⟩
   fiber (NatΠ ζ) g                              ■
 
-NatΠ-vv-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
               → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
               → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΠ ζ)
 NatΠ-vv-equiv A B ζ fe fe' i g = equiv-to-singleton
                                     (≃-sym (NatΠ-fiber-equiv A B ζ fe g))
                                     (Π-is-singleton fe' (λ x → i x (g x)))
 
-NatΠ-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
            → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΠ ζ)
 NatΠ-equiv A B ζ fe fe' i = vv-equivs-are-equivs
@@ -551,30 +551,30 @@ NatΠ-equiv A B ζ fe fe' i = vv-equivs-are-equivs
                              (NatΠ-vv-equiv A B ζ fe fe'
                                (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-Π-cong' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
+Π-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
         → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
         → ((x : X) → A x ≃ B x) → Π A ≃ Π B
 Π-cong' A B fe fe' e = NatΠ (λ x → pr₁(e x)) , NatΠ-equiv A B (λ x → pr₁(e x)) fe fe' (λ x → pr₂(e x))
 
-≡-cong : {X : 𝓤 ̇} (x y : X) {x' y' : X} → x ≡ x' → y ≡ y' → (x ≡ y) ≃ (x' ≡ y')
+≡-cong : {X : 𝓤 ̇ } (x y : X) {x' y' : X} → x ≡ x' → y ≡ y' → (x ≡ y) ≃ (x' ≡ y')
 ≡-cong x y refl refl = ≃-refl (x ≡ y)
 
-≡-cong-l : {X : 𝓤 ̇} (x y : X) {x' : X} → x ≡ x' → (x ≡ y) ≃ (x' ≡ y)
+≡-cong-l : {X : 𝓤 ̇ } (x y : X) {x' : X} → x ≡ x' → (x ≡ y) ≃ (x' ≡ y)
 ≡-cong-l x y refl = ≃-refl (x ≡ y)
 
-≡-cong-r : {X : 𝓤 ̇} (x y : X) {y' : X} → y ≡ y' → (x ≡ y) ≃ (x ≡ y')
+≡-cong-r : {X : 𝓤 ̇ } (x y : X) {y' : X} → y ≡ y' → (x ≡ y) ≃ (x ≡ y')
 ≡-cong-r x y refl = ≃-refl (x ≡ y)
 
-≡-flip : {X : 𝓤 ̇} {x y : X} → (x ≡ y) ≃ (y ≡ x)
+≡-flip : {X : 𝓤 ̇ } {x y : X} → (x ≡ y) ≃ (y ≡ x)
 ≡-flip = _⁻¹ , (_⁻¹ , ⁻¹-involutive) , (_⁻¹ , ⁻¹-involutive)
 
-singleton-≃ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-singleton X → is-singleton Y → X ≃ Y
+singleton-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → is-singleton X → is-singleton Y → X ≃ Y
 singleton-≃ {𝓤} {𝓥} (c , φ) (d , γ) = (λ _ → d) , ((λ _ → c) , γ) , ((λ _ → c) , φ)
 
-singleton-≃-𝟙 : {X : 𝓤 ̇} → is-singleton X → X ≃ 𝟙 {𝓥}
+singleton-≃-𝟙 : {X : 𝓤 ̇ } → is-singleton X → X ≃ 𝟙 {𝓥}
 singleton-≃-𝟙 i = singleton-≃ i 𝟙-is-singleton
 
-singleton-≃-𝟙' : {X : 𝓤 ̇} → is-singleton X → 𝟙 {𝓥} ≃ X
+singleton-≃-𝟙' : {X : 𝓤 ̇ } → is-singleton X → 𝟙 {𝓥} ≃ X
 singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
 
 𝟙-≡-≃ : (P : 𝓤 ̇ ) → funext 𝓤 𝓤 → propext 𝓤
@@ -602,7 +602,7 @@ Alternatively, where we should change the name of this function:
 
 \begin{code}
 
-graph-domain-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+graph-domain-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                    → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
 graph-domain-equiv {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
  where
@@ -615,7 +615,7 @@ graph-domain-equiv {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
   η : (x : X) → h (g x) ≡ x
   η x = refl
 
-left-Id-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x : X) → (Σ \(x' : X) → (x' ≡ x) × Y x') ≃ Y x
+left-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} (x : X) → (Σ \(x' : X) → (x' ≡ x) × Y x') ≃ Y x
 left-Id-equiv {𝓤} {𝓥} {X} {Y} x = qinveq f (g , gf , fg)
  where
   f : (Σ \(x' : X) → (x' ≡ x) × Y x') → Y x
@@ -627,7 +627,7 @@ left-Id-equiv {𝓤} {𝓥} {X} {Y} x = qinveq f (g , gf , fg)
   fg : (y : Y x) → f (g y) ≡ y
   fg y = refl
 
-fiber-equiv : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
+fiber-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
 fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ Σ-assoc ⟩
                                 (Σ \(x' : X) → Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
                                 (Σ \(x' : X) → (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩

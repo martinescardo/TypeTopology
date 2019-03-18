@@ -47,7 +47,7 @@ module UF-Choice where
 module Shift
    (𝓤 : Universe)
    (T : 𝓤 ̇ → 𝓤 ̇ )
-   (T-functor : {X Y : 𝓤 ̇} → (X → Y) → T X → T Y)
+   (T-functor : {X Y : 𝓤 ̇ } → (X → Y) → T X → T Y)
  where
 
 \end{code}
@@ -97,10 +97,10 @@ abstractly, where T may be ∥_∥ and S may be is-set.
 module TChoice
    (𝓤 : Universe)
    (T : 𝓤 ̇ → 𝓤 ̇ )
-   (T-functor : {X Y : 𝓤 ̇} → (X → Y) → T X → T Y)
+   (T-functor : {X Y : 𝓤 ̇ } → (X → Y) → T X → T Y)
    (S : 𝓤 ̇ → 𝓤 ̇ )
-   (S-exponential-ideal : {X Y : 𝓤 ̇} → S Y → S(X → Y))
-   (T-is-S : {X : 𝓤 ̇} → S(T X))
+   (S-exponential-ideal : {X Y : 𝓤 ̇ } → S Y → S(X → Y))
+   (T-is-S : {X : 𝓤 ̇ } → S(T X))
  where
 
  Shift : (X : 𝓤 ̇ ) → (X → 𝓤 ̇) → 𝓤 ̇
@@ -140,7 +140,7 @@ module UnivalentChoice (𝓤 : Universe)
 
  open PropositionalTruncation pt public
 
- sei : {X Y : 𝓤 ̇} → is-set Y → is-set (X → Y)
+ sei : {X Y : 𝓤 ̇ } → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe 𝓤 𝓤) (λ x → isy)
 
  open TChoice 𝓤 ∥_∥ ∥∥-functor is-set sei (props-are-sets ∥∥-is-a-prop)
@@ -208,10 +208,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
 
  open UnivalentChoice 𝓤 fe pt
 
- α : {X : 𝓤 ̇} → ∥ X ∥ → ¬¬ X
+ α : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
  α s u = ∥∥-rec 𝟘-is-prop u s
 
- β : {X : 𝓤 ̇} → ¬¬ X → ∥ X ∥
+ β : {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-a-prop)
 
  DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
@@ -226,7 +226,7 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  Fact' : DNS → AC'
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
- l : {X : 𝓤 ̇} → is-set(¬¬ X)
+ l : {X : 𝓤 ̇ } → is-set(¬¬ X)
  l {X} = props-are-sets (Π-is-prop (fe 𝓤 𝓤₀) (λ _ → 𝟘-is-prop))
 
  fact : DNS → DNA
@@ -261,7 +261,7 @@ module AC-renders-all-sets-discrete
  open import DiscreteAndSeparated
  open import UF-Miscelanea
 
- lemma₁ : {X : 𝓤 ̇} (a : 𝟚 → X)
+ lemma₁ : {X : 𝓤 ̇ } (a : 𝟚 → X)
         → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  lemma₁ a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
@@ -300,7 +300,7 @@ module AC-renders-all-sets-discrete
    claim (inl p) = inl (s-a p)
    claim (inr u) = inr (contrapositive a-s u)
 
- lemma₂ : {X : 𝓤 ̇} → is-set X → (a : 𝟚 → X)
+ lemma₂ : {X : 𝓤 ̇ } → is-set X → (a : 𝟚 → X)
         → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
  lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
@@ -373,7 +373,7 @@ module Observation (𝓤 : Universe)
  open import DiscreteAndSeparated
  open import UF-Miscelanea
 
- observation : {X : 𝓤 ̇} (a : 𝟚 → X)
+ observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
         → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))

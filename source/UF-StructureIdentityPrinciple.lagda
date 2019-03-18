@@ -45,10 +45,10 @@ projections:
 
 \begin{code}
 
-⟨_⟩ : {𝓤 𝓥 : Universe} {S : 𝓤 ̇ → 𝓥 ̇} → Σ S → 𝓤 ̇
+⟨_⟩ : {𝓤 𝓥 : Universe} {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
 ⟨_⟩ = pr₁
 
-structure : {𝓤 𝓥 : Universe} {S : 𝓤 ̇ → 𝓥 ̇} (A : Σ S) → S ⟨ A ⟩
+structure : {𝓤 𝓥 : Universe} {S : 𝓤 ̇ → 𝓥 ̇ } (A : Σ S) → S ⟨ A ⟩
 structure = pr₂
 
 \end{code}

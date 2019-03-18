@@ -50,7 +50,7 @@ module type-classifier
    γ : ∀ y → (Σ \(σ : Σ A) → pr₁ σ ≡ y) ≡ A y
    γ y = eqtoid ua _ _ (f y , ((g y , fg y) , (g y , gf y)))
 
- transport-map : {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X → Y)
+ transport-map : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
                → transport (λ - → - → Y) (eqtoid ua X X' e) g
                ≡ g ∘ eqtofun (≃-sym e)
 
@@ -103,7 +103,7 @@ module subtype-classifier
    γ : (y : Y) → χ (T P) y ≡ P y
    γ y = Ω-ext-from-univalence ua (f y) (g y)
 
- transport-embedding : {X X' Y : 𝓤 ̇} (e : X ≃ X') (g : X → Y) (i : is-embedding g)
+ transport-embedding : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y) (i : is-embedding g)
                     → transport (λ - → - ↪ Y) (eqtoid ua X X' e) (g , i)
                     ≡ g ∘ eqtofun (≃-sym e) , comp-embedding
                                                  (equivs-are-embeddings (eqtofun (≃-sym e))

@@ -255,7 +255,7 @@ restriction map _∘ j:
 \begin{code}
 
 ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ̇
-ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                       → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
 \end{code}
@@ -274,7 +274,7 @@ Injectivity stipulates that the restriction map is a surjection:
 \begin{code}
 
 injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
-injective-type D 𝓤 𝓥 = {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                      → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
 \end{code}
 
@@ -286,7 +286,7 @@ by the following two extension operators:
 
 \begin{code}
 
-_↓_ _↑_ :  {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → 𝓦 ̇ ) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
+_↓_ _↑_ :  {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → 𝓦 ̇ ) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
 (f ↓ j) y = Σ \(w : fiber j y) → f(pr₁ w)
 (f ↑ j) y = Π \(w : fiber j y) → f(pr₁ w)
 
@@ -304,12 +304,12 @@ product indexed by a proposition is equal to any of its factors.
 
 \begin{code}
 
-↓-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+↓-is-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → f ↓ j ∘ j ∼ f
 ↓-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ↓ j ∘ j) x) (f x)
                                    (prop-indexed-sum (i (j x)) (x , refl))
 
-↑-is-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+↑-is-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
                → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → f ↑ j ∘ j ∼ f
 ↑-is-extension {𝓤} {𝓥} j i f x = eqtoid (ua (𝓤 ⊔ 𝓥)) ((f ↑ j ∘ j) x) (f x)
                                    (prop-indexed-product (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
@@ -336,13 +336,13 @@ give 𝟘 and 𝟙 respectively:
 
 \begin{code}
 
-Σ-extension-out-of-range : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
+Σ-extension-out-of-range : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
                          → (y : Y) → ((x : X) → j x ≢ y)
                          → (f ↓ j) y ≃ 𝟘 {𝓣}
 Σ-extension-out-of-range f j y φ = prop-indexed-sum-zero (uncurry φ)
 
 
-Π-extension-out-of-range : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
+Π-extension-out-of-range : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
                          → (y : Y) → ((x : X) → j x ≢ y)
                          → (f ↑ j) y ≃ 𝟙 {𝓣}
 Π-extension-out-of-range {𝓤} {𝓥} {𝓦} f j y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
@@ -355,11 +355,11 @@ excluded middle is not needed, as it is not hard to see:
 
 \begin{code}
 
-same-Σ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
+same-Σ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
        → Σ f ≃ Σ (f ↓ j)
 same-Σ = blackboard.same-Σ
 
-same-Π : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
+same-Π : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
        → Π f ≃ Π (f ↑ j)
 same-Π = blackboard.same-Π
 
@@ -379,7 +379,7 @@ We record the following known constructions and facts mentioned above:
 
 \begin{code}
 
-_[_] : {X : 𝓤 ̇} (f : X → 𝓥 ̇ ) {x y : X} → Id x y → f x → f y
+_[_] : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x y : X} → Id x y → f x → f y
 f [ p ] = transport f p
 
 \end{code}
@@ -389,18 +389,18 @@ implicit arguments made explicit:
 
 \begin{code}
 
-automatic-functoriality-id : {X : 𝓤 ̇} (f : X → 𝓥 ̇ ) {x : X}
+automatic-functoriality-id : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x : X}
                            → f [ refl─ x ] ≡ id─ (f x)
 automatic-functoriality-id f = refl
 
-automatic-functoriality-∘ : {X : 𝓤 ̇} (f : X → 𝓥 ̇ ) {x y z : X} (p : Id x y) (q : Id y z)
+automatic-functoriality-∘ : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x y z : X} (p : Id x y) (q : Id y z)
                           → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
 automatic-functoriality-∘ f refl refl = refl
 
-_≾_ : {X : 𝓤 ̇} → (X → 𝓥 ̇ ) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+_≾_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 f ≾ g = (x : domain f) → f x → g x
 
-automatic-naturality : {X : 𝓤 ̇} (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇) (τ : f ≾ f') {x y : X} (p : Id x y)
+automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇) (τ : f ≾ f') {x y : X} (p : Id x y)
                      → τ y ∘ f [ p ] ≡ f' [ p ] ∘ τ x
 automatic-naturality f f' τ refl = refl
 
@@ -410,11 +410,11 @@ With this notation, we have:
 
 \begin{code}
 
-ηΣ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
+ηΣ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
    → f ≾ f ↓ j ∘ j
 ηΣ f j x B = (x , refl) , B
 
-ηΠ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
+ηΠ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y)
    → f ↑ j ∘ j ≾ f
 ηΠ f j x A = A (x , refl)
 
@@ -426,11 +426,11 @@ g ↦ g ∘ j.
 
 \begin{code}
 
-↓-extension-left-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇)
+↓-extension-left-Kan : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇)
                      → (f ↓ j ≾ g) ≃ (f ≾ g ∘ j)
 ↓-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
 
-↑-extension-right-Kan : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇)
+↑-extension-right-Kan : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇)
                       → (g ≾ f ↑ j) ≃ (g ∘ j ≾ f)
 ↑-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
 
@@ -602,13 +602,13 @@ article). Their proofs are routine.
 
 \begin{code}
 
-iterated-↑ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ ) (j : X → Y) (k : Y → Z)
+iterated-↑ : {𝓤 𝓥 𝓦 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ ) (j : X → Y) (k : Y → Z)
            → (f ↑ j) ↑ k ∼ f ↑ (k ∘ j)
 iterated-↑ {𝓤} {𝓥} {𝓦} f j k z = eqtoid (ua (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (((f ↑ j) ↑ k) z) ((f ↑ (k ∘ j)) z)
                                       (blackboard.iterated-extension j k z)
 
 
-retract-extension : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (f' : X → 𝓦' ̇) (j : X → Y)
+retract-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → 𝓦 ̇ ) (f' : X → 𝓦' ̇) (j : X → Y)
                   → ((x : X) → retract (f x) of (f' x))
                   → ((y : Y) → retract ((f ↑ j) y) of ((f' ↑ j) y))
 retract-extension = blackboard.retract-extension
@@ -650,7 +650,7 @@ And under products, where we perform the extension pointwise:
 
 \begin{code}
 
-Π-ainjective : {A : 𝓣 ̇} {D : A → 𝓦 ̇}
+Π-ainjective : {A : 𝓣 ̇ } {D : A → 𝓦 ̇}
              → ((a : A) → ainjective-type (D a) 𝓤 𝓥)
              → ainjective-type (Π D) 𝓤 𝓥
 Π-ainjective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
@@ -668,7 +668,7 @@ And hence under exponential powers:
 
 \begin{code}
 
-power-of-ainjective : {A : 𝓣 ̇} {D : 𝓦 ̇}
+power-of-ainjective : {A : 𝓣 ̇ } {D : 𝓦 ̇}
                     → ainjective-type D 𝓤 𝓥
                     → ainjective-type (A → D) 𝓤 𝓥
 power-of-ainjective i = Π-ainjective (λ a → i)
@@ -696,7 +696,7 @@ the link.
 
 \begin{code}
 
-Id-is-embedding : {X : 𝓤 ̇} → is-embedding(Id {𝓤} {X})
+Id-is-embedding : {X : 𝓤 ̇ } → is-embedding(Id {𝓤} {X})
 Id-is-embedding {𝓤} = UA-Id-embedding (ua 𝓤) fe
 
 \end{code}
@@ -1325,7 +1325,7 @@ retract-of-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
-power-of-injective : {A : 𝓣 ̇} {D : 𝓣 ⊔ 𝓦 ̇}
+power-of-injective : {A : 𝓣 ̇ } {D : 𝓣 ⊔ 𝓦 ̇}
                    → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
                    → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
 power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
@@ -1419,7 +1419,7 @@ import LiftingEmbeddingViaSIP
 𝓛-unit-is-embedding : (X : 𝓤 ̇ ) → is-embedding (𝓛-unit {𝓣} X)
 𝓛-unit-is-embedding {𝓤} {𝓣} X = LiftingEmbeddingViaSIP.η-is-embedding' 𝓣 𝓤 X (ua 𝓣) (fe 𝓣 𝓤)
 
-𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇} → 𝓛-alg 𝓣 A → aflabby A 𝓣
+𝓛-alg-aflabby : {𝓣 𝓤 : Universe} {A : 𝓤 ̇ } → 𝓛-alg 𝓣 A → aflabby A 𝓣
 𝓛-alg-aflabby {𝓣} {𝓤} (∐ , κ , ι) P i f = ∐ i f , γ
  where
   γ : (p : P) → ∐ i f ≡ f p

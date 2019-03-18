@@ -49,19 +49,19 @@ that r has a pointwise section).
 
 \begin{code}
 
- has-section· : {A : 𝓤 ̇} {X : 𝓥 ̇} → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
+ has-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇} → (A → (A → X)) → 𝓤 ⊔ 𝓥 ̇
  has-section· r = Σ \(s : codomain r → domain r) → ∀ g a → r (s g) a ≡ g a
 
- section-gives-section· : {A : 𝓤 ̇} {X : 𝓥 ̇} (r : A → (A → X))
+ section-gives-section· : {A : 𝓤 ̇ } {X : 𝓥 ̇} (r : A → (A → X))
                         → has-section r → has-section· r
  section-gives-section· r (s , rs) = s , λ g a → ap (λ - → - a) (rs g)
 
- section·-gives-section : {A : 𝓤 ̇} {X : 𝓥 ̇} (r : A → (A → X))
+ section·-gives-section : {A : 𝓤 ̇ } {X : 𝓥 ̇} (r : A → (A → X))
                         → funext 𝓤 𝓥
                         → has-section· r → has-section r
  section·-gives-section r fe (s , rs·) = s , λ g → dfunext fe (rs· g)
 
- LFPT· : {A : 𝓤 ̇} {X : 𝓥 ̇} (r : A → (A → X))
+ LFPT· : {A : 𝓤 ̇ } {X : 𝓥 ̇} (r : A → (A → X))
        → has-section· r
        → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT· {𝓤} {𝓥} {A} {X} r (s , rs) f = x , p
@@ -78,17 +78,17 @@ that r has a pointwise section).
        g a       ≡⟨ refl ⟩
        f x       ∎
 
- LFPT : {A : 𝓤 ̇} {X : 𝓥 ̇}
+ LFPT : {A : 𝓤 ̇ } {X : 𝓥 ̇}
       → retract (A → X) of A
       → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT (r , h) = LFPT· r (section-gives-section· r h)
 
- LFPT-≃ : {A : 𝓤 ⊔ 𝓥 ̇} {X : 𝓤 ̇}
+ LFPT-≃ : {A : 𝓤 ⊔ 𝓥 ̇ } {X : 𝓤 ̇}
         → A ≃ (A → X)
         → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT-≃ p = LFPT (equiv-retract-r p)
 
- LFPT-≡ : {A : 𝓤 ⊔ 𝓥 ̇} {X : 𝓤 ̇}
+ LFPT-≡ : {A : 𝓤 ⊔ 𝓥 ̇ } {X : 𝓤 ̇}
         → A ≡ (A → X)
         → (f : X → X) → Σ \(x : X) → x ≡ f x
  LFPT-≡ p = LFPT (Id-retract-r p)
@@ -183,7 +183,7 @@ module surjection-version (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
  open ImageAndSurjection pt
 
- LFPT : {A : 𝓤 ̇} {X : 𝓥 ̇} (φ : A → (A → X))
+ LFPT : {A : 𝓤 ̇ } {X : 𝓥 ̇} (φ : A → (A → X))
       → is-surjection φ
       → (f : X → X) → ∃ \(x : X) → x ≡ f x
  LFPT {𝓤} {𝓥} {A} {X} φ s f = ∥∥-functor γ e
@@ -281,7 +281,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
  open import DiscreteAndSeparated
 
  Π-projection-has-section :
-    {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (x₀ : X)
+    {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} (x₀ : X)
   → is-isolated x₀
   → Π Y
   → has-section (λ (f : Π Y) → f x₀)
@@ -297,7 +297,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
      a : i x₀ ≡ inl refl
      a = isolated-inl x₀ i x₀ refl
 
- udr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇ ) (B : 𝓦 ̇)
+ udr-lemma : {A : 𝓤 ̇ } (X : A → 𝓥 ̇ ) (B : 𝓦 ̇)
              (a₀ : A)
            → is-isolated a₀
            → B
@@ -324,7 +324,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
       γ = udr-lemma X 𝟚 a (d a) ₀ ρ
 
  universe-discretely-regular :
-    {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇ )
+    {𝓤 𝓥 : Universe} {A : 𝓤 ̇ } (X : A → 𝓤 ⊔ 𝓥 ̇ )
   → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≡ B)
  universe-discretely-regular {𝓤} {𝓥} {A} X d =
    γ (universe-discretely-regular' 𝓤 𝓥 A X d)
@@ -333,7 +333,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
      → (Σ \(B : 𝓤 ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≡ B))
    γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
- Universe-discretely-regular : {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇ )
+ Universe-discretely-regular : {𝓤 𝓥 : Universe} {A : 𝓤 ̇ } (X : A → 𝓤 ⊔ 𝓥 ̇ )
                              → is-discrete A → ¬(is-surjection X)
  Universe-discretely-regular {𝓤} {𝓥} {A} X d s = ∥∥-rec 𝟘-is-prop n e
   where
@@ -363,7 +363,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
  open import DiscreteAndSeparated
 
  Π-projection-has-section :
-    {A : 𝓤 ̇} {X : A → 𝓥 ̇}
+    {A : 𝓤 ̇ } {X : A → 𝓥 ̇}
   → funext 𝓥 ((𝓤 ⊔ 𝓦)⁺) → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦) → propext (𝓤 ⊔ 𝓦)
   → (a₀ : A) → is-h-isolated a₀ → has-section (λ (f : (a : A) → X a → Ω (𝓤 ⊔ 𝓦)) → f a₀)
  Π-projection-has-section {𝓤} {𝓥} {𝓦} {A} {X} fe fe' pe a₀ ish = s , rs
@@ -389,7 +389,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
      γ x₀ = to-Σ-≡ (pe ∥∥-is-a-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                      being-a-prop-is-a-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
- usr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇ )
+ usr-lemma : {A : 𝓤 ̇ } (X : A → 𝓥 ̇ )
            → funext 𝓥 ((𝓤 ⊔ 𝓦)⁺) → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦) → propext (𝓤 ⊔ 𝓦)
            → (a₀ : A)
            → is-h-isolated a₀
@@ -484,9 +484,9 @@ module Coquand where
           (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
           (S : 𝓤 ̇ → A)
-          (ρ : {X : 𝓤 ̇} → T (S X) → X)
-          (σ : {X : 𝓤 ̇} → X → T (S X))
-          (η : {X : 𝓤 ̇} (x : X) → ρ (σ x) ≡ x)
+          (ρ : {X : 𝓤 ̇ } → T (S X) → X)
+          (σ : {X : 𝓤 ̇ } → X → T (S X))
+          (η : {X : 𝓤 ̇ } (x : X) → ρ (σ x) ≡ x)
         → 𝟘
  Lemma₀ 𝓤 A T S ρ σ η = pr₁ (γ 𝟘 id )
   where

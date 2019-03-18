@@ -97,22 +97,22 @@ Step (1). Church ordinal trees:
 O : 𝓤₀ ̇ → 𝓤₀ ̇
 O X = X → (X → X) → ((ℕ → X) → X) → X
 
-zer : {X : 𝓤₀ ̇} → O X
+zer : {X : 𝓤₀ ̇ } → O X
 zer = λ z → λ s → λ l → z
 
-suc : {X : 𝓤₀ ̇} → O X → O X
+suc : {X : 𝓤₀ ̇ } → O X → O X
 suc a = λ z → λ s → λ l → s(a z s l)
 
-lim : {X : 𝓤₀ ̇} → (ℕ → O X) → O X
+lim : {X : 𝓤₀ ̇ } → (ℕ → O X) → O X
 lim as = λ z → λ s → λ l → l(λ i → as i z s l)
 
-O-rec : {X : 𝓤₀ ̇} → X → (X → X) → ((ℕ → X) → X) → (O X → X)
+O-rec : {X : 𝓤₀ ̇ } → X → (X → X) → ((ℕ → X) → X) → (O X → X)
 O-rec z s l a = a z s l
 
 \end{code}
 
 Notice that by uncurrying, flipping and currying the type of O-rec is
-isomorphic to {X : 𝓤₀ ̇} → O X → O X, but the above form is more
+isomorphic to {X : 𝓤₀ ̇ } → O X → O X, but the above form is more
 convenient for recursive definitions.
 
 In this first step, we have natural definitions but the types are not
@@ -120,35 +120,35 @@ uniform:
 
 \begin{code}
 
-add : {X : 𝓤₀ ̇} → O X → O X → O X
+add : {X : 𝓤₀ ̇ } → O X → O X → O X
 add a b = λ z → λ s → λ l → a (b z s l) s l
 
-mul : {X : 𝓤₀ ̇} → O X → O(O X) → O X
+mul : {X : 𝓤₀ ̇ } → O X → O(O X) → O X
 mul a = O-rec zer (λ r → add r a) lim
 
-exp : {X : 𝓤₀ ̇} → O(O X) → O(O X) → O X
+exp : {X : 𝓤₀ ̇ } → O(O X) → O(O X) → O X
 exp a = O-rec (suc zer) (λ r → mul r a) lim
 
 \end{code}
 
 Remark: if we had used O-rec to define add, it would instead have
-the type {X : 𝓤₀ ̇} → O X → O(O X) → O X, and then mul would have
-the type {X : 𝓤₀ ̇} → O(O X) → O(O X) → O X, with the same
+the type {X : 𝓤₀ ̇ } → O X → O(O X) → O X, and then mul would have
+the type {X : 𝓤₀ ̇ } → O(O X) → O(O X) → O X, with the same
 definition, but the same definition of exp then cannot be typed
 using iterations of O. In step (2) we will consider all finite
 iterations of O to define a type O', and give a uniform type
-{X : 𝓤₀ ̇} → O' X → O' X → O' X to add, mul, and exp.
+{X : 𝓤₀ ̇ } → O' X → O' X → O' X to add, mul, and exp.
 
 We will not use the following:
 
 \begin{code}
 
-down : {X : 𝓤₀ ̇} → O(O X) → O X
+down : {X : 𝓤₀ ̇ } → O(O X) → O X
 down = O-rec zer suc lim
 
 \end{code}
 
-There is a term up : {X : 𝓤₀ ̇} → O X → O(O X), but no such term has
+There is a term up : {X : 𝓤₀ ̇ } → O X → O(O X), but no such term has
 the desired behaviour of being a (left or right) inverse of down.
 
 Before using the first universe, we can dominate any ordinal below ε₀.
@@ -157,7 +157,7 @@ The sequence of finite ordinals first:
 
 \begin{code}
 
-finite : {X : 𝓤₀ ̇} → ℕ → O X
+finite : {X : 𝓤₀ ̇ } → ℕ → O X
 finite = rec zer suc
 
 \end{code}
@@ -166,7 +166,7 @@ Its limit:
 
 \begin{code}
 
-ω : {X : 𝓤₀ ̇} → O X
+ω : {X : 𝓤₀ ̇ } → O X
 ω = lim finite
 
 \end{code}
@@ -176,13 +176,13 @@ without universes or W-types or impredicativity etc.
 
 \begin{code}
 
-ω₁ : {X : 𝓤₀ ̇} → O X
+ω₁ : {X : 𝓤₀ ̇ } → O X
 ω₁ = exp ω ω
 
-ω₂ : {X : 𝓤₀ ̇} → O X
+ω₂ : {X : 𝓤₀ ̇ } → O X
 ω₂ = exp ω ω₁
 
-ω₃ : {X : 𝓤₀ ̇} → O X
+ω₃ : {X : 𝓤₀ ̇ } → O X
 ω₃ = exp ω ω₂
 
 \end{code}
@@ -193,14 +193,14 @@ O X → O X, but rather:
 
 \begin{code}
 
-step :  {X : 𝓤₀ ̇} → O(O X) → O X
+step :  {X : 𝓤₀ ̇ } → O(O X) → O X
 step = exp ω
 
 \end{code}
 
 If you try to define
 
-  ω-tower : {X : 𝓤₀ ̇} → ℕ → O X
+  ω-tower : {X : 𝓤₀ ̇ } → ℕ → O X
   ω-tower = rec ω (exp ω)
 
 then Agda rightfully complains that this would need X = O X, which
@@ -236,28 +236,28 @@ We define O' X = Π (n : ℕ) → Oⁿ⁺¹ X as follows in Agda notation:
 O' : 𝓤₀ ̇ → 𝓤₀ ̇
 O' X = (n : ℕ) → O(rec₁ X O n)
 
-zer' : {X : 𝓤₀ ̇} → O' X
+zer' : {X : 𝓤₀ ̇ } → O' X
 zer' = λ n → zer
 
-suc' : {X : 𝓤₀ ̇} → O' X → O' X
+suc' : {X : 𝓤₀ ̇ } → O' X → O' X
 suc' a = λ n → suc(a n)
 
-lim' : {X : 𝓤₀ ̇} → (ℕ → O' X) → O' X
+lim' : {X : 𝓤₀ ̇ } → (ℕ → O' X) → O' X
 lim' as = λ n → lim(λ i → as i n)
 
-add' : {X : 𝓤₀ ̇} → O' X → O' X → O' X
+add' : {X : 𝓤₀ ̇ } → O' X → O' X → O' X
 add' a b = λ n → add (a n) (b n)
 
-mul' : {X : 𝓤₀ ̇} → O' X → O' X → O' X
+mul' : {X : 𝓤₀ ̇ } → O' X → O' X → O' X
 mul' a b = λ n → mul (a n) (b(succ n))
 
-exp' : {X : 𝓤₀ ̇} → O' X → O' X → O' X
+exp' : {X : 𝓤₀ ̇ } → O' X → O' X → O' X
 exp' a b = λ n → exp (a(succ n)) (b(succ n))
 
-ω' : {X : 𝓤₀ ̇} → O' X
+ω' : {X : 𝓤₀ ̇ } → O' X
 ω' = λ n → ω
 
-ω-tower' : {X : 𝓤₀ ̇} → ℕ → O' X
+ω-tower' : {X : 𝓤₀ ̇ } → ℕ → O' X
 ω-tower' = rec ω' (exp' ω')
 
 \end{code}
@@ -267,7 +267,7 @@ below).
 
 \begin{code}
 
-ε₀' : {X : 𝓤₀ ̇} → O' X
+ε₀' : {X : 𝓤₀ ̇ } → O' X
 ε₀' = lim' ω-tower'
 
 \end{code}
@@ -284,17 +284,17 @@ define ε₀ as an element of O X using the following coersion:
 
 \begin{code}
 
-O'↦O : {X : 𝓤₀ ̇} → O' X → O X
+O'↦O : {X : 𝓤₀ ̇ } → O' X → O X
 O'↦O a = a zero
 
-ε₀ : {X : 𝓤₀ ̇} → O X
+ε₀ : {X : 𝓤₀ ̇ } → O X
 ε₀ = O'↦O ε₀'
 
 \end{code}
 
 Notice that the following doesn't type check:
 
-  O↦O' : {X : 𝓤₀ ̇} → O X → O' X
+  O↦O' : {X : 𝓤₀ ̇ } → O X → O' X
   O↦O' a = λ n → a
 
 But it does type check for some particular a, such as ω in the
@@ -342,7 +342,7 @@ in Agda, that this produces the same result as the above
 recursion-free definition.
 
 \begin{code}
-B-rec : {X : 𝓤₀ ̇} → X → (X → X) → ((ℕ → X) → X) → B → X
+B-rec : {X : 𝓤₀ ̇ } → X → (X → X) → ((ℕ → X) → X) → B → X
 B-rec {X} z s l = h
  where
   h : B → X
@@ -352,12 +352,12 @@ B-rec {X} z s l = h
 \end{code}
 
 By suitable uncurrying, flipping and currying, the type of B-rec is
-isomorphic to {X : 𝓤₀ ̇} → B → O X, but the above form is more
+isomorphic to {X : 𝓤₀ ̇ } → B → O X, but the above form is more
 convenient for recursive definitions:
 
 \begin{code}
 
-B↦O : {X : 𝓤₀ ̇} → B → O X
+B↦O : {X : 𝓤₀ ̇ } → B → O X
 B↦O u s z l = B-rec s z l u
 
 \end{code}
@@ -423,7 +423,7 @@ We need more coersions:
 
 \begin{code}
 
-B↦O' : {X : 𝓤₀ ̇} → B → O' X
+B↦O' : {X : 𝓤₀ ̇ } → B → O' X
 B↦O' u = λ n → B↦O u
 
 O'↦B : O' B → B
@@ -441,7 +441,7 @@ recursion or iteration B-rec on B):
 
 \begin{code}
 
-B-induction : {A : B → 𝓤₀ ̇} →
+B-induction : {A : B → 𝓤₀ ̇ } →
    A Z →
   ((u : B) → A u → A(S u)) →
   ((us : ℕ → B) → ((i : ℕ) → A(us i)) → A(L us)) →

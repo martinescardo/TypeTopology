@@ -41,20 +41,20 @@ pe = propext-from-univalence ua
 powerset : 𝓤 ̇ → 𝓤 ⁺ ̇
 powerset X = X → Ω 𝓤
 
-_∈_ : {X : 𝓤 ̇} → X → powerset X → 𝓤 ̇
+_∈_ : {X : 𝓤 ̇ } → X → powerset X → 𝓤 ̇
 x ∈ A = A x holds
 
-_⊆_ : {X : 𝓤 ̇} → powerset X → powerset X → 𝓤 ̇
+_⊆_ : {X : 𝓤 ̇ } → powerset X → powerset X → 𝓤 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
-⊆-refl : {X : 𝓤 ̇} (A : powerset X) → A ⊆ A
+⊆-refl : {X : 𝓤 ̇ } (A : powerset X) → A ⊆ A
 ⊆-refl A x = id
 
-⊆-refl-consequence : {X : 𝓤 ̇} (A B : powerset X)
+⊆-refl-consequence : {X : 𝓤 ̇ } (A B : powerset X)
                    → A ≡ B → (A ⊆ B) × (B ⊆ A)
 ⊆-refl-consequence {X} A .A refl = ⊆-refl A , ⊆-refl A
 
-subset-extensionality : {X : 𝓤 ̇} (A B : powerset X)
+subset-extensionality : {X : 𝓤 ̇ } (A B : powerset X)
                      → A ⊆ B → B ⊆ A → A ≡ B
 subset-extensionality {X} A B h k = dfunext fe' φ
  where

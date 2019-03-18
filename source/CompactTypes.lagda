@@ -124,7 +124,7 @@ Terminology: we call x₀ the universal witness.
 
 \begin{code}
 
-compact-pointed-gives-compact∙ : {X : 𝓤 ̇} → compact X → X → compact∙ X
+compact-pointed-gives-compact∙ : {X : 𝓤 ̇ } → compact X → X → compact∙ X
 compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = lemma(φ p)
  where
   lemma : (Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁) →
@@ -132,7 +132,7 @@ compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = lemma(φ p)
   lemma (inl(x , r)) = x , (λ s → 𝟘-elim(equal-₀-different-from-₁ r s))
   lemma (inr f) = x₀ , (λ r → f)
 
-compact∙-gives-compact : {X : 𝓤 ̇} → compact∙ X → compact X
+compact∙-gives-compact : {X : 𝓤 ̇ } → compact∙ X → compact X
 compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
  where
   x₀ : X
@@ -144,7 +144,7 @@ compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
   case₁ : p x₀ ≡ ₁ → (Σ \(x : X) → p x ≡ ₀) + ((x : X) → p x ≡ ₁)
   case₁ r = inr(lemma r)
 
-compact∙-gives-pointed : {X : 𝓤 ̇} → compact∙ X → X
+compact∙-gives-pointed : {X : 𝓤 ̇ } → compact∙ X → X
 compact∙-gives-pointed ε = pr₁(ε(λ x → ₀))
 
 \end{code}
@@ -235,13 +235,13 @@ only if p has a root.
 
 \begin{code}
 
-_is-a-root-of_ : {X : 𝓤 ̇} → X → (X → 𝟚) → 𝓤₀ ̇
+_is-a-root-of_ : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤₀ ̇
 x is-a-root-of p = p x ≡ ₀
 
-_has-a-root : {X : 𝓤 ̇} → (X → 𝟚) → 𝓤 ̇
+_has-a-root : {X : 𝓤 ̇ } → (X → 𝟚) → 𝓤 ̇
 p has-a-root = Σ \x → x is-a-root-of p
 
-putative-root : {X : 𝓤 ̇}
+putative-root : {X : 𝓤 ̇ }
               → compact∙ X → (p : X → 𝟚) → Σ \(x₀ : X) → (p has-a-root) ⇔ (x₀ is-a-root-of p)
 putative-root {𝓤} {X} ε p = x₀ , (lemma₀ , lemma₁)
  where
@@ -268,7 +268,7 @@ X has-selection ε = (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x �
 compact∙' : 𝓤 ̇ → 𝓤 ̇
 compact∙' X = Σ \(ε : (X → 𝟚) → X) → X has-selection ε
 
-compact∙-gives-compact∙' : {X : 𝓤 ̇} → compact∙ X → compact∙' X
+compact∙-gives-compact∙' : {X : 𝓤 ̇ } → compact∙ X → compact∙' X
 compact∙-gives-compact∙' {𝓤} {X} ε' = ε , lemma
  where
   ε : (X → 𝟚) → X
@@ -298,7 +298,7 @@ is called discreteness. More generally we have:
 
 \begin{code}
 
-apart-or-equal : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
+apart-or-equal : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
               → compact X → ((x : X) → is-discrete(Y x))
               → (f g : (x : X) → Y x) → (f ♯ g) + (f ≡ g)
 apart-or-equal {𝓤} {𝓥} {X} fe {Y} φ d f g = lemma₂ lemma₁
@@ -315,7 +315,7 @@ apart-or-equal {𝓤} {𝓥} {X} fe {Y} φ d f g = lemma₂ lemma₁
   lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r))
   lemma₂(inr h) = inr (dfunext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
 
-compact-discrete-discrete : {X : 𝓤 ̇} → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇} →
+compact-discrete-discrete : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇} →
 
    compact X → ((x : X) → is-discrete(Y x)) → is-discrete((x : X) → Y x)
 
@@ -325,7 +325,7 @@ compact-discrete-discrete fe φ d f g = h(apart-or-equal fe φ d f g)
   h(inl a) = inr(apart-is-different a)
   h(inr r) = inl r
 
-compact-discrete-discrete' : {X : 𝓤 ̇} {Y : 𝓥 ̇} → funext 𝓤 𝓥
+compact-discrete-discrete' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → funext 𝓤 𝓥
                            → compact X → is-discrete Y → is-discrete(X → Y)
 compact-discrete-discrete' fe φ d = compact-discrete-discrete fe φ (λ x → d)
 
@@ -363,18 +363,18 @@ generalize to get closure of compact types under Σ.
 
 \begin{code}
 
-module warmup {𝓤} {𝓥} {R : 𝓥 ̇} where
+module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
 
   quantifier : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   quantifier X = (X → R) → R
 
-  quant-prod : {X : 𝓤 ̇} {Y : X → 𝓤 ̇} → quantifier X → ((x : X)  → quantifier (Y x)) → quantifier (Σ Y)
+  quant-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇} → quantifier X → ((x : X)  → quantifier (Y x)) → quantifier (Σ Y)
   quant-prod φ γ p = φ(λ x → γ x (λ y → p(x , y)))
 
   selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   selection X = (X → R) → X
 
-  sel-prod : {X : 𝓤 ̇} {Y : X → 𝓤 ̇} → selection X → ((x : X) → selection (Y x)) → selection (Σ Y)
+  sel-prod : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇} → selection X → ((x : X) → selection (Y x)) → selection (Σ Y)
   sel-prod {X} {Y} ε δ p = (x₀ , y₀)
     where
      next : (x : X) → Y x
@@ -390,10 +390,10 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇} where
 
 \begin{code}
 
-  overline : {X : 𝓤 ̇} → selection X → quantifier X
+  overline : {X : 𝓤 ̇ } → selection X → quantifier X
   overline ε p = p(ε p)
 
-  sel-prod' : {X : 𝓤 ̇} {Y : X → 𝓤 ̇} → selection X → ((x : X) → selection (Y x)) → selection (Σ Y)
+  sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇} → selection X → ((x : X) → selection (Y x)) → selection (Σ Y)
   sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X
@@ -407,7 +407,7 @@ Back to compact sets:
 
 \begin{code}
 
-Σ-compact∙ : {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
+Σ-compact∙ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
            → compact∙ X → ((x : X) → compact∙(Y x)) → compact∙(Σ Y)
 Σ-compact∙ {i} {j} {X} {Y} ε δ p = (x₀ , y₀) , correctness
  where
@@ -434,10 +434,10 @@ Corollary: Binary products preserve compactness:
 
 \begin{code}
 
-binary-Tychonoff : {X : 𝓤 ̇} {Y : 𝓥 ̇} → compact∙ X → compact∙ Y → compact∙(X × Y)
+binary-Tychonoff : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → compact∙ X → compact∙ Y → compact∙(X × Y)
 binary-Tychonoff ε δ = Σ-compact∙ ε (λ i → δ)
 
-binary-Σ-compact∙' : {X₀ : 𝓤 ̇} {X₁ : 𝓤 ̇}
+binary-Σ-compact∙' : {X₀ : 𝓤 ̇ } {X₁ : 𝓤 ̇}
                    → compact∙ X₀ → compact∙ X₁ → compact∙(X₀ +' X₁)
 binary-Σ-compact∙' {𝓤} {X₀} {X₁} ε₀ ε₁ = Σ-compact∙ 𝟚-compact∙ ε
  where
@@ -445,7 +445,7 @@ binary-Σ-compact∙' {𝓤} {X₀} {X₁} ε₀ ε₁ = Σ-compact∙ 𝟚-comp
   ε ₀ = ε₀
   ε ₁ = ε₁
 
-retractions-preserve-compactness : {X : 𝓤 ̇} {Y : 𝓥 ̇} {f : X → Y}
+retractions-preserve-compactness : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {f : X → Y}
                                  → has-section' f → compact∙ X → compact∙ Y
 retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
   where
@@ -469,7 +469,7 @@ retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
      fact₁ : q(f x) ≡ q a
      fact₁ = ap q (pr₂ fact)
 
-retract-compact∙ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → retract Y Of X → compact∙ X → compact∙ Y
+retract-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract Y Of X → compact∙ X → compact∙ Y
 retract-compact∙ (_ , φ) = retractions-preserve-compactness φ
 
 𝟙+𝟙-compact∙ : compact∙ (𝟙 {𝓤} + 𝟙 {𝓥})
@@ -481,10 +481,10 @@ retract-compact∙ (_ , φ) = retractions-preserve-compactness φ
   r (inl *) = ₀ , refl
   r (inr *) = ₁ , refl
 
-equiv-compact∙ : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X ≃ Y → compact∙ X → compact∙ Y
+equiv-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → X ≃ Y → compact∙ X → compact∙ Y
 equiv-compact∙ (f , (g , fg) , (h , hf)) = retract-compact∙ (f , (λ y → g y , fg y))
 
-singleton-compact∙ : {X : 𝓤 ̇} → is-singleton X → compact∙ X
+singleton-compact∙ : {X : 𝓤 ̇ } → is-singleton X → compact∙ X
 singleton-compact∙ {𝓤} {X} (x , φ) p = x , g
  where
   g : p x ≡ ₁ → (y : X) → p y ≡ ₁
@@ -494,7 +494,7 @@ module _ (pt : propositional-truncations-exist) where
 
  open ImageAndSurjection pt
 
- surjection-compact∙ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
+ surjection-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
                      → is-surjection f → compact∙ X → compact∙ Y
  surjection-compact∙ {𝓤} {𝓥} {X} {Y} f su ε q = (y₀ , h)
   where
@@ -511,7 +511,7 @@ module _ (pt : propositional-truncations-exist) where
    h : q y₀ ≡ ₁ → (y : Y) → q y ≡ ₁
    h r = surjection-induction f su (λ y → q y ≡ ₁) isp (g r)
 
- image-compact∙ : ∀ {X Y : 𝓤₀ ̇} (f : X → Y)
+ image-compact∙ : ∀ {X Y : 𝓤₀ ̇ } (f : X → Y)
                 → compact∙ X → compact∙ (image f)
  image-compact∙ f = surjection-compact∙ (corestriction f)
                                         (corestriction-surjection f)
@@ -544,7 +544,7 @@ in MLTT:
 
 \begin{code}
 
-wcompact-implies-wcompact' : {X : 𝓤 ̇} → wcompact X → wcompact' X
+wcompact-implies-wcompact' : {X : 𝓤 ̇ } → wcompact X → wcompact' X
 wcompact-implies-wcompact' {𝓤} {X} φ = A , lemma
  where
   A : (X → 𝟚) → 𝟚
@@ -552,7 +552,7 @@ wcompact-implies-wcompact' {𝓤} {X} φ = A , lemma
   lemma : (p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁)
   lemma p = pr₂(φ p)
 
-compact-gives-wcompact : {X : 𝓤 ̇} → compact∙ X → wcompact X
+compact-gives-wcompact : {X : 𝓤 ̇ } → compact∙ X → wcompact X
 compact-gives-wcompact {𝓤} {X} ε p = y , (lemma₀ , lemma₁)
  where
   x₀ : X
