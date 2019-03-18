@@ -169,7 +169,7 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
     p : transport A (rs x) (back-transport A (rs x) a) ≡ a
     p = back-and-forth-transport (rs x)
 
-Σ-retract : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
+Σ-retract : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
           → ((x : X) → retract (A x) of (B x))
           → retract (Σ A) of (Σ B)
 Σ-retract {𝓤} {𝓥} {𝓦} {X} A B ρ = NatΣ R , NatΣ S , rs
@@ -250,10 +250,10 @@ added this ages ago to make the above proofs more readable.
 _◁_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Y ◁ X = retract Y of X
 
-_◁⟨_⟩_ : (X : 𝓤 ̇) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
+_◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
 _ ◁⟨ d ⟩ e = retracts-compose e d
 
-_◀ : (X : 𝓤 ̇) → X ◁ X
+_◀ : (X : 𝓤 ̇ ) → X ◁ X
 X ◀ = identity-retraction {universe-of X} {X}
 
 \end{code}

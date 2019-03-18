@@ -96,7 +96,7 @@ shulmans-taboo e = DNE-gives-EM fe₀ dne
     g : (z : X) → z ≺ y → z ≺ x
     g (q , ψ) (b , _) = 𝟘-elim (ψ b)
 
-  dne : (P : 𝓤₀ ̇) → is-prop P → ¬¬ P → P
+  dne : (P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P
   dne P j φ = Idtofun s φ
    where
     p q : X

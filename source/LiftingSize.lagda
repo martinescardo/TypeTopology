@@ -78,11 +78,11 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
 \begin{code}
 
 𝓛-resize : is-univalent 𝓣 → is-univalent 𝓤 → Propositional-resizing
-         → (X : 𝓤 ⁺ ̇) → (𝓛 X) has-size (𝓤 ⁺)
+         → (X : 𝓤 ⁺ ̇ ) → (𝓛 X) has-size (𝓤 ⁺)
 𝓛-resize {𝓤} ua ua' ρ X = L , e
  where
   L : 𝓤 ⁺ ̇
-  L = Σ \(P : 𝓤 ̇) → (P → X) × is-prop P
+  L = Σ \(P : 𝓤 ̇ ) → (P → X) × is-prop P
   e : L ≃ 𝓛 X
   e = qinveq φ (γ , γφ , φγ)
    where
@@ -126,7 +126,7 @@ Added 8th Feb 2019.
 
 \begin{code}
 
-𝓛-resizing₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
+𝓛-resizing₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇ ) → (𝓛 X) has-size 𝓣
 𝓛-resizing₀ (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
  where
   up : Ω₀ → Ω 𝓣
@@ -151,7 +151,7 @@ more parsimonious.
 
 \begin{code}
 
-𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇) → (𝓛 X) has-size 𝓣
+𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇ ) → (𝓛 X) has-size 𝓣
 𝓛-resizing (O , ε) X = (Σ \(p : O) → up p holds → X) , ≃-comp d e
  where
   up : O → Ω 𝓣

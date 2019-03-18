@@ -504,14 +504,14 @@ _̇ : (𝓤 : Universe) → _
 
 infix  0 _̇
 
-data Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
+data Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
   _,_ : (x : X) (y : Y x) → Σ Y
 
-data Id {𝓤 : Universe} {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
+data Id {𝓤 : Universe} {X : 𝓤 ̇} : X → X → 𝓤 ̇  where
   refl : (x : X) → Id x x
 
 J : {𝓤 𝓥 : Universe} {X : 𝓤 ̇}
-  → (A : (x y : X) → Id x y → 𝓥 ̇)
+  → (A : (x y : X) → Id x y → 𝓥 ̇ )
   → ((x : X) → A x x (refl x))
   → (x y : X) (p : Id x y) → A x y p
 J A f x .x (refl .x) = f x
@@ -548,25 +548,25 @@ singletonTypesAreSingletons {𝓤} {X} = h
   h : (x : X) → Σ \(c : singletonType x) → (σ : singletonType x) → Id c σ
   h x = (η x , g x)
 
-id : {𝓤 : Universe} (X : 𝓤 ̇) → X → X
+id : {𝓤 : Universe} (X : 𝓤 ̇ ) → X → X
 id X x = x
 
-idIsEquiv : {𝓤 : Universe} (X : 𝓤 ̇) → is-equiv(id X)
+idIsEquiv : {𝓤 : Universe} (X : 𝓤 ̇ ) → is-equiv(id X)
 idIsEquiv X = g
  where
   g : (x : X) → is-singleton (fiber (id X) x)
   g = singletonTypesAreSingletons
 
-IdToEq : {𝓤 : Universe} (X Y : 𝓤 ̇) → Id X Y → Eq X Y
+IdToEq : {𝓤 : Universe} (X Y : 𝓤 ̇ ) → Id X Y → Eq X Y
 IdToEq {𝓤} = J A f
  where
-  A : (X Y : 𝓤 ̇) → Id X Y → 𝓤 ̇
+  A : (X Y : 𝓤 ̇ ) → Id X Y → 𝓤 ̇
   A X Y p = Eq X Y
-  f : (X : 𝓤 ̇) → A X X (refl X)
+  f : (X : 𝓤 ̇ ) → A X X (refl X)
   f X = (id X , idIsEquiv X)
 
 is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
-is-univalent 𝓤 = (X Y : 𝓤 ̇) → is-equiv(IdToEq X Y)
+is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv(IdToEq X Y)
 
 \end{code}
 
@@ -588,7 +588,7 @@ Id (x₃ , refl x₃) (y₁ , p)) (λ x₃ → refl (x₃ , refl x₃))
 This is with lots of subterms elided. With all of them explicitly
 given, the normal form of is-univalent is
 
-λ 𝓤 → (X Y : 𝓤 ̇) (y : Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤}
+λ 𝓤 → (X Y : 𝓤 ̇ ) (y : Σ {𝓤} {𝓤} {X → Y} (λ f → (y₁ : Y) → Σ {𝓤} {𝓤}
 {Σ {𝓤} {𝓤} {X} (λ x → Id {𝓤} {Y} (f x) y₁)} (λ c → (x : Σ {𝓤} {𝓤} {X}
 (λ x₁ → Id {𝓤} {Y} (f x₁) y₁)) → Id {𝓤} {Σ {𝓤} {𝓤} {X} (λ x₁ → Id {𝓤} {Y}
 (f x₁) y₁)} c x))) → Σ {𝓤 ⁺} {𝓤 ⁺} {Σ {𝓤 ⁺} {𝓤} {Id {𝓤 ′} {𝓤 ̇} X Y}

@@ -17,13 +17,13 @@ We show that, under the same assumptions, this is equivalent
 
 Notice that, as shown in the HoTT book, the statement
 
-    ∀ (B : 𝓤 ̇) → ∥ B ∥ → B
+    ∀ (B : 𝓤 ̇ ) → ∥ B ∥ → B
 
 is in contradiction with the univalence axiom (we cannot reveal
 secrets in general). However, univalent choice is consistent with the
 univalent axiom, and, moreover, gives that
 
-   ∥∀ (B : 𝓤 ̇) → ∥ ∥ B ∥ → B ∥
+   ∥∀ (B : 𝓤 ̇ ) → ∥ ∥ B ∥ → B ∥
 
 (one can secretly reveal secrets always), which is equivalent to
 choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
@@ -46,7 +46,7 @@ module UF-Choice where
 
 module Shift
    (𝓤 : Universe)
-   (T : 𝓤 ̇ → 𝓤 ̇)
+   (T : 𝓤 ̇ → 𝓤 ̇ )
    (T-functor : {X Y : 𝓤 ̇} → (X → Y) → T X → T Y)
  where
 
@@ -71,11 +71,11 @@ or
 
 \begin{code}
 
- Shift = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
+ Shift = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
 
- Shift' = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → T(Π \(x : X) → T(A x) → A x)
+ Shift' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → T(Π \(x : X) → T(A x) → A x)
 
- lemma : Shift → (X : 𝓤 ̇) → T(T X → X)
+ lemma : Shift → (X : 𝓤 ̇ ) → T(T X → X)
  lemma shift X = shift (T X) (λ _ → X) (λ x → x)
 
  theorem : Shift → Shift'
@@ -96,21 +96,21 @@ abstractly, where T may be ∥_∥ and S may be is-set.
 
 module TChoice
    (𝓤 : Universe)
-   (T : 𝓤 ̇ → 𝓤 ̇)
+   (T : 𝓤 ̇ → 𝓤 ̇ )
    (T-functor : {X Y : 𝓤 ̇} → (X → Y) → T X → T Y)
-   (S : 𝓤 ̇ → 𝓤 ̇)
+   (S : 𝓤 ̇ → 𝓤 ̇ )
    (S-exponential-ideal : {X Y : 𝓤 ̇} → S Y → S(X → Y))
    (T-is-S : {X : 𝓤 ̇} → S(T X))
  where
 
- Shift : (X : 𝓤 ̇) → (X → 𝓤 ̇) → 𝓤 ̇
+ Shift : (X : 𝓤 ̇ ) → (X → 𝓤 ̇) → 𝓤 ̇
  Shift X A = ((x : X) → T(A x)) → T(Π \(x : X) → A x)
 
- Choice = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → Shift X A
+ Choice = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → Shift X A
 
- Choice' = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
+ Choice' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
 
- lemma : Choice → (X : 𝓤 ̇) → S X → T(T X → X)
+ lemma : Choice → (X : 𝓤 ̇ ) → S X → T(T X → X)
  lemma choice X s = choice (T X) (λ _ → X) T-is-S  (λ x → s) (λ x → x)
 
  theorem : Choice → Choice'
@@ -145,16 +145,16 @@ module UnivalentChoice (𝓤 : Universe)
 
  open TChoice 𝓤 ∥_∥ ∥∥-functor is-set sei (props-are-sets ∥∥-is-a-prop)
 
- AC   = (X : 𝓤 ̇) (A : X → 𝓤 ̇) (P : (x : X) → A x → 𝓤 ̇)
+ AC   = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) (P : (x : X) → A x → 𝓤 ̇)
      → is-set X
      → ((x : X) → is-set (A x))
      → ((x : X) (a : A x) → is-prop (P x a))
      → (∀ (x : X) → ∃ \(a : A x) → P x a) → ∃ \(f : Π A) → ∀ (x : X) → P x (f x)
 
- AC'  = (X : 𝓤 ̇) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
+ AC'  = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
      → (Π \(x : X) → ∥ Y x ∥) → ∥(Π \(x : X) → Y x)∥
 
- AC'' = (X : 𝓤 ̇) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
+ AC'' = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
      → ∥(Π \(x : X) → ∥ Y x ∥ → Y x)∥
 
  ACAC' : AC → AC'
@@ -188,7 +188,7 @@ module UnivalentChoice (𝓤 : Universe)
  AC''AC' : AC'' → AC'
  AC''AC' = theorem'
 
- secretly-revealing-secrets : AC' → (B : 𝓤 ̇) → is-set B → ∥(∥ B ∥ → B)∥
+ secretly-revealing-secrets : AC' → (B : 𝓤 ̇ ) → is-set B → ∥(∥ B ∥ → B)∥
  secretly-revealing-secrets = lemma
 
 \end{code}
@@ -214,10 +214,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  β : {X : 𝓤 ̇} → ¬¬ X → ∥ X ∥
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-a-prop)
 
- DNS = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
+ DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
      → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
 
- DNA = (X : 𝓤 ̇) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
+ DNA = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
      → ¬¬(Π \(x : X) → ¬¬(A x) → A x)
 
  Fact : AC' → DNS
@@ -305,7 +305,7 @@ module AC-renders-all-sets-discrete
         → decidable(a ₀ ≡ a ₁)
  lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
- ac-discrete-sets : AC → (X : 𝓤 ̇) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
+ ac-discrete-sets : AC → (X : 𝓤 ̇ ) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
   where
    A : X → 𝓤 ̇

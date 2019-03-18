@@ -222,7 +222,7 @@ open import CompactTypes
 open import UF-ExcludedMiddle
 
 compact-prop-tychonoff-wem :
-  ((X : 𝓤₀ ̇) (Y : X → 𝓤₀ ̇) → is-prop X → ((x : X) → compact(Y x)) → compact(Π Y))
+  ((X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇) → is-prop X → ((x : X) → compact(Y x)) → compact(Π Y))
   → WEM 𝓤₀
 compact-prop-tychonoff-wem τ P isp = compact-decidable (¬ P) ¬P-compact
  where

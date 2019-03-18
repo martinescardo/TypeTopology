@@ -73,7 +73,7 @@ https://groups.google.com/forum/#!msg/homotopytypetheory/VaLJM7S4d18/Lezr_ZhJl6U
 
 \begin{code}
 
-transport-funext : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (P : (x : X) → A x → 𝓦 ̇) (fe : funext 𝓤 𝓥)
+transport-funext : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓦 ̇) (fe : funext 𝓤 𝓥)
                    (f g : Π A)
                    (φ : (x : X) → P x (f x))
                    (h : f ∼ g)

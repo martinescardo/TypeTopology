@@ -81,7 +81,7 @@ slighly non-universal terminology.
 
 \begin{code}
 
-detachable : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+detachable : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 detachable A = ∀ x → decidable(A x)
 
 characteristic-function : {X : 𝓤 ̇} {A : X → 𝓥 ̇}

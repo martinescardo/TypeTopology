@@ -30,12 +30,12 @@ open import UF-Equiv-FunExt
 open import UF-UA-FunExt
 
 universe-embedding-criterion : Univalence
-                             → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇)
-                             → ((X : 𝓤 ̇) → f X ≃ X)
+                             → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                             → ((X : 𝓤 ̇ ) → f X ≃ X)
                              → is-embedding f
 universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion' f γ
  where
-  γ : (X X' : 𝓤 ̇) → (f X ≡ f X') ≃ (X ≡ X')
+  γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
   γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
             (f X ≃ f X')  ≃⟨ Eq-Eq-cong (FunExt-from-Univalence ua) (i X) (i X') ⟩
             (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓤) X X') ⟩
@@ -51,7 +51,7 @@ hence is an embedding:
 lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
 lift 𝓥 X = X + 𝟘 {𝓥}
 
-lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇) → lift 𝓥 X ≃ X
+lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → lift 𝓥 X ≃ X
 lift-≃ 𝓥 X = 𝟘-rneutral'
 
 lift-is-embedding : Univalence → is-embedding (lift {𝓤} 𝓥)
@@ -68,28 +68,28 @@ propositions are propositions. (For use in the module UF-Resize.)
 prop-fiber-criterion : PropExt
                      → FunExt
                      → (𝓤 𝓥 : Universe)
-                     → (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇)
-                     → ((X : 𝓤 ̇) → f X ≃ X)
-                     → (Q : 𝓤 ⊔ 𝓥 ̇) → is-prop Q → is-prop (fiber f Q)
+                     → (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                     → ((X : 𝓤 ̇ ) → f X ≃ X)
+                     → (Q : 𝓤 ⊔ 𝓥 ̇ ) → is-prop Q → is-prop (fiber f Q)
 prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
  where
   k : is-prop (f P)
   k = back-transport is-prop r j
   l : is-prop P
   l = equiv-to-prop (≃-sym (i P)) k
-  a : (X : 𝓤 ̇) → (f X ≡ f P) ≃ (X ≡ P)
+  a : (X : 𝓤 ̇ ) → (f X ≡ f P) ≃ (X ≡ P)
   a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (f X) (f P) k ⟩
         (f X ≃ f P)  ≃⟨ Eq-Eq-cong fe (i X) (i P) ⟩
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
         (X ≡ P)      ■
-  b : (Σ \(X : 𝓤 ̇) → f X ≡ f P) ≃ (Σ \(X : 𝓤 ̇) → X ≡ P)
+  b : (Σ \(X : 𝓤 ̇ ) → f X ≡ f P) ≃ (Σ \(X : 𝓤 ̇) → X ≡ P)
   b = Σ-cong a
-  c : is-prop (Σ \(X : 𝓤 ̇) → f X ≡ f P)
+  c : is-prop (Σ \(X : 𝓤 ̇ ) → f X ≡ f P)
   c = equiv-to-prop b (singleton-types'-are-props P)
-  d : is-prop (Σ \(X : 𝓤 ̇) → f X ≡ Q)
-  d = transport (λ - → is-prop (Σ \(X : 𝓤 ̇) → f X ≡ -)) r c
+  d : is-prop (Σ \(X : 𝓤 ̇ ) → f X ≡ Q)
+  d = transport (λ - → is-prop (Σ \(X : 𝓤 ̇ ) → f X ≡ -)) r c
 
-prop-fiber-lift : PropExt → FunExt → (Q : 𝓤 ⊔ 𝓥 ̇) → is-prop Q → is-prop (fiber (lift 𝓥) Q)
+prop-fiber-lift : PropExt → FunExt → (Q : 𝓤 ⊔ 𝓥 ̇ ) → is-prop Q → is-prop (fiber (lift 𝓥) Q)
 prop-fiber-lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 𝓥 (lift {𝓤} 𝓥) (lift-≃ 𝓥)
 
 \end{code}

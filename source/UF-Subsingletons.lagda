@@ -23,7 +23,7 @@ is-prop : 𝓤 ̇ → 𝓤 ̇
 is-prop X = (x y : X) → x ≡ y
 
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ \(P : 𝓤 ̇) → is-prop P
+Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-prop P
 
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds = pr₁
@@ -61,7 +61,7 @@ univalent type theory.
 
 \begin{code}
 
-is-the-only-element-of : (X : 𝓤 ̇) → X → 𝓤 ̇
+is-the-only-element-of : (X : 𝓤 ̇ ) → X → 𝓤 ̇
 is-the-only-element-of X c = (x : X) → c ≡ x
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
@@ -76,7 +76,7 @@ For compatibility with the homotopical terminology:
 
 \begin{code}
 
-is-center-of-contraction-of : (X : 𝓤 ̇) → X → 𝓤 ̇
+is-center-of-contraction-of : (X : 𝓤 ̇ ) → X → 𝓤 ̇
 is-center-of-contraction-of = is-the-only-element-of
 
 is-contr : 𝓤 ̇ → 𝓤 ̇
@@ -127,7 +127,7 @@ is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = {x : X} → is-h-isolated x
 
-refl-is-set : (X : 𝓤 ̇)
+refl-is-set : (X : 𝓤 ̇ )
             → ((x : X) (p : x ≡ x) → p ≡ refl)
             → is-set X
 refl-is-set X r {x} {.x} p refl = r x p
@@ -287,7 +287,7 @@ pr₁-lc : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} → ({x : X} → is-prop(Y x))
        → left-cancellable (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
-subsets-of-sets-are-sets : (X : 𝓤 ̇) (Y : X → 𝓥 ̇)
+subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇)
                          → is-set X
                          → ({x : X} → is-prop(Y x))
                          → is-set(Σ \(x : X) → Y x)
@@ -299,7 +299,7 @@ inl-lc-is-section refl = refl
 inr-lc-is-section : {X : 𝓤 ̇} {Y : 𝓥 ̇} {y y' : Y} → (p : inr {𝓤} {𝓥} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
 inr-lc-is-section refl = refl
 
-+-is-set : (X : 𝓤 ̇) (Y : 𝓥 ̇) → is-set X → is-set Y → is-set (X + Y)
++-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) → is-set X → is-set Y → is-set (X + Y)
 +-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
  where
   r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
@@ -318,7 +318,7 @@ Formulation of the K axiom for a universe U.
 \begin{code}
 
 K-axiom : ∀ 𝓤 → 𝓤 ⁺ ̇
-K-axiom 𝓤 = (X : 𝓤 ̇) → is-set X
+K-axiom 𝓤 = (X : 𝓤 ̇ ) → is-set X
 
 \end{code}
 
@@ -357,7 +357,7 @@ values other than 𝟘 and 𝟙:
 
 \begin{code}
 
-no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ Σ \(P : 𝓤 ̇) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
+no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ Σ \(P : 𝓤 ̇ ) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
 no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim(φ u)
  where
    u : ¬ P
@@ -389,7 +389,7 @@ Unique existence
 
 \begin{code}
 
-∃! : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+∃! : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 ∃! A = is-singleton (Σ A)
 
 ∃!-intro : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (x : X) (a : A x) → ((σ : Σ A) → (x , a) ≡ σ) → ∃! A

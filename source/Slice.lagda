@@ -13,7 +13,7 @@ module Slice (𝓣 : Universe) where
 open import UF-Subsingletons hiding (⊥)
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
-𝓕 X = Σ \(I : 𝓣 ̇) → (I → X)
+𝓕 X = Σ \(I : 𝓣 ̇ ) → (I → X)
 
 source : {X : 𝓤 ̇} → 𝓕 X → 𝓣 ̇
 source (I , φ) = I
@@ -40,7 +40,7 @@ open import UF-FunExt
 open import UF-Univalence
 
 𝓕-equiv-particular : funext 𝓣 (𝓣 ⁺) → is-univalent 𝓣
-                   → (X : 𝓣 ̇) → 𝓕 X ≃ (X → 𝓣 ̇)
+                   → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇)
 𝓕-equiv-particular = type-classifier.classification-equivalence
 
 open import UF-Resizing
@@ -50,16 +50,16 @@ open import UF-UA-FunExt
 open import UF-UniverseEmbedding
 open import UF-EquivalenceExamples
 
-𝓕-equiv : Univalence →  (X : 𝓤 ̇) → 𝓕 X ≃ Σ \(A : X → 𝓣 ⊔ 𝓤 ̇) → (Σ A) has-size 𝓣
+𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ Σ \(A : X → 𝓣 ⊔ 𝓤 ̇) → (Σ A) has-size 𝓣
 𝓕-equiv {𝓤} ua X = qinveq χ (T , Tχ , χT)
  where
   fe : FunExt
   fe = FunExt-from-Univalence ua
-  χ : 𝓕 X → Σ \(A : X → 𝓣 ⊔ 𝓤 ̇) → (Σ A) has-size 𝓣
+  χ : 𝓕 X → Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣
   χ (I , φ) = fiber φ , I , ≃-sym (graph-domain-equiv φ)
-  T : (Σ \(A : X → 𝓣 ⊔ 𝓤 ̇) → (Σ A) has-size 𝓣) → 𝓕 X
+  T : (Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣) → 𝓕 X
   T (A , I , (f , e)) = I , pr₁ ∘ f
-  χT : (σ : Σ \(A : X → 𝓣 ⊔ 𝓤 ̇) → (Σ A) has-size 𝓣) → χ (T σ) ≡ σ
+  χT : (σ : Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣) → χ (T σ) ≡ σ
   χT (A , I , (f , e)) = p
    where
     h : (x : X) → fiber (pr₁ ∘ f) x ≃ A x

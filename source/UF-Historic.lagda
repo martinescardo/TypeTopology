@@ -17,10 +17,10 @@ open import UF-FunExt
 open import UF-Univalence
 open import UF-PropTrunc
 
-ip-ie-idtofun : (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇) (p : X ≡ Y) → is-prop(is-equiv(idtofun X Y p))
+ip-ie-idtofun : (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇ ) (p : X ≡ Y) → is-prop(is-equiv(idtofun X Y p))
 ip-ie-idtofun {𝓤} fe X = Jbased X B go
  where
-   B : (Y : 𝓤 ̇) → X ≡ Y → 𝓤 ̇
+   B : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓤 ̇
    B Y p = is-prop(is-equiv(idtofun X Y p))
    A = Σ \(f : X → X) → f ≡ id
    a : is-prop A

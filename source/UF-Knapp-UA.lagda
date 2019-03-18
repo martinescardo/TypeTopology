@@ -7,7 +7,7 @@ Function extensionality follows from a generalization of
 univalence. Using this, we formulate a condition equivalent to
 the univalence of the universe U, namely
 
- (X Y : 𝓤 ̇) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f
+ (X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f
 
 \begin{code}
 
@@ -60,7 +60,7 @@ pietoid-idtopie refl = refl
 idtopie-pietoid : {X Y : 𝓤 ̇} (e : X ⋍ Y) → idtopie (pietoid e) ≡ e
 idtopie-pietoid (_ , refl , refl) = refl
 
-PIE-induction : {X : 𝓤 ̇} (A : {Y : 𝓤 ̇} → (X → Y) → 𝓥 ̇)
+PIE-induction : {X : 𝓤 ̇} (A : {Y : 𝓤 ̇} → (X → Y) → 𝓥 ̇ )
               → A id → {Y : 𝓤 ̇} (f : X → Y) → isPIE f → A f
 PIE-induction {𝓤} {𝓥} {X} A g {Y} f (p , q) = transport A r (φ p)
   where
@@ -93,7 +93,7 @@ http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf:
 π₂ : {X : 𝓤 ̇} → Δ X → X
 π₂ (_ , y , _) = y
 
-πδ : (X : 𝓤 ̇) → π₁ ∘ δ ≡ π₂ ∘ δ
+πδ : (X : 𝓤 ̇ ) → π₁ ∘ δ ≡ π₂ ∘ δ
 πδ {𝓤} X = refl {𝓤} {X → X}
 
 \end{code}
@@ -119,7 +119,7 @@ knapps-funext-criterion {𝓤} H D {𝓥} {X} {Y} {f₁} {f₂} h = γ
                                → back-transport (λ - → - → Y) (pietoid e) g ≡ g ∘ pr₁ e
   back-transport-is-pre-comp'' {𝓤} {X} {X'} e g = back-transport-is-pre-comp (pietoid e) g ∙ q ∙ r
    where
-    φ : ∀ {𝓤} (X Y : 𝓤 ̇) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
+    φ : ∀ {𝓤} (X Y : 𝓤 ̇ ) (p : X ≡ Y) → Idtofun p ≡ pr₁ (idtopie p)
     φ X .X refl = refl
     q : g ∘ Idtofun (pietoid e) ≡ g ∘ pr₁ (idtopie (pietoid e))
     q = ap (λ - → g ∘ -) (φ X X' (pr₁ (pr₂ e)))
@@ -182,14 +182,14 @@ is-equiv-isPIE-UA {𝓤} φ X = γ
   D = φ δ δ-is-equiv
   k : funext 𝓤 𝓤
   k = knapps-funext-Criterion {𝓤} H D
-  s : (Y : 𝓤 ̇) → X ≃ Y → X ≡ Y
+  s : (Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
   s Y (f , i) = pietoid (f , φ f i)
   η : {Y : 𝓤 ̇} (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
   η {Y} (f , i) = to-Σ-≡ (p , being-equiv-is-a-prop'' k f _ _)
    where
     p : pr₁ (idtoeq X Y (s Y (f , i))) ≡ f
     p = pietofun-factors-through-idtofun (f , φ f i)
-  γ : (Y : 𝓤 ̇) → is-equiv (idtoeq X Y)
+  γ : (Y : 𝓤 ̇ ) → is-equiv (idtoeq X Y)
   γ = nats-with-sections-are-equivs X (idtoeq X) (λ Y → (s Y) , η)
 
 \end{code}
@@ -200,14 +200,14 @@ see from the proof, we can replace qinv by is-equiv:
 \begin{code}
 
 UA-characterization :
-                     ((X Y : 𝓤 ̇) (f : X → Y) → qinv f → fiber (transport id) f)
+                     ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → fiber (transport id) f)
                    ⇔ is-univalent 𝓤
 UA-characterization {𝓤} = (forth , back)
  where
-  forth : ((X Y : 𝓤 ̇) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent 𝓤
+  forth : ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent 𝓤
   forth γ = is-equiv-isPIE-UA (λ {X} {Y} → φ X Y)
    where
-    φ : (X Y : 𝓤 ̇) (f : X → Y) → is-equiv f → isPIE f
+    φ : (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → isPIE f
     φ X Y f i = p , r
      where
       p : X ≡ Y
@@ -216,7 +216,7 @@ UA-characterization {𝓤} = (forth , back)
       q = pr₂ (γ X Y f (equivs-are-qinvs f i))
       r : idtofun X Y p ≡ f
       r = idtofun-agreement X Y p ∙ q
-  back : is-univalent 𝓤 → ((X Y : 𝓤 ̇) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+  back : is-univalent 𝓤 → ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
   back ua X Y f q = p , s
    where
     σ : Σ \(p : X ≡ Y) → idtofun X Y p ≡ f

@@ -44,7 +44,7 @@ family λ (_ : ℕ) → X).
 D : 𝓤 ̇ → 𝓤 ̇
 D X = Σ \(u : ℕ∞) → is-finite u → X
 
-private remark₁ : (X : 𝓤 ̇) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
+private remark₁ : (X : 𝓤 ̇ ) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
 remark₁ X = refl
 
 Cantor : 𝓤₀ ̇
@@ -499,7 +499,7 @@ of showing that our searchable ordinals are totally separated.
 
 \begin{code}
 
-Σ¹-Cantor-retract : (X : ℕ → 𝓤 ̇)
+Σ¹-Cantor-retract : (X : ℕ → 𝓤 ̇ )
                        → ((n : ℕ) → retract (X n) of Cantor)
                        → retract (Σ¹ X) of Cantor
 Σ¹-Cantor-retract {𝓤} X ρ = retracts-compose D-Cantor-retract-of-Cantor r

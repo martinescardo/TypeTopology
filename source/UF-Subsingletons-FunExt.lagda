@@ -49,19 +49,19 @@ being-a-prop-is-a-prop {𝓤} {X} fe f g = c₁
   c₁  = dfunext fe c₀
 
 identifications-of-props-are-props : propext 𝓤 → funext 𝓤 𝓤
-                                   → (P : 𝓤 ̇) → is-prop P
-                                   → (X : 𝓤 ̇) → is-prop (X ≡ P)
+                                   → (P : 𝓤 ̇ ) → is-prop P
+                                   → (X : 𝓤 ̇ ) → is-prop (X ≡ P)
 identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X → g X ∘ f X , k X)
  where
-  f : (X : 𝓤 ̇) → X ≡ P → is-prop X × (X ⇔ P)
+  f : (X : 𝓤 ̇ ) → X ≡ P → is-prop X × (X ⇔ P)
   f X refl = i , (id , id)
-  g : (X : 𝓤 ̇) → is-prop X × (X ⇔ P) → X ≡ P
+  g : (X : 𝓤 ̇ ) → is-prop X × (X ⇔ P) → X ≡ P
   g X (l , φ , γ) = pe l i φ γ
-  j : (X : 𝓤 ̇) → is-prop (is-prop X × (X ⇔ P))
+  j : (X : 𝓤 ̇ ) → is-prop (is-prop X × (X ⇔ P))
   j X = ×-prop-criterion ((λ _ → being-a-prop-is-a-prop fe) ,
                           (λ l → ×-is-prop (Π-is-prop fe (λ x → i))
                                             (Π-is-prop fe (λ p → l))))
-  k : (X : 𝓤 ̇) → constant (g X ∘ f X)
+  k : (X : 𝓤 ̇ ) → constant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
 being-a-singleton-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇} → is-prop(is-singleton X)
@@ -163,7 +163,7 @@ negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
 not fe (P , i) = (¬ P , negations-are-props fe)
 
-equal-⊤-is-true : (P : 𝓤 ̇) (i : is-prop P) → (P , i) ≡ ⊤ → P
+equal-⊤-is-true : (P : 𝓤 ̇ ) (i : is-prop P) → (P , i) ≡ ⊤ → P
 equal-⊤-is-true P hp r = f *
  where
   s : 𝟙 ≡ P
@@ -177,12 +177,12 @@ TODO. In the following, rather than using a P and i, use a p = (P , i) in Ω �
 
 \begin{code}
 
-true-is-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇) (i : is-prop P)
+true-is-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
                 → P → (P , i) ≡ ⊤
 true-is-equal-⊤ pe fe P i p = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p) ,
                                       being-a-prop-is-a-prop fe _ _)
 
-false-is-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇) (i : is-prop P)
+false-is-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
                  → ¬ P → (P , i) ≡ ⊥
 false-is-equal-⊥ pe fe P i f = to-Σ-≡ (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
                                        being-a-prop-is-a-prop fe _ _)

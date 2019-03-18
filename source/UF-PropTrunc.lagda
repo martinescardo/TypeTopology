@@ -50,7 +50,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  ∥∥-functor : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
- ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+ ∃ : {X : 𝓤 ̇} → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
 
  _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -62,10 +62,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  right-fails-then-left-holds : {P : 𝓤 ̇} {Q : 𝓥 ̇} → is-prop P → P ∨ Q → ¬ Q → P
  right-fails-then-left-holds i d u = ∥∥-rec i (λ d → Right-fails-then-left-holds d u) d
 
- pt-gdn : {X : 𝓤 ̇} → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇) → is-prop P → (X → P) → P
+ pt-gdn : {X : 𝓤 ̇} → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P
  pt-gdn {𝓤} {X} s {𝓥} P isp u = ∥∥-rec isp u s
 
- gdn-pt : {X : 𝓤 ̇} → (∀ {𝓥} (P : 𝓥 ̇) → is-prop P → (X → P) → P) → ∥ X ∥
+ gdn-pt : {X : 𝓤 ̇} → (∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P) → ∥ X ∥
  gdn-pt {𝓤} {X} φ = φ ∥ X ∥ ∥∥-is-a-prop ∣_∣
 
  pt-dn : {X : 𝓤 ̇} → ∥ X ∥ → ¬¬ X

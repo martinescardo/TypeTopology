@@ -24,7 +24,7 @@ The Yoneda element induced by a natural transformation:
 
 \begin{code}
 
-yoneda-elem : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+yoneda-elem : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
             → Nat (Id x) A → A x
 yoneda-elem x A η = η x refl
 
@@ -35,7 +35,7 @@ of "Nat" expanded, beginning here:
 
 \begin{code}
 
-Yoneda-elem : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+Yoneda-elem : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
             → ((y : X) → x ≡ y → A y) → A x
 Yoneda-elem = yoneda-elem
 
@@ -45,11 +45,11 @@ The natural transformation induced by an element:
 
 \begin{code}
 
-yoneda-nat : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+yoneda-nat : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
            → A x → Nat (Id x) A
 yoneda-nat x A a y p = transport A p a
 
-Yoneda-nat : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+Yoneda-nat : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
            → A x → (y : X) → x ≡ y → A y
 Yoneda-nat = yoneda-nat
 
@@ -62,11 +62,11 @@ its Yoneda element:
 
 \begin{code}
 
-yoneda-lemma : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
+yoneda-lemma : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
              → yoneda-nat x A (yoneda-elem x A η) ≈ η
 yoneda-lemma x A η y refl = refl
 
-Yoneda-lemma : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+Yoneda-lemma : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
                (η : (y : X) → x ≡ y → A y) (y : X) (p : x ≡ y)
              → transport A p (η x refl) ≡ η y p
 Yoneda-lemma = yoneda-lemma
@@ -79,7 +79,7 @@ transformation η is recursively defined.
 \begin{code}
 
 yoneda-lemma' : FunExt
-              → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
+              → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
               → yoneda-nat x A (yoneda-elem x A η) ≡ η
 yoneda-lemma' {𝓤} {𝓥} fe x A η = dfunext (fe 𝓤 (𝓤 ⊔ 𝓥))
                                    (λ y → dfunext (fe 𝓤 𝓥)
@@ -92,16 +92,16 @@ not be taken too seriously:
 
 \begin{code}
 
-Yoneda-computation : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (a : A x)
+Yoneda-computation : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ ) (a : A x)
                    → transport A refl a ≡ a
 Yoneda-computation x A a = refl
 
-yoneda-computation : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (a : A x)
+yoneda-computation : {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ ) (a : A x)
                    → yoneda-elem x A (yoneda-nat x A a) ≡ a
 yoneda-computation x A = Yoneda-computation x A
 
 yoneda-elem-is-equiv : FunExt
-                     → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+                     → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
                      → is-equiv (yoneda-elem x A)
 yoneda-elem-is-equiv fe x A = qinvs-are-equivs (yoneda-elem x A)
                                                (yoneda-nat x A ,
@@ -109,7 +109,7 @@ yoneda-elem-is-equiv fe x A = qinvs-are-equivs (yoneda-elem x A)
                                                 yoneda-computation x A)
 
 yoneda-nat-is-equiv : FunExt
-                    → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+                    → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
                     → is-equiv (yoneda-nat x A)
 yoneda-nat-is-equiv fe {X} x A = qinvs-are-equivs (yoneda-nat x A)
                                                   (yoneda-elem x A ,
@@ -117,12 +117,12 @@ yoneda-nat-is-equiv fe {X} x A = qinvs-are-equivs (yoneda-nat x A)
                                                    yoneda-lemma' fe x A)
 
 yoneda-equivalence : FunExt
-                   → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+                   → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
                    → A x ≃ Nat (Id x) A
 yoneda-equivalence fe x A = yoneda-nat x A , yoneda-nat-is-equiv fe x A
 
 Yoneda-equivalence : FunExt
-                   → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇)
+                   → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ )
                    → A x ≃ (∀ y → x ≡ y → A y)
 Yoneda-equivalence = yoneda-equivalence
 
@@ -133,7 +133,7 @@ universal elements in the sense of category theory.
 
 \begin{code}
 
-is-universal-element-of : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → Σ A → 𝓤 ⊔ 𝓥 ̇
+is-universal-element-of : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) → Σ A → 𝓤 ⊔ 𝓥 ̇
 is-universal-element-of {𝓤} {𝓥} {X} A (x , a) =
    (y : X) (b : A y) → Σ \(p : x ≡ y) → yoneda-nat x A a y p ≡ b
 
@@ -142,7 +142,7 @@ universal-element-is-the-only-element : {X : 𝓤 ̇} {A : X → 𝓥 ̇} (σ : 
                                       → is-the-only-element-of (Σ A) σ
 universal-element-is-the-only-element (x , a) u (y , b) = to-Σ-≡ (u y b)
 
-unique-element-is-universal-element : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (σ : Σ A)
+unique-element-is-universal-element : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (σ : Σ A)
                                     → is-the-only-element-of (Σ A) σ
                                     → is-universal-element-of A σ
 unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡ (φ(y , b))
@@ -355,10 +355,10 @@ singleton.
 
 \begin{code}
 
-_≊_ : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+_≊_ : {X : 𝓤 ̇} → (X → 𝓥 ̇ ) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 A ≊ B = Σ \(η : Nat A B) → ∀ x → is-equiv(η x)
 
-is-representable : {X : 𝓤 ̇} → (X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+is-representable : {X : 𝓤 ̇} → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-representable A = Σ \x → Id x ≊ A
 
 singleton-representable : {X : 𝓤 ̇} {A : X → 𝓥 ̇}
@@ -402,7 +402,7 @@ extensionality holds (happly is an equivalence).
 \begin{code}
 
 funext-via-singletons :
-    ((X : 𝓤 ̇) (Y : X → 𝓥 ̇)
+    ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇)
   → ((x : X) → is-singleton (Y x)) → is-singleton (Π Y))
   → funext 𝓤 𝓥
 funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
@@ -437,13 +437,13 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Univalence
 
-univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇) → ∃! \(Y : 𝓤 ̇) → X ≃ Y)
+univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! \(Y : 𝓤 ̇) → X ≃ Y)
 univalence-via-singletons = (f , g)
  where
-  f : is-univalent 𝓤 → (X : 𝓤 ̇) → ∃! (Eq X)
+  f : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! (Eq X)
   f ua X = representable-singleton (X , (idtoeq X , ua X))
 
-  g : ((X : 𝓤 ̇) → ∃! (Eq X)) → is-univalent 𝓤
+  g : ((X : 𝓤 ̇ ) → ∃! (Eq X)) → is-univalent 𝓤
   g φ X = universality-equiv X (≃-refl X)
                                (unique-element-is-universal-element
                                   (Eq X)
@@ -494,7 +494,7 @@ Id-charac : FunExt
           → {X : 𝓤 ̇} (x {y} : X) → (x ≡ y) ≃ Nat (Id y) (Id x)
 Id-charac fe {X} x {y} = yoneda-equivalence fe y (Id x)
 
-yoneda-nat-Eq : (X {Y} : 𝓤 ̇) → Eq X Y → Nat (Id Y) (Eq X)
+yoneda-nat-Eq : (X {Y} : 𝓤 ̇ ) → Eq X Y → Nat (Id Y) (Eq X)
 yoneda-nat-Eq X {Y} = yoneda-nat Y (Eq X)
 
 yoneda-elem-Id : {X : 𝓤 ̇} (x {y} : X) → Nat (Id y) (Id x) → Id x y
@@ -543,11 +543,11 @@ that the latter can be recovered from the former.
 
 \begin{code}
 
-Jbased'' : {X : 𝓤 ̇} (x : X) (A : singleton-type x → 𝓥 ̇)
+Jbased'' : {X : 𝓤 ̇} (x : X) (A : singleton-type x → 𝓥 ̇ )
          → A (x , refl) → Π A
 Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons' w)
 
-Jbased' : {X : 𝓤 ̇} (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇)
+Jbased' : {X : 𝓤 ̇} (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
         → B x refl → (y : X) → Π (B y)
 Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
 
@@ -656,12 +656,12 @@ NatΣ-lc' {𝓤} {𝓥} {𝓦} {X} {A} {B} ζ ζ-lc {(x , a)} {(y , b)} pq = g
     g : x , a ≡ y , b
     g = to-Σ-Id (p , t)
 
-yoneda-equivalence-Σ : FunExt → {X : 𝓤 ̇} (A : X → 𝓥 ̇)
+yoneda-equivalence-Σ : FunExt → {X : 𝓤 ̇} (A : X → 𝓥 ̇ )
                      → Σ A ≃ Σ \(x : X) → Nat (Id x) A
 yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
 
 
-nats-are-uniquely-transports : FunExt → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇) (η : Nat (Id x) A)
+nats-are-uniquely-transports : FunExt → {X : 𝓤 ̇} (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
                              → ∃! \(a : A x) → (λ y p → transport A p a) ≡ η
 nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
@@ -676,13 +676,13 @@ We need this elsewhere:
 
 \begin{code}
 
-idtoeq-bis : (X : 𝓤 ̇) → Nat (Id X) (Eq X)
+idtoeq-bis : (X : 𝓤 ̇ ) → Nat (Id X) (Eq X)
 idtoeq-bis X = yoneda-nat X (Eq X) (≃-refl X)
 
-Idtofun' : (X : 𝓤 ̇) → Nat (Id X) (λ Y → X → Y)
+Idtofun' : (X : 𝓤 ̇ ) → Nat (Id X) (λ Y → X → Y)
 Idtofun' X = yoneda-nat X (λ Y → X → Y) id
 
-idtofun-agree' : (X : 𝓤 ̇) → idtofun X ≈ Idtofun' X
+idtofun-agree' : (X : 𝓤 ̇ ) → idtofun X ≈ Idtofun' X
 idtofun-agree' X = yoneda-elem-lc (idtofun X) (Idtofun' X) refl
 
 \end{code}

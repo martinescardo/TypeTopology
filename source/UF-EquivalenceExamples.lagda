@@ -111,7 +111,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε _ = refl
 
 Π-cong : funext 𝓤 𝓥 → funext 𝓤 𝓦
-       → (X : 𝓤 ̇) (Y : X → 𝓥 ̇) (Y' : X → 𝓦 ̇)
+       → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇) (Y' : X → 𝓦 ̇)
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 Π-cong fe fe' X Y Y' φ = (F , (G , FG) , (H , HF))
  where
@@ -298,7 +298,7 @@ An application of Π-cong is the following:
    η (inl (x , y)) = refl
    η (inr x)       = refl
 
-Ap+ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇) → X ≃ Y → X + Z ≃ Y + Z
+Ap+ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇ ) → X ≃ Y → X + Z ≃ Y + Z
 Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') , (h' , η')
  where
    f' : X + Z → Y + Z
@@ -428,7 +428,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
        → Y ≃ B → (X → Y) ≃ (X → B)
 →-cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →-cong fe fe' (≃-refl X)
 
-pr₁-equivalence : (X : 𝓤 ̇) (A : X → 𝓥 ̇)
+pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇)
                 → ((x : X) → is-singleton (A x))
                 → is-equiv (pr₁ {𝓤} {𝓥} {X} {A})
 pr₁-equivalence {𝓤} {𝓥} X A iss = qinvs-are-equivs pr₁ (g , ε , η)
@@ -440,7 +440,7 @@ pr₁-equivalence {𝓤} {𝓥} X A iss = qinvs-are-equivs pr₁ (g , ε , η)
   ε : (σ : Σ A) → g(pr₁ σ) ≡ σ
   ε (x , a) = to-Σ-≡ (η x , singletons-are-props (iss x) _ _)
 
-NatΣ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                  → (x : X) (b : B x) → fiber (ζ x) b ≃ fiber (NatΣ ζ) (x , b)
 NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
  where
@@ -453,36 +453,36 @@ NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
   η : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
   η b (a , refl) = refl
 
-NatΣ-vv-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-vv-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
               → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΣ ζ)
 NatΣ-vv-equiv A B ζ i (x , b) = equiv-to-singleton
                                    (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                    (i x b)
 
-NatΣ-vv-equiv-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-vv-equiv-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                        → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
 NatΣ-vv-equiv-converse A B ζ e x b = equiv-to-singleton
                                       (NatΣ-fiber-equiv A B ζ x b)
                                       (e (x , b))
 
-NatΣ-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
 NatΣ-equiv A B ζ i = vv-equivs-are-equivs
                          (NatΣ ζ)
                          (NatΣ-vv-equiv A B ζ
                            (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-NatΣ-equiv-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-equiv-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                     → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
 NatΣ-equiv-converse A B ζ e x = vv-equivs-are-equivs (ζ x)
                                  (NatΣ-vv-equiv-converse A B ζ
                                    (equivs-are-vv-equivs (NatΣ ζ) e) x)
 
-Σ-cong' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
+Σ-cong' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
         → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 Σ-cong' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
 
-NatΣ-equiv' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-equiv' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
             → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
 NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
  where
@@ -495,7 +495,7 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (i x)) a)
 
-Σ-change-of-variables' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇) (g : Y → X)
+Σ-change-of-variables' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (g : Y → X)
                        → is-hae g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
 Σ-change-of-variables' {𝓤} {𝓥} {𝓦} {X} {Y} A g (f , η , ε , α) = γ , φ , φγ , γφ
  where
@@ -517,7 +517,7 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
         transport A (ε (g y)) (back-transport A (ε (g y)) a)           ≡⟨ back-and-forth-transport (ε (g y)) ⟩
         a                                                              ∎
 
-Σ-change-of-variables : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇) (g : Y → X)
+Σ-change-of-variables : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (g : Y → X)
                       → is-equiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
 Σ-change-of-variables {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
@@ -526,7 +526,7 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
 
-NatΠ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                  → funext 𝓤 𝓦
                  → (g : Π B) → (Π \(x : X) → fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
@@ -536,14 +536,14 @@ NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
   (Σ \(f : Π A) → (λ x → ζ x (f x)) ≡ g)        ≃⟨ ≃-refl _ ⟩
   fiber (NatΠ ζ) g                              ■
 
-NatΠ-vv-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-vv-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
               → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
               → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΠ ζ)
 NatΠ-vv-equiv A B ζ fe fe' i g = equiv-to-singleton
                                     (≃-sym (NatΠ-fiber-equiv A B ζ fe g))
                                     (Π-is-singleton fe' (λ x → i x (g x)))
 
-NatΠ-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
            → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΠ ζ)
 NatΠ-equiv A B ζ fe fe' i = vv-equivs-are-equivs
@@ -551,7 +551,7 @@ NatΠ-equiv A B ζ fe fe' i = vv-equivs-are-equivs
                              (NatΠ-vv-equiv A B ζ fe fe'
                                (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
-Π-cong' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
+Π-cong' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
         → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
         → ((x : X) → A x ≃ B x) → Π A ≃ Π B
 Π-cong' A B fe fe' e = NatΠ (λ x → pr₁(e x)) , NatΠ-equiv A B (λ x → pr₁(e x)) fe fe' (λ x → pr₂(e x))
@@ -577,7 +577,7 @@ singleton-≃-𝟙 i = singleton-≃ i 𝟙-is-singleton
 singleton-≃-𝟙' : {X : 𝓤 ̇} → is-singleton X → 𝟙 {𝓥} ≃ X
 singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
 
-𝟙-≡-≃ : (P : 𝓤 ̇) → funext 𝓤 𝓤 → propext 𝓤
+𝟙-≡-≃ : (P : 𝓤 ̇ ) → funext 𝓤 𝓤 → propext 𝓤
       → is-prop P → (𝟙 ≡ P) ≃ P
 𝟙-≡-≃ P fe pe i = qinveq (λ q → Idtofun q *) (f , ε , η)
  where
@@ -588,7 +588,7 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
   ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
   ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q *)) q
 
-sum-of-fibers : (X : 𝓤 ̇) (Y : 𝓥 ̇) (f : X → Y) → X ≃ Σ (fiber f)
+sum-of-fibers : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) (f : X → Y) → X ≃ Σ (fiber f)
 sum-of-fibers {𝓤} {𝓥} X Y f =
   X                                   ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
   X × 𝟙                               ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton

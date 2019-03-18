@@ -13,8 +13,8 @@ open import LexicographicOrder
 open import InfCompact
 
 Σ-inf-compact : ∀ {𝓣} {X : 𝓤 ̇} {Y : X → 𝓥 ̇}
-  → (_≤_ : X → X → 𝓦 ̇)
-  → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇)
+  → (_≤_ : X → X → 𝓦 ̇ )
+  → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇ )
   → inf-compact _≤_
   → ((x : X) → inf-compact (_≼_ {x}))
   → inf-compact (lex-order _≤_ _≼_)

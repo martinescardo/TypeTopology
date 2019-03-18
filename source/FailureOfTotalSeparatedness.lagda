@@ -181,7 +181,7 @@ unchanged.
 
 \begin{code}
 
-module general-example (𝓤 : Universe) (X : 𝓤 ̇) (a : X) where
+module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
 
  Y : 𝓤 ̇
  Y = Σ \(x : X) → x ≡ a → 𝟚

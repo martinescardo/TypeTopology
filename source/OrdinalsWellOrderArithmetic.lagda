@@ -26,7 +26,7 @@ ordering.
 
 module prop
         {𝓤 𝓥}
-        (P : 𝓤 ̇)
+        (P : 𝓤 ̇ )
         (isp : is-prop P)
        where
 
@@ -66,8 +66,8 @@ module plus
         {𝓤 𝓥 𝓦}
         {X : 𝓤 ̇}
         {Y : 𝓥 ̇}
-        (_<_ : X → X → 𝓦 ̇)
-        (_≺_ : Y → Y → 𝓦 ̇)
+        (_<_ : X → X → 𝓦 ̇ )
+        (_≺_ : Y → Y → 𝓦 ̇ )
        where
 
  private
@@ -152,7 +152,7 @@ Successor (probably get rid of it).
 module successor
         {𝓤 𝓥}
         {X : 𝓤 ̇}
-        (_<_ : X → X → 𝓥 ̇)
+        (_<_ : X → X → 𝓥 ̇ )
        where
 
   private
@@ -184,8 +184,8 @@ module times
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : 𝓥 ̇}
-        (_<_ : X → X → 𝓦 ̇)
-        (_≺_ : Y → Y → 𝓣 ̇)
+        (_<_ : X → X → 𝓦 ̇ )
+        (_≺_ : Y → Y → 𝓣 ̇ )
        where
 
  private
@@ -301,7 +301,7 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : ∀ {𝓣} {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇) (_≺_ : Y → Y → 𝓣 ̇)
+retract-accessible : ∀ {𝓣} {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
                        (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
@@ -319,7 +319,7 @@ retract-accessible {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ = tra
       m : is-accessible _≺_ (r (s y))
       m = τ (s y) (φ x y l)
 
-retract-well-founded : {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇) (_≺_ : Y → Y → 𝓣 ̇)
+retract-well-founded : {X : 𝓤 ̇} {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
                        (r : X → Y) (s : Y → X)
                     → ((y : Y) → r(s y) ≡ y)
                     → ((x : X) (y : Y) → y ≺ r x → s y < x)
@@ -340,10 +340,10 @@ The product of a proposition-indexed family of ordinals (pip):
 module pip
         {𝓤 𝓥 𝓦}
         (fe : funext 𝓤 𝓥)
-        (P : 𝓤 ̇)
+        (P : 𝓤 ̇ )
         (isp : is-prop P)
-        (X : P → 𝓥 ̇)
-        (_<_ : {p : P} → X p → X p → 𝓦 ̇)
+        (X : P → 𝓥 ̇ )
+        (_<_ : {p : P} → X p → X p → 𝓦 ̇ )
        where
 
 \end{code}
@@ -527,8 +527,8 @@ module sum
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
-        (_<_ : X → X → 𝓦 ̇)
-        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇)
+        (_<_ : X → X → 𝓦 ̇ )
+        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
       where
 
  open import LexicographicOrder
@@ -599,8 +599,8 @@ module sum-top
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
-        (_<_ : X → X → 𝓦 ̇)
-        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇)
+        (_<_ : X → X → 𝓦 ̇ )
+        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
         (top : Π Y)
         (ist : (x : X) → is-top _≺_ (top x))
       where
@@ -685,8 +685,8 @@ module sum-cotransitive
         {𝓤 𝓥 𝓦 𝓣}
         {X : 𝓤 ̇}
         {Y : X → 𝓥 ̇}
-        (_<_ : X → X → 𝓦 ̇)
-        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇)
+        (_<_ : X → X → 𝓦 ̇ )
+        (_≺_ : {x : X} → Y x → Y x → 𝓣 ̇ )
         (c : cotransitive _<_)
       where
 
@@ -791,10 +791,10 @@ module extension
         {𝓤 𝓥 𝓦}
         {X : 𝓤 ̇}
         {A : 𝓥 ̇}
-        (Y : X → 𝓦 ̇)
+        (Y : X → 𝓦 ̇ )
         (j : X → A)
         (ise : is-embedding j)
-        (_<_ : {x : X} → Y x → Y x → 𝓦 ̇)
+        (_<_ : {x : X} → Y x → Y x → 𝓦 ̇ )
         (a : A)
        where
 

@@ -30,15 +30,15 @@ of which is actually an equivalence).
 \begin{code}
 
 𝓚 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
-𝓚 X = Σ \(P : 𝓣 ̇) → (P → X) × is-singleton P
+𝓚 X = Σ \(P : 𝓣 ̇ ) → (P → X) × is-singleton P
 
 κ : {X : 𝓤 ̇} → X → 𝓚 X
 κ x = 𝟙 , (λ _ → x) , 𝟙-is-singleton
 
-ζ : (X : 𝓤 ̇) (P : 𝓣 ̇) → (P → X) × is-singleton P → (P → X) × is-prop P
+ζ : (X : 𝓤 ̇ ) (P : 𝓣 ̇) → (P → X) × is-singleton P → (P → X) × is-prop P
 ζ X P (φ , i) = φ , singletons-are-props i
 
-𝓚→𝓛 : (X : 𝓤 ̇) → 𝓚 X → 𝓛 X
+𝓚→𝓛 : (X : 𝓤 ̇ ) → 𝓚 X → 𝓛 X
 𝓚→𝓛 X = NatΣ (ζ X)
 
 η-composite : funext 𝓣 𝓣 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
@@ -58,7 +58,7 @@ NatΣ-embedding.:
 
 \begin{code}
 
-ζ-is-embedding : funext 𝓣 𝓣 → (X : 𝓤 ̇) (P : 𝓣 ̇) → is-embedding (ζ X P)
+ζ-is-embedding : funext 𝓣 𝓣 → (X : 𝓤 ̇ ) (P : 𝓣 ̇) → is-embedding (ζ X P)
 ζ-is-embedding fe X P = ×-embedding
                           id
                           singletons-are-props
@@ -69,7 +69,7 @@ NatΣ-embedding.:
                             (being-a-prop-is-a-prop fe))
 
 𝓚→𝓛-is-embedding : funext 𝓣 𝓣
-                  → (X : 𝓤 ̇) → is-embedding (𝓚→𝓛 X)
+                  → (X : 𝓤 ̇ ) → is-embedding (𝓚→𝓛 X)
 𝓚→𝓛-is-embedding fe X = NatΣ-is-embedding
                           (λ P → (P → X) × is-singleton P)
                           (λ P → (P → X) × is-prop P)

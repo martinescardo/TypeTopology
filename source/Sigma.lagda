@@ -15,7 +15,7 @@ such cases.
 
 \begin{code}
 
-record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
+record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
   constructor _,_
   field
    pr₁ : X

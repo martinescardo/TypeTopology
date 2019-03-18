@@ -21,7 +21,7 @@ module SimpleTypes (fe : FunExt) (pt : propositional-truncations-exist) where
 open import UF-Retracts
 open import UF-Retracts-FunExt
 
-data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
+data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇  where
  base : simple-type ℕ
  step : {X Y : 𝓤₀ ̇} → simple-type X → simple-type Y → simple-type (X → Y)
 
@@ -105,7 +105,7 @@ definition of simple types:
 
 \begin{code}
 
-data simple-type₂ : 𝓤₀ ̇ → 𝓤₁ ̇ where
+data simple-type₂ : 𝓤₀ ̇ → 𝓤₁ ̇  where
  base₂ : simple-type₂ 𝟚
  base : simple-type₂ ℕ
  step : {X Y : 𝓤₀ ̇} → simple-type₂ X → simple-type₂ Y → simple-type₂ (X → Y)

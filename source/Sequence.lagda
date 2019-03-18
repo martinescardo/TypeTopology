@@ -111,12 +111,12 @@ Added 11th September 2018.
 
 \begin{code}
 
-seq-bisimulation : {A : 𝓤 ̇} → ((ℕ → A) → (ℕ → A) → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+seq-bisimulation : {A : 𝓤 ̇} → ((ℕ → A) → (ℕ → A) → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 seq-bisimulation {𝓤} {𝓥} {A} R = (α β : ℕ → A) → R α β
                                                  → (head α ≡ head β)
                                                  × R (tail α) (tail β)
 
-seq-coinduction : {A : 𝓤 ̇} (R : (ℕ → A) → (ℕ → A) → 𝓥 ̇)
+seq-coinduction : {A : 𝓤 ̇} (R : (ℕ → A) → (ℕ → A) → 𝓥 ̇ )
                 → seq-bisimulation R → (α β : ℕ → A) → R α β → α ≡ β
 seq-coinduction {𝓤} {𝓥} {A} R b α β r = dfunext (fe 𝓤₀ 𝓤) (h α β r)
  where

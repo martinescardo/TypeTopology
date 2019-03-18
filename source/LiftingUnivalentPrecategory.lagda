@@ -16,7 +16,7 @@ open import SpartanMLTT
 module LiftingUnivalentPrecategory
         (𝓣 : Universe)
         {𝓤 : Universe}
-        (X : 𝓤 ̇)
+        (X : 𝓤 ̇ )
        where
 
 open import UF-Base
@@ -165,8 +165,8 @@ formulation of the above equivalence:
 
 private
  η-fiber-same-as-is-defined' : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-                             → (l : 𝓛 X) → (fiber η l    ∶ 𝓣 ⁺ ⊔ 𝓤 ̇)
-                                         ≃ (is-defined l ∶ 𝓣 ̇)
+                             → (l : 𝓛 X) → (fiber η l    ∶ 𝓣 ⁺ ⊔ 𝓤 ̇ )
+                                         ≃ (is-defined l ∶ 𝓣 ̇ )
  η-fiber-same-as-is-defined' = η-fiber-same-as-is-defined
 
 \end{code}

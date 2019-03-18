@@ -68,7 +68,7 @@ is-prop-valued
  symmetric
  transitive
  equivalence
-   : {X : 𝓤 ̇} → (X → X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+   : {X : 𝓤 ̇} → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 
 is-prop-valued _≈_ = ∀ x y → is-prop(x ≈ y)
 reflexive      _≈_ = ∀ x → x ≈ x
@@ -91,8 +91,8 @@ module _
        (fe  : FunExt)
        {𝓤 𝓥 : Universe}
        (pe  : propext 𝓥)
-       (X   : 𝓤 ̇)
-       (_≈_ : X → X → 𝓥 ̇)
+       (X   : 𝓤 ̇ )
+       (_≈_ : X → X → 𝓥 ̇ )
        (≈p  : is-prop-valued _≈_)
        (≈r  : reflexive _≈_)
        (≈s  : symmetric _≈_)
@@ -108,7 +108,7 @@ Now, Ω 𝓥 is the type of subsingletons, or (univalent) propositions, or
 h-propositions, or mere propositions, in the universe 𝓥, which lives
 in the next universe 𝓥 ⁺.
 
-From the relation _≈_ : X → (X → 𝓥 ̇) we define a relation
+From the relation _≈_ : X → (X → 𝓥 ̇ ) we define a relation
 X → (X → Ω 𝓥), which of course is formally a function. We then take
 the quotient X/≈ to be the image of this function.
 
@@ -160,7 +160,7 @@ values in any universe 𝓦 we please:
 
 \begin{code}
 
- η-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇)
+ η-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇ )
              → ((x' : X/≈) → is-prop(P x'))
              → ((x : X) → P(η x))
              → (x' : X/≈) → P x'
@@ -214,7 +214,7 @@ universe 𝓦.
 
 \begin{code}
 
- universal-property : ∀ {𝓦} (A : 𝓦 ̇)
+ universal-property : ∀ {𝓦} (A : 𝓦 ̇ )
                     → is-set A
                     → (f : X → A)
                     → ({x x' : X} → x ≈ x' → f x ≡ f x')

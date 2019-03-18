@@ -181,7 +181,7 @@ a neutral element for ordinary function composition, definitionally:
   p : inverse f e ∘ f ≡ id
   p = dfunext (fe 𝓤 𝓤) (inverse-is-retraction f e)
 
-≃-Comp : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
+≃-Comp : FunExt → {X : 𝓤 ̇} {Y : 𝓥 ̇} (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 ≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
  where
   p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
@@ -213,7 +213,7 @@ ranges over arbitrary types:
 \begin{code}
 
 propext-funext-give-prop-ua : propext 𝓤 → funext 𝓤 𝓤
-                            → (X : 𝓤 ̇) (P : 𝓤 ̇) → is-prop P → is-equiv (idtoeq X P)
+                            → (X : 𝓤 ̇ ) (P : 𝓤 ̇) → is-prop P → is-equiv (idtoeq X P)
 propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
@@ -228,7 +228,7 @@ propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
   ε : (q : X ≡ P) → eqtoid (idtoeq X P q) ≡ q
   ε q = identifications-of-props-are-props pe fe P i X (eqtoid (idtoeq X P q)) q
 
-prop-univalent-≃ : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇) → is-prop P → (X ≡ P) ≃ (X ≃ P)
+prop-univalent-≃ : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇ ) → is-prop P → (X ≡ P) ≃ (X ≃ P)
 prop-univalent-≃ pe fe X P i = idtoeq X P , propext-funext-give-prop-ua pe fe X P i
 
 

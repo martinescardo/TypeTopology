@@ -36,7 +36,7 @@ equiv-post-comp-closure 𝓤 𝓥 𝓦 = {X : 𝓤 ̇} {Y : 𝓥 ̇} {A : 𝓦 �
 equiv-post-gives-funext' : equiv-post-comp-closure (𝓤 ⊔ 𝓥) 𝓤 𝓤 → funext 𝓤 𝓥
 equiv-post-gives-funext' {𝓤} {𝓥} eqc = funext-via-singletons γ
   where
-  γ : (X : 𝓤 ̇) (A : X → 𝓥 ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
+  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
   γ X A φ = retract-of-singleton (r , s , rs) iss
    where
    f : Σ A → X

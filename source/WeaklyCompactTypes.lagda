@@ -256,7 +256,7 @@ boolean predicates as X, and hence X is ∃-compact (respectively
 
 \begin{code}
 
-module TStronglyOvertnessAndCompactness (X : 𝓤 ̇) where
+module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
 
  open TotallySeparatedReflection fe pt
 
@@ -433,7 +433,7 @@ information for the moment.
 
 \begin{code}
 
-isod : (X : 𝓤 ̇) → is-prop X → ∃-compact X → decidable X
+isod : (X : 𝓤 ̇ ) → is-prop X → ∃-compact X → decidable X
 isod X isp c = f a
  where
   a : decidable ∥ X × (₀ ≡ ₀) ∥
@@ -454,7 +454,7 @@ isdni {𝓤} {X} c φ = g (isod-corollary c)
   g (inl s) = s
   g (inr u) = 𝟘-elim (φ (λ x → u ∣ x ∣))
 
-idso : (X : 𝓤 ̇) → is-prop X → decidable X → ∃-compact X
+idso : (X : 𝓤 ̇ ) → is-prop X → decidable X → ∃-compact X
 idso X isp d p = g d
  where
   g : decidable X → decidable (∃ \x → p x ≡ ₀)
@@ -471,7 +471,7 @@ idso X isp d p = g d
 
   g (inr u) = inr (∥∥-rec 𝟘-is-prop (λ σ → u(pr₁ σ)))
 
-icdn : (X : 𝓤 ̇) → is-prop X → Π-compact X → decidable(¬ X)
+icdn : (X : 𝓤 ̇ ) → is-prop X → Π-compact X → decidable(¬ X)
 icdn X isp c = f a
  where
   a : decidable (X → ₀ ≡ ₁)
@@ -481,7 +481,7 @@ icdn X isp c = f a
   f (inl u) = inl (zero-is-not-one  ∘ u)
   f (inr φ) = inr λ u → φ (λ x → 𝟘-elim (u x) )
 
-emcdn : (X : 𝓤 ̇) → is-prop X → Π-compact(X + ¬ X) → decidable (¬ X)
+emcdn : (X : 𝓤 ̇ ) → is-prop X → Π-compact(X + ¬ X) → decidable (¬ X)
 emcdn X isp c = Cases a l m
  where
   p : X + ¬ X → 𝟚
@@ -1059,7 +1059,7 @@ Images with upper case:
 \begin{code}
 
 Image : {X : 𝓤 ̇} {Y : 𝓥 ̇}
-     → (X → Y) → (X → 𝓦 ̇) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
+     → (X → Y) → (X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
 Image f A = λ y → ∃ \x → A x × (f x ≡ y)
 
 is-clopen-map : {X : 𝓤 ̇} {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -1073,12 +1073,12 @@ being-clopen-map-is-a-prop {𝓤} {𝓥} fe f =
    (λ p → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
             (λ y → decidability-of-prop-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-a-prop))
 
-fst : (A : 𝓤 ̇) (X : 𝓥 ̇) → A × X → A
+fst : (A : 𝓤 ̇ ) (X : 𝓥 ̇) → A × X → A
 fst _ _ = pr₁
 
-∃-compact-clopen-projections : (X : 𝓤 ̇)
+∃-compact-clopen-projections : (X : 𝓤 ̇ )
                              → ∃-compact X
-                             → (∀ {𝓥} (A : 𝓥 ̇) → is-clopen-map(fst A X))
+                             → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map(fst A X))
 ∃-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
   g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
@@ -1092,8 +1092,8 @@ fst _ _ = pr₁
     h : (Σ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a)) → Σ \(x : X) → p (a , x) ≡ ₀
     h ((a' , x) , (r , s)) = x , transport (λ - → p (- , x) ≡ ₀) s r
 
-clopen-projections-∃-compact : ∀ {𝓤 𝓦} (X : 𝓤 ̇)
-                             → (∀ {𝓥} (A : 𝓥 ̇) → is-clopen-map(fst A X))
+clopen-projections-∃-compact : ∀ {𝓤 𝓦} (X : 𝓤 ̇ )
+                             → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map(fst A X))
                              → ∃-compact X
 clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
  where

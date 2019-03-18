@@ -74,7 +74,7 @@ type Σ A.
 \begin{code}
 
 Id-Embedding-Lemma : FunExt → {X : 𝓤 ̇}
-                  → ((x y : X) (A : X → 𝓤 ̇)
+                  → ((x y : X) (A : X → 𝓤 ̇ )
                   → left-cancellable (idtofun (Id x y) (A y)))
                   → is-embedding(Id {𝓤} {X})
 Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
@@ -121,7 +121,7 @@ Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
 
 \end{code}
 
-univalence implies that the function Id {𝓤} {X} : X → (X → 𝓤 ̇) is an embedding.
+univalence implies that the function Id {𝓤} {X} : X → (X → 𝓤 ̇ ) is an embedding.
 
 The map eqtofun is left-cancellable assuming univalence (and function
 extensionality, which is a consequence of univalence, but we don't
@@ -130,7 +130,7 @@ bother):
 \begin{code}
 
 eqtofun-lc : is-univalent 𝓤 → FunExt
-           → (X Y : 𝓤 ̇) → left-cancellable(Eqtofun X Y)
+           → (X Y : 𝓤 ̇ ) → left-cancellable(Eqtofun X Y)
 eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
  where
   q : yoneda-nat f is-equiv jef g p ≡ jeg
@@ -144,7 +144,7 @@ The map idtofun is left-cancellable assuming univalence (and funext):
 
 \begin{code}
 
-is-univalent-idtofun-lc : is-univalent 𝓤 → FunExt → (X Y : 𝓤 ̇)
+is-univalent-idtofun-lc : is-univalent 𝓤 → FunExt → (X Y : 𝓤 ̇ )
                        → left-cancellable(idtofun X Y)
 is-univalent-idtofun-lc  ua fe X Y = left-cancellable-closed-under-∘
                                         (idtoeq X Y)

@@ -29,7 +29,7 @@ We use the following to indicate the type of a subterm:
 
 \begin{code}
 
--id : (X : 𝓤 ̇) → X → X
+-id : (X : 𝓤 ̇ ) → X → X
 -id X x = x
 
 syntax -id X x = x ∶ X
@@ -49,7 +49,7 @@ Get rid of this:
 
 \begin{code}
 
-Σ! : {X : 𝓤 ̇} (A : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+Σ! : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Σ! {𝓤} {𝓥} {X} A = (Σ \(x : X) → A x) × ((x x' : X) → A x → A x' → x ≡ x')
 
 \end{code}

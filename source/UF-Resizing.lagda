@@ -54,10 +54,10 @@ universe 𝓥:
 \begin{code}
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-X has-size 𝓥 = Σ \(Y : 𝓥 ̇) → Y ≃ X
+X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → Y ≃ X
 
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇) → is-prop P → P has-size 𝓥
+propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P has-size 𝓥
 
 \end{code}
 
@@ -65,7 +65,7 @@ Propositional resizing from a universe to a higher universe just holds, of cours
 
 \begin{code}
 
-resize-up : (X : 𝓤 ̇) → X has-size (𝓤 ⊔ 𝓥)
+resize-up : (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
 resize-up {𝓤} {𝓥} X = lift 𝓥 X , lift-≃ 𝓥 X
 
 resize-up-proposition : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
@@ -77,10 +77,10 @@ We use the following to work with propositional resizing more abstractly:
 
 \begin{code}
 
-resize           : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇) (i : is-prop P) → 𝓥 ̇
-resize-is-a-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → is-prop (resize ρ P i)
-to-resize        : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → P → resize ρ P i
-from-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇) (i : is-prop P) → resize ρ P i → P
+resize           : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇ ) (i : is-prop P) → 𝓥 ̇
+resize-is-a-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P) → is-prop (resize ρ P i)
+to-resize        : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P) → P → resize ρ P i
+from-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P) → resize ρ P i → P
 
 resize         ρ P i   = pr₁ (ρ P i)
 resize-is-a-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
@@ -123,19 +123,19 @@ hypotheses below).
 
 \begin{code}
 
-has-size-is-a-prop : Univalence → (X : 𝓤 ̇) (𝓥 :  Universe)
+has-size-is-a-prop : Univalence → (X : 𝓤 ̇ ) (𝓥 :  Universe)
                    → is-prop (X has-size 𝓥)
 has-size-is-a-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
   fe = FunExt-from-Univalence ua
-  a : (Y : 𝓥 ̇) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
+  a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
   a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 X)  ■
-  b : (Σ \(Y : 𝓥 ̇) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
+  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
   b = Σ-cong a
-  c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ X)
+  c : is-prop (Σ \(Y : 𝓥 ̇ ) → Y ≃ X)
   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
 
 propositional-resizing-is-a-prop : Univalence → is-prop (propositional-resizing 𝓤 𝓥)
@@ -156,20 +156,20 @@ instead of univalence:
 
 prop-has-size-is-a-prop : PropExt
                         → FunExt
-                        → (P : 𝓤 ̇)
+                        → (P : 𝓤 ̇ )
                         → is-prop P
                         → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
 prop-has-size-is-a-prop {𝓤} pe fe P i 𝓥 = c
  where
   j : is-prop (lift 𝓥 P)
   j = equiv-to-prop (lift-≃ 𝓥 P) i
-  a : (Y : 𝓥 ̇) → (Y ≃ P) ≃ (lift 𝓤 Y ≡ lift 𝓥 P)
+  a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (lift 𝓤 Y ≡ lift 𝓥 P)
   a Y = (Y ≃ P)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 P)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 P)  ≃⟨ ≃-sym (prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (lift 𝓤 Y) (lift 𝓥 P) j) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 P)  ■
-  b : (Σ \(Y : 𝓥 ̇) → Y ≃ P) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 P)
+  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ P) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 P)
   b = Σ-cong a
-  c : is-prop (Σ \(Y : 𝓥 ̇) → Y ≃ P)
+  c : is-prop (Σ \(Y : 𝓥 ̇ ) → Y ≃ P)
   c = equiv-to-prop b (prop-fiber-lift pe fe (lift 𝓥 P) j)
 
 propositional-resizing-is-a-prop' : PropExt → FunExt → is-prop (propositional-resizing 𝓤 𝓥)
@@ -336,20 +336,20 @@ lift-is-section ua R 𝓤 𝓥 = (r , rs)
   e = lift-is-embedding ua
   F : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   F Y = resize R (fiber s Y) (e Y)
-  f : (Y : 𝓤 ⊔ 𝓥 ̇) → F Y → fiber s Y
+  f : (Y : 𝓤 ⊔ 𝓥 ̇ ) → F Y → fiber s Y
   f Y = from-resize R (fiber s Y) (e Y)
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   r Y = (p : F Y) → pr₁ (f Y p)
-  rs : (X : 𝓤 ̇) → r (s X) ≡ X
+  rs : (X : 𝓤 ̇ ) → r (s X) ≡ X
   rs X = γ
    where
-    g : (Y : 𝓤 ⊔ 𝓥 ̇) → fiber s Y → F Y
+    g : (Y : 𝓤 ⊔ 𝓥 ̇ ) → fiber s Y → F Y
     g Y = to-resize R (fiber s Y) (e Y)
     u : F (s X)
     u = g (s X) (X , refl)
     v : fiber s (s X)
     v = f (s X) u
-    i : (Y : 𝓤 ⊔ 𝓥 ̇) → is-prop (F Y)
+    i : (Y : 𝓤 ⊔ 𝓥 ̇ ) → is-prop (F Y)
     i Y = resize-is-a-prop R (fiber s Y) (e Y)
     X' : 𝓤 ̇
     X' = pr₁ v
@@ -378,10 +378,10 @@ Hence it is worth stating this explicitly:
 universe-retract' : Univalence
                   → Propositional-resizing
                   → (𝓤 𝓥 : Universe)
-                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇)) → is-embedding (section ρ)
+                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )) → is-embedding (section ρ)
 universe-retract' ua R 𝓤 𝓥 = (pr₁ a , lift 𝓥 , pr₂ a) , lift-is-embedding ua
  where
-  a : Σ \(lower : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇) → lower ∘ lift 𝓥 ∼ id
+  a : Σ \(lower : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇ ) → lower ∘ lift 𝓥 ∼ id
   a = lift-is-section ua R 𝓤 𝓥
 
 \end{code}
@@ -400,7 +400,7 @@ universes).
 \begin{code}
 
 ∥_∥⁺ : 𝓤 ̇ → 𝓤 ⁺ ̇
-∥ X ∥⁺ = (P : universe-of X ̇) → is-prop P → (X → P) → P
+∥ X ∥⁺ = (P : universe-of X ̇ ) → is-prop P → (X → P) → P
 
 ∥∥⁺-is-a-prop : FunExt → {X : 𝓤 ̇} → is-prop (∥ X ∥⁺)
 ∥∥⁺-is-a-prop fe = Π-is-prop (fe _ _)

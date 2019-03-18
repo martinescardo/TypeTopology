@@ -8,10 +8,10 @@ module UF-Base where
 
 open import SpartanMLTT
 
-Nat : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+Nat : {X : 𝓤 ̇} → (X → 𝓥 ̇ ) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Nat A B = Π \x → A x → B x
 
-Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (τ : Nat A B)
+Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (τ : Nat A B)
                  → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
 Nats-are-natural A B τ refl = refl
 
@@ -41,12 +41,12 @@ _≈_ : {X : 𝓤 ̇} {x : X} {A : X → 𝓥 ̇} → Nat (Id x) A → Nat (Id x
 ap-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} (y : Y) {x x' : X} (p : x ≡ x') → ap (λ _ → y) p ≡ refl
 ap-const y refl = refl
 
-transport₂ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → Y → 𝓦 ̇)
+transport₂ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → Y → 𝓦 ̇ )
              {x x' : X} {y y' : Y}
           → x ≡ x' → y ≡ y' → A x y → A x' y'
 transport₂ A refl refl = id
 
-back-transport₂ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → Y → 𝓦 ̇)
+back-transport₂ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : X → Y → 𝓦 ̇ )
                   {x x' : X} {y y' : Y}
                → x ≡ x' → y ≡ y' → A x' y' → A x y
 back-transport₂ A refl refl = id
@@ -79,28 +79,28 @@ trans-sym refl = refl
 trans-sym' : {X : 𝓤 ̇} {x y : X} (r : x ≡ y) → r ∙ r ⁻¹ ≡ refl
 trans-sym' refl = refl
 
-transport-× : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
+transport-× : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
                 {x y : X} {c : A x × B x} (p : x ≡ y)
             → transport (λ x → A x × B x) p c
             ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
 
-transport-comp : {X : 𝓤 ̇} (A : X → 𝓥 ̇)
+transport-comp : {X : 𝓤 ̇} (A : X → 𝓥 ̇ )
                    {x y z : X} (q : x ≡ y) (p : y ≡ z) {a : A x}
                → transport A  (q ∙ p) a ≡ transport A p (transport A q a)
 transport-comp A refl refl = refl
 
-transport-comp' : {X : 𝓤 ̇} (A : X → 𝓥 ̇)
+transport-comp' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ )
                   {x y z : X} (q : x ≡ y) (p : y ≡ z)
                 → transport A  (q ∙ p) ≡ transport A p ∘ transport A q
 transport-comp' A refl refl = refl
 
-transport-ap : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : Y → 𝓦 ̇)
+transport-ap : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : Y → 𝓦 ̇ )
                (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
              → transport (A ∘ f) p a ≡ transport A (ap f p) a
 transport-ap A f refl = refl
 
-transport-ap' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : Y → 𝓦 ̇)
+transport-ap' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (A : Y → 𝓦 ̇ )
                 (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
               → transport (A ∘ f) p ≡ transport A (ap f p)
 transport-ap' A f refl = refl
@@ -110,17 +110,17 @@ nat-transport : {X : 𝓤 ̇} {A : X → 𝓥 ̇} {B : X → 𝓦 ̇}
               → f y (transport A p a) ≡ transport B p (f x a)
 nat-transport f refl = refl
 
-transport-fam : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (P : {x : X} → Y x → 𝓦 ̇)
+transport-fam : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (P : {x : X} → Y x → 𝓦 ̇ )
                (x : X) (y : Y x) → P y → (x' : X) (r : x ≡ x') → P(transport Y r y)
 transport-fam P x y p .x refl = p
 
-transport-rel : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇)
+transport-rel : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
               → (a x : X) (b : Y a) (v : Y x) (p : a ≡ x)
               →  v ≺ transport Y p b
               → back-transport Y p v ≺ b
 transport-rel _≺_ a .a b v refl = id
 
-transport-rel' : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇)
+transport-rel' : {X : 𝓤 ̇} {Y : X → 𝓥 ̇} (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
               → (a x : X) (b : Y a) (v : Y x) (r : x ≡ a)
               → transport Y r v ≺ b
               → v ≺ back-transport Y r b
@@ -130,7 +130,7 @@ transport-const : {X : 𝓤 ̇} {Y : 𝓥 ̇} {x x' : X} {y : Y} (p : x ≡ x')
                 → transport (λ (_ : X) → Y) p y ≡ y
 transport-const refl = refl
 
-apd' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (f : (x : X) → A x) {x y : X}
+apd' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (f : (x : X) → A x) {x y : X}
        (p : x ≡ y) → transport A p (f x) ≡ f y
 apd' A f refl = refl
 

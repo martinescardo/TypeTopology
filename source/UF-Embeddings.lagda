@@ -128,9 +128,9 @@ pr₁-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
     h : is-prop(Y x)
     h = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
-K-idtofun-lc : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇} (x y : X) (A : X → 𝓤 ̇)
+K-idtofun-lc : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇} (x y : X) (A : X → 𝓤 ̇ )
              → left-cancellable(idtofun (Id x y) (A y))
-K-idtofun-lc {𝓤} k {X} x y A {p} {q} r = k (𝓤 ̇) p q
+K-idtofun-lc {𝓤} k {X} x y A {p} {q} r = k (𝓤 ̇ ) p q
 
 lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f : X → Y)
                                  → left-cancellable f
@@ -357,12 +357,12 @@ module _ {𝓤 𝓥 𝓦 𝓣}
        l : ¬ fiber (g x) b
        l (a , refl) = n ((x , a) , refl)
 
-inl-embedding : (X : 𝓤 ̇) (Y : 𝓥 ̇)
+inl-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇)
               → is-embedding (inl {𝓤} {𝓥} {X} {Y})
 inl-embedding {𝓤} {𝓥} X Y (inl a) (.a , refl) (.a , refl) = refl
 inl-embedding {𝓤} {𝓥} X Y (inr b) (x , p) (x' , p') = 𝟘-elim (+disjoint p)
 
-inr-embedding : (X : 𝓤 ̇) (Y : 𝓥 ̇)
+inr-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇)
               → is-embedding (inr {𝓤} {𝓥} {X} {Y})
 inr-embedding {𝓤} {𝓥} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
 inr-embedding {𝓤} {𝓥} X Y (inr a) (.a , refl) (.a , refl) = refl
@@ -387,19 +387,19 @@ maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
   rs : (φ : fiber (λ z → f (pr₁ z) , g (pr₂ z)) (a , b)) → r (s φ) ≡ φ
   rs ((x , y) , refl) = refl
 
-NatΣ-is-embedding : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-is-embedding : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                   → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΣ ζ)
 NatΣ-is-embedding A B ζ i (x , b) = equiv-to-prop
                                      (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                      (i x b)
 
-NatΣ-is-embedding-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΣ-is-embedding-converse : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                            → is-embedding(NatΣ ζ) → ((x : X) → is-embedding(ζ x))
 NatΣ-is-embedding-converse A B ζ e x b = equiv-to-prop
                                           (NatΣ-fiber-equiv A B ζ x b)
                                           (e (x , b))
 
-NatΠ-is-embedding : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (ζ : Nat A B)
+NatΠ-is-embedding : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (ζ : Nat A B)
                   → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
                   → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΠ ζ)
 NatΠ-is-embedding A B ζ fe fe' i g = equiv-to-prop
@@ -412,7 +412,7 @@ For any proposition P, the unique map P → 𝟙 is an embedding:
 
 \begin{code}
 
-prop-embedding : (P : 𝓤 ̇) → is-prop P → ∀ 𝓥 → is-embedding (λ (p : P) → * {𝓥})
+prop-embedding : (P : 𝓤 ̇ ) → is-prop P → ∀ 𝓥 → is-embedding (λ (p : P) → * {𝓥})
 prop-embedding P i 𝓥 * (p , r) (p' , r') = to-×-≡ (i p p')
                                                   (props-are-sets 𝟙-is-prop r r')
 \end{code}

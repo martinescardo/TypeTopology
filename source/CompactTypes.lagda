@@ -262,7 +262,7 @@ selection functions.
 
 \begin{code}
 
-_has-selection_ : (X : 𝓤 ̇) → ((X → 𝟚) → X) → 𝓤 ̇
+_has-selection_ : (X : 𝓤 ̇ ) → ((X → 𝟚) → X) → 𝓤 ̇
 X has-selection ε = (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x ≡ ₁
 
 compact∙' : 𝓤 ̇ → 𝓤 ̇
@@ -332,7 +332,7 @@ compact-discrete-discrete' fe φ d = compact-discrete-discrete fe φ (λ x → d
 𝟘-compact : compact (𝟘 {𝓤})
 𝟘-compact {𝓤} p = inr (λ x → 𝟘-elim {𝓤₀} {𝓤} x)
 
-compact-decidable : (X : 𝓤 ̇) → compact X → decidable X
+compact-decidable : (X : 𝓤 ̇ ) → compact X → decidable X
 compact-decidable X φ = f a
  where
   a : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁)
@@ -341,7 +341,7 @@ compact-decidable X φ = f a
   f (inl (x , _)) = inl x
   f (inr u)       = inr (λ x → zero-is-not-one (u x))
 
-decidable-prop-compact : (X : 𝓤 ̇) → is-prop X → decidable X → compact X
+decidable-prop-compact : (X : 𝓤 ̇ ) → is-prop X → decidable X → compact X
 decidable-prop-compact X isp δ p = g δ
  where
   g : decidable X → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁

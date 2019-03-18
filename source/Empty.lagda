@@ -8,7 +8,7 @@ module Empty where
 
 open import Universes
 
-data 𝟘 {𝓤} : 𝓤 ̇ where
+data 𝟘 {𝓤} : 𝓤 ̇  where
 unique-from-𝟘 : {A : 𝓤 ̇} → 𝟘 {𝓥} → A
 unique-from-𝟘 = λ ()
 

@@ -36,7 +36,7 @@ open import UF-Miscelanea
 
 module sequences
         {𝓤 : Universe}
-        (D : 𝓤 ̇)
+        (D : 𝓤 ̇ )
         (δ : is-discrete D)
        where
 

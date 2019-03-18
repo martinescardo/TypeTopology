@@ -13,7 +13,7 @@ open import UF-Subsingletons
 open import UF-KrausLemma
 open import DiscreteAndSeparated
 
-lemma : (X : 𝓤₀ ̇) (a : 𝟚 → X) → ((x : X) → collapsible(Σ \(i : 𝟚) → a i ≡ x)) → decidable(a ₀ ≡ a ₁)
+lemma : (X : 𝓤₀ ̇ ) (a : 𝟚 → X) → ((x : X) → collapsible(Σ \(i : 𝟚) → a i ≡ x)) → decidable(a ₀ ≡ a ₁)
 lemma X a c = equal-or-different
  where
   κ : (x : X) → (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x

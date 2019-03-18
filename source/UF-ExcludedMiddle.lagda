@@ -31,7 +31,7 @@ which we refer to as the density of the decidable truth values.
 \begin{code}
 
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
-EM 𝓤 = (P : 𝓤 ̇) → is-prop P → P + ¬ P
+EM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
 
 EM-is-prop : FunExt → is-prop (EM 𝓤)
 EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
@@ -48,10 +48,10 @@ LEM-gives-LEM : LEM 𝓤 → EM 𝓤
 LEM-gives-LEM lem P i = lem (P , i)
 
 WEM : ∀ 𝓤 → 𝓤 ⁺ ̇
-WEM 𝓤 = (P : 𝓤 ̇) → is-prop P → ¬ P + ¬¬ P
+WEM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬ P + ¬¬ P
 
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
-DNE 𝓤 = (P : 𝓤 ̇) → is-prop P → ¬¬ P → P
+DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
@@ -72,7 +72,7 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- double-negation-is-truncation-gives-DNE :((X : 𝓤 ̇) → ¬¬ X → ∥ X ∥) → DNE 𝓤
+ double-negation-is-truncation-gives-DNE :((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ∥∥-rec isp id (f P u)
 
 \end{code}

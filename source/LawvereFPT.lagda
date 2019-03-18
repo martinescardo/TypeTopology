@@ -99,7 +99,7 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \begin{code}
 
- ¬-no-fp : ¬ Σ \(X : 𝓤 ̇) → X ≡ ¬ X
+ ¬-no-fp : ¬ Σ \(X : 𝓤 ̇ ) → X ≡ ¬ X
  ¬-no-fp {𝓤} (X , p) = pr₁(γ id)
   where
    γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
@@ -115,9 +115,9 @@ As a simple application, it follows that negation doesn't have fixed points:
  \begin{code}
 
  cantor-theorem-for-universes :
-     (𝓤 𝓥 : Universe) (A : 𝓥 ̇) (r : A → (A → 𝓤 ̇))
+     (𝓤 𝓥 : Universe) (A : 𝓥 ̇ ) (r : A → (A → 𝓤 ̇))
    → has-section· r
-   → (X : 𝓤 ̇) (f : X → X) → Σ \(x : X) → x ≡ f x
+   → (X : 𝓤 ̇ ) (f : X → X) → Σ \(x : X) → x ≡ f x
  cantor-theorem-for-universes 𝓤 𝓥 A r h X = LFPT-≡ {𝓤} {𝓤} p
   where
    B : 𝓤 ̇
@@ -134,8 +134,8 @@ As a simple application, it follows that negation doesn't have fixed points:
  \begin{code}
 
  Cantor-theorem-for-universes :
-     (𝓤 𝓥 : Universe) (A : 𝓥 ̇)
-   → (r : A → (A → 𝓤 ̇)) → ¬(has-section· r)
+     (𝓤 𝓥 : Universe) (A : 𝓥 ̇ )
+   → (r : A → (A → 𝓤 ̇ )) → ¬(has-section· r)
  Cantor-theorem-for-universes 𝓤 𝓥 A r h = 𝟘-elim(pr₁ (cantor-theorem-for-universes 𝓤 𝓥 A r h 𝟘 id))
 
  \end{code}
@@ -157,7 +157,7 @@ As a simple application, it follows that negation doesn't have fixed points:
    q : P holds ≡ ¬(P holds)
    q = ap _holds p
 
- cantor-theorem : (𝓤 𝓥 : Universe) (A : 𝓥 ̇)
+ cantor-theorem : (𝓤 𝓥 : Universe) (A : 𝓥 ̇ )
                 → funext 𝓤 𝓤₀ → (r : A → (A → Ω 𝓤)) → ¬(has-section· r)
  cantor-theorem 𝓤 𝓥 A fe r (s , rs) = not-no-fp fe not-fp
   where
@@ -216,26 +216,26 @@ module surjection-version (pt : propositional-truncations-exist) where
 \begin{code}
 
  cantor-theorem-for-universes :
-     (𝓤 𝓥 : Universe) (A : 𝓥 ̇) (φ : A → (A → 𝓤 ̇))
+     (𝓤 𝓥 : Universe) (A : 𝓥 ̇ ) (φ : A → (A → 𝓤 ̇))
    → is-surjection φ
-   → (X : 𝓤 ̇) (f : X → X) → ∃ \(x : X) → x ≡ f x
+   → (X : 𝓤 ̇ ) (f : X → X) → ∃ \(x : X) → x ≡ f x
  cantor-theorem-for-universes 𝓤 𝓥 A φ s X f = ∥∥-functor g t
   where
-   t : ∃ \(B : 𝓤 ̇) → B ≡ (B → X)
+   t : ∃ \(B : 𝓤 ̇ ) → B ≡ (B → X)
    t = LFPT φ s (λ B → B → X)
-   g : (Σ \(B : 𝓤 ̇) → B ≡ (B → X)) → Σ \(x : X) → x ≡ f x
+   g : (Σ \(B : 𝓤 ̇ ) → B ≡ (B → X)) → Σ \(x : X) → x ≡ f x
    g (B , p) = retract-version.LFPT-≡ {𝓤} {𝓤} p f
 
  Cantor-theorem-for-universes :
-     (𝓤 𝓥 : Universe) (A : 𝓥 ̇)
-   → (φ : A → (A → 𝓤 ̇)) → ¬(is-surjection φ)
+     (𝓤 𝓥 : Universe) (A : 𝓥 ̇ )
+   → (φ : A → (A → 𝓤 ̇ )) → ¬(is-surjection φ)
  Cantor-theorem-for-universes 𝓤 𝓥 A r h = 𝟘-elim(∥∥-rec 𝟘-is-prop pr₁ c)
   where
    c : ∃ \(x : 𝟘) → x ≡ x
    c = cantor-theorem-for-universes 𝓤 𝓥 A r h 𝟘 id
 
  cantor-theorem :
-     (𝓤 𝓥 : Universe) (A : 𝓥 ̇)
+     (𝓤 𝓥 : Universe) (A : 𝓥 ̇ )
    → funext 𝓤 𝓤₀ → (φ : A → (A → Ω 𝓤)) → ¬(is-surjection φ)
  cantor-theorem 𝓤 𝓥 A fe φ s = ∥∥-rec 𝟘-is-prop (retract-version.not-no-fp fe) t
   where
@@ -297,7 +297,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
      a : i x₀ ≡ inl refl
      a = isolated-inl x₀ i x₀ refl
 
- udr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇) (B : 𝓦 ̇)
+ udr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇ ) (B : 𝓦 ̇)
              (a₀ : A)
            → is-isolated a₀
            → B
@@ -309,8 +309,8 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    ρ' = retracts-compose ρ ((λ f → f a₀) , Π-projection-has-section a₀ i (λ a x → b))
 
  universe-discretely-regular' :
-    (𝓤 𝓥 : Universe) (A : 𝓤 ̇) (X : A → 𝓤 ⊔ 𝓥 ̇)
-  → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≃ B)
+    (𝓤 𝓥 : Universe) (A : 𝓤 ̇ ) (X : A → 𝓤 ⊔ 𝓥 ̇)
+  → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≃ B)
  universe-discretely-regular' 𝓤 𝓥 A X d  = B , φ
    where
     B : 𝓤 ⊔ 𝓥 ̇
@@ -324,16 +324,16 @@ module Blechschmidt (pt : propositional-truncations-exist) where
       γ = udr-lemma X 𝟚 a (d a) ₀ ρ
 
  universe-discretely-regular :
-    {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇)
-  → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B)
+    {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇ )
+  → is-discrete A → Σ \(B : 𝓤 ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≡ B)
  universe-discretely-regular {𝓤} {𝓥} {A} X d =
    γ (universe-discretely-regular' 𝓤 𝓥 A X d)
   where
-   γ : (Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≃ B))
-     → (Σ \(B : 𝓤 ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B))
+   γ : (Σ \(B : 𝓤 ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≃ B))
+     → (Σ \(B : 𝓤 ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≡ B))
    γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
- Universe-discretely-regular : {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇)
+ Universe-discretely-regular : {𝓤 𝓥 : Universe} {A : 𝓤 ̇} (X : A → 𝓤 ⊔ 𝓥 ̇ )
                              → is-discrete A → ¬(is-surjection X)
  Universe-discretely-regular {𝓤} {𝓥} {A} X d s = ∥∥-rec 𝟘-is-prop n e
   where
@@ -346,7 +346,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    n : ¬(Σ \a → X a ≡ B)
    n = uncurry φ
 
- Universe-uncountable : {𝓤 : Universe} → ¬ Σ \(X : ℕ → 𝓤 ̇) → is-surjection X
+ Universe-uncountable : {𝓤 : Universe} → ¬ Σ \(X : ℕ → 𝓤 ̇ ) → is-surjection X
  Universe-uncountable (X , s) = Universe-discretely-regular X ℕ-is-discrete s
 
 \end{code}
@@ -389,7 +389,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
      γ x₀ = to-Σ-≡ (pe ∥∥-is-a-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                      being-a-prop-is-a-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
- usr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇)
+ usr-lemma : {A : 𝓤 ̇} (X : A → 𝓥 ̇ )
            → funext 𝓥 ((𝓤 ⊔ 𝓦)⁺) → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦) → propext (𝓤 ⊔ 𝓦)
            → (a₀ : A)
            → is-h-isolated a₀
@@ -411,8 +411,8 @@ We now work with the following assumptions:
    (fe  : funext 𝓤 𝓤)
    (fe₀ : funext 𝓤 𝓤₀)
    (pe  : propext 𝓤)
-   (A   : 𝓤 ̇)
-   (X   : A → 𝓤 ⁺ ⊔ 𝓥 ̇)
+   (A   : 𝓤 ̇ )
+   (X   : A → 𝓤 ⁺ ⊔ 𝓥 ̇ )
    (iss : is-set A)
    where
 
@@ -422,7 +422,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \begin{code}
 
-  universe-set-regular' : Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≃ B)
+  universe-set-regular' : Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≃ B)
   universe-set-regular' = B , φ
     where
      B : 𝓤 ⁺ ⊔ 𝓥 ̇
@@ -435,11 +435,11 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
        γ : (f : Ω 𝓤 → Ω 𝓤) → Σ \(p : Ω 𝓤) → p ≡ f p
        γ = usr-lemma {𝓤} {𝓥 ⊔ 𝓤 ⁺} {𝓤} {A} X fe' fe pe a iss ρ
 
-  universe-set-regular : Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B)
+  universe-set-regular : Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≡ B)
   universe-set-regular = γ universe-set-regular'
    where
-    γ : (Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≃ B))
-      → (Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇) → (a : A) → ¬(X a ≡ B))
+    γ : (Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≃ B))
+      → (Σ \(B : 𝓤 ⁺ ⊔ 𝓥 ̇ ) → (a : A) → ¬(X a ≡ B))
     γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
   Universe-set-regular : ¬(is-surjection X)
@@ -481,8 +481,8 @@ Lemma₀ by a second application of LFPT (todo).
 module Coquand where
 
  Lemma₀ : (𝓤 : Universe)
-          (A : 𝓤 ̇)
-          (T : A → 𝓤 ̇)
+          (A : 𝓤 ̇ )
+          (T : A → 𝓤 ̇ )
           (S : 𝓤 ̇ → A)
           (ρ : {X : 𝓤 ̇} → T (S X) → X)
           (σ : {X : 𝓤 ̇} → X → T (S X))
@@ -490,13 +490,13 @@ module Coquand where
         → 𝟘
  Lemma₀ 𝓤 A T S ρ σ η = pr₁ (γ 𝟘 id )
   where
-   data 𝕎 : 𝓤 ̇ where
+   data 𝕎 : 𝓤 ̇  where
     sup : {a : A} → (T a → 𝕎) → 𝕎
 
-   α : 𝕎 → (𝕎 → 𝓤 ̇)
+   α : 𝕎 → (𝕎 → 𝓤 ̇ )
    α (sup φ) = fiber φ
 
-   module _ (X : 𝓤 ̇) where
+   module _ (X : 𝓤 ̇ ) where
     H : 𝕎 → 𝓤 ̇
     H w = α w w → X
     R : 𝕎
@@ -528,8 +528,8 @@ universe 𝓤₀, which is where our negations take values:
 
 \begin{code}
 
- Lemma₁ : ∀ 𝓤 (A : 𝓤 ̇) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
-        → ¬((X : 𝓤 ̇) → retract X of (T (S X)))
+ Lemma₁ : ∀ 𝓤 (A : 𝓤 ̇ ) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
+        → ¬((X : 𝓤 ̇ ) → retract X of (T (S X)))
  Lemma₁ 𝓤 A T S ρ = 𝟘-elim (Lemma₀ 𝓤 A T S
                               (λ {X} → retraction (ρ X))
                               (λ {X} → section (ρ X))
@@ -541,8 +541,8 @@ Because equivalences are retractions, it follows that
 
 \begin{code}
 
- Lemma₂ : ∀ 𝓤 (A : 𝓤 ̇) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
-        → ¬((X : 𝓤 ̇) → T (S X) ≃ X)
+ Lemma₂ : ∀ 𝓤 (A : 𝓤 ̇ ) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
+        → ¬((X : 𝓤 ̇ ) → T (S X) ≃ X)
  Lemma₂ 𝓤 A T S e = Lemma₁ 𝓤 A T S (λ X → equiv-retract-r (e X))
 
 \end{code}
@@ -551,8 +551,8 @@ And because identitities are equivalences, it follows that
 
 \begin{code}
 
- Lemma₃ : ∀ 𝓤 (A : 𝓤 ̇) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
-        → ¬((X : 𝓤 ̇) → T (S X) ≡ X)
+ Lemma₃ : ∀ 𝓤 (A : 𝓤 ̇ ) (T : A → 𝓤 ̇) (S : 𝓤 ̇ → A)
+        → ¬((X : 𝓤 ̇ ) → T (S X) ≡ X)
  Lemma₃ 𝓤 A T S p = Lemma₂ 𝓤 A T S (λ X → idtoeq (T (S X)) X (p X))
 
 \end{code}
@@ -561,11 +561,11 @@ This means that a universe 𝓤 cannot be a retract of any type in 𝓤:
 
 \begin{code}
 
- Lemma₄ : ∀ 𝓤 → ¬ Σ \(A : 𝓤 ̇) → retract 𝓤 ̇ of A
+ Lemma₄ : ∀ 𝓤 → ¬ Σ \(A : 𝓤 ̇ ) → retract 𝓤 ̇ of A
  Lemma₄ 𝓤 (A , T , S , TS) = Lemma₃ 𝓤 A T S TS
 
- corollary : ∀ 𝓤 → ¬ (retract 𝓤 ⁺ ̇ of (𝓤 ̇))
- corollary 𝓤 ρ = Lemma₄ (𝓤 ⁺) ((𝓤 ̇) , ρ)
+ corollary : ∀ 𝓤 → ¬ (retract 𝓤 ⁺ ̇ of (𝓤 ̇ ))
+ corollary 𝓤 ρ = Lemma₄ (𝓤 ⁺) ((𝓤 ̇ ) , ρ)
 
 \end{code}
 
@@ -574,7 +574,7 @@ equivalent to a type in 𝓤:
 
 \begin{code}
 
- Theorem : ∀ 𝓤 → ¬ Σ \(𝕌 : 𝓤 ̇) → 𝓤 ̇ ≃ 𝕌
+ Theorem : ∀ 𝓤 → ¬ Σ \(𝕌 : 𝓤 ̇ ) → 𝓤 ̇ ≃ 𝕌
  Theorem 𝓤 (𝕌 , e) = Lemma₄ 𝓤 (𝕌 , equiv-retract-l e)
 
 \end{code}

@@ -44,10 +44,10 @@ equivs-are-lc f e = sections-are-lc f (equivs-are-sections f e)
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
-id-is-an-equiv : (X : 𝓤 ̇) → is-equiv (id {𝓤} {X})
+id-is-an-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
 id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 
-≃-refl : (X : 𝓤 ̇) → X ≃ X
+≃-refl : (X : 𝓤 ̇ ) → X ≃ X
 ≃-refl X = id , id-is-an-equiv X
 
 ∘-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {f : X → Y} {f' : Y → Z}
@@ -66,16 +66,16 @@ id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 _●_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 _●_ = ≃-comp
 
-_≃⟨_⟩_ : (X : 𝓤 ̇) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+_≃⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 _ ≃⟨ d ⟩ e = d ● e
 
-_■ : (X : 𝓤 ̇) → X ≃ X
+_■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
 Eq : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Eq = _≃_
 
-Eqtofun : (X : 𝓤 ̇) (Y : 𝓥 ̇) → X ≃ Y → X → Y
+Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
 eqtofun : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X ≃ Y → X → Y
@@ -87,10 +87,10 @@ eqtofun-is-an-equiv = pr₂
 back-eqtofun : {X : 𝓤 ̇} {Y : 𝓥 ̇} → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
 
-idtoeq : (X Y : 𝓤 ̇) → X ≡ Y → X ≃ Y
+idtoeq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 idtoeq X Y p = transport (Eq X) p (≃-refl X)
 
-idtoeq-traditional : (X Y : 𝓤 ̇) → X ≡ Y → X ≃ Y
+idtoeq-traditional : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 idtoeq-traditional X _ refl = ≃-refl X
 
 \end{code}
@@ -101,14 +101,14 @@ don't with the current definition:
 
 \begin{code}
 
-eqtoeq-agreement : (X Y : 𝓤 ̇) (p : X ≡ Y)
+eqtoeq-agreement : (X Y : 𝓤 ̇ ) (p : X ≡ Y)
                  → idtoeq X Y p ≡ idtoeq-traditional X Y p
 eqtoeq-agreement {𝓤} X _ refl = refl
 
-idtofun : (X Y : 𝓤 ̇) → X ≡ Y → X → Y
+idtofun : (X Y : 𝓤 ̇ ) → X ≡ Y → X → Y
 idtofun X Y p = eqtofun (idtoeq X Y p)
 
-idtofun-agreement : (X Y : 𝓤 ̇) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
+idtofun-agreement : (X Y : 𝓤 ̇ ) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
 idtofun-agreement X Y refl = refl
 
 equiv-closed-under-∼ : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
@@ -441,7 +441,7 @@ but also has a direct proof by path induction:
       → identifications-in-fibers f y x x' p p' (from-identifications-in-fibers f y x x' p p' q) ≡ q
 ε-pif f .(f x) x .x refl .refl refl = refl
 
-pr₁-is-vv-equiv : (X : 𝓤 ̇) (Y : X → 𝓥 ̇)
+pr₁-is-vv-equiv : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇)
              → ((x : X) → is-singleton (Y x))
              → is-vv-equiv (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-is-vv-equiv {𝓤} {𝓥} X Y iss x = g

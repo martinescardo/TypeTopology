@@ -32,7 +32,7 @@ open import UF-Embeddings
 Ord  = Ordinal  𝓤₀
 Ordᵀ = Ordinalᵀ 𝓤₀
 
-prop-ordinal : (P : 𝓤₀ ̇) → is-prop P → Ord
+prop-ordinal : (P : 𝓤₀ ̇ ) → is-prop P → Ord
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
 
 𝟘ₒ 𝟙ₒ ℕₒ ℕ∞ₒ : Ord

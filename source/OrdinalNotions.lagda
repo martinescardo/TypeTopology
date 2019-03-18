@@ -17,16 +17,16 @@ open import UF-Subsingletons-FunExt
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
         {X : 𝓤 ̇}
-        (_<_ : X → X → 𝓥 ̇)
+        (_<_ : X → X → 𝓥 ̇ )
        where
 
 is-prop-valued : 𝓤 ⊔ 𝓥 ̇
 is-prop-valued = (x y : X) → is-prop(x < y)
 
-data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
+data is-accessible : X → 𝓤 ⊔ 𝓥 ̇  where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
 
-accessible-induction : ∀ {𝓦} (P : (x : X) → is-accessible x → 𝓦 ̇)
+accessible-induction : ∀ {𝓦} (P : (x : X) → is-accessible x → 𝓦 ̇ )
                      → ((x : X) (σ : (y : X) → y < x → is-accessible y)
                          → ((y : X) (l : y < x) → P y (σ y l))
                          → P x (next x σ))
@@ -46,7 +46,7 @@ prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y) → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
-transfinite-induction' :  ∀ {𝓦} (P : X → 𝓦 ̇)
+transfinite-induction' :  ∀ {𝓦} (P : X → 𝓦 ̇ )
                        → ((x : X) → (∀(y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction (λ x _ → P x)
@@ -56,7 +56,7 @@ is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
 Well-founded : ∀ {𝓦} → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
-Well-founded {𝓦} = (P : X → 𝓦 ̇) → ((x : X) → ((y : X) → y < x → P y) → P x)
+Well-founded {𝓦} = (P : X → 𝓦 ̇ ) → ((x : X) → ((y : X) → y < x → P y) → P x)
                                 → (x : X) → P x
 
 transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
@@ -241,7 +241,7 @@ cotransitive-≤-coarser-than-≼ c x y n u l = γ (c u x y l)
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
 
-no-minimal-is-empty : is-well-founded → ∀ {𝓦} (P : X → 𝓦 ̇)
+no-minimal-is-empty : is-well-founded → ∀ {𝓦} (P : X → 𝓦 ̇ )
                     → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where

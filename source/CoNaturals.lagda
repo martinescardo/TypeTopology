@@ -231,12 +231,12 @@ We now discuss coinduction. We first define bisimulations.
 
 \begin{code}
 
-ℕ∞-bisimulation :(ℕ∞ → ℕ∞ → 𝓤 ̇) → 𝓤 ̇
+ℕ∞-bisimulation :(ℕ∞ → ℕ∞ → 𝓤 ̇ ) → 𝓤 ̇
 ℕ∞-bisimulation R = (u v : ℕ∞) → R u v
                                 → (positivity u ≡ positivity v)
                                 ×  R (Pred u) (Pred v)
 
-ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → 𝓤 ̇) → ℕ∞-bisimulation R
+ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → 𝓤 ̇ ) → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
 ℕ∞-coinduction R b u v r = incl-lc fe₀ (dfunext fe₀ (l u v r))
  where

@@ -39,7 +39,7 @@ we also consider towards the end of this article.
 
 \begin{code}
 
-data OE : 𝓤₀ ̇ where
+data OE : 𝓤₀ ̇  where
  One  : OE
  Add  : OE → OE → OE
  Mul  : OE → OE → OE

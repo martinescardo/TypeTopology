@@ -6,7 +6,7 @@ Martin Escardo 20-21 December 2012
 
 open import SpartanMLTT
 
-module InfCompact {𝓤 𝓥} {X : 𝓤 ̇} (_≤_ : X → X → 𝓥 ̇) where
+module InfCompact {𝓤 𝓥} {X : 𝓤 ̇} (_≤_ : X → X → 𝓥 ̇ ) where
 
 conditional-root : (X → 𝟚) → X → 𝓤 ̇
 conditional-root p x₀ = (Σ \(x : X) → p x ≡ ₀) → p x₀ ≡ ₀

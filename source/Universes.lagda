@@ -34,7 +34,7 @@ This is mainly to avoid namining implicit arguments:
 
 \begin{code}
 
-universe-of : (X : 𝓤 ̇) → Universe
+universe-of : (X : 𝓤 ̇ ) → Universe
 universe-of {𝓤} X = 𝓤
 
 \end{code}

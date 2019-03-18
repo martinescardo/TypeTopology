@@ -59,7 +59,7 @@ The following is sometimes useful:
 
 \begin{code}
 
-universe-of : {𝓤 : Universe} (X : 𝓤 ̇) → Universe
+universe-of : {𝓤 : Universe} (X : 𝓤 ̇ ) → Universe
 universe-of {𝓤} X = 𝓤
 
 \end{code}

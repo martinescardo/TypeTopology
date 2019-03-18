@@ -90,7 +90,7 @@ extensional P = ∀ X Y → X ≃ Y → P X ≡ P Y
 
 Rice's-Theorem-for-U :
 
-    (P : 𝓤 ̇ → 𝟚) → extensional P → (X Y : 𝓤 ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
+    (P : 𝓤 ̇ → 𝟚) → extensional P → (X Y : 𝓤 ̇ ) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
 
 Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma , p-lemma∞)
  where
@@ -155,17 +155,17 @@ cannot, then all 𝟚-valued functions on 𝓤 ̇ must be constant:
 
 Rice's-contrapositive : ∀ {𝓤}
 
- → ¬ WLPO → (P : 𝓤 ̇ → 𝟚) → extensional P → (X Y : 𝓤 ̇) → P X ≡ P Y
+ → ¬ WLPO → (P : 𝓤 ̇ → 𝟚) → extensional P → (X Y : 𝓤 ̇ ) → P X ≡ P Y
 
 Rice's-contrapositive {𝓤} nwlpo P e = f
  where
-  a : (X Y : 𝓤 ̇) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
+  a : (X Y : 𝓤 ̇ ) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
   a X Y = Rice's-Theorem-for-U P e X Y
-  b : (X Y : 𝓤 ̇) (m n : 𝟚) → P X ≡ m → P Y ≡ n → m ≡ n
+  b : (X Y : 𝓤 ̇ ) (m n : 𝟚) → P X ≡ m → P Y ≡ n → m ≡ n
   b X Y ₀ ₀ p q = refl
   b X Y ₀ ₁ p q = 𝟘-elim (nwlpo (a X Y p q))
   b X Y ₁ ₀ p q = 𝟘-elim (nwlpo (a Y X q p))
   b X Y ₁ ₁ p q = refl
-  f : (X Y : 𝓤 ̇) → P X ≡ P Y
+  f : (X Y : 𝓤 ̇ ) → P X ≡ P Y
   f X Y = b X Y (P X) (P Y) refl refl
 \end{code}

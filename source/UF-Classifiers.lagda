@@ -3,8 +3,8 @@ Martin Escardo, 20th August 2018
 We consider type and subtype classifiers, and discuss an obvious
 generalization which is left undone for the moment.
 
- * (Σ \(X : 𝓤 ̇) → X → Y) ≃ (Y → 𝓤 ̇)
- * (Σ \(X : 𝓤 ̇) → X ↪ Y) ≃ (Y → Ω 𝓤)
+ * (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇)
+ * (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
 
 \begin{code}
 
@@ -27,16 +27,16 @@ module type-classifier
         {𝓤 : Universe}
         (fe' : funext 𝓤 (𝓤 ⁺))
         (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇)
+        (Y : 𝓤 ̇ )
        where
 
- χ : (Σ \(X : 𝓤 ̇) → X → Y)  → (Y → 𝓤 ̇)
+ χ : (Σ \(X : 𝓤 ̇ ) → X → Y)  → (Y → 𝓤 ̇)
  χ (X , f) = fiber f
 
- T : (Y → 𝓤 ̇) → Σ \(X : 𝓤 ̇) → X → Y
+ T : (Y → 𝓤 ̇ ) → Σ \(X : 𝓤 ̇) → X → Y
  T A = Σ A , pr₁
 
- χT : (A : Y → 𝓤 ̇) → χ(T A) ≡ A
+ χT : (A : Y → 𝓤 ̇ ) → χ(T A) ≡ A
  χT A = dfunext fe' γ
   where
    f : ∀ y → (Σ \(σ : Σ A) → pr₁ σ ≡ y) → A y
@@ -66,14 +66,14 @@ module type-classifier
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
- Tχ : (σ : Σ \(X : 𝓤 ̇) → X → Y) → T(χ σ) ≡ σ
+ Tχ : (σ : Σ \(X : 𝓤 ̇ ) → X → Y) → T(χ σ) ≡ σ
  Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
                        transport-map (graph-domain-equiv f) pr₁)
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
 
- classification-equivalence : (Σ \(X : 𝓤 ̇) → X → Y) ≃ (Y → 𝓤 ̇)
+ classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇)
  classification-equivalence = χ , χ-is-equivalence
 
 
@@ -81,16 +81,16 @@ module subtype-classifier
         {𝓤 : Universe}
         (fe' : funext 𝓤 (𝓤 ⁺))
         (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇)
+        (Y : 𝓤 ̇ )
        where
 
  fe : funext 𝓤 𝓤
  fe = funext-from-univalence ua
 
- χ : (Σ \(X : 𝓤 ̇) → X ↪ Y)  → (Y → Ω 𝓤)
+ χ : (Σ \(X : 𝓤 ̇ ) → X ↪ Y)  → (Y → Ω 𝓤)
  χ (X , f , i) y = fiber f y , i y
 
- T : (Y → Ω 𝓤) → Σ \(X : 𝓤 ̇) → X ↪ Y
+ T : (Y → Ω 𝓤) → Σ \(X : 𝓤 ̇ ) → X ↪ Y
  T P = (Σ \(y : Y) → P y holds) , pr₁ , pr₁-embedding (λ y → holds-is-prop (P y))
 
  χT : (P : Y → Ω 𝓤) → χ(T P) ≡ P
@@ -124,7 +124,7 @@ module subtype-classifier
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
- Tχ : (σ : Σ \(X : 𝓤 ̇) → X ↪ Y) → T(χ σ) ≡ σ
+ Tχ : (σ : Σ \(X : 𝓤 ̇ ) → X ↪ Y) → T(χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
                           (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-embedding i)
                          ∙ to-Σ-≡' (being-embedding-is-a-prop fe fe f _ _)))
@@ -132,7 +132,7 @@ module subtype-classifier
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
 
- classification-equivalence : (Σ \(X : 𝓤 ̇) → X ↪ Y) ≃ (Y → Ω 𝓤)
+ classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
  classification-equivalence = χ , χ-is-equivalence
 
 \end{code}
@@ -143,7 +143,7 @@ correspond to the green maps X → Y. This generalizes the above
 situation. In particular, the case green = contractible is of interest
 and describes a previously known situation. Another example is that
 surjections X → Y are in bijection with families
-Y → Σ (Z : 𝓤 ̇) → ∥ Z ∥), that is, families of inhabited types. It is
+Y → Σ (Z : 𝓤 ̇ ) → ∥ Z ∥), that is, families of inhabited types. It is
 not necessary that "green" is proposition valued. It can be universe
 valued in general. And then of course retractions X → Y are in
 bijections with families of pointed types.

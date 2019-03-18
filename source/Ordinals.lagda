@@ -21,10 +21,10 @@ module Ordinals
        where
 
 OrdinalStructure : 𝓤 ̇ → 𝓤 ⁺ ̇
-OrdinalStructure {𝓤} X = Σ \(_<_ : X → X → 𝓤 ̇) → is-well-order _<_
+OrdinalStructure {𝓤} X = Σ \(_<_ : X → X → 𝓤 ̇ ) → is-well-order _<_
 
 Ordinal : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ordinal 𝓤 = Σ \(X : 𝓤 ̇) → OrdinalStructure X
+Ordinal 𝓤 = Σ \(X : 𝓤 ̇ ) → OrdinalStructure X
 
 \end{code}
 

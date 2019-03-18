@@ -8,7 +8,7 @@ module Two where
 
 open import Universes
 
-data 𝟚 : 𝓤₀ ̇ where
+data 𝟚 : 𝓤₀ ̇  where
  ₀ : 𝟚
  ₁ : 𝟚
 

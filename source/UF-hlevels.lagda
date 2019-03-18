@@ -25,18 +25,18 @@ _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero     = is-prop X
 X is-of-hlevel (succ n) = (x x' : X) → (x ≡ x') is-of-hlevel n
 
-hlevel-relation-is-a-prop : (n : ℕ) (X : 𝓤 ̇) → is-prop  (X is-of-hlevel n)
+hlevel-relation-is-a-prop : (n : ℕ) (X : 𝓤 ̇ ) → is-prop  (X is-of-hlevel n)
 hlevel-relation-is-a-prop {𝓤} zero     X = being-a-prop-is-a-prop (fe 𝓤 𝓤)
 hlevel-relation-is-a-prop {𝓤} (succ n) X = Π-is-prop (fe 𝓤 𝓤)
                                              (λ x → Π-is-prop (fe 𝓤 𝓤)
                                                       (λ x' → hlevel-relation-is-a-prop {𝓤} n (x ≡ x')))
 
-props-have-all-hlevels : (n : ℕ) (P : 𝓤 ̇) → is-prop P → P is-of-hlevel n
+props-have-all-hlevels : (n : ℕ) (P : 𝓤 ̇ ) → is-prop P → P is-of-hlevel n
 props-have-all-hlevels zero     P i = i
 props-have-all-hlevels (succ n) P i = λ x x' → props-have-all-hlevels n (x ≡ x') (props-are-sets i)
 
 hlevels-closed-under-Σ : (n : ℕ)
-                        → (X : 𝓤 ̇) (Y : X → 𝓤 ̇)
+                        → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇)
                         → X is-of-hlevel n
                         → ((x : X) → (Y x) is-of-hlevel n)
                         → (Σ Y) is-of-hlevel n
@@ -56,7 +56,7 @@ hlevels-closed-under-Σ {𝓤} (succ n) X Y l m = γ
            (λ p → m (pr₁ τ) (transport Y p (pr₂ σ)) (pr₂ τ))
 
 hlevels-closed-under-Π : (n : ℕ)
-                       → (X : 𝓤 ̇) (Y : X → 𝓤 ̇)
+                       → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇)
                        → ((x : X) → (Y x) is-of-hlevel n)
                        → (Π Y) is-of-hlevel n
 hlevels-closed-under-Π {𝓤} zero X Y m = Π-is-prop (fe 𝓤 𝓤) m
@@ -77,6 +77,6 @@ The subuniverse of types of hlevel n:
 \begin{code}
 
 ℍ : ℕ → (𝓤 : Universe) → 𝓤 ⁺ ̇
-ℍ n 𝓤 = Σ \(X : 𝓤 ̇) → X is-of-hlevel n
+ℍ n 𝓤 = Σ \(X : 𝓤 ̇ ) → X is-of-hlevel n
 
 \end{code}

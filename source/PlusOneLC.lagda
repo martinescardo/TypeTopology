@@ -21,7 +21,7 @@ open import DiscreteAndSeparated
 
 module PlusOneLC (fe : FunExt) where
 
-_∖_ : (X : 𝓤 ̇) (a : X) → 𝓤 ̇
+_∖_ : (X : 𝓤 ̇ ) (a : X) → 𝓤 ̇
 X ∖ a = Σ \(x : X) → x ≢ a
 
 add-and-remove-point : {X : 𝓤 ̇} →  X ≃ (X + 𝟙) ∖ (inr *)

@@ -457,7 +457,7 @@ We place it in the first universe, and we name it unique element "*":
 
 \begin{code}
 
-data 𝟙 : 𝓤₀ ̇ where
+data 𝟙 : 𝓤₀ ̇  where
  ⋆ : 𝟙
 
 \end{code}
@@ -486,7 +486,7 @@ a given property A.
 
     In Agda these Π-types are written as
 
-     (A : 𝟙 → 𝓤 ̇) → A * → (x : 𝟙) → A x.
+     (A : 𝟙 → 𝓤 ̇ ) → A * → (x : 𝟙) → A x.
 
    This is the type of functions with three arguments A : 𝟙 → 𝓤 ̇
    and a : A * and x : 𝟙, and value in the type A x.
@@ -498,7 +498,7 @@ a given property A.
 \begin{code}
 
 
-𝟙-induction : (A : 𝟙 → 𝓤 ̇)
+𝟙-induction : (A : 𝟙 → 𝓤 ̇ )
             → A ⋆
             → (x : 𝟙) → A x
 𝟙-induction A a ⋆ = a
@@ -522,7 +522,7 @@ that maps any x : 𝟙 to b.
 
 \begin{code}
 
-𝟙-induction' : (B : 𝓤 ̇) → B → (𝟙 → B)
+𝟙-induction' : (B : 𝓤 ̇ ) → B → (𝟙 → B)
 𝟙-induction' B b x = 𝟙-induction (λ _ → B) b x
 
 \end{code}
@@ -545,7 +545,7 @@ for example for the identity arrow of an object in a category.
 
 \begin{code}
 
-!𝟙' : (X : 𝓤 ̇) → X → 𝟙
+!𝟙' : (X : 𝓤 ̇ ) → X → 𝟙
 !𝟙' X x = ⋆
 
 !𝟙 : {X : 𝓤 ̇} → X → 𝟙
@@ -571,7 +571,7 @@ It is defined like 𝟙, except that no elements are listed for it:
 
 \begin{code}
 
-data 𝟘 : 𝓤₀ ̇ where
+data 𝟘 : 𝓤₀ ̇  where
 
 \end{code}
 
@@ -581,10 +581,10 @@ know the definition of set) and the truth-value "false".
 
 \begin{code}
 
-𝟘-induction : (A : 𝟘 → 𝓤 ̇) → (x : 𝟘) → A x
+𝟘-induction : (A : 𝟘 → 𝓤 ̇ ) → (x : 𝟘) → A x
 𝟘-induction A ()
 
-!𝟘 : (A : 𝓤 ̇) → 𝟘 → A
+!𝟘 : (A : 𝓤 ̇ ) → 𝟘 → A
 !𝟘 A a = 𝟘-induction (λ _ → A) a
 
 \end{code}
@@ -632,11 +632,11 @@ then define induction. Once we have defined equality "≡", we will
 
 \begin{code}
 
-data ℕ : 𝓤₀ ̇ where
+data ℕ : 𝓤₀ ̇  where
  zero : ℕ
  succ : ℕ → ℕ
 
-ℕ-induction : (A : ℕ → 𝓤 ̇)
+ℕ-induction : (A : ℕ → 𝓤 ̇ )
             → A zero
             → ((n : ℕ) → A n → A (succ n))
             → (n : ℕ) → A n
@@ -658,13 +658,13 @@ primitive recursion:
 
 \begin{code}
 
-ℕ-recursion : (X : 𝓤 ̇)
+ℕ-recursion : (X : 𝓤 ̇ )
             → X
             → (ℕ → X → X)
             → ℕ → X
 ℕ-recursion X = ℕ-induction (λ _ → X)
 
-ℕ-iteration : (X : 𝓤 ̇)
+ℕ-iteration : (X : 𝓤 ̇ )
             → X
             → (X → X)
             → ℕ → X
@@ -822,7 +822,7 @@ yet.
 
 \begin{code}
 
-record Σ {𝓤 𝓥} {X : 𝓤 ̇} (Y : X → 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
+record Σ {𝓤 𝓥} {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
   constructor _,_
   field
    x : X
@@ -940,7 +940,7 @@ above, but we introduce the notation Π for them, similar to that for Σ:
 
 \begin{code}
 
-Π : {X : 𝓤 ̇} (Y : X → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+Π : {X : 𝓤 ̇} (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Π {𝓤} {𝓥} {X} Y = (x : X) → Y x
 
 \end{code}
@@ -1006,7 +1006,7 @@ the type X + Y are all of the form inl x for x : X or inr y for y : Y.
 
 \begin{code}
 
-data _+_ {𝓤 𝓥} (X : 𝓤 ̇) (Y : 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇ where
+data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇) : 𝓤 ⊔ 𝓥 ̇  where
   inl : X → X + Y
   inr : Y → X + Y
 
@@ -1043,7 +1043,7 @@ the type x ≡ x is something called "refl x" (for reflexivity).
 
 \begin{code}
 
-data _≡_ {𝓤} {X : 𝓤 ̇} : X → X → 𝓤 ̇ where
+data _≡_ {𝓤} {X : 𝓤 ̇} : X → X → 𝓤 ̇  where
  refl : (x : X) → x ≡ x
 
 \end{code}
@@ -1071,7 +1071,7 @@ is traditionally called J but we will call ≡-induction.
 
 \begin{code}
 
-≡-induction : {X : 𝓤 ̇} (x : X) (A : (y : X) → x ≡ y → 𝓥 ̇)
+≡-induction : {X : 𝓤 ̇} (x : X) (A : (y : X) → x ≡ y → 𝓥 ̇ )
             → A x (refl x) → (y : X) (p : x ≡ y) → A y p
 ≡-induction x A a x (refl x) = a
 
@@ -1102,10 +1102,10 @@ way as our ≡-induction.
 
 \begin{code}
 
-Id : (X : 𝓤 ̇) → X → X → 𝓤 ̇
+Id : (X : 𝓤 ̇ ) → X → X → 𝓤 ̇
 Id X x y = x ≡ y
 
-J : (X : 𝓤 ̇) (B : (x y : X) → x ≡ y → 𝓥 ̇)
+J : (X : 𝓤 ̇ ) (B : (x y : X) → x ≡ y → 𝓥 ̇)
  → ((x : X) → B x x (refl x)) → (x y : X) (p : x ≡ y) → B x y p
 J X B f x = ≡-induction x (λ y p → B x y p) (f x)
 
@@ -1154,7 +1154,7 @@ define a function x ≡ y → A y, it is enough to give a point of A x.
 
 \begin{code}
 
-transport : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X}
+transport : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x y : X}
           → x ≡ y → A x → A y
 transport A (refl _) = id
 
@@ -1309,7 +1309,7 @@ identification composition backwards (as is customary).
 
 \begin{code}
 
-transport∙ : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y z : X} (p : x ≡ y) (q : y ≡ z)
+transport∙ : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x y z : X} (p : x ≡ y) (q : y ≡ z)
            → transport A (p ∙ q) ≡ transport A q ∘ transport A p
 transport∙ A p (refl y) = refl (transport A p)
 
@@ -1377,7 +1377,7 @@ by definition, we may as well defined dId as follows.
 
 \begin{code}
 
-dId : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X} (p : x ≡ y) → A x → A y → 𝓥 ̇
+dId : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y) → A x → A y → 𝓥 ̇
 dId A p a b = transport A p a ≡ b
 
 \end{code}
@@ -1403,7 +1403,7 @@ following.
 
 \begin{code}
 
-≡-on-refl-is-≡ : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x : X} (a b : A x)
+≡-on-refl-is-≡ : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
                → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
 
 ≡-on-refl-is-≡ A {x} a b = refl (a ≡ b)
@@ -1421,7 +1421,7 @@ apparent:
 
 \begin{code}
 
-≡-on-refl-is-≡' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x : X} (a b : A x)
+≡-on-refl-is-≡' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x : X} (a b : A x)
                 → (a ≡[ refl x / A ] b) ≡ (a ≡ b)
 
 ≡-on-refl-is-≡' {𝓤} {𝓥} {X} A {x} a b = refl {𝓥 ⁺} {𝓥 ̇} (a ≡ b)
@@ -1534,10 +1534,10 @@ distinghished names for the two projections:
 
 \begin{code}
 
-center : (X : 𝓤 ̇) → is-singleton X → X
+center : (X : 𝓤 ̇ ) → is-singleton X → X
 center X (c , φ) = c
 
-centrality : (X : 𝓤 ̇) (i : is-singleton X) (x : X) → center X i ≡ x
+centrality : (X : 𝓤 ̇ ) (i : is-singleton X) (x : X) → center X i ≡ x
 centrality X (c , φ) = φ
 
 \end{code}
@@ -1578,12 +1578,12 @@ https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence
 
 \begin{code}
 
-singletons-are-subsingletons : (X : 𝓤 ̇) → is-singleton X → is-subsingleton X
+singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
                                              c ≡⟨ φ y ⟩
                                              y ∎
 
-pointed-subsingletons-are-singletons : (X : 𝓤 ̇) → X → is-subsingleton X → is-singleton X
+pointed-subsingletons-are-singletons : (X : 𝓤 ̇ ) → X → is-subsingleton X → is-singleton X
 pointed-subsingletons-are-singletons X x s = (x , s x)
 
 \end{code}
@@ -1599,8 +1599,8 @@ precisely that.
 \begin{code}
 
 EM EM' : 𝓤 ⁺ ̇
-EM   {𝓤} = (X : 𝓤 ̇) → is-subsingleton X → X + ¬ X
-EM'  {𝓤} = (X : 𝓤 ̇) → is-subsingleton X → is-singleton X + is-empty X
+EM   {𝓤} = (X : 𝓤 ̇ ) → is-subsingleton X → X + ¬ X
+EM'  {𝓤} = (X : 𝓤 ̇ ) → is-subsingleton X → is-singleton X + is-empty X
 
 \end{code}
 
@@ -1676,10 +1676,10 @@ come up with a better one yet.
 collapsible : 𝓤 ̇ → 𝓤 ̇
 collapsible X = Σ \(f : X → X) → wconstant f
 
-collapser : (X : 𝓤 ̇) → collapsible X → X → X
+collapser : (X : 𝓤 ̇ ) → collapsible X → X → X
 collapser X (f , w) = f
 
-collapser-wconstancy : (X : 𝓤 ̇) (c : collapsible X) → wconstant (collapser X c)
+collapser-wconstancy : (X : 𝓤 ̇ ) (c : collapsible X) → wconstant (collapser X c)
 collapser-wconstancy X (f , w) = w
 
 hedberg : {X : 𝓤 ̇} (x : X)
@@ -1709,7 +1709,7 @@ A characterization of sets
 ≡-collapsible : 𝓤 ̇ → 𝓤 ̇
 ≡-collapsible X = (x y : X) → collapsible(x ≡ y)
 
-sets-are-≡-collapsible : (X : 𝓤 ̇) → is-set X → ≡-collapsible X
+sets-are-≡-collapsible : (X : 𝓤 ̇ ) → is-set X → ≡-collapsible X
 sets-are-≡-collapsible X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
@@ -1717,7 +1717,7 @@ sets-are-≡-collapsible X s x y = (f , κ)
   κ : (p q : x ≡ y) → f p ≡ f q
   κ p q = s x y p q
 
-≡-collapsibles-are-sets : (X : 𝓤 ̇) → ≡-collapsible X → is-set X
+≡-collapsibles-are-sets : (X : 𝓤 ̇ ) → ≡-collapsible X → is-set X
 ≡-collapsibles-are-sets X c x = hedberg x (λ y → collapser (x ≡ y) (c x y) ,
                                                  collapser-wconstancy (x ≡ y) (c x y))
 
@@ -1732,7 +1732,7 @@ using the fact that X is a subsingleton instead, to get a wconstant function:
 
 \begin{code}
 
-subsingletons-are-≡-collapsible : (X : 𝓤 ̇) → is-subsingleton X → ≡-collapsible X
+subsingletons-are-≡-collapsible : (X : 𝓤 ̇ ) → is-subsingleton X → ≡-collapsible X
 subsingletons-are-≡-collapsible X s x y = (f , κ)
  where
   f : x ≡ y → x ≡ y
@@ -1740,7 +1740,7 @@ subsingletons-are-≡-collapsible X s x y = (f , κ)
   κ : (p q : x ≡ y) → f p ≡ f q
   κ p q = refl (s x y)
 
-subsingletons-are-sets : (X : 𝓤 ̇) → is-subsingleton X → is-set X
+subsingletons-are-sets : (X : 𝓤 ̇ ) → is-subsingleton X → is-set X
 subsingletons-are-sets X s = ≡-collapsibles-are-sets X (subsingletons-are-≡-collapsible X s)
 
 \end{code}
@@ -1751,13 +1751,13 @@ The types of hlevel 1 are the subsingletons
 
 \begin{code}
 
-subsingletons-are-of-hlevel-1 : (X : 𝓤 ̇) → is-subsingleton X → X is-of-hlevel 1
+subsingletons-are-of-hlevel-1 : (X : 𝓤 ̇ ) → is-subsingleton X → X is-of-hlevel 1
 subsingletons-are-of-hlevel-1 X = g
  where
   g : ((x y : X) → x ≡ y) → (x y : X) → is-singleton (x ≡ y)
   g t x y = t x y , subsingletons-are-sets X t x y (t x y)
 
-types-of-hlevel-1-are-subsingletons : (X : 𝓤 ̇) → X is-of-hlevel 1 → is-subsingleton X
+types-of-hlevel-1-are-subsingletons : (X : 𝓤 ̇ ) → X is-of-hlevel 1 → is-subsingleton X
 types-of-hlevel-1-are-subsingletons X = f
  where
   f : ((x y : X) → is-singleton (x ≡ y)) → (x y : X) → x ≡ y
@@ -1771,13 +1771,13 @@ The types of hlevel 2 are the sets
 
 \begin{code}
 
-sets-are-of-hlevel-2 : (X : 𝓤 ̇) → is-set X → X is-of-hlevel 2
+sets-are-of-hlevel-2 : (X : 𝓤 ̇ ) → is-set X → X is-of-hlevel 2
 sets-are-of-hlevel-2 X = g
  where
   g : ((x y : X) → is-subsingleton (x ≡ y)) → (x y : X) → (x ≡ y) is-of-hlevel 1
   g t x y = subsingletons-are-of-hlevel-1 (x ≡ y) (t x y)
 
-types-of-hlevel-2-are-sets : (X : 𝓤 ̇) → X is-of-hlevel 2 → is-set X
+types-of-hlevel-2-are-sets : (X : 𝓤 ̇ ) → X is-of-hlevel 2 → is-set X
 types-of-hlevel-2-are-sets X = f
  where
   f : ((x y : X) → (x ≡ y) is-of-hlevel 1) → (x y : X) → is-subsingleton (x ≡ y)
@@ -1794,7 +1794,7 @@ of hlevel n is of hlevel n+1 too, ...
 
 \begin{code}
 
-hlevel-upper : (X : 𝓤 ̇) (n : ℕ) → X is-of-hlevel n → X is-of-hlevel (succ n)
+hlevel-upper : (X : 𝓤 ̇ ) (n : ℕ) → X is-of-hlevel n → X is-of-hlevel (succ n)
 hlevel-upper X zero = γ
  where
   γ : (h : is-singleton X) (x y : X) → is-singleton (x ≡ y)
@@ -1916,7 +1916,7 @@ successor universe 𝓤 ⁺, as follows.
 \begin{code}
 
 Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Magma 𝓤 = Σ \(X : 𝓤 ̇) → is-set X × (X → X → X)
+Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X × (X → X → X)
 
 \end{code}
 
@@ -1929,7 +1929,7 @@ call ∞-magmas (then the type of magmas could be called 1-Magma).
 \begin{code}
 
 ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
-∞-Magma 𝓤 = Σ \(X : 𝓤 ̇) → (X → X → X)
+∞-Magma 𝓤 = Σ \(X : 𝓤 ̇ ) → (X → X → X)
 
 \end{code}
 
@@ -1958,7 +1958,7 @@ three laws:
 \begin{code}
 
 Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Monoid 𝓤 = Σ \(X : 𝓤 ̇) → is-set X
+Monoid 𝓤 = Σ \(X : 𝓤 ̇ ) → is-set X
                          × Σ \(_·_ : X → X → X)
                          → Σ \(e : X)
                          → left-neutral e _·_
@@ -2065,7 +2065,7 @@ The identity retraction:
 
 \begin{code}
 
-◁-refl : (X : 𝓤 ̇) → X ◁ X
+◁-refl : (X : 𝓤 ̇ ) → X ◁ X
 ◁-refl X = id , id , refl
 
 \end{code}
@@ -2095,7 +2095,7 @@ Composition with an implicit argument made explicit:
 \begin{code}
 
 
-_◁⟨_⟩_ : (X : 𝓤 ̇) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
+_◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ◁ Y → Y ◁ Z → X ◁ Z
 X ◁⟨ ρ ⟩ σ = ρ ◁∘ σ
 
 \end{code}
@@ -2104,7 +2104,7 @@ Postfix notation for the identity retraction:
 
 \begin{code}
 
-_◀ : (X : 𝓤 ̇) → X ◁ X
+_◀ : (X : 𝓤 ̇ ) → X ◁ X
 X ◀ = ◁-refl X
 
 \end{code}
@@ -2115,10 +2115,10 @@ Natural transformations
 
 \begin{code}
 
-Nat : {X : 𝓤 ̇} → (X → 𝓥 ̇) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+Nat : {X : 𝓤 ̇} → (X → 𝓥 ̇ ) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 Nat A B = (x : domain A) → A x → B x
 
-Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (τ : Nat A B)
+Nats-are-natural : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (τ : Nat A B)
                  → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
 Nats-are-natural A B τ (refl x) = refl (τ x)
 
@@ -2133,7 +2133,7 @@ Behaviour of Σ types with respect to retractions
 
 \begin{code}
 
-Σ-retract : (X : 𝓤 ̇) (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
+Σ-retract : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇) (B : X → 𝓦 ̇)
           → ((x : X) → (A x) ◁ (B x)) → Σ A ◁ Σ B
 Σ-retract X A B ρ = NatΣ r , NatΣ s , η'
  where
@@ -2319,7 +2319,7 @@ invertible maps:
 
 \begin{code}
 
-id-is-equiv : (X : 𝓤 ̇) → is-equiv (id {𝓤} {X})
+id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
 id-is-equiv X = singleton-types-are-singletons
 
 ∘-is-equiv : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} {f : X → Y} {g : Y → Z}
@@ -2348,7 +2348,7 @@ Identity and composition of equivalences:
 
 \begin{code}
 
-≃-refl : (X : 𝓤 ̇) → X ≃ X
+≃-refl : (X : 𝓤 ̇ ) → X ≃ X
 ≃-refl X = id , id-is-equiv X
 
 _●_ : {X : 𝓤 ̇} {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
@@ -2360,10 +2360,10 @@ We can use the following for equational reasoning with equivalences:
 
 \begin{code}
 
-_≃⟨_⟩_ : (X : 𝓤 ̇) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
+_≃⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇} {Z : 𝓦 ̇} → X ≃ Y → Y ≃ Z → X ≃ Z
 _ ≃⟨ d ⟩ e = d ● e
 
-_■ : (X : 𝓤 ̇) → X ≃ X
+_■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
 \end{code}
@@ -2376,11 +2376,11 @@ The function "transport A p" is an equivalence.
 
 \begin{code}
 
-transport-is-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X} (p : x ≡ y)
+transport-is-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                    → is-equiv (transport A p)
 transport-is-equiv A (refl x) = id-is-equiv (A x)
 
-transport-≃ : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X}
+transport-≃ : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x y : X}
             → x ≡ y → A x ≃ A y
 transport-≃ A p = transport A p , transport-is-equiv A p
 
@@ -2390,7 +2390,7 @@ A longer proof for the sake of illustration:
 
 \begin{code}
 
-transport-is-equiv' : {X : 𝓤 ̇} (A : X → 𝓥 ̇) {x y : X} (p : x ≡ y)
+transport-is-equiv' : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) {x y : X} (p : x ≡ y)
                     → is-equiv (transport A p)
 transport-is-equiv' A p = invertibles-are-equivs
                           (transport A p)
@@ -2423,7 +2423,7 @@ Characterization of equality in Σ types:
 Voevodsky's univalence axiom
 ----------------------------
 
-There is a canonical transformation (X Y : 𝓤 ̇) → X ≡ Y → X ≃ Y that
+There is a canonical transformation (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y that
 sends the identity identification "refl X : X X ≡ X" to the identity
 equivalence "≃-refl X" by induction on identifications. The univalence
 axiom, for the universe 𝓤, say that this canonical map is itself an
@@ -2431,11 +2431,11 @@ equivalence.
 
 \begin{code}
 
-Id-to-Eq : (X Y : 𝓤 ̇) → X ≡ Y → X ≃ Y
+Id-to-Eq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 Id-to-Eq X X (refl X) = ≃-refl X
 
 is-univalent : (𝓤 : Universe) → 𝓤 ⁺ ̇
-is-univalent 𝓤 = (X Y : 𝓤 ̇) → is-equiv (Id-to-Eq X Y)
+is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv (Id-to-Eq X Y)
 
 univalence : 𝓤ω
 univalence = (𝓤 : Universe) → is-univalent 𝓤
@@ -2448,7 +2448,7 @@ conjecture is).
 
 \begin{code}
 
-Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇) → X ≃ Y → X ≡ Y
+Eq-to-Id : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
 Eq-to-Id ua X Y = inverse (Id-to-Eq X Y) (ua X Y)
 
 \end{code}
@@ -2571,14 +2571,14 @@ equivs-closed-under-∼' : {X : 𝓤 ̇} {Y : 𝓥 ̇} (f g : X → Y)
                        → is-equiv g
 equivs-closed-under-∼' f g e h = equivs-closed-under-∼ f g e (λ x → (h x)⁻¹)
 
-≃-gives-◁ : (X : 𝓤 ̇) (Y : 𝓥 ̇) → X ≃ Y → X ◁ Y
+≃-gives-◁ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) → X ≃ Y → X ◁ Y
 
-≃-gives-▷ : (X : 𝓤 ̇) (Y : 𝓥 ̇) → X ≃ Y → Y ◁ X
+≃-gives-▷ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) → X ≃ Y → Y ◁ X
 
-equiv-to-singleton : (X : 𝓤 ̇) (Y : 𝓥 ̇)
+equiv-to-singleton : (X : 𝓤 ̇ ) (Y : 𝓥 ̇)
                    → X ≃ Y → is-singleton Y → is-singleton X
 
-pr₁-equivalence : (X : 𝓤 ̇) (A : X → 𝓥 ̇)
+pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇)
                 → ((x : X) → is-singleton (A x))
                 → is-equiv (pr₁ {𝓤} {𝓥} {X} {A})
 
@@ -2597,16 +2597,16 @@ singleton-types-≃ : {X : 𝓤 ̇} (x : X) → singleton-type' x ≃ singleton-
 
 singleton-types-are-singletons' : {X : 𝓤 ̇} (x : X) → is-singleton (singleton-type' x)
 
-singletons-equivalent : (X : 𝓤 ̇) (Y : 𝓥 ̇)
+singletons-equivalent : (X : 𝓤 ̇ ) (Y : 𝓥 ̇)
                       → is-singleton X → is-singleton Y → X ≃ Y
 
-maps-of-singletons-are-equivs : (X : 𝓤 ̇) (Y : 𝓥 ̇) (f : X → Y)
+maps-of-singletons-are-equivs : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) (f : X → Y)
                               → is-singleton X → is-singleton Y → is-equiv f
 
-NatΣ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (φ : Nat A B)
+NatΣ-fiber-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (φ : Nat A B)
                  → (x : X) (b : B x) → fiber (φ x) b ≃ fiber (NatΣ φ) (x , b)
 
-NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇) (B : X → 𝓦 ̇) (φ : Nat A B)
+NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇} (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (φ : Nat A B)
                                  → is-equiv(NatΣ φ) → ((x : X) → is-equiv(φ x))
 
 \end{code}
@@ -3025,7 +3025,7 @@ More generally:
 
 \begin{code}
 
-hlevel-relation-is-subsingleton : dfunext 𝓤 𝓤 → (n : ℕ) (X : 𝓤 ̇) → is-subsingleton (X is-of-hlevel n)
+hlevel-relation-is-subsingleton : dfunext 𝓤 𝓤 → (n : ℕ) (X : 𝓤 ̇ ) → is-subsingleton (X is-of-hlevel n)
 hlevel-relation-is-subsingleton {𝓤} fe zero     X = being-a-singleton-is-a-subsingleton fe
 hlevel-relation-is-subsingleton {𝓤} fe (succ n) X = Π-is-subsingleton fe
                                                       (λ x → Π-is-subsingleton fe
@@ -3074,7 +3074,7 @@ univalence if needed).
 \begin{code}
 
 is-inhabited : 𝓤 ̇ → 𝓤 ⁺ ̇
-is-inhabited {𝓤} X = (P : 𝓤 ̇) → is-subsingleton P → (X → P) → P
+is-inhabited {𝓤} X = (P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → P
 
 \end{code}
 
@@ -3092,19 +3092,19 @@ dfunext.
 global-dfunext : 𝓤ω
 global-dfunext = ∀ 𝓤 𝓥 → dfunext 𝓤 𝓥
 
-inhabitedness-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇) → is-subsingleton (is-inhabited X)
+inhabitedness-is-a-subsingleton : global-dfunext → (X : 𝓤 ̇ ) → is-subsingleton (is-inhabited X)
 inhabitedness-is-a-subsingleton {𝓤} fe X = Π-is-subsingleton (fe (𝓤 ⁺) 𝓤)
                                             λ P → Π-is-subsingleton (fe 𝓤 𝓤)
                                                    (λ (s : is-subsingleton P)
                                                          → Π-is-subsingleton (fe 𝓤 𝓤) (λ (f : X → P) → s))
 
-inhabited-intro : (X : 𝓤 ̇) → X → is-inhabited X
+inhabited-intro : (X : 𝓤 ̇ ) → X → is-inhabited X
 inhabited-intro X x = λ P s f → f x
 
-inhabited-elim : (X P : 𝓤 ̇) → is-subsingleton P → (X → P) → is-inhabited X → P
+inhabited-elim : (X P : 𝓤 ̇ ) → is-subsingleton P → (X → P) → is-inhabited X → P
 inhabited-elim X P s f φ = φ P s f
 
-inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇) → is-subsingleton P → is-inhabited P → P
+inhabited-gives-pointed-for-subsingletons : (P : 𝓤 ̇ ) → is-subsingleton P → is-inhabited P → P
 inhabited-gives-pointed-for-subsingletons P s = inhabited-elim P P s id
 
 \end{code}
