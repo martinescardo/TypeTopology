@@ -13,7 +13,6 @@ date : 2019-03-04
      1. [Homotopy type theory](index.html#homotopytypetheory)
      1. [General references](index.html#generalreferences)
      1. [Choice of material](index.html#plan)
-     1. [Table of contents](toc.html#contents)
   1. [MLTT in Agda](MLTT-Agda.html)
      1. [A spartan Martin-Löf type theory (MLTT)](MLTT-Agda.html#spartanmltt)
      1. [What is Agda?](MLTT-Agda.html#whatisagda)
