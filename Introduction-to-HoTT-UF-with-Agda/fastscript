@@ -1,0 +1,11 @@
+#!/bin/bash
+
+ghc --make agdatomd.hs
+
+inotifywait -e close_write,moved_to,create -m . |
+while read -r directory events filename; do
+  if [ "$filename" = "HoTT-UF-Agda.lagda" ]; then
+    date
+    cat HoTT-UF-Agda.lagda | ./agdatomd > HoTT-UF-Agda.md
+  fi
+done
