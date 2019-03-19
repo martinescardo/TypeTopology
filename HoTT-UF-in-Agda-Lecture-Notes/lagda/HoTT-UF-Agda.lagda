@@ -22,7 +22,7 @@ open import MLTT-Agda
 ### <a name="axiomaticutt"></a> Our univalent type theory
 
   * Spartan `MLTT` [as above](MLTT-Agda.html#spartanmltt).
-  * [Univalence axiom](#univalence).
+  * [Univalence axiom](HoTT-UF-Agda.html#univalence).
 
 But, as discussed above, rather than postulating univalence we will
 use it as an explicit assumption each time it is needed.
@@ -158,7 +158,7 @@ _≅ₘ_ : Magma 𝓤 → Magma 𝓤 → 𝓤 ̇
 M ≅ₘ N = Σ \(f : ⟨ M ⟩ → ⟨ N ⟩) → is-magma-iso M N f
 \end{code}
 
-The following function [will be](#sip) a bijection in the presence of
+The following function [will be](Inhabitation.html#sip) a bijection in the presence of
 univalence, so that the identifications of magmas are in one-to-one
 correspondence with the magma isomorphisms:
 
@@ -307,12 +307,12 @@ See [[van den Berg and Garner](https://arxiv.org/abs/0812.0298)] and
 [[Lumsdaine](https://lmcs.episciences.org/1062)].
 
 For some types, such as the natural numbers, we [can
-prove](#naturalsset) that this process trivializes after the first
-step, because the type `x ≡ y` has at most one element. Such types are
-the sets as defined above.
+prove](HoTT-UF-Agda.html#naturalsset) that this process trivializes
+after the first step, because the type `x ≡ y` has at most one
+element. Such types are the sets as defined above.
 
-Voevodsky defined the notion of [*hlevel*](#hlevel) to measure how long it takes
-for the process to trivialize.
+Voevodsky defined the notion of [*hlevel*](HoTT-UF-Agda.html#hlevel)
+to measure how long it takes for the process to trivialize.
 
 Here are some more constructions with identifications:
 
@@ -380,8 +380,8 @@ the two possible bijections `Color → 𝟚` that identify colors with
 bits. So, it is not enough to have `Color ≡ 𝟚` to be able to compare a
 color `c : Color` with a bit `b : 𝟚`. We need to specify which
 identification `p : Color ≡ 𝟚` we want to consider for the comparison.
-The [same considerations](#notsets) apply when we consider identifications
-`p : 𝟚 ≡ 𝟚`.
+The [same considerations](HoTT-UF-Agda.html#notsets) apply when we
+consider identifications `p : 𝟚 ≡ 𝟚`.
 
 So the meaningful comparison in the more general situation is
 
@@ -540,8 +540,9 @@ But this is a very weak statement when the left- and right-hand
 identity types may have multiple elements, which is precisely the
 point of univalent mathematics.
 
-What we want is the lhs and the rhs to be isomorphic, or more precisely,
-[equivalent in the sense of Voevodsky](#fibersandequivalences).
+What we want is the lhs and the rhs to be isomorphic, or more
+precisely, [equivalent in the sense of
+Voevodsky](HoTT-UF-Agda.html#fibersandequivalences).
 
 Once we have defined this notion `_≃_` of type equivalence, this
 characterization will become an equivalence
@@ -660,7 +661,7 @@ that subsingletons are sets, and this is not easy. We use an argument
 due to
 [Hedberg](https://homotopytypetheory.org/references/hedberg/). This
 argument also shows that [Voevodsky's hlevel are upper
-closed](#hlevelsupper).
+closed](HoTT-UF-Agda.html#hlevelsupper).
 
 We choose to present an [alternative formulation of Hedberg's
 Theorem](https://link.springer.com/chapter/10.1007/978-3-642-38946-7_14),
@@ -782,8 +783,9 @@ types-of-hlevel-1-are-subsingletons X = f
 \end{code}
 
 This is an "if and only if" characterization, but, under
-[univalence](#univalence), it becomes an equality because the types
-under consideration are [subsingletons](#subsingletonsandsets).
+[univalence](HoTT-UF-Agda.html#univalence), it becomes an equality
+because the types under consideration are
+[subsingletons](HoTT-UF-Agda.html#subsingletonsandsets).
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="hlevel2set"></a> The types of hlevel 2 are the sets
@@ -835,8 +837,8 @@ such types then have minimal hlevel `∞`.
 *Exercise.* Formulate and prove the following. The type `𝟙` has
 minimal hlevel `0`. The type `𝟘` has minimal hlevel `1`, the type `ℕ`
 has minimal hlevel `2`. More ambitiously, when you have
-[univalence](#univalence) at your disposal, show that the type of
-monoids has minimal hlevel `3`.
+[univalence](HoTT-UF-Agda.html#univalence) at your disposal, show that
+the type of monoids has minimal hlevel `3`.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="naturalsset"></a> Example: ℕ is a set
@@ -1028,12 +1030,13 @@ X ◀ = ◁-refl X
 \end{code}
 
 These last two definitions are for notational convenience. See
-[below](#fibersandequivalences) for examples of their use.
+[below](HoTT-UF-Agda.html#fibersandequivalences) for examples of their
+use.
 
 We conclude this section with some facts about retracts of `Σ` types.
 The following are technical tools for dealing with equivalences in the
 sense of Voevosky in [comparison with invertible
-maps](#fibersandequivalences).
+maps](HoTT-UF-Agda.html#fibersandequivalences).
 
 A pointwise retraction gives  a retraction of the total spaces:
 \begin{code}
@@ -1073,9 +1076,9 @@ And we can reindex retracts of Σ types as follows:
         a                                           ∎
 \end{code}
 
-We have defined [the property of a type being a singleton](#hlevel). The
-following defines singleton types, which have the property of being
-singletons.
+We have defined [the property of a type being a
+singleton](HoTT-UF-Agda.html#hlevel). The following defines singleton
+types, which have the property of being singletons.
 
 \begin{code}
 singleton-type : {X : 𝓤 ̇ } → X → 𝓤 ̇
@@ -1111,8 +1114,9 @@ retract-of-singleton (r , s , η) (c , φ) = r c , γ
 ### <a name="fibersandequivalences"></a> Voevodsky's notion of equivalence
 
 The main notions of univalent mathematics conceived by Voevodsky, with
-formulations in `MLTT`, are those of [singleton type](#hlevels) (or
-contractible type), [hlevel](#hlevels) (including the notions of
+formulations in `MLTT`, are those of [singleton
+type](HoTT-UF-Agda.html#hlevels) (or contractible type),
+[hlevel](HoTT-UF-Agda.html#hlevels) (including the notions of
 subsingleton and set), and of type equivalence, which we define now.
 For that purpose, we need to define the notion of fiber of a function
 first.
@@ -1186,8 +1190,8 @@ equivs-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv
 equivs-are-invertible f e = (inverse f e , inverse-is-retraction f e , inverse-is-section f e)
 \end{code}
 
-The non-trivial direction is the following, for which we use the retraction
-techniques explained [above](#retractsofsigma):
+The non-trivial direction is the following, for which we use the
+retraction techniques explained [above](HoTT-UF-Agda.html#retracts):
 
 \begin{code}
 invertibles-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → invertible f → is-equiv f
@@ -1487,7 +1491,7 @@ For more examples, see [[Kraus and Sattler](https://arxiv.org/abs/1311.4002)].
 
 Here are some facts whose proofs are left to the reader but we will
 need from the next section onwards. Sample solutions are given
-[below](#solutions).
+[below](HoTT-UF-Agda.html#solutions).
 
 Define functions for the following type declarations. As a matter of
 procedure, we suggest to import this file and add another declaration

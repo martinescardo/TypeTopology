@@ -29,7 +29,7 @@ funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 \end{code}
 
-There [will be](#hfunext) two stronger statements, namely
+There [will be](FunExt.html#hfunext) two stronger statements, namely
 the generalization to dependent functions, and the requirement that
 the canonical map `(f ≡ g) → (f ∼ g) ` is an equivalence.
 
