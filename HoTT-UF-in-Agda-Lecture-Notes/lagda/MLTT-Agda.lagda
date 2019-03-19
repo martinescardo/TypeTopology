@@ -45,11 +45,19 @@ theory in Agda, we summarize the particular Martin-Löf type
 theory that we will consider, by naming the concepts that we will
 include. We will have:
 
-   * An empty type [`𝟘`](#emptytype).
-   * A one-element type [`𝟙`](#onepointtype).
-   * A type of [`ℕ`](#naturalnumbers) natural numbers.
-   * Type formers [`+`](#binarysum) (binary sum), [`Π`](#pitypes) (product), [`Σ`](#sigmatypes) (sum), [`Id`](#identitytype) (identity type).
-   * [Universes](#universes) (types of types), ranged over by `𝓤,𝓥,𝓦`.
+   * An empty type [`𝟘`](MLTT-Agda.html#emptytype).
+
+   * A one-element type [`𝟙`](MLTT-Agda.html#onepointtype).
+
+   * A type of [`ℕ`](MLTT-Agda.html#naturalnumbers) natural numbers.
+
+   * Type formers [`+`](MLTT-Agda.html#binarysum) (binary sum),
+     [`Π`](MLTT-Agda.html#pitypes) (product),
+     [`Σ`](MLTT-Agda.html#sigmatypes) (sum),
+     [`Id`](MLTT-Agda.html#identitytype) (identity type).
+
+   * [Universes](MLTT-Agda.html#universes) (types of types), ranged
+     over by `𝓤,𝓥,𝓦`.
 
 This is enough to do number theory, analysis, group theory, topology, category theory and more.
 
@@ -80,15 +88,19 @@ module MLTT-Agda where
  * The option `--without-K` disables [Streicher's `K` axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29), which we don't
    want for univalent mathematics.
 
- * The option `--exact-split` makes Agda to only accept definitions with
-   the equality sign "`=`" that [behave like so-called judgmental equalities](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees).
+ * The option `--exact-split` makes Agda to only accept definitions
+   with the equality sign "`=`" that [behave like so-called judgmental
+   equalities](https://agda.readthedocs.io/en/latest/language/function-definitions.html#case-trees).
 
- * The option `--safe` disables features [that may make Agda inconsistent](https://agda.readthedocs.io/en/latest/language/safe-agda.html#safe-agda),
+ * The option `--safe` disables features [that may make Agda
+   inconsistent](https://agda.readthedocs.io/en/latest/language/safe-agda.html#safe-agda),
    such as `--type-in-type`, postulates and more.
 
- * Every Agda file is a [module](https://agda.readthedocs.io/en/latest/language/module-system.html). These lecture notes are an Agda file,
-   which is converted to html by Agda after it successfully checks the
-   mathematical development for correctness.
+ * Every Agda file is a
+  [module](https://agda.readthedocs.io/en/latest/language/module-system.html).
+  These lecture notes are a set of Agda files, which is converted to
+  html by Agda after it successfully checks the mathematical
+  development for correctness.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)
 ### <a name="universes"></a> Universes
@@ -98,11 +110,12 @@ A universe `𝓤` is a type of types.
  * One use of universes is to define families of types indexed by a
    type `X` as functions `X → 𝓤`.
 
- * Such a function is sometimes seen as a property of elements of `X.
+ * Such a function is sometimes seen as a property of elements of `X`.
 
- * An other use of universes, as we shall see, is to define types of
-   mathematical structures, such as [monoids](#magmasandmonoids), groups, topological spaces,
-   categories etc.
+ * Another use of universes, as we shall see, is to define types of
+   mathematical structures, such as
+   [monoids](HoTT-UF-Agda.html#magmasandmonoids), groups, topological
+   spaces, categories etc.
 
 Sometimes we need more than one universe. For example, the type of
 groups in a universe lives in a bigger universe, and given a category
@@ -176,16 +189,16 @@ It is important that the point `⋆` lives in the type `𝟙` and in no other
 type. There isn't dual citizenship in our type theory. When we create
 a type, we also create freshly new elements for it, in this case
 "`⋆`". (However, Agda has a limited form of overloading, which allows
-one to sometimes use the same name for different things.)
+us to sometimes use the same name for different things.)
 
 Next we want to give a mechanism to prove that all points of the
 type `𝟙` satify a given property `A`.
 
   * The property is a function `A : 𝟙 → 𝓤` for some universe `𝓤`.
 
-  * The type `A(x)`, which we will write simply `A x`, doesn't
-    need to be a [truth value](#subsingletonsandsets).  It can be any
-    type. We will meet examples shortly.
+  * The type `A(x)`, which we will write simply `A x`, doesn't need to
+    be a [truth value](HoTT-UF-Agda.html#subsingletonsandsets).  It can be
+    any type. We will meet examples shortly.
 
   * Mathematical statements are types, such as
 
@@ -316,23 +329,22 @@ is-empty X = X → 𝟘
 \end{code}
 
 This says that a type is empty precisely when we have a function to
-the empty type. Assuming [univalence](#univalence), once we have
-defined equality type former [`_≡_`](#identitytype), we will be able
-to prove that `(is-empty X) ≡ (X ≡ 𝟘)`. We will also be able to prove
-things like `(2 + 2 ≡ 5) ≡ 𝟘` and `(2 + 2 ≡ 4) ≡ 𝟙`.
+the empty type. Assuming [univalence](HoTT-UF-Agda.html#univalence),
+once we have defined equality type former
+[`_≡_`](MLTT-Agda.html#identitytype), we will be able to prove that
+`(is-empty X) ≡ (X ≡ 𝟘)`. We will also be able to prove things like
+`(2 + 2 ≡ 5) ≡ 𝟘` and `(2 + 2 ≡ 4) ≡ 𝟙`.
 
-This is for
-*numbers*. If we define *types* `𝟚 = 𝟙 + 𝟙` and `𝟜 = 𝟚 + 𝟚` with two
-and four elements respectively, where we are anticipating the
-definition of [`_+_`](#binarysum) for types, then we will instead have
-that `𝟚 + 𝟚 ≡ 𝟜` is a type with `4!` elements, which is [number of
-permutations](https://en.wikipedia.org/wiki/Factorial) of a set with
-four elements, rather than a truth value `𝟘` or `𝟙`, as a consequence
-of the univalence axiom. That is, we will have `(𝟚 + 𝟚 ≡ 𝟜) ≡ (𝟜 + 𝟜 +
-𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type equality `𝟚 + 𝟚 ≡ 𝟜` holds in [many
-more
-ways](https://arxiv.org/abs/math/9802029)
-than the numerical equation `2 + 2 ≡ 4`.
+This is for *numbers*. If we define *types* `𝟚 = 𝟙 + 𝟙` and `𝟜 = 𝟚 +
+𝟚` with two and four elements respectively, where we are anticipating
+the definition of [`_+_`](MLTT-Agda.html#binarysum) for types, then we
+will instead have that `𝟚 + 𝟚 ≡ 𝟜` is a type with `4!` elements, which
+is [number of permutations](https://en.wikipedia.org/wiki/Factorial)
+of a set with four elements, rather than a truth value `𝟘` or `𝟙`, as
+a consequence of the univalence axiom. That is, we will have `(𝟚 + 𝟚 ≡
+𝟜) ≡ (𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜 + 𝟜)`, so that the type equality `𝟚 + 𝟚 ≡ 𝟜`
+holds in [many more ways](https://arxiv.org/abs/math/9802029) than the
+numerical equation `2 + 2 ≡ 4`.
 
 The above is possible only because universes are genuine types and
 hence their elements (that is, types) have identity types themselves,
@@ -352,9 +364,9 @@ to `(𝟘 → 𝟘) ≡ 𝟙`, which in turn says that there is precisely one fu
 The definition is similar but not quite the same as the one via
 [Peano Axioms](https://en.wikipedia.org/wiki/Peano_axioms).
 
-We stipulate an element `zero : ℕ` and a successor function `ℕ → ℕ`, and
-then define induction. Once we have defined equality `_≡_`, we will
-[*prove*](#naturalsset) the other peano axioms.
+We stipulate an element `zero : ℕ` and a successor function `ℕ → ℕ`,
+and then define induction. Once we have defined equality `_≡_`, we
+will [*prove*](HoTT-UF-Agda.html#naturalsset) the other peano axioms.
 
 \begin{code}
 data ℕ : 𝓤₀ ̇  where
@@ -379,8 +391,13 @@ role in the Agda development of these lectures notes.
 
 In the following, the type family `A` can be seen as playing the role
 of a property of elements of `ℕ`, except that it doesn't need to be
-necessarily [subsingleton](#subsingletonsandsets)-valued. When it is, the *type* of the function gives
-the familiar [principle of mathematical induction](https://en.wikipedia.org/wiki/Mathematical_induction) for natural numbers, whereas, in general, its definition says how to compute with induction.
+necessarily
+[subsingleton](HoTT-UF-Agda.html#subsingletonsandsets)-valued. When it
+is, the *type* of the function gives the familiar [principle of
+mathematical
+induction](https://en.wikipedia.org/wiki/Mathematical_induction) for
+natural numbers, whereas, in general, its definition says how to
+compute with induction.
 
 \begin{code}
 ℕ-induction : (A : ℕ → 𝓤 ̇ )
@@ -509,17 +526,19 @@ module ℕ-order where
   x ≥ y = y ≤ x
 \end{code}
 
-*Exercise.* After you have learned [`Σ`](#sigmatypes) and
-  [`_≡_`](#identitytype) explained below, prove that
+*Exercise.* After you have learned [`Σ`](MLTT-Agda.html#sigmatypes)
+ and [`_≡_`](MLTT-Agda.html#identitytype) explained below, prove that
 
    > `x ≤ y` if and only if `Σ \(z : ℕ) → x + z ≡ y`.
 
-Later, when you have learned [univalence](#univalence) prove that in this case this implies
+Later, when you have learned
+[univalence](HoTT-UF-Agda.html#univalence) prove that in this case
+this implies
 
    > `(x ≤ y) ≡ Σ \(z : ℕ) → x + z ≡ y`.
 
 That bi-implication can be turned into equality only holds for types
-that are [subsingletons](#subsingletonsandsets).
+that are [subsingletons](HoTT-UF-Agda.html#subsingletonsandsets).
 
 
 If we are doing applied mathematics and want to actually compute, we
@@ -545,7 +564,7 @@ for `x : X` and `y : Y`. If `X : 𝓤` and `Y : 𝓥`, we stipulate that
 
    > `𝓤 ⊔ 𝓥 `
 
-is the [least upper bound](#universes) of the two universes `𝓤` and
+is the [least upper bound](MLTT-Agda.html#universes) of the two universes `𝓤` and
 `𝓥`.  In Agda we can define this as follows.
 
 \begin{code}
@@ -573,7 +592,7 @@ to prove "`A` or `B`" we have to prove one of `A` and `B`. When `A` and
 `B` are simultaneously possible, we have two proofs, but sometimes we
 want to deliberately ignore which one we get, when we want to get a
 truth value rather than a possibly more general type, and in this case
-we use the [truncation](#truncation) `∥ A + B ∥`.
+we use the [truncation](Inhabitation.html#truncation) `∥ A + B ∥`.
 
 But also `_+_` is used to construct mathematical objects. For example,
 we can define a two-point type:
@@ -623,7 +642,7 @@ is a type whose elements are of the form
    > `(x , y)`
 
 with `x : X` and `y : Y x`. This sum type will live in the [least
-upper bound](#universes)
+upper bound](MLTT-Agda.html#universes)
 
    > `𝓤 ⊔ 𝓥`.
 
@@ -656,7 +675,7 @@ nameless family defined on the fly, as in the exercise proposed above:
    > `Σ \(z : ℕ) → x + z ≡ y`,
 
 where `Y z = (x + z ≡ y)` in this case, and where we haven't defined
-the [identity type former](#identitytype) `_≡_` yet.
+the [identity type former](MLTT-Agda.html#identitytype) `_≡_` yet.
 
 We can construct the `Σ` type former as follows in Agda:
 
@@ -744,10 +763,11 @@ We have the following uses of `Σ`.
     `(x , a)`.
 
   * Later we will discuss *unspecified* existence `∃ \(x : X) → A x`,
-    which will be obtained by a sort of quotient of `Σ \(x : X), A
-    x`, written `∥ Σ \(x : X), A x ∥` that identifies all the elements
-    of the type `Σ \(x : X), A x` in a single equivalence class,
-    called its propositional or subsingleton [truncation](#truncation).
+    which will be obtained by a sort of quotient of `Σ \(x : X), A x`,
+    written `∥ Σ \(x : X), A x ∥` that identifies all the elements of
+    the type `Σ \(x : X), A x` in a single equivalence class, called
+    its propositional or subsingleton
+    [truncation](Inhabitation.html#truncation).
 
   * Another reading of `Σ \(x : X), A x` is as "the type of `x : X`
     with `A x`", similar to subset notation `{ x ∈ X | A x }` in set
@@ -848,13 +868,13 @@ by some mysterious sort of induction. It is this that prevents us from
 being able to prove that `refl x` would be the only element of the type `Id
 X x x`, or that for `Id X x y` would have at most one element no
 matter what `y : X` is. There is however, one interesting thing we
-[can prove](#retractsofsigma), namely that for any fixed `x : X`, the
+[can prove](HoTT-UF-Agda.html#retracts), namely that for any fixed `x : X`, the
 type
 
 
    > `Σ \(y : Y) → Id X x y`
 
-is always a [singleton](#hlevel).
+is always a [singleton](HoTT-UF-Agda.html#hlevel).
 
 We will use the following alternative notation for the identity type
 former `Id`, where the symbol "`_`" in the right-hand side of the
@@ -875,7 +895,7 @@ Whereas we can make the intuition that `x ≡ x` has precisely one
 element good by postulating a certain [`K`
 axiom](https://ncatlab.org/nlab/show/axiom+K+%28type+theory%29) due to
 Thomas Streicher, which comes with Agda by default but we have
-[disabled above](#gettingstartedagda), we cannot *prove* that `refl x`
+[disabled above](MLTT-Agda.html#gettingstartedagda), we cannot *prove* that `refl x`
 is the only element of `x ≡ x` for an arbitrary type `X`. This
 non-provability result was established by [Hofmann and
 Streicher](https://ieeexplore.ieee.org/document/316071), by giving a
@@ -885,14 +905,15 @@ model of type theory in which types are interpreted as
 However, for the elements of *some* types, such as `ℕ`, it is possible
 to prove that any identity type `x ≡ y` has at most one element. Such
 types are called [sets in univalent
-mathematics](#subsingletonsandsets).
+mathematics](HoTT-UF-Agda.html#subsingletonsandsets).
 
-If instead of `K` we adopt Voevodsky's [univalence](#univalence)
-axiom, we get [specific examples](#notsets) of objects `x` and `y`
-such that the type `x ≡ y` has multiple elements, *within* the type
-theory.  It follows that the identity type `x ≡ y` is fairly
-under-specified in general, in that we can't prove or disprove that it
-has at most one element.
+If instead of `K` we adopt Voevodsky's
+[univalence](HoTT-UF-Agda.html#univalence) axiom, we get [specific
+examples](HoTT-UF-Agda.html#notsets) of objects `x` and `y` such that
+the type `x ≡ y` has multiple elements, *within* the type theory.  It
+follows that the identity type `x ≡ y` is fairly under-specified in
+general, in that we can't prove or disprove that it has at most one
+element.
 
 There are two opposing ways to resolve the ambiguity or
 underspecification of the identity types: (1) We can consider the `K`
@@ -1100,12 +1121,13 @@ ap f p = transport (λ - → f (lhs p) ≡ f -) p (refl (f (lhs p)))
 \end{code}
 
 Notice that we have so far used the recursion principle `transport`
-only. To reason about `transport`, `_∙_`, `_⁻¹` and `ap`, we
-[will need](#identitytypeuf) to use the full induction principle `J`.
+only. To reason about `transport`, `_∙_`, `_⁻¹` and `ap`, we [will
+need](HoTT-UF-Agda.html#identitytypeuf) to use the full induction
+principle `J`.
 
 *Pointwise equality of functions*. We will work with pointwise
 equality of functions, defined as follows, which, using univalence,
-will be [equivalent to equality of functions](#hfunext).
+will be [equivalent to equality of functions](FunExt.html#hfunext).
 
 \begin{code}
 _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ((x : X) → A x) → ((x : X) → A x) → 𝓤 ⊔ 𝓥 ̇
@@ -1166,10 +1188,10 @@ that inverts identifications with `u`:
 \end{code}
 
 To show that the type `𝟙` is not equal to the type `𝟘`, we use that
-`transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 ≡ id 𝟘` where `id` is the
-[identity function](#pitypes). So if we have a
-hypothetical identification `p : 𝟙 ≡ 𝟘`, then we get a function `𝟙 →
-𝟘`. We apply this function to `⋆ : 𝟙` to conclude the proof.
+`transport id` gives `𝟙 ≡ 𝟘 → id 𝟙 ≡ id 𝟘` where `id` is the [identity
+function](MLTT-Agda.html#pitypes). So if we have a hypothetical
+identification `p : 𝟙 ≡ 𝟘`, then we get a function `𝟙 → 𝟘`. We apply
+this function to `⋆ : 𝟙` to conclude the proof.
 
 \begin{code}
 𝟙-is-not-𝟘 : ¬(𝟙 ≡ 𝟘)
@@ -1274,7 +1296,7 @@ module twin-primes where
 
 Thus, can we write down not only definitions, constructions, theorems
 and proofs, but also conjectures. They are just definitions of
-types. Likewise, the univalence axiom, [to be formulated in due course](#univalence),
+types. Likewise, the univalence axiom, [to be formulated in due course](HoTT-UF-Agda.html#univalence),
 is a type.
 
 [<sub>Table of contents ⇑</sub>](toc.html#contents)

@@ -44,8 +44,9 @@ with the formal, verified, mathematical development within *code*
 environments, and the usual mathematical discussion outside them. Most
 of this file is not Agda code, and is in markdown format, and the html
 web page is generated automatically from it using Agda and other
-tools. [Github](https://github.com/) pull requests by students to fix
-typos or mistakes and clarify ambiguities are welcome.
+tools. [Github](https://github.com/martinescardo/TypeTopology) pull
+requests by students to fix typos or mistakes and clarify ambiguities
+are welcome.
 
 These notes were originally developed for the
 [Midlands Graduate School 2019](http://events.cs.bham.ac.uk/mgs2019/).
@@ -242,12 +243,12 @@ starting points:
 
    - [Agda wiki](https://wiki.portal.chalmers.se/agda/pmwiki.php).
    - [Agda reference manual](https://agda.readthedocs.io/en/latest/getting-started/index.html).
-   - Agda [furher references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
+   - Agda [further references](https://wiki.portal.chalmers.se/agda/pmwiki.php?n=Main.Documentation).
    - [Cubical Agda blog post](https://homotopytypetheory.org/2018/12/06/cubical-agda/).
    - [Cubical Agda documentation](https://agda.readthedocs.io/en/latest/language/cubical.html#cubical).
 
 We have based these lecture notes
-on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001>).
+on the slides of our talk [*logic in univalent type theory*](https://www.newton.ac.uk/seminar/20170711100011001).
 
 [<sub>Table of contents ⇓</sub>](toc.html#contents)
 ### <a name="plan"></a> Choice of material
