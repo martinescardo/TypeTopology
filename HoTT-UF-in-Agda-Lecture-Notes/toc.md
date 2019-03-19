@@ -65,5 +65,5 @@ date : 2019-03-04
   1. [Appendix](Appendix.html)
      1. [Additional exercises](Appendix.html#moreexercises)
      1. [Solutions to additional exercises](Appendix.html#mlttexercisessol)
-     1. [Agda files automatically extracted from these notes](agda/)
+     1. [Agda files automatically extracted from these notes](https://github.com/martinescardo/TypeTopology/tree/master/HoTT-UF-in-Agda-Lecture-Notes/agda)
      1. [The sources for these notes](https://github.com/martinescardo/TypeTopology/tree/master/HoTT-UF-in-Agda-Lecture-Notes)
