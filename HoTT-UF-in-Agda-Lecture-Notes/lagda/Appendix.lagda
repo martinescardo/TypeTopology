@@ -26,7 +26,12 @@ open import Inhabitation
 
 Solutions are available [at the end](#mlttexercisessol).
 
-*Exercise.* A sequence of elements of a type `X` is just a function `ℕ → X`. Use [Cantor's diagonal argument](https://en.wikipedia.org/wiki/Cantor%27s_diagonal_argument) to show in Agda that the type of sequences of natural numbers is uncountable. Prove a positive version and then derive a negative version from it:
+*Exercise.* A sequence of elements of a type `X` is just a function `ℕ
+ → X`. Use [Cantor's diagonal
+ argument](https://en.wikipedia.org/wiki/Cantor%27s_diagonal_argument)
+ to show in Agda that the type of sequences of natural numbers is
+ uncountable. Prove a positive version and then derive a negative
+ version from it:
 
 \begin{code}
 positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ \(α : ℕ → ℕ) → (n : ℕ) → α ≢ e n
@@ -40,8 +45,9 @@ cantors-diagonal : ¬(Σ \(e : ℕ → (ℕ → ℕ)) → (α : ℕ → ℕ) →
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 \end{code}
 
-Universes are not cumulative in Agda, in the sense that from `X : 𝓤` we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.
-The usual approach is to consider an embeddings of universes into larger universes:
+Universes are not cumulative in Agda, in the sense that from `X : 𝓤`
+we would get `X : 𝓤⁺` or `X : 𝓤 ⊔ 𝓥`.  The usual approach is to
+consider embeddings of universes into larger universes:
 
 \begin{code}
 data Up {𝓤 : Universe} (𝓥 : Universe) (X : 𝓤 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
