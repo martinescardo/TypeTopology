@@ -1,7 +1,13 @@
+deploy
+agdatomd
+illiterator
+clean
 source/compileall
 source/working/*
 *.agdai
 *~
+*.hi
+*.o
 *.aux
 *.log
 *.out
@@ -14,7 +20,4 @@ c
 b
 e
 updateurl
-index.html
-index.lagda
 source/html/*
-clean

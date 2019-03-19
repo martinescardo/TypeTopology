@@ -1,0 +1,9 @@
+#!/bin/bash
+
+agda --html --html-highlight=code Appendix.lagda
+mv html/HoTT-UF-Agda.tex ../HoTT-UF-Agda.md
+mv html/MLTT-Agda.tex ../MLTT-Agda.md
+mv html/Universes.tex ../Universes.md
+mv html/Appendix.tex ../Appendix.md
+mv html/FunExt.tex ../FunExt.md
+mv html/Inhabitation.tex ../Inhabitation.md

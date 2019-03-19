@@ -1,0 +1,18 @@
+#!/bin/bash
+
+./generatehtml
+
+
+inotifywait -e close_write,moved_to,create -m . |
+while read -r directory events filename; do
+    if [ "$filename" = "HoTT-UF-Agda.lagda" ] ||
+       [ "$filename" = "Universes.lagda" ] ||
+       [ "$filename" = "Appendix.lagda" ] ||
+       [ "$filename" = "FunExt.lagda" ] ||
+       [ "$filename" = "Inhabitation.lagda" ] ||
+       [ "$filename" = "MLTT-Agda.lagda" ] ; then
+      date
+      ./generatehtml
+      echo "done"
+  fi
+done

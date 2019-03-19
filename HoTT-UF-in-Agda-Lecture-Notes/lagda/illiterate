@@ -1,0 +1,10 @@
+#!/bin/bash
+
+ghc --make illiterator.hs
+
+cat MLTT-Agda.lagda | ./illiterator > ../agda/MLTT-Agda.agda
+cat HoTT-UF-Agda.lagda | ./illiterator > ../agda/HoTT-UF-Agda.agda
+cat Universes.lagda | ./illiterator > ../agda/Universes.agda
+cat FunExt.lagda | ./illiterator > ../agda/FunExt.agda
+cat Appendix.lagda | ./illiterator > ../agda/Appendix.agda
+cat Inhabitation.lagda | ./illiterator > ../agda/Inhabitation.agda
