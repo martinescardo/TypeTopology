@@ -23,6 +23,6 @@ while read -r directory events filename; do
        [ "$filename" = "Appendix.lagda" ] ; then
       date
       generatemd
-    echo "done"
+      echo "done"
   fi
 done

@@ -1,7 +1,4 @@
 #!/bin/bash
-#!/bin/bash
-
-#!/bin/bash
 
 ghc --make illiterator.hs
 
@@ -17,6 +14,6 @@ while read -r directory events filename; do
        [ "$filename" = "Appendix.lagda" ] ; then
       date
       ./illiterate
-    echo "done"
+      echo "done"
   fi
 done
