@@ -4,7 +4,6 @@ cd lagda
 cd ..
 jekyll build
 cp -a _site/* ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
-cd ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/
 rm -rf ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/lagda
 rm -f ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/agda/*.agdai
 rm -f ~/public_html/HoTT-UF-in-Agda-Lecture-Notes/deploy
