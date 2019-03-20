@@ -179,7 +179,7 @@ excluded middle and the *univalent* axiom of choice.
 
 In these notes we will explore the above ideas, using Agda to write
 `MLTT` definitions, constructions, theorems and proofs, with
-univalence as an explicit assumption eaxch time it is needed. We will
+univalence as an explicit assumption each time it is needed. We will
 have a further assumption, the existence of certain subsingleton (or
 propositional, or truth-value) truncations in order to be able to deal
 with the distinction between property and data, and in particular with
