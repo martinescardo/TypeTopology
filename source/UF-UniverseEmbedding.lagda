@@ -82,7 +82,7 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
         (f X ≃ f P)  ≃⟨ Eq-Eq-cong fe (i X) (i P) ⟩
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
         (X ≡ P)      ■
-  b : (Σ \(X : 𝓤 ̇ ) → f X ≡ f P) ≃ (Σ \(X : 𝓤 ̇) → X ≡ P)
+  b : (Σ \(X : 𝓤 ̇ ) → f X ≡ f P) ≃ (Σ \(X : 𝓤 ̇ ) → X ≡ P)
   b = Σ-cong a
   c : is-prop (Σ \(X : 𝓤 ̇ ) → f X ≡ f P)
   c = equiv-to-prop b (singleton-types'-are-props P)

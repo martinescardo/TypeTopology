@@ -140,7 +140,7 @@ without the need of any assumption:
 
 \begin{code}
 
-cdd : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → Π-compact X → is-discrete Y → is-discrete(X → Y)
+cdd : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Π-compact X → is-discrete Y → is-discrete(X → Y)
 cdd {𝓤} {𝓥} {X} {Y} c d f g = h (c p)
  where
   p : X → 𝟚
@@ -176,10 +176,10 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 \begin{code}
 
-dcc : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
+dcc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
 dcc {𝓤} re d = d𝟚-Πc (retract-discrete-discrete (rpe (fe 𝓤 𝓤₀) re) d)
 
-ddc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (y₀ y₁ : Y) → y₀ ≢ y₁
+ddc' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y₀ y₁ : Y) → y₀ ≢ y₁
      → is-discrete Y → is-discrete(X → Y) → Π-compact X
 ddc' y₀ y₁ ne dy = dcc (𝟚-retract-of-discrete ne dy)
 
@@ -194,7 +194,7 @@ Compactness of images:
 
 open ImageAndSurjection pt
 
-surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
+surjection-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f → ∃-compact X → ∃-compact Y
 surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
  where
@@ -211,11 +211,11 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (∥∥-functor h s)
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-a-prop k) u)
 
-image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
+image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → ∃-compact X → ∃-compact (image f)
 image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-surjection f)
 
-surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
+surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f → Π-compact X → Π-compact Y
 surjection-Π-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
  where
@@ -223,27 +223,27 @@ surjection-Π-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   g (inl s) = inl (surjection-induction f su (λ y → q y ≡ ₁) (λ _ → 𝟚-is-set) s)
   g (inr u) = inr (contrapositive (λ φ x → φ (f x)) u)
 
-retract-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+retract-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → retract Y of X → ∃-compact X → ∃-compact Y
 retract-∃-compact (f , hass) = surjection-∃-compact f (retraction-surjection f hass)
 
-retract-∃-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+retract-∃-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                    → ∥ retract Y of X ∥ → ∃-compact X → ∃-compact Y
 retract-∃-compact' t c = ∥∥-rec ∃-compactness-is-a-prop (λ r → retract-∃-compact r c) t
 
-image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
+image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → Π-compact X → Π-compact (image f)
 image-Π-compact f = surjection-Π-compact (corestriction f) (corestriction-surjection f)
 
-retract-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+retract-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → retract Y of X → Π-compact X → Π-compact Y
 retract-Π-compact (f , hass) = surjection-Π-compact f (retraction-surjection f hass)
 
-retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → ∥ retract Y of X ∥ → Π-compact X → Π-compact Y
 retract-Π-compact' t c = ∥∥-rec Π-compactness-is-a-prop (λ r → retract-Π-compact r c) t
 
-i2c2c : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+i2c2c : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → X → Π-compact (X → Y) → Π-compact Y
 i2c2c x = retract-Π-compact (pdrc x)
 
@@ -349,13 +349,13 @@ corollaries:
 
 \begin{code}
 
-tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇} → is-totally-separated X → retract 𝟚 of Y
+tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇ } → is-totally-separated X → retract 𝟚 of Y
      → Π-compact (X → Y) → is-discrete X
 tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (rpe (fe 𝓤₀ 𝓤₀) r) c)
 
 open TotallySeparatedReflection fe pt
 
-tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → retract 𝟚 of Y
+tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract 𝟚 of Y
       → Π-compact (X → Y) → is-discrete (𝕋 X)
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
@@ -397,7 +397,7 @@ Closure of compactness under sums (and hence binary products):
 
 \begin{code}
 
-Π-compact-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+Π-compact-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                          → Π-compact X → ((x : X) → Π-compact (Y x))
                          → Π-compact (Σ Y)
 Π-compact-closed-under-Σ {𝓤} {𝓥} {X} {Y} c d p = g e
@@ -777,7 +777,7 @@ E : (X → 𝟚) → 𝟚.
 
 \begin{code}
 
-Κ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → Y → (X → Y)
+Κ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y)
 Κ y x = y
 
 \end{code}
@@ -1058,22 +1058,22 @@ Images with upper case:
 
 \begin{code}
 
-Image : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
-     → (X → Y) → (X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
+Image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+     → (X → Y) → (X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
 Image f A = λ y → ∃ \x → A x × (f x ≡ y)
 
-is-clopen-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-clopen-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
-being-clopen-map-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → FunExt
+being-clopen-map-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → FunExt
                            → (f : X → Y) → is-prop(is-clopen-map f)
 being-clopen-map-is-a-prop {𝓤} {𝓥} fe f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ p → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
             (λ y → decidability-of-prop-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-a-prop))
 
-fst : (A : 𝓤 ̇ ) (X : 𝓥 ̇) → A × X → A
+fst : (A : 𝓤 ̇ ) (X : 𝓥 ̇ ) → A × X → A
 fst _ _ = pr₁
 
 ∃-compact-clopen-projections : (X : 𝓤 ̇ )

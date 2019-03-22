@@ -38,7 +38,7 @@ double-𝓛-charac : (X : 𝓤 ̇ )
                                    × is-prop P
 double-𝓛-charac X = Σ-cong (λ P → ×-cong (γ X P) (≃-refl (is-prop P)))
  where
-  γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇) → (P → 𝓛 X) ≃ (Σ \(Q : P → 𝓣 ̇) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
+  γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → (P → 𝓛 X) ≃ (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
   γ X P = (P → Σ \(Q : 𝓣 ̇ ) → (Q → X) × is-prop Q)                               ≃⟨ ΠΣ-distr-≃ ⟩
           (Σ \(Q : P → 𝓣 ̇ ) → (p : P) → ((Q p → X) × is-prop (Q p)))             ≃⟨ Σ-cong (λ Q → →×) ⟩
           (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p))) ■
@@ -85,7 +85,7 @@ following two laws:
 𝓛-alg-Law₀ {𝓤} {X} ∐ = (x : X) → ∐ 𝟙-is-prop (λ (p : 𝟙) → x) ≡ x
 
 𝓛-alg-Law₁ : {X : 𝓤 ̇ } → joinop X → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-alg-Law₁ {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
+𝓛-alg-Law₁ {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P) (j : (p : P) → is-prop (Q p)) (f : Σ Q → X)
                           → ∐ (Σ-is-prop i j) f ≡ ∐ i (λ p → ∐ (j p) (λ q → f (p , q)))
 
 \end{code}
@@ -145,7 +145,7 @@ for all f:P→X.
 
 \begin{code}
 
-𝓛-morphism-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+𝓛-morphism-charac : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     (s : 𝓛 X → X) (t : 𝓛 Y → Y)
                     (h : X → Y)
 
@@ -166,7 +166,7 @@ We name the other two projections of 𝓛-alg:
 𝓛-alg-const (∐ , κ , ι) = κ
 
 𝓛-alg-iterated : {X : 𝓤 ̇ } (A : 𝓛-alg X)
-                 (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇) (i : is-prop P) (j : (p : P) → is-prop (Q p))
+                 (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P) (j : (p : P) → is-prop (Q p))
                  (f : Σ Q → X)
                → ∐ A (Σ-is-prop i j) f ≡ ∐ A i (λ p → ∐ A (j p) (λ q → f (p , q)))
 𝓛-alg-iterated (∐ , κ , ι) = ι
@@ -357,7 +357,7 @@ operations. More generally:
   ∐· i f x = ∐ (α x) i (λ p → f p x)
   l₀ : (φ : Π A) → ∐· 𝟙-is-prop (λ p → φ) ≡ φ
   l₀ φ = dfunext fe (λ x → law₀ (α x) (φ x))
-  l₁ : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇)
+  l₁ : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ )
        (i : is-prop P) (j : (p : P) → is-prop (Q p))
        (f : Σ Q → Π A)
       →
@@ -384,7 +384,7 @@ universe-is-algebra-Σ ua = sum , k , ι
   sum {P} i = Σ
   k : (X : 𝓣 ̇ ) → Σ (λ p → X) ≡ X
   k X = eqtoid ua (𝟙 × X) X 𝟙-lneutral
-  ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇) (i : is-prop P)
+  ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
       (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
     → Σ f ≡ Σ (λ p → Σ (λ q → f (p , q)))
   ι P Q i j f = eqtoid ua _ _ Σ-assoc
@@ -398,7 +398,7 @@ universe-is-algebra-Π ua = prod , k , ι
   prod {P} i = Π
   k : (X : 𝓣 ̇ ) → Π (λ p → X) ≡ X
   k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (funext-from-univalence ua)))
-  ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇) (i : is-prop P)
+  ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
       (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
     → Π f ≡ Π (λ p → Π (λ q → f (p , q)))
   ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe fe)

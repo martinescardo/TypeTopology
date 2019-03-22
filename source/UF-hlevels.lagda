@@ -36,7 +36,7 @@ props-have-all-hlevels zero     P i = i
 props-have-all-hlevels (succ n) P i = λ x x' → props-have-all-hlevels n (x ≡ x') (props-are-sets i)
 
 hlevels-closed-under-Σ : (n : ℕ)
-                        → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇)
+                        → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
                         → X is-of-hlevel n
                         → ((x : X) → (Y x) is-of-hlevel n)
                         → (Σ Y) is-of-hlevel n
@@ -56,7 +56,7 @@ hlevels-closed-under-Σ {𝓤} (succ n) X Y l m = γ
            (λ p → m (pr₁ τ) (transport Y p (pr₂ σ)) (pr₂ τ))
 
 hlevels-closed-under-Π : (n : ℕ)
-                       → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇)
+                       → (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
                        → ((x : X) → (Y x) is-of-hlevel n)
                        → (Π Y) is-of-hlevel n
 hlevels-closed-under-Π {𝓤} zero X Y m = Π-is-prop (fe 𝓤 𝓤) m

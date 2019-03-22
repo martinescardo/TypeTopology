@@ -40,7 +40,7 @@ open import UF-FunExt
 open import UF-Univalence
 
 𝓕-equiv-particular : funext 𝓣 (𝓣 ⁺) → is-univalent 𝓣
-                   → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇)
+                   → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
 𝓕-equiv-particular = type-classifier.classification-equivalence
 
 open import UF-Resizing
@@ -50,7 +50,7 @@ open import UF-UA-FunExt
 open import UF-UniverseEmbedding
 open import UF-EquivalenceExamples
 
-𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ Σ \(A : X → 𝓣 ⊔ 𝓤 ̇) → (Σ A) has-size 𝓣
+𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣
 𝓕-equiv {𝓤} ua X = qinveq χ (T , Tχ , χT)
  where
   fe : FunExt

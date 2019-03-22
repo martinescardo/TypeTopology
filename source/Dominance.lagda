@@ -29,7 +29,7 @@ D4 : (𝓤 ̇ → 𝓤 ̇ ) → 𝓤 ̇
 D4 d = d 𝟙
 
 D5 : (𝓤 ̇ → 𝓤 ̇ ) → 𝓤⁺ ̇
-D5 d = (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇) → d P → ((p : P) → d(Q p)) → d(Σ Q)
+D5 d = (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇ ) → d P → ((p : P) → d(Q p)) → d(Σ Q)
 
 is-dominance : (𝓤 ̇ → 𝓤 ̇ ) → 𝓤⁺ ̇
 is-dominance d = D2 d × D3 d × D4 d × D5 d
@@ -49,7 +49,7 @@ dominant-types-are-props (_ , (_ , (disp , _))) = disp
 𝟙-is-dominant : (D : Dominance) → is-dominant D 𝟙
 𝟙-is-dominant (_ , (_ , (_ , (oisd , _)))) = oisd
 
-dominant-closed-under-Σ : (D : Dominance) → (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇)
+dominant-closed-under-Σ : (D : Dominance) → (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇ )
                         → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
@@ -118,7 +118,7 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
  η : ∀ {𝓥} {X : 𝓥 ̇ } → X → L X
  η x = 𝟙 , 𝟙-is-dominant D , λ _ → x
 
- extension : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇} → (X ⇀ Y) → (L X → L Y)
+ extension : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → (X ⇀ Y) → (L X → L Y)
  extension {𝓥} {𝓦} {X} {Y} f (P , (isdp , φ)) = (Q , (isdq , γ))
   where
    Q : 𝓤 ̇
@@ -134,10 +134,10 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
    γ : Q → Y
    γ (p , def) = value(f (φ p)) def
 
- _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇} → (X ⇀ Y) → (L X → L Y)
+ _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → (X ⇀ Y) → (L X → L Y)
  f ♯ = extension f
 
- _◌_ : ∀ {𝓥 𝓦 𝓣} {X : 𝓥 ̇ } {Y : 𝓦 ̇} {Z : 𝓣 ̇}
+ _◌_ : ∀ {𝓥 𝓦 𝓣} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ }
      → (Y ⇀ Z) → (X ⇀ Y) → (X ⇀ Z)
  g ◌ f = g ♯ ∘ f
 
@@ -148,11 +148,11 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
  kleisli-law₀ : ∀ {𝓥} {X : 𝓥 ̇ } → extension (η {𝓥} {X}) ∼ id
  kleisli-law₀ {𝓥} {X} (P , (isdp , φ)) = {!!}
 
- kleisli-law₁ : ∀ {𝓥 𝓦)} {X : 𝓥 ̇ } {Y : 𝓦 ̇} (f : X ⇀ Y) → extension f ∘ η ∼ f
+ kleisli-law₁ : ∀ {𝓥 𝓦)} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } (f : X ⇀ Y) → extension f ∘ η ∼ f
  kleisli-law₁ {𝓥} {𝓦} {X} {Y} f x = {!!}
 
 
- kleisli-law₂ : ∀ {𝓥 𝓦) T} {X : 𝓥 ̇ } {Y : 𝓦 ̇} {Z : 𝓣 ̇} (f : X ⇀ Y) (g : Y ⇀ Z)
+ kleisli-law₂ : ∀ {𝓥 𝓦) T} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } {Z : 𝓣 ̇ } (f : X ⇀ Y) (g : Y ⇀ Z)
               → (g ♯ ∘ f)♯ ∼ g ♯ ∘ f ♯
  kleisli-law₂ {𝓥} {𝓦} {𝓣} {X} {Y} {Z} f g (P , (isdp , φ)) = {!!}
  -}

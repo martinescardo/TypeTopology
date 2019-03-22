@@ -28,7 +28,7 @@ open import UF-EquivalenceExamples
 naive-funext-gives-funext' : naive-funext 𝓤 (𝓤 ⊔ 𝓥) → naive-funext 𝓤 𝓤 → funext 𝓤 𝓥
 naive-funext-gives-funext' {𝓤} {𝓥} nfe nfe' = funext-via-singletons γ
  where
-  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
+  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
   γ X A φ = retract-of-singleton (r , s , rs) iss
    where
     f : Σ A → X

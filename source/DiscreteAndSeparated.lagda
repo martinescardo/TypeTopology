@@ -77,7 +77,7 @@ Standard examples:
    step (inl r) = inl(ap succ r)
    step (inr f) = inr(λ s → f(succ-lc s))
 
-+discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
++discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → is-discrete X → is-discrete Y → is-discrete (X + Y)
 +discrete d e (inl x) (inl x') =
     Cases (d x x')
@@ -108,7 +108,7 @@ discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
   f (inl r) = inr (λ s → φ(r ∙ s))
   f (inr γ) = inl γ
 
-retract-discrete-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+retract-discrete-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → retract Y of X → is-discrete X → is-discrete Y
 retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
@@ -140,7 +140,7 @@ extensionality. More generally:
 is-separated : 𝓤 ̇ → 𝓤 ̇
 is-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
-Π-is-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+Π-is-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → ((x : X) → is-separated(Y x)) → is-separated(Π Y)
 Π-is-separated fe s f g h = dfunext fe lemma₂
  where
@@ -157,7 +157,7 @@ discrete-is-separated d x y = ¬¬-elim(d x y)
 𝟚-is-separated : is-separated 𝟚
 𝟚-is-separated = discrete-is-separated 𝟚-is-discrete
 
-subtype-of-separated-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (m : X → Y)
+subtype-of-separated-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                   → left-cancellable m → is-separated Y → is-separated X
 subtype-of-separated-is-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
 
@@ -171,20 +171,20 @@ below.)
 
 infix 21 _♯_
 
-_♯_ : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇} → (f g : (x : X) → Y x) → 𝓤 ⊔ 𝓥 ̇
+_♯_ : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ } → (f g : (x : X) → Y x) → 𝓤 ⊔ 𝓥 ̇
 f ♯ g = Σ \x → f x ≢ g x
 
 
-apart-is-different : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+apart-is-different : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → {f g : (x : X) → Y x} → f ♯ g → f ≢ g
 apart-is-different (x , φ) r = φ (ap (λ - → - x) r)
 
 
-apart-is-symmetric : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇}
+apart-is-symmetric : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
                    → {f g : (x : X) → Y x} → f ♯ g → g ♯ f
 apart-is-symmetric (x , φ)  = (x , (φ ∘ _⁻¹))
 
-apart-is-cotransitive : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇}
+apart-is-cotransitive : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
                      → ((x : X) → is-discrete(Y x))
                      → (f g h : (x : X) → Y x)
                      → f ♯ g → f ♯ h  +  h ♯ g
@@ -203,7 +203,7 @@ assuming extensionality:
 
 \begin{code}
 
-tight : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
+tight : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
       → ((x : X) → is-separated(Y x))
       → (f g : (x : X) → Y x)
       → ¬(f ♯ g) → f ≡ g
@@ -214,7 +214,7 @@ tight fe s f g h = dfunext fe lemma₁
   lemma₁ : ∀ x → f x ≡ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
 
-tight' : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇}
+tight' : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
        → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
 tight' fe d = tight fe (λ x → discrete-is-separated(d x))
 
@@ -225,7 +225,7 @@ easy:
 
 \begin{code}
 
-binary-product-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+binary-product-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                             → is-separated X → is-separated Y → is-separated(X × Y)
 binary-product-is-separated s t (x , y) (x' , y') φ =
  lemma(lemma₀ φ)(lemma₁ φ)
@@ -245,7 +245,7 @@ special case is also easy:
 
 \begin{code}
 
-binary-sum-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+binary-sum-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                         → is-separated X → is-separated Y → is-separated(X + Y)
 binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
  where
@@ -293,7 +293,7 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
 
 \begin{code}
 
-qinvs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y) → qinv f
+qinvs-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f
                             → (x : X) → is-isolated x → is-isolated (f x)
 qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , ε , η) x i y = h (i (g y))
  where
@@ -301,7 +301,7 @@ qinvs-preserve-isolatedness {𝓤} {𝓥} {X} {Y} f (g , ε , η) x i y = h (i (
   h (inl p) = inl (ap f p ∙ η y)
   h (inr u) = inr (contrapositive (λ (q : f x ≡ y) → (ε x)⁻¹ ∙ ap g q) u)
 
-equivalences-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y) → is-equiv f
+equivalences-preserve-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f
                                    → (x : X) → is-isolated x → is-isolated (f x)
 equivalences-preserve-isolatedness f e = qinvs-preserve-isolatedness f (equivs-are-qinvs f e)
 

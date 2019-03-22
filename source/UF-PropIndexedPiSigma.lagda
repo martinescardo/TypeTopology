@@ -12,13 +12,13 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Equiv
 
-Π-proj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} (a : X) → Π Y → Y a
+Π-proj : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (a : X) → Π Y → Y a
 Π-proj a f = f a
 
-Π-incl : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} → is-prop X → (a : X) → Y a → Π Y
+Π-incl : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X → (a : X) → Y a → Π Y
 Π-incl {𝓤} {𝓥} {X} {Y} i a y x = transport Y (i a x) y
 
-Π-proj-is-equiv : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+Π-proj-is-equiv : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                 → is-prop X → (a : X) → is-equiv (Π-proj a)
 Π-proj-is-equiv {𝓤} {𝓥} fe {X} {Y} i a = qinvs-are-equivs (Π-proj a) (Π-incl i a , ε , η)
  where
@@ -33,11 +33,11 @@ open import UF-Equiv
   ε : (f : Π Y) → Π-incl i a (Π-proj a f) ≡ f
   ε φ = dfunext fe (ε' φ)
 
-prop-indexed-product : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+prop-indexed-product : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                      → is-prop X → (a : X) → Π Y ≃ Y a
 prop-indexed-product fe i a = Π-proj a , Π-proj-is-equiv fe i a
 
-prop-indexed-product-one : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} → (X → 𝟘 {𝓦})
+prop-indexed-product-one : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (X → 𝟘 {𝓦})
                          → Π Y ≃ 𝟙 {𝓣}
 prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = qinveq unique-to-𝟙 (g , ε , η)
  where
@@ -57,7 +57,7 @@ Added 18th December 2017.
 
 \begin{code}
 
-prop-indexed-sum : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+prop-indexed-sum : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                  → is-prop X → (a : X) → Σ Y ≃ Y a
 prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
  where
@@ -74,7 +74,7 @@ prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
   ε : (σ : Σ Y) → g(f σ) ≡ σ
   ε (x , y) = to-Σ-≡ (i a x , c x y (i x a))
 
-prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} → (X → 𝟘 {𝓦})
+prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (X → 𝟘 {𝓦})
                       → Σ Y ≃ (𝟘 {𝓣})
 prop-indexed-sum-zero {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
  where

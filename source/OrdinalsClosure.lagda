@@ -109,7 +109,7 @@ More Cantor-retract properties are in the module SquashedCantor.
 
 \begin{code}
 
-Σ-retract-of-ℕ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+Σ-retract-of-ℕ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → retract X of ℕ
                → ((x : X) → retract (Y x) of ℕ)
                → retract (Σ Y) of ℕ

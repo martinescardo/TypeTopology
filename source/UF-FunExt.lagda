@@ -21,13 +21,13 @@ naive-funext here.
 \begin{code}
 
 naive-funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
-naive-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇} {f g : X → Y} → f ∼ g → f ≡ g
+naive-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → f ∼ g → f ≡ g
 
 DN-funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
-DN-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {f g : Π A} → f ∼ g → f ≡ g
+DN-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {f g : Π A} → f ∼ g → f ≡ g
 
 funext : ∀ 𝓤 𝓥 → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
-funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (f g : Π A) → is-equiv (happly' f g)
+funext 𝓤 𝓥 = {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A) → is-equiv (happly' f g)
 
 FunExt : 𝓤ω
 FunExt = (𝓤 𝓥 : Universe) → funext 𝓤 𝓥
@@ -35,7 +35,7 @@ FunExt = (𝓤 𝓥 : Universe) → funext 𝓤 𝓥
 FunExt' : 𝓤ω
 FunExt' = {𝓤 𝓥 : Universe} → funext 𝓤 𝓥
 
-≃-funext : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (f g : Π A)
+≃-funext : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f g : Π A)
          → (f ≡ g) ≃ (f ∼ g)
 ≃-funext fe f g = happly' f g , fe f g
 
@@ -45,20 +45,20 @@ dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 nfunext : funext 𝓤 𝓥 → naive-funext 𝓤 𝓥
 nfunext fe = dfunext fe
 
-happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                 (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
               → happly (dfunext fe h) ≡ h
 happly-funext fe f g = pr₂(pr₁(fe f g))
 
-funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (fe : funext 𝓤 𝓥)
+funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥)
          → (f g : Π A) → left-cancellable (dfunext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
 
-happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (fe : funext 𝓤 𝓥) (f g : Π A)
+happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
          → left-cancellable(happly' f g)
 happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
 
-ap-funext : {X : 𝓥 ̇ } {Y : 𝓦 ̇} (f g : X → Y) {A : 𝓦' ̇} (k : Y → A) (h : f ∼ g)
+ap-funext : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } (f g : X → Y) {A : 𝓦' ̇ } (k : Y → A) (h : f ∼ g)
           → (fe : funext 𝓥 𝓦) (x : X) → ap (λ (- : X → Y) → k (- x)) (dfunext fe h) ≡ ap k (h x)
 ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ≡⟨ refl ⟩
                          ap (k ∘ (λ - → - x)) (dfunext fe h)  ≡⟨ (ap-ap (λ - → - x) k (dfunext fe h))⁻¹ ⟩
@@ -73,7 +73,7 @@ https://groups.google.com/forum/#!msg/homotopytypetheory/VaLJM7S4d18/Lezr_ZhJl6U
 
 \begin{code}
 
-transport-funext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓦 ̇) (fe : funext 𝓤 𝓥)
+transport-funext : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (P : (x : X) → A x → 𝓦 ̇ ) (fe : funext 𝓤 𝓥)
                    (f g : Π A)
                    (φ : (x : X) → P x (f x))
                    (h : f ∼ g)

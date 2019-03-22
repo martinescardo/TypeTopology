@@ -133,7 +133,7 @@ has-size-is-a-prop {𝓤} ua X 𝓥 = c
   a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 X)  ■
-  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 X)
+  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇ ) → lift 𝓤 Y ≡ lift 𝓥 X)
   b = Σ-cong a
   c : is-prop (Σ \(Y : 𝓥 ̇ ) → Y ≃ X)
   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
@@ -167,7 +167,7 @@ prop-has-size-is-a-prop {𝓤} pe fe P i 𝓥 = c
   a Y = (Y ≃ P)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 P)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 P)  ≃⟨ ≃-sym (prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (lift 𝓤 Y) (lift 𝓥 P) j) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 P)  ■
-  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ P) ≃ (Σ \(Y : 𝓥 ̇) → lift 𝓤 Y ≡ lift 𝓥 P)
+  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ P) ≃ (Σ \(Y : 𝓥 ̇ ) → lift 𝓤 Y ≡ lift 𝓥 P)
   b = Σ-cong a
   c : is-prop (Σ \(Y : 𝓥 ̇ ) → Y ≃ P)
   c = equiv-to-prop b (prop-fiber-lift pe fe (lift 𝓥 P) j)

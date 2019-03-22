@@ -44,7 +44,7 @@ is-truth-value = is-prop
 
 \begin{code}
 
-Σ-is-prop : {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+Σ-is-prop : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
 Σ-is-prop {𝓤} {𝓥} {X} {A} i j (x , a) (y , b) =
   to-Σ-≡ (i x y , j y (transport A (i x y) a) b)
@@ -138,14 +138,14 @@ We now consider some machinery for dealing with the above notions:
 
 \begin{code}
 
-constant : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+constant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
 constant f = ∀ x y → f x ≡ f y
 
-constant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
+constant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
                   → constant f → constant (g ∘ f)
 constant-pre-comp f g c x x' = ap g (c x x')
 
-constant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇} (f : X → Y) (g : Y → Z)
+constant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
                    → constant g → constant (g ∘ f)
 constant-post-comp f g c x x' = c (f x) (f x')
 
@@ -257,24 +257,24 @@ singleton-types-are-props x = singletons-are-props (singleton-types-are-singleto
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ \y → y ≡ x
 
-×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y ))) ,
                                (λ x y y' → ap pr₂ (i (x , y) (x  , y')))
 
-×-prop-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+×-prop-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
-×-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+×-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → is-prop X → is-prop Y → is-prop(X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
-subtype-of-prop-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (m : X → Y)
+subtype-of-prop-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-prop Y → is-prop X
 subtype-of-prop-is-a-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
 
-subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (m : X → Y)
+subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
 subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f , g)
  where
@@ -283,23 +283,23 @@ subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f 
   g : {x x' : X} (r s : x ≡ x') → f r ≡ f s
   g r s = ap i (h (ap m r) (ap m s))
 
-pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} → ({x : X} → is-prop(Y x))
+pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop(Y x))
        → left-cancellable (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
-subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇)
+subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
                          → ({x : X} → is-prop(Y x))
                          → is-set(Σ \(x : X) → Y x)
 subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
-inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
+inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
 inl-lc-is-section refl = refl
 
-inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {y y' : Y} → (p : inr {𝓤} {𝓥} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
+inr-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y} → (p : inr {𝓤} {𝓥} {X} {Y} y ≡ inr y') → p ≡ ap inr (inr-lc p)
 inr-lc-is-section refl = refl
 
-+-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) → is-set X → is-set Y → is-set (X + Y)
++-is-set : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-set X → is-set Y → is-set (X + Y)
 +-is-set X Y i j {inl x} {inl x'} p q = inl-lc-is-section p ∙ r ∙ (inl-lc-is-section q)⁻¹
  where
   r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
@@ -340,7 +340,7 @@ proposition is a proposition:
 
 \begin{code}
 
-sum-of-contradictory-props : {P : 𝓤 ̇ } {Q : 𝓥 ̇}
+sum-of-contradictory-props : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
                            → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop(P + Q)
 sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = go
  where
@@ -392,22 +392,22 @@ Unique existence
 ∃! : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 ∃! A = is-singleton (Σ A)
 
-∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (x : X) (a : A x) → ((σ : Σ A) → (x , a) ≡ σ) → ∃! A
+∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x) → ((σ : Σ A) → (x , a) ≡ σ) → ∃! A
 ∃!-intro x a o = (x , a) , o
 
-∃!-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} → ∃! A → X
+∃!-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → X
 ∃!-witness ((x , a) , o) = x
 
-∃!-is-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (u : ∃! A) → A(∃!-witness u)
+∃!-is-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → A(∃!-witness u)
 ∃!-is-witness ((x , a) , o) = a
 
-description : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} → ∃! A → Σ A
+description : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → Σ A
 description (σ , o) = σ
 
-∃!-uniqueness' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (u : ∃! A) → (σ : Σ A) → description u ≡ σ
+∃!-uniqueness' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (σ : Σ A) → description u ≡ σ
 ∃!-uniqueness' ((x , a) , o) = o
 
-∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇} (u : ∃! A) → (x : X) (a : A x) → description u ≡ (x , a)
+∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (x : X) (a : A x) → description u ≡ (x , a)
 ∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
 
 \end{code}

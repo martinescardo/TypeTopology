@@ -301,7 +301,7 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
+retract-accessible : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
                        (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
@@ -319,7 +319,7 @@ retract-accessible {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ = tra
       m : is-accessible _≺_ (r (s y))
       m = τ (s y) (φ x y l)
 
-retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇)
+retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
                        (r : X → Y) (s : Y → X)
                     → ((y : Y) → r(s y) ≡ y)
                     → ((x : X) (y : Y) → y ≺ r x → s y < x)

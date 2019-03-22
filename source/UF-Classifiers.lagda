@@ -3,7 +3,7 @@ Martin Escardo, 20th August 2018
 We consider type and subtype classifiers, and discuss an obvious
 generalization which is left undone for the moment.
 
- * (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇)
+ * (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
  * (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
 
 \begin{code}
@@ -30,10 +30,10 @@ module type-classifier
         (Y : 𝓤 ̇ )
        where
 
- χ : (Σ \(X : 𝓤 ̇ ) → X → Y)  → (Y → 𝓤 ̇)
+ χ : (Σ \(X : 𝓤 ̇ ) → X → Y)  → (Y → 𝓤 ̇ )
  χ (X , f) = fiber f
 
- T : (Y → 𝓤 ̇ ) → Σ \(X : 𝓤 ̇) → X → Y
+ T : (Y → 𝓤 ̇ ) → Σ \(X : 𝓤 ̇ ) → X → Y
  T A = Σ A , pr₁
 
  χT : (A : Y → 𝓤 ̇ ) → χ(T A) ≡ A
@@ -73,7 +73,7 @@ module type-classifier
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
 
- classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇)
+ classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
  classification-equivalence = χ , χ-is-equivalence
 
 

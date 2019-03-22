@@ -27,7 +27,7 @@ record propositional-truncations-exist : 𝓤ω where
   ∥_∥ : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
   ∥∥-is-a-prop : {𝓤 : Universe} {X : 𝓤 ̇ } → is-prop ∥ X ∥
   ∣_∣ : {𝓤 : Universe} {X : 𝓤 ̇ } → X → ∥ X ∥
-  ∥∥-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇} → is-prop P → (X → P) → ∥ X ∥ → P
+  ∥∥-rec : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ } → is-prop P → (X → P) → ∥ X ∥ → P
  infix 0 ∥_∥
  infix 0 ∣_∣
 
@@ -47,7 +47,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    g : is-prop X × ∥ X ∥ → is-singleton X
    g (i , s) = ∥∥-rec i id s , i (∥∥-rec i id s)
 
- ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → ∥ X ∥ → ∥ Y ∥
+ ∥∥-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → ∥ X ∥ → ∥ Y ∥
  ∥∥-functor f = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ f x ∣)
 
  ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -56,10 +56,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥
 
- left-fails-then-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇} → is-prop Q → P ∨ Q → ¬ P → Q
+ left-fails-then-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop Q → P ∨ Q → ¬ P → Q
  left-fails-then-right-holds i d u = ∥∥-rec i (λ d → Left-fails-then-right-holds d u) d
 
- right-fails-then-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇} → is-prop P → P ∨ Q → ¬ Q → P
+ right-fails-then-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop P → P ∨ Q → ¬ Q → P
  right-fails-then-left-holds i d u = ∥∥-rec i (λ d → Right-fails-then-left-holds d u) d
 
  pt-gdn : {X : 𝓤 ̇ } → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P
@@ -71,7 +71,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  pt-dn : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
  pt-dn s = pt-gdn s 𝟘 𝟘-is-prop
 
- binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
+ binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ∥∥-rec ∥∥-is-a-prop (λ x → ∥∥-rec ∥∥-is-a-prop (λ y → ∣ x , y ∣) t) s
 
  infixr 0 _∨_

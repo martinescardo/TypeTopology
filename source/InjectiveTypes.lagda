@@ -138,10 +138,10 @@ We rename the type of natural transformations:
 
 \begin{code}
 
-_≾_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+_≾_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 _≾_ = Nat
 
-_≾_-explicitly : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇)
+_≾_-explicitly : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
                → A ≾ B ≡ ((x : X) → A x → B x)
 _≾_-explicitly A B = refl
 
@@ -166,7 +166,7 @@ p : x ≡ y,
 
 \begin{code}
 
-≾-naturality : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇) (τ : A ≾ B)
+≾-naturality : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (τ : A ≾ B)
              → {x y : X} (p : x ≡ y) → τ y ∘ transport A p ≡ transport B p ∘ τ x
 ≾-naturality = Nats-are-natural
 
@@ -368,8 +368,8 @@ We now introduce the notations f / j and f ∖ j for the Π- and
 
 \begin{code}
 
-_/_ _∖_ :  {X : 𝓤 ̇ } {Y : 𝓥 ̇}
-        → (X → 𝓦 ̇ ) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇)
+_/_ _∖_ :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+        → (X → 𝓦 ̇ ) → (X → Y) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
 f / j = Π-extension f j
 f ∖ j = Σ-extension f j
 
@@ -383,14 +383,14 @@ A different notation reflects a different view of these processes:
 
 \begin{code}
 
-inverse-image :  {X : 𝓤 ̇ } {Y : 𝓥 ̇}
-              → (X → Y) → (Y → 𝓦 ̇ ) → (X → 𝓦 ̇)
+inverse-image :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (X → Y) → (Y → 𝓦 ̇ ) → (X → 𝓦 ̇ )
 
 inverse-image f v = v ∘ f
 
 
-Π-image Σ-image :  {X : 𝓤 ̇ } {Y : 𝓥 ̇}
-                → (X → Y) → ((X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇))
+Π-image Σ-image :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                → (X → Y) → ((X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ ))
 
 Π-image j = λ f → Π-extension f j
 
@@ -411,7 +411,7 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
 
 \begin{code}
 
-Σ-image-of-singleton-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (j : X → Y) (x : X) (y : Y)
+Σ-image-of-singleton-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (j : X → Y) (x : X) (y : Y)
                            → Σ-image j (Id x) y ≃ Id (j x) y
 Σ-image-of-singleton-lemma {𝓤} {𝓥} {X} {Y} j x y = (f , (g , fg) , (g , gf))
  where
@@ -427,7 +427,7 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
   fg : (p : Id (j x) y) → f(g p) ≡ p
   fg refl = refl
 
-Σ-image-of-singleton-lemma' : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (j : X → Y) (x : X) (y : Y)
+Σ-image-of-singleton-lemma' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (j : X → Y) (x : X) (y : Y)
                             → (((Id x) ∖ j) y) ≃ (j x ≡ y)
 Σ-image-of-singleton-lemma' = Σ-image-of-singleton-lemma
 
@@ -453,36 +453,36 @@ There is more to do about this.
 
 \begin{code}
 
-Π-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y)
+Π-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                          → is-embedding j
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ∼ f
 Π-extension-is-extension ua j e f x = eqtoid ua _ _ (Π-extension-in-range f j e x)
 
 Π-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
-                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y)
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                           → is-embedding j
                           → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ≡ f
 Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
 
 Π-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺) → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
-                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y)
+                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                            → is-embedding j
                            → (λ f → (f / j) ∘ j) ≡ id
 Π-extension-is-extension'' ua fe fe' j e = dfunext fe' (Π-extension-is-extension' ua fe j e)
 
-Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y)
+Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                          → is-embedding j
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ∼ f
 Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
 Σ-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
-                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y)
+                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                           → is-embedding j
                           → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ≡ f
 Σ-extension-is-extension' ua fe j e f = dfunext fe (Σ-extension-is-extension ua j e f)
 
 Σ-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺) → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
-                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y)
+                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                            → is-embedding j
                            → (λ f → (f ∖ j) ∘ j) ≡ id
 Σ-extension-is-extension'' ua fe fe' j e = dfunext fe' (Σ-extension-is-extension' ua fe j e)
@@ -495,17 +495,17 @@ data rather than property), called algebraic injectivity.
 \begin{code}
 
 ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
-ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
                       → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
 
-embedding-retract : (D : 𝓦 ̇ ) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → ainjective-type D 𝓦 𝓥
+embedding-retract : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y) → is-embedding j → ainjective-type D 𝓦 𝓥
                   → retract D of Y
 embedding-retract D Y j e i = pr₁ a , j , pr₂ a
  where
   a : Σ \(f' : Y → D) → f' ∘ j ∼ id
   a = i j e id
 
-retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇)
+retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                       → ainjective-type D 𝓤 𝓥
                       → retract D' of D
                       → ainjective-type D' 𝓤 𝓥
@@ -516,7 +516,7 @@ retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
    φ : (Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f) → Σ \(f'' : Y → D') → f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
 
-equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇)
+equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                     → ainjective-type D 𝓤 𝓥
                     → D' ≃ D
                     → ainjective-type D' 𝓤 𝓥
@@ -536,7 +536,7 @@ ainjective-is-retract-of-power-of-universe : (D : 𝓤 ̇ ) → is-univalent �
                                            → retract D of (D → 𝓤 ̇ )
 ainjective-is-retract-of-power-of-universe {𝓤} D ua = embedding-retract D (D → 𝓤 ̇ ) Id (UA-Id-embedding ua fe)
 
-Π-ainjective : {A : 𝓣 ̇ } {D : A → 𝓦 ̇}
+Π-ainjective : {A : 𝓣 ̇ } {D : A → 𝓦 ̇ }
              → ((a : A) → ainjective-type (D a) 𝓤 𝓥)
              → ainjective-type (Π D) 𝓤 𝓥
 Π-ainjective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
@@ -550,7 +550,7 @@ ainjective-is-retract-of-power-of-universe {𝓤} D ua = embedding-retract D (D 
     g : f' ∘ j ∼ f
     g x = dfunext (fe 𝓣 𝓦) (λ a → pr₂ (l a) x)
 
-power-of-ainjective : {A : 𝓣 ̇ } {D : 𝓦 ̇}
+power-of-ainjective : {A : 𝓣 ̇ } {D : 𝓦 ̇ }
                     → ainjective-type D 𝓤 𝓥
                     → ainjective-type (A → D) 𝓤 𝓥
 power-of-ainjective i = Π-ainjective (λ a → i)
@@ -579,7 +579,7 @@ to be an embedding and that the proof is completely routine.
 
 \begin{code}
 
-retract-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (A : X → 𝓦 ̇ ) (B : X → 𝓣 ̇) (e : X → Y)
+retract-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (B : X → 𝓣 ̇ ) (e : X → Y)
                   → ((x : X) → retract (A x) of (B x))
                   → ((y : Y) → retract ((A / e) y) of ((B / e) y))
 retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
@@ -605,7 +605,7 @@ Added 25th July 2018.
 
 \begin{code}
 
-iterated-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Z : 𝓦 ̇} {A : X → 𝓣 ̇}
+iterated-extension : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : X → 𝓣 ̇ }
                      (j : X → Y) (k : Y → Z)
                    → (z : Z) → ((A / j) / k) z ≃ (A / (k ∘ j)) z
 iterated-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {Z} {A} j k z = γ
@@ -832,10 +832,10 @@ module /-extension-is-embedding
  feuu : funext 𝓤 𝓤
  feuu = funext-from-univalence ua
 
- s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇)
+ s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇ )
  s f = f / j
 
- r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇)
+ r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇ )
  r g = g ∘ j
 
  rs : ∀ f → r (s f) ≡ f
@@ -926,10 +926,10 @@ module ∖-extension-is-embedding
  feuu : funext 𝓤 𝓤
  feuu = funext-from-univalence ua
 
- s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇)
+ s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇ )
  s f = f ∖ j
 
- r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇)
+ r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇ )
  r g = g ∘ j
 
  rs : ∀ f → r (s f) ≡ f
@@ -1203,7 +1203,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
   b : is-embedding (lift 𝓥)
     → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
-  b = embedding-retract (𝓤 ̇ ) (𝓤 ⊔ 𝓥 ̇) (lift 𝓥)
+  b = embedding-retract (𝓤 ̇ ) (𝓤 ⊔ 𝓥 ̇ ) (lift 𝓥)
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
   ρ = b (lift-is-embedding ua) (ainjective-resizing R (𝓤 ̇ ) a)
 
@@ -1220,10 +1220,10 @@ of 𝓤.
 \begin{code}
 
 ainjective-characterization : is-univalent 𝓤 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇ )
-                            → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇)
+                            → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇ )
 ainjective-characterization {𝓤} ua R D = a , b
  where
-  a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇)
+  a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇ )
   a i = D , d
    where
     c : ainjective-type D 𝓤 (𝓤 ⁺)
@@ -1231,7 +1231,7 @@ ainjective-characterization {𝓤} ua R D = a , b
     d : retract D of (D → 𝓤 ̇ )
     d = ainjective-is-retract-of-power-of-universe D ua c
 
-  b : (Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇)) → ainjective-type D 𝓤 𝓤
+  b : (Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇ )) → ainjective-type D 𝓤 𝓤
   b (X , r) = d
    where
     c : ainjective-type (X → 𝓤 ̇ ) 𝓤 𝓤
@@ -1300,7 +1300,7 @@ monad:
 \begin{code}
 
  ainjectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → propositional-resizing (𝓤 ⁺) 𝓤
-                                        → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇) → retract D of (𝓛 X)
+                                        → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇ ) → retract D of (𝓛 X)
  ainjectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
   where
    a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇ ) → retract D of (𝓛 X)
@@ -1320,7 +1320,7 @@ module injective (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
- injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇} (j : X → Y) → is-embedding j
+ injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
                        → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
 
 
@@ -1341,7 +1341,7 @@ module injective (pt : propositional-truncations-exist) where
  ∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-a-prop D 𝓤 𝓥)
                                                      (ainjective-gives-injective D)
 
- embedding-∥retract∥ : (D : 𝓦 ̇ ) (Y : 𝓥 ̇) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥
+ embedding-∥retract∥ : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥
                      → ∥ retract D of Y ∥
  embedding-∥retract∥ D Y j e i = ∥∥-functor φ a
   where
@@ -1350,7 +1350,7 @@ module injective (pt : propositional-truncations-exist) where
    φ : (Σ \r  → r ∘ j ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
    φ (r , p) = r , j , p
 
- retract-of-injective : (D' : 𝓤 ̇ ) (D : 𝓥 ̇)
+ retract-of-injective : (D' : 𝓤 ̇ ) (D : 𝓥 ̇ )
                        → injective-type D 𝓦 𝓣
                        → retract D' of D
                        → injective-type D' 𝓦 𝓣
@@ -1370,7 +1370,7 @@ so we need a new proof, but hence also new universe assumptions.
 
 \begin{code}
 
- power-of-injective : {A : 𝓣 ̇ } {D : 𝓣 ⊔ 𝓦 ̇}
+ power-of-injective : {A : 𝓣 ̇ } {D : 𝓣 ⊔ 𝓦 ̇ }
                      → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
                      → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
  power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ

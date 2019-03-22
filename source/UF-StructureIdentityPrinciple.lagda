@@ -453,7 +453,7 @@ module gsip-with-axioms
 
  (S : 𝓤 ̇ → 𝓥 ̇ )
 
- (Axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇)
+ (Axioms : (X : 𝓤 ̇ ) → S X → 𝓥 ̇ )
 
  (Axioms-is-prop : (X : 𝓤 ̇ ) (s : S X) → is-prop (Axioms X s))
 
@@ -774,7 +774,7 @@ module gsip-with-axioms'
 
  (S : 𝓤 ̇ → 𝓥 ̇ )
 
- (Axioms : (X : 𝓤 ̇ ) → S X → 𝓣 ̇)
+ (Axioms : (X : 𝓤 ̇ ) → S X → 𝓣 ̇ )
 
  (Axioms-is-prop : (X : 𝓤 ̇ ) (s : S X) → is-prop (Axioms X s))
 

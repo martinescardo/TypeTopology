@@ -519,10 +519,10 @@ J A f x .x (refl .x) = f x
 is-singleton : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ \(c : X) → (x : X) → Id c x
 
-fiber : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
+fiber : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber f y = Σ \x → Id (f x) y
 
-is-equiv : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+is-equiv : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : _) → is-singleton(fiber f y)
 
 Eq : {𝓤 𝓥 : Universe} → 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇

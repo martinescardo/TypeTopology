@@ -29,7 +29,7 @@ negation-preserves-decidability : {A : 𝓤 ̇ }
 negation-preserves-decidability (inl a) = inr (λ f → f a)
 negation-preserves-decidability (inr g) = inl g
 
-which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇}
+which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
         → A + B → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → B)
 
 which-of (inl a) = ₀ , ((λ r → a) , (λ ()))
@@ -61,7 +61,7 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 \begin{code}
 
-indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇}
+indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇ }
           → ((x : X) → A x + B x)
           → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x)
 indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
@@ -84,15 +84,15 @@ slighly non-universal terminology.
 detachable : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 detachable A = ∀ x → decidable(A x)
 
-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
 characteristic-function = indicator
 
-co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
   → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x)
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
-decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇} → is-prop X
+decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X
                          → decidable X → ((x : X) → decidable (Y x)) → decidable (Σ Y)
 decidable-closed-under-Σ {𝓤} {𝓥} {X} {Y} isp d e = g d
  where

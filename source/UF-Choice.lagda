@@ -71,9 +71,9 @@ or
 
 \begin{code}
 
- Shift = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
+ Shift = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
 
- Shift' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → T(Π \(x : X) → T(A x) → A x)
+ Shift' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → T(Π \(x : X) → T(A x) → A x)
 
  lemma : Shift → (X : 𝓤 ̇ ) → T(T X → X)
  lemma shift X = shift (T X) (λ _ → X) (λ x → x)
@@ -103,12 +103,12 @@ module TChoice
    (T-is-S : {X : 𝓤 ̇ } → S(T X))
  where
 
- Shift : (X : 𝓤 ̇ ) → (X → 𝓤 ̇) → 𝓤 ̇
+ Shift : (X : 𝓤 ̇ ) → (X → 𝓤 ̇ ) → 𝓤 ̇
  Shift X A = ((x : X) → T(A x)) → T(Π \(x : X) → A x)
 
- Choice = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → Shift X A
+ Choice = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → S X → (Π \(x : X) → S(A x)) → Shift X A
 
- Choice' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
+ Choice' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
 
  lemma : Choice → (X : 𝓤 ̇ ) → S X → T(T X → X)
  lemma choice X s = choice (T X) (λ _ → X) T-is-S  (λ x → s) (λ x → x)
@@ -145,16 +145,16 @@ module UnivalentChoice (𝓤 : Universe)
 
  open TChoice 𝓤 ∥_∥ ∥∥-functor is-set sei (props-are-sets ∥∥-is-a-prop)
 
- AC   = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) (P : (x : X) → A x → 𝓤 ̇)
+ AC   = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (P : (x : X) → A x → 𝓤 ̇ )
      → is-set X
      → ((x : X) → is-set (A x))
      → ((x : X) (a : A x) → is-prop (P x a))
      → (∀ (x : X) → ∃ \(a : A x) → P x a) → ∃ \(f : Π A) → ∀ (x : X) → P x (f x)
 
- AC'  = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
+ AC'  = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (Y x))
      → (Π \(x : X) → ∥ Y x ∥) → ∥(Π \(x : X) → Y x)∥
 
- AC'' = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (Y x))
+ AC'' = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (Y x))
      → ∥(Π \(x : X) → ∥ Y x ∥ → Y x)∥
 
  ACAC' : AC → AC'
@@ -214,10 +214,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  β : {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-a-prop)
 
- DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
+ DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
      → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
 
- DNA = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇) → is-set X → ((x : X) → is-set (A x))
+ DNA = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
      → ¬¬(Π \(x : X) → ¬¬(A x) → A x)
 
  Fact : AC' → DNS

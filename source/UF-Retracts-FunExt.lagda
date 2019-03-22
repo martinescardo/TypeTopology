@@ -9,7 +9,7 @@ open import UF-Base
 open import UF-Retracts
 open import UF-FunExt
 
-rexp : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇} {X' : 𝓦 ̇} {Y' : 𝓣 ̇} → funext 𝓤 𝓣
+rexp : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {X' : 𝓦 ̇ } {Y' : 𝓣 ̇ } → funext 𝓤 𝓣
     → retract X of X' → retract Y' of Y → retract (X → Y') of (X' → Y)
 rexp {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {X'} {Y'} fe (rx , (sx , rsx)) (ry , (sy , rsy)) = (r , (s , rs))
  where
@@ -22,18 +22,18 @@ rexp {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {X'} {Y'} fe (rx , (sx , rsx)) (ry , (s
   rs : (f' : X → Y') → r (s f') ≡ f'
   rs f' = dfunext fe (rs' f')
 
-rpe : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {Y' : 𝓦 ̇} → funext 𝓤 𝓦
+rpe : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Y' : 𝓦 ̇ } → funext 𝓤 𝓦
     → retract Y' of Y → retract (X → Y') of (X → Y)
 rpe fe = rexp fe identity-retraction
 
-crpe : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {X' : 𝓦 ̇} → funext 𝓤 𝓥
+crpe : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {X' : 𝓦 ̇ } → funext 𝓤 𝓥
     → retract X of X' → retract (X → Y) of (X' → Y)
 crpe fe rx = rexp fe rx identity-retraction
 
-pdrc : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → X → retract Y of (X → Y)
+pdrc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X → retract Y of (X → Y)
 pdrc x = ((λ f → f x) , ((λ y x → y) , λ y → refl))
 
-retracts-of-closed-under-exponentials : {X : 𝓤 ̇ } {Y : 𝓥 ̇} {B : 𝓦 ̇} → funext 𝓦 𝓦
+retracts-of-closed-under-exponentials : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {B : 𝓦 ̇ } → funext 𝓦 𝓦
                                       → X → retract B of X → retract B of Y → retract B of (X → Y)
 retracts-of-closed-under-exponentials {𝓤} {𝓥} {𝓦} {X} {Y} {B} fe x rbx rby = rbxy
  where

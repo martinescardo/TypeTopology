@@ -21,18 +21,18 @@ open import UF-FunExt
 open import UF-LeftCancellable
 open import UF-Retracts
 
-Π-is-prop : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+Π-is-prop : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → ((x : X) → is-prop (A x)) → is-prop (Π A)
 Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
 
-Π-is-prop' : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+Π-is-prop' : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
         → ((x : X) → is-prop (A x)) → is-prop ({x : X} → A x)
 Π-is-prop' fe {X} {A} i = retract-of-prop retr (Π-is-prop fe i)
  where
   retr : retract ({x : X} → A x) of Π A
   retr = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
 
-Π-is-singleton : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+Π-is-singleton : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
 Π-is-singleton fe i = (λ x → pr₁ (i x)) , (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
 
@@ -72,7 +72,7 @@ being-a-singleton-is-a-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext
   iss : is-set X
   iss = props-are-sets isp
 
-Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇}
+Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
          → ((x : X) → is-set(A x)) → is-set(Π A)
 Π-is-set {𝓤} {𝓥} fe {X} {A} isa {f} {g} = b
  where

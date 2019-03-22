@@ -19,7 +19,7 @@ open import UF-FunExt
 open import Lifting
 open import LiftingEmbeddingDirectly
 
-𝓛* : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X
+𝓛* : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding f → 𝓛 𝓣 Y → 𝓛 (𝓤 ⊔ 𝓥 ⊔ 𝓣) X
 𝓛* f e (Q , ψ , j) = (Σ \(q : Q) → fiber f (ψ q)) ,
                       (λ p → pr₁ (pr₂ p)) ,
                       Σ-is-prop j (e ∘ ψ)

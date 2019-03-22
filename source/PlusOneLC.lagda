@@ -38,7 +38,7 @@ add-and-remove-point {𝓤} {X} = qinveq f (g , ε , η)
   ε : g ∘ f ∼ id
   ε x = refl
 
-remove-points : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
+remove-points : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f → (a : X) → X ∖ a ≃ Y ∖ (f a)
 remove-points {𝓤} {𝓥} {X} {Y} f (g , ε , η) a = qinveq f' (g' , ε' , η')
  where
   f' : X ∖ a → Y ∖ (f a)
@@ -91,7 +91,7 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inl b) i = qinveq f (g , ε , η)
 
 add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-point
 
-+𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
++𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
 +𝟙-cancellable {𝓤} {𝓥} {X} {Y} (φ , e) =
    X                  ≃⟨ add-and-remove-point ⟩
   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *) ⟩

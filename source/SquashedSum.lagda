@@ -174,7 +174,7 @@ But this is not enough: we need a map Σ↑ : Σ₁ X → Σ¹ Y given maps f n
 
 \begin{code}
 
-Over : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Over : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
        (f : (n : ℕ) → X n → Y n)
     → (z : ℕ + 𝟙) → (X / over) z → (Y / over) z
 Over X Y f (inl n) =
@@ -186,7 +186,7 @@ Over X Y f (inr *) =
    (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ _ → +disjoint))))
    (eqtofun (Π-extension-out-of-range X over (inr *) (λ _ → +disjoint)))
 
-Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇) (f : (n : ℕ) → X n → Y n)
+Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
     → (n : ℕ) → Over X Y f (inl n)
     ≡ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
          transport (λ - → Y (pr₁ -))
@@ -194,7 +194,7 @@ Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇) (f : (n : ℕ) → X n �
                    (f n (φ (n , refl)))
 Over-inl X Y f n = refl
 
-Over-inr : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇) (f : (n : ℕ) → X n → Y n)
+Over-inr : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
         → Over X Y f (inr *) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
 Over-inr X Y f = refl
 
@@ -206,7 +206,7 @@ dense embeddings.
 
 \begin{code}
 
-Over-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Over-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
              (f : (n : ℕ) → X n → Y n)
           → ((n : ℕ) → is-dense (f n))
           → (z : ℕ + 𝟙) → is-dense (Over X Y f z)
@@ -225,7 +225,7 @@ Over-dense X Y f d (inr *) =
   (is-equiv-is-dense (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
    (eqtofun-is-an-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
 
-Over-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Over-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                  (f : (n : ℕ) → X n → Y n)
               → ((n : ℕ) → is-embedding (f n))
               → (z : ℕ + 𝟙) → is-embedding (Over X Y f z)
@@ -244,11 +244,11 @@ Over-embedding {𝓤} X Y f d (inr *) =
   (equivs-are-embeddings (eqtofun (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint))))
    (eqtofun-is-an-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
 
-Σ₁-functor : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇) (f : (n : ℕ) → X n → Y n)
+Σ₁-functor : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
            → Σ₁ X → Σ₁ Y
 Σ₁-functor X Y f = pair-fun id (Over X Y f)
 
-Σ₁-functor-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Σ₁-functor-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                    (f : (n : ℕ) → X n → Y n)
                 → ((n : ℕ) → is-dense (f n))
                 → is-dense (Σ₁-functor X Y f)
@@ -258,7 +258,7 @@ Over-embedding {𝓤} X Y f d (inr *) =
                             id-is-dense
                             (Over-dense X Y f d)
 
-Σ₁-functor-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Σ₁-functor-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                        (f : (n : ℕ) → X n → Y n)
                     → ((n : ℕ) → is-embedding (f n))
                     → is-embedding (Σ₁-functor X Y f)
@@ -268,18 +268,18 @@ Over-embedding {𝓤} X Y f d (inr *) =
                                 id-is-embedding
                                 (Over-embedding X Y f e)
 
-Σ↑ : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Σ↑ : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
       (f : (n : ℕ) → X n → Y n)
    → Σ₁ X → Σ¹ Y
 Σ↑ X Y f = Σ-up Y ∘ Σ₁-functor X Y f
 
-Σ↑-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Σ↑-dense : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
             (f : (n : ℕ) → X n → Y n)
          → ((n : ℕ) → is-dense (f n))
          → is-dense (Σ↑ X Y f)
 Σ↑-dense X Y f d = comp-dense (Σ₁-functor-dense X Y f d) (Σ-up-dense Y)
 
-Σ↑-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇)
+Σ↑-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                (f : (n : ℕ) → X n → Y n)
             → ((n : ℕ) → is-embedding (f n))
             → is-embedding (Σ↑ X Y f)
@@ -322,7 +322,7 @@ Given a countable family of sets.
 
 extend it to a ℕ∞-indexed family of sets as follows
 
-  _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇)
+  _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇ )
   X [ u ] = (k : ℕ) → under k ≡ u → X k
 
 where u ranges over ℕ∞, the one-point compactification of the natural
@@ -349,7 +349,7 @@ within intensional MLTT with function extensionality as a postulate
 
 module original-version-and-equivalence-with-new-version where
 
- _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇)
+ _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇ )
  X [ u ] = (k : ℕ) → under k ≡ u → X k
 
  Σᴵ : (ℕ → 𝓤₀ ̇ ) → 𝓤₀ ̇

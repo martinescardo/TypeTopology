@@ -35,7 +35,7 @@ of which is actually an equivalence).
 κ : {X : 𝓤 ̇ } → X → 𝓚 X
 κ x = 𝟙 , (λ _ → x) , 𝟙-is-singleton
 
-ζ : (X : 𝓤 ̇ ) (P : 𝓣 ̇) → (P → X) × is-singleton P → (P → X) × is-prop P
+ζ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → (P → X) × is-singleton P → (P → X) × is-prop P
 ζ X P (φ , i) = φ , singletons-are-props i
 
 𝓚→𝓛 : (X : 𝓤 ̇ ) → 𝓚 X → 𝓛 X
@@ -58,7 +58,7 @@ NatΣ-embedding.:
 
 \begin{code}
 
-ζ-is-embedding : funext 𝓣 𝓣 → (X : 𝓤 ̇ ) (P : 𝓣 ̇) → is-embedding (ζ X P)
+ζ-is-embedding : funext 𝓣 𝓣 → (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → is-embedding (ζ X P)
 ζ-is-embedding fe X P = ×-embedding
                           id
                           singletons-are-props

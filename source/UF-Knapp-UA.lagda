@@ -60,7 +60,7 @@ pietoid-idtopie refl = refl
 idtopie-pietoid : {X Y : 𝓤 ̇ } (e : X ⋍ Y) → idtopie (pietoid e) ≡ e
 idtopie-pietoid (_ , refl , refl) = refl
 
-PIE-induction : {X : 𝓤 ̇ } (A : {Y : 𝓤 ̇} → (X → Y) → 𝓥 ̇ )
+PIE-induction : {X : 𝓤 ̇ } (A : {Y : 𝓤 ̇ } → (X → Y) → 𝓥 ̇ )
               → A id → {Y : 𝓤 ̇ } (f : X → Y) → isPIE f → A f
 PIE-induction {𝓤} {𝓥} {X} A g {Y} f (p , q) = transport A r (φ p)
   where
@@ -109,10 +109,10 @@ knapps-funext-criterion :
             → ∀ {𝓥} → naive-funext 𝓥 𝓤
 knapps-funext-criterion {𝓤} H D {𝓥} {X} {Y} {f₁} {f₂} h = γ
  where
-  transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {x y : X} (p : x ≡ y) → isPIE (transport A p)
+  transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y) → isPIE (transport A p)
   transport-isPIE refl = refl , refl
 
-  back-transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇} {x y : X} (p : x ≡ y) → isPIE (back-transport A p)
+  back-transport-isPIE : ∀ {𝓤 𝓥} {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y) → isPIE (back-transport A p)
   back-transport-isPIE p = transport-isPIE (p ⁻¹)
 
   back-transport-is-pre-comp'' : ∀ {𝓤} {X X' Y : 𝓤 ̇ } (e : X ⋍ X') (g : X' → Y)

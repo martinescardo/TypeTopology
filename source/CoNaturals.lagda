@@ -134,7 +134,7 @@ SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
 PRED-lc : {u v : ℕ∞} → PRED u ≡ PRED v → u ≡ v
 PRED-lc r = SUCC-PRED ⁻¹ ∙ ap SUCC r ∙ SUCC-PRED
 
-𝟙+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇} → (X → Y) → 𝟙 + X → 𝟙 + Y
+𝟙+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝟙 + X → 𝟙 + Y
 𝟙+ f (inl s) = inl {𝓤₀} s
 𝟙+ f (inr x) = inr(f x)
 

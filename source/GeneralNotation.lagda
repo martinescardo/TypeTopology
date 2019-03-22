@@ -40,7 +40,7 @@ And the following to make explicit the type of hypotheses:
 
 \begin{code}
 
-have : {A : 𝓤 ̇ } {B : 𝓥 ̇} → A → B → B
+have : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → B → B
 have _ y = y
 
 \end{code}

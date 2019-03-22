@@ -58,7 +58,7 @@ discrete-inr fe d x y n =
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ≡ x)
 isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
 
-Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇}
+Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
               → is-discrete X → ((x : X) → is-discrete(Y x)) → is-discrete(Σ Y)
 Σ-is-discrete {𝓤} {𝓥} {X} {Y} d e (x , y) (x' , y') = g (d x x')
  where

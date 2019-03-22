@@ -140,7 +140,7 @@ separated, but its discreteness amounts to WLPO.
 
 \begin{code}
 
-retract-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
+retract-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → retract Y of X → is-totally-separated X → is-totally-separated Y
 retract-totally-separated (r , (s , rs)) ts {y} {y'} α = section-lc s (r , rs) h
  where
@@ -236,7 +236,7 @@ the following particular cases:
 
 \begin{code}
 
-×-totally-separated : (X : 𝓤 ̇ ) (Y : 𝓥 ̇)
+×-totally-separated : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                     → is-totally-separated X
                     → is-totally-separated Y
                     → is-totally-separated (X × Y)
@@ -244,7 +244,7 @@ the following particular cases:
    to-×-≡ (t (λ (p : X → 𝟚) → φ (λ (z : X × Y) → p (pr₁ z))))
           (u (λ (q : Y → 𝟚) → φ (λ (z : X × Y) → q (pr₂ z))))
 
-Σ-is-totally-separated : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇)
+Σ-is-totally-separated : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                        → is-discrete X
                        → ((x : X) → is-totally-separated (Y x))
                        → is-totally-separated (Σ Y)
@@ -285,7 +285,7 @@ The following can also be considered as a special case of Σ (indexed by the typ
 
 \begin{code}
 
-+-totally-separated : (X : 𝓤 ̇ ) (Y : 𝓥 ̇)
++-totally-separated : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                     → is-totally-separated X
                     → is-totally-separated Y
                     → is-totally-separated (X + Y)
@@ -305,7 +305,7 @@ The following can also be considered as a special case of Σ (indexed by the typ
 𝟚-is-totally-separated : is-totally-separated 𝟚
 𝟚-is-totally-separated e = e id
 
-Π-is-totally-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇}
+Π-is-totally-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                    → ((x : X) → is-totally-separated(Y x)) → is-totally-separated(Π Y)
 Π-is-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where
@@ -330,7 +330,7 @@ module _ (fe : FunExt)  where
 
  open import InjectiveTypes fe
 
- /-is-totally-separated : {X : 𝓤 ̇ } {A : 𝓥 ̇}
+ /-is-totally-separated : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                           (j : X → A)
                           (Y : X → 𝓦 ̇ )
                         → ((x : X) → is-totally-separated (Y x))
@@ -440,7 +440,7 @@ rather than direct proofs (as in the proof of tight reflection below).
 
 \begin{code}
 
- totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇} → is-totally-separated A
+ totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
                               → (f : X → A) → ∃! \(f' : 𝕋 X → A) → f' ∘ η ≡ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} ts f = go
   where
@@ -496,11 +496,11 @@ We package the above as follows for convenient use elsewhere
 
 \begin{code}
 
- totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇} → is-totally-separated A
+ totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
                               → is-equiv (λ (f' : 𝕋 X → A) → f' ∘ η)
  totally-separated-reflection' ts = vv-equivs-are-equivs _ (totally-separated-reflection ts)
 
- totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇} → is-totally-separated A
+ totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
                                → (𝕋 X → A) ≃ (X → A)
  totally-separated-reflection'' ts = (λ f' → f' ∘ η) , totally-separated-reflection' ts
 
@@ -746,12 +746,12 @@ apartness relation _♯₂ is tight:
 
 \begin{code}
 
- strongly-extensional : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇}
-                      → (X → X → 𝓦 ̇ ) → (Y → Y → 𝓣 ̇) → (X → Y) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
+ strongly-extensional : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                      → (X → X → 𝓦 ̇ ) → (Y → Y → 𝓣 ̇ ) → (X → Y) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
  strongly-extensional _♯_ _♯'_ f = ∀ {x x'} → f x ♯' f x' → x ♯ x'
 
- preserves : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇}
-          → (X → X → 𝓦 ̇ ) → (Y → Y → 𝓣 ̇) → (X → Y) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
+ preserves : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+          → (X → X → 𝓦 ̇ ) → (Y → Y → 𝓣 ̇ ) → (X → Y) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
  preserves R S f = ∀ {x x'} → R x x' → S (f x) (f x')
 
  module TightReflection
@@ -1021,7 +1021,7 @@ apartness on it.
 
 \begin{code}
 
-  tight-reflection : ∀ {𝓣} (A : 𝓦 ̇ ) (_♯ᴬ_ : A → A → 𝓣 ̇)
+  tight-reflection : ∀ {𝓣} (A : 𝓦 ̇ ) (_♯ᴬ_ : A → A → 𝓣 ̇ )
                    → is-apartness _♯ᴬ_
                    → is-tight _♯ᴬ_
                    → (f : X → A)
