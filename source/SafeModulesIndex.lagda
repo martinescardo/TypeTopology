@@ -16,7 +16,7 @@ Main modules and module clusters:
 \begin{code}
 
 import Compactness
-import TotallySeparatedness
+import TotalSeparatedness
 import InjectiveTypes-article
 import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
