@@ -8,6 +8,8 @@ https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 But there are also new results and observations here, as well as
 different approaches.
 
+We apply the results to characterize injective types.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}

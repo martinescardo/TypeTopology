@@ -1,3 +1,8 @@
+This module cluster investigates totally separated type and its
+relation to compact types. It gives a particular example of type that
+fails to be totally separated. The simple types are totally separated,
+and investigated with respect to compactness.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
