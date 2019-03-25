@@ -4,6 +4,6 @@
 
 import TotallySeparated
 import FailureOfTotalSeparatedness
-import SimplesTypes
+import SimpleTypes
 
 \end{code}
