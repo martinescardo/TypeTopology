@@ -1,7 +1,8 @@
 Martin Escardo
 
 There are some somewhat obsolete comments at the end of this file,
-explaining part of what we do in this development.
+explaining part of what we do in this development. See instead the
+comments in the various modules.
 
 \begin{code}
 
