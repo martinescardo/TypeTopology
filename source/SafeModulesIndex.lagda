@@ -29,7 +29,7 @@ import UF
 
 The last module (univalent foundations) has been developed, on demand,
 for use in the preceding modules (and the modules below, too). The
-modules UF-Yoneda and Id-Embedding contain new results.
+modules UF-Yoneda and UF-IdEmbedding contain new results.
 
 All modules in alphabetical order:
 
