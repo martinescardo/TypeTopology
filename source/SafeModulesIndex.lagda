@@ -23,6 +23,7 @@ import InjectiveTypes
 import InjectiveTypes-article
 import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
+import Ordinals
 import LawvereFPT
 import PartialElements
 import UF
