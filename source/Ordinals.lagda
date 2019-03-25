@@ -4,8 +4,11 @@
 
 import OrdinalNotions
 import OrdinalsType
+import SquashedSum
+import SquashedCantor
 import OrdinalsWellOrderArithmetic
 import OrdinalArithmetic
+import LexicographicOrder
 import OrdinalsClosure
 import OrdinalCodes
 import OrdinalNotationInterpretation

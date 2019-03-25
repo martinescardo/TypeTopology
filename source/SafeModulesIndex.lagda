@@ -9,16 +9,30 @@ explaining part of what we do in this development.
 
 module SafeModulesIndex where
 
+\end{code}
+
+Main modules and module clusters:
+
+\begin{code}
+
 import Compactness
 import TotallySeparated
+import FailureOfTotalSeparatedness
 import SimpleTypes
 import InjectiveTypes
 import InjectiveTypes-article
 import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
+import LawvereFPT
+import PartialElements
+
+\end{code}
+
+The remaining modules:
+
+\begin{code}
 
 import AlternativePlus
-import ADecidableQuantificationOverTheNaturals
 import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
@@ -26,18 +40,14 @@ import Codistance
 import CoNaturals
 import CoNaturalsArithmetic
 import CoNaturalsExercise
-import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DiscreteAndSeparated
 import Dominance
 import DummettDisjunction
-import FailureOfTotalSeparatedness
 import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
-import LawvereFPT
-import LexicographicOrder
 import LPO
 import Lumsdaine
 import NaturalNumbers
@@ -48,8 +58,6 @@ import Negation
 import NonCollapsibleFamily
 import One
 import One-Properties
-import Ordinals
-import PartialElements
 import Pi
 import Plus
 import Plus-Properties
@@ -64,8 +72,6 @@ import SliceMonad
 import SliceAlgebras
 import SliceEmbedding
 import SpartanMLTT
-import SquashedCantor
-import SquashedSum
 import Two
 import Two-Properties
 import Two-Prop-Density
