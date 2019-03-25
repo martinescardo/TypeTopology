@@ -25,29 +25,58 @@ import TheTopologyOfTheUniverse
 import RicesTheoremForTheUniverse
 import LawvereFPT
 import PartialElements
+import UF
 
 \end{code}
 
-The remaining modules:
+The last module (univalent foundations) has been developed, on demand,
+for use in the preceding modules (and the modules below, too).
+
+All modules in alphabetical order:
 
 \begin{code}
 
+import ADecidableQuantificationOverTheNaturals
 import AlternativePlus
 import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import Codistance
-import CoNaturals
+import Compactness
+import CompactTypes
 import CoNaturalsArithmetic
 import CoNaturalsExercise
+import CoNaturals
+import ConvergentSequenceCompact
+import ConvergentSequenceInfCompact
+import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DiscreteAndSeparated
 import Dominance
 import DummettDisjunction
+import Empty
+import ExtendedSumCompact
+import FailureOfTotalSeparatedness
 import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
+import InfCompact
+import InjectiveTypes-article
+import InjectiveTypes
+import LawvereFPT
+import LeftOvers
+import LexicographicCompactness
+import LexicographicOrder
+import LiftingAlgebras
+import LiftingEmbeddingDirectly
+import LiftingEmbeddingViaSIP
+import LiftingIdentityViaSIP
+import Lifting
+import LiftingMonad
+import LiftingMonadVariation
+import LiftingSize
+import LiftingUnivalentPrecategory
 import LPO
 import Lumsdaine
 import NaturalNumbers
@@ -58,28 +87,80 @@ import Negation
 import NonCollapsibleFamily
 import One
 import One-Properties
+import OrdinalArithmetic
+import OrdinalCodes
+import OrdinalNotationInterpretation
+import OrdinalNotions
+import OrdinalOfOrdinals
+import OrdinalOfTruthValues
+import OrdinalsClosure
+import Ordinals
+import OrdinalsShulmanTaboo
+import OrdinalsType
+import OrdinalsWellOrderArithmetic
+import PartialElements
 import Pi
 import Plus
-import Plus-Properties
 import PlusOneLC
-import PropTychonoff
+import Plus-Properties
 import PropInfTychonoff
+import PropTychonoff
+import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
-import Slice
-import SliceIdentityViaSIP
-import SliceMonad
+import Sigma
+import SimpleTypes
 import SliceAlgebras
 import SliceEmbedding
+import SliceIdentityViaSIP
+import Slice
+import SliceMonad
 import SpartanMLTT
+import SquashedCantor
+import SquashedSum
+import TheTopologyOfTheUniverse
+import TotallySeparated
 import Two
-import Two-Properties
 import Two-Prop-Density
+import Two-Properties
+import UF-Base
+import UF-Choice
+import UF-Classifiers
+import UF-Embeddings
+import UF-EquivalenceExamples
+import UF-Equiv-FunExt
+import UF-Equiv
+import UF-ExcludedMiddle
+import UF-FunExt-from-Naive-FunExt-alternate
+import UF-FunExt-from-Naive-FunExt
+import UF-FunExt
+import UF-hlevels
+import UF-IdEmbedding
+import UF-ImageAndSurjection
+import UF-Knapp-UA
+import UF-KrausLemma
 import UF
-import Universes
+import UF-LeftCancellable
+import UF-Miscelanea
+import UF-PropIndexedPiSigma
+import UF-PropTrunc
+import UF-Quotient
+import UF-Resizing
+import UF-Retracts-FunExt
+import UF-Retracts
+import UF-StructureIdentityPrinciple
+import UF-SubsetIdentity
+import UF-Subsingletons-FunExt
+import UF-Subsingletons
+import UF-UA-FunExt
+import UF-Univalence
+import UF-UniverseEmbedding
+import UF-Yoneda
 import UnivalenceFromScratch
-import WLPO
+import Universes
+import WeaklyCompactTypes
 import W
+import WLPO
 
 \end{code}
 
