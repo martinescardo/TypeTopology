@@ -20,7 +20,7 @@ module OrdinalArithmetic
        where
 
 
-open import Ordinals fe
+open import OrdinalsType fe
 open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)

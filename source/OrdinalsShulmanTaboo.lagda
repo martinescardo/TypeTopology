@@ -47,7 +47,7 @@ module OrdinalsShulmanTaboo
        (pe : propext 𝓤₀)
        where
 
-open import Ordinals fe
+open import OrdinalsType fe
 open import OrdinalOfTruthValues fe 𝓤₀ pe
 open import OrdinalNotions
 open import UF-Base

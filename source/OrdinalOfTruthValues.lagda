@@ -18,7 +18,7 @@ module OrdinalOfTruthValues
        (pe : propext 𝓤)
        where
 
-open import Ordinals fe
+open import OrdinalsType fe
 
 Ωₒ : Ordinal (𝓤 ⁺)
 Ωₒ = Ω 𝓤 , _≺_ , pv , w , e , t
