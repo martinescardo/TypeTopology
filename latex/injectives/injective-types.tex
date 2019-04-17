@@ -95,7 +95,7 @@
 
 \newcommand{\edown}{\scaleobj{0.7}{\,\downarrow\,}}
 \newcommand{\eup}{\scaleobj{0.7}{\,\uparrow\,}}
-\newcommand{\wps}{\mathrel{\,\,\precsim\,\,}}
+\newcommand{\wps}{\mathrel{\,\,\preceq\,\,}}
 
 \newtheorem{numbered}{}
 \swapnumbers
@@ -152,7 +152,7 @@ injectivity are about the extension problem
 The injectivity of a type \m{D:\U} is defined by the surjectivity
 of the restriction map \m{(-) \comp j} along any embedding~\m{j}:
 %
-\M{ \Pi(X,Y : \U)\, \Pi (j : X \emb D)\, \Pi(f : X \to D)\, \exists (g :
+\M{ \Pi(X,Y : \U)\, \Pi (j : X \emb Y)\, \Pi(f : X \to D)\, \exists (g :
   Y \to D)\, g \comp j = f,
 }
 %
@@ -166,7 +166,7 @@ this amounts to
 %
 \M{
   \Pi(X,Y : \U)\,
-  \Pi (j : X \emb D)\, \Pi(f : X \to D)\, \Sigma (f \mid j : Y \to D),
+  \Pi (j : X \emb Y)\, \Pi(f : X \to D)\, \Sigma (f \mid j : Y \to D),
   f \mid j \comp j = f,
 }
 %
@@ -502,7 +502,7 @@ explicitly.
 We say that a type \m{D} in a universe \m{\W} is \df{\m{\U,\V}-injective}
 to mean
 %
-\M{ \Pi(X : \U)\, \Pi(Y : \V)\, \Pi (j : X \emb D)\, \Pi(f : X \to D)\, \exists (g :
+\M{ \Pi(X : \U)\, \Pi(Y : \V)\, \Pi (j : X \emb Y)\, \Pi(f : X \to D)\, \exists (g :
   Y \to D), g \comp j \sim f,
 }
 %
@@ -510,7 +510,7 @@ and that it is \df{algebraically \m{\U,\V}-injective} to mean
 %
 \M{
   \Pi(X : \U) \,\Pi(Y : \V)\,
-  \Pi (j : X \emb D) \, \Pi(f : X \to D) \, \Sigma (f \mid j : Y \to D),
+  \Pi (j : X \emb Y) \, \Pi(f : X \to D) \, \Sigma (f \mid j : Y \to D),
   f \mid j \comp j \sim f.
 }
 %
@@ -602,10 +602,10 @@ Then we can consider the type of transformations between such
 \m{\infty}-presheaves \m{f : X \to \W} and \m{f' : X \to \W'} defined by
 %
 \M{
-  f \preceq f' \eqdef \Pi (x : X), f \, x \to  f' x,
+  f \wps f' \eqdef \Pi (x : X), f \, x \to  f' x,
 }
 %
-which are automatically natural in the sense that for all \m{\tau: f \preceq f'} and \m{p : \Id \, x \, y},
+which are automatically natural in the sense that for all \m{\tau: f \wps f'} and \m{p : \Id \, x \, y},
 %
 \M{
   \tau_y \comp f [ p ] = f' [p] \comp \tau_x.
@@ -649,7 +649,7 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, left Kan extension a
   By function extensionality, we have that \m{r (s \, f) = f}, because
   \m{s} is a pointwise-extension operator as \m{j} is an embedding,
   and by construction we have that \m{s (r \, g) = (g \comp j) \edown
-    j}. Now define \m{\kappa : \Pi (g : Y \to \U), s(r \,g) \precsim
+    j}. Now define \m{\kappa : \Pi (g : Y \to \U), s(r \,g) \wps
     g} by
   %
   \M{
@@ -733,7 +733,7 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, the right Kan extens
   %
   By function extensionality, we have that \m{r (s \, f) = f},
   and, by construction, \m{s (r \, g) = (g \comp j) \eup
-    j}. Now define \m{\kappa : \Pi (g : Y \to \U), g \precsim s(r \,g)
+    j}. Now define \m{\kappa : \Pi (g : Y \to \U), g \wps s(r \,g)
     } by
   %
   \M{
@@ -803,7 +803,7 @@ of the following.
 %   \M{
 %     \begin{diagram}
 % X &  \rTo^j &  Y & \rTo^k & Z \\
-%   & \rdTo_f^{\precsim} & \dTo_{f\edown j} & \ldTo_{(f\edown j)\eup k \sim f\edown (k \comp j)}^{\precsim} \\
+%   & \rdTo_f^{\precseq} & \dTo_{f\edown j} & \ldTo_{(f\edown j)\eup k \sim f\edown (k \comp j)}^{\wps} \\
 %   &         &  D,         &
 % \end{diagram}
 % \qquad
@@ -923,8 +923,8 @@ and hence, being equal to the singleton type \m{\Sigma (\Id x)},
 the type \m{\Sigma A} is itself a singleton.  Hence we have
   %
   \M{\begin{array}{llll}
-       A \, x & \simeq & \Id x \preceq A & \text{By the Yoneda Lemma~\cite{rijke:msc},} \\
-           & = & \Pi (y : X), \Id \, x \, y \to A \, y & \text{by definition of \m{\preceq},} \\
+       A \, x & \simeq & \Id x \wps A & \text{By the Yoneda Lemma~\cite{rijke:msc},} \\
+           & = & \Pi (y : X), \Id \, x \, y \to A \, y & \text{by definition of \m{\wps},} \\
            & \simeq & \Pi (y : X), \Id \, x \, y \simeq A \, y & \text{because \m{\Sigma A} is a singleton (Yoneda corollary),} \\
            & \simeq & \Pi (y : X), \Id \, x \, y = A \, y & \text{by univalence,} \\
            & \simeq & \Id \, x = A & \text{by function extensionality.}
@@ -1377,7 +1377,7 @@ algebraic injectivity implies injectivity: the universe levels are
 different in the converse:
 
 \begin{numbered}
-  If a type \m{D:\U} is \m{\U,\U^+}-injective, then it is \m{\U,\U^+}-injective in an unspecified way.
+  If a type \m{D:\U} is \m{\U,\U^+}-injective, then it is algebraically \m{\U,\U^+}-injective in an unspecified way.
 \end{numbered}
 
 So, in summary, regarding the relationship between injectivity and
