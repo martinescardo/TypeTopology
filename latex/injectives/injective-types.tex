@@ -180,8 +180,9 @@ and, assuming resizing, if and only if all inhabited types are
 injective, so that there is nothing interesting to say about
 (algebraic) injectivity in its presence.
 
-Under propositional resizing principles~\cite{hottbook}, the main results
-are easy to state:
+Under propositional resizing principles~\cite{hottbook}
+(Definitions~\ref{resizing} and~\ref{omega:resizing} below), the main
+results are easy to state:
 \begin{enumerate}
 \item Injectivity is equivalent to the propositional truncation of
   algebraic injectivity.
@@ -1130,17 +1131,18 @@ We index \m{n}-types from \m{n=-2} as in the HoTT book, where the
 Returning to size issues, we now apply algebraic flabbiness to show
 that propositional resizing gives unrestricted algebraic injective
 resizing.
-%
+\begin{definition} \label{resizing}
 The propositional resizing principle, from \m{\U} to \m{\V}, that we
 consider here says that every proposition in the universe \m{\U} has
-an equivalent copy in the universe~\m{\V}. This is consistent because
+an equivalent copy in the universe~\m{\V}. By propositional resizing without
+qualification, we mean propositional resizing between any of the
+universes involved in the discussion.
+\end{definition}
+This is consistent because
 it is implied by excluded middle, but, as far as we are aware, there
 is no known computational interpretation of this axiom. A model in
 which excluded middle fails but propositional resizing holds is given
-by Shulman~\cite{MR3340541}. By propositional resizing without
-qualification, we mean propositional resizing between any of the
-universes involved in the discussion.
-
+by Shulman~\cite{MR3340541}.
 
 We begin with the following construction, which says that algebraic
 flabbiness is universe independent in the presence of propositional
@@ -1614,20 +1616,19 @@ We now apply these ideas to injectivity.
   \m{(\Leftarrow)}: Algebraic injectivity is closed under retracts.
 \end{proof}
 
-
-
+\begin{definition} \label{omega:resizing}
 Now, instead of propositional resizing, we consider the propositional
 impredicativity of the universe \m{\U}, which says that the type
 \m{\Omega_\U} of propositions in \m{\U}, which lives in the next
 universe \m{\U^+}, has an equivalent copy in \m{\U}. We refer to this
-kind of impredicativity as \m{\Omega}-resizing. It is not hard to see
+kind of impredicativity as \m{\Omega}-resizing.
+\end{definition}
+It is not hard to see
 that propositional resizing implies \m{\Omega}-resizing for all
 universes other than the first one~\cite{TypeTopology}, and so all
 the assumption of \m{\Omega}-resizing does is to account
 for the first universe too.
-
 %
-
 \begin{numbered}
   Under \m{\Omega}-resizing, for any type \m{X:\T}, the type
   \m{\Lift_{\T} X : \T^+} has an equivalent copy in the universe \m{\T}.
