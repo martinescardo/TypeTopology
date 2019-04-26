@@ -222,9 +222,10 @@ here.
 
 \section{Underlying formal system} \label{foundations}
 
-Because the way we handle universes is different from that of the HoTT
-Book~\cite{hottbook} and Coq~\cite{coq}, and probably unfamiliar to
-readers not acquainted with Agda~\cite{agda}, we explicitly state it here.
+Our handling of universes has a model in \m{\infty}-toposes following
+Shulman~\cite{2019arXiv190407004S}. It differs from that of the HoTT
+book, and Coq~\cite{coq}, in that we don't assume cumulativity, and it
+agrees with that of Agda~\cite{agda}.
 
 \subsection{Our univalent type theory}
 
@@ -1026,7 +1027,7 @@ below \m{\U} back, as follows.
   \m{d_y = f_y (x,p)} for all \m{(x,p):f^{-1}(y)}. By the construction of
   \m{f_y} and the definition of fiber, this amounts to saying that for
   any \m{x : X} and \m{p : j \, x = y}, we have \m{d_y = f \,
-    x}. Therefore we can cake
+    x}. Therefore we can take
 %
 \M{(f \mid j) \, y \eqdef d_y,}
 because we then have
@@ -1271,7 +1272,7 @@ Using this, we get the following as an immediate consequence.
 \begin{numbered} \df{(Characterization of algebraic injective \m{(n+1)}-types).}  If propositional resizing holds, then an
   \m{(n+1)}-type \m{D} in \m{\U} is algebraically \m{\U,\U}-injective
   if and only if \m{D} is a retract of an exponential power of the
-  universe of \m{n}-types \m{\U} with exponent in \m{\U}.
+  universe of \m{n}-types in \m{\U}, with exponent in \m{\U}.
 \end{numbered}
 
 \begin{corollary}
