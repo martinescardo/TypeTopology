@@ -116,7 +116,7 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
 TODO. The above proof can be simplified.
 
 NB. With a more careful treatment everywhere (including the structure
-of identity principle), we can relax the assumption that 𝓣 and 𝓤 are
+identity principle), we can relax the assumption that 𝓣 and 𝓤 are
 univalent to the assumption that 𝓣 satisfies propositional and
 functional extensionality. But this is probably not worth the trouble,
 as it would imply developing a copy of the SIP with this different

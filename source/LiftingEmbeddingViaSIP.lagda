@@ -1,7 +1,7 @@
 Martin Escardo 7th December 2018.
 
 We show that the natural map into the lifting is an embedding using
-the structure of identity principle. A more direct, but longer, proof
+the structure identity principle. A more direct, but longer, proof
 is in the module LiftingEmbeddingDirectly.
 
 \begin{code}
@@ -31,7 +31,7 @@ open import LiftingIdentityViaSIP 𝓣
 \end{code}
 
 The crucial point the use the characterization of identity via the
-structure of identity principle:
+structure identity principle:
 
 \begin{code}
 

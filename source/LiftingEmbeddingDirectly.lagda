@@ -2,7 +2,7 @@ Martin Escardo 25th October 2018.
 
 We show that the natural map into the lifting is an embedding.  See
 the module LiftingEmbeddingViaSIP for an alternative approach via the
-structure of identity principle.
+structure identity principle.
 
 \begin{code}
 
