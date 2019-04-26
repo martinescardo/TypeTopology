@@ -57,8 +57,8 @@
 \makeatother
 
 \newcommand{\bracket}[1]{\leftcolor{darkgreen}(\,#1\,\rightcolor{darkgreen})}
-\newcommand{\ttrunc}[1]{\leftcolor{darkgreen}\llbracket\,#1\,\rightcolor{darkgreen}\rrbracket}
-\newcommand{\trunc}[1]{\leftcolor{darkgreen}\llbracket\,\db{#1}\,\rightcolor{darkgreen}\rrbracket}
+\newcommand{\ttrunc}[1]{\leftcolor{darkblue}\llbracket\,#1\,\rightcolor{darkblue}\rrbracket}
+\newcommand{\trunc}[1]{\leftcolor{darkblue}\llbracket\,\db{#1}\,\rightcolor{darkblue}\rrbracket}
 
 \newcommand{\df}[1]{\emph{\db{#1}}}
 
@@ -338,16 +338,16 @@ Book.
 \begin{enumerate}
 \item A type \m{X} is a singleton, or contractible, if there is a
   designated \m{c:X} with \m{x = c} for all \m{x:X}:
-  \[
+  \M{
     \text{\m{X} is a singleton} \eqdef \Sigma (c : X), \Pi (x:X), x = c.
-  \]
+  }
 
 \item A proposition, or subsingleton, or truth value, is a type with
   at most one element, meaning that any two of its elements are
   equal:
-  \[
+  \M{
   \text{\m{X} is a proposition} \eqdef \Pi(x,y:X), x=y.
-  \]
+  }
   % (We don't use the adjective ``mere'' for propositions as in
   % the HoTT Book~\cite{hottbook}.)
 
@@ -363,7 +363,7 @@ Book.
   retract of the type \m{B} in an unspecified way, what we mean is that
   \m{\trunc{\text{\m{A} is a retract of \m{B}}}}.
 
-\item Phrases such as ``there exists'', ``there is'', ``there is some'', ``for some'' etc.\ indicate a propositionally truncated \m{\Sigma}, and symbolically we write  \[ (\exists (x:X), A \, x) \eqdef  \trunc{\Sigma (x:X), A \, x}.\]
+\item Phrases such as ``there exists'', ``there is'', ``there is some'', ``for some'' etc.\ indicate a propositionally truncated \m{\Sigma}, and symbolically we write  \M{(\exists (x:X), A \, x) \eqdef  \trunc{\Sigma (x:X), A \, x}.}
 For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
 
   When the meaning of existence is intended to be (untruncated)
@@ -372,9 +372,9 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
 
   The statement that there is a unique \m{x:X} with \m{A \, x} amounts to
   the assertion that the type \m{\Sigma (x:X), A \, x} is a singleton:
-  \[
+  \M{
     (\exists! (x:X), A \, x) \eqdef \text{the type \m{\Sigma (x:X), A \, x} is a singleton}.
-  \]
+  }
   That is, there is a unique pair \m{(x,a)} with \m{x:X} and \m{a : A\,
   x}. This doesn't need to be explicitly propositionally truncated,
   because singleton types are automatically propositions.
@@ -391,9 +391,9 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
   function \m{f : X \to Y} to be the type \m{f^{-1}(y)} of points \m{x:X}
   that are mapped by \m{f} to a point identified with \m{y}, it
   should be clear from the above conventions that we mean
-  \[
+  \M{
    f^{-1}(y) \eqdef \Sigma (x : X), f x = y.
- \]
+  }
  Also, with the above terminological conventions, saying that the
  fibers of \m{f} are singletons (that is, that \m{f} is an equivalence)
  amounts to the same thing as saying that for every \m{y:Y} there is a
@@ -1471,9 +1471,9 @@ its equality types. We denote the projections from \m{\Lift_{\T}
 }
 %
 For \m{l , m : \Lift_{\T} \, X}, define
-\[
+\M{
   (l \backsimeq m) \eqdef \Sigma (e : \delta \, l \simeq \delta \, m), \upsilon \, l = \upsilon \, m \comp e.
-\]
+}
 \begin{lemma}
   The canonical transformation \m{(l = m) \to (l \backsimeq m)} that
   sends \m{\refl_l} to the identity equivalence paired with \m{\refl_{\upsilon \,
