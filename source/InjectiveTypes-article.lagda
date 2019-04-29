@@ -1325,9 +1325,9 @@ retract-of-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
-power-of-injective : {A : 𝓣 ̇ } {D : 𝓣 ⊔ 𝓦 ̇ }
-                   → injective-type D       (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
-                   → injective-type (A → D) (𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)
+power-of-injective : {A : 𝓣 ̇ } {D : 𝓦 ̇ }
+                   → injective-type D       (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓥)
+                   → injective-type (A → D) 𝓤 𝓥
 power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
   where
    g : X × A → D
@@ -1339,7 +1339,7 @@ power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
    ψ : ∃ \(g' : Y × A → D) → g' ∘ k ∼ g
    ψ = i k c g
    φ : (Σ \(g' : Y × A → D) → g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
-   φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 (𝓣 ⊔ 𝓦)) (λ a → h (x , a)))
+   φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 𝓦) (λ a → h (x , a)))
    γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
