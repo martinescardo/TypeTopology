@@ -1448,7 +1448,7 @@ ainjective-is-retract-of-free-𝓛-algebra D i = ainjective-retract-of-subtype D
 With propositional resizing, the algebraically injective types are
 precisely the retracts of the underlying objects of free algebras of
 the lifting monad:
-
+`
 \begin{code}
 
 ainjectives-in-terms-of-free-𝓛-algebras : (D : 𝓣 ̇ ) → propositional-resizing (𝓣 ⁺) 𝓣
