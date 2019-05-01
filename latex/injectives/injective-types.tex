@@ -1010,7 +1010,7 @@ subsingletons. Notice that an algebraically flabby type \m{D} is pointed, by con
   \m{\U,\V}-injective, then it is algebraically \m{\U}-flabby.
 \end{numbered}
 \begin{proof}
-  Give a subsingleton \m{P} and a map \m{f : P \to D}, we can take its extension \m{f \mid \operatorname{!}: \One \to D} along the unique map \m{!:P \to \One}, because it is an embedding, and then we let \m{d \eqdef f \, \one}, and the extension property gives \m{d = f \, p} for any \m{p}.
+  Give a subsingleton \m{P} and a map \m{f : P \to D}, we can take its extension \m{f \mid \operatorname{!}: \One \to D} along the unique map \m{!:P \to \One}, because it is an embedding, and then we let \m{d \eqdef (f \mid \operatorname{!})\, \one}, and the extension property gives \m{d = f \, p} for any \m{p:P}.
 \end{proof}
 The interesting thing about this is that the
 universe~\m{\V} is forgotten, and then we can put any other universe
@@ -1170,7 +1170,7 @@ And from this it follows that algebraic injectivity is also universe
 independent in the presence of propositional resizing: we convert
 back-and-forth between algebraic injectivity and algebraic flabbiness.
 
-\begin{numbered}
+\begin{numbered} \label{universe:independence}
   If propositional resizing holds, then for any type \m{D} in any universe
   \m{\W}, the algebraic \m{\U,\V}-injectivity of \m{D} gives its
   algebraic \m{\U',\V'}-injectivity.
@@ -1249,11 +1249,11 @@ of an exponential power of the universe of \m{n}-types. We establish something
 more general first.
 
 \begin{numbered}
-  For any subuniverse \m{\Sigma \, A} of a universe \m{\U} closed
-  under subsingletons, we have that any algebraically
-  \m{\U,\U}-injective type \m{X:\U} whose identity types \m{x=_X x'}
-  all satisfy the property \m{A:\U \to \T} is a retract of the type
-  \m{X \to \Sigma \, A}.
+  Under propositional resizing, for any subuniverse \m{\Sigma \, A} of
+  a universe \m{\U} closed under subsingletons, we have that any
+  algebraically \m{\U,\U}-injective type \m{X:\U} whose identity types
+  \m{x=_X x'} all satisfy the property \m{A:\U \to \T} is a retract of
+  the type \m{X \to \Sigma \, A}.
 \end{numbered}
 \begin{proof}
   Because the first projection \m{j : \Sigma \, A \to \U} is an
@@ -1680,6 +1680,9 @@ injectivity, we have the following.
   \m{\U,\V}-injective in an unspecified way, and hence it is
   \m{\U,\V}-injective.
 \end{proof}
+At the time of writing, we are not able to establish the converse. In
+particular, we don't have the analogue of~\ref{universe:independence}.
+
 
 \section{The equivalence of  excluded middle with the (algebraic) injectivity of all pointed types}
 
