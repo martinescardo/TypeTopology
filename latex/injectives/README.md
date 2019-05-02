@@ -13,3 +13,7 @@ Remarks and to do list.
 
  * Explain a in more detail (the simple) proof of the first resizing
    construction.
+
+ * Something similar to aflabiness -> ainjectivity is Lemma 2.23 of
+   "Localization in homotopy type theory" by Christensen, Opie, Rijke
+   and Scoccola.
