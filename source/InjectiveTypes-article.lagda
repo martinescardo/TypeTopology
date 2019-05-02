@@ -819,12 +819,12 @@ ainjective-resizing₁ {𝓦} {𝓤} {𝓣} {𝓥} D i = b
  where
   a : aflabby D (𝓤 ⊔ 𝓣)
   a = ainjective-types-are-aflabby D i
-  b : {!ainjective-type D 𝓤 𝓣!}
+  b : ainjective-type D 𝓤 𝓣
   b = aflabby-types-are-ainjective D a
 
 \end{code}
 
-We record two particular cases:
+We record the following particular cases as examples:
 
 \begin{code}
 
@@ -833,6 +833,15 @@ ainjective-resizing₂ = ainjective-resizing₁
 
 ainjective-resizing₃ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤₀ 𝓤
 ainjective-resizing₃ = ainjective-resizing₁
+
+ainjective-resizing₄ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → ainjective-type D 𝓤 𝓤₀
+ainjective-resizing₄ = ainjective-resizing₁
+
+ainjective-resizing₅ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓤₀ → ainjective-type D 𝓤 𝓤
+ainjective-resizing₅ = ainjective-resizing₁
+
+ainjective-resizing₆ : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓤₀ ⇔ ainjective-type D 𝓤 𝓤
+ainjective-resizing₆ D = (ainjective-resizing₁ D , ainjective-resizing₁ D)
 
 \end{code}
 
@@ -854,17 +863,21 @@ subuniverse-aflabby-Σ : (A : 𝓤 ̇ → 𝓣 ̇ )
                       → aflabby (Σ A) 𝓤
 subuniverse-aflabby-Σ {𝓤} {𝓣} A φ α κ P i f = (X , a) , c
  where
+  g : P → 𝓤 ̇
+  g = pr₁ ∘ f
+  h : (p : P) → A (g p)
+  h = pr₂ ∘ f
   X : 𝓤 ̇
-  X = Σ (pr₁ ∘ f)
+  X = Σ \(p : P) → g p
   a : A X
-  a = κ P (pr₁ ∘ f) (α P i) (pr₂ ∘ f)
+  a = κ P g (α P i) h
   c : (p : P) → (X , a) ≡ f p
   c p = to-Σ-≡ (q , r)
    where
-     q : X ≡ pr₁ (f p)
-     q = eqtoid (ua 𝓤) X (pr₁ (f p)) (prop-indexed-sum i p)
-     r : transport A q a ≡ pr₂ (f p)
-     r = φ (pr₁ (f p)) (transport A q a) (pr₂ (f p))
+     q : X ≡ g p
+     q = eqtoid (ua 𝓤) X (g p) (prop-indexed-sum i p)
+     r : transport A q a ≡ h p
+     r = φ (g p) (transport A q a) (h p)
 
 \end{code}
 

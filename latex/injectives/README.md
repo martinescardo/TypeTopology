@@ -18,3 +18,10 @@ Remarks and to do list.
    "Localization in homotopy type theory" by Christensen, Opie, Rijke
    and Scoccola. By the way, it would be probably a good idea to draw
    a diagram for this proof (and some other proofs).
+
+ * Observation by Egbert Rijke at CAS (2nd May 2019): The subuniverse
+   of subfinite types is flabby because it is closed. Also the
+   subuniverse of types with decidable equality. Another example is
+   the subuniverse of injective types in any universe. (Of course also
+   the subuniverse of modal types for any modality that contains all
+   the propositions.)
