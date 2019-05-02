@@ -16,4 +16,5 @@ Remarks and to do list.
 
  * Something similar to aflabiness -> ainjectivity is Lemma 2.23 of
    "Localization in homotopy type theory" by Christensen, Opie, Rijke
-   and Scoccola.
+   and Scoccola. By the way, it would be probably a good idea to draw
+   a diagram for this proof (and some other proofs).
