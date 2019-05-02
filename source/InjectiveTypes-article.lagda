@@ -782,27 +782,30 @@ maps P → 𝟙 from propositions P are embeddings, as alluded above:
 \begin{code}
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
-ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ (i unique-to-𝟙 (prop-embedding P h 𝓥) f) * ,
-                                                     pr₂ (i unique-to-𝟙 (prop-embedding P h 𝓥) f)
+ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ s * , pr₂ s
+ where
+  s : Σ \(f' : 𝟙 → D) → f' ∘ unique-to-𝟙 ∼ f
+  s = i unique-to-𝟙 (prop-embedding P h 𝓥) f
 
 \end{code}
 
-The interesting thing about this is that the
-universe~\m{\V} is forgotten, and the we can put any other universe
-below \m{\U} back, as follows.
+The interesting thing about this is that the universe 𝓥 is forgotten,
+and the we can put any other universe below 𝓤 back, as follows.
 
 \begin{code}
 
 aflabby-types-are-ainjective : (D : 𝓦 ̇ ) → aflabby D (𝓤 ⊔ 𝓥) → ainjective-type D 𝓤 𝓥
 aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
  where
+  g : (y : Y) → Σ \(d : D) → (w : fiber j y) → d ≡ (f ∘ pr₁) w
+  g y = φ (fiber j y) (e y) (f ∘ pr₁)
   f' : Y → D
-  f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
+  f' y = pr₁ (g y)
   p : (x : X) → f' (j x) ≡ f x
   p x = q (x , refl)
    where
     q : (w : fiber j (j x)) → f' (j x) ≡ f (pr₁ w)
-    q = pr₂ (φ (fiber j (j x)) (e (j x)) (f ∘ pr₁))
+    q = pr₂ (g (j x))
 
 \end{code}
 
