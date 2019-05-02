@@ -636,7 +636,9 @@ retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
   a : Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
   a = i j e (s ∘ f)
   φ : (Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f) → Σ \(f'' : Y → D') → f'' ∘ j ∼ f
-  φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
+  φ (f' , h) = r ∘ f' , (λ x → r (f' (j x)) ≡⟨ ap r (h x) ⟩
+                               r (s (f x))  ≡⟨ rs (f x) ⟩
+                               f x          ∎)
 
 equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                     → ainjective-type D 𝓤 𝓥
