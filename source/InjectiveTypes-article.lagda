@@ -815,7 +815,12 @@ two conversions between algebraic flabbiness and injectivity:
 \begin{code}
 
 ainjective-resizing₁ : (D : 𝓦 ̇ ) → ainjective-type D (𝓤 ⊔ 𝓣) 𝓥 → ainjective-type D 𝓤 𝓣
-ainjective-resizing₁ D i j e f = aflabby-types-are-ainjective D (ainjective-types-are-aflabby D i) j e f
+ainjective-resizing₁ {𝓦} {𝓤} {𝓣} {𝓥} D i = b
+ where
+  a : aflabby D (𝓤 ⊔ 𝓣)
+  a = ainjective-types-are-aflabby D i
+  b : {!ainjective-type D 𝓤 𝓣!}
+  b = aflabby-types-are-ainjective D a
 
 \end{code}
 
