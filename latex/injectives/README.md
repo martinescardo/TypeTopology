@@ -10,3 +10,6 @@ Remarks and to do list.
  * Prove iterated-↓ and maybe retract-extension-↓.
 
  * Improve diagram in construction 12 (retracts of ainjectives).
+
+ * Explain a in more detail (the simple) proof of the first resizing
+   construction.

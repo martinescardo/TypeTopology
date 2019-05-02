@@ -671,7 +671,7 @@ And hence under exponential powers:
 \begin{code}
 
 power-of-ainjective : {A : 𝓣 ̇ } {D : 𝓦 ̇ }
-                    → ainjective-type D 𝓤 𝓥
+                    → ainjective-type D       𝓤 𝓥
                     → ainjective-type (A → D) 𝓤 𝓥
 power-of-ainjective i = Π-ainjective (λ a → i)
 
@@ -683,7 +683,8 @@ extend the identity function to get the retraction:
 
 \begin{code}
 
-ainjective-retract-of-subtype : (D : 𝓦 ̇ ) → ainjective-type D 𝓦 𝓥
+ainjective-retract-of-subtype : (D : 𝓦 ̇ )
+                              → ainjective-type D 𝓦 𝓥
                               → (Y : 𝓥 ̇ ) → D ↪ Y → retract D of Y
 ainjective-retract-of-subtype D i Y (j , e) = pr₁ a , j , pr₂ a
  where
@@ -730,11 +731,16 @@ need to resizing axioms:
 \begin{code}
 
 ainjective-resizing₀ : (D : 𝓤 ̇ ) → ainjective-type D 𝓤 (𝓤 ⁺) → ainjective-type D 𝓤 𝓤
-ainjective-resizing₀ {𝓤} D i = φ (ainjective-is-retract-of-power-of-universe D i)
+ainjective-resizing₀ {𝓤} D i = c d
  where
-  φ : retract D of (D → 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤
-  φ = retract-of-ainjective D (D → 𝓤 ̇ ) (power-of-ainjective (universes-are-ainjective-Π))
-
+  a : ainjective-type (𝓤 ̇) 𝓤 𝓤
+  a = universes-are-ainjective-Π
+  b : ainjective-type (D → 𝓤 ̇) 𝓤 𝓤
+  b = power-of-ainjective a
+  c : retract D of (D → 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤
+  c = retract-of-ainjective D (D → 𝓤 ̇ ) b
+  d : retract D of (D → 𝓤 ̇)
+  d = ainjective-is-retract-of-power-of-universe D i
 \end{code}
 
 This is resizing down and so is not surprising.
