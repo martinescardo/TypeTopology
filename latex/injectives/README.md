@@ -25,3 +25,6 @@ Remarks and to do list.
    the subuniverse of injective types in any universe. (Of course also
    the subuniverse of modal types for any modality that contains all
    the propositions.)
+
+ * Item 5 of Section 2.2: do we need to say that that the point is
+   specified? Probably. Think about that.

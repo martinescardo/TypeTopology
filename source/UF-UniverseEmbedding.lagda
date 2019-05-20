@@ -60,8 +60,8 @@ lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (
 \end{code}
 
 Added 7th Feb 2019. Assuming propositional and functional
-extensionality instead of univalence univalence, the lift fibers of
-propositions are propositions. (For use in the module UF-Resize.)
+extensionality instead of univalence, the lift fibers of propositions
+are propositions. (For use in the module UF-Resize.)
 
 \begin{code}
 
