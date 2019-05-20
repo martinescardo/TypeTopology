@@ -117,7 +117,7 @@ separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-separat
 separated-types-are-sets fe s = Id-collapsibles-are-sets (separated-is-Id-collapsible fe s)
 
 is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop(is-separated X)
-is-prop-separated fe fe₀ {X} = iprops-are-propositions f
+is-prop-separated fe fe₀ {X} = iprops-are-props f
  where
   f : is-separated X → is-prop(is-separated X)
   f s = Π-is-prop fe

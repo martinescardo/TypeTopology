@@ -91,8 +91,8 @@ singletons-are-props {𝓤} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡�
 isingletons-are-props : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
 isingletons-are-props {𝓤} {X} φ x = singletons-are-props (φ x) x
 
-iprops-are-propositions : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
-iprops-are-propositions {𝓤} {X} φ x y = φ x x y
+iprops-are-props : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
+iprops-are-props {𝓤} {X} φ x y = φ x x y
 
 pointed-props-are-singletons : {X : 𝓤 ̇ } → X → is-prop X → is-singleton X
 pointed-props-are-singletons x h = x , h x
