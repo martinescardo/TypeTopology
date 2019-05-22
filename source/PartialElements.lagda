@@ -25,5 +25,6 @@ import LiftingMonad
 import LiftingMonadVariation
 import LiftingAlgebras
 import LiftingSize
+import LiftingSet
 
 \end{code}
