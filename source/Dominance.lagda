@@ -54,7 +54,7 @@ dominant-closed-under-Σ : (D : Dominance) → (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
 being-a-dominance-is-a-prop : (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
-being-a-dominance-is-a-prop d = iprops-are-propositions lemma
+being-a-dominance-is-a-prop d = iprops-are-props lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
