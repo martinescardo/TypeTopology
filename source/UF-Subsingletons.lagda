@@ -311,7 +311,7 @@ inr-lc-is-section refl = refl
   r : ap inr (inr-lc p) ≡ ap inr (inr-lc q)
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
 
-×-is-set : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-set X → is-set Y → is-set (X × Y)
+×-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set X → is-set Y → is-set (X × Y)
 ×-is-set i j {(x , y)} {(x' , y')} p q = 
  p            ≡⟨ tofrom-×-≡ p ⟩
  to-×-≡ p₀ p₁ ≡⟨ ap₂ (λ -₀ -₁ → to-×-≡ -₀ -₁) (i p₀ q₀) (j p₁ q₁) ⟩
