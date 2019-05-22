@@ -311,6 +311,21 @@ inr-lc-is-section refl = refl
   r : ap inr (inr-lc p) ≡ ap inr (inr-lc q)
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
 
+×-is-set : {X : 𝓤 ̇} {Y : 𝓥 ̇} → is-set X → is-set Y → is-set (X × Y)
+×-is-set i j {(x , y)} {(x' , y')} p q = 
+ p            ≡⟨ tofrom-×-≡ p ⟩
+ to-×-≡ p₀ p₁ ≡⟨ ap₂ (λ -₀ -₁ → to-×-≡ -₀ -₁) (i p₀ q₀) (j p₁ q₁) ⟩
+ to-×-≡ q₀ q₁ ≡⟨ (tofrom-×-≡ q)⁻¹ ⟩
+ q            ∎ where
+  p₀ : x ≡ x'
+  p₀ = pr₁ (from-×-≡' p)
+  p₁ : y ≡ y'
+  p₁ = pr₂ (from-×-≡' p)
+  q₀ : x ≡ x'
+  q₀ = pr₁ (from-×-≡' q)
+  q₁ : y ≡ y'
+  q₁ = pr₂ (from-×-≡' q) 
+
 \end{code}
 
 Formulation of the K axiom for a universe U.
