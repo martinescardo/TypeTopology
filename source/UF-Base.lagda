@@ -229,6 +229,11 @@ from-×-≡' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
           → z ≡ z' → (pr₁ z ≡ pr₁ z') × (pr₂ z ≡ pr₂ z' )
 from-×-≡' refl = (refl , refl)
 
+tofrom-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
+             → (p : z ≡ z')
+             → p ≡ to-×-≡ (pr₁ (from-×-≡' p)) (pr₂ (from-×-≡' p))
+tofrom-×-≡ refl = refl
+
 from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
          → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)
 from-Σ-≡ refl = refl , refl
