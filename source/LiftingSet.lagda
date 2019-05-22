@@ -24,7 +24,7 @@ open import Lifting 𝓣
 lifting-of-set-is-a-set : (fe' : funext 𝓣 𝓤) 
                           → (fe : funext 𝓣 𝓣)
                           → (pe : propext 𝓣)
-                          → (X : 𝓤 ̇)
+                          → (X : 𝓤 ̇ )
                           → is-set X
                           → is-set (𝓛 X)
 lifting-of-set-is-a-set fe' fe pe  X i {l} {m} p q  = retract-of-prop r j p q
