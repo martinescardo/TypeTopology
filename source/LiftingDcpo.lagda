@@ -20,8 +20,6 @@ module LiftingDcpo
   where
 
 open import UF-Base
---open import UF-Retracts
---open import UF-Subsingletons-FunExt
 open import Lifting 𝓣
 open import LiftingUnivalentPrecategory 𝓣 X
 open import LiftingSet 𝓣
@@ -68,6 +66,7 @@ l ⊑' m = is-defined l → l ≡ m
  g : is-defined l → l ⊑ m
  g d = transport (_⊑_ l) (a d) (𝓛-id l)
 
+{-
 ⊑'-is-reflexive : is-reflexive (_⊑'_)
 ⊑'-is-reflexive l d = refl
 
@@ -78,12 +77,15 @@ l ⊑' m = is-defined l → l ≡ m
 
 ⊑'-is-antisymmetric : is-antisymmetric (_⊑'_)
 ⊑'-is-antisymmetric l m a b = ⊑-anti pe fe fe (⊑'-to-⊑ a , ⊑'-to-⊑ b)
+-}
 
 ≡-of-values-from-≡ : {l m : 𝓛 X} → l ≡ m
-                   → (d : is-defined l)
-                   → (e : is-defined m)
+                   → {d : is-defined l}
+                   → {e : is-defined m}
                    → value l d ≡ value m e
-≡-of-values-from-≡ {l} refl d e = ap (value l) (being-defined-is-a-prop l d e)
+≡-of-values-from-≡ {l} refl {d} {e} = ap (value l) (being-defined-is-a-prop l d e)
+≡-to-is-defined : {l m : 𝓛 X} → l ≡ m → is-defined l → is-defined m
+≡-to-is-defined e d = transport is-defined e d
 
 family-value-map : {I : 𝓤₀ ̇}
                  → (α : I → 𝓛 X)
@@ -101,22 +103,16 @@ directed-family-value-map-is-constant {I} α δ (i₀ , d₀) (i₁ , d₁) =
   γ : ∃ (\(k : I) → (α i₀ ⊑ α k) × (α i₁ ⊑ α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
   γ = ∥∥-rec s g where
    g : Σ (\(k : I) → (α i₀ ⊑ α k) × (α i₁ ⊑ α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
-   g (k , l , m) =
-    f (i₀ , d₀)         ≡⟨ refl ⟩
-    value (α i₀) d₀     ≡⟨ b₀ ⟩
-    value (α k) (a₀ d₀) ≡⟨ ap (value (α k))
-                          (being-defined-is-a-prop (α k) (a₀ d₀) (a₁ d₁)) ⟩
-    value (α k) (a₁ d₁) ≡⟨ b₁ ⁻¹ ⟩
-    value (α i₁) d₁     ≡⟨ refl ⟩
-    f (i₁ , d₁)         ∎ where
-     a₀ : is-defined (α i₀) → is-defined (α k)
-     a₀ = pr₁ l
-     b₀ : value (α i₀) d₀ ≡ value (α k) (a₀ d₀)
-     b₀ = pr₂ l d₀
-     a₁ : is-defined (α i₁) → is-defined (α k)
-     a₁ = pr₁ m
-     b₁ : value (α i₁) d₁ ≡ value (α k) (a₁ d₁)
-     b₁ = pr₂ m d₁
+   g (k , l , m) = 
+    f (i₀ , d₀)                         ≡⟨ refl ⟩
+    value (α i₀) d₀                     ≡⟨ ≡-of-values-from-≡ e₀ ⟩
+    value (α k) (≡-to-is-defined e₀ d₀) ≡⟨ ≡-of-values-from-≡ (e₁ ⁻¹) ⟩
+    value (α i₁) d₁                     ≡⟨ refl ⟩
+    f (i₁ , d₁)                         ∎ where
+     e₀ : α i₀ ≡ α k
+     e₀ = ⊑-to-⊑' l d₀
+     e₁ : α i₁ ≡ α k
+     e₁ = ⊑-to-⊑' m d₁
 
 lifting-sup-value : {I : 𝓤₀ ̇}
                   → (α : I → 𝓛 X)
@@ -127,38 +123,64 @@ lifting-sup-value {I} α δ =
   (Σ \(i : I) → is-defined (α i))
   s (family-value-map α) (directed-family-value-map-is-constant α δ)
 
-lifting-sup : {I : 𝓤₀ ̇} → {α : I → 𝓛 X} → (δ : is-directed _⊑_ α) → 𝓛 X
-lifting-sup {I} {α} δ =
+lifting-sup : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑_ α) → 𝓛 X
+lifting-sup {I} α δ =
  ∃ (\(i : I) → is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-a-prop
 
-lifting-of-set-is-a-dcpo : is-set X → DCPO -- {!!} {!!}
+lifting-sup-is-upperbound : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑_ α)
+                          → (i : I) → α i ⊑ lifting-sup α δ
+lifting-sup-is-upperbound {I} α δ i = γ where
+ γ : α i ⊑ lifting-sup α δ
+ γ = f , v where
+  f : is-defined (α i) → is-defined (lifting-sup α δ)
+  f d = ∣ i , d ∣
+  v : (d : is-defined (α i)) → value (α i) d ≡ value (lifting-sup α δ) (f d)
+  v d = value (α i) d                 ≡⟨ constant-map-to-set-factors-through-truncation-of-domain
+                                         (Σ (\(j : I) → is-defined (α j))) s
+                                         (family-value-map α)
+                                         (directed-family-value-map-is-constant α δ)
+                                         (i , d) ⟩
+        lifting-sup-value α δ (f d)   ≡⟨ refl ⟩
+        value (lifting-sup α δ) (f d) ∎
+
+family-defined-somewhere-sup-≡ : {I : 𝓤₀ ̇} {α : I → 𝓛 X}
+                               → (δ : is-directed _⊑_ α)
+                               → (i : I)
+                               → is-defined (α i)
+                               → α i ≡ lifting-sup α δ
+family-defined-somewhere-sup-≡ {I} {α} δ i d =
+ ⊑-to-⊑' (lifting-sup-is-upperbound α δ i) d
+
+lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓤₀ ̇}
+                                         → {α : I → 𝓛 X}
+                                         → (δ : is-directed _⊑_ α)
+                                         → (v : 𝓛 X)
+                                         → ((i : I) → α i ⊑ v)
+                                         → lifting-sup α δ ⊑ v
+lifting-sup-is-lowerbound-of-upperbounds {I} {α} δ v b = ⊑'-to-⊑ h where
+ h : lifting-sup α δ ⊑' v
+ h d = ∥∥-rec (lifting-of-set-is-a-set fe fe pe X s) g d where
+  g : (Σ (\(i : I) → is-defined (α i))) → lifting-sup α δ ≡ v
+  g (i , dᵢ) = lifting-sup α δ ≡⟨ (family-defined-somewhere-sup-≡ δ i dᵢ) ⁻¹ ⟩
+               α i            ≡⟨ ⊑-to-⊑' (b i) dᵢ ⟩
+               v              ∎
+
+lifting-of-set-is-a-dcpo : is-set X → DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⊔ 𝓤}
 lifting-of-set-is-a-dcpo s = 𝓛 X , _⊑_ , d where
  d : dcpo-axioms _⊑_
- d = j , p , r , t , a ,
-      (λ {I} {α} δ →
-       ((∃ \(i : I) → is-defined (α i)) ,
-        lifting-sup-value α δ ,
-        ∥∥-is-a-prop) ,
-       (λ (i : I) →
-        (λ (d : is-defined (α i)) → ∣ i , d ∣) ,
-        (λ (d : is-defined (α i)) →
-         constant-map-to-set-factors-through-truncation-of-domain
-          (Σ( \(i : I) → is-defined (α i))) {!!} (family-value-map α) -- something weird here
-          (directed-family-value-map-is-constant α δ) (i , d))) ,
-       (λ (u : 𝓛 X) (b : (i : I) → α i ⊑ u) → 
-        (λ d → ∥∥-rec (being-defined-is-a-prop u)
-         (λ p → pr₁ (b (pr₁ p)) (pr₂ p)) d) ,
-        λ d → ≡-of-values-from-≡ {!!} d {!!} )) 
-     where
-  j : is-set (𝓛 X)
-  j = lifting-of-set-is-a-set fe fe pe X s
-  p : is-prop-valued (_⊑_)
-  p = ⊑-prop-valued fe fe s
-  r : is-reflexive (_⊑_)
-  r = 𝓛-id
-  a : is-antisymmetric (_⊑_)
-  a l m p q = ⊑-anti pe fe fe (p , q)
-  t : is-transitive (_⊑_)
-  t = 𝓛-comp
+ d = sl , p , r , t , a ,
+  (λ {I} {α} δ → (lifting-sup α δ) ,
+   ((lifting-sup-is-upperbound α δ) ,
+   (lifting-sup-is-lowerbound-of-upperbounds δ))) where
+    sl : is-set (𝓛 X)
+    sl = lifting-of-set-is-a-set fe fe pe X s
+    p : is-prop-valued (_⊑_)
+    p = ⊑-prop-valued fe fe s
+    r : is-reflexive (_⊑_)
+    r = 𝓛-id
+    a : is-antisymmetric (_⊑_)
+    a l m p q = ⊑-anti pe fe fe (p , q)
+    t : is-transitive (_⊑_)
+    t = 𝓛-comp
 
 \end{code}
