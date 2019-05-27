@@ -48,6 +48,16 @@ module _
  is-sup s α = (is-upperbound s α)
             × ((u : D) → is-upperbound u α → s ⊑ u)
 
+ is-sup-is-upperbound : {I : 𝓥 ̇ } {s : D} {α : I → D}
+                      → is-sup s α
+                      → is-upperbound s α
+ is-sup-is-upperbound i = pr₁ i
+
+ is-sup-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } {s : D} {α : I → D}
+                                     → is-sup s α
+                                     → ((u : D) → is-upperbound u α → s ⊑ u)
+ is-sup-is-lowerbound-of-upperbounds i = pr₂ i
+
  has-sup : {I : 𝓥 ̇ } → (I → D) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
  has-sup α = Σ \(s : D) → is-sup s α
 
@@ -132,6 +142,9 @@ module _ {𝓤 𝓣 : Universe} where
 
  syntax underlying-order  𝓓 x y = x ⊑⟨ 𝓓 ⟩ y
 
+ axioms-of-dcpo : (𝓓 : DCPO) → dcpo-axioms (underlying-order 𝓓)
+ axioms-of-dcpo (D , _⊑_ , d) = d
+
  sethood : (𝓓 : DCPO) → is-set ⟨ 𝓓 ⟩
  sethood (D , _⊑_ , (s  , p  , r  , t  , a  , c )) = s
 
@@ -169,8 +182,60 @@ module _ {𝓤 𝓣 : Universe} where
                                 → ((u : ⟨ 𝓓 ⟩) → ((i : I) → α i ⊑⟨ 𝓓 ⟩ u) → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ u)
  ∐-is-lowerbound-of-upperbounds 𝓓 δ = pr₂ (∐-is-sup 𝓓 δ)
 
-\end{code}
+is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
+is-monotone 𝓓 𝓔 f = (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → f x ⊑⟨ 𝓔 ⟩ f y
 
-But 𝓥 = 𝓤₀. So we if work with ℕ : 𝓤₁ for the underlying set of the
-base type and ℕ : 𝓤₀ for the index set of the directed sets, we are
-fine.
+is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+              → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+              → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+is-continuous 𝓓 𝓔 f = (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+                     → is-sup (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ α)
+
+being-continuous-is-a-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                           → is-prop (is-continuous 𝓓 𝓔 f)
+being-continuous-is-a-prop 𝓓 𝓔 f =
+   Π-is-prop fe
+    (λ I → Π-is-prop fe
+            (λ α → Π-is-prop fe
+                     (λ δ → is-sup-is-a-prop (underlying-order 𝓔)
+                            (axioms-of-dcpo 𝓔) (f (∐ 𝓓 δ)) (f ∘ α))))
+
+[_,_] : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                     → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+[ 𝓓 , 𝓔 ] = Σ (\(f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 f)
+
+underlying-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                    → [ 𝓓 , 𝓔 ] → ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
+underlying-function 𝓓 𝓔 (f , _) = f
+
+continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : [ 𝓓 , 𝓔 ])
+                       → is-continuous 𝓓 𝓔 (pr₁ f)
+continuity-of-function 𝓓 𝓔 (_ , c) = c
+                            
+continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+                                  → is-continuous 𝓓 𝓔 f → is-monotone 𝓓 𝓔 f
+continuous-functions-are-monotone 𝓓 𝓔 f cts x y l = γ
+  where
+   α : 𝟙 {𝓥} + 𝟙 {𝓥} → ⟨ 𝓓 ⟩
+   α (inl *) = x
+   α (inr *) = y
+   δ : is-Directed 𝓓 α
+   δ (inl *) (inl *) = ∣ inr * , l , l ∣
+   δ (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
+   δ (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
+   δ (inr *) (inr *) = ∣ inr * , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
+   a : y ≡ ∐ 𝓓 δ
+   a = antisymmetry 𝓓 y (∐ 𝓓 δ)
+           (∐-is-upperbound 𝓓 δ (inr *))
+           (∐-is-lowerbound-of-upperbounds 𝓓 δ y h)
+    where
+     h : (i : 𝟙 + 𝟙) → α i ⊑⟨ 𝓓 ⟩ y
+     h (inl *) = l
+     h (inr *) = reflexivity 𝓓 y
+   b : is-sup (underlying-order 𝓔) (f y) (f ∘ α)
+   b = transport (λ - → is-sup (underlying-order 𝓔) - (f ∘ α)) (ap f (a ⁻¹))
+       (cts (𝟙 + 𝟙) α δ)
+   γ : f x ⊑⟨ 𝓔 ⟩ f y
+   γ = is-sup-is-upperbound (underlying-order 𝓔) b (inl *)
+
+\end{code}
