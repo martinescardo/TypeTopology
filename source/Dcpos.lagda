@@ -41,6 +41,12 @@ module _
  is-antisymmetric : 𝓤 ⊔ 𝓣 ̇
  is-antisymmetric = (x y : D) → x ⊑ y → y ⊑ x → x ≡ y
 
+ is-least : D → 𝓤 ⊔ 𝓣 ̇
+ is-least x = ∀ (y : D) → x ⊑ y
+
+ has-least : 𝓤 ⊔ 𝓣 ̇
+ has-least = Σ (\(x : D) → is-least x)
+
  is-upperbound : {I : 𝓥 ̇ } (u : D) (α : I → D) → 𝓥 ⊔ 𝓣 ̇
  is-upperbound u α = (i : domain α) → α i ⊑ u
 
@@ -68,12 +74,20 @@ module _
  sup-property (s , i) = i
 
  is-directed : {I : 𝓥 ̇ } → (I → D) → 𝓥 ⊔ 𝓣 ̇
- is-directed {I} α = (i j : I) → ∃ \(k : I) → (α i ⊑ α k) × (α j ⊑ α k)
+ is-directed {I} α = ∥ I ∥ × ((i j : I) → ∃ \(k : I) → (α i ⊑ α k) × (α j ⊑ α k))
+
+ is-directed-inhabited : {I : 𝓥 ̇} (α : I → D) → is-directed α → ∥ I ∥
+ is-directed-inhabited α = pr₁
+
+ is-directed-order : {I : 𝓥 ̇} (α : I → D) → is-directed α
+                   → (i j : I) → ∃ (\(k : I) → (α i ⊑ α k) × (α j ⊑ α k))
+ is-directed-order α = pr₂
 
  being-directed-is-a-prop : {I : 𝓥 ̇ } (α : I → D) → is-prop (is-directed α)
- being-directed-is-a-prop α = Π-is-prop fe
+ being-directed-is-a-prop α = ×-is-prop ∥∥-is-a-prop
+                            (Π-is-prop fe
                                (λ i → Π-is-prop fe
-                                       (λ j → ∥∥-is-a-prop ))
+                                       (λ j → ∥∥-is-a-prop )))
 
  is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
@@ -141,6 +155,18 @@ module _ {𝓤 𝓣 : Universe} where
  underlying-order (D , _⊑_ , d) = _⊑_
 
  syntax underlying-order 𝓓 x y = x ⊑⟨ 𝓓 ⟩ y
+
+ DCPO⊥ : (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓣 ⁺) ̇
+ DCPO⊥ = Σ \(𝓓 : DCPO) → has-least (underlying-order 𝓓)
+
+ ⟪_⟫ : DCPO⊥ → DCPO
+ ⟪ 𝓓 , x , p ⟫  = 𝓓
+
+ the-least : (𝓓 : DCPO⊥) → ⟨ ⟪ 𝓓 ⟫ ⟩
+ the-least (𝓓 , x , p) = x
+
+ least-property : (𝓓 : DCPO⊥) → is-least (underlying-order ⟪ 𝓓 ⟫) (the-least 𝓓)
+ least-property (𝓓 , x , p) = p
 
  axioms-of-dcpo : (𝓓 : DCPO) → dcpo-axioms (underlying-order 𝓓)
  axioms-of-dcpo (D , _⊑_ , d) = d
@@ -220,10 +246,12 @@ continuous-functions-are-monotone 𝓓 𝓔 f cts x y l = γ
    α (inl *) = x
    α (inr *) = y
    δ : is-Directed 𝓓 α
-   δ (inl *) (inl *) = ∣ inr * , l , l ∣
-   δ (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
-   δ (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
-   δ (inr *) (inr *) = ∣ inr * , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
+   δ = (∣ inl * ∣ , ε) where
+    ε : (i j : 𝟙 + 𝟙) → ∃ (\k → α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
+    ε (inl *) (inl *) = ∣ inr * , l , l ∣
+    ε (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
+    ε (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
+    ε (inr *) (inr *) = ∣ inr * , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
    a : y ≡ ∐ 𝓓 δ
    a = antisymmetry 𝓓 y (∐ 𝓓 δ)
            (∐-is-upperbound 𝓓 δ (inr *))
@@ -237,5 +265,15 @@ continuous-functions-are-monotone 𝓓 𝓔 f cts x y l = γ
        (cts (𝟙 + 𝟙) α δ)
    γ : f x ⊑⟨ 𝓔 ⟩ f y
    γ = is-sup-is-upperbound (underlying-order 𝓔) b (inl *)
+
+constant-function-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                                (e : ⟨ 𝓔 ⟩)
+                                → is-continuous 𝓓 𝓔 (λ d → e)
+constant-function-is-continuous 𝓓 𝓔 e I α δ = u , v where
+ u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
+ u i = reflexivity 𝓔 e 
+ v : (y : ⟨ 𝓔 ⟩) → ((i : I) → e ⊑⟨ 𝓔 ⟩ y) → e ⊑⟨ 𝓔 ⟩ y
+ v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) (λ (i : I) → l i)
+          (is-directed-inhabited (underlying-order 𝓓) α δ)
 
 \end{code}

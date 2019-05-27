@@ -97,7 +97,7 @@ directed-family-value-map-is-constant : {I : 𝓤₀ ̇}
                                       → (δ : is-directed _⊑_ α )
                                       → constant (family-value-map α)
 directed-family-value-map-is-constant {I} α δ (i₀ , d₀) (i₁ , d₁) =
- γ (δ i₀ i₁) where
+ γ (is-directed-order _⊑_ α δ i₀ i₁) where
   f : Σ (λ i → is-defined (α i)) → X
   f = family-value-map α
   γ : ∃ (\(k : I) → (α i₀ ⊑ α k) × (α i₁ ⊑ α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
