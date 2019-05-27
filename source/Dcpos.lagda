@@ -76,7 +76,7 @@ module _
                                        (λ j → ∥∥-is-a-prop ))
 
  is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
- is-directed-complete = {I : 𝓥 ̇ } {α : I → D} → is-directed α → has-sup α
+ is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
 
  dcpo-axioms : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
  dcpo-axioms = is-set D × is-prop-valued × is-reflexive × is-transitive × is-antisymmetric × is-directed-complete
@@ -99,8 +99,8 @@ module _
 
  being-directed-complete-is-a-prop : dcpo-axioms → is-prop is-directed-complete
  being-directed-complete-is-a-prop a =
-  Π-is-prop' fe
-   (λ I → Π-is-prop' fe 
+  Π-is-prop fe
+   (λ I → Π-is-prop fe 
              (λ α → Π-is-prop fe (λ d → has-sup-is-a-prop a α)))
 
  dcpo-axioms-is-a-prop : is-prop dcpo-axioms
@@ -140,7 +140,7 @@ module _ {𝓤 𝓣 : Universe} where
  underlying-order : (𝓓 : DCPO) → ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓣 ̇
  underlying-order (D , _⊑_ , d) = _⊑_
 
- syntax underlying-order  𝓓 x y = x ⊑⟨ 𝓓 ⟩ y
+ syntax underlying-order 𝓓 x y = x ⊑⟨ 𝓓 ⟩ y
 
  axioms-of-dcpo : (𝓓 : DCPO) → dcpo-axioms (underlying-order 𝓓)
  axioms-of-dcpo (D , _⊑_ , d) = d
@@ -167,12 +167,12 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
  ∐ : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
- ∐ 𝓓 δ = pr₁ (directed-completeness 𝓓 δ)
+ ∐ 𝓓 {I} {α} δ = pr₁ (directed-completeness 𝓓 I α δ)
 
  ∐-is-sup : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
           → ((i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
           × ((u : ⟨ 𝓓 ⟩) → ((i : I) → α i ⊑⟨ 𝓓 ⟩ u) → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ u)
- ∐-is-sup 𝓓 δ = pr₂ (directed-completeness 𝓓 δ)
+ ∐-is-sup 𝓓 {I} {α} δ = pr₂ (directed-completeness 𝓓 I α δ)
 
  ∐-is-upperbound : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
                  → ((i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)

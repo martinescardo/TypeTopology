@@ -166,21 +166,20 @@ lifting-sup-is-lowerbound-of-upperbounds {I} {α} δ v b = ⊑'-to-⊑ h where
                v              ∎
 
 lifting-of-set-is-a-dcpo : is-set X → DCPO {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⊔ 𝓤}
-lifting-of-set-is-a-dcpo s = 𝓛 X , _⊑_ , d where
- d : dcpo-axioms _⊑_
- d = sl , p , r , t , a ,
-  (λ {I} {α} δ → (lifting-sup α δ) ,
-   ((lifting-sup-is-upperbound α δ) ,
-   (lifting-sup-is-lowerbound-of-upperbounds δ))) where
-    sl : is-set (𝓛 X)
-    sl = lifting-of-set-is-a-set fe fe pe X s
-    p : is-prop-valued (_⊑_)
-    p = ⊑-prop-valued fe fe s
-    r : is-reflexive (_⊑_)
-    r = 𝓛-id
-    a : is-antisymmetric (_⊑_)
-    a l m p q = ⊑-anti pe fe fe (p , q)
-    t : is-transitive (_⊑_)
-    t = 𝓛-comp
+lifting-of-set-is-a-dcpo s = 𝓛 X , _⊑_ , sl , p , r , t , a , c where
+ sl : is-set (𝓛 X)
+ sl = lifting-of-set-is-a-set fe fe pe X s
+ p : is-prop-valued (_⊑_)
+ p = ⊑-prop-valued fe fe s
+ r : is-reflexive (_⊑_)
+ r = 𝓛-id
+ a : is-antisymmetric (_⊑_)
+ a l m p q = ⊑-anti pe fe fe (p , q)
+ t : is-transitive (_⊑_)
+ t = 𝓛-comp
+ c : (I : 𝓤₀ ̇) (α : I → 𝓛 X) → is-directed _⊑_ α → has-sup _⊑_ α
+ c I α δ = lifting-sup α δ ,
+           lifting-sup-is-upperbound α δ ,
+           lifting-sup-is-lowerbound-of-upperbounds δ
 
 \end{code}
