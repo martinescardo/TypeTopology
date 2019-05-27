@@ -113,11 +113,9 @@ DCPO[ 𝓓 , 𝓔 ] = [ 𝓓 , 𝓔 ] , [ 𝓓 , 𝓔 ]-⊑ , d where
                                                    (underlying-function 𝓓 𝓔 g)))
                                       (λ d₁ → _)) _ )
                                    (continuity-of-function 𝓓 𝓔 g))
-   c : (I : _ ̇) (α : I → [ 𝓓 , 𝓔 ]) →
-           is-directed [ 𝓓 , 𝓔 ]-⊑ α → has-sup [ 𝓓 , 𝓔 ]-⊑ α
-   c I α δ = (continuous-functions-sup 𝓓 𝓔 α δ) ,
-             u ,
-             v
+   c : (I : _ ̇) (α : I → [ 𝓓 , 𝓔 ])
+     → is-directed [ 𝓓 , 𝓔 ]-⊑ α → has-sup [ 𝓓 , 𝓔 ]-⊑ α
+   c I α δ = (continuous-functions-sup 𝓓 𝓔 α δ) , u , v
     where
      u : (i : I) → [ 𝓓 , 𝓔 ]-⊑ (α i) (continuous-functions-sup 𝓓 𝓔 α δ)
      u i d = ∐-is-upperbound 𝓔 (pointwise-family-is-directed 𝓓 𝓔 α δ d) i
