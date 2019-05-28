@@ -136,35 +136,114 @@ DCPO⊥[ 𝓓 , 𝓔 ] = DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , h where
  h = ((λ _ → the-least 𝓔) , constant-function-is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ (the-least 𝓔)) ,
      λ g d → least-property 𝓔 (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g d)
 
-iter : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (n : ℕ) → ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩ → ⟨ ⟪ 𝓓 ⟫ ⟩
-iter 𝓓 zero     f = the-least 𝓓
-iter 𝓓 (succ n) f = underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f (iter 𝓓 n f)
+module _
+  (𝓓 : DCPO⊥ {𝓤} {𝓣})
+  where
 
-iter-is-monotone : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (n : ℕ)
-                 → is-monotone ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (iter 𝓓 n)
-iter-is-monotone 𝓓 zero     f g l = least-property 𝓓 (iter 𝓓 zero g)
-iter-is-monotone 𝓓 (succ n) f g l = transitivity ⟪ 𝓓 ⟫
-                                      (iter 𝓓 (succ n) f)
-                                      (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g (iter 𝓓 n f))
-                                      (iter 𝓓 (succ n) g)
-                                      (l (iter 𝓓 n f))
-                                      (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-                                       (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
-                                       (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
-                                       (iter 𝓓 n f)
-                                       (iter 𝓓 n g)
-                                       (iter-is-monotone 𝓓 n f g l))
+ iter : (n : ℕ) → ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩ → ⟨ ⟪ 𝓓 ⟫ ⟩
+ iter zero     f = the-least 𝓓
+ iter (succ n) f = underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f (iter n f)
 
-{-
-iter : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (n : ℕ) → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]
-iter 𝓓 zero     = (λ f → the-least 𝓓) ,
-                   (constant-function-is-continuous ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (the-least 𝓓))
-iter 𝓓 (succ n) = (λ f → (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f) (pr₁ (iter 𝓓 n) f)) ,
-                   (λ I α δ → {!u!} , {!v!}) where
- u : {!!}
- u = {!!}
- v : {!!}
- v = {!!}
--}
+ iter-is-monotone : (n : ℕ) → is-monotone ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (iter n)
+ iter-is-monotone zero     f g l = least-property 𝓓 (iter zero g)
+ iter-is-monotone (succ n) f g l = transitivity ⟪ 𝓓 ⟫
+                                       (iter (succ n) f)
+                                       (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g (iter n f))
+                                       (iter (succ n) g)
+                                       (l (iter n f))
+                                       (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+                                        (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
+                                        (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
+                                        (iter n f)
+                                        (iter n g)
+                                        (iter-is-monotone n f g l))
+
+ n-family : {I : 𝓥 ̇} (α : I → ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩) (n : ℕ) → I → ⟨ ⟪ 𝓓 ⟫ ⟩
+ n-family α n i = iter n (α i)
+
+ n-family-is-directed : {I : 𝓥 ̇} (α : I → ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩)
+                      (δ : is-directed [ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]-⊑ α)
+                      (n : ℕ) → is-Directed ⟪ 𝓓 ⟫ (n-family α n)
+ n-family-is-directed {I} α δ n =
+  is-Directed-inhabited ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ α δ , ε where
+   ε : (i j : I) → ∃ (\(k : I) → (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
+                                 (n-family α n j) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k))
+   ε i j = ∥∥-functor h (is-Directed-order ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ α δ i j) where
+    h : Σ (\(k : I) → (α i) ⊑⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩ (α k) ×
+                      (α j) ⊑⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩ (α k))
+        → Σ (\(k : I) → (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
+                        (n-family α n j) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k))
+    h (k , l , m) = k , (iter-is-monotone n (α i) (α k) l) , (iter-is-monotone n (α j) (α k) m)
+
+ double-∐-lemma : {I : 𝓥 ̇} (α : I → ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩)
+                (δ : is-directed [ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]-⊑ α)
+                (n : ℕ)
+                → ∐ ⟪ 𝓓 ⟫ (pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α δ
+                   (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))
+                  ≡ ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))
+ double-∐-lemma {I} α δ n = antisymmetry ⟪ 𝓓 ⟫ x y a b where
+  ε : is-Directed ⟪ 𝓓 ⟫ (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α
+       (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))
+  ε = (pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α δ
+       (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))
+  φ : (n : ℕ) → is-Directed ⟪ 𝓓 ⟫ (n-family α n)
+  φ n = n-family-is-directed α δ n
+
+  x : ⟨ ⟪ 𝓓 ⟫ ⟩
+  x = ∐ ⟪ 𝓓 ⟫ ε
+  y : ⟨ ⟪ 𝓓 ⟫ ⟩
+  y = ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))
+  
+  a : x ⊑⟨ ⟪ 𝓓 ⟫ ⟩ y
+  a = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ ε y g where
+   g : (i : I)
+     → (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α (∐ ⟪ 𝓓 ⟫ (φ n)) i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ y
+   g i = is-sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫) s y u where
+    β : I → ⟨ ⟪ 𝓓 ⟫ ⟩
+    β = underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) ∘ (n-family α n)
+    s : is-sup (underlying-order ⟪ 𝓓 ⟫) (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α (∐ ⟪ 𝓓 ⟫ (φ n)) i) β
+    s = continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) I (n-family α n) (φ n)
+    u : (j : I) → underlying-order ⟪ 𝓓 ⟫ (β j) y
+    u j = ∥∥-rec (prop-valuedness ⟪ 𝓓 ⟫ (β j) y) v
+           (is-Directed-order ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ α δ i j) where
+     v : Σ (\(k : I) → [ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]-⊑ (α i) (α k) × [ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]-⊑ (α j) (α k)) →
+           underlying-order ⟪ 𝓓 ⟫ (β j) y
+     v (k , l , m) = transitivity ⟪ 𝓓 ⟫ (β j) (iter (succ n) (α k)) y p q where
+      p : β j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ n) (α k)
+      p = transitivity ⟪ 𝓓 ⟫
+          (β j)
+          (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k) (iter n (α j)))
+          (iter (succ n) (α k))
+          p₀ p₁ where
+       p₀ : β j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k) (iter n (α j))
+       p₀ = l (iter n (α j))
+       p₁ : underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k) (iter n (α j)) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ n) (α k)
+       p₁ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+            (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k))
+            (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k))
+            (iter n (α j))
+            (iter n (α k))
+            (iter-is-monotone n (α j) (α k) m)
+      q : iter (succ n) (α k) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ y
+      q = ∐-is-upperbound ⟪ 𝓓 ⟫ (φ (succ n)) k
+
+  b : y ⊑⟨ ⟪ 𝓓 ⟫ ⟩ x
+  b = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ (φ (succ n)) x h where
+   h : (i : I) → (n-family α (succ n) i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ x
+   h i = transitivity ⟪ 𝓓 ⟫ (n-family α (succ n) i)
+          (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) (∐ ⟪ 𝓓 ⟫ (φ n))) x p q where
+    p : iter (succ n) (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i)
+                                         (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
+    p = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+         (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i))
+         (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i))
+         (iter n (α i))
+         (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
+         (∐-is-upperbound ⟪ 𝓓 ⟫ (φ n) i)
+    q : (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i)
+         (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))
+        ⊑⟨ ⟪ 𝓓 ⟫ ⟩  x
+    q = ∐-is-upperbound ⟪ 𝓓 ⟫ ε i
+
 
 \end{code}
