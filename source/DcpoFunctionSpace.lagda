@@ -245,5 +245,45 @@ module _
         ⊑⟨ ⟪ 𝓓 ⟫ ⟩  x
     q = ∐-is-upperbound ⟪ 𝓓 ⟫ ε i
 
+ iter-is-continuous : (n : ℕ) → is-continuous ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (iter n)
+ iter-is-continuous zero     I α δ = a , b where
+  a : (i : I) → iter zero (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter zero (∐ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ {I} {α} δ)
+  a i = least-property 𝓓 (iter zero (∐ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ {I} {α} δ))
+  b : (u : ⟨ ⟪ 𝓓 ⟫ ⟩)
+    → ((i : I) → iter zero (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ u)
+    → iter zero (∐ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ {I} {α} δ) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ u
+  b u l = least-property 𝓓 u
+  
+ iter-is-continuous (succ n) I α δ = γ where
+  γ : is-sup (underlying-order ⟪ 𝓓 ⟫)
+      (iter (succ n) (∐ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ δ)) (λ (j : I) → iter (succ n) (α j))
+  γ = transport
+      (λ - → is-sup (underlying-order ⟪ 𝓓 ⟫) - (λ (j : I) → iter (succ n) (α j)))
+      (h ⁻¹) k where
+   h = iter (succ n) s                                                          ≡⟨ refl ⟩
+       underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s (iter n s)                             ≡⟨ ap (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s) e ⟩
+       underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)) ≡⟨ refl ⟩
+       ∐ ⟪ 𝓓 ⟫ (pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α δ
+        (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))                                 ≡⟨ double-∐-lemma α δ n ⟩
+       ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))                              ∎ where
+    s = (∐ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ {I} {α} δ)
+    e : iter n s ≡ ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
+    e = antisymmetry ⟪ 𝓓 ⟫ (iter n s) (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)) l m where
+     IH : is-sup (underlying-order ⟪ 𝓓 ⟫) (iter n (∐ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ δ)) (λ (j : I) → iter n (α j))
+     IH = iter-is-continuous n I α δ
+     l : iter n s ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
+     l = is-sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫) IH
+         (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
+         (∐-is-upperbound ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
+     m : ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter n s
+     m = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ (n-family-is-directed α δ n) (iter n s)
+         (is-sup-is-upperbound (underlying-order ⟪ 𝓓 ⟫) IH)
+   k : is-sup (underlying-order ⟪ 𝓓 ⟫)
+       (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n)))
+       (λ (j : I) → iter (succ n) (α j))
+   k = ∐-is-sup ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))
+
+ iter-c : ℕ → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]
+ iter-c n = iter n , iter-is-continuous n
 
 \end{code}
