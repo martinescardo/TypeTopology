@@ -335,7 +335,7 @@ used in UniMath~\cite{unimath}.
 We assume that the readers are already familiar with the notions of
 univalent mathematics, e.g.\ from the HoTT book~\cite{hottbook}. The
 purpose of this section is to establish terminology and notation only,
-particularly regarding our modes of expression which diverge from the HoTT
+particularly regarding our modes of expression that diverge from the HoTT
 book.
 \begin{enumerate}
 \item A type \m{X} is a singleton, or contractible, if there is a
@@ -346,7 +346,7 @@ book.
 
 \item A proposition, or subsingleton, or truth value, is a type with
   at most one element, meaning that any two of its elements are
-  equal:
+  identified:
   \M{
   \text{\m{X} is a proposition} \eqdef \Pi(x,y:X), x=y.
   }
@@ -857,7 +857,7 @@ Algebraic injectives are closed under retracts:
 \noindent In particular, any type equivalent to an algebraically injective type
 is itself algebraically injective, without the need to invoke univalence.
 \begin{proof}
-\M{\begin{diagram}
+\M{\begin{diagram}[p=0.4em]
 X &	 	& \rTo^j  & 		   & Y 	\\
   & \rdTo^f\rdTo(2,4)_{s \comp f} 	&   	       & \ldEto^{f \mid j}\ldTo(2,4)_{(s \comp f) \mid j}       & 	\\
   & 		& D'	       & 		   &    \\
