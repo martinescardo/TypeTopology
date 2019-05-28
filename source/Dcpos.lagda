@@ -192,6 +192,13 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → 𝓥 ⊔ 𝓣 ̇
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
+ is-Directed-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α → ∥ I ∥
+ is-Directed-inhabited 𝓓 α = pr₁
+
+ is-Directed-order : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α
+                   → (i j : I) → ∃ (\(k : I) → (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k))
+ is-Directed-order 𝓓 α = pr₂
+
  ∐ : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
  ∐ 𝓓 {I} {α} δ = pr₁ (directed-completeness 𝓓 I α δ)
 
