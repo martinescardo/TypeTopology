@@ -1,11 +1,5 @@
 Tom de Jong & Martin Escardo, 27 May 2019.
 
- * Directed complete posets.
- * Continuous maps.
- * Function space.
- * Least fixed points.
- * Example: lifting, and the semantic counter-parts of the PCF constants.
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -35,12 +29,14 @@ pointwise-family-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} 
                              (δ : is-directed [ 𝓓 , 𝓔 ]-⊑ α)
                              (d : ⟨ 𝓓 ⟩)
                              → is-directed (underlying-order 𝓔) (pointwise-family 𝓓 𝓔 α d)
-pointwise-family-is-directed 𝓓 𝓔 {I} α δ d i j = ∥∥-functor h (δ i j) where
- β : ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
- β = pointwise-family 𝓓 𝓔 α
- h : Σ (\k → [ 𝓓 , 𝓔 ]-⊑ (α i) (α k) × [ 𝓓 , 𝓔 ]-⊑ (α j) (α k))
-     → Σ (\k → (β d i) ⊑⟨ 𝓔 ⟩ (β d k) × (β d j) ⊑⟨ 𝓔 ⟩ (β d k))
- h (k , l , m) = k , l d , m d
+pointwise-family-is-directed 𝓓 𝓔 {I} α δ d =
+ (is-directed-inhabited [ 𝓓 , 𝓔 ]-⊑ α δ) ,
+ λ (i j : I) → ∥∥-functor (h i j) ((is-directed-order [ 𝓓 , 𝓔 ]-⊑ α δ) i j) where
+  β : ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
+  β = pointwise-family 𝓓 𝓔 α
+  h : (i j : I) → Σ (\k → [ 𝓓 , 𝓔 ]-⊑ (α i) (α k) × [ 𝓓 , 𝓔 ]-⊑ (α j) (α k))
+      → Σ (\k → (β d i) ⊑⟨ 𝓔 ⟩ (β d k) × (β d j) ⊑⟨ 𝓔 ⟩ (β d k))
+  h i j (k , l , m) = k , l d , m d
 
 continuous-functions-sup : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) {I : 𝓥 ̇}
                          → (α : I → [ 𝓓 , 𝓔 ])
@@ -125,10 +121,50 @@ DCPO[ 𝓓 , 𝓔 ] = [ 𝓓 , 𝓔 ] , [ 𝓓 , 𝓔 ]-⊑ , d where
      v g l d = ∐-is-lowerbound-of-upperbounds 𝓔 (pointwise-family-is-directed 𝓓 𝓔 α δ d)
                ((underlying-function 𝓓 𝓔 g) d) (λ (i : I) → l i d)
 
+{-
 DCPO'[_,_] : DCPO {𝓤₁} {𝓤₀} → DCPO {𝓤₁} {𝓤₀} → DCPO {𝓥 ⁺} {𝓤₁}
 DCPO'[_,_] = DCPO[_,_]
 
 DCPO''[_,_] : DCPO {𝓤₁} {𝓤₁} → DCPO {𝓤₁} {𝓤₁} → DCPO {𝓥 ⁺} {𝓤₁}
 DCPO''[_,_] = DCPO[_,_]
+-}
+
+DCPO⊥[_,_] : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
+          → DCPO⊥ {(𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
+DCPO⊥[ 𝓓 , 𝓔 ] = DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , h where
+ h : has-least ([ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ]-⊑)
+ h = ((λ _ → the-least 𝓔) , constant-function-is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ (the-least 𝓔)) ,
+     λ g d → least-property 𝓔 (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g d)
+
+iter : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (n : ℕ) → ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩ → ⟨ ⟪ 𝓓 ⟫ ⟩
+iter 𝓓 zero     f = the-least 𝓓
+iter 𝓓 (succ n) f = underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f (iter 𝓓 n f)
+
+iter-is-monotone : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (n : ℕ)
+                 → is-monotone ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (iter 𝓓 n)
+iter-is-monotone 𝓓 zero     f g l = least-property 𝓓 (iter 𝓓 zero g)
+iter-is-monotone 𝓓 (succ n) f g l = transitivity ⟪ 𝓓 ⟫
+                                      (iter 𝓓 (succ n) f)
+                                      (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g (iter 𝓓 n f))
+                                      (iter 𝓓 (succ n) g)
+                                      (l (iter 𝓓 n f))
+                                      (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+                                       (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
+                                       (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
+                                       (iter 𝓓 n f)
+                                       (iter 𝓓 n g)
+                                       (iter-is-monotone 𝓓 n f g l))
+
+{-
+iter : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (n : ℕ) → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]
+iter 𝓓 zero     = (λ f → the-least 𝓓) ,
+                   (constant-function-is-continuous ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (the-least 𝓓))
+iter 𝓓 (succ n) = (λ f → (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f) (pr₁ (iter 𝓓 n) f)) ,
+                   (λ I α δ → {!u!} , {!v!}) where
+ u : {!!}
+ u = {!!}
+ v : {!!}
+ v = {!!}
+-}
 
 \end{code}
