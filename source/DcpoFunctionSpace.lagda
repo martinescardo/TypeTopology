@@ -16,6 +16,7 @@ open PropositionalTruncation pt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import Dcpos pt fe 𝓥
+open import NaturalsOrder
 
 [_,_]-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → [ 𝓓 , 𝓔 ] → [ 𝓓 , 𝓔 ] → 𝓤 ⊔ 𝓣' ̇
 [ 𝓓 , 𝓔 ]-⊑ (f , _) (g , _) = ∀ d → f d ⊑⟨ 𝓔 ⟩ g d
@@ -286,4 +287,25 @@ module _
  iter-c : ℕ → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]
  iter-c n = iter n , iter-is-continuous n
 
+ iter-is-ω-chain : (n : ℕ) → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]-⊑ (iter-c n) (iter-c (succ n))
+ iter-is-ω-chain zero     f = least-property 𝓓 (iter (succ zero) f)
+ iter-is-ω-chain (succ n) f = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+                              (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
+                              (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
+                              (iter n f)
+                              (iter (succ n) f)
+                              (iter-is-ω-chain n f)
+
+ iter-increases : (n m : ℕ) → (n ≤ m) → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]-⊑ (iter-c n) (iter-c m)
+ iter-increases n zero l     f = transport (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter zero f)
+                                 (unique-minimal n l ⁻¹)
+                                 (reflexivity ⟪ 𝓓 ⟫ (iter zero f))
+ iter-increases n (succ m) l f = h (≤-split n m l) where
+  h : (n ≤ m) + (n ≡ succ m) → (iter n f) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ m) f
+  h (inl l') = transitivity ⟪ 𝓓 ⟫ (iter n f) (iter m f) (iter (succ m) f)
+               (iter-increases n m l' f)
+               (iter-is-ω-chain m f)
+  h (inr e)  = transport (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ m) f) (e ⁻¹)
+               (reflexivity ⟪ 𝓓 ⟫ (iter (succ m) f))
+  
 \end{code}
