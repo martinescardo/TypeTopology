@@ -300,6 +300,7 @@ module _
 module _
   (𝓓 : DCPO⊥ {𝓤} {𝓣})
   (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+  (𝓕 : DCPO⊥ {𝓦} {𝓦'}) -- 𝓦 ok?
   where
 
  ⦅K⦆ : [ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓓 ⟫ ] ]
@@ -317,5 +318,71 @@ module _
      → (e : ⟨ ⟪ 𝓔 ⟫ ⟩) → ∐ ⟪ 𝓓 ⟫ δ ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓓 ⟫ f e)
    v f l e = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ δ (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓓 ⟫ f e)
              λ (i : I) → (l i) e
+
+{-
+ ⦅S⦆₀ : [ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] → [ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] → [ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ]
+ ⦅S⦆₀ f g = (λ x → pr₁ (pr₁ f x) (pr₁ g x)) , c where
+  c : is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓕 ⟫ (λ x → pr₁ (pr₁ f x) (pr₁ g x))
+  c I α δ = u , v where
+   u : (i : I) → (pr₁ (pr₁ f (α i)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)))
+   u i = transitivity ⟪ 𝓕 ⟫
+         (pr₁ (pr₁ f (α i)) (pr₁ g (α i)))
+         (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i)))
+         (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)))
+         (l₁ (pr₁ g (α i)))
+         (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)) l₀) where
+    l₀ : pr₁ g (α i) ⊑⟨ ⟪ 𝓔 ⟫ ⟩ pr₁ g (∐ ⟪ 𝓓 ⟫ δ)
+    l₀ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (∐ ⟪ 𝓓 ⟫ δ) (∐-is-upperbound ⟪ 𝓓 ⟫ δ i)
+    l₁ : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α i)) (pr₁ f (∐ ⟪ 𝓓 ⟫ δ))
+    l₁ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α i) (∐ ⟪ 𝓓 ⟫ δ) (∐-is-upperbound ⟪ 𝓓 ⟫ δ i)
+   v : (y : ⟨ ⟪ 𝓕 ⟫ ⟩)
+     → ((i : I) → (pr₁ (pr₁ f (α i)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y)
+     → (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+   v y ineqs = {!!} where
+    a : {!!}
+    a = {!!}
+
+    β : (i : I) → ⟨ ⟪ 𝓔 ⟫ ⟩
+    β i = pr₁ g (α i)
+    ε : is-Directed ⟪ 𝓔 ⟫ β
+    ε = {!!}
+    b : pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (∐ ⟪ 𝓔 ⟫ ε) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+    b = {!!}
+
+    h₁ : (i : I) → (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+    h₁ i = is-sup-is-lowerbound-of-upperbounds {!!} {!!} {!!} {!!}
+    δ₀ : is-Directed {!!} (λ (i : I) → pr₁ f (α i))
+    δ₀ = {!!}
+    t : (i : I) → (pr₁ (∐ {!!} δ₀) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+    t i = ∐-is-lowerbound-of-upperbounds {!!} δ₀ {!!} (h₂ i)
+     where
+      h₂ : (i j : I) → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+      h₂ i j = ∥∥-rec (prop-valuedness ⟪ 𝓕 ⟫ (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) y) r (is-Directed-order ⟪ 𝓓 ⟫ α δ i j) where
+       r : Σ (\(k : I) → α i ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k × α j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k)
+         → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+       r (k , l , m ) = transitivity ⟪ 𝓕 ⟫
+                        (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
+                        (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
+                        y
+                        (transitivity ⟪ 𝓕 ⟫
+                         (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
+                         (pr₁ (pr₁ f (α k)) (pr₁ g (α i)))
+                         (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
+                         (s (pr₁ g (α i)))
+                         (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (α k)) (pr₁ g (α i)) (pr₁ g (α k))
+                          (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (α k) l)))
+                        (ineqs k) where
+        s : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α j)) (pr₁ f (α k))
+        s = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α j) (α k) m
+
+ ⦅S⦆ : [ DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] , DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] ]
+ ⦅S⦆ = (λ f → (λ g → (λ x → pr₁ (pr₁ f x) (pr₁ g x)) , {!c₂!}) , {!c₁!}) , c₀ where
+  c₀ : {!!}
+  c₀ = {!!}
+  c₁ : {!!}
+  c₁ = {!!}
+  c₂ : {!!}
+  c₂ = {!!}
+-}
 
 \end{code}
