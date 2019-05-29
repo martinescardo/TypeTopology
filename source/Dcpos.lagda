@@ -283,4 +283,36 @@ constant-function-is-continuous 𝓓 𝓔 e I α δ = u , v where
  v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) (λ (i : I) → l i)
           (is-directed-inhabited (underlying-order 𝓓) α δ)
 
+image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                  (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                  → is-Directed 𝓓 α
+                  → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
+image-is-directed 𝓓 𝓔 f {I} {α} δ =
+ (is-Directed-inhabited 𝓓 α δ) , γ where
+  γ : (i j : I)
+    → ∃ (\(k : I) → (underlying-function 𝓓 𝓔 f ∘ α) i ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k
+                    × (underlying-function 𝓓 𝓔 f ∘ α) j ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k)
+  γ i j = ∥∥-functor h (is-Directed-order 𝓓 α δ i j) where
+   h : Σ (\(k : I) → (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
+       → Σ (\(k : I) → (underlying-function 𝓓 𝓔 f ∘ α) i ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k
+                       × (underlying-function 𝓓 𝓔 f ∘ α) j ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k)
+   h (k , l , m) = k ,
+                   (continuous-functions-are-monotone 𝓓 𝓔 f (α i) (α k) l ,
+                   (continuous-functions-are-monotone 𝓓 𝓔 f (α j) (α k) m))
+
+continuous-function-∐-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                  (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
+                  → (underlying-function 𝓓 𝓔 f) (∐ 𝓓 δ) ≡ ∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ)
+continuous-function-∐-≡ 𝓓 𝓔 f {I} {α} δ =
+ antisymmetry 𝓔
+ (underlying-function 𝓓 𝓔 f (∐ 𝓓 δ))
+ (∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ))
+  (is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s (∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ))
+  (∐-is-upperbound 𝓔 (image-is-directed 𝓓 𝓔 f δ)))
+ (∐-is-lowerbound-of-upperbounds 𝓔 (image-is-directed 𝓓 𝓔 f δ) (underlying-function 𝓓 𝓔 f (∐ 𝓓 δ))
+  (is-sup-is-upperbound (underlying-order 𝓔) s))
+ where
+  s : is-sup (underlying-order 𝓔) (underlying-function 𝓓 𝓔 f (∐ 𝓓 δ)) ((underlying-function 𝓓 𝓔 f) ∘ α)
+  s = continuity-of-function 𝓓 𝓔 f I α δ
+
 \end{code}
