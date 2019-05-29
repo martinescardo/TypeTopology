@@ -16,6 +16,7 @@ open PropositionalTruncation pt
 open import Dcpos pt fe 𝓤₀
 open import DcpoFunctionSpace pt fe 𝓤₀
 open import NaturalsOrder
+open import NaturalsAddition renaming (_+_ to _+'_)
 
 module _
   (𝓓 : DCPO⊥ {𝓤} {𝓣})
@@ -29,7 +30,15 @@ module _
            ×
            ((f : Σ (is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫)) →
             underlying-order ⟪ 𝓓 ⟫ (iter 𝓓 j f) (iter 𝓓 k f)))
-  δ i j = ∣ {!i natplus j!} , {!!} ∣
+  δ i j = ∣ i +' j , l , m ∣ where
+   l : (f : [ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 (i +' j) f
+   l = iter-increases 𝓓 i (i +' j)
+         (cosubtraction i (i +' j) (j , (addition-commutativity j i)))
+   m : (f : [ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 (i +' j) f
+   m = iter-increases 𝓓 j (i +' j) (cosubtraction j (i +' j) (i , refl))
+
+ μ : [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]
+ μ = continuous-functions-sup ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓) iter-is-directed
 
 
 \end{code}
