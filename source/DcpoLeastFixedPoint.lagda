@@ -49,7 +49,6 @@ module _
   
   l : pr₁ μ f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ pr₁ f (pr₁ μ f)
   l = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ δ (pr₁ f (pr₁ μ f)) h where
-
    h : (n : ℕ) → iter 𝓓 n f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ pr₁ f (pr₁ μ f)
    h zero     = least-property 𝓓 (pr₁ f (pr₁ μ f))
    h (succ n) = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
@@ -73,6 +72,23 @@ module _
     q : α (succ n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ pr₁ μ f
     q = ∐-is-upperbound ⟪ 𝓓 ⟫ δ (succ n)
 
+ μ-gives-lowerbound-of-fixed-points : (f : ⟨ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟩)
+                                    → (d : ⟨ ⟪ 𝓓 ⟫ ⟩)
+                                    → underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+                                    → (underlying-function ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ μ) f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+ μ-gives-lowerbound-of-fixed-points f d l =
+  ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫
+   (pointwise-family-is-directed ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓) iter-is-directed f)
+   d g where
+   g : (n : ℕ) → iter 𝓓 n f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+   g zero     = least-property 𝓓 d
+   g (succ n) = transitivity ⟪ 𝓓 ⟫
+                (iter 𝓓 (succ n) f) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d) d
+                (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+                 (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
+                 (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
+                 (iter 𝓓 n f) d (g n))
+                l
 
 
 \end{code}
