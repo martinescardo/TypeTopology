@@ -245,9 +245,9 @@ continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'
                        → is-continuous 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
 continuity-of-function 𝓓 𝓔 (_ , c) = c
                             
-continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
-                                  → is-continuous 𝓓 𝓔 f → is-monotone 𝓓 𝓔 f
-continuous-functions-are-monotone 𝓓 𝓔 f cts x y l = γ
+continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : [ 𝓓 , 𝓔 ])
+                                  → is-monotone 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
+continuous-functions-are-monotone 𝓓 𝓔 (g , cts) x y l = γ
   where
    α : 𝟙 {𝓥} + 𝟙 {𝓥} → ⟨ 𝓓 ⟩
    α (inl *) = x
@@ -267,10 +267,10 @@ continuous-functions-are-monotone 𝓓 𝓔 f cts x y l = γ
      h : (i : 𝟙 + 𝟙) → α i ⊑⟨ 𝓓 ⟩ y
      h (inl *) = l
      h (inr *) = reflexivity 𝓓 y
-   b : is-sup (underlying-order 𝓔) (f y) (f ∘ α)
-   b = transport (λ - → is-sup (underlying-order 𝓔) - (f ∘ α)) (ap f (a ⁻¹))
+   b : is-sup (underlying-order 𝓔) (g y) (g ∘ α)
+   b = transport (λ - → is-sup (underlying-order 𝓔) - (g ∘ α)) (ap g (a ⁻¹))
        (cts (𝟙 + 𝟙) α δ)
-   γ : f x ⊑⟨ 𝓔 ⟩ f y
+   γ : g x ⊑⟨ 𝓔 ⟩ g y
    γ = is-sup-is-upperbound (underlying-order 𝓔) b (inl *)
 
 constant-function-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})

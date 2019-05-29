@@ -51,9 +51,7 @@ module _
   l = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ δ (pr₁ f (pr₁ μ f)) h where
    h : (n : ℕ) → iter 𝓓 n f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ pr₁ f (pr₁ μ f)
    h zero     = least-property 𝓓 (pr₁ f (pr₁ μ f))
-   h (succ n) = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-                (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
-                (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
+   h (succ n) = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f
                 (iter 𝓓 n f)
                 (pr₁ μ f)
                 (∐-is-upperbound ⟪ 𝓓 ⟫ δ n)
@@ -84,10 +82,7 @@ module _
    g zero     = least-property 𝓓 d
    g (succ n) = transitivity ⟪ 𝓓 ⟫
                 (iter 𝓓 (succ n) f) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d) d
-                (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-                 (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
-                 (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
-                 (iter 𝓓 n f) d (g n))
+                (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f (iter 𝓓 n f) d (g n))
                 l
 
 

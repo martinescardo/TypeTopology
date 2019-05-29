@@ -58,8 +58,7 @@ continuous-functions-sup 𝓓 𝓔 {I} α δ = f , c where
    r : (i : I) → pr₁ (α i) (γ j) ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 φ)
    r i = transitivity 𝓔 _ _ _ p q where
     p : pr₁ (α i) (γ j) ⊑⟨ 𝓔 ⟩ pr₁ (α i) (∐ 𝓓 φ)
-    p = continuous-functions-are-monotone 𝓓 𝓔 (underlying-function 𝓓 𝓔 (α i))
-        (continuity-of-function 𝓓 𝓔 (α i))  (γ j) (∐ 𝓓 φ) (∐-is-upperbound 𝓓 φ j)
+    p = continuous-functions-are-monotone 𝓓 𝓔 (α i) (γ j) (∐ 𝓓 φ) (∐-is-upperbound 𝓓 φ j)
     q : pr₁ (α i) (∐ 𝓓 φ) ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 φ)
     q = ∐-is-upperbound 𝓔 (ε (∐ 𝓓 φ)) i
   v : (y : ⟨ 𝓔 ⟩)
@@ -152,9 +151,7 @@ module _
                                        (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g (iter n f))
                                        (iter (succ n) g)
                                        (l (iter n f))
-                                       (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-                                        (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
-                                        (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g)
+                                       (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g
                                         (iter n f)
                                         (iter n g)
                                         (iter-is-monotone n f g l))
@@ -219,9 +216,7 @@ module _
        p₀ : β j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k) (iter n (α j))
        p₀ = l (iter n (α j))
        p₁ : underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k) (iter n (α j)) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ n) (α k)
-       p₁ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-            (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k))
-            (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k))
+       p₁ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α k)
             (iter n (α j))
             (iter n (α k))
             (iter-is-monotone n (α j) (α k) m)
@@ -235,9 +230,7 @@ module _
           (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) (∐ ⟪ 𝓓 ⟫ (φ n))) x p q where
     p : iter (succ n) (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i)
                                          (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
-    p = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-         (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i))
-         (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i))
+    p = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i)
          (iter n (α i))
          (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
          (∐-is-upperbound ⟪ 𝓓 ⟫ (φ n) i)
@@ -289,9 +282,7 @@ module _
 
  iter-is-ω-chain : (n : ℕ) → [ ⟪ DCPO⊥[ 𝓓 , 𝓓 ] ⟫ , ⟪ 𝓓 ⟫ ]-⊑ (iter-c n) (iter-c (succ n))
  iter-is-ω-chain zero     f = least-property 𝓓 (iter (succ zero) f)
- iter-is-ω-chain (succ n) f = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
-                              (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
-                              (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f)
+ iter-is-ω-chain (succ n) f = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f
                               (iter n f)
                               (iter (succ n) f)
                               (iter-is-ω-chain n f)
