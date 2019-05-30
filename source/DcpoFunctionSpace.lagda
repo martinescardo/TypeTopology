@@ -300,7 +300,7 @@ module _
 module _
   (𝓓 : DCPO⊥ {𝓤} {𝓣})
   (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
-  (𝓕 : DCPO⊥ {𝓦} {𝓦'}) -- 𝓦 ok?
+  (𝓕 : DCPO⊥ {𝓦} {𝓦'})
   where
 
  ⦅K⦆ : [ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓓 ⟫ ] ]
@@ -390,15 +390,35 @@ module _
                     s : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α j)) (pr₁ f (α k))
                     s = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α j) (α k) m
 
-{-
+ ⦅S⦆₁ : [ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] → [ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ]
+ ⦅S⦆₁ f = (⦅S⦆₀ f) , c
+  where
+   c : is-continuous DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] (⦅S⦆₀ f)
+   c I α δ = u , v
+    where
+     u : (i : I) (d : ⟨ ⟪ 𝓓 ⟫ ⟩) → pr₁ (⦅S⦆₀ f (α i)) d ⊑⟨ ⟪ 𝓕 ⟫ ⟩ pr₁ (⦅S⦆₀ f (∐ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] {I} {α} δ)) d
+     u i d = continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f d) (pr₁ (α i) d) (pr₁ (∐ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] {I} {α} δ) d)
+             (∐-is-upperbound ⟪ 𝓔 ⟫ (pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ α δ d) i)
+     v : (g : ⟨ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ⟩)
+       → ((i : I) → underlying-order DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] (⦅S⦆₀ f (α i)) g)
+       → (d : ⟨ ⟪ 𝓓 ⟫ ⟩) → pr₁ (⦅S⦆₀ f (∐ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] {I} {α} δ)) d ⊑⟨ ⟪ 𝓕 ⟫ ⟩ pr₁ g d
+     v g l d = transport (λ - → - ⊑⟨ ⟪ 𝓕 ⟫ ⟩ pr₁ g d) e s
+      where
+       ε : is-Directed ⟪ 𝓔 ⟫ (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ α d)
+       ε = pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ α δ d
+       e : ∐ ⟪ 𝓕 ⟫ (image-is-directed ⟪ 𝓔 ⟫ (pr₁ 𝓕) (pr₁ f d) ε) ≡ pr₁ (⦅S⦆₀ f (∐ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] {I} {α} δ)) d
+       e = (continuous-function-∐-≡ ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ ((underlying-function ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f) d) ε) ⁻¹
+       φ : is-Directed ⟪ 𝓕 ⟫ (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (underlying-function ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f d)
+           ∘ (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ α d))
+       φ = image-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ ((underlying-function ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f) d) ε
+       s : ∐ ⟪ 𝓕 ⟫ φ ⊑⟨ ⟪ 𝓕 ⟫ ⟩ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓕 ⟫ g) d
+       s = ∐-is-lowerbound-of-upperbounds ⟪ 𝓕 ⟫ φ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓕 ⟫ g d)
+           (λ (i : I) → l i d)
+
  ⦅S⦆ : [ DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] , DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] ]
- ⦅S⦆ = (λ f → (λ g → (λ x → pr₁ (pr₁ f x) (pr₁ g x)) , {!c₂!}) , {!c₁!}) , c₀ where
-  c₀ : {!!}
-  c₀ = {!!}
-  c₁ : {!!}
-  c₁ = {!!}
-  c₂ : {!!}
-  c₂ = {!!}
--}
+ ⦅S⦆ = ⦅S⦆₁ , c
+  where
+   c : is-continuous DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] ⦅S⦆₁
+   c I α δ = {!!}
 
 \end{code}
