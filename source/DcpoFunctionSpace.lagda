@@ -320,97 +320,76 @@ module _
              λ (i : I) → (l i) e
 
  ⦅S⦆₀ : [ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] → [ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] → [ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ]
- ⦅S⦆₀ f g = (λ x → pr₁ (pr₁ f x) (pr₁ g x)) , c where
-  c : is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓕 ⟫ (λ x → pr₁ (pr₁ f x) (pr₁ g x))
-  c I α δ = u , v where
-   u : (i : I) → (pr₁ (pr₁ f (α i)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)))
-   u i = transitivity ⟪ 𝓕 ⟫
-         (pr₁ (pr₁ f (α i)) (pr₁ g (α i)))
-         (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i)))
-         (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)))
-         (l₁ (pr₁ g (α i)))
-         (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)) l₀) where
-    l₀ : pr₁ g (α i) ⊑⟨ ⟪ 𝓔 ⟫ ⟩ pr₁ g (∐ ⟪ 𝓓 ⟫ δ)
-    l₀ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (∐ ⟪ 𝓓 ⟫ δ) (∐-is-upperbound ⟪ 𝓓 ⟫ δ i)
-    l₁ : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α i)) (pr₁ f (∐ ⟪ 𝓓 ⟫ δ))
-    l₁ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α i) (∐ ⟪ 𝓓 ⟫ δ) (∐-is-upperbound ⟪ 𝓓 ⟫ δ i)
-   v : (y : ⟨ ⟪ 𝓕 ⟫ ⟩)
-     → ((i : I) → (pr₁ (pr₁ f (α i)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y)
-     → (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-   v y ineqs = γ where
-    γ : pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-    γ = transport (λ - → pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) - ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y) e₀ γ₀ where
-     e₀ : ∐ ⟪ 𝓔 ⟫ (image-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ) ≡ pr₁ g (∐ ⟪ 𝓓 ⟫ δ)
-     e₀ = (continuous-function-∐-≡ ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ) ⁻¹
-     ε₀ : is-Directed ⟪ 𝓔 ⟫ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g ∘ α)
-     ε₀ = image-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ
-     γ₀ : (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (∐ ⟪ 𝓔 ⟫ ε₀)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-     γ₀ = transport (λ - → - ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y) e₁ γ₁ where
-      e₁ : ∐ ⟪ 𝓕 ⟫ (image-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε₀) ≡ pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (∐ ⟪ 𝓔 ⟫ ε₀)
-      e₁ = (continuous-function-∐-≡ ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε₀) ⁻¹
-      ε₁ : is-Directed ⟪ 𝓕 ⟫
-           (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ∘ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g ∘ α))
-      ε₁ = image-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε₀
-      γ₁ : (∐ ⟪ 𝓕 ⟫ ε₁) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-      γ₁ = ∐-is-lowerbound-of-upperbounds ⟪ 𝓕 ⟫ ε₁ y γ₂ where
-       γ₂ : (i : I)
-          → (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ))) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-       γ₂ i = transport (λ - → (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ -) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y ) e₂ γ₃ where
-        e₂ : ∐ {!!} (image-is-directed ⟪ 𝓓 ⟫ {!!} f δ) ≡ pr₁ f (∐ ⟪ 𝓓 ⟫ δ)
-        e₂ = (continuous-function-∐-≡ ⟪ 𝓓 ⟫ {!!} f δ) ⁻¹
-        γ₃ : pr₁ (∐ {!!} (image-is-directed ⟪ 𝓓 ⟫ {!!} f δ)) (pr₁ g (α i)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-        γ₃ = ∐-is-lowerbound-of-upperbounds ⟪ 𝓕 ⟫ {!!} y (h₂ i) where
-         h₂ : (i j : I) → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-         h₂ i j = ∥∥-rec (prop-valuedness ⟪ 𝓕 ⟫ (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) y) r (is-Directed-order ⟪ 𝓓 ⟫ α δ i j) where
-          r : Σ (\(k : I) → α i ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k × α j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k)
-            → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-          r (k , l , m ) = transitivity ⟪ 𝓕 ⟫
-                           (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
-                           (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
-                           y
-                           (transitivity ⟪ 𝓕 ⟫
-                            (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
-                            (pr₁ (pr₁ f (α k)) (pr₁ g (α i)))
-                            (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
-                            (s (pr₁ g (α i)))
-                            (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (α k)) (pr₁ g (α i)) (pr₁ g (α k))
-                             (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (α k) l)))
-                           (ineqs k) where
-           s : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α j)) (pr₁ f (α k))
-           s = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α j) (α k) m
-
-{-
-     β : (i : I) → ⟨ ⟪ 𝓔 ⟫ ⟩
-     β i = pr₁ g (α i)
-     ε : is-Directed ⟪ 𝓔 ⟫ β
-     ε = image-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ
-     e₀ : underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (∐ ⟪ 𝓔 ⟫ ε)
-        ≡ ∐ ⟪ 𝓕 ⟫ (image-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε)
-     e₀ = continuous-function-∐-≡ ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε
-
-     γ₀ : {!!}
-     γ₀ = {!!}
-    
+ ⦅S⦆₀ f g = (λ x → pr₁ (pr₁ f x) (pr₁ g x)) , c
+  where
+   c : is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓕 ⟫ (λ x → pr₁ (pr₁ f x) (pr₁ g x))
+   c I α δ = u , v
+    where
+     u : (i : I) → (pr₁ (pr₁ f (α i)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)))
+     u i = transitivity ⟪ 𝓕 ⟫
+           (pr₁ (pr₁ f (α i)) (pr₁ g (α i)))
+           (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i)))
+           (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)))
+           (l₁ (pr₁ g (α i)))
+           (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (α i)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)) l₀) where
+      l₀ : pr₁ g (α i) ⊑⟨ ⟪ 𝓔 ⟫ ⟩ pr₁ g (∐ ⟪ 𝓓 ⟫ δ)
+      l₀ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (∐ ⟪ 𝓓 ⟫ δ) (∐-is-upperbound ⟪ 𝓓 ⟫ δ i)
+      l₁ : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α i)) (pr₁ f (∐ ⟪ 𝓓 ⟫ δ))
+      l₁ = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α i) (∐ ⟪ 𝓓 ⟫ δ) (∐-is-upperbound ⟪ 𝓓 ⟫ δ i)
+     v : (y : ⟨ ⟪ 𝓕 ⟫ ⟩)
+       → ((i : I) → (pr₁ (pr₁ f (α i)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y)
+       → (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+     v y ineqs = γ
       where
-      h₂ : (i j : I) → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-      h₂ i j = ∥∥-rec (prop-valuedness ⟪ 𝓕 ⟫ (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) y) r (is-Directed-order ⟪ 𝓓 ⟫ α δ i j) where
-       r : Σ (\(k : I) → α i ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k × α j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k)
-         → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
-       r (k , l , m ) = transitivity ⟪ 𝓕 ⟫
-                        (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
-                        (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
-                        y
-                        (transitivity ⟪ 𝓕 ⟫
-                         (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
-                         (pr₁ (pr₁ f (α k)) (pr₁ g (α i)))
-                         (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
-                         (s (pr₁ g (α i)))
-                         (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (α k)) (pr₁ g (α i)) (pr₁ g (α k))
-                          (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (α k) l)))
-                        (ineqs k) where
-        s : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α j)) (pr₁ f (α k))
-        s = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α j) (α k) m
--}
+       γ : pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (pr₁ g (∐ ⟪ 𝓓 ⟫ δ)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+       γ = transport (λ - → pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) - ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y) e₀ γ₀
+        where
+         e₀ : ∐ ⟪ 𝓔 ⟫ (image-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ) ≡ pr₁ g (∐ ⟪ 𝓓 ⟫ δ)
+         e₀ = (continuous-function-∐-≡ ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ) ⁻¹
+         ε₀ : is-Directed ⟪ 𝓔 ⟫ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g ∘ α)
+         ε₀ = image-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g δ
+         γ₀ : (pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (∐ ⟪ 𝓔 ⟫ ε₀)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+         γ₀ = transport (λ - → - ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y) e₁ γ₁
+          where
+           e₁ : ∐ ⟪ 𝓕 ⟫ (image-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε₀) ≡ pr₁ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) (∐ ⟪ 𝓔 ⟫ ε₀)
+           e₁ = (continuous-function-∐-≡ ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε₀) ⁻¹
+           ε₁ : is-Directed ⟪ 𝓕 ⟫
+                (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ∘ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g ∘ α))
+           ε₁ = image-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ)) ε₀
+           γ₁ : (∐ ⟪ 𝓕 ⟫ ε₁) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+           γ₁ = ∐-is-lowerbound-of-upperbounds ⟪ 𝓕 ⟫ ε₁ y γ₂
+            where
+             γ₂ : (i : I)
+                → (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (∐ ⟪ 𝓓 ⟫ δ))) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+             γ₂ i = transport (λ - → (underlying-function ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ -) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y ) e₂ γ₃
+              where
+               ε₂ : is-Directed DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] (underlying-function ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f ∘ α)
+               ε₂ = image-is-directed ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f δ
+               e₂ : ∐ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ε₂ ≡ pr₁ f (∐ ⟪ 𝓓 ⟫ δ)
+               e₂ = (continuous-function-∐-≡ ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f δ) ⁻¹
+               γ₃ : pr₁ (∐ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] {I} {pr₁ f ∘ α} ε₂) (pr₁ g (α i)) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+               γ₃ = ∐-is-lowerbound-of-upperbounds ⟪ 𝓕 ⟫ (pointwise-family-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f ∘ α) ε₂ (pr₁ g (α i))) y h
+                where
+                 h : (j : I) → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+                 h j = ∥∥-rec (prop-valuedness ⟪ 𝓕 ⟫ (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) y) r (is-Directed-order ⟪ 𝓓 ⟫ α δ i j)
+                  where
+                   r : Σ (\(k : I) → α i ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k × α j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α k)
+                     → (pr₁ (pr₁ f (α j)) (pr₁ g (α i))) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ y
+                   r (k , l , m ) = transitivity ⟪ 𝓕 ⟫
+                                    (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
+                                    (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
+                                    y
+                                    (transitivity ⟪ 𝓕 ⟫
+                                     (pr₁ (pr₁ f (α j)) (pr₁ g (α i)))
+                                     (pr₁ (pr₁ f (α k)) (pr₁ g (α i)))
+                                     (pr₁ (pr₁ f (α k)) (pr₁ g (α k)))
+                                     (s (pr₁ g (α i)))
+                                     (continuous-functions-are-monotone ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ (pr₁ f (α k)) (pr₁ g (α i)) (pr₁ g (α k))
+                                      (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g (α i) (α k) l)))
+                                    (ineqs k) where
+                    s : [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]-⊑ (pr₁ f (α j)) (pr₁ f (α k))
+                    s = continuous-functions-are-monotone ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] f (α j) (α k) m
+
 {-
  ⦅S⦆ : [ DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] , DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] ]
  ⦅S⦆ = (λ f → (λ g → (λ x → pr₁ (pr₁ f x) (pr₁ g x)) , {!c₂!}) , {!c₁!}) , c₀ where
