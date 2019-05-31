@@ -8,7 +8,7 @@ Combinatory version of Platek-Scott-Plotkin PCF.
 
 open import UF-PropTrunc
 
-module pcf (pt : propositional-truncations-exist) where
+module PCF (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
