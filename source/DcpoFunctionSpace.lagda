@@ -419,6 +419,27 @@ module _
  ⦅S⦆ = ⦅S⦆₁ , c
   where
    c : is-continuous DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] ⦅S⦆₁
-   c I α δ = {!!}
+   c I α δ = u , v
+    where
+     u : (i : I) (g : [ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ]) (d : ⟨ ⟪ 𝓓 ⟫ ⟩)
+       → pr₁ (pr₁ (α i) d) (pr₁ g d) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ pr₁ (pr₁ (∐ DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] {I} {α} δ) d) (pr₁ g d)
+     u i g d = ∐-is-upperbound ⟪ 𝓕 ⟫ (pointwise-family-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ β ε (pr₁ g d)) i
+      where
+       β : I → ⟨ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ⟩
+       β = pointwise-family ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] α d
+       ε : is-Directed DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] β
+       ε = pointwise-family-is-directed ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] α δ d
+     v : (f : ⟨ DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] ⟩)
+       → ((i : I) → underlying-order DCPO[ DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ] , DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓕 ⟫ ] ] (⦅S⦆₁ (α i)) f)
+       → (g : [ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ]) (d : ⟨ ⟪ 𝓓 ⟫ ⟩) → pr₁ (pr₁ (∐ DCPO[ ⟪ 𝓓 ⟫ , DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] ] {I} {α} δ) d) (pr₁ g d) ⊑⟨ ⟪ 𝓕 ⟫ ⟩ (pr₁ (pr₁ f g) d)
+     v f l g d = ∐-is-lowerbound-of-upperbounds ⟪ 𝓕 ⟫ ε (pr₁ (pr₁ f g) d) (λ (i : I) → l i g d)
+      where
+       ε : is-Directed ⟪ 𝓕 ⟫ (λ (i : I) → pr₁ (pr₁ (⦅S⦆₁ (α i)) g) d)
+       ε = pointwise-family-is-directed ⟪ 𝓔 ⟫ ⟪ 𝓕 ⟫ β φ (pr₁ g d)
+        where
+         β : I → [ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ]
+         β i = pr₁ (α i) d
+         φ : is-Directed DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] β
+         φ = pointwise-family-is-directed ⟪ 𝓓 ⟫ DCPO[ ⟪ 𝓔 ⟫ , ⟪ 𝓕 ⟫ ] α δ d
 
 \end{code}
