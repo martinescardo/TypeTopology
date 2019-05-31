@@ -2,6 +2,8 @@ Tom de Jong, 28 May 2019
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import UF-PropTrunc
 open import SpartanMLTT
 
