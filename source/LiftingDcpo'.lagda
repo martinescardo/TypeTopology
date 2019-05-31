@@ -25,6 +25,7 @@ open import UF-ImageAndSurjection
 open ImageAndSurjection pt
 open import UF-Equiv
 open import LiftingMonad 𝓣
+open import LiftingIdentityViaSIP 𝓣
 
 
 \end{code}
@@ -72,6 +73,26 @@ module _
   g : is-defined l → l ⊑ m
   g d = transport (_⊑_ l) (a d) (𝓛-id l)
 
+ ⋍-to-≡ : {l m : 𝓛 X} → l ⋍ m → l ≡ m
+ ⋍-to-≡ {l} {m} (deq , veq) = ⊑-anti pe fe fe (a , b)
+  where
+   a : l ⊑ m
+   a = eqtofun deq , happly veq
+   b : m ⊑ l
+   b = (back-eqtofun deq , h)
+    where
+     h : (d : is-defined m) → value m d ≡ value l (back-eqtofun deq d)
+     h d = value m d                                  ≡⟨ ap (value m) (being-defined-is-a-prop m d _) ⟩
+           value m (eqtofun deq (back-eqtofun deq d)) ≡⟨ (happly veq (back-eqtofun deq d)) ⁻¹ ⟩
+           value l (back-eqtofun deq d)               ∎
+
+ -- Find a better home for this
+ value-is-constant : {l : 𝓛 X} (d e : is-defined l) → value l d ≡ value l e
+ value-is-constant {l} d e = ap (value l) (being-defined-is-a-prop l d e)
+
+ is-defined-η-≡ : {l : 𝓛 X} (d : is-defined l) → l ≡ η (value l d)
+ is-defined-η-≡ {l} d = ⊑-to-⊑' ((λ _ → *) , λ (e : is-defined l) → value-is-constant {l} e d) d
+ --
 
  ⊑'-is-reflexive : is-reflexive (_⊑'_)
  ⊑'-is-reflexive l d = refl
@@ -202,6 +223,11 @@ module _
  ♯-is-defined : (f : X → 𝓛 Y) (l : 𝓛 X) → is-defined ((f ♯) l) → is-defined l
  ♯-is-defined f l = pr₁
 
+ ♯-on-total-element : (f : X → 𝓛 Y) {l : 𝓛 X} (d : is-defined l) → (f ♯) l ≡ f (value l d)
+ ♯-on-total-element f {l} d = (f ♯) l               ≡⟨ ap (f ♯) (is-defined-η-≡ X s₀ d) ⟩
+                              (f ♯) (η (value l d)) ≡⟨ ⋍-to-≡ Y s₁ (Kleisli-Law₁ f (value l d)) ⟩
+                              f (value l d)         ∎
+ 
  ♯-is-monotone : (f : X → 𝓛 Y) → is-monotone (𝓛-DCPO X s₀) (𝓛-DCPO Y s₁) (f ♯)
  ♯-is-monotone f l m ineq d = ap (f ♯) (ineq (♯-is-defined f l d))
 
