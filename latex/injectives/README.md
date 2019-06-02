@@ -5,7 +5,9 @@ Remarks and to do list.
 
  * Egbert says maybe it is not a good idea to use "\mid" for
    extension, as it is usually used for restriction, which can be
-   confusing. Probably change this at some point.
+   confusing. Probably change this at some point. Not sure. We think
+   of \mid as the quotient symbol: f \mid j is f over j or f divided
+   by j.
 
  * Prove iterated-↓ and maybe retract-extension-↓.
 
