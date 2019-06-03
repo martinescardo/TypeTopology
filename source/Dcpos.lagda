@@ -306,17 +306,17 @@ continuous-function-∐-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {
                           ∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ)
 continuous-function-∐-≡ 𝓓 𝓔 (f , c) {I} {α} δ =
  antisymmetry 𝓔 (f (∐ 𝓓 δ)) (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)) a b
- where
-  s : is-sup (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ α)
-  s = c I α δ
-  ε : is-Directed 𝓔 (f ∘ α)
-  ε = image-is-directed 𝓓 𝓔 (f , c) δ
-  a : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)
-  a = is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
-      (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ))
-      (∐-is-upperbound 𝓔 ε)
-  b : ∐ 𝓔 ε  ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
-  b = ∐-is-lowerbound-of-upperbounds 𝓔 ε (f (∐ 𝓓 δ))
-      (is-sup-is-upperbound (underlying-order 𝓔) s)
+  where
+   s : is-sup (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ α)
+   s = c I α δ
+   ε : is-Directed 𝓔 (f ∘ α)
+   ε = image-is-directed 𝓓 𝓔 (f , c) δ
+   a : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)
+   a = is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
+       (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ))
+       (∐-is-upperbound 𝓔 ε)
+   b : ∐ 𝓔 ε  ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
+   b = ∐-is-lowerbound-of-upperbounds 𝓔 ε (f (∐ 𝓓 δ))
+       (is-sup-is-upperbound (underlying-order 𝓔) s)
 
 \end{code}
