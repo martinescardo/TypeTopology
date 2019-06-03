@@ -2,9 +2,7 @@ Tom de Jong & Martin Escardo, 20 May 2019.
 
  * Directed complete posets.
  * Continuous maps.
- * Function space.
- * Least fixed points.
- * Example: lifting, and the semantic counter-parts of the PCF constants.
+ * Examples and constructions in DcpoConstructions
 
 \begin{code}
 
@@ -245,20 +243,22 @@ continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'
                        → is-continuous 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
 continuity-of-function 𝓓 𝓔 (_ , c) = c
                             
-continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : [ 𝓓 , 𝓔 ])
-                                  → is-monotone 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
-continuous-functions-are-monotone 𝓓 𝓔 (g , cts) x y l = γ
+continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                                    (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 f
+                                  → is-monotone 𝓓 𝓔 f
+continuous-functions-are-monotone 𝓓 𝓔 g cts x y l = γ
   where
    α : 𝟙 {𝓥} + 𝟙 {𝓥} → ⟨ 𝓓 ⟩
    α (inl *) = x
    α (inr *) = y
    δ : is-Directed 𝓓 α
-   δ = (∣ inl * ∣ , ε) where
-    ε : (i j : 𝟙 + 𝟙) → ∃ (\k → α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
-    ε (inl *) (inl *) = ∣ inr * , l , l ∣
-    ε (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
-    ε (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
-    ε (inr *) (inr *) = ∣ inr * , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
+   δ = (∣ inl * ∣ , ε)
+    where
+     ε : (i j : 𝟙 + 𝟙) → ∃ (\k → α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
+     ε (inl *) (inl *) = ∣ inr * , l , l ∣
+     ε (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
+     ε (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
+     ε (inr *) (inr *) = ∣ inr * , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
    a : y ≡ ∐ 𝓓 δ
    a = antisymmetry 𝓓 y (∐ 𝓓 δ)
            (∐-is-upperbound 𝓓 δ (inr *))
@@ -274,8 +274,7 @@ continuous-functions-are-monotone 𝓓 𝓔 (g , cts) x y l = γ
    γ = is-sup-is-upperbound (underlying-order 𝓔) b (inl *)
 
 constant-function-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                                (e : ⟨ 𝓔 ⟩)
-                                → is-continuous 𝓓 𝓔 (λ d → e)
+                                  (e : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ d → e)
 constant-function-is-continuous 𝓓 𝓔 e I α δ = u , v where
  u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
  u i = reflexivity 𝓔 e 
@@ -284,35 +283,40 @@ constant-function-is-continuous 𝓓 𝓔 e I α δ = u , v where
           (is-directed-inhabited (underlying-order 𝓓) α δ)
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                  (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                    (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
-image-is-directed 𝓓 𝓔 f {I} {α} δ =
- (is-Directed-inhabited 𝓓 α δ) , γ where
-  γ : (i j : I)
-    → ∃ (\(k : I) → (underlying-function 𝓓 𝓔 f ∘ α) i ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k
-                    × (underlying-function 𝓓 𝓔 f ∘ α) j ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k)
-  γ i j = ∥∥-functor h (is-Directed-order 𝓓 α δ i j) where
-   h : Σ (\(k : I) → (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
-       → Σ (\(k : I) → (underlying-function 𝓓 𝓔 f ∘ α) i ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k
-                       × (underlying-function 𝓓 𝓔 f ∘ α) j ⊑⟨ 𝓔 ⟩ (underlying-function 𝓓 𝓔 f ∘ α) k)
-   h (k , l , m) = k ,
-                   (continuous-functions-are-monotone 𝓓 𝓔 f (α i) (α k) l ,
-                   (continuous-functions-are-monotone 𝓓 𝓔 f (α j) (α k) m))
+image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
+ (is-Directed-inhabited 𝓓 α δ) , γ
+  where
+   γ : (i j : I)
+     → ∃ (\(k : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
+   γ i j = ∥∥-functor h (is-Directed-order 𝓓 α δ i j)
+    where
+     h : Σ (\(k : I) → (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
+         → Σ (\(k : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
+     h (k , l , m) =
+      k , (continuous-functions-are-monotone 𝓓 𝓔 f c (α i) (α k) l ,
+      (continuous-functions-are-monotone 𝓓 𝓔 f c (α j) (α k) m))
 
 continuous-function-∐-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                  (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
-                  → (underlying-function 𝓓 𝓔 f) (∐ 𝓓 δ) ≡ ∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ)
-continuous-function-∐-≡ 𝓓 𝓔 f {I} {α} δ =
- antisymmetry 𝓔
- (underlying-function 𝓓 𝓔 f (∐ 𝓓 δ))
- (∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ))
-  (is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s (∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ))
-  (∐-is-upperbound 𝓔 (image-is-directed 𝓓 𝓔 f δ)))
- (∐-is-lowerbound-of-upperbounds 𝓔 (image-is-directed 𝓓 𝓔 f δ) (underlying-function 𝓓 𝓔 f (∐ 𝓓 δ))
-  (is-sup-is-upperbound (underlying-order 𝓔) s))
+                          (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                          (δ : is-Directed 𝓓 α)
+                        → (underlying-function 𝓓 𝓔 f) (∐ 𝓓 δ) ≡
+                          ∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ)
+continuous-function-∐-≡ 𝓓 𝓔 (f , c) {I} {α} δ =
+ antisymmetry 𝓔 (f (∐ 𝓓 δ)) (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)) a b
  where
-  s : is-sup (underlying-order 𝓔) (underlying-function 𝓓 𝓔 f (∐ 𝓓 δ)) ((underlying-function 𝓓 𝓔 f) ∘ α)
-  s = continuity-of-function 𝓓 𝓔 f I α δ
+  s : is-sup (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ α)
+  s = c I α δ
+  ε : is-Directed 𝓔 (f ∘ α)
+  ε = image-is-directed 𝓓 𝓔 (f , c) δ
+  a : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)
+  a = is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
+      (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ))
+      (∐-is-upperbound 𝓔 ε)
+  b : ∐ 𝓔 ε  ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
+  b = ∐-is-lowerbound-of-upperbounds 𝓔 ε (f (∐ 𝓓 δ))
+      (is-sup-is-upperbound (underlying-order 𝓔) s)
 
 \end{code}
