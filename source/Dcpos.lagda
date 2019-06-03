@@ -231,22 +231,22 @@ being-continuous-is-a-prop 𝓓 𝓔 f =
                      (λ δ → is-sup-is-a-prop (underlying-order 𝓔)
                             (axioms-of-dcpo 𝓔) (f (∐ 𝓓 δ)) (f ∘ α))))
 
-[_,_] : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+DCPO[_,_] : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                      → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-[ 𝓓 , 𝓔 ] = Σ (\(f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 f)
+DCPO[ 𝓓 , 𝓔 ] = Σ (\(f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 f)
 
 underlying-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                    → [ 𝓓 , 𝓔 ] → ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
+                    → DCPO[ 𝓓 , 𝓔 ] → ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩
 underlying-function 𝓓 𝓔 (f , _) = f
 
-continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : [ 𝓓 , 𝓔 ])
+continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : DCPO[ 𝓓 , 𝓔 ])
                        → is-continuous 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
 continuity-of-function 𝓓 𝓔 (_ , c) = c
                             
 continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                                    (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 f
-                                  → is-monotone 𝓓 𝓔 f
-continuous-functions-are-monotone 𝓓 𝓔 g cts x y l = γ
+                                    (f : DCPO[ 𝓓 , 𝓔 ])
+                                  → is-monotone 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
+continuous-functions-are-monotone 𝓓 𝓔 (f , cts) x y l = γ
   where
    α : 𝟙 {𝓥} + 𝟙 {𝓥} → ⟨ 𝓓 ⟩
    α (inl *) = x
@@ -267,10 +267,10 @@ continuous-functions-are-monotone 𝓓 𝓔 g cts x y l = γ
      h : (i : 𝟙 + 𝟙) → α i ⊑⟨ 𝓓 ⟩ y
      h (inl *) = l
      h (inr *) = reflexivity 𝓓 y
-   b : is-sup (underlying-order 𝓔) (g y) (g ∘ α)
-   b = transport (λ - → is-sup (underlying-order 𝓔) - (g ∘ α)) (ap g (a ⁻¹))
+   b : is-sup (underlying-order 𝓔) (f y) (f ∘ α)
+   b = transport (λ - → is-sup (underlying-order 𝓔) - (f ∘ α)) (ap f (a ⁻¹))
        (cts (𝟙 + 𝟙) α δ)
-   γ : g x ⊑⟨ 𝓔 ⟩ g y
+   γ : f x ⊑⟨ 𝓔 ⟩ f y
    γ = is-sup-is-upperbound (underlying-order 𝓔) b (inl *)
 
 constant-function-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -283,7 +283,7 @@ constant-function-is-continuous 𝓓 𝓔 e I α δ = u , v where
           (is-directed-inhabited (underlying-order 𝓓) α δ)
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                    (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                    (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
 image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
@@ -296,11 +296,11 @@ image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
      h : Σ (\(k : I) → (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
          → Σ (\(k : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
      h (k , l , m) =
-      k , (continuous-functions-are-monotone 𝓓 𝓔 f c (α i) (α k) l ,
-      (continuous-functions-are-monotone 𝓓 𝓔 f c (α j) (α k) m))
+      k , (continuous-functions-are-monotone 𝓓 𝓔 (f , c) (α i) (α k) l ,
+      (continuous-functions-are-monotone 𝓓 𝓔 (f , c) (α j) (α k) m))
 
 continuous-function-∐-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                          (f : [ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                          (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                           (δ : is-Directed 𝓓 α)
                         → (underlying-function 𝓓 𝓔 f) (∐ 𝓓 δ) ≡
                           ∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ)
