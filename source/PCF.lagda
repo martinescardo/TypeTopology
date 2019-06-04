@@ -1,6 +1,7 @@
 Tom de Jong & Martin Escardo, 20 May 2019.
 
 Combinatory version of Platek-Scott-Plotkin PCF.
+Includes (reflexive transitive closure of) operational semantics.
 
 \begin{code}
 
@@ -8,7 +9,7 @@ Combinatory version of Platek-Scott-Plotkin PCF.
 
 open import UF-PropTrunc
 
-module pcf (pt : propositional-truncations-exist) where
+module PCF (pt : propositional-truncations-exist) where
 
 open PropositionalTruncation pt
 
@@ -66,13 +67,16 @@ s ▹* t = ∥ s ▹*' t ∥
 ▹'-to-▹*' : {σ τ : type} (f : PCF σ → PCF τ) →
             ((s t : PCF σ) → s ▹' t → (f s) ▹' (f t)) →
             (s t : PCF σ) → s ▹*' t → (f s) ▹*' (f t)
-▹'-to-▹*' f f-preserves-▹' s t (extend rel) = extend (∥∥-rec a b rel) where
+▹'-to-▹*' f f-preserves-▹' s t (extend rel) = extend (∥∥-rec a b rel)
+ where
   a : is-prop (f s ▹ f t)
   a = ∥∥-is-a-prop
   b : (step : s ▹' t) → ∥ f s ▹' f t ∥
   b step = ∣ f-preserves-▹' s t step ∣
+  
 ▹'-to-▹*' f f-preserves-▹' s s (refl s) = refl (f s)
-▹'-to-▹*' f f-preserves-▹' s r (trans {σ} {s} {t} {r} rel₁ rel₂) = trans IH₁ IH₂ where
+▹'-to-▹*' f f-preserves-▹' s r (trans {σ} {s} {t} {r} rel₁ rel₂) = trans IH₁ IH₂
+ where
   IH₁ : f s ▹*' f t
   IH₁ = ▹'-to-▹*' f f-preserves-▹' s t rel₁
   IH₂ : f t ▹*' f r
@@ -83,7 +87,8 @@ s ▹* t = ∥ s ▹*' t ∥
            (s t : PCF σ) → s ▹* t → (f s) ▹* (f t)
 ▹'-to-▹* f f-preserves-▹' s t = ∥∥-functor (▹'-to-▹*' f f-preserves-▹' s t)
 
-·-step* : {σ τ : type} (f g : PCF (σ ⇒ τ)) (t : PCF σ) → f ▹* g → (f · t) ▹* (g · t)
+·-step* : {σ τ : type} (f g : PCF (σ ⇒ τ)) (t : PCF σ)
+        → f ▹* g → (f · t) ▹* (g · t)
 ·-step* f g t rel = ▹'-to-▹* (λ x → x · t) (λ f' g' → ·-step f' g' t) f g rel
 
 Succ-arg* : (s t : PCF ι) → s ▹* t → (Succ · s) ▹* (Succ · t)
@@ -92,7 +97,8 @@ Succ-arg* = ▹'-to-▹* (λ x → Succ · x) Succ-arg
 Pred-arg* : (s t : PCF ι) → s ▹* t → (Pred · s) ▹* (Pred · t)
 Pred-arg* = ▹'-to-▹* (λ x → Pred · x) Pred-arg
 
-ifZero-arg* : (s t r r' : PCF ι) → r ▹* r' → (ifZero · s · t · r) ▹* (ifZero · s · t · r')
+ifZero-arg* : (s t r r' : PCF ι) → r ▹* r'
+            → (ifZero · s · t · r) ▹* (ifZero · s · t · r')
 ifZero-arg* s t = ▹'-to-▹* (λ x → ifZero · s · t · x) (ifZero-arg s t)
 
 \end{code}

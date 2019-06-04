@@ -26,4 +26,9 @@ succ-no-fp : (n : ℕ) → n ≡ succ n → 𝟘 {𝓤}
 succ-no-fp zero ()
 succ-no-fp (succ n) p = succ-no-fp n (succ-lc p)
 
+ℕ-cases : {P : ℕ → 𝓦 ̇} (n : ℕ)
+        → (n ≡ zero → P n) → ((m : ℕ) → n ≡ succ m → P n) → P n
+ℕ-cases {𝓦} {P} zero c₀ cₛ     = c₀ refl
+ℕ-cases {𝓦} {P} (succ n) c₀ cₛ = cₛ n refl
+
 \end{code}
