@@ -16,10 +16,10 @@ open import UF-FunExt
 open import UF-Subsingletons
 
 module LiftingMiscelanea-PropExt-FunExt
-  (𝓣 : Universe)
-  (pe : propext 𝓣)
-  (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-  where
+        (𝓣 : Universe)
+        (pe : propext 𝓣)
+        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+       where
 
 open import UF-Base
 open import UF-Equiv
@@ -38,10 +38,9 @@ prove that the lifting of a set is again a set.
 
 \begin{code}
 
-module _
-  {𝓤 : Universe}
-  {X : 𝓤 ̇ }
-  where
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+       where
 
  open import LiftingUnivalentPrecategory 𝓣 X
 
@@ -133,12 +132,11 @@ module _
        d' : is-defined m
        d' = eqtofun deq e
         
-module _
- {𝓤 : Universe}
- {X : 𝓤 ̇ }
- {𝓥 : Universe}
- {Y : 𝓥 ̇ }
- where
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         {𝓥 : Universe}
+         {Y : 𝓥 ̇ }
+       where
  
  ♯-is-defined : (f : X → 𝓛 Y) (l : 𝓛 X) → is-defined ((f ♯) l) → is-defined l
  ♯-is-defined f l = pr₁

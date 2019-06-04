@@ -8,12 +8,13 @@ Tom de Jong & Martin Escardo, 20 May 2019.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF-PropTrunc
 open import SpartanMLTT
+open import UF-PropTrunc
 
-module Dcpo (pt : propositional-truncations-exist)
-            (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-            (𝓥 : Universe) -- where the index set for directed completeness lives
+module Dcpo
+        (pt : propositional-truncations-exist)
+        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (𝓥 : Universe) -- where the index type for directed completeness lives
        where
 
 open PropositionalTruncation pt
@@ -21,10 +22,9 @@ open PropositionalTruncation pt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-module _
-        {𝓤 𝓣 : Universe}
-        {D : 𝓤 ̇ }
-        (_⊑_ : D → D → 𝓣 ̇ )
+module _ {𝓤 𝓣 : Universe}
+         {D : 𝓤 ̇ }
+         (_⊑_ : D → D → 𝓣 ̇ )
        where
 
  is-prop-valued : 𝓤 ⊔ 𝓣 ̇

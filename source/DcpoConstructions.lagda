@@ -9,12 +9,12 @@ Tom de Jong, 27 May 2019.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF-PropTrunc hiding (⊥)
 open import SpartanMLTT
+open import UF-PropTrunc hiding (⊥)
 
 module DcpoConstructions
-       (pt : propositional-truncations-exist)
-       (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (pt : propositional-truncations-exist)
+        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
        where
 
 open PropositionalTruncation pt
@@ -34,13 +34,13 @@ We start by defining the dcpo of continuous functions. This is the exponential
 \begin{code}
 
 module DcpoConstructionsGeneral
-       (𝓥 : Universe)
+        (𝓥 : Universe)
        where
  open import Dcpo pt fe 𝓥
 
- module _
-  (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-  where
+ module _ (𝓓 : DCPO {𝓤} {𝓣})
+          (𝓔 : DCPO {𝓤'} {𝓣'})
+        where
 
   _hom-⊑_ : DCPO[ 𝓓 , 𝓔 ] → DCPO[ 𝓓 , 𝓔 ] → 𝓤 ⊔ 𝓣' ̇
   (f , _) hom-⊑ (g , _) = ∀ d → f d ⊑⟨ 𝓔 ⟩ g d
@@ -179,9 +179,8 @@ This will be used in ScottModelOfPCF.
 
 \begin{code}
 
- module _
-        (𝓓 : DCPO {𝓤} {𝓣})
-        (𝓔 : DCPO {𝓤'} {𝓣'})
+ module _ (𝓓 : DCPO {𝓤} {𝓣})
+          (𝓔 : DCPO {𝓤'} {𝓣'})
         where
 
   Kᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓓 ]
@@ -199,9 +198,7 @@ This will be used in ScottModelOfPCF.
     v (f , _) l e = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f e)
                     (λ (i : I) → (l i) e)
 
-  module _
-         (𝓕 : DCPO {𝓦} {𝓦'})
-         where
+  module _ (𝓕 : DCPO {𝓦} {𝓦'}) where
 
    S₀ᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ]
           → DCPO[ 𝓓 , 𝓔 ]
@@ -357,10 +354,9 @@ This will be used in ScottModelOfPCF.
            φ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) β
            φ = pointwise-family-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) α δ d
 
- module _
-   (𝓓 : DCPO⊥ {𝓤} {𝓣})
-   (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
-   where
+ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣})
+          (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+        where
    
   Kᵈᶜᵖᵒ⊥ : DCPO⊥[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ]
   Kᵈᶜᵖᵒ⊥ = Kᵈᶜᵖᵒ ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫
@@ -377,9 +373,7 @@ lowest universe), because ℕ lives in 𝓤₀.
 
 \begin{code}
 
- module _
-   (𝓓 : DCPO⊥ {𝓤} {𝓣})
-   where
+ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
   iter : (n : ℕ) → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ → ⟨ ⟪ 𝓓 ⟫ ⟩
   iter zero     f = the-least 𝓓
@@ -561,13 +555,12 @@ lowest universe), because ℕ lives in 𝓤₀.
     h (inr e)  = transport (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ m) f) (e ⁻¹)
                  (reflexivity ⟪ 𝓓 ⟫ (iter (succ m) f))
 
-module _
-       where
- open DcpoConstructionsGeneral 𝓤₀
+module _ where
+
  open import Dcpo pt fe 𝓤₀
- module _
-        (𝓓 : DCPO⊥ {𝓤} {𝓣})
-        where
+ open DcpoConstructionsGeneral 𝓤₀
+
+ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
   iter-is-directed : is-directed (λ F G → ∀ f → F f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ G f) (iter 𝓓) 
   iter-is-directed = ∣ zero ∣ , δ
@@ -654,8 +647,8 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
 \begin{code}
 
  module LiftingDcpo
-        (𝓣 : Universe)
-        (pe : propext 𝓣)
+         (𝓣 : Universe)
+         (pe : propext 𝓣)
         where
 
   open import UF-ImageAndSurjection
@@ -666,11 +659,10 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
   open import LiftingMiscelanea-PropExt-FunExt 𝓣 pe fe
   open import LiftingMonad 𝓣
 
-  module _
-    {𝓤 : Universe}
-    {X : 𝓤 ̇ }
-    (s : is-set X)
-    where
+  module _ {𝓤 : Universe}
+           {X : 𝓤 ̇ }
+           (s : is-set X)
+         where
 
    family-value-map : {I : 𝓤₀ ̇}
                     → (α : I → 𝓛 X)
@@ -780,14 +772,13 @@ Kleisli extension yield continuous maps
 
 \begin{code}
 
-  module _
-    {𝓤 : Universe}
-    {X : 𝓤 ̇ }
-    (s₀ : is-set X)
-    {𝓥 : Universe}
-    {Y : 𝓥 ̇ }
-    (s₁ : is-set Y)
-    where
+  module _ {𝓤 : Universe}
+           {X : 𝓤 ̇ }
+           (s₀ : is-set X)
+           {𝓥 : Universe}
+           {Y : 𝓥 ̇ }
+           (s₁ : is-set Y)
+         where
 
    ♯-is-monotone : (f : X → 𝓛 Y) → is-monotone (𝓛-DCPO s₀) (𝓛-DCPO s₁) (f ♯)
    ♯-is-monotone f l m ineq d = ap (f ♯) (ineq (♯-is-defined f l d))

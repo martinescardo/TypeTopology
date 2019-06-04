@@ -7,9 +7,10 @@ Tom de Jong, 31 May 2019
 open import SpartanMLTT
 open import UF-PropTrunc
 
-module ScottModelOfPCF (pt : propositional-truncations-exist)
-                       (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-                       (pe : propext 𝓤₀)
+module ScottModelOfPCF
+        (pt : propositional-truncations-exist)
+        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (pe : propext 𝓤₀)
        where
 
 open PropositionalTruncation pt

@@ -8,16 +8,13 @@ A few basic lemmas for working with partial elements of a type.
 
 open import SpartanMLTT
 
-module LiftingMiscelanea
-  (𝓣 : Universe)
-  where
+module LiftingMiscelanea (𝓣 : Universe) where
 
 open import Lifting 𝓣
 
-module _
-  {𝓤 : Universe}
-  {X : 𝓤 ̇ }
-  where
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+       where
   
  value-is-constant : (l : 𝓛 X) (d e : is-defined l) → value l d ≡ value l e
  value-is-constant l d e = ap (value l) (being-defined-is-a-prop l d e)
