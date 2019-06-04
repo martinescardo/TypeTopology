@@ -52,15 +52,16 @@ module _ {𝓤 𝓣 : Universe}
  is-sup s α = (is-upperbound s α)
             × ((u : D) → is-upperbound u α → s ⊑ u)
 
- is-sup-is-upperbound : {I : 𝓥 ̇ } {s : D} {α : I → D}
-                      → is-sup s α
-                      → is-upperbound s α
- is-sup-is-upperbound i = pr₁ i
+ is-sup-gives-is-upperbound : {I : 𝓥 ̇ } {s : D} {α : I → D}
+                            → is-sup s α
+                            → is-upperbound s α
+ is-sup-gives-is-upperbound i = pr₁ i
 
- is-sup-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } {s : D} {α : I → D}
-                                     → is-sup s α
-                                     → ((u : D) → is-upperbound u α → s ⊑ u)
- is-sup-is-lowerbound-of-upperbounds i = pr₂ i
+ is-sup-gives-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } {s : D} {α : I → D}
+                                           → is-sup s α
+                                           → (u : D)
+                                           → is-upperbound u α → s ⊑ u
+ is-sup-gives-is-lowerbound-of-upperbounds i = pr₂ i
 
  has-sup : {I : 𝓥 ̇ } → (I → D) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
  has-sup α = Σ \(s : D) → is-sup s α
@@ -74,8 +75,8 @@ module _ {𝓤 𝓣 : Universe}
  is-directed : {I : 𝓥 ̇ } → (I → D) → 𝓥 ⊔ 𝓣 ̇
  is-directed {I} α = ∥ I ∥ × ((i j : I) → ∃ \(k : I) → (α i ⊑ α k) × (α j ⊑ α k))
 
- is-directed-inhabited : {I : 𝓥 ̇} (α : I → D) → is-directed α → ∥ I ∥
- is-directed-inhabited α = pr₁
+ is-directed-gives-inhabited : {I : 𝓥 ̇} (α : I → D) → is-directed α → ∥ I ∥
+ is-directed-gives-inhabited α = pr₁
 
  is-directed-order : {I : 𝓥 ̇} (α : I → D) → is-directed α
                    → (i j : I) → ∃ (\(k : I) → (α i ⊑ α k) × (α j ⊑ α k))
@@ -91,20 +92,28 @@ module _ {𝓤 𝓣 : Universe}
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
 
  dcpo-axioms : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣 ̇
- dcpo-axioms = is-set D × is-prop-valued × is-reflexive × is-transitive × is-antisymmetric × is-directed-complete
+ dcpo-axioms = is-set D
+             × is-prop-valued
+             × is-reflexive
+             × is-transitive
+             × is-antisymmetric
+             × is-directed-complete
 
- is-sup-is-a-prop : dcpo-axioms → {I : 𝓥 ̇ } (d : D) (α : I → D) → is-prop (is-sup d α)
+ is-sup-is-a-prop : dcpo-axioms → {I : 𝓥 ̇ } (d : D) (α : I → D)
+                  → is-prop (is-sup d α)
  is-sup-is-a-prop (s , p , r , t , a , c) {I} d α = γ
   where
    γ : is-prop (is-sup d α)
    γ = ×-is-prop (Π-is-prop fe (λ (i : I) → p (α i) d))
                  (Π-is-prop fe (λ (x : D) → Π-is-prop fe (λ l → p d x)))
 
- has-sup-is-a-prop : dcpo-axioms → {I : 𝓥 ̇ } (α : I → D) → is-prop (has-sup α)
- has-sup-is-a-prop (s , p , r , t , a , c) {I} α = γ
+ having-sup-is-a-prop : dcpo-axioms → {I : 𝓥 ̇ } (α : I → D)
+                      → is-prop (has-sup α)
+ having-sup-is-a-prop (s , p , r , t , a , c) {I} α = γ
   where
    γ : is-prop (has-sup α)
-   γ (j , (u , l)) (j' , (u' , l')) = to-Σ-≡ (q , is-sup-is-a-prop (s , p , r , t , a , c) j' α _ _)
+   γ (j , (u , l)) (j' , (u' , l')) =
+     to-Σ-≡ (q , is-sup-is-a-prop (s , p , r , t , a , c) j' α _ _)
     where
      q : j ≡ j'
      q = a j j' (l j' u') (l' j u)
@@ -112,8 +121,8 @@ module _ {𝓤 𝓣 : Universe}
  being-directed-complete-is-a-prop : dcpo-axioms → is-prop is-directed-complete
  being-directed-complete-is-a-prop a =
   Π-is-prop fe
-   (λ I → Π-is-prop fe 
-             (λ α → Π-is-prop fe (λ d → has-sup-is-a-prop a α)))
+   (λ I → Π-is-prop fe
+             (λ α → Π-is-prop fe (λ d → having-sup-is-a-prop a α)))
 
  dcpo-axioms-is-a-prop : is-prop dcpo-axioms
  dcpo-axioms-is-a-prop = iprops-are-props γ
@@ -190,8 +199,8 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → 𝓥 ⊔ 𝓣 ̇
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
- is-Directed-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α → ∥ I ∥
- is-Directed-inhabited 𝓓 α = pr₁
+ is-Directed-gives-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α → ∥ I ∥
+ is-Directed-gives-inhabited 𝓓 α = pr₁
 
  is-Directed-order : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α
                    → (i j : I) → ∃ (\(k : I) → (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k))
@@ -244,7 +253,7 @@ underlying-function 𝓓 𝓔 (f , _) = f
 continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : DCPO[ 𝓓 , 𝓔 ])
                        → is-continuous 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
 continuity-of-function 𝓓 𝓔 (_ , c) = c
-                            
+
 continuous-functions-are-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                                     (f : DCPO[ 𝓓 , 𝓔 ])
                                   → is-monotone 𝓓 𝓔 (underlying-function 𝓓 𝓔 f)
@@ -273,23 +282,23 @@ continuous-functions-are-monotone 𝓓 𝓔 (f , cts) x y l = γ
    b = transport (λ - → is-sup (underlying-order 𝓔) - (f ∘ α)) (ap f (a ⁻¹))
        (cts (𝟙 + 𝟙) α δ)
    γ : f x ⊑⟨ 𝓔 ⟩ f y
-   γ = is-sup-is-upperbound (underlying-order 𝓔) b (inl *)
+   γ = is-sup-gives-is-upperbound (underlying-order 𝓔) b (inl *)
 
-constant-function-is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                                  (e : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ d → e)
-constant-function-is-continuous 𝓓 𝓔 e I α δ = u , v where
+constant-functions-are-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                                    (e : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ d → e)
+constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v where
  u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
- u i = reflexivity 𝓔 e 
+ u i = reflexivity 𝓔 e
  v : (y : ⟨ 𝓔 ⟩) → ((i : I) → e ⊑⟨ 𝓔 ⟩ y) → e ⊑⟨ 𝓔 ⟩ y
  v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) (λ (i : I) → l i)
-          (is-directed-inhabited (underlying-order 𝓓) α δ)
+          (is-directed-gives-inhabited (underlying-order 𝓓) α δ)
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
 image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
- (is-Directed-inhabited 𝓓 α δ) , γ
+ (is-Directed-gives-inhabited 𝓓 α δ) , γ
   where
    γ : (i j : I)
      → ∃ (\(k : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
@@ -314,11 +323,11 @@ continuous-function-∐-≡ 𝓓 𝓔 (f , c) {I} {α} δ =
    ε : is-Directed 𝓔 (f ∘ α)
    ε = image-is-directed 𝓓 𝓔 (f , c) δ
    a : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)
-   a = is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
+   a = is-sup-gives-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
        (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ))
        (∐-is-upperbound 𝓔 ε)
    b : ∐ 𝓔 ε  ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
    b = ∐-is-lowerbound-of-upperbounds 𝓔 ε (f (∐ 𝓓 δ))
-       (is-sup-is-upperbound (underlying-order 𝓔) s)
+       (is-sup-gives-is-upperbound (underlying-order 𝓔) s)
 
 \end{code}

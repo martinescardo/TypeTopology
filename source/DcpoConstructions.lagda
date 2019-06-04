@@ -52,9 +52,9 @@ module DcpoConstructionsGeneral
                                  (δ : is-directed _hom-⊑_ α)
                                  (d : ⟨ 𝓓 ⟩)
                                → is-directed (underlying-order 𝓔)
-                                 (pointwise-family α d)
+                                  (pointwise-family α d)
   pointwise-family-is-directed {I} α δ d =
-   (is-directed-inhabited _hom-⊑_ α δ) ,
+   (is-directed-gives-inhabited _hom-⊑_ α δ) ,
    λ (i j : I) → ∥∥-functor (h i j) ((is-directed-order _hom-⊑_ α δ) i j)
     where
      β : ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
@@ -105,7 +105,7 @@ module DcpoConstructionsGeneral
           q = ∐-is-lowerbound-of-upperbounds 𝓔 (ε (∐ 𝓓 φ)) y h
            where
             h : (i' : I) → β (∐ 𝓓 φ) i' ⊑⟨ 𝓔 ⟩ y
-            h i' = is-sup-is-lowerbound-of-upperbounds (underlying-order 𝓔)
+            h i' = is-sup-gives-is-lowerbound-of-upperbounds (underlying-order 𝓔)
                    (continuity-of-function 𝓓 𝓔 (α i') J γ φ) y m
              where
               m : (j : J) → underlying-function 𝓓 𝓔 (α i') (γ j) ⊑⟨ 𝓔 ⟩ y
@@ -134,7 +134,7 @@ module DcpoConstructionsGeneral
      p : (f g : DCPO[ 𝓓 , 𝓔 ]) → is-prop (f ⊑ g)
      p (f , _) (g , _) = Π-is-prop fe
                          (λ (x : ⟨ 𝓓 ⟩) → prop-valuedness 𝓔 (f x) (g x))
-     r : (f : DCPO[ 𝓓 , 𝓔 ]) → f ⊑ f 
+     r : (f : DCPO[ 𝓓 , 𝓔 ]) → f ⊑ f
      r (f , _) x = reflexivity 𝓔 (f x)
      t : (f g h : DCPO[ 𝓓 , 𝓔 ]) → f ⊑ g → g ⊑ h → f ⊑ h
      t (f , _) (g , _) (h , _) l m x = transitivity 𝓔 (f x) (g x) (h x)
@@ -162,14 +162,14 @@ module DcpoConstructionsGeneral
                        (g d) (λ (i : I) → l i d)
 
  infixr 20 _⟹ᵈᶜᵖᵒ⊥_
- 
+
  _⟹ᵈᶜᵖᵒ⊥_ : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
           → DCPO⊥ {(𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣'} {𝓤 ⊔ 𝓣'}
  𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓔 = ⟪ 𝓓 ⟫ ⟹ᵈᶜᵖᵒ ⟪ 𝓔 ⟫ , h
   where
    h : has-least (underlying-order (⟪ 𝓓 ⟫ ⟹ᵈᶜᵖᵒ ⟪ 𝓔 ⟫))
    h = ((λ _ → the-least 𝓔) ,
-       constant-function-is-continuous ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ (the-least 𝓔)) ,
+       constant-functions-are-continuous ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ (the-least 𝓔)) ,
        (λ g d → least-property 𝓔 (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫ g d))
 
 \end{code}
@@ -186,7 +186,7 @@ This will be used in ScottModelOfPCF.
   Kᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓓 ]
   Kᵈᶜᵖᵒ = k , c where
    k : ⟨ 𝓓 ⟩ → DCPO[ 𝓔 , 𝓓 ]
-   k x = (λ _ → x) , (constant-function-is-continuous 𝓔 𝓓 x)
+   k x = (λ _ → x) , (constant-functions-are-continuous 𝓔 𝓓 x)
    c : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
      → is-sup (underlying-order (𝓔 ⟹ᵈᶜᵖᵒ 𝓓)) (k (∐ 𝓓 δ)) (λ (i : I) → k (α i))
    c I α δ = u , v where
@@ -259,10 +259,12 @@ This will be used in ScottModelOfPCF.
                  ε₂ = image-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ
                  e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) ε₂ ≡ f (∐ 𝓓 δ)
                  e₂ = (continuous-function-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
-                 γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂) (g (α i))
+                 γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂)
+                       (g (α i))
                       ⊑⟨ 𝓕 ⟩ y
                  γ₃ = ∐-is-lowerbound-of-upperbounds 𝓕
-                      (pointwise-family-is-directed 𝓔 𝓕 (f ∘ α) ε₂ (g (α i))) y h
+                       (pointwise-family-is-directed 𝓔 𝓕 (f ∘ α) ε₂ (g (α i)))
+                       y h
                   where
                    h : (j : I) → (pr₁ (f (α j)) (g (α i))) ⊑⟨ 𝓕 ⟩ y
                    h j = ∥∥-rec (prop-valuedness 𝓕 (pr₁ (f (α j)) (g (α i))) y)
@@ -271,20 +273,28 @@ This will be used in ScottModelOfPCF.
                      r : Σ (\(k : I) → α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
                        → (underlying-function 𝓔 𝓕 (f (α j)) (g (α i))) ⊑⟨ 𝓕 ⟩ y
                      r (k , l , m ) = transitivity 𝓕
-                                      (underlying-function 𝓔 𝓕 (f (α j)) (g (α i)))
-                                      (underlying-function 𝓔 𝓕 (f (α k)) (g (α k)))
-                                      y
-                                      (transitivity 𝓕
-                                       (underlying-function 𝓔 𝓕 (f (α j)) (g (α i)))
-                                       (underlying-function 𝓔 𝓕 (f (α k)) (g (α i)))
-                                       (underlying-function 𝓔 𝓕 (f (α k)) (g (α k)))
+                                       (underlying-function 𝓔 𝓕 (f (α j))
+                                        (g (α i)))
+                                       (underlying-function 𝓔 𝓕 (f (α k))
+                                        (g (α k)))
+                                       y
+                                       (transitivity 𝓕
+                                         (underlying-function 𝓔 𝓕 (f (α j))
+                                           (g (α i)))
+                                         (underlying-function 𝓔 𝓕 (f (α k))
+                                           (g (α i)))
+                                       (underlying-function 𝓔 𝓕 (f (α k))
+                                           (g (α k)))
                                        (s (g (α i)))
-                                       (continuous-functions-are-monotone 𝓔 𝓕 (f (α k)) (g (α i)) (g (α k))
-                                        (continuous-functions-are-monotone 𝓓 𝓔 (g , cg) (α i) (α k) l)))
+                                       (continuous-functions-are-monotone 𝓔 𝓕
+                                         (f (α k)) (g (α i)) (g (α k))
+                                        (continuous-functions-are-monotone 𝓓 𝓔
+                                         (g , cg) (α i) (α k) l)))
                                       (ineqs k)
                       where
                        s : f (α j) ⊑⟨ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ⟩ f (α k)
-                       s = continuous-functions-are-monotone 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) (α j) (α k) m
+                       s = continuous-functions-are-monotone 𝓓
+                            (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) (α j) (α k) m
 
 
    S₁ᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ]
@@ -305,7 +315,8 @@ This will be used in ScottModelOfPCF.
                (∐-is-upperbound 𝓔 (pointwise-family-is-directed 𝓓 𝓔 α δ d) i)
        v : (g : DCPO[ 𝓓 , 𝓕 ])
          → ((i : I) → h (α i) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ 𝓕 ⟩ g)
-         → (d : ⟨ 𝓓 ⟩) → underlying-function 𝓓 𝓕 (h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ)) d
+         → (d : ⟨ 𝓓 ⟩) → underlying-function 𝓓 𝓕 (h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
+                           {I} {α} δ)) d
                           ⊑⟨ 𝓕 ⟩ underlying-function 𝓓 𝓕 g d
        v g l d = transport (λ - → - ⊑⟨ 𝓕 ⟩ underlying-function 𝓓 𝓕 g d) e s
         where
@@ -324,8 +335,9 @@ This will be used in ScottModelOfPCF.
    Sᵈᶜᵖᵒ : DCPO[ 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 , (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⟹ᵈᶜᵖᵒ (𝓓 ⟹ᵈᶜᵖᵒ 𝓕) ]
    Sᵈᶜᵖᵒ = S₁ᵈᶜᵖᵒ , c
     where
-     c : is-continuous (𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕) ((𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⟹ᵈᶜᵖᵒ (𝓓 ⟹ᵈᶜᵖᵒ 𝓕))
-         S₁ᵈᶜᵖᵒ
+     c : is-continuous (𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕)
+                       ((𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⟹ᵈᶜᵖᵒ (𝓓 ⟹ᵈᶜᵖᵒ 𝓕))
+                       S₁ᵈᶜᵖᵒ
      c I α δ = u , v
       where
        u : (i : I) (g : DCPO[ 𝓓 , 𝓔 ]) (d : ⟨ 𝓓 ⟩)
@@ -357,7 +369,7 @@ This will be used in ScottModelOfPCF.
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣})
           (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
         where
-   
+
   Kᵈᶜᵖᵒ⊥ : DCPO⊥[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ]
   Kᵈᶜᵖᵒ⊥ = Kᵈᶜᵖᵒ ⟪ 𝓓 ⟫ ⟪ 𝓔 ⟫
 
@@ -396,7 +408,8 @@ lowest universe), because ℕ lives in 𝓤₀.
   n-family-is-directed : {I : 𝓥 ̇} (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩)
                          (δ : is-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α)
                          (n : ℕ) → is-Directed ⟪ 𝓓 ⟫ (n-family α n)
-  n-family-is-directed {I} α δ n = is-Directed-inhabited ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ , ε
+  n-family-is-directed {I} α δ n =
+    is-Directed-gives-inhabited ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ , ε
    where
     ε : (i j : I) → ∃ (\(k : I) → (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
                                   (n-family α n j) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k))
@@ -434,7 +447,8 @@ lowest universe), because ℕ lives in 𝓤₀.
      where
       g : (i : I)
         → (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α (∐ ⟪ 𝓓 ⟫ (φ n)) i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ y
-      g i = is-sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫) s y u
+      g i = is-sup-gives-is-lowerbound-of-upperbounds
+             (underlying-order ⟪ 𝓓 ⟫) s y u
        where
         β : I → ⟨ ⟪ 𝓓 ⟫ ⟩
         β = underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) ∘ (n-family α n)
@@ -476,8 +490,8 @@ lowest universe), because ℕ lives in 𝓤₀.
       h i = transitivity ⟪ 𝓓 ⟫ (n-family α (succ n) i)
              (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) (∐ ⟪ 𝓓 ⟫ (φ n))) x p q
        where
-        p : iter (succ n) (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i)
-                                            (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
+        p : iter (succ n) (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫
+             (α i) (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
         p = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i)
              (iter n (α i))
              (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
@@ -496,7 +510,7 @@ lowest universe), because ℕ lives in 𝓤₀.
     b : (u : ⟨ ⟪ 𝓓 ⟫ ⟩)
       → ((i : I) → iter zero (α i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ u)
       → iter zero (∐ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ {I} {α} δ) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ u
-    b u l = least-property 𝓓 u 
+    b u l = least-property 𝓓 u
   iter-is-continuous (succ n) I α δ = γ
    where
     γ : is-sup (underlying-order ⟪ 𝓓 ⟫)
@@ -508,12 +522,25 @@ lowest universe), because ℕ lives in 𝓤₀.
           (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n)))
           (iter (succ n) ∘ α)
       k = ∐-is-sup ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))
-      h = iter (succ n) s                                                          ≡⟨ refl ⟩
-          underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s (iter n s)                             ≡⟨ ap (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s) e ⟩
-          underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)) ≡⟨ refl ⟩
+      h = iter (succ n) s
+
+               ≡⟨ refl ⟩
+
+          underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s (iter n s)
+
+               ≡⟨ ap (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s) e ⟩
+
+          underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ s (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
+
+               ≡⟨ refl ⟩
+
           ∐ ⟪ 𝓓 ⟫ (pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α δ
-           (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))                                 ≡⟨ double-∐-lemma α δ n ⟩
-          ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))                              ∎
+           (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)))
+
+               ≡⟨ double-∐-lemma α δ n ⟩
+
+          ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ (succ n))
+               ∎
        where
         s = (∐ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ {I} {α} δ)
         e : iter n s ≡ ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
@@ -523,12 +550,14 @@ lowest universe), because ℕ lives in 𝓤₀.
                (iter n ∘ α)
           IH = iter-is-continuous n I α δ
           l : iter n s ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
-          l = is-sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫) IH
+          l = is-sup-gives-is-lowerbound-of-upperbounds
+              (underlying-order ⟪ 𝓓 ⟫) IH
               (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
               (∐-is-upperbound ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
           m : ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter n s
-          m = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ (n-family-is-directed α δ n) (iter n s)
-              (is-sup-is-upperbound (underlying-order ⟪ 𝓓 ⟫) IH)
+          m = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
+              (iter n s)
+              (is-sup-gives-is-upperbound (underlying-order ⟪ 𝓓 ⟫) IH)
 
   iter-c : ℕ → DCPO[ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]
   iter-c n = iter n , iter-is-continuous n
@@ -543,7 +572,8 @@ lowest universe), because ℕ lives in 𝓤₀.
 
   iter-increases : (n m : ℕ) → (n ≤ m)
                  → (iter-c n) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟹ᵈᶜᵖᵒ ⟪ 𝓓 ⟫ ⟩ (iter-c m)
-  iter-increases n zero l     f = transport (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter zero f)
+  iter-increases n zero l     f = transport
+                                  (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter zero f)
                                   (unique-minimal n l ⁻¹)
                                   (reflexivity ⟪ 𝓓 ⟫ (iter zero f))
   iter-increases n (succ m) l f = h (≤-split n m l)
@@ -562,13 +592,13 @@ module _ where
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
-  iter-is-directed : is-directed (λ F G → ∀ f → F f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ G f) (iter 𝓓) 
+  iter-is-directed : is-directed (λ F G → ∀ f → F f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ G f) (iter 𝓓)
   iter-is-directed = ∣ zero ∣ , δ
    where
-    δ : (i j : ℕ) → ∃ (\(k : ℕ) →
-             ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
-             ×
-             ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f))
+    δ : (i j : ℕ)
+      → ∃ (\(k : ℕ)
+          → ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
+          × ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f))
     δ i j = ∣ i +' j , l , m ∣
      where
       l : (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 (i +' j) f
@@ -606,7 +636,7 @@ module _ where
                    (∐-is-upperbound ⟪ 𝓓 ⟫ δ n)
 
     m : f (ν fc) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ν fc
-    m = is-sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫)
+    m = is-sup-gives-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫)
         (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc ℕ α δ) (ν fc) k
      where
       α : ℕ → ⟨ ⟪ 𝓓 ⟫ ⟩
@@ -621,12 +651,11 @@ module _ where
         q : α (succ n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ν fc
         q = ∐-is-upperbound ⟪ 𝓓 ⟫ δ (succ n)
 
-  μ-gives-lowerbound-of-fixed-points : (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ])
-                                       (d : ⟨ ⟪ 𝓓 ⟫ ⟩)
-                                     → underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d
-                                       ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
-                                     → (underlying-function ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ μ) f
-                                       ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+  μ-gives-lowerbound-of-fixed-points :
+      (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ])
+      (d : ⟨ ⟪ 𝓓 ⟫ ⟩)
+    → underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d  ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+    → (underlying-function ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ μ) f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
   μ-gives-lowerbound-of-fixed-points f d l =
    ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫
    (pointwise-family-is-directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓)
@@ -637,7 +666,8 @@ module _ where
      g zero     = least-property 𝓓 d
      g (succ n) = transitivity ⟪ 𝓓 ⟫
                   (iter 𝓓 (succ n) f) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d) d
-                  (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f (iter 𝓓 n f) d (g n))
+                  (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f
+                    (iter 𝓓 n f) d (g n))
                   l
 
 \end{code}
@@ -681,8 +711,9 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
       γ : ∃ (\(k : I) → (α i₀ ⊑' α k) × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
       γ = ∥∥-rec s g
        where
-        g : Σ (\(k : I) → (α i₀ ⊑' α k) × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
-        g (k , l , m) = 
+        g : Σ (\(k : I) → (α i₀ ⊑' α k)
+                        × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
+        g (k , l , m) =
          f (i₀ , d₀)                             ≡⟨ refl ⟩
          value (α i₀) d₀                         ≡⟨ ≡-of-values-from-≡ (l d₀) ⟩
          value (α k) (≡-to-is-defined (l d₀) d₀) ≡⟨ ≡-of-values-from-≡ ((m d₁) ⁻¹) ⟩
@@ -693,7 +724,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
                      → (α : I → 𝓛 X)
                      → (δ : is-directed _⊑'_ α )
                      → ∃ (\(i : I) → is-defined (α i)) → X
-   lifting-sup-value {I} α δ = 
+   lifting-sup-value {I} α δ =
     constant-map-to-set-truncation-of-domain-map
      (Σ \(i : I) → is-defined (α i))
      s (family-value-map α) (directed-family-value-map-is-constant α δ)
@@ -702,7 +733,8 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
    lifting-sup {I} α δ =
     ∃ (\(i : I) → is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-a-prop
 
-   lifting-sup-is-upperbound : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α)
+   lifting-sup-is-upperbound : {I : 𝓤₀ ̇} → (α : I → 𝓛 X)
+                               (δ : is-directed _⊑'_ α)
                              → (i : I) → α i ⊑' lifting-sup α δ
    lifting-sup-is-upperbound {I} α δ i = γ
     where
@@ -712,13 +744,15 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
        f : is-defined (α i) → is-defined (lifting-sup α δ)
        f d = ∣ i , d ∣
        v : (d : is-defined (α i)) → value (α i) d ≡ value (lifting-sup α δ) (f d)
-       v d = value (α i) d                 ≡⟨ constant-map-to-set-factors-through-truncation-of-domain
-                                              (Σ (\(j : I) → is-defined (α j))) s
-                                              (family-value-map α)
-                                              (directed-family-value-map-is-constant α δ)
-                                              (i , d) ⟩
+       v d = value (α i) d                 ≡⟨ p ⟩
              lifting-sup-value α δ (f d)   ≡⟨ refl ⟩
              value (lifting-sup α δ) (f d) ∎
+        where
+         p = constant-map-to-set-factors-through-truncation-of-domain
+              (Σ (\(j : I) → is-defined (α j))) s
+              (family-value-map α)
+              (directed-family-value-map-is-constant α δ)
+              (i , d)
 
    family-defined-somewhere-sup-≡ : {I : 𝓤₀ ̇} {α : I → 𝓛 X}
                                   → (δ : is-directed _⊑'_ α)
@@ -752,9 +786,9 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
      p : is-prop-valued (_⊑'_)
      p _ _ = ⊑'-prop-valued s
      r : is-reflexive (_⊑'_)
-     r _ = ⊑'-is-reflexive 
+     r _ = ⊑'-is-reflexive
      a : is-antisymmetric (_⊑'_)
-     a _ _ = ⊑'-is-antisymmetric 
+     a _ _ = ⊑'-is-antisymmetric
      t : is-transitive (_⊑'_)
      t _ _ _ = ⊑'-is-transitive
      c : (I : 𝓤₀ ̇) (α : I → 𝓛 X) → is-directed _⊑'_ α → has-sup _⊑'_ α
@@ -764,7 +798,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
 
    𝓛-DCPO⊥ : DCPO⊥ {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
    𝓛-DCPO⊥ = 𝓛-DCPO , ⊥ , λ _ → unique-from-𝟘
-      
+
 \end{code}
 
 Now that we have the lifting as a dcpo, we prove that the lifting functor and
@@ -831,7 +865,7 @@ future work.
   ⦅ifZero⦆₀ a b zero     = a
   ⦅ifZero⦆₀ a b (succ n) = b
 
-  ⦅ifZero⦆₁ : 𝓛 ℕ → 𝓛 ℕ → DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ] 
+  ⦅ifZero⦆₁ : 𝓛 ℕ → 𝓛 ℕ → DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ]
   ⦅ifZero⦆₁ a b =
    (⦅ifZero⦆₀ a b) ♯ , ♯-is-continuous ℕ-is-set ℕ-is-set (⦅ifZero⦆₀ a b)
 
@@ -843,87 +877,136 @@ future work.
      where
       u : (i : I) (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (α i)) ♯) l))
         → ((⦅ifZero⦆₀ a (α i)) ♯) l ≡ ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l
-      u i l d = ((⦅ifZero⦆₀ a (α i)) ♯) l              ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (α i)) e ⟩
-                ⦅ifZero⦆₀ a (α i) (value l e)          ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) →  ⦅ifZero⦆₀ a (α i) n ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) n} (value l e) p₀ pₛ ⟩
-                ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e) ⁻¹ ⟩
+      u i l d = ((⦅ifZero⦆₀ a (α i)) ♯) l              ≡⟨ q₀ ⟩
+                ⦅ifZero⦆₀ a (α i) (value l e)          ≡⟨ q₁ ⟩
+                ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ q₂ ⟩
                 ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l     ∎
        where
         e : is-defined l
         e = ♯-is-defined (⦅ifZero⦆₀ a (α i)) l d
-        p₀ : value l e ≡ zero → ⦅ifZero⦆₀ a (α i) (value l e) ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
-        p₀ q = ⦅ifZero⦆₀ a (α i) (value l e)          ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q ⟩
-               ⦅ifZero⦆₀ a (α i) zero                 ≡⟨ refl ⟩
-               a                                     ≡⟨ refl ⟩
-               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) zero        ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) (q ⁻¹) ⟩
-               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ∎
-        pₛ : (n : ℕ) → value l e ≡ succ n → ⦅ifZero⦆₀ a (α i) (value l e) ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
-        pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)          ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q ⟩
-                 ⦅ifZero⦆₀ a (α i) (succ n)             ≡⟨ refl ⟩
-                 α i                                    ≡⟨ family-defined-somewhere-sup-≡ ℕ-is-set δ i e₁ ⟩
-                 ∐ ⟪ 𝓛ᵈℕ ⟫ δ                            ≡⟨ refl ⟩
-                 ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (succ n)     ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) (q ⁻¹) ⟩
-                 ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ∎
+        p₀ : value l e ≡ zero → ⦅ifZero⦆₀ a (α i) (value l e)
+           ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+        p₀ q = ⦅ifZero⦆₀ a (α i) (value l e)
+                  ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q ⟩
+               ⦅ifZero⦆₀ a (α i) zero
+                  ≡⟨ refl ⟩
+               a
+                  ≡⟨ refl ⟩
+               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) zero
+                  ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) (q ⁻¹) ⟩
+               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                  ∎
+        pₛ : (n : ℕ) → value l e ≡ succ n → ⦅ifZero⦆₀ a (α i) (value l e)
+                                          ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+        pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)
+                    ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q ⟩
+                 ⦅ifZero⦆₀ a (α i) (succ n)
+                    ≡⟨ refl ⟩
+                 α i
+                    ≡⟨ family-defined-somewhere-sup-≡ ℕ-is-set δ i e₁ ⟩
+                 ∐ ⟪ 𝓛ᵈℕ ⟫ δ
+                    ≡⟨ refl ⟩
+                 ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (succ n)
+                     ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) (q ⁻¹) ⟩
+                 ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                    ∎
          where
           e₁ : is-defined (α i)
           e₁ = ≡-to-is-defined (ap (⦅ifZero⦆₀ a (α i)) q)
                (≡-to-is-defined (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) d)
+        q₀ = ♯-on-total-element (⦅ifZero⦆₀ a (α i)) e
+        q₁ = ℕ-cases {𝓣 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (α i) n
+                                      ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) n} (value l e) p₀ pₛ
+        q₂ = (♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e) ⁻¹
       v : (f : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ])
         → ((i : I) → ⦅ifZero⦆₁ a (α i) ⊑⟨ ⟪ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟫ ⟩ f)
-        → (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l)) → ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l ≡ pr₁ f l
-      v f ineqs l d = ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l     ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e ⟩
-                      ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) →  ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) n ≡ pr₁ f l} (value l e) p₀ pₛ ⟩
-                      pr₁ f l                               ∎
+        → (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l))
+        → ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l ≡ pr₁ f l
+      v f ineqs l d = ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l
+                        ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e ⟩
+                      ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                        ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) n
+                                                    ≡ pr₁ f l}
+                            (value l e) p₀ pₛ ⟩
+                      pr₁ f l
+                        ∎
        where
         e : is-defined l
         e = ♯-is-defined (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) l d
         p₀ : value l e ≡ zero → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡ pr₁ f l
-        p₀ q = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) q ⟩
-               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) zero        ≡⟨ refl ⟩
-               a                                     ≡⟨ r ⟩
-               pr₁ f l                               ∎
+        p₀ q = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                  ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) q ⟩
+               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) zero
+                  ≡⟨ refl ⟩
+               a
+                  ≡⟨ r ⟩
+               pr₁ f l
+                  ∎
          where
           r : a ≡ pr₁ f l
-          r = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h (is-Directed-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
+          r = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set)
+               h (is-Directed-gives-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
            where
             h : (i : I) → a ≡ pr₁ f l
             h i = a                         ≡⟨ g ⟩
                   ((⦅ifZero⦆₀ a (α i)) ♯) l ≡⟨ ineqs i l e₀ ⟩
                   pr₁ f l                   ∎
              where
-              g = a                             ≡⟨ refl ⟩
-                  ⦅ifZero⦆₀ a (α i) zero        ≡⟨ ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹) ⟩
-                  ⦅ifZero⦆₀ a (α i) (value l e) ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e) ⁻¹ ⟩
-                  ((⦅ifZero⦆₀ a (α i)) ♯) l     ∎
+              g = a
+                     ≡⟨ refl ⟩
+                  ⦅ifZero⦆₀ a (α i) zero
+                     ≡⟨ ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹) ⟩
+                  ⦅ifZero⦆₀ a (α i) (value l e)
+                     ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e) ⁻¹ ⟩
+                  ((⦅ifZero⦆₀ a (α i)) ♯) l
+                     ∎
               e₀ : is-defined (((⦅ifZero⦆₀ a (α i)) ♯) l)
               e₀ = ≡-to-is-defined (g' ∙ g) d
                where
-                g' = ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l     ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e ⟩
-                     ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) q ⟩
-                     ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) zero        ≡⟨ refl ⟩
-                     a                                     ∎
+                g' = ((⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) ♯) l
+                         ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e ⟩
+                     ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                         ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) q ⟩
+                     ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) zero
+                         ≡⟨ refl ⟩
+                     a
+                         ∎
 
-        pₛ : (m : ℕ) → value l e ≡ succ m → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡ pr₁ f l
+        pₛ : (m : ℕ) → value l e ≡ succ m → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                                          ≡ pr₁ f l
         pₛ m q = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h eₛ
          where
           g : (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) ♯) l ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
           g = ♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e
-          g' = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) q ⟩
-               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (succ m)    ≡⟨ refl ⟩
-              ∐ ⟪ 𝓛ᵈℕ ⟫ δ                           ∎
+          g' = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                  ≡⟨ ap (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) q ⟩
+               ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (succ m)
+                  ≡⟨ refl ⟩
+              ∐ ⟪ 𝓛ᵈℕ ⟫ δ
+                  ∎
           eₛ : is-defined (∐ ⟪ 𝓛ᵈℕ ⟫ δ)
           eₛ = ≡-to-is-defined (g ∙ g') d
           h : Σ (\(i : I) → is-defined (α i))
             → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡ pr₁ f l
-          h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡⟨ g' ⟩
-                       ∐ ⟪ 𝓛ᵈℕ ⟫ δ                           ≡⟨ (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹ ⟩
-                       α i                                   ≡⟨ h' ⟩
-                       ((⦅ifZero⦆₀ a (α i)) ♯) l              ≡⟨ ineqs i l (≡-to-is-defined h' dᵢ) ⟩
-                       pr₁ f l                               ∎
+          h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
+                          ≡⟨ g' ⟩
+                       ∐ ⟪ 𝓛ᵈℕ ⟫ δ
+                          ≡⟨ (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹ ⟩
+                       α i
+                          ≡⟨ h' ⟩
+                       ((⦅ifZero⦆₀ a (α i)) ♯) l
+                          ≡⟨ ineqs i l (≡-to-is-defined h' dᵢ) ⟩
+                       pr₁ f l
+                          ∎
            where
-            h' = α i                           ≡⟨ refl ⟩
-                 ⦅ifZero⦆₀ a (α i) (succ m)    ≡⟨ ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹) ⟩
-                 ⦅ifZero⦆₀ a (α i) (value l e) ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) ⁻¹ ⟩
-                 ((⦅ifZero⦆₀ a (α i)) ♯) l     ∎         
+            h' = α i
+                    ≡⟨ refl ⟩
+                 ⦅ifZero⦆₀ a (α i) (succ m)
+                    ≡⟨ ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹) ⟩
+                 ⦅ifZero⦆₀ a (α i) (value l e)
+                    ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) ⁻¹ ⟩
+                 ((⦅ifZero⦆₀ a (α i)) ♯) l
+                    ∎
 
   ⦅ifZero⦆ : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ  ]
   ⦅ifZero⦆ = ⦅ifZero⦆₂ , c
@@ -933,37 +1016,62 @@ future work.
      where
       u : (i : I) (b : 𝓛 ℕ) (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ (α i) b) ♯) l))
         → ((⦅ifZero⦆₀ (α i) b) ♯) l ≡ ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l
-      u i b l d = ((⦅ifZero⦆₀ (α i) b) ♯) l              ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ (α i) b) e ⟩
-                  ⦅ifZero⦆₀ (α i) b (value l e)          ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) →  ⦅ifZero⦆₀ (α i) b n ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b n} (value l e) p₀ pₛ ⟩
-                  ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e) ⁻¹ ⟩
-                  ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l     ∎
+      u i b l d = ((⦅ifZero⦆₀ (α i) b) ♯) l
+                     ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ (α i) b) e ⟩
+                  ⦅ifZero⦆₀ (α i) b (value l e)
+                     ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) →  ⦅ifZero⦆₀ (α i) b n
+                                                 ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b n}
+                          (value l e) p₀ pₛ ⟩
+                  ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                     ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e) ⁻¹ ⟩
+                  ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l
+                     ∎
        where
         e : is-defined l
         e = ♯-is-defined (⦅ifZero⦆₀ (α i) b) l d
-        p₀ : value l e ≡ zero → ⦅ifZero⦆₀ (α i) b (value l e) ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
-        p₀ q = ⦅ifZero⦆₀ (α i) b (value l e)                  ≡⟨ ap (⦅ifZero⦆₀ (α i) b) q ⟩
-               ⦅ifZero⦆₀ (α i) b zero                         ≡⟨ refl ⟩
-               α i                                            ≡⟨ family-defined-somewhere-sup-≡ ℕ-is-set δ i e₁ ⟩
-               ∐ ⟪ 𝓛ᵈℕ ⟫ δ                                    ≡⟨ refl ⟩
-               ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b zero                 ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) (q ⁻¹) ⟩
-               ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)          ∎
+        p₀ : value l e ≡ zero → ⦅ifZero⦆₀ (α i) b (value l e)
+                              ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+        p₀ q = ⦅ifZero⦆₀ (α i) b (value l e)
+                  ≡⟨ ap (⦅ifZero⦆₀ (α i) b) q ⟩
+               ⦅ifZero⦆₀ (α i) b zero
+                  ≡⟨ refl ⟩
+               α i
+                  ≡⟨ family-defined-somewhere-sup-≡ ℕ-is-set δ i e₁ ⟩
+               ∐ ⟪ 𝓛ᵈℕ ⟫ δ
+                  ≡⟨ refl ⟩
+               ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b zero
+                  ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) (q ⁻¹) ⟩
+               ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                  ∎
          where
           e₁ : is-defined (α i)
           e₁ = ≡-to-is-defined (ap (⦅ifZero⦆₀ (α i) b) q)
                (≡-to-is-defined (♯-on-total-element (⦅ifZero⦆₀ (α i) b) {l} e) d)
-        pₛ : (n : ℕ) → value l e ≡ succ n → ⦅ifZero⦆₀ (α i) b (value l e) ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
-        pₛ n q = ⦅ifZero⦆₀ (α i) b (value l e)          ≡⟨ ap (⦅ifZero⦆₀ (α i) b) q ⟩
-                 ⦅ifZero⦆₀ (α i) b (succ n)             ≡⟨ refl ⟩
-                 b                                     ≡⟨ refl ⟩
-                 ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (succ n)    ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) (q ⁻¹) ⟩
-                 ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ∎
+        pₛ : (n : ℕ) → value l e ≡ succ n → ⦅ifZero⦆₀ (α i) b (value l e)
+                                          ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+        pₛ n q = ⦅ifZero⦆₀ (α i) b (value l e)
+                    ≡⟨ ap (⦅ifZero⦆₀ (α i) b) q ⟩
+                 ⦅ifZero⦆₀ (α i) b (succ n)
+                    ≡⟨ refl ⟩
+                 b
+                    ≡⟨ refl ⟩
+                 ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (succ n)
+                    ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) (q ⁻¹) ⟩
+                 ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                    ∎
 
       v : (f : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ])
         → ((i : I) (b : 𝓛 ℕ) → ⦅ifZero⦆₁ (α i) b ⊑⟨ ⟪ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟫ ⟩ pr₁ f b)
-        → (b : 𝓛 ℕ) (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l)) → ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l ≡ pr₁ (pr₁ f b) l 
-      v f ineqs b l d = ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l     ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e ⟩
-                        ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) →  ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b n ≡ pr₁ (pr₁ f b) l} (value l e) p₀ pₛ ⟩
-                        pr₁ (pr₁ f b) l                       ∎
+        → (b : 𝓛 ℕ) (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l))
+        → ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l ≡ pr₁ (pr₁ f b) l
+      v f ineqs b l d = ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l
+                           ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e ⟩
+                        ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                           ≡⟨ ℕ-cases {𝓣 ⁺} {λ (n : ℕ) →  ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b n
+                                                       ≡ pr₁ (pr₁ f b) l}
+                                (value l e) p₀ pₛ ⟩
+                        pr₁ (pr₁ f b) l
+                           ∎
        where
         e : is-defined l
         e = ♯-is-defined (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) l d
@@ -979,41 +1087,64 @@ future work.
           e₀ = ≡-to-is-defined (g ∙ g') d
           h : Σ (\(i : I) → is-defined (α i))
             → ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡ pr₁ (pr₁ f b) l
-          h (i , dᵢ) = ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡⟨ g' ⟩
-                       ∐ ⟪ 𝓛ᵈℕ ⟫ δ                           ≡⟨ (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹ ⟩
-                       α i                                   ≡⟨ h' ⟩
-                       ((⦅ifZero⦆₀ (α i) b) ♯) l              ≡⟨ ineqs i b l (≡-to-is-defined h' dᵢ) ⟩
-                       pr₁ (pr₁ f b) l                       ∎
+          h (i , dᵢ) = ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                          ≡⟨ g' ⟩
+                       ∐ ⟪ 𝓛ᵈℕ ⟫ δ
+                          ≡⟨ (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹ ⟩
+                       α i
+                          ≡⟨ h' ⟩
+                       ((⦅ifZero⦆₀ (α i) b) ♯) l
+                          ≡⟨ ineqs i b l (≡-to-is-defined h' dᵢ) ⟩
+                       pr₁ (pr₁ f b) l
+                          ∎
            where
-            h' = α i                           ≡⟨ refl ⟩
-                 ⦅ifZero⦆₀ (α i) b zero        ≡⟨ ap (⦅ifZero⦆₀ (α i) b) (q ⁻¹) ⟩
-                 ⦅ifZero⦆₀ (α i) b (value l e) ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ (α i) b) {l} e) ⁻¹ ⟩
-                 ((⦅ifZero⦆₀ (α i) b) ♯) l     ∎         
+            h' = α i
+                    ≡⟨ refl ⟩
+                 ⦅ifZero⦆₀ (α i) b zero
+                    ≡⟨ ap (⦅ifZero⦆₀ (α i) b) (q ⁻¹) ⟩
+                 ⦅ifZero⦆₀ (α i) b (value l e)
+                    ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ (α i) b) {l} e) ⁻¹ ⟩
+                 ((⦅ifZero⦆₀ (α i) b) ♯) l
+                    ∎
 
-        pₛ : (m : ℕ) → value l e ≡ succ m → ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡ pr₁ (pr₁ f b) l
-        pₛ m q = ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) q ⟩
-                 ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (succ m)    ≡⟨ refl ⟩
-                 b                                     ≡⟨ r ⟩
-                 pr₁ (pr₁ f b) l                       ∎
+        pₛ : (m : ℕ) → value l e ≡ succ m → ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                                          ≡ pr₁ (pr₁ f b) l
+        pₛ m q = ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                    ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) q ⟩
+                 ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (succ m)
+                    ≡⟨ refl ⟩
+                 b
+                    ≡⟨ r ⟩
+                 pr₁ (pr₁ f b) l
+                    ∎
          where
           r : b ≡ pr₁ (pr₁ f b) l
-          r = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h (is-Directed-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
+          r = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h
+               (is-Directed-gives-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
            where
             h : (i : I) → b ≡ pr₁ (pr₁ f b) l
             h i = b                         ≡⟨ g ⟩
                   ((⦅ifZero⦆₀ (α i) b) ♯) l ≡⟨ ineqs i b l eₛ ⟩
                   pr₁ (pr₁ f b) l          ∎
              where
-              g = b                             ≡⟨ refl ⟩
-                  ⦅ifZero⦆₀ (α i) b (succ m)    ≡⟨ ap (⦅ifZero⦆₀ (α i) b) (q ⁻¹) ⟩
-                  ⦅ifZero⦆₀ (α i) b (value l e) ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ (α i) b) e) ⁻¹ ⟩
-                  ((⦅ifZero⦆₀ (α i) b) ♯) l     ∎
+              g = b
+                     ≡⟨ refl ⟩
+                  ⦅ifZero⦆₀ (α i) b (succ m)
+                     ≡⟨ ap (⦅ifZero⦆₀ (α i) b) (q ⁻¹) ⟩
+                  ⦅ifZero⦆₀ (α i) b (value l e)
+                     ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ (α i) b) e) ⁻¹ ⟩
+                  ((⦅ifZero⦆₀ (α i) b) ♯) l
+                     ∎
               eₛ : is-defined (((⦅ifZero⦆₀ (α i) b) ♯) l)
               eₛ = ≡-to-is-defined (g' ∙ g) d
                where
-                g' = ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l     ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e ⟩
-                     ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) q ⟩
-                     ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (succ m)    ≡⟨ refl ⟩
-                     b                                     ∎
+                g' = ((⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) ♯) l
+                        ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e ⟩
+                     ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
+                        ≡⟨ ap (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) q ⟩
+                     ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (succ m)
+                        ≡⟨ refl ⟩
+                     b
+                        ∎
 
 \end{code}

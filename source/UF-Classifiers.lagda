@@ -62,7 +62,9 @@ module type-classifier
    τ refl q = ap (λ h → g ∘ h) s
     where
      r : idtoeq X X refl ≡ e
-     r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
+     r = idtoeq X X refl              ≡⟨ ap (idtoeq X X) q ⟩
+         idtoeq X X (eqtoid ua X X e) ≡⟨ idtoeq-eqtoid ua X X e ⟩
+         e                            ∎
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
