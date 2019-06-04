@@ -143,10 +143,9 @@ module _
  ♯-is-defined : (f : X → 𝓛 Y) (l : 𝓛 X) → is-defined ((f ♯) l) → is-defined l
  ♯-is-defined f l = pr₁
 
- ♯-on-total-element : is-set X → is-set Y
-                    → (f : X → 𝓛 Y) {l : 𝓛 X} (d : is-defined l)
+ ♯-on-total-element : (f : X → 𝓛 Y) {l : 𝓛 X} (d : is-defined l)
                     → (f ♯) l ≡ f (value l d)
- ♯-on-total-element s₀ s₁ f {l} d =
+ ♯-on-total-element f {l} d =
   (f ♯) l               ≡⟨ ap (f ♯) (is-defined-η-≡ d) ⟩
   (f ♯) (η (value l d)) ≡⟨ ⋍-to-≡ (Kleisli-Law₁ f (value l d)) ⟩
   f (value l d)         ∎
