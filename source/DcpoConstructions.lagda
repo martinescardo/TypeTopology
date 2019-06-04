@@ -26,7 +26,6 @@ open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalsOrder
 open import NaturalNumbers-Properties
 
-
 \end{code}
 
 We start by defining the dcpo of continuous functions. This is the exponential
@@ -34,10 +33,10 @@ We start by defining the dcpo of continuous functions. This is the exponential
 
 \begin{code}
 
-module DCPOConstructionsGeneral
+module DcpoConstructionsGeneral
        (𝓥 : Universe)
        where
- open import Dcpos pt fe 𝓥
+ open import Dcpo pt fe 𝓥
 
  module _
   (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -562,10 +561,10 @@ lowest universe), because ℕ lives in 𝓤₀.
     h (inr e)  = transport (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ m) f) (e ⁻¹)
                  (reflexivity ⟪ 𝓓 ⟫ (iter (succ m) f))
 
-module DCPOConstructions₀
+module _
        where
- open DCPOConstructionsGeneral 𝓤₀
- open import Dcpos pt fe 𝓤₀
+ open DcpoConstructionsGeneral 𝓤₀
+ open import Dcpo pt fe 𝓤₀
  module _
         (𝓓 : DCPO⊥ {𝓤} {𝓣})
         where
