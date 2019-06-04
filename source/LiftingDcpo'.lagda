@@ -76,7 +76,7 @@ module _
   e = ⊑-open fe fe fe l m
   g : is-defined l → l ⊑ m
   g d = transport (_⊑_ l) (a d) (𝓛-id l)
-
+{-
  ⋍-to-≡ : {l m : 𝓛 X} → l ⋍ m → l ≡ m
  ⋍-to-≡ {l} {m} (deq , veq) = ⊑-anti pe fe fe (a , b)
   where
@@ -89,6 +89,7 @@ module _
      h d = value m d                                  ≡⟨ ap (value m) (being-defined-is-a-prop m d _) ⟩
            value m (eqtofun deq (back-eqtofun deq d)) ≡⟨ (happly veq (back-eqtofun deq d)) ⁻¹ ⟩
            value l (back-eqtofun deq d)               ∎
+           -}
 
  -- Find a better home for this
  value-is-constant : {l : 𝓛 X} (d e : is-defined l) → value l d ≡ value l e

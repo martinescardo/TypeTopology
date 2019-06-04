@@ -26,5 +26,6 @@ import LiftingMonadVariation
 import LiftingAlgebras
 import LiftingSize
 import LiftingMiscelanea
+import LiftingMiscelanea-PropExt-FunExt
 
 \end{code}
