@@ -13,7 +13,7 @@
    A module dependency graph (updated manually from time to time) is
    available at https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf
 
-   Clickable index:
+Click at the imported module names to navigate to them:
 
 \begin{code}
 

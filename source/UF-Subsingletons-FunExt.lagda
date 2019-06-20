@@ -124,7 +124,8 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
 Ω-ext : funext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
         → (p holds → q holds) → (q holds → p holds) → p ≡ q
 Ω-ext {𝓤} fe pe {p} {q} f g =
- to-Σ-≡ ((pe (holds-is-prop p) (holds-is-prop q) f g) , being-a-prop-is-a-prop fe _ _)
+ to-Σ-≡ (pe (holds-is-prop p) (holds-is-prop q) f g ,
+         being-a-prop-is-a-prop fe _ _)
 
 Ω-is-a-set : funext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
 Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets pc

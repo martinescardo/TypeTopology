@@ -4,6 +4,8 @@ There are some somewhat obsolete comments at the end of this file,
 explaining part of what we do in this development. See instead the
 comments in the various modules.
 
+Click at the imported module names to navigate to them.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
