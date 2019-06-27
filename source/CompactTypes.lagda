@@ -276,6 +276,14 @@ compact∙-gives-compact∙' {𝓤} {X} ε' = ε , lemma
   lemma : (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x ≡ ₁
   lemma p = pr₂(ε' p)
 
+compact∙'-gives-compact∙ : {X : 𝓤 ̇} → compact∙' X → compact∙ X
+compact∙'-gives-compact∙ {𝓤} {X} ε p = x₀ , lemma
+ where
+  x₀ : X
+  x₀ = pr₁ ε p
+  lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+  lemma u β = pr₂ ε p u β
+
 \end{code}
 
 Notice that Bishop's limited principle of omniscience LPO, which is a
