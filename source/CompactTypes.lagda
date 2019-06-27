@@ -276,7 +276,7 @@ compact∙-gives-compact∙' {𝓤} {X} ε' = ε , lemma
   lemma : (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x ≡ ₁
   lemma p = pr₂(ε' p)
 
-compact∙'-gives-compact∙ : {X : 𝓤 ̇} → compact∙' X → compact∙ X
+compact∙'-gives-compact∙ : {X : 𝓤 ̇ } → compact∙' X → compact∙ X
 compact∙'-gives-compact∙ {𝓤} {X} ε p = x₀ , lemma
  where
   x₀ : X
