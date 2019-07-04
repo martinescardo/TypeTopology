@@ -24,7 +24,7 @@ import UnsafeModulesIndex
 
 \end{code}
 
-There are only three, periferal, unsafe modules. One of them is to get
+There are only three, peripheral, unsafe modules. One of them is to get
 a contradiction from type-in-type. The other two assume
 (meta-theoretically) the Brouwerian axiom "all functions are
 continuous" to prove a countable Tychonoff theorem and a form of the
