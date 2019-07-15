@@ -139,6 +139,56 @@ module subtype-classifier
 
 \end{code}
 
+\begin{code}
+
+module general-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+        (green : 𝓤 ̇ → 𝓤 ̇ )
+       where
+
+ _is-a-green-map : {X : 𝓤 ̇ } → (X → Y) → 𝓤 ̇
+ f is-a-green-map = (y : Y) → green (fiber f y)
+
+ Green : 𝓤 ⁺ ̇
+ Green = Σ \(X : 𝓤 ̇ ) → green X
+
+ green-maps : 𝓤 ⁺ ̇
+ green-maps = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → f is-a-green-map
+
+ χ : green-maps  → (Y → Green)
+ χ (X , f , i) y = (fiber f y) , (i y)
+
+ fiber-family-eq : (A : Y → Green) (y : Y) → pr₁ (A y) ≡ fiber pr₁ y
+ fiber-family-eq A y = eqtoid ua (pr₁ (A y)) (fiber pr₁ y) e
+  where
+   e : pr₁ (A y) ≃ fiber pr₁ y
+   e = ≃-sym (fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y)
+
+ T : (Y → Green) → green-maps
+ T A = (Σ \(y : Y) → pr₁ (A y)) , pr₁ , g
+  where
+   g : pr₁ is-a-green-map
+   g y = transport green (fiber-family-eq A y) (pr₂ (A y))
+   
+ χT : (A : Y → Green) → χ(T A) ≡ A
+ χT A = dfunext fe' γ
+  where
+   γ : (y : Y) → χ (T A) y ≡ A y
+   γ y = to-Σ-≡ ((p ⁻¹) , e)
+    where
+     p : pr₁ (A y) ≡ fiber pr₁ y
+     p = fiber-family-eq A y
+     e = transport green (p ⁻¹) (pr₂ (χ (T A) y))               ≡⟨ refl ⟩
+         transport green (p ⁻¹) (transport green p (pr₂ (A y))) ≡⟨ (transport-comp green p (p ⁻¹)) ⁻¹ ⟩
+         transport green (p ∙ (p ⁻¹)) (pr₂ (A y))               ≡⟨ ap (λ - → transport green - (pr₂ (A y))) (trans-sym' p) ⟩
+         transport green refl (pr₂ (A y))                       ≡⟨ refl ⟩
+         pr₂ (A y)                                              ∎
+                                                          
+\end{code}
+
 TODO. Consider a property "green" of types, and call a map green if
 its fibers are all green. Then the maps of Y into green types should
 correspond to the green maps X → Y. This generalizes the above
