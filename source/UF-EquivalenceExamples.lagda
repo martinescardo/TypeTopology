@@ -526,6 +526,10 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
 
+test : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (e : Z ≃ X) (f : X → Y) (y : Y)
+     → fiber (f ∘ eqtofun e) y ≃ fiber f y
+test (g , i) f y = Σ-change-of-variables (λ x → f x ≡ y) g i
+
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
                  → (g : Π B) → (Π \(x : X) → fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
