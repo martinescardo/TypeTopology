@@ -525,10 +525,16 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   γ = pr₁(Σ-change-of-variables' A g (equivs-are-haes g e))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
+\end{code}
 
-test : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (e : Z ≃ X) (f : X → Y) (y : Y)
-     → fiber (f ∘ eqtofun e) y ≃ fiber f y
-test (g , i) f y = Σ-change-of-variables (λ x → f x ≡ y) g i
+A nice application of the previous lemma is that the fiber of a map doesn't
+change (up to equivalence, at least) when precomposing with an equivalence.
+
+\begin{code}
+precomp-with-equiv-fiber-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (e : Z ≃ X)
+                                 (f : X → Y) (y : Y)
+                               → fiber (f ∘ eqtofun e) y ≃ fiber f y
+precomp-with-equiv-fiber-equiv (g , i) f y = Σ-change-of-variables (λ x → f x ≡ y) g i
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦

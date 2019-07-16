@@ -149,6 +149,7 @@ module general-classifier
         (green : 𝓤 ̇ → 𝓤 ̇ )
        where
 
+ -- prefixing with is might suggest that this is propositional (?)
  _is-a-green-map : {X : 𝓤 ̇ } → (X → Y) → 𝓤 ̇
  f is-a-green-map = (y : Y) → green (fiber f y)
 
@@ -158,14 +159,21 @@ module general-classifier
  green-maps : 𝓤 ⁺ ̇
  green-maps = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → f is-a-green-map
 
+ -- closure under precomposition with equivalences
+ precomp-with-equiv-preserves-being-green : {X X' : 𝓤 ̇ } (e : X' ≃ X) {f : X → Y}
+                                         → f is-a-green-map
+                                         → (f ∘ eqtofun e) is-a-green-map
+ precomp-with-equiv-preserves-being-green e {f} g y = transport green p (g y)
+  where
+   p : fiber f y ≡ fiber (f ∘ eqtofun e) y
+   p = (eqtoid ua _ _ (precomp-with-equiv-fiber-equiv e f y)) ⁻¹
+                                         
  χ : green-maps  → (Y → Green)
  χ (X , f , g) y = (fiber f y) , (g y)
 
  family-fiber-≡ : (A : Y → Green) (y : Y) → pr₁ (A y) ≡ fiber pr₁ y
- family-fiber-≡ A y = eqtoid ua (pr₁ (A y)) (fiber pr₁ y) e
-  where
-   e : pr₁ (A y) ≃ fiber pr₁ y
-   e = ≃-sym (fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y)
+ family-fiber-≡ A y = eqtoid ua (pr₁ (A y)) (fiber pr₁ y)
+                      (≃-sym (fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y))
 
  T : (Y → Green) → green-maps
  T A = Σ (pr₁ ∘ A) , pr₁ , g
@@ -186,38 +194,6 @@ module general-classifier
          transport green (p ∙ (p ⁻¹)) (pr₂ (A y))               ≡⟨ ap (λ - → transport green - (pr₂ (A y))) (trans-sym' p) ⟩
          transport green refl (pr₂ (A y))                       ≡⟨ refl ⟩
          pr₂ (A y)                                              ∎
-
-{-
- transport-map : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
-               → transport (λ - → - → Y) (eqtoid ua X X' e) g
-               ≡ g ∘ eqtofun (≃-sym e)
-
- transport-map {X} {X'} {Y} e g = τ (eqtoid ua X X' e) refl
-  where
-   τ : (p : X ≡ X')
-     → p ≡ eqtoid ua X X' e
-     → transport (λ - → - → Y) p g ≡ g ∘ eqtofun (≃-sym e)
-   τ refl q = ap (λ h → g ∘ h) s
-    where
-     r : idtoeq X X refl ≡ e
-     r = idtoeq X X refl              ≡⟨ ap (idtoeq X X) q ⟩
-         idtoeq X X (eqtoid ua X X e) ≡⟨ idtoeq-eqtoid ua X X e ⟩
-         e                            ∎
-     s : id ≡ eqtofun (≃-sym e)
-     s = ap (λ - → eqtofun (≃-sym -)) r
-     -}
-
- -- It should be possible to prove this without univalence (?)
- fiber-of-green-map-after-eq : {X X' : 𝓤 ̇ } (e : X ≃ X') (f : X → Y) (g : f is-a-green-map)
-                             (y : Y) → fiber (f ∘ eqtofun (≃-sym e)) y ≃ fiber f y
- fiber-of-green-map-after-eq {X} {X'} e f g y =
-  JEq ua X
-   (λ _ - → fiber (f ∘ eqtofun (≃-sym -)) y ≃ fiber f y)
-   (idtoeq _ (fiber f y) refl) X' e
-
- fiber-of-green-map-after-eq' : {X X' : 𝓤 ̇ } (e : X ≃ X') (f : X → Y) (g : f is-a-green-map)
-                             (y : Y) → fiber (f ∘ eqtofun (≃-sym e)) y ≡ fiber f y
- fiber-of-green-map-after-eq' {X} {X'} e f g y = eqtoid ua _ (fiber f y) (fiber-of-green-map-after-eq e f g y)
 
  transport-green : {X X' : 𝓤 ̇ } (e : X ≃ X') (f : X → Y) (g : f is-a-green-map)
                     → transport (λ - → Σ _is-a-green-map) (eqtoid ua X X' e) (f , g)
