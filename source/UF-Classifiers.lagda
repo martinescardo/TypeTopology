@@ -149,7 +149,7 @@ module general-classifier
         (green : 𝓤 ̇ → 𝓤 ̇ )
        where
 
- -- prefixing with is might suggest that this is propositional (?)
+ -- prefixing with "is" might suggest that this is propositional (?)
  _is-a-green-map : {X : 𝓤 ̇ } → (X → Y) → 𝓤 ̇
  f is-a-green-map = (y : Y) → green (fiber f y)
 
@@ -167,6 +167,22 @@ module general-classifier
   where
    p : fiber f y ≡ fiber (f ∘ eqtofun e) y
    p = (eqtoid ua _ _ (precomp-with-equiv-fiber-equiv e f y)) ⁻¹
+
+ precomp-green-refl-lemma : {X : 𝓤 ̇ } (f : X → Y) (g : f is-a-green-map)
+      → precomp-with-equiv-preserves-being-green (≃-refl X) g ≡ g
+ precomp-green-refl-lemma {X} f g = dfunext (funext-from-univalence ua) γ
+  where
+   γ : (y : Y) → precomp-with-equiv-preserves-being-green (≃-refl X) g y ≡ g y
+   γ y = precomp-with-equiv-preserves-being-green (≃-refl X) g y ≡⟨ refl ⟩
+         transport green (q ⁻¹) (g y)                            ≡⟨ ap (λ - → transport green - (g y)) r ⟩
+         transport green refl (g y)                              ≡⟨ refl ⟩
+         g y                                                     ∎
+    where
+     q : fiber (f ∘ eqtofun (≃-refl X)) y ≡ fiber f y
+     q = eqtoid ua _ _ (precomp-with-equiv-fiber-equiv (≃-refl X) f y)
+     r = q ⁻¹    ≡⟨ ap _⁻¹ (eqtoid-refl ua (fiber (f ∘ eqtofun (≃-refl X)) y)) ⟩
+         refl ⁻¹ ≡⟨ refl ⟩
+         refl    ∎
                                          
  χ : green-maps  → (Y → Green)
  χ (X , f , g) y = (fiber f y) , (g y)
@@ -197,27 +213,34 @@ module general-classifier
 
  transport-green : {X X' : 𝓤 ̇ } (e : X ≃ X') (f : X → Y) (g : f is-a-green-map)
                     → transport (λ - → Σ _is-a-green-map) (eqtoid ua X X' e) (f , g)
-                    ≡ f ∘ eqtofun (≃-sym e) , (λ y → back-transport green (fiber-of-green-map-after-eq' e f g y) (g y))
+                    ≡ f ∘ eqtofun (≃-sym e) , precomp-with-equiv-preserves-being-green (≃-sym e) g
  transport-green {X} {X'} e f g =
-  JEq ua X (λ Y₁ x → (transport (λ - → Σ _is-a-green-map) (eqtoid ua X Y₁ x) (f , g)) ≡ f ∘ eqtofun (≃-sym x) , (λ y → back-transport green (fiber-of-green-map-after-eq' x f g y) (g y))) (to-Σ-≡ ((dfunext (funext-from-univalence ua) (λ x → {!!})) , {!!})) X' e
+  JEq ua X
+  (λ X'' e' → transport (λ - → Σ _is-a-green-map) (eqtoid ua X X'' e') (f , g) ≡
+               f ∘ eqtofun (≃-sym e') , precomp-with-equiv-preserves-being-green (≃-sym e') g)
+  γ X' e
+   where
+    γ : transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X)) (f , g)
+        ≡ f ∘ eqtofun (≃-sym (≃-refl X)) , precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g
+    γ = to-Σ-≡ (a , b)
+     where
+      a : pr₁
+            (transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X))
+             (f , g))
+            ≡ f ∘ eqtofun (≃-sym (≃-refl X))
+      a = {!!}
+      b : {!!}
+      b = {!!}
 
-{-τ (eqtoid ua X X' e) refl
-  where
-   τ : (p : X ≡ X')
-     → p ≡ eqtoid ua X X' e
-     → transport (λ - → - ↪ Y) p (g , i)
-     ≡ g ∘ eqtofun (≃-sym e) , comp-embedding
-                                  (equivs-are-embeddings (eqtofun (≃-sym e))
-                                                         (eqtofun-is-an-equiv (≃-sym e))) i
-   τ refl q = to-Σ-≡ (ap (λ h → g ∘ h) s ,
-                      being-embedding-is-a-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
-    where
-     r : idtoeq X X refl ≡ e
-     r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
-     s : id ≡ eqtofun (≃-sym e)
-     s = ap (λ - → eqtofun (≃-sym -)) r
+{-
+transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X)) (f , g)                         ≡⟨ ap (λ - → transport (λ - → Σ _is-a-green-map) - (f , g)) (eqtoid-refl ua X) ⟩
+        transport (λ - → Σ _is-a-green-map) refl (f , g)                                               ≡⟨ refl ⟩
+        f , g                                                                                          ≡⟨ refl ⟩
+        f ∘ eqtofun (≃-sym (≃-refl X)) , precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g ∎
 -}
+    
 
+{-
  Tχ : (f : green-maps) → T(χ f) ≡ f
  Tχ (X , f , g) =
   to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) , to-Σ-≡ (a , b))
@@ -228,23 +251,6 @@ module general-classifier
            (pr₂ (T (χ (X , f , g)))))
           ≡ f
     a = {!transport-map!}
-
-{-
- χ : green-maps  → (Y → Green)
- χ (X , f , i) y = (fiber f y) , (i y)
-
- family-fiber-≡ : (A : Y → Green) (y : Y) → pr₁ (A y) ≡ fiber pr₁ y
- family-fiber-≡ A y = eqtoid ua (pr₁ (A y)) (fiber pr₁ y) e
-  where
-   e : pr₁ (A y) ≃ fiber pr₁ y
-   e = ≃-sym (fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y)
-
- T : (Y → Green) → green-maps
- T A = (Σ \(y : Y) → pr₁ (A y)) , pr₁ , g
-  where
-   g : pr₁ is-a-green-map
-   g y = transport green (family-fiber-≡ A y) (pr₂ (A y))
--}
     b : transport _is-a-green-map a
           (pr₂
            (transport (λ X₁ → Σ _is-a-green-map)
@@ -252,9 +258,6 @@ module general-classifier
             (pr₂ (T (χ (X , f , g))))))
           ≡ g
     b = {!transport-map!}
-
- {-to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                       transport-map (graph-domain-equiv f) pr₁)
  -}                                                         
 \end{code}
 
