@@ -6,7 +6,9 @@
 
 % \date{{\sc Version of} \today}
 
-\usepackage{amsmath,stmaryrd,amssymb,amsthm,enumerate,bbm,url,hyperref,scalerel,mathtools}
+\usepackage{amsmath,stmaryrd,amssymb,amsthm,enumerate,url,hyperref,scalerel,mathtools}
+
+\usepackage[bb=boondox]{mathalfa} % for getting \mathbb{0} to work
 
 \usepackage[nohug]{diagrams}
 \newarrow{Into}{C}{-}{-}{-}{>}
@@ -84,8 +86,8 @@
 \newcommand{\T}{\mathcal{T}}
 \newcommand{\Lift}{\mathcal{L}}
 \newcommand{\NI}{\N_\infty}
-\newcommand{\Zero}{\mathbbm{O}}
-\newcommand{\One}{\mathbbm{1}}
+\newcommand{\Zero}{\mathbb{0}}
+\newcommand{\One}{\mathbb{1}}
 \newcommand{\one}{\operatorname{\star}}
 \newcommand{\Id}{\operatorname{Id}}
 \newcommand{\refl}{\operatorname{refl}}
@@ -160,7 +162,7 @@ so that we get an \emph{unspecified} extension~\m{g} of~\m{f}
 along~\m{j}.
 %
 The algebraic injectivity of \m{D} is defined by a given section
-\m{(-) \mid j} of the restriction map, following Bourke's
+\m{(-) \mid j} of the restriction map \m{(-) \comp j}, following Bourke's
 terminology~\cite{bourke:2017}. By \m{\Sigma{-}\Pi}-distributivity,
 this amounts to
 %
@@ -171,6 +173,7 @@ this amounts to
 }
 %
 so that we get a \emph{designated} extension~\m{f \mid j} of~\m{f} along~\m{j}.
+Formally, in this definition, \m{f \mid j} can be regarded as a variable, but we instead think of \m{\mid} as a binary operator.
 
 For the sake of generality, we work without assuming or rejecting the
 principle of excluded middle, and hence without assuming the axiom of
@@ -178,7 +181,7 @@ choice either. Moreover, we show that the principle of excluded middle
 holds if and only if all pointed types are algebraically injective,
 and, assuming resizing, if and only if all inhabited types are
 injective, so that there is nothing interesting to say about
-(algebraic) injectivity in its presence.
+(algebraic) injectivity in its presence. That pointness is needed is seen by considering the embedding \m{\Zero \emb \One}.
 
 Under propositional resizing principles~\cite{hottbook}
 (Definitions~\ref{resizing} and~\ref{omega:resizing} below), the main
@@ -188,11 +191,13 @@ results are easy to state:
   algebraic injectivity.
 
   (This can be seen as a form of choice that
-  just holds, as its moves a propositional truncation inside a
+  just holds, as it moves a propositional truncation inside a
   \m{\Pi}-type to outside the \m{\Pi}-type, and may be related to
   \cite{kenney:2011}.)
    \item The algebraically injective types are precisely the retracts of
-     exponential powers of universes. In particular,
+     exponential powers of universes. Here by an exponential power of a type \m{B} we mean a type of the form \m{A \to B}, also written \m{B^A}.
+
+     In particular,
        \begin{enumerate}
        \item The algebraically injective sets are precisely the
          retracts of powersets.
@@ -306,7 +311,7 @@ used in UniMath~\cite{unimath}.
   assumption, also tacit.  The HoTT book~\cite{hottbook}, instead,
   defines type formation \df{rules} for propositional truncation as a
   syntactical construct of the formal system. Here we take
-  propositional truncation as a mathematical principle for any pair of
+  propositional truncation as an axiom for any pair of
   universes \m{\U,\V}: \db{
     \begin{align*}
       \Pi (X:\U)\,  \Sigma & (\trunc{X}  : \U), \\
@@ -407,7 +412,7 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
  left-cancellable, but coincides with left-cancellability if the type
  \m{Y} is a set (its identity types are all subsingletons).
 
-\item We sometimes use the mathematically more familiar ``mapsto''
+\item We sometimes use the mathematically more familiar ``maps to''
   notation~\m{\mapsto} instead of type-theoretical lambda notation
   \m{\lambda} for defining nameless functions.
 
@@ -583,6 +588,10 @@ excluded middle is not needed, as it is not hard to see:
 \m{\Sigma f \simeq \Sigma (f \edown j)} and
 \m{\Pi f \simeq \Pi (f \eup j)}.
 \end{numbered}
+Notice that the functions \m{f}, \m{f \edown j} and \m{f \eup j},
+being universe valued, are type families, and hence the notations
+\m{\Sigma f}, \m{\Sigma(f \edown j)} and \m{\Sigma(f \eup j)} are just
+particular cases of the notation for the sum of a type family.
 
 The two extensions are left and right Kan extensions in the following
 sense, without the need to assume that \m{j} is an embedding. First, a
@@ -872,8 +881,8 @@ extension operator for \m{D'} from that of \m{D} is given by \m{f \mid
 
 \begin{numbered}
   The product of any family \m{D_a} of algebraically
-  \m{\U,\V}-injective types in a universe \m{\W} with indices in a type
-  \m{A} of any universe \m{\T} is itself algebraically \m{\U,\V}-injective.
+  \m{\U,\V}-injective types in a universe \m{\W}, with indices \m{a} in a type
+  \m{A} of any universe \m{\T}, is itself algebraically \m{\U,\V}-injective.
 \end{numbered}
 \noindent In particular, if a type \m{D} in a universe \m{\W} is algebraically
 \m{\U,\V}-injective, then so is any exponential power \m{A \to D : \T \sqcup \W} for
@@ -991,8 +1000,7 @@ subobject classifier \m{\Omega}. We refer to the notion defined with
 untruncated \m{\Sigma} as algebraic flabbiness.
 
 \begin{definition}
-  We say that a type \m{D : \W} is \df{algebraically \m{\U}-flabby} to mean
-%  that
+  We say that a type \m{D : \W} is \df{algebraically \m{\U}-flabby} if
 %
 \M{
   \Pi (P : \U), \text{if \m{P} is a subsingleton then \m{\Pi(f : P \to D)\, \Sigma (d : D)\, \Pi(p : P), d = f \, p}.}
@@ -1252,7 +1260,7 @@ more general first.
   Under propositional resizing, for any subuniverse \m{\Sigma \, A} of
   a universe \m{\U} closed under subsingletons, we have that any
   algebraically \m{\U,\U}-injective type \m{X:\U} whose identity types
-  \m{x=_X x'} all satisfy the property \m{A:\U \to \T} is a retract of
+  \m{x=_X x'} all satisfy the property \m{A} is a retract of
   the type \m{X \to \Sigma \, A}.
 \end{numbered}
 \begin{proof}
@@ -1284,7 +1292,7 @@ Using this, we get the following as an immediate consequence.
   The algebraically injective sets in \m{\U} are the retracts of
   powersets of (arbitrary) types in \m{\U}, assuming propositional resizing.
 \end{corollary}
-\noindent Notice that the the powerset of any type is a set, because
+\noindent Notice that the powerset of any type is a set, because
 \m{\Omega_\U} is a set and because sets (and more generally
 \m{n}-types) form an exponential ideal.
 
@@ -1435,7 +1443,7 @@ necessarily the same as \m{\T}, then the equivalence becomes
   (\Sigma (A : X \to \T \sqcup \U), \Sigma(T : \T), T \simeq \Sigma \, A) \simeq (\Sigma (P : \T), P \to X).
 }
 %
-This says that although the total space \m{\Sigma \, A} doesn't not
+This says that although the total space \m{\Sigma \, A} doesn't
 live in the universe \m{\T}, it must have a copy in \m{\T}.
 
 What the third component of the triple does is to restrict the above
@@ -1693,10 +1701,7 @@ for algebraic injectivity it is not.
 
 The decidability of a type \m{X} is defined to be the assertion \m{X +
   (X \to \Zero)}, which says that we can exhibit a point of \m{X} or
-else tell that this is impossible.
-% If \m{X} is a subsingleton, then,
-% under functional and propositional extensionality, the decidability of
-% \m{X} is equivalent to the proposition \M{(X = \One) + (X = \Zero).}
+else tell that \m{X} is empty.
 The principle of excluded middle in univalent mathematics, for the
 universe \m{\U}, is taken to mean that all subsingleton types in
 \m{\U} are decidable:
@@ -1741,7 +1746,7 @@ subsingleton \m{P}. So in the following we get data out of a proposition.
   type \m{D} in any universe \m{\W} is algebraically \m{\U}-flabby.
 \end{numbered}
 \begin{proof}
-  Let \m{d} be a point of \m{D} and \m{f : P \to D} be a function with
+  Let \m{d} be the given point of \m{D} and \m{f : P \to D} be a function with
   subsingleton domain. If we have a point \m{p : P}, then we can take
   \m{f \, p} as the flabbiness witness. Otherwise, if \m{P \to \Zero},
   we can take \m{d} as the flabbiness witness.
