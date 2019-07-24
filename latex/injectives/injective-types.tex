@@ -262,17 +262,17 @@ used in UniMath~\cite{unimath}.
   the successor operation \m{(-)^+} distributes over \m{(-)\sqcup(-)}
   definitionally.
 
-\item We don't assume that the universes are cumulative, in the sense
-  that from \m{X : \U} we would be able to deduce that
-  \m{X : \U \sqcup \V} for any \m{\V}, but we also don't assume that they
-  are not. However, from the assumptions formulated below, it follows
-  that for any two universes \m{\U,\V} there is a map
-  \m{\lift_{\U,\V} : \U \to \U \sqcup \V}, for instance
-  \m{X \mapsto X + \Zero_\V}, which is an embedding with
-  \m{\lift X \simeq X} if univalence holds (we cannot write the identity
-  type \m{\lift X = X}, as the left- and right-hand sides live in the different
-  types \m{\U} and \m{\U \sqcup \V}, which are not (definitionally) the
-  same in general).
+\item We don't assume that the universes are cumulative on the nose,
+  in the sense that from \m{X : \U} we would be able to deduce that
+  \m{X : \U \sqcup \V} for any \m{\V}, but we also don't assume that
+  they are not. However, from the assumptions formulated below, it
+  follows that for any two universes \m{\U,\V} there is a map
+  \m{\lift_{\U,\V} : \U \to \U \sqcup \V}, for instance \m{X \mapsto X
+    + \Zero_\V}, which is an embedding with \m{\lift X \simeq X} if
+  univalence holds (we cannot write the identity type \m{\lift X = X},
+  as the left- and right-hand sides live in the different types \m{\U}
+  and \m{\U \sqcup \V}, which are not (definitionally) the same in
+  general).
 
 \item We stipulate that we have copies \m{\Zero_\U} and \m{\One_\V} of the
   empty and singleton types in each universe \m{\U} (with the subscripts
@@ -436,8 +436,8 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
   \df{lemma} can be an auxiliary construction and a \df{corollary} can
   be a special case of a construction or an easily derived
   construction. We use numbered statements without qualifications for
-  statements that are not subsingletons and require constructions,
-  with the word \df{proof} preceding the construction.
+  statements that are not necessarily subsingletons and require
+  constructions, with the word \df{proof} preceding the construction.
 
   Because \df{proposition} is a semantical rather than syntactical
   notion in univalent mathematics, we often have situations when we
