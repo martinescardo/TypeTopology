@@ -712,8 +712,8 @@ For any types \m{X,Y:\U} and any embedding \m{j : X \to Y}, left Kan extension a
   $\eta$-rule for \m{\Pi}, so that indeed \m{s} is the composition of
   two embeddings, as we wanted to show.
 
-  It remains to show that the map \m{\kappa \, (s f) \, y : s(r(s \,
-    f)) \, y \to s (f \, y)} is indeed an equivalence. The domain and
+  It remains to show that the map \m{\kappa \, (s f) \, y : s (f \, y) \to s(r(s \,
+    f)) \, y} is indeed an equivalence. The domain and
   codomain of this function amount, by construction, to respectively
   %
   \M{
@@ -844,7 +844,7 @@ This is a direct consequence of the laws
     \end{array}
   }
   %
-  for arbitrary universes \m{\U,\V,\W} and \m{A:\U}, \m{B: X \to \V}, and \m{C : \Sigma \, B \to \W}.
+  for arbitrary universes \m{\U,\V,\W} and \m{A:\U}, \m{B: A \to \V}, and \m{C : \Sigma \, B \to \W}.
 \end{proof}
 
 The above and the following are applied in work on
@@ -956,7 +956,7 @@ the type \m{\Sigma A} is itself a singleton.  Hence we have
     : X), \Id \, x = A} of~\m{A}.
 \end{proof}
 \begin{numbered}
-  If a type \m{D} in a universe \m{\U} is \m{\U,\U^+}-injective, then \m{D} is a retract of the exponential power \m{D \to \U} of \m{\U}.
+  If a type \m{D} in a universe \m{\U} is algebraically \m{\U,\U^+}-injective, then \m{D} is a retract of the exponential power \m{D \to \U} of \m{\U}.
 \end{numbered}
 \begin{proof}
 \M{\begin{diagram}
@@ -1040,7 +1040,7 @@ below \m{\U} back, as follows.
   the map \m{f_y : j^{-1}(y) \to D} defined by \m{(x,p) \mapsto
     f\,x}. Because the fiber is a subsingleton as \m{j} is an
   embedding, we can apply algebraic flabbiness to get \m{d_y : D} with
-  \m{d_y = f_y (x,p)} for all \m{(x,p):f^{-1}(y)}. By the construction of
+  \m{d_y = f_y (x,p)} for all \m{(x,p):j^{-1}(y)}. By the construction of
   \m{f_y} and the definition of fiber, this amounts to saying that for
   any \m{x : X} and \m{p : j \, x = y}, we have \m{d_y = f \,
     x}. Therefore we can take
@@ -1100,7 +1100,7 @@ equivalence into a sum type followed by the first projection).
   \end{quote}
   according to whether we have closure under sums or products. Because
   \m{P}, being a subsingleton satisfies \m{A} and because the values
-  of the map \m{\fst \comp f : P \to \T} satisfy \m{A} by definition
+  of the map \m{\fst \comp f : P \to \U} satisfy \m{A} by definition
   of subuniverse, we have \m{a : A\, X} by the sum or product closure
   property, and \m{d \eqdef (X,a)} has type \m{\Sigma \,A}. To
   conclude the proof, we need to show that \m{d = f\,p} for any
