@@ -372,7 +372,7 @@ when 𝓤 is viewed as the ∞-generalization of the category of sets, can
 be considered as a sort of ∞-presheaf, because its functoriality is
 automatic. Then we can consider natural transformations between such
 ∞-presheaves. But again the naturality condition is automatic.  We
-denote by _≾_ the type of natural transformations between such
+denote by _≼_ the type of natural transformations between such
 ∞-presheaves.
 
 We record the following known constructions and facts mentioned above:
@@ -397,10 +397,10 @@ automatic-functoriality-∘ : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x y z : X} (p
                           → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
 automatic-functoriality-∘ f refl refl = refl
 
-_≾_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-f ≾ g = (x : domain f) → f x → g x
+_≼_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+f ≼ g = (x : domain f) → f x → g x
 
-automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ ) (τ : f ≾ f') {x y : X} (p : Id x y)
+automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ ) (τ : f ≼ f') {x y : X} (p : Id x y)
                      → τ y ∘ f [ p ] ≡ f' [ p ] ∘ τ x
 automatic-naturality f f' τ refl = refl
 
@@ -411,11 +411,11 @@ With this notation, we have:
 \begin{code}
 
 ηΣ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
-   → f ≾ f ↓ j ∘ j
+   → f ≼ f ↓ j ∘ j
 ηΣ f j x B = (x , refl) , B
 
 ηΠ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
-   → f ↑ j ∘ j ≾ f
+   → f ↑ j ∘ j ≼ f
 ηΠ f j x A = A (x , refl)
 
 \end{code}
@@ -427,11 +427,11 @@ g ↦ g ∘ j.
 \begin{code}
 
 ↓-extension-left-Kan : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇ )
-                     → (f ↓ j ≾ g) ≃ (f ≾ g ∘ j)
+                     → (f ↓ j ≼ g) ≃ (f ≼ g ∘ j)
 ↓-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
 
 ↑-extension-right-Kan : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇ )
-                      → (g ≾ f ↑ j) ≃ (g ∘ j ≾ f)
+                      → (g ≼ f ↑ j) ≃ (g ∘ j ≼ f)
 ↑-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
 
 \end{code}
@@ -458,7 +458,7 @@ embedding are themselves embeddings.
   sr : ∀ g → s (r g) ≡ (g ∘ j) ↓ j
   sr g = refl
 
-  κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → s (r g) ≾ g
+  κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → s (r g) ≼ g
   κ g y ((x , p) , C) = transport g p C
 
   M : (𝓤 ⊔ 𝓥)⁺ ̇
@@ -534,7 +534,7 @@ embedding are themselves embeddings.
   sr : ∀ g → s (r g) ≡ (g ∘ j) ↑ j
   sr g = refl
 
-  κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → g ≾ s (r g)
+  κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → g ≼ s (r g)
   κ g y C (x , p) = back-transport g p C
 
   M : (𝓤 ⊔ 𝓥)⁺ ̇
@@ -1752,6 +1752,6 @@ Fixities:
 
 infix  7 _↓_
 infix  7 _↑_
-infixr 4 _≾_
+infixr 4 _≼_
 
 \end{code}
