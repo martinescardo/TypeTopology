@@ -478,10 +478,10 @@ embedding are themselves embeddings.
       ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ≡ τ
       ε ((x , refl) , (x' , p') , C) = t x x' (pa x' x p') p' C (appa x x' p')
        where
-         t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → (ap j u ≡ p) →
-             ((x' , p)    , (x' , refl) , C)
-          ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
-         t x .x refl p C refl = refl
+         t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → ap j u ≡ p
+           →  ((x' , p)    , (x' , refl) , C)
+           ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
+         t x x refl p C refl = refl
          q : ∀ x x' → qinv (ap j {x} {x'})
          q x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
          pa : ∀ x x' → j x ≡ j x' → x ≡ x'
