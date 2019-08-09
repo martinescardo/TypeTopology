@@ -181,6 +181,24 @@ a neutral element for ordinary function composition, definitionally:
   p : inverse f e ∘ f ≡ id
   p = dfunext (fe 𝓤 𝓤) (inverse-is-retraction f e)
 
+≃-comp-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+           → FunExt
+           → (f : X ≃ Y) (g : Y ≃ Z)
+           → ≃-sym (f ● g) ≡ ≃-sym g ● ≃-sym f
+≃-comp-sym {𝓤} {𝓥} {𝓦} fe f g = 
+ to-Σ-≡
+  (dfunext (fe 𝓦 𝓤) (λ z → refl) ,
+  being-equiv-is-a-prop fe (eqtofun (≃-sym g ● ≃-sym f)) _ (eqtofun-is-an-equiv (≃-sym g ● ≃-sym f)))
+
+≃-comp-sym' : {X Y Z : 𝓤 ̇ }
+           → funext 𝓤 𝓤
+           → (f : X ≃ Y) (g : Y ≃ Z)
+           → ≃-sym (f ● g) ≡ ≃-sym g ● ≃-sym f
+≃-comp-sym' fe f g =
+ to-Σ-≡
+  (dfunext fe (λ z → refl) ,
+  being-equiv-is-a-prop'' fe (eqtofun (≃-sym g ● ≃-sym f)) _ (eqtofun-is-an-equiv (≃-sym g ● ≃-sym f)))
+
 ≃-Comp : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 ≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
  where
