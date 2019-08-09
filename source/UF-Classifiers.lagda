@@ -239,107 +239,35 @@ module general-classifier
  Tχ : (f : Green-map) → T(χ f) ≡ f
  Tχ (X , f , g) = to-Σ-≡ (a , (to-Σ-≡ (b , c)))
   where
+   X' : 𝓤 ̇
    X' = pr₁ (T (χ (X , (f , g))))
-   a = X'                       ≡⟨ refl ⟩
-       Σ (\(y : Y) → fiber f y) ≡⟨ eqtoid ua _ X (≃-sym (sum-of-fibers X Y f)) ⟩
-       X                        ∎ 
-   t = transport (λ - → Σ (λ (h : - → Y) → green-map h)) a (pr₂ (T (χ (X , f , g))))
-   s : t ≡ {!!}
-   s = {!transport-green-eqtoid!}
+   f' : X' → Y
+   f' = pr₁ (pr₂ (T (χ (X , f , g))))
+   g' : green-map f'
+   g' = pr₂ (pr₂ (T (χ (X , f , g))))
+   e : X' ≃ X
+   e = ≃-sym (sum-of-fibers X Y f)
+   a : X' ≡ X
+   a = eqtoid ua X' X e
+   t : Σ \(h : X → Y) → green-map h
+   t = transport (λ - → Σ (λ (h : - → Y) → green-map h)) a (f' , g')
+   p : t ≡ f' ∘ eqtofun (≃-sym e) ,
+            precomp-with-equiv-preserves-being-green (≃-sym e) g'
+   p = transport-green-eqtoid e f' g'
+   p₁ : pr₁ t ≡ f' ∘ eqtofun (≃-sym e)
+   p₁ = pr₁ (from-Σ-≡ p)
+   p₂ : transport green-map p₁ (pr₂ t) ≡ precomp-with-equiv-preserves-being-green (≃-sym e) g'
+   p₂ = pr₂ (from-Σ-≡ p)
    b : pr₁ t ≡ f
-   b = pr₁ t ≡⟨ ap pr₁ {!transport-green-eqtoid!} ⟩
-       {!!}  ≡⟨ {!!} ⟩
-       f     ∎
+   b = pr₁ t                  ≡⟨ p₁ ⟩
+       f' ∘ eqtofun (≃-sym e) ≡⟨ refl ⟩
+       f                      ∎
    c : transport green-map b (pr₂ t) ≡ g
-   c = {!!}
+   c = transport green-map b (pr₂ t)                         ≡⟨ p₂ ⟩
+       precomp-with-equiv-preserves-being-green (≃-sym e) g' ≡⟨ {!!} ⟩
+       {!!}                                                  ≡⟨ {!!} ⟩
+       g                                                     ∎
 
-
-{-
-
- -- closure under precomposition with equivalences
- precomp-with-equiv-preserves-being-green : {X X' : 𝓤 ̇ } (e : X' ≃ X) {f : X → Y}
-                                         → f is-a-green-map
-                                         → (f ∘ eqtofun e) is-a-green-map
- precomp-with-equiv-preserves-being-green e {f} g y = transport green p (g y)
-  where
-   p : fiber f y ≡ fiber (f ∘ eqtofun e) y
-   p = (eqtoid ua _ _ (precomp-with-equiv-fiber-equiv e f y)) ⁻¹
-
- precomp-green-refl-lemma : {X : 𝓤 ̇ } (f : X → Y) (g : f is-a-green-map)
-      → precomp-with-equiv-preserves-being-green (≃-refl X) g ≡ g
- precomp-green-refl-lemma {X} f g = dfunext (funext-from-univalence ua) γ
-  where
-   γ : (y : Y) → precomp-with-equiv-preserves-being-green (≃-refl X) g y ≡ g y
-   γ y = precomp-with-equiv-preserves-being-green (≃-refl X) g y ≡⟨ refl ⟩
-         transport green (q ⁻¹) (g y)                            ≡⟨ ap (λ - → transport green - (g y)) r ⟩
-         transport green refl (g y)                              ≡⟨ refl ⟩
-         g y                                                     ∎
-    where
-     q : fiber (f ∘ eqtofun (≃-refl X)) y ≡ fiber f y
-     q = eqtoid ua _ _ (precomp-with-equiv-fiber-equiv (≃-refl X) f y)
-     r = q ⁻¹    ≡⟨ ap _⁻¹ (eqtoid-refl ua (fiber (f ∘ eqtofun (≃-refl X)) y)) ⟩
-         refl ⁻¹ ≡⟨ refl ⟩
-         refl    ∎
-
- transport-green : {X X' : 𝓤 ̇ } (e : X ≃ X') (f : X → Y) (g : f is-a-green-map)
-                    → transport (λ - → Σ _is-a-green-map) (eqtoid ua X X' e) (f , g)
-                    ≡ f ∘ eqtofun (≃-sym e) , precomp-with-equiv-preserves-being-green (≃-sym e) g
- transport-green {X} {X'} e f g =
-  JEq ua X
-  (λ X'' e' → transport (λ - → Σ _is-a-green-map) (eqtoid ua X X'' e') (f , g) ≡
-               f ∘ eqtofun (≃-sym e') , precomp-with-equiv-preserves-being-green (≃-sym e') g)
-  γ X' e
-   where
-    γ : transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X)) (f , g)
-        ≡ f ∘ eqtofun (≃-sym (≃-refl X)) , precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g
-    γ = to-Σ-≡ (a , b)
-     where
-      a : (λ z →
-               pr₁
-               (transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X))
-                ((λ z₁ → f z₁) , g))
-               z)
-            ≡ (λ z → ((λ z₁ → f z₁) ∘ eqtofun (≃-sym (≃-refl X))) z)
-      a = {!!}
-      test : transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X)) (f , g) ≡ f , g
-      test = ap (λ x → transport (λ - → Σ _is-a-green-map) x (f , g)) (eqtoid-refl ua X) 
-   {-
-      a = pr₁ (transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X)) (f , g)) ≡⟨ ap (λ x → pr₁ (transport (λ - → Σ _is-a-green-map) x (f , g))) (eqtoid-refl ua X) ⟩
-          pr₁ (transport (λ - → Σ _is-a-green-map) refl (f , g))                       ≡⟨ refl ⟩
-          pr₁ (f , g)                                                                  ≡⟨ refl ⟩
-          f                                                                            ≡⟨ refl ⟩
-          f ∘ eqtofun (≃-sym (≃-refl X))                                               ∎
--}
-      b : transport _is-a-green-map a
-            (pr₂
-             (transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X))
-              ((λ z → f z) , g)))
-            ≡ precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g
-      b = {!!}
-
-transport (λ - → Σ _is-a-green-map) (eqtoid ua X X (≃-refl X)) (f , g)                         ≡⟨ ap (λ - → transport (λ - → Σ _is-a-green-map) - (f , g)) (eqtoid-refl ua X) ⟩
-        transport (λ - → Σ _is-a-green-map) refl (f , g)                                               ≡⟨ refl ⟩
-        f , g                                                                                          ≡⟨ refl ⟩
-        f ∘ eqtofun (≃-sym (≃-refl X)) , precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g ∎
-    
- Tχ : (f : green-maps) → T(χ f) ≡ f
- Tχ (X , f , g) =
-  to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) , to-Σ-≡ (a , b))
-   where
-    a : pr₁ (transport (λ - → Σ _is-a-green-map)
-           (eqtoid ua _ _ (graph-domain-equiv f))
-           (pr₂ (T (χ (X , f , g)))))
-          ≡ f
-    a = {!transport-map!}
-    b : transport _is-a-green-map a
-          (pr₂
-           (transport (λ X₁ → Σ _is-a-green-map)
-            (eqtoid ua _ _ (graph-domain-equiv f))
-            (pr₂ (T (χ (X , f , g))))))
-          ≡ g
-    b = {!transport-map!}
-             
--}                                            
 \end{code}
 
 TODO. Consider a property "green" of types, and call a map green if
