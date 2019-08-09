@@ -22,6 +22,7 @@ open import UF-Univalence
 open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
+open import UF-Equiv-FunExt
 
 naive-funext-from-univalence : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
 naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
@@ -95,5 +96,25 @@ open import UF-Subsingletons-FunExt
 Ω-ext-from-univalence : is-univalent 𝓤
                         → {p q : Ω 𝓤} → (p holds → q holds) → (q holds → p holds) → p ≡ q
 Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-ext (funext-from-univalence ua) (propext-from-univalence ua)
+
+eqtoid-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇} (f : X ≃ Y) (g : Y ≃ Z)
+            → (eqtoid ua X Y f) ∙ (eqtoid ua Y Z g) ≡ eqtoid ua X Z (≃-comp f g)
+eqtoid-comp ua {X} {Y} {Z} f =
+ JEq ua Y (λ Z g → eqtoid ua X Y f ∙ eqtoid ua Y Z g ≡ eqtoid ua X Z (≃-comp f g)) γ Z
+  where
+   γ : eqtoid ua X Y f ∙ eqtoid ua Y Y (≃-refl Y) ≡ eqtoid ua X Y (≃-comp f (≃-refl Y))
+   γ = eqtoid ua X Y f ∙ eqtoid ua Y Y (≃-refl Y) ≡⟨ ap (λ - → eqtoid ua X Y f ∙ -) (eqtoid-refl ua Y) ⟩
+       eqtoid ua X Y f                            ≡⟨ ap (λ - → eqtoid ua X Y -) h ⟩
+       eqtoid ua X Y (≃-comp f (≃-refl Y))      ∎
+    where
+     h : f ≡ ≃-comp f (≃-refl Y)
+     h = to-Σ-≡ (l , being-equiv-is-a-prop'' fe (eqtofun (≃-comp f (≃-refl Y)))
+                      (transport is-equiv l (eqtofun-is-an-equiv f))
+                      (eqtofun-is-an-equiv (≃-comp f (≃-refl Y))))
+      where
+       fe : funext _ _
+       fe = funext-from-univalence ua
+       l : eqtofun f ≡ eqtofun (≃-comp f (≃-refl Y))
+       l = dfunext fe (λ x → refl)
 
 \end{code}
