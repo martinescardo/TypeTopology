@@ -264,9 +264,51 @@ module general-classifier
        f                      ∎
    c : transport green-map b (pr₂ t) ≡ g
    c = transport green-map b (pr₂ t)                         ≡⟨ p₂ ⟩
-       precomp-with-equiv-preserves-being-green (≃-sym e) g' ≡⟨ {!!} ⟩
-       {!!}                                                  ≡⟨ {!!} ⟩
+       precomp-with-equiv-preserves-being-green (≃-sym e) g' ≡⟨ dfunext fe c' ⟩
        g                                                     ∎
+    where
+     fe : funext 𝓤 𝓤
+     fe = funext-from-univalence ua
+     c' : (y : Y) → precomp-with-equiv-preserves-being-green (≃-sym e) g' y ≡ g y
+     c' y = precomp-with-equiv-preserves-being-green (≃-sym e) g' y  ≡⟨ refl ⟩
+            transport green ((q y) ⁻¹) (g' y)                        ≡⟨ refl ⟩
+            transport green ((q y) ⁻¹) (transport green (r y) (g y)) ≡⟨ (transport-comp green (r y) ((q y) ⁻¹)) ⁻¹ ⟩
+            transport green ((r y) ∙ ((q y) ⁻¹)) (g y)               ≡⟨ ap (λ - → transport green - (g y)) (u y) ⟩
+            transport green refl (g y)                               ≡⟨ refl ⟩            
+            g y                                                      ∎
+      where
+       q : (y : Y) → fiber (f' ∘ eqtofun (≃-sym e)) y ≡ fiber f' y
+       q y = eqtoid ua _ _ (precomp-with-equiv-fiber-equiv (≃-sym e) f' y)
+       r : (y : Y) → fiber f y ≡ fiber f' y
+       r y = fiber-equiv-≡ (λ (y' : Y) → fiber f y' , g y') y
+       u : (y : Y) → (r y) ∙ (q y) ⁻¹ ≡ refl
+       u y = (r y) ∙ (q y) ⁻¹                                   ≡⟨ refl ⟩
+             eqtoid ua _ _ (≃-sym (fiber-equiv y)) ∙ (q y) ⁻¹ ≡⟨ ap (λ - → eqtoid ua _ _ (≃-sym (fiber-equiv y)) ∙ -) (eqtoid-inverse ua (precomp-with-equiv-fiber-equiv (≃-sym e) f' y)) ⟩
+             eqtoid ua _ _ (≃-sym (fiber-equiv y)) ∙ eqtoid ua _ _ (≃-sym (precomp-with-equiv-fiber-equiv (≃-sym e) f' y)) ≡⟨ eqtoid-comp ua _ _ ⟩
+             eqtoid ua _ _ ((≃-sym (fiber-equiv y)) ● (≃-sym (precomp-with-equiv-fiber-equiv (≃-sym e) f' y))) ≡⟨ ap (λ - → eqtoid ua _ _ -) v ⟩
+             eqtoid ua _ _ (≃-refl (fiber f y))         ≡⟨ eqtoid-refl ua (fiber f y) ⟩
+             refl         ∎
+        where
+         v : ≃-sym (fiber-equiv y) ● ≃-sym (precomp-with-equiv-fiber-equiv (≃-sym e) f' y)
+             ≡ ≃-refl (fiber f y)
+         v = {!!} -- w ⁻¹ ∙ (ap ≃-sym z)
+          where
+           w : ≃-sym
+                 (precomp-with-equiv-fiber-equiv (≃-sym e) f' y ● fiber-equiv y)
+                 ≡
+                 ≃-sym (fiber-equiv y) ●
+                 ≃-sym (precomp-with-equiv-fiber-equiv (≃-sym e) f' y)
+           w = ≃-comp-sym' fe (precomp-with-equiv-fiber-equiv (≃-sym e) f' y) (fiber-equiv y)
+           z : precomp-with-equiv-fiber-equiv (≃-sym e) f' y ● fiber-equiv y ≡ ≃-refl (fiber f y)
+           z = to-Σ-≡ ((dfunext fe z') , {!--being-equiv-is-a-prop''!})
+            where
+             z' : (xp : fiber (f' ∘ eqtofun (≃-sym e)) y)
+                → eqtofun (precomp-with-equiv-fiber-equiv (≃-sym e) f' y ● fiber-equiv y) xp
+                  ≡ xp
+             z' (x , ϕ) = eqtofun (precomp-with-equiv-fiber-equiv (≃-sym e) f' y ● fiber-equiv y) (x , ϕ) ≡⟨ refl ⟩
+                          eqtofun (fiber-equiv y) (eqtofun (precomp-with-equiv-fiber-equiv (≃-sym e) f' y) (x , ϕ)) ≡⟨ {!!} ⟩
+                          x , ϕ ∎
+
 
 \end{code}
 
