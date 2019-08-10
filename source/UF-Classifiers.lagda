@@ -191,7 +191,7 @@ module general-classifier
  precomp-with-equiv-preserves-being-green e {f} g y = transport green p (g y)
   where
    p : fiber f y ≡ fiber (f ∘ eqtofun e) y
-   p = (eqtoid ua _ _ (precomp-with-equiv-fiber-equiv e f y)) ⁻¹
+   p = eqtoid ua _ _ (≃-sym (precomp-with-equiv-fiber-equiv e f y))
 
  precomp-with-≃-refl-green : {X : 𝓤 ̇ } (f : X → Y) (g : green-map f)
                            → precomp-with-equiv-preserves-being-green (≃-refl X) g ≡ g
@@ -199,15 +199,8 @@ module general-classifier
   where
    γ : (y : Y) → precomp-with-equiv-preserves-being-green (≃-refl X) g y ≡ g y
    γ y = precomp-with-equiv-preserves-being-green (≃-refl X) g y ≡⟨ refl ⟩
-         transport green (q ⁻¹) (g y)                            ≡⟨ ap (λ - → transport green - (g y)) r ⟩
-         transport green refl (g y)                              ≡⟨ refl ⟩
+         transport green (eqtoid ua _ _ (≃-refl _)) (g y)        ≡⟨ ap (λ - → transport green - (g y)) (eqtoid-refl ua _) ⟩
          g y                                                     ∎
-    where
-     q : fiber (f ∘ eqtofun (≃-refl X)) y ≡ fiber f y
-     q = eqtoid ua _ _ (precomp-with-equiv-fiber-equiv (≃-refl X) f y)
-     r = q ⁻¹    ≡⟨ ap _⁻¹ (eqtoid-refl ua (fiber (f ∘ eqtofun (≃-refl X)) y)) ⟩
-         refl ⁻¹ ≡⟨ refl ⟩
-         refl    ∎
 
  transport-green-eqtoid : {X X' : 𝓤 ̇ } (e : X ≃ X') (f : X → Y) (g : green-map f)
                   → transport (λ - → Σ \(h : - → Y) → green-map h)
@@ -235,6 +228,12 @@ module general-classifier
          g                                                             ≡⟨ (precomp-with-≃-refl-green f g) ⁻¹ ⟩
          precomp-with-equiv-preserves-being-green (≃-refl X) g         ≡⟨ refl ⟩
          precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g ∎
+
+ key-lemma : {X : 𝓤 ̇ } (f : X → Y) (g : green-map f) (y : Y)
+           → precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f)
+              (λ (y' : Y) → transport green (fiber-equiv-≡ (λ (y'' : Y) → (fiber f y'' , g y'')) y') (g y')) y
+             ≡ g y
+ key-lemma {X} f g y = {!!}
 
  Tχ : (f : Green-map) → T(χ f) ≡ f
  Tχ (X , f , g) = to-Σ-≡ (a , (to-Σ-≡ (b , c)))
@@ -264,20 +263,18 @@ module general-classifier
        f                      ∎
    c : transport green-map b (pr₂ t) ≡ g
    c = transport green-map b (pr₂ t)                         ≡⟨ p₂ ⟩
-       precomp-with-equiv-preserves-being-green (≃-sym e) g' ≡⟨ dfunext fe c' ⟩
+       precomp-with-equiv-preserves-being-green (≃-sym e) g' ≡⟨ {!!} ⟩ --ap (λ - → precomp-with-equiv-preserves-being-green {!-!} {!!}) (≃-sym-involutive {!!} e) ⟩
+       precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g' ≡⟨ dfunext (funext-from-univalence ua) (key-lemma f g) ⟩
        g                                                     ∎
-    where
-     fe : funext 𝓤 𝓤
-     fe = funext-from-univalence ua
-     c' : (y : Y) → precomp-with-equiv-preserves-being-green (≃-sym e) g' y ≡ g y
-     c' y = precomp-with-equiv-preserves-being-green (≃-sym e) g' y  ≡⟨ refl ⟩
+
+{-precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g' y  ≡⟨ refl ⟩
             transport green ((q y) ⁻¹) (g' y)                        ≡⟨ refl ⟩
             transport green ((q y) ⁻¹) (transport green (r y) (g y)) ≡⟨ (transport-comp green (r y) ((q y) ⁻¹)) ⁻¹ ⟩
             transport green ((r y) ∙ ((q y) ⁻¹)) (g y)               ≡⟨ ap (λ - → transport green - (g y)) (u y) ⟩
             transport green refl (g y)                               ≡⟨ refl ⟩            
             g y                                                      ∎
       where
-       q : (y : Y) → fiber (f' ∘ eqtofun (≃-sym e)) y ≡ fiber f' y
+       q : (y : Y) → fiber (f' ∘ eqtofun (sum-of-fibers X Y f)) y ≡ fiber f' y
        q y = eqtoid ua _ _ (precomp-with-equiv-fiber-equiv (≃-sym e) f' y)
        r : (y : Y) → fiber f y ≡ fiber f' y
        r y = fiber-equiv-≡ (λ (y' : Y) → fiber f y' , g y') y
@@ -308,7 +305,7 @@ module general-classifier
              z' (x , ϕ) = eqtofun (precomp-with-equiv-fiber-equiv (≃-sym e) f' y ● fiber-equiv y) (x , ϕ) ≡⟨ refl ⟩
                           eqtofun (fiber-equiv y) (eqtofun (precomp-with-equiv-fiber-equiv (≃-sym e) f' y) (x , ϕ)) ≡⟨ {!!} ⟩
                           x , ϕ ∎
-
+-}
 
 \end{code}
 
