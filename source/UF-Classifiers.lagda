@@ -265,20 +265,46 @@ module general-classifier
        f                      ∎
    c : transport green-map b (pr₂ t) ≡ g
    c = transport green-map b (pr₂ t)                               ≡⟨ p₂ ⟩
-       precomp-with-equiv-preserves-being-green (≃-sym e) g'       ≡⟨ (apd (λ - → precomp-with-equiv-preserves-being-green - g') q ) ⁻¹ ⟩
-       transport B q l ≡⟨ refl ⟩
-       transport B q (λ (y : Y) → transport green (eqtoid ua _ _ (≃-sym (precomp-with-equiv-fiber-equiv (sum-of-fibers X Y f) f' y))) (g' y)) ≡⟨ {!!} ⟩
-       {!!}                                                        ≡⟨ {!!} ⟩
-       g                                                     ∎
+       precomp-with-equiv-preserves-being-green (≃-sym e) g'       ≡⟨ dfunext fe c' ⟩
+       g                                                           ∎
     where
      fe : funext 𝓤 𝓤
      fe = funext-from-univalence ua
+     c' : (y : Y) → precomp-with-equiv-preserves-being-green (≃-sym e) g' y ≡ g y
+     c' y = precomp-with-equiv-preserves-being-green (≃-sym e) g' y ≡⟨ refl ⟩
+            transport green q₁ (g' y)                               ≡⟨ refl ⟩
+            transport green q₁ (transport green q₂ (g y))           ≡⟨ (transport-comp green q₂ q₁) ⁻¹ ⟩
+            transport green (q₂ ∙ q₁) (g y)                         ≡⟨ ap (λ - → transport green - (g y)) u ⟩
+            transport green refl (g y)                              ≡⟨ refl ⟩
+            g y                        ∎
+      where
+       e₁ : fiber (f' ∘ eqtofun (≃-sym e)) y ≃ fiber f' y
+       e₁ = precomp-with-equiv-fiber-equiv (≃-sym e) f' y
+       q₁ : fiber f' y ≡ fiber (f' ∘ eqtofun (≃-sym e)) y
+       q₁ = eqtoid ua _ _ (≃-sym e₁)
+       q₂ : fiber f y ≡ fiber {𝓤} {𝓤} {Σ (fiber f)} {Y} pr₁ y
+       q₂ = fiber-equiv-≡ (λ y' → (fiber f y') , (g y')) y
+       u : q₂ ∙ q₁ ≡ refl
+       u = q₂ ∙ q₁ ≡⟨ refl ⟩
+           eqtoid ua _ _ (≃-sym (fiber-equiv y)) ∙ eqtoid ua _ _ (≃-sym e₁) ≡⟨ eqtoid-comp ua _ _ ⟩
+           eqtoid ua _ _ (≃-sym (fiber-equiv y) ● ≃-sym e₁) ≡⟨ ap (λ - → eqtoid ua _ _ -) ((≃-comp-sym' fe e₁ (fiber-equiv y)) ⁻¹) ⟩
+           eqtoid ua _ _ (≃-sym (e₁ ● (fiber-equiv y))) ≡⟨ (apd (λ - → eqtoid ua _ _ -) v) ⁻¹ ⟩
+           transport {!!} v {!!}  ≡⟨ {!!} ⟩
+           refl ∎
+        where
+         v : ≃-refl (fiber f y) ≡ ≃-sym (e₁ ● fiber-equiv y)
+         v = to-Σ-≡ ((dfunext fe (λ xp → to-Σ-≡ (refl , {!refl!}))) , {!!})
+        
+
+{-
      B : (e' : X ≃ X') → 𝓤 ̇ 
      B e' = green-map (f' ∘ eqtofun e')
      q : sum-of-fibers X Y f ≡ ≃-sym (≃-sym (sum-of-fibers X Y f))
      q = (≃-sym-involutive' fe (sum-of-fibers X Y f)) ⁻¹
      l : green-map (f' ∘ eqtofun (sum-of-fibers X Y f))
      l = precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g'
+-}
+
 
 {-precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g' y  ≡⟨ refl ⟩
             transport green ((q y) ⁻¹) (g' y)                        ≡⟨ refl ⟩
