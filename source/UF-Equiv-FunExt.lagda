@@ -166,6 +166,10 @@ a neutral element for ordinary function composition, definitionally:
 ≃-sym-involutive fe (f , a) = to-Σ-≡ (inversion-involutive f a ,
                                    being-equiv-is-a-prop fe f _ a)
 
+≃-sym-involutive' : funext 𝓤 𝓤 → {X : 𝓤 ̇ } {Y : 𝓤 ̇ } (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
+≃-sym-involutive' fe (f , a) = to-Σ-≡ (inversion-involutive f a ,
+                                   being-equiv-is-a-prop'' fe f _ a)
+
 ≃-Sym : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym fe = qinveq ≃-sym (≃-sym , ≃-sym-involutive fe , ≃-sym-involutive fe)
 
