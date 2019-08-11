@@ -229,11 +229,13 @@ module general-classifier
          precomp-with-equiv-preserves-being-green (≃-refl X) g         ≡⟨ refl ⟩
          precomp-with-equiv-preserves-being-green (≃-sym (≃-refl X)) g ∎
 
+ {-
  key-lemma : {X : 𝓤 ̇ } (f : X → Y) (g : green-map f) (y : Y)
            → precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f)
               (λ (y' : Y) → transport green (fiber-equiv-≡ (λ (y'' : Y) → (fiber f y'' , g y'')) y') (g y')) y
              ≡ g y
  key-lemma {X} f g y = {!!}
+ -}
 
  Tχ : (f : Green-map) → T(χ f) ≡ f
  Tχ (X , f , g) = to-Σ-≡ (a , (to-Σ-≡ (b , c)))
@@ -262,10 +264,21 @@ module general-classifier
        f' ∘ eqtofun (≃-sym e) ≡⟨ refl ⟩
        f                      ∎
    c : transport green-map b (pr₂ t) ≡ g
-   c = transport green-map b (pr₂ t)                         ≡⟨ p₂ ⟩
-       precomp-with-equiv-preserves-being-green (≃-sym e) g' ≡⟨ {!!} ⟩ --ap (λ - → precomp-with-equiv-preserves-being-green {!-!} {!!}) (≃-sym-involutive {!!} e) ⟩
-       precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g' ≡⟨ dfunext (funext-from-univalence ua) (key-lemma f g) ⟩
+   c = transport green-map b (pr₂ t)                               ≡⟨ p₂ ⟩
+       precomp-with-equiv-preserves-being-green (≃-sym e) g'       ≡⟨ (apd (λ - → precomp-with-equiv-preserves-being-green - g') q ) ⁻¹ ⟩
+       transport B q l ≡⟨ refl ⟩
+       transport B q (λ (y : Y) → transport green (eqtoid ua _ _ (≃-sym (precomp-with-equiv-fiber-equiv (sum-of-fibers X Y f) f' y))) (g' y)) ≡⟨ {!!} ⟩
+       {!!}                                                        ≡⟨ {!!} ⟩
        g                                                     ∎
+    where
+     fe : funext 𝓤 𝓤
+     fe = funext-from-univalence ua
+     B : (e' : X ≃ X') → 𝓤 ̇ 
+     B e' = green-map (f' ∘ eqtofun e')
+     q : sum-of-fibers X Y f ≡ ≃-sym (≃-sym (sum-of-fibers X Y f))
+     q = (≃-sym-involutive' fe (sum-of-fibers X Y f)) ⁻¹
+     l : green-map (f' ∘ eqtofun (sum-of-fibers X Y f))
+     l = precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g'
 
 {-precomp-with-equiv-preserves-being-green (sum-of-fibers X Y f) g' y  ≡⟨ refl ⟩
             transport green ((q y) ⁻¹) (g' y)                        ≡⟨ refl ⟩
