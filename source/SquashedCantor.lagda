@@ -37,15 +37,16 @@ open import UF-Retracts
 A delayed element of X is a "time" u : ℕ∞ together with a partial
 element of X, which is defined when u is finite. Hence the type of
 delayed elements of X is the squashed sum of the constant
-family λ (_ : ℕ) → X).
+family λ (_ : ℕ) → X.
 
 \begin{code}
 
 D : 𝓤 ̇ → 𝓤 ̇
 D X = Σ \(u : ℕ∞) → is-finite u → X
 
-private remark₁ : (X : 𝓤 ̇ ) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
-remark₁ X = refl
+private
+ remark₁ : (X : 𝓤 ̇ ) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
+ remark₁ X = refl
 
 Cantor : 𝓤₀ ̇
 Cantor = ℕ → 𝟚
@@ -59,12 +60,16 @@ The idea is that Cantor[ u ] is the set of partial elements of the
 Cantor space with domain of definition "is-finite u".
 
 Exercises left to the reader (they are not needed so far):
-(1) Cantor[ under n ] ≃ Cantor, (2) Cantor[ ∞ ] ≃ 𝟙.
+
+  (1) Cantor[ under n ] ≃ Cantor,
+
+  (2) Cantor[ ∞ ] ≃ 𝟙.
 
 \begin{code}
 
-private remark₂ : D Cantor ≡ Σ \(u : ℕ∞) → Cantor[ u ]
-remark₂ = refl
+private
+ remark₂ : D Cantor ≡ Σ \(u : ℕ∞) → Cantor[ u ]
+ remark₂ = refl
 
 transport-Cantor : {u v : ℕ∞} (p : u ≡ v) → Cantor[ u ] → Cantor[ v ]
 transport-Cantor = transport Cantor[_]
@@ -76,8 +81,8 @@ back-transport-finite : {u v : ℕ∞} (p : u ≡ v) → is-finite v → is-fini
 back-transport-finite = back-transport is-finite
 
 ap-Cantor : {X : 𝓤 ̇ } (f : (u : ℕ∞) → Cantor[ u ] → X)
-           {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}
-         → f u φ ≡ f v (φ ∘ back-transport-finite p)
+            {u v : ℕ∞} (p : u ≡ v) {φ : Cantor[ u ]}
+          → f u φ ≡ f v (φ ∘ back-transport-finite p)
 ap-Cantor f refl = refl
 
 \end{code}
@@ -202,7 +207,7 @@ Tail₁ α (zero , r) = 𝟘-elim (Zero-not-Succ (r ∙ Head₁ (₁ ∶∶ α) 
 Tail₁ α (succ n , r) = refl
 
 ap-Tail : {α β : Cantor} (p : α ≡ β)
-       → Tail α ≡ Tail β ∘ transport (λ - → is-finite (Head -)) p
+        → Tail α ≡ Tail β ∘ transport (λ - → is-finite (Head -)) p
 ap-Tail refl = refl
 
 \end{code}
@@ -213,8 +218,8 @@ version of the above, derived from it:
 \begin{code}
 
 ap₂-Tail : {α β : Cantor} (i : is-finite (Head α))
-        → (p : α ≡ β)
-        → Tail α i ≡ Tail β (transport (λ - → is-finite (Head -)) p i)
+         → (p : α ≡ β)
+         → Tail α i ≡ Tail β (transport (λ - → is-finite (Head -)) p i)
 ap₂-Tail i p = ap (λ - → - i) (ap-Tail p)
 
 \end{code}
@@ -334,7 +339,7 @@ tail-Cons-under (succ n) φ = γ
      ≡ φ (is-finite-up (under n) (under-is-finite n))
   IH = tail-Cons-under n (φ ∘ is-finite-up (under n))
   p : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
-   ≡ (Cons (under n , φ ∘ is-finite-up (under n))) ∘ (λ k → k ∔ succ n)
+    ≡ (Cons (under n , φ ∘ is-finite-up (under n))) ∘ (λ k → k ∔ succ n)
   p = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (under n) φ)
   γ : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
     ≡ φ (under-is-finite (succ n))
@@ -500,8 +505,8 @@ of showing that our searchable ordinals are totally separated.
 \begin{code}
 
 Σ¹-Cantor-retract : (X : ℕ → 𝓤 ̇ )
-                       → ((n : ℕ) → retract (X n) of Cantor)
-                       → retract (Σ¹ X) of Cantor
+                  → ((n : ℕ) → retract (X n) of Cantor)
+                  → retract (Σ¹ X) of Cantor
 Σ¹-Cantor-retract {𝓤} X ρ = retracts-compose D-Cantor-retract-of-Cantor r
  where
   s : (u : ℕ∞) → retract (X / under) u of ((λ _ → Cantor) / under) u
@@ -516,7 +521,7 @@ We also need the following retractions (the first with X=ℕ):
 \begin{code}
 
 pair-seq-retract : {X : 𝓤 ̇ } → funext 𝓤₀ 𝓤
-                → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
+                 → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
 pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
   open import BinaryNaturals

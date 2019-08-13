@@ -26,7 +26,7 @@ is-prop-valued = (x y : X) → is-prop(x < y)
 data is-accessible : X → 𝓤 ⊔ 𝓥 ̇  where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
 
-accessible-induction : ∀ {𝓦} (P : (x : X) → is-accessible x → 𝓦 ̇ )
+accessible-induction : (P : (x : X) → is-accessible x → 𝓦 ̇ )
                      → ((x : X) (σ : (y : X) → y < x → is-accessible y)
                          → ((y : X) (l : y < x) → P y (σ y l))
                          → P x (next x σ))
@@ -46,7 +46,7 @@ prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y) → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
-transfinite-induction' :  ∀ {𝓦} (P : X → 𝓦 ̇ )
+transfinite-induction' :  (P : X → 𝓦 ̇ )
                        → ((x : X) → (∀(y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
 transfinite-induction' P f = accessible-induction (λ x _ → P x)
@@ -55,7 +55,7 @@ transfinite-induction' P f = accessible-induction (λ x _ → P x)
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
-Well-founded : ∀ {𝓦} → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
+Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
 Well-founded {𝓦} = (P : X → 𝓦 ̇ ) → ((x : X) → ((y : X) → y < x → P y) → P x)
                                 → (x : X) → P x
 
@@ -65,7 +65,8 @@ transfinite-induction w P f x = transfinite-induction' P f x (w x)
 transfinite-induction-converse : Well-founded {𝓤 ⊔ 𝓥} → is-well-founded
 transfinite-induction-converse φ = φ is-accessible next
 
-transfinite-recursion : is-well-founded → ∀ {𝓦} {Y : 𝓦 ̇ }
+transfinite-recursion : is-well-founded
+                      → ∀ {𝓦} {Y : 𝓦 ̇ }
                       → ((x : X) → ((y : X) → y < x → Y) → Y) → X → Y
 transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 
@@ -145,7 +146,7 @@ well-foundedness-is-a-prop : FunExt → is-prop is-well-founded
 well-foundedness-is-a-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (accessibility-is-a-prop fe)
 
 extensionally-ordered-types-are-sets : FunExt → is-prop-valued
-                         → is-extensional → is-set X
+                                     → is-extensional → is-set X
 extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
@@ -241,8 +242,10 @@ cotransitive-≤-coarser-than-≼ c x y n u l = γ (c u x y l)
   γ (inl l) = l
   γ (inr l) = 𝟘-elim (n l)
 
-no-minimal-is-empty : is-well-founded → ∀ {𝓦} (P : X → 𝓦 ̇ )
-                    → ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → is-empty(Σ P)
+no-minimal-is-empty : is-well-founded
+                    → ∀ {𝓦} (P : X → 𝓦 ̇ )
+                    → ((x : X) → P x → Σ \(y : X) → (y < x) × P y)
+                    → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where
   f : ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → (x : X) → ¬(P x)
@@ -267,7 +270,7 @@ needed any longer:
 
 is-well-founded₂ : 𝓤 ⊔ 𝓥 ̇
 is-well-founded₂ = (p : X → 𝟚) → ((x : X) → ((y : X) → y < x → p y ≡ ₁) → p x ≡ ₁)
-                              → (x : X) → p x ≡ ₁
+                               → (x : X) → p x ≡ ₁
 
 well-founded-Wellfounded₂ : is-well-founded → is-well-founded₂
 well-founded-Wellfounded₂ w p = transfinite-induction w (λ x → p x ≡ ₁)
@@ -306,8 +309,8 @@ open import Two-Properties
 
 _≺₂_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)
-                          × ((u v : X) → (u < v → p u ≤₂ p v)
-                                       × (p u <₂ p v → u < v))
+                        × ((u v : X) → (u < v → p u ≤₂ p v)
+                                     × (p u <₂ p v → u < v))
 
 ≺₂-courser-than-< : (x y : X) → x ≺₂ y → x < y
 ≺₂-courser-than-< x y (p , l , φ) = pr₂(φ x y) l

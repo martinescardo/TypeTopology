@@ -6,7 +6,7 @@ Begun December 2012, based on earlier work, circa 2010.
 
 Most of the work has been done later, and coded in July 2018 after a
 long pause to understand univalent foundations, which is what we use
-in this development, and to develop the mathematica basis for this in
+in this development, and to develop the mathematical basis for this in
 other modules.
 
 Here an ordinal is a type equipped with a well order, namely
@@ -142,8 +142,8 @@ _≺⟪ τ ⟫_ denotes its underlying order.
 Κ-is-totally-separated : (ν : OE) → is-totally-separated ⟪ Κ ν ⟫
 
 Δ                      : OE → Ordᵀ
-Δ-is-discrete          : (ν : OE) → is-discrete ⟪ Δ ν ⟫
 Δ-retract-of-ℕ         : (ν : OE) → retract ⟪ Δ ν ⟫ of ℕ
+Δ-is-discrete          : (ν : OE) → is-discrete ⟪ Δ ν ⟫
 
 ι                      : {ν : OE} → ⟪ Δ ν ⟫ → ⟪ Κ ν ⟫
 ι-dense                : (ν : OE) → is-dense (ι {ν})
