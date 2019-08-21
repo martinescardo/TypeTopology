@@ -27,6 +27,7 @@ import Ordinals
 import LawvereFPT
 import PartialElements
 import UF
+import Types2019
 import ScottModelOfPCF -- by Tom de Jong
 \end{code}
 
