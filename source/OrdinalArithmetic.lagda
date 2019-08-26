@@ -70,7 +70,7 @@ assumptions. Having a top element is a simple sufficient condition,
 which holds in the applications we have in mind (for compact
 ordinals).  Classically, these are the successor
 ordinals. Constructively, ℕ∞ is an example of an ordinal with a top
-element, which is not a successor ordinal, as its top element is not
+element, which "is not" a successor ordinal, as its top element is not
 isolated.
 
 \begin{code}

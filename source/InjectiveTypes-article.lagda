@@ -372,7 +372,7 @@ when 𝓤 is viewed as the ∞-generalization of the category of sets, can
 be considered as a sort of ∞-presheaf, because its functoriality is
 automatic. Then we can consider natural transformations between such
 ∞-presheaves. But again the naturality condition is automatic.  We
-denote by _≾_ the type of natural transformations between such
+denote by _≼_ the type of natural transformations between such
 ∞-presheaves.
 
 We record the following known constructions and facts mentioned above:
@@ -397,10 +397,10 @@ automatic-functoriality-∘ : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x y z : X} (p
                           → f [ p ∙ q ] ≡ f [ q ] ∘ f [ p ]
 automatic-functoriality-∘ f refl refl = refl
 
-_≾_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-f ≾ g = (x : domain f) → f x → g x
+_≼_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+f ≼ g = (x : domain f) → f x → g x
 
-automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ ) (τ : f ≾ f') {x y : X} (p : Id x y)
+automatic-naturality : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) (f' : X → 𝓦' ̇ ) (τ : f ≼ f') {x y : X} (p : Id x y)
                      → τ y ∘ f [ p ] ≡ f' [ p ] ∘ τ x
 automatic-naturality f f' τ refl = refl
 
@@ -411,11 +411,11 @@ With this notation, we have:
 \begin{code}
 
 ηΣ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
-   → f ≾ f ↓ j ∘ j
+   → f ≼ f ↓ j ∘ j
 ηΣ f j x B = (x , refl) , B
 
 ηΠ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y)
-   → f ↑ j ∘ j ≾ f
+   → f ↑ j ∘ j ≼ f
 ηΠ f j x A = A (x , refl)
 
 \end{code}
@@ -427,11 +427,11 @@ g ↦ g ∘ j.
 \begin{code}
 
 ↓-extension-left-Kan : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇ )
-                     → (f ↓ j ≾ g) ≃ (f ≾ g ∘ j)
+                     → (f ↓ j ≼ g) ≃ (f ≼ g ∘ j)
 ↓-extension-left-Kan f j g = blackboard.Σ-extension-left-Kan f j g
 
 ↑-extension-right-Kan : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → 𝓦 ̇ ) (j : X → Y) (g : Y → 𝓣 ̇ )
-                      → (g ≾ f ↑ j) ≃ (g ∘ j ≾ f)
+                      → (g ≼ f ↑ j) ≃ (g ∘ j ≼ f)
 ↑-extension-right-Kan f j g = blackboard.Π-extension-right-Kan f j g
 
 \end{code}
@@ -443,28 +443,28 @@ embedding are themselves embeddings.
 
 \begin{code}
 
-↓-extension-is-embedding : (X Y : 𝓤 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↓ j)
-↓-extension-is-embedding {𝓤} X Y j i = s-is-embedding
+↓-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↓ j)
+↓-extension-is-embedding {𝓤} {𝓥} X Y j i = s-is-embedding
  where
-  s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇ )
+  s : (X → 𝓤 ⊔ 𝓥 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ̇ )
   s f = f ↓ j
 
-  r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇ )
+  r : (Y → 𝓤 ⊔ 𝓥 ̇ ) → (X → 𝓤 ⊔ 𝓥 ̇ )
   r g = g ∘ j
 
   rs : ∀ f → r (s f) ≡ f
-  rs f = dfunext (fe 𝓤 (𝓤 ⁺)) (↓-is-extension j i f)
+  rs f = dfunext (fe 𝓤 ((𝓤 ⊔ 𝓥)⁺)) (↓-is-extension j i f)
 
   sr : ∀ g → s (r g) ≡ (g ∘ j) ↓ j
   sr g = refl
 
-  κ : (g : Y → 𝓤 ̇ ) → s (r g) ≾ g
+  κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → s (r g) ≼ g
   κ g y ((x , p) , C) = transport g p C
 
-  M : 𝓤 ⁺ ̇
-  M = Σ \(g : Y → 𝓤 ̇ ) → (y : Y) → is-equiv (κ g y)
+  M : (𝓤 ⊔ 𝓥)⁺ ̇
+  M = Σ \(g : Y → 𝓤 ⊔ 𝓥 ̇ ) → (y : Y) → is-equiv (κ g y)
 
-  φ : (X → 𝓤 ̇ ) → M
+  φ : (X → 𝓤 ⊔ 𝓥 ̇ ) → M
   φ f = s f , e
    where
     e : (y : Y) → is-equiv (κ (s f) y)
@@ -478,10 +478,10 @@ embedding are themselves embeddings.
       ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ≡ τ
       ε ((x , refl) , (x' , p') , C) = t x x' (pa x' x p') p' C (appa x x' p')
        where
-         t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → (ap j u ≡ p) →
-             ((x' , p)    , (x' , refl) , C)
-          ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
-         t x .x refl p C refl = refl
+         t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → ap j u ≡ p
+           →  ((x' , p)    , (x' , refl) , C)
+           ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
+         t x x refl p C refl = refl
          q : ∀ x x' → qinv (ap j {x} {x'})
          q x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
          pa : ∀ x x' → j x ≡ j x' → x ≡ x'
@@ -489,13 +489,13 @@ embedding are themselves embeddings.
          appa : ∀ x x' p' → ap j (pa x' x p') ≡ p'
          appa x x' = pr₂ (pr₂ (q x' x))
 
-  γ : M → (X → 𝓤 ̇ )
+  γ : M → (X → 𝓤 ⊔ 𝓥 ̇ )
   γ (g , e) = r g
 
   φγ : ∀ m → φ (γ m) ≡ m
   φγ (g , e) = to-Σ-≡
-                (dfunext (fe 𝓤 (𝓤 ⁺)) (λ y → eqtoid (ua 𝓤) (s (r g) y) (g y) (κ g y , e y)) ,
-                 Π-is-prop (fe 𝓤 𝓤) (λ y → being-equiv-is-a-prop'' (fe 𝓤 𝓤) (κ g y)) _ e)
+                (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺)) (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (κ g y , e y)) ,
+                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
   γφ : ∀ f → γ (φ f) ≡ f
   γφ = rs
@@ -506,11 +506,11 @@ embedding are themselves embeddings.
   φ-is-embedding : is-embedding φ
   φ-is-embedding = equivs-are-embeddings φ φ-is-equiv
 
-  ψ : M → (Y → 𝓤 ̇ )
+  ψ : M → (Y → 𝓤 ⊔ 𝓥 ̇ )
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop (fe 𝓤 𝓤) (λ y → being-equiv-is-a-prop'' (fe 𝓤 𝓤) (κ g y)))
+  ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -519,28 +519,28 @@ embedding are themselves embeddings.
   s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
 
 
-↑-extension-is-embedding : (X Y : 𝓤 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↑ j)
-↑-extension-is-embedding {𝓤} X Y j i = s-is-embedding
+↑-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↑ j)
+↑-extension-is-embedding {𝓤} {𝓥} X Y j i = s-is-embedding
  where
-  s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇ )
+  s : (X → 𝓤 ⊔ 𝓥 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ̇ )
   s f = f ↑ j
 
-  r : (Y → 𝓤 ̇ ) → (X → 𝓤 ̇ )
+  r : (Y → 𝓤 ⊔ 𝓥 ̇ ) → (X → 𝓤 ⊔ 𝓥 ̇ )
   r g = g ∘ j
 
   rs : ∀ f → r (s f) ≡ f
-  rs f = dfunext (fe 𝓤 (𝓤 ⁺)) (↑-is-extension j i f)
+  rs f = dfunext (fe 𝓤 ((𝓤 ⊔ 𝓥)⁺)) (↑-is-extension j i f)
 
   sr : ∀ g → s (r g) ≡ (g ∘ j) ↑ j
   sr g = refl
 
-  κ : (g : Y → 𝓤 ̇ ) → g ≾ s (r g)
+  κ : (g : Y → 𝓤 ⊔ 𝓥 ̇ ) → g ≼ s (r g)
   κ g y C (x , p) = back-transport g p C
 
-  M : 𝓤 ⁺ ̇
-  M = Σ \(g : Y → 𝓤 ̇ ) → (y : Y) → is-equiv (κ g y)
+  M : (𝓤 ⊔ 𝓥)⁺ ̇
+  M = Σ \(g : Y → 𝓤 ⊔ 𝓥 ̇ ) → (y : Y) → is-equiv (κ g y)
 
-  φ : (X → 𝓤 ̇ ) → M
+  φ : (X → 𝓤 ⊔ 𝓥 ̇ ) → M
   φ f = s f , e
    where
     e : (y : Y) → is-equiv (κ (s f) y)
@@ -549,10 +549,10 @@ embedding are themselves embeddings.
       δ : (((f ↑ j) ∘ j) ↑ j) y → (f ↑ j) y
       δ C (x , p) = C (x , p) (x , refl)
       η : (C : ((f ↑ j ∘ j) ↑ j) y) → κ (s f) y (δ C) ≡ C
-      η C = dfunext (fe 𝓤 𝓤) g
+      η C = dfunext (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) g
        where
         g : (w : fiber j y) → κ (s f) y (δ C) w ≡ C w
-        g (x , refl) = dfunext (fe 𝓤 𝓤) h
+        g (x , refl) = dfunext (fe (𝓥 ⊔ 𝓤) (𝓥 ⊔ 𝓤)) h
          where
           h : (t : fiber j (j x)) → C t (pr₁ t , refl) ≡ C (x , refl) t
           h (x' , p') = transport (λ - → C - (pr₁ - , refl) ≡ C (x , refl) -) q refl
@@ -560,18 +560,18 @@ embedding are themselves embeddings.
             q : (x , refl) ≡ (x' , p')
             q = i (j x) (x , refl) (x' , p')
       ε : (a : (f ↑ j) y) → δ (κ (s f) y a) ≡ a
-      ε a = dfunext (fe 𝓤 𝓤) g
+      ε a = dfunext (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) g
        where
         g : (w : fiber j y) → δ (κ (s f) y a) w ≡ a w
         g (x , refl) = refl
 
-  γ : M → (X → 𝓤 ̇ )
+  γ : M → (X → 𝓤 ⊔ 𝓥 ̇ )
   γ (g , e) = r g
 
   φγ : ∀ m → φ (γ m) ≡ m
   φγ (g , e) = to-Σ-≡
-                (dfunext (fe 𝓤 (𝓤 ⁺)) (λ y → eqtoid (ua 𝓤) (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
-                 Π-is-prop (fe 𝓤 𝓤) (λ y → being-equiv-is-a-prop'' (fe 𝓤 𝓤) (κ g y)) _ e)
+                (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺)) (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
+                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
   γφ : ∀ f → γ (φ f) ≡ f
   γφ = rs
@@ -582,11 +582,11 @@ embedding are themselves embeddings.
   φ-is-embedding : is-embedding φ
   φ-is-embedding = equivs-are-embeddings φ φ-is-equiv
 
-  ψ : M → (Y → 𝓤 ̇ )
+  ψ : M → (Y → 𝓤 ⊔ 𝓥 ̇ )
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop (fe 𝓤 𝓤) (λ y → being-equiv-is-a-prop'' (fe 𝓤 𝓤) (κ g y)))
+  ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -1752,6 +1752,6 @@ Fixities:
 
 infix  7 _↓_
 infix  7 _↑_
-infixr 4 _≾_
+infixr 4 _≼_
 
 \end{code}

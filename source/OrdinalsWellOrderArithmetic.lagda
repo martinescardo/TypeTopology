@@ -301,19 +301,18 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : ∀ {𝓣} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
+retract-accessible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
                        (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
                    → (x : X) → is-accessible _<_ x → is-accessible _≺_ (r x)
-retract-accessible {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
+retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
  where
-  P : (x : X) → 𝓥 ⊔ 𝓣 ̇
-  P x = is-accessible _≺_ (r x)
-  γ : (x : X) → ((x' : X) → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
+  P = λ x → is-accessible _≺_ (r x)
+  γ : ∀ x → (∀ x' → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
   γ x τ = next (r x) σ
    where
-    σ : (y : Y) → y ≺ r x → is-accessible _≺_ y
+    σ : ∀ y → y ≺ r x → is-accessible _≺_ y
     σ y l = transport (is-accessible _≺_) (η y) m
      where
       m : is-accessible _≺_ (r (s y))
@@ -771,14 +770,14 @@ ordinal, then so does every type in the extended family Y/j : A → W.
              Y   \   / Y/j
                   \ /
                    v
-                   W
+                   𝓦
 
 This is a direct application of the construction in the module
 OrdinalArithmetic.prop-indexed-product-of-ordinals.
 
-This assumes X : W, A : W, and that the given ordinal structure is
+This assumes X A : 𝓦, and that the given ordinal structure is
 W-valued. More generally, we have the following typing, for which the
-above triangle no longer makes sense, because Y / j : A → 𝓤 ⊔ 𝓥 ⊔ W,
+above triangle no longer makes sense, because Y / j : A → 𝓤 ⊔ 𝓥 ⊔ 𝓦,
 but the constructions still work.
 
 \begin{code}
