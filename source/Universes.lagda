@@ -30,7 +30,7 @@ _̇ : (𝓤 : Universe) → _
 
 \end{code}
 
-This is mainly to avoid namining implicit arguments:
+This is mainly to avoid naming implicit arguments:
 
 \begin{code}
 
