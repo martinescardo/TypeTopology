@@ -176,6 +176,12 @@ module general-classifier
                  → eqtofun (ϕ ● ψ) z ≡ z
               ϕψ' (x , refl) = refl
 
+ χ-is-equivalence : is-equiv χ
+ χ-is-equivalence = (T , χT) , (T , Tχ)
+
+ classification-equivalence : Green-map ≃ (Y → Green)
+ classification-equivalence = χ , χ-is-equivalence
+
 \end{code}
 
 This generalizes the above
@@ -186,3 +192,26 @@ Y → Σ (Z : 𝓤 ̇ ) → ∥ Z ∥), that is, families of inhabited types. It
 not necessary that "green" is proposition valued. It can be universe
 valued in general. And then of course retractions X → Y are in
 bijections with families of pointed types.
+
+\begin{code}
+module type-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+       where
+
+ open general-classifier fe' ua Y (λ y → 𝟙)
+
+ type-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
+ type-classification-equivalence = (Σ \(X : 𝓤 ̇ ) → X → Y) ≃⟨ ϕ ⟩
+                                   Green-map ≃⟨ classification-equivalence ⟩
+                                   (Y → Green) ≃⟨ ψ ⟩
+                                   (Y → 𝓤 ̇ ) ■
+  where
+   ϕ : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ Green-map
+   ϕ = {!!}
+   ψ : (Y → Green) ≃ (Y → 𝓤 ̇ )
+   ψ = {!!}
+
+\end{code}
