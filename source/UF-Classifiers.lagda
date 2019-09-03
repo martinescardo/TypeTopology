@@ -14,6 +14,7 @@ module UF-Classifiers where
 
 open import SpartanMLTT
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-Equiv-FunExt
@@ -182,6 +183,88 @@ module general-classifier
  classification-equivalence : Green-map ≃ (Y → Green)
  classification-equivalence = χ , χ-is-equivalence
 
+module type-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+       where
+
+ open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → 𝟙)
+
+ type-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
+ type-classification-equivalence = (Σ \(X : 𝓤 ̇ ) → X → Y) ≃⟨ ϕ ⟩
+                                   Green-map ≃⟨ classification-equivalence ⟩
+                                   (Y → Green) ≃⟨ ψ ⟩
+                                   (Y → 𝓤 ̇ ) ■
+  where
+   ϕ : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ Green-map
+   ϕ = qinveq α (β , a , b)
+    where
+     α : (Σ \(X : 𝓤 ̇ ) → X → Y) → Green-map
+     α (X , f) = X , (f , (λ y → *))
+     β : Green-map → (Σ \(X : 𝓤 ̇ ) → X → Y)
+     β (X , f , g) = X , f
+     a : (p : Σ (λ X → X → Y)) → β (α p) ≡ p
+     a (X , f) = refl
+     b : (q : Green-map) → α (β q) ≡ q
+     b (X , f , g) = to-Σ-≡ (refl ,
+                             to-Σ-≡ (refl ,
+                                     dfunext (funext-from-univalence ua)
+                                      (λ y → 𝟙-is-prop * (g y))))
+   ψ : (Y → Green) ≃ (Y → 𝓤 ̇ )
+   ψ = →-cong fe' fe' (≃-refl Y) γ
+    where
+     γ : Green ≃ 𝓤 ̇
+     γ = qinveq pr₁ ((λ X → (X , * )) , c , λ x → refl)
+      where
+       c : (p : Σ (λ X → 𝟙)) → pr₁ p , * ≡ p
+       c (x , *) = refl
+
+module subsingleton-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+       where
+
+ open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → is-prop X)
+
+ subsingleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤 )
+ subsingleton-classification-equivalence = classification-equivalence
+
+module singleton-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+       where
+
+ open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → is-singleton X)
+
+ singleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ 𝟙 {𝓤}
+ singleton-classification-equivalence =
+  (Σ \(X : 𝓤 ̇ ) → X ≃ Y)                            ≃⟨ ϕ ⟩
+  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f)) ≃⟨ classification-equivalence ⟩
+  (Y → (Σ \(X : 𝓤 ̇ ) → is-singleton X))             ≃⟨ →-cong fe fe' (≃-refl Y) ψ ⟩
+  (Y → 𝟙)                                           ≃⟨ →𝟙 fe ⟩
+  𝟙                                                 ■
+   where
+    fe : funext 𝓤 𝓤
+    fe = funext-from-univalence ua
+    ϕ : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f))
+    ϕ = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) →
+        logically-equivalent-props-are-equivalent (being-equiv-is-a-prop'' fe f)
+                                                  (Π-is-prop fe (λ y → being-a-singleton-is-a-prop fe))
+                                                  (equivs-are-vv-equivs f)
+                                                  (vv-equivs-are-equivs f)))
+    ψ : Σ (λ X → is-singleton X) ≃ 𝟙
+    ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop *))
+     where
+      a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
+      a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
+                          (being-a-singleton-is-a-prop fe _ s))
+
 \end{code}
 
 This generalizes the above
@@ -193,25 +276,3 @@ not necessary that "green" is proposition valued. It can be universe
 valued in general. And then of course retractions X → Y are in
 bijections with families of pointed types.
 
-\begin{code}
-module type-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-       where
-
- open general-classifier fe' ua Y (λ y → 𝟙)
-
- type-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
- type-classification-equivalence = (Σ \(X : 𝓤 ̇ ) → X → Y) ≃⟨ ϕ ⟩
-                                   Green-map ≃⟨ classification-equivalence ⟩
-                                   (Y → Green) ≃⟨ ψ ⟩
-                                   (Y → 𝓤 ̇ ) ■
-  where
-   ϕ : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ Green-map
-   ϕ = {!!}
-   ψ : (Y → Green) ≃ (Y → 𝓤 ̇ )
-   ψ = {!!}
-
-\end{code}
