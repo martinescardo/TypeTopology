@@ -76,7 +76,7 @@ module general-classifier
   transport green p (g y)
    where
     p : fiber f y ≡ fiber (f ∘ eqtofun e) y
-    p = (eqtoid ua _ _ (precomp-with-equiv-fiber-equiv e f y)) ⁻¹       
+    p = (eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f y)) ⁻¹
 
  precomp-with-≃-refl-green-map : {X : 𝓤 ̇ } (f : X → Y) (g : green-map f)
                            → green-maps-are-closed-under-precomp-with-equivs
@@ -152,7 +152,7 @@ module general-classifier
            g y                                                    ∎
        where
         p : fiber (f' ∘ eqtofun e) y ≡ fiber f' y
-        p = eqtoid ua _ _ (precomp-with-equiv-fiber-equiv e f' y)
+        p = eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f' y)
         q : fiber f' y ≡ fiber f y
         q = eqtoid ua (fiber f' y) (fiber f y) (fiber-equiv y)
         v = q ⁻¹ ∙ p ⁻¹ ≡⟨ ⁻¹-contravariant p q ⟩
@@ -166,7 +166,7 @@ module general-classifier
               refl                              ∎
            where
             ϕ : fiber (f' ∘ eqtofun e) y ≃ fiber f' y
-            ϕ = precomp-with-equiv-fiber-equiv e f' y
+            ϕ = precomposition-with-equiv-does-not-change-fibers e f' y
             ψ : fiber pr₁ y ≃ pr₁ (χ (X , f , g) y)
             ψ = fiber-equiv y
             ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
