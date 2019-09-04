@@ -1,4 +1,5 @@
 Martin Escardo, 2012-
+Tom de Jong, September 2019 (two lemmas used in UF-Classifiers)
 
 Expanded on demand whenever a general equivalence is needed.
 
@@ -539,16 +540,6 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   γ = pr₁(Σ-change-of-variables' A g (equivs-are-haes g e))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
-\end{code}
-
-A nice application of the previous lemma is that the fiber of a map doesn't
-change (up to equivalence, at least) when precomposing with an equivalence.
-
-\begin{code}
-precomp-with-equiv-fiber-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (e : Z ≃ X)
-                                 (f : X → Y) (y : Y)
-                               → fiber (f ∘ eqtofun e) y ≃ fiber f y
-precomp-with-equiv-fiber-equiv (g , i) f y = Σ-change-of-variables (λ x → f x ≡ y) g i
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
@@ -659,11 +650,19 @@ fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ 
 
 \end{code}
 
-Tom de Jong
-September 2019
-This is used in UF-Classifiers.
+A nice application of Σ-change-of-variables is that the fiber of a map doesn't
+change (up to equivalence, at least) when precomposing with an equivalence.
+
+These two lemmas are used in UF-Classifiers, but are sufficiently general to
+warrant their place here.
 
 \begin{code}
+
+precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                                                   (e : Z ≃ X) (f : X → Y) (y : Y)
+                                                 → fiber (f ∘ eqtofun e) y ≃ fiber f y
+precomposition-with-equiv-does-not-change-fibers (g , i) f y =
+ Σ-change-of-variables (λ x → f x ≡ y) g i
 
 retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : X → Y}
                        → has-section r ≃ (Π \(y : Y) → fiber r y)
