@@ -14,7 +14,6 @@ module UF-Classifiers where
 
 open import SpartanMLTT
 open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-Equiv-FunExt
@@ -23,6 +22,7 @@ open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-FunExt
 open import UF-Embeddings
+open import UF-PropTrunc -- for inhabited-type-classsifier
 
 module general-classifier
         {𝓤 : Universe}
@@ -240,6 +240,7 @@ module singleton-classifier
         (Y : 𝓤 ̇ )
        where
 
+ open import UF-Subsingletons-FunExt
  open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → is-singleton X)
 
  singleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ 𝟙 {𝓤}
@@ -247,8 +248,8 @@ module singleton-classifier
   (Σ \(X : 𝓤 ̇ ) → X ≃ Y)                            ≃⟨ ϕ ⟩
   (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f)) ≃⟨ classification-equivalence ⟩
   (Y → (Σ \(X : 𝓤 ̇ ) → is-singleton X))             ≃⟨ →-cong fe fe' (≃-refl Y) ψ ⟩
-  (Y → 𝟙)                                           ≃⟨ →𝟙 fe ⟩
-  𝟙                                                 ■
+  (Y → 𝟙)                                             ≃⟨ →𝟙 fe ⟩
+  𝟙                                                   ■
    where
     fe : funext 𝓤 𝓤
     fe = funext-from-univalence ua
@@ -265,14 +266,38 @@ module singleton-classifier
       a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
                           (being-a-singleton-is-a-prop fe _ s))
 
+module inhabited-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+        (pt : propositional-truncations-exist)
+       where
+
+ open import UF-ImageAndSurjection
+ open ImageAndSurjection pt
+ open PropositionalTruncation pt
+ open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → ∥ X ∥)
+
+ inhabited-classification-equivalence :
+  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
+ inhabited-classification-equivalence = classification-equivalence
+
+module pointed-classifier
+        {𝓤 : Universe}
+        (fe' : funext 𝓤 (𝓤 ⁺))
+        (ua : is-univalent 𝓤)
+        (Y : 𝓤 ̇ )
+       where
+
+ open import UF-Retracts
+ open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → X)
+
+ pointed-classification-equivalence :
+  (Σ \(X : 𝓤 ̇ ) → Y ◁ X) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → X))
+ pointed-classification-equivalence =
+  (Σ \(X : 𝓤 ̇ ) → Y ◁ X)                                  ≃⟨ Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) → retract-pointed-fibers)) ⟩
+  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → (y : Y) → fiber f y)) ≃⟨ classification-equivalence ⟩
+  (Y → (Σ \(X : 𝓤 ̇ ) → X))                                ■
+
 \end{code}
-
-This generalizes the above
-situation. In particular, the case green = contractible is of interest
-and describes a previously known situation. Another example is that
-surjections X → Y are in bijection with families
-Y → Σ (Z : 𝓤 ̇ ) → ∥ Z ∥), that is, families of inhabited types. It is
-not necessary that "green" is proposition valued. It can be universe
-valued in general. And then of course retractions X → Y are in
-bijections with families of pointed types.
-
