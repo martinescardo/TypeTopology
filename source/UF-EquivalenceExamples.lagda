@@ -12,6 +12,7 @@ open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
+open import UF-Retracts -- This is only used for the final equivalence.
 
 module UF-EquivalenceExamples where
 
@@ -655,5 +656,26 @@ fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ 
                                 (Σ \(x' : X) → Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
                                 (Σ \(x' : X) → (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
                                 Y x                              ■
+
+\end{code}
+
+Tom de Jong
+September 2019
+This is used in UF-Classifiers.
+
+\begin{code}
+
+retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : X → Y}
+                       → has-section r ≃ (Π \(y : Y) → fiber r y)
+retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
+ where
+  f : has-section r → Π (fiber r)
+  f (s , rs) y = (s y) , (rs y)
+  g : ((y : Y) → fiber r y) → has-section r
+  g α = (λ (y : Y) → pr₁ (α y)) , (λ (y : Y) → pr₂ (α y))
+  p : (hs : has-section r) → g (f hs) ≡ hs
+  p (s , rs) = refl
+  q : (α : Π \(y : Y) → fiber r y) → f (g α) ≡ α
+  q α = refl
 
 \end{code}
