@@ -1,4 +1,5 @@
 Martin Escardo, 9th April 2018
+Tom de Jong, July 2019 (Added a lemma on composing eqtoids.)
 
 We first give Voevodsky's original proof that univalence implies
 non-dependent, naive function extensionality, as presented by Gambino,
@@ -97,22 +98,37 @@ open import UF-Subsingletons-FunExt
                         → {p q : Ω 𝓤} → (p holds → q holds) → (q holds → p holds) → p ≡ q
 Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-ext (funext-from-univalence ua) (propext-from-univalence ua)
 
+\end{code}
+
+Added July 2019. Used in UF-Classifiers.
+
+It is here, because it is quite a general result, but in cannot be in
+UF-Univalence or UF-Equiv or UF-Equiv-FunExt, because of cyclic module
+dependencies. In particular, we use funext-from-univalence, which is defined
+here.
+
+Alternatively, one could add (fe : funext 𝓤 𝓤) as an additional hypothesis and
+put this lemma in different module, but this seems awkward as it follows from
+univalence of 𝓤, of course.
+
+\begin{code}
+
 eqtoid-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇} (f : X ≃ Y) (g : Y ≃ Z)
             → (eqtoid ua X Y f) ∙ (eqtoid ua Y Z g) ≡ eqtoid ua X Z (f ● g)
-eqtoid-comp ua {X} {Y} {Z} f =
+eqtoid-comp {𝓤} ua {X} {Y} {Z} f =
  JEq ua Y (λ Z g → eqtoid ua X Y f ∙ eqtoid ua Y Z g ≡ eqtoid ua X Z (f ● g)) γ Z
   where
    γ : eqtoid ua X Y f ∙ eqtoid ua Y Y (≃-refl Y) ≡ eqtoid ua X Y (f ● ≃-refl Y)
    γ = eqtoid ua X Y f ∙ eqtoid ua Y Y (≃-refl Y) ≡⟨ ap (λ - → eqtoid ua X Y f ∙ -) (eqtoid-refl ua Y) ⟩
        eqtoid ua X Y f                            ≡⟨ ap (λ - → eqtoid ua X Y -) h ⟩
-       eqtoid ua X Y (f ● ≃-refl Y)      ∎
+       eqtoid ua X Y (f ● ≃-refl Y)               ∎
     where
      h : f ≡ f ● ≃-refl Y
      h = to-Σ-≡ (l , being-equiv-is-a-prop'' fe (eqtofun (f ● ≃-refl Y))
                       (transport is-equiv l (eqtofun-is-an-equiv f))
                       (eqtofun-is-an-equiv (f ● ≃-refl Y)))
       where
-       fe : funext _ _
+       fe : funext 𝓤 𝓤
        fe = funext-from-univalence ua
        l : eqtofun f ≡ eqtofun (f ● ≃-refl Y)
        l = dfunext fe (λ x → refl)
