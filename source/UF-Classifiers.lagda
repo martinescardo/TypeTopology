@@ -4,7 +4,7 @@ Tom de Jong, September 2019
  I implemented the final two examples and the general theorem, following
  Martin's suggestion.
 
-Fix type universe 𝓤 and 𝓥 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓥.
+Fix type universes 𝓤 and 𝓥 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓥.
 If X : 𝓤 ̇ and f : X → Y, then we say that f is a green map if all of its fibers
 are green.
 
