@@ -4,7 +4,7 @@ Tom de Jong, September 2019
  I implemented the final two examples and the general theorem, following
  Martin's suggestion.
 
-Fix a type universe 𝓤 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓤 on 𝓤.
+Fix type universe 𝓤 and 𝓥 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓥.
 If X : 𝓤 ̇ and f : X → Y, then we say that f is a green map if all of its fibers
 are green.
 
@@ -47,20 +47,21 @@ open import UF-Embeddings
 open import UF-PropTrunc -- for inhabited-type-classsifier
 
 module general-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
+        {𝓤 𝓥 : Universe}
+        (fe : funext 𝓤 𝓥)
+        (fe' : funext 𝓤 (𝓤 ⁺ ⊔ 𝓥))
         (ua : is-univalent 𝓤)
         (Y : 𝓤 ̇ )
-        (green : 𝓤 ̇ → 𝓤 ̇ )
+        (green : 𝓤 ̇ → 𝓥 ̇ )
        where
 
- green-map : {X : 𝓤 ̇ } → (X → Y) → 𝓤 ̇
+ green-map : {X : 𝓤 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
  green-map f = (y : Y) → green (fiber f y)
 
- Green : 𝓤 ⁺ ̇
+ Green : 𝓤 ⁺ ⊔ 𝓥 ̇
  Green = Σ \(X : 𝓤 ̇ ) → green X
 
- Green-map : 𝓤 ⁺ ̇
+ Green-map : 𝓤 ⁺ ⊔ 𝓥 ̇
  Green-map = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → green-map f
                                          
  χ : Green-map  → (Y → Green)
@@ -104,7 +105,7 @@ module general-classifier
                            → green-maps-are-closed-under-precomp-with-equivs
                               (≃-refl X) g
                              ≡ g
- precomp-with-≃-refl-green-map {X} f g = dfunext (funext-from-univalence ua) γ
+ precomp-with-≃-refl-green-map {X} f g = dfunext fe γ
   where
    γ : (y : Y) → green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y ≡ g y
    γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ≡⟨ refl ⟩
@@ -120,9 +121,9 @@ module general-classifier
                                green-maps-are-closed-under-precomp-with-equivs e g 
  transport-green-map-eqtoid {X} {X'} = JEq ua X' E γ X
   where
-   B : 𝓤 ̇ → 𝓤 ̇
+   B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
    B Z = Σ \(h : Z → Y) → green-map h
-   E : (Z : 𝓤 ̇) → X' ≃ Z → 𝓤 ̇
+   E : (Z : 𝓤 ̇) → X' ≃ Z → 𝓤 ⊔ 𝓥 ̇
    E Z e = (f : Z → Y) → (g : green-map f)
          → transport B ((eqtoid ua X' Z e) ⁻¹) (f , g)
            ≡ f ∘ (eqtofun e) , green-maps-are-closed-under-precomp-with-equivs e g
@@ -144,7 +145,7 @@ module general-classifier
    e = sum-of-fibers X Y f
    a : X' ≡ X
    a = (eqtoid ua X X' e) ⁻¹
-   B : 𝓤 ̇ → 𝓤 ̇
+   B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
    B Z = Σ \(h : Z → Y) → green-map h
    t : transport B a (f' , g') ≡
        (f' ∘ eqtofun e) , (green-maps-are-closed-under-precomp-with-equivs e g')
@@ -164,8 +165,6 @@ module general-classifier
        green-maps-are-closed-under-precomp-with-equivs e g' ≡⟨ dfunext fe u ⟩
        g ∎
     where
-     fe : funext 𝓤 𝓤
-     fe = funext-from-univalence ua
      u : (y : Y) → green-maps-are-closed-under-precomp-with-equivs e g' y ≡ g y
      u y = green-maps-are-closed-under-precomp-with-equivs e g' y ≡⟨ refl ⟩
            transport green (p ⁻¹) (g' y)                          ≡⟨ refl ⟩
@@ -192,12 +191,14 @@ module general-classifier
             ψ : fiber pr₁ y ≃ pr₁ (χ (X , f , g) y)
             ψ = fiber-equiv y
             ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
-            ϕψ = to-Σ-≡ (dfunext fe ϕψ' ,
-                         being-equiv-is-a-prop'' fe id _ (id-is-an-equiv _))
+            ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
+                         being-equiv-is-a-prop'' fe'' id _ (id-is-an-equiv _))
              where
               ϕψ' : (z : fiber (f' ∘ eqtofun e) y)
                  → eqtofun (ϕ ● ψ) z ≡ z
               ϕψ' (x , refl) = refl
+              fe'' : funext 𝓤 𝓤
+              fe'' = funext-from-univalence ua
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
@@ -212,7 +213,7 @@ module type-classifier
         (Y : 𝓤 ̇ )
        where
 
- open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → 𝟙)
+ open general-classifier (funext-from-univalence ua) fe' ua Y (λ (X : 𝓤 ̇ ) → 𝟙)
 
  type-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
  type-classification-equivalence = (Σ \(X : 𝓤 ̇ ) → X → Y) ≃⟨ ϕ ⟩
@@ -250,7 +251,8 @@ module subsingleton-classifier
         (Y : 𝓤 ̇ )
        where
 
- open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → is-prop X)
+ open general-classifier (funext-from-univalence ua) fe' ua Y
+                         (λ (X : 𝓤 ̇ ) → is-prop X)
 
  subsingleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤 )
  subsingleton-classification-equivalence = classification-equivalence
@@ -263,7 +265,8 @@ module singleton-classifier
        where
 
  open import UF-Subsingletons-FunExt
- open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → is-singleton X)
+ open general-classifier (funext-from-univalence ua) fe' ua Y
+                         (λ (X : 𝓤 ̇ ) → is-singleton X)
 
  singleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ 𝟙 {𝓤}
  singleton-classification-equivalence =
@@ -287,7 +290,6 @@ module singleton-classifier
       a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
       a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
                           (being-a-singleton-is-a-prop fe _ s))
-
 module inhabited-classifier
         {𝓤 : Universe}
         (fe' : funext 𝓤 (𝓤 ⁺))
@@ -299,7 +301,8 @@ module inhabited-classifier
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt
  open PropositionalTruncation pt
- open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → ∥ X ∥)
+ open general-classifier (funext-from-univalence ua) fe' ua Y
+                         (λ (X : 𝓤 ̇ ) → ∥ X ∥)
 
  inhabited-classification-equivalence :
   (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
@@ -313,7 +316,7 @@ module pointed-classifier
        where
 
  open import UF-Retracts
- open general-classifier fe' ua Y (λ (X : 𝓤 ̇ ) → X)
+ open general-classifier (funext-from-univalence ua) fe' ua Y (λ (X : 𝓤 ̇ ) → X)
 
  pointed-classification-equivalence :
   (Σ \(X : 𝓤 ̇ ) → Y ◁ X) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → X))
