@@ -41,7 +41,7 @@ open import UF-Univalence
 
 𝓕-equiv-particular : funext 𝓣 (𝓣 ⁺) → is-univalent 𝓣
                    → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
-𝓕-equiv-particular = type-classifier.classification-equivalence
+𝓕-equiv-particular = type-classifier.type-classification-equivalence
 
 open import UF-Resizing
 open import UF-Base

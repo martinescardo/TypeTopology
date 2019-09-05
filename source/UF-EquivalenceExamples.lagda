@@ -1,4 +1,5 @@
 Martin Escardo, 2012-
+Tom de Jong, September 2019 (two lemmas used in UF-Classifiers)
 
 Expanded on demand whenever a general equivalence is needed.
 
@@ -12,6 +13,7 @@ open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
+open import UF-Retracts -- This is only used for the final equivalence.
 
 module UF-EquivalenceExamples where
 
@@ -374,6 +376,19 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   ε : (x : X) → g (f x) ≡ x
   ε x = refl
 
+→𝟙 : {X : 𝓤 ̇ } → funext 𝓤 𝓥
+   → (X → 𝟙 {𝓥}) ≃ 𝟙 {𝓥}
+→𝟙 {𝓤} {𝓥} {X} fe = qinveq f (g , ε , η)
+ where
+  f : (X → 𝟙) → 𝟙
+  f = unique-to-𝟙
+  g : (t : 𝟙) → X → 𝟙
+  g t = unique-to-𝟙
+  ε : (α : X → 𝟙) → g * ≡ α
+  ε α = dfunext fe λ (x : X) → 𝟙-is-prop (g * x) (α x)
+  η : (t : 𝟙) → * ≡ t
+  η = 𝟙-is-prop *
+
 +→ : ∀ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
    → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
 +→ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} fe = qinveq f (g , ε , η)
@@ -632,5 +647,34 @@ fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ 
                                 (Σ \(x' : X) → Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
                                 (Σ \(x' : X) → (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
                                 Y x                              ■
+
+\end{code}
+
+A nice application of Σ-change-of-variables is that the fiber of a map doesn't
+change (up to equivalence, at least) when precomposing with an equivalence.
+
+These two lemmas are used in UF-Classifiers, but are sufficiently general to
+warrant their place here.
+
+\begin{code}
+
+precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                                                   (e : Z ≃ X) (f : X → Y) (y : Y)
+                                                 → fiber (f ∘ eqtofun e) y ≃ fiber f y
+precomposition-with-equiv-does-not-change-fibers (g , i) f y =
+ Σ-change-of-variables (λ x → f x ≡ y) g i
+
+retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : X → Y}
+                       → has-section r ≃ (Π \(y : Y) → fiber r y)
+retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
+ where
+  f : has-section r → Π (fiber r)
+  f (s , rs) y = (s y) , (rs y)
+  g : ((y : Y) → fiber r y) → has-section r
+  g α = (λ (y : Y) → pr₁ (α y)) , (λ (y : Y) → pr₂ (α y))
+  p : (hs : has-section r) → g (f hs) ≡ hs
+  p (s , rs) = refl
+  q : (α : Π \(y : Y) → fiber r y) → f (g α) ≡ α
+  q α = refl
 
 \end{code}
