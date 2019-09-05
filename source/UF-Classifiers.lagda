@@ -1,11 +1,33 @@
 Martin Escardo, 20th August 2018
 
-We consider type and subtype classifiers, and discuss an obvious
-generalization which is left undone for the moment.
+Tom de Jong, September 2019
+ I implemented the final two examples and the general theorem, following
+ Martin's suggestion.
 
- * (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
- * (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
+Fix a type universe 𝓤 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓤 on 𝓤.
+If X : 𝓤 ̇ and f : X → Y, then we say that f is a green map if all of its fibers
+are green.
 
+The general theorem says that type of green maps to Y is equivalent to the type
+of green types: Green-map ≃ (Y → Green).
+
+The examples are obtained by specialising to a specific property green:
+
+ * Every type and map is green.
+   (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
+   
+ * A type is green exactly if it is a subsingleton.
+   Then a map is green exactly if it is an embedding.
+   (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
+   
+ * A type is green exactly if it is inhabited.
+   Then a map is green exactly if it is a surjection.
+   (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
+   
+ * A type is green exactly if it is pointed.
+   Then a map is green exactly if it is a retraction.
+   (Σ \(X : 𝓤 ̇ ) → Y ◁ X) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → X))
+ 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
