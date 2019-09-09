@@ -221,10 +221,13 @@ module general-classifier
      a : pr₁ (A y) ≡ pr₁ (χ (T A) y)
      a = fiber-equiv-≡ A y
      b = transport green (a ⁻¹) (pr₂ (χ (T A) y))               ≡⟨ refl ⟩
-         transport green (a ⁻¹) (transport green a (pr₂ (A y))) ≡⟨ (transport-comp green a (a ⁻¹)) ⁻¹ ⟩
-         transport green (a ∙ a ⁻¹) (pr₂ (A y))                 ≡⟨ ap (λ - → transport green - (pr₂ (A y))) (trans-sym' a) ⟩
+         transport green (a ⁻¹) (transport green a (pr₂ (A y))) ≡⟨ i ⟩
+         transport green (a ∙ a ⁻¹) (pr₂ (A y))                 ≡⟨ ii ⟩
          transport green refl (pr₂ (A y))                       ≡⟨ refl ⟩
          pr₂ (A y)                                              ∎
+      where
+       i  = (transport-comp green a (a ⁻¹)) ⁻¹
+       ii = ap (λ - → transport green - (pr₂ (A y))) (trans-sym' a)
 
  green-maps-are-closed-under-precomp-with-equivs : {X X' : 𝓤 ̇ } (e : X' ≃ X)
                                                    {f : X → Y}
@@ -244,8 +247,10 @@ module general-classifier
   where
    γ : (y : Y) → green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y ≡ g y
    γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ≡⟨ refl ⟩
-         transport green ((eqtoid ua _ _ (≃-refl (fiber f y))) ⁻¹) (g y)        ≡⟨ ap (λ - → transport green (- ⁻¹) (g y)) (eqtoid-refl ua (fiber f y)) ⟩
+         transport green ((eqtoid ua _ _ (≃-refl (fiber f y))) ⁻¹) (g y)        ≡⟨ i ⟩
          g y                                                                    ∎
+    where
+     i = ap (λ - → transport green (- ⁻¹) (g y)) (eqtoid-refl ua (fiber f y))
 
  transport-green-map-eqtoid : {X X' : 𝓤 ̇ } (e : X' ≃ X) (f : X → Y)
                               (g : green-map f)
@@ -263,9 +268,12 @@ module general-classifier
          → transport B ((eqtoid ua X' Z e) ⁻¹) (f , g)
            ≡ f ∘ (eqtofun e) , green-maps-are-closed-under-precomp-with-equivs e g
    γ : E X' (≃-refl X')
-   γ f g = transport B ((eqtoid ua X' X' (≃-refl X')) ⁻¹) (f , g)            ≡⟨ ap (λ - → transport B (- ⁻¹) (f , g)) (eqtoid-refl ua X') ⟩
-           f , g                                                             ≡⟨ to-Σ-≡ (refl , ((precomp-with-≃-refl-green-map f g) ⁻¹)) ⟩
+   γ f g = transport B ((eqtoid ua X' X' (≃-refl X')) ⁻¹) (f , g)            ≡⟨ i ⟩
+           f , g                                                             ≡⟨ ii ⟩
            f , green-maps-are-closed-under-precomp-with-equivs (≃-refl X') g ∎
+    where
+     i  = ap (λ - → transport B (- ⁻¹) (f , g)) (eqtoid-refl ua X')
+     ii = to-Σ-≡ (refl , ((precomp-with-≃-refl-green-map f g) ⁻¹))
 
  Tχ : (f : Green-map) → T(χ f) ≡ f
  Tχ (X , f , g) = to-Σ-≡ (a , (to-Σ-≡ (b , c)))
@@ -303,37 +311,40 @@ module general-classifier
      u : (y : Y) → green-maps-are-closed-under-precomp-with-equivs e g' y ≡ g y
      u y = green-maps-are-closed-under-precomp-with-equivs e g' y ≡⟨ refl ⟩
            transport green (p ⁻¹) (g' y)                          ≡⟨ refl ⟩
-           transport green (p ⁻¹) (transport green (q ⁻¹) (g y))  ≡⟨ (transport-comp green (q ⁻¹) (p ⁻¹)) ⁻¹ ⟩
-           transport green (q ⁻¹ ∙ p ⁻¹) (g y)                    ≡⟨ ap (λ - → transport green - (g y)) v ⟩
+           transport green (p ⁻¹) (transport green (q ⁻¹) (g y))  ≡⟨ i ⟩
+           transport green (q ⁻¹ ∙ p ⁻¹) (g y)                    ≡⟨ ii ⟩
            g y                                                    ∎
        where
         p : fiber (f' ∘ eqtofun e) y ≡ fiber f' y
         p = eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f' y)
         q : fiber f' y ≡ fiber f y
         q = eqtoid ua (fiber f' y) (fiber f y) (fiber-equiv y)
-        v = q ⁻¹ ∙ p ⁻¹ ≡⟨ ⁻¹-contravariant p q ⟩
-            (p ∙ q) ⁻¹  ≡⟨ ap (_⁻¹) w ⟩
-            refl        ∎
+        i  = (transport-comp green (q ⁻¹) (p ⁻¹)) ⁻¹
+        ii = ap (λ - → transport green - (g y)) v
          where
-          w : p ∙ q ≡ refl
-          w = eqtoid ua _ _ ϕ ∙ eqtoid ua _ _ ψ ≡⟨ eqtoid-comp ua _ _ ⟩
-              eqtoid ua _ _ (ϕ ● ψ)             ≡⟨ ap (eqtoid ua _ _) ϕψ ⟩
-              eqtoid ua _ _ (≃-refl _)          ≡⟨ eqtoid-refl ua _ ⟩
-              refl                              ∎
+          v = q ⁻¹ ∙ p ⁻¹ ≡⟨ ⁻¹-contravariant p q ⟩
+              (p ∙ q) ⁻¹  ≡⟨ ap (_⁻¹) w ⟩
+              refl        ∎
            where
-            ϕ : fiber (f' ∘ eqtofun e) y ≃ fiber f' y
-            ϕ = precomposition-with-equiv-does-not-change-fibers e f' y
-            ψ : fiber pr₁ y ≃ pr₁ (χ (X , f , g) y)
-            ψ = fiber-equiv y
-            ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
-            ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
-                         being-equiv-is-a-prop'' fe'' id _ (id-is-an-equiv _))
+            w : p ∙ q ≡ refl
+            w = eqtoid ua _ _ ϕ ∙ eqtoid ua _ _ ψ ≡⟨ eqtoid-comp ua _ _ ⟩
+                eqtoid ua _ _ (ϕ ● ψ)             ≡⟨ ap (eqtoid ua _ _) ϕψ ⟩
+                eqtoid ua _ _ (≃-refl _)          ≡⟨ eqtoid-refl ua _ ⟩
+                refl                              ∎
              where
-              ϕψ' : (z : fiber (f' ∘ eqtofun e) y)
-                 → eqtofun (ϕ ● ψ) z ≡ z
-              ϕψ' (x , refl) = refl
-              fe'' : funext 𝓤 𝓤
-              fe'' = funext-from-univalence ua
+              ϕ : fiber (f' ∘ eqtofun e) y ≃ fiber f' y
+              ϕ = precomposition-with-equiv-does-not-change-fibers e f' y
+              ψ : fiber pr₁ y ≃ pr₁ (χ (X , f , g) y)
+              ψ = fiber-equiv y
+              ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
+              ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
+                           being-equiv-is-a-prop'' fe'' id _ (id-is-an-equiv _))
+               where
+                ϕψ' : (z : fiber (f' ∘ eqtofun e) y)
+                   → eqtofun (ϕ ● ψ) z ≡ z
+                ϕψ' (x , refl) = refl
+                fe'' : funext 𝓤 𝓤
+                fe'' = funext-from-univalence ua
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
@@ -418,27 +429,30 @@ module singleton-classifier
 
  singleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ 𝟙 {𝓤}
  singleton-classification-equivalence =
-  (Σ \(X : 𝓤 ̇ ) → X ≃ Y)                            ≃⟨ ϕ ⟩
-  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f)) ≃⟨ classification-equivalence ⟩
-  (Y → (Σ \(X : 𝓤 ̇ ) → is-singleton X))             ≃⟨ →-cong fe fe' (≃-refl Y) ψ ⟩
+  (Σ \(X : 𝓤 ̇ ) → X ≃ Y)                            ≃⟨ i ⟩
+  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f)) ≃⟨ ii ⟩
+  (Y → (Σ \(X : 𝓤 ̇ ) → is-singleton X))             ≃⟨ iii ⟩
   (Y → 𝟙)                                             ≃⟨ →𝟙 fe ⟩
   𝟙                                                   ■
    where
     fe : funext 𝓤 𝓤
     fe = funext-from-univalence ua
-    ϕ : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f))
-    ϕ = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) →
-        logically-equivalent-props-are-equivalent (being-equiv-is-a-prop'' fe f)
-                                                  (Π-is-prop fe (λ y → being-a-singleton-is-a-prop fe))
-                                                  (equivs-are-vv-equivs f)
-                                                  (vv-equivs-are-equivs f)))
-    ψ : Σ (λ X → is-singleton X) ≃ 𝟙
-    ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop *))
+    
+    i   = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) →
+           logically-equivalent-props-are-equivalent
+            (being-equiv-is-a-prop'' fe f)
+            (Π-is-prop fe (λ y → being-a-singleton-is-a-prop fe))
+            (equivs-are-vv-equivs f)
+            (vv-equivs-are-equivs f)))    
+    ii  = classification-equivalence
+    iii = →-cong fe fe' (≃-refl Y) ψ
      where
-      a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
-      a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
-                          (being-a-singleton-is-a-prop fe _ s))
-
+      ψ : Σ (λ X → is-singleton X) ≃ 𝟙
+      ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop *))
+       where
+       a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
+       a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
+                           (being-a-singleton-is-a-prop fe _ s))
 
 open import UF-PropTrunc
 
@@ -457,9 +471,9 @@ module inhabited-classifier
                          (λ (X : 𝓤 ̇ ) → ∥ X ∥)
 
  inhabited-classification-equivalence :
-  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
+  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃
+   (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
  inhabited-classification-equivalence = classification-equivalence
-
 
 module pointed-classifier
         {𝓤 : Universe}
@@ -474,8 +488,11 @@ module pointed-classifier
  pointed-classification-equivalence :
   (Σ \(X : 𝓤 ̇ ) → Y ◁ X) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → X))
  pointed-classification-equivalence =
-  (Σ \(X : 𝓤 ̇ ) → Y ◁ X)                                  ≃⟨ Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) → retract-pointed-fibers)) ⟩
-  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → (y : Y) → fiber f y)) ≃⟨ classification-equivalence ⟩
+  (Σ \(X : 𝓤 ̇ ) → Y ◁ X)                                  ≃⟨ i ⟩
+  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → (y : Y) → fiber f y)) ≃⟨ ii ⟩
   (Y → (Σ \(X : 𝓤 ̇ ) → X))                                ■
+   where
+    i  = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) → retract-pointed-fibers))
+    ii = classification-equivalence
 
 \end{code}
