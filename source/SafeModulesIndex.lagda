@@ -28,7 +28,7 @@ import LawvereFPT
 import PartialElements
 import UF
 import Types2019
-import ScottModelOfPCF -- by Tom de Jong
+import PCFModules -- by Tom de Jong
 \end{code}
 
 The last module (univalent foundations) has been developed, on demand,
