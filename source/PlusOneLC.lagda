@@ -101,11 +101,3 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-
    Y ■
 
 \end{code}
-
-Precedences:
-
-\begin{code}
-
-infix 2 _∖_
-
-\end{code}

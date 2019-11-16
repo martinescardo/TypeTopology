@@ -52,7 +52,8 @@ We then define addition and multiplication on ℕ from (3') and (5'),
 from which (3) and (5) follow tautologically.
 
 This relies on type arithmetic. To prove (3'), we use the trivial
-equivalences
+bijections, or *equivalences* in the terminology of univalent
+mathematics,
 
  X ≃ X + 𝟘,
  (X + Y) + 𝟙 ≃ X + (Y + 𝟙),
@@ -168,11 +169,22 @@ We have zero and successor for finite sets, with the following types:
 
 \begin{code}
 
-fzero : {n : ℕ} → Fin(succ n)
-fzero = inr *
+fzero' : {n : ℕ} → Fin(succ n)
+fzero' = inr *
 
-fsucc : {n : ℕ} → Fin n → Fin(succ n)
-fsucc = inl
+fsucc' : {n : ℕ} → Fin n → Fin(succ n)
+fsucc' = inl
+
+\end{code}
+
+We also define them as patterns so that they can be used in pattern
+matching (because although patterns can be used as term, Agda can't
+always infer types when we use patterns, unfortunately):
+
+\begin{code}
+
+pattern fzero = inr *
+pattern fsucc n = inl n
 
 \end{code}
 

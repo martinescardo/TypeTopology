@@ -22,10 +22,26 @@ dep-cases f g (inr y) = g y
 cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → (X → A) → (Y → A) → X + Y → A
 cases = dep-cases
 
+\end{code}
+
+Sometimes it is useful to have the arguments in a different order:
+
+\begin{code}
+
 Cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } → X + Y → (X → A) → (Y → A) → A
 Cases z f g = cases f g z
 
+dep-Cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X + Y → 𝓦 ̇ )
+          → (z : X + Y)
+          → ((x : X) → A(inl x))
+          → ((y : Y) → A(inr y))
+          → A z
+dep-Cases {𝓤} {𝓥} {𝓦} {X} {Y} A z f g = dep-cases {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g z
+
 \end{code}
+
+(Agda (version 2.6.0.1) can't infer the implicit parameters of the
+previous definition for some reason.)
 
 Fixities:
 
