@@ -121,43 +121,65 @@ patch-equation₀ a b i f = Cases-equality-l (λ _ → b) (λ _ → f a) (i a) r
   γ : i a ≡ inl refl
   γ = isolated-inl a i a refl
 
-
-isolated-inr : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ≡ inr n
-isolated-inr x i y n =
-  equality-cases (i y)
-    (λ (p : x ≡ y) (q : i y ≡ inl p) → {!!}) -- q ∙ ap inl (isolated-is-h-isolated x i p r))
-    (λ (h : x ≢ y) (q : i y ≡ inr h) → {!!}) -- 𝟘-elim(h r))
-
 patch-equation₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
                   (i : is-isolated a) (f : X → Y)
                 → (x : X) → a ≢ x → patch a b i f x ≡ f x
-patch-equation₁ a b i f x n = Cases-equality-r (λ _ → b) (λ _ → f x) (i x) n γ
+patch-equation₁ {𝓤} {X} a b i f x n = Cases-equality-r (λ _ → b) (λ _ → f x) (i x) n γ
  where
   γ : i x ≡ inr n
-  γ = {!!}
-
-
-
+  γ = isolated-inr (fe 𝓤 𝓤₀) a i x n
 
 swap : {X : 𝓤 ̇ } (a b : X) → is-isolated a → is-isolated b → X → X
-swap a b i j x = Cases (i x)
-                  (λ (p : a ≡ x) → b)
-                  (λ (n : ¬(a ≡ x))
-                        → Cases (j x)
-                           (λ (p : b ≡ x) → a)
-                           (λ (n : ¬(b ≡ x)) → x))
+swap a b i j = patch a b i (patch b a j id)
 
-swap₀ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
-      → swap a b i j a ≡ b
-swap₀ a b i j = {!!}
+swap-equation₀ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
+               → swap a b i j a ≡ b
+swap-equation₀ a b i j = patch-equation₀ a b i (patch b a j id)
+
+swap-equation₁ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
+               → swap a b i j b ≡ a
+swap-equation₁ a b i j = γ (j a)
+ where
+  γ : (b ≡ a) + (b ≢ a) → swap a b i j b ≡ a
+  γ (inl r) =
+      swap a b i j b ≡⟨ ap (swap a b i j) r    ⟩
+      swap a b i j a ≡⟨ swap-equation₀ a b i j ⟩
+      b              ≡⟨ r                      ⟩
+      a              ∎
+  γ (inr n) =
+      swap a b i j b                 ≡⟨ refl                                               ⟩
+      patch a b i (patch b a j id) b ≡⟨ patch-equation₁ a b i (patch b a j id) b (≢-sym n) ⟩
+      patch b a j id b               ≡⟨ patch-equation₀ b a j id                           ⟩
+      a                              ∎
+
+swap-equation₂ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
+               → (x : X) → a ≢ x → b ≢ x → swap a b i j x ≡ x
+swap-equation₂ a b i j x m n = swap a b i j x                 ≡⟨ refl ⟩
+                               patch a b i (patch b a j id) x ≡⟨ patch-equation₁ a b i (patch b a j id) x m ⟩
+                               patch b a j id x               ≡⟨ patch-equation₁ b a j id x n ⟩
+                               x                              ∎
 
 swap-involutive : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
                 → swap a b i j ∘ swap a b i j ∼ id
-swap-involutive a b i j x = dep-Cases (λ (p : (a ≡ x) + ¬ (a ≡ x)) → swap a b i j (swap a b i j x) ≡ x)
-                             (i x)
-                             (λ (p : a ≡ x) → dep-Cases (λ (q : {!(b ≡ !}) → {!!}) {!!} {!!} {!!})
-                             {!!}
-
+swap-involutive a b i j x = γ (i x) (j x)
+ where
+  γ : (a ≡ x) + (a ≢ x) → (b ≡ x) + (b ≢ x) → swap a b i j (swap a b i j x) ≡ x
+  γ (inl p) _ =
+    swap a b i j (swap a b i j x) ≡⟨ ap (λ - → swap a b i j (swap a b i j -)) (p ⁻¹) ⟩
+    swap a b i j (swap a b i j a) ≡⟨ ap (swap a b i j) (swap-equation₀ a b i j)      ⟩
+    swap a b i j b                ≡⟨ swap-equation₁ a b i j                          ⟩
+    a                             ≡⟨ p                                               ⟩
+    x                             ∎
+  γ (inr _) (inl q) =
+    swap a b i j (swap a b i j x) ≡⟨ ap (λ - → swap a b i j (swap a b i j -)) (q ⁻¹) ⟩
+    swap a b i j (swap a b i j b) ≡⟨ ap (swap a b i j) (swap-equation₁ a b i j)      ⟩
+    swap a b i j a                ≡⟨ swap-equation₀ a b i j                          ⟩
+    b                             ≡⟨ q                                               ⟩
+    x                             ∎
+  γ (inr m) (inr n) =
+    swap a b i j (swap a b i j x) ≡⟨ ap (swap a b i j) (swap-equation₂ a b i j x m n) ⟩
+    swap a b i j x                ≡⟨ swap-equation₂ a b i j x m n ⟩
+    x                             ∎
 
 \end{code}
 
