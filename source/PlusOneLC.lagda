@@ -17,6 +17,7 @@ open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
+open import UF-Miscelanea
 open import DiscreteAndSeparated
 
 module PlusOneLC (fe : FunExt) where
@@ -102,55 +103,68 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-
 
 \end{code}
 
--- {-
--- Added Friday 8th November 2019:
+Added Friday 8th November 2019:
 
--- \begin{code}
+\begin{code}
 
--- patch : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
---       → is-isolated a → (X → Y) → (X → Y)
--- patch a b i f x = Cases (i x)
---                     (λ (p :   a ≡ x ) → b)
---                     (λ (_ : ¬(a ≡ x)) → f x)
+patch : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
+      → is-isolated a → (X → Y) → (X → Y)
+patch a b i f x = Cases (i x)
+                    (λ (_ : a ≡ x) → b)
+                    (λ (_ : a ≢ x) → f x)
 
--- patch-equation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
---                   (i : is-isolated a) (f : X → Y)
---                 → patch a b i f a ≡ b
--- patch-equation a b i f = γ
---  where
---   φ : ∀ x → (a ≡ x) → patch a b i f x ≡ b
---   φ x p = {!!}
---   γ : patch a b i f a ≡ b
---   γ = φ a refl
+patch-equation₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
+                  (i : is-isolated a) (f : X → Y)
+                → patch a b i f a ≡ b
+patch-equation₀ a b i f = Cases-equality-l (λ _ → b) (λ _ → f a) (i a) refl γ
+ where
+  γ : i a ≡ inl refl
+  γ = isolated-inl a i a refl
 
 
--- swap : {X : 𝓤 ̇ } (a b : X) → is-isolated a → is-isolated b → X → X
--- swap a b i j x = Cases (i x)
---                   (λ (p : a ≡ x) → b)
---                   (λ (n : ¬(a ≡ x))
---                         → Cases (j x)
---                            (λ (p : b ≡ x) → a)
---                            (λ (n : ¬(b ≡ x)) → x))
+isolated-inr : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ≡ inr n
+isolated-inr x i y n =
+  equality-cases (i y)
+    (λ (p : x ≡ y) (q : i y ≡ inl p) → {!!}) -- q ∙ ap inl (isolated-is-h-isolated x i p r))
+    (λ (h : x ≢ y) (q : i y ≡ inr h) → {!!}) -- 𝟘-elim(h r))
 
--- swap₀ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
---       → swap a b i j a ≡ b
--- swap₀ a b i j = {!!}
-
--- swap-involutive : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
---                 → swap a b i j ∘ swap a b i j ∼ id
--- swap-involutive a b i j x = dep-Cases (λ (p : (a ≡ x) + ¬ (a ≡ x)) → swap a b i j (swap a b i j x) ≡ x)
---                              (i x)
---                              (λ (p : a ≡ x) → dep-Cases (λ (q : {!(b ≡ !}) → {!!}) {!!} {!!} {!!})
---                              {!!}
+patch-equation₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
+                  (i : is-isolated a) (f : X → Y)
+                → (x : X) → a ≢ x → patch a b i f x ≡ f x
+patch-equation₁ a b i f x n = Cases-equality-r (λ _ → b) (λ _ → f x) (i x) n γ
+ where
+  γ : i x ≡ inr n
+  γ = {!!}
 
 
--- \end{code}
--- -}
 
--- Precedences:
 
--- \begin{code}
+swap : {X : 𝓤 ̇ } (a b : X) → is-isolated a → is-isolated b → X → X
+swap a b i j x = Cases (i x)
+                  (λ (p : a ≡ x) → b)
+                  (λ (n : ¬(a ≡ x))
+                        → Cases (j x)
+                           (λ (p : b ≡ x) → a)
+                           (λ (n : ¬(b ≡ x)) → x))
 
--- infix 2 _∖_
+swap₀ : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
+      → swap a b i j a ≡ b
+swap₀ a b i j = {!!}
 
--- \end{code}
+swap-involutive : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
+                → swap a b i j ∘ swap a b i j ∼ id
+swap-involutive a b i j x = dep-Cases (λ (p : (a ≡ x) + ¬ (a ≡ x)) → swap a b i j (swap a b i j x) ≡ x)
+                             (i x)
+                             (λ (p : a ≡ x) → dep-Cases (λ (q : {!(b ≡ !}) → {!!}) {!!} {!!} {!!})
+                             {!!}
+
+
+\end{code}
+
+Precedences:
+
+\begin{code}
+
+infix 2 _∖_
+
+\end{code}

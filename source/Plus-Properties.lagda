@@ -28,7 +28,7 @@ inr-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {y y' : Y} → inr {𝓤} {𝓥} {X} {Y} 
 inr-lc refl = refl
 
 equality-cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (z : X + Y)
-              → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
+               → ((x : X) → z ≡ inl x → A) → ((y : Y) → z ≡ inr y → A) → A
 equality-cases (inl x) f g = f x refl
 equality-cases (inr y) f g = g y refl
 

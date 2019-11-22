@@ -40,20 +40,21 @@ isolated-inl : {X : 𝓤 ̇ } (x : X) (i : is-isolated x) (y : X) (r : x ≡ y) 
 isolated-inl x i y r =
   equality-cases (i y)
     (λ (p : x ≡ y) (q : i y ≡ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
-    (λ (h : ¬(x ≡ y)) (q : i y ≡ inr h) → 𝟘-elim(h r))
+    (λ (h : x ≢ y) (q : i y ≡ inr h) → 𝟘-elim(h r))
+
+isolated-inr : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀
+             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ≡ inr n
+isolated-inr fe x i y n =
+  equality-cases (i y)
+  (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
+  (λ (m : x ≢ y) (q : i y ≡ inr m) → q ∙ ap inr (nfunext fe (λ (p : x ≡ y) → 𝟘-elim (m p))))
 
 discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
-discrete-inl d x y r =
-  equality-cases (d x y)
-    (λ (p : x ≡ y) (q : d x y ≡ inl p) → q ∙ ap inl (discrete-types-are-sets d p r))
-    (λ (h : ¬(x ≡ y)) (q : d x y ≡ inr h) → 𝟘-elim(h r))
+discrete-inl d x = isolated-inl x (d x)
 
 discrete-inr : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀
-            → (d : is-discrete X) (x y : X) (n : ¬(x ≡ y)) → d x y ≡ inr n
-discrete-inr fe d x y n =
-  equality-cases (d x y)
-    (λ (p : x ≡ y) (q : d x y ≡ inl p) → 𝟘-elim (n p))
-    (λ (m : ¬(x ≡ y)) (q : d x y ≡ inr m) → q ∙ ap inr (nfunext fe (λ (p : x ≡ y) → 𝟘-elim (m p))))
+             → (d : is-discrete X) (x y : X) (n : ¬(x ≡ y)) → d x y ≡ inr n
+discrete-inr fe d x = isolated-inr fe x (d x)
 
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ≡ x)
 isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
