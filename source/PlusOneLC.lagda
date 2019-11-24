@@ -293,9 +293,6 @@ module another-approach where
    h : Y + 𝟙 → Y + 𝟙
    h = swap t₀ (inr *) a b
 
-   j : h ∘ h ∼ id
-   j = swap-involutive t₀ (inr *) a b
-
    k : is-equiv h
    k = swap-is-equiv t₀ (inr *) a b
 
@@ -311,14 +308,10 @@ module another-approach where
    l : is-equiv f'
    l = pr₁ (pr₂ (lemma₁ X Y f p (∘-is-equiv i k)))
 
-   m : f ∼ +functor f' unique-to-𝟙
-   m = pr₂ (pr₂ (lemma₁ X Y f p (∘-is-equiv i k)))
-
 \end{code}
 
 These maps are mutually inverse (hopefully this will be included
 soon).
-
 
 Precedences:
 
