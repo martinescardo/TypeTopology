@@ -1521,10 +1521,10 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
   e = ≃-sym(pr₂ (𝓛-resizing ω D))
 
   down : 𝓛 D → L
-  down = eqtofun e
+  down = ⌜ e ⌝
 
   down-is-embedding : is-embedding down
-  down-is-embedding = equivs-are-embeddings down (eqtofun-is-an-equiv e)
+  down-is-embedding = equivs-are-embeddings down (⌜⌝-is-equiv e)
 
   ε : D → L
   ε = down ∘ 𝓛-unit D

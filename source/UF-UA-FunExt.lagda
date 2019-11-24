@@ -124,13 +124,13 @@ eqtoid-comp {𝓤} ua {X} {Y} {Z} f =
        eqtoid ua X Y (f ● ≃-refl Y)               ∎
     where
      h : f ≡ f ● ≃-refl Y
-     h = to-Σ-≡ (l , being-equiv-is-a-prop'' fe (eqtofun (f ● ≃-refl Y))
-                      (transport is-equiv l (eqtofun-is-an-equiv f))
-                      (eqtofun-is-an-equiv (f ● ≃-refl Y)))
+     h = to-Σ-≡ (l , being-equiv-is-a-prop'' fe (⌜ f ● ≃-refl Y ⌝)
+                      (transport is-equiv l (⌜⌝-is-equiv f))
+                      (⌜⌝-is-equiv (f ● ≃-refl Y)))
       where
        fe : funext 𝓤 𝓤
        fe = funext-from-univalence ua
-       l : eqtofun f ≡ eqtofun (f ● ≃-refl Y)
+       l : ⌜ f ⌝ ≡ ⌜ f ● ≃-refl Y ⌝
        l = dfunext fe (λ x → refl)
 
 \end{code}

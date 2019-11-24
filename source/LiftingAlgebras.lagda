@@ -36,7 +36,7 @@ double-𝓛-charac : (X : 𝓤 ̇ )
                 → 𝓛 (𝓛 X) ≃ Σ \(P : 𝓣 ̇ )
                                    → (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
                                    × is-prop P
-double-𝓛-charac X = Σ-cong (λ P → ×-cong (γ X P) (≃-refl (is-prop P)))
+double-𝓛-charac X = Σ-cong (λ P → ×cong (γ X P) (≃-refl (is-prop P)))
  where
   γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → (P → 𝓛 X) ≃ (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
   γ X P = (P → Σ \(Q : 𝓣 ̇ ) → (Q → X) × is-prop Q)                               ≃⟨ ΠΣ-distr-≃ ⟩
@@ -288,7 +288,7 @@ change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (
   e : Q ≃ P
   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
   a : Idtofun (eqtoid ua Q P e) ≡ k
-  a = ap eqtofun (idtoeq'-eqtoid ua Q P e)
+  a = ap ⌜_⌝ (idtoeq'-eqtoid ua Q P e)
 
 𝓛-alg-self-distr : {X : 𝓤 ̇ } (∐ : joinop X)
                    (P : 𝓣 ̇ ) (i : is-prop P)

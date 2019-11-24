@@ -260,9 +260,9 @@ ordinal-equiv-gives-bisimilarity α β (f , p , e , q) =
  (g , order-equivs-are-simulations β α g (q , d , p))
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
-  g = eqtofun (≃-sym (f , e))
+  g = ⌜ ≃-sym (f , e) ⌝
   d : is-equiv g
-  d = eqtofun-is-an-equiv (≃-sym (f , e))
+  d = ⌜⌝-is-equiv (≃-sym (f , e))
 
 bisimilarity-gives-ordinal-equiv : (α β : Ordinal 𝓤)
                                  → α ⊴ β → β ⊴ α → α ≃ₒ β
@@ -290,7 +290,7 @@ eqtoidₒ {𝓤} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f 
  where
   A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
   A Y e = (σ : OrdinalStructure Y)
-        → is-order-preserving α (Y , σ) (eqtofun e)
+        → is-order-preserving α (Y , σ) ⌜ e ⌝
         → is-order-preserving (Y , σ) α (back-eqtofun e)
         → α ≡ (Y , σ)
   a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)

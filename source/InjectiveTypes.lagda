@@ -1465,10 +1465,10 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
    down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
 
    down : (D → Ω 𝓤) → (D → Ω₀)
-   down = eqtofun down-≃
+   down = ⌜ down-≃ ⌝
 
    down-is-embedding : is-embedding down
-   down-is-embedding = equivs-are-embeddings down (eqtofun-is-an-equiv down-≃)
+   down-is-embedding = equivs-are-embeddings down (⌜⌝-is-equiv down-≃)
 
    Id-set₀ : D → (D → Ω₀)
    Id-set₀ = down ∘ Id-set i
@@ -1512,10 +1512,10 @@ Added 8th Feb. Solves a problem formulated above.
    e = ≃-sym(pr₂ (𝓛-resizing ω₀ D))
 
    down : 𝓛 D → L
-   down = eqtofun e
+   down = ⌜ e ⌝
 
    down-is-embedding : is-embedding down
-   down-is-embedding = equivs-are-embeddings down (eqtofun-is-an-equiv e)
+   down-is-embedding = equivs-are-embeddings down (⌜⌝-is-equiv e)
 
    ε : D → L
    ε = down ∘ η

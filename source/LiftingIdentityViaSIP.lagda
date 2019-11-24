@@ -28,7 +28,7 @@ open import UF-StructureIdentityPrinciple
 open import Lifting 𝓣
 
 _⋍_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
-l ⋍ m = Σ \(e : is-defined l ≃ is-defined m) → value l ≡ value m ∘ eqtofun e
+l ⋍ m = Σ \(e : is-defined l ≃ is-defined m) → value l ≡ value m ∘ ⌜ e ⌝
 
 𝓛-Id : is-univalent 𝓣 → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍ m)
 𝓛-Id ua = ≡-is-≃ₛ'
@@ -44,7 +44,7 @@ l ⋍ m = Σ \(e : is-defined l ≃ is-defined m) → value l ≡ value m ∘ eq
         (λ A τ υ → refl-left-neutral)
 
 ⋍-gives-≡ : is-univalent 𝓣 → {l m : 𝓛 X} → (l ⋍ m) → l ≡ m
-⋍-gives-≡ ua = eqtofun (≃-sym (𝓛-Id ua _ _))
+⋍-gives-≡ ua = ⌜ ≃-sym (𝓛-Id ua _ _) ⌝
 
 \end{code}
 
@@ -54,10 +54,10 @@ pointwise equality, and hence we also consider:
 \begin{code}
 
 _⋍·_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
-l ⋍· m = Σ \(e : is-defined l ≃ is-defined m) → value l ∼ value m ∘ eqtofun e
+l ⋍· m = Σ \(e : is-defined l ≃ is-defined m) → value l ∼ value m ∘ ⌜ e ⌝
 
 𝓛-Id· : is-univalent 𝓣 → funext 𝓣 𝓤
       → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍· m)
-𝓛-Id· ua fe l m = (𝓛-Id ua l m) ● (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ eqtofun e)))
+𝓛-Id· ua fe l m = (𝓛-Id ua l m) ● (Σ-cong (λ e → ≃-funext fe (value l) (value m ∘ ⌜ e ⌝)))
 
 \end{code}

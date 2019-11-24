@@ -84,8 +84,8 @@ from-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : i
 
 resize         ρ P i   = pr₁ (ρ P i)
 resize-is-a-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
-to-resize      ρ P i   = eqtofun (≃-sym(pr₂ (ρ P i)))
-from-resize    ρ P i   = eqtofun (pr₂ (ρ P i))
+to-resize      ρ P i   = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
+from-resize    ρ P i   = ⌜ pr₂ (ρ P i) ⌝
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
@@ -274,7 +274,7 @@ universes:
 Ω-resizing-gives-propositional-resizing {𝓤} {𝓥} (O , e) pe fe P i = Q , ε
  where
   down : Ω 𝓤 → O
-  down = eqtofun (≃-sym e)
+  down = ⌜ ≃-sym e ⌝
   O-is-set : is-set O
   O-is-set = equiv-to-set e (Ω-is-a-set fe pe)
   Q : 𝓥 ̇
@@ -282,7 +282,7 @@ universes:
   j : is-prop Q
   j = O-is-set
   φ : Q → P
-  φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (eqtofun-is-an-equiv (≃-sym e)) q)) *
+  φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (⌜⌝-is-equiv (≃-sym e)) q)) *
   γ : P → Q
   γ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) , being-a-prop-is-a-prop fe _ _))
   ε : Q ≃ P

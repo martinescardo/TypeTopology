@@ -169,22 +169,11 @@ We have zero and successor for finite sets, with the following types:
 
 \begin{code}
 
-fzero' : {n : ℕ} → Fin(succ n)
-fzero' = inr *
+fzero : {n : ℕ} → Fin(succ n)
+fzero = inr *
 
-fsucc' : {n : ℕ} → Fin n → Fin(succ n)
-fsucc' = inl
-
-\end{code}
-
-We also define them as patterns so that they can be used in pattern
-matching (because although patterns can be used as term, Agda can't
-always infer types when we use patterns, unfortunately):
-
-\begin{code}
-
-pattern fzero = inr *
-pattern fsucc n = inl n
+fsucc : {n : ℕ} → Fin n → Fin(succ n)
+fsucc = inl
 
 \end{code}
 
@@ -204,7 +193,7 @@ pattern fsucc n = inl n
     φ = pr₂ IH
     φ' : Fin(succ k) ≃ Fin m + Fin (succ n)
     φ' =  Fin k + 𝟙           ≃⟨ Ap+ 𝟙 φ ⟩
-         (Fin m + Fin n) + 𝟙  ≃⟨ +assoc ⟩
+         (Fin m + Fin n) + 𝟙  ≃⟨ +assoc  ⟩
          (Fin m + Fin n + 𝟙)  ■
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m + Fin (succ n)
     g = succ k , φ'
@@ -250,8 +239,8 @@ left-cancellable:
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
 Fin-lc zero zero p = refl
-Fin-lc (succ m) zero p = 𝟘-elim (eqtofun p fzero)
-Fin-lc zero (succ n) p = 𝟘-elim (eqtofun (≃-sym p) fzero)
+Fin-lc (succ m) zero p = 𝟘-elim (⌜ p ⌝ fzero)
+Fin-lc zero (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ fzero)
 Fin-lc (succ m) (succ n) p = ap succ r
  where
   IH : Fin m ≃ Fin n → m ≡ n
@@ -275,8 +264,8 @@ addition:
 
 +'-comm : (m n : ℕ) → m +' n ≡ n +' m
 +'-comm m n = Fin-lc (m +' n) (n +' m)
- (Fin (m +' n)   ≃⟨ Fin+homo m n ⟩
-  Fin m + Fin n  ≃⟨ +comm  ⟩
+ (Fin (m +' n)   ≃⟨ Fin+homo m n         ⟩
+  Fin m + Fin n  ≃⟨ +comm                ⟩
   Fin n + Fin m  ≃⟨ ≃-sym (Fin+homo n m) ⟩
   Fin (n +' m)   ■)
 
@@ -297,9 +286,9 @@ We now repeat this story for multiplication:
     φ : Fin k ≃ Fin m × Fin n
     φ = pr₂ IH
     φ' : Fin (k +' m) ≃ Fin m × (Fin n + 𝟙)
-    φ' = Fin (k +' m)          ≃⟨ Fin+homo k m ⟩
+    φ' = Fin (k +' m)          ≃⟨ Fin+homo k m  ⟩
          Fin k + Fin m         ≃⟨ Ap+ (Fin m) φ ⟩
-         Fin m × Fin n + Fin m ≃⟨ 𝟙distr ⟩
+         Fin m × Fin n + Fin m ≃⟨ 𝟙distr        ⟩
          Fin m × (Fin n + 𝟙)   ■
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
     g = (k +' m) , φ'
@@ -318,8 +307,8 @@ Fin×homo m n = pr₂(×construction m n)
 
 ×'-comm : (m n : ℕ) → m ×' n ≡ n ×' m
 ×'-comm m n = Fin-lc (m ×' n) (n ×' m)
- (Fin (m ×' n)   ≃⟨ Fin×homo m n ⟩
-  Fin m × Fin n  ≃⟨ ×comm ⟩
+ (Fin (m ×' n)   ≃⟨ Fin×homo m n         ⟩
+  Fin m × Fin n  ≃⟨ ×comm                ⟩
   Fin n × Fin m  ≃⟨ ≃-sym (Fin×homo n m) ⟩
   Fin (n ×' m)   ■)
 
@@ -332,8 +321,8 @@ Added 30th August 2018: Exponentiation. Requires one more induction.
 →construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
 →construction zero n = succ zero ,
                        (𝟘 + 𝟙        ≃⟨ 𝟘-lneutral ⟩
-                        𝟙            ≃⟨ 𝟘→ fe₀ ⟩
-                        (𝟘 → Fin n)  ■)
+                        𝟙            ≃⟨ 𝟘→ fe₀     ⟩
+                       (𝟘 → Fin n)   ■)
 →construction (succ m) n = g
  where
   IH : Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
@@ -343,10 +332,10 @@ Added 30th August 2018: Exponentiation. Requires one more induction.
   φ : Fin k ≃ (Fin m → Fin n)
   φ = pr₂ IH
   φ' : Fin (k ×' n) ≃ (Fin (succ m) → Fin n)
-  φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n ⟩
-       Fin k × Fin n                  ≃⟨ ×-cong φ (𝟙→ fe₀) ⟩
-       (Fin m → Fin n) × (𝟙 → Fin n)  ≃⟨ ≃-sym (+→ fe₀) ⟩
-       (Fin m + 𝟙 → Fin n)            ■
+  φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n     ⟩
+       Fin k × Fin n                  ≃⟨ ×cong φ (𝟙→ fe₀) ⟩
+      (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀)   ⟩
+      (Fin m + 𝟙 → Fin n)             ■
   g : Σ \(k' : ℕ) → Fin k' ≃ (Fin (succ m) → Fin n)
   g = k ×' n , φ'
 
@@ -370,21 +359,21 @@ Then, without the need for induction, we get the exponential laws:
 
 ^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
 ^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
- (Fin (k ^ (m +' n))                 ≃⟨ Fin^homo (m +' n) k ⟩
-  (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k)) ⟩
-  (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀ ⟩
-  (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×-cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
-  Fin (k ^ m) × Fin (k ^ n)          ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n)) ⟩
-  Fin (k ^ m ×' k ^ n)               ■)
+ (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k                                 ⟩
+ (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
+ (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀                                              ⟩
+ (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
+  Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n))                    ⟩
+  Fin (k ^ m ×' k ^ n)              ■)
 
 iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
 iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
-  (Fin (k ^ (m ×' n))         ≃⟨ Fin^homo (m ×' n) k ⟩
-   (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k)) ⟩
-   (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe ⟩
+   (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k                                    ⟩
+   (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
+   (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe                                       ⟩
    (Fin m → (Fin n → Fin k))  ≃⟨ →-cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
-   (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n)) ⟩
-   Fin (k ^ n ^ m)            ■)
+   (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n))                             ⟩
+    Fin (k ^ n ^ m)           ■)
 
 \end{code}
 

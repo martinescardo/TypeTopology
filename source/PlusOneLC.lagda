@@ -14,6 +14,7 @@ open import SpartanMLTT
 
 open import Plus-Properties
 open import UF-Base
+open import UF-Retracts
 open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
@@ -94,16 +95,17 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-
 
 +𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
 +𝟙-cancellable {𝓤} {𝓥} {X} {Y} (φ , e) =
-   X                  ≃⟨ add-and-remove-point ⟩
-  (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *) ⟩
+   X                  ≃⟨ add-and-remove-point                              ⟩
+  (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *)    ⟩
   (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
-                              (φ (inr *))
-                              (equivalences-preserve-isolatedness φ e (inr *) new-point-is-isolated) ⟩
+                          (φ (inr *))
+                          (equivalences-preserve-isolatedness φ e (inr *)
+                            new-point-is-isolated)                         ⟩
    Y ■
 
 \end{code}
 
-Added Friday 8th November 2019:
+Added Friday 8th November 2019.
 
 \begin{code}
 
@@ -204,7 +206,119 @@ swap-involutive a b i j x = γ (i x) (j x)
     swap a b i j x                ≡⟨ swap-equation₂ a b i j x m n                     ⟩
     x                             ∎
 
+swap-is-equiv : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b)
+              → is-equiv (swap a b i j)
+swap-is-equiv a b i j = qinvs-are-equivs
+                         (swap a b i j)
+                         (swap a b i j , (swap-involutive a b i j , swap-involutive a b i j))
+
+≃-swap : {X : 𝓤 ̇ } (a b : X) (i : is-isolated a) (j : is-isolated b) → X ≃ X
+≃-swap a b i j = swap a b i j , swap-is-equiv a b i j
+
+open import UF-EquivalenceExamples
+
+co-derived-set : 𝓤 ̇ → 𝓤 ̇
+co-derived-set X = Σ \(x : X) → is-isolated x
+
+module another-approach where
+
+ back : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → (X ≃ Y) × co-derived-set (Y + 𝟙) → X + 𝟙 ≃ Y + 𝟙
+ back {𝓤} {𝓥} X Y (e , (z , i)) =
+    X + 𝟙   ≃⟨ +cong e (one-𝟙-only 𝓤 𝓥) ⟩
+    Y + 𝟙   ≃⟨ ≃-swap z (inr *) i new-point-is-isolated ⟩
+    (Y + 𝟙) ■
+
+ lemma₀ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X + 𝟙 {𝓦} → Y + 𝟙 {𝓣})
+        → f (inr *) ≡ inr *
+        → is-section f
+        → (x : X) → Σ \(y : Y) → f (inl x) ≡ inl y
+ lemma₀ X Y f p (g , gf) x = γ x (f (inl x)) refl
+  where
+   γ : (x : X) (z : Y + 𝟙) → f (inl x) ≡ z → Σ \(y : Y) → z ≡ inl y
+   γ x (inl y) q = y , refl
+   γ x (inr *) q = 𝟘-elim (+disjoint (inl x         ≡⟨ (gf (inl x))⁻¹ ⟩
+                                      g (f (inl x)) ≡⟨ ap g q         ⟩
+                                      g (inr *)     ≡⟨ ap g (p ⁻¹)    ⟩
+                                      g (f (inr *)) ≡⟨ gf (inr *)     ⟩
+                                      inr *         ∎))
+
+ lemma₁ : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X + 𝟙 {𝓦} → Y + 𝟙 {𝓣})
+        → f (inr *) ≡ inr *
+        → is-equiv f
+        → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
+ lemma₁ {𝓤} {𝓥} X Y f p i = γ (equivs-are-qinvs f i)
+  where
+   γ : qinv f → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
+   γ (g , η , ε) = f' , qinvs-are-equivs f' (g' , η' , ε') , h
+    where
+     f' : X → Y
+     f' x = pr₁ (lemma₀ X Y f p (g , η) x)
+     a : (x : X) → f (inl x) ≡ inl (f' x)
+     a x = pr₂ (lemma₀ X Y f p (g , η) x)
+     q = g (inr *)     ≡⟨ (ap g p)⁻¹ ⟩
+         g (f (inr *)) ≡⟨ η (inr *)  ⟩
+         inr *         ∎
+     g' : Y → X
+     g' x = pr₁ (lemma₀ Y X g q (f , ε) x)
+     b : (y : Y) → g (inl y) ≡ inl (g' y)
+     b y = pr₂ (lemma₀ Y X g q (f , ε) y)
+     η' : g' ∘ f' ∼ id
+     η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹   ⟩
+                    g (inl (f' x))  ≡⟨ (ap g (a x))⁻¹ ⟩
+                    g (f (inl x))   ≡⟨ η (inl x)      ⟩
+                    inl x           ∎)
+     ε' : f' ∘ g' ∼ id
+     ε' y = inl-lc (inl (f' (g' y)) ≡⟨ (a (g' y))⁻¹   ⟩
+                    f (inl (g' y))  ≡⟨ (ap f (b y))⁻¹ ⟩
+                    f (g (inl y))   ≡⟨ ε (inl y)      ⟩
+                    inl y           ∎)
+
+     h : f ∼ +functor f' unique-to-𝟙
+     h (inl x) = a x
+     h (inr *) = p
+
+ forth : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+       → (X + 𝟙 {𝓦} ≃ Y + 𝟙 {𝓣}) → co-derived-set (Y + 𝟙) × (X ≃ Y)
+ forth {𝓤} {𝓥} {𝓦} {𝓣} X Y (g , i) = (t₀ , a) , f' , l
+  where
+   t₀ : Y + 𝟙
+   t₀ = g (inr *)
+
+   a : is-isolated t₀
+   a = equivalences-preserve-isolatedness g i (inr *) new-point-is-isolated
+
+   b : is-isolated (inr * ∶ Y + 𝟙 {𝓣})
+   b = new-point-is-isolated
+
+   h : Y + 𝟙 → Y + 𝟙
+   h = swap t₀ (inr *) a b
+
+   j : h ∘ h ∼ id
+   j = swap-involutive t₀ (inr *) a b
+
+   k : is-equiv h
+   k = swap-is-equiv t₀ (inr *) a b
+
+   f : X + 𝟙 → Y + 𝟙
+   f = h ∘ g
+
+   p : f (inr *) ≡ inr *
+   p = swap-equation₀ t₀ (inr *) a b
+
+   f' : X → Y
+   f' = pr₁ (lemma₁ X Y f p (∘-is-equiv i k))
+
+   l : is-equiv f'
+   l = pr₁ (pr₂ (lemma₁ X Y f p (∘-is-equiv i k)))
+
+   m : f ∼ +functor f' unique-to-𝟙
+   m = pr₂ (pr₂ (lemma₁ X Y f p (∘-is-equiv i k)))
+
 \end{code}
+
+These maps are mutually inverse (hopefully this will be included
+soon).
+
 
 Precedences:
 

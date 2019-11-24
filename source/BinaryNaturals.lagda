@@ -588,7 +588,7 @@ two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
 
 two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
 two-ℕ-plus-𝟙 =
-    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +-cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
+    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
     𝔹 ∔ (𝔹 ∔ 𝟙)  ≃⟨ two-𝔹-plus-𝟙 ⟩
     𝔹             ≃⟨ binary-equiv ⟩
     ℕ ■
@@ -614,10 +614,10 @@ module examples where
  example-pair : pair (5 , 6) ≡ 415
  example-pair = refl
 
- ex17 : eqtofun (≃-sym two-ℕ) 17 ≡ inr 8
+ ex17 : ⌜ ≃-sym two-ℕ ⌝ 17 ≡ inr 8
  ex17 = refl
 
- ex18 : eqtofun (≃-sym two-ℕ) 18 ≡ inl 9
+ ex18 : ⌜ ≃-sym two-ℕ ⌝ 18 ≡ inl 9
  ex18 = refl
 
 \end{code}

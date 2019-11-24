@@ -108,7 +108,7 @@ module _ {𝓤 : Universe}
 
  ⊑'-prop-valued : is-set X → {l m : 𝓛 X} → is-prop (l ⊑' m)
  ⊑'-prop-valued s {l} {m} =
-  Π-is-prop fe λ (d : is-defined l) → lifting-of-set-is-a-set s 
+  Π-is-prop fe λ (d : is-defined l) → lifting-of-set-is-a-set s
 
  is-defined-η-≡ : {l : 𝓛 X} (d : is-defined l) → l ≡ η (value l d)
  is-defined-η-≡ {l} d =
@@ -118,7 +118,7 @@ module _ {𝓤 : Universe}
  ⋍-to-≡ {l} {m} (deq , veq) = ⊑-anti pe fe fe (a , b)
   where
    a : l ⊑ m
-   a = eqtofun deq , happly veq
+   a = ⌜ deq ⌝ , happly veq
    b : m ⊑ l
    b = (back-eqtofun deq , h)
     where
@@ -130,14 +130,14 @@ module _ {𝓤 : Universe}
        e : is-defined l
        e = back-eqtofun deq d
        d' : is-defined m
-       d' = eqtofun deq e
-        
+       d' = ⌜ deq ⌝ e
+
 module _ {𝓤 : Universe}
          {X : 𝓤 ̇ }
          {𝓥 : Universe}
          {Y : 𝓥 ̇ }
        where
- 
+
  ♯-is-defined : (f : X → 𝓛 Y) (l : 𝓛 X) → is-defined ((f ♯) l) → is-defined l
  ♯-is-defined f l = pr₁
 
@@ -171,4 +171,3 @@ module _ {𝓤 : Universe}
      s d = refl
 
 \end{code}
-

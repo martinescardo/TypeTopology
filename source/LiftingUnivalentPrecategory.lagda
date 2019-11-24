@@ -183,7 +183,7 @@ construction of _⋍·_ in another module:
 ⊑-anti-sip : is-univalent 𝓣 → funext 𝓣 𝓤
            → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
 ⊑-anti-sip ua fe {Q , ψ , j} {P , φ , i} ((f , δ) , (g , ε)) =
- eqtofun (≃-sym (𝓛-Id· ua fe (Q , ψ , j) (P , φ , i))) γ
+ ⌜ ≃-sym (𝓛-Id· ua fe (Q , ψ , j) (P , φ , i)) ⌝ γ
  where
   e : Q ≃ P
   e = f , ((g , (λ p → i (f (g p)) p)) , (g , (λ q → j (g (f q)) q)))
@@ -238,7 +238,7 @@ to-from fe l m ((f , δ) , g) = b
 ⊑-anti-equiv : is-univalent 𝓣 → funext 𝓣 𝓤
              → (l m : 𝓛 X)
              → (l ⊑ m) × (m ⊑ l) ≃ (l ≡ m) × (m ≡ l)
-⊑-anti-equiv ua fe l m = γ ● (×-cong (⊑-anti-equiv-lemma ua fe l m)
+⊑-anti-equiv ua fe l m = γ ● (×cong (⊑-anti-equiv-lemma ua fe l m)
                                      (⊑-anti-equiv-lemma ua fe m l))
  where
   A = (l ⊑ m) × (m ⊑ l)
@@ -357,7 +357,7 @@ Using this we have the following, as promised:
 
   a = ⊑-open fe fe₀ fe₂ l m
   b =  ≃-sym 𝟙-rneutral
-  c = ×-cong (≃-refl _) (≃-sym s)
+  c = ×cong (≃-refl _) (≃-sym s)
   d = ≃-sym ΠΣ-distr-≃
   e = →-cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
 
@@ -372,7 +372,7 @@ elements of hom-type l ⊑ m as partial element of identity the type l ≡ m.
 ⊑-lift : is-univalent 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤) → funext 𝓣 (𝓣 ⊔ 𝓤)
        → (l m : 𝓛 X) → l ⊑ m → 𝓛 (l ≡ m)
 ⊑-lift ua fe₀ fe₁ fe₂ l m α = is-defined l ,
-                              eqtofun (⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m) α ,
+                              ⌜ ⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m ⌝ α ,
                               being-defined-is-a-prop l
 
 

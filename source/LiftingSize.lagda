@@ -98,8 +98,8 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
                  (to-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ∘ to-resize ρ Q j ,
                  (λ r → resize-is-a-prop ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) _ r) ,
                  (λ q → j _ q))
-      b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ≡ g ∘ eqtofun a
-      b = ap (g ∘_) (dfunext (funext-from-univalence ua) (λ r → j _ (eqtofun a r)))
+      b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ≡ g ∘ ⌜ a ⌝
+      b = ap (g ∘_) (dfunext (funext-from-univalence ua) (λ r → j _ (⌜ a ⌝ r)))
     γφ : (m : L) → γ (φ m) ≡ m
     γφ (P , f , i) = ⋍-gives-≡ 𝓤 ua' (a , b)
      where
@@ -108,8 +108,8 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
                  (to-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ∘ to-resize ρ P i ,
                  (λ r → resize-is-a-prop ρ (resize ρ P i) (resize-is-a-prop ρ P i) _ r) ,
                  (λ q → i _ q))
-      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ≡ f ∘ eqtofun a
-      b = ap (f ∘_) (dfunext (funext-from-univalence ua') (λ r → i _ (eqtofun a r)))
+      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ≡ f ∘ ⌜ a ⌝
+      b = ap (f ∘_) (dfunext (funext-from-univalence ua') (λ r → i _ (⌜ a ⌝ r)))
 
 \end{code}
 
@@ -130,10 +130,10 @@ Added 8th Feb 2019.
 𝓛-resizing₀ (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
  where
   up : Ω₀ → Ω 𝓣
-  up = eqtofun e₀
+  up = ⌜ e₀ ⌝
 
   up-is-equiv : is-equiv up
-  up-is-equiv = eqtofun-is-an-equiv e₀
+  up-is-equiv = ⌜⌝-is-equiv e₀
 
   d : (Σ \(p : Ω₀) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
   d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
@@ -155,10 +155,10 @@ more parsimonious.
 𝓛-resizing (O , ε) X = (Σ \(p : O) → up p holds → X) , ≃-comp d e
  where
   up : O → Ω 𝓣
-  up = eqtofun ε
+  up = ⌜ ε ⌝
 
   up-is-equiv : is-equiv up
-  up-is-equiv = eqtofun-is-an-equiv ε
+  up-is-equiv = ⌜⌝-is-equiv ε
 
   d : (Σ \(p : O) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
   d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv

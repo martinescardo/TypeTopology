@@ -231,7 +231,6 @@ propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
 prop-univalent-≃ : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇ ) → is-prop P → (X ≡ P) ≃ (X ≃ P)
 prop-univalent-≃ pe fe X P i = idtoeq X P , propext-funext-give-prop-ua pe fe X P i
 
-
 \end{code}
 
 The so-called type-theoretic axiom of choice (already defined in

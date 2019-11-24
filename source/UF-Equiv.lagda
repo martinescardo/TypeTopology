@@ -78,11 +78,13 @@ Eq = _≃_
 Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
-eqtofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
-eqtofun (f , _) = f
+eqtofun ⌜_⌝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
+eqtofun = pr₁
+⌜_⌝     = eqtofun
 
-eqtofun-is-an-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv (eqtofun e)
+eqtofun-is-an-equiv ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝
 eqtofun-is-an-equiv = pr₂
+⌜⌝-is-equiv         = eqtofun-is-an-equiv
 
 back-eqtofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
@@ -106,7 +108,7 @@ eqtoeq-agreement : (X Y : 𝓤 ̇ ) (p : X ≡ Y)
 eqtoeq-agreement {𝓤} X _ refl = refl
 
 idtofun : (X Y : 𝓤 ̇ ) → X ≡ Y → X → Y
-idtofun X Y p = eqtofun (idtoeq X Y p)
+idtofun X Y p = ⌜ idtoeq X Y p ⌝
 
 idtofun-agreement : (X Y : 𝓤 ̇ ) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
 idtofun-agreement X Y refl = refl
@@ -475,9 +477,7 @@ logically-equivalent-props-are-equivalent i j f g = qinveq f (g , (λ p → i (g
                                                                   (λ q → j (f (g q)) q))
 
 equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
-equiv-to-set e = subtypes-of-sets-are-sets
-                   (eqtofun e)
-                   (equivs-are-lc (eqtofun e) (eqtofun-is-an-equiv e))
+equiv-to-set e = subtypes-of-sets-are-sets ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 
 5th March 2019. A more direct proof the quasi-invertible maps
