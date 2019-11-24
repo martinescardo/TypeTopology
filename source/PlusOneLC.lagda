@@ -105,7 +105,7 @@ add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-
 
 \end{code}
 
-Added Friday 8th November 2019.
+Added Friday 8th November 2019 (but going back to 2017).
 
 \begin{code}
 
@@ -279,34 +279,34 @@ module another-approach where
 
  forth : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
        → (X + 𝟙 {𝓦} ≃ Y + 𝟙 {𝓣}) → co-derived-set (Y + 𝟙) × (X ≃ Y)
- forth {𝓤} {𝓥} {𝓦} {𝓣} X Y (g , i) = (t₀ , a) , f' , l
+ forth {𝓤} {𝓥} {𝓦} {𝓣} X Y (g , i) = (t₀ , j) , f' , m
   where
    t₀ : Y + 𝟙
    t₀ = g (inr *)
 
-   a : is-isolated t₀
-   a = equivalences-preserve-isolatedness g i (inr *) new-point-is-isolated
+   j : is-isolated t₀
+   j = equivalences-preserve-isolatedness g i (inr *) new-point-is-isolated
 
-   b : is-isolated (inr * ∶ Y + 𝟙 {𝓣})
-   b = new-point-is-isolated
+   k : is-isolated (inr * ∶ Y + 𝟙 {𝓣})
+   k = new-point-is-isolated
 
    h : Y + 𝟙 → Y + 𝟙
-   h = swap t₀ (inr *) a b
+   h = swap t₀ (inr *) j k
 
-   k : is-equiv h
-   k = swap-is-equiv t₀ (inr *) a b
+   l : is-equiv h
+   l = swap-is-equiv t₀ (inr *) j k
 
    f : X + 𝟙 → Y + 𝟙
    f = h ∘ g
 
    p : f (inr *) ≡ inr *
-   p = swap-equation₀ t₀ (inr *) a b
+   p = swap-equation₀ t₀ (inr *) j k
 
    f' : X → Y
-   f' = pr₁ (lemma₁ X Y f p (∘-is-equiv i k))
+   f' = pr₁ (lemma₁ X Y f p (∘-is-equiv i l))
 
-   l : is-equiv f'
-   l = pr₁ (pr₂ (lemma₁ X Y f p (∘-is-equiv i k)))
+   m : is-equiv f'
+   m = pr₁ (pr₂ (lemma₁ X Y f p (∘-is-equiv i l)))
 
 \end{code}
 
