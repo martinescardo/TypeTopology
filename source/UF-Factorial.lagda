@@ -345,7 +345,7 @@ general and have X and Y as module parameters:
 
    η : φ ∘ γ ∼ id
    η ((f , i) , p) = to-Σ-≡
-                      (to-Σ-≡ (r , being-equiv-is-a-prop fe f _ _) ,
+                      (to-subtype-≡ (being-equiv-is-a-prop fe) r ,
                       isolated-is-h-isolated (f (inr *))
                        (equivs-preserve-isolatedness f i (inr *) new-point-is-isolated) _ p)
     where
@@ -466,9 +466,9 @@ general and have X and Y as module parameters:
      p' = swap-equation₀ (g (inr *)) (inr *) l new-point-is-isolated
 
      s : ((g (inr *) , l) , ((f' , j') , p')) ≡ ((t , i) , ((f , j) , p))
-     s = to-×-≡ r (to-Σ-≡ (o , n - p))
+     s = to-×-≡ r (to-Σ-≡ (o , n top' p))
       where
-       - = transport (λ - → ⌜ - ⌝ (inr *) ≡ inr *) o p'
+       top' = transport (λ - → ⌜ - ⌝ (inr *) ≡ inr *) o p'
 
  step₄ : co-derived-set (Y+𝟙) × (X ≃ Y) ≃ (X+𝟙 ≃ Y+𝟙)
  step₄ = step₂ ● step₃
