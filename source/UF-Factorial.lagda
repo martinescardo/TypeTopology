@@ -219,17 +219,17 @@ We construct/prove this in four steps:
 
 Hence
 
-(2) co-derived-set (Y + 𝟙) × (X ≃ Y)
-  ≃ co-derived-set (Y + 𝟙) × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+(2) (Y + 𝟙)' × (X ≃ Y)
+  ≃ (Y + 𝟙)' × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
 
 Also
 
-(3) co-derived-set (Y + 𝟙) × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+(3) (Y + 𝟙)' × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
   ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 And therefore
 
-(4) co-derived-set (Y + 𝟙) × (X ≃ Y) ≃ (X + 𝟙 ≃ Y + 𝟙)
+(4) (Y + 𝟙)' × (X ≃ Y) ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 \begin{code}
 
