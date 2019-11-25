@@ -350,15 +350,15 @@ module _ {𝓤 𝓥 𝓦 𝓣}
        l : ¬ fiber (g x) b
        l (a , refl) = n ((x , a) , refl)
 
-inl-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-              → is-embedding (inl {𝓤} {𝓥} {X} {Y})
-inl-embedding {𝓤} {𝓥} X Y (inl a) (.a , refl) (.a , refl) = refl
-inl-embedding {𝓤} {𝓥} X Y (inr b) (x , p) (x' , p') = 𝟘-elim (+disjoint p)
+inl-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                 → is-embedding (inl {𝓤} {𝓥} {X} {Y})
+inl-is-embedding {𝓤} {𝓥} X Y (inl a) (.a , refl) (.a , refl) = refl
+inl-is-embedding {𝓤} {𝓥} X Y (inr b) (x , p) (x' , p') = 𝟘-elim (+disjoint p)
 
-inr-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
-              → is-embedding (inr {𝓤} {𝓥} {X} {Y})
-inr-embedding {𝓤} {𝓥} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
-inr-embedding {𝓤} {𝓥} X Y (inr a) (.a , refl) (.a , refl) = refl
+inr-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+                 → is-embedding (inr {𝓤} {𝓥} {X} {Y})
+inr-is-embedding {𝓤} {𝓥} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
+inr-is-embedding {𝓤} {𝓥} X Y (inr a) (.a , refl) (.a , refl) = refl
 
 maps-of-props-are-embeddings : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } (f : P → Q)
                              → is-prop P → is-prop Q → is-embedding f

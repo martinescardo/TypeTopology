@@ -26,6 +26,9 @@ open import UF-FunExt
 is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → decidable(x ≡ y)
 
+is-perfect : 𝓤 ̇ → 𝓤 ̇
+is-perfect X = ¬ Σ \(x : X) → is-isolated x
+
 is-isolated' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated' x = ∀ y → decidable(y ≡ x)
 

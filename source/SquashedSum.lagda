@@ -80,7 +80,7 @@ over : ℕ → ℕ + 𝟙
 over = inl {𝓤₀} {𝓤₀}
 
 over-embedding : is-embedding over
-over-embedding = inl-embedding ℕ 𝟙
+over-embedding = inl-is-embedding ℕ 𝟙
 
 Σ₁ :(ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σ₁ X = Σ (X / over)
@@ -210,7 +210,7 @@ Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n 
          → (n : ℕ) → Over X Y f (inl n)
          ≡ λ (φ : (X / over) (inl n)) (w : fiber over (inl n)) →
              transport (λ - → Y (pr₁ -))
-                       (inl-embedding ℕ 𝟙 (inl n) (n , refl) w)
+                       (inl-is-embedding ℕ 𝟙 (inl n) (n , refl) w)
                        (f n (φ (n , refl)))
 Over-inl X Y f n = refl
 

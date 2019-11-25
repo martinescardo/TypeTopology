@@ -16,6 +16,7 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
+open import UF-Embeddings
 
 decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
 decidable-is-collapsible (inl x) = pointed-types-are-collapsible x
@@ -68,6 +69,21 @@ discrete-inr fe d x = isolated-inr fe x (d x)
 
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ≡ x)
 isolated-Id-is-prop x i = local-hedberg' x (λ y → decidable-is-collapsible (i y))
+
+lc-maps-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → left-cancellable f
+                             → (x : X) → is-isolated (f x) → is-isolated x
+lc-maps-reflect-isolatedness f l x i y = γ (i (f y))
+ where
+  γ : (f x ≡ f y) + ¬ (f x ≡ f y) → (x ≡ y) + ¬ (x ≡ y)
+  γ (inl p) = inl (l p)
+  γ (inr n) = inr (contrapositive (ap f) n)
+
+embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                → is-embedding f
+                                → (x : X) → is-isolated (f x) → is-isolated x
+embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
+                                              (embedding-lc f e) x i y
 
 Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
               → is-discrete X → ((x : X) → is-discrete(Y x)) → is-discrete(Σ Y)

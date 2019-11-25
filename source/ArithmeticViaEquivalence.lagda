@@ -377,6 +377,7 @@ iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
 
 \end{code}
 
+
 Operator precedences:
 
 \begin{code}

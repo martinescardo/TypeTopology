@@ -58,6 +58,9 @@ We refer to set of isolated points as the co derived set (for
 complement of the derived set, in the sense of Cantor, consisting of
 the limit points, i.e. non-isolated points).
 
+Recall that a point x : X is isolated if the identity type x ≡ y is
+decidable for every y : X.
+
 \begin{code}
 
 co-derived-set : 𝓤 ̇ → 𝓤 ̇
@@ -74,8 +77,30 @@ cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated
                                (λ x → pointed-props-are-singletons (d x)
                                        (being-isolated-is-a-prop fe x))
 
+\end{code}
+
+Recall that a type is perfect if it has no isolated points.
+
+\begin{code}
+
 ≃-cods : (X : 𝓤 ̇ ) → is-discrete X → co-derived-set X ≃ X
 ≃-cods X d = cods-embedding X , cods-embedding-is-equiv X d
+
+≃-perfect : (X : 𝓤 ̇ ) → is-perfect X → is-empty (co-derived-set X)
+≃-perfect X i = γ
+ where
+  γ : co-derived-set X → 𝟘
+  γ (x , j) = i (x , j)
+
+≃-perfect₁ : (X : 𝓤 ̇ ) → is-perfect X → is-singleton (co-derived-set (X + 𝟙 {𝓥}))
+≃-perfect₁ X i = (inr * , new-point-is-isolated) , γ
+ where
+  γ : (c : co-derived-set (X + 𝟙)) → inr * , new-point-is-isolated ≡ c
+  γ (inl x , j) = 𝟘-elim (i (x , a))
+   where
+    a : is-isolated x
+    a = embeddings-reflect-isolatedness inl (inl-is-embedding X 𝟙) x j
+  γ (inr * , j) = to-Σ-≡' (being-isolated-is-a-prop fe (inr *) new-point-is-isolated j)
 
 \end{code}
 
@@ -483,7 +508,8 @@ X ! = (X ≃ X)
 general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × X ! ≃ (X + 𝟙)!
 general-factorial {𝓤} X = factorial-steps.step₄ 𝓤 𝓤 X X
 
-discrete-factorial : (X : 𝓤 ̇ ) → is-discrete X
+discrete-factorial : (X : 𝓤 ̇ )
+                   → is-discrete X
                    → (X + 𝟙) × X ! ≃ (X + 𝟙)!
 discrete-factorial X d = γ
  where
@@ -493,6 +519,13 @@ discrete-factorial X d = γ
      co-derived-set (X + 𝟙) × X ! ≃⟨ general-factorial X ⟩
      (X + 𝟙) !                    ■
 
+perfect-factorial : (X : 𝓤 ̇ )
+                  → is-perfect X
+                  → X ! ≃ (X + 𝟙)!
+perfect-factorial X i = X !                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})            ⟩
+                        𝟙 × X !                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (≃-perfect₁ X i))) (≃-refl (X !)) ⟩
+                        co-derived-set (X + 𝟙) × X ! ≃⟨ general-factorial X                                           ⟩
+                        (X + 𝟙) !                    ■
 \end{code}
 
 We should not forget the "base case":
