@@ -52,13 +52,32 @@ id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
            → is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
-∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf'))  =
-  (g ∘ g' , fg'') , (h ∘ h' , hf'')
+∘-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf')) =
+ (g ∘ g' , fg'') , (h ∘ h' , hf'')
  where
   fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
   fg'' z =  ap f' (fg (g' z)) ∙ fg' z
   hf'' : (x : X) → h(h'(f'(f x))) ≡ x
   hf'' x = ap h (hf' (f x)) ∙ hf x
+
+\end{code}
+
+For type-checking efficiency reasons:
+
+\begin{code}
+
+∘-is-equiv-abstract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
+                    → is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
+∘-is-equiv-abstract {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} = γ
+ where
+  abstract
+   γ : is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
+   γ ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf')) = (g ∘ g' , fg'') , (h ∘ h' , hf'')
+    where
+     fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
+     fg'' z =  ap f' (fg (g' z)) ∙ fg' z
+     hf'' : (x : X) → h(h'(f'(f x))) ≡ x
+     hf'' x = ap h (hf' (f x)) ∙ hf x
 
 ≃-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z → X ≃ Z
 ≃-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , ∘-is-equiv d e
@@ -79,7 +98,7 @@ Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
 eqtofun ⌜_⌝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
-eqtofun = pr₁
+eqtofun = Eqtofun _ _
 ⌜_⌝     = eqtofun
 
 eqtofun-is-an-equiv ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝
@@ -457,6 +476,11 @@ pr₁-is-vv-equiv {𝓤} {𝓥} X Y iss x = g
   g : is-singleton (fiber pr₁ x)
   g = c , f
 
+pr₁-is-equiv : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+             → ((x : X) → is-singleton (Y x))
+             → is-equiv (pr₁ {𝓤} {𝓥} {X} {Y})
+pr₁-is-equiv {𝓤} {𝓥} X Y iss = vv-equivs-are-equivs pr₁ (pr₁-is-vv-equiv X Y iss)
+
 pr₁-is-vv-equiv-converse : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                       → is-vv-equiv (pr₁ {𝓤} {𝓥} {X} {A})
                       → ((x : X) → is-singleton(A x))
@@ -517,5 +541,5 @@ infix  0 _≃_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
 infixl 2 _●_
-
+infix  1 ⌜_⌝
 \end{code}

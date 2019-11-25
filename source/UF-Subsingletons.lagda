@@ -270,6 +270,13 @@ singleton-type' x = Σ \y → y ≡ x
           → is-prop X → is-prop Y → is-prop(X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
+to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
+               {x y : X} {a : A x} {b : A y}
+             → ((x : X) → is-prop (A x))
+             → x ≡ y
+             → (x , a) ≡ (y , b)
+to-subtype-≡ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
+
 subtype-of-prop-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-prop Y → is-prop X
 subtype-of-prop-is-a-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
@@ -312,7 +319,7 @@ inr-lc-is-section refl = refl
   r = ap (ap inr) (j (inr-lc p) (inr-lc q))
 
 ×-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-set X → is-set Y → is-set (X × Y)
-×-is-set i j {(x , y)} {(x' , y')} p q = 
+×-is-set i j {(x , y)} {(x' , y')} p q =
  p            ≡⟨ tofrom-×-≡ p ⟩
  to-×-≡ p₀ p₁ ≡⟨ ap₂ (λ -₀ -₁ → to-×-≡ -₀ -₁) (i p₀ q₀) (j p₁ q₁) ⟩
  to-×-≡ q₀ q₁ ≡⟨ (tofrom-×-≡ q)⁻¹ ⟩
@@ -324,7 +331,7 @@ inr-lc-is-section refl = refl
   q₀ : x ≡ x'
   q₀ = pr₁ (from-×-≡' q)
   q₁ : y ≡ y'
-  q₁ = pr₂ (from-×-≡' q) 
+  q₁ = pr₂ (from-×-≡' q)
 
 \end{code}
 

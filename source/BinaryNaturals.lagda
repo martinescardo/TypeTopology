@@ -611,14 +611,8 @@ module examples where
  example-riap : riap 17 ≡ (1 , 4)
  example-riap = refl
 
- example-pair : pair (5 , 6) ≡ 415
+ example-pair : pair (1 , 4) ≡ 17
  example-pair = refl
-
- ex17 : ⌜ ≃-sym two-ℕ ⌝ 17 ≡ inr 8
- ex17 = refl
-
- ex18 : ⌜ ≃-sym two-ℕ ⌝ 18 ≡ inl 9
- ex18 = refl
 
 \end{code}
 

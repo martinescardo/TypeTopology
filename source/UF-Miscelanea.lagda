@@ -29,6 +29,16 @@ discrete-is-Id-collapsible d = decidable-is-collapsible (d _ _)
 discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
 discrete-types-are-sets d = Id-collapsibles-are-sets(discrete-is-Id-collapsible d)
 
+being-isolated-is-a-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
+being-isolated-is-a-prop {𝓤} fe x i = γ i
+ where
+  γ : is-prop (is-isolated x)
+  γ = Π-is-prop (fe 𝓤 𝓤)
+        (λ x → sum-of-contradictory-props
+                (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
+                (negations-are-props (fe 𝓤 𝓤₀))
+                (λ p n → n p))
+
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
