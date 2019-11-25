@@ -530,8 +530,9 @@ perfect-factorial X i =
 
 \end{code}
 
-Exercise. Conclude that (-)+𝟙 : 𝓤 ̇ → 𝓤 ̇ is not an embedding, but that
-it is an embedding when restricted to perfect types.
+Exercise. Conclude that the map (-)+𝟙 : 𝓤 ̇ → 𝓤 ̇, although it is
+left-cancellable, is not an embedding, but that it is an embedding
+when restricted to perfect types.
 
 We should not forget the (trivial) "base case":
 
