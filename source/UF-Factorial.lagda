@@ -219,17 +219,17 @@ We construct/prove this in four steps:
 
 Hence
 
-(2) co-derived-set X × (X ≃ Y)
-  ≃ co-derived-set X × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+(2) co-derived-set (Y + 𝟙) × (X ≃ Y)
+  ≃ co-derived-set (Y + 𝟙) × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
 
 Also
 
-(3) co-derived-set X × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+(3) co-derived-set (Y + 𝟙) × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
   ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 And therefore
 
-(4) co-derived-set X × (X ≃ Y) ≃ (X + 𝟙 ≃ Y + 𝟙)
+(4) co-derived-set (Y + 𝟙) × (X ≃ Y) ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 \begin{code}
 
@@ -357,7 +357,7 @@ general and have X and Y as module parameters:
      r = dfunext (fe _ _) (λ z → (s z)⁻¹)
 
    ε : γ ∘ φ ∼ id
-   ε (g , i) = to-Σ-≡ (refl , (being-equiv-is-a-prop fe g _ i))
+   ε (g , i) = to-Σ-≡ (refl , being-equiv-is-a-prop fe g _ i)
 
 
  step₂ : co-derived-set (Y+𝟙) × (X ≃ Y)
