@@ -126,6 +126,7 @@ import TotallySeparated
 import Two
 import Two-Prop-Density
 import Two-Properties
+import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
@@ -143,7 +144,6 @@ import UF-IdEmbedding
 import UF-ImageAndSurjection
 import UF-Knapp-UA
 import UF-KrausLemma
-import UF
 import UF-LeftCancellable
 import UF-Miscelanea
 import UF-PropIndexedPiSigma

@@ -497,6 +497,24 @@ discrete-factorial X d = γ
 
 \end{code}
 
+We should not forget the "base case":
+
+\begin{code}
+
+factorial-base : (𝟘 {𝓤})! ≃ 𝟙 {𝓥}
+factorial-base = f , ((g , η) , (g , ε))
+ where
+  f : 𝟘 ! → 𝟙
+  f = unique-to-𝟙
+  g : 𝟙 → 𝟘 !
+  g _ = id , ((id , (λ _ → refl)) , (id , (λ _ → refl)))
+  η : (x : 𝟙) → f (g x) ≡ x
+  η * = refl
+  ε : (e : 𝟘 !) → g (f e) ≡ e
+  ε (φ , i) = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
+
+\end{code}
+
 Precedences:
 
 \begin{code}
