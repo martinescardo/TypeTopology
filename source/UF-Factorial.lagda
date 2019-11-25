@@ -77,14 +77,14 @@ cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated
                                (λ x → pointed-props-are-singletons (d x)
                                        (being-isolated-is-a-prop fe x))
 
+≃-cods : (X : 𝓤 ̇ ) → is-discrete X → co-derived-set X ≃ X
+≃-cods X d = cods-embedding X , cods-embedding-is-equiv X d
+
 \end{code}
 
 Recall that a type is perfect if it has no isolated points.
 
 \begin{code}
-
-≃-cods : (X : 𝓤 ̇ ) → is-discrete X → co-derived-set X ≃ X
-≃-cods X d = cods-embedding X , cods-embedding-is-equiv X d
 
 ≃-perfect : (X : 𝓤 ̇ ) → is-perfect X → is-empty (co-derived-set X)
 ≃-perfect X i = γ
