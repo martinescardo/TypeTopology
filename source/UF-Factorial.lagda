@@ -67,7 +67,7 @@ cods-embedding : (X : 𝓤 ̇ ) → co-derived-set X → X
 cods-embedding X = pr₁
 
 cods-embedding-is-embedding : (X : 𝓤 ̇ ) → is-embedding (cods-embedding X)
-cods-embedding-is-embedding X = pr₁-embedding (being-isolated-is-a-prop fe)
+cods-embedding-is-embedding X = pr₁-is-embedding (being-isolated-is-a-prop fe)
 
 cods-embedding-is-equiv : (X : 𝓤 ̇ ) → is-discrete X → is-equiv (cods-embedding X)
 cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated

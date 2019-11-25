@@ -730,7 +730,7 @@ module /-extension-is-embedding-special-case
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (κ X))
+ ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-a-prop fe (κ X))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -802,7 +802,7 @@ module ∖-extension-is-embedding-special-case
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-embedding (λ X → being-equiv-is-a-prop fe (κ X))
+ ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-a-prop fe (κ X))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -896,7 +896,7 @@ module /-extension-is-embedding
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
+ ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -990,7 +990,7 @@ module ∖-extension-is-embedding
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
+ ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl

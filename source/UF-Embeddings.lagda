@@ -96,21 +96,21 @@ embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
             (pr₁ (fiber-lemma f y))
             (section-lc _ (pr₂ (pr₂ (fiber-lemma f y)))) (g' y)
 
-pr₁-embedding : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-              → ((x : X) → is-prop(Y x))
-              → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
-pr₁-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
+pr₁-is-embedding : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                 → ((x : X) → is-prop(Y x))
+                 → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
+pr₁-is-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
  where
   g : (x , y') , refl ≡ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop(Y x)) → left-cancellable pr₁
-pr₁-lc-bis f {u} {v} r = embedding-lc pr₁ (pr₁-embedding (λ x → f {x})) r
+pr₁-lc-bis f {u} {v} r = embedding-lc pr₁ (pr₁-is-embedding (λ x → f {x})) r
 
-pr₁-embedding-converse : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                       → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
-                       → ((x : X) → is-prop(Y x))
-pr₁-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
+pr₁-is-embedding-converse : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                          → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
+                          → ((x : X) → is-prop(Y x))
+pr₁-is-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
   where
     e : Σ Y → X
     e = pr₁ {𝓤} {𝓥} {X} {Y}

@@ -510,7 +510,7 @@ embedding are themselves embeddings.
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
+  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -586,7 +586,7 @@ embedding are themselves embeddings.
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
+  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -1140,7 +1140,7 @@ reflective-subuniverse-Σ {𝓤} {𝓣} R A φ α κ = ainjective-retract-of-sub
   j : Σ A → 𝓤 ̇
   j = pr₁
   e : is-embedding j
-  e = pr₁-embedding φ
+  e = pr₁-is-embedding φ
 
 reflective-subuniverse-Π : Propositional-resizing
                          → (A : 𝓤 ̇ → 𝓣 ̇ )
@@ -1155,7 +1155,7 @@ reflective-subuniverse-Π {𝓤} {𝓣} R A φ α κ = ainjective-retract-of-sub
   j : Σ A → 𝓤 ̇
   j = pr₁
   e : is-embedding j
-  e = pr₁-embedding φ
+  e = pr₁-is-embedding φ
 
 \end{code}
 
@@ -1236,7 +1236,7 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subty
   j : Σ A → 𝓤 ̇
   j = pr₁
   a : is-embedding j
-  a = pr₁-embedding φ
+  a = pr₁-is-embedding φ
   k : (X → Σ A) → (X → 𝓤 ̇ )
   k = j ∘_
   b : is-embedding k

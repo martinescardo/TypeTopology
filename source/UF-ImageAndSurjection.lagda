@@ -31,12 +31,12 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
 
  restriction-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-embedding(restriction f)
- restriction-embedding f = pr₁-embedding (λ y → ∥∥-is-a-prop)
+ restriction-embedding f = pr₁-is-embedding (λ y → ∥∥-is-a-prop)
 
  corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
              → X → image f
  corestriction f x = f x , ∣ x , refl ∣
- 
+
  constant-maps-to-sets-have-propositional-images : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
                                                  → is-set Y
                                                  → (f : X → Y)
@@ -57,7 +57,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                                                → (f : X → Y)
                                                → constant f
                                                → ∥ X ∥ → image f
- constant-map-to-set-truncation-of-domain-map' X s f c = 
+ constant-map-to-set-truncation-of-domain-map' X s f c =
   ∥∥-rec
   (constant-maps-to-sets-have-propositional-images X s f c)
   (corestriction f)

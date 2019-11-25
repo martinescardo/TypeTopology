@@ -448,7 +448,7 @@ module Image
  restriction f (y , _) = y
 
  restriction-embedding : (f : X → Y) → is-embedding(restriction f)
- restriction-embedding f = pr₁-embedding (λ y → resize-is-a-prop R _ _)
+ restriction-embedding f = pr₁-is-embedding (λ y → resize-is-a-prop R _ _)
 
  corestriction : (f : X → Y) → X → image f
  corestriction f x = f x , to-resize R _ _ ∣ x , refl ∣

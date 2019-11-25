@@ -93,7 +93,7 @@ module subtype-classifier
  χ (X , f , i) y = fiber f y , i y
 
  T : (Y → Ω 𝓤) → Σ \(X : 𝓤 ̇ ) → X ↪ Y
- T P = (Σ \(y : Y) → P y holds) , pr₁ , pr₁-embedding (λ y → holds-is-prop (P y))
+ T P = (Σ \(y : Y) → P y holds) , pr₁ , pr₁-is-embedding (λ y → holds-is-prop (P y))
 
  χT : (P : Y → Ω 𝓤) → χ(T P) ≡ P
  χT P = dfunext fe' γ
@@ -128,7 +128,7 @@ module subtype-classifier
 
  Tχ : (σ : Σ \(X : 𝓤 ̇ ) → X ↪ Y) → T(χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                          (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-embedding i)
+                          (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-is-embedding i)
                          ∙ to-Σ-≡' (being-embedding-is-a-prop fe fe f _ _)))
 
  χ-is-equivalence : is-equiv χ
@@ -437,13 +437,13 @@ module singleton-classifier
    where
     fe : funext 𝓤 𝓤
     fe = funext-from-univalence ua
-    
+
     i   = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) →
            logically-equivalent-props-are-equivalent
             (being-equiv-is-a-prop'' fe f)
             (Π-is-prop fe (λ y → being-a-singleton-is-a-prop fe))
             (equivs-are-vv-equivs f)
-            (vv-equivs-are-equivs f)))    
+            (vv-equivs-are-equivs f)))
     ii  = classification-equivalence
     iii = →-cong fe fe' (≃-refl Y) ψ
      where
