@@ -19,7 +19,7 @@ where the co-derived-set of a type is the subtype of isolated points.
 For example, the circle S¹ doesn't have any isolated points, so that
 the co-derived-set of S¹ + 𝟙 is equivalent to 𝟙, and hence
 
-  s¹ ! ≃ (S¹ + 𝟙)!
+  S¹ ! ≃ (S¹ + 𝟙)!
 
 More generally this is the case for any connected type.
 
