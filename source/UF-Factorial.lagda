@@ -108,7 +108,7 @@ patch-equation₁ {𝓤} {X} a b i f x n = Cases-equality-r (λ _ → b) (λ _ �
 
 \end{code}
 
-The (involutive) swap automorphisms is obtained by patching the
+The (involutive) swap automorphism is obtained by patching the
 identity function twice:
 
 \begin{code}
@@ -511,7 +511,7 @@ factorial-base = f , ((g , η) , (g , ε))
   η : (x : 𝟙) → f (g x) ≡ x
   η * = refl
   ε : (e : 𝟘 !) → g (f e) ≡ e
-  ε (φ , i) = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
+  ε _ = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
 
 \end{code}
 
