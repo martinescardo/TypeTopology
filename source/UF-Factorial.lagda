@@ -86,14 +86,14 @@ Recall that a type is perfect if it has no isolated points.
 
 \begin{code}
 
-≃-perfect : (X : 𝓤 ̇ ) → is-perfect X → is-empty (co-derived-set X)
-≃-perfect X i = γ
+perfect-coderived-empty : (X : 𝓤 ̇ ) → is-perfect X → is-empty (co-derived-set X)
+perfect-coderived-empty X i = γ
  where
   γ : co-derived-set X → 𝟘
   γ (x , j) = i (x , j)
 
-≃-perfect₁ : (X : 𝓤 ̇ ) → is-perfect X → is-singleton (co-derived-set (X + 𝟙 {𝓥}))
-≃-perfect₁ X i = (inr * , new-point-is-isolated) , γ
+perfect-coderived-singleton : (X : 𝓤 ̇ ) → is-perfect X → is-singleton (co-derived-set (X + 𝟙 {𝓥}))
+perfect-coderived-singleton X i = (inr * , new-point-is-isolated) , γ
  where
   γ : (c : co-derived-set (X + 𝟙)) → inr * , new-point-is-isolated ≡ c
   γ (inl x , j) = 𝟘-elim (i (x , a))
@@ -522,13 +522,15 @@ discrete-factorial X d = γ
 perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
                   → X ! ≃ (X + 𝟙)!
-perfect-factorial X i = X !                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})            ⟩
-                        𝟙 × X !                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (≃-perfect₁ X i))) (≃-refl (X !)) ⟩
-                        co-derived-set (X + 𝟙) × X ! ≃⟨ general-factorial X                                           ⟩
-                        (X + 𝟙) !                    ■
+perfect-factorial X i =
+  X !                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})                             ⟩
+  𝟙 × X !                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (X !)) ⟩
+  co-derived-set (X + 𝟙) × X ! ≃⟨ general-factorial X                                                            ⟩
+  (X + 𝟙) !                    ■
+
 \end{code}
 
-We should not forget the "base case":
+We should not forget the (trivial) "base case":
 
 \begin{code}
 
