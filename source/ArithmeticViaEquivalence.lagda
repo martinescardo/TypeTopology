@@ -377,6 +377,49 @@ iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
 
 \end{code}
 
+Added 25t November 2019: Numerical factorial from the type theoretical factorial.
+
+\begin{code}
+
+open import UF-Factorial fe
+open import DiscreteAndSeparated
+
+Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
+Fin-is-discrete zero     = 𝟘-is-discrete
+Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
+
+!construction : (n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Aut (Fin n)
+!construction zero = 1 ,
+                     (Fin 1          ≃⟨ ≃-refl (Fin 1) ⟩
+                      𝟘 + 𝟙          ≃⟨ 𝟘-lneutral     ⟩
+                      𝟙              ≃⟨ factorial-base ⟩
+                      Aut (Fin zero) ■)
+!construction (succ n) = g
+ where
+  IH : Σ \(k : ℕ) → Fin k ≃ Aut(Fin n)
+  IH = !construction n
+  k : ℕ
+  k = pr₁ IH
+  φ : Fin k ≃ Aut(Fin n)
+  φ = pr₂ IH
+  φ' : Fin (succ n ×' k) ≃ Aut(Fin (succ n))
+  φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k ⟩
+       Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ ⟩
+       (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
+       Aut (Fin n + 𝟙)           ■
+  g : Σ \(k' : ℕ) → Fin k' ≃ Aut (Fin (succ n))
+  g = succ n ×' k , φ'
+
+_! : ℕ → ℕ
+n ! = pr₁ (!construction n)
+
+!-base : 0 ! ≡ 1
+!-base = refl
+
+!-step : (n : ℕ) → (succ n)! ≡ succ n ×' n !
+!-step n = refl
+
+\end{code}
 
 Operator precedences:
 
@@ -385,5 +428,7 @@ Operator precedences:
 infixl 20 _+'_
 infixl 22 _×'_
 infixl 23 _^_
+infix 100 _!
+
 
 \end{code}

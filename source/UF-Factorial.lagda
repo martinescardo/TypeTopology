@@ -502,31 +502,31 @@ This is the end of the submodule, which has the following corollaries:
 
 \begin{code}
 
-_! : 𝓤 ̇ → 𝓤 ̇
-X ! = (X ≃ X)
+Aut : 𝓤 ̇ → 𝓤 ̇
+Aut X = (X ≃ X)
 
-general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × X ! ≃ (X + 𝟙)!
+general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × Aut X ≃ Aut(X + 𝟙)
 general-factorial {𝓤} X = factorial-steps.step₄ 𝓤 𝓤 X X
 
 discrete-factorial : (X : 𝓤 ̇ )
                    → is-discrete X
-                   → (X + 𝟙) × X ! ≃ (X + 𝟙)!
+                   → (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
 discrete-factorial X d = γ
  where
- i = ×cong (≃-sym (≃-cods (X + 𝟙) ( +discrete d 𝟙-is-discrete))) (≃-refl (X !))
+ i = ×cong (≃-sym (≃-cods (X + 𝟙) ( +discrete d 𝟙-is-discrete))) (≃-refl (Aut X))
 
- γ = (X + 𝟙) × X !                ≃⟨ i                   ⟩
-     co-derived-set (X + 𝟙) × X ! ≃⟨ general-factorial X ⟩
-     (X + 𝟙) !                    ■
+ γ = (X + 𝟙) × Aut X                ≃⟨ i                   ⟩
+     co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X ⟩
+     Aut (X + 𝟙)                    ■
 
 perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
-                  → X ! ≃ (X + 𝟙)!
+                  → Aut X ≃ Aut (X + 𝟙)
 perfect-factorial X i =
-  X !                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})                             ⟩
-  𝟙 × X !                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (X !)) ⟩
-  co-derived-set (X + 𝟙) × X ! ≃⟨ general-factorial X                                                            ⟩
-  (X + 𝟙) !                    ■
+  Aut X                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})                               ⟩
+  𝟙 × Aut X                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X)) ⟩
+  co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X                                                              ⟩
+  Aut (X + 𝟙)                    ■
 
 \end{code}
 
@@ -538,24 +538,16 @@ We should not forget the (trivial) "base case":
 
 \begin{code}
 
-factorial-base : (𝟘 {𝓤})! ≃ 𝟙 {𝓥}
+factorial-base : 𝟙 {𝓥} ≃ Aut (𝟘 {𝓤})
 factorial-base = f , ((g , η) , (g , ε))
  where
-  f : 𝟘 ! → 𝟙
-  f = unique-to-𝟙
-  g : 𝟙 → 𝟘 !
-  g _ = id , ((id , (λ _ → refl)) , (id , (λ _ → refl)))
-  η : (x : 𝟙) → f (g x) ≡ x
-  η * = refl
-  ε : (e : 𝟘 !) → g (f e) ≡ e
-  ε _ = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
-
-\end{code}
-
-Precedences:
-
-\begin{code}
-
-infix 100 _!
+  f : 𝟙 → Aut 𝟘
+  f _ = id , ((id , (λ _ → refl)) , (id , (λ _ → refl)))
+  g : Aut 𝟘 → 𝟙
+  g = unique-to-𝟙
+  η : (e : Aut 𝟘) → f (g e) ≡ e
+  η _ = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
+  ε : (x : 𝟙) → g (f x) ≡ x
+  ε * = refl
 
 \end{code}
