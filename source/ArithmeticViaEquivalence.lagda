@@ -413,6 +413,12 @@ Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
 _! : ℕ → ℕ
 n ! = pr₁ (!construction n)
 
+\end{code}
+
+The following are theorems rather than definitions:
+
+\begin{code}
+
 !-base : 0 ! ≡ 1
 !-base = refl
 
