@@ -240,19 +240,23 @@ The claim is that the above map is an equivalence.
 
 We construct/prove this in four steps:
 
-(1) (X ≃ Y) ≃ Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+(1)  (X ≃ Y)
+    ≃ Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
 
 Hence
 
-(2) (Y + 𝟙)' × (X ≃ Y) ≃ (Y + 𝟙)' × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+(2) (Y + 𝟙)' × (X ≃ Y)
+  ≃ (Y + 𝟙)' × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
 
 Also
 
-(3) (Y + 𝟙)' × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr * ≃ (X + 𝟙 ≃ Y + 𝟙)
+(3) (Y + 𝟙)' × (Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *)
+  ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 And therefore
 
-(4) (Y + 𝟙)' × (X ≃ Y) ≃ (X + 𝟙 ≃ Y + 𝟙)
+(4) (Y + 𝟙)' × (X ≃ Y)
+  ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 \begin{code}
 

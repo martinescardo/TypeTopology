@@ -3,7 +3,7 @@ Arithmetic via equivalence
 
 Martín Hötzel Escardó
 
-Originally 10 July 2014, modified 10 Oct 2017, 22 March 2018.
+Originally 10 July 2014, modified 10 Oct 2017, 22 March 2018, 25 Nov 2019.
 
 This is a literate proof in univalent mathematics, in Agda notation.
 
