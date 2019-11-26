@@ -414,6 +414,12 @@ Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
   g : Σ \(k' : ℕ) → Fin k' ≃ Aut (Fin (succ n))
   g = succ n ×' k , φ'
 
+\end{code}
+
+Geometric definition of the factorial function:
+
+\begin{code}
+
 _! : ℕ → ℕ
 n ! = pr₁ (!construction n)
 
@@ -426,7 +432,7 @@ The following are theorems rather than definitions:
 !-base : 0 ! ≡ 1
 !-base = refl
 
-!-step : (n : ℕ) → (succ n)! ≡ succ n ×' n !
+!-step : (n : ℕ) → (n +' 1)! ≡ (n +' 1) ×' n !
 !-step n = refl
 
 \end{code}
