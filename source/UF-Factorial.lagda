@@ -272,17 +272,17 @@ module factorial-steps
 
  lemma₀ : (f : X+𝟙 → Y+𝟙)
         → f (inr *) ≡ inr *
-        → is-section f
+        → left-cancellable f
         → (x : X) → Σ \(y : Y) → f (inl x) ≡ inl y
- lemma₀ f p (g , gf) x = γ x (f (inl x)) refl
+ lemma₀ f p l x = γ x (f (inl x)) refl
   where
    γ : (x : X) (z : Y+𝟙) → f (inl x) ≡ z → Σ \(y : Y) → z ≡ inl y
    γ x (inl y) q = y , refl
-   γ x (inr *) q = 𝟘-elim (+disjoint (inl x         ≡⟨ (gf (inl x))⁻¹ ⟩
-                                      g (f (inl x)) ≡⟨ ap g q         ⟩
-                                      g (inr *)     ≡⟨ ap g (p ⁻¹)    ⟩
-                                      g (f (inr *)) ≡⟨ gf (inr *)     ⟩
-                                      inr *         ∎))
+   γ x (inr *) q = 𝟘-elim (+disjoint (l r))
+    where
+     r : f (inl x) ≡ f (inr *)
+     r = q ∙ p ⁻¹
+
 \end{code}
 
 The following is the same as the above with X and Y swapped. It seems
@@ -293,17 +293,16 @@ general and have X and Y as module parameters:
 
  lemma₁ : (g : Y+𝟙 → X+𝟙)
         → g (inr *) ≡ inr *
-        → is-section g
+        → left-cancellable g
         → (y : Y) → Σ \(x : X) → g (inl y) ≡ inl x
- lemma₁ g p (f , fg) y = γ y (g (inl y)) refl
+ lemma₁ g p l x = γ x (g (inl x)) refl
   where
    γ : (y : Y) (t : X+𝟙) → g (inl y) ≡ t → Σ \(x : X) → t ≡ inl x
    γ y (inl x) q = x , refl
-   γ y (inr *) q = 𝟘-elim (+disjoint (inl y         ≡⟨ (fg (inl y))⁻¹ ⟩
-                                      f (g (inl y)) ≡⟨ ap f q         ⟩
-                                      f (inr *)     ≡⟨ ap f (p ⁻¹)    ⟩
-                                      f (g (inr *)) ≡⟨ fg (inr *)     ⟩
-                                      inr *         ∎))
+   γ y (inr *) q = 𝟘-elim (+disjoint (l r))
+    where
+     r : g (inl y) ≡ g (inr *)
+     r = q ∙ p ⁻¹
 
  lemma₂ : (f : X+𝟙 → Y+𝟙)
         → f (inr *) ≡ inr *
@@ -315,20 +314,20 @@ general and have X and Y as module parameters:
    γ (g , η , ε) = f' , qinvs-are-equivs f' (g' , η' , ε') , h
     where
      f' : X → Y
-     f' x = pr₁ (lemma₀ f p (g , η) x)
+     f' x = pr₁ (lemma₀ f p (sections-are-lc f (g , η)) x)
 
      a : (x : X) → f (inl x) ≡ inl (f' x)
-     a x = pr₂ (lemma₀ f p (g , η) x)
+     a x = pr₂ (lemma₀ f p (sections-are-lc f (g , η)) x)
 
      q = g (inr *)     ≡⟨ (ap g p)⁻¹ ⟩
          g (f (inr *)) ≡⟨ η (inr *)  ⟩
          inr *         ∎
 
      g' : Y → X
-     g' x = pr₁ (lemma₁ g q (f , ε) x)
+     g' x = pr₁ (lemma₁ g q (sections-are-lc g (f , ε)) x)
 
      b : (y : Y) → g (inl y) ≡ inl (g' y)
-     b y = pr₂ (lemma₁ g q (f , ε) y)
+     b y = pr₂ (lemma₁ g q (sections-are-lc g (f , ε)) y)
 
      η' : g' ∘ f' ∼ id
      η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹   ⟩
