@@ -191,10 +191,11 @@ fsucc = inl
     k = pr₁ IH
     φ : Fin k ≃ Fin m + Fin n
     φ = pr₂ IH
-    φ' : Fin(succ k) ≃ Fin m + Fin (succ n)
+
     φ' =  Fin k + 𝟙           ≃⟨ Ap+ 𝟙 φ ⟩
          (Fin m + Fin n) + 𝟙  ≃⟨ +assoc  ⟩
          (Fin m + Fin n + 𝟙)  ■
+
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m + Fin (succ n)
     g = succ k , φ'
 
@@ -285,11 +286,12 @@ We now repeat this story for multiplication:
     k = pr₁ IH
     φ : Fin k ≃ Fin m × Fin n
     φ = pr₂ IH
-    φ' : Fin (k +' m) ≃ Fin m × (Fin n + 𝟙)
+
     φ' = Fin (k +' m)          ≃⟨ Fin+homo k m  ⟩
          Fin k + Fin m         ≃⟨ Ap+ (Fin m) φ ⟩
          Fin m × Fin n + Fin m ≃⟨ 𝟙distr        ⟩
          Fin m × (Fin n + 𝟙)   ■
+
     g : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
     g = (k +' m) , φ'
 
@@ -331,11 +333,12 @@ Added 30th August 2018: Exponentiation. Requires one more induction.
   k = pr₁ IH
   φ : Fin k ≃ (Fin m → Fin n)
   φ = pr₂ IH
-  φ' : Fin (k ×' n) ≃ (Fin (succ m) → Fin n)
+
   φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n     ⟩
        Fin k × Fin n                  ≃⟨ ×cong φ (𝟙→ fe₀) ⟩
       (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀)   ⟩
       (Fin m + 𝟙 → Fin n)             ■
+
   g : Σ \(k' : ℕ) → Fin k' ≃ (Fin (succ m) → Fin n)
   g = k ×' n , φ'
 
@@ -402,11 +405,12 @@ Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
   k = pr₁ IH
   φ : Fin k ≃ Aut(Fin n)
   φ = pr₂ IH
-  φ' : Fin (succ n ×' k) ≃ Aut(Fin (succ n))
-  φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k ⟩
-       Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ ⟩
+
+  φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k                            ⟩
+       Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ                ⟩
        (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
        Aut (Fin n + 𝟙)           ■
+
   g : Σ \(k' : ℕ) → Fin k' ≃ Aut (Fin (succ n))
   g = succ n ×' k , φ'
 
