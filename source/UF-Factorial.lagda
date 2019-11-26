@@ -85,6 +85,9 @@ cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated
 
 \end{code}
 
+Exercise. Prove that the co derived set is a set in the sense of
+univalent mathematics.
+
 Recall that a type is perfect if it has no isolated points.
 
 \begin{code}
