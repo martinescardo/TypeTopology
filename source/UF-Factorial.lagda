@@ -1,8 +1,9 @@
 Martin Escardo, 2017, written in Agda November 2019.
 
-We prove Coquand and Danielsson's result that if X is discrete then
+We prove a geralization of Coquand and Danielsson's result that if X
+is discrete then
 
-  (X + 𝟙) × X ! ≃ (X + 𝟙)!
+  (X + 𝟙) × X ! ≃ (X + 𝟙)!,
 
 where
 
@@ -10,9 +11,9 @@ where
 
 more commonly written Aut X.
 
-We then generalize it to show that, without any assumptions on X,
+The generalization is that, for an arbitraty type X,
 
-  co-derived-set (X + 𝟙) × X ! ≃ (X + 𝟙)!
+  co-derived-set (X + 𝟙) × X ! ≃ (X + 𝟙)!,
 
 where the co-derived-set of a type is the subtype of isolated points.
 
@@ -21,7 +22,9 @@ the co-derived-set of S¹ + 𝟙 is equivalent to 𝟙, and hence
 
   S¹ ! ≃ (S¹ + 𝟙)!
 
-More generally this is the case for any connected type.
+More generally this is the case for any connected type, and even more
+generally for any perfect type, that is, a type without isolated
+points.
 
 \begin{code}
 
