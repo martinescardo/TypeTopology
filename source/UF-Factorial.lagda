@@ -444,10 +444,13 @@ general and have X and Y as module parameters:
      k : is-equiv g
      k = ∘-is-equiv-abstract j (swap-is-equiv t (inr *) i new-point-is-isolated)
 
-     l : is-isolated (g (inr *))
-     l = equivs-preserve-isolatedness g k (inr *) new-point-is-isolated
+     t' : Y+𝟙
+     t' = g (inr *)
 
-     q : g (inr *) ≡ t
+     i' : is-isolated t'
+     i' = equivs-preserve-isolatedness g k (inr *) new-point-is-isolated
+
+     q : t' ≡ t
      q = g (inr *)                                      ≡⟨ a ⟩
          swap t (inr *) i new-point-is-isolated (inr *) ≡⟨ b ⟩
          t                                              ∎
@@ -455,17 +458,17 @@ general and have X and Y as module parameters:
        a = ap (swap t (inr *) i new-point-is-isolated) p
        b = swap-equation₁ t (inr *) i new-point-is-isolated
 
-     r : (g (inr *) , l) ≡ (t , i)
+     r : (t' , i') ≡ (t , i)
      r = to-subtype-≡ (being-isolated-is-a-prop fe) q
 
      f' : X+𝟙 → Y+𝟙
-     f' = swap (g (inr *)) (inr *) l new-point-is-isolated ∘ g
+     f' = swap t' (inr *) i' new-point-is-isolated ∘ g
 
      j' : is-equiv f'
-     j' = ∘-is-equiv-abstract k (swap-is-equiv (g (inr *)) (inr *) l new-point-is-isolated)
+     j' = ∘-is-equiv-abstract k (swap-is-equiv t' (inr *) i' new-point-is-isolated)
 
      h : f' ∼ f
-     h z = swap (g (inr *)) (inr *) l new-point-is-isolated
+     h z = swap t' (inr *) i' new-point-is-isolated
             (swap t (inr *) i new-point-is-isolated (f z))    ≡⟨ a ⟩
 
            swap t (inr *) i new-point-is-isolated
@@ -489,9 +492,9 @@ general and have X and Y as module parameters:
      o = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) h)
 
      p' : f' (inr *) ≡ inr *
-     p' = swap-equation₀ (g (inr *)) (inr *) l new-point-is-isolated
+     p' = swap-equation₀ t' (inr *) i' new-point-is-isolated
 
-     s : ((g (inr *) , l) , ((f' , j') , p')) ≡ ((t , i) , ((f , j) , p))
+     s : ((t' , i') , ((f' , j') , p')) ≡ ((t , i) , ((f , j) , p))
      s = to-×-≡ r (to-Σ-≡ (o , n top' p))
       where
        top' = transport (λ - → ⌜ - ⌝ (inr *) ≡ inr *) o p'
