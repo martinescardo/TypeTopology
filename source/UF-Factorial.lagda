@@ -143,11 +143,11 @@ And therefore
 
 \begin{code}
 
-lemma₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X + 𝟙 {𝓦}  → Y + 𝟙 {𝓣})
-        → f (inr *) ≡ inr *
-        → left-cancellable f
-        → (x : X) → Σ \(y : Y) → f (inl x) ≡ inl y
-lemma₁ {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) refl
+inl-preservation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X + 𝟙 {𝓦}  → Y + 𝟙 {𝓣})
+                 → f (inr *) ≡ inr *
+                 → left-cancellable f
+                 → (x : X) → Σ \(y : Y) → f (inl x) ≡ inl y
+inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) refl
  where
   γ : (x : X) (z : Y + 𝟙) → f (inl x) ≡ z → Σ \(y : Y) → z ≡ inl y
   γ x (inl y) q = y , refl
@@ -174,30 +174,30 @@ module factorial-steps
  X+𝟙 = X + 𝟙 {𝓦}
  Y+𝟙 = Y + 𝟙 {𝓣}
 
- lemma₂ : (f : X+𝟙 → Y+𝟙)
-        → f (inr *) ≡ inr *
-        → is-equiv f
-        → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
- lemma₂ f p i = γ (equivs-are-qinvs f i)
+ lemma : (f : X+𝟙 → Y+𝟙)
+       → f (inr *) ≡ inr *
+       → is-equiv f
+       → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
+ lemma f p i = γ (equivs-are-qinvs f i)
   where
    γ : qinv f → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
    γ (g , η , ε) = f' , qinvs-are-equivs f' (g' , η' , ε') , h
     where
      f' : X → Y
-     f' x = pr₁ (lemma₁ f p (sections-are-lc f (g , η)) x)
+     f' x = pr₁ (inl-preservation f p (sections-are-lc f (g , η)) x)
 
      a : (x : X) → f (inl x) ≡ inl (f' x)
-     a x = pr₂ (lemma₁ f p (sections-are-lc f (g , η)) x)
+     a x = pr₂ (inl-preservation f p (sections-are-lc f (g , η)) x)
 
      q = g (inr *)     ≡⟨ (ap g p)⁻¹ ⟩
          g (f (inr *)) ≡⟨ η (inr *)  ⟩
          inr *         ∎
 
      g' : Y → X
-     g' x = pr₁ (lemma₁ g q (sections-are-lc g (f , ε)) x)
+     g' x = pr₁ (inl-preservation g q (sections-are-lc g (f , ε)) x)
 
      b : (y : Y) → g (inl y) ≡ inl (g' y)
-     b y = pr₂ (lemma₁ g q (sections-are-lc g (f , ε)) y)
+     b y = pr₂ (inl-preservation g q (sections-are-lc g (f , ε)) y)
 
      η' : g' ∘ f' ∼ id
      η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹   ⟩
@@ -237,7 +237,7 @@ module factorial-steps
    φ (g , i) = (+functor g unique-to-𝟙 , d g (equivs-are-qinvs g i)) , refl
 
    γ : (Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *) → (X ≃ Y)
-   γ ((f , i) , p) = pr₁ (lemma₂ f p i) , pr₁ (pr₂ (lemma₂ f p i))
+   γ ((f , i) , p) = pr₁ (lemma f p i) , pr₁ (pr₂ (lemma f p i))
 
    η : φ ∘ γ ∼ id
    η ((f , i) , p) = to-Σ-≡
@@ -246,7 +246,7 @@ module factorial-steps
                        (equivs-preserve-isolatedness f i (inr *) new-point-is-isolated) _ p)
     where
      s : f ∼ pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p)))
-     s (inl x) = pr₂ (pr₂ (lemma₂ f p i)) (inl x)
+     s (inl x) = pr₂ (pr₂ (lemma f p i)) (inl x)
      s (inr *) = p
 
      r : pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p))) ≡ f
