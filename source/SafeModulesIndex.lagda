@@ -121,6 +121,7 @@ import SliceMonad
 import SpartanMLTT
 import SquashedCantor
 import SquashedSum
+import Swap
 import TheTopologyOfTheUniverse
 import TotallySeparated
 import Two
