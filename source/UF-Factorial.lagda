@@ -173,8 +173,7 @@ inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) 
 \end{code}
 
 We are going to use the above lemma twice in the module below with the
-roles of X and Y swapped, and hence we cannot move it to the module
-below:
+roles of X and Y swapped.
 
 \begin{code}
 
