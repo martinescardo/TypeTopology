@@ -2,13 +2,13 @@ Martin Escardo, 2017, written in Agda November 2019.
 
 If X is discrete then
 
-  (X + 𝟙) × X! ≃ (X + 𝟙)!,
+  (X + 𝟙) × Auto X ≃ Aut (X + 𝟙),
 
 where
 
-  X! = (X ≃ X)
+  Aut X := (X ≃ X)
 
-is the type of automorphisms of the type X, more commonly written Aut X.
+is the type of automorphisms of the type X.
 
 This is related to Danielsson's
 
@@ -25,18 +25,20 @@ and to ours
 
 More generally, for an arbitraty type X,
 
-  co-derived-set(X + 𝟙) × X! ≃ (X + 𝟙)!,
+  co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙),
 
 where the co-derived-set of a type is the subtype of isolated points.
 
-For example, the circle S¹ doesn't have any isolated points, so that
-the co-derived-set of S¹ + 𝟙 is equivalent to 𝟙, and hence
+In particular, if X is discrete (all its points are isolated), then we
+get the "factorial equivalence"
 
-  S¹! ≃ (S¹ + 𝟙)!
+  (X + 𝟙) × Aut X ≃ Aut (X + 𝟙).
 
-More generally this is the case for any connected type, and even more
-generally for any perfect type, that is, a type without isolated
-points.
+On the other hand, if X is perfect (has no isolated points), then
+
+  Aut X ≃ Aut (X + 𝟙),
+
+This is the case, for example, if X is the circle S¹.
 
 \begin{code}
 
