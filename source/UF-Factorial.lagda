@@ -2,7 +2,7 @@ Martin Escardo, 2017, written in Agda November 2019.
 
 If X is discrete then
 
-  (X + 𝟙) × Auto X ≃ Aut (X + 𝟙),
+  (X + 𝟙) × Aut X ≃ Aut (X + 𝟙),
 
 where
 
@@ -395,7 +395,7 @@ This is the end of the submodule, which has the following corollaries:
 Aut : 𝓤 ̇ → 𝓤 ̇
 Aut X = (X ≃ X)
 
-general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × Aut X ≃ Aut(X + 𝟙)
+general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
 general-factorial {𝓤} X = factorial-steps.step₄ 𝓤 𝓤 X X
 
 discrete-factorial : (X : 𝓤 ̇ )
