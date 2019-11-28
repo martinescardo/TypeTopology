@@ -1,7 +1,6 @@
 Martin Escardo, 2017, written in Agda November 2019.
 
-We prove a geralization of Coquand and Danielsson's result that if X
-is discrete then
+If X is discrete then
 
   (X + 𝟙) × X! ≃ (X + 𝟙)!,
 
@@ -11,7 +10,20 @@ where
 
 is the type of automorphisms of the type X, more commonly written Aut X.
 
-The generalization is that, for an arbitraty type X,
+This is related to Danielsson's
+
+ http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#
+
+and to Coquand's
+
+ https://github.com/simhu/cubical/blob/master/examples/finite.cub
+
+and to ours
+
+ https://www.cs.bham.ac.uk/~mhe/agda-new/PlusOneLC.html
+
+
+More generally, for an arbitraty type X,
 
   co-derived-set(X + 𝟙) × X! ≃ (X + 𝟙)!,
 

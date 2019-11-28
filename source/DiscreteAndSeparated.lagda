@@ -314,6 +314,7 @@ new-point-is-isolated {𝓤} {𝓥} {X} = h
   h :  (y : X + 𝟙) → decidable (inr * ≡ y)
   h (inl x) = inr (λ ())
   h (inr *) = inl refl
+
 \end{code}
 
 Back to old stuff:

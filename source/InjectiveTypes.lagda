@@ -736,7 +736,7 @@ module /-extension-is-embedding-special-case
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
- s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+ s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
 
@@ -808,7 +808,7 @@ module ∖-extension-is-embedding-special-case
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
- s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+ s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
 
@@ -902,7 +902,7 @@ module /-extension-is-embedding
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
- s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+ s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
 
@@ -996,7 +996,7 @@ module ∖-extension-is-embedding
  s-is-comp = refl
 
  s-is-embedding : is-embedding s
- s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+ s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
 
@@ -1474,7 +1474,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
    Id-set₀ = down ∘ Id-set i
 
    Id-set₀-is-embedding : is-embedding Id-set₀
-   Id-set₀-is-embedding = comp-embedding
+   Id-set₀-is-embedding = ∘-is-embedding
                            (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
                            down-is-embedding
 
@@ -1521,7 +1521,7 @@ Added 8th Feb. Solves a problem formulated above.
    ε = down ∘ η
 
    ε-is-embedding : is-embedding ε
-   ε-is-embedding = comp-embedding (η-is-embedding' 𝓤 D ua (fe 𝓤 𝓤)) down-is-embedding
+   ε-is-embedding = ∘-is-embedding (η-is-embedding' 𝓤 D ua (fe 𝓤 𝓤)) down-is-embedding
 
    injective-retract-of-L : injective-type D 𝓤 𝓤 → ∥ retract D of L ∥
    injective-retract-of-L = embedding-∥retract∥ D L ε ε-is-embedding

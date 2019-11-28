@@ -516,7 +516,7 @@ embedding are themselves embeddings.
   s-is-comp = refl
 
   s-is-embedding : is-embedding s
-  s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+  s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 
 ↑-extension-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (j : X → Y) → is-embedding j → is-embedding (_↑ j)
@@ -592,7 +592,7 @@ embedding are themselves embeddings.
   s-is-comp = refl
 
   s-is-embedding : is-embedding s
-  s-is-embedding = comp-embedding φ-is-embedding ψ-is-embedding
+  s-is-embedding = ∘-is-embedding φ-is-embedding ψ-is-embedding
 
 \end{code}
 
@@ -1530,7 +1530,7 @@ injectivity-in-terms-of-ainjectivity {𝓤} ω D = γ , ∥ainjective∥-gives-i
   ε = down ∘ 𝓛-unit D
 
   ε-is-embedding : is-embedding ε
-  ε-is-embedding = comp-embedding (𝓛-unit-is-embedding D) down-is-embedding
+  ε-is-embedding = ∘-is-embedding (𝓛-unit-is-embedding D) down-is-embedding
 
   injective-retract-of-L : injective-type D 𝓤 𝓤 → ∥ retract D of L ∥
   injective-retract-of-L i = embedding-∥retract∥ D i L ε ε-is-embedding

@@ -253,8 +253,8 @@ Over-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                → ((n : ℕ) → is-embedding (f n))
                → (z : ℕ + 𝟙) → is-embedding (Over X Y f z)
 Over-embedding {𝓤} X Y f d (inl n) =
- comp-embedding
-  (comp-embedding
+ ∘-is-embedding
+  (∘-is-embedding
     (equivs-are-embeddings
       ⌜ Π-extension-in-range X over over-embedding n ⌝
       (⌜⌝-is-equiv (Π-extension-in-range X over over-embedding n)))
@@ -263,7 +263,7 @@ Over-embedding {𝓤} X Y f d (inl n) =
     ⌜ ≃-sym (Π-extension-in-range Y over over-embedding n) ⌝
    (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
 Over-embedding {𝓤} X Y f d (inr *) =
- comp-embedding {𝓤} {𝓤₀}
+ ∘-is-embedding {𝓤} {𝓤₀}
   (equivs-are-embeddings
     ⌜ Π-extension-out-of-range X over (inr *) (λ x → +disjoint) ⌝
     (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
@@ -310,7 +310,7 @@ Over-embedding {𝓤} X Y f d (inr *) =
                (f : (n : ℕ) → X n → Y n)
              → ((n : ℕ) → is-embedding (f n))
              → is-embedding (Σ↑ X Y f)
-Σ↑-embedding X Y f d = comp-embedding (Σ₁-functor-embedding X Y f d) (Σ-up-embedding Y)
+Σ↑-embedding X Y f d = ∘-is-embedding (Σ₁-functor-embedding X Y f d) (Σ-up-embedding Y)
 
 \end{code}
 

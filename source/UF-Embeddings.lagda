@@ -149,12 +149,12 @@ lc-maps-are-embeddings-with-K {𝓤} {𝓥} {X} {Y} f f-lc k =
 id-is-embedding : {X : 𝓤 ̇ } → is-embedding (id {𝓤} {X})
 id-is-embedding = singleton-types'-are-props
 
-comp-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                {f : X → Y} {g : Y → Z}
+∘-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                 {f : X → Y} {g : Y → Z}
                → is-embedding f
                → is-embedding g
                → is-embedding (g ∘ f)
-comp-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
+∘-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
  where
   T : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   T z = Σ \(w : fiber g z) → fiber f (pr₁ w)

@@ -132,5 +132,5 @@ two embeddings:
   back-transport
    is-embedding
    (η-composite fe fe'')
-   (comp-embedding (κ-is-embedding pe fe fe') (𝓚→𝓛-is-embedding fe X))
+   (∘-is-embedding (κ-is-embedding pe fe fe') (𝓚→𝓛-is-embedding fe X))
 \end{code}
