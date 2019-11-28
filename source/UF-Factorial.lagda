@@ -125,13 +125,13 @@ For a type A, denote by A' the co-derived set of A.
 
 Then we get a map
 
-  (Y+1)' × (X ≃ Y) → (X+1 ≃ Y+1),
+  (Y+𝟙)' × (X ≃ Y) → (X+𝟙 ≃ Y+𝟙),
 
-where the choice of isolated point a:Y+1 controls which equivalence
-X+1≃Y+1 we get from the equivalence f: X≃Y:
+where the choice of isolated point a:Y+𝟙 controls which equivalence
+X+𝟙≃Y+𝟙 we get from the equivalence f: X≃Y:
 
-       f+1       swap(a,inr(⋆))
-  X+1 ----> Y+1 ---------------> Y+1
+       f+𝟙       swap(a,inr(⋆))
+  X+𝟙 ----> Y+𝟙 ---------------> Y+𝟙
 
 The claim is that the above map is an equivalence.
 
