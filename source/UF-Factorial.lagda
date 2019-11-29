@@ -18,7 +18,7 @@ and to Coquand's
 
  https://github.com/simhu/cubical/blob/master/examples/finite.cub
 
-and to ours
+and to our
 
  https://www.cs.bham.ac.uk/~mhe/agda-new/PlusOneLC.html
 
