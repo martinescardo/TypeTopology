@@ -10,20 +10,20 @@ where
 
 is the type of automorphisms of the type X.
 
-This is related to Danielsson's
+This is proved by Danielsson in
 
- http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#131830
+ http://www.cse.chalmers.se/~nad/listings/equality/Function-universe.html#[⊤⊎↔⊤⊎]↔[⊤⊎×↔]
 
-and to Coquand's
+See also Coquand's
 
  https://github.com/simhu/cubical/blob/master/examples/finite.cub
 
-and to our
+and our
 
  https://www.cs.bham.ac.uk/~mhe/agda-new/PlusOneLC.html
 
 
-More generally, for an arbitraty type X,
+More generally, for an arbitraty type X, we prove that
 
   co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙),
 
