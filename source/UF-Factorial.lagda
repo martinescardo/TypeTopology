@@ -277,7 +277,7 @@ module factorial-steps
 
  step₃ : (co-derived-set (Y+𝟙) × Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *)
        ≃ (X+𝟙 ≃ Y+𝟙)
- step₃ = φ , (γ , η) , (γ , ε)
+ step₃ = qinveq φ (γ , η , ε)
   where
    A = co-derived-set (Y+𝟙) × Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *
    B = X+𝟙 ≃ Y+𝟙
@@ -304,23 +304,8 @@ module factorial-steps
      p : f (inr *) ≡ inr *
      p = swap-equation₀ t (inr *) i new-point-is-isolated
 
-   η : φ ∘ γ ∼ id
-   η (g , k) = r
-    where
-     z : Y+𝟙
-     z = g (inr *)
-     i : is-isolated z
-     i = equivs-preserve-isolatedness g k (inr *) new-point-is-isolated
-     h : (swap (g (inr *)) (inr *) i new-point-is-isolated)
-       ∘ (swap (g (inr *)) (inr *) i new-point-is-isolated)
-       ∘ g
-       ∼ g
-     h = swap-involutive z (inr *) i new-point-is-isolated ∘ g
-     r : φ (γ (g , k)) ≡ (g , k)
-     r = to-Σ-≡ (dfunext (fe _ _) h , being-equiv-is-a-prop fe g _ k)
-
-   ε : γ ∘ φ ∼ id
-   ε ((t , i) , ((f , j) , p)) = s
+   η : γ ∘ φ ∼ id
+   η ((t , i) , ((f , j) , p)) = s
     where
      g : X+𝟙 → Y+𝟙
      g = swap t (inr *) i new-point-is-isolated ∘ f
@@ -382,6 +367,22 @@ module factorial-steps
      s = to-×-≡ r (to-Σ-≡ (o , n top' p))
       where
        top' = transport (λ - → ⌜ - ⌝ (inr *) ≡ inr *) o p'
+
+   ε : φ ∘ γ ∼ id
+   ε (g , k) = r
+    where
+     z : Y+𝟙
+     z = g (inr *)
+     i : is-isolated z
+     i = equivs-preserve-isolatedness g k (inr *) new-point-is-isolated
+     h : (swap (g (inr *)) (inr *) i new-point-is-isolated)
+       ∘ (swap (g (inr *)) (inr *) i new-point-is-isolated)
+       ∘ g
+       ∼ g
+     h = swap-involutive z (inr *) i new-point-is-isolated ∘ g
+     r : φ (γ (g , k)) ≡ (g , k)
+     r = to-Σ-≡ (dfunext (fe _ _) h , being-equiv-is-a-prop fe g _ k)
+
 
  step₄ : co-derived-set (Y+𝟙) × (X ≃ Y) ≃ (X+𝟙 ≃ Y+𝟙)
  step₄ = step₂ ● step₃
