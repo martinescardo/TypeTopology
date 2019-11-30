@@ -149,7 +149,6 @@ fe₀ = fe 𝓤₀ 𝓤₀
 
 open import UF-Equiv
 open import UF-EquivalenceExamples
-open import PlusOneLC
 open import Fin
 
 \end{code}
@@ -216,30 +215,8 @@ Fin+homo m n = pr₂(+construction m n)
 
 \end{code}
 
-3rd and last definition by induction. The function Fin : ℕ → 𝓤₀ is
-left-cancellable:
-
-\begin{code}
-
-Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
-Fin-lc zero zero p = refl
-Fin-lc (succ m) zero p = 𝟘-elim (⌜ p ⌝ fzero)
-Fin-lc zero (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ fzero)
-Fin-lc (succ m) (succ n) p = ap succ r
- where
-  IH : Fin m ≃ Fin n → m ≡ n
-  IH = Fin-lc m n
-  remark : Fin m + 𝟙 ≃ Fin n + 𝟙
-  remark = p
-  q : Fin m ≃ Fin n
-  q = +𝟙-cancellable fe p
-  r : m ≡ n
-  r = IH q
-
-\end{code}
-
-This uses the non-trivial construction +𝟙-cancellable defined in the
-module PlusOneLC.lagda.
+The 3rd and last use of induction is for the left-cancellability of
+Fin : ℕ → 𝓤₀, which is in the module Fin.
 
 With this, no further induction is needed to prove commutativity of
 addition:
@@ -247,7 +224,7 @@ addition:
 \begin{code}
 
 +'-comm : (m n : ℕ) → m +' n ≡ n +' m
-+'-comm m n = Fin-lc (m +' n) (n +' m)
++'-comm m n = Fin-lc fe (m +' n) (n +' m)
  (Fin (m +' n)   ≃⟨ Fin+homo m n         ⟩
   Fin m + Fin n  ≃⟨ +comm                ⟩
   Fin n + Fin m  ≃⟨ ≃-sym (Fin+homo n m) ⟩
@@ -291,7 +268,7 @@ Fin×homo : (m n : ℕ) → Fin(m ×' n) ≃ Fin m × Fin n
 Fin×homo m n = pr₂(×construction m n)
 
 ×'-comm : (m n : ℕ) → m ×' n ≡ n ×' m
-×'-comm m n = Fin-lc (m ×' n) (n ×' m)
+×'-comm m n = Fin-lc fe (m ×' n) (n ×' m)
  (Fin (m ×' n)   ≃⟨ Fin×homo m n         ⟩
   Fin m × Fin n  ≃⟨ ×comm                ⟩
   Fin n × Fin m  ≃⟨ ≃-sym (Fin×homo n m) ⟩
@@ -344,7 +321,7 @@ Then, without the need for induction, we get the exponential laws:
 \begin{code}
 
 ^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
-^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
+^+homo k m n = Fin-lc fe (k ^ (m +' n)) (k ^ m ×' k ^ n)
  (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k                                 ⟩
  (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
  (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀                                              ⟩
@@ -353,7 +330,7 @@ Then, without the need for induction, we get the exponential laws:
   Fin (k ^ m ×' k ^ n)              ■)
 
 iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
-iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
+iterated^ k m n = Fin-lc fe (k ^ (m ×' n)) (k ^ n ^ m)
    (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k                                    ⟩
    (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
    (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe                                       ⟩
