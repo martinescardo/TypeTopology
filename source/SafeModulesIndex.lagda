@@ -59,6 +59,7 @@ import Dominance
 import DummettDisjunction
 import Empty
 import ExtendedSumCompact
+import Fin
 import FailureOfTotalSeparatedness
 import GeneralNotation
 import GenericConvergentSequence
