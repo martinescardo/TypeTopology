@@ -103,6 +103,70 @@ on it, it decidable whether it has a root:
 compact : 𝓤 ̇ → 𝓤 ̇
 compact = Σ-compact
 
+
+Σ-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Σ-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ \(x : X) → A x)
+
+\end{code}
+
+These two notions of compactness are equivalent:
+
+\begin{code}
+
+Σ-compact-upper : (X : 𝓤 ̇ ) → Σ-compact X → (𝓥 : Universe) → Σ-Compact X 𝓥
+Σ-compact-upper X c 𝓥 A d = iii
+ where
+  i : Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
+  i = characteristic-function d
+  p : X → 𝟚
+  p = pr₁ i
+  ii : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁) → decidable (Σ A)
+  ii (inl (x , r)) = inl (x , pr₁ (pr₂ i x) r)
+  ii (inr u)       = inr φ
+   where
+    φ : ¬ Σ A
+    φ (x , a) = pr₂ (pr₂ i x) (u x) a
+  iii : decidable (Σ A)
+  iii = ii (c p)
+
+Σ-Compact-lower : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-compact X
+Σ-Compact-lower X C p = iv
+ where
+  A : X → 𝓤₀ ̇
+  A x = p x ≡ ₀
+  i : detachable (λ x → p x ≡ ₀) → decidable (Σ \(x : X) → p x ≡ ₀)
+  i = C A
+  ii : detachable (λ x → p x ≡ ₀)
+  ii x = 𝟚-is-discrete (p x) ₀
+  iii : decidable (Σ \(x : X) → p x ≡ ₀) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
+  iii (inl σ) = inl σ
+  iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
+  iv : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
+  iv = iii (i ii)
+
+NB-Σ-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-Compact X 𝓥
+NB-Σ-Compact {𝓤} {𝓥} X C = Σ-compact-upper X (Σ-Compact-lower X C) 𝓥
+
+\end{code}
+
+Exercise. Prove the converse of the previous observation, using the
+fact that any decidable type is logically equivalent to either 𝟘 or 𝟙,
+and hence to a type in the universe 𝓤₀.
+
+\begin{code}
+
+Π-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Π-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π \(x : X) → A x)
+
+Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓥 → Π-Compact X 𝓥
+Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬(A x)) e)
+ where
+  e : detachable (λ x → ¬(A x))
+  e x = ¬-preserves-decidability (d x)
+  γ : decidable (Σ \(x : X) → ¬(A x)) → decidable (Π \(x : X) → A x)
+  γ (inl (x , v)) = inr (λ φ → v (φ x))
+  γ (inr u)       = inl (λ x → ¬¬-elim (d x) (λ n → u (x , n)))
+
 \end{code}
 
 Notice that compactness in this sense is not in general a univalent

@@ -13,10 +13,12 @@ open import OrdinalNotions hiding (_≤_ ; <-coarser-than-≤ ; ≤-refl)
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties
 
-_≤_ : ℕ → ℕ → 𝓤₀ ̇
+_≤_ _≥_ : ℕ → ℕ → 𝓤₀ ̇
 zero ≤ n        = 𝟙
 succ m ≤ zero   = 𝟘
 succ m ≤ succ n = m ≤ n
+
+x ≥ y = y ≤ x
 
 ≤-is-prop-valued : (m n : ℕ) → is-prop (m ≤ n)
 ≤-is-prop-valued zero n = 𝟙-is-prop
@@ -100,13 +102,25 @@ unique-minimal (succ n) ()
 ≤-join m n (inl l) = ≤-trans m n (succ n) l (≤-succ n)
 ≤-join .(succ n) n (inr refl) = ≤-refl n
 
-_<_ : ℕ → ℕ → 𝓤₀ ̇
+_<_ _>_ : ℕ → ℕ → 𝓤₀ ̇
 m < n = succ m ≤ n
 
-not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → m ≤ n
+x > y = y < x
+
+not-less-itself : (n : ℕ) → ¬(n < n)
+not-less-itself zero l = l
+not-less-itself (succ n) l = not-less-itself n l
+
+not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → n ≥ m
 not-less-bigger-or-equal zero n u = zero-minimal n
 not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
+
+bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬(n < m)
+bigger-or-equal-not-less m n l u = not-less-itself n (≤-trans (succ n) m n u l)
+
+less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬(n ≤ m)
+less-not-bigger-or-equal m n l u = bigger-or-equal-not-less n m u l
 
 bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
                → A k

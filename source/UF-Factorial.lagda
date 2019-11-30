@@ -231,7 +231,7 @@ module factorial-steps
 
 
  step₁ : (X ≃ Y) ≃ Σ \(f : X+𝟙 ≃ Y+𝟙) → ⌜ f ⌝ (inr *) ≡ inr *
- step₁ = φ , (γ , η) , (γ , ε)
+ step₁ = qinveq φ (γ , η , ε)
   where
    a : (g : X → Y) → qinv g → Y+𝟙 → X+𝟙
    a g (g' , η , ε) = +functor g' unique-to-𝟙
@@ -253,8 +253,11 @@ module factorial-steps
    γ : (Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *) → (X ≃ Y)
    γ ((f , i) , p) = pr₁ (lemma f p i) , pr₁ (pr₂ (lemma f p i))
 
-   η : φ ∘ γ ∼ id
-   η ((f , i) , p) = to-Σ-≡
+   η : γ ∘ φ ∼ id
+   η (g , i) = to-Σ-≡ (refl , being-equiv-is-a-prop fe g _ i)
+
+   ε : φ ∘ γ ∼ id
+   ε ((f , i) , p) = to-Σ-≡
                       (to-subtype-≡ (being-equiv-is-a-prop fe) r ,
                       isolated-is-h-isolated (f (inr *))
                        (equivs-preserve-isolatedness f i (inr *) new-point-is-isolated) _ p)
@@ -265,9 +268,6 @@ module factorial-steps
 
      r : pr₁ (pr₁ ((φ ∘ γ) ((f , i) , p))) ≡ f
      r = dfunext (fe _ _) (λ z → (s z)⁻¹)
-
-   ε : γ ∘ φ ∼ id
-   ε (g , i) = to-Σ-≡ (refl , being-equiv-is-a-prop fe g _ i)
 
 
  step₂ : co-derived-set (Y+𝟙) × (X ≃ Y)

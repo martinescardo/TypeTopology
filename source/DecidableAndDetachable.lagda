@@ -20,17 +20,45 @@ We look at decidable propositions and subsets (using the terminogy
 
 \begin{code}
 
+
 ¬¬-elim : {A : 𝓤 ̇ } → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)
 
-negation-preserves-decidability : {A : 𝓤 ̇ }
-                                → decidable A → decidable(¬ A)
-negation-preserves-decidability (inl a) = inr (λ f → f a)
-negation-preserves-decidability (inr g) = inl g
+𝟘-decidable : decidable (𝟘 {𝓤})
+𝟘-decidable = inr 𝟘-elim
+
+pointed-decidable : {X : 𝓤 ̇ } → X → decidable X
+pointed-decidable = inl
+
+𝟙-decidable : decidable (𝟙 {𝓤})
+𝟙-decidable = pointed-decidable *
+
+×-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                         → decidable A → decidable B → decidable (A × B)
+×-preserves-decidability (inl a) (inl b) = inl (a , b)
+×-preserves-decidability (inl a) (inr v) = inr (λ c → v (pr₂ c))
+×-preserves-decidability (inr u) _       = inr (λ c → u (pr₁ c))
+
+
++-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                         → decidable A → decidable B → decidable (A + B)
++-preserves-decidability (inl a) _       = inl (inl a)
++-preserves-decidability (inr u) (inl b) = inl (inr b)
++-preserves-decidability (inr u) (inr v) = inr (cases u v)
+
+→-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                         → decidable A → decidable B → decidable (A → B)
+→-preserves-decidability d       (inl b) = inl (λ _ → b)
+→-preserves-decidability (inl a) (inr v) = inr (λ f → v (f a))
+→-preserves-decidability (inr u) (inr v) = inl (λ a → 𝟘-elim (u a))
+
+¬-preserves-decidability : {A : 𝓤 ̇ }
+                         → decidable A → decidable(¬ A)
+¬-preserves-decidability d = →-preserves-decidability d 𝟘-decidable
 
 which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-        → A + B → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → B)
+         → A + B → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → B)
 
 which-of (inl a) = ₀ , ((λ r → a) , (λ ()))
 which-of (inr b) = ₁ , ((λ ()) , (λ r → b))

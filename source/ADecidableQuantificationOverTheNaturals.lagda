@@ -74,7 +74,7 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
   claim₂ = g(ℕ∞-compact q)
    where
     fact : (y : ℕ∞) → (p y ≢ p(Succ y)) + ¬(p y ≢ p(Succ y))
-    fact y = negation-preserves-decidability(𝟚-is-discrete (p y) (p(Succ y)))
+    fact y = ¬-preserves-decidability(𝟚-is-discrete (p y) (p(Succ y)))
 
     f : Σ \(q : ℕ∞ → 𝟚) → (y : ℕ∞) → (q y ≡ ₀ → p y ≢ p(Succ y))
                                 × (q y ≡ ₁ → ¬(p y ≢ p(Succ y)))
