@@ -150,32 +150,15 @@ fe₀ = fe 𝓤₀ 𝓤₀
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import PlusOneLC
+open import Fin
 
 \end{code}
 
-1st definition by induction. From a natural number n, get a finite set
-with n elements. This can be considered as an interpretation function,
-which defines the meaning of numbers as types.
+The 1st definition by induction is in the imported module Fin. From a
+natural number n, get a finite set with n elements. This can be
+considered as an interpretation function, which defines the meaning of
+numbers as types.
 
-\begin{code}
-
-Fin : ℕ → 𝓤₀ ̇
-Fin zero     = 𝟘
-Fin (succ n) = Fin n + 𝟙
-
-\end{code}
-
-We have zero and successor for finite sets, with the following types:
-
-\begin{code}
-
-fzero : {n : ℕ} → Fin(succ n)
-fzero = inr *
-
-fsucc : {n : ℕ} → Fin n → Fin(succ n)
-fsucc = inl
-
-\end{code}
 
 2nd definition by induction. Existence of addition:
 
@@ -385,11 +368,6 @@ Added 25t November 2019: Numerical factorial from the type theoretical factorial
 \begin{code}
 
 open import UF-Factorial fe
-open import DiscreteAndSeparated
-
-Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
-Fin-is-discrete zero     = 𝟘-is-discrete
-Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
 
 !construction : (n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Aut (Fin n)
 !construction zero = 1 ,
