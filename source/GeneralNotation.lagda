@@ -57,6 +57,18 @@ Get rid of this:
 Note: Σ! is to be avoided, in favour of the contractibility of Σ,
 following univalent mathematics.
 
+I am not sure where to put this, so it goes here for the moment:
+
+\begin{code}
+
+left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
+
+left-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
+
+\end{code}
+
 Fixities:
 
 \begin{code}

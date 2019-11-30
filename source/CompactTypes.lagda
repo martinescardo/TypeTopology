@@ -81,7 +81,7 @@ open import Two-Prop-Density
 open import Plus-Properties
 open import AlternativePlus
 open import DiscreteAndSeparated
-open import DecidableAndDetachable
+open import DecidableAndDetachable public
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Retracts

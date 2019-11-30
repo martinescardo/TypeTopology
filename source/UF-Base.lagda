@@ -29,12 +29,6 @@ NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
               → (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
 ΠΣ-distr-back (f , φ) x = f x , φ x
 
-left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
-
-left-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
-
 _≈_ : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ } → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
 η ≈ θ = ∀ y → η y ∼ θ y
 

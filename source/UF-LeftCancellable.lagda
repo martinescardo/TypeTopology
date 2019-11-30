@@ -44,3 +44,18 @@ NatΠ-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } (f : Nat A B
 NatΠ-lc f flc {g} {g'} p x = flc x (happly p x)
 
 \end{code}
+
+Sometimes the type of left cancellable maps is useful (but more often
+the type of embeddings, defined elsewhere, is useful).
+
+\begin{code}
+
+_↣_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ↣ Y =  Σ \(f : X → Y) → left-cancellable f
+
+⌈_⌉ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↣ Y → X → Y
+⌈ f , _ ⌉ = f
+
+infix 0 _↣_
+
+\end{code}

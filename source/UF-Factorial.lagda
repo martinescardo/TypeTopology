@@ -155,26 +155,8 @@ And therefore
 (4) (Y + 𝟙)' × (X ≃ Y)
   ≃ (X + 𝟙 ≃ Y + 𝟙)
 
-\begin{code}
-
-inl-preservation : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X + 𝟙 {𝓦}  → Y + 𝟙 {𝓣})
-                 → f (inr *) ≡ inr *
-                 → left-cancellable f
-                 → (x : X) → Σ \(y : Y) → f (inl x) ≡ inl y
-inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) refl
- where
-  γ : (x : X) (z : Y + 𝟙) → f (inl x) ≡ z → Σ \(y : Y) → z ≡ inl y
-  γ x (inl y) q = y , refl
-  γ x (inr *) q = 𝟘-elim (+disjoint (l r))
-   where
-    r : f (inl x) ≡ f (inr *)
-    r = q ∙ p ⁻¹
-
 \end{code}
 
-We are going to use the above lemma twice in the module below with the
-roles of X and Y swapped, and hence we cannot move it to the module
-below:
 
 \begin{code}
 
@@ -187,6 +169,14 @@ module factorial-steps
 
  X+𝟙 = X + 𝟙 {𝓦}
  Y+𝟙 = Y + 𝟙 {𝓣}
+
+\end{code}
+
+In the following, we use the fact that if f (inr *) ≡ inr * for a
+function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
+(inl-preservation).
+
+\begin{code}
 
  lemma : (f : X+𝟙 → Y+𝟙)
        → f (inr *) ≡ inr *
@@ -228,7 +218,6 @@ module factorial-steps
      h : f ∼ +functor f' unique-to-𝟙
      h (inl x) = a x
      h (inr *) = p
-
 
  step₁ : (X ≃ Y) ≃ Σ \(f : X+𝟙 ≃ Y+𝟙) → ⌜ f ⌝ (inr *) ≡ inr *
  step₁ = qinveq φ (γ , η , ε)
