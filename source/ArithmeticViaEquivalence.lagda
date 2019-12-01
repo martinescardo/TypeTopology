@@ -5,7 +5,9 @@ Martín Hötzel Escardó
 
 Originally 10 July 2014, modified 10 Oct 2017, 22 March 2018, 25 Nov 2019.
 
-This is a literate proof in univalent mathematics, in Agda notation.
+This is a literate proof in univalent mathematics, in Agda
+notation. Although the concepts of univalent mathematics are used, the
+univalence axiom is not needed.
 
 We have that 3+3+3+3+3 = 5+5+5, or 5×3 = 3×5, and more generally
 
@@ -140,12 +142,8 @@ foundations in Agda notation).
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT hiding (_^_)
-open import UF-FunExt
 
-module ArithmeticViaEquivalence (fe : FunExt) where
-
-fe₀ : funext 𝓤₀ 𝓤₀
-fe₀ = fe 𝓤₀ 𝓤₀
+module ArithmeticViaEquivalence where
 
 open import UF-Equiv
 open import UF-EquivalenceExamples
@@ -153,11 +151,10 @@ open import Fin
 
 \end{code}
 
-The 1st definition by induction is in the imported module Fin. From a
-natural number n, get a finite set with n elements. This can be
-considered as an interpretation function, which defines the meaning of
-numbers as types.
-
+The 1st definition by induction is that of the function Fin defined in
+the module Fin imported above. From a natural number n, get a finite
+set Fin n with n elements. This can be considered as an interpretation
+function, which defines the meaning of numbers as types.
 
 2nd definition by induction. Existence of addition:
 
@@ -189,6 +186,8 @@ The construction gives an addition function by projection:
 
 _+'_ : ℕ → ℕ → ℕ
 m +' n = pr₁(+construction m n)
+
+infixl 20 _+'_
 
 \end{code}
 
@@ -224,7 +223,7 @@ addition:
 \begin{code}
 
 +'-comm : (m n : ℕ) → m +' n ≡ n +' m
-+'-comm m n = Fin-lc fe (m +' n) (n +' m)
++'-comm m n = Fin-lc (m +' n) (n +' m)
  (Fin (m +' n)   ≃⟨ Fin+homo m n         ⟩
   Fin m + Fin n  ≃⟨ +comm                ⟩
   Fin n + Fin m  ≃⟨ ≃-sym (Fin+homo n m) ⟩
@@ -258,6 +257,8 @@ We now repeat this story for multiplication:
 _×'_ : ℕ → ℕ → ℕ
 m ×' n = pr₁(×construction m n)
 
+infixl 22 _×'_
+
 ×base : {m : ℕ} → m ×' zero ≡ zero
 ×base = refl
 
@@ -268,7 +269,7 @@ Fin×homo : (m n : ℕ) → Fin(m ×' n) ≃ Fin m × Fin n
 Fin×homo m n = pr₂(×construction m n)
 
 ×'-comm : (m n : ℕ) → m ×' n ≡ n ×' m
-×'-comm m n = Fin-lc fe (m ×' n) (n ×' m)
+×'-comm m n = Fin-lc (m ×' n) (n ×' m)
  (Fin (m ×' n)   ≃⟨ Fin×homo m n         ⟩
   Fin m × Fin n  ≃⟨ ×comm                ⟩
   Fin n × Fin m  ≃⟨ ≃-sym (Fin×homo n m) ⟩
@@ -276,98 +277,110 @@ Fin×homo m n = pr₂(×construction m n)
 
 \end{code}
 
-Added 30th August 2018: Exponentiation. Requires one more induction.
+Added 30th August 2018: Exponentiation. Requires one more induction
+and function extensionality.
 
 \begin{code}
 
-→construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
-→construction zero n = succ zero ,
-                       (𝟘 + 𝟙        ≃⟨ 𝟘-lneutral ⟩
-                        𝟙            ≃⟨ 𝟘→ fe₀     ⟩
-                       (𝟘 → Fin n)   ■)
-→construction (succ m) n = g
- where
-  IH : Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
-  IH = →construction m n
-  k : ℕ
-  k = pr₁ IH
-  φ : Fin k ≃ (Fin m → Fin n)
-  φ = pr₂ IH
+open import UF-FunExt
 
-  φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n     ⟩
-       Fin k × Fin n                  ≃⟨ ×cong φ (𝟙→ fe₀) ⟩
-      (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀)   ⟩
-      (Fin m + 𝟙 → Fin n)             ■
+module _ (fe : FunExt) where
 
-  g : Σ \(k' : ℕ) → Fin k' ≃ (Fin (succ m) → Fin n)
-  g = k ×' n , φ'
+ fe₀ : funext 𝓤₀ 𝓤₀
+ fe₀ = fe 𝓤₀ 𝓤₀
 
-_^_ : ℕ → ℕ → ℕ
-n ^ m = pr₁(→construction m n)
+ →construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
+ →construction zero n = succ zero ,
+                        (𝟘 + 𝟙        ≃⟨ 𝟘-lneutral ⟩
+                         𝟙            ≃⟨ 𝟘→ fe₀     ⟩
+                        (𝟘 → Fin n)   ■)
+ →construction (succ m) n = g
+  where
+   IH : Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
+   IH = →construction m n
+   k : ℕ
+   k = pr₁ IH
+   φ : Fin k ≃ (Fin m → Fin n)
+   φ = pr₂ IH
 
-^base : {n : ℕ} → n ^ zero ≡ succ zero
-^base = refl
+   φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n     ⟩
+        Fin k × Fin n                  ≃⟨ ×cong φ (𝟙→ fe₀) ⟩
+       (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀)   ⟩
+       (Fin m + 𝟙 → Fin n)             ■
 
-^step : {m n : ℕ} → n ^ (succ m) ≡ (n ^ m) ×' n
-^step = refl
+   g : Σ \(k' : ℕ) → Fin k' ≃ (Fin (succ m) → Fin n)
+   g = k ×' n , φ'
 
-Fin^homo : (m n : ℕ) → Fin(n ^ m) ≃ (Fin m → Fin n)
-Fin^homo m n = pr₂(→construction m n)
+ _^_ : ℕ → ℕ → ℕ
+ n ^ m = pr₁(→construction m n)
+
+ infixl 23 _^_
+
+ ^base : {n : ℕ} → n ^ zero ≡ succ zero
+ ^base = refl
+
+ ^step : {m n : ℕ} → n ^ (succ m) ≡ (n ^ m) ×' n
+ ^step = refl
+
+ Fin^homo : (m n : ℕ) → Fin(n ^ m) ≃ (Fin m → Fin n)
+ Fin^homo m n = pr₂(→construction m n)
 
 \end{code}
 
-Then, without the need for induction, we get the exponential laws:
+ Then, without the need for induction, we get the exponential laws:
 
 \begin{code}
 
-^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
-^+homo k m n = Fin-lc fe (k ^ (m +' n)) (k ^ m ×' k ^ n)
- (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k                                 ⟩
- (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
- (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀                                              ⟩
- (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
-  Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n))                    ⟩
-  Fin (k ^ m ×' k ^ n)              ■)
+ ^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
+ ^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
+  (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k                                 ⟩
+  (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
+  (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀                                              ⟩
+  (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
+   Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n))                    ⟩
+   Fin (k ^ m ×' k ^ n)              ■)
 
-iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
-iterated^ k m n = Fin-lc fe (k ^ (m ×' n)) (k ^ n ^ m)
-   (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k                                    ⟩
-   (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
-   (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe                                       ⟩
-   (Fin m → (Fin n → Fin k))  ≃⟨ →-cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
-   (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n))                             ⟩
-    Fin (k ^ n ^ m)           ■)
+ iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
+ iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
+    (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k                                    ⟩
+    (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
+    (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe                                       ⟩
+    (Fin m → (Fin n → Fin k))  ≃⟨ →-cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
+    (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n))                             ⟩
+     Fin (k ^ n ^ m)           ■)
 
 \end{code}
 
-Added 25t November 2019: Numerical factorial from the type theoretical factorial.
+Added 25t November 2019: Numerical factorial from the type theoretical
+factorial, which also uses function extensionality (which is not
+actually necessary - see the comments in the module UF-Factorial).
 
 \begin{code}
 
-open import UF-Factorial fe
+ open import UF-Factorial fe
 
-!construction : (n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Aut (Fin n)
-!construction zero = 1 ,
-                     (Fin 1          ≃⟨ ≃-refl (Fin 1) ⟩
-                      𝟘 + 𝟙          ≃⟨ 𝟘-lneutral     ⟩
-                      𝟙              ≃⟨ factorial-base ⟩
-                      Aut (Fin zero) ■)
-!construction (succ n) = g
- where
-  IH : Σ \(k : ℕ) → Fin k ≃ Aut(Fin n)
-  IH = !construction n
-  k : ℕ
-  k = pr₁ IH
-  φ : Fin k ≃ Aut(Fin n)
-  φ = pr₂ IH
+ !construction : (n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Aut (Fin n)
+ !construction zero = 1 ,
+                      (Fin 1          ≃⟨ ≃-refl (Fin 1) ⟩
+                       𝟘 + 𝟙          ≃⟨ 𝟘-lneutral     ⟩
+                       𝟙              ≃⟨ factorial-base ⟩
+                       Aut (Fin zero) ■)
+ !construction (succ n) = g
+  where
+   IH : Σ \(k : ℕ) → Fin k ≃ Aut(Fin n)
+   IH = !construction n
+   k : ℕ
+   k = pr₁ IH
+   φ : Fin k ≃ Aut(Fin n)
+   φ = pr₂ IH
 
-  φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k                            ⟩
-       Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ                ⟩
-       (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
-       Aut (Fin n + 𝟙)           ■
+   φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k                            ⟩
+        Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ                ⟩
+        (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
+        Aut (Fin n + 𝟙)           ■
 
-  g : Σ \(k' : ℕ) → Fin k' ≃ Aut (Fin (succ n))
-  g = succ n ×' k , φ'
+   g : Σ \(k' : ℕ) → Fin k' ≃ Aut (Fin (succ n))
+   g = succ n ×' k , φ'
 
 \end{code}
 
@@ -375,31 +388,21 @@ Geometric definition of the factorial function:
 
 \begin{code}
 
-_! : ℕ → ℕ
-n ! = pr₁ (!construction n)
+ _! : ℕ → ℕ
+ n ! = pr₁ (!construction n)
+
+ infix 100 _!
 
 \end{code}
 
 The following are theorems rather than definitions:
 
-\begin{code}
+\sbegin{code}
 
-!-base : 0 ! ≡ 1
-!-base = refl
+ !-base : 0 ! ≡ 1
+ !-base = refl
 
-!-step : (n : ℕ) → (n +' 1)! ≡ (n +' 1) ×' n !
-!-step n = refl
-
-\end{code}
-
-Operator precedences:
-
-\begin{code}
-
-infixl 20 _+'_
-infixl 22 _×'_
-infixl 23 _^_
-infix 100 _!
-
+ !-step : (n : ℕ) → (n +' 1)! ≡ (n +' 1) ×' n !
+ !-step n = refl
 
 \end{code}

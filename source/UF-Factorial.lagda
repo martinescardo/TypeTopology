@@ -49,7 +49,7 @@ open import UF-FunExt
 \end{code}
 
 We need functional extensionality (but not propositional
-extensionality or univalence):
+extensionality or univalence).
 
 \begin{code}
 
@@ -58,7 +58,7 @@ module UF-Factorial (fe : FunExt) where
 open import SpartanMLTT
 open import Plus-Properties
 open import DiscreteAndSeparated
-open import Swap fe
+open import Swap
 open import UF-Base
 open import UF-Retracts
 open import UF-Equiv

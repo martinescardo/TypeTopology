@@ -31,27 +31,24 @@ The left cancellability of Fin uses the non-trivial construction
 
 \begin{code}
 
-open import UF-FunExt
 
-module _ (fe : FunExt) where
+open import PlusOneLC
+open import UF-Equiv
 
- open import PlusOneLC
- open import UF-Equiv
-
- Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
- Fin-lc zero zero p = refl
- Fin-lc (succ m) zero p = 𝟘-elim (⌜ p ⌝ fzero)
- Fin-lc zero (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ fzero)
- Fin-lc (succ m) (succ n) p = ap succ r
-  where
-   IH : Fin m ≃ Fin n → m ≡ n
-   IH = Fin-lc m n
-   remark : Fin m + 𝟙 ≃ Fin n + 𝟙
-   remark = p
-   q : Fin m ≃ Fin n
-   q = +𝟙-cancellable fe p
-   r : m ≡ n
-   r = IH q
+Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
+Fin-lc zero zero p = refl
+Fin-lc (succ m) zero p = 𝟘-elim (⌜ p ⌝ fzero)
+Fin-lc zero (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ fzero)
+Fin-lc (succ m) (succ n) p = ap succ r
+ where
+  IH : Fin m ≃ Fin n → m ≡ n
+  IH = Fin-lc m n
+  remark : Fin m + 𝟙 ≃ Fin n + 𝟙
+  remark = p
+  q : Fin m ≃ Fin n
+  q = +𝟙-cancellable p
+  r : m ≡ n
+  r = IH q
 
 open import DiscreteAndSeparated
 
@@ -98,89 +95,80 @@ Fin-Compact (succ n) A d = f (d fzero)
 
 \end{code}
 
-\begin{code}
-
-module _ (fe : FunExt) where
-
- open import Plus-Properties
- open import Swap fe
- open import UF-Base
- open import UF-Equiv
- open import UF-LeftCancellable
-
-\end{code}
-
 Recall that X ↣ Y is the type of left cancellable maps from X to Y.
 
 \begin{code}
 
- +𝟙-cancel-lemma : {X Y : 𝓤 ̇}
-                 → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
-                 → ⌈ 𝒇 ⌉ (inr *) ≡ inr *
-                 → X ↣ Y
- +𝟙-cancel-lemma {𝓤} {X} {Y} (f , l) p = g , m
-  where
-   g : X → Y
-   g x = pr₁ (inl-preservation {𝓤} {𝓤} {𝓤} {𝓤} f p l x)
+open import Plus-Properties
+open import Swap
+open import UF-LeftCancellable
 
-   a : (x : X) → f (inl x) ≡ inl (g x)
-   a x = pr₂ (inl-preservation f p l x)
++𝟙-cancel-lemma : {X Y : 𝓤 ̇}
+                → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
+                → ⌈ 𝒇 ⌉ (inr *) ≡ inr *
+                → X ↣ Y
++𝟙-cancel-lemma {𝓤} {X} {Y} (f , l) p = g , m
+ where
+  g : X → Y
+  g x = pr₁ (inl-preservation {𝓤} {𝓤} {𝓤} {𝓤} f p l x)
 
-   m : left-cancellable g
-   m {x} {x'} p = q
-    where
-     r = f (inl x)  ≡⟨ a x      ⟩
-         inl (g x)  ≡⟨ ap inl p ⟩
-         inl (g x') ≡⟨ (a x')⁻¹ ⟩
-         f (inl x') ∎
-     q : x ≡ x'
-     q = inl-lc (l r)
+  a : (x : X) → f (inl x) ≡ inl (g x)
+  a x = pr₂ (inl-preservation f p l x)
 
- +𝟙-cancel : {X Y : 𝓤 ̇}
-           → is-discrete Y
-           → X + 𝟙 ↣ Y + 𝟙
-           → X ↣ Y
- +𝟙-cancel {𝓤} {X} {Y} i (f , e) = a
-  where
-   h : Y + 𝟙 → Y + 𝟙
-   h = swap (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated
-   d : left-cancellable h
-   d = equivs-are-lc h (swap-is-equiv (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated)
-   f' : X + 𝟙 → Y + 𝟙
-   f' = h ∘ f
-   e' : left-cancellable f'
-   e' = left-cancellable-closed-under-∘ f h e d
-   p : f' (inr *) ≡ inr *
-   p = swap-equation₀ (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated
-   a : X ↣ Y
-   a = +𝟙-cancel-lemma (f' , e') p
+  m : left-cancellable g
+  m {x} {x'} p = q
+   where
+    r = f (inl x)  ≡⟨ a x      ⟩
+        inl (g x)  ≡⟨ ap inl p ⟩
+        inl (g x') ≡⟨ (a x')⁻¹ ⟩
+        f (inl x') ∎
+    q : x ≡ x'
+    q = inl-lc (l r)
 
++𝟙-cancel : {X Y : 𝓤 ̇}
+          → is-discrete Y
+          → X + 𝟙 ↣ Y + 𝟙
+          → X ↣ Y
++𝟙-cancel {𝓤} {X} {Y} i (f , e) = a
+ where
+  h : Y + 𝟙 → Y + 𝟙
+  h = swap (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated
+  d : left-cancellable h
+  d = equivs-are-lc h (swap-is-equiv (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated)
+  f' : X + 𝟙 → Y + 𝟙
+  f' = h ∘ f
+  e' : left-cancellable f'
+  e' = left-cancellable-closed-under-∘ f h e d
+  p : f' (inr *) ≡ inr *
+  p = swap-equation₀ (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated
+  a : X ↣ Y
+  a = +𝟙-cancel-lemma (f' , e') p
 
- open import NaturalsOrder
- open import UF-EquivalenceExamples
+open import NaturalsOrder
+open import UF-EquivalenceExamples
 
- finle : (m n : ℕ) → (Fin m ↣ Fin n) → m ≤ n
- finle zero n e              = zero-minimal n
- finle (succ m) zero (f , i) = 𝟘-elim (f fzero)
- finle (succ m) (succ n) e   = finle m n (+𝟙-cancel (Fin-is-discrete n) e)
+↣-gives-≤ : (m n : ℕ) → (Fin m ↣ Fin n) → m ≤ n
+↣-gives-≤ zero n e              = zero-minimal n
+↣-gives-≤ (succ m) zero (f , i) = 𝟘-elim (f fzero)
+↣-gives-≤ (succ m) (succ n) e   = ↣-gives-≤ m n (+𝟙-cancel (Fin-is-discrete n) e)
 
- lefin : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
- lefin zero     n        l = unique-from-𝟘 , (λ {x} {x'} p → 𝟘-elim x)
- lefin (succ m) zero     l = 𝟘-elim l
- lefin (succ m) (succ n) l = g , j
-  where
-   IH : Fin m ↣ Fin n
-   IH = lefin m n l
-   f : Fin m → Fin n
-   f = pr₁ IH
-   i : left-cancellable f
-   i = pr₂ IH
-   g : Fin (succ m) → Fin (succ n)
-   g = +functor f unique-to-𝟙
-   j : left-cancellable g
-   j {inl x} {inl x'} p = ap inl (i (inl-lc p))
-   j {inl x} {inr *}  p = 𝟘-elim (+disjoint  p)
-   j {inr *} {inl y}  p = 𝟘-elim (+disjoint' p)
-   j {inr *} {inr *}  p = refl
+≤-gives-↣ : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
+≤-gives-↣ zero     n        l = unique-from-𝟘 , (λ {x} {x'} p → 𝟘-elim x)
+≤-gives-↣ (succ m) zero     l = 𝟘-elim l
+≤-gives-↣ (succ m) (succ n) l = g , j
+ where
+  IH : Fin m ↣ Fin n
+  IH = ≤-gives-↣ m n l
+  f : Fin m → Fin n
+  f = pr₁ IH
+  i : left-cancellable f
+  i = pr₂ IH
+  g : Fin (succ m) → Fin (succ n)
+  g = +functor f unique-to-𝟙
+  j : left-cancellable g
+  j {inl x} {inl x'} p = ap inl (i (inl-lc p))
+  j {inl x} {inr *}  p = 𝟘-elim (+disjoint  p)
+  j {inr *} {inl y}  p = 𝟘-elim (+disjoint' p)
+  j {inr *} {inr *}  p = refl
 
 \end{code}

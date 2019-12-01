@@ -533,11 +533,52 @@ qinv-is-vv-equiv {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
 
 \end{code}
 
+Added 1st December 2019.
+
+Sometimes it is is convenient to reason with quasi-equivalences
+directly, in particular if we want to avoid function extensionality,
+and we introduce some machinery for this.
+
+\begin{code}
+
+_≅_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+X ≅ Y = Σ \(f : X → Y) → qinv f
+
+id-qinv : (X : 𝓤 ̇ ) → qinv (id {𝓤} {X})
+id-qinv X = id , (λ x → refl) , (λ x → refl)
+
+≅-refl : (X : 𝓤 ̇ ) → X ≅ X
+≅-refl X = id , (id-qinv X)
+
+∘-qinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
+       → qinv f → qinv f' → qinv (f' ∘ f)
+∘-qinv {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {f'} = γ
+ where
+   γ : qinv f → qinv f' → qinv (f' ∘ f)
+   γ (g , gf , fg) (g' , gf' , fg') = (g ∘ g' , gf'' , fg'' )
+    where
+     fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
+     fg'' z =  ap f' (fg (g' z)) ∙ fg' z
+     gf'' : (x : X) → g(g'(f'(f x))) ≡ x
+     gf'' x = ap g (gf' (f x)) ∙ gf x
+
+≅-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≅ Y → Y ≅ Z → X ≅ Z
+≅-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , ∘-qinv d e
+
+_≅⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≅ Y → Y ≅ Z → X ≅ Z
+_ ≅⟨ d ⟩ e = ≅-comp d e
+
+_◾ : (X : 𝓤 ̇ ) → X ≅ X
+_◾ = ≅-refl
+
+\end{code}
+
 Associativities and precedences.
 
 \begin{code}
 
 infix  0 _≃_
+infix  0 _≅_
 infix  1 _■
 infixr 0 _≃⟨_⟩_
 infixl 2 _●_

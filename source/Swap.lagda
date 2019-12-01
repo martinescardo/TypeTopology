@@ -6,9 +6,7 @@ The swap automorphism.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF-FunExt
-
-module Swap (fe : FunExt) where
+module Swap where
 
 open import SpartanMLTT
 open import Plus-Properties
@@ -24,27 +22,32 @@ x=y is decidable for all y:X.
 
 \begin{code}
 
-patch : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
-      → is-isolated a → (X → Y) → (X → Y)
-patch a b i f x = Cases (i x)
-                    (λ (_ : a ≡ x) → b)
-                    (λ (_ : a ≢ x) → f x)
+module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y) (i : is-isolated a) (f : X → Y) where
 
-patch-equation₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
-                  (i : is-isolated a) (f : X → Y)
-                → patch a b i f a ≡ b
-patch-equation₀ a b i f = Cases-equality-l (λ _ → b) (λ _ → f a) (i a) refl γ
- where
-  γ : i a ≡ inl refl
-  γ = isolated-inl a i a refl
+ private
+  φ : (x : X) → (a ≡ x) + (a ≢ x) → Y
+  φ x (inl p) = b
+  φ x (inr u) = f x
 
-patch-equation₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (a : X) (b : Y)
-                  (i : is-isolated a) (f : X → Y)
-                → (x : X) → a ≢ x → patch a b i f x ≡ f x
-patch-equation₁ {𝓤} {X} a b i f x n = Cases-equality-r (λ _ → b) (λ _ → f x) (i x) n γ
- where
-  γ : i x ≡ inr n
-  γ = isolated-inr (fe 𝓤 𝓤₀) a i x n
+  f' : X → Y
+  f' x = φ x (i x)
+
+  γ : (z : (a ≡ a) + (a ≢ a)) → i a ≡ z → φ a z ≡ b
+  γ (inl p) q = refl
+  γ (inr u) q = 𝟘-elim (u refl)
+
+  δ : (x : X) (u : a ≢ x) (z : (a ≡ x) + (a ≢ x)) → i x ≡ z → φ x z ≡ f x
+  δ x u (inl p) q = 𝟘-elim (u p)
+  δ x u (inr v) q = refl
+
+ patch : X → Y
+ patch = f'
+
+ patch-equation₀ : f' a ≡ b
+ patch-equation₀ = γ (i a) refl
+
+ patch-equation₁ : (x : X) → a ≢ x → f' x ≡ f x
+ patch-equation₁ x u = δ x u (i x) refl
 
 \end{code}
 

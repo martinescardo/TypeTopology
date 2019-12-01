@@ -60,6 +60,19 @@ isolated-inr fe x i y n =
   (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
   (λ (m : x ≢ y) (q : i y ≡ inr m) → q ∙ ap inr (nfunext fe (λ (p : x ≡ y) → 𝟘-elim (m p))))
 
+\end{code}
+
+The following variation of the above doesn't required function extensionality:
+
+\begin{code}
+
+isolated-inr' : {X : 𝓤 ̇ }
+             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ \(m : x ≢ y) → i y ≡ inr m
+isolated-inr' x i y n =
+  equality-cases (i y)
+  (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
+  (λ (m : x ≢ y) (q : i y ≡ inr m) → m , q)
+
 discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
 discrete-inl d x = isolated-inl x (d x)
 
