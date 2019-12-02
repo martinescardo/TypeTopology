@@ -107,9 +107,9 @@ m < n = succ m ≤ n
 
 x > y = y < x
 
-not-less-itself : (n : ℕ) → ¬(n < n)
-not-less-itself zero l = l
-not-less-itself (succ n) l = not-less-itself n l
+not-less-than-itself : (n : ℕ) → ¬(n < n)
+not-less-than-itself zero l = l
+not-less-than-itself (succ n) l = not-less-than-itself n l
 
 not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → n ≥ m
 not-less-bigger-or-equal zero n u = zero-minimal n
@@ -117,7 +117,7 @@ not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
 bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬(n < m)
-bigger-or-equal-not-less m n l u = not-less-itself n (≤-trans (succ n) m n u l)
+bigger-or-equal-not-less m n l u = not-less-than-itself n (≤-trans (succ n) m n u l)
 
 less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬(n ≤ m)
 less-not-bigger-or-equal m n l u = bigger-or-equal-not-less n m u l

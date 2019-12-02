@@ -53,17 +53,17 @@ open import DiscreteAndSeparated
   g : Y + 𝟙 → X + 𝟙
   g = inverse φ i ∘ s
 
-  H : s ∘ s ∼ id
-  H = swap-involutive (φ z₀) t₀ k l
+  h : s ∘ s ∼ id
+  h = swap-involutive (φ z₀) t₀ k l
 
   η : g ∘ f ∼ id
-  η z = inverse φ i (s (s (φ z))) ≡⟨ ap (inverse φ i) (H (φ z))  ⟩
+  η z = inverse φ i (s (s (φ z))) ≡⟨ ap (inverse φ i) (h (φ z))  ⟩
         inverse φ i (φ z)         ≡⟨ inverse-is-retraction φ i z ⟩
         z                         ∎
 
   ε : f ∘ g ∼ id
   ε t = s (φ (inverse φ i (s t))) ≡⟨ ap s (inverse-is-section φ i (s t)) ⟩
-        s (s t)                   ≡⟨ H t                                 ⟩
+        s (s t)                   ≡⟨ h t                                 ⟩
         t                         ∎
 
   f' : X → Y

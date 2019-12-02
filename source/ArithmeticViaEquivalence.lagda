@@ -152,9 +152,11 @@ open import Fin
 \end{code}
 
 The 1st definition by induction is that of the function Fin defined in
-the module Fin imported above. From a natural number n, get a finite
-set Fin n with n elements. This can be considered as an interpretation
-function, which defines the meaning of numbers as types.
+the module Fin imported above.
+
+From a natural number n, get a finite set Fin n with n elements. This
+can be considered as an interpretation function, which defines the
+meaning of numbers as types.
 
 2nd definition by induction. Existence of addition:
 
