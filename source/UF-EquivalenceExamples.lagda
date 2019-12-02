@@ -216,10 +216,10 @@ An application of Π-cong is the following:
    f = inl
    g : X + 𝟘 → X
    g (inl x) = x
-   g (inr ())
+   g (inr y) = 𝟘-elim y
    ε : (y : X + 𝟘) → (f ∘ g) y ≡ y
    ε (inl x) = refl
-   ε (inr ())
+   ε (inr y) = 𝟘-elim y
    η : (x : X) → (g ∘ f) x ≡ x
    η x = refl
 
@@ -275,13 +275,13 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
 ×𝟘 {𝓤} {𝓥} {𝓦} {X} = qinveq f (g , η , ε)
  where
    f : 𝟘 → X × 𝟘
-   f ()
+   f = unique-from-𝟘
    g : X × 𝟘 → 𝟘
-   g (x , ())
+   g (x , y) = 𝟘-elim y
    ε : (t : X × 𝟘) → (f ∘ g) t ≡ t
-   ε (x , ())
+   ε (x , y) = 𝟘-elim y
    η : (u : 𝟘) → (g ∘ f) u ≡ u
-   η ()
+   η = 𝟘-induction
 
 𝟙distr : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X × Y + X ≃ X × (Y + 𝟙 {𝓦})
 𝟙distr {𝓤} {𝓥} {𝓦} {X} {Y} = f , (g , ε) , (g , η)
@@ -349,7 +349,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
 𝟘→ {𝓤} {𝓥} {𝓦} {X} fe = qinveq f (g , ε , η)
  where
   f : 𝟙 → 𝟘 → X
-  f * ()
+  f * y = 𝟘-elim y
   g : (𝟘 → X) → 𝟙
   g h = *
   η : (h : 𝟘 → X) → f (g h) ≡ h

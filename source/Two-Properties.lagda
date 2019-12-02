@@ -10,7 +10,7 @@ in the module SpartanMLTT. Here we develop some general machinery.
 module Two-Properties where
 
 open import SpartanMLTT
-
+open import One-Properties
 
 𝟚-Cases : {A : 𝓤 ̇ } → 𝟚 → A → A → A
 𝟚-Cases a b c = 𝟚-cases b c a
@@ -35,8 +35,18 @@ open import SpartanMLTT
 𝟚-possibilities ₀ = inl refl
 𝟚-possibilities ₁ = inr refl
 
+one-is-not-zero : ₁ ≢ ₀
+one-is-not-zero p = 𝟙-is-not-𝟘 q
+ where
+  f : 𝟚 → 𝓤₀ ̇
+  f ₀ = 𝟘
+  f ₁ = 𝟙
+
+  q : 𝟙 ≡ 𝟘
+  q = ap f p
+
 zero-is-not-one : ₀ ≢ ₁
-zero-is-not-one ()
+zero-is-not-one p = one-is-not-zero (p ⁻¹)
 
 equal-₁-different-from-₀ : {b : 𝟚} → b ≡ ₁ → b ≢ ₀
 equal-₁-different-from-₀ r s = zero-is-not-one (s ⁻¹ ∙ r)
@@ -67,8 +77,8 @@ complement ₀ = ₁
 complement ₁ = ₀
 
 complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {𝓤}
-complement-no-fp ₀ ()
-complement-no-fp ₁ ()
+complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
+complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 
 complement-involutive : (b : 𝟚) → complement(complement b) ≡ b
 complement-involutive ₀ = refl
@@ -105,7 +115,7 @@ a ≤₂ b = a ≡ ₁ → b ≡ ₁
 ₁-top r = refl
 
 ₀-bottom : {b : 𝟚} → ₀ ≤₂ b
-₀-bottom ()
+₀-bottom {b} p = 𝟘-elim (zero-is-not-one p)
 
 _≤₂'_ : (a b : 𝟚) → 𝓤₀ ̇
 a ≤₂' b = b ≡ ₀ → a ≡ ₀
@@ -205,8 +215,8 @@ Lemma[b≡c→b⊕c≡₀] {b} {c} r = ap (λ - → b ⊕ -) (r ⁻¹) ∙ (Lemm
 
 Lemma[b⊕c≡₀→b≡c] : {b c : 𝟚} → b ⊕ c ≡ ₀ → b ≡ c
 Lemma[b⊕c≡₀→b≡c] {₀} {₀} r = refl
-Lemma[b⊕c≡₀→b≡c] {₀} {₁} ()
-Lemma[b⊕c≡₀→b≡c] {₁} {₀} ()
+Lemma[b⊕c≡₀→b≡c] {₀} {₁} r = r ⁻¹
+Lemma[b⊕c≡₀→b≡c] {₁} {₀} r = r
 Lemma[b⊕c≡₀→b≡c] {₁} {₁} r = refl
 
 Lemma[b≢c→b⊕c≡₁] : {b c : 𝟚} → b ≢ c → b ⊕ c ≡ ₁

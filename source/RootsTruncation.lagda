@@ -60,7 +60,7 @@ extensionality here.
 \begin{code}
 
 fpo : ∀ k α → FPO k α
-fpo zero α = inr (λ n ())
+fpo zero α = inr (λ n p → 𝟘-elim p)
 fpo (succ k) α = cases f g (fpo k α)
  where
   f : α has-a-minimal-root< k → FPO (succ k) α

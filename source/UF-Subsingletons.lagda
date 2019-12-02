@@ -205,16 +205,16 @@ local-hedberg' {𝓤} {X} x pc y p q =
   c _ refl = sym-is-inverse' (f x refl)
 
 props-are-Id-collapsible : {X : 𝓤 ̇ } → is-prop X → Id-collapsible X
-props-are-Id-collapsible h {x} {y} = ((λ p → h x y) , (λ p q → refl))
+props-are-Id-collapsible h {x} {y} = (λ p → h x y) , (λ p q → refl)
 
 props-are-sets : {X : 𝓤 ̇ } → is-prop X → is-set X
 props-are-sets h = Id-collapsibles-are-sets(props-are-Id-collapsible h)
 
 𝟘-is-collapsible : collapsible (𝟘 {𝓤})
-𝟘-is-collapsible {𝓤} = (id , (λ x → λ ()))
+𝟘-is-collapsible {𝓤} = id , (λ x y → 𝟘-elim y)
 
 pointed-types-are-collapsible : {X : 𝓤 ̇ } → X → collapsible X
-pointed-types-are-collapsible x = ((λ y → x) , λ y y' → refl)
+pointed-types-are-collapsible x = (λ y → x) , (λ y y' → refl)
 
 \end{code}
 
@@ -311,8 +311,8 @@ inr-lc-is-section refl = refl
  where
   r : ap inl (inl-lc p) ≡ ap inl (inl-lc q)
   r = ap (ap inl) (i (inl-lc p) (inl-lc q))
-+-is-set X Y i j {inl x} {inr y} () q
-+-is-set X Y i j {inr y} {inl x} p ()
++-is-set X Y i j {inl x} {inr y} p q = 𝟘-elim (+disjoint  p)
++-is-set X Y i j {inr y} {inl x} p q = 𝟘-elim (+disjoint' p)
 +-is-set X Y i j {inr y} {inr y'} p q = inr-lc-is-section p ∙ r ∙ (inr-lc-is-section q)⁻¹
  where
   r : ap inr (inr-lc p) ≡ ap inr (inr-lc q)

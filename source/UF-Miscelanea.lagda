@@ -11,6 +11,7 @@ module UF-Miscelanea where
 open import SpartanMLTT
 
 open import Plus-Properties
+open import NaturalNumbers-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
@@ -160,10 +161,9 @@ is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } 
 is-prop-separated fe fe₀ {X} = iprops-are-props f
  where
   f : is-separated X → is-prop(is-separated X)
-  f s = Π-is-prop fe
-          (λ _ → Π-is-prop fe
-                    (λ _ → Π-is-prop fe
-                              (λ _ → separated-types-are-sets fe₀ s)))
+  f s = Π-is-prop fe (λ _ →
+        Π-is-prop fe (λ _ →
+        Π-is-prop fe (λ _ → separated-types-are-sets fe₀ s)))
 
 \end{code}
 
@@ -177,8 +177,8 @@ Find a better home for this:
 
 𝟚-ℕ-embedding-lc : left-cancellable 𝟚-ℕ-embedding
 𝟚-ℕ-embedding-lc {₀} {₀} refl = refl
-𝟚-ℕ-embedding-lc {₀} {₁} ()
-𝟚-ℕ-embedding-lc {₁} {₀} ()
+𝟚-ℕ-embedding-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-ℕ-embedding-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
 𝟚-ℕ-embedding-lc {₁} {₁} refl = refl
 
 C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)

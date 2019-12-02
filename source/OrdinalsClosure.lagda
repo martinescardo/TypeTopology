@@ -31,6 +31,7 @@ open import PropInfTychonoff
 open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; l ; r)
 open import InfCompact
+open import Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
@@ -136,7 +137,7 @@ More Cantor-retract properties are in the module SquashedCantor.
    where
     r : (z : ℕ + 𝟙) → ℕ → ((λ _ → ℕ) / inl) z
     r (inl n) m w = m
-    r (inr *) m (k , ())
+    r (inr *) m (k , p) = 𝟘-elim (+disjoint p)
     s : (z : ℕ + 𝟙) → ((λ _ → ℕ) / inl) z → ℕ
     s (inl n) φ = φ (n , refl)
     s (inr *) φ = 0 -- Any natural number will do here.
@@ -148,7 +149,7 @@ More Cantor-retract properties are in the module SquashedCantor.
     rs (inr *) φ = dfunext fe₀ g
      where
       g : (w : fiber inl (inr *)) → r (inr *) (s (inr *) φ) w ≡ φ w
-      g (k , ())
+      g (k , p) = 𝟘-elim (+disjoint p)
 
 \end{code}
 
@@ -200,8 +201,8 @@ under𝟙ᵒ = under𝟙
 under𝟙ᵒ-is-order-preserving : is-order-preserving (succₒ ℕₒ) ℕ∞ᵒ under𝟙ᵒ
 under𝟙ᵒ-is-order-preserving (inl n) (inl m) l = under-order-preserving n m l
 under𝟙ᵒ-is-order-preserving (inl n) (inr *) * = n , (refl , refl)
-under𝟙ᵒ-is-order-preserving (inr *) (inl m) ()
-under𝟙ᵒ-is-order-preserving (inr *) (inr *) ()
+under𝟙ᵒ-is-order-preserving (inr *) (inl m) l = 𝟘-elim l
+under𝟙ᵒ-is-order-preserving (inr *) (inr *) l = 𝟘-elim l
 
 over-under-map-is-order-preserving  : (τ : ℕ → Ordᵀ) (z : ℕ + 𝟙)
                                     → is-order-preserving
@@ -217,7 +218,7 @@ over-under-map-is-order-preserving τ (inl n) x y ((.n , refl) , l) = (n , refl)
         (over-under-map-left (λ n → ⟪ τ n ⟫) n x)
         (over-under-map-left (λ n → ⟪ τ n ⟫) n y)
         l
-over-under-map-is-order-preserving τ (inr *) x y ((n , ()) , l)
+over-under-map-is-order-preserving τ (inr *) x y ((n , p) , l) = 𝟘-elim (+disjoint p)
 
 ∑-up : (τ : ℕ → Ordᵀ) → ⟪ ∑₁ τ ⟫ → ⟪ ∑¹ τ ⟫
 ∑-up τ = Σ-up (λ n → ⟪ τ n ⟫)
@@ -249,7 +250,7 @@ Overᵒ-is-order-preserving : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ
                                              ((υ ↗ (over , over-embedding)) z)
                                              (Overᵒ τ υ f z)
 Overᵒ-is-order-preserving τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
-Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , ()) , l)
+Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+disjoint q)
 
 ∑₁-functor : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
            → ⟪ ∑₁ τ ⟫ → ⟪ ∑₁ υ ⟫
@@ -388,7 +389,7 @@ Overᵒ-is-order-reflecting : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ
                                               ((υ ↗ (over , over-embedding)) z)
                                               (Overᵒ τ υ f z)
 Overᵒ-is-order-reflecting τ υ f p (inl n) x y ((.n , refl) , l) = (n , refl) , p n _ _ l
-Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
+Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+disjoint q)
 
 ∑₁-functor-is-order-reflecting : (τ υ : ℕ → Ordᵀ) (f : (n : ℕ) → ⟪ τ n ⟫ → ⟪ υ n ⟫)
                                → ((n : ℕ) → is-order-reflecting (τ n) (υ n) (f n))
@@ -431,10 +432,10 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
   f : (Σ \(x : 𝟙) → p x ≡ ₀) → p * ≡ ₀
   f (* , r) = r
   g : (x : 𝟙) → p x ≡ ₀ → * ≼⟪ 𝟙ᵒ ⟫ x
-  g * r ()
+  g * r a = 𝟘-elim a
   h : (x : 𝟙) → root-lower-bound (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y) p x
     → x ≼⟪ 𝟙ᵒ ⟫ *
-  h * φ ()
+  h * φ a = 𝟘-elim a
 
 𝟚ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
 𝟚ᵒ-inf-compact p = 𝟚-equality-cases φ γ
@@ -448,10 +449,10 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
     f (inl * , s) = s
     f (inr * , s) = r
     g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inl * ≤ x
-    g (inl *) s ()
-    g (inr *) s ()
+    g (inl *) s l = 𝟘-elim l
+    g (inr *) s l = 𝟘-elim l
     h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inl *
-    h (inl *) φ ()
+    h (inl *) φ l = 𝟘-elim l
     h (inr *) φ * = φ (inl *) r *
 
   γ : (r : p (inl *) ≡ ₁) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
@@ -462,10 +463,10 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , ()) , l)
     f (inr * , s) = s
     g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inr * ≤ x
     g (inl *) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
-    g (inr *) s ()
+    g (inr *) s l = 𝟘-elim l
     h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inr *
-    h (inl *) φ ()
-    h (inr *) φ ()
+    h (inl *) φ a = 𝟘-elim a
+    h (inr *) φ a = 𝟘-elim a
 
 \end{code}
 

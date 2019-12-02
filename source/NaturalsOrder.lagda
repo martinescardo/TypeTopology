@@ -30,7 +30,7 @@ open import UF-Miscelanea
 
 right-addition-is-embedding : (m n : ℕ) → is-prop (Σ \(k : ℕ) → k +' m ≡ n)
 right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl
-right-addition-is-embedding (succ m) zero (k , ()) (k' , p')
+right-addition-is-embedding (succ m) zero (k , p) (k' , p') = 𝟘-elim (positive-not-zero (k +' m) p)
 right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap pr₁ IH , ℕ-is-set _ _)
  where
   IH : k , succ-lc p ≡ k' , succ-lc p'
@@ -38,7 +38,7 @@ right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap 
 
 subtraction : (m n : ℕ) → m ≤ n → Σ \(k : ℕ) → k +' m ≡ n
 subtraction zero n l = n , refl
-subtraction (succ m) zero ()
+subtraction (succ m) zero l = 𝟘-elim l
 subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
  where
   IH : Σ \(k : ℕ) → k +' m ≡ n
@@ -46,7 +46,7 @@ subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
 
 cosubtraction : (m n : ℕ) → (Σ \(k : ℕ) → k +' m ≡ n) → m ≤ n
 cosubtraction zero n (.n , refl) = *
-cosubtraction (succ m) zero (k , ())
+cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
 cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
 
 zero-minimal : (n : ℕ) → zero ≤ n
@@ -63,7 +63,7 @@ succ-order-injective m n l = l
             → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
 ≤-induction P base step zero n *            = base n
-≤-induction P base step (succ m) zero ()
+≤-induction P base step (succ m) zero l     = 𝟘-elim l
 ≤-induction P base step (succ m) (succ n) l = step m n l (≤-induction P base step m n l)
 
 succ≤≡ : (m n : ℕ) → (succ m ≤ succ n) ≡ (m ≤ n)
@@ -75,14 +75,14 @@ succ≤≡ m n = refl
 
 ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
 ≤-trans zero m n p q = *
-≤-trans (succ l) zero n () q
-≤-trans (succ l) (succ m) zero p ()
+≤-trans (succ l) zero n p q = 𝟘-elim p
+≤-trans (succ l) (succ m) zero p q = 𝟘-elim q
 ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
 
 ≤-anti : (m n : ℕ) → m ≤ n → n ≤ m → m ≡ n
 ≤-anti zero zero p q = refl
-≤-anti zero (succ n) p ()
-≤-anti (succ m) zero () q
+≤-anti zero (succ n) p q = 𝟘-elim q
+≤-anti (succ m) zero p q = 𝟘-elim p
 ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
 
 ≤-succ : (n : ℕ) → n ≤ succ n
@@ -91,7 +91,7 @@ succ≤≡ m n = refl
 
 unique-minimal : (n : ℕ) → n ≤ zero → n ≡ zero
 unique-minimal zero l = refl
-unique-minimal (succ n) ()
+unique-minimal (succ n) l = 𝟘-elim l
 
 ≤-split : (m n : ℕ) → m ≤ succ n → (m ≤ n) + (m ≡ succ n)
 ≤-split zero n l = inl l
@@ -190,15 +190,14 @@ course-of-values-induction = transfinite-induction _<_ <-is-well-founded
 
 \end{code}
 
-Induction on z, then y, then x:
+Induction on z, then x, then y:
 
 \begin{code}
 
 ℕ-cotransitive : cotransitive _<_
-ℕ-cotransitive zero y zero l = inr l
-ℕ-cotransitive (succ x) y zero l = inr (≤-trans 1 (succ(succ x)) y * l)
-ℕ-cotransitive x zero (succ z) ()
-ℕ-cotransitive zero (succ y) (succ z) l = inl (zero-minimal y)
+ℕ-cotransitive zero     y        zero     l = inr l
+ℕ-cotransitive (succ x) y        zero     l = inr (≤-trans 1 (succ(succ x)) y * l)
+ℕ-cotransitive zero     (succ y) (succ z) l = inl (zero-minimal y)
 ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
  where
   IH : (x < z) + (z < y)

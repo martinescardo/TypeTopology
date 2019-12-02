@@ -60,15 +60,10 @@ pointed-decidable = inl
 which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
          → A + B → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → B)
 
-which-of (inl a) = ₀ , ((λ r → a) , (λ ()))
-which-of (inr b) = ₁ , ((λ ()) , (λ r → b))
+which-of (inl a) = ₀ , (λ (r : ₀ ≡ ₀) → a) , λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
+which-of (inr b) = ₁ , (λ (p : ₁ ≡ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) , (λ (r : ₁ ≡ ₁) → b)
 
 \end{code}
-
-Notice that in Agda the term λ () is a proof of an implication that
-holds vacuously, by virtue of the premise being false.  In the above
-example, the first occurrence is a proof of ₀ ≡ ₁ → B, and the second
-one is a proof of ₁ ≡ ₀ → A.
 
 The following is a special case we are interested in:
 

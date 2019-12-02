@@ -11,15 +11,25 @@ open import Universes
 open import Negation
 open import Id
 open import Empty
+open import One
+open import One-Properties
 
 +-commutative : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A + B → B + A
 +-commutative = cases inr inl
 
 +disjoint : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬(inl x ≡ inr y)
-+disjoint ()
++disjoint {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
+ where
+  f : X + Y → 𝓤₀ ̇
+  f (inl x) = 𝟙
+  f (inr y) = 𝟘
+
+  q : 𝟙 ≡ 𝟘
+  q = ap f p
+
 
 +disjoint' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬(inr y ≡ inl x)
-+disjoint' ()
++disjoint' p = +disjoint (p ⁻¹)
 
 inl-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → inl {𝓤} {𝓥} {X} {Y} x ≡ inl x' → x ≡ x'
 inl-lc refl = refl

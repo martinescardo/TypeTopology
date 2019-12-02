@@ -99,6 +99,9 @@ module blechschmidt where
 
  data 𝟘 : Set where
 
+ 𝟘-elim : {A : Set} → 𝟘 → A
+ 𝟘-elim ()
+
  Π : {X : Set} (Y : X → Set) → Set
  Π Y = (x : _) → Y x
 
@@ -235,7 +238,7 @@ module blechschmidt where
  holds-is-prop = pr₂
 
  𝟘-is-prop : is-prop 𝟘
- 𝟘-is-prop ()
+ 𝟘-is-prop x y = 𝟘-elim x
 
  ¬_ : Set → Set
  ¬ X = X → 𝟘

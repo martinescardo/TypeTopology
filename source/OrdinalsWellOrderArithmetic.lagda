@@ -43,10 +43,10 @@ module prop
  extensional x y f g = isp x y
 
  transitive : is-transitive _<_
- transitive x y z ()
+ transitive x y z a = 𝟘-elim a
 
  well-founded : is-well-founded _<_
- well-founded x = next x (λ y ())
+ well-founded x = next x (λ y a → 𝟘-elim a)
 
  well-order : is-well-order _<_
  well-order = prop-valued , well-founded , extensional , transitive
@@ -84,7 +84,7 @@ module plus
              → is-prop-valued _⊏_
  prop-valued p p' (inl x) (inl x') l m = p x x' l m
  prop-valued p p' (inl x) (inr y') * * = refl
- prop-valued p p' (inr y) (inl x') () m
+ prop-valued p p' (inr y) (inl x') a m = 𝟘-elim a
  prop-valued p p' (inr y) (inr y') l m = p' y y' l m
 
  extensional : is-well-founded _<_
@@ -101,10 +101,10 @@ module plus
             → is-transitive _⊏_
  transitive t t' (inl x) (inl x') (inl z) l m = t x x' z l m
  transitive t t' (inl x) (inl x') (inr z') l m = *
- transitive t t' (inl x) (inr y') (inl z) l ()
+ transitive t t' (inl x) (inr y') (inl z) l m = 𝟘-elim m
  transitive t t' (inl x) (inr y') (inr z') l m = *
- transitive t t' (inr y) (inl x') z () m
- transitive t t' (inr y) (inr y') (inl z') l ()
+ transitive t t' (inr y) (inl x') z l m = 𝟘-elim l
+ transitive t t' (inr y) (inr y') (inl z') l m = 𝟘-elim m
  transitive t t' (inr y) (inr y') (inr z') l m = t' y y' z' l m
 
  well-founded : is-well-founded _<_
@@ -117,7 +117,7 @@ module plus
     where
      τ : (s : X + Y) → s ⊏ inl x → is-accessible _⊏_ s
      τ (inl x') l = φ x' (σ x' l)
-     τ (inr y') ()
+     τ (inr y') l = 𝟘-elim l
    γ : (y : Y) → is-accessible _≺_ y → is-accessible _⊏_ (inr y)
    γ y (next .y σ) = next (inr y) τ
     where
@@ -140,7 +140,7 @@ module plus
  top-preservation (y , f) = inr y , g
   where
    g : (z : X + Y) → ¬ (inr y ⊏ z)
-   g (inl x) ()
+   g (inl x)  l = 𝟘-elim l
    g (inr y') l = f y' l
 
 \end{code}
@@ -171,8 +171,8 @@ module successor
   top = inr * , g
    where
     g : (y : X + 𝟙) → ¬ (inr * <' y)
-    g (inl x) ()
-    g (inr *) ()
+    g (inl x) l = 𝟘-elim l
+    g (inr *) l = 𝟘-elim l
 
 \end{code}
 

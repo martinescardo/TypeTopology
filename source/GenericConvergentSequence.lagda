@@ -458,7 +458,7 @@ u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
 ∞-maximal u = λ n _ → refl
 
 Zero-minimal : (u : ℕ∞) → Zero ≼ u
-Zero-minimal u n ()
+Zero-minimal u n = λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
 
 Succ-not-≼-Zero : (u : ℕ∞) → ¬(Succ u ≼ Zero)
 Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
@@ -539,15 +539,15 @@ below-isolated fe u v (n , r , l) = back-transport is-isolated r (finite-isolate
 open import NaturalsOrder
 
 <-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
-<-gives-⊏ zero zero ()
+<-gives-⊏ zero zero l = 𝟘-elim l
 <-gives-⊏ zero (succ n) l = refl
-<-gives-⊏ (succ m) zero ()
+<-gives-⊏ (succ m) zero l = 𝟘-elim l
 <-gives-⊏ (succ m) (succ n) l = <-gives-⊏ m n l
 
 ⊏-gives-< : (m n : ℕ) →  m ⊏ under n → m < n
-⊏-gives-< zero zero ()
+⊏-gives-< zero zero l = 𝟘-elim (zero-is-not-one l)
 ⊏-gives-< zero (succ n) l = zero-minimal n
-⊏-gives-< (succ m) zero ()
+⊏-gives-< (succ m) zero l = 𝟘-elim (zero-is-not-one l)
 ⊏-gives-< (succ m) (succ n) l = ⊏-gives-< m n l
 
 ⊏-back : (u : ℕ∞) (n : ℕ) → succ n ⊏ u → n ⊏ u

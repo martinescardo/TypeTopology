@@ -81,9 +81,9 @@ prop-indexed-sum-zero {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε 
   f : Σ Y → 𝟘
   f (x , y) = 𝟘-elim(φ x)
   g : 𝟘 → Σ Y
-  g ()
+  g = unique-from-𝟘
   η : (x : 𝟘) → f(g x) ≡ x
-  η ()
+  η = 𝟘-induction
   ε : (σ : Σ Y) → g(f σ) ≡ σ
   ε (x , y) = 𝟘-elim (φ x)
 
