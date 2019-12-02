@@ -26,13 +26,20 @@ fzero = inr *
 fsucc : {n : ℕ} → Fin n → Fin (succ n)
 fsucc = inl
 
+Fin-induction : (P : (n : ℕ) → Fin n → 𝓤 ̇ )
+              → ((n : ℕ) → P (succ n) fzero)
+              → ((n : ℕ) (i : Fin n) → P n i → P (succ n) (fsucc i))
+              →  (n : ℕ) (i : Fin n) → P n i
+Fin-induction P β σ zero     i       = 𝟘-elim i
+Fin-induction P β σ (succ n) (inr *) = β n
+Fin-induction P β σ (succ n) (inl i) = σ n i (Fin-induction P β σ n i)
+
 \end{code}
 
 The left cancellability of Fin uses the non-trivial construction
 +𝟙-cancellable defined in the module PlusOneLC.lagda.
 
 \begin{code}
-
 
 open import PlusOneLC
 open import UF-Equiv
