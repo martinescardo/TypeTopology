@@ -103,8 +103,8 @@ Fin-Compact (succ n) A d = f (d fzero)
     g (inr v) = inr w
      where
       w : ¬ Σ A
-      w (inl x , a) = v (x , a)
       w (inr * , a) = u a
+      w (inl x , a) = v (x , a)
     γ : Σ A + ¬ Σ A
     γ = g IH
 
@@ -200,7 +200,7 @@ canonical-Fin-inclusion-lc (succ m) (succ n) l {inr *} {inr *} p = refl
 
 \end{code}
 
-Another construction:
+An equivalent construction:
 
 \begin{code}
 ≤-gives-↣' : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
@@ -224,7 +224,7 @@ Another construction:
 
 \end{code}
 
-Added 2ns December 2019. An isomorphic copy of Fin n:
+Added 2nd December 2019. An isomorphic copy of Fin n:
 
 \begin{code}
 
@@ -242,7 +242,7 @@ Fin-unprime zero     (k , l)      = 𝟘-elim l
 Fin-unprime (succ n) (zero , l)   = fzero
 Fin-unprime (succ n) (succ k , l) = fsucc (Fin-unprime n (k , l))
 
-Fin-prime : (n : ℕ) → Fin n → (Σ \(k : ℕ) → k < n)
+Fin-prime : (n : ℕ) → Fin n → Fin' n
 Fin-prime zero     i       = 𝟘-elim i
 Fin-prime (succ n) (inl i) = fsucc' (Fin-prime n i)
 Fin-prime (succ n) (inr *) = fzero'
