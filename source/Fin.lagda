@@ -296,7 +296,6 @@ Equivalently, we can define finiteness as follows:
 
  finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
  finite-unprime X = ∥∥-rec (being-finite-is-a-prop X) γ
-
   where
    γ : (Σ \(n : ℕ) → X ≃ Fin n) → Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
    γ (n , e) = n , ∣ e ∣

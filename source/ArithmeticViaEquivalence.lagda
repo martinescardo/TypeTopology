@@ -409,7 +409,9 @@ The following are theorems rather than definitions:
 
 \end{code}
 
-Added 8th December 2019. Some corollaries:
+Added 8th December 2019. Some corollaries.
+
+Recall that a type X is finite if there is n : ℕ with X ≃ Fin n.
 
 \begin{code}
 
@@ -468,4 +470,26 @@ module _ (pt : propositional-truncations-exist)
     γ : ∥ (X → Y) ≃ Fin (n ^ m) ∥
     γ = ∥∥-functor₂ δ α β
 
+\end{code}
+
+We have accounted for the type constructors +, ×, →, and ≃ (and hence
+≡ if we assume univalence). The last two types to account for in our
+spartan MLTT are Π and Σ.
+
+\begin{code}
+{-
+Σconstruction : (n : ℕ) (j : Fin n → ℕ)
+              → Σ \(k : ℕ) → Fin k ≃ Σ \(i : Fin n) → Fin (j i)
+Σconstruction = ?
+
+∑ : {n : ℕ} (j : Fin n → ℕ) → ℕ
+∑ {n} j = pr₁ (Σconstruction n j)
+
+Πconstruction : (n : ℕ) (j : Fin n → ℕ)
+              → Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (j i)
+Πconstruction = ?
+
+∏ : {n : ℕ} (j : Fin n → ℕ) → ℕ
+∏ {n} j = pr₁ (Πconstruction n j)
+-}
 \end{code}
