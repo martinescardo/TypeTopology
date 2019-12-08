@@ -493,3 +493,5 @@ spartan MLTT are Π and Σ.
 ∏ {n} j = pr₁ (Πconstruction n j)
 -}
 \end{code}
+
+(What if we had W types as well?)
