@@ -504,7 +504,7 @@ module _ (pt : propositional-truncations-exist) where
 
  surjection-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f → compact∙ X → compact∙ Y
- surjection-compact∙ {𝓤} {𝓥} {X} {Y} f su ε q = (y₀ , h)
+ surjection-compact∙ {𝓤} {𝓥} {X} {Y} f i ε q = (y₀ , h)
   where
    p : X → 𝟚
    p = q ∘ f
@@ -517,7 +517,7 @@ module _ (pt : propositional-truncations-exist) where
    isp : (y : Y) → is-prop (q y ≡ ₁)
    isp y = 𝟚-is-set
    h : q y₀ ≡ ₁ → (y : Y) → q y ≡ ₁
-   h r = surjection-induction f su (λ y → q y ≡ ₁) isp (g r)
+   h r = surjection-induction f i (λ y → q y ≡ ₁) isp (g r)
 
  image-compact∙ : ∀ {X Y : 𝓤₀ ̇ } (f : X → Y)
                 → compact∙ X → compact∙ (image f)
@@ -699,5 +699,37 @@ and hence to a type in the universe 𝓤₀.
                          → Σ-Compact X 𝓦
                          → Σ-Compact Y 𝓦
 Σ-Compact-closed-under-≃ e = Σ-Compact-closed-under-retracts (equiv-retract-r e)
+
+module _ (pt : propositional-truncations-exist) where
+
+ open ImageAndSurjection pt
+
+ surjection-Σ-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → funext 𝓥 𝓤₀
+                     → is-surjection f
+                     → Σ-Compact X 𝓥
+                     → Σ-Compact Y 𝓥
+ surjection-Σ-Compact {𝓤} {𝓥} {X} {Y} f fe i c A δ = γ (c B ε)
+  where
+   B : X → 𝓥 ̇
+   B = A ∘ f
+   ε : detachable B
+   ε = δ ∘ f
+   γ : decidable (Σ B) → decidable (Σ A)
+   γ (inl (x , a)) = inl (f x , a)
+   γ (inr u)       = inr v
+    where
+     u' : (x : X) → ¬ A (f x)
+     u' x a = u (x , a)
+     v' : (y : Y) → ¬ A y
+     v' = surjection-induction f i (λ y → ¬ A y) (λ y → negations-are-props fe) u'
+     v : ¬ Σ A
+     v (y , a) = v' y a
+
+ image-Σ-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                 → funext (𝓤 ⊔ 𝓥) 𝓤₀
+                 → Σ-Compact X (𝓤 ⊔ 𝓥)
+                 → Σ-Compact (image f) (𝓤 ⊔ 𝓥)
+ image-Σ-Compact f fe c = surjection-Σ-Compact (corestriction f) fe (corestriction-surjection f) c
 
 \end{code}
