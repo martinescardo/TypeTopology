@@ -679,4 +679,25 @@ and hence to a type in the universe 𝓤₀.
   γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
 
 
+Σ-Compact-closed-under-retracts : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                → retract Y of X
+                                → Σ-Compact X 𝓦
+                                → Σ-Compact Y 𝓦
+Σ-Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ = γ (c B ε)
+ where
+  B : X → 𝓦 ̇
+  B = A ∘ r
+  ε : detachable B
+  ε = δ ∘ r
+  γ : decidable (Σ B) → decidable (Σ A)
+  γ (inl (x , a)) = inl (r x , a)
+  γ (inr u)       = inr λ {(y , a) → u (s y , transport A ((η y)⁻¹) a)}
+
+
+Σ-Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                         → X ≃ Y
+                         → Σ-Compact X 𝓦
+                         → Σ-Compact Y 𝓦
+Σ-Compact-closed-under-≃ e = Σ-Compact-closed-under-retracts (equiv-retract-r e)
+
 \end{code}
