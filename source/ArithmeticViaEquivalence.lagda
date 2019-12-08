@@ -286,7 +286,7 @@ and function extensionality.
 
 open import UF-FunExt
 
-module _ (fe : FunExt) where
+module exponentiation-and-factorial (fe : FunExt) where
 
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
@@ -359,7 +359,7 @@ actually necessary - see the comments in the module UF-Factorial).
 
 \begin{code}
 
- open import UF-Factorial fe
+ open import UF-Factorial fe public
 
  !construction : (n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Aut (Fin n)
  !construction zero = 1 ,
@@ -406,5 +406,66 @@ The following are theorems rather than definitions:
 
  !-step : (n : ℕ) → (n +' 1)! ≡ (n +' 1) ×' n !
  !-step n = refl
+
+\end{code}
+
+Added 8th December 2019. Some corollaries:
+
+\begin{code}
+
+open import UF-PropTrunc
+
+module _ (pt : propositional-truncations-exist)
+         (fe : FunExt)
+         {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         where
+
+ open finiteness pt
+ open exponentiation-and-factorial fe
+ open import UF-Equiv-FunExt
+
+ Aut-finite : is-finite X → is-finite (Aut X)
+ Aut-finite (n , α) = n ! , γ
+  where
+   δ : X ≃ Fin n → Aut X ≃ Fin (n !)
+   δ d = Aut X       ≃⟨ Eq-Eq-cong fe d d             ⟩
+         Aut (Fin n) ≃⟨ ≃-sym (pr₂ (!construction n)) ⟩
+         Fin (n !)   ■
+   γ : ∥ Aut X ≃ Fin (n !) ∥
+   γ = ∥∥-functor δ α
+
+ module _ {𝓥 : Universe} {Y : 𝓥 ̇ } where
+
+  +finite : is-finite X → is-finite Y → is-finite (X + Y)
+  ×finite : is-finite X → is-finite Y → is-finite (X × Y)
+  →finite : is-finite X → is-finite Y → is-finite (X → Y)
+
+  +finite (m , α) (n , β) = m +' n , γ
+   where
+    δ : X ≃ Fin m → Y ≃ Fin n → X + Y ≃ Fin (m +' n)
+    δ d e = X + Y         ≃⟨ +cong d e                       ⟩
+            Fin m + Fin n ≃⟨ ≃-sym (pr₂ (+construction m n)) ⟩
+            Fin (m +' n)  ■
+    γ : ∥ X + Y ≃ Fin (m +' n) ∥
+    γ = ∥∥-functor₂ δ α β
+
+  ×finite (m , α) (n , β) = m ×' n , γ
+   where
+    δ : X ≃ Fin m → Y ≃ Fin n → X × Y ≃ Fin (m ×' n)
+    δ d e = X × Y         ≃⟨ ×cong d e                       ⟩
+            Fin m × Fin n ≃⟨ ≃-sym (pr₂ (×construction m n)) ⟩
+            Fin (m ×' n)  ■
+    γ : ∥ X × Y ≃ Fin (m ×' n) ∥
+    γ = ∥∥-functor₂ δ α β
+
+  →finite (m , α) (n , β) = n ^ m , γ
+   where
+    δ : X ≃ Fin m → Y ≃ Fin n → (X → Y) ≃ Fin (n ^ m)
+    δ d e = (X → Y)         ≃⟨ →-cong (fe 𝓤₀ 𝓤₀) (fe 𝓤 𝓥) d e   ⟩
+            (Fin m → Fin n) ≃⟨ ≃-sym (pr₂ (→construction m n))  ⟩
+            Fin (n ^ m)     ■
+    γ : ∥ (X → Y) ≃ Fin (n ^ m) ∥
+    γ = ∥∥-functor₂ δ α β
 
 \end{code}

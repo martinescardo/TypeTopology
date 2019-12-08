@@ -94,6 +94,10 @@ compact-gives-∃-compact {𝓤} {X} φ p = g (φ p)
   g (inl (x , r)) = inl ∣ x , r ∣
   g (inr α) = inr (forall₁-implies-not-exists₀ pt p α)
 
+∥Compact∥-gives-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X 𝓤₀ ∥ → ∃-compact X
+∥Compact∥-gives-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-a-prop
+                                     (compact-gives-∃-compact ∘ Compact-gives-compact X)
+
 \end{code}
 
 But notice that the Π-compactness of ℕ is WLPO and its ∃-compactness

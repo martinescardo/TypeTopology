@@ -80,9 +80,9 @@ Added November 2019.
 
 open import CompactTypes
 
-Fin-Compact : (n : ℕ) → Σ-Compact (Fin n) 𝓤
-Fin-Compact zero     = 𝟘-Σ-Compact
-Fin-Compact (succ n) = +-Σ-Compact (Fin-Compact n) 𝟙-Σ-Compact
+Fin-Compact : (n : ℕ) → Compact (Fin n) 𝓤
+Fin-Compact zero     = 𝟘-Compact
+Fin-Compact (succ n) = +-Compact (Fin-Compact n) 𝟙-Compact
 
 \end{code}
 
@@ -282,5 +282,19 @@ module finiteness (pt : propositional-truncations-exist) where
 
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
  finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
+
+ module _ (fe : FunExt) where
+
+  open import WeaklyCompactTypes fe pt
+
+  finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
+  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
+   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
+
+
+  finite-∃-compact : {X : 𝓤 ̇ } → is-finite X → ∃-compact X
+  finite-∃-compact {𝓤} {X} i = ∥Compact∥-gives-∃-compact (finite-∥Compact∥ i)
+
+
 
 \end{code}
