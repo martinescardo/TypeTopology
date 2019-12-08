@@ -586,6 +586,18 @@ in the original development:
 Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
 Compact = Σ-Compact
 
+Compactness-gives-Markov : {X : 𝓤 ̇ }
+                         → Compact X 𝓥
+                         → (A : X → 𝓥 ̇)
+                         → detachable A
+                         → ¬¬ Σ A → Σ A
+Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
+ where
+  γ : decidable (Σ A) → Σ A
+  γ (inl σ) = σ
+  γ (inr u) = 𝟘-elim (φ u)
+
+
 compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → (𝓥 : Universe) → Compact X 𝓥
 compact-gives-Compact X c 𝓥 A d = iii
  where
@@ -703,7 +715,7 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → Compact Y 𝓦
 Compact-closed-under-≃ e = Compact-closed-under-retracts (equiv-retract-r e)
 
-module _ (pt : propositional-truncations-exist) where
+module CompactTypesPT (pt : propositional-truncations-exist) where
 
  open ImageAndSurjection pt
 
@@ -735,5 +747,41 @@ module _ (pt : propositional-truncations-exist) where
                → Compact (image f) (𝓤 ⊔ 𝓥)
  image-Compact f fe c = surjection-Compact (corestriction f) fe
                            (corestriction-surjection f) c
+
+
+ open PropositionalTruncation pt
+
+ ∃-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+ ∃-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (∃ A)
+
+ Compactness-gives-∃-Compactness : {X : 𝓤 ̇ } → Compact X 𝓥 → ∃-Compact X 𝓥
+ Compactness-gives-∃-Compactness {𝓤} {X} c A δ = γ (c A δ)
+  where
+   γ : decidable (Σ A) → decidable (∃ A)
+   γ (inl σ) = inl ∣ σ ∣
+   γ (inr u) = inr (empty-is-uninhabited u)
+
+
+ ∃-Compactness-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∃-Compact X 𝓥)
+ ∃-Compactness-is-a-prop {𝓤} {𝓥} fe {X} = Π-is-prop (fe (𝓤 ⊔ (𝓥 ⁺)) (𝓤 ⊔ 𝓥))
+                                    (λ A → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
+                                    (λ δ → decidability-of-prop-is-prop
+                                            (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-a-prop))
+
+
+ ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
+                            → ∃-Compact X 𝓥
+                            → (A : X → 𝓥 ̇ )
+                            → detachable A
+                            → ¬¬ ∃ A → ∃ A
+ ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ φ = γ (c A δ)
+  where
+   γ : decidable (∃ A) → ∃ A
+   γ (inl e) = e
+   γ (inr u) = 𝟘-elim (φ u)
+
+ ∥Compact∥-gives-∃-Compact : FunExt → {X : 𝓤 ̇ } → ∥ Compact X 𝓥 ∥ → ∃-Compact X 𝓥
+ ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-a-prop fe)
+                                     Compactness-gives-∃-Compactness
 
 \end{code}

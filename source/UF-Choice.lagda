@@ -230,10 +230,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  l {X} = props-are-sets (Π-is-prop (fe 𝓤 𝓤₀) (λ _ → 𝟘-is-prop))
 
  fact : DNS → DNA
- fact = TChoice.theorem 𝓤 ¬¬ ¬¬-functor is-set sei l
+ fact = TChoice.theorem 𝓤 ¬¬_ ¬¬-functor is-set sei l
 
  fact' : DNA → DNS
- fact' = TChoice.theorem' 𝓤 ¬¬ ¬¬-functor is-set sei l
+ fact' = TChoice.theorem' 𝓤 ¬¬_ ¬¬-functor is-set sei l
 
 \end{code}
 

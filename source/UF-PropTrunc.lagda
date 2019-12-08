@@ -76,8 +76,14 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  gdn-pt : {X : 𝓤 ̇ } → (∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P) → ∥ X ∥
  gdn-pt {𝓤} {X} φ = φ ∥ X ∥ ∥∥-is-a-prop ∣_∣
 
- pt-dn : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
- pt-dn s = pt-gdn s 𝟘 𝟘-is-prop
+ inhabited-is-nonempty : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
+ inhabited-is-nonempty s = pt-gdn s 𝟘 𝟘-is-prop
+
+ uninhabited-is-empty : {X : 𝓤 ̇ } → ¬ ∥ X ∥ → ¬ X
+ uninhabited-is-empty u x = u ∣ x ∣
+
+ empty-is-uninhabited : {X : 𝓤 ̇ } → ¬ X → ¬ ∥ X ∥
+ empty-is-uninhabited v = ∥∥-rec 𝟘-is-prop v
 
  binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ∥∥-rec ∥∥-is-a-prop (λ x → ∥∥-rec ∥∥-is-a-prop (λ y → ∣ x , y ∣) t) s

@@ -38,12 +38,12 @@ open import DecidableAndDetachable
 ∃-compactness-is-a-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤)
                                 (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀) ∥∥-is-a-prop)
 
-∃-compact-Markov : {X : 𝓤 ̇ }
-                 → ∃-compact X
-                 → (p : X → 𝟚)
-                 → ¬¬(∃ \(x : X) → p x ≡ ₀)
-                 → ∃ \(x : X) → p x ≡ ₀
-∃-compact-Markov {𝓤} {X} c p φ = g (c p)
+∃-compactness-gives-Markov : {X : 𝓤 ̇ }
+                           → ∃-compact X
+                           → (p : X → 𝟚)
+                           → ¬¬(∃ \(x : X) → p x ≡ ₀)
+                           → ∃ \(x : X) → p x ≡ ₀
+∃-compactness-gives-Markov {𝓤} {X} c p φ = g (c p)
  where
   g : decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
   g (inl e) = e

@@ -285,16 +285,13 @@ module finiteness (pt : propositional-truncations-exist) where
 
  module _ (fe : FunExt) where
 
-  open import WeaklyCompactTypes fe pt
+  open CompactTypesPT pt
 
   finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
   finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
    ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
-
-  finite-∃-compact : {X : 𝓤 ̇ } → is-finite X → ∃-compact X
-  finite-∃-compact {𝓤} {X} i = ∥Compact∥-gives-∃-compact (finite-∥Compact∥ i)
-
-
+  finite-∃-compact : {X : 𝓤 ̇ } → is-finite X → ∃-Compact X 𝓥
+  finite-∃-compact {𝓤} {X} i = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ i)
 
 \end{code}
