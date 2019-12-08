@@ -493,18 +493,3 @@ spartan MLTT are Π and Σ.
 ∏ {n} j = pr₁ (Πconstruction n j)
 -}
 \end{code}
-
-What if we had W types as well?
-
-\begin{code}
-{-
-open import W
-
-Wconstruction : (n : ℕ) (j : Fin n → ℕ)
-              → Σ \(k : ℕ) → Fin k ≃ W \(i : Fin n) → Fin (j i)
-Wconstruction = ?
-
-𝕎 : {n : ℕ} (j : Fin n → ℕ) → ℕ
-𝕎 {n} j = pr₁ (Wconstruction n j)
--}
-\end{code}
