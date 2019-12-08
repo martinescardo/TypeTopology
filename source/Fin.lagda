@@ -1,6 +1,7 @@
-Martin Escardo, 2014, 21 March 2018
+Martin Escardo, 2014, 21 March 2018, November-December 2019.
 
-Fin n is a set with n elements. We investigate some of its basic properties.
+Fin n is a set with n elements. We investigate some of its basic
+properties.
 
 \begin{code}
 
@@ -234,5 +235,52 @@ Fin-prime (succ n) (inr *) = fzero'
 
 ≃-Fin : (n : ℕ) → Fin n ≃ Fin' n
 ≃-Fin n = qinveq (Fin-prime n) (Fin-unprime n , εFin n , ηFin n)
+
+\end{code}
+
+Added 8th December 2019.
+
+\begin{code}
+
+open import UF-PropTrunc
+
+module finiteness (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt public
+
+ is-finite : 𝓤 ̇ → 𝓤 ̇
+ is-finite X = Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
+
+ cardinality : (X : 𝓤 ̇ ) → is-finite X → ℕ
+ cardinality X = pr₁
+
+ cardinality-≃ : (X : 𝓤 ̇ ) (i : is-finite X) → ∥ X ≃ Fin (cardinality X i) ∥
+ cardinality-≃ X = pr₂
+
+ being-finite-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
+ being-finite-is-a-prop X (m , d) (n , e) = γ
+  where
+   a : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ≡ n
+   a m n d e = Fin-lc m n (≃-sym d ● e)
+   b : (m n : ℕ) → ∥ X ≃ Fin m ∥ → ∥ X ≃ Fin n ∥ → m ≡ n
+   b m n = ∥∥-rec₂ ℕ-is-set (a m n)
+   γ : m , d ≡ n , e
+   γ = to-Σ-≡ (b m n d e , ∥∥-is-a-prop _ _)
+
+ is-finite' : 𝓤 ̇ → 𝓤 ̇
+ is-finite' X = ∃ \(n : ℕ) → X ≃ Fin n
+
+ being-finite'-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
+ being-finite'-is-a-prop X = ∥∥-is-a-prop
+
+ finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
+ finite-unprime X = ∥∥-rec (being-finite-is-a-prop X) γ
+
+  where
+   γ : (Σ \(n : ℕ) → X ≃ Fin n) → Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
+   γ (n , e) = n , ∣ e ∣
+
+ finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
+ finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
 
 \end{code}

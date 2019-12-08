@@ -678,4 +678,5 @@ and hence to a type in the universe 𝓤₀.
   γ (inl (x , (y , a))) = inl ((x , y) , a)
   γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
 
+
 \end{code}
