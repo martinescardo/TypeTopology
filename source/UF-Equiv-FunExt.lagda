@@ -184,23 +184,23 @@ a neutral element for ordinary function composition, definitionally:
 ≃-Comp : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 ≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
  where
-  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
+  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β            ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
-            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _ ⟩
+            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _                    ⟩
             β                 ∎
 
-  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
+  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ             ⟩
             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
-            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
-            γ ∎
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _                     ⟩
+            γ                 ∎
 
 Eq-Eq-cong : FunExt
            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
            → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
 Eq-Eq-cong fe {X} {Y} {A} {B} α β =
- (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α)⟩
- (A ≃ Y)  ≃⟨ ≃-Sym fe ⟩
- (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β)⟩
+ (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α)  ⟩
+ (A ≃ Y)  ≃⟨ ≃-Sym fe               ⟩
+ (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β)  ⟩
  (B ≃ A)  ≃⟨ ≃-Sym fe ⟩
  (A ≃ B)  ■
 
