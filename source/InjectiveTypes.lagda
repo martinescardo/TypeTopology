@@ -1462,7 +1462,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
  set-injectivity-in-terms-of-ainjectivity {𝓤} (Ω₀ , e₀) pe D i = γ , ∥ainjective∥-gives-injective D
   where
    down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
-   down-≃ = →-cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
+   down-≃ = →cong' (fe 𝓤 𝓤₀) (fe 𝓤 (𝓤 ⁺)) (≃-sym e₀)
 
    down : (D → Ω 𝓤) → (D → Ω₀)
    down = ⌜ down-≃ ⌝

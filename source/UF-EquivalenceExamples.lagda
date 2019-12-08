@@ -417,10 +417,10 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   η : (α : Π X × Π Y) → f (g α) ≡ α
   η (γ , δ) = refl
 
-→-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-       → funext 𝓦 𝓣 → funext 𝓤 𝓥
-       → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
-→-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =
+→cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+      → funext 𝓦 𝓣 → funext 𝓤 𝓥
+      → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
+→cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =
  H (equivs-are-qinvs f i) (equivs-are-qinvs φ j)
  where
   H : qinv f → qinv φ → (X → Y) ≃ (A → B)
@@ -435,10 +435,10 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
     D : (h : X → Y) → G (F h) ≡ h
     D h = dfunext fe' (λ x → ε (h (g (f x))) ∙ ap h (e x))
 
-→-cong' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {B : 𝓣 ̇ }
+→cong' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {B : 𝓣 ̇ }
        → funext 𝓤 𝓣 → funext 𝓤 𝓥
        → Y ≃ B → (X → Y) ≃ (X → B)
-→-cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →-cong fe fe' (≃-refl X)
+→cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →cong fe fe' (≃-refl X)
 
 pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                 → ((x : X) → is-singleton (A x))

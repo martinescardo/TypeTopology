@@ -359,7 +359,7 @@ Using this we have the following, as promised:
   b =  ≃-sym 𝟙-rneutral
   c = ×cong (≃-refl _) (≃-sym s)
   d = ≃-sym ΠΣ-distr-≃
-  e = →-cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
+  e = →cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
 
 \end{code}
 

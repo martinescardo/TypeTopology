@@ -389,7 +389,7 @@ module type-classifier-bis
                                      dfunext (funext-from-univalence ua)
                                       (λ y → 𝟙-is-prop * (g y))))
    ψ : (Y → Green) ≃ (Y → 𝓤 ̇ )
-   ψ = →-cong fe' fe' (≃-refl Y) γ
+   ψ = →cong fe' fe' (≃-refl Y) γ
     where
      γ : Green ≃ 𝓤 ̇
      γ = qinveq pr₁ ((λ X → (X , * )) , c , λ x → refl)
@@ -445,7 +445,7 @@ module singleton-classifier
             (equivs-are-vv-equivs f)
             (vv-equivs-are-equivs f)))
     ii  = classification-equivalence
-    iii = →-cong fe fe' (≃-refl Y) ψ
+    iii = →cong fe fe' (≃-refl Y) ψ
      where
       ψ : Σ (λ X → is-singleton X) ≃ 𝟙
       ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop *))

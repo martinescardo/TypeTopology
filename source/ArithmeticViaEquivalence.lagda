@@ -336,7 +336,7 @@ module exponentiation-and-factorial (fe : FunExt) where
  ^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
  ^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
   (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k                                 ⟩
-  (Fin (m +' n) → Fin k)             ≃⟨ →-cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
+  (Fin (m +' n) → Fin k)             ≃⟨ →cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
   (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀                                              ⟩
   (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
    Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n))                    ⟩
@@ -345,9 +345,9 @@ module exponentiation-and-factorial (fe : FunExt) where
  iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
  iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
     (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k                                    ⟩
-    (Fin (m ×' n) → Fin k)     ≃⟨ →-cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
+    (Fin (m ×' n) → Fin k)     ≃⟨ →cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
     (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe                                       ⟩
-    (Fin m → (Fin n → Fin k))  ≃⟨ →-cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
+    (Fin m → (Fin n → Fin k))  ≃⟨ →cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
     (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n))                             ⟩
      Fin (k ^ n ^ m)           ■)
 
@@ -462,7 +462,7 @@ module _ (pt : propositional-truncations-exist)
   →finite (m , α) (n , β) = n ^ m , γ
    where
     δ : X ≃ Fin m → Y ≃ Fin n → (X → Y) ≃ Fin (n ^ m)
-    δ d e = (X → Y)         ≃⟨ →-cong (fe 𝓤₀ 𝓤₀) (fe 𝓤 𝓥) d e   ⟩
+    δ d e = (X → Y)         ≃⟨ →cong (fe 𝓤₀ 𝓤₀) (fe 𝓤 𝓥) d e    ⟩
             (Fin m → Fin n) ≃⟨ ≃-sym (pr₂ (→construction m n))  ⟩
             Fin (n ^ m)     ■
     γ : ∥ (X → Y) ≃ Fin (n ^ m) ∥
