@@ -240,6 +240,21 @@ Fin-prime (succ n) (inr *) = fzero'
 
 Added 8th December 2019.
 
+The following is structure rather than property. It amounts to the
+type of finite linear orders on X.
+
+\begin{code}
+
+Finite : 𝓤 ̇ → 𝓤 ̇
+Finite X = Σ \(n : ℕ) → X ≃ Fin n
+
+\end{code}
+
+Exercise: If X ≃ Fin n, the type Finite X has n! elements.
+
+Hence one considers the following notion of finiteness, which is
+property rather than structure:
+
 \begin{code}
 
 open import UF-PropTrunc
@@ -266,6 +281,12 @@ module finiteness (pt : propositional-truncations-exist) where
    b m n = ∥∥-rec₂ ℕ-is-set (a m n)
    γ : m , d ≡ n , e
    γ = to-Σ-≡ (b m n d e , ∥∥-is-a-prop _ _)
+
+\end{code}
+
+Equivalently, we can define finiteness as follows:
+
+\begin{code}
 
  is-finite' : 𝓤 ̇ → 𝓤 ̇
  is-finite' X = ∃ \(n : ℕ) → X ≃ Fin n

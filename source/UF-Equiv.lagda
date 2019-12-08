@@ -44,6 +44,9 @@ equivs-are-lc f e = sections-are-lc f (equivs-are-sections f e)
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ≃ Y = Σ \(f : X → Y) → is-equiv f
 
+Aut : 𝓤 ̇ → 𝓤 ̇
+Aut X = (X ≃ X)
+
 id-is-an-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
 id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
 

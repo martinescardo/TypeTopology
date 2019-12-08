@@ -382,9 +382,6 @@ This is the end of the submodule, which has the following corollaries:
 
 \begin{code}
 
-Aut : 𝓤 ̇ → 𝓤 ̇
-Aut X = (X ≃ X)
-
 general-factorial : (X : 𝓤 ̇ ) → co-derived-set (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
 general-factorial {𝓤} X = factorial-steps.step₄ 𝓤 𝓤 X X
 
