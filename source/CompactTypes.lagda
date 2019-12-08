@@ -1,4 +1,4 @@
-Martin Escardo 2011, reorganized and expanded 2018.
+Martin Escardo 2011, reorganized and expanded 2018,2019.
 
 Compact types. We shall call a type compact if it is exhaustibly
 searchable. But there are many closely related, but different, notions
@@ -24,12 +24,12 @@ We can also ask whether the statements
   ∃ \(x : X) → p x ≡ ₀   and   Π \(x : X) → p x ≡ ₀
 
 are decidable for every p, and in these cases we say that X is
-∃-compact and Π-compact respectively. We have
+is-∃-compact and is-Π-compact respectively. We have
 
-  Σ-compact X → ∃-compact X → Π-compact X.
+  Σ-compact X → is-∃-compact X → is-Π-compact X.
 
 In this module we study Σ-compactness, and in the module
-WeaklyCompactTypes we study ∃-compact and Π-compact types.
+WeaklyCompactTypes we study is-∃-compact and is-Π-compact types.
 
 If X is the finite type Fin n for some n : ℕ, then it is
 Σ-compact. But even if X is a subtype of 𝟙 ≃ Fin 1, or a univalent
@@ -46,7 +46,7 @@ does satisfy the principle of omniscience, or, using the above
 terminology, is Σ-compact.
 
 Because of the relation to LPO, we formerly referred to Σ- or
-∃-compact sets as "omniscient" sets:
+is-∃-compact sets as "omniscient" sets:
 
    Martin H. Escardo, Infinite sets that satisfy the principle of
    omniscience in any variety of constructive mathematics. The Journal
@@ -103,75 +103,11 @@ on it, it decidable whether it has a root:
 compact : 𝓤 ̇ → 𝓤 ̇
 compact = Σ-compact
 
-
-Σ-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Σ-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ \(x : X) → A x)
-
-\end{code}
-
-These two notions of compactness are equivalent:
-
-\begin{code}
-
-Σ-compact-upper : (X : 𝓤 ̇ ) → Σ-compact X → (𝓥 : Universe) → Σ-Compact X 𝓥
-Σ-compact-upper X c 𝓥 A d = iii
- where
-  i : Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
-  i = characteristic-function d
-  p : X → 𝟚
-  p = pr₁ i
-  ii : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁) → decidable (Σ A)
-  ii (inl (x , r)) = inl (x , pr₁ (pr₂ i x) r)
-  ii (inr u)       = inr φ
-   where
-    φ : ¬ Σ A
-    φ (x , a) = pr₂ (pr₂ i x) (u x) a
-  iii : decidable (Σ A)
-  iii = ii (c p)
-
-Σ-Compact-lower : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-compact X
-Σ-Compact-lower X C p = iv
- where
-  A : X → 𝓤₀ ̇
-  A x = p x ≡ ₀
-  i : detachable (λ x → p x ≡ ₀) → decidable (Σ \(x : X) → p x ≡ ₀)
-  i = C A
-  ii : detachable (λ x → p x ≡ ₀)
-  ii x = 𝟚-is-discrete (p x) ₀
-  iii : decidable (Σ \(x : X) → p x ≡ ₀) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
-  iii (inl σ) = inl σ
-  iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
-  iv : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
-  iv = iii (i ii)
-
-NB-Σ-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-Compact X 𝓥
-NB-Σ-Compact {𝓤} {𝓥} X C = Σ-compact-upper X (Σ-Compact-lower X C) 𝓥
-
-\end{code}
-
-Exercise. Prove the converse of the previous observation, using the
-fact that any decidable type is logically equivalent to either 𝟘 or 𝟙,
-and hence to a type in the universe 𝓤₀.
-
-\begin{code}
-
-Π-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Π-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π \(x : X) → A x)
-
-Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓥 → Π-Compact X 𝓥
-Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬(A x)) e)
- where
-  e : detachable (λ x → ¬(A x))
-  e x = ¬-preserves-decidability (d x)
-  γ : decidable (Σ \(x : X) → ¬(A x)) → decidable (Π \(x : X) → A x)
-  γ (inl (x , v)) = inr (λ φ → v (φ x))
-  γ (inr u)       = inl (λ x → ¬¬-elim (d x) (λ n → u (x , n)))
-
 \end{code}
 
 Notice that compactness in this sense is not in general a univalent
-proposition (subsingleton). Weaker notions, ∃-compactness and
-Π-compactness, that are always propositions are defined and studied in
+proposition (subsingleton). Weaker notions, is-∃-compactness and
+is-Π-compactness, that are always propositions are defined and studied in
 the module WeaklyCompactTypes.
 
 The following notion is logically equivalent to the conjunction of
@@ -593,7 +529,7 @@ module _ (pt : propositional-truncations-exist) where
 The following is from 2011 originally in the module ExhaustibleTypes,
 where "wcompact" was "exhaustible". We should remove this, or move it
 to the module WeaklyCompactTypes, as wcompact is equivalent to
-Π-compact.
+is-Π-compact.
 
 \begin{code}
 
@@ -635,5 +571,111 @@ compact-gives-wcompact {𝓤} {X} ε p = y , (lemma₀ , lemma₁)
   lemma₀ = pr₂(ε p)
   lemma₁ : ((x : X) → p x ≡ ₁) → y ≡ ₁
   lemma₁ h = h x₀
+
+\end{code}
+
+Added 8th November - December 2019. I think the following equivalent
+notion of compactness is easier to deal with, and I wish I had used it
+in the original development:
+
+\begin{code}
+
+Σ-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Σ-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ \(x : X) → A x)
+
+Σ-compact-upper : (X : 𝓤 ̇ ) → Σ-compact X → (𝓥 : Universe) → Σ-Compact X 𝓥
+Σ-compact-upper X c 𝓥 A d = iii
+ where
+  i : Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
+  i = characteristic-function d
+  p : X → 𝟚
+  p = pr₁ i
+  ii : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁) → decidable (Σ A)
+  ii (inl (x , r)) = inl (x , pr₁ (pr₂ i x) r)
+  ii (inr u)       = inr φ
+   where
+    φ : ¬ Σ A
+    φ (x , a) = pr₂ (pr₂ i x) (u x) a
+  iii : decidable (Σ A)
+  iii = ii (c p)
+
+Σ-Compact-lower : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-compact X
+Σ-Compact-lower X C p = iv
+ where
+  A : X → 𝓤₀ ̇
+  A x = p x ≡ ₀
+  i : detachable (λ x → p x ≡ ₀) → decidable (Σ \(x : X) → p x ≡ ₀)
+  i = C A
+  ii : detachable (λ x → p x ≡ ₀)
+  ii x = 𝟚-is-discrete (p x) ₀
+  iii : decidable (Σ \(x : X) → p x ≡ ₀) → (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
+  iii (inl σ) = inl σ
+  iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
+  iv : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
+  iv = iii (i ii)
+
+NB-Σ-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-Compact X 𝓥
+NB-Σ-Compact {𝓤} {𝓥} X C = Σ-compact-upper X (Σ-Compact-lower X C) 𝓥
+
+\end{code}
+
+Exercise. Prove the converse of the previous observation, using the
+fact that any decidable type is logically equivalent to either 𝟘 or 𝟙,
+and hence to a type in the universe 𝓤₀.
+
+\begin{code}
+
+Π-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Π-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π \(x : X) → A x)
+
+Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓥 → Π-Compact X 𝓥
+Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬(A x)) e)
+ where
+  e : detachable (λ x → ¬(A x))
+  e x = ¬-preserves-decidability (d x)
+  γ : decidable (Σ \(x : X) → ¬(A x)) → decidable (Π \(x : X) → A x)
+  γ (inl (x , v)) = inr (λ φ → v (φ x))
+  γ (inr u)       = inl (λ x → ¬¬-elim (d x) (λ n → u (x , n)))
+
+𝟘-Σ-Compact : Σ-Compact (𝟘 {𝓤}) 𝓥
+𝟘-Σ-Compact A δ = inr (λ (σ : Σ A) → 𝟘-elim (pr₁ σ))
+
+𝟙-Σ-Compact : Σ-Compact (𝟙 {𝓤}) 𝓥
+𝟙-Σ-Compact A δ = γ (δ *)
+ where
+  γ : A * + ¬ A * → decidable (Σ A)
+  γ (inl a) = inl (* , a)
+  γ (inr u) = inr (λ {(* , a) → u a})
+
++-Σ-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → Σ-Compact X 𝓦 → Σ-Compact Y 𝓦 → Σ-Compact (X + Y) 𝓦
++-Σ-Compact c d A δ = γ (c (A ∘ inl) (δ ∘ inl)) (d (A ∘ inr) (δ ∘ inr))
+ where
+  γ : decidable (Σ (A ∘ inl)) → decidable (Σ (A ∘ inr)) → decidable (Σ A)
+  γ (inl (x , a)) _            = inl (inl x , a)
+  γ (inr _)      (inl (y , a)) = inl (inr y , a)
+  γ (inr u)      (inr v)       = inr w
+   where
+    w : ¬ Σ A
+    w (inl x , a) = u (x , a)
+    w (inr y , a) = v (y , a)
+
+Σ-Σ-compact : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+            → Σ-Compact X (𝓥 ⊔ 𝓦)
+            → ((x : X) → Σ-Compact (Y x) 𝓦)
+            → Σ-Compact (Σ Y) 𝓦
+Σ-Σ-compact {𝓤} {𝓥} {𝓦} {X} {Y} c d A δ = γ e
+ where
+  B : X → 𝓥 ⊔ 𝓦 ̇
+  B x = Σ \(y : Y x) → A (x , y)
+  ζ : (x : X) → detachable (λ y → A (x , y))
+  ζ x y = δ (x , y)
+  ε : detachable B
+  ε x = d x (λ y → A (x , y)) (ζ x)
+  e : decidable (Σ B)
+  e = c B ε
+  γ : decidable (Σ B) → decidable (Σ A)
+  γ (inl (x , (y , a))) = inl ((x , y) , a)
+  γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
 
 \end{code}

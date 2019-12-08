@@ -79,34 +79,9 @@ Added November 2019.
 
 open import CompactTypes
 
-Fin-Compact : (n : ℕ) → Σ-Compact (Fin n) 𝓤₀
-Fin-Compact zero A d = γ
- where
-  w : ¬ Σ \(x : Fin zero) → A x
-  w (x , a) = x
-  γ : Σ A + ¬ Σ A
-  γ = inr w
-Fin-Compact (succ n) A d = f (d fzero)
- where
-  f : A fzero + ¬ A fzero → Σ A + ¬ Σ A
-  f (inl a) = inl (fzero , a)
-  f (inr u) = γ
-   where
-    B : Fin n → 𝓤₀ ̇
-    B x = A (fsucc x)
-    e : detachable B
-    e x = d (fsucc x)
-    IH : decidable (Σ B)
-    IH = Fin-Compact n B e
-    g : Σ B + ¬ Σ B → Σ A + ¬ Σ A
-    g (inl (x , b)) = inl (fsucc x , b)
-    g (inr v) = inr w
-     where
-      w : ¬ Σ A
-      w (inr * , a) = u a
-      w (inl x , a) = v (x , a)
-    γ : Σ A + ¬ Σ A
-    γ = g IH
+Fin-Compact : (n : ℕ) → Σ-Compact (Fin n) 𝓤
+Fin-Compact zero     = 𝟘-Σ-Compact
+Fin-Compact (succ n) = +-Σ-Compact (Fin-Compact n) 𝟙-Σ-Compact
 
 \end{code}
 
