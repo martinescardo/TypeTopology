@@ -354,15 +354,13 @@ Equivalently, we can define finiteness as follows:
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
  finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
 
- module _ (fe : FunExt) where
+ open CompactTypesPT pt
 
-  open CompactTypesPT pt
+ finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
+ finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
+  ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
-  finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
-  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
-   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
-
-  finite-∃-compact : {X : 𝓤 ̇ } → is-finite X → ∃-Compact X 𝓥
-  finite-∃-compact {𝓤} {X} i = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ i)
+ finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X 𝓥
+ finite-∃-compact fe i = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ i)
 
 \end{code}
