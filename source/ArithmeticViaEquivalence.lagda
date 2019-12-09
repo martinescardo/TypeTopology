@@ -493,17 +493,19 @@ open import UF-PropIndexedPiSigma
   k = pr₁ IH
   φ : Fin k ≃ Σ \(i : Fin n) → Fin (a (suc i))
   φ = pr₂ IH
-  φ' = Fin (k +' a 𝟎)                                                      ≃⟨ i   ⟩
-       Fin k + Fin (a 𝟎)                                                   ≃⟨ ii  ⟩
-       (Σ \(i : Fin n) → Fin (a (suc i))) + (Σ \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iii ⟩
+  φ' = Fin (a 𝟎 +' k)                                                      ≃⟨ i   ⟩
+       Fin (a 𝟎) + Fin k                                                   ≃⟨ ii  ⟩
+       Fin k + Fin (a 𝟎)                                                   ≃⟨ iii ⟩
+       (Σ \(i : Fin n) → Fin (a (suc i))) + (Σ \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iv  ⟩
       (Σ \(i : Fin n + 𝟙) → Fin (a i))                                     ■
    where
-    i   = pr₂ (+construction k (a 𝟎))
-    ii  = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop *))
-    iii = Σ+distr (Fin n) 𝟙 (λ i → Fin (a i))
+    i   = pr₂ (+construction (a 𝟎) k)
+    ii  = +comm
+    iii = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop *))
+    iv  = Σ+distr (Fin n) 𝟙 (λ i → Fin (a i))
 
   g : Σ \(k' : ℕ) → Fin k' ≃ Σ \(i : Fin (succ n)) → Fin (a i)
-  g = k +' a 𝟎 , φ'
+  g = a 𝟎 +' k , φ'
 
 \end{code}
 
@@ -521,11 +523,13 @@ Which is characterized by its usual inductive definition:
 
 \begin{code}
 
-∑-base : (a : Fin 0 → ℕ) → ∑ a ≡ 0
+∑-base : (a : Fin 0 → ℕ)
+       → ∑ a ≡ 0
 ∑-base a = refl
 
-∑-step : {n : ℕ} (a : Fin (succ n) → ℕ) → ∑ a ≡ a 𝟎 +' ∑ (a ∘ suc)
-∑-step {n} a = +'-comm (∑ (a ∘ suc)) (a 𝟎)
+∑-step : {n : ℕ} (a : Fin (succ n) → ℕ)
+       → ∑ a ≡ a 𝟎 +' ∑ (a ∘ suc)
+∑-step {n} a = refl
 
 \end{code}
 
@@ -537,11 +541,17 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
 
  Πconstruction : (n : ℕ) (a : Fin n → ℕ)
                → Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (a i)
- Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ ≃-refl _                               ⟩
-                          𝟘 + 𝟙                        ≃⟨ 𝟘-lneutral                             ⟩
-                          𝟙                            ≃⟨ ≃-sym (prop-indexed-product-one fe id) ⟩
-                          (Π \(i : 𝟘) → Fin (a i))     ≃⟨ ≃-refl _                               ⟩
+ Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ i   ⟩
+                          𝟘 + 𝟙                        ≃⟨ ii  ⟩
+                          𝟙                            ≃⟨ iii ⟩
+                          (Π \(i : 𝟘) → Fin (a i))     ≃⟨ iv  ⟩
                           (Π \(i : Fin 0) → Fin (a i)) ■)
+  where
+   i   = ≃-refl _
+   ii  = 𝟘-lneutral
+   iii = ≃-sym (prop-indexed-product-one fe id)
+   iv  = ≃-refl _
+
  Πconstruction (succ n) a = g
   where
    IH : Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (a (suc i))
@@ -550,32 +560,37 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
    k = pr₁ IH
    φ : Fin k ≃ Π \(i : Fin n) → Fin (a (suc i))
    φ = pr₂ IH
-   φ' = Fin (k ×' a 𝟎)                                                      ≃⟨ i   ⟩
-        Fin k × Fin (a 𝟎)                                                   ≃⟨ ii  ⟩
-        (Π \(i : Fin n) → Fin (a (suc i))) × (Π \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iii ⟩
+   φ' = Fin (a 𝟎 ×' k)                                                      ≃⟨ i   ⟩
+        Fin (a 𝟎) × Fin k                                                   ≃⟨ ii  ⟩
+        Fin k × Fin (a 𝟎)                                                   ≃⟨ iii ⟩
+        (Π \(i : Fin n) → Fin (a (suc i))) × (Π \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iv  ⟩
         (Π \(i : Fin n + 𝟙) → Fin (a i))                                    ■
     where
-     i   = pr₂ (×construction k (a 𝟎))
-     ii  = ×cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
-     iii = Π×+ fe
+     i   = pr₂ (×construction (a 𝟎) k)
+     ii  = ×comm
+     iii = ×cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
+     iv  = Π×+ fe
 
    g : Σ \(k' : ℕ) → Fin k' ≃ Π \(i : Fin (succ n)) → Fin (a i)
-   g = k ×' a 𝟎 , φ'
+   g = a 𝟎 ×' k , φ'
 
  ∏ : {n : ℕ} → (Fin n → ℕ) → ℕ
  ∏ {n} a = pr₁ (Πconstruction n a)
 
- ∏-base : (a : Fin 0 → ℕ) → ∏ a ≡ 1
+ ∏-base : (a : Fin 0 → ℕ)
+        → ∏ a ≡ 1
  ∏-base a = refl
 
- ∏-step : {n : ℕ} (a : Fin (succ n) → ℕ) → ∏ a ≡ a 𝟎 ×' ∏ (a ∘ suc)
- ∏-step {n} a = ×'-comm (∏ (a ∘ suc)) (a 𝟎)
+ ∏-step : {n : ℕ} (a : Fin (succ n) → ℕ)
+        → ∏ a ≡ a 𝟎 ×' ∏ (a ∘ suc)
+ ∏-step {n} a = refl
 
 \end{code}
 
-Two avoid the use of the commutativity of +' and ×', it would have
-been better to have defined Fin(succ n) = 𝟙 + Fin n. In retrospect,
-this definitions seems more natural in general.
+In order to avoid the use of the commutativity of + and × to get the
+natural induction constructions of ∑ and ∏, it would have been better
+to have defined Fin(succ n) = 𝟙 + Fin n. In retrospect, this
+definitions seems more natural in general.
 
 Todo: Corollary. If X is a type and A is an X-indexed family of types,
 and if X is finite and A x is finite for every x : X, then the types Σ
