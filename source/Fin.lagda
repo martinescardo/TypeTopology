@@ -223,9 +223,9 @@ pigeonhole m n f g = γ
   d ψ = c δ
    where
     ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
-    ε i j φ  q = ψ (i , j , q , φ)
+    ε i j p ν = ψ (i , j , ν , p)
     δ : (i j : Fin m) → f i ≡ f j → i ≡ j
-    δ i j φ = ¬¬-elim (Fin-is-discrete m i j) (ε i j φ)
+    δ i j p = ¬¬-elim (Fin-is-discrete m i j) (ε i j p)
 
   u : (i j : Fin m) → decidable ((i ≢ j) × (f i ≡ f j))
   u i j = ×-preserves-decidability
