@@ -12,7 +12,7 @@ open import SpartanMLTT
 module Fin  where
 
 Fin : ℕ → 𝓤₀ ̇
-Fin 0     = 𝟘
+Fin 0        = 𝟘
 Fin (succ n) = Fin n + 𝟙
 
 \end{code}
@@ -31,7 +31,7 @@ Fin-induction : (P : (n : ℕ) → Fin n → 𝓤 ̇ )
               → ((n : ℕ) → P (succ n) 𝟎)
               → ((n : ℕ) (i : Fin n) → P n i → P (succ n) (suc i))
               →  (n : ℕ) (i : Fin n) → P n i
-Fin-induction P β σ 0     i       = 𝟘-elim i
+Fin-induction P β σ 0        i       = 𝟘-elim i
 Fin-induction P β σ (succ n) (inr *) = β n
 Fin-induction P β σ (succ n) (inl i) = σ n i (Fin-induction P β σ n i)
 
