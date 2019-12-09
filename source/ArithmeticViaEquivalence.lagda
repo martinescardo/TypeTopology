@@ -513,7 +513,6 @@ The numerical sum:
 
 \begin{code}
 
-
 ∑ : {n : ℕ} → (Fin n → ℕ) → ℕ
 ∑ {n} a = pr₁ (Σconstruction n a)
 
@@ -588,7 +587,7 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
 \end{code}
 
 In order to avoid the use of the commutativity of + and × to get the
-natural induction constructions of ∑ and ∏, it would have been better
+natural inductive constructions of ∑ and ∏, it would have been better
 to have defined Fin(succ n) = 𝟙 + Fin n. In retrospect, this
 definitions seems more natural in general.
 

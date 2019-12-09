@@ -200,6 +200,46 @@ An equivalent construction:
 
 \end{code}
 
+Added 9th December 2019. A version of the pigeonhole principle.
+
+\begin{code}
+
+pigeonhole : (m n : ℕ) (f : Fin m → Fin n)
+           → m > n → Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+pigeonhole m n f g = γ w
+ where
+  a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
+  a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
+
+  b : ¬ left-cancellable f
+  b l = a (f , l)
+
+  c : ¬((i j : Fin m) → f i ≡ f j → i ≡ j)
+  c φ = b (λ {i} {j} → φ i j)
+
+  u : (i j : Fin m) → decidable ((i ≢ j) × (f i ≡ f j))
+  u i j = ×-preserves-decidability
+           (¬-preserves-decidability (Fin-is-discrete m i j))
+           (Fin-is-discrete n (f i) (f j))
+
+  v : (i : Fin m) → decidable (Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
+  v i = Fin-Compact m _ (u i)
+
+  w : decidable (Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
+  w = Fin-Compact m _ v
+
+  γ : decidable (Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
+    → Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+  γ (inl σ) = σ
+  γ (inr ψ) = 𝟘-elim (c δ)
+   where
+    ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
+    ε i j φ  q = ψ (i , j , q , φ)
+    δ : (i j : Fin m) → f i ≡ f j → i ≡ j
+    δ i j φ = ¬¬-elim (Fin-is-discrete m i j) (ε i j φ)
+
+\end{code}
+
 Added 2nd December 2019. An isomorphic copy of Fin n:
 
 \begin{code}
