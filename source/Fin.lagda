@@ -206,8 +206,10 @@ Added 9th December 2019. A version of the pigeonhole principle.
 
 pigeonhole : (m n : ℕ) (f : Fin m → Fin n)
            → m > n → Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
-pigeonhole m n f g = γ w
+pigeonhole m n f g = γ
  where
+  desired-conclusion = Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+
   a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
 
@@ -217,6 +219,14 @@ pigeonhole m n f g = γ w
   c : ¬((i j : Fin m) → f i ≡ f j → i ≡ j)
   c φ = b (λ {i} {j} → φ i j)
 
+  d : ¬¬ desired-conclusion
+  d ψ = c δ
+   where
+    ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
+    ε i j φ  q = ψ (i , j , q , φ)
+    δ : (i j : Fin m) → f i ≡ f j → i ≡ j
+    δ i j φ = ¬¬-elim (Fin-is-discrete m i j) (ε i j φ)
+
   u : (i j : Fin m) → decidable ((i ≢ j) × (f i ≡ f j))
   u i j = ×-preserves-decidability
            (¬-preserves-decidability (Fin-is-discrete m i j))
@@ -225,18 +235,11 @@ pigeonhole m n f g = γ w
   v : (i : Fin m) → decidable (Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
   v i = Fin-Compact m _ (u i)
 
-  w : decidable (Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
+  w : decidable desired-conclusion
   w = Fin-Compact m _ v
 
-  γ : decidable (Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
-    → Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
-  γ (inl σ) = σ
-  γ (inr ψ) = 𝟘-elim (c δ)
-   where
-    ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
-    ε i j φ  q = ψ (i , j , q , φ)
-    δ : (i j : Fin m) → f i ≡ f j → i ≡ j
-    δ i j φ = ¬¬-elim (Fin-is-discrete m i j) (ε i j φ)
+  γ : desired-conclusion
+  γ = ¬¬-elim w d
 
 \end{code}
 
