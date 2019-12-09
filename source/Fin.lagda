@@ -204,12 +204,13 @@ Added 9th December 2019. A version of the pigeonhole principle.
 
 \begin{code}
 
+has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+has-a-repetition f = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+
 pigeonhole : (m n : ℕ) (f : Fin m → Fin n)
-           → m > n → Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+           → m > n → has-a-repetition f
 pigeonhole m n f g = γ
  where
-  desired-conclusion = Σ \(i : Fin m) → Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
-
   a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
 
@@ -219,7 +220,7 @@ pigeonhole m n f g = γ
   c : ¬((i j : Fin m) → f i ≡ f j → i ≡ j)
   c φ = b (λ {i} {j} → φ i j)
 
-  d : ¬¬ desired-conclusion
+  d : ¬¬ has-a-repetition f
   d ψ = c δ
    where
     ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
@@ -235,10 +236,10 @@ pigeonhole m n f g = γ
   v : (i : Fin m) → decidable (Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
   v i = Fin-Compact m _ (u i)
 
-  w : decidable desired-conclusion
+  w : decidable (has-a-repetition f)
   w = Fin-Compact m _ v
 
-  γ : desired-conclusion
+  γ : has-a-repetition f
   γ = ¬¬-elim w d
 
 \end{code}
