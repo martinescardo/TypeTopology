@@ -663,7 +663,7 @@ and hence to a type in the universe 𝓤₀.
   γ (inr u) = inr (λ {(* , a) → u a})
 
 +-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → Compact X 𝓦 → Compact Y 𝓦 → Compact (X + Y) 𝓦
+          → Compact X 𝓦 → Compact Y 𝓦 → Compact (X + Y) 𝓦
 +-Compact c d A δ = γ (c (A ∘ inl) (δ ∘ inl)) (d (A ∘ inr) (δ ∘ inr))
  where
   γ : decidable (Σ (A ∘ inl)) → decidable (Σ (A ∘ inr)) → decidable (Σ A)

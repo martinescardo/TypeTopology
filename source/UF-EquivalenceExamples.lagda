@@ -112,6 +112,24 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε : ΠΣ-distr-back ∘ ΠΣ-distr ∼ id
   ε _ = refl
 
+Σ+distr : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) (A : X + Y → 𝓦 ̇ )
+        → (Σ \(x : X) → A (inl x)) + (Σ \(y : Y) → A (inr y))
+        ≃ (Σ \(z : X + Y) → A z)
+Σ+distr X Y A = qinveq f (g , η , ε)
+ where
+  f : (Σ \(x : X) → A (inl x)) + (Σ \(y : Y) → A (inr y)) → (Σ \(z : X + Y) → A z)
+  f (inl (x , a)) = inl x , a
+  f (inr (y , a)) = inr y , a
+  g : (Σ \(z : X + Y) → A z) → (Σ \(x : X) → A (inl x)) + (Σ \(y : Y) → A (inr y))
+  g (inl x , a) = inl (x , a)
+  g (inr y , a) = inr (y , a)
+  η : g ∘ f ∼ id
+  η (inl _) = refl
+  η (inr _) = refl
+  ε : f ∘ g ∼ id
+  ε (inl _ , _) = refl
+  ε (inr _ , _) = refl
+
 Π-cong : funext 𝓤 𝓥 → funext 𝓤 𝓦
        → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
@@ -386,25 +404,33 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   η : (t : 𝟙) → * ≡ t
   η = 𝟙-is-prop *
 
-+→ : ∀ {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
-   → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
-+→ {𝓤} {𝓥} {𝓦} {X} {Y} {Z} fe = qinveq f (g , ε , η)
+
+Π×+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X + Y → 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
+    → (Π \(x : X) → A (inl x)) × (Π \(y : Y) → A (inr y))
+    ≃ (Π \(z : X + Y) → A z)
+
+Π×+ {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe = qinveq f (g , ε , η)
  where
-  f : (X + Y → Z) → (X → Z) × (Y → Z)
-  f h = h ∘ inl , h ∘ inr
-  g : (X → Z) × (Y → Z) → X + Y → Z
-  g (l , r) (inl x) = l x
-  g (l , r) (inr y) = r y
-  η : (w : (X → Z) × (Y → Z)) → f (g w) ≡ w
-  η (l , r) = refl
-  ε : (h : X + Y → Z) → g (f h) ≡ h
-  ε h = dfunext fe γ
+  f : (Π \(x : X) → A (inl x)) × (Π \(y : Y) → A (inr y)) → (Π \(z : X + Y) → A z)
+  f (l , r) (inl x) = l x
+  f (l , r) (inr y) = r y
+  g : (Π \(z : X + Y) → A z) → (Π \(x : X) → A (inl x)) × (Π \(y : Y) → A (inr y))
+  g h = h ∘ inl , h ∘ inr
+  η : f ∘ g ∼ id
+  η h = dfunext fe γ
    where
-    γ : (t : X + Y) → g (f h) t ≡ h t
+    γ : (z : X + Y) → (f ∘ g) h z ≡ h z
     γ (inl x) = refl
     γ (inr y) = refl
+  ε : g ∘ f ∼ id
+  ε (l , r) = refl
 
-→× : ∀ {A : 𝓤 ̇ } {X : A → 𝓥 ̇ } {Y : A → 𝓦 ̇ }
+
++→ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
+   → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
++→ fe = ≃-sym (Π×+ fe)
+
+→× : {A : 𝓤 ̇ } {X : A → 𝓥 ̇ } {Y : A → 𝓦 ̇ }
    → ((a : A) → X a × Y a)  ≃ Π X × Π Y
 →× {𝓤} {𝓥} {𝓦} {A} {X} {Y} = qinveq f (g , ε , η)
  where

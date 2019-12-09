@@ -12,7 +12,7 @@ open import SpartanMLTT
 module Fin  where
 
 Fin : ℕ → 𝓤₀ ̇
-Fin zero     = 𝟘
+Fin 0     = 𝟘
 Fin (succ n) = Fin n + 𝟙
 
 \end{code}
@@ -21,17 +21,17 @@ We have zero and successor for finite sets, with the following types:
 
 \begin{code}
 
-fzero : {n : ℕ} → Fin (succ n)
-fzero = inr *
+𝟎 : {n : ℕ} → Fin (succ n)
+𝟎 = inr *
 
-fsucc : {n : ℕ} → Fin n → Fin (succ n)
-fsucc = inl
+suc : {n : ℕ} → Fin n → Fin (succ n)
+suc = inl
 
 Fin-induction : (P : (n : ℕ) → Fin n → 𝓤 ̇ )
-              → ((n : ℕ) → P (succ n) fzero)
-              → ((n : ℕ) (i : Fin n) → P n i → P (succ n) (fsucc i))
+              → ((n : ℕ) → P (succ n) 𝟎)
+              → ((n : ℕ) (i : Fin n) → P n i → P (succ n) (suc i))
               →  (n : ℕ) (i : Fin n) → P n i
-Fin-induction P β σ zero     i       = 𝟘-elim i
+Fin-induction P β σ 0     i       = 𝟘-elim i
 Fin-induction P β σ (succ n) (inr *) = β n
 Fin-induction P β σ (succ n) (inl i) = σ n i (Fin-induction P β σ n i)
 
@@ -46,10 +46,10 @@ open import PlusOneLC
 open import UF-Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
-Fin-lc zero zero p = refl
-Fin-lc (succ m) zero p = 𝟘-elim (⌜ p ⌝ fzero)
-Fin-lc zero (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ fzero)
-Fin-lc (succ m) (succ n) p = ap succ r
+Fin-lc 0           0       p = refl
+Fin-lc (succ m)    0       p = 𝟘-elim (⌜ p ⌝ 𝟎)
+Fin-lc 0          (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ 𝟎)
+Fin-lc (succ m)   (succ n) p = ap succ r
  where
   IH : Fin m ≃ Fin n → m ≡ n
   IH = Fin-lc m n
@@ -63,7 +63,7 @@ Fin-lc (succ m) (succ n) p = ap succ r
 open import DiscreteAndSeparated
 
 Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
-Fin-is-discrete zero     = 𝟘-is-discrete
+Fin-is-discrete 0        = 𝟘-is-discrete
 Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
 
 open import UF-Subsingletons
@@ -81,7 +81,7 @@ Added November 2019.
 open import CompactTypes
 
 Fin-Compact : (n : ℕ) → Compact (Fin n) 𝓤
-Fin-Compact zero     = 𝟘-Compact
+Fin-Compact 0        = 𝟘-Compact
 Fin-Compact (succ n) = +-Compact (Fin-Compact n) 𝟙-Compact
 
 \end{code}
@@ -146,14 +146,14 @@ open import NaturalsOrder
 open import UF-EquivalenceExamples
 
 ↣-gives-≤ : (m n : ℕ) → (Fin m ↣ Fin n) → m ≤ n
-↣-gives-≤ zero n e              = zero-minimal n
-↣-gives-≤ (succ m) zero (f , i) = 𝟘-elim (f fzero)
-↣-gives-≤ (succ m) (succ n) e   = ↣-gives-≤ m n (+𝟙-cancel (Fin-is-discrete n) e)
+↣-gives-≤ 0        n        e       = zero-minimal n
+↣-gives-≤ (succ m) 0        (f , i) = 𝟘-elim (f 𝟎)
+↣-gives-≤ (succ m) (succ n) e       = ↣-gives-≤ m n (+𝟙-cancel (Fin-is-discrete n) e)
 
 
 canonical-Fin-inclusion : (m n : ℕ) → m ≤ n → (Fin m → Fin n)
-canonical-Fin-inclusion zero n            l = unique-from-𝟘
-canonical-Fin-inclusion (succ m) zero     l = 𝟘-elim l
+canonical-Fin-inclusion 0        n        l = unique-from-𝟘
+canonical-Fin-inclusion (succ m) 0        l = 𝟘-elim l
 canonical-Fin-inclusion (succ m) (succ n) l = +functor IH unique-to-𝟙
  where
   IH : Fin m → Fin n
@@ -161,8 +161,8 @@ canonical-Fin-inclusion (succ m) (succ n) l = +functor IH unique-to-𝟙
 
 canonical-Fin-inclusion-lc : (m n : ℕ) (l : m ≤ n)
                            → left-cancellable (canonical-Fin-inclusion m n l)
-canonical-Fin-inclusion-lc zero n            l {x} {y} p = 𝟘-elim x
-canonical-Fin-inclusion-lc (succ m) zero     l {x} {y} p = 𝟘-elim l
+canonical-Fin-inclusion-lc 0        n        l {x} {y}         p = 𝟘-elim x
+canonical-Fin-inclusion-lc (succ m) 0        l {x} {y}         p = 𝟘-elim l
 canonical-Fin-inclusion-lc (succ m) (succ n) l {inl x} {inl y} p = γ
  where
   IH : canonical-Fin-inclusion m n l x ≡ canonical-Fin-inclusion m n l y → x ≡ y
@@ -180,8 +180,8 @@ An equivalent construction:
 
 \begin{code}
 ≤-gives-↣' : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
-≤-gives-↣' zero     n        l = unique-from-𝟘 , (λ {x} {x'} p → 𝟘-elim x)
-≤-gives-↣' (succ m) zero     l = 𝟘-elim l
+≤-gives-↣' 0        n        l = unique-from-𝟘 , (λ {x} {x'} p → 𝟘-elim x)
+≤-gives-↣' (succ m) 0        l = 𝟘-elim l
 ≤-gives-↣' (succ m) (succ n) l = g , j
  where
   IH : Fin m ↣ Fin n
@@ -207,30 +207,30 @@ Added 2nd December 2019. An isomorphic copy of Fin n:
 Fin' : ℕ → 𝓤₀ ̇
 Fin' n = Σ \(k : ℕ) → k < n
 
-fzero' : {n : ℕ} → Fin' (succ n)
-fzero' = 0 , *
+𝟎' : {n : ℕ} → Fin' (succ n)
+𝟎' = 0 , *
 
-fsucc' : {n : ℕ} → Fin' n → Fin' (succ n)
-fsucc' (k , l) = succ k , l
+suc' : {n : ℕ} → Fin' n → Fin' (succ n)
+suc' (k , l) = succ k , l
 
 Fin-unprime : (n : ℕ) → Fin' n → Fin n
-Fin-unprime zero     (k , l)      = 𝟘-elim l
-Fin-unprime (succ n) (zero , l)   = fzero
-Fin-unprime (succ n) (succ k , l) = fsucc (Fin-unprime n (k , l))
+Fin-unprime 0        (k , l)      = 𝟘-elim l
+Fin-unprime (succ n) (0 , l)      = 𝟎
+Fin-unprime (succ n) (succ k , l) = suc (Fin-unprime n (k , l))
 
 Fin-prime : (n : ℕ) → Fin n → Fin' n
-Fin-prime zero     i       = 𝟘-elim i
-Fin-prime (succ n) (inl i) = fsucc' (Fin-prime n i)
-Fin-prime (succ n) (inr *) = fzero'
+Fin-prime 0        i       = 𝟘-elim i
+Fin-prime (succ n) (inl i) = suc' (Fin-prime n i)
+Fin-prime (succ n) (inr *) = 𝟎'
 
 ηFin : (n : ℕ) → Fin-prime n ∘ Fin-unprime n ∼ id
-ηFin zero     (k , l)      = 𝟘-elim l
-ηFin (succ n) (zero , *)   = refl
-ηFin (succ n) (succ k , l) = ap fsucc' (ηFin n (k , l))
+ηFin 0        (k , l)      = 𝟘-elim l
+ηFin (succ n) (0 , *)      = refl
+ηFin (succ n) (succ k , l) = ap suc' (ηFin n (k , l))
 
 εFin : (n : ℕ) → Fin-unprime n ∘ Fin-prime n ∼ id
-εFin zero     i       = 𝟘-elim i
-εFin (succ n) (inl i) = ap fsucc (εFin n i)
+εFin 0        i       = 𝟘-elim i
+εFin (succ n) (inl i) = ap suc (εFin n i)
 εFin (succ n) (inr *) = refl
 
 ≃-Fin : (n : ℕ) → Fin n ≃ Fin' n

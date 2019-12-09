@@ -477,19 +477,106 @@ We have accounted for the type constructors +, ×, →, and ≃ (and hence
 spartan MLTT are Π and Σ.
 
 \begin{code}
-{-
-Σconstruction : (n : ℕ) (j : Fin n → ℕ)
-              → Σ \(k : ℕ) → Fin k ≃ Σ \(i : Fin n) → Fin (j i)
-Σconstruction = ?
 
-∑ : {n : ℕ} (j : Fin n → ℕ) → ℕ
-∑ {n} j = pr₁ (Σconstruction n j)
+open import UF-PropIndexedPiSigma
 
-Πconstruction : (n : ℕ) (j : Fin n → ℕ)
-              → Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (j i)
-Πconstruction = ?
+Σconstruction : (n : ℕ) (a : Fin n → ℕ)
+              → Σ \(k : ℕ) → Fin k ≃ Σ \(i : Fin n) → Fin (a i)
+Σconstruction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _                         ⟩
+                         𝟘                        ≃⟨ ≃-sym (prop-indexed-sum-zero id) ⟩
+                         (Σ \(i : 𝟘) → Fin (a i)) ■)
+Σconstruction (succ n) a = g
+ where
+  IH : Σ \(k : ℕ) → Fin k ≃ Σ \(i : Fin n) → Fin (a (suc i))
+  IH = Σconstruction n (λ i → a (suc i))
+  k : ℕ
+  k = pr₁ IH
+  φ : Fin k ≃ Σ \(i : Fin n) → Fin (a (suc i))
+  φ = pr₂ IH
+  φ' = Fin (k +' a 𝟎)                                                      ≃⟨ i   ⟩
+       Fin k + Fin (a 𝟎)                                                   ≃⟨ ii  ⟩
+       (Σ \(i : Fin n) → Fin (a (suc i))) + (Σ \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iii ⟩
+      (Σ \(i : Fin n + 𝟙) → Fin (a i))                                     ■
+   where
+    i   = pr₂ (+construction k (a 𝟎))
+    ii  = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop *))
+    iii = Σ+distr (Fin n) 𝟙 (λ i → Fin (a i))
 
-∏ : {n : ℕ} (j : Fin n → ℕ) → ℕ
-∏ {n} j = pr₁ (Πconstruction n j)
--}
+  g : Σ \(k' : ℕ) → Fin k' ≃ Σ \(i : Fin (succ n)) → Fin (a i)
+  g = k +' a 𝟎 , φ'
+
 \end{code}
+
+The numerical sum:
+
+\begin{code}
+
+
+∑ : {n : ℕ} → (Fin n → ℕ) → ℕ
+∑ {n} a = pr₁ (Σconstruction n a)
+
+\end{code}
+
+Which is characterized by its usual inductive definition:
+
+\begin{code}
+
+∑-base : (a : Fin 0 → ℕ) → ∑ a ≡ 0
+∑-base a = refl
+
+∑-step : {n : ℕ} (a : Fin (succ n) → ℕ) → ∑ a ≡ a 𝟎 +' ∑ (a ∘ suc)
+∑-step {n} a = +'-comm (∑ (a ∘ suc)) (a 𝟎)
+
+\end{code}
+
+For Π we need function extensionality:
+
+\begin{code}
+
+module _ (fe : funext 𝓤₀ 𝓤₀) where
+
+ Πconstruction : (n : ℕ) (a : Fin n → ℕ)
+               → Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (a i)
+ Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ ≃-refl _                               ⟩
+                          𝟘 + 𝟙                        ≃⟨ 𝟘-lneutral                             ⟩
+                          𝟙                            ≃⟨ ≃-sym (prop-indexed-product-one fe id) ⟩
+                          (Π \(i : 𝟘) → Fin (a i))     ≃⟨ ≃-refl _                               ⟩
+                          (Π \(i : Fin 0) → Fin (a i)) ■)
+ Πconstruction (succ n) a = g
+  where
+   IH : Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (a (suc i))
+   IH = Πconstruction n (λ i → a (suc i))
+   k : ℕ
+   k = pr₁ IH
+   φ : Fin k ≃ Π \(i : Fin n) → Fin (a (suc i))
+   φ = pr₂ IH
+   φ' = Fin (k ×' a 𝟎)                                                      ≃⟨ i   ⟩
+        Fin k × Fin (a 𝟎)                                                   ≃⟨ ii  ⟩
+        (Π \(i : Fin n) → Fin (a (suc i))) × (Π \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iii ⟩
+        (Π \(i : Fin n + 𝟙) → Fin (a i))                                    ■
+    where
+     i   = pr₂ (×construction k (a 𝟎))
+     ii  = ×cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
+     iii = Π×+ fe
+
+   g : Σ \(k' : ℕ) → Fin k' ≃ Π \(i : Fin (succ n)) → Fin (a i)
+   g = k ×' a 𝟎 , φ'
+
+ ∏ : {n : ℕ} → (Fin n → ℕ) → ℕ
+ ∏ {n} a = pr₁ (Πconstruction n a)
+
+ ∏-base : (a : Fin 0 → ℕ) → ∏ a ≡ 1
+ ∏-base a = refl
+
+ ∏-step : {n : ℕ} (a : Fin (succ n) → ℕ) → ∏ a ≡ a 𝟎 ×' ∏ (a ∘ suc)
+ ∏-step {n} a = ×'-comm (∏ (a ∘ suc)) (a 𝟎)
+
+\end{code}
+
+Two avoid the use of the commutativity of +' and ×', it would have
+been better to have defined Fin(succ n) = 𝟙 + Fin n. In retrospect,
+this definitions seems more natural in general.
+
+Todo: Corollary. If X is a type and A is an X-indexed family of types,
+and if X is finite and A x is finite for every x : X, then the types Σ
+A and Π A are finite.
