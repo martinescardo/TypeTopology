@@ -207,9 +207,9 @@ Added 9th December 2019. A version of the pigeonhole principle.
 has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-a-repetition f = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
 
-pigeonhole : (m n : ℕ) (f : Fin m → Fin n)
-           → m > n → has-a-repetition f
-pigeonhole m n f g = γ
+finite-pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
+                            → m > n → has-a-repetition f
+finite-pigeonhole-principle m n f g = γ
  where
   a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
