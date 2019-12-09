@@ -60,6 +60,13 @@ Fin-lc (succ m)   (succ n) p = ap succ r
   r : m ≡ n
   r = IH q
 
+\end{code}
+
+Notice that Fin is an example of a map that is left-cancellable but
+not an embedding.
+
+\begin{code}
+
 open import DiscreteAndSeparated
 
 Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
