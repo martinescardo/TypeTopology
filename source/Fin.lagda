@@ -335,6 +335,26 @@ module finiteness (pt : propositional-truncations-exist) where
 
 \end{code}
 
+Finite types are discrete and sets:
+
+\begin{code}
+
+ finite-types-are-discrete : FunExt → {X : 𝓤 ̇ } → is-finite X → is-discrete X
+ finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-a-prop fe) γ s
+  where
+   γ : X ≃ Fin n → is-discrete X
+   γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
+
+ finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
+ finite-types-are-sets fe i = discrete-types-are-sets (finite-types-are-discrete fe i)
+
+\end{code}
+
+Exercise. Formulate and prove the pigeonhole principle for finite
+types (it is easier to prove it using univalence, but it is possible
+to prove it without it).
+
+
 Equivalently, we can define finiteness as follows:
 
 \begin{code}
