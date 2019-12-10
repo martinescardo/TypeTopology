@@ -52,6 +52,9 @@ cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k
 zero-minimal : (n : ℕ) → zero ≤ n
 zero-minimal n = *
 
+zero-minimal' : (n : ℕ) → ¬(succ n ≤ zero)
+zero-minimal' n l = l
+
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
 
@@ -208,5 +211,21 @@ Induction on z, then x, then y:
   γ : (x < z) + (z < y) → (succ x < succ z) + (succ z < succ y)
   γ (inl l) = inl (succ-monotone (succ x) z l)
   γ (inr r) = inr (succ-monotone (succ z) y r)
+
+\end{code}
+
+Added December 2019.
+
+\begin{code}
+
+open import DecidableAndDetachable
+
+≤-decidable : {m n : ℕ } → decidable (m ≤ n)
+≤-decidable {zero}   {n}      = inl (zero-minimal n)
+≤-decidable {succ m} {zero}   = inr (zero-minimal' m)
+≤-decidable {succ m} {succ n} = ≤-decidable {m} {n}
+
+<-decidable : {m n : ℕ } → decidable (m < n)
+<-decidable {m} {n} = ≤-decidable {succ m} {n}
 
 \end{code}

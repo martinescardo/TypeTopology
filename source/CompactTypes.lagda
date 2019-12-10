@@ -785,3 +785,40 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                                      Compactness-gives-∃-Compactness
 
 \end{code}
+
+Added 10th December 2019.
+
+\begin{code}
+
+Compact∙ : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Compact∙ {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → Σ \(x₀ : X) → A x₀ → (x : X) → A x
+
+Compact-pointed-gives-compact∙ : {X : 𝓤 ̇ } → Compact X 𝓥 → X → Compact∙ X 𝓥
+Compact-pointed-gives-compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
+ where
+  A' : X → 𝓥 ̇
+  A' x = ¬(A x)
+  δ' : detachable A'
+  δ' x = ¬-preserves-decidability (δ x)
+  γ : decidable (Σ A') → Σ \(x₀ : X) → A x₀ → (x : X) → A x
+  γ (inl (x , u)) = x  , (λ (a : A x) → 𝟘-elim (u a))
+  γ (inr v)       = x₀ , (λ (a : A x₀) (x : X) → ¬¬-elim (δ x) λ (φ : ¬ A x) → v (x , φ))
+
+
+Compact∙-gives-Compact : {X : 𝓤 ̇ } → Compact∙ X 𝓥 → Compact X 𝓥
+Compact∙-gives-Compact {𝓤} {𝓥} {X} ε A δ = γ (δ x₀)
+ where
+  l : Σ \(x₀ : X) → ¬ A x₀ → (x : X) → ¬ A x
+  l = ε (λ x → ¬ A x) (λ x → ¬-preserves-decidability (δ x))
+  x₀ : X
+  x₀ = pr₁ l
+  i : ¬ A x₀ → ¬ Σ A
+  i u (x , a) = pr₂ l u x a
+  γ : decidable (A x₀) → decidable (Σ A)
+  γ (inl a) = inl (x₀ , a)
+  γ (inr u) = inr (i u)
+
+Compact∙-gives-pointed : {X : 𝓤 ̇ } → Compact∙ X 𝓥 → X
+Compact∙-gives-pointed ε = pr₁ (ε (λ x → 𝟘) (λ x → 𝟘-decidable))
+
+\end{code}
