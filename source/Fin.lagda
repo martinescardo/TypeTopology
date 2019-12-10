@@ -365,6 +365,13 @@ Equivalently, we can define finiteness as follows:
 
 \end{code}
 
+Exercise. Consider a finite type X with a binary operation _·_ which
+is left-cancellable and has a right neutral element e. Define natural
+powers x ^ n for x : X in the usual way. Using the pigeonhole
+principle and left-cancellability, show that there is a smallest n : ℕ
+with x ^ n ≡ e. Because X, being finite, is a set, the type of minimal
+such n is a proposition, and hence an explicit such n can be found.
+
 Added 10th Dec 2019.
 
 \begin{code}
