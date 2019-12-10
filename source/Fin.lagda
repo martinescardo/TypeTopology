@@ -374,6 +374,9 @@ open import NaturalNumbers-Properties
 Fin→ℕ : {n : ℕ} → Fin n → ℕ
 Fin→ℕ {n} i = pr₁ (Fin-prime n i)
 
+Fin→ℕ-property : {n : ℕ} (i : Fin n) → Fin→ℕ i < n
+Fin→ℕ-property {n} i = pr₂ (Fin-prime n i)
+
 Fin→ℕ-lc : (n : ℕ) → left-cancellable (Fin→ℕ {n})
 Fin→ℕ-lc 0        {i} {j} p = 𝟘-elim i
 Fin→ℕ-lc (succ n) {inr *} {inr *} p = refl
