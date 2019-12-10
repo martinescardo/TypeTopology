@@ -105,6 +105,9 @@ unique-minimal (succ n) l = 𝟘-elim l
 _<_ _>_ : ℕ → ℕ → 𝓤₀ ̇
 m < n = succ m ≤ n
 
+<-succ : (n : ℕ) → n < succ n
+<-succ = ≤-refl
+
 x > y = y < x
 
 not-less-than-itself : (n : ℕ) → ¬(n < n)

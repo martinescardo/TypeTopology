@@ -16,7 +16,6 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
-open import UF-Retracts
 open import UF-Embeddings
 
 decidable-is-collapsible : {X : 𝓤 ̇ } → decidable X → collapsible X
@@ -40,6 +39,9 @@ being-isolated-is-a-prop {𝓤} fe x i = γ i
                 (local-hedberg _ (λ y → decidable-is-collapsible (i y)) x)
                 (negations-are-props (fe 𝓤 𝓤₀))
                 (λ p n → n p))
+
+being-discrete-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
+being-discrete-is-a-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-a-prop fe)
 
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
@@ -93,11 +95,21 @@ lc-maps-reflect-isolatedness f l x i y = γ (i (f y))
   γ (inl p) = inl (l p)
   γ (inr n) = inr (contrapositive (ap f) n)
 
+lc-maps-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → left-cancellable f
+                             → is-discrete Y → is-discrete X
+lc-maps-reflect-discreteness f l d x = lc-maps-reflect-isolatedness f l x (d (f x))
+
 embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → (x : X) → is-isolated (f x) → is-isolated x
 embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
                                               (embedding-lc f e) x i y
+
+embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                → is-embedding f
+                                → is-discrete Y → is-discrete X
+embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embedding-lc f e)
 
 Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
               → is-discrete X → ((x : X) → is-discrete(Y x)) → is-discrete(Σ Y)

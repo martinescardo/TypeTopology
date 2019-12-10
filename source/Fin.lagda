@@ -214,9 +214,10 @@ Added 9th December 2019. A version of the pigeonhole principle.
 has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-a-repetition f = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
 
-finite-pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
-                            → m > n → has-a-repetition f
-finite-pigeonhole-principle m n f g = γ
+pigeonhole-principle : (m n : ℕ)
+                     → m > n
+                     → (f : Fin m → Fin n) → has-a-repetition f
+pigeonhole-principle m n g f = γ
  where
   a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
@@ -296,12 +297,12 @@ type of finite linear orders on X.
 
 \begin{code}
 
-Finite : 𝓤 ̇ → 𝓤 ̇
-Finite X = Σ \(n : ℕ) → X ≃ Fin n
+finite : 𝓤 ̇ → 𝓤 ̇
+finite X = Σ \(n : ℕ) → X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, the type Finite X has n! elements.
+Exercise: If X ≃ Fin n, the type finite X has n! elements.
 
 Hence one considers the following notion of finiteness, which is
 property rather than structure:
@@ -354,6 +355,29 @@ Equivalently, we can define finiteness as follows:
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
  finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
 
+\end{code}
+
+Finite types are discrete and sets:
+
+\begin{code}
+
+ finite-types-are-discrete : FunExt → {X : 𝓤 ̇ } → is-finite X → is-discrete X
+ finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-a-prop fe) γ s
+  where
+   γ : X ≃ Fin n → is-discrete X
+   γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
+
+ finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
+ finite-types-are-sets fe i = discrete-types-are-sets (finite-types-are-discrete fe i)
+
+\end{code}
+
+Exercise. Formulate and prove the pigeonhole principle for finite
+types (it is easier to prove it using univalence, but it is possible
+to prove it without it).
+
+\begin{code}
+
  open CompactTypesPT pt
 
  finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
@@ -364,3 +388,10 @@ Equivalently, we can define finiteness as follows:
  finite-∃-compact fe i = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ i)
 
 \end{code}
+
+Exercise. Consider a finite type X with a binary operation _·_ which
+is left-cancellable and has a right neutral element e. Define natural
+powers x ^ n for x : X in the usual way. Using the pigeonhole
+principle and left-cancellability, show that there is a smallest n : ℕ
+with x ^ n ≡ e. Because X, being finite, is a set, the type of minimal
+such n is a proposition, and hence an explicit such n can be found.
