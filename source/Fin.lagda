@@ -91,6 +91,12 @@ Fin-Compact : (n : ℕ) → Compact (Fin n) 𝓤
 Fin-Compact 0        = 𝟘-Compact
 Fin-Compact (succ n) = +-Compact (Fin-Compact n) 𝟙-Compact
 
+Fin-Π-Compact : (n : ℕ) → Π-Compact (Fin n) 𝓤
+Fin-Π-Compact n = Σ-Compact-gives-Π-Compact (Fin n) (Fin-Compact n)
+
+Fin-Compact∙ : (n : ℕ) → Compact∙ (Fin (succ n)) 𝓤
+Fin-Compact∙ n = Compact-pointed-gives-Compact∙ (Fin-Compact (succ n)) 𝟎
+
 \end{code}
 
 Recall that X ↣ Y is the type of left cancellable maps from X to Y.
@@ -411,16 +417,73 @@ Fin→ℕ-lc (succ n) {inr *} {inl j} p = 𝟘-elim (≢-sym (positive-not-zero 
 Fin→ℕ-lc (succ n) {inl i} {inr *} p = 𝟘-elim (positive-not-zero (Fin→ℕ i) p)
 Fin→ℕ-lc (succ n) {inl i} {inl j} p = ap inl (Fin→ℕ-lc n (succ-lc p))
 
-_≺_ _≼_ : {m n : ℕ} → Fin m → Fin n → 𝓤₀ ̇
+_≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
 i ≺ j = Fin→ℕ i < Fin→ℕ j
 i ≼ j = Fin→ℕ i ≤ Fin→ℕ j
 
-≺-decidable : {m n : ℕ} {i : Fin m} {j : Fin n}
-            → decidable (i ≺ j)
-≺-decidable {m} {n} {i} {j} = <-decidable {Fin→ℕ {m} i} {Fin→ℕ {n} j}
+_is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
+i is-lower-bound-of A = ∀ j → A j → i ≼ j
 
-≼-decidable : {m n : ℕ} {i : Fin m} {j : Fin n}
-            → decidable (i ≼ j)
-≼-decidable {m} {n} {i} {j} = ≤-decidable {Fin→ℕ {m} i} {Fin→ℕ {n} j}
+lower-bounds : {n : ℕ} → (Fin n → 𝓤 ̇ ) → Fin n → 𝓤 ̇
+lower-bounds A = λ i → i is-lower-bound-of A
+
+_is-upper-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
+i is-upper-bound-of A = ∀ j → A j → j ≼ i
+
+_is-inf-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
+i is-inf-of A = i is-lower-bound-of A
+              × i is-upper-bound-of (lower-bounds A)
+
+inf-is-lb : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
+          → i is-inf-of A → i is-lower-bound-of A
+inf-is-lb i A = pr₁
+
+inf-is-ub-of-lbs : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
+                 → i is-inf-of A → i is-upper-bound-of (lower-bounds A)
+inf-is-ub-of-lbs i A = pr₂
+
+
+inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
+                 → detachable A
+                 → Σ \(i : Fin (succ n)) → i is-inf-of A
+inf-construction {𝓤} {zero} A δ = 𝟎 , l , m
+ where
+  l : 𝟎 is-lower-bound-of A
+  l (inr *) _ = ≤-refl 0
+  m : (j : Fin 1) → j is-lower-bound-of A → j ≼ 𝟎
+  m (inr *) _ = ≤-refl 0
+inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
+ where
+  IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc)
+  IH = inf-construction {𝓤} {n} (A ∘ suc) (δ ∘ suc)
+  i : Fin (succ n)
+  i = pr₁ IH
+  l : (j : Fin (succ n)) → A (suc j) → i ≼ j
+  l = inf-is-lb i (A ∘ suc) (pr₂ IH)
+  u : (j : Fin (succ n)) → ((k : Fin (succ n)) → A (suc k) → j ≼ k) → j ≼ i
+  u = inf-is-ub-of-lbs i (A ∘ suc) (pr₂ IH)
+  γ : decidable (A 𝟎) → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A
+  γ (inl a) = 𝟎 , φ , ψ
+    where
+     φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
+     φ j b = zero-minimal (Fin→ℕ j)
+     ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
+     ψ j l = l 𝟎 a
+  γ (inr ν) = suc i , φ , ψ
+    where
+     φ : (j : Fin (succ (succ n))) → A j → suc i ≼ j
+     φ (inr *) a = 𝟘-elim (ν a)
+     φ (inl j) a = l j a
+     ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
+     ψ (inr *) l = zero-minimal (Fin→ℕ i)
+     ψ (inl j) l = u j (l ∘ suc)
+
+inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
+inf A δ = pr₁ (inf-construction A δ)
+
+inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
+             → (inf A δ) is-inf-of A
+inf-property A δ = pr₂ (inf-construction A δ)
+
 
 \end{code}

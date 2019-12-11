@@ -581,7 +581,7 @@ in the original development:
 \begin{code}
 
 Σ-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Σ-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ \(x : X) → A x)
+Σ-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
 
 Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
 Compact = Σ-Compact
@@ -641,7 +641,7 @@ and hence to a type in the universe 𝓤₀.
 \begin{code}
 
 Π-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Π-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π \(x : X) → A x)
+Π-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π A)
 
 Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓥 → Π-Compact X 𝓥
 Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬(A x)) e)
@@ -793,8 +793,8 @@ Added 10th December 2019.
 Compact∙ : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
 Compact∙ {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → Σ \(x₀ : X) → A x₀ → (x : X) → A x
 
-Compact-pointed-gives-compact∙ : {X : 𝓤 ̇ } → Compact X 𝓥 → X → Compact∙ X 𝓥
-Compact-pointed-gives-compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
+Compact-pointed-gives-Compact∙ : {X : 𝓤 ̇ } → Compact X 𝓥 → X → Compact∙ X 𝓥
+Compact-pointed-gives-Compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
  where
   A' : X → 𝓥 ̇
   A' x = ¬(A x)

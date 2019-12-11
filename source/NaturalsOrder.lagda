@@ -220,12 +220,12 @@ Added December 2019.
 
 open import DecidableAndDetachable
 
-≤-decidable : {m n : ℕ } → decidable (m ≤ n)
-≤-decidable {zero}   {n}      = inl (zero-minimal n)
-≤-decidable {succ m} {zero}   = inr (zero-minimal' m)
-≤-decidable {succ m} {succ n} = ≤-decidable {m} {n}
+≤-decidable : (m n : ℕ ) → decidable (m ≤ n)
+≤-decidable zero     n        = inl (zero-minimal n)
+≤-decidable (succ m) zero     = inr (zero-minimal' m)
+≤-decidable (succ m) (succ n) = ≤-decidable m n
 
-<-decidable : {m n : ℕ } → decidable (m < n)
-<-decidable {m} {n} = ≤-decidable {succ m} {n}
+<-decidable : (m n : ℕ ) → decidable (m < n)
+<-decidable m n = ≤-decidable (succ m) n
 
 \end{code}
