@@ -445,31 +445,40 @@ inf-is-ub-of-lbs i A = pr₂
 
 inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
                  → detachable A
-                 → Σ \(i : Fin (succ n)) → i is-inf-of A
-inf-construction {𝓤} {zero} A δ = 𝟎 , l , m
+                 → Σ \(i : Fin (succ n))
+                         → i is-inf-of A
+                         × ((Σ \(j : Fin (succ n)) → A j) → A i)
+inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
  where
   l : 𝟎 is-lower-bound-of A
   l (inr *) _ = ≤-refl 0
   m : (j : Fin 1) → j is-lower-bound-of A → j ≼ 𝟎
   m (inr *) _ = ≤-refl 0
+  ε : Σ A → A 𝟎
+  ε (inr * , a) = a
+  ε (inl i , a) = 𝟘-elim i
 inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
  where
-  IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc)
+  IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc) × ((Σ \(j : Fin (succ n)) → A (suc j)) → A (suc i))
   IH = inf-construction {𝓤} {n} (A ∘ suc) (δ ∘ suc)
   i : Fin (succ n)
   i = pr₁ IH
   l : (j : Fin (succ n)) → A (suc j) → i ≼ j
-  l = inf-is-lb i (A ∘ suc) (pr₂ IH)
+  l = inf-is-lb i (A ∘ suc) (pr₁ (pr₂ IH))
   u : (j : Fin (succ n)) → ((k : Fin (succ n)) → A (suc k) → j ≼ k) → j ≼ i
-  u = inf-is-ub-of-lbs i (A ∘ suc) (pr₂ IH)
-  γ : decidable (A 𝟎) → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A
-  γ (inl a) = 𝟎 , φ , ψ
+  u = inf-is-ub-of-lbs i (A ∘ suc) (pr₁ (pr₂ IH))
+  γ : decidable (A 𝟎)
+    → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A × ((Σ \(j : Fin (succ (succ n))) → A j) → A i')
+  γ (inl a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
      φ j b = zero-minimal (Fin→ℕ j)
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
      ψ j l = l 𝟎 a
-  γ (inr ν) = suc i , φ , ψ
+     ε : Σ A → A 𝟎
+     ε _ = a
+
+  γ (inr ν) = suc i , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → suc i ≼ j
      φ (inr *) a = 𝟘-elim (ν a)
@@ -477,13 +486,19 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
      ψ (inr *) l = zero-minimal (Fin→ℕ i)
      ψ (inl j) l = u j (l ∘ suc)
+     ε : Σ A → A (suc i)
+     ε (inr * , b) = 𝟘-elim (ν b)
+     ε (inl j , b) = pr₂ (pr₂ IH) (j , b)
 
 inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
 inf A δ = pr₁ (inf-construction A δ)
 
 inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
              → (inf A δ) is-inf-of A
-inf-property A δ = pr₂ (inf-construction A δ)
+inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
 
+inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
+                → (Σ \(i : Fin (succ n)) → A i) → A (inf A δ)
+inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 \end{code}

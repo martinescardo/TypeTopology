@@ -55,6 +55,9 @@ zero-minimal n = *
 zero-minimal' : (n : ℕ) → ¬(succ n ≤ zero)
 zero-minimal' n l = l
 
+zero-minimal'' : (n : ℕ) → n ≤ zero → n ≡ zero
+zero-minimal'' zero l = refl
+
 succ-monotone : (m n : ℕ) → m ≤ n → succ m ≤ succ n
 succ-monotone m n l = l
 
