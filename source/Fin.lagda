@@ -21,19 +21,34 @@ We have zero and successor for finite sets, with the following types:
 
 \begin{code}
 
-𝟎 : {n : ℕ} → Fin (succ n)
-𝟎 = inr *
+fzero : {n : ℕ} → Fin (succ n)
+fzero = inr *
 
-suc : {n : ℕ} → Fin n → Fin (succ n)
-suc = inl
+fsucc : {n : ℕ} → Fin n → Fin (succ n)
+fsucc = inl
+
+\end{code}
+
+But it will more convenient to have them as patterns, for the sake of clarity:
+
+\begin{code}
+
+pattern 𝟎     = inr *
+pattern suc i = inl i
+
+\end{code}
+
+The induction principle for Fin is proved by induction on ℕ:
+
+\begin{code}
 
 Fin-induction : (P : (n : ℕ) → Fin n → 𝓤 ̇ )
               → ((n : ℕ) → P (succ n) 𝟎)
               → ((n : ℕ) (i : Fin n) → P n i → P (succ n) (suc i))
               →  (n : ℕ) (i : Fin n) → P n i
 Fin-induction P β σ 0        i       = 𝟘-elim i
-Fin-induction P β σ (succ n) (inr *) = β n
-Fin-induction P β σ (succ n) (inl i) = σ n i (Fin-induction P β σ n i)
+Fin-induction P β σ (succ n) 𝟎 = β n
+Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 
 \end{code}
 
@@ -109,23 +124,23 @@ open import UF-LeftCancellable
 
 +𝟙-cancel-lemma : {X Y : 𝓤 ̇}
                 → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
-                → ⌈ 𝒇 ⌉ (inr *) ≡ inr *
+                → ⌈ 𝒇 ⌉ 𝟎 ≡ 𝟎
                 → X ↣ Y
 +𝟙-cancel-lemma {𝓤} {X} {Y} (f , l) p = g , m
  where
   g : X → Y
   g x = pr₁ (inl-preservation {𝓤} {𝓤} {𝓤} {𝓤} f p l x)
 
-  a : (x : X) → f (inl x) ≡ inl (g x)
+  a : (x : X) → f (suc x) ≡ suc (g x)
   a x = pr₂ (inl-preservation f p l x)
 
   m : left-cancellable g
   m {x} {x'} p = q
    where
-    r = f (inl x)  ≡⟨ a x      ⟩
-        inl (g x)  ≡⟨ ap inl p ⟩
-        inl (g x') ≡⟨ (a x')⁻¹ ⟩
-        f (inl x') ∎
+    r = f (suc x)  ≡⟨ a x      ⟩
+        suc (g x)  ≡⟨ ap suc p ⟩
+        suc (g x') ≡⟨ (a x')⁻¹ ⟩
+        f (suc x') ∎
     q : x ≡ x'
     q = inl-lc (l r)
 
@@ -136,11 +151,11 @@ open import UF-LeftCancellable
 +𝟙-cancel {𝓤} {X} {Y} i (f , e) = a
  where
   h : Y + 𝟙 → Y + 𝟙
-  h = swap (f (inr *)) (inr *) (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated
+  h = swap (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   d : left-cancellable h
-  d = equivs-are-lc h (swap-is-equiv (f (inr *)) (inr *)
-                        (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated)
+  d = equivs-are-lc h (swap-is-equiv (f 𝟎) 𝟎
+                        (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated)
 
   f' : X + 𝟙 → Y + 𝟙
   f' = h ∘ f
@@ -148,9 +163,9 @@ open import UF-LeftCancellable
   e' : left-cancellable f'
   e' = left-cancellable-closed-under-∘ f h e d
 
-  p : f' (inr *) ≡ inr *
-  p = swap-equation₀ (f (inr *)) (inr *)
-       (+discrete i 𝟙-is-discrete (f (inr *))) new-point-is-isolated
+  p : f' 𝟎 ≡ 𝟎
+  p = swap-equation₀ (f 𝟎) 𝟎
+       (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   a : X ↣ Y
   a = +𝟙-cancel-lemma (f' , e') p
@@ -176,13 +191,13 @@ canonical-Fin-inclusion-lc : (m n : ℕ) (l : m ≤ n)
                            → left-cancellable (canonical-Fin-inclusion m n l)
 canonical-Fin-inclusion-lc 0        n        l {x} {y}         p = 𝟘-elim x
 canonical-Fin-inclusion-lc (succ m) 0        l {x} {y}         p = 𝟘-elim l
-canonical-Fin-inclusion-lc (succ m) (succ n) l {inl x} {inl y} p = γ
+canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
  where
   IH : canonical-Fin-inclusion m n l x ≡ canonical-Fin-inclusion m n l y → x ≡ y
   IH = canonical-Fin-inclusion-lc m n l
-  γ : inl x ≡ inl y
-  γ = ap inl (IH (inl-lc p))
-canonical-Fin-inclusion-lc (succ m) (succ n) l {inr *} {inr *} p = refl
+  γ : suc x ≡ suc y
+  γ = ap suc (IH (inl-lc p))
+canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
 
 ≤-gives-↣ : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
 ≤-gives-↣ m n l = canonical-Fin-inclusion m n l , canonical-Fin-inclusion-lc m n l
@@ -206,10 +221,10 @@ An equivalent construction:
   g : Fin (succ m) → Fin (succ n)
   g = +functor f unique-to-𝟙
   j : left-cancellable g
-  j {inl x} {inl x'} p = ap inl (i (inl-lc p))
-  j {inl x} {inr *}  p = 𝟘-elim (+disjoint  p)
-  j {inr *} {inl y}  p = 𝟘-elim (+disjoint' p)
-  j {inr *} {inr *}  p = refl
+  j {suc x} {suc x'} p = ap suc (i (inl-lc p))
+  j {suc x} {𝟎}      p = 𝟘-elim (+disjoint  p)
+  j {𝟎}     {suc y}  p = 𝟘-elim (+disjoint' p)
+  j {𝟎}     {𝟎}      p = refl
 
 \end{code}
 
@@ -277,8 +292,8 @@ Fin-unprime (succ n) (succ k , l) = suc (Fin-unprime n (k , l))
 
 Fin-prime : (n : ℕ) → Fin n → Fin' n
 Fin-prime 0        i       = 𝟘-elim i
-Fin-prime (succ n) (inl i) = suc' (Fin-prime n i)
-Fin-prime (succ n) (inr *) = 𝟎'
+Fin-prime (succ n) (suc i) = suc' (Fin-prime n i)
+Fin-prime (succ n) 𝟎 = 𝟎'
 
 ηFin : (n : ℕ) → Fin-prime n ∘ Fin-unprime n ∼ id
 ηFin 0        (k , l)      = 𝟘-elim l
@@ -287,8 +302,8 @@ Fin-prime (succ n) (inr *) = 𝟎'
 
 εFin : (n : ℕ) → Fin-unprime n ∘ Fin-prime n ∼ id
 εFin 0        i       = 𝟘-elim i
-εFin (succ n) (inl i) = ap suc (εFin n i)
-εFin (succ n) (inr *) = refl
+εFin (succ n) (suc i) = ap suc (εFin n i)
+εFin (succ n) 𝟎       = refl
 
 ≃-Fin : (n : ℕ) → Fin n ≃ Fin' n
 ≃-Fin n = qinveq (Fin-prime n) (Fin-unprime n , εFin n , ηFin n)
@@ -411,11 +426,11 @@ Fin→ℕ-property : {n : ℕ} (i : Fin n) → Fin→ℕ i < n
 Fin→ℕ-property {n} i = pr₂ (Fin-prime n i)
 
 Fin→ℕ-lc : (n : ℕ) → left-cancellable (Fin→ℕ {n})
-Fin→ℕ-lc 0        {i} {j} p = 𝟘-elim i
-Fin→ℕ-lc (succ n) {inr *} {inr *} p = refl
-Fin→ℕ-lc (succ n) {inr *} {inl j} p = 𝟘-elim (≢-sym (positive-not-zero (Fin→ℕ j)) p)
-Fin→ℕ-lc (succ n) {inl i} {inr *} p = 𝟘-elim (positive-not-zero (Fin→ℕ i) p)
-Fin→ℕ-lc (succ n) {inl i} {inl j} p = ap inl (Fin→ℕ-lc n (succ-lc p))
+Fin→ℕ-lc 0        {i}     {j}     p = 𝟘-elim i
+Fin→ℕ-lc (succ n) {𝟎}     {𝟎}     p = refl
+Fin→ℕ-lc (succ n) {𝟎}     {suc j} p = 𝟘-elim (≢-sym (positive-not-zero (Fin→ℕ j)) p)
+Fin→ℕ-lc (succ n) {suc i} {𝟎}     p = 𝟘-elim (positive-not-zero (Fin→ℕ i) p)
+Fin→ℕ-lc (succ n) {suc i} {suc j} p = ap suc (Fin→ℕ-lc n (succ-lc p))
 
 _≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
 i ≺ j = Fin→ℕ i < Fin→ℕ j
@@ -451,12 +466,14 @@ inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
 inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
  where
   l : 𝟎 is-lower-bound-of A
-  l (inr *) _ = ≤-refl 0
+  l 𝟎       _ = ≤-refl 0
+  l (suc i) _ = 𝟘-elim i
   m : (j : Fin 1) → j is-lower-bound-of A → j ≼ 𝟎
-  m (inr *) _ = ≤-refl 0
+  m 𝟎       _ = ≤-refl 0
+  m (suc i) _ = 𝟘-elim i
   ε : Σ A → A 𝟎
-  ε (inr * , a) = a
-  ε (inl i , a) = 𝟘-elim i
+  ε (𝟎 , a)     = a
+  ε (suc i , a) = 𝟘-elim i
 inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
  where
   IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc) × ((Σ \(j : Fin (succ n)) → A (suc j)) → A (suc i))
@@ -469,7 +486,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
   u = inf-is-ub-of-lbs i (A ∘ suc) (pr₁ (pr₂ IH))
   γ : decidable (A 𝟎)
     → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A × ((Σ \(j : Fin (succ (succ n))) → A j) → A i')
-  γ (inl a) = 𝟎 , (φ , ψ) , ε
+  γ (suc a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
      φ j b = zero-minimal (Fin→ℕ j)
@@ -481,14 +498,14 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
   γ (inr ν) = suc i , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → suc i ≼ j
-     φ (inr *) a = 𝟘-elim (ν a)
-     φ (inl j) a = l j a
+     φ 𝟎 a = 𝟘-elim (ν a)
+     φ (suc j) a = l j a
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
-     ψ (inr *) l = zero-minimal (Fin→ℕ i)
-     ψ (inl j) l = u j (l ∘ suc)
+     ψ 𝟎 l = zero-minimal (Fin→ℕ i)
+     ψ (suc j) l = u j (l ∘ suc)
      ε : Σ A → A (suc i)
-     ε (inr * , b) = 𝟘-elim (ν b)
-     ε (inl j , b) = pr₂ (pr₂ IH) (j , b)
+     ε (𝟎 , b)     = 𝟘-elim (ν b)
+     ε (suc j , b) = pr₂ (pr₂ IH) (j , b)
 
 inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
 inf A δ = pr₁ (inf-construction A δ)
