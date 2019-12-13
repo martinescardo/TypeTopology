@@ -52,8 +52,8 @@ Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 
 \end{code}
 
-The left cancellability of Fin uses the non-trivial construction
-+𝟙-cancellable defined in the module PlusOneLC.lagda.
+The left cancellability of Fin uses the construction +𝟙-cancellable
+defined in the module PlusOneLC.lagda.
 
 \begin{code}
 
