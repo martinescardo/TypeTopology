@@ -232,11 +232,14 @@ Added 9th December 2019. A version of the pigeonhole principle.
 
 \begin{code}
 
-has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-a-repetition f = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+repeated-value : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
+repeated-value f x = Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+
+_has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+f has-a-repetition = Σ (repeated-value f)
 
 pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
-                     → m > n → has-a-repetition f
+                     → m > n → f has-a-repetition
 pigeonhole-principle m n f g = γ
  where
   a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
@@ -248,7 +251,7 @@ pigeonhole-principle m n f g = γ
   c : ¬((i j : Fin m) → f i ≡ f j → i ≡ j)
   c φ = b (λ {i} {j} → φ i j)
 
-  d : ¬¬ has-a-repetition f
+  d : ¬¬ (f has-a-repetition)
   d ψ = c δ
    where
     ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
@@ -264,10 +267,10 @@ pigeonhole-principle m n f g = γ
   v : (i : Fin m) → decidable (Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
   v i = Fin-Compact m _ (u i)
 
-  w : decidable (has-a-repetition f)
+  w : decidable (f has-a-repetition)
   w = Fin-Compact m _ v
 
-  γ : has-a-repetition f
+  γ : f has-a-repetition
   γ = ¬¬-elim w d
 
 \end{code}
@@ -280,7 +283,7 @@ Fin' : ℕ → 𝓤₀ ̇
 Fin' n = Σ \(k : ℕ) → k < n
 
 𝟎' : {n : ℕ} → Fin' (succ n)
-𝟎' = 0 , *
+𝟎' {n} = 0 , zero-minimal n
 
 suc' : {n : ℕ} → Fin' n → Fin' (succ n)
 suc' (k , l) = succ k , l
@@ -305,8 +308,166 @@ Fin-prime (succ n) 𝟎 = 𝟎'
 εFin (succ n) (suc i) = ap suc (εFin n i)
 εFin (succ n) 𝟎       = refl
 
+Fin-prime-is-equiv : (n : ℕ) → is-equiv (Fin-prime n)
+Fin-prime-is-equiv n = qinvs-are-equivs (Fin-prime n) ((Fin-unprime n) , εFin n , ηFin n)
+
 ≃-Fin : (n : ℕ) → Fin n ≃ Fin' n
-≃-Fin n = qinveq (Fin-prime n) (Fin-unprime n , εFin n , ηFin n)
+≃-Fin n = Fin-prime n , Fin-prime-is-equiv n
+
+\end{code}
+
+Added 10th Dec 2019. We define the natural order on Fin n by reduction
+to the natural order on ℕ so that the canonical embedding Fin n → ℕ is
+order preserving and reflecting.
+
+\begin{code}
+
+open import NaturalNumbers-Properties
+
+Fin→ℕ : {n : ℕ} → Fin n → ℕ
+Fin→ℕ {n} = pr₁ ∘ Fin-prime n
+
+Fin→ℕ-property : {n : ℕ} (i : Fin n) → Fin→ℕ i < n
+Fin→ℕ-property {n} i = pr₂ (Fin-prime n i)
+
+open import UF-Embeddings
+
+Fin→ℕ-is-embedding : (n : ℕ) → is-embedding (Fin→ℕ {n})
+Fin→ℕ-is-embedding n = ∘-is-embedding
+                        (equivs-are-embeddings (Fin-prime n) (Fin-prime-is-equiv n))
+                        (pr₁-is-embedding (λ i → <-is-prop-valued i n))
+
+Fin→ℕ-lc : (n : ℕ) → left-cancellable (Fin→ℕ {n})
+Fin→ℕ-lc n = embedding-lc Fin→ℕ (Fin→ℕ-is-embedding n)
+
+_≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
+i ≺ j = Fin→ℕ i < Fin→ℕ j
+i ≼ j = Fin→ℕ i ≤ Fin→ℕ j
+
+_is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
+i is-lower-bound-of A = ∀ j → A j → i ≼ j
+
+lower-bounds : {n : ℕ} → (Fin n → 𝓤 ̇ ) → Fin n → 𝓤 ̇
+lower-bounds A = λ i → i is-lower-bound-of A
+
+_is-upper-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
+i is-upper-bound-of A = ∀ j → A j → j ≼ i
+
+_is-inf-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
+i is-inf-of A = i is-lower-bound-of A
+              × i is-upper-bound-of (lower-bounds A)
+
+inf-is-lb : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
+          → i is-inf-of A → i is-lower-bound-of A
+inf-is-lb i A = pr₁
+
+inf-is-ub-of-lbs : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
+                 → i is-inf-of A → i is-upper-bound-of (lower-bounds A)
+inf-is-ub-of-lbs i A = pr₂
+
+
+inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
+                 → detachable A
+                 → Σ \(i : Fin (succ n)) → i is-inf-of A × (Σ A → A i)
+inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
+ where
+  l : 𝟎 is-lower-bound-of A
+  l 𝟎       _ = ≤-refl 0
+  l (suc i) _ = 𝟘-elim i
+  m : (j : Fin 1) → j is-lower-bound-of A → j ≼ 𝟎
+  m 𝟎       _ = ≤-refl 0
+  m (suc i) _ = 𝟘-elim i
+  ε : Σ A → A 𝟎
+  ε (𝟎 , a)     = a
+  ε (suc i , a) = 𝟘-elim i
+inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
+ where
+  IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc) × ((Σ \(j : Fin (succ n)) → A (suc j)) → A (suc i))
+  IH = inf-construction {𝓤} {n} (A ∘ suc) (δ ∘ suc)
+  i : Fin (succ n)
+  i = pr₁ IH
+  l : (j : Fin (succ n)) → A (suc j) → i ≼ j
+  l = inf-is-lb i (A ∘ suc) (pr₁ (pr₂ IH))
+  u : (j : Fin (succ n)) → ((k : Fin (succ n)) → A (suc k) → j ≼ k) → j ≼ i
+  u = inf-is-ub-of-lbs i (A ∘ suc) (pr₁ (pr₂ IH))
+  γ : decidable (A 𝟎) → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A × (Σ A → A i')
+  γ (suc a) = 𝟎 , (φ , ψ) , ε
+    where
+     φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
+     φ j b = zero-minimal (Fin→ℕ j)
+     ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
+     ψ j l = l 𝟎 a
+     ε : Σ A → A 𝟎
+     ε _ = a
+
+  γ (inr ν) = suc i , (φ , ψ) , ε
+    where
+     φ : (j : Fin (succ (succ n))) → A j → suc i ≼ j
+     φ 𝟎 a = 𝟘-elim (ν a)
+     φ (suc j) a = l j a
+     ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
+     ψ 𝟎 l = zero-minimal (Fin→ℕ i)
+     ψ (suc j) l = u j (l ∘ suc)
+     ε : Σ A → A (suc i)
+     ε (𝟎 , b)     = 𝟘-elim (ν b)
+     ε (suc j , b) = pr₂ (pr₂ IH) (j , b)
+
+inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
+inf A δ = pr₁ (inf-construction A δ)
+
+inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
+             → (inf A δ) is-inf-of A
+inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
+
+inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
+                → Σ A → A (inf A δ)
+inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
+
+Σₘᵢₙ : {n : ℕ} → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
+Σₘᵢₙ A = Σ \i → A i × (i is-lower-bound-of A)
+
+Σₘᵢₙ-gives-Σ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
+              → Σₘᵢₙ A → Σ A
+Σₘᵢₙ-gives-Σ A (i , a , _) = (i , a)
+
+Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
+              → detachable A → Σ A → Σₘᵢₙ A
+Σ-gives-Σₘᵢₙ {𝓤} {0} A δ (i , a) = 𝟘-elim i
+Σ-gives-Σₘᵢₙ {𝓤} {succ n} A δ σ = inf A δ ,
+                                   inf-is-attained A δ σ ,
+                                   inf-is-lb (inf A δ) A (inf-property A δ)
+
+Σ-gives-Σₘᵢₙ' : {n : ℕ} (A : Fin n → 𝓤 ̇ )
+      → detachable A → ¬¬ Σ A → Σₘᵢₙ A
+Σ-gives-Σₘᵢₙ' {𝓤} {n} A δ u = Σ-gives-Σₘᵢₙ A δ (¬¬-elim (Fin-Compact n A δ) u)
+
+is-prop-valued : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-prop-valued A = ∀ x → is-prop (A x)
+
+open import UF-FunExt
+open import UF-Subsingletons-FunExt
+open import UF-Base
+
+Σₘᵢₙ-is-prop : FunExt
+              → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+              → is-prop-valued A → is-prop (Σₘᵢₙ A)
+Σₘᵢₙ-is-prop {𝓤} fe {n} A h (i , a , l) (i' , a' , l') = γ
+ where
+  p : i ≡ i'
+  p = Fin→ℕ-lc n (≤-anti (Fin→ℕ i) (Fin→ℕ i') u v)
+   where
+    u : i ≼ i'
+    u = l i' a'
+    v : i' ≼ i
+    v = l' i a
+  H : ∀ j → is-prop (A j × (j is-lower-bound-of A))
+  H j = ×-is-prop
+         (h j)
+         (Π-is-prop (fe 𝓤₀ 𝓤)
+           (λ k → Π-is-prop (fe 𝓤 𝓤₀)
+                   (λ b → ≤-is-prop-valued (Fin→ℕ j) (Fin→ℕ k))))
+  γ : i , a , l ≡ i' , a' , l'
+  γ = to-Σ-≡ (p , H _ _ _)
 
 \end{code}
 
@@ -356,51 +517,6 @@ module finiteness (pt : propositional-truncations-exist) where
 
 \end{code}
 
-Finite types are discrete and sets:
-
-\begin{code}
-
- finite-types-are-discrete : FunExt → {X : 𝓤 ̇ } → is-finite X → is-discrete X
- finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-a-prop fe) γ s
-  where
-   γ : X ≃ Fin n → is-discrete X
-   γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
-
- finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
- finite-types-are-sets fe i = discrete-types-are-sets (finite-types-are-discrete fe i)
-
-\end{code}
-
-The pigeonhole principle holds for finite types in the following form:
-
-\begin{code}
-
- finite-pigeonhole-principle : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                               (i : is-finite X) (j : is-finite Y)
-                             → cardinality X i > cardinality Y j
-                             → ∥ has-a-repetition f ∥
- finite-pigeonhole-principle {𝓤} {𝓥} {X} {Y} f (m , s) (n , t) g = γ
-  where
-   h : Fin m ≃ X → Y ≃ Fin n → has-a-repetition f
-   h (φ , d) (ψ , e) = r h'
-    where
-     f' : Fin m → Fin n
-     f' = ψ ∘ f ∘ φ
-     h' : has-a-repetition f'
-     h' = pigeonhole-principle m n f' g
-     r : has-a-repetition f' → has-a-repetition f
-     r (i , j , u , p) = φ i , φ j , u' , p'
-      where
-       u' : φ i ≢ φ j
-       u' = contrapositive (equivs-are-lc φ d) u
-       p' : f (φ i) ≡ f (φ j)
-       p' = equivs-are-lc ψ e p
-
-   γ : ∥ has-a-repetition f ∥
-   γ = ∥∥-functor₂ h (∥∥-functor ≃-sym s) t
-
-\end{code}
-
 Equivalently, we can define finiteness as follows:
 
 \begin{code}
@@ -431,6 +547,150 @@ Equivalently, we can define finiteness as follows:
 
 \end{code}
 
+Finite types are discrete and sets:
+
+\begin{code}
+
+ finite-types-are-discrete : FunExt → {X : 𝓤 ̇ } → is-finite X → is-discrete X
+ finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-a-prop fe) γ s
+  where
+   γ : X ≃ Fin n → is-discrete X
+   γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
+
+ finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
+ finite-types-are-sets fe i = discrete-types-are-sets (finite-types-are-discrete fe i)
+
+\end{code}
+
+The pigeonhole principle holds for finite types in the following form:
+
+\begin{code}
+
+ finite-pigeonhole-principle : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                               (i : is-finite X) (j : is-finite Y)
+                             → cardinality X i > cardinality Y j
+                             → ∥ f has-a-repetition ∥
+ finite-pigeonhole-principle {𝓤} {𝓥} {X} {Y} f (m , s) (n , t) g = γ
+  where
+   h : Fin m ≃ X → Y ≃ Fin n → f has-a-repetition
+   h (φ , d) (ψ , e) = r h'
+    where
+     f' : Fin m → Fin n
+     f' = ψ ∘ f ∘ φ
+     h' : f' has-a-repetition
+     h' = pigeonhole-principle m n f' g
+     r : f' has-a-repetition → f has-a-repetition
+     r (i , j , u , p) = φ i , φ j , u' , p'
+      where
+       u' : φ i ≢ φ j
+       u' = contrapositive (equivs-are-lc φ d) u
+       p' : f (φ i) ≡ f (φ j)
+       p' = equivs-are-lc ψ e p
+
+   γ : ∥ f has-a-repetition ∥
+   γ = ∥∥-functor₂ h (∥∥-functor ≃-sym s) t
+
+ μ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+   → detachable A → is-prop-valued A → ∃ A → Σₘᵢₙ A
+ μ fe A δ h = ∥∥-rec (Σₘᵢₙ-is-prop fe A h) (Σ-gives-Σₘᵢₙ A δ)
+
+ Fin-Σ-from-∃' : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+               → detachable A → is-prop-valued A → ∃ A → Σ A
+ Fin-Σ-from-∃' fe A δ h e = Σₘᵢₙ-gives-Σ A (μ fe A δ h e)
+
+ Fin-Σ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+              → detachable A → ∃ A → Σ A
+ Fin-Σ-from-∃ {𝓤} fe {n} A δ e = g σ'
+  where
+   A' : Fin n → 𝓤 ̇
+   A' x = ∥ A x ∥
+   δ' : detachable A'
+   δ' x = d (δ x)
+    where
+     d : decidable (A x) → decidable (A' x)
+     d (inl a) = inl ∣ a ∣
+     d (inr u) = inr (∥∥-rec 𝟘-is-prop u)
+   f : Σ A → Σ A'
+   f (x , a) = x , ∣ a ∣
+   e' : ∃ A'
+   e' = ∥∥-functor f e
+   σ' : Σ A'
+   σ' = Fin-Σ-from-∃' fe A' δ' (λ x → ∥∥-is-a-prop) e'
+   g : Σ A' → Σ A
+   g (x , a') = x , ¬¬-elim (δ x) (λ (u : ¬ A x) → ∥∥-rec 𝟘-is-prop u a')
+
+\end{code}
+
+From now on we assume function extensionality:
+
+\begin{code}
+
+ module _ (fe : FunExt) where
+
+\end{code}
+
+We can easily derive the above finite-pigeonhole-principle from the
+following, at the expense of function extensionality:
+
+\begin{code}
+
+  repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
+                         → is-finite Y
+                         → detachable (λ i → repeated-value f i)
+  repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
+   Fin-Compact m
+    (λ j → (i ≢ j) × (f i ≡ f j))
+    (λ j → ×-preserves-decidability
+            (¬-preserves-decidability (Fin-is-discrete m i j))
+            (finite-types-are-discrete fe (n , t) (f i) (f j)))
+
+  finite-pigeonhole-principle' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
+                                 (j : is-finite Y)
+                               → m > cardinality Y j
+                               → f has-a-repetition
+  finite-pigeonhole-principle' {𝓥} {m} {Y} f (n , t) g = γ
+   where
+    h : Y ≃ Fin n → f has-a-repetition
+    h (ψ , e) = r h'
+     where
+      f' : Fin m → Fin n
+      f' = ψ ∘ f
+      h' : f' has-a-repetition
+      h' = pigeonhole-principle m n f' g
+      r : f' has-a-repetition → f has-a-repetition
+      r (i , j , u , p) = i , j , u , equivs-are-lc ψ e p
+
+    γ' : ∥ f has-a-repetition ∥
+    γ' = ∥∥-functor h t
+    A : Fin m → 𝓥 ̇
+    A i = Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+    γ = Fin-Σ-from-∃ fe {m} A (repetitions-detachable f (n , t)) γ'
+
+  finite-pigeonhole-principle'' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
+                                 (φ : is-finite Y)
+                                → m > cardinality Y φ
+                                → Σₘᵢₙ (repeated-value f)
+  finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
+   Σ-gives-Σₘᵢₙ
+    (repeated-value f)
+    (repetitions-detachable f φ)
+    (finite-pigeonhole-principle' f φ g)
+
+  ℕ-finite-pigeonhole-principle : {Y : 𝓥 ̇ } (f : ℕ → Y)
+                                → is-finite Y
+                                → f has-a-repetition
+  ℕ-finite-pigeonhole-principle {𝓥} {Y} f (m , t) = r h
+   where
+    f' : Fin (succ m) → Y
+    f' i = f (Fin→ℕ i)
+    h : f' has-a-repetition
+    h = finite-pigeonhole-principle' f'(m , t) (<-succ m)
+    r : f' has-a-repetition → f has-a-repetition
+    r (i , j , u , p) = Fin→ℕ i , Fin→ℕ j , contrapositive (Fin→ℕ-lc (succ m)) u , p
+
+\end{code}
+
+
 Exercise. Consider a finite type X with a binary operation _·_ which
 is left-cancellable and has a right neutral element e. Define natural
 powers x ^ n for x : X in the usual way. Using the pigeonhole
@@ -438,109 +698,38 @@ principle and left-cancellability, show that there is a smallest n : ℕ
 with x ^ n ≡ e. Because X, being finite, is a set, the type of minimal
 such n is a proposition, and hence an explicit such n can be found.
 
-Added 10th Dec 2019.
+In a finite group, every element has a finite order. More generally:
 
 \begin{code}
 
-open import NaturalNumbers-Properties
+  module _
+          {X : 𝓤 ̇ }
+          (_·_ : X → X → X)
+          (e : X)
+          (lc : (x : X) → left-cancellable (x ·_))
+          (eneutral : (x : X) → x · e ≡ e)
+          (φ : is-finite X)
+         where
 
-Fin→ℕ : {n : ℕ} → Fin n → ℕ
-Fin→ℕ {n} i = pr₁ (Fin-prime n i)
+    _↑_ : X → ℕ → X
+    x ↑ 0 = e
+    x ↑ (succ n) = x · (x ↑ n)
 
-Fin→ℕ-property : {n : ℕ} (i : Fin n) → Fin→ℕ i < n
-Fin→ℕ-property {n} i = pr₂ (Fin-prime n i)
+    infixl 3 _↑_
 
-Fin→ℕ-lc : (n : ℕ) → left-cancellable (Fin→ℕ {n})
-Fin→ℕ-lc 0        {i}     {j}     p = 𝟘-elim i
-Fin→ℕ-lc (succ n) {𝟎}     {𝟎}     p = refl
-Fin→ℕ-lc (succ n) {𝟎}     {suc j} p = 𝟘-elim (≢-sym (positive-not-zero (Fin→ℕ j)) p)
-Fin→ℕ-lc (succ n) {suc i} {𝟎}     p = 𝟘-elim (positive-not-zero (Fin→ℕ i) p)
-Fin→ℕ-lc (succ n) {suc i} {suc j} p = ap suc (Fin→ℕ-lc n (succ-lc p))
+    finite-order : (x : X) → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
+    finite-order x = c a
+     where
+      a : Σ \(m : ℕ) → Σ \(n : ℕ) → (m ≢ n) × (x ↑ m ≡ x ↑ n)
+      a = ℕ-finite-pigeonhole-principle (x ↑_) φ
 
-_≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
-i ≺ j = Fin→ℕ i < Fin→ℕ j
-i ≼ j = Fin→ℕ i ≤ Fin→ℕ j
+      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ≡ x ↑ n → Σ \(k : ℕ) → (x ↑ (succ k) ≡ e)
+      b 0        0        ν p = 𝟘-elim (ν refl)
+      b 0        (succ n) ν p = n , (p ⁻¹)
+      b (succ m) 0        ν p = m , p
+      b (succ m) (succ n) ν p = b m n (λ (q : m ≡ n) → ν (ap succ q)) (lc x p)
 
-_is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
-i is-lower-bound-of A = ∀ j → A j → i ≼ j
-
-lower-bounds : {n : ℕ} → (Fin n → 𝓤 ̇ ) → Fin n → 𝓤 ̇
-lower-bounds A = λ i → i is-lower-bound-of A
-
-_is-upper-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
-i is-upper-bound-of A = ∀ j → A j → j ≼ i
-
-_is-inf-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
-i is-inf-of A = i is-lower-bound-of A
-              × i is-upper-bound-of (lower-bounds A)
-
-inf-is-lb : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
-          → i is-inf-of A → i is-lower-bound-of A
-inf-is-lb i A = pr₁
-
-inf-is-ub-of-lbs : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
-                 → i is-inf-of A → i is-upper-bound-of (lower-bounds A)
-inf-is-ub-of-lbs i A = pr₂
-
-
-inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
-                 → detachable A
-                 → Σ \(i : Fin (succ n))
-                         → i is-inf-of A
-                         × ((Σ \(j : Fin (succ n)) → A j) → A i)
-inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
- where
-  l : 𝟎 is-lower-bound-of A
-  l 𝟎       _ = ≤-refl 0
-  l (suc i) _ = 𝟘-elim i
-  m : (j : Fin 1) → j is-lower-bound-of A → j ≼ 𝟎
-  m 𝟎       _ = ≤-refl 0
-  m (suc i) _ = 𝟘-elim i
-  ε : Σ A → A 𝟎
-  ε (𝟎 , a)     = a
-  ε (suc i , a) = 𝟘-elim i
-inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
- where
-  IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc) × ((Σ \(j : Fin (succ n)) → A (suc j)) → A (suc i))
-  IH = inf-construction {𝓤} {n} (A ∘ suc) (δ ∘ suc)
-  i : Fin (succ n)
-  i = pr₁ IH
-  l : (j : Fin (succ n)) → A (suc j) → i ≼ j
-  l = inf-is-lb i (A ∘ suc) (pr₁ (pr₂ IH))
-  u : (j : Fin (succ n)) → ((k : Fin (succ n)) → A (suc k) → j ≼ k) → j ≼ i
-  u = inf-is-ub-of-lbs i (A ∘ suc) (pr₁ (pr₂ IH))
-  γ : decidable (A 𝟎)
-    → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A × ((Σ \(j : Fin (succ (succ n))) → A j) → A i')
-  γ (suc a) = 𝟎 , (φ , ψ) , ε
-    where
-     φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
-     φ j b = zero-minimal (Fin→ℕ j)
-     ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
-     ψ j l = l 𝟎 a
-     ε : Σ A → A 𝟎
-     ε _ = a
-
-  γ (inr ν) = suc i , (φ , ψ) , ε
-    where
-     φ : (j : Fin (succ (succ n))) → A j → suc i ≼ j
-     φ 𝟎 a = 𝟘-elim (ν a)
-     φ (suc j) a = l j a
-     ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
-     ψ 𝟎 l = zero-minimal (Fin→ℕ i)
-     ψ (suc j) l = u j (l ∘ suc)
-     ε : Σ A → A (suc i)
-     ε (𝟎 , b)     = 𝟘-elim (ν b)
-     ε (suc j , b) = pr₂ (pr₂ IH) (j , b)
-
-inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
-inf A δ = pr₁ (inf-construction A δ)
-
-inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
-             → (inf A δ) is-inf-of A
-inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
-
-inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
-                → Σ A → A (inf A δ)
-inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
+      c : type-of a → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
+      c (m , n , ν , p) = b m n ν p
 
 \end{code}

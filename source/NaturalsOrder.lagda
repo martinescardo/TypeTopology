@@ -168,8 +168,8 @@ regress : (P : ℕ → 𝓤 ̇ )
         → (n m : ℕ) → m ≤ n → P n → P m
 regress P ρ zero m l p = back-transport P (unique-minimal m l) p
 regress P ρ (succ n) m l p = cases (λ (l' : m ≤ n) → IH m l' (ρ n p))
-                                    (λ (r : m ≡ succ n) → back-transport P r p)
-                                    (≤-split m n l)
+                                   (λ (r : m ≡ succ n) → back-transport P r p)
+                                   (≤-split m n l)
  where
   IH : (m : ℕ) → m ≤ n → P n → P m
   IH = regress P ρ n
