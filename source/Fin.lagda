@@ -690,25 +690,18 @@ following, at the expense of function extensionality:
 
 \end{code}
 
-
-Exercise. Consider a finite type X with a binary operation _·_ which
-is left-cancellable and has a right neutral element e. Define natural
-powers x ^ n for x : X in the usual way. Using the pigeonhole
-principle and left-cancellability, show that there is a smallest n : ℕ
-with x ^ n ≡ e. Because X, being finite, is a set, the type of minimal
-such n is a proposition, and hence an explicit such n can be found.
+Added 13th December 2019.
 
 In a finite group, every element has a finite order. More generally:
 
 \begin{code}
 
-  module _
-          {X : 𝓤 ̇ }
-          (_·_ : X → X → X)
-          (e : X)
-          (lc : (x : X) → left-cancellable (x ·_))
-          (eneutral : (x : X) → x · e ≡ e)
-          (φ : is-finite X)
+  module _ {X : 𝓤 ̇ }
+           (_·_ : X → X → X)
+           (e : X)
+           (lc : (x : X) → left-cancellable (x ·_))
+           (eneutral : (x : X) → x · e ≡ e)
+           (φ : is-finite X)
          where
 
     _↑_ : X → ℕ → X
