@@ -235,9 +235,9 @@ Added 9th December 2019. A version of the pigeonhole principle.
 has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-a-repetition f = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
 
-finite-pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
-                            → m > n → has-a-repetition f
-finite-pigeonhole-principle m n f g = γ
+pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
+                     → m > n → has-a-repetition f
+pigeonhole-principle m n f g = γ
  where
   a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
@@ -371,10 +371,35 @@ Finite types are discrete and sets:
 
 \end{code}
 
-Exercise. Formulate and prove the pigeonhole principle for finite
-types (it is easier to prove it using univalence, but it is possible
-to prove it without it).
+The pigeonhole principle holds for finite types in the following form:
 
+\begin{code}
+
+ finite-pigeonhole-principle : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                               (i : is-finite X) (j : is-finite Y)
+                             → cardinality X i > cardinality Y j
+                             → ∥ has-a-repetition f ∥
+ finite-pigeonhole-principle {𝓤} {𝓥} {X} {Y} f (m , s) (n , t) g = γ
+  where
+   h : Fin m ≃ X → Y ≃ Fin n → has-a-repetition f
+   h (φ , d) (ψ , e) = r h'
+    where
+     f' : Fin m → Fin n
+     f' = ψ ∘ f ∘ φ
+     h' : has-a-repetition f'
+     h' = pigeonhole-principle m n f' g
+     r : has-a-repetition f' → has-a-repetition f
+     r (i , j , u , p) = φ i , φ j , u' , p'
+      where
+       u' : φ i ≢ φ j
+       u' = contrapositive (equivs-are-lc φ d) u
+       p' : f (φ i) ≡ f (φ j)
+       p' = equivs-are-lc ψ e p
+
+   γ : ∥ has-a-repetition f ∥
+   γ = ∥∥-functor₂ h (∥∥-functor ≃-sym s) t
+
+\end{code}
 
 Equivalently, we can define finiteness as follows:
 
@@ -515,7 +540,7 @@ inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
 inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
 
 inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
-                → (Σ \(i : Fin (succ n)) → A i) → A (inf A δ)
+                → Σ A → A (inf A δ)
 inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 \end{code}

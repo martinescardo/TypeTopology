@@ -774,11 +774,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                             → (A : X → 𝓥 ̇ )
                             → detachable A
                             → ¬¬ ∃ A → ∃ A
- ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ φ = γ (c A δ)
-  where
-   γ : decidable (∃ A) → ∃ A
-   γ (inl e) = e
-   γ (inr u) = 𝟘-elim (φ u)
+ ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
  ∥Compact∥-gives-∃-Compact : FunExt → {X : 𝓤 ̇ } → ∥ Compact X 𝓥 ∥ → ∃-Compact X 𝓥
  ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-a-prop fe)
