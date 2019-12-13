@@ -700,7 +700,6 @@ In a finite group, every element has a finite order. More generally:
            (_·_ : X → X → X)
            (e : X)
            (lc : (x : X) → left-cancellable (x ·_))
-           (eneutral : (x : X) → x · e ≡ e)
            (φ : is-finite X)
          where
 
