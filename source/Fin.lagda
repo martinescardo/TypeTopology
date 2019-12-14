@@ -1,8 +1,9 @@
 Martin Escardo, 2014, 21 March 2018, November-December 2019.
 
-Fin n is a set with n elements. We investigate some of its basic
-properties, including the pigeonhole principle and its application to
-show that every element of a finite group has a finite order.
+The type Fin n is a discrete set with n elements. We investigate some
+of its basic properties, including the pigeonhole principle and its
+application to show that every element of a finite group has a finite
+order.
 
 Other interesting uses of the types Fin n is in the file
 https://www.cs.bham.ac.uk/~mhe/agda-new/ArithmeticViaEquivalence.html
@@ -913,5 +914,5 @@ because finite types are discrete:
 Remark: the given construction finite-order already produces the
 minimal order, but it seems slightly more difficult to prove this than
 just compute the minimal order from any order. If we were interested
-in the efficiency our our constructions (functional programs!), we
+in the efficiency of our constructions (functional programs!), we
 would have to consider this.
