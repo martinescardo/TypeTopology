@@ -1,7 +1,13 @@
 Martin Escardo, 2014, 21 March 2018, November-December 2019.
 
 Fin n is a set with n elements. We investigate some of its basic
-properties.
+properties, including the pigeonhole principle and its application to
+show that every element of a finite group has a finite order.
+
+Other interesting uses of the types Fin n is in the file
+https://www.cs.bham.ac.uk/~mhe/agda-new/ArithmeticViaEquivalence.html
+which proves commutativity of addition and multiplication, and more,
+using the corresponding property for (finite) types.
 
 \begin{code}
 
