@@ -600,7 +600,7 @@ module finiteness (pt : propositional-truncations-exist) where
  cardinality X = pr₁
 
 
- cardinality-≃ : (X : 𝓤 ̇ ) (i : is-finite X) → ∥ X ≃ Fin (cardinality X i) ∥
+ cardinality-≃ : (X : 𝓤 ̇ ) (φ : is-finite X) → ∥ X ≃ Fin (cardinality X φ) ∥
  cardinality-≃ X = pr₂
 
 
@@ -654,7 +654,7 @@ Finite types are compact, or exhaustively searchable.
 
 
  finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X 𝓥
- finite-∃-compact fe i = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ i)
+ finite-∃-compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
 
 \end{code}
 
@@ -670,7 +670,7 @@ Finite types are discrete and hence sets:
 
 
  finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
- finite-types-are-sets fe i = discrete-types-are-sets (finite-types-are-discrete fe i)
+ finite-types-are-sets fe φ = discrete-types-are-sets (finite-types-are-discrete fe φ)
 
 \end{code}
 
@@ -727,7 +727,7 @@ explicit existence:
 
 \end{code}
 
-But the prop-valuedness of A is actually not needed:
+But the prop-valuedness of A is actually not needed, with more work:
 
 \begin{code}
 
@@ -772,13 +772,13 @@ We now consider further variations of the finite pigeonhole principle.
 
 \begin{code}
 
-  repeated-value : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
-  repeated-value f x = Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+  repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
+  repeated-values f x = Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
 
 
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
-                         → detachable (repeated-value f)
+                         → detachable (repeated-values f)
 
   repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact m
@@ -827,13 +827,13 @@ Further versions of the pigeonhole principle are the following.
 \begin{code}
 
   finite-pigeonhole-principle'' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
-                                 (φ : is-finite Y)
+                                  (φ : is-finite Y)
                                 → m > cardinality Y φ
-                                → Σₘᵢₙ (repeated-value f)
+                                → Σₘᵢₙ (repeated-values f)
 
   finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
    Σ-gives-Σₘᵢₙ
-    (repeated-value f)
+    (repeated-values f)
     (repetitions-detachable f φ)
     (finite-pigeonhole-principle' f φ g)
 
