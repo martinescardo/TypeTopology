@@ -73,7 +73,6 @@ open import PlusOneLC
 open import UF-Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
-
 Fin-lc 0           0       p = refl
 Fin-lc (succ m)    0       p = 𝟘-elim (⌜ p ⌝ 𝟎)
 Fin-lc 0          (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ 𝟎)
@@ -150,6 +149,7 @@ open import UF-LeftCancellable
                 → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
                 → ⌈ 𝒇 ⌉ 𝟎 ≡ 𝟎
                 → X ↣ Y
+
 +𝟙-cancel-lemma {𝓤} {X} {Y} (f , l) p = g , m
  where
   g : X → Y
@@ -169,10 +169,12 @@ open import UF-LeftCancellable
     q : x ≡ x'
     q = inl-lc (l r)
 
+
 +𝟙-cancel : {X Y : 𝓤 ̇}
           → is-discrete Y
           → X + 𝟙 ↣ Y + 𝟙
           → X ↣ Y
+
 +𝟙-cancel {𝓤} {X} {Y} i (f , e) = a
  where
   h : Y + 𝟙 → Y + 𝟙
@@ -224,6 +226,7 @@ canonical-Fin-inclusion (succ m) (succ n) l = +functor IH unique-to-𝟙
 
 canonical-Fin-inclusion-lc : (m n : ℕ) (l : m ≤ n)
                            → left-cancellable (canonical-Fin-inclusion m n l)
+
 canonical-Fin-inclusion-lc 0        n        l {x}     {y}     p = 𝟘-elim x
 canonical-Fin-inclusion-lc (succ m) 0        l {x}     {y}     p = 𝟘-elim l
 canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
@@ -233,6 +236,7 @@ canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
 
   γ : suc x ≡ suc y
   γ = ap suc (IH (inl-lc p))
+
 canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
 
 ≤-gives-↣ : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
@@ -332,6 +336,7 @@ Added 2nd December 2019. An isomorphic copy of the type Fin n:
 
 Fin' : ℕ → 𝓤₀ ̇
 Fin' n = Σ \(k : ℕ) → k < n
+
 
 𝟎' : {n : ℕ} → Fin' (succ n)
 𝟎' {n} = 0 , zero-minimal n
