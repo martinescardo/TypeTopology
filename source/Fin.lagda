@@ -35,7 +35,8 @@ fsucc = inl
 
 \end{code}
 
-But it will more convenient to have them as patterns, for the sake of clarity:
+But it will more convenient to have them as patterns, for the sake of
+clarity in definitions by pattern matching:
 
 \begin{code}
 
@@ -52,11 +53,15 @@ Fin-induction : (P : (n : ℕ) → Fin n → 𝓤 ̇ )
               → ((n : ℕ) → P (succ n) 𝟎)
               → ((n : ℕ) (i : Fin n) → P n i → P (succ n) (suc i))
               →  (n : ℕ) (i : Fin n) → P n i
+
 Fin-induction P β σ 0        i       = 𝟘-elim i
 Fin-induction P β σ (succ n) 𝟎 = β n
 Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 
 \end{code}
+
+We will not use this induction principle explicitly. Instead, we will
+use the above pattern for similar definitions by induction.
 
 The left cancellability of Fin uses the construction +𝟙-cancellable
 defined in the module PlusOneLC.lagda.
@@ -67,6 +72,7 @@ open import PlusOneLC
 open import UF-Equiv
 
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
+
 Fin-lc 0           0       p = refl
 Fin-lc (succ m)    0       p = 𝟘-elim (⌜ p ⌝ 𝟎)
 Fin-lc 0          (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ 𝟎)
@@ -74,17 +80,22 @@ Fin-lc (succ m)   (succ n) p = ap succ r
  where
   IH : Fin m ≃ Fin n → m ≡ n
   IH = Fin-lc m n
+
   remark : Fin m + 𝟙 ≃ Fin n + 𝟙
   remark = p
+
   q : Fin m ≃ Fin n
   q = +𝟙-cancellable p
+
   r : m ≡ n
   r = IH q
 
 \end{code}
 
 Notice that Fin is an example of a map that is left-cancellable but
-not an embedding.
+not an embedding in the sense of univalent mathematics.
+
+Recall that a type is discrete if it has decidable equality.
 
 \begin{code}
 
@@ -113,8 +124,10 @@ Fin-Compact : (n : ℕ) → Compact (Fin n) 𝓤
 Fin-Compact 0        = 𝟘-Compact
 Fin-Compact (succ n) = +-Compact (Fin-Compact n) 𝟙-Compact
 
+
 Fin-Π-Compact : (n : ℕ) → Π-Compact (Fin n) 𝓤
 Fin-Π-Compact n = Σ-Compact-gives-Π-Compact (Fin n) (Fin-Compact n)
+
 
 Fin-Compact∙ : (n : ℕ) → Compact∙ (Fin (succ n)) 𝓤
 Fin-Compact∙ n = Compact-pointed-gives-Compact∙ (Fin-Compact (succ n)) 𝟎
@@ -123,9 +136,8 @@ Fin-Compact∙ n = Compact-pointed-gives-Compact∙ (Fin-Compact (succ n)) 𝟎
 
 Recall that X ↣ Y is the type of left cancellable maps from X to Y,
 which should not be confused with the type X ↪ Y of embeddings of X
-into Y. However, for types that are sets (like Fin n, as we will see),
-there is no difference between the embedding property and left
-cancellability.
+into Y. However, for types that are sets, like Fin n, there is no
+difference between the embedding property and left cancellability.
 
 \begin{code}
 
@@ -189,8 +201,9 @@ open import UF-EquivalenceExamples
 In set theory, natural numbers are defined as certain sets, and their
 order relation is inherited from the ordering of sets defined by the
 existence of injections, or left-cancellable maps. Here, in type
-theory, we have defined m ≤ n by induction on m and n, but we can
-prove that this relation is characterized by this injection property:
+theory, we have defined m ≤ n by induction on m and n, in the style of
+Peano Arithmetic, but we can prove that this relation is characterized
+by this injection property:
 
 \begin{code}
 
@@ -207,6 +220,7 @@ canonical-Fin-inclusion (succ m) (succ n) l = +functor IH unique-to-𝟙
  where
   IH : Fin m → Fin n
   IH = canonical-Fin-inclusion m n l
+
 
 canonical-Fin-inclusion-lc : (m n : ℕ) (l : m ≤ n)
                            → left-cancellable (canonical-Fin-inclusion m n l)
@@ -250,28 +264,27 @@ An equivalent construction:
 \end{code}
 
 Added 9th December 2019. A version of the pigeonhole principle, which
-uses (on direction of) the above characterization of the relation m ≤
+uses (one direction of) the above characterization of the relation m ≤
 n as the existence of an injection Fin m → Fin n:
 
 \begin{code}
 
-repeated-value : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
-repeated-value f x = Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
 
 _has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-f has-a-repetition = Σ (repeated-value f)
+f has-a-repetition = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+
 
 pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
                      → m > n → f has-a-repetition
 pigeonhole-principle m n f g = γ
  where
-  a : ¬ Σ (\(f : Fin m → Fin n) → left-cancellable f)
+  a : ¬ Σ \(f : Fin m → Fin n) → left-cancellable f
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
 
   b : ¬ left-cancellable f
   b l = a (f , l)
 
-  c : ¬((i j : Fin m) → f i ≡ f j → i ≡ j)
+  c : ¬ ((i j : Fin m) → f i ≡ f j → i ≡ j)
   c φ = b (λ {i} {j} → φ i j)
 
   d : ¬¬ (f has-a-repetition)
@@ -281,6 +294,13 @@ pigeonhole-principle m n f g = γ
     ε i j p ν = ψ (i , j , ν , p)
     δ : (i j : Fin m) → f i ≡ f j → i ≡ j
     δ i j p = ¬¬-elim (Fin-is-discrete m i j) (ε i j p)
+
+\end{code}
+
+A classical proof ends at this point. For a constructive proof, we
+need more steps.
+
+\begin{code}
 
   u : (i j : Fin m) → decidable ((i ≢ j) × (f i ≡ f j))
   u i j = ×-preserves-decidability
@@ -298,7 +318,7 @@ pigeonhole-principle m n f g = γ
 
 \end{code}
 
-Added 2nd December 2019. An isomorphic copy of Fin n:
+Added 2nd December 2019. An isomorphic copy of the type Fin n:
 
 \begin{code}
 
@@ -311,20 +331,23 @@ Fin' n = Σ \(k : ℕ) → k < n
 suc' : {n : ℕ} → Fin' n → Fin' (succ n)
 suc' (k , l) = succ k , l
 
+
 Fin-unprime : (n : ℕ) → Fin' n → Fin n
 Fin-unprime 0        (k , l)      = 𝟘-elim l
 Fin-unprime (succ n) (0 , l)      = 𝟎
 Fin-unprime (succ n) (succ k , l) = suc (Fin-unprime n (k , l))
 
+
 Fin-prime : (n : ℕ) → Fin n → Fin' n
 Fin-prime 0        i       = 𝟘-elim i
 Fin-prime (succ n) (suc i) = suc' (Fin-prime n i)
-Fin-prime (succ n) 𝟎 = 𝟎'
+Fin-prime (succ n) 𝟎       = 𝟎'
 
 ηFin : (n : ℕ) → Fin-prime n ∘ Fin-unprime n ∼ id
 ηFin 0        (k , l)      = 𝟘-elim l
 ηFin (succ n) (0 , *)      = refl
 ηFin (succ n) (succ k , l) = ap suc' (ηFin n (k , l))
+
 
 εFin : (n : ℕ) → Fin-unprime n ∘ Fin-prime n ∼ id
 εFin 0        i       = 𝟘-elim i
@@ -334,59 +357,69 @@ Fin-prime (succ n) 𝟎 = 𝟎'
 Fin-prime-is-equiv : (n : ℕ) → is-equiv (Fin-prime n)
 Fin-prime-is-equiv n = qinvs-are-equivs (Fin-prime n) ((Fin-unprime n) , εFin n , ηFin n)
 
+
 ≃-Fin : (n : ℕ) → Fin n ≃ Fin' n
 ≃-Fin n = Fin-prime n , Fin-prime-is-equiv n
 
 \end{code}
 
-Added 10th Dec 2019. We define the natural order on Fin n by reduction
-to the natural order on ℕ so that the canonical embedding Fin n → ℕ is
+Added 10th Dec 2019. We define the natural order of Fin n by reduction
+to the natural order of ℕ so that the canonical embedding Fin n → ℕ is
 order preserving and reflecting, using the above isomorphic
-manifestation of Fin n.
+manifestation of the type Fin n.
 
 \begin{code}
 
 open import NaturalNumbers-Properties
 
-Fin→ℕ : {n : ℕ} → Fin n → ℕ
-Fin→ℕ {n} = pr₁ ∘ Fin-prime n
+Fin↦ℕ : {n : ℕ} → Fin n → ℕ
+Fin↦ℕ {n} = pr₁ ∘ Fin-prime n
 
-Fin→ℕ-property : {n : ℕ} (i : Fin n) → Fin→ℕ i < n
-Fin→ℕ-property {n} i = pr₂ (Fin-prime n i)
+
+Fin↦ℕ-property : {n : ℕ} (i : Fin n) → Fin↦ℕ i < n
+Fin↦ℕ-property {n} i = pr₂ (Fin-prime n i)
 
 open import UF-Embeddings
 
-Fin→ℕ-is-embedding : (n : ℕ) → is-embedding (Fin→ℕ {n})
-Fin→ℕ-is-embedding n = ∘-is-embedding
+Fin↦ℕ-is-embedding : (n : ℕ) → is-embedding (Fin↦ℕ {n})
+Fin↦ℕ-is-embedding n = ∘-is-embedding
                         (equivs-are-embeddings (Fin-prime n) (Fin-prime-is-equiv n))
                         (pr₁-is-embedding (λ i → <-is-prop-valued i n))
 
-Fin→ℕ-lc : (n : ℕ) → left-cancellable (Fin→ℕ {n})
-Fin→ℕ-lc n = embedding-lc Fin→ℕ (Fin→ℕ-is-embedding n)
+
+Fin↦ℕ-lc : (n : ℕ) → left-cancellable (Fin↦ℕ {n})
+Fin↦ℕ-lc n = embedding-lc Fin↦ℕ (Fin↦ℕ-is-embedding n)
+
 
 _≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
-i ≺ j = Fin→ℕ i < Fin→ℕ j
-i ≼ j = Fin→ℕ i ≤ Fin→ℕ j
+i ≺ j = Fin↦ℕ i < Fin↦ℕ j
+i ≼ j = Fin↦ℕ i ≤ Fin↦ℕ j
+
 
 _is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
 i is-lower-bound-of A = ∀ j → A j → i ≼ j
 
-lower-bounds : {n : ℕ} → (Fin n → 𝓤 ̇ ) → Fin n → 𝓤 ̇
-lower-bounds A = λ i → i is-lower-bound-of A
+
+lower-bounds-of : {n : ℕ} → (Fin n → 𝓤 ̇ ) → Fin n → 𝓤 ̇
+lower-bounds-of A = λ i → i is-lower-bound-of A
+
 
 _is-upper-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
 i is-upper-bound-of A = ∀ j → A j → j ≼ i
 
+
 _is-inf-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 i is-inf-of A = i is-lower-bound-of A
-              × i is-upper-bound-of (lower-bounds A)
+              × i is-upper-bound-of (lower-bounds-of A)
+
 
 inf-is-lb : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
           → i is-inf-of A → i is-lower-bound-of A
 inf-is-lb i A = pr₁
 
+
 inf-is-ub-of-lbs : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
-                 → i is-inf-of A → i is-upper-bound-of (lower-bounds A)
+                 → i is-inf-of A → i is-upper-bound-of (lower-bounds-of A)
 inf-is-ub-of-lbs i A = pr₂
 
 
@@ -418,7 +451,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
   γ (suc a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
-     φ j b = zero-minimal (Fin→ℕ j)
+     φ j b = zero-minimal (Fin↦ℕ j)
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
      ψ j l = l 𝟎 a
      ε : Σ A → A 𝟎
@@ -430,40 +463,50 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
      φ 𝟎 a = 𝟘-elim (ν a)
      φ (suc j) a = l j a
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
-     ψ 𝟎 l = zero-minimal (Fin→ℕ i)
+     ψ 𝟎 l = zero-minimal (Fin↦ℕ i)
      ψ (suc j) l = u j (l ∘ suc)
      ε : Σ A → A (suc i)
      ε (𝟎 , b)     = 𝟘-elim (ν b)
      ε (suc j , b) = pr₂ (pr₂ IH) (j , b)
 
+
 inf : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) → detachable A → Fin (succ n)
 inf A δ = pr₁ (inf-construction A δ)
 
+
 inf-property : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
              → (inf A δ) is-inf-of A
+
 inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
+
 
 inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
                 → Σ A → A (inf A δ)
 inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
+
 Σₘᵢₙ : {n : ℕ} → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 Σₘᵢₙ A = Σ \i → A i × (i is-lower-bound-of A)
+
 
 Σₘᵢₙ-gives-Σ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
               → Σₘᵢₙ A → Σ A
 Σₘᵢₙ-gives-Σ A (i , a , _) = (i , a)
 
+
 Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
               → detachable A → Σ A → Σₘᵢₙ A
+
 Σ-gives-Σₘᵢₙ {𝓤} {0} A δ (i , a) = 𝟘-elim i
 Σ-gives-Σₘᵢₙ {𝓤} {succ n} A δ σ = inf A δ ,
                                    inf-is-attained A δ σ ,
                                    inf-is-lb (inf A δ) A (inf-property A δ)
 
-Σ-gives-Σₘᵢₙ' : {n : ℕ} (A : Fin n → 𝓤 ̇ )
-      → detachable A → ¬¬ Σ A → Σₘᵢₙ A
-Σ-gives-Σₘᵢₙ' {𝓤} {n} A δ u = Σ-gives-Σₘᵢₙ A δ (¬¬-elim (Fin-Compact n A δ) u)
+¬¬Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
+               → detachable A → ¬¬ Σ A → Σₘᵢₙ A
+
+¬¬Σ-gives-Σₘᵢₙ {𝓤} {n} A δ u = Σ-gives-Σₘᵢₙ A δ (¬¬-elim (Fin-Compact n A δ) u)
+
 
 is-prop-valued : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued A = ∀ x → is-prop (A x)
@@ -475,21 +518,25 @@ open import UF-Base
 Σₘᵢₙ-is-prop : FunExt
              → {n : ℕ} (A : Fin n → 𝓤 ̇ )
              → is-prop-valued A → is-prop (Σₘᵢₙ A)
+
 Σₘᵢₙ-is-prop {𝓤} fe {n} A h (i , a , l) (i' , a' , l') = γ
  where
   p : i ≡ i'
-  p = Fin→ℕ-lc n (≤-anti (Fin→ℕ i) (Fin→ℕ i') u v)
+  p = Fin↦ℕ-lc n (≤-anti (Fin↦ℕ i) (Fin↦ℕ i') u v)
    where
     u : i ≼ i'
     u = l i' a'
+
     v : i' ≼ i
     v = l' i a
+
   H : ∀ j → is-prop (A j × (j is-lower-bound-of A))
   H j = ×-is-prop
          (h j)
          (Π-is-prop (fe 𝓤₀ 𝓤)
            (λ k → Π-is-prop (fe 𝓤 𝓤₀)
-                   (λ b → ≤-is-prop-valued (Fin→ℕ j) (Fin→ℕ k))))
+                   (λ b → ≤-is-prop-valued (Fin↦ℕ j) (Fin↦ℕ k))))
+
   γ : i , a , l ≡ i' , a' , l'
   γ = to-Σ-≡ (p , H _ _ _)
 
@@ -497,8 +544,8 @@ open import UF-Base
 
 Added 8th December 2019. One defines a type to finite, in univalent
 mathematics, if it is isomorphic to Fin n for some n. But one has to
-careful to express this properly, with a suitably chosen notion of
-existence.
+careful to express this, if we want finiteness to be property rather
+than structure, with a suitably chosen notion of existence.
 
 The following is structure rather than property. It amounts to the
 type of finite linear orders on X.
@@ -510,7 +557,7 @@ Finite X = Σ \(n : ℕ) → X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, the type Finite X has n! elements.
+Exercise: If X ≃ Fin n, then the type Finite X has n! elements.
 
 Hence one considers the following notion of finiteness, which is
 property rather than structure:
@@ -526,11 +573,14 @@ module finiteness (pt : propositional-truncations-exist) where
  is-finite : 𝓤 ̇ → 𝓤 ̇
  is-finite X = Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
 
+
  cardinality : (X : 𝓤 ̇ ) → is-finite X → ℕ
  cardinality X = pr₁
 
+
  cardinality-≃ : (X : 𝓤 ̇ ) (i : is-finite X) → ∥ X ≃ Fin (cardinality X i) ∥
  cardinality-≃ X = pr₂
+
 
  being-finite-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
  being-finite-is-a-prop X (m , d) (n , e) = γ
@@ -544,21 +594,24 @@ module finiteness (pt : propositional-truncations-exist) where
 
 \end{code}
 
-Equivalently, we can define finiteness as follows:
+Equivalently, one can define finiteness as follows:
 
 \begin{code}
 
  is-finite' : 𝓤 ̇ → 𝓤 ̇
  is-finite' X = ∃ \(n : ℕ) → X ≃ Fin n
 
+
  being-finite'-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
  being-finite'-is-a-prop X = ∥∥-is-a-prop
+
 
  finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
  finite-unprime X = ∥∥-rec (being-finite-is-a-prop X) γ
   where
    γ : (Σ \(n : ℕ) → X ≃ Fin n) → Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
    γ (n , e) = n , ∣ e ∣
+
 
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
  finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
@@ -575,12 +628,13 @@ Finite types are compact, or exhaustively searchable.
  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
+
  finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X 𝓥
  finite-∃-compact fe i = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ i)
 
 \end{code}
 
-Finite types are discrete and sets:
+Finite types are discrete and hence sets:
 
 \begin{code}
 
@@ -589,6 +643,7 @@ Finite types are discrete and sets:
   where
    γ : X ≃ Fin n → is-discrete X
    γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
+
 
  finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
  finite-types-are-sets fe i = discrete-types-are-sets (finite-types-are-discrete fe i)
@@ -601,25 +656,26 @@ following form:
 \begin{code}
 
  finite-pigeonhole-principle : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                               (i : is-finite X) (j : is-finite Y)
-                             → cardinality X i > cardinality Y j
+                               (φ : is-finite X) (ψ : is-finite Y)
+                             → cardinality X φ > cardinality Y ψ
                              → ∥ f has-a-repetition ∥
- finite-pigeonhole-principle {𝓤} {𝓥} {X} {Y} f (m , s) (n , t) g = γ
+
+ finite-pigeonhole-principle {𝓤} {𝓥} {X} {Y} f (m , s) (n , t) b = γ
   where
    h : Fin m ≃ X → Y ≃ Fin n → f has-a-repetition
-   h (φ , d) (ψ , e) = r h'
+   h (g , d) (h , e) = r r'
     where
      f' : Fin m → Fin n
-     f' = ψ ∘ f ∘ φ
-     h' : f' has-a-repetition
-     h' = pigeonhole-principle m n f' g
+     f' = h ∘ f ∘ g
+     r' : f' has-a-repetition
+     r' = pigeonhole-principle m n f' b
      r : f' has-a-repetition → f has-a-repetition
-     r (i , j , u , p) = φ i , φ j , u' , p'
+     r (i , j , u , p) = g i , g j , u' , p'
       where
-       u' : φ i ≢ φ j
-       u' = contrapositive (equivs-are-lc φ d) u
-       p' : f (φ i) ≡ f (φ j)
-       p' = equivs-are-lc ψ e p
+       u' : g i ≢ g j
+       u' = contrapositive (equivs-are-lc g d) u
+       p' : f (g i) ≡ f (g j)
+       p' = equivs-are-lc h e p
 
    γ : ∥ f has-a-repetition ∥
    γ = ∥∥-functor₂ h (∥∥-functor ≃-sym s) t
@@ -635,9 +691,16 @@ explicit existence:
              → detachable A → is-prop-valued A → ∃ A → Σₘᵢₙ A
  Σₘᵢₙ-from-∃ fe A δ h = ∥∥-rec (Σₘᵢₙ-is-prop fe A h) (Σ-gives-Σₘᵢₙ A δ)
 
+
  Fin-Σ-from-∃' : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
                → detachable A → is-prop-valued A → ∃ A → Σ A
  Fin-Σ-from-∃' fe A δ h e = Σₘᵢₙ-gives-Σ A (Σₘᵢₙ-from-∃ fe A δ h e)
+
+\end{code}
+
+But the prop-valuedness of A is actually not needed:
+
+\begin{code}
 
  Fin-Σ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
               → detachable A → ∃ A → Σ A
@@ -674,6 +737,10 @@ We now consider further variations of the finite pigeonhole principle.
 
 \begin{code}
 
+  repeated-value : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
+  repeated-value f x = Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+
+
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
                          → detachable (repeated-value f)
@@ -708,8 +775,8 @@ We now consider further variations of the finite pigeonhole principle.
 
 \end{code}
 
-We can easily derive finite-pigeonhole-principle from the
-finite-pigeonhole-principle', at the expense of function
+We can easily derive the construction finite-pigeonhole-principle from
+finite-pigeonhole-principle', but at the expense of function
 extensionality, which was not needed with our original construction.
 
 Further versions of the pigeonhole principle are the following.
@@ -720,30 +787,33 @@ Further versions of the pigeonhole principle are the following.
                                  (φ : is-finite Y)
                                 → m > cardinality Y φ
                                 → Σₘᵢₙ (repeated-value f)
+
   finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
    Σ-gives-Σₘᵢₙ
     (repeated-value f)
     (repetitions-detachable f φ)
     (finite-pigeonhole-principle' f φ g)
 
+
   ℕ-finite-pigeonhole-principle : {Y : 𝓥 ̇ } (f : ℕ → Y)
                                 → is-finite Y
                                 → f has-a-repetition
+
   ℕ-finite-pigeonhole-principle {𝓥} {Y} f (m , t) = r h
    where
     f' : Fin (succ m) → Y
-    f' i = f (Fin→ℕ i)
+    f' i = f (Fin↦ℕ i)
     h : f' has-a-repetition
     h = finite-pigeonhole-principle' f'(m , t) (<-succ m)
     r : f' has-a-repetition → f has-a-repetition
-    r (i , j , u , p) = Fin→ℕ i , Fin→ℕ j , contrapositive (Fin→ℕ-lc (succ m)) u , p
+    r (i , j , u , p) = Fin↦ℕ i , Fin↦ℕ j , contrapositive (Fin↦ℕ-lc (succ m)) u , p
 
 \end{code}
 
 Added 13th December 2019.
 
-A well-known application of the pigeonhole principle is that in a
-finite group, every element has a (minimal) finite order. This holds
+A well-known application of the pigeonhole principle is that every
+element has a (minimal) finite order in a finite group. This holds
 more generally for any finite type equipped with a left-cancellable
 binary operation _·_ and a distinguished element e, with the same
 construction.
@@ -790,6 +860,7 @@ because finite types are discrete:
      where
       A : ℕ → 𝓤 ̇
       A n = x ↑ (succ n) ≡ e
+
       γ : (n : ℕ) → decidable (x ↑ succ n ≡ e)
       γ n = finite-types-are-discrete fe φ (x ↑ succ n) e
 
