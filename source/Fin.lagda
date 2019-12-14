@@ -96,7 +96,8 @@ Fin-is-set n = discrete-types-are-sets (Fin-is-discrete n)
 
 \end{code}
 
-Added November 2019.
+Added November 2019. The type Fin n is compact, or exhaustively
+searchable.
 
 \begin{code}
 
@@ -114,7 +115,11 @@ Fin-Compact∙ n = Compact-pointed-gives-Compact∙ (Fin-Compact (succ n)) 𝟎
 
 \end{code}
 
-Recall that X ↣ Y is the type of left cancellable maps from X to Y.
+Recall that X ↣ Y is the type of left cancellable maps from X to Y,
+which should not be confused with the type X ↪ Y of embeddings of X
+into Y. However, for types that are sets (like Fin n, as we will see),
+there is no difference between the embedding property and left
+cancellability.
 
 \begin{code}
 
@@ -173,6 +178,16 @@ open import UF-LeftCancellable
 open import NaturalsOrder
 open import UF-EquivalenceExamples
 
+\end{code}
+
+In set theory, natural numbers are defined as certain sets, and their
+order relation is inherited from the ordering of sets defined by the
+existence of injections, or left-cancellable maps. Here, in type
+theory, we have defined m ≤ n by induction on m and n, but we can
+prove that this relation is characterized by this injection property:
+
+\begin{code}
+
 ↣-gives-≤ : (m n : ℕ) → (Fin m ↣ Fin n) → m ≤ n
 ↣-gives-≤ 0        n        e       = zero-minimal n
 ↣-gives-≤ (succ m) 0        (f , i) = 𝟘-elim (f 𝟎)
@@ -228,7 +243,9 @@ An equivalent construction:
 
 \end{code}
 
-Added 9th December 2019. A version of the pigeonhole principle.
+Added 9th December 2019. A version of the pigeonhole principle, which
+uses (on direction of) the above characterization of the relation m ≤
+n as the existence of an injection Fin m → Fin n:
 
 \begin{code}
 
@@ -318,7 +335,8 @@ Fin-prime-is-equiv n = qinvs-are-equivs (Fin-prime n) ((Fin-unprime n) , εFin n
 
 Added 10th Dec 2019. We define the natural order on Fin n by reduction
 to the natural order on ℕ so that the canonical embedding Fin n → ℕ is
-order preserving and reflecting.
+order preserving and reflecting, using the above isomorphic
+manifestation of Fin n.
 
 \begin{code}
 
@@ -471,7 +489,10 @@ open import UF-Base
 
 \end{code}
 
-Added 8th December 2019.
+Added 8th December 2019. One defines a type to finite, in univalent
+mathematics, if it is isomorphic to Fin n for some n. But one has to
+careful to express this properly, with a suitably chosen notion of
+existence.
 
 The following is structure rather than property. It amounts to the
 type of finite linear orders on X.
@@ -568,7 +589,8 @@ Finite types are discrete and sets:
 
 \end{code}
 
-The pigeonhole principle holds for finite types in the following form:
+Example. The pigeonhole principle holds for finite types in the
+following form:
 
 \begin{code}
 
@@ -717,7 +739,7 @@ Added 13th December 2019.
 A well-known application of the pigeonhole principle is that in a
 finite group, every element has a (minimal) finite order. This holds
 more generally for any finite type equipped with a left-cancellable
-binary operation and a distinguished element, with the same
+binary operation _·_ and a distinguished element e, with the same
 construction.
 
 \begin{code}
