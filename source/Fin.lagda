@@ -449,8 +449,8 @@ open import UF-Subsingletons-FunExt
 open import UF-Base
 
 Σₘᵢₙ-is-prop : FunExt
-              → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-              → is-prop-valued A → is-prop (Σₘᵢₙ A)
+             → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+             → is-prop-valued A → is-prop (Σₘᵢₙ A)
 Σₘᵢₙ-is-prop {𝓤} fe {n} A h (i , a , l) (i' , a' , l') = γ
  where
   p : i ≡ i'
@@ -536,6 +536,12 @@ Equivalently, we can define finiteness as follows:
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
  finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
 
+\end{code}
+
+Finite types are compact, or exhaustively searchable.
+
+\begin{code}
+
  open CompactTypesPT pt
 
  finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
@@ -590,13 +596,20 @@ The pigeonhole principle holds for finite types in the following form:
    γ : ∥ f has-a-repetition ∥
    γ = ∥∥-functor₂ h (∥∥-functor ≃-sym s) t
 
- μ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
-   → detachable A → is-prop-valued A → ∃ A → Σₘᵢₙ A
- μ fe A δ h = ∥∥-rec (Σₘᵢₙ-is-prop fe A h) (Σ-gives-Σₘᵢₙ A δ)
+\end{code}
+
+We now consider a situation in which anonymous existence gives
+explicit existence:
+
+\begin{code}
+
+ Σₘᵢₙ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+             → detachable A → is-prop-valued A → ∃ A → Σₘᵢₙ A
+ Σₘᵢₙ-from-∃ fe A δ h = ∥∥-rec (Σₘᵢₙ-is-prop fe A h) (Σ-gives-Σₘᵢₙ A δ)
 
  Fin-Σ-from-∃' : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
                → detachable A → is-prop-valued A → ∃ A → Σ A
- Fin-Σ-from-∃' fe A δ h e = Σₘᵢₙ-gives-Σ A (μ fe A δ h e)
+ Fin-Σ-from-∃' fe A δ h e = Σₘᵢₙ-gives-Σ A (Σₘᵢₙ-from-∃ fe A δ h e)
 
  Fin-Σ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
               → detachable A → ∃ A → Σ A
@@ -629,8 +642,7 @@ From now on we assume function extensionality:
 
 \end{code}
 
-We can easily derive the above finite-pigeonhole-principle from the
-following, at the expense of function extensionality:
+We now consider further variations of the finite pigeonhole principle.
 
 \begin{code}
 
@@ -666,6 +678,16 @@ following, at the expense of function extensionality:
     A i = Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
     γ = Fin-Σ-from-∃ fe {m} A (repetitions-detachable f (n , t)) γ'
 
+\end{code}
+
+We can easily derive finite-pigeonhole-principle from the
+finite-pigeonhole-principle', at the expense of function
+extensionality, which was not needed with our original construction.
+
+Further versions of the pigeonhole principle are the following.
+
+\begin{code}
+
   finite-pigeonhole-principle'' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                                  (φ : is-finite Y)
                                 → m > cardinality Y φ
@@ -692,7 +714,11 @@ following, at the expense of function extensionality:
 
 Added 13th December 2019.
 
-In a finite group, every element has a finite order. More generally:
+A well-known application of the pigeonhole principle is that in a
+finite group, every element has a (minimal) finite order. This holds
+more generally for any finite type equipped with a left-cancellable
+binary operation and a distinguished element, with the same
+construction.
 
 \begin{code}
 
@@ -741,7 +767,7 @@ because finite types are discrete:
 
 \end{code}
 
-Remark: the given construction already produces the minimal order, but
-it seems more difficult to prove this than just compute the minimal
-order from any order. If we were interested in efficiency, we would
-have to consider this.
+Remark: the given construction finite-order already produces the
+minimal order, but it seems slightly more difficult to prove this than
+just compute the minimal order from any order. If we were interested
+in efficiency, we would have to consider this.
