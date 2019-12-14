@@ -108,6 +108,9 @@ unique-minimal (succ n) l = 𝟘-elim l
 ≤-join m n (inl l) = ≤-trans m n (succ n) l (≤-succ n)
 ≤-join .(succ n) n (inr refl) = ≤-refl n
 
+≤-down : (m n : ℕ) → m ≤ succ n → (m ≢ succ n) → (m ≤ n)
+≤-down m n l u = cases id (λ p → 𝟘-elim (u p)) (≤-split m n l)
+
 _<_ _>_ : ℕ → ℕ → 𝓤₀ ̇
 m < n = succ m ≤ n
 
@@ -230,5 +233,64 @@ open import DecidableAndDetachable
 
 <-decidable : (m n : ℕ ) → decidable (m < n)
 <-decidable m n = ≤-decidable (succ m) n
+
+\end{code}
+
+Bounded minimization (added 14th December 2019):
+
+\begin{code}
+
+βμ : (A : ℕ → 𝓤 ̇ ) → detachable A
+  → (k : ℕ) → (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
+            + ((n : ℕ) → A n → n ≥ k)
+
+βμ A δ 0 = inr (λ n a → zero-minimal n)
+βμ A δ (succ k) = cases f g (βμ A δ k)
+ where
+  conclusion = type-of (βμ A δ (succ k))
+  f : (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
+  f (m , l , a , φ) = inl (m , <-trans m k (succ k) l (<-succ k) , a , φ)
+  g : ((n : ℕ) → A n → k ≤ n) → conclusion
+  g φ = cases g₀ g₁ (δ k)
+   where
+    g₀ : A k → conclusion
+    g₀ a = inl (k , ≤-refl k , a , φ)
+    g₁ : ¬ A k → conclusion
+    g₁ u = inr ψ
+     where
+      ψ : (n : ℕ) → A n → succ k ≤ n
+      ψ 0 a = 𝟘-elim (v a)
+       where
+        p : k ≡ 0
+        p = zero-minimal'' k (φ 0 a)
+        v : ¬ A 0
+        v = transport (λ - → ¬ A -) p u
+      ψ (succ n) a = III
+       where
+        I : k ≤ succ n
+        I = φ (succ n) a
+        II : k ≢ succ n
+        II p = transport (λ - → ¬ A -) p u a
+        III : k ≤ n
+        III = ≤-down k n I II
+
+\end{code}
+
+Given k : ℕ with A k, find the minimal m : ℕ with A m, by reduction to
+bounded minimization:
+
+\begin{code}
+
+Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
+Σμ A = Σ \(m : ℕ) → A m × ((n : ℕ) → A n → m ≤ n)
+
+find-minimal-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
+find-minimal-from-given A δ (k , a) = cases f g (βμ A δ k)
+ where
+  conclusion = type-of (find-minimal-from-given A δ (k , a))
+  f : (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
+  f (m , l , a' , φ) = m , a' , φ
+  g : ((n : ℕ) → A n → k ≤ n) → conclusion
+  g φ = k , a , φ
 
 \end{code}

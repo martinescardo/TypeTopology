@@ -636,7 +636,7 @@ following, at the expense of function extensionality:
 
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
-                         → detachable (λ i → repeated-value f i)
+                         → detachable (repeated-value f)
   repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact m
     (λ j → (i ≢ j) × (f i ≡ f j))
@@ -723,5 +723,20 @@ In a finite group, every element has a finite order. More generally:
 
       c : type-of a → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
       c (m , n , ν , p) = b m n ν p
+
+\end{code}
+
+And of course then there is a minimal such k, by bounded minimization,
+because finite types are discrete:
+
+\begin{code}
+
+    minimal-finite-order : (x : X) → Σμ \(k : ℕ) → x ↑ (succ k) ≡ e
+    minimal-finite-order x = find-minimal-from-given A γ (finite-order x)
+     where
+      A : ℕ → 𝓤 ̇
+      A n = x ↑ (succ n) ≡ e
+      γ : (n : ℕ) → decidable (x ↑ succ n ≡ e)
+      γ n = finite-types-are-discrete fe φ (x ↑ succ n) e
 
 \end{code}
