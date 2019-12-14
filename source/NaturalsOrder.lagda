@@ -284,10 +284,10 @@ bounded minimization:
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σμ A = Σ \(m : ℕ) → A m × ((n : ℕ) → A n → m ≤ n)
 
-find-minimal-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
-find-minimal-from-given A δ (k , a) = cases f g (βμ A δ k)
+minimal-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
+minimal-from-given A δ (k , a) = cases f g (βμ A δ k)
  where
-  conclusion = type-of (find-minimal-from-given A δ (k , a))
+  conclusion = type-of (minimal-from-given A δ (k , a))
   f : (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
   f (m , l , a' , φ) = m , a' , φ
   g : ((n : ℕ) → A n → k ≤ n) → conclusion

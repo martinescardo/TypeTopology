@@ -224,8 +224,8 @@ canonical-Fin-inclusion (succ m) (succ n) l = +functor IH unique-to-𝟙
 
 canonical-Fin-inclusion-lc : (m n : ℕ) (l : m ≤ n)
                            → left-cancellable (canonical-Fin-inclusion m n l)
-canonical-Fin-inclusion-lc 0        n        l {x} {y}         p = 𝟘-elim x
-canonical-Fin-inclusion-lc (succ m) 0        l {x} {y}         p = 𝟘-elim l
+canonical-Fin-inclusion-lc 0        n        l {x}     {y}     p = 𝟘-elim x
+canonical-Fin-inclusion-lc (succ m) 0        l {x}     {y}     p = 𝟘-elim l
 canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
  where
   IH : canonical-Fin-inclusion m n l x ≡ canonical-Fin-inclusion m n l y → x ≡ y
@@ -239,7 +239,7 @@ canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
 
 \end{code}
 
-An equivalent construction:
+An equivalent, shorter construction:
 
 \begin{code}
 ≤-gives-↣' : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
@@ -264,11 +264,10 @@ An equivalent construction:
 \end{code}
 
 Added 9th December 2019. A version of the pigeonhole principle, which
-uses (one direction of) the above characterization of the relation m ≤
-n as the existence of an injection Fin m → Fin n:
+uses (one direction of) the above characterization of the relation m ≤ n
+as the existence of an injection Fin m → Fin n:
 
 \begin{code}
-
 
 _has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 f has-a-repetition = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
@@ -318,6 +317,10 @@ need more steps.
 
 \end{code}
 
+This, of course, doesn't give the most efficient algorithm, but it
+does give an algorithm for computing an argument of the function whose
+value is repeated.
+
 Added 2nd December 2019. An isomorphic copy of the type Fin n:
 
 \begin{code}
@@ -353,6 +356,7 @@ Fin-prime (succ n) 𝟎       = 𝟎'
 εFin 0        i       = 𝟘-elim i
 εFin (succ n) (suc i) = ap suc (εFin n i)
 εFin (succ n) 𝟎       = refl
+
 
 Fin-prime-is-equiv : (n : ℕ) → is-equiv (Fin-prime n)
 Fin-prime-is-equiv n = qinvs-are-equivs (Fin-prime n) ((Fin-unprime n) , εFin n , ηFin n)
@@ -431,29 +435,38 @@ inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
   l : 𝟎 is-lower-bound-of A
   l 𝟎       _ = ≤-refl 0
   l (suc i) _ = 𝟘-elim i
+
   m : (j : Fin 1) → j is-lower-bound-of A → j ≼ 𝟎
   m 𝟎       _ = ≤-refl 0
   m (suc i) _ = 𝟘-elim i
+
   ε : Σ A → A 𝟎
   ε (𝟎 , a)     = a
   ε (suc i , a) = 𝟘-elim i
+
 inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
  where
   IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc) × ((Σ \(j : Fin (succ n)) → A (suc j)) → A (suc i))
   IH = inf-construction {𝓤} {n} (A ∘ suc) (δ ∘ suc)
+
   i : Fin (succ n)
   i = pr₁ IH
+
   l : (j : Fin (succ n)) → A (suc j) → i ≼ j
   l = inf-is-lb i (A ∘ suc) (pr₁ (pr₂ IH))
+
   u : (j : Fin (succ n)) → ((k : Fin (succ n)) → A (suc k) → j ≼ k) → j ≼ i
   u = inf-is-ub-of-lbs i (A ∘ suc) (pr₁ (pr₂ IH))
+
   γ : decidable (A 𝟎) → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A × (Σ A → A i')
   γ (suc a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
      φ j b = zero-minimal (Fin↦ℕ j)
+
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
      ψ j l = l 𝟎 a
+
      ε : Σ A → A 𝟎
      ε _ = a
 
@@ -462,9 +475,11 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
      φ : (j : Fin (succ (succ n))) → A j → suc i ≼ j
      φ 𝟎 a = 𝟘-elim (ν a)
      φ (suc j) a = l j a
+
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
      ψ 𝟎 l = zero-minimal (Fin↦ℕ i)
      ψ (suc j) l = u j (l ∘ suc)
+
      ε : Σ A → A (suc i)
      ε (𝟎 , b)     = 𝟘-elim (ν b)
      ε (suc j , b) = pr₂ (pr₂ IH) (j , b)
@@ -490,7 +505,8 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 
 Σₘᵢₙ-gives-Σ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
-              → Σₘᵢₙ A → Σ A
+             → Σₘᵢₙ A → Σ A
+
 Σₘᵢₙ-gives-Σ A (i , a , _) = (i , a)
 
 
@@ -501,6 +517,7 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 Σ-gives-Σₘᵢₙ {𝓤} {succ n} A δ σ = inf A δ ,
                                    inf-is-attained A δ σ ,
                                    inf-is-lb (inf A δ) A (inf-property A δ)
+
 
 ¬¬Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
                → detachable A → ¬¬ Σ A → Σₘᵢₙ A
@@ -587,8 +604,10 @@ module finiteness (pt : propositional-truncations-exist) where
   where
    a : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ≡ n
    a m n d e = Fin-lc m n (≃-sym d ● e)
+
    b : (m n : ℕ) → ∥ X ≃ Fin m ∥ → ∥ X ≃ Fin n ∥ → m ≡ n
    b m n = ∥∥-rec₂ ℕ-is-set (a m n)
+
    γ : m , d ≡ n , e
    γ = to-Σ-≡ (b m n d e , ∥∥-is-a-prop _ _)
 
@@ -667,13 +686,16 @@ following form:
     where
      f' : Fin m → Fin n
      f' = h ∘ f ∘ g
+
      r' : f' has-a-repetition
      r' = pigeonhole-principle m n f' b
+
      r : f' has-a-repetition → f has-a-repetition
      r (i , j , u , p) = g i , g j , u' , p'
       where
        u' : g i ≢ g j
        u' = contrapositive (equivs-are-lc g d) u
+
        p' : f (g i) ≡ f (g j)
        p' = equivs-are-lc h e p
 
@@ -689,11 +711,13 @@ explicit existence:
 
  Σₘᵢₙ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
              → detachable A → is-prop-valued A → ∃ A → Σₘᵢₙ A
+
  Σₘᵢₙ-from-∃ fe A δ h = ∥∥-rec (Σₘᵢₙ-is-prop fe A h) (Σ-gives-Σₘᵢₙ A δ)
 
 
  Fin-Σ-from-∃' : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
                → detachable A → is-prop-valued A → ∃ A → Σ A
+
  Fin-Σ-from-∃' fe A δ h e = Σₘᵢₙ-gives-Σ A (Σₘᵢₙ-from-∃ fe A δ h e)
 
 \end{code}
@@ -704,22 +728,28 @@ But the prop-valuedness of A is actually not needed:
 
  Fin-Σ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
               → detachable A → ∃ A → Σ A
+
  Fin-Σ-from-∃ {𝓤} fe {n} A δ e = g σ'
   where
    A' : Fin n → 𝓤 ̇
    A' x = ∥ A x ∥
+
    δ' : detachable A'
    δ' x = d (δ x)
     where
      d : decidable (A x) → decidable (A' x)
      d (inl a) = inl ∣ a ∣
      d (inr u) = inr (∥∥-rec 𝟘-is-prop u)
+
    f : Σ A → Σ A'
    f (x , a) = x , ∣ a ∣
+
    e' : ∃ A'
    e' = ∥∥-functor f e
+
    σ' : Σ A'
    σ' = Fin-Σ-from-∃' fe A' δ' (λ x → ∥∥-is-a-prop) e'
+
    g : Σ A' → Σ A
    g (x , a') = x , ¬¬-elim (δ x) (λ (u : ¬ A x) → ∥∥-rec 𝟘-is-prop u a')
 
@@ -744,6 +774,7 @@ We now consider further variations of the finite pigeonhole principle.
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
                          → detachable (repeated-value f)
+
   repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
    Fin-Compact m
     (λ j → (i ≢ j) × (f i ≡ f j))
@@ -751,26 +782,33 @@ We now consider further variations of the finite pigeonhole principle.
             (¬-preserves-decidability (Fin-is-discrete m i j))
             (finite-types-are-discrete fe (n , t) (f i) (f j)))
 
+
   finite-pigeonhole-principle' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
-                                 (j : is-finite Y)
-                               → m > cardinality Y j
+                                 (ψ : is-finite Y)
+                               → m > cardinality Y ψ
                                → f has-a-repetition
-  finite-pigeonhole-principle' {𝓥} {m} {Y} f (n , t) g = γ
+
+  finite-pigeonhole-principle' {𝓥} {m} {Y} f (n , t) b = γ
    where
     h : Y ≃ Fin n → f has-a-repetition
-    h (ψ , e) = r h'
+    h (h , e) = r r'
      where
       f' : Fin m → Fin n
-      f' = ψ ∘ f
-      h' : f' has-a-repetition
-      h' = pigeonhole-principle m n f' g
+      f' = h ∘ f
+
+      r' : f' has-a-repetition
+      r' = pigeonhole-principle m n f' b
+
       r : f' has-a-repetition → f has-a-repetition
-      r (i , j , u , p) = i , j , u , equivs-are-lc ψ e p
+      r (i , j , u , p) = i , j , u , equivs-are-lc h e p
 
     γ' : ∥ f has-a-repetition ∥
     γ' = ∥∥-functor h t
+
     A : Fin m → 𝓥 ̇
     A i = Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+
+    γ : f has-a-repetition
     γ = Fin-Σ-from-∃ fe {m} A (repetitions-detachable f (n , t)) γ'
 
 \end{code}
@@ -799,12 +837,14 @@ Further versions of the pigeonhole principle are the following.
                                 → is-finite Y
                                 → f has-a-repetition
 
-  ℕ-finite-pigeonhole-principle {𝓥} {Y} f (m , t) = r h
+  ℕ-finite-pigeonhole-principle {𝓥} {Y} f (m , t) = r r'
    where
     f' : Fin (succ m) → Y
     f' i = f (Fin↦ℕ i)
-    h : f' has-a-repetition
-    h = finite-pigeonhole-principle' f'(m , t) (<-succ m)
+
+    r' : f' has-a-repetition
+    r' = finite-pigeonhole-principle' f'(m , t) (<-succ m)
+
     r : f' has-a-repetition → f has-a-repetition
     r (i , j , u , p) = Fin↦ℕ i , Fin↦ℕ j , contrapositive (Fin↦ℕ-lc (succ m)) u , p
 
@@ -856,7 +896,7 @@ because finite types are discrete:
 \begin{code}
 
     minimal-finite-order : (x : X) → Σμ \(k : ℕ) → x ↑ (succ k) ≡ e
-    minimal-finite-order x = find-minimal-from-given A γ (finite-order x)
+    minimal-finite-order x = minimal-from-given A γ (finite-order x)
      where
       A : ℕ → 𝓤 ̇
       A n = x ↑ (succ n) ≡ e
