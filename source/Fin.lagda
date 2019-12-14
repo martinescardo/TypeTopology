@@ -740,3 +740,8 @@ because finite types are discrete:
       γ n = finite-types-are-discrete fe φ (x ↑ succ n) e
 
 \end{code}
+
+Remark: the given construction already produces the minimal order, but
+it seems more difficult to prove this than just compute the minimal
+order from any order. If we were interested in efficiency, we would
+have to consider this.
