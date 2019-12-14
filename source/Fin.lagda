@@ -516,12 +516,12 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 
 Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
-              → detachable A → Σ A → Σₘᵢₙ A
+             → detachable A → Σ A → Σₘᵢₙ A
 
 Σ-gives-Σₘᵢₙ {𝓤} {0} A δ (i , a) = 𝟘-elim i
 Σ-gives-Σₘᵢₙ {𝓤} {succ n} A δ σ = inf A δ ,
-                                   inf-is-attained A δ σ ,
-                                   inf-is-lb (inf A δ) A (inf-property A δ)
+                                  inf-is-attained A δ σ ,
+                                  inf-is-lb (inf A δ) A (inf-property A δ)
 
 
 ¬¬Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
@@ -564,7 +564,7 @@ open import UF-Base
 
 \end{code}
 
-Added 8th December 2019. One defines a type to finite, in univalent
+Added 8th December 2019. One defines a type to be finite, in univalent
 mathematics, if it is isomorphic to Fin n for some n. But one has to
 careful to express this, if we want finiteness to be property rather
 than structure, with a suitably chosen notion of existence.
