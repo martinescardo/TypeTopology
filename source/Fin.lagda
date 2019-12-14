@@ -424,17 +424,20 @@ i is-inf-of A = i is-lower-bound-of A
 
 inf-is-lb : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
           → i is-inf-of A → i is-lower-bound-of A
+
 inf-is-lb i A = pr₁
 
 
 inf-is-ub-of-lbs : {n : ℕ} (i : Fin n) (A : Fin n → 𝓤 ̇ )
                  → i is-inf-of A → i is-upper-bound-of (lower-bounds-of A)
+
 inf-is-ub-of-lbs i A = pr₂
 
 
 inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
                  → detachable A
                  → Σ \(i : Fin (succ n)) → i is-inf-of A × (Σ A → A i)
+
 inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
  where
   l : 𝟎 is-lower-bound-of A
@@ -829,7 +832,7 @@ Further versions of the pigeonhole principle are the following.
   finite-pigeonhole-principle'' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                                   (φ : is-finite Y)
                                 → m > cardinality Y φ
-                                → Σₘᵢₙ (repeated-values f)
+                                → Σₘᵢₙ \(i : Fin m) → repeated-values f i
 
   finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
    Σ-gives-Σₘᵢₙ
