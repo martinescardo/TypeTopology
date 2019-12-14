@@ -55,7 +55,7 @@ Fin-induction : (P : (n : ℕ) → Fin n → 𝓤 ̇ )
               →  (n : ℕ) (i : Fin n) → P n i
 
 Fin-induction P β σ 0        i       = 𝟘-elim i
-Fin-induction P β σ (succ n) 𝟎 = β n
+Fin-induction P β σ (succ n) 𝟎       = β n
 Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 
 \end{code}
@@ -164,6 +164,7 @@ open import UF-LeftCancellable
         suc (g x)  ≡⟨ ap suc p ⟩
         suc (g x') ≡⟨ (a x')⁻¹ ⟩
         f (suc x') ∎
+
     q : x ≡ x'
     q = inl-lc (l r)
 
@@ -177,8 +178,7 @@ open import UF-LeftCancellable
   h = swap (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   d : left-cancellable h
-  d = equivs-are-lc h (swap-is-equiv (f 𝟎) 𝟎
-                        (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated)
+  d = equivs-are-lc h (swap-is-equiv (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated)
 
   f' : X + 𝟙 → Y + 𝟙
   f' = h ∘ f
@@ -187,8 +187,7 @@ open import UF-LeftCancellable
   e' = left-cancellable-closed-under-∘ f h e d
 
   p : f' 𝟎 ≡ 𝟎
-  p = swap-equation₀ (f 𝟎) 𝟎
-       (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
+  p = swap-equation₀ (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   a : X ↣ Y
   a = +𝟙-cancel-lemma (f' , e') p
@@ -230,6 +229,7 @@ canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
  where
   IH : canonical-Fin-inclusion m n l x ≡ canonical-Fin-inclusion m n l y → x ≡ y
   IH = canonical-Fin-inclusion-lc m n l
+
   γ : suc x ≡ suc y
   γ = ap suc (IH (inl-lc p))
 canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
@@ -249,12 +249,16 @@ An equivalent, shorter construction:
  where
   IH : Fin m ↣ Fin n
   IH = ≤-gives-↣' m n l
+
   f : Fin m → Fin n
   f = pr₁ IH
+
   i : left-cancellable f
   i = pr₂ IH
+
   g : Fin (succ m) → Fin (succ n)
   g = +functor f unique-to-𝟙
+
   j : left-cancellable g
   j {suc x} {suc x'} p = ap suc (i (inl-lc p))
   j {suc x} {𝟎}      p = 𝟘-elim (+disjoint  p)
