@@ -792,4 +792,5 @@ because finite types are discrete:
 Remark: the given construction finite-order already produces the
 minimal order, but it seems slightly more difficult to prove this than
 just compute the minimal order from any order. If we were interested
-in efficiency, we would have to consider this.
+in the efficiency our our constructions (functional programs!), we
+would have to consider this.
