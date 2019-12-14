@@ -893,7 +893,7 @@ construction.
       a : Σ \(m : ℕ) → Σ \(n : ℕ) → (m ≢ n) × (x ↑ m ≡ x ↑ n)
       a = ℕ-finite-pigeonhole-principle (x ↑_) φ
 
-      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ≡ x ↑ n → Σ \(k : ℕ) → (x ↑ (succ k) ≡ e)
+      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ≡ x ↑ n → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
       b 0        0        ν p = 𝟘-elim (ν refl)
       b 0        (succ n) ν p = n , (p ⁻¹)
       b (succ m) 0        ν p = m , p
