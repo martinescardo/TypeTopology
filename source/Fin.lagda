@@ -505,6 +505,7 @@ inf-property A δ = pr₁ (pr₂ (inf-construction A δ))
 
 inf-is-attained : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ ) (δ : detachable A)
                 → Σ A → A (inf A δ)
+
 inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 
@@ -521,10 +522,10 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
              → detachable A → Σ A → Σₘᵢₙ A
 
-Σ-gives-Σₘᵢₙ {𝓤} {0} A δ (i , a) = 𝟘-elim i
-Σ-gives-Σₘᵢₙ {𝓤} {succ n} A δ σ = inf A δ ,
-                                  inf-is-attained A δ σ ,
-                                  inf-is-lb (inf A δ) A (inf-property A δ)
+Σ-gives-Σₘᵢₙ {𝓤} {0}      A δ (i , a) = 𝟘-elim i
+Σ-gives-Σₘᵢₙ {𝓤} {succ n} A δ σ       = inf A δ ,
+                                        inf-is-attained A δ σ ,
+                                        inf-is-lb (inf A δ) A (inf-property A δ)
 
 
 ¬¬Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
@@ -823,7 +824,7 @@ We now consider further variations of the finite pigeonhole principle.
 
 We can easily derive the construction finite-pigeonhole-principle from
 finite-pigeonhole-principle', but at the expense of function
-extensionality, which was not needed with our original construction.
+extensionality, which was not needed in our original construction.
 
 Further versions of the pigeonhole principle are the following.
 
@@ -869,14 +870,14 @@ construction.
 \begin{code}
 
   module _ {X : 𝓤 ̇ }
-           (_·_ : X → X → X)
-           (e : X)
-           (lc : (x : X) → left-cancellable (x ·_))
            (φ : is-finite X)
+           (_·_ : X → X → X)
+           (lc : (x : X) → left-cancellable (x ·_))
+           (e : X)
          where
 
     _↑_ : X → ℕ → X
-    x ↑ 0 = e
+    x ↑ 0        = e
     x ↑ (succ n) = x · (x ↑ n)
 
     infixl 3 _↑_
