@@ -941,8 +941,10 @@ just compute the minimal order from any order. If we were interested
 in the efficiency of our constructions (functional programs!), we
 would have to consider this.
 
-Added 15th December 2019. If the type X i is compact for every i : Fin
-n, then the product type (i : Fin n) → X i is also compact.
+Added 15th December 2019.
+
+If the type X i is compact for every i : Fin n, then the product type
+(i : Fin n) → X i is also compact.
 
 For that purpose we first consider generalized vector types.
 
@@ -952,10 +954,8 @@ vec : (n : ℕ) → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 vec 0        X = 𝟙
 vec (succ n) X = X 𝟎 × vec n (X ∘ suc)
 
-
 Vec : 𝓤 ̇ → (n : ℕ) → 𝓤 ̇
 Vec X n = vec n (λ _ → X)
-
 
 \end{code}
 
@@ -987,7 +987,7 @@ hd (x ∷ xs) = x
 
 
 tl : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → vec n (X ∘ suc)
-tl (x , xs) = xs
+tl (x ∷ xs) = xs
 
 index : (n : ℕ) {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
 index 0        xs       i       = 𝟘-elim i
