@@ -1,9 +1,22 @@
 Martin Escardo, 2014, 21 March 2018, November-December 2019.
 
-The type Fin n is a discrete set with n elements. We investigate some
-of its basic properties, including the pigeonhole principle and its
-application to show that every element of a finite group has a finite
-order.
+The type Fin n is a discrete set with n elements.
+
+ * The function Fin : ℕ → 𝓤₀ is left-cancellable, or an injection (but
+   not an embedding in the sense of univalent mathematics).
+
+ * Exhaustive search over Fin n, or its compactness, finding a minimal
+   element with a decidable property.
+
+ * m ≤ n iff there is an injection Fin m → Fin n.
+
+ * Finite types, defined by the unspecified existence of an
+   isomorphism with some Fin n.
+
+ * Various forms of the pigeonhole principle, and its application to
+   show that every element of a finite group has a finite order.
+
+And more.
 
 Other interesting uses of the types Fin n is in the file
 https://www.cs.bham.ac.uk/~mhe/agda-new/ArithmeticViaEquivalence.html
@@ -239,6 +252,7 @@ canonical-Fin-inclusion-lc (succ m) (succ n) l {suc x} {suc y} p = γ
 
 canonical-Fin-inclusion-lc (succ m) (succ n) l {𝟎} {𝟎} p = refl
 
+
 ≤-gives-↣ : (m n : ℕ) → m ≤ n → (Fin m ↣ Fin n)
 ≤-gives-↣ m n l = canonical-Fin-inclusion m n l , canonical-Fin-inclusion-lc m n l
 
@@ -341,6 +355,7 @@ Fin' n = Σ \(k : ℕ) → k < n
 𝟎' : {n : ℕ} → Fin' (succ n)
 𝟎' {n} = 0 , zero-minimal n
 
+
 suc' : {n : ℕ} → Fin' n → Fin' (succ n)
 suc' (k , l) = succ k , l
 
@@ -410,7 +425,7 @@ i ≺ j = Fin↦ℕ i < Fin↦ℕ j
 i ≼ j = Fin↦ℕ i ≤ Fin↦ℕ j
 
 
-_is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ )  → 𝓤 ̇
+_is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 i is-lower-bound-of A = ∀ j → A j → i ≼ j
 
 
@@ -925,3 +940,123 @@ minimal order, but it seems slightly more difficult to prove this than
 just compute the minimal order from any order. If we were interested
 in the efficiency of our constructions (functional programs!), we
 would have to consider this.
+
+Added 15th December 2019. We show that if the type X i is compact for
+every i : Fin n, then the product type (i : Fin n) → X i is compact.
+
+For the purpose we first consider generalized vector types.
+
+\begin{code}
+
+vec : (n : ℕ) → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
+vec 0        X = 𝟙
+vec (succ n) X = X 𝟎 × vec n (X ∘ suc)
+
+
+Vec : 𝓤 ̇ → (n : ℕ) → 𝓤 ̇
+Vec X n = vec n (λ _ → X)
+
+
+pattern []       = *
+pattern _∷_ x xs = (x , xs)
+
+
+hd : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → X 𝟎
+hd (x ∷ xs) = x
+
+
+tl : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → vec n (X ∘ suc)
+tl (x , xs) = xs
+
+index : (n : ℕ) {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
+index 0        xs       i       = 𝟘-elim i
+index (succ n) (x ∷ xs) 𝟎       = x
+index (succ n) (x ∷ xs) (suc i) = index n xs i
+
+_!!_ : {n : ℕ} {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
+_!!_ {𝓤} {n} = index n
+
+\end{code}
+
+A version of the desired compactness theorem:
+
+\begin{code}
+
+finite-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
+                       → ((i : Fin n) → Compact (X i) 𝓤)
+                       → Compact (vec n X) 𝓤
+
+finite-product-compact zero     X c = 𝟙-Compact
+finite-product-compact (succ n) X c = ×-Compact
+                                       (c 𝟎)
+                                       (finite-product-compact n (X ∘ suc) (c ∘ suc))
+
+\end{code}
+
+
+An isomorphic copy of vec n X.
+
+\begin{code}
+
+vec' : (n : ℕ) → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
+vec' n X = (i : Fin n) → X i
+
+
+Vec' : 𝓤 ̇ → (n : ℕ) → 𝓤 ̇
+Vec' X n = vec' n (λ _ → X)
+
+
+hd' : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec' (succ n) X → X 𝟎
+hd' xs = xs 𝟎
+
+
+tl' : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec' (succ n) X → vec' n (X ∘ suc)
+
+tl' xs = λ i → xs (suc i)
+
+
+[]' : {X : Fin 0 → 𝓤 ̇ } → vec' 0 X
+[]' = λ i → unique-from-𝟘 i
+
+
+_∷'_ : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → X 𝟎 → vec' n (X ∘ suc) → vec' (succ n) X
+
+(x ∷' xs) 𝟎       = x
+(x ∷' xs) (suc i) = xs i
+
+xedni : (n : ℕ) {X : Fin n → 𝓤 ̇ } → ((i : Fin n) → X i) → vec n X
+xedni 0        xs' = []
+xedni (succ n) xs' = hd' xs' ∷ xedni n (tl' xs')
+
+vecη : (n : ℕ) {X : Fin n → 𝓤 ̇ } → xedni n {X} ∘ index n {X} ∼ id
+vecη zero     []       = refl
+vecη (succ n) (x ∷ xs) = ap (x ∷_) (vecη n xs)
+
+module _ {𝓤} (fe : funext 𝓤₀ 𝓤) where
+
+ vecε : (n : ℕ) {X : Fin n → 𝓤 ̇ } → index n {X} ∘ xedni n {X} ∼ id
+ vecε 0        xs' = dfunext fe (λ i → 𝟘-elim i)
+ vecε (succ n) xs' = dfunext fe h
+  where
+   h : (i : Fin (succ n)) → index (succ n) (xs' 𝟎 ∷ xedni n (tl' xs')) i ≡ xs' i
+   h 𝟎       = refl
+   h (suc i) = happly (vecε n (tl' xs')) i
+
+ vec-≃ : (n : ℕ) {X : Fin n → 𝓤 ̇ } → vec n X ≃ vec' n X
+ vec-≃ n {X} = qinveq (index n) (xedni n {X} , vecη n , vecε n)
+
+\end{code}
+
+The desired compactness theorem:
+
+\begin{code}
+
+ finitely-indexed-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
+                                  → ((i : Fin n) → Compact (X i) 𝓤)
+                                  → Compact ((i : Fin n) → X i) 𝓤
+
+ finitely-indexed-product-compact n X c = Compact-closed-under-≃
+                                           (vec-≃ n)
+                                           (finite-product-compact n X c)
+
+\end{code}

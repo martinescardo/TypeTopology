@@ -693,6 +693,17 @@ and hence to a type in the universe 𝓤₀.
   γ (inl (x , (y , a))) = inl ((x , y) , a)
   γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
 
+\end{code}
+
+A direct proof of the following would give more general universe
+assignments:
+
+\begin{code}
+
+×-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+          → Compact X (𝓥 ⊔ 𝓦) → Compact Y 𝓦 → Compact (X × Y) 𝓦
+×-Compact c d = Σ-preserves-Compactness c (λ x → d)
+
 
 Compact-closed-under-retracts : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                               → retract Y of X
