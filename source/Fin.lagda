@@ -941,9 +941,8 @@ just compute the minimal order from any order. If we were interested
 in the efficiency of our constructions (functional programs!), we
 would have to consider this.
 
-Added 15th December 2019. We show that if the type X i is compact for
-every i : Fin n, then the product type (i : Fin n) → X i is also
-compact.
+Added 15th December 2019. If the type X i is compact for every i : Fin
+n, then the product type (i : Fin n) → X i is also compact.
 
 For that purpose we first consider generalized vector types.
 
@@ -960,7 +959,7 @@ Vec X n = vec n (λ _ → X)
 
 \end{code}
 
-A version of the desired compactness theorem:
+A version of the desired compactness construction:
 
 \begin{code}
 
