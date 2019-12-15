@@ -942,9 +942,10 @@ in the efficiency of our constructions (functional programs!), we
 would have to consider this.
 
 Added 15th December 2019. We show that if the type X i is compact for
-every i : Fin n, then the product type (i : Fin n) → X i is compact.
+every i : Fin n, then the product type (i : Fin n) → X i is also
+compact.
 
-For the purpose we first consider generalized vector types.
+For that purpose we first consider generalized vector types.
 
 \begin{code}
 
@@ -956,25 +957,6 @@ vec (succ n) X = X 𝟎 × vec n (X ∘ suc)
 Vec : 𝓤 ̇ → (n : ℕ) → 𝓤 ̇
 Vec X n = vec n (λ _ → X)
 
-
-pattern []       = *
-pattern _∷_ x xs = (x , xs)
-
-
-hd : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → X 𝟎
-hd (x ∷ xs) = x
-
-
-tl : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → vec n (X ∘ suc)
-tl (x , xs) = xs
-
-index : (n : ℕ) {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
-index 0        xs       i       = 𝟘-elim i
-index (succ n) (x ∷ xs) 𝟎       = x
-index (succ n) (x ∷ xs) (suc i) = index n xs i
-
-_!!_ : {n : ℕ} {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
-_!!_ {𝓤} {n} = index n
 
 \end{code}
 
@@ -993,6 +975,31 @@ finite-product-compact (succ n) X c = ×-Compact
 
 \end{code}
 
+Standard operations on (generalized) vectors:
+
+\begin{code}
+
+pattern []       = *
+pattern _∷_ x xs = (x , xs)
+
+
+hd : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → X 𝟎
+hd (x ∷ xs) = x
+
+
+tl : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → vec n (X ∘ suc)
+tl (x , xs) = xs
+
+index : (n : ℕ) {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
+index 0        xs       i       = 𝟘-elim i
+index (succ n) (x ∷ xs) 𝟎       = x
+index (succ n) (x ∷ xs) (suc i) = index n xs i
+
+
+_!!_ : {n : ℕ} {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
+_!!_ {𝓤} {n} = index n
+
+\end{code}
 
 An isomorphic copy of vec n X.
 
@@ -1020,9 +1027,9 @@ tl' xs = λ i → xs (suc i)
 
 
 _∷'_ : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → X 𝟎 → vec' n (X ∘ suc) → vec' (succ n) X
-
 (x ∷' xs) 𝟎       = x
 (x ∷' xs) (suc i) = xs i
+
 
 xedni : (n : ℕ) {X : Fin n → 𝓤 ̇ } → ((i : Fin n) → X i) → vec n X
 xedni 0        xs' = []
@@ -1031,6 +1038,7 @@ xedni (succ n) xs' = hd' xs' ∷ xedni n (tl' xs')
 vecη : (n : ℕ) {X : Fin n → 𝓤 ̇ } → xedni n {X} ∘ index n {X} ∼ id
 vecη zero     []       = refl
 vecη (succ n) (x ∷ xs) = ap (x ∷_) (vecη n xs)
+
 
 module _ {𝓤} (fe : funext 𝓤₀ 𝓤) where
 
