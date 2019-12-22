@@ -581,7 +581,8 @@ are equal without using function extensionality:
 ext-assoc : {X : 𝓤 ̇ } {z t : X} (r : z ≡ t)
           → (λ (x y : X) (p : x ≡ y) (q : y ≡ z) → (p ∙ q) ∙ r)
           ≡ (λ (x y : X) (p : x ≡ y) (q : y ≡ z) → p ∙ (q ∙ r))
-ext-assoc {𝓤} {X} {z} {t} = yoneda-elem-lc (λ z r x y p q → p ∙ q ∙ r)
+ext-assoc {𝓤} {X} {z} {t} = yoneda-elem-lc {𝓤} {𝓤} {X} {z} {λ - → (x y : X) (p : x ≡ y) (q : y ≡ z) → x ≡ - }
+                                           (λ z r x y p q → p ∙ q ∙ r)
                                            (λ z r x y p q → p ∙ (q ∙ r))
                                            refl
                                            t

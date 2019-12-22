@@ -1017,7 +1017,6 @@ hd' xs = xs 𝟎
 
 
 tl' : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec' (succ n) X → vec' n (X ∘ suc)
-
 tl' xs = λ i → xs (suc i)
 
 
@@ -1034,6 +1033,7 @@ xedni : (n : ℕ) {X : Fin n → 𝓤 ̇ } → ((i : Fin n) → X i) → vec n X
 xedni 0        xs' = []
 xedni (succ n) xs' = hd' xs' ∷ xedni n (tl' xs')
 
+
 vecη : (n : ℕ) {X : Fin n → 𝓤 ̇ } → xedni n {X} ∘ index n {X} ∼ id
 vecη zero     []       = refl
 vecη (succ n) (x ∷ xs) = ap (x ∷_) (vecη n xs)
@@ -1048,6 +1048,7 @@ module _ {𝓤} (fe : funext 𝓤₀ 𝓤) where
    h : (i : Fin (succ n)) → index (succ n) (xs' 𝟎 ∷ xedni n (tl' xs')) i ≡ xs' i
    h 𝟎       = refl
    h (suc i) = happly (vecε n (tl' xs')) i
+
 
  vec-≃ : (n : ℕ) {X : Fin n → 𝓤 ̇ } → vec n X ≃ vec' n X
  vec-≃ n {X} = qinveq (index n) (xedni n {X} , vecη n , vecε n)
