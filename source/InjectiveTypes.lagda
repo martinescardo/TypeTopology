@@ -113,7 +113,7 @@ open import UF-Univalence
 open import UF-IdEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-Subsingletons
-open import UF-Resizing
+open import UF-Size
 open import UF-PropTrunc
 open import UF-UniverseEmbedding
 open import UF-ExcludedMiddle
@@ -1209,7 +1209,7 @@ universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
 
 \end{code}
 
-And unfolding of the above construction is in the module UF-Resizing.
+And unfolding of the above construction is in the module UF-Size.
 
 Added 25th January 2019. From this we get the following
 characterization of injective types (as a logical equivalence, not a

@@ -11,7 +11,7 @@ open import SpartanMLTT
 module LiftingSize (𝓣 : Universe) where
 
 open import UF-Subsingletons hiding (⊥)
-open import UF-Resizing
+open import UF-Size
 open import UF-Equiv
 open import UF-Univalence
 open import UF-FunExt

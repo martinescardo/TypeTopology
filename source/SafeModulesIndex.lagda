@@ -151,9 +151,9 @@ import UF-Miscelanea
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-Quotient
-import UF-Resizing
 import UF-Retracts-FunExt
 import UF-Retracts
+import UF-Size
 import UF-StructureIdentityPrinciple
 import UF-SubsetIdentity
 import UF-Subsingletons-FunExt

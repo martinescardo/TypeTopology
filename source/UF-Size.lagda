@@ -26,7 +26,7 @@ which seems to be a new result.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module UF-Resizing where
+module UF-Size where
 
 open import SpartanMLTT
 

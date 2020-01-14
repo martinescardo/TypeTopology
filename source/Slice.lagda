@@ -13,7 +13,7 @@ module Slice (𝓣 : Universe) where
 open import UF-Subsingletons hiding (⊥)
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
-𝓕 X = Σ \(I : 𝓣 ̇ ) → (I → X)
+𝓕 X = Σ \(I : 𝓣 ̇ ) → I → X
 
 source : {X : 𝓤 ̇ } → 𝓕 X → 𝓣 ̇
 source (I , φ) = I
@@ -23,10 +23,6 @@ family (I , φ) = φ
 
 η : {X : 𝓤 ̇ } → X → 𝓕 X
 η x = 𝟙 , (λ _ → x)
-
-\end{code}
-
-\begin{code}
 
 Sigma : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ̇
 Sigma (I , φ) = I
@@ -43,7 +39,7 @@ open import UF-Univalence
                    → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
 𝓕-equiv-particular = type-classifier.classification-equivalence
 
-open import UF-Resizing
+open import UF-Size
 open import UF-Base
 open import UF-Equiv-FunExt
 open import UF-UA-FunExt

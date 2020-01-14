@@ -29,8 +29,8 @@ import UF-PropTrunc
 import UF-Quotient
 import UF-Retracts
 import UF-Retracts-FunExt
+import UF-Size
 import UF-StructureIdentityPrinciple
-import UF-Resizing
 import UF-SubsetIdentity
 import UF-Subsingletons
 import UF-Subsingletons-FunExt

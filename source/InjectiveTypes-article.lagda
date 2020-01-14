@@ -998,7 +998,7 @@ resizing:
 
 \begin{code}
 
-open import UF-Resizing
+open import UF-Size
 
 aflabbiness-resizing : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe) → propositional-resizing 𝓤 𝓥
                      → aflabby D 𝓥 → aflabby D 𝓤
@@ -1505,7 +1505,7 @@ impredicativity of the universe 𝓤, which says that the type of
 propositions in 𝓤, which lives in the next universe 𝓤 ⁺, has an
 equivalent copy in 𝓤 (for the relationship between propositional
 resizing and propositional impredicativity, see the module
-UF-Resizing). We refer to this kind of impredicativity as Ω-resizing.
+UF-Size). We refer to this kind of impredicativity as Ω-resizing.
 
 \begin{code}
 
