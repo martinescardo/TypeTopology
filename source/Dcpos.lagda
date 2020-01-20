@@ -1,6 +1,6 @@
 Tom de Jong, 4 June 2019
 
-Generic module for directed complete posets (with a leat element)
+Generic module for directed complete posets (with a least element)
 
 \begin{code}
 
