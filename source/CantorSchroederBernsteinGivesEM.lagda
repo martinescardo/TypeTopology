@@ -41,16 +41,20 @@ csb-lemma {𝓤} {𝓥} {X} {A} c (r , s , η) = γ e
  where
   P : X → 𝓤 ⊔ 𝓥 ̇
   P x = Σ \(a : A) → r x ≡ inl a
+
   d : detachable P
   d x = equality-cases (r x)
          (λ (a : A) (p : r x ≡ inl a) → inl (a , p))
          (λ (y : X) (q : r x ≡ inr y) → inr (λ {(a , p) → +disjoint (inl a ≡⟨ p ⁻¹ ⟩
                                                                      r x   ≡⟨ q    ⟩
                                                                      inr y ∎)}))
+
   e : decidable (Σ (\(x : X) → P x))
   e = c P d
+
   f : A → Σ \(x : X) → P x
   f a = s (inl a) , a , η (inl a)
+
   γ : decidable (Σ (\(x : X) → P x)) → decidable A
   γ (inl (x , a , p)) = inl a
   γ (inr φ)           = inr (contrapositive f φ)
@@ -118,6 +122,7 @@ CSB-gives-excluded-middle fe csb 𝓤 P i = γ
  where
   a : CantorSchroederBernstein ℕ∞ (P + ℕ∞)
   a = csb 𝓤₀ 𝓤 ℕ∞ (P + ℕ∞) (ℕ∞-is-set fe) (+-is-set P ℕ∞ (props-are-sets i) (ℕ∞-is-set fe))
+
   γ : P + ¬ P
   γ = CantorSchroederBernstein-gives-EM fe P i a
 
