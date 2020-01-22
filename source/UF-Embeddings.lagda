@@ -360,10 +360,13 @@ inr-is-embedding : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
 inr-is-embedding {𝓤} {𝓥} X Y (inl b) (x , p) (x' , p') = 𝟘-elim (+disjoint' p)
 inr-is-embedding {𝓤} {𝓥} X Y (inr a) (.a , refl) (.a , refl) = refl
 
+maps-of-props-into-sets-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+                                       → is-prop P → is-set X → is-embedding f
+maps-of-props-into-sets-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' , j _ s')
+
 maps-of-props-are-embeddings : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } (f : P → Q)
                              → is-prop P → is-prop Q → is-embedding f
-maps-of-props-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' ,
-                                                                props-are-sets j _ s')
+maps-of-props-are-embeddings f i j = maps-of-props-into-sets-are-embeddings f i (props-are-sets j)
 
 ×-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
                 (f : X → A ) (g : Y → B)
