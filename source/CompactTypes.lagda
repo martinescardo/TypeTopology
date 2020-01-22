@@ -599,8 +599,8 @@ Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
   γ (inr u) = 𝟘-elim (φ u)
 
 
-compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → (𝓥 : Universe) → Compact X {𝓥}
-compact-gives-Compact X c 𝓥 A d = iii
+compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → Compact X {𝓥}
+compact-gives-Compact X c A d = iii
  where
   i : Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
   i = characteristic-function d
@@ -631,7 +631,7 @@ Compact-gives-compact X C p = iv
   iv = iii (i ii)
 
 NB-Compact : (X : 𝓤 ̇ ) → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
-NB-Compact {𝓤} {𝓥} X C = compact-gives-Compact X (Compact-gives-compact X C) 𝓥
+NB-Compact X C = compact-gives-Compact X (Compact-gives-compact X C)
 
 \end{code}
 
