@@ -133,16 +133,16 @@ searchable.
 
 open import CompactTypes
 
-Fin-Compact : (n : ℕ) → Compact (Fin n) 𝓤
+Fin-Compact : (n : ℕ) → Compact (Fin n) {𝓤}
 Fin-Compact 0        = 𝟘-Compact
 Fin-Compact (succ n) = +-Compact (Fin-Compact n) 𝟙-Compact
 
 
-Fin-Π-Compact : (n : ℕ) → Π-Compact (Fin n) 𝓤
+Fin-Π-Compact : (n : ℕ) → Π-Compact (Fin n) {𝓤}
 Fin-Π-Compact n = Σ-Compact-gives-Π-Compact (Fin n) (Fin-Compact n)
 
 
-Fin-Compact∙ : (n : ℕ) → Compact∙ (Fin (succ n)) 𝓤
+Fin-Compact∙ : (n : ℕ) → Compact∙ (Fin (succ n)) {𝓤}
 Fin-Compact∙ n = Compact-pointed-gives-Compact∙ (Fin-Compact (succ n)) 𝟎
 
 \end{code}
@@ -672,12 +672,12 @@ Finite types are compact, or exhaustively searchable.
 
  open CompactTypesPT pt
 
- finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X 𝓥 ∥
+ finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X {𝓥} ∥
  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
 
- finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X 𝓥
+ finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
  finite-∃-compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
 
 \end{code}
@@ -964,8 +964,8 @@ A version of the desired compactness construction:
 \begin{code}
 
 finite-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
-                       → ((i : Fin n) → Compact (X i) 𝓤)
-                       → Compact (vec n X) 𝓤
+                       → ((i : Fin n) → Compact (X i) {𝓤})
+                       → Compact (vec n X) {𝓤}
 
 finite-product-compact zero     X c = 𝟙-Compact
 finite-product-compact (succ n) X c = ×-Compact
@@ -1060,8 +1060,8 @@ The desired compactness theorem:
 \begin{code}
 
  finitely-indexed-product-compact : (n : ℕ) (X : Fin n → 𝓤 ̇ )
-                                  → ((i : Fin n) → Compact (X i) 𝓤)
-                                  → Compact ((i : Fin n) → X i) 𝓤
+                                  → ((i : Fin n) → Compact (X i))
+                                  → Compact ((i : Fin n) → X i)
 
  finitely-indexed-product-compact n X c = Compact-closed-under-≃
                                            (vec-≃ n)

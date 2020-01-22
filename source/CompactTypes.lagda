@@ -580,14 +580,15 @@ in the original development:
 
 \begin{code}
 
-Σ-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Σ-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
+Σ-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
+Σ-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Σ A)
 
-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
 Compact = Σ-Compact
 
 Compactness-gives-Markov : {X : 𝓤 ̇ }
-                         → Compact X 𝓥
+                         → Compact X
+
                          → (A : X → 𝓥 ̇)
                          → detachable A
                          → ¬¬ Σ A → Σ A
@@ -598,7 +599,7 @@ Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
   γ (inr u) = 𝟘-elim (φ u)
 
 
-compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → (𝓥 : Universe) → Compact X 𝓥
+compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → (𝓥 : Universe) → Compact X {𝓥}
 compact-gives-Compact X c 𝓥 A d = iii
  where
   i : Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
@@ -614,7 +615,7 @@ compact-gives-Compact X c 𝓥 A d = iii
   iii : decidable (Σ A)
   iii = ii (c p)
 
-Compact-gives-compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-compact X
+Compact-gives-compact : (X : 𝓤 ̇ ) → Σ-Compact X → Σ-compact X
 Compact-gives-compact X C p = iv
  where
   A : X → 𝓤₀ ̇
@@ -629,7 +630,7 @@ Compact-gives-compact X C p = iv
   iv : (Σ \(x : X) → p x ≡ ₀) + (Π \(x : X) → p x ≡ ₁)
   iv = iii (i ii)
 
-NB-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓤₀ → Σ-Compact X 𝓥
+NB-Compact : (X : 𝓤 ̇ ) → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
 NB-Compact {𝓤} {𝓥} X C = compact-gives-Compact X (Compact-gives-compact X C) 𝓥
 
 \end{code}
@@ -640,10 +641,10 @@ and hence to a type in the universe 𝓤₀.
 
 \begin{code}
 
-Π-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Π-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π A)
+Π-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
+Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π A)
 
-Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X 𝓥 → Π-Compact X 𝓥
+Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X {𝓥} → Π-Compact X {𝓥}
 Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬(A x)) e)
  where
   e : detachable (λ x → ¬(A x))
@@ -652,10 +653,10 @@ and hence to a type in the universe 𝓤₀.
   γ (inl (x , v)) = inr (λ φ → v (φ x))
   γ (inr u)       = inl (λ x → ¬¬-elim (d x) (λ n → u (x , n)))
 
-𝟘-Compact : Compact (𝟘 {𝓤}) 𝓥
+𝟘-Compact : Compact (𝟘 {𝓤}) {𝓥}
 𝟘-Compact A δ = inr (λ (σ : Σ A) → 𝟘-elim (pr₁ σ))
 
-𝟙-Compact : Compact (𝟙 {𝓤}) 𝓥
+𝟙-Compact : Compact (𝟙 {𝓤}) {𝓥}
 𝟙-Compact A δ = γ (δ *)
  where
   γ : A * + ¬ A * → decidable (Σ A)
@@ -663,7 +664,7 @@ and hence to a type in the universe 𝓤₀.
   γ (inr u) = inr (λ {(* , a) → u a})
 
 +-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → Compact X 𝓦 → Compact Y 𝓦 → Compact (X + Y) 𝓦
+          → Compact X {𝓦} → Compact Y {𝓦} → Compact (X + Y) {𝓦}
 +-Compact c d A δ = γ (c (A ∘ inl) (δ ∘ inl)) (d (A ∘ inr) (δ ∘ inr))
  where
   γ : decidable (Σ (A ∘ inl)) → decidable (Σ (A ∘ inr)) → decidable (Σ A)
@@ -676,9 +677,9 @@ and hence to a type in the universe 𝓤₀.
     w (inr y , a) = v (y , a)
 
 Σ-preserves-Compactness : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                        → Compact X (𝓥 ⊔ 𝓦)
-                        → ((x : X) → Compact (Y x) 𝓦)
-                        → Compact (Σ Y) 𝓦
+                        → Compact X {𝓥 ⊔ 𝓦}
+                        → ((x : X) → Compact (Y x) {𝓦})
+                        → Compact (Σ Y) {𝓦}
 Σ-preserves-Compactness {𝓤} {𝓥} {𝓦} {X} {Y} c d A δ = γ e
  where
   B : X → 𝓥 ⊔ 𝓦 ̇
@@ -701,14 +702,14 @@ assignments:
 \begin{code}
 
 ×-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → Compact X (𝓥 ⊔ 𝓦) → Compact Y 𝓦 → Compact (X × Y) 𝓦
+          → Compact X {𝓥 ⊔ 𝓦} → Compact Y {𝓦} → Compact (X × Y) {𝓦}
 ×-Compact c d = Σ-preserves-Compactness c (λ x → d)
 
 
 Compact-closed-under-retracts : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                               → retract Y of X
-                              → Compact X 𝓦
-                              → Compact Y 𝓦
+                              → Compact X {𝓦}
+                              → Compact Y {𝓦}
 Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ = γ (c B ε)
  where
   B : X → 𝓦 ̇
@@ -722,8 +723,8 @@ Compact-closed-under-retracts {𝓤} {𝓥} {𝓦} {X} {Y} (r , s , η) c A δ =
 
 Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X ≃ Y
-                       → Compact X 𝓦
-                       → Compact Y 𝓦
+                       → Compact X {𝓦}
+                       → Compact Y {𝓦}
 Compact-closed-under-≃ e = Compact-closed-under-retracts (equiv-retract-r e)
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
@@ -733,8 +734,8 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
  surjection-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → funext 𝓥 𝓤₀
                     → is-surjection f
-                    → Compact X 𝓥
-                    → Compact Y 𝓥
+                    → Compact X {𝓥}
+                    → Compact Y {𝓥}
  surjection-Compact {𝓤} {𝓥} {X} {Y} f fe i c A δ = γ (c B ε)
   where
    B : X → 𝓥 ̇
@@ -754,18 +755,18 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
  image-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                → funext (𝓤 ⊔ 𝓥) 𝓤₀
-               → Compact X (𝓤 ⊔ 𝓥)
-               → Compact (image f) (𝓤 ⊔ 𝓥)
+               → Compact X {𝓤 ⊔ 𝓥}
+               → Compact (image f) {𝓤 ⊔ 𝓥}
  image-Compact f fe c = surjection-Compact (corestriction f) fe
                            (corestriction-surjection f) c
 
 
  open PropositionalTruncation pt
 
- ∃-Compact : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
- ∃-Compact {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → decidable (∃ A)
+ ∃-Compact : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
+ ∃-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (∃ A)
 
- Compactness-gives-∃-Compactness : {X : 𝓤 ̇ } → Compact X 𝓥 → ∃-Compact X 𝓥
+ Compactness-gives-∃-Compactness : {X : 𝓤 ̇ } → Compact X {𝓥} → ∃-Compact X {𝓥}
  Compactness-gives-∃-Compactness {𝓤} {X} c A δ = γ (c A δ)
   where
    γ : decidable (Σ A) → decidable (∃ A)
@@ -773,7 +774,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
    γ (inr u) = inr (empty-is-uninhabited u)
 
 
- ∃-Compactness-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∃-Compact X 𝓥)
+ ∃-Compactness-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∃-Compact X {𝓥})
  ∃-Compactness-is-a-prop {𝓤} {𝓥} fe {X} = Π-is-prop (fe (𝓤 ⊔ (𝓥 ⁺)) (𝓤 ⊔ 𝓥))
                                     (λ A → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
                                     (λ δ → decidability-of-prop-is-prop
@@ -781,13 +782,13 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
 
  ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
-                            → ∃-Compact X 𝓥
+                            → ∃-Compact X {𝓥}
                             → (A : X → 𝓥 ̇ )
                             → detachable A
                             → ¬¬ ∃ A → ∃ A
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
- ∥Compact∥-gives-∃-Compact : FunExt → {X : 𝓤 ̇ } → ∥ Compact X 𝓥 ∥ → ∃-Compact X 𝓥
+ ∥Compact∥-gives-∃-Compact : FunExt → {X : 𝓤 ̇ } → ∥ Compact X {𝓥} ∥ → ∃-Compact X {𝓥}
  ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-a-prop fe)
                                      Compactness-gives-∃-Compactness
 
@@ -797,10 +798,10 @@ Added 10th December 2019.
 
 \begin{code}
 
-Compact∙ : 𝓤 ̇ → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-Compact∙ {𝓤} X 𝓥 = (A : X → 𝓥 ̇ ) → detachable A → Σ \(x₀ : X) → A x₀ → (x : X) → A x
+Compact∙ : 𝓤 ̇ → {𝓥 : Universe} → 𝓤 ⊔ (𝓥 ⁺) ̇
+Compact∙ {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → Σ \(x₀ : X) → A x₀ → (x : X) → A x
 
-Compact-pointed-gives-Compact∙ : {X : 𝓤 ̇ } → Compact X 𝓥 → X → Compact∙ X 𝓥
+Compact-pointed-gives-Compact∙ : {X : 𝓤 ̇ } → Compact X {𝓥} → X → Compact∙ X {𝓥}
 Compact-pointed-gives-Compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
  where
   A' : X → 𝓥 ̇
@@ -812,7 +813,7 @@ Compact-pointed-gives-Compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
   γ (inr v)       = x₀ , (λ (a : A x₀) (x : X) → ¬¬-elim (δ x) λ (φ : ¬ A x) → v (x , φ))
 
 
-Compact∙-gives-Compact : {X : 𝓤 ̇ } → Compact∙ X 𝓥 → Compact X 𝓥
+Compact∙-gives-Compact : {X : 𝓤 ̇ } → Compact∙ X {𝓥} → Compact X {𝓥}
 Compact∙-gives-Compact {𝓤} {𝓥} {X} ε A δ = γ (δ x₀)
  where
   l : Σ \(x₀ : X) → ¬ A x₀ → (x : X) → ¬ A x
@@ -825,7 +826,7 @@ Compact∙-gives-Compact {𝓤} {𝓥} {X} ε A δ = γ (δ x₀)
   γ (inl a) = inl (x₀ , a)
   γ (inr u) = inr (i u)
 
-Compact∙-gives-pointed : {X : 𝓤 ̇ } → Compact∙ X 𝓥 → X
+Compact∙-gives-pointed : {X : 𝓤 ̇ } → Compact∙ X {𝓥} → X
 Compact∙-gives-pointed ε = pr₁ (ε (λ x → 𝟘) (λ x → 𝟘-decidable))
 
 \end{code}
