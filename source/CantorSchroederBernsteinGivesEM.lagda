@@ -117,6 +117,13 @@ Cantor-Schroeder-Bernstein for univalent foundations:
 CSB : 𝓤ω
 CSB = (𝓤 𝓥 : Universe) (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-set X → is-set Y → CantorSchroederBernstein X Y
 
+\end{code}
+
+If we assume Cantor-Schroeder-Bernstein for all universes, then we get
+excluded middle for all universes:
+
+\begin{code}
+
 CSB-gives-excluded-middle : funext 𝓤₀ 𝓤₀ → CSB → (𝓤 : Universe) → EM 𝓤
 CSB-gives-excluded-middle fe csb 𝓤 P i = γ
  where
