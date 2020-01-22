@@ -4,6 +4,9 @@ This is a univalent-foundations version of Pierre Pradic and Chad
 E. Brown's argument that Cantor-Schroeder-Bernstein implies excluded
 middle in constructive set theory (https://arxiv.org/abs/1904.09193).
 
+Their proof, reproduced below, uses the compactness (also know as the
+searchability or omniscience) of ℕ∞.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -14,14 +17,11 @@ open import UF-FunExt
 module CantorSchroederBernsteinGivesEM where
 
 open import UF-ExcludedMiddle
-open import UF-Base
 open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Embeddings
-open import UF-PropTrunc
-open import GenericConvergentSequence
 open import UF-Retracts
+open import GenericConvergentSequence
 open import DecidableAndDetachable
 open import Plus-Properties
 open import CompactTypes
