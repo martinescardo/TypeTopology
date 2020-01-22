@@ -136,7 +136,7 @@ CSB-gives-excluded-middle fe csb 𝓤 P i = γ
 \end{code}
 
 Remark. If instead of requiring that we have a designated equivalence,
-we required that there is an an unspecified equivalence in the
+we required that there is an unspecified equivalence in the
 formulation of Cantor-Schroeder-Bernstein, we would still get excluded
 middle, because P + ¬P is a proposition.
 
