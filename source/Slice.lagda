@@ -30,6 +30,62 @@ Sigma (I , φ) = I
 Pi : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ⊔ 𝓤 ̇
 Pi {𝓤} {X} (I , φ) = Σ \(s : X → I) → φ ∘ s ≡ id
 
+pullback : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+         → (A → C) → (B → C) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+pullback f g = Σ \(x : domain f) → Σ \(y : domain g) → f x ≡ g y
+
+ppr₁ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+       {f : A → C} {g : B → C}
+     → pullback f g → A
+ppr₁ (x , y , p) = x
+
+ppr₂ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+       {f : A → C} {g : B → C}
+     → pullback f g → B
+ppr₂ (x , y , p) = y
+
+ppr₃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+       {f : A → C} {g : B → C}
+     → (z : pullback f g) → f (ppr₁ z) ≡ g (ppr₂ z)
+ppr₃ (x , y , p) = p
+
+
+open import UF-Base
+
+{- TODO.
+pullback-mediating : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+                     {f : A → C} {g : B → C}
+                     {T : 𝓤' ̇ }
+                     (φ : T → A) (γ : T → B)
+                   → f ∘ φ  ∼ g ∘ γ
+                   → ∃! \(h : T → pullback f g) → (ppr₁ ∘ h ∼ φ) × (ppr₂ ∘ h ∼ γ)
+pullback-mediating {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} {f} {g} {T} φ γ r = (h , p , q) , o
+ where
+  h : T → pullback f g
+  h t = φ t , γ t , r t
+  p : ppr₁ ∘ h ∼ φ
+  p t = refl
+  q : ppr₂ ∘ h ∼ γ
+  q t = refl
+  o : (σ : Σ \(h' : T → pullback f g) → (ppr₁ ∘ h' ∼ φ) × (ppr₂ ∘ h' ∼ γ)) → h , p , q ≡ σ
+  o (h' , p' , q') = to-Σ-≡ ({!!} , {!!})
+-}
+
+
+pbf : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → (𝓕 Y → 𝓕 X)
+pbf f (Y , γ) = pullback f γ , ppr₁
+
+∑ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
+∑ f (X , φ) = X , f ∘ φ
+
+{-
+
+∏ : {X : {!!} ̇ } {Y : {!!} ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
+∏ f (X , φ) = {!!}
+
+-}
+
+
 open import UF-Classifiers
 open import UF-Equiv
 open import UF-FunExt
