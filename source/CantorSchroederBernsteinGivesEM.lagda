@@ -139,3 +139,7 @@ Remark. If instead of requiring that we have a designated equivalence,
 we required that there is an an unspecified equivalence in the
 formulation of Cantor-Schroeder-Bernstein, we would still get excluded
 middle, because P + ¬P is a proposition.
+
+Also recall that for types that are sets, embeddings are the same
+thing as left-cancellable maps, and equivalences are the same thing as
+invertible maps.
