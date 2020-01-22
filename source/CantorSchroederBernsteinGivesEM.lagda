@@ -55,7 +55,7 @@ csb-lemma {𝓤} {𝓥} {X} {A} c (r , s , η) = γ e
   f : A → Σ \(x : X) → P x
   f a = s (inl a) , a , η (inl a)
 
-  γ : decidable (Σ (\(x : X) → P x)) → decidable A
+  γ : decidable (Σ \(x : X) → P x) → decidable A
   γ (inl (x , a , p)) = inl a
   γ (inr φ)           = inr (contrapositive f φ)
 
