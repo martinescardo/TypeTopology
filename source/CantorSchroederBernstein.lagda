@@ -169,8 +169,9 @@ The Cantor-Schröder-Bernstein Theorem holds for all homotopy types, or
 that embeddings have subsingleton fibers, so that e.g. the function
 is-g-point defined in the proof is property rather than data and hence
 we can apply univalent excluded middle to it. It is also worth
-remembering that a map of types that are sets is an embedding if and
-only if it is left-cancellable.
+remembering, for the sake of comparing the classical results for sets
+with its generalization to ∞-groupoids, that a map of types that are
+sets is an embedding if and only if it is left-cancellable.
 
 
 For foundational reasons, we make clear which instances of function
