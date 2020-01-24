@@ -12,7 +12,7 @@ univalence or propositional truncation:
     the searchability or omniscience) of ℕ∞.
 
 (2) A proof that excluded middle implies Cantor-Schröder-Bernstein for
-    all homotopy types, or ∞-groupoids.
+    all homotopy types, or ∞-groupoids. (Added 24th January.)
 
     For any pair of types, if each is embedded into the other, then
     they are equivalent. For this it is crucial that a map is an
