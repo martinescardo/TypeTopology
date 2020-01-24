@@ -20,7 +20,7 @@ univalence or propositional truncation:
     they are equivalent.
 
     For this it is crucial that a map is an embedding if and only if
-    its fibers all are propositions (rather than being merely
+    its fibers all are propositions (rather than the map being merely
     left-cancellable).
 
     As far as we know, (2) is a new result.
