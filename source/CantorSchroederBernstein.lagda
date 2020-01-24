@@ -3,6 +3,7 @@ Martin Escardo, 22nd January 2020
 This file has two parts, which assume function extensionality but not
 univalence or propositional truncation:
 
+
 (1) A univalent-foundations version of Pierre Pradic and Chad
     E. Brown's argument that Cantor-Schröder-Bernstein implies
     excluded middle in constructive set theory
@@ -10,6 +11,7 @@ univalence or propositional truncation:
 
     Their proof, reproduced here, uses the compactness (also known as
     the searchability or omniscience) of ℕ∞.
+
 
 (2) A proof that excluded middle implies Cantor-Schröder-Bernstein for
     all homotopy types, or ∞-groupoids. (Added 24th January.)
