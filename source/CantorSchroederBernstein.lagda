@@ -83,7 +83,7 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
                                                                     r x   ≡⟨ v    ⟩
                                                                     inr y ∎)))
 
-  e : decidable (Σ (\(x : X) → P x))
+  e : decidable (Σ \(x : X) → P x)
   e = c P d
 
   f : A → Σ \(x : X) → P x
