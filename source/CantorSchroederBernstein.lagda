@@ -159,7 +159,7 @@ CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i csb
 Remark. If instead of requiring that we have a designated equivalence,
 we required that there is an unspecified equivalence in the
 formulation of Cantor-Schröder-Bernstein, we would still get excluded
-middle, because P + ¬P is a proposition.
+middle, because P + ¬ P is a proposition.
 
 Part 2
 ------
@@ -217,15 +217,15 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ x₀ (n , p)  = γ x₀ (succ n , ap (g ∘ f) p)
 
-  f-g⁻¹-disjoint-images : (x x' : X) → ¬ (is-g-point x) → (γ : is-g-point x') → f x ≢ g⁻¹ x' γ
+  f-g⁻¹-disjoint-images : (x x' : X) → ¬ is-g-point x → (γ : is-g-point x') → f x ≢ g⁻¹ x' γ
   f-g⁻¹-disjoint-images x x' ν γ p = w γ
    where
-    ν' : ¬ (is-g-point (g (f x)))
+    ν' : ¬ is-g-point (g (f x))
     ν' = contrapositive (α x) ν
     q = g (f x)      ≡⟨ ap g p            ⟩
         g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
         x'           ∎
-    w : ¬ (is-g-point x')
+    w : ¬ is-g-point x'
     w = transport (λ - → ¬ is-g-point -) q ν'
 
   H-lc : (x x' : X) (d : decidable (is-g-point x)) (e : decidable (is-g-point x'))
@@ -248,8 +248,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ σ = Cases (em (fiber g x₀) (g-is-emb x₀))
-                                     (λ (τ :     fiber g x₀)  → τ)
-                                     (λ (ν' : ¬ (fiber g x₀)) → 𝟘-elim (ν (x₀ , σ , ν')))
+                                     (λ (τ :    fiber g x₀) → τ)
+                                     (λ (ν' : ¬ fiber g x₀) → 𝟘-elim (ν (x₀ , σ , ν')))
 
   β : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
   β y ν = v
@@ -265,7 +265,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
    iii = ¬¬-functor ii i
 
    iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
-   iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc λ {σ} → negations-are-props fe₀) (f-is-emb y)
+   iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
 
    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
    v = EM-gives-DNE em _ iv iii
@@ -292,9 +292,9 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
       ψ (inr _) = p
 
   h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
-  h-split-surjection y = pr₁ σ , pr₂ σ (em (is-g-point (pr₁ σ)) (being-g-point-is-a-prop (pr₁ σ)))
+  h-split-surjection y = pr₁ ss , pr₂ ss (em (is-g-point (pr₁ ss)) (being-g-point-is-a-prop (pr₁ ss)))
    where
-    σ = H-split-surjection y
+    ss = H-split-surjection y
 
   𝓱 : X ≃ Y
   𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
