@@ -44,7 +44,7 @@ import AlternativePlus
 import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
-import CantorSchroederBernsteinGivesEM
+import CantorSchroederBernstein
 import Codistance
 import Compactness
 import CompactTypes

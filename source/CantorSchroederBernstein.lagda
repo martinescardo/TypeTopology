@@ -25,7 +25,7 @@ univalence or propositional truncation:
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module CantorSchroederBernsteinGivesEM where
+module CantorSchroederBernstein where
 
 open import SpartanMLTT
 open import GenericConvergentSequence
@@ -167,7 +167,7 @@ is-g-point defined in the proof is property rather than data and hence
 we can apply univalent excluded middle to it.
 
 For foundational reasons, we make clear which instances of function
-extensionality and excluded middle are needed to conclud
+extensionality and excluded middle are needed to conclude
 Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 
 \begin{code}
