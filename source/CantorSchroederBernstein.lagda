@@ -19,8 +19,8 @@ univalence or propositional truncation:
     For any pair of types, if each is embedded into the other, then
     they are equivalent.
 
-    For this it is crucial that a map is an embedding if and only its
-    fibers all are propositions (rather than being merely
+    For this it is crucial that a map is an embedding if and only if
+    its fibers all are propositions (rather than being merely
     left-cancellable).
 
     As far as we know, (2) is a new result.
