@@ -160,6 +160,7 @@ we required that there is an unspecified equivalence in the
 formulation of Cantor-Schröder-Bernstein, we would still get excluded
 middle, because P + ¬ P is a proposition.
 
+
 Part 2
 ------
 
@@ -167,7 +168,10 @@ The Cantor-Schröder-Bernstein Theorem holds for all homotopy types, or
 ∞-gropoids, in the presence of excluded middle. It is crucial here
 that embeddings have subsingleton fibers, so that e.g. the function
 is-g-point defined in the proof is property rather than data and hence
-we can apply univalent excluded middle to it.
+we can apply univalent excluded middle to it. It is also worth
+remembering that a map of types that are sets is an embedding if and
+only if it is left-cancellable.
+
 
 For foundational reasons, we make clear which instances of function
 extensionality and excluded middle are needed to conclude
