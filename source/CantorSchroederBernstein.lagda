@@ -166,7 +166,7 @@ Part 2
 
 The Cantor-Schröder-Bernstein holds for all homotopy types, or
 ∞-gropoids, in the presence of excluded middle. It is crucial here
-that embeddings have subsingleton fibers, so that the function
+that embeddings have subsingleton fibers, so that e.g. the function
 is-g-point defined in the proof is property rather than data and hence
 we can apply univalent excluded middle to it.
 
@@ -298,4 +298,5 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
 
   𝓱 : X ≃ Y
   𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
+
 \end{code}
