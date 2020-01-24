@@ -20,7 +20,7 @@ univalence or propositional truncation:
     they are equivalent.
 
     For this it is crucial that a map is an embedding if and only if
-    its fibers all are propositions (rather than the map being merely
+    its fibers all are propositions (rather than merely the map being
     left-cancellable).
 
     As far as we know, (2) is a new result.
@@ -186,7 +186,7 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
 EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-emb) (g , g-is-emb) = 𝓱
  where
-  gf^_ : ℕ → X → X
+  gf^_ : ℕ → (X → X)
   gf^  0        = id
   gf^ (succ n)  = λ x → g (f ((gf^ n) x))
 
