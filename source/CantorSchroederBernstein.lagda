@@ -261,7 +261,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
    i = contrapositive (non-f-point-is-g-point (g y)) ν
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   ii (x₀ , (0 ,      p) , ν) = 𝟘-elim (ν (y , (p ⁻¹)))
+   ii (x₀ , (0      , p) , ν) = 𝟘-elim (ν (y , (p ⁻¹)))
    ii (x₀ , (succ n , p) , ν) = ((gf^ n) x₀ , embedding-lc g g-is-emb p) , (λ γ → ν (γ x₀ (n , refl)))
 
    iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
