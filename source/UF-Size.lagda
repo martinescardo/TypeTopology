@@ -460,3 +460,76 @@ UF-ImageAndSurjection. Better: reorganize the code so that reproving
 is not necessary.
 
 \end{code}
+
+Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
+
+It turns out that a proposition Y has size 𝓥 precisely if the proposition
+(Y has-size 𝓥) has size 𝓥.
+
+Hence, if you can resize the propositions of the form (Y has-size 𝓥)
+(with Y in 𝓤), then you can resize all propositions in 𝓤 (to 𝓥).
+
+\begin{code}
+
+has-size-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                    → is-prop Y
+                    → (Y has-size 𝓥) has-size 𝓥
+                    → Y has-size 𝓥
+has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
+ where
+  X : 𝓥 ̇
+  X = Σ \(h : H) → pr₁ (eqtofun e h)
+  γ = X  ≃⟨ Σ-change-of-variables pr₁ (eqtofun e) (eqtofun-is-an-equiv e) ⟩
+      X' ≃⟨ ϕ ⟩
+      Y  ■
+   where
+    X' : 𝓥 ⁺ ⊔ 𝓤 ̇
+    X' = Σ \(h : Y has-size 𝓥) → pr₁ h
+    ϕ = logically-equivalent-props-are-equivalent j i f g
+     where
+      j : is-prop X'
+      j = Σ-is-prop (has-size-is-a-prop ua Y 𝓥)
+            (λ (h : Y has-size 𝓥) → equiv-to-prop (pr₂ h) i)
+      f : X' → Y
+      f (e' , x) = eqtofun (pr₂ e') x
+      g : Y → X'
+      g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , *
+
+has-size-resizing : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
+has-size-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y has-size 𝓥) has-size 𝓥
+
+has-size-resizing-implies-propositional-resizing : (ua : Univalence)
+                                                   (𝓤 𝓥 : Universe)
+                                                   → has-size-resizing 𝓤 𝓥
+                                                   → propositional-resizing 𝓤 𝓥
+has-size-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
+  has-size-idempotent ua 𝓤 𝓥 P i (r P)
+
+has-size-idempotent' : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                     → Y has-size 𝓥
+                     → (Y has-size 𝓥) has-size 𝓥
+has-size-idempotent' ua 𝓤 𝓥 Y r = 𝟙{𝓥} , γ
+ where
+  γ : 𝟙{𝓥} ≃ (Y has-size 𝓥)
+  γ = singleton-≃-𝟙' (pointed-props-are-singletons r (has-size-is-a-prop ua Y 𝓥))
+
+has-size-idempotent-≃ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                      → is-prop Y
+                      → ((Y has-size 𝓥) has-size 𝓥) ≃ (Y has-size 𝓥)
+has-size-idempotent-≃ ua 𝓤 𝓥 Y i =
+ logically-equivalent-props-are-equivalent
+   (has-size-is-a-prop ua (Y has-size 𝓥) 𝓥)
+   (has-size-is-a-prop ua Y 𝓥)
+   (has-size-idempotent ua 𝓤 𝓥 Y i)
+   (has-size-idempotent' ua 𝓤 𝓥 Y)
+
+has-size-idempotent-≡ : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
+                      → is-prop Y
+                      → ((Y has-size 𝓥) has-size 𝓥) ≡ (Y has-size 𝓥)
+has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
+  eqtoid (ua (𝓤 ⊔ 𝓥 ⁺))
+    ((Y has-size 𝓥) has-size 𝓥)
+    (Y has-size 𝓥)
+    (has-size-idempotent-≃ ua 𝓤 𝓥 Y i)
+
+\end{code}
