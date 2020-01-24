@@ -173,9 +173,13 @@ remembering, for the sake of comparing the classical result for sets
 with its generalization to ∞-groupoids, that a map of types that are
 sets is an embedding if and only if it is left-cancellable.
 
-Our proof adapts Wikipedia's "alternate proof" (of 23rd January 2020)
 
-   https://en.wikipedia.org/wiki/Schr%C3%B6der%E2%80%93Bernstein_theorem#Alternate_proof
+Our proof adapts Wikipedia's "alternate proof" (consulted 23rd January 2020)
+
+  https://en.wikipedia.org/wiki/Schr%C3%B6der%E2%80%93Bernstein_theorem#Alternate_proof
+
+to our more general situation.
+
 
 For foundational reasons, we make clear which instances of function
 extensionality and excluded middle are needed to conclude
