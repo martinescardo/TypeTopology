@@ -231,8 +231,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
     w : ¬ is-g-point x'
     w = transport (λ - → ¬ is-g-point -) q ν'
 
-  H-lc : (x x' : X) (d : decidable (is-g-point x)) (e : decidable (is-g-point x'))
-       → H x d ≡ H x' e → x ≡ x'
+  H-lc : (x x' : X) (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
+       → H x d ≡ H x' d' → x ≡ x'
   H-lc x x' (inl γ) (inl γ') p = x                 ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
                                  g (g⁻¹ x γ)       ≡⟨ ap g p              ⟩
                                  g (H x' (inl γ')) ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
