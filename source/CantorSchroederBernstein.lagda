@@ -1,7 +1,7 @@
 Martin Escardo, 22nd January 2020
 
 This file has two parts, which assume function extensionality but not
-univalence or propositional truncation:
+univalence or the existence of propositional truncations:
 
 
 (1) A univalent-foundations version of Pierre Pradic and Chad
@@ -16,8 +16,8 @@ univalence or propositional truncation:
 (2) A proof that excluded middle implies Cantor-Schröder-Bernstein for
     all homotopy types, or ∞-groupoids. (Added 24th January.)
 
-    For any pair of types, if each is embedded into the other, then
-    they are equivalent.
+    For any pair of types, if each one is embedded into the other,
+    then they are equivalent.
 
     For this it is crucial that a map is an embedding if and only if
     its fibers all are propositions (rather than merely the map being
