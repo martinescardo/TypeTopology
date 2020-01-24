@@ -481,14 +481,14 @@ has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
   X = Σ \(h : H) → pr₁ (eqtofun e h)
   γ = X  ≃⟨ Σ-change-of-variables pr₁ (eqtofun e) (eqtofun-is-an-equiv e) ⟩
       X' ≃⟨ ϕ ⟩
-      Y ■
+      Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
     X' = Σ \(h : Y has-size 𝓥) → pr₁ h
-    ϕ = logically-equivalent-props-are-equivalent k i f g
+    ϕ = logically-equivalent-props-are-equivalent j i f g
      where
-      k : is-prop X'
-      k = Σ-is-prop (has-size-is-a-prop ua Y 𝓥)
+      j : is-prop X'
+      j = Σ-is-prop (has-size-is-a-prop ua Y 𝓥)
             (λ (h : Y has-size 𝓥) → equiv-to-prop (pr₂ h) i)
       f : X' → Y
       f (e' , x) = eqtofun (pr₂ e') x
