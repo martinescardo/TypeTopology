@@ -144,7 +144,7 @@ CSB-gives-EM fe P i csb = γ
 
 Hence if we assume Cantor-Schröder-Bernstein for the first universe 𝓤₀
 and an arbitrary universe 𝓥, as formulated above, then we get excluded
-middle for propositions in the universe 𝓤:
+middle for propositions in the universe 𝓥:
 
 \begin{code}
 
