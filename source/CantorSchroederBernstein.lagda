@@ -47,6 +47,18 @@ open import UF-ExcludedMiddle
 
 \end{code}
 
+Our formulation of Cantor-Schröder-Bernstein:
+
+\begin{code}
+
+CSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+CSB X Y = (X ↪ Y) → (Y ↪ X) → X ≃ Y
+
+CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → CSB X Y
+
+\end{code}
+
 Part 1
 ------
 
@@ -67,9 +79,9 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
   d : (x : X) → decidable (P x)
   d x = equality-cases (r x)
          (λ (a : A) (u : r x ≡ inl a) → inl (a , u))
-         (λ (y : X) (v : r x ≡ inr y) → inr (λ {(a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
-                                                                     r x   ≡⟨ v    ⟩
-                                                                     inr y ∎)}))
+         (λ (y : X) (v : r x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
+                                                                    r x   ≡⟨ v    ⟩
+                                                                    inr y ∎)))
 
   e : decidable (Σ (\(x : X) → P x))
   e = c P d
@@ -80,15 +92,6 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
   γ : decidable (Σ \(x : X) → P x) → decidable A
   γ (inl (x , a , u)) = inl a
   γ (inr φ)           = inr (contrapositive f φ)
-
-\end{code}
-
-We first consider Cantor-Schröder-Bernstein for a pair of types:
-
-\begin{code}
-
-CSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-CSB X Y = (X ↪ Y) → (Y ↪ X) → X ≃ Y
 
 \end{code}
 
@@ -136,10 +139,6 @@ CSB-gives-EM fe P i csb = γ
 
   γ : P + ¬ P
   γ = Pradic-Brown-lemma ρ (ℕ∞-Compact fe)
-
-
-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → CSB X Y
 
 \end{code}
 
