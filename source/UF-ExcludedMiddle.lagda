@@ -33,6 +33,9 @@ which we refer to as the density of the decidable truth values.
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
 
+Global-EM : 𝓤ω
+Global-EM = ∀ {𝓤} → EM 𝓤
+
 EM-is-prop : FunExt → is-prop (EM 𝓤)
 EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
                       (λ P → Π-is-prop (fe 𝓤 𝓤)
@@ -61,12 +64,12 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
 
-fem-proptrunc : FunExt → (∀ 𝓤 → EM 𝓤 )→ propositional-truncations-exist
+fem-proptrunc : FunExt → Global-EM → propositional-truncations-exist
 fem-proptrunc fe em = record {
   ∥_∥          = λ X → ¬¬ X ;
   ∥∥-is-a-prop = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
   ∣_∣         = λ x u → u x ;
-  ∥∥-rec       = λ i u φ → EM-gives-DNE (em _) _ i (¬¬-functor u φ) }
+  ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ) }
 
 module _ (pt : propositional-truncations-exist) where
 
