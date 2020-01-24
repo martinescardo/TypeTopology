@@ -184,6 +184,25 @@ qinvs-are-equivs f (g , (gf , fg)) = (g , fg) , (g , gf)
 qinveq : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → qinv f → X ≃ Y
 qinveq f q = (f , qinvs-are-equivs f q)
 
+lc-split-surjections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                               → left-cancellable f
+                               → ((y : Y) → Σ \(x : X) → f x ≡ y)
+                               → is-equiv f
+lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
+ where
+  g : codomain f → domain f
+  g y = pr₁ (s y)
+
+  ε : f ∘ g ∼ id
+  ε y = pr₂ (s y)
+
+  η : g ∘ f ∼ id
+  η x = l p
+   where
+    p : f (g (f x)) ≡ f x
+    p = ε (f x)
+
+
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  → X ≃ Y → Y ≃ X
 ≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverse-is-equiv f e
 
