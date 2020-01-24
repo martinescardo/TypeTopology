@@ -163,7 +163,7 @@ middle, because P + ¬ P is a proposition.
 Part 2
 ------
 
-The Cantor-Schröder-Bernstein holds for all homotopy types, or
+The Cantor-Schröder-Bernstein Theorem holds for all homotopy types, or
 ∞-gropoids, in the presence of excluded middle. It is crucial here
 that embeddings have subsingleton fibers, so that e.g. the function
 is-g-point defined in the proof is property rather than data and hence
