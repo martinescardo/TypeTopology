@@ -15,9 +15,11 @@ univalence or propositional truncation:
     all homotopy types, or ∞-groupoids. (Added 24th January.)
 
     For any pair of types, if each is embedded into the other, then
-    they are equivalent. For this it is crucial that a map is an
-    embedding if and only its fibers all are propositions (rather than
-    being merely left-cancellable).
+    they are equivalent.
+
+    For this it is crucial that a map is an embedding if and only its
+    fibers all are propositions (rather than being merely
+    left-cancellable).
 
     As far as we know, (2) is a new result.
 
