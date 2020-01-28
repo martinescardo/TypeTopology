@@ -25,11 +25,6 @@ univalence or the existence of propositional truncations:
 
     As far as we know, (2) is a new result.
 
-
-A blog post with more information in the comments is available here:
-
-    https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -316,3 +311,9 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
   𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
 
 \end{code}
+
+Added 28th January. A blog post with more information in the comments
+is available here:
+
+
+https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
