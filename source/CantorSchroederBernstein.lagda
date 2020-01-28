@@ -25,6 +25,7 @@ univalence or the existence of propositional truncations:
 
     As far as we know, (2) is a new result.
 
+
 A blog post with more information in the comments is available here:
 
     https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
