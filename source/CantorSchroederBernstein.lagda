@@ -303,16 +303,16 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
    v = EM-gives-DNE em _ iv iii
 
-  H-split-surjection : (y : Y) → Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
-  H-split-surjection y = ss (em (is-g-point (g y)) (being-g-point-is-a-prop (g y)))
+  h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
+  h-split-surjection y = x , p
    where
-    ss : decidable (is-g-point (g y)) → Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
-    ss (inl γ) = g y , ψ
+    a : decidable (is-g-point (g y)) → Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
       ψ (inl γ') = g⁻¹-is-linv y γ'
       ψ (inr ν)  = 𝟘-elim (ν γ)
-    ss (inr ν) = x , ψ
+    a (inr ν) = x , ψ
      where
       x : X
       x = pr₁ (pr₁ (β y ν))
@@ -323,11 +323,12 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = 𝟘-elim (ν' γ)
       ψ (inr _) = p
-
-  h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
-  h-split-surjection y = pr₁ ss , pr₂ ss (em (is-g-point (pr₁ ss)) (being-g-point-is-a-prop (pr₁ ss)))
-   where
-    ss = H-split-surjection y
+    b : Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    b = a (em (is-g-point (g y)) (being-g-point-is-a-prop (g y)))
+    x : X
+    x = pr₁ b
+    p : h x ≡ y
+    p = pr₂ b (em (is-g-point x) (being-g-point-is-a-prop x))
 
   𝓱 : X ≃ Y
   𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
