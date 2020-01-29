@@ -243,7 +243,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
        → H x d ≡ H x' d' → x ≡ x'
   H-lc x x' (inl γ) (inl γ') p = x                 ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
                                  g (g⁻¹ x γ)       ≡⟨ ap g p              ⟩
-                                 g (H x' (inl γ')) ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                                 g (g⁻¹ x' γ')     ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
                                  x'                ∎
   H-lc x x' (inl γ) (inr ν') p = 𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
   H-lc x x' (inr ν) (inl γ') p = 𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p    )
@@ -315,5 +315,4 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
 Added 28th January. A blog post with more information in the comments
 is available here:
 
-
-https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
+   https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
