@@ -239,20 +239,27 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
     w : ¬ is-g-point x'
     w = transport (λ - → ¬ is-g-point -) q ν'
 
-  H-lc : (x x' : X) (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
-       → H x d ≡ H x' d' → x ≡ x'
-  H-lc x x' (inl γ) (inl γ') p = x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
-                                 g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
-                                 g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
-                                 x'            ∎
-  H-lc x x' (inl γ) (inr ν') p = 𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
-  H-lc x x' (inr ν) (inl γ') p = 𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p    )
-  H-lc x x' (inr ν) (inr ν') p = embedding-lc f f-is-emb p
-
   h-lc : left-cancellable h
-  h-lc {x} {x'} = H-lc x x'
-                   (em (is-g-point x)  (being-g-point-is-a-prop x ))
-                   (em (is-g-point x') (being-g-point-is-a-prop x'))
+  h-lc {x} {x'} = l (em (is-g-point x ) (being-g-point-is-a-prop x ))
+                    (em (is-g-point x') (being-g-point-is-a-prop x'))
+   where
+    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
+      → H x d ≡ H x' d' → x ≡ x'
+
+    l (inl γ) (inl γ') = λ (p : g⁻¹ x γ ≡ g⁻¹ x' γ') →
+                              x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                              g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
+                              g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                              x'            ∎
+
+    l (inl γ) (inr ν') = λ (p : g⁻¹ x γ ≡ f x') →
+                              𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
+
+    l (inr ν) (inl γ') = λ (p : f x ≡ g⁻¹ x' γ') →
+                              𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p    )
+
+    l (inr ν) (inr ν') = λ (p : f x ≡ f x') →
+                              embedding-lc f f-is-emb p
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → (gf^ n) x₀ ≡ x) × ¬ fiber g x₀
