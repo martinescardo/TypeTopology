@@ -25,6 +25,8 @@ univalence or the existence of propositional truncations:
 
     As far as we know, (2) is a new result.
 
+NB. This file needs the Agda release candidate 2.6.1.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
