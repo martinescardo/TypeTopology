@@ -259,7 +259,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ σ = Cases (em (fiber g x₀) (g-is-emb x₀))
-                                     (λ (τ :    fiber g x₀) → τ)
+                                     (λ (τ  :   fiber g x₀) → τ)
                                      (λ (ν' : ¬ fiber g x₀) → 𝟘-elim (ν (x₀ , σ , ν')))
 
   β : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
@@ -269,8 +269,21 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
    i = contrapositive (non-f-point-is-g-point (g y)) ν
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   ii (x₀ , (0      , p) , ν) = 𝟘-elim (ν (y , (p ⁻¹)))
-   ii (x₀ , (succ n , p) , ν) = ((gf^ n) x₀ , embedding-lc g g-is-emb p) , (λ γ → ν (γ x₀ (n , refl)))
+   ii (x₀ , (0 , p) , ν) = 𝟘-elim (a p)
+    where
+     a : x₀ ≢ g y
+     a p = ν (y , (p ⁻¹))
+   ii (x₀ , (succ n , p) , ν) = a , b
+    where
+     q : f ((gf^ n) x₀) ≡ y
+     q = embedding-lc g g-is-emb p
+     a : fiber f y
+     a = (gf^ n) x₀ , q
+     b : ¬ is-g-point ((gf^ n) x₀)
+     b γ = ν c
+      where
+       c : fiber g x₀
+       c = γ x₀ (n , refl)
 
    iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
    iii = ¬¬-functor ii i
