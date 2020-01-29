@@ -241,10 +241,10 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ em {X} {Y} (f , f-is-em
 
   H-lc : (x x' : X) (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
        → H x d ≡ H x' d' → x ≡ x'
-  H-lc x x' (inl γ) (inl γ') p = x                 ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
-                                 g (g⁻¹ x γ)       ≡⟨ ap g p              ⟩
-                                 g (g⁻¹ x' γ')     ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
-                                 x'                ∎
+  H-lc x x' (inl γ) (inl γ') p = x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                                 g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
+                                 g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                                 x'            ∎
   H-lc x x' (inl γ) (inr ν') p = 𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
   H-lc x x' (inr ν) (inl γ') p = 𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p    )
   H-lc x x' (inr ν) (inr ν') p = embedding-lc f f-is-emb p
