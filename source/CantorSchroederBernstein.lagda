@@ -236,7 +236,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   α x γ x₀ n p = need (fiber g x₀) which-is-given-by
                  (have (p ∶ ((g ∘ f) ^ n) x₀ ≡ x)
                   so-use (apply (γ x₀ (succ n))
-                          to (ap (g ∘ f) p ∶ {!((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)!})))
+                          to (ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x))))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have (v ∶ ¬ is-g-point x')
