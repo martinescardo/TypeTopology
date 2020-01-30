@@ -199,20 +199,14 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
 
-  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X                   ) →
-                              Π-is-prop fe₁ (λ (n  : ℕ                   ) →
-                              Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → g-is-emb x₀)))
-
-
   g-is-invertible-at-g-points : (x : X) → is-g-point x → fiber g x
   g-is-invertible-at-g-points x γ = γ x 0 refl
 
   g⁻¹ : (x : X) → is-g-point x → Y
-  g⁻¹ x γ = pr₁ (g-is-invertible-at-g-points x γ)
+  g⁻¹ x γ = fiber-point g x (g-is-invertible-at-g-points x γ)
 
   g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
-  g⁻¹-is-rinv x γ = pr₂ (g-is-invertible-at-g-points x γ)
+  g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
   g⁻¹-is-linv y γ = embedding-lc g g-is-emb p
@@ -220,12 +214,21 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
     p : g (g⁻¹ (g y) γ) ≡ g y
     p = g⁻¹-is-rinv (g y) γ
 
+  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X                   ) →
+                              Π-is-prop fe₁ (λ (n  : ℕ                   ) →
+                              Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → g-is-emb x₀)))
+
+  δ : (x : X) → decidable (is-g-point x)
+  δ x = em (is-g-point x) (being-g-point-is-a-prop x)
+
   H : (x : X) → decidable (is-g-point x) → Y
-  H x (inl γ) = g⁻¹ x γ
-  H x (inr _) = f x
+  H x d = Cases d
+           (λ (γ :   is-g-point x) → g⁻¹ x γ)
+           (λ (ν : ¬ is-g-point x) → f x)
 
   h : X → Y
-  h x = H x (em (is-g-point x) (being-g-point-is-a-prop x))
+  h x = H x (δ x)
 
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
@@ -242,26 +245,25 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
     v = transport (λ - → ¬ is-g-point -) q u
 
   h-lc : left-cancellable h
-  h-lc {x} {x'} = l (em (is-g-point x ) (being-g-point-is-a-prop x ))
-                    (em (is-g-point x') (being-g-point-is-a-prop x'))
+  h-lc {x} {x'} = l (δ x) (δ x')
    where
     l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
       → H x d ≡ H x' d' → x ≡ x'
 
-    l (inl γ) (inl γ') = λ (p : g⁻¹ x γ ≡ g⁻¹ x' γ') →
-                              x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
-                              g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
-                              g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
-                              x'            ∎
+    l (inl γ) (inl γ') p = have (p ∶ g⁻¹ x γ ≡ g⁻¹ x' γ')
+                           so (x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                               g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
+                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                               x'            ∎)
 
-    l (inl γ) (inr ν') = λ (p : g⁻¹ x γ ≡ f x') →
-                              𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
+    l (inl γ) (inr ν') p = have (p ∶ g⁻¹ x γ ≡ f x')
+                           which-is-impossible-by (λ - → f-g⁻¹-disjoint-images x' x ν' γ (- ⁻¹))
 
-    l (inr ν) (inl γ') = λ (p : f x ≡ g⁻¹ x' γ') →
-                              𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p    )
+    l (inr ν) (inl γ') p = have (p ∶ f x ≡ g⁻¹ x' γ')
+                           which-is-impossible-by (f-g⁻¹-disjoint-images x x' ν γ')
 
-    l (inr ν) (inr ν') = λ (p : f x ≡ f x') →
-                              embedding-lc f f-is-emb p
+    l (inr ν) (inr ν') p = have (p ∶ f x ≡ f x')
+                           so (embedding-lc f f-is-emb p ∶ x ≡ x')
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
@@ -269,34 +271,34 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ n p = Cases (em (fiber g x₀) (g-is-emb x₀))
                                        (λ (σ :   fiber g x₀) → σ)
-                                       (λ (u : ¬ fiber g x₀) → 𝟘-elim (ν (x₀ , (n , p) , u)))
+                                       (λ (u : ¬ fiber g x₀) → have ((x₀ , (n , p) , u) ∶ f-point x)
+                                                               which-is-impossible-by (ν ∶ ¬ f-point x))
 
-  β : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-  β y u = v
+  claim : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+  claim y u = v
    where
    i : ¬¬ f-point (g y)
    i = contrapositive (non-f-point-is-g-point (g y)) u
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   ii (x₀ , (0 , p) , ν) = 𝟘-elim (a p)
+   ii (x₀ , (0 , p) , ν) = have (p ∶ x₀ ≡ g y) which-is-impossible-by a
     where
      a : x₀ ≢ g y
-     a p = ν (y , (p ⁻¹))
+     a = assume p ∶ x₀ ≡ g y
+         then (have ((y , (p ⁻¹)) ∶ fiber g x₀)
+               which-is-impossible-by (ν ∶ ¬ fiber g x₀))
    ii (x₀ , (succ n , p) , ν) = a , b
     where
-     _ : ((g ∘ f) ^ (succ n)) x₀ ≡ g y
-     _ = p
      q : f (((g ∘ f) ^ n) x₀) ≡ y
-     q = embedding-lc g g-is-emb p
+     q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g y
+                 ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y)
+         so-use (embedding-lc g g-is-emb p)
      a : fiber f y
      a = ((g ∘ f) ^ n) x₀ , q
-     _ : ¬ fiber g x₀
-     _ = ν
      b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
-     b γ = ν c
-      where
-       c : fiber g x₀
-       c = γ x₀ n refl
+     b = assume γ ∶ is-g-point (((g ∘ f) ^ n) x₀)
+         then (have (γ x₀ n refl ∶ fiber g x₀)
+               which-is-impossible-by (ν ∶ ¬ fiber g x₀))
 
    iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
    iii = ¬¬-functor ii i
@@ -314,25 +316,32 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
     a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
-      ψ (inl γ') = g⁻¹-is-linv y γ'
-      ψ (inr ν)  = 𝟘-elim (ν γ)
+      ψ (inl γ') = H (g y) (inl γ') ≡⟨ refl             ⟩
+                   g⁻¹ (g y) γ'     ≡⟨ g⁻¹-is-linv y γ' ⟩
+                   y                ∎
+      ψ (inr ν)  = have (ν ∶ ¬ is-g-point (g y))
+                   which-contradicts (γ ∶ is-g-point (g y))
     a (inr ν) = x , ψ
      where
+      w : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+      w = apply (claim y) to (ν ∶ ¬ is-g-point (g y))
+
       x : X
-      x = pr₁ (pr₁ (β y ν))
+      x = fiber-point f y (pr₁ w)
       p : f x ≡ y
-      p = pr₂ (pr₁ (β y ν))
-      ν' : ¬ is-g-point x
-      ν' = pr₂ (β y ν)
+      p = fiber-path f y  (pr₁ w)
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
-      ψ (inl γ) = 𝟘-elim (ν' γ)
-      ψ (inr _) = p
+      ψ (inl γ) = have (pr₂ (claim y ν) ∶ ¬ is-g-point x)
+                  which-contradicts (γ ∶ is-g-point x)
+      ψ (inr ν) = H x (inr ν) ≡⟨ refl ⟩
+                  f x         ≡⟨ p    ⟩
+                  y           ∎
     b : Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
-    b = a (em (is-g-point (g y)) (being-g-point-is-a-prop (g y)))
+    b = a (δ (g y))
     x : X
     x = pr₁ b
     p : h x ≡ y
-    p = pr₂ b (em (is-g-point x) (being-g-point-is-a-prop x))
+    p = pr₂ b (δ x)
 
   𝓱 : X ≃ Y
   𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection

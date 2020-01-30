@@ -263,8 +263,14 @@ back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 
 \begin{code}
 
-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
+fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
 fiber f y = Σ \x → f x ≡ y
+
+fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y) → fiber f y → X
+fiber-point f y = pr₁
+
+fiber-path : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y) (w : fiber f y) → f (fiber-point f y w) ≡ y
+fiber-path f y = pr₂
 
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-vv-equiv f = ∀ y → is-singleton (fiber f y)
