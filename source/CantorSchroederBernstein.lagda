@@ -202,7 +202,9 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
 EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y (f , f-is-emb) (g , g-is-emb) =
+
   need (X ≃ Y) which-is-given-by 𝒽
+
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -385,5 +387,162 @@ EM-gives-CantorSchröderBernstein₀ : funext 𝓤₀ 𝓤₀
                                   → EM 𝓤₀
                                   → CantorSchröderBernstein 𝓤₀ 𝓤₀
 EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe fe fe
+
+\end{code}
+
+The above is an attempt to make the proof more readable and match the
+blog post. Our original Agda proof is approximately the following,
+without using the above conventions to mimick natural language proofs
+(copied from a previous git commit):
+
+\begin{code}
+
+EM-gives-CantorSchröderBernstein' : funext 𝓤 (𝓤 ⊔ 𝓥)
+                                  → funext (𝓤 ⊔ 𝓥) 𝓤₀
+                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
+                                  → EM (𝓤 ⊔ 𝓥)
+                                  → CantorSchröderBernstein 𝓤 𝓥
+EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ em X Y (f , f-is-emb) (g , g-is-emb) = 𝓱
+ where
+  gf^_ : ℕ → (X → X)
+  gf^  0        = id
+  gf^ (succ n)  = λ x → g (f ((gf^ n) x))
+
+  is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
+  is-g-point x = (x₀ : X) (n : ℕ) → (gf^ n) x₀ ≡ x → fiber g x₀
+
+  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X             ) →
+                              Π-is-prop fe₁ (λ (n  : ℕ             ) →
+                              Π-is-prop fe  (λ (p  : (gf^ n) x₀ ≡ x) → g-is-emb x₀)))
+
+
+  g-is-invertible-at-g-points : (x : X) → is-g-point x → fiber g x
+  g-is-invertible-at-g-points x γ = γ x 0 refl
+
+  g⁻¹ : (x : X) → is-g-point x → Y
+  g⁻¹ x γ = pr₁ (g-is-invertible-at-g-points x γ)
+
+  g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
+  g⁻¹-is-rinv x γ = pr₂ (g-is-invertible-at-g-points x γ)
+
+  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
+  g⁻¹-is-linv y γ = embeddings-are-left-cancellable g g-is-emb p
+   where
+    p : g (g⁻¹ (g y) γ) ≡ g y
+    p = g⁻¹-is-rinv (g y) γ
+
+  H : (x : X) → decidable (is-g-point x) → Y
+  H x (inl γ) = g⁻¹ x γ
+  H x (inr _) = f x
+
+  h : X → Y
+  h x = H x (em (is-g-point x) (being-g-point-is-a-prop x))
+
+  α : (x : X) → is-g-point (g (f x)) → is-g-point x
+  α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
+
+  f-g⁻¹-disjoint-images : (x x' : X) → ¬ is-g-point x → (γ : is-g-point x') → f x ≢ g⁻¹ x' γ
+  f-g⁻¹-disjoint-images x x' ν γ p = w γ
+   where
+    ν' : ¬ is-g-point (g (f x))
+    ν' = contrapositive (α x) ν
+    q = g (f x)      ≡⟨ ap g p            ⟩
+        g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
+        x'           ∎
+    w : ¬ is-g-point x'
+    w = transport (λ - → ¬ is-g-point -) q ν'
+
+  h-lc : left-cancellable h
+  h-lc {x} {x'} = l (em (is-g-point x ) (being-g-point-is-a-prop x ))
+                    (em (is-g-point x') (being-g-point-is-a-prop x'))
+   where
+    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
+      → H x d ≡ H x' d' → x ≡ x'
+
+    l (inl γ) (inl γ') = λ (p : g⁻¹ x γ ≡ g⁻¹ x' γ') →
+                              x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                              g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
+                              g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                              x'            ∎
+
+    l (inl γ) (inr ν') = λ (p : g⁻¹ x γ ≡ f x') →
+                              𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
+
+    l (inr ν) (inl γ') = λ (p : f x ≡ g⁻¹ x' γ') →
+                              𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p    )
+
+    l (inr ν) (inr ν') = λ (p : f x ≡ f x') →
+                              embeddings-are-left-cancellable f f-is-emb p
+
+  f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
+  f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → (gf^ n) x₀ ≡ x) × ¬ fiber g x₀
+
+  non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
+  non-f-point-is-g-point x ν x₀ n p = Cases (em (fiber g x₀) (g-is-emb x₀))
+                                       (λ (σ :   fiber g x₀) → σ)
+                                       (λ (u : ¬ fiber g x₀) → 𝟘-elim (ν (x₀ , (n , p) , u)))
+
+  β : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+  β y ν = v
+   where
+   i : ¬¬ f-point (g y)
+   i = contrapositive (non-f-point-is-g-point (g y)) ν
+
+   ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+   ii (x₀ , (0 , p) , ν) = 𝟘-elim (a p)
+    where
+     a : x₀ ≢ g y
+     a p = ν (y , (p ⁻¹))
+   ii (x₀ , (succ n , p) , ν) = a , b
+    where
+     q : f ((gf^ n) x₀) ≡ y
+     q = embeddings-are-left-cancellable g g-is-emb p
+     a : fiber f y
+     a = (gf^ n) x₀ , q
+     b : ¬ is-g-point ((gf^ n) x₀)
+     b γ = ν c
+      where
+       c : fiber g x₀
+       c = γ x₀ n refl
+
+   iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
+   iii = ¬¬-functor ii i
+
+   iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
+   iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
+
+   v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+   v = EM-gives-DNE em _ iv iii
+
+  h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
+  h-split-surjection y = x , p
+   where
+    a : decidable (is-g-point (g y)) → Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    a (inl γ) = g y , ψ
+     where
+      ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
+      ψ (inl γ') = g⁻¹-is-linv y γ'
+      ψ (inr ν)  = 𝟘-elim (ν γ)
+    a (inr ν) = x , ψ
+     where
+      x : X
+      x = pr₁ (pr₁ (β y ν))
+      p : f x ≡ y
+      p = pr₂ (pr₁ (β y ν))
+      ν' : ¬ is-g-point x
+      ν' = pr₂ (β y ν)
+      ψ : (d : decidable (is-g-point x)) → H x d ≡ y
+      ψ (inl γ) = 𝟘-elim (ν' γ)
+      ψ (inr _) = p
+    b : Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    b = a (em (is-g-point (g y)) (being-g-point-is-a-prop (g y)))
+    x : X
+    x = pr₁ b
+    p : h x ≡ y
+    p = pr₂ b (em (is-g-point x) (being-g-point-is-a-prop x))
+
+  𝓱 : X ≃ Y
+  𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
 
 \end{code}
