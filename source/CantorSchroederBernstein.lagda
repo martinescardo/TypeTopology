@@ -235,15 +235,15 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
 
   f-g⁻¹-disjoint-images : (x x' : X) → ¬ is-g-point x → (γ : is-g-point x') → f x ≢ g⁻¹ x' γ
-  f-g⁻¹-disjoint-images x x' ν γ p = w γ
+  f-g⁻¹-disjoint-images x x' ν γ p = v γ
    where
-    ν' : ¬ is-g-point (g (f x))
-    ν' = contrapositive (α x) ν
+    u : ¬ is-g-point (g (f x))
+    u = contrapositive (α x) ν
     q = g (f x)      ≡⟨ ap g p            ⟩
         g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
         x'           ∎
-    w : ¬ is-g-point x'
-    w = transport (λ - → ¬ is-g-point -) q ν'
+    v : ¬ is-g-point x'
+    v = transport (λ - → ¬ is-g-point -) q u
 
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (em (is-g-point x ) (being-g-point-is-a-prop x ))
@@ -276,10 +276,10 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
                                        (λ (u : ¬ fiber g x₀) → 𝟘-elim (ν (x₀ , (n , p) , u)))
 
   β : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-  β y ν = v
+  β y u = v
    where
    i : ¬¬ f-point (g y)
-   i = contrapositive (non-f-point-is-g-point (g y)) ν
+   i = contrapositive (non-f-point-is-g-point (g y)) u
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
    ii (x₀ , (0 , p) , ν) = 𝟘-elim (a p)
@@ -288,10 +288,14 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
      a p = ν (y , (p ⁻¹))
    ii (x₀ , (succ n , p) , ν) = a , b
     where
+     _ : gf^ (succ n) x₀ ≡ g y
+     _ = p
      q : f (gf^ n x₀) ≡ y
      q = embedding-lc g g-is-emb p
      a : fiber f y
      a = gf^ n x₀ , q
+     _ : ¬ fiber g x₀
+     _ = ν
      b : ¬ is-g-point (gf^ n x₀)
      b γ = ν c
       where
