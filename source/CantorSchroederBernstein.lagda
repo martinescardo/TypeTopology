@@ -187,6 +187,10 @@ For foundational reasons, we make clear which instances of function
 extensionality and excluded middle are needed to conclude
 Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 
+Added 28th January. To better understand this proof, consult the blog
+post
+   https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
+
 \begin{code}
 
 EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
@@ -369,8 +373,3 @@ EM-gives-CantorSchröderBernstein₀ : funext 𝓤₀ 𝓤₀
 EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe fe fe
 
 \end{code}
-
-Added 28th January. A blog post with more information in the comments
-is available here:
-
-   https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
