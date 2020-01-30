@@ -212,10 +212,9 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   g⁻¹-is-rinv (x , γ) = fiber-path g x (g-is-invertible-at-g-points (x , γ))
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
-  g⁻¹-is-linv y γ = embedding-lc g g-is-emb p
-   where
-    p : g (g⁻¹ (g y , γ)) ≡ g y
-    p = g⁻¹-is-rinv (g y , γ)
+  g⁻¹-is-linv y γ = apply (embedding-lc g g-is-emb)
+                    to (g (g⁻¹ (g y , γ)) ≡⟨ g⁻¹-is-rinv (g y , γ) ⟩
+                        g y               ∎)
 
   being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
   being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X                   ) →
@@ -234,7 +233,10 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   h x = H x (δ x)
 
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
-  α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
+  α x γ x₀ n p = need (fiber g x₀) which-is-given-by
+                 (have (p ∶ ((g ∘ f) ^ n) x₀ ≡ x)
+                  so-use (apply (γ x₀ (succ n))
+                          to (ap (g ∘ f) p ∶ {!((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)!})))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have (v ∶ ¬ is-g-point x')
@@ -275,7 +277,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
-  non-f-point-is-g-point x ν x₀ n p = need-to-show (fiber g x₀) which-is-proved-by
+  non-f-point-is-g-point x ν x₀ n p = need (fiber g x₀) which-is-given-by
     (Cases (em (fiber g x₀) (g-is-emb x₀))
       (λ (σ :   fiber g x₀) → σ)
       (λ (u : ¬ fiber g x₀) → have ((x₀ , (n , p) , u) ∶ f-point x)

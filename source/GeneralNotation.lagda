@@ -41,8 +41,8 @@ And the following to make explicit the type of hypotheses:
 
 \begin{code}
 
-need-to-show_which-is-proved-by_ : (A : 𝓤 ̇ ) → A → A
-need-to-show A which-is-proved-by a = a
+need_which-is-given-by_ : (A : 𝓤 ̇ ) → A → A
+need A which-is-given-by a = a
 
 have_so_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → B → B
 have a so b = b
