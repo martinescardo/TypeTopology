@@ -232,13 +232,16 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
 
   f-g⁻¹-disjoint-images : (x x' : X) → ¬ is-g-point x → (γ : is-g-point x') → f x ≢ g⁻¹ x' γ
-  f-g⁻¹-disjoint-images x x' ν γ p = v γ
+  f-g⁻¹-disjoint-images x x' ν γ p = have (v ∶ ¬ is-g-point x')
+                                     which-contradicts γ
    where
     u : ¬ is-g-point (g (f x))
     u = contrapositive (α x) ν
-    q = g (f x)      ≡⟨ ap g p            ⟩
-        g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
-        x'           ∎
+    q : g (f x) ≡ x'
+    q = have (p ∶ f x ≡ g⁻¹ x' γ)
+        so-use (g (f x)      ≡⟨ ap g p            ⟩
+                g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
+                x'           ∎)
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
 
