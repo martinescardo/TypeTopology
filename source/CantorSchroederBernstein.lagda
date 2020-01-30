@@ -194,7 +194,7 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} (f , f-is-emb) (g , g-is-emb) = 𝓱
+EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} (f , f-is-emb) (g , g-is-emb) = need (X ≃ Y) which-is-given-by 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -357,8 +357,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {
     p : h x ≡ y
     p = pr₂ b (δ x)
 
-  𝓱 : X ≃ Y
-  𝓱 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
+  𝒽 : X ≃ Y
+  𝒽 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
 
 
 EM-gives-CantorSchröderBernstein₀ : funext 𝓤₀ 𝓤₀
