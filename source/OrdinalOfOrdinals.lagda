@@ -644,10 +644,10 @@ simulations-are-order-reflecting : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → �
 simulations-are-order-reflecting α β f (i , p) = lc-initial-segments-are-order-reflecting α β f i
                                                    (simulations-are-lc α β f (i , p))
 
-order-embeddings-are-lc : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-embeddings-are-left-cancellable : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)
                         → is-order-embedding α β f
                         → left-cancellable f
-order-embeddings-are-lc α β f (p , r) {x} {y} s = Extensionality α x y a b
+order-embeddings-are-left-cancellable α β f (p , r) {x} {y} s = Extensionality α x y a b
  where
   a : (u : ⟨ α ⟩) → u ≺⟨ α ⟩ x → u ≺⟨ α ⟩ y
   a u l = r u y j
@@ -669,7 +669,7 @@ order-embedings-are-embeddings : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ 
                                → is-embedding f
 order-embedings-are-embeddings α β f (p , r) =
   lc-maps-into-sets-are-embeddings f
-     (order-embeddings-are-lc α β f (p , r))
+     (order-embeddings-are-left-cancellable α β f (p , r))
      (well-ordered-types-are-sets (underlying-order β) fe (is-well-ordered β))
 
 simulations-are-monotone : (α β : Ordinal 𝓤) (f : ⟨ α ⟩ → ⟨ β ⟩)

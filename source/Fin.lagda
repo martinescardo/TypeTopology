@@ -417,7 +417,7 @@ Fin↦ℕ-is-embedding n = ∘-is-embedding
 
 
 Fin↦ℕ-lc : (n : ℕ) → left-cancellable (Fin↦ℕ {n})
-Fin↦ℕ-lc n = embedding-lc Fin↦ℕ (Fin↦ℕ-is-embedding n)
+Fin↦ℕ-lc n = embeddings-are-left-cancellable Fin↦ℕ (Fin↦ℕ-is-embedding n)
 
 
 _≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇

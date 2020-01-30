@@ -358,7 +358,7 @@ lift-is-section ua R 𝓤 𝓥 = (r , rs)
     b : s X' ≡ s X
     b = pr₂ v
     c : X' ≡ X
-    c = embedding-lc s e b
+    c = embeddings-are-left-cancellable s e b
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
     γ : r (s X) ≡ X

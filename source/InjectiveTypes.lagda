@@ -192,7 +192,7 @@ module _ {X : 𝓤 ̇ }
    f∖j = Σ-extension
 
   Σ→Π : is-embedding j → f∖j ≾ f/j
-  Σ→Π e y ((x , p) , B) (x' , p') = transport f (embedding-lc j e (p ∙ p' ⁻¹)) B
+  Σ→Π e y ((x , p) , B) (x' , p') = transport f (embeddings-are-left-cancellable j e (p ∙ p' ⁻¹)) B
 
 \end{code}
 

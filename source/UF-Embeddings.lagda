@@ -59,9 +59,9 @@ equiv-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → X ≃ Y → X ↪ Y
 equiv-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e)
 
-embedding-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+embeddings-are-left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
              → is-embedding f → left-cancellable f
-embedding-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
+embeddings-are-left-cancellable f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 is-embedding' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding' f = ∀ x x' → is-equiv (ap f {x} {x'})
@@ -105,7 +105,7 @@ pr₁-is-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop(Y x)) → left-cancellable pr₁
-pr₁-lc-bis f {u} {v} r = embedding-lc pr₁ (pr₁-is-embedding (λ x → f {x})) r
+pr₁-lc-bis f {u} {v} r = embeddings-are-left-cancellable pr₁ (pr₁-is-embedding (λ x → f {x})) r
 
 pr₁-is-embedding-converse : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                           → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})

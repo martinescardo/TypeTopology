@@ -58,7 +58,7 @@ apply f to a = f a
 
 syntax -assume A (λ x → b) = assume x ∶ A then b
 
-infix 100 -assume
+infixr 100 -assume
 
 \end{code}
 
