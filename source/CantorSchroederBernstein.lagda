@@ -325,14 +325,13 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
      where
       w : Σ \((x , p) : fiber f y) → ¬ is-g-point x
       w = apply (claim y) to (ν ∶ ¬ is-g-point (g y))
-
       x : X
       x = fiber-point f y (pr₁ w)
       p : f x ≡ y
-      p = fiber-path f y  (pr₁ w)
+      p = fiber-path f y (pr₁ w)
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
-      ψ (inl γ) = have (pr₂ (claim y ν) ∶ ¬ is-g-point x)
-                  which-contradicts (γ ∶ is-g-point x)
+      ψ (inl γ) = have (γ ∶ is-g-point x)
+                  which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
       ψ (inr ν) = H x (inr ν) ≡⟨ refl ⟩
                   f x         ≡⟨ p    ⟩
                   y           ∎
