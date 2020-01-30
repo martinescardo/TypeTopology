@@ -209,10 +209,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
   g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
-  g⁻¹-is-linv y γ = embedding-lc g g-is-emb p
-   where
-    p : g (g⁻¹ (g y) γ) ≡ g y
-    p = g⁻¹-is-rinv (g y) γ
+  g⁻¹-is-linv y γ = apply (embedding-lc g g-is-emb)
+                    to (g⁻¹-is-rinv (g y) γ ∶ g (g⁻¹ (g y) γ) ≡ g y)
 
   being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
   being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X                   ) →
