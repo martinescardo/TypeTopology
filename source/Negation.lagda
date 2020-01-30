@@ -43,8 +43,11 @@ dual R f p = p ∘ f
 contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → ¬ B → ¬ A
 contrapositive = dual _
 
+double-contrapositive : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → ¬¬ A → ¬¬ B
+double-contrapositive = contrapositive ∘ contrapositive
+
 ¬¬-functor : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → ¬¬ A → ¬¬ B
-¬¬-functor = contrapositive ∘ contrapositive
+¬¬-functor = double-contrapositive
 
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
