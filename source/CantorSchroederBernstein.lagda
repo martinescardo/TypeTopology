@@ -390,6 +390,9 @@ EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe f
 
 \end{code}
 
+APPENDIX
+--------
+
 The above is an attempt to make the proof more readable and match the
 blog post. Our original Agda proof is approximately the following,
 without using the above conventions to mimick natural language proofs
