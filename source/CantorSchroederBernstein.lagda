@@ -246,7 +246,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {
                                          which-contradicts (γ ∶ is-g-point x')
    where
     u : ¬ is-g-point (g (f x))
-    u = contrapositive (α x) ν
+    u = have (ν ∶ (¬ is-g-point x))
+        so-use (contrapositive (α x) ν)
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
         so-use (g (f x)          ≡⟨ ap g p                ⟩
