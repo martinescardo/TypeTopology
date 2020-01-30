@@ -231,9 +231,6 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
    Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need (is-prop (fiber g x₀))
                                                   which-is-given-by (g-is-emb x₀))))
 
-  δ : (x : X) → decidable (is-g-point x)
-  δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
-
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ = λ (x₀ : X) (n : ℕ) (p : ((g ∘ f) ^ n) x₀ ≡ x) →
             (need (fiber g x₀) which-is-given-by
@@ -255,6 +252,9 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
         so-use (contrapositive (α x) ν)
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
+
+  δ : (x : X) → decidable (is-g-point x)
+  δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
 
   h : X → Y
   h x = Cases (δ x)
