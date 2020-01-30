@@ -264,10 +264,10 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
       → H x d ≡ H x' d' → x ≡ x'
 
     l (inl γ) (inl γ') p = have (p ∶ g⁻¹ (x , γ) ≡ g⁻¹ (x' , γ'))
-                           so (x                  ≡⟨ (g⁻¹-is-rinv (x , γ))⁻¹ ⟩
-                               g (g⁻¹ (x  , γ ))  ≡⟨ ap g p                  ⟩
-                               g (g⁻¹ (x' , γ'))  ≡⟨ g⁻¹-is-rinv (x' , γ')   ⟩
-                               x'                 ∎)
+                           so (x                 ≡⟨ (g⁻¹-is-rinv (x , γ))⁻¹ ⟩
+                               g (g⁻¹ (x  , γ )) ≡⟨ ap g p                  ⟩
+                               g (g⁻¹ (x' , γ')) ≡⟨ g⁻¹-is-rinv (x' , γ')   ⟩
+                               x'                ∎)
 
     l (inl γ) (inr ν') p = have (p ∶ g⁻¹ (x , γ) ≡ f x')
                            which-is-impossible-by (λ - → f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹))
