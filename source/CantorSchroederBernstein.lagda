@@ -316,8 +316,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
    iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
 
    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   v = EM-gives-DNE em _ iv iii
-
+   v = double-negation-elimination em _ iv iii
 
   h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
   h-split-surjection y = x , p

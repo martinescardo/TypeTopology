@@ -59,6 +59,9 @@ DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
 
+double-negation-elimination : EM 𝓤 → DNE 𝓤
+double-negation-elimination = EM-gives-DNE
+
 DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
