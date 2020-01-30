@@ -191,6 +191,8 @@ Added 28th January. To better understand this proof, consult the blog
 post
    https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
 
+first.
+
 \begin{code}
 
 EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
