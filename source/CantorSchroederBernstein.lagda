@@ -246,14 +246,14 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have (v ∶ ¬ is-g-point x')
                                          which-contradicts (γ ∶ is-g-point x')
    where
-    u : ¬ is-g-point (g (f x))
-    u = have (ν ∶ (¬ is-g-point x))
-        so-use (contrapositive (α x) ν)
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
         so-use (g (f x)          ≡⟨ ap g p                ⟩
                 g (g⁻¹ (x' , γ)) ≡⟨ g⁻¹-is-rinv (x' , γ)  ⟩
                 x'               ∎)
+    u : ¬ is-g-point (g (f x))
+    u = have (ν ∶ (¬ is-g-point x))
+        so-use (contrapositive (α x) ν)
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
 
@@ -320,7 +320,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
    iii = double-contrapositive ii i
 
    iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
-   iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
+   iv = apply (subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)))
+        to (f-is-emb y ∶ is-prop (fiber f y))
 
    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
    v = double-negation-elimination excluded-middle _ iv iii
