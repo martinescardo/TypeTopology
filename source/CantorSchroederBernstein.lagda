@@ -57,7 +57,7 @@ CSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 CSB X Y = (X ↪ Y) → (Y ↪ X) → X ≃ Y
 
 CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → CSB X Y
+CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → CSB X Y
 
 \end{code}
 
@@ -153,7 +153,7 @@ middle for propositions in the universe 𝓥:
 CantorSchröderBernstein-gives-EM : funext 𝓤₀ 𝓤₀
                                  → CantorSchröderBernstein 𝓤₀ 𝓥
                                  → EM 𝓥
-CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i csb
+CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i (csb ℕ∞ (P + ℕ∞))
 
 \end{code}
 
@@ -194,7 +194,7 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} (f , f-is-emb) (g , g-is-emb) =
+EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y (f , f-is-emb) (g , g-is-emb) =
   need (X ≃ Y) which-is-given-by 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
