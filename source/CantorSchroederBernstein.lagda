@@ -234,14 +234,6 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
   δ : (x : X) → decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
 
-  H : (x : X) → decidable (is-g-point x) → Y
-  H x d = Cases d
-           (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
-           (λ (ν : ¬ is-g-point x) → f x)
-
-  h : X → Y
-  h x = H x (δ x)
-
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ = λ (x₀ : X) (n : ℕ) (p : ((g ∘ f) ^ n) x₀ ≡ x) →
             (need (fiber g x₀) which-is-given-by
@@ -263,6 +255,25 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
         so-use (contrapositive (α x) ν)
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
+
+  h : X → Y
+  h x = Cases (δ x)
+           (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
+           (λ (ν : ¬ is-g-point x) → f x)
+
+\end{code}
+
+It is convenient to work with the following auxiliary definition:
+
+\begin{code}
+
+  H : (x : X) → decidable (is-g-point x) → Y
+  H x d = Cases d
+           (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
+           (λ (ν : ¬ is-g-point x) → f x)
+
+  remark : h ≡ λ x → H x (δ x)
+  remark = by-definition
 
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
