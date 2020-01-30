@@ -194,7 +194,8 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} (f , f-is-emb) (g , g-is-emb) = need (X ≃ Y) which-is-given-by 𝒽
+EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} (f , f-is-emb) (g , g-is-emb) =
+  need (X ≃ Y) which-is-given-by 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -299,21 +300,21 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {
                            which-is-impossible-by a
     where
      a : x₀ ≢ g y
-     a = λ (p : x₀ ≡ g y) →
-           (have ((y , (p ⁻¹)) ∶ fiber g x₀)
-            which-is-impossible-by (u ∶ ¬ fiber g x₀))
+     a = assume p ∶ x₀ ≡ g y
+         then (have ((y , (p ⁻¹)) ∶ fiber g x₀)
+               which-is-impossible-by (u ∶ ¬ fiber g x₀))
    ii (x₀ , (succ n , p) , u) = a , b
     where
      q : f (((g ∘ f) ^ n) x₀) ≡ y
-     q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g y
+     q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
                  ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y)
          so-use (embeddings-are-left-cancellable g g-is-emb p)
      a : fiber f y
      a = ((g ∘ f) ^ n) x₀ , q
      b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
-     b = λ (γ : is-g-point (((g ∘ f) ^ n) x₀)) →
-           (have (γ x₀ n refl ∶ fiber g x₀)
-            which-is-impossible-by (u ∶ ¬ fiber g x₀))
+     b = assume γ ∶ is-g-point (((g ∘ f) ^ n) x₀)
+         then (have (γ x₀ n refl ∶ fiber g x₀)
+               which-is-impossible-by (u ∶ ¬ fiber g x₀))
 
    iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
    iii = double-contrapositive ii i
