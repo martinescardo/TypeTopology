@@ -264,7 +264,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
                            which-is-impossible-by (f-g⁻¹-disjoint-images x x' ν γ')
 
     l (inr ν) (inr ν') p = have (p ∶ f x ≡ f x')
-                           so (embedding-lc f f-is-emb p ∶ x ≡ x')
+                           so-use (embedding-lc f f-is-emb p)
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
