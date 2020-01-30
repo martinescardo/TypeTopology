@@ -189,7 +189,8 @@ Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 
 Added 28th January. To better understand this proof, consult the blog
 post
-   https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
+
+    https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
 
 first.
 
@@ -210,7 +211,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
   G-point = Σ \(x : X) → is-g-point x
 
   g-is-invertible-at-g-points : ((x , γ) : G-point) → fiber g x
-  g-is-invertible-at-g-points (x , γ) = γ x 0 (refl ∶ ((g ∘ f) ^ 0) x ≡ x)
+  g-is-invertible-at-g-points (x , γ) = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
 
   g⁻¹ : G-point → Y
   g⁻¹ (x , γ) = fiber-point g x (g-is-invertible-at-g-points (x , γ))
@@ -339,7 +340,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
     a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
-      ψ (inl γ') = H (g y) (inl γ') ≡⟨ refl             ⟩
+      ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition    ⟩
                    g⁻¹ (g y , γ')   ≡⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have (ν ∶ ¬ is-g-point (g y))
@@ -355,8 +356,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = have (γ ∶ is-g-point x)
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
-      ψ (inr ν) = H x (inr ν) ≡⟨ refl ⟩
-                  f x         ≡⟨ p    ⟩
+      ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
+                  f x         ≡⟨ p             ⟩
                   y           ∎
     b : Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
     b = a (δ (g y))
