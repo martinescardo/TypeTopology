@@ -196,17 +196,13 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
 EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f-is-emb) (g , g-is-emb) = 𝓱
  where
-  gf^ : ℕ → (X → X)
-  gf^  0       x = x
-  gf^ (succ n) x = g (f (gf^ n x))
-
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
-  is-g-point x = (x₀ : X) (n : ℕ) → gf^ n x₀ ≡ x → fiber g x₀
+  is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
 
   being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X           ) →
-                              Π-is-prop fe₁ (λ (n  : ℕ           ) →
-                              Π-is-prop fe  (λ (p  : gf^ n x₀ ≡ x) → g-is-emb x₀)))
+  being-g-point-is-a-prop x = Π-is-prop fe  (λ (x₀ : X                   ) →
+                              Π-is-prop fe₁ (λ (n  : ℕ                   ) →
+                              Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → g-is-emb x₀)))
 
 
   g-is-invertible-at-g-points : (x : X) → is-g-point x → fiber g x
@@ -268,7 +264,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
                               embedding-lc f f-is-emb p
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
-  f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → gf^ n x₀ ≡ x) × ¬ fiber g x₀
+  f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ n p = Cases (em (fiber g x₀) (g-is-emb x₀))
@@ -288,15 +284,15 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ em {X} {Y} (f , f
      a p = ν (y , (p ⁻¹))
    ii (x₀ , (succ n , p) , ν) = a , b
     where
-     _ : gf^ (succ n) x₀ ≡ g y
+     _ : ((g ∘ f) ^ (succ n)) x₀ ≡ g y
      _ = p
-     q : f (gf^ n x₀) ≡ y
+     q : f (((g ∘ f) ^ n) x₀) ≡ y
      q = embedding-lc g g-is-emb p
      a : fiber f y
-     a = gf^ n x₀ , q
+     a = ((g ∘ f) ^ n) x₀ , q
      _ : ¬ fiber g x₀
      _ = ν
-     b : ¬ is-g-point (gf^ n x₀)
+     b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
      b γ = ν c
       where
        c : fiber g x₀
