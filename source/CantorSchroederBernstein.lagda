@@ -222,9 +222,9 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
   g⁻¹-is-rinv (x , γ) = fiber-path g x (g-is-invertible-at-g-points (x , γ))
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
-  g⁻¹-is-linv y γ = apply (embeddings-are-left-cancellable g g-is-emb)
-                    to (g (g⁻¹ (g y , γ)) ≡⟨ g⁻¹-is-rinv (g y , γ) ⟩
-                        g y               ∎)
+  g⁻¹-is-linv y γ = have (g (g⁻¹ (g y , γ)) ≡⟨ g⁻¹-is-rinv (g y , γ) ⟩
+                          g y               ∎)
+                    so-apply (embeddings-are-left-cancellable g g-is-emb)
 
   being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
   being-g-point-is-a-prop x =
@@ -242,7 +242,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have (γ ∶ is-g-point x')
-                                         which-is-impossible-by (v ∶ ¬ is-g-point x')
+                                         which-is-impossible-by v
    where
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
@@ -251,7 +251,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
                 x'               ∎)
     u : ¬ is-g-point (g (f x))
     u = have (ν ∶ (¬ is-g-point x))
-        so-use (contrapositive (α x) ν)
+        so-apply (contrapositive (α x))
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
 
@@ -295,7 +295,7 @@ It is convenient to work with the following auxiliary definition:
                            which-is-impossible-by (f-g⁻¹-disjoint-images x ν (x' , γ'))
 
     l (inr ν) (inr ν') p = have (p ∶ f x ≡ f x')
-                           so-use (embeddings-are-left-cancellable f f-is-emb p)
+                           so-apply (embeddings-are-left-cancellable f f-is-emb)
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
@@ -312,7 +312,7 @@ It is convenient to work with the following auxiliary definition:
    where
    i : ¬¬ f-point (g y)
    i = have (ν ∶ ¬ is-g-point (g y))
-       so-use (contrapositive (non-f-point-is-g-point (g y)) ν)
+       so-apply (contrapositive (non-f-point-is-g-point (g y)))
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
    ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
@@ -323,7 +323,7 @@ It is convenient to work with the following auxiliary definition:
      q : f (((g ∘ f) ^ n) x₀) ≡ y
      q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
                  ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y)
-         so-use (embeddings-are-left-cancellable g g-is-emb p)
+         so-apply (embeddings-are-left-cancellable g g-is-emb)
      a : fiber f y
      a = ((g ∘ f) ^ n) x₀ , q
      b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
@@ -335,8 +335,8 @@ It is convenient to work with the following auxiliary definition:
    iii = double-contrapositive ii i
 
    iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
-   iv = apply (subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)))
-        to (f-is-emb y ∶ is-prop (fiber f y))
+   iv = have (f-is-emb y ∶ is-prop (fiber f y))
+        so-apply (subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)))
 
    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
    v = double-negation-elimination excluded-middle _ iv iii
@@ -356,7 +356,8 @@ It is convenient to work with the following auxiliary definition:
     a (inr ν) = x , ψ
      where
       w : Σ \((x , p) : fiber f y) → ¬ is-g-point x
-      w = apply (claim y) to (ν ∶ ¬ is-g-point (g y))
+      w = have (ν ∶ ¬ is-g-point (g y))
+          so-apply (claim y)
       x : X
       x = fiber-point f y (pr₁ w)
       p : f x ≡ y

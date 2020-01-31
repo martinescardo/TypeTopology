@@ -53,6 +53,9 @@ have a so-use b = b
 apply_to_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → A → B
 apply f to a = f a
 
+have_so-apply_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → (A → B) → B
+have a so-apply f = f a
+
 -assume : (A : 𝓤 ̇ ) {B : 𝓥 ̇ } → (A → B) → A → B
 -assume A f = f
 
