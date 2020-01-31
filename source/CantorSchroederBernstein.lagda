@@ -241,8 +241,8 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
               in  γ x₀ (succ n) q)
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
-  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (v ∶ ¬ is-g-point x')
-                                         which-contradicts (γ ∶ is-g-point x')
+  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (γ ∶ is-g-point x')
+                                         which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
@@ -280,8 +280,7 @@ It is convenient to work with the following auxiliary definition:
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
    where
-    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x'))
-      → H x d ≡ H x' d' → x ≡ x'
+    l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ≡ H x' d' → x ≡ x'
 
     l (inl γ) (inl γ') p = have (p ∶ g⁻¹ (x , γ) ≡ g⁻¹ (x' , γ'))
                            so (x                 ≡⟨ (g⁻¹-is-rinv (x , γ))⁻¹ ⟩
