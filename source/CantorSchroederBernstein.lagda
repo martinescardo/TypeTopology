@@ -409,7 +409,7 @@ f-point x, because excluded middle applies only to truth values.)
 
 \end{code}
 
-The important point is that non-f-points are g-points:
+What is important for our argument is that non-f-points are g-points:
 
 \begin{code}
 
@@ -465,9 +465,9 @@ doesn't refer to the notion of f-point.
 
 With this we are ready to show that h is a split surjection. The idea
 is that, given y : Y, we check whether g y is a g-point or not, and if
-it is we map it to g y, and otherwise we map to the point x : X given
-by the above claim. But then, of course, we also need to argue that
-this works.
+it is we map it to g y, and otherwise we map y to the point x : X
+given by the above claim. But then, of course, we also need to argue
+that this works.
 
 \begin{code}
 
