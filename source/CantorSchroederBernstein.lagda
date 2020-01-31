@@ -541,9 +541,9 @@ APPENDIX
 
 The above is an attempt to make the proof more readable and match the
 blog post. Here is a more concise version of the above in a more
-direct Agda style which some will prefer (which could be made even
-more concise by avoiding auxiliary definitions, which are used for the
-purpose of indicating types explicitly).
+direct Agda style which some will prefer (and which could be made even
+more concise by avoiding auxiliary definitions used for the purpose of
+indicating types explicitly).
 
 \begin{code}
 
