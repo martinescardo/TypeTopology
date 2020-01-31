@@ -57,8 +57,8 @@ s is a definitional section of the function r):
  Y-is-fp-combinator : {X : Set} (f : X → X) → f (Y f) ≡ Y f
  Y-is-fp-combinator f = refl
 
- contradiction : 𝟘
- contradiction = Y id
+ Contradiction : 𝟘
+ Contradiction = Y id
 
 \end{code}
 
