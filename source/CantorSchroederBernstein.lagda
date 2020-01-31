@@ -224,13 +224,6 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
                           g y               ∎)
                     so-apply (embeddings-are-left-cancellable g g-is-emb)
 
-  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x =
-   Π-is-prop fe  (λ (x₀ : X                   ) →
-   Π-is-prop fe₁ (λ (n  : ℕ                   ) →
-   Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need (is-prop (fiber g x₀))
-                                                  which-is-given-by (g-is-emb x₀))))
-
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ = need (is-g-point x)
           which-is-given-by
@@ -241,10 +234,11 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
                so-apply (γ x₀ (succ n))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
-  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (p ∶ f x ≡ g⁻¹ (x' , γ)) so
-                                         need contradiction which-is-given-by
-                                          have (v ∶ ¬ is-g-point x')
-                                          which-contradicts (γ ∶ is-g-point x')
+  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (p ∶ f x ≡ g⁻¹ (x' , γ))
+                                         so need contradiction
+                                            which-is-given-by
+                                             have (v ∶ ¬ is-g-point x')
+                                             which-contradicts (γ ∶ is-g-point x')
    where
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
@@ -257,13 +251,20 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
 
+  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-a-prop x =
+   Π-is-prop fe  (λ (x₀ : X                   ) →
+   Π-is-prop fe₁ (λ (n  : ℕ                   ) →
+   Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need (is-prop (fiber g x₀))
+                                                  which-is-given-by (g-is-emb x₀))))
+
   δ : (x : X) → decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
 
   h : X → Y
   h x = Cases (δ x)
-           (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
-           (λ (ν : ¬ is-g-point x) → f x)
+         (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
+         (λ (ν : ¬ is-g-point x) → f x)
 
 \end{code}
 
@@ -425,9 +426,6 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
   g⁻¹-is-linv y γ = embeddings-are-left-cancellable g g-is-emb (g⁻¹-is-rinv (g y , γ))
 
-  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x = Π-is-prop fe (λ x₀ → Π-is-prop fe₁ (λ _ → Π-is-prop fe (λ _ → g-is-emb x₀)))
-
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
 
@@ -441,6 +439,9 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     u = contrapositive (α x) ν
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
+
+  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-a-prop x = Π-is-prop fe (λ x₀ → Π-is-prop fe₁ (λ _ → Π-is-prop fe (λ _ → g-is-emb x₀)))
 
   δ : (x : X) → decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
