@@ -15,6 +15,8 @@ open import Sigma
 
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
+contradiction : 𝓤₀ ̇
+contradiction = 𝟘
 
 have_which-is-impossible-by_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
                              → A → (A → 𝟘 {𝓤₀}) → B

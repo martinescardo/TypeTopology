@@ -50,6 +50,9 @@ have a so b = b
 have_so-use_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → B → B
 have a so-use b = b
 
+have_and_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → B → B
+have a and b = b
+
 apply_to_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → A → B
 apply f to a = f a
 

@@ -232,15 +232,19 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
                                                   which-is-given-by (g-is-emb x₀))))
 
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
-  α x γ = λ (x₀ : X) (n : ℕ) (p : ((g ∘ f) ^ n) x₀ ≡ x) →
-            (need (fiber g x₀) which-is-given-by
-              let q : ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
-                  q = ap (g ∘ f) p
-              in  γ x₀ (succ n) q)
+  α x γ = need (is-g-point x)
+          which-is-given-by
+           λ (x₀ : X) (n : ℕ) (p : ((g ∘ f) ^ n) x₀ ≡ x) →
+             need (fiber g x₀)
+             which-is-given-by
+               have (ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x))
+               so-apply (γ x₀ (succ n))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
-  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (γ ∶ is-g-point x')
-                                         which-is-impossible-by v
+  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (p ∶ f x ≡ g⁻¹ (x' , γ)) so
+                                         need contradiction which-is-given-by
+                                          have (v ∶ ¬ is-g-point x')
+                                          which-contradicts (γ ∶ is-g-point x')
    where
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
@@ -248,7 +252,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
                 g (g⁻¹ (x' , γ)) ≡⟨ g⁻¹-is-rinv (x' , γ)  ⟩
                 x'               ∎)
     u : ¬ is-g-point (g (f x))
-    u = have (ν ∶ (¬ is-g-point x))
+    u = have (ν ∶ ¬ is-g-point x)
         so-apply (contrapositive (α x))
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
@@ -314,8 +318,8 @@ It is convenient to work with the following auxiliary definition:
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
    ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
-                           so (have ((y , (p ⁻¹)) ∶ fiber g x₀)
-                               which-is-impossible-by (u ∶ ¬ fiber g x₀))
+                           so have ((y , (p ⁻¹)) ∶ fiber g x₀)
+                              which-is-impossible-by (u ∶ ¬ fiber g x₀)
    ii (x₀ , (succ n , p) , u) = a , b
     where
      q : f (((g ∘ f) ^ n) x₀) ≡ y
