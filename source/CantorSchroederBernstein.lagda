@@ -267,6 +267,12 @@ invertible at g-points, because, by definition, we have that
   g-is-invertible-at-g-points : ((x , γ) : G-point) → fiber g x
   g-is-invertible-at-g-points (x , γ) = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
 
+\end{code}
+
+The fiber point is given by the first projection of the fiber:
+
+\begin{code}
+
   g⁻¹ : G-point → Y
   g⁻¹ (x , γ) = fiber-point g x (g-is-invertible-at-g-points (x , γ))
 
@@ -303,7 +309,8 @@ left-cancellable and split-surjective.
 To show that it is left-cancellable, we first show that g⁻¹ is a
 two-sided inverse in its domain of definition.
 
-That it is a right inverse follows from the definition of fiber:
+That it is a right inverse follows from the definition of fiber, by
+taking the fiber path, which is given by the second projection:
 
 \begin{code}
 
