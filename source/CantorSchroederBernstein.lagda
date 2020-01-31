@@ -213,7 +213,7 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
 
 \end{code}
 
-In order to define 𝒽 : X ≃ Y, we use the notion of g-point.
+In order to define 𝒽 : X ≃ Y, we use a notion of g-point.
 
 \begin{code}
 
@@ -222,9 +222,9 @@ In order to define 𝒽 : X ≃ Y, we use the notion of g-point.
 
 \end{code}
 
-What is important is that this is property rather than data, using the
-fact that g is an embedding, which means that its fibers are all
-propositions.
+What is important for our purposes is that this is property rather
+than data, using the fact that g is an embedding, which means that its
+fibers are all propositions.
 
 \begin{code}
 
@@ -360,7 +360,7 @@ left-cancellability of h:
 
 \end{code}
 
-It is convenient to work with the following auxiliary definition and
+It is convenient to work with the following auxiliary function H and
 prove properties about H and then specialize them to h:
 
 \begin{code}
@@ -463,7 +463,11 @@ doesn't refer to the notion of f-point.
 
 \end{code}
 
-With this we are ready to show that h is a split surjection:
+With this we are ready to show that h is a split surjection. The idea
+is that, given y : Y, we check whether g y is a g-point or not, and if
+it is we map it to g y, and otherwise we map to the point x : X given
+by the above claim. But then, of course, we also need to argue that
+this works.
 
 \begin{code}
 
@@ -531,8 +535,8 @@ APPENDIX
 The above is an attempt to make the proof more readable and match the
 blog post. Here is a more concise version of the above in a more
 direct Agda style which some will prefer (which could be made even
-more concise by avoiding auxiliary definitions used to indicate
-types).
+more concise by avoiding auxiliary definitions, which are used for the
+purpose of indicating types explicitly).
 
 \begin{code}
 
