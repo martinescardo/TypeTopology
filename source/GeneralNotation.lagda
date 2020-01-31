@@ -59,12 +59,12 @@ apply f to a = f a
 have_so-apply_ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A → (A → B) → B
 have a so-apply f = f a
 
--assume : (A : 𝓤 ̇ ) {B : 𝓥 ̇ } → (A → B) → A → B
--assume A f = f
+assume-then : (A : 𝓤 ̇ ) {B : A → 𝓥 ̇ } → ((a : A) → B a) → (a : A) → B a
+assume-then A f x = f x
 
-syntax -assume A (λ x → b) = assume x ∶ A then b
+syntax assume-then A (λ x → b) = assume x ∶ A then b
 
-infixr 100 -assume
+infixl 100 assume-then
 
 \end{code}
 

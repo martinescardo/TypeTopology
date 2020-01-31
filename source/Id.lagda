@@ -21,6 +21,9 @@ by-definition = refl
 by-construction : {X : 𝓤 ̇ } {x : X} → x ≡ x
 by-construction = refl
 
+by-assumption : {X : 𝓤 ̇ } {x : X} → x ≡ x
+by-assumption = refl
+
 lhs : {X : 𝓤 ̇ } {x y : X} → x ≡ y → X
 lhs {𝓤} {X} {x} {y} p = x
 

@@ -185,12 +185,12 @@ For foundational reasons, we make clear which instances of function
 extensionality and excluded middle are needed to conclude
 Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 
-Added 28th January. To better understand this proof, consult the blog
+Added 28th January. To better understand this proof, you may consult the blog
 post
 
     https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
 
-first.
+first. However, we try to make the proof understandable here.
 
 \begin{code}
 
@@ -204,11 +204,65 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
   need (X ≃ Y) which-is-given-by 𝒽
 
  where
+
+  remark-f : type-of f ≡ (X → Y)
+  remark-f = by-assumption
+
+  remark-g : type-of g ≡ (Y → X)
+  remark-g = by-assumption
+
+\end{code}
+
+In order to define 𝒽 : X ≃ Y, we use the notion of g-point.
+
+\begin{code}
+
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
 
+\end{code}
+
+What is important is that this is property rather than data, using the
+fact that g is an embedding, which means that its fibers are all
+propositions.
+
+\begin{code}
+
+  recall : (x : X) → fiber g x ≡ Σ \(y : Y) → g y ≡ x
+  recall _ = by-definition
+
+  also-recall : is-embedding g ≡ ((x : X) → is-prop (fiber g x))
+  also-recall = by-definition
+
+\end{code}
+
+We use the fact that propositions are closed under products, which
+requires function extensionality:
+
+\begin{code}
+
+  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-a-prop x =
+   Π-is-prop fe  (λ (x₀ : X                   ) →
+   Π-is-prop fe₁ (λ (n  : ℕ                   ) →
+   Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need (is-prop (fiber g x₀))
+                                                  which-is-given-by (g-is-emb x₀))))
+\end{code}
+
+We collect the g-points in a subtype of X.
+
+\begin{code}
+
   G-point : 𝓤 ⊔ 𝓥 ̇
   G-point = Σ \(x : X) → is-g-point x
+
+\end{code}
+
+By construction, considering x₀ = x and n = 0, we have that g is
+invertible at g-points, because, by definition, we have that
+((g ∘ f) ^ 0) x ≡ x).
+
+\begin{code}
 
   g-is-invertible-at-g-points : ((x , γ) : G-point) → fiber g x
   g-is-invertible-at-g-points (x , γ) = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
@@ -216,29 +270,82 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
   g⁻¹ : G-point → Y
   g⁻¹ (x , γ) = fiber-point g x (g-is-invertible-at-g-points (x , γ))
 
+\end{code}
+
+Because being a g-point is property, we can apply excluded middle to
+it:
+
+\begin{code}
+
+  recall-the-notion-of-decidability : {𝓦 : Universe} {A : 𝓦 ̇ } → decidable A ≡ (A + ¬ A)
+  recall-the-notion-of-decidability = by-definition
+
+  δ : (x : X) → decidable (is-g-point x)
+  δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
+
+\end{code}
+
+The rest of the proof consists in showing that the following function
+is an equivalence:
+
+\begin{code}
+
+  h : X → Y
+  h x = Cases (δ x)
+        (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
+        (λ (ν : ¬ is-g-point x) → f x)
+
+\end{code}
+
+To show that h is an equivalence, it is enough to show that it is
+left-cancellable and split-surjective.
+
+To show that it is left-cancellable, we first show that g⁻¹ is a
+two-sided inverse in its domain of definition.
+
+That it is a right inverse follows from the definition of fiber:
+
+\begin{code}
+
   g⁻¹-is-rinv : ((x , γ) : G-point) → g (g⁻¹ (x , γ)) ≡ x
   g⁻¹-is-rinv (x , γ) = fiber-path g x (g-is-invertible-at-g-points (x , γ))
+
+\end{code}
+
+That it is a left inverse follows from the above and the fact that g,
+being an embedding, is left-cancellable:
+
+\begin{code}
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
   g⁻¹-is-linv y γ = have (g (g⁻¹ (g y , γ)) ≡⟨ g⁻¹-is-rinv (g y , γ) ⟩
                           g y               ∎)
                     so-apply (embeddings-are-left-cancellable g g-is-emb)
 
+\end{code}
+
+We also need the following two facts to establish the
+left-cancellability of h:
+
+\begin{code}
+
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ = need (is-g-point x)
           which-is-given-by
-           λ (x₀ : X) (n : ℕ) (p : ((g ∘ f) ^ n) x₀ ≡ x) →
-             need (fiber g x₀)
+           assume x₀ ∶ X                    then
+           assume n  ∶ ℕ                    then
+           assume p  ∶ ((g ∘ f) ^ n) x₀ ≡ x then
+            (need fiber g x₀
              which-is-given-by
-               have (ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x))
-               so-apply (γ x₀ (succ n))
+              (have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
+               so-apply γ x₀ (succ n)))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have (p ∶ f x ≡ g⁻¹ (x' , γ))
                                          so need contradiction
                                             which-is-given-by
-                                             have (v ∶ ¬ is-g-point x')
-                                             which-contradicts (γ ∶ is-g-point x')
+                                             have (γ ∶ is-g-point x')
+                                             which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
     q : g (f x) ≡ x'
     q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
@@ -247,28 +354,14 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
                 x'               ∎)
     u : ¬ is-g-point (g (f x))
     u = have (ν ∶ ¬ is-g-point x)
-        so-apply (contrapositive (α x))
+       so-apply (contrapositive (α x))
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
 
-  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x =
-   Π-is-prop fe  (λ (x₀ : X                   ) →
-   Π-is-prop fe₁ (λ (n  : ℕ                   ) →
-   Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need (is-prop (fiber g x₀))
-                                                  which-is-given-by (g-is-emb x₀))))
-
-  δ : (x : X) → decidable (is-g-point x)
-  δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
-
-  h : X → Y
-  h x = Cases (δ x)
-         (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
-         (λ (ν : ¬ is-g-point x) → f x)
-
 \end{code}
 
-It is convenient to work with the following auxiliary definition:
+It is convenient to work with the following auxiliary definition and
+prove properties about H and then specialize them to h:
 
 \begin{code}
 
@@ -277,8 +370,8 @@ It is convenient to work with the following auxiliary definition:
            (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
            (λ (ν : ¬ is-g-point x) → f x)
 
-  remark : h ≡ λ x → H x (δ x)
-  remark = by-definition
+  notice-that : h ≡ λ x → H x (δ x)
+  notice-that = by-definition
 
   h-lc : left-cancellable h
   h-lc {x} {x'} = l (δ x) (δ x')
@@ -300,8 +393,25 @@ It is convenient to work with the following auxiliary definition:
     l (inr ν) (inr ν') p = have (p ∶ f x ≡ f x')
                            so-apply (embeddings-are-left-cancellable f f-is-emb)
 
+\end{code}
+
+Next we want to show that h is split surjective. For that purpose, we
+define the notion of f-point, which is data rather than property (as
+several x₀ and n are possible answers in general).
+
+(In particular, excluded middle can't be applied to the type
+f-point x, because excluded middle applies only to truth values.)
+
+\begin{code}
+
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
+
+\end{code}
+
+The important point is that non-f-points are g-points:
+
+\begin{code}
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ n p = need (fiber g x₀) which-is-given-by
@@ -310,39 +420,52 @@ It is convenient to work with the following auxiliary definition:
       (λ (u : ¬ fiber g x₀) → have ((x₀ , (n , p) , u) ∶ f-point x)
                               which-is-impossible-by (ν ∶ ¬ f-point x)))
 
+\end{code}
+
+We use the notion of f-point to prove the following, whose statement
+doesn't refer to the notion of f-point.
+
+\begin{code}
+
   claim : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
   claim y ν = v
    where
-   i : ¬¬ f-point (g y)
-   i = have (ν ∶ ¬ is-g-point (g y))
-       so-apply (contrapositive (non-f-point-is-g-point (g y)))
+    i : ¬¬ f-point (g y)
+    i = have (ν ∶ ¬ is-g-point (g y))
+        so-apply (contrapositive (non-f-point-is-g-point (g y)))
 
-   ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
-                           so have ((y , (p ⁻¹)) ∶ fiber g x₀)
-                              which-is-impossible-by (u ∶ ¬ fiber g x₀)
-   ii (x₀ , (succ n , p) , u) = a , b
-    where
-     q : f (((g ∘ f) ^ n) x₀) ≡ y
-     q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
-                 ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y)
-         so-apply (embeddings-are-left-cancellable g g-is-emb)
-     a : fiber f y
-     a = ((g ∘ f) ^ n) x₀ , q
-     b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
-     b = assume γ ∶ is-g-point (((g ∘ f) ^ n) x₀)
-         then (have (γ x₀ n refl ∶ fiber g x₀)
-               which-is-impossible-by (u ∶ ¬ fiber g x₀))
+    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+    ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
+                            so have ((y , (p ⁻¹)) ∶ fiber g x₀)
+                               which-is-impossible-by (u ∶ ¬ fiber g x₀)
+    ii (x₀ , (succ n , p) , u) = a , b
+     where
+      q : f (((g ∘ f) ^ n) x₀) ≡ y
+      q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
+                  ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y)
+          so-apply (embeddings-are-left-cancellable g g-is-emb)
+      a : fiber f y
+      a = ((g ∘ f) ^ n) x₀ , q
+      b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
+      b = assume γ ∶ is-g-point (((g ∘ f) ^ n) x₀)
+          then (have (γ x₀ n refl ∶ fiber g x₀)
+                which-is-impossible-by (u ∶ ¬ fiber g x₀))
 
-   iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   iii = double-contrapositive ii i
+    iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
+    iii = double-contrapositive ii i
 
-   iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
-   iv = have (f-is-emb y ∶ is-prop (fiber f y))
-        so-apply (subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)))
+    iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
+    iv = have (f-is-emb y ∶ is-prop (fiber f y))
+         so-apply (subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)))
 
-   v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
-   v = double-negation-elimination excluded-middle _ iv iii
+    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+    v = double-negation-elimination excluded-middle _ iv iii
+
+\end{code}
+
+With this we are ready to show that h is a split surjection:
+
+\begin{code}
 
   h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
   h-split-surjection y = x , p
@@ -378,9 +501,21 @@ It is convenient to work with the following auxiliary definition:
     p : h x ≡ y
     p = pr₂ b (δ x)
 
+\end{code}
+
+And because left-cancellable split surjections are equivalences, we
+are done:
+
+\begin{code}
+
   𝒽 : X ≃ Y
   𝒽 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
 
+\end{code}
+
+We record the following special case:
+
+\begin{code}
 
 EM-gives-CantorSchröderBernstein₀ : funext 𝓤₀ 𝓤₀
                                   → EM 𝓤₀
