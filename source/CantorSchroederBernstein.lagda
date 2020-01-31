@@ -317,12 +317,8 @@ It is convenient to work with the following auxiliary definition:
 
    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
    ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
-                           which-is-impossible-by a
-    where
-     a : x₀ ≢ g y
-     a = assume p ∶ x₀ ≡ g y
-         then (have ((y , (p ⁻¹)) ∶ fiber g x₀)
-               which-is-impossible-by (u ∶ ¬ fiber g x₀))
+                           so (have ((y , (p ⁻¹)) ∶ fiber g x₀)
+                               which-is-impossible-by (u ∶ ¬ fiber g x₀))
    ii (x₀ , (succ n , p) , u) = a , b
     where
      q : f (((g ∘ f) ^ n) x₀) ≡ y
@@ -389,6 +385,7 @@ EM-gives-CantorSchröderBernstein₀ : funext 𝓤₀ 𝓤₀
 EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe fe fe
 
 \end{code}
+
 
 APPENDIX
 --------
