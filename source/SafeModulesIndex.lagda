@@ -1,10 +1,26 @@
-Martin Escardo
 
-There are some somewhat obsolete comments at the end of this file,
+   Various new theorems in
+   constructive univalent mathematics
+   written in Agda
+
+   Tested with Agda 2.6.0.1.
+
+   Martin Escardo, 2010--
+   Continuously evolving.
+
+   https://github.com/martinescardo/TypeTopology
+
+   A module dependency graph (updated manually from time to time) is
+   available at https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf
+
+   Check our lecture notes (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html)
+   if you want to learn HoTT/UF and Agda:
+
+   Click at the imported module names to navigate to them.
+
+(There are some somewhat obsolete comments at the end of this file,
 explaining part of what we do in this development. See instead the
-comments in the various modules.
-
-Click at the imported module names to navigate to them.
+comments in the various modules.)
 
 \begin{code}
 

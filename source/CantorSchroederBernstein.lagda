@@ -1,6 +1,6 @@
-Martin Escardo, 22nd January 2020
+Martin Escardo, 22nd January 2020. (This file needs the Agda release candidate 2.6.1.)
 
-This file has two parts, which assume function extensionality but not
+There are two parts, which assume function extensionality but not
 univalence or the existence of propositional truncations:
 
 
@@ -24,8 +24,6 @@ univalence or the existence of propositional truncations:
     left-cancellable).
 
     As far as we know, (2) is a new result.
-
-NB. This file needs the Agda release candidate 2.6.1.
 
 \begin{code}
 
@@ -527,3 +525,6 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   𝒽 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
 
 \end{code}
+
+Check our lecture notes https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
+if you want to learn HoTT/UF and Agda.
