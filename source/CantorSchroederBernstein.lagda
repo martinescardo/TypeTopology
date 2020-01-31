@@ -327,7 +327,7 @@ being an embedding, is left-cancellable:
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
   g⁻¹-is-linv y γ = have (g (g⁻¹ (g y , γ)) ≡⟨ g⁻¹-is-rinv (g y , γ) ⟩
                           g y               ∎)
-                    so-apply (embeddings-are-left-cancellable g g-is-emb)
+                    so-apply embeddings-are-left-cancellable g g-is-emb
 
 \end{code}
 
@@ -337,7 +337,7 @@ left-cancellability of h:
 \begin{code}
 
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
-  α x γ = need (is-g-point x)
+  α x γ = need is-g-point x
           which-is-given-by
            assume x₀ ∶ X                    then
            assume n  ∶ ℕ                    then
@@ -348,20 +348,20 @@ left-cancellability of h:
                so-apply γ x₀ (succ n)))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
-  f-g⁻¹-disjoint-images x ν (x' , γ) p = have (p ∶ f x ≡ g⁻¹ (x' , γ))
+  f-g⁻¹-disjoint-images x ν (x' , γ) p = have p ∶ f x ≡ g⁻¹ (x' , γ)
                                          so need contradiction
                                             which-is-given-by
                                              have (γ ∶ is-g-point x')
                                              which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
     q : g (f x) ≡ x'
-    q = have (p ∶ f x ≡ g⁻¹ (x' , γ))
+    q = have p ∶ f x ≡ g⁻¹ (x' , γ)
         so-use (g (f x)          ≡⟨ ap g p                ⟩
                 g (g⁻¹ (x' , γ)) ≡⟨ g⁻¹-is-rinv (x' , γ)  ⟩
                 x'               ∎)
     u : ¬ is-g-point (g (f x))
-    u = have (ν ∶ ¬ is-g-point x)
-       so-apply (contrapositive (α x))
+    u = have ν ∶ ¬ is-g-point x
+        so-apply contrapositive (α x)
     v : ¬ is-g-point x'
     v = transport (λ - → ¬ is-g-point -) q u
 
@@ -385,20 +385,20 @@ prove properties about H and then specialize them to h:
    where
     l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ≡ H x' d' → x ≡ x'
 
-    l (inl γ) (inl γ') p = have (p ∶ g⁻¹ (x , γ) ≡ g⁻¹ (x' , γ'))
+    l (inl γ) (inl γ') p = have p ∶ g⁻¹ (x , γ) ≡ g⁻¹ (x' , γ')
                            so (x                 ≡⟨ (g⁻¹-is-rinv (x , γ))⁻¹ ⟩
                                g (g⁻¹ (x  , γ )) ≡⟨ ap g p                  ⟩
                                g (g⁻¹ (x' , γ')) ≡⟨ g⁻¹-is-rinv (x' , γ')   ⟩
                                x'                ∎)
 
-    l (inl γ) (inr ν') p = have (p ∶ g⁻¹ (x , γ) ≡ f x')
-                           which-is-impossible-by (λ - → f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹))
+    l (inl γ) (inr ν') p = have p ∶ g⁻¹ (x , γ) ≡ f x'
+                           which-is-impossible-by λ - → f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹)
 
-    l (inr ν) (inl γ') p = have (p ∶ f x ≡ g⁻¹ (x' , γ'))
-                           which-is-impossible-by (f-g⁻¹-disjoint-images x ν (x' , γ'))
+    l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ (x' , γ')
+                           which-is-impossible-by f-g⁻¹-disjoint-images x ν (x' , γ')
 
     l (inr ν) (inr ν') p = have (p ∶ f x ≡ f x')
-                           so-apply (embeddings-are-left-cancellable f f-is-emb)
+                           so-apply embeddings-are-left-cancellable f f-is-emb
 
 \end{code}
 
@@ -424,7 +424,7 @@ What is important for our argument is that non-f-points are g-points:
   non-f-point-is-g-point x ν x₀ n p = need (fiber g x₀) which-is-given-by
     (Cases (excluded-middle (fiber g x₀) (g-is-emb x₀))
       (λ (σ :   fiber g x₀) → σ)
-      (λ (u : ¬ fiber g x₀) → have ((x₀ , (n , p) , u) ∶ f-point x)
+      (λ (u : ¬ fiber g x₀) → have (x₀ , (n , p) , u) ∶ f-point x
                               which-is-impossible-by (ν ∶ ¬ f-point x)))
 
 \end{code}
@@ -438,32 +438,32 @@ doesn't refer to the notion of f-point.
   claim y ν = v
    where
     i : ¬¬ f-point (g y)
-    i = have (ν ∶ ¬ is-g-point (g y))
-        so-apply (contrapositive (non-f-point-is-g-point (g y)))
+    i = have ν ∶ ¬ is-g-point (g y)
+        so-apply contrapositive (non-f-point-is-g-point (g y))
 
     ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
     ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
-                            so have ((y , (p ⁻¹)) ∶ fiber g x₀)
+                            so have (y , (p ⁻¹)) ∶ fiber g x₀
                                which-is-impossible-by (u ∶ ¬ fiber g x₀)
     ii (x₀ , (succ n , p) , u) = a , b
      where
       q : f (((g ∘ f) ^ n) x₀) ≡ y
-      q = have (p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
-                  ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y)
-          so-apply (embeddings-are-left-cancellable g g-is-emb)
+      q = have p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
+                 ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y
+          so-apply embeddings-are-left-cancellable g g-is-emb
       a : fiber f y
       a = ((g ∘ f) ^ n) x₀ , q
       b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
       b = assume γ ∶ is-g-point (((g ∘ f) ^ n) x₀)
-          then (have (γ x₀ n refl ∶ fiber g x₀)
+          then (have γ x₀ n refl ∶ fiber g x₀
                 which-is-impossible-by (u ∶ ¬ fiber g x₀))
 
     iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
     iii = double-contrapositive ii i
 
     iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
-    iv = have (f-is-emb y ∶ is-prop (fiber f y))
-         so-apply (subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)))
+    iv = have f-is-emb y ∶ is-prop (fiber f y)
+         so-apply subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀))
 
     v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
     v = double-negation-elimination excluded-middle _ iv iii
@@ -488,19 +488,19 @@ that this works.
       ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition    ⟩
                    g⁻¹ (g y , γ')   ≡⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
-      ψ (inr ν)  = have (ν ∶ ¬ is-g-point (g y))
+      ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
                    which-contradicts (γ ∶ is-g-point (g y))
     a (inr ν) = x , ψ
      where
       w : Σ \((x , p) : fiber f y) → ¬ is-g-point x
-      w = have (ν ∶ ¬ is-g-point (g y))
-          so-apply (claim y)
+      w = have ν ∶ ¬ is-g-point (g y)
+          so-apply claim y
       x : X
       x = fiber-point f y (pr₁ w)
       p : f x ≡ y
       p = fiber-path f y (pr₁ w)
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
-      ψ (inl γ) = have (γ ∶ is-g-point x)
+      ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
       ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
                   f x         ≡⟨ p             ⟩
