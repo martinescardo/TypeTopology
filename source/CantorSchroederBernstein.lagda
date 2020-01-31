@@ -190,7 +190,9 @@ post
 
     https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
 
-first. However, we try to make the proof understandable here.
+first. However, we try to make the proof understandable as we can
+here, and hopefully it should be possible to read it without reference
+to the blog post.
 
 \begin{code}
 
@@ -303,8 +305,8 @@ is an equivalence:
 
 \end{code}
 
-To show that h is an equivalence, it is enough to show that it is
-left-cancellable and split-surjective.
+For that purpose, it is enough to show that it is left-cancellable and
+split-surjective.
 
 To show that it is left-cancellable, we first show that g⁻¹ is a
 two-sided inverse in its domain of definition.
@@ -344,14 +346,14 @@ left-cancellability of h:
            assume p  ∶ ((g ∘ f) ^ n) x₀ ≡ x then
             (need fiber g x₀
              which-is-given-by
-              (have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
-               so-apply γ x₀ (succ n)))
+               have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
+               so-apply γ x₀ (succ n))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have p ∶ f x ≡ g⁻¹ (x' , γ)
                                          so need contradiction
                                             which-is-given-by
-                                             have (γ ∶ is-g-point x')
+                                             have γ ∶ is-g-point x'
                                              which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
     q : g (f x) ≡ x'
@@ -368,7 +370,7 @@ left-cancellability of h:
 \end{code}
 
 It is convenient to work with the following auxiliary function H and
-prove properties about H and then specialize them to h:
+prove properties of H and then specialize them to h:
 
 \begin{code}
 
@@ -397,7 +399,7 @@ prove properties about H and then specialize them to h:
     l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ (x' , γ')
                            which-is-impossible-by f-g⁻¹-disjoint-images x ν (x' , γ')
 
-    l (inr ν) (inr ν') p = have (p ∶ f x ≡ f x')
+    l (inr ν) (inr ν') p = have p ∶ f x ≡ f x'
                            so-apply embeddings-are-left-cancellable f f-is-emb
 
 \end{code}
@@ -442,7 +444,7 @@ doesn't refer to the notion of f-point.
         so-apply contrapositive (non-f-point-is-g-point (g y))
 
     ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
-    ii (x₀ , (0 , p) , u) = have (p ∶ x₀ ≡ g y)
+    ii (x₀ , (0 , p) , u) = have p ∶ x₀ ≡ g y
                             so have (y , (p ⁻¹)) ∶ fiber g x₀
                                which-is-impossible-by (u ∶ ¬ fiber g x₀)
     ii (x₀ , (succ n , p) , u) = a , b
@@ -474,7 +476,8 @@ With this we are ready to show that h is a split surjection. The idea
 is that, given y : Y, we check whether g y is a g-point or not, and if
 it is we map it to g y, and otherwise we map y to the point x : X
 given by the above claim. But then, of course, we also need to argue
-that this works.
+that this works. As above, we use the auxiliary function H for that
+purpose.
 
 \begin{code}
 

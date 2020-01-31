@@ -37,7 +37,7 @@ syntax -id X x = x ∶ X
 
 \end{code}
 
-And the following to make explicit the type of hypotheses:
+Notation to try to make proofs readable:
 
 \begin{code}
 

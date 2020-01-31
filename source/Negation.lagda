@@ -15,18 +15,6 @@ open import Sigma
 
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
-contradiction : 𝓤₀ ̇
-contradiction = 𝟘
-
-have_which-is-impossible-by_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
-                             → A → (A → 𝟘 {𝓤₀}) → B
-have a which-is-impossible-by ν = 𝟘-elim (ν a)
-
-
-have_which-contradicts_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
-                        → (A → 𝟘 {𝓤₀}) → A → B
-have ν which-contradicts a = 𝟘-elim (ν a)
-
 _≢_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
 x ≢ y = ¬(x ≡ y)
 
@@ -76,6 +64,24 @@ not-Σ-implies-Π-not = curry
 Π-not-implies-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
                     → ((x : X) → ¬(A x)) → ¬(Σ \(x : X) → A x)
 Π-not-implies-not-Σ = uncurry
+
+\end{code}
+
+Notation to try to make proofs readable:
+
+\begin{code}
+
+contradiction : 𝓤₀ ̇
+contradiction = 𝟘
+
+have_which-is-impossible-by_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
+                             → A → (A → 𝟘 {𝓤₀}) → B
+have a which-is-impossible-by ν = 𝟘-elim (ν a)
+
+
+have_which-contradicts_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
+                        → (A → 𝟘 {𝓤₀}) → A → B
+have ν which-contradicts a = 𝟘-elim (ν a)
 
 \end{code}
 
