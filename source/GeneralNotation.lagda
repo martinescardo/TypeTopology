@@ -64,7 +64,24 @@ assume-then A f x = f x
 
 syntax assume-then A (λ x → b) = assume x ∶ A then b
 
-infixl 100 assume-then
+assume-and : (A : 𝓤 ̇ ) {B : A → 𝓥 ̇ } → ((a : A) → B a) → (a : A) → B a
+assume-and A f x = f x
+
+syntax assume-and A (λ x → b) = assume x ∶ A and b
+
+mapsto : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → ((a : A) → B a) → (a : A) → B a
+mapsto f = f
+
+syntax mapsto (λ x → b) = x ↦ b
+
+infixr 10 mapsto
+
+Mapsto : (A : 𝓤 ̇ ) {B : A → 𝓥 ̇ } → ((a : A) → B a) → (a : A) → B a
+Mapsto A f = f
+
+syntax Mapsto A (λ x → b) = x ꞉ A ↦ b
+
+infixr 10 Mapsto
 
 \end{code}
 

@@ -188,11 +188,11 @@ Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 Added 28th January. To better understand this proof, you may consult the blog
 post
 
-    https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
+  https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
 
-first. However, we try to make the proof understandable as we can
-here, and hopefully it should be possible to read it without reference
-to the blog post.
+first. However, we have tried to make the proof understandable as we
+can here, and hopefully it should be possible to read it without
+reference to the blog post.
 
 \begin{code}
 
@@ -207,10 +207,10 @@ EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X
 
  where
 
-  remark-f : type-of f ≡ (X → Y)
+  remark-f : type-of (f , f-is-emb) ≡ (X ↪ Y)
   remark-f = by-assumption
 
-  remark-g : type-of g ≡ (Y → X)
+  remark-g : type-of (g , g-is-emb) ≡ (Y ↪ X)
   remark-g = by-assumption
 
 \end{code}
@@ -293,15 +293,15 @@ it:
 
 \end{code}
 
-The rest of the proof consists in showing that the following function
-is an equivalence:
+The rest of the proof shows that the following function is an
+equivalence:
 
 \begin{code}
 
   h : X → Y
   h x = Cases (δ x)
-        (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
-        (λ (ν : ¬ is-g-point x) → f x)
+         (γ ꞉   is-g-point x ↦ g⁻¹ (x , γ))
+         (ν ꞉ ¬ is-g-point x ↦ f x)
 
 \end{code}
 
@@ -341,13 +341,13 @@ left-cancellability of h:
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ = need is-g-point x
           which-is-given-by
-           assume x₀ ∶ X                    then
-           assume n  ∶ ℕ                    then
+           assume x₀ ∶ X                    and
+           assume n  ∶ ℕ                    and
            assume p  ∶ ((g ∘ f) ^ n) x₀ ≡ x then
             (need fiber g x₀
              which-is-given-by
-               have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
-               so-apply γ x₀ (succ n))
+              have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
+              so-apply γ x₀ (succ n))
 
   f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
   f-g⁻¹-disjoint-images x ν (x' , γ) p = have p ∶ f x ≡ g⁻¹ (x' , γ)
@@ -365,7 +365,7 @@ left-cancellability of h:
     u = have ν ∶ ¬ is-g-point x
         so-apply contrapositive (α x)
     v : ¬ is-g-point x'
-    v = transport (λ - → ¬ is-g-point -) q u
+    v = transport (- ↦ ¬ is-g-point -) q u
 
 \end{code}
 
@@ -376,10 +376,10 @@ prove properties of H and then specialize them to h:
 
   H : (x : X) → decidable (is-g-point x) → Y
   H x d = Cases d
-           (λ (γ :   is-g-point x) → g⁻¹ (x , γ))
-           (λ (ν : ¬ is-g-point x) → f x)
+           (γ ꞉   is-g-point x ↦ g⁻¹ (x , γ))
+           (ν ꞉ ¬ is-g-point x ↦ f x)
 
-  notice-that : h ≡ λ x → H x (δ x)
+  notice-that : h ≡ x ↦ H x (δ x)
   notice-that = by-definition
 
   h-lc : left-cancellable h
@@ -394,7 +394,7 @@ prove properties of H and then specialize them to h:
                                x'                ∎)
 
     l (inl γ) (inr ν') p = have p ∶ g⁻¹ (x , γ) ≡ f x'
-                           which-is-impossible-by λ - → f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹)
+                           which-is-impossible-by ( - ↦ f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹))
 
     l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ (x' , γ')
                            which-is-impossible-by f-g⁻¹-disjoint-images x ν (x' , γ')
@@ -425,9 +425,9 @@ What is important for our argument is that non-f-points are g-points:
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ n p = need (fiber g x₀) which-is-given-by
     (Cases (excluded-middle (fiber g x₀) (g-is-emb x₀))
-      (λ (σ :   fiber g x₀) → σ)
-      (λ (u : ¬ fiber g x₀) → have (x₀ , (n , p) , u) ∶ f-point x
-                              which-is-impossible-by (ν ∶ ¬ f-point x)))
+      (σ ꞉   fiber g x₀ ↦ σ)
+      (u ꞉ ¬ fiber g x₀ ↦ have (x₀ , (n , p) , u) ∶ f-point x
+                          which-is-impossible-by (ν ∶ ¬ f-point x)))
 
 \end{code}
 
