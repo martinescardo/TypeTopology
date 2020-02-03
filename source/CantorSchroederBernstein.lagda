@@ -513,7 +513,9 @@ purpose.
     x : X
     x = pr₁ b
     p : h x ≡ y
-    p = pr₂ b (δ x)
+    p = h x       ≡⟨ by-construction ⟩
+        H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
+        y         ∎
 
 \end{code}
 
