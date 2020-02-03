@@ -6,7 +6,7 @@ univalence or the existence of propositional truncations:
 
 (1) A univalent-foundations version of Pierre Pradic and Chad
     E. Brown's argument that Cantor-Schröder-Bernstein implies
-    excluded middle in constructive set theory
+    excluded middle in constructive set theory.
     (https://arxiv.org/abs/1904.09193).
 
     Their proof, reproduced here, uses the compactness (also known as
@@ -394,7 +394,7 @@ prove properties of H and then specialize them to h:
                                x'                ∎)
 
     l (inl γ) (inr ν') p = have p ∶ g⁻¹ (x , γ) ≡ f x'
-                           which-is-impossible-by ( - ↦ f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹))
+                           which-is-impossible-by (- ↦ f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹))
 
     l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ (x' , γ')
                            which-is-impossible-by f-g⁻¹-disjoint-images x ν (x' , γ')
