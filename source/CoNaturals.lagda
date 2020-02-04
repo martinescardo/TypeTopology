@@ -161,7 +161,7 @@ coalg-mophism← {𝓤} κ h b = dfunext (fe 𝓤 𝓤₀)
                             (λ x → ap (λ - → PRED(- x)) b ∙ PRED-SUCC)
 
 homomorphism-existence : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
-                       → Σ \(h : X → ℕ∞) → is-homomorphism κ h
+                       → Σ h ꞉ (X → ℕ∞), is-homomorphism κ h
 homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
  where
   q : 𝟙 + X → 𝟙 + X
@@ -322,7 +322,7 @@ coalg-morphism-Pred : {X : 𝓤 ̇ }
                     → (x : X) (u v : ℕ∞)
                     → u ≡ f x
                     → v ≡ g x
-                    → Σ \(x' : X) → (Pred u ≡ f x') × (Pred v ≡ g x')
+                    → Σ x' ꞉ X , (Pred u ≡ f x') × (Pred v ≡ g x')
 coalg-morphism-Pred {𝓤} {X} κ f g a b x u v d e =
  equality-cases (κ x) l₀ l₁
  where
@@ -413,10 +413,10 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 PRED-is-the-homotopy-final-coalgebra : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
-                                     → ∃! \(h : X → ℕ∞) → is-homomorphism κ h
+                                     → ∃! h ꞉ (X → ℕ∞), is-homomorphism κ h
 PRED-is-the-homotopy-final-coalgebra {𝓤} {X} κ = homomorphism-existence κ , γ
  where
-  γ : (e : Σ \(h' : X → ℕ∞) → is-homomorphism κ h') → homomorphism-existence κ ≡ e
+  γ : (e : Σ h' ꞉ (X → ℕ∞), is-homomorphism κ h') → homomorphism-existence κ ≡ e
   γ (h' , r) = to-Σ-≡
                 (homomorphism-uniqueness κ (ℕ∞-corec κ) h' (ℕ∞-corec-homomorphism κ) r ,
                  Π-is-set (fe 𝓤 𝓤₀)

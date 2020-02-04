@@ -135,7 +135,7 @@ universal elements in the sense of category theory.
 
 is-universal-element-of : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → Σ A → 𝓤 ⊔ 𝓥 ̇
 is-universal-element-of {𝓤} {𝓥} {X} A (x , a) =
-   (y : X) (b : A y) → Σ \(p : x ≡ y) → yoneda-nat x A a y p ≡ b
+   (y : X) (b : A y) → Σ p ꞉ x ≡ y , yoneda-nat x A a y p ≡ b
 
 universal-element-is-the-only-element : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ : Σ A)
                                       → is-universal-element-of A σ
@@ -356,7 +356,7 @@ singleton.
 \begin{code}
 
 _≊_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-A ≊ B = Σ \(η : Nat A B) → ∀ x → is-equiv(η x)
+A ≊ B = Σ η ꞉ Nat A B , ∀ x → is-equiv(η x)
 
 is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-representable A = Σ \x → Id x ≊ A
@@ -378,7 +378,7 @@ We also have the following corollaries:
 
 is-vv-equiv-has-adj' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
                      → is-vv-equiv g
-                     → Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)
+                     → Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x))
 is-vv-equiv-has-adj' g φ = pr₁ γ ,
                            λ x y → pr₁ (pr₂ γ) x y ,
                                    nats-with-sections-are-equivs
@@ -388,7 +388,7 @@ is-vv-equiv-has-adj' g φ = pr₁ γ ,
   γ = is-vv-equiv-has-adj g φ
 
 has-adj-is-vv-equiv' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
-                     → (Σ \(f : X → Y) → (x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x))
+                     → (Σ f ꞉ (X → Y) , ((x : X) (y : Y) → (f x ≡ y) ≃ (g y ≡ x)))
                      → is-vv-equiv g
 has-adj-is-vv-equiv' g (f , ψ) =
   has-adj-is-vv-equiv g (f , (λ x y → pr₁(ψ x y)) , (λ x y → pr₁(pr₂(ψ x y))))
@@ -407,11 +407,11 @@ funext-via-singletons :
   → funext 𝓤 𝓥
 funext-via-singletons {𝓤} {𝓥} φ {X} {Y} f = γ
  where
-  c : is-singleton (Π \(x : X) → Σ \(y : Y x) → f x ≡ y)
-  c = φ X (λ x → Σ \(y : Y x) → f x ≡ y) (λ x → singleton-types-are-singletons (f x))
+  c : is-singleton (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y)
+  c = φ X (λ x → Σ y ꞉ Y x , f x ≡ y) (λ x → singleton-types-are-singletons (f x))
   A : Π Y → 𝓤 ⊔ 𝓥 ̇
   A g = (x : X) → f x ≡ g x
-  r : (Π \(x : X) → Σ \(y : Y x) → f x ≡ y) → Σ A
+  r : (Π x ꞉ X , Σ y ꞉ Y x , f x ≡ y) → Σ A
   r = TT-choice
   r-has-section : has-section r
   r-has-section = TT-choice-has-section
@@ -437,7 +437,7 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Univalence
 
-univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! \(Y : 𝓤 ̇ ) → X ≃ Y)
+univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
 univalence-via-singletons = (f , g)
  where
   f : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! (Eq X)
@@ -604,14 +604,14 @@ right-inverse-bis {𝓤} {X} {x} {y} = yoneda-const (λ x p → p ∙ p ⁻¹) y
 
 from-Σ-Id : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
           → σ ≡ τ
-          → Σ \(p : pr₁ σ ≡ pr₁ τ) → yoneda-nat (σ .pr₁) A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ
+          → Σ p ꞉ pr₁ σ ≡ pr₁ τ , yoneda-nat (σ .pr₁) A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ
 from-Σ-Id {𝓤} {𝓥} {X} {A} {x , a} {τ} = yoneda-nat (x , yoneda-nat x A a x refl) B (refl , refl) τ
  where
    B : (τ : Σ A) → 𝓤 ⊔ 𝓥 ̇
-   B τ = Σ \(p : x ≡ pr₁ τ) → yoneda-nat x A a (pr₁ τ) p ≡ pr₂ τ
+   B τ = Σ p ꞉ x ≡ pr₁ τ , yoneda-nat x A a (pr₁ τ) p ≡ pr₂ τ
 
 to-Σ-Id : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-          → (Σ \(p : pr₁ σ ≡ pr₁ τ) → yoneda-nat (pr₁ σ) A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ)
+          → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , yoneda-nat (pr₁ σ) A (pr₂ σ) (pr₁ τ) p ≡ pr₂ τ)
           → σ ≡ τ
 to-Σ-Id {𝓤} {𝓥} {X} {A} {x , a} {y , b} (p , q) = r
  where
@@ -624,11 +624,11 @@ to-Σ-Id {𝓤} {𝓥} {X} {A} {x , a} {y , b} (p , q) = r
 
 from-Σ-Id' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
            → σ ≡ τ
-           → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ
+           → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ
 from-Σ-Id' = from-Σ-Id
 
 to-Σ-Id' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-         → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+         → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
          → σ ≡ τ
 to-Σ-Id' = to-Σ-Id
 
@@ -658,12 +658,12 @@ NatΣ-lc' {𝓤} {𝓥} {𝓦} {X} {A} {B} ζ ζ-lc {(x , a)} {(y , b)} pq = g
     g = to-Σ-Id (p , t)
 
 yoneda-equivalence-Σ : FunExt → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                     → Σ A ≃ Σ \(x : X) → Nat (Id x) A
+                     → Σ A ≃ (Σ x ꞉ X , Nat (Id x) A)
 yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
 
 
 nats-are-uniquely-transports : FunExt → {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
-                             → ∃! \(a : A x) → (λ y p → transport A p a) ≡ η
+                             → ∃! a ꞉ A x , (λ y p → transport A p a) ≡ η
 nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
 adj-obs : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X) (x : X)

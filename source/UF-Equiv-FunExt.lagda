@@ -239,8 +239,8 @@ SpartanMLTT with another name - TODO):
 \begin{code}
 
 TT-choice : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
-          → (Π \(x : X) → Σ \(y : Y x) → A x y)
-          → Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x)
+          → (Π x ꞉ X , Σ y ꞉ Y x , A x y)
+          → Σ f ꞉ ((x : X) → Y x) , Π x ꞉ X , A x (f x)
 TT-choice φ = (λ x → pr₁(φ x)) , (λ x → pr₂(φ x))
 
 \end{code}
@@ -250,8 +250,8 @@ Its inverse (also already defined - TODO):
 \begin{code}
 
 TT-unchoice : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
-            → (Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-            → Π \(x : X) → Σ \(y : Y x) → A x y
+            → (Σ f ꞉ ((x : X) → Y x) , Π x ꞉ X , A x (f x))
+            → Π x ꞉ X , Σ y ꞉ Y x , A x y
 TT-unchoice (f , g) x = (f x) , (g x)
 
 \end{code}
@@ -263,18 +263,18 @@ function extensionality (this already occurs in UF-EquivalenceExamples
 \begin{code}
 
 TT-choice-unchoice : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
-                  → (t : Σ \(f : (x : X) → Y x) → Π \(x : X) → A x (f x))
-                  → TT-choice (TT-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A} t) ≡ t
+                   → (t : Σ f ꞉ ((x : X) → Y x) , Π x ꞉ X , A x (f x))
+                   → TT-choice (TT-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A} t) ≡ t
 TT-choice-unchoice t = refl
 
 TT-choice-has-section : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
-                    → has-section (TT-choice {𝓤} {𝓥} {𝓦} {X} {Y} {A})
+                      → has-section (TT-choice {𝓤} {𝓥} {𝓦} {X} {Y} {A})
 TT-choice-has-section {𝓤} {𝓥} {𝓦} {X} {Y} {A} = TT-unchoice ,
                                                 TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A}
 
 TT-unchoice-choice : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
                    → funext 𝓤 (𝓥 ⊔ 𝓦)
-                   → (φ : Π \(x : X) → Σ \(y : Y x) → A x y)
+                   → (φ : Π x ꞉ X , Σ y ꞉ Y x , A x y)
                    → TT-unchoice (TT-choice φ) ≡ φ
 TT-unchoice-choice fe φ = dfunext fe (λ x → refl)
 

@@ -61,7 +61,7 @@ prop-indexed-product {P} i α = Π X ,
   _<_ : {p : P} → X p → X p → 𝓤₀ ̇
   _<_ {p} x y = x ≺⟨ α p ⟩ y
   _≺_ : Π X → Π X → 𝓤₀ ̇
-  f ≺ g = Σ \(p : P) → f p < g p
+  f ≺ g = Σ p ꞉ P , f p < g p
 
 \end{code}
 
@@ -94,7 +94,7 @@ Sum of an ordinal-indexed family of ordinals:
 \begin{code}
 
 ∑ : (τ : Ordᵀ) → (⟪ τ ⟫ → Ordᵀ) → Ordᵀ
-∑ ((X , _<_ , o) , t) υ = ((Σ \(x : X) → ⟪ υ x ⟫) ,
+∑ ((X , _<_ , o) , t) υ = ((Σ x ꞉ X , ⟪ υ x ⟫) ,
                               Sum.order ,
                               Sum.well-order o (λ x → tis-well-ordered (υ x))) ,
                           Sum.top-preservation t
@@ -124,7 +124,7 @@ This uses the module 𝓤₀F-InjectiveTypes to calculate Y / j.
 
 \begin{code}
 
-_↗_ : {X A : 𝓤₀ ̇ } → (X → Ordᵀ) → (Σ \(j : X → A) → is-embedding j) → (A → Ordᵀ)
+_↗_ : {X A : 𝓤₀ ̇ } → (X → Ordᵀ) → (Σ j ꞉ (X → A), is-embedding j) → (A → Ordᵀ)
 τ ↗ (j , e) = λ a → ((Y / j) a ,
                      Extension.order a ,
                      Extension.well-order a (λ x → tis-well-ordered (τ x))) ,
@@ -161,7 +161,7 @@ Miscelanea:
 \begin{code}
 
 less-is-left : (α : Ord) (x y : ⟨ α +ₒ 𝟙ₒ ⟩) → x ≺⟨ α +ₒ 𝟙ₒ ⟩ y
-             → Σ \(a : ⟨ α ⟩) → x ≡ inl a
+             → Σ a ꞉ ⟨ α ⟩ , x ≡ inl a
 less-is-left α (inl a) y l = a , refl
 less-is-left α (inr *) (inl a) l = 𝟘-elim l
 less-is-left α (inr *) (inr *) l = 𝟘-elim l

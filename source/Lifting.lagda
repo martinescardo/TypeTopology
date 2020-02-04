@@ -14,7 +14,7 @@ module Lifting (𝓣 : Universe) where
 open import UF-Subsingletons hiding (⊥)
 
 𝓛 : 𝓤 ̇ → 𝓣 ⁺ ⊔  𝓤 ̇
-𝓛 X = Σ \(P : 𝓣 ̇ ) → (P → X) × is-prop P
+𝓛 X = Σ P ꞉ 𝓣 ̇ , (P → X) × is-prop P
 
 is-defined : {X : 𝓤 ̇ } → 𝓛 X → 𝓣 ̇
 

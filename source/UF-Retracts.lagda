@@ -20,7 +20,7 @@ sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
 sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-retract Y of X = Σ \(r : X → Y) → has-section r
+retract Y of X = Σ r ꞉ (X → Y) , has-section r
 
 retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract X of Y → (Y → X)
 retraction (r , s , rs) = r
@@ -74,18 +74,18 @@ has-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
 has-section' f = ∀ y → Σ \x → f x ≡ y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-retract Y Of X = Σ \(f : X → Y) → has-section' f
+retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
 
 retract-of-retract-Of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y of X → retract Y Of X
 retract-of-retract-Of {𝓤} {𝓥} {X} {Y} ρ = (retraction ρ , hass)
  where
-  hass : (y : Y) → Σ \(x : X) → retraction ρ x ≡ y
+  hass : (y : Y) → Σ x ꞉ X , retraction ρ x ≡ y
   hass y = section ρ y , retract-condition ρ y
 
 retract-Of-retract-of : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract Y Of X → retract Y of X
 retract-Of-retract-of {𝓤} {𝓥} {X} {Y} (f , hass) = (f , φ)
  where
-  φ : Σ \(s : Y → X) → f ∘ s ∼ id
+  φ : Σ s ꞉ (Y → X) , f ∘ s ∼ id
   φ = (λ y → pr₁ (hass y)) , (λ y → pr₂ (hass y))
 
 retracts-compose : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
@@ -159,9 +159,9 @@ retracts-compose (r , (s , rs)) (r' , (s' , rs')) = r' ∘ r , s ∘ s' , p
                   → has-section r → retract (Σ A) of (Σ (A ∘ r))
 Σ-reindex-retract {𝓤} {𝓥} {𝓦} {X} {Y} {A} r (s , rs) = γ , φ , γφ
  where
-  γ : (Σ \(y : Y) → A (r y)) → Σ A
+  γ : (Σ y ꞉ Y , A (r y)) → Σ A
   γ (y , a) = (r y , a)
-  φ : Σ A → Σ \(y : Y) → A (r y)
+  φ : Σ A → Σ y ꞉ Y , A (r y)
   φ (x , a) = (s x , back-transport A (rs x) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡ (rs x , p)

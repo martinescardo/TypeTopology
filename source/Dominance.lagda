@@ -98,7 +98,7 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
  D = (d , isd)
 
  L : ∀ {𝓥} (X : 𝓥 ̇ ) → 𝓤⁺ ⊔ 𝓥 ̇
- L X = Σ \(P : 𝓤 ̇ ) → d P × (P → X)
+ L X = Σ P ꞉ 𝓤 ̇ , d P × (P → X)
 
  LL : ∀ {𝓥} (X : 𝓥 ̇ ) → 𝓤⁺ ⊔ 𝓥 ̇
  LL X = L(L X)
@@ -122,7 +122,7 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
  extension {𝓥} {𝓦} {X} {Y} f (P , (isdp , φ)) = (Q , (isdq , γ))
   where
    Q : 𝓤 ̇
-   Q = Σ \(p : P) → isDefined(f(φ p))
+   Q = Σ p ꞉ P , isDefined(f(φ p))
 
    isdq : is-dominant D Q
    isdq = dominant-closed-under-Σ D

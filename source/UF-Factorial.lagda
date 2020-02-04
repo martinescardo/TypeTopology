@@ -81,7 +81,7 @@ decidable for every y : X.
 \begin{code}
 
 co-derived-set : 𝓤 ̇ → 𝓤 ̇
-co-derived-set X = Σ \(x : X) → is-isolated x
+co-derived-set X = Σ x ꞉ X , is-isolated x
 
 cods-embedding : (X : 𝓤 ̇ ) → co-derived-set X → X
 cods-embedding X = pr₁
@@ -138,16 +138,16 @@ The claim is that the above map is an equivalence.
 We construct/prove this in four steps:
 
 (1)  (X ≃ Y)
-    ≃ Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+    ≃ Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr *) ≡ inr *
 
 Hence
 
 (2) (Y + 𝟙)' × (X ≃ Y)
-  ≃ (Y + 𝟙)' × Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *
+  ≃ (Y + 𝟙)' × Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr *) ≡ inr *
 
 Also
 
-(3) (Y + 𝟙)' × (Σ \(f : X + 𝟙 ≃ Y + 𝟙) → f (inr *) ≡ inr *)
+(3) (Y + 𝟙)' × (Σ f ꞉ X + 𝟙 ≃ Y + 𝟙 , f (inr *) ≡ inr *)
   ≃ (X + 𝟙 ≃ Y + 𝟙)
 
 And therefore
@@ -181,10 +181,10 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
  lemma : (f : X+𝟙 → Y+𝟙)
        → f (inr *) ≡ inr *
        → is-equiv f
-       → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
+       → Σ f' ꞉ (X → Y), is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
  lemma f p i = γ (equivs-are-qinvs f i)
   where
-   γ : qinv f → Σ \(f' : X → Y) → is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
+   γ : qinv f → Σ f' ꞉ (X → Y), is-equiv f' × (f ∼ +functor f' unique-to-𝟙)
    γ (g , η , ε) = f' , qinvs-are-equivs f' (g' , η' , ε') , h
     where
      f' : X → Y
@@ -219,7 +219,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      h (inl x) = a x
      h (inr *) = p
 
- step₁ : (X ≃ Y) ≃ Σ \(f : X+𝟙 ≃ Y+𝟙) → ⌜ f ⌝ (inr *) ≡ inr *
+ step₁ : (X ≃ Y) ≃ (Σ f ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ f ⌝ (inr *) ≡ inr *)
  step₁ = qinveq φ (γ , η , ε)
   where
    a : (g : X → Y) → qinv g → Y+𝟙 → X+𝟙
@@ -236,10 +236,10 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
    d : (g : X → Y) → qinv g → is-equiv (+functor g unique-to-𝟙)
    d g q = qinvs-are-equivs (+functor g unique-to-𝟙) (a g q , b g q , c g q)
 
-   φ : (X ≃ Y) → Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *
+   φ : (X ≃ Y) → Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *
    φ (g , i) = (+functor g unique-to-𝟙 , d g (equivs-are-qinvs g i)) , refl
 
-   γ : (Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *) → (X ≃ Y)
+   γ : (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *) → (X ≃ Y)
    γ ((f , i) , p) = pr₁ (lemma f p i) , pr₁ (pr₂ (lemma f p i))
 
    η : γ ∘ φ ∼ id
@@ -260,15 +260,15 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
 
 
  step₂ : co-derived-set (Y+𝟙) × (X ≃ Y)
-       ≃ co-derived-set (Y+𝟙) × Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *
+       ≃ co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *)
  step₂ = ×cong (≃-refl (co-derived-set (Y+𝟙))) step₁
 
 
- step₃ : (co-derived-set (Y+𝟙) × Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *)
+ step₃ : (co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *))
        ≃ (X+𝟙 ≃ Y+𝟙)
  step₃ = qinveq φ (γ , η , ε)
   where
-   A = co-derived-set (Y+𝟙) × Σ \(e : X+𝟙 ≃ Y+𝟙) → ⌜ e ⌝ (inr *) ≡ inr *
+   A = co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *)
    B = X+𝟙 ≃ Y+𝟙
 
    φ : A → B

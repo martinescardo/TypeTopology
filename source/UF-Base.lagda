@@ -22,11 +22,11 @@ NatΠ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B →
 NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
 
 ΠΣ-distr : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-         → (Π \(x : X) → Σ \(a : A x) → P x a) → Σ \(f : Π A) → Π \(x : X) → P x (f x)
+         → (Π x ꞉ X , Σ a ꞉ A x , P x a) → Σ f ꞉ Π A , Π x ꞉ X , P x (f x)
 ΠΣ-distr φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
 
 ΠΣ-distr-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-              → (Σ \(f : Π A) → Π \(x : X) → P x (f x)) → Π \(x : X) → Σ \(a : A x) → P x a
+              → (Σ f ꞉ Π A , Π x ꞉ X , P x (f x)) → Π x  ꞉  X , Σ a  ꞉  A x , P x a
 ΠΣ-distr-back (f , φ) x = f x , φ x
 
 _≈_ : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ } → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇
@@ -229,7 +229,7 @@ tofrom-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
 tofrom-×-≡ refl = refl
 
 from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
-         → Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ (pr₂ τ)
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ (pr₂ τ)
 from-Σ-≡ refl = refl , refl
 
 from-Σ-≡' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {u v : Σ Y} (r : u ≡ v)
@@ -240,12 +240,12 @@ from-Σ-≡' {𝓤} {𝓥} {X} {Y} {u} {v} = J A (λ u → refl) {u} {v}
   A u v r = transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
 
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-       → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+       → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
        → σ ≡ τ
 to-Σ-≡ (refl , refl) = refl
 
 ap-pr₁-to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-                (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+                (w : Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
               → ap pr₁ (to-Σ-≡ w) ≡ pr₁ w
 ap-pr₁-to-Σ-≡ (refl , refl) = refl
 
@@ -253,7 +253,7 @@ to-Σ-≡' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {x : X} {y y' : Y x}
         → y ≡ y' → _≡_ {_} {Σ Y} (x , y) (x , y')
 to-Σ-≡' {𝓤} {𝓥} {X} {Y} {x} = ap (λ - → (x , -))
 
-fromto-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (w : Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+fromto-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (w : Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
            → from-Σ-≡ (to-Σ-≡ w) ≡ w
 fromto-Σ-≡ (refl , refl) = refl
 

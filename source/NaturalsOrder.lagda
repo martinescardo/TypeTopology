@@ -28,7 +28,7 @@ x ≥ y = y ≤ x
 open import UF-Base
 open import UF-Miscelanea
 
-right-addition-is-embedding : (m n : ℕ) → is-prop (Σ \(k : ℕ) → k +' m ≡ n)
+right-addition-is-embedding : (m n : ℕ) → is-prop (Σ k ꞉ ℕ , k +' m ≡ n)
 right-addition-is-embedding zero n (.n , refl) (.n , refl) = refl
 right-addition-is-embedding (succ m) zero (k , p) (k' , p') = 𝟘-elim (positive-not-zero (k +' m) p)
 right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap pr₁ IH , ℕ-is-set _ _)
@@ -36,15 +36,15 @@ right-addition-is-embedding (succ m) (succ n) (k , p) (k' , p') = to-Σ-≡ (ap 
   IH : k , succ-lc p ≡ k' , succ-lc p'
   IH = right-addition-is-embedding m n (k , succ-lc p) (k' , succ-lc p')
 
-subtraction : (m n : ℕ) → m ≤ n → Σ \(k : ℕ) → k +' m ≡ n
+subtraction : (m n : ℕ) → m ≤ n → Σ k ꞉ ℕ , k +' m ≡ n
 subtraction zero n l = n , refl
 subtraction (succ m) zero l = 𝟘-elim l
 subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
  where
-  IH : Σ \(k : ℕ) → k +' m ≡ n
+  IH : Σ k ꞉ ℕ , k +' m ≡ n
   IH = subtraction m n l
 
-cosubtraction : (m n : ℕ) → (Σ \(k : ℕ) → k +' m ≡ n) → m ≤ n
+cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ≡ n) → m ≤ n
 cosubtraction zero n (.n , refl) = *
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
 cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
@@ -241,14 +241,14 @@ Bounded minimization (added 14th December 2019):
 \begin{code}
 
 βμ : (A : ℕ → 𝓤 ̇ ) → detachable A
-  → (k : ℕ) → (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
+  → (k : ℕ) → (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n))
             + ((n : ℕ) → A n → n ≥ k)
 
 βμ A δ 0 = inr (λ n a → zero-minimal n)
 βμ A δ (succ k) = cases f g (βμ A δ k)
  where
   conclusion = type-of (βμ A δ (succ k))
-  f : (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
+  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
   f (m , l , a , φ) = inl (m , <-trans m k (succ k) l (<-succ k) , a , φ)
   g : ((n : ℕ) → A n → k ≤ n) → conclusion
   g φ = cases g₀ g₁ (δ k)
@@ -282,13 +282,13 @@ bounded minimization:
 \begin{code}
 
 Σμ : (ℕ → 𝓤 ̇ ) → 𝓤 ̇
-Σμ A = Σ \(m : ℕ) → A m × ((n : ℕ) → A n → m ≤ n)
+Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
 minimal-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
 minimal-from-given A δ (k , a) = cases f g (βμ A δ k)
  where
   conclusion = type-of (minimal-from-given A δ (k , a))
-  f : (Σ \(m : ℕ) → (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
+  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
   f (m , l , a' , φ) = m , a' , φ
   g : ((n : ℕ) → A n → k ≤ n) → conclusion
   g φ = k , a , φ

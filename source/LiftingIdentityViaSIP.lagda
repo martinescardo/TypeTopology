@@ -28,7 +28,7 @@ open import UF-StructureIdentityPrinciple
 open import Lifting 𝓣
 
 _⋍_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
-l ⋍ m = Σ \(e : is-defined l ≃ is-defined m) → value l ≡ value m ∘ ⌜ e ⌝
+l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ≡ value m ∘ ⌜ e ⌝
 
 𝓛-Id : is-univalent 𝓣 → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍ m)
 𝓛-Id ua = ≡-is-≃ₛ'
@@ -54,7 +54,7 @@ pointwise equality, and hence we also consider:
 \begin{code}
 
 _⋍·_ : 𝓛 X → 𝓛 X → 𝓣 ⊔ 𝓤 ̇
-l ⋍· m = Σ \(e : is-defined l ≃ is-defined m) → value l ∼ value m ∘ ⌜ e ⌝
+l ⋍· m = Σ e ꞉ is-defined l ≃ is-defined m , value l ∼ value m ∘ ⌜ e ⌝
 
 𝓛-Id· : is-univalent 𝓣 → funext 𝓣 𝓤
       → (l m : 𝓛 X) → (l ≡ m) ≃ (l ⋍· m)

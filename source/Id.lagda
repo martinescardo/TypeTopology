@@ -9,7 +9,7 @@ module Id where
 open import Universes
 open import Pi
 
-data _≡_ {𝓤} {X : 𝓤 ̇ } : X → X → 𝓤 ̇  where
+data _≡_ {𝓤} {X : 𝓤 ̇ } : X → X → 𝓤 ̇ where
   refl : {x : X} → x ≡ x
 
 refl─ : {X : 𝓤 ̇ } (x : X) → x ≡ x

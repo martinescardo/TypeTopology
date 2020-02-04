@@ -51,7 +51,7 @@ induction principle:
 
 \begin{code}
 
-data 𝔹 : 𝓤₀ ̇  where
+data 𝔹 : 𝓤₀ ̇ where
  zero : 𝔹
  l    : 𝔹 → 𝔹
  r    : 𝔹 → 𝔹

@@ -24,7 +24,7 @@ module Lumsdaine
         where
 
 private
-  record Σ {𝓤 𝓥 } {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+  record Σ {𝓤 𝓥 } {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
    constructor _,_
    field
     pr₁ : X
@@ -32,11 +32,18 @@ private
 
   open Σ
 
+  Sigma : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+  Sigma X Y = Σ Y
+
+  syntax Sigma A (λ x → b) = Σ x ꞉ A , b
+
+  infixr -1 Sigma
+
   id : {X : 𝓤 ̇ }  → X → X
   id x = x
 
   lc-maps : (X Y : 𝓤 ̇ ) → 𝓤 ̇
-  lc-maps X Y = Σ \(f : X → Y) → {x x' : X} → Id (f x) (f x') → Id x x'
+  lc-maps X Y = Σ f ꞉ (X → Y) , ({x x' : X} → Id (f x) (f x') → Id x x')
 
   id-lc-maps : {X : 𝓤 ̇ } → lc-maps X X
   id-lc-maps = (id , id)
@@ -55,11 +62,11 @@ module _ {X : 𝓤 ̇ }
       C y p = lc-maps (A y p ) (A x refl)
 
     h : (b : A x refl) {y : X} (p : Id x y)
-      → Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
+      → Σ x ꞉ A y p , Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
     h b {y} p = J x B (b , refl) y p
      where
       B : (y : X) (p : Id x y) → 𝓤 ̇
-      B y p = Σ \(x : A y p) → Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
+      B y p = Σ x ꞉ A y p , Id (pr₁ (g p p) x) (pr₁ (g refl p) b)
 
   J' : A x refl → (y : X) (p : Id x y) → A y p
   J' b y p = pr₁ (h b p)

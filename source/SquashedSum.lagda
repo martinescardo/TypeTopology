@@ -357,16 +357,16 @@ numbers ℕ, defined in the module GenericConvergentSequence.
 
 The squashed sum of X : ℕ → 𝓤₀ ̇ is defined to be
 
-   Σᴵ X = Σ \(u : ℕ∞) → X [ u ]
+   Σᴵ X = Σ u ꞉ ℕ∞ , X [ u ]
 
 Intuitively, the squashed sum is the disjoint sum with an added limit
 point at infinity.
 
-Assuming excluded middle, Σᴵ X is isomorphic to (Σ \(n : ℕ) → X n) ⊎ 1
+Assuming excluded middle, Σᴵ X is isomorphic to (Σ n ꞉ ℕ , X n) ⊎ 1
 where 1 is the one-point type.
 
 Assuming Brouwerian continuity axioms, Σᴵ X is the one-point
-compatification of the disjoint sum (Σ \(n : ℕ) → X n).
+compatification of the disjoint sum (Σ n ꞉ ℕ , X n).
 
 But we don't assume excluded middle or continuiy axioms here. We work
 within intensional MLTT with function extensionality as a postulate
@@ -380,7 +380,7 @@ module original-version-and-equivalence-with-new-version where
  X [ u ] = (k : ℕ) → under k ≡ u → X k
 
  Σᴵ : (ℕ → 𝓤₀ ̇ ) → 𝓤₀ ̇
- Σᴵ X = Σ \(u : ℕ∞) → X [ u ]
+ Σᴵ X = Σ u ꞉ ℕ∞ , X [ u ]
 
  ∞₁ : {X : ℕ → 𝓤₀ ̇ } → Σᴵ X
  ∞₁ = ∞ , λ k r → 𝟘-elim (∞-is-not-finite k (r ⁻¹))

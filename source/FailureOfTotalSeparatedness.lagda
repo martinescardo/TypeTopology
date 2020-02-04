@@ -61,7 +61,7 @@ more transparent and conceptual argument.)
 module concrete-example where
 
  X : 𝓤₀ ̇
- X = Σ \(u : ℕ∞) → u ≡ ∞ → 𝟚
+ X = Σ u ꞉ ℕ∞ , (u ≡ ∞ → 𝟚)
 
  ∞₀ : X
  ∞₀ = (∞ , λ r → ₀)
@@ -184,7 +184,7 @@ unchanged.
 module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
 
  Y : 𝓤 ̇
- Y = Σ \(x : X) → x ≡ a → 𝟚
+ Y = Σ x ꞉ X , (x ≡ a → 𝟚)
 
  e : 𝟚 → X → Y
  e n x = (x , λ p → n)
@@ -199,7 +199,7 @@ module general-example (𝓤 : Universe) (X : 𝓤 ̇ ) (a : X) where
  Proposition r = zero-is-not-one zero-is-one
   where
    P : Y → 𝓤 ̇
-   P (x , f) = Σ \(q : x ≡ a) → f q ≡ ₁
+   P (x , f) = Σ q ꞉ x ≡ a , f q ≡ ₁
 
    observation₀ : P a₀ ≡ (a ≡ a) × (₀ ≡ ₁)
    observation₀ = refl
@@ -246,7 +246,7 @@ module DiscreteAndSeparated.)
  weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
  weakly-isolated x = ∀ x' → decidable(x' ≢ x)
 
- Theorem : (Σ \(g : Y → 𝟚) → g a₀ ≢ g a₁) → weakly-isolated a
+ Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≢ g a₁) → weakly-isolated a
  Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)
   where
    f : X → 𝟚

@@ -7,7 +7,7 @@ Function extensionality follows from a generalization of
 univalence. Using this, we formulate a condition equivalent to
 the univalence of the universe U, namely
 
- (X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f
+ (X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ p ꞉ X ≡ Y , transport id p ≡ f
 
 \begin{code}
 
@@ -36,11 +36,11 @@ of path-induced equivalences.
 isPIE : {X Y : 𝓤 ̇ } → (X → Y) → 𝓤 ⁺ ̇
 isPIE {𝓤} {X} {Y} = fiber (idtofun X Y)
 
-isPIE-remark : {X Y : 𝓤 ̇ } (f : X → Y) → isPIE f ≡ Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
+isPIE-remark : {X Y : 𝓤 ̇ } (f : X → Y) → isPIE f ≡ (Σ p ꞉ X ≡ Y , idtofun X Y p ≡ f)
 isPIE-remark f = refl
 
 _⋍_ : 𝓤 ̇ → 𝓤 ̇ → 𝓤 ⁺ ̇
-X ⋍ Y = Σ \(f : X → Y) → isPIE f
+X ⋍ Y = Σ f ꞉ (X → Y) , isPIE f
 
 idtopie : {X Y : 𝓤 ̇ } → X ≡ Y → X ⋍ Y
 idtopie p = (idtofun _ _ p , p , refl)
@@ -82,7 +82,7 @@ http://www.math.uwo.ca/faculty/kapulkin/notes/ua_implies_fe.pdf:
 \begin{code}
 
 Δ : 𝓤 ̇ → 𝓤 ̇
-Δ X = Σ \(x : X) → Σ \(y : X) → x ≡ y
+Δ X = Σ x ꞉ X , Σ y ꞉ X , x ≡ y
 
 δ : {X : 𝓤 ̇ } → X → Δ X
 δ x = (x , x , refl)
@@ -204,7 +204,7 @@ UA-characterization :
                    ⇔ is-univalent 𝓤
 UA-characterization {𝓤} = (forth , back)
  where
-  forth : ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f) → is-univalent 𝓤
+  forth : ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ p ꞉ X ≡ Y , transport id p ≡ f) → is-univalent 𝓤
   forth γ = is-equiv-isPIE-UA (λ {X} {Y} → φ X Y)
    where
     φ : (X Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → isPIE f
@@ -216,10 +216,10 @@ UA-characterization {𝓤} = (forth , back)
       q = pr₂ (γ X Y f (equivs-are-qinvs f i))
       r : idtofun X Y p ≡ f
       r = idtofun-agreement X Y p ∙ q
-  back : is-univalent 𝓤 → ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ \(p : X ≡ Y) → transport id p ≡ f)
+  back : is-univalent 𝓤 → ((X Y : 𝓤 ̇ ) (f : X → Y) → qinv f → Σ p ꞉ X ≡ Y , transport id p ≡ f)
   back ua X Y f q = p , s
    where
-    σ : Σ \(p : X ≡ Y) → idtofun X Y p ≡ f
+    σ : Σ p ꞉ X ≡ Y , idtofun X Y p ≡ f
     σ = UA-is-equiv-isPIE ua f (qinvs-are-equivs f q)
     p : X ≡ Y
     p = pr₁ σ

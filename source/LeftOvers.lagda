@@ -32,7 +32,7 @@ JJ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 JJ R X = (X → R) → X
 
 sel-prod : {R : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : X → 𝓦 ̇ }
-         → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ \(x : X) → Y x)
+         → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ x ꞉ X , Y x)
 sel-prod {𝓤} {𝓥} {𝓦} {R} {X} {Y} ε δ p = (x₀ , y₀)
    where
     next : (x : X) → Y x
@@ -52,7 +52,7 @@ overline : {R : 𝓤 ̇ } {X : 𝓥 ̇ } → JJ R X → KK R X
 overline ε p = p(ε p)
 
 sel-prod' : {R : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : X → 𝓦 ̇ }
-          → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ \(x : X) → Y x)
+          → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ x ꞉ X , Y x)
 sel-prod' {𝓤} {𝓥} {𝓦} {R} {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X

@@ -162,11 +162,11 @@ meaning of numbers as types.
 
 \begin{code}
 
-+construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Fin m + Fin n
++construction : (m n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ Fin m + Fin n
 +construction m zero = m , 𝟘-rneutral
 +construction m (succ n) = g
   where
-    IH : Σ \(k : ℕ) → Fin k ≃ Fin m + Fin n
+    IH : Σ k ꞉ ℕ , Fin k ≃ Fin m + Fin n
     IH = +construction m n
     k : ℕ
     k = pr₁ IH
@@ -177,7 +177,7 @@ meaning of numbers as types.
          (Fin m + Fin n) + 𝟙  ≃⟨ +assoc  ⟩
          (Fin m + Fin n + 𝟙)  ■
 
-    g : Σ \(k' : ℕ) → Fin k' ≃ Fin m + Fin (succ n)
+    g : Σ k' ꞉ ℕ , Fin k' ≃ Fin m + Fin (succ n)
     g = succ k , φ'
 
 \end{code}
@@ -237,11 +237,11 @@ We now repeat this story for multiplication:
 
 \begin{code}
 
-×construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Fin m × Fin n
+×construction : (m n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ Fin m × Fin n
 ×construction m zero = zero , ×𝟘
 ×construction m (succ n) = g
   where
-    IH : Σ \(k : ℕ) → Fin k ≃ Fin m × Fin n
+    IH : Σ k ꞉ ℕ , Fin k ≃ Fin m × Fin n
     IH = ×construction m n
     k : ℕ
     k = pr₁ IH
@@ -253,7 +253,7 @@ We now repeat this story for multiplication:
          Fin m × Fin n + Fin m ≃⟨ 𝟙distr        ⟩
          Fin m × (Fin n + 𝟙)   ■
 
-    g : Σ \(k' : ℕ) → Fin k' ≃ Fin m × Fin (succ n)
+    g : Σ k' ꞉ ℕ , Fin k' ≃ Fin m × Fin (succ n)
     g = (k +' m) , φ'
 
 _×'_ : ℕ → ℕ → ℕ
@@ -291,14 +291,14 @@ module exponentiation-and-factorial (fe : FunExt) where
  fe₀ : funext 𝓤₀ 𝓤₀
  fe₀ = fe 𝓤₀ 𝓤₀
 
- →construction : (m n : ℕ) → Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
+ →construction : (m n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ (Fin m → Fin n)
  →construction zero n = succ zero ,
                         (𝟘 + 𝟙        ≃⟨ 𝟘-lneutral ⟩
                          𝟙            ≃⟨ 𝟘→ fe₀     ⟩
                         (𝟘 → Fin n)   ■)
  →construction (succ m) n = g
   where
-   IH : Σ \(k : ℕ) → Fin k ≃ (Fin m → Fin n)
+   IH : Σ k ꞉ ℕ , Fin k ≃ (Fin m → Fin n)
    IH = →construction m n
    k : ℕ
    k = pr₁ IH
@@ -310,7 +310,7 @@ module exponentiation-and-factorial (fe : FunExt) where
        (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀)   ⟩
        (Fin m + 𝟙 → Fin n)             ■
 
-   g : Σ \(k' : ℕ) → Fin k' ≃ (Fin (succ m) → Fin n)
+   g : Σ k' ꞉ ℕ , Fin k' ≃ (Fin (succ m) → Fin n)
    g = k ×' n , φ'
 
  _^_ : ℕ → ℕ → ℕ
@@ -361,7 +361,7 @@ actually necessary - see the comments in the module UF-Factorial).
 
  open import UF-Factorial fe public
 
- !construction : (n : ℕ) → Σ \(k : ℕ) → Fin k ≃ Aut (Fin n)
+ !construction : (n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ Aut (Fin n)
  !construction zero = 1 ,
                       (Fin 1          ≃⟨ ≃-refl (Fin 1) ⟩
                        𝟘 + 𝟙          ≃⟨ 𝟘-lneutral     ⟩
@@ -369,7 +369,7 @@ actually necessary - see the comments in the module UF-Factorial).
                        Aut (Fin zero) ■)
  !construction (succ n) = g
   where
-   IH : Σ \(k : ℕ) → Fin k ≃ Aut(Fin n)
+   IH : Σ k ꞉ ℕ , Fin k ≃ Aut(Fin n)
    IH = !construction n
    k : ℕ
    k = pr₁ IH
@@ -381,7 +381,7 @@ actually necessary - see the comments in the module UF-Factorial).
         (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
         Aut (Fin n + 𝟙)           ■
 
-   g : Σ \(k' : ℕ) → Fin k' ≃ Aut (Fin (succ n))
+   g : Σ k' ꞉ ℕ , Fin k' ≃ Aut (Fin (succ n))
    g = succ n ×' k , φ'
 
 \end{code}
@@ -481,30 +481,30 @@ spartan MLTT are Π and Σ.
 open import UF-PropIndexedPiSigma
 
 Σconstruction : (n : ℕ) (a : Fin n → ℕ)
-              → Σ \(k : ℕ) → Fin k ≃ Σ \(i : Fin n) → Fin (a i)
+              → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
 Σconstruction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _                         ⟩
                          𝟘                        ≃⟨ ≃-sym (prop-indexed-sum-zero id) ⟩
-                         (Σ \(i : 𝟘) → Fin (a i)) ■)
+                         (Σ i ꞉ 𝟘 , Fin (a i)) ■)
 Σconstruction (succ n) a = g
  where
-  IH : Σ \(k : ℕ) → Fin k ≃ Σ \(i : Fin n) → Fin (a (suc i))
+  IH : Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a (suc i)))
   IH = Σconstruction n (λ i → a (suc i))
   k : ℕ
   k = pr₁ IH
-  φ : Fin k ≃ Σ \(i : Fin n) → Fin (a (suc i))
+  φ : Fin k ≃ (Σ i ꞉ Fin n , Fin (a (suc i)))
   φ = pr₂ IH
   φ' = Fin (a 𝟎 +' k)                                                      ≃⟨ i   ⟩
        Fin (a 𝟎) + Fin k                                                   ≃⟨ ii  ⟩
        Fin k + Fin (a 𝟎)                                                   ≃⟨ iii ⟩
-       (Σ \(i : Fin n) → Fin (a (suc i))) + (Σ \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iv  ⟩
-      (Σ \(i : Fin n + 𝟙) → Fin (a i))                                     ■
+       (Σ i ꞉ Fin n , Fin (a (suc i))) + (Σ i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv  ⟩
+      (Σ i ꞉ Fin n + 𝟙 , Fin (a i))                                     ■
    where
     i   = pr₂ (+construction (a 𝟎) k)
     ii  = +comm
     iii = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop *))
     iv  = Σ+distr (Fin n) 𝟙 (λ i → Fin (a i))
 
-  g : Σ \(k' : ℕ) → Fin k' ≃ Σ \(i : Fin (succ n)) → Fin (a i)
+  g : Σ k' ꞉ ℕ , Fin k' ≃ Σ \(i : Fin (succ n)) → Fin (a i)
   g = a 𝟎 +' k , φ'
 
 \end{code}
@@ -539,12 +539,12 @@ For Π we need function extensionality:
 module _ (fe : funext 𝓤₀ 𝓤₀) where
 
  Πconstruction : (n : ℕ) (a : Fin n → ℕ)
-               → Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (a i)
+               → Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a i))
  Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ i   ⟩
                           𝟘 + 𝟙                        ≃⟨ ii  ⟩
                           𝟙                            ≃⟨ iii ⟩
-                          (Π \(i : 𝟘) → Fin (a i))     ≃⟨ iv  ⟩
-                          (Π \(i : Fin 0) → Fin (a i)) ■)
+                          (Π i ꞉ 𝟘 , Fin (a i))     ≃⟨ iv  ⟩
+                          (Π i ꞉ Fin 0 , Fin (a i)) ■)
   where
    i   = ≃-refl _
    ii  = 𝟘-lneutral
@@ -553,24 +553,24 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
 
  Πconstruction (succ n) a = g
   where
-   IH : Σ \(k : ℕ) → Fin k ≃ Π \(i : Fin n) → Fin (a (suc i))
+   IH : Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a (suc i)))
    IH = Πconstruction n (λ i → a (suc i))
    k : ℕ
    k = pr₁ IH
-   φ : Fin k ≃ Π \(i : Fin n) → Fin (a (suc i))
+   φ : Fin k ≃ (Π i ꞉ Fin n , Fin (a (suc i)))
    φ = pr₂ IH
    φ' = Fin (a 𝟎 ×' k)                                                      ≃⟨ i   ⟩
         Fin (a 𝟎) × Fin k                                                   ≃⟨ ii  ⟩
         Fin k × Fin (a 𝟎)                                                   ≃⟨ iii ⟩
-        (Π \(i : Fin n) → Fin (a (suc i))) × (Π \(i : 𝟙) → Fin (a (inr i))) ≃⟨ iv  ⟩
-        (Π \(i : Fin n + 𝟙) → Fin (a i))                                    ■
+        (Π i ꞉ Fin n , Fin (a (suc i))) × (Π i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv  ⟩
+        (Π i ꞉ Fin n + 𝟙 , Fin (a i))                                    ■
     where
      i   = pr₂ (×construction (a 𝟎) k)
      ii  = ×comm
      iii = ×cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
      iv  = Π×+ fe
 
-   g : Σ \(k' : ℕ) → Fin k' ≃ Π \(i : Fin (succ n)) → Fin (a i)
+   g : Σ k' ꞉ ℕ , Fin k' ≃ Π \(i : Fin (succ n)) → Fin (a i)
    g = a 𝟎 ×' k , φ'
 
  ∏ : {n : ℕ} → (Fin n → ℕ) → ℕ

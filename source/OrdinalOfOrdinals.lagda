@@ -54,10 +54,10 @@ is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x
 is-order-embedding  α β f = is-order-preserving α β f × is-order-reflecting α β f
 
 is-order-equiv      α β f = is-order-preserving α β f
-                          × Σ \(e : is-equiv f) → is-order-preserving β α (back-eqtofun (f , e))
+                          × (Σ e ꞉ is-equiv f , is-order-preserving β α (back-eqtofun (f , e)))
 
 is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                          → y ≺⟨ β ⟩ f x → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+                          → y ≺⟨ β ⟩ f x → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
 
 is-simulation       α β f = is-initial-segment α β f × is-order-preserving α β f
 
@@ -121,7 +121,7 @@ simulations-are-lc α β f (i , p) {x} {y} = φ x y (Well-foundedness α x) (Wel
      where
       a : f u ≺⟨ β ⟩ f y
       a = transport (λ - → f u ≺⟨ β ⟩ -) r (p u x l)
-      b : Σ \(v : ⟨ α ⟩) → (v ≺⟨ α ⟩ y) × (f v ≡ f u)
+      b : Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ y) × (f v ≡ f u)
       b = i y (f u) a
       c : u ≡ pr₁ b
       c = φ u (pr₁ b) (s u l) (t (pr₁ b) (pr₁(pr₂ b))) ((pr₂ (pr₂ b))⁻¹)
@@ -132,7 +132,7 @@ simulations-are-lc α β f (i , p) {x} {y} = φ x y (Well-foundedness α x) (Wel
      where
       a : f u ≺⟨ β ⟩ f x
       a = transport (λ - → f u ≺⟨ β ⟩ -) (r ⁻¹) (p u y l)
-      b : Σ \(v : ⟨ α ⟩) → (v ≺⟨ α ⟩ x) × (f v ≡ f u)
+      b : Σ v ꞉ ⟨ α ⟩ , (v ≺⟨ α ⟩ x) × (f v ≡ f u)
       b = i x (f u) a
       c : pr₁ b ≡ u
       c = φ (pr₁ b) u (s (pr₁ b) (pr₁(pr₂ b))) (t u l) (pr₂(pr₂ b))
@@ -148,7 +148,7 @@ being-initial-segment-is-a-prop {𝓤} {𝓥} α β f p i =
             λ z → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
                     λ l → φ x z l) i
   where
-   φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop(Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+   φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop(Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
    φ x y l (x' , (m , r)) (x'' , (m' , r')) = to-Σ-≡ (a , b)
     where
      c : f x' ≡ f x''
@@ -189,7 +189,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
     a : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f x → z ≺⟨ β ⟩ f' x
     a z l = transport (λ - → - ≺⟨ β ⟩ f' x) t m
      where
-      s : Σ \(y : ⟨ α ⟩) → (y ≺⟨ α ⟩ x) × (f y ≡ z)
+      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f y ≡ z)
       s = i x z l
       y : ⟨ α ⟩
       y = pr₁ s
@@ -200,7 +200,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
     b : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f' x → z ≺⟨ β ⟩ f x
     b z l = transport (λ - → - ≺⟨ β ⟩ f x) t m
      where
-      s : Σ \(y : ⟨ α ⟩) → (y ≺⟨ α ⟩ x) × (f' y ≡ z)
+      s : Σ y ꞉ ⟨ α ⟩ , (y ≺⟨ α ⟩ x) × (f' y ≡ z)
       s = i' x z l
       y : ⟨ α ⟩
       y = pr₁ s
@@ -210,7 +210,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
       t = IH y (pr₁(pr₂ s)) ∙ pr₂(pr₂ s)
 
 _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
-α ⊴ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-simulation α β f
+α ⊴ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-simulation α β f
 
 ⊴-prop-valued : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → is-prop (α ⊴ β)
 ⊴-prop-valued {𝓤} {𝓥} α β (f , s) (g , t) =
@@ -229,18 +229,18 @@ _⊴_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
                                         (λ x y l → q (f x) (f y) (p x y l))
  where
   k : (x : ⟨ α ⟩) (z : ⟨ γ ⟩) →  z ≺⟨ γ ⟩ (g (f x))
-    → Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (g (f x') ≡ z)
+    → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (g (f x') ≡ z)
   k x z l = pr₁ b , pr₁(pr₂ b) , (ap g (pr₂(pr₂ b)) ∙ pr₂(pr₂ a))
    where
-    a : Σ \(y : ⟨ β ⟩) → (y ≺⟨ β ⟩ f x) × (g y ≡ z)
+    a : Σ y ꞉ ⟨ β ⟩ , (y ≺⟨ β ⟩ f x) × (g y ≡ z)
     a = j (f x) z l
     y : ⟨ β ⟩
     y = pr₁ a
-    b : Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+    b : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
     b = i x y (pr₁ (pr₂ a))
 
 _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
-α ≃ₒ β = Σ \(f : ⟨ α ⟩ → ⟨ β ⟩) → is-order-equiv α β f
+α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
 
 ≃ₒ-gives-≃ : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → α ≃ₒ β → ⟨ α ⟩ ≃ ⟨ β ⟩
 ≃ₒ-gives-≃ α β (f , p , e , q) = (f , e)
@@ -345,9 +345,9 @@ Any lower set α ↓ a of a point a : ⟨ α ⟩ forms a (sub-)ordinal:
 \begin{code}
 
 _↓_ : (α : Ordinal 𝓤) → ⟨ α ⟩ → Ordinal 𝓤
-α ↓ a = (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) , _<_ , p , w , e , t
+α ↓ a = (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a) , _<_ , p , w , e , t
  where
-  _<_ : (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → (Σ \(x : ⟨ α ⟩) → x ≺⟨ α ⟩ a) → _ ̇
+  _<_ : (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a) → (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a) → _ ̇
   (y , _) < (z , _) = y ≺⟨ α ⟩ z
   p : is-prop-valued _<_
   p (x , _) (y , _)  = Prop-valuedness α x y
@@ -420,7 +420,7 @@ a univalent universe U.
 module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
 
  _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
- α ⊲ β = Σ \(b : ⟨ β ⟩) → α ≡ (β ↓ b)
+ α ⊲ β = Σ b ꞉ ⟨ β ⟩ , α ≡ (β ↓ b)
 
  ⊲-prop-valued : (α β : Ordinal 𝓤) → is-prop (α ⊲ β)
  ⊲-prop-valued α β (b , p) (b' , p') = to-Σ-≡ (r , s)
@@ -466,7 +466,7 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
      f : ⟨ α ↓ u ⟩ → ⟨ (α ↓ b) ↓ (u , l) ⟩
      f (x , n) = ((x , Transitivity α x u b n l) , n)
      i : (t : ⟨ α ↓ u ⟩) (w : ⟨ (α ↓ b) ↓ (u , l) ⟩)
-       → w ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t → Σ \(t' : ⟨ α ↓ u ⟩) → (t' ≺⟨ α ↓ u ⟩ t) × (f t' ≡ w)
+       → w ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t → Σ t' ꞉ ⟨ α ↓ u ⟩ , (t' ≺⟨ α ↓ u ⟩ t) × (f t' ≡ w)
      i (x , n) ((x' , m') , n') o = (x' , n') ,
                                     (o , to-Σ-≡ (to-Σ-≡' (Prop-valuedness α x' b _ _) ,
                                                 Prop-valuedness α x' u _ _))
@@ -524,9 +524,9 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
                             ((λ x → pr₁(φ x)) , i , p)
                             ((λ y → pr₁(γ y)) , j , q)
   where
-   φ : (x : ⟨ α ⟩) → Σ \(y : ⟨ β ⟩) → α ↓ x ≡ β ↓ y
+   φ : (x : ⟨ α ⟩) → Σ y ꞉ ⟨ β ⟩ , α ↓ x ≡ β ↓ y
    φ x = f (α ↓ x) (x , refl)
-   γ : (y : ⟨ β ⟩) → Σ \(x : ⟨ α ⟩) → β ↓ y ≡ α ↓ x
+   γ : (y : ⟨ β ⟩) → Σ x ꞉ ⟨ α ⟩ , β ↓ y ≡ α ↓ x
    γ y = g (β ↓ y) (y , refl)
    η : (x : ⟨ α ⟩) → pr₁(γ (pr₁(φ x))) ≡ x
    η x = (↓-lc α x (pr₁(γ (pr₁(φ x)))) a)⁻¹
@@ -633,7 +633,7 @@ lc-initial-segments-are-order-reflecting : (α β : Ordinal 𝓤) (f : ⟨ α �
                                          → is-order-reflecting α β f
 lc-initial-segments-are-order-reflecting α β f i c x y l = m
  where
-  a : Σ \(x' : ⟨ α ⟩) → (x' ≺⟨ α ⟩ y) × (f x' ≡ f x)
+  a : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ y) × (f x' ≡ f x)
   a = i y (f x) l
   m : x ≺⟨ α ⟩ y
   m = transport (λ - → - ≺⟨ α ⟩ y) (c (pr₂(pr₂ a))) (pr₁(pr₂ a))
@@ -711,7 +711,7 @@ module example where
  fact = under𝟙 , i , p
   where
    i : (x : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
-     → y ≺⟨ ℕ∞ₒ ⟩ under𝟙 x → Σ \(x' : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) → (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (under𝟙 x' ≡ y)
+     → y ≺⟨ ℕ∞ₒ ⟩ under𝟙 x → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (under𝟙 x' ≡ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
 
@@ -734,14 +734,14 @@ module example where
                                               (λ x → i x (lpo x)) ,
                                               (λ x y → p x y (lpo x) (lpo y))
   where
-   under𝟙-inverse-inl : (u : ℕ∞) (d : decidable(Σ \(n : ℕ) → u ≡ under n))
+   under𝟙-inverse-inl : (u : ℕ∞) (d : decidable(Σ n ꞉ ℕ , u ≡ under n))
                       → (m : ℕ) → u ≡ under m → under𝟙-inverse u d ≡ inl m
    under𝟙-inverse-inl .(under n) (inl (n , refl)) m q = ap inl (under-lc q)
    under𝟙-inverse-inl u (inr g) m q = 𝟘-elim (g (m , q))
 
-   i : (x : ℕ∞) (d : decidable(Σ \(n : ℕ) → x ≡ under n)) (y : ℕ + 𝟙)
+   i : (x : ℕ∞) (d : decidable(Σ n ꞉ ℕ , x ≡ under n)) (y : ℕ + 𝟙)
      → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d
-     → Σ \(x' : ℕ∞) → (x' ≺⟨ ℕ∞ₒ ⟩ x) × (under𝟙-inverse x' (lpo x') ≡ y)
+     → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (under𝟙-inverse x' (lpo x') ≡ y)
    i .(under n) (inl (n , refl)) (inl m) l =
      under m , under-order-preserving m n l , under𝟙-inverse-inl (under m) (lpo (under m)) m refl
    i .(under n) (inl (n , refl)) (inr *) l = 𝟘-elim l
@@ -751,7 +751,7 @@ module example where
      under𝟙-inverse-inl (under n) (lpo (under n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
-   p : (x y : ℕ∞)  (d : decidable(Σ \(n : ℕ) → x ≡ under n)) (e : decidable(Σ \(m : ℕ) → y ≡ under m))
+   p : (x y : ℕ∞)  (d : decidable(Σ n ꞉ ℕ , x ≡ under n)) (e : decidable(Σ m ꞉ ℕ , y ≡ under m))
      →  x ≺⟨ ℕ∞ₒ ⟩ y → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
    p .(under n) .(under m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
     back-transport (λ - → - < m) (under-lc r) (⊏-gives-< k m l)

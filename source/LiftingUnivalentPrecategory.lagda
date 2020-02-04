@@ -41,7 +41,7 @@ same value:
 \begin{code}
 
 _⊑_ : 𝓛 X → 𝓛 X → 𝓤 ⊔ 𝓣 ̇
-l ⊑ m = Σ \(f : is-defined l → is-defined m) → value l ∼ value m ∘ f
+l ⊑ m = Σ f ꞉ (is-defined l → is-defined m) , value l ∼ value m ∘ f
 
 dom : {l m : 𝓛 X} → l ⊑ m → 𝓛 X
 dom {l} {m} α = l
@@ -136,7 +136,7 @@ We can now establish the promised fact:
 open import LiftingEmbeddingDirectly 𝓣
 
 η-fiber-same-as-is-defined : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
-                           → (l : 𝓛 X) → (Σ \(x : X) → η x ≡ l) ≃ is-defined l
+                           → (l : 𝓛 X) → (Σ x ꞉ X , η x ≡ l) ≃ is-defined l
 η-fiber-same-as-is-defined pe fe fe' fe'' l = qinveq (f l) (g l , gf , fg)
  where
   f : (l : 𝓛 X) → fiber η l → is-defined l
@@ -413,8 +413,8 @@ is-𝓛-equiv← pe fe fe' l m α e = γ
   r = ⊑-anti-lemma pe fe fe' α (inverse (pr₁ α) e)
 
   π : (l n : 𝓛 X) (α : l ⊑ l) → pr₁ α ≡ id
-    → Σ \(δ : (q : is-defined l) → value l q ≡ value l q)
-            → 𝓛-pre-comp-with l l α n
+    → Σ δ ꞉ ((q : is-defined l) → value l q ≡ value l q)
+          , 𝓛-pre-comp-with l l α n
             ∼ λ β → pr₁ β , (λ q → δ q ∙ pr₂ β q)
   π l n (.id , δ) refl = δ , λ β → refl
 
@@ -495,7 +495,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
                                      (λ p → being-defined-is-a-prop m (pr₁ α (g p)) p)))
 
  _≃⟨𝓛⟩_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
- l ≃⟨𝓛⟩ m = Σ \(α : l ⊑ m) → is-𝓛-equiv l m α
+ l ≃⟨𝓛⟩ m = Σ α ꞉ l ⊑ m , is-𝓛-equiv l m α
 
  ≃⟨𝓛⟩-charac : (l m : 𝓛 X)
              → (l ≃⟨𝓛⟩ m) ≃ (l ⊑ m) × (is-defined m → is-defined l)
@@ -505,10 +505,10 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
             → (l ≃⟨𝓛⟩ m) ≃ (l ≡ m)
  ≃⟨𝓛⟩-is-Id l m = (≃⟨𝓛⟩-charac l m) ● (⊑-anti-equiv-lemma ua fe l m)
 
- 𝓛-is-univalent' : (l : 𝓛 X) → ∃! \(m : 𝓛 X) → (l ≃⟨𝓛⟩ m)
+ 𝓛-is-univalent' : (l : 𝓛 X) → ∃! m ꞉ 𝓛 X , (l ≃⟨𝓛⟩ m)
  𝓛-is-univalent' l = equiv-to-singleton e (singleton-types-are-singletons l)
   where
-    e : (Σ \(m : 𝓛 X) → l ≃⟨𝓛⟩ m) ≃ (Σ \(m : 𝓛 X) → l ≡ m)
+    e : (Σ m ꞉ 𝓛 X , l ≃⟨𝓛⟩ m) ≃ (Σ m ꞉ 𝓛 X , l ≡ m)
     e = Σ-cong (≃⟨𝓛⟩-is-Id l)
 
  𝓛-id-is-𝓛-equiv : (l : 𝓛 X) → is-𝓛-equiv l l (𝓛-id l)

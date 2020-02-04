@@ -9,13 +9,13 @@ open import Universes
 \end{code}
 
 Using our conventions below, a sum can be written Σ {X} Y or as
-Σ \(x : X) → Y x, or even Σ \x → Y x when Agda can infer the type of
+Σ x ꞉ X , Y x, or even Σ \x → Y x when Agda can infer the type of
 the element x from the context. I prefer to use \ rather than λ in
 such cases.
 
 \begin{code}
 
-record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
+record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
   constructor _,_
   field
    pr₁ : X
@@ -23,16 +23,15 @@ record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 
 
 open Σ public
 
--Σ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
--Σ X Y = Σ Y
+Sigma : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+Sigma X Y = Σ Y
 
--- In emacs, type "\:4" to get the following "꞉":
-syntax -Σ A (λ x → b) = Σ x ꞉ A , b
+syntax Sigma A (λ x → b) = Σ x ꞉ A , b
 
-infixr -1 -Σ
+infixr -1 Sigma
 
 _×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X × Y = Σ \(x : X) → Y
+X × Y = Σ x ꞉ X , Y
 
 uncurry : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : 𝓦 ̇ }
         → ((x : X) → Y x → Z) → Σ Y → Z

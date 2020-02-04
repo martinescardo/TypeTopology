@@ -34,14 +34,14 @@ indexed by a proposition:
 
 double-𝓛-charac : (X : 𝓤 ̇ )
                 → 𝓛 (𝓛 X) ≃ Σ \(P : 𝓣 ̇ )
-                                   → (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
+                                   → (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
                                    × is-prop P
 double-𝓛-charac X = Σ-cong (λ P → ×cong (γ X P) (≃-refl (is-prop P)))
  where
-  γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → (P → 𝓛 X) ≃ (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
-  γ X P = (P → Σ \(Q : 𝓣 ̇ ) → (Q → X) × is-prop Q)                               ≃⟨ ΠΣ-distr-≃ ⟩
-          (Σ \(Q : P → 𝓣 ̇ ) → (p : P) → ((Q p → X) × is-prop (Q p)))             ≃⟨ Σ-cong (λ Q → →×) ⟩
-          (Σ \(Q : P → 𝓣 ̇ ) → ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p))) ■
+  γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → (P → 𝓛 X) ≃ (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
+  γ X P = (P → Σ Q ꞉ 𝓣 ̇ , (Q → X) × is-prop Q)                                 ≃⟨ ΠΣ-distr-≃ ⟩
+          (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → ((Q p → X) × is-prop (Q p))))           ≃⟨ Σ-cong (λ Q → →×) ⟩
+          (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p))) ■
 
 \end{code}
 
@@ -51,7 +51,7 @@ algebras:
 \begin{code}
 
 𝓛-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-algebra X = Σ \(s : 𝓛 X → X) → (s ∘ η ∼ id) × (s ∘ μ ∼ s ∘ 𝓛̇ s)
+𝓛-algebra X = Σ s ꞉ (𝓛 X → X) , (s ∘ η ∼ id) × (s ∘ μ ∼ s ∘ 𝓛̇ s)
 
 free-𝓛-algebra : is-univalent 𝓣 → (X : 𝓤 ̇ ) → 𝓛-algebra (𝓛 X)
 free-𝓛-algebra ua X = μ , 𝓛-unit-left∼ ua , 𝓛-assoc∼ ua
@@ -103,7 +103,7 @@ written in more standard mathematical notation as follows:
 \begin{code}
 
 𝓛-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓛-alg X = Σ \(∐ : joinop X) → 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
+𝓛-alg X = Σ ∐ ꞉ joinop X , 𝓛-alg-Law₀ ∐ × 𝓛-alg-Law₁ ∐
 
 \end{code}
 

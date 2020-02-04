@@ -23,7 +23,7 @@ module OrdinalNotions
 is-prop-valued : 𝓤 ⊔ 𝓥 ̇
 is-prop-valued = (x y : X) → is-prop(x < y)
 
-data is-accessible : X → 𝓤 ⊔ 𝓥 ̇  where
+data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
 
 accessible-induction : (P : (x : X) → is-accessible x → 𝓦 ̇ )
@@ -196,7 +196,7 @@ is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≤ x
 
 has-top : 𝓤 ⊔ 𝓥 ̇
-has-top = Σ \(x : X) → is-top x
+has-top = Σ x ꞉ X , is-top x
 
 <-coarser-than-≤  : (x : X) → is-accessible x → ∀ y → y < x → y ≤ x
 <-coarser-than-≤ = transfinite-induction'
@@ -244,11 +244,11 @@ cotransitive-≤-coarser-than-≼ c x y n u l = γ (c u x y l)
 
 no-minimal-is-empty : is-well-founded
                     → ∀ {𝓦} (P : X → 𝓦 ̇ )
-                    → ((x : X) → P x → Σ \(y : X) → (y < x) × P y)
+                    → ((x : X) → P x → Σ y ꞉ X , (y < x) × P y)
                     → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where
-  f : ((x : X) → P x → Σ \(y : X) → (y < x) × P y) → (x : X) → ¬(P x)
+  f : ((x : X) → P x → Σ y ꞉ X , (y < x) × P y) → (x : X) → ¬(P x)
   f s x p = g x (w x) p
    where
     g : (x : X) → is-accessible x → ¬(P x)
@@ -257,7 +257,7 @@ no-minimal-is-empty w P s (x , p) = f s x p
       IH : (y : X) → y < x → ¬(P y)
       IH y l = g y (σ y l)
 
-  NB : Σ P → ¬((x : X) → P x → Σ \(y : X) → (y < x) × P y)
+  NB : Σ P → ¬((x : X) → P x → Σ y ꞉ X , (y < x) × P y)
   NB (x , p) s = f s x p
 
 \end{code}
@@ -308,9 +308,9 @@ equivalent to a proposition (has split support).
 open import Two-Properties
 
 _≺₂_ : X → X → 𝓤 ⊔ 𝓥 ̇
-x ≺₂ y = Σ \(p : X → 𝟚) → (p x <₂ p y)
-                        × ((u v : X) → (u < v → p u ≤₂ p v)
-                                     × (p u <₂ p v → u < v))
+x ≺₂ y = Σ p ꞉ (X → 𝟚) , (p x <₂ p y)
+                       × ((u v : X) → (u < v → p u ≤₂ p v)
+                                    × (p u <₂ p v → u < v))
 
 ≺₂-courser-than-< : (x y : X) → x ≺₂ y → x < y
 ≺₂-courser-than-< x y (p , l , φ) = pr₂(φ x y) l
@@ -323,9 +323,9 @@ open import DiscreteAndSeparated
 𝟚-order-separated-gives-cotransitive : 𝟚-order-separated → cotransitive
 𝟚-order-separated-gives-cotransitive s x y z l = g (s x y l)
  where
-  g : (Σ \(p : X → 𝟚) → (p x <₂ p y)
-                          × ((u v : X) → (u < v → p u ≤₂ p v)
-                                       × (p u <₂ p v → u < v)))
+  g : (Σ p ꞉ (X → 𝟚) , (p x <₂ p y)
+                     × ((u v : X) → (u < v → p u ≤₂ p v)
+                                  × (p u <₂ p v → u < v)))
     → (x < z) + (z < y)
   g (p , (r , s) , φ) = Cases (𝟚-is-discrete (p z) ₀)
                          (λ (t : p z ≡ ₀)

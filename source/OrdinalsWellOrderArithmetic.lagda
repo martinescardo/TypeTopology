@@ -377,7 +377,7 @@ the components:
 
  private
    _≺_ : Π X → Π X → 𝓤 ⊔ 𝓦 ̇
-   u ≺ v = Σ \(p : P) → φ p u < φ p v
+   u ≺ v = Σ p ꞉ P , φ p u < φ p v
 
  order = _≺_
 
@@ -620,13 +620,13 @@ module sum-top
    f' u l = Cases (f (u , top u) (inl l))
              (λ (m : u < x)
                 → m)
-             (λ (σ : Σ \(r : u ≡ x) → transport Y r (top u) ≺ y)
+             (λ (σ : Σ r ꞉ u ≡ x , transport Y r (top u) ≺ y)
                 → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g (u , top u) (inl l))
              (λ (m : u < a)
                 → m)
-             (λ (σ : Σ \(r : u ≡ a) → transport Y r (top u) ≺ b)
+             (λ (σ : Σ r ꞉ u ≡ a , transport Y r (top u) ≺ b)
                 → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
    p : a ≡ x
    p =  e a x f' g'
@@ -634,10 +634,10 @@ module sum-top
    f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
                  → 𝟘-elim (≤-refl _<_ x (w x) l))
-              (λ (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y)
+              (λ (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y)
                  → φ σ)
               where
-               φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
+               φ : (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y) → v ≺ y
                φ (r , l) = transport
                             (λ - → transport Y - v ≺ y)
                             (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
@@ -646,7 +646,7 @@ module sum-top
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
                  → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → x < -) p l)))
-              λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
+              λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
@@ -723,10 +723,10 @@ module sum-cotransitive
    f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
                  → 𝟘-elim (≤-refl _<_ x (w x) l))
-              (λ (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y)
+              (λ (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y)
                  → φ σ)
               where
-               φ : (σ : Σ \(r : x ≡ x) → transport Y r v ≺ y) → v ≺ y
+               φ : (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y) → v ≺ y
                φ (r , l) = transport
                             (λ r → transport Y r v ≺ y)
                             (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
@@ -735,7 +735,7 @@ module sum-cotransitive
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
                  → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → x < -) p l)))
-              λ (σ : Σ \(r : x ≡ a) → transport Y r u ≺ b)
+              λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
@@ -801,7 +801,7 @@ module extension
 
  private
   _≺_ : (Y / j) a → (Y / j) a → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  u ≺ v = Σ \(p : fiber j a) → u p < v p
+  u ≺ v = Σ p ꞉ fiber j a , u p < v p
 
  order = _≺_
 

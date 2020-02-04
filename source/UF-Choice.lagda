@@ -7,13 +7,13 @@ sense to consider T=¬¬, in connection with the double-negation shift.
 Choice in the HoTT book, under the assumption that X is a set and A is
 an X-indexed family of sets is
 
-    (Π \(x : X) → ∥ A x ∥) → ∥Π \(x : X) → A x∥
+    (Π x ꞉ X , ∥ A x ∥) → ∥Π x ꞉ X , A x∥
 
 (a set-indexed product of inhabited sets is inhabited).
 
 We show that, under the same assumptions, this is equivalent
 
-    ∥(Π \(x : X) → ∥ A x ∥ → A x)∥.
+    ∥(Π x ꞉ X , ∥ A x ∥ → A x)∥.
 
 Notice that, as shown in the HoTT book, the statement
 
@@ -54,26 +54,26 @@ module Shift
 
 The T-shift for a family A : X → 𝓤 ̇ is
 
-    (Π \(x : X) → T(A x)) →  T(Π \(x : X) → A x).
+    (Π x ꞉ X , T(A x)) →  T(Π x ꞉ X , A x).
 
 We observe that this is equivalent to
 
-    T(Π \(x : X) → T(A x) → A x)
+    T(Π x ꞉ X , T(A x) → A x)
 
 This generalizes the T-condition that the double negation shift is
 equivalent to
 
-   ¬¬(Π \(x : X) → A x + ¬(A x))
+   ¬¬(Π x ꞉ X , A x + ¬(A x))
 
 or
 
-   ¬¬(Π \(x : X) → ¬¬(A x) → A x)
+   ¬¬(Π x ꞉ X , ¬¬ A x → A x)
 
 \begin{code}
 
- Shift = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → (Π \(x : X) → T(A x)) → T(Π \(x : X) → A x)
+ Shift = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → (Π x ꞉ X , T(A x)) → T(Π x ꞉ X , A x)
 
- Shift' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → T(Π \(x : X) → T(A x) → A x)
+ Shift' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → T(Π x ꞉ X , (T(A x) → A x))
 
  lemma : Shift → (X : 𝓤 ̇ ) → T(T X → X)
  lemma shift X = shift (T X) (λ _ → X) (λ x → x)
@@ -104,11 +104,11 @@ module TChoice
  where
 
  Shift : (X : 𝓤 ̇ ) → (X → 𝓤 ̇ ) → 𝓤 ̇
- Shift X A = ((x : X) → T(A x)) → T(Π \(x : X) → A x)
+ Shift X A = ((x : X) → T(A x)) → T(Π x ꞉ X , A x)
 
- Choice = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → S X → (Π \(x : X) → S(A x)) → Shift X A
+ Choice = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → S X → (Π x ꞉ X , S(A x)) → Shift X A
 
- Choice' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → S X → (Π \(x : X) → S(A x)) → T(Π \(x : X) → T(A x) → A x)
+ Choice' = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → S X → (Π x ꞉ X , S(A x)) → T(Π x ꞉ X , (T(A x) → A x))
 
  lemma : Choice → (X : 𝓤 ̇ ) → S X → T(T X → X)
  lemma choice X s = choice (T X) (λ _ → X) T-is-S  (λ x → s) (λ x → x)
@@ -152,10 +152,10 @@ module UnivalentChoice (𝓤 : Universe)
      → (∀ (x : X) → ∃ \(a : A x) → P x a) → ∃ \(f : Π A) → ∀ (x : X) → P x (f x)
 
  AC'  = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (Y x))
-     → (Π \(x : X) → ∥ Y x ∥) → ∥(Π \(x : X) → Y x)∥
+     → (Π x ꞉ X , ∥ Y x ∥) → ∥(Π x ꞉ X , Y x)∥
 
  AC'' = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (Y x))
-     → ∥(Π \(x : X) → ∥ Y x ∥ → Y x)∥
+     → ∥(Π x ꞉ X , (∥ Y x ∥ → Y x))∥
 
  ACAC' : AC → AC'
  ACAC' ac X Y isx isy f = h
@@ -175,9 +175,9 @@ module UnivalentChoice (𝓤 : Universe)
  AC'AC : AC' → AC
  AC'AC ac' X A P s t isp f = ∥∥-functor ΠΣ-distr g
   where
-   g : ∥(Π \(x : X) → Σ \(a : A x) → P x a)∥
+   g : ∥(Π x ꞉ X , Σ a ꞉ A x , P x a)∥
    g = ac' X
-           (λ x → Σ \(a : A x) → P x a)
+           (λ x → Σ a ꞉ A x , P x a)
            s
            (λ x → subsets-of-sets-are-sets (A x) (P x) (t x) (λ {a} → isp x a))
            f
@@ -215,10 +215,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-a-prop)
 
  DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
-     → (Π \(x : X) → ¬¬(A x)) → ¬¬(Π \(x : X) → A x)
+     → (Π x ꞉ X , ¬¬ A x) → ¬¬(Π x ꞉ X , A x)
 
  DNA = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
-     → ¬¬(Π \(x : X) → ¬¬(A x) → A x)
+     → ¬¬(Π x ꞉ X , (¬¬ A x → A x))
 
  Fact : AC' → DNS
  Fact ac X A isx isa f = α (ac X A isx isa (λ x → β (f x)))
@@ -262,17 +262,17 @@ module AC-renders-all-sets-discrete
  open import UF-Miscelanea
 
  lemma₁ : {X : 𝓤 ̇ } (a : 𝟚 → X)
-        → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
+        → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  lemma₁ a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
    r : 𝟚 → image a
    r = corestriction a
 
-   r-splits : (y : image a) → Σ \(i : 𝟚) → r i ≡ y
+   r-splits : (y : image a) → Σ i ꞉ 𝟚 , r i ≡ y
    r-splits (x , t) = f (c x t)
     where
-     f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
+     f : (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , r i ≡ (x , t)
      f (i , p) = i , to-Σ-≡ (p , ∥∥-is-a-prop _ t)
 
    s : image a → 𝟚
@@ -301,7 +301,7 @@ module AC-renders-all-sets-discrete
    claim (inr u) = inr (contrapositive a-s u)
 
  lemma₂ : {X : 𝓤 ̇ } → is-set X → (a : 𝟚 → X)
-        → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)∥
+        → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
  lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
@@ -309,7 +309,7 @@ module AC-renders-all-sets-discrete
  ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
   where
    A : X → 𝓤 ̇
-   A x = Σ \(i : 𝟚) → a i ≡ x
+   A x = Σ i ꞉ 𝟚 , a i ≡ x
 
    isa : (x : X) → is-set(A x)
    isa x = subsets-of-sets-are-sets 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
@@ -374,19 +374,19 @@ module Observation (𝓤 : Universe)
  open import UF-Miscelanea
 
  observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-        → ((x : X) → ¬¬(Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → a i ≡ x)
+        → ((x : X) → ¬¬(Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
-   Y = Σ \(x : X) → ¬¬ (Σ \(i : 𝟚) → a i ≡ x)
+   Y = Σ x ꞉ X , ¬¬ (Σ i ꞉ 𝟚 , a i ≡ x)
 
    r : 𝟚 → Y
    r i = a i , λ u → u (i , refl)
 
-   r-splits : (y : Y) → Σ \(i : 𝟚) → r i ≡ y
+   r-splits : (y : Y) → Σ i ꞉ 𝟚 , r i ≡ y
    r-splits (x , t) = f (c x t)
     where
-     f : (Σ \(i : 𝟚) → a i ≡ x) → Σ \(i : 𝟚) → r i ≡ (x , t)
+     f : (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , r i ≡ (x , t)
      f (i , p) = i , (to-Σ-≡ (p , negations-are-props (fe 𝓤 𝓤₀) _ t))
 
    s : Y → 𝟚

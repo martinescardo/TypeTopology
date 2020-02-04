@@ -46,7 +46,7 @@ being-discrete-is-a-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolat
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
-  γ : (y : X) → decidable (x ≡ y) → Σ \(f : x ≡ y → x ≡ y) → constant f
+  γ : (y : X) → decidable (x ≡ y) → Σ f ꞉ (x ≡ y → x ≡ y) , constant f
   γ y (inl p) = (λ _ → p) , (λ q r → refl)
   γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
 
@@ -70,7 +70,7 @@ The following variation of the above doesn't required function extensionality:
 \begin{code}
 
 isolated-inr' : {X : 𝓤 ̇ }
-             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ \(m : x ≢ y) → i y ≡ inr m
+             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ m ꞉ x ≢ y , i y ≡ inr m
 isolated-inr' x i y n =
   equality-cases (i y)
   (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))

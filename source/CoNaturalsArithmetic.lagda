@@ -146,7 +146,7 @@ min-unit v = ap (λ - → - v) h-is-corec
   h-homomorphism : is-homomorphism PRED h
   h-homomorphism = dfunext fe₀ (λ v → φ v (Zero+Succ fe₀ v))
    where
-    φ : (v : ℕ∞) → (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → PRED (h v) ≡ 𝟙+ h (PRED v)
+    φ : (v : ℕ∞) → (v ≡ Zero) + (Σ t ꞉ ℕ∞ , v ≡ Succ t) → PRED (h v) ≡ 𝟙+ h (PRED v)
     φ v (inl refl) =
       PRED (min (∞ , Zero))        ≡⟨ ap PRED (min-eq₀ ∞) ⟩
       PRED Zero                    ≡⟨ refl ⟩
@@ -175,7 +175,7 @@ min-idempotent u = ap (λ - → - u) h-is-corec
   h-homomorphism : is-homomorphism PRED h
   h-homomorphism = dfunext fe₀ (λ u → φ (Zero+Succ fe₀ u))
    where
-    φ : {u : ℕ∞} → (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → PRED (h u) ≡ 𝟙+ h (PRED u)
+    φ : {u : ℕ∞} → (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w) → PRED (h u) ≡ 𝟙+ h (PRED u)
     φ (inl refl) =
       PRED (min (Zero , Zero))     ≡⟨ ap PRED (min-eq₀ Zero) ⟩
       PRED Zero                    ≡⟨ refl ⟩
@@ -209,7 +209,7 @@ eq₃-from-eq₀-and-eq₁ : (h : ℕ∞ × ℕ∞ → ℕ∞)
                      → (∀ u → h (u , Zero) ≡ Zero)
 eq₃-from-eq₀-and-eq₁ h eq₀ eq₁ u = γ (Zero+Succ fe₀ u)
  where
-  γ : (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → h (u , Zero) ≡ Zero
+  γ : (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w) → h (u , Zero) ≡ Zero
   γ (inl refl)       = h (Zero , Zero)   ≡⟨ eq₀ Zero ⟩ Zero ∎
   γ (inr (w , refl)) = h (Succ w , Zero) ≡⟨ eq₁ w ⟩    Zero ∎
 
@@ -234,8 +234,8 @@ min-equations-characterize-homomorphisms h eq₀ eq₁ eq₂ = dfunext fe₀ γ
    γ : (w : ℕ∞ × ℕ∞) → PRED (h w) ≡ 𝟙+ h (κ-min w)
    γ (u , v) = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
     where
-     φ : (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w)
-       → (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t)
+     φ : (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w)
+       → (v ≡ Zero) + (Σ t ꞉ ℕ∞ , v ≡ Succ t)
        → PRED (h (u , v)) ≡ 𝟙+ h (κ-min (u , v))
      φ (inl refl) _  =
        PRED (h (Zero , v))            ≡⟨ ap PRED (eq₀ v) ⟩
@@ -308,9 +308,9 @@ min-associative u v w = ap (λ - → - (u , v , w)) p
     γ : (z : ℕ∞ × ℕ∞ × ℕ∞) → PRED (f z) ≡ 𝟙+ f (κ z)
     γ (u , v , w) = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v) (Zero+Succ fe₀ w)
      where
-      φ : (u ≡ Zero) + (Σ \(x : ℕ∞) → u ≡ Succ x)
-       → (v ≡ Zero) + (Σ \(y : ℕ∞) → v ≡ Succ y)
-       → (w ≡ Zero) + (Σ \(z : ℕ∞) → w ≡ Succ z)
+      φ : (u ≡ Zero) + (Σ x ꞉ ℕ∞ , u ≡ Succ x)
+       → (v ≡ Zero) + (Σ y ꞉ ℕ∞ , v ≡ Succ y)
+       → (w ≡ Zero) + (Σ z ꞉ ℕ∞ , w ≡ Succ z)
        → PRED (f (u , v , w)) ≡ 𝟙+ f (κ (u , v , w))
       φ (inl refl) _ _ = ap PRED (min-eq₀ (min (v , w)))
       φ (inr (x , refl)) (inl refl) _ =
@@ -332,9 +332,9 @@ min-associative u v w = ap (λ - → - (u , v , w)) p
     γ : (z : ℕ∞ × ℕ∞ × ℕ∞) → PRED (g z) ≡ 𝟙+ g (κ z)
     γ (u , v , w) = φ (Zero+Succ fe₀ u) (Zero+Succ fe₀ v) (Zero+Succ fe₀ w)
      where
-      φ : (u ≡ Zero) + (Σ \(x : ℕ∞) → u ≡ Succ x)
-       → (v ≡ Zero) + (Σ \(y : ℕ∞) → v ≡ Succ y)
-       → (w ≡ Zero) + (Σ \(z : ℕ∞) → w ≡ Succ z)
+      φ : (u ≡ Zero) + (Σ x ꞉ ℕ∞ , u ≡ Succ x)
+       → (v ≡ Zero) + (Σ y ꞉ ℕ∞ , v ≡ Succ y)
+       → (w ≡ Zero) + (Σ z ꞉ ℕ∞ , w ≡ Succ z)
        → PRED (g (u , v , w)) ≡ 𝟙+ g (κ (u , v , w))
       φ (inl refl) _ _ = ap PRED (min-eq₀ (min (v , w)))
       φ (inr (x , refl)) (inl refl) _ =
@@ -392,7 +392,7 @@ And here are their constructions:
 
 min-Zero u v r = h (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
  where
-  h : (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → _
+  h : (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w) → (v ≡ Zero) + (Σ t ꞉ ℕ∞ , v ≡ Succ t) → _
   h (inl refl) _ = inl refl
   h (inr (w , refl)) (inl refl) = inr refl
   h (inr (w , refl)) (inr (t , refl)) = 𝟘-elim (Zero-not-Succ (r ⁻¹ ∙ min-eq₂ w t))
@@ -400,7 +400,7 @@ min-Zero u v r = h (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
 
 min-Succ u v x r = h (Zero+Succ fe₀ u) (Zero+Succ fe₀ v)
  where
-  h : (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → _
+  h : (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w) → (v ≡ Zero) + (Σ t ꞉ ℕ∞ , v ≡ Succ t) → _
   h (inl refl) _ =
     𝟘-elim (Zero-not-Succ (Zero           ≡⟨ (min-eq₀ v)⁻¹ ⟩
                            min (Zero , v) ≡⟨ r ⟩
@@ -499,7 +499,7 @@ density:
 {-
  γ (Zero+Succ fe₀ v)
  where
-  γ :  (v ≡ Zero) + (Σ \(t : ℕ∞) → v ≡ Succ t) → min (u , v) ≡ u
+  γ :  (v ≡ Zero) + (Σ t ꞉ ℕ∞ , v ≡ Succ t) → min (u , v) ≡ u
   γ (inl refl) =
     min (u , v)    ≡⟨ ap (λ - → min (- , v)) (≼-anti fe₀ u Zero l (Zero-minimal u)) ⟩
     min (Zero , v) ≡⟨ min-eq₀ v ⟩
@@ -512,7 +512,7 @@ density:
     h-homomorphism : is-homomorphism PRED h
     h-homomorphism = dfunext fe₀ (λ u → φ u (Zero+Succ fe₀ u))
      where
-      φ : (u : ℕ∞) → (u ≡ Zero) + (Σ \(w : ℕ∞) → u ≡ Succ w) → PRED (h u) ≡ 𝟙+ h (PRED u)
+      φ : (u : ℕ∞) → (u ≡ Zero) + (Σ w ꞉ ℕ∞ , u ≡ Succ w) → PRED (h u) ≡ 𝟙+ h (PRED u)
       φ u (inl refl) =
         PRED (h Zero)    ≡⟨ ap PRED (min-eq₀ v) ⟩
         PRED Zero        ≡⟨ refl ⟩

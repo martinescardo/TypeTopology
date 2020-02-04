@@ -8,7 +8,7 @@ module One where
 
 open import Universes
 
-data 𝟙 {𝓤} : 𝓤 ̇  where
+data 𝟙 {𝓤} : 𝓤 ̇ where
  * : 𝟙
 
 unique-to-𝟙 : {A : 𝓤 ̇ } → A → 𝟙 {𝓥}

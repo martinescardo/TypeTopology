@@ -109,7 +109,7 @@ module old (fe : FunExt) where
  open import UF-Subsingletons-FunExt
 
  _∖_ : (X : 𝓤 ̇ ) (a : X) → 𝓤 ̇
- X ∖ a = Σ \(x : X) → x ≢ a
+ X ∖ a = Σ x ꞉ X , x ≢ a
 
  add-and-remove-point : {X : 𝓤 ̇ } →  X ≃ (X + 𝟙) ∖ (inr *)
  add-and-remove-point {𝓤} {X} = qinveq f (g , ε , η)

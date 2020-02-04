@@ -24,15 +24,15 @@ open import SliceIdentityViaSIP 𝓣
 open import SliceMonad 𝓣
 
 double-𝓕-charac : (X : 𝓤 ̇ )
-                → 𝓕 (𝓕 X) ≃ Σ \(I : 𝓣 ̇ ) → (Σ \(J : I → 𝓣 ̇ ) → (i : I) → J i → X)
+                → 𝓕 (𝓕 X) ≃ (Σ I ꞉ 𝓣 ̇ , (Σ J ꞉ (I → 𝓣 ̇ ), ((i : I) → J i → X)))
 double-𝓕-charac X = Σ-cong (γ X)
  where
-  γ : (X : 𝓤 ̇ ) (I : 𝓣 ̇ ) → (I → 𝓕 X) ≃ (Σ \(J : I → 𝓣 ̇ ) → ((i : I) → J i → X))
-  γ X I = (I → Σ \(J : 𝓣 ̇ ) → (J → X))             ≃⟨ ΠΣ-distr-≃ ⟩
-          (Σ \(J : I → 𝓣 ̇ ) → (i : I) → J i → X)   ■
+  γ : (X : 𝓤 ̇ ) (I : 𝓣 ̇ ) → (I → 𝓕 X) ≃ (Σ J ꞉ (I → 𝓣 ̇ ), ((i : I) → J i → X))
+  γ X I = (I → Σ J ꞉ 𝓣 ̇ , (J → X))               ≃⟨ ΠΣ-distr-≃ ⟩
+          (Σ J ꞉ (I → 𝓣 ̇ ), ((i : I) → J i → X)) ■
 
 𝓕-algebra : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓕-algebra X = Σ \(s : 𝓕 X → X) → (s ∘ η ∼ id) × (s ∘ μ ∼ s ∘ 𝓕̇ s)
+𝓕-algebra X = Σ s ꞉ (𝓕 X → X), (s ∘ η ∼ id) × (s ∘ μ ∼ s ∘ 𝓕̇ s)
 
 free-𝓕-algebra : is-univalent 𝓣 → (X : 𝓤 ̇ ) → 𝓕-algebra (𝓕 X)
 free-𝓕-algebra ua X = μ , 𝓕-unit-left∼ ua , 𝓕-assoc∼ ua
@@ -49,7 +49,7 @@ joinop X = {I : 𝓣 ̇ } → (I → X) → X
 
 
 𝓕-alg : 𝓤 ̇ → 𝓣 ⁺ ⊔ 𝓤 ̇
-𝓕-alg X = Σ \(∐ : joinop X) → 𝓕-alg-Law₀ ∐ × 𝓕-alg-Law₁ ∐
+𝓕-alg X = Σ ∐ ꞉ joinop X , 𝓕-alg-Law₀ ∐ × 𝓕-alg-Law₁ ∐
 
 ⋁ : {X : 𝓤 ̇ } → (𝓕 X → X) → joinop X
 ⋁ s {I} f = s (I , f)

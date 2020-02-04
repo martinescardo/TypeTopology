@@ -58,7 +58,7 @@ pointed-decidable = inl
 ¬-preserves-decidability d = →-preserves-decidability d 𝟘-decidable
 
 which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-         → A + B → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → B)
+         → A + B → Σ b ꞉ 𝟚 , (b ≡ ₀ → A) × (b ≡ ₁ → B)
 
 which-of (inl a) = ₀ , (λ (r : ₀ ≡ ₀) → a) , λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
 which-of (inr b) = ₁ , (λ (p : ₁ ≡ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) , (λ (r : ₁ ≡ ₁) → b)
@@ -70,7 +70,7 @@ The following is a special case we are interested in:
 \begin{code}
 
 boolean-value : {A : 𝓤 ̇ }
-            → decidable A → Σ \(b : 𝟚) → (b ≡ ₀ → A) × (b ≡ ₁ → ¬ A)
+            → decidable A → Σ b ꞉ 𝟚 , (b ≡ ₀ → A) × (b ≡ ₁ → ¬ A)
 boolean-value = which-of
 
 \end{code}
@@ -86,7 +86,7 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇ }
           → ((x : X) → A x + B x)
-          → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x)
+          → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x))
 indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
   lemma₀ : (x : X) → (A x + B x) → Σ \b → (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
@@ -108,11 +108,11 @@ detachable : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 detachable A = ∀ x → decidable(A x)
 
 characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-  → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x))
+  → detachable A → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x)))
 characteristic-function = indicator
 
 co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-  → detachable A → Σ \(p : X → 𝟚) → (x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x)
+  → detachable A → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x))
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
 decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X

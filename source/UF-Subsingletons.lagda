@@ -23,7 +23,7 @@ is-prop : 𝓤 ̇ → 𝓤 ̇
 is-prop X = (x y : X) → x ≡ y
 
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ \(P : 𝓤 ̇ ) → is-prop P
+Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
 
 _holds : Ω 𝓤 → 𝓤 ̇
 _holds = pr₁
@@ -65,7 +65,7 @@ is-the-only-element-of : (X : 𝓤 ̇ ) → X → 𝓤 ̇
 is-the-only-element-of X c = (x : X) → c ≡ x
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ \(c : X) → is-the-only-element-of X c
+is-singleton X = Σ c ꞉ X , is-the-only-element-of X c
 
 singleton-types-are-pointed : {X : 𝓤 ̇ } → is-singleton X → X
 singleton-types-are-pointed = pr₁
@@ -150,7 +150,7 @@ constant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) 
 constant-post-comp f g c x x' = c (f x) (f x')
 
 collapsible : 𝓤 ̇ → 𝓤 ̇
-collapsible X = Σ \(f : X → X) → constant f
+collapsible X = Σ f ꞉ (X → X) , constant f
 
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
 Id-collapsible X = {x y : X} → collapsible(x ≡ y)
@@ -243,7 +243,7 @@ singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ≡ x') → 
 singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → 𝓤 ̇
-  A x x' r = _≡_ {_} {Σ \(x' : X) → x ≡ x'} (singleton-inclusion x) (x' , r)
+  A x x' r = _≡_ {_} {Σ x' ꞉ X , x ≡ x'} (singleton-inclusion x) (x' , r)
 
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton(singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
@@ -297,7 +297,7 @@ pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
                          → ({x : X} → is-prop(Y x))
-                         → is-set(Σ \(x : X) → Y x)
+                         → is-set(Σ x ꞉ X , Y x)
 subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
@@ -379,7 +379,7 @@ values other than 𝟘 and 𝟙:
 
 \begin{code}
 
-no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ Σ \(P : 𝓤 ̇ ) → is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙)
+no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙))
 no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim(φ u)
  where
    u : ¬ P
@@ -413,6 +413,13 @@ Unique existence
 
 ∃! : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 ∃! A = is-singleton (Σ A)
+
+existsUnique : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+existsUnique X A = ∃! A
+
+syntax existsUnique A (λ x → b) = ∃! x ꞉ A , b
+
+infixr -1 existsUnique
 
 ∃!-intro : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x) → ((σ : Σ A) → (x , a) ≡ σ) → ∃! A
 ∃!-intro x a o = (x , a) , o

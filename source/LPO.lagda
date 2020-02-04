@@ -3,7 +3,7 @@ Martin Escardo, December 2017 (but done much earlier on paper)
 As discussed in the module CompactTypes, Bishop's "limited principle
 of omniscience" amount to the compactness of the type ℕ, that is,
 
-  Π \(p : ℕ → 𝟚) → (Σ \(n : ℕ) → p n ≡ ₀) + (Π \(n : ℕ) → p n ≡ ₁),
+  Π p ꞉ ℕ → 𝟚 , (Σ n ꞉ ℕ , p n ≡ ₀) + (Π n  ꞉  ℕ , p n ≡ ₁),
 
 which fails in contructive mathematics (here in the sense that it is
 independent - it is not provable, and its negation is also not
@@ -41,7 +41,7 @@ open import CompactTypes
 open import NaturalsOrder
 
 LPO : 𝓤₀ ̇
-LPO = (x : ℕ∞) → decidable(Σ \(n : ℕ) → x ≡ under n)
+LPO = (x : ℕ∞) → decidable(Σ n ꞉ ℕ , x ≡ under n)
 
 LPO-is-a-prop : is-prop LPO
 LPO-is-a-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
@@ -64,7 +64,7 @@ sense of UF) to our formulation.
 LPO-gives-compact-ℕ : LPO → compact ℕ
 LPO-gives-compact-ℕ lpo β = cases a b d
   where
-    A = (Σ \(n : ℕ) → β n ≡ ₀) + (Π \(n : ℕ) → β n ≡ ₁)
+    A = (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
 
     α : ℕ → 𝟚
     α = force-decreasing β
@@ -72,16 +72,16 @@ LPO-gives-compact-ℕ lpo β = cases a b d
     x : ℕ∞
     x = (α , force-decreasing-is-decreasing β)
 
-    d : decidable(Σ \(n : ℕ) → x ≡ under n)
+    d : decidable(Σ n ꞉ ℕ , x ≡ under n)
     d = lpo x
 
-    a : (Σ \(n : ℕ) → x ≡ under n) → A
+    a : (Σ n ꞉ ℕ , x ≡ under n) → A
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
         c : α n ≡ ₀
         c = ap (λ - → incl - n) p ∙ under-diagonal₀ n
 
-    b : (¬ Σ \(n : ℕ) → x ≡ under n) → A
+    b : (¬ (Σ n ꞉ ℕ , x ≡ under n)) → A
     b u = inr g
       where
         v : (n : ℕ) → x ≡ under n → 𝟘
@@ -102,33 +102,33 @@ LPO-gives-compact-ℕ lpo β = cases a b d
 compact-ℕ-gives-LPO : compact ℕ → LPO
 compact-ℕ-gives-LPO chlpo x = cases a b d
   where
-    A = decidable (Σ \(n : ℕ) → x ≡ under n)
+    A = decidable (Σ n ꞉ ℕ , x ≡ under n)
 
     β : ℕ → 𝟚
     β = incl x
 
-    d : (Σ \(n : ℕ) → β n ≡ ₀) + (Π \(n : ℕ) → β n ≡ ₁)
+    d : (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
     d = chlpo β
 
-    a : (Σ \(n : ℕ) → β n ≡ ₀) → A
+    a : (Σ n ꞉ ℕ , β n ≡ ₀) → A
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
-        g : Σ \(m : ℕ) → (m ≤ n) × (x ≡ under m)
+        g : Σ m ꞉ ℕ , (m ≤ n) × (x ≡ under m)
         g = under-lemma (fe 𝓤₀ 𝓤₀) x n p
 
-    b : (Π \(n : ℕ) → β n ≡ ₁) → A
+    b : (Π n ꞉ ℕ , β n ≡ ₁) → A
     b φ = inr g
       where
-        ψ : ¬ Σ \(n : ℕ) → β n ≡ ₀
+        ψ : ¬ (Σ n ꞉ ℕ , β n ≡ ₀)
         ψ = uncurry (λ n → equal-₁-different-from-₀(φ n))
 
-        f : (Σ \(n : ℕ) → x ≡ under n) → Σ \(n : ℕ) → β n ≡ ₀
+        f : (Σ n ꞉ ℕ , x ≡ under n) → Σ n ꞉ ℕ , β n ≡ ₀
         f (n , p) = (n , (ap (λ - → incl - n) p ∙ under-diagonal₀ n))
           where
            l : incl x n ≡ incl (under n) n
            l = ap (λ - → incl - n) p
 
-        g : ¬ Σ \(n : ℕ) → x ≡ under n
+        g : ¬ (Σ n ꞉ ℕ , x ≡ under n)
         g = contrapositive f ψ
 
 \end{code}
@@ -166,31 +166,31 @@ embedding under𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 
 \begin{code}
 
-has-section-under𝟙-gives-LPO : (Σ \(s : ℕ∞ → ℕ + 𝟙) → under𝟙 ∘ s ∼ id) → LPO
+has-section-under𝟙-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 ∘ s ∼ id) → LPO
 has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
  where
-  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ \(n : ℕ) → u ≡ under n)
+  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ n ꞉ ℕ , u ≡ under n)
   ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
                           under𝟙 (s u) ≡⟨ ap under𝟙 p ⟩
                           under n      ∎))
   ψ (inr *) p = inr γ
    where
-    γ : ¬ Σ \(n : ℕ) → u ≡ under n
+    γ : ¬ (Σ n ꞉ ℕ , u ≡ under n)
     γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
                                    under𝟙 (s u) ≡⟨ ε u ⟩
                                    u            ≡⟨ q ⟩
                                    under n      ∎)
 
-under𝟙-inverse : (u : ℕ∞) → decidable(Σ \(n : ℕ) → u ≡ under n) → ℕ + 𝟙 {𝓤₀}
+under𝟙-inverse : (u : ℕ∞) → decidable(Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}
 under𝟙-inverse .(under n) (inl (n , refl)) = inl n
 under𝟙-inverse u (inr g) = inr *
 
-LPO-gives-has-section-under𝟙 : LPO → Σ \(s : ℕ∞ → ℕ + 𝟙) → under𝟙 ∘ s ∼ id
+LPO-gives-has-section-under𝟙 : LPO → Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 ∘ s ∼ id
 LPO-gives-has-section-under𝟙 lpo = s , ε
  where
   s : ℕ∞ → ℕ + 𝟙
   s u = under𝟙-inverse u (lpo u)
-  φ : (u : ℕ∞) (d : decidable (Σ \(n : ℕ) → u ≡ under n)) → under𝟙 (under𝟙-inverse u d) ≡ u
+  φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ under n)) → under𝟙 (under𝟙-inverse u d) ≡ u
   φ .(under n) (inl (n , refl)) = refl
   φ u (inr g) = (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g))⁻¹
   ε : under𝟙 ∘ s ∼ id

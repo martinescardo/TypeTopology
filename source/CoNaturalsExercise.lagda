@@ -32,7 +32,7 @@ open import CoNaturals fe
 open import GenericConvergentSequence
 open import Sequence fe
 
-incl-is-a-section : Σ \(retr : (ℕ → 𝟚) → ℕ∞) → retr ∘ incl ≡ id
+incl-is-a-section : Σ retr ꞉ ((ℕ → 𝟚) → ℕ∞) , retr ∘ incl ≡ id
 incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
  where
   f-retr : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)

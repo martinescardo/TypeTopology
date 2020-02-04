@@ -10,7 +10,7 @@ exponential powers of the universe.)
 
 This works as follows in outline:
 
-If A : X → 𝓤 ̇ then the Id-fiber of A is Σ \(x : X) → Id x ≡ A.
+If A : X → 𝓤 ̇ then the Id-fiber of A is Σ x ꞉ X , Id x ≡ A.
 
 If the pair (x,p) is in the fiber for x : X and p : Id x = A, then
 
@@ -67,7 +67,7 @@ open import UF-EquivalenceExamples
 \end{code}
 
 The Id Embedding Lemma. The idea is to show that the type
-T := Σ \(x : X) → Id x ≡ A is a proposition by showing that there is a
+T := Σ x ꞉ X , Id x ≡ A is a proposition by showing that there is a
 left-cancellable map from it to a proposition, namely the contractible
 type Σ A.
 
@@ -79,7 +79,7 @@ Id-Embedding-Lemma : FunExt → {X : 𝓤 ̇ }
                   → is-embedding(Id {𝓤} {X})
 Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
-  T = Σ \(x : X) → Id x ≡ A
+  T = Σ x ꞉ X , Id x ≡ A
   q : Σ (Id x₀) ≡ Σ A
   q = ap Σ p₀
   c : ∃! A

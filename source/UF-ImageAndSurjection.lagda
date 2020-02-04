@@ -46,13 +46,13 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
   to-Σ-≡ (∥∥-rec s (λ u → ∥∥-rec s (λ v → h u v) p') p ,
           ∥∥-is-a-prop _ p')
    where
-    h : (Σ \(x : X) → f x ≡ y) → (Σ \(x' : X) → f x' ≡ y') → y ≡ y'
+    h : (Σ x ꞉ X , f x ≡ y) → (Σ x' ꞉ X , f x' ≡ y') → y ≡ y'
     h (x , e) (x' , e') = y    ≡⟨ e ⁻¹ ⟩
                           f x  ≡⟨ c x x' ⟩
                           f x' ≡⟨ e' ⟩
                           y'   ∎
 
- constant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇) {Y : 𝓥 ̇}
+ constant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
                                                → is-set Y
                                                → (f : X → Y)
                                                → constant f
@@ -62,7 +62,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
   (constant-maps-to-sets-have-propositional-images X s f c)
   (corestriction f)
 
- constant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇) {Y : 𝓥 ̇}
+ constant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
                                               → is-set Y
                                               → (f : X → Y)
                                               → constant f
@@ -70,7 +70,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  constant-map-to-set-truncation-of-domain-map X s f c =
   restriction f ∘ constant-map-to-set-truncation-of-domain-map' X s f c
 
- constant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇) {Y : 𝓥 ̇}
+ constant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
                                                             (s : is-set Y)
                                                             (f : X → Y)
                                                             (c : constant f)

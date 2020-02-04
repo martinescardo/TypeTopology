@@ -54,7 +54,7 @@ universe 𝓥:
 \begin{code}
 
 _has-size_ : 𝓤 ̇ → (𝓥 : Universe) → 𝓥 ⁺  ⊔ 𝓤 ̇
-X has-size 𝓥 = Σ \(Y : 𝓥 ̇ ) → Y ≃ X
+X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P has-size 𝓥
@@ -133,9 +133,9 @@ has-size-is-a-prop {𝓤} ua X 𝓥 = c
   a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 X)  ■
-  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ X) ≃ (Σ \(Y : 𝓥 ̇ ) → lift 𝓤 Y ≡ lift 𝓥 X)
+  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , lift 𝓤 Y ≡ lift 𝓥 X)
   b = Σ-cong a
-  c : is-prop (Σ \(Y : 𝓥 ̇ ) → Y ≃ X)
+  c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
   c = equiv-to-prop b (lift-is-embedding ua (lift 𝓥 X))
 
 propositional-resizing-is-a-prop : Univalence → is-prop (propositional-resizing 𝓤 𝓥)
@@ -167,9 +167,9 @@ prop-has-size-is-a-prop {𝓤} pe fe P i 𝓥 = c
   a Y = (Y ≃ P)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 P)) ⟩
         (lift 𝓤 Y ≃ lift 𝓥 P)  ≃⟨ ≃-sym (prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (lift 𝓤 Y) (lift 𝓥 P) j) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 P)  ■
-  b : (Σ \(Y : 𝓥 ̇ ) → Y ≃ P) ≃ (Σ \(Y : 𝓥 ̇ ) → lift 𝓤 Y ≡ lift 𝓥 P)
+  b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ P) ≃ (Σ Y ꞉ 𝓥 ̇  , lift 𝓤 Y ≡ lift 𝓥 P)
   b = Σ-cong a
-  c : is-prop (Σ \(Y : 𝓥 ̇ ) → Y ≃ P)
+  c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ P)
   c = equiv-to-prop b (prop-fiber-lift pe fe (lift 𝓥 P) j)
 
 propositional-resizing-is-a-prop' : PropExt → FunExt → is-prop (propositional-resizing 𝓤 𝓥)
@@ -381,7 +381,7 @@ universe-retract' : Univalence
                   → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )) → is-embedding (section ρ)
 universe-retract' ua R 𝓤 𝓥 = (pr₁ a , lift 𝓥 , pr₂ a) , lift-is-embedding ua
  where
-  a : Σ \(lower : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇ ) → lower ∘ lift 𝓥 ∼ id
+  a : Σ lower ꞉ (𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇ ) , lower ∘ lift 𝓥 ∼ id
   a = lift-is-section ua R 𝓤 𝓥
 
 \end{code}
@@ -478,13 +478,13 @@ has-size-idempotent : (ua : Univalence) (𝓤 𝓥 : Universe) (Y : 𝓤 ̇ )
 has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
  where
   X : 𝓥 ̇
-  X = Σ \(h : H) → pr₁ (eqtofun e h)
+  X = Σ h ꞉ H , pr₁ (eqtofun e h)
   γ = X  ≃⟨ Σ-change-of-variables pr₁ (eqtofun e) (eqtofun-is-an-equiv e) ⟩
       X' ≃⟨ ϕ ⟩
       Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
-    X' = Σ \(h : Y has-size 𝓥) → pr₁ h
+    X' = Σ h ꞉ Y has-size 𝓥 , pr₁ h
     ϕ = logically-equivalent-props-are-equivalent j i f g
      where
       j : is-prop X'

@@ -7,7 +7,7 @@ gives weak excluded middle (negative propositions are decidable).
 The definition of the compactness (or exhaustive searchability) of a
 type A is
 
-    compact A = (p : A → 𝟚) → Σ \(a₀ : A) → p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
 
 With excluded middle for propositions, the above claim is not
 surprising, because
@@ -71,7 +71,7 @@ With this observation, the following proof should be self-contained,
 if we recall again the definition of compact set from the module
 CompacTypes:
 
-    compact∙ A = (p : A → 𝟚) → Σ \(a₀ : A) → p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
 
 Recall also that such an a₀ is called a universal witness for the predicate p.
 
@@ -98,7 +98,7 @@ prop-tychonoff {𝓤} {𝓥} {X} {Y} hp ε p = φ₀ , φ₀-is-universal-witnes
   f : (x : X) → Π Y → Y x
   f x = pr₁(hip x)
 
-  hrf : (x : X) → Σ \(r : Y x → Π Y) → r ∘ f x ∼ id
+  hrf : (x : X) → Σ r ꞉ (Y x → Π Y), r ∘ f x ∼ id
   hrf x = pr₂(pr₂(hip x))
 
   h : (x : X) → Y x → Π Y

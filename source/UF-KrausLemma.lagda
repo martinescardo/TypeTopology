@@ -79,7 +79,7 @@ has a constant endfunction then it has a propositional truncation.
 \begin{code}
 
 has-split-support : 𝓤 ̇ → 𝓤 ⁺ ̇
-has-split-support {𝓤} X = Σ \(P : 𝓤 ̇ ) → is-prop P × (X ⇔ P)
+has-split-support {𝓤} X = Σ P ꞉ 𝓤 ̇ , is-prop P × (X ⇔ P)
 
 fix-has-split-support : {X : 𝓤 ̇ }
                     → collapsible X
@@ -87,7 +87,7 @@ fix-has-split-support : {X : 𝓤 ̇ }
 fix-has-split-support {𝓤} {X} (f , κ) = fix f , Kraus-Lemma f κ , to-fix f κ , from-fix f
 
 has-prop-truncation : (𝓥 : Universe) → 𝓤 ̇ → (𝓤 ⊔ 𝓥)⁺ ̇
-has-prop-truncation {𝓤} 𝓥 X = Σ \(X' : 𝓤 ̇ ) → is-prop X'
+has-prop-truncation {𝓤} 𝓥 X = Σ X' ꞉ 𝓤 ̇ , is-prop X'
                                              × (X → X')
                                              × ((P : 𝓥 ̇ ) → is-prop P → (X → P) → X' → P)
 

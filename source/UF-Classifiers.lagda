@@ -3,8 +3,8 @@ Martin Escardo, 20th August 2018
 We consider type and subtype classifiers, and discuss an obvious
 generalization which is left undone for the moment.
 
- * (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
- * (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
+ * (Σ X ꞉ 𝓤 ̇ , X → Y) ≃ (Y → 𝓤 ̇ )
+ * (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤)
 
 \begin{code}
 
@@ -30,24 +30,24 @@ module type-classifier
         (Y : 𝓤 ̇ )
        where
 
- χ : (Σ \(X : 𝓤 ̇ ) → X → Y)  → (Y → 𝓤 ̇ )
+ χ : (Σ X ꞉ 𝓤 ̇ , (X → Y))  → (Y → 𝓤 ̇ )
  χ (X , f) = fiber f
 
- T : (Y → 𝓤 ̇ ) → Σ \(X : 𝓤 ̇ ) → X → Y
+ T : (Y → 𝓤 ̇ ) → Σ X ꞉ 𝓤 ̇ , (X → Y)
  T A = Σ A , pr₁
 
  χT : (A : Y → 𝓤 ̇ ) → χ(T A) ≡ A
  χT A = dfunext fe' γ
   where
-   f : ∀ y → (Σ \(σ : Σ A) → pr₁ σ ≡ y) → A y
+   f : ∀ y → (Σ σ ꞉ Σ A , pr₁ σ ≡ y) → A y
    f y ((.y , a) , refl) = a
-   g : ∀ y → A y → Σ \(σ : Σ A) → pr₁ σ ≡ y
+   g : ∀ y → A y → Σ σ ꞉ Σ A , pr₁ σ ≡ y
    g y a = (y , a) , refl
    fg : ∀ y a → f y (g y a) ≡ a
    fg y a = refl
    gf : ∀ y σ → g y (f y σ) ≡ σ
    gf y ((.y , a) , refl) = refl
-   γ : ∀ y → (Σ \(σ : Σ A) → pr₁ σ ≡ y) ≡ A y
+   γ : ∀ y → (Σ σ ꞉ Σ A , pr₁ σ ≡ y) ≡ A y
    γ y = eqtoid ua _ _ (f y , ((g y , fg y) , (g y , gf y)))
 
  transport-map : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
@@ -68,14 +68,14 @@ module type-classifier
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
- Tχ : (σ : Σ \(X : 𝓤 ̇ ) → X → Y) → T(χ σ) ≡ σ
+ Tχ : (σ : Σ X ꞉ 𝓤 ̇ , (X → Y)) → T(χ σ) ≡ σ
  Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
                        transport-map (graph-domain-equiv f) pr₁)
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
 
- classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
+ classification-equivalence : (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃ (Y → 𝓤 ̇ )
  classification-equivalence = χ , χ-is-equivalence
 
 
@@ -89,11 +89,11 @@ module subtype-classifier
  fe : funext 𝓤 𝓤
  fe = funext-from-univalence ua
 
- χ : (Σ \(X : 𝓤 ̇ ) → X ↪ Y)  → (Y → Ω 𝓤)
+ χ : (Σ X ꞉ 𝓤 ̇ , X ↪ Y)  → (Y → Ω 𝓤)
  χ (X , f , i) y = fiber f y , i y
 
- T : (Y → Ω 𝓤) → Σ \(X : 𝓤 ̇ ) → X ↪ Y
- T P = (Σ \(y : Y) → P y holds) , pr₁ , pr₁-is-embedding (λ y → holds-is-prop (P y))
+ T : (Y → Ω 𝓤) → Σ X ꞉ 𝓤 ̇ , X ↪ Y
+ T P = (Σ y ꞉ Y , P y holds) , pr₁ , pr₁-is-embedding (λ y → holds-is-prop (P y))
 
  χT : (P : Y → Ω 𝓤) → χ(T P) ≡ P
  χT P = dfunext fe' γ
@@ -126,7 +126,7 @@ module subtype-classifier
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
- Tχ : (σ : Σ \(X : 𝓤 ̇ ) → X ↪ Y) → T(χ σ) ≡ σ
+ Tχ : (σ : Σ X ꞉ 𝓤 ̇ , X ↪ Y) → T(χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
                           (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-is-embedding i)
                          ∙ to-Σ-≡' (being-embedding-is-a-prop fe fe f _ _)))
@@ -134,7 +134,7 @@ module subtype-classifier
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
 
- classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
+ classification-equivalence : (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤)
  classification-equivalence = χ , χ-is-equivalence
 
 \end{code}
@@ -165,19 +165,19 @@ of green types: Green-map ≃ (Y → Green).
 The examples are obtained by specialising to a specific property green:
 
  * Every type and map is green.
-   (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
+   (Σ X ꞉ 𝓤 ̇ , X → Y) ≃ (Y → 𝓤 ̇ )
 
  * A type is green exactly if it is a subsingleton.
    Then a map is green exactly if it is an embedding.
-   (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤)
+   (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤)
 
  * A type is green exactly if it is inhabited.
    Then a map is green exactly if it is a surjection.
-   (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
+   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ X → Y , is-surjection f )) ≃ (Y → (Σ X  ꞉  𝓤 ̇  , ∥ X ∥))
 
  * A type is green exactly if it is pointed.
    Then a map is green exactly if it is a retraction.
-   (Σ \(X : 𝓤 ̇ ) → Y ◁ X) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → X))
+   (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
 
 \begin{code}
 
@@ -194,10 +194,10 @@ module general-classifier
  green-map f = (y : Y) → green (fiber f y)
 
  Green : 𝓤 ⁺ ⊔ 𝓥 ̇
- Green = Σ \(X : 𝓤 ̇ ) → green X
+ Green = Σ X ꞉ 𝓤 ̇ , green X
 
  Green-map : 𝓤 ⁺ ⊔ 𝓥 ̇
- Green-map = Σ \(X : 𝓤 ̇ ) → Σ \(f : X → Y) → green-map f
+ Green-map = Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , green-map f
 
  χ : Green-map  → (Y → Green)
  χ (X , f , g) y = (fiber f y) , (g y)
@@ -254,7 +254,7 @@ module general-classifier
 
  transport-green-map-eqtoid : {X X' : 𝓤 ̇ } (e : X' ≃ X) (f : X → Y)
                               (g : green-map f)
-                            → transport (λ - → Σ \(h : - → Y) → green-map h)
+                            → transport (λ - → Σ h ꞉ (- → Y) , green-map h)
                                ((eqtoid ua X' X e) ⁻¹) (f , g)
                               ≡
                               f ∘ (eqtofun e) ,
@@ -262,8 +262,8 @@ module general-classifier
  transport-green-map-eqtoid {X} {X'} = JEq ua X' E γ X
   where
    B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-   B Z = Σ \(h : Z → Y) → green-map h
-   E : (Z : 𝓤 ̇) → X' ≃ Z → 𝓤 ⊔ 𝓥 ̇
+   B Z = Σ h ꞉ (Z → Y) , green-map h
+   E : (Z : 𝓤 ̇ ) → X' ≃ Z → 𝓤 ⊔ 𝓥 ̇
    E Z e = (f : Z → Y) → (g : green-map f)
          → transport B ((eqtoid ua X' Z e) ⁻¹) (f , g)
            ≡ f ∘ (eqtofun e) , green-maps-are-closed-under-precomp-with-equivs e g
@@ -289,7 +289,7 @@ module general-classifier
    a : X' ≡ X
    a = (eqtoid ua X X' e) ⁻¹
    B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-   B Z = Σ \(h : Z → Y) → green-map h
+   B Z = Σ h ꞉ (Z → Y), green-map h
    t : transport B a (f' , g') ≡
        (f' ∘ eqtofun e) , (green-maps-are-closed-under-precomp-with-equivs e g')
    t = transport-green-map-eqtoid e f' g'
@@ -368,18 +368,18 @@ module type-classifier-bis
 
  open general-classifier (funext-from-univalence ua) fe' ua Y (λ (X : 𝓤 ̇ ) → 𝟙)
 
- type-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ (Y → 𝓤 ̇ )
- type-classification-equivalence = (Σ \(X : 𝓤 ̇ ) → X → Y) ≃⟨ ϕ ⟩
+ type-classification-equivalence : (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃ (Y → 𝓤 ̇ )
+ type-classification-equivalence = (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ ϕ ⟩
                                    Green-map ≃⟨ classification-equivalence ⟩
                                    (Y → Green) ≃⟨ ψ ⟩
                                    (Y → 𝓤 ̇ ) ■
   where
-   ϕ : (Σ \(X : 𝓤 ̇ ) → X → Y) ≃ Green-map
+   ϕ : (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃ Green-map
    ϕ = qinveq α (β , a , b)
     where
-     α : (Σ \(X : 𝓤 ̇ ) → X → Y) → Green-map
+     α : (Σ X ꞉ 𝓤 ̇ , (X → Y)) → Green-map
      α (X , f) = X , (f , (λ y → *))
-     β : Green-map → (Σ \(X : 𝓤 ̇ ) → X → Y)
+     β : Green-map → (Σ X ꞉ 𝓤 ̇ , (X → Y))
      β (X , f , g) = X , f
      a : (p : Σ (λ X → X → Y)) → β (α p) ≡ p
      a (X , f) = refl
@@ -413,7 +413,7 @@ module subsingleton-classifier
  open general-classifier (funext-from-univalence ua) fe' ua Y
                          (λ (X : 𝓤 ̇ ) → is-prop X)
 
- subsingleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ↪ Y) ≃ (Y → Ω 𝓤 )
+ subsingleton-classification-equivalence : (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤 )
  subsingleton-classification-equivalence = classification-equivalence
 
 module singleton-classifier
@@ -427,11 +427,11 @@ module singleton-classifier
  open general-classifier (funext-from-univalence ua) fe' ua Y
                          (λ (X : 𝓤 ̇ ) → is-singleton X)
 
- singleton-classification-equivalence : (Σ \(X : 𝓤 ̇ ) → X ≃ Y) ≃ 𝟙 {𝓤}
+ singleton-classification-equivalence : (Σ X ꞉ 𝓤 ̇ , X ≃ Y) ≃ 𝟙 {𝓤}
  singleton-classification-equivalence =
-  (Σ \(X : 𝓤 ̇ ) → X ≃ Y)                            ≃⟨ i ⟩
-  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-vv-equiv f)) ≃⟨ ii ⟩
-  (Y → (Σ \(X : 𝓤 ̇ ) → is-singleton X))             ≃⟨ iii ⟩
+  (Σ X ꞉ 𝓤 ̇ , X ≃ Y)                            ≃⟨ i ⟩
+  (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y), is-vv-equiv f)) ≃⟨ ii ⟩
+  (Y → (Σ X ꞉ 𝓤 ̇ , is-singleton X))             ≃⟨ iii ⟩
   (Y → 𝟙)                                             ≃⟨ →𝟙 fe ⟩
   𝟙                                                   ■
    where
@@ -471,8 +471,8 @@ module inhabited-classifier
                          (λ (X : 𝓤 ̇ ) → ∥ X ∥)
 
  inhabited-classification-equivalence :
-  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → is-surjection f )) ≃
-   (Y → (Σ \(X : 𝓤 ̇ ) → ∥ X ∥))
+  (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y), is-surjection f )) ≃
+   (Y → (Σ X ꞉ 𝓤 ̇ , ∥ X ∥))
  inhabited-classification-equivalence = classification-equivalence
 
 module pointed-classifier
@@ -486,11 +486,11 @@ module pointed-classifier
  open general-classifier (funext-from-univalence ua) fe' ua Y (λ (X : 𝓤 ̇ ) → X)
 
  pointed-classification-equivalence :
-  (Σ \(X : 𝓤 ̇ ) → Y ◁ X) ≃ (Y → (Σ \(X : 𝓤 ̇ ) → X))
+  (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
  pointed-classification-equivalence =
-  (Σ \(X : 𝓤 ̇ ) → Y ◁ X)                                  ≃⟨ i ⟩
-  (Σ \(X : 𝓤 ̇ ) → (Σ \(f : X → Y) → (y : Y) → fiber f y)) ≃⟨ ii ⟩
-  (Y → (Σ \(X : 𝓤 ̇ ) → X))                                ■
+  (Σ X ꞉ 𝓤 ̇ , Y ◁ X)                                  ≃⟨ i ⟩
+  (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y) , ((y : Y) → fiber f y))) ≃⟨ ii ⟩
+  (Y → (Σ X ꞉ 𝓤 ̇ , X))                                ■
    where
     i  = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) → retract-pointed-fibers))
     ii = classification-equivalence

@@ -13,7 +13,7 @@ module Slice (𝓣 : Universe) where
 open import UF-Subsingletons hiding (⊥)
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
-𝓕 X = Σ \(I : 𝓣 ̇ ) → I → X
+𝓕 X = Σ I ꞉ 𝓣 ̇ , (I → X)
 
 source : {X : 𝓤 ̇ } → 𝓕 X → 𝓣 ̇
 source (I , φ) = I
@@ -24,15 +24,15 @@ family (I , φ) = φ
 η : {X : 𝓤 ̇ } → X → 𝓕 X
 η x = 𝟙 , (λ _ → x)
 
-Sigma : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ̇
-Sigma (I , φ) = I
+SIGMA : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ̇
+SIGMA (I , φ) = I
 
-Pi : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ⊔ 𝓤 ̇
-Pi {𝓤} {X} (I , φ) = Σ \(s : X → I) → φ ∘ s ≡ id
+PI : {X : 𝓤 ̇ } → 𝓕  X → 𝓣 ⊔ 𝓤 ̇
+PI {𝓤} {X} (I , φ) = Σ s ꞉ (X → I) , φ ∘ s ≡ id
 
 pullback : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
          → (A → C) → (B → C) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-pullback f g = Σ \(x : domain f) → Σ \(y : domain g) → f x ≡ g y
+pullback f g = Σ x ꞉ domain f , Σ y ꞉ domain g , f x ≡ g y
 
 ppr₁ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
        {f : A → C} {g : B → C}
@@ -58,7 +58,7 @@ pullback-mediating : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
                      {T : 𝓤' ̇ }
                      (φ : T → A) (γ : T → B)
                    → f ∘ φ  ∼ g ∘ γ
-                   → ∃! \(h : T → pullback f g) → (ppr₁ ∘ h ∼ φ) × (ppr₂ ∘ h ∼ γ)
+                   → ∃! h ꞉ T → pullback f g , (ppr₁ ∘ h ∼ φ) × (ppr₂ ∘ h ∼ γ)
 pullback-mediating {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} {f} {g} {T} φ γ r = (h , p , q) , o
  where
   h : T → pullback f g
@@ -67,7 +67,7 @@ pullback-mediating {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} {f} {g} {T} φ γ r 
   p t = refl
   q : ppr₂ ∘ h ∼ γ
   q t = refl
-  o : (σ : Σ \(h' : T → pullback f g) → (ppr₁ ∘ h' ∼ φ) × (ppr₂ ∘ h' ∼ γ)) → h , p , q ≡ σ
+  o : (σ : Σ h' ꞉ T → pullback f g , (ppr₁ ∘ h' ∼ φ) × (ppr₂ ∘ h' ∼ γ)) → h , p , q ≡ σ
   o (h' , p' , q') = to-Σ-≡ ({!!} , {!!})
 -}
 
@@ -102,21 +102,21 @@ open import UF-UA-FunExt
 open import UF-UniverseEmbedding
 open import UF-EquivalenceExamples
 
-𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣
+𝓕-equiv : Univalence →  (X : 𝓤 ̇ ) → 𝓕 X ≃ (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣)
 𝓕-equiv {𝓤} ua X = qinveq χ (T , Tχ , χT)
  where
   fe : FunExt
   fe = FunExt-from-Univalence ua
-  χ : 𝓕 X → Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣
+  χ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣
   χ (I , φ) = fiber φ , I , ≃-sym (graph-domain-equiv φ)
-  T : (Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣) → 𝓕 X
+  T : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → 𝓕 X
   T (A , I , (f , e)) = I , pr₁ ∘ f
-  χT : (σ : Σ \(A : X → 𝓣 ⊔ 𝓤 ̇ ) → (Σ A) has-size 𝓣) → χ (T σ) ≡ σ
+  χT : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → χ (T σ) ≡ σ
   χT (A , I , (f , e)) = p
    where
     h : (x : X) → fiber (pr₁ ∘ f) x ≃ A x
-    h x = (Σ \(i : I) → pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variables (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
-          (Σ \(σ : Σ A) → pr₁ σ ≡ x)   ≃⟨ fiber-equiv x ⟩
+    h x = (Σ i ꞉ I , pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variables (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
+          (Σ σ ꞉ Σ A , pr₁ σ ≡ x)   ≃⟨ fiber-equiv x ⟩
           A x                          ■
     p : fiber (pr₁ ∘ f) , I , ≃-sym (graph-domain-equiv (pr₁ ∘ f)) ≡ A , I , f , e
     p = to-Σ-≡ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,

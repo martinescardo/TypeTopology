@@ -7,7 +7,7 @@ order on X × Y is defined by
 
 More generally, we can consider the lexicographic product of two
 binary relations R on X and S on Y, which is a relation on X × Y, or
-even on (Σ \(x : X) → Y x) if Y and S depend on X.
+even on (Σ x ꞉ X , Y x) if Y and S depend on X.
 
 \begin{code}
 
@@ -33,7 +33,7 @@ However, for a strict order, it makes sense to define
 \begin{code}
 
 slex-order : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇ ) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
-slex-order _<_ _≺_ (x , y) (x' , y') = (x < x') + Σ \(r : x ≡ x') → transport _ r y ≺ y'
+slex-order _<_ _≺_ (x , y) (x' , y') = (x < x') + (Σ r ꞉ x ≡ x' , transport _ r y ≺ y')
 
 \end{code}
 

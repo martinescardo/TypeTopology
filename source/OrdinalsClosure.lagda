@@ -86,7 +86,7 @@ following construction is performed in the module SquashedCantor.
    where
     f : 𝟚 → 𝟙 + 𝟙
     f = pr₁ retract-𝟙+𝟙-of-𝟚
-    h : retract ⟪ τ +ᵒ υ ⟫ of (Σ \(i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫)
+    h : retract ⟪ τ +ᵒ υ ⟫ of (Σ i ꞉ 𝟚 , ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫)
     h = Σ-reindex-retract f (pr₂ retract-𝟙+𝟙-of-𝟚)
     l : (i : 𝟚) → ⟪ cases (λ _ → τ) (λ _ → υ) (f i) ⟫
                 ≡ 𝟚-cases ⟪ τ ⟫ ⟪ υ ⟫ i
@@ -429,7 +429,7 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 𝟙ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y)
 𝟙ᵒ-inf-compact p = * , f , g , h
  where
-  f : (Σ \(x : 𝟙) → p x ≡ ₀) → p * ≡ ₀
+  f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p * ≡ ₀
   f (* , r) = r
   g : (x : 𝟙) → p x ≡ ₀ → * ≼⟪ 𝟙ᵒ ⟫ x
   g * r a = 𝟘-elim a
@@ -442,10 +442,10 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
-  φ : (r : p (inl *) ≡ ₀) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
+  φ : (r : p (inl *) ≡ ₀) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
   φ r = inl * , f , g , h
    where
-    f : (Σ \(x : 𝟙 + 𝟙) → p x ≡ ₀) → p (inl *) ≡ ₀
+    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inl *) ≡ ₀
     f (inl * , s) = s
     f (inr * , s) = r
     g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inl * ≤ x
@@ -455,10 +455,10 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
     h (inl *) φ l = 𝟘-elim l
     h (inr *) φ * = φ (inl *) r *
 
-  γ : (r : p (inl *) ≡ ₁) → Σ \(x : 𝟙 + 𝟙) → conditional-root _≤_ p x × roots-infimum _≤_ p x
+  γ : (r : p (inl *) ≡ ₁) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
   γ r = inr * , f , g , h
    where
-    f : (Σ \(x : 𝟙 + 𝟙) → p x ≡ ₀) → p (inr *) ≡ ₀
+    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inr *) ≡ ₀
     f (inl * , s) = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
     f (inr * , s) = s
     g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inr * ≤ x

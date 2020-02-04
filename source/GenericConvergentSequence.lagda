@@ -46,7 +46,7 @@ being-decreasing-is-a-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decre
 being-decreasing-is-a-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
 ℕ∞ : 𝓤₀ ̇
-ℕ∞ = Σ \(α : ℕ → 𝟚) → decreasing α
+ℕ∞ = Σ α ꞉ (ℕ → 𝟚) , decreasing α
 
 incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
@@ -94,11 +94,11 @@ force-decreasing-is-smaller β (succ i) p = Lemma[min𝟚ab≡₁→a≡₁] p
 
 force-decreasing-is-not-much-smaller : (β : ℕ → 𝟚) (n : ℕ)
                                      → force-decreasing β n ≡ ₀
-                                     → Σ \(m : ℕ) → β m ≡ ₀
+                                     → Σ m ꞉ ℕ , β m ≡ ₀
 force-decreasing-is-not-much-smaller β zero  p    = zero , p
 force-decreasing-is-not-much-smaller β (succ n) p = f c
   where
-    A = Σ \(m : ℕ) → β m ≡ ₀
+    A = Σ m ꞉ ℕ , β m ≡ ₀
     c : (β (succ n) ≡ ₀) + (force-decreasing β n ≡ ₀)
     c = lemma[min𝟚ab≡₀] {β (succ n)} {force-decreasing β n} p
     f : (β (succ n) ≡ ₀) + (force-decreasing β n ≡ ₀) → A
@@ -277,7 +277,7 @@ Zero-or-Succ fe₀ u = 𝟚-equality-cases
                       (λ (p : is-positive u) → inr (positive-equal-Succ fe₀ p))
 
 is-Succ : ℕ∞ → 𝓤₀ ̇
-is-Succ u = Σ \(w : ℕ∞) → u ≡ Succ w
+is-Succ u = Σ w ꞉ ℕ∞ , u ≡ Succ w
 
 Zero+Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + is-Succ u
 Zero+Succ fe₀ u = Cases (Zero-or-Succ fe₀ u) inl (λ p → inr (Pred u , p))
@@ -402,7 +402,7 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
         g r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀(succ n)
 
 is-finite : ℕ∞ → 𝓤₀ ̇
-is-finite u = Σ \(n : ℕ) → under n ≡ u
+is-finite u = Σ n ꞉ ℕ , under n ≡ u
 
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
@@ -480,7 +480,7 @@ above-Succ-is-positive u v l = l zero refl
 
 ≼-unfold : funext₀ → (u v : ℕ∞)
          → u ≼ v
-         → (u ≡ Zero) + Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)
+         → (u ≡ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t))
 ≼-unfold fe u v l = φ (Zero+Succ fe u) (Zero+Succ fe v)
  where
   φ : (u ≡ Zero) + is-Succ u → (v ≡ Zero) + is-Succ v → _
@@ -489,7 +489,7 @@ above-Succ-is-positive u v l = l zero refl
   φ (inr (w , refl)) (inr (t , refl)) = inr (w , t , refl , refl , Succ-loc w t l)
 
 ≼-fold : (u v : ℕ∞)
-       → ((u ≡ Zero) + Σ \(w : ℕ∞) → Σ \(t : ℕ∞) → (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t))
+       → ((u ≡ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)))
        → u ≼ v
 ≼-fold .Zero v (inl refl) = Zero-minimal v
 ≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
@@ -515,7 +515,7 @@ as the need arises.
 ∞-⊏-maximal n = refl
 
 _≺_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
-u ≺ v = Σ \(n : ℕ) → (u ≡ under n) × n ⊏ v
+u ≺ v = Σ n ꞉ ℕ , (u ≡ under n) × n ⊏ v
 
 ∞-top : (u : ℕ∞) → ¬(∞ ≺ u)
 ∞-top u (n , r , l) = ∞-is-not-finite n r
@@ -625,13 +625,13 @@ proved above, that ≺ is well founded:
                   ≺-extensional fe ,
                   ≺-trans
 
-under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+under-lemma : funext₀ → (u : ℕ∞) (n : ℕ) → u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ≡ under m)
 under-lemma fe u zero p     = zero , ≤-refl zero , is-Zero-equal-Zero fe p
 under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
  where
-  IH : u ⊑ n → Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+  IH : u ⊑ n → Σ m ꞉ ℕ , (m ≤ n) × (u ≡ under m)
   IH = under-lemma fe u n
-  g :  decidable(u ⊑ n) → Σ \(m : ℕ) → (m ≤ succ n) × (u ≡ under m)
+  g :  decidable(u ⊑ n) → Σ m ꞉ ℕ , (m ≤ succ n) × (u ≡ under m)
   g (inl q) = pr₁(IH q) , ≤-trans (pr₁(IH q)) n (succ n) (pr₁(pr₂(IH q))) (≤-succ n) , pr₂(pr₂(IH q))
   g (inr φ) = succ n , ≤-refl n , s
     where
@@ -649,7 +649,7 @@ under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
    where
     b : w ⊑ n
     b = not-⊏-is-⊒ {n} {w} f
-    σ : Σ \(m : ℕ) → (m ≤ n) × (w ≡ under m)
+    σ : Σ m ꞉ ℕ , (m ≤ n) × (w ≡ under m)
     σ = under-lemma fe w n b
     m : ℕ
     m = pr₁ σ
@@ -675,7 +675,7 @@ under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
   g : (u v : ℕ∞) → p u <₂ p v → u ≺ v
   g u v (a , b) = pr₁ c , pr₂(pr₂ c) , (⊏-trans'' v n (pr₁ c) (pr₁(pr₂ c)) b)
    where
-    c : Σ \(m : ℕ) → (m ≤ n) × (u ≡ under m)
+    c : Σ m ꞉ ℕ , (m ≤ n) × (u ≡ under m)
     c = under-lemma fe u n a
 
   h : (u v : ℕ∞) → (u ≺ v → p u ≤₂ p v) × (p u <₂ p v → u ≺ v)
@@ -707,7 +707,7 @@ Another version of N∞, to be investigated.
 \begin{code}
 
 Ν∞ : 𝓤₁ ̇
-Ν∞ = Σ \(A : ℕ → Ω 𝓤₀) → (n : ℕ) → A (succ n) holds → A n holds
+Ν∞ = Σ A ꞉ (ℕ → Ω 𝓤₀), ((n : ℕ) → A (succ n) holds → A n holds)
 
 \end{code}
 
@@ -761,11 +761,11 @@ Characterization of ⊏.
 ⊏-positive n u = ⊏-trans'' u n 0 (zero-minimal n)
 
 ⊏-charac→ : funext₀ → (n : ℕ) (u : ℕ∞)
-           → n ⊏ u → Σ \(v : ℕ∞) → u ≡ (Succ ^ (n ∔ 1)) v
+           → n ⊏ u → Σ v ꞉ ℕ∞ , u ≡ (Succ ^ (n ∔ 1)) v
 ⊏-charac→ fe₀ zero u l = Pred u , (positive-equal-Succ fe₀ l)
 ⊏-charac→ fe₀ (succ n) u l = γ
  where
-  IH : Σ \(v : ℕ∞) → Pred u ≡ (Succ ^ (n ∔ 1)) v
+  IH : Σ v ꞉ ℕ∞ , Pred u ≡ (Succ ^ (n ∔ 1)) v
   IH = ⊏-charac→ fe₀ n (Pred u) l
   v : ℕ∞
   v = pr₁ IH
@@ -773,11 +773,11 @@ Characterization of ⊏.
   p = u                   ≡⟨ positive-equal-Succ fe₀ (⊏-positive (succ n) u l) ⟩
       Succ (Pred u)       ≡⟨ ap Succ (pr₂ IH) ⟩
       (Succ ^ (n ∔ 2)) v  ∎
-  γ : Σ \(v : ℕ∞) → u ≡ (Succ ^ (n ∔ 2)) v
+  γ : Σ v ꞉ ℕ∞ , u ≡ (Succ ^ (n ∔ 2)) v
   γ = v , p
 
 ⊏-charac← : funext₀ → (n : ℕ) (u : ℕ∞)
-           → (Σ \(v : ℕ∞) → u ≡ (Succ ^ (n ∔ 1)) v) → n ⊏ u
+           → (Σ v ꞉ ℕ∞ , u ≡ (Succ ^ (n ∔ 1)) v) → n ⊏ u
 ⊏-charac← fe₀ zero u (v , refl) = refl
 ⊏-charac← fe₀ (succ n) u (v , refl) = γ
  where

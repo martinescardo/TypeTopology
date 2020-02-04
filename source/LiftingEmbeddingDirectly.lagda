@@ -30,7 +30,7 @@ of which is actually an equivalence).
 \begin{code}
 
 𝓚 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
-𝓚 X = Σ \(P : 𝓣 ̇ ) → (P → X) × is-singleton P
+𝓚 X = Σ P ꞉ 𝓣 ̇ , (P → X) × is-singleton P
 
 κ : {X : 𝓤 ̇ } → X → 𝓚 X
 κ x = 𝟙 , (λ _ → x) , 𝟙-is-singleton

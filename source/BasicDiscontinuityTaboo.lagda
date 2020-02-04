@@ -54,7 +54,7 @@ of type ℕ∞ → 𝟚.
 
 \begin{code}
 
-WLPO-is-discontinuous : WLPO → Σ \(p : ℕ∞ → 𝟚) → basic-discontinuity p
+WLPO-is-discontinuous : WLPO → Σ p ꞉ (ℕ∞ → 𝟚), basic-discontinuity p
 WLPO-is-discontinuous f = p , (d , d∞)
  where
   p : ℕ∞ → 𝟚

@@ -27,7 +27,7 @@ is-isolated : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated x = ∀ y → decidable(x ≡ y)
 
 is-perfect : 𝓤 ̇ → 𝓤 ̇
-is-perfect X = ¬ Σ \(x : X) → is-isolated x
+is-perfect X = ¬ (Σ x ꞉ X , is-isolated x)
 
 is-isolated' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 is-isolated' x = ∀ y → decidable(y ≡ x)
@@ -321,7 +321,7 @@ Back to old stuff:
 
 \begin{code}
 
-≡-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≢ n) × (p n ≡ ₁ → m ≡ n)
+≡-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ≡ ₀ → m ≢ n) × (p n ≡ ₁ → m ≡ n))
 ≡-indicator m = co-characteristic-function (ℕ-is-discrete m)
 
 χ≡ : ℕ → ℕ → 𝟚
@@ -338,7 +338,7 @@ infix  30 _≡[ℕ]_
 ≡-agrees-with-≡[ℕ] : (m n : ℕ) → m ≡ n ⇔ m ≡[ℕ] n
 ≡-agrees-with-≡[ℕ] m n = (λ r → different-from-₀-equal-₁ (λ s → pr₁(χ≡-spec m n) s r)) , pr₂(χ≡-spec m n)
 
-≢-indicator :  (m : ℕ) → Σ \(p : ℕ → 𝟚) → (n : ℕ) → (p n ≡ ₀ → m ≡ n) × (p n ≡ ₁ → m ≢ n)
+≢-indicator :  (m : ℕ) → Σ p ꞉ (ℕ → 𝟚) , ((n : ℕ) → (p n ≡ ₀ → m ≡ n) × (p n ≡ ₁ → m ≢ n))
 ≢-indicator m = indicator(ℕ-is-discrete m)
 
 χ≢ : ℕ → ℕ → 𝟚

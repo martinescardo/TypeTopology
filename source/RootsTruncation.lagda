@@ -43,7 +43,7 @@ _has-no-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
 α has-no-root< k = (n : ℕ) → n < k → α n ≢ z
 
 _has-a-minimal-root<_ : (ℕ → Z) → ℕ → 𝓤 ̇
-α has-a-minimal-root< k = Σ \(m : ℕ) → (α m ≡ z)
+α has-a-minimal-root< k = Σ m ꞉ ℕ , (α m ≡ z)
                                      × (m < k)
                                      × α has-no-root< m
 
@@ -96,7 +96,7 @@ be empty, and still the function is well defined.
 \begin{code}
 
 roots : (ℕ → Z) → 𝓤 ̇
-roots α = Σ \(n : ℕ) → α n ≡ z
+roots α = Σ n ꞉ ℕ , α n ≡ z
 
 μρ : (α : ℕ → Z) → roots α → roots α
 μρ α (n , p) = pr₁ (minimal-root α n p) , pr₁ (pr₂ (minimal-root α n p))
@@ -143,7 +143,7 @@ Explicitly (and repeating the construction of roots-has-prop-truncation):
 \begin{code}
 
 roots-truncation : (ℕ → Z) → 𝓤 ̇
-roots-truncation α = Σ \(r : roots α) → r ≡ μρ α r
+roots-truncation α = Σ r ꞉ roots α , r ≡ μρ α r
 
 roots-truncation-is-a-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
 roots-truncation-is-a-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
@@ -177,16 +177,16 @@ module ExitRootTruncations (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- exit-roots-truncation : (α : ℕ → Z) → (∃ \(n : ℕ) → α n ≡ z) → Σ \(n : ℕ) → α n ≡ z
+ exit-roots-truncation : (α : ℕ → Z) → (∃ \(n : ℕ) → α n ≡ z) → Σ n ꞉ ℕ , α n ≡ z
  exit-roots-truncation α = h ∘ g
   where
-   f : (Σ \(n : ℕ) → α n ≡ z) → fix (μρ α)
+   f : (Σ n ꞉ ℕ , α n ≡ z) → fix (μρ α)
    f = to-fix (μρ α) (μρ-constant α)
 
-   g : ∥(Σ \(n : ℕ) → α n ≡ z)∥ → fix (μρ α)
+   g : ∥(Σ n ꞉ ℕ , α n ≡ z)∥ → fix (μρ α)
    g = ∥∥-rec (Kraus-Lemma (μρ α) (μρ-constant α)) f
 
-   h : fix (μρ α) → Σ \(n : ℕ) → α n ≡ z
+   h : fix (μρ α) → Σ n ꞉ ℕ , α n ≡ z
    h = from-fix (μρ α)
 
 \end{code}

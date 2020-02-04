@@ -25,7 +25,7 @@ open import UF-StructureIdentityPrinciple
 open import Slice 𝓣
 
 _⋍_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
-l ⋍ m = Σ \(e : source l ≃ source m) → family l ≡ family m ∘ ⌜ e ⌝
+l ⋍ m = Σ e ꞉ source l ≃ source m , family l ≡ family m ∘ ⌜ e ⌝
 
 𝓕-Id : is-univalent 𝓣 → (l m : 𝓕 X) → (l ≡ m) ≃ (l ⋍ m)
 𝓕-Id ua = ≡-is-≃ₛ'
@@ -42,7 +42,7 @@ l ⋍ m = Σ \(e : source l ≃ source m) → family l ≡ family m ∘ ⌜ e �
 ⋍-gives-≡ ua = ⌜ ≃-sym (𝓕-Id ua _ _) ⌝
 
 _⋍·_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
-l ⋍· m = Σ \(e : source l ≃ source m) → family l ∼ family m ∘ ⌜ e ⌝
+l ⋍· m = Σ e ꞉ source l ≃ source m , family l ∼ family m ∘ ⌜ e ⌝
 
 𝓕-Id· : is-univalent 𝓣 → funext 𝓣 𝓤
       → (l m : 𝓕 X) → (l ≡ m) ≃ (l ⋍· m)

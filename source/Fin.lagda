@@ -293,14 +293,14 @@ as the existence of an injection Fin m → Fin n:
 \begin{code}
 
 _has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-f has-a-repetition = Σ \(x : domain f) → Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+f has-a-repetition = Σ x ꞉ domain f , Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
 
 
 pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
                      → m > n → f has-a-repetition
 pigeonhole-principle m n f g = γ
  where
-  a : ¬ Σ \(f : Fin m → Fin n) → left-cancellable f
+  a : ¬ (Σ f ꞉ (Fin m → Fin n), left-cancellable f)
   a = contrapositive (↣-gives-≤ m n) (less-not-bigger-or-equal n m g)
 
   b : ¬ left-cancellable f
@@ -329,7 +329,7 @@ need more steps.
            (¬-preserves-decidability (Fin-is-discrete m i j))
            (Fin-is-discrete n (f i) (f j))
 
-  v : (i : Fin m) → decidable (Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j))
+  v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≢ j) × (f i ≡ f j))
   v i = Fin-Compact m _ (u i)
 
   w : decidable (f has-a-repetition)
@@ -349,7 +349,7 @@ Added 2nd December 2019. An isomorphic copy of the type Fin n:
 \begin{code}
 
 Fin' : ℕ → 𝓤₀ ̇
-Fin' n = Σ \(k : ℕ) → k < n
+Fin' n = Σ k ꞉ ℕ , k < n
 
 
 𝟎' : {n : ℕ} → Fin' (succ n)
@@ -599,7 +599,7 @@ type of finite linear orders on X.
 \begin{code}
 
 Finite : 𝓤 ̇ → 𝓤 ̇
-Finite X = Σ \(n : ℕ) → X ≃ Fin n
+Finite X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
@@ -617,7 +617,7 @@ module finiteness (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt public
 
  is-finite : 𝓤 ̇ → 𝓤 ̇
- is-finite X = Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
+ is-finite X = Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥
 
 
  cardinality : (X : 𝓤 ̇ ) → is-finite X → ℕ
@@ -657,7 +657,7 @@ Equivalently, one can define finiteness as follows:
  finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
  finite-unprime X = ∥∥-rec (being-finite-is-a-prop X) γ
   where
-   γ : (Σ \(n : ℕ) → X ≃ Fin n) → Σ \(n : ℕ) → ∥ X ≃ Fin n ∥
+   γ : (Σ n ꞉ ℕ , X ≃ Fin n) → Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥
    γ (n , e) = n , ∣ e ∣
 
 
@@ -797,7 +797,7 @@ We now consider further variations of the finite pigeonhole principle.
 \begin{code}
 
   repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
-  repeated-values f x = Σ \(x' : domain f) → (x ≢ x') × (f x ≡ f x')
+  repeated-values f x = Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
 
 
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
@@ -835,7 +835,7 @@ We now consider further variations of the finite pigeonhole principle.
     γ' = ∥∥-functor h t
 
     A : Fin m → 𝓥 ̇
-    A i = Σ \(j : Fin m) → (i ≢ j) × (f i ≡ f j)
+    A i = Σ j ꞉ Fin m , (i ≢ j) × (f i ≡ f j)
 
     γ : f has-a-repetition
     γ = Fin-Σ-from-∃ fe {m} A (repetitions-detachable f (n , t)) γ'
@@ -902,19 +902,19 @@ construction.
 
     infixl 3 _↑_
 
-    finite-order : (x : X) → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
+    finite-order : (x : X) → Σ k ꞉ ℕ , x ↑ (succ k) ≡ e
     finite-order x = c a
      where
-      a : Σ \(m : ℕ) → Σ \(n : ℕ) → (m ≢ n) × (x ↑ m ≡ x ↑ n)
+      a : Σ m ꞉ ℕ , Σ n ꞉ ℕ , (m ≢ n) × (x ↑ m ≡ x ↑ n)
       a = ℕ-finite-pigeonhole-principle (x ↑_) φ
 
-      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ≡ x ↑ n → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
+      b : (m : ℕ) (n : ℕ) → m ≢ n → x ↑ m ≡ x ↑ n → Σ k ꞉ ℕ , x ↑ (succ k) ≡ e
       b 0        0        ν p = 𝟘-elim (ν refl)
       b 0        (succ n) ν p = n , (p ⁻¹)
       b (succ m) 0        ν p = m , p
       b (succ m) (succ n) ν p = b m n (λ (q : m ≡ n) → ν (ap succ q)) (lc x p)
 
-      c : type-of a → Σ \(k : ℕ) → x ↑ (succ k) ≡ e
+      c : type-of a → Σ k ꞉ ℕ , x ↑ (succ k) ≡ e
       c (m , n , ν , p) = b m n ν p
 
 \end{code}

@@ -51,7 +51,7 @@ the type of embeddings, defined elsewhere, is useful).
 \begin{code}
 
 _↣_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↣ Y =  Σ \(f : X → Y) → left-cancellable f
+X ↣ Y =  Σ f ꞉ (X → Y) , left-cancellable f
 
 ⌈_⌉ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ↣ Y → X → Y
 ⌈ f , _ ⌉ = f

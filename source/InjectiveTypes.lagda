@@ -183,8 +183,8 @@ module _ {X : 𝓤 ̇ }
        where
 
   Π-extension Σ-extension : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  Π-extension y = Π \(w : fiber j y) → f(pr₁ w)
-  Σ-extension y = Σ \(w : fiber j y) → f(pr₁ w)
+  Π-extension y = Π w ꞉ fiber j y , f(pr₁ w)
+  Σ-extension y = Σ w ꞉ fiber j y , f(pr₁ w)
 
   private
    f/j f∖j : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -290,13 +290,13 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  2nd-Π-extension-formula : (y : Y) → f/j(y) ≃ Π \(x : X) → j x ≡ y → f x
+  2nd-Π-extension-formula : (y : Y) → f/j(y) ≃ (Π x ꞉ X , (j x ≡ y → f x))
   2nd-Π-extension-formula y = curry-uncurry fe
 
   2nd-Π-extension-formula' : (y : Y) → f/j(y) ≃ (λ x → j x ≡ y) ≾ f
   2nd-Π-extension-formula' = 2nd-Π-extension-formula
 
-  2nd-Σ-extension-formula : (y : Y) → f∖j(y) ≃ Σ \(x : X) → (j x ≡ y) × f x
+  2nd-Σ-extension-formula : (y : Y) → f∖j(y) ≃ (Σ x ꞉ X , (j x ≡ y) × f x)
   2nd-Σ-extension-formula y = Σ-assoc
 
 
@@ -308,11 +308,11 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  Π-observation : is-embedding j → (a : X) → f a ≃ (Π \(x : X) → j x ≡ j a → f x)
+  Π-observation : is-embedding j → (a : X) → f a ≃ (Π x ꞉ X , (j x ≡ j a → f x))
   Π-observation e a = ≃-sym ((≃-sym (2nd-Π-extension-formula (j a))) ●
                                       (Π-extension-in-range e a))
 
-  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ \(x : X) → (j x ≡ j a) × f x)
+  Σ-observation : is-embedding j → (a : X) → f a ≃ (Σ x ꞉ X , (j x ≡ j a) × f x)
   Σ-observation e a = ≃-sym ((≃-sym (2nd-Σ-extension-formula (j a))) ●
                                       (Σ-extension-in-range e a))
 
@@ -496,13 +496,13 @@ data rather than property), called algebraic injectivity.
 
 ainjective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 ainjective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
-                      → (f : X → D) → Σ \(f' : Y → D) → f' ∘ j ∼ f
+                      → (f : X → D) → Σ f' ꞉ (Y → D) , f' ∘ j ∼ f
 
 embedding-retract : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y) → is-embedding j → ainjective-type D 𝓦 𝓥
                   → retract D of Y
 embedding-retract D Y j e i = pr₁ a , j , pr₂ a
  where
-  a : Σ \(f' : Y → D) → f' ∘ j ∼ id
+  a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ id
   a = i j e id
 
 retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
@@ -511,9 +511,9 @@ retract-of-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                       → ainjective-type D' 𝓤 𝓥
 retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
   where
-   a : Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
+   a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f
    a = i j e (s ∘ f)
-   φ : (Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f) → Σ \(f'' : Y → D') → f'' ∘ j ∼ f
+   φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
 
 equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
@@ -541,7 +541,7 @@ ainjective-is-retract-of-power-of-universe {𝓤} D ua = embedding-retract D (D 
              → ainjective-type (Π D) 𝓤 𝓥
 Π-ainjective {𝓣}  {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = f' , g
   where
-    l : (a : A) → Σ \(h : Y → D a) → h ∘ j ∼ (λ x → f x a)
+    l : (a : A) → Σ h ꞉ (Y → D a) , h ∘ j ∼ (λ x → f x a)
     l a = (i a) j e (λ x → f x a)
 
     f' : Y → (a : A) → D a
@@ -659,7 +659,7 @@ So in essence we are considering the map s : (P → 𝓤) → 𝓤 defined by
 
 Then, for any X : 𝓤,
 
-  fiber s X = Σ \(f : P → 𝓤) → (Π (p : P) → f p) ≡ X.
+  fiber s X = Σ f ꞉ P → 𝓤 , (Π (p : P) → f p) ≡ X.
 
 A few days pause. Now 15th Nov 2018 after a discussion in the HoTT list.
 https://groups.google.com/d/topic/homotopytypetheory/xvx5hOEPnDs/discussion
@@ -698,7 +698,7 @@ module /-extension-is-embedding-special-case
  κ X x p = x
 
  M : 𝓤 ⁺ ̇
- M = Σ \(X : 𝓤 ̇ ) → is-equiv (κ X)
+ M = Σ X ꞉ 𝓤 ̇ , is-equiv (κ X)
 
  φ : (P → 𝓤 ̇ ) → M
  φ A = s A , qinvs-are-equivs (κ (s A)) (δ , ε , η)
@@ -770,7 +770,7 @@ module ∖-extension-is-embedding-special-case
  κ X = pr₂
 
  C : 𝓤 ⁺ ̇
- C = Σ \(X : 𝓤 ̇ ) → is-equiv (κ X)
+ C = Σ X ꞉ 𝓤 ̇ , is-equiv (κ X)
 
  φ : (P → 𝓤 ̇ ) → C
  φ A = s A , qinvs-are-equivs (κ (s A)) (δ , ε , η)
@@ -848,7 +848,7 @@ module /-extension-is-embedding
  κ g y C (x , p) = back-transport g p C
 
  M : (𝓤 ⁺) ̇
- M = Σ \(g : Y → 𝓤 ̇ ) → (y : Y) → is-equiv (κ g y)
+ M = Σ g ꞉ (Y → 𝓤 ̇ ), ((y : Y) → is-equiv (κ g y))
 
  φ : (X → 𝓤 ̇ ) → M
  φ f = s f , e
@@ -942,7 +942,7 @@ module ∖-extension-is-embedding
  κ g y ((x , p) , C) = transport g p C
 
  M : (𝓤 ⁺) ̇
- M = Σ \(g : Y → 𝓤 ̇ ) → (y : Y) → is-equiv (κ g y)
+ M = Σ g ꞉ (Y → 𝓤 ̇), ((y : Y) → is-equiv (κ g y))
 
  φ : (X → 𝓤 ̇ ) → M
  φ f = s f , e
@@ -950,8 +950,8 @@ module ∖-extension-is-embedding
    e : (y : Y) → is-equiv (κ (s f) y)
    e y = qinvs-are-equivs (κ (s f) y) (δ , ε , η)
     where
-     δ : (Σ \(w : fiber j y) → f(pr₁ w))
-       → Σ \(t : fiber j y) → Σ (\(w : fiber j (j (pr₁ t))) → f (pr₁ w))
+     δ : (Σ w ꞉ fiber j y , f(pr₁ w))
+       → Σ t ꞉ fiber j y , Σ (\(w : fiber j (j (pr₁ t))) → f (pr₁ w))
      δ ((x , p) , C) = (x , p) , (x , refl) , C
      η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
      η ((x , refl) , C) = refl
@@ -1009,7 +1009,7 @@ algebraic flabbiness.
 \begin{code}
 
 aflabby : 𝓦 ̇ → (𝓤 : Universe) → 𝓦 ⊔ 𝓤 ⁺ ̇
-aflabby D 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (f : P → D) → Σ \(d : D) → (p : P) → d ≡ f p
+aflabby D 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (f : P → D) → Σ d ꞉ D , ((p : P) → d ≡ f p)
 
 aflabby-pointed : (D : 𝓦 ̇ ) → aflabby D 𝓤 → D
 aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
@@ -1072,7 +1072,7 @@ The injectivity of all types is logically equivalent to excluded middle
 EM-gives-pointed-types-aflabby : (D : 𝓦 ̇ ) → EM 𝓤 → D → aflabby D 𝓤
 EM-gives-pointed-types-aflabby {𝓦} {𝓤} D em d P i f = h (em P i)
  where
-  h : P + ¬ P → Σ \(d : D) → (p : P) → d ≡ f p
+  h : P + ¬ P → Σ d ꞉ D , ((p : P) → d ≡ f p)
   h (inl p) = f p , (λ q → ap f (i p q))
   h (inr n) = d , (λ p → 𝟘-elim (n p))
 
@@ -1220,10 +1220,10 @@ of 𝓤.
 \begin{code}
 
 ainjective-characterization : is-univalent 𝓤 → propositional-resizing (𝓤 ⁺) 𝓤 → (D : 𝓤 ̇ )
-                            → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇ )
+                            → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ ))
 ainjective-characterization {𝓤} ua R D = a , b
  where
-  a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇ )
+  a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ )
   a i = D , d
    where
     c : ainjective-type D 𝓤 (𝓤 ⁺)
@@ -1231,7 +1231,7 @@ ainjective-characterization {𝓤} ua R D = a , b
     d : retract D of (D → 𝓤 ̇ )
     d = ainjective-is-retract-of-power-of-universe D ua c
 
-  b : (Σ \(X : 𝓤 ̇ ) → retract D of (X → 𝓤 ̇ )) → ainjective-type D 𝓤 𝓤
+  b : (Σ X ꞉ 𝓤 ̇ , retract D of (X → 𝓤 ̇ )) → ainjective-type D 𝓤 𝓤
   b (X , r) = d
    where
     c : ainjective-type (X → 𝓤 ̇ ) 𝓤 𝓤
@@ -1300,12 +1300,12 @@ monad:
 \begin{code}
 
  ainjectives-in-terms-of-free-𝓛-algebras : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺) → propositional-resizing (𝓤 ⁺) 𝓤
-                                        → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤 ⇔ Σ \(X : 𝓤 ̇ ) → retract D of (𝓛 X)
+                                        → (D : 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤 ⇔ (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X))
  ainjectives-in-terms-of-free-𝓛-algebras ua fe R D = a , b
   where
-   a : ainjective-type D 𝓤 𝓤 → Σ \(X : 𝓤 ̇ ) → retract D of (𝓛 X)
+   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)
    a i = D , ainjective-is-retract-of-free-𝓛-algebra D ua (ainjective-resizing R D i)
-   b : (Σ \(X : 𝓤 ̇ ) → retract D of (𝓛 X)) → ainjective-type D 𝓤 𝓤
+   b : (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)) → ainjective-type D 𝓤 𝓤
    b (X , r) = retract-of-ainjective D (𝓛 X) (free-𝓛-algebra-ainjective ua fe X) r
 
 \end{code}
@@ -1358,7 +1358,7 @@ module injective (pt : propositional-truncations-exist) where
   where
    i' : ∃ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
-   φ : (Σ \(f' : Y → D) → f' ∘ j ∼ s ∘ f) → Σ \(f'' : Y → D') → f'' ∘ j ∼ f
+   φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D'), f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
    γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
@@ -1383,7 +1383,7 @@ so we need a new proof, but hence also new universe assumptions.
    c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
    ψ : ∃ \(g' : Y × A → D) → g' ∘ k ∼ g
    ψ = i k c g
-   φ : (Σ \(g' : Y × A → D) → g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
+   φ : (Σ g' ꞉ (Y × A → D), g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
    φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 (𝓣 ⊔ 𝓦)) (λ a → h (x , a)))
    γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ

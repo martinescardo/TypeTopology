@@ -33,9 +33,9 @@ module coquand where
    data 𝕎 : Set where
     sup : (T : Set) → (T → 𝕎) → 𝕎
    e : 𝕎 → 𝕎 → Set
-   e (sup T φ) w = Σ \(t : T) → φ t ≡ w
+   e (sup T φ) w = Σ t ꞉ T , φ t ≡ w
    R : 𝕎
-   R = sup (Σ \(w : 𝕎) → e w w → X) pr₁
+   R = sup (Σ w ꞉ 𝕎 , (e w w → X)) pr₁
    A : Set
    A = e R R
    r : A → (A → X)
@@ -44,7 +44,7 @@ module coquand where
    s f = (R , f) , refl
    rs : (f : A → X) → r (s f) ≡ f
    rs f = refl
-   γ : (f : X → X) → Σ \(x : X) → x ≡ f x
+   γ : (f : X → X) → Σ x ꞉ X , x ≡ f x
    γ = retract-version.LFPT (r , s , rs)
 
 \end{code}
@@ -113,8 +113,16 @@ module blechschmidt where
 
  open Σ public
 
+ Sigma : (X : Set) (Y : X → Set) → Set
+ Sigma X Y = Σ Y
+
+ syntax Sigma A (λ x → b) = Σ x ꞉ A , b
+
+ infixr -1 Sigma
+
+
  _×_ : Set → Set → Set
- X × Y = Σ \(x : X) → Y
+ X × Y = Σ x ꞉ X , Y
 
  data _≡_ {X : Set} : X → X → Set where
    refl : {x : X} → x ≡ x
@@ -153,7 +161,7 @@ module blechschmidt where
  p ∙ q = transport (λ x → _ ≡ x) q p
 
  to-Σ-≡ : {X : Set} {A : X → Set} {σ τ : Σ A}
-        → (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+        → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
         → σ ≡ τ
  to-Σ-≡ (refl , refl) = refl
 
@@ -229,7 +237,7 @@ module blechschmidt where
  ∥∥-rec {X} {P} isp φ s = s P isp φ
 
  Ω : Set
- Ω = Σ \(P : Set) → is-prop P
+ Ω = Σ P ꞉ Set , is-prop P
 
  _holds : Ω → Set
  _holds = pr₁
@@ -256,7 +264,7 @@ module blechschmidt where
  has-section r = Σ \s → r ∘ s ∼ id
 
  retract_of_ : Set → Set → Set
- retract Y of X = Σ \(r : X → Y) → has-section r
+ retract Y of X = Σ r ꞉ (X → Y) , has-section r
 
  retracts-compose : {X Y Z : Set} → retract Y of X → retract Z of Y → retract Z of X
  retracts-compose (r , (s , η)) (r' , (s' , η')) = r' ∘ r ,
@@ -273,7 +281,7 @@ module blechschmidt where
  is-equiv f = has-section f × is-section f
 
  _≃_ : Set → Set → Set
- X ≃ Y = Σ \(f : X → Y) → is-equiv f
+ X ≃ Y = Σ f ꞉ (X → Y) , is-equiv f
 
  idtoeq : (X Y : Set) → X ≡ Y → X ≃ Y
  idtoeq X Y refl = id , (id , (λ (x : X) → refl)) , id , (λ (y : Y) → refl)
@@ -295,7 +303,7 @@ module blechschmidt where
 
  LFPT : {A : Set} {X : Set}
       → retract (A → X) of A
-      → (f : X → X) → Σ \(x : X) → x ≡ f x
+      → (f : X → X) → Σ x ꞉ X , x ≡ f x
  LFPT {A} {X} (r , (s , η)) f = x , p
   where
    g : A → X
@@ -307,7 +315,7 @@ module blechschmidt where
 
  LFPT-≡ : {A : Set} {X : Set}
         → A ≡ (A → X)
-        → (f : X → X) → Σ \(x : X) → x ≡ f x
+        → (f : X → X) → Σ x ꞉ X , x ≡ f x
  LFPT-≡ p = LFPT (Id-retract p)
 
  \end{code}
@@ -317,12 +325,12 @@ module blechschmidt where
 
  \begin{code}
 
- not-no-fp : ¬ Σ \(P : Ω) → P ≡ not P
+ not-no-fp : ¬ (Σ P ꞉ Ω , P ≡ not P)
  not-no-fp (P , p) = pr₁(γ id)
   where
    q : P holds ≡ ¬ (P holds)
    q = ap _holds p
-   γ : (f : 𝟘 → 𝟘) → Σ \(x : 𝟘) → x ≡ f x
+   γ : (f : 𝟘 → 𝟘) → Σ x ꞉ 𝟘 , x ≡ f x
    γ = LFPT-≡ q
 
  \end{code}
@@ -337,23 +345,23 @@ module blechschmidt where
  Π-projection-has-section {A} {X} A₀ = s , η
   where
    s : (X A₀ → Ω) → ((A : A) → X A → Ω)
-   s φ A x = ∥(Σ \(p : A ≡ A₀) → φ (transport X p x) holds)∥ , ∥∥-is-prop
+   s φ A x = ∥(Σ p ꞉ A ≡ A₀ , φ (transport X p x) holds)∥ , ∥∥-is-prop
    η : (φ : X A₀ → Ω) → s φ A₀ ≡ φ
    η φ = funext γ
     where
-     a : (x₀ : X A₀) → ∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥ → φ x₀ holds
+     a : (x₀ : X A₀) → ∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥ → φ x₀ holds
      a x₀ = ∥∥-rec (holds-is-prop (φ x₀)) f
       where
-       f : (Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds) → φ x₀ holds
+       f : (Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds) → φ x₀ holds
        f (p , h) = transport _holds t h
         where
          r : p ≡ refl
          r = K-axiom A p refl
          t : φ (transport X p x₀) ≡ φ x₀
          t = ap (λ - → φ(transport X - x₀)) r
-     b : (x₀ : X A₀) → φ x₀ holds → ∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥
+     b : (x₀ : X A₀) → φ x₀ holds → ∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥
      b x₀ h = ∣ refl , h ∣
-     γ : (x₀ : X A₀) → (∥(Σ \(p : A₀ ≡ A₀) → φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ≡ φ x₀
+     γ : (x₀ : X A₀) → (∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ≡ φ x₀
      γ x₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                     being-a-prop-is-a-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
 
@@ -366,7 +374,7 @@ module blechschmidt where
  usr-lemma : {A : Set} (X : A → Set)
            → (a₀ : A)
            → retract ((a : A) → X a → Ω) of X a₀
-           → (f : Ω → Ω) → Σ \(P : Ω) → P ≡ f P
+           → (f : Ω → Ω) → Σ P ꞉ Ω , P ≡ f P
  usr-lemma {A} X a₀ retr = LFPT retr'
   where
    retr' : retract (X a₀ → Ω) of X a₀
@@ -381,7 +389,7 @@ module blechschmidt where
 
  \begin{code}
 
- universe-regular-≃ : (A : Set) (X : A → Set) → Σ \(B : Set) → (a : A) → ¬(X a ≃ B)
+ universe-regular-≃ : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬(X a ≃ B))
  universe-regular-≃ A X = B , φ
    where
     B : Set
@@ -391,14 +399,14 @@ module blechschmidt where
      where
       retr : retract B of (X a)
       retr = equiv-retract p
-      γ : (f : Ω → Ω) → Σ \(P : Ω) → P ≡ f P
+      γ : (f : Ω → Ω) → Σ P ꞉ Ω , P ≡ f P
       γ = usr-lemma {A} X a retr
 
- universe-regular : (A : Set) (X : A → Set) → Σ \(B : Set) → (a : A) → ¬(X a ≡ B)
+ universe-regular : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬(X a ≡ B))
  universe-regular A X = γ (universe-regular-≃ A X)
   where
-   γ : (Σ \(B : Set) → (a : A) → ¬(X a ≃ B))
-     → (Σ \(B : Set) → (a : A) → ¬(X a ≡ B))
+   γ : (Σ B ꞉ Set , ((a : A) → ¬(X a ≃ B)))
+     → (Σ B ꞉ Set , ((a : A) → ¬(X a ≡ B)))
    γ (B , φ) = B , (λ a p → φ a (idtoeq (X a) B p))
 
  \end{code}

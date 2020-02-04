@@ -58,7 +58,7 @@ structure = pr₂
  of underlying sets subject to a suitable condition involving the
  data:
 
-   (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B (f , e)
+   (A ≡ B) ≃ Σ f ꞉ ⟨ A ⟩ → ⟨ B ⟩ , Σ e ꞉ is-equiv f , S-equiv A B (f , e)
 
  It is important that such a condition is not necessarily property but
  actually data in general.
@@ -122,7 +122,7 @@ module gsip
 \begin{code}
 
   _≃ₛ_ : Σ S → Σ S → 𝓤 ⊔ 𝓥 ̇
-  A ≃ₛ B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B (f , e)
+  A ≃ₛ B = Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩) , Σ e ꞉ is-equiv f , S-equiv A B (f , e)
 
 \end{code}
 
@@ -225,7 +225,7 @@ module gsip
   ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
 
   _≃ₛ'_ : Σ S → Σ S → 𝓤 ⊔ 𝓥 ̇
-  A ≃ₛ' B = Σ \(p : ⟨ A ⟩ ≃ ⟨ B ⟩) → S-equiv A B (pr₁ p , pr₂ p)
+  A ≃ₛ' B = Σ p ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , S-equiv A B (pr₁ p , pr₂ p)
 
   ≃ₛ-is-≃ₛ' : (A B : Σ S) → (A ≃ₛ B) ≃ (A ≃ₛ' B)
   ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
@@ -291,7 +291,7 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  fact' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
        → ((X , _·_) ≡ (Y , _⋆_))
-       ≃ Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x'))
+       ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
  fact' X Y _·_ _⋆_ = fact (X , _·_) (Y , _⋆_)
 
 \end{code}
@@ -313,13 +313,13 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 
  fact'' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
         → ((X , _·_) ≡ (Y , _⋆_))
-        ≃ Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')
+        ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x'))
  fact'' X Y _·_ _⋆_ =
    ((X , _·_) ≡ (Y , _⋆_))
        ≃⟨ fact' X Y _·_ _⋆_ ⟩
-   (Σ \(f : X → Y) → is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
+   (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
        ≃⟨ Σ-cong (λ f → ×cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
-   (Σ \(f : X → Y) → is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')) ■
+   (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')) ■
 
 \end{code}
 
@@ -363,7 +363,7 @@ module ∞-proto-topological-spaces (𝓤 𝓥 : Universe) (ua : is-univalent �
 \begin{code}
 
  fact' : (X Y : 𝓤 ̇ ) (τ : (X → R) → R) (σ : (Y → R) → R)
-       → ((X , τ) ≡ (Y , σ)) ≃ Σ \(f : X → Y) → is-equiv f × ((λ V → τ (V ∘ f)) ≡ σ)
+       → ((X , τ) ≡ (Y , σ)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ V → τ (V ∘ f)) ≡ σ))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
 \end{code}
@@ -401,7 +401,7 @@ module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (
  fact = ≡-is-≃ₛ
 
  fact' : (X Y : 𝓤 ̇ ) (d : X → X → R) (e : Y → Y → R)
-       → ((X , d) ≡ (Y , e)) ≃ Σ \(f : X → Y) → is-equiv f × (d ≡ (λ x x' → e (f x) (f x')))
+       → ((X , d) ≡ (Y , e)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × (d ≡ (λ x x' → e (f x) (f x'))))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
 \end{code}
@@ -432,7 +432,7 @@ module selection-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : �
  fact = ≡-is-≃ₛ
 
  fact' : (X Y : 𝓤 ̇ ) (ε : (X → R) → X) (δ : (Y → R) → Y)
-       → ((X , ε) ≡ (Y , δ)) ≃ Σ \(f : X → Y) → is-equiv f × ((λ V → f (ε (V ∘ f))) ≡ δ)
+       → ((X , ε) ≡ (Y , δ)) ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ V → f (ε (V ∘ f))) ≡ δ))
  fact' X Y σ τ = fact (X , σ) (Y , τ)
 
 \end{code}
@@ -481,7 +481,7 @@ module gsip-with-axioms
 \begin{code}
 
    S' : 𝓤 ̇ → 𝓥 ̇
-   S' X = Σ \(s : S X) → Axioms X s
+   S' X = Σ s ꞉ S X , Axioms X s
 
    S'-preserving : (A' B' : Σ S') → ⟨ A' ⟩ ≃ ⟨ B' ⟩ → 𝓤 ⊔ 𝓥 ̇
    S'-preserving (X , s , α) (Y , t , β) = S-equiv (X , s) (Y , t)
@@ -608,7 +608,7 @@ axioms:
 \begin{code}
 
  Monoid : 𝓤 ⁺ ̇
- Monoid = Σ \(X : 𝓤 ̇ ) → Σ \(s : S X) → Axioms X s
+ Monoid = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , Axioms X s
 
 \end{code}
 
@@ -700,7 +700,7 @@ module gsip'
   where
 
   _≃ₛ_ : Σ S → Σ S → 𝓤 ⊔ 𝓦 ̇
-  A ≃ₛ B = Σ \(f : ⟨ A ⟩ → ⟨ B ⟩) → Σ \(e : is-equiv f) → S-equiv A B (f , e)
+  A ≃ₛ B = Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩) , Σ e ꞉ is-equiv f , S-equiv A B (f , e)
 
   ≃ₛ-refl : (A : Σ S) → A ≃ₛ A
   ≃ₛ-refl A = pr₁(≃-refl ⟨ A ⟩) , pr₂(≃-refl ⟨ A ⟩) , S-refl A
@@ -758,7 +758,7 @@ module gsip'
   ≡-is-≃ₛ A B = idtoeqₛ A B , uaₛ A B
 
   _≃ₛ'_ : Σ S → Σ S → 𝓤 ⊔ 𝓦 ̇
-  A ≃ₛ' B = Σ \(p : ⟨ A ⟩ ≃ ⟨ B ⟩) → S-equiv A B (pr₁ p , pr₂ p)
+  A ≃ₛ' B = Σ p ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , S-equiv A B (pr₁ p , pr₂ p)
 
   ≃ₛ-is-≃ₛ' : (A B : Σ S) → (A ≃ₛ B) ≃ (A ≃ₛ' B)
   ≃ₛ-is-≃ₛ' A B = ≃-sym Σ-assoc
@@ -796,7 +796,7 @@ module gsip-with-axioms'
  where
 
    S' : 𝓤 ̇ → 𝓥 ⊔ 𝓣 ̇
-   S' X = Σ \(s : S X) → Axioms X s
+   S' X = Σ s ꞉ S X , Axioms X s
 
    S'-preserving : (A' B' : Σ S') → ⟨ A' ⟩ ≃ ⟨ B' ⟩ → 𝓦 ̇
    S'-preserving (X , s , α) (Y , t , β) = S-equiv (X , s) (Y , t)

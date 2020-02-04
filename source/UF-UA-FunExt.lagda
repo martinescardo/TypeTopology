@@ -28,7 +28,7 @@ open import UF-Equiv-FunExt
 naive-funext-from-univalence : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
 naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
  where
-  Δ = Σ \(y₀ : Y) → Σ \(y₁ : Y) → y₀ ≡ y₁
+  Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≡ y₁
 
   δ : Y → Δ
   δ y = (y , y , refl)

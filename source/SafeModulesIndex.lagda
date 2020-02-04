@@ -234,7 +234,7 @@ The module dependency graph: http://www.cs.bham.ac.uk/~mhe/agda-new/manual.pdf
 The following module investigates the notion of compact set. A
 set X is compact iff
 
-   (p : X → 𝟚) → (Σ \(x : X) → p x ≡ ₀) + Π \(x : X) → p x ≡ ₁
+   (p : X → 𝟚) → (Σ x ꞉ X , p x ≡ ₀) + Π x ꞉ X , p x ≡ ₁
 
 The compactness of ℕ is a contructive taboo, known as LPO, which is an
 undecided proposition in our type theory. Nevertheless, we can show

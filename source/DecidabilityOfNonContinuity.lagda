@@ -102,6 +102,6 @@ For future use:
 \begin{code}
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-continuous f = Σ \(m : ℕ) → (n : ℕ) → f(max (under m) (under n)) ≡ f ∞
+continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f(max (under m) (under n)) ≡ f ∞)
 
 \end{code}

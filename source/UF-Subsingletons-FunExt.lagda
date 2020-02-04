@@ -151,7 +151,7 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
   f p q e = h p q (g p q e)
   constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
   constant-f p q d e = ap (h p q) (A-is-prop p q (g p q d) (g p q e))
-  pc : {p q : Ω 𝓤} → Σ \(f : p ≡ q → p ≡ q) → constant f
+  pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , constant f
   pc {p} {q} = (f p q , constant-f p q)
 
 powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
@@ -205,7 +205,7 @@ Without excluded middle, we have that:
 \begin{code}
 
 no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤 → propext 𝓤
-                                   → ¬ Σ \(p : Ω 𝓤) → (p ≢ ⊥) × (p ≢ ⊤)
+                                  → ¬ (Σ p ꞉ Ω 𝓤 , (p ≢ ⊥) × (p ≢ ⊤))
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
   u : ¬ P

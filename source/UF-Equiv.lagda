@@ -42,7 +42,7 @@ equivs-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-are-lc f e = sections-are-lc f (equivs-are-sections f e)
 
 _≃_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ≃ Y = Σ \(f : X → Y) → is-equiv f
+X ≃ Y = Σ f ꞉ (X → Y) , is-equiv f
 
 Aut : 𝓤 ̇ → 𝓤 ̇
 Aut X = (X ≃ X)
@@ -186,7 +186,7 @@ qinveq f q = (f , qinvs-are-equivs f q)
 
 lc-split-surjections-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                → left-cancellable f
-                               → ((y : Y) → Σ \(x : X) → f x ≡ y)
+                               → ((y : Y) → Σ x ꞉ X , f x ≡ y)
                                → is-equiv f
 lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
  where
@@ -275,18 +275,18 @@ fiber-path f y = pr₂
 is-vv-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-vv-equiv f = ∀ y → is-singleton (fiber f y)
 
-is-vv-equiv-NB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-vv-equiv f ≡ Π \(y : Y) → ∃! \(x : X) → f x ≡ y
+is-vv-equiv-NB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-vv-equiv f ≡ (Π y ꞉ Y , ∃! x ꞉ X , f x ≡ y)
 is-vv-equiv-NB f = refl
 
 vv-equivs-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-vv-equiv f → is-equiv f
 vv-equivs-are-equivs {𝓤} {𝓥} {X} {Y} f φ = (g , fg) , (g , gf)
  where
-  φ' : (y : Y) → Σ \(c : Σ \(x : X) → f x ≡ y) → (σ : Σ \(x : X) → f x ≡ y) → c ≡ σ
+  φ' : (y : Y) → Σ c ꞉ (Σ x ꞉ X , f x ≡ y) , ((σ : Σ x ꞉ X , f x ≡ y) → c ≡ σ)
   φ' = φ
-  c : (y : Y) → Σ \(x : X) → f x ≡ y
+  c : (y : Y) → Σ x ꞉ X , f x ≡ y
   c y = pr₁(φ y)
-  d : (y : Y) → (σ : Σ \(x : X) → f x ≡ y) → c y ≡ σ
+  d : (y : Y) → (σ : Σ x ꞉ X , f x ≡ y) → c y ≡ σ
   d y = pr₂(φ y)
   g : Y → X
   g y = pr₁(c y)
@@ -313,8 +313,8 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   gh (x , refl) = refl
 
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-hae {𝓤} {𝓥} {X} {Y} f = Σ \(g : Y → X) → Σ \(η : g ∘ f ∼ id) → Σ \(ε : f ∘ g ∼ id)
-                            → Π \(x : X) → ap f (η x) ≡ ε (f x)
+is-hae {𝓤} {𝓥} {X} {Y} f = Σ g ꞉ (Y → X) , Σ η ꞉ g ∘ f ∼ id , Σ \(ε : f ∘ g ∼ id)
+                            → Π x ꞉ X , ap f (η x) ≡ ε (f x)
 
 haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-hae f → is-equiv f
@@ -372,7 +372,7 @@ but a proof by path induction is direct:
 
 identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
-                          → (Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
+                          → (Σ γ ꞉ x ≡ x' , ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
 identifications-in-fibers f .(f x) x .x refl p' (refl , r) = g
  where
   g : x , refl ≡ x , p'
@@ -469,12 +469,12 @@ have:
 
 from-identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                  (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
-                               → (x , p) ≡ (x' , p') → Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p
+                               → (x , p) ≡ (x' , p') → Σ γ ꞉ x ≡ x' , ap f γ ∙ p' ≡ p
 from-identifications-in-fibers f .(f x) x .x refl .refl refl = refl , refl
 
 η-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
         (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
-        (σ : Σ \(γ : x ≡ x') → ap f γ ∙ p' ≡ p)
+        (σ : Σ γ ꞉ x ≡ x' , ap f γ ∙ p' ≡ p)
       → from-identifications-in-fibers f y x x' p p' (identifications-in-fibers f y x x' p p' σ) ≡ σ
 η-pif f .(f x) x .x _ refl (refl , refl) = refl
 
@@ -499,7 +499,7 @@ pr₁-is-vv-equiv {𝓤} {𝓥} X Y iss x = g
   c = (x , pr₁ (iss x)) , refl
   p : (y : Y x) → pr₁ (iss x) ≡ y
   p = pr₂ (iss x)
-  f : (w : Σ \(σ : Σ Y) → pr₁ σ ≡ x) → c ≡ w
+  f : (w : Σ σ ꞉ Σ Y , pr₁ σ ≡ x) → c ≡ w
   f ((.x , y) , refl) = ap (λ - → (x , -) , refl) (p y)
   g : is-singleton (fiber pr₁ x)
   g = c , f
@@ -553,9 +553,9 @@ qinv-is-vv-equiv {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
            refl ∙ q            ≡⟨ refl-left-neutral ⟩
            q                   ∎
   b : fiber f y₀ ◁ singleton-type' y₀
-  b = (Σ \(x : X) → f x ≡ y₀)     ◁⟨ Σ-reindex-retract g (f , η) ⟩
-      (Σ \(y : Y) → f (g y) ≡ y₀) ◁⟨ Σ-retract (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
-      (Σ \(y : Y) → y ≡ y₀)       ◀
+  b = (Σ x ꞉ X , f x ≡ y₀)     ◁⟨ Σ-reindex-retract g (f , η) ⟩
+      (Σ y ꞉ Y , f (g y) ≡ y₀) ◁⟨ Σ-retract (λ y → f (g y) ≡ y₀) (λ y → y ≡ y₀) a ⟩
+      (Σ y ꞉ Y , y ≡ y₀)       ◀
   γ : is-contr (fiber f y₀)
   γ = retract-of-singleton b (singleton-types'-are-singletons y₀)
 
@@ -570,7 +570,7 @@ and we introduce some machinery for this.
 \begin{code}
 
 _≅_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ≅ Y = Σ \(f : X → Y) → qinv f
+X ≅ Y = Σ f ꞉ (X → Y) , qinv f
 
 id-qinv : (X : 𝓤 ̇ ) → qinv (id {𝓤} {X})
 id-qinv X = id , (λ x → refl) , (λ x → refl)

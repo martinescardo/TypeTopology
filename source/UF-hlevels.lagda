@@ -46,9 +46,9 @@ hlevels-closed-under-Σ {𝓤} (succ n) X Y l m = γ
   γ : (σ τ : Σ Y) → (σ ≡ τ) is-of-hlevel n
   γ σ τ = back-transport (_is-of-hlevel n) a IH
    where
-    a : (σ ≡ τ) ≡ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ pr₂ τ)
+    a : (σ ≡ τ) ≡ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ pr₂ τ)
     a = eqtoid (ua 𝓤) _ _ Σ-≡-≃
-    IH : (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport Y p (pr₂ σ) ≡ pr₂ τ) is-of-hlevel n
+    IH : (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ pr₂ τ) is-of-hlevel n
     IH = hlevels-closed-under-Σ n
            (pr₁ σ ≡ pr₁ τ)
            (λ p → transport Y p (pr₂ σ) ≡ pr₂ τ)
@@ -77,6 +77,6 @@ The subuniverse of types of hlevel n:
 \begin{code}
 
 ℍ : ℕ → (𝓤 : Universe) → 𝓤 ⁺ ̇
-ℍ n 𝓤 = Σ \(X : 𝓤 ̇ ) → X is-of-hlevel n
+ℍ n 𝓤 = Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n
 
 \end{code}

@@ -30,7 +30,7 @@ http://www.cs.bham.ac.uk/~mhe/agda-new/FailureOfTotalSeparatedness.html
 
 This is the "compactification" of ℕ with two points at infinity:
 
-   Σ \(u : ℕ∞) → u ≡ ∞ → 𝟚.
+   Σ u ꞉ ℕ∞ , u ≡ ∞ → 𝟚.
 
 If there is a 𝟚-valued function separating the two points at infinity,
 then WLPO holds. (The totally separated reflection of this type should
@@ -276,7 +276,7 @@ the following particular cases:
 Maybe this can be further generalized by replacing the discreteness of X
 with the assumption that
 
-  (x : X) (q : Y x → 𝟚) → Σ \(p : Σ Y → 𝟚) → (y : Y x) → q y ≡ p (x , y).
+  (x : X) (q : Y x → 𝟚) → Σ p ꞉ Σ Y → 𝟚 , (y : Y x) → q y ≡ p (x , y).
 
 Then the previous few functions would be a particular case of this.
 
@@ -441,25 +441,25 @@ rather than direct proofs (as in the proof of tight reflection below).
 \begin{code}
 
  totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
-                              → (f : X → A) → ∃! \(f' : 𝕋 X → A) → f' ∘ η ≡ f
+                              → (f : X → A) → ∃! f' ꞉ (𝕋 X → A) , f' ∘ η ≡ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} ts f = go
   where
    iss : is-set A
    iss = totally-separated-types-are-sets (fe 𝓥 𝓤₀) A ts
 
-   ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ \(a : A) → eval a ≡ γ)
+   ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ a ꞉ A , eval a ≡ γ)
    ie = tsieeval (fe 𝓥 𝓤₀) ts
 
-   h : (φ : (X → 𝟚) → 𝟚) → (∃ \(x : X) → eval x ≡ φ) → Σ \(a : A) → eval a ≡ (λ q → φ(q ∘ f))
+   h : (φ : (X → 𝟚) → 𝟚) → (∃ \(x : X) → eval x ≡ φ) → Σ a ꞉ A , eval a ≡ (λ q → φ(q ∘ f))
    h φ = ∥∥-rec (ie γ) u
     where
      γ : (A → 𝟚) → 𝟚
      γ q = φ (q ∘ f)
 
-     u : (Σ \(x : X) → (λ p → p x) ≡ φ) → Σ \(a : A) → eval a ≡ γ
+     u : (Σ x ꞉ X , (λ p → p x) ≡ φ) → Σ a ꞉ A , eval a ≡ γ
      u (x , r) = f x , dfunext (fe 𝓥 𝓤₀) (λ q → happly r (q ∘ f))
 
-   h' : (x' : 𝕋 X) → Σ \(a : A) → eval a ≡ (λ q → pr₁ x' (q ∘ f))
+   h' : (x' : 𝕋 X) → Σ a ꞉ A , eval a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
 
    f' : 𝕋 X → A
@@ -471,7 +471,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    r : f' ∘ η ≡ f
    r = dfunext (fe 𝓤 𝓥) (λ x → ts (b (η x)))
 
-   c : (σ : Σ \(f'' : 𝕋 X → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c : (σ : Σ f'' ꞉ (𝕋 X → A) , f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡ (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
@@ -486,7 +486,7 @@ rather than direct proofs (as in the proof of tight reflection below).
      v : u ≡ s
      v = Π-is-set (fe 𝓤 𝓥) (λ _ → iss) u s
 
-   go : ∃! \(f' : 𝕋 X → A) → f' ∘ η ≡ f
+   go : ∃! f' ꞉ (𝕋 X → A) , f' ∘ η ≡ f
    go = (f' , r) , c
 
 \end{code}
@@ -580,19 +580,19 @@ apartness relation _♯₂ is tight:
    b : is-irreflexive _♯₂_
    b x = ∥∥-rec 𝟘-is-prop g
     where
-     g : ¬ Σ \(p : X → 𝟚) → p x ≢ p x
+     g : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p x)
      g (p , u) = u refl
 
    c : is-symmetric _♯₂_
    c x y = ∥∥-functor g
     where
-     g : (Σ \(p : X → 𝟚) → p x ≢ p y) → Σ \(p : X → 𝟚) → p y ≢ p x
+     g : (Σ p ꞉ (X → 𝟚) , p x ≢ p y) → Σ p ꞉ (X → 𝟚) , p y ≢ p x
      g (p , u) = p , ≢-sym u
 
    d : is-cotransitive _♯₂_
    d x y z = ∥∥-functor g
     where
-     g : (Σ \(p : X → 𝟚) → p x ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
+     g : (Σ p ꞉ (X → 𝟚) , p x ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
      g (p , u) = h (discrete-is-cotransitive 𝟚-is-discrete {p x} {p y} {p z} u)
       where
        h : (p x ≢ p z) + (p z ≢ p y) → (x ♯₂ z) + (y ♯₂ z)
@@ -602,13 +602,13 @@ apartness relation _♯₂ is tight:
  ♯₂-is-tight-ts : {X : 𝓤 ̇ } → is-tight (_♯₂_ {𝓤} {X}) → is-totally-separated X
  ♯₂-is-tight-ts {𝓤} {X} t {x} {y} α = t x y (∥∥-rec 𝟘-is-prop h)
   where
-   h : ¬ Σ \(p : X → 𝟚) → p x ≢ p y
+   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p y)
    h (p , u) = u (α p)
 
  ts-♯₂-is-tight : {X : 𝓤 ̇ } → is-totally-separated X → is-tight (_♯₂_ {𝓤} {X})
  ts-♯₂-is-tight {𝓤} {X} ts x y na = ts α
   where
-   h : ¬ Σ \(p : X → 𝟚) → p x ≢ p y
+   h : ¬ (Σ p ꞉ (X → 𝟚) , p x ≢ p y)
    h (p , u) = na ∣ p , u ∣
 
    α : (p : X → 𝟚) → p x ≡ p y
@@ -730,14 +730,14 @@ apartness relation _♯₂ is tight:
                  → (∃ \(_♯_ : X → X → 𝓤 ̇ ) → is-apartness _♯_ × is-tight _♯_) → is-separated X
  tight-separated' {𝓤} {X} fe fe₀ = ∥∥-rec (is-prop-separated fe fe₀) f
    where
-    f : (Σ \(_♯_ : X → X → 𝓤 ̇ ) → is-apartness _♯_ × is-tight _♯_) → is-separated X
+    f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-separated X
     f (_♯_ , a , t) = tight-is-separated _♯_ a t
 
  tight-is-set' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
            → (∃ \(_♯_ : X → X → 𝓤 ̇ ) → is-apartness _♯_ × is-tight _♯_) → is-set X
  tight-is-set' {𝓤} {X} fe fe₀ = ∥∥-rec (being-set-is-a-prop fe) f
    where
-    f : (Σ \(_♯_ : X → X → 𝓤 ̇ ) → is-apartness _♯_ × is-tight _♯_) → is-set X
+    f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-is-set fe₀ _♯_ a t
 
 \end{code}
@@ -872,7 +872,7 @@ apartness on it.
 \begin{code}
 
   _♯'_ : X' → X' → 𝓤 ⊔ 𝓥 ⁺ ̇
-  (u , _) ♯' (v , _) = ∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
+  (u , _) ♯' (v , _) = ∃ \(x : X) → Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
 
 \end{code}
 
@@ -886,7 +886,7 @@ apartness on it.
   η-strongly-extensional : strongly-extensional _♯_ _♯'_ η
   η-strongly-extensional {x} {y} = ∥∥-rec (♯p x y) g
    where
-    g : (Σ \(x' : X) → Σ \(y' : X) → (x' ♯ y') × (apart x' ≡ apart x) × (apart y' ≡ apart y))
+    g : (Σ x' ꞉ X , Σ y' ꞉ X , (x' ♯ y') × (apart x' ≡ apart x) × (apart y' ≡ apart y))
       → x ♯ y
     g (x' , y' , a , p , q) = ♯s _ _ (j (♯s _ _ (i a)))
      where
@@ -981,10 +981,10 @@ apartness on it.
   ♯'t : is-tight _♯'_
   ♯'t (u , e) (v , f) n = ∥∥-rec X'-is-set (λ σ → ∥∥-rec X'-is-set (h σ) f) e
    where
-    h : (Σ \(x : X) → apart x ≡ u) → (Σ \(y : X) → apart y ≡ v) → (u , e) ≡ (v , f)
+    h : (Σ x ꞉ X , apart x ≡ u) → (Σ y ꞉ X , apart y ≡ v) → (u , e) ≡ (v , f)
     h (x , p) (y , q) = to-Σ-≡ (t , ∥∥-is-a-prop _ _)
      where
-      remark : (∃ \(x : X) → Σ \(y : X) → (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)) → 𝟘
+      remark : (∃ \(x : X) → Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)) → 𝟘
       remark = n
 
       r : x ♯ y → 𝟘
@@ -1026,7 +1026,7 @@ apartness on it.
                    → is-tight _♯ᴬ_
                    → (f : X → A)
                    → strongly-extensional _♯_ _♯ᴬ_ f
-                   → ∃! \(f' : X' → A) → f' ∘ η ≡ f
+                   → ∃! f' ꞉ (X' → A) , f' ∘ η ≡ f
   tight-reflection {𝓦} {𝓣} A  _♯ᴬ_  ♯ᴬa  ♯ᴬt  f  se = ic
    where
     iss : is-set A
@@ -1052,7 +1052,7 @@ apartness on it.
        γ : (x' : X') → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
        γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
-    k : (x' : X') → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
+    k : (x' : X') → Σ a ꞉ A , ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step
      where
       induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)
@@ -1073,7 +1073,7 @@ apartness on it.
       h : (y : X) → f'(η y) ≡ f y
       h y = ∥∥-rec iss (j y) (g y)
 
-    c : (σ : Σ \(f'' : X' → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+    c : (σ : Σ f'' ꞉ (X' → A), f'' ∘ η ≡ f) → (f' , r) ≡ σ
     c (f'' , s) = to-Σ-≡ (t , v)
      where
       w : ∀ x → f'(η x) ≡ f''(η x)
@@ -1088,7 +1088,7 @@ apartness on it.
       v : u ≡ s
       v = Π-is-set (fe 𝓤 𝓦) (λ _ → iss) u s
 
-    ic : ∃! \(f' : X' → A) → f' ∘ η ≡ f
+    ic : ∃! f' ꞉ (X' → A), f' ∘ η ≡ f
     ic = (f' , r) , c
 
 \end{code}
@@ -1113,10 +1113,10 @@ apartness on it.
   tight-η-equiv-abstract-nonsense : is-tight _♯_ → X ≃ X'
   tight-η-equiv-abstract-nonsense ♯t = η , (θ , happly p₄) , (θ , happly p₀)
    where
-    u : ∃! \(θ : X' → X) → θ ∘ η ≡ id
+    u : ∃! θ ꞉ (X' → X), θ ∘ η ≡ id
     u = tight-reflection X _♯_ ♯a ♯t id id
 
-    v : ∃! \(ζ : X' → X') → ζ ∘ η ≡ η
+    v : ∃! ζ ꞉ (X' → X'), ζ ∘ η ≡ η
     v = tight-reflection X' _♯'_ ♯'a ♯'t η η-strongly-extensional
 
     θ : X' → X

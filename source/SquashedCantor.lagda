@@ -42,10 +42,10 @@ family λ (_ : ℕ) → X.
 \begin{code}
 
 D : 𝓤 ̇ → 𝓤 ̇
-D X = Σ \(u : ℕ∞) → is-finite u → X
+D X = Σ u ꞉ ℕ∞ , (is-finite u → X)
 
 private
- remark₁ : (X : 𝓤 ̇ ) → D X ≡ Σ¹ (λ (_ : ℕ) → X)
+ remark₁ : (X : 𝓤 ̇ ) → D X ≡ (Σ¹ \(_ : ℕ) → X)
  remark₁ X = refl
 
 Cantor : 𝓤₀ ̇
@@ -68,7 +68,7 @@ Exercises left to the reader (they are not needed so far):
 \begin{code}
 
 private
- remark₂ : D Cantor ≡ Σ \(u : ℕ∞) → Cantor[ u ]
+ remark₂ : D Cantor ≡ (Σ u ꞉ ℕ∞ , Cantor[ u ])
  remark₂ = refl
 
 transport-Cantor : {u v : ℕ∞} (p : u ≡ v) → Cantor[ u ] → Cantor[ v ]
@@ -128,13 +128,13 @@ We now define functions
 
    Head : Cantor → ℕ∞
    Tail : (α : Cantor) → Cantor[ Head α ]
-   Cons : (Σ \(u : ℕ∞) → Cantor[ u ]) → Cantor
+   Cons : (Σ u ꞉ ℕ∞ , Cantor[ u ]) → Cantor
 
 such that for all u : ℕ∞ and φ : Cantor[ u ],
 
    (Head (Cons (u , φ) , Tail (Cons(u, φ)) = (u , φ),
 
-thus exhibiting (Σ \(u : ℕ∞) → Cantor[ u ]) as a retract of Cantor.
+thus exhibiting (Σ u ꞉ ℕ∞ , Cantor[ u ]) as a retract of Cantor.
 
 This is a constructive rendering of the classical fact that every
 sequence α : Cantor is of one of the forms

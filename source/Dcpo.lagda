@@ -64,7 +64,7 @@ module _ {𝓤 𝓣 : Universe}
  is-sup-gives-is-lowerbound-of-upperbounds i = pr₂ i
 
  has-sup : {I : 𝓥 ̇ } → (I → D) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
- has-sup α = Σ \(s : D) → is-sup s α
+ has-sup α = Σ s ꞉ D , is-sup s α
 
  the-sup : {I : 𝓥 ̇ } {α : I → D} → has-sup α → D
  the-sup (s , i) = s
@@ -150,10 +150,10 @@ module _ {𝓤 𝓣 : Universe}
 module _ {𝓤 𝓣 : Universe} where
 
  DCPO-structure : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ⊔ (𝓣 ⁺) ̇
- DCPO-structure D = Σ \(_⊑_ : D → D → 𝓣 ̇ ) → dcpo-axioms {𝓤} {𝓣} _⊑_
+ DCPO-structure D = Σ _⊑_ ꞉ (D → D → 𝓣 ̇ ), (dcpo-axioms {𝓤} {𝓣} _⊑_)
 
  DCPO : (𝓤 ⁺) ⊔ (𝓥 ⁺) ⊔ (𝓣 ⁺) ̇
- DCPO = Σ \(D : 𝓤 ̇ ) → DCPO-structure D
+ DCPO = Σ D ꞉ 𝓤 ̇ , DCPO-structure D
 
  ⟨_⟩ : DCPO → 𝓤 ̇
  ⟨ D , _⊑_ , d ⟩ = D
@@ -164,7 +164,7 @@ module _ {𝓤 𝓣 : Universe} where
  syntax underlying-order 𝓓 x y = x ⊑⟨ 𝓓 ⟩ y
 
  DCPO⊥ : (𝓥 ⁺) ⊔ (𝓤 ⁺) ⊔ (𝓣 ⁺) ̇
- DCPO⊥ = Σ \(𝓓 : DCPO) → has-least (underlying-order 𝓓)
+ DCPO⊥ = Σ 𝓓 ꞉ DCPO , has-least (underlying-order 𝓓)
 
  ⟪_⟫ : DCPO⊥ → DCPO
  ⟪ 𝓓 , x , p ⟫  = 𝓓
@@ -272,7 +272,7 @@ is-monotone 𝓓 𝓔 f = (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → f x �
 is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
               → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
               → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-is-continuous 𝓓 𝓔 f = (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+is-continuous 𝓓 𝓔 f = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
                      → is-sup (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ α)
 
 being-continuous-is-a-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)

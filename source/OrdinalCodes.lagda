@@ -308,7 +308,7 @@ forests, that is, sequences ℕ → B.
 
 \begin{code}
 
-data B : 𝓤₀ ̇  where
+data B : 𝓤₀ ̇ where
  Z : B
  S : B → B
  L : (ℕ → B) → B
@@ -394,7 +394,7 @@ extensional equality on B.
 
 \begin{code}
 
-data _≣_ : B → B → 𝓤₀ ̇  where
+data _≣_ : B → B → 𝓤₀ ̇ where
  ≣-Z : Z ≣ Z
  ≣-S : (u v : B) → u ≣ v → S u ≣ S v
  ≣-L : (us vs : ℕ → B) → ((i : ℕ) → us i ≣ vs i) → L us ≣ L vs

@@ -19,8 +19,8 @@ module UF-EquivalenceExamples where
 
 
 curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦 → funext (𝓤 ⊔ 𝓥) 𝓦
-               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ \(x : X) → Y x) → 𝓦 ̇ }
-               → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
+               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
+               → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z(x , y))
 curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc , cu)
  where
   c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
@@ -33,15 +33,15 @@ curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc ,
   uc f = dfunext fe'' (λ w → refl)
 
 curry-uncurry : (fe : FunExt)
-              → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ \(x : X) → Y x) → 𝓦 ̇ }
-              → Π Z ≃ Π \(x : X) → Π \(y : Y x) → Z(x , y)
+              → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
+              → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z(x , y))
 curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe 𝓥 𝓦) (fe (𝓤 ⊔ 𝓥) 𝓦)
 
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
-      → (σ ≡ τ) ≃ (Σ \(p : pr₁ σ ≡ pr₁ τ) → transport A p (pr₂ σ) ≡ pr₂ τ)
+      → (σ ≡ τ) ≃ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
 Σ-≡-≃ {𝓤} {𝓥} {X} {A} {x , a} {y , b} = qinveq from-Σ-≡ (to-Σ-≡ , ε , η)
  where
-  η : (σ : Σ \(p : x ≡ y) → transport A p a ≡ b) → from-Σ-≡ (to-Σ-≡ σ) ≡ σ
+  η : (σ : Σ p ꞉ x ≡ y , transport A p a ≡ b) → from-Σ-≡ (to-Σ-≡ σ) ≡ σ
   η (refl , refl) = refl
   ε : (q : x , a ≡ y , b) → to-Σ-≡ (from-Σ-≡ q) ≡ q
   ε refl = refl
@@ -56,7 +56,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε refl = refl
 
 Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
-        → Σ Z ≃ (Σ \(x : X) → Σ \(y : Y x) → Z(x , y))
+        → Σ Z ≃ (Σ x ꞉ X , Σ y ꞉ Y x , Z(x , y))
 Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq c (u , (λ τ → refl) , (λ σ → refl))
  where
   c : Σ Z → Σ \x → Σ \y → Z (x , y)
@@ -65,12 +65,12 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   u (x , (y , z)) = ((x , y) , z)
 
 Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
-       → (Σ \(x : X) → Σ \(y : Y) → A x y) ≃ (Σ \(y : Y) → Σ \(x : X) → A x y)
+       → (Σ x ꞉ X , Σ y ꞉ Y , A x y) ≃ (Σ y  ꞉  Y , Σ x  ꞉  X , A x y)
 Σ-flip {𝓤} {𝓥} {𝓦} {X} {Y} {A} = qinveq f (g , ε , η)
  where
-  f : (Σ \(x : X) → Σ \(y : Y) → A x y) → (Σ \(y : Y) → Σ \(x : X) → A x y)
+  f : (Σ x ꞉ X , Σ y ꞉ Y , A x y) → (Σ y  ꞉  Y , Σ x  ꞉  X , A x y)
   f (x , y , p) = y , x , p
-  g : (Σ \(y : Y) → Σ \(x : X) → A x y) → (Σ \(x : X) → Σ \(y : Y) → A x y)
+  g : (Σ y ꞉ Y , Σ x ꞉ X , A x y) → (Σ x  ꞉  X , Σ y  ꞉  Y , A x y)
   g (y , x , p) = x , y , p
   ε : ∀ σ → g (f σ) ≡ σ
   ε (x , y , p) = refl
@@ -104,7 +104,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   HF (x , y) = to-Σ-≡' (hf x y)
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-           → (Π \(x : X) → Σ \(a : A x) → P x a) ≃ (Σ \(f : Π A) → Π \(x : X) → P x (f x))
+           → (Π x ꞉ X , Σ a ꞉ A x , P x a) ≃ (Σ f  ꞉  Π A , Π x  ꞉  X , P x (f x))
 ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = qinveq ΠΣ-distr (ΠΣ-distr-back , ε , η)
  where
   η :  ΠΣ-distr {𝓤} {𝓥} {𝓦} {X} {A} {P} ∘ ΠΣ-distr-back ∼ id
@@ -112,15 +112,15 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε : ΠΣ-distr-back ∘ ΠΣ-distr ∼ id
   ε _ = refl
 
-Σ+distr : (X : 𝓤 ̇ ) (Y : 𝓥 ̇) (A : X + Y → 𝓦 ̇ )
-        → (Σ \(x : X) → A (inl x)) + (Σ \(y : Y) → A (inr y))
-        ≃ (Σ \(z : X + Y) → A z)
+Σ+distr : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (A : X + Y → 𝓦 ̇ )
+        → (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y))
+        ≃ (Σ z ꞉ X + Y , A z)
 Σ+distr X Y A = qinveq f (g , η , ε)
  where
-  f : (Σ \(x : X) → A (inl x)) + (Σ \(y : Y) → A (inr y)) → (Σ \(z : X + Y) → A z)
+  f : (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y)) → (Σ z  ꞉  X + Y , A z)
   f (inl (x , a)) = inl x , a
   f (inr (y , a)) = inr y , a
-  g : (Σ \(z : X + Y) → A z) → (Σ \(x : X) → A (inl x)) + (Σ \(y : Y) → A (inr y))
+  g : (Σ z ꞉ X + Y , A z) → (Σ x ꞉ X , A (inl x)) + (Σ y  ꞉  Y , A (inr y))
   g (inl x , a) = inl (x , a)
   g (inr y , a) = inr (y , a)
   η : g ∘ f ∼ id
@@ -406,15 +406,15 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
 
 
 Π×+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X + Y → 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
-    → (Π \(x : X) → A (inl x)) × (Π \(y : Y) → A (inr y))
-    ≃ (Π \(z : X + Y) → A z)
+    → (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y))
+    ≃ (Π z ꞉ X + Y , A z)
 
 Π×+ {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe = qinveq f (g , ε , η)
  where
-  f : (Π \(x : X) → A (inl x)) × (Π \(y : Y) → A (inr y)) → (Π \(z : X + Y) → A z)
+  f : (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y)) → (Π z  ꞉  X + Y , A z)
   f (l , r) (inl x) = l x
   f (l , r) (inr y) = r y
-  g : (Π \(z : X + Y) → A z) → (Π \(x : X) → A (inl x)) × (Π \(y : Y) → A (inr y))
+  g : (Π z ꞉ X + Y , A z) → (Π x ꞉ X , A (inl x)) × (Π y  ꞉  Y , A (inr y))
   g h = h ∘ inl , h ∘ inr
   η : f ∘ g ∼ id
   η h = dfunext fe γ
@@ -534,19 +534,19 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (i x)) a)
 
 Σ-change-of-variables' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
-                       → is-hae g → Σ \(γ : (Σ \(y : Y) → A (g y)) → Σ A) → qinv γ
+                       → is-hae g → Σ γ ꞉ ((Σ y ꞉ Y , A (g y)) → Σ A) , qinv γ
 Σ-change-of-variables' {𝓤} {𝓥} {𝓦} {X} {Y} A g (f , η , ε , α) = γ , φ , φγ , γφ
  where
-  γ : (Σ \(y : Y) → A (g y)) → Σ A
+  γ : (Σ y ꞉ Y , A (g y)) → Σ A
   γ (y , a) = (g y , a)
-  φ : Σ A → Σ \(y : Y) → A (g y)
+  φ : Σ A → Σ y ꞉ Y , A (g y)
   φ (x , a) = (f x , back-transport A (ε x) a)
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡ (ε x , p)
    where
     p : transport A (ε x) (back-transport A (ε x) a) ≡ a
     p = back-and-forth-transport (ε x)
-  φγ : (τ : (Σ \(y : Y) → A (g y))) → φ (γ τ) ≡ τ
+  φγ : (τ : (Σ y ꞉ Y , A (g y))) → φ (γ τ) ≡ τ
   φγ (y , a) = to-Σ-≡ (η y , q)
    where
     q : transport (λ - → A (g -)) (η y) (back-transport A (ε (g y)) a) ≡ a
@@ -556,22 +556,22 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
         a                                                              ∎
 
 Σ-change-of-variables : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
-                      → is-equiv g → (Σ \(y : Y) → A (g y)) ≃ Σ A
+                      → is-equiv g → (Σ y ꞉ Y , A (g y)) ≃ Σ A
 Σ-change-of-variables {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
-  γ :  (Σ \(y : Y) → A (g y)) → Σ A
+  γ :  (Σ y ꞉ Y , A (g y)) → Σ A
   γ = pr₁(Σ-change-of-variables' A g (equivs-are-haes g e))
   q :  qinv γ
   q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
-                 → (g : Π B) → (Π \(x : X) → fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
+                 → (g : Π B) → (Π x ꞉ X , fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
-  (Π \(x : X) → fiber (ζ x) (g x))              ≃⟨ ≃-refl _ ⟩
-  (Π \(x : X) → Σ \(a : A x) → ζ x a ≡ g x)     ≃⟨ ΠΣ-distr-≃ ⟩
-  (Σ \(f : Π A) → Π \(x : X) → ζ x (f x) ≡ g x) ≃⟨ Σ-cong (λ f → ≃-sym (≃-funext fe (λ x → ζ x (f x)) g)) ⟩
-  (Σ \(f : Π A) → (λ x → ζ x (f x)) ≡ g)        ≃⟨ ≃-refl _ ⟩
+  (Π x ꞉ X , fiber (ζ x) (g x))              ≃⟨ ≃-refl _ ⟩
+  (Π x ꞉ X , Σ a ꞉ A x , ζ x a ≡ g x)     ≃⟨ ΠΣ-distr-≃ ⟩
+  (Σ f ꞉ Π A , Π x ꞉ X , ζ x (f x) ≡ g x) ≃⟨ Σ-cong (λ f → ≃-sym (≃-funext fe (λ x → ζ x (f x)) g)) ⟩
+  (Σ f ꞉ Π A , (λ x → ζ x (f x)) ≡ g)        ≃⟨ ≃-refl _ ⟩
   fiber (NatΠ ζ) g                              ■
 
 NatΠ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
@@ -631,8 +631,8 @@ sum-of-fibers {𝓤} {𝓥} X Y f =
   X                                   ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
   X × 𝟙                               ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton
                                                 (singleton-types-are-singletons (f x))) ⟩
-  (Σ \(x : X) → Σ \(y : Y) → f x ≡ y) ≃⟨ Σ-flip ⟩
-  (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ■
+  (Σ x ꞉ X , Σ y ꞉ Y , f x ≡ y) ≃⟨ Σ-flip ⟩
+  (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ■
 
 \end{code}
 
@@ -641,34 +641,34 @@ Alternatively, where we should change the name of this function:
 \begin{code}
 
 graph-domain-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                   → (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) ≃ X
+                   → (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃ X
 graph-domain-equiv {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
  where
-  g : X → Σ \(y : Y) → Σ \(x : X) → f x ≡ y
+  g : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
   g x = f x , x , refl
-  h : (Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → X
+  h : (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → X
   h (.(f x) , x , refl) = x
-  ε : (σ : Σ \(y : Y) → Σ \(x : X) → f x ≡ y) → g (h σ )≡ σ
+  ε : (σ : Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → g (h σ )≡ σ
   ε (.(f x) , x , refl) = refl
   η : (x : X) → h (g x) ≡ x
   η x = refl
 
-left-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → (Σ \(x' : X) → (x' ≡ x) × Y x') ≃ Y x
+left-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → (Σ x' ꞉ X , (x' ≡ x) × Y x') ≃ Y x
 left-Id-equiv {𝓤} {𝓥} {X} {Y} x = qinveq f (g , gf , fg)
  where
-  f : (Σ \(x' : X) → (x' ≡ x) × Y x') → Y x
+  f : (Σ x' ꞉ X , (x' ≡ x) × Y x') → Y x
   f (.x , refl , y) = y
   g : (y : Y x) → Σ (λ x' → (x' ≡ x) × Y x')
   g y = x , refl , y
-  gf : (σ : Σ \(x' : X) → (x' ≡ x) × Y x') → g (f σ) ≡ σ
+  gf : (σ : Σ x' ꞉ X , (x' ≡ x) × Y x') → g (f σ) ≡ σ
   gf (.x , refl , y) = refl
   fg : (y : Y x) → f (g y) ≡ y
   fg y = refl
 
 fiber-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
 fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ Σ-assoc ⟩
-                                (Σ \(x' : X) → Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
-                                (Σ \(x' : X) → (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
+                                (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
+                                (Σ x' ꞉ X , (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
                                 Y x                              ■
 
 \end{code}
@@ -688,7 +688,7 @@ precomposition-with-equiv-does-not-change-fibers (g , i) f y =
  Σ-change-of-variables (λ x → f x ≡ y) g i
 
 retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : X → Y}
-                       → has-section r ≃ (Π \(y : Y) → fiber r y)
+                       → has-section r ≃ (Π y ꞉ Y , fiber r y)
 retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
  where
   f : has-section r → Π (fiber r)
@@ -697,7 +697,7 @@ retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
   g α = (λ (y : Y) → pr₁ (α y)) , (λ (y : Y) → pr₂ (α y))
   p : (hs : has-section r) → g (f hs) ≡ hs
   p (s , rs) = refl
-  q : (α : Π \(y : Y) → fiber r y) → f (g α) ≡ α
+  q : (α : Π y ꞉ Y , fiber r y) → f (g α) ≡ α
   q α = refl
 
 \end{code}

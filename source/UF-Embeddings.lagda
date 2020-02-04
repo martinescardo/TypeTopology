@@ -38,7 +38,7 @@ embedding-criterion' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 embedding-criterion' {𝓤} {𝓥} {X} {Y} f e =
  embedding-criterion f (λ x' → equiv-to-prop (a x') (singleton-types'-are-props x'))
  where
-  a : (x' : X) → fiber f (f x') ≃ (Σ \(x : X) → x ≡ x')
+  a : (x' : X) → fiber f (f x') ≃ (Σ x ꞉ X , x ≡ x')
   a x' = Σ-cong (λ x → e x x')
 
 equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -46,7 +46,7 @@ equivs-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
 
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↪ Y = Σ \(f : X → Y) → is-embedding f
+X ↪ Y = Σ f ꞉ (X → Y) , is-embedding f
 
 etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → X → Y
 etofun = pr₁
@@ -83,14 +83,14 @@ embedding-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
 embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding' f → is-embedding f
 embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
-  e : (x : X) → is-the-only-element-of (Σ \(x' : X) → f x ≡ f x') (x , refl)
+  e : (x : X) → is-the-only-element-of (Σ x' ꞉ X , f x ≡ f x') (x , refl)
   e x = universal-element-is-the-only-element
          (x , refl)
          (equiv-universality x refl (ise x))
   h : (x : X) → is-prop (fiber' f (f x))
   h x σ τ = σ ≡⟨ (e x σ)⁻¹ ⟩ (x , refl) ≡⟨ e x τ ⟩ τ ∎
   g' : (y : Y) → is-prop (fiber' f y)
-  g' y (x , p) = transport (λ - → is-prop (Σ \(x' : X) → - ≡ f x')) (p ⁻¹) (h x) (x , p)
+  g' y (x , p) = transport (λ - → is-prop (Σ x' ꞉ X , - ≡ f x')) (p ⁻¹) (h x) (x , p)
   g : (y : Y) → is-prop (fiber f y)
   g y = left-cancellable-reflects-is-prop
             (pr₁ (fiber-lemma f y))
@@ -157,7 +157,7 @@ id-is-embedding = singleton-types'-are-props
 ∘-is-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
  where
   T : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  T z = Σ \(w : fiber g z) → fiber f (pr₁ w)
+  T z = Σ w ꞉ fiber g z , fiber f (pr₁ w)
   T-is-prop : (z : Z) → is-prop (T z)
   T-is-prop z = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
   φ : (z : Z) → fiber (g ∘ f) z → T z
@@ -217,7 +217,7 @@ disjoint-cases-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X �
                          → is-embedding (cases f g)
 disjoint-cases-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g ef eg d = go
   where
-   go : (a : A) (σ τ : Σ \(z : X + Y) → cases f g z ≡ a) → σ ≡ τ
+   go : (a : A) (σ τ : Σ z ꞉ X + Y , cases f g z ≡ a) → σ ≡ τ
    go a (inl x , p) (inl x' , p') = r
      where
        q : x , p ≡ x' , p'
@@ -260,7 +260,7 @@ comp-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
            → is-dense (g ∘ f)
 comp-dense {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} e d = h
  where
-  h : ¬ Σ \(z : Z) → ¬ fiber (g ∘ f) z
+  h : ¬ (Σ z ꞉ Z , ¬ fiber (g ∘ f) z)
   h (z , n) = d (z , k)
    where
     k : ¬ fiber g z
@@ -278,7 +278,7 @@ terminology would be ¬¬-dense.
 \begin{code}
 
 _↪ᵈ_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-X ↪ᵈ Y = Σ \(f : X → Y) → is-embedding f × is-dense f
+X ↪ᵈ Y = Σ f ꞉ (X → Y) , is-embedding f × is-dense f
 
 module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
 
@@ -321,7 +321,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun-embedding e d (y , b) = h
   where
    Z : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
-   Z = Σ \(w : fiber f y) → fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
+   Z = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
    Z-is-prop : is-prop Z
    Z-is-prop = subtype-of-prop-is-a-prop
                 pr₁
@@ -341,7 +341,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
                → is-dense pair-fun
  pair-fun-dense i j = contrapositive γ i
   where
-   γ : (Σ \(w : Σ B) → ¬ fiber pair-fun w) → Σ \(y : Y) → ¬ fiber f y
+   γ : (Σ w ꞉ Σ B , ¬ fiber pair-fun w) → Σ y ꞉ Y , ¬ fiber f y
    γ ((y , b) , n) = y , m
     where
      m : ¬ fiber f y

@@ -218,7 +218,7 @@ universe 𝓦.
                     → is-set A
                     → (f : X → A)
                     → ({x x' : X} → x ≈ x' → f x ≡ f x')
-                    → ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+                    → ∃! f' ꞉( X/≈ → A), f' ∘ η ≡ f
  universal-property {𝓦} A iss f pr = ic
   where
    φ : (x' : X/≈) → is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
@@ -238,7 +238,7 @@ universe 𝓦.
       γ : (x' : X/≈) → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
       γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
-   k : (x' : X/≈) → Σ \(a : A) → ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
+   k : (x' : X/≈) → Σ a ꞉ A , ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step
     where
      induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)
@@ -259,7 +259,7 @@ universe 𝓦.
      h : (y : X) → f'(η y) ≡ f y
      h y = ∥∥-rec iss (j y) (g y)
 
-   c : (σ : Σ \(f'' : X/≈ → A) → f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c : (σ : Σ f'' ꞉ (X/≈ → A), f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡ (t , v)
     where
      w : ∀ x → f'(η x) ≡ f''(η x)
@@ -274,7 +274,7 @@ universe 𝓦.
      v : u ≡ s
      v = Π-is-set (fe 𝓤 𝓦) (λ _ → iss) u s
 
-   ic : ∃! \(f' : X/≈ → A) → f' ∘ η ≡ f
+   ic : ∃! f' ꞉ (X/≈ → A), f' ∘ η ≡ f
    ic = (f' , r) , c
 
 \end{code}

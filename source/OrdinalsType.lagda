@@ -21,10 +21,10 @@ module OrdinalsType
        where
 
 OrdinalStructure : 𝓤 ̇ → 𝓤 ⁺ ̇
-OrdinalStructure {𝓤} X = Σ \(_<_ : X → X → 𝓤 ̇ ) → is-well-order _<_
+OrdinalStructure {𝓤} X = Σ _<_ ꞉ (X → X → 𝓤 ̇ ) , (is-well-order _<_)
 
 Ordinal : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ordinal 𝓤 = Σ \(X : 𝓤 ̇ ) → OrdinalStructure X
+Ordinal 𝓤 = Σ X ꞉ 𝓤 ̇ , OrdinalStructure X
 
 \end{code}
 
@@ -85,7 +85,7 @@ isolated.
 \begin{code}
 
 Ordinalᵀ : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ordinalᵀ 𝓤 = Σ \(α : Ordinal 𝓤) → has-top (underlying-order α)
+Ordinalᵀ 𝓤 = Σ α ꞉ Ordinal 𝓤 , has-top (underlying-order α)
 
 [_] : Ordinalᵀ 𝓤 → Ordinal 𝓤
 [ α , t ] = α

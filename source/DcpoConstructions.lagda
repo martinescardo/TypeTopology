@@ -149,7 +149,7 @@ module DcpoConstructionsGeneral
                (l d) (m d)) ,
        being-continuous-is-a-prop 𝓓 𝓔 (underlying-function 𝓓 𝓔 g) _
         (continuity-of-function 𝓓 𝓔 g))
-     c : (I : _ ̇) (α : I → DCPO[ 𝓓 , 𝓔 ]) → is-directed _⊑_ α → has-sup _⊑_ α
+     c : (I : _ ̇ ) (α : I → DCPO[ 𝓓 , 𝓔 ]) → is-directed _⊑_ α → has-sup _⊑_ α
      c I α δ = (continuous-functions-sup 𝓓 𝓔 α δ) , u , v
       where
        u : (i : I) → α i ⊑ continuous-functions-sup 𝓓 𝓔 α δ
@@ -187,7 +187,7 @@ This will be used in ScottModelOfPCF.
   Kᵈᶜᵖᵒ = k , c where
    k : ⟨ 𝓓 ⟩ → DCPO[ 𝓔 , 𝓓 ]
    k x = (λ _ → x) , (constant-functions-are-continuous 𝓔 𝓓 x)
-   c : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+   c : (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
      → is-sup (underlying-order (𝓔 ⟹ᵈᶜᵖᵒ 𝓓)) (k (∐ 𝓓 δ)) (λ (i : I) → k (α i))
    c I α δ = u , v where
     u : (i : I) (e : ⟨ 𝓔 ⟩) → α i ⊑⟨ 𝓓 ⟩ (∐ 𝓓 δ)
@@ -726,7 +726,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
                      → ∃ (\(i : I) → is-defined (α i)) → X
    lifting-sup-value {I} α δ =
     constant-map-to-set-truncation-of-domain-map
-     (Σ \(i : I) → is-defined (α i))
+     (Σ i ꞉ I , is-defined (α i))
      s (family-value-map α) (directed-family-value-map-is-constant α δ)
 
    lifting-sup : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
@@ -791,7 +791,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
      a _ _ = ⊑'-is-antisymmetric
      t : is-transitive (_⊑'_)
      t _ _ _ = ⊑'-is-transitive
-     c : (I : 𝓤₀ ̇) (α : I → 𝓛 X) → is-directed _⊑'_ α → has-sup _⊑'_ α
+     c : (I : 𝓤₀ ̇ ) (α : I → 𝓛 X) → is-directed _⊑'_ α → has-sup _⊑'_ α
      c I α δ = lifting-sup α δ ,
                lifting-sup-is-upperbound α δ ,
                lifting-sup-is-lowerbound-of-upperbounds δ

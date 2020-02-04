@@ -112,7 +112,7 @@ coinduction on ℕ∞ using codistance-eq₁:
    l : ∀ α → c α α ≡ Succ (c (tail α) (tail α))
    l α = codistance-eq₁ α α refl
    R : ℕ∞ → ℕ∞ → 𝓤 ̇
-   R u v = (Σ \(α : 𝓢) → u ≡ c α α) × (v ≡ ∞)
+   R u v = (Σ α ꞉ 𝓢 , u ≡ c α α) × (v ≡ ∞)
    b : ℕ∞-bisimulation R
    b .(c α α) .∞ ((α , refl) , refl) = s , t , Pred-∞-is-∞
     where

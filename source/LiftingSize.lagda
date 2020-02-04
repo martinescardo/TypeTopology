@@ -82,7 +82,7 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
 𝓛-resize {𝓤} ua ua' ρ X = L , e
  where
   L : 𝓤 ⁺ ̇
-  L = Σ \(P : 𝓤 ̇ ) → (P → X) × is-prop P
+  L = Σ P ꞉ 𝓤 ̇ , (P → X) × is-prop P
   e : L ≃ 𝓛 X
   e = qinveq φ (γ , γφ , φγ)
    where
@@ -127,7 +127,7 @@ Added 8th Feb 2019.
 \begin{code}
 
 𝓛-resizing₀ : Ω-resizing₀ 𝓣 → (X : 𝓣 ̇ ) → (𝓛 X) has-size 𝓣
-𝓛-resizing₀ (Ω₀ , e₀) X = (Σ \(p : Ω₀) → up p holds → X) , ≃-comp d e
+𝓛-resizing₀ (Ω₀ , e₀) X = (Σ p ꞉ Ω₀ , (up p holds → X)) , ≃-comp d e
  where
   up : Ω₀ → Ω 𝓣
   up = ⌜ e₀ ⌝
@@ -135,14 +135,14 @@ Added 8th Feb 2019.
   up-is-equiv : is-equiv up
   up-is-equiv = ⌜⌝-is-equiv e₀
 
-  d : (Σ \(p : Ω₀) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
+  d : (Σ p ꞉ Ω₀ , (up p holds → X)) ≃ (Σ p ꞉ Ω 𝓣 , (p holds → X))
   d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
 
-  e : (Σ \(p : Ω 𝓣) → p holds → X) ≃ 𝓛 X
-  e = qinveq (λ {((P , i) , f) → P , f , i})
-             ((λ {(P , f , i) → (P , i) , f}) ,
-              (λ _ → refl) ,
-              (λ _ → refl))
+  e : (Σ p ꞉ Ω 𝓣 , (p holds → X)) ≃ 𝓛 X
+  e = qinveq (λ ((P , i) , f) →  P , f ,  i)
+             ((λ (P , f  , i) → (P , i) , f) ,
+             (λ _ → refl) ,
+             (λ _ → refl))
 
 \end{code}
 
@@ -152,7 +152,7 @@ more parsimonious.
 \begin{code}
 
 𝓛-resizing : Ω-resizing 𝓣 → (X : 𝓣 ̇ ) → (𝓛 X) has-size 𝓣
-𝓛-resizing (O , ε) X = (Σ \(p : O) → up p holds → X) , ≃-comp d e
+𝓛-resizing (O , ε) X = (Σ p ꞉ O , (up p holds → X)) , ≃-comp d e
  where
   up : O → Ω 𝓣
   up = ⌜ ε ⌝
@@ -160,13 +160,13 @@ more parsimonious.
   up-is-equiv : is-equiv up
   up-is-equiv = ⌜⌝-is-equiv ε
 
-  d : (Σ \(p : O) → up p holds → X) ≃ (Σ \(p : Ω 𝓣) → p holds → X)
+  d : (Σ p ꞉ O , (up p holds → X)) ≃ (Σ p ꞉ Ω 𝓣 , (p holds → X))
   d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
 
-  e : (Σ \(p : Ω 𝓣) → p holds → X) ≃ 𝓛 X
-  e = qinveq (λ {((P , i) , f) → P , f , i})
-             ((λ {(P , f , i) → (P , i) , f}) ,
-              (λ _ → refl) ,
-              (λ _ → refl))
+  e : (Σ p ꞉ Ω 𝓣 , (p holds → X)) ≃ 𝓛 X
+  e = qinveq (λ ((P , i) , f) →  P , f  , i)
+             ((λ (P , f ,  i) → (P , i) , f) ,
+             (λ _ → refl) ,
+             (λ _ → refl))
 
 \end{code}

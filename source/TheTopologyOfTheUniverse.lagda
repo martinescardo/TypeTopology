@@ -139,7 +139,7 @@ lemmas needed to establish that).
 
 Universe-Indiscreteness-Theorem : (X : ℕ → 𝓤 ̇ ) (X∞ : 𝓤 ̇ )
 
-  → Σ \(Y : ℕ∞ → 𝓤 ̇ ) → ((i : ℕ) → Y (under i) ≃ X i)  ×  (Y ∞ ≃ X∞)
+  → Σ Y ꞉ (ℕ∞ → 𝓤 ̇ ), ((i : ℕ) → Y (under i) ≃ X i)  ×  (Y ∞ ≃ X∞)
 
 Universe-Indiscreteness-Theorem {𝓤} X X∞ = Y , (λ i → a (inl i)) , (a (inr *))
  where
