@@ -23,6 +23,14 @@ record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 
 
 open Σ public
 
+-Σ : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+-Σ X Y = Σ Y
+
+-- In emacs, type "\:4" to get the following "꞉":
+syntax -Σ A (λ x → b) = Σ x ꞉ A , b
+
+infixr -1 -Σ
+
 _×_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X × Y = Σ \(x : X) → Y
 

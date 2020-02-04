@@ -74,7 +74,7 @@ Pradic-Brown-lemma : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
 Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
  where
   P : X → 𝓤 ⊔ 𝓥 ̇
-  P x = Σ \(a : A) → r x ≡ inl a
+  P x = Σ a ꞉ A , r x ≡ inl a
 
   d : (x : X) → decidable (P x)
   d x = equality-cases (r x)
@@ -83,13 +83,13 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
                                                                     r x   ≡⟨ v    ⟩
                                                                     inr y ∎)))
 
-  e : decidable (Σ \(x : X) → P x)
+  e : decidable (Σ x ꞉ X , P x)
   e = c P d
 
-  f : A → Σ \(x : X) → P x
+  f : A → Σ x ꞉ X , P x
   f a = s (inl a) , a , η (inl a)
 
-  γ : decidable (Σ \(x : X) → P x) → decidable A
+  γ : decidable (Σ x ꞉ X , P x) → decidable A
   γ (inl (x , a , u)) = inl a
   γ (inr φ)           = inr (contrapositive f φ)
 
@@ -230,7 +230,7 @@ fibers are all propositions.
 
 \begin{code}
 
-  recall : (x : X) → fiber g x ≡ Σ \(y : Y) → g y ≡ x
+  recall : (x : X) → fiber g x ≡ (Σ y ꞉ Y , g y ≡ x)
   recall _ = by-definition
 
   also-recall : is-embedding g ≡ ((x : X) → is-prop (fiber g x))
@@ -256,7 +256,7 @@ We collect the g-points in a subtype of X.
 \begin{code}
 
   G-point : 𝓤 ⊔ 𝓥 ̇
-  G-point = Σ \(x : X) → is-g-point x
+  G-point = Σ x ꞉ X , is-g-point x
 
 \end{code}
 
@@ -414,7 +414,7 @@ f-point x, because excluded middle applies only to truth values.)
 \begin{code}
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
-  f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
+  f-point x = Σ x₀ ꞉ X , (Σ n ꞉ ℕ , ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
 
 \end{code}
 
@@ -436,14 +436,14 @@ doesn't refer to the notion of f-point.
 
 \begin{code}
 
-  claim : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+  claim : (y : Y) → ¬ is-g-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
   claim y ν = v
    where
     i : ¬¬ f-point (g y)
     i = have ν ∶ ¬ is-g-point (g y)
         so-apply contrapositive (non-f-point-is-g-point (g y))
 
-    ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+    ii : f-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
     ii (x₀ , (0 , p) , u) = have p ∶ x₀ ≡ g y
                             so have (y , (p ⁻¹)) ∶ fiber g x₀
                                which-is-impossible-by (u ∶ ¬ fiber g x₀)
@@ -460,14 +460,14 @@ doesn't refer to the notion of f-point.
           then (have γ x₀ n refl ∶ fiber g x₀
                 which-is-impossible-by (u ∶ ¬ fiber g x₀))
 
-    iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
+    iii : ¬¬ (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
     iii = double-contrapositive ii i
 
-    iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
+    iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
     iv = have f-is-emb y ∶ is-prop (fiber f y)
          so-apply subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀))
 
-    v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+    v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
     v = double-negation-elimination excluded-middle _ iv iii
 
 \end{code}
@@ -480,11 +480,10 @@ that this works. As above, we use the auxiliary function H for that
 purpose.
 
 \begin{code}
-
-  h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
+  h-split-surjection : (y : Y) → Σ x ꞉ X , h x ≡ y
   h-split-surjection y = x , p
    where
-    a : decidable (is-g-point (g y)) → Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    a : decidable (is-g-point (g y)) → Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
     a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
@@ -495,7 +494,7 @@ purpose.
                    which-contradicts (γ ∶ is-g-point (g y))
     a (inr ν) = x , ψ
      where
-      w : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+      w : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
       w = have ν ∶ ¬ is-g-point (g y)
           so-apply claim y
       x : X
@@ -508,7 +507,7 @@ purpose.
       ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
                   f x         ≡⟨ p             ⟩
                   y           ∎
-    b : Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))
     x : X
     x = pr₁ b
@@ -563,7 +562,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
 
   G-point : 𝓤 ⊔ 𝓥 ̇
-  G-point = Σ \(x : X) → is-g-point x
+  G-point = Σ x ꞉ X , is-g-point x
 
   g-is-invertible-at-g-points : ((x , γ) : G-point) → fiber g x
   g-is-invertible-at-g-points (x , γ) = γ x 0 refl
@@ -617,7 +616,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     l (inr ν) (inr ν') p = embeddings-are-left-cancellable f f-is-emb p
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
-  f-point x = Σ \(x₀ : X) → (Σ \(n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
+  f-point x = Σ x₀ ꞉ X , (Σ n ꞉ ℕ , ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
   non-f-point-is-g-point x ν x₀ n p =
@@ -625,13 +624,13 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     (λ (σ :   fiber g x₀) → σ)
     (λ (u : ¬ fiber g x₀) → 𝟘-elim(ν (x₀ , (n , p) , u)))
 
-  claim : (y : Y) → ¬ is-g-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+  claim : (y : Y) → ¬ is-g-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
   claim y ν = v
    where
    i : ¬¬ f-point (g y)
    i = contrapositive (non-f-point-is-g-point (g y)) ν
 
-   ii : f-point (g y) → Σ \((x , p) : fiber f y) → ¬ is-g-point x
+   ii : f-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
    ii (x₀ , (0      , p) , u) = 𝟘-elim (u (y , (p ⁻¹)))
    ii (x₀ , (succ n , p) , u) = a , b
     where
@@ -642,19 +641,19 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
      b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
      b γ = 𝟘-elim (u (γ x₀ n refl))
 
-   iii : ¬¬ Σ \((x , p) : fiber f y) → ¬ is-g-point x
+   iii : ¬¬ (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
    iii = double-contrapositive ii i
 
-   iv : is-prop (Σ \((x , p) : fiber f y) → ¬ is-g-point x)
+   iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
    iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
 
-   v : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+   v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
    v = double-negation-elimination excluded-middle _ iv iii
 
-  h-split-surjection : (y : Y) → Σ \(x : X) → h x ≡ y
+  h-split-surjection : (y : Y) → Σ x ꞉ X , h x ≡ y
   h-split-surjection y = x , p
    where
-    a : decidable (is-g-point (g y)) → Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    a : decidable (is-g-point (g y)) → Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
     a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
@@ -662,7 +661,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
       ψ (inr ν)  = 𝟘-elim (ν γ)
     a (inr ν) = x , ψ
      where
-      w : Σ \((x , p) : fiber f y) → ¬ is-g-point x
+      w : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
       w = claim y ν
       x : X
       x = fiber-point f y (pr₁ w)
@@ -670,12 +669,14 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
       ψ (inl γ) = 𝟘-elim (pr₂ w γ)
       ψ (inr ν) = fiber-path f y (pr₁ w)
 
-    b : Σ \(x : X) → (d : decidable (is-g-point x)) → H x d ≡ y
+    b : Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))
     x : X
     x = pr₁ b
     p : h x ≡ y
-    p = pr₂ b (δ x)
+    p = h x       ≡⟨ by-construction ⟩
+        H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
+        y         ∎
 
   𝒽 : X ≃ Y
   𝒽 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection

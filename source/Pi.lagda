@@ -13,6 +13,13 @@ open import Universes
 Π : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Π {𝓤} {𝓥} {X} Y = (x : X) → Y x
 
+-Π : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+-Π X Y = Π Y
+
+syntax -Π A (λ x → b) = Π x ꞉ A ， b
+
+infixr -1 -Π
+
 \end{code}
 
 We often write Π \(x : X) → A x for Π A to make X explicit.
