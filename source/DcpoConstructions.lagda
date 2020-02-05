@@ -59,7 +59,7 @@ module DcpoConstructionsGeneral
     where
      β : ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
      β = pointwise-family α
-     h : (i j : I) → (Σ  k  ꞉  I , α i hom-⊑ α k × α j hom-⊑ α k)
+     h : (i j : I) → (Σ k ꞉ I , α i hom-⊑ α k × α j hom-⊑ α k)
          → Σ (\k → (β d i) ⊑⟨ 𝓔 ⟩ (β d k) × (β d j) ⊑⟨ 𝓔 ⟩ (β d k))
      h i j (k , l , m) = k , l d , m d
 
@@ -270,7 +270,7 @@ This will be used in ScottModelOfPCF.
                    h j = ∥∥-rec (prop-valuedness 𝓕 (pr₁ (f (α j)) (g (α i))) y)
                          r (is-Directed-order 𝓓 α δ i j)
                     where
-                     r : (Σ  k  ꞉  I , α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
+                     r : (Σ  k ꞉ I , α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
                        → (underlying-function 𝓔 𝓕 (f (α j)) (g (α i))) ⊑⟨ 𝓕 ⟩ y
                      r (k , l , m ) = transitivity 𝓕
                                        (underlying-function 𝓔 𝓕 (f (α j))
@@ -411,13 +411,13 @@ lowest universe), because ℕ lives in 𝓤₀.
   n-family-is-directed {I} α δ n =
     is-Directed-gives-inhabited ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ , ε
    where
-    ε : (i j : I) →  ∃  k  ꞉  I , (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
+    ε : (i j : I) →  ∃  k ꞉ I , (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
                                   (n-family α n j) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k)
     ε i j = ∥∥-functor h (is-Directed-order ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ i j)
      where
-      h : (Σ  k  ꞉  I , (α i) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ (α k) ×
+      h : (Σ  k ꞉ I , (α i) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ (α k) ×
                         (α j) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ (α k))
-          → Σ  k  ꞉  I , (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
+          → Σ  k ꞉ I , (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
                          (n-family α n j) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k)
       h (k , l , m) = k , (iter-is-monotone n (α i) (α k) l) ,
                       (iter-is-monotone n (α j) (α k) m)
@@ -459,7 +459,7 @@ lowest universe), because ℕ lives in 𝓤₀.
         u j = ∥∥-rec (prop-valuedness ⟪ 𝓓 ⟫ (β j) y) v
                (is-Directed-order ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ i j)
                 where
-          v : (Σ  k  ꞉  I , α i ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ α k
+          v : (Σ  k ꞉ I , α i ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ α k
                           × α j ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ α k)
             → β j ⊑⟨ ⟪ 𝓓 ⟫ ⟩ y
           v (k , l , m) = transitivity ⟪ 𝓓 ⟫ (β j) (iter (succ n) (α k)) y p q
@@ -596,9 +596,8 @@ module _ where
   iter-is-directed = ∣ zero ∣ , δ
    where
     δ : (i j : ℕ)
-      → (∃ \(k : ℕ)
-          → ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
-          × ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f))
+      → ∃ k ꞉ ℕ , ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
+                × ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
     δ i j = ∣ i +' j , l , m ∣
      where
       l : (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 (i +' j) f
@@ -696,7 +695,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
 
    family-value-map : {I : 𝓤₀ ̇}
                     → (α : I → 𝓛 X)
-                    → Σ ( i  ꞉  I , is-defined (α i)) → X
+                    → (Σ i ꞉ I , is-defined (α i)) → X
    family-value-map α (i , d) = value (α i) d
 
    directed-family-value-map-is-constant : {I : 𝓤₀ ̇}
@@ -708,11 +707,11 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
      where
       f : Σ (λ i → is-defined (α i)) → X
       f = family-value-map α
-      γ : ∃ ( k  ꞉  I , (α i₀ ⊑' α k) × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
+      γ : (∃ k ꞉ I , (α i₀ ⊑' α k) × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
       γ = ∥∥-rec s g
        where
-        g : Σ ( k  ꞉  I , (α i₀ ⊑' α k)
-                        × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
+        g : (Σ k ꞉ I , (α i₀ ⊑' α k)
+                     × (α i₁ ⊑' α k)) → f (i₀ , d₀) ≡ f (i₁ , d₁)
         g (k , l , m) =
          f (i₀ , d₀)                             ≡⟨ refl ⟩
          value (α i₀) d₀                         ≡⟨ ≡-of-values-from-≡ (l d₀) ⟩
@@ -723,7 +722,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
    lifting-sup-value : {I : 𝓤₀ ̇}
                      → (α : I → 𝓛 X)
                      → (δ : is-directed _⊑'_ α )
-                     → ∃ ( i  ꞉  I , is-defined (α i)) → X
+                     → (∃ i ꞉ I , is-defined (α i)) → X
    lifting-sup-value {I} α δ =
     constant-map-to-set-truncation-of-domain-map
      (Σ i ꞉ I , is-defined (α i))
@@ -731,7 +730,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
 
    lifting-sup : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
    lifting-sup {I} α δ =
-    ∃ ( i  ꞉  I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-a-prop
+    (∃ i ꞉ I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-a-prop
 
    lifting-sup-is-upperbound : {I : 𝓤₀ ̇} → (α : I → 𝓛 X)
                                (δ : is-directed _⊑'_ α)
@@ -749,7 +748,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
              value (lifting-sup α δ) (f d) ∎
         where
          p = constant-map-to-set-factors-through-truncation-of-domain
-              (Σ ( j  ꞉  I , is-defined (α j))) s
+              (Σ j ꞉ I , is-defined (α j)) s
               (family-value-map α)
               (directed-family-value-map-is-constant α δ)
               (i , d)
@@ -773,7 +772,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
      h : lifting-sup α δ ⊑' v
      h d = ∥∥-rec (lifting-of-set-is-a-set s) g d
       where
-       g : (Σ ( i  ꞉  I , is-defined (α i))) → lifting-sup α δ ≡ v
+       g : (Σ i ꞉ I , is-defined (α i)) → lifting-sup α δ ≡ v
        g (i , dᵢ) = lifting-sup α δ ≡⟨ (family-defined-somewhere-sup-≡ δ i dᵢ) ⁻¹ ⟩
                     α i             ≡⟨ b i dᵢ ⟩
                     v               ∎
@@ -829,7 +828,7 @@ Kleisli extension yield continuous maps
      v m ineqs d =
       ∥∥-rec (lifting-of-set-is-a-set s₁) g (♯-is-defined f (∐ (𝓛-DCPO s₀) δ) d)
        where
-        g : Σ ( i  ꞉  I , is-defined (α i)) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡ m
+        g : (Σ i ꞉ I , is-defined (α i)) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡ m
         g (i , dᵢ) = (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡⟨ h i dᵢ ⟩
                      (f ♯) (α i)             ≡⟨ ineqs i (≡-to-is-defined (h i dᵢ) d) ⟩
                      m                       ∎
@@ -986,7 +985,7 @@ future work.
                   ∎
           eₛ : is-defined (∐ ⟪ 𝓛ᵈℕ ⟫ δ)
           eₛ = ≡-to-is-defined (g ∙ g') d
-          h : Σ ( i  ꞉  I , is-defined (α i))
+          h : (Σ i ꞉ I , is-defined (α i))
             → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e) ≡ pr₁ f l
           h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
                           ≡⟨ g' ⟩
@@ -1085,7 +1084,7 @@ future work.
                ∐ ⟪ 𝓛ᵈℕ ⟫ δ                           ∎
           e₀ : is-defined (∐ ⟪ 𝓛ᵈℕ ⟫ δ)
           e₀ = ≡-to-is-defined (g ∙ g') d
-          h : Σ ( i  ꞉  I , is-defined (α i))
+          h : (Σ i ꞉ I , is-defined (α i))
             → ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡ pr₁ (pr₁ f b) l
           h (i , dᵢ) = ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
                           ≡⟨ g' ⟩

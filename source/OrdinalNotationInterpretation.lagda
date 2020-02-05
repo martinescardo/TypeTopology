@@ -180,7 +180,7 @@ construct the order as this was work in progress):
 Κ One  = 𝟙ᵒ
 Κ (Add ν μ) = Κ ν +ᵒ Κ μ
 Κ (Mul ν μ) = Κ ν ×ᵒ  Κ μ
-Κ (Sum1 ν) = ∑¹  i  ꞉  ℕ , Κ(ν i)
+Κ (Sum1 ν) = ∑¹  \(i : ℕ) → Κ(ν i)
 
 \end{code}
 
@@ -239,7 +239,7 @@ many interesting properties, formulated above and proved below.
 Δ One = 𝟙ᵒ
 Δ (Add ν μ) = Δ ν +ᵒ Δ μ
 Δ (Mul ν μ) = Δ ν ×ᵒ  Δ μ
-Δ (Sum1 ν) = ∑₁  i  ꞉  ℕ , Δ(ν i)
+Δ (Sum1 ν) = ∑₁ \(i : ℕ) → Δ(ν i)
 
 Δ-is-discrete One  = 𝟙-is-discrete
 Δ-is-discrete (Add ν μ) =

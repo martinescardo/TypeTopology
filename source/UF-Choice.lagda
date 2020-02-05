@@ -149,7 +149,7 @@ module UnivalentChoice (𝓤 : Universe)
      → is-set X
      → ((x : X) → is-set (A x))
      → ((x : X) (a : A x) → is-prop (P x a))
-     → (∀ (x : X) → ∃ a ꞉ A x , P x a) → ∃ f  ꞉  Π A , ∀ (x : X) → P x (f x)
+     → (∀ (x : X) → ∃ a ꞉ A x , P x a) → ∃ f ꞉ Π A , ∀ (x : X) → P x (f x)
 
  AC'  = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (Y x))
      → (Π x ꞉ X , ∥ Y x ∥) → ∥(Π x ꞉ X , Y x)∥
@@ -166,7 +166,7 @@ module UnivalentChoice (𝓤 : Universe)
    -- proposition. Any inhabited type that is a proposition will do,
    -- of course.
 
-   g : ∃ f ꞉ Π Y , (x : X) → x ≡ x
+   g : ∃ f ꞉ Π Y , ((x : X) → x ≡ x)
    g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ∥∥-functor (λ y → y , refl) (f x))
 
    h : ∥ Π Y ∥

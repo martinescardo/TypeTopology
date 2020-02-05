@@ -397,7 +397,7 @@ coalgebra, as claimed:
 \begin{code}
 
 PRED-is-the-final-coalgebra : {X : 𝓤 ̇ }
-  → (κ : X → 𝟙 + X) → Σ! h  ꞉  (X → ℕ∞ ), is-homomorphism κ h
+  → (κ : X → 𝟙 + X) → Σ! h ꞉ (X → ℕ∞ ), is-homomorphism κ h
 PRED-is-the-final-coalgebra κ = homomorphism-existence κ , homomorphism-uniqueness κ
 
 \end{code}

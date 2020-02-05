@@ -45,7 +45,7 @@ D : 𝓤 ̇ → 𝓤 ̇
 D X = Σ u ꞉ ℕ∞ , (is-finite u → X)
 
 private
- remark₁ : (X : 𝓤 ̇ ) → D X ≡ (Σ¹  _  ꞉  ℕ , X)
+ remark₁ : (X : 𝓤 ̇ ) → D X ≡ Σ¹ λ (_ : ℕ) → X
  remark₁ X = refl
 
 Cantor : 𝓤₀ ̇

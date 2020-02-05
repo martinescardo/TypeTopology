@@ -275,7 +275,7 @@ Injectivity stipulates that the restriction map is a surjection:
 
 injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
 injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
-                     → (f : X → D) → ∃ g ꞉ Y → D , g ∘ j ∼ f
+                     → (f : X → D) → ∃ g ꞉ (Y → D), g ∘ j ∼ f
 \end{code}
 
 The algebraic injectivity of universes
@@ -1352,11 +1352,11 @@ retract-of-injective : (D' : 𝓤' ̇ ) (D : 𝓤 ̇ )
                      → injective-type D' 𝓦 𝓣
 retract-of-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
-   i' : ∃ f' ꞉ Y → D , f' ∘ j ∼ s ∘ f
+   i' : ∃ f' ꞉ (Y → D), f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
    φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
-   γ : ∃ f'' ꞉ Y → D' , f'' ∘ j ∼ f
+   γ : ∃ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
 power-of-injective : {A : 𝓣 ̇ } {D : 𝓦 ̇ }
@@ -1370,7 +1370,7 @@ power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
    k (x , a) = j x , a
    c : is-embedding k
    c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
-   ψ : ∃ g' ꞉ Y × A → D , g' ∘ k ∼ g
+   ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
    φ : (Σ g' ꞉ (Y × A → D) , g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
    φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 𝓦) (λ a → h (x , a)))

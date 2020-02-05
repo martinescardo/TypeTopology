@@ -45,7 +45,7 @@ open import DecidableAndDetachable
                            → ∃ x ꞉ X , p x ≡ ₀
 ∃-compactness-gives-Markov {𝓤} {X} c p φ = g (c p)
  where
-  g : decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x  ꞉  X , p x ≡ ₀
+  g : decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x ꞉ X , p x ≡ ₀
   g (inl e) = e
   g (inr u) = 𝟘-elim (φ u)
 
@@ -211,7 +211,7 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   k : (Σ y ꞉ Y , q y ≡ ₀) → ∃ x ꞉ X , q (f x) ≡ ₀
   k (y , r) = ∥∥-functor (l y r) (su y)
 
-  g : decidable (∃ x ꞉ X , q(f x) ≡ ₀) → decidable (∃ y  ꞉  Y , q y ≡ ₀)
+  g : decidable (∃ x ꞉ X , q(f x) ≡ ₀) → decidable (∃ y ꞉ Y , q y ≡ ₀)
   g (inl s) = inl (∥∥-functor h s)
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-a-prop k) u)
 
@@ -285,7 +285,7 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
    g : (Σ x ꞉ X , p x ≡ ₀) → Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀
    g (x , r) = η x , (extension-property p x ∙ r)
 
-   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → decidable (∃ x  ꞉  X , p x ≡ ₀)
+   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → decidable (∃ x ꞉ X , p x ≡ ₀)
    h (inl x) = inl (∥∥-rec ∥∥-is-a-prop f x)
    h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
@@ -614,7 +614,7 @@ module CompactTypes).
 \begin{code}
 
 ∃-compact∙ : 𝓤 ̇ → 𝓤 ̇
-∃-compact∙ X = (p : X → 𝟚) → ∃ x₀ ꞉ X , p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+∃-compact∙ X = (p : X → 𝟚) → ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
 
 ∃-compactness∙-is-a-prop : {X : 𝓤 ̇ } → is-prop (∃-compact∙ X)
 ∃-compactness∙-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤) (λ _ → ∥∥-is-a-prop)
@@ -645,10 +645,10 @@ iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (dec
 i-and-c-iso : {X : 𝓤 ̇ } → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
 i-and-c-iso {𝓤} {X} (t , c) p = ∥∥-rec ∥∥-is-a-prop f t
  where
-  f : X → ∃ x₀ ꞉ X , p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+  f : X → ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
   f x₀ = g (𝟚-is-discrete (p x₀) ₀) (c p)
    where
-    g : decidable(p x₀ ≡ ₀) → decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x₀  ꞉  X , p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+    g : decidable(p x₀ ≡ ₀) → decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
     g (inl r) e = ∣ x₀ , (λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))) ∣
     g (inr _) (inl t) = ∥∥-functor h t
      where
