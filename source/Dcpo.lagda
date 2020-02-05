@@ -43,7 +43,7 @@ module _ {𝓤 𝓣 : Universe}
  is-least x = ∀ (y : D) → x ⊑ y
 
  has-least : 𝓤 ⊔ 𝓣 ̇
- has-least = Σ (\(x : D) → is-least x)
+ has-least = Σ ( x  ꞉  D , is-least x)
 
  is-upperbound : {I : 𝓥 ̇ } (u : D) (α : I → D) → 𝓥 ⊔ 𝓣 ̇
  is-upperbound u α = (i : domain α) → α i ⊑ u
@@ -73,13 +73,13 @@ module _ {𝓤 𝓣 : Universe}
  sup-property (s , i) = i
 
  is-directed : {I : 𝓥 ̇ } → (I → D) → 𝓥 ⊔ 𝓣 ̇
- is-directed {I} α = ∥ I ∥ × ((i j : I) → ∃ \(k : I) → (α i ⊑ α k) × (α j ⊑ α k))
+ is-directed {I} α = ∥ I ∥ × ((i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k))
 
  is-directed-gives-inhabited : {I : 𝓥 ̇} (α : I → D) → is-directed α → ∥ I ∥
  is-directed-gives-inhabited α = pr₁
 
  is-directed-order : {I : 𝓥 ̇} (α : I → D) → is-directed α
-                   → (i j : I) → ∃ (\(k : I) → (α i ⊑ α k) × (α j ⊑ α k))
+                   → (i j : I) → ∃ ( k  ꞉  I , (α i ⊑ α k) × (α j ⊑ α k))
  is-directed-order α = pr₂
 
  being-directed-is-a-prop : {I : 𝓥 ̇ } (α : I → D) → is-prop (is-directed α)
@@ -203,7 +203,7 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed-gives-inhabited 𝓓 α = pr₁
 
  is-Directed-order : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α
-                   → (i j : I) → ∃ (\(k : I) → (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k))
+                   → (i j : I) → ∃ ( k  ꞉  I , (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k))
  is-Directed-order 𝓓 α = pr₂
 
  ∐ : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
@@ -285,7 +285,7 @@ being-continuous-is-a-prop 𝓓 𝓔 f =
                             (axioms-of-dcpo 𝓔) (f (∐ 𝓓 δ)) (f ∘ α))))
 
 DCPO[_,_] : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-DCPO[ 𝓓 , 𝓔 ] = Σ (\(f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 f)
+DCPO[ 𝓓 , 𝓔 ] = Σ ( f  ꞉  ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩ , is-continuous 𝓓 𝓔 f)
 
 DCPO⊥[_,_] : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'} → (𝓥 ⁺) ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
 DCPO⊥[ 𝓓 , 𝓔 ] = DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓔 ⟫ ]
@@ -345,11 +345,11 @@ image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
  (is-Directed-gives-inhabited 𝓓 α δ) , γ
   where
    γ : (i j : I)
-     → ∃ (\(k : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
+     → ∃ ( k  ꞉  I , f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
    γ i j = ∥∥-functor h (is-Directed-order 𝓓 α δ i j)
     where
-     h : Σ (\(k : I) → (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
-         → Σ (\(k : I) → f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
+     h : Σ ( k  ꞉  I , (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
+         → Σ ( k  ꞉  I , f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k))
      h (k , l , m) =
       k , (continuous-functions-are-monotone 𝓓 𝓔 (f , c) (α i) (α k) l ,
       (continuous-functions-are-monotone 𝓓 𝓔 (f , c) (α j) (α k) m))

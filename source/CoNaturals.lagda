@@ -327,7 +327,7 @@ coalg-morphism-Pred {𝓤} {X} κ f g a b x u v d e =
  equality-cases (κ x) l₀ l₁
  where
   l₀ : (s : 𝟙) → κ x ≡ inl s
-     → Σ \x' → (Pred u ≡ f x') ×  (Pred v ≡ g x')
+     → Σ x' ꞉ X , (Pred u ≡ f x') ×  (Pred v ≡ g x')
   l₀ s q = x , (l f a u d , l g b v e)
    where
     l : (h : X → ℕ∞) → PRED ∘ h ≡ (𝟙+ h) ∘ κ
@@ -340,7 +340,7 @@ coalg-morphism-Pred {𝓤} {X} κ f g a b x u v d e =
       c₁ = ap Pred (d ∙ c₀)
 
   l₁ : (x' : X) → κ x ≡ inr x'
-     → Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
+     → Σ x' ꞉ X , (Pred u ≡ f x') × (Pred v ≡ g x')
   l₁ x' q = x' , (l f a u d , l g b v e)
    where
     l : (h : X → ℕ∞) → PRED ∘ h ≡ (𝟙+ h) ∘ κ
@@ -365,7 +365,7 @@ homomorphism-uniqueness : {X : 𝓤 ̇ }
 homomorphism-uniqueness {𝓤} {X} κ f g a b = dfunext (fe 𝓤 𝓤₀) l
  where
   R : ℕ∞ → ℕ∞ → 𝓤 ̇
-  R u v = Σ \x → (u ≡ f x) × (v ≡ g x)
+  R u v = Σ x ꞉ X , (u ≡ f x) × (v ≡ g x)
 
   r : (x : X) → R (f x) (g x)
   r x = (x , refl , refl)
@@ -380,7 +380,7 @@ homomorphism-uniqueness {𝓤} {X} κ f g a b = dfunext (fe 𝓤 𝓤₀) l
   R-Pred u v (x , c , d) =
    (pr₁ l , pr₁(pr₂ l) , pr₂(pr₂ l))
    where
-    l : Σ \x' → (Pred u ≡ f x') × (Pred v ≡ g x')
+    l : Σ x' ꞉ X , (Pred u ≡ f x') × (Pred v ≡ g x')
     l = coalg-morphism-Pred κ f g a b x u v c d
 
   R-bisimulation : ℕ∞-bisimulation R
@@ -397,7 +397,7 @@ coalgebra, as claimed:
 \begin{code}
 
 PRED-is-the-final-coalgebra : {X : 𝓤 ̇ }
-  → (κ : X → 𝟙 + X) → Σ! \(h : X → ℕ∞) → is-homomorphism κ h
+  → (κ : X → 𝟙 + X) → Σ! h  ꞉  (X → ℕ∞ ), is-homomorphism κ h
 PRED-is-the-final-coalgebra κ = homomorphism-existence κ , homomorphism-uniqueness κ
 
 \end{code}

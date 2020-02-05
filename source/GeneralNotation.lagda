@@ -92,6 +92,13 @@ Get rid of this:
 Σ! : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Σ! {𝓤} {𝓥} {X} A = (Σ x ꞉ X , A x) × ((x x' : X) → A x → A x' → x ≡ x')
 
+Sigma! : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+Sigma! X A = Σ! A
+
+syntax Sigma! A (λ x → b) = Σ! x ꞉ A , b
+
+infixr 10 Sigma!
+
 \end{code}
 
 Note: Σ! is to be avoided, in favour of the contractibility of Σ,

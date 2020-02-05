@@ -17,11 +17,11 @@ that a given function p : X → 𝟚 defined on a type X has a root.
 We say that a type X is Σ-compact, or simply compact for short, if
 this statement is decidable for every p : X → 𝟚. This is equivalent to
 
-  Π p ꞉ X → 𝟚 , (Σ x ꞉ X , p x ≡ ₀) + (Π x  ꞉  X , p x ≡ ₁).
+  Π p ꞉ X → 𝟚 , (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁).
 
 We can also ask whether the statements
 
-  ∃ \(x : X) → p x ≡ ₀   and   Π x ꞉ X , p x ≡ ₀
+  ∃ x : X , p x ≡ ₀   and   Π x ꞉ X , p x ≡ ₀
 
 are decidable for every p, and in these cases we say that X is
 is ∃-compact and is Π-compact respectively. We have
@@ -239,7 +239,7 @@ _is-a-root-of_ : {X : 𝓤 ̇ } → X → (X → 𝟚) → 𝓤₀ ̇
 x is-a-root-of p = p x ≡ ₀
 
 _has-a-root : {X : 𝓤 ̇ } → (X → 𝟚) → 𝓤 ̇
-p has-a-root = Σ \x → x is-a-root-of p
+p has-a-root = Σ x ꞉ domain p , x is-a-root-of p
 
 putative-root : {X : 𝓤 ̇ }
               → compact∙ X → (p : X → 𝟚) → Σ x₀ ꞉ X , ((p has-a-root) ⇔ (x₀ is-a-root-of p))
@@ -317,9 +317,9 @@ apart-or-equal {𝓤} {𝓥} {X} fe {Y} φ d f g = lemma₂ lemma₁
   lemma₀ = indicator claim
   p : X → 𝟚
   p = pr₁ lemma₀
-  lemma₁ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁)
+  lemma₁ : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
   lemma₁ = φ p
-  lemma₂ : (Σ \x → p x ≡ ₀) + ((x : X) → p x ≡ ₁) → (f ♯ g) + (f ≡ g)
+  lemma₂ : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁) → (f ♯ g) + (f ≡ g)
   lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r))
   lemma₂(inr h) = inr (dfunext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
 
@@ -624,7 +624,7 @@ Compact-gives-compact X C p = iv
   i = C A
   ii : detachable (λ x → p x ≡ ₀)
   ii x = 𝟚-is-discrete (p x) ₀
-  iii : decidable (Σ x ꞉ X , p x ≡ ₀) → (Σ x ꞉ X , p x ≡ ₀) + (Π x  ꞉  X , p x ≡ ₁)
+  iii : decidable (Σ x ꞉ X , p x ≡ ₀) → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
   iii (inl σ) = inl σ
   iii (inr u) = inr (λ x → different-from-₀-equal-₁ (λ r → u (x , r)))
   iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)

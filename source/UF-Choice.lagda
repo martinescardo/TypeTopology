@@ -149,7 +149,7 @@ module UnivalentChoice (𝓤 : Universe)
      → is-set X
      → ((x : X) → is-set (A x))
      → ((x : X) (a : A x) → is-prop (P x a))
-     → (∀ (x : X) → ∃ \(a : A x) → P x a) → ∃ \(f : Π A) → ∀ (x : X) → P x (f x)
+     → (∀ (x : X) → ∃ a ꞉ A x , P x a) → ∃ f  ꞉  Π A , ∀ (x : X) → P x (f x)
 
  AC'  = (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (Y x))
      → (Π x ꞉ X , ∥ Y x ∥) → ∥(Π x ꞉ X , Y x)∥
@@ -166,7 +166,7 @@ module UnivalentChoice (𝓤 : Universe)
    -- proposition. Any inhabited type that is a proposition will do,
    -- of course.
 
-   g : ∃ \(f : Π Y) → (x : X) → x ≡ x
+   g : ∃ f ꞉ Π Y , (x : X) → x ≡ x
    g = ac X Y (λ x a → x ≡ x) isx isy (λ x a → isx) (λ x → ∥∥-functor (λ y → y , refl) (f x))
 
    h : ∥ Π Y ∥
@@ -262,7 +262,7 @@ module AC-renders-all-sets-discrete
  open import UF-Miscelanea
 
  lemma₁ : {X : 𝓤 ̇ } (a : 𝟚 → X)
-        → ((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
+        → ((x : X) → (∃ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  lemma₁ a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where
@@ -301,7 +301,7 @@ module AC-renders-all-sets-discrete
    claim (inr u) = inr (contrapositive a-s u)
 
  lemma₂ : {X : 𝓤 ̇ } → is-set X → (a : 𝟚 → X)
-        → ∥((x : X) → (∃ \(i : 𝟚) → a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)∥
+        → ∥((x : X) → (∃ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)∥
         → decidable(a ₀ ≡ a ₁)
  lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
 

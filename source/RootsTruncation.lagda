@@ -177,7 +177,7 @@ module ExitRootTruncations (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- exit-roots-truncation : (α : ℕ → Z) → (∃ \(n : ℕ) → α n ≡ z) → Σ n ꞉ ℕ , α n ≡ z
+ exit-roots-truncation : (α : ℕ → Z) → (∃ n ꞉ ℕ , α n ≡ z) → Σ n ꞉ ℕ , α n ≡ z
  exit-roots-truncation α = h ∘ g
   where
    f : (Σ n ꞉ ℕ , α n ≡ z) → fix (μρ α)

@@ -118,7 +118,7 @@ coinduction on ℕ∞ using codistance-eq₁:
     where
      s : positivity (c α α) ≡ positivity ∞
      s = successors-same-positivity (l α) ((Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹)
-     t : Σ (\(α' : 𝓢) → Pred (c α α) ≡ c α' α')
+     t : Σ α' ꞉ 𝓢 , Pred (c α α) ≡ c α' α'
      t = tail α , (ap Pred (l α) ∙ Pred-Succ)
    γ : R (c α α) ∞
    γ = (α , refl) , refl

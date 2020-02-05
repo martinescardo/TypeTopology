@@ -3,7 +3,7 @@ Martin Escardo, December 2017 (but done much earlier on paper)
 As discussed in the module CompactTypes, Bishop's "limited principle
 of omniscience" amount to the compactness of the type ℕ, that is,
 
-  Π p ꞉ ℕ → 𝟚 , (Σ n ꞉ ℕ , p n ≡ ₀) + (Π n  ꞉  ℕ , p n ≡ ₁),
+  Π p ꞉ ℕ → 𝟚 , (Σ n ꞉ ℕ , p n ≡ ₀) + (Π n ꞉ ℕ , p n ≡ ₁),
 
 which fails in contructive mathematics (here in the sense that it is
 independent - it is not provable, and its negation is also not

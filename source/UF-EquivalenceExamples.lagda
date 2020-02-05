@@ -65,12 +65,12 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   u (x , (y , z)) = ((x , y) , z)
 
 Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }
-       → (Σ x ꞉ X , Σ y ꞉ Y , A x y) ≃ (Σ y  ꞉  Y , Σ x  ꞉  X , A x y)
+       → (Σ x ꞉ X , Σ y ꞉ Y , A x y) ≃ (Σ y ꞉ Y , Σ x ꞉ X , A x y)
 Σ-flip {𝓤} {𝓥} {𝓦} {X} {Y} {A} = qinveq f (g , ε , η)
  where
-  f : (Σ x ꞉ X , Σ y ꞉ Y , A x y) → (Σ y  ꞉  Y , Σ x  ꞉  X , A x y)
+  f : (Σ x ꞉ X , Σ y ꞉ Y , A x y) → (Σ y ꞉ Y , Σ x ꞉ X , A x y)
   f (x , y , p) = y , x , p
-  g : (Σ y ꞉ Y , Σ x ꞉ X , A x y) → (Σ x  ꞉  X , Σ y  ꞉  Y , A x y)
+  g : (Σ y ꞉ Y , Σ x ꞉ X , A x y) → (Σ x ꞉ X , Σ y ꞉ Y , A x y)
   g (y , x , p) = x , y , p
   ε : ∀ σ → g (f σ) ≡ σ
   ε (x , y , p) = refl
@@ -104,7 +104,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   HF (x , y) = to-Σ-≡' (hf x y)
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-           → (Π x ꞉ X , Σ a ꞉ A x , P x a) ≃ (Σ f  ꞉  Π A , Π x  ꞉  X , P x (f x))
+           → (Π x ꞉ X , Σ a ꞉ A x , P x a) ≃ (Σ f ꞉ Π A , Π x ꞉ X , P x (f x))
 ΠΣ-distr-≃ {𝓤} {𝓥} {𝓦} {X} {A} {P} = qinveq ΠΣ-distr (ΠΣ-distr-back , ε , η)
  where
   η :  ΠΣ-distr {𝓤} {𝓥} {𝓦} {X} {A} {P} ∘ ΠΣ-distr-back ∼ id
@@ -117,10 +117,10 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
         ≃ (Σ z ꞉ X + Y , A z)
 Σ+distr X Y A = qinveq f (g , η , ε)
  where
-  f : (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y)) → (Σ z  ꞉  X + Y , A z)
+  f : (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y)) → (Σ z ꞉ X + Y , A z)
   f (inl (x , a)) = inl x , a
   f (inr (y , a)) = inr y , a
-  g : (Σ z ꞉ X + Y , A z) → (Σ x ꞉ X , A (inl x)) + (Σ y  ꞉  Y , A (inr y))
+  g : (Σ z ꞉ X + Y , A z) → (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y))
   g (inl x , a) = inl (x , a)
   g (inr y , a) = inr (y , a)
   η : g ∘ f ∼ id
@@ -411,10 +411,10 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
 
 Π×+ {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe = qinveq f (g , ε , η)
  where
-  f : (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y)) → (Π z  ꞉  X + Y , A z)
+  f : (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y)) → (Π z ꞉ X + Y , A z)
   f (l , r) (inl x) = l x
   f (l , r) (inr y) = r y
-  g : (Π z ꞉ X + Y , A z) → (Π x ꞉ X , A (inl x)) × (Π y  ꞉  Y , A (inr y))
+  g : (Π z ꞉ X + Y , A z) → (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y))
   g h = h ∘ inl , h ∘ inr
   η : f ∘ g ∼ id
   η h = dfunext fe γ

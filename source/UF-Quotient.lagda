@@ -238,7 +238,7 @@ universe 𝓦.
       γ : (x' : X/≈) → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
       γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
-   k : (x' : X/≈) → Σ a ꞉ A , ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
+   k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step
     where
      induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)

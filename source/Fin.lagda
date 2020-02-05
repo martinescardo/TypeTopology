@@ -647,7 +647,7 @@ Equivalently, one can define finiteness as follows:
 \begin{code}
 
  is-finite' : 𝓤 ̇ → 𝓤 ̇
- is-finite' X = ∃ \(n : ℕ) → X ≃ Fin n
+ is-finite' X = ∃ n ꞉ ℕ , X ≃ Fin n
 
 
  being-finite'-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
@@ -853,7 +853,7 @@ Further versions of the pigeonhole principle are the following.
   finite-pigeonhole-principle'' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                                   (φ : is-finite Y)
                                 → m > cardinality Y φ
-                                → Σₘᵢₙ \(i : Fin m) → repeated-values f i
+                                → Σₘᵢₙ  i  ꞉  Fin m , repeated-values f i
 
   finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
    Σ-gives-Σₘᵢₙ
@@ -924,7 +924,7 @@ because finite types are discrete:
 
 \begin{code}
 
-    minimal-finite-order : (x : X) → Σμ \(k : ℕ) → x ↑ (succ k) ≡ e
+    minimal-finite-order : (x : X) → Σμ  k  ꞉  ℕ , x ↑ (succ k) ≡ e
     minimal-finite-order x = minimal-from-given A γ (finite-order x)
      where
       A : ℕ → 𝓤 ̇

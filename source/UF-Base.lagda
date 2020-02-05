@@ -26,7 +26,7 @@ NatΠ f g x = f x (g x) -- (S combinator from combinatory logic!)
 ΠΣ-distr φ = (λ x → pr₁ (φ x)) , λ x → pr₂ (φ x)
 
 ΠΣ-distr-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
-              → (Σ f ꞉ Π A , Π x ꞉ X , P x (f x)) → Π x  ꞉  X , Σ a  ꞉  A x , P x a
+              → (Σ f ꞉ Π A , Π x ꞉ X , P x (f x)) → Π x ꞉ X , Σ a ꞉ A x , P x a
 ΠΣ-distr-back (f , φ) x = f x , φ x
 
 _≈_ : {X : 𝓤 ̇ } {x : X} {A : X → 𝓥 ̇ } → Nat (Id x) A → Nat (Id x) A → 𝓤 ⊔ 𝓥 ̇

@@ -145,11 +145,11 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → ¬ (∃ \(x : X) → p x ≡ ₀) → (∀ (x : X) → p x ≡ ₁)
+                            → ¬ (∃ x ꞉ X , p x ≡ ₀) → (∀ (x : X) → p x ≡ ₁)
  not-exists₀-implies-forall₁ p u x = different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → (∀ (x : X) → p x ≡ ₁) → ¬ ∃ \(x : X) → p x ≡ ₀
+                            → (∀ (x : X) → p x ≡ ₁) → ¬ (∃ x ꞉ X , p x ≡ ₀)
  forall₁-implies-not-exists₀ p α = ∥∥-rec 𝟘-is-prop h
   where
    h : (Σ \x → p x ≡ ₀) → 𝟘

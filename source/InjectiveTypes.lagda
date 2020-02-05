@@ -950,8 +950,8 @@ module ∖-extension-is-embedding
    e : (y : Y) → is-equiv (κ (s f) y)
    e y = qinvs-are-equivs (κ (s f) y) (δ , ε , η)
     where
-     δ : (Σ w ꞉ fiber j y , f(pr₁ w))
-       → Σ t ꞉ fiber j y , Σ (\(w : fiber j (j (pr₁ t))) → f (pr₁ w))
+     δ : (Σ (x , _) ꞉ fiber j y , f x)
+       → Σ t ꞉ fiber j y , Σ (x , _) ꞉ fiber j (j (pr₁ t)), f x
      δ ((x , p) , C) = (x , p) , (x , refl) , C
      η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
      η ((x , refl) , C) = refl
@@ -960,7 +960,7 @@ module ∖-extension-is-embedding
       where
         t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → (ap j u ≡ p) →
             ((x' , p)    , (x' , refl) , C)
-         ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
+          ≡ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉  fiber j (j x) , r (s f) x))
         t x .x refl p C refl = refl
         ej' : ∀ x x' → qinv (ap j {x} {x'})
         ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
@@ -1195,7 +1195,7 @@ automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
 
 universe-retract : Univalence → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
-                 → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )) → is-embedding (section ρ)
+                 → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
 universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
@@ -1321,7 +1321,7 @@ module injective (pt : propositional-truncations-exist) where
 
  injective-type : 𝓦 ̇ → (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥  ⁺ ⊔ 𝓦 ̇
  injective-type D 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y) → is-embedding j
-                       → (f : X → D) → ∃ \(g : Y → D) → g ∘ j ∼ f
+                       → (f : X → D) → ∃ g ꞉ (Y → D), g ∘ j ∼ f
 
 
  injectivity-is-a-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
@@ -1345,9 +1345,9 @@ module injective (pt : propositional-truncations-exist) where
                      → ∥ retract D of Y ∥
  embedding-∥retract∥ D Y j e i = ∥∥-functor φ a
   where
-   a : ∃ \r  → r ∘ j ∼ id
+   a : ∃ r ꞉ (Y → D), r ∘ j ∼ id
    a = i j e id
-   φ : (Σ \r  → r ∘ j ∼ id) → Σ \r  → Σ \s → r ∘ s ∼ id
+   φ : (Σ r ꞉ (Y → D), r ∘ j ∼ id) → Σ r ꞉ (Y → D) , Σ s ꞉ (D → Y), r ∘ s ∼ id
    φ (r , p) = r , j , p
 
  retract-of-injective : (D' : 𝓤 ̇ ) (D : 𝓥 ̇ )
@@ -1356,11 +1356,11 @@ module injective (pt : propositional-truncations-exist) where
                        → injective-type D' 𝓦 𝓣
  retract-of-injective D' D i (r , (s , rs)) {X} {Y} j e f = γ
   where
-   i' : ∃ \(f' : Y → D) → f' ∘ j ∼ s ∘ f
+   i' : ∃ f' ꞉ (Y → D), f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
    φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D'), f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
-   γ : ∃ \(f'' : Y → D') → f'' ∘ j ∼ f
+   γ : ∃ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
 \end{code}
@@ -1381,11 +1381,11 @@ so we need a new proof, but hence also new universe assumptions.
    k (x , a) = j x , a
    c : is-embedding k
    c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
-   ψ : ∃ \(g' : Y × A → D) → g' ∘ k ∼ g
+   ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
-   φ : (Σ g' ꞉ (Y × A → D), g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
+   φ : (Σ g' ꞉ (Y × A → D), g' ∘ k ∼ g) → (Σ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f)
    φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 (𝓣 ⊔ 𝓦)) (λ a → h (x , a)))
-   γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
+   γ : ∃ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
  injective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇ ) → is-univalent 𝓤

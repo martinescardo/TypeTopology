@@ -185,12 +185,12 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  LFPT : {A : 𝓤 ̇ } {X : 𝓥 ̇ } (φ : A → (A → X))
       → is-surjection φ
-      → (f : X → X) → ∃ \(x : X) → x ≡ f x
+      → (f : X → X) → ∃ x ꞉ X , x ≡ f x
  LFPT {𝓤} {𝓥} {A} {X} φ s f = ∥∥-functor γ e
   where
    g : A → X
    g a = f (φ a a)
-   e : ∃ \(a : A) → φ a ≡ g
+   e : ∃ a ꞉ A , φ a ≡ g
    e = s g
    γ : (Σ a ꞉ A , φ a ≡ g) → Σ x ꞉ X , x ≡ f x
    γ (a , q) = x , p
@@ -218,10 +218,10 @@ module surjection-version (pt : propositional-truncations-exist) where
  cantor-theorem-for-universes :
      (𝓤 𝓥 : Universe) (A : 𝓥 ̇ ) (φ : A → (A → 𝓤 ̇ ))
    → is-surjection φ
-   → (X : 𝓤 ̇ ) (f : X → X) → ∃ \(x : X) → x ≡ f x
+   → (X : 𝓤 ̇ ) (f : X → X) → ∃ x ꞉ X , x ≡ f x
  cantor-theorem-for-universes 𝓤 𝓥 A φ s X f = ∥∥-functor g t
   where
-   t : ∃ \(B : 𝓤 ̇ ) → B ≡ (B → X)
+   t : ∃ B ꞉ 𝓤 ̇  , B ≡ (B → X)
    t = LFPT φ s (λ B → B → X)
    g : (Σ B ꞉ 𝓤 ̇ , B ≡ (B → X)) → Σ x ꞉ X , x ≡ f x
    g (B , p) = retract-version.LFPT-≡ {𝓤} {𝓤} p f
@@ -231,7 +231,7 @@ module surjection-version (pt : propositional-truncations-exist) where
    → (φ : A → (A → 𝓤 ̇ )) → ¬(is-surjection φ)
  Cantor-theorem-for-universes 𝓤 𝓥 A r h = 𝟘-elim(∥∥-rec 𝟘-is-prop pr₁ c)
   where
-   c : ∃ \(x : 𝟘) → x ≡ x
+   c : ∃ x ꞉ 𝟘 , x ≡ x
    c = cantor-theorem-for-universes 𝓤 𝓥 A r h 𝟘 id
 
  cantor-theorem :
@@ -239,7 +239,7 @@ module surjection-version (pt : propositional-truncations-exist) where
    → funext 𝓤 𝓤₀ → (φ : A → (A → Ω 𝓤)) → ¬(is-surjection φ)
  cantor-theorem 𝓤 𝓥 A fe φ s = ∥∥-rec 𝟘-is-prop (retract-version.not-no-fp fe) t
   where
-   t : ∃ \(B : Ω 𝓤) → B ≡ not fe B
+   t : ∃ B ꞉ Ω 𝓤 , B ≡ not fe B
    t = LFPT φ s (not fe)
 
  \end{code}
@@ -254,13 +254,13 @@ module surjection-version (pt : propositional-truncations-exist) where
  cantor-uncountable : ¬ Σ \(φ : ℕ → (ℕ → 𝟚)) → is-surjection φ
  cantor-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry complement-no-fp) t
   where
-   t : ∃ \(n : 𝟚) → n ≡ complement n
+   t : ∃ n ꞉ 𝟚 , n ≡ complement n
    t = LFPT φ s complement
 
  baire-uncountable : ¬ Σ \(φ : ℕ → (ℕ → ℕ)) → is-surjection φ
  baire-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry succ-no-fp) t
   where
-   t : ∃ \(n : ℕ) → n ≡ succ n
+   t : ∃ n ꞉ ℕ , n ≡ succ n
    t = LFPT φ s succ
 
 \end{code}
@@ -369,11 +369,11 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
  Π-projection-has-section {𝓤} {𝓥} {𝓦} {A} {X} fe fe' pe a₀ ish = s , rs
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
-   s φ a x = (∃ \(p : a ≡ a₀) → φ (transport X p x) holds) , ∥∥-is-a-prop
+   s φ a x = (∃ p ꞉ a ≡ a₀ , φ (transport X p x) holds) , ∥∥-is-a-prop
    rs : (φ : X a₀ → Ω (𝓤 ⊔ 𝓦)) → s φ a₀ ≡ φ
    rs φ = dfunext fe γ
     where
-     a : (x₀ : X a₀) → (∃ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) → φ x₀ holds
+     a : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) → φ x₀ holds
      a x₀ = ∥∥-rec (holds-is-prop (φ x₀)) f
       where
        f : (Σ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) → φ x₀ holds
@@ -383,9 +383,9 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
          r = ish p refl
          t : φ (transport X p x₀) ≡ φ x₀
          t = ap (λ - → φ(transport X - x₀)) r
-     b : (x₀ : X a₀) → φ x₀ holds → ∃ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds
+     b : (x₀ : X a₀) → φ x₀ holds → ∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds
      b x₀ h = ∣ refl , h ∣
-     γ : (x₀ : X a₀) → (∃ \(p : a₀ ≡ a₀) → φ (transport X p x₀) holds) , ∥∥-is-a-prop ≡ φ x₀
+     γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) , ∥∥-is-a-prop ≡ φ x₀
      γ x₀ = to-Σ-≡ (pe ∥∥-is-a-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                      being-a-prop-is-a-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 

@@ -32,7 +32,7 @@ open PropositionalTruncation pt
 open import DecidableAndDetachable
 
 ∃-compact : 𝓤 ̇ → 𝓤 ̇
-∃-compact X = (p : X → 𝟚) → decidable (∃ \(x : X) → p x ≡ ₀)
+∃-compact X = (p : X → 𝟚) → decidable (∃ x ꞉ X , p x ≡ ₀)
 
 ∃-compactness-is-a-prop : {X : 𝓤 ̇ } → is-prop (∃-compact X)
 ∃-compactness-is-a-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤)
@@ -41,11 +41,11 @@ open import DecidableAndDetachable
 ∃-compactness-gives-Markov : {X : 𝓤 ̇ }
                            → ∃-compact X
                            → (p : X → 𝟚)
-                           → ¬¬(∃ \(x : X) → p x ≡ ₀)
-                           → ∃ \(x : X) → p x ≡ ₀
+                           → ¬¬(∃ x ꞉ X , p x ≡ ₀)
+                           → ∃ x ꞉ X , p x ≡ ₀
 ∃-compactness-gives-Markov {𝓤} {X} c p φ = g (c p)
  where
-  g : decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+  g : decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x  ꞉  X , p x ≡ ₀
   g (inl e) = e
   g (inr u) = 𝟘-elim (φ u)
 
@@ -67,7 +67,7 @@ LPO with WLPO.
 ∃-compact-gives-Π-compact : {X : 𝓤 ̇ } → ∃-compact X → Π-compact X
 ∃-compact-gives-Π-compact {𝓤} {X} c p = f (c p)
  where
-  f : decidable (∃ \(x : X) → p x ≡ ₀) → decidable (Π x ꞉ X , p x ≡ ₁)
+  f : decidable (∃ x ꞉ X , p x ≡ ₀) → decidable (Π x ꞉ X , p x ≡ ₁)
   f (inl s) = inr (λ α → ∥∥-rec 𝟘-is-prop (g α) s)
    where
     g : ((x : X) → p x ≡ ₁) → ¬ Σ \x → p x ≡ ₀
@@ -90,7 +90,7 @@ of ℕ∞, for example):
 compact-gives-∃-compact : {X : 𝓤 ̇ } → compact X → ∃-compact X
 compact-gives-∃-compact {𝓤} {X} φ p = g (φ p)
  where
-  g : ((Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
+  g : ((Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ x ꞉ X , p x ≡ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
   g (inr α) = inr (forall₁-implies-not-exists₀ pt p α)
 
@@ -208,10 +208,10 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   l : (y : Y) → q y ≡ ₀ → (Σ x ꞉ X , f x ≡ y) → Σ x ꞉ X , q (f x) ≡ ₀
   l y r (x , s) = (x , (ap q s ∙ r))
 
-  k : (Σ y ꞉ Y , q y ≡ ₀) → ∃ \(x : X) → q (f x) ≡ ₀
+  k : (Σ y ꞉ Y , q y ≡ ₀) → ∃ x ꞉ X , q (f x) ≡ ₀
   k (y , r) = ∥∥-functor (l y r) (su y)
 
-  g : decidable (∃ \(x : X) → q(f x) ≡ ₀) → decidable (∃ \(y : Y) → q y ≡ ₀)
+  g : decidable (∃ x ꞉ X , q(f x) ≡ ₀) → decidable (∃ y  ꞉  Y , q y ≡ ₀)
   g (inl s) = inl (∥∥-functor h s)
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-a-prop k) u)
 
@@ -276,7 +276,7 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
  tos : ∃-compact (𝕋 X) → ∃-compact X
  tos c p = h (c (extension p))
   where
-   f : (Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → ∃ \(x : X) → p x ≡ ₀
+   f : (Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → ∃ x ꞉ X , p x ≡ ₀
    f (x' , r) = ∥∥-functor f' (η-surjection x')
     where
      f' : (Σ x ꞉ X , η x ≡ x') → Σ x ꞉ X , p x ≡ ₀
@@ -285,7 +285,7 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
    g : (Σ x ꞉ X , p x ≡ ₀) → Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀
    g (x , r) = η x , (extension-property p x ∙ r)
 
-   h : decidable (∃ \(x' : 𝕋 X) → extension p x' ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀)
+   h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → decidable (∃ x  ꞉  X , p x ≡ ₀)
    h (inl x) = inl (∥∥-rec ∥∥-is-a-prop f x)
    h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
@@ -550,7 +550,7 @@ detachable-subset-∃-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
 detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
  where
-  g : decidable (∃ \(x : X) → A x ≡ ₀) → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
+  g : decidable (∃ x ꞉ X , A x ≡ ₀) → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
   g (inl e) = retract-∃-compact' (∥∥-functor detachable-subset-retract e) c
   g (inr u) = is-empty-∃-compact (contrapositive ∣_∣ u)
 
@@ -614,7 +614,7 @@ module CompactTypes).
 \begin{code}
 
 ∃-compact∙ : 𝓤 ̇ → 𝓤 ̇
-∃-compact∙ X = (p : X → 𝟚) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+∃-compact∙ X = (p : X → 𝟚) → ∃ x₀ ꞉ X , p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
 ∃-compactness∙-is-a-prop : {X : 𝓤 ̇ } → is-prop (∃-compact∙ X)
 ∃-compactness∙-is-a-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤) (λ _ → ∥∥-is-a-prop)
@@ -632,10 +632,10 @@ iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (dec
   g₁ : ∥ Σ (λ x₀ → ₀ ≡ ₁ → (x : X) → ₀ ≡ ₁) ∥
   g₁ = c (λ x → ₀)
 
-  g₂ : (p : X → 𝟚) → (Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)) → decidable (∃ \(x : X) → p x ≡ ₀)
+  g₂ : (p : X → 𝟚) → (Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)) → decidable (∃ x ꞉ X , p x ≡ ₀)
   g₂ p (x₀ , φ) = h (𝟚-is-discrete (p x₀) ₁)
    where
-    h : decidable(p x₀ ≡ ₁) → decidable (∃ \(x : X) → p x ≡ ₀)
+    h : decidable(p x₀ ≡ ₁) → decidable (∃ x ꞉ X , p x ≡ ₀)
     h (inl r) = inr (∥∥-rec 𝟘-is-prop f)
      where
       f : ¬ (Σ x ꞉ X , p x ≡ ₀)
@@ -645,10 +645,10 @@ iso-i-and-c {𝓤} {X} c = (∥∥-functor pr₁ g₁ , λ p → ∥∥-rec (dec
 i-and-c-iso : {X : 𝓤 ̇ } → ∥ X ∥ × ∃-compact X → ∃-compact∙ X
 i-and-c-iso {𝓤} {X} (t , c) p = ∥∥-rec ∥∥-is-a-prop f t
  where
-  f : X → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+  f : X → ∃ x₀ ꞉ X , p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
   f x₀ = g (𝟚-is-discrete (p x₀) ₀) (c p)
    where
-    g : decidable(p x₀ ≡ ₀) → decidable (∃ \(x : X) → p x ≡ ₀) → ∃ \(x₀ : X) → p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
+    g : decidable(p x₀ ≡ ₀) → decidable (∃ x ꞉ X , p x ≡ ₀) → ∃ x₀  ꞉  X , p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
     g (inl r) e = ∣ x₀ , (λ s _ → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))) ∣
     g (inr _) (inl t) = ∥∥-functor h t
      where
@@ -677,7 +677,7 @@ isoore-so (inr u) = is-empty-∃-compact u
 so-isoore : {X : 𝓤 ̇ } → ∃-compact X → ∃-compact∙ X + is-empty X
 so-isoore {𝓤} {X} c = g
  where
-  h : decidable (∃ \(x : X) → ₀ ≡ ₀) → ∃-compact∙ X + is-empty X
+  h : decidable (∃ x ꞉ X , ₀ ≡ ₀) → ∃-compact∙ X + is-empty X
   h (inl t) = inl (i-and-c-iso (∥∥-functor pr₁ t , c))
   h (inr u) = inr (contrapositive (λ x → ∣ x , refl ∣) u)
 
@@ -1085,8 +1085,8 @@ fst _ _ = pr₁
                              → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map(fst A X))
 ∃-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
-  g : decidable (∃ \(x : X) → p (a , x) ≡ ₀)
-    → decidable (∃ \(z : A × X) → (p z ≡ ₀) × (pr₁ z ≡ a))
+  g : decidable (∃ x ꞉ X , p (a , x) ≡ ₀)
+    → decidable (∃ z ꞉ A × X , (p z ≡ ₀) × (pr₁ z ≡ a))
   g (inl e) = inl ((∥∥-functor h) e)
    where
     h : (Σ x ꞉ X , p (a , x) ≡ ₀) → Σ z ꞉ A × X , (p z ≡ ₀) × (pr₁ z ≡ a)
@@ -1101,8 +1101,8 @@ clopen-projections-∃-compact : ∀ {𝓤 𝓦} (X : 𝓤 ̇ )
                              → ∃-compact X
 clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
  where
-  g : decidable (∃ \(z : 𝟙 {𝓦} × X) → (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
-    → decidable (∃ \(x : X) → p x ≡ ₀)
+  g : decidable (∃ z ꞉ 𝟙 {𝓦} × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
+    → decidable (∃ x ꞉ X , p x ≡ ₀)
   g (inl e) = inl (∥∥-functor h e)
    where
     h : (Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)) → Σ x ꞉ X , p x ≡ ₀

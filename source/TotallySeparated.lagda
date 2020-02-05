@@ -450,7 +450,7 @@ rather than direct proofs (as in the proof of tight reflection below).
    ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ a ꞉ A , eval a ≡ γ)
    ie = tsieeval (fe 𝓥 𝓤₀) ts
 
-   h : (φ : (X → 𝟚) → 𝟚) → (∃ \(x : X) → eval x ≡ φ) → Σ a ꞉ A , eval a ≡ (λ q → φ(q ∘ f))
+   h : (φ : (X → 𝟚) → 𝟚) → (∃ x ꞉ X , eval x ≡ φ) → Σ a ꞉ A , eval a ≡ (λ q → φ(q ∘ f))
    h φ = ∥∥-rec (ie γ) u
     where
      γ : (A → 𝟚) → 𝟚
@@ -569,7 +569,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
  _♯₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
- x ♯₂ y = ∃ \(p : _ → 𝟚) → p x ≢ p y
+ x ♯₂ y = ∃ p ꞉ (type-of x → 𝟚), p x ≢ p y
 
  ♯₂-is-apartness : {X : 𝓤 ̇ } → is-apartness (_♯₂_ {𝓤} {X})
  ♯₂-is-apartness {𝓤} {X} = a , b , c , d
@@ -727,14 +727,14 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
  tight-separated' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
-                 → (∃ \(_♯_ : X → X → 𝓤 ̇ ) → is-apartness _♯_ × is-tight _♯_) → is-separated X
+                  → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-separated X
  tight-separated' {𝓤} {X} fe fe₀ = ∥∥-rec (is-prop-separated fe fe₀) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-separated X
     f (_♯_ , a , t) = tight-is-separated _♯_ a t
 
  tight-is-set' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
-           → (∃ \(_♯_ : X → X → 𝓤 ̇ ) → is-apartness _♯_ × is-tight _♯_) → is-set X
+               → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
  tight-is-set' {𝓤} {X} fe fe₀ = ∥∥-rec (being-set-is-a-prop fe) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
@@ -872,7 +872,7 @@ apartness on it.
 \begin{code}
 
   _♯'_ : X' → X' → 𝓤 ⊔ 𝓥 ⁺ ̇
-  (u , _) ♯' (v , _) = ∃ \(x : X) → Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
+  (u , _) ♯' (v , _) = ∃ x ꞉ X , Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)
 
 \end{code}
 
@@ -984,7 +984,7 @@ apartness on it.
     h : (Σ x ꞉ X , apart x ≡ u) → (Σ y ꞉ X , apart y ≡ v) → (u , e) ≡ (v , f)
     h (x , p) (y , q) = to-Σ-≡ (t , ∥∥-is-a-prop _ _)
      where
-      remark : (∃ \(x : X) → Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)) → 𝟘
+      remark : (∃ x ꞉ X , Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)) → 𝟘
       remark = n
 
       r : x ♯ y → 𝟘
@@ -1035,27 +1035,27 @@ apartness on it.
     i : {x y : X} → x ~ y → f x ≡ f y
     i = ♯ᴬt _ _ ∘ contrapositive se
 
-    φ : (x' : X') → is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a))
+    φ : (x' : X') → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a))
     φ = η-induction _ γ induction-step
       where
-       induction-step : (y : X) → is-prop (Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a))
+       induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ a))
        induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-a-prop _ _)
         where
-         h : (Σ \x' → (η x' ≡ η x) × (f x' ≡ a))
-           → (Σ \y' → (η y' ≡ η x) × (f y' ≡ b))
+         h : (Σ x' ꞉ X , (η x' ≡ η x) × (f x' ≡ a))
+           → (Σ y' ꞉ X , (η y' ≡ η x) × (f y' ≡ b))
            → a ≡ b
          h (x' , r , s) (y' , t , u) = s ⁻¹ ∙ i (η-equal-equiv (r ∙ t ⁻¹)) ∙ u
 
          p : a ≡ b
          p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
-       γ : (x' : X') → is-prop (is-prop (Σ \a → ∃ \x → (η x ≡ x') × (f x ≡ a)))
+       γ : (x' : X') → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)))
        γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
-    k : (x' : X') → Σ a ꞉ A , ∃ \(x : X) → (η x ≡ x') × (f x ≡ a)
+    k : (x' : X') → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step
      where
-      induction-step : (y : X) → Σ \a → ∃ \x → (η x ≡ η y) × (f x ≡ a)
+      induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ a)
       induction-step x = f x , ∣ x , refl , refl ∣
 
     f' : X' → A
@@ -1064,10 +1064,10 @@ apartness on it.
     r : f' ∘ η ≡ f
     r = dfunext (fe 𝓤 𝓦) h
      where
-      g : (y : X) → ∃ \x → (η x ≡ η y) × (f x ≡ f' (η y))
+      g : (y : X) → ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))
       g y = pr₂(k(η y))
 
-      j : (y : X) → (Σ \x → (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+      j : (y : X) → (Σ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
       j y (x , p , q) = q ⁻¹ ∙ i (η-equal-equiv p)
 
       h : (y : X) → f'(η y) ≡ f y

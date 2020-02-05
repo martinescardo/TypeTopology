@@ -61,6 +61,13 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  ∃ : {X : 𝓤 ̇ } → (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
  ∃ Y = ∥ Σ Y ∥
 
+ Exists : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+ Exists X Y = ∃ Y
+
+ syntax Exists A (λ x → b) = ∃ x ꞉ A , b
+
+ infixr -1 Exists
+
  _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥
 
