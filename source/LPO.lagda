@@ -46,10 +46,10 @@ LPO = (x : ℕ∞) → decidable(Σ n ꞉ ℕ , x ≡ under n)
 LPO-is-a-prop : is-prop LPO
 LPO-is-a-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
  where
-  a : (x : ℕ∞) → is-prop(Σ \n → x ≡ under n)
+  a : (x : ℕ∞) → is-prop(Σ n ꞉ ℕ , x ≡ under n)
   a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe 𝓤₀ 𝓤₀)_ _)
 
-  f : (x : ℕ∞) → is-prop (decidable (Σ \n → x ≡ under n))
+  f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ≡ under n))
   f x = decidability-of-prop-is-prop (fe 𝓤₀ 𝓤₀) (a x)
 
 \end{code}

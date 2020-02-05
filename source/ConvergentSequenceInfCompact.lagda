@@ -69,7 +69,7 @@ open import GenericConvergentSequence
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
   Lemma r = ℕ∞-𝟚-density fe₀ (Claim₂ r) (Claim₃ r)
 
-  putative-root-lemma : (Σ \u → p u ≡ ₀) → p a ≡ ₀
+  putative-root-lemma : (Σ u ꞉ ℕ∞ , p u ≡ ₀) → p a ≡ ₀
   putative-root-lemma (x , r) = lemma claim
    where
     lemma : ¬((x : ℕ∞) → p x ≡ ₁) → p a ≡ ₀

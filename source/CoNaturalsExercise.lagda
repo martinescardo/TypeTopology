@@ -61,7 +61,7 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
     lemma = ap (λ - → f-retr - (tail α)) r
 
   R : ℕ∞ → ℕ∞ → 𝓤₀ ̇
-  R u v = Σ \w → (retr(incl w) ≡ u) × (w ≡ v)
+  R u v = Σ w ꞉ ℕ∞ , (retr(incl w) ≡ u) × (w ≡ v)
 
   r : (u : ℕ∞) → R (retr(incl u)) u
   r u = (u , refl , refl)

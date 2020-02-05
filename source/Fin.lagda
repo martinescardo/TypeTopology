@@ -530,7 +530,7 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 
 
 Σₘᵢₙ : {n : ℕ} → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
-Σₘᵢₙ A = Σ \i → A i × (i is-lower-bound-of A)
+Σₘᵢₙ {𝓤} {n} A = Σ i ꞉ Fin n , A i × (i is-lower-bound-of A)
 
 
 Σₘᵢₙ-gives-Σ : {n : ℕ} (A : Fin n → 𝓤 ̇ )

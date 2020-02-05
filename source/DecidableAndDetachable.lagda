@@ -89,10 +89,10 @@ indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇ }
           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x))
 indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
-  lemma₀ : (x : X) → (A x + B x) → Σ \b → (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
+  lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
   lemma₀ x = which-of
 
-  lemma₁ : (x : X) → Σ \b → (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
+  lemma₁ : (x : X) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
   lemma₁ = λ x → lemma₀ x (h x)
 
 \end{code}
@@ -150,9 +150,9 @@ module _ (pt : propositional-truncations-exist) where
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇ } (p : X → 𝟚)
                             → (∀ (x : X) → p x ≡ ₁) → ¬ (∃ x ꞉ X , p x ≡ ₀)
- forall₁-implies-not-exists₀ p α = ∥∥-rec 𝟘-is-prop h
+ forall₁-implies-not-exists₀ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
   where
-   h : (Σ \x → p x ≡ ₀) → 𝟘
+   h : (Σ x ꞉ X , p x ≡ ₀) → 𝟘
    h (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
 
 \end{code}

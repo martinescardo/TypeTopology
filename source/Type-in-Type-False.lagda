@@ -141,6 +141,12 @@ module blechschmidt where
      → (f : X → Y) (x : X) → Z (f x)
  g ∘ f = λ x → g(f x)
 
+ domain : {X : Set} {Y : Set} → (X → Y) → Set
+ domain {X} {Y} f = X
+
+ codomain : {X : Set} {Y : Set} → (X → Y) → Set
+ codomain {X} {Y} f = Y
+
  \end{code}
 
  Equality basics:
@@ -261,7 +267,7 @@ module blechschmidt where
  \begin{code}
 
  has-section : {X Y : Set} → (X → Y) → Set
- has-section r = Σ \s → r ∘ s ∼ id
+ has-section r = Σ s ꞉ (codomain r → domain r) , r ∘ s ∼ id
 
  retract_of_ : Set → Set → Set
  retract Y of X = Σ r ꞉ (X → Y) , has-section r
@@ -275,7 +281,7 @@ module blechschmidt where
  Id-retract refl = id , id , (λ y → refl)
 
  is-section : {X Y : Set} → (X → Y) → Set
- is-section s = Σ \r → r ∘ s ∼ id
+ is-section s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
  is-equiv : {X Y : Set} → (X → Y) → Set
  is-equiv f = has-section f × is-section f

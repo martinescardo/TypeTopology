@@ -343,7 +343,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    φ = pr₂(universe-discretely-regular {𝓤} {𝓥} {A} X d)
    e : ∃ \a → X a ≡ B
    e = s B
-   n : ¬(Σ \a → X a ≡ B)
+   n : ¬(Σ a ꞉ A , X a ≡ B)
    n = uncurry φ
 
  Universe-uncountable : {𝓤 : Universe} → ¬ (Σ X ꞉ (ℕ → 𝓤 ̇ ), is-surjection X)

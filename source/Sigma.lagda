@@ -9,7 +9,7 @@ open import Universes
 \end{code}
 
 Using our conventions below, a sum can be written Σ {X} Y or as
-Σ x ꞉ X , Y x, or even Σ \x → Y x when Agda can infer the type of
+Σ x ꞉ X , Y x, or even Σ λ x → Y x when Agda can infer the type of
 the element x from the context. I prefer to use \ rather than λ in
 such cases.
 

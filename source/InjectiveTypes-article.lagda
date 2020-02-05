@@ -480,7 +480,7 @@ embedding are themselves embeddings.
        where
          t : (x x' : X) (u : x' ≡ x) (p : j x' ≡ j x) (C : f x') → ap j u ≡ p
            →  ((x' , p)    , (x' , refl) , C)
-           ≡ (((x  , refl) , (x' , p)    , C) ∶ Σ \w → r (s f) (pr₁ w))
+           ≡ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉ fiber j (j x) , r (s f) x))
          t x x refl p C refl = refl
          q : ∀ x x' → qinv (ap j {x} {x'})
          q x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
@@ -1343,7 +1343,7 @@ embedding-∥retract∥ D i Y j e = ∥∥-functor φ a
   where
    a : ∃ r ꞉ (Y → D), r ∘ j ∼ id
    a = i j e id
-   φ : (Σ r ꞉ (Y → D) , r ∘ j ∼ id) → Σ r ꞉ (Y → D) , Σ \s → r ∘ s ∼ id
+   φ : (Σ r ꞉ (Y → D) , r ∘ j ∼ id) → Σ r ꞉ (Y → D) , Σ s ꞉ (D → Y) , r ∘ s ∼ id
    φ (r , p) = r , j , p
 
 retract-of-injective : (D' : 𝓤' ̇ ) (D : 𝓤 ̇ )
