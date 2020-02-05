@@ -27,8 +27,8 @@ Next we have (*)
      ≃ (y : X) → Id x y ≡ A y   (by univalence)
      ≃ Id x ≡ A                 (by function extensionality)
 
-Applying Σ to both sides, Σ A ≃ (Σ \(x : X), Id x ≡ A), and because
-the type Σ A is contractible so is Σ \(x : X), Id x ≡ A, which shows
+Applying Σ to both sides, Σ A ≃ (Σ x ꞉ X , Id x ≡ A), and because
+the type Σ A is contractible so is Σ x ꞉ X , Id x ≡ A, which shows
 that the map Id : X → (X → U) is an embedding.
 
 2017:

@@ -78,9 +78,10 @@ module _ {𝓤 𝓥 : Universe}
          (t : X → X)
        where
 
- private f : X → (ℕ → A)
- f x zero = h x
- f x (succ n) = f (t x) n
+ private
+  f : X → (ℕ → A)
+  f x zero = h x
+  f x (succ n) = f (t x) n
 
  seq-corec = f
 
@@ -90,7 +91,7 @@ module _ {𝓤 𝓥 : Universe}
  seq-corec-tail : tail ∘ f ∼ f ∘ t
  seq-corec-tail x = dfunext (fe 𝓤₀ 𝓤) (λ n → refl)
 
- seq-final : Σ! \(f : X → (ℕ → A)) → (head ∘ f ∼ h) × (tail ∘ f ∼ f ∘ t)
+ seq-final : Σ! f ꞉ (X → (ℕ → A)), (head ∘ f ∼ h) × (tail ∘ f ∼ f ∘ t)
  seq-final = (seq-corec , seq-corec-head , seq-corec-tail) , c
   where
    c : (f f' : X → ℕ → A) →

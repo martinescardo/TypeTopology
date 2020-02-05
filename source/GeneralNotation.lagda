@@ -97,7 +97,7 @@ Sigma! X A = Σ! A
 
 syntax Sigma! A (λ x → b) = Σ! x ꞉ A , b
 
-infixr 10 Sigma!
+infixr -1 Sigma!
 
 \end{code}
 

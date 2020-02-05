@@ -456,7 +456,7 @@ inf-is-ub-of-lbs i A = pr₂
 
 inf-construction : {n : ℕ} (A : Fin (succ n) → 𝓤 ̇ )
                  → detachable A
-                 → Σ \(i : Fin (succ n)) → i is-inf-of A × (Σ A → A i)
+                 → Σ i ꞉ Fin (succ n) , i is-inf-of A × (Σ A → A i)
 
 inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
  where
@@ -474,7 +474,7 @@ inf-construction {𝓤} {zero} A δ = 𝟎 , (l , m) , ε
 
 inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
  where
-  IH : Σ \(i : Fin (succ n)) → i is-inf-of (A ∘ suc) × ((Σ \(j : Fin (succ n)) → A (suc j)) → A (suc i))
+  IH : Σ i ꞉ Fin (succ n) , i is-inf-of (A ∘ suc) × ((Σ j ꞉ Fin (succ n) , A (suc j)) → A (suc i))
   IH = inf-construction {𝓤} {n} (A ∘ suc) (δ ∘ suc)
 
   i : Fin (succ n)
@@ -486,7 +486,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
   u : (j : Fin (succ n)) → ((k : Fin (succ n)) → A (suc k) → j ≼ k) → j ≼ i
   u = inf-is-ub-of-lbs i (A ∘ suc) (pr₁ (pr₂ IH))
 
-  γ : decidable (A 𝟎) → Σ \(i' : Fin (succ (succ n))) → i' is-inf-of A × (Σ A → A i')
+  γ : decidable (A 𝟎) → Σ i' ꞉ Fin (succ (succ n)) , i' is-inf-of A × (Σ A → A i')
   γ (suc a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
@@ -853,7 +853,7 @@ Further versions of the pigeonhole principle are the following.
   finite-pigeonhole-principle'' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                                   (φ : is-finite Y)
                                 → m > cardinality Y φ
-                                → Σₘᵢₙ \(i : Fin m) → repeated-values f i
+                                → Σₘᵢₙ λ(i : Fin m) → repeated-values f i
 
   finite-pigeonhole-principle'' {𝓥} {m} {Y} f φ g =
    Σ-gives-Σₘᵢₙ
@@ -924,7 +924,7 @@ because finite types are discrete:
 
 \begin{code}
 
-    minimal-finite-order : (x : X) → Σμ \(k : ℕ) → x ↑ (succ k) ≡ e
+    minimal-finite-order : (x : X) → Σμ λ(k : ℕ) → x ↑ (succ k) ≡ e
     minimal-finite-order x = minimal-from-given A γ (finite-order x)
      where
       A : ℕ → 𝓤 ̇

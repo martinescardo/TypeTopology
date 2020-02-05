@@ -236,9 +236,9 @@ This motivates the following definition.
 \begin{code}
 
 has-adj : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (Y → X) → 𝓤 ⊔ 𝓥 ̇
-has-adj g = Σ \(f : codomain g → domain g)
-                  → Σ \(η : ∀ x y → f x ≡ y → g y ≡ x)
-                          → ∀ x y → has-section(η x y)
+has-adj g = Σ f ꞉ (codomain g → domain g)
+          , Σ η ꞉ (∀ x y → f x ≡ y → g y ≡ x)
+          , (∀ x y → has-section(η x y))
 
 is-vv-equiv-has-adj : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (g : Y → X)
                     → is-vv-equiv g → has-adj g
@@ -668,7 +668,7 @@ nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yon
 
 adj-obs : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
-        → ∃! \(q : g (f x) ≡ x) → (λ y p → transport (λ - → g - ≡ x) p q) ≡ η
+        → ∃! q ꞉ g (f x) ≡ x , (λ y p → transport (λ - → g - ≡ x) p q) ≡ η
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)
 
 \end{code}

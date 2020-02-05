@@ -378,7 +378,7 @@ Hence it is worth stating this explicitly:
 universe-retract' : Univalence
                   → Propositional-resizing
                   → (𝓤 𝓥 : Universe)
-                  → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )) → is-embedding (section ρ)
+                  → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
 universe-retract' ua R 𝓤 𝓥 = (pr₁ a , lift 𝓥 , pr₂ a) , lift-is-embedding ua
  where
   a : Σ lower ꞉ (𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇ ) , lower ∘ lift 𝓥 ∼ id

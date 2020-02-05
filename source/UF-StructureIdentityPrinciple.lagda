@@ -1,5 +1,8 @@
 Martin Escardo, August 2018.
 
+There is a better treatment of this here:
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
+
 A structure identity principle (sip) for types, rather than categories
 as in the HoTT Book.
 
@@ -276,9 +279,9 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  ∞-Magma = Σ S
 
  fact : (A B : ∞-Magma)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-                          → is-equiv f
-                          × ((λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x')))
+      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f
+                       × ((λ x x' → f (structure A x x')) ≡ (λ x x' → structure B (f x) (f x'))))
  fact = ≡-is-≃ₛ
 
 \end{code}
@@ -352,8 +355,8 @@ module ∞-proto-topological-spaces (𝓤 𝓥 : Universe) (ua : is-univalent �
        (λ A τ υ → refl-left-neutral)
 
  fact : (A B : Σ S)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-                        → is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B)
+      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f × ((λ V → structure A (λ x → V (f x))) ≡ structure B))
  fact = ≡-is-≃ₛ
 
 \end{code}
@@ -396,8 +399,8 @@ module ∞-proto-metric-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (
        (λ A s υ → refl-left-neutral)
 
  fact : (A B : Σ S)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-                        → is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x')))
+      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f × (structure A ≡ (λ x x' → structure B (f x) (f x'))))
  fact = ≡-is-≃ₛ
 
  fact' : (X Y : 𝓤 ̇ ) (d : X → X → R) (e : Y → Y → R)
@@ -427,8 +430,8 @@ module selection-spaces (𝓤 𝓥 : Universe) (ua : is-univalent 𝓤) (R : �
        (λ A τ υ → refl-left-neutral)
 
  fact : (A B : Σ S)
-      → (A ≡ B) ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-                        → is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B)
+      → (A ≡ B) ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+                       , is-equiv f × ((λ V → f(structure A (λ x → V (f x)))) ≡ structure B))
  fact = ≡-is-≃ₛ
 
  fact' : (X Y : 𝓤 ̇ ) (ε : (X → R) → X) (δ : (Y → R) → Y)
@@ -640,19 +643,19 @@ And now we are ready to apply gsip-with-axioms to our situation:
 
  fact : (A B : Monoid)
       → (A ≡ B)
-      ≃ Σ \(f : ⟨ A ⟩ → ⟨ B ⟩)
-              → is-equiv f
-              × ((λ x x' → f (μ A x x')) ≡ (λ x x' → μ B (f x) (f x')))
-              × (f (η A) ≡ η B)
+      ≃ (Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
+             , is-equiv f
+             × ((λ x x' → f (μ A x x')) ≡ (λ x x' → μ B (f x) (f x')))
+             × (f (η A) ≡ η B))
  fact = ≡-is-≃ₛ
 
  fact' : (X : 𝓤 ̇ ) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
          (Y : 𝓤 ̇ ) (_⋆_ : Y → Y → Y) (e : Y) (β : Axioms Y (_⋆_ , e))
        → ((X , (_·_ , d) , α) ≡ (Y , (_⋆_ , e) , β))
-       ≃ Σ \(f : X → Y)
-               → is-equiv f
-               × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x'))
-               × (f d ≡ e)
+       ≃ (Σ f ꞉ (X → Y)
+              , is-equiv f
+              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x'))
+              × (f d ≡ e))
  fact' X _·_ d α Y _⋆_ e β = fact (X , ((_·_ , d) , α)) (Y , ((_⋆_ , e) , β))
 
 \end{code}

@@ -136,9 +136,8 @@ considered here.
 
 JEq-improve : ∀ {𝓤 𝓥}
             → (jeq' : ≃-induction 𝓤 𝓥)
-            → Σ \(jeq : ≃-induction 𝓤 𝓥)
-                      → (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
-                      → jeq X A b X (≃-refl X) ≡ b
+            → Σ jeq ꞉ ≃-induction 𝓤 𝓥 , ((X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
+                                      → jeq X A b X (≃-refl X) ≡ b)
 JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
  where
   module _ (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) where
@@ -148,7 +147,7 @@ JEq-improve {𝓤} {𝓥} jeq' = jeq , jeq-comp
      B : (T : 𝓤 ̇ ) → X ≃ T → 𝓥 ̇
      B T q = Σ f ꞉ (A Y p → A T q) , left-cancellable f
      C : (T : 𝓤 ̇ ) → X ≃ T → 𝓥 ̇
-     C T p = Σ \(f : A T p → A X (≃-refl X)) → left-cancellable f
+     C T p = Σ f ꞉ (A T p → A X (≃-refl X)), left-cancellable f
      b : B X (≃-refl X)
      b = jeq' X C ((λ a → a) , λ p → p) _ p
 

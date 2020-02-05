@@ -572,10 +572,9 @@ moment (but has the above as a corollary by Lambek's Lemma):
 \begin{code}
 {-
 D-corec : {X : 𝓤 ̇ } (h : X → ℕ∞) (t : (x : X) → is-finite (h x) → X)
-        → Σ \(f : X → Cantor)
-             → Σ \(p : Head ∘ f ∼ h)
-                  → ((x : X) (i : is-finite (Head (f x)))
-                      → Tail (f x) i ≡ f (t x (transport-finite (p x) i)))
+        → Σ f ꞉ (X → Cantor)
+        , Σ p ꞉ Head ∘ f ∼ h
+        , ((x : X) (i : is-finite (Head (f x)) → Tail (f x) i ≡ f (t x (transport-finite (p x) i))))
 D-corec {𝓤} {X} h t = ?
 -}
 

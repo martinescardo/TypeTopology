@@ -25,7 +25,7 @@ ku : {R : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → KK R (X × Y) → KK R X �
 ku φ = (K-functor pr₁ φ , K-functor pr₂ φ)
 
 quant-prod : {X R : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-    → KK R X → ((x : X)  → KK R (Y x)) → KK R ((Σ \(x : X)  → Y x))
+    → KK R X → ((x : X)  → KK R (Y x)) → KK R ((Σ x ꞉ X , Y x))
 quant-prod φ γ p = φ(λ x → γ x (λ y → p(x , y)))
 
 JJ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇

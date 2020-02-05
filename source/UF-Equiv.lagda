@@ -313,8 +313,10 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   gh (x , refl) = refl
 
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-hae {𝓤} {𝓥} {X} {Y} f = Σ g ꞉ (Y → X) , Σ η ꞉ g ∘ f ∼ id , Σ \(ε : f ∘ g ∼ id)
-                            → Π x ꞉ X , ap f (η x) ≡ ε (f x)
+is-hae {𝓤} {𝓥} {X} {Y} f = Σ g ꞉ (Y → X)
+                         , Σ η ꞉ g ∘ f ∼ id
+                         , Σ ε ꞉ f ∘ g ∼ id
+                         , Π x ꞉ X , ap f (η x) ≡ ε (f x)
 
 haes-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-hae f → is-equiv f
