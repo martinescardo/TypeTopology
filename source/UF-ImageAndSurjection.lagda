@@ -23,7 +23,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- image f = Σ \y → ∃ \x → f x ≡ y
+ image f = Σ y ꞉ codomain f , ∃ x ꞉ domain f , f x ≡ y
 
  restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
             → image f → Y
@@ -94,7 +94,7 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
 \begin{code}
 
  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- is-surjection f = ∀ y → ∃ \x → f x ≡ y
+ is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ≡ y
 
  c-es  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
           → is-vv-equiv f ⇔ is-embedding f × is-surjection f
@@ -110,7 +110,7 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
                          → is-surjection (corestriction f)
  corestriction-surjection f (y , s) = ∥∥-functor g s
   where
-   g : (Σ \x → f x ≡ y) → Σ \x → corestriction f x ≡ y , s
+   g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-a-prop _ _)
 
  pt-is-surjection : {X : 𝓤 ̇ } → is-surjection(λ(x : X) → ∣ x ∣)

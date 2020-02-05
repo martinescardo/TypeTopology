@@ -59,9 +59,9 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
         → Σ Z ≃ (Σ x ꞉ X , Σ y ꞉ Y x , Z(x , y))
 Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq c (u , (λ τ → refl) , (λ σ → refl))
  where
-  c : Σ Z → Σ \x → Σ \y → Z (x , y)
+  c : Σ Z → Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)
   c ((x , y) , z) = (x , (y , z))
-  u : (Σ \x → Σ \y → Z (x , y)) → Σ Z
+  u : (Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)) → Σ Z
   u (x , (y , z)) = ((x , y) , z)
 
 Σ-flip : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X → Y → 𝓦 ̇ }

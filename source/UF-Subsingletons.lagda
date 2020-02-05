@@ -234,7 +234,7 @@ empty-types-are-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 𝟘-is-collapsible' = empty-types-are-collapsible id
 
 singleton-type : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
-singleton-type x = Σ \y → x ≡ y
+singleton-type x = Σ y ꞉ type-of x , x ≡ y
 
 singleton-inclusion : {X : 𝓤 ̇ } (x : X) → singleton-type x
 singleton-inclusion x = (x , refl)
@@ -255,7 +255,7 @@ singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop(singleton-type x)
 singleton-types-are-props x = singletons-are-props (singleton-types-are-singletons x)
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
-singleton-type' x = Σ \y → y ≡ x
+singleton-type' x = Σ y ꞉ type-of x , y ≡ x
 
 ×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)

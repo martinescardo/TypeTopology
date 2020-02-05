@@ -44,7 +44,7 @@ arguments:
 
 \begin{code}
 
-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ̇
+domain : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Π Y → 𝓤 ̇
 domain {𝓤} {𝓥} {X} {Y} f = X
 
 codomain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓥 ̇

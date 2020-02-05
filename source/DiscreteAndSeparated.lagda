@@ -175,7 +175,7 @@ below.)
 infix 21 _♯_
 
 _♯_ : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ } → (f g : (x : X) → Y x) → 𝓤 ⊔ 𝓥 ̇
-f ♯ g = Σ \x → f x ≢ g x
+f ♯ g = Σ x ꞉ domain f , f x ≢ g x
 
 
 apart-is-different : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }

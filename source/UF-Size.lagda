@@ -442,7 +442,7 @@ module Image
  open PropositionalTruncation (resizing-truncation fe R)
 
  image : (X → Y) → 𝓥 ̇
- image f = Σ \y → resize (R {𝓤 ⊔ 𝓥} {𝓥}) (∃ \x → f x ≡ y) ∥∥-is-a-prop
+ image f = Σ y ꞉ Y , resize (R {𝓤 ⊔ 𝓥} {𝓥}) (∃ x ꞉ X , f x ≡ y) ∥∥-is-a-prop
 
  restriction : (f : X → Y) → image f → Y
  restriction f (y , _) = y

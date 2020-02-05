@@ -527,7 +527,7 @@ is-singleton : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ c ꞉ X , ((x : X) → Id c x)
 
 fiber : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ \x → Id (f x) y
+fiber {𝓤} {𝓥} {X} {Y} f y = Σ x ꞉ X , Id (f x) y
 
 is-equiv : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-equiv f = (y : _) → is-singleton(fiber f y)
@@ -536,7 +536,7 @@ Eq : {𝓤 𝓥 : Universe} → 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 Eq X Y = Σ f ꞉ (X → Y) , is-equiv f
 
 singletonType : {𝓤 : Universe} {X : 𝓤 ̇ } → X → 𝓤 ̇
-singletonType x = Σ \y → Id y x
+singletonType {𝓤} {X} x = Σ y ꞉ X , Id y x
 
 η : {𝓤 : Universe} {X : 𝓤 ̇ } (x : X) → singletonType x
 η x = (x , refl x)

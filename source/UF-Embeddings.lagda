@@ -248,7 +248,7 @@ This can be deduced directly from Yoneda.
 \begin{code}
 
 is-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-dense f = is-empty (Σ \y → ¬ fiber f y)
+is-dense f = is-empty (Σ y ꞉ codomain f , ¬ fiber f y)
 
 id-is-dense : {X : 𝓤 ̇ } → is-dense (id {𝓤} {X})
 id-is-dense (y , n) = n (y , refl)

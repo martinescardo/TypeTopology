@@ -359,7 +359,7 @@ _≊_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ �
 A ≊ B = Σ η ꞉ Nat A B , ∀ x → is-equiv(η x)
 
 is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-representable A = Σ \x → Id x ≊ A
+is-representable A = Σ x ꞉ domain A , Id x ≊ A
 
 singleton-representable : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → ∃! A → is-representable A

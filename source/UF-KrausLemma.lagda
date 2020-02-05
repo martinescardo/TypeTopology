@@ -13,7 +13,7 @@ open import UF-Base
 open import UF-Subsingletons
 
 fix : {X : 𝓤 ̇ } → (f : X → X) → 𝓤 ̇
-fix f = Σ \x → x ≡ f x
+fix f = Σ x ꞉ domain f , x ≡ f x
 
 key-lemma : {X Y : 𝓤 ̇ } (f : X → Y) (g : constant f) {x y : X} (p : x ≡ y)
          → ap f p ≡ (g x x)⁻¹ ∙ g x y

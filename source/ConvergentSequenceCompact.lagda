@@ -111,7 +111,7 @@ module _ (fe' : FunExt) (pt : propositional-truncations-exist) where
  open import WeaklyCompactTypes fe' pt
 
  ℕ∞-is-∃-compact : ∃-compact ℕ∞
- ℕ∞-is-∃-compact = compact-gives-∃-compact ℕ∞-compact
+ ℕ∞-is-∃-compact = compact-types-are-∃-compact ℕ∞-compact
 
  ℕ∞-is-Π-compact : Π-compact ℕ∞
  ℕ∞-is-Π-compact = ∃-compact-gives-Π-compact ℕ∞-is-∃-compact

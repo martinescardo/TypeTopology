@@ -70,15 +70,15 @@ LPO with WLPO.
   f : decidable (∃ x ꞉ X , p x ≡ ₀) → decidable (Π x ꞉ X , p x ≡ ₁)
   f (inl s) = inr (λ α → ∥∥-rec 𝟘-is-prop (g α) s)
    where
-    g : ((x : X) → p x ≡ ₁) → ¬ Σ \x → p x ≡ ₀
+    g : ((x : X) → p x ≡ ₁) → ¬(Σ x ꞉ X , p x ≡ ₀)
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
   f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
 
-is-empty-∃-compact : {X : 𝓤 ̇ } → is-empty X → ∃-compact X
-is-empty-∃-compact u p = inr (∥∥-rec 𝟘-is-prop λ σ → u (pr₁ σ))
+empty-types-are-∃-compact : {X : 𝓤 ̇ } → is-empty X → ∃-compact X
+empty-types-are-∃-compact u p = inr (∥∥-rec 𝟘-is-prop λ σ → u (pr₁ σ))
 
-empty-Π-compact : {X : 𝓤 ̇ } → is-empty X → Π-compact X
-empty-Π-compact u p = inl (λ x → 𝟘-elim (u x))
+empty-types-are-Π-compact : {X : 𝓤 ̇ } → is-empty X → Π-compact X
+empty-types-are-Π-compact u p = inl (λ x → 𝟘-elim (u x))
 
 \end{code}
 
@@ -87,16 +87,16 @@ of ℕ∞, for example):
 
 \begin{code}
 
-compact-gives-∃-compact : {X : 𝓤 ̇ } → compact X → ∃-compact X
-compact-gives-∃-compact {𝓤} {X} φ p = g (φ p)
+compact-types-are-∃-compact : {X : 𝓤 ̇ } → compact X → ∃-compact X
+compact-types-are-∃-compact {𝓤} {X} φ p = g (φ p)
  where
   g : ((Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)) → decidable (∃ x ꞉ X , p x ≡ ₀)
   g (inl (x , r)) = inl ∣ x , r ∣
   g (inr α) = inr (forall₁-implies-not-exists₀ pt p α)
 
-∥Compact∥-gives-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X ∥ → ∃-compact X
-∥Compact∥-gives-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-a-prop
-                                     (compact-gives-∃-compact ∘ Compact-gives-compact X)
+∥Compact∥-types-are-∃-compact : {X : 𝓤 ̇ } → ∥ Compact X ∥ → ∃-compact X
+∥Compact∥-types-are-∃-compact {𝓤} {X} = ∥∥-rec ∃-compactness-is-a-prop
+                                        (compact-types-are-∃-compact ∘ Compact-gives-compact X)
 
 \end{code}
 
@@ -461,16 +461,16 @@ isdni {𝓤} {X} c φ = g (isod-corollary c)
 idso : (X : 𝓤 ̇ ) → is-prop X → decidable X → ∃-compact X
 idso X isp d p = g d
  where
-  g : decidable X → decidable (∃ \x → p x ≡ ₀)
+  g : decidable X → decidable (∃ x ꞉ X , p x ≡ ₀)
   g (inl x) = 𝟚-equality-cases b c
    where
-    b : p x ≡ ₀ → decidable (∃ \x → p x ≡ ₀)
+    b : p x ≡ ₀ → decidable (∃ x ꞉ X , p x ≡ ₀)
     b r = inl ∣ x , r ∣
 
-    c : p x ≡ ₁ → decidable (∃ \x → p x ≡ ₀)
+    c : p x ≡ ₁ → decidable (∃ x ꞉ X , p x ≡ ₀)
     c r = inr (∥∥-rec (𝟘-is-prop) f)
      where
-      f : ¬ Σ \y → p y ≡ ₀
+      f : ¬ (Σ y ꞉ X , p y ≡ ₀)
       f (y , q) = zero-is-not-one (transport (λ - → p - ≡ ₀) (isp y x) q ⁻¹ ∙ r)
 
   g (inr u) = inr (∥∥-rec 𝟘-is-prop (λ σ → u(pr₁ σ)))
@@ -552,7 +552,7 @@ detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
  where
   g : decidable (∃ x ꞉ X , A x ≡ ₀) → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
   g (inl e) = retract-∃-compact' (∥∥-functor detachable-subset-retract e) c
-  g (inr u) = is-empty-∃-compact (contrapositive ∣_∣ u)
+  g (inr u) = empty-types-are-∃-compact (contrapositive ∣_∣ u)
 
 \end{code}
 
@@ -672,7 +672,7 @@ isoore-is-a-prop {𝓤} {X} = sum-of-contradictory-props
 
 isoore-so : {X : 𝓤 ̇ } → ∃-compact∙ X + is-empty X → ∃-compact X
 isoore-so (inl c) = pr₂(iso-i-and-c c)
-isoore-so (inr u) = is-empty-∃-compact u
+isoore-so (inr u) = empty-types-are-∃-compact u
 
 so-isoore : {X : 𝓤 ̇ } → ∃-compact X → ∃-compact∙ X + is-empty X
 so-isoore {𝓤} {X} c = g
@@ -809,7 +809,8 @@ E ⊣Κ = (n : 𝟚) (p : _ → 𝟚) → E p ≤₂ n ⇔ p ≤̇ Κ n
 \end{code}
 
 TODO: The types Κ⊣ A and E ⊣Κ are propositions, and so are the types
-Σ \A → Κ⊣ A (compactness) and Σ \E → E ⊣Κ (overtness).
+Σ A ꞉ ((X → 𝟚) → 𝟚) , Κ⊣ A (compactness) and
+Σ E ꞉ (X → 𝟚) → 𝟚) , E ⊣Κ (overtness).
 
 Right adjoints to Κ are characterized as follows:
 
@@ -1064,7 +1065,7 @@ Images with upper case:
 
 Image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
      → (X → Y) → (X → 𝓦 ̇ ) → (Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇ )
-Image f A = λ y → ∃ \x → A x × (f x ≡ y)
+Image f A = λ y → ∃ x ꞉ domain f , A x × (f x ≡ y)
 
 is-clopen-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)

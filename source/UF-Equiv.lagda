@@ -143,7 +143,7 @@ equiv-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → is-e
 equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
 
 qinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-qinv f = Σ \g → (g ∘ f ∼ id) × (f ∘ g ∼ id)
+qinv f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g ∼ id)
 
 equivs-are-qinvs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → qinv f
 equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
@@ -264,7 +264,7 @@ back-transports-are-equivs p = transports-are-equivs (p ⁻¹)
 \begin{code}
 
 fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber f y = Σ \x → f x ≡ y
+fiber f y = Σ x ꞉ domain f , f x ≡ y
 
 fiber-point : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y) → fiber f y → X
 fiber-point f y = pr₁
@@ -298,7 +298,7 @@ vv-equivs-are-equivs {𝓤} {𝓥} {X} {Y} f φ = (g , fg) , (g , gf)
   gf x = ap pr₁ (e x)
 
 fiber' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → Y → 𝓤 ⊔ 𝓥 ̇
-fiber' f y = Σ \x → y ≡ f x
+fiber' f y = Σ x ꞉ domain f , y ≡ f x
 
 fiber-lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y) → fiber f y ≃ fiber' f y
 fiber-lemma f y = g , (h , gh) , (h , hg)

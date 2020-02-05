@@ -10,13 +10,13 @@ open import UF-Subsingletons
 open import AlternativePlus
 
 has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-section r = Σ \s → r ∘ s ∼ id
+has-section r = Σ s ꞉ (codomain r → domain r), r ∘ s ∼ id
 
 is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-section s = Σ \r → r ∘ s ∼ id
+is-section s = Σ r ꞉ (codomain s → domain s), r ∘ s ∼ id
 
 sections-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
-                  → is-section s → left-cancellable s
+                → is-section s → left-cancellable s
 sections-are-lc s (r , rs) {x} {x'} p = (rs x)⁻¹ ∙ ap r p ∙ rs x'
 
 retract_of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -71,7 +71,7 @@ Surjection expressed in Curry-Howard logic amounts to retraction.
 \begin{code}
 
 has-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
-has-section' f = ∀ y → Σ \x → f x ≡ y
+has-section' f = (y : codomain f) → Σ x ꞉ domain f , f x ≡ y
 
 retract_Of_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 retract Y Of X = Σ f ꞉ (X → Y) , has-section' f
