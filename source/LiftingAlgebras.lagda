@@ -33,9 +33,9 @@ indexed by a proposition:
 \begin{code}
 
 double-𝓛-charac : (X : 𝓤 ̇ )
-                → 𝓛 (𝓛 X) ≃ Σ \(P : 𝓣 ̇ )
-                                   → (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
-                                   × is-prop P
+                → 𝓛 (𝓛 X) ≃ (Σ P ꞉ 𝓣 ̇
+                                 , (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))
+                                 × is-prop P)
 double-𝓛-charac X = Σ-cong (λ P → ×cong (γ X P) (≃-refl (is-prop P)))
  where
   γ : (X : 𝓤 ̇ ) (P : 𝓣 ̇ ) → (P → 𝓛 X) ≃ (Σ Q ꞉ (P → 𝓣 ̇ ), ((p : P) → (Q p → X)) × ((p : P) → is-prop (Q p)))

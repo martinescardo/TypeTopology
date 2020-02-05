@@ -251,13 +251,13 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  open import Two
 
- cantor-uncountable : ¬ Σ \(φ : ℕ → (ℕ → 𝟚)) → is-surjection φ
+ cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry complement-no-fp) t
   where
    t : ∃ n ꞉ 𝟚 , n ≡ complement n
    t = LFPT φ s complement
 
- baire-uncountable : ¬ Σ \(φ : ℕ → (ℕ → ℕ)) → is-surjection φ
+ baire-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → ℕ)), is-surjection φ)
  baire-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry succ-no-fp) t
   where
    t : ∃ n ꞉ ℕ , n ≡ succ n
@@ -394,7 +394,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
            → (a₀ : A)
            → is-h-isolated a₀
            → retract ((a : A) → X a → Ω (𝓤 ⊔ 𝓦)) of X a₀
-           → (f : Ω (𝓤 ⊔ 𝓦) → Ω (𝓤 ⊔ 𝓦)) → Σ \(p : Ω (𝓤 ⊔ 𝓦)) → p ≡ f p
+           → (f : Ω (𝓤 ⊔ 𝓦) → Ω (𝓤 ⊔ 𝓦)) → Σ p ꞉ Ω (𝓤 ⊔ 𝓦), p ≡ f p
  usr-lemma {𝓤} {𝓥} {𝓦} {A} X fe fe' pe a₀ i ρ = retract-version.LFPT ρ'
   where
    ρ' : retract (X a₀ → Ω (𝓤 ⊔ 𝓦)) of X a₀

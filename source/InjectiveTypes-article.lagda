@@ -470,8 +470,8 @@ embedding are themselves embeddings.
     e : (y : Y) → is-equiv (κ (s f) y)
     e y = qinvs-are-equivs (κ (s f) y) (δ , ε , η)
      where
-      δ : (Σ w ꞉ fiber j y , f(pr₁ w))
-        → Σ t ꞉ fiber j y , Σ (\(w : fiber j (j (pr₁ t))) → f (pr₁ w))
+      δ : (Σ (x , _) ꞉ fiber j y , f x)
+        → Σ (x' , _) ꞉ fiber j y , Σ (x , _) ꞉ fiber j (j x') , f x
       δ ((x , p) , C) = (x , p) , (x , refl) , C
       η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
       η ((x , refl) , C) = refl
@@ -1054,7 +1054,7 @@ our situation.
 
 universe-retract : Propositional-resizing
                  → (𝓤 𝓥 : Universe)
-                 → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )) → is-embedding (section ρ)
+                 → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
 universe-retract R 𝓤 𝓥 = ρ , lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
@@ -1083,7 +1083,7 @@ publication):
 
 universe-retract-unfolded : Propositional-resizing
                           → (𝓤 𝓥 : Universe)
-                          → Σ \(ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )) → is-embedding (section ρ)
+                          → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
 universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding ua
  where
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
@@ -1341,7 +1341,7 @@ embedding-∥retract∥ : (D : 𝓦 ̇ ) → injective-type D 𝓦 𝓥
                     → ∥ retract D of Y ∥
 embedding-∥retract∥ D i Y j e = ∥∥-functor φ a
   where
-   a : ∃ \(r : Y → D)  → r ∘ j ∼ id
+   a : ∃ r ꞉ (Y → D), r ∘ j ∼ id
    a = i j e id
    φ : (Σ r ꞉ (Y → D) , r ∘ j ∼ id) → Σ r ꞉ (Y → D) , Σ \s → r ∘ s ∼ id
    φ (r , p) = r , j , p
@@ -1372,9 +1372,9 @@ power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
    c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
    ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
-   φ : (Σ g' ꞉ (Y × A → D) , g' ∘ k ∼ g) → (Σ \(f' : Y → (A → D)) → f' ∘ j ∼ f)
+   φ : (Σ g' ꞉ (Y × A → D) , g' ∘ k ∼ g) → (Σ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f)
    φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 𝓦) (λ a → h (x , a)))
-   γ : ∃ \(f' : Y → (A → D)) → f' ∘ j ∼ f
+   γ : ∃ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
 injective-∥retract∥-of-power-of-universe : (D : 𝓤 ̇ )
