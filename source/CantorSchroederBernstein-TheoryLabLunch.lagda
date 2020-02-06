@@ -9,8 +9,8 @@ The Cantor-Schröder-Bernstein for ∞-groupoids
 
     This talk has embedded Agda code.
 
-    In the end I gave the talk in a whiteboard. But it followed the
-    outline of these "slides".
+    In the end I gave the talk in a whiteboard (without showing any
+    Agda code). But it followed the script outlined in these "slides".
 
 Abstract
 --------
@@ -32,7 +32,7 @@ Abstract
 
      This seems to be a new result.
 
-I have also written a blog post here
+I have also written a blog post which gives the proof in mathematical vernacular:
 https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
 
 
@@ -406,7 +406,7 @@ recall₆ = by-definition
 
 \end{code}
 
-We are now ready to discuss prove the theorem.
+We are now ready to prove the theorem.
 
 \begin{code}
 
