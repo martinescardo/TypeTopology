@@ -145,6 +145,9 @@ Main differences between HoTT/UF and MLTT
        This e.g. makes unique choice automatic, while in CoC unique
        choice fails.
 
+Part 1
+------
+
 The Pradic-Brown argument rendered in HoTT/UF
 ---------------------------------------------
 
@@ -181,9 +184,6 @@ CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → CSB X Y
 
 \end{code}
-
-Part 1
-------
 
 We begin by recalling some definitions.
 
