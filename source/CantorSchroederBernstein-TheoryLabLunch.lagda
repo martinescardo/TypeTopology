@@ -1,5 +1,5 @@
-The Cantor-Schröder-Bernstein for ∞-groupoids
----------------------------------------------
+The Cantor-Schröder-Bernstein Theorem for ∞-groupoids
+-----------------------------------------------------
 
     Martín Hötzel Escardó
     6th February 2020
@@ -12,7 +12,7 @@ The Cantor-Schröder-Bernstein for ∞-groupoids
     In the end I gave the talk in a whiteboard (without showing any
     Agda code). But it followed the script outlined in these "slides".
 
-    I have also written a blog post which gives the proof in
+    I have also written a blog post that gives the proof in
     mathematical vernacular:
     https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
 
