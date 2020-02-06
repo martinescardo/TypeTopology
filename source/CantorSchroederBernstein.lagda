@@ -176,7 +176,7 @@ sets is an embedding if and only if it is left-cancellable.
 
 Our proof adapts Wikipedia's "alternate proof" (consulted 23rd January 2020)
 
-  https://en.wikipedia.org/wiki/Schr%C3%B6der%E2%80%93Bernstein_theorem#Alternate_proof
+  https://en.wikipedia.org/wiki/Schröder-Bernstein_theorem#Alternate_proof
 
 to our more general situation.
 
@@ -188,7 +188,7 @@ Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 Added 28th January. To better understand this proof, you may consult the blog
 post
 
-  https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-%e2%88%9e-groupoids/
+  https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
 
 first. However, we have tried to make the proof understandable as we
 can here, and hopefully it should be possible to read it without

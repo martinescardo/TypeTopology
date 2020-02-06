@@ -2,7 +2,7 @@ The Cantor-Schröder-Bernstein for ∞-groupoids
 ---------------------------------------------
 
     Martín Hötzel Escardó
-    7th February 2020
+    6th February 2020
     School of Computer Science
     Birmingham Theory Group
     Lab Lunch Talk
@@ -11,6 +11,11 @@ The Cantor-Schröder-Bernstein for ∞-groupoids
 
     In the end I gave the talk in a whiteboard (without showing any
     Agda code). But it followed the script outlined in these "slides".
+
+    I have also written a blog post which gives the proof in
+    mathematical vernacular:
+    https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
+
 
 Abstract
 --------
@@ -31,10 +36,6 @@ Abstract
      there are embeddings X → Y and Y → X, then X ≃ Y.
 
      This seems to be a new result.
-
-I have also written a blog post which gives the proof in mathematical vernacular:
-https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
-
 
 HoTT/UF
 -------
@@ -194,7 +195,7 @@ recall₀ = by-definition
 
 recall₁ : {X : 𝓤 ̇ }
         → Compact X {𝓥} ≡ ((A : X → 𝓥 ̇ ) → ((x : X) → decidable (A x))
-                                           → decidable (Σ x ꞉ X , A x))
+                                         → decidable (Σ x ꞉ X , A x))
 recall₁ = by-definition
 
 recall∞ : ℕ∞ ≡ (Σ α ꞉ (ℕ → 𝟚) , decreasing α)
@@ -332,7 +333,7 @@ This seems rather unlikely at first sight:
 
 Now:
 
-  * In set theory, a map f : X → Y is an embedding if and only if it
+  * In set theory, a map f : X → Y is an injection if and only if it
     is left-cancellable:
 
       f x = f x' implies x = x'.
@@ -384,7 +385,7 @@ The Cantor-Schröder-Bernstein Theorem holds for all homotopy types, or
 
 Our proof adapts Wikipedia's "alternate proof" (consulted 23rd January 2020)
 
-  https://en.wikipedia.org/wiki/Schr%C3%B6der%E2%80%93Bernstein_theorem#Alternate_proof
+  https://en.wikipedia.org/wiki/Schröder-Bernstein_theorem#Alternate_proof
 
 to our more general situation.
 
