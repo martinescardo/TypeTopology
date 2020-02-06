@@ -103,7 +103,7 @@ Possible axioms for HoTT/UF:
   * It validates the above axioms, assuming classical logic and
     Grothendieck universes in the meta-theory.
 
-  * Types are intepreted as homotopy types.
+  * Types are interpreted as homotopy types.
 
 Main differences between HoTT/UF and MLTT
 -----------------------------------------
