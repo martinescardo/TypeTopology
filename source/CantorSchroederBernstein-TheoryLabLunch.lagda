@@ -393,6 +393,10 @@ Our proof adapts Wikipedia's "alternate proof" (consulted 23rd January 2020)
 
 to our more general situation.
 
+The fiber of a point y : Y over a map f : X → Y collects all the
+points x : X that are mapped by f to a point identified with y,
+together with the identification datum:
+
 \begin{code}
 
 recall₄ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y)
@@ -404,6 +408,11 @@ recall₅ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
         → is-embedding f ≡ ((y : Y) → is-prop (fiber f y))
 recall₅ f = by-definition
 
+\end{code}
+
+The type (X ↪ Y) collects all embeddings of the type X into the type Y:
+
+\begin{code}
 
 recall₆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
         → (X ↪ Y) ≡ (Σ f ꞉ (X → Y) , is-embedding f)
@@ -411,7 +420,7 @@ recall₆ = by-definition
 
 \end{code}
 
-We are now ready to prove the theorem.
+We are now ready to formulate and prove the theorem.
 
 \begin{code}
 
