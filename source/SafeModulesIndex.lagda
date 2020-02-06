@@ -61,6 +61,7 @@ import ArithmeticViaEquivalence
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import CantorSchroederBernstein
+import CantorSchroederBernstein-TheoryLabLunch
 import Codistance
 import Compactness
 import CompactTypes
