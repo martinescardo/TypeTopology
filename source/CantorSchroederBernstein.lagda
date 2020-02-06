@@ -251,23 +251,14 @@ requires function extensionality:
                                                   which-is-given-by (g-is-emb x₀))))
 \end{code}
 
-We collect the g-points in a subtype of X.
-
-\begin{code}
-
-  G-point : 𝓤 ⊔ 𝓥 ̇
-  G-point = Σ x ꞉ X , is-g-point x
-
-\end{code}
-
 By construction, considering x₀ = x and n = 0, we have that g is
 invertible at g-points, because, by definition, we have that
 ((g ∘ f) ^ 0) x ≡ x).
 
 \begin{code}
 
-  g-is-invertible-at-g-points : ((x , γ) : G-point) → fiber g x
-  g-is-invertible-at-g-points (x , γ) = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
+  g-is-invertible-at-g-points : (x : X) (γ : is-g-point x) → fiber g x
+  g-is-invertible-at-g-points x γ = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
 
 \end{code}
 
@@ -275,8 +266,8 @@ The fiber point is given by the first projection of the fiber:
 
 \begin{code}
 
-  g⁻¹ : G-point → Y
-  g⁻¹ (x , γ) = fiber-point g x (g-is-invertible-at-g-points (x , γ))
+  g⁻¹ : (x : X) → is-g-point x → Y
+  g⁻¹ x γ = fiber-point g x (g-is-invertible-at-g-points x γ)
 
 \end{code}
 
@@ -300,7 +291,7 @@ equivalence:
 
   h : X → Y
   h x = Cases (δ x)
-         (γ ꞉   is-g-point x ↦ g⁻¹ (x , γ))
+         (γ ꞉   is-g-point x ↦ g⁻¹ x γ)
          (ν ꞉ ¬ is-g-point x ↦ f x)
 
 \end{code}
@@ -316,8 +307,8 @@ taking the fiber path, which is given by the second projection:
 
 \begin{code}
 
-  g⁻¹-is-rinv : ((x , γ) : G-point) → g (g⁻¹ (x , γ)) ≡ x
-  g⁻¹-is-rinv (x , γ) = fiber-path g x (g-is-invertible-at-g-points (x , γ))
+  g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
+  g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
 
 \end{code}
 
@@ -326,9 +317,9 @@ being an embedding, is left-cancellable:
 
 \begin{code}
 
-  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
-  g⁻¹-is-linv y γ = have (g (g⁻¹ (g y , γ)) ≡⟨ g⁻¹-is-rinv (g y , γ) ⟩
-                          g y               ∎)
+  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
+  g⁻¹-is-linv y γ = have (g (g⁻¹ (g y) γ) ≡⟨ g⁻¹-is-rinv (g y) γ ⟩
+                          g y             ∎)
                     so-apply embeddings-are-left-cancellable g g-is-emb
 
 \end{code}
@@ -349,18 +340,21 @@ left-cancellability of h:
               have ap (g ∘ f) p ∶ ((g ∘ f) ^ (succ n)) x₀ ≡ g (f x)
               so-apply γ x₀ (succ n))
 
-  f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
-  f-g⁻¹-disjoint-images x ν (x' , γ) p = have p ∶ f x ≡ g⁻¹ (x' , γ)
-                                         so need contradiction
-                                            which-is-given-by
-                                             have γ ∶ is-g-point x'
-                                             which-is-impossible-by (v ∶ ¬ is-g-point x')
+  f-g⁻¹-disjoint-images : (x x' : X)
+                        → ¬ is-g-point x
+                        → (γ : is-g-point x')
+                        → f x ≢ g⁻¹ x' γ
+  f-g⁻¹-disjoint-images x x' ν γ p = have p ∶ f x ≡ g⁻¹ x' γ
+                                     so need contradiction
+                                        which-is-given-by
+                                         have γ ∶ is-g-point x'
+                                         which-is-impossible-by (v ∶ ¬ is-g-point x')
    where
     q : g (f x) ≡ x'
-    q = have p ∶ f x ≡ g⁻¹ (x' , γ)
-        so-use (g (f x)          ≡⟨ ap g p                ⟩
-                g (g⁻¹ (x' , γ)) ≡⟨ g⁻¹-is-rinv (x' , γ)  ⟩
-                x'               ∎)
+    q = have p ∶ f x ≡ g⁻¹ x' γ
+        so-use (g (f x)      ≡⟨ ap g p            ⟩
+                g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
+                x'           ∎)
     u : ¬ is-g-point (g (f x))
     u = have ν ∶ ¬ is-g-point x
         so-apply contrapositive (α x)
@@ -376,7 +370,7 @@ prove properties of H and then specialize them to h:
 
   H : (x : X) → decidable (is-g-point x) → Y
   H x d = Cases d
-           (γ ꞉   is-g-point x ↦ g⁻¹ (x , γ))
+           (γ ꞉   is-g-point x ↦ g⁻¹ x γ)
            (ν ꞉ ¬ is-g-point x ↦ f x)
 
   notice-that : h ≡ x ↦ H x (δ x)
@@ -387,17 +381,17 @@ prove properties of H and then specialize them to h:
    where
     l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ≡ H x' d' → x ≡ x'
 
-    l (inl γ) (inl γ') p = have p ∶ g⁻¹ (x , γ) ≡ g⁻¹ (x' , γ')
-                           so (x                 ≡⟨ (g⁻¹-is-rinv (x , γ))⁻¹ ⟩
-                               g (g⁻¹ (x  , γ )) ≡⟨ ap g p                  ⟩
-                               g (g⁻¹ (x' , γ')) ≡⟨ g⁻¹-is-rinv (x' , γ')   ⟩
-                               x'                ∎)
+    l (inl γ) (inl γ') p = have p ∶ g⁻¹ x γ ≡ g⁻¹ x' γ'
+                           so (x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                               g (g⁻¹ x γ)   ≡⟨ ap g p                  ⟩
+                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                               x'            ∎)
 
-    l (inl γ) (inr ν') p = have p ∶ g⁻¹ (x , γ) ≡ f x'
-                           which-is-impossible-by (- ↦ f-g⁻¹-disjoint-images x' ν' (x , γ) (- ⁻¹))
+    l (inl γ) (inr ν') p = have p ∶ g⁻¹ x γ ≡ f x'
+                           which-is-impossible-by (- ↦ f-g⁻¹-disjoint-images x' x ν' γ (- ⁻¹))
 
-    l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ (x' , γ')
-                           which-is-impossible-by f-g⁻¹-disjoint-images x ν (x' , γ')
+    l (inr ν) (inl γ') p = have p ∶ f x ≡ g⁻¹ x' γ'
+                           which-is-impossible-by f-g⁻¹-disjoint-images x x' ν γ'
 
     l (inr ν) (inr ν') p = have p ∶ f x ≡ f x'
                            so-apply embeddings-are-left-cancellable f f-is-emb
@@ -488,7 +482,7 @@ purpose.
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
       ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition    ⟩
-                   g⁻¹ (g y , γ')   ≡⟨ g⁻¹-is-linv y γ' ⟩
+                   g⁻¹ (g y) γ'     ≡⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
                    which-contradicts (γ ∶ is-g-point (g y))
@@ -561,30 +555,30 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
 
-  G-point : 𝓤 ⊔ 𝓥 ̇
-  G-point = Σ x ꞉ X , is-g-point x
+  g-is-invertible-at-g-points : (x : X) (γ : is-g-point x) → fiber g x
+  g-is-invertible-at-g-points x γ = γ x 0 refl
 
-  g-is-invertible-at-g-points : ((x , γ) : G-point) → fiber g x
-  g-is-invertible-at-g-points (x , γ) = γ x 0 refl
+  g⁻¹ : (x : X) → is-g-point x → Y
+  g⁻¹ x γ = fiber-point g x (g-is-invertible-at-g-points x γ)
 
-  g⁻¹ : G-point → Y
-  g⁻¹ (x , γ) = fiber-point g x (g-is-invertible-at-g-points (x , γ))
+  g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
+  g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
 
-  g⁻¹-is-rinv : ((x , γ) : G-point) → g (g⁻¹ (x , γ)) ≡ x
-  g⁻¹-is-rinv (x , γ) = fiber-path g x (g-is-invertible-at-g-points (x , γ))
-
-  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y , γ) ≡ y
-  g⁻¹-is-linv y γ = embeddings-are-left-cancellable g g-is-emb (g⁻¹-is-rinv (g y , γ))
+  g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
+  g⁻¹-is-linv y γ = embeddings-are-left-cancellable g g-is-emb (g⁻¹-is-rinv (g y) γ)
 
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
 
-  f-g⁻¹-disjoint-images : (x : X) → ¬ is-g-point x → ((x' , γ) : G-point) → f x ≢ g⁻¹ (x' , γ)
-  f-g⁻¹-disjoint-images x ν (x' , γ) p = 𝟘-elim (v γ)
+  f-g⁻¹-disjoint-images : (x x' : X)
+                        → ¬ is-g-point x
+                        → (γ : is-g-point x')
+                        → f x ≢ g⁻¹ x' γ
+  f-g⁻¹-disjoint-images x x' ν γ p = 𝟘-elim (v γ)
    where
-    q = g (f x)          ≡⟨ ap g p                ⟩
-        g (g⁻¹ (x' , γ)) ≡⟨ g⁻¹-is-rinv (x' , γ)  ⟩
-        x'               ∎
+    q = g (f x)      ≡⟨ ap g p            ⟩
+        g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
+        x'           ∎
     u : ¬ is-g-point (g (f x))
     u = contrapositive (α x) ν
     v : ¬ is-g-point x'
@@ -597,7 +591,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
 
   H : (x : X) → decidable (is-g-point x) → Y
-  H x (inl γ) = g⁻¹ (x , γ)
+  H x (inl γ) = g⁻¹ x γ
   H x (inr _) = f x
 
   h : X → Y
@@ -607,12 +601,12 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   h-lc {x} {x'} = l (δ x) (δ x')
    where
     l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ≡ H x' d' → x ≡ x'
-    l (inl γ) (inl γ') p = x                 ≡⟨ (g⁻¹-is-rinv (x , γ))⁻¹ ⟩
-                           g (g⁻¹ (x  , γ )) ≡⟨ ap g p                  ⟩
-                           g (g⁻¹ (x' , γ')) ≡⟨ g⁻¹-is-rinv (x' , γ')   ⟩
-                           x'                ∎
-    l (inl γ) (inr ν') p = 𝟘-elim(f-g⁻¹-disjoint-images x' ν' (x  , γ )(p ⁻¹))
-    l (inr ν) (inl γ') p = 𝟘-elim(f-g⁻¹-disjoint-images x  ν  (x' , γ') p)
+    l (inl γ) (inl γ') p = x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹     ⟩
+                           g (g⁻¹ x γ)   ≡⟨ ap g p                  ⟩
+                           g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                           x'            ∎
+    l (inl γ) (inr ν') p = 𝟘-elim(f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
+    l (inr ν) (inl γ') p = 𝟘-elim(f-g⁻¹-disjoint-images x  x' ν  γ' p)
     l (inr ν) (inr ν') p = embeddings-are-left-cancellable f f-is-emb p
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
