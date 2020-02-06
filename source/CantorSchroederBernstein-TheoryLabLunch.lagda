@@ -61,7 +61,7 @@ We work with a Spartan MLTT:
 
   5. Universes (types of types), ranged over by 𝓤,𝓥,𝓦.
 
-Possible axioms for HoTT/UF:
+Possible axioms for HoTT/UF
 ---------------------------
 
   1. Function extensionality.                    \ Given constructive content
@@ -123,7 +123,7 @@ Main differences between HoTT/UF and MLTT
 
      * The type x ≡ y has (provably) multiple elements in general.
 
-     * In the homotopical conception, the identifications are paths.
+     * In the homotopical understanding, the identifications are paths.
 
      * Example. In the type of groups, one can prove that the
        identifications are in bijection with group isomorphisms,
@@ -136,8 +136,12 @@ Main differences between HoTT/UF and MLTT
 
   2. The treatment of propositions.
 
-     * There isn't a type of propositions as in the Calculus of
-       Constructions (CoC).
+     * There isn't a a built-in type of propositions as in the
+       Calculus of Constructions (CoC).
+
+     * The constructed type of propositions, in a type universe 𝓤, is
+
+         Ω 𝓤 := Σ P ꞉ 𝓤 ̇ , is-prop P.
 
      * A proposition, or truth value, is defined to be a type with at
        most one element, or a subsingleton.
