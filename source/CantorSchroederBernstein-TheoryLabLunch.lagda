@@ -41,8 +41,8 @@ HoTT/UF
 -------
 
 An intensional Martin-Löf type theory (MLTT) in which types are
-conceived as homotopy types, or ∞-groupoids, rather than as sets as in
-the original Martin-Löf understanding.
+understood as homotopy types, or ∞-groupoids, rather than as sets as
+in the original Martin-Löf conception.
 
 We work with a Spartan MLTT:
 
