@@ -16,7 +16,6 @@ The Cantor-Schröder-Bernstein Theorem for ∞-groupoids
     mathematical vernacular:
     https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
 
-
 Abstract
 --------
 
@@ -60,6 +59,10 @@ We work with a Spartan MLTT:
        Id (identity type).
 
   5. Universes (types of types), ranged over by 𝓤,𝓥,𝓦.
+
+(Here are lecture notes for HoTT/UF in Agda:
+https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes)
+
 
 Possible axioms for HoTT/UF
 ---------------------------
