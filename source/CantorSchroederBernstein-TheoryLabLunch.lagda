@@ -26,7 +26,7 @@ Abstract
        If for all sets X and Y, the existence of injections X → Y and
        Y → X implies X ≃ Y,
 
-       then P ∨ ¬P for any proposition P.
+       then P ∨ ¬ P for any proposition P.
 
  (2) In homotopy type theory / univalent foundations (HoTT/UF),
      excluded middle implies CSB, not only for sets, but also for
@@ -193,20 +193,22 @@ We begin by recalling some definitions.
 
 \begin{code}
 
-recall₀ : {A : 𝓤 ̇ } → decidable A ≡ (A + ¬ A)
-recall₀ = by-definition
+recall-decidable : {A : 𝓤 ̇ } → decidable A ≡ (A + ¬ A)
+recall-decidable = by-definition
 
 
-recall₁ : {X : 𝓤 ̇ }
-        → Compact X {𝓥} ≡ ((A : X → 𝓥 ̇ ) → ((x : X) → decidable (A x))
-                                         → decidable (Σ x ꞉ X , A x))
-recall₁ = by-definition
+recall-Compact : {X : 𝓤 ̇ }
+               → Compact X {𝓥} ≡ ((A : X → 𝓥 ̇ ) → ((x : X) → decidable (A x))
+                                                → decidable (Σ x ꞉ X , A x))
+recall-Compact = by-definition
 
-recall∞ : ℕ∞ ≡ (Σ α ꞉ (ℕ → 𝟚) , decreasing α)
-recall∞ = by-definition
 
-recall₂ : (fe : funext 𝓤₀ 𝓤₀) → Compact ℕ∞ {𝓤}
-recall₂ fe = ℕ∞-Compact fe
+recall-ℕ∞ : ℕ∞ ≡ (Σ α ꞉ (ℕ → 𝟚) , decreasing α)
+recall-ℕ∞ = by-definition
+
+
+recall-ℕ∞-Compact : funext 𝓤₀ 𝓤₀ → Compact ℕ∞ {𝓤}
+recall-ℕ∞-Compact fe = ℕ∞-Compact fe
 
 \end{code}
 
@@ -248,8 +250,8 @@ that ℕ∞ is a set, and once to know that it is compact.
 
 \begin{code}
 
-recall₃ : EM 𝓤 ≡ ((P : 𝓤 ̇ ) → is-prop P → P + ¬ P)
-recall₃ = by-definition
+recall-EM : EM 𝓤 ≡ ((P : 𝓤 ̇ ) → is-prop P → P + ¬ P)
+recall-EM = by-definition
 
 \end{code}
 
@@ -399,14 +401,14 @@ together with the identification datum:
 
 \begin{code}
 
-recall₄ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y)
-        → fiber f y ≡ (Σ x ꞉ X , f x ≡ y)
-recall₄ x f = by-definition
+recall-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (y : Y)
+             → fiber f y ≡ (Σ x ꞉ X , f x ≡ y)
+recall-fiber f x = by-definition
 
 
-recall₅ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-        → is-embedding f ≡ ((y : Y) → is-prop (fiber f y))
-recall₅ f = by-definition
+recall-is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → is-embedding f ≡ ((y : Y) → is-prop (fiber f y))
+recall-is-embedding f = by-definition
 
 \end{code}
 
@@ -414,9 +416,9 @@ The type (X ↪ Y) collects all embeddings of the type X into the type Y:
 
 \begin{code}
 
-recall₆ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-        → (X ↪ Y) ≡ (Σ f ꞉ (X → Y) , is-embedding f)
-recall₆ = by-definition
+recall-type-of-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                          → (X ↪ Y) ≡ (Σ f ꞉ (X → Y) , is-embedding f)
+recall-type-of-embeddings = by-definition
 
 \end{code}
 
