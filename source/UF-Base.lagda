@@ -135,9 +135,9 @@ apd = apd' _
 ap-id-is-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → p ≡ ap id p
 ap-id-is-id refl = refl
 
-ap-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
-        → ap f (p ∙ q) ≡ ap f p ∙ ap f q
-ap-comp f refl refl = refl
+ap-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
+     → ap f (p ∙ q) ≡ ap f p ∙ ap f q
+ap-∙ f refl refl = refl
 
 ap-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y : X} (p : x ≡ y)
        → (ap f p) ⁻¹ ≡ ap f (p ⁻¹)

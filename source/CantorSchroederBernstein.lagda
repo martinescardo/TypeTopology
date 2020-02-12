@@ -174,7 +174,8 @@ with its generalization to ∞-groupoids, that a map of types that are
 sets is an embedding if and only if it is left-cancellable.
 
 
-Our proof adapts Wikipedia's "alternate proof" (consulted 23rd January 2020)
+Our proof adapts Wikipedia's "alternate proof" (attributed to Halmos,
+consulted 23rd January 2020)
 
   https://en.wikipedia.org/wiki/Schröder-Bernstein_theorem#Alternate_proof
 

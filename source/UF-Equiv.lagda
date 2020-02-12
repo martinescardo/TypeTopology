@@ -399,17 +399,17 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y = (c , λ σ → α 
     γ : g y ≡ x
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ≡ ε y
-    q = ap f γ ∙ p                         ≡⟨ refl ⟩
-        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ - → - ∙ p) (ap-comp f ((ap g p)⁻¹) (η x)) ⟩
-        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p) ⟩
-        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x) ⟩
-        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹)) ⟩
+    q = ap f γ ∙ p                          ≡⟨ refl ⟩
+        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ - → - ∙ p) (ap-∙ f ((ap g p)⁻¹) (η x))                              ⟩
+        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p)                           ⟩
+        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x)                               ⟩
+        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹))                             ⟩
         ap (f ∘ g) (p ⁻¹) ∙ ε (f x) ∙ p     ≡⟨ ap (λ - → - ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹ ⟩
-        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))⁻¹ ⟩
-        ε y ∙ p ⁻¹ ∙ p                      ≡⟨ ∙assoc (ε y) (p ⁻¹) p ⟩
-        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ - → ε y ∙ -) (trans-sym p) ⟩
-        ε y ∙ refl ≡⟨ refl ⟩
-        ε y ∎
+        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))⁻¹                             ⟩
+        ε y ∙ p ⁻¹ ∙ p                      ≡⟨ ∙assoc (ε y) (p ⁻¹) p                                                     ⟩
+        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ - → ε y ∙ -) (trans-sym p)                                          ⟩
+        ε y ∙ refl                          ≡⟨ refl ⟩
+        ε y                                 ∎
 
     φ : g y , ε y ≡ x , p
     φ = identifications-in-fibers f y (g y) x (ε y) p (γ , q)
@@ -421,7 +421,7 @@ Here are some corollaries:
 \begin{code}
 
 qinvs-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                 → qinv f → is-vv-equiv f
+                    → qinv f → is-vv-equiv f
 qinvs-are-vv-equivs f q = haes-are-vv-equivs f (qinvs-are-haes f q)
 
 equivs-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)

@@ -543,13 +543,15 @@ that the latter can be recovered from the former.
 
 \begin{code}
 
-Jbased'' : {X : 𝓤 ̇ } (x : X) (A : singleton-type x → 𝓥 ̇ )
-         → A (x , refl) → Π A
-Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons' w)
+private
 
-Jbased' : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
-        → B x refl → (y : X) → Π (B y)
-Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
+ Jbased'' : {X : 𝓤 ̇ } (x : X) (A : singleton-type x → 𝓥 ̇ )
+          → A (x , refl) → Π A
+ Jbased'' x A a w = yoneda-nat (x , refl) A a w (singleton-types-are-singletons' w)
+
+ Jbased' : {X : 𝓤 ̇ } (x : X) (B : (y : X) → x ≡ y → 𝓥 ̇ )
+         → B x refl → (y : X) → Π (B y)
+ Jbased' x B b y p = Jbased'' x (uncurry B) b (y , p)
 
 \end{code}
 
