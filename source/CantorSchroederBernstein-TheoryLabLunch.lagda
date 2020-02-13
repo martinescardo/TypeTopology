@@ -436,7 +436,7 @@ EM-gives-CantorSchröderBernstein : Fun-Ext
 EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe excluded-middle
                                  X Y (f , f-is-emb) (g , g-is-emb) =
 
-  need (X ≃ Y) which-is-given-by 𝒽
+  need X ≃ Y which-is-given-by 𝒽
 
  where
 
@@ -469,7 +469,7 @@ requires function extensionality:
   being-g-point-is-a-prop x =
    Π-is-prop fe (λ (x₀ : X                   ) →
    Π-is-prop fe (λ (n  : ℕ                   ) →
-   Π-is-prop fe (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need (is-prop (fiber g x₀))
+   Π-is-prop fe (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need is-prop (fiber g x₀)
                                                  which-is-given-by (g-is-emb x₀))))
 \end{code}
 
@@ -636,7 +636,7 @@ What is important for our argument is that non-f-points are g-points:
 \begin{code}
 
   non-f-point-is-g-point : (x : X) → ¬ f-point x → is-g-point x
-  non-f-point-is-g-point x ν x₀ n p = need (fiber g x₀) which-is-given-by
+  non-f-point-is-g-point x ν x₀ n p = need fiber g x₀ which-is-given-by
     (Cases (excluded-middle (fiber g x₀) (g-is-emb x₀))
       (σ ꞉   fiber g x₀ ↦ σ)
       (u ꞉ ¬ fiber g x₀ ↦ have (x₀ , (n , p) , u) ∶ f-point x
