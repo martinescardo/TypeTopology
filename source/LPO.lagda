@@ -137,28 +137,30 @@ Now, if LPO is false, that is, an empty type, then the function type
 
   LPO → ℕ
 
-is isomorphic to the unit type 𝟙, and hence is compact and compact. If
-LPO holds, that is, LPO is isomorphic to 𝟙 because it is a univalent
-proposition, then the function type LPO → ℕ is isomorphic to ℕ, and
-hence the type LPO → ℕ is again compact by LPO. So in any case we have
-that the type LPO → ℕ is compact. However, LPO is an undecided
-proposition in our type theory, so that the nature of the function
-type LPO → ℕ is undecided. Nevertheless, we can show that it is
-compact, without knowing whether LPO holds or not!
+is isomorphic to the unit type 𝟙, and hence is compact. If LPO holds,
+that is, LPO is isomorphic to 𝟙 because it is a univalent proposition,
+then the function type LPO → ℕ is isomorphic to ℕ, and hence the type
+LPO → ℕ is again compact by LPO. So in any case we have that the type
+LPO → ℕ is compact. However, LPO is an undecided proposition in our
+type theory, so that the nature of the function type LPO → ℕ is
+undecided. Nevertheless, we can show that it is compact, without
+knowing whether LPO holds or not!
 
 \begin{code}
 
 open import PropTychonoff
 
-LPO-gives-ℕ-compact∙ : compact∙(LPO → ℕ)
-LPO-gives-ℕ-compact∙ = prop-tychonoff-corollary' fe LPO-is-a-prop f
+[LPO→ℕ]-compact∙ : compact∙(LPO → ℕ)
+[LPO→ℕ]-compact∙ = prop-tychonoff-corollary' fe LPO-is-a-prop f
  where
    f : LPO → compact∙ ℕ
    f lpo = compact-pointed-gives-compact∙ (LPO-gives-compact-ℕ lpo) 0
 
-LPO-gives-ℕ-compact : compact(LPO → ℕ)
-LPO-gives-ℕ-compact = compact∙-gives-compact LPO-gives-ℕ-compact∙
+[LPO→ℕ]-compact : compact(LPO → ℕ)
+[LPO→ℕ]-compact = compact∙-gives-compact [LPO→ℕ]-compact∙
 
+[LPO→ℕ]-Compact : Compact (LPO → ℕ) {𝓤}
+[LPO→ℕ]-Compact = compact-gives-Compact (LPO → ℕ) [LPO→ℕ]-compact
 \end{code}
 
 Another condition equivalent to LPO is that the obvious
