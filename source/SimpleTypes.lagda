@@ -67,7 +67,7 @@ simple-types-r rn (step s t) = retracts-of-closed-under-exponentials
 cfdbce : {X Y : 𝓤₀ ̇ } → simple-type X → simple-type Y
        → compact (X → Y) → is-discrete X × compact Y
 cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r 𝟚-retract-of-ℕ t) c ,
-               i2c2c (simple-types-pointed s) c)
+               Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types-pointed s) c)
 
 \end{code}
 
@@ -144,6 +144,6 @@ simple-types₂-r𝟚 (step s t) = retracts-of-closed-under-exponentials
 cfdbce₂ : {X Y : 𝓤₀ ̇ } → simple-type₂ X → simple-type₂ Y
         → compact (X → Y) → is-discrete X × compact Y
 cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-r𝟚 t) c ,
-                 i2c2c (simple-types₂-pointed s) c)
+                 Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types₂-pointed s) c)
 
 \end{code}

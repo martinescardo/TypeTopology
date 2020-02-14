@@ -183,8 +183,14 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 power-of-two-or-more-discrete-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                      → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
-power-of-two-or-more-discrete-gives-compact-exponent {𝓤} re d = power-of-two-discrete-gives-compact-exponent
-                                                                 (retract-discrete-discrete (rpe (fe 𝓤 𝓤₀) re) d)
+power-of-two-or-more-discrete-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d = γ
+ where
+  a : retract (X → 𝟚) of (X → Y)
+  a = retract-contravariance (fe 𝓤 𝓤₀) ρ
+  b : is-discrete (X → 𝟚)
+  b = retract-discrete-discrete a d
+  γ : Π-compact X
+  γ = power-of-two-discrete-gives-compact-exponent b
 
 power-of-two-or-more-discrete-gives-compact-exponent' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                       → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
@@ -252,9 +258,10 @@ retract-Π-compact' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → ∥ retract Y of X ∥ → Π-compact X → Π-compact Y
 retract-Π-compact' t c = ∥∥-rec Π-compactness-is-a-prop (λ r → retract-Π-compact r c) t
 
-i2c2c : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-      → X → Π-compact (X → Y) → Π-compact Y
-i2c2c x = retract-Π-compact (pdrc x)
+Π-compact-exponential-with-pointed-domain-has-Π-compact-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                               → X → Π-compact (X → Y) → Π-compact Y
+Π-compact-exponential-with-pointed-domain-has-Π-compact-domain x =
+  retract-Π-compact (codomain-is-retract-of-function-space-with-pointed-domain x)
 
 \end{code}
 
@@ -275,11 +282,11 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
  extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
 
- sot : ∃-compact X → ∃-compact (𝕋 X)
- sot = surjection-∃-compact η (η-surjection)
+ ∃-compact-gives-∃-compact-𝕋 : ∃-compact X → ∃-compact (𝕋 X)
+ ∃-compact-gives-∃-compact-𝕋 = surjection-∃-compact η (η-surjection)
 
- tos : ∃-compact (𝕋 X) → ∃-compact X
- tos c p = h (c (extension p))
+ ∃-compact-𝕋-gives-∃-compact : ∃-compact (𝕋 X) → ∃-compact X
+ ∃-compact-𝕋-gives-∃-compact c p = h (c (extension p))
   where
    f : (Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → ∃ x ꞉ X , p x ≡ ₀
    f (x' , r) = ∥∥-functor f' (η-surjection x')
@@ -294,11 +301,11 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
    h (inl x) = inl (∥∥-rec ∥∥-is-a-prop f x)
    h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
- ct : Π-compact X → Π-compact (𝕋 X)
- ct = surjection-Π-compact η (η-surjection)
+ Π-compact-gives-Π-compact-𝕋 : Π-compact X → Π-compact (𝕋 X)
+ Π-compact-gives-Π-compact-𝕋 = surjection-Π-compact η (η-surjection)
 
- tc : Π-compact (𝕋 X) → Π-compact X
- tc c p = h (c (extension p))
+ Π-compact-𝕋-gives-Π-compact : Π-compact (𝕋 X) → Π-compact X
+ Π-compact-𝕋-gives-Π-compact c p = h (c (extension p))
   where
    f : ((x' : 𝕋 X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
    f α x = (extension-property p x)⁻¹ ∙ α (η x)
@@ -358,18 +365,20 @@ corollaries:
 
 \begin{code}
 
-tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇ } → is-totally-separated X → retract 𝟚 of Y
-     → Π-compact (X → Y) → is-discrete X
-tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (rpe (fe 𝓤₀ 𝓤₀) r) c)
+tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇ }
+      → is-totally-separated X → retract 𝟚 of Y
+      → Π-compact (X → Y) → is-discrete X
+tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (retract-contravariance (fe 𝓤₀ 𝓤₀) r) c)
 
 open TotallySeparatedReflection fe pt
 
-tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → retract 𝟚 of Y
+tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+      → retract 𝟚 of Y
       → Π-compact (X → Y) → is-discrete (𝕋 X)
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
   z : retract (X → 𝟚) of (X → Y)
-  z = rpe (fe 𝓤 𝓤₀) r
+  z = retract-contravariance (fe 𝓤 𝓤₀) r
   a : (𝕋 X → 𝟚) ≃ (X → 𝟚)
   a = totally-separated-reflection'' 𝟚-is-totally-separated
   b : retract (𝕋 X → 𝟚) of (X → 𝟚)
