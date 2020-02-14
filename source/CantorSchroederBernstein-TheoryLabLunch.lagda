@@ -392,12 +392,8 @@ Theorem
 The Cantor-Schröder-Bernstein Theorem holds for all homotopy types, or
 ∞-gropoids, in the presence of excluded middle.
 
-Our proof adapts Wikipedia's "alternate proof" (attributed to Halmos,
-consulted 23rd January 2020)
-
-  https://en.wikipedia.org/wiki/Schröder-Bernstein_theorem#Alternate_proof
-
-to our more general situation.
+Our proof adapts Halmos' proof in his book Naive Set Theory to our
+more general situation.
 
 The fiber of a point y : Y over a map f : X → Y collects all the
 points x : X that are mapped by f to a point identified with y,
