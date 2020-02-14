@@ -830,3 +830,42 @@ Compact∙-gives-pointed : {X : 𝓤 ̇ } → Compact∙ X {𝓥} → X
 Compact∙-gives-pointed ε = pr₁ (ε (λ x → 𝟘) (λ x → 𝟘-decidable))
 
 \end{code}
+
+Based on what was done in the module WeaklyCompactTypes before:
+
+\begin{code}
+
+Compact-propositions-are-decidable : (X : 𝓤 ̇ ) → is-prop X → Compact X → decidable X
+Compact-propositions-are-decidable X i c = γ
+ where
+  A : X → 𝓤₀ ̇
+  A _ = 𝟙
+  δ : detachable A
+  δ _ = inl *
+  a : decidable (X × 𝟙)
+  a = c A δ
+  f : decidable (X × 𝟙) → decidable X
+  f (inl (x , *)) = inl x
+  f (inr ν)       = inr (contrapositive (λ x → (x , *)) ν)
+  γ : decidable X
+  γ = f a
+
+
+discrete-to-the-power-Compact-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                         → funext 𝓤 𝓥
+                                         → Π-Compact X → is-discrete Y → is-discrete (X → Y)
+discrete-to-the-power-Compact-is-discrete {𝓤} {𝓥} {X} {Y} fe c d f g = γ
+ where
+  A : X → 𝓥 ̇
+  A x = f x ≡ g x
+  a : (x : X) → decidable (A x)
+  a x = d (f x) (g x)
+  b : decidable (Π A)
+  b = c A a
+  φ : decidable (Π A) → decidable (f ≡ g)
+  φ (inl α) = inl (dfunext fe α)
+  φ (inr ν) = inr (contrapositive happly ν)
+  γ : decidable (f ≡ g)
+  γ = φ b
+
+\end{code}

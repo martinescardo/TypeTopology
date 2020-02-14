@@ -161,6 +161,23 @@ open import PropTychonoff
 
 [LPO→ℕ]-Compact : Compact (LPO → ℕ) {𝓤}
 [LPO→ℕ]-Compact = compact-gives-Compact (LPO → ℕ) [LPO→ℕ]-compact
+
+\end{code}
+
+However, we cannot prove that the function type LPO→ℕ is discrete, as
+otherwise we would be able to decide the negation of LPO (added 14th
+Feb 2020):
+
+\begin{code}
+
+open import DiscreteAndSeparated
+open import NaturalNumbers-Properties
+
+[LPO→ℕ]-discrete-gives-¬LPO-decidable : is-discrete (LPO → ℕ) → decidable (¬ LPO)
+[LPO→ℕ]-discrete-gives-¬LPO-decidable = discrete-exponential-has-decidable-emptiness-of-exponent
+                                         (fe 𝓤₀ 𝓤₀)
+                                         (1 , 0 , positive-not-zero 0)
+
 \end{code}
 
 Another condition equivalent to LPO is that the obvious

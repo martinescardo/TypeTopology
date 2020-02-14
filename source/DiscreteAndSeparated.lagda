@@ -356,3 +356,33 @@ infix  30 _≠_
 ≠-agrees-with-≢ m n = pr₂(χ≢-spec m n) , (λ d → different-from-₀-equal-₁ (contrapositive(pr₁(χ≢-spec m n)) d))
 
 \end{code}
+
+Added 14th Feb 2020:
+
+\begin{code}
+
+discrete-exponential-has-decidable-emptiness-of-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                         → funext 𝓤 𝓥
+                                                         → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
+                                                         → is-discrete (X → Y)
+                                                         → decidable (¬ X)
+discrete-exponential-has-decidable-emptiness-of-exponent {𝓤} {𝓥} {X} {Y} fe (y₀ , y₁ , ne) d = γ
+ where
+  a : decidable ((λ _ → y₀) ≡ (λ _ → y₁))
+  a = d (λ _ → y₀) (λ _ → y₁)
+  f : decidable ((λ _ → y₀) ≡ (λ _ → y₁)) → decidable (¬ X)
+  f (inl p) = inl g
+   where
+    g : ¬ X
+    g x = ne q
+     where
+      q : y₀ ≡ y₁
+      q = ap (λ - → - x) p
+  f (inr ν) = inr (contrapositive g ν)
+   where
+    g : ¬ X → (λ _ → y₀) ≡ (λ _ → y₁)
+    g ν = dfunext fe (λ x → 𝟘-elim (ν x))
+  γ : decidable (¬ X)
+  γ = f a
+
+\end{code}
