@@ -12,6 +12,8 @@ univalence or the existence of propositional truncations:
     Their proof, reproduced here, uses the compactness (also known as
     the searchability or omniscience) of ℕ∞.
 
+    (See also Appendix II.)
+
 
 (2) A proof that excluded middle implies Cantor-Schröder-Bernstein for
     all homotopy types, or ∞-groupoids. (Added 24th January.)
