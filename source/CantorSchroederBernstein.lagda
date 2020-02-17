@@ -746,10 +746,10 @@ BKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
    where
     f' : ¬¬ P → ¬¬ Σ A
     f' = double-contrapositive f
-    σ : ¬¬ P → Σ A
-    σ = mp A j ∘ f'
+    h : ¬¬ P → Σ A
+    h = mp A j ∘ f'
     dne : ¬¬ P → P
-    dne = g ∘ σ
+    dne = g ∘ h
 
 \end{code}
 
