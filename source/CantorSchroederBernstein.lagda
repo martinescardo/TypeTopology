@@ -529,8 +529,8 @@ EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe f
 \end{code}
 
 
-APPENDIX
---------
+APPENDIX I
+----------
 
 The above is an attempt to make the proof more readable and match the
 blog post. Here is a more concise version of the above in a more
@@ -675,8 +675,8 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
 Check our lecture notes https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
 if you want to learn HoTT/UF and Agda.
 
-Appendix
---------
+APPENDIX 2
+----------
 
 Added 17th Feb 2020.
 
@@ -742,14 +742,14 @@ BKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
  where
   γ : (Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
     → ¬¬ P → P
-  γ (A , d , j , f , g) = p
+  γ (A , d , j , f , g) = dne
    where
     f' : ¬¬ P → ¬¬ Σ A
     f' = double-contrapositive f
     σ : ¬¬ P → Σ A
     σ = mp A j ∘ f'
-    p : ¬¬ P → P
-    p = g ∘ σ
+    dne : ¬¬ P → P
+    dne = g ∘ σ
 
 \end{code}
 
@@ -822,7 +822,7 @@ discrete-CSB-gives-BKS⁺ csb P i = γ
   g = cases z succ
 
   a : is-embedding z
-  a = maps-of-props-into-sets-are-embeddings (λ p → 0) i ℕ-is-set
+  a = maps-of-props-into-sets-are-embeddings z i ℕ-is-set
 
   b : is-embedding succ
   b = lc-maps-into-sets-are-embeddings succ succ-lc ℕ-is-set
