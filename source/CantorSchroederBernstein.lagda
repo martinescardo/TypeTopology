@@ -769,11 +769,11 @@ We now show that CSB for discrete types gives BKS⁺:
 
 \begin{code}
 
-KS-lemma : {P : 𝓤 ̇ }
+BKS⁺-lemma : {P : 𝓤 ̇ }
          → is-prop P
          → ℕ ≃ P + ℕ
          → is-rosolini P
-KS-lemma {𝓤} {P} i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
+BKS⁺-lemma {𝓤} {P} i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
  where
   A : ℕ → 𝓤 ̇
   A n = Σ p ꞉ P , f n ≡ inl p
@@ -822,7 +822,7 @@ discrete-CSB-gives-BKS⁺ csb P i = γ
   g = cases z succ
 
   a : is-embedding z
-  a = maps-of-props-into-sets-are-embeddings (λ p → 0) i ℕ-is-set
+  a = maps-of-props-into-sets-are-embeddings z i ℕ-is-set
 
   b : is-embedding succ
   b = lc-maps-into-sets-are-embeddings succ succ-lc ℕ-is-set
@@ -837,6 +837,6 @@ discrete-CSB-gives-BKS⁺ csb P i = γ
   e = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (f , j) (g , k)
 
   γ : is-rosolini P
-  γ = KS-lemma i e
+  γ = BKS⁺-lemma i e
 
 \end{code}
