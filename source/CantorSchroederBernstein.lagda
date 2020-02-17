@@ -120,7 +120,7 @@ CSB-gives-EM fe P i csb = γ
   g = cases z Succ
 
   a : is-embedding z
-  a = maps-of-props-into-sets-are-embeddings (λ p → Zero) i (ℕ∞-is-set fe)
+  a = maps-of-props-into-sets-are-embeddings z i (ℕ∞-is-set fe)
 
   b : is-embedding Succ
   b = lc-maps-into-sets-are-embeddings Succ Succ-lc (ℕ∞-is-set fe)
@@ -674,3 +674,169 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
 
 Check our lecture notes https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
 if you want to learn HoTT/UF and Agda.
+
+Appendix
+--------
+
+Added 17th Feb 2020.
+
+Coming back to part 1, what follows if we assume CSB for sets with
+decidable equality (which are necessarily sets) only? Such types are
+called discrete. We adapt an argument in Johnstone's Sketches of an
+Elephant Volume 2 (Lemma D.4.1.2).
+
+See
+https://www.sciencedirect.com/science/article/pii/S0019357718303276
+for BKS⁺ (strong Brouwer-Kripke Schema) and the fact that together
+with Markov Principle it implies excluded middle (attributed to
+Moschovakis). The terminology "is-rosolini" is in connection with the
+Rosolini dominance from synthetic domain theory and topology.
+
+\begin{code}
+
+open import DiscreteAndSeparated
+open import UF-Miscelanea
+open import NaturalNumbers-Properties
+open import UF-Base
+
+is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
+is-rosolini {𝓤} P = Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n))
+                                       × is-prop (Σ A)
+                                       × (P ⇔ Σ A)
+
+private
+ observation : (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → (n : ℕ) → is-prop (A n)
+ observation A i n a a' = t
+  where
+   q : (n , a) ≡ (n , a')
+   q = i (n , a) (n , a')
+   t = a                        ≡⟨ refl ⟩
+       transport A refl       a ≡⟨ ap (λ - → transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
+       transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                           ⟩
+       a'                       ∎
+
+BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
+BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-rosolini P
+
+\end{code}
+
+It is convenient to work with the following formulation of Markov's
+Principle that avoids ∃ (and hence propositional truncations), which
+is easily seen to be equivalent to the traditional formulation using ∃
+(using the fact that unique choice just holds (trivially) in HoTT/UF).
+
+\begin{code}
+
+MP : (𝓤 : Universe) → 𝓤 ⁺ ̇
+MP 𝓤 = (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → ¬¬ Σ A → Σ A
+
+\end{code}
+
+The following, which derives double negation elimination from BKS⁺ and
+MP, is formulated and proved in pure (spartan) MLTT:
+
+\begin{code}
+
+BKS⁺-and-MP-give-DNE : BKS⁺ 𝓤 → MP 𝓤 → DNE 𝓤
+BKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
+ where
+  γ : (Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
+    → ¬¬ P → P
+  γ (A , d , j , f , g) = p
+   where
+    f' : ¬¬ P → ¬¬ Σ A
+    f' = double-contrapositive f
+    σ : ¬¬ P → Σ A
+    σ = mp A j ∘ f'
+    p : ¬¬ P → P
+    p = g ∘ σ
+
+\end{code}
+
+But the following, which derives excluded middle, needs function
+extensionality:
+
+\begin{code}
+
+BKS⁺-and-MP-give-EM : funext 𝓤 𝓤₀ → BKS⁺ 𝓤 → MP 𝓤 → EM 𝓤
+BKS⁺-and-MP-give-EM fe bks MP = DNE-gives-EM fe (BKS⁺-and-MP-give-DNE bks MP)
+
+\end{code}
+
+So BKS⁺ "almost" gives excluded middle in some sense.
+
+We now show that CSB for discrete types gives BKS⁺:
+
+\begin{code}
+
+KS-lemma : {P : 𝓤 ̇ }
+         → is-prop P
+         → ℕ ≃ P + ℕ
+         → is-rosolini P
+KS-lemma {𝓤} {P} i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
+ where
+  A : ℕ → 𝓤 ̇
+  A n = Σ p ꞉ P , f n ≡ inl p
+
+  d : (x : ℕ) → decidable (A x)
+  d x = equality-cases (f x)
+         (λ (p : P) (u : f x ≡ inl p) → inl (p , u))
+         (λ (y : ℕ) (v : f x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
+                                                                    f x   ≡⟨ v    ⟩
+                                                                    inr y ∎)))
+
+  j : is-prop (Σ A)
+  j (n , p , u) (n' , p' , u') = t
+   where
+    q : n ≡ n'
+    q = equivs-are-lc f ((s , η) , (r , ε)) (f n    ≡⟨ u               ⟩
+                                             inl p  ≡⟨ ap inl (i p p') ⟩
+                                             inl p' ≡⟨ u' ⁻¹           ⟩
+                                             f n'   ∎)
+    t : n , p , u ≡ n' , p' , u'
+    t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P ℕ (props-are-sets i) ℕ-is-set _ u'))
+
+  φ : P → Σ A
+  φ p = s (inl p) , p , η (inl p)
+
+  γ : Σ A → P
+  γ (n , p , u) = p
+
+
+discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+discrete-CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-discrete X → is-discrete Y → CSB X Y
+
+discrete-CSB-gives-BKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
+discrete-CSB-gives-BKS⁺ csb P i = γ
+ where
+  f : ℕ → P + ℕ
+  f = inr
+
+  j : is-embedding f
+  j = inr-is-embedding P ℕ
+
+  z : P → ℕ
+  z _ = 0
+
+  g : P + ℕ → ℕ
+  g = cases z succ
+
+  a : is-embedding z
+  a = maps-of-props-into-sets-are-embeddings (λ p → 0) i ℕ-is-set
+
+  b : is-embedding succ
+  b = lc-maps-into-sets-are-embeddings succ succ-lc ℕ-is-set
+
+  c : disjoint-images z succ
+  c = λ (p : P) (x : ℕ) (q : zero ≡ succ x) → positive-not-zero x (q ⁻¹)
+
+  k : is-embedding g
+  k = disjoint-cases-embedding z succ a b c
+
+  e : ℕ ≃ P + ℕ
+  e = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (f , j) (g , k)
+
+  γ : is-rosolini P
+  γ = KS-lemma i e
+
+\end{code}

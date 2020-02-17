@@ -58,11 +58,14 @@ Standard examples:
 
 \begin{code}
 
+props-are-discrete : {P : 𝓤 ̇ } → is-prop P → is-discrete P
+props-are-discrete i x y = inl (i x y)
+
 𝟘-is-discrete : is-discrete (𝟘 {𝓤})
-𝟘-is-discrete x y = 𝟘-elim x
+𝟘-is-discrete = props-are-discrete 𝟘-is-prop
 
 𝟙-is-discrete : is-discrete (𝟙 {𝓤})
-𝟙-is-discrete * * = inl refl
+𝟙-is-discrete = props-are-discrete 𝟙-is-prop
 
 𝟚-is-discrete : is-discrete 𝟚
 𝟚-is-discrete ₀ ₀ = inl refl

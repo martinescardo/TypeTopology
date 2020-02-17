@@ -283,7 +283,7 @@ CSB-gives-EM fe P i csb = γ
   g = cases z Succ
 
   a : is-embedding z
-  a = maps-of-props-into-sets-are-embeddings (λ p → Zero) i (ℕ∞-is-set fe)
+  a = maps-of-props-into-sets-are-embeddings z i (ℕ∞-is-set fe)
 
   b : is-embedding Succ
   b = lc-maps-into-sets-are-embeddings Succ Succ-lc (ℕ∞-is-set fe)
