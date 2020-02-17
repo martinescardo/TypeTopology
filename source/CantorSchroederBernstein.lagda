@@ -529,8 +529,8 @@ EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe f
 \end{code}
 
 
-APPENDIX
---------
+APPENDIX I
+----------
 
 The above is an attempt to make the proof more readable and match the
 blog post. Here is a more concise version of the above in a more
@@ -675,8 +675,8 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
 Check our lecture notes https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
 if you want to learn HoTT/UF and Agda.
 
-Appendix
---------
+APPENDIX II
+-----------
 
 Added 17th Feb 2020.
 
