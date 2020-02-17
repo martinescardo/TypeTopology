@@ -701,8 +701,8 @@ open import UF-Base
 
 is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-rosolini {𝓤} P = Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n))
-                                       × is-prop (Σ A)
-                                       × (P ⇔ Σ A)
+                                     × is-prop (Σ A)
+                                     × (P ⇔ Σ A)
 
 private
  observation : (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → (n : ℕ) → is-prop (A n)
@@ -742,14 +742,14 @@ BKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
  where
   γ : (Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
     → ¬¬ P → P
-  γ (A , d , j , f , g) = p
+  γ (A , _ , j , f , g) = dne
    where
     f' : ¬¬ P → ¬¬ Σ A
     f' = double-contrapositive f
-    σ : ¬¬ P → Σ A
-    σ = mp A j ∘ f'
-    p : ¬¬ P → P
-    p = g ∘ σ
+    h : ¬¬ Σ A → Σ A
+    h = mp A j
+    dne : ¬¬ P → P
+    dne = g ∘ h ∘ f'
 
 \end{code}
 
