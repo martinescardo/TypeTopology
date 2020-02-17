@@ -680,10 +680,10 @@ Appendix
 
 Added 17th Feb 2020.
 
-Coming back to part 1, what follows if we assume CSB for types with
-decidable equality (which are necessarily sets) only? Such types are
-called discrete. We adapt an argument in Johnstone's Sketches of an
-Elephant Volume 2 (Lemma D.4.1.2).
+Coming back to part 1, we consider what follows if we assume CSB for
+types with decidable equality (which are necessarily sets) only. Such
+types are called discrete. We adapt an argument in Johnstone's
+Sketches of an Elephant Volume 2 (Lemma D.4.1.2).
 
 See
 https://www.sciencedirect.com/science/article/pii/S0019357718303276
@@ -770,9 +770,9 @@ We now show that CSB for discrete types gives BKS⁺:
 \begin{code}
 
 BKS⁺-lemma : {P : 𝓤 ̇ }
-         → is-prop P
-         → ℕ ≃ P + ℕ
-         → is-rosolini P
+           → is-prop P
+           → ℕ ≃ P + ℕ
+           → is-rosolini P
 BKS⁺-lemma {𝓤} {P} i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
  where
   A : ℕ → 𝓤 ̇
