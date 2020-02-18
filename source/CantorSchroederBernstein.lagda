@@ -779,39 +779,45 @@ We now show that CSB for discrete types gives BKS⁺:
 
 \begin{code}
 
-BKS⁺-lemma : {P : 𝓤 ̇ }
-           → is-prop P
-           → ℕ ≃ P + ℕ
-           → is-rosolini P
-BKS⁺-lemma {𝓤} {P} i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
+blemma : {P : 𝓤 ̇ } {X : 𝓥 ̇ }
+       → is-set X
+       → is-prop P
+       → X ≃ P + X
+       → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → decidable (A x)) × is-prop (Σ A) × (P ⇔ Σ A)
+blemma {𝓤} {𝓥} {P} {X} σ i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
  where
-  A : ℕ → 𝓤 ̇
-  A n = Σ p ꞉ P , f n ≡ inl p
+  A : X → 𝓤 ⊔ 𝓥 ̇
+  A x = Σ p ꞉ P , f x ≡ inl p
 
-  d : (x : ℕ) → decidable (A x)
+  d : (x : X) → decidable (A x)
   d x = equality-cases (f x)
          (λ (p : P) (u : f x ≡ inl p) → inl (p , u))
-         (λ (y : ℕ) (v : f x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
+         (λ (y : X) (v : f x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
                                                                     f x   ≡⟨ v    ⟩
                                                                     inr y ∎)))
 
   j : is-prop (Σ A)
-  j (n , p , u) (n' , p' , u') = t
+  j (x , p , u) (x' , p' , u') = t
    where
-    q : n ≡ n'
-    q = equivs-are-lc f ((s , η) , (r , ε)) (f n    ≡⟨ u               ⟩
+    q : x ≡ x'
+    q = equivs-are-lc f ((s , η) , (r , ε)) (f x    ≡⟨ u               ⟩
                                              inl p  ≡⟨ ap inl (i p p') ⟩
                                              inl p' ≡⟨ u' ⁻¹           ⟩
-                                             f n'   ∎)
-    t : n , p , u ≡ n' , p' , u'
-    t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P ℕ (props-are-sets i) ℕ-is-set _ u'))
+                                             f x'   ∎)
+    t : x , p , u ≡ x' , p' , u'
+    t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P X (props-are-sets i) σ _ u'))
 
   φ : P → Σ A
   φ p = s (inl p) , p , η (inl p)
 
   γ : Σ A → P
-  γ (n , p , u) = p
+  γ (x , p , u) = p
 
+BKS⁺-lemma : {P : 𝓤 ̇ }
+           → is-prop P
+           → ℕ ≃ P + ℕ
+           → is-rosolini P
+BKS⁺-lemma = blemma ℕ-is-set
 
 discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 discrete-CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-discrete X → is-discrete Y → CSB X Y
