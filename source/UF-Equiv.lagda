@@ -206,6 +206,14 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  → X ≃ Y → Y ≃ X
 ≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverse-is-equiv f e
 
+≃-sym-is-linv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (x : X)
+              → ⌜ ≃-sym 𝓯 ⌝ (⌜ 𝓯 ⌝ x) ≡ x
+≃-sym-is-linv (f , e) x = inverse-is-retraction f e x
+
+≃-sym-is-rinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (y : Y)
+              → ⌜ 𝓯 ⌝ (⌜ ≃-sym 𝓯 ⌝ y) ≡ y
+≃-sym-is-rinv (f , e) y = inverse-is-section f e y
+
 equiv-retract-l : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → retract X of Y
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
 

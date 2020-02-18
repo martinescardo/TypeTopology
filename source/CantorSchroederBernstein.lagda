@@ -856,3 +856,86 @@ discrete-CSB-gives-BKS⁺ csb P i = γ
   γ = BKS⁺-lemma i e
 
 \end{code}
+
+Added 18th Feb 2020. We make the last development above sharper, at
+the expense of assuming propositional extensionality (univalence for
+propositions):
+
+\begin{code}
+
+clemma : funext 𝓤 𝓤
+       → propext 𝓤
+       → ((P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ)
+       → EM 𝓤
+clemma {𝓤} fe pe φ P i = γ
+ where
+  A : 𝓤 ⁺ ̇
+  A = Σ Q ꞉ 𝓤 ̇ , is-prop Q × Q
+  u : (Q : 𝓤 ̇) → is-prop (is-prop Q × Q)
+  u Q (j , q) = ×-is-prop (being-a-prop-is-a-prop fe) j (j , q)
+  v : is-prop A
+  v (Q , j , q) (Q' , j' , q') = to-subtype-≡ u s
+   where
+    s : Q ≡ Q'
+    s = pe j j' (λ _ → q') (λ _ → q)
+  f : A → ℕ
+  f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
+  n : ℕ
+  n = f (𝟙 , 𝟙-is-prop , *)
+  g : (k : ℕ) (s : ⌜ φ P i ⌝ n ≡ inr k) → ¬ P
+  g k s p = +disjoint' b
+   where
+    a : n ≡ f (P , i , p)
+    a = ap f (v _ _)
+    b = inr k                                 ≡⟨ s ⁻¹                          ⟩
+        ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
+        ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ refl                          ⟩
+        ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
+        inl p                                 ∎
+
+  γ : P + ¬ P
+  γ = equality-cases (⌜ φ P i ⌝ n)
+       (λ (p : P) (r : ⌜ φ P i ⌝ n ≡ inl p) → inl p)
+       (λ (k : ℕ) (s : ⌜ φ P i ⌝ n ≡ inr k) → inr (g k s))
+
+discrete-CSB-gives-EM : funext 𝓥 𝓥
+                      → propext 𝓥
+                      → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
+                      → EM 𝓥
+discrete-CSB-gives-EM {𝓥} fe pe csb = clemma fe pe φ
+ where
+  φ : (P : 𝓥 ̇ ) → is-prop P → ℕ ≃ P + ℕ
+  φ P i = e
+   where
+    f : ℕ → P + ℕ
+    f = inr
+
+    j : is-embedding f
+    j = inr-is-embedding P ℕ
+
+    z : P → ℕ
+    z _ = 0
+
+    g : P + ℕ → ℕ
+    g = cases z succ
+
+    a : is-embedding z
+    a = maps-of-props-into-sets-are-embeddings z i ℕ-is-set
+
+    b : is-embedding succ
+    b = lc-maps-into-sets-are-embeddings succ succ-lc ℕ-is-set
+
+    c : disjoint-images z succ
+    c = λ (p : P) (x : ℕ) (q : zero ≡ succ x) → positive-not-zero x (q ⁻¹)
+
+    k : is-embedding g
+    k = disjoint-cases-embedding z succ a b c
+
+    e : ℕ ≃ P + ℕ
+    e = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (f , j) (g , k)
+
+\end{code}
+
+Thus, in particular, decidable equality is not enough to get a
+constructive version of CSB. Even with decidable equality of the given
+types, one still needs full excluded middle.
