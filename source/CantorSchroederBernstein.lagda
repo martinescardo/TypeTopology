@@ -939,3 +939,14 @@ discrete-CSB-gives-EM {𝓥} fe pe csb = clemma fe pe φ
 Thus, in particular, decidable equality is not enough to get a
 constructive version of CSB. Even with decidable equality of the given
 types, one still needs full excluded middle.
+
+Discussion
+----------
+
+The Pradic-Brown argument has the advantage that if we weaken the
+statement of CSB to say that an unspecified (rather than designated)
+equivalence exists, for any two given embeddings in opposite
+directions, one still gets excluded middle, as already remarked
+above. Our argument doesn't work with this weakening. In any case,
+excluded middle does give CSB with designated equivalences in the
+conclusion, as shown above.
