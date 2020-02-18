@@ -1,12 +1,19 @@
-Martin Escardo, 22nd January 2020. (This file needs the Agda release candidate 2.6.1.)
+The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda
+-------------------------------------------------------------------------
+
+Martin Escardo, 22nd and 24th January 2020, with further additions
+after that.
+
+This file needs the Agda release candidate 2.6.1.
 
 There are two parts, which assume function extensionality but not
-univalence or the existence of propositional truncations:
+univalence or the existence of propositional truncations (any
+assumption beyond MLTT is explicit in each claim).
 
 
 (1) A univalent-foundations version of Pierre Pradic and Chad
     E. Brown's argument that Cantor-Schröder-Bernstein implies
-    excluded middle in constructive set theory.
+    excluded middle in constructive set theory. (Added 22nd January.)
     (https://arxiv.org/abs/1904.09193).
 
     Their proof, reproduced here, uses the compactness (also known as
@@ -26,6 +33,10 @@ univalence or the existence of propositional truncations:
     left-cancellable).
 
     As far as we know, (2) is a new result.
+
+    This part is the Agda version of https://arxiv.org/abs/2002.07079.
+    Check our lecture notes to learn HoTT/UF with Agda:
+    https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/ if
 
 \begin{code}
 
@@ -673,9 +684,6 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   𝒽 = h , lc-split-surjections-are-equivs h h-lc h-split-surjection
 
 \end{code}
-
-Check our lecture notes https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
-if you want to learn HoTT/UF and Agda.
 
 APPENDIX II
 -----------
