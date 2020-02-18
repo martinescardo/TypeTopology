@@ -710,9 +710,9 @@ open import NaturalNumbers-Properties
 open import UF-Base
 
 is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
-is-rosolini {𝓤} P = Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n))
-                                     × is-prop (Σ A)
-                                     × (P ⇔ Σ A)
+is-rosolini {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
+                                    × is-prop (Σ A)
+                                    × (P ⇔ Σ A)
 
 private
  observation : (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → (n : ℕ) → is-prop (A n)
@@ -750,7 +750,7 @@ MP, is formulated and proved in pure (spartan) MLTT:
 BKS⁺-and-MP-give-DNE : BKS⁺ 𝓤 → MP 𝓤 → DNE 𝓤
 BKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
  where
-  γ : (Σ \(A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
+  γ : (Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
     → ¬¬ P → P
   γ (A , d , j , f , g) = dne
    where
