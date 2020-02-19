@@ -1030,11 +1030,12 @@ previously shown above.
 
 Added 19th Feb 2020: In light of the above discussion, notice that the
 17th Feb 2020 development has its merits, after all, compared to the
-18th Feb development.
+18th Feb development. We don't get excluded middle if we weaken CSB,
+but we do get BKS⁺.
 
 \begin{code}
 
-module discrete-wCSB-still-gives-BKS⁺
+module discrete-wCSB-gives-BKS⁺
         (pt : propositional-truncations-exist)
         (fe : FunExt)
         (pe : PropExt)
