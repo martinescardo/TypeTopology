@@ -1076,5 +1076,5 @@ We now consider the propositional version of BKS⁺:
 \end{code}
 
 Notice that BKS⁺ also implies excluded middle in the presence of MP,
-because MP is a proposition (in any case, this was already proved by
+because EM is a proposition (in any case, this was already proved by
 Moschovakis, as discussed above).
