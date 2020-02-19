@@ -1069,10 +1069,8 @@ We now consider the propositional version of BKS⁺:
   where
    s : ∥ ℕ ≃ P + ℕ ∥
    s = w ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ i)
-   t : ℕ ≃ P + ℕ → rosolini-data P
-   t = rlemma i
    γ : is-rosolini P
-   γ = ∥∥-functor t s
+   γ = ∥∥-functor (rlemma i) s
 
 \end{code}
 
