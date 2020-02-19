@@ -73,7 +73,7 @@ CSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 CSB X Y = (X ↪ Y) × (Y ↪ X) → X ≃ Y
 
 CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → CSB X Y
+CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → CSB X Y
 
 \end{code}
 
@@ -119,13 +119,13 @@ is a subsingleton for every y.
 
 \begin{code}
 
-elemma' : {X : 𝓤 ̇ } {P : 𝓥 ̇ } (z : P → X) (s : X → X)
-        → is-prop P
-        → ((p : P) → is-h-isolated (z p))
-        → disjoint-images z s
-        → is-embedding s
-        → (X ↪ P + X) × (P + X ↪ X)
-elemma' {𝓤} {𝓥} {X} {P} z s i h d e = ((f , j) , (g , k))
+econstruction' : {X : 𝓤 ̇ } {P : 𝓥 ̇ } (z : P → X) (s : X → X)
+               → is-prop P
+               → ((p : P) → is-h-isolated (z p))
+               → disjoint-images z s
+               → is-embedding s
+               → (X ↪ P + X) × (P + X ↪ X)
+econstruction' {𝓤} {𝓥} {X} {P} z s i h d e = ((f , j) , (g , k))
  where
   f : X → P + X
   f = inr
@@ -150,14 +150,14 @@ Hedberg's Theorem, every isolated point is h-isolated.
 
 \begin{code}
 
-elemma : {X : 𝓤 ̇ } {P : 𝓥 ̇ } (x₀ : X) (s : X → X)
-       → is-set X
-       → is-prop P
-       → is-isolated x₀
-       → ((x : X) → x₀ ≢ s x)
-       → left-cancellable s
-       → (X ↪ P + X) × (P + X ↪ X)
-elemma {𝓤} {𝓥} {X} {P} x₀ s j i k d' lc = elemma' z s i h d e
+econstruction : {X : 𝓤 ̇ } {P : 𝓥 ̇ } (x₀ : X) (s : X → X)
+              → is-set X
+              → is-prop P
+              → is-isolated x₀
+              → ((x : X) → x₀ ≢ s x)
+              → left-cancellable s
+              → (X ↪ P + X) × (P + X ↪ X)
+econstruction {𝓤} {𝓥} {X} {P} x₀ s j i k d' lc = econstruction' z s i h d e
  where
   z : P → X
   z p = x₀
@@ -170,11 +170,23 @@ elemma {𝓤} {𝓥} {X} {P} x₀ s j i k d' lc = elemma' z s i h d e
 
 \end{code}
 
+The Pradic-Brown argument uses the special case X = ℕ∞ with Zero and
+Succ, but, in Appendix II, we also consider X = ℕ with zero and succ.
+
+\begin{code}
+
+econstruction-ℕ∞ : funext 𝓤₀ 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → (ℕ∞ ↪ P + ℕ∞) × (P + ℕ∞ ↪ ℕ∞)
+econstruction-ℕ∞ fe i = econstruction Zero Succ
+                         (ℕ∞-is-set fe) i (finite-isolated fe zero) (λ x → Zero-not-Succ) Succ-lc
+\end{code}
+
 In the following, function extensionality is used to know that (1) ℕ∞
 is a set, (2) its finite elements (in particular zero) are isolated,
 (3) ℕ∞ is compact.
 
 \begin{code}
+
+
 
 CSB-gives-EM : funext 𝓤₀ 𝓤₀
              → (P : 𝓤 ̇ )
@@ -184,7 +196,7 @@ CSB-gives-EM : funext 𝓤₀ 𝓤₀
 CSB-gives-EM fe P i csb = γ
  where
   e : ℕ∞ ≃ P + ℕ∞
-  e = csb (elemma Zero Succ (ℕ∞-is-set fe) i (finite-isolated fe zero) (λ x → Zero-not-Succ) Succ-lc)
+  e = csb (econstruction-ℕ∞ fe i)
 
   ρ : retract (P + ℕ∞) of ℕ∞
   ρ = equiv-retract-r e
@@ -203,7 +215,7 @@ middle for propositions in the universe 𝓥:
 CantorSchröderBernstein-gives-EM : funext 𝓤₀ 𝓤₀
                                  → CantorSchröderBernstein 𝓤₀ 𝓥
                                  → EM 𝓥
-CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i (csb ℕ∞ (P + ℕ∞))
+CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i csb
 
 \end{code}
 
@@ -222,7 +234,7 @@ module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
  wCSB X Y = (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥
 
  wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
- wCantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → wCSB X Y
+ wCantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → wCSB X Y
 
  wCantorSchröderBernstein-gives-EM : funext 𝓤₀ 𝓤₀
                                    → funext 𝓥 𝓤₀
@@ -231,7 +243,7 @@ module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
  wCantorSchröderBernstein-gives-EM fe₀ fe w P i = γ
   where
    s : ∥ ℕ∞ ≃ P + ℕ∞ ∥
-   s = w ℕ∞ (P + ℕ∞) (elemma Zero Succ (ℕ∞-is-set fe₀) i (finite-isolated fe₀ zero) (λ x → Zero-not-Succ) Succ-lc)
+   s = w (econstruction-ℕ∞ fe₀ i)
    t : ℕ∞ ≃ P + ℕ∞ → P + ¬ P
    t e = Pradic-Brown-lemma (equiv-retract-r e) (ℕ∞-Compact fe₀)
    γ : P + ¬ P
@@ -274,7 +286,7 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y ((f , f-is-emb) , (g , g-is-emb)) =
+EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) =
 
   need X ≃ Y which-is-given-by 𝒽
 
@@ -623,7 +635,7 @@ EM-gives-CantorSchröderBernstein' : funext 𝓤 (𝓤 ⊔ 𝓥)
                                   → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                   → EM (𝓤 ⊔ 𝓥)
                                   → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
+EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -880,7 +892,7 @@ rlemma : {P : 𝓤 ̇ }
 rlemma = blemma ℕ-is-set
 
 discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-discrete-CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-discrete X → is-discrete Y → CSB X Y
+discrete-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → CSB X Y
 
 dlemma : (P : 𝓥 ̇ )
        → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
@@ -888,13 +900,13 @@ dlemma : (P : 𝓥 ̇ )
 dlemma P csb i = b
  where
   a : (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
-  a = elemma zero succ
+  a = econstruction zero succ
        ℕ-is-set i
         (ℕ-is-discrete zero)
         (λ x (p : zero ≡ succ x) → positive-not-zero x (p ⁻¹))
         succ-lc
   b : ℕ ≃ P + ℕ
-  b = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) a
+  b = csb ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) a
 
 discrete-CSB-gives-BKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
 discrete-CSB-gives-BKS⁺ csb P i = γ
@@ -919,9 +931,9 @@ proposition P, given by a function
 then we can use φ to decide P for any proposition P. To see this,
 first consider P=𝟙, and call n the natural number which is mapped to
 inl * by the equivalence given by φ. Then, for an arbitrary
-proposition P, if the equivalence maps n to inl p for some p, then P
-holds. Otherwise, if it maps n to inl k for some k : ℕ, then P can't
-hold, for if it did we would have p : P, and hence P=𝟙 by
+proposition P, if the equivalence maps n to inl p for some p, we have
+that P holds. Otherwise, if it maps n to inl k for some k : ℕ, then P
+can't hold, for if it did we would have p : P, and hence P=𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
 at n. In order to simplify the calculational details of the proof, we
