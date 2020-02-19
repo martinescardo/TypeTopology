@@ -228,7 +228,7 @@ excluded middle, because P + ¬ P is a proposition if P is:
 
 module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
 
- open PropositionalTruncation pt
+ open PropositionalTruncation pt public
 
  wCSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  wCSB X Y = (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥
@@ -777,29 +777,44 @@ See
 https://www.sciencedirect.com/science/article/pii/S0019357718303276
 for BKS⁺ (strong Brouwer-Kripke Schema) and the fact that together
 with Markov Principle it implies excluded middle (attributed to
-Moschovakis). The terminology "is-rosolini" is in connection with the
+Moschovakis). The terminology "rosolini" is in connection with the
 Rosolini dominance from synthetic domain theory and topology.
 
 \begin{code}
 
-is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
-is-rosolini {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
-                                    × is-prop (Σ A)
-                                    × (P ⇔ Σ A)
+rosolini-data : 𝓤 ̇ → 𝓤 ⁺ ̇
+rosolini-data {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
+                                      × is-prop (Σ A)
+                                      × (P ⇔ Σ A)
 
-private
- observation : (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → (n : ℕ) → is-prop (A n)
- observation A i n a a' = t
-  where
-   q : (n , a) ≡ (n , a')
-   q = i (n , a) (n , a')
-   t = a                        ≡⟨ by-definition                                         ⟩
-       transport A refl       a ≡⟨ ap (λ - → transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
-       transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                           ⟩
-       a'                       ∎
+\end{code}
 
-BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-rosolini P
+Notice that the type rosolini P is data on P rather than property of
+P, because multiple A's apply to the same P, when P holds.
+
+Notice that we don't need to require that each A n is a proposition:
+
+\begin{code}
+
+is-prop-total-gives-is-prop-each : (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → (n : ℕ) → is-prop (A n)
+is-prop-total-gives-is-prop-each A i n a a' = t
+ where
+  q : (n , a) ≡ (n , a')
+  q = i (n , a) (n , a')
+  t = a                        ≡⟨ by-definition                                         ⟩
+      transport A refl       a ≡⟨ ap (λ - → transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
+      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                           ⟩
+      a'                       ∎
+
+\end{code}
+
+We consider a typal, rather than propositional, version of BKS⁺, which
+is data rather than a subsingleton:
+
+\begin{code}
+
+dBKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
+dBKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → rosolini-data P
 
 \end{code}
 
@@ -820,8 +835,8 @@ MP, is formulated and proved in pure (spartan) MLTT:
 
 \begin{code}
 
-BKS⁺-and-MP-give-DNE : BKS⁺ 𝓤 → MP 𝓤 → DNE 𝓤
-BKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
+dBKS⁺-and-MP-give-DNE : dBKS⁺ 𝓤 → MP 𝓤 → DNE 𝓤
+dBKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
  where
   γ : (Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
     → ¬¬ P → P
@@ -841,14 +856,14 @@ extensionality:
 
 \begin{code}
 
-BKS⁺-and-MP-give-EM : funext 𝓤 𝓤₀ → BKS⁺ 𝓤 → MP 𝓤 → EM 𝓤
-BKS⁺-and-MP-give-EM fe bks MP = DNE-gives-EM fe (BKS⁺-and-MP-give-DNE bks MP)
+dBKS⁺-and-MP-give-EM : funext 𝓤 𝓤₀ → dBKS⁺ 𝓤 → MP 𝓤 → EM 𝓤
+dBKS⁺-and-MP-give-EM fe bks MP = DNE-gives-EM fe (dBKS⁺-and-MP-give-DNE bks MP)
 
 \end{code}
 
-So BKS⁺ "almost" gives excluded middle in some sense.
+So dBKS⁺ "almost" gives excluded middle in some sense.
 
-We now show that CSB for discrete types gives BKS⁺:
+We now show that CSB for discrete types gives dBKS⁺:
 
 \begin{code}
 
@@ -889,33 +904,31 @@ blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , 
 rlemma : {P : 𝓤 ̇ }
        → is-prop P
        → ℕ ≃ P + ℕ
-       → is-rosolini P
+       → rosolini-data P
 rlemma = blemma ℕ-is-set
 
 discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 discrete-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → CSB X Y
 
-dlemma : (P : 𝓥 ̇ )
+econstruction-ℕ : {P : 𝓤 ̇ } → is-prop P → (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
+econstruction-ℕ i = econstruction zero succ
+                     ℕ-is-set i
+                      (ℕ-is-discrete zero)
+                      (λ x (p : zero ≡ succ x) → positive-not-zero x (p ⁻¹))
+                      succ-lc
+
+dlemma : {P : 𝓥 ̇ }
        → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
        → is-prop P → ℕ ≃ P + ℕ
-dlemma P csb i = b
- where
-  a : (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
-  a = econstruction zero succ
-       ℕ-is-set i
-        (ℕ-is-discrete zero)
-        (λ x (p : zero ≡ succ x) → positive-not-zero x (p ⁻¹))
-        succ-lc
-  b : ℕ ≃ P + ℕ
-  b = csb ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) a
+dlemma {𝓥} {P} csb i = csb ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ i)
 
-discrete-CSB-gives-BKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
-discrete-CSB-gives-BKS⁺ csb P i = γ
+discrete-CSB-gives-dBKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → dBKS⁺ 𝓥
+discrete-CSB-gives-dBKS⁺ csb P i = γ
  where
   e : ℕ ≃ P + ℕ
-  e = dlemma P csb i
+  e = dlemma csb i
 
-  γ : is-rosolini P
+  γ : rosolini-data P
   γ = rlemma i e
 
 \end{code}
@@ -985,7 +998,7 @@ discrete-CSB-gives-EM : funext 𝓥 𝓥
 discrete-CSB-gives-EM {𝓥} fe pe csb = ulemma fe pe φ
  where
   φ : (P : 𝓥 ̇ ) → is-prop P → ℕ ≃ P + ℕ
-  φ P = dlemma P csb
+  φ P = dlemma csb
 
 \end{code}
 
@@ -1013,3 +1026,51 @@ instance of CSB, for a given proposition, whereas we use a family of
 instances. In any case, in the other direction, excluded middle does
 give CSB with a designated equivalence in the conclusion, as
 previously shown above.
+
+Added 19th Feb 2020: In light of the above discussion, notice that the
+17th Feb 2020 development has its merits, after all, compared to the
+18th Feb development.
+
+\begin{code}
+
+module discrete-wCSB-still-gives-BKS⁺
+        (pt : propositional-truncations-exist)
+        (fe : FunExt)
+        (pe : PropExt)
+        where
+
+\end{code}
+
+We open the module wCSB-still-gives-EM only to have access to the
+definition of wCSB:
+
+\begin{code}
+
+ open  wCSB-still-gives-EM pt
+
+ discrete-wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+ discrete-wCantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → wCSB X Y
+
+\end{code}
+
+We now consider the propositional version of BKS⁺:
+
+\begin{code}
+
+ is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-rosolini {𝓤} P = ∥ rosolini-data P ∥
+
+ BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-rosolini P
+
+ discrete-wCSB-gives-BKS⁺ : discrete-wCantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
+ discrete-wCSB-gives-BKS⁺ w P i = γ
+  where
+   s : ∥ ℕ ≃ P + ℕ ∥
+   s = w ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ i)
+   t : ℕ ≃ P + ℕ → rosolini-data P
+   t = rlemma i
+   γ : is-rosolini P
+   γ = ∥∥-functor t s
+
+\end{code}
