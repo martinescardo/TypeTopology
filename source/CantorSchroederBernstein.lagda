@@ -792,7 +792,7 @@ private
   where
    q : (n , a) ≡ (n , a')
    q = i (n , a) (n , a')
-   t = a                        ≡⟨ refl                                                  ⟩
+   t = a                        ≡⟨ by-definition                                         ⟩
        transport A refl       a ≡⟨ ap (λ - → transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
        transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                           ⟩
        a'                       ∎
@@ -968,7 +968,7 @@ ulemma {𝓤} fe pe φ P i = γ
     a = ap f (v _ _)
     b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
-        ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ refl                          ⟩
+        ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition                 ⟩
         ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
         inl p                                 ∎
 
