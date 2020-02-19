@@ -923,7 +923,8 @@ proposition P, if the equivalence maps n to inl p for some p, then P
 holds. Otherwise, if it maps n to inl k for some k : ℕ, then P can't
 hold, for if it did we would have p : P, and hence P=𝟙 by
 propositional extensionality, and the equivalence would have to map n
-to inl p.
+to inl p, which is different from the value inr k of the equivalence
+at n.
 
 \begin{code}
 
