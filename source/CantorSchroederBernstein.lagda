@@ -943,10 +943,10 @@ types, one still needs full excluded middle.
 Discussion
 ----------
 
-The Pradic-Brown argument has the advantage that if we weaken the
-statement of CSB to say that an unspecified (rather than designated)
-equivalence exists, for any two given embeddings in opposite
-directions,
+The Pradic-Brown argument, although it requires a non-discrete type to
+work, has the advantage that if we weaken the statement of CSB to say
+that an unspecified (rather than designated) equivalence exists, for
+any two given embeddings in opposite directions,
 
     (X ↪ Y) → (Y ↪ X) → ∥ X ≃ Y ∥.
 
