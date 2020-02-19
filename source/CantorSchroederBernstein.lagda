@@ -789,10 +789,11 @@ rosolini-data {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable 
 
 \end{code}
 
-Notice that the type rosolini P is data on P rather than property of
-P, because multiple A's apply to the same P, when P holds.
+Notice this is data on P rather than property of P because multiple
+A's apply to the same P, when P holds.
 
-Notice that we don't need to require that each A n is a proposition:
+Notice also that we don't need to require that each A n is a
+proposition, as this is automatic:
 
 \begin{code}
 
@@ -809,7 +810,7 @@ is-prop-total-gives-is-prop-each A i n a a' = t
 \end{code}
 
 We consider a typal, rather than propositional, version of BKS⁺, which
-is data rather than a subsingleton:
+is data-valued rather than propositionally valued.
 
 \begin{code}
 
@@ -1074,3 +1075,7 @@ We now consider the propositional version of BKS⁺:
    γ = ∥∥-functor t s
 
 \end{code}
+
+Notice that BKS⁺ also implies excluded middle in the presence of MP,
+because MP is a proposition (in any case, this was already proved by
+Moschovakis, as discussed above).
