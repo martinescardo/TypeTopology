@@ -980,8 +980,9 @@ one still gets excluded middle, as already remarked above. And it is
 is also nice and clear and short. Our argument, however, doesn't work
 with this weakening, as in this case it is no longer possible to
 define the function φ in the proof (without choice, which is stronger
-than what we want to prove, namely excluded middle). The reason is
-that Pradic and Brown use only one instance of CSB, for a given
-proposition, whereas we use a family of instances. In any case, in the
-other direction, excluded middle does give CSB with a designated
-equivalence in the conclusion, as previously shown above.
+than what we want to prove, namely excluded middle) to apply the
+uniformity lemma. The reason is that Pradic and Brown use only one
+instance of CSB, for a given proposition, whereas we use a family of
+instances. In any case, in the other direction, excluded middle does
+give CSB with a designated equivalence in the conclusion, as
+previously shown above.
