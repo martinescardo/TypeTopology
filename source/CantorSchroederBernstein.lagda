@@ -688,7 +688,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
 APPENDIX II
 -----------
 
-Added 17th Feb 2020.
+Added 17th Feb 2020 (a stronger result was added below, 18th Feb 2020).
 
 Coming back to part 1, we consider what follows if we assume CSB for
 types with decidable equality (which are necessarily sets) only. Such
@@ -946,13 +946,19 @@ Discussion
 The Pradic-Brown argument has the advantage that if we weaken the
 statement of CSB to say that an unspecified (rather than designated)
 equivalence exists, for any two given embeddings in opposite
-directions, one still gets excluded middle, as already remarked
-above. And it is is also nice and clear and short. Our argument,
-however, doesn't work with this weakening, as in this case it is no
-longer possible to define φ (without choice, which is stronger than
-what we want to prove, namely excluded middle). In any case, excluded
-middle does give CSB with a designated equivalence in the conclusion,
-as shown above.
+directions,
+
+    (X ↪ Y) → (Y ↪ X) → ∥ X ≃ Y ∥.
+
+one still gets excluded middle, as already remarked above. And it is
+is also nice and clear and short. Our argument, however, doesn't work
+with this weakening, as in this case it is no longer possible to
+define the function φ in the proof (without choice, which is stronger
+than what we want to prove, namely excluded middle). The reason is
+that Pradic and Brown use only one instance of CSB, for a given
+proposition, whereas we use a family of instances. In any case, in the
+opposite direction, excluded middle does give CSB with a designated
+equivalence in the conclusion, as previously shown above.
 
 Todo
 ----
