@@ -916,12 +916,13 @@ proposition P, given by a function
 
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
-then we can use φ to decided P for any proposition P. The idea is to
-consider P=𝟙, and see which natural number n is mapped to inl * by the
-equivalence f given by φ. Now, for arbitrary P, if f maps n to inl p
-for some p, then P holds. Otherwise, if f maps n to inl k for some k :
-ℕ, then P can't hold, for if it did we would have p : P, and hence P=𝟙
-by propositional extensionality, and f would have to map n to inl p.
+then we can use φ to decide P for any proposition P. The idea is to
+first consider P=𝟙, and see which natural number n is mapped to inl *
+by the equivalence f given by φ. Then, for an arbitrary proposition P,
+if f maps n to inl p for some p, then P holds. Otherwise, if f maps n
+to inl k for some k : ℕ, then P can't hold, for if it did we would
+have p : P, and hence P=𝟙 by propositional extensionality, and f would
+have to map n to inl p.
 
 \begin{code}
 
