@@ -949,7 +949,7 @@ ulemma {𝓤} fe pe φ P i = γ
   f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
   n : ℕ
   n = f (𝟙 , 𝟙-is-prop , *)
-  ν : (k : ℕ) (r : ⌜ φ P i ⌝ n ≡ inr k) → ¬ P
+  ν : (k : ℕ) → ⌜ φ P i ⌝ n ≡ inr k → ¬ P
   ν k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
