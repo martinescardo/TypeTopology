@@ -765,7 +765,8 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
 APPENDIX II
 -----------
 
-Added 17th Feb 2020 (a stronger result was added below, 18th Feb 2020).
+Added 17th Feb 2020. A stronger result is added below, 18th Feb 2020,
+with a technically and conceptually simpler proof.
 
 Coming back to part 1, we consider what follows if we assume CSB for
 types with decidable equality (which are necessarily sets) only. Such
