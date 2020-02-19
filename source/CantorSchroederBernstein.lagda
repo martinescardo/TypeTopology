@@ -36,7 +36,7 @@ assumption beyond MLTT is explicit in each claim).
 
     This part is the Agda version of https://arxiv.org/abs/2002.07079.
     Check our lecture notes to learn HoTT/UF with Agda:
-    https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/ if
+    https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
 
 \begin{code}
 
