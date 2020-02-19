@@ -1035,11 +1035,7 @@ but we do get BKS⁺.
 
 \begin{code}
 
-module discrete-wCSB-gives-BKS⁺
-        (pt : propositional-truncations-exist)
-        (fe : FunExt)
-        (pe : PropExt)
-        where
+module discrete-wCSB-gives-BKS⁺ (pt : propositional-truncations-exist) where
 
 \end{code}
 
