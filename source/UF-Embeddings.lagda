@@ -412,3 +412,9 @@ prop-embedding : (P : 𝓤 ̇ ) → is-prop P → ∀ 𝓥 → is-embedding (λ 
 prop-embedding P i 𝓥 * (p , r) (p' , r') = to-×-≡ (i p p')
                                                   (props-are-sets 𝟙-is-prop r r')
 \end{code}
+
+\begin{code}
+
+infix  0 _↪_
+
+\end{code}

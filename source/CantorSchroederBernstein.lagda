@@ -45,18 +45,23 @@ assumption beyond MLTT is explicit in each claim).
 module CantorSchroederBernstein where
 
 open import SpartanMLTT
-open import GenericConvergentSequence
-open import DecidableAndDetachable
-open import Plus-Properties
 open import CompactTypes
 open import ConvergentSequenceCompact
-open import UF-Subsingletons
+open import DecidableAndDetachable
+open import DiscreteAndSeparated
+open import GenericConvergentSequence
+open import NaturalNumbers-Properties
+open import Plus-Properties
+open import UF-Base
 open import UF-Equiv
 open import UF-Embeddings
-open import UF-Retracts
-open import UF-FunExt
-open import UF-Subsingletons-FunExt
 open import UF-ExcludedMiddle
+open import UF-FunExt
+open import UF-Miscelanea
+open import UF-PropTrunc
+open import UF-Retracts
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 
 \end{code}
 
@@ -65,7 +70,7 @@ Our formulation of Cantor-Schröder-Bernstein:
 \begin{code}
 
 CSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-CSB X Y = (X ↪ Y) → (Y ↪ X) → X ≃ Y
+CSB X Y = (X ↪ Y) × (Y ↪ X) → X ≃ Y
 
 CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → CSB X Y
@@ -108,8 +113,66 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
 
 \end{code}
 
-Function extensionality is used twice in the following, once to know
-that ℕ∞ is a set, and once to know that it is compact.
+We formulate the following in more generality than we need
+here. Recall that a point x is h-isolated if the identity type x ≡ y
+is a subsingleton for every y.
+
+\begin{code}
+
+elemma' : {X : 𝓤 ̇ } {P : 𝓥 ̇ } (z : P → X) (s : X → X)
+        → is-prop P
+        → ((p : P) → is-h-isolated (z p))
+        → disjoint-images z s
+        → is-embedding s
+        → (X ↪ P + X) × (P + X ↪ X)
+elemma' {𝓤} {𝓥} {X} {P} z s i h d e = ((f , j) , (g , k))
+ where
+  f : X → P + X
+  f = inr
+
+  j : is-embedding f
+  j = inr-is-embedding P X
+
+  g : P + X → X
+  g = cases z s
+
+  l : is-embedding z
+  l = maps-of-props-into-h-isolated-points-are-embeddings z i h
+
+  k : is-embedding g
+  k = disjoint-cases-embedding z s l e d
+
+\end{code}
+
+The level of generality we need here is the following. Recall that a
+point is x isolated if equality x ≡ y is decidable for every y. By
+Hedberg's Theorem, every isolated point is h-isolated.
+
+\begin{code}
+
+elemma : {X : 𝓤 ̇ } {P : 𝓥 ̇ } (x₀ : X) (s : X → X)
+       → is-set X
+       → is-prop P
+       → is-isolated x₀
+       → ((x : X) → x₀ ≢ s x)
+       → left-cancellable s
+       → (X ↪ P + X) × (P + X ↪ X)
+elemma {𝓤} {𝓥} {X} {P} x₀ s j i k d' lc = elemma' z s i h d e
+ where
+  z : P → X
+  z p = x₀
+  h : (p : P) → is-h-isolated (z p)
+  h p = isolated-is-h-isolated x₀ k
+  d : disjoint-images z s
+  d p = d'
+  e : is-embedding s
+  e = lc-maps-into-sets-are-embeddings s lc j
+
+\end{code}
+
+In the following, function extensionality is used to know that (1) ℕ∞
+is a set, (2) its finite elements (in particular zero) are isolated,
+(3) ℕ∞ is compact.
 
 \begin{code}
 
@@ -120,32 +183,8 @@ CSB-gives-EM : funext 𝓤₀ 𝓤₀
              → P + ¬ P
 CSB-gives-EM fe P i csb = γ
  where
-  f : ℕ∞ → P + ℕ∞
-  f = inr
-
-  j : is-embedding f
-  j = inr-is-embedding P ℕ∞
-
-  z : P → ℕ∞
-  z _ = Zero
-
-  g : P + ℕ∞ → ℕ∞
-  g = cases z Succ
-
-  a : is-embedding z
-  a = maps-of-props-into-sets-are-embeddings z i (ℕ∞-is-set fe)
-
-  b : is-embedding Succ
-  b = lc-maps-into-sets-are-embeddings Succ Succ-lc (ℕ∞-is-set fe)
-
-  c : disjoint-images z Succ
-  c = λ (p : P) (x : ℕ∞) (q : Zero ≡ Succ x) → Zero-not-Succ q
-
-  k : is-embedding g
-  k = disjoint-cases-embedding z Succ a b c
-
   e : ℕ∞ ≃ P + ℕ∞
-  e = csb (f , j) (g , k)
+  e = csb (elemma Zero Succ (ℕ∞-is-set fe) i (finite-isolated fe zero) (λ x → Zero-not-Succ) Succ-lc)
 
   ρ : retract (P + ℕ∞) of ℕ∞
   ρ = equiv-retract-r e
@@ -168,11 +207,37 @@ CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i (csb ℕ∞ (
 
 \end{code}
 
-Remark. If instead of requiring that we have a designated equivalence,
-we required that there is an unspecified equivalence in the
-formulation of Cantor-Schröder-Bernstein, we would still get excluded
-middle, because P + ¬ P is a proposition.
+We remark that if instead of requiring that we have a designated
+equivalence, we required that there is an unspecified equivalence in
+the formulation of Cantor-Schröder-Bernstein, we would still get
+excluded middle, because P + ¬ P is a proposition if P is:
 
+\begin{code}
+
+module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt
+
+ wCSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ wCSB X Y = (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥
+
+ wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+ wCantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → wCSB X Y
+
+ wCantorSchröderBernstein-gives-EM : funext 𝓤₀ 𝓤₀
+                                   → funext 𝓥 𝓤₀
+                                   → wCantorSchröderBernstein 𝓤₀ 𝓥
+                                   → EM 𝓥
+ wCantorSchröderBernstein-gives-EM fe₀ fe w P i = γ
+  where
+   s : ∥ ℕ∞ ≃ P + ℕ∞ ∥
+   s = w ℕ∞ (P + ℕ∞) (elemma Zero Succ (ℕ∞-is-set fe₀) i (finite-isolated fe₀ zero) (λ x → Zero-not-Succ) Succ-lc)
+   t : ℕ∞ ≃ P + ℕ∞ → P + ¬ P
+   t e = Pradic-Brown-lemma (equiv-retract-r e) (ℕ∞-Compact fe₀)
+   γ : P + ¬ P
+   γ = ∥∥-rec (decidability-of-prop-is-prop fe i) t s
+
+\end{code}
 
 Part 2
 ------
@@ -209,7 +274,7 @@ EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y (f , f-is-emb) (g , g-is-emb) =
+EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y ((f , f-is-emb) , (g , g-is-emb)) =
 
   need X ≃ Y which-is-given-by 𝒽
 
@@ -558,7 +623,7 @@ EM-gives-CantorSchröderBernstein' : funext 𝓤 (𝓤 ⊔ 𝓥)
                                   → funext 𝓤₀ (𝓤 ⊔ 𝓥)
                                   → EM (𝓤 ⊔ 𝓥)
                                   → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y (f , f-is-emb) (g , g-is-emb) = 𝒽
+EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle X Y ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -704,11 +769,6 @@ Rosolini dominance from synthetic domain theory and topology.
 
 \begin{code}
 
-open import DiscreteAndSeparated
-open import UF-Miscelanea
-open import NaturalNumbers-Properties
-open import UF-Base
-
 is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
 is-rosolini {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
                                     × is-prop (Σ A)
@@ -784,7 +844,7 @@ blemma : {P : 𝓤 ̇ } {X : 𝓥 ̇ }
        → is-prop P
        → X ≃ P + X
        → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → decidable (A x)) × is-prop (Σ A) × (P ⇔ Σ A)
-blemma {𝓤} {𝓥} {P} {X} σ i (f , (s , η) , (r , ε)) = A , d , j , (φ , γ)
+blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , γ)
  where
   A : X → 𝓤 ⊔ 𝓥 ̇
   A x = Σ p ꞉ P , f x ≡ inl p
@@ -796,8 +856,8 @@ blemma {𝓤} {𝓥} {P} {X} σ i (f , (s , η) , (r , ε)) = A , d , j , (φ , 
                                                                     f x   ≡⟨ v    ⟩
                                                                     inr y ∎)))
 
-  j : is-prop (Σ A)
-  j (x , p , u) (x' , p' , u') = t
+  k : is-prop (Σ A)
+  k (x , p , u) (x' , p' , u') = t
    where
     q : x ≡ x'
     q = equivs-are-lc f ((s , η) , (r , ε)) (f x    ≡⟨ u               ⟩
@@ -805,7 +865,7 @@ blemma {𝓤} {𝓥} {P} {X} σ i (f , (s , η) , (r , ε)) = A , d , j , (φ , 
                                              inl p' ≡⟨ u' ⁻¹           ⟩
                                              f x'   ∎)
     t : x , p , u ≡ x' , p' , u'
-    t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P X (props-are-sets i) σ _ u'))
+    t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P X (props-are-sets i) j _ u'))
 
   φ : P → Σ A
   φ p = s (inl p) , p , η (inl p)
@@ -813,65 +873,58 @@ blemma {𝓤} {𝓥} {P} {X} σ i (f , (s , η) , (r , ε)) = A , d , j , (φ , 
   γ : Σ A → P
   γ (x , p , u) = p
 
-BKS⁺-lemma : {P : 𝓤 ̇ }
-           → is-prop P
-           → ℕ ≃ P + ℕ
-           → is-rosolini P
-BKS⁺-lemma = blemma ℕ-is-set
+rlemma : {P : 𝓤 ̇ }
+       → is-prop P
+       → ℕ ≃ P + ℕ
+       → is-rosolini P
+rlemma = blemma ℕ-is-set
 
 discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 discrete-CantorSchröderBernstein 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → is-discrete X → is-discrete Y → CSB X Y
 
+dlemma : (P : 𝓥 ̇ )
+       → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
+       → is-prop P → ℕ ≃ P + ℕ
+dlemma P csb i = b
+ where
+  a : (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
+  a = elemma zero succ
+       ℕ-is-set i
+        (ℕ-is-discrete zero)
+        (λ x (p : zero ≡ succ x) → positive-not-zero x (p ⁻¹))
+        succ-lc
+  b : ℕ ≃ P + ℕ
+  b = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) a
+
 discrete-CSB-gives-BKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
 discrete-CSB-gives-BKS⁺ csb P i = γ
  where
-  f : ℕ → P + ℕ
-  f = inr
-
-  j : is-embedding f
-  j = inr-is-embedding P ℕ
-
-  z : P → ℕ
-  z _ = 0
-
-  g : P + ℕ → ℕ
-  g = cases z succ
-
-  a : is-embedding z
-  a = maps-of-props-into-sets-are-embeddings z i ℕ-is-set
-
-  b : is-embedding succ
-  b = lc-maps-into-sets-are-embeddings succ succ-lc ℕ-is-set
-
-  c : disjoint-images z succ
-  c = λ (p : P) (x : ℕ) (q : zero ≡ succ x) → positive-not-zero x (q ⁻¹)
-
-  k : is-embedding g
-  k = disjoint-cases-embedding z succ a b c
-
   e : ℕ ≃ P + ℕ
-  e = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (f , j) (g , k)
+  e = dlemma P csb i
 
   γ : is-rosolini P
-  γ = BKS⁺-lemma i e
+  γ = rlemma i e
 
 \end{code}
 
 Added 18th Feb 2020. We make the last development above sharper, at
 the expense of assuming propositional extensionality (univalence for
-propositions):
+propositions).
+
+If we have a uniform way to get an equivalence ℕ ≃ P + ℕ for any
+proposition P, then excluded middle follows:
 
 \begin{code}
 
-clemma : funext 𝓤 𝓤
+ulemma : funext 𝓤 𝓤
        → propext 𝓤
        → ((P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ)
        → EM 𝓤
-clemma {𝓤} fe pe φ P i = γ
+ulemma {𝓤} fe pe φ P i = γ
  where
   A : 𝓤 ⁺ ̇
   A = Σ Q ꞉ 𝓤 ̇ , is-prop Q × Q
-  u : (Q : 𝓤 ̇) → is-prop (is-prop Q × Q)
+  u : (Q : 𝓤 ̇ ) → is-prop (is-prop Q × Q)
   u Q (j , q) = ×-is-prop (being-a-prop-is-a-prop fe) j (j , q)
   v : is-prop A
   v (Q , j , q) (Q' , j' , q') = to-subtype-≡ u s
@@ -902,37 +955,10 @@ discrete-CSB-gives-EM : funext 𝓥 𝓥
                       → propext 𝓥
                       → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
                       → EM 𝓥
-discrete-CSB-gives-EM {𝓥} fe pe csb = clemma fe pe φ
+discrete-CSB-gives-EM {𝓥} fe pe csb = ulemma fe pe φ
  where
   φ : (P : 𝓥 ̇ ) → is-prop P → ℕ ≃ P + ℕ
-  φ P i = e
-   where
-    f : ℕ → P + ℕ
-    f = inr
-
-    j : is-embedding f
-    j = inr-is-embedding P ℕ
-
-    z : P → ℕ
-    z _ = 0
-
-    g : P + ℕ → ℕ
-    g = cases z succ
-
-    a : is-embedding z
-    a = maps-of-props-into-sets-are-embeddings z i ℕ-is-set
-
-    b : is-embedding succ
-    b = lc-maps-into-sets-are-embeddings succ succ-lc ℕ-is-set
-
-    c : disjoint-images z succ
-    c = λ (p : P) (x : ℕ) (q : zero ≡ succ x) → positive-not-zero x (q ⁻¹)
-
-    k : is-embedding g
-    k = disjoint-cases-embedding z succ a b c
-
-    e : ℕ ≃ P + ℕ
-    e = csb ℕ (P + ℕ) ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (f , j) (g , k)
+  φ P = dlemma P csb
 
 \end{code}
 
@@ -948,7 +974,7 @@ work, has the advantage that if we weaken the statement of CSB to say
 that an unspecified (rather than designated) equivalence exists, for
 any two given embeddings in opposite directions,
 
-    (X ↪ Y) → (Y ↪ X) → ∥ X ≃ Y ∥.
+    (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥.
 
 one still gets excluded middle, as already remarked above. And it is
 is also nice and clear and short. Our argument, however, doesn't work
@@ -959,8 +985,3 @@ that Pradic and Brown use only one instance of CSB, for a given
 proposition, whereas we use a family of instances. In any case, in the
 other direction, excluded middle does give CSB with a designated
 equivalence in the conclusion, as previously shown above.
-
-Todo
-----
-
-Factor out some arguments that occur repeatedly.

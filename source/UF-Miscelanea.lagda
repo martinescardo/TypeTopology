@@ -203,3 +203,25 @@ C-B-embeddings-are-left-cancellable fe {α} {β} p = dfunext fe h
   h n = 𝟚-ℕ-embeddings-are-left-cancellable (ap (λ - → - n) p)
 
 \end{code}
+
+Added 19th Feb 2020:
+
+\begin{code}
+
+open import UF-Embeddings
+
+maps-of-props-into-h-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+                                                  → is-prop P
+                                                  → ((p : P) → is-h-isolated (f p))
+                                                  → is-embedding f
+maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' , j p' _ s')
+
+maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
+                                                  → is-prop P
+                                                  → ((p : P) → is-isolated (f p))
+                                                  → is-embedding f
+maps-of-props-into-isolated-points-are-embeddings f i j = maps-of-props-into-h-isolated-points-are-embeddings
+                                                           f i (λ p → isolated-is-h-isolated (f p) (j p))
+
+
+\end{code}
