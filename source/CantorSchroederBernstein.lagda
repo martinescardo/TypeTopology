@@ -924,7 +924,9 @@ holds. Otherwise, if it maps n to inl k for some k : ℕ, then P can't
 hold, for if it did we would have p : P, and hence P=𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
-at n.
+at n. In order to simplify the details of the proof, we work with the
+type T of true propositions, which is (contractible and hence) a
+subsingleton.
 
 \begin{code}
 
@@ -934,16 +936,16 @@ ulemma : funext 𝓤 𝓤
        → EM 𝓤
 ulemma {𝓤} fe pe φ P i = γ
  where
-  A : 𝓤 ⁺ ̇
-  A = Σ Q ꞉ 𝓤 ̇ , is-prop Q × Q
+  T : 𝓤 ⁺ ̇
+  T = Σ Q ꞉ 𝓤 ̇ , is-prop Q × Q
   u : (Q : 𝓤 ̇ ) → is-prop (is-prop Q × Q)
   u Q (j , q) = ×-is-prop (being-a-prop-is-a-prop fe) j (j , q)
-  v : is-prop A
+  v : is-prop T
   v (Q , j , q) (Q' , j' , q') = to-subtype-≡ u s
    where
     s : Q ≡ Q'
     s = pe j j' (λ _ → q') (λ _ → q)
-  f : A → ℕ
+  f : T → ℕ
   f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
   n : ℕ
   n = f (𝟙 , 𝟙-is-prop , *)
