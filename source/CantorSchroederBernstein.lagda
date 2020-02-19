@@ -1047,7 +1047,7 @@ definition of wCSB:
 
 \begin{code}
 
- open  wCSB-still-gives-EM pt
+ open wCSB-still-gives-EM pt
 
  discrete-wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
  discrete-wCantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → wCSB X Y
