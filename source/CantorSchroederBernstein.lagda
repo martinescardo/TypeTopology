@@ -772,8 +772,8 @@ See
 https://www.sciencedirect.com/science/article/pii/S0019357718303276
 for BKS⁺ (strong Brouwer-Kripke Schema) and the fact that together
 with Markov Principle it implies excluded middle (attributed to
-Moschovakis). The terminology "rosolini" is in connection with the
-Rosolini dominance from synthetic domain theory and topology.
+Moschovakis). The terminology "rosolini-data" is in connection with
+the Rosolini dominance from synthetic domain theory and topology.
 
 \begin{code}
 
