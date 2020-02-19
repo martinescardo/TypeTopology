@@ -924,9 +924,9 @@ holds. Otherwise, if it maps n to inl k for some k : ℕ, then P can't
 hold, for if it did we would have p : P, and hence P=𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
-at n. In order to simplify the details of the proof, we work with the
-type T of true propositions, which is (contractible and hence) a
-subsingleton.
+at n. In order to simplify the calculational details of the proof, we
+work with the type T of true propositions, which is (contractible and
+hence) a subsingleton by propositional extensionality.
 
 \begin{code}
 
