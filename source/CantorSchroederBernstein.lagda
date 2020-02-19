@@ -912,7 +912,16 @@ the expense of assuming propositional extensionality (univalence for
 propositions).
 
 If we have a uniform way to get an equivalence ℕ ≃ P + ℕ for any
-proposition P, then excluded middle follows:
+proposition P, given by a function
+
+ φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
+
+then we can use φ to decided P for any proposition P. The idea is to
+consider P=𝟙, and see which natural number n is mapped to inl * by the
+equivalence f given by φ. Now, for arbitrary P, if if f map n to inl p
+for some p, then P holds. Otherwise, if f maps n to inl k for some k :
+ℕ, then P can't hold, for if we had p : P, then we would have P=𝟙 by
+propositional extensionality, and f would have to map n to inl p.
 
 \begin{code}
 
