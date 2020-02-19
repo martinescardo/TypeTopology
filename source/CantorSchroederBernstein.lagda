@@ -173,20 +173,15 @@ econstruction {𝓤} {𝓥} {X} {P} x₀ s j i k d' lc = econstruction' z s i h 
 The Pradic-Brown argument uses the special case X = ℕ∞ with Zero and
 Succ, but, in Appendix II, we also consider X = ℕ with zero and succ.
 
-\begin{code}
-
-econstruction-ℕ∞ : funext 𝓤₀ 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → (ℕ∞ ↪ P + ℕ∞) × (P + ℕ∞ ↪ ℕ∞)
-econstruction-ℕ∞ fe i = econstruction Zero Succ
-                         (ℕ∞-is-set fe) i (finite-isolated fe zero) (λ x → Zero-not-Succ) Succ-lc
-\end{code}
-
 In the following, function extensionality is used to know that (1) ℕ∞
 is a set, (2) its finite elements (in particular zero) are isolated,
 (3) ℕ∞ is compact.
 
 \begin{code}
 
-
+econstruction-ℕ∞ : funext 𝓤₀ 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → (ℕ∞ ↪ P + ℕ∞) × (P + ℕ∞ ↪ ℕ∞)
+econstruction-ℕ∞ fe i = econstruction Zero Succ
+                         (ℕ∞-is-set fe) i (finite-isolated fe zero) (λ x → Zero-not-Succ) Succ-lc
 
 CSB-gives-EM : funext 𝓤₀ 𝓤₀
              → (P : 𝓤 ̇ )
