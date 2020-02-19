@@ -916,13 +916,14 @@ proposition P, given by a function
 
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
-then we can use φ to decide P for any proposition P. The idea is to
-first consider P=𝟙, and see which natural number n is mapped to inl *
-by the equivalence f given by φ. Then, for an arbitrary proposition P,
-if f maps n to inl p for some p, then P holds. Otherwise, if f maps n
-to inl k for some k : ℕ, then P can't hold, for if it did we would
-have p : P, and hence P=𝟙 by propositional extensionality, and f would
-have to map n to inl p.
+then we can use φ to decide P for any proposition P. To see this,
+first consider P=𝟙, and call n the natural number which is mapped to
+inl * by the equivalence given by φ. Then, for an arbitrary
+proposition P, if the equivalence maps n to inl p for some p, then P
+holds. Otherwise, if it maps n to inl k for some k : ℕ, then P can't
+hold, for if it did we would have p : P, and hence P=𝟙 by
+propositional extensionality, and the equivalence would have to map n
+to inl p.
 
 \begin{code}
 
@@ -945,12 +946,12 @@ ulemma {𝓤} fe pe φ P i = γ
   f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
   n : ℕ
   n = f (𝟙 , 𝟙-is-prop , *)
-  g : (k : ℕ) (s : ⌜ φ P i ⌝ n ≡ inr k) → ¬ P
-  g k s p = +disjoint' b
+  ν : (k : ℕ) (s : ⌜ φ P i ⌝ n ≡ inr k) → ¬ P
+  ν k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
     a = ap f (v _ _)
-    b = inr k                                 ≡⟨ s ⁻¹                          ⟩
+    b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
         ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ refl                          ⟩
         ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
@@ -958,8 +959,8 @@ ulemma {𝓤} fe pe φ P i = γ
 
   γ : P + ¬ P
   γ = equality-cases (⌜ φ P i ⌝ n)
-       (λ (p : P) (r : ⌜ φ P i ⌝ n ≡ inl p) → inl p)
-       (λ (k : ℕ) (s : ⌜ φ P i ⌝ n ≡ inr k) → inr (g k s))
+       (λ (p : P) (l : ⌜ φ P i ⌝ n ≡ inl p) → inl p)
+       (λ (k : ℕ) (r : ⌜ φ P i ⌝ n ≡ inr k) → inr (ν k r))
 
 discrete-CSB-gives-EM : funext 𝓥 𝓥
                       → propext 𝓥
