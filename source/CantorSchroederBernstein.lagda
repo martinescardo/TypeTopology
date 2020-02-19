@@ -957,7 +957,7 @@ define the function φ in the proof (without choice, which is stronger
 than what we want to prove, namely excluded middle). The reason is
 that Pradic and Brown use only one instance of CSB, for a given
 proposition, whereas we use a family of instances. In any case, in the
-opposite direction, excluded middle does give CSB with a designated
+other direction, excluded middle does give CSB with a designated
 equivalence in the conclusion, as previously shown above.
 
 Todo
