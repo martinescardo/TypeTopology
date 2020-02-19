@@ -1018,7 +1018,7 @@ any two given embeddings in opposite directions,
     (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥.
 
 one still gets excluded middle, as already remarked above. And it is
-is also nice and clear and short. Our argument, however, doesn't work
+also nice and clear and short. Our argument, however, doesn't work
 with this weakening, as in this case it is no longer possible to
 define the function φ in the proof (without choice, which is stronger
 than what we want to prove, namely excluded middle) to apply the
