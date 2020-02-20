@@ -96,15 +96,24 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
  is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ≡ y
 
- c-es  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-          → is-vv-equiv f ⇔ is-embedding f × is-surjection f
- c-es f = g , h
+ vv-equiv-iff-embedding-and-surjection  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                        → is-vv-equiv f ⇔ is-embedding f × is-surjection f
+ vv-equiv-iff-embedding-and-surjection f = g , h
   where
    g : is-vv-equiv f → is-embedding f × is-surjection f
-   g i = (λ y → pr₁(pr₁ c-es₁ (i y))) , (λ y → pr₂(pr₁ c-es₁ (i y)))
+   g i = (λ y → pr₁(pr₁ the-singletons-are-the-inhabited-propositions (i y))) ,
+         (λ y → pr₂(pr₁ the-singletons-are-the-inhabited-propositions (i y)))
 
    h : is-embedding f × is-surjection f → is-vv-equiv f
-   h (e , s) = λ y → pr₂ c-es₁ (e y , s y)
+   h (e , s) = λ y → pr₂ the-singletons-are-the-inhabited-propositions (e y , s y)
+
+ surjective-embeddings-are-vv-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                     → is-embedding f → is-surjection f → is-vv-equiv f
+ surjective-embeddings-are-vv-equivs f e s = pr₂ (vv-equiv-iff-embedding-and-surjection f) (e , s)
+
+ surjective-embeddings-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                  → is-embedding f → is-surjection f → is-equiv f
+ surjective-embeddings-are-equivs f e s = vv-equivs-are-equivs f (surjective-embeddings-are-vv-equivs f e s)
 
  corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                          → is-surjection (corestriction f)

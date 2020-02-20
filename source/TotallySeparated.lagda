@@ -1159,7 +1159,7 @@ apartness on it.
     e =  lc-maps-into-sets-are-embeddings η lc X'-is-set
 
     cm : is-vv-equiv η
-    cm = pr₂ (c-es η) (e , η-surjection)
+    cm = surjective-embeddings-are-vv-equivs η e η-surjection
 
 \end{code}
 

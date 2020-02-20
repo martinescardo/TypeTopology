@@ -625,6 +625,63 @@ EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe f
 
 \end{code}
 
+If the type X in the proof is connected, then every map of X into a
+set is constant. In particular, the property of being a g-point is
+constant, because the type of truth values is a set (assuming
+univalence for subsingletons). Hence, by excluded middle, it is
+constantly true or constantly false, and so h = g⁻¹ or h = f, which
+means that one of the embeddings f and g is already an equivalence.
+
+Mike Shulman observed that this is true even without excluded middle:
+If X is connected and we have an embedding g : Y → X and any function
+at all f : X → Y, then g is an equivalence. In fact, for any x : X, we
+have ∥ g(f(x)) = x ∥ since X is connected; thus g is (non-split)
+surjective. But a surjective embedding is an equivalence.
+
+\begin{code}
+
+module CSB-for-connected-types-without-EM (pt : propositional-truncations-exist) where
+
+ open PropositionalTruncation pt public
+ open import UF-Connected pt
+ open import UF-ImageAndSurjection
+ open ImageAndSurjection pt
+
+\end{code}
+
+We say that X is weakly connected ∥ x ≡ x' ∥ for all x and x' in X,
+and that it is connected if additionally ∥ X ∥ is pointed.
+
+\begin{code}
+
+ lemma : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X)
+       → is-wconnected X → is-embedding g → is-equiv g
+ lemma f g w e = surjective-embeddings-are-equivs g e s
+  where
+   a : ∀ x → ∥ g(f(x)) ≡ x ∥
+   a x = w (g (f x)) x
+   s : is-surjection g
+   s x = ∥∥-functor (λ p → (f x , p)) (a x)
+
+ cCSB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected Y → CSB X Y
+ cCSB  {𝓤} {𝓥} {X} {Y} w ((f , i) , (g , j)) = γ
+  where
+   γ : X ≃ Y
+   γ = f , lemma g f w i
+
+ cCSB' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected X → CSB X Y
+ cCSB'  {𝓤} {𝓥} {X} {Y} w e = ≃-sym (cCSB w (pr₂ e , (pr₁ e)))
+
+ wconnected-types-are-Dedekind-infinite : {X : 𝓤 ̇ }
+                                        → is-wconnected X
+                                        → (f : X → X) → is-embedding f → is-equiv f
+
+ wconnected-types-are-Dedekind-infinite w f = lemma f f w
+
+
+\end{code}
+
+
 
 APPENDIX I
 ----------
@@ -1098,5 +1155,5 @@ We now consider the propositional version of BKS⁺:
 \end{code}
 
 Notice that BKS⁺ also implies excluded middle in the presence of MP,
-because EM is a proposition (in any case, this was already proved by
+because EM is a proposition (in any case, this was already observed by
 Moschovakis, as discussed above).

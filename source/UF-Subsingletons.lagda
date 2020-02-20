@@ -134,7 +134,8 @@ refl-is-set X r {x} {.x} p refl = r x p
 
 \end{code}
 
-We now consider some machinery for dealing with the above notions:
+We now consider some machinery for dealing with the above notions,
+using weakly, or wildly, constant maps:
 
 \begin{code}
 
@@ -407,7 +408,7 @@ used in the following construction.
 
 \end{code}
 
-Unique existence
+Unique existence.
 
 \begin{code}
 
