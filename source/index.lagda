@@ -26,7 +26,7 @@ comments in the various modules.)
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module SafeModulesIndex where
+module index where
 
 \end{code}
 
@@ -45,6 +45,7 @@ import PartialElements
 import UF
 import Types2019
 import PCFModules -- by Tom de Jong
+
 \end{code}
 
 The last module (univalent foundations) has been developed, on demand,

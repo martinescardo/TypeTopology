@@ -1031,8 +1031,8 @@ discrete-CSB-gives-dBKS⁺ csb P i = γ
 
 \end{code}
 
-Added 18th Feb 2020. We make the last development above sharper, at
-the expense of assuming propositional extensionality (univalence for
+Added 18th Feb 2020. We make the 17 Feb 2020 delopment sharper, at the
+expense of assuming propositional extensionality (univalence for
 propositions).
 
 If we have a uniform way to get an equivalence ℕ ≃ P + ℕ for any

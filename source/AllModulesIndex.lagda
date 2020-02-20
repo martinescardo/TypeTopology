@@ -13,7 +13,7 @@
    A module dependency graph (updated manually from time to time) is
    available at https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf
 
-   Check our lecture notes (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html)
+   Check our lecture notes (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
    if you want to learn HoTT/UF and Agda:
 
    Click at the imported module names to navigate to them:
@@ -22,7 +22,7 @@
 
 {-# OPTIONS --without-K --exact-split #-}
 
-import SafeModulesIndex
+import index
 import UnsafeModulesIndex
 
 \end{code}
