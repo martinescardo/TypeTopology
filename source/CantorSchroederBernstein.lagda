@@ -1044,8 +1044,8 @@ can't hold, for if it did we would have p : P, and hence P=𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
 at n. In order to simplify the calculational details of the proof, we
-work with the type T of true propositions, which has 𝟙 as its center
-of contraction.
+work with the type T of true propositions, which is contractible with
+center of contraction 𝟙.
 
 \begin{code}
 
