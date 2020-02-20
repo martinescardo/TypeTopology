@@ -676,11 +676,11 @@ Of course, we can instead assume that X is wconnected:
 \begin{code}
 
  cCSB' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected X → CSB X Y
- cCSB'  {𝓤} {𝓥} {X} {Y} w e = ≃-sym (cCSB w (pr₂ e , pr₁ e))
+ cCSB' w e = ≃-sym (cCSB w (pr₂ e , pr₁ e))
 
 \end{code}
 
-Another direct corollary is that weakly connected types are Dedekind
+another direct corollary is that weakly connected types are dedekind
 finite:
 
 \begin{code}
@@ -876,19 +876,21 @@ Notice this is data on P rather than property of P because multiple
 A's apply to the same P, when P holds.
 
 Notice also that we don't need to require that each A n is a
-proposition, as this is automatic:
+proposition, as this is automatic because ℕ is a set:
 
 \begin{code}
 
-is-prop-total-gives-is-prop-each : (A : ℕ → 𝓤 ̇ ) → is-prop (Σ A) → (n : ℕ) → is-prop (A n)
-is-prop-total-gives-is-prop-each A i n a a' = t
+is-prop-total-gives-is-prop-each : {X : 𝓤 ̇} (A : X → 𝓥 ̇ )
+                                 → is-set X
+                                 → is-prop (Σ A) → (x : X) → is-prop (A x)
+is-prop-total-gives-is-prop-each A j i x a a' = t
  where
-  q : (n , a) ≡ (n , a')
-  q = i (n , a) (n , a')
+  q : (x , a) ≡ (x , a')
+  q = i (x , a) (x , a')
 
-  t = a                        ≡⟨ by-definition                                       ⟩
-      transport A refl       a ≡⟨ ap (- ↦ transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
-      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                         ⟩
+  t = a                        ≡⟨ by-definition                                ⟩
+      transport A refl       a ≡⟨ ap (- ↦ transport A - a) (j refl (ap pr₁ q)) ⟩
+      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                  ⟩
       a'                       ∎
 
 \end{code}
@@ -971,6 +973,9 @@ blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , 
                                                                     f x   ≡⟨ v    ⟩
                                                                     inr y ∎)))
 
+  l : (x : X) → is-prop (A x)
+  l x = Σ-is-prop i (λ p → +-is-set P X (props-are-sets i) j)
+
   k : is-prop (Σ A)
   k (x , p , u) (x' , p' , u') = t
    where
@@ -981,7 +986,7 @@ blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , 
                                              f x'   ∎)
 
     t : x , p , u ≡ x' , p' , u'
-    t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P X (props-are-sets i) j _ u'))
+    t = to-subtype-≡ l q
 
   φ : P → Σ A
   φ p = s (inl p) , p , η (inl p)
