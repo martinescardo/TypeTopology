@@ -860,13 +860,13 @@ See
 https://www.sciencedirect.com/science/article/pii/S0019357718303276
 for BKS⁺ (strong Brouwer-Kripke Schema) and the fact that together
 with Markov Principle it implies excluded middle (attributed to
-Moschovakis). The terminology "rosolini-data" is in connection with
+Moschovakis). The terminology "Rosolini-data" is in connection with
 the Rosolini dominance from synthetic domain theory and topology.
 
 \begin{code}
 
-rosolini-data : 𝓤 ̇ → 𝓤 ⁺ ̇
-rosolini-data {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
+Rosolini-data : 𝓤 ̇ → 𝓤 ⁺ ̇
+Rosolini-data {𝓤} P = Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n))
                                       × is-prop (Σ A)
                                       × (P ⇔ Σ A)
 
@@ -901,7 +901,7 @@ is data-valued rather than propositionally valued.
 \begin{code}
 
 dBKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
-dBKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → rosolini-data P
+dBKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → Rosolini-data P
 
 \end{code}
 
@@ -997,7 +997,7 @@ blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ
 rlemma : (P : 𝓤 ̇ )
        → is-prop P
        → ℕ ≃ P + ℕ
-       → rosolini-data P
+       → Rosolini-data P
 rlemma P = blemma P ℕ-is-set
 
 discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
@@ -1021,7 +1021,7 @@ discrete-CSB-gives-dBKS⁺ csb P i = γ
   e : ℕ ≃ P + ℕ
   e = dlemma P csb i
 
-  γ : rosolini-data P
+  γ : Rosolini-data P
   γ = rlemma P i e
 
 \end{code}
@@ -1147,11 +1147,11 @@ We now consider the propositional version of BKS⁺:
 
 \begin{code}
 
- is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-rosolini P = ∥ rosolini-data P ∥
+ is-Rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-Rosolini P = ∥ Rosolini-data P ∥
 
  BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
- BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-rosolini P
+ BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-Rosolini P
 
  discrete-wCSB-gives-BKS⁺ : discrete-wCantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
  discrete-wCSB-gives-BKS⁺ w P i = γ
@@ -1159,7 +1159,7 @@ We now consider the propositional version of BKS⁺:
    s : ∥ ℕ ≃ P + ℕ ∥
    s = w ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ P i)
 
-   γ : is-rosolini P
+   γ : is-Rosolini P
    γ = ∥∥-functor (rlemma P i) s
 
 \end{code}
