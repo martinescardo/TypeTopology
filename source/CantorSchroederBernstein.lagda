@@ -1058,10 +1058,13 @@ ulemma {𝓤} fe pe φ P i = γ
   u Q (j , q) = ×-is-prop (being-a-prop-is-a-prop fe) j (j , q)
 
   v : is-prop T
-  v (Q , j , q) (Q' , j' , q') = to-subtype-≡ u s
+  v (Q , j , q) (Q' , j' , q') = t
    where
     s : Q ≡ Q'
     s = pe j j' (λ _ → q') (λ _ → q)
+
+    t : Q , j , q ≡ Q' , j' , q'
+    t = to-subtype-≡ u s
 
   f : T → ℕ
   f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
@@ -1073,7 +1076,7 @@ ulemma {𝓤} fe pe φ P i = γ
   ν k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
-    a = ap f (v _ _)
+    a = ap f (v (𝟙 , 𝟙-is-prop , *) (P , i , p))
 
     b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
