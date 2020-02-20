@@ -22,6 +22,9 @@
 explaining part of what we do in this development. See instead the
 comments in the various modules.)
 
+There is also a module https://www.cs.bham.ac.uk/~mhe/agda-new/UnsafeModulesIndex.html which
+links some "unsafe" modules that use type theory beyond MLTT and HoTT/UF.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
