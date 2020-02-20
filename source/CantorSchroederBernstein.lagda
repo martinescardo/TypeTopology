@@ -961,7 +961,7 @@ blemma : {P : 𝓤 ̇ } {X : 𝓥 ̇ }
        → is-prop P
        → X ≃ P + X
        → Σ A ꞉ (X → 𝓤 ⊔ 𝓥 ̇ ) , ((x : X) → decidable (A x)) × is-prop (Σ A) × (P ⇔ Σ A)
-blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , γ)
+blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ)
  where
   A : X → 𝓤 ⊔ 𝓥 ̇
   A x = Σ p ꞉ P , f x ≡ inl p
@@ -973,11 +973,11 @@ blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , 
                                                                     f x   ≡⟨ v    ⟩
                                                                     inr y ∎)))
 
-  l : (x : X) → is-prop (A x)
-  l x = Σ-is-prop i (λ p → +-is-set P X (props-are-sets i) j)
+  k : (x : X) → is-prop (A x)
+  k x = Σ-is-prop i (λ p → +-is-set P X (props-are-sets i) j)
 
-  k : is-prop (Σ A)
-  k (x , p , u) (x' , p' , u') = t
+  l : is-prop (Σ A)
+  l (x , p , u) (x' , p' , u') = t
    where
     q : x ≡ x'
     q = equivs-are-lc f ((s , η) , (r , ε)) (f x    ≡⟨ u               ⟩
@@ -986,7 +986,7 @@ blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , 
                                              f x'   ∎)
 
     t : x , p , u ≡ x' , p' , u'
-    t = to-subtype-≡ l q
+    t = to-subtype-≡ k q
 
   φ : P → Σ A
   φ p = s (inl p) , p , η (inl p)
