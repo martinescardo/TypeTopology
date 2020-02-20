@@ -37,12 +37,12 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
              → X → image f
  corestriction f x = f x , ∣ x , refl ∣
 
- constant-maps-to-sets-have-propositional-images : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
+ wconstant-maps-to-sets-have-propositional-images : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
                                                  → is-set Y
                                                  → (f : X → Y)
-                                                 → constant f
+                                                 → wconstant f
                                                  → is-prop (image f)
- constant-maps-to-sets-have-propositional-images X s f c (y , p) (y' , p') =
+ wconstant-maps-to-sets-have-propositional-images X s f c (y , p) (y' , p') =
   to-Σ-≡ (∥∥-rec s (λ u → ∥∥-rec s (λ v → h u v) p') p ,
           ∥∥-is-a-prop _ p')
    where
@@ -52,35 +52,35 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                           f x' ≡⟨ e' ⟩
                           y'   ∎
 
- constant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
+ wconstant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
                                                → is-set Y
                                                → (f : X → Y)
-                                               → constant f
+                                               → wconstant f
                                                → ∥ X ∥ → image f
- constant-map-to-set-truncation-of-domain-map' X s f c =
+ wconstant-map-to-set-truncation-of-domain-map' X s f c =
   ∥∥-rec
-  (constant-maps-to-sets-have-propositional-images X s f c)
+  (wconstant-maps-to-sets-have-propositional-images X s f c)
   (corestriction f)
 
- constant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
+ wconstant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
                                               → is-set Y
                                               → (f : X → Y)
-                                              → constant f
+                                              → wconstant f
                                               → ∥ X ∥ → Y
- constant-map-to-set-truncation-of-domain-map X s f c =
-  restriction f ∘ constant-map-to-set-truncation-of-domain-map' X s f c
+ wconstant-map-to-set-truncation-of-domain-map X s f c =
+  restriction f ∘ wconstant-map-to-set-truncation-of-domain-map' X s f c
 
- constant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
+ wconstant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
                                                             (s : is-set Y)
                                                             (f : X → Y)
-                                                            (c : constant f)
-                                                          → f ∼ (constant-map-to-set-truncation-of-domain-map X s f c) ∘ ∣_∣
- constant-map-to-set-factors-through-truncation-of-domain X s f c = γ
+                                                            (c : wconstant f)
+                                                          → f ∼ (wconstant-map-to-set-truncation-of-domain-map X s f c) ∘ ∣_∣
+ wconstant-map-to-set-factors-through-truncation-of-domain X s f c = γ
   where
    g : ∥ X ∥ → image f
-   g = constant-map-to-set-truncation-of-domain-map' X s f c
+   g = wconstant-map-to-set-truncation-of-domain-map' X s f c
    p : is-prop (image f)
-   p = constant-maps-to-sets-have-propositional-images X s f c
+   p = wconstant-maps-to-sets-have-propositional-images X s f c
    γ : (x : X) → f x ≡ restriction f (g ∣ x ∣)
    γ x = f x                               ≡⟨ refl ⟩
          restriction f (corestriction f x) ≡⟨ ap (restriction f)

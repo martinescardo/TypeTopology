@@ -223,7 +223,7 @@ totally-separated-types-are-sets' fe X t = Id-collapsibles-are-sets h
   c : {x y : X} (r s : x ≡ y) → (λ p → ap p r) ≡ (λ p → ap p s)
   c r s = b(λ p → ap p r) (λ p → ap p s)
 
-  g : {x y : X} → constant(f {x} {y})
+  g : {x y : X} → wconstant(f {x} {y})
   g r s = ap t (c r s)
 
   h : Id-collapsible X

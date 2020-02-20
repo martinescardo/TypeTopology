@@ -114,7 +114,7 @@ roots α = Σ n ꞉ ℕ , α n ≡ z
   f : ¬(α n ≢ z) → ¬(n < μρ-root α (m , p))
   f = contrapositive (pr₂(pr₂(pr₂ (minimal-root α m p))) n)
 
-μρ-constant : (α : ℕ → Z) → constant (μρ α)
+μρ-constant : (α : ℕ → Z) → wconstant (μρ α)
 μρ-constant α (n , p) (n' , p') = r
  where
   m m' : ℕ

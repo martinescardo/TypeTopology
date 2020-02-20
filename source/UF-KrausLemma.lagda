@@ -15,11 +15,11 @@ open import UF-Subsingletons
 fix : {X : 𝓤 ̇ } → (f : X → X) → 𝓤 ̇
 fix f = Σ x ꞉ domain f , x ≡ f x
 
-key-lemma : {X Y : 𝓤 ̇ } (f : X → Y) (g : constant f) {x y : X} (p : x ≡ y)
+key-lemma : {X Y : 𝓤 ̇ } (f : X → Y) (g : wconstant f) {x y : X} (p : x ≡ y)
          → ap f p ≡ (g x x)⁻¹ ∙ g x y
 key-lemma f g {x} refl = sym-is-inverse (g x x)
 
-key-insight : {X Y : 𝓤 ̇ } (f : X → Y) → constant f → {x : X} (p : x ≡ x) → ap f p ≡ refl
+key-insight : {X Y : 𝓤 ̇ } (f : X → Y) → wconstant f → {x : X} (p : x ≡ x) → ap f p ≡ refl
 key-insight f g p = key-lemma f g p ∙ (sym-is-inverse(g _ _))⁻¹
 
 transport-identifications-along-identifications : {X Y : 𝓤 ̇ } {x y : X} (p : x ≡ y) (h k : X → Y) (q : h x ≡ k x)
@@ -31,7 +31,7 @@ transport-identifications-along-identifications' : {X : 𝓤 ̇ } {x : X} (p : x
 transport-identifications-along-identifications'  p f q = transport-identifications-along-identifications p id f q
                                     ∙ ap (λ - → - ⁻¹ ∙ q ∙ (ap f p)) ((ap-id-is-id p)⁻¹)
 
-Kraus-Lemma : {X : 𝓤 ̇ } → (f : X → X) → constant f → is-prop(fix f)
+Kraus-Lemma : {X : 𝓤 ̇ } → (f : X → X) → wconstant f → is-prop(fix f)
 Kraus-Lemma {𝓤} {X} f g (x , p) (y , q) =
   -- p : x ≡ f x
   -- q : y ≡ f y
@@ -68,13 +68,13 @@ Kraus-Lemma {𝓤} {X} f g (x , p) (y , q) =
 from-fix : {X : 𝓤 ̇ } (f : X → X) → fix f → X
 from-fix f = pr₁
 
-to-fix : {X : 𝓤 ̇ } (f : X → X) → constant f → X → fix f
+to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f → X → fix f
 to-fix f g x = (f x , g x (f x))
 
 \end{code}
 
 A main application is to show that, in pure spartan MLTT, if a type
-has a constant endfunction then it has a propositional truncation.
+has a wconstant endfunction then it has a propositional truncation.
 
 \begin{code}
 

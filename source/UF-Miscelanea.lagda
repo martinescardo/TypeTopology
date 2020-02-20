@@ -46,7 +46,7 @@ being-discrete-is-a-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolat
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
  where
-  γ : (y : X) → decidable (x ≡ y) → Σ f ꞉ (x ≡ y → x ≡ y) , constant f
+  γ : (y : X) → decidable (x ≡ y) → Σ f ꞉ (x ≡ y → x ≡ y) , wconstant f
   γ y (inl p) = (λ _ → p) , (λ q r → refl)
   γ y (inr n) = id , (λ q r → 𝟘-elim (n r))
 

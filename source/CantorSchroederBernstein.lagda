@@ -181,7 +181,7 @@ is a set, (2) its finite elements (in particular zero) are isolated,
 
 econstruction-ℕ∞ : funext 𝓤₀ 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → (ℕ∞ ↪ P + ℕ∞) × (P + ℕ∞ ↪ ℕ∞)
 econstruction-ℕ∞ fe i = econstruction Zero Succ
-                         (ℕ∞-is-set fe) i (finite-isolated fe zero) (λ x → Zero-not-Succ) Succ-lc
+                         (ℕ∞-is-set fe) i (finite-isolated fe zero) (x ↦ Zero-not-Succ) Succ-lc
 
 CSB-gives-EM : funext 𝓤₀ 𝓤₀
              → (P : 𝓤 ̇ )
@@ -239,8 +239,10 @@ module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
   where
    s : ∥ ℕ∞ ≃ P + ℕ∞ ∥
    s = w (econstruction-ℕ∞ fe₀ i)
+
    t : ℕ∞ ≃ P + ℕ∞ → P + ¬ P
    t e = Pradic-Brown-lemma (equiv-retract-r e) (ℕ∞-Compact fe₀)
+
    γ : P + ¬ P
    γ = ∥∥-rec (decidability-of-prop-is-prop fe i) t s
 
@@ -435,9 +437,11 @@ left-cancellability of h:
         so-use (g (f x)      ≡⟨ ap g p            ⟩
                 g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
                 x'           ∎)
+
     u : ¬ is-g-point (g (f x))
     u = have ν ∶ ¬ is-g-point x
         so-apply contrapositive (α x)
+
     v : ¬ is-g-point x'
     v = transport (- ↦ ¬ is-g-point -) q u
 
@@ -527,8 +531,10 @@ doesn't refer to the notion of f-point.
       q = have p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
                  ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y
           so-apply embeddings-are-left-cancellable g g-is-emb
+
       a : fiber f y
       a = ((g ∘ f) ^ n) x₀ , q
+
       b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
       b = assume γ ∶ is-g-point (((g ∘ f) ^ n) x₀)
           then (have γ x₀ n refl ∶ fiber g x₀
@@ -571,20 +577,26 @@ purpose.
       w : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
       w = have ν ∶ ¬ is-g-point (g y)
           so-apply claim y
+
       x : X
       x = fiber-point f y (pr₁ w)
+
       p : f x ≡ y
       p = fiber-path f y (pr₁ w)
+
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
       ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
                   f x         ≡⟨ p             ⟩
                   y           ∎
+
     b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))
+
     x : X
     x = pr₁ b
+
     p : h x ≡ y
     p = h x       ≡⟨ by-construction ⟩
         H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
@@ -659,10 +671,12 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     q = g (f x)      ≡⟨ ap g p            ⟩
         g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
         x'           ∎
+
     u : ¬ is-g-point (g (f x))
     u = contrapositive (α x) ν
+
     v : ¬ is-g-point x'
-    v = transport (λ - → ¬ is-g-point -) q u
+    v = transport (- ↦ ¬ is-g-point -) q u
 
   being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
   being-g-point-is-a-prop x = Π-is-prop fe (λ x₀ → Π-is-prop fe₁ (λ _ → Π-is-prop fe (λ _ → g-is-emb x₀)))
@@ -710,8 +724,10 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     where
      q : f (((g ∘ f) ^ n) x₀) ≡ y
      q = embeddings-are-left-cancellable g g-is-emb p
+
      a : fiber f y
      a = ((g ∘ f) ^ n) x₀ , q
+
      b : ¬ is-g-point (((g ∘ f) ^ n) x₀)
      b γ = 𝟘-elim (u (γ x₀ n refl))
 
@@ -737,16 +753,20 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
      where
       w : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
       w = claim y ν
+
       x : X
       x = fiber-point f y (pr₁ w)
+
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = 𝟘-elim (pr₂ w γ)
       ψ (inr ν) = fiber-path f y (pr₁ w)
 
     b : Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))
+
     x : X
     x = pr₁ b
+
     p : h x ≡ y
     p = h x       ≡⟨ by-construction ⟩
         H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
@@ -797,9 +817,10 @@ is-prop-total-gives-is-prop-each A i n a a' = t
  where
   q : (n , a) ≡ (n , a')
   q = i (n , a) (n , a')
-  t = a                        ≡⟨ by-definition                                         ⟩
-      transport A refl       a ≡⟨ ap (λ - → transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
-      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                           ⟩
+
+  t = a                        ≡⟨ by-definition                                       ⟩
+      transport A refl       a ≡⟨ ap (- ↦ transport A - a) (ℕ-is-set refl (ap pr₁ q)) ⟩
+      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                         ⟩
       a'                       ∎
 
 \end{code}
@@ -826,8 +847,8 @@ MP 𝓤 = (A : ℕ → 𝓤 ̇ ) → ((n : ℕ) → decidable (A n)) → is-prop
 
 \end{code}
 
-The following, which derives double negation elimination from BKS⁺ and
-MP, is formulated and proved in pure (spartan) MLTT:
+The following, which derives double negation elimination from dBKS⁺
+and MP, is formulated and proved in pure (spartan) MLTT:
 
 \begin{code}
 
@@ -840,8 +861,10 @@ dBKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
    where
     f' : ¬¬ P → ¬¬ Σ A
     f' = double-contrapositive f
+
     h : ¬¬ Σ A → Σ A
     h = mp A d j
+
     dne : ¬¬ P → P
     dne = g ∘ h ∘ f'
 
@@ -888,6 +911,7 @@ blemma {𝓤} {𝓥 } {P} {X} j i (f , (s , η) , (r , ε)) = A , d , k , (φ , 
                                              inl p  ≡⟨ ap inl (i p p') ⟩
                                              inl p' ≡⟨ u' ⁻¹           ⟩
                                              f x'   ∎)
+
     t : x , p , u ≡ x' , p' , u'
     t = to-Σ-≡ (q , to-Σ-≡ (i _ p' , +-is-set P X (props-are-sets i) j _ u'))
 
@@ -909,14 +933,14 @@ discrete-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → 
 econstruction-ℕ : {P : 𝓤 ̇ } → is-prop P → (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
 econstruction-ℕ i = econstruction zero succ
                      ℕ-is-set i
-                      (ℕ-is-discrete zero)
-                      (λ x (p : zero ≡ succ x) → positive-not-zero x (p ⁻¹))
-                      succ-lc
+                     (ℕ-is-discrete zero)
+                     (λ (x : ℕ) (p : zero ≡ succ x) → positive-not-zero x (p ⁻¹))
+                     succ-lc
 
 dlemma : {P : 𝓥 ̇ }
        → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
        → is-prop P → ℕ ≃ P + ℕ
-dlemma {𝓥} {P} csb i = csb ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ i)
+dlemma csb i = csb ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ i)
 
 discrete-CSB-gives-dBKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → dBKS⁺ 𝓥
 discrete-CSB-gives-dBKS⁺ csb P i = γ
@@ -939,7 +963,7 @@ proposition P, given by a function
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
 then we can use φ to decide P for any proposition P. To see this,
-first consider P=𝟙, and call n the natural number which is mapped to
+first consider P=𝟙, and let n be the natural number that is mapped to
 inl * by the equivalence given by φ. Then, for an arbitrary
 proposition P, if the equivalence maps n to inl p for some p, we have
 that P holds. Otherwise, if it maps n to inl k for some k : ℕ, then P
@@ -960,22 +984,28 @@ ulemma {𝓤} fe pe φ P i = γ
  where
   T : 𝓤 ⁺ ̇
   T = Σ Q ꞉ 𝓤 ̇ , is-prop Q × Q
+
   u : (Q : 𝓤 ̇ ) → is-prop (is-prop Q × Q)
   u Q (j , q) = ×-is-prop (being-a-prop-is-a-prop fe) j (j , q)
+
   v : is-prop T
   v (Q , j , q) (Q' , j' , q') = to-subtype-≡ u s
    where
     s : Q ≡ Q'
     s = pe j j' (λ _ → q') (λ _ → q)
+
   f : T → ℕ
   f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
+
   n : ℕ
   n = f (𝟙 , 𝟙-is-prop , *)
+
   ν : (k : ℕ) → ⌜ φ P i ⌝ n ≡ inr k → ¬ P
   ν k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
     a = ap f (v _ _)
+
     b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
         ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition                 ⟩
@@ -1025,8 +1055,8 @@ previously shown above.
 
 Added 19th Feb 2020: In light of the above discussion, notice that the
 17th Feb 2020 development has its merits, after all, compared to the
-18th Feb development. We don't get excluded middle if we weaken CSB,
-but we do get BKS⁺.
+18th Feb 2020 development. We don't get excluded middle if we weaken
+CSB, but we do get BKS⁺.
 
 \begin{code}
 
@@ -1034,8 +1064,8 @@ module discrete-wCSB-gives-BKS⁺ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-We open the module wCSB-still-gives-EM only to have access to the
-definition of wCSB:
+We open the following module only to have access to the definition of
+wCSB:
 
 \begin{code}
 
@@ -1051,7 +1081,7 @@ We now consider the propositional version of BKS⁺:
 \begin{code}
 
  is-rosolini : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-rosolini {𝓤} P = ∥ rosolini-data P ∥
+ is-rosolini P = ∥ rosolini-data P ∥
 
  BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
  BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-rosolini P
@@ -1061,6 +1091,7 @@ We now consider the propositional version of BKS⁺:
   where
    s : ∥ ℕ ≃ P + ℕ ∥
    s = w ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ i)
+
    γ : is-rosolini P
    γ = ∥∥-functor (rlemma i) s
 

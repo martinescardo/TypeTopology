@@ -138,19 +138,19 @@ We now consider some machinery for dealing with the above notions:
 
 \begin{code}
 
-constant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
-constant f = ∀ x y → f x ≡ f y
+wconstant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (f : X → Y) → 𝓤 ⊔ 𝓥 ̇
+wconstant f = ∀ x y → f x ≡ f y
 
-constant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                  → constant f → constant (g ∘ f)
-constant-pre-comp f g c x x' = ap g (c x x')
+wconstant-pre-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
+                   → wconstant f → wconstant (g ∘ f)
+wconstant-pre-comp f g c x x' = ap g (c x x')
 
-constant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-                   → constant g → constant (g ∘ f)
-constant-post-comp f g c x x' = c (f x) (f x')
+wconstant-post-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
+                    → wconstant g → wconstant (g ∘ f)
+wconstant-post-comp f g c x x' = c (f x) (f x')
 
 collapsible : 𝓤 ̇ → 𝓤 ̇
-collapsible X = Σ f ꞉ (X → X) , constant f
+collapsible X = Σ f ꞉ (X → X) , wconstant f
 
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
 Id-collapsible X = {x y : X} → collapsible(x ≡ y)

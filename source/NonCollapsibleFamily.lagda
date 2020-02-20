@@ -18,7 +18,7 @@ lemma X a c = equal-or-different
  where
   κ : (x : X) → (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x
   κ x = pr₁(c x)
-  κ-constant : (x : X) → constant(κ x)
+  κ-constant : (x : X) → wconstant(κ x)
   κ-constant x = pr₂(c x)
 
   prop-fix : (x : X) → is-prop(fix(κ x))

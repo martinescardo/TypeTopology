@@ -155,7 +155,7 @@ extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp x y l l')
                                              (≼-prop-valued-order fe isp y x m m')
-  κ : {x y : X} → constant (f {x} {y})
+  κ : {x y : X} → wconstant (f {x} {y})
   κ p q = ec
 
 well-ordered-types-are-sets : FunExt → is-well-order → is-set X

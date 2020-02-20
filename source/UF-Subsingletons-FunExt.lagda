@@ -61,7 +61,7 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
   j X = ×-prop-criterion ((λ _ → being-a-prop-is-a-prop fe) ,
                           (λ l → ×-is-prop (Π-is-prop fe (λ x → i))
                                             (Π-is-prop fe (λ p → l))))
-  k : (X : 𝓤 ̇ ) → constant (g X ∘ f X)
+  k : (X : 𝓤 ̇ ) → wconstant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
 being-a-singleton-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop(is-singleton X)
@@ -149,10 +149,10 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
   h p q (u , v) = Ω-ext fe pe u v
   f  : (p q : Ω 𝓤) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
-  constant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
-  constant-f p q d e = ap (h p q) (A-is-prop p q (g p q d) (g p q e))
-  pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , constant f
-  pc {p} {q} = (f p q , constant-f p q)
+  wconstant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
+  wconstant-f p q d e = ap (h p q) (A-is-prop p q (g p q d) (g p q e))
+  pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , wconstant f
+  pc {p} {q} = (f p q , wconstant-f p q)
 
 powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
                    → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)

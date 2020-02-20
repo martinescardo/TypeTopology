@@ -280,7 +280,7 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
 ⊥-⊤-density' : funext 𝓤 𝓤 → propext 𝓤
              → ∀ {𝓥} {X : 𝓥 ̇ }
              → is-separated X
-             → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤ → constant f
+             → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤ → wconstant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
     a : ∀ p → ¬¬(f p ≡ f ⊤)

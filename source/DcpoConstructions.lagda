@@ -698,11 +698,11 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
                     → (Σ i ꞉ I , is-defined (α i)) → X
    family-value-map α (i , d) = value (α i) d
 
-   directed-family-value-map-is-constant : {I : 𝓤₀ ̇}
-                                         → (α : I → 𝓛 X)
-                                         → (δ : is-directed _⊑'_ α )
-                                         → constant (family-value-map α)
-   directed-family-value-map-is-constant {I} α δ (i₀ , d₀) (i₁ , d₁) =
+   directed-family-value-map-is-wconstant : {I : 𝓤₀ ̇}
+                                          → (α : I → 𝓛 X)
+                                          → (δ : is-directed _⊑'_ α )
+                                          → wconstant (family-value-map α)
+   directed-family-value-map-is-wconstant {I} α δ (i₀ , d₀) (i₁ , d₁) =
     γ (is-directed-order _⊑'_ α δ i₀ i₁)
      where
       f : Σ (λ i → is-defined (α i)) → X
@@ -724,9 +724,9 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
                      → (δ : is-directed _⊑'_ α )
                      → (∃ i ꞉ I , is-defined (α i)) → X
    lifting-sup-value {I} α δ =
-    constant-map-to-set-truncation-of-domain-map
+    wconstant-map-to-set-truncation-of-domain-map
      (Σ i ꞉ I , is-defined (α i))
-     s (family-value-map α) (directed-family-value-map-is-constant α δ)
+     s (family-value-map α) (directed-family-value-map-is-wconstant α δ)
 
    lifting-sup : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
    lifting-sup {I} α δ =
@@ -747,10 +747,10 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
              lifting-sup-value α δ (f d)   ≡⟨ refl ⟩
              value (lifting-sup α δ) (f d) ∎
         where
-         p = constant-map-to-set-factors-through-truncation-of-domain
+         p = wconstant-map-to-set-factors-through-truncation-of-domain
               (Σ j ꞉ I , is-defined (α j)) s
               (family-value-map α)
-              (directed-family-value-map-is-constant α δ)
+              (directed-family-value-map-is-wconstant α δ)
               (i , d)
 
    family-defined-somewhere-sup-≡ : {I : 𝓤₀ ̇} {α : I → 𝓛 X}
