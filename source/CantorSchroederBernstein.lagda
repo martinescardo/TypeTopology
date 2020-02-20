@@ -676,20 +676,19 @@ Of course, we can instead assume that X is connected:
 \begin{code}
 
  cCSB' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected X → CSB X Y
- cCSB'  {𝓤} {𝓥} {X} {Y} w e = ≃-sym (cCSB w (pr₂ e , (pr₁ e)))
+ cCSB'  {𝓤} {𝓥} {X} {Y} w e = ≃-sym (cCSB w (pr₂ e , pr₁ e))
 
 \end{code}
 
-Another direct corollary is that weakly connected types are Dedeking
-infinite (but of course not finite, because the one-point type 𝟙 is
-connected and finite):
+Another direct corollary is that weakly connected types are Dedekind
+finite:
 
 \begin{code}
 
- wconnected-types-are-Dedekind-infinite : {X : 𝓤 ̇ }
-                                        → is-wconnected X
-                                        → (f : X → X) → is-embedding f → is-equiv f
- wconnected-types-are-Dedekind-infinite w f = lemma f f w
+ wconnected-types-are-Dedekind-finite : {X : 𝓤 ̇ }
+                                      → is-wconnected X
+                                      → (f : X → X) → is-embedding f → is-equiv f
+ wconnected-types-are-Dedekind-finite w f = lemma f f w
 
 \end{code}
 
