@@ -1071,7 +1071,7 @@ ulemma {𝓤} fe pe φ = em
   ν P i k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
-    a = ap f (c (P , (λ x → i x) , p))
+    a = ap f (c (P , i , p))
 
     b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
