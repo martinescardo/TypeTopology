@@ -671,7 +671,7 @@ and that it is connected if additionally ∥ X ∥ is pointed.
 
 \end{code}
 
-Of course, we can instead assume that X is connected:
+Of course, we can instead assume that X is wconnected:
 
 \begin{code}
 

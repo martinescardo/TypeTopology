@@ -150,6 +150,7 @@ import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
+import UF-Connected
 import UF-Embeddings
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt
