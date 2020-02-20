@@ -1053,34 +1053,25 @@ ulemma : funext 𝓤 𝓤
        → propext 𝓤
        → ((P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ)
        → EM 𝓤
-ulemma {𝓤} fe pe φ P i = γ
+ulemma {𝓤} fe pe φ = em
  where
   T : 𝓤 ⁺ ̇
-  T = Σ Q ꞉ 𝓤 ̇ , is-prop Q × Q
+  T = Σ P ꞉ 𝓤 ̇ , is-prop P × P
 
-  u : (Q : 𝓤 ̇ ) → is-prop (is-prop Q × Q)
-  u Q (j , q) = ×-is-prop (being-a-prop-is-a-prop fe) j (j , q)
-
-  v : is-prop T
-  v (Q , j , q) (Q' , j' , q') = t
-   where
-    s : Q ≡ Q'
-    s = pe j j' (λ _ → q') (λ _ → q)
-
-    t : Q , j , q ≡ Q' , j' , q'
-    t = to-subtype-≡ u s
+  t : is-prop T
+  t = singletons-are-props (the-true-props-form-a-singleton-type fe pe)
 
   f : T → ℕ
-  f (Q , j , q) = ⌜ ≃-sym (φ Q j) ⌝ (inl q)
+  f (P , i , p) = ⌜ ≃-sym (φ P i) ⌝ (inl p)
 
   n : ℕ
   n = f (𝟙 , 𝟙-is-prop , *)
 
-  ν : (k : ℕ) → ⌜ φ P i ⌝ n ≡ inr k → ¬ P
-  ν k r p = +disjoint' b
+  ν : (P : 𝓤 ̇ ) (i : is-prop P) (k : ℕ) → ⌜ φ P i ⌝ n ≡ inr k → ¬ P
+  ν P i k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
-    a = ap f (v (𝟙 , 𝟙-is-prop , *) (P , i , p))
+    a = ap f (t (𝟙 , 𝟙-is-prop , *) (P , i , p))
 
     b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
@@ -1088,10 +1079,10 @@ ulemma {𝓤} fe pe φ P i = γ
         ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
         inl p                                 ∎
 
-  γ : P + ¬ P
-  γ = equality-cases (⌜ φ P i ⌝ n)
-       (λ (p : P) (l : ⌜ φ P i ⌝ n ≡ inl p) → inl p)
-       (λ (k : ℕ) (r : ⌜ φ P i ⌝ n ≡ inr k) → inr (ν k r))
+  em : (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
+  em P i = equality-cases (⌜ φ P i ⌝ n)
+           (λ (p : P) (l : ⌜ φ P i ⌝ n ≡ inl p) → inl p)
+           (λ (k : ℕ) (r : ⌜ φ P i ⌝ n ≡ inr k) → inr (ν P i k r))
 
 discrete-CSB-gives-EM : funext 𝓥 𝓥
                       → propext 𝓥

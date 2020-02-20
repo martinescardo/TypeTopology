@@ -230,3 +230,24 @@ as this is where negations take values in.
 ⊥-is-not-⊤ b = 𝟘-elim(𝟘-is-not-𝟙 (ap _holds b))
 
 \end{code}
+
+Sometimes it is convenient to work with the type of true propositions,
+which is a singleton and hence a subsingleton. But we will leave this
+type nameless:
+
+\begin{code}
+
+the-true-props-form-a-singleton-type : funext 𝓤 𝓤 → propext 𝓤
+                                     → is-singleton (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
+the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , *) , γ
+ where
+  φ : ∀ P → is-prop (is-prop P × P)
+  φ P (i , p) = ×-is-prop (being-a-prop-is-a-prop fe) i (i , p)
+
+  γ : ∀ σ → (𝟙 , 𝟙-is-prop , *) ≡ σ
+  γ (P , i , p) = to-subtype-≡ φ s
+   where
+    s : 𝟙 ≡ P
+    s = pe 𝟙-is-prop i (λ _ → p) (λ _ → *)
+
+\end{code}
