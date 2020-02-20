@@ -805,7 +805,7 @@ Compact-pointed-gives-Compact∙ : {X : 𝓤 ̇ } → Compact X {𝓥} → X →
 Compact-pointed-gives-Compact∙ {𝓤} {𝓥} {X} c x₀ A δ = γ (c A' δ')
  where
   A' : X → 𝓥 ̇
-  A' x = ¬(A x)
+  A' x = ¬ A x
   δ' : detachable A'
   δ' x = ¬-preserves-decidability (δ x)
   γ : decidable (Σ A') → Σ x₀ ꞉ X , (A x₀ → (x : X) → A x)

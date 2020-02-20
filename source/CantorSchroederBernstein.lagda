@@ -272,8 +272,8 @@ post
 
   https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
 
-first. However, we have tried to make the proof understandable as we
-can here, and hopefully it should be possible to read it without
+first. However, we have tried to make the proof as understandable as
+we can here, and hopefully it should be possible to read it without
 reference to the blog post.
 
 \begin{code}
@@ -649,7 +649,7 @@ module CSB-for-connected-types-without-EM (pt : propositional-truncations-exist)
 
 \end{code}
 
-We say that X is weakly connected ∥ x ≡ x' ∥ if for all x and x' in X,
+We say that X is weakly connected if ∥ x ≡ x' ∥ for all x and x' in X,
 and that it is connected if additionally ∥ X ∥ is pointed.
 
 \begin{code}
@@ -680,7 +680,7 @@ Of course, we can instead assume that X is wconnected:
 
 \end{code}
 
-Another direct corollary is that weakly connected types are dedekind
+Another direct corollary is that weakly connected types are Dedekind
 finite:
 
 \begin{code}
