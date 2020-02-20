@@ -664,7 +664,7 @@ and that it is connected if additionally ∥ X ∥ is pointed.
    s x = ∥∥-functor (λ p → (f x , p)) (a x)
 
  cCSB : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-wconnected Y → CSB X Y
- cCSB  {𝓤} {𝓥} {X} {Y} w ((f , i) , (g , j)) = γ
+ cCSB  {𝓤} {𝓥} {X} {Y} w ((f , i) , (g , _)) = γ
   where
    γ : X ≃ Y
    γ = f , lemma g f w i
@@ -680,7 +680,7 @@ Of course, we can instead assume that X is wconnected:
 
 \end{code}
 
-another direct corollary is that weakly connected types are dedekind
+Another direct corollary is that weakly connected types are dedekind
 finite:
 
 \begin{code}
@@ -1044,8 +1044,8 @@ can't hold, for if it did we would have p : P, and hence P=𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
 at n. In order to simplify the calculational details of the proof, we
-work with the type T of true propositions, which is (contractible and
-hence) a subsingleton by propositional extensionality.
+work with the type T of true propositions, which has 𝟙 as its center
+of contraction.
 
 \begin{code}
 
@@ -1058,8 +1058,8 @@ ulemma {𝓤} fe pe φ = em
   T : 𝓤 ⁺ ̇
   T = Σ P ꞉ 𝓤 ̇ , is-prop P × P
 
-  t : is-prop T
-  t = singletons-are-props (the-true-props-form-a-singleton-type fe pe)
+  c : (t : T) → (𝟙 , 𝟙-is-prop , *) ≡ t
+  c = 𝟙-is-true-props-center fe pe
 
   f : T → ℕ
   f (P , i , p) = ⌜ ≃-sym (φ P i) ⌝ (inl p)
@@ -1071,7 +1071,7 @@ ulemma {𝓤} fe pe φ = em
   ν P i k r p = +disjoint' b
    where
     a : n ≡ f (P , i , p)
-    a = ap f (t (𝟙 , 𝟙-is-prop , *) (P , i , p))
+    a = ap f (c (P , (λ x → i x) , p))
 
     b = inr k                                 ≡⟨ r ⁻¹                          ⟩
         ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩

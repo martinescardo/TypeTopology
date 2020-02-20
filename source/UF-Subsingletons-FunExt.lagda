@@ -237,9 +237,9 @@ type nameless:
 
 \begin{code}
 
-the-true-props-form-a-singleton-type : funext 𝓤 𝓤 → propext 𝓤
-                                     → is-singleton (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
-the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , *) , γ
+𝟙-is-true-props-center : funext 𝓤 𝓤 → propext 𝓤
+                       → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , *) ≡ σ
+𝟙-is-true-props-center fe pe = γ
  where
   φ : ∀ P → is-prop (is-prop P × P)
   φ P (i , p) = ×-is-prop (being-a-prop-is-a-prop fe) i (i , p)
@@ -249,5 +249,14 @@ the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , *) , γ
    where
     s : 𝟙 ≡ P
     s = pe 𝟙-is-prop i (λ _ → p) (λ _ → *)
+
+the-true-props-form-a-singleton-type : funext 𝓤 𝓤 → propext 𝓤
+                                     → is-singleton (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
+the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , *) , 𝟙-is-true-props-center fe pe
+
+
+the-true-props-form-a-prop : funext 𝓤 𝓤 → propext 𝓤
+                           → is-prop (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
+the-true-props-form-a-prop fe pe = singletons-are-props (the-true-props-form-a-singleton-type fe pe)
 
 \end{code}
