@@ -267,8 +267,8 @@ For foundational reasons, we make clear which instances of function
 extensionality and excluded middle are needed to conclude
 Cantor-Schröder-Bernstein for arbitrary universes 𝓤 and 𝓥.
 
-Added 28th January. To better understand this proof, you may consult the blog
-post
+Added 28th January. To better understand this proof, the reader may
+consult the blog post
 
   https://homotopytypetheory.org/2020/01/26/the-cantor-schroder-bernstein-theorem-for-∞-groupoids/
 
@@ -849,19 +849,24 @@ APPENDIX II
 -----------
 
 Added 17th Feb 2020. A stronger result is added below, 18th Feb 2020,
-with a technically and conceptually simpler proof.
+with a technically and conceptually simpler proof. (But 19th Feb 2020
+below shows that this 17th Feb 2020 argument has some merits.)
 
 Coming back to part 1, we consider what follows if we assume CSB for
 types with decidable equality (which are necessarily sets) only. Such
-types are called discrete. We adapt an argument in Johnstone's
-Sketches of an Elephant Volume 2 (Lemma D.4.1.2).
+types are called discrete.
 
-See
+We adapt an argument in Johnstone's Sketches of an Elephant Volume 2
+(Lemma D.4.1.2).
+
+See also van Atten
 https://www.sciencedirect.com/science/article/pii/S0019357718303276
-for BKS⁺ (strong Brouwer-Kripke Schema) and the fact that together
-with Markov Principle it implies excluded middle (attributed to
-Moschovakis). The terminology "Rosolini-data" is in connection with
-the Rosolini dominance from synthetic domain theory and topology.
+for BKS⁺ defined below (strong Brouwer-Kripke Schema) and the fact
+that together with Markov Principle it implies excluded middle
+(attributed to Moschovakis).
+
+The terminology "Rosolini-data" is in connection with the Rosolini
+dominance from synthetic domain theory and topology.
 
 \begin{code}
 
@@ -895,8 +900,8 @@ is-prop-total-gives-is-prop-each A j i x a a' = t
 
 \end{code}
 
-We consider a typal, rather than propositional, version of BKS⁺, which
-is data-valued rather than propositionally valued.
+Here a typal, rather than propositional, version of BKS⁺, which is
+data-valued rather than propositionally valued, arises.
 
 \begin{code}
 
@@ -905,7 +910,7 @@ dBKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → Rosolini-data P
 
 \end{code}
 
-It is convenient to work with the following formulation of Markov's
+It is convenient to work with the following formulation of Markov
 Principle that avoids ∃ (and hence propositional truncations), which
 is easily seen to be equivalent to the traditional formulation using ∃
 (using the fact that unique choice just holds (trivially) in HoTT/UF).
@@ -1036,15 +1041,17 @@ proposition P, given by a function
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
 then we can use φ to decide P for any proposition P. To see this,
-first consider P=𝟙, and let n be the natural number that is mapped to
-inl * by the equivalence given by φ. Then, for an arbitrary
+first consider P = 𝟙, and let n be the natural number that is mapped
+to inl * by the equivalence given by φ. Then, for an arbitrary
 proposition P, if the equivalence maps n to inl p for some p, we have
 that P holds. Otherwise, if it maps n to inl k for some k : ℕ, then P
-can't hold, for if it did we would have p : P, and hence P=𝟙 by
+can't hold, for if it did we would have p : P, and hence P ≡ 𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
-at n. In order to simplify the calculational details of the proof, we
-work with the type T of true propositions, which is contractible with
+at n.
+
+In order to simplify the calculational details of this proof, we work
+with the type T of true propositions, which is contractible with
 center of contraction 𝟙.
 
 \begin{code}
@@ -1110,15 +1117,18 @@ any two given embeddings in opposite directions,
     (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥.
 
 one still gets excluded middle, as already remarked above. And it is
-also nice and clear and short. Our argument, however, doesn't work
-with this weakening, as in this case it is no longer possible to
-define the function φ in the proof (without choice, which is stronger
-than what we want to prove, namely excluded middle) to apply the
-uniformity lemma. The reason is that Pradic and Brown use only one
-instance of CSB, for a given proposition, whereas we use a family of
-instances. In any case, in the other direction, excluded middle does
-give CSB with a designated equivalence in the conclusion, as
-previously shown above.
+also nice and clear and short.
+
+Our argument doesn't work with this weakening of the hypothesis, as in
+this case it is no longer possible to define the function φ in the
+proof (without choice, which is stronger than what we want to prove,
+namely excluded middle) to apply the uniformity lemma. The reason is
+that Pradic and Brown use only one instance of CSB, for a given
+proposition, whereas we use a family of instances.
+
+In any case, in the other direction, excluded middle does give CSB
+with a designated equivalence in the conclusion, as previously shown
+above.
 
 Added 19th Feb 2020: In light of the above discussion, notice that the
 17th Feb 2020 development has its merits, after all, compared to the
