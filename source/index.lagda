@@ -17,12 +17,11 @@
      significant steps kept, and with failed ideas and calculations
      eventually erased. We offer this page as a preliminary
      announcement of results to be submitted for publication, of the
-     kind one would get when we visit a mathematician's office. We
-     have also used this development for learning other people's
-     results, and so some previously known constructions and theorems
-     are included (sometimes with embellishments). In our last count,
-     this development has 40000 lines, including comments and blank
-     lines.
+     kind we would get when we visit a mathematician's office. We have
+     also used this development for learning other people's results,
+     and so some previously known constructions and theorems are
+     included (sometimes with embellishments). In our last count, this
+     development has 40000 lines, including comments and blank lines.
 
    * The required material on HoTT/UF has been developed on demand
      over the years to fullfil the needs of the above as they arise,
@@ -33,7 +32,7 @@
      Our lecture notes develop HoTT/UF in Agda in a more principled
      way, and offers better approaches to some constructions and
      simpler proofs of some (previously) difficult theorems.
-     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/index.html)
+     (https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
 
      Our philosophy, here and in the lecture notes, is to work with a
      minimal Martin-Löf type theory, and use principles from HoTT/UF
@@ -54,14 +53,15 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/agda-new/UnsafeModulesIndex.html)
 
-   * A module dependency graph is available (updated manually from time to time).
-     https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf
+   * A module dependency graph is available, updated manually from
+     time to time.
+     (https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf)
+
+   * There are some somewhat obsolete comments at the end of this
+     file, explaining part of what we do in this development. See
+     instead the comments in the various modules.
 
    * This has been tested with the release candidate for Agda 2.6.1.
-
-(There are some somewhat obsolete comments at the end of this file,
-explaining part of what we do in this development. See instead the
-comments in the various modules.)
 
 Click at the imported module names to navigate to them:
 
