@@ -46,7 +46,7 @@
      results. We also work, deliberately, with a minimal subset of
      Agda.
 
-   * There is also a module which links some "unsafe" modules that use
+   * There is also a module that links some "unsafe" modules that use
      type theory beyond MLTT and HoTT/UF, which cannot be included in
      this safe-modules index: The system with type-in-type is
      inconsistent (as is well known), countable Tychonoff, and

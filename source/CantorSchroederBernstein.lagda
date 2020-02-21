@@ -4,8 +4,6 @@ The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda
 Martin Escardo, 22nd and 24th January 2020, with further additions
 after that.
 
-This file needs the Agda release candidate 2.6.1.
-
 There are two parts, which assume function extensionality but not
 univalence or the existence of propositional truncations (any
 assumption beyond MLTT is explicit in each claim).
