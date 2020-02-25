@@ -1,6 +1,6 @@
-Martin Escardo, August 2018.
+Martin Escardo, August 2018. A structure identity principle.
 
-There is a better treatment of this here:
+There is a better treatment of this here and so this file is obsolete:
 https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
 
 A structure identity principle (sip) for types, rather than categories
