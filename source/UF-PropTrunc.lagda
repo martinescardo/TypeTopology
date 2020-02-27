@@ -95,6 +95,35 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ∥∥-rec ∥∥-is-a-prop (λ x → ∥∥-rec ∥∥-is-a-prop (λ y → ∣ x , y ∣) t) s
 
+\end{code}
+
+Added 19/12/2019 by Tom de Jong.
+
+The following allows us to use Agda's do-notation with the ∥∥-monad.
+
+Note that the Kleisli laws hold trivially, because ∥ X ∥ is a proposition for
+any type X.
+
+It is quite convenient when dealing with multiple, successive ∥∥-rec calls.
+
+Agda's do-notation is powerful, because it can be combined with pattern
+matching, i.e. if
+  w ꞉ ∥ fiber f y ∥,
+then
+  x , p ← w
+is allowed in the do-block.
+
+(Note that in Haskell, you would write "return" for our function ∣_∣.)
+
+\begin{code}
+
+ _>>=_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → (X → ∥ Y ∥) → ∥ Y ∥
+ s >>= f = ∥∥-rec ∥∥-is-a-prop f s
+
+\end{code}
+
+\begin{code}
+
  infixr 0 _∨_
 
 \end{code}
