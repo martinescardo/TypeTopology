@@ -1042,7 +1042,7 @@ then we can use φ to decide P for any proposition P. To see this,
 first consider P = 𝟙, and let n be the natural number that is mapped
 to inl * by the equivalence given by φ. Then, for an arbitrary
 proposition P, if the equivalence maps n to inl p for some p, we have
-that P holds. Otherwise, if it maps n to inl k for some k : ℕ, then P
+that P holds. Otherwise, if it maps n to inr k for some k : ℕ, then P
 can't hold, for if it did we would have p : P, and hence P ≡ 𝟙 by
 propositional extensionality, and the equivalence would have to map n
 to inl p, which is different from the value inr k of the equivalence
