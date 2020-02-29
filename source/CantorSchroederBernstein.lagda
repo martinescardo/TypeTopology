@@ -1077,7 +1077,7 @@ ulemma {𝓤} {𝓥} {𝓦} fe pe {X} {Y} φ = em
   x = f (𝟙 , 𝟙-is-prop , *)
 
   ν : (P : 𝓤 ̇ ) (i : is-prop P) (y : Y) → ⌜ φ P i ⌝ x ≡ inr y → ¬ P
-  ν P i y r p = +disjoint' b
+  ν P i y r p = γ
    where
     a : x ≡ f (P , i , p)
     a = ap f (c (P , i , p))
@@ -1087,6 +1087,9 @@ ulemma {𝓤} {𝓥} {𝓦} fe pe {X} {Y} φ = em
         ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition                 ⟩
         ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
         inl p                                 ∎
+
+    γ : 𝟘
+    γ = +disjoint' b
 
   em : (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
   em P i = equality-cases (⌜ φ P i ⌝ x)
