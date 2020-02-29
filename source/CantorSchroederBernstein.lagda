@@ -1062,7 +1062,7 @@ ulemma : funext 𝓤 𝓤
        → {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
        → ((P : 𝓤 ̇ ) → is-prop P → X ≃ P + Y)
        → EM 𝓤
-ulemma {𝓤} {𝓥} {𝓦} fe pe {X} {Y} φ = em
+ulemma {𝓤} fe pe {X} {Y} φ = em
  where
   T : 𝓤 ⁺ ̇
   T = Σ P ꞉ 𝓤 ̇ , is-prop P × P
