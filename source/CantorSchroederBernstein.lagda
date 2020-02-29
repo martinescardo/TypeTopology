@@ -1039,16 +1039,19 @@ proposition P, given by a function
  φ : (P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ,
 
 then we can use φ to decide P for any proposition P. To see this,
-first consider P = 𝟙, and let n be the natural number that is mapped
+first consider P = 𝟙, and let x be the natural number that is mapped
 to inl * by the equivalence given by φ. Then, for an arbitrary
-proposition P, if the equivalence maps n to inl p for some p, we have
-that P holds. Otherwise, if it maps n to inr k for some k : ℕ, then P
+proposition P, if the equivalence maps x to inl p for some p, we have
+that P holds. Otherwise, if it maps x to inr y for some y : ℕ, then P
 can't hold, for if it did we would have p : P, and hence P ≡ 𝟙 by
-propositional extensionality, and the equivalence would have to map n
-to inl p, which is different from the value inr k of the equivalence
-at n.
+propositional extensionality, and the equivalence would have to map x
+to inl p, which is different from the value inr y of the equivalence
+at x.
 
-In order to simplify the calculational details of this proof, we work
+There is nothing that depends on the nature of the specific type ℕ in
+the above argument, and hence we formulate this uniformity lemma with
+arbitrary types X and Y, although we will apply it to X = Y = ℕ.  In
+order to simplify the calculational details of this proof, we work
 with the type T of true propositions, which is contractible with
 center of contraction 𝟙.
 
@@ -1056,9 +1059,10 @@ center of contraction 𝟙.
 
 ulemma : funext 𝓤 𝓤
        → propext 𝓤
-       → ((P : 𝓤 ̇ ) → is-prop P → ℕ ≃ P + ℕ)
+       → {X : 𝓥 ̇ } {Y : 𝓦 ̇ }
+       → ((P : 𝓤 ̇ ) → is-prop P → X ≃ P + Y)
        → EM 𝓤
-ulemma {𝓤} fe pe φ = em
+ulemma {𝓤} {𝓥} {𝓦} fe pe {X} {Y} φ = em
  where
   T : 𝓤 ⁺ ̇
   T = Σ P ꞉ 𝓤 ̇ , is-prop P × P
@@ -1066,28 +1070,28 @@ ulemma {𝓤} fe pe φ = em
   c : (t : T) → (𝟙 , 𝟙-is-prop , *) ≡ t
   c = 𝟙-is-true-props-center fe pe
 
-  f : T → ℕ
+  f : T → X
   f (P , i , p) = ⌜ ≃-sym (φ P i) ⌝ (inl p)
 
-  n : ℕ
-  n = f (𝟙 , 𝟙-is-prop , *)
+  x : X
+  x = f (𝟙 , 𝟙-is-prop , *)
 
-  ν : (P : 𝓤 ̇ ) (i : is-prop P) (k : ℕ) → ⌜ φ P i ⌝ n ≡ inr k → ¬ P
-  ν P i k r p = +disjoint' b
+  ν : (P : 𝓤 ̇ ) (i : is-prop P) (y : Y) → ⌜ φ P i ⌝ x ≡ inr y → ¬ P
+  ν P i y r p = +disjoint' b
    where
-    a : n ≡ f (P , i , p)
+    a : x ≡ f (P , i , p)
     a = ap f (c (P , i , p))
 
-    b = inr k                                 ≡⟨ r ⁻¹                          ⟩
-        ⌜ φ P i ⌝ n                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
+    b = inr y                                 ≡⟨ r ⁻¹                          ⟩
+        ⌜ φ P i ⌝ x                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
         ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition                 ⟩
         ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
         inl p                                 ∎
 
   em : (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
-  em P i = equality-cases (⌜ φ P i ⌝ n)
-           (λ (p : P) (l : ⌜ φ P i ⌝ n ≡ inl p) → inl p)
-           (λ (k : ℕ) (r : ⌜ φ P i ⌝ n ≡ inr k) → inr (ν P i k r))
+  em P i = equality-cases (⌜ φ P i ⌝ x)
+           (λ (p : P) (l : ⌜ φ P i ⌝ x ≡ inl p) → inl p)
+           (λ (y : Y) (r : ⌜ φ P i ⌝ x ≡ inr y) → inr (ν P i y r))
 
 discrete-CSB-gives-EM : funext 𝓥 𝓥
                       → propext 𝓥
