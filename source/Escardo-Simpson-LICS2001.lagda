@@ -11,6 +11,8 @@ https://www.cs.bham.ac.uk/~mhe/papers/lics2001-revised.pdf
 https://www.cs.bham.ac.uk/~mhe/papers/interval.pdf
 https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
+TODO. (Important.) The "double" stuff is not included yet.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
