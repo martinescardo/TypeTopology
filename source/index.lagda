@@ -124,6 +124,7 @@ import DiscreteAndSeparated
 import Dominance
 import DummettDisjunction
 import Empty
+import Escardo-Simpson-LICS2001
 import ExtendedSumCompact
 import Fin
 import FailureOfTotalSeparatedness
