@@ -13,6 +13,8 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 \begin{code}
 
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 module Escardo-Simpson-LICS2001 where
 
 open import SpartanMLTT
