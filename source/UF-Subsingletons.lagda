@@ -441,3 +441,24 @@ description (σ , o) = σ
 ∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
 
 \end{code}
+
+Added 5 March 2020 by Tom de Jong.
+
+\begin{code}
+
++-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+          → is-prop X → is-prop Y
+          → (X → ¬ Y)
+          → is-prop (X + Y)
++-is-prop i j f (inl x) (inl x') = ap inl (i x x')
++-is-prop i j f (inl x) (inr y) = 𝟘-induction (f x y)
++-is-prop i j f (inr y) (inl x) = 𝟘-induction (f x y)
++-is-prop i j f (inr y) (inr y') = ap inr (j y y')
+
++-is-prop' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+           → is-prop X → is-prop Y
+           → (Y → ¬ X)
+           → is-prop (X + Y)
++-is-prop' {𝓤} {𝓥} {X} {Y} i j f = +-is-prop i j (λ y x → f x y)
+
+\end{code}
