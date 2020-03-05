@@ -14,6 +14,8 @@ open import UF-Subsingletons public
 open import UF-FunExt public
 open import UF-Subsingletons-FunExt public
 
+open import UF-Equiv -- for a-prop-is-equivalent-to-its-truncation
+
 \end{code}
 
 We use the existence of propositional truncations as an
@@ -94,6 +96,10 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ∥∥-rec ∥∥-is-a-prop (λ x → ∥∥-rec ∥∥-is-a-prop (λ y → ∣ x , y ∣) t) s
+
+ a-prop-is-equivalent-to-its-truncation : {X : 𝓤 ̇ } → is-prop X → ∥ X ∥ ≃ X
+ a-prop-is-equivalent-to-its-truncation i =
+  logically-equivalent-props-are-equivalent ∥∥-is-a-prop i (∥∥-rec i id) ∣_∣
 
 \end{code}
 
