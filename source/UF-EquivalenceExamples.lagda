@@ -13,10 +13,7 @@ open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-open import UF-Retracts -- This is only used for retract-pointed-fibers.
-
 module UF-EquivalenceExamples where
-
 
 curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦 → funext (𝓤 ⊔ 𝓥) 𝓦
                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
@@ -689,17 +686,17 @@ precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 precomposition-with-equiv-does-not-change-fibers (g , i) f y =
  Σ-change-of-variables (λ x → f x ≡ y) g i
 
-retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : X → Y}
-                       → has-section r ≃ (Π y ꞉ Y , fiber r y)
+retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : Y → X}
+                       → (Σ s ꞉ (X → Y) , r ∘ s ∼ id) ≃ (Π x ꞉ X , fiber r x)
 retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
  where
-  f : has-section r → Π (fiber r)
-  f (s , rs) y = (s y) , (rs y)
-  g : ((y : Y) → fiber r y) → has-section r
-  g α = (λ (y : Y) → pr₁ (α y)) , (λ (y : Y) → pr₂ (α y))
-  p : (hs : has-section r) → g (f hs) ≡ hs
+  f : (Σ s ꞉ (X → Y) , r ∘ s ∼ id) → Π (fiber r)
+  f (s , rs) x = (s x) , (rs x)
+  g : ((x : X) → fiber r x) → Σ s ꞉ (X → Y) , r ∘ s ∼ id
+  g α = (λ (x : X) → pr₁ (α x)) , (λ (x : X) → pr₂ (α x))
+  p : (srs : Σ s ꞉ (X → Y) , r ∘ s ∼ id) → g (f srs) ≡ srs
   p (s , rs) = refl
-  q : (α : Π y ꞉ Y , fiber r y) → f (g α) ≡ α
+  q : (α : Π x ꞉ X , fiber r x) → f (g α) ≡ α
   q α = refl
 
 \end{code}
