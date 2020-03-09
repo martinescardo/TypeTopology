@@ -1,5 +1,4 @@
 Martin Escardo, 2012-
-Tom de Jong, September 2019 (two lemmas used in UF-Classifiers)
 
 Expanded on demand whenever a general equivalence is needed.
 
@@ -13,10 +12,8 @@ open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
-open import UF-Retracts -- This is only used for the final equivalence.
 
 module UF-EquivalenceExamples where
-
 
 curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦 → funext (𝓤 ⊔ 𝓥) 𝓦
                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
@@ -673,6 +670,8 @@ fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ 
 
 \end{code}
 
+Tom de Jong, September 2019 (two lemmas used in UF-Classifiers)
+
 A nice application of Σ-change-of-variables is that the fiber of a map doesn't
 change (up to equivalence, at least) when precomposing with an equivalence.
 
@@ -687,17 +686,82 @@ precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 precomposition-with-equiv-does-not-change-fibers (g , i) f y =
  Σ-change-of-variables (λ x → f x ≡ y) g i
 
-retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : X → Y}
-                       → has-section r ≃ (Π y ꞉ Y , fiber r y)
+retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : Y → X}
+                       → (Σ s ꞉ (X → Y) , r ∘ s ∼ id) ≃ (Π x ꞉ X , fiber r x)
 retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
  where
-  f : has-section r → Π (fiber r)
-  f (s , rs) y = (s y) , (rs y)
-  g : ((y : Y) → fiber r y) → has-section r
-  g α = (λ (y : Y) → pr₁ (α y)) , (λ (y : Y) → pr₂ (α y))
-  p : (hs : has-section r) → g (f hs) ≡ hs
+  f : (Σ s ꞉ (X → Y) , r ∘ s ∼ id) → Π (fiber r)
+  f (s , rs) x = (s x) , (rs x)
+  g : ((x : X) → fiber r x) → Σ s ꞉ (X → Y) , r ∘ s ∼ id
+  g α = (λ (x : X) → pr₁ (α x)) , (λ (x : X) → pr₂ (α x))
+  p : (srs : Σ s ꞉ (X → Y) , r ∘ s ∼ id) → g (f srs) ≡ srs
   p (s , rs) = refl
-  q : (α : Π y ꞉ Y , fiber r y) → f (g α) ≡ α
+  q : (α : Π x ꞉ X , fiber r x) → f (g α) ≡ α
   q α = refl
+
+\end{code}
+
+Added 10 February 2020 by Tom de Jong.
+
+\begin{code}
+
+fiber-of-composite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
+                   → (z : Z)
+                   → fiber (g ∘ f) z
+                   ≃ (Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+fiber-of-composite {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g z =
+ qinveq ϕ (ψ , (ψϕ , ϕψ))
+  where
+   ϕ : fiber (g ∘ f) z
+     → (Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+   ϕ (x , p) = ((f x) , p) , (x , refl)
+   ψ : (Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+     → fiber (g ∘ f) z
+   ψ ((y , q) , (x , p)) = x , ((ap g p) ∙ q)
+   ψϕ : (w : fiber (g ∘ f) z) → ψ (ϕ w) ≡ w
+   ψϕ (x , refl) = refl
+   ϕψ : (w : Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+      → ϕ (ψ w) ≡ w
+   ϕψ ((.(f x) , refl) , (x , refl)) = refl
+
+fiber-of-unique-to-𝟙 : {𝓥 : Universe} {X : 𝓤 ̇ }
+                     → (u : 𝟙) → fiber (unique-to-𝟙 {_} {𝓥} {X}) u ≃ X
+fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
+ (Σ x ꞉ X , unique-to-𝟙 x ≡ *) ≃⟨ Σ-cong ψ ⟩
+ X × 𝟙{𝓥}                      ≃⟨ 𝟙-rneutral ⟩
+ X                             ■
+  where
+   ψ : (x : X) → (* ≡ *) ≃ 𝟙
+   ψ x = singleton-≃-𝟙
+         (pointed-props-are-singletons refl (props-are-sets 𝟙-is-prop))
+
+∼-fiber-paths-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
+                → f ∼ g
+                → (y : Y) (x : X) → (f x ≡ y) ≃ (g x ≡ y)
+∼-fiber-paths-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y x = qinveq α (β , (βα , αβ))
+ where
+  α : f x ≡ y → g x ≡ y
+  α p = (H x) ⁻¹ ∙ p
+  β : g x ≡ y → f x ≡ y
+  β q = (H x) ∙ q
+  βα : (p : f x ≡ y) → β (α p) ≡ p
+  βα p = β (α p)                ≡⟨ refl ⟩
+         (H x) ∙ ((H x) ⁻¹ ∙ p) ≡⟨ (∙assoc (H x) ((H x) ⁻¹) p) ⁻¹ ⟩
+         (H x) ∙ (H x) ⁻¹ ∙ p   ≡⟨ i ⟩
+         refl ∙ p               ≡⟨ refl-left-neutral ⟩
+         p                      ∎
+   where
+    i = ap (λ - → - ∙ p) ((right-inverse (H x)) ⁻¹)
+  αβ : (q : g x ≡ y) → α (β q) ≡ q
+  αβ q = α (β q)                ≡⟨ refl ⟩
+         (H x) ⁻¹ ∙ ((H x) ∙ q) ≡⟨ (∙assoc ((H x) ⁻¹) (H x) q) ⁻¹ ⟩
+         (H x) ⁻¹ ∙ (H x) ∙ q   ≡⟨ ap (λ - → - ∙ q) (left-inverse (H x)) ⟩
+         refl ∙ q               ≡⟨ refl-left-neutral ⟩
+         q                      ∎
+
+∼-fiber-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
+          → f ∼ g
+          → (y : Y) → fiber f y ≃ fiber g y
+∼-fiber-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y = Σ-cong (∼-fiber-paths-≃ H y)
 
 \end{code}

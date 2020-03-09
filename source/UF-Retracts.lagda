@@ -267,3 +267,55 @@ infix  1 _◀
 infixr 0 _◁⟨_⟩_
 
 \end{code}
+
+Added 20 February 2020 by Tom de Jong.
+
+\begin{code}
+
+ap-of-section-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                           → is-section s
+                           → (x x' : X) → is-section (ap s {x} {x'})
+ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
+ where
+  ρ : s x ≡ s x' → x ≡ x'
+  ρ q = x        ≡⟨ (rs x) ⁻¹ ⟩
+        r (s x)  ≡⟨ ap r q ⟩
+        r (s x') ≡⟨ rs x' ⟩
+        x'       ∎
+  ρap : (p : x ≡ x') → ρ (ap s p) ≡ p
+  ρap p = ρ (ap s p)                          ≡⟨ by-definition ⟩
+          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i   ⟩
+          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii  ⟩
+          (rs x) ⁻¹ ∙ ap (r ∘ s) p ∙  rs x'   ≡⟨ iii ⟩
+          ap id p                             ≡⟨ (ap-id-is-id p) ⁻¹ ⟩
+          p                                   ∎
+   where
+    i   = ∙assoc ((rs x) ⁻¹) (ap r (ap s p)) (rs x') ⁻¹
+    ii  = ap (λ - → (rs x) ⁻¹ ∙ - ∙ rs x') (ap-ap s r p)
+    iii = homotopies-are-natural'' (r ∘ s) id rs {x} {x'} {p}
+
+\end{code}
+
+I would phrase this in terms of fibers, but fiber is defined in UF-Equiv which
+imports this file.
+
+\begin{code}
+
+Σ-section-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (ρ : Y ◁ Z) (g : X → Y)
+                  → (y : Y)
+                  → (Σ x ꞉ X , g x ≡ y)
+                  ◁ (Σ x ꞉ X , section ρ (g x) ≡ section ρ y)
+Σ-section-retract {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (r , s , rs) g y =
+ Σ-retract (λ x → g x ≡ y) (λ x → s (g x) ≡ s y) γ
+  where
+   γ : (x : X) → (g x ≡ y) ◁ (s (g x) ≡ s y)
+   γ x = ρ , (σ , ρσ)
+    where
+     σ : g x ≡ y → s (g x) ≡ s y
+     σ = ap s
+     ρ : s (g x) ≡ s y → g x ≡ y
+     ρ = pr₁ (ap-of-section-is-section s (r , rs) (g x) y)
+     ρσ : (p : g x ≡ y) → ρ (σ p) ≡ p
+     ρσ = pr₂ (ap-of-section-is-section s ((r , rs)) (g x) y)
+
+\end{code}
