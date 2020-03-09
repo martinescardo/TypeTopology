@@ -94,11 +94,11 @@ module basic-interval-object-development {𝓤 : Universe} (io : interval-object
  𝕀 = interval-object-exists.𝕀 io
  _⊕_ = interval-object-exists._⊕_ io
  u = interval-object-exists.u io
- v = interval-object-exists.v io
- 
+ v = interval-object-exists.v io 
  mpaa = interval-object-exists.mpaa io
  ia = interval-object-exists.ia io
- 
+ universal-property = interval-object-exists.universal-property io
+
  ⊕-idem : (x : 𝕀) → x ⊕ x ≡ x
  ⊕-idem = pr₁ (pr₂ mpaa)
 
@@ -114,11 +114,6 @@ module basic-interval-object-development {𝓤 : Universe} (io : interval-object
  𝓘 : Convex-body 𝓤
  𝓘 = 𝕀 , _⊕_ , mpaa , ⊕-canc , ia
 
- universal-property : {𝓥 : Universe} (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩)
-   → ∃! h ꞉ (𝕀 → ⟨ 𝓐 ⟩) , (h u ≡ a)
-                        × (h v ≡ b)
-                        × ((x y : 𝕀) → h (x ⊕ y) ≡ h x ⊕⟨ 𝓐 ⟩ h y)
- universal-property = interval-object-exists.universal-property io
 
 \end{code}
 
@@ -171,17 +166,10 @@ object, with the constructions and theorems of the slides.
  M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem x ⁻¹) ⁻¹
 
  M-symm : ∀ (x : ℕ → ℕ → 𝕀) → M (λ i → (M λ j → x i j)) ≡ M (λ i → M (λ j → x j i))
- M-symm x = M-prop₂ {!M (λ i → M (λ j → x j i))!} (λ i → M (x i)) {!!} ⁻¹
+ M-symm x = {!!}
 
  M-homo : ∀ x y → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
  M-homo x y = {!!}
-
- M-homo× : ∀ x y → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
- M-homo× x y = ap (M x ⊕_) (M-prop₁ y)
-            ∙ ap (_⊕ (y 0 ⊕ M (y ∘ succ))) (M-prop₁ x)
-            ∙ ⊕-tran (x 0) (M (x ∘ succ)) (y 0) (M (y ∘ succ))
-            ∙ ap ((x 0 ⊕ y 0) ⊕_) (M-homo× (λ z → x (succ z)) (λ z → y (succ z)))
-            ∙ M-prop₁ (λ i → x i ⊕ y i) ⁻¹
 
 -- (x y u v : 𝕀) → (x ⊕ y) ⊕ (u ⊕ v) ≡ (x ⊕ u) ⊕ (y ⊕ v)
 
@@ -191,19 +179,24 @@ object, with the constructions and theorems of the slides.
 
 \begin{code}
 
- M-homo' : (x y : 𝕀) (z : ℕ → 𝕀) → affine x y (M z) ≡
-                           (affine x y (z 0) ⊕ affine x y (M (λ n → z (succ n))))
- M-homo' x y z = (ap (affine x y) (M-prop₁ z))
-                       ∙ (h-prop₃ x y (z 0) (M (z ∘ succ)))
+ open import NaturalsAddition renaming (_+_ to _+ℕ_)
 
- affine-M-homo : (x y : 𝕀) → ∀ (z : ℕ → 𝕀) → affine x y (M z) ≡ M (λ n → affine x y (z n))
- affine-M-homo x y z = M-homo' x y z
-                       ∙ {!!}
-                       ∙ M-prop₁ (λ n → affine x y (z n)) ⁻¹
+ hom→hom : (h : 𝕀 → 𝕀)
+           → ((x y : 𝕀) → h(x ⊕ y) ≡ h x ⊕ h y)
+           → (z : ℕ → 𝕀) → h (M z) ≡ M (λ n → h (z n))
+ hom→hom h hom z = M-prop₂ M' (λ n → h (z n)) γ where
+   M' : ℕ → 𝕀
+   M' 0 = h (M λ n → z n)
+   M' (succ i) = h (M λ n → z (succ (n +ℕ i)))
+   γ : (i : ℕ) → M' i ≡ (h (z i) ⊕ M' (succ i))
+   γ zero = ap h (M-prop₁ z)
+          ∙ hom (z 0) (M (z ∘ succ))
+   γ (succ i) = ap h (M-prop₁ (λ n → z (succ (n +ℕ i))))
+              ∙ hom (z (succ (0 +ℕ i))) (M ((λ n → z (succ (n +ℕ i))) ∘ succ))
+              ∙ {!!}
 
-
--- ∀ (x y : 𝕀) → (a b : 𝕀) → affine x y (a ⊕ b) ≡ affine x y a ⊕ affine x y b
--- 
+ affine-M-homo : (x y : 𝕀) (z : ℕ → 𝕀) → affine x y (M z) ≡ M (λ n → affine x y (z n))
+ affine-M-homo x y z = hom→hom (affine x y) (h-prop₃ x y) z
 
 \end{code}
 
@@ -238,9 +231,6 @@ object, with the constructions and theorems of the slides.
  mul-prop₂ y = ap (λ - → affine - ₊₁ y) −-prop₂ ∙ h-prop₄ y
 
  infixl 10 _*_
-
- 𝕀-cases : (x : 𝕀) → (u ≡ x) + (v ≡ x) + (Σ \a → (Σ \b → (a ⊕ b) ≡ x))
- 𝕀-cases x = inr (inr (x , x , (⊕-idem x)))
 
  *-comm : (x y : 𝕀) → affine (− x) x y ≡ affine (− y) y x
  *-comm x y = {!!}
