@@ -33,9 +33,9 @@ cancellative : {A : 𝓤 ̇ } → (A → A → A) → 𝓤 ̇
 cancellative _⊕_ = ∀ x y z → x ⊕ z ≡ y ⊕ z → x ≡ y
 
 iterative : {A : 𝓤 ̇ } → (A → A → A) → 𝓤 ̇
-iterative {𝓤} {A} _⊕_ = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ≡ a 0 ⊕ M (a ∘ succ))
-                                            × ((a x : ℕ → A) → ((i : ℕ) → a i ≡ x i ⊕ a (succ i))
-                                                             → a 0 ≡ M x)
+iterative {𝓤} {A} _⊕_ = ∃! M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ≡ a 0 ⊕ M (a ∘ succ))
+                                             × ((a x : ℕ → A) → ((i : ℕ) → a i ≡ x i ⊕ a (succ i))
+                                                              → a 0 ≡ M x)
 
 \end{code}
 
@@ -63,17 +63,31 @@ syntax mid-point-operation 𝓐 x y = x ⊕⟨ 𝓐 ⟩ y
 
 is-homomorphism : (𝓐 : Convex-body 𝓤) (𝓑 : Convex-body 𝓥)
                 → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-homomorphism 𝓐 𝓑 h = ((x y : ⟨ 𝓐 ⟩) → h (x ⊕⟨ 𝓐 ⟩ y) ≡ h x ⊕⟨ 𝓑 ⟩ h y)
+is-homomorphism 𝓐 𝓑 h = (x y : ⟨ 𝓐 ⟩) → h (x ⊕⟨ 𝓐 ⟩ y) ≡ h x ⊕⟨ 𝓑 ⟩ h y
 
-id-is-homomorphism : (𝓐 : Convex-body 𝓤)
-                   → is-homomorphism 𝓐 𝓐 id
-id-is-homomorphism 𝓐 = {!!}
+id-is-homomorphism : (𝓐 : Convex-body 𝓤) → is-homomorphism 𝓐 𝓐 id
+id-is-homomorphism 𝓐 x y = refl
 
+⊕-is-homomorphism-r : (𝓐 : Convex-body 𝓤) (a : ⟨ 𝓐 ⟩) → is-homomorphism 𝓐 𝓐 (λ y → a ⊕⟨ 𝓐 ⟩ y)
+⊕-is-homomorphism-r (𝓐 , _⊕_ , (_ , ⊕-idem , _ , ⊕-tran) , _) a x y = γ
+  where
+    γ : a ⊕ (x ⊕ y) ≡ (a ⊕ x) ⊕ (a ⊕ y)
+    γ = ap (_⊕ (x ⊕ y)) (⊕-idem a ⁻¹) ∙ ⊕-tran a a x y
 
+⊕-is-homomorphism-l : (𝓐 : Convex-body 𝓤) (b : ⟨ 𝓐 ⟩) → is-homomorphism 𝓐 𝓐 (λ x → x ⊕⟨ 𝓐 ⟩ b)
+⊕-is-homomorphism-l (𝓐 , _⊕_ , (_ , ⊕-idem , _ , ⊕-tran) , _) b x y = γ
+  where
+    γ : (x ⊕ y) ⊕ b ≡ ((x ⊕ b) ⊕ (y ⊕ b))
+    γ = ap ((x ⊕ y) ⊕_) (⊕-idem b ⁻¹) ∙ ⊕-tran x y b b
+
+homomorphism-composition : (𝓐 : Convex-body 𝓤) (𝓑 : Convex-body 𝓥) (𝓒 : Convex-body 𝓦)
+                          → (h₁ : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → (h₂ : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                          → is-homomorphism 𝓐 𝓑 h₁ → is-homomorphism 𝓑 𝓒 h₂
+                          → is-homomorphism 𝓐 𝓒 (h₂ ∘ h₁)
+homomorphism-composition {𝓤} {𝓥} {𝓦} 𝓐 𝓑 𝓒 h₁ h₂ i₁ i₂ x y = ap h₂ (i₁ x y) ∙ i₂ (h₁ x) (h₁ y)
 
 is-interval-object : (𝓘 : Convex-body 𝓤) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤ω
 is-interval-object {𝓤} 𝓘 u v =
-
      {𝓥 : Universe} (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩)
    → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩) , (h u ≡ a)
                             × (h v ≡ b)
@@ -118,7 +132,6 @@ module basic-interval-object-development {𝓤 : Universe} (io : interval-object
  𝓘 : Convex-body 𝓤
  𝓘 = 𝕀 , _⊕_ , mpaa , ⊕-canc , ia
 
-
 \end{code}
 
 To be continued.
@@ -154,13 +167,13 @@ object, with the constructions and theorems of the slides.
                    → f v ≡ b
                    → is-homomorphism 𝓘 𝓘 f
                    → affine a b ∼ f
- affine-uniqueness· f a b l r i x = ap (λ - → - x) ( affine-uniqueness f a b l r i)
+ affine-uniqueness· f a b l r i x = ap (λ - → - x) (affine-uniqueness f a b l r i)
 
- h-prop₄ : affine u v ≡ id
- h-prop₄ = affine-uniqueness id u v refl refl (id-is-homomorphism 𝓘)
+ h-prop₄ : (x : 𝕀) → affine u v x ≡ id x
+ h-prop₄ = affine-uniqueness· id u v refl refl (id-is-homomorphism 𝓘)
 
- h-prop₅ : (a : 𝕀) → affine a a ≡ λ _ → a
- h-prop₅ a = affine-uniqueness (λ _ → a) a a refl refl (λ x y → {!!})
+ h-prop₅ : (a : 𝕀) (x : 𝕀) → affine a a x ≡ a
+ h-prop₅ a = affine-uniqueness· (λ _ → a) a a refl refl (λ _ _ → ⊕-idem a ⁻¹)
 
 \end{code}
 
@@ -172,24 +185,31 @@ object, with the constructions and theorems of the slides.
 \begin{code}
 
  M : (ℕ → 𝕀) → 𝕀
- M = pr₁ ia
-
+ M = ∃!-witness ia
+ 
  M-prop₁ : (a : ℕ → 𝕀) → M a ≡ a 0 ⊕ (M (a ∘ succ))
- M-prop₁ = pr₁ (pr₂ ia)
+ M-prop₁ = pr₁ (∃!-is-witness ia)
 
  M-prop₂ : (a x : ℕ → 𝕀) → ((i : ℕ) → a i ≡ x i ⊕ a (succ i)) → a 0 ≡ M x
- M-prop₂ = pr₂ (pr₂ ia)
+ M-prop₂ = pr₂ (∃!-is-witness ia)
 
+ M-uniqueness : (f : (ℕ → 𝕀) → 𝕀)
+              → ((a : ℕ → 𝕀) → f a ≡ a 0 ⊕ (f (a ∘ succ)))
+              → ((a x : ℕ → 𝕀) → ((i : ℕ) → a i ≡ x i ⊕ a (succ i)) → a 0 ≡ f x)
+              → M ≡ f
+ M-uniqueness f p q = ap pr₁ (∃!-uniqueness' ia (f , p , q))
+
+ M-uniqueness· : (f : (ℕ → 𝕀) → 𝕀)
+              → ((a : ℕ → 𝕀) → f a ≡ a 0 ⊕ (f (a ∘ succ)))
+              → ((a x : ℕ → 𝕀) → ((i : ℕ) → a i ≡ x i ⊕ a (succ i)) → a 0 ≡ f x)
+              → M ∼ f
+ M-uniqueness· f p q x = ap (λ - → - x) (M-uniqueness f p q)
+ 
  M-idem : ∀ (x : 𝕀) → M (λ _ → x) ≡ x
  M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem x ⁻¹) ⁻¹
 
- M-symm : ∀ (x : ℕ → ℕ → 𝕀) → M (λ i → (M λ j → x i j)) ≡ M (λ i → M (λ j → x j i))
+ M-symm : ∀ (x : ℕ → ℕ → 𝕀) → M (λ i → (M (x i))) ≡ M (λ i → M (λ j → x j i))
  M-symm x = {!!}
-
- M-homo : ∀ x y → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
- M-homo x y = {!!}
-
--- (x y u v : 𝕀) → (x ⊕ y) ⊕ (u ⊕ v) ≡ (x ⊕ u) ⊕ (y ⊕ v)
 
 \end{code}
 
@@ -199,8 +219,7 @@ object, with the constructions and theorems of the slides.
 
  open import NaturalsAddition renaming (_+_ to _+ℕ_)
 
- hom→hom : (h : 𝕀 → 𝕀)
-           → ((x y : 𝕀) → h(x ⊕ y) ≡ h x ⊕ h y)
+ hom→hom : (h : 𝕀 → 𝕀) → is-homomorphism 𝓘 𝓘 h
            → (z : ℕ → 𝕀) → h (M z) ≡ M (λ n → h (z n))
  hom→hom h hom z = M-prop₂ M' (λ n → h (z n)) γ where
    M' : ℕ → 𝕀
@@ -215,6 +234,11 @@ object, with the constructions and theorems of the slides.
 
  affine-M-homo : (x y : 𝕀) (z : ℕ → 𝕀) → affine x y (M z) ≡ M (λ n → affine x y (z n))
  affine-M-homo x y z = hom→hom (affine x y) (affine-is-midpoint-hom x y) z
+
+ M-homo : ∀ x y → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
+ M-homo a b = {!!}
+
+-- (x y u v : 𝕀) → (x ⊕ y) ⊕ (u ⊕ v) ≡ (x ⊕ u) ⊕ (y ⊕ v)
 
 \end{code}
 
@@ -239,9 +263,21 @@ object, with the constructions and theorems of the slides.
  −-prop₂ : (− ₊₁) ≡ ₋₁
  −-prop₂ = affine-equation-r ₊₁ ₋₁
 
- negation-involutive : (x : 𝕀) → affine u v x ≡ − (− x)
- negation-involutive = affine-uniqueness· ((λ x → − (− x))) u v {!!} {!!} {!!}
- -- (λ x → − (− x)) u v {!!} {!!} {!!}
+ −-props₁ : (− (− ₋₁)) ≡ ₋₁
+ −-props₁ = ap −_ −-prop₁ ∙ −-prop₂
+
+ −-props₂ : (− (− ₊₁)) ≡ ₊₁
+ −-props₂ = ap −_ −-prop₂ ∙ −-prop₁
+
+ −-is-homomorphism : (a b : 𝕀) → (− (a ⊕ b)) ≡ (− a) ⊕ (− b)
+ −-is-homomorphism a b = affine-is-midpoint-hom v u a b
+
+ negation-involutive' : (x : 𝕀) → affine u v x ≡ − (− x)
+ negation-involutive' = affine-uniqueness· ((λ x → − (− x))) u v −-props₁ −-props₂
+                       (homomorphism-composition 𝓘 𝓘 𝓘 −_ −_ −-is-homomorphism −-is-homomorphism)
+ 
+ negation-involutive : (x : 𝕀) → − (− x) ≡ x
+ negation-involutive x = (h-prop₄ x ⁻¹ ∙ negation-involutive' x) ⁻¹
 
  mul : 𝕀 → 𝕀 → 𝕀
  mul x y = affine (− x) x y
@@ -249,30 +285,36 @@ object, with the constructions and theorems of the slides.
  mul-prop₁ : (y : 𝕀) → mul ₋₁ y ≡ − y
  mul-prop₁ y = ap (λ - → affine - ₋₁ y) −-prop₁
 
+ mul-prop₁-c : (y : 𝕀) → mul y ₋₁ ≡ − y
+ mul-prop₁-c y = affine-equation-l (− y) y
+
  mul-prop₂ : (y : 𝕀) → mul ₊₁ y ≡ y
- mul-prop₂ y = ap (λ - → affine - ₊₁ y) −-prop₂ ∙ {!!} -- h-prop₄ y
+ mul-prop₂ y = ap (λ - → affine - ₊₁ y) −-prop₂ ∙ h-prop₄ y
 
- infixl 10 _*_
+ mul-prop₂-c : (y : 𝕀) → mul y ₊₁ ≡ y
+ mul-prop₂-c y = affine-equation-r (− y) y
 
- *-comm : (x y : 𝕀) → mul x y ≡ mul y x
- *-comm x = γ
+ mul-comm : (x y : 𝕀) → mul x y ≡ mul y x
+ mul-comm x = γ
   where
+   j : (a b : 𝕀) → is-homomorphism 𝓘 𝓘 (λ x → mul a x ⊕ mul b x)
+   j a b x y
+       = ap (_⊕ mul b (x ⊕ y)) (affine-is-midpoint-hom (− a) a x y)
+       ∙ ap ((mul a x ⊕ mul a y) ⊕_) (affine-is-midpoint-hom (− b) b x y)
+       ∙ ⊕-tran (mul a x) (mul a y) (affine (− b) b x) (affine (− b) b y)
    i : is-homomorphism 𝓘 𝓘 (λ y → mul y x)
    i y z = p
     where
      p : mul (y ⊕ z) x ≡ (mul y x ⊕ mul z x)
-     p = affine-uniqueness· (λ x → mul y x ⊕ mul z x) (− (y ⊕ z)) (y ⊕ z) {!!} {!!} {!!} {!!}
+     p = affine-uniqueness· (λ x → mul y x ⊕ mul z x) (− (y ⊕ z)) (y ⊕ z)
+         (ap (_⊕ mul z u) (mul-prop₁-c y)
+         ∙ ap ((− y) ⊕_) (mul-prop₁-c z)
+         ∙ affine-is-midpoint-hom v u y z ⁻¹)
+         (ap (_⊕ mul z v) (mul-prop₂-c y)
+         ∙ ap (y ⊕_) (mul-prop₂-c z))
+         (j y z) x
    γ : mul x ∼ (λ y → mul y x)
-   γ = affine-uniqueness· (λ y → mul y x) (− x) x {!!} {!!} {!!}
-
- *-commu2 : (x y : 𝕀) → mul x u ≡ mul u x
- *-commu2 x y = affine-equation-l (− x) x ∙ ap (λ - → affine - u x) (−-prop₁ ⁻¹)
-
- *-commu3 : (x a b : 𝕀) → mul x (a ⊕ b) ≡ mul (a ⊕ b) x
- *-commu3 x a b = γ where
-   γ : affine (− x) x (a ⊕ b) ≡ affine (− (a ⊕ b)) (a ⊕ b) x
-   γ = affine-is-midpoint-hom (− x) x a b
-       ∙ {!!}
+   γ = affine-uniqueness· (λ y → mul y x) (− x) x (mul-prop₁ x) (mul-prop₂ x) i
 
 
 -- mul x y = affine (− x) x y
@@ -291,6 +333,3 @@ object, with the constructions and theorems of the slides.
   * Page 42.
 
 \begin{code}
-
- ⊕-assoc : (x y z : 𝕀) → x ⊕ (y ⊕ z) ≡ (x ⊕ y) ⊕ z
- ⊕-assoc x y z = {!!}
