@@ -1,6 +1,6 @@
 \documentclass[10pt]{article}
 
-\title{Injectives types in univalent mathematics}
+\title{Injective types in univalent mathematics}
 
 \author{Mart\'{\i}n H\"otzel Escard\'o \\ School of Computer Science \\ University of Birmingham, UK}
 
@@ -103,6 +103,8 @@
 \swapnumbers
 \newtheorem{theorem}[numbered]{Theorem}
 \newtheorem{lemma}[numbered]{Lemma}
+\newtheorem{remark}[numbered]{Remark}
+\newtheorem{proposition}[numbered]{Proposition}
 \newtheorem{corollary}[numbered]{Corollary}
 \theoremstyle{definition}
 \newtheorem{definition}[numbered]{Definition}
@@ -428,16 +430,10 @@ For emphasis, we may say that there is an unspecified \m{x:X} with \m{A\,x}.
   there are designated functions \m{s : X \to Y} and \m{r : Y \to X},
   and a designated pointwise identification \m{r \comp s \sim \id}.
 
-  Similarly, we don't reserve the word \df{proof} for constructions of
-  elements of subsingleton types, and all our constructions are
-  indicated by the word proof, including the construction of data or
-  structure.  We will, however, reserve the words \df{theorem} and
-  \df{proposition} for statements that are subsingletons, although a
-  \df{lemma} can be an auxiliary construction and a \df{corollary} can
-  be a special case of a construction or an easily derived
-  construction. We use numbered statements without qualifications for
-  statements that are not necessarily subsingletons and require
-  constructions, with the word \df{proof} preceding the construction.
+\item Similarly, we don't reserve the words \df{theorem}, \df{lemma},
+  \df{corollary} and \df{proof} for constructions of elements of
+  subsingleton types, and all our constructions are indicated by the
+  word proof, including the construction of data or structure.
 
   Because \df{proposition} is a semantical rather than syntactical
   notion in univalent mathematics, we often have situations when we
@@ -515,7 +511,7 @@ explicitly.
 We say that a type \m{D} in a universe \m{\W} is \df{\m{\U,\V}-injective}
 to mean
 %
-\M{ \Pi(X : \U)\, \Pi(Y : \V)\, \Pi (j : X \emb Y)\, \Pi(f : X \to D)\, \exists (g :
+\M{ \Pi(X : \U)\, \Pi(Y : \V)\, \Pi (j : X \emb Y)\, \Pi(f : X \to D),\, \exists (g :
   Y \to D), g \comp j \sim f,
 }
 %
@@ -523,7 +519,7 @@ and that it is \df{algebraically \m{\U,\V}-injective} to mean
 %
 \M{
   \Pi(X : \U) \,\Pi(Y : \V)\,
-  \Pi (j : X \emb Y) \, \Pi(f : X \to D) \, \Sigma (f \mid j : Y \to D),
+  \Pi (j : X \emb Y) \, \Pi(f : X \to D) ,\, \Sigma (f \mid j : Y \to D),
   f \mid j \comp j \sim f.
 }
 %
@@ -558,10 +554,10 @@ Let \m{\U,\V,\W} be universes, \m{X:\U} and \m{Y : \V} be types, and
 % \end{proof}
 % However, the original formulation is more convenient, in particular to show the following.
 
-\begin{numbered}
+\begin{lemma}
     If \m{j} is an embedding, then both \m{f \edown j} and \m{f \eup j} are extensions of \m{f} along~\m{j} up to equivalence, in the sense that \M{(f \edown j \comp j) \, x \simeq f x \simeq (f \eup j \comp j) \, x,}
 and hence extensions up to equality if \m{\W} is taken to be \m{\U \sqcup \V}, by univalence.
-\end{numbered}
+\end{lemma}
 \noindent Notice that if \m{\W} is kept arbitrary, then univalence cannot be applied because equality is defined only for elements of the same type.
 \begin{proof}
 Because a sum indexed by a subsingleton is equivalent to any of its
@@ -570,14 +566,14 @@ any of its factors, and because a map is an embedding precisely when
 its fibers are all subsingletons.
 \end{proof}
 \noindent We record this corollary:
-\begin{numbered}
+\begin{lemma} \label{ref:16:1}
   The universe \m{\U \sqcup \V} is algebraically \m{\U,\V}-injective, in at least two ways.
-\end{numbered}
+\end{lemma}
 \noindent And in particular, e.g.\ \m{\U} is \m{\U,\U}-injective, but of course
 \m{\U} doesn't live in \m{\U} and doesn't even have a copy in
 \m{\U}. For the following, we say that \m{y : Y} is not in the image
 of \m{j} to mean that \m{j \, x \ne y} for all \m{x:X}.
-\begin{numbered}
+\begin{proposition}
         For \m{y:Y} not in the image of \m{j}, we have
 %        \begin{enumerate}
 %        \item
@@ -585,14 +581,14 @@ of \m{j} to mean that \m{j \, x \ne y} for all \m{x:X}.
         % \item
         \m{(f \eup j) \, y \simeq \One}.
 %    \end{enumerate}
-  \end{numbered}
+  \end{proposition}
 \noindent With excluded middle, this would give that the two extensions have
 the same sum and product as the non-extended map, respectively, but
 excluded middle is not needed, as it is not hard to see:
-\begin{numbered} We have
+\begin{remark} We have canonical equivalences
 \m{\Sigma f \simeq \Sigma (f \edown j)} and
 \m{\Pi f \simeq \Pi (f \eup j)}.
-\end{numbered}
+\end{remark}
 Notice that the functions \m{f}, \m{f \edown j} and \m{f \eup j},
 being universe valued, are type families, and hence the notations
 \m{\Sigma f}, \m{\Sigma(f \edown j)}, \m{\Pi f} and \m{\Pi(f \eup j)}
@@ -631,9 +627,9 @@ which are automatically natural in the sense that for all \m{\tau: f \wps f'} an
 %
 
 It is easy to check that we have the following canonical transformations:
-\begin{numbered}
+\begin{remark}
   \m{f \edown j \wps f \eup j} if \m{j} is an embedding.
-\end{numbered}
+\end{remark}
 It is also easy to see that, without assuming \m{j} to be an embedding,
   \begin{enumerate}
   \item \m{f \wps f \edown j \comp j},
@@ -642,12 +638,12 @@ It is also easy to see that, without assuming \m{j} to be an embedding,
   These are particular cases of the following constructions, which are
   evident and canonical, even if they may be a bit
   laborious:
-\begin{numbered} For any \m{g : Y \to \T},
+\begin{remark} For any \m{g : Y \to \T}, we have canonical equivalences
     \begin{enumerate}
     \item \m{(f \edown j \wps g) \simeq (f \wps g \comp j),} \quad i.e.\ \m{f \edown j} is a left Kan extension,
     \item \m{(g \wps f \eup j) \simeq (g \comp j \wps f),} \quad i.e.\ \m{f \eup j} is a right Kan extension.
     \end{enumerate}
-\end{numbered}
+\end{remark}
 
 We also have that the left and right Kan extension operators along an
 embedding are themselves embeddings, as we now show.
@@ -807,8 +803,8 @@ The left and right Kan extensions trivially satisfy \m{f \edown \id \sim f}
 and \m{f \eup \id \sim f} because the identity map is an embedding, by
 the extension property, and so are contravariantly functorial in view
 of the following.
-\begin{numbered} \label{iterated}
-  For types \m{X : \U}, \m{Y : \V} and \m{Z : \W}, and functions \m{j : X \to Y}, \m{k : Y \to Z} and \m{f : X \to \U \sqcup \V \sqcup \W}, we have that
+\begin{remark} \label{iterated}
+  For types \m{X : \U}, \m{Y : \V} and \m{Z : \W}, and functions \m{j : X \to Y}, \m{k : Y \to Z} and \m{f : X \to \U \sqcup \V \sqcup \W}, we have canonical identifications
 %
   \M{
     \begin{array}{lll}
@@ -831,9 +827,9 @@ of the following.
 %   &         &  D.         &
 % \end{diagram}
 % }
-\end{numbered}
+\end{remark}
 \begin{proof}
-This is a direct consequence of the laws
+This is a direct consequence of the canonical equivalences
   %
   \M{
     \begin{array}{lll}
@@ -849,13 +845,13 @@ This is a direct consequence of the laws
 
 The above and the following are applied in work on
 compact ordinals (reported in our repository~\cite{TypeTopology}).
-\begin{numbered}
+\begin{remark}
   For types \m{X : \U} and \m{Y : \V}, and functions \m{j : X \to Y}, \m{f : X \to \W}
   and \m{f' : X \to \W'}, if the type \m{f \, x} is a retract of \m{f'
     \, x} for any
   \m{x:X}, then the type \m{(f \eup j) \, y} is a
   retract of \m{(f' \eup j) \, y} for any \m{y : Y}.
-\end{numbered}
+\end{remark}
 
 \noindent The construction is routine, and presumably can be
 performed for left Kan extensions too, but we haven't paused to check
@@ -864,11 +860,11 @@ this.
 \section{Constructions with algebraically injective types}
 
 Algebraic injectives are closed under retracts:
-\begin{numbered}
+\begin{lemma}
   If a type \m{D} in a universe \m{\W} is algebraically
   \m{\U,\V}-injective, then so is any retract \m{D' : \W'} of \m{D} in
   any universe \m{\W'}.
-\end{numbered}
+\end{lemma}
 \noindent In particular, any type equivalent to an algebraically injective type
 is itself algebraically injective, without the need to invoke univalence.
 \begin{proof}
@@ -885,11 +881,11 @@ extension operator for \m{D'} from that of \m{D} is given by \m{f \mid
   j \eqdef r \comp ((s \comp f) \mid j)}.
 \end{proof}
 
-\begin{numbered}
+\begin{lemma}
   The product of any family \m{D_a} of algebraically
   \m{\U,\V}-injective types in a universe \m{\W}, with indices \m{a} in a type
   \m{A} of any universe \m{\T}, is itself algebraically \m{\U,\V}-injective.
-\end{numbered}
+\end{lemma}
 \noindent In particular, if a type \m{D} in a universe \m{\W} is algebraically
 \m{\U,\V}-injective, then so is any exponential power \m{A \to D : \T \sqcup \W} for
 any type \m{A} in any universe \m{\T}.
@@ -906,10 +902,10 @@ operators \m{(-)\mid_a(-)} of the algebraically injective types
 %
 \end{proof}
 
-\begin{numbered}
+\begin{lemma}
   Every algebraically \m{\U,\V}-injective type \m{D:\W} is a retract
   of any type \m{Y:\V} in which it is embedded into.
-\end{numbered}
+\end{lemma}
 \begin{proof}
 \M{\begin{diagram}
   D & & \rInto^j & & Y  \\
@@ -955,9 +951,9 @@ the type \m{\Sigma A} is itself a singleton.  Hence we have
   the type \m{\Sigma A} is a singleton, so is the fiber \m{\Sigma (x
     : X), \Id \, x = A} of~\m{A}.
 \end{proof}
-\begin{numbered}
+\begin{lemma} \label{ref:16:3}
   If a type \m{D} in a universe \m{\U} is algebraically \m{\U,\U^+}-injective, then \m{D} is a retract of the exponential power \m{D \to \U} of \m{\U}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
 \M{\begin{diagram}
   D & & \rInto^\Id & & (D \to \U)  \\
@@ -979,10 +975,10 @@ precisely the retracts of exponential powers of universes, but there
 is a universe mismatch.  Keeping track of the universes to avoid the
 mismatch, what we get instead is a resizing construction without the
 need for resizing axioms:
-\begin{numbered}
+\begin{lemma}
   Algebraically \m{\U,\U^+}-injective types \m{D:\U} are
   algebraically \m{\U,\U}-injective too.
-\end{numbered}
+\end{lemma}
 \begin{proof}
 By the above constructions, we
 first get that \m{D}, being algebraically \m{\U,\U^+}-injective, is a
@@ -1017,28 +1013,35 @@ untruncated \m{\Sigma} as algebraic flabbiness.
 algebraic injectivity: notice that flabbiness and algebraic flabbiness
 amount to simply injectivity and algebraic injectivity with respect to
 the class of embeddings \m{P \to \One} with \m{P} ranging over
-subsingletons. Notice that an algebraically flabby type \m{D} is pointed, by considering the unique map \m{\Zero \to D}.
+subsingletons:
+\begin{diagram}
+  P & & \rInto & & \One  \\
+  & \rdTo_f &  & \ldEto & \\
+  & & D. & &
+\end{diagram}
+Notice also that an algebraically flabby type \m{D} is pointed, by
+considering the case when \m{f} is the unique map \m{\Zero \to D}.
 
-\begin{numbered}
+\begin{lemma} \label{for27:1}
   If a type \m{D} in the universe \m{\W} is algebraically
   \m{\U,\V}-injective, then it is algebraically \m{\U}-flabby.
-\end{numbered}
+\end{lemma}
 \begin{proof}
-  Given a subsingleton \m{P} and a map \m{f : P \to D}, we can take its extension \m{f \mid \operatorname{!}: \One \to D} along the unique map \m{!:P \to \One}, because it is an embedding, and then we let \m{d \eqdef (f \mid \operatorname{!})\, \one}, and the extension property gives \m{d = f \, p} for any \m{p:P}.
+  Given a subsingleton \m{P:\U} and a map \m{f : P \to D}, we can take its extension \m{f \mid \operatorname{!}: \One \to D} along the unique map \m{!:P \to \One}, because it is an embedding, and then we let \m{d \eqdef (f \mid \operatorname{!})\, \one}, and the extension property gives \m{d = f \, p} for any \m{p:P}.
 \end{proof}
 The interesting thing about this is that the
 universe~\m{\V} is forgotten, and then we can put any other universe
 below \m{\U} back, as follows.
 
-\begin{numbered}
+\begin{lemma} \label{for27:2}
   If a type \m{D} in the universe \m{\W} is algebraically \m{\U \sqcup
     \V}-flabby, then it is also algebraically \m{\U,\V}-injective.
-\end{numbered}
+\end{lemma}
 \begin{proof}
-  Given an embedding \m{j : X \to Y}, a map \m{f : X \to D} and a
+  Given an embedding \m{j : X \to Y} of types \m{X:\U} and \m{\V}, a map \m{f : X \to D} and a
   point \m{y:Y}, in order to construct \m{(f \mid j) \, y} we consider
   the map \m{f_y : j^{-1}(y) \to D} defined by \m{(x,p) \mapsto
-    f\,x}. Because the fiber is a subsingleton as \m{j} is an
+    f\,x}. Because the fiber \m{j^{-1}(y) : \U \sqcup \V} is a subsingleton as \m{j} is an
   embedding, we can apply algebraic flabbiness to get \m{d_y : D} with
   \m{d_y = f_y (x,p)} for all \m{(x,p):j^{-1}(y)}. By the construction of
   \m{f_y} and the definition of fiber, this amounts to saying that for
@@ -1054,10 +1057,10 @@ for any \m{x:X}, as required.
 \end{proof}
 \noindent We then get the following resizing construction by composing the above
 two conversions between algebraic flabbiness and injectivity:
-\begin{numbered}
+\begin{lemma}
   If a type \m{D} in the universe \m{\W} is algebraically \m{(\U \sqcup
     \T),\V}-injective, then it is also algebraically \m{\U,\T}-injective.
-\end{numbered}
+\end{lemma}
 \noindent In particular, algebraic \m{\U,\V}-injectivity gives
 algebraic \m{\U,\U}- and \m{\U_0,\U}-injectivity.  So this is no
 longer necessarily resizing down, by taking \m{\V} to be
@@ -1086,12 +1089,12 @@ that all embeddings are of this form up to equivalence (more
 precisely, every embedding of any two types is the composition of an
 equivalence into a sum type followed by the first projection).
 
-\begin{numbered}
+\begin{lemma}
   Any subuniverse of \m{\U} which is closed
   under subsingletons and sums, or alternatively under subsingletons and
   products, is algebraically \m{\U}-flabby and hence
   algebraically \m{\U,\U}-injective.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Let \m{\Sigma\,A} be a subuniverse of \m{\U}, let \m{P:\U} be a
   subsingleton and \m{f : P \to \Sigma \, A} be given. Then define
@@ -1116,12 +1119,20 @@ equivalence into a sum type followed by the first projection).
 % given flabiness structure for \m{U}, with essentially the same proof.
 
 We index \m{n}-types from \m{n=-2} as in the HoTT book, where the
-\m{-2}-types are the singletons.
-\begin{corollary}
+\m{-2}-types are the singletons. We have the following as a corollary.
+\begin{theorem}
   The subuniverse of \m{n}-types in a universe \m{\U} is algebraically
   \m{\U}-flabby, in at least two ways, and hence algebraically
   \m{\U,\U}-injective.
-\end{corollary}
+\end{theorem}
+\begin{proof}
+  We have a subuniverse because the notion of being an \m{n}-type is a
+  proposition. For \m{n=-2}, the subuniverse of singletons is itself a
+  singleton, and hence trivially injective.  For \m{n>-2}, the
+  \m{n}-types are known to be closed under subsingletons and both sums
+  and products.
+\end{proof}
+
 \noindent In particular:
 \begin{enumerate}
 \item The type \m{\Omega_\U} of subsingletons in a universe \m{\U} is
@@ -1135,13 +1146,13 @@ We index \m{n}-types from \m{n=-2} as in the HoTT book, where the
 \item Powersets, being exponential powers of \m{\Omega_\U}, are
   algebraically \m{\U,\U}-injective.
 \end{enumerate}
-\begin{proof}
-  We have a subuniverse because the notion of being an \m{n}-type is a
-  proposition. For \m{n=-2}, the subuniverse of singletons is itself a
-  singleton, and hence trivially injective.  For \m{n>-2}, the
-  \m{n}-types are known to be closed under subsingletons and both sums
-  and products.
-\end{proof}
+An anonymous referee suggested the following additional examples: (i)
+The subuniverse of subfinite types, i.e., subtypes of types for which
+there is an uunspecified equivalence with \m{\operatorname{Fin}(n)}
+for some~\m{n}. This subuniverse is closed under both \m{\Pi} and
+\m{\Sigma}.  (ii) Reflective subuniverses, as they are closed under
+\m{\Pi}. (iii) Any universe \m{\U} seen as a subuniverse of \m{\U
+  \sqcup \V}.
 
 \section{Algebraic flabbiness with resizing axioms}
 
@@ -1165,10 +1176,10 @@ We begin with the following construction, which says that algebraic
 flabbiness is universe independent in the presence of propositional
 resizing:
 
-\begin{numbered}
+\begin{lemma}
   If propositional resizing holds, then the algebraic \m{\V}-flabbiness
   of a type in any universe gives its algebraic \m{\U}-flabbiness.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Let \m{D:\W} be a type in any universe \m{\W}, let \m{P : \U} be a
   proposition and \m{f : P \to D}. By resizing, we have an equivalence
@@ -1184,15 +1195,15 @@ And from this it follows that algebraic injectivity is also universe
 independent in the presence of propositional resizing: we convert
 back-and-forth between algebraic injectivity and algebraic flabbiness.
 
-\begin{numbered} \label{universe:independence}
+\begin{lemma} \label{universe:independence}
   If propositional resizing holds, then for any type \m{D} in any universe
   \m{\W}, the algebraic \m{\U,\V}-injectivity of \m{D} gives its
   algebraic \m{\U',\V'}-injectivity.
-\end{numbered}
+\end{lemma}
 \begin{proof}
-  We first get the \m{\U}-flabbiness of \m{D}, and then, by resizing, its
-  \m{\U' \sqcup \V'}-flabbiness, and finally its algebraic
-  \m{\U',\V'}-injectivity.
+  We first get the \m{\U}-flabbiness of \m{D} by~\ref{for27:1}, and then its
+  \m{\U' \sqcup \V'}-flabbiness by~\ref{universe:independence}, and finally its algebraic
+  \m{\U',\V'}-injectivity by~\ref{for27:2}.
 \end{proof}
 
 As an application of this and of the algebraic injectivity of
@@ -1201,9 +1212,9 @@ universe.  We remark that for types that are not sets, sections are
 not automatically embeddings~\cite{MR3548859}. But we can choose the
 retraction so that the section is an embedding in our situation.
 
-\begin{numbered}
-  We have an embedding of any universe \m{\U} into any larger universe \m{U \sqcup \V}.
-\end{numbered}
+\begin{lemma} \label{canonical}
+  We have an embedding of any universe \m{\U} into any larger universe \m{\U \sqcup \V}.
+\end{lemma}
 \begin{proof}
   For example, we have the embedding given by \m{X \mapsto X +
     \Zero_\V}. We don't consider an argument that this is indeed an
@@ -1214,36 +1225,39 @@ retraction so that the section is an embedding in our situation.
   found in~\cite{injective:article} in case of doubt.
 \end{proof}
 
-\begin{numbered}
+\begin{theorem}
   If propositional resizing holds, then any universe \m{\U} is a
   retract of any larger universe \m{\U \sqcup \V} with a section that
   is an embedding.
-\end{numbered}
+\end{theorem}
 \begin{proof}
-  As we have seen, the universe \m{\U} is algebraically
-  \m{\U,\U}-injective, and hence, by propositional resizing, it is
-  algebraically \m{\U^+,(\U \sqcup \V)^+}-injective, which has the
-  right universe assignments to apply the construction that gives a
-  retraction from an embedding of an injective type into a larger
-  type, in this case some designated embedding \m{\U \to \U \sqcup
-    \V}.
+  The universe \m{\U} is algebraically \m{\U,\U}-injective
+  by~\ref{ref:16:1}, and hence it is algebraically \m{\U^+,(\U \sqcup
+    \V)^+}-injective by~\ref{universe:independence}, which has the
+  right universe assignments to apply the construction~\ref{ref:16:3}
+  that gives a retraction from an embedding of an injective type into
+  a larger type, in this case the embedding of the universe \m{\U}
+  into the larger universe \m{\U \sqcup \V} constructed
+  in~\ref{canonical}.
 \end{proof}
 
 As mentioned above, we almost have that the algebraically injective
 types are precisely the retracts of exponential powers of universes,
 up to a universe mismatch. This mismatch is side-stepped by
-propositional resizing.
+propositional resizing. The following is one of the main results of
+this paper:
 
-\begin{numbered} \df{(First characterization of algebraic
+\begin{theorem} \df{(First characterization of algebraic
     injectives.)}  If propositional resizing holds, then a type \m{D}
   in a universe \m{\U} is algebraically \m{\U,\U}-injective if and
   only if \m{D} is a retract of an exponential power of \m{\U} with
   exponent in \m{\U}.
-\end{numbered}
+\end{theorem}
 \noindent We emphasize that this is a logical equivalence ``if and
 only if'' rather than an \m{\infty}-groupoid equivalence
-``\m{\simeq}''.  So this characterizes the types
-  that \df{can} be equipped with algebraic-injective structure.
+``\m{\simeq}''. More precisely, the theorem gives two constructions in
+opposite directions. So this characterizes the types that \df{can} be
+equipped with algebraic-injective structure.
 \begin{proof}
   \m{(\Rightarrow)}: Because \m{D} is algebraically
   \m{\U,\U}-injective, it is algebraically \m{\U,\U^+}-injective by
@@ -1262,13 +1276,13 @@ We also have that any algebraically injective \m{(n+1)}-type is a retract
 of an exponential power of the universe of \m{n}-types. We establish something
 more general first.
 
-\begin{numbered}
+\begin{lemma}
   Under propositional resizing, for any subuniverse \m{\Sigma \, A} of
   a universe \m{\U} closed under subsingletons, we have that any
   algebraically \m{\U,\U}-injective type \m{X:\U} whose identity types
   \m{x=_X x'} all satisfy the property \m{A} is a retract of
   the type \m{X \to \Sigma \, A}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Because the first projection \m{j : \Sigma \, A \to \U} is an
   embedding by the assumption, so is the map \m{k \eqdef j \comp (-) :
@@ -1288,11 +1302,11 @@ more general first.
 
 Using this, we get the following as an immediate consequence.
 
-\begin{numbered} \df{(Characterization of algebraic injective \m{(n+1)}-types.)}  If propositional resizing holds, then an
+\begin{theorem} \df{(Characterization of algebraic injective \m{(n+1)}-types.)}  If propositional resizing holds, then an
   \m{(n+1)}-type \m{D} in \m{\U} is algebraically \m{\U,\U}-injective
   if and only if \m{D} is a retract of an exponential power of the
   universe of \m{n}-types in \m{\U}, with exponent in \m{\U}.
-\end{numbered}
+\end{theorem}
 
 \begin{corollary}
   The algebraically injective sets in \m{\U} are the retracts of
@@ -1307,24 +1321,24 @@ Using this, we get the following as an immediate consequence.
 \section{Injectivity in terms of algebraic injectivity in the absence of resizing}
 
 We now compare injectivity with algebraic injectivity. The following observation follows from the fact that retractions are surjections:
-\begin{numbered}
+\begin{lemma}
   If a type \m{D} in a universe \m{\W} is algebraically
   \m{\U,\V}-injective, then it is \m{\U,\V}-injective
-\end{numbered}
+\end{lemma}
 \noindent The following observation follows from the fact that propositions are
 closed under products.
-\begin{numbered}
+\begin{lemma}
   Injectivity is a proposition.
-\end{numbered}
+\end{lemma}
 \noindent But of course algebraic injectivity is not. From this we immediately
 get the following by the universal property of propositional
 truncation:
 
-\begin{numbered}
+\begin{lemma}
   For any type \m{D} in a universe \m{\W}, the truncation of the
   algebraic \m{\U,\V}-injectivity of \m{D} gives its
   \m{\U,\V}-injectivity.
-\end{numbered}
+\end{lemma}
 
 In order to relate injectivity to the propositional truncation of
 algebraic injectivity in the other direction, we first establish some
@@ -1333,10 +1347,10 @@ injectivity. These facts cannot be obtained by reduction (in
 particular products of injectives are not necessarily injective, in
 the absence of choice, but exponential powers are).
 
-\begin{numbered} \label{embedding-||retract||}
+\begin{lemma} \label{embedding-||retract||}
   Any \m{\W,\V}-injective type \m{D} in a universe \m{\W} is a retract
   of any type in \m{\V} it is embedded into, in an unspecified way.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Given \m{Y:\V} with an embedding \m{j : D \to Y}, by the
   \m{\W,\V}-injectivity of \m{D} there is an \df{unspecified} \m{r : Y
@@ -1347,10 +1361,10 @@ the absence of choice, but exponential powers are).
   statement, there is an unspecified retraction.
 \end{proof}
 
-\begin{numbered}
+\begin{lemma}
   If a type \m{D' : \U'} is a retract of a type \m{D : \U} then the \m{\W,\T}-injectivity of
   \m{D} implies that of \m{D'}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Let \m{r : D \to D'} and \m{s : D' \to D} be the given section
   retraction pair, and, to show that \m{D'} is \m{\W,\T}-injective,
@@ -1366,10 +1380,10 @@ the absence of choice, but exponential powers are).
 
 The universe assignments in the following are probably not very
 friendly, but we are aiming for maximum generality.
-\begin{numbered}
+\begin{lemma}
   If a type \m{D : \W} is \m{(\U \sqcup \T),(\V \sqcup \T)}-injective,
   then the exponential power \m{A \to D} is \m{\U,\V}-injective for any \m{A:\T}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   For a given embedding \m{j : X \to Y} and a given map \m{f : X \to
     (A \to D)}, take the exponential transpose \m{g : X \times A \to
@@ -1384,10 +1398,10 @@ friendly, but we are aiming for maximum generality.
 \end{proof}
 
 
-\begin{numbered}
+\begin{lemma}
   If a type \m{D:\U} is \m{\U,\U^+} injective, then it is a retract of
   \m{D \to \U} in an unspecified way.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   This is an immediate consequence of~\ref{embedding-||retract||} and the fact that the
   identity type former \m{\Id_X : X \to (X \to \U)} is an embedding.
@@ -1397,9 +1411,9 @@ With this we get an almost converse to the fact that truncated
 algebraic injectivity implies injectivity: the universe levels are
 different in the converse:
 
-\begin{numbered}
+\begin{lemma}
   If a type \m{D:\U} is \m{\U,\U^+}-injective, then it is algebraically \m{\U,\U^+}-injective in an unspecified way.
-\end{numbered}
+\end{lemma}
 
 So, in summary, regarding the relationship between injectivity and
 truncated algebraic injectivity, so far we know that
@@ -1415,14 +1429,17 @@ Therefore, using propositional resizing, we get the following
 characterization of a particular case of injectivity in terms of
 algebraic injectivity.
 
-\begin{numbered} \label{worse} \df{(Injectivity in terms of algebraic injectivity.)}
+\begin{proposition} \label{worse} \df{(Injectivity in terms of algebraic injectivity.)}
   If propositional resizing holds, then a type \m{D : \U} is \m{\U,\U^+}-injective if and only if it is algebraically \m{\U,\U^+}-injective in an unspecified way.
-\end{numbered}
+\end{proposition}
 \noindent We would like to do better than this. For that purpose, we consider
 the partial-map classifier in conjunction with flabbiness and resizing.
 
 \section{Algebraic flabbiness via the partial-map classifier}
 
+We begin with a generalization~\cite{MR3695545} of a familiar construction
+in \m{1}-topos theory~\cite{MR1173017}.
+\begin{definition}
 The lifting \m{\Lift_{\T} \, X : \T^+ \sqcup \U} of a type \m{X:\U}
 with respect to a universe \m{\T} % for truth-values
 is defined by
@@ -1430,12 +1447,11 @@ is defined by
 \M{ \Lift_{\T}\, X \eqdef \Sigma (P : \T), (P \to X) \times
   \text{\m{P} is a subsingleton}.  }
 %
-This is a generalization~\cite{MR3695545} of a familiar construction
-in \m{1}-topos theory~\cite{MR1173017}.
+\end{definition}
 
 When the universes \m{\T} and \m{\U} are the same and the last
 component of the triple is omitted, we have the familiar
-correspondence
+canonical correspondence
 %
 \M{
   (X \to \T) \simeq (\Sigma (P : \T), P \to X)
@@ -1492,8 +1508,15 @@ its equality types. We denote the projections from \m{\Lift_{\T}
 %
 For \m{l , m : \Lift_{\T} \, X}, define
 \M{
-  (l \backsimeq m) \eqdef \Sigma (e : \delta \, l \simeq \delta \, m), \upsilon \, l = \upsilon \, m \comp e.
+  (l \backsimeq m) \eqdef \Sigma (e : \delta \, l \simeq \delta \, m), \upsilon \, l = \upsilon \, m \comp e,
 }
+as indicated in the commuting triangle
+\M{\begin{diagram}[p=0.4em]
+  \delta l & & \rTo^e & & \delta m \\
+  & \rdTo_{v l} & & \ldTo_{v m} & \\
+   & & X & &
+\end{diagram}}
+
 \begin{lemma}
   The canonical transformation \m{(l = m) \to (l \backsimeq m)} that
   sends \m{\refl_l} to the identity equivalence paired with \m{\refl_{\upsilon \,
@@ -1509,9 +1532,9 @@ where \m{i} is a proof that \m{\One} is a proposition.
 \begin{proof}
   This is easily proved using the above characterization of equality.
 \end{proof}
-\begin{numbered}
+\begin{lemma}
   The unit satisfies the unit equations for a monad.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Using the above characterization of equality, the left and right
   unit laws amount to the fact that the type \m{\One} is the left
@@ -1550,9 +1573,9 @@ We define the multiplication \m{\mu_X : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\
   \end{array}
 }
 %
-\begin{numbered}
+\begin{lemma}
   The multiplication satisfies the associativity equation for a monad.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Using the above characterization of equality, we see that this
   amounts to the associativity of \m{\Sigma}, which says that for
@@ -1565,7 +1588,7 @@ We define the multiplication \m{\mu_X : \Lift_{\T} (\Lift_{\T}\, X) \to \Lift_{\
 even easier to check, and we omit the verification. We now turn to
 algebras. We omit the direct verification of the following.
 
-\begin{numbered} Let \m{X:\U} be any type.
+\begin{lemma} Let \m{X:\U} be any type.
   \begin{enumerate}
   \item A function \m{\alpha : \Lift_\T X \to X}, that is, a functor
     algebra, amounts to a family of functions \m{\bigsqcup_P : (P \to
@@ -1600,32 +1623,32 @@ algebras. We omit the direct verification of the following.
     }
     %
   \end{enumerate}
-\end{numbered}
+\end{lemma}
 \noindent So the associativity law for algebras plays no role in
 flabbiness. But of course we can have algebraic flabbiness data that
 is associative, such as not only the free algebra \m{\Lift_\T X}, but
 also the following two examples that connect to the opening
 development of this paper on the injectivity of universes, in
 particular the construction~\ref{iterated}:
-\begin{numbered} The universe \m{\T} is a monad algebra of
+\begin{lemma} The universe \m{\T} is a monad algebra of
   \m{\Lift_\T} in at least two ways, with \m{\bigsqcup = \Sigma} and
   \m{\bigsqcup = \Pi}.
-\end{numbered}
+\end{lemma}
 
 
 We now apply these ideas to injectivity.
-\begin{numbered}
+\begin{lemma}
   Any algebraically \m{\T,\T^+}-injective type \m{D:\T} is a retract of \m{\Lift_\T D}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Because the unit is an embedding, and so we can extend the identity of~\m{D} along it.
 \end{proof}
 
-\begin{numbered} \df{(Second characterization of algebraic injectives.)}
+\begin{theorem} \df{(Second characterization of algebraic injectives.)}
   With propositional resizing, a type \m{D:\T} is algebraically
   \m{\T,\T}-injective if and only if it is a retract of a monad
   algebra of \m{\Lift_\T}.
-\end{numbered}
+\end{theorem}
 \begin{proof}
   \m{(\Rightarrow)}: Because \m{D} is algebraically
   \m{\T,\T}-injective, it is algebraically \m{\T,\T^+}-injective by
@@ -1647,10 +1670,10 @@ universes other than the first one~\cite{TypeTopology}, and so all
 the assumption of \m{\Omega}-resizing does is to account
 for the first universe too.
 %
-\begin{numbered}
+\begin{lemma}
   Under \m{\Omega}-resizing, for any type \m{X:\T}, the type
   \m{\Lift_{\T} X : \T^+} has an equivalent copy in the universe \m{\T}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   We can take \m{\Sigma (p : \Omega'), \fst(\rho \, p) \to X} where \m{\rho : \Omega' \to \Omega_\T} is the given equivalence.
 \end{proof}
@@ -1681,12 +1704,12 @@ mention lifting in its formulation.
 \end{proof}
 
 As an immediate consequence, by reduction to the above results about algebraic
-injectivity, we have the following.
-\begin{corollary}
+injectivity, we have the following corollary.
+\begin{theorem}
   Under \m{\Omega}-resizing and propositional resizing, if a type
   \m{D} in a universe \m{\T} is \m{\T,\T}-injective , then it is also
   \m{\U,\V}-injective for any universes \m{\U} and \m{\V}.
-\end{corollary}
+\end{theorem}
 \begin{proof}
   The type \m{D} is algebraically \m{\T,\T}-injective in an
   unspecified way, and so by functoriality of truncation on objects
@@ -1747,10 +1770,10 @@ subsingleton \m{P}. So in the following we get data out of a proposition.
 % constructive mathematics, but not only them.
 
 
-\begin{numbered}
+\begin{lemma}
   If excluded middle holds in the universe \m{\U}, then every pointed
   type \m{D} in any universe \m{\W} is algebraically \m{\U}-flabby.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Let \m{d} be the given point of \m{D} and \m{f : P \to D} be a function with
   subsingleton domain. If we have a point \m{p : P}, then we can take
@@ -1789,9 +1812,9 @@ For the converse, we use the following.
   decidable.
 \end{proof}
 \noindent From this we immediately conclude the following:
-\begin{numbered}
+\begin{lemma}
   If all pointed types in a universe \m{\W} are algebraically \m{\W}-flabby, then excluded middle holds in~\m{\W}.
-\end{numbered}
+\end{lemma}
 % \begin{proof}
 %   Give a proposition \m{P}, apply the lemma to the pointed type \m{P +
 %     (P \to \Zero) + \One}.
@@ -1799,36 +1822,36 @@ For the converse, we use the following.
 \noindent
 And then we have the same situation for algebraically injective types,
 by reduction to algebraic flabbiness:
-\begin{numbered}
+\begin{lemma}
   If excluded middle holds in the universe \m{\U \sqcup \V}, then any
   pointed type \m{D} in any universe \m{\W} is algebraically
   \m{\U,\V}-injective.
-\end{numbered}
+\end{lemma}
 % \begin{proof}
 %   Simply because, as we have seen, algebraic flabbiness gives
 %   algebraic injectivity.
 % \end{proof}
 \noindent Putting this together with some universe specializations, we
 have the following construction.
-\begin{numbered} % \df{(Logical equivalence of algebraic injectivity of all pointed types with excluded middle.)} \\
+\begin{theorem} % \df{(Logical equivalence of algebraic injectivity of all pointed types with excluded middle.)} \\
   All pointed types in a universe \m{\U} are algebraically \m{\U,\U}-injective if and only if excluded middle holds in~\m{\U}.
-\end{numbered}
+\end{theorem}
 
 \noindent
 And we have a similar situation with injective types.
-\begin{numbered}
+\begin{lemma}
   If excluded middle holds, then every inhabited type of any universe is
   injective with respect to any two universes.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Because excluded middle gives algebraic injectivity, which in turn gives
   injectivity.
 \end{proof}
 \noindent Without resizing, we have the following.
-\begin{numbered}
+\begin{lemma}
   If every inhabited type \m{D:\W} is \m{\W,\W^+}-injective, then
   excluded middle holds in the universe \m{\W}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Given a proposition \m{P}, we have that the type \m{D \eqdef P + (P
     \to \Zero) + \One_{\W}} is injective by the assumption. Hence it
@@ -1839,10 +1862,10 @@ And we have a similar situation with injective types.
   proposition is a proposition.
 \end{proof}
 \noindent With resizing we can do better:
-\begin{numbered}
+\begin{lemma}
   Under \m{\Omega}-resizing, if every inhabited type in a universe \m{\U} is
   \m{\U,\U}-injective, then excluded middle holds in \m{\U}.
-\end{numbered}
+\end{lemma}
 \begin{proof}
   Given a proposition \m{P}, we have that the type \m{D \eqdef P + (P
     \to \Zero) + \One_{\U}} is injective by the assumption. Hence it
