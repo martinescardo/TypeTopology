@@ -260,3 +260,12 @@ the-true-props-form-a-prop : funext 𝓤 𝓤 → propext 𝓤
 the-true-props-form-a-prop fe pe = singletons-are-props (the-true-props-form-a-singleton-type fe pe)
 
 \end{code}
+
+Added 5 March 2020 by Tom de Jong.
+
+\begin{code}
+
+¬-is-prop : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop (¬ X)
+¬-is-prop fe = Π-is-prop fe (λ x → 𝟘-is-prop)
+
+\end{code}

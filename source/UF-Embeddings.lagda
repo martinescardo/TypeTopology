@@ -413,6 +413,26 @@ prop-embedding P i 𝓥 * (p , r) (p' , r') = to-×-≡ (i p p')
                                                   (props-are-sets 𝟙-is-prop r r')
 \end{code}
 
+Added by Tom de Jong.
+
+If a type X embeds into a proposition, then X is itself a proposition.
+
+\begin{code}
+
+embedding-into-prop : {X : 𝓤 ̇ } {P : 𝓥 ̇ } → is-prop P → X ↪ P → is-prop X
+embedding-into-prop i (f , e) x y = d
+ where
+   a : x ≡ y → f x ≡ f y
+   a = ap f {x} {y}
+   b : is-equiv a
+   b = embedding-embedding' f e x y
+   c : f x ≡ f y
+   c = i (f x) (f y)
+   d : x ≡ y
+   d = inverse a b c
+
+\end{code}
+
 \begin{code}
 
 infix  0 _↪_

@@ -50,3 +50,22 @@ Fixities:
 infixr 1 _+_
 
 \end{code}
+
+Added 4 March 2020 by Tom de Jong.
+
+\begin{code}
+
+dep-cases₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : X + Y + Z → 𝓦 ̇ }
+           → ((x : X) → A(inl x))
+           → ((y : Y) → A(inr (inl y)))
+           → ((z : Z) → A(inr (inr z)))
+           → ((p : X + Y + Z) → A p)
+dep-cases₃ f g h (inl x)       = f x
+dep-cases₃ f g h (inr (inl y)) = g y
+dep-cases₃ f g h (inr (inr z)) = h z
+
+cases₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓦 ̇ }
+       → (X → A) → (Y → A) → (Z → A) → X + Y + Z → A
+cases₃ = dep-cases₃
+
+\end{code}
