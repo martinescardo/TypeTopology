@@ -7,14 +7,10 @@ module UF-ImageAndSurjection where
 open import SpartanMLTT
 open import UF-Base public
 open import UF-Equiv
+open import UF-EquivalenceExamples
 open import UF-Embeddings
 open import UF-PropTrunc
 open import UF-Retracts
-
--- This is only used at the end to prove that if f : X → Y is a surjection, then
--- Y ≃ image f. This cannot be in UF-EquivalenceExamples, because of module
--- dependencies.
-open import UF-EquivalenceExamples
 
 \end{code}
 
