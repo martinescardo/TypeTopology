@@ -13,8 +13,7 @@ open import UF-Base public
 open import UF-Subsingletons public
 open import UF-FunExt public
 open import UF-Subsingletons-FunExt public
-
-open import UF-Equiv -- for a-prop-is-equivalent-to-its-truncation
+open import UF-Equiv
 
 \end{code}
 
