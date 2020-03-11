@@ -92,10 +92,11 @@ import PartialElements
 import UF
 import Types2019
 import PCFModules -- by Tom de Jong
+import Dyadics    -- by Tom de Jong
 
 \end{code}
 
-The last module (univalent foundations) has been developed, on demand,
+The UF module (univalent foundations) has been developed, on demand,
 for use in the preceding modules (and the modules below, too). The
 modules UF-Yoneda and UF-IdEmbedding contain new results.
 
@@ -121,6 +122,9 @@ import ConvergentSequenceInfCompact
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DiscreteAndSeparated
+import Dyadic
+import DyadicOrder
+import Dyadics
 import Dominance
 import DummettDisjunction
 import Empty

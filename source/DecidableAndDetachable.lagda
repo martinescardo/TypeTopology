@@ -53,6 +53,25 @@ pointed-decidable = inl
 →-preserves-decidability (inl a) (inr v) = inr (λ f → v (f a))
 →-preserves-decidability (inr u) (inr v) = inl (λ a → 𝟘-elim (u a))
 
+→-preserves-decidability' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                          → (¬ B →  decidable A) →  decidable B → decidable (A → B)
+→-preserves-decidability' φ (inl b) = inl (λ _ → b)
+→-preserves-decidability' {𝓤} {𝓥} {A} {B} φ (inr v) = γ (φ v)
+ where
+  γ : decidable A → decidable (A → B)
+  γ (inl a) = inr (λ f → v (f a))
+  γ (inr u) = inl (λ a → 𝟘-elim (u a))
+
+→-preserves-decidability'' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                           → decidable A →  (A → decidable B) → decidable (A → B)
+→-preserves-decidability'' {𝓤} {𝓥} {A} {B} (inl a) φ = γ (φ a)
+ where
+  γ : decidable B → decidable (A → B)
+  γ (inl b) = inl (λ _ → b)
+  γ (inr v) = inr (λ f → v (f a))
+
+→-preserves-decidability'' (inr u) φ = inl (λ a → 𝟘-elim (u a))
+
 ¬-preserves-decidability : {A : 𝓤 ̇ }
                          → decidable A → decidable(¬ A)
 ¬-preserves-decidability d = →-preserves-decidability d 𝟘-decidable
