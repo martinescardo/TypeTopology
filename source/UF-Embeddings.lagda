@@ -83,7 +83,7 @@ embedding-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
 embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding' f → is-embedding f
 embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
-  e : (x : X) → is-the-only-element-of (Σ x' ꞉ X , f x ≡ f x') (x , refl)
+  e : (x : X) → is-central (Σ x' ꞉ X , f x ≡ f x') (x , refl)
   e x = universal-element-is-the-only-element
          (x , refl)
          (equiv-universality x refl (ise x))

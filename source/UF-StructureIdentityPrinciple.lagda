@@ -1,7 +1,11 @@
 Martin Escardo, August 2018. A structure identity principle.
 
-There is a better treatment of this here and so this file is obsolete:
+There is a much better treatment of this here and so this file is
+obsolete:
+
 https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/
+
+This is also ported in the module UF-SIP.
 
 A structure identity principle (sip) for types, rather than categories
 as in the HoTT Book.

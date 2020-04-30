@@ -231,7 +231,8 @@ import UF-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Size
-import UF-StructureIdentityPrinciple
+import UF-SIP                         -- New
+import UF-StructureIdentityPrinciple  -- Old
 import UF-SubsetIdentity
 import UF-Subsingletons-FunExt
 import UF-Subsingletons

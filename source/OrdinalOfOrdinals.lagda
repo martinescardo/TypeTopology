@@ -279,7 +279,7 @@ bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) =
   ε = at-most-one-simulation α α (g ∘ f) id εs (pr₂ (⊴-refl α))
 
 ≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
-≃ₒ-refl α = id , (λ x y → id) , id-is-an-equiv ⟨ α ⟩ , (λ x y → id)
+≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
 
 idtoeqₒ : (α β : Ordinal 𝓤) → α ≡ β → α ≃ₒ β
 idtoeqₒ α .α refl = ≃ₒ-refl α

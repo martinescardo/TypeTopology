@@ -140,7 +140,7 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  \end{code}
 
- The original version of Cantor's theorem was for powersets, which
+ The original version of Cantor's theorem was for 𝓟s, which
  here are types of maps into the subtype classifier Ω 𝓤 of the universe 𝓤.
 
  Function extensionality is needed in order to define negation

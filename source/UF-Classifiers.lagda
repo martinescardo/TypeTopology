@@ -338,7 +338,7 @@ module general-classifier
               ψ = fiber-equiv y
               ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
               ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
-                           being-equiv-is-a-prop'' fe'' id _ (id-is-an-equiv _))
+                           being-equiv-is-a-prop'' fe'' id _ (id-is-equiv _))
                where
                 ϕψ' : (z : fiber (f' ∘ eqtofun e) y)
                    → eqtofun (ϕ ● ψ) z ≡ z

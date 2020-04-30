@@ -136,7 +136,7 @@ Added 8th Feb 2019.
   up-is-equiv = ⌜⌝-is-equiv e₀
 
   d : (Σ p ꞉ Ω₀ , (up p holds → X)) ≃ (Σ p ꞉ Ω 𝓣 , (p holds → X))
-  d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
+  d = Σ-change-of-variable (λ p → p holds → X) up up-is-equiv
 
   e : (Σ p ꞉ Ω 𝓣 , (p holds → X)) ≃ 𝓛 X
   e = qinveq (λ ((P , i) , f) →  P , f ,  i)
@@ -161,7 +161,7 @@ more parsimonious.
   up-is-equiv = ⌜⌝-is-equiv ε
 
   d : (Σ p ꞉ O , (up p holds → X)) ≃ (Σ p ꞉ Ω 𝓣 , (p holds → X))
-  d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
+  d = Σ-change-of-variable (λ p → p holds → X) up up-is-equiv
 
   e : (Σ p ꞉ Ω 𝓣 , (p holds → X)) ≃ 𝓛 X
   e = qinveq (λ ((P , i) , f) →  P , f  , i)

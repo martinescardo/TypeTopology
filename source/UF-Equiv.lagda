@@ -47,11 +47,11 @@ X ≃ Y = Σ f ꞉ (X → Y) , is-equiv f
 Aut : 𝓤 ̇ → 𝓤 ̇
 Aut X = (X ≃ X)
 
-id-is-an-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
-id-is-an-equiv X = (id , λ x → refl) , (id , λ x → refl)
+id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (id {𝓤} {X})
+id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
 
 ≃-refl : (X : 𝓤 ̇ ) → X ≃ X
-≃-refl X = id , id-is-an-equiv X
+≃-refl X = id , id-is-equiv X
 
 ∘-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {f' : Y → Z}
            → is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
@@ -150,13 +150,13 @@ equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
   sf : (x : X) → s(f x) ≡ x
   sf x = s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
-         r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
-         r(f x)       ≡⟨ rf x ⟩
+         r(f(s(f x))) ≡⟨ ap r (fs (f x))  ⟩
+         r(f x)       ≡⟨ rf x             ⟩
          x            ∎
 
-inverse-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                   → f ∘ inverse f e ∼ id
-inverse-is-section f ((s , fs) , (r , rf)) = fs
+inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                      → f ∘ inverse f e ∼ id
+inverses-are-sections f ((s , fs) , (r , rf)) = fs
 
 inverse-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                       → inverse f e ∘ f ∼ id
@@ -165,7 +165,7 @@ inverse-is-retraction f e = pr₁ (pr₂(equivs-are-qinvs f e))
 inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                  → is-equiv (inverse f e)
 
-inverse-is-equiv f e = (f , inverse-is-retraction f e) , (f , inverse-is-section f e)
+inverse-is-equiv f e = (f , inverse-is-retraction f e) , (f , inverses-are-sections f e)
 
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
@@ -212,7 +212,7 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
 
 ≃-sym-is-rinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (y : Y)
               → ⌜ 𝓯 ⌝ (⌜ ≃-sym 𝓯 ⌝ y) ≡ y
-≃-sym-is-rinv (f , e) y = inverse-is-section f e y
+≃-sym-is-rinv (f , e) y = inverses-are-sections f e y
 
 equiv-retract-l : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → retract X of Y
 equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
@@ -261,7 +261,7 @@ Equivalence of transports.
 
 transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y)
                       → is-equiv (transport A p)
-transports-are-equivs refl = id-is-an-equiv _
+transports-are-equivs refl = id-is-equiv _
 
 back-transports-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {x y : X} (p : x ≡ y)
                            → is-equiv (back-transport A p)
@@ -336,7 +336,7 @@ id-homotopies-are-natural h η {x} =
    η (h x)                         ≡⟨ refl ⟩
    η (h x) ∙ refl                  ≡⟨ ap (λ - → η(h x) ∙ -) ((trans-sym' (η x))⁻¹) ⟩
    η (h x) ∙ (η x ∙ (η x)⁻¹)       ≡⟨ (∙assoc (η (h x)) (η x) (η x ⁻¹))⁻¹ ⟩
-   η (h x) ∙ η x ∙ (η x)⁻¹         ≡⟨ ap (λ - → η (h x) ∙ - ∙ (η x)⁻¹) ((ap-id-is-id (η x))) ⟩
+   η (h x) ∙ η x ∙ (η x)⁻¹         ≡⟨ ap (λ - → η (h x) ∙ - ∙ (η x)⁻¹) ((ap-id-is-id' (η x))) ⟩
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹ ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
    ap h (η x)                      ∎
 
@@ -355,19 +355,19 @@ qinvs-are-haes {𝓤} {𝓥} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
         ap g (ap f (η x)) ∎
 
   b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
-  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x)) ⟩
-        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
+  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x))                                 ⟩
+        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x)))                          ⟩
         ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹ ⟩
-        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x)) ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x))                        ⟩
         ε (f (g (f x))) ∙ ap f (η x)         ∎
 
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
-  τ x = ap f (η x)                                         ≡⟨ refl-left-neutral ⁻¹ ⟩
-        refl ∙ ap f (η x)                                   ≡⟨ ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
+  τ x = ap f (η x)                                           ≡⟨ refl-left-neutral ⁻¹                                        ⟩
+        refl ∙ ap f (η x)                                    ≡⟨ ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹ ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹                  ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
-        ε' (f x)                                            ∎
+        ε' (f x)                                             ∎
 
 equivs-are-haes : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → is-equiv f → is-hae f
@@ -413,7 +413,7 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y = (c , λ σ → α 
         ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x)                               ⟩
         ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹))                             ⟩
         ap (f ∘ g) (p ⁻¹) ∙ ε (f x) ∙ p     ≡⟨ ap (λ - → - ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹ ⟩
-        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))⁻¹                             ⟩
+        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))                               ⟩
         ε y ∙ p ⁻¹ ∙ p                      ≡⟨ ∙assoc (ε y) (p ⁻¹) p                                                     ⟩
         ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ - → ε y ∙ -) (trans-sym p)                                          ⟩
         ε y ∙ refl                          ≡⟨ refl ⟩

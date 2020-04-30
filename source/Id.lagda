@@ -13,7 +13,7 @@ data _≡_ {𝓤} {X : 𝓤 ̇ } : X → X → 𝓤 ̇ where
   refl : {x : X} → x ≡ x
 
 refl─ : {X : 𝓤 ̇ } (x : X) → x ≡ x
-refl─ x = refl
+refl─ x = refl {_} {_} {x}
 
 by-definition : {X : 𝓤 ̇ } {x : X} → x ≡ x
 by-definition = refl

@@ -173,7 +173,7 @@ a neutral element for ordinary function composition, definitionally:
 ≃-sym-left-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe _ _ _)
  where
   p : f ∘ inverse f e ≡ id
-  p = dfunext (fe 𝓥 𝓥) (inverse-is-section f e)
+  p = dfunext (fe 𝓥 𝓥) (inverses-are-sections f e)
 
 ≃-sym-right-inverse : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-sym α ≡ ≃-refl X
 ≃-sym-right-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-≡ (p , being-equiv-is-a-prop fe _ _ _)

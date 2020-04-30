@@ -115,7 +115,7 @@ open import UF-EquivalenceExamples
   χT (A , I , (f , e)) = p
    where
     h : (x : X) → fiber (pr₁ ∘ f) x ≃ A x
-    h x = (Σ i ꞉ I , pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variables (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
+    h x = (Σ i ꞉ I , pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
           (Σ σ ꞉ Σ A , pr₁ σ ≡ x)   ≃⟨ fiber-equiv x ⟩
           A x                          ■
     p : fiber (pr₁ ∘ f) , I , ≃-sym (graph-domain-equiv (pr₁ ∘ f)) ≡ A , I , f , e

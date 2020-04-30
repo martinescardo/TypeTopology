@@ -139,11 +139,11 @@ is-universal-element-of {𝓤} {𝓥} {X} A (x , a) =
 
 universal-element-is-the-only-element : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ : Σ A)
                                       → is-universal-element-of A σ
-                                      → is-the-only-element-of (Σ A) σ
+                                      → is-central (Σ A) σ
 universal-element-is-the-only-element (x , a) u (y , b) = to-Σ-≡ (u y b)
 
 unique-element-is-universal-element : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (σ : Σ A)
-                                    → is-the-only-element-of (Σ A) σ
+                                    → is-central (Σ A) σ
                                     → is-universal-element-of A σ
 unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡ (φ(y , b))
 
@@ -529,7 +529,7 @@ illustration.
 \begin{code}
 
 singleton-types-are-singletons-bis : {X : 𝓤 ̇ } (x : X)
-                                   → is-the-only-element-of (singleton-type x) (x , refl)
+                                   → is-central (singleton-type x) (x , refl)
 singleton-types-are-singletons-bis {𝓤} {X} x (y , p) = yoneda-const η y p
  where
   η : (y : X) → x ≡ y → singleton-type x

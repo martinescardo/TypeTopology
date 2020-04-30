@@ -287,7 +287,7 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
           (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i   ⟩
           (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii  ⟩
           (rs x) ⁻¹ ∙ ap (r ∘ s) p ∙  rs x'   ≡⟨ iii ⟩
-          ap id p                             ≡⟨ (ap-id-is-id p) ⁻¹ ⟩
+          ap id p                             ≡⟨ (ap-id-is-id' p) ⁻¹ ⟩
           p                                   ∎
    where
     i   = ∙assoc ((rs x) ⁻¹) (ap r (ap s p)) (rs x') ⁻¹

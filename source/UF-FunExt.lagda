@@ -49,8 +49,8 @@ nfunext : funext 𝓤 𝓥 → naive-funext 𝓤 𝓥
 nfunext fe = dfunext fe
 
 happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
-              → happly (dfunext fe h) ≡ h
+               (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
+             → happly (dfunext fe h) ≡ h
 happly-funext fe f g = pr₂(pr₁(fe f g))
 
 funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥)

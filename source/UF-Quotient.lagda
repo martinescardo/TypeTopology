@@ -132,7 +132,7 @@ is the successor of the universe 𝓥:
 
  X/≈-is-set : is-set X/≈
  X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-                (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe)
+                (𝓟s-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe)
                 ∥∥-is-a-prop
 
  η : X → X/≈

@@ -530,9 +530,9 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (i x)) a)
 
-Σ-change-of-variables' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
+Σ-change-of-variable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
                        → is-hae g → Σ γ ꞉ ((Σ y ꞉ Y , A (g y)) → Σ A) , qinv γ
-Σ-change-of-variables' {𝓤} {𝓥} {𝓦} {X} {Y} A g (f , η , ε , α) = γ , φ , φγ , γφ
+Σ-change-of-variable' {𝓤} {𝓥} {𝓦} {X} {Y} A g (f , η , ε , α) = γ , φ , φγ , γφ
  where
   γ : (Σ y ꞉ Y , A (g y)) → Σ A
   γ (y , a) = (g y , a)
@@ -552,14 +552,14 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
         transport A (ε (g y)) (back-transport A (ε (g y)) a)           ≡⟨ back-and-forth-transport (ε (g y)) ⟩
         a                                                              ∎
 
-Σ-change-of-variables : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
+Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
                       → is-equiv g → (Σ y ꞉ Y , A (g y)) ≃ Σ A
-Σ-change-of-variables {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
+Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
   γ :  (Σ y ꞉ Y , A (g y)) → Σ A
-  γ = pr₁(Σ-change-of-variables' A g (equivs-are-haes g e))
+  γ = pr₁(Σ-change-of-variable' A g (equivs-are-haes g e))
   q :  qinv γ
-  q = pr₂(Σ-change-of-variables' A g (equivs-are-haes g e))
+  q = pr₂(Σ-change-of-variable' A g (equivs-are-haes g e))
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
@@ -672,7 +672,7 @@ fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ 
 
 Tom de Jong, September 2019 (two lemmas used in UF-Classifiers)
 
-A nice application of Σ-change-of-variables is that the fiber of a map doesn't
+A nice application of Σ-change-of-variable is that the fiber of a map doesn't
 change (up to equivalence, at least) when precomposing with an equivalence.
 
 These two lemmas are used in UF-Classifiers, but are sufficiently general to
@@ -684,7 +684,7 @@ precomposition-with-equiv-does-not-change-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                    (e : Z ≃ X) (f : X → Y) (y : Y)
                                                  → fiber (f ∘ ⌜ e ⌝) y ≃ fiber f y
 precomposition-with-equiv-does-not-change-fibers (g , i) f y =
- Σ-change-of-variables (λ x → f x ≡ y) g i
+ Σ-change-of-variable (λ x → f x ≡ y) g i
 
 retract-pointed-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {r : Y → X}
                        → (Σ s ꞉ (X → Y) , r ∘ s ∼ id) ≃ (Π x ꞉ X , fiber r x)

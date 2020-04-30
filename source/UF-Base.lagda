@@ -136,8 +136,11 @@ apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ≡ y) → transport A p (f x) ≡ f y
 apd = apd' _
 
-ap-id-is-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → p ≡ ap id p
+ap-id-is-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → ap id p ≡ p
 ap-id-is-id refl = refl
+
+ap-id-is-id' : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → p ≡ ap id p
+ap-id-is-id' refl = refl
 
 ap-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
      → ap f (p ∙ q) ≡ ap f p ∙ ap f q
