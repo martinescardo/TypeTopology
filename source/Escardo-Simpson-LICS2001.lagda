@@ -292,35 +292,8 @@ module basic-interval-object-development {𝓤 : Universe}
  M-idem : (x : 𝕀) → M (λ _ → x) ≡ x
  M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem x ⁻¹) ⁻¹
 
-{- 
- M-prop₁' : (a : ℕ → ℕ → 𝕀)
-           → M (λ n → M (λ m → a n m))
-           ≡ M (λ m → a 0 m) ⊕ M (λ n → M (λ m → a (succ n) m))
- M-prop₁' a = M-prop₁ (λ n → M (a n))
-
- M-prop₂' : (a x : ℕ → ℕ → 𝕀) → ((i : ℕ) → a 0 i ≡ x 0 i ⊕ a 0 (succ i)) → a 0 0 ≡ M (x 0)
- M-prop₂' a x q = M-prop₂ (a 0) (x 0) q
-
- M-prop₂'' : (a x : ℕ → ℕ → 𝕀) → ((i : ℕ) → a i 0 ≡ x i 0 ⊕ a (succ i) 0)
-           → a 0 0 ≡ M (λ n → x n 0)
- M-prop₂'' a x q = M-prop₂ (λ n → a n 0) (λ n → x n 0) q
-
- M-symm : (x : ℕ → ℕ → 𝕀) → M (λ i → (M (λ j → x i j))) ≡ M (λ i → M (λ j → x j i))
- M-symm x = M-prop₂' M' Q γ where
-   M' : ℕ → ℕ → 𝕀
-   M' k l = M (λ i → M (λ j → x (i +ℕ l) (j +ℕ k))) 
-   Q : ℕ → ℕ → 𝕀
-   Q k i = M (λ j → x (j +ℕ k) i)
-   extragoal : ∀ k → M (λ i → M (λ j → x (succ i +ℕ k) j))
-             ≡ M (λ i → M (λ j → x (succ (i +ℕ k)) j))
-   extragoal = {!!}
-   γ : (k : ℕ) → M' 0 k ≡ (Q 0 k ⊕ M' 0 (succ k))
-   γ k = M-prop₁' (λ i j → x (i +ℕ k) (j +ℕ 0))
-       ∙ ap (λ - → M (λ j → x - j) ⊕ M (λ i → M (λ j → x (succ i +ℕ k) j))) (zero-left-neutral k)
-       ∙ ap (M (λ j → x k j) ⊕_) (extragoal k)
-       ∙ ap (_⊕ M' 0 (succ k))
-           (M-prop₁ (λ j → x k j)
-         ∙ {!!}) -}
+ -- M-symm : (x : ℕ → ℕ → 𝕀) → M (λ i → (M (λ j → x i j))) ≡ M (λ i → M (λ j → x j i))
+ -- M-symm = ?
  
  M-hom : (x y : ℕ → 𝕀) → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
  M-hom x y = M-prop₂ M' (λ i → x i ⊕ y i) γ where
@@ -329,24 +302,24 @@ module basic-interval-object-development {𝓤 : Universe}
    γ : (i : ℕ) → M' i ≡ ((x i ⊕ y i) ⊕ M' (succ i))
    γ i = M (λ n → x (n +ℕ i)) ⊕ M (λ n → y (n +ℕ i))
              ≡⟨ ap (_⊕ M (λ n → y (n +ℕ i)))
-                  (M-prop₁ (λ n → x (n +ℕ i))) ⟩
+                   (M-prop₁ (λ n → x (n +ℕ i)))             ⟩
          (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ M (λ n → y (n +ℕ i))
              ≡⟨ ap ((x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕_)
-                  (M-prop₁ (λ n → y (n +ℕ i))) ⟩
+                   (M-prop₁ (λ n → y (n +ℕ i)))             ⟩
          (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ (y (0 +ℕ i) ⊕ M (λ n → y (succ n +ℕ i)))
              ≡⟨ ⊕-tran
-                  (x (0 +ℕ i)) (M (λ n → x (succ n +ℕ i)))
-                  (y (0 +ℕ i)) (M (λ n → y (succ n +ℕ i))) ⟩
+                   (x (0 +ℕ i)) (M (λ n → x (succ n +ℕ i)))
+                   (y (0 +ℕ i)) (M (λ n → y (succ n +ℕ i))) ⟩
          ((x (0 +ℕ i) ⊕ y (0 +ℕ i)) ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
              ≡⟨ ap (λ - → (x - ⊕ y -)
                         ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
                    (zero-left-neutral i) ⟩
          ((x i ⊕ y i) ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
              ≡⟨ ap (λ - → (x i ⊕ y i) ⊕ (M - ⊕ M (λ n → y (succ n +ℕ i))))
-                   (seq-add-push x i) ⟩
+                   (seq-add-push x i)    ⟩
          ((x i ⊕ y i) ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M (λ n → y (succ n +ℕ i))))
              ≡⟨ ap (λ - → (x i ⊕ y i) ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M -))
-                   (seq-add-push y i) ⟩
+                   (seq-add-push y i)    ⟩
          (x i ⊕ y i) ⊕ M' (succ i) ∎
 
 \end{code}
@@ -363,13 +336,15 @@ module basic-interval-object-development {𝓤 : Universe}
    M' i = h (M (λ n → z (n +ℕ i)))
    γ : (i : ℕ) → M' i ≡ (h (z i) ⊕ M' (succ i))
    γ i = h (M (λ n → z (n +ℕ i)))
-            ≡⟨ ap h (M-prop₁ (λ n → z (n +ℕ i))) ⟩
+            ≡⟨ ap h (M-prop₁ (λ n → z (n +ℕ i)))            ⟩
          h (z (0 +ℕ i) ⊕ M (λ n → z (succ n +ℕ i)))
             ≡⟨ hom (z (0 +ℕ i)) (M (λ n → z (succ n +ℕ i))) ⟩
          h (z (0 +ℕ i)) ⊕ h (M (λ n → z (succ n +ℕ i)))
-            ≡⟨ ap (λ - → h (z -) ⊕ h (M (λ n → z (succ n +ℕ i)))) (zero-left-neutral i) ⟩
+            ≡⟨ ap (λ - → h (z -) ⊕ h (M (λ n → z (succ n +ℕ i))))
+                  (zero-left-neutral i) ⟩
          h (z i) ⊕ h (M (λ n → z (succ n +ℕ i)))
-            ≡⟨ ap (λ - → h (z i) ⊕ h (M -)) (seq-add-push z i) ⟩ 
+            ≡⟨ ap (λ - → h (z i) ⊕ h (M -))
+                  (seq-add-push z i)    ⟩ 
          h (z i) ⊕ M' (succ i)
             ∎
 
@@ -409,10 +384,11 @@ module basic-interval-object-development {𝓤 : Universe}
  +1-inverse = affine-equation-r +1 −1
 
  O-inverse : − O ≡ O
- O-inverse = −-is-⊕-homomorphism −1 +1
-            ∙ ap (_⊕ − +1) −1-inverse
-            ∙ ap (+1 ⊕_)   +1-inverse
-            ∙ ⊕-comm +1 −1
+ O-inverse =    − O      ≡⟨ −-is-⊕-homomorphism −1 +1 ⟩ 
+             − −1 ⊕ − +1 ≡⟨ ap (_⊕ − +1) −1-inverse   ⟩ 
+               +1 ⊕ − +1 ≡⟨ ap (+1 ⊕_)   +1-inverse   ⟩
+               +1 ⊕ −1   ≡⟨ ⊕-comm +1 −1              ⟩
+                  O      ∎ 
 
  −1-neg-inv : − − −1 ≡ −1
  −1-neg-inv = − − −1 ≡⟨ ap −_ −1-inverse ⟩
@@ -448,28 +424,31 @@ module basic-interval-object-development {𝓤 : Universe}
  x ⊖ y = x ⊕ (− y)
 
  ⊖-zero : (x : 𝕀) → x ⊖ x ≡ O
- ⊖-zero x = ⊖-fact' ⁻¹ ∙ affine-constant O x where
-   ⊖-fact' : affine O O x ≡ x ⊖ x
-   ⊖-fact' = affine-uniqueness· f O O −1-⊖ +1-⊖ ⊖-hom x where
-     −1-⊖ : −1 ⊖ −1 ≡ O
-     −1-⊖ = ap (−1 ⊕_) −1-inverse
-     +1-⊖ : +1 ⊖ +1 ≡ O
-     +1-⊖ = ap (+1 ⊕_) +1-inverse ∙ ⊕-comm +1 −1
-     f : 𝕀 → 𝕀
-     f x = x ⊖ x
-     ⊖-hom : is-⊕-homomorphism 𝓘 𝓘 (λ x → x ⊖ x)
-     ⊖-hom x y = ap ((x ⊕ y) ⊕_) (−-is-⊕-homomorphism x y)
-               ∙ ⊕-tran x y (− x) (− y)
+ ⊖-zero x = x ⊖ x        ≡⟨ ⊖-fact' ⁻¹          ⟩ 
+            affine O O x ≡⟨ affine-constant O x ⟩
+            O            ∎
+   where
+    ⊖-fact' : affine O O x ≡ x ⊖ x
+    ⊖-fact' = affine-uniqueness· (λ x → x ⊖ x) O O
+              (ap (−1 ⊕_) −1-inverse)
+              (ap (+1 ⊕_) +1-inverse ∙ ⊕-comm +1 −1)
+              (λ x y → ap ((x ⊕ y) ⊕_)
+                          (−-is-⊕-homomorphism x y)
+                     ∙ ⊕-tran x y (− x) (− y))
+              x
 
 \end{code}
 
-
+ The multiplication function and related properties,
+ culminating in proving multiplication is
+ commutative and associative
 
 \begin{code}
 
  _*_ : 𝕀 → 𝕀 → 𝕀
  x * y = affine (− x) x y
- mul = _*_
+
+ infixl 99 _*_
 
  *-gives-negation-l : (x : 𝕀) → x * −1 ≡ − x
  *-gives-negation-l x = affine-equation-l (− x) x
@@ -486,38 +465,40 @@ module basic-interval-object-development {𝓤 : Universe}
  *-is-⊕-homomorphism-l : (a : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (a *_)
  *-is-⊕-homomorphism-l a x y = affine-is-⊕-homomorphism (− a) a x y
 
- mul-commutative : commutative _*_
- mul-commutative x y = γ y
+ *-commutative : commutative _*_
+ *-commutative x y = γ y
   where
-   j : (a b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (λ x → mul a x ⊕ mul b x)
+   j : (a b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (λ x → a * x ⊕ b * x)
    j a b x y
-       = ap (_⊕ mul b (x ⊕ y)) (*-is-⊕-homomorphism-l a x y)
-       ∙ ap ((mul a x ⊕ mul a y) ⊕_) (*-is-⊕-homomorphism-l b x y)
-       ∙ ⊕-tran (mul a x) (mul a y) (affine (− b) b x) (affine (− b) b y)
-   i : is-⊕-homomorphism 𝓘 𝓘 (λ y → mul y x)
+       = ap (_⊕ b * (x ⊕ y)) (*-is-⊕-homomorphism-l a x y)
+       ∙ ap ((a * x ⊕ a * y) ⊕_) (*-is-⊕-homomorphism-l b x y)
+       ∙ ⊕-tran (a * x) (a * y) (affine (− b) b x) (affine (− b) b y)
+   i : is-⊕-homomorphism 𝓘 𝓘 (λ y → y * x)
    i y z = p
     where
-     p : mul (y ⊕ z) x ≡ (mul y x ⊕ mul z x)
-     p = affine-uniqueness· (λ x → mul y x ⊕ mul z x) (− (y ⊕ z)) (y ⊕ z)
-         (ap (_⊕ mul z u) (*-gives-negation-l y)
+     p : (y ⊕ z) * x ≡ (y * x ⊕ z * x)
+     p = affine-uniqueness· (λ x → y * x ⊕ z * x) (− (y ⊕ z)) (y ⊕ z)
+         (ap (_⊕ z * u) (*-gives-negation-l y)
          ∙ ap ((− y) ⊕_) (*-gives-negation-l z)
          ∙ affine-is-⊕-homomorphism +1 −1 y z ⁻¹)
-         (ap (_⊕ mul z v) (*-gives-id-l y)
+         (ap (_⊕ z * v) (*-gives-id-l y)
          ∙ ap (y ⊕_) (*-gives-id-l z))
          (j y z) x
-   γ : (λ y → mul x y) ∼ (λ y → mul y x)
-   γ = affine-uniqueness· (λ y → mul y x)
+   γ : (λ y → x * y) ∼ (λ y → y * x)
+   γ = affine-uniqueness· (λ y → y * x)
        (− x) x (*-gives-negation-r x) (*-gives-id-r x)
        i
 
  *-is-⊕-homomorphism-r : (b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (_* b)
- *-is-⊕-homomorphism-r b x y = mul-commutative (x ⊕ y) b
-                             ∙ *-is-⊕-homomorphism-l b x y
-                             ∙ ap ((b * x) ⊕_) (mul-commutative b y)
-                             ∙ ap (_⊕ (y * b)) (mul-commutative b x)
+ *-is-⊕-homomorphism-r b x y =
+      (x ⊕ y) * b       ≡⟨ *-commutative (x ⊕ y) b             ⟩ 
+      b * (x ⊕ y)       ≡⟨ *-is-⊕-homomorphism-l b x y           ⟩ 
+      (b * x) ⊕ (b * y) ≡⟨ ap ((b * x) ⊕_) (*-commutative b y) ⟩
+      (b * x) ⊕ (y * b) ≡⟨ ap (_⊕ (y * b)) (*-commutative b x) ⟩
+      (x * b) ⊕ (y * b) ∎
 
- mul-prop : (x y : 𝕀) → x * y ≡ − (x * − y)
- mul-prop x y = affine-uniqueness· (λ - → − (x * (− -))) (− x) x l r i y
+ *-prop : (x y : 𝕀) → x * y ≡ − (x * − y)
+ *-prop x y = affine-uniqueness· (λ - → − (x * (− -))) (− x) x l r i y
   where
    l = − (x * (− −1)) ≡⟨ ap (λ - → − (x * -)) −1-inverse ⟩
        − (x *    +1 ) ≡⟨ ap −_ (*-gives-id-l x)          ⟩
@@ -528,36 +509,35 @@ module basic-interval-object-development {𝓤 : Universe}
              x        ∎
    i : is-⊕-homomorphism 𝓘 𝓘 (λ - → − (x * (− -)))
    i a b = −  (x * (− (a ⊕ b)))
-                ≡⟨ ap (λ - → − mul x -) (−-is-⊕-homomorphism a b) ⟩
-           −  (x * ((− a) ⊕ (− b)))
-                ≡⟨ ap −_ (affine-is-⊕-homomorphism (− x) x (− a) (− b)) ⟩
-           − ((x * (− a)) ⊕ (x * (− b)))
-                ≡⟨ affine-is-⊕-homomorphism +1 −1 (mul x (− a)) (mul x (− b)) ⟩
-          (− mul x (− a)) ⊕ (− mul x (− b))
-                ∎
-
- mul-assoc : (x y z : 𝕀) → mul x (mul y z) ≡ mul (mul x y) z
- mul-assoc x y z = γ z ⁻¹
+                ≡⟨ ap (λ - → − (x * -)) (−-is-⊕-homomorphism a b)         ⟩
+           −  (x * (− a ⊕ − b))
+                ≡⟨ ap −_ (affine-is-⊕-homomorphism (− x) x (− a) (− b))   ⟩
+           − ((x * − a) ⊕ (x * − b))
+                ≡⟨ affine-is-⊕-homomorphism +1 −1 (x * (− a)) (x * (− b)) ⟩
+           − (x * − a) ⊕ − (x * − b) ∎
+                
+ *-assoc : (x y z : 𝕀) → x * (y * z) ≡ (x * y) * z
+ *-assoc x y z = γ z ⁻¹
   where
-   l =      mul x (mul y −1) ≡⟨ ap (mul x) (*-gives-negation-l y) ⟩
-            mul x   (− y)    ≡⟨ −-involutive (mul x (− y)) ⁻¹     ⟩
-       − (− mul x   (− y))   ≡⟨ ap −_ (mul-prop x y ⁻¹)           ⟩
-          − mul x      y     ∎
-   r = mul x (mul y +1) ≡⟨ ap (mul x) (*-gives-id-l y) ⟩
-       mul x      y     ∎
-   i : is-⊕-homomorphism 𝓘 𝓘 (λ z → mul x (mul y z))
-   i a b = mul x (mul y (a ⊕ b))
-                ≡⟨ ap (mul x) (*-is-⊕-homomorphism-l y a b) ⟩
-           mul x (mul y a ⊕ mul y b)
-                ≡⟨ affine-is-⊕-homomorphism (− x) x (mul y a) (mul y b) ⟩
-           mul x (mul y a) ⊕ mul x (mul y b)
-                ∎
-   γ : (λ z → mul (mul x y) z) ∼ (λ z → mul x (mul y z)) 
-   γ = affine-uniqueness· (λ z → mul x (mul y z)) (− mul x y) (mul x y) l r i
+   l =      x * (y * −1) ≡⟨ ap (x *_) (*-gives-negation-l y) ⟩
+            x *  (− y)   ≡⟨ −-involutive (x * (− y)) ⁻¹      ⟩
+     (− (− (x * − y)))   ≡⟨ ap −_ (*-prop x y ⁻¹)          ⟩
+         − (x * y)       ∎
+   r = x * (y * +1) ≡⟨ ap (x *_) (*-gives-id-l y) ⟩
+       x * y        ∎
+   i : is-⊕-homomorphism 𝓘 𝓘 (λ z → x * (y * z))
+   i a b = x * (y * (a ⊕ b))
+                ≡⟨ ap (x *_) (*-is-⊕-homomorphism-l y a b)          ⟩
+           x * (y * a ⊕ y * b)
+                ≡⟨ affine-is-⊕-homomorphism (− x) x (y * a) (y * b) ⟩
+           x * (y * a) ⊕ x * (y * b) ∎
+   γ : (λ z → (x * y) * z) ∼ (λ z → x * (y * z)) 
+   γ = affine-uniqueness· (λ z → x * (y * z)) (− (x * y)) (x * y) l r i
 
 \end{code}
 
-  * Medial power series (page 20 and 21).
+ Power series can be implemented from multiplication
+ We also define a halving function from the midpoint
 
 \begin{code}
 
@@ -568,26 +548,6 @@ module basic-interval-object-development {𝓤 : Universe}
  powerseries : (ℕ → 𝕀) → (𝕀 → 𝕀)
  powerseries a = λ x → M (λ n → (a n) * (x ** n))
 
-\end{code}
-
-  TODO. (Important.) The "double" stuff is not included yet.
-  We need to axiomatize the existence of double (page 33 and
-  onwards of the slides).
-
-\begin{code}
-  
- double : 𝕀 → 𝕀
- double = pr₁ hd
-
- double₁ : (x : 𝕀) → double (x ⊕ (u ⊕ v)) ≡ x
- double₁ = pr₁ (pr₂ hd)
-
- double₂ : (x : 𝕀) → double (u ⊕ (u ⊕ x)) ≡ u
- double₂ = pr₁ (pr₂ (pr₂ hd))
-
- double₃ : (x : 𝕀) → double (v ⊕ (v ⊕ x)) ≡ v
- double₃ = pr₂ (pr₂ (pr₂ hd))
-
  _/2 : 𝕀 → 𝕀
  _/2 = _⊕ O
  +1/2 = +1 /2
@@ -595,86 +555,133 @@ module basic-interval-object-development {𝓤 : Universe}
 
  infixl 99 _/2
 
- factual : (x : 𝕀) → − (x /2) ≡ − x /2
- factual x = −-is-⊕-homomorphism x O ∙ ap (− x ⊕_) O-inverse
+ −-half : (x : 𝕀) → − (x /2) ≡ − x /2
+ −-half x = −-is-⊕-homomorphism x O ∙ ap (− x ⊕_) O-inverse
 
  O-half : O /2 ≡ O
  O-half = ⊕-idem O
  
  −1-half : − +1/2 ≡ −1/2
- −1-half = factual +1 ∙ ap _/2 +1-inverse
+ −1-half = −-half +1 ∙ ap _/2 +1-inverse
 
  +1-half : − −1/2 ≡ +1/2
- +1-half = factual −1 ∙ ap _/2 −1-inverse
+ +1-half = −-half −1 ∙ ap _/2 −1-inverse
 
- half-same : _* +1/2 ≡ _/2
- half-same = {!!}
+ half-is-⊕-homomorphism : is-⊕-homomorphism 𝓘 𝓘 _/2
+ half-is-⊕-homomorphism = ⊕-is-⊕-homomorphism-l 𝓘 O
 
- _+𝕀_ _−𝕀_ : 𝕀 → 𝕀 → 𝕀 -- Truncated addition and subtraction
+ half-same : (x : 𝕀) → +1/2 * x ≡ x /2
+ half-same x = ap (λ - → affine - +1/2 x) −1-half
+             ∙ affine-uniqueness· _/2 −1/2 +1/2
+               refl refl half-is-⊕-homomorphism x
+
+\end{code}
+
+ Now we assume that we have a doubling function
+ This allows the definition
+ of truncated addition and subtraction
+
+\begin{code}
+  
+ double : 𝕀 → 𝕀
+ double = pr₁ hd
+
+ double-mid : (x : 𝕀) → double (x /2) ≡ x
+ double-mid = pr₁ (pr₂ hd)
+
+ double-left : (x : 𝕀) → double (−1 ⊕ (−1 ⊕ x)) ≡ −1
+ double-left = pr₁ (pr₂ (pr₂ hd))
+
+ double-right : (x : 𝕀) → double (+1 ⊕ (+1 ⊕ x)) ≡ +1
+ double-right = pr₂ (pr₂ (pr₂ hd))
+
+ _+𝕀_ _−𝕀_ : 𝕀 → 𝕀 → 𝕀
  x +𝕀 y = double (x ⊕ y)
  x −𝕀 y = double (x ⊖ y)
 
- maxO : 𝕀 → 𝕀 -- max O x
- maxO x = (double (−1/2 +𝕀 x)) /2 +𝕀 +1/2
+\end{code}
+
+ Double and half allows it to define a max operation
+ First, there is an operation for maxO,
+ this is then used to define max itself
+
+ We wish to prove that max is a semi-lattice
+ (idempotent, commutative and associative)
+
+\begin{code}
+
+ maxO : 𝕀 → 𝕀
+ maxO x = double (−1/2 +𝕀 x) /2 +𝕀 +1/2
 
  O-midpoint-of-halves : −1/2 ⊕ +1/2 ≡ O
- O-midpoint-of-halves = ⊕-tran −1 O +1 O
-                         ∙ ap (O ⊕_) (⊕-idem O)
-                         ∙ ⊕-idem O
+ O-midpoint-of-halves = −1/2 ⊕ +1/2     ≡⟨ ap (−1/2 ⊕_) (+1-half ⁻¹) ⟩
+                        −1/2 ⊕ (− −1/2) ≡⟨ ⊖-zero −1/2               ⟩
+                        O ∎
                          
  double-O-is-O : double O ≡ O
- double-O-is-O = ap double (⊕-idem O ⁻¹) ∙ double₁ O
+ double-O-is-O = double O       ≡⟨ ap double (⊕-idem O ⁻¹) ⟩
+                 double (O ⊕ O) ≡⟨ double-mid O            ⟩
+                 O ∎ 
 
  maxO-O-is-O : maxO O ≡ O
- maxO-O-is-O = one ∙ two ∙ three where
-   one : maxO O ≡ (double −1/2) /2 +𝕀 +1/2
-   one = ap (λ - → (double - /2) +𝕀 +1/2) (double₁ −1/2)
-   two : (double −1/2) /2 +𝕀 +1/2 ≡ −1/2 +𝕀 +1/2
-   two = ap (λ - → - /2 +𝕀 +1/2) (double₂ +1)
-   three : double (−1/2 ⊕ +1/2) ≡ O
-   three = ap double O-midpoint-of-halves ∙ double-O-is-O
+ maxO-O-is-O = maxO O
+                 ≡⟨ ap (λ - → (double - /2) +𝕀 +1/2) (double-mid −1/2) ⟩
+               (double −1/2 /2) +𝕀 +1/2
+                 ≡⟨ ap (λ - → - /2 +𝕀 +1/2) (double-left +1) ⟩
+               −1/2 +𝕀 +1/2
+                 ≡⟨ ap double O-midpoint-of-halves ∙ double-O-is-O ⟩
+               O ∎
 
  max _∨_ : 𝕀 → 𝕀 → 𝕀
- max x y = double ((x /2) +𝕀 maxO (y ⊖ x))
+ max x y = double (x /2 +𝕀 maxO (y ⊖ x))
  _∨_ = max
 
  max-idem : idempotent _∨_
- max-idem a = first ∙ second ∙ third where
-   first : double ((a /2) +𝕀 maxO (a ⊖ a)) ≡ double ((a /2) +𝕀 O)
-   first = ap (λ - → double ((a /2) +𝕀 -))
-          (ap maxO (⊖-zero a) ∙ maxO-O-is-O)
-   second : double ((a /2) +𝕀 O) ≡ double ((a /2))
-   second = ap double (double₁ (a /2))
-   third : double (a /2) ≡ a
-   third = double₁ a
+ max-idem a = a ∨ a
+                ≡⟨ ap (λ - → double ((a /2) +𝕀 maxO -))
+                      (⊖-zero a)                 ⟩
+              double (double (a /2 ⊕ maxO O))
+                ≡⟨ ap (λ - → double ((a /2) +𝕀 -))
+                      maxO-O-is-O                ⟩
+              double (a /2 +𝕀 O)
+                ≡⟨ ap double (double-mid (a /2)) ⟩
+              double (a /2)
+                ≡⟨ double-mid a                  ⟩
+              a ∎
+              
+ -- max-comm : commutative _∨_
+ -- max-comm x y = {!!}
 
- max-comm : commutative _∨_
- max-comm = {!!}
+ -- max-assoc : associative _∨_
+ -- max-assoc = {!!}
 
- max-assoc : associative _∨_
- max-assoc = {!!}
- 
+\end{code}
+
+ Other functions can be derived from max
+
+\begin{code}
+
  min : 𝕀 → 𝕀 → 𝕀
  min x y = − (max (− x) (− y))
 
  abs : 𝕀 → 𝕀
  abs x = max (− x) x
 
-
 \end{code}
+
+ TODO list:
+  * Prove M is symmetric
+
   * max (_∨_) is a semilattice -- assoc, comm, idem
     - derive order from this semilattice
 
-  * Pull request goes here
+  * Pull request to TypeTopology
 
   * TODO. being-interval-object-is-prop. -- in another file
 
   * Page 42. - Prove the limit *is* the limit, as above
 
-----
-
-  * Implement the axioms
-
-(ℕ      →      ℕ          →           𝕀)
-numerator     denominator   numer/denom
-                            (binary expansion stream applied to M)
+  * Binary expansions
+           (ℕ      →      ℕ          →           𝕀)
+           numerator     denominator   numer/denom
+           (binary expansion stream applied to M)
