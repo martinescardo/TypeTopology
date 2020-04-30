@@ -1478,14 +1478,14 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
                            (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
                            down-is-embedding
 
-   injective-set-retract-of-𝓟 : injective-type D 𝓤 𝓤 → ∥ retract D of (D → Ω₀) ∥
-   injective-set-retract-of-𝓟 = embedding-∥retract∥ D (D → Ω₀) Id-set₀ Id-set₀-is-embedding
+   injective-set-retract-of-powerset : injective-type D 𝓤 𝓤 → ∥ retract D of (D → Ω₀) ∥
+   injective-set-retract-of-powerset = embedding-∥retract∥ D (D → Ω₀) Id-set₀ Id-set₀-is-embedding
 
    Ω₀-injective : ainjective-type Ω₀ 𝓤 𝓤
    Ω₀-injective = equiv-to-ainjective Ω₀ (Ω 𝓤) (Ω-ainjective (pe 𝓤)) e₀
 
    γ : injective-type D 𝓤 𝓤 → ∥ ainjective-type D 𝓤 𝓤 ∥
-   γ j = ∥∥-functor φ (injective-set-retract-of-𝓟 j)
+   γ j = ∥∥-functor φ (injective-set-retract-of-powerset j)
     where
      φ : retract D of (D → Ω₀) → ainjective-type D 𝓤 𝓤
      φ = retract-of-ainjective D (D → Ω₀) (power-of-ainjective Ω₀-injective)

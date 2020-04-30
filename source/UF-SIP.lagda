@@ -1041,7 +1041,7 @@ module subgroup-identity
   subgroups-form-a-set : is-set Subgroups
   subgroups-form-a-set S T = equiv-to-subsingleton
                               (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
-                              (𝓟s-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
+                              (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
 
   subgroup-equality : (S T : Subgroups)
                     → (S ≡ T)

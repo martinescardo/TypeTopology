@@ -841,7 +841,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _ (𝓟s-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-a-prop
+  X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _ (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-a-prop
 
   η : X → X'
   η = corestriction apart

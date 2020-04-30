@@ -67,7 +67,7 @@ are easy to state:
        exponential powers of type universes. In particular,
 
          (a) The algebraically injective sets are precisely the
-             retracts of 𝓟s.
+             retracts of powersets.
 
          (b) The algebraically injective (n+1)-types are precisely
              retracts of exponential powers of the universes of
@@ -1280,7 +1280,7 @@ ainjective-ntype-characterization {𝓤} R D n h = (a , b)
 
 \end{code}
 
-In particular, the injective sets are the retracts of 𝓟s.
+In particular, the injective sets are the retracts of powersets.
 
 \begin{code}
 

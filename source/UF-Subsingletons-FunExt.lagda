@@ -154,9 +154,9 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
   pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , wconstant f
   pc {p} {q} = (f p q , wconstant-f p q)
 
-𝓟s-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
+powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
                    → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
-𝓟s-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
+powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
 
 negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop(¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
