@@ -29,7 +29,7 @@ as well as a specific property about equality of streams under some arithmetic
 
 \begin{code}
 
-associative commutative idempotent transpositional : {X : 𝓤 ̇} → (X → X → X) → 𝓤 ̇
+associative commutative idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 associative     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ≡ (a ∙ b) ∙ c
 commutative     _∙_ = ∀ a b     → a ∙ b             ≡ b ∙ a
 idempotent      _∙_ = ∀ a       → a ∙ a             ≡ a
@@ -61,7 +61,7 @@ Midpoint-algebra 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (mid-p
 
 \begin{code}
 
-cancellative : {X : 𝓤 ̇} → (X → X → X) → 𝓤 ̇
+cancellative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 cancellative  _∙_ = ∀ a b c → a ∙ c ≡ b ∙ c → a ≡ b
 
 iterative : {A : 𝓤 ̇ } → (A → A → A) → 𝓤 ̇
@@ -70,7 +70,7 @@ iterative {𝓤} {A} _⊕_ = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) →
                                                → ((i : ℕ) → a i ≡ x i ⊕ a (succ i))
                                                → a 0 ≡ M x)
 
-iterative-uniqueness· : {A : 𝓤 ̇} → (_⊕_ : A → A → A)
+iterative-uniqueness· : {A : 𝓤 ̇ } → (_⊕_ : A → A → A)
                       → (F M : iterative _⊕_)
                       → pr₁ F ∼ pr₁ M
 iterative-uniqueness· {𝓤} {𝕀} _⊕_ (F , p₁ , q₁) (M , p₂ , q₂) x = q₂ M' x γ
@@ -81,7 +81,7 @@ iterative-uniqueness· {𝓤} {𝕀} _⊕_ (F , p₁ , q₁) (M , p₂ , q₂) x
             ∙ ap (λ - → x - ⊕ F (λ n → x (succ n +ℕ i))) (zero-left-neutral i)
             ∙ ap (λ - → x i ⊕ F -) (seq-add-push x i)
 
-iterative-uniqueness : {A : 𝓤 ̇} → (_⊕_ : A → A → A)
+iterative-uniqueness : {A : 𝓤 ̇ } → (_⊕_ : A → A → A)
                      → (F M : iterative _⊕_)
                      → pr₁ F ≡ pr₁ M
 iterative-uniqueness {𝓤} _⊕_ F M = dfunext (fe 𝓤 𝓤) (iterative-uniqueness· _⊕_ F M)
