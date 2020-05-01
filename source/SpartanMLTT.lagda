@@ -10,7 +10,7 @@ identity types _≡_, and universes 𝓤, 𝓥, 𝓦, ....
 module SpartanMLTT where
 
 open import Empty           public
-open import One             public
+open import Unit            public
 open import Two             public
 open import NaturalNumbers  public
 open import Plus            public

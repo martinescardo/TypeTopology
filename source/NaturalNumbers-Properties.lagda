@@ -11,8 +11,8 @@ open import NaturalNumbers
 open import Negation
 open import Id
 open import Empty
-open import One
-open import One-Properties
+open import Unit
+open import Unit-Properties
 
 pred : ℕ → ℕ
 pred 0 = 0

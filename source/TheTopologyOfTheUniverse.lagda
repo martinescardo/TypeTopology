@@ -13,7 +13,7 @@
     extended with the propositional axiom of extensionality as a
     postulate, written in Agda notation. The K-rule or UIP axiom
     are not used, except in a few instances where they can be
-    proved. The proof type-checks in Agda 2.6.0.
+    proved. The proof type-checks in Agda 2.6.1.
 
 
 A b s t r a c t. We show that a Martin-Lof universe `a la Russell

@@ -8,8 +8,7 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
-
-open import One-Properties
+open import Unit-Properties
 
 \end{code}
 

@@ -4,7 +4,7 @@ One element type.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module One where
+module Unit where
 
 open import Universes
 

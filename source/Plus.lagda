@@ -36,9 +36,6 @@ dep-Cases {𝓤} {𝓥} {𝓦} {X} {Y} A z f g = dep-cases {𝓤} {𝓥} {𝓦} 
 
 \end{code}
 
-(Agda (version 2.6.0.1) can't infer the implicit parameters of the
-previous definition for some reason.)
-
 Added 4 March 2020 by Tom de Jong.
 
 \begin{code}

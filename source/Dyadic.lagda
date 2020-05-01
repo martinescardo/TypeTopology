@@ -12,7 +12,7 @@ module Dyadic where
 
 open import SpartanMLTT
 open import DiscreteAndSeparated
-open import One-Properties
+open import Unit-Properties
 
 open import UF-Miscelanea
 open import UF-Subsingletons

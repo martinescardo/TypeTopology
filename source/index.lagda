@@ -65,7 +65,7 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with the release candidate for Agda 2.6.1.
+   * This has been tested with Agda 2.6.1.
 
 Click at the imported module names to navigate to them:
 
@@ -161,8 +161,6 @@ import NaturalsAddition
 import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
-import One
-import One-Properties
 import OrdinalArithmetic
 import OrdinalCodes
 import OrdinalNotationInterpretation
@@ -201,6 +199,8 @@ import Two
 import Two-Prop-Density
 import Two-Properties
 import UnivalenceFromScratch
+import Unit
+import Unit-Properties
 import Universes
 import WeaklyCompactTypes
 import W
