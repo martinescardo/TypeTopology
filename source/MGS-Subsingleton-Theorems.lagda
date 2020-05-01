@@ -118,7 +118,7 @@ univalence-gives-global-hfunext ua {𝓤} {𝓥} = univalence-gives-hfunext'
 Π-is-subsingleton' fe {X} {A} i = γ
  where
   ρ : ({x : X} → A x) ◁ Π A
-  ρ = (λ f {x} → f x) , (λ g x → g {x}) , refl
+  ρ = (λ f {x} → f x) , (λ g x → g {x}) , (λ f → refl (λ {x} → f))
 
   γ : is-subsingleton ({x : X} → A x)
   γ = retract-of-subsingleton ρ (Π-is-subsingleton fe i)

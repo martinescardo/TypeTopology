@@ -205,11 +205,11 @@ codomain {𝓤} {𝓥} {X} {Y} f = Y
 type-of : {X : 𝓤 ̇ } → X → 𝓤 ̇
 type-of {𝓤} {X} x = X
 
-data Id {𝓤} (X : 𝓤 ̇ ) : X → X → 𝓤 ̇  where
- refl : (x : X) → Id X x x
+open import ≡ renaming (_≡_ to infix 0 _≡_ ; refl to 𝓻ℯ𝓯𝓵) public
+pattern refl x = 𝓻ℯ𝓯𝓵 {x = x}
 
-_≡_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
-x ≡ y = Id _ x y
+Id : (X : 𝓤 ̇ ) → X → X → 𝓤 ̇
+Id _ x y = x ≡ y
 
 𝕁 : (X : 𝓤 ̇ ) (A : (x y : X) → x ≡ y → 𝓥 ̇ )
   → ((x : X) → A x x (refl x))
@@ -666,7 +666,6 @@ module basic-arithmetic-and-order where
     γ : minimal-root f
     γ = right-fails-gives-left-holds (bounded-ℕ-search (succ n) f) g
 
-infix   0 _≡_
 infixr 30 _×_
 infix   0 _∼_
 infixl 70 _∘_
