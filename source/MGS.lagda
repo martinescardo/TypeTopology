@@ -1,4 +1,4 @@
-x`Martin Escardo 1st May 2020.
+Martin Escardo 1st May 2020.
 
 This is ported from the Midlands Graduate School 2019 lecture notes
 
