@@ -15,9 +15,9 @@ such cases.
 
 \begin{code}
 
-open import Σ renaming (_,_ to infixr 4 _,_) public
+open import Sigma-Type renaming (_,_ to infixr 4 _,_) public
 
-open Σ.Σ public
+open Σ public
 
 Sigma : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Sigma X Y = Σ Y

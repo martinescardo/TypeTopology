@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module + where
+module Plus-Type where
 
 open import Universes public
 

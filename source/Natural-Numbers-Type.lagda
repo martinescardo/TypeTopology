@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module ℕ where
+module Natural-Numbers-Type where
 
 data ℕ : Set₀  where
  zero : ℕ

@@ -9,7 +9,7 @@ module Id where
 open import Universes
 open import Pi
 
-open import ≡ renaming (_≡_ to infix 0 _≡_) public
+open import Identity-Type renaming (_≡_ to infix 0 _≡_) public
 
 refl─ : {X : 𝓤 ̇ } (x : X) → x ≡ x
 refl─ x = refl {_} {_} {x}

@@ -2,10 +2,11 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module 𝟘 where
+module Unit-Type where
 
 open import Universes public
 
-data 𝟘 {𝓤} : 𝓤 ̇ where
+data 𝟙 {𝓤} : 𝓤 ̇ where
+ ⋆ : 𝟙
 
 \end{code}

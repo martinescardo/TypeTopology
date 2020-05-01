@@ -7,7 +7,7 @@ Natural numbers
 module NaturalNumbers where
 
 open import Universes
-open import ℕ public
+open import Natural-Numbers-Type public
 
 rec : {X : 𝓤 ̇ } → X → (X → X) → (ℕ → X)
 rec x f zero = x

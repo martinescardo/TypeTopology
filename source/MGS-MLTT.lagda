@@ -13,7 +13,7 @@ module MGS-MLTT where
 
 open import Universes public
 
-open import 𝟙 renaming (𝟙 to 𝟙') public
+open import Unit-Type renaming (𝟙 to 𝟙') public
 
 𝟙 : 𝓤₀ ̇
 𝟙 = 𝟙' {𝓤₀}
@@ -30,7 +30,7 @@ open import 𝟙 renaming (𝟙 to 𝟙') public
 !𝟙 : {X : 𝓤 ̇ } → X → 𝟙
 !𝟙 x = ⋆
 
-open import 𝟘 renaming (𝟘 to 𝟘') public
+open import Empty-Type renaming (𝟘 to 𝟘') public
 
 𝟘 : 𝓤₀ ̇
 𝟘 = 𝟘' {𝓤₀}
@@ -50,7 +50,7 @@ is-empty X = X → 𝟘
 ¬ : 𝓤 ̇ → 𝓤 ̇
 ¬ X = X → 𝟘
 
-open import ℕ public
+open import Natural-Numbers-Type public
 
 ℕ-induction : (A : ℕ → 𝓤 ̇ )
             → A 0
@@ -119,7 +119,7 @@ module ℕ-order where
   infix 10 _≤_
   infix 10 _≥_
 
-open import + renaming (_+_ to infixr 20 _+_) public
+open import Plus-Type renaming (_+_ to infixr 20 _+_) public
 
 +-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X + Y → 𝓦 ̇ )
             → ((x : X) → A (inl x))
@@ -147,7 +147,7 @@ pattern ₁ = inr ⋆
                          (𝟙-induction (λ (x : 𝟙) → A (inl x)) a₀)
                          (𝟙-induction (λ (y : 𝟙) → A (inr y)) a₁)
 
-open import Σ renaming (_,_ to infixr 50 _,_) public
+open import Sigma-Type renaming (_,_ to infixr 50 _,_) public
 
 pr₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Σ Y → X
 pr₁ (x , y) = x
@@ -205,7 +205,7 @@ codomain {𝓤} {𝓥} {X} {Y} f = Y
 type-of : {X : 𝓤 ̇ } → X → 𝓤 ̇
 type-of {𝓤} {X} x = X
 
-open import ≡ renaming (_≡_ to infix 0 _≡_ ; refl to 𝓻ℯ𝓯𝓵) public
+open import Identity-Type renaming (_≡_ to infix 0 _≡_ ; refl to 𝓻ℯ𝓯𝓵) public
 pattern refl x = 𝓻ℯ𝓯𝓵 {x = x}
 
 Id : (X : 𝓤 ̇ ) → X → X → 𝓤 ̇

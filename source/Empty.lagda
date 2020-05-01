@@ -6,7 +6,7 @@ Empty type.
 
 module Empty where
 
-open import 𝟘 public
+open import Empty-Type public
 
 \end{code}
 

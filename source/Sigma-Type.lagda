@@ -2,7 +2,7 @@
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module Σ where
+module Sigma-Type where
 
 open import Universes
 
