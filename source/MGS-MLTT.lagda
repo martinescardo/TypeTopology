@@ -147,12 +147,7 @@ pattern ₁ = inr ⋆
                          (𝟙-induction (λ (x : 𝟙) → A (inl x)) a₀)
                          (𝟙-induction (λ (y : 𝟙) → A (inr y)) a₁)
 
-record Σ {𝓤 𝓥} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
-  constructor
-   _,_
-  field
-   x : X
-   y : Y x
+open import Σ renaming (_,_ to infixr 50 _,_) public
 
 pr₁ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → Σ Y → X
 pr₁ (x , y) = x
@@ -674,7 +669,6 @@ module basic-arithmetic-and-order where
 infix   0 _≡_
 infixr 30 _×_
 infix   0 _∼_
-infixr 50 _,_
 infixl 70 _∘_
 infix   0 Id
 infix  10 _⇔_

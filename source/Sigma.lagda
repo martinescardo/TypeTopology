@@ -15,13 +15,9 @@ such cases.
 
 \begin{code}
 
-record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
-  constructor _,_
-  field
-   pr₁ : X
-   pr₂ : Y pr₁
+open import Σ renaming (_,_ to infixr 4 _,_) public
 
-open Σ public
+open Σ.Σ public
 
 Sigma : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 Sigma X Y = Σ Y
@@ -51,7 +47,6 @@ Fixities:
 
 \begin{code}
 
-infixr 4 _,_
 infixr 2 _×_
 
 \end{code}
