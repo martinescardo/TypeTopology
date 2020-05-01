@@ -7,12 +7,7 @@ Natural numbers
 module NaturalNumbers where
 
 open import Universes
-
-data ℕ : Set where
-  zero : ℕ
-  succ : ℕ → ℕ
-
-{-# BUILTIN NATURAL ℕ #-}
+open import ℕ public
 
 rec : {X : 𝓤 ̇ } → X → (X → X) → (ℕ → X)
 rec x f zero = x

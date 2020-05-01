@@ -48,11 +48,7 @@ is-empty X = X → 𝟘
 ¬ : 𝓤 ̇ → 𝓤 ̇
 ¬ X = X → 𝟘
 
-data ℕ : 𝓤₀ ̇  where
- zero : ℕ
- succ : ℕ → ℕ
-
-{-# BUILTIN NATURAL ℕ #-}
+open import ℕ public
 
 ℕ-induction : (A : ℕ → 𝓤 ̇ )
             → A 0
@@ -692,7 +688,5 @@ infix   1 _∎
 infix  40 _⁻¹
 infixr -1 -Σ
 infixr -1 -Π
-
-
 
 \end{code}
