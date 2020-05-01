@@ -13,8 +13,10 @@ module MGS-MLTT where
 
 open import Universes public
 
-data 𝟙 : 𝓤₀ ̇ where
- ⋆ : 𝟙
+open import 𝟙 renaming (𝟙 to 𝟙') public
+
+𝟙 : 𝓤₀ ̇
+𝟙 = 𝟙' {𝓤₀}
 
 𝟙-induction : (A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x
 𝟙-induction A a ⋆ = a
@@ -28,7 +30,10 @@ data 𝟙 : 𝓤₀ ̇ where
 !𝟙 : {X : 𝓤 ̇ } → X → 𝟙
 !𝟙 x = ⋆
 
-data 𝟘 : 𝓤₀ ̇ where
+open import 𝟘 renaming (𝟘 to 𝟘') public
+
+𝟘 : 𝓤₀ ̇
+𝟘 = 𝟘' {𝓤₀}
 
 𝟘-induction : (A : 𝟘 → 𝓤 ̇ ) → (x : 𝟘) → A x
 𝟘-induction A ()
@@ -114,9 +119,7 @@ module ℕ-order where
   infix 10 _≤_
   infix 10 _≥_
 
-data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇  where
- inl : X → X + Y
- inr : Y → X + Y
+open import + renaming (_+_ to infixr 20 _+_) public
 
 +-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X + Y → 𝓦 ̇ )
             → ((x : X) → A (inl x))
@@ -364,9 +367,6 @@ Id→Funs-agree (refl X) = refl (𝑖𝑑 X)
 
   q : 𝟙 ≡ 𝟘
   q = ap f p
-
-₁-is-not-₀[not-an-MLTT-proof] : ¬(₁ ≡ ₀)
-₁-is-not-₀[not-an-MLTT-proof] ()
 
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
@@ -675,7 +675,6 @@ infix   0 _≡_
 infixr 30 _×_
 infix   0 _∼_
 infixr 50 _,_
-infixr 20 _+_
 infixl 70 _∘_
 infix   0 Id
 infix  10 _⇔_

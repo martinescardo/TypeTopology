@@ -6,9 +6,7 @@ Empty type.
 
 module Empty where
 
-open import Universes
-
-data 𝟘 {𝓤} : 𝓤 ̇ where
+open import 𝟘 public
 
 \end{code}
 

@@ -162,10 +162,10 @@ Impredicativity-gives-PR : propext 𝓤
 
 Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
  where
-  𝟙' : 𝓤 ̇
-  𝟙' = Lift 𝓤 𝟙
+  𝟙'' : 𝓤 ̇
+  𝟙'' = Lift 𝓤 𝟙
 
-  k : is-subsingleton 𝟙'
+  k : is-subsingleton 𝟙''
   k (lift ⋆) (lift ⋆) = refl (lift ⋆)
 
   down : Ω 𝓤 → O
@@ -175,7 +175,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   O-is-set = equiv-to-set (≃-sym e) (Ω-is-a-set fe pe)
 
   Q : 𝓥 ̇
-  Q = down (𝟙' , k) ≡ down (P , i)
+  Q = down (𝟙'' , k) ≡ down (P , i)
 
   j : is-subsingleton Q
   j = O-is-set (down (Lift 𝓤 𝟙 , k)) (down (P , i))
