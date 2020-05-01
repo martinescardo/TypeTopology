@@ -28,6 +28,9 @@ _̇ : (𝓤 : Universe) → _
 𝓤₁ = 𝓤₀ ⁺
 𝓤₂ = 𝓤₁ ⁺
 
+_⁺⁺ : Universe → Universe
+𝓤 ⁺⁺ = 𝓤 ⁺ ⁺
+
 \end{code}
 
 This is mainly to avoid naming implicit arguments:

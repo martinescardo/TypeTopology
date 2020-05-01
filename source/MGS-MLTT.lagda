@@ -11,12 +11,9 @@ This is ported from the Midlands Graduate School 2019 lecture notes
 
 module MGS-MLTT where
 
-open import MGS-Universes public
+open import Universes public
 
-variable
- 𝓤 𝓥 𝓦 𝓣 : Universe
-
-data 𝟙 : 𝓤₀ ̇  where
+data 𝟙 : 𝓤₀ ̇ where
  ⋆ : 𝟙
 
 𝟙-induction : (A : 𝟙 → 𝓤 ̇ ) → A ⋆ → (x : 𝟙) → A x
@@ -31,7 +28,7 @@ data 𝟙 : 𝓤₀ ̇  where
 !𝟙 : {X : 𝓤 ̇ } → X → 𝟙
 !𝟙 x = ⋆
 
-data 𝟘 : 𝓤₀ ̇  where
+data 𝟘 : 𝓤₀ ̇ where
 
 𝟘-induction : (A : 𝟘 → 𝓤 ̇ ) → (x : 𝟘) → A x
 𝟘-induction A ()

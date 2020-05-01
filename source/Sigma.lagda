@@ -55,7 +55,3 @@ infixr 4 _,_
 infixr 2 _×_
 
 \end{code}
-
-Not used anymore, kept just in case we change our minds:
-
-  syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B

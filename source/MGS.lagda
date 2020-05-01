@@ -1,4 +1,4 @@
-Martin Escardo 1st May 2020.
+x`Martin Escardo 1st May 2020.
 
 This is ported from the Midlands Graduate School 2019 lecture notes
 
@@ -40,7 +40,6 @@ import MGS-Subsingleton-Truncation
 import MGS-Unique-Existence
 import MGS-Univalence
 import MGS-Universe-Lifting
-import MGS-Universes
 import MGS-Yoneda
 
 \end{code}
