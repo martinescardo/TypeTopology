@@ -25,88 +25,7 @@ open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-Retracts
-
-transport-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                → (τ : Nat (Id x) A)
-                → (y : X) (p : x ≡ y) → τ y p ≡ transport A p (τ x (refl─ x))
-
-transport-lemma A x τ x refl = refl
-
-maps-of-singletons-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                              → is-singleton X → is-singleton Y → is-equiv f
-maps-of-singletons-are-equivs f (c , φ) (d , γ) =
- ((λ y → c) , (λ x → f c ≡⟨ singletons-are-props (d , γ) (f c) x ⟩
-                     x   ∎)) ,
- ((λ y → c) , φ)
-
-is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
-
-NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
-                                   (φ : Nat A B)
-                                 → is-equiv (NatΣ φ)
-                                 → ((x : X) → is-equiv (φ x))
-NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
-
-universal-fiberwise-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
-                          → ∃! A
-                          → (x : X) (τ : Nat (Id x) A) → is-fiberwise-equiv τ
-
-universal-fiberwise-equiv {𝓤} {𝓥} {X} A u x τ = γ
- where
-  g : singleton-type x → Σ A
-  g = NatΣ τ
-
-  e : is-equiv g
-  e = maps-of-singletons-are-equivs g (singleton-types-are-singletons x) u
-
-  γ : is-fiberwise-equiv τ
-  γ = NatΣ-equiv-gives-fiberwise-equiv τ e
-
-
-retract-universal-lemma : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                        → ((y : X) → A y ◁ (x ≡ y))
-                        → ∃! A
-
-retract-universal-lemma A x ρ = i
- where
-  σ : Σ A ◁ singleton-type x
-  σ = Σ-retract A (Id x) ρ
-
-  i : ∃! A
-  i = retract-of-singleton σ (singleton-types-are-singletons x)
-
-
-fiberwise-retractions-are-equivs : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
-                                 → (τ : Nat (Id x) A)
-                                 → ((y : X) → has-section (τ y))
-                                 → is-fiberwise-equiv τ
-
-fiberwise-retractions-are-equivs {𝓤} {𝓥} {X} A x τ s = γ
- where
-  ρ : (y : X) → A y ◁ (x ≡ y)
-  ρ y = τ y , s y
-
-  i : ∃! A
-  i = retract-universal-lemma A x ρ
-
-  γ : is-fiberwise-equiv τ
-  γ = universal-fiberwise-equiv A i x τ
-
-ap-pr₁-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-              → (p₁ : pr₁ z ≡ pr₁ t)
-              → (p₂ : pr₂ z ≡ pr₂ t)
-              → ap pr₁ (to-×-≡ p₁ p₂) ≡ p₁
-
-ap-pr₁-to-×-≡ refl refl = refl
-
-
-ap-pr₂-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
-              → (p₁ : pr₁ z ≡ pr₁ t)
-              → (p₂ : pr₂ z ≡ pr₂ t)
-              → ap pr₂ (to-×-≡ p₁ p₂) ≡ p₂
-
-ap-pr₂-to-×-≡ refl refl = refl
+open import UF-Yoneda
 
 module sip where
 
@@ -206,7 +125,7 @@ module sip where
                        → canonical-map ι ρ s t p
                        ≡ transport (λ - → ι (X , s) (X , -) (≃-refl X)) p (ρ (X , s))
 
-  canonical-map-charac s = transport-lemma (λ t → ι (X , s) (X , t) (≃-refl X)) s
+  canonical-map-charac s = Id-Nats-are-transports (λ t → ι (X , s) (X , t) (≃-refl X)) s
                             (canonical-map ι ρ s)
 {-
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
@@ -452,8 +371,7 @@ module sip-join where
                     (inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
 
    γ : ∀ z₁ → is-equiv (r z₁)
-   γ = fiberwise-retractions-are-equivs (λ z₁ → A x₀ (pr₁ z₁) × B y₀ (pr₂ z₁))
-         (x₀ , y₀) r (λ z₁ → (s z₁ , η z₁))
+   γ = nats-with-sections-are-equivs (x₀ , y₀) r λ z₁ → (s z₁ , η z₁)
 
  variable
   𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
@@ -723,8 +641,7 @@ module associative-∞-magma-identity
        γ = ap g q
 
    θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
-   θ {X} s = universal-fiberwise-equiv (λ t → ι (X , s) (X , t) (≃-refl X))
-              (u X s) s (canonical-map ι ρ s)
+   θ {X} s = Yoneda-Theorem-forth s (canonical-map ι ρ s) (u X s)
 
  _≅_ : ∞-aMagma → ∞-aMagma → 𝓤 ̇
  (X , _·_ , α) ≅ (Y , _*_ , β) = Σ f ꞉ (X → Y)

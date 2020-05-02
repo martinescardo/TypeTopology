@@ -525,7 +525,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
 
  𝓛-is-univalent : (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq l m)
  𝓛-is-univalent l = universality-equiv l (𝓛-refl l)
-                      (unique-element-is-universal-element (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
+                      (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
                         (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
   where
    open import UF-Yoneda

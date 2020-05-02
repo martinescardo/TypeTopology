@@ -568,6 +568,16 @@ qinv-is-vv-equiv {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = γ
   γ : is-contr (fiber f y₀)
   γ = retract-of-singleton b (singleton-types'-are-singletons y₀)
 
+maps-of-singletons-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → is-singleton X → is-singleton Y → is-equiv f
+maps-of-singletons-are-equivs f (c , φ) (d , γ) =
+ ((λ y → c) , (λ x → f c ≡⟨ singletons-are-props (d , γ) (f c) x ⟩
+                     x   ∎)) ,
+ ((λ y → c) , φ)
+
+is-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+is-fiberwise-equiv τ = ∀ x → is-equiv (τ x)
+
 \end{code}
 
 Added 1st December 2019.

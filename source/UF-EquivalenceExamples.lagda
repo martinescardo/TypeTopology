@@ -513,6 +513,12 @@ NatΣ-equiv-converse A B ζ e x = vv-equivs-are-equivs (ζ x)
                                  (NatΣ-vv-equiv-converse A B ζ
                                    (equivs-are-vv-equivs (NatΣ ζ) e) x)
 
+NatΣ-equiv-gives-fiberwise-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
+                                   (φ : Nat A B)
+                                 → is-equiv (NatΣ φ)
+                                 → is-fiberwise-equiv φ
+NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
+
 Σ-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
         → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
 Σ-cong' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))

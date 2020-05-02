@@ -287,4 +287,22 @@ tofrom-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ≡ �
            → to-Σ-≡ (from-Σ-≡ r) ≡ r
 tofrom-Σ-≡ refl = refl
 
+Id-Nats-are-transports : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X)
+                       → (τ : Nat (Id x) A)
+                       → (y : X) (p : x ≡ y) → τ y p ≡ transport A p (τ x (refl─ x))
+Id-Nats-are-transports A x τ x refl = refl
+
+ap-pr₁-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → (p₂ : pr₂ z ≡ pr₂ t)
+              → ap pr₁ (to-×-≡ p₁ p₂) ≡ p₁
+ap-pr₁-to-×-≡ refl refl = refl
+
+
+ap-pr₂-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → (p₂ : pr₂ z ≡ pr₂ t)
+              → ap pr₂ (to-×-≡ p₁ p₂) ≡ p₂
+ap-pr₂-to-×-≡ refl refl = refl
+
 \end{code}

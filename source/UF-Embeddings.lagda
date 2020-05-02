@@ -75,7 +75,7 @@ embedding-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
   c : (x : X) → is-singleton(fiber' f (f x))
   c x = retract-of-singleton (pr₁ (fiber-lemma f (f x)) , pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → is-equiv(ap f {x} {x'})
-  g x = universality-equiv x refl (unique-element-is-universal-element
+  g x = universality-equiv x refl (central-point-is-universal
                                          (λ x' → f x ≡ f x')
                                          (pr₁(c x))
                                          (pr₂(c x)))
@@ -84,7 +84,7 @@ embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedd
 embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
   e : (x : X) → is-central (Σ x' ꞉ X , f x ≡ f x') (x , refl)
-  e x = universal-element-is-the-only-element
+  e x = universal-element-is-central
          (x , refl)
          (equiv-universality x refl (ise x))
   h : (x : X) → is-prop (fiber' f (f x))

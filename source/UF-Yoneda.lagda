@@ -137,15 +137,15 @@ is-universal-element-of : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → Σ A → 𝓤 
 is-universal-element-of {𝓤} {𝓥} {X} A (x , a) =
    (y : X) (b : A y) → Σ p ꞉ x ≡ y , yoneda-nat x A a y p ≡ b
 
-universal-element-is-the-only-element : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ : Σ A)
-                                      → is-universal-element-of A σ
-                                      → is-central (Σ A) σ
-universal-element-is-the-only-element (x , a) u (y , b) = to-Σ-≡ (u y b)
+universal-element-is-central : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (σ : Σ A)
+                             → is-universal-element-of A σ
+                             → is-central (Σ A) σ
+universal-element-is-central (x , a) u (y , b) = to-Σ-≡ (u y b)
 
-unique-element-is-universal-element : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (σ : Σ A)
-                                    → is-central (Σ A) σ
-                                    → is-universal-element-of A σ
-unique-element-is-universal-element A (x , a) φ y b = from-Σ-≡ (φ(y , b))
+central-point-is-universal : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (σ : Σ A)
+                           → is-central (Σ A) σ
+                           → is-universal-element-of A σ
+central-point-is-universal A (x , a) φ y b = from-Σ-≡ (φ(y , b))
 
 \end{code}
 
@@ -192,7 +192,7 @@ Yoneda-section-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id
 Yoneda-section-forth {𝓤} {𝓥} {X} {A} x η i y = g
  where
   u : is-universal-element-of A (x , yoneda-elem x A η)
-  u = unique-element-is-universal-element A
+  u = central-point-is-universal A
         (x , yoneda-elem x A η)
         (singletons-are-props i (x , yoneda-elem x A η))
   h : yoneda-nat x A (yoneda-elem x A η) y ∼ η y
@@ -211,7 +211,7 @@ Yoneda-section-back {𝓤} {𝓥} {X} {A} x η φ = c
   u : is-universal-element-of A (x , yoneda-elem x A η)
   u = section-universality x (yoneda-elem x A η) g
   c : ∃! A
-  c = (x , yoneda-elem x A η) , (universal-element-is-the-only-element (x , yoneda-elem x A η) u)
+  c = (x , yoneda-elem x A η) , (universal-element-is-central (x , yoneda-elem x A η) u)
 
 Yoneda-section : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
                → ∃! A ⇔ ((y : X) → has-section (η y))
@@ -319,7 +319,7 @@ nat-having-section-is-a-prop {𝓤} {𝓥} fe {X} x η φ = Π-is-prop (fe 𝓤 
 
 nats-with-sections-are-equivs : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
                               → ((y : X) → has-section(η y))
-                              → ((y : X) → is-equiv(η y))
+                              → is-fiberwise-equiv η
 nats-with-sections-are-equivs x η hs y = (hs y , nat-retraction-is-section x η hs y)
 
 \end{code}
@@ -330,22 +330,45 @@ We are interested in the following corollaries:
 
 universality-equiv : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x)
                    → is-universal-element-of A (x , a)
-                   → (y : X) → is-equiv(yoneda-nat x A a y)
+                   → is-fiberwise-equiv (yoneda-nat x A a)
 universality-equiv {𝓤} {𝓥} {X} {A} x a u = nats-with-sections-are-equivs x
                                              (yoneda-nat x A a)
                                              (universality-section x a u)
 
 equiv-universality : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (a : A x)
-                   → ((y : X) → is-equiv(yoneda-nat x A a y))
+                   → is-fiberwise-equiv (yoneda-nat x A a )
                    → is-universal-element-of A (x , a)
 equiv-universality x a φ = section-universality x a (λ y → pr₁ (φ y))
 
 Yoneda-Theorem-forth : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                     → ∃! A → (y : X) → is-equiv (η y)
+                     → ∃! A → is-fiberwise-equiv η
 Yoneda-Theorem-forth x η i = nats-with-sections-are-equivs x η (Yoneda-section-forth x η i)
 
+\end{code}
+
+Here is another proof, from the MGS'2019 lecture notes (https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes):
+
+\begin{code}
+
+Yoneda-Theorem-forth' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (x : X) (η : Nat (Id x) A)
+                      → ∃! A → is-fiberwise-equiv η
+Yoneda-Theorem-forth' {𝓤} {𝓥} {X} A x η u = γ
+ where
+  g : singleton-type x → Σ A
+  g = NatΣ η
+
+  e : is-equiv g
+  e = maps-of-singletons-are-equivs g (singleton-types-are-singletons x) u
+
+  γ : is-fiberwise-equiv η
+  γ = NatΣ-equiv-gives-fiberwise-equiv η e
+
+\end{code}
+
+\begin{code}
+
 Yoneda-Theorem-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)
-                    → ((y : X) → is-equiv (η y)) → ∃! A
+                    → is-fiberwise-equiv η → ∃! A
 Yoneda-Theorem-back x η φ = Yoneda-section-back x η (λ y → pr₁(φ y))
 
 \end{code}
@@ -356,7 +379,7 @@ singleton.
 \begin{code}
 
 _≊_ : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → (X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-A ≊ B = Σ η ꞉ Nat A B , ∀ x → is-equiv(η x)
+A ≊ B = Σ η ꞉ Nat A B , is-fiberwise-equiv η
 
 is-representable : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-representable A = Σ x ꞉ domain A , Id x ≊ A
@@ -445,7 +468,7 @@ univalence-via-singletons = (f , g)
 
   g : ((X : 𝓤 ̇ ) → ∃! (Eq X)) → is-univalent 𝓤
   g φ X = universality-equiv X (≃-refl X)
-                               (unique-element-is-universal-element
+                               (central-point-is-universal
                                   (Eq X)
                                   (X , ≃-refl X)
                                   (singletons-are-props (φ X) (X , ≃-refl X)))
