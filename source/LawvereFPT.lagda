@@ -574,7 +574,10 @@ equivalent to a type in 𝓤:
 
 \begin{code}
 
- Theorem : ∀ 𝓤 → ¬(Σ 𝕌 ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ 𝕌)
- Theorem 𝓤 (𝕌 , e) = Lemma₄ 𝓤 (𝕌 , ≃-gives-◁ e)
+ Theorem : ∀ 𝓤 → ¬(Σ X ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ X)
+ Theorem 𝓤 (X , e) = Lemma₄ 𝓤 (X , ≃-gives-◁ e)
+
+ Corollary : ∀ 𝓤 → ¬(𝓤 ⁺ ̇ ≃ 𝓤 ̇ )
+ Corollary 𝓤 e = Theorem (𝓤 ⁺) ((𝓤 ̇ ), e)
 
 \end{code}
