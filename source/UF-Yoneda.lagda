@@ -365,6 +365,32 @@ Yoneda-Theorem-forth' {𝓤} {𝓥} {X} A x η u = γ
 
 \end{code}
 
+Here is an application:
+
+\begin{code}
+
+fiberwise-equiv-criterion : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            (x : X)
+                          → ((y : X) → A y ◁ (x ≡ y))
+                          → (τ : Nat (Id x) A) → is-fiberwise-equiv τ
+fiberwise-equiv-criterion A x ρ τ = Yoneda-Theorem-forth x τ
+                                     (Yoneda-section-back x
+                                       (λ x → retraction (ρ x))
+                                       (λ x → retraction-has-section (ρ x)))
+
+fiberwise-equiv-criterion' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                             (x : X)
+                           → ((y : X) → (x ≡ y) ≃ A y)
+                           → (τ : Nat (Id x) A) → is-fiberwise-equiv τ
+fiberwise-equiv-criterion' A x e = fiberwise-equiv-criterion A x
+                                    (λ y → ≃-gives-▷ (e y))
+
+\end{code}
+
+This says that is there is any fiberwise equivalence whatsoever (or
+even just a fiberwise retraction), then any natural transformation is
+a fiberwise equivalence.
+
 \begin{code}
 
 Yoneda-Theorem-back : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X) (η : Nat (Id x) A)

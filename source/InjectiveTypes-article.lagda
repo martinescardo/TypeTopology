@@ -644,7 +644,7 @@ equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                     → ainjective-type D 𝓤 𝓥
                     → D' ≃ D
                     → ainjective-type D' 𝓤 𝓥
-equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (equiv-retract-l e)
+equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (≃-gives-◁ e)
 
 \end{code}
 

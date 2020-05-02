@@ -520,7 +520,7 @@ equiv-to-ainjective : (D' : 𝓦' ̇ ) (D : 𝓦 ̇ )
                     → ainjective-type D 𝓤 𝓥
                     → D' ≃ D
                     → ainjective-type D' 𝓤 𝓥
-equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (equiv-retract-l e)
+equiv-to-ainjective D' D i e = retract-of-ainjective D' D i (≃-gives-◁ e)
 
 universes-are-ainjective-Π : is-univalent (𝓤 ⊔ 𝓥) → ainjective-type (𝓤 ⊔ 𝓥 ̇ ) 𝓤 𝓥
 universes-are-ainjective-Π ua j e f = f / j , Π-extension-is-extension ua j e f

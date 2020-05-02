@@ -725,7 +725,7 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X ≃ Y
                        → Compact X {𝓦}
                        → Compact Y {𝓦}
-Compact-closed-under-≃ e = Compact-closed-under-retracts (equiv-retract-r e)
+Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
 

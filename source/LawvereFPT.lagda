@@ -86,7 +86,7 @@ that r has a pointwise section).
  LFPT-≃ : {A : 𝓤 ⊔ 𝓥 ̇ } {X : 𝓤 ̇ }
         → A ≃ (A → X)
         → (f : X → X) → Σ x ꞉ X , x ≡ f x
- LFPT-≃ p = LFPT (equiv-retract-r p)
+ LFPT-≃ p = LFPT (≃-gives-▷ p)
 
  LFPT-≡ : {A : 𝓤 ⊔ 𝓥 ̇ } {X : 𝓤 ̇ }
         → A ≡ (A → X)
@@ -319,7 +319,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
     φ a p = uncurry complement-no-fp (γ complement)
      where
       ρ : retract B of (X a)
-      ρ = equiv-retract-r p
+      ρ = ≃-gives-▷ p
       γ : (f : 𝟚 → 𝟚) → Σ b ꞉ 𝟚 , b ≡ f b
       γ = udr-lemma X 𝟚 a (d a) ₀ ρ
 
@@ -431,7 +431,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
      φ a p = retract-version.not-no-fp fe₀ (γ (not fe₀))
       where
        ρ : retract B of (X a)
-       ρ = equiv-retract-r p
+       ρ = ≃-gives-▷ p
        γ : (f : Ω 𝓤 → Ω 𝓤) → Σ p ꞉ Ω 𝓤 , p ≡ f p
        γ = usr-lemma {𝓤} {𝓥 ⊔ 𝓤 ⁺} {𝓤} {A} X fe' fe pe a iss ρ
 
@@ -543,7 +543,7 @@ Because equivalences are retractions, it follows that
 
  Lemma₂ : ∀ 𝓤 (A : 𝓤 ̇ ) (T : A → 𝓤 ̇ ) (S : 𝓤 ̇ → A)
         → ¬((X : 𝓤 ̇ ) → T (S X) ≃ X)
- Lemma₂ 𝓤 A T S e = Lemma₁ 𝓤 A T S (λ X → equiv-retract-r (e X))
+ Lemma₂ 𝓤 A T S e = Lemma₁ 𝓤 A T S (λ X → ≃-gives-▷ (e X))
 
 \end{code}
 
@@ -575,6 +575,6 @@ equivalent to a type in 𝓤:
 \begin{code}
 
  Theorem : ∀ 𝓤 → ¬(Σ 𝕌 ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ 𝕌)
- Theorem 𝓤 (𝕌 , e) = Lemma₄ 𝓤 (𝕌 , equiv-retract-l e)
+ Theorem 𝓤 (𝕌 , e) = Lemma₄ 𝓤 (𝕌 , ≃-gives-◁ e)
 
 \end{code}

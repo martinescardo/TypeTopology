@@ -92,12 +92,12 @@ over-is-discrete : (X : ℕ → 𝓤 ̇ )
                  → ((n : ℕ) → is-discrete (X n))
                  → (z : ℕ + 𝟙) → is-discrete ((X / over) z)
 over-is-discrete X d (inl n) = retract-discrete-discrete
-                                 (equiv-retract-l
+                                 (≃-gives-◁
                                    (Π-extension-in-range X over
                                       over-embedding n))
                                  (d n)
 over-is-discrete X d (inr *) = retract-discrete-discrete {𝓤₀}
-                                 (equiv-retract-l
+                                 (≃-gives-◁
                                    (Π-extension-out-of-range X over (inr *)
                                        (λ n → +disjoint)))
                                  𝟙-is-discrete

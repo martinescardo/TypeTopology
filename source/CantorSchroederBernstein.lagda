@@ -192,7 +192,7 @@ CSB-gives-EM fe P i csb = γ
   e = csb (econstruction-ℕ∞ fe P i)
 
   ρ : retract (P + ℕ∞) of ℕ∞
-  ρ = equiv-retract-r e
+  ρ = ≃-gives-▷ e
 
   γ : P + ¬ P
   γ = Pradic-Brown-lemma ρ (ℕ∞-Compact fe)
@@ -239,7 +239,7 @@ module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
    s = w (econstruction-ℕ∞ fe₀ P i)
 
    t : ℕ∞ ≃ P + ℕ∞ → P + ¬ P
-   t e = Pradic-Brown-lemma (equiv-retract-r e) (ℕ∞-Compact fe₀)
+   t e = Pradic-Brown-lemma (≃-gives-▷ e) (ℕ∞-Compact fe₀)
 
    γ : P + ¬ P
    γ = ∥∥-rec (decidability-of-prop-is-prop fe i) t s

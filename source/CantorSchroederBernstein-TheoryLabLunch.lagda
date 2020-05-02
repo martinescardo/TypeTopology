@@ -298,7 +298,7 @@ CSB-gives-EM fe P i csb = γ
   e = csb (f , j) (g , k)
 
   ρ : retract (P + ℕ∞) of ℕ∞
-  ρ = equiv-retract-r e
+  ρ = ≃-gives-▷ e
 
   γ : P + ¬ P
   γ = Pradic-Brown-lemma ρ (ℕ∞-Compact fe)

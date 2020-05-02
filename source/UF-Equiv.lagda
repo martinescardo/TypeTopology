@@ -213,23 +213,23 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
               → ⌜ 𝓯 ⌝ (⌜ ≃-sym 𝓯 ⌝ y) ≡ y
 ≃-sym-is-rinv (f , e) y = inverses-are-sections f e y
 
-equiv-retract-l : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → retract X of Y
-equiv-retract-l (f , (g , fg) , (h , hf)) = h , f , hf
+≃-gives-◁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ◁ Y
+≃-gives-◁ (f , (g , fg) , (h , hf)) = h , f , hf
 
-equiv-retract-r : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → retract Y of X
-equiv-retract-r (f , (g , fg) , (h , hf)) = f , g , fg
+≃-gives-▷ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y ◁ X
+≃-gives-▷ (f , (g , fg) , (h , hf)) = f , g , fg
 
 Id-retract-l : {X Y : 𝓤 ̇ } → X ≡ Y → retract X of Y
-Id-retract-l p = equiv-retract-l (idtoeq (lhs p) (rhs p) p)
+Id-retract-l p = ≃-gives-◁ (idtoeq (lhs p) (rhs p) p)
 
 Id-retract-r : {X Y : 𝓤 ̇ } → X ≡ Y → retract Y of X
-Id-retract-r p = equiv-retract-r (idtoeq (lhs p) (rhs p) p)
+Id-retract-r p = ≃-gives-▷ (idtoeq (lhs p) (rhs p) p)
 
 equiv-to-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-prop X → is-prop Y
-equiv-to-prop e = retract-of-prop (equiv-retract-l e)
+equiv-to-prop e = retract-of-prop (≃-gives-◁ e)
 
 equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-singleton X → is-singleton Y
-equiv-to-singleton e = retract-of-singleton (equiv-retract-l e)
+equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 
 pt-pf-equiv : {X : 𝓤 ̇ } (x : X) → singleton-type x ≃ singleton-type' x
 pt-pf-equiv x = f , ((g , fg) , (g , gf))

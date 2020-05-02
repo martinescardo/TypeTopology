@@ -382,7 +382,7 @@ tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
   a : (𝕋 X → 𝟚) ≃ (X → 𝟚)
   a = totally-separated-reflection'' 𝟚-is-totally-separated
   b : retract (𝕋 X → 𝟚) of (X → 𝟚)
-  b = equiv-retract-l a
+  b = ≃-gives-◁ a
   d : retract (𝕋 X → 𝟚) of (X → Y)
   d = retracts-compose z b
   e : Π-compact (𝕋 X → 𝟚)

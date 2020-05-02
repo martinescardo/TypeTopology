@@ -26,6 +26,7 @@ open import UF-EquivalenceExamples
 open import UF-Subsingletons
 open import UF-Embeddings
 open import UF-Yoneda
+open import UF-Retracts
 
 module sip where
 
@@ -127,12 +128,11 @@ module sip where
 
   canonical-map-charac s t p = (yoneda-lemma s (λ t → ι (X , s) (X , t) (≃-refl X)) (canonical-map ι ρ s) t p)⁻¹
 
-{-
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
                               ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
 
-  when-canonical-map-is-equiv = (λ e s → fiberwise-equiv-universal (A s) s (τ s) (e s)) ,
-                                (λ φ s → universal-fiberwise-equiv (A s) (φ s) s (τ s))
+  when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (τ s) (e s)) ,
+                                (λ φ s → Yoneda-Theorem-forth s (τ s) (φ s))
    where
     A = λ s t → ι (X , s) (X , t) (≃-refl X)
     τ = canonical-map ι ρ
@@ -150,7 +150,6 @@ module sip where
   canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                         (λ t → ι (X , s) (X , t) (≃-refl X))
                                         s (φ s) (canonical-map ι ρ s)
--}
 
 module sip-with-axioms where
 

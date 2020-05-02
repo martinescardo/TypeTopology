@@ -31,6 +31,9 @@ section (r , s , rs) = s
 retract-condition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : retract X of Y) → retraction ρ ∘ section ρ ∼ id
 retract-condition (r , s , rs) = rs
 
+retraction-has-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (ρ : retract X of Y) → has-section (retraction ρ)
+retraction-has-section (r , h) = h
+
 retract-of-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → retract Y of X
                      → is-singleton X
