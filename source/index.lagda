@@ -232,8 +232,9 @@ import UF-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Size
-import UF-SIP                         -- New
-import UF-StructureIdentityPrinciple  -- Old
+import UF-StructureIdentityPrinciple  -- Old, but still used in some modules.
+import UF-SIP                         -- New, better, version.
+import UF-SIP-Examples
 import UF-SubsetIdentity
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
