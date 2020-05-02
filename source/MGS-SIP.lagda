@@ -1371,7 +1371,7 @@ module contrived-example-identity (𝓤 : Universe) where
      (λ φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})))
     (X , φ) (Y , γ)
 
-module generalized-functor-algebra-equality
+module generalized-functor-algebra-identity
          {𝓤 𝓥 : Universe}
          (F : 𝓤 ̇ → 𝓥 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
