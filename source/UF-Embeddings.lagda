@@ -48,6 +48,9 @@ equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y) , is-embedding f
 
+Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+
 etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → X → Y
 etofun = pr₁
 

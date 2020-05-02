@@ -30,7 +30,7 @@ eqtoid-idtoeq : (ua : is-univalent 𝓤)
 eqtoid-idtoeq ua X Y = pr₁(pr₂ (equivs-are-qinvs (idtoeq X Y) (ua X Y)))
 
 eqtoid-refl : (ua : is-univalent 𝓤) (X : 𝓤 ̇ )
-           → eqtoid ua X X (≃-refl X) ≡ refl
+            → eqtoid ua X X (≃-refl X) ≡ refl
 eqtoid-refl ua X = eqtoid-idtoeq ua X X refl
 
 idtoeq' : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
@@ -46,8 +46,8 @@ idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid 
 Idtofun-is-equiv : (X Y : 𝓤 ̇ ) (p : X ≡ Y) → is-equiv(idtofun X Y p)
 Idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
 
-is-univalent-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-is-univalent-≃ ua X Y = idtoeq X Y , ua X Y
+univalence-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+univalence-≃ ua X Y = idtoeq X Y , ua X Y
 
 back-transport-is-pre-comp' : (ua : is-univalent 𝓤)
                             → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X' → Y)

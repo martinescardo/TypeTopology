@@ -6,7 +6,25 @@ Start to port the structure identity principle example formulated and proved in
  https://arxiv.org/abs/1911.00580
  https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 
-Each example is in a submodule.
+Each example is in a submodule:
+
+  * ∞-magma
+  * magma
+  * pointed-type
+  * pointed-∞-magma
+  * monoid
+  * associative-∞-magma
+  * group
+  * slice
+  * generalized-metric-space
+  * generalized-topological-space
+  * selection-space
+  * contrived-example
+  * generalized-functor-algebra
+  * type-valued-preorder
+  * type-valued-preorder-with-axioms
+  * category
+  * subgroup (not fully ported yet)
 
 \begin{code}
 
@@ -576,289 +594,6 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
 
-\end{code}
-
-TODO: port this.
-
-module subgroup-identity
-        (𝓤  : Universe)
-        (ua : Univalence)
-       where
-
- gfe : ∀ 𝓤 𝓥 → DN-funext 𝓤 𝓥
- gfe = ? -- univalence-gives-global-DN-funext ua
-
- open sip
- open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
- open group-identity {𝓤} (ua 𝓤)
- open import UF-SubsetIdentity ? ? ?
-
-
- module ambient (G : Group) where
-
-  _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
-  x · y = x ·⟨ G ⟩ y
-
-  infixl 42 _·_
-
-  group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
-  group-closed 𝓐 = 𝓐 (unit G)
-                 × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
-                 × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
-
-  Subgroups : 𝓤 ⁺ ̇
-  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
-
-  ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
-  ⟪ A , u , c , ι ⟫ = A
-
-  being-group-closed-subset-is-prop : (A : 𝓟 ⟨ G ⟩) → is-prop (group-closed (_∈ A))
-  being-group-closed-subset-is-prop A = ×-is-prop
-                                                  (∈-is-prop A (unit G))
-                                               (×-is-prop
-                                                  (Π-is-prop fe
-                                                     (λ x → Π-is-prop fe
-                                                     (λ y → Π-is-prop fe
-                                                     (λ _ → Π-is-prop fe
-                                                     (λ _ → ∈-is-prop A (x · y))))))
-                                                  (Π-is-prop fe
-                                                     (λ x → Π-is-prop fe
-                                                     (λ _ → ∈-is-prop A (inv G x)))))
-
-  ⟪⟫-is-embedding : is-embedding ⟪_⟫
-  ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-prop
-   where
-
-  ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
-  ap-⟪⟫ S T = ap ⟪_⟫
-
-  ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
-  ap-⟪⟫-is-equiv = embedding-embedding' ⟪_⟫ ⟪⟫-is-embedding
-
-  subgroups-form-a-set : is-set Subgroups
-  subgroups-form-a-set S T = equiv-to-subsingleton
-                              (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
-                              (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫)
-
-  subgroup-equality : (S T : Subgroups)
-                    → (S ≡ T)
-                    ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
-
-  subgroup-equality S T = γ
-   where
-    f : S ≡ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫
-    f p x = transport (λ - → x ∈ ⟪ - ⟫) p , transport (λ - → x ∈ ⟪ - ⟫) (p ⁻¹)
-
-    h : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → ⟪ S ⟫ ≡ ⟪ T ⟫
-    h φ = subset-extensionality' ua α β
-     where
-      α : ⟪ S ⟫ ⊆ ⟪ T ⟫
-      α x = lr-implication (φ x)
-
-      β : ⟪ T ⟫ ⊆ ⟪ S ⟫
-      β x = rl-implication (φ x)
-
-    g : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → S ≡ T
-    g = inverse (ap-⟪⟫ S T) (ap-⟪⟫-is-equiv S T) ∘ h
-
-    γ : (S ≡ T) ≃ ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫)
-    γ = logically-equivalent-subsingletons-are-equivalent _ _
-          (subgroups-form-a-set S T)
-          (Π-is-prop fe
-             (λ x → ×-is-prop
-                      (Π-is-prop fe (λ _ → ∈-is-prop ⟪ T ⟫ x))
-                      (Π-is-prop fe (λ _ → ∈-is-prop ⟪ S ⟫ x))))
-          (f , g)
-
-  T : 𝓤 ̇ → 𝓤 ̇
-  T X = Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
-
-  module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (e : is-embedding h) where
-
-   private
-    h-lc : left-cancellable h
-    h-lc = embeddings-are-lc h e
-
-   having-group-closed-fiber-is-prop : is-prop (group-closed (fiber h))
-   having-group-closed-fiber-is-prop = being-group-closed-subset-is-prop
-                                                (λ x → (fiber h x , e x))
-
-   at-most-one-homomorphic-structure : is-prop (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-   at-most-one-homomorphic-structure
-      ((((_*_ ,  unitH) ,  maxioms) ,  gaxiom) ,  (pmult ,  punit))
-      ((((_*'_ , unitH') , maxioms') , gaxiom') , (pmult' , punit'))
-    = γ
-    where
-     τ τ' : T X
-     τ  = ((_*_ ,  unitH) ,  maxioms) ,  gaxiom
-     τ' = ((_*'_ , unitH') , maxioms') , gaxiom'
-
-     i :  is-homomorphism (X , τ)  G h
-     i  = (pmult ,  punit)
-
-     i' : is-homomorphism (X , τ') G h
-     i' = (pmult' , punit')
-
-     p : _*_ ≡ _*'_
-     p = gfe (λ x → gfe (λ y → h-lc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult     ⟩
-                                     h x · h y  ≡⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
-                                     h (x *' y) ∎)))
-     q : unitH ≡ unitH'
-     q = h-lc (h unitH  ≡⟨  punit     ⟩
-               unit G   ≡⟨  punit' ⁻¹ ⟩
-               h unitH' ∎)
-
-     r : (_*_ , unitH) ≡ (_*'_ , unitH')
-     r = to-×-≡ (p , q)
-
-     δ : τ ≡ τ'
-     δ = to-subtype-≡
-           (group-axiom-is-prop X)
-           (to-subtype-≡
-              (monoid-axioms-subsingleton X)
-              r)
-
-     γ : (τ  , i) ≡ (τ' , i')
-     γ = to-subtype-≡ (λ τ → being-homomorphism-is-prop (X , τ) G h) δ
-
-   group-closed-fiber-gives-homomorphic-structure : group-closed (fiber h)
-                                                  → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-
-   group-closed-fiber-gives-homomorphic-structure (unitc , mulc , invc) = τ , i
-    where
-     φ : (x : X) → fiber h (h x)
-     φ x = (x , refl─ (h x))
-
-     unitH : X
-     unitH = fiber-point unitc
-
-     _*_ : X → X → X
-     x * y = fiber-point (mulc (h x) (h y) (φ x) (φ y))
-
-     invH : X → X
-     invH x = fiber-point (invc (h x) (φ x))
-
-     pmul : (x y : X) → h (x * y) ≡ h x · h y
-     pmul x y = fiber-identification (mulc (h x) (h y) (φ x) (φ y))
-
-     punit : h unitH ≡ unit G
-     punit = fiber-identification unitc
-
-     pinv : (x : X) → h (invH x) ≡ inv G (h x)
-     pinv x = fiber-identification (invc (h x) (φ x))
-
-     unitH-left : (x : X) → unitH * x ≡ x
-     unitH-left x = h-lc (h (unitH * x) ≡⟨ pmul unitH x      ⟩
-                          h unitH · h x ≡⟨ ap (_· h x) punit ⟩
-                          unit G · h x  ≡⟨ unit-left G (h x) ⟩
-                          h x           ∎)
-
-     unitH-right : (x : X) → x * unitH ≡ x
-     unitH-right x = h-lc (h (x * unitH) ≡⟨ pmul x unitH       ⟩
-                           h x · h unitH ≡⟨ ap (h x ·_) punit  ⟩
-                           h x · unit G  ≡⟨ unit-right G (h x) ⟩
-                           h x           ∎)
-
-     assocH : (x y z : X) → ((x * y) * z) ≡ (x * (y * z))
-     assocH x y z = h-lc (h ((x * y) * z)   ≡⟨ pmul (x * y) z             ⟩
-                          h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y)     ⟩
-                          (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z)  ⟩
-                          h x · (h y · h z) ≡⟨ (ap (h x ·_) (pmul y z))⁻¹ ⟩
-                          h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹         ⟩
-                          h (x * (y * z))   ∎)
-
-     group-axiomH : (x : X) → Σ x' ꞉ X , (x * x' ≡ unitH) × (x' * x ≡ unitH)
-     group-axiomH x = invH x ,
-
-                      h-lc (h (x * invH x)     ≡⟨ pmul x (invH x)      ⟩
-                            h x · h (invH x)   ≡⟨ ap (h x ·_) (pinv x) ⟩
-                            h x · inv G (h x)  ≡⟨ inv-right G (h x)    ⟩
-                            unit G             ≡⟨ punit ⁻¹             ⟩
-                            h unitH            ∎),
-
-                      h-lc ((h (invH x * x)    ≡⟨ pmul (invH x) x      ⟩
-                             h (invH x) · h x  ≡⟨ ap (_· h x) (pinv x) ⟩
-                             inv G (h x) · h x ≡⟨ inv-left G (h x)     ⟩
-                             unit G            ≡⟨ punit ⁻¹             ⟩
-                             h unitH           ∎))
-
-     j : is-set X
-     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
-
-     τ : T X
-     τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH
-
-     i : is-homomorphism (X , τ) G h
-     i = gfe (λ x → gfe (pmul x)) , punit
-
-   homomorphic-structure-gives-group-closed-fiber : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-                                                  → group-closed (fiber h)
-
-   homomorphic-structure-gives-group-closed-fiber
-       ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
-     = (unitc , mulc , invc)
-    where
-     H : Group
-     H = X , ((_*_ , unitH) , maxioms) , gaxiom
-
-     unitc : fiber h (unit G)
-     unitc = unitH , punit
-
-     mulc : ((x y : ⟨ G ⟩) → fiber h x → fiber h y → fiber h (x · y))
-     mulc x y (a , p) (b , q) = (a * b) ,
-                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult    ⟩
-                                 h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
-                                 x · y     ∎)
-
-     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inv G x))
-     invc x (a , p) = inv H a ,
-                      (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
-                       inv G (h a) ≡⟨ ap (inv G) p                         ⟩
-                       inv G x     ∎)
-
-   fiber-structure-lemma : group-closed (fiber h)
-                         ≃ (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
-
-   fiber-structure-lemma = logically-equivalent-subsingletons-are-equivalent _ _
-                             having-group-closed-fiber-is-prop
-                             at-most-one-homomorphic-structure
-                             (group-closed-fiber-gives-homomorphic-structure ,
-                              homomorphic-structure-gives-group-closed-fiber)
-
-  characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
-                                                           , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                           , is-embedding h
-                                                           × is-homomorphism H G h)
-  characterization-of-the-type-of-subgroups =
-
-   Subgroups                                                                                       ≃⟨ i    ⟩
-   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v    ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
-   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
-
-      where
-       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
-       φ = χ-special is-prop ⟨ G ⟩
-
-       j : is-equiv φ
-       j = χ-special-is-equiv (ua 𝓤) gfe is-prop ⟨ G ⟩
-
-       i    = ≃-refl Subgroups
-       ii   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
-       iii  = Σ-assoc
-       iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
-       v    = Σ-cong (λ X → Σ-assoc)
-       vi   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
-       vii  = Σ-cong (λ X → Σ-flip)
-       viii = ≃-sym Σ-assoc
-
-  induced-group : Subgroups → Group
-  induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 
 module slice-identity
         {𝓤 𝓥 : Universe}
@@ -880,10 +615,13 @@ module slice-identity
    ρ (X , g) = refl─ g
 
    k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ -id (g ≡ h)
-   k (refl─ g) = refl─ (refl─ g)
+   k (refl {g}) = refl─ (refl─ g)
 
    θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
-   θ g h = equiv-closed-under-∼ (id-is-equiv (g ≡ h)) k
+   θ g h = equiv-closed-under-∼ id (canonical-map ι ρ g h) (id-is-equiv (g ≡ h)) k
+
+ _/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+ 𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
 
  _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
  (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
@@ -914,10 +652,10 @@ module generalized-metric-space-identity
    ρ (X , d) = refl─ d
 
    h : {X : 𝓤 ̇ } {d e : S X} → canonical-map ι ρ d e ∼ -id (d ≡ e)
-   h (refl─ d) = refl─ (refl─ d)
+   h (refl {d}) = refl─ (refl─ d)
 
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
-   θ d e = equiv-closed-under-∼ (id-is-equiv (d ≡ e)) h
+   θ d e = equiv-closed-under-∼ id (canonical-map ι ρ d e) (id-is-equiv (d ≡ e)) h
 
  M : 𝓤 ⁺ ⊔ 𝓥  ̇
  M = Σ X ꞉ 𝓤 ̇ , Σ d ꞉ (X → X → R) , axioms X d
@@ -970,10 +708,10 @@ module generalized-topological-space-identity
    ρ (X , 𝓞) = refl─ 𝓞
 
    h : {X : 𝓤 ̇ } {𝓞 𝓞' : ℙℙ X} → canonical-map ι ρ 𝓞 𝓞' ∼ -id (𝓞 ≡ 𝓞')
-   h (refl─ 𝓞) = refl─ (refl─ 𝓞)
+   h (refl {𝓞}) = refl─ (refl─ 𝓞)
 
    θ : {X : 𝓤 ̇ } (𝓞 𝓞' : ℙℙ X) → is-equiv (canonical-map ι ρ 𝓞 𝓞')
-   θ {X} 𝓞 𝓞' = equiv-closed-under-∼ (id-is-equiv (𝓞 ≡ 𝓞')) h
+   θ {X} 𝓞 𝓞' = equiv-closed-under-∼ id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ≡ 𝓞')) h
 
  _≅_  : Space → Space → 𝓤 ⊔ 𝓥 ̇
 
@@ -1033,10 +771,10 @@ module selection-space-identity
    θ {X} ε δ = γ
     where
      h : canonical-map ι ρ ε δ ∼ -id (ε ≡ δ)
-     h (refl─ ε) = refl─ (refl─ ε)
+     h (refl {ε}) = refl─ (refl─ ε)
 
      γ : is-equiv (canonical-map ι ρ ε δ)
-     γ = equiv-closed-under-∼ (id-is-equiv (ε ≡ δ)) h
+     γ = equiv-closed-under-∼ id (canonical-map ι ρ ε δ) (id-is-equiv (ε ≡ δ)) h
 
  _≅_  :  SelectionSpace → SelectionSpace → 𝓤 ⊔ 𝓥 ̇
 
@@ -1070,10 +808,10 @@ module contrived-example-identity (𝓤 : Universe) where
    characterization-of-≡ ua
     ((λ (X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ) ,
      (λ (X , φ) → refl─ φ) ,
-     (λ φ γ → equiv-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl─ φ) → refl─ (refl─ φ)})))
+     (λ φ γ → equiv-closed-under-∼ _ _ (id-is-equiv (φ ≡ γ)) (λ {(refl {φ}) → refl─ (refl─ φ)})))
     (X , φ) (Y , γ)
 
-module generalized-functor-algebra-equality
+module generalized-functor-algebra-identity
          {𝓤 𝓥 : Universe}
          (F : 𝓤 ̇ → 𝓥 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
@@ -1102,14 +840,14 @@ module generalized-functor-algebra-equality
      c = transport (α ≡_) (ρ (X , β))
 
      i : is-equiv c
-     i = transport-is-equiv (α ≡_) (ρ (X , β))
+     i = transports-are-equivs (ρ (X , β))
 
      h : canonical-map ι ρ α β ∼ c
-     h (refl─ _) = ρ (X , α)           ≡⟨ refl─-left ⁻¹ ⟩
-                   refl─ α ∙ ρ (X , α) ∎
+     h refl = ρ (X , α)           ≡⟨ refl-left-neutral ⁻¹ ⟩
+              refl─ α ∙ ρ (X , α) ∎
 
      γ : is-equiv (canonical-map ι ρ α β)
-     γ = equiv-closed-under-∼ i h
+     γ = equiv-closed-under-∼ c (canonical-map ι ρ α β) i h
 
  characterization-of-functor-algebra-≡ : is-univalent 𝓤
    → (X Y : 𝓤 ̇ ) (α : F X → X) (β : F Y → Y)
@@ -1131,11 +869,8 @@ module type-valued-preorder-identity
 
  open sip
 
- fe : global-DN-funext
- fe = univalence-gives-global-DN-funext ua
-
- fe : global-hfunext
- fe = univalence-gives-global-hfunext ua
+ fe : Fun-Ext
+ fe {𝓤} {𝓥} = FunExt-from-Univalence ua 𝓤 𝓥
 
  S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  S = type-valued-preorder-S {𝓤} {𝓥}
@@ -1193,16 +928,16 @@ module type-valued-preorder-identity
      φ = canonical-map ι ρ (homX , idX , compX) (homA , idA , compA)
 
      γ : codomain φ → domain φ
-     γ (refl─ _ , refl─ _ , refl─ _) = refl─ _
+     γ (refl , refl , refl) = refl
 
      η : γ ∘ φ ∼ id
-     η (refl─ _) = refl─ _
+     η refl = refl
 
      ε : φ ∘ γ ∼ id
-     ε (refl─ _ , refl─ _ , refl─ _) = refl─ _
+     ε (refl , refl , refl) = refl
 
      g : is-equiv φ
-     g = invertibles-are-equivs φ (γ , η , ε)
+     g = qinvs-are-equivs φ (γ , η , ε)
 
  lemma : (𝓧 𝓐 : Σ S) (F : Ob 𝓧 → Ob 𝓐)
        →
@@ -1223,18 +958,18 @@ module type-valued-preorder-identity
        (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             , (∀ x y → is-equiv (𝓕 x y)))                             ■
     where
-     i   = hfunext₂-≃ fe fe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
-     ii  = Π-cong fe fe
-            (λ x → Π-cong fe fe
+     i   = ≃-funext₂ fe fe (hom 𝓧 )  λ x y → hom 𝓐 (F x) (F y)
+     ii  = Π-cong fe fe _ _ _
+            (λ x → Π-cong fe fe _ _ _
             (λ y → univalence-≃ (ua 𝓥) (hom 𝓧 x y) (hom 𝓐 (F x) (F y))))
-     iii = Π-cong fe fe (λ y → ΠΣ-distr-≃)
+     iii = Π-cong fe fe _ _ _ (λ y → ΠΣ-distr-≃)
      iv  = ΠΣ-distr-≃
 
    v : (p : hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))
      → functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
      ≃ functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p))
 
-   v (refl─ _) = ≃-refl _
+   v refl = ≃-refl _
 
    γ =
 
@@ -1253,7 +988,7 @@ module type-valued-preorder-identity
                   × functorial 𝓧 𝓐 F 𝓕)                          ■
     where
      vi   = Σ-cong v
-     vii  = ≃-sym (Σ-change-of-variable _ ⌜ e ⌝ (⌜⌝-is-equiv e))
+     vii  = Σ-change-of-variable _ ⌜ e ⌝ (⌜⌝-is-equiv e)
      viii = Σ-assoc
 
  characterization-of-type-valued-preorder-≡ :
@@ -1331,8 +1066,8 @@ module category-identity
 
  open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
- fe : global-DN-funext
- fe = univalence-gives-global-DN-funext ua
+ fe : Fun-Ext
+ fe {𝓤} {𝓥} = FunExt-from-Univalence ua 𝓤 𝓥
 
  S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  S = type-valued-preorder-S {𝓤} {𝓥}
@@ -1363,17 +1098,17 @@ module category-identity
     where
      ss = Π-is-prop fe
            (λ x → Π-is-prop fe
-           (λ y → being-set-is-prop fe))
+           (λ y → being-set-is-a-prop fe))
 
      ls = Π-is-prop fe
            (λ x → Π-is-prop fe
            (λ y → Π-is-prop fe
-           (λ f → i x y (compX x x y (idX x) f) f)))
+           (λ f → i x y)))
 
      rs = Π-is-prop fe
            (λ x → Π-is-prop fe
            (λ y → Π-is-prop fe
-           (λ f → i x y (compX x y y f (idX y)) f)))
+           (λ f → i x y)))
 
      as = Π-is-prop fe
            (λ x → Π-is-prop fe
@@ -1382,8 +1117,7 @@ module category-identity
            (λ t → Π-is-prop fe
            (λ f → Π-is-prop fe
            (λ g → Π-is-prop fe
-           (λ h → i x t (compX x y t f (compX y z t g h))
-                        (compX x z t (compX x y z f g) h))))))))
+           (λ h → i x t)))))))
 
  Cat : (𝓤 ⊔ 𝓥)⁺ ̇
  Cat = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , category-axioms X s
@@ -1430,23 +1164,304 @@ module category-identity
                      × is-functorial 𝓧 𝓐 F 𝓕)
 
  idtoeqCat : (𝓧 𝓐 : Cat) → 𝓧 ≡ 𝓐 → 𝓧 ⋍ 𝓐
- idtoeqCat 𝓧 𝓧 (refl─ 𝓧) = -id (Ob 𝓧 ) ,
-                         id-is-equiv (Ob 𝓧 ) ,
-                         (λ x y → -id (hom 𝓧 x y)) ,
-                         (λ x y → id-is-equiv (hom 𝓧 x y)) ,
-                         refl─ (𝒾𝒹 𝓧) ,
-                         refl─ (comp 𝓧)
+ idtoeqCat 𝓧 𝓧 (refl {𝓧}) = -id (Ob 𝓧 ) ,
+                              id-is-equiv (Ob 𝓧 ) ,
+                              (λ x y → -id (hom 𝓧 x y)) ,
+                              (λ x y → id-is-equiv (hom 𝓧 x y)) ,
+                              refl─ (𝒾𝒹 𝓧) ,
+                              refl─ (comp 𝓧)
 
  characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ (𝓧 ⋍ 𝓐)
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
                                    category-axioms category-axioms-subsingleton
 
  idtoeqCat-is-equiv : (𝓧 𝓐 : Cat) → is-equiv (idtoeqCat 𝓧 𝓐)
- idtoeqCat-is-equiv 𝓧 𝓐 = equiv-closed-under-∼
+ idtoeqCat-is-equiv 𝓧 𝓐 = equiv-closed-under-∼ _ _
                            (⌜⌝-is-equiv (characterization-of-category-≡ 𝓧 𝓐))
                            (γ 𝓧 𝓐)
   where
    γ : (𝓧 𝓐 : Cat) → idtoeqCat 𝓧 𝓐 ∼ ⌜ characterization-of-category-≡ 𝓧 𝓐 ⌝
-   γ 𝓧 𝓧 (refl─ 𝓧) = refl─ _
+   γ 𝓧 𝓧 (refl {𝓧}) = refl─ (idtoeqCat 𝓧 𝓧 (refl─ 𝓧))
 
 \end{code}
+
+TODO. Finish porting the following:
+
+module subgroup-identity
+        (𝓤  : Universe)
+        (ua : Univalence)
+       where
+
+ open sip
+ open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
+ open group-identity {𝓤} (ua 𝓤)
+ open import UF-SubsetIdentity ? ? ?
+
+
+ module ambient (G : Group) where
+
+  _·_ : ⟨ G ⟩ → ⟨ G ⟩ → ⟨ G ⟩
+  x · y = x ·⟨ G ⟩ y
+
+  infixl 42 _·_
+
+  group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+  group-closed 𝓐 = 𝓐 (unit G)
+                 × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
+                 × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
+
+  Subgroups : 𝓤 ⁺ ̇
+  Subgroups = Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A)
+
+  ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
+  ⟪ A , u , c , ι ⟫ = A
+
+  being-group-closed-subset-is-prop : (A : 𝓟 ⟨ G ⟩) → is-prop (group-closed (_∈ A))
+  being-group-closed-subset-is-prop A = ×-is-prop
+                                                  (∈-is-prop A (unit G))
+                                               (×-is-prop
+                                                  (Π-is-prop fe
+                                                     (λ x → Π-is-prop fe
+                                                     (λ y → Π-is-prop fe
+                                                     (λ _ → Π-is-prop fe
+                                                     (λ _ → ∈-is-prop A (x · y))))))
+                                                  (Π-is-prop fe
+                                                     (λ x → Π-is-prop fe
+                                                     (λ _ → ∈-is-prop A (inv G x)))))
+
+  ⟪⟫-is-embedding : is-embedding ⟪_⟫
+  ⟪⟫-is-embedding = pr₁-is-embedding being-group-closed-subset-is-prop
+   where
+
+  ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
+  ap-⟪⟫ S T = ap ⟪_⟫
+
+  ap-⟪⟫-is-equiv : (S T : Subgroups) → is-equiv (ap-⟪⟫ S T)
+  ap-⟪⟫-is-equiv = embedding-embedding' ⟪_⟫ ⟪⟫-is-embedding
+
+  subgroups-form-a-set : is-set Subgroups
+  subgroups-form-a-set S T = ? {- equiv-to-subsingleton
+                              (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
+                              (powersets-are-sets' ua ⟪ S ⟫ ⟪ T ⟫) -}
+
+  subgroup-equality : (S T : Subgroups)
+                    → (S ≡ T)
+                    ≃ ((x : ⟨ G ⟩) → (x ∈ ⟪ S ⟫) ⇔ (x ∈ ⟪ T ⟫))
+
+  subgroup-equality S T = γ
+   where
+    f : S ≡ T → (x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫
+    f p x = transport (λ - → x ∈ ⟪ - ⟫) p , transport (λ - → x ∈ ⟪ - ⟫) (p ⁻¹)
+
+    h : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → ⟪ S ⟫ ≡ ⟪ T ⟫
+    h φ = ? -- subset-extensionality' ua α β
+     where
+      α : ⟪ S ⟫ ⊆ ⟪ T ⟫
+      α x = ? -- lr-implication (φ x)
+
+      β : ⟪ T ⟫ ⊆ ⟪ S ⟫
+      β x = ? -- rl-implication (φ x)
+
+    g : ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫) → S ≡ T
+    g = inverse (ap-⟪⟫ S T) (ap-⟪⟫-is-equiv S T) ∘ h
+
+    γ : (S ≡ T) ≃ ((x : ⟨ G ⟩) → x ∈ ⟪ S ⟫ ⇔ x ∈ ⟪ T ⟫)
+    γ = ? {- logically-equivalent-subsingletons-are-equivalent _ _
+          (subgroups-form-a-set S T)
+          (Π-is-prop fe
+             (λ x → ×-is-prop
+                      (Π-is-prop fe (λ _ → ∈-is-prop ⟪ T ⟫ x))
+                      (Π-is-prop fe (λ _ → ∈-is-prop ⟪ S ⟫ x))))
+          (f , g) -}
+
+  T : 𝓤 ̇ → 𝓤 ̇
+  T X = Σ ((_·_ , e) , a) ꞉ group-structure X , group-axiom X (_·_ , e)
+
+  module _ {X : 𝓤 ̇ } (h : X → ⟨ G ⟩) (e : is-embedding h) where
+
+   private
+    h-lc : left-cancellable h
+    h-lc = ? -- embeddings-are-lc h e
+
+   having-group-closed-fiber-is-prop : is-prop (group-closed (fiber h))
+   having-group-closed-fiber-is-prop = being-group-closed-subset-is-prop
+                                                (λ x → (fiber h x , e x))
+
+   at-most-one-homomorphic-structure : is-prop (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+   at-most-one-homomorphic-structure
+      ((((_*_ ,  unitH) ,  maxioms) ,  gaxiom) ,  (pmult ,  punit))
+      ((((_*'_ , unitH') , maxioms') , gaxiom') , (pmult' , punit'))
+    = γ
+    where
+     τ τ' : T X
+     τ  = ((_*_ ,  unitH) ,  maxioms) ,  gaxiom
+     τ' = ((_*'_ , unitH') , maxioms') , gaxiom'
+
+     i :  is-homomorphism (X , τ)  G h
+     i  = (pmult ,  punit)
+
+     i' : is-homomorphism (X , τ') G h
+     i' = (pmult' , punit')
+
+     p : _*_ ≡ _*'_
+     p = ? {- gfe (λ x → gfe (λ y → h-lc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult     ⟩
+                                     h x · h y  ≡⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
+                                     h (x *' y) ∎))) -}
+     q : unitH ≡ unitH'
+     q = h-lc (h unitH  ≡⟨  punit     ⟩
+               unit G   ≡⟨  punit' ⁻¹ ⟩
+               h unitH' ∎)
+
+     r : (_*_ , unitH) ≡ (_*'_ , unitH')
+     r = to-×-≡ (p , q)
+
+     δ : τ ≡ τ'
+     δ = to-subtype-≡
+           (group-axiom-is-prop X)
+           (to-subtype-≡
+              (monoid-axioms-subsingleton X)
+              r)
+
+     γ : (τ  , i) ≡ (τ' , i')
+     γ = to-subtype-≡ (λ τ → being-homomorphism-is-prop (X , τ) G h) δ
+
+   group-closed-fiber-gives-homomorphic-structure : group-closed (fiber h)
+                                                  → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+
+   group-closed-fiber-gives-homomorphic-structure (unitc , mulc , invc) = τ , i
+    where
+     φ : (x : X) → fiber h (h x)
+     φ x = (x , refl─ (h x))
+
+     unitH : X
+     unitH = fiber-point unitc
+
+     _*_ : X → X → X
+     x * y = fiber-point (mulc (h x) (h y) (φ x) (φ y))
+
+     invH : X → X
+     invH x = fiber-point (invc (h x) (φ x))
+
+     pmul : (x y : X) → h (x * y) ≡ h x · h y
+     pmul x y = ? -- fiber-identification (mulc (h x) (h y) (φ x) (φ y))
+
+     punit : h unitH ≡ unit G
+     punit = ? -- fiber-identification unitc
+
+     pinv : (x : X) → h (invH x) ≡ inv G (h x)
+     pinv x = ? -- fiber-identification (invc (h x) (φ x))
+
+     unitH-left : (x : X) → unitH * x ≡ x
+     unitH-left x = h-lc (h (unitH * x) ≡⟨ pmul unitH x      ⟩
+                          h unitH · h x ≡⟨ ap (_· h x) punit ⟩
+                          unit G · h x  ≡⟨ unit-left G (h x) ⟩
+                          h x           ∎)
+
+     unitH-right : (x : X) → x * unitH ≡ x
+     unitH-right x = h-lc (h (x * unitH) ≡⟨ pmul x unitH       ⟩
+                           h x · h unitH ≡⟨ ap (h x ·_) punit  ⟩
+                           h x · unit G  ≡⟨ unit-right G (h x) ⟩
+                           h x           ∎)
+
+     assocH : (x y z : X) → ((x * y) * z) ≡ (x * (y * z))
+     assocH x y z = h-lc (h ((x * y) * z)   ≡⟨ pmul (x * y) z             ⟩
+                          h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y)     ⟩
+                          (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z)  ⟩
+                          h x · (h y · h z) ≡⟨ (ap (h x ·_) (pmul y z))⁻¹ ⟩
+                          h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹         ⟩
+                          h (x * (y * z))   ∎)
+
+     group-axiomH : (x : X) → Σ x' ꞉ X , (x * x' ≡ unitH) × (x' * x ≡ unitH)
+     group-axiomH x = invH x ,
+
+                      h-lc (h (x * invH x)     ≡⟨ pmul x (invH x)      ⟩
+                            h x · h (invH x)   ≡⟨ ap (h x ·_) (pinv x) ⟩
+                            h x · inv G (h x)  ≡⟨ inv-right G (h x)    ⟩
+                            unit G             ≡⟨ punit ⁻¹             ⟩
+                            h unitH            ∎),
+
+                      h-lc ((h (invH x * x)    ≡⟨ pmul (invH x) x      ⟩
+                             h (invH x) · h x  ≡⟨ ap (_· h x) (pinv x) ⟩
+                             inv G (h x) · h x ≡⟨ inv-left G (h x)     ⟩
+                             unit G            ≡⟨ punit ⁻¹             ⟩
+                             h unitH           ∎))
+
+     j : is-set X
+     j = subtypes-of-sets-are-sets h h-lc (group-is-set G)
+
+     τ : T X
+     τ = ((_*_ , unitH) , (j , unitH-left , unitH-right , assocH)) , group-axiomH
+
+     i : is-homomorphism (X , τ) G h
+     i = ? -- gfe (λ x → gfe (pmul x)) , punit
+
+   homomorphic-structure-gives-group-closed-fiber : (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+                                                  → group-closed (fiber h)
+
+   homomorphic-structure-gives-group-closed-fiber
+       ((((_*_ , unitH) , maxioms) , gaxiom) , (pmult , punit))
+     = (unitc , mulc , invc)
+    where
+     H : Group
+     H = X , ((_*_ , unitH) , maxioms) , gaxiom
+
+     unitc : fiber h (unit G)
+     unitc = unitH , punit
+
+     mulc : ((x y : ⟨ G ⟩) → fiber h x → fiber h y → fiber h (x · y))
+     mulc x y (a , p) (b , q) = (a * b) ,
+                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult    ⟩
+                                 h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
+                                 x · y     ∎)
+
+     invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inv G x))
+     invc x (a , p) = inv H a ,
+                      (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
+                       inv G (h a) ≡⟨ ap (inv G) p                         ⟩
+                       inv G x     ∎)
+
+   fiber-structure-lemma : group-closed (fiber h)
+                         ≃ (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
+
+   fiber-structure-lemma = ? {- logically-equivalent-subsingletons-are-equivalent _ _
+                             having-group-closed-fiber-is-prop
+                             at-most-one-homomorphic-structure
+                             (group-closed-fiber-gives-homomorphic-structure ,
+                              homomorphic-structure-gives-group-closed-fiber) -}
+
+  characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
+                                                           , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                                                           , is-embedding h
+                                                           × is-homomorphism H G h)
+  characterization-of-the-type-of-subgroups =
+
+   Subgroups                                                                                       ≃⟨ i    ⟩
+   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
+   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v    ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
+   (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
+
+      where
+       φ : Subtypes ⟨ G ⟩ → 𝓟 ⟨ G ⟩
+       φ = χ-special is-prop ⟨ G ⟩
+
+       j : is-equiv φ
+       j = χ-special-is-equiv (ua 𝓤) gfe is-prop ⟨ G ⟩
+
+       i    = ≃-refl Subgroups
+       ii   = Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j
+       iii  = Σ-assoc
+       iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
+       v    = Σ-cong (λ X → Σ-assoc)
+       vi   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
+       vii  = Σ-cong (λ X → Σ-flip)
+       viii = ≃-sym Σ-assoc
+
+  induced-group : Subgroups → Group
+  induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
+
+\begin{code}

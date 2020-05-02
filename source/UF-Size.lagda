@@ -131,7 +131,7 @@ has-size-is-a-prop {𝓤} ua X 𝓥 = c
   fe = FunExt-from-Univalence ua
   a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (lift 𝓤 Y ≡ lift 𝓥 X)
   a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (lift-≃ 𝓤 Y)) (≃-sym (lift-≃ 𝓥 X)) ⟩
-        (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
+        (lift 𝓤 Y ≃ lift 𝓥 X)  ≃⟨ ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
         (lift 𝓤 Y ≡ lift 𝓥 X)  ■
   b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , lift 𝓤 Y ≡ lift 𝓥 X)
   b = Σ-cong a
