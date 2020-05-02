@@ -28,6 +28,7 @@ open import UF-Embeddings
 open import UF-Yoneda
 open import UF-Retracts
 
+
 module sip where
 
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
@@ -41,31 +42,25 @@ module sip where
                  (ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩))
                  {X : 𝓤 ̇ }
                  (s t : S X)
-
                → s ≡ t → ι (X , s) (X , t) (≃-refl X)
-
  canonical-map ι ρ {X} s s (refl {s}) = ρ (X , s)
 
  SNS : (𝓤 ̇ → 𝓥 ̇ ) → (𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
-
  SNS {𝓤} {𝓥} S 𝓦 = Σ ι ꞉ ((A B : Σ S) → (⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ ))
                   , Σ ρ ꞉ ((A : Σ S) → ι A A (≃-refl ⟨ A ⟩))
                   , ({X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t))
 
  homomorphic : {S : 𝓤 ̇ → 𝓥 ̇ } → SNS S 𝓦
              → (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇
-
  homomorphic (ι , ρ , θ) = ι
 
  _≃[_]_ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → SNS S 𝓦 → Σ S → 𝓤 ⊔ 𝓦 ̇
-
  A ≃[ σ ] B = Σ f ꞉ (⟨ A ⟩ → ⟨ B ⟩)
             , Σ i ꞉ is-equiv f
             , homomorphic σ A B (f , i)
 
  Id→homEq : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
           → (A B : Σ S) → (A ≡ B) → (A ≃[ σ ] B)
-
  Id→homEq (_ , ρ , _) A A (refl {A}) = id , id-is-equiv ⟨ A ⟩ , ρ A
 
  homomorphism-lemma : {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
@@ -73,7 +68,6 @@ module sip where
                     →
                       (transport S p (structure A) ≡ structure B)
                     ≃  homomorphic σ A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p)
-
  homomorphism-lemma (ι , ρ , θ) (X , s) (X , t) (refl {X}) = γ
   where
    γ : (s ≡ t) ≃ ι (X , s) (X , t) (≃-refl X)
@@ -84,18 +78,14 @@ module sip where
                        → (A B : Σ S)
 
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
-
  characterization-of-≡ ua {S} σ A B =
-
     (A ≡ B)                                                           ≃⟨ i   ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
     (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv  ⟩
     (A ≃[ σ ] B)                                                      ■
-
   where
    ι   = homomorphic σ
-
    i   = Σ-≡-≃
    ii  = Σ-cong (homomorphism-lemma σ A B)
    iii = Σ-change-of-variable (ι A B) (idtoeq ⟨ A ⟩ ⟨ B ⟩) (ua ⟨ A ⟩ ⟨ B ⟩)
@@ -103,7 +93,6 @@ module sip where
 
  Id→homEq-is-equiv : (ua : is-univalent 𝓤) {S : 𝓤 ̇ → 𝓥 ̇ } (σ : SNS S 𝓦)
                    → (A B : Σ S) → is-equiv (Id→homEq σ A B)
-
  Id→homEq-is-equiv ua {S} σ A B = γ
   where
    h : (A B : Σ S) → Id→homEq σ A B ∼ ⌜ characterization-of-≡ ua σ A B ⌝
@@ -118,19 +107,15 @@ module sip where
           (ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓦 ̇ )
           (ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩))
           {X : 𝓤 ̇ }
-
         where
 
   canonical-map-charac : (s t : S X) (p : s ≡ t)
-
                        → canonical-map ι ρ s t p
                        ≡ transport (λ - → ι (X , s) (X , -) (≃-refl X)) p (ρ (X , s))
-
   canonical-map-charac s t p = (yoneda-lemma s (λ t → ι (X , s) (X , t) (≃-refl X)) (canonical-map ι ρ s) t p)⁻¹
 
   when-canonical-map-is-equiv : ((s t : S X) → is-equiv (canonical-map ι ρ s t))
                               ⇔ ((s : S X) → ∃! t ꞉ S X , ι (X , s) (X , t) (≃-refl X))
-
   when-canonical-map-is-equiv = (λ e s → Yoneda-Theorem-back  s (τ s) (e s)) ,
                                 (λ φ s → Yoneda-Theorem-forth s (τ s) (φ s))
    where
@@ -139,17 +124,16 @@ module sip where
 
   canonical-map-equiv-criterion : ((s t : S X) → (s ≡ t) ≃ ι (X , s) (X , t) (≃-refl X))
                                 → (s t : S X) → is-equiv (canonical-map ι ρ s t)
-
   canonical-map-equiv-criterion φ s = fiberwise-equiv-criterion'
                                        (λ t → ι (X , s) (X , t) (≃-refl X))
                                        s (φ s) (canonical-map ι ρ s)
 
   canonical-map-equiv-criterion' : ((s t : S X) → ι (X , s) (X , t) (≃-refl X) ◁ (s ≡ t))
                                  → (s t : S X) → is-equiv (canonical-map ι ρ s t)
-
   canonical-map-equiv-criterion' φ s = fiberwise-equiv-criterion
                                         (λ t → ι (X , s) (X , t) (≃-refl X))
                                         s (φ s) (canonical-map ι ρ s)
+
 
 module sip-with-axioms where
 
@@ -157,21 +141,17 @@ module sip-with-axioms where
 
  [_] : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
      → (Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s) → Σ S
-
  [ X , s , _ ] = (X , s)
 
  ⟪_⟫ : {S : 𝓤 ̇ → 𝓥 ̇ } {axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ }
      → (Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s) → 𝓤 ̇
-
  ⟪ X , _ , _ ⟫ = X
 
  add-axioms : {S : 𝓤 ̇ → 𝓥 ̇ }
               (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
             → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
-
             → SNS S 𝓣
             → SNS (λ X → Σ s ꞉ S X , axioms X s) 𝓣
-
  add-axioms {𝓤} {𝓥} {𝓦} {𝓣} {S} axioms i (ι , ρ , θ) = ι' , ρ' , θ'
   where
    S' : 𝓤 ̇ → 𝓥 ⊔ 𝓦  ̇
@@ -207,18 +187,16 @@ module sip-with-axioms where
      γ = equiv-closed-under-∼ _ _ e l
 
  characterization-of-≡-with-axioms :
-
      is-univalent 𝓤
    → {S : 𝓤 ̇ → 𝓥 ̇ }
      (σ : SNS S 𝓣)
      (axioms : (X : 𝓤 ̇ ) → S X → 𝓦 ̇ )
    → ((X : 𝓤 ̇ ) (s : S X) → is-prop (axioms X s))
    → (A B : Σ X ꞉ 𝓤 ̇ , Σ s ꞉ S X , axioms X s)
-
    → (A ≡ B) ≃ ([ A ] ≃[ σ ] [ B ])
-
  characterization-of-≡-with-axioms ua σ axioms i =
    characterization-of-≡ ua (add-axioms axioms i σ)
+
 
 module sip-join where
 
@@ -277,24 +255,20 @@ module sip-join where
 
  ⟪_⟫ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
      → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X) → 𝓤 ̇
-
  ⟪ X , s₀ , s₁ ⟫ = X
 
  [_]₀ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X) → Σ S₀
-
  [ X , s₀ , s₁ ]₀ = (X , s₀)
 
  [_]₁ : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X) → Σ S₁
-
  [ X , s₀ , s₁ ]₁ = (X , s₁)
 
  join : {S₀ : 𝓤 ̇ → 𝓥₀ ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
       → SNS S₀ 𝓦₀
       → SNS S₁ 𝓦₁
       → SNS (λ X → S₀ X × S₁ X) (𝓦₀ ⊔ 𝓦₁)
-
  join {𝓤} {𝓥₀} {𝓥₁} {𝓦₀} {𝓦₁} {S₀} {S₁} (ι₀ , ρ₀ , θ₀) (ι₁ , ρ₁ , θ₁) = ι , ρ , θ
   where
    S : 𝓤 ̇ → 𝓥₀ ⊔ 𝓥₁ ̇
@@ -328,14 +302,11 @@ module sip-join where
      γ = equiv-closed-under-∼ _ _ i e
 
  _≃⟦_,_⟧_ : {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
-
           → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
           → SNS S₀ 𝓦₀
           → SNS S₁ 𝓦₁
           → (Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
-
           → 𝓤 ⊔ 𝓦₀ ⊔ 𝓦₁ ̇
-
  A ≃⟦ σ₀ , σ₁ ⟧ B = Σ f ꞉ (⟪ A ⟫ → ⟪ B ⟫)
                   , Σ i ꞉ is-equiv f , homomorphic σ₀ [ A ]₀ [ B ]₀ (f , i)
                                      × homomorphic σ₁ [ A ]₁ [ B ]₁ (f , i)
@@ -344,9 +315,7 @@ module sip-join where
                             → {S₀ : 𝓤 ̇ → 𝓥 ̇ } {S₁ : 𝓤 ̇ → 𝓥₁ ̇ }
                               (σ₀ : SNS S₀ 𝓦₀)  (σ₁ : SNS S₁ 𝓦₁)
                               (A B : Σ X ꞉ 𝓤 ̇ , S₀ X × S₁ X)
-
                             → (A ≡ B) ≃ (A ≃⟦ σ₀ , σ₁ ⟧ B)
-
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
 
 \end{code}
