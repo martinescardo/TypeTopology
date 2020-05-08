@@ -117,19 +117,19 @@ sections-have-at-most-one-retraction : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } 
                                      → has-section f → is-prop(is-section f)
 sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
-being-equiv-is-prop : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → is-prop(is-equiv f)
-being-equiv-is-prop fe f = ×-prop-criterion (retractions-have-at-most-one-section fe f , sections-have-at-most-one-retraction fe f)
-
 being-equiv-is-prop' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                       → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                       → (f : X → Y) → is-prop(is-equiv f)
+                     → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
+                     → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
                                                                sections-have-at-most-one-retraction' fe'' fe''' f)
 
+being-equiv-is-prop : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → is-prop(is-equiv f)
+being-equiv-is-prop {𝓤} {𝓥} fe f = being-equiv-is-prop' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤) (fe 𝓥 𝓤) f
+
 being-equiv-is-prop'' : {X Y : 𝓤 ̇ }
-                        → funext 𝓤 𝓤
-                        → (f : X → Y) → is-prop(is-equiv f)
+                      → funext 𝓤 𝓤
+                      → (f : X → Y) → is-prop(is-equiv f)
 being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
 
 ≃-assoc : FunExt

@@ -68,8 +68,8 @@ is-central X c = (x : X) → c ≡ x
 is-singleton : 𝓤 ̇ → 𝓤 ̇
 is-singleton X = Σ c ꞉ X , is-central X c
 
-singleton-types-are-pointed : {X : 𝓤 ̇ } → is-singleton X → X
-singleton-types-are-pointed = pr₁
+center : {X : 𝓤 ̇ } → is-singleton X → X
+center = pr₁
 
 \end{code}
 

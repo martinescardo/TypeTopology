@@ -53,16 +53,16 @@ dominant-closed-under-Σ : (D : Dominance) → (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇
                         → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
-being-a-dominance-is-prop : (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
-being-a-dominance-is-prop d = prop-criterion lemma
+being-dominance-is-prop : (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
+being-dominance-is-prop d = prop-criterion lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
-               (Π-is-prop (fe 𝓤⁺ 𝓤) λ _ → being-a-prop-is-prop (fe 𝓤 𝓤))
+               (Π-is-prop (fe 𝓤⁺ 𝓤) λ _ → being-prop-is-prop (fe 𝓤 𝓤))
                λ _ → Σ-is-prop
                        (Π-is-prop (fe 𝓤⁺ 𝓤)
                           λ _ → Π-is-prop (fe 𝓤 𝓤)
-                                   λ _ → being-a-prop-is-prop (fe 𝓤 𝓤))
+                                   λ _ → being-prop-is-prop (fe 𝓤 𝓤))
                        λ _ → Σ-is-prop
                                (being-dominant-is-prop (d , isd) 𝟙)
                                λ _ → Π-is-prop (fe 𝓤⁺ 𝓤⁺)
@@ -85,7 +85,7 @@ module DecidableDominance where
  decidable-dominance : Dominance
  decidable-dominance = (λ P → is-prop P × decidable P) ,
                        (λ P → Σ-is-prop
-                                 (being-a-prop-is-prop (fe 𝓤 𝓤))
+                                 (being-prop-is-prop (fe 𝓤 𝓤))
                                  (decidability-of-prop-is-prop (fe 𝓤 𝓤₀))) ,
                        (λ X → pr₁) ,
                        (𝟙-is-prop , inl *) ,

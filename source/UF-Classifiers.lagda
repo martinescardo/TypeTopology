@@ -1,10 +1,17 @@
-Martin Escardo, 20th August 2018
+Martin Escardo 8th May 2020.
 
-We consider type and subtype classifiers, and discuss an obvious
-generalization which is left undone for the moment.
+An old version of this file is at UF-Classifiers-Old.
 
- * (Σ X ꞉ 𝓤 ̇ , X → Y) ≃ (Y → 𝓤 ̇ )
- * (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤)
+This version is ported from the Midlands Graduate School 2019 lecture notes
+
+ https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/HoTT-UF-Agda.html
+ https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+
+
+   * Map classifier
+   * Embedding classifier
+   * Retraction classifier
+   * Surjection classifier
 
 \begin{code}
 
@@ -13,486 +20,202 @@ generalization which is left undone for the moment.
 module UF-Classifiers where
 
 open import SpartanMLTT
-open import UF-Subsingletons
-open import UF-Equiv
-open import UF-EquivalenceExamples
-open import UF-Equiv-FunExt
 open import UF-Base
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-FunExt
 open import UF-Embeddings
+open import UF-Equiv
+open import UF-Univalence
+open import UF-FunExt
+open import UF-UA-FunExt
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
+open import UF-Powerset
+open import UF-EquivalenceExamples
+open import UF-Retracts
 
-module type-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-       where
+-- Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
+-- Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
- χ : (Σ X ꞉ 𝓤 ̇ , (X → Y))  → (Y → 𝓤 ̇ )
- χ (X , f) = fiber f
+_/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
 
- T : (Y → 𝓤 ̇ ) → Σ X ꞉ 𝓤 ̇ , (X → Y)
- T A = Σ A , pr₁
+total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → Σ (fiber f) ≃ X
 
- χT : (A : Y → 𝓤 ̇ ) → χ(T A) ≡ A
- χT A = dfunext fe' γ
-  where
-   f : ∀ y → (Σ σ ꞉ Σ A , pr₁ σ ≡ y) → A y
-   f y ((.y , a) , refl) = a
-   g : ∀ y → A y → Σ σ ꞉ Σ A , pr₁ σ ≡ y
-   g y a = (y , a) , refl
-   fg : ∀ y a → f y (g y a) ≡ a
-   fg y a = refl
-   gf : ∀ y σ → g y (f y σ) ≡ σ
-   gf y ((.y , a) , refl) = refl
-   γ : ∀ y → (Σ σ ꞉ Σ A , pr₁ σ ≡ y) ≡ A y
-   γ y = eqtoid ua _ _ (f y , ((g y , fg y) , (g y , gf y)))
+total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = qinveq g (h , η , ε)
+ where
+  g : (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → X
+  g (y , x , p) = x
 
- transport-map : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
-               → transport (λ - → - → Y) (eqtoid ua X X' e) g
-               ≡ g ∘ eqtofun (≃-sym e)
+  h : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
+  h x = (f x , x , refl)
 
- transport-map {X} {X'} {Y} e g = τ (eqtoid ua X X' e) refl
-  where
-   τ : (p : X ≡ X')
-     → p ≡ eqtoid ua X X' e
-     → transport (λ - → - → Y) p g ≡ g ∘ eqtofun (≃-sym e)
-   τ refl q = ap (λ h → g ∘ h) s
-    where
-     r : idtoeq X X refl ≡ e
-     r = idtoeq X X refl              ≡⟨ ap (idtoeq X X) q ⟩
-         idtoeq X X (eqtoid ua X X e) ≡⟨ idtoeq-eqtoid ua X X e ⟩
-         e                            ∎
-     s : id ≡ eqtofun (≃-sym e)
-     s = ap (λ - → eqtofun (≃-sym -)) r
+  η : ∀ t → h (g t) ≡ t
+  η (_ , x , refl) = refl
 
- Tχ : (σ : Σ X ꞉ 𝓤 ̇ , (X → Y)) → T(χ σ) ≡ σ
- Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                       transport-map (graph-domain-equiv f) pr₁)
+  ε : (x : X) → g (h x) ≡ x
+  ε x = refl
 
- χ-is-equivalence : is-equiv χ
- χ-is-equivalence = (T , χT) , (T , Tχ)
+χ : (Y : 𝓤 ̇ ) → 𝓤 / Y  → (Y → 𝓤 ̇ )
+χ Y (X , f) = fiber f
 
- classification-equivalence : (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃ (Y → 𝓤 ̇ )
- classification-equivalence = χ , χ-is-equivalence
+is-map-classifier : (𝓤 : Universe) → 𝓤 ⁺ ̇
+is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 
+𝕋 : (Y : 𝓤 ̇ ) → (Y → 𝓤 ̇ ) → 𝓤 / Y
+𝕋 Y A = Σ A , pr₁
 
-module subtype-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-       where
+χη : is-univalent 𝓤
+   → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
 
- fe : funext 𝓤 𝓤
- fe = funext-from-univalence ua
+χη ua Y (X , f) = r
+ where
+  e : Σ (fiber f) ≃ X
+  e = total-fiber-is-domain f
 
- χ : (Σ X ꞉ 𝓤 ̇ , X ↪ Y)  → (Y → Ω 𝓤)
- χ (X , f , i) y = fiber f y , i y
+  p : Σ (fiber f) ≡ X
+  p = eqtoid ua (Σ (fiber f)) X e
 
- T : (Y → Ω 𝓤) → Σ X ꞉ 𝓤 ̇ , X ↪ Y
- T P = (Σ y ꞉ Y , P y holds) , pr₁ , pr₁-is-embedding (λ y → holds-is-prop (P y))
+  observation : ⌜ ≃-sym e ⌝ ≡ (λ x → f x , x , refl)
+  observation = refl
 
- χT : (P : Y → Ω 𝓤) → χ(T P) ≡ P
- χT P = dfunext fe' γ
-  where
-   f : ∀ y → χ (T P) y holds → P y holds
-   f y ((.y , h) , refl) = h
-   g : ∀ y → P y holds → χ (T P) y holds
-   g y h = (y , h) , refl
-   γ : (y : Y) → χ (T P) y ≡ P y
-   γ y = Ω-ext-from-univalence ua (f y) (g y)
+  q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-is-pre-comp' ua e pr₁ ⟩
+      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl                            ⟩
+      f                             ∎
 
- transport-embedding : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y) (i : is-embedding g)
-                    → transport (λ - → - ↪ Y) (eqtoid ua X X' e) (g , i)
-                    ≡ g ∘ eqtofun (≃-sym e) , ∘-is-embedding
-                                                 (equivs-are-embeddings (eqtofun (≃-sym e))
-                                                                        (eqtofun-is-an-equiv (≃-sym e))) i
- transport-embedding {X} {X'} {Y} e g i = τ (eqtoid ua X X' e) refl
-  where
-   τ : (p : X ≡ X')
-     → p ≡ eqtoid ua X X' e
-     → transport (λ - → - ↪ Y) p (g , i)
-     ≡ g ∘ eqtofun (≃-sym e) , ∘-is-embedding
-                                  (equivs-are-embeddings (eqtofun (≃-sym e))
-                                                         (eqtofun-is-an-equiv (≃-sym e))) i
-   τ refl q = to-Σ-≡ (ap (λ h → g ∘ h) s ,
-                      being-embedding-is-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
-    where
-     r : idtoeq X X refl ≡ e
-     r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
-     s : id ≡ eqtofun (≃-sym e)
-     s = ap (λ - → eqtofun (≃-sym -)) r
+  r : (Σ (fiber f) , pr₁) ≡ (X , f)
+  r = to-Σ-≡ (p , q)
 
- Tχ : (σ : Σ X ꞉ 𝓤 ̇ , X ↪ Y) → T(χ σ) ≡ σ
- Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                          (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-is-embedding i)
-                         ∙ to-Σ-≡' (being-embedding-is-prop fe fe f _ _)))
+χε : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+   → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ≡ A
 
- χ-is-equivalence : is-equiv χ
- χ-is-equivalence = (T , χT) , (T , Tχ)
+χε ua fe Y A = dfunext fe γ
+ where
+  f : ∀ y → fiber pr₁ y → A y
+  f y ((y , a) , refl) = a
 
- classification-equivalence : (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤)
- classification-equivalence = χ , χ-is-equivalence
+  g : ∀ y → A y → fiber pr₁ y
+  g y a = (y , a) , refl
 
-\end{code}
+  η : ∀ y σ → g y (f y σ) ≡ σ
+  η y ((y , a) , refl) = refl
 
-TODO. Consider a property "green" of types, and call a map green if
-its fibers are all green. Then the maps of Y into green types should
-correspond to the green maps X → Y. This generalizes the above
-situation. In particular, the case green = contractible is of interest
-and describes a previously known situation. Another example is that
-surjections X → Y are in bijection with families
-Y → Σ (Z : 𝓤 ̇ ) → ∥ Z ∥), that is, families of inhabited types. It is
-not necessary that "green" is proposition valued. It can be universe
-valued in general. And then of course retractions X → Y are in
-bijections with families of pointed types.
+  ε : ∀ y a → f y (g y a) ≡ a
+  ε y a = refl
 
-Tom de Jong, September 2019. I implement the above TODO.
+  γ : ∀ y → fiber pr₁ y ≡ A y
+  γ y = eqtoid ua _ _ (qinveq (f y) (g y , η y , ε y))
 
-(There is an alternative solution at
-https://www.cs.bham.ac.uk/~mhe/HoTT-UF-in-Agda-Lecture-Notes/)
+universes-are-map-classifiers : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                              → is-map-classifier 𝓤
 
-Fix type universes 𝓤 and 𝓥 and a type Y : 𝓤 ̇. Consider a property green : 𝓤 → 𝓥.
-If X : 𝓤 ̇ and f : X → Y, then we say that f is a green map if all of its fibers
-are green.
+universes-are-map-classifiers ua fe Y = qinvs-are-equivs (χ Y)
+                                         (𝕋 Y , χη ua Y , χε ua fe Y)
 
-The general theorem says that type of green maps to Y is equivalent to the type
-of green types: Green-map ≃ (Y → Green).
+map-classification : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                   → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
 
-The examples are obtained by specialising to a specific property green:
+map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y
 
- * Every type and map is green.
-   (Σ X ꞉ 𝓤 ̇ , X → Y) ≃ (Y → 𝓤 ̇ )
+_/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+𝓤 /[ P ] Y = Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → P (fiber f y))
 
- * A type is green exactly if it is a subsingleton.
-   Then a map is green exactly if it is an embedding.
-   (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤)
+χ-special : (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ ) → 𝓤 /[ P ] Y  → (Y → Σ P)
+χ-special P Y (X , f , φ) y = fiber f y , φ y
 
- * A type is green exactly if it is inhabited.
-   Then a map is green exactly if it is a surjection.
-   (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ X → Y , is-surjection f )) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , ∥ X ∥))
+is-special-map-classifier : (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ⁺ ⊔ 𝓥 ̇
+is-special-map-classifier {𝓤} P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y)
 
- * A type is green exactly if it is pointed.
-   Then a map is green exactly if it is a retraction.
-   (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
+mc-gives-sc : is-map-classifier 𝓤
+            → (P : 𝓤 ̇ → 𝓥 ̇ ) → is-special-map-classifier P
 
-\begin{code}
-
-module general-classifier
-        {𝓤 𝓥 : Universe}
-        (fe : funext 𝓤 𝓥)
-        (fe' : funext 𝓤 (𝓤 ⁺ ⊔ 𝓥))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-        (green : 𝓤 ̇ → 𝓥 ̇ )
-       where
-
- green-map : {X : 𝓤 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- green-map f = (y : Y) → green (fiber f y)
-
- Green : 𝓤 ⁺ ⊔ 𝓥 ̇
- Green = Σ X ꞉ 𝓤 ̇ , green X
-
- Green-map : 𝓤 ⁺ ⊔ 𝓥 ̇
- Green-map = Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , green-map f
-
- χ : Green-map  → (Y → Green)
- χ (X , f , g) y = (fiber f y) , (g y)
-
- fiber-equiv-≡ : (A : Y → Green) (y : Y) → pr₁ (A y) ≡ fiber pr₁ y
- fiber-equiv-≡ A y =
-  (eqtoid ua (fiber pr₁ y) (pr₁ (A y)) (fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y)) ⁻¹
-
- T : (Y → Green) → Green-map
- T A = Σ (pr₁ ∘ A) , pr₁ , g
-  where
-   g : green-map pr₁
-   g y = transport green (fiber-equiv-≡ A y) (pr₂ (A y))
-
- χT : (A : Y → Green) → χ(T A) ≡ A
- χT A = dfunext fe' γ
-  where
-   γ : (y : Y) → χ (T A) y ≡ A y
-   γ y = to-Σ-≡ ((a ⁻¹) , b)
-    where
-     a : pr₁ (A y) ≡ pr₁ (χ (T A) y)
-     a = fiber-equiv-≡ A y
-     b = transport green (a ⁻¹) (pr₂ (χ (T A) y))               ≡⟨ refl ⟩
-         transport green (a ⁻¹) (transport green a (pr₂ (A y))) ≡⟨ i ⟩
-         transport green (a ∙ a ⁻¹) (pr₂ (A y))                 ≡⟨ ii ⟩
-         transport green refl (pr₂ (A y))                       ≡⟨ refl ⟩
-         pr₂ (A y)                                              ∎
-      where
-       i  = (transport-comp green a (a ⁻¹)) ⁻¹
-       ii = ap (λ - → transport green - (pr₂ (A y))) (trans-sym' a)
-
- green-maps-are-closed-under-precomp-with-equivs : {X X' : 𝓤 ̇ } (e : X' ≃ X)
-                                                   {f : X → Y}
-                                                 → green-map f
-                                                 → green-map (f ∘ eqtofun e)
- green-maps-are-closed-under-precomp-with-equivs e {f} g y =
-  transport green p (g y)
+mc-gives-sc {𝓤} s P Y = γ
+ where
+  e = (𝓤 /[ P ] Y)                               ≃⟨ a ⟩
+      (Σ σ ꞉ 𝓤 / Y , ((y : Y) → P ((χ Y) σ y)))  ≃⟨ b ⟩
+      (Σ A ꞉ (Y → 𝓤 ̇ ), ((y : Y) → P (A y)))     ≃⟨ c ⟩
+      (Y → Σ P)                                  ■
    where
-    p : fiber f y ≡ fiber (f ∘ eqtofun e) y
-    p = (eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f y)) ⁻¹
+    a = ≃-sym Σ-assoc
+    b = Σ-change-of-variable (λ A → Π (P ∘ A)) (χ Y) (s Y)
+    c = ≃-sym ΠΣ-distr-≃
 
- precomp-with-≃-refl-green-map : {X : 𝓤 ̇ } (f : X → Y) (g : green-map f)
-                           → green-maps-are-closed-under-precomp-with-equivs
-                              (≃-refl X) g
-                             ≡ g
- precomp-with-≃-refl-green-map {X} f g = dfunext fe γ
-  where
-   γ : (y : Y) → green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y ≡ g y
-   γ y = green-maps-are-closed-under-precomp-with-equivs (≃-refl X) g y         ≡⟨ refl ⟩
-         transport green ((eqtoid ua _ _ (≃-refl (fiber f y))) ⁻¹) (g y)        ≡⟨ i ⟩
-         g y                                                                    ∎
-    where
-     i = ap (λ - → transport green (- ⁻¹) (g y)) (eqtoid-refl ua (fiber f y))
+  observation : χ-special P Y ≡ ⌜ e ⌝
+  observation = refl
 
- transport-green-map-eqtoid : {X X' : 𝓤 ̇ } (e : X' ≃ X) (f : X → Y)
-                              (g : green-map f)
-                            → transport (λ - → Σ h ꞉ (- → Y) , green-map h)
-                               ((eqtoid ua X' X e) ⁻¹) (f , g)
-                              ≡
-                              f ∘ (eqtofun e) ,
-                               green-maps-are-closed-under-precomp-with-equivs e g
- transport-green-map-eqtoid {X} {X'} = JEq ua X' E γ X
-  where
-   B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-   B Z = Σ h ꞉ (Z → Y) , green-map h
-   E : (Z : 𝓤 ̇ ) → X' ≃ Z → 𝓤 ⊔ 𝓥 ̇
-   E Z e = (f : Z → Y) → (g : green-map f)
-         → transport B ((eqtoid ua X' Z e) ⁻¹) (f , g)
-           ≡ f ∘ (eqtofun e) , green-maps-are-closed-under-precomp-with-equivs e g
-   γ : E X' (≃-refl X')
-   γ f g = transport B ((eqtoid ua X' X' (≃-refl X')) ⁻¹) (f , g)            ≡⟨ i ⟩
-           f , g                                                             ≡⟨ ii ⟩
-           f , green-maps-are-closed-under-precomp-with-equivs (≃-refl X') g ∎
-    where
-     i  = ap (λ - → transport B (- ⁻¹) (f , g)) (eqtoid-refl ua X')
-     ii = to-Σ-≡ (refl , ((precomp-with-≃-refl-green-map f g) ⁻¹))
+  γ : is-equiv (χ-special P Y)
+  γ = ⌜⌝-is-equiv e
 
- Tχ : (f : Green-map) → T(χ f) ≡ f
- Tχ (X , f , g) = to-Σ-≡ (a , (to-Σ-≡ (b , c)))
-  where
-   X' : 𝓤 ̇
-   X' = pr₁ (T (χ (X , f , g)))
-   f' : X' → Y
-   f' = pr₁ (pr₂ (T (χ (X , f , g))))
-   g' : green-map f'
-   g' = pr₂ (pr₂ (T (χ (X , f , g))))
-   e : X ≃ X'
-   e = sum-of-fibers X Y f
-   a : X' ≡ X
-   a = (eqtoid ua X X' e) ⁻¹
-   B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-   B Z = Σ h ꞉ (Z → Y), green-map h
-   t : transport B a (f' , g') ≡
-       (f' ∘ eqtofun e) , (green-maps-are-closed-under-precomp-with-equivs e g')
-   t = transport-green-map-eqtoid e f' g'
-   t₁ : pr₁ (transport B a (f' , g')) ≡ f' ∘ eqtofun e
-   t₁ = pr₁ (from-Σ-≡ t)
-   t₂ : transport green-map t₁ (pr₂ (transport B a (f' , g'))) ≡
-        green-maps-are-closed-under-precomp-with-equivs e g'
-   t₂ = pr₂ (from-Σ-≡ t)
-   b : pr₁ (transport B a (f' , g')) ≡ f
-   b = pr₁ (transport B a (f' , g')) ≡⟨ t₁ ⟩
-       f' ∘ eqtofun e                ≡⟨ refl ⟩
-       f                             ∎
-   c : transport green-map b (pr₂ (transport B a (f' , g')))  ≡ g
-   c = transport green-map b (pr₂ (transport B a (f' , g')))  ≡⟨ refl ⟩
-       transport green-map t₁ (pr₂ (transport B a (f' , g'))) ≡⟨ t₂ ⟩
-       green-maps-are-closed-under-precomp-with-equivs e g' ≡⟨ dfunext fe u ⟩
-       g ∎
-    where
-     u : (y : Y) → green-maps-are-closed-under-precomp-with-equivs e g' y ≡ g y
-     u y = green-maps-are-closed-under-precomp-with-equivs e g' y ≡⟨ refl ⟩
-           transport green (p ⁻¹) (g' y)                          ≡⟨ refl ⟩
-           transport green (p ⁻¹) (transport green (q ⁻¹) (g y))  ≡⟨ i ⟩
-           transport green (q ⁻¹ ∙ p ⁻¹) (g y)                    ≡⟨ ii ⟩
-           g y                                                    ∎
-       where
-        p : fiber (f' ∘ eqtofun e) y ≡ fiber f' y
-        p = eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f' y)
-        q : fiber f' y ≡ fiber f y
-        q = eqtoid ua (fiber f' y) (fiber f y) (fiber-equiv y)
-        i  = (transport-comp green (q ⁻¹) (p ⁻¹)) ⁻¹
-        ii = ap (λ - → transport green - (g y)) v
-         where
-          v = q ⁻¹ ∙ p ⁻¹ ≡⟨ ⁻¹-contravariant p q ⟩
-              (p ∙ q) ⁻¹  ≡⟨ ap (_⁻¹) w ⟩
-              refl        ∎
-           where
-            w : p ∙ q ≡ refl
-            w = eqtoid ua _ _ ϕ ∙ eqtoid ua _ _ ψ ≡⟨ eqtoid-comp ua _ _ ⟩
-                eqtoid ua _ _ (ϕ ● ψ)             ≡⟨ ap (eqtoid ua _ _) ϕψ ⟩
-                eqtoid ua _ _ (≃-refl _)          ≡⟨ eqtoid-refl ua _ ⟩
-                refl                              ∎
-             where
-              ϕ : fiber (f' ∘ eqtofun e) y ≃ fiber f' y
-              ϕ = precomposition-with-equiv-does-not-change-fibers e f' y
-              ψ : fiber pr₁ y ≃ pr₁ (χ (X , f , g) y)
-              ψ = fiber-equiv y
-              ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
-              ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
-                           being-equiv-is-prop'' fe'' id _ (id-is-equiv _))
-               where
-                ϕψ' : (z : fiber (f' ∘ eqtofun e) y)
-                   → eqtofun (ϕ ● ψ) z ≡ z
-                ϕψ' (x , refl) = refl
-                fe'' : funext 𝓤 𝓤
-                fe'' = funext-from-univalence ua
+χ-special-is-equiv : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                   → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
+                   → is-equiv (χ-special P Y)
 
- χ-is-equivalence : is-equiv χ
- χ-is-equivalence = (T , χT) , (T , Tχ)
+χ-special-is-equiv {𝓤} ua fe P Y = mc-gives-sc (universes-are-map-classifiers ua fe) P Y
 
- classification-equivalence : Green-map ≃ (Y → Green)
- classification-equivalence = χ , χ-is-equivalence
+special-map-classifier : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+                       → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
+                       → 𝓤 /[ P ] Y ≃ (Y → Σ P)
 
-\end{code}
+special-map-classifier {𝓤} ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y
 
-We now can get type-classifier above as a special case of this more
-general situation:
+Ω-is-subtype-classifier : Univalence
+                        → (Y : 𝓤 ̇ ) → Subtypes Y ≃ (Y → Ω 𝓤)
 
-\begin{code}
+Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
+                                  (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
+                                  is-subsingleton
 
-module type-classifier-bis
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
+subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes Y)
+subtypes-form-set {𝓤} ua Y = equiv-to-set
+                              (Ω-is-subtype-classifier ua Y)
+                              (powersets-are-sets' ua)
+
+
+retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
+retractions-into {𝓤} Y = Σ X ꞉ 𝓤 ̇ , Y ◁ X
+
+pointed-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇ , X
+
+retraction-classifier : Univalence
+                      → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
+retraction-classifier {𝓤} ua Y =
+ retractions-into Y                                              ≃⟨ i      ⟩
+ ((𝓤 /[ id ] Y))                                                 ≃⟨ ii     ⟩
+ (Y → pointed-types 𝓤)                                           ■
+ where
+  i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
+  ii = special-map-classifier (ua 𝓤)
+        (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
+        id Y
+
+module surjection-classifier
+         (ua : Univalence)
        where
 
- open general-classifier (funext-from-univalence ua) fe' ua Y (λ (X : 𝓤 ̇ ) → 𝟙)
+  open import UF-PropTrunc
 
- type-classification-equivalence : (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃ (Y → 𝓤 ̇ )
- type-classification-equivalence = (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃⟨ ϕ ⟩
-                                   Green-map ≃⟨ classification-equivalence ⟩
-                                   (Y → Green) ≃⟨ ψ ⟩
-                                   (Y → 𝓤 ̇ ) ■
-  where
-   ϕ : (Σ X ꞉ 𝓤 ̇ , (X → Y)) ≃ Green-map
-   ϕ = qinveq α (β , a , b)
-    where
-     α : (Σ X ꞉ 𝓤 ̇ , (X → Y)) → Green-map
-     α (X , f) = X , (f , (λ y → *))
-     β : Green-map → (Σ X ꞉ 𝓤 ̇ , (X → Y))
-     β (X , f , g) = X , f
-     a : (p : Σ (λ X → X → Y)) → β (α p) ≡ p
-     a (X , f) = refl
-     b : (q : Green-map) → α (β q) ≡ q
-     b (X , f , g) = to-Σ-≡ (refl ,
-                             to-Σ-≡ (refl ,
-                                     dfunext (funext-from-univalence ua)
-                                      (λ y → 𝟙-is-prop * (g y))))
-   ψ : (Y → Green) ≃ (Y → 𝓤 ̇ )
-   ψ = →cong fe' fe' (≃-refl Y) γ
-    where
-     γ : Green ≃ 𝓤 ̇
-     γ = qinveq pr₁ ((λ X → (X , * )) , c , λ x → refl)
-      where
-       c : (p : Σ (λ X → 𝟙)) → pr₁ p , * ≡ p
-       c (x , *) = refl
+  module _ (pt : propositional-truncations-exist) where
 
-\end{code}
+   open PropositionalTruncation pt public
+   open import UF-ImageAndSurjection
+   open ImageAndSurjection pt public
 
-And we also get the other examples in the TODO:
 
-\begin{code}
 
-module subsingleton-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-       where
+   _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+   X ↠ Y = Σ f ꞉ (X → Y), is-surjection f
 
- open general-classifier (funext-from-univalence ua) fe' ua Y
-                         (λ (X : 𝓤 ̇ ) → is-prop X)
+   surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
+   surjections-into {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↠ Y
 
- subsingleton-classification-equivalence : (Σ X ꞉ 𝓤 ̇ , X ↪ Y) ≃ (Y → Ω 𝓤 )
- subsingleton-classification-equivalence = classification-equivalence
+   inhabited-types : (𝓤 : Universe) → 𝓤 ⁺ ̇
+   inhabited-types 𝓤 = Σ X ꞉ 𝓤 ̇ , ∥ X ∥
 
-module singleton-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-       where
-
- open import UF-Subsingletons-FunExt
- open general-classifier (funext-from-univalence ua) fe' ua Y
-                         (λ (X : 𝓤 ̇ ) → is-singleton X)
-
- singleton-classification-equivalence : (Σ X ꞉ 𝓤 ̇ , X ≃ Y) ≃ 𝟙 {𝓤}
- singleton-classification-equivalence =
-  (Σ X ꞉ 𝓤 ̇ , X ≃ Y)                            ≃⟨ i ⟩
-  (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y), is-vv-equiv f)) ≃⟨ ii ⟩
-  (Y → (Σ X ꞉ 𝓤 ̇ , is-singleton X))             ≃⟨ iii ⟩
-  (Y → 𝟙)                                             ≃⟨ →𝟙 fe ⟩
-  𝟙                                                   ■
-   where
-    fe : funext 𝓤 𝓤
-    fe = funext-from-univalence ua
-
-    i   = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) →
-           logically-equivalent-props-are-equivalent
-            (being-equiv-is-prop'' fe f)
-            (Π-is-prop fe (λ y → being-singleton-is-prop fe))
-            (equivs-are-vv-equivs f)
-            (vv-equivs-are-equivs f)))
-    ii  = classification-equivalence
-    iii = →cong fe fe' (≃-refl Y) ψ
-     where
-      ψ : Σ (λ X → is-singleton X) ≃ 𝟙
-      ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop *))
-       where
-       a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
-       a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
-                           (being-singleton-is-prop fe _ s))
-
-open import UF-PropTrunc
-
-module inhabited-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-        (pt : propositional-truncations-exist)
-       where
-
- open import UF-ImageAndSurjection
- open ImageAndSurjection pt
- open PropositionalTruncation pt
- open general-classifier (funext-from-univalence ua) fe' ua Y
-                         (λ (X : 𝓤 ̇ ) → ∥ X ∥)
-
- inhabited-classification-equivalence :
-  (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y), is-surjection f )) ≃
-   (Y → (Σ X ꞉ 𝓤 ̇ , ∥ X ∥))
- inhabited-classification-equivalence = classification-equivalence
-
-module pointed-classifier
-        {𝓤 : Universe}
-        (fe' : funext 𝓤 (𝓤 ⁺))
-        (ua : is-univalent 𝓤)
-        (Y : 𝓤 ̇ )
-       where
-
- open import UF-Retracts
- open general-classifier (funext-from-univalence ua) fe' ua Y (λ (X : 𝓤 ̇ ) → X)
-
- pointed-classification-equivalence :
-  (Σ X ꞉ 𝓤 ̇ , Y ◁ X) ≃ (Y → (Σ X ꞉ 𝓤 ̇  , X))
- pointed-classification-equivalence =
-  (Σ X ꞉ 𝓤 ̇ , Y ◁ X)                                  ≃⟨ i ⟩
-  (Σ X ꞉ 𝓤 ̇ , (Σ f ꞉ (X → Y) , ((y : Y) → fiber f y))) ≃⟨ ii ⟩
-  (Y → (Σ X ꞉ 𝓤 ̇ , X))                                ■
-   where
-    i  = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) → retract-pointed-fibers))
-    ii = classification-equivalence
+   surjection-classifier : Univalence
+                         → (Y : 𝓤 ̇ )
+                         → surjections-into Y ≃ (Y → inhabited-types 𝓤)
+   surjection-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
+                                   (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
+                                   ∥_∥
 
 \end{code}

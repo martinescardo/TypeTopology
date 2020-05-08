@@ -99,7 +99,7 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
                  (λ r → resize-is-prop ρ (resize ρ Q j) (resize-is-prop ρ Q j) _ r) ,
                  (λ q → j _ q))
       b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ≡ g ∘ ⌜ a ⌝
-      b = ap (g ∘_) (dfunext (funext-from-univalence ua) (λ r → j _ (⌜ a ⌝ r)))
+      b = ap (g ∘_) (dfunext (univalence-gives-funext ua) (λ r → j _ (⌜ a ⌝ r)))
     γφ : (m : L) → γ (φ m) ≡ m
     γφ (P , f , i) = ⋍-gives-≡ 𝓤 ua' (a , b)
      where
@@ -109,7 +109,7 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
                  (λ r → resize-is-prop ρ (resize ρ P i) (resize-is-prop ρ P i) _ r) ,
                  (λ q → i _ q))
       b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ≡ f ∘ ⌜ a ⌝
-      b = ap (f ∘_) (dfunext (funext-from-univalence ua') (λ r → i _ (⌜ a ⌝ r)))
+      b = ap (f ∘_) (dfunext (univalence-gives-funext ua') (λ r → i _ (⌜ a ⌝ r)))
 
 \end{code}
 

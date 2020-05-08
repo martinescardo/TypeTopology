@@ -209,6 +209,7 @@ import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
+import UF-Classifiers-Old -- Still used by some modules
 import UF-Connected
 import UF-Embeddings
 import UF-EquivalenceExamples
@@ -226,6 +227,7 @@ import UF-Knapp-UA
 import UF-KrausLemma
 import UF-LeftCancellable
 import UF-Miscelanea
+import UF-Powerset
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-Quotient
@@ -235,7 +237,6 @@ import UF-Size
 import UF-StructureIdentityPrinciple  -- Old, but still used in some modules.
 import UF-SIP                         -- New, better, version.
 import UF-SIP-Examples
-import UF-SubsetIdentity
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
 import UF-UA-FunExt

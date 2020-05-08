@@ -116,7 +116,7 @@ module magma-identity {𝓤 : Universe} where
    characterization-of-≡-with-axioms ua
      ∞-magma-identity.sns-data
      (λ X s → is-set X)
-     (λ X s → being-set-is-prop (funext-from-univalence ua))
+     (λ X s → being-set-is-prop (univalence-gives-funext ua))
 
 
 module pointed-type-identity {𝓤 : Universe} where
@@ -178,7 +178,7 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
 module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  fe : funext 𝓤 𝓤
- fe = funext-from-univalence ua
+ fe = univalence-gives-funext ua
 
  open sip
  open sip-join
@@ -256,7 +256,7 @@ module associative-∞-magma-identity
 
  abstract
    fe : funext 𝓤 𝓤
-   fe = funext-from-univalence ua
+   fe = univalence-gives-funext ua
 
  associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
  associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
@@ -601,7 +601,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
  open sip-join
 
  fe : ∀ {𝓥} {𝓦} → funext 𝓥 𝓦
- fe {𝓥} {𝓦} = funext-from-univalence' 𝓥 𝓦 (ua 𝓥) (ua (𝓥 ⊔ 𝓦))
+ fe {𝓥} {𝓦} = univalence-gives-funext' 𝓥 𝓦 (ua 𝓥) (ua (𝓥 ⊔ 𝓦))
 
  rng-structure : 𝓤 ̇ → 𝓤 ̇
  rng-structure X = (X → X → X) × (X → X → X)
@@ -771,7 +771,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
    (λ x → Π-is-prop fe
    (λ y → i {x · y} {y · x}))
 
- open import UF-SubsetIdentity 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+ open import UF-Powerset
 
  is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
  is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)

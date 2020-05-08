@@ -176,7 +176,7 @@ points are mapped to equal points:
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe 𝓤 (𝓥 ⁺))
                                       (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                                                     being-a-prop-is-prop (fe 𝓥 𝓥) _ _)) ,
+                                                     being-prop-is-prop (fe 𝓥 𝓥) _ _)) ,
                                    ∥∥-is-prop _ _)
 
 \end{code}
@@ -236,7 +236,7 @@ universe 𝓦.
         p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
       γ : (x' : X/≈) → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)))
-      γ x' = being-a-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+      γ x' = being-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
    k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step

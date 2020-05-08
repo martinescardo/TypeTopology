@@ -121,7 +121,7 @@ embedding.
       ψ ∘ g                                                 ≡⟨ dfunext fe' ε ⟩
       φ     ∎
   e : Q , ψ , j ≡ P , φ , i
-  e = to-Σ-≡ (a , to-×-≡ d (being-a-prop-is-prop fe _ i))
+  e = to-Σ-≡ (a , to-×-≡ d (being-prop-is-prop fe _ i))
 
 ⊑-anti : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
        → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
@@ -232,7 +232,7 @@ to-from fe l m ((f , δ) , g) = b
                    → (l m : 𝓛 X)
                    → (l ⊑ m) × (is-defined m → is-defined l) ≃ (l ≡ m)
 ⊑-anti-equiv-lemma ua fe l m =
-  (⊑-anti-equiv-lemma' (funext-from-univalence ua) l m)
+  (⊑-anti-equiv-lemma' (univalence-gives-funext ua) l m)
   ● (≃-sym (𝓛-Id· ua fe l m))
 
 ⊑-anti-equiv : is-univalent 𝓣 → funext 𝓣 𝓤
@@ -257,10 +257,10 @@ to-from fe l m ((f , δ) , g) = b
      uv (((f , δ) , h) , ((g , ε) , k)) = t
       where
        r : g ≡ h
-       r = dfunext (funext-from-univalence ua)
+       r = dfunext (univalence-gives-funext ua)
                    (λ p → being-defined-is-prop l (g p) (h p))
        s : f ≡ k
-       s = dfunext (funext-from-univalence ua)
+       s = dfunext (univalence-gives-funext ua)
                    (λ p → being-defined-is-prop m (f p) (k p))
        t : ((f , δ) , g) , (g , ε) , f ≡ ((f , δ) , h) , (g , ε) , k
        t = ap₂ (λ -₀ -₁ → ((f , δ) , -₀) , (g , ε) , -₁) r s
@@ -348,7 +348,7 @@ Using this we have the following, as promised:
  (is-defined l → l ≡ m)                                                ■
  where
   fe : funext 𝓣 𝓣
-  fe = funext-from-univalence ua
+  fe = univalence-gives-funext ua
   s : (is-defined l → is-defined m → is-defined l) ≃ 𝟙 {𝓤}
   s = singleton-≃-𝟙 ((λ d e → d) ,
                      Π-is-prop fe
@@ -472,7 +472,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
        where
 
  pe : propext 𝓣
- pe = propext-from-univalence ua
+ pe = univalence-gives-propext ua
 
  is-𝓛-equiv-charac : (l m : 𝓛 X) (α : l ⊑ m)
                    → is-𝓛-equiv l m α ≃ (is-defined m → is-defined l)

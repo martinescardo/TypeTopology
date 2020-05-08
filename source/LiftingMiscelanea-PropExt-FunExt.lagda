@@ -55,7 +55,7 @@ module _ {𝓤 : Universe}
         (identifications-of-props-are-props pe fe (is-defined m)
          (being-defined-is-prop m) (is-defined l))
         (λ d → ×-is-set (Π-is-set fe λ _ → i)
-                        (props-are-sets (being-a-prop-is-prop fe)))
+                        (props-are-sets (being-prop-is-prop fe)))
 
  \end{code}
 

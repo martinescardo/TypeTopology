@@ -86,7 +86,7 @@ pbf f (Y , γ) = pullback f γ , ppr₁
 -}
 
 
-open import UF-Classifiers
+open import UF-Classifiers-Old
 open import UF-Equiv
 open import UF-FunExt
 open import UF-Univalence

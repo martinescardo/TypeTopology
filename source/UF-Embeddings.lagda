@@ -25,7 +25,7 @@ is-embedding f = ∀ y → is-prop(fiber f y)
 being-embedding-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                           → is-prop(is-embedding f)
-being-embedding-is-prop fe fe' f = Π-is-prop fe (λ x → being-a-prop-is-prop fe')
+being-embedding-is-prop fe fe' f = Π-is-prop fe (λ x → being-prop-is-prop fe')
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → ((x : X) → is-prop (fiber f (f x)))

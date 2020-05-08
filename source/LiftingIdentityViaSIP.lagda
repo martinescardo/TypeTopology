@@ -37,7 +37,7 @@ l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ≡ value m ∘ ⌜ e
         𝓣 (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤) 𝓣 ua
         (λ P → P → X)
         (λ P s → is-prop P)
-        (λ P s → being-a-prop-is-prop (funext-from-univalence ua))
+        (λ P s → being-prop-is-prop (univalence-gives-funext ua))
         (λ {l m (f , e) → pr₂ l ≡ pr₂ m ∘ f})
         (λ l → refl)
         (λ P ε δ → id)

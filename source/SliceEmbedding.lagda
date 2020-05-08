@@ -28,7 +28,7 @@ open import SliceIdentityViaSIP 𝓣
   where
    a : (𝟙 ≃ 𝟙) ≃ 𝟙
    a = (𝟙 ≃ 𝟙) ≃⟨ ≃-sym (univalence-≃ ua 𝟙 𝟙) ⟩
-       (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (funext-from-univalence ua) (propext-from-univalence ua) 𝟙-is-prop ⟩
+       (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (univalence-gives-funext ua) (univalence-gives-propext ua) 𝟙-is-prop ⟩
        𝟙       ■
    b : (x y : X) → ((λ (_ : 𝟙) → x) ≡ (λ (_ : 𝟙) → y)) ≃ (x ≡ y)
    b x y = ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩

@@ -235,7 +235,7 @@ fe : FunExt
 fe = FunExt-from-Univalence ua
 
 pe : PropExt
-pe 𝓤 = propext-from-univalence (ua 𝓤)
+pe 𝓤 = univalence-gives-propext (ua 𝓤)
 
 import InjectiveTypes
 module blackboard = InjectiveTypes fe

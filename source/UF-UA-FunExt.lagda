@@ -25,8 +25,8 @@ open import UF-FunExt
 open import UF-FunExt-from-Naive-FunExt
 open import UF-Equiv-FunExt
 
-naive-funext-from-univalence : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
-naive-funext-from-univalence {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
+naive-univalence-gives-funext : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
+naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
  where
   Δ = Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≡ y₁
 
@@ -71,8 +71,8 @@ Added 19th May 2018:
 
 \begin{code}
 
-funext-from-univalence : is-univalent 𝓤 → funext 𝓤 𝓤
-funext-from-univalence ua = naive-funext-gives-funext (naive-funext-from-univalence ua)
+univalence-gives-funext : is-univalent 𝓤 → funext 𝓤 𝓤
+univalence-gives-funext ua = naive-funext-gives-funext (naive-univalence-gives-funext ua)
 
 \end{code}
 
@@ -80,31 +80,31 @@ Added 27 Jun 2018:
 
 \begin{code}
 
-funext-from-univalence' : ∀ 𝓤 𝓥 → is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 𝓥
-funext-from-univalence' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
-                                       (naive-funext-from-univalence ua')
-                                       (naive-funext-from-univalence ua)
+univalence-gives-funext' : ∀ 𝓤 𝓥 → is-univalent 𝓤 → is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 𝓥
+univalence-gives-funext' 𝓤 𝓥 ua ua' = naive-funext-gives-funext'
+                                       (naive-univalence-gives-funext ua')
+                                       (naive-univalence-gives-funext ua)
 
 FunExt-from-Univalence : Univalence → FunExt
-FunExt-from-Univalence ua 𝓤 𝓥 = funext-from-univalence' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
+FunExt-from-Univalence ua 𝓤 𝓥 = univalence-gives-funext' 𝓤 𝓥 (ua 𝓤) (ua (𝓤 ⊔ 𝓥))
 
 funext-from-successive-univalence : ∀ 𝓤 → is-univalent 𝓤 → is-univalent (𝓤 ⁺) → funext 𝓤 (𝓤 ⁺)
-funext-from-successive-univalence 𝓤 = funext-from-univalence' 𝓤 (𝓤 ⁺)
+funext-from-successive-univalence 𝓤 = univalence-gives-funext' 𝓤 (𝓤 ⁺)
 
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 Ω-ext-from-univalence : is-univalent 𝓤
                         → {p q : Ω 𝓤} → (p holds → q holds) → (q holds → p holds) → p ≡ q
-Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-ext (funext-from-univalence ua) (propext-from-univalence ua)
+Ω-ext-from-univalence {𝓤} ua {p} {q} = Ω-ext (univalence-gives-funext ua) (univalence-gives-propext ua)
 
 \end{code}
 
-Added July 2019. Used in UF-Classifiers.
+Added July 2019. Used in UF-Classifiers-Old.
 
 It is here, because it is quite a general result, but in cannot be in
 UF-Univalence or UF-Equiv or UF-Equiv-FunExt, because of cyclic module
-dependencies. In particular, we use funext-from-univalence, which is defined
+dependencies. In particular, we use univalence-gives-funext, which is defined
 here.
 
 Alternatively, one could add (fe : funext 𝓤 𝓤) as an additional hypothesis and
@@ -129,7 +129,7 @@ eqtoid-comp {𝓤} ua {X} {Y} {Z} f =
                       (⌜⌝-is-equiv (f ● ≃-refl Y)))
       where
        fe : funext 𝓤 𝓤
-       fe = funext-from-univalence ua
+       fe = univalence-gives-funext ua
        l : ⌜ f ⌝ ≡ ⌜ f ● ≃-refl Y ⌝
        l = dfunext fe (λ x → refl)
 

@@ -680,7 +680,7 @@ module /-extension-is-embedding-special-case
  open import UF-UA-FunExt
 
  feuu : funext 𝓤 𝓤
- feuu = funext-from-univalence ua
+ feuu = univalence-gives-funext ua
 
  r :  𝓤 ̇ → (P → 𝓤 ̇ )
  r X p = X
@@ -830,7 +830,7 @@ module /-extension-is-embedding
  open import UF-UA-FunExt
 
  feuu : funext 𝓤 𝓤
- feuu = funext-from-univalence ua
+ feuu = univalence-gives-funext ua
 
  s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇ )
  s f = f / j
@@ -924,7 +924,7 @@ module ∖-extension-is-embedding
  open import UF-UA-FunExt
 
  feuu : funext 𝓤 𝓤
- feuu = funext-from-univalence ua
+ feuu = univalence-gives-funext ua
 
  s : (X → 𝓤 ̇ ) → (Y → 𝓤 ̇ )
  s f = f ∖ j
@@ -1048,7 +1048,7 @@ whereas the injectivity of the universe requires full univalence.
   j : is-prop Q
   j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
   c : (p : P) → Q , j ≡ f p
-  c p = to-Σ-≡ (t , being-a-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
+  c p = to-Σ-≡ (t , being-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
    where
       g : Q → f p holds
       g q = q p
@@ -1275,8 +1275,8 @@ free 𝓛-algebras are injective.
  free-𝓛-algebra-ainjective : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
                            → (X : 𝓤 ̇ ) → ainjective-type (𝓛 X) 𝓤 𝓤
  free-𝓛-algebra-ainjective ua fe X = 𝓛-alg-ainjective
-                                       (propext-from-univalence ua)
-                                       (funext-from-univalence ua)
+                                       (univalence-gives-propext ua)
+                                       (univalence-gives-funext ua)
                                        fe
                                        (𝓛 X)
                                        (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
@@ -1290,7 +1290,7 @@ injective types are retracts of underlying objects of free algebras:
  ainjective-is-retract-of-free-𝓛-algebra : (D : 𝓤 ̇ ) → is-univalent 𝓤
                                          → ainjective-type D 𝓤 (𝓤 ⁺) → retract D of (𝓛 D)
  ainjective-is-retract-of-free-𝓛-algebra D ua = embedding-retract D (𝓛 D) η
-                                                  (η-is-embedding' 𝓤 D ua (funext-from-univalence ua))
+                                                  (η-is-embedding' 𝓤 D ua (univalence-gives-funext ua))
 \end{code}
 
 With propositional resizing, the injective types are precisely the

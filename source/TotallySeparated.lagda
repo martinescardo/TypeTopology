@@ -817,7 +817,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → apart x z ≡ apart y z
-    h z = to-Σ-≡ (g z , being-a-prop-is-prop (fe 𝓥 𝓥) _ _)
+    h z = to-Σ-≡ (g z , being-prop-is-prop (fe 𝓥 𝓥) _ _)
 
 \end{code}
 
@@ -1050,7 +1050,7 @@ apartness on it.
          p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
        γ : (x' : X') → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)))
-       γ x' = being-a-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+       γ x' = being-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
     k : (x' : X') → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step

@@ -132,7 +132,7 @@ module _ {𝓤 𝓣 : Universe}
     ×-is-prop  (being-set-is-prop fe)
     (×-is-prop (Π-is-prop fe
                  (λ (x : D) → Π-is-prop fe
-                                (λ (y : D) → being-a-prop-is-prop fe)))
+                                (λ (y : D) → being-prop-is-prop fe)))
     (×-is-prop (Π-is-prop fe (λ (x : D) → p x x))
     (×-is-prop (Π-is-prop fe
                  (λ (x : D) → Π-is-prop fe

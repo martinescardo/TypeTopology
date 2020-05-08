@@ -316,7 +316,7 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  open import UF-EquivalenceExamples
 
  fe : funext 𝓤 𝓤
- fe = funext-from-univalence ua
+ fe = univalence-gives-funext ua
 
  fact'' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
         → ((X , _·_) ≡ (Y , _⋆_))
@@ -550,7 +550,7 @@ module monoids (𝓤 : Universe) (ua : is-univalent 𝓤) where
  open import UF-UA-FunExt
 
  fe : funext 𝓤 𝓤
- fe = funext-from-univalence ua
+ fe = univalence-gives-funext ua
 
 \end{code}
 

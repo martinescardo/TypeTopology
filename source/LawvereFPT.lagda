@@ -387,7 +387,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
      b x₀ h = ∣ refl , h ∣
      γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) , ∥∥-is-prop ≡ φ x₀
      γ x₀ = to-Σ-≡ (pe ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
-                     being-a-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
+                     being-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  usr-lemma : {A : 𝓤 ̇ } (X : A → 𝓥 ̇ )
            → funext 𝓥 ((𝓤 ⊔ 𝓦)⁺) → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦) → propext (𝓤 ⊔ 𝓦)

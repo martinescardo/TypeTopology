@@ -218,7 +218,7 @@ type injectivity purposes).
   r : f ≡ λ (_ : P) → f p
   r = dfunext fe' (λ p' → ap f (i p' p))
   s : P ≡ 𝟙 → ∐ {P} i f ≡ ∐ {𝟙} 𝟙-is-prop (λ (_ : 𝟙) → f p)
-  s refl = ap₂ ∐ (being-a-prop-is-prop fe i 𝟙-is-prop) r
+  s refl = ap₂ ∐ (being-prop-is-prop fe i 𝟙-is-prop) r
   t : P ≡ 𝟙
   t = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
   γ : ∐ i f ≡ f p
@@ -284,7 +284,7 @@ change-of-variables-in-join : {X : 𝓤 ̇ } (∐ : joinop X)
 change-of-variables-in-join ∐ P i Q j h k f ua = cd (eqtoid ua Q P e) ∙ ap (λ - → ∐ j (f ∘ -)) a
  where
   cd : (r : Q ≡ P) → ∐ i f ≡ ∐ j (f ∘ Idtofun r)
-  cd refl = ap (λ - → ∐ - f) (being-a-prop-is-prop (funext-from-univalence ua) i j)
+  cd refl = ap (λ - → ∐ - f) (being-prop-is-prop (univalence-gives-funext ua) i j)
   e : Q ≃ P
   e = qinveq k (h , ((λ q → j (h (k q)) q) , λ p → i (k (h p)) p))
   a : Idtofun (eqtoid ua Q P e) ≡ k
@@ -393,11 +393,11 @@ universe-is-algebra-Π : is-univalent 𝓣 → 𝓛-alg (𝓣 ̇ )
 universe-is-algebra-Π ua = prod , k , ι
  where
   fe : funext 𝓣 𝓣
-  fe = funext-from-univalence ua
+  fe = univalence-gives-funext ua
   prod : {P : 𝓣 ̇ } → is-prop P → (P → 𝓣 ̇ ) → 𝓣 ̇
   prod {P} i = Π
   k : (X : 𝓣 ̇ ) → Π (λ p → X) ≡ X
-  k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (funext-from-univalence ua)))
+  k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (univalence-gives-funext ua)))
   ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
       (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
     → Π f ≡ Π (λ p → Π (λ q → f (p , q)))

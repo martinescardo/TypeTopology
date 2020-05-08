@@ -9,6 +9,7 @@ module UF where
 import UF-Base
 import UF-Choice
 import UF-Classifiers
+import UF-Classifiers-Old
 import UF-Embeddings
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt
@@ -24,6 +25,7 @@ import UF-Knapp-UA
 import UF-KrausLemma
 import UF-LeftCancellable
 import UF-Miscelanea
+import UF-Powerset
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-Quotient
@@ -31,7 +33,6 @@ import UF-Retracts
 import UF-Retracts-FunExt
 import UF-Size
 import UF-StructureIdentityPrinciple
-import UF-SubsetIdentity
 import UF-Subsingletons
 import UF-Subsingletons-FunExt
 import UF-UA-FunExt

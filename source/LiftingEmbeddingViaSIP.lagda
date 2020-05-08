@@ -39,8 +39,8 @@ structure identity principle:
 η-is-embedding' ua fe = embedding-criterion' η c
  where
   a = (𝟙 ≃ 𝟙) ≃⟨ ≃-sym (univalence-≃ ua 𝟙 𝟙) ⟩
-      (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (funext-from-univalence ua)
-                         (propext-from-univalence ua) 𝟙-is-prop ⟩
+      (𝟙 ≡ 𝟙) ≃⟨ 𝟙-≡-≃ 𝟙 (univalence-gives-funext ua)
+                         (univalence-gives-propext ua) 𝟙-is-prop ⟩
       𝟙       ■
 
   b = λ x y → ((λ _ → x) ≡ (λ _ → y)) ≃⟨ ≃-funext fe (λ _ → x) (λ _ → y) ⟩

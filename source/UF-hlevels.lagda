@@ -26,7 +26,7 @@ X is-of-hlevel zero     = is-prop X
 X is-of-hlevel (succ n) = (x x' : X) → (x ≡ x') is-of-hlevel n
 
 hlevel-relation-is-prop : (n : ℕ) (X : 𝓤 ̇ ) → is-prop  (X is-of-hlevel n)
-hlevel-relation-is-prop {𝓤} zero     X = being-a-prop-is-prop (fe 𝓤 𝓤)
+hlevel-relation-is-prop {𝓤} zero     X = being-prop-is-prop (fe 𝓤 𝓤)
 hlevel-relation-is-prop {𝓤} (succ n) X = Π-is-prop (fe 𝓤 𝓤)
                                              (λ x → Π-is-prop (fe 𝓤 𝓤)
                                                       (λ x' → hlevel-relation-is-prop {𝓤} n (x ≡ x')))

@@ -97,7 +97,7 @@ eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ≡ 
 
 transport-is-pre-comp' : (ua : is-univalent 𝓤)
                        → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
-                       → transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ pr₁ (≃-sym e)
+                       → transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ ⌜ ≃-sym e ⌝
 transport-is-pre-comp' ua {X} {X'} e g = transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
  where
   b : Idtofun ((eqtoid ua X X' e)⁻¹) ≡ Idtofun (eqtoid ua X' X (≃-sym e))
@@ -245,8 +245,8 @@ equivs-are-vv-equivs' {𝓤} ua {X} {Y} f ise = g Y (f , ise)
   g = JEq ua X A b
 
 
-propext-from-univalence : is-univalent 𝓤 → propext 𝓤
-propext-from-univalence ua {P} {Q} i j f g = eqtoid ua P Q
+univalence-gives-propext : is-univalent 𝓤 → propext 𝓤
+univalence-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
                                        (f ,
                                        (g , (λ y → j (f (g y)) y)) ,
                                        (g , (λ x → i (g (f x)) x)))

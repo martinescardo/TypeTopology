@@ -183,7 +183,7 @@ transitivity-is-prop fe isp =
 being-well-order-is-prop : FunExt → is-prop is-well-order
 being-well-order-is-prop fe o = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
                                                             λ x → Π-is-prop (fe 𝓤 𝓥)
-                                                                    (λ y → being-a-prop-is-prop (fe 𝓥 𝓥)))
+                                                                    (λ y → being-prop-is-prop (fe 𝓥 𝓥)))
                                             (×-is-prop (well-foundedness-is-prop fe)
                                               (×-is-prop (extensionality-is-prop fe (pr₁ o))
                                                               (transitivity-is-prop fe (pr₁ o))))
@@ -291,7 +291,7 @@ is-well-order-gives-is-well-order₂ (p , w , e , t) = p , (well-founded-Wellfou
 being-well-order₂-is-prop : FunExt → is-prop-valued → is-prop is-well-order₂
 being-well-order₂-is-prop fe isp = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
                                                              (λ x → Π-is-prop (fe 𝓤 𝓥)
-                                                                       (λ y → being-a-prop-is-prop (fe 𝓥 𝓥))))
+                                                                       (λ y → being-prop-is-prop (fe 𝓥 𝓥))))
                                                (×-is-prop (being-well-founded₂-is-prop fe)
                                                  (×-is-prop (extensionality-is-prop fe isp)
                                                                  (transitivity-is-prop fe isp)))

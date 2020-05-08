@@ -123,11 +123,11 @@ universe-is-algebra-Π : is-univalent 𝓣 → 𝓕-alg (𝓣 ̇ )
 universe-is-algebra-Π ua = prod , k , ι
  where
   fe : funext 𝓣 𝓣
-  fe = funext-from-univalence ua
+  fe = univalence-gives-funext ua
   prod : {I : 𝓣 ̇ } → (I → 𝓣 ̇ ) → 𝓣 ̇
   prod = Π
   k : (X : 𝓣 ̇ ) → Π (λ i → X) ≡ X
-  k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (funext-from-univalence ua)))
+  k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (univalence-gives-funext ua)))
   ι : (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → 𝓣 ̇ )
     → Π f ≡ Π (λ i → Π (λ j → f (i , j)))
   ι I J f = eqtoid ua _ _ (curry-uncurry' fe fe fe)

@@ -37,7 +37,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  open propositional-truncations-exist pt public
 
  is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
- is-singleton'-is-prop fe = Σ-is-prop (being-a-prop-is-prop fe) (λ _ → ∥∥-is-prop)
+ is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
  the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ } → is-singleton X ⇔ is-prop X × ∥ X ∥
  the-singletons-are-the-inhabited-propositions {𝓤} {X} = f , g
@@ -99,8 +99,8 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  binary-choice : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → ∥ Y ∥ → ∥ X × Y ∥
  binary-choice s t = ∥∥-rec ∥∥-is-prop (λ x → ∥∥-rec ∥∥-is-prop (λ y → ∣ x , y ∣) t) s
 
- a-prop-is-equivalent-to-its-truncation : {X : 𝓤 ̇ } → is-prop X → ∥ X ∥ ≃ X
- a-prop-is-equivalent-to-its-truncation i =
+ prop-is-equivalent-to-its-truncation : {X : 𝓤 ̇ } → is-prop X → ∥ X ∥ ≃ X
+ prop-is-equivalent-to-its-truncation i =
   logically-equivalent-props-are-equivalent ∥∥-is-prop i (∥∥-rec i id) ∣_∣
 
 \end{code}

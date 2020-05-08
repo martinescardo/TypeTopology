@@ -284,7 +284,7 @@ universes:
   φ : Q → P
   φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (⌜⌝-is-equiv (≃-sym e)) q)) *
   γ : P → Q
-  γ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) , being-a-prop-is-prop fe _ _))
+  γ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) , being-prop-is-prop fe _ _))
   ε : Q ≃ P
   ε = logically-equivalent-props-are-equivalent j i φ γ
 
