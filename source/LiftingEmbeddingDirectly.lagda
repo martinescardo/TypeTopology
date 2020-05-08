@@ -47,7 +47,7 @@ of which is actually an equivalence).
  where
   h : (x : X) → (𝟙 , (λ _ → x) , 𝟙-is-prop)
               ≡ (𝟙 , (λ _ → x) , singletons-are-props (𝟙-is-singleton))
-  h x = to-Σ-≡ (refl , to-×-≡ refl (being-a-prop-is-a-prop fe _ _))
+  h x = to-Σ-≡ (refl , to-×-≡ refl (being-a-prop-is-prop fe _ _))
 
 \end{code}
 
@@ -65,8 +65,8 @@ NatΣ-embedding.:
                           id-is-embedding
                           (maps-of-props-are-embeddings
                             singletons-are-props
-                            (being-a-singleton-is-a-prop fe)
-                            (being-a-prop-is-a-prop fe))
+                            (being-singleton-is-prop fe)
+                            (being-a-prop-is-prop fe))
 
 𝓚→𝓛-is-embedding : funext 𝓣 𝓣
                   → (X : 𝓤 ̇ ) → is-embedding (𝓚→𝓛 X)
@@ -110,7 +110,7 @@ itself.
       a = dfunext fe' (λ x → ap φ (𝟙-is-prop (singleton-types-are-pointed i) x))
       b : 𝟙-is-singleton ≡ i
       b = (singletons-are-props (pointed-props-are-singletons
-                                   𝟙-is-singleton (being-a-singleton-is-a-prop fe))
+                                   𝟙-is-singleton (being-singleton-is-prop fe))
                                  𝟙-is-singleton i)
     u : 𝟙 , (λ _ → φ (singleton-types-are-pointed i)) , 𝟙-is-singleton ≡ P , φ , i
     u = to-Σ-≡ (t , s t)

@@ -185,7 +185,7 @@ is-equiv-isPIE-UA {𝓤} φ X = γ
   s : (Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
   s Y (f , i) = pietoid (f , φ f i)
   η : {Y : 𝓤 ̇ } (e : X ≃ Y) → idtoeq X Y (s Y e) ≡ e
-  η {Y} (f , i) = to-Σ-≡ (p , being-equiv-is-a-prop'' k f _ _)
+  η {Y} (f , i) = to-Σ-≡ (p , being-equiv-is-prop'' k f _ _)
    where
     p : pr₁ (idtoeq X Y (s Y (f , i))) ≡ f
     p = pietofun-factors-through-idtofun (f , φ f i)

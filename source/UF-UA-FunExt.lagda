@@ -124,7 +124,7 @@ eqtoid-comp {𝓤} ua {X} {Y} {Z} f =
        eqtoid ua X Y (f ● ≃-refl Y)               ∎
     where
      h : f ≡ f ● ≃-refl Y
-     h = to-Σ-≡ (l , being-equiv-is-a-prop'' fe (⌜ f ● ≃-refl Y ⌝)
+     h = to-Σ-≡ (l , being-equiv-is-prop'' fe (⌜ f ● ≃-refl Y ⌝)
                       (transport is-equiv l (⌜⌝-is-equiv f))
                       (⌜⌝-is-equiv (f ● ≃-refl Y)))
       where

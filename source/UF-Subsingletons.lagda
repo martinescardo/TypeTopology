@@ -37,8 +37,9 @@ And of course we could adopt a terminology borrowed from topos logic:
 
 \begin{code}
 
-is-truth-value : 𝓤 ̇ → 𝓤 ̇
-is-truth-value = is-prop
+is-truth-value is-subsingleton : 𝓤 ̇ → 𝓤 ̇
+is-truth-value  = is-prop
+is-subsingleton = is-prop
 
 \end{code}
 
@@ -88,11 +89,11 @@ is-contr = is-singleton
 singletons-are-props : {X : 𝓤 ̇ } → is-singleton X → is-prop X
 singletons-are-props {𝓤} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
 
-isingletons-are-props : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
-isingletons-are-props {𝓤} {X} φ x = singletons-are-props (φ x) x
+prop-criterion' : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
+prop-criterion' {𝓤} {X} φ x = singletons-are-props (φ x) x
 
-iprops-are-props : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
-iprops-are-props {𝓤} {X} φ x y = φ x x y
+prop-criterion : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
+prop-criterion {𝓤} {X} φ x y = φ x x y
 
 pointed-props-are-singletons : {X : 𝓤 ̇ } → X → is-prop X → is-singleton X
 pointed-props-are-singletons x h = x , h x
@@ -278,9 +279,9 @@ to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
              → (x , a) ≡ (y , b)
 to-subtype-≡ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
 
-subtype-of-prop-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+subtype-of-prop-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-prop Y → is-prop X
-subtype-of-prop-is-a-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
+subtype-of-prop-is-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
 
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X

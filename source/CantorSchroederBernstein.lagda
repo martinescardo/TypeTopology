@@ -323,8 +323,8 @@ requires function extensionality:
 
 \begin{code}
 
-  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x =
+  being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-prop x =
    Π-is-prop fe  (λ (x₀ : X                   ) →
    Π-is-prop fe₁ (λ (n  : ℕ                   ) →
    Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need is-prop (fiber g x₀)
@@ -360,7 +360,7 @@ it:
   recall-the-notion-of-decidability = by-definition
 
   δ : (x : X) → decidable (is-g-point x)
-  δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
+  δ x = excluded-middle (is-g-point x) (being-g-point-is-prop x)
 
 \end{code}
 
@@ -400,7 +400,7 @@ being an embedding, is left-cancellable:
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
   g⁻¹-is-linv y γ = have (g (g⁻¹ (g y) γ) ≡⟨ g⁻¹-is-rinv (g y) γ ⟩
                           g y             ∎)
-                    so-apply embeddings-are-left-cancellable g g-is-emb
+                    so-apply embeddings-are-lc g g-is-emb
 
 \end{code}
 
@@ -476,7 +476,7 @@ prove properties of H and then specialize them to h:
                            which-is-impossible-by f-g⁻¹-disjoint-images x x' ν γ'
 
     l (inr ν) (inr ν') p = have p ∶ f x ≡ f x'
-                           so-apply embeddings-are-left-cancellable f f-is-emb
+                           so-apply embeddings-are-lc f f-is-emb
 
 \end{code}
 
@@ -528,7 +528,7 @@ doesn't refer to the notion of f-point.
       q : f (((g ∘ f) ^ n) x₀) ≡ y
       q = have p ∶ ((g ∘ f) ^ (succ n)) x₀  ≡ g y
                  ∶ g (f (((g ∘ f) ^ n) x₀)) ≡ g y
-          so-apply embeddings-are-left-cancellable g g-is-emb
+          so-apply embeddings-are-lc g g-is-emb
 
       a : fiber f y
       a = ((g ∘ f) ^ n) x₀ , q
@@ -543,7 +543,7 @@ doesn't refer to the notion of f-point.
 
     iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
     iv = have f-is-emb y ∶ is-prop (fiber f y)
-         so-apply subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀))
+         so-apply subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀))
 
     v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
     v = double-negation-elimination excluded-middle _ iv iii
@@ -723,7 +723,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
-  g⁻¹-is-linv y γ = embeddings-are-left-cancellable g g-is-emb (g⁻¹-is-rinv (g y) γ)
+  g⁻¹-is-linv y γ = embeddings-are-lc g g-is-emb (g⁻¹-is-rinv (g y) γ)
 
   α : (x : X) → is-g-point (g (f x)) → is-g-point x
   α x γ x₀ n p = γ x₀ (succ n) (ap (g ∘ f) p)
@@ -744,11 +744,11 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     v : ¬ is-g-point x'
     v = transport (- ↦ ¬ is-g-point -) q u
 
-  being-g-point-is-a-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-a-prop x = Π-is-prop fe (λ x₀ → Π-is-prop fe₁ (λ _ → Π-is-prop fe (λ _ → g-is-emb x₀)))
+  being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
+  being-g-point-is-prop x = Π-is-prop fe (λ x₀ → Π-is-prop fe₁ (λ _ → Π-is-prop fe (λ _ → g-is-emb x₀)))
 
   δ : (x : X) → decidable (is-g-point x)
-  δ x = excluded-middle (is-g-point x) (being-g-point-is-a-prop x)
+  δ x = excluded-middle (is-g-point x) (being-g-point-is-prop x)
 
   H : (x : X) → decidable (is-g-point x) → Y
   H x (inl γ) = g⁻¹ x γ
@@ -767,7 +767,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
                            x'            ∎
     l (inl γ) (inr ν') p = 𝟘-elim(f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
     l (inr ν) (inl γ') p = 𝟘-elim(f-g⁻¹-disjoint-images x  x' ν  γ' p)
-    l (inr ν) (inr ν') p = embeddings-are-left-cancellable f f-is-emb p
+    l (inr ν) (inr ν') p = embeddings-are-lc f f-is-emb p
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   f-point x = Σ x₀ ꞉ X , (Σ n ꞉ ℕ , ((g ∘ f) ^ n) x₀ ≡ x) × ¬ fiber g x₀
@@ -789,7 +789,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
    ii (x₀ , (succ n , p) , u) = a , b
     where
      q : f (((g ∘ f) ^ n) x₀) ≡ y
-     q = embeddings-are-left-cancellable g g-is-emb p
+     q = embeddings-are-lc g g-is-emb p
 
      a : fiber f y
      a = ((g ∘ f) ^ n) x₀ , q
@@ -801,7 +801,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
    iii = double-contrapositive ii i
 
    iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
-   iv = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
+   iv = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
 
    v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
    v = double-negation-elimination excluded-middle _ iv iii

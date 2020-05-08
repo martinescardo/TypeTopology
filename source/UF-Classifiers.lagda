@@ -119,7 +119,7 @@ module subtype-classifier
                                   (equivs-are-embeddings (eqtofun (≃-sym e))
                                                          (eqtofun-is-an-equiv (≃-sym e))) i
    τ refl q = to-Σ-≡ (ap (λ h → g ∘ h) s ,
-                      being-embedding-is-a-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
+                      being-embedding-is-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
     where
      r : idtoeq X X refl ≡ e
      r = ap (idtoeq X X) q ∙ idtoeq-eqtoid ua X X e
@@ -129,7 +129,7 @@ module subtype-classifier
  Tχ : (σ : Σ X ꞉ 𝓤 ̇ , X ↪ Y) → T(χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
                           (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-is-embedding i)
-                         ∙ to-Σ-≡' (being-embedding-is-a-prop fe fe f _ _)))
+                         ∙ to-Σ-≡' (being-embedding-is-prop fe fe f _ _)))
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
@@ -338,7 +338,7 @@ module general-classifier
               ψ = fiber-equiv y
               ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
               ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
-                           being-equiv-is-a-prop'' fe'' id _ (id-is-equiv _))
+                           being-equiv-is-prop'' fe'' id _ (id-is-equiv _))
                where
                 ϕψ' : (z : fiber (f' ∘ eqtofun e) y)
                    → eqtofun (ϕ ● ψ) z ≡ z
@@ -440,8 +440,8 @@ module singleton-classifier
 
     i   = Σ-cong (λ (X : 𝓤 ̇ ) → Σ-cong (λ (f : X → Y) →
            logically-equivalent-props-are-equivalent
-            (being-equiv-is-a-prop'' fe f)
-            (Π-is-prop fe (λ y → being-a-singleton-is-a-prop fe))
+            (being-equiv-is-prop'' fe f)
+            (Π-is-prop fe (λ y → being-singleton-is-prop fe))
             (equivs-are-vv-equivs f)
             (vv-equivs-are-equivs f)))
     ii  = classification-equivalence
@@ -452,7 +452,7 @@ module singleton-classifier
        where
        a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
        a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
-                           (being-a-singleton-is-a-prop fe _ s))
+                           (being-singleton-is-prop fe _ s))
 
 open import UF-PropTrunc
 

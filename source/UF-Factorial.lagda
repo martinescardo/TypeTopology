@@ -87,12 +87,12 @@ cods-embedding : (X : 𝓤 ̇ ) → co-derived-set X → X
 cods-embedding X = pr₁
 
 cods-embedding-is-embedding : (X : 𝓤 ̇ ) → is-embedding (cods-embedding X)
-cods-embedding-is-embedding X = pr₁-is-embedding (being-isolated-is-a-prop fe)
+cods-embedding-is-embedding X = pr₁-is-embedding (being-isolated-is-prop fe)
 
 cods-embedding-is-equiv : (X : 𝓤 ̇ ) → is-discrete X → is-equiv (cods-embedding X)
 cods-embedding-is-equiv X d = pr₁-is-equiv X is-isolated
                                (λ x → pointed-props-are-singletons (d x)
-                                       (being-isolated-is-a-prop fe x))
+                                       (being-isolated-is-prop fe x))
 
 ≃-cods : (X : 𝓤 ̇ ) → is-discrete X → co-derived-set X ≃ X
 ≃-cods X d = cods-embedding X , cods-embedding-is-equiv X d
@@ -117,7 +117,7 @@ perfect-coderived-singleton X i = (inr * , new-point-is-isolated) , γ
    where
     a : is-isolated x
     a = embeddings-reflect-isolatedness inl (inl-is-embedding X 𝟙) x j
-  γ (inr * , j) = to-Σ-≡' (being-isolated-is-a-prop fe (inr *) new-point-is-isolated j)
+  γ (inr * , j) = to-Σ-≡' (being-isolated-is-prop fe (inr *) new-point-is-isolated j)
 
 \end{code}
 
@@ -243,11 +243,11 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
    γ ((f , i) , p) = pr₁ (lemma f p i) , pr₁ (pr₂ (lemma f p i))
 
    η : γ ∘ φ ∼ id
-   η (g , i) = to-Σ-≡ (refl , being-equiv-is-a-prop fe g _ i)
+   η (g , i) = to-Σ-≡ (refl , being-equiv-is-prop fe g _ i)
 
    ε : φ ∘ γ ∼ id
    ε ((f , i) , p) = to-Σ-≡
-                      (to-subtype-≡ (being-equiv-is-a-prop fe) r ,
+                      (to-subtype-≡ (being-equiv-is-prop fe) r ,
                       isolated-is-h-isolated (f (inr *))
                        (equivs-preserve-isolatedness f i (inr *) new-point-is-isolated) _ p)
     where
@@ -317,7 +317,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
        b = swap-equation₁ t (inr *) i new-point-is-isolated
 
      r : (t' , i') ≡ (t , i)
-     r = to-subtype-≡ (being-isolated-is-a-prop fe) q
+     r = to-subtype-≡ (being-isolated-is-prop fe) q
 
      f' : X+𝟙 → Y+𝟙
      f' = swap t' (inr *) i' new-point-is-isolated ∘ g
@@ -347,7 +347,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      n = isolated-is-h-isolated (f (inr *)) m
 
      o : f' , j' ≡ f , j
-     o = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) h)
+     o = to-subtype-≡ (being-equiv-is-prop fe) (dfunext (fe _ _) h)
 
      p' : f' (inr *) ≡ inr *
      p' = swap-equation₀ t' (inr *) i' new-point-is-isolated
@@ -370,7 +370,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
        ∼ g
      h = swap-involutive z (inr *) i new-point-is-isolated ∘ g
      r : φ (γ (g , k)) ≡ (g , k)
-     r = to-Σ-≡ (dfunext (fe _ _) h , being-equiv-is-a-prop fe g _ k)
+     r = to-Σ-≡ (dfunext (fe _ _) h , being-equiv-is-prop fe g _ k)
 
 
  step₄ : co-derived-set (Y+𝟙) × (X ≃ Y) ≃ (X+𝟙 ≃ Y+𝟙)
@@ -423,7 +423,7 @@ factorial-base = f , ((g , η) , (g , ε))
   g : Aut 𝟘 → 𝟙
   g = unique-to-𝟙
   η : (e : Aut 𝟘) → f (g e) ≡ e
-  η _ = to-subtype-≡ (being-equiv-is-a-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
+  η _ = to-subtype-≡ (being-equiv-is-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
   ε : (x : 𝟙) → g (f x) ≡ x
   ε * = refl
 

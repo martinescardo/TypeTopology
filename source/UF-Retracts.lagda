@@ -44,7 +44,7 @@ retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → retract Y of X
                 → is-prop X
                 → is-prop Y
-retract-of-prop (r , s , rs) = subtype-of-prop-is-a-prop s
+retract-of-prop (r , s , rs) = subtype-of-prop-is-prop s
                                         (sections-are-lc s (r , rs))
 
 identity-retraction : {X : 𝓤 ̇ } → retract X of X

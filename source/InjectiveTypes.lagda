@@ -192,7 +192,7 @@ module _ {X : 𝓤 ̇ }
    f∖j = Σ-extension
 
   Σ→Π : is-embedding j → f∖j ≾ f/j
-  Σ→Π e y ((x , p) , B) (x' , p') = transport f (embeddings-are-left-cancellable j e (p ∙ p' ⁻¹)) B
+  Σ→Π e y ((x , p) , B) (x' , p') = transport f (embeddings-are-lc j e (p ∙ p' ⁻¹)) B
 
 \end{code}
 
@@ -715,7 +715,7 @@ module /-extension-is-embedding-special-case
 
  φγ : (m : M) → φ (γ m) ≡ m
  φγ (X , i) = to-Σ-≡ (eqtoid ua (P → X) X (≃-sym (κ X , i)) ,
-                      being-equiv-is-a-prop fe (κ X) _ i)
+                      being-equiv-is-prop fe (κ X) _ i)
 
  γφ : (A : P → 𝓤 ̇ ) → γ (φ A) ≡ A
  γφ = rs
@@ -730,7 +730,7 @@ module /-extension-is-embedding-special-case
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-a-prop fe (κ X))
+ ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-prop fe (κ X))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -787,7 +787,7 @@ module ∖-extension-is-embedding-special-case
 
  φγ : (c : C) → φ (γ c) ≡ c
  φγ (X , i) = to-Σ-≡ (eqtoid ua (P × X) X (κ X , i) ,
-                     (being-equiv-is-a-prop fe (κ X) _ i))
+                     (being-equiv-is-prop fe (κ X) _ i))
 
  γφ : (A : P → 𝓤 ̇ ) → γ (φ A) ≡ A
  γφ = rs
@@ -802,7 +802,7 @@ module ∖-extension-is-embedding-special-case
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-a-prop fe (κ X))
+ ψ-is-embedding = pr₁-is-embedding (λ X → being-equiv-is-prop fe (κ X))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -881,7 +881,7 @@ module /-extension-is-embedding
  φγ : ∀ m → φ (γ m) ≡ m
  φγ (g , e) = to-Σ-≡
                (dfunext fe' (λ y → eqtoid ua (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
-                Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)) _ e)
+                Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)) _ e)
 
  γφ : ∀ f → γ (φ f) ≡ f
  γφ = rs
@@ -896,7 +896,7 @@ module /-extension-is-embedding
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
+ ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -975,7 +975,7 @@ module ∖-extension-is-embedding
  φγ : ∀ m → φ (γ m) ≡ m
  φγ (g , e) = to-Σ-≡
                (dfunext fe' (λ y → eqtoid ua (s (r g) y) (g y) (κ g y , e y)) ,
-                Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)) _ e)
+                Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)) _ e)
 
  γφ : ∀ f → γ (φ f) ≡ f
  γφ = rs
@@ -990,7 +990,7 @@ module ∖-extension-is-embedding
  ψ = pr₁
 
  ψ-is-embedding : is-embedding ψ
- ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-a-prop'' feuu (κ g y)))
+ ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop feuu (λ y → being-equiv-is-prop'' feuu (κ g y)))
 
  s-is-comp : s ≡ ψ ∘ φ
  s-is-comp = refl
@@ -1048,7 +1048,7 @@ whereas the injectivity of the universe requires full univalence.
   j : is-prop Q
   j = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ p → holds-is-prop (f p))
   c : (p : P) → Q , j ≡ f p
-  c p = to-Σ-≡ (t , being-a-prop-is-a-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
+  c p = to-Σ-≡ (t , being-a-prop-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) _ _)
    where
       g : Q → f p holds
       g q = q p
@@ -1155,7 +1155,7 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
   Q : 𝓥 ̇
   Q = resize R P i
   j : is-prop Q
-  j = resize-is-a-prop R P i
+  j = resize-is-prop R P i
   α : P → Q
   α = to-resize R P i
   β : Q → P
@@ -1324,21 +1324,21 @@ module injective (pt : propositional-truncations-exist) where
                        → (f : X → D) → ∃ g ꞉ (Y → D), g ∘ j ∼ f
 
 
- injectivity-is-a-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
+ injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                        → is-prop (injective-type D 𝓤 𝓥)
- injectivity-is-a-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+ injectivity-is-prop {𝓦} D 𝓤 𝓥 = Π-is-prop' (fe (𝓤 ⁺) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
                                         (λ X → Π-is-prop' (fe (𝓥 ⁺) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                           (λ Y → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                             (λ j → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
                                               (λ e → Π-is-prop (fe (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓦))
-                                                (λ f → ∥∥-is-a-prop)))))
+                                                (λ f → ∥∥-is-prop)))))
 
 
  ainjective-gives-injective : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → injective-type D 𝓤 𝓥
  ainjective-gives-injective D i j e f = ∣ i j e f ∣
 
  ∥ainjective∥-gives-injective : (D : 𝓦 ̇ ) → ∥ ainjective-type D 𝓤 𝓥 ∥ → injective-type D 𝓤 𝓥
- ∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-a-prop D 𝓤 𝓥)
+ ∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-prop D 𝓤 𝓥)
                                                      (ainjective-gives-injective D)
 
  embedding-∥retract∥ : (D : 𝓦 ̇ ) (Y : 𝓥 ̇ ) (j : D → Y) → is-embedding j → injective-type D 𝓦 𝓥

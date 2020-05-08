@@ -309,10 +309,10 @@ nat-retraction-is-section-uniquely fe x η hs y = pointed-props-are-singletons
                                                   (nat-retraction-is-section x η hs y)
                                                   (sections-have-at-most-one-retraction fe (η y) (hs y))
 
-nat-having-section-is-a-prop : FunExt → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+nat-having-section-is-prop : FunExt → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                                (x : X) (η : Nat (Id x) A)
                              → is-prop ((y : X) → has-section (η y))
-nat-having-section-is-a-prop {𝓤} {𝓥} fe {X} x η φ = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) γ φ
+nat-having-section-is-prop {𝓤} {𝓥} fe {X} x η φ = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) γ φ
   where
    γ : (y : X) → is-prop (has-section (η y))
    γ y = retractions-have-at-most-one-section fe (η y) (nat-retraction-is-section x η φ y)

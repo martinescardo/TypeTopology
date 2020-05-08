@@ -32,7 +32,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
 
  restriction-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-embedding(restriction f)
- restriction-embedding f = pr₁-is-embedding (λ y → ∥∥-is-a-prop)
+ restriction-embedding f = pr₁-is-embedding (λ y → ∥∥-is-prop)
 
  corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
              → X → image f
@@ -45,7 +45,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                                                  → is-prop (image f)
  wconstant-maps-to-sets-have-propositional-images X s f c (y , p) (y' , p') =
   to-Σ-≡ (∥∥-rec s (λ u → ∥∥-rec s (λ v → h u v) p') p ,
-          ∥∥-is-a-prop _ p')
+          ∥∥-is-prop _ p')
    where
     h : (Σ x ꞉ X , f x ≡ y) → (Σ x' ꞉ X , f x' ≡ y') → y ≡ y'
     h (x , e) (x' , e') = y    ≡⟨ e ⁻¹ ⟩
@@ -121,10 +121,10 @@ TODO: a map is an embedding iff its corestriction is an equivalence.
  corestriction-surjection f (y , s) = ∥∥-functor g s
   where
    g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
-   g (x , p) = x , to-Σ-≡ (p , ∥∥-is-a-prop _ _)
+   g (x , p) = x , to-Σ-≡ (p , ∥∥-is-prop _ _)
 
  pt-is-surjection : {X : 𝓤 ̇ } → is-surjection(λ(x : X) → ∣ x ∣)
- pt-is-surjection t = ∥∥-rec ∥∥-is-a-prop (λ x → ∣ x , ∥∥-is-a-prop (∣ x ∣) t ∣) t
+ pt-is-surjection t = ∥∥-rec ∥∥-is-prop (λ x → ∣ x , ∥∥-is-prop (∣ x ∣) t ∣) t
 
 \end{code}
 
@@ -145,7 +145,7 @@ Surjections can be characterized as follows, modulo size:
  image-surjection-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                            → imageInduction f → is-surjection f
  image-surjection-converse f is' = is' (λ y → ∥ Σ (λ x → f x ≡ y) ∥)
-                                       (λ y → ∥∥-is-a-prop)
+                                       (λ y → ∥∥-is-prop)
                                        (λ x → ∣ x , refl ∣)
 
  image-induction : ∀ {𝓦} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -177,6 +177,6 @@ Added 13 February 2020 by Tom de Jong.
   Y                             ■
    where
     γ : (y : Y) → (∃ x ꞉ X , f x ≡ y) ≃ 𝟙
-    γ y = singleton-≃-𝟙 (pointed-props-are-singletons (s y) ∥∥-is-a-prop)
+    γ y = singleton-≃-𝟙 (pointed-props-are-singletons (s y) ∥∥-is-prop)
 
 \end{code}

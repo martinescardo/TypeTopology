@@ -495,7 +495,7 @@ embedding are themselves embeddings.
   φγ : ∀ m → φ (γ m) ≡ m
   φγ (g , e) = to-Σ-≡
                 (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺)) (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (κ g y , e y)) ,
-                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
+                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
   γφ : ∀ f → γ (φ f) ≡ f
   γφ = rs
@@ -510,7 +510,7 @@ embedding are themselves embeddings.
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
+  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -571,7 +571,7 @@ embedding are themselves embeddings.
   φγ : ∀ m → φ (γ m) ≡ m
   φγ (g , e) = to-Σ-≡
                 (dfunext (fe 𝓥 ((𝓤 ⊔ 𝓥)⁺)) (λ y → eqtoid (ua (𝓤 ⊔ 𝓥)) (s (r g) y) (g y) (≃-sym (κ g y , e y))) ,
-                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
+                 Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)) _ e)
 
   γφ : ∀ f → γ (φ f) ≡ f
   γφ = rs
@@ -586,7 +586,7 @@ embedding are themselves embeddings.
   ψ = pr₁
 
   ψ-is-embedding : is-embedding ψ
-  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-a-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
+  ψ-is-embedding = pr₁-is-embedding (λ g → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥)) (λ y → being-equiv-is-prop'' (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (κ g y)))
 
   s-is-comp : s ≡ ψ ∘ φ
   s-is-comp = refl
@@ -950,7 +950,7 @@ open import UF-hlevels ua
 ℍ-aflabby : (n : ℕ) → aflabby (Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n) 𝓤
 ℍ-aflabby n = subuniverse-aflabby-Π
                 (_is-of-hlevel n)
-                (hlevel-relation-is-a-prop n)
+                (hlevel-relation-is-prop n)
                 (props-have-all-hlevels n)
                 (λ X Y _ → hlevels-closed-under-Π n X Y)
 
@@ -1007,7 +1007,7 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
   Q : 𝓥 ̇
   Q = resize R P i
   j : is-prop Q
-  j = resize-is-a-prop R P i
+  j = resize-is-prop R P i
   α : P → Q
   α = to-resize R P i
   β : Q → P
@@ -1106,7 +1106,7 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding
     v : fiber s (s X)
     v = f (s X) u
     i : (Y : 𝓤 ⊔ 𝓥 ̇ ) → is-prop (F Y)
-    i Y = resize-is-a-prop R (fiber s Y) (e Y)
+    i Y = resize-is-prop R (fiber s Y) (e Y)
     X' : 𝓤 ̇
     X' = pr₁ v
     a : r (s X) ≃ X'
@@ -1114,7 +1114,7 @@ universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding
     b : s X' ≡ s X
     b = pr₂ v
     c : X' ≡ X
-    c = embeddings-are-left-cancellable s e b
+    c = embeddings-are-lc s e b
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
     γ : r (s X) ≡ X
@@ -1167,7 +1167,7 @@ reflective-n-type-subuniverse-Σ : Propositional-resizing
                                 → (n : ℕ) → retract (Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n) of (𝓤 ̇ )
 reflective-n-type-subuniverse-Σ R n = reflective-subuniverse-Σ R
                                        (_is-of-hlevel n)
-                                       (hlevel-relation-is-a-prop n)
+                                       (hlevel-relation-is-prop n)
                                        (props-have-all-hlevels n)
                                        (hlevels-closed-under-Σ n)
 
@@ -1175,7 +1175,7 @@ reflective-n-type-subuniverse-Π : Propositional-resizing
                                 → (n : ℕ) → retract (Σ X ꞉ 𝓤 ̇ , X is-of-hlevel n) of (𝓤 ̇ )
 reflective-n-type-subuniverse-Π R n = reflective-subuniverse-Π R
                                        (_is-of-hlevel n)
-                                       (hlevel-relation-is-a-prop n)
+                                       (hlevel-relation-is-prop n)
                                        (props-have-all-hlevels n)
                                        (λ X Y _ → hlevels-closed-under-Π n X Y)
 
@@ -1266,7 +1266,7 @@ ainjective-ntype-characterization : Propositional-resizing
 ainjective-ntype-characterization {𝓤} R D n h = (a , b)
  where
   a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (X → ℍ n 𝓤 )
-  a i = D , ainjective-retract-sub R (_is-of-hlevel n) (hlevel-relation-is-a-prop n) D h i
+  a i = D , ainjective-retract-sub R (_is-of-hlevel n) (hlevel-relation-is-prop n) D h i
 
   b : (Σ X ꞉ 𝓤 ̇ , retract D of (X → ℍ n 𝓤)) → ainjective-type D 𝓤 𝓤
   b (X , r) = d
@@ -1309,9 +1309,9 @@ The following is routine, using the fact that propositions are closed under prod
 
 \begin{code}
 
-injectivity-is-a-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
+injectivity-is-prop : (D : 𝓦 ̇ ) (𝓤 𝓥 : Universe)
                       → is-prop (injective-type D 𝓤 𝓥)
-injectivity-is-a-prop = blackboard.injective.injectivity-is-a-prop pt
+injectivity-is-prop = blackboard.injective.injectivity-is-prop pt
 
 \end{code}
 
@@ -1322,7 +1322,7 @@ From this we get the following.
 \begin{code}
 
 ∥ainjective∥-gives-injective : (D : 𝓦 ̇ ) → ∥ ainjective-type D 𝓤 𝓥  ∥ → injective-type D 𝓤 𝓥
-∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-a-prop D 𝓤 𝓥)
+∥ainjective∥-gives-injective {𝓦} {𝓤} {𝓥} D = ∥∥-rec (injectivity-is-prop D 𝓤 𝓥)
                                                     (ainjective-gives-injective D)
 
 \end{code}

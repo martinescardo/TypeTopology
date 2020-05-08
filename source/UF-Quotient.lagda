@@ -133,7 +133,7 @@ is the successor of the universe 𝓥:
  X/≈-is-set : is-set X/≈
  X/≈-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
                 (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe)
-                ∥∥-is-a-prop
+                ∥∥-is-prop
 
  η : X → X/≈
  η = corestriction equiv-rel
@@ -176,8 +176,8 @@ points are mapped to equal points:
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e = to-Σ-≡ (dfunext (fe 𝓤 (𝓥 ⁺))
                                       (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
-                                                     being-a-prop-is-a-prop (fe 𝓥 𝓥) _ _)) ,
-                                   ∥∥-is-a-prop _ _)
+                                                     being-a-prop-is-prop (fe 𝓥 𝓥) _ _)) ,
+                                   ∥∥-is-prop _ _)
 
 \end{code}
 
@@ -225,7 +225,7 @@ universe 𝓦.
    φ = η-induction _ γ induction-step
      where
       induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ≡ η y) × (f x ≡ a))
-      induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-a-prop _ _)
+      induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-prop _ _)
        where
         h : (Σ x' ꞉ X , (η x' ≡ η x) × (f x' ≡ a))
           → (Σ y' ꞉ X , (η y' ≡ η x) × (f y' ≡ b))
@@ -236,7 +236,7 @@ universe 𝓦.
         p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
       γ : (x' : X/≈) → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)))
-      γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+      γ x' = being-a-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
    k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
    k = η-induction _ φ induction-step

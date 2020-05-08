@@ -42,7 +42,7 @@ Constructions:
 _♯ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → 𝓛 Y) → (𝓛 X → 𝓛 Y)
 _♯ f (P , φ , i) = (Σ p ꞉ P , is-defined (f (φ p))) ,
                     (λ σ → value (f (φ (pr₁ σ))) (pr₂ σ)) ,
-                    Σ-is-prop i (λ p → being-defined-is-a-prop (f (φ p)))
+                    Σ-is-prop i (λ p → being-defined-is-prop (f (φ p)))
 
 μ : {X : 𝓤 ̇ } → 𝓛 (𝓛 X) → 𝓛 X
 μ = id ♯

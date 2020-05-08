@@ -417,7 +417,7 @@ Fin↦ℕ-is-embedding n = ∘-is-embedding
 
 
 Fin↦ℕ-lc : (n : ℕ) → left-cancellable (Fin↦ℕ {n})
-Fin↦ℕ-lc n = embeddings-are-left-cancellable Fin↦ℕ (Fin↦ℕ-is-embedding n)
+Fin↦ℕ-lc n = embeddings-are-lc Fin↦ℕ (Fin↦ℕ-is-embedding n)
 
 
 _≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
@@ -628,8 +628,8 @@ module finiteness (pt : propositional-truncations-exist) where
  cardinality-≃ X = pr₂
 
 
- being-finite-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
- being-finite-is-a-prop X (m , d) (n , e) = γ
+ being-finite-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
+ being-finite-is-prop X (m , d) (n , e) = γ
   where
    a : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ≡ n
    a m n d e = Fin-lc m n (≃-sym d ● e)
@@ -638,7 +638,7 @@ module finiteness (pt : propositional-truncations-exist) where
    b m n = ∥∥-rec₂ ℕ-is-set (a m n)
 
    γ : m , d ≡ n , e
-   γ = to-Σ-≡ (b m n d e , ∥∥-is-a-prop _ _)
+   γ = to-Σ-≡ (b m n d e , ∥∥-is-prop _ _)
 
 \end{code}
 
@@ -650,19 +650,19 @@ Equivalently, one can define finiteness as follows:
  is-finite' X = ∃ n ꞉ ℕ , X ≃ Fin n
 
 
- being-finite'-is-a-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
- being-finite'-is-a-prop X = ∥∥-is-a-prop
+ being-finite'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
+ being-finite'-is-prop X = ∥∥-is-prop
 
 
  finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
- finite-unprime X = ∥∥-rec (being-finite-is-a-prop X) γ
+ finite-unprime X = ∥∥-rec (being-finite-is-prop X) γ
   where
    γ : (Σ n ꞉ ℕ , X ≃ Fin n) → Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥
    γ (n , e) = n , ∣ e ∣
 
 
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
- finite-prime X (n , s) = ∥∥-rec ∥∥-is-a-prop (λ e → ∣ n , e ∣) s
+ finite-prime X (n , s) = ∥∥-rec ∥∥-is-prop (λ e → ∣ n , e ∣) s
 
 \end{code}
 
@@ -687,7 +687,7 @@ Finite types are discrete and hence sets:
 \begin{code}
 
  finite-types-are-discrete : FunExt → {X : 𝓤 ̇ } → is-finite X → is-discrete X
- finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-a-prop fe) γ s
+ finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-prop fe) γ s
   where
    γ : X ≃ Fin n → is-discrete X
    γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
@@ -777,7 +777,7 @@ But the prop-valuedness of A is actually not needed, with more work:
    e' = ∥∥-functor f e
 
    σ' : Σ A'
-   σ' = Fin-Σ-from-∃' fe A' δ' (λ x → ∥∥-is-a-prop) e'
+   σ' = Fin-Σ-from-∃' fe A' δ' (λ x → ∥∥-is-prop) e'
 
    g : Σ A' → Σ A
    g (x , a') = x , ¬¬-elim (δ x) (λ (u : ¬ A x) → ∥∥-rec 𝟘-is-prop u a')

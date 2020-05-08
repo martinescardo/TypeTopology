@@ -15,7 +15,6 @@ open import MGS-Powerset                 public
 open import MGS-Classifiers              public
 open import MGS-Subsingleton-Truncation  public
 
-
 module sip where
 
  ⟨_⟩ : {S : 𝓤 ̇ → 𝓥 ̇ } → Σ S → 𝓤 ̇
@@ -1748,6 +1747,9 @@ module category-identity
    γ 𝓧 𝓧 (refl 𝓧) = refl _
 
 module ring-identity {𝓤 : Universe} (ua : Univalence) where
+ open sip hiding (⟨_⟩)
+ open sip-with-axioms
+ open sip-join
 
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
@@ -1861,37 +1863,16 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                            × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
 
  characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
- characterization-of-rng-≡ = sip.characterization-of-≡ (ua 𝓤)
-                              (sip-with-axioms.add-axioms
+ characterization-of-rng-≡ = characterization-of-≡ (ua 𝓤)
+                              (add-axioms
                                 rng-axioms
                                 rng-axioms-is-subsingleton
-                                (sip-join.join
+                                (join
                                   ∞-magma-identity.sns-data
                                   ∞-magma-identity.sns-data))
 
- is-commutative : Rng → 𝓤 ̇
- is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
-
- being-commutative-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-commutative 𝓡)
- being-commutative-is-subsingleton (R , (_+_ , _·_) , i , ii-vii) =
-
-   Π-is-subsingleton fe
-   (λ x → Π-is-subsingleton fe
-   (λ y → i (x · y) (y · x)))
-
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
  ⟨ R , _ ⟩ = R
-
- is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
- is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)
-                                              × (x ∈ I → (x · y) ∈ I)
-                                              × (y ∈ I → (x · y) ∈ I)
-
- is-local : Rng → 𝓤 ⁺ ̇
- is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I)
-
- being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
- being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
 
  ring-structure : 𝓤 ̇ → 𝓤 ̇
  ring-structure X = X × rng-structure X
@@ -1931,9 +1912,30 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                                   ring-axioms-is-subsingleton
                                   (sip-join.join
                                     pointed-type-identity.sns-data
-                                      (sip-join.join
+                                      (join
                                         ∞-magma-identity.sns-data
                                         ∞-magma-identity.sns-data)))
+
+ is-commutative : Rng → 𝓤 ̇
+ is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
+
+ being-commutative-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-commutative 𝓡)
+ being-commutative-is-subsingleton (R , (_+_ , _·_) , i , ii-vii) =
+
+   Π-is-subsingleton fe
+   (λ x → Π-is-subsingleton fe
+   (λ y → i (x · y) (y · x)))
+
+ is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
+ is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)
+                                              × (x ∈ I → (x · y) ∈ I)
+                                              × (y ∈ I → (x · y) ∈ I)
+
+ is-local : Rng → 𝓤 ⁺ ̇
+ is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I)
+
+ being-local-is-subsingleton : (𝓡 : Rng) → is-subsingleton (is-local 𝓡)
+ being-local-is-subsingleton 𝓡 = ∃!-is-subsingleton _ fe
 
  module _ (pt : subsingleton-truncations-exist) where
 

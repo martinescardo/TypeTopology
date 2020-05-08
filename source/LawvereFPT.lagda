@@ -369,7 +369,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
  Π-projection-has-section {𝓤} {𝓥} {𝓦} {A} {X} fe fe' pe a₀ ish = s , rs
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
-   s φ a x = (∃ p ꞉ a ≡ a₀ , φ (transport X p x) holds) , ∥∥-is-a-prop
+   s φ a x = (∃ p ꞉ a ≡ a₀ , φ (transport X p x) holds) , ∥∥-is-prop
    rs : (φ : X a₀ → Ω (𝓤 ⊔ 𝓦)) → s φ a₀ ≡ φ
    rs φ = dfunext fe γ
     where
@@ -385,9 +385,9 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
          t = ap (λ - → φ(transport X - x₀)) r
      b : (x₀ : X a₀) → φ x₀ holds → ∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds
      b x₀ h = ∣ refl , h ∣
-     γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) , ∥∥-is-a-prop ≡ φ x₀
-     γ x₀ = to-Σ-≡ (pe ∥∥-is-a-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
-                     being-a-prop-is-a-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
+     γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) , ∥∥-is-prop ≡ φ x₀
+     γ x₀ = to-Σ-≡ (pe ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
+                     being-a-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
 
  usr-lemma : {A : 𝓤 ̇ } (X : A → 𝓥 ̇ )
            → funext 𝓥 ((𝓤 ⊔ 𝓦)⁺) → funext (𝓤 ⊔ 𝓦) (𝓤 ⊔ 𝓦) → propext (𝓤 ⊔ 𝓦)

@@ -30,8 +30,8 @@ discrete-is-Id-collapsible d = decidable-is-collapsible (d _ _)
 discrete-types-are-sets : {X : 𝓤 ̇ } → is-discrete X → is-set X
 discrete-types-are-sets d = Id-collapsibles-are-sets(discrete-is-Id-collapsible d)
 
-being-isolated-is-a-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
-being-isolated-is-a-prop {𝓤} fe x i = γ i
+being-isolated-is-prop : FunExt → {X : 𝓤 ̇ } (x : X) → is-prop (is-isolated x)
+being-isolated-is-prop {𝓤} fe x i = γ i
  where
   γ : is-prop (is-isolated x)
   γ = Π-is-prop (fe 𝓤 𝓤)
@@ -40,8 +40,8 @@ being-isolated-is-a-prop {𝓤} fe x i = γ i
                 (negations-are-props (fe 𝓤 𝓤₀))
                 (λ p n → n p))
 
-being-discrete-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
-being-discrete-is-a-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-a-prop fe)
+being-discrete-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (is-discrete X)
+being-discrete-is-prop {𝓤} fe {X} = Π-is-prop (fe 𝓤 𝓤) (being-isolated-is-prop fe)
 
 isolated-is-h-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated x → is-h-isolated x
 isolated-is-h-isolated {𝓤} {X} x i {y} = local-hedberg x (λ y → γ y (i y)) y
@@ -104,12 +104,12 @@ embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → (x : X) → is-isolated (f x) → is-isolated x
 embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
-                                              (embeddings-are-left-cancellable f e) x i y
+                                              (embeddings-are-lc f e) x i y
 
 embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
                                 → is-discrete Y → is-discrete X
-embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings-are-left-cancellable f e)
+embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings-are-lc f e)
 
 Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
               → is-discrete X → ((x : X) → is-discrete(Y x)) → is-discrete(Σ Y)
@@ -170,7 +170,7 @@ separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-separat
 separated-types-are-sets fe s = Id-collapsibles-are-sets (separated-is-Id-collapsible fe s)
 
 is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop(is-separated X)
-is-prop-separated fe fe₀ {X} = iprops-are-props f
+is-prop-separated fe fe₀ {X} = prop-criterion f
  where
   f : is-separated X → is-prop(is-separated X)
   f s = Π-is-prop fe (λ _ →
@@ -187,20 +187,20 @@ Find a better home for this:
 𝟚-ℕ-embedding ₀ = 0
 𝟚-ℕ-embedding ₁ = 1
 
-𝟚-ℕ-embeddings-are-left-cancellable : left-cancellable 𝟚-ℕ-embedding
-𝟚-ℕ-embeddings-are-left-cancellable {₀} {₀} refl = refl
-𝟚-ℕ-embeddings-are-left-cancellable {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
-𝟚-ℕ-embeddings-are-left-cancellable {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
-𝟚-ℕ-embeddings-are-left-cancellable {₁} {₁} refl = refl
+𝟚-ℕ-embeddings-are-lc : left-cancellable 𝟚-ℕ-embedding
+𝟚-ℕ-embeddings-are-lc {₀} {₀} refl = refl
+𝟚-ℕ-embeddings-are-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-ℕ-embeddings-are-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
+𝟚-ℕ-embeddings-are-lc {₁} {₁} refl = refl
 
 C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
 C-B-embedding α = 𝟚-ℕ-embedding ∘ α
 
-C-B-embeddings-are-left-cancellable : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
-C-B-embeddings-are-left-cancellable fe {α} {β} p = dfunext fe h
+C-B-embeddings-are-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
+C-B-embeddings-are-lc fe {α} {β} p = dfunext fe h
  where
   h : (n : ℕ) → α n ≡ β n
-  h n = 𝟚-ℕ-embeddings-are-left-cancellable (ap (λ - → - n) p)
+  h n = 𝟚-ℕ-embeddings-are-lc (ap (λ - → - n) p)
 
 \end{code}
 

@@ -120,7 +120,7 @@ open import UF-EquivalenceExamples
           A x                          ■
     p : fiber (pr₁ ∘ f) , I , ≃-sym (graph-domain-equiv (pr₁ ∘ f)) ≡ A , I , f , e
     p = to-Σ-≡ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
-                has-size-is-a-prop ua (Σ A) 𝓣 _ (I , f , e))
+                has-size-is-prop ua (Σ A) 𝓣 _ (I , f , e))
   Tχ : (l : 𝓕 X) → T (χ l) ≡ l
   Tχ (I , φ) = ap (λ - → I , -) (dfunext (fe 𝓣 𝓤) (λ i → refl))
 

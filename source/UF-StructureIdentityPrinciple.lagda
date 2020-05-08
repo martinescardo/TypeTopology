@@ -585,7 +585,7 @@ a proposition:
 
  Axioms-is-prop : (X : 𝓤 ̇ ) (s : S X) → is-prop (Axioms X s)
  Axioms-is-prop X (_·_ , e) (i , α , ν) = ×-is-prop
-                                           (being-set-is-a-prop fe)
+                                           (being-set-is-prop fe)
                                            (×-is-prop
                                               (Π-is-prop fe
                                                  λ x → Π-is-prop fe

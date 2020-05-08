@@ -25,11 +25,11 @@ is-wconnected X = (x y : X) → ∥ x ≡ y ∥
 is-connected : 𝓤 ̇ → 𝓤 ̇
 is-connected X = ∥ X ∥ × is-wconnected X
 
-being-wconnected-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-wconnected X)
-being-wconnected-is-a-prop fe = Π-is-prop fe (λ x → Π-is-prop fe (λ y → ∥∥-is-a-prop))
+being-wconnected-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-wconnected X)
+being-wconnected-is-prop fe = Π-is-prop fe (λ x → Π-is-prop fe (λ y → ∥∥-is-prop))
 
-being-connected-is-a-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-connected X)
-being-connected-is-a-prop fe = ×-is-prop ∥∥-is-a-prop (being-wconnected-is-a-prop fe)
+being-connected-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-connected X)
+being-connected-is-prop fe = ×-is-prop ∥∥-is-prop (being-wconnected-is-prop fe)
 
 maps-of-wconnected-types-into-sets-are-constant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                 → is-set Y

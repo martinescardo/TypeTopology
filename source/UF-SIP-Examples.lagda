@@ -15,6 +15,7 @@ Each example is in a submodule:
   * monoid
   * associative-∞-magma
   * group
+  * ring
   * slice
   * generalized-metric-space
   * generalized-topological-space
@@ -115,7 +116,7 @@ module magma-identity {𝓤 : Universe} where
    characterization-of-≡-with-axioms ua
      ∞-magma-identity.sns-data
      (λ X s → is-set X)
-     (λ X s → being-set-is-a-prop (funext-from-univalence ua))
+     (λ X s → being-set-is-prop (funext-from-univalence ua))
 
 
 module pointed-type-identity {𝓤 : Universe} where
@@ -214,7 +215,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
    γ : is-prop (monoid-axioms X (_·_ , e))
    γ = ×-is-prop
-         (being-set-is-a-prop fe)
+         (being-set-is-prop fe)
       (×-is-prop
          (Π-is-prop fe
            (λ x → i {e · x} {x}))
@@ -594,6 +595,334 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
 
+module ring-identity {𝓤 : Universe} (ua : Univalence) where
+ open sip hiding (⟨_⟩)
+ open sip-with-axioms
+ open sip-join
+
+ fe : ∀ {𝓥} {𝓦} → funext 𝓥 𝓦
+ fe {𝓥} {𝓦} = funext-from-univalence' 𝓥 𝓦 (ua 𝓥) (ua (𝓥 ⊔ 𝓦))
+
+ rng-structure : 𝓤 ̇ → 𝓤 ̇
+ rng-structure X = (X → X → X) × (X → X → X)
+
+ rng-axioms : (R : 𝓤 ̇ ) → rng-structure R → 𝓤 ̇
+ rng-axioms R (_+_ , _·_) = I × II × III × IV × V × VI × VII
+  where
+    I   = is-set R
+    II  = (x y z : R) → (x + y) + z ≡ x + (y + z)
+    III = (x y : R) → x + y ≡ y + x
+    IV  = Σ O ꞉ R , ((x : R) → x + O ≡ x) × ((x : R) → Σ x' ꞉ R , x + x' ≡ O)
+    V   = (x y z : R) → (x · y) · z ≡ x · (y · z)
+    VI  = (x y z : R) → x · (y + z) ≡ (x · y) + (x · z)
+    VII = (x y z : R) → (y + z) · x ≡ (y · x) + (z · x)
+
+ Rng : 𝓤 ⁺ ̇
+ Rng = Σ R ꞉ 𝓤 ̇ , Σ s ꞉ rng-structure R , rng-axioms R s
+
+ rng-axioms-is-prop : (R : 𝓤 ̇ ) (s : rng-structure R)
+                    → is-prop (rng-axioms R s)
+
+ rng-axioms-is-prop R (_+_ , _·_) = prop-criterion δ
+  where
+   δ : rng-axioms R (_+_ , _·_) → is-prop (rng-axioms R (_+_ , _·_))
+   δ (i , ii , iii , iv-vii) = γ
+    where
+     A   = λ (O : R) → ((x : R) → x + O ≡ x)
+                     × ((x : R) → Σ x' ꞉ R , x + x' ≡ O)
+
+     IV  = Σ A
+
+     a : (O O' : R) → ((x : R) → x + O ≡ x) → ((x : R) → x + O' ≡ x) → O ≡ O'
+     a O O' f f' = O       ≡⟨ (f' O)⁻¹ ⟩
+                  (O + O') ≡⟨ iii O O' ⟩
+                  (O' + O) ≡⟨ f O'     ⟩
+                   O'      ∎
+
+     b : (O : R) → is-prop ((x : R) → x + O ≡ x)
+     b O = Π-is-prop fe (λ x → i {x + O} {x})
+
+     c : (O : R)
+       → ((x : R) → x + O ≡ x)
+       → (x : R) → is-prop (Σ x' ꞉ R , x + x' ≡ O)
+     c O f x (x' , p') (x'' , p'') = to-subtype-≡ (λ y → i {x + y} {O}) r
+      where
+       r : x' ≡ x''
+       r = x'               ≡⟨ (f x')⁻¹               ⟩
+           (x' + O)         ≡⟨ ap (x' +_) (p'' ⁻¹)    ⟩
+           (x' + (x + x'')) ≡⟨ (ii x' x x'')⁻¹        ⟩
+           ((x' + x) + x'') ≡⟨ ap (_+ x'') (iii x' x) ⟩
+           ((x + x') + x'') ≡⟨ ap (_+ x'') p'         ⟩
+           (O + x'')        ≡⟨ iii O x''              ⟩
+           (x'' + O)        ≡⟨ f x''                  ⟩
+           x''              ∎
+
+     d : (O : R) → is-prop (A O)
+     d O (f , g) = φ (f , g)
+      where
+       φ : is-prop (A O)
+       φ = ×-is-prop (b O) (Π-is-prop fe (λ x → c O f x))
+
+     IV-is-prop : is-prop IV
+     IV-is-prop (O , f , g) (O' , f' , g') = e
+      where
+       e : (O , f , g) ≡ (O' , f' , g')
+       e = to-subtype-≡ d (a O O' f f')
+
+     γ : is-prop (rng-axioms R (_+_ , _·_))
+     γ = ×-is-prop
+           (being-set-is-prop fe)
+        (×-is-prop
+           (Π-is-prop fe
+           (λ x → Π-is-prop fe
+           (λ y → Π-is-prop fe
+           λ z → i {(x + y) + z} {x + (y + z)})))
+        (×-is-prop
+           (Π-is-prop fe
+           (λ x → Π-is-prop fe
+           (λ y → i {x + y} {y + x})))
+        (×-is-prop
+           IV-is-prop
+        (×-is-prop
+           (Π-is-prop fe
+           (λ x → Π-is-prop fe
+           (λ y → Π-is-prop fe
+           (λ z → i {(x · y) · z} {x · (y · z)}))))
+        (×-is-prop
+           (Π-is-prop fe
+           (λ x → Π-is-prop fe
+           (λ y → Π-is-prop fe
+           (λ z → i {x · (y + z)} {(x · y) + (x · z)}))))
+           (Π-is-prop fe
+           (λ x → Π-is-prop fe
+           (λ y → Π-is-prop fe
+           (λ z → i {(y + z) · x} {(y · x) + (z · x)})))))))))
+
+ _≅[Rng]_ : Rng → Rng → 𝓤 ̇
+
+ (R , (_+_ , _·_) , _) ≅[Rng] (R' , (_+'_ , _·'_) , _) =
+
+                       Σ f ꞉ (R → R')
+                           , is-equiv f
+                           × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                           × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+ characterization-of-rng-≡ : (𝓡 𝓡' : Rng) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Rng] 𝓡')
+ characterization-of-rng-≡ = characterization-of-≡ (ua 𝓤)
+                              (add-axioms
+                                rng-axioms
+                                rng-axioms-is-prop
+                                (join
+                                  ∞-magma-identity.sns-data
+                                  ∞-magma-identity.sns-data))
+
+ ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
+ ⟨ R , _ ⟩ = R
+
+ ring-structure : 𝓤 ̇ → 𝓤 ̇
+ ring-structure X = X × rng-structure X
+
+ ring-axioms : (R : 𝓤 ̇ ) → ring-structure R → 𝓤 ̇
+ ring-axioms R (𝟏 , _+_ , _·_) = rng-axioms R (_+_ , _·_) × VIII
+  where
+   VIII = (x : R) → (x · 𝟏 ≡ x) × (𝟏 · x ≡ x)
+
+ ring-axioms-is-prop : (R : 𝓤 ̇ ) (s : ring-structure R)
+                             → is-prop (ring-axioms R s)
+
+ ring-axioms-is-prop R (𝟏 , _+_ , _·_) ((i , ii-vii) , viii) = γ ((i , ii-vii) , viii)
+  where
+   γ : is-prop (ring-axioms R (𝟏 , _+_ , _·_))
+   γ = ×-is-prop
+         (rng-axioms-is-prop R (_+_ , _·_))
+         (Π-is-prop fe (λ x → ×-is-prop (i {x · 𝟏} {x}) (i {𝟏 · x} {x})))
+
+ Ring : 𝓤 ⁺ ̇
+ Ring = Σ R ꞉ 𝓤 ̇ , Σ s ꞉ ring-structure R , ring-axioms R s
+
+ _≅[Ring]_ : Ring → Ring → 𝓤 ̇
+
+ (R , (𝟏 , _+_ , _·_) , _) ≅[Ring] (R' , (𝟏' , _+'_ , _·'_) , _) =
+
+                           Σ f ꞉ (R → R')
+                               , is-equiv f
+                               × (f 𝟏 ≡ 𝟏')
+                               × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                               × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+ characterization-of-ring-≡ : (𝓡 𝓡' : Ring) → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[Ring] 𝓡')
+ characterization-of-ring-≡ = sip.characterization-of-≡ (ua 𝓤)
+                                (sip-with-axioms.add-axioms
+                                  ring-axioms
+                                  ring-axioms-is-prop
+                                  (sip-join.join
+                                    pointed-type-identity.sns-data
+                                      (join
+                                        ∞-magma-identity.sns-data
+                                        ∞-magma-identity.sns-data)))
+
+ is-commutative : Rng → 𝓤 ̇
+ is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
+
+ being-commutative-is-prop : (𝓡 : Rng) → is-prop (is-commutative 𝓡)
+ being-commutative-is-prop (R , (_+_ , _·_) , i , ii-vii) =
+
+   Π-is-prop fe
+   (λ x → Π-is-prop fe
+   (λ y → i {x · y} {y · x}))
+
+ open import UF-SubsetIdentity 𝓤 (ua 𝓤) (ua (𝓤 ⁺))
+
+ is-ideal : (𝓡 : Rng) → 𝓟 ⟨ 𝓡 ⟩ → 𝓤 ̇
+ is-ideal (R , (_+_ , _·_) , _) I = (x y : R) → (x ∈ I → y ∈ I → (x + y) ∈ I)
+                                              × (x ∈ I → (x · y) ∈ I)
+                                              × (y ∈ I → (x · y) ∈ I)
+
+ is-local : Rng → 𝓤 ⁺ ̇
+ is-local 𝓡 = ∃! I ꞉ 𝓟 ⟨ 𝓡 ⟩ , (is-ideal 𝓡 I → (J : 𝓟 ⟨ 𝓡 ⟩) → is-ideal 𝓡 J → J ⊆ I)
+
+ being-local-is-prop : (𝓡 : Rng) → is-prop (is-local 𝓡)
+ being-local-is-prop 𝓡 = ∃!-is-prop fe
+
+ open import UF-PropTrunc
+
+ module _ (pt : propositional-truncations-exist) where
+
+  open propositional-truncations-exist pt public
+  open PropositionalTruncation pt
+  open import NaturalsOrder
+
+  is-noetherian : (𝓡 : Rng) → 𝓤 ⁺ ̇
+  is-noetherian 𝓡 = (I : ℕ → 𝓟 ⟨ 𝓡 ⟩)
+                  → ((n : ℕ) → is-ideal 𝓡 (I n))
+                  → ((n : ℕ) → I n ⊆ I (succ n))
+                  → ∃ m ꞉ ℕ , ((n : ℕ) → m ≤ n → I m ≡ I n)
+
+  NoetherianRng : 𝓤 ⁺ ̇
+  NoetherianRng = Σ 𝓡 ꞉ Rng , is-noetherian 𝓡
+
+  being-noetherian-is-prop : (𝓡 : Rng) → is-prop (is-noetherian 𝓡)
+
+  being-noetherian-is-prop 𝓡 = Π-is-prop fe
+                                (λ I → Π-is-prop fe
+                                (λ _ → Π-is-prop fe
+                                (λ _ → ∃-is-prop)))
+
+  forget-Noether : NoetherianRng → Rng
+  forget-Noether (𝓡 , _) = 𝓡
+
+  forget-Noether-is-embedding : is-embedding forget-Noether
+  forget-Noether-is-embedding = pr₁-is-embedding being-noetherian-is-prop
+
+  _≅[NoetherianRng]_ : NoetherianRng → NoetherianRng → 𝓤 ̇
+
+  ((R , (_+_ , _·_) , _) , _) ≅[NoetherianRng] ((R' , (_+'_ , _·'_) , _) , _) =
+
+                              Σ f ꞉ (R → R')
+                                  , is-equiv f
+                                  × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                  × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+  NB : (𝓡 𝓡' : NoetherianRng)
+     → (𝓡 ≅[NoetherianRng] 𝓡') ≡ (forget-Noether 𝓡 ≅[Rng] forget-Noether 𝓡')
+
+  NB 𝓡 𝓡' = refl
+
+  characterization-of-nrng-≡ : (𝓡 𝓡' : NoetherianRng)
+                             → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[NoetherianRng] 𝓡')
+
+  characterization-of-nrng-≡ 𝓡 𝓡' =
+
+    (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+    (forget-Noether 𝓡 ≡ forget-Noether 𝓡') ≃⟨ ii ⟩
+    (𝓡 ≅[NoetherianRng] 𝓡')                ■
+
+    where
+     i = ≃-sym (embedding-criterion-converse forget-Noether
+                  forget-Noether-is-embedding 𝓡 𝓡')
+     ii = characterization-of-rng-≡ (forget-Noether 𝓡) (forget-Noether 𝓡')
+
+  isomorphic-NoetherianRng-transport :
+
+      (A : NoetherianRng → 𝓥 ̇ )
+    → (𝓡 𝓡' : NoetherianRng) → 𝓡 ≅[NoetherianRng] 𝓡' → A 𝓡 → A 𝓡'
+
+  isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
+   where
+    p : 𝓡 ≡ 𝓡'
+    p = ⌜ ≃-sym (characterization-of-nrng-≡ 𝓡 𝓡') ⌝ i
+
+    a' : A 𝓡'
+    a' = transport A p a
+
+  is-CNL : Ring → 𝓤 ⁺ ̇
+  is-CNL (R , (𝟏 , _+_ , _·_) , i-vii , viii) = is-commutative 𝓡
+                                              × is-noetherian 𝓡
+                                              × is-local 𝓡
+   where
+    𝓡 : Rng
+    𝓡 = (R , (_+_ , _·_) , i-vii)
+
+  being-CNL-is-prop : (𝓡 : Ring) → is-prop (is-CNL 𝓡)
+  being-CNL-is-prop (R , (𝟏 , _+_ , _·_) , i-vii , viii) =
+
+     ×-is-prop (being-commutative-is-prop 𝓡)
+    (×-is-prop (being-noetherian-is-prop 𝓡)
+                       (being-local-is-prop 𝓡))
+   where
+    𝓡 : Rng
+    𝓡 = (R , (_+_ , _·_) , i-vii)
+
+  CNL-Ring : 𝓤 ⁺ ̇
+  CNL-Ring = Σ 𝓡 ꞉ Ring , is-CNL 𝓡
+
+  _≅[CNL]_ : CNL-Ring → CNL-Ring → 𝓤 ̇
+
+  ((R , (𝟏 , _+_ , _·_) , _) , _) ≅[CNL] ((R' , (𝟏' , _+'_ , _·'_) , _) , _) =
+
+                                  Σ f ꞉ (R → R')
+                                      , is-equiv f
+                                      × (f 𝟏 ≡ 𝟏')
+                                      × ((λ x y → f (x + y)) ≡ (λ x y → f x +' f y))
+                                      × ((λ x y → f (x · y)) ≡ (λ x y → f x ·' f y))
+
+  forget-CNL : CNL-Ring → Ring
+  forget-CNL (𝓡 , _) = 𝓡
+
+  forget-CNL-is-embedding : is-embedding forget-CNL
+  forget-CNL-is-embedding = pr₁-is-embedding being-CNL-is-prop
+
+  NB' : (𝓡 𝓡' : CNL-Ring)
+      → (𝓡 ≅[CNL] 𝓡') ≡ (forget-CNL 𝓡 ≅[Ring] forget-CNL 𝓡')
+
+  NB' 𝓡 𝓡' = refl
+
+  characterization-of-CNL-ring-≡ : (𝓡 𝓡' : CNL-Ring)
+                                 → (𝓡 ≡ 𝓡') ≃ (𝓡 ≅[CNL] 𝓡')
+
+  characterization-of-CNL-ring-≡ 𝓡 𝓡' =
+
+     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+     (forget-CNL 𝓡 ≡ forget-CNL 𝓡')         ≃⟨ ii ⟩
+     (𝓡 ≅[CNL] 𝓡')                          ■
+
+     where
+      i = ≃-sym (embedding-criterion-converse forget-CNL
+                   forget-CNL-is-embedding 𝓡 𝓡')
+      ii = characterization-of-ring-≡ (forget-CNL 𝓡) (forget-CNL 𝓡')
+
+  isomorphic-CNL-Ring-transport :
+
+      (A : CNL-Ring → 𝓥 ̇ )
+    → (𝓡 𝓡' : CNL-Ring) → 𝓡 ≅[CNL] 𝓡' → A 𝓡 → A 𝓡'
+
+  isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
+   where
+    p : 𝓡 ≡ 𝓡'
+    p = ⌜ ≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡') ⌝ i
+
+    a' : A 𝓡'
+    a' = transport A p a
 
 module slice-identity
         {𝓤 𝓥 : Universe}
@@ -1098,7 +1427,7 @@ module category-identity
     where
      ss = Π-is-prop fe
            (λ x → Π-is-prop fe
-           (λ y → being-set-is-a-prop fe))
+           (λ y → being-set-is-prop fe))
 
      ls = Π-is-prop fe
            (λ x → Π-is-prop fe

@@ -70,7 +70,7 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
 fem-proptrunc : FunExt → Global-EM → propositional-truncations-exist
 fem-proptrunc fe em = record {
   ∥_∥          = λ X → ¬¬ X ;
-  ∥∥-is-a-prop = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
+  ∥∥-is-prop = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
   ∣_∣         = λ x u → u x ;
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ) }
 
