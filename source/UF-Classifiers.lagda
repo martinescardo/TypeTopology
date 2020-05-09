@@ -32,28 +32,8 @@ open import UF-Powerset
 open import UF-EquivalenceExamples
 open import UF-Retracts
 
--- Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
--- Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
-
 _/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
-
-total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → Σ (fiber f) ≃ X
-
-total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = qinveq g (h , η , ε)
- where
-  g : (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → X
-  g (y , x , p) = x
-
-  h : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
-  h x = (f x , x , refl)
-
-  η : ∀ t → h (g t) ≡ t
-  η (_ , x , refl) = refl
-
-  ε : (x : X) → g (h x) ≡ x
-  ε x = refl
 
 χ : (Y : 𝓤 ̇ ) → 𝓤 / Y  → (Y → 𝓤 ̇ )
 χ Y (X , f) = fiber f
@@ -66,7 +46,6 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 
 χη : is-univalent 𝓤
    → (Y : 𝓤 ̇ ) (σ : 𝓤 / Y) → 𝕋 Y (χ Y σ) ≡ σ
-
 χη ua Y (X , f) = r
  where
   e : Σ (fiber f) ≃ X
@@ -87,33 +66,26 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
 
 χε : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
    → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ≡ A
-
 χε ua fe Y A = dfunext fe γ
  where
   f : ∀ y → fiber pr₁ y → A y
   f y ((y , a) , refl) = a
-
   g : ∀ y → A y → fiber pr₁ y
   g y a = (y , a) , refl
-
   η : ∀ y σ → g y (f y σ) ≡ σ
   η y ((y , a) , refl) = refl
-
   ε : ∀ y a → f y (g y a) ≡ a
   ε y a = refl
-
   γ : ∀ y → fiber pr₁ y ≡ A y
   γ y = eqtoid ua _ _ (qinveq (f y) (g y , η y , ε y))
 
 universes-are-map-classifiers : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
                               → is-map-classifier 𝓤
-
 universes-are-map-classifiers ua fe Y = qinvs-are-equivs (χ Y)
                                          (𝕋 Y , χη ua Y , χε ua fe Y)
 
 map-classification : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
                    → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
-
 map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y
 
 _/[_]_ : (𝓤 : Universe) → (𝓤 ̇ → 𝓥 ̇ ) → 𝓤 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
@@ -127,7 +99,6 @@ is-special-map-classifier {𝓤} P = (Y : 𝓤 ̇ ) → is-equiv (χ-special P Y
 
 mc-gives-sc : is-map-classifier 𝓤
             → (P : 𝓤 ̇ → 𝓥 ̇ ) → is-special-map-classifier P
-
 mc-gives-sc {𝓤} s P Y = γ
  where
   e = (𝓤 /[ P ] Y)                               ≃⟨ a ⟩
@@ -148,18 +119,15 @@ mc-gives-sc {𝓤} s P Y = γ
 χ-special-is-equiv : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
                    → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                    → is-equiv (χ-special P Y)
-
 χ-special-is-equiv {𝓤} ua fe P Y = mc-gives-sc (universes-are-map-classifiers ua fe) P Y
 
 special-map-classifier : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
-
 special-map-classifier {𝓤} ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y
 
 Ω-is-subtype-classifier : Univalence
                         → (Y : 𝓤 ̇ ) → Subtypes Y ≃ (Y → Ω 𝓤)
-
 Ω-is-subtype-classifier {𝓤} ua = special-map-classifier (ua 𝓤)
                                   (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
                                   is-subsingleton
@@ -168,7 +136,6 @@ subtypes-form-set : Univalence → (Y : 𝓤 ̇ ) → is-set (Subtypes Y)
 subtypes-form-set {𝓤} ua Y = equiv-to-set
                               (Ω-is-subtype-classifier ua Y)
                               (powersets-are-sets' ua)
-
 
 retractions-into : 𝓤 ̇ → 𝓤 ⁺ ̇
 retractions-into {𝓤} Y = Σ X ꞉ 𝓤 ̇ , Y ◁ X
@@ -199,11 +166,6 @@ module surjection-classifier
    open PropositionalTruncation pt public
    open import UF-ImageAndSurjection
    open ImageAndSurjection pt public
-
-
-
-   _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-   X ↠ Y = Σ f ꞉ (X → Y), is-surjection f
 
    surjections-into : 𝓤 ̇ → 𝓤 ⁺ ̇
    surjections-into {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↠ Y

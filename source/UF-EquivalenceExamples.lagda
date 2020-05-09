@@ -629,23 +629,23 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
   ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
   ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q *)) q
 
-sum-of-fibers : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X → Y) → X ≃ Σ (fiber f)
-sum-of-fibers {𝓤} {𝓥} X Y f =
+domain-is-total-fiber : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (f : X → Y) → X ≃ Σ (fiber f)
+domain-is-total-fiber {𝓤} {𝓥} X Y f =
   X                                   ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
   X × 𝟙                               ≃⟨ Σ-cong (λ x → singleton-≃ 𝟙-is-singleton
                                                 (singleton-types-are-singletons (f x))) ⟩
-  (Σ x ꞉ X , Σ y ꞉ Y , f x ≡ y) ≃⟨ Σ-flip ⟩
-  (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ■
+  (Σ x ꞉ X , Σ y ꞉ Y , f x ≡ y)       ≃⟨ Σ-flip ⟩
+  (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y)       ■
 
 \end{code}
 
-Alternatively, where we should change the name of this function:
+Alternatively, we can prove this directly:
 
 \begin{code}
 
-graph-domain-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                   → (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃ X
-graph-domain-equiv {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
+total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                      → (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃ X
+total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
  where
   g : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
   g x = f x , x , refl

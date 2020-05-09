@@ -108,7 +108,7 @@ open import UF-EquivalenceExamples
   fe : FunExt
   fe = FunExt-from-Univalence ua
   χ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣
-  χ (I , φ) = fiber φ , I , ≃-sym (graph-domain-equiv φ)
+  χ (I , φ) = fiber φ , I , ≃-sym (total-fiber-is-domain φ)
   T : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → 𝓕 X
   T (A , I , (f , e)) = I , pr₁ ∘ f
   χT : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → χ (T σ) ≡ σ
@@ -118,7 +118,7 @@ open import UF-EquivalenceExamples
     h x = (Σ i ꞉ I , pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
           (Σ σ ꞉ Σ A , pr₁ σ ≡ x)   ≃⟨ fiber-equiv x ⟩
           A x                          ■
-    p : fiber (pr₁ ∘ f) , I , ≃-sym (graph-domain-equiv (pr₁ ∘ f)) ≡ A , I , f , e
+    p : fiber (pr₁ ∘ f) , I , ≃-sym (total-fiber-is-domain (pr₁ ∘ f)) ≡ A , I , f , e
     p = to-Σ-≡ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
                 has-size-is-prop ua (Σ A) 𝓣 _ (I , f , e))
   Tχ : (l : 𝓕 X) → T (χ l) ≡ l

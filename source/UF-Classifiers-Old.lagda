@@ -69,8 +69,8 @@ module type-classifier
      s = ap (λ - → eqtofun (≃-sym -)) r
 
  Tχ : (σ : Σ X ꞉ 𝓤 ̇ , (X → Y)) → T(χ σ) ≡ σ
- Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                       transport-map (graph-domain-equiv f) pr₁)
+ Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (total-fiber-is-domain f) ,
+                       transport-map (total-fiber-is-domain f) pr₁)
 
  χ-is-equivalence : is-equiv χ
  χ-is-equivalence = (T , χT) , (T , Tχ)
@@ -127,8 +127,8 @@ module subtype-classifier
      s = ap (λ - → eqtofun (≃-sym -)) r
 
  Tχ : (σ : Σ X ꞉ 𝓤 ̇ , X ↪ Y) → T(χ σ) ≡ σ
- Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (graph-domain-equiv f) ,
-                          (transport-embedding (graph-domain-equiv f) pr₁ (pr₁-is-embedding i)
+ Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (total-fiber-is-domain f) ,
+                          (transport-embedding (total-fiber-is-domain f) pr₁ (pr₁-is-embedding i)
                          ∙ to-Σ-≡' (being-embedding-is-prop fe fe f _ _)))
 
  χ-is-equivalence : is-equiv χ
@@ -285,7 +285,7 @@ module general-classifier
    g' : green-map f'
    g' = pr₂ (pr₂ (T (χ (X , f , g))))
    e : X ≃ X'
-   e = sum-of-fibers X Y f
+   e = domain-is-total-fiber X Y f
    a : X' ≡ X
    a = (eqtoid ua X X' e) ⁻¹
    B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇

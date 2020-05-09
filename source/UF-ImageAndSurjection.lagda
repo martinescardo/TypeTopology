@@ -160,6 +160,9 @@ Surjections can be characterized as follows, modulo size:
                        → has-section f → is-surjection f
  retraction-surjection {𝓤} {𝓥} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
 
+ _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ X ↠ Y = Σ f ꞉ (X → Y), is-surjection f
+
 \end{code}
 
 Added 13 February 2020 by Tom de Jong.
