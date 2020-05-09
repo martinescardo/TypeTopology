@@ -347,7 +347,7 @@ The fiber point is given by the first projection of the fiber:
 \begin{code}
 
   g⁻¹ : (x : X) → is-g-point x → Y
-  g⁻¹ x γ = fiber-point g x (g-is-invertible-at-g-points x γ)
+  g⁻¹ x γ = fiber-point (g-is-invertible-at-g-points x γ)
 
 \end{code}
 
@@ -388,7 +388,7 @@ taking the fiber path, which is given by the second projection:
 \begin{code}
 
   g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
-  g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
+  g⁻¹-is-rinv x γ = fiber-identification (g-is-invertible-at-g-points x γ)
 
 \end{code}
 
@@ -577,10 +577,10 @@ purpose.
           so-apply claim y
 
       x : X
-      x = fiber-point f y (pr₁ w)
+      x = fiber-point (pr₁ w)
 
       p : f x ≡ y
-      p = fiber-path f y (pr₁ w)
+      p = fiber-identification (pr₁ w)
 
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = have γ ∶ is-g-point x
@@ -717,10 +717,10 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   g-is-invertible-at-g-points x γ = γ x 0 refl
 
   g⁻¹ : (x : X) → is-g-point x → Y
-  g⁻¹ x γ = fiber-point g x (g-is-invertible-at-g-points x γ)
+  g⁻¹ x γ = fiber-point (g-is-invertible-at-g-points x γ)
 
   g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
-  g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
+  g⁻¹-is-rinv x γ = fiber-identification (g-is-invertible-at-g-points x γ)
 
   g⁻¹-is-linv : (y : Y) (γ : is-g-point (g y)) → g⁻¹ (g y) γ ≡ y
   g⁻¹-is-linv y γ = embeddings-are-lc g g-is-emb (g⁻¹-is-rinv (g y) γ)
@@ -821,11 +821,11 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
       w = claim y ν
 
       x : X
-      x = fiber-point f y (pr₁ w)
+      x = fiber-point (pr₁ w)
 
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = 𝟘-elim (pr₂ w γ)
-      ψ (inr ν) = fiber-path f y (pr₁ w)
+      ψ (inr ν) = fiber-identification (pr₁ w)
 
     b : Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))

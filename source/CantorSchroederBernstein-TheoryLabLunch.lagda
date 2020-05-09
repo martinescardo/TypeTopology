@@ -485,7 +485,7 @@ The fiber point is given by the first projection of the fiber:
 \begin{code}
 
   g⁻¹ : (x : X) → is-g-point x → Y
-  g⁻¹ x γ = fiber-point g x (g-is-invertible-at-g-points x γ)
+  g⁻¹ x γ = fiber-point (g-is-invertible-at-g-points x γ)
 
 \end{code}
 
@@ -523,7 +523,7 @@ taking the fiber path, which is given by the second projection:
 \begin{code}
 
   g⁻¹-is-rinv : (x : X) (γ : is-g-point x) → g (g⁻¹ x γ) ≡ x
-  g⁻¹-is-rinv x γ = fiber-path g x (g-is-invertible-at-g-points x γ)
+  g⁻¹-is-rinv x γ = fiber-identification (g-is-invertible-at-g-points x γ)
 
 \end{code}
 
@@ -708,9 +708,9 @@ purpose.
       w = have ν ∶ ¬ is-g-point (g y)
           so-apply claim y
       x : X
-      x = fiber-point f y (pr₁ w)
+      x = fiber-point (pr₁ w)
       p : f x ≡ y
-      p = fiber-path f y (pr₁ w)
+      p = fiber-identification (pr₁ w)
       ψ : (d : decidable (is-g-point x)) → H x d ≡ y
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)

@@ -714,19 +714,19 @@ Added 10 February 2020 by Tom de Jong.
 fiber-of-composite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
                    → (z : Z)
                    → fiber (g ∘ f) z
-                   ≃ (Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+                   ≃ (Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
 fiber-of-composite {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g z =
  qinveq ϕ (ψ , (ψϕ , ϕψ))
   where
    ϕ : fiber (g ∘ f) z
-     → (Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+     → (Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
    ϕ (x , p) = ((f x) , p) , (x , refl)
-   ψ : (Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+   ψ : (Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
      → fiber (g ∘ f) z
    ψ ((y , q) , (x , p)) = x , ((ap g p) ∙ q)
    ψϕ : (w : fiber (g ∘ f) z) → ψ (ϕ w) ≡ w
    ψϕ (x , refl) = refl
-   ϕψ : (w : Σ w ꞉ (fiber g z) , fiber f (fiber-point g z w))
+   ϕψ : (w : Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
       → ϕ (ψ w) ≡ w
    ϕψ ((.(f x) , refl) , (x , refl)) = refl
 
@@ -741,10 +741,10 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
    ψ x = singleton-≃-𝟙
          (pointed-props-are-singletons refl (props-are-sets 𝟙-is-prop))
 
-∼-fiber-paths-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
+∼-fiber-identifications-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
                 → f ∼ g
                 → (y : Y) (x : X) → (f x ≡ y) ≃ (g x ≡ y)
-∼-fiber-paths-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y x = qinveq α (β , (βα , αβ))
+∼-fiber-identifications-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y x = qinveq α (β , (βα , αβ))
  where
   α : f x ≡ y → g x ≡ y
   α p = (H x) ⁻¹ ∙ p
@@ -768,6 +768,6 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
 ∼-fiber-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
           → f ∼ g
           → (y : Y) → fiber f y ≃ fiber g y
-∼-fiber-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y = Σ-cong (∼-fiber-paths-≃ H y)
+∼-fiber-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y = Σ-cong (∼-fiber-identifications-≃ H y)
 
 \end{code}
