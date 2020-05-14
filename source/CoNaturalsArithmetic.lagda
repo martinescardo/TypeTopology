@@ -12,7 +12,7 @@ operation).
 
 NB. There are shorter constructions with more direct proofs of the
 minimum function, e.g. take the pointwise minimum in 𝟚 (see the
-function max in the module GenericconvergentSequence), but this module
+module GenericConvergentSequence), but this module
 serves as a good illustration of reasoning with the final coalgebra
 property to both construct functions and prove their properties.
 
@@ -33,7 +33,7 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
-open import GenericConvergentSequence
+open import GenericConvergentSequence renaming (min to min')
 open import CoNaturals fe
 open import UF-Base
 
@@ -249,6 +249,32 @@ min-equations-characterize-homomorphisms h eq₀ eq₁ eq₂ = dfunext fe₀ γ
        PRED (h (Succ w , Succ t))     ≡⟨ ap PRED (eq₂ w t) ⟩
        PRED (Succ (h (w , t)))        ≡⟨ refl ⟩
        𝟙+ h (κ-min (Succ w , Succ t)) ∎
+
+\end{code}
+
+We can show that the min defined here is equivalent to that
+given in GenericConvergentSequence:
+
+\begin{code}
+
+min'-eq₀ : ∀ v → uncurry min' (Zero , v) ≡ Zero
+min'-eq₀ v = incl-lc (fe 𝓤₀ 𝓤₀) refl
+
+min'-eq₁ : ∀ u → uncurry min' (Succ u , Zero) ≡ Zero
+min'-eq₁ u = incl-lc  (fe 𝓤₀ 𝓤₀)
+             (dfunext (fe 𝓤₀ 𝓤₀) (λ i → Lemma[min𝟚ab≡₀] (inr refl)))
+
+min'-eq₂ : ∀ u v → uncurry min' (Succ u , Succ v) ≡ Succ (uncurry min' (u , v))
+min'-eq₂ u v = incl-lc (fe 𝓤₀ 𝓤₀) (dfunext (fe 𝓤₀ 𝓤₀) γ)
+ where γ : pr₁ (uncurry min' (Succ u , Succ v)) ∼ pr₁ (Succ (uncurry min' (u , v)))
+       γ zero = refl
+       γ (succ i) = refl
+
+min≡ : min ≡ uncurry min'
+min≡ = homomorphism-uniqueness κ-min min (uncurry min')
+       (ℕ∞-corec-homomorphism κ-min)
+       (min-equations-characterize-homomorphisms
+        (uncurry min') min'-eq₀ min'-eq₁ min'-eq₂)
 
 \end{code}
 
