@@ -12,7 +12,7 @@ operation).
 
 NB. There are shorter constructions with more direct proofs of the
 minimum function, e.g. take the pointwise minimum in 𝟚 (see the
-module GenericConvergentSequence), but this module
+function max in the module GenericconvergentSequence), but this module
 serves as a good illustration of reasoning with the final coalgebra
 property to both construct functions and prove their properties.
 
@@ -33,7 +33,7 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
-open import GenericConvergentSequence renaming (min to min')
+open import GenericConvergentSequence
 open import CoNaturals fe
 open import UF-Base
 
@@ -44,14 +44,13 @@ homomorphism to the final coalgebra PRED : ℕ∞ → 𝟙 + ℕ∞ on ℕ∞.
 
 \begin{code}
 
-κ-min' : 𝟚 → 𝟚 → ℕ∞ → ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
-κ-min' ₀ _ _ _ = inl *
-κ-min' ₁ ₀ _ _ = inl *
-κ-min' ₁ ₁ Pu Pv = inr (Pu , Pv)
-
 private
  κ-min : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
- κ-min (u , v) = κ-min' (positivity u) (positivity v) (Pred u) (Pred v)
+ κ-min (u , v) = 𝟚-Cases (positivity u)
+                  (inl *)
+                  (𝟚-Cases (positivity v)
+                    (inl *)
+                    (inr (Pred u , Pred v)))
 
 min : ℕ∞ × ℕ∞ → ℕ∞
 min = ℕ∞-corec κ-min
@@ -250,34 +249,6 @@ min-equations-characterize-homomorphisms h eq₀ eq₁ eq₂ = dfunext fe₀ γ
        PRED (h (Succ w , Succ t))     ≡⟨ ap PRED (eq₂ w t) ⟩
        PRED (Succ (h (w , t)))        ≡⟨ refl ⟩
        𝟙+ h (κ-min (Succ w , Succ t)) ∎
-
-\end{code}
-
-We can show that the min defined here is equivalent to that
-given in GenericConvergentSequence:
-
-\begin{code}
-
-min'' = uncurry min'
-
-min'-eq₀ : ∀ v → min'' (Zero , v) ≡ Zero
-min'-eq₀ v = incl-lc (fe 𝓤₀ 𝓤₀) refl
-
-min'-eq₁ : ∀ u → min'' (Succ u , Zero) ≡ Zero
-min'-eq₁ u = incl-lc  (fe 𝓤₀ 𝓤₀)
-             (dfunext (fe 𝓤₀ 𝓤₀) (λ i → Lemma[min𝟚ab≡₀] (inr refl)))
-
-min'-eq₂ : ∀ u v → min'' (Succ u , Succ v) ≡ Succ (min'' (u , v))
-min'-eq₂ u v = incl-lc (fe 𝓤₀ 𝓤₀) (dfunext (fe 𝓤₀ 𝓤₀) γ)
- where γ : pr₁ (min'' (Succ u , Succ v)) ∼ pr₁ (Succ (min'' (u , v)))
-       γ zero = refl
-       γ (succ i) = refl
-
-min≡ : min ≡ min''
-min≡ = homomorphism-uniqueness κ-min min min''
-       (ℕ∞-corec-homomorphism κ-min)
-       (min-equations-characterize-homomorphisms
-       min'' min'-eq₀ min'-eq₁ min'-eq₂)
 
 \end{code}
 
