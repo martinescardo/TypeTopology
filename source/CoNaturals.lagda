@@ -172,9 +172,9 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
   Q 0 z = z
   Q(succ n) z = q(Q n z)
 
-  E : 𝟙 + X → 𝟚
-  E(inl s) = ₀
-  E(inr x) = ₁
+  E : {X : 𝓤 ̇ } → 𝟙 + X → 𝟚
+  E (inl s) = ₀
+  E (inr x) = ₁
 
   hl : (z : 𝟙 + X) → E(q z) ≡ ₁ → E z ≡ ₁
   hl (inl s) r = r
