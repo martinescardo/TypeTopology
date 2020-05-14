@@ -924,7 +924,6 @@ module subgroup-identity
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
   ⟪⟫-is-embedding = pr₁-embedding being-group-closed-subset-is-subsingleton
-   where
 
   ap-⟪⟫ : (S T : Subgroups) → S ≡ T → ⟪ S ⟫ ≡ ⟪ T ⟫
   ap-⟪⟫ S T = ap ⟪_⟫
