@@ -163,6 +163,9 @@ positivity u = incl u 0
 is-Zero-Zero : is-Zero Zero
 is-Zero-Zero = refl
 
+is-positive-Succ : (α : ℕ∞) → is-positive (Succ α)
+is-positive-Succ α = refl
+
 Zero-not-Succ : {u : ℕ∞} → Zero ≢ Succ u
 Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
 
@@ -192,6 +195,10 @@ Pred(α , d) = (α ∘ succ , d ∘ succ)
 
 Pred-Zero-is-Zero : Pred Zero ≡ Zero
 Pred-Zero-is-Zero = refl
+
+Pred-Zero-is-Zero' : (u : ℕ∞) → u ≡ Zero → Pred u ≡ u
+Pred-Zero-is-Zero' u u≡Zero
+ = transport (λ - → Pred - ≡ -) (u≡Zero ⁻¹) Pred-Zero-is-Zero
 
 Pred-Succ : {u : ℕ∞} → Pred(Succ u) ≡ u
 Pred-Succ {u} = refl
@@ -248,6 +255,10 @@ same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-gives-≤₂ a)
   a p = back-transport is-Zero (g (is-Zero-equal-Zero fe₀ p)) refl
   b : is-Zero u → is-Zero v
   b p = back-transport is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
+
+equal-same-positivity : (u v : ℕ∞) → u ≡ v
+                      → positivity u ≡ positivity v
+equal-same-positivity u .u refl = refl
 
 successors-same-positivity : {u u' v v' : ℕ∞}
                            → u ≡ Succ u'
@@ -503,6 +514,17 @@ max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
      f : (α(succ i) ≡ ₁) + (β(succ i) ≡ ₁) → (α i ≡ ₁) + (β i ≡ ₁)
      f (inl p) = inl (r i p)
      f (inr p) = inr (s i p)
+
+min : ℕ∞ → ℕ∞ → ℕ∞
+min (α , r) (β , s) = (λ i → min𝟚 (α i) (β i)) , t
+ where
+  t : decreasing (λ i → min𝟚 (α i) (β i))
+  t i p = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (pr₁ (g e)) (pr₂ (g e))
+   where
+    e : (α(succ i) ≡ ₁) × (β(succ i) ≡ ₁)
+    e = Lemma[min𝟚ab≡₁→a≡₁] p , Lemma[min𝟚ab≡₁→b≡₁] p
+    g : (α(succ i) ≡ ₁) × (β(succ i) ≡ ₁) → (α i ≡ ₁) × (β i ≡ ₁)
+    g (p₁ , p₂) = r i p₁ , s i p₂
 
 \end{code}
 

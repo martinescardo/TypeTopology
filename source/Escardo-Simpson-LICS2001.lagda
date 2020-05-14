@@ -15,12 +15,13 @@ https://www.cs.bham.ac.uk/~mhe/.talks/map2011/
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import UF-FunExt
 open import SpartanMLTT renaming (* to ⋆)
 open import NaturalsAddition renaming (_+_ to _+ℕ_)
-open import UF-Subsingletons
+open import UF-FunExt
 
 module Escardo-Simpson-LICS2001 (fe : FunExt) where
+
+open import UF-Subsingletons public
 
 \end{code}
 
@@ -36,10 +37,10 @@ idempotent      _∙_ = ∀ a       → a ∙ a             ≡ a
 transpositional _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ≡ (a ∙ c) ∙ (b ∙ d)
 
 
-seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (i : ℕ)
-             → (λ (n : ℕ) → α (succ n +ℕ i)) ≡ (λ (n : ℕ) → α (succ (n +ℕ i)))
+seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (n : ℕ)
+             → (λ (i : ℕ) → α (succ i +ℕ n)) ≡ (λ (i : ℕ) → α (succ (i +ℕ n)))
 seq-add-push α 0 = refl
-seq-add-push α (succ i) = seq-add-push (α ∘ succ) i
+seq-add-push α (succ n) = seq-add-push (α ∘ succ) n
 
 \end{code}
 
@@ -47,12 +48,12 @@ The initial structure we define is a Midpoint-algebra
 
 \begin{code}
 
-mid-point-algebra-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
-mid-point-algebra-axioms A _⊕_ = is-set A
+midpoint-algebra-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
+midpoint-algebra-axioms A _⊕_ = is-set A
                                × idempotent _⊕_ × commutative _⊕_ × transpositional _⊕_
 
 Midpoint-algebra : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Midpoint-algebra 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (mid-point-algebra-axioms A _⊕_)
+Midpoint-algebra 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpoint-algebra-axioms A _⊕_)
 
 \end{code}
 
@@ -93,17 +94,17 @@ iterative-uniqueness {𝓤} _⊕_ F M = dfunext (fe 𝓤 𝓤) (iterative-unique
 \begin{code}
 
 Convex-body : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Convex-body 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (mid-point-algebra-axioms A _⊕_)
+Convex-body 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpoint-algebra-axioms A _⊕_)
                                                  × (cancellative _⊕_)
                                                  × (iterative _⊕_)
-                                                 
+
 ⟨_⟩ : Convex-body 𝓤 → 𝓤 ̇
 ⟨ A , _ ⟩ = A
 
-mid-point-operation : (𝓐 : Convex-body 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
-mid-point-operation (A , _⊕_ , _) = _⊕_
+midpoint-operation : (𝓐 : Convex-body 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
+midpoint-operation (A , _⊕_ , _) = _⊕_
 
-syntax mid-point-operation 𝓐 x y = x ⊕⟨ 𝓐 ⟩ y
+syntax midpoint-operation 𝓐 x y = x ⊕⟨ 𝓐 ⟩ y
 
 \end{code}
 
@@ -156,9 +157,9 @@ id-is-⊕-homomorphism 𝓐 x y = refl
 
 \begin{code}
 
-is-interval-object : (𝓘 : Convex-body 𝓤) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤ω
-is-interval-object {𝓤} 𝓘 u v =
-     {𝓥 : Universe} (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩) -- h = affine a b
+is-interval-object : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
+is-interval-object 𝓘 𝓥 u v =
+     (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩) -- h = affine a b
    → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩) , (h u ≡ a)
                             × (h v ≡ b)
                             × ((x y : ⟨ 𝓘 ⟩) → h (x ⊕⟨ 𝓘 ⟩ y) ≡ h x ⊕⟨ 𝓐 ⟩ h y)
@@ -174,10 +175,10 @@ record Interval-object (𝓤 : Universe) : 𝓤ω where
   𝕀 : 𝓤 ̇
   _⊕_ : 𝕀 → 𝕀 → 𝕀
   u v : 𝕀
-  mpaa : mid-point-algebra-axioms 𝕀 _⊕_
+  mpaa : midpoint-algebra-axioms 𝕀 _⊕_
   ca : cancellative _⊕_
   ia : iterative _⊕_
-  universal-property : is-interval-object (𝕀 , _⊕_ , mpaa , ca , ia) u v 
+  universal-property : is-interval-object (𝕀 , _⊕_ , mpaa , ca , ia) 𝓤 u v
 
 \end{code}
 
@@ -282,7 +283,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
  M : (ℕ → 𝕀) → 𝕀
  M = pr₁ ia
- 
+
  M-prop₁ : (a : ℕ → 𝕀) → M a ≡ a 0 ⊕ (M (a ∘ succ))
  M-prop₁ = pr₁ (pr₂ ia)
 
@@ -292,9 +293,6 @@ module basic-interval-object-development {𝓤 : Universe}
  M-idem : (x : 𝕀) → M (λ _ → x) ≡ x
  M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem x ⁻¹) ⁻¹
 
- -- M-symm : (x : ℕ → ℕ → 𝕀) → M (λ i → (M (λ j → x i j))) ≡ M (λ i → M (λ j → x j i))
- -- M-symm = ?
- 
  M-hom : (x y : ℕ → 𝕀) → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
  M-hom x y = M-prop₂ M' (λ i → x i ⊕ y i) γ where
    M' : ℕ → 𝕀
@@ -322,6 +320,34 @@ module basic-interval-object-development {𝓤 : Universe}
                    (seq-add-push y i)    ⟩
          (x i ⊕ y i) ⊕ M' (succ i) ∎
 
+ M-prop₁-inner : (x : ℕ → ℕ → 𝕀) → M (λ i → M (λ j → x i j))
+                                 ≡ M (λ i → x i 0 ⊕ M (λ j → x i (succ j)))
+ M-prop₁-inner x = ap M (dfunext (fe 𝓤₀ 𝓤) (λ i → M-prop₁ (x i)))
+
+ M-symm : (x : ℕ → ℕ → 𝕀) → M (λ i → M (λ j → x i j)) ≡ M (λ i → (M λ j → x j i))
+ M-symm x = M-prop₂ M' (λ i → M (λ j → x j i)) γ where
+   M' : ℕ → 𝕀
+   M' n = M (λ i → M (λ j → x i (j +ℕ n)))
+   γ : (i : ℕ) → M' i ≡ (pr₁ ia (λ j → x j i) ⊕ M' (succ i))
+   γ n = M (λ i → M (λ j → x i (j +ℕ n)))
+             ≡⟨ M-prop₁-inner (λ i j → x i (j +ℕ n))          ⟩ 
+         M (λ i → x i (0 +ℕ n) ⊕ M (λ j → x i (succ j +ℕ n)))
+             ≡⟨ M-hom (λ i → x i (0 +ℕ n))
+                      (λ i → M (λ j → x i (succ j +ℕ n))) ⁻¹  ⟩ 
+         M (λ i → x i (0 +ℕ n)) ⊕ M (λ i → M (λ j → x i (succ j +ℕ n)))
+             ≡⟨ ap (λ - → M (λ i → x i -)
+                    ⊕ M (λ i → M (λ j → x i (succ j +ℕ n))))
+                   (zero-left-neutral n)                      ⟩
+         M (λ i → x i n) ⊕ M (λ i → M (λ j → x i (succ j +ℕ n)))
+             ≡⟨ ap (M (λ j → x j n) ⊕_) (seq-seq-add-push x n) ⟩
+         M (λ j → x j n) ⊕ M' (succ n) ∎
+     where
+       seq-seq-add-push : (x : ℕ → ℕ → 𝕀) (n : ℕ)
+                        → M (λ i → M (λ j → x i (succ j +ℕ n)))
+                        ≡ M (λ i → M (λ j → x i (succ (j +ℕ n))))
+       seq-seq-add-push x 0 = refl
+       seq-seq-add-push x (succ n) = seq-seq-add-push (λ i j → x i (succ j)) n
+
 \end{code}
 
  Any midpoint-hom is automatically an M-hom
@@ -344,7 +370,7 @@ module basic-interval-object-development {𝓤 : Universe}
                   (zero-left-neutral i) ⟩
          h (z i) ⊕ h (M (λ n → z (succ n +ℕ i)))
             ≡⟨ ap (λ - → h (z i) ⊕ h (M -))
-                  (seq-add-push z i)    ⟩ 
+                  (seq-add-push z i)    ⟩
          h (z i) ⊕ M' (succ i)
             ∎
 
@@ -384,11 +410,11 @@ module basic-interval-object-development {𝓤 : Universe}
  +1-inverse = affine-equation-r +1 −1
 
  O-inverse : − O ≡ O
- O-inverse =    − O      ≡⟨ −-is-⊕-homomorphism −1 +1 ⟩ 
-             − −1 ⊕ − +1 ≡⟨ ap (_⊕ − +1) −1-inverse   ⟩ 
+ O-inverse =    − O      ≡⟨ −-is-⊕-homomorphism −1 +1 ⟩
+             − −1 ⊕ − +1 ≡⟨ ap (_⊕ − +1) −1-inverse   ⟩
                +1 ⊕ − +1 ≡⟨ ap (+1 ⊕_)   +1-inverse   ⟩
                +1 ⊕ −1   ≡⟨ ⊕-comm +1 −1              ⟩
-                  O      ∎ 
+                  O      ∎
 
  −1-neg-inv : − − −1 ≡ −1
  −1-neg-inv = − − −1 ≡⟨ ap −_ −1-inverse ⟩
@@ -402,7 +428,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
  −-involutive : (x : 𝕀) → − − x ≡ x
  −-involutive x =         − − x ≡⟨ negation-involutive' x ⁻¹ ⟩
-                 affine −1 +1 x ≡⟨ affine-uv-involutive x ⟩ 
+                 affine −1 +1 x ≡⟨ affine-uv-involutive x ⟩
                               x  ∎
   where
    −−-is-⊕-homomorphism : is-⊕-homomorphism 𝓘 𝓘 (λ x → − (− x))
@@ -412,6 +438,11 @@ module basic-interval-object-development {𝓤 : Universe}
    negation-involutive' = affine-uniqueness· (λ x → − (− x))
                           −1 +1 −1-neg-inv +1-neg-inv
                           −−-is-⊕-homomorphism
+
+ fact : (x y : 𝕀) → x ⊕ − y ≡ − (− x ⊕ y)
+ fact x y =     x ⊕ − y ≡⟨ ap (_⊕ (− y)) (−-involutive x ⁻¹) ⟩
+            − − x ⊕ − y ≡⟨ −-is-⊕-homomorphism (− x) y ⁻¹ ⟩
+            − (− x ⊕ y) ∎
 
 \end{code}
 
@@ -424,7 +455,7 @@ module basic-interval-object-development {𝓤 : Universe}
  x ⊖ y = x ⊕ (− y)
 
  ⊖-zero : (x : 𝕀) → x ⊖ x ≡ O
- ⊖-zero x = x ⊖ x        ≡⟨ ⊖-fact' ⁻¹          ⟩ 
+ ⊖-zero x = x ⊖ x        ≡⟨ ⊖-fact' ⁻¹          ⟩
             affine O O x ≡⟨ affine-constant O x ⟩
             O            ∎
    where
@@ -491,8 +522,8 @@ module basic-interval-object-development {𝓤 : Universe}
 
  *-is-⊕-homomorphism-r : (b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (_* b)
  *-is-⊕-homomorphism-r b x y =
-      (x ⊕ y) * b       ≡⟨ *-commutative (x ⊕ y) b             ⟩ 
-      b * (x ⊕ y)       ≡⟨ *-is-⊕-homomorphism-l b x y           ⟩ 
+      (x ⊕ y) * b       ≡⟨ *-commutative (x ⊕ y) b             ⟩
+      b * (x ⊕ y)       ≡⟨ *-is-⊕-homomorphism-l b x y           ⟩
       (b * x) ⊕ (b * y) ≡⟨ ap ((b * x) ⊕_) (*-commutative b y) ⟩
       (b * x) ⊕ (y * b) ≡⟨ ap (_⊕ (y * b)) (*-commutative b x) ⟩
       (x * b) ⊕ (y * b) ∎
@@ -515,7 +546,7 @@ module basic-interval-object-development {𝓤 : Universe}
            − ((x * − a) ⊕ (x * − b))
                 ≡⟨ affine-is-⊕-homomorphism +1 −1 (x * (− a)) (x * (− b)) ⟩
            − (x * − a) ⊕ − (x * − b) ∎
-                
+
  *-assoc : (x y z : 𝕀) → x * (y * z) ≡ (x * y) * z
  *-assoc x y z = γ z ⁻¹
   where
@@ -531,7 +562,7 @@ module basic-interval-object-development {𝓤 : Universe}
            x * (y * a ⊕ y * b)
                 ≡⟨ affine-is-⊕-homomorphism (− x) x (y * a) (y * b) ⟩
            x * (y * a) ⊕ x * (y * b) ∎
-   γ : (λ z → (x * y) * z) ∼ (λ z → x * (y * z)) 
+   γ : (λ z → (x * y) * z) ∼ (λ z → x * (y * z))
    γ = affine-uniqueness· (λ z → x * (y * z)) (− (x * y)) (x * y) l r i
 
 \end{code}
@@ -560,7 +591,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
  O-half : O /2 ≡ O
  O-half = ⊕-idem O
- 
+
  −1-half : − +1/2 ≡ −1/2
  −1-half = −-half +1 ∙ ap _/2 +1-inverse
 
@@ -582,7 +613,7 @@ module basic-interval-object-development {𝓤 : Universe}
  of truncated addition and subtraction
 
 \begin{code}
-  
+
  double : 𝕀 → 𝕀
  double = pr₁ hd
 
@@ -598,6 +629,18 @@ module basic-interval-object-development {𝓤 : Universe}
  _+𝕀_ _−𝕀_ : 𝕀 → 𝕀 → 𝕀
  x +𝕀 y = double (x ⊕ y)
  x −𝕀 y = double (x ⊖ y)
+
+ +𝕀-comm : commutative _+𝕀_
+ +𝕀-comm x y = ap double (⊕-comm x y)
+
+ +𝕀-itself : (x : 𝕀) → x +𝕀 x ≡ double x
+ +𝕀-itself x = ap double (⊕-idem x)
+
+ +𝕀-tran : (x y s t : 𝕀) → (x ⊕ y) +𝕀 (s ⊕ t) ≡ (x ⊕ s) +𝕀 (y ⊕ t)
+ +𝕀-tran x y s t = ap double (⊕-tran x y s t)
+
+ +𝕀-fact : (x y : 𝕀) → x +𝕀 − y ≡ double (− (y ⊖ x))
+ +𝕀-fact x y = ap double (fact x y ∙ ap −_ (⊕-comm (− x) y))
 
 \end{code}
 
@@ -617,11 +660,23 @@ module basic-interval-object-development {𝓤 : Universe}
  O-midpoint-of-halves = −1/2 ⊕ +1/2     ≡⟨ ap (−1/2 ⊕_) (+1-half ⁻¹) ⟩
                         −1/2 ⊕ (− −1/2) ≡⟨ ⊖-zero −1/2               ⟩
                         O ∎
-                         
+
  double-O-is-O : double O ≡ O
  double-O-is-O = double O       ≡⟨ ap double (⊕-idem O ⁻¹) ⟩
                  double (O ⊕ O) ≡⟨ double-mid O            ⟩
-                 O ∎ 
+                 O ∎
+
+ double-−1/2-is-−1 : double −1/2 ≡ −1
+ double-−1/2-is-−1 = double-mid −1
+
+ double-+1/2-is-+1 : double +1/2 ≡ +1
+ double-+1/2-is-+1 = double-mid +1
+
+ double-−1-is-−1 : double −1 ≡ −1
+ double-−1-is-−1 = ap double (⊕-idem −1 ⁻¹ ∙ ap (−1 ⊕_) (⊕-idem −1 ⁻¹)) ∙ double-left −1
+
+ double-+1-is-+1 : double +1 ≡ +1
+ double-+1-is-+1 = ap double (⊕-idem +1 ⁻¹ ∙ ap (+1 ⊕_) (⊕-idem +1 ⁻¹)) ∙ double-right +1
 
  maxO-O-is-O : maxO O ≡ O
  maxO-O-is-O = maxO O
@@ -648,7 +703,7 @@ module basic-interval-object-development {𝓤 : Universe}
               double (a /2)
                 ≡⟨ double-mid a                  ⟩
               a ∎
-              
+
  -- max-comm : commutative _∨_
  -- max-comm x y = {!!}
 
