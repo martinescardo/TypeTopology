@@ -725,7 +725,7 @@ Compact-closed-under-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                        → X ≃ Y
                        → Compact X {𝓦}
                        → Compact Y {𝓦}
-Compact-closed-under-≃ e = Compact-closed-under-retracts (equiv-retract-r e)
+Compact-closed-under-≃ e = Compact-closed-under-retracts (≃-gives-▷ e)
 
 module CompactTypesPT (pt : propositional-truncations-exist) where
 
@@ -774,11 +774,11 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
    γ (inr u) = inr (empty-is-uninhabited u)
 
 
- ∃-Compactness-is-a-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∃-Compact X {𝓥})
- ∃-Compactness-is-a-prop {𝓤} {𝓥} fe {X} = Π-is-prop (fe (𝓤 ⊔ (𝓥 ⁺)) (𝓤 ⊔ 𝓥))
+ ∃-Compactness-is-prop : FunExt → {X : 𝓤 ̇ } → is-prop (∃-Compact X {𝓥})
+ ∃-Compactness-is-prop {𝓤} {𝓥} fe {X} = Π-is-prop (fe (𝓤 ⊔ (𝓥 ⁺)) (𝓤 ⊔ 𝓥))
                                     (λ A → Π-is-prop (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
                                     (λ δ → decidability-of-prop-is-prop
-                                            (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-a-prop))
+                                            (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-prop))
 
 
  ∃-Compactness-gives-Markov : {X : 𝓤 ̇ }
@@ -789,7 +789,7 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
  ∥Compact∥-gives-∃-Compact : FunExt → {X : 𝓤 ̇ } → ∥ Compact X {𝓥} ∥ → ∃-Compact X {𝓥}
- ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-a-prop fe)
+ ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-prop fe)
                                      Compactness-gives-∃-Compactness
 
 \end{code}

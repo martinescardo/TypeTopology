@@ -85,7 +85,7 @@ If X is a set, then _⊑_ is a partial order:
 ⊑-prop-valued : funext 𝓣 𝓣 → funext 𝓣 𝓤
               → is-set X → (l m : 𝓛 X) → is-prop (l ⊑ m)
 ⊑-prop-valued fe fe' s l m (f , δ) (g , ε) =
-  to-Σ-≡ (dfunext fe (λ p → being-defined-is-a-prop m (f p) (g p)) ,
+  to-Σ-≡ (dfunext fe (λ p → being-defined-is-prop m (f p) (g p)) ,
           Π-is-prop fe' (λ d → s) _ ε)
 
 \end{code}
@@ -121,7 +121,7 @@ embedding.
       ψ ∘ g                                                 ≡⟨ dfunext fe' ε ⟩
       φ     ∎
   e : Q , ψ , j ≡ P , φ , i
-  e = to-Σ-≡ (a , to-×-≡ d (being-a-prop-is-a-prop fe _ i))
+  e = to-Σ-≡ (a , to-×-≡ d (being-prop-is-prop fe _ i))
 
 ⊑-anti : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
        → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
@@ -149,7 +149,7 @@ open import LiftingEmbeddingDirectly 𝓣
     b : (P , φ , i) ⊑ η (φ p)
     b = (λ _ → *) , (λ q → ap φ (i q p))
   fg : (d : is-defined l) → f l (g l d) ≡ d
-  fg d = being-defined-is-a-prop l (f l (g l d)) d
+  fg d = being-defined-is-prop l (f l (g l d)) d
   gf : (z : fiber η l) → g l (f l z) ≡ z
   gf z = η-is-embedding pe fe fe' fe'' l (g l (f l z)) z
 
@@ -214,7 +214,7 @@ to-from fe l m ((f , δ) , g) = b
   δ' : is-equiv f
   δ' = pr₂ (pr₁ (to-⋍· l m (from-⋍· l m ((f , δ) , g))))
   a : δ' ≡ δ
-  a = being-equiv-is-a-prop'' fe f δ' δ
+  a = being-equiv-is-prop'' fe f δ' δ
   b : (f , δ') , g ≡ (f , δ) , g
   b = ap (λ - → (f , -) , g) a
 
@@ -232,7 +232,7 @@ to-from fe l m ((f , δ) , g) = b
                    → (l m : 𝓛 X)
                    → (l ⊑ m) × (is-defined m → is-defined l) ≃ (l ≡ m)
 ⊑-anti-equiv-lemma ua fe l m =
-  (⊑-anti-equiv-lemma' (funext-from-univalence ua) l m)
+  (⊑-anti-equiv-lemma' (univalence-gives-funext ua) l m)
   ● (≃-sym (𝓛-Id· ua fe l m))
 
 ⊑-anti-equiv : is-univalent 𝓣 → funext 𝓣 𝓤
@@ -257,11 +257,11 @@ to-from fe l m ((f , δ) , g) = b
      uv (((f , δ) , h) , ((g , ε) , k)) = t
       where
        r : g ≡ h
-       r = dfunext (funext-from-univalence ua)
-                   (λ p → being-defined-is-a-prop l (g p) (h p))
+       r = dfunext (univalence-gives-funext ua)
+                   (λ p → being-defined-is-prop l (g p) (h p))
        s : f ≡ k
-       s = dfunext (funext-from-univalence ua)
-                   (λ p → being-defined-is-a-prop m (f p) (k p))
+       s = dfunext (univalence-gives-funext ua)
+                   (λ p → being-defined-is-prop m (f p) (k p))
        t : ((f , δ) , g) , (g , ε) , f ≡ ((f , δ) , h) , (g , ε) , k
        t = ap₂ (λ -₀ -₁ → ((f , δ) , -₀) , (g , ε) , -₁) r s
 
@@ -348,12 +348,12 @@ Using this we have the following, as promised:
  (is-defined l → l ≡ m)                                                ■
  where
   fe : funext 𝓣 𝓣
-  fe = funext-from-univalence ua
+  fe = univalence-gives-funext ua
   s : (is-defined l → is-defined m → is-defined l) ≃ 𝟙 {𝓤}
   s = singleton-≃-𝟙 ((λ d e → d) ,
                      Π-is-prop fe
                        (λ d → Π-is-prop fe
-                                (λ e → being-defined-is-a-prop l)) (λ d e → d))
+                                (λ e → being-defined-is-prop l)) (λ d e → d))
 
   a = ⊑-open fe fe₀ fe₂ l m
   b =  ≃-sym 𝟙-rneutral
@@ -373,7 +373,7 @@ elements of hom-type l ⊑ m as partial element of identity the type l ≡ m.
        → (l m : 𝓛 X) → l ⊑ m → 𝓛 (l ≡ m)
 ⊑-lift ua fe₀ fe₁ fe₂ l m α = is-defined l ,
                               ⌜ ⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m ⌝ α ,
-                              being-defined-is-a-prop l
+                              being-defined-is-prop l
 
 
 \end{code}
@@ -389,16 +389,16 @@ is univalent and we have enough function extensionality for 𝓣 and 𝓤.
 is-𝓛-equiv : (l m : 𝓛 X) → l ⊑ m → 𝓣 ⁺ ⊔ 𝓤 ̇
 is-𝓛-equiv l m α = (n : 𝓛 X) → is-equiv (𝓛-pre-comp-with l m α n)
 
-being-𝓛-equiv-is-a-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
+being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
                         → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
-being-𝓛-equiv-is-a-prop fe fe' l m α =
- Π-is-prop fe (λ n → being-equiv-is-a-prop'' fe' (𝓛-pre-comp-with l m α n))
+being-𝓛-equiv-is-prop fe fe' l m α =
+ Π-is-prop fe (λ n → being-equiv-is-prop'' fe' (𝓛-pre-comp-with l m α n))
 
 is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m) → is-𝓛-equiv l m α → is-equiv (pr₁ α)
 is-𝓛-equiv→ l m α e = qinvs-are-equivs (pr₁ α)
                                        (pr₁ β ,
-                                        (λ p → being-defined-is-a-prop l (pr₁ β (pr₁ α p)) p) ,
-                                        (λ q → being-defined-is-a-prop m (pr₁ α (pr₁ β q)) q))
+                                        (λ p → being-defined-is-prop l (pr₁ β (pr₁ α p)) p) ,
+                                        (λ q → being-defined-is-prop m (pr₁ α (pr₁ β q)) q))
  where
   u : m ⊑ l → l ⊑ l
   u = 𝓛-pre-comp-with l m α l
@@ -422,7 +422,7 @@ is-𝓛-equiv← pe fe fe' l m α e = γ
   ρ l α e n = equiv-closed-under-∼ u (𝓛-pre-comp-with l l α n) i h
    where
     s : pr₁ α ≡ id
-    s = dfunext fe (λ q → being-defined-is-a-prop l (pr₁ α q) q)
+    s = dfunext fe (λ q → being-defined-is-prop l (pr₁ α q) q)
     δ : (q : is-defined l) → value l q ≡ value l q
     δ = pr₁ (π l n α s)
     u : l ⊑ n → l ⊑ n
@@ -472,7 +472,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
        where
 
  pe : propext 𝓣
- pe = propext-from-univalence ua
+ pe = univalence-gives-propext ua
 
  is-𝓛-equiv-charac : (l m : 𝓛 X) (α : l ⊑ m)
                    → is-𝓛-equiv l m α ≃ (is-defined m → is-defined l)
@@ -481,18 +481,18 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
                            (is-defined m → is-defined l) ■
   where
    a = logically-equivalent-props-are-equivalent
-        (being-𝓛-equiv-is-a-prop fe fe l m α)
-        (being-equiv-is-a-prop'' fe (pr₁ α))
+        (being-𝓛-equiv-is-prop fe fe l m α)
+        (being-equiv-is-prop'' fe (pr₁ α))
         (is-𝓛-equiv→ l m α)
         (is-𝓛-equiv← pe fe fe l m α)
 
    b = logically-equivalent-props-are-equivalent
-        (being-equiv-is-a-prop'' fe (pr₁ α))
-        (Π-is-prop fe (λ p → being-defined-is-a-prop l))
+        (being-equiv-is-prop'' fe (pr₁ α))
+        (Π-is-prop fe (λ p → being-defined-is-prop l))
         (inverse (pr₁ α))
         (λ g → qinvs-are-equivs (pr₁ α)
-                                (g , (λ q → being-defined-is-a-prop l (g (pr₁ α q)) q) ,
-                                     (λ p → being-defined-is-a-prop m (pr₁ α (g p)) p)))
+                                (g , (λ q → being-defined-is-prop l (g (pr₁ α q)) q) ,
+                                     (λ p → being-defined-is-prop m (pr₁ α (g p)) p)))
 
  _≃⟨𝓛⟩_ : 𝓛 X → 𝓛 X → 𝓣 ⁺ ⊔ 𝓤 ̇
  l ≃⟨𝓛⟩ m = Σ α ꞉ l ⊑ m , is-𝓛-equiv l m α
@@ -525,7 +525,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
 
  𝓛-is-univalent : (l m : 𝓛 X) → is-equiv (Id-to-𝓛-eq l m)
  𝓛-is-univalent l = universality-equiv l (𝓛-refl l)
-                      (unique-element-is-universal-element (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
+                      (central-point-is-universal (l ≃⟨𝓛⟩_) (l , 𝓛-refl l)
                         (singletons-are-props (𝓛-is-univalent' l) (l , 𝓛-refl l)))
   where
    open import UF-Yoneda

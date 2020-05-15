@@ -11,8 +11,8 @@ open import Universes
 open import Negation
 open import Id
 open import Empty
-open import One
-open import One-Properties
+open import Unit
+open import Unit-Properties
 
 +-commutative : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A + B → B + A
 +-commutative = cases inr inl
@@ -58,7 +58,7 @@ Right-fails-then-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q �
 Right-fails-then-left-holds (inl p) u = p
 Right-fails-then-left-holds (inr q) u = 𝟘-elim (u q)
 
-open import One
+open import Unit
 open import Sigma
 open import GeneralNotation
 

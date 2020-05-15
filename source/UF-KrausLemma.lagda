@@ -29,7 +29,7 @@ transport-identifications-along-identifications refl h k q = refl-left-neutral �
 transport-identifications-along-identifications' : {X : 𝓤 ̇ } {x : X} (p : x ≡ x) (f : X → X) (q : x ≡ f x)
                             → transport (λ - → - ≡ f -) p q ≡ (p ⁻¹ ∙ q) ∙ ap f p
 transport-identifications-along-identifications'  p f q = transport-identifications-along-identifications p id f q
-                                    ∙ ap (λ - → - ⁻¹ ∙ q ∙ (ap f p)) ((ap-id-is-id p)⁻¹)
+                                    ∙ ap (λ - → - ⁻¹ ∙ q ∙ (ap f p)) ((ap-id-is-id' p)⁻¹)
 
 Kraus-Lemma : {X : 𝓤 ̇ } → (f : X → X) → wconstant f → is-prop(fix f)
 Kraus-Lemma {𝓤} {X} f g (x , p) (y , q) =

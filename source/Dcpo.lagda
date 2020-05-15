@@ -82,11 +82,11 @@ module _ {𝓤 𝓣 : Universe}
                    → (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
  is-directed-order α = pr₂
 
- being-directed-is-a-prop : {I : 𝓥 ̇ } (α : I → D) → is-prop (is-directed α)
- being-directed-is-a-prop α = ×-is-prop ∥∥-is-a-prop
+ being-directed-is-prop : {I : 𝓥 ̇ } (α : I → D) → is-prop (is-directed α)
+ being-directed-is-prop α = ×-is-prop ∥∥-is-prop
                             (Π-is-prop fe
                                (λ i → Π-is-prop fe
-                                       (λ j → ∥∥-is-a-prop )))
+                                       (λ j → ∥∥-is-prop )))
 
  is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
@@ -99,40 +99,40 @@ module _ {𝓤 𝓣 : Universe}
              × is-antisymmetric
              × is-directed-complete
 
- is-sup-is-a-prop : dcpo-axioms → {I : 𝓥 ̇ } (d : D) (α : I → D)
+ is-sup-is-prop : dcpo-axioms → {I : 𝓥 ̇ } (d : D) (α : I → D)
                   → is-prop (is-sup d α)
- is-sup-is-a-prop (s , p , r , t , a , c) {I} d α = γ
+ is-sup-is-prop (s , p , r , t , a , c) {I} d α = γ
   where
    γ : is-prop (is-sup d α)
    γ = ×-is-prop (Π-is-prop fe (λ (i : I) → p (α i) d))
                  (Π-is-prop fe (λ (x : D) → Π-is-prop fe (λ l → p d x)))
 
- having-sup-is-a-prop : dcpo-axioms → {I : 𝓥 ̇ } (α : I → D)
+ having-sup-is-prop : dcpo-axioms → {I : 𝓥 ̇ } (α : I → D)
                       → is-prop (has-sup α)
- having-sup-is-a-prop (s , p , r , t , a , c) {I} α = γ
+ having-sup-is-prop (s , p , r , t , a , c) {I} α = γ
   where
    γ : is-prop (has-sup α)
    γ (j , (u , l)) (j' , (u' , l')) =
-     to-Σ-≡ (q , is-sup-is-a-prop (s , p , r , t , a , c) j' α _ _)
+     to-Σ-≡ (q , is-sup-is-prop (s , p , r , t , a , c) j' α _ _)
     where
      q : j ≡ j'
      q = a j j' (l j' u') (l' j u)
 
- being-directed-complete-is-a-prop : dcpo-axioms → is-prop is-directed-complete
- being-directed-complete-is-a-prop a =
+ being-directed-complete-is-prop : dcpo-axioms → is-prop is-directed-complete
+ being-directed-complete-is-prop a =
   Π-is-prop fe
    (λ I → Π-is-prop fe
-             (λ α → Π-is-prop fe (λ d → having-sup-is-a-prop a α)))
+             (λ α → Π-is-prop fe (λ d → having-sup-is-prop a α)))
 
- dcpo-axioms-is-a-prop : is-prop dcpo-axioms
- dcpo-axioms-is-a-prop = iprops-are-props γ
+ dcpo-axioms-is-prop : is-prop dcpo-axioms
+ dcpo-axioms-is-prop = prop-criterion γ
   where
    γ : dcpo-axioms → is-prop dcpo-axioms
    γ (s , p , r , t , a , c) =
-    ×-is-prop  (being-set-is-a-prop fe)
+    ×-is-prop  (being-set-is-prop fe)
     (×-is-prop (Π-is-prop fe
                  (λ (x : D) → Π-is-prop fe
-                                (λ (y : D) → being-a-prop-is-a-prop fe)))
+                                (λ (y : D) → being-prop-is-prop fe)))
     (×-is-prop (Π-is-prop fe (λ (x : D) → p x x))
     (×-is-prop (Π-is-prop fe
                  (λ (x : D) → Π-is-prop fe
@@ -145,7 +145,7 @@ module _ {𝓤 𝓣 : Universe}
                                (λ y → Π-is-prop fe
                                        (λ (l : x ⊑ y) → Π-is-prop fe
                                                          λ (m : y ⊑ x) → s))))
-              (being-directed-complete-is-a-prop (s , p , r , t , a , c))))))
+              (being-directed-complete-is-prop (s , p , r , t , a , c))))))
 
 module _ {𝓤 𝓣 : Universe} where
 
@@ -275,13 +275,13 @@ is-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
 is-continuous 𝓓 𝓔 f = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
                      → is-sup (underlying-order 𝓔) (f (∐ 𝓓 δ)) (f ∘ α)
 
-being-continuous-is-a-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
+being-continuous-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
                            → is-prop (is-continuous 𝓓 𝓔 f)
-being-continuous-is-a-prop 𝓓 𝓔 f =
+being-continuous-is-prop 𝓓 𝓔 f =
    Π-is-prop fe
     (λ I → Π-is-prop fe
             (λ α → Π-is-prop fe
-                     (λ δ → is-sup-is-a-prop (underlying-order 𝓔)
+                     (λ δ → is-sup-is-prop (underlying-order 𝓔)
                             (axioms-of-dcpo 𝓔) (f (∐ 𝓓 δ)) (f ∘ α))))
 
 DCPO[_,_] : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇

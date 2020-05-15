@@ -4,10 +4,10 @@ One-element type properties.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module One-Properties where
+module Unit-Properties where
 
 open import Universes
-open import One
+open import Unit
 open import Empty
 open import Id
 open import Negation

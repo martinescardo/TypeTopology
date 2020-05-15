@@ -40,8 +40,8 @@ Dominance = Σ is-dominance
 is-dominant : (D : Dominance) → 𝓤 ̇ → 𝓤 ̇
 is-dominant (d , _) = d
 
-being-dominant-is-a-prop : (D : Dominance) → (X : 𝓤 ̇ ) → is-prop (is-dominant D X)
-being-dominant-is-a-prop (_ , (isp , _)) = isp
+being-dominant-is-prop : (D : Dominance) → (X : 𝓤 ̇ ) → is-prop (is-dominant D X)
+being-dominant-is-prop (_ , (isp , _)) = isp
 
 dominant-types-are-props : (D : Dominance) → (X : 𝓤 ̇ ) → is-dominant D X → is-prop X
 dominant-types-are-props (_ , (_ , (disp , _))) = disp
@@ -53,23 +53,23 @@ dominant-closed-under-Σ : (D : Dominance) → (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇
                         → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
-being-a-dominance-is-a-prop : (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
-being-a-dominance-is-a-prop d = iprops-are-props lemma
+being-dominance-is-prop : (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
+being-dominance-is-prop d = prop-criterion lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
-               (Π-is-prop (fe 𝓤⁺ 𝓤) λ _ → being-a-prop-is-a-prop (fe 𝓤 𝓤))
+               (Π-is-prop (fe 𝓤⁺ 𝓤) λ _ → being-prop-is-prop (fe 𝓤 𝓤))
                λ _ → Σ-is-prop
                        (Π-is-prop (fe 𝓤⁺ 𝓤)
                           λ _ → Π-is-prop (fe 𝓤 𝓤)
-                                   λ _ → being-a-prop-is-a-prop (fe 𝓤 𝓤))
+                                   λ _ → being-prop-is-prop (fe 𝓤 𝓤))
                        λ _ → Σ-is-prop
-                               (being-dominant-is-a-prop (d , isd) 𝟙)
+                               (being-dominant-is-prop (d , isd) 𝟙)
                                λ _ → Π-is-prop (fe 𝓤⁺ 𝓤⁺)
                                         λ _ → Π-is-prop (fe 𝓤⁺ 𝓤)
                                                  λ Q → Π-is-prop (fe 𝓤 𝓤)
                                                           λ _ → Π-is-prop (fe 𝓤 𝓤)
-                                                                   λ _ → being-dominant-is-a-prop (d , isd) (Σ Q)
+                                                                   λ _ → being-dominant-is-prop (d , isd) (Σ Q)
 
 
 \end{code}
@@ -85,7 +85,7 @@ module DecidableDominance where
  decidable-dominance : Dominance
  decidable-dominance = (λ P → is-prop P × decidable P) ,
                        (λ P → Σ-is-prop
-                                 (being-a-prop-is-a-prop (fe 𝓤 𝓤))
+                                 (being-prop-is-prop (fe 𝓤 𝓤))
                                  (decidability-of-prop-is-prop (fe 𝓤 𝓤₀))) ,
                        (λ X → pr₁) ,
                        (𝟙-is-prop , inl *) ,

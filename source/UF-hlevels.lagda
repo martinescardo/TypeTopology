@@ -25,11 +25,11 @@ _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero     = is-prop X
 X is-of-hlevel (succ n) = (x x' : X) → (x ≡ x') is-of-hlevel n
 
-hlevel-relation-is-a-prop : (n : ℕ) (X : 𝓤 ̇ ) → is-prop  (X is-of-hlevel n)
-hlevel-relation-is-a-prop {𝓤} zero     X = being-a-prop-is-a-prop (fe 𝓤 𝓤)
-hlevel-relation-is-a-prop {𝓤} (succ n) X = Π-is-prop (fe 𝓤 𝓤)
+hlevel-relation-is-prop : (n : ℕ) (X : 𝓤 ̇ ) → is-prop  (X is-of-hlevel n)
+hlevel-relation-is-prop {𝓤} zero     X = being-prop-is-prop (fe 𝓤 𝓤)
+hlevel-relation-is-prop {𝓤} (succ n) X = Π-is-prop (fe 𝓤 𝓤)
                                              (λ x → Π-is-prop (fe 𝓤 𝓤)
-                                                      (λ x' → hlevel-relation-is-a-prop {𝓤} n (x ≡ x')))
+                                                      (λ x' → hlevel-relation-is-prop {𝓤} n (x ≡ x')))
 
 props-have-all-hlevels : (n : ℕ) (P : 𝓤 ̇ ) → is-prop P → P is-of-hlevel n
 props-have-all-hlevels zero     P i = i

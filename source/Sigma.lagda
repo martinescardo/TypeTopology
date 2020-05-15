@@ -15,11 +15,7 @@ such cases.
 
 \begin{code}
 
-record Σ {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
-  constructor _,_
-  field
-   pr₁ : X
-   pr₂ : Y pr₁
+open import Sigma-Type renaming (_,_ to infixr 4 _,_) public
 
 open Σ public
 
@@ -51,11 +47,6 @@ Fixities:
 
 \begin{code}
 
-infixr 4 _,_
 infixr 2 _×_
 
 \end{code}
-
-Not used anymore, kept just in case we change our minds:
-
-  syntax Σ {A} (λ x → B) = Σ（ x ∶ A ） B

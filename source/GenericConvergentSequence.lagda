@@ -42,8 +42,8 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 decreasing : (ℕ → 𝟚) → 𝓤₀ ̇
 decreasing α = (i : ℕ) → α(succ i) ≤₂ α i
 
-being-decreasing-is-a-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
-being-decreasing-is-a-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
+being-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
+being-decreasing-is-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
 ℕ∞ : 𝓤₀ ̇
 ℕ∞ = Σ α ꞉ (ℕ → 𝟚) , decreasing α
@@ -52,7 +52,7 @@ incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
 
 incl-lc : funext₀ → left-cancellable incl
-incl-lc fe = pr₁-lc (being-decreasing-is-a-prop fe _)
+incl-lc fe = pr₁-lc (being-decreasing-is-prop fe _)
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0 = β 0
@@ -83,7 +83,7 @@ lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
 lcni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
 lcni-incl fe (α , d) = to-Σ-≡ (dfunext fe (force-decreasing-unchanged α d) ,
-                               being-decreasing-is-a-prop fe α _ _)
+                               being-decreasing-is-prop fe α _ _)
 
 ℕ∞-retract-of-Cantor : funext₀ → retract ℕ∞ of (ℕ → 𝟚)
 ℕ∞-retract-of-Cantor fe = lcni , incl , lcni-incl fe
@@ -418,8 +418,8 @@ is-finite u = Σ n ꞉ ℕ , under n ≡ u
 size : {u : ℕ∞} → is-finite u → ℕ
 size (n , r) = n
 
-being-finite-is-a-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
-being-finite-is-a-prop = under-embedding
+being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
+being-finite-is-prop = under-embedding
 
 under-is-finite : (n : ℕ) → is-finite(under n)
 under-is-finite n = (n , refl)

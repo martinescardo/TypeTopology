@@ -143,7 +143,7 @@ module UnivalentChoice (𝓤 : Universe)
  sei : {X Y : 𝓤 ̇ } → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe 𝓤 𝓤) (λ x → isy)
 
- open TChoice 𝓤 ∥_∥ ∥∥-functor is-set sei (props-are-sets ∥∥-is-a-prop)
+ open TChoice 𝓤 ∥_∥ ∥∥-functor is-set sei (props-are-sets ∥∥-is-prop)
 
  AC   = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) (P : (x : X) → A x → 𝓤 ̇ )
      → is-set X
@@ -212,7 +212,7 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  α s u = ∥∥-rec 𝟘-is-prop u s
 
  β : {X : 𝓤 ̇ } → ¬¬ X → ∥ X ∥
- β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-a-prop)
+ β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
  DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
      → (Π x ꞉ X , ¬¬ A x) → ¬¬(Π x ꞉ X , A x)
@@ -273,7 +273,7 @@ module AC-renders-all-sets-discrete
    r-splits (x , t) = f (c x t)
     where
      f : (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , r i ≡ (x , t)
-     f (i , p) = i , to-Σ-≡ (p , ∥∥-is-a-prop _ t)
+     f (i , p) = i , to-Σ-≡ (p , ∥∥-is-prop _ t)
 
    s : image a → 𝟚
    s y = pr₁(r-splits y)
@@ -285,7 +285,7 @@ module AC-renders-all-sets-discrete
    s-lc = section-lc s (r , rs)
 
    a-r : {i j : 𝟚} → a i ≡ a j → r i ≡ r j
-   a-r p = to-Σ-≡ (p , ∥∥-is-a-prop _ _)
+   a-r p = to-Σ-≡ (p , ∥∥-is-prop _ _)
 
    r-a : {i j : 𝟚} → r i ≡ r j → a i ≡ a j
    r-a = ap pr₁

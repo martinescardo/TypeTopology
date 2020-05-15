@@ -20,8 +20,8 @@ is-defined : {X : 𝓤 ̇ } → 𝓛 X → 𝓣 ̇
 
 is-defined (P , φ , i) = P
 
-being-defined-is-a-prop : {X : 𝓤 ̇ } (l : 𝓛  X) → is-prop (is-defined l)
-being-defined-is-a-prop (P , φ , i) = i
+being-defined-is-prop : {X : 𝓤 ̇ } (l : 𝓛  X) → is-prop (is-defined l)
+being-defined-is-prop (P , φ , i) = i
 
 value : {X : 𝓤 ̇ } (l : 𝓛  X) → is-defined l → X
 value (P , φ , i) = φ

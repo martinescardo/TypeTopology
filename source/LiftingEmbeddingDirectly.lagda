@@ -47,7 +47,7 @@ of which is actually an equivalence).
  where
   h : (x : X) → (𝟙 , (λ _ → x) , 𝟙-is-prop)
               ≡ (𝟙 , (λ _ → x) , singletons-are-props (𝟙-is-singleton))
-  h x = to-Σ-≡ (refl , to-×-≡ refl (being-a-prop-is-a-prop fe _ _))
+  h x = to-Σ-≡ (refl , to-×-≡ refl (being-prop-is-prop fe _ _))
 
 \end{code}
 
@@ -65,8 +65,8 @@ NatΣ-embedding.:
                           id-is-embedding
                           (maps-of-props-are-embeddings
                             singletons-are-props
-                            (being-a-singleton-is-a-prop fe)
-                            (being-a-prop-is-a-prop fe))
+                            (being-singleton-is-prop fe)
+                            (being-prop-is-prop fe))
 
 𝓚→𝓛-is-embedding : funext 𝓣 𝓣
                   → (X : 𝓤 ̇ ) → is-embedding (𝓚→𝓛 X)
@@ -89,7 +89,7 @@ itself.
 κ-is-equiv {𝓤} pe fe fe' {X} = qinvs-are-equivs κ (ρ , (ρκ , κρ))
  where
   ρ : {X : 𝓤 ̇ } → 𝓚 X → X
-  ρ (P , φ , i) = φ (singleton-types-are-pointed i)
+  ρ (P , φ , i) = φ (center i)
   ρκ : {X : 𝓤 ̇ } (x : X) → ρ (κ x) ≡ x
   ρκ x = refl
   κρ : (m : 𝓚 X) → κ (ρ m) ≡ m
@@ -97,22 +97,22 @@ itself.
    where
     t : 𝟙 ≡ P
     t = pe 𝟙-is-prop (singletons-are-props i)
-                     (λ _ → singleton-types-are-pointed i)
+                     (λ _ → center i)
                      unique-to-𝟙
     s : (t : 𝟙 ≡ P)
       → transport (λ - → (- → X) × is-singleton -)
-                  t ((λ _ → φ (singleton-types-are-pointed i)),
+                  t ((λ _ → φ (center i)),
         𝟙-is-singleton)
       ≡ φ , i
     s refl = to-×-≡ a b
      where
-      a : (λ x → φ (singleton-types-are-pointed i)) ≡ φ
-      a = dfunext fe' (λ x → ap φ (𝟙-is-prop (singleton-types-are-pointed i) x))
+      a : (λ x → φ (center i)) ≡ φ
+      a = dfunext fe' (λ x → ap φ (𝟙-is-prop (center i) x))
       b : 𝟙-is-singleton ≡ i
       b = (singletons-are-props (pointed-props-are-singletons
-                                   𝟙-is-singleton (being-a-singleton-is-a-prop fe))
+                                   𝟙-is-singleton (being-singleton-is-prop fe))
                                  𝟙-is-singleton i)
-    u : 𝟙 , (λ _ → φ (singleton-types-are-pointed i)) , 𝟙-is-singleton ≡ P , φ , i
+    u : 𝟙 , (λ _ → φ (center i)) , 𝟙-is-singleton ≡ P , φ , i
     u = to-Σ-≡ (t , s t)
 
 κ-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤

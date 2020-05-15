@@ -53,9 +53,9 @@ module _ {𝓤 : Universe}
                 p₁ (pr₂ l) ≡ pr₂ m))
    j = Σ-is-prop
         (identifications-of-props-are-props pe fe (is-defined m)
-         (being-defined-is-a-prop m) (is-defined l))
+         (being-defined-is-prop m) (is-defined l))
         (λ d → ×-is-set (Π-is-set fe λ _ → i)
-                        (props-are-sets (being-a-prop-is-a-prop fe)))
+                        (props-are-sets (being-prop-is-prop fe)))
 
  \end{code}
 
@@ -80,7 +80,7 @@ module _ {𝓤 : Universe}
    c = λ _ → d
    v : (e : is-defined m) → value m e ≡ value l d
    v e = value m e         ≡⟨ ap (value m)
-                             (being-defined-is-a-prop m e (pr₁ a d)) ⟩
+                             (being-defined-is-prop m e (pr₁ a d)) ⟩
          value m (pr₁ a d) ≡⟨ g ⁻¹ ⟩
          value l d         ∎ where
     h : is-defined l → is-defined m

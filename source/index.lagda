@@ -65,7 +65,7 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with the release candidate for Agda 2.6.1.
+   * This has been tested with Agda 2.6.1.
 
 Click at the imported module names to navigate to them:
 
@@ -91,11 +91,13 @@ import LawvereFPT
 import PartialElements
 import UF
 import Types2019
+import MGS        -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
 import PCFModules -- by Tom de Jong
+import Dyadics    -- by Tom de Jong
 
 \end{code}
 
-The last module (univalent foundations) has been developed, on demand,
+The UF module (univalent foundations) has been developed, on demand,
 for use in the preceding modules (and the modules below, too). The
 modules UF-Yoneda and UF-IdEmbedding contain new results.
 
@@ -121,6 +123,9 @@ import ConvergentSequenceInfCompact
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DiscreteAndSeparated
+import Dyadic
+import DyadicOrder
+import Dyadics
 import Dominance
 import DummettDisjunction
 import Empty
@@ -156,8 +161,6 @@ import NaturalsAddition
 import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
-import One
-import One-Properties
 import OrdinalArithmetic
 import OrdinalCodes
 import OrdinalNotationInterpretation
@@ -196,6 +199,8 @@ import Two
 import Two-Prop-Density
 import Two-Properties
 import UnivalenceFromScratch
+import Unit
+import Unit-Properties
 import Universes
 import WeaklyCompactTypes
 import W
@@ -204,6 +209,7 @@ import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
+import UF-Classifiers-Old -- Still used by some modules
 import UF-Connected
 import UF-Embeddings
 import UF-EquivalenceExamples
@@ -221,14 +227,16 @@ import UF-Knapp-UA
 import UF-KrausLemma
 import UF-LeftCancellable
 import UF-Miscelanea
+import UF-Powerset
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
 import UF-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Size
-import UF-StructureIdentityPrinciple
-import UF-SubsetIdentity
+import UF-StructureIdentityPrinciple  -- Old, but still used in some modules.
+import UF-SIP                         -- New, better, version.
+import UF-SIP-Examples
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
 import UF-UA-FunExt

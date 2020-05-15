@@ -36,9 +36,9 @@ universe-embedding-criterion : Univalence
 universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion' f γ
  where
   γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ is-univalent-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
+  γ X X' =  (f X ≡ f X')  ≃⟨ univalence-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
             (f X ≃ f X')  ≃⟨ Eq-Eq-cong (FunExt-from-Univalence ua) (i X) (i X') ⟩
-            (X ≃ X')      ≃⟨ ≃-sym (is-univalent-≃ (ua 𝓤) X X') ⟩
+            (X ≃ X')      ≃⟨ ≃-sym (univalence-≃ (ua 𝓤) X X') ⟩
             (X ≡ X')      ■
 
 \end{code}

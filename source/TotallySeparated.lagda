@@ -186,9 +186,9 @@ clause.
 
 \begin{code}
 
-total-separatedness-is-a-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+total-separatedness-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
                               → (X : 𝓤 ̇ ) → is-prop(is-totally-separated X)
-total-separatedness-is-a-prop {𝓤} fe fe₀ X = γ
+total-separatedness-is-prop {𝓤} fe fe₀ X = γ
  where
   T : 𝓤 ̇
   T = (x y : X) → x ≡₂ y → x ≡ y
@@ -204,7 +204,7 @@ total-separatedness-is-a-prop {𝓤} fe fe₀ X = γ
         t
 
   γ : is-prop (is-totally-separated X)
-  γ = subtype-of-prop-is-a-prop g (λ {t} {u} (q : g t ≡ g u) → ap f q) p
+  γ = subtype-of-prop-is-prop g (λ {t} {u} (q : g t ≡ g u) → ap f q) p
 \end{code}
 
 Old proof which by-passes the step via separatedness:
@@ -410,7 +410,7 @@ We construct the reflection as the image of the evaluation map.
    f e p = e (λ (x' : 𝕋 X) → pr₁ x' p)
 
    g : (e : (q : 𝕋 X → 𝟚) → q (φ , s) ≡ q (γ , t)) → (φ , s) ≡ (γ , t)
-   g e = to-Σ-≡ (dfunext (fe 𝓤 𝓤₀) (f e), ∥∥-is-a-prop _ t)
+   g e = to-Σ-≡ (dfunext (fe 𝓤 𝓤₀) (f e), ∥∥-is-prop _ t)
 
 \end{code}
 
@@ -575,7 +575,7 @@ apartness relation _♯₂ is tight:
  ♯₂-is-apartness {𝓤} {X} = a , b , c , d
   where
    a : is-prop-valued _♯₂_
-   a x y = ∥∥-is-a-prop
+   a x y = ∥∥-is-prop
 
    b : is-irreflexive _♯₂_
    b x = ∥∥-rec 𝟘-is-prop g
@@ -735,7 +735,7 @@ apartness relation _♯₂ is tight:
 
  tight-is-set' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
                → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
- tight-is-set' {𝓤} {X} fe fe₀ = ∥∥-rec (being-set-is-a-prop fe) f
+ tight-is-set' {𝓤} {X} fe fe₀ = ∥∥-rec (being-set-is-prop fe) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
     f (_♯_ , a , t) = tight-is-set fe₀ _♯_ a t
@@ -817,7 +817,7 @@ apartness relation _♯₂ is tight:
     g z = pe (♯p x z) (♯p y z) (pr₁ (f z)) (pr₂ (f z))
 
     h : (z : X) → apart x z ≡ apart y z
-    h z = to-Σ-≡ (g z , being-a-prop-is-a-prop (fe 𝓥 𝓥) _ _)
+    h z = to-Σ-≡ (g z , being-prop-is-prop (fe 𝓥 𝓥) _ _)
 
 \end{code}
 
@@ -841,7 +841,7 @@ apartness on it.
 \begin{code}
 
   X'-is-set : is-set X'
-  X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _ (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-a-prop
+  X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _ (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-prop
 
   η : X → X'
   η = corestriction apart
@@ -910,7 +910,7 @@ apartness on it.
   fuv = fe (𝓤 ⊔ 𝓥 ⁺) (𝓤 ⊔ 𝓥 ⁺)
 
   ♯'p : is-prop-valued _♯'_
-  ♯'p _ _ = ∥∥-is-a-prop
+  ♯'p _ _ = ∥∥-is-prop
 
   ♯'i : is-irreflexive _♯'_
   ♯'i = by-induction
@@ -959,12 +959,12 @@ apartness on it.
       η-induction (λ x' → ∀ y' z' → x' ♯' y' → (x' ♯' z') ∨ (y' ♯' z'))
        (λ _ → Π-is-prop fuv
                 (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-a-prop))))
+                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop))))
        (λ x → η-induction (λ y' → ∀ z' → η x ♯' y' → (η x ♯' z') ∨ (y' ♯' z'))
                 (λ _ → Π-is-prop fuv
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-a-prop)))
+                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop)))
                 (λ y → η-induction (λ z' → η x ♯' η y → (η x ♯' z') ∨ (η y ♯' z'))
-                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-a-prop))
+                         (λ _ → Π-is-prop fuv (λ _ → ∥∥-is-prop))
                          (induction-step x y)))
 
   ♯'a : is-apartness _♯'_
@@ -982,7 +982,7 @@ apartness on it.
   ♯'t (u , e) (v , f) n = ∥∥-rec X'-is-set (λ σ → ∥∥-rec X'-is-set (h σ) f) e
    where
     h : (Σ x ꞉ X , apart x ≡ u) → (Σ y ꞉ X , apart y ≡ v) → (u , e) ≡ (v , f)
-    h (x , p) (y , q) = to-Σ-≡ (t , ∥∥-is-a-prop _ _)
+    h (x , p) (y , q) = to-Σ-≡ (t , ∥∥-is-prop _ _)
      where
       remark : (∃ x ꞉ X , Σ y ꞉ X , (x ♯ y) × (apart x ≡ u) × (apart y ≡ v)) → 𝟘
       remark = n
@@ -1039,7 +1039,7 @@ apartness on it.
     φ = η-induction _ γ induction-step
       where
        induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ a))
-       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-a-prop _ _)
+       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-prop _ _)
         where
          h : (Σ x' ꞉ X , (η x' ≡ η x) × (f x' ≡ a))
            → (Σ y' ꞉ X , (η y' ≡ η x) × (f y' ≡ b))
@@ -1050,7 +1050,7 @@ apartness on it.
          p = ∥∥-rec iss (λ σ → ∥∥-rec iss (h σ) e) d
 
        γ : (x' : X') → is-prop (is-prop (Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)))
-       γ x' = being-a-prop-is-a-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
+       γ x' = being-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
     k : (x' : X') → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
     k = η-induction _ φ induction-step

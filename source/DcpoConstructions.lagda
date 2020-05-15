@@ -130,7 +130,7 @@ module DcpoConstructionsGeneral
      s : is-set DCPO[ 𝓓 , 𝓔 ]
      s = subsets-of-sets-are-sets (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) (is-continuous 𝓓 𝓔)
          (Π-is-set fe (λ (x : ⟨ 𝓓 ⟩) →  sethood 𝓔))
-         (λ {f} → being-continuous-is-a-prop 𝓓 𝓔 f)
+         (λ {f} → being-continuous-is-prop 𝓓 𝓔 f)
      p : (f g : DCPO[ 𝓓 , 𝓔 ]) → is-prop (f ⊑ g)
      p (f , _) (g , _) = Π-is-prop fe
                          (λ (x : ⟨ 𝓓 ⟩) → prop-valuedness 𝓔 (f x) (g x))
@@ -147,7 +147,7 @@ module DcpoConstructionsGeneral
                ((underlying-function 𝓓 𝓔 f) d)
                ((underlying-function 𝓓 𝓔 g) d)
                (l d) (m d)) ,
-       being-continuous-is-a-prop 𝓓 𝓔 (underlying-function 𝓓 𝓔 g) _
+       being-continuous-is-prop 𝓓 𝓔 (underlying-function 𝓓 𝓔 g) _
         (continuity-of-function 𝓓 𝓔 g))
      c : (I : _ ̇ ) (α : I → DCPO[ 𝓓 , 𝓔 ]) → is-directed _⊑_ α → has-sup _⊑_ α
      c I α δ = (continuous-functions-sup 𝓓 𝓔 α δ) , u , v
@@ -730,7 +730,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
 
    lifting-sup : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
    lifting-sup {I} α δ =
-    (∃ i ꞉ I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-a-prop
+    (∃ i ꞉ I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-prop
 
    lifting-sup-is-upperbound : {I : 𝓤₀ ̇} → (α : I → 𝓛 X)
                                (δ : is-directed _⊑'_ α)

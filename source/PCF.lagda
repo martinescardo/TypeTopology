@@ -70,7 +70,7 @@ s ▹* t = ∥ s ▹*' t ∥
 ▹'-to-▹*' f f-preserves-▹' s t (extend rel) = extend (∥∥-rec a b rel)
  where
   a : is-prop (f s ▹ f t)
-  a = ∥∥-is-a-prop
+  a = ∥∥-is-prop
   b : (step : s ▹' t) → ∥ f s ▹' f t ∥
   b step = ∣ f-preserves-▹' s t step ∣
   

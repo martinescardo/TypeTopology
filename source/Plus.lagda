@@ -6,11 +6,7 @@ The disjoint sum X + Y of two types X and Y.
 
 module Plus where
 
-open import Universes
-
-data _+_ {𝓤 𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
-  inl : X → X + Y
-  inr : Y → X + Y
+open import Plus-Type renaming (_+_ to infixr 1 _+_) public
 
 dep-cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X + Y → 𝓦 ̇ }
           → ((x : X) → A(inl x))
@@ -40,13 +36,21 @@ dep-Cases {𝓤} {𝓥} {𝓦} {X} {Y} A z f g = dep-cases {𝓤} {𝓥} {𝓦} 
 
 \end{code}
 
-(Agda (version 2.6.0.1) can't infer the implicit parameters of the
-previous definition for some reason.)
-
-Fixities:
+Added 4 March 2020 by Tom de Jong.
 
 \begin{code}
 
-infixr 1 _+_
+dep-cases₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : X + Y + Z → 𝓦 ̇ }
+           → ((x : X) → A(inl x))
+           → ((y : Y) → A(inr (inl y)))
+           → ((z : Z) → A(inr (inr z)))
+           → ((p : X + Y + Z) → A p)
+dep-cases₃ f g h (inl x)       = f x
+dep-cases₃ f g h (inr (inl y)) = g y
+dep-cases₃ f g h (inr (inr z)) = h z
+
+cases₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : 𝓦 ̇ }
+       → (X → A) → (Y → A) → (Z → A) → X + Y + Z → A
+cases₃ = dep-cases₃
 
 \end{code}

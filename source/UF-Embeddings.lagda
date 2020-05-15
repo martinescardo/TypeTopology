@@ -22,10 +22,10 @@ open import UF-UA-FunExt
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = ∀ y → is-prop(fiber f y)
 
-being-embedding-is-a-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+being-embedding-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                           → is-prop(is-embedding f)
-being-embedding-is-a-prop fe fe' f = Π-is-prop fe (λ x → being-a-prop-is-a-prop fe')
+being-embedding-is-prop fe fe' f = Π-is-prop fe (λ x → being-prop-is-prop fe')
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → ((x : X) → is-prop (fiber f (f x)))
@@ -48,6 +48,9 @@ equivs-are-embeddings f e y = singletons-are-props (equivs-are-vv-equivs f e y)
 _↪_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 X ↪ Y = Σ f ꞉ (X → Y) , is-embedding f
 
+Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
+Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
+
 etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → X → Y
 etofun = pr₁
 
@@ -59,9 +62,9 @@ equiv-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                 → X ≃ Y → X ↪ Y
 equiv-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e)
 
-embeddings-are-left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-             → is-embedding f → left-cancellable f
-embeddings-are-left-cancellable f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
+embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                  → is-embedding f → left-cancellable f
+embeddings-are-lc f e {x} {x'} p = ap pr₁ (e (f x) (x , refl) (x' , (p ⁻¹)))
 
 is-embedding' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding' f = ∀ x x' → is-equiv (ap f {x} {x'})
@@ -75,16 +78,24 @@ embedding-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
   c : (x : X) → is-singleton(fiber' f (f x))
   c x = retract-of-singleton (pr₁ (fiber-lemma f (f x)) , pr₁(pr₂(fiber-lemma f (f x)))) (b x)
   g : (x x' : X) → is-equiv(ap f {x} {x'})
-  g x = universality-equiv x refl (unique-element-is-universal-element
+  g x = universality-equiv x refl (central-point-is-universal
                                          (λ x' → f x ≡ f x')
                                          (pr₁(c x))
                                          (pr₂(c x)))
 
+embedding-criterion-converse : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-embedding f
+                             → ((x' x : X) → (f x' ≡ f x) ≃ (x' ≡ x))
+
+embedding-criterion-converse f e x' x = ≃-sym
+                                         (ap f {x'} {x} ,
+                                          embedding-embedding' f e x' x)
+
 embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding' f → is-embedding f
 embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
-  e : (x : X) → is-the-only-element-of (Σ x' ꞉ X , f x ≡ f x') (x , refl)
-  e x = universal-element-is-the-only-element
+  e : (x : X) → is-central (Σ x' ꞉ X , f x ≡ f x') (x , refl)
+  e x = universal-element-is-central
          (x , refl)
          (equiv-universality x refl (ise x))
   h : (x : X) → is-prop (fiber' f (f x))
@@ -105,7 +116,7 @@ pr₁-is-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
 pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop(Y x)) → left-cancellable pr₁
-pr₁-lc-bis f {u} {v} r = embeddings-are-left-cancellable pr₁ (pr₁-is-embedding (λ x → f {x})) r
+pr₁-lc-bis f {u} {v} r = embeddings-are-lc pr₁ (pr₁-is-embedding (λ x → f {x})) r
 
 pr₁-is-embedding-converse : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                           → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
@@ -159,7 +170,7 @@ id-is-embedding = singleton-types'-are-props
   T : (z : Z) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   T z = Σ w ꞉ fiber g z , fiber f (pr₁ w)
   T-is-prop : (z : Z) → is-prop (T z)
-  T-is-prop z = subtype-of-prop-is-a-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
+  T-is-prop z = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {t} → e (pr₁ t))) (d z)
   φ : (z : Z) → fiber (g ∘ f) z → T z
   φ z (x , p) = (f x , p) , x , refl
   γ : (z : Z) → T z → fiber (g ∘ f) z
@@ -167,7 +178,7 @@ id-is-embedding = singleton-types'-are-props
   γφ : (z : Z) (t : fiber (g ∘ f) z) → γ z (φ z t) ≡ t
   γφ .(g (f x)) (x , refl) = refl
   h : (z : Z) → is-prop (fiber (g ∘ f) z)
-  h z = subtype-of-prop-is-a-prop
+  h z = subtype-of-prop-is-prop
          (φ z)
          (sections-are-lc (φ z) (γ z , (γφ z)))
          (T-is-prop z)
@@ -323,7 +334,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    Z : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    Z = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)
    Z-is-prop : is-prop Z
-   Z-is-prop = subtype-of-prop-is-a-prop
+   Z-is-prop = subtype-of-prop-is-prop
                 pr₁
                 (pr₁-lc (λ {w} → d (pr₁ w) (back-transport B (pr₂ w) b)))
                 (e y)
@@ -334,7 +345,7 @@ module _ {𝓤 𝓥 𝓦 𝓣}
    γφ : (t : fiber pair-fun (y , b)) → γ (φ t) ≡ t
    γφ ((x , a) , refl) = refl
    h : is-prop (fiber pair-fun (y , b))
-   h = subtype-of-prop-is-a-prop φ (sections-are-lc φ (γ , γφ)) Z-is-prop
+   h = subtype-of-prop-is-prop φ (sections-are-lc φ (γ , γφ)) Z-is-prop
 
  pair-fun-dense : is-dense f
                → ((x : X) → is-dense (g x))
@@ -411,6 +422,26 @@ For any proposition P, the unique map P → 𝟙 is an embedding:
 prop-embedding : (P : 𝓤 ̇ ) → is-prop P → ∀ 𝓥 → is-embedding (λ (p : P) → * {𝓥})
 prop-embedding P i 𝓥 * (p , r) (p' , r') = to-×-≡ (i p p')
                                                   (props-are-sets 𝟙-is-prop r r')
+\end{code}
+
+Added by Tom de Jong.
+
+If a type X embeds into a proposition, then X is itself a proposition.
+
+\begin{code}
+
+embedding-into-prop : {X : 𝓤 ̇ } {P : 𝓥 ̇ } → is-prop P → X ↪ P → is-prop X
+embedding-into-prop i (f , e) x y = d
+ where
+   a : x ≡ y → f x ≡ f y
+   a = ap f {x} {y}
+   b : is-equiv a
+   b = embedding-embedding' f e x y
+   c : f x ≡ f y
+   c = i (f x) (f y)
+   d : x ≡ y
+   d = inverse a b c
+
 \end{code}
 
 \begin{code}

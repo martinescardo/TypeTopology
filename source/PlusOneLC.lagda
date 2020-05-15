@@ -62,7 +62,7 @@ open import DiscreteAndSeparated
         z                         ∎
 
   ε : f ∘ g ∼ id
-  ε t = s (φ (inverse φ i (s t))) ≡⟨ ap s (inverse-is-section φ i (s t)) ⟩
+  ε t = s (φ (inverse φ i (s t))) ≡⟨ ap s (inverses-are-sections φ i (s t)) ⟩
         s (s t)                   ≡⟨ h t                                 ⟩
         t                         ∎
 

@@ -111,6 +111,19 @@ unique-minimal (succ n) l = 𝟘-elim l
 ≤-down : (m n : ℕ) → m ≤ succ n → (m ≢ succ n) → (m ≤ n)
 ≤-down m n l u = cases id (λ p → 𝟘-elim (u p)) (≤-split m n l)
 
+≤-+ : (m n : ℕ) → (m ≤ m +' n)
+≤-+ m zero     = ≤-refl m
+≤-+ m (succ n) = ≤-join m (m +' n) (inl IH)
+ where
+  IH : m ≤ m +' n
+  IH = ≤-+ m n
+
+≤-+' : (m n : ℕ) → (n ≤ m +' n)
+≤-+' m n = transport (λ k → n ≤ k) γ (≤-+ n m)
+ where
+  γ : n +' m ≡ m +' n
+  γ = addition-commutativity n m
+
 _<_ _>_ : ℕ → ℕ → 𝓤₀ ̇
 m < n = succ m ≤ n
 

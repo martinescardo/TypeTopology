@@ -136,8 +136,11 @@ apd : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (f : (x : X) → A x) {x y : X}
       (p : x ≡ y) → transport A p (f x) ≡ f y
 apd = apd' _
 
-ap-id-is-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → p ≡ ap id p
+ap-id-is-id : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → ap id p ≡ p
 ap-id-is-id refl = refl
+
+ap-id-is-id' : {X : 𝓤 ̇ } {x y : X} (p : x ≡ y) → p ≡ ap id p
+ap-id-is-id' refl = refl
 
 ap-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (q : y ≡ z)
      → ap f (p ∙ q) ≡ ap f p ∙ ap f q
@@ -207,12 +210,31 @@ cancel-left {𝓤} {X} {x} {y} {z} {p} {q} {r} s =
        refl ∙ r       ≡⟨ refl-left-neutral ⟩
        r ∎
 
+\end{code}
+
+Added 24 February 2020 by Tom de Jong.
+
+\begin{code}
+
+cancel-left-≡ : {X : 𝓤 ̇ } {x y z : X} {p : x ≡ y} {q r : y ≡ z}
+              → (p ∙ q ≡ p ∙ r) ≡ (q ≡ r)
+cancel-left-≡ {𝓤} {X} {x} {y} {z} {refl} {q} {r} =
+ ap₂ (λ u v → u ≡ v) refl-left-neutral refl-left-neutral
+
+\end{code}
+
+\begin{code}
+
 homotopies-are-natural' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
-                      → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
+                        → H x ∙ ap g p ∙ (H y)⁻¹ ≡ ap f p
 homotopies-are-natural' f g H {x} {_} {refl} = trans-sym' (H x)
 
+homotopies-are-natural'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
+                         → (H x) ⁻¹ ∙ ap f p ∙ H y ≡ ap g p
+homotopies-are-natural'' f g H {x} {_} {refl} = trans-sym (H x)
+
 homotopies-are-natural : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (f g : X → A) (H : f ∼ g) {x y : X} {p : x ≡ y}
-                      → H x ∙ ap g p ≡ ap f p ∙ H y
+                       → H x ∙ ap g p ≡ ap f p ∙ H y
 homotopies-are-natural f g H {x} {_} {refl} = refl-left-neutral ⁻¹
 
 to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} {y y' : Y}
@@ -264,5 +286,18 @@ fromto-Σ-≡ (refl , refl) = refl
 tofrom-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A} (r : σ ≡ τ)
            → to-Σ-≡ (from-Σ-≡ r) ≡ r
 tofrom-Σ-≡ refl = refl
+
+ap-pr₁-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → (p₂ : pr₂ z ≡ pr₂ t)
+              → ap pr₁ (to-×-≡ p₁ p₂) ≡ p₁
+ap-pr₁-to-×-≡ refl refl = refl
+
+
+ap-pr₂-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
+              → (p₁ : pr₁ z ≡ pr₁ t)
+              → (p₂ : pr₂ z ≡ pr₂ t)
+              → ap pr₂ (to-×-≡ p₁ p₂) ≡ p₂
+ap-pr₂-to-×-≡ refl refl = refl
 
 \end{code}

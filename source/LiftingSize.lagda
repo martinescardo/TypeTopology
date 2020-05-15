@@ -87,29 +87,29 @@ universes except the first, i.e., all successor universes 𝓤 ⁺.
   e = qinveq φ (γ , γφ , φγ)
    where
     φ : L → 𝓛 X
-    φ (P , f , i) = resize ρ P i , f ∘ from-resize ρ P i , resize-is-a-prop ρ P i
+    φ (P , f , i) = resize ρ P i , f ∘ from-resize ρ P i , resize-is-prop ρ P i
     γ : 𝓛 X → L
-    γ (Q , g , j) = resize ρ Q j , g ∘ from-resize ρ Q j , resize-is-a-prop ρ Q j
+    γ (Q , g , j) = resize ρ Q j , g ∘ from-resize ρ Q j , resize-is-prop ρ Q j
     φγ : (l : 𝓛 X) → φ (γ l) ≡ l
     φγ (Q , g , j) = ⋍-gives-≡ 𝓣 ua (a , b)
      where
-      a : resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ≃ Q
-      a = qinveq (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j))
-                 (to-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ∘ to-resize ρ Q j ,
-                 (λ r → resize-is-a-prop ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) _ r) ,
+      a : resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ≃ Q
+      a = qinveq (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
+                 (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j ,
+                 (λ r → resize-is-prop ρ (resize ρ Q j) (resize-is-prop ρ Q j) _ r) ,
                  (λ q → j _ q))
-      b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-a-prop ρ Q j) ≡ g ∘ ⌜ a ⌝
-      b = ap (g ∘_) (dfunext (funext-from-univalence ua) (λ r → j _ (⌜ a ⌝ r)))
+      b : g ∘ from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ≡ g ∘ ⌜ a ⌝
+      b = ap (g ∘_) (dfunext (univalence-gives-funext ua) (λ r → j _ (⌜ a ⌝ r)))
     γφ : (m : L) → γ (φ m) ≡ m
     γφ (P , f , i) = ⋍-gives-≡ 𝓤 ua' (a , b)
      where
-      a : resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ≃ P
-      a = qinveq (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i))
-                 (to-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ∘ to-resize ρ P i ,
-                 (λ r → resize-is-a-prop ρ (resize ρ P i) (resize-is-a-prop ρ P i) _ r) ,
+      a : resize ρ (resize ρ P i) (resize-is-prop ρ P i) ≃ P
+      a = qinveq (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
+                 (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘ to-resize ρ P i ,
+                 (λ r → resize-is-prop ρ (resize ρ P i) (resize-is-prop ρ P i) _ r) ,
                  (λ q → i _ q))
-      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-a-prop ρ P i) ≡ f ∘ ⌜ a ⌝
-      b = ap (f ∘_) (dfunext (funext-from-univalence ua') (λ r → i _ (⌜ a ⌝ r)))
+      b : f ∘ from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ≡ f ∘ ⌜ a ⌝
+      b = ap (f ∘_) (dfunext (univalence-gives-funext ua') (λ r → i _ (⌜ a ⌝ r)))
 
 \end{code}
 
@@ -136,7 +136,7 @@ Added 8th Feb 2019.
   up-is-equiv = ⌜⌝-is-equiv e₀
 
   d : (Σ p ꞉ Ω₀ , (up p holds → X)) ≃ (Σ p ꞉ Ω 𝓣 , (p holds → X))
-  d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
+  d = Σ-change-of-variable (λ p → p holds → X) up up-is-equiv
 
   e : (Σ p ꞉ Ω 𝓣 , (p holds → X)) ≃ 𝓛 X
   e = qinveq (λ ((P , i) , f) →  P , f ,  i)
@@ -161,7 +161,7 @@ more parsimonious.
   up-is-equiv = ⌜⌝-is-equiv ε
 
   d : (Σ p ꞉ O , (up p holds → X)) ≃ (Σ p ꞉ Ω 𝓣 , (p holds → X))
-  d = Σ-change-of-variables (λ p → p holds → X) up up-is-equiv
+  d = Σ-change-of-variable (λ p → p holds → X) up up-is-equiv
 
   e : (Σ p ꞉ Ω 𝓣 , (p holds → X)) ≃ 𝓛 X
   e = qinveq (λ ((P , i) , f) →  P , f  , i)

@@ -14,6 +14,12 @@ open import Negation public
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 A ⇔ B = (A → B) × (B → A)
 
+lr-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (X → Y)
+lr-implication = pr₁
+
+rl-implication : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ⇔ Y) → (Y → X)
+rl-implication = pr₂
+
 \end{code}
 
 This is to avoid naming implicit arguments:

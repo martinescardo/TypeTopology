@@ -9,11 +9,10 @@ module Id where
 open import Universes
 open import Pi
 
-data _≡_ {𝓤} {X : 𝓤 ̇ } : X → X → 𝓤 ̇ where
-  refl : {x : X} → x ≡ x
+open import Identity-Type renaming (_≡_ to infix 0 _≡_) public
 
 refl─ : {X : 𝓤 ̇ } (x : X) → x ≡ x
-refl─ x = refl
+refl─ x = refl {_} {_} {x}
 
 by-definition : {X : 𝓤 ̇ } {x : X} → x ≡ x
 by-definition = refl
@@ -86,7 +85,6 @@ Fixities:
 
 \begin{code}
 
-infix  0 _≡_
 infix  3  _⁻¹
 infix  1 _∎
 infixr 0 _≡⟨_⟩_

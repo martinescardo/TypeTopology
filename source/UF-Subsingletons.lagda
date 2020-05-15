@@ -14,7 +14,7 @@ https://unimath.github.io/bham2017/uf.pdf
 module UF-Subsingletons where
 
 open import SpartanMLTT
-open import One-Properties
+open import Unit-Properties
 
 open import Plus-Properties
 open import UF-Base
@@ -37,8 +37,9 @@ And of course we could adopt a terminology borrowed from topos logic:
 
 \begin{code}
 
-is-truth-value : 𝓤 ̇ → 𝓤 ̇
-is-truth-value = is-prop
+is-truth-value is-subsingleton : 𝓤 ̇ → 𝓤 ̇
+is-truth-value  = is-prop
+is-subsingleton = is-prop
 
 \end{code}
 
@@ -61,14 +62,14 @@ univalent type theory.
 
 \begin{code}
 
-is-the-only-element-of : (X : 𝓤 ̇ ) → X → 𝓤 ̇
-is-the-only-element-of X c = (x : X) → c ≡ x
+is-central : (X : 𝓤 ̇ ) → X → 𝓤 ̇
+is-central X c = (x : X) → c ≡ x
 
 is-singleton : 𝓤 ̇ → 𝓤 ̇
-is-singleton X = Σ c ꞉ X , is-the-only-element-of X c
+is-singleton X = Σ c ꞉ X , is-central X c
 
-singleton-types-are-pointed : {X : 𝓤 ̇ } → is-singleton X → X
-singleton-types-are-pointed = pr₁
+center : {X : 𝓤 ̇ } → is-singleton X → X
+center = pr₁
 
 \end{code}
 
@@ -77,7 +78,7 @@ For compatibility with the homotopical terminology:
 \begin{code}
 
 is-center-of-contraction-of : (X : 𝓤 ̇ ) → X → 𝓤 ̇
-is-center-of-contraction-of = is-the-only-element-of
+is-center-of-contraction-of = is-central
 
 is-contr : 𝓤 ̇ → 𝓤 ̇
 is-contr = is-singleton
@@ -88,11 +89,11 @@ is-contr = is-singleton
 singletons-are-props : {X : 𝓤 ̇ } → is-singleton X → is-prop X
 singletons-are-props {𝓤} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
 
-isingletons-are-props : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
-isingletons-are-props {𝓤} {X} φ x = singletons-are-props (φ x) x
+prop-criterion' : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
+prop-criterion' {𝓤} {X} φ x = singletons-are-props (φ x) x
 
-iprops-are-props : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
-iprops-are-props {𝓤} {X} φ x y = φ x x y
+prop-criterion : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
+prop-criterion {𝓤} {X} φ x y = φ x x y
 
 pointed-props-are-singletons : {X : 𝓤 ̇ } → X → is-prop X → is-singleton X
 pointed-props-are-singletons x h = x , h x
@@ -249,7 +250,7 @@ singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton(singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
 
-singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X} → is-the-only-element-of (singleton-type x) (x , refl)
+singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X} → is-central (singleton-type x) (x , refl)
 singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
 
 singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop(singleton-type x)
@@ -278,9 +279,9 @@ to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
              → (x , a) ≡ (y , b)
 to-subtype-≡ {𝓤} {𝓥} {X} {A} {x} {y} {a} {b} s p = to-Σ-≡ (p , s y (transport A p a) b)
 
-subtype-of-prop-is-a-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+subtype-of-prop-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-prop Y → is-prop X
-subtype-of-prop-is-a-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
+subtype-of-prop-is-prop {𝓤} {𝓥} {X} m lc i x x' = lc (i (m x) (m x'))
 
 subtypes-of-sets-are-sets : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                           → left-cancellable m → is-set Y → is-set X
@@ -439,5 +440,26 @@ description (σ , o) = σ
 
 ∃!-uniqueness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → (x : X) (a : A x) → description u ≡ (x , a)
 ∃!-uniqueness u x a = ∃!-uniqueness' u (x , a)
+
+\end{code}
+
+Added 5 March 2020 by Tom de Jong.
+
+\begin{code}
+
++-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+          → is-prop X → is-prop Y
+          → (X → ¬ Y)
+          → is-prop (X + Y)
++-is-prop i j f (inl x) (inl x') = ap inl (i x x')
++-is-prop i j f (inl x) (inr y) = 𝟘-induction (f x y)
++-is-prop i j f (inr y) (inl x) = 𝟘-induction (f x y)
++-is-prop i j f (inr y) (inr y') = ap inr (j y y')
+
++-is-prop' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+           → is-prop X → is-prop Y
+           → (Y → ¬ X)
+           → is-prop (X + Y)
++-is-prop' {𝓤} {𝓥} {X} {Y} i j f = +-is-prop i j (λ y x → f x y)
 
 \end{code}
