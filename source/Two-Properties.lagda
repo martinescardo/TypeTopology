@@ -175,6 +175,11 @@ Lemma[a≤₂b→min𝟚ab≡a] : {a b : 𝟚} → a ≤₂ b → min𝟚 a b �
 Lemma[a≤₂b→min𝟚ab≡a] {₀} {b} p = refl
 Lemma[a≤₂b→min𝟚ab≡a] {₁} {b} p = p refl
 
+Lemma[min𝟚ab≡₀] : {a b : 𝟚} → (a ≡ ₀) + (b ≡ ₀) → min𝟚 a b ≡ ₀
+Lemma[min𝟚ab≡₀] {₀} {b} (inl p) = refl
+Lemma[min𝟚ab≡₀] {₀} {₀} (inr q) = refl
+Lemma[min𝟚ab≡₀] {₁} {₀} (inr q) = refl
+
 lemma[min𝟚ab≡₀] : {a b : 𝟚} → min𝟚 a b ≡ ₀ → (a ≡ ₀) + (b ≡ ₀)
 lemma[min𝟚ab≡₀] {₀} {b} p = inl p
 lemma[min𝟚ab≡₀] {₁} {b} p = inr p
