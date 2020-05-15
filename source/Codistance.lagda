@@ -1,4 +1,5 @@
 Martin Escardo, 11th September 2018
+Completed by Todd Waugh Ambridge, 15th May 2020
 
 We begin by defining a "codistance" or "closeness" function
 
@@ -27,11 +28,13 @@ open import UF-FunExt
 
 module Codistance (fe : FunExt) where
 
-
 open import Sequence fe
 open import CoNaturals fe
-open import GenericConvergentSequence
+open import CoNaturalsArithmetic fe
+open import GenericConvergentSequence renaming (min to min')
 open import DiscreteAndSeparated
+open import UF-Miscelanea
+open import Two-Properties
 open import UF-Miscelanea
 
 module sequences
@@ -61,7 +64,7 @@ the functor 𝟙 + (-), which we refer to as corecursion.
   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
   c : 𝓢 → 𝓢 → ℕ∞
   c = curry (ℕ∞-corec p)
-
+ 
 \end{code}
 
 We use the private name "c" in this submodule, which is exported as
@@ -78,9 +81,11 @@ The two defining properties of the function c are the following:
 
 \begin{code}
 
- codistance-eq₀ : (α β : 𝓢) → head α ≢ head β → c α β ≡ Zero
- codistance-eq₁ : (α β : 𝓢) → head α ≡ head β → c α β ≡ Succ (c (tail α) (tail β))
-
+ codistance-eq₀ : (α β : 𝓢) → head α ≢ head β
+                → c α β ≡ Zero
+ codistance-eq₁ : (α β : 𝓢) → head α ≡ head β
+                → c α β ≡ Succ (c (tail α) (tail β))
+                
  codistance-eq₀ α β n = γ r
   where
    t : δ (head α) (head β) ≡ inr n
@@ -96,7 +101,8 @@ The two defining properties of the function c are the following:
    t = discrete-inl δ (head α) (head β) q
    r : p (α , β) ≡ inr (tail α , tail β)
    r = ap (cases (f α β) (g α β)) t
-   γ : p (α , β) ≡ inr (tail α , tail β) → c α β ≡ Succ (c (tail α) (tail β))
+   γ : p (α , β) ≡ inr (tail α , tail β)
+     → c α β ≡ Succ (c (tail α) (tail β))
    γ = Coalg-morphism-Succ p (α , β) (tail α , tail β)
 
 \end{code}
@@ -143,16 +149,102 @@ impossible case) and codistance-eq₁ (to establish the result):
      d : head α ≡ head β
      d = Cases (δ (head α) (head β))
           (λ (p : head α ≡ head β)
-                → p)
+            → p)
           (λ (n : head α ≢ head β)
-                → 𝟘-elim (Zero-not-Succ (Zero    ≡⟨ (l n)⁻¹ ⟩
-                                         c α β   ≡⟨ q ⟩
-                                         ∞       ≡⟨ (Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹ ⟩
-                                         Succ ∞  ∎)))
+            → 𝟘-elim (Zero-not-Succ (Zero    ≡⟨ (l n)⁻¹ ⟩
+                                     c α β   ≡⟨ q ⟩
+                                     ∞       ≡⟨ (Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹ ⟩
+                                     Succ ∞  ∎)))
      e : c (tail α) (tail β) ≡ ∞
      e = ap Pred (Succ (c (tail α) (tail β)) ≡⟨ (codistance-eq₁ α β d)⁻¹ ⟩
                   c α β                      ≡⟨ q ⟩
                   ∞                          ∎)
+
+\end{code}
+
+Symmetric property:
+
+\begin{code}
+
+ symmetric-property : (α β : 𝓢) → c α β ≡ c β α
+ symmetric-property α β = ℕ∞-coinduction R b (c α β) (c β α) γ
+  where
+   R : ℕ∞ → ℕ∞ → 𝓤 ̇
+   R u v = Σ \α → Σ \β → (u ≡ c α β) × (v ≡ c β α)
+   b : ℕ∞-bisimulation R
+   b .(c α β) .(c β α) (α , β , refl , refl)
+     = s , t (δ (head α) (head β))
+    where
+     s : positivity (c α β) ≡ positivity (c β α)
+     s = Cases (δ (head α) (head β)) sₕ sₜ
+      where
+       sₕ : head α ≡ head β → positivity (c α β) ≡ positivity (c β α)
+       sₕ h≡ = successors-same-positivity
+               (codistance-eq₁ α β h≡) (codistance-eq₁ β α (h≡ ⁻¹))
+       sₜ : head α ≢ head β → positivity (c α β) ≡ positivity (c β α)
+       sₜ h≢ = equal-same-positivity (c α β) (c β α)
+               (codistance-eq₀ α β h≢
+               ∙ codistance-eq₀ β α (λ h≡ → h≢ (h≡ ⁻¹)) ⁻¹)
+     t : (head α ≡ head β) + (head α ≢ head β)
+       → R (Pred (c α β)) (Pred (c β α))
+     t (inl h≡) = tail α , tail β
+                , ap Pred (codistance-eq₁ α β h≡ ∙ Pred-Succ)
+                , ap Pred (codistance-eq₁ β α (h≡ ⁻¹) ∙ Pred-Succ)
+     t (inr h≢) = α , β
+                , Pred-Zero-is-Zero' (c α β) (codistance-eq₀ α β h≢)
+                , Pred-Zero-is-Zero' (c β α) (codistance-eq₀ β α (λ h≡ → h≢ (h≡ ⁻¹)))
+   γ : R (c α β) (c β α)
+   γ = α , β , refl , refl
+
+\end{code}
+
+Ultra property:
+
+\begin{code}
+
+ codistance-eq₁' : (α β : 𝓢) → is-positive (c α β)
+                 → head α ≡ head β
+ codistance-eq₁' α β p = Cases (δ (head α) (head β)) id
+   (λ h≢ → 𝟘-elim (zero-is-not-one
+    (is-Zero-Zero ⁻¹ ∙ ap (λ - → incl - 0) (codistance-eq₀ α β h≢ ⁻¹) ∙ p)))
+
+ open import NaturalsOrder
+
+ codistance-conceptually₁ : (α β : 𝓢) (n : ℕ)
+                          → ((k : ℕ) → k ≤ n → α k ≡ β k)
+                          → n ⊏ c α β
+ codistance-conceptually₁ α β zero α≈ₙβ
+  = transport (0 ⊏_) (codistance-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
+    (is-positive-Succ (c (tail α) (tail β)))
+ codistance-conceptually₁ α β (succ n) α≈ₙβ
+  = transport (succ n ⊏_) (codistance-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
+    (codistance-conceptually₁ (tail α) (tail β) n (λ m → α≈ₙβ (succ m)))
+ 
+ codistance-conceptually₂ : (α β : 𝓢) (n : ℕ)
+                          → n ⊏ c α β
+                          → ((k : ℕ) → k ≤ n → α k ≡ β k)
+ codistance-conceptually₂ α β n ⊏ₙcαβ zero k≤n
+  = codistance-eq₁' α β (⊏-trans'' (c α β) n 0 k≤n ⊏ₙcαβ)
+ codistance-conceptually₂ α β n ⊏ₙcαβ (succ k) k≤n
+  = codistance-conceptually₂ (tail α) (tail β) k (transport (succ k ⊏_)
+      (codistance-eq₁ α β (codistance-eq₁' α β (⊏-trans'' (c α β) n 0 * ⊏ₙcαβ)))
+      (⊏-trans'' (c α β) n (succ k) k≤n ⊏ₙcαβ))
+    k (≤-refl k)
+
+ min-split : (α β : ℕ∞) (n : ℕ) → n ⊏ uncurry min' (α , β) → n ⊏ α × n ⊏ β
+ pr₁ (min-split α β n min≼) = different-from-₀-equal-₁
+                              (λ x → zero-is-not-one (Lemma[min𝟚ab≡₀] (inl x) ⁻¹ ∙ min≼))
+ pr₂ (min-split α β n min≼) = different-from-₀-equal-₁
+                              (λ x → zero-is-not-one (Lemma[min𝟚ab≡₀] (inr x) ⁻¹ ∙ min≼))
+
+ ultra-property : (α β ε : 𝓢) → min (c α β , c β ε) ≼ c α ε
+ ultra-property α β ε n min≼  = codistance-conceptually₁ α ε n
+                     (λ k k≤n → codistance-conceptually₂ α β n (pr₁ min-split') k k≤n
+                              ∙ codistance-conceptually₂ β ε n (pr₂ min-split') k k≤n)
+  where
+   min-split' : n ⊏ c α β × n ⊏ c β ε
+   min-split' = min-split (c α β) (c β ε) n
+                (transport (λ - → n ⊏ - (c α β , c β ε)) min≡ min≼)
 
 \end{code}
 
@@ -165,13 +257,17 @@ open sequences ℕ ℕ-is-discrete
  renaming
   (codistance                 to Baire-codistance ;
    infinitely-close-to-itself to Baire-infinitely-close-to-itself ;
-   infinitely-close-are-equal to Baire-infinitely-close-are-equal)
+   infinitely-close-are-equal to Baire-infinitely-close-are-equal ;
+   symmetric-property         to Baire-symmetric-property ;
+   ultra-property             to Baire-ultra-property )
 
 open sequences 𝟚 𝟚-is-discrete
  renaming
   (codistance                 to Cantor-codistance ;
    infinitely-close-to-itself to Cantor-infinitely-close-to-itself ;
-   infinitely-close-are-equal to Cantor-infinitely-close-are-equal)
+   infinitely-close-are-equal to Cantor-infinitely-close-are-equal ;
+   symmetric-property         to Cantor-symmetric-property ;
+   ultra-property             to Cantor-ultra-property )
 
 \end{code}
 
@@ -195,13 +291,18 @@ convergent sequence:
   γ : incl u ≡ incl v
   γ = Cantor-infinitely-close-are-equal (incl u) (incl v) r
 
+ℕ∞-symmetric-property : (u v : ℕ∞) → ℕ∞-codistance u v ≡ ℕ∞-codistance v u
+ℕ∞-symmetric-property u v = Cantor-symmetric-property (incl u) (incl v)
+
+ℕ∞-ultra-property : (u v w : ℕ∞) → min (ℕ∞-codistance u v , ℕ∞-codistance v w)
+                                 ≼ ℕ∞-codistance u w
+ℕ∞-ultra-property u v w = Cantor-ultra-property (incl u) (incl v) (incl w)
+
 \end{code}
 
 Axioms for codistance:
 
 \begin{code}
-
-open import CoNaturalsArithmetic fe
 
 is-codistance
  indistinguishable-are-equal
@@ -218,7 +319,32 @@ is-codistance               c = indistinguishable-are-equal c
                               × self-indistinguishable c
                               × is-symmetric c
                               × is-ultra c
+
 \end{code}
 
-TODO. Show that the above codistances are indeed codistances according
-to this definition.
+The above codistances are indeed codistances according
+to this definition
+
+\begin{code}
+
+open sequences
+
+ℕ→D-has-codistance : (X : 𝓤 ̇ ) (δ : is-discrete X)
+                   → is-codistance (codistance X δ)
+ℕ→D-has-codistance X δ
+ = infinitely-close-are-equal X δ
+ , infinitely-close-to-itself X δ
+ , symmetric-property X δ
+ , ultra-property X δ
+
+ℕ→ℕ-has-codistance : is-codistance (Baire-codistance)
+ℕ→ℕ-has-codistance = ℕ→D-has-codistance ℕ ℕ-is-discrete
+
+ℕ→𝟚-has-codistance : is-codistance (Cantor-codistance)
+ℕ→𝟚-has-codistance = ℕ→D-has-codistance 𝟚 𝟚-is-discrete
+
+ℕ→ℕ∞-has-codistance : is-codistance (ℕ∞-codistance)
+ℕ→ℕ∞-has-codistance = ℕ∞-infinitely-close-are-equal
+                    , ℕ∞-infinitely-close-to-itself
+                    , ℕ∞-symmetric-property
+                    , ℕ∞-ultra-property
