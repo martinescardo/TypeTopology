@@ -35,7 +35,6 @@ open import GenericConvergentSequence renaming (min to min')
 open import DiscreteAndSeparated
 open import UF-Miscelanea
 open import Two-Properties
-open import UF-Miscelanea
 
 module sequences
         {𝓤 : Universe}
