@@ -129,10 +129,10 @@ embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings
         p' = ap pr₁ r
         q' : transport Y p' y ≡ y'
         q' = from-Σ-≡' r
-        s : p ≡ p'
-        s = discrete-types-are-sets d p p'
+        s : p' ≡ p
+        s = discrete-types-are-sets d p' p
         q : transport Y p y ≡ y'
-        q = ap (λ - → transport Y - y) s ∙ q'
+        q = transport (λ - → transport Y - y ≡ y') s q'
   g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
 𝟚-is-set : is-set 𝟚
