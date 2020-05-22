@@ -22,6 +22,7 @@ open import UF-FunExt
 module Escardo-Simpson-LICS2001 (fe : FunExt) where
 
 open import UF-Subsingletons public
+open import Sequence fe
 
 \end{code}
 
@@ -36,7 +37,6 @@ commutative     _∙_ = ∀ a b     → a ∙ b             ≡ b ∙ a
 idempotent      _∙_ = ∀ a       → a ∙ a             ≡ a
 transpositional _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ≡ (a ∙ c) ∙ (b ∙ d)
 
-
 seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (n : ℕ)
              → (λ (i : ℕ) → α (succ i +ℕ n)) ≡ (λ (i : ℕ) → α (succ (i +ℕ n)))
 seq-add-push α 0 = refl
@@ -49,8 +49,8 @@ The initial structure we define is a Midpoint-algebra
 \begin{code}
 
 midpoint-algebra-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
-midpoint-algebra-axioms A _⊕_ = is-set A
-                               × idempotent _⊕_ × commutative _⊕_ × transpositional _⊕_
+midpoint-algebra-axioms {𝓤} A _⊕_ = is-set A
+                                  × idempotent _⊕_ × commutative _⊕_ × transpositional _⊕_
 
 Midpoint-algebra : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Midpoint-algebra 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpoint-algebra-axioms A _⊕_)
@@ -66,7 +66,7 @@ cancellative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 cancellative  _∙_ = ∀ a b c → a ∙ c ≡ b ∙ c → a ≡ b
 
 iterative : {A : 𝓤 ̇ } → (A → A → A) → 𝓤 ̇
-iterative {𝓤} {A} _⊕_ = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ≡ a 0 ⊕ M (a ∘ succ))
+iterative {𝓤} {A} _⊕_ = Σ M ꞉ ((ℕ → A) → A) , ((a : ℕ → A) → M a ≡ a 0 ⊕ M (tail a))
                                             × ((a x : ℕ → A)
                                                → ((i : ℕ) → a i ≡ x i ⊕ a (succ i))
                                                → a 0 ≡ M x)
@@ -93,10 +93,13 @@ iterative-uniqueness {𝓤} _⊕_ F M = dfunext (fe 𝓤 𝓤) (iterative-unique
 
 \begin{code}
 
+convex-body-axioms : (A : 𝓤 ̇ ) → (A → A → A) → 𝓤 ̇
+convex-body-axioms {𝓤} A _⊕_ = (midpoint-algebra-axioms A _⊕_)
+                             × (cancellative _⊕_)
+                             × (iterative _⊕_)
+
 Convex-body : (𝓤 : Universe) → 𝓤 ⁺ ̇
-Convex-body 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpoint-algebra-axioms A _⊕_)
-                                                 × (cancellative _⊕_)
-                                                 × (iterative _⊕_)
+Convex-body 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (convex-body-axioms A _⊕_)
 
 ⟨_⟩ : Convex-body 𝓤 → 𝓤 ̇
 ⟨ A , _ ⟩ = A
@@ -159,7 +162,7 @@ id-is-⊕-homomorphism 𝓐 x y = refl
 
 is-interval-object : (𝓘 : Convex-body 𝓤) (𝓥 : Universe) → ⟨ 𝓘 ⟩ → ⟨ 𝓘 ⟩ → 𝓤 ⊔ 𝓥 ⁺ ̇
 is-interval-object 𝓘 𝓥 u v =
-     (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩) -- h = affine a b
+    (𝓐 : Convex-body 𝓥) (a b : ⟨ 𝓐 ⟩) -- h = affine a b
    → ∃! h ꞉ (⟨ 𝓘 ⟩ → ⟨ 𝓐 ⟩) , (h u ≡ a)
                             × (h v ≡ b)
                             × ((x y : ⟨ 𝓘 ⟩) → h (x ⊕⟨ 𝓘 ⟩ y) ≡ h x ⊕⟨ 𝓐 ⟩ h y)
@@ -710,6 +713,7 @@ module basic-interval-object-development {𝓤 : Universe}
  -- max-assoc : associative _∨_
  -- max-assoc = {!!}
 
+
 \end{code}
 
  Other functions can be derived from max
@@ -722,17 +726,12 @@ module basic-interval-object-development {𝓤 : Universe}
  abs : 𝕀 → 𝕀
  abs x = max (− x) x
 
+
 \end{code}
 
  TODO list:
-  * Prove M is symmetric
-
-  * max (_∨_) is a semilattice -- assoc, comm, idem
+  * max (_∨_) is a semilattice -- assoc, comm (done idem)
     - derive order from this semilattice
-
-  * Pull request to TypeTopology
-
-  * TODO. being-interval-object-is-prop. -- in another file
 
   * Page 42. - Prove the limit *is* the limit, as above
 
