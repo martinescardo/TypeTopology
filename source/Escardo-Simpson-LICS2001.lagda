@@ -27,7 +27,7 @@ open import Sequence fe
 \end{code}
 
 First we give basic properties on binary functions,
-as well as a specific property about equality of streams under some arithmetic
+as well as a specific property about equality of streams under some arithmetic.
 
 \begin{code}
 
@@ -44,7 +44,7 @@ seq-add-push α (succ n) = seq-add-push (α ∘ succ) n
 
 \end{code}
 
-The initial structure we define is a Midpoint-algebra
+The initial structure we define is a Midpoint-algebra.
 
 \begin{code}
 
@@ -57,8 +57,8 @@ Midpoint-algebra 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ _⊕_ ꞉ (A → A → A) , (midpo
 
 \end{code}
 
- We introduce two more properties on binary functions: cancellation and iteration
- For a particular type, the iterator is unique
+ We introduce two more properties on binary functions: cancellation and iteration.
+ For a particular type, the iterator is unique.
 
 \begin{code}
 
@@ -89,7 +89,7 @@ iterative-uniqueness {𝓤} _⊕_ F M = dfunext (fe 𝓤 𝓤) (iterative-unique
 
 \end{code}
 
- A Convex-body is a cancellative, iterative Midpoint-algebra
+ A Convex-body is a cancellative, iterative Midpoint-algebra.
 
 \begin{code}
 
@@ -111,10 +111,10 @@ syntax midpoint-operation 𝓐 x y = x ⊕⟨ 𝓐 ⟩ y
 
 \end{code}
 
- Definition of a midpoint-homomorphism
- The identity function is a midpoint-hom
- The unary functions given by a constant midpoint are midpoint-homs
- The composition of two midpoint-homs is a midpoint-hom
+ Definition of a midpoint-homomorphism.
+ The identity function is a midpoint-hom.
+ The unary functions given by a constant midpoint are midpoint-homs.
+ The composition of two midpoint-homs is a midpoint-hom.
 
 \begin{code}
 
@@ -150,13 +150,13 @@ id-is-⊕-homomorphism 𝓐 x y = refl
 
 \end{code}
 
- The key structure of the axiomatisation: an interval object
- An interval object is defined by a Convex-body 𝓘 and two points u,v : ⟨𝓘⟩
+ The key structure of the axiomatisation: an interval object.
+ An interval object is defined by a Convex-body 𝓘 and two points u,v : ⟨𝓘⟩.
  For every two points a,b : ⟨𝓐⟩ of a Convex-body 𝓐,
    there exists a unique h : ⟨𝓘⟩ → ⟨𝓐⟩ such that:
-    * h u ≡ a
-    * h v ≡ b
-    * ∀ x,y : ⟨𝓘⟩. h (x ⊕⟨ 𝓘 ⟩ y) ≡ h x ⊕⟨ 𝓐 ⟩ h y)
+    * h u ≡ a,
+    * h v ≡ b,
+    * ∀ x,y : ⟨𝓘⟩. h (x ⊕⟨ 𝓘 ⟩ y) ≡ h x ⊕⟨ 𝓐 ⟩ h y).
 
 \begin{code}
 
@@ -169,7 +169,7 @@ is-interval-object 𝓘 𝓥 u v =
 
 \end{code}
 
- The type of an interval object axiomatisation as a record
+ The type of an interval object axiomatisation as a record.
 
 \begin{code}
 
@@ -185,7 +185,7 @@ record Interval-object (𝓤 : Universe) : 𝓤ω where
 
 \end{code}
 
- The type of a doubling function axiomatisation
+ The type of a doubling function axiomatisation.
 
 \begin{code}
 
@@ -203,7 +203,7 @@ has-double 𝓥 io = Σ double ꞉ (𝕀 → 𝕀)
 \end{code}
 
  We now prove things within a universe
- with an Interval-object and a doubling function
+ with an Interval-object and a doubling function.
 
 \begin{code}
 
@@ -213,7 +213,7 @@ module basic-interval-object-development {𝓤 : Universe}
 \end{code}
 
  First we unpack all of the axioms from the Interval-object
- affine : 𝕀 → 𝕀 → 𝕀 → 𝕀 is given by the unique map h : 𝕀 → 𝕀
+ affine : 𝕀 → 𝕀 → 𝕀 → 𝕀 is given by the unique map h : 𝕀 → 𝕀.
 
 \begin{code}
 
@@ -265,11 +265,10 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- Many of the following proofs follow from the uniqueness of affine
- For example, affine u v is point-wise equivalent to the identity function
+ Many of the following proofs follow from the uniqueness of affine.
+ For example, affine u v is point-wise equivalent to the identity function.
 
 \begin{code}
-
 
  affine-uv-involutive : affine u v ∼ id
  affine-uv-involutive = affine-uniqueness· id u v refl refl (id-is-⊕-homomorphism 𝓘)
@@ -279,8 +278,8 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- The iterator is called M
- We prove that it is idempotent, symmetric and is a midpoint-hom
+ The iterator is called M.
+ We prove that it is idempotent, symmetric and is a midpoint-hom.
 
 \begin{code}
 
@@ -333,10 +332,10 @@ module basic-interval-object-development {𝓤 : Universe}
    M' n = M (λ i → M (λ j → x i (j +ℕ n)))
    γ : (i : ℕ) → M' i ≡ (pr₁ ia (λ j → x j i) ⊕ M' (succ i))
    γ n = M (λ i → M (λ j → x i (j +ℕ n)))
-             ≡⟨ M-prop₁-inner (λ i j → x i (j +ℕ n))          ⟩ 
+             ≡⟨ M-prop₁-inner (λ i j → x i (j +ℕ n))          ⟩
          M (λ i → x i (0 +ℕ n) ⊕ M (λ j → x i (succ j +ℕ n)))
              ≡⟨ M-hom (λ i → x i (0 +ℕ n))
-                      (λ i → M (λ j → x i (succ j +ℕ n))) ⁻¹  ⟩ 
+                      (λ i → M (λ j → x i (succ j +ℕ n))) ⁻¹  ⟩
          M (λ i → x i (0 +ℕ n)) ⊕ M (λ i → M (λ j → x i (succ j +ℕ n)))
              ≡⟨ ap (λ - → M (λ i → x i -)
                     ⊕ M (λ i → M (λ j → x i (succ j +ℕ n))))
@@ -353,8 +352,8 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- Any midpoint-hom is automatically an M-hom
- Thus, M is an M-hom
+ Any midpoint-hom is automatically an M-hom.
+ Thus, M is an M-hom.
 
 \begin{code}
 
@@ -382,7 +381,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- We adopt the convention u = −1 and v = +1 for the following
+ We adopt the convention u = −1 and v = +1 for the following.
 
 \begin{code}
 
@@ -394,7 +393,7 @@ module basic-interval-object-development {𝓤 : Universe}
 \end{code}
 
  The negation function and related properties,
- culminating in proving negation is involutive
+ culminating in proving negation is involutive.
 
 \begin{code}
 
@@ -449,8 +448,8 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- The "midpoint subtraction" function from midpoint and negation
- The midpoint subtraction of any x with itself is O
+ The "midpoint subtraction" function from midpoint and negation.
+ The midpoint subtraction of any x with itself is O.
 
 \begin{code}
 
@@ -475,7 +474,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
  The multiplication function and related properties,
  culminating in proving multiplication is
- commutative and associative
+ commutative and associative.
 
 \begin{code}
 
@@ -570,8 +569,8 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- Power series can be implemented from multiplication
- We also define a halving function from the midpoint
+ Power series can be implemented from multiplication.
+ We also define a halving function from the midpoint.
 
 \begin{code}
 
@@ -611,9 +610,9 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- Now we assume that we have a doubling function
+ Now we assume that we have a doubling function.
  This allows the definition
- of truncated addition and subtraction
+ of truncated addition and subtraction.
 
 \begin{code}
 
@@ -647,12 +646,12 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- Double and half allows it to define a max operation
+ Double and half allows it to define a max operation.
  First, there is an operation for maxO,
- this is then used to define max itself
+ this is then used to define max itself.
 
  We wish to prove that max is a semi-lattice
- (idempotent, commutative and associative)
+ (idempotent, commutative and associative).
 
 \begin{code}
 
@@ -716,7 +715,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \end{code}
 
- Other functions can be derived from max
+ Other functions can be derived from max.
 
 \begin{code}
 
@@ -731,11 +730,11 @@ module basic-interval-object-development {𝓤 : Universe}
 
  TODO list:
   * max (_∨_) is a semilattice -- assoc, comm (done idem)
-    - derive order from this semilattice
+    - derive order from this semilattice.
 
-  * Page 42. - Prove the limit *is* the limit, as above
+  * Page 42. - Prove the limit *is* the limit, as above.
 
   * Binary expansions
            (ℕ      →      ℕ          →           𝕀)
            numerator     denominator   numer/denom
-           (binary expansion stream applied to M)
+           (binary expansion stream applied to M).
