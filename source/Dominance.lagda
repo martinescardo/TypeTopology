@@ -1,4 +1,4 @@
-Martin Escardo, January 2018
+Martin Escardo, January 2018, May 2020
 
 Based on joint work with Cory Knapp.
 http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
@@ -144,6 +144,18 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
  μ : ∀ {𝓥} {X : 𝓥 ̇ } → L(L X) → L X
  μ = extension id
 
+\end{code}
+
+Added 27th May 2020.
+
+\begin{code}
+
+\end{code}
+
+
+
+\begin{code}
+
  {- TODO:
  kleisli-law₀ : ∀ {𝓥} {X : 𝓥 ̇ } → extension (η {𝓥} {X}) ∼ id
  kleisli-law₀ {𝓥} {X} (P , (isdp , φ)) = {!!}
@@ -156,6 +168,5 @@ module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
               → (g ♯ ∘ f)♯ ∼ g ♯ ∘ f ♯
  kleisli-law₂ {𝓥} {𝓦} {𝓣} {X} {Y} {Z} f g (P , (isdp , φ)) = {!!}
  -}
-
 
 \end{code}

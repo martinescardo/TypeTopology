@@ -339,12 +339,12 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
-             → {Y : 𝓤 ̇ }
-             → is-separated Y
-             → {f g : ℕ∞ → Y}
-             → ((n : ℕ) → f(under n) ≡ g(under n))
-             → f ∞ ≡ g ∞
-             → (u : ℕ∞) → f u ≡ g u
+           → {Y : 𝓤 ̇ }
+           → is-separated Y
+           → {f g : ℕ∞ → Y}
+           → ((n : ℕ) → f(under n) ≡ g(under n))
+           → f ∞ ≡ g ∞
+           → (u : ℕ∞) → f u ≡ g u
 ℕ∞-density fe s = ℕ∞-ddensity fe (λ {_} → s)
 
 ℕ∞-𝟚-density : funext₀
@@ -810,7 +810,7 @@ Characterization of ⊏.
 
 \end{code}
 
-precedences:
+Precedences:
 
 \begin{code}
 

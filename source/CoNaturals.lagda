@@ -107,32 +107,38 @@ PRED-SUCC{inl *} = refl
 PRED-SUCC{inr u} = refl
 
 SUCC-lc : {y z : 𝟙 + ℕ∞} → SUCC y ≡ SUCC z → y ≡ z
-SUCC-lc r = PRED-SUCC ⁻¹ ∙ ap PRED r ∙ PRED-SUCC
+SUCC-lc {y} {z} r = y             ≡⟨ PRED-SUCC ⁻¹ ⟩
+                    PRED (SUCC y) ≡⟨ ap PRED r    ⟩
+                    PRED (SUCC z) ≡⟨ PRED-SUCC    ⟩
+                    z             ∎
 
 SUCC-PRED : {u : ℕ∞} → SUCC(PRED u) ≡ u
 SUCC-PRED {u} = 𝟚-equality-cases l₀ l₁
  where
   l₀ : positivity u ≡ ₀ → SUCC(PRED u) ≡ u
-  l₀ r = c₁ ∙ (is-Zero-equal-Zero fe₀ r)⁻¹
+  l₀ r = SUCC(PRED u) ≡⟨ ap SUCC c₀                   ⟩
+         Zero         ≡⟨ (is-Zero-equal-Zero fe₀ r)⁻¹ ⟩
+         u            ∎
     where
      c₀ : PRED u ≡ Zero'
      c₀ = ap (𝟚-cases Zero' (Pred' u)) r
-     c₁ : SUCC(PRED u) ≡ Zero
-     c₁ = ap SUCC c₀
+
   l₁ : positivity u ≡ ₁ → SUCC(PRED u) ≡ u
-  l₁ r = c₁ ∙ c₃ ⁻¹
+  l₁ r = SUCC (PRED u) ≡⟨ ap SUCC c₀                  ⟩
+         Succ (Pred u) ≡⟨ (not-Zero-is-Succ fe₀ c₁)⁻¹ ⟩
+         u             ∎
+
    where
      c₀ : PRED u ≡ Pred' u
      c₀ = ap (𝟚-cases Zero' (Pred' u)) r
-     c₁ : SUCC(PRED u) ≡ Succ (Pred u)
-     c₁ = ap SUCC c₀
-     c₂ : u ≢ Zero
-     c₂ s = equal-₀-different-from-₁(ap positivity s) r
-     c₃ : u ≡ Succ (Pred u)
-     c₃ = not-Zero-is-Succ fe₀ c₂
+     c₁ : u ≢ Zero
+     c₁ s = equal-₀-different-from-₁(ap positivity s) r
 
 PRED-lc : {u v : ℕ∞} → PRED u ≡ PRED v → u ≡ v
-PRED-lc r = SUCC-PRED ⁻¹ ∙ ap SUCC r ∙ SUCC-PRED
+PRED-lc {u} {v} r = u             ≡⟨ SUCC-PRED ⁻¹ ⟩
+                    SUCC (PRED u) ≡⟨ ap SUCC r    ⟩
+                    SUCC (PRED v) ≡⟨ SUCC-PRED    ⟩
+                    v             ∎
 
 𝟙+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝟙 + X → 𝟙 + Y
 𝟙+ f (inl s) = inl {𝓤₀} s
@@ -152,13 +158,17 @@ coalg-mophism→ : {X : 𝓤 ̇ } (κ : X → 𝟙 + X) (h : X → ℕ∞)
                → is-homomorphism κ h
                → h ≡ SUCC ∘ (𝟙+ h) ∘ κ
 coalg-mophism→ {𝓤} κ h a = dfunext (fe 𝓤 𝓤₀)
-                             (λ x → SUCC-PRED ⁻¹ ∙ ap (λ - → SUCC(- x)) a)
+                             (λ x → h x               ≡⟨ SUCC-PRED ⁻¹           ⟩
+                                    SUCC (PRED (h x)) ≡⟨ ap (λ - → SUCC(- x)) a ⟩
+                                    SUCC (𝟙+ h (κ x)) ∎)
 
 coalg-mophism← : {X : 𝓤 ̇ } (κ : X → 𝟙 + X) (h : X → ℕ∞)
                → h ≡ SUCC ∘ (𝟙+ h) ∘ κ
                → is-homomorphism κ h
 coalg-mophism← {𝓤} κ h b = dfunext (fe 𝓤 𝓤₀)
-                            (λ x → ap (λ - → PRED(- x)) b ∙ PRED-SUCC)
+                            (λ x → PRED (h x)                 ≡⟨ ap (λ - → PRED(- x)) b ⟩
+                                   PRED ((SUCC ∘ 𝟙+ h ∘ κ) x) ≡⟨ PRED-SUCC              ⟩
+                                   𝟙+ h (κ x)                 ∎)
 
 homomorphism-existence : {X : 𝓤 ̇ } (κ : X → 𝟙 + X)
                        → Σ h ꞉ (X → ℕ∞), is-homomorphism κ h
@@ -188,25 +198,27 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
   h-spec x = equality-cases (κ x) l₀ l₁
    where
     l₀ : (s : 𝟙) → κ x ≡ inl s → PRED(h x) ≡ (𝟙+ h)(κ x)
-    l₀ * r = c₂ ∙ c₀ ⁻¹
+    l₀ * r = PRED (h x) ≡⟨ ap PRED c       ⟩
+             PRED Zero  ≡⟨ PRED-Zero       ⟩
+             Zero'      ≡⟨ (ap (𝟙+ h) r)⁻¹ ⟩
+             𝟙+ h (κ x) ∎
      where
-      c₀ : (𝟙+ h)(κ x) ≡ Zero'
-      c₀ = ap (𝟙+ h) r
-      c₁ : h x ≡ Zero
-      c₁ = is-Zero-equal-Zero fe₀ (ap E r)
-      c₂ : PRED(h x) ≡ Zero'
-      c₂ = ap PRED c₁ ∙ PRED-Zero
+      c : h x ≡ Zero
+      c = is-Zero-equal-Zero fe₀ (ap E r)
+
 
     l₁ : (x' : X) → κ x ≡ inr x' → PRED(h x) ≡ (𝟙+ h)(κ x)
-    l₁ x' r = c₆ ∙ c₀ ⁻¹
+    l₁ x' r = PRED (h x) ≡⟨ ap PRED c₅      ⟩
+              inr (h x') ≡⟨ (ap (𝟙+ h) r)⁻¹ ⟩
+              𝟙+ h (κ x) ∎
      where
-      c₀ : (𝟙+ h)(κ x) ≡ inr(h x')
-      c₀ = ap (𝟙+ h) r
       c₁ : (n : ℕ) → q(Q n (inr x)) ≡ Q n (κ x)
       c₁ 0 = refl
       c₁ (succ n) = ap q (c₁ n)
       c₂ : (n : ℕ) → q(Q n (inr x)) ≡ Q n (inr x')
-      c₂ n = c₁ n ∙ ap (Q n) r
+      c₂ n = q (Q n (inr x)) ≡⟨ c₁ n       ⟩
+             Q n (κ x)       ≡⟨ ap (Q n) r ⟩
+             Q n (inr x')    ∎
       c₃ : (n : ℕ) → E(q(Q n (inr x))) ≡ E(Q n (inr x'))
       c₃ n = ap E (c₂ n)
       c₄ : (i : ℕ) → incl(h x) i ≡ incl(Succ (h x')) i
@@ -214,9 +226,6 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
       c₄ (succ i) = c₃(succ i)
       c₅ : h x ≡ Succ (h x')
       c₅ = incl-lc fe₀ (dfunext fe₀ c₄)
-
-      c₆ : PRED(h x) ≡ inr(h x')
-      c₆ = ap PRED c₅
 
 ℕ∞-corec  : {X : 𝓤 ̇ } → (X → 𝟙 + X) → (X → ℕ∞)
 ℕ∞-corec c = pr₁(homomorphism-existence c)
@@ -254,14 +263,14 @@ coalgebra homomorphisms in more detail.
 coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → h x ≡ Zero
-coalg-morphism-Zero p h a x * κ = SUCC-PRED ⁻¹ ∙ ap SUCC c₃
+coalg-morphism-Zero p h a x * κ = h x               ≡⟨ SUCC-PRED ⁻¹ ⟩
+                                  SUCC (PRED (h x)) ≡⟨ ap SUCC c    ⟩
+                                  SUCC (inl *)      ∎
  where
-  c₁ : PRED(h x) ≡ (𝟙+ h)(p x)
-  c₁ = ap (λ - → - x) a
-  c₂ : (𝟙+ h)(p x) ≡ Zero'
-  c₂ = ap (𝟙+ h) κ
-  c₃ : PRED(h x) ≡ inl *
-  c₃ = c₁ ∙ c₂
+  c : PRED(h x) ≡ inl *
+  c = PRED (h x) ≡⟨ ap (λ - → - x) a ⟩
+      𝟙+ h (p x) ≡⟨ ap (𝟙+ h) κ      ⟩
+      inl *      ∎
 
 Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → ℕ∞-corec κ x ≡ Zero
@@ -271,14 +280,14 @@ coalg-morphism-Succ : {X : 𝓤 ̇ }
                       (κ : X →  𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x x' : X) → κ x ≡ inr x' → h x ≡ Succ (h x')
-coalg-morphism-Succ κ h a x x' q = SUCC-PRED ⁻¹ ∙ ap SUCC c₃
+coalg-morphism-Succ κ h a x x' q = h x               ≡⟨ SUCC-PRED ⁻¹ ⟩
+                                   SUCC (PRED (h x)) ≡⟨ ap SUCC c    ⟩
+                                   SUCC (inr (h x')) ∎
  where
-  c₁ : PRED(h x) ≡ (𝟙+ h)(κ x)
-  c₁ = ap (λ - → - x) a
-  c₂ : (𝟙+ h)(κ x) ≡ inr(h x')
-  c₂ = ap (𝟙+ h) q
-  c₃ : PRED(h x) ≡ inr(h x')
-  c₃ = c₁ ∙ c₂
+  c : PRED(h x) ≡ inr(h x')
+  c = PRED (h x) ≡⟨ ap (λ - → - x) a ⟩
+      𝟙+ h (κ x) ≡⟨ ap (𝟙+ h) q      ⟩
+      inr (h x') ∎
 
 Coalg-morphism-Succ : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
                     → (x x' : X) → κ x ≡ inr x' → ℕ∞-corec κ x ≡ Succ (ℕ∞-corec κ x')
@@ -296,24 +305,17 @@ coalg-morphism-positivity : {X : 𝓤 ̇ }
                           → is-homomorphism κ f
                           → is-homomorphism κ g
                           → (x : X) → positivity(f x) ≡ positivity(g x)
-coalg-morphism-positivity {𝓤} {X} κ f g a b x =
- equality-cases (κ x) l₀ l₁
+coalg-morphism-positivity {𝓤} {X} κ f g a b x = equality-cases (κ x) l₀ l₁
  where
   l₀ : (s : 𝟙) → κ x ≡ inl s → positivity(f x) ≡ positivity(g x)
-  l₀ s q = fl ∙ gl ⁻¹
-   where
-    fl : positivity(f x) ≡ ₀
-    fl = ap positivity(coalg-morphism-Zero κ f a x s q)
-    gl : positivity(g x) ≡ ₀
-    gl = ap positivity(coalg-morphism-Zero κ g b x s q)
+  l₀ s q = positivity (f x) ≡⟨ ap positivity(coalg-morphism-Zero κ f a x s q)     ⟩
+           ₀                ≡⟨ (ap positivity(coalg-morphism-Zero κ g b x s q))⁻¹ ⟩
+           positivity (g x) ∎
 
   l₁ : (x' : X) → κ x ≡ inr x' → positivity(f x) ≡ positivity(g x)
-  l₁ x' q = fl ∙ gl ⁻¹
-   where
-    fl : positivity(f x) ≡ ₁
-    fl = ap positivity(coalg-morphism-Succ κ f a x x' q)
-    gl : positivity(g x) ≡ ₁
-    gl = ap positivity(coalg-morphism-Succ κ g b x x' q)
+  l₁ x' q = positivity (f x)         ≡⟨ ap positivity(coalg-morphism-Succ κ f a x x' q) ⟩
+            positivity (Succ (f x')) ≡⟨ (ap positivity(coalg-morphism-Succ κ g b x x' q))⁻¹ ⟩
+            positivity (g x)         ∎
 
 coalg-morphism-Pred : {X : 𝓤 ̇ }
                       (κ : X →  𝟙 + X) (f g : X → ℕ∞)
@@ -332,12 +334,16 @@ coalg-morphism-Pred {𝓤} {X} κ f g a b x u v d e =
    where
     l : (h : X → ℕ∞) → PRED ∘ h ≡ (𝟙+ h) ∘ κ
       → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x
-    l h a u d = c₁ ∙ c₀ ⁻¹
+    l h a u d = Pred u ≡⟨ c₁    ⟩
+                Zero   ≡⟨ c₀ ⁻¹ ⟩
+                h x    ∎
      where
       c₀ : h x ≡ Zero
       c₀ = coalg-morphism-Zero κ h a x s q
       c₁ : Pred u ≡ Zero
-      c₁ = ap Pred (d ∙ c₀)
+      c₁ = ap Pred (u    ≡⟨ d  ⟩
+                    h x  ≡⟨ c₀ ⟩
+                    Zero ∎)
 
   l₁ : (x' : X) → κ x ≡ inr x'
      → Σ x' ꞉ X , (Pred u ≡ f x') × (Pred v ≡ g x')
@@ -345,10 +351,9 @@ coalg-morphism-Pred {𝓤} {X} κ f g a b x u v d e =
    where
     l : (h : X → ℕ∞) → PRED ∘ h ≡ (𝟙+ h) ∘ κ
       → (u : ℕ∞) → u ≡ h x → Pred u ≡ h x'
-    l h a u d = ap Pred d ∙ l'
-     where
-      l' : Pred(h x) ≡ h x'
-      l' = ap Pred(coalg-morphism-Succ κ h a x x' q)
+    l h a u d = Pred u     ≡⟨ ap Pred d                                 ⟩
+                Pred (h x) ≡⟨ ap Pred(coalg-morphism-Succ κ h a x x' q) ⟩
+                h x'       ∎
 
 \end{code}
 
@@ -371,10 +376,10 @@ homomorphism-uniqueness {𝓤} {X} κ f g a b = dfunext (fe 𝓤 𝓤₀) l
   r x = (x , refl , refl)
 
   R-positivity : (u v : ℕ∞) → R u v → positivity u ≡ positivity v
-  R-positivity u v (x , c , d) = ap positivity c ∙ e ∙ ap positivity (d ⁻¹)
-   where
-    e : positivity(f x) ≡ positivity(g x)
-    e = coalg-morphism-positivity {𝓤} {X} κ f g a b x
+  R-positivity u v (x , c , d) = positivity u     ≡⟨ ap positivity c                       ⟩
+                                 positivity (f x) ≡⟨ coalg-morphism-positivity κ f g a b x ⟩
+                                 positivity (g x) ≡⟨ ap positivity (d ⁻¹)                  ⟩
+                                 positivity v ∎
 
   R-Pred : (u v : ℕ∞) → R u v → R (Pred u) (Pred v)
   R-Pred u v (x , c , d) =
