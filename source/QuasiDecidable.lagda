@@ -59,6 +59,8 @@ propositions:
 
 \end{code}
 
+NB. Semidecidable propositions are called Rosolini propositions in the above reference.
+
 The following shows that we need to truncate, because the Cantor
 (ℕ → 𝟚) is certainly not the type of semi-decidable propositions:
 
