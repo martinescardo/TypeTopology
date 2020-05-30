@@ -72,10 +72,10 @@ The following shows that we need to truncate, because the Cantor type
                                    → (Σ X ꞉ 𝓤₀ ̇ , semidecidability-data X) ≃ (ℕ → 𝟚)
  totality-of-semidecidability-data ua =
 
-   (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ i ⟩
-   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ ii ⟩
+   (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ i   ⟩
+   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ ii  ⟩
    (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ≡ ₁) ≃ X) ≃⟨ iii ⟩
-   (ℕ → 𝟚) × 𝟙 {𝓤₀}                                     ≃⟨ iv ⟩
+   (ℕ → 𝟚) × 𝟙 {𝓤₀}                                     ≃⟨ iv  ⟩
    (ℕ → 𝟚)                                              ■
   where
    i   = Σ-flip
@@ -97,10 +97,9 @@ take the intersection of all 𝟘-𝟙-ω-closed subsets of Ω 𝓤₀).
 \begin{code}
 
  𝟘-𝟙-ω-closed : (𝓤₀ ̇ → 𝓤 ̇ ) → 𝓤₁ ⊔ 𝓤 ̇
- 𝟘-𝟙-ω-closed {𝓤} A =
-     A 𝟘
-   × A 𝟙
-   × ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → A (P n)) → A (∃ n ꞉ ℕ , P n))
+ 𝟘-𝟙-ω-closed {𝓤} A = A 𝟘
+                    × A 𝟙
+                    × ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → A (P n)) → A (∃ n ꞉ ℕ , P n))
 
 \end{code}
 
@@ -129,13 +128,13 @@ We assume that it exists in the following:
   quasidecidable-dom : propext 𝓤₀
                      → (P : 𝓤₀ ̇ )
                      → is-quasidecidable P
-                     → (Q : 𝓤₀ ̇)
+                     → (Q : 𝓤₀ ̇ )
                      → (P → is-quasidecidable Q)
                      → is-quasidecidable (P × Q)
   quasidecidable-dom pe = quasidecidable-induction A (a₀ , a₁ , aω)
    where
     A : 𝓤₀ ̇ → 𝓤₁ ̇
-    A P = (Q : 𝓤₀ ̇) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
+    A P = (Q : 𝓤₀ ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
     a₀ : A 𝟘
     a₀ Q φ = transport is-quasidecidable r 𝟘-is-quasidecidable
      where
@@ -205,7 +204,7 @@ follows by induction:
   quasidecidable-σ-frame-trivial :
              (P : 𝓤₀ ̇ )
            → is-quasidecidable P
-           → (Q : ℕ → 𝓤₀ ̇)
+           → (Q : ℕ → 𝓤₀ ̇ )
            → ((n : ℕ) → is-quasidecidable (Q n))
            → P × ∃ Q → ∃ n ꞉ ℕ , P × Q n
   quasidecidable-σ-frame-trivial P i Q φ (p , e) = ∥∥-rec ∃-is-prop (λ (n , q) → ∣ n , p , q ∣) e
@@ -214,20 +213,20 @@ follows by induction:
   quasidecidable-σ-frame-non-trivial :
              (P : 𝓤₀ ̇ )
            → is-quasidecidable P
-           → (Q : ℕ → 𝓤₀ ̇)
+           → (Q : ℕ → 𝓤₀ ̇ )
            → ((n : ℕ) → is-quasidecidable (Q n))
            → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
   quasidecidable-σ-frame-non-trivial = quasidecidable-induction A (a₀ , a₁ , aω)
    where
     A : 𝓤₀ ̇ → 𝓤₁ ̇
-    A P = (Q : ℕ → 𝓤₀ ̇)
+    A P = (Q : ℕ → 𝓤₀ ̇ )
         → ((n : ℕ) → is-quasidecidable (Q n))
         → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
     a₀ : A 𝟘
     a₀ Q φ e = 𝟘-elim (∥∥-rec 𝟘-is-prop (λ (n , z , q) → z) e)
     a₁ : A 𝟙
     a₁ Q φ e = * , (∥∥-rec ∃-is-prop (λ (n , o , q) → ∣ n , q ∣) e)
-    aω : (P : ℕ → 𝓤₀ ̇) → ((n : ℕ) → A (P n)) → A (∃ P)
+    aω : (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → A (P n)) → A (∃ P)
     aω P f Q φ e = ∥∥-rec ∃-is-prop (λ (n , ep , q) → ep) e , ∥∥-rec ∃-is-prop ((λ (n , ep , q) → ∣ n , q ∣)) e
 
 \end{code}
@@ -240,7 +239,7 @@ extensionality, we get the σ-frame distributive law:
   quasidecidable-σ-frame : propext 𝓤₀
            → (P : 𝓤₀ ̇ )
            → is-quasidecidable P
-           → (Q : ℕ → 𝓤₀ ̇)
+           → (Q : ℕ → 𝓤₀ ̇ )
            → ((n : ℕ) → is-quasidecidable (Q n))
            → (∃ n ꞉ ℕ , P × Q n) ≡ P × ∃ Q
   quasidecidable-σ-frame pe P i Q φ = pe ∃-is-prop
