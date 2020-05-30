@@ -15,7 +15,8 @@ countable joins.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import GenericConvergentSequence
+open import DecidableAndDetachable
+open import Dominance
 open import UF-PropTrunc
 open import UF-Equiv
 open import UF-Equiv-FunExt
@@ -23,7 +24,6 @@ open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-EquivalenceExamples
 open import UF-Yoneda
-open import Dominance
 open import UF-SIP
 open import UF-SIP-Examples
 
@@ -32,17 +32,30 @@ module QuasiDecidable where
 \end{code}
 
 A proposition is semidecidable if it is a countable join of decidable
-propositions. See the
-paperhttps://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
+propositions. See the paper
+https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 by Martin Escardo and Cory Knapp.
 
+We assume the existence of propositional truncations for a while:
+
 \begin{code}
+
 module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
  is-semidecidable : 𝓤 ̇ → 𝓤 ̇
  is-semidecidable X = ∃ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)
+
+\end{code}
+
+Exercise. X is semidecidable iff it is a countable join of decidable
+propositions:
+
+\begin{code}
+
+ is-semidecidable' : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-semidecidable' {𝓤} X = ∃ A ꞉ (ℕ → 𝓤 ̇ ), ((n : ℕ) → decidable (A n)) × (X ≃ (∃ n ꞉ ℕ , A n))
 
 \end{code}
 
@@ -76,6 +89,8 @@ The set of quasidecidable propositions, if it exists, is the smallest
 collection of propositions containing 𝟘 and 𝟙 and closed under
 countable joins.
 
+Exercise. It exists under propositional resizing assumptions.
+
 \begin{code}
 
  𝟘-𝟙-ω-closed : (𝓤₀ ̇ → 𝓤 ̇ ) → 𝓤₁ ⊔ 𝓤 ̇
@@ -96,30 +111,30 @@ We assume that it exists in the following:
           (quasidecidable-induction : ∀ {𝓤} (A : 𝓤₀ ̇ → 𝓤 ̇ ) → 𝟘-𝟙-ω-closed A → (P : 𝓤₀ ̇ ) → is-quasidecidable P → A P)
       where
 
-  quasidecidable₀ : is-quasidecidable 𝟘
-  quasidecidable₀ = pr₁ 𝟘-𝟙-ω-closure
+  𝟘-is-quasidecidable : is-quasidecidable 𝟘
+  𝟘-is-quasidecidable = pr₁ 𝟘-𝟙-ω-closure
 
-  quasidecidable₁ : is-quasidecidable 𝟙
-  quasidecidable₁ = pr₁ (pr₂ 𝟘-𝟙-ω-closure)
+  𝟙-is-quasi-decidable : is-quasidecidable 𝟙
+  𝟙-is-quasi-decidable = pr₁ (pr₂ 𝟘-𝟙-ω-closure)
 
-  quasidecidableω : ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → is-quasidecidable (P n)) → is-quasidecidable (∃ n ꞉ ℕ , P n))
-  quasidecidableω = pr₂ (pr₂ 𝟘-𝟙-ω-closure)
+  quasidecidable-closed-under-ω-joins : ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → is-quasidecidable (P n)) → is-quasidecidable (∃ n ꞉ ℕ , P n))
+  quasidecidable-closed-under-ω-joins = pr₂ (pr₂ 𝟘-𝟙-ω-closure)
 
   quasidecidable-types-are-props : ∀ P → is-quasidecidable P → is-prop P
   quasidecidable-types-are-props = quasidecidable-induction is-prop (𝟘-is-prop , 𝟙-is-prop , λ P φ → ∃-is-prop)
 
   quasidecidable-dom : propext 𝓤₀
-                      → (P : 𝓤₀ ̇ )
-                      → is-quasidecidable P
-                      → (Q : 𝓤₀ ̇)
-                      → (P → is-quasidecidable Q)
-                      → is-quasidecidable (P × Q)
+                     → (P : 𝓤₀ ̇ )
+                     → is-quasidecidable P
+                     → (Q : 𝓤₀ ̇)
+                     → (P → is-quasidecidable Q)
+                     → is-quasidecidable (P × Q)
   quasidecidable-dom pe = quasidecidable-induction A (a₀ , a₁ , aω)
    where
     A : 𝓤₀ ̇ → 𝓤₁ ̇
     A P = (Q : 𝓤₀ ̇) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
     a₀ : A 𝟘
-    a₀ Q φ = transport is-quasidecidable aa quasidecidable₀
+    a₀ Q φ = transport is-quasidecidable aa 𝟘-is-quasidecidable
      where
       aa : 𝟘 ≡ 𝟘 × Q
       aa = pe 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
@@ -138,7 +153,7 @@ We assume that it exists in the following:
       γ' : (n : ℕ) → is-quasidecidable (P n × Q)
       γ' n = f n Q (φ' n)
       δ : is-quasidecidable (∃ n ꞉ ℕ , P n × Q)
-      δ = quasidecidableω (λ n → P n × Q) γ'
+      δ = quasidecidable-closed-under-ω-joins (λ n → P n × Q) γ'
       u : (∃ n ꞉ ℕ , P n × Q) → ((∃ n ꞉ ℕ , P n) × Q)
       u s = (t , q)
        where
@@ -155,11 +170,11 @@ We assume that it exists in the following:
 
   quasidecidable-closed-under-Σ : propext 𝓤₀
                                  → (P : 𝓤₀ ̇ )
-                                 → is-quasidecidable P
                                  → (Q : P → 𝓤₀ ̇ )
+                                 → is-quasidecidable P
                                  → ((p : P) → is-quasidecidable (Q p))
                                  → is-quasidecidable (Σ Q)
-  quasidecidable-closed-under-Σ pe P i Q = γ
+  quasidecidable-closed-under-Σ pe P Q i = γ
    where
     γ : ((p : P) → is-quasidecidable (Q p)) → is-quasidecidable (Σ Q)
     γ = D3-and-D5'-give-D5 pe is-quasidecidable
@@ -175,13 +190,14 @@ In summary, the quasidecidable properties form a dominance:
   quasidecidability-is-dominance : propext 𝓤₀ → is-dominance is-quasidecidable
   quasidecidability-is-dominance pe = being-quasidecidable-is-prop ,
                                       quasidecidable-types-are-props ,
-                                      quasidecidable₁ ,
-                                      (λ P Q i → quasidecidable-closed-under-Σ pe P i Q)
+                                      𝟙-is-quasi-decidable ,
+                                      (quasidecidable-closed-under-Σ pe)
 \end{code}
 
 We know show that binary meets (cartesian products) or quasidecidable
 properties distribute over countable joins (existential
-quantifications over ℕ):
+quantifications over ℕ). One direction is trivial, and the other
+follows by induction:
 
 \begin{code}
 
@@ -213,6 +229,13 @@ quantifications over ℕ):
     aω : (P : ℕ → 𝓤₀ ̇) → ((n : ℕ) → A (P n)) → A (∃ P)
     aω P f Q φ e = ∥∥-rec ∃-is-prop (λ (n , ep , q) → ep) e , ∥∥-rec ∃-is-prop ((λ (n , ep , q) → ∣ n , q ∣)) e
 
+\end{code}
+
+Putting the two directions together with the aid of propositional
+extensionality, we get the σ-frame distributive law:
+
+\begin{code}
+
   quasidecidable-σ-frame : propext 𝓤₀
            → (P : 𝓤₀ ̇ )
            → is-quasidecidable P
@@ -220,13 +243,19 @@ quantifications over ℕ):
            → ((n : ℕ) → is-quasidecidable (Q n))
            → (∃ n ꞉ ℕ , P × Q n) ≡ P × ∃ Q
   quasidecidable-σ-frame pe P i Q φ = pe ∃-is-prop
-                               (×-is-prop (quasidecidable-types-are-props P i) (quasidecidable-types-are-props (∃ Q) (quasidecidableω Q φ)))
-                               (quasidecidable-σ-frame-non-trivial P i Q φ)
-                               (quasidecidable-σ-frame-trivial P i Q φ)
-
+                                         (×-is-prop (quasidecidable-types-are-props P i)
+                                                    (quasidecidable-types-are-props (∃ Q)
+                                                    (quasidecidable-closed-under-ω-joins Q φ)))
+                                         (quasidecidable-σ-frame-non-trivial P i Q φ)
+                                         (quasidecidable-σ-frame-trivial P i Q φ)
 \end{code}
 
-We now define σ-frames.
+We now define σ-frames. A σ-frame is a poset with countable joins and
+finite meets such that binary meets distribute over countable joins.
+
+We denote the empty meet (a top element) by ⊤, the binary meet by ∧,
+and the countable join by ⋁. These are unary, binary and ℕ-ary
+operations.
 
 \begin{code}
 
@@ -247,6 +276,13 @@ We now define σ-frames.
   VII = (𝕪 : ℕ → X)
       → ((i : ℕ) → 𝕪 i ≤ ⋁ 𝕪)
       × ((u : X) → ((i : ℕ) → 𝕪 i ≤ ⋁ 𝕪) → ⋁ 𝕪 ≤ u)
+\end{code}
+
+Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
+says that ⋁ gives least upper bounds w.r.t. the induced partial order,
+and axiom VI says that binary meets distribute over countable joins.
+
+\begin{code}
 
 σ-frame-axioms-is-prop : funext 𝓤 𝓤 → funext 𝓤₀ 𝓤
                        → (X : 𝓤 ̇ ) (s : σ-frame-structure X)
@@ -299,4 +335,6 @@ characterization-of-σ-Frame-≡ ua fe₀ =
       (∞-bigmagma-identity.sns-data ℕ))))
 \end{code}
 
-To be continued.
+To be continued. The first thing to do is to define the σ-frame of
+quasidecidable propositions, and show that it is the homotopy initial
+one.
