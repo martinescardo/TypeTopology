@@ -13,7 +13,7 @@ open import UF-Subsingletons hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 
-module Dominance (𝓤 : Universe) (fe : FunExt) where
+module Dominance {𝓤 : Universe} where
 
 𝓤⁺ = 𝓤 ⁺
 
@@ -92,8 +92,8 @@ dominant-closed-under-Σ : (D : Dominance) → (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇
                         → is-dominant D P → ((p : P) → is-dominant D (Q p)) → is-dominant D (Σ Q)
 dominant-closed-under-Σ (_ , (_ , (_ , (_ , cus)))) = cus
 
-being-dominance-is-prop : (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
-being-dominance-is-prop d = prop-criterion lemma
+being-dominance-is-prop : FunExt → (d : 𝓤 ̇ → 𝓤 ̇ ) → is-prop (is-dominance d)
+being-dominance-is-prop fe d = prop-criterion lemma
  where
   lemma : is-dominance d → is-prop (is-dominance d)
   lemma isd = Σ-is-prop
@@ -121,15 +121,15 @@ module DecidableDominance where
 
  open import DecidableAndDetachable
 
- decidable-dominance : Dominance
- decidable-dominance = (λ P → is-prop P × decidable P) ,
-                       (λ P → Σ-is-prop
-                                 (being-prop-is-prop (fe 𝓤 𝓤))
-                                 (decidability-of-prop-is-prop (fe 𝓤 𝓤₀))) ,
-                       (λ X → pr₁) ,
-                       (𝟙-is-prop , inl *) ,
-                       λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁(dQ p)) ,
-                                      decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
+ decidable-dominance : FunExt → Dominance
+ decidable-dominance fe = (λ P → is-prop P × decidable P) ,
+                          (λ P → Σ-is-prop
+                                    (being-prop-is-prop (fe 𝓤 𝓤))
+                                    (decidability-of-prop-is-prop (fe 𝓤 𝓤₀))) ,
+                          (λ X → pr₁) ,
+                          (𝟙-is-prop , inl *) ,
+                          λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁(dQ p)) ,
+                                         decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
 
 module lift (d : 𝓤 ̇ → 𝓤 ̇ ) (isd : is-dominance d) where
 

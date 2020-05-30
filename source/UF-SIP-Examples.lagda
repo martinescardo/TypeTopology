@@ -119,6 +119,47 @@ module magma-identity {𝓤 : Universe} where
      (λ X s → being-set-is-prop (univalence-gives-funext ua))
 
 
+module ∞-bigmagma-identity {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
+
+ open sip
+
+ ∞-bigmagma-structure : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ ∞-bigmagma-structure A = (I → A) → A
+
+ ∞-Bigmagma : 𝓤 ⁺ ⊔ 𝓥 ̇
+ ∞-Bigmagma = Σ A ꞉ 𝓤 ̇ , ∞-bigmagma-structure A
+
+ sns-data : SNS ∞-bigmagma-structure (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓐 𝓐' : ∞-Bigmagma) → ⟨ 𝓐 ⟩ ≃ ⟨ 𝓐' ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (A , sup) (A' , sup') (f , _) = (λ 𝕒 → f (sup 𝕒)) ≡ (λ 𝕒 → sup' (i ↦ f (𝕒 i)))
+
+   ρ : (𝓐 : ∞-Bigmagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
+   ρ (A , sup) = refl─ sup
+
+   h : {A : 𝓤 ̇ } {sup sup' : ∞-bigmagma-structure A}
+     → canonical-map ι ρ sup sup' ∼ -id (sup ≡ sup')
+
+   h (refl {sup}) = refl─ (refl─ sup)
+
+   θ : {A : 𝓤 ̇ } (sup sup' : ∞-bigmagma-structure A)
+     → is-equiv (canonical-map ι ρ sup sup')
+
+   θ sup sup' = equiv-closed-under-∼ _ _ (id-is-equiv (sup ≡ sup')) h
+
+ _≅[∞-Bigmagma]_ : ∞-Bigmagma → ∞-Bigmagma → 𝓤 ⊔ 𝓥 ̇
+ (A , sup) ≅[∞-Bigmagma] (A' , sup') =
+
+           Σ f ꞉ (A → A'), is-equiv f
+                        × ((λ 𝕒 → f (sup 𝕒)) ≡ (λ 𝕒 → sup' (i ↦ f (𝕒 i))))
+
+ characterization-of-∞-Bigmagma-≡ : is-univalent 𝓤
+                                  → (A B : ∞-Bigmagma)
+                                  → (A ≡ B) ≃ (A ≅[∞-Bigmagma] B)
+ characterization-of-∞-Bigmagma-≡ ua = characterization-of-≡ ua sns-data
+
+
 module pointed-type-identity {𝓤 : Universe} where
  open sip
 
