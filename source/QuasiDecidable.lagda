@@ -177,12 +177,9 @@ We assume that it exists in the following:
                                  → is-quasidecidable P
                                  → ((p : P) → is-quasidecidable (Q p))
                                  → is-quasidecidable (Σ Q)
-  quasidecidable-closed-under-Σ pe P Q i = γ
-   where
-    γ : ((p : P) → is-quasidecidable (Q p)) → is-quasidecidable (Σ Q)
-    γ = D3-and-D5'-give-D5 pe is-quasidecidable
-         quasidecidable-types-are-props
-         (λ P Q' i j → quasidecidable-dom pe P i Q' j) P Q i
+  quasidecidable-closed-under-Σ pe = D3-and-D5'-give-D5 pe is-quasidecidable
+                                       quasidecidable-types-are-props
+                                       (λ P Q' i j → quasidecidable-dom pe P i Q' j)
 
 \end{code}
 
