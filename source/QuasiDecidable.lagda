@@ -183,7 +183,8 @@ We assume that it exists in the following:
 
 \end{code}
 
-In summary, the quasidecidable properties form a dominance:
+In summary, the quasidecidable properties form a dominance, assuming
+propositional extensionality:
 
 \begin{code}
 
@@ -191,10 +192,10 @@ In summary, the quasidecidable properties form a dominance:
   quasidecidability-is-dominance pe = being-quasidecidable-is-prop ,
                                       quasidecidable-types-are-props ,
                                       𝟙-is-quasi-decidable ,
-                                      (quasidecidable-closed-under-Σ pe)
+                                      quasidecidable-closed-under-Σ pe
 \end{code}
 
-We know show that binary meets (cartesian products) or quasidecidable
+We now show that binary meets (cartesian products) or quasidecidable
 properties distribute over countable joins (existential
 quantifications over ℕ). One direction is trivial, and the other
 follows by induction:
