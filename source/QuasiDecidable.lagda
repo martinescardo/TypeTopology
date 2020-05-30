@@ -1,8 +1,8 @@
 Martin Escardo, May 2020.
 
-The quasidecidable propositions generalize the semidecidable
-propositions.  A weakening of the axiom of countable choice is
-equivalent to the equivalence of semidecidability with
+The quasidecidable propositions, defined below, generalize the
+semidecidable propositions.  A weakening of the axiom of countable
+choice is equivalent to the equivalence of semidecidability with
 quasidecidability.
 
 The quasidecidable propositions form a dominance, and their totality
@@ -36,6 +36,8 @@ propositions. See the paper
 https://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 by Martin Escardo and Cory Knapp.
 
+NB. Semidecidable propositions are called Rosolini propositions in the above reference.
+
 We assume the existence of propositional truncations for a while:
 
 \begin{code}
@@ -58,8 +60,6 @@ propositions:
  is-semidecidable' {𝓤} X = ∃ A ꞉ (ℕ → 𝓤 ̇ ), ((n : ℕ) → decidable (A n)) × (X ≃ (∃ n ꞉ ℕ , A n))
 
 \end{code}
-
-NB. Semidecidable propositions are called Rosolini propositions in the above reference.
 
 The following shows that we need to truncate, because the Cantor
 (ℕ → 𝟚) is certainly not the type of semi-decidable propositions:
@@ -316,7 +316,7 @@ _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
 
 TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies
 funext 𝓤₀ 𝓤 (see MGS lecture notes for a proof). Hence the assumption
-funext 𝓤₀ 𝓤 is superflous in the following.
+funext 𝓤₀ 𝓤 is superfluous in the following.
 
 \begin{code}
 
