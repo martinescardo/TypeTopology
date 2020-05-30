@@ -91,7 +91,8 @@ The set of quasidecidable propositions, if it exists, is the smallest
 collection of propositions containing 𝟘 and 𝟙 and closed under
 countable joins.
 
-Exercise. It exists under propositional resizing assumptions.
+Exercise. It exists under propositional resizing assumptions (just
+take the intersection of all 𝟘-𝟙-ω-closed subsets of Ω 𝓤₀).
 
 \begin{code}
 
@@ -136,28 +137,28 @@ We assume that it exists in the following:
     A : 𝓤₀ ̇ → 𝓤₁ ̇
     A P = (Q : 𝓤₀ ̇) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
     a₀ : A 𝟘
-    a₀ Q φ = transport is-quasidecidable aa 𝟘-is-quasidecidable
+    a₀ Q φ = transport is-quasidecidable r 𝟘-is-quasidecidable
      where
-      aa : 𝟘 ≡ 𝟘 × Q
-      aa = pe 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
+      r : 𝟘 ≡ 𝟘 × Q
+      r = pe 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
     a₁ : A 𝟙
-    a₁ Q φ = transport is-quasidecidable aa (φ *)
+    a₁ Q φ = transport is-quasidecidable r (φ *)
      where
       i : is-prop Q
       i = quasidecidable-types-are-props Q (φ *)
-      aa : Q ≡ 𝟙 × Q
-      aa = pe i (×-is-prop 𝟙-is-prop i) (λ q → (* , q)) pr₂
+      r : Q ≡ 𝟙 × Q
+      r = pe i (×-is-prop 𝟙-is-prop i) (λ q → (* , q)) pr₂
     aω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → A (P n)) → A (∃ n ꞉ ℕ , P n)
     aω P f Q φ = γ
      where
       φ' : (n : ℕ) → P n → is-quasidecidable Q
       φ' n p = φ ∣ n , p ∣
-      γ' : (n : ℕ) → is-quasidecidable (P n × Q)
-      γ' n = f n Q (φ' n)
-      δ : is-quasidecidable (∃ n ꞉ ℕ , P n × Q)
-      δ = quasidecidable-closed-under-ω-joins (λ n → P n × Q) γ'
-      u : (∃ n ꞉ ℕ , P n × Q) → ((∃ n ꞉ ℕ , P n) × Q)
-      u s = (t , q)
+      a : (n : ℕ) → is-quasidecidable (P n × Q)
+      a n = f n Q (φ' n)
+      b : is-quasidecidable (∃ n ꞉ ℕ , P n × Q)
+      b = quasidecidable-closed-under-ω-joins (λ n → P n × Q) a
+      c : (∃ n ꞉ ℕ , P n × Q) → ((∃ n ꞉ ℕ , P n) × Q)
+      c s = (t , q)
        where
         t : ∃ n ꞉ ℕ , P n
         t = ∥∥-rec ∃-is-prop (λ (n , (p , q)) → ∣ n , p ∣) s
@@ -165,10 +166,10 @@ We assume that it exists in the following:
         i = quasidecidable-types-are-props Q (φ t)
         q : Q
         q = ∥∥-rec i (λ (n , (p , q)) → q) s
-      v : ((∃ n ꞉ ℕ , P n) × Q) → (∃ n ꞉ ℕ , P n × Q)
-      v (t , q) = ∥∥-functor (λ (n , p) → n , (p , q)) t
+      d : ((∃ n ꞉ ℕ , P n) × Q) → (∃ n ꞉ ℕ , P n × Q)
+      d (t , q) = ∥∥-functor (λ (n , p) → n , (p , q)) t
       γ : is-quasidecidable ((∃ n ꞉ ℕ , P n) × Q)
-      γ = transport is-quasidecidable (pe ∃-is-prop (×-prop-criterion ((λ _ → ∃-is-prop) , (λ e → quasidecidable-types-are-props Q (φ e)))) u v) δ
+      γ = transport is-quasidecidable (pe ∃-is-prop (×-prop-criterion ((λ _ → ∃-is-prop) , (λ e → quasidecidable-types-are-props Q (φ e)))) c d) b
 
   quasidecidable-closed-under-Σ : propext 𝓤₀
                                  → (P : 𝓤₀ ̇ )
