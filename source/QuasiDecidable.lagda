@@ -275,7 +275,7 @@ operations.
   x ≤ y = x ∧ y ≡ x
   VII = (𝕪 : ℕ → X)
       → ((i : ℕ) → 𝕪 i ≤ ⋁ 𝕪)
-      × ((u : X) → ((i : ℕ) → 𝕪 i ≤ ⋁ 𝕪) → ⋁ 𝕪 ≤ u)
+      × ((u : X) → ((i : ℕ) → 𝕪 i ≤ u) → ⋁ 𝕪 ≤ u)
 \end{code}
 
 Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
