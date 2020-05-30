@@ -61,8 +61,8 @@ propositions:
 
 \end{code}
 
-The following shows that we need to truncate, because the Cantor
-(ℕ → 𝟚) is certainly not the type of semi-decidable propositions:
+The following shows that we need to truncate, because the Cantor type
+(ℕ → 𝟚) is certainly not the type of semidecidable propositions:
 
 \begin{code}
  semidecidability-data : 𝓤 ̇ → 𝓤 ̇
@@ -195,7 +195,7 @@ propositional extensionality:
                                       quasidecidable-closed-under-Σ pe
 \end{code}
 
-We now show that binary meets (cartesian products) or quasidecidable
+We now show that binary meets (cartesian products) of quasidecidable
 properties distribute over countable joins (existential
 quantifications over ℕ). One direction is trivial, and the other
 follows by induction:
