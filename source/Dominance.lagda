@@ -7,10 +7,8 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
--- open import UF -- hiding (𝟙) hiding (𝟙-is-prop) hiding (⊤)
-
 open import SpartanMLTT
-
+open import UF-Equiv
 open import UF-Subsingletons hiding (⊤)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
@@ -30,6 +28,47 @@ D4 d = d 𝟙
 
 D5 : (𝓤 ̇ → 𝓤 ̇ ) → 𝓤⁺ ̇
 D5 d = (P : 𝓤 ̇ ) (Q : P → 𝓤 ̇ ) → d P → ((p : P) → d(Q p)) → d(Σ Q)
+
+\end{code}
+
+condition D5 is more conceptual and often what we need in practice,
+and condition D5' below is easier to check:
+
+\begin{code}
+
+D5' : (𝓤 ̇ → 𝓤 ̇ ) → 𝓤⁺ ̇
+D5' d = (P Q' : 𝓤 ̇ ) → d P → (P → d Q') → d(P × Q')
+
+D5-gives-D5' : (d : 𝓤 ̇ → 𝓤 ̇ ) → D5 d → D5' d
+D5-gives-D5' d d5 P Q' i j = d5 P (λ p → Q') i j
+
+D3-and-D5'-give-D5 : propext 𝓤
+                   → (d : 𝓤 ̇ → 𝓤 ̇ )
+                   → D3 d
+                   → D5' d
+                   → D5 d
+D3-and-D5'-give-D5 pe d d3 d5' P Q i j = w
+ where
+  Q' : 𝓤 ̇
+  Q' = Σ Q
+  k : is-prop P
+  k = d3 P i
+  l : (p : P) → is-prop (Q p)
+  l p = d3 (Q p) (j p)
+  m : is-prop Q'
+  m = Σ-is-prop k l
+  n : (p : P) → Q p ≡ Q'
+  n p = pe (l p) m (λ q        → (p , q))
+                   (λ (p' , q) → transport Q (k p' p) q)
+  j' : P → d Q'
+  j' p = transport d (n p) (j p)
+  u : d (P × Q')
+  u = d5' P Q' i j'
+  v : P × Q' ≡ Σ Q
+  v = pe (×-is-prop k m) m (λ (p , p' , q) → (p' , q))
+                           (λ (p' , q)     → (p' , p' , q))
+  w : d (Σ Q)
+  w = transport d v u
 
 is-dominance : (𝓤 ̇ → 𝓤 ̇ ) → 𝓤⁺ ̇
 is-dominance d = D2 d × D3 d × D4 d × D5 d
