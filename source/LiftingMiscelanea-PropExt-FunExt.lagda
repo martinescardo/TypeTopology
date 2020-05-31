@@ -44,8 +44,8 @@ module _ {𝓤 : Universe}
 
  open import LiftingUnivalentPrecategory 𝓣 X
 
- lifting-of-set-is-a-set : is-set X → is-set (𝓛 X)
- lifting-of-set-is-a-set i {l} {m} p q  = retract-of-prop r j p q
+ lifting-of-set-is-set : is-set X → is-set (𝓛 X)
+ lifting-of-set-is-set i {l} {m} p q  = retract-of-prop r j p q
   where
    r : Σ has-section
    r = (to-Σ-≡ , from-Σ-≡ , tofrom-Σ-≡)
@@ -108,7 +108,7 @@ module _ {𝓤 : Universe}
 
  ⊑'-prop-valued : is-set X → {l m : 𝓛 X} → is-prop (l ⊑' m)
  ⊑'-prop-valued s {l} {m} =
-  Π-is-prop fe λ (d : is-defined l) → lifting-of-set-is-a-set s
+  Π-is-prop fe λ (d : is-defined l) → lifting-of-set-is-set s
 
  is-defined-η-≡ : {l : 𝓛 X} (d : is-defined l) → l ≡ η (value l d)
  is-defined-η-≡ {l} d =

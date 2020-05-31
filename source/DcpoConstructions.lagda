@@ -770,7 +770,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
    lifting-sup-is-lowerbound-of-upperbounds {I} {α} δ v b = h
     where
      h : lifting-sup α δ ⊑' v
-     h d = ∥∥-rec (lifting-of-set-is-a-set s) g d
+     h d = ∥∥-rec (lifting-of-set-is-set s) g d
       where
        g : (Σ i ꞉ I , is-defined (α i)) → lifting-sup α δ ≡ v
        g (i , dᵢ) = lifting-sup α δ ≡⟨ (family-defined-somewhere-sup-≡ δ i dᵢ) ⁻¹ ⟩
@@ -781,7 +781,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
    𝓛-DCPO = 𝓛 X , _⊑'_ , sl , p , r , t , a , c
     where
      sl : is-set (𝓛 X)
-     sl = lifting-of-set-is-a-set s
+     sl = lifting-of-set-is-set s
      p : is-prop-valued (_⊑'_)
      p _ _ = ⊑'-prop-valued s
      r : is-reflexive (_⊑'_)
@@ -826,7 +826,7 @@ Kleisli extension yield continuous maps
        → ((i : I) → (f ♯) (α i) ⊑⟨ (𝓛-DCPO s₁) ⟩ m)
        → (f ♯) (∐ (𝓛-DCPO s₀) δ) ⊑⟨ (𝓛-DCPO s₁) ⟩ m
      v m ineqs d =
-      ∥∥-rec (lifting-of-set-is-a-set s₁) g (♯-is-defined f (∐ (𝓛-DCPO s₀) δ) d)
+      ∥∥-rec (lifting-of-set-is-set s₁) g (♯-is-defined f (∐ (𝓛-DCPO s₀) δ) d)
        where
         g : (Σ i ꞉ I , is-defined (α i)) → (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡ m
         g (i , dᵢ) = (f ♯) (∐ (𝓛-DCPO s₀) δ) ≡⟨ h i dᵢ ⟩
@@ -943,7 +943,7 @@ future work.
                   ∎
          where
           r : a ≡ pr₁ f l
-          r = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set)
+          r = ∥∥-rec (lifting-of-set-is-set ℕ-is-set)
                h (is-Directed-gives-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
            where
             h : (i : I) → a ≡ pr₁ f l
@@ -973,7 +973,7 @@ future work.
 
         pₛ : (m : ℕ) → value l e ≡ succ m → ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
                                           ≡ pr₁ f l
-        pₛ m q = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h eₛ
+        pₛ m q = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h eₛ
          where
           g : (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) ♯) l ≡ ⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ) (value l e)
           g = ♯-on-total-element (⦅ifZero⦆₀ a (∐ ⟪ 𝓛ᵈℕ ⟫ δ)) {l} e
@@ -1075,7 +1075,7 @@ future work.
         e : is-defined l
         e = ♯-is-defined (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) l d
         p₀ : value l e ≡ zero → ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e) ≡ pr₁ (pr₁ f b) l
-        p₀ q = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h e₀
+        p₀ q = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h e₀
          where
           g : (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b ♯) l ≡ ⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b (value l e)
           g = ♯-on-total-element (⦅ifZero⦆₀ (∐ ⟪ 𝓛ᵈℕ ⟫ δ) b) {l} e
@@ -1118,7 +1118,7 @@ future work.
                     ∎
          where
           r : b ≡ pr₁ (pr₁ f b) l
-          r = ∥∥-rec (lifting-of-set-is-a-set ℕ-is-set) h
+          r = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h
                (is-Directed-gives-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
            where
             h : (i : I) → b ≡ pr₁ (pr₁ f b) l

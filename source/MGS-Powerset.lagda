@@ -105,8 +105,8 @@ holds-is-subsingleton (P , i) = i
                                  (λ _ → being-subsingleton-is-subsingleton fe)
                                  (pe (holds-is-subsingleton p) (holds-is-subsingleton q) f g)
 
-Ω-is-a-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = types-with-wconstant-≡-endomaps-are-sets (Ω 𝓤) c
+Ω-is-set : dfunext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
+Ω-is-set {𝓤} fe pe = types-with-wconstant-≡-endomaps-are-sets (Ω 𝓤) c
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
@@ -144,7 +144,7 @@ holds-is-subsingleton (P , i) = i
 powersets-are-sets : hfunext 𝓤 (𝓥 ⁺) → dfunext 𝓥 𝓥 → propext 𝓥
                    → {X : 𝓤 ̇ } → is-set (X → Ω 𝓥)
 
-powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
+powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
 
 𝓟 : 𝓤 ̇ → 𝓤 ⁺ ̇
 𝓟 {𝓤} X = X → Ω 𝓤

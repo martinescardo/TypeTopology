@@ -130,8 +130,8 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
  to-Σ-≡ (pe (holds-is-prop p) (holds-is-prop q) f g ,
          being-prop-is-prop fe _ _)
 
-Ω-is-a-set : funext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
-Ω-is-a-set {𝓤} fe pe = Id-collapsibles-are-sets pc
+Ω-is-set : funext 𝓤 𝓤 → propext 𝓤 → is-set (Ω 𝓤)
+Ω-is-set {𝓤} fe pe = Id-collapsibles-are-sets pc
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
@@ -159,7 +159,7 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
 
 powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
                    → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
-powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-a-set fe' pe)
+powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
 
 negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop(¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)

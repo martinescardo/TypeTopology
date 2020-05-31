@@ -357,7 +357,7 @@ module choice
     ⊤ = (Lift 𝓤 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
     δ : (ω : Ω 𝓤) → decidable (⊤ ≡ ω)
-    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-a-set hunapply pe) ⊤
+    δ = choice-gives-decidable-equality tac (Ω 𝓤) (Ω-is-set hunapply pe) ⊤
 
     em : (P : 𝓤 ̇ ) → is-subsingleton P → P + ¬ P
     em P i = γ (δ (P , i))

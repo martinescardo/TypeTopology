@@ -172,7 +172,7 @@ Impredicativity-gives-PR {𝓤} {𝓥} pe fe (O , e) P i = Q , ε
   down = ⌜ e ⌝
 
   O-is-set : is-set O
-  O-is-set = equiv-to-set (≃-sym e) (Ω-is-a-set fe pe)
+  O-is-set = equiv-to-set (≃-sym e) (Ω-is-set fe pe)
 
   Q : 𝓥 ̇
   Q = down (𝟙'' , k) ≡ down (P , i)

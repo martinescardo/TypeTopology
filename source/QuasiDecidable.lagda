@@ -17,7 +17,7 @@ countable joins.
 open import SpartanMLTT
 open import DecidableAndDetachable
 open import Dominance
-open import UF-PropTrunc
+open import UF-PropTrunc hiding (⊤)
 open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Univalence
@@ -26,10 +26,101 @@ open import UF-EquivalenceExamples
 open import UF-Yoneda
 open import UF-SIP
 open import UF-SIP-Examples
+open import UF-Embeddings
 
 module QuasiDecidable where
 
 \end{code}
+
+We first define σ-frames (this should probably go to another module,
+but, for development purposes, we keep it here for the moment). A
+σ-frame is a poset with countable joins and finite meets such that
+binary meets distribute over countable joins.
+
+We denote the empty meet (a top element) by ⊤, the binary meet by ∧,
+and the countable join by ⋁. These are unary, binary and ℕ-ary
+operations.
+
+\begin{code}
+
+σ-frame-structure : 𝓤 ̇ → 𝓤 ̇
+σ-frame-structure X = X × (X → X → X) × ((ℕ → X) → X)
+
+σ-frame-axioms : (X : 𝓤 ̇ ) → σ-frame-structure X → 𝓤 ̇
+σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII
+ where
+  I   = is-set X
+  II  = (x : X) → x ∧ x ≡ x
+  III = (x y : X) → x ∧ y ≡ y ∧ x
+  IV  = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
+  V   = (x : X) → x ∧ ⊤ ≡ x
+  VI  = (x : X) (y : ℕ → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
+  _≤_ : X → X → 𝓤 ̇
+  x ≤ y = x ∧ y ≡ x
+  VII = (x : ℕ → X)
+      → ((i : ℕ) → x i ≤ ⋁ x)
+      × ((u : X) → ((i : ℕ) → x i ≤ u) → ⋁ x ≤ u)
+\end{code}
+
+Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
+says that ⋁ gives least upper bounds w.r.t. the induced partial order,
+and axiom VI says that binary meets distribute over countable joins.
+
+\begin{code}
+
+σ-frame-axioms-is-prop : funext 𝓤 𝓤 → funext 𝓤₀ 𝓤
+                       → (X : 𝓤 ̇ ) (s : σ-frame-structure X)
+                       → is-prop (σ-frame-axioms X s)
+σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⋁) = prop-criterion δ
+ where
+  δ : σ-frame-axioms X (⊤ , _∧_ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⋁))
+  δ (i , ii-vii) =
+    ×-is-prop (being-set-is-prop fe)
+   (×-is-prop (Π-is-prop fe (λ x →                                                   i {x ∧ x} {x}))
+   (×-is-prop (Π-is-prop fe (λ x → Π-is-prop fe (λ y →                               i {x ∧ y} {y ∧ x})))
+   (×-is-prop (Π-is-prop fe (λ x → Π-is-prop fe (λ y → Π-is-prop fe (λ z →           i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
+   (×-is-prop (Π-is-prop fe (λ x →                                                   i {x ∧ ⊤} {x}))
+   (×-is-prop (Π-is-prop fe (λ x → Π-is-prop fe (λ y →                               i {x ∧ ⋁ y} {⋁ (n ↦ x ∧ y n)})))
+              (Π-is-prop fe λ 𝕪 → ×-is-prop (Π-is-prop fe₀ (λ n →                    i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
+                                            (Π-is-prop fe (λ u → Π-is-prop fe (λ _ → i {⋁ 𝕪 ∧ u} {⋁ 𝕪})))))))))
+
+σ-Frame : (𝓤 : Universe) → 𝓤 ⁺ ̇
+σ-Frame 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ σ-frame-structure A , σ-frame-axioms A s
+
+_≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
+(A , (⊤ , _∧_ , ⋁) , _) ≅[σ-Frame] (A' , (⊤' , _∧'_ , ⋁') , _) =
+
+                        Σ f ꞉ (A → A')
+                            , is-equiv f
+                            × (f ⊤ ≡ ⊤')
+                            × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
+                            × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+\end{code}
+
+TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies
+funext 𝓤₀ 𝓤 (see MGS lecture notes for a proof). Hence the assumption
+funext 𝓤₀ 𝓤 is superfluous in the following.
+
+\begin{code}
+
+characterization-of-σ-Frame-≡ : is-univalent 𝓤
+                              → funext 𝓤₀ 𝓤
+                              → (A B : σ-Frame 𝓤)
+                              → (A ≡ B) ≃ (A ≅[σ-Frame] B)
+characterization-of-σ-Frame-≡ ua fe₀ =
+  sip.characterization-of-≡ ua
+   (sip-with-axioms.add-axioms
+      σ-frame-axioms
+      (σ-frame-axioms-is-prop (univalence-gives-funext ua) fe₀)
+     (sip-join.join
+       pointed-type-identity.sns-data
+     (sip-join.join
+       ∞-magma-identity.sns-data
+      (∞-bigmagma-identity.sns-data ℕ))))
+\end{code}
+
+We now move to quasidecidable propositions, but we first review
+semidecidable ones.
 
 A proposition is semidecidable if it is a countable join of decidable
 propositions. See the paper
@@ -116,8 +207,8 @@ We assume that it exists in the following:
   𝟘-is-quasidecidable : is-quasidecidable 𝟘
   𝟘-is-quasidecidable = pr₁ 𝟘-𝟙-ω-closure
 
-  𝟙-is-quasi-decidable : is-quasidecidable 𝟙
-  𝟙-is-quasi-decidable = pr₁ (pr₂ 𝟘-𝟙-ω-closure)
+  𝟙-is-quasidecidable : is-quasidecidable 𝟙
+  𝟙-is-quasidecidable = pr₁ (pr₂ 𝟘-𝟙-ω-closure)
 
   quasidecidable-closed-under-ω-joins : ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → is-quasidecidable (P n)) → is-quasidecidable (∃ n ꞉ ℕ , P n))
   quasidecidable-closed-under-ω-joins = pr₂ (pr₂ 𝟘-𝟙-ω-closure)
@@ -190,7 +281,7 @@ propositional extensionality:
   quasidecidability-is-dominance : propext 𝓤₀ → is-dominance is-quasidecidable
   quasidecidability-is-dominance pe = being-quasidecidable-is-prop ,
                                       quasidecidable-types-are-props ,
-                                      𝟙-is-quasi-decidable ,
+                                      𝟙-is-quasidecidable ,
                                       quasidecidable-closed-under-Σ pe
 \end{code}
 
@@ -250,91 +341,179 @@ extensionality, we get the σ-frame distributive law:
                                          (quasidecidable-σ-frame-trivial P i Q φ)
 \end{code}
 
-We now define σ-frames. A σ-frame is a poset with countable joins and
-finite meets such that binary meets distribute over countable joins.
-
-We denote the empty meet (a top element) by ⊤, the binary meet by ∧,
-and the countable join by ⋁. These are unary, binary and ℕ-ary
-operations.
+Next we define the σ-frame of quasidecidable propositions.
 
 \begin{code}
 
-σ-frame-structure : 𝓤 ̇ → 𝓤 ̇
-σ-frame-structure X = X × (X → X → X) × ((ℕ → X) → X)
+  𝓠 : 𝓤₁ ̇
+  𝓠 = Σ P ꞉ 𝓤₀ ̇ , is-quasidecidable P
 
-σ-frame-axioms : (X : 𝓤 ̇ ) → σ-frame-structure X → 𝓤 ̇
-σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII
- where
-  I   = is-set X
-  II  = (x : X) → x ∧ x ≡ x
-  III = (x y : X) → x ∧ y ≡ y ∧ x
-  IV  = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
-  V   = (x : X) → x ∧ ⊤ ≡ x
-  VI  = (x : X) (𝕪 : ℕ → X) → x ∧ (⋁ 𝕪) ≡ ⋁ (i ↦ (x ∧ 𝕪 i))
-  _≤_ : X → X → 𝓤 ̇
-  x ≤ y = x ∧ y ≡ x
-  VII = (𝕪 : ℕ → X)
-      → ((i : ℕ) → 𝕪 i ≤ ⋁ 𝕪)
-      × ((u : X) → ((i : ℕ) → 𝕪 i ≤ u) → ⋁ 𝕪 ≤ u)
+  _is-true : 𝓠 → 𝓤₀ ̇
+  _is-true (P , i) = P
+
+  being-true-is-quasidecidable : (𝕡 : 𝓠) → is-quasidecidable (𝕡 is-true)
+  being-true-is-quasidecidable (P , i) = i
+
+  being-true-is-prop : (𝕡 : 𝓠) → is-prop (𝕡 is-true)
+  being-true-is-prop (P , i) = quasidecidable-types-are-props P i
+
+  𝓠→Ω : 𝓠 → Ω 𝓤₀
+  𝓠→Ω (P , i) = P , quasidecidable-types-are-props P i
+
+  𝓠→Ω-is-embedding : funext 𝓤₀ 𝓤₀ → is-embedding 𝓠→Ω
+  𝓠→Ω-is-embedding fe₀ = NatΣ-is-embedding is-quasidecidable is-prop ζ ζ-is-embedding
+   where
+    ζ : (P : 𝓤₀ ̇ ) → is-quasidecidable P → is-prop P
+    ζ = quasidecidable-types-are-props
+    ζ-is-embedding : (P : 𝓤₀ ̇ ) → is-embedding (ζ P)
+    ζ-is-embedding P = maps-of-props-are-embeddings (ζ P) (being-quasidecidable-is-prop P) (being-prop-is-prop fe₀)
+
 \end{code}
 
-Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
-says that ⋁ gives least upper bounds w.r.t. the induced partial order,
-and axiom VI says that binary meets distribute over countable joins.
+We now assume functional and propositional extensionality for the
+first universe to give the quasidecidable propositions the structure
+of a σ-frame:
 
 \begin{code}
 
-σ-frame-axioms-is-prop : funext 𝓤 𝓤 → funext 𝓤₀ 𝓤
-                       → (X : 𝓤 ̇ ) (s : σ-frame-structure X)
-                       → is-prop (σ-frame-axioms X s)
-σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⋁) = prop-criterion δ
- where
-  δ : σ-frame-axioms X (⊤ , _∧_ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⋁))
-  δ (i , ii , iii , iv , v , vi) =
-    ×-is-prop (being-set-is-prop fe)
-   (×-is-prop (Π-is-prop fe (λ x →                                                   i {x ∧ x} {x}))
-   (×-is-prop (Π-is-prop fe (λ x → Π-is-prop fe (λ y →                               i {x ∧ y} {y ∧ x})))
-   (×-is-prop (Π-is-prop fe (λ x → Π-is-prop fe (λ y → Π-is-prop fe (λ z →           i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
-   (×-is-prop (Π-is-prop fe (λ x →                                                   i {x ∧ ⊤} {x}))
-   (×-is-prop (Π-is-prop fe (λ x → Π-is-prop fe (λ y →                               i {x ∧ ⋁ y} {⋁ (i ↦ x ∧ y i)})))
-              (Π-is-prop fe λ 𝕪 → ×-is-prop (Π-is-prop fe₀ (λ n →                    i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
-                                            (Π-is-prop fe (λ x → Π-is-prop fe (λ _ → i {⋁ 𝕪 ∧ x} {⋁ 𝕪})))))))))
+  module _ (fe₀ : funext 𝓤₀ 𝓤₀)
+           (pe₀ : propext 𝓤₀)
+         where
 
-σ-Frame : (𝓤 : Universe) → 𝓤 ⁺ ̇
-σ-Frame 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ σ-frame-structure A , σ-frame-axioms A s
+   𝓠-is-set : is-set 𝓠
+   𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω (embeddings-are-lc 𝓠→Ω (𝓠→Ω-is-embedding fe₀)) (Ω-is-set fe₀ pe₀)
 
-_≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
-(A , (⊤ , _∧_ , ⋁) , _) ≅[σ-Frame] (A' , (⊤' , _∧'_ , ⋁') , _) =
+   ⊤ : 𝓠
+   ⊤ = 𝟙 , 𝟙-is-quasidecidable
 
-                        Σ f ꞉ (A → A')
-                            , is-equiv f
-                            × (f ⊤ ≡ ⊤')
-                            × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
-                            × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (i ↦ f (𝕒 i))))
+   _∧_ : 𝓠 → 𝓠 → 𝓠
+   (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-dom pe₀ P i Q (λ _ → j)
+
+   ⋁ : (ℕ → 𝓠) → 𝓠
+   ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n is-true) ,
+          quasidecidable-closed-under-ω-joins
+            (λ n → 𝕡 n is-true)
+            (λ n → being-true-is-quasidecidable (𝕡 n))
+
+   ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
+   ∧-is-idempotent (P , i) = γ
+    where
+     i' : is-prop P
+     i' = quasidecidable-types-are-props P i
+     a : P × P ≡ P
+     a = pe₀ (×-is-prop i' i') i' pr₁ (λ p → (p , p))
+     γ : ((P × P) , _) ≡ (P , _)
+     γ = to-subtype-≡ being-quasidecidable-is-prop a
+
+
+   ∧-is-commutative : (𝕡 𝕢 : 𝓠) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
+   ∧-is-commutative (P , i) (Q , j) = γ
+    where
+     i' : is-prop P
+     i' = quasidecidable-types-are-props P i
+     j' : is-prop Q
+     j' = quasidecidable-types-are-props Q j
+     a : P × Q ≡ Q × P
+     a = pe₀ (×-is-prop i' j')
+             (×-is-prop j' i')
+             (λ (p , q) → (q , p))
+             (λ (q , p) → (p , q))
+     γ : ((P × Q) , _) ≡ ((Q × P) , _)
+     γ = to-subtype-≡ being-quasidecidable-is-prop a
+
+   ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
+   ∧-is-associative (P , i) (Q , j) (R , k) = γ
+    where
+     i' : is-prop P
+     i' = quasidecidable-types-are-props P i
+     j' : is-prop Q
+     j' = quasidecidable-types-are-props Q j
+     k' : is-prop R
+     k' = quasidecidable-types-are-props R k
+     a : P × (Q × R) ≡ (P × Q) × R
+     a = pe₀ (×-is-prop i' (×-is-prop j' k'))
+             (×-is-prop (×-is-prop i' j') k')
+             (λ (p , (q , r)) → ((p , q) , r))
+             (λ ((p , q) , r) → (p , (q , r)))
+     γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
+     γ = to-subtype-≡ being-quasidecidable-is-prop a
+
+   ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
+   ⊤-is-maximum (P , i) = γ
+    where
+     i' : is-prop P
+     i' = quasidecidable-types-are-props P i
+     a : P × 𝟙 ≡ P
+     a = pe₀ (×-is-prop i' 𝟙-is-prop)
+             i'
+             (λ (p , _) → p)
+             (λ p → (p , *))
+     γ : ((P × 𝟙) , _) ≡ (P , _)
+     γ = to-subtype-≡ being-quasidecidable-is-prop a
+
+   _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
+   𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
+
+   ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
+   ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
+
+   ≤-characterization→ : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
+   ≤-characterization→ (P , i) (Q , j) l p = γ
+    where
+     a : P × Q ≡ P
+     a = ap (_is-true) l
+     g : P → P × Q
+     g = idtofun P (P × Q) (a ⁻¹)
+     γ : Q
+     γ = pr₂ (g p)
+
+   ≤-characterization← : (𝕡 𝕢 : 𝓠) → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
+   ≤-characterization← (P , i) (Q , j) f = γ
+    where
+     i' : is-prop P
+     i' = quasidecidable-types-are-props P i
+     j' : is-prop Q
+     j' = quasidecidable-types-are-props Q j
+     a : P × Q ≡ P
+     a = pe₀ (×-is-prop i' j') i' pr₁ (λ p → (p , f p))
+     γ : ((P × Q) , _) ≡ (P , _)
+     γ = to-subtype-≡ being-quasidecidable-is-prop a
+
+   ≤-characterization : (𝕡 𝕢 : 𝓠) → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
+   ≤-characterization 𝕡 𝕢 = logically-equivalent-props-are-equivalent
+                              (≤-is-prop-valued 𝕡 𝕢)
+                              (Π-is-prop fe₀ (λ _ → being-true-is-prop 𝕢))
+                              (≤-characterization→ 𝕡 𝕢)
+                              (≤-characterization← 𝕡 𝕢)
+
 \end{code}
 
-TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies
-funext 𝓤₀ 𝓤 (see MGS lecture notes for a proof). Hence the assumption
-funext 𝓤₀ 𝓤 is superfluous in the following.
+NB. We can't conclude equality above because the lhs and rhs live in different universes and hence in different types.
 
 \begin{code}
+{-
+   distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ (𝕡 ∧ 𝕢 n))
+   distributivity = {!!}
 
-characterization-of-σ-Frame-≡ : is-univalent 𝓤
-                              → funext 𝓤₀ 𝓤
-                              → (A B : σ-Frame 𝓤)
-                              → (A ≡ B) ≃ (A ≅[σ-Frame] B)
-characterization-of-σ-Frame-≡ ua fe₀ =
-  sip.characterization-of-≡ ua
-   (sip-with-axioms.add-axioms
-      σ-frame-axioms
-      (σ-frame-axioms-is-prop (univalence-gives-funext ua) fe₀)
-     (sip-join.join
-       pointed-type-identity.sns-data
-     (sip-join.join
-       ∞-magma-identity.sns-data
-      (∞-bigmagma-identity.sns-data ℕ))))
+   ⋁-is-lub : (𝕡 : ℕ → 𝓠)
+            → ((i : ℕ) → 𝕡 i ≤ ⋁ 𝕡)
+            × ((𝕦 : 𝓠) → ((i : ℕ) → 𝕡 i ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦 )
+   ⋁-is-lub = {!!}
+
+
+   QuasiProp : σ-Frame 𝓤₁
+   QuasiProp = 𝓠 ,
+               (⊤ , _∧_ , ⋁) ,
+               (𝓠-is-set ,
+                ∧-is-idempotent ,
+                ∧-is-commutative ,
+                ∧-is-associative ,
+                ⊤-is-maximum ,
+                distributivity ,
+                ⋁-is-lub)
+-}
 \end{code}
 
-To be continued. The first thing to do is to define the σ-frame of
-quasidecidable propositions, and show that it is the homotopy initial
-one.
+To be continued. The first thing to do is to complete the above (easy)
+and then show that the frame of quasidecidable propositions is
+homotopy initial.

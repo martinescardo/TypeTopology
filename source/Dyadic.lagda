@@ -116,7 +116,7 @@ right-lc = ap f
   b : ¬ (x ≡ y) → decidable (right x ≡ right y)
   b = inr ∘ contrapositive right-lc
 
-𝔻-is-a-set : is-set 𝔻
-𝔻-is-a-set = discrete-types-are-sets 𝔻-is-discrete
+𝔻-is-set : is-set 𝔻
+𝔻-is-set = discrete-types-are-sets 𝔻-is-discrete
 
 \end{code}
