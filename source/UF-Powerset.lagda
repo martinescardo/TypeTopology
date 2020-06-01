@@ -35,21 +35,20 @@ powersets-are-sets' {𝓤} ua = powersets-are-sets
                                (univalence-gives-funext (ua 𝓤))
                                (univalence-gives-propext (ua 𝓤))
 
-_∈_ : {X : 𝓤 ̇ } → X → 𝓟 X → 𝓤 ̇
+_∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 x ∈ A = A x holds
 
-_⊆_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓤 ̇
+_⊆_ : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
-∈-is-prop : {X : 𝓤 ̇ } (A : 𝓟 X) (x : X) → is-prop (x ∈ A)
+∈-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∈ A)
 ∈-is-prop A x = holds-is-prop (A x)
 
-⊆-is-prop : funext 𝓤 𝓤
-                  → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-prop (A ⊆ B)
-
-⊆-is-prop fe A B = Π-is-prop fe
-                            (λ x → Π-is-prop fe
-                            (λ _ → ∈-is-prop B x))
+⊆-is-prop : funext 𝓤 𝓥 → funext 𝓥 𝓥
+          → {X : 𝓤 ̇ } (A B : X → Ω 𝓥) → is-prop (A ⊆ B)
+⊆-is-prop fe fe' A B = Π-is-prop fe
+                        (λ x → Π-is-prop fe'
+                        (λ _ → ∈-is-prop B x))
 
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
 ⊆-refl A x = id

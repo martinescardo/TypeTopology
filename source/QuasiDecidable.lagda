@@ -17,7 +17,7 @@ countable joins.
 open import SpartanMLTT
 open import DecidableAndDetachable
 open import Dominance
-open import UF-PropTrunc hiding (⊥ ; ⊤)
+open import UF-PropTrunc renaming (⊥ to false ; ⊤ to true)
 open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Univalence
@@ -27,6 +27,7 @@ open import UF-Yoneda
 open import UF-SIP
 open import UF-SIP-Examples
 open import UF-Embeddings
+open import UF-Powerset
 
 module QuasiDecidable where
 
@@ -105,10 +106,12 @@ take the intersection of all 𝟘-𝟙-ω-closed subsets of Ω 𝓤₀).
  𝟘-𝟙-ω-closed {𝓤} A = A 𝟘
                     × A 𝟙
                     × ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → A (P n)) → A (∃ n ꞉ ℕ , P n))
-
 \end{code}
 
-We assume that it exists in the following:
+We now assume that there is a smallest collection of types, called
+quasidecidable, satisfying the above closure property. The types in
+this collection are automatically propositions. The "smallest"
+condition amounts to an induction principle.
 
 \begin{code}
 
@@ -119,6 +122,11 @@ We assume that it exists in the following:
                                     → 𝟘-𝟙-ω-closed A
                                     → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → A P)
       where
+\end{code}
+
+We break apart the closure condition for notational convenience:
+
+\begin{code}
 
   𝟘-is-quasidecidable : is-quasidecidable 𝟘
   𝟘-is-quasidecidable = pr₁ 𝟘-𝟙-ω-closure
@@ -129,8 +137,23 @@ We assume that it exists in the following:
   quasidecidable-closed-under-ω-joins : ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → is-quasidecidable (P n)) → is-quasidecidable (∃ n ꞉ ℕ , P n))
   quasidecidable-closed-under-ω-joins = pr₂ (pr₂ 𝟘-𝟙-ω-closure)
 
+\end{code}
+
+As promised, the quasidecidable types are automatically propositions,
+with a proof by induction:
+
+\begin{code}
+
   quasidecidable-types-are-props : ∀ P → is-quasidecidable P → is-prop P
   quasidecidable-types-are-props = quasidecidable-induction is-prop (𝟘-is-prop , 𝟙-is-prop , λ P φ → ∃-is-prop)
+
+\end{code}
+
+And they form a dominance, again with a proof by induction. The main
+dominance condition generalizes closure under binary products (that
+is, conjunctions, or meets):
+
+\begin{code}
 
   quasidecidable-dom : propext 𝓤₀
                      → (P : 𝓤₀ ̇ )
@@ -174,8 +197,20 @@ We assume that it exists in the following:
         q = ∥∥-rec i (λ (n , (p , q)) → q) s
       d : ((∃ n ꞉ ℕ , P n) × Q) → (∃ n ꞉ ℕ , P n × Q)
       d (t , q) = ∥∥-functor (λ (n , p) → n , (p , q)) t
+      r : (∃ n ꞉ ℕ , P n × Q) ≡ ((∃ n ꞉ ℕ , P n) × Q)
+      r = pe ∃-is-prop
+            (×-prop-criterion ((λ _ → ∃-is-prop) ,
+                               (λ e → quasidecidable-types-are-props Q (φ e))))
+            c d
       γ : is-quasidecidable ((∃ n ꞉ ℕ , P n) × Q)
-      γ = transport is-quasidecidable (pe ∃-is-prop (×-prop-criterion ((λ _ → ∃-is-prop) , (λ e → quasidecidable-types-are-props Q (φ e)))) c d) b
+      γ = transport is-quasidecidable r b
+
+\end{code}
+
+This condition automatically implies closure under Σ, or joins indexed
+by quasidecidable propositions:
+
+\begin{code}
 
   quasidecidable-closed-under-Σ : propext 𝓤₀
                                  → (P : 𝓤₀ ̇ )
@@ -189,8 +224,10 @@ We assume that it exists in the following:
 
 \end{code}
 
-In summary, the quasidecidable properties form a dominance, assuming
-propositional extensionality:
+Notice that Σ Q is equivalent to ∃ Q as quasidecidable types are
+propositions.
+
+The following summarizes the dominance conditions:
 
 \begin{code}
 
@@ -257,7 +294,8 @@ extensionality, we get the σ-frame distributive law:
                                          (quasidecidable-σ-frame-non-trivial P i Q φ)
 \end{code}
 
-Next we define the σ-frame of quasidecidable propositions.
+Next we define the σ-frame QD of quasidecidable propositions, with
+underlying type 𝓠.
 
 \begin{code}
 
@@ -299,22 +337,31 @@ of a σ-frame:
    𝓠-is-set : is-set 𝓠
    𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω (embeddings-are-lc 𝓠→Ω (𝓠→Ω-is-embedding fe₀)) (Ω-is-set fe₀ pe₀)
 
-   ⊥ : 𝓠
+\end{code}
+
+We make the following definitions private in order to have the general
+symbols available in other contexts, but they are still available as
+the structure and axioms of the σ-frame QD of quasidecidable
+proposition:
+
+\begin{code}
+
+   private ⊥ : 𝓠
    ⊥ = 𝟘 , 𝟘-is-quasidecidable
 
-   ⊤ : 𝓠
+   private ⊤ : 𝓠
    ⊤ = 𝟙 , 𝟙-is-quasidecidable
 
-   _∧_ : 𝓠 → 𝓠 → 𝓠
+   private _∧_ : 𝓠 → 𝓠 → 𝓠
    (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-dom pe₀ P i Q (λ _ → j)
 
-   ⋁ : (ℕ → 𝓠) → 𝓠
+   private ⋁ : (ℕ → 𝓠) → 𝓠
    ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n is-true) ,
           quasidecidable-closed-under-ω-joins
             (λ n → 𝕡 n is-true)
             (λ n → being-true-is-quasidecidable (𝕡 n))
 
-   ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
+   private ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
    ∧-is-idempotent (P , i) = γ
     where
      i' : is-prop P
@@ -324,8 +371,7 @@ of a σ-frame:
      γ : ((P × P) , _) ≡ (P , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-
-   ∧-is-commutative : (𝕡 𝕢 : 𝓠) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
+   private ∧-is-commutative : (𝕡 𝕢 : 𝓠) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
    ∧-is-commutative (P , i) (Q , j) = γ
     where
      i' : is-prop P
@@ -340,7 +386,7 @@ of a σ-frame:
      γ : ((P × Q) , _) ≡ ((Q × P) , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
+   private ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
    ∧-is-associative (P , i) (Q , j) (R , k) = γ
     where
      i' : is-prop P
@@ -357,7 +403,7 @@ of a σ-frame:
      γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ∧ 𝕡 ≡ ⊥
+   private ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ∧ 𝕡 ≡ ⊥
    ⊥-is-minimum (P , i) = γ
     where
      i' : is-prop P
@@ -370,7 +416,7 @@ of a σ-frame:
      γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
+   private ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
    ⊤-is-maximum (P , i) = γ
     where
      i' : is-prop P
@@ -383,13 +429,13 @@ of a σ-frame:
      γ : ((P × 𝟙) , _) ≡ (P , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
+   private _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
    𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
 
-   ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
+   private ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
    ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
 
-   ≤-characterization→ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
+   private ≤-characterization→ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
    ≤-characterization→ {P , i} {Q , j} l p = γ
     where
      a : P × Q ≡ P
@@ -399,7 +445,7 @@ of a σ-frame:
      γ : Q
      γ = pr₂ (g p)
 
-   ≤-characterization← : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
+   private ≤-characterization← : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
    ≤-characterization← {P , i} {Q , j} f = γ
     where
      i' : is-prop P
@@ -411,7 +457,7 @@ of a σ-frame:
      γ : ((P × Q) , _) ≡ (P , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   ≤-characterization : {𝕡 𝕢 : 𝓠} → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
+   private ≤-characterization : {𝕡 𝕢 : 𝓠} → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
    ≤-characterization {𝕡} {𝕢} = logically-equivalent-props-are-equivalent
                                 (≤-is-prop-valued 𝕡 𝕢)
                                 (Π-is-prop fe₀ (λ _ → being-true-is-prop 𝕢))
@@ -424,7 +470,7 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
 
 \begin{code}
 
-   distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ (𝕡 ∧ 𝕢 n))
+   private distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ (𝕡 ∧ 𝕢 n))
    distributivity (P , i) 𝕢 = γ
     where
      Q : ℕ → 𝓤₀ ̇
@@ -436,7 +482,7 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
      γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   ⋁-is-lub : (𝕡 : ℕ → 𝓠)
+   private ⋁-is-lub : (𝕡 : ℕ → 𝓠)
             → ((n : ℕ) → 𝕡 n ≤ ⋁ 𝕡)
             × ((𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦 )
    ⋁-is-lub 𝕡 = a , b
@@ -464,6 +510,11 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
         ⊤-is-maximum ,
         distributivity ,
         ⋁-is-lub)
+\end{code}
+
+To be continued. Next we show that QD is the initial σ-frame:
+
+\begin{code}
 {-
    QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
      → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
@@ -478,5 +529,3 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
      c = {!!}
 -}
 \end{code}
-
-To be continued.
