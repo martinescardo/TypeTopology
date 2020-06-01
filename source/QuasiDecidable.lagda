@@ -371,8 +371,8 @@ of a σ-frame:
    ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
    ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
 
-   ≤-characterization→ : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
-   ≤-characterization→ (P , i) (Q , j) l p = γ
+   ≤-characterization→ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
+   ≤-characterization→ {P , i} {Q , j} l p = γ
     where
      a : P × Q ≡ P
      a = ap (_is-true) l
@@ -381,8 +381,8 @@ of a σ-frame:
      γ : Q
      γ = pr₂ (g p)
 
-   ≤-characterization← : (𝕡 𝕢 : 𝓠) → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
-   ≤-characterization← (P , i) (Q , j) f = γ
+   ≤-characterization← : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
+   ≤-characterization← {P , i} {Q , j} f = γ
     where
      i' : is-prop P
      i' = quasidecidable-types-are-props P i
@@ -393,12 +393,12 @@ of a σ-frame:
      γ : ((P × Q) , _) ≡ (P , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-   ≤-characterization : (𝕡 𝕢 : 𝓠) → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
-   ≤-characterization 𝕡 𝕢 = logically-equivalent-props-are-equivalent
-                              (≤-is-prop-valued 𝕡 𝕢)
-                              (Π-is-prop fe₀ (λ _ → being-true-is-prop 𝕢))
-                              (≤-characterization→ 𝕡 𝕢)
-                              (≤-characterization← 𝕡 𝕢)
+   ≤-characterization : {𝕡 𝕢 : 𝓠} → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
+   ≤-characterization {𝕡} {𝕢} = logically-equivalent-props-are-equivalent
+                                (≤-is-prop-valued 𝕡 𝕢)
+                                (Π-is-prop fe₀ (λ _ → being-true-is-prop 𝕢))
+                                (≤-characterization→ {𝕡} {𝕢})
+                                (≤-characterization← {𝕡} {𝕢})
 
 \end{code}
 
@@ -418,11 +418,20 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
      γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
-{-
    ⋁-is-lub : (𝕡 : ℕ → 𝓠)
-            → ((i : ℕ) → 𝕡 i ≤ ⋁ 𝕡)
-            × ((𝕦 : 𝓠) → ((i : ℕ) → 𝕡 i ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦 )
-   ⋁-is-lub = {!!}
+            → ((n : ℕ) → 𝕡 n ≤ ⋁ 𝕡)
+            × ((𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦 )
+   ⋁-is-lub 𝕡 = a , b
+    where
+     a : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+     a n = ≤-characterization← (λ Pn → ∣ n , Pn ∣)
+     b : (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
+     b (U , i) φ = ≤-characterization← d
+      where
+       c : (Σ n ꞉ ℕ , 𝕡 n is-true) → U
+       c (n , p) = ≤-characterization→ (φ n) p
+       d : (∃ n ꞉ ℕ , 𝕡 n is-true) → U
+       d = ∥∥-rec (quasidecidable-types-are-props U i) c
 
    open σ-frame
 
@@ -436,7 +445,6 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
                 ⊤-is-maximum ,
                 distributivity ,
                 ⋁-is-lub)
--}
 \end{code}
 
 To be continued. The first thing to do is to complete the above (easy)
