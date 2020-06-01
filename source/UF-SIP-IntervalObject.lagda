@@ -67,7 +67,7 @@ midpoint-algebra-prop _⊕_ i = ×-is-prop
 
 midpoint-algebra-sns : SNS midpoint-algebra-structure 𝓤
 midpoint-algebra-sns = add-axioms midpoint-algebra-axioms s
-                                  ∞-magma-identity.sns-data
+                                  ∞-magma.sns-data
   where
    s : (X : 𝓤 ̇) (_⊕_ : X → X → X) → is-prop (midpoint-algebra-axioms X _⊕_)
    s X _⊕_ (i , p) = midpoint-algebra-prop _⊕_ i (i , p)
@@ -126,7 +126,7 @@ convex-body-prop X _⊕_ ((i , p) , q) = γ ((i , p) , q)
 convex-body-sns : SNS convex-body-structure 𝓤
 convex-body-sns = add-axioms convex-body-axioms
                              convex-body-prop
-                             ∞-magma-identity.sns-data
+                             ∞-magma.sns-data
 
 _≊⟨convex-body⟩_ : convex-body → convex-body → 𝓤 ̇
 (X , _⊕_ , mx , _) ≊⟨convex-body⟩ (Y , _⊗_ , my , _)
@@ -171,9 +171,9 @@ open sip-join
 
 interval-object-sns : (𝓥 : Universe) → SNS (interval-object-structure 𝓥) 𝓤
 interval-object-sns 𝓥 = add-axioms (interval-object-axioms 𝓥) s
-                          (join ∞-magma-identity.sns-data
-                            (join pointed-type-identity.sns-data
-                                  pointed-type-identity.sns-data))
+                          (join ∞-magma.sns-data
+                            (join pointed-type.sns-data
+                                  pointed-type.sns-data))
  where
   s : (X : 𝓤 ̇) (s : (X → X → X) × X × X)
     → is-prop (interval-object-axioms 𝓥 X s)
