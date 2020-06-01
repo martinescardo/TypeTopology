@@ -25,6 +25,7 @@ module UF-SIP-IntervalObject {𝓤 : Universe} (fe' : FunExt) where
 fe : funext 𝓥 𝓦
 fe {𝓥} {𝓦} = fe' 𝓥 𝓦
 
+open import UF-Base
 open import UF-Univalence
 open import UF-Equiv
 open import UF-Subsingletons-FunExt
@@ -155,11 +156,11 @@ interval-object-structure 𝓥 X = Σ (interval-object-axioms 𝓥 X)
 interval-object : (𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
 interval-object 𝓥 = Σ (interval-object-structure 𝓥)
 
-interval-object-prop : (𝓥 : Universe) → (X : 𝓤 ̇)
+interval-axioms-prop : (𝓥 : Universe) → (X : 𝓤 ̇)
                      → (_⊕_uv : (X → X → X) × X × X)
                      → is-set X
                      → is-prop (interval-object-axioms 𝓥 X _⊕_uv)
-interval-object-prop 𝓥 X (_⊕_ , u , v) i
+interval-axioms-prop 𝓥 X (_⊕_ , u , v) i
  = ×-is-prop
      (convex-body-prop X _⊕_)
      (Π-is-prop fe
@@ -178,7 +179,7 @@ interval-object-sns 𝓥 = add-axioms (interval-object-axioms 𝓥) s
   s : (X : 𝓤 ̇) (s : (X → X → X) × X × X)
     → is-prop (interval-object-axioms 𝓥 X s)
   s X _⊕_uv (((i , p) , q) , r)
-    = interval-object-prop 𝓥 X _⊕_uv i (((i , p) , q) , r)
+    = interval-axioms-prop 𝓥 X _⊕_uv i (((i , p) , q) , r)
 
 _≊⟨interval-object⟩_ : {𝓥 : Universe}
                      → interval-object 𝓥 → interval-object 𝓥 → 𝓤 ̇
@@ -192,5 +193,49 @@ characterization-of-interval-object-≡ : {𝓥 : Universe} → is-univalent �
                                       → (A ≡ B) ≃ (A ≊⟨interval-object⟩ B)
 characterization-of-interval-object-≡ {𝓥} ua = characterization-of-≡ ua
                                                (interval-object-sns 𝓥)
+
+all-interval-objects-equiv : (A B : interval-object 𝓤) → A ≊⟨interval-object⟩ B
+all-interval-objects-equiv (X , (_⊕_ , u , v) , p , p₄) (Y , (_⊗_ , s , t) , r , r₄)
+ = h , ((h' , happly h∘h'≡id) , (h' , happly h'∘h≡id))
+ , dfunext fe (λ x → dfunext fe (λ y → hᵢ x y)) , hₗ , hᵣ
+ where
+  hX→Y! : ∃! (λ h → (h u ≡ s) × (h v ≡ t) × ((a b : X) → h (a ⊕ b) ≡ h a ⊗ h b))
+  hX→Y! = p₄ (Y , _⊗_ , r) s t
+  hY→X! : ∃! (λ h → (h s ≡ u) × (h t ≡ v) × ((a b : Y) → h (a ⊗ b) ≡ h a ⊕ h b))
+  hY→X! = r₄ (X , _⊕_ , p) u v
+  h : X → Y
+  h = ∃!-witness hX→Y!
+  hₗ : h u ≡ s
+  hₗ = pr₁ (∃!-is-witness hX→Y!)
+  hᵣ : h v ≡ t
+  hᵣ = pr₁ (pr₂ (∃!-is-witness hX→Y!))
+  hᵢ : (a b : X) → h (a ⊕ b) ≡ h a ⊗ h b
+  hᵢ = pr₂ (pr₂ (∃!-is-witness hX→Y!))
+  h' : Y → X
+  h' = ∃!-witness hY→X!
+  h'ₗ : h' s ≡ u
+  h'ₗ = pr₁ (∃!-is-witness hY→X!)
+  h'ᵣ : h' t ≡ v
+  h'ᵣ = pr₁ (pr₂ (∃!-is-witness hY→X!))
+  h'ᵢ : (a b : Y) → h' (a ⊗ b) ≡ h' a ⊕ h' b
+  h'ᵢ = pr₂ (pr₂ (∃!-is-witness hY→X!))
+  h∘h'≡id : h ∘ h' ≡ id
+  h∘h'≡id = ap pr₁ (∃!-uniqueness'' (r₄ (Y , _⊗_ , r) s t)
+              (h ∘ h' , (ap h h'ₗ ∙ hₗ) , (ap h h'ᵣ ∙ hᵣ)
+                      , λ a b → ap h (h'ᵢ a b) ∙ hᵢ (h' a) (h' b))
+              (id     , refl            , refl
+                      , λ a b → refl))
+  h'∘h≡id : h' ∘ h ≡ id
+  h'∘h≡id = ap pr₁ (∃!-uniqueness'' (p₄ (X , _⊕_ , p) u v)
+              (h' ∘ h , (ap h' hₗ ∙ h'ₗ) , (ap h' hᵣ ∙ h'ᵣ)
+                      , λ a b → ap h' (hᵢ a b) ∙ h'ᵢ (h a) (h b))
+              (id     , refl            , refl
+                      , λ a b → refl))
+
+interval-object-prop : is-univalent 𝓤 → is-prop (interval-object 𝓤)
+interval-object-prop ua A B = f (all-interval-objects-equiv A B)
+ where
+  f : A ≊⟨interval-object⟩ B → A ≡ B
+  f = pr₁ (pr₁ (pr₂ (characterization-of-interval-object-≡ ua A B)))
 
 \end{code}
