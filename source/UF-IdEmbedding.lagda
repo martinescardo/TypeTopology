@@ -200,6 +200,6 @@ Id-set-is-embedding : funext  𝓤 𝓤 → funext  𝓤 (𝓤 ⁺) → propext 
 Id-set-is-embedding fe fe' pe {X} i = lc-maps-into-sets-are-embeddings
                                         (Id-set i)
                                         (Id-set-lc fe' i)
-                                        (Π-is-set fe' (λ x → Ω-is-a-set fe pe))
+                                        (Π-is-set fe' (λ x → Ω-is-set fe pe))
 
 \end{code}

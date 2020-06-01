@@ -486,18 +486,18 @@ and the proof given here via Yoneda was announced on 12th May 2015
 
 open import UF-Univalence
 
-univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
-univalence-via-singletons = (f , g)
- where
-  f : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! (Eq X)
-  f ua X = representable-singleton (X , (idtoeq X , ua X))
+univalence-via-singletons→ : is-univalent 𝓤 → (X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y
+univalence-via-singletons→ ua X = representable-singleton (X , (idtoeq X , ua X))
 
-  g : ((X : 𝓤 ̇ ) → ∃! (Eq X)) → is-univalent 𝓤
-  g φ X = universality-equiv X (≃-refl X)
-                               (central-point-is-universal
-                                  (Eq X)
-                                  (X , ≃-refl X)
-                                  (singletons-are-props (φ X) (X , ≃-refl X)))
+univalence-via-singletons← : ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y) → is-univalent 𝓤
+univalence-via-singletons← φ X = universality-equiv X (≃-refl X)
+                                  (central-point-is-universal
+                                     (Eq X)
+                                     (X , ≃-refl X)
+                                     (singletons-are-props (φ X) (X , ≃-refl X)))
+
+univalence-via-singletons : is-univalent 𝓤 ⇔ ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y)
+univalence-via-singletons = (univalence-via-singletons→ , univalence-via-singletons←)
 
 \end{code}
 

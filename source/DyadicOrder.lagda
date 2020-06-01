@@ -174,7 +174,7 @@ trichotomy-is-a-singleton {x} {y} =
    γ = +-is-prop (≺-is-prop-valued x y) h g
     where
      h : is-prop ((x ≡ y) + y ≺ x)
-     h = +-is-prop 𝔻-is-a-set (≺-is-prop-valued y x) ≡-to-¬≺'
+     h = +-is-prop 𝔻-is-set (≺-is-prop-valued y x) ≡-to-¬≺'
      g : x ≺ y → ¬ ((x ≡ y) + y ≺ x)
      g l = cases a b
       where

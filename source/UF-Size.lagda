@@ -276,7 +276,7 @@ universes:
   down : Ω 𝓤 → O
   down = ⌜ ≃-sym e ⌝
   O-is-set : is-set O
-  O-is-set = equiv-to-set e (Ω-is-a-set fe pe)
+  O-is-set = equiv-to-set e (Ω-is-set fe pe)
   Q : 𝓥 ̇
   Q = down ⊤ ≡ down (P , i)
   j : is-prop Q

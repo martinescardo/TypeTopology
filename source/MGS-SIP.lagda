@@ -139,7 +139,7 @@ module sip where
                                         (λ t → ι (X , s) (X , t) (id-≃ X))
                                         s (φ s) (canonical-map ι ρ s)
 
-module ∞-magma-identity {𝓤 : Universe} where
+module ∞-magma {𝓤 : Universe} where
 
  open sip
 
@@ -257,7 +257,7 @@ module sip-with-axioms where
  characterization-of-≡-with-axioms ua σ axioms i =
    characterization-of-≡ ua (add-axioms axioms i σ)
 
-module magma-identity {𝓤 : Universe} where
+module magma {𝓤 : Universe} where
 
  open sip-with-axioms
 
@@ -274,11 +274,11 @@ module magma-identity {𝓤 : Universe} where
  characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-     ∞-magma-identity.sns-data
+     ∞-magma.sns-data
      (λ X s → is-set X)
      (λ X s → being-set-is-subsingleton (univalence-gives-dfunext ua))
 
-module pointed-type-identity {𝓤 : Universe} where
+module pointed-type {𝓤 : Universe} where
 
  open sip
 
@@ -313,7 +313,6 @@ module pointed-type-identity {𝓤 : Universe} where
 module sip-join where
 
  technical-lemma :
-
      {X : 𝓤 ̇ } {A : X → X → 𝓥 ̇ }
      {Y : 𝓦 ̇ } {B : Y → Y → 𝓣 ̇ }
      (f : (x₀ x₁ : X) → x₀ ≡ x₁ → A x₀ x₁)
@@ -321,45 +320,39 @@ module sip-join where
    → ((x₀ x₁ : X) → is-equiv (f x₀ x₁))
    → ((y₀ y₁ : Y) → is-equiv (g y₀ y₁))
 
-   → (z₀ z₁ : X × Y) → is-equiv (λ (p : z₀ ≡ z₁) → f (pr₁ z₀) (pr₁ z₁) (ap pr₁ p) ,
-                                                   g (pr₂ z₀) (pr₂ z₁) (ap pr₂ p))
-
+   → ((x₀ , y₀) (x₁ , y₁) : X × Y) → is-equiv (λ (p : (x₀ , y₀) ≡ (x₁ , y₁)) → f x₀ x₁ (ap pr₁ p) ,
+                                                                               g y₀ y₁ (ap pr₂ p))
  technical-lemma {𝓤} {𝓥} {𝓦} {𝓣} {X} {A} {Y} {B} f g i j (x₀ , y₀) = γ
   where
-   module _ (z₁ : X × Y) where
-     x₁ = pr₁ z₁
-     y₁ = pr₂ z₁
+   u : ∃! x₁ ꞉ X , A x₀ x₁
+   u = fiberwise-equiv-universal (A x₀) x₀ (f x₀) (i x₀)
 
-     r : (x₀ , y₀) ≡ (x₁ , y₁) → A x₀ x₁ × B y₀ y₁
-     r p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
+   v : ∃! y₁ ꞉ Y , B y₀ y₁
+   v = fiberwise-equiv-universal (B y₀) y₀ (g y₀) (j y₀)
 
-     f' : (a : A x₀ x₁) → x₀ ≡ x₁
-     f' = inverse (f x₀ x₁) (i x₀ x₁)
+   C : X × Y → 𝓥 ⊔ 𝓣 ̇
+   C (x₁ , y₁) = A x₀ x₁ × B y₀ y₁
 
-     g' : (b : B y₀ y₁) → y₀ ≡ y₁
-     g' = inverse (g y₀ y₁) (j y₀ y₁)
+   w : (∃! x₁ ꞉ X , A x₀ x₁)
+     → (∃! y₁ ꞉ Y , B y₀ y₁)
+     →  ∃! (x₁ , y₁) ꞉ X × Y , C (x₁ , y₁)
+   w ((x₁ , a₁) , φ) ((y₁ , b₁) , ψ) = ((x₁ , y₁) , (a₁ , b₁)) , δ
+    where
+     p : ∀ x y a b
+       → (x₁ , a₁) ≡ (x , a)
+       → (y₁ , b₁) ≡ (y , b)
+       → (x₁ , y₁) , (a₁ , b₁) ≡ (x , y) , (a , b)
+     p .x₁ .y₁ .a₁ .b₁ (refl .(x₁ , a₁)) (refl .(y₁ , b₁)) = refl ((x₁ , y₁) , (a₁ , b₁))
 
-     s : A x₀ x₁ × B y₀ y₁ → (x₀ , y₀) ≡ (x₁ , y₁)
-     s (a , b) = to-×-≡ (f' a , g' b)
+     δ : (((x , y) , (a , b)) : Σ C) → (x₁ , y₁) , (a₁ , b₁) ≡ ((x , y) , (a , b))
+     δ ((x , y) , (a , b)) = p x y a b (φ (x , a)) (ψ (y , b))
 
-     η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ≡ c
-     η (a , b) =
-       r (s (a , b))                              ≡⟨ refl _ ⟩
-       r (to-×-≡  (f' a , g' b))                  ≡⟨ refl _ ⟩
-       (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a , g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a , g' b))))  ≡⟨ ii     ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii    ⟩
-       a , b                                      ∎
-      where
-       ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)
-                 (ap-pr₁-to-×-≡ (f' a) (g' b))
-                 (ap-pr₂-to-×-≡ (f' a) (g' b))
-       iii = to-×-≡ (inverses-are-sections (f x₀ x₁) (i x₀ x₁) a ,
-                     inverses-are-sections (g y₀ y₁) (j y₀ y₁) b)
+   τ : Nat (𝓨 (x₀ , y₀)) C
+   τ (x₁ , y₁) p = f x₀ x₁ (ap pr₁ p) , g y₀ y₁ (ap pr₂ p)
 
-   γ : ∀ z₁ → is-equiv (r z₁)
-   γ = fiberwise-retractions-are-equivs (λ z₁ → A x₀ (pr₁ z₁) × B y₀ (pr₂ z₁))
-         (x₀ , y₀) r (λ z₁ → (s z₁ , η z₁))
+   γ : is-fiberwise-equiv τ
+   γ = universal-fiberwise-equiv C (w u v) (x₀ , y₀) τ
+
 
  variable
   𝓥₀ 𝓥₁ 𝓦₀ 𝓦₁ : Universe
@@ -440,7 +433,7 @@ module sip-join where
 
  characterization-of-join-≡ ua σ₀ σ₁ = characterization-of-≡ ua (join σ₀ σ₁)
 
-module pointed-∞-magma-identity {𝓤 : Universe} where
+module pointed-∞-magma {𝓤 : Universe} where
 
  open sip-join
 
@@ -461,10 +454,10 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                            ∞-magma-identity.sns-data
-                                            pointed-type-identity.sns-data
+                                            ∞-magma.sns-data
+                                            pointed-type.sns-data
 
-module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  dfe : dfunext 𝓤 𝓤
  dfe = univalence-gives-dfunext ua
@@ -511,8 +504,8 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data = add-axioms
               monoid-axioms monoid-axioms-subsingleton
               (join
-                 ∞-magma-identity.sns-data
-                 pointed-type-identity.sns-data)
+                 ∞-magma.sns-data
+                 pointed-type.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -529,7 +522,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 
-module associative-∞-magma-identity
+module associative-∞-magma
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
        where
@@ -628,14 +621,14 @@ module associative-∞-magma-identity
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 
-module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  hfe : hfunext 𝓤 𝓤
  hfe = univalence-gives-hfunext ua
 
  open sip
  open sip-with-axioms
- open monoid-identity {𝓤} ua hiding (sns-data ; _≅_)
+ open monoid {𝓤} ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
@@ -683,7 +676,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ s ꞉ group-structure X , group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-subsingleton
-             (monoid-identity.sns-data ua)
+             (monoid.sns-data ua)
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -879,7 +872,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
 
-module subgroup-identity
+module subgroup
         (𝓤  : Universe)
         (ua : Univalence)
        where
@@ -888,8 +881,8 @@ module subgroup-identity
  gfe = univalence-gives-global-dfunext ua
 
  open sip
- open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
- open group-identity {𝓤} (ua 𝓤)
+ open monoid {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
+ open group {𝓤} (ua 𝓤)
 
  module ambient (G : Group) where
 
@@ -1156,7 +1149,7 @@ module subgroup-identity
   induced-group : Subgroups → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 
-module slice-identity
+module slice
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
        where
@@ -1187,7 +1180,7 @@ module slice-identity
  characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 
-module generalized-metric-space-identity
+module generalized-metric-space
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -1231,7 +1224,7 @@ module generalized-metric-space-identity
                                 sns-data
                                 axioms axiomss
 
-module generalized-topological-space-identity
+module generalized-topological-space
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -1300,7 +1293,7 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 
-module selection-space-identity
+module selection-space
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇ )
@@ -1350,7 +1343,7 @@ module selection-space-identity
                                              sns-data
                                              axioms axiomss
 
-module contrived-example-identity (𝓤 : Universe) where
+module contrived-example (𝓤 : Universe) where
 
  open sip
 
@@ -1369,7 +1362,7 @@ module contrived-example-identity (𝓤 : Universe) where
      (λ φ γ → equivs-closed-under-∼ (id-is-equiv (φ ≡ γ)) (λ {(refl φ) → refl (refl φ)})))
     (X , φ) (Y , γ)
 
-module generalized-functor-algebra-identity
+module generalized-functor-algebra
          {𝓤 𝓥 : Universe}
          (F : 𝓤 ̇ → 𝓥 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
@@ -1420,7 +1413,7 @@ type-valued-preorder-S {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥 ̇ )
                                          , ((x : X) → x ≤ x)
                                          × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 
-module type-valued-preorder-identity
+module type-valued-preorder
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
        where
@@ -1581,7 +1574,7 @@ module type-valued-preorder-identity
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma 𝓧 𝓐 F))
 
-module type-valued-preorder-with-axioms-identity
+module type-valued-preorder-with-axioms
         (𝓤 𝓥 𝓦 : Universe)
         (ua : Univalence)
         (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
@@ -1590,7 +1583,7 @@ module type-valued-preorder-with-axioms-identity
 
  open sip
  open sip-with-axioms
- open type-valued-preorder-identity 𝓤 𝓥 ua
+ open type-valued-preorder 𝓤 𝓥 ua
 
  S' : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
  S' X = Σ s ꞉ S X , axioms X s
@@ -1620,12 +1613,12 @@ module type-valued-preorder-with-axioms-identity
    i  = characterization-of-≡-with-axioms (ua 𝓤) sns-data axioms axiomss 𝓧' 𝓐'
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma [ 𝓧' ] [ 𝓐' ] F))
 
-module category-identity
+module category
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
        where
 
- open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
+ open type-valued-preorder-with-axioms 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
  fe : global-dfunext
  fe = univalence-gives-global-dfunext ua
@@ -1745,7 +1738,7 @@ module category-identity
    γ : (𝓧 𝓐 : Cat) → Id→EqCat 𝓧 𝓐 ∼ ⌜ characterization-of-category-≡ 𝓧 𝓐 ⌝
    γ 𝓧 𝓧 (refl 𝓧) = refl _
 
-module ring-identity {𝓤 : Universe} (ua : Univalence) where
+module ring {𝓤 : Universe} (ua : Univalence) where
  open sip hiding (⟨_⟩)
  open sip-with-axioms
  open sip-join
@@ -1867,8 +1860,8 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                                 rng-axioms
                                 rng-axioms-is-subsingleton
                                 (join
-                                  ∞-magma-identity.sns-data
-                                  ∞-magma-identity.sns-data))
+                                  ∞-magma.sns-data
+                                  ∞-magma.sns-data))
 
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
  ⟨ R , _ ⟩ = R
@@ -1910,10 +1903,10 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                                   ring-axioms
                                   ring-axioms-is-subsingleton
                                   (sip-join.join
-                                    pointed-type-identity.sns-data
+                                    pointed-type.sns-data
                                       (join
-                                        ∞-magma-identity.sns-data
-                                        ∞-magma-identity.sns-data)))
+                                        ∞-magma.sns-data
+                                        ∞-magma.sns-data)))
 
  is-commutative : Rng → 𝓤 ̇
  is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x

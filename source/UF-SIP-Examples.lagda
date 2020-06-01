@@ -27,6 +27,14 @@ Each example is in a submodule:
   * type-valued-preorder-with-axioms
   * category
 
+We also consider the following, which are not in the above lecture
+notes:
+
+  * ∞-bigmagma
+  * σ-frame
+  * ∞-hugemagma
+  * frame
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -47,7 +55,7 @@ open import UF-UA-FunExt
 open import UF-Retracts
 open import UF-Yoneda
 
-module ∞-magma-identity {𝓤 : Universe} where
+module ∞-magma {𝓤 : Universe} where
 
  open sip
 
@@ -97,7 +105,7 @@ module ∞-magma-identity {𝓤 : Universe} where
  characterization-of-characterization-of-∞-Magma-≡ ua A = refl─ _
 
 
-module magma-identity {𝓤 : Universe} where
+module magma {𝓤 : Universe} where
 
  open sip-with-axioms
 
@@ -114,12 +122,11 @@ module magma-identity {𝓤 : Universe} where
  characterization-of-Magma-≡ : is-univalent 𝓤 → (A B : Magma ) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-Magma-≡ ua =
    characterization-of-≡-with-axioms ua
-     ∞-magma-identity.sns-data
+     ∞-magma.sns-data
      (λ X s → is-set X)
      (λ X s → being-set-is-prop (univalence-gives-funext ua))
 
-
-module pointed-type-identity {𝓤 : Universe} where
+module pointed-type {𝓤 : Universe} where
  open sip
 
  Pointed : 𝓤 ̇ → 𝓤 ̇
@@ -151,7 +158,7 @@ module pointed-type-identity {𝓤 : Universe} where
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
 
 
-module pointed-∞-magma-identity {𝓤 : Universe} where
+module pointed-∞-magma {𝓤 : Universe} where
 
  open sip-join
 
@@ -172,10 +179,10 @@ module pointed-∞-magma-identity {𝓤 : Universe} where
                                      → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-magma-≡ ua = characterization-of-join-≡ ua
-                                            ∞-magma-identity.sns-data
-                                            pointed-type-identity.sns-data
+                                            ∞-magma.sns-data
+                                            pointed-type.sns-data
 
-module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  fe : funext 𝓤 𝓤
  fe = univalence-gives-funext ua
@@ -231,8 +238,8 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data = add-axioms
               monoid-axioms monoid-axioms-prop
               (join
-                 ∞-magma-identity.sns-data
-                 pointed-type-identity.sns-data)
+                 ∞-magma.sns-data
+                 pointed-type.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -249,7 +256,7 @@ module monoid-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
 
-module associative-∞-magma-identity
+module associative-∞-magma
         {𝓤 : Universe}
         (ua : is-univalent 𝓤)
        where
@@ -351,10 +358,10 @@ module associative-∞-magma-identity
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 
-module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
  open sip
  open sip-with-axioms
- open monoid-identity {𝓤} ua hiding (sns-data ; _≅_)
+ open monoid {𝓤} ua hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
@@ -402,7 +409,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
  sns-data : SNS (λ X → Σ s ꞉ group-structure X , group-axiom X (pr₁ s)) 𝓤
  sns-data = add-axioms
              (λ X s → group-axiom X (pr₁ s)) group-axiom-is-prop
-             (monoid-identity.sns-data ua)
+             (monoid.sns-data ua)
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -595,7 +602,7 @@ module group-identity {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
 
-module subgroup-identity
+module subgroup
         (𝓤  : Universe)
         (ua : Univalence)
        where
@@ -604,8 +611,8 @@ module subgroup-identity
  gfe {𝓥} {𝓦} = univalence-gives-funext' 𝓥 𝓦 (ua 𝓥) (ua (𝓥 ⊔ 𝓦))
 
  open sip
- open monoid-identity {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
- open group-identity {𝓤} (ua 𝓤)
+ open monoid {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
+ open group {𝓤} (ua 𝓤)
  open import UF-Powerset
  open import UF-Classifiers
 
@@ -871,7 +878,7 @@ module subgroup-identity
   induced-group : Subgroups → Group
   induced-group S = pr₁ (⌜ characterization-of-the-type-of-subgroups ⌝ S)
 
-module ring-identity {𝓤 : Universe} (ua : Univalence) where
+module ring {𝓤 : Universe} (ua : Univalence) where
  open sip hiding (⟨_⟩)
  open sip-with-axioms
  open sip-join
@@ -989,8 +996,8 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                                 rng-axioms
                                 rng-axioms-is-prop
                                 (join
-                                  ∞-magma-identity.sns-data
-                                  ∞-magma-identity.sns-data))
+                                  ∞-magma.sns-data
+                                  ∞-magma.sns-data))
 
  ⟨_⟩ : (𝓡 : Rng) → 𝓤 ̇
  ⟨ R , _ ⟩ = R
@@ -1032,10 +1039,10 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
                                   ring-axioms
                                   ring-axioms-is-prop
                                   (sip-join.join
-                                    pointed-type-identity.sns-data
+                                    pointed-type.sns-data
                                       (join
-                                        ∞-magma-identity.sns-data
-                                        ∞-magma-identity.sns-data)))
+                                        ∞-magma.sns-data
+                                        ∞-magma.sns-data)))
 
  is-commutative : Rng → 𝓤 ̇
  is-commutative (R , (_+_ , _·_) , _) = (x y : R) → x · y ≡ y · x
@@ -1200,7 +1207,7 @@ module ring-identity {𝓤 : Universe} (ua : Univalence) where
     a' : A 𝓡'
     a' = transport A p a
 
-module slice-identity
+module slice
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
        where
@@ -1234,7 +1241,7 @@ module slice-identity
  characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 
-module generalized-metric-space-identity
+module generalized-metric-space
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -1278,7 +1285,7 @@ module generalized-metric-space-identity
                                 sns-data
                                 axioms axiomss
 
-module generalized-topological-space-identity
+module generalized-topological-space
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → R) → 𝓤 ⊔ 𝓥 ̇ )
@@ -1347,7 +1354,7 @@ module generalized-topological-space-identity
 
  characterization-of-Space-≡' = characterization-of-Space-≡
 
-module selection-space-identity
+module selection-space
         (𝓤 𝓥 : Universe)
         (R : 𝓥 ̇ )
         (axioms  : (X : 𝓤 ̇ ) → ((X → R) → X) → 𝓤 ⊔ 𝓥 ̇ )
@@ -1397,7 +1404,7 @@ module selection-space-identity
                                              sns-data
                                              axioms axiomss
 
-module contrived-example-identity (𝓤 : Universe) where
+module contrived-example (𝓤 : Universe) where
 
  open sip
 
@@ -1416,7 +1423,7 @@ module contrived-example-identity (𝓤 : Universe) where
      (λ φ γ → equiv-closed-under-∼ _ _ (id-is-equiv (φ ≡ γ)) (λ {(refl {φ}) → refl─ (refl─ φ)})))
     (X , φ) (Y , γ)
 
-module generalized-functor-algebra-identity
+module generalized-functor-algebra
          {𝓤 𝓥 : Universe}
          (F : 𝓤 ̇ → 𝓥 ̇ )
          (𝓕 : {X Y : 𝓤 ̇ } → (X → Y) → F X → F Y)
@@ -1467,7 +1474,7 @@ type-valued-preorder-S {𝓤} {𝓥} X = Σ _≤_ ꞉ (X → X → 𝓥 ̇ )
                                          , ((x : X) → x ≤ x)
                                          × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
 
-module type-valued-preorder-identity
+module type-valued-preorder
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
        where
@@ -1625,7 +1632,7 @@ module type-valued-preorder-identity
    i  = characterization-of-≡ (ua 𝓤) sns-data 𝓧 𝓐
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma 𝓧 𝓐 F))
 
-module type-valued-preorder-with-axioms-identity
+module type-valued-preorder-with-axioms
         (𝓤 𝓥 𝓦 : Universe)
         (ua : Univalence)
         (axioms  : (X : 𝓤 ̇ ) → type-valued-preorder-S {𝓤} {𝓥} X → 𝓦 ̇ )
@@ -1634,7 +1641,7 @@ module type-valued-preorder-with-axioms-identity
 
  open sip
  open sip-with-axioms
- open type-valued-preorder-identity 𝓤 𝓥 ua
+ open type-valued-preorder 𝓤 𝓥 ua
 
  S' : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
  S' X = Σ s ꞉ S X , axioms X s
@@ -1664,12 +1671,12 @@ module type-valued-preorder-with-axioms-identity
    i  = characterization-of-≡-with-axioms (ua 𝓤) sns-data axioms axiomss 𝓧' 𝓐'
    ii = Σ-cong (λ F → Σ-cong (λ _ → lemma [ 𝓧' ] [ 𝓐' ] F))
 
-module category-identity
+module category
         (𝓤 𝓥 : Universe)
         (ua : Univalence)
        where
 
- open type-valued-preorder-with-axioms-identity 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
+ open type-valued-preorder-with-axioms 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
  fe : Fun-Ext
  fe {𝓤} {𝓥} = FunExt-from-Univalence ua 𝓤 𝓥
@@ -1787,5 +1794,279 @@ module category-identity
   where
    γ : (𝓧 𝓐 : Cat) → idtoeqCat 𝓧 𝓐 ∼ ⌜ characterization-of-category-≡ 𝓧 𝓐 ⌝
    γ 𝓧 𝓧 (refl {𝓧}) = refl─ (idtoeqCat 𝓧 𝓧 (refl─ 𝓧))
+
+\end{code}
+
+We now consider ∞-magmas with the binary operation generalized to an
+operation of arbitrary arity. This is used to define σ-frames.
+
+\begin{code}
+
+module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
+
+ open sip
+
+ ∞-bigmagma-structure : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ ∞-bigmagma-structure A = (I → A) → A
+
+ ∞-Bigmagma : 𝓤 ⁺ ⊔ 𝓥 ̇
+ ∞-Bigmagma = Σ A ꞉ 𝓤 ̇ , ∞-bigmagma-structure A
+
+ sns-data : SNS ∞-bigmagma-structure (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓐 𝓐' : ∞-Bigmagma) → ⟨ 𝓐 ⟩ ≃ ⟨ 𝓐' ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (A , sup) (A' , sup') (f , _) = (λ 𝕒 → f (sup 𝕒)) ≡ (λ 𝕒 → sup' (n ↦ f (𝕒 n)))
+
+   ρ : (𝓐 : ∞-Bigmagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
+   ρ (A , sup) = refl─ sup
+
+   h : {A : 𝓤 ̇ } {sup sup' : ∞-bigmagma-structure A}
+     → canonical-map ι ρ sup sup' ∼ -id (sup ≡ sup')
+
+   h (refl {sup}) = refl─ (refl─ sup)
+
+   θ : {A : 𝓤 ̇ } (sup sup' : ∞-bigmagma-structure A)
+     → is-equiv (canonical-map ι ρ sup sup')
+
+   θ sup sup' = equiv-closed-under-∼ _ _ (id-is-equiv (sup ≡ sup')) h
+
+ _≅[∞-Bigmagma]_ : ∞-Bigmagma → ∞-Bigmagma → 𝓤 ⊔ 𝓥 ̇
+ (A , sup) ≅[∞-Bigmagma] (A' , sup') =
+
+           Σ f ꞉ (A → A'), is-equiv f
+                         × ((λ 𝕒 → f (sup 𝕒)) ≡ (λ 𝕒 → sup' (n ↦ f (𝕒 n))))
+
+ characterization-of-∞-Bigmagma-≡ : is-univalent 𝓤
+                                  → (A B : ∞-Bigmagma)
+                                  → (A ≡ B) ≃ (A ≅[∞-Bigmagma] B)
+ characterization-of-∞-Bigmagma-≡ ua = characterization-of-≡ ua sns-data
+
+\end{code}
+
+We now consider σ-frames. A σ-frame is a poset with countable joins
+and finite meets such that binary meets distribute over countable
+joins.
+
+We denote the empty meet (a top element) by ⊤, the binary meet by ∧,
+and the countable join by ⋁. These are unary, binary and ℕ-ary
+operations.
+
+\begin{code}
+
+module σ-frame where
+
+ σ-frame-structure : 𝓤 ̇ → 𝓤 ̇
+ σ-frame-structure X = X × (X → X → X) × ((ℕ → X) → X)
+
+ σ-frame-axioms : (X : 𝓤 ̇ ) → σ-frame-structure X → 𝓤 ̇
+ σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII
+  where
+   I   = is-set X
+   II  = (x : X) → x ∧ x ≡ x
+   III = (x y : X) → x ∧ y ≡ y ∧ x
+   IV  = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
+   V   = (x : X) → x ∧ ⊤ ≡ x
+   VI  = (x : X) (y : ℕ → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
+   _≤_ : X → X → 𝓤 ̇
+   x ≤ y = x ∧ y ≡ x
+   VII = (x : ℕ → X)
+       → ((n : ℕ) → x n ≤ ⋁ x)
+       × ((u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u)
+ \end{code}
+
+ Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
+ says that ⋁ gives least upper bounds w.r.t. the induced partial order,
+ and axiom VI says that binary meets distribute over countable joins.
+
+ \begin{code}
+
+ σ-frame-axioms-is-prop : funext 𝓤 𝓤 → funext 𝓤₀ 𝓤
+                        → (X : 𝓤 ̇ ) (s : σ-frame-structure X)
+                        → is-prop (σ-frame-axioms X s)
+ σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⋁) = prop-criterion δ
+  where
+   δ : σ-frame-axioms X (⊤ , _∧_ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⋁))
+   δ (i , ii-vii) =
+     ×-is-prop (being-set-is-prop fe)
+    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ x} {x}))
+    (×-is-prop (Π-is-prop fe (λ x →
+                Π-is-prop fe (λ y →            i {x ∧ y} {y ∧ x})))
+    (×-is-prop (Π-is-prop fe (λ x →
+                Π-is-prop fe (λ y →
+                Π-is-prop fe (λ z →            i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
+    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ ⊤} {x}))
+    (×-is-prop (Π-is-prop fe (λ x →
+                Π-is-prop fe (λ y →            i {x ∧ ⋁ y} {⋁ (n ↦ x ∧ y n)})))
+               (Π-is-prop fe λ 𝕪 →
+               ×-is-prop (Π-is-prop fe₀ (λ n → i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
+                         (Π-is-prop fe (λ u →
+                          Π-is-prop fe (λ _ →  i {⋁ 𝕪 ∧ u} {⋁ 𝕪})))))))))
+
+ σ-Frame : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ σ-Frame 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ σ-frame-structure A , σ-frame-axioms A s
+
+ _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
+ (A , (⊤ , _∧_ , ⋁) , _) ≅[σ-Frame] (A' , (⊤' , _∧'_ , ⋁') , _) =
+
+                         Σ f ꞉ (A → A')
+                             , is-equiv f
+                             × (f ⊤ ≡ ⊤')
+                             × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
+                             × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+ \end{code}
+
+ TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies
+ funext 𝓤₀ 𝓤 (see MGS lecture notes for a proof). Hence the assumption
+ funext 𝓤₀ 𝓤 is superfluous in the following.
+
+ \begin{code}
+
+ characterization-of-σ-Frame-≡ : is-univalent 𝓤
+                               → funext 𝓤₀ 𝓤
+                               → (A B : σ-Frame 𝓤)
+                               → (A ≡ B) ≃ (A ≅[σ-Frame] B)
+ characterization-of-σ-Frame-≡ ua fe₀ =
+   sip.characterization-of-≡ ua
+    (sip-with-axioms.add-axioms
+       σ-frame-axioms
+       (σ-frame-axioms-is-prop (univalence-gives-funext ua) fe₀)
+      (sip-join.join
+        pointed-type.sns-data
+      (sip-join.join
+        ∞-magma.sns-data
+       (∞-bigmagma.sns-data ℕ))))
+
+\end{code}
+
+We now consider ∞-bigmagmas with all operations of all arities.
+
+\begin{code}
+
+module ∞-hugemagma {𝓤 𝓥 : Universe} where
+
+ open sip
+
+ ∞-hugemagma-structure : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+ ∞-hugemagma-structure A = {N : 𝓥 ̇ } → (N → A) → A
+
+ ∞-Hugemagma : (𝓤 ⊔ 𝓥)⁺ ̇
+ ∞-Hugemagma = Σ A ꞉ 𝓤 ̇ , ∞-hugemagma-structure A
+
+ sns-data : SNS ∞-hugemagma-structure (𝓤 ⊔ (𝓥 ⁺))
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (𝓐 𝓐' : ∞-Hugemagma) → ⟨ 𝓐 ⟩ ≃ ⟨ 𝓐' ⟩ → 𝓤 ⊔ (𝓥 ⁺) ̇
+   ι (A , sup) (A' , sup') (f , _) = (λ {N} (𝕒 : N → A) → f (sup 𝕒)) ≡ (λ {N} 𝕒 → sup' (i ↦ f (𝕒 i)))
+
+   ρ : (𝓐 : ∞-Hugemagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
+   ρ (A , sup) = refl
+
+   h : {A : 𝓤 ̇ } {sup sup' : ∞-hugemagma-structure A}
+     → canonical-map ι ρ sup sup' ∼ id
+
+   h refl = refl
+
+   θ : {A : 𝓤 ̇ } (sup sup' : ∞-hugemagma-structure A)
+     → is-equiv (canonical-map ι ρ sup sup')
+
+   θ sup sup' = equiv-closed-under-∼ _ _ (id-is-equiv _) h
+
+ _≅[∞-Hugemagma]_ : ∞-Hugemagma → ∞-Hugemagma → 𝓤 ⊔ (𝓥 ⁺) ̇
+ (A , sup) ≅[∞-Hugemagma] (A' , sup') =
+
+           Σ f ꞉ (A → A'), is-equiv f
+                         × ((λ {N} (𝕒 : N → A) → f (sup 𝕒)) ≡ (λ {N} (𝕒 : N → A) → sup' (i ↦ f (𝕒 i))))
+
+ characterization-of-∞-Hugemagma-≡ : is-univalent 𝓤
+                                   → (A B : ∞-Hugemagma)
+                                   → (A ≡ B) ≃ (A ≅[∞-Hugemagma] B)
+ characterization-of-∞-Hugemagma-≡ ua = characterization-of-≡ ua sns-data
+
+\end{code}
+
+We now consider frames.
+
+\begin{code}
+
+module frame (𝓤 𝓥 : Universe) where
+
+ frame-structure : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+ frame-structure X = X × (X → X → X) × ({N : 𝓥 ̇ } → ((N → X) → X))
+
+ frame-axioms : (X : 𝓤 ̇ ) → frame-structure X → 𝓤 ⊔ (𝓥 ⁺) ̇
+ frame-axioms X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII
+  where
+   I   = is-set X
+   II  = (x : X) → x ∧ x ≡ x
+   III = (x y : X) → x ∧ y ≡ y ∧ x
+   IV  = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
+   V   = (x : X) → x ∧ ⊤ ≡ x
+   VI  = (x : X) {N : 𝓥 ̇ } (y : N → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
+   _≤_ : X → X → 𝓤 ̇
+   x ≤ y = x ∧ y ≡ x
+   VII = {N : 𝓥 ̇ } (x : N → X)
+       → ((n : N) → x n ≤ ⋁ x)
+       × ((u : X) → ((n : N) → x n ≤ u) → ⋁ x ≤ u)
+ \end{code}
+
+ Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
+ says that ⋁ gives least upper bounds w.r.t. the induced partial order,
+ and axiom VI says that binary meets distribute over countable joins.
+
+ \begin{code}
+
+ frame-axioms-is-prop : funext 𝓤 𝓤
+                      → funext 𝓤 (𝓤 ⊔ (𝓥 ⁺)) → funext (𝓥 ⁺) (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) 𝓤
+                      → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → funext 𝓥 𝓤 → funext 𝓤 (𝓤 ⊔ 𝓥)
+                      → (X : 𝓤 ̇ ) (s : frame-structure X)
+                      → is-prop (frame-axioms X s)
+ frame-axioms-is-prop fe fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ X (⊤ , _∧_ , ⋁) = prop-criterion δ
+  where
+   δ : frame-axioms X (⊤ , _∧_ , ⋁) → is-prop (frame-axioms X (⊤ , _∧_ , ⋁))
+   δ (i , ii-vii) =
+     ×-is-prop (being-set-is-prop fe)
+    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ x} {x}))
+    (×-is-prop (Π-is-prop fe (λ x →
+                Π-is-prop fe (λ y →            i {x ∧ y} {y ∧ x})))
+    (×-is-prop (Π-is-prop fe (λ x →
+                Π-is-prop fe (λ y →
+                Π-is-prop fe (λ z →            i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
+    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ ⊤} {x}))
+    (×-is-prop (Π-is-prop fe₁ (λ x →
+                Π-is-prop' fe₂ (λ N →
+                Π-is-prop fe₃ (λ y →           i {x ∧ ⋁ y} {⋁ (λ n → x ∧ y n)}))))
+               (Π-is-prop' fe₂ (λ n
+              → Π-is-prop  fe₄  (λ 𝕪 →
+              ×-is-prop (Π-is-prop fe₅ (λ n →  i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
+                        (Π-is-prop fe₆ (λ u →
+                         Π-is-prop fe₃ (λ _ →  i {⋁ 𝕪 ∧ u} {⋁ 𝕪})))))))))))
+ Frame : (𝓤 ⊔ 𝓥)⁺ ̇
+ Frame = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ frame-structure A , frame-axioms A s
+
+ _≅[Frame]_ : Frame → Frame → 𝓤 ⊔ (𝓥 ⁺) ̇
+ (A , (⊤ , _∧_ , ⋁) , _) ≅[Frame] (A' , (⊤' , _∧'_ , ⋁') , _) =
+
+                         Σ f ꞉ (A → A')
+                             , is-equiv f
+                             × (f ⊤ ≡ ⊤')
+                             × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
+                             × ((λ {N} (𝕒 : N → A) → f (⋁ 𝕒)) ≡ (λ {N} 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+
+ characterization-of-Frame-≡ : is-univalent 𝓤
+                             → funext 𝓤 (𝓤 ⊔ (𝓥 ⁺)) → funext (𝓥 ⁺) (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) 𝓤
+                             → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → funext 𝓥 𝓤 → funext 𝓤 (𝓤 ⊔ 𝓥)
+                             → (A B : Frame)
+                             → (A ≡ B) ≃ (A ≅[Frame] B)
+ characterization-of-Frame-≡ ua fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ =
+   sip.characterization-of-≡ ua
+    (sip-with-axioms.add-axioms
+       frame-axioms
+       (frame-axioms-is-prop (univalence-gives-funext ua) fe₁ fe₂ fe₃ fe₄ fe₅ fe₆)
+      (sip-join.join
+        pointed-type.sns-data
+      (sip-join.join
+        ∞-magma.sns-data
+        ∞-hugemagma.sns-data)))
 
 \end{code}

@@ -319,8 +319,8 @@ UAₒ {𝓤} ua α = nats-with-sections-are-equivs α
     → idtoeqₒ α β (eqtoidₒ ua α β e) ≡ e
   η β e = ≃ₒ-prop-valued α β (idtoeqₒ α β (eqtoidₒ ua α β e)) e
 
-type-of-ordinals-is-a-set : is-univalent 𝓤 → is-set (Ordinal 𝓤)
-type-of-ordinals-is-a-set {𝓤} ua {α} {β} = equiv-to-prop
+type-of-ordinals-is-set : is-univalent 𝓤 → is-set (Ordinal 𝓤)
+type-of-ordinals-is-set {𝓤} ua {α} {β} = equiv-to-prop
                                              (idtoeqₒ α β , UAₒ ua α β)
                                              (≃ₒ-prop-valued α β)
 \end{code}
@@ -428,7 +428,7 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
    r : b ≡ b'
    r = ↓-lc β b b' (p ⁻¹ ∙ p')
    s : transport (λ - → α ≡ (β ↓ -)) r p ≡ p'
-   s = type-of-ordinals-is-a-set ua _ _
+   s = type-of-ordinals-is-set ua _ _
 
 \end{code}
 

@@ -1,17 +1,17 @@
 Todd Waugh Ambridge, 22 May 2020
 
 This gives a structured identity principle for
- * Midpoint algebras
- * Convex bodies
- * Interval objects
-with each building on the last
+ * midpoint algebras,
+ * convex bodies,
+ * interval objects,
+with each building on the last.
 
-The defintions for these are found in Escardo-Simpson-LICS2001
+The defintions for these are found in Escardo-Simpson-LICS2001.
 
 For each structure we define a standard notion of structure (SNS),
-which gives rise to an equivalence type for the structure
+which gives rise to an equivalence type for the structure.
 We then show that this equivalence characterizes the identity type
-for the structure
+for the structure.
 
 \begin{code}
 
@@ -37,7 +37,7 @@ open sip-with-axioms
 
 \end{code}
 
-(1) Midpoint Algebras
+(1) Midpoint Algebras.
 
 \begin{code}
 
@@ -67,11 +67,11 @@ midpoint-algebra-prop _⊕_ i = ×-is-prop
 
 midpoint-algebra-sns : SNS midpoint-algebra-structure 𝓤
 midpoint-algebra-sns = add-axioms midpoint-algebra-axioms s
-                                  ∞-magma-identity.sns-data
+                                  ∞-magma.sns-data
   where
    s : (X : 𝓤 ̇) (_⊕_ : X → X → X) → is-prop (midpoint-algebra-axioms X _⊕_)
    s X _⊕_ (i , p) = midpoint-algebra-prop _⊕_ i (i , p)
-   
+
 _≊⟨midpoint-algebra⟩_ : midpoint-algebra → midpoint-algebra → 𝓤 ̇
 (X , _⊕_ , _) ≊⟨midpoint-algebra⟩ (Y , _⊗_ , _)
  = Σ f ꞉ (X → Y) , is-equiv f
@@ -85,7 +85,7 @@ characterization-of-midpoint-algebra-≡ ua = characterization-of-≡ ua
 
 \end{code}
 
-(2) Convex bodies
+(2) Convex bodies.
 
 \begin{code}
 
@@ -126,7 +126,7 @@ convex-body-prop X _⊕_ ((i , p) , q) = γ ((i , p) , q)
 convex-body-sns : SNS convex-body-structure 𝓤
 convex-body-sns = add-axioms convex-body-axioms
                              convex-body-prop
-                             ∞-magma-identity.sns-data 
+                             ∞-magma.sns-data
 
 _≊⟨convex-body⟩_ : convex-body → convex-body → 𝓤 ̇
 (X , _⊕_ , mx , _) ≊⟨convex-body⟩ (Y , _⊗_ , my , _)
@@ -140,7 +140,7 @@ characterization-of-convex-body-≡ ua = characterization-of-≡ ua
 
 \end{code}
 
-(3) Interval Objects
+(3) Interval Objects.
 
 \begin{code}
 
@@ -148,7 +148,7 @@ interval-object-axioms : (𝓥 : Universe)
                        → (X : 𝓤 ̇ ) → (X → X → X) × X × X → 𝓤 ⊔ 𝓥 ⁺ ̇
 interval-object-axioms 𝓥 X (_⊕_ , u , v)
  = Σ 𝓘 ꞉ convex-body-axioms X _⊕_ , is-interval-object (X , _⊕_ , 𝓘) 𝓥 u v
-                                           
+
 interval-object-structure : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ̇
 interval-object-structure 𝓥 X = Σ (interval-object-axioms 𝓥 X)
 
@@ -171,9 +171,9 @@ open sip-join
 
 interval-object-sns : (𝓥 : Universe) → SNS (interval-object-structure 𝓥) 𝓤
 interval-object-sns 𝓥 = add-axioms (interval-object-axioms 𝓥) s
-                          (join ∞-magma-identity.sns-data
-                            (join pointed-type-identity.sns-data
-                                  pointed-type-identity.sns-data))
+                          (join ∞-magma.sns-data
+                            (join pointed-type.sns-data
+                                  pointed-type.sns-data))
  where
   s : (X : 𝓤 ̇) (s : (X → X → X) × X × X)
     → is-prop (interval-object-axioms 𝓥 X s)

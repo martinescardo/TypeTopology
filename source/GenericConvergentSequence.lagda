@@ -339,12 +339,12 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
-             → {Y : 𝓤 ̇ }
-             → is-separated Y
-             → {f g : ℕ∞ → Y}
-             → ((n : ℕ) → f(under n) ≡ g(under n))
-             → f ∞ ≡ g ∞
-             → (u : ℕ∞) → f u ≡ g u
+           → {Y : 𝓤 ̇ }
+           → is-separated Y
+           → {f g : ℕ∞ → Y}
+           → ((n : ℕ) → f(under n) ≡ g(under n))
+           → f ∞ ≡ g ∞
+           → (u : ℕ∞) → f u ≡ g u
 ℕ∞-density fe s = ℕ∞-ddensity fe (λ {_} → s)
 
 ℕ∞-𝟚-density : funext₀
@@ -810,7 +810,7 @@ Characterization of ⊏.
 
 \end{code}
 
-precedences:
+Precedences:
 
 \begin{code}
 
@@ -818,3 +818,21 @@ infix  30 _⊏_
 infix  30 _≺_
 
 \end{code}
+
+TODO:
+
+ℕ∞-charac : ℕ∞ ≃ (Σ α ꞉ (ℕ → 𝟚), is-prop (Σ n ꞉ ℕ , α n ≡ ₀))
+ℕ∞-charac = qinveq f (g , η , ε)
+ where
+  l : (α : ℕ → 𝟚) → decreasing α → (n k : ℕ) → α n ≡ ₀ → α k ≡ ₀ → n ≡ k
+  l α d zero zero p q = refl
+  l α d zero (succ k) p q = {!!}
+  l α d (succ n) k p q = {!!}
+  f : ℕ∞ → Σ α ꞉ (ℕ → 𝟚), is-prop (Σ n ꞉ ℕ , α n ≡ ₀)
+  f x = {!!}
+  g : (Σ α ꞉ (ℕ → 𝟚), is-prop (Σ n ꞉ ℕ , α n ≡ ₀)) → ℕ∞
+  g = {!!}
+  η : g ∘ f ∼ id
+  η = {!!}
+  ε : f ∘ g ∼ id
+  ε = {!!}

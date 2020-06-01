@@ -179,6 +179,7 @@ import PlusOneLC
 import Plus-Properties
 import PropInfTychonoff
 import PropTychonoff
+import QuasiDecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
@@ -237,6 +238,7 @@ import UF-Size
 import UF-StructureIdentityPrinciple  -- Old, but still used in some modules.
 import UF-SIP                         -- New, better, version.
 import UF-SIP-Examples
+import UF-SIP-IntervalObject
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
 import UF-UA-FunExt

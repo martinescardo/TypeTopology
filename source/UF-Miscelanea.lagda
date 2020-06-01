@@ -129,10 +129,10 @@ embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings
         p' = ap pr₁ r
         q' : transport Y p' y ≡ y'
         q' = from-Σ-≡' r
-        s : p ≡ p'
-        s = discrete-types-are-sets d p p'
+        s : p' ≡ p
+        s = discrete-types-are-sets d p' p
         q : transport Y p y ≡ y'
-        q = ap (λ - → transport Y - y) s ∙ q'
+        q = transport (λ - → transport Y - y ≡ y') s q'
   g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
 𝟚-is-set : is-set 𝟚
@@ -187,20 +187,20 @@ Find a better home for this:
 𝟚-ℕ-embedding ₀ = 0
 𝟚-ℕ-embedding ₁ = 1
 
-𝟚-ℕ-embeddings-are-lc : left-cancellable 𝟚-ℕ-embedding
-𝟚-ℕ-embeddings-are-lc {₀} {₀} refl = refl
-𝟚-ℕ-embeddings-are-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
-𝟚-ℕ-embeddings-are-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
-𝟚-ℕ-embeddings-are-lc {₁} {₁} refl = refl
+𝟚-ℕ-embedding-is-lc : left-cancellable 𝟚-ℕ-embedding
+𝟚-ℕ-embedding-is-lc {₀} {₀} refl = refl
+𝟚-ℕ-embedding-is-lc {₀} {₁} r    = 𝟘-elim (positive-not-zero 0 (r ⁻¹))
+𝟚-ℕ-embedding-is-lc {₁} {₀} r    = 𝟘-elim (positive-not-zero 0 r)
+𝟚-ℕ-embedding-is-lc {₁} {₁} refl = refl
 
 C-B-embedding : (ℕ → 𝟚) → (ℕ → ℕ)
 C-B-embedding α = 𝟚-ℕ-embedding ∘ α
 
-C-B-embeddings-are-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
-C-B-embeddings-are-lc fe {α} {β} p = dfunext fe h
+C-B-embedding-is-lc : funext 𝓤₀ 𝓤₀ → left-cancellable C-B-embedding
+C-B-embedding-is-lc fe {α} {β} p = dfunext fe h
  where
   h : (n : ℕ) → α n ≡ β n
-  h n = 𝟚-ℕ-embeddings-are-lc (ap (λ - → - n) p)
+  h n = 𝟚-ℕ-embedding-is-lc (ap (λ - → - n) p)
 
 \end{code}
 

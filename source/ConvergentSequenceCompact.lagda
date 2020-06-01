@@ -21,7 +21,6 @@ open import UF-FunExt
 
 module ConvergentSequenceCompact (fe : funext 𝓤₀ 𝓤₀) where
 
-
 open import Two-Properties
 open import UF-PropTrunc
 open import GenericConvergentSequence
@@ -41,40 +40,62 @@ This is the main theorem proved in this module:
   α 0       = p(under 0)
   α(succ n) = min𝟚 (α n) (p(under(succ n)))
 
+  d' : (n : ℕ) → min𝟚 (α n) (p(under(succ n))) ≡ ₁ → α n ≡ ₁
+  d' n = Lemma[minab≤₂a] {α n}
+
+  d : decreasing α
+  d = d'
+
   a : ℕ∞
-  a = (α , λ i → Lemma[minab≤₂a])
+  a = (α , d)
 
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
-  Dagger₀ 0 r =  ap (λ - → incl - 0) r
-  Dagger₀ (succ n) r = w ⁻¹ ∙ t ∙ under-diagonal₀ n
-   where
-    s : α n ≡ incl (under (succ n)) n
-    s = ap (λ - → incl - n) r
+  Dagger₀ 0 r =  p (under 0)      ≡⟨ refl                  ⟩
+                 α 0              ≡⟨ ap (λ - → incl - 0) r ⟩
+                 incl (under 0) 0 ≡⟨ refl                  ⟩
+                 ₀                ∎
 
-    t : α(succ n) ≡ incl (under (succ n)) (succ n)
-    t = ap (λ - → incl - (succ n)) r
+  Dagger₀ (succ n) r = p (under (succ n))             ≡⟨ w ⁻¹                         ⟩
+                       α (succ n)                     ≡⟨ ap (λ - → incl - (succ n)) r ⟩
+                       incl (under (succ n)) (succ n) ≡⟨ under-diagonal₀ n            ⟩
+                       ₀                              ∎
+   where
+    t : α n ≡ ₁
+    t = α n                     ≡⟨ ap (λ - → incl - n) r  ⟩
+        incl (under (succ n)) n ≡⟨ under-diagonal₁ n      ⟩
+        ₁                       ∎
 
     w : α(succ n) ≡ p(under(succ n))
-    w = ap (λ - → min𝟚 - (p(under(succ n)))) (s  ∙ under-diagonal₁ n)
+    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p(under(succ n)))) t ⟩
+        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl                                   ⟩
+        p(under(succ n))            ∎
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
-  Dagger₁ r 0 = ap (λ - → incl - 0) r
-  Dagger₁ r (succ n) = w ⁻¹ ∙ t
+  Dagger₁ r 0 = p (under 0) ≡⟨ refl                  ⟩
+                α 0         ≡⟨ ap (λ - → incl - 0) r ⟩
+                incl ∞ 0    ≡⟨ refl                  ⟩
+                ₁           ∎
+
+  Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⁻¹                         ⟩
+                       α (succ n)         ≡⟨ ap (λ - → incl - (succ n)) r ⟩
+                       incl ∞ (succ n)    ≡⟨ refl                         ⟩
+                       ₁                  ∎
    where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
 
-    t : α(succ n) ≡ ₁
-    t = ap (λ - → incl - (succ n)) r
-
     w : α(succ n) ≡ p(under(succ n))
-    w = ap (λ - → min𝟚 - (p(under(succ n)))) s
+    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p(under(succ n)))) s ⟩
+        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl                                   ⟩
+        p (under (succ n))          ∎
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
     Lemma : a ≡ under n → p a ≡ ₀
-    Lemma t = ap p t ∙ Dagger₀ n t
+    Lemma t = p a         ≡⟨ ap p t      ⟩
+              p (under n) ≡⟨ Dagger₀ n t ⟩
+              ₀           ∎
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
   Claim₁ r = not-finite-is-∞ fe (Claim₀ r)
@@ -83,7 +104,9 @@ This is the main theorem proved in this module:
   Claim₂ r = Dagger₁(Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
-  Claim₃ r = (ap p (Claim₁ r))⁻¹ ∙ r
+  Claim₃ r = p ∞ ≡⟨ (ap p (Claim₁ r))⁻¹ ⟩
+             p a ≡⟨ r                   ⟩
+             ₁   ∎
 
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
   Lemma r = ℕ∞-𝟚-density fe (Claim₂ r) (Claim₃ r)

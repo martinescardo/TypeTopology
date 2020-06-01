@@ -344,7 +344,7 @@ module AC-gives-EM
  open  AC-renders-all-sets-discrete 𝓤₁ pt fe
 
  lemma : AC → (P : Ω 𝓤₀) → decidable(⊤ ≡ P)
- lemma ac P = ac-discrete-sets ac (Ω 𝓤₀) (Ω-is-a-set (fe 𝓤₀ 𝓤₀) pe) a
+ lemma ac P = ac-discrete-sets ac (Ω 𝓤₀) (Ω-is-set (fe 𝓤₀ 𝓤₀) pe) a
    where
     a : 𝟚 → Ω 𝓤₀
     a ₀ = ⊤
