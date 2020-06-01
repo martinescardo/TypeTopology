@@ -1846,33 +1846,39 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
 
 We now consider σ-frames. A σ-frame is a poset with countable joins
 and finite meets such that binary meets distribute over countable
-joins.
+joins. Countable joins are exhausted by finitely indexed joins and
+ℕ-indexed joins. But, apart from the empty join, all finite joins can
+be expressed as ℕ-indexed joins (of eventually constant sequences) and
+hence it is enough to consider the empty join (a bottom element) and
+ℕ-indexed joins, which is the approach we take here.
 
 We denote the empty meet (a top element) by ⊤, the binary meet by ∧,
-and the countable join by ⋁. These are unary, binary and ℕ-ary
-operations.
+the empty join (a bottom element) by ⊥, and the ℕ-indexed join by
+⋁. These are unary, binary and ℕ-ary operations.
 
 \begin{code}
 
 module σ-frame where
 
  σ-frame-structure : 𝓤 ̇ → 𝓤 ̇
- σ-frame-structure X = X × (X → X → X) × ((ℕ → X) → X)
+ σ-frame-structure X = X × (X → X → X) × X × ((ℕ → X) → X)
 
  σ-frame-axioms : (X : 𝓤 ̇ ) → σ-frame-structure X → 𝓤 ̇
- σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII
+ σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⊥ , ⋁) = I × II × III × IV × V × VI × VII × VIII
   where
-   I   = is-set X
-   II  = (x : X) → x ∧ x ≡ x
-   III = (x y : X) → x ∧ y ≡ y ∧ x
-   IV  = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
-   V   = (x : X) → x ∧ ⊤ ≡ x
-   VI  = (x : X) (y : ℕ → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
    _≤_ : X → X → 𝓤 ̇
    x ≤ y = x ∧ y ≡ x
-   VII = (x : ℕ → X)
-       → ((n : ℕ) → x n ≤ ⋁ x)
-       × ((u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u)
+
+   I    = is-set X
+   II   = (x : X) → x ∧ x ≡ x
+   III  = (x y : X) → x ∧ y ≡ y ∧ x
+   IV   = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
+   V   = (x : X) → ⊥ ≤ x
+   VI  = (x : X) → x ≤ ⊤
+   VII  = (x : X) (y : ℕ → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
+   VIII = (x : ℕ → X)
+        → ((n : ℕ) → x n ≤ ⋁ x)
+        × ((u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u)
  \end{code}
 
  Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
@@ -1884,9 +1890,9 @@ module σ-frame where
  σ-frame-axioms-is-prop : funext 𝓤 𝓤 → funext 𝓤₀ 𝓤
                         → (X : 𝓤 ̇ ) (s : σ-frame-structure X)
                         → is-prop (σ-frame-axioms X s)
- σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⋁) = prop-criterion δ
+ σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⊥ , ⋁) = prop-criterion δ
   where
-   δ : σ-frame-axioms X (⊤ , _∧_ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⋁))
+   δ : σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁))
    δ (i , ii-vii) =
      ×-is-prop (being-set-is-prop fe)
     (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ x} {x}))
@@ -1895,24 +1901,26 @@ module σ-frame where
     (×-is-prop (Π-is-prop fe (λ x →
                 Π-is-prop fe (λ y →
                 Π-is-prop fe (λ z →            i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
+    (×-is-prop (Π-is-prop fe (λ x →            i {⊥ ∧ x} {⊥}))
     (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ ⊤} {x}))
     (×-is-prop (Π-is-prop fe (λ x →
                 Π-is-prop fe (λ y →            i {x ∧ ⋁ y} {⋁ (n ↦ x ∧ y n)})))
                (Π-is-prop fe λ 𝕪 →
                ×-is-prop (Π-is-prop fe₀ (λ n → i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
                          (Π-is-prop fe (λ u →
-                          Π-is-prop fe (λ _ →  i {⋁ 𝕪 ∧ u} {⋁ 𝕪})))))))))
+                          Π-is-prop fe (λ _ →  i {⋁ 𝕪 ∧ u} {⋁ 𝕪}))))))))))
 
  σ-Frame : (𝓤 : Universe) → 𝓤 ⁺ ̇
  σ-Frame 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ σ-frame-structure A , σ-frame-axioms A s
 
  _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
- (A , (⊤ , _∧_ , ⋁) , _) ≅[σ-Frame] (A' , (⊤' , _∧'_ , ⋁') , _) =
+ (A , (⊤ , _∧_ , ⊥ , ⋁) , _) ≅[σ-Frame] (A' , (⊤' , _∧'_ , ⊥' , ⋁') , _) =
 
                          Σ f ꞉ (A → A')
                              , is-equiv f
                              × (f ⊤ ≡ ⊤')
                              × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
+                             × (f ⊥ ≡ ⊥')
                              × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
  \end{code}
 
@@ -1935,7 +1943,9 @@ module σ-frame where
         pointed-type.sns-data
       (sip-join.join
         ∞-magma.sns-data
-       (∞-bigmagma.sns-data ℕ))))
+        (sip-join.join
+         pointed-type.sns-data
+         (∞-bigmagma.sns-data ℕ)))))
 
 \end{code}
 
