@@ -1873,8 +1873,8 @@ module σ-frame where
    II   = (x : X) → x ∧ x ≡ x
    III  = (x y : X) → x ∧ y ≡ y ∧ x
    IV   = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
-   V   = (x : X) → ⊥ ≤ x
-   VI  = (x : X) → x ≤ ⊤
+   V    = (x : X) → ⊥ ≤ x
+   VI   = (x : X) → x ≤ ⊤
    VII  = (x : X) (y : ℕ → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
    VIII = (x : ℕ → X)
         → ((n : ℕ) → x n ≤ ⋁ x)
@@ -1893,7 +1893,7 @@ module σ-frame where
  σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⊥ , ⋁) = prop-criterion δ
   where
    δ : σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁))
-   δ (i , ii-vii) =
+   δ (i , ii-viii) =
      ×-is-prop (being-set-is-prop fe)
     (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ x} {x}))
     (×-is-prop (Π-is-prop fe (λ x →
@@ -1913,15 +1913,21 @@ module σ-frame where
  σ-Frame : (𝓤 : Universe) → 𝓤 ⁺ ̇
  σ-Frame 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ σ-frame-structure A , σ-frame-axioms A s
 
- _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
- (A , (⊤ , _∧_ , ⊥ , ⋁) , _) ≅[σ-Frame] (A' , (⊤' , _∧'_ , ⊥' , ⋁') , _) =
+ ⟨_⟩ : σ-Frame 𝓤 → 𝓤 ̇
+ ⟨ A , _ ⟩ = A
 
-                         Σ f ꞉ (A → A')
-                             , is-equiv f
-                             × (f ⊤ ≡ ⊤')
-                             × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
-                             × (f ⊥ ≡ ⊥')
-                             × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+ is-σ-frame-homomorphism : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                         → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
+ is-σ-frame-homomorphism  (A , (⊤ , _∧_ , ⊥ , ⋁) , _) (A' , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
+     (f ⊤ ≡ ⊤')
+   × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
+   × (f ⊥ ≡ ⊥')
+   × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+
+
+ _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
+ 𝓐 ≅[σ-Frame] 𝓑 = Σ f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-equiv f × is-σ-frame-homomorphism 𝓐 𝓑 f
+
  \end{code}
 
  TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies

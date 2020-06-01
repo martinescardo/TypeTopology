@@ -17,7 +17,7 @@ countable joins.
 open import SpartanMLTT
 open import DecidableAndDetachable
 open import Dominance
-open import UF-PropTrunc hiding (⊤)
+open import UF-PropTrunc hiding (⊥ ; ⊤)
 open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Univalence
@@ -115,7 +115,9 @@ We assume that it exists in the following:
  module _ (is-quasidecidable : 𝓤₀ ̇ → 𝓤₀ ̇ )
           (being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P))
           (𝟘-𝟙-ω-closure : 𝟘-𝟙-ω-closed is-quasidecidable)
-          (quasidecidable-induction : ∀ {𝓤} (A : 𝓤₀ ̇ → 𝓤 ̇ ) → 𝟘-𝟙-ω-closed A → (P : 𝓤₀ ̇ ) → is-quasidecidable P → A P)
+          (quasidecidable-induction : ∀ {𝓤} (A : 𝓤₀ ̇ → 𝓤 ̇ )
+                                    → 𝟘-𝟙-ω-closed A
+                                    → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → A P)
       where
 
   𝟘-is-quasidecidable : is-quasidecidable 𝟘
@@ -297,6 +299,9 @@ of a σ-frame:
    𝓠-is-set : is-set 𝓠
    𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω (embeddings-are-lc 𝓠→Ω (𝓠→Ω-is-embedding fe₀)) (Ω-is-set fe₀ pe₀)
 
+   ⊥ : 𝓠
+   ⊥ = 𝟘 , 𝟘-is-quasidecidable
+
    ⊤ : 𝓠
    ⊤ = 𝟙 , 𝟙-is-quasidecidable
 
@@ -350,6 +355,19 @@ of a σ-frame:
              (λ (p , (q , r)) → ((p , q) , r))
              (λ ((p , q) , r) → (p , (q , r)))
      γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
+     γ = to-subtype-≡ being-quasidecidable-is-prop a
+
+   ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ∧ 𝕡 ≡ ⊥
+   ⊥-is-minimum (P , i) = γ
+    where
+     i' : is-prop P
+     i' = quasidecidable-types-are-props P i
+     a : 𝟘 × P ≡ 𝟘
+     a = pe₀ (×-is-prop 𝟘-is-prop i')
+             𝟘-is-prop
+             pr₁
+             unique-from-𝟘
+     γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
      γ = to-subtype-≡ being-quasidecidable-is-prop a
 
    ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
@@ -435,17 +453,30 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
 
    open σ-frame
 
-   QuasiProp : σ-Frame 𝓤₁
-   QuasiProp = 𝓠 ,
-               (⊤ , _∧_ , ⋁) ,
-               (𝓠-is-set ,
-                ∧-is-idempotent ,
-                ∧-is-commutative ,
-                ∧-is-associative ,
-                ⊤-is-maximum ,
-                distributivity ,
-                ⋁-is-lub)
+   QD : σ-Frame 𝓤₁
+   QD = 𝓠 ,
+       (⊤ , _∧_ , ⊥ , ⋁) ,
+       (𝓠-is-set ,
+        ∧-is-idempotent ,
+        ∧-is-commutative ,
+        ∧-is-associative ,
+        ⊥-is-minimum ,
+        ⊤-is-maximum ,
+        distributivity ,
+        ⋁-is-lub)
+{-
+   QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
+     → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+   QD-is-initial-σ-Frame (A , (⊤' , _∧'_ , ⊥' , ⋁') , axioms) = (f , h) , c
+    where
+     𝓐 = (A , (⊤' , _∧'_ , ⊥' , ⋁') , axioms)
+     f : 𝓠 → A
+     f = {!!}
+     h : is-σ-frame-homomorphism QD 𝓐 f
+     h = {!!}
+     c : ((g , k) : Σ g ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 g) → ((f , h) ≡ (g , k))
+     c = {!!}
+-}
 \end{code}
 
-To be continued. We now need to show that the frame of quasidecidable
-propositions is homotopy initial.
+To be continued.
