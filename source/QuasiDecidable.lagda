@@ -447,6 +447,5 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
                 ⋁-is-lub)
 \end{code}
 
-To be continued. The first thing to do is to complete the above (easy)
-and then show that the frame of quasidecidable propositions is
-homotopy initial.
+To be continued. We now need to show that the frame of quasidecidable
+propositions is homotopy initial.
