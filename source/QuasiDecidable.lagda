@@ -424,7 +424,7 @@ NB. We can't conclude equality above because the lhs and rhs live in different u
    ⋁-is-lub 𝕡 = a , b
     where
      a : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
-     a n = ≤-characterization← (λ Pn → ∣ n , Pn ∣)
+     a n = ≤-characterization← (λ p → ∣ n , p ∣)
      b : (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
      b (U , i) φ = ≤-characterization← d
       where
