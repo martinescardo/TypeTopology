@@ -592,7 +592,7 @@ Next we show that QD is the initial σ-frame. We first show that any
         → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n)))
         → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))
      lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)                         ≡⟨ ap f (distributivity 𝕡 𝕢)                        ⟩
-              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))                ≡⟨ ap (λ - → - (λ n →  𝕡 ∧ 𝕢 n)) f⋁                 ⟩
+              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))                ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                    ⟩
               ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 ∧ 𝕢 n))           ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)                          ⟩
               ⋁⟨ 𝓐 ⟩ (n ↦ f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n))   ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
               (f 𝕡 ∧⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕢 n))) ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
@@ -639,18 +639,22 @@ upperbounds are unique when they exist, the type F P is a proposition.
    ⊥' = ⊥⟨ 𝓐 ⟩
    ⊤' = ⊤⟨ 𝓐 ⟩
    ⋁' = ⋁⟨ 𝓐 ⟩
+   _≤'_ : A → A → 𝓤 ̇
+   a ≤' b = a ≤⟨ 𝓐 ⟩ b
+   _∧'_ : A → A → A
+   a ∧' b = a ∧⟨ 𝓐 ⟩ b
 
    F : 𝓤₀ ̇ → 𝓤 ̇
-   F P = Σ a ꞉ A , (P → ⊤' ≤⟨ 𝓐 ⟩ a) × ((u : A) → (P → ⊤' ≤⟨ 𝓐 ⟩ u) → a ≤⟨ 𝓐 ⟩ u)
+   F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
    F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
    F-is-prop-valued P (a , α , β) (a' , α' , β') = to-subtype-≡ j r
     where
-     j : (a : A) → is-prop ((P → ⊤' ≤⟨ 𝓐 ⟩ a) × ((u : A) → (P → ⊤' ≤⟨ 𝓐 ⟩ u) → a ≤⟨ 𝓐 ⟩ u))
+     j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
      j a = ×-is-prop
-           (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤' ∧⟨ 𝓐 ⟩ a} {⊤'}))
+           (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤' ∧' a} {⊤'}))
            (Π-is-prop fe (λ u →
-            Π-is-prop fe (λ ψ → ⟨ 𝓐 ⟩-is-set {a ∧⟨ 𝓐 ⟩ u} {a})))
+            Π-is-prop fe (λ ψ → ⟨ 𝓐 ⟩-is-set {a ∧' u} {a})))
      r : a ≡ a'
      r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
 
@@ -665,41 +669,41 @@ upperbounds are unique when they exist, the type F P is a proposition.
     where
      a : ℕ → A
      a n = pr₁ (φ n)
-     α : (n : ℕ) → P n → ⊤' ≤⟨ 𝓐 ⟩ a n
+     α : (n : ℕ) → P n → ⊤' ≤' a n
      α n = pr₁ (pr₂ (φ n))
-     β : (n : ℕ) → (u : A) → (P n → ⊤' ≤⟨ 𝓐 ⟩ u) → a n ≤⟨ 𝓐 ⟩ u
+     β : (n : ℕ) → (u : A) → (P n → ⊤' ≤' u) → a n ≤' u
      β n = pr₂ (pr₂ (φ n))
      a∞ : A
      a∞ = ⋁' (n ↦ pr₁ (φ n))
-     α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤⟨ 𝓐 ⟩ a∞
+     α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
      α∞ e = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞' e
       where
-       α∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤⟨ 𝓐 ⟩ a∞
+       α∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
        α∞' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (a n) a∞ (α n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
 
-     β∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤⟨ 𝓐 ⟩ u) → a∞ ≤⟨ 𝓐 ⟩ u
+     β∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤' u) → a∞ ≤' u
      β∞ u ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u l
       where
-       l : (n : ℕ) → a n ≤⟨ 𝓐 ⟩ u
+       l : (n : ℕ) → a n ≤' u
        l n = β n u (λ p → ψ ∣ n , p ∣)
 
    δ : (P : 𝓤₀ ̇) → is-quasidecidable P
-     → Σ a ꞉ A , ((p : P) → ⊤' ≤⟨ 𝓐 ⟩ a) × ((u : A) → (P → ⊤' ≤⟨ 𝓐 ⟩ u) → a ≤⟨ 𝓐 ⟩ u)
+     → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
    δ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
 
    f : 𝓠 → A
    f (P , i) = pr₁ (δ P i)
 
-   f₁ : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤⟨ 𝓐 ⟩ f 𝕡
+   f₁ : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
    f₁ (P , i) = pr₁ (pr₂ (δ P i))
 
-   f₂ : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤⟨ 𝓐 ⟩ u) → f 𝕡 ≤⟨ 𝓐 ⟩ u)
+   f₂ : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
    f₂ (P , i) = pr₂ (pr₂ (δ P i))
 
    ⊤-preservation : f ⊤ ≡ ⊤'
    ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (f₁ ⊤ *)
 
-   f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤⟨ 𝓐 ⟩ f 𝕢
+   f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
    f-is-monotone 𝕡 𝕢 l = f₂ 𝕡 (f 𝕢) (λ p → f₁ 𝕢 (≤-characterization→ l p))
 
    ⊥-preservation : f ⊥ ≡ ⊥'
@@ -710,21 +714,21 @@ upperbounds are unique when they exist, the type F P is a proposition.
                          (f₂ (⋁ 𝕡) (⋁' (λ n → f (𝕡 n))) φ)
                          (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (λ n → f (𝕡 n)) (f (⋁ 𝕡)) s)
        where
-        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤⟨ 𝓐 ⟩ ⋁' (λ n → f (𝕡 n))
-        φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (λ n → f (𝕡 n)))
+        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
+        φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n)))
                            (f₁ (𝕡 n) p)
-                           (⟨ 𝓐 ⟩-⋁-is-ub (λ n → f (𝕡 n)) n)
-        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤⟨ 𝓐 ⟩ ⋁' (λ n → f (𝕡 n))
+                           (⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n)
+        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
         φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
         s' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
         s' = ⋁-is-ub 𝕡
-        s : (n : ℕ) → f (𝕡 n) ≤⟨ 𝓐 ⟩ f (⋁ 𝕡)
+        s : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
         s n = f-is-monotone (𝕡 n) (⋁ 𝕡) (s' n)
 
    ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
    ⋁-preservation = dfunext fe ⋁-preservation'
 
-   ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
+   ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
    ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom 𝓐 f ⊥-preservation ⊤-preservation ⋁-preservation
 
    f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
@@ -739,4 +743,5 @@ upperbounds are unique when they exist, the type F P is a proposition.
 
 TODO. Conversely, if the initial σ-frame exists, then we can define
 quasidecidable propositions and show that they form a frame isomorphic
-(and hence equal) to the initial σ-frame.
+(and hence equal) to the initial σ-frame. Moreover, the initial
+ω-sup-lattice should be automatically the initial σ-frame.
