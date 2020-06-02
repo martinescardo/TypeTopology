@@ -744,28 +744,33 @@ homomorphism:
 
    ⊤-preservation : f ⊤ ≡ ⊤'
    ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (αf ⊤ *)
+   ⊥-preservation : f ⊥ ≡ ⊥'
+   ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (βf ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
 
    f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
    f-is-monotone 𝕡 𝕢 l = βf 𝕡 (f 𝕢) (λ p → αf 𝕢 (≤-characterization→ l p))
 
-   ⊥-preservation : f ⊥ ≡ ⊥'
-   ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (βf ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
-
    ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
-   ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n)))
-                         (βf (⋁ 𝕡) (⋁' (λ n → f (𝕡 n))) φ)
-                         (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (λ n → f (𝕡 n)) (f (⋁ 𝕡)) s)
+   ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n))) v w
        where
-        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
-        φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n)))
-                           (αf (𝕡 n) p)
-                           (⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n)
+        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
+        φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n))) r s
+          where
+           r : ⊤' ≤' f (𝕡 n)
+           r = αf (𝕡 n) p
+           s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
+           s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
         φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
         φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
-        s' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
-        s' = ⋁-is-ub 𝕡
-        s : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
-        s n = f-is-monotone (𝕡 n) (⋁ 𝕡) (s' n)
+        v : f (⋁ 𝕡) ≤' ⋁' (n ↦ f (𝕡 n))
+        v = βf (⋁ 𝕡) (⋁' (n ↦ f (𝕡 n))) φ
+
+        t' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+        t' = ⋁-is-ub 𝕡
+        t : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
+        t n = f-is-monotone (𝕡 n) (⋁ 𝕡) (t' n)
+        w : ⋁' (n ↦ f (𝕡 n)) ≤' f (⋁ 𝕡)
+        w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) t
 
    ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
    ⋁-preservation = dfunext fe ⋁-preservation'
