@@ -665,7 +665,8 @@ We first introduce some abbreviations for notational convenience:
 We proceed by induction using the auxiliary predicate F.
 
 The following condition in the definition of F says that the element a : A
-is the least upper bound of the (weakly) constant family λ (p : P) → ⊤'.  Because least upper bounds are unique when they exist, the type F P is a
+is the least upper bound of the (weakly) constant family λ (p : P) → ⊤'.
+Because least upper bounds are unique when they exist, the type F P is a
 proposition. The hardest part in this development was not to write the Agda
 code, but to figure out what F ought to be.
 
