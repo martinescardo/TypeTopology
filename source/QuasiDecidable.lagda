@@ -370,6 +370,7 @@ follows by induction:
                     ∥∥-rec ∃-is-prop (λ (n , ep , q) → ∣ n , q ∣) e
    γ : (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
    γ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω P i Q j (quasidecidable-types-are-props P i)
+
 \end{code}
 
 Putting the two directions together with the aid of propositional
@@ -628,6 +629,7 @@ And then again by 𝓠-induction, there is at most one homomorphism from
             ⋁⟨ 𝓐 ⟩ (n ↦ g (𝕡 n)) ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)  ⟩
             ⋁⟨ 𝓐 ⟩ (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
              h (⋁ 𝕡)             ∎
+
    r : g ∼ h
    r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
 
@@ -648,6 +650,7 @@ quasidecidable propositions is the initial σ-frame:
 We first introduce some abbreviations for notational convenience:
 
 \begin{code}
+
    A = ⟨ 𝓐 ⟩
    ⊥' = ⊥⟨ 𝓐 ⟩
    ⊤' = ⊤⟨ 𝓐 ⟩
@@ -656,12 +659,13 @@ We first introduce some abbreviations for notational convenience:
    a ≤' b = a ≤⟨ 𝓐 ⟩ b
    _∧'_ : A → A → A
    a ∧' b = a ∧⟨ 𝓐 ⟩ b
+
 \end{code}
 
 We proceed by induction using the auxiliary predicate F.
 
-The following condition in the definition of F says that a is the
-least upper bound of the (weakly) constant family λ (p : P) → ⊤'.
+The following condition in the definition of F says that the element a : A
+is the least upper bound of the (weakly) constant family λ (p : P) → ⊤'.
 Because least upperbounds are unique when they exist, the type F P is
 a proposition.
 
