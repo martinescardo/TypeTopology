@@ -191,9 +191,9 @@ We collect the quasidecidable propositions in the type 𝓠 (curly Q):
 
 \end{code}
 
-We formulate induction on 𝓠 in two different, equivalent ways. The
-first one is often more convenient in practice, and the second one is
-conceptually more natural.
+We formulate and prove induction on 𝓠 in two different, equivalent
+ways. The first one is often more convenient in practice, and the
+second one is conceptually more natural.
 
 \begin{code}
 
@@ -335,11 +335,11 @@ follows by induction:
 \begin{code}
 
  quasidecidable-σ-frame-trivial :
-            (P : 𝓤₀ ̇ )
-          → is-quasidecidable P
-          → (Q : ℕ → 𝓤₀ ̇ )
-          → ((n : ℕ) → is-quasidecidable (Q n))
-          → P × ∃ Q → ∃ n ꞉ ℕ , P × Q n
+     (P : 𝓤₀ ̇ )
+   → is-quasidecidable P
+   → (Q : ℕ → 𝓤₀ ̇ )
+   → ((n : ℕ) → is-quasidecidable (Q n))
+   → P × ∃ Q → ∃ n ꞉ ℕ , P × Q n
  quasidecidable-σ-frame-trivial P i Q φ (p , e) = ∥∥-rec ∃-is-prop (λ (n , q) → ∣ n , p , q ∣) e
 
 
@@ -559,7 +559,8 @@ different universes and hence in different types.
 \end{code}
 
 Next we show that QD is the initial σ-frame. We first show that any
-⊥,⊤,⋁-homomorphism on QD is automatically a ∧-homomorphism.
+⊥,⊤,⋁-homomorphism on QD is automatically a ∧-homomorphism,
+𝓠-induction.
 
 \begin{code}
 
@@ -603,8 +604,8 @@ Next we show that QD is the initial σ-frame. We first show that any
 
 \end{code}
 
-And then again by induction, there is at most one homomorphism from 𝓠
-to any σ-frame:`
+And then again by 𝓠-induction, there is at most one homomorphism from
+𝓠 to any σ-frame:
 
 \begin{code}
 
@@ -630,6 +631,13 @@ to any σ-frame:`
    r : g ∼ h
    r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
 
+\end{code}
+
+We now have enough constructions and lemmas to show that the type of
+quasidecidable propositions is the initial σ-frame:
+
+\begin{code}
+
  QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
                        → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
  QD-is-initial-σ-Frame {𝓤} 𝓐 = γ
@@ -637,8 +645,7 @@ to any σ-frame:`
 
 \end{code}
 
-We first introduce some abbreviations first for notational
-convenience:
+We first introduce some abbreviations for notational convenience:
 
 \begin{code}
    A = ⟨ 𝓐 ⟩
@@ -722,6 +729,14 @@ Using δ we define the desired homormophism f:
    βf : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
    βf (P , i) = pr₂ (pr₂ (δ P i))
 
+\end{code}
+
+The conditions αf and βf on f are crucial to prove that f is a
+homomorphism:
+
+\begin{code}
+
+
    ⊤-preservation : f ⊤ ≡ ⊤'
    ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (αf ⊤ *)
 
@@ -752,7 +767,7 @@ Using δ we define the desired homormophism f:
 
 \end{code}
 
-Bu the above, binary meets are automatically preserved:
+By the above, binary meets are automatically preserved:
 
 \begin{code}
 
