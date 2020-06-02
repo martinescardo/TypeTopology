@@ -797,3 +797,7 @@ quasidecidable propositions and show that they form a frame isomorphic
 
 TODO. Write in Agda some of the proofs of the above reference with
 Cory Knapp, particularly regarding choice.
+
+TODO. Assuming propositional resizing, it follows that the initial
+σ-frame exists. (Notice that in this development we don't use
+higher-induction types other than propositional truncation.)
