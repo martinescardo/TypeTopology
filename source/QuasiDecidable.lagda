@@ -18,9 +18,9 @@ open import SpartanMLTT
 open import UF-PropTrunc hiding (⊥ ; ⊤)
 
 module QuasiDecidable
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe  : Fun-Ext)
         (pe₀ : propext 𝓤₀)
-        (pt : propositional-truncations-exist)
+        (pt  : propositional-truncations-exist)
        where
 
 open PropositionalTruncation pt
@@ -35,6 +35,8 @@ open import UF-EquivalenceExamples
 open import UF-Yoneda
 open import UF-SIP-Examples
 open import UF-Embeddings
+open import UF-Powerset
+
 
 \end{code}
 
@@ -143,19 +145,110 @@ with a proof by induction:
 
 \end{code}
 
-And they form a dominance, again with a proof by induction. The main
-dominance condition generalizes closure under binary products (that
-is, conjunctions, or meets):
+We collect the quasidecidable propositions in the type 𝓠 (curly Q):
 
 \begin{code}
 
- quasidecidable-dom : propext 𝓤₀
-                    → (P : 𝓤₀ ̇ )
-                    → is-quasidecidable P
-                    → (Q : 𝓤₀ ̇ )
-                    → (P → is-quasidecidable Q)
-                    → is-quasidecidable (P × Q)
- quasidecidable-dom pe = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
+ 𝓠 : 𝓤₁ ̇
+ 𝓠 = Σ P ꞉ 𝓤₀ ̇ , is-quasidecidable P
+
+ _is-true : 𝓠 → 𝓤₀ ̇
+ _is-true (P , i) = P
+
+ being-true-is-quasidecidable : (𝕡 : 𝓠) → is-quasidecidable (𝕡 is-true)
+ being-true-is-quasidecidable (P , i) = i
+
+ being-true-is-prop : (𝕡 : 𝓠) → is-prop (𝕡 is-true)
+ being-true-is-prop (P , i) = quasidecidable-types-are-props P i
+
+ 𝓠→Ω : 𝓠 → Ω 𝓤₀
+ 𝓠→Ω (P , i) = P , quasidecidable-types-are-props P i
+
+ 𝓠→Ω-is-embedding : is-embedding 𝓠→Ω
+ 𝓠→Ω-is-embedding = NatΣ-is-embedding is-quasidecidable is-prop ζ ζ-is-embedding
+  where
+   ζ : (P : 𝓤₀ ̇ ) → is-quasidecidable P → is-prop P
+   ζ = quasidecidable-types-are-props
+   ζ-is-embedding : (P : 𝓤₀ ̇ ) → is-embedding (ζ P)
+   ζ-is-embedding P = maps-of-props-are-embeddings (ζ P) (being-quasidecidable-is-prop P) (being-prop-is-prop fe)
+
+ 𝓠-is-set : is-set 𝓠
+ 𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
+             (embeddings-are-lc 𝓠→Ω 𝓠→Ω-is-embedding)
+             (Ω-is-set fe pe₀)
+
+ ⊥ : 𝓠
+ ⊥ = 𝟘 , 𝟘-is-quasidecidable
+
+ ⊤ : 𝓠
+ ⊤ = 𝟙 , 𝟙-is-quasidecidable
+
+ ⋁ : (ℕ → 𝓠) → 𝓠
+ ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n is-true) ,
+        quasidecidable-closed-under-ω-joins
+          (λ n → 𝕡 n is-true)
+          (λ n → being-true-is-quasidecidable (𝕡 n))
+
+\end{code}
+
+We formulate induction on 𝓠 in two different, equivalent ways. The
+first one is often more convenient in practice, and the second one is
+conceptually more natural.
+
+\begin{code}
+
+ 𝓠-induction : (G : 𝓠 → 𝓤 ̇ )
+             → ((𝕡 : 𝓠) → is-prop (G 𝕡))
+             → G ⊥
+             → G ⊤
+             → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → G (𝕡 n)) → G (⋁ 𝕡))
+             → (𝕡 : 𝓠) → G 𝕡
+ 𝓠-induction {𝓤} G G-is-prop-valued g₀ g₁ gω (P , i) = γ
+  where
+   F :  𝓤₀ ̇ → 𝓤 ̇
+   F P = Σ j ꞉ is-quasidecidable P , G (P , j)
+   F-is-prop-valued : ∀ P → is-prop (F P)
+   F-is-prop-valued P = Σ-is-prop (being-quasidecidable-is-prop P) (λ j → G-is-prop-valued (P , j))
+   F₀ : F 𝟘
+   F₀ = 𝟘-is-quasidecidable , g₀
+   F₁ : F 𝟙
+   F₁ = 𝟙-is-quasidecidable , g₁
+   Fω : (Q : ℕ → 𝓤₀ ̇) → ((n : ℕ) → F (Q n)) → F (∃ n ꞉ ℕ , Q n)
+   Fω Q φ = quasidecidable-closed-under-ω-joins Q (λ n → pr₁ (φ n)) ,
+            gω (λ n → (Q n , pr₁ (φ n))) (λ n → pr₂ (φ n))
+   δ : Σ j ꞉ is-quasidecidable P , G (P , j)
+   δ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω P i
+   j : is-quasidecidable P
+   j = pr₁ δ
+   g : G (P , j)
+   g = pr₂ δ
+   γ : G (P , i)
+   r : j ≡ i
+   r = being-quasidecidable-is-prop P j i
+   γ = transport (λ - → G (P , -)) r g
+
+ 𝓠-induction' : (𝓖 : 𝓠 → Ω 𝓤)
+              → ⊥ ∈ 𝓖
+              → ⊤ ∈ 𝓖
+              → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → 𝕡 n ∈ 𝓖) → ⋁ 𝕡 ∈ 𝓖)
+              → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
+ 𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ (P , i) → pr₁ (𝓖 (P , i))) (λ (P , i) → pr₂ (𝓖 (P , i)))
+
+\end{code}
+
+The quasidecidable propositions form a dominance, with a proof by
+quasidecidable-induction. The main dominance condition generalizes
+closure under binary products (that is, conjunctions, or meets):
+
+\begin{code}
+
+ quasidecidable-closed-under-× : propext 𝓤₀
+   → (P : 𝓤₀ ̇ )
+   → is-quasidecidable P
+   → (Q : 𝓤₀ ̇ )
+   → (P → is-quasidecidable Q)
+   → is-quasidecidable (P × Q)
+ quasidecidable-closed-under-× pe = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
   where
    F : 𝓤₀ ̇ → 𝓤₁ ̇
    F P = (Q : 𝓤₀ ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
@@ -209,14 +302,14 @@ by quasidecidable propositions:
 \begin{code}
 
  quasidecidable-closed-under-Σ : propext 𝓤₀
-                               → (P : 𝓤₀ ̇ )
-                               → (Q : P → 𝓤₀ ̇ )
-                               → is-quasidecidable P
-                               → ((p : P) → is-quasidecidable (Q p))
-                               → is-quasidecidable (Σ Q)
+   → (P : 𝓤₀ ̇ )
+   → (Q : P → 𝓤₀ ̇ )
+   → is-quasidecidable P
+   → ((p : P) → is-quasidecidable (Q p))
+   → is-quasidecidable (Σ Q)
  quasidecidable-closed-under-Σ pe = D3-and-D5'-give-D5 pe is-quasidecidable
                                       (quasidecidable-types-are-props)
-                                      (λ P Q' i j → quasidecidable-dom pe P i Q' j)
+                                      (λ P Q' i j → quasidecidable-closed-under-× pe P i Q' j)
 
 \end{code}
 
@@ -285,11 +378,11 @@ extensionality, we get the σ-frame distributive law:
 \begin{code}
 
  quasidecidable-σ-frame : propext 𝓤₀
-          → (P : 𝓤₀ ̇ )
-          → is-quasidecidable P
-          → (Q : ℕ → 𝓤₀ ̇ )
-          → ((n : ℕ) → is-quasidecidable (Q n))
-          → P × ∃ Q ≡ (∃ n ꞉ ℕ , P × Q n)
+   → (P : 𝓤₀ ̇ )
+   → is-quasidecidable P
+   → (Q : ℕ → 𝓤₀ ̇ )
+   → ((n : ℕ) → is-quasidecidable (Q n))
+   → P × ∃ Q ≡ (∃ n ꞉ ℕ , P × Q n)
  quasidecidable-σ-frame pe P i Q φ =
    pe (×-is-prop (quasidecidable-types-are-props P i)
                  (quasidecidable-types-are-props (∃ Q)
@@ -300,95 +393,41 @@ extensionality, we get the σ-frame distributive law:
 
 \end{code}
 
-Next we define the σ-frame QD of quasidecidable propositions, with
-underlying type 𝓠.
+We now give the quasidecidable propositions the structure of a
+σ-frame. We have already defined ⊥, ⊤ and ⋁. So it remains to define ∧
+and prove the σ-frame axioms.
 
 \begin{code}
 
- 𝓠 : 𝓤₁ ̇
- 𝓠 = Σ P ꞉ 𝓤₀ ̇ , is-quasidecidable P
+ _∧_ : 𝓠 → 𝓠 → 𝓠
+ (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-closed-under-× pe₀ P i Q (λ _ → j)
 
- _is-true : 𝓠 → 𝓤₀ ̇
- _is-true (P , i) = P
-
- being-true-is-quasidecidable : (𝕡 : 𝓠) → is-quasidecidable (𝕡 is-true)
- being-true-is-quasidecidable (P , i) = i
-
- being-true-is-prop : (𝕡 : 𝓠) → is-prop (𝕡 is-true)
- being-true-is-prop (P , i) = quasidecidable-types-are-props P i
-
- 𝓠→Ω : 𝓠 → Ω 𝓤₀
- 𝓠→Ω (P , i) = P , quasidecidable-types-are-props P i
-
- 𝓠→Ω-is-embedding : is-embedding 𝓠→Ω
- 𝓠→Ω-is-embedding = NatΣ-is-embedding is-quasidecidable is-prop ζ ζ-is-embedding
-  where
-   ζ : (P : 𝓤₀ ̇ ) → is-quasidecidable P → is-prop P
-   ζ = quasidecidable-types-are-props
-   ζ-is-embedding : (P : 𝓤₀ ̇ ) → is-embedding (ζ P)
-   ζ-is-embedding P = maps-of-props-are-embeddings (ζ P) (being-quasidecidable-is-prop P) (being-prop-is-prop fe)
-
-\end{code}
-
-We now give the quasidecidable propositions the structure
-of a σ-frame:
-
-\begin{code}
-
- 𝓠-is-set : is-set 𝓠
- 𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
-             (embeddings-are-lc 𝓠→Ω 𝓠→Ω-is-embedding)
-             (Ω-is-set fe pe₀)
-\end{code}
-
-We make the following definitions private in order to have the general
-symbols available in other contexts, but they are still available as
-the structure and axioms of the σ-frame QD of quasidecidable
-proposition:
-
-\begin{code}
-
- private ⊥ : 𝓠
- ⊥ = 𝟘 , 𝟘-is-quasidecidable
-
- private ⊤ : 𝓠
- ⊤ = 𝟙 , 𝟙-is-quasidecidable
-
- private _∧_ : 𝓠 → 𝓠 → 𝓠
- (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-dom pe₀ P i Q (λ _ → j)
-
- private ⋁ : (ℕ → 𝓠) → 𝓠
- ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n is-true) ,
-        quasidecidable-closed-under-ω-joins
-          (λ n → 𝕡 n is-true)
-          (λ n → being-true-is-quasidecidable (𝕡 n))
-
- private ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
+ ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
  ∧-is-idempotent (P , i) = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
-   a : P × P ≡ P
-   a = pe₀ (×-is-prop i' i') i' pr₁ (λ p → (p , p))
+   r : P × P ≡ P
+   r = pe₀ (×-is-prop i' i') i' pr₁ (λ p → (p , p))
    γ : ((P × P) , _) ≡ (P , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private ∧-is-commutative : (𝕡 𝕢 : 𝓠) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
+ ∧-is-commutative : (𝕡 𝕢 : 𝓠) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
  ∧-is-commutative (P , i) (Q , j) = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
    j' : is-prop Q
    j' = quasidecidable-types-are-props Q j
-   a : P × Q ≡ Q × P
-   a = pe₀ (×-is-prop i' j')
+   r : P × Q ≡ Q × P
+   r = pe₀ (×-is-prop i' j')
            (×-is-prop j' i')
            (λ (p , q) → (q , p))
            (λ (q , p) → (p , q))
    γ : ((P × Q) , _) ≡ ((Q × P) , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
+ ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
  ∧-is-associative (P , i) (Q , j) (R , k) = γ
   where
    i' : is-prop P
@@ -397,69 +436,69 @@ proposition:
    j' = quasidecidable-types-are-props Q j
    k' : is-prop R
    k' = quasidecidable-types-are-props R k
-   a : P × (Q × R) ≡ (P × Q) × R
-   a = pe₀ (×-is-prop i' (×-is-prop j' k'))
+   r : P × (Q × R) ≡ (P × Q) × R
+   r = pe₀ (×-is-prop i' (×-is-prop j' k'))
            (×-is-prop (×-is-prop i' j') k')
            (λ (p , (q , r)) → ((p , q) , r))
            (λ ((p , q) , r) → (p , (q , r)))
    γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ∧ 𝕡 ≡ ⊥
+ ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ∧ 𝕡 ≡ ⊥
  ⊥-is-minimum (P , i) = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
-   a : 𝟘 × P ≡ 𝟘
-   a = pe₀ (×-is-prop 𝟘-is-prop i')
+   r : 𝟘 × P ≡ 𝟘
+   r = pe₀ (×-is-prop 𝟘-is-prop i')
            𝟘-is-prop
            pr₁
            unique-from-𝟘
    γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
+ ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
  ⊤-is-maximum (P , i) = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
-   a : P × 𝟙 ≡ P
-   a = pe₀ (×-is-prop i' 𝟙-is-prop)
+   r : P × 𝟙 ≡ P
+   r = pe₀ (×-is-prop i' 𝟙-is-prop)
            i'
            (λ (p , _) → p)
            (λ p → (p , *))
    γ : ((P × 𝟙) , _) ≡ (P , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
+ _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
  𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
 
- private ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
+ ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
  ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
 
- private ≤-characterization→ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
+ ≤-characterization→ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
  ≤-characterization→ {P , i} {Q , j} l p = γ
   where
-   a : P × Q ≡ P
-   a = ap (_is-true) l
+   r : P × Q ≡ P
+   r = ap (_is-true) l
    g : P → P × Q
-   g = idtofun P (P × Q) (a ⁻¹)
+   g = idtofun P (P × Q) (r ⁻¹)
    γ : Q
    γ = pr₂ (g p)
 
- private ≤-characterization← : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
+ ≤-characterization← : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
  ≤-characterization← {P , i} {Q , j} f = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
    j' : is-prop Q
    j' = quasidecidable-types-are-props Q j
-   a : P × Q ≡ P
-   a = pe₀ (×-is-prop i' j') i' pr₁ (λ p → (p , f p))
+   r : P × Q ≡ P
+   r = pe₀ (×-is-prop i' j') i' pr₁ (λ p → (p , f p))
    γ : ((P × Q) , _) ≡ (P , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private ≤-characterization : {𝕡 𝕢 : 𝓠} → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
+ ≤-characterization : {𝕡 𝕢 : 𝓠} → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
  ≤-characterization {𝕡} {𝕢} = logically-equivalent-props-are-equivalent
                               (≤-is-prop-valued 𝕡 𝕢)
                               (Π-is-prop fe (λ _ → being-true-is-prop 𝕢))
@@ -468,31 +507,30 @@ proposition:
 
 \end{code}
 
-NB. We can't conclude equality above because the lhs and rhs live in different universes and hence in different types.
+NB. We can't conclude equality above because the lhs and rhs live in
+different universes and hence in different types.
 
 \begin{code}
 
- private distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ (𝕡 ∧ 𝕢 n))
+ distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
  distributivity (P , i) 𝕢 = γ
   where
    Q : ℕ → 𝓤₀ ̇
    Q n = 𝕢 n is-true
    j : (n : ℕ) → is-quasidecidable (Q n)
    j n = being-true-is-quasidecidable (𝕢 n)
-   a : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
-   a = quasidecidable-σ-frame pe₀ P i Q j
+   r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
+   r = quasidecidable-σ-frame pe₀ P i Q j
    γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop a
+   γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- private ⋁-is-ub : (𝕡 : ℕ → 𝓠)
-                 → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+ ⋁-is-ub : (𝕡 : ℕ → 𝓠) → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
  ⋁-is-ub 𝕡 = a
   where
    a : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
    a n = ≤-characterization← (λ p → ∣ n , p ∣)
 
- private ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓠)
-                        → (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
+ ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓠) → (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
  ⋁-is-lb-of-ubs 𝕡 = b
   where
    b : (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
@@ -524,33 +562,59 @@ To be continued. Next we show that QD is the initial σ-frame.
 
 The following condition in the definition of F says that a is the
 least upper bound of the family λ (p : P) → ⊤'. Because least
-upperbounds are unique when they exist, the type F P is a proposition:
+upperbounds are unique when they exist, the type F P is a proposition.
+
+We prove some general facts about ≤' here to get the proof done, but
+eventually we should move this somewhere else.
 
 \begin{code}
-{-
+
  QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
-   → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
- QD-is-initial-σ-Frame {𝓤} (A , (⊤' , _∧'_ , ⊥' , ⋁') , (i , ii , iii , iv , v , vi , vii , viii , ix)) = {!!}
+                       → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+ QD-is-initial-σ-Frame {𝓤} (A , (⊤' , _∧'_ , ⊥' , ⋁') ,
+                           (A-is-set , idempotency , commutativity , associativity ,
+                            ⊥'-is-minimum , ⊤'-is-maximum , distributivity' , ⋁'-is-ub , ⋁-is-lb-of-ubs)) = γ
   where
    𝓐 : σ-Frame 𝓤
-   𝓐 = (A , (⊤' , _∧'_ , ⊥' , ⋁') , (i , ii , iii , iv , v , vi , vii , viii , ix))
+   𝓐 = (A , (⊤' , _∧'_ , ⊥' , ⋁') ,
+             (A-is-set , idempotency , commutativity , associativity ,
+              ⊥'-is-minimum , ⊤'-is-maximum , distributivity' , ⋁'-is-ub , ⋁-is-lb-of-ubs))
+
    _≤'_ : A → A → 𝓤 ̇
    a ≤' b = a ∧' b ≡ a
 
    ≤'-trans : (a b c : A) → a ≤' b → b ≤' c → a ≤' c
-   ≤'-trans = {!!}
+   ≤'-trans a b c l m = (a ∧' c)        ≡⟨ ap (_∧' c) (l ⁻¹) ⟩
+                        ((a ∧' b) ∧' c) ≡⟨ (associativity a b c)⁻¹      ⟩
+                        (a ∧' (b ∧' c)) ≡⟨ ap (a ∧'_) m      ⟩
+                        (a ∧' b)        ≡⟨ l                 ⟩
+                        a               ∎
+
+   ≤'-antisym : (a b : A) → a ≤' b → b ≤' a → a ≡ b
+   ≤'-antisym a b l m = a        ≡⟨ l ⁻¹    ⟩
+                        (a ∧' b) ≡⟨ commutativity a b ⟩
+                        (b ∧' a) ≡⟨ m       ⟩
+                        b        ∎
 
    F : 𝓤₀ ̇ → 𝓤 ̇
    F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
    F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
-   F-is-prop-valued P = {!!}
+   F-is-prop-valued P (a , α , β) (a' , α' , β') = to-subtype-≡ j r
+    where
+     j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
+     j a = ×-is-prop
+           (Π-is-prop fe (λ p → A-is-set {⊤' ∧' a} {⊤'}))
+           (Π-is-prop fe (λ u →
+            Π-is-prop fe (λ ψ → A-is-set {a ∧' u} {a})))
+     r : a ≡ a'
+     r = ≤'-antisym a a' (β  a' α') (β' a α)
 
    F₀ : F 𝟘
-   F₀ = ⊥' , (λ p → 𝟘-elim p) , (λ u ψ → v u)
+   F₀ = ⊥' , (λ p → 𝟘-elim p) , (λ u ψ → ⊥'-is-minimum u)
 
    F₁ : F 𝟙
-   F₁ = ⊤' , (λ p → vi ⊤') , (λ u ψ → ψ *)
+   F₁ = ⊤' , (λ p → ⊤'-is-maximum ⊤') , (λ u ψ → ψ *)
 
    Fω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
    Fω P φ = a∞ , b∞ , c∞
@@ -564,19 +628,117 @@ upperbounds are unique when they exist, the type F P is a proposition:
      a∞ : A
      a∞ = ⋁' (n ↦ pr₁ (φ n))
      b∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-     b∞ e = ∥∥-rec i b∞' e
+     b∞ e = ∥∥-rec A-is-set b∞' e
       where
        b∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-       b∞' (n , p) = ≤'-trans ⊤' (a n) a∞ (b n p) (viii a n)
+       b∞' (n , p) = ≤'-trans ⊤' (a n) a∞ (b n p) (⋁'-is-ub a n)
 
      c∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤' u) → a∞ ≤' u
-     c∞ u ψ = ix a u l
+     c∞ u ψ = ⋁-is-lb-of-ubs a u l
       where
        l : (n : ℕ) → a n ≤' u
        l n = c n u (λ p → ψ ∣ n , p ∣)
 
-   sofar : (P : 𝓤₀ ̇) → is-quasidecidable P
-     → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
-   sofar = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
--}
+   hence : (P : 𝓤₀ ̇) → is-quasidecidable P
+         → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+   hence = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
+
+   f : 𝓠 → A
+   f (P , i) = pr₁ (hence P i)
+
+   f₁ : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
+   f₁ (P , i) = pr₁ (pr₂ (hence P i))
+
+   f₂ : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
+   f₂ (P , i) = pr₂ (pr₂ (hence P i))
+
+   ⊤-preservation : f ⊤ ≡ ⊤'
+   ⊤-preservation = ≤'-antisym (f ⊤) ⊤' (⊤'-is-maximum (f ⊤)) (f₁ ⊤ *)
+
+   f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
+   f-is-monotone 𝕡 𝕢 l = f₂ 𝕡 (f 𝕢) (λ p → f₁ 𝕢 (≤-characterization→ l p))
+
+   ⊥-preservation : f ⊥ ≡ ⊥'
+   ⊥-preservation = ≤'-antisym (f ⊥) ⊥' (f₂ ⊥ ⊥' unique-from-𝟘) (⊥'-is-minimum (f ⊥))
+
+   ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
+   ⋁-preservation' 𝕡 = ≤'-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n)))
+           (f₂ (⋁ 𝕡) (⋁' (λ n → f (𝕡 n))) φ)
+           (⋁-is-lb-of-ubs (λ n → f (𝕡 n)) (f (⋁ 𝕡)) s)
+       where
+        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
+        φ' (n , p) = ≤'-trans ⊤' (f (𝕡 n)) (⋁' (λ n → f (𝕡 n))) (f₁ (𝕡 n) p) (⋁'-is-ub (λ n → f (𝕡 n)) n)
+        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
+        φ = ∥∥-rec A-is-set φ'
+        s' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+        s' = ⋁-is-ub 𝕡
+        s : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
+        s n = f-is-monotone (𝕡 n) (⋁ 𝕡) (s' n)
+
+   ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
+   ⋁-preservation = dfunext fe ⋁-preservation'
+
+   ∧-preservation' : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)
+   ∧-preservation' 𝕡 = 𝓠-induction (λ 𝕢 → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)) (λ 𝕢 → A-is-set {f (𝕡 ∧ 𝕢)} {f 𝕡 ∧' f 𝕢}) l₀ l₁ lω
+    where
+     l₀ = f (𝕡 ∧ ⊥)    ≡⟨ ap f (∧-is-commutative 𝕡 ⊥) ⟩
+          f (⊥ ∧ 𝕡)    ≡⟨ ap f (⊥-is-minimum 𝕡)       ⟩
+          f ⊥          ≡⟨ ⊥-preservation                          ⟩
+          ⊥'           ≡⟨ (⊥'-is-minimum (f 𝕡))⁻¹     ⟩
+          (⊥' ∧' f 𝕡)  ≡⟨ ap (_∧' f 𝕡) (⊥-preservation ⁻¹)        ⟩
+          (f ⊥ ∧' f 𝕡) ≡⟨ commutativity (f ⊥) (f 𝕡)   ⟩
+          (f 𝕡 ∧' f ⊥) ∎
+
+     l₁ = f (𝕡 ∧ ⊤)    ≡⟨ ap f (⊤-is-maximum 𝕡)    ⟩
+          f 𝕡          ≡⟨ (⊤'-is-maximum (f 𝕡))⁻¹  ⟩
+          (f 𝕡 ∧' ⊤')  ≡⟨ ap (f 𝕡 ∧'_) (⊤-preservation ⁻¹)     ⟩
+          (f 𝕡 ∧' f ⊤) ∎
+
+     lω : (𝕢 : ℕ → 𝓠)
+        → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧' f (𝕢 n)))
+        → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧' f (⋁ 𝕢))
+     lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢) ≡⟨ ap f (distributivity 𝕡 𝕢) ⟩
+              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))      ≡⟨ ⋁-preservation' (n ↦ 𝕡 ∧ 𝕢 n)                       ⟩
+              ⋁' (n ↦ f (𝕡 ∧ 𝕢 n))      ≡⟨ ap ⋁' (dfunext fe φ)                    ⟩
+              ⋁' (n ↦ f 𝕡 ∧' f (𝕢 n))   ≡⟨ (distributivity' (f 𝕡) (n ↦ f (𝕢 n)))⁻¹ ⟩
+              (f 𝕡 ∧' ⋁' (n ↦ f (𝕢 n))) ≡⟨ ap (f 𝕡 ∧'_) ((⋁-preservation' 𝕢)⁻¹)                ⟩
+              (f 𝕡 ∧' f (⋁ 𝕢))          ∎
+
+   ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
+   ∧-preservation = dfunext fe (λ 𝕡 → dfunext fe (∧-preservation' 𝕡))
+
+   f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
+   f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
+
+   at-most-one-hom : (g h : 𝓠 → A)
+                   → is-σ-frame-homomorphism QD 𝓐 g
+                   → is-σ-frame-homomorphism QD 𝓐 h
+                   → g ≡ h
+   at-most-one-hom g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
+    where
+     i₀ = g ⊥ ≡⟨ g⊥ ⟩
+          ⊥'  ≡⟨ h⊥ ⁻¹ ⟩
+          h ⊥ ∎
+
+     i₁ : g ⊤ ≡ h ⊤
+     i₁ = g ⊤ ≡⟨ g⊤    ⟩
+          ⊤'  ≡⟨ h⊤ ⁻¹ ⟩
+          h ⊤ ∎
+
+     iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
+     iω 𝕡 φ = g (⋁ 𝕡) ≡⟨ ap (λ - → - 𝕡) g⋁ ⟩
+              ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ)  ⟩
+              ⋁' (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
+               h (⋁ 𝕡) ∎
+     r : g ∼ h
+     r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → A-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
+
+   γ : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+   γ = (f , f-is-hom) ,
+       (λ (g , g-is-hom) → to-subtype-≡
+                            (being-σ-frame-homomorphism-is-prop fe QD 𝓐)
+                            (at-most-one-hom f g f-is-hom g-is-hom))
+
 \end{code}
+
+First milestone for quasidecidable propositions proved - now we need to tidy up the code.

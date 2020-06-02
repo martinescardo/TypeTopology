@@ -1918,11 +1918,21 @@ module σ-frame where
 
  is-σ-frame-homomorphism : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
                          → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
- is-σ-frame-homomorphism  (A , (⊤ , _∧_ , ⊥ , ⋁) , _) (A' , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
+ is-σ-frame-homomorphism  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
      (f ⊤ ≡ ⊤')
    × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
    × (f ⊥ ≡ ⊥')
    × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
+
+ being-σ-frame-homomorphism-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                                    → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                    → is-prop (is-σ-frame-homomorphism 𝓐 𝓑 f)
+ being-σ-frame-homomorphism-is-prop fe (_ , (⊤ , _∧_ , ⊥ , ⋁) ,  _)
+                                    (_ , (⊤' , _∧'_ , ⊥' , ⋁') , (i' , _)) f =
+   ×-is-prop i'
+  (×-is-prop (Π-is-set fe (λ a →
+              Π-is-set fe (λ b → i')))
+  (×-is-prop i' (Π-is-set fe (λ 𝕒 → i'))))
 
 
  _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
