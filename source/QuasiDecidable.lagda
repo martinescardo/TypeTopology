@@ -601,6 +601,13 @@ Next we show that QD is the initial σ-frame. We first show that any
    γ : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
    γ = dfunext fe (λ 𝕡 → dfunext fe (δ 𝕡))
 
+\end{code}
+
+And then again by induction, there is at most one homomorphism from 𝓠
+to any σ-frame:`
+
+\begin{code}
+
  at-most-one-hom : (𝓐 : σ-Frame 𝓤) (g h : 𝓠 → ⟨ 𝓐 ⟩)
                  → is-σ-frame-homomorphism QD 𝓐 g
                  → is-σ-frame-homomorphism QD 𝓐 h
@@ -622,19 +629,18 @@ Next we show that QD is the initial σ-frame. We first show that any
              h (⋁ 𝕡)             ∎
    r : g ∼ h
    r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
-\end{code}
-
-
-The following condition in the definition of F says that a is the
-least upper bound of the family λ (p : P) → ⊤'. Because least
-upperbounds are unique when they exist, the type F P is a proposition.
-
-\begin{code}
 
  QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
                        → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
  QD-is-initial-σ-Frame {𝓤} 𝓐 = γ
   where
+
+\end{code}
+
+We first introduce some abbreviations first for notational
+convenience:
+
+\begin{code}
    A = ⟨ 𝓐 ⟩
    ⊥' = ⊥⟨ 𝓐 ⟩
    ⊤' = ⊤⟨ 𝓐 ⟩
@@ -643,6 +649,16 @@ upperbounds are unique when they exist, the type F P is a proposition.
    a ≤' b = a ≤⟨ 𝓐 ⟩ b
    _∧'_ : A → A → A
    a ∧' b = a ∧⟨ 𝓐 ⟩ b
+\end{code}
+
+We proceed by induction using the auxiliary predicate F.
+
+The following condition in the definition of F says that a is the
+least upper bound of the (weakly) constant family λ (p : P) → ⊤'.
+Because least upperbounds are unique when they exist, the type F P is
+a proposition.
+
+\begin{code}
 
    F : 𝓤₀ ̇ → 𝓤 ̇
    F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
@@ -691,6 +707,12 @@ upperbounds are unique when they exist, the type F P is a proposition.
      → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
    δ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
 
+\end{code}
+
+Using δ we define the desired homormophism f:
+
+\begin{code}
+
    f : 𝓠 → A
    f (P , i) = pr₁ (δ P i)
 
@@ -728,8 +750,20 @@ upperbounds are unique when they exist, the type F P is a proposition.
    ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
    ⋁-preservation = dfunext fe ⋁-preservation'
 
+\end{code}
+
+Bu the above, binary meets are automatically preserved:
+
+\begin{code}
+
    ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
    ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom 𝓐 f ⊥-preservation ⊤-preservation ⋁-preservation
+
+\end{code}
+
+And then we are done:
+
+\begin{code}
 
    f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
    f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
