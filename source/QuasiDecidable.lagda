@@ -694,29 +694,29 @@ upperbounds are unique when they exist, the type F P is a proposition.
    f : 𝓠 → A
    f (P , i) = pr₁ (δ P i)
 
-   f₁ : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
-   f₁ (P , i) = pr₁ (pr₂ (δ P i))
+   αf : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
+   αf (P , i) = pr₁ (pr₂ (δ P i))
 
-   f₂ : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
-   f₂ (P , i) = pr₂ (pr₂ (δ P i))
+   βf : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
+   βf (P , i) = pr₂ (pr₂ (δ P i))
 
    ⊤-preservation : f ⊤ ≡ ⊤'
-   ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (f₁ ⊤ *)
+   ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (αf ⊤ *)
 
    f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
-   f-is-monotone 𝕡 𝕢 l = f₂ 𝕡 (f 𝕢) (λ p → f₁ 𝕢 (≤-characterization→ l p))
+   f-is-monotone 𝕡 𝕢 l = βf 𝕡 (f 𝕢) (λ p → αf 𝕢 (≤-characterization→ l p))
 
    ⊥-preservation : f ⊥ ≡ ⊥'
-   ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (f₂ ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
+   ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (βf ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
 
    ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
    ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n)))
-                         (f₂ (⋁ 𝕡) (⋁' (λ n → f (𝕡 n))) φ)
+                         (βf (⋁ 𝕡) (⋁' (λ n → f (𝕡 n))) φ)
                          (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (λ n → f (𝕡 n)) (f (⋁ 𝕡)) s)
        where
         φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
         φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n)))
-                           (f₁ (𝕡 n) p)
+                           (αf (𝕡 n) p)
                            (⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n)
         φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
         φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
