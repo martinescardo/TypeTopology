@@ -745,3 +745,6 @@ TODO. Conversely, if the initial σ-frame exists, then we can define
 quasidecidable propositions and show that they form a frame isomorphic
 (and hence equal) to the initial σ-frame. Moreover, the initial
 ω-sup-lattice should be automatically the initial σ-frame.
+
+TODO. Write in Agda some of the proofs of the above reference with
+Cory Knapp, particularly regarding choice.
