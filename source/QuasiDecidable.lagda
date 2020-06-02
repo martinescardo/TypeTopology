@@ -558,187 +558,182 @@ different universes and hence in different types.
 
 \end{code}
 
-To be continued. Next we show that QD is the initial σ-frame.
+Next we show that QD is the initial σ-frame. We first show that any
+⊥,⊤,⋁-homomorphism on QD is automatically a ∧-homomorphism.
+
+\begin{code}
+
+ ⊥⊤⋁-hom-on-QD-is-∧-hom : (𝓐 : σ-Frame 𝓤) (f : ⟨ QD ⟩ → ⟨ 𝓐 ⟩)
+                        → f ⊥ ≡ ⊥⟨ 𝓐 ⟩
+                        → f ⊤ ≡ ⊤⟨ 𝓐 ⟩
+                        → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 n))))
+                        → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
+ ⊥⊤⋁-hom-on-QD-is-∧-hom {𝓤} 𝓐 f f⊥ f⊤ f⋁ = γ
+  where
+   δ : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
+   δ 𝕡 = 𝓠-induction (λ 𝕢 → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢))
+                     (λ 𝕢 → ⟨ 𝓐 ⟩-is-set {f (𝕡 ∧ 𝕢)} {f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢})
+                     l₀ l₁ lω
+    where
+     l₀ = f (𝕡 ∧ ⊥)           ≡⟨ ap f (∧-is-commutative 𝕡 ⊥)     ⟩
+          f (⊥ ∧ 𝕡)           ≡⟨ ap f (⊥-is-minimum 𝕡)           ⟩
+          f ⊥                 ≡⟨ f⊥                              ⟩
+          ⊥⟨ 𝓐 ⟩              ≡⟨ (⟨ 𝓐 ⟩-⊥-minimum (f 𝕡))⁻¹       ⟩
+          (⊥⟨ 𝓐 ⟩ ∧⟨ 𝓐 ⟩ f 𝕡) ≡⟨ ap (λ - → - ∧⟨ 𝓐 ⟩ f 𝕡) (f⊥ ⁻¹) ⟩
+          (f ⊥ ∧⟨ 𝓐 ⟩ f 𝕡)    ≡⟨ ⟨ 𝓐 ⟩-commutativity (f ⊥) (f 𝕡) ⟩
+          (f 𝕡 ∧⟨ 𝓐 ⟩ f ⊥)    ∎
+
+     l₁ = f (𝕡 ∧ ⊤)    ≡⟨ ap f (⊤-is-maximum 𝕡)    ⟩
+          f 𝕡          ≡⟨ (⟨ 𝓐 ⟩-⊤-maximum (f 𝕡))⁻¹  ⟩
+          (f 𝕡 ∧⟨ 𝓐 ⟩ ⊤⟨ 𝓐 ⟩)  ≡⟨ ap (λ - → f 𝕡 ∧⟨ 𝓐 ⟩ -) (f⊤ ⁻¹)     ⟩
+          (f 𝕡 ∧⟨ 𝓐 ⟩ f ⊤) ∎
+
+     lω : (𝕢 : ℕ → 𝓠)
+        → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n)))
+        → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))
+     lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)                         ≡⟨ ap f (distributivity 𝕡 𝕢)                        ⟩
+              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))                ≡⟨ ap (λ - → - (λ n →  𝕡 ∧ 𝕢 n)) f⋁                 ⟩
+              ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 ∧ 𝕢 n))           ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)                          ⟩
+              ⋁⟨ 𝓐 ⟩ (n ↦ f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n))   ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
+              (f 𝕡 ∧⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕢 n))) ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
+              (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))              ∎
+
+   γ : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
+   γ = dfunext fe (λ 𝕡 → dfunext fe (δ 𝕡))
+
+ at-most-one-hom : (𝓐 : σ-Frame 𝓤) (g h : 𝓠 → ⟨ 𝓐 ⟩)
+                 → is-σ-frame-homomorphism QD 𝓐 g
+                 → is-σ-frame-homomorphism QD 𝓐 h
+                 → g ≡ h
+ at-most-one-hom 𝓐 g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
+  where
+   i₀ = g ⊥    ≡⟨ g⊥ ⟩
+        ⊥⟨ 𝓐 ⟩ ≡⟨ h⊥ ⁻¹ ⟩
+        h ⊥    ∎
+
+   i₁ = g ⊤    ≡⟨ g⊤    ⟩
+        ⊤⟨ 𝓐 ⟩ ≡⟨ h⊤ ⁻¹ ⟩
+        h ⊤    ∎
+
+   iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
+   iω 𝕡 φ = g (⋁ 𝕡)              ≡⟨ ap (λ - → - 𝕡) g⋁ ⟩
+            ⋁⟨ 𝓐 ⟩ (n ↦ g (𝕡 n)) ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)  ⟩
+            ⋁⟨ 𝓐 ⟩ (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
+             h (⋁ 𝕡)             ∎
+   r : g ∼ h
+   r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
+\end{code}
+
 
 The following condition in the definition of F says that a is the
 least upper bound of the family λ (p : P) → ⊤'. Because least
 upperbounds are unique when they exist, the type F P is a proposition.
 
-We prove some general facts about ≤' here to get the proof done, but
-eventually we should move this somewhere else.
-
 \begin{code}
 
  QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
                        → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
- QD-is-initial-σ-Frame {𝓤} (A , (⊤' , _∧'_ , ⊥' , ⋁') ,
-                           (A-is-set , idempotency , commutativity , associativity ,
-                            ⊥'-is-minimum , ⊤'-is-maximum , distributivity' , ⋁'-is-ub , ⋁-is-lb-of-ubs)) = γ
+ QD-is-initial-σ-Frame {𝓤} 𝓐 = γ
   where
-   𝓐 : σ-Frame 𝓤
-   𝓐 = (A , (⊤' , _∧'_ , ⊥' , ⋁') ,
-             (A-is-set , idempotency , commutativity , associativity ,
-              ⊥'-is-minimum , ⊤'-is-maximum , distributivity' , ⋁'-is-ub , ⋁-is-lb-of-ubs))
-
-   _≤'_ : A → A → 𝓤 ̇
-   a ≤' b = a ∧' b ≡ a
-
-   ≤'-trans : (a b c : A) → a ≤' b → b ≤' c → a ≤' c
-   ≤'-trans a b c l m = (a ∧' c)        ≡⟨ ap (_∧' c) (l ⁻¹) ⟩
-                        ((a ∧' b) ∧' c) ≡⟨ (associativity a b c)⁻¹      ⟩
-                        (a ∧' (b ∧' c)) ≡⟨ ap (a ∧'_) m      ⟩
-                        (a ∧' b)        ≡⟨ l                 ⟩
-                        a               ∎
-
-   ≤'-antisym : (a b : A) → a ≤' b → b ≤' a → a ≡ b
-   ≤'-antisym a b l m = a        ≡⟨ l ⁻¹    ⟩
-                        (a ∧' b) ≡⟨ commutativity a b ⟩
-                        (b ∧' a) ≡⟨ m       ⟩
-                        b        ∎
-
+   A = ⟨ 𝓐 ⟩
    F : 𝓤₀ ̇ → 𝓤 ̇
-   F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+   F P = Σ a ꞉ A , (P → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a) × ((u : A) → (P → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ u) → a ≤⟨ 𝓐 ⟩ u)
 
    F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
    F-is-prop-valued P (a , α , β) (a' , α' , β') = to-subtype-≡ j r
     where
-     j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
+     j : (a : A) → is-prop ((P → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a) × ((u : A) → (P → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ u) → a ≤⟨ 𝓐 ⟩ u))
      j a = ×-is-prop
-           (Π-is-prop fe (λ p → A-is-set {⊤' ∧' a} {⊤'}))
+           (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤⟨ 𝓐 ⟩ ∧⟨ 𝓐 ⟩ a} {⊤⟨ 𝓐 ⟩}))
            (Π-is-prop fe (λ u →
-            Π-is-prop fe (λ ψ → A-is-set {a ∧' u} {a})))
+            Π-is-prop fe (λ ψ → ⟨ 𝓐 ⟩-is-set {a ∧⟨ 𝓐 ⟩ u} {a})))
      r : a ≡ a'
-     r = ≤'-antisym a a' (β  a' α') (β' a α)
+     r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
 
    F₀ : F 𝟘
-   F₀ = ⊥' , (λ p → 𝟘-elim p) , (λ u ψ → ⊥'-is-minimum u)
+   F₀ = ⊥⟨ 𝓐 ⟩ , (λ p → 𝟘-elim p) , (λ u ψ → ⟨ 𝓐 ⟩-⊥-minimum u)
 
    F₁ : F 𝟙
-   F₁ = ⊤' , (λ p → ⊤'-is-maximum ⊤') , (λ u ψ → ψ *)
+   F₁ = ⊤⟨ 𝓐 ⟩ , (λ p → ⟨ 𝓐 ⟩-⊤-maximum ⊤⟨ 𝓐 ⟩) , (λ u ψ → ψ *)
 
    Fω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
    Fω P φ = a∞ , b∞ , c∞
     where
      a : ℕ → A
      a n = pr₁ (φ n)
-     b : (n : ℕ) → P n → ⊤' ≤' a n
+     b : (n : ℕ) → P n → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a n
      b n = pr₁ (pr₂ (φ n))
-     c : (n : ℕ) → (u : A) → (P n → ⊤' ≤' u) → a n ≤' u
+     c : (n : ℕ) → (u : A) → (P n → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ u) → a n ≤⟨ 𝓐 ⟩ u
      c n = pr₂ (pr₂ (φ n))
      a∞ : A
-     a∞ = ⋁' (n ↦ pr₁ (φ n))
-     b∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-     b∞ e = ∥∥-rec A-is-set b∞' e
+     a∞ = ⋁⟨ 𝓐 ⟩ (n ↦ pr₁ (φ n))
+     b∞ : (∃ n ꞉ ℕ , P n) → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a∞
+     b∞ e = ∥∥-rec ⟨ 𝓐 ⟩-is-set b∞' e
       where
-       b∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-       b∞' (n , p) = ≤'-trans ⊤' (a n) a∞ (b n p) (⋁'-is-ub a n)
+       b∞' : (Σ n ꞉ ℕ , P n) → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a∞
+       b∞' (n , p) = ⟨ 𝓐 ⟩-trans ⊤⟨ 𝓐 ⟩ (a n) a∞ (b n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
 
-     c∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤' u) → a∞ ≤' u
-     c∞ u ψ = ⋁-is-lb-of-ubs a u l
+     c∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ u) → a∞ ≤⟨ 𝓐 ⟩ u
+     c∞ u ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u l
       where
-       l : (n : ℕ) → a n ≤' u
+       l : (n : ℕ) → a n ≤⟨ 𝓐 ⟩ u
        l n = c n u (λ p → ψ ∣ n , p ∣)
 
-   hence : (P : 𝓤₀ ̇) → is-quasidecidable P
-         → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
-   hence = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
+   δ : (P : 𝓤₀ ̇) → is-quasidecidable P
+     → Σ a ꞉ A , ((p : P) → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a) × ((u : A) → (P → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ u) → a ≤⟨ 𝓐 ⟩ u)
+   δ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
 
    f : 𝓠 → A
-   f (P , i) = pr₁ (hence P i)
+   f (P , i) = pr₁ (δ P i)
 
-   f₁ : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
-   f₁ (P , i) = pr₁ (pr₂ (hence P i))
+   f₁ : (𝕡 : 𝓠) → 𝕡 is-true → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ f 𝕡
+   f₁ (P , i) = pr₁ (pr₂ (δ P i))
 
-   f₂ : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
-   f₂ (P , i) = pr₂ (pr₂ (hence P i))
+   f₂ : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ u) → f 𝕡 ≤⟨ 𝓐 ⟩ u)
+   f₂ (P , i) = pr₂ (pr₂ (δ P i))
 
-   ⊤-preservation : f ⊤ ≡ ⊤'
-   ⊤-preservation = ≤'-antisym (f ⊤) ⊤' (⊤'-is-maximum (f ⊤)) (f₁ ⊤ *)
+   ⊤-preservation : f ⊤ ≡ ⊤⟨ 𝓐 ⟩
+   ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤⟨ 𝓐 ⟩ (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (f₁ ⊤ *)
 
-   f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
+   f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤⟨ 𝓐 ⟩ f 𝕢
    f-is-monotone 𝕡 𝕢 l = f₂ 𝕡 (f 𝕢) (λ p → f₁ 𝕢 (≤-characterization→ l p))
 
-   ⊥-preservation : f ⊥ ≡ ⊥'
-   ⊥-preservation = ≤'-antisym (f ⊥) ⊥' (f₂ ⊥ ⊥' unique-from-𝟘) (⊥'-is-minimum (f ⊥))
+   ⊥-preservation : f ⊥ ≡ ⊥⟨ 𝓐 ⟩
+   ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥⟨ 𝓐 ⟩ (f₂ ⊥ ⊥⟨ 𝓐 ⟩ unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
 
-   ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
-   ⋁-preservation' 𝕡 = ≤'-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n)))
-           (f₂ (⋁ 𝕡) (⋁' (λ n → f (𝕡 n))) φ)
-           (⋁-is-lb-of-ubs (λ n → f (𝕡 n)) (f (⋁ 𝕡)) s)
+   ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 n))
+   ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 n)))
+                         (f₂ (⋁ 𝕡) (⋁⟨ 𝓐 ⟩ (λ n → f (𝕡 n))) φ)
+                         (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (λ n → f (𝕡 n)) (f (⋁ 𝕡)) s)
        where
-        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
-        φ' (n , p) = ≤'-trans ⊤' (f (𝕡 n)) (⋁' (λ n → f (𝕡 n))) (f₁ (𝕡 n) p) (⋁'-is-ub (λ n → f (𝕡 n)) n)
-        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (λ n → f (𝕡 n))
-        φ = ∥∥-rec A-is-set φ'
+        φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (λ n → f (𝕡 n))
+        φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤⟨ 𝓐 ⟩ (f (𝕡 n)) (⋁⟨ 𝓐 ⟩
+                           (λ n → f (𝕡 n))) (f₁ (𝕡 n) p)
+                           (⟨ 𝓐 ⟩-⋁-is-ub (λ n → f (𝕡 n)) n)
+        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (λ n → f (𝕡 n))
+        φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
         s' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
         s' = ⋁-is-ub 𝕡
-        s : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
+        s : (n : ℕ) → f (𝕡 n) ≤⟨ 𝓐 ⟩ f (⋁ 𝕡)
         s n = f-is-monotone (𝕡 n) (⋁ 𝕡) (s' n)
 
-   ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
+   ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 n)))
    ⋁-preservation = dfunext fe ⋁-preservation'
 
-   ∧-preservation' : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)
-   ∧-preservation' 𝕡 = 𝓠-induction (λ 𝕢 → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)) (λ 𝕢 → A-is-set {f (𝕡 ∧ 𝕢)} {f 𝕡 ∧' f 𝕢}) l₀ l₁ lω
-    where
-     l₀ = f (𝕡 ∧ ⊥)    ≡⟨ ap f (∧-is-commutative 𝕡 ⊥) ⟩
-          f (⊥ ∧ 𝕡)    ≡⟨ ap f (⊥-is-minimum 𝕡)       ⟩
-          f ⊥          ≡⟨ ⊥-preservation                          ⟩
-          ⊥'           ≡⟨ (⊥'-is-minimum (f 𝕡))⁻¹     ⟩
-          (⊥' ∧' f 𝕡)  ≡⟨ ap (_∧' f 𝕡) (⊥-preservation ⁻¹)        ⟩
-          (f ⊥ ∧' f 𝕡) ≡⟨ commutativity (f ⊥) (f 𝕡)   ⟩
-          (f 𝕡 ∧' f ⊥) ∎
-
-     l₁ = f (𝕡 ∧ ⊤)    ≡⟨ ap f (⊤-is-maximum 𝕡)    ⟩
-          f 𝕡          ≡⟨ (⊤'-is-maximum (f 𝕡))⁻¹  ⟩
-          (f 𝕡 ∧' ⊤')  ≡⟨ ap (f 𝕡 ∧'_) (⊤-preservation ⁻¹)     ⟩
-          (f 𝕡 ∧' f ⊤) ∎
-
-     lω : (𝕢 : ℕ → 𝓠)
-        → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧' f (𝕢 n)))
-        → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧' f (⋁ 𝕢))
-     lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢) ≡⟨ ap f (distributivity 𝕡 𝕢) ⟩
-              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))      ≡⟨ ⋁-preservation' (n ↦ 𝕡 ∧ 𝕢 n)                       ⟩
-              ⋁' (n ↦ f (𝕡 ∧ 𝕢 n))      ≡⟨ ap ⋁' (dfunext fe φ)                    ⟩
-              ⋁' (n ↦ f 𝕡 ∧' f (𝕢 n))   ≡⟨ (distributivity' (f 𝕡) (n ↦ f (𝕢 n)))⁻¹ ⟩
-              (f 𝕡 ∧' ⋁' (n ↦ f (𝕢 n))) ≡⟨ ap (f 𝕡 ∧'_) ((⋁-preservation' 𝕢)⁻¹)                ⟩
-              (f 𝕡 ∧' f (⋁ 𝕢))          ∎
-
-   ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
-   ∧-preservation = dfunext fe (λ 𝕡 → dfunext fe (∧-preservation' 𝕡))
+   ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
+   ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom 𝓐 f ⊥-preservation ⊤-preservation ⋁-preservation
 
    f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
    f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
-
-   at-most-one-hom : (g h : 𝓠 → A)
-                   → is-σ-frame-homomorphism QD 𝓐 g
-                   → is-σ-frame-homomorphism QD 𝓐 h
-                   → g ≡ h
-   at-most-one-hom g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
-    where
-     i₀ = g ⊥ ≡⟨ g⊥ ⟩
-          ⊥'  ≡⟨ h⊥ ⁻¹ ⟩
-          h ⊥ ∎
-
-     i₁ : g ⊤ ≡ h ⊤
-     i₁ = g ⊤ ≡⟨ g⊤    ⟩
-          ⊤'  ≡⟨ h⊤ ⁻¹ ⟩
-          h ⊤ ∎
-
-     iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
-     iω 𝕡 φ = g (⋁ 𝕡) ≡⟨ ap (λ - → - 𝕡) g⋁ ⟩
-              ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ)  ⟩
-              ⋁' (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
-               h (⋁ 𝕡) ∎
-     r : g ∼ h
-     r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → A-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
 
    γ : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
    γ = (f , f-is-hom) ,
        (λ (g , g-is-hom) → to-subtype-≡
                             (being-σ-frame-homomorphism-is-prop fe QD 𝓐)
-                            (at-most-one-hom f g f-is-hom g-is-hom))
+                            (at-most-one-hom 𝓐 f g f-is-hom g-is-hom))
 
 \end{code}
 
-First milestone for quasidecidable propositions proved - now we need to tidy up the code.
+TODO. Conversely, if the initial σ-frame exists, then we can define
+quasidecidable propositions and show that they form a frame isomorphic
+(and hence equal) to the initial σ-frame.

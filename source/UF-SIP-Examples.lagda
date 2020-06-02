@@ -1924,20 +1924,6 @@ module σ-frame where
    × (f ⊥ ≡ ⊥')
    × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
 
- being-σ-frame-homomorphism-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
-                                    → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-                                    → is-prop (is-σ-frame-homomorphism 𝓐 𝓑 f)
- being-σ-frame-homomorphism-is-prop fe (_ , (⊤ , _∧_ , ⊥ , ⋁) ,  _)
-                                    (_ , (⊤' , _∧'_ , ⊥' , ⋁') , (i' , _)) f =
-   ×-is-prop i'
-  (×-is-prop (Π-is-set fe (λ a →
-              Π-is-set fe (λ b → i')))
-  (×-is-prop i' (Π-is-set fe (λ 𝕒 → i'))))
-
-
- _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
- 𝓐 ≅[σ-Frame] 𝓑 = Σ f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-equiv f × is-σ-frame-homomorphism 𝓐 𝓑 f
-
  \end{code}
 
  TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies
@@ -1945,6 +1931,9 @@ module σ-frame where
  funext 𝓤₀ 𝓤 is superfluous in the following.
 
  \begin{code}
+
+ _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
+ 𝓐 ≅[σ-Frame] 𝓑 = Σ f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-equiv f × is-σ-frame-homomorphism 𝓐 𝓑 f
 
  characterization-of-σ-Frame-≡ : is-univalent 𝓤
                                → funext 𝓤₀ 𝓤
@@ -1962,6 +1951,93 @@ module σ-frame where
         (sip-join.join
          pointed-type.sns-data
          (∞-bigmagma.sns-data ℕ)))))
+
+\end{code}
+
+We name the projections (we wouldn't need to do this if we had used a
+record, but we need Σ for our approach to SIP):
+
+\begin{code}
+
+ ⊤⟨_⟩ : (𝓐 : σ-Frame 𝓤) → ⟨ 𝓐 ⟩
+ ⊤⟨ A , (⊤ , _∧_ , ⊥ , ⋁) , _ ⟩ = ⊤
+
+ meet : (𝓐 : σ-Frame 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
+ meet (A , (⊤ , _∧_ , ⊥ , ⋁) , _) = _∧_
+
+ syntax meet 𝓐 x y = x ∧⟨ 𝓐 ⟩ y
+
+ ⊥⟨_⟩ : (𝓐 : σ-Frame 𝓤) → ⟨ 𝓐 ⟩
+ ⊥⟨ A , (⊤ , _∧_ , ⊥ , ⋁) , _ ⟩ = ⊥
+
+ ⋁⟨_⟩ : (𝓐 : σ-Frame 𝓤) → (ℕ → ⟨ 𝓐 ⟩) → ⟨ 𝓐 ⟩
+ ⋁⟨ A , (⊤ , _∧_ , ⊥ , ⋁) , _ ⟩ = ⋁
+
+ ⟨_⟩-is-set : (𝓐 : σ-Frame 𝓤) → is-set ⟨ 𝓐 ⟩
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-is-set = i
+
+ ⟨_⟩-idempotency : (𝓐 : σ-Frame 𝓤) (a : ⟨ 𝓐 ⟩)
+                 → a ∧⟨ 𝓐 ⟩ a ≡ a
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-idempotency = ii
+
+ ⟨_⟩-commutativity : (𝓐 : σ-Frame 𝓤) (a b : ⟨ 𝓐 ⟩)
+                   → a ∧⟨ 𝓐 ⟩ b ≡ b ∧⟨ 𝓐 ⟩ a
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-commutativity = iii
+
+ ⟨_⟩-associativity : (𝓐 : σ-Frame 𝓤) (a b c : ⟨ 𝓐 ⟩)
+                   → a ∧⟨ 𝓐 ⟩ (b ∧⟨ 𝓐 ⟩ c) ≡ (a ∧⟨ 𝓐 ⟩ b) ∧⟨ 𝓐 ⟩ c
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-associativity = iv
+
+ le : (𝓐 : σ-Frame 𝓤)
+    → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓤 ̇
+ le 𝓐 a b = a ∧⟨ 𝓐 ⟩ b ≡ a
+
+ syntax le 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
+
+ ⟨_⟩-⊥-minimum : (𝓐 : σ-Frame 𝓤) (a : ⟨ 𝓐 ⟩)
+               → ⊥⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-⊥-minimum = v
+
+ ⟨_⟩-⊤-maximum : (𝓐 : σ-Frame 𝓤) (a : ⟨ 𝓐 ⟩)
+               → a ≤⟨ 𝓐 ⟩ ⊤⟨ 𝓐 ⟩
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-⊤-maximum = vi
+
+ ⟨_⟩-distributivity : (𝓐 : σ-Frame 𝓤) (a : ⟨ 𝓐 ⟩) (b : ℕ → ⟨ 𝓐 ⟩)
+                    → a ∧⟨ 𝓐 ⟩ (⋁⟨ 𝓐 ⟩ b) ≡ ⋁⟨ 𝓐 ⟩ (n ↦ (a ∧⟨ 𝓐 ⟩ b n))
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-distributivity = vii
+
+ ⟨_⟩-⋁-is-ub : (𝓐 : σ-Frame 𝓤) (a : ℕ → ⟨ 𝓐 ⟩) (n : ℕ)
+             → a n ≤⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ a
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-⋁-is-ub = viii
+
+ ⟨_⟩-⋁-is-lb-of-ubs : (𝓐 : σ-Frame 𝓤) (a : ℕ → ⟨ 𝓐 ⟩) (u : ⟨ 𝓐 ⟩)
+                    → ((n : ℕ) → a n ≤⟨ 𝓐 ⟩ u) → ⋁⟨ 𝓐 ⟩ a ≤⟨ 𝓐 ⟩ u
+ ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-⋁-is-lb-of-ubs = ix
+
+ ⟨_⟩-trans : (𝓐 : σ-Frame 𝓤) (a b c : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ c → a ≤⟨ 𝓐 ⟩ c
+ ⟨_⟩-trans 𝓐 a b c l m = (a ∧⟨ 𝓐 ⟩ c)             ≡⟨ ap (λ - → - ∧⟨ 𝓐 ⟩ c) (l ⁻¹)  ⟩
+                          ((a ∧⟨ 𝓐 ⟩ b) ∧⟨ 𝓐 ⟩ c) ≡⟨ (⟨ 𝓐 ⟩-associativity a b c)⁻¹ ⟩
+                          (a ∧⟨ 𝓐 ⟩ (b ∧⟨ 𝓐 ⟩ c)) ≡⟨ ap (λ - → a ∧⟨ 𝓐 ⟩ -) m       ⟩
+                          (a ∧⟨ 𝓐 ⟩ b)             ≡⟨ l                            ⟩
+                          a                         ∎
+
+ ⟨_⟩-antisym : (𝓐 : σ-Frame 𝓤) (a b : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ a → a ≡ b
+ ⟨_⟩-antisym 𝓐 a b l m = a            ≡⟨ l ⁻¹                    ⟩
+                         (a ∧⟨ 𝓐 ⟩ b) ≡⟨ ⟨ 𝓐 ⟩-commutativity a b ⟩
+                         (b ∧⟨ 𝓐 ⟩ a) ≡⟨ m                       ⟩
+                         b             ∎
+
+
+ being-σ-frame-homomorphism-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                                    → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                    → is-prop (is-σ-frame-homomorphism 𝓐 𝓑 f)
+ being-σ-frame-homomorphism-is-prop fe (_ , (⊤ , _∧_ , ⊥ , ⋁) ,  _)
+                                    (_ , (⊤' , _∧'_ , ⊥' , ⋁') , (i' , _)) f =
+   ×-is-prop i'
+  (×-is-prop (Π-is-set fe (λ a →
+              Π-is-set fe (λ b → i')))
+  (×-is-prop i' (Π-is-set fe (λ 𝕒 → i'))))
+
 
 \end{code}
 
