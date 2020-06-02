@@ -593,12 +593,12 @@ Next we show that QD is the initial σ-frame. We first show that any
      lω : (𝕢 : ℕ → 𝓠)
         → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n)))
         → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))
-     lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)                         ≡⟨ ap f (distributivity 𝕡 𝕢)                        ⟩
-              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))                ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                    ⟩
-              ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 ∧ 𝕢 n))           ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)                          ⟩
-              ⋁⟨ 𝓐 ⟩ (n ↦ f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n))   ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
-              (f 𝕡 ∧⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕢 n))) ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
-              (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))              ∎
+     lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)                         ≡⟨ ap f (distributivity 𝕡 𝕢)                          ⟩
+              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))                ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                      ⟩
+              ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 ∧ 𝕢 n))            ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)                           ⟩
+              ⋁⟨ 𝓐 ⟩ (n ↦ f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n))     ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
+              (f 𝕡 ∧⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕢 n)))   ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
+              (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))                ∎
 
    γ : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
    γ = dfunext fe (λ 𝕡 → dfunext fe (δ 𝕡))
@@ -668,7 +668,8 @@ The following condition in the definition of F says that the element a : A
 is the least upper bound of the (weakly) constant family λ (p : P) → ⊤'.
 Because least upper bounds are unique when they exist, the type F P is a
 proposition. The hardest part in this development was not to write the Agda
-code, but to figure out what F ought to be.
+code. It was to figure out what F ought to be so that we could define f and
+prove it to be a homormorphism.
 
 \begin{code}
 
@@ -704,7 +705,7 @@ code, but to figure out what F ought to be.
      a∞ : A
      a∞ = ⋁' (n ↦ pr₁ (φ n))
      α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-     α∞ e = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞' e
+     α∞ = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞'
       where
        α∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
        α∞' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (a n) a∞ (α n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
@@ -721,7 +722,7 @@ code, but to figure out what F ought to be.
 
 \end{code}
 
-Using δ we define the desired homormophism f:
+Using δ we define the desired homomorphism f:
 
 \begin{code}
 
@@ -740,7 +741,6 @@ The conditions αf and βf on f are crucial to prove that f is a
 homomorphism:
 
 \begin{code}
-
 
    ⊤-preservation : f ⊤ ≡ ⊤'
    ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (αf ⊤ *)
