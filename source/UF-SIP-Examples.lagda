@@ -1864,7 +1864,7 @@ module σ-frame where
  σ-frame-structure X = X × (X → X → X) × X × ((ℕ → X) → X)
 
  σ-frame-axioms : (X : 𝓤 ̇ ) → σ-frame-structure X → 𝓤 ̇
- σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⊥ , ⋁) = I × II × III × IV × V × VI × VII × VIII
+ σ-frame-axioms {𝓤} X (⊤ , _∧_ , ⊥ , ⋁) = I × II × III × IV × V × VI × VII × VIII × IX
   where
    _≤_ : X → X → 𝓤 ̇
    x ≤ y = x ∧ y ≡ x
@@ -1876,9 +1876,8 @@ module σ-frame where
    V    = (x : X) → ⊥ ≤ x
    VI   = (x : X) → x ≤ ⊤
    VII  = (x : X) (y : ℕ → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
-   VIII = (x : ℕ → X)
-        → ((n : ℕ) → x n ≤ ⋁ x)
-        × ((u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u)
+   VIII = (x : ℕ → X) (n : ℕ) → x n ≤ ⋁ x
+   IX   = (x : ℕ → X) (u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u
  \end{code}
 
  Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
@@ -1893,22 +1892,23 @@ module σ-frame where
  σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⊥ , ⋁) = prop-criterion δ
   where
    δ : σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁))
-   δ (i , ii-viii) =
+   δ (i , ii-ix) =
      ×-is-prop (being-set-is-prop fe)
-    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ x} {x}))
+    (×-is-prop (Π-is-prop fe (λ x →  i {x ∧ x} {x}))
     (×-is-prop (Π-is-prop fe (λ x →
-                Π-is-prop fe (λ y →            i {x ∧ y} {y ∧ x})))
+                Π-is-prop fe (λ y →  i {x ∧ y} {y ∧ x})))
     (×-is-prop (Π-is-prop fe (λ x →
                 Π-is-prop fe (λ y →
-                Π-is-prop fe (λ z →            i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
-    (×-is-prop (Π-is-prop fe (λ x →            i {⊥ ∧ x} {⊥}))
-    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ ⊤} {x}))
+                Π-is-prop fe (λ z →  i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
+    (×-is-prop (Π-is-prop fe (λ x →  i {⊥ ∧ x} {⊥}))
+    (×-is-prop (Π-is-prop fe (λ x →  i {x ∧ ⊤} {x}))
     (×-is-prop (Π-is-prop fe (λ x →
-                Π-is-prop fe (λ y →            i {x ∧ ⋁ y} {⋁ (n ↦ x ∧ y n)})))
-               (Π-is-prop fe λ 𝕪 →
-               ×-is-prop (Π-is-prop fe₀ (λ n → i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
-                         (Π-is-prop fe (λ u →
-                          Π-is-prop fe (λ _ →  i {⋁ 𝕪 ∧ u} {⋁ 𝕪}))))))))))
+                Π-is-prop fe (λ y →  i {x ∧ ⋁ y} {⋁ (n ↦ x ∧ y n)})))
+    (×-is-prop (Π-is-prop fe (λ x →
+                Π-is-prop fe₀ (λ n → i {x n ∧ ⋁ x} {x n})))
+               (Π-is-prop fe (λ x →
+                Π-is-prop fe (λ u →
+                Π-is-prop fe (λ _ →  i {⋁ x ∧ u} {⋁ x})))))))))))
 
  σ-Frame : (𝓤 : Universe) → 𝓤 ⁺ ̇
  σ-Frame 𝓤 = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ σ-frame-structure A , σ-frame-axioms A s
