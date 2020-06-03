@@ -122,7 +122,7 @@ countable joins.
 Exercise. It exists under propositional resizing assumptions (just
 take the intersection of all subsets with 𝟘 and 𝟙 as members and
 closed under countable joins). This exercise is solved below in the
-submodule quasidecidability-construction-from-resizing..
+submodule quasidecidability-construction-from-resizing.
 
 We now assume that there is a such a smallest collection of types,
 called quasidecidable, satisfying the above closure property. The
@@ -238,7 +238,9 @@ second one is conceptually more natural.
    F P = Σ j ꞉ is-quasidecidable P , G (P , j)
 
    F-is-prop-valued : ∀ P → is-prop (F P)
-   F-is-prop-valued P = Σ-is-prop (being-quasidecidable-is-prop P) (λ j → G-is-prop-valued (P , j))
+   F-is-prop-valued P = Σ-is-prop
+                         (being-quasidecidable-is-prop P)
+                         (λ j → G-is-prop-valued (P , j))
 
    F₀ : F 𝟘
    F₀ = 𝟘-is-quasidecidable , g₀
@@ -272,8 +274,9 @@ second one is conceptually more natural.
               → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → 𝕡 n ∈ 𝓖) → ⋁ 𝕡 ∈ 𝓖)
               → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
 
- 𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ (P , i) → pr₁ (𝓖 (P , i))) (λ (P , i) → pr₂ (𝓖 (P , i)))
-
+ 𝓠-induction' {𝓤} 𝓖 = 𝓠-induction
+                        (λ (P , i) → pr₁ (𝓖 (P , i)))
+                        (λ (P , i) → pr₂ (𝓖 (P , i)))
 \end{code}
 
 The quasidecidable propositions form a dominance, with a proof by
@@ -295,7 +298,8 @@ closure under binary products (that is, conjunctions, or meets):
    F P = (Q : 𝓤₀ ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
 
    F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
-   F-is-prop-valued P = Π-is-prop fe (λ Q → Π-is-prop fe (λ _ → being-quasidecidable-is-prop (P × Q)))
+   F-is-prop-valued P = Π-is-prop fe (λ Q →
+                        Π-is-prop fe (λ _ → being-quasidecidable-is-prop (P × Q)))
 
    F₀ : F 𝟘
    F₀ Q φ = transport is-quasidecidable r 𝟘-is-quasidecidable
@@ -375,65 +379,30 @@ The following summarizes the dominance conditions:
 \begin{code}
 
  quasidecidability-is-dominance : is-dominance is-quasidecidable
- quasidecidability-is-dominance =
-   being-quasidecidable-is-prop ,
-   quasidecidable-types-are-props ,
-   𝟙-is-quasidecidable ,
-   quasidecidable-closed-under-Σ
-
+ quasidecidability-is-dominance = being-quasidecidable-is-prop ,
+                                  quasidecidable-types-are-props ,
+                                  𝟙-is-quasidecidable ,
+                                  quasidecidable-closed-under-Σ
 \end{code}
 
 We now show that binary meets (cartesian products) of quasidecidable
 properties distribute over countable joins (existential
-quantifications over ℕ). One direction is trivial, and the other
-follows by induction:
+quantifications over ℕ).
 
 \begin{code}
 
- quasidecidable-σ-frame-trivial :
-     (P : 𝓤₀ ̇ )
-   → is-quasidecidable P
-   → (Q : ℕ → 𝓤₀ ̇ )
-   → ((n : ℕ) → is-quasidecidable (Q n))
-   → P × ∃ Q → ∃ n ꞉ ℕ , P × Q n
-
- quasidecidable-σ-frame-trivial P i Q φ (p , e) = ∥∥-rec ∃-is-prop (λ (n , q) → ∣ n , p , q ∣) e
+ σ-frame→ : (P : 𝓤₀ ̇ ) (Q : ℕ → 𝓤₀ ̇ ) → P × ∃ Q → ∃ n ꞉ ℕ , P × Q n
+ σ-frame→ P Q (p , e) = ∥∥-rec ∃-is-prop (λ (n , q) → ∣ n , p , q ∣) e
 
 
- quasidecidable-σ-frame-non-trivial :
-    (P : 𝓤₀ ̇ )
-  → is-quasidecidable P
-  → (Q : ℕ → 𝓤₀ ̇ )
-  → ((n : ℕ) → is-quasidecidable (Q n))
-  → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
-
- quasidecidable-σ-frame-non-trivial P i Q j = γ
+ σ-frame← : (P : 𝓤₀ ̇ ) → is-prop P → (Q : ℕ → 𝓤₀ ̇ ) → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
+ σ-frame← P i Q e = p , e'
   where
-   F : 𝓤₀ ̇ → 𝓤₁ ̇
-   F P = (Q : ℕ → 𝓤₀ ̇ )
-       → ((n : ℕ) → is-quasidecidable (Q n))
-       → is-prop P → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
+   p : P
+   p = ∥∥-rec i (λ (n , p , q) → p) e
 
-   F-is-prop-valued : ∀ P → is-prop (F P)
-   F-is-prop-valued P = Π-is-prop fe (λ Q →
-                        Π-is-prop fe (λ φ →
-                        Π-is-prop fe (λ i →
-                        Π-is-prop fe (λ a →
-                        ×-is-prop i ∃-is-prop))))
-
-   F₀ : F 𝟘
-   F₀ Q φ i e = 𝟘-elim (∥∥-rec 𝟘-is-prop (λ (n , z , q) → z) e)
-
-   F₁ : F 𝟙
-   F₁ Q φ i e = * , (∥∥-rec ∃-is-prop (λ (n , o , q) → ∣ n , q ∣) e)
-
-   Fω : (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ P)
-   Fω P f Q φ i e = ∥∥-rec ∃-is-prop (λ (n , ep , q) → ep) e ,
-                    ∥∥-rec ∃-is-prop (λ (n , ep , q) → ∣ n , q ∣) e
-
-   γ : (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
-   γ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω P i Q j
-        (quasidecidable-types-are-props P i)
+   e' : ∃ Q
+   e' = ∥∥-rec ∃-is-prop (λ (n , p , q) → ∣ n , q ∣) e
 
 \end{code}
 
@@ -454,8 +423,8 @@ extensionality, we get the σ-frame distributive law:
                   (quasidecidable-types-are-props (∃ Q)
                   (quasidecidable-closed-under-ω-joins Q φ)))
        ∃-is-prop
-       (quasidecidable-σ-frame-trivial P i Q φ)
-       (quasidecidable-σ-frame-non-trivial P i Q φ)
+       (σ-frame→ P Q)
+       (σ-frame← P (quasidecidable-types-are-props P i) Q)
 
 \end{code}
 
