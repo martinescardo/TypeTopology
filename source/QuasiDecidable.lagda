@@ -13,7 +13,7 @@ countable joins.
   * We first work with a hypothetical collection of quasidecidable
     propositions and show that they form the initial σ-frame.
 
-    This is the submodule hypothetical-quasidecidability.
+    This is in the submodule hypothetical-quasidecidability.
 
 
   * Then we construct it assuming propositional resizing.
@@ -142,11 +142,13 @@ module hypothetical-quasidecidability
 
         (𝟙-is-quasidecidable : is-quasidecidable 𝟙)
 
-        (quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤₀ ̇ )
+        (quasidecidable-closed-under-ω-joins :
+            (P : ℕ → 𝓤₀ ̇ )
           → ((n : ℕ) → is-quasidecidable (P n))
           → is-quasidecidable (∃ n ꞉ ℕ , P n))
 
-        (quasidecidable-induction : ∀ {𝓤} (F : 𝓤₀ ̇ → 𝓤 ̇ )
+        (quasidecidable-induction : ∀ {𝓤}
+            (F : 𝓤₀ ̇ → 𝓤 ̇ )
           → ((P : 𝓤₀ ̇ ) → is-prop (F P))
           → F 𝟘
           → F 𝟙
@@ -193,8 +195,10 @@ We collect the quasidecidable propositions in the type 𝓠:
   where
    ζ : (P : 𝓤₀ ̇ ) → is-quasidecidable P → is-prop P
    ζ = quasidecidable-types-are-props
+
    ζ-is-embedding : (P : 𝓤₀ ̇ ) → is-embedding (ζ P)
-   ζ-is-embedding P = maps-of-props-are-embeddings (ζ P) (being-quasidecidable-is-prop P) (being-prop-is-prop fe)
+   ζ-is-embedding P = maps-of-props-are-embeddings (ζ P)
+                       (being-quasidecidable-is-prop P) (being-prop-is-prop fe)
 
  𝓠-is-set : is-set 𝓠
  𝓠-is-set = subtypes-of-sets-are-sets 𝓠→Ω
@@ -227,35 +231,47 @@ second one is conceptually more natural.
              → G ⊤
              → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → G (𝕡 n)) → G (⋁ 𝕡))
              → (𝕡 : 𝓠) → G 𝕡
+
  𝓠-induction {𝓤} G G-is-prop-valued g₀ g₁ gω (P , i) = γ
   where
    F :  𝓤₀ ̇ → 𝓤 ̇
    F P = Σ j ꞉ is-quasidecidable P , G (P , j)
+
    F-is-prop-valued : ∀ P → is-prop (F P)
    F-is-prop-valued P = Σ-is-prop (being-quasidecidable-is-prop P) (λ j → G-is-prop-valued (P , j))
+
    F₀ : F 𝟘
    F₀ = 𝟘-is-quasidecidable , g₀
+
    F₁ : F 𝟙
    F₁ = 𝟙-is-quasidecidable , g₁
+
    Fω : (Q : ℕ → 𝓤₀ ̇) → ((n : ℕ) → F (Q n)) → F (∃ n ꞉ ℕ , Q n)
    Fω Q φ = quasidecidable-closed-under-ω-joins Q (λ n → pr₁ (φ n)) ,
             gω (λ n → (Q n , pr₁ (φ n))) (λ n → pr₂ (φ n))
+
    δ : Σ j ꞉ is-quasidecidable P , G (P , j)
    δ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω P i
+
    j : is-quasidecidable P
    j = pr₁ δ
+
    g : G (P , j)
    g = pr₂ δ
-   γ : G (P , i)
+
    r : j ≡ i
    r = being-quasidecidable-is-prop P j i
+
+   γ : G (P , i)
    γ = transport (λ - → G (P , -)) r g
+
 
  𝓠-induction' : (𝓖 : 𝓠 → Ω 𝓤)
               → ⊥ ∈ 𝓖
               → ⊤ ∈ 𝓖
               → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → 𝕡 n ∈ 𝓖) → ⋁ 𝕡 ∈ 𝓖)
               → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
+
  𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ (P , i) → pr₁ (𝓖 (P , i))) (λ (P , i) → pr₂ (𝓖 (P , i)))
 
 \end{code}
@@ -272,17 +288,21 @@ closure under binary products (that is, conjunctions, or meets):
    → (Q : 𝓤₀ ̇ )
    → (P → is-quasidecidable Q)
    → is-quasidecidable (P × Q)
+
  quasidecidable-closed-under-× = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
   where
    F : 𝓤₀ ̇ → 𝓤₁ ̇
    F P = (Q : 𝓤₀ ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
+
    F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
    F-is-prop-valued P = Π-is-prop fe (λ Q → Π-is-prop fe (λ _ → being-quasidecidable-is-prop (P × Q)))
+
    F₀ : F 𝟘
    F₀ Q φ = transport is-quasidecidable r 𝟘-is-quasidecidable
     where
      r : 𝟘 ≡ 𝟘 × Q
      r = pe₀ 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
+
    F₁ : F 𝟙
    F₁ Q φ = transport is-quasidecidable r (φ *)
     where
@@ -290,31 +310,40 @@ closure under binary products (that is, conjunctions, or meets):
      i = quasidecidable-types-are-props Q (φ *)
      r : Q ≡ 𝟙 × Q
      r = pe₀ i (×-is-prop 𝟙-is-prop i) (λ q → (* , q)) pr₂
+
    Fω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
    Fω P f Q φ = γ
     where
      φ' : (n : ℕ) → P n → is-quasidecidable Q
      φ' n p = φ ∣ n , p ∣
+
      a : (n : ℕ) → is-quasidecidable (P n × Q)
      a n = f n Q (φ' n)
+
      b : is-quasidecidable (∃ n ꞉ ℕ , P n × Q)
      b = quasidecidable-closed-under-ω-joins (λ n → P n × Q) a
+
      c : (∃ n ꞉ ℕ , P n × Q) → ((∃ n ꞉ ℕ , P n) × Q)
      c s = (t , q)
       where
        t : ∃ n ꞉ ℕ , P n
        t = ∥∥-rec ∃-is-prop (λ (n , (p , q)) → ∣ n , p ∣) s
+
        i : is-prop Q
        i = quasidecidable-types-are-props Q (φ t)
+
        q : Q
        q = ∥∥-rec i (λ (n , (p , q)) → q) s
+
      d : ((∃ n ꞉ ℕ , P n) × Q) → (∃ n ꞉ ℕ , P n × Q)
      d (t , q) = ∥∥-functor (λ (n , p) → n , (p , q)) t
+
      r : (∃ n ꞉ ℕ , P n × Q) ≡ ((∃ n ꞉ ℕ , P n) × Q)
      r = pe₀ ∃-is-prop
              (×-prop-criterion ((λ _ → ∃-is-prop) ,
                                 (λ e → quasidecidable-types-are-props Q (φ e))))
              c d
+
      γ : is-quasidecidable ((∃ n ꞉ ℕ , P n) × Q)
      γ = transport is-quasidecidable r b
 
@@ -331,6 +360,7 @@ by quasidecidable propositions:
    → is-quasidecidable P
    → ((p : P) → is-quasidecidable (Q p))
    → is-quasidecidable (Σ Q)
+
  quasidecidable-closed-under-Σ = D3-and-D5'-give-D5 pe₀ is-quasidecidable
                                   (quasidecidable-types-are-props)
                                   (λ P Q' i j → quasidecidable-closed-under-× P i Q' j)
@@ -345,10 +375,12 @@ The following summarizes the dominance conditions:
 \begin{code}
 
  quasidecidability-is-dominance : is-dominance is-quasidecidable
- quasidecidability-is-dominance = being-quasidecidable-is-prop ,
-                                   quasidecidable-types-are-props ,
-                                   𝟙-is-quasidecidable ,
-                                   quasidecidable-closed-under-Σ
+ quasidecidability-is-dominance =
+   being-quasidecidable-is-prop ,
+   quasidecidable-types-are-props ,
+   𝟙-is-quasidecidable ,
+   quasidecidable-closed-under-Σ
+
 \end{code}
 
 We now show that binary meets (cartesian products) of quasidecidable
@@ -364,6 +396,7 @@ follows by induction:
    → (Q : ℕ → 𝓤₀ ̇ )
    → ((n : ℕ) → is-quasidecidable (Q n))
    → P × ∃ Q → ∃ n ꞉ ℕ , P × Q n
+
  quasidecidable-σ-frame-trivial P i Q φ (p , e) = ∥∥-rec ∃-is-prop (λ (n , q) → ∣ n , p , q ∣) e
 
 
@@ -373,27 +406,34 @@ follows by induction:
   → (Q : ℕ → 𝓤₀ ̇ )
   → ((n : ℕ) → is-quasidecidable (Q n))
   → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
+
  quasidecidable-σ-frame-non-trivial P i Q j = γ
   where
    F : 𝓤₀ ̇ → 𝓤₁ ̇
    F P = (Q : ℕ → 𝓤₀ ̇ )
        → ((n : ℕ) → is-quasidecidable (Q n))
        → is-prop P → (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
+
    F-is-prop-valued : ∀ P → is-prop (F P)
    F-is-prop-valued P = Π-is-prop fe (λ Q →
                         Π-is-prop fe (λ φ →
                         Π-is-prop fe (λ i →
                         Π-is-prop fe (λ a →
                         ×-is-prop i ∃-is-prop))))
+
    F₀ : F 𝟘
    F₀ Q φ i e = 𝟘-elim (∥∥-rec 𝟘-is-prop (λ (n , z , q) → z) e)
+
    F₁ : F 𝟙
    F₁ Q φ i e = * , (∥∥-rec ∃-is-prop (λ (n , o , q) → ∣ n , q ∣) e)
+
    Fω : (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ P)
    Fω P f Q φ i e = ∥∥-rec ∃-is-prop (λ (n , ep , q) → ep) e ,
                     ∥∥-rec ∃-is-prop (λ (n , ep , q) → ∣ n , q ∣) e
+
    γ : (∃ n ꞉ ℕ , P × Q n) → P × ∃ Q
-   γ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω P i Q j (quasidecidable-types-are-props P i)
+   γ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω P i Q j
+        (quasidecidable-types-are-props P i)
 
 \end{code}
 
@@ -408,6 +448,7 @@ extensionality, we get the σ-frame distributive law:
    → (Q : ℕ → 𝓤₀ ̇ )
    → ((n : ℕ) → is-quasidecidable (Q n))
    → P × ∃ Q ≡ (∃ n ꞉ ℕ , P × Q n)
+
  quasidecidable-σ-frame P i Q φ =
    pe₀ (×-is-prop (quasidecidable-types-are-props P i)
                   (quasidecidable-types-are-props (∃ Q)
@@ -432,8 +473,10 @@ and prove the σ-frame axioms.
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
+
    r : P × P ≡ P
    r = pe₀ (×-is-prop i' i') i' pr₁ (λ p → (p , p))
+
    γ : ((P × P) , _) ≡ (P , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
@@ -442,13 +485,16 @@ and prove the σ-frame axioms.
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
+
    j' : is-prop Q
    j' = quasidecidable-types-are-props Q j
+
    r : P × Q ≡ Q × P
    r = pe₀ (×-is-prop i' j')
            (×-is-prop j' i')
            (λ (p , q) → (q , p))
            (λ (q , p) → (p , q))
+
    γ : ((P × Q) , _) ≡ ((Q × P) , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
@@ -457,46 +503,54 @@ and prove the σ-frame axioms.
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
+
    j' : is-prop Q
    j' = quasidecidable-types-are-props Q j
+
    k' : is-prop R
    k' = quasidecidable-types-are-props R k
+
    r : P × (Q × R) ≡ (P × Q) × R
    r = pe₀ (×-is-prop i' (×-is-prop j' k'))
            (×-is-prop (×-is-prop i' j') k')
            (λ (p , (q , r)) → ((p , q) , r))
            (λ ((p , q) , r) → (p , (q , r)))
+
    γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ∧ 𝕡 ≡ ⊥
+ _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
+ 𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
+
+ ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ≤ 𝕡
  ⊥-is-minimum (P , i) = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
+
    r : 𝟘 × P ≡ 𝟘
    r = pe₀ (×-is-prop 𝟘-is-prop i')
            𝟘-is-prop
            pr₁
            unique-from-𝟘
+
    γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ∧ ⊤ ≡ 𝕡
+ ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ≤ ⊤
  ⊤-is-maximum (P , i) = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
+
    r : P × 𝟙 ≡ P
    r = pe₀ (×-is-prop i' 𝟙-is-prop)
            i'
            (λ (p , _) → p)
            (λ p → (p , *))
+
    γ : ((P × 𝟙) , _) ≡ (P , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
-
- _≤_ : 𝓠 → 𝓠 → 𝓤₁ ̇
- 𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
 
  ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
  ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
@@ -506,8 +560,10 @@ and prove the σ-frame axioms.
   where
    r : P × Q ≡ P
    r = ap (_is-true) l
+
    g : P → P × Q
    g = idtofun P (P × Q) (r ⁻¹)
+
    γ : Q
    γ = pr₂ (g p)
 
@@ -516,10 +572,13 @@ and prove the σ-frame axioms.
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
+
    j' : is-prop Q
    j' = quasidecidable-types-are-props Q j
+
    r : P × Q ≡ P
    r = pe₀ (×-is-prop i' j') i' pr₁ (λ p → (p , f p))
+
    γ : ((P × Q) , _) ≡ (P , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
@@ -528,10 +587,13 @@ and prove the σ-frame axioms.
   where
    Q : ℕ → 𝓤₀ ̇
    Q n = 𝕢 n is-true
+
    j : (n : ℕ) → is-quasidecidable (Q n)
    j n = being-true-is-quasidecidable (𝕢 n)
+
    r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
    r = quasidecidable-σ-frame P i Q j
+
    γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
@@ -543,6 +605,7 @@ and prove the σ-frame axioms.
   where
    δ : (Σ n ꞉ ℕ , 𝕡 n is-true) → U
    δ (n , p) = from-≤ (φ n) p
+
    γ : (∃ n ꞉ ℕ , 𝕡 n is-true) → U
    γ = ∥∥-rec (quasidecidable-types-are-props U i) δ
 
@@ -607,6 +670,7 @@ We first show that any ⊥,⊤,⋁-homomorphism on QD is automatically a
                           → f ⊤ ≡ ⊤'
                           → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n))))
                           → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
+
   ⊥⊤⋁-hom-on-QD-is-∧-hom f f⊥ f⊤ f⋁ = γ
    where
     δ : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)
@@ -630,6 +694,7 @@ We first show that any ⊥,⊤,⋁-homomorphism on QD is automatically a
       lω : (𝕢 : ℕ → 𝓠)
          → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧' f (𝕢 n)))
          → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧' f (⋁ 𝕢))
+
       lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)               ≡⟨ ap f (distributivity 𝕡 𝕢)                          ⟩
                f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))      ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                      ⟩
                ⋁' (n ↦ f (𝕡 ∧ 𝕢 n))      ≡⟨ ap ⋁' (dfunext fe φ)                               ⟩
@@ -651,6 +716,7 @@ And then again by 𝓠-induction, there is at most one homomorphism from
                   → is-σ-frame-homomorphism QD 𝓐 g
                   → is-σ-frame-homomorphism QD 𝓐 h
                   → g ≡ h
+
   at-most-one-hom g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
    where
     i₀ = g ⊥ ≡⟨ g⊥    ⟩
@@ -682,6 +748,7 @@ exist, the type in the conclusion of the lemma is a proposition.
   initiality-lemma : (P : 𝓤₀ ̇)
                    → is-quasidecidable P
                    → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+
   initiality-lemma = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
 
    where
@@ -711,12 +778,16 @@ exist, the type in the conclusion of the lemma is a proposition.
      where
       a : ℕ → A
       a n = pr₁ (φ n)
+
       α : (n : ℕ) → P n → ⊤' ≤' a n
       α n = pr₁ (pr₂ (φ n))
+
       β : (n : ℕ) → (u : A) → (P n → ⊤' ≤' u) → a n ≤' u
       β n = pr₂ (pr₂ (φ n))
+
       a∞ : A
-      a∞ = ⋁' (n ↦ pr₁ (φ n))
+      a∞ = ⋁' a
+
       α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
       α∞ = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞'
        where
@@ -735,7 +806,6 @@ We now have enough constructions and lemmas to show that the type of
 quasidecidable propositions is the initial σ-frame. It remains to show
 that the function 𝓠 → A induced by the initiality lemma is a σ-frame
 homomorphism.
-
 
 \begin{code}
 
@@ -775,17 +845,22 @@ homomorphism, and are all we need for that purpose.
          where
           r : ⊤' ≤' f (𝕡 n)
           r = α (𝕡 n) p
+
           s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
           s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
+
        φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
        φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
+
        v : f (⋁ 𝕡) ≤' ⋁' (n ↦ f (𝕡 n))
        v = β (⋁ 𝕡) (⋁' (n ↦ f (𝕡 n))) φ
 
        t' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
        t' = ⋁-is-ub 𝕡
+
        t : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
        t n = f-is-monotone (𝕡 n) (⋁ 𝕡) (t' n)
+
        w : ⋁' (n ↦ f (𝕡 n)) ≤' f (⋁ 𝕡)
        w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) t
 
@@ -817,8 +892,7 @@ And then we are done:
                              (at-most-one-hom f g f-is-hom g-is-hom))
 \end{code}
 
-This conclude the anonymous module and the module
-hypothetical-quasidecidability.
+This conclude the anonymous module and the module hypothetical-quasidecidability.
 
 We discussed above the specification of the notion of quasidecidable
 property. But can we define or construct it? Yes if, for example,
@@ -838,17 +912,18 @@ This assunption says that any proposition in the universe 𝓤 is
 equivalent to some proposition in the universe 𝓥, for any two
 universes 𝓤 and 𝓥.
 
-The crucial fact exploited here is that intersections of sets of
-subsets 𝓐:𝓟(𝓟 X) exist under propositional resizing. We prove this
-generalizing the type of 𝓐 (the double powerset) as follows, where the
-membership relation defined in the module UF-Powerset has type
+The crucial fact exploited here is that intersections of collections
+of subcollections 𝓐:𝓟(𝓟 X) exist under propositional resizing. We
+prove this generalizing the type of 𝓐 (the double powerset) as
+follows, where the membership relation defined in the module
+UF-Powerset has type
 
   _∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 
 \begin{code}
 
- intersections-exist : {X : 𝓤 ̇ } (𝓐 : ((X → Ω 𝓥) → Ω 𝓦))
-                     → Σ B ꞉ (X → Ω 𝓥) , ((x : X) → (x ∈ B) ⇔ ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A))
+ intersections-exist : {X : 𝓤 ̇ } (𝓐 : (X → Ω 𝓥) → Ω 𝓦)
+                     → Σ B ꞉ (X → Ω 𝓥) , ((x : X) → x ∈ B ⇔ ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A))
  intersections-exist {𝓤} {𝓥} {𝓦} {X} 𝓐 = B , (λ x → lr x , rl x)
   where
    β : X → 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦 ̇
@@ -858,7 +933,8 @@ membership relation defined in the module UF-Powerset has type
    i x = Π-is-prop fe (λ A → Π-is-prop fe (λ _ → ∈-is-prop A x))
 
    B : X → Ω 𝓥
-   B x = (resize ρ (β x) (i x) , resize-is-prop ρ (β x) (i x))
+   B x = resize ρ (β x) (i x) ,
+         resize-is-prop ρ (β x) (i x)
 
    lr : (x : X) → x ∈ B → (A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A
    lr x = from-resize ρ (β x) (i x)
@@ -866,7 +942,7 @@ membership relation defined in the module UF-Powerset has type
    rl : (x : X) → ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A) → x ∈ B
    rl x = to-resize ρ (β x) (i x)
 
- ⋂ : {X : 𝓤 ̇ } (𝓐 : ((X → Ω 𝓥) → Ω 𝓦)) → (X → Ω 𝓥)
+ ⋂ : {X : 𝓤 ̇ } (𝓐 : (X → Ω 𝓥) → Ω 𝓦) → (X → Ω 𝓥)
  ⋂ 𝓐 = pr₁ (intersections-exist 𝓐)
 
  from-⋂ : {X : 𝓤 ̇ } (𝓐 : ((X → Ω 𝓥) → Ω 𝓦)) (x : X)
@@ -880,7 +956,8 @@ membership relation defined in the module UF-Powerset has type
 \end{code}
 
 To define the type of quasi-decidable propositions, we take the
-intersection of the types satisfying the following closure condition:
+intersection of the collections of types satisfying the following
+closure condition:
 
 \begin{code}
 
@@ -893,6 +970,7 @@ intersection of the types satisfying the following closure condition:
    closure-condition = (𝟘 ∈ A)
                      × (𝟙 ∈ A)
                      × ((P : ℕ → 𝓤 ̇ ) → ((n : ℕ) → P n ∈ A) → (∃ n ꞉ ℕ , P n) ∈ A)
+
    i : is-prop closure-condition
    i = ×-is-prop (∈-is-prop A 𝟘)
       (×-is-prop (∈-is-prop A 𝟙)
@@ -921,67 +999,83 @@ intersection of the types satisfying the following closure condition:
     where
      i : (n : ℕ) → P n ∈ ⋂ QD-closed-types
      i = φ
+
      ii : (n : ℕ) (A : 𝓤₀ ̇ → Ω 𝓤₀) → A ∈ QD-closed-types → P n ∈ A
      ii n = from-⋂ QD-closed-types (P n) (i n)
+
      iii : (A : 𝓤₀ ̇ → Ω₀) → A ∈ QD-closed-types → ∃ P ∈ A
      iii A (c₁ , c₂ , cω) = cω P (λ n → ii n A (c₁ , c₂ , cω))
+
      iv : ∃ P ∈ ⋂ QD-closed-types
      iv = to-⋂ QD-closed-types (∃ P) iii
 
 \end{code}
 
-The full induction principle requires an application of resizing. We
-first prove a particular case that doesn't, which captures the essence
-of the proof of the full induction principle:
+The full induction principle requires a further application of
+resizing. We first prove a particular case that doesn't, which
+captures the essence of the proof of the full induction principle:
 
 \begin{code}
 
- quasidecidable-induction₀ : (F : 𝓤₀ ̇ → 𝓤₀ ̇ )
+ quasidecidable-induction₀ :
+     (F : 𝓤₀ ̇ → 𝓤₀ ̇ )
    → ((P : 𝓤₀ ̇ ) → is-prop (F P))
    → F 𝟘
    → F 𝟙
    → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P
+
  quasidecidable-induction₀ F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
   where
    A : (P : 𝓤₀ ̇ ) → Ω 𝓤₀
    A P = F P , F-is-prop-valued P
+
    A-is-QD-closed : A ∈ QD-closed-types
    A-is-QD-closed = F₀ , F₁ , Fω
+
    pqd : P ∈ ⋂ QD-closed-types
    pqd = P-is-quasidecidable
+
    δ : P ∈ A
    δ = from-⋂ QD-closed-types P pqd A A-is-QD-closed
+
    γ : F P
    γ = δ
 
 \end{code}
 
 To get the full induction principle we need to add resizing coercions
-to the above construction. The point is that the type of F now
-is 𝓤₀ ̇ → 𝓤 ̇ rather than 𝓤₀ ̇ → 𝓤₀ ̇ as above.
+to the above construction. The point is that now F has values in any
+universe 𝓤 rather than the first universe 𝓤₀ as above.
 
 \begin{code}
 
- quasidecidable-induction : (F : 𝓤₀ ̇ → 𝓤 ̇ )
+ quasidecidable-induction :
+     (F : 𝓤₀ ̇ → 𝓤 ̇ )
    → ((P : 𝓤₀ ̇ ) → is-prop (F P))
    → F 𝟘
    → F 𝟙
    → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P
+
  quasidecidable-induction {𝓤} F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
   where
    A : (P : 𝓤₀ ̇ ) → Ω 𝓤₀
-   A P = resize ρ (F P) (F-is-prop-valued P) , resize-is-prop ρ (F P) (F-is-prop-valued P)
+   A P = resize ρ (F P) (F-is-prop-valued P) ,
+         resize-is-prop ρ (F P) (F-is-prop-valued P)
+
    A-is-QD-closed : A ∈ QD-closed-types
    A-is-QD-closed = to-resize ρ (F 𝟘) (F-is-prop-valued 𝟘) F₀ ,
                     to-resize ρ (F 𝟙) (F-is-prop-valued 𝟙) F₁ ,
                     (λ P φ  → to-resize ρ (F (∃ P)) (F-is-prop-valued (∃ P))
                                (Fω P (λ n → from-resize ρ (F (P n)) (F-is-prop-valued (P n)) (φ n))))
+
    pqd : P ∈ ⋂ QD-closed-types
    pqd = P-is-quasidecidable
+
    δ : P ∈ A
    δ = from-⋂ QD-closed-types P P-is-quasidecidable A A-is-QD-closed
+
    γ : F P
    γ = from-resize ρ (F P) (F-is-prop-valued P) δ
 
@@ -996,7 +1090,9 @@ hypothetical development.
  open σ-frame
 
  initial-σ-Frame-exists :
+
   Σ I ꞉ σ-Frame 𝓤₁ , ((𝓐 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ I ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism I 𝓐 f)
+
  initial-σ-Frame-exists {𝓤} = QD , QD-is-initial-σ-Frame
   where
    open hypothetical-quasidecidability
@@ -1028,6 +1124,6 @@ only if the quasidecidable propositions are semidecidable. This is not
 in the paper, but the methods of proof of the paper should apply more
 or less directly.
 
-TODO. Can we construct the collection of quasidecidable propositions
-without resizing and without higher-inductive types other than
-propositional truncation?
+To think about. Can we construct the collection of quasidecidable
+propositions without resizing and without higher-inductive types other
+than propositional truncation?
