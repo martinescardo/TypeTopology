@@ -1,4 +1,4 @@
-Martin Escardo, May 2020.
+Martin Escardo, 30 May - 3rd June 2020.
 
 The quasidecidable propositions, defined below, generalize the
 semidecidable propositions.  A weakening of the axiom of countable
@@ -10,10 +10,17 @@ defines the initial σ-frame.  A σ-frame is a poset with countable
 joins and finite meets such that binary meets distribute over
 countable joins.
 
-We first work with a hypothetical collection of quasidecidable
-propositions, and then we construct it assuming propositional
-resizing. Can we construct them without resizing and without
-higher-inductive types other than propositional truncation?
+  * We first work with a hypothetical collection of quasidecidable
+    propositions and show that they form the initial σ-frame, and then
+
+    This is the submodule hypothetical-quasidecidability.
+
+  * we construct it assuming propositional resizing.
+
+    This is in the submodule quasidecidability-construction-from-resizing.
+
+Can we construct them without resizing and without higher-inductive
+types other than propositional truncation?
 
 \begin{code}
 
@@ -41,7 +48,6 @@ open import UF-Yoneda
 open import UF-SIP-Examples
 open import UF-Embeddings
 open import UF-Powerset
-
 
 \end{code}
 
@@ -640,144 +646,152 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 
 \end{code}
 
-We now have enough constructions and lemmas to show that the type of
-quasidecidable propositions is the initial σ-frame:
+To prove the initiality condition, we work with an arbitrary frame 𝓐
+in an arbitrary universe 𝓤:
 
 \begin{code}
 
- QD-is-initial-σ-Frame : (𝓐 : σ-Frame 𝓤)
-                       → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
- QD-is-initial-σ-Frame {𝓤} 𝓐 = γ
-  where
+ module _ {𝓤 : Universe} (𝓐 : σ-Frame 𝓤) where
 
 \end{code}
 
-We first introduce some abbreviations for notational convenience:
+We first introduce some abbreviations, private to this anonymous
+module, for notational convenience:
 
 \begin{code}
 
-   A = ⟨ 𝓐 ⟩
-   ⊥' = ⊥⟨ 𝓐 ⟩
-   ⊤' = ⊤⟨ 𝓐 ⟩
-   ⋁' = ⋁⟨ 𝓐 ⟩
-   _≤'_ : A → A → 𝓤 ̇
-   a ≤' b = a ≤⟨ 𝓐 ⟩ b
-   _∧'_ : A → A → A
-   a ∧' b = a ∧⟨ 𝓐 ⟩ b
+  private
+
+    A = ⟨ 𝓐 ⟩
+    ⊥' = ⊥⟨ 𝓐 ⟩
+    ⊤' = ⊤⟨ 𝓐 ⟩
+    ⋁' = ⋁⟨ 𝓐 ⟩
+    _≤'_ : A → A → 𝓤 ̇
+    a ≤' b = a ≤⟨ 𝓐 ⟩ b
+    _∧'_ : A → A → A
+    a ∧' b = a ∧⟨ 𝓐 ⟩ b
 
 \end{code}
 
-We proceed by induction using the auxiliary predicate F.
-
-The following condition in the definition of F says that the element a : A
-is the least upper bound of the (weakly) constant family λ (p : P) → ⊤'.
-Because least upper bounds are unique when they exist, the type F P is a
-proposition.
+The condition in the conclusion of the following initiality lemma says
+that a is the least upper bound of the (weakly) constant family
+λ (p : P) → ⊤'.  Because least upper bounds are unique when they
+exist, the type in the conclusion of the lemma is a proposition.
 
 \begin{code}
 
-   F : 𝓤₀ ̇ → 𝓤 ̇
-   F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+  initiality-lemma : (P : 𝓤₀ ̇)
+                   → is-quasidecidable P
+                   → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+  initiality-lemma = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
 
-   F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
-   F-is-prop-valued P (a , α , β) (a' , α' , β') = to-subtype-≡ j r
-    where
-     j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
-     j a = ×-is-prop
-           (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤' ∧' a} {⊤'}))
-           (Π-is-prop fe (λ u →
-            Π-is-prop fe (λ ψ → ⟨ 𝓐 ⟩-is-set {a ∧' u} {a})))
-     r : a ≡ a'
-     r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
+   where
 
-   F₀ : F 𝟘
-   F₀ = ⊥' , (λ p → 𝟘-elim p) , (λ u ψ → ⟨ 𝓐 ⟩-⊥-minimum u)
+    F : 𝓤₀ ̇ → 𝓤 ̇
+    F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
-   F₁ : F 𝟙
-   F₁ = ⊤' , (λ p → ⟨ 𝓐 ⟩-⊤-maximum ⊤') , (λ u ψ → ψ *)
-
-   Fω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
-   Fω P φ = a∞ , α∞ , β∞
-    where
-     a : ℕ → A
-     a n = pr₁ (φ n)
-     α : (n : ℕ) → P n → ⊤' ≤' a n
-     α n = pr₁ (pr₂ (φ n))
-     β : (n : ℕ) → (u : A) → (P n → ⊤' ≤' u) → a n ≤' u
-     β n = pr₂ (pr₂ (φ n))
-     a∞ : A
-     a∞ = ⋁' (n ↦ pr₁ (φ n))
-     α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-     α∞ = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞'
-      where
-       α∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-       α∞' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (a n) a∞ (α n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
-
-     β∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤' u) → a∞ ≤' u
-     β∞ u ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u l
-      where
-       l : (n : ℕ) → a n ≤' u
-       l n = β n u (λ p → ψ ∣ n , p ∣)
-
-   δ : (P : 𝓤₀ ̇) → is-quasidecidable P
-     → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
-   δ = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
-
-\end{code}
-
-Using δ we define the desired homomorphism f:
-
-\begin{code}
-
-   f : 𝓠 → A
-   f (P , i) = pr₁ (δ P i)
-
-   αf : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
-   αf (P , i) = pr₁ (pr₂ (δ P i))
-
-   βf : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
-   βf (P , i) = pr₂ (pr₂ (δ P i))
-
-\end{code}
-
-The conditions αf and βf on f are crucial to prove that f is indeed a
-homomorphism:
-
-\begin{code}
-
-   ⊤-preservation : f ⊤ ≡ ⊤'
-   ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (αf ⊤ *)
-
-   ⊥-preservation : f ⊥ ≡ ⊥'
-   ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (βf ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
-
-   f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
-   f-is-monotone 𝕡 𝕢 l = βf 𝕡 (f 𝕢) (λ p → αf 𝕢 (≤-characterization→ l p))
-
-   ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
-   ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n))) v w
+    F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
+    F-is-prop-valued P (a , α , β) (a' , α' , β') = to-subtype-≡ j r
      where
-      φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
-      φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n))) r s
-        where
-         r : ⊤' ≤' f (𝕡 n)
-         r = αf (𝕡 n) p
-         s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
-         s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
-      φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
-      φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
-      v : f (⋁ 𝕡) ≤' ⋁' (n ↦ f (𝕡 n))
-      v = βf (⋁ 𝕡) (⋁' (n ↦ f (𝕡 n))) φ
+      j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
+      j a = ×-is-prop
+            (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤' ∧' a} {⊤'}))
+            (Π-is-prop fe (λ u →
+             Π-is-prop fe (λ ψ → ⟨ 𝓐 ⟩-is-set {a ∧' u} {a})))
+      r : a ≡ a'
+      r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
 
-      t' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
-      t' = ⋁-is-ub 𝕡
-      t : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
-      t n = f-is-monotone (𝕡 n) (⋁ 𝕡) (t' n)
-      w : ⋁' (n ↦ f (𝕡 n)) ≤' f (⋁ 𝕡)
-      w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) t
+    F₀ : F 𝟘
+    F₀ = ⊥' , (λ p → 𝟘-elim p) , (λ u ψ → ⟨ 𝓐 ⟩-⊥-minimum u)
 
-   ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
-   ⋁-preservation = dfunext fe ⋁-preservation'
+    F₁ : F 𝟙
+    F₁ = ⊤' , (λ p → ⟨ 𝓐 ⟩-⊤-maximum ⊤') , (λ u ψ → ψ *)
+
+    Fω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
+    Fω P φ = a∞ , α∞ , β∞
+     where
+      a : ℕ → A
+      a n = pr₁ (φ n)
+      α : (n : ℕ) → P n → ⊤' ≤' a n
+      α n = pr₁ (pr₂ (φ n))
+      β : (n : ℕ) → (u : A) → (P n → ⊤' ≤' u) → a n ≤' u
+      β n = pr₂ (pr₂ (φ n))
+      a∞ : A
+      a∞ = ⋁' (n ↦ pr₁ (φ n))
+      α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
+      α∞ = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞'
+       where
+        α∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
+        α∞' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (a n) a∞ (α n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
+
+      β∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤' u) → a∞ ≤' u
+      β∞ u ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u l
+       where
+        l : (n : ℕ) → a n ≤' u
+        l n = β n u (λ p → ψ ∣ n , p ∣)
+
+\end{code}
+
+We now have enough constructions and lemmas to show that the type of
+quasidecidable propositions is the initial σ-frame. It remains to show
+that the function 𝓠 → A induced by the initiality lemma is a σ-frame
+homomorphism.
+
+
+\begin{code}
+
+  QD-is-initial-σ-Frame : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+  QD-is-initial-σ-Frame = γ
+   where
+    f : 𝓠 → A
+    f (P , i) = pr₁ (initiality-lemma P i)
+
+    α : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
+    α (P , i) = pr₁ (pr₂ (initiality-lemma P i))
+
+    β : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
+    β (P , i) = pr₂ (pr₂ (initiality-lemma P i))
+
+\end{code}
+
+The conditions α and β on f are crucial to prove that f is indeed a
+homomorphism, and are all we need for that purpose.
+
+\begin{code}
+
+    ⊤-preservation : f ⊤ ≡ ⊤'
+    ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (α ⊤ *)
+
+    ⊥-preservation : f ⊥ ≡ ⊥'
+    ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (β ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
+
+    f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
+    f-is-monotone 𝕡 𝕢 l = β 𝕡 (f 𝕢) (λ p → α 𝕢 (≤-characterization→ l p))
+
+    ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
+    ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n))) v w
+      where
+       φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
+       φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n))) r s
+         where
+          r : ⊤' ≤' f (𝕡 n)
+          r = α (𝕡 n) p
+          s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
+          s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
+       φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
+       φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
+       v : f (⋁ 𝕡) ≤' ⋁' (n ↦ f (𝕡 n))
+       v = β (⋁ 𝕡) (⋁' (n ↦ f (𝕡 n))) φ
+
+       t' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+       t' = ⋁-is-ub 𝕡
+       t : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
+       t n = f-is-monotone (𝕡 n) (⋁ 𝕡) (t' n)
+       w : ⋁' (n ↦ f (𝕡 n)) ≤' f (⋁ 𝕡)
+       w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) t
+
+    ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
+    ⋁-preservation = dfunext fe ⋁-preservation'
 
 \end{code}
 
@@ -785,8 +799,8 @@ By the above, binary meets are automatically preserved:
 
 \begin{code}
 
-   ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
-   ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom 𝓐 f ⊥-preservation ⊤-preservation ⋁-preservation
+    ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
+    ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom 𝓐 f ⊥-preservation ⊤-preservation ⋁-preservation
 
 \end{code}
 
@@ -794,15 +808,18 @@ And then we are done:
 
 \begin{code}
 
-   f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
-   f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
+    f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
+    f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
 
-   γ : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
-   γ = (f , f-is-hom) ,
-       (λ (g , g-is-hom) → to-subtype-≡
-                            (being-σ-frame-homomorphism-is-prop fe QD 𝓐)
-                            (at-most-one-hom 𝓐 f g f-is-hom g-is-hom))
+    γ : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+    γ = (f , f-is-hom) ,
+        (λ (g , g-is-hom) → to-subtype-≡
+                             (being-σ-frame-homomorphism-is-prop fe QD 𝓐)
+                             (at-most-one-hom 𝓐 f g f-is-hom g-is-hom))
 \end{code}
+
+This conclude the anonymous module and the module
+hypothetical-quasidecidability.
 
 We discussed above the specification of the notion of quasidecidable
 property. But can we define or construct it? Yes if, for example,
@@ -953,18 +970,19 @@ is 𝓤₀ ̇ → 𝓤 ̇ rather than 𝓤₀ ̇ → 𝓤₀ ̇ as above.
    → F 𝟙
    → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P
- quasidecidable-induction {𝓤} F F-is-prop-valued F₀ F₁ Fω P i = γ
+ quasidecidable-induction {𝓤} F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
   where
    A : (P : 𝓤₀ ̇ ) → Ω 𝓤₀
    A P = resize ρ (F P) (F-is-prop-valued P) , resize-is-prop ρ (F P) (F-is-prop-valued P)
    A-is-QD-closed : A ∈ QD-closed-types
    A-is-QD-closed = to-resize ρ (F 𝟘) (F-is-prop-valued 𝟘) F₀ ,
                     to-resize ρ (F 𝟙) (F-is-prop-valued 𝟙) F₁ ,
-                    (λ P φ  → to-resize ρ (F (∃ P)) (F-is-prop-valued (∃ P)) (Fω P (λ n → from-resize ρ (F (P n)) (F-is-prop-valued (P n)) (φ n))))
+                    (λ P φ  → to-resize ρ (F (∃ P)) (F-is-prop-valued (∃ P))
+                               (Fω P (λ n → from-resize ρ (F (P n)) (F-is-prop-valued (P n)) (φ n))))
    pqd : P ∈ ⋂ QD-closed-types
-   pqd = i
+   pqd = P-is-quasidecidable
    δ : P ∈ A
-   δ = from-⋂ QD-closed-types P i A A-is-QD-closed
+   δ = from-⋂ QD-closed-types P P-is-quasidecidable A A-is-QD-closed
    γ : F P
    γ = from-resize ρ (F P) (F-is-prop-valued P) δ
 
