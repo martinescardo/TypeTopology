@@ -10,6 +10,11 @@ defines the initial σ-frame.  A σ-frame is a poset with countable
 joins and finite meets such that binary meets distribute over
 countable joins.
 
+We first work with a hypothetical collection of quasidecidable
+propositions, and then we construct it assuming propositional
+resizing. Can we construct them without resizing and without
+higher-inductive types other than propositional truncation?
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -992,9 +997,20 @@ The initial σ-frame can also be constructed as a higher-inductive type.
 TODO. The initial ω-sup-lattice should be automatically the initial
 σ-frame.
 
-TODO. Conversely, if the initial σ-frame exists, then we can define
-quasidecidable propositions and show that they form a frame isomorphic
-(and hence equal) to the initial σ-frame.
+TODO. If the initial σ-frame exists, then we can define quasidecidable
+propositions and show that they form a frame isomorphic (and hence
+equal) to the initial σ-frame.
 
 TODO. Write in Agda some of the proofs of the above reference with
-Cory Knapp, particularly regarding choice.
+Cory Knapp, particularly regarding choice. E.g. the semidecidable
+properties form a dominance if and only if certain particular case of
+countable choice holds.
+
+TODO. This certain particular case of countable choice holds if and
+only if the quasidecidable propositions are semidecidable. This is not
+in the paper, but the methods of proof of the paper should apply more
+or less directly.
+
+TODO. Can we construct the collection of quasidecidable propositions
+without resizing and without higher-inductive types other than
+propositional truncation?
