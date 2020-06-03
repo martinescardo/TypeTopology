@@ -739,9 +739,10 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 \end{code}
 
 The condition in the conclusion of the following initiality lemma says
-that a is the least upper bound of the (weakly) constant family
-λ (p : P) → ⊤'.  Because least upper bounds are unique when they
-exist, the type in the conclusion of the lemma is a proposition.
+that the element a : A is the least upper bound of the (weakly)
+constant family λ (p : P) → ⊤'.  Because least upper bounds are unique
+when they exist, the type in the conclusion of the lemma is a
+proposition.
 
 \begin{code}
 
@@ -908,7 +909,7 @@ module quasidecidability-construction-from-resizing
 
 \end{code}
 
-This assunption says that any proposition in the universe 𝓤 is
+This assumption says that any proposition in the universe 𝓤 is
 equivalent to some proposition in the universe 𝓥, for any two
 universes 𝓤 and 𝓥.
 
