@@ -11,16 +11,22 @@ joins and finite meets such that binary meets distribute over
 countable joins.
 
   * We first work with a hypothetical collection of quasidecidable
-    propositions and show that they form the initial σ-frame, and then
+    propositions and show that they form the initial σ-frame.
 
     This is the submodule hypothetical-quasidecidability.
 
-  * we construct it assuming propositional resizing.
+
+  * Then we construct it assuming propositional resizing.
 
     This is in the submodule quasidecidability-construction-from-resizing.
 
+
 Can we construct them without resizing and without higher-inductive
 types other than propositional truncation?
+
+In this module, and hence the submodules, we assume function
+extensionality, propositional extensionality and the existence of
+propositional truncations, as explicit hypotheses.
 
 \begin{code}
 
@@ -82,6 +88,7 @@ The following shows that we need to truncate, because the Cantor type
 (ℕ → 𝟚) is certainly not the type of semidecidable propositions:
 
 \begin{code}
+
 semidecidability-data : 𝓤 ̇ → 𝓤 ̇
 semidecidability-data X = Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)
 
@@ -99,10 +106,14 @@ totality-of-semidecidability-data ua =
   ii  = Σ-cong (λ α → Σ-cong (λ X → ≃-Sym'' (univalence-gives-funext ua)))
   iii = Σ-cong (λ α → singleton-≃-𝟙 (univalence-via-singletons→ ua (∃ n ꞉ ℕ , α n ≡ ₁)))
   iv  = 𝟙-rneutral
+
+𝓢 : 𝓤₁ ̇
+𝓢 = Σ X ꞉ 𝓤₀ ̇ , is-semidecidable X
+
 \end{code}
 
-The type of semidecidable propositions is not a σ-frame unless we have
-enough countable choice - see the Escardo-Knapp reference above.
+The type 𝓢 of semidecidable propositions is not a σ-frame unless we
+have enough countable choice - see the Escardo-Knapp reference above.
 
 The set of quasidecidable propositions, if it exists, is the smallest
 collection of propositions containing 𝟘 and 𝟙 and closed under
@@ -110,12 +121,14 @@ countable joins.
 
 Exercise. It exists under propositional resizing assumptions (just
 take the intersection of all subsets with 𝟘 and 𝟙 as members and
-closed under countable joins). This exercise is solved below.
+closed under countable joins). This exercise is solved below in the
+submodule quasidecidability-construction-from-resizing..
 
-We now assume that there is a smallest collection of types, called
-quasidecidable, satisfying the above closure property. The types in
-this collection are automatically propositions. The minimality
-condition of the collection amounts to an induction principle.
+We now assume that there is a such a smallest collection of types,
+called quasidecidable, satisfying the above closure property. The
+types in this collection are automatically propositions. The
+minimality condition of the collection amounts to an induction
+principle.
 
 \begin{code}
 
@@ -253,13 +266,13 @@ closure under binary products (that is, conjunctions, or meets):
 
 \begin{code}
 
- quasidecidable-closed-under-× : propext 𝓤₀
-   → (P : 𝓤₀ ̇ )
+ quasidecidable-closed-under-× :
+     (P : 𝓤₀ ̇ )
    → is-quasidecidable P
    → (Q : 𝓤₀ ̇ )
    → (P → is-quasidecidable Q)
    → is-quasidecidable (P × Q)
- quasidecidable-closed-under-× pe = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
+ quasidecidable-closed-under-× = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
   where
    F : 𝓤₀ ̇ → 𝓤₁ ̇
    F P = (Q : 𝓤₀ ̇ ) → (P → is-quasidecidable Q) → is-quasidecidable (P × Q)
@@ -269,14 +282,14 @@ closure under binary products (that is, conjunctions, or meets):
    F₀ Q φ = transport is-quasidecidable r 𝟘-is-quasidecidable
     where
      r : 𝟘 ≡ 𝟘 × Q
-     r = pe 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
+     r = pe₀ 𝟘-is-prop (λ (z , q) → 𝟘-elim z) unique-from-𝟘 pr₁
    F₁ : F 𝟙
    F₁ Q φ = transport is-quasidecidable r (φ *)
     where
      i : is-prop Q
      i = quasidecidable-types-are-props Q (φ *)
      r : Q ≡ 𝟙 × Q
-     r = pe i (×-is-prop 𝟙-is-prop i) (λ q → (* , q)) pr₂
+     r = pe₀ i (×-is-prop 𝟙-is-prop i) (λ q → (* , q)) pr₂
    Fω :  (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
    Fω P f Q φ = γ
     where
@@ -298,10 +311,10 @@ closure under binary products (that is, conjunctions, or meets):
      d : ((∃ n ꞉ ℕ , P n) × Q) → (∃ n ꞉ ℕ , P n × Q)
      d (t , q) = ∥∥-functor (λ (n , p) → n , (p , q)) t
      r : (∃ n ꞉ ℕ , P n × Q) ≡ ((∃ n ꞉ ℕ , P n) × Q)
-     r = pe ∃-is-prop
-           (×-prop-criterion ((λ _ → ∃-is-prop) ,
-                              (λ e → quasidecidable-types-are-props Q (φ e))))
-           c d
+     r = pe₀ ∃-is-prop
+             (×-prop-criterion ((λ _ → ∃-is-prop) ,
+                                (λ e → quasidecidable-types-are-props Q (φ e))))
+             c d
      γ : is-quasidecidable ((∃ n ꞉ ℕ , P n) × Q)
      γ = transport is-quasidecidable r b
 
@@ -312,15 +325,15 @@ by quasidecidable propositions:
 
 \begin{code}
 
- quasidecidable-closed-under-Σ : propext 𝓤₀
-   → (P : 𝓤₀ ̇ )
+ quasidecidable-closed-under-Σ :
+     (P : 𝓤₀ ̇ )
    → (Q : P → 𝓤₀ ̇ )
    → is-quasidecidable P
    → ((p : P) → is-quasidecidable (Q p))
    → is-quasidecidable (Σ Q)
- quasidecidable-closed-under-Σ pe = D3-and-D5'-give-D5 pe is-quasidecidable
-                                      (quasidecidable-types-are-props)
-                                      (λ P Q' i j → quasidecidable-closed-under-× pe P i Q' j)
+ quasidecidable-closed-under-Σ = D3-and-D5'-give-D5 pe₀ is-quasidecidable
+                                  (quasidecidable-types-are-props)
+                                  (λ P Q' i j → quasidecidable-closed-under-× P i Q' j)
 
 \end{code}
 
@@ -331,11 +344,11 @@ The following summarizes the dominance conditions:
 
 \begin{code}
 
- quasidecidability-is-dominance : propext 𝓤₀ → is-dominance is-quasidecidable
- quasidecidability-is-dominance pe = being-quasidecidable-is-prop ,
-                                     quasidecidable-types-are-props ,
-                                     𝟙-is-quasidecidable ,
-                                     quasidecidable-closed-under-Σ pe
+ quasidecidability-is-dominance : is-dominance is-quasidecidable
+ quasidecidability-is-dominance = being-quasidecidable-is-prop ,
+                                   quasidecidable-types-are-props ,
+                                   𝟙-is-quasidecidable ,
+                                   quasidecidable-closed-under-Σ
 \end{code}
 
 We now show that binary meets (cartesian products) of quasidecidable
@@ -389,19 +402,19 @@ extensionality, we get the σ-frame distributive law:
 
 \begin{code}
 
- quasidecidable-σ-frame : propext 𝓤₀
-   → (P : 𝓤₀ ̇ )
+ quasidecidable-σ-frame :
+     (P : 𝓤₀ ̇ )
    → is-quasidecidable P
    → (Q : ℕ → 𝓤₀ ̇ )
    → ((n : ℕ) → is-quasidecidable (Q n))
    → P × ∃ Q ≡ (∃ n ꞉ ℕ , P × Q n)
- quasidecidable-σ-frame pe P i Q φ =
-   pe (×-is-prop (quasidecidable-types-are-props P i)
-                 (quasidecidable-types-are-props (∃ Q)
-                    (quasidecidable-closed-under-ω-joins Q φ)))
-      ∃-is-prop
-      (quasidecidable-σ-frame-trivial P i Q φ)
-      (quasidecidable-σ-frame-non-trivial P i Q φ)
+ quasidecidable-σ-frame P i Q φ =
+   pe₀ (×-is-prop (quasidecidable-types-are-props P i)
+                  (quasidecidable-types-are-props (∃ Q)
+                  (quasidecidable-closed-under-ω-joins Q φ)))
+       ∃-is-prop
+       (quasidecidable-σ-frame-trivial P i Q φ)
+       (quasidecidable-σ-frame-non-trivial P i Q φ)
 
 \end{code}
 
@@ -412,7 +425,7 @@ and prove the σ-frame axioms.
 \begin{code}
 
  _∧_ : 𝓠 → 𝓠 → 𝓠
- (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-closed-under-× pe₀ P i Q (λ _ → j)
+ (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-closed-under-× P i Q (λ _ → j)
 
  ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
  ∧-is-idempotent (P , i) = γ
@@ -488,8 +501,8 @@ and prove the σ-frame axioms.
  ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
  ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
 
- ≤-characterization→ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
- ≤-characterization→ {P , i} {Q , j} l p = γ
+ from-≤ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
+ from-≤ {P , i} {Q , j} l p = γ
   where
    r : P × Q ≡ P
    r = ap (_is-true) l
@@ -498,8 +511,8 @@ and prove the σ-frame axioms.
    γ : Q
    γ = pr₂ (g p)
 
- ≤-characterization← : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
- ≤-characterization← {P , i} {Q , j} f = γ
+ to-≤ : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
+ to-≤ {P , i} {Q , j} f = γ
   where
    i' : is-prop P
    i' = quasidecidable-types-are-props P i
@@ -510,20 +523,6 @@ and prove the σ-frame axioms.
    γ : ((P × Q) , _) ≡ (P , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- ≤-characterization : {𝕡 𝕢 : 𝓠} → (𝕡 ≤ 𝕢) ≃ (𝕡 is-true → 𝕢 is-true)
- ≤-characterization {𝕡} {𝕢} = logically-equivalent-props-are-equivalent
-                              (≤-is-prop-valued 𝕡 𝕢)
-                              (Π-is-prop fe (λ _ → being-true-is-prop 𝕢))
-                              (≤-characterization→ {𝕡} {𝕢})
-                              (≤-characterization← {𝕡} {𝕢})
-
-\end{code}
-
-NB. We can't conclude equality above because the lhs and rhs live in
-different universes and hence in different types.
-
-\begin{code}
-
  distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
  distributivity (P , i) 𝕢 = γ
   where
@@ -532,26 +531,27 @@ different universes and hence in different types.
    j : (n : ℕ) → is-quasidecidable (Q n)
    j n = being-true-is-quasidecidable (𝕢 n)
    r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
-   r = quasidecidable-σ-frame pe₀ P i Q j
+   r = quasidecidable-σ-frame P i Q j
    γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
  ⋁-is-ub : (𝕡 : ℕ → 𝓠) → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
- ⋁-is-ub 𝕡 = a
-  where
-   a : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
-   a n = ≤-characterization← (λ p → ∣ n , p ∣)
+ ⋁-is-ub 𝕡 n = to-≤ (λ p → ∣ n , p ∣)
 
  ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓠) → (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
- ⋁-is-lb-of-ubs 𝕡 = b
+ ⋁-is-lb-of-ubs 𝕡 (U , i) φ = to-≤ γ
   where
-   b : (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
-   b (U , i) φ = ≤-characterization← d
-    where
-     c : (Σ n ꞉ ℕ , 𝕡 n is-true) → U
-     c (n , p) = ≤-characterization→ (φ n) p
-     d : (∃ n ꞉ ℕ , 𝕡 n is-true) → U
-     d = ∥∥-rec (quasidecidable-types-are-props U i) c
+   δ : (Σ n ꞉ ℕ , 𝕡 n is-true) → U
+   δ (n , p) = from-≤ (φ n) p
+   γ : (∃ n ꞉ ℕ , 𝕡 n is-true) → U
+   γ = ∥∥-rec (quasidecidable-types-are-props U i) δ
+
+\end{code}
+
+Putting these axioms together we get the σ-frame of quasidecidable
+propositions:
+
+\begin{code}
 
  open σ-frame
 
@@ -570,84 +570,8 @@ different universes and hence in different types.
 
 \end{code}
 
-Next we show that QD is the initial σ-frame. We first show that any
-⊥,⊤,⋁-homomorphism on QD is automatically a ∧-homomorphism,
-by 𝓠-induction.
-
-\begin{code}
-
- ⊥⊤⋁-hom-on-QD-is-∧-hom : (𝓐 : σ-Frame 𝓤) (f : ⟨ QD ⟩ → ⟨ 𝓐 ⟩)
-                        → f ⊥ ≡ ⊥⟨ 𝓐 ⟩
-                        → f ⊤ ≡ ⊤⟨ 𝓐 ⟩
-                        → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 n))))
-                        → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
- ⊥⊤⋁-hom-on-QD-is-∧-hom {𝓤} 𝓐 f f⊥ f⊤ f⋁ = γ
-  where
-   δ : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
-   δ 𝕡 = 𝓠-induction (λ 𝕢 → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢))
-                     (λ 𝕢 → ⟨ 𝓐 ⟩-is-set {f (𝕡 ∧ 𝕢)} {f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢})
-                     l₀ l₁ lω
-    where
-     l₀ = f (𝕡 ∧ ⊥)           ≡⟨ ap f (∧-is-commutative 𝕡 ⊥)     ⟩
-          f (⊥ ∧ 𝕡)           ≡⟨ ap f (⊥-is-minimum 𝕡)           ⟩
-          f ⊥                 ≡⟨ f⊥                              ⟩
-          ⊥⟨ 𝓐 ⟩              ≡⟨ (⟨ 𝓐 ⟩-⊥-minimum (f 𝕡))⁻¹       ⟩
-          (⊥⟨ 𝓐 ⟩ ∧⟨ 𝓐 ⟩ f 𝕡) ≡⟨ ap (λ - → - ∧⟨ 𝓐 ⟩ f 𝕡) (f⊥ ⁻¹) ⟩
-          (f ⊥ ∧⟨ 𝓐 ⟩ f 𝕡)    ≡⟨ ⟨ 𝓐 ⟩-commutativity (f ⊥) (f 𝕡) ⟩
-          (f 𝕡 ∧⟨ 𝓐 ⟩ f ⊥)    ∎
-
-     l₁ = f (𝕡 ∧ ⊤)    ≡⟨ ap f (⊤-is-maximum 𝕡)    ⟩
-          f 𝕡          ≡⟨ (⟨ 𝓐 ⟩-⊤-maximum (f 𝕡))⁻¹  ⟩
-          (f 𝕡 ∧⟨ 𝓐 ⟩ ⊤⟨ 𝓐 ⟩)  ≡⟨ ap (λ - → f 𝕡 ∧⟨ 𝓐 ⟩ -) (f⊤ ⁻¹)     ⟩
-          (f 𝕡 ∧⟨ 𝓐 ⟩ f ⊤) ∎
-
-     lω : (𝕢 : ℕ → 𝓠)
-        → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n)))
-        → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))
-     lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)                         ≡⟨ ap f (distributivity 𝕡 𝕢)                          ⟩
-              f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))                ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                      ⟩
-              ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕡 ∧ 𝕢 n))            ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)                           ⟩
-              ⋁⟨ 𝓐 ⟩ (n ↦ f 𝕡 ∧⟨ 𝓐 ⟩ f (𝕢 n))     ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
-              (f 𝕡 ∧⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ (n ↦ f (𝕢 n)))   ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
-              (f 𝕡 ∧⟨ 𝓐 ⟩ f (⋁ 𝕢))                ∎
-
-   γ : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧⟨ 𝓐 ⟩ f 𝕢)
-   γ = dfunext fe (λ 𝕡 → dfunext fe (δ 𝕡))
-
-\end{code}
-
-And then again by 𝓠-induction, there is at most one homomorphism from
-𝓠 to any σ-frame:
-
-\begin{code}
-
- at-most-one-hom : (𝓐 : σ-Frame 𝓤) (g h : 𝓠 → ⟨ 𝓐 ⟩)
-                 → is-σ-frame-homomorphism QD 𝓐 g
-                 → is-σ-frame-homomorphism QD 𝓐 h
-                 → g ≡ h
- at-most-one-hom 𝓐 g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
-  where
-   i₀ = g ⊥    ≡⟨ g⊥ ⟩
-        ⊥⟨ 𝓐 ⟩ ≡⟨ h⊥ ⁻¹ ⟩
-        h ⊥    ∎
-
-   i₁ = g ⊤    ≡⟨ g⊤    ⟩
-        ⊤⟨ 𝓐 ⟩ ≡⟨ h⊤ ⁻¹ ⟩
-        h ⊤    ∎
-
-   iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
-   iω 𝕡 φ = g (⋁ 𝕡)              ≡⟨ ap (λ - → - 𝕡) g⋁ ⟩
-            ⋁⟨ 𝓐 ⟩ (n ↦ g (𝕡 n)) ≡⟨ ap ⋁⟨ 𝓐 ⟩ (dfunext fe φ)  ⟩
-            ⋁⟨ 𝓐 ⟩ (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
-             h (⋁ 𝕡)             ∎
-
-   r : g ∼ h
-   r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
-
-\end{code}
-
-To prove the initiality condition, we work with an arbitrary frame 𝓐
-in an arbitrary universe 𝓤:
+To prove that QD is the initial σ-frame, we work with an arbitrary
+frame 𝓐 in an arbitrary universe 𝓤:
 
 \begin{code}
 
@@ -670,6 +594,81 @@ module, for notational convenience:
     a ≤' b = a ≤⟨ 𝓐 ⟩ b
     _∧'_ : A → A → A
     a ∧' b = a ∧⟨ 𝓐 ⟩ b
+
+\end{code}
+
+We first show that any ⊥,⊤,⋁-homomorphism on QD is automatically a
+∧-homomorphism, by 𝓠-induction.
+
+\begin{code}
+
+  ⊥⊤⋁-hom-on-QD-is-∧-hom : (f : 𝓠 → A)
+                          → f ⊥ ≡ ⊥'
+                          → f ⊤ ≡ ⊤'
+                          → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n))))
+                          → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
+  ⊥⊤⋁-hom-on-QD-is-∧-hom f f⊥ f⊤ f⋁ = γ
+   where
+    δ : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)
+    δ 𝕡 = 𝓠-induction (λ 𝕢 → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢))
+                      (λ 𝕢 → ⟨ 𝓐 ⟩-is-set {f (𝕡 ∧ 𝕢)} {f 𝕡 ∧' f 𝕢})
+                      l₀ l₁ lω
+     where
+      l₀ = f (𝕡 ∧ ⊥)    ≡⟨ ap f (∧-is-commutative 𝕡 ⊥)     ⟩
+           f (⊥ ∧ 𝕡)    ≡⟨ ap f (⊥-is-minimum 𝕡)           ⟩
+           f ⊥          ≡⟨ f⊥                              ⟩
+           ⊥'           ≡⟨ (⟨ 𝓐 ⟩-⊥-minimum (f 𝕡))⁻¹       ⟩
+           (⊥' ∧' f 𝕡)  ≡⟨ ap (λ - → - ∧' f 𝕡) (f⊥ ⁻¹)     ⟩
+           (f ⊥ ∧' f 𝕡) ≡⟨ ⟨ 𝓐 ⟩-commutativity (f ⊥) (f 𝕡) ⟩
+           (f 𝕡 ∧' f ⊥) ∎
+
+      l₁ = f (𝕡 ∧ ⊤)    ≡⟨ ap f (⊤-is-maximum 𝕡)       ⟩
+           f 𝕡          ≡⟨ (⟨ 𝓐 ⟩-⊤-maximum (f 𝕡))⁻¹   ⟩
+           (f 𝕡 ∧' ⊤')  ≡⟨ ap (λ - → f 𝕡 ∧' -) (f⊤ ⁻¹) ⟩
+           (f 𝕡 ∧' f ⊤) ∎
+
+      lω : (𝕢 : ℕ → 𝓠)
+         → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧' f (𝕢 n)))
+         → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧' f (⋁ 𝕢))
+      lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)               ≡⟨ ap f (distributivity 𝕡 𝕢)                          ⟩
+               f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))      ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                      ⟩
+               ⋁' (n ↦ f (𝕡 ∧ 𝕢 n))      ≡⟨ ap ⋁' (dfunext fe φ)                               ⟩
+               ⋁' (n ↦ f 𝕡 ∧' f (𝕢 n))   ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
+               (f 𝕡 ∧' ⋁' (n ↦ f (𝕢 n))) ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
+               (f 𝕡 ∧' f (⋁ 𝕢))          ∎
+
+    γ : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
+    γ = dfunext fe (λ 𝕡 → dfunext fe (δ 𝕡))
+
+\end{code}
+
+And then again by 𝓠-induction, there is at most one homomorphism from
+𝓠 to any σ-frame:
+
+\begin{code}
+
+  at-most-one-hom : (g h : 𝓠 → A)
+                  → is-σ-frame-homomorphism QD 𝓐 g
+                  → is-σ-frame-homomorphism QD 𝓐 h
+                  → g ≡ h
+  at-most-one-hom g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
+   where
+    i₀ = g ⊥ ≡⟨ g⊥    ⟩
+         ⊥'  ≡⟨ h⊥ ⁻¹ ⟩
+         h ⊥ ∎
+
+    i₁ = g ⊤ ≡⟨ g⊤    ⟩
+         ⊤'  ≡⟨ h⊤ ⁻¹ ⟩
+         h ⊤ ∎
+
+    iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
+    iω 𝕡 φ = g (⋁ 𝕡)          ≡⟨ ap (λ - → - 𝕡) g⋁     ⟩
+             ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ)  ⟩
+             ⋁' (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
+              h (⋁ 𝕡)         ∎
+
+    r : g ∼ h
+    r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
 
 \end{code}
 
@@ -740,7 +739,7 @@ homomorphism.
 
 \begin{code}
 
-  QD-is-initial-σ-Frame : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+  QD-is-initial-σ-Frame : ∃! f ꞉ (⟨ QD ⟩ → A), is-σ-frame-homomorphism QD 𝓐 f
   QD-is-initial-σ-Frame = γ
    where
     f : 𝓠 → A
@@ -766,7 +765,7 @@ homomorphism, and are all we need for that purpose.
     ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (β ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
 
     f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
-    f-is-monotone 𝕡 𝕢 l = β 𝕡 (f 𝕢) (λ p → α 𝕢 (≤-characterization→ l p))
+    f-is-monotone 𝕡 𝕢 l = β 𝕡 (f 𝕢) (λ p → α 𝕢 (from-≤ l p))
 
     ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
     ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n))) v w
@@ -800,7 +799,7 @@ By the above, binary meets are automatically preserved:
 \begin{code}
 
     ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
-    ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom 𝓐 f ⊥-preservation ⊤-preservation ⋁-preservation
+    ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom f ⊥-preservation ⊤-preservation ⋁-preservation
 
 \end{code}
 
@@ -811,11 +810,11 @@ And then we are done:
     f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
     f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
 
-    γ : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
+    γ : ∃! f ꞉ (⟨ QD ⟩ → A), is-σ-frame-homomorphism QD 𝓐 f
     γ = (f , f-is-hom) ,
         (λ (g , g-is-hom) → to-subtype-≡
                              (being-σ-frame-homomorphism-is-prop fe QD 𝓐)
-                             (at-most-one-hom 𝓐 f g f-is-hom g-is-hom))
+                             (at-most-one-hom f g f-is-hom g-is-hom))
 \end{code}
 
 This conclude the anonymous module and the module
