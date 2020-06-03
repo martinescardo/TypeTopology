@@ -642,8 +642,8 @@ frame 𝓐 in an arbitrary universe 𝓤:
 
 \end{code}
 
-We first introduce some abbreviations, private to this anonymous
-module, for notational convenience:
+We introduce some abbreviations, private to this anonymous module, for
+notational convenience:
 
 \begin{code}
 
@@ -666,10 +666,10 @@ We first show that any ⊥,⊤,⋁-homomorphism on QD is automatically a
 \begin{code}
 
   ⊥⊤⋁-hom-on-QD-is-∧-hom : (f : 𝓠 → A)
-                          → f ⊥ ≡ ⊥'
-                          → f ⊤ ≡ ⊤'
-                          → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n))))
-                          → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
+                         → f ⊥ ≡ ⊥'
+                         → f ⊤ ≡ ⊤'
+                         → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n))))
+                         → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
 
   ⊥⊤⋁-hom-on-QD-is-∧-hom f f⊥ f⊤ f⋁ = γ
    where
@@ -809,7 +809,7 @@ homomorphism.
 
 \begin{code}
 
-  QD-is-initial-σ-Frame : ∃! f ꞉ (⟨ QD ⟩ → A), is-σ-frame-homomorphism QD 𝓐 f
+  QD-is-initial-σ-Frame : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
   QD-is-initial-σ-Frame = γ
    where
     f : 𝓠 → A
@@ -1081,9 +1081,9 @@ universe 𝓤 rather than the first universe 𝓤₀ as above.
 
 \end{code}
 
-Hence the initial σ-frame exists under proposition resizing: we simply
-plug the construction of the quasidecidable propositions to the above
-hypothetical development.
+Hence the initial σ-frame exists under propositional resizing: we
+simply plug the construction of the quasidecidable propositions to the
+above hypothetical development.
 
 \begin{code}
 
