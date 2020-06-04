@@ -248,7 +248,7 @@ second one is conceptually more natural.
    F₁ : F 𝟙
    F₁ = 𝟙-is-quasidecidable , g₁
 
-   Fω : (Q : ℕ → 𝓤₀ ̇) → ((n : ℕ) → F (Q n)) → F (∃ n ꞉ ℕ , Q n)
+   Fω : (Q : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (Q n)) → F (∃ n ꞉ ℕ , Q n)
    Fω Q φ = quasidecidable-closed-under-ω-joins Q (λ n → pr₁ (φ n)) ,
             gω (λ n → (Q n , pr₁ (φ n))) (λ n → pr₂ (φ n))
 
@@ -675,7 +675,7 @@ applied to prop-valued predicates only.
 
 \begin{code}
 
-  initiality-lemma : (P : 𝓤₀ ̇)
+  initiality-lemma : (P : 𝓤₀ ̇ )
                    → is-quasidecidable P
                    → Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
@@ -692,6 +692,7 @@ applied to prop-valued predicates only.
             (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤' ∧' a} {⊤'}))
             (Π-is-prop fe (λ u →
              Π-is-prop fe (λ ψ → ⟨ 𝓐 ⟩-is-set {a ∧' u} {a})))
+
       r : a ≡ a'
       r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
 
