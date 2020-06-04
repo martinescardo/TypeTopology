@@ -356,6 +356,9 @@ propext 𝓤 = {P Q : 𝓤 ̇ } → is-prop P → is-prop Q → (P → Q) → (Q
 PropExt : 𝓤ω
 PropExt = ∀ 𝓤 → propext 𝓤
 
+Prop-Ext : 𝓤ω
+Prop-Ext = ∀ {𝓤} → propext 𝓤
+
 \end{code}
 
 The following says that, in particular, for any proposition P, we have
