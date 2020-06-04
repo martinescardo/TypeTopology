@@ -195,14 +195,14 @@ characterization-of-interval-object-≡ {𝓥} ua = characterization-of-≡ ua
                                                (interval-object-sns 𝓥)
 
 all-interval-objects-equiv : (A B : interval-object 𝓤) → A ≊⟨interval-object⟩ B
-all-interval-objects-equiv (X , (_⊕_ , u , v) , p , p₄) (Y , (_⊗_ , s , t) , r , r₄)
+all-interval-objects-equiv (X , (_⊕_ , u , v) , p , up) (Y , (_⊗_ , s , t) , p' , up')
  = h , ((h' , happly h∘h'≡id) , (h' , happly h'∘h≡id))
  , dfunext fe (λ x → dfunext fe (λ y → hᵢ x y)) , hₗ , hᵣ
  where
   hX→Y! : ∃! (λ h → (h u ≡ s) × (h v ≡ t) × ((a b : X) → h (a ⊕ b) ≡ h a ⊗ h b))
-  hX→Y! = p₄ (Y , _⊗_ , r) s t
+  hX→Y! = up (Y , _⊗_ , p') s t
   hY→X! : ∃! (λ h → (h s ≡ u) × (h t ≡ v) × ((a b : Y) → h (a ⊗ b) ≡ h a ⊕ h b))
-  hY→X! = r₄ (X , _⊕_ , p) u v
+  hY→X! = up' (X , _⊕_ , p) u v
   h : X → Y
   h = ∃!-witness hX→Y!
   hₗ : h u ≡ s
@@ -220,13 +220,13 @@ all-interval-objects-equiv (X , (_⊕_ , u , v) , p , p₄) (Y , (_⊗_ , s , t)
   h'ᵢ : (a b : Y) → h' (a ⊗ b) ≡ h' a ⊕ h' b
   h'ᵢ = pr₂ (pr₂ (∃!-is-witness hY→X!))
   h∘h'≡id : h ∘ h' ≡ id
-  h∘h'≡id = ap pr₁ (∃!-uniqueness'' (r₄ (Y , _⊗_ , r) s t)
+  h∘h'≡id = ap pr₁ (∃!-uniqueness'' (up' (Y , _⊗_ , p') s t)
               (h ∘ h' , (ap h h'ₗ ∙ hₗ) , (ap h h'ᵣ ∙ hᵣ)
                       , λ a b → ap h (h'ᵢ a b) ∙ hᵢ (h' a) (h' b))
               (id     , refl            , refl
                       , λ a b → refl))
   h'∘h≡id : h' ∘ h ≡ id
-  h'∘h≡id = ap pr₁ (∃!-uniqueness'' (p₄ (X , _⊕_ , p) u v)
+  h'∘h≡id = ap pr₁ (∃!-uniqueness'' (up (X , _⊕_ , p) u v)
               (h' ∘ h , (ap h' hₗ ∙ h'ₗ) , (ap h' hᵣ ∙ h'ᵣ)
                       , λ a b → ap h' (hᵢ a b) ∙ h'ᵢ (h a) (h b))
               (id     , refl            , refl
