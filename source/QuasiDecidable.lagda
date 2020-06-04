@@ -676,12 +676,10 @@ proposition.
 
   initiality-lemma : (P : 𝓤₀ ̇)
                    → is-quasidecidable P
-                   → Σ a ꞉ A , ((p : P) → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+                   → Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
   initiality-lemma = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
-
    where
-
     F : 𝓤₀ ̇ → 𝓤 ̇
     F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
@@ -1032,11 +1030,6 @@ above hypothetical development.
           quasidecidable-closed-under-ω-joins
           quasidecidable-induction
 
- data qd : 𝓤₀ ̇ → 𝓤₁ ̇ where
-  qd₀ : qd 𝟘
-  qd₁ : qd 𝟙
-  qdω : (P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → qd (P n)) → qd (∃ n ꞉ ℕ , P n)
-
 \end{code}
 
 The initial σ-frame can also be constructed as a higher-inductive
@@ -1064,7 +1057,7 @@ propositions without resizing and without higher-inductive types other
 than propositional truncation?
 
 The type of propositions is a frame. But here we need its restricted
-structure of a σ-frame.
+structure of a σ-frame:
 
 \begin{code}
 
@@ -1196,8 +1189,8 @@ module Ω-is-σ-frame {𝓤 : Universe} where
 
  open σ-frame
 
- QD : σ-Frame (𝓤 ⁺)
- QD = 𝓞 ,
+ σΩ : σ-Frame (𝓤 ⁺)
+ σΩ = 𝓞 ,
      (⊤ , _∧_ , ⊥ , ⋁) ,
      (Ω-is-set fe pe ,
       ∧-is-idempotent ,
@@ -1215,13 +1208,11 @@ We now explore the consequences of the hypothetical existence of an
 initial σ-frame.
 
 \begin{code}
-{-
 
-module _ {𝓥 : Universe}
-         {I ꞉ σ-Frame 𝓥}
-         (I-initial : {𝓦 : Universe} (𝓐 : σ-Frame 𝓦) → ∃! f ꞉ (⟨ I ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism I 𝓞 f)
-       where
--}
+ module _ (QD : σ-Frame 𝓤₀)
+          (QD-initial : {𝓦 : Universe} (𝓐 : σ-Frame 𝓦) → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f)
+        where
+
 \end{code}
 
 To be continued.
