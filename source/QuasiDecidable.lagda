@@ -57,7 +57,7 @@ open import UF-Powerset
 
 \end{code}
 
-We now move to quasidecidable propositions, but we first review
+Before considering quasidecidable propositions, we review
 semidecidable ones.
 
 A proposition is semidecidable if it is a countable join of decidable
@@ -821,10 +821,11 @@ And then we are done:
                              (at-most-one-hom f g f-is-hom g-is-hom))
 \end{code}
 
-This conclude the anonymous module and the module hypothetical-quasidecidability.
+This concludes the anonymous module and the module
+hypothetical-quasidecidability.
 
 We discussed above the specification of the notion of quasidecidable
-property. But can we define or construct it? Yes if, for example,
+proposition. But can we define or construct it? Yes if, for example,
 propositional resizing is available:
 
 \begin{code}
@@ -843,7 +844,7 @@ universes 𝓤 and 𝓥.
 
 The crucial fact exploited here is that intersections of collections
 of subcollections 𝓐:𝓟(𝓟 X) exist under propositional resizing. We
-prove this generalizing the type of 𝓐 (the double powerset) as
+prove this generalizing the type of 𝓐 (the double powerset of X) as
 follows, where the membership relation defined in the module
 UF-Powerset has type
 
@@ -1046,8 +1047,8 @@ equal) to the initial σ-frame.
 
 TODO. Write in Agda some of the proofs of the above reference with
 Cory Knapp, particularly regarding choice. E.g. the semidecidable
-properties form a dominance if and only if certain particular case of
-countable choice holds.
+properties form a dominance if and only if a certain particular case
+of countable choice holds.
 
 TODO. This certain particular case of countable choice holds if and
 only if the quasidecidable propositions are semidecidable. This is not
@@ -1215,6 +1216,57 @@ initial σ-frame.
           (QD-initial : {𝓦 : Universe} (𝓐 : σ-Frame 𝓦) → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f)
         where
 
+  f : ⟨ QD ⟩ → 𝓞
+  f = pr₁ (center (QD-initial σΩ))
+
+  h : is-σ-frame-homomorphism QD σΩ f
+  h = pr₂ (center (QD-initial σΩ))
+
+  is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
+  is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (P , i)
+
+  being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
+  being-quasidecidable-is-prop P = Σ-is-prop (being-prop-is-prop fe) (λ i → ∃!-is-prop fe)
+
+{-
+  𝟘-is-quasidecidable : is-quasidecidable 𝟘
+  𝟘-is-quasidecidable = 𝟘-is-prop , (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) , c
+   where
+    d : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ ⊥) → (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+    d (𝕡 , r) = to-subtype-≡ (λ 𝕡 → ⟨ σΩ ⟩-is-set) question
+     where
+      r' : f 𝕡 ≡ ⊥
+      r' = r
+      question : ⊥⟨ QD ⟩ ≡ 𝕡
+      question = {!!}
+    c : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (𝟘 , 𝟘-is-prop)) → (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+    c = d
+
+
+
+  𝟙-is-quasidecidable : is-quasidecidable 𝟙
+  𝟙-is-quasidecidable = 𝟙-is-prop , ∣ ⊤⟨ QD ⟩ , pr₁ h ∣
+
+  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤 ̇ )
+                                      → ((n : ℕ) → is-quasidecidable (P n))
+                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
+  quasidecidable-closed-under-ω-joins P φ = ∃-is-prop , {!!}
+   where
+    φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (P n , i)
+    φ' = φ
+    γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ ⟨ QD ⟩ , f 𝕢 ≡ (∃ P , j)
+    γ = ∃-is-prop , ∥∥-rec ∃-is-prop {!!} {!!}
+
+  quasidecidable-induction :
+      (F : {!!} ̇ → 𝓤 ̇ )
+    → ((P : 𝓤₀ ̇ ) → is-prop (F P))
+    → F 𝟘
+    → F 𝟙
+    → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+    → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P
+
+  quasidecidable-induction = {!!}
+-}
 \end{code}
 
 To be continued.
