@@ -153,7 +153,7 @@ module hypothetical-quasidecidability
           → F 𝟘
           → F 𝟙
           → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-          → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P)
+          → (P : 𝓤₀ ̇ ) → is-quasidecidable P → F P)
      where
 
 \end{code}
@@ -704,7 +704,7 @@ applied to prop-valued predicates only.
     F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
 
     F-is-prop-valued : (P : 𝓤₀ ̇ ) → is-prop (F P)
-    F-is-prop-valued P (a , α , β) (a' , α' , β') = to-subtype-≡ j r
+    F-is-prop-valued P (a , α , β) (a' , α' , β') = γ
      where
       j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
       j a = ×-is-prop
@@ -715,8 +715,11 @@ applied to prop-valued predicates only.
       r : a ≡ a'
       r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
 
+      γ : (a , α , β) ≡ (a' , α' , β')
+      γ = to-subtype-≡ j r
+
     F₀ : F 𝟘
-    F₀ = ⊥' , (λ p → 𝟘-elim p) , (λ u ψ → ⟨ 𝓐 ⟩-⊥-minimum u)
+    F₀ = ⊥' , unique-from-𝟘 , (λ u ψ → ⟨ 𝓐 ⟩-⊥-minimum u)
 
     F₁ : F 𝟙
     F₁ = ⊤' , (λ p → ⟨ 𝓐 ⟩-⊤-maximum ⊤') , (λ u ψ → ψ *)
@@ -891,7 +894,7 @@ UF-Powerset has type
    rl : (x : X) → ((A : X → Ω 𝓥) → A ∈ 𝓐 → x ∈ A) → x ∈ B
    rl x = to-resize ρ (β x) (i x)
 
- ⋂ : {X : 𝓤 ̇ } (𝓐 : (X → Ω 𝓥) → Ω 𝓦) → (X → Ω 𝓥)
+ ⋂ : {X : 𝓤 ̇ } → ((X → Ω 𝓥) → Ω 𝓦) → (X → Ω 𝓥)
  ⋂ 𝓐 = pr₁ (intersections-exist 𝓐)
 
  from-⋂ : {X : 𝓤 ̇ } (𝓐 : ((X → Ω 𝓥) → Ω 𝓦)) (x : X)
@@ -941,6 +944,7 @@ closure condition:
  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤₀ ̇ )
                                      → ((n : ℕ) → is-quasidecidable (P n))
                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
+
  quasidecidable-closed-under-ω-joins P φ = to-⋂ QD-closed-types (∃ P) γ
   where
    γ : (A : 𝓤₀ ̇ → Ω 𝓤₀) → A ∈ QD-closed-types → ∃ P ∈ A
@@ -1005,7 +1009,7 @@ universe 𝓤 rather than the first universe 𝓤₀ as above.
    → F 𝟘
    → F 𝟙
    → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-   → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P
+   → (P : 𝓤₀ ̇ ) → is-quasidecidable P → F P
 
  quasidecidable-induction {𝓤} F F-is-prop-valued F₀ F₁ Fω P P-is-quasidecidable = γ
   where
