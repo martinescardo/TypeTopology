@@ -372,7 +372,26 @@ by quasidecidable propositions:
 \end{code}
 
 Notice that Σ Q is equivalent to ∃ Q as quasidecidable types are
-propositions.
+propositions, and propositions are closed under Σ:
+
+\begin{code}
+
+ NB : (P : 𝓤₀ ̇ )
+    → (Q : P → 𝓤₀ ̇ )
+    → is-quasidecidable P
+    → ((p : P) → is-quasidecidable (Q p))
+    → Σ Q ≃ ∃ Q
+
+ NB P Q i j = logically-equivalent-props-are-equivalent
+               k
+               ∃-is-prop
+               (λ (p , q) → ∣ p , q ∣)
+               (∥∥-rec k id)
+  where
+   k : is-prop (Σ Q)
+   k = quasidecidable-types-are-props (Σ Q) (quasidecidable-closed-under-Σ P Q i j)
+
+\end{code}
 
 The following summarizes the dominance conditions:
 
@@ -508,8 +527,8 @@ and prove the σ-frame axioms.
    γ : ((P × Q) , _) ≡ (P , _)
    γ = to-subtype-≡ being-quasidecidable-is-prop r
 
- distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
- distributivity (P , i) 𝕢 = γ
+ ∧-⋁-distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
+ ∧-⋁-distributivity (P , i) 𝕢 = γ
   where
    Q : ℕ → 𝓤₀ ̇
    Q n = 𝕢 n is-true
@@ -555,7 +574,7 @@ propositions:
       ∧-is-associative ,
       ⊥-is-minimum ,
       ⊤-is-maximum ,
-      distributivity ,
+      ∧-⋁-distributivity ,
       ⋁-is-ub ,
       ⋁-is-lb-of-ubs)
 
@@ -623,7 +642,7 @@ We first show that any ⊥,⊤,⋁-homomorphism on QD is automatically a
          → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧' f (𝕢 n)))
          → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧' f (⋁ 𝕢))
 
-      lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)               ≡⟨ ap f (distributivity 𝕡 𝕢)                          ⟩
+      lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)               ≡⟨ ap f (∧-⋁-distributivity 𝕡 𝕢)                      ⟩
                f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))      ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                      ⟩
                ⋁' (n ↦ f (𝕡 ∧ 𝕢 n))      ≡⟨ ap ⋁' (dfunext fe φ)                               ⟩
                ⋁' (n ↦ f 𝕡 ∧' f (𝕢 n))   ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
@@ -645,7 +664,7 @@ And then again by 𝓠-induction, there is at most one homomorphism from
                   → is-σ-frame-homomorphism QD 𝓐 h
                   → g ≡ h
 
-  at-most-one-hom g h (g⊤ , g∧ , g⊥ , g⋁) (h⊤ , h∧ , h⊥ , h⋁) = dfunext fe r
+  at-most-one-hom g h (g⊤ , _ , g⊥ , g⋁) (h⊤ , _ , h⊥ , h⋁) = dfunext fe r
    where
     i₀ = g ⊥ ≡⟨ g⊥    ⟩
          ⊥'  ≡⟨ h⊥ ⁻¹ ⟩
@@ -659,7 +678,7 @@ And then again by 𝓠-induction, there is at most one homomorphism from
     iω 𝕡 φ = g (⋁ 𝕡)          ≡⟨ ap (λ - → - 𝕡) g⋁     ⟩
              ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ)  ⟩
              ⋁' (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
-              h (⋁ 𝕡)         ∎
+             h (⋁ 𝕡)          ∎
 
     r : g ∼ h
     r = 𝓠-induction (λ 𝕡 → g 𝕡 ≡ h 𝕡) (λ 𝕡 → ⟨ 𝓐 ⟩-is-set {g 𝕡} {h 𝕡}) i₀ i₁ iω
@@ -1164,8 +1183,8 @@ module Ω-is-σ-frame {𝓤 : Universe} where
    γ : ((P × Q) , _) ≡ (P , _)
    γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
- distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
- distributivity (P , i) 𝕢 = γ
+ ∧-⋁-distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
+ ∧-⋁-distributivity (P , i) 𝕢 = γ
   where
    Q : ℕ → 𝓤 ̇
    Q n = 𝕢 n holds
@@ -1201,7 +1220,7 @@ module Ω-is-σ-frame {𝓤 : Universe} where
       ∧-is-associative ,
       ⊥-is-minimum ,
       ⊤-is-maximum ,
-      distributivity ,
+      ∧-⋁-distributivity ,
       ⋁-is-ub ,
       ⋁-is-lb-of-ubs)
 
@@ -1242,10 +1261,8 @@ initial σ-frame.
     c : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (𝟘 , 𝟘-is-prop)) → (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
     c = d
 
-
-
   𝟙-is-quasidecidable : is-quasidecidable 𝟙
-  𝟙-is-quasidecidable = 𝟙-is-prop , ∣ ⊤⟨ QD ⟩ , pr₁ h ∣
+  𝟙-is-quasidecidable = ?
 
   quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤 ̇ )
                                       → ((n : ℕ) → is-quasidecidable (P n))
