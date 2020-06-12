@@ -8,7 +8,7 @@ of a given type.
 
 A subset of a type X in a universe 𝓤 is an embedding of some given
 type into X, or, equivalently, a map of X into the subtype classifier
-Ω 𝓤 of the universe U (see the module UF-Classifiers-Old).
+Ω 𝓤 of the universe 𝓤 (see the module UF-Classifiers).
 
 \begin{code}
 

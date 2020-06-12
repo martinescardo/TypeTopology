@@ -258,9 +258,11 @@ Bounded minimization (added 14th December 2019):
             + ((n : ℕ) → A n → n ≥ k)
 
 βμ A δ 0 = inr (λ n a → zero-minimal n)
-βμ A δ (succ k) = cases f g (βμ A δ k)
+βμ A δ (succ k) = γ
  where
-  conclusion = type-of (βμ A δ (succ k))
+  conclusion = (Σ m ꞉ ℕ , (m < succ k) × A m × ((n : ℕ) → A n → m ≤ n))
+             + ((n : ℕ) → A n → n ≥ succ k)
+
   f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
   f (m , l , a , φ) = inl (m , <-trans m k (succ k) l (<-succ k) , a , φ)
   g : ((n : ℕ) → A n → k ≤ n) → conclusion
@@ -287,6 +289,9 @@ Bounded minimization (added 14th December 2019):
         III : k ≤ n
         III = ≤-down k n I II
 
+  γ : conclusion
+  γ = cases f g (βμ A δ k)
+
 \end{code}
 
 Given k : ℕ with A k, find the minimal m : ℕ with A m, by reduction to
@@ -298,12 +303,13 @@ bounded minimization:
 Σμ A = Σ m ꞉ ℕ , A m × ((n : ℕ) → A n → m ≤ n)
 
 minimal-from-given : (A : ℕ → 𝓤 ̇ ) → detachable A → Σ A → Σμ A
-minimal-from-given A δ (k , a) = cases f g (βμ A δ k)
+minimal-from-given A δ (k , a) = γ
  where
-  conclusion = type-of (minimal-from-given A δ (k , a))
-  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → conclusion
+  f : (Σ m ꞉ ℕ , (m < k) × A m × ((n : ℕ) → A n → m ≤ n)) → Σμ A
   f (m , l , a' , φ) = m , a' , φ
-  g : ((n : ℕ) → A n → k ≤ n) → conclusion
+  g : ((n : ℕ) → A n → k ≤ n) → Σμ A
   g φ = k , a , φ
+  γ : Σμ A
+  γ = cases f g (βμ A δ k)
 
 \end{code}

@@ -181,6 +181,28 @@ The examples are obtained by specialising to a specific property green:
 
 \begin{code}
 
+eqtoid-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇} (f : X ≃ Y) (g : Y ≃ Z)
+            → (eqtoid ua X Y f) ∙ (eqtoid ua Y Z g) ≡ eqtoid ua X Z (f ● g)
+eqtoid-comp {𝓤} ua {X} {Y} {Z} f =
+ JEq ua Y (λ Z g → eqtoid ua X Y f ∙ eqtoid ua Y Z g ≡ eqtoid ua X Z (f ● g)) γ Z
+  where
+   γ : eqtoid ua X Y f ∙ eqtoid ua Y Y (≃-refl Y) ≡ eqtoid ua X Y (f ● ≃-refl Y)
+   γ = eqtoid ua X Y f ∙ eqtoid ua Y Y (≃-refl Y) ≡⟨ ap (λ - → eqtoid ua X Y f ∙ -) (eqtoid-refl ua Y) ⟩
+       eqtoid ua X Y f                            ≡⟨ ap (λ - → eqtoid ua X Y -) h ⟩
+       eqtoid ua X Y (f ● ≃-refl Y)               ∎
+    where
+     h : f ≡ f ● ≃-refl Y
+     h = to-Σ-≡ (l , being-equiv-is-prop'' fe (⌜ f ● ≃-refl Y ⌝)
+                      (transport is-equiv l (⌜⌝-is-equiv f))
+                      (⌜⌝-is-equiv (f ● ≃-refl Y)))
+      where
+       fe : funext 𝓤 𝓤
+       fe = univalence-gives-funext ua
+       l : ⌜ f ⌝ ≡ ⌜ f ● ≃-refl Y ⌝
+       l = dfunext fe (λ x → refl)
+
+
+
 module general-classifier
         {𝓤 𝓥 : Universe}
         (fe : funext 𝓤 𝓥)

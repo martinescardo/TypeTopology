@@ -270,5 +270,3 @@ ua-all-from-id {𝓤} {𝓥} ua X P b Y f e = JEq ua X A b Y (f , e)
   A Y (f , _) = P Y f
 
 \end{code}
-
-TODO. The converse. From this we get univalence.

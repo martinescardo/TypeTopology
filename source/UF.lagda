@@ -9,7 +9,6 @@ module UF where
 import UF-Base
 import UF-Choice
 import UF-Classifiers
-import UF-Classifiers-Old
 import UF-Embeddings
 import UF-EquivalenceExamples
 import UF-Equiv-FunExt
