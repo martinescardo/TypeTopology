@@ -1595,10 +1595,12 @@ aflabby-decidability-lemma {𝓦} P i φ = γ
   f : P + ¬ P → D
   f (inl p) = inl (inl p)
   f (inr n) = inl (inr n)
+  l : Σ d ꞉ D , ((z : P + ¬ P) → d ≡ f z)
+  l = φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f
   d : D
-  d = pr₁ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+  d = pr₁ l
   κ : (z : P + ¬ P) → d ≡ f z
-  κ = pr₂ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+  κ = pr₂ l
   a : (p : P) → d ≡ inl (inl p)
   a p = κ (inl p)
   b : (n : ¬ P) → d ≡ inl (inr n)
