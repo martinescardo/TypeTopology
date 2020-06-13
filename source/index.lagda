@@ -210,7 +210,7 @@ import UF
 import UF-Base
 import UF-Choice
 import UF-Classifiers
--- import UF-Classifiers-Old
+import UF-Classifiers-Old
 import UF-Connected
 import UF-Embeddings
 import UF-EquivalenceExamples

@@ -161,20 +161,18 @@ a neutral element for ordinary function composition, definitionally:
 
 \begin{code}
 
-≃-refl-left : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-refl X ● α ≡ α
-≃-refl-left fe α = to-Σ-≡ (refl , being-equiv-is-prop fe _ _ _)
+≃-refl-left' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤
+               → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-refl X ● α ≡ α
+≃-refl-left' fe₀ fe₁ fe₂ α = to-Σ-≡' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
-≃-refl-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-refl Y ≡ α
-≃-refl-right fe α = to-Σ-≡ (refl , being-equiv-is-prop fe _ _ _)
+≃-refl-right' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-refl Y ≡ α
+≃-refl-right' fe₀ fe₁ fe₂  α = to-Σ-≡' (being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ _ _ _)
 
 ≃-sym-involutive' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤
                   → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
 ≃-sym-involutive' fe₀ fe₁ fe₂ (f , a) = to-Σ-≡
                                              (inversion-involutive f a ,
                                               being-equiv-is-prop' fe₀ fe₁ fe₂ fe₀ f _ a)
-
-≃-sym-involutive : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
-≃-sym-involutive {𝓤} {𝓥} fe = ≃-sym-involutive' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤)
 
 ≃-Sym' : funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓤 𝓥
        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ≃ Y) ≃ (Y ≃ X)
@@ -186,6 +184,15 @@ a neutral element for ordinary function composition, definitionally:
 
 ≃-Sym : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ≃ Y) ≃ (Y ≃ X)
 ≃-Sym {𝓤} {𝓥} fe = ≃-Sym' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤) (fe 𝓤 𝓥)
+
+≃-refl-left : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-refl X ● α ≡ α
+≃-refl-left fe = ≃-refl-left' (fe _ _) (fe _ _) (fe _ _)
+
+≃-refl-right : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → α ● ≃-refl Y ≡ α
+≃-refl-right fe = ≃-refl-right' (fe _ _) (fe _ _) (fe _ _)
+
+≃-sym-involutive : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym (≃-sym α) ≡ α
+≃-sym-involutive {𝓤} {𝓥} fe = ≃-sym-involutive' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤)
 
 ≃-sym-left-inverse : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y) → ≃-sym α ● α ≡ ≃-refl Y
 ≃-sym-left-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-≡ (p , being-equiv-is-prop fe _ _ _)
