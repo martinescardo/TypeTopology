@@ -272,3 +272,40 @@ Added 5 March 2020 by Tom de Jong.
 ¬-is-prop fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
 \end{code}
+
+Added 16th June 2020 by Martin Escardo. (Should have added this ages ago to avoid boiler-plate code.)
+
+\begin{code}
+
+Π₂-is-prop : Fun-Ext → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ }
+           → ((x : X) (y : Y x) → is-prop (Z x y)) → is-prop ((x : X) (y : Y x) → Z x y)
+Π₂-is-prop fe i = Π-is-prop fe (λ x → Π-is-prop fe (i x))
+
+Π₃-is-prop : Fun-Ext → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ } {T : (x : X) (y : Y x) → Z x y → 𝓣 ̇ }
+           → ((x : X) (y : Y x) (z : Z x y) → is-prop (T x y z)) → is-prop ((x : X) (y : Y x) (z : Z x y) → T x y z)
+Π₃-is-prop fe i = Π-is-prop fe (λ x → Π₂-is-prop fe (i x))
+
+Π₄-is-prop : Fun-Ext
+           → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ : Universe}
+             {X₀ : 𝓤 ̇ }
+             {X₁ : X₀ → 𝓥₀ ̇ }
+             {X₂ : (x₀ : X₀) → X₁ x₀ → 𝓥₁ ̇ }
+             {X₃ : (x₀ : X₀) (x₁ : X₁ x₀) → X₂ x₀ x₁ → 𝓥₂ ̇ }
+             {X₄ : (x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) → X₃ x₀ x₁ x₂ → 𝓥₃ ̇ }
+           → ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) → is-prop (X₄ x₀ x₁ x₂ x₃))
+           → is-prop ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) → X₄ x₀ x₁ x₂ x₃)
+Π₄-is-prop fe i = Π-is-prop fe (λ x → Π₃-is-prop fe (i x))
+
+Π₅-is-prop : Fun-Ext
+           → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ : Universe}
+             {X₀ : 𝓤 ̇ }
+             {X₁ : X₀ → 𝓥₀ ̇ }
+             {X₂ : (x₀ : X₀) → X₁ x₀ → 𝓥₁ ̇ }
+             {X₃ : (x₀ : X₀) (x₁ : X₁ x₀) → X₂ x₀ x₁ → 𝓥₂ ̇ }
+             {X₄ : (x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) → X₃ x₀ x₁ x₂ → 𝓥₃ ̇ }
+             {X₅ : (x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) → X₄ x₀ x₁ x₂ x₃ → 𝓥₄ ̇ }
+           → ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) (x₄ : X₄ x₀ x₁ x₂ x₃) → is-prop (X₅ x₀ x₁ x₂ x₃ x₄))
+           → is-prop ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) (x₄ : X₄ x₀ x₁ x₂ x₃) → X₅ x₀ x₁ x₂ x₃ x₄)
+Π₅-is-prop fe i = Π-is-prop fe (λ x → Π₄-is-prop fe (i x))
+
+\end{code}

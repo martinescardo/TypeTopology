@@ -181,6 +181,34 @@ Id-collapsibles-are-sets pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x
 
 \end{code}
 
+Here is an example. Any type that admits a prop-valued, reflexive and
+antisymmetric relation is a set.
+
+\begin{code}
+
+type-with-prop-valued-refl-antisym-rel-is-set : {X : 𝓤 ̇ }
+                                              → (_≤_ : X → X → 𝓥 ̇ )
+                                              → ((x y : X) → is-prop (x ≤ y))
+                                              → ((x : X) → x ≤ x)
+                                              → ((x y : X) → x ≤ y → y ≤ x → x ≡ y)
+                                              → is-set X
+type-with-prop-valued-refl-antisym-rel-is-set {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
+ where
+  α : ∀ {x} {y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ≡ ≤-anti x y l' m'
+  α {x} {y} l l' m m' = ap₂ (≤-anti x y) (≤-prop-valued x y l l') (≤-prop-valued y x m m')
+  g : ∀ {x y} → x ≡ y → x ≤ y
+  g {x} {y} p = transport (x ≤_) p (≤-refl x)
+  h : ∀ {x y} → x ≡ y → y ≤ x
+  h {x} {y} p = g (p ⁻¹)
+  f : ∀ {x y} → x ≡ y → x ≡ y
+  f {x} {y} p = ≤-anti x y (g p) (h p)
+  κ : ∀ {x} {y} p q → f {x} {y} p ≡ f {x} {y} q
+  κ {x} {y} p q = α (g p) (g q) (h p) (h q)
+  γ : is-set X
+  γ = Id-collapsibles-are-sets (f , κ)
+
+\end{code}
+
 We also need the following symmetrical version of local Hedberg, which
 can be proved by reduction to the above (using the fact that
 collapsible types are closed under equivalence), but at this point we
@@ -468,4 +496,39 @@ Added 5 March 2020 by Tom de Jong.
            → is-prop (X + Y)
 +-is-prop' {𝓤} {𝓥} {X} {Y} i j f = +-is-prop i j (λ y x → f x y)
 
+\end{code}
+
+Added 16th June 2020 by Martin Escardo. (Should have added this ages ago to avoid boiler-plate code.)
+
+\begin{code}
+
+×₃-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ : Universe}
+             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ }
+           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop (X₀ × X₁ × X₂)
+×₃-is-prop i₀ i₁ i₂ = ×-is-prop i₀ (×-is-prop i₁ i₂)
+
+×₄-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ : Universe}
+             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ }
+           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop X₃ → is-prop (X₀ × X₁ × X₂ × X₃)
+×₄-is-prop i₀ i₁ i₂ i₃ = ×-is-prop i₀ (×₃-is-prop i₁ i₂ i₃)
+
+×₅-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ : Universe}
+             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ }
+           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop X₃ → is-prop X₄ → is-prop (X₀ × X₁ × X₂ × X₃ × X₄)
+×₅-is-prop i₀ i₁ i₂ i₃ i₄ = ×-is-prop i₀ (×₄-is-prop i₁ i₂ i₃ i₄)
+
+×₆-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ : Universe}
+             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ }
+           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop X₃ → is-prop X₄ → is-prop X₅ → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅)
+×₆-is-prop i₀ i₁ i₂ i₃ i₄ i₅ = ×-is-prop i₀ (×₅-is-prop i₁ i₂ i₃ i₄ i₅)
+
+×₇-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ 𝓥₆ : Universe}
+             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ } {X₆ : 𝓥₆ ̇ }
+           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop X₃ → is-prop X₄ → is-prop X₅ → is-prop X₆ → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅ × X₆)
+×₇-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ = ×-is-prop i₀ (×₆-is-prop i₁ i₂ i₃ i₄ i₅ i₆)
+
+×₈-is-prop : {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ 𝓥₅ 𝓥₆ 𝓥₇ : Universe}
+             {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ } {X₆ : 𝓥₆ ̇ } {X₇ : 𝓥₇ ̇ }
+           → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop X₃ → is-prop X₄ → is-prop X₅ → is-prop X₆ → is-prop X₇ → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅ × X₆ × X₇)
+×₈-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ i₇ = ×-is-prop i₀ (×₇-is-prop i₁ i₂ i₃ i₄ i₅ i₆ i₇)
 \end{code}
