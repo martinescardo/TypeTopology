@@ -194,6 +194,7 @@ import SpartanMLTT
 import SquashedCantor
 import SquashedSum
 import Swap
+import sigma-sup-lattice
 import TheTopologyOfTheUniverse
 import TotallySeparated
 import Two
