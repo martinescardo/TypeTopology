@@ -7,5 +7,5 @@ contribute, please add your full real name and date at the place of
 contribution.
 
 An [html rendering of the Agda
-code](http://www.cs.bham.ac.uk/~mhe/agda-new/index.html) is hosted at
+code](http://www.cs.bham.ac.uk/~mhe/TypeTopology/index.html) is hosted at
 Martin Escardo's institutional web page.
