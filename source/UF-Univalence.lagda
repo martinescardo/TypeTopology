@@ -120,7 +120,7 @@ for Mathematics in Bonn.
 The following is an adaptation of an 'improvement method' I learned
 from Peter Lumsdaine, 7 July 2017, when we were both visiting the
 Newton Institute. His original version translated to Agda is here:
-http://www.cs.bham.ac.uk/~mhe/agda-new/Lumsdaine.html
+http://www.cs.bham.ac.uk/~mhe/TypeTopology/Lumsdaine.html
 
 Unfortunately, we couldn't use his result off-the-shelf. The main
 difference is that Peter works with a global identity system on all

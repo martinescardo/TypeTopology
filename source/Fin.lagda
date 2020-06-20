@@ -19,7 +19,7 @@ The type Fin n is a discrete set with n elements.
 And more.
 
 Other interesting uses of the types Fin n is in the file
-https://www.cs.bham.ac.uk/~mhe/agda-new/ArithmeticViaEquivalence.html
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/ArithmeticViaEquivalence.html
 which proves commutativity of addition and multiplication, and more,
 using the corresponding property for (finite) types.
 

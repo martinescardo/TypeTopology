@@ -26,7 +26,7 @@ and ℕ∞ (defined with Σ) is totally separated (proved in the module
 GenericConvergentSequence).
 
 A counter-example to closure under Σ (from 2012) is in the file
-http://www.cs.bham.ac.uk/~mhe/agda-new/FailureOfTotalSeparatedness.html
+http://www.cs.bham.ac.uk/~mhe/TypeTopology/FailureOfTotalSeparatedness.html
 
 This is the "compactification" of ℕ with two points at infinity:
 

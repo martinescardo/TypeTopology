@@ -55,11 +55,11 @@
      this safe-modules index: The system with type-in-type is
      inconsistent (as is well known), countable Tychonoff, and
      compactness of the Cantor type using countable Tychonoff.
-     (https://www.cs.bham.ac.uk/~mhe/agda-new/UnsafeModulesIndex.html)
+     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
    * A module dependency graph is available, updated manually from
      time to time.
-     (https://www.cs.bham.ac.uk/~mhe/agda-new/dependency-graph.pdf)
+     (https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf)
 
    * There are some somewhat obsolete comments at the end of this
      file, explaining part of what we do in this development. See
@@ -291,7 +291,7 @@ up-to-date information within them.
 You can navigate this set of files by clicking at words or
 symbols to get to their definitions.
 
-The module dependency graph: http://www.cs.bham.ac.uk/~mhe/agda-new/manual.pdf
+The module dependency graph: http://www.cs.bham.ac.uk/~mhe/TypeTopology/manual.pdf
 
 The following module investigates the notion of compact set. A
 set X is compact iff
