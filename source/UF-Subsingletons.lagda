@@ -71,6 +71,9 @@ is-singleton X = Σ c ꞉ X , is-central X c
 center : {X : 𝓤 ̇ } → is-singleton X → X
 center = pr₁
 
+centrality : {X : 𝓤 ̇ } (i : is-singleton X) → is-central X (center i)
+centrality = pr₂
+
 \end{code}
 
 For compatibility with the homotopical terminology:

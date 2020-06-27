@@ -1087,146 +1087,147 @@ structure of a σ-frame:
 
 \begin{code}
 
+open σ-frame
+
 module Ω-is-σ-frame {𝓤 : Universe} where
 
  𝓞 = Ω 𝓤
 
- ⊤ : 𝓞
- ⊤ = 𝟙 , 𝟙-is-prop
+ private
+   ⊤ : 𝓞
+   ⊤ = 𝟙 , 𝟙-is-prop
 
- _∧_ : 𝓞 → 𝓞 → 𝓞
- (P , i) ∧ (Q , j) = (P × Q) , ×-is-prop i j
+   _∧_ : 𝓞 → 𝓞 → 𝓞
+   (P , i) ∧ (Q , j) = (P × Q) , ×-is-prop i j
 
- ⊥ : 𝓞
- ⊥ = 𝟘 , 𝟘-is-prop
+   ⊥ : 𝓞
+   ⊥ = 𝟘 , 𝟘-is-prop
 
- ⋁ : (ℕ → 𝓞) → 𝓞
- ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n holds) , ∃-is-prop
+   ⋁ : (ℕ → 𝓞) → 𝓞
+   ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n holds) , ∃-is-prop
 
- ∧-is-idempotent : (𝕡 : 𝓞) → 𝕡 ∧ 𝕡 ≡ 𝕡
- ∧-is-idempotent (P , i) = γ
-  where
-   r : P × P ≡ P
-   r = pe (×-is-prop i i) i pr₁ (λ p → (p , p))
+   ∧-is-idempotent : (𝕡 : 𝓞) → 𝕡 ∧ 𝕡 ≡ 𝕡
+   ∧-is-idempotent (P , i) = γ
+    where
+     r : P × P ≡ P
+     r = pe (×-is-prop i i) i pr₁ (λ p → (p , p))
 
-   γ : ((P × P) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × P) , _) ≡ (P , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
- ∧-is-commutative : (𝕡 𝕢 : 𝓞) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
- ∧-is-commutative (P , i) (Q , j) = γ
-  where
-   r : P × Q ≡ Q × P
-   r = pe (×-is-prop i j)
-          (×-is-prop j i)
-          (λ (p , q) → (q , p))
-          (λ (q , p) → (p , q))
+   ∧-is-commutative : (𝕡 𝕢 : 𝓞) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
+   ∧-is-commutative (P , i) (Q , j) = γ
+    where
+     r : P × Q ≡ Q × P
+     r = pe (×-is-prop i j)
+            (×-is-prop j i)
+            (λ (p , q) → (q , p))
+            (λ (q , p) → (p , q))
 
-   γ : ((P × Q) , _) ≡ ((Q × P) , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × Q) , _) ≡ ((Q × P) , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
- ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓞) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
- ∧-is-associative (P , i) (Q , j) (R , k) = γ
-  where
-   r : P × (Q × R) ≡ (P × Q) × R
-   r = pe (×-is-prop i (×-is-prop j k))
-          (×-is-prop (×-is-prop i j) k)
-          (λ (p , (q , r)) → ((p , q) , r))
-          (λ ((p , q) , r) → (p , (q , r)))
+   ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓞) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
+   ∧-is-associative (P , i) (Q , j) (R , k) = γ
+    where
+     r : P × (Q × R) ≡ (P × Q) × R
+     r = pe (×-is-prop i (×-is-prop j k))
+            (×-is-prop (×-is-prop i j) k)
+            (λ (p , (q , r)) → ((p , q) , r))
+            (λ ((p , q) , r) → (p , (q , r)))
 
-   γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+     γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
- _≤_ : 𝓞 → 𝓞 → 𝓤 ⁺ ̇
- 𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
+   _≤_ : 𝓞 → 𝓞 → 𝓤 ⁺ ̇
+   𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
 
- ⊥-is-minimum : (𝕡 : 𝓞) → ⊥ ≤ 𝕡
- ⊥-is-minimum (P , i) = γ
-  where
-   r : 𝟘 × P ≡ 𝟘
-   r = pe (×-is-prop 𝟘-is-prop i)
-          𝟘-is-prop
-          pr₁
-          unique-from-𝟘
+   ⊥-is-minimum : (𝕡 : 𝓞) → ⊥ ≤ 𝕡
+   ⊥-is-minimum (P , i) = γ
+    where
+     r : 𝟘 × P ≡ 𝟘
+     r = pe (×-is-prop 𝟘-is-prop i)
+            𝟘-is-prop
+            pr₁
+            unique-from-𝟘
 
-   γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+     γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
- ⊤-is-maximum : (𝕡 : 𝓞) → 𝕡 ≤ ⊤
- ⊤-is-maximum (P , i) = γ
-  where
-   r : P × 𝟙 ≡ P
-   r = pe (×-is-prop i 𝟙-is-prop)
-          i
-          (λ (p , _) → p)
-          (λ p → (p , *))
+   ⊤-is-maximum : (𝕡 : 𝓞) → 𝕡 ≤ ⊤
+   ⊤-is-maximum (P , i) = γ
+    where
+     r : P × 𝟙 ≡ P
+     r = pe (×-is-prop i 𝟙-is-prop)
+            i
+            (λ (p , _) → p)
+            (λ p → (p , *))
 
-   γ : ((P × 𝟙) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+     γ : ((P × 𝟙) , _) ≡ (P , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
- ≤-is-prop-valued : (𝕡 𝕢 : 𝓞) → is-prop (𝕡 ≤ 𝕢)
- ≤-is-prop-valued 𝕡 𝕢 = Ω-is-set fe pe {𝕡 ∧ 𝕢} {𝕡}
+   ≤-is-prop-valued : (𝕡 𝕢 : 𝓞) → is-prop (𝕡 ≤ 𝕢)
+   ≤-is-prop-valued 𝕡 𝕢 = Ω-is-set fe pe {𝕡 ∧ 𝕢} {𝕡}
 
- from-≤ : {𝕡 𝕢 : 𝓞} → 𝕡 ≤ 𝕢 → (𝕡 holds → 𝕢 holds)
- from-≤ {P , i} {Q , j} l p = γ
-  where
-   r : P × Q ≡ P
-   r = ap (_holds) l
+   from-≤ : {𝕡 𝕢 : 𝓞} → 𝕡 ≤ 𝕢 → (𝕡 holds → 𝕢 holds)
+   from-≤ {P , i} {Q , j} l p = γ
+    where
+     r : P × Q ≡ P
+     r = ap (_holds) l
 
-   g : P → P × Q
-   g = idtofun P (P × Q) (r ⁻¹)
+     g : P → P × Q
+     g = idtofun P (P × Q) (r ⁻¹)
 
-   γ : Q
-   γ = pr₂ (g p)
+     γ : Q
+     γ = pr₂ (g p)
 
- to-≤ : {𝕡 𝕢 : 𝓞} → (𝕡 holds → 𝕢 holds) → 𝕡 ≤ 𝕢
- to-≤ {P , i} {Q , j} f = γ
-  where
-   r : P × Q ≡ P
-   r = pe (×-is-prop i j) i pr₁ (λ p → (p , f p))
+   to-≤ : {𝕡 𝕢 : 𝓞} → (𝕡 holds → 𝕢 holds) → 𝕡 ≤ 𝕢
+   to-≤ {P , i} {Q , j} f = γ
+    where
+     r : P × Q ≡ P
+     r = pe (×-is-prop i j) i pr₁ (λ p → (p , f p))
 
-   γ : ((P × Q) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+     γ : ((P × Q) , _) ≡ (P , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
- ∧-⋁-distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
- ∧-⋁-distributivity (P , i) 𝕢 = γ
-  where
-   Q : ℕ → 𝓤 ̇
-   Q n = 𝕢 n holds
+   ∧-⋁-distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
+   ∧-⋁-distributivity (P , i) 𝕢 = γ
+    where
+     Q : ℕ → 𝓤 ̇
+     Q n = 𝕢 n holds
 
-   r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
-   r = prop-frame-distr pe P i Q λ n → holds-is-prop (𝕢 n)
+     r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
+     r = prop-frame-distr pe P i Q λ n → holds-is-prop (𝕢 n)
 
-   γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+     γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
+     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
- ⋁-is-ub : (𝕡 : ℕ → 𝓞) → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
- ⋁-is-ub 𝕡 n = to-≤ {𝕡 n} {⋁ 𝕡} (λ p → ∣ n , p ∣)
+   ⋁-is-ub : (𝕡 : ℕ → 𝓞) → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+   ⋁-is-ub 𝕡 n = to-≤ {𝕡 n} {⋁ 𝕡} (λ p → ∣ n , p ∣)
 
- ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓞) → (𝕦 : 𝓞) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
- ⋁-is-lb-of-ubs 𝕡 (U , i) φ = to-≤ {⋁ 𝕡} {𝕦} γ
-  where
-   𝕦 = (U , i)
+   ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓞) → (𝕦 : 𝓞) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
+   ⋁-is-lb-of-ubs 𝕡 (U , i) φ = to-≤ {⋁ 𝕡} {𝕦} γ
+    where
+     𝕦 = (U , i)
 
-   δ : (Σ n ꞉ ℕ , 𝕡 n holds) → U
-   δ (n , p) = from-≤ {𝕡 n} {𝕦} (φ n) p
+     δ : (Σ n ꞉ ℕ , 𝕡 n holds) → U
+     δ (n , p) = from-≤ {𝕡 n} {𝕦} (φ n) p
 
-   γ : (∃ n ꞉ ℕ , 𝕡 n holds) → U
-   γ = ∥∥-rec i δ
-
- open σ-frame
+     γ : (∃ n ꞉ ℕ , 𝕡 n holds) → U
+     γ = ∥∥-rec i δ
 
  σΩ : σ-Frame (𝓤 ⁺)
  σΩ = 𝓞 ,
      (⊤ , _∧_ , ⊥ , ⋁) ,
-     (Ω-is-set fe pe ,
-      ∧-is-idempotent ,
-      ∧-is-commutative ,
-      ∧-is-associative ,
-      ⊥-is-minimum ,
-      ⊤-is-maximum ,
-      ∧-⋁-distributivity ,
-      ⋁-is-ub ,
-      ⋁-is-lb-of-ubs)
+     Ω-is-set fe pe ,
+     ∧-is-idempotent ,
+     ∧-is-commutative ,
+     ∧-is-associative ,
+     ⊥-is-minimum ,
+     ⊤-is-maximum ,
+     ∧-⋁-distributivity ,
+     ⋁-is-ub ,
+     ⋁-is-lb-of-ubs
 
 \end{code}
 
@@ -1235,58 +1236,161 @@ initial σ-frame.
 
 \begin{code}
 
- module _ (QD : σ-Frame 𝓤₀)
-          (QD-initial : {𝓦 : Universe} (𝓐 : σ-Frame 𝓦) → ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f)
-        where
+module _ (𝓐 : σ-Frame 𝓤₀)
+         (𝓐-initial : {𝓦 : Universe} (𝓑 : σ-Frame 𝓦) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-homomorphism· 𝓐 𝓑 f)
+       where
 
-  f : ⟨ QD ⟩ → 𝓞
-  f = pr₁ (center (QD-initial σΩ))
+ A   = ⟨ 𝓐 ⟩
+ ⊥   = ⊥⟨ 𝓐 ⟩
+ ⊤   = ⊤⟨ 𝓐 ⟩
+ _∧_ = λ a b → a ∧⟨ 𝓐 ⟩ b
+ ⋁  = ⋁⟨ 𝓐 ⟩
 
-  h : is-σ-frame-homomorphism QD σΩ f
-  h = pr₂ (center (QD-initial σΩ))
+ σ-induction : (P : ⟨ 𝓐 ⟩ → 𝓥 ̇ )
+             → ((a : ⟨ 𝓐 ⟩) → is-prop (P a))
+             → P ⊤
+             → ((a b : ⟨ 𝓐 ⟩) → P a → P b → P (a ∧ b))
+             → P ⊥
+             → ((a : (ℕ → ⟨ 𝓐 ⟩)) → ((n : ℕ) → P (a n)) → (P (⋁ a)))
+             → (a : ⟨ 𝓐 ⟩) → P a
+ σ-induction {𝓥} P P-is-prop-valued ⊤-closure ∧-closure ⊥-closure ⋁-closure = γ
+  where
+   X = Σ a ꞉ A , P a
 
-  is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
-  is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (P , i)
+   ⊤' ⊥' : X
+   ⊤' = (⊤ , ⊤-closure)
+   ⊥' = (⊥ , ⊥-closure)
 
-  being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
-  being-quasidecidable-is-prop P = Σ-is-prop (being-prop-is-prop fe) (λ i → ∃!-is-prop fe)
+   _∧'_ : X → X → X
+   (a , p) ∧' (b , q) = (a ∧ b , ∧-closure a b p q)
+
+   ⋁' : (ℕ → X) → X
+   ⋁' a = (⋁ (pr₁ ∘ a) , ⋁-closure (pr₁ ∘ a) (pr₂ ∘ a))
+
+   X-is-set : is-set X
+   X-is-set = subtypes-of-sets-are-sets pr₁ (pr₁-lc λ {a : A} → P-is-prop-valued a) ⟨ 𝓐 ⟩-is-set
+
+   ∧'-is-idempotent : (x : X) → x ∧' x ≡ x
+   ∧'-is-idempotent (a , p) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-idempotency a)
+
+   ∧'-is-commutative : (x y : X) → x ∧' y ≡ y ∧' x
+   ∧'-is-commutative (a , _) (b , _) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-commutativity a b)
+
+   ∧'-is-associative : (x y z : X) → x ∧' (y ∧' z) ≡ (x ∧' y) ∧' z
+   ∧'-is-associative (a , _) (b , _) (c , _) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-associativity a b c)
+
+   _≤'_ : X → X → 𝓥 ̇
+   x ≤' y = x ∧' y ≡ x
+
+   ⊤'-is-maximum : (x : X) → x ≤' ⊤'
+   ⊤'-is-maximum (a , _) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-⊤-maximum a)
+
+   ⊥'-is-minimum : (x : X) → ⊥' ≤' x
+   ⊥'-is-minimum (a , _) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-⊥-minimum a)
+
+   ∧'-⋁'-distributivity : (x : X) (y : ℕ → X) → x ∧' (⋁' y) ≡ ⋁' (n ↦ x ∧' y n)
+   ∧'-⋁'-distributivity (x , _) y = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-distributivity x (pr₁ ∘ y))
+
+   ⋁'-is-ub : (x : ℕ → X) → (n : ℕ) → x n ≤' ⋁' x
+   ⋁'-is-ub x n = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n)
+
+   ⋁'-is-lb-of-ubs : (x : ℕ → X) → (u : X) → ((n : ℕ) → x n ≤' u) → ⋁' x ≤' u
+   ⋁'-is-lb-of-ubs x (a , _) φ = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) a (λ n → ap pr₁ (φ n)))
+
+   𝓑 : σ-Frame 𝓥
+   𝓑 = X , (⊤' , _∧'_ , ⊥' , ⋁') ,
+        X-is-set ,
+        ∧'-is-idempotent ,
+        ∧'-is-commutative ,
+        ∧'-is-associative ,
+        ⊥'-is-minimum ,
+        ⊤'-is-maximum ,
+        ∧'-⋁'-distributivity ,
+        ⋁'-is-ub ,
+        ⋁'-is-lb-of-ubs
+
+   g : X → A
+   g = pr₁
+
+   g-is-homomorphism : is-σ-frame-homomorphism· 𝓑 𝓐 g
+   g-is-homomorphism = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
+
+
+   f : A → X
+   f = pr₁ (center (𝓐-initial 𝓑))
+
+   f-is-homomorphism : is-σ-frame-homomorphism· 𝓐 𝓑 f
+   f-is-homomorphism = pr₂ (center (𝓐-initial 𝓑))
+
+   h : A → A
+   h = g ∘ f
+
+   h-is-homomorphism : is-σ-frame-homomorphism· 𝓐 𝓐 h
+   h-is-homomorphism = ∘-σ-frame-homomorphism· 𝓐 𝓑 𝓐 f g f-is-homomorphism g-is-homomorphism
+
+   H : h ≡ id
+   H = ap pr₁ p
+    where
+     p : (h , h-is-homomorphism) ≡ (id , id-is-σ-frame-homomorphism· 𝓐)
+     p = singletons-are-props (𝓐-initial 𝓐) _ _
+
+   γ : (a : A) → P a
+   γ a = transport P r p
+    where
+     p : P (h a)
+     p = pr₂ (f a)
+
+     r : h a ≡ a
+     r = happly H a
 
 {-
-  𝟘-is-quasidecidable : is-quasidecidable 𝟘
-  𝟘-is-quasidecidable = 𝟘-is-prop , (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) , c
-   where
-    d : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ ⊥) → (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
-    d (𝕡 , r) = to-subtype-≡ (λ 𝕡 → ⟨ σΩ ⟩-is-set) question
-     where
-      r' : f 𝕡 ≡ ⊥
-      r' = r
-      question : ⊥⟨ QD ⟩ ≡ 𝕡
-      question = {!!}
-    c : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (𝟘 , 𝟘-is-prop)) → (⊥⟨ QD ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
-    c = d
+ f : ⟨ 𝓐 ⟩ → 𝓞
+ f = pr₁ (center (𝓐-initial σΩ))
 
-  𝟙-is-quasidecidable : is-quasidecidable 𝟙
-  𝟙-is-quasidecidable = ?
+ h : is-σ-frame-homomorphism 𝓐 σΩ f
+ h = pr₂ (center (𝓐-initial σΩ))
 
-  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤 ̇ )
-                                      → ((n : ℕ) → is-quasidecidable (P n))
-                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
-  quasidecidable-closed-under-ω-joins P φ = ∃-is-prop , {!!}
-   where
-    φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ ⟨ QD ⟩ , f 𝕡 ≡ (P n , i)
-    φ' = φ
-    γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ ⟨ QD ⟩ , f 𝕢 ≡ (∃ P , j)
-    γ = ∃-is-prop , ∥∥-rec ∃-is-prop {!!} {!!}
+ is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
+ is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (P , i)
 
-  quasidecidable-induction :
-      (F : {!!} ̇ → 𝓤 ̇ )
-    → ((P : 𝓤₀ ̇ ) → is-prop (F P))
-    → F 𝟘
-    → F 𝟙
-    → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-    → (P : 𝓤₀ ̇ ) →  is-quasidecidable P → F P
+ being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
+ being-quasidecidable-is-prop P = Σ-is-prop (being-prop-is-prop fe) (λ i → ∃!-is-prop fe)
 
-  quasidecidable-induction = {!!}
+ 𝟘-is-quasidecidable : is-quasidecidable 𝟘
+ 𝟘-is-quasidecidable = 𝟘-is-prop , (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) , c
+  where
+   d : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ ⊥) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+   d (𝕡 , r) = to-subtype-≡ (λ 𝕡 → ⟨ σΩ ⟩-is-set) question
+    where
+     r' : f 𝕡 ≡ ⊥
+     r' = r
+     question : ⊥⟨ 𝓐 ⟩ ≡ 𝕡
+     question = {!!}
+   c : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (𝟘 , 𝟘-is-prop)) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+   c = d
+
+ 𝟙-is-quasidecidable : is-quasidecidable 𝟙
+ 𝟙-is-quasidecidable = {!!}
+
+ quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤 ̇ )
+                                     → ((n : ℕ) → is-quasidecidable (P n))
+                                     → is-quasidecidable (∃ n ꞉ ℕ , P n)
+ quasidecidable-closed-under-ω-joins P φ = ∃-is-prop , {!!}
+  where
+   φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (P n , i)
+   φ' = {!!}
+   γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ ⟨ 𝓐 ⟩ , f 𝕢 ≡ (∃ P , j)
+   γ = ∃-is-prop , ∥∥-rec ∃-is-prop {!!} {!!}
+
+ quasidecidable-induction :
+     (F : {!!} ̇ → 𝓤 ̇ )
+   → ((P : {!!} ̇ ) → is-prop (F P))
+   → F 𝟘
+   → F 𝟙
+   → ((P : ℕ → {!!} ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+   → (P : {!!} ̇ ) →  is-quasidecidable P → F P
+
+ quasidecidable-induction = {!!}
 -}
 \end{code}
 

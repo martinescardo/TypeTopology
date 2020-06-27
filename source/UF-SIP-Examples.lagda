@@ -2032,12 +2032,32 @@ record, but we need Σ for our approach to SIP):
                                     → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                                     → is-prop (is-σ-frame-homomorphism 𝓐 𝓑 f)
  being-σ-frame-homomorphism-is-prop fe (_ , (⊤ , _∧_ , ⊥ , ⋁) ,  _)
-                                    (_ , (⊤' , _∧'_ , ⊥' , ⋁') , (i' , _)) f =
+                                       (_ , (⊤' , _∧'_ , ⊥' , ⋁') , (i' , _)) f =
    ×-is-prop i'
   (×-is-prop (Π-is-set fe (λ a →
               Π-is-set fe (λ b → i')))
   (×-is-prop i' (Π-is-set fe (λ 𝕒 → i'))))
 
+ ∘-σ-frame-homomorphism : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
+                          (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                        → is-σ-frame-homomorphism 𝓐 𝓑 f
+                        → is-σ-frame-homomorphism 𝓑 𝓒 g
+                        → is-σ-frame-homomorphism 𝓐 𝓒 (g ∘ f)
+ ∘-σ-frame-homomorphism 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
+  where
+   p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
+        g ⊤⟨ 𝓑 ⟩  ≡⟨ p₁         ⟩
+        ⊤⟨ 𝓒 ⟩    ∎
+
+   q₂ = (λ a b → g (f (a ∧⟨ 𝓐 ⟩ b))) ≡⟨ dfunext {!!} (λ a → dfunext {!!} (λ b → ap (λ - → g (- a b)) q₀)) ⟩
+        (λ a b → g (f a ∧⟨ 𝓑 ⟩ f b)) ≡⟨ {!!} ⟩
+        (λ a b → g (f a) ∧⟨ 𝓒 ⟩ g (f b)) ∎
+
+   r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
+        g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁      ⟩
+        ⊥⟨ 𝓒 ⟩       ∎
+
+   s₂ = {!!}
 
 \end{code}
 
