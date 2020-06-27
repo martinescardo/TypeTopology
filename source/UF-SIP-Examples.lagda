@@ -2038,28 +2038,70 @@ record, but we need Σ for our approach to SIP):
               Π-is-set fe (λ b → i')))
   (×-is-prop i' (Π-is-set fe (λ 𝕒 → i'))))
 
- ∘-σ-frame-homomorphism : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
+ ∘-σ-frame-homomorphism : Fun-Ext
+                        → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
                           (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
                         → is-σ-frame-homomorphism 𝓐 𝓑 f
                         → is-σ-frame-homomorphism 𝓑 𝓒 g
                         → is-σ-frame-homomorphism 𝓐 𝓒 (g ∘ f)
- ∘-σ-frame-homomorphism 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
+ ∘-σ-frame-homomorphism fe 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
   where
    p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
-        g ⊤⟨ 𝓑 ⟩  ≡⟨ p₁         ⟩
-        ⊤⟨ 𝓒 ⟩    ∎
+        g ⊤⟨ 𝓑 ⟩     ≡⟨ p₁         ⟩
+        ⊤⟨ 𝓒 ⟩       ∎
 
-   q₂ = (λ a b → g (f (a ∧⟨ 𝓐 ⟩ b))) ≡⟨ dfunext {!!} (λ a → dfunext {!!} (λ b → ap (λ - → g (- a b)) q₀)) ⟩
-        (λ a b → g (f a ∧⟨ 𝓑 ⟩ f b)) ≡⟨ {!!} ⟩
+   q₂ = (λ a b → g (f (a ∧⟨ 𝓐 ⟩ b)))     ≡⟨ dfunext fe (λ a → dfunext fe (λ b → ap (λ - → g (- a b)) q₀))     ⟩
+        (λ a b → g (f a ∧⟨ 𝓑 ⟩ f b))     ≡⟨ dfunext fe (λ a → dfunext fe (λ b → ap (λ - → - (f a) (f b)) q₁)) ⟩
         (λ a b → g (f a) ∧⟨ 𝓒 ⟩ g (f b)) ∎
 
    r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
         g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁      ⟩
         ⊥⟨ 𝓒 ⟩       ∎
 
-   s₂ = {!!}
+   s₂ = (λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒)))           ≡⟨ dfunext fe (λ 𝕒 → ap (λ - → g (- 𝕒)) s₀)           ⟩
+        (λ 𝕒 → g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n)))) ≡⟨ dfunext fe (λ 𝕒 → ap (λ - → - (λ n → f (𝕒 n))) s₁) ⟩
+        (λ 𝕒 → ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n)))) ∎
 
 \end{code}
+
+I think I prefer to work with pointwise homomorphisms:
+
+\begin{code}
+ is-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                          → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
+ is-σ-frame-homomorphism·  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
+     (f ⊤ ≡ ⊤')
+   × (∀ a b → f (a ∧ b) ≡ f a ∧' f b)
+   × (f ⊥ ≡ ⊥')
+   × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
+
+ id-is-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) → is-σ-frame-homomorphism· 𝓐 𝓐 id
+ id-is-σ-frame-homomorphism· 𝓐 = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
+
+ ∘-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
+                           (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                         → is-σ-frame-homomorphism· 𝓐 𝓑 f
+                         → is-σ-frame-homomorphism· 𝓑 𝓒 g
+                         → is-σ-frame-homomorphism· 𝓐 𝓒 (g ∘ f)
+ ∘-σ-frame-homomorphism· 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
+  where
+   p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
+        g ⊤⟨ 𝓑 ⟩  ≡⟨ p₁         ⟩
+        ⊤⟨ 𝓒 ⟩    ∎
+
+   q₂ = λ a b → g (f (a ∧⟨ 𝓐 ⟩ b))     ≡⟨ ap g (q₀ a b)  ⟩
+                g (f a ∧⟨ 𝓑 ⟩ f b)     ≡⟨ q₁ (f a) (f b) ⟩
+                g (f a) ∧⟨ 𝓒 ⟩ g (f b) ∎
+
+   r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
+        g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁      ⟩
+        ⊥⟨ 𝓒 ⟩       ∎
+
+   s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ≡⟨ ap g (s₀ 𝕒)        ⟩
+              g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ≡⟨ s₁ (λ n → f (𝕒 n)) ⟩
+              ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n))) ∎
+\end{code}
+
 
 We now consider ∞-bigmagmas with all operations of all arities.
 

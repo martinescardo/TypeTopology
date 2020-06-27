@@ -1246,13 +1246,13 @@ module _ (𝓐 : σ-Frame 𝓤₀)
  _∧_ = λ a b → a ∧⟨ 𝓐 ⟩ b
  ⋁  = ⋁⟨ 𝓐 ⟩
 
- σ-induction : (P : ⟨ 𝓐 ⟩ → 𝓥 ̇ )
-             → ((a : ⟨ 𝓐 ⟩) → is-prop (P a))
+ σ-induction : (P : A → 𝓥 ̇ )
+             → ((a : A) → is-prop (P a))
              → P ⊤
-             → ((a b : ⟨ 𝓐 ⟩) → P a → P b → P (a ∧ b))
+             → ((a b : A) → P a → P b → P (a ∧ b))
              → P ⊥
-             → ((a : (ℕ → ⟨ 𝓐 ⟩)) → ((n : ℕ) → P (a n)) → (P (⋁ a)))
-             → (a : ⟨ 𝓐 ⟩) → P a
+             → ((a : (ℕ → A)) → ((n : ℕ) → P (a n)) → (P (⋁ a)))
+             → (a : A) → P a
  σ-induction {𝓥} P P-is-prop-valued ⊤-closure ∧-closure ⊥-closure ⋁-closure = γ
   where
    X = Σ a ꞉ A , P a
@@ -1344,22 +1344,22 @@ module _ (𝓐 : σ-Frame 𝓤₀)
      r = happly H a
 
 {-
- f : ⟨ 𝓐 ⟩ → 𝓞
+ f : A → 𝓞
  f = pr₁ (center (𝓐-initial σΩ))
 
  h : is-σ-frame-homomorphism 𝓐 σΩ f
  h = pr₂ (center (𝓐-initial σΩ))
 
  is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
- is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (P , i)
+ is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ A , f 𝕡 ≡ (P , i)
 
  being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
  being-quasidecidable-is-prop P = Σ-is-prop (being-prop-is-prop fe) (λ i → ∃!-is-prop fe)
 
  𝟘-is-quasidecidable : is-quasidecidable 𝟘
- 𝟘-is-quasidecidable = 𝟘-is-prop , (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) , c
+ 𝟘-is-quasidecidable = 𝟘-is-prop , (⊥A , pr₁ (pr₂ (pr₂ h))) , c
   where
-   d : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ ⊥) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+   d : ((𝕡 , r) : Σ 𝕡 ꞉ A , f 𝕡 ≡ ⊥) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
    d (𝕡 , r) = to-subtype-≡ (λ 𝕡 → ⟨ σΩ ⟩-is-set) question
     where
      r' : f 𝕡 ≡ ⊥
@@ -1377,9 +1377,9 @@ module _ (𝓐 : σ-Frame 𝓤₀)
                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
  quasidecidable-closed-under-ω-joins P φ = ∃-is-prop , {!!}
   where
-   φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (P n , i)
+   φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ A , f 𝕡 ≡ (P n , i)
    φ' = {!!}
-   γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ ⟨ 𝓐 ⟩ , f 𝕢 ≡ (∃ P , j)
+   γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ A , f 𝕢 ≡ (∃ P , j)
    γ = ∃-is-prop , ∥∥-rec ∃-is-prop {!!} {!!}
 
  quasidecidable-induction :
