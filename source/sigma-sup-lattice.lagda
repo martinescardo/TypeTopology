@@ -14,7 +14,6 @@ open import UF-Subsingletons
 module sigma-sup-lattice
         (fe : Fun-Ext)
         (pe : Prop-Ext)
-        (𝓤 : Universe)
        where
 
 open import UF-Base
@@ -36,15 +35,16 @@ element, and ⋁ x is the least upper bound of the sequence x.
 \begin{code}
 
 is-σ-sup-compatible-order : {X : 𝓤 ̇ } → σ-sup-lattice-structure X → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-σ-sup-compatible-order {𝓥} {X} (⊤ , ⊥ , ⋁) _≤_ =
-  ((x y : X) → is-prop (x ≤ y))
-             × ((x : X) → x ≤ x)
-             × ((x y z : X) → x ≤ y → y ≤ z → x ≤ z)
-             × ((x y : X) → x ≤ y → y ≤ x → x ≡ y)
-             × ((x : X) → x ≤ ⊤)
-             × ((x : X) → ⊥ ≤ x)
-             × ((x : ℕ → X) (n : ℕ) → x n ≤ ⋁ x)
-             × ((x : ℕ → X) (u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u)
+is-σ-sup-compatible-order {𝓤} {𝓥} {X} (⊤ , ⊥ , ⋁) _≤_ = I × II × III × IV × V × VI × VII × VIII
+ where
+  I    = (x y : X) → is-prop (x ≤ y)
+  II   = (x : X) → x ≤ x
+  III  = (x y z : X) → x ≤ y → y ≤ z → x ≤ z
+  IV   = (x y : X) → x ≤ y → y ≤ x → x ≡ y
+  V    = (x : X) → x ≤ ⊤
+  VI   = (x : X) → ⊥ ≤ x
+  VII  = (x : ℕ → X) (n : ℕ) → x n ≤ ⋁ x
+  VIII = (x : ℕ → X) (u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u
 \end{code}
 
 We can define the binary sup x ∨ y of two elements x and y by
@@ -168,18 +168,93 @@ which is then unique by the above:
 
 
 σ-sup-lattice-axiom-is-prop : {𝓥 : Universe}
-                             → {X : 𝓤 ̇ } (s : σ-sup-lattice-structure X)
-                             → is-prop (σ-sup-lattice-axiom 𝓥 {X} s)
+                            → {X : 𝓤 ̇ } (s : σ-sup-lattice-structure X)
+                            → is-prop (σ-sup-lattice-axiom 𝓥 {X} s)
 σ-sup-lattice-axiom-is-prop s (_≤_ , a) (_≤'_ , a') = to-subtype-≡
                                                         (being-σ-sup-order-is-prop s)
                                                         (at-most-one-σ-sup-order s _≤_ _≤'_ a a')
 
-σ-Sup-Lattice : (𝓥  : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-σ-Sup-Lattice 𝓥 = Σ X ꞉  𝓤 ̇ , Σ s ꞉ σ-sup-lattice-structure X , σ-sup-lattice-axiom 𝓥 s
+σ-Sup-Lattice : (𝓤 𝓥  : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+σ-Sup-Lattice 𝓤 𝓥 = Σ X ꞉  𝓤 ̇ , Σ s ꞉ σ-sup-lattice-structure X , σ-sup-lattice-axiom 𝓥 s
 
-open sip
+open sip public
 
-σ-Sup-Lattice-underlying-order-is-set : (L : σ-Sup-Lattice 𝓥) → is-set ⟨ L ⟩
-σ-Sup-Lattice-underlying-order-is-set (X , s , a) = σ-sup-lattice-axiom-gives-is-set a
+⊤⟨_⟩ : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) → ⟨ 𝓐 ⟩
+⊤⟨ A , (⊤ , ⊥ , ⋁) , _ ⟩ = ⊤
+
+⊥⟨_⟩ : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) → ⟨ 𝓐 ⟩
+⊥⟨ A , (⊤ , ⊥ , ⋁) , _ ⟩ = ⊥
+
+⋁⟨_⟩ : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) → (ℕ → ⟨ 𝓐 ⟩) → ⟨ 𝓐 ⟩
+⋁⟨ A , (⊤ , ⊥ , ⋁) , _ ⟩ = ⋁
+
+⟨_⟩-is-set : (L : σ-Sup-Lattice 𝓤 𝓥) → is-set ⟨ L ⟩
+⟨_⟩-is-set (X , s , a) = σ-sup-lattice-axiom-gives-is-set a
+
+le : (𝓐 : σ-Sup-Lattice 𝓤 𝓥)
+   → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
+le (A , (⊤ , ⊥ , ⋁) , (_≤_ , _)) = _≤_
+
+syntax le 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
+
+⟨_⟩-order-is-prop-valued : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → is-prop (a ≤⟨ 𝓐 ⟩ b)
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-order-is-prop-valued = i
+
+⟨_⟩-refl : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ a
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-refl = ii
+
+
+⟨_⟩-trans : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a b c : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ c → a ≤⟨ 𝓐 ⟩ c
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-trans = iii
+
+
+⟨_⟩-antisym : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ a → a ≡ b
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-antisym = iv
+
+
+⟨_⟩-⊤-maximum : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ ⊤⟨ 𝓐 ⟩
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⊤-maximum = v
+
+
+⟨_⟩-⊥-minimum : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → ⊥⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⊥-minimum = vi
+
+
+⟨_⟩-⋁-is-ub : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a : ℕ → ⟨ 𝓐 ⟩) (n : ℕ) → a n ≤⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ a
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⋁-is-ub = vii
+
+⟨_⟩-⋁-is-lb-of-ubs : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a : ℕ → ⟨ 𝓐 ⟩) (u : ⟨ 𝓐 ⟩)
+                   → ((n : ℕ) → a n ≤⟨ 𝓐 ⟩ u) → ⋁⟨ 𝓐 ⟩ a ≤⟨ 𝓐 ⟩ u
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⋁-is-lb-of-ubs = viii
+
+is-σ-sup-lattice-homomorphism· : (𝓐 : σ-Sup-Lattice 𝓤 𝓦) (𝓑 : σ-Sup-Lattice 𝓥 𝓣)
+                               → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
+is-σ-sup-lattice-homomorphism·  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' , ⋁') , _) f =
+    (f ⊤ ≡ ⊤')
+  × (f ⊥ ≡ ⊥')
+  × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
+
+id-is-σ-sup-lattice-homomorphism· : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) → is-σ-sup-lattice-homomorphism· 𝓐 𝓐 id
+id-is-σ-sup-lattice-homomorphism· 𝓐 = refl , refl , (λ 𝕒 → refl)
+
+∘-σ-sup-lattice-homomorphism· : (𝓐 : σ-Sup-Lattice 𝓤 𝓤') (𝓑 : σ-Sup-Lattice 𝓥 𝓥') (𝓒 : σ-Sup-Lattice 𝓦 𝓦')
+                                (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                              → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                              → is-σ-sup-lattice-homomorphism· 𝓑 𝓒 g
+                              → is-σ-sup-lattice-homomorphism· 𝓐 𝓒 (g ∘ f)
+∘-σ-sup-lattice-homomorphism· 𝓐 𝓑 𝓒 f g (p₀ , r₀ , s₀) (p₁ , r₁ , s₁) = (p₂ , r₂ , s₂)
+ where
+  p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
+       g ⊤⟨ 𝓑 ⟩     ≡⟨ p₁      ⟩
+       ⊤⟨ 𝓒 ⟩       ∎
+
+
+  r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
+       g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁      ⟩
+       ⊥⟨ 𝓒 ⟩       ∎
+
+  s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ≡⟨ ap g (s₀ 𝕒)        ⟩
+             g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ≡⟨ s₁ (λ n → f (𝕒 n)) ⟩
+             ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n))) ∎
 
 \end{code}

@@ -2086,8 +2086,8 @@ I think I prefer to work with pointwise homomorphisms:
  ∘-σ-frame-homomorphism· 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
   where
    p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
-        g ⊤⟨ 𝓑 ⟩  ≡⟨ p₁         ⟩
-        ⊤⟨ 𝓒 ⟩    ∎
+        g ⊤⟨ 𝓑 ⟩     ≡⟨ p₁         ⟩
+        ⊤⟨ 𝓒 ⟩       ∎
 
    q₂ = λ a b → g (f (a ∧⟨ 𝓐 ⟩ b))     ≡⟨ ap g (q₀ a b)  ⟩
                 g (f a ∧⟨ 𝓑 ⟩ f b)     ≡⟨ q₁ (f a) (f b) ⟩
