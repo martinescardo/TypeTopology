@@ -1424,6 +1424,11 @@ module hypothetical-initial-σ-Sup-Lattice
                       → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f)
         where
 
+\end{code}
+
+We first introduce some abbreviations:
+
+\begin{code}
 
   private
    A   = ⟨ 𝓐 ⟩
@@ -1433,6 +1438,12 @@ module hypothetical-initial-σ-Sup-Lattice
 
   _≤_ : A → A → 𝓤₀ ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
+\end{code}
+
+We then prove an induction principle:
+
+\begin{code}
+
 
   σ-induction : (P : A → 𝓥 ̇ )
               → ((a : A) → is-prop (P a))
@@ -1496,6 +1507,13 @@ module hypothetical-initial-σ-Sup-Lattice
     γ : (a : A) → P a
     γ a = transport P (happly H a) (δ a)
 
+\end{code}
+
+In order to show that the initial σ-sup-lattice has binary meets, we
+define a sub-σ-sup-lattice for any element of the initial one, by
+taking its down set:
+
+\begin{code}
 
   ↓ : A → 𝓤₀ ̇
   ↓ a = Σ d ꞉ A , d ≤ a
@@ -1515,20 +1533,24 @@ module hypothetical-initial-σ-Sup-Lattice
            (λ (a , _) → ⟨ 𝓐 ⟩-⊥-minimum a) ,
            (λ x n → ⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n) ,
            (λ x (u , _) φ → ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) u φ)
+\end{code}
 
+Then we apply initiality:
+
+\begin{code}
   meet : (a : A) → A → ↓ a
   meet a = pr₁ (center (𝓐-is-initial (down a)))
 
-  meet-is-homomorphism : (a : A) →  is-σ-sup-lattice-homomorphism· 𝓐 (down a) (meet a)
+  meet-is-homomorphism : (a : A) → is-σ-sup-lattice-homomorphism· 𝓐 (down a) (meet a)
   meet-is-homomorphism a = pr₂ (center (𝓐-is-initial (down a)))
 
   _∧_ : A → A → A
   a ∧ b = pr₁ (meet a b)
 
-  infixl 100 _∧_
+  infix 100 _∧_
 
-  meet₀ : (a b : A) → (a ∧ b) ≤ a
-  meet₀ a b = pr₂ (meet a b)
+  ∧-is-lb-left : (a b : A) → a ∧ b ≤ a
+  ∧-is-lb-left a b = pr₂ (meet a b)
 
   meet⊤ : (a : A) → a ∧ ⊤ ≡ a
   meet⊤ a = ap pr₁ (pr₁ (meet-is-homomorphism a))
@@ -1536,9 +1558,131 @@ module hypothetical-initial-σ-Sup-Lattice
   meet⊥ : (a : A) → a ∧ ⊥ ≡ ⊥
   meet⊥ a = ap pr₁ (pr₁ (pr₂ ((meet-is-homomorphism a))))
 
-  meet⋁ : (a : A) (b : ℕ → A) → a ∧ ⋁ b ≡ ⋁ (n ↦ a ∧ (b n))
+  meet⋁ : (a : A) (b : ℕ → A) → a ∧ ⋁ b ≡ ⋁ (n ↦ a ∧ b n)
   meet⋁ a b = ap pr₁ (pr₂ (pr₂ (meet-is-homomorphism a)) b)
 
+\end{code}
+
+Using this, we show that a ∧ b is the greatest lower bound to a and b,
+by induction:
+
+\begin{code}
+
+  ∧-is-lb-right : (a b : A) → a ∧ b ≤ b
+  ∧-is-lb-right a = σ-induction (λ b → (a ∧ b) ≤ b)
+                     (λ b → ⟨ 𝓐 ⟩-order-is-prop-valued (a ∧ b) b)
+                     (⟨ 𝓐 ⟩-⊤-maximum (a ∧ ⊤))
+                     (transport (_≤ ⊥) ((meet⊥ a)⁻¹) (⟨ 𝓐 ⟩-refl ⊥))
+                     p
+   where
+    p : (c : ℕ → A)
+      → ((n : ℕ) → a ∧ c n ≤ c n)
+      → a ∧ ⋁ c ≤ ⋁ c
+    p c φ = transport (_≤ ⋁ c) (q ⁻¹) r
+     where
+      q : a ∧ ⋁ c ≡ ⋁ (n ↦ a ∧ c n)
+      q = meet⋁ a c
+      s : (n : ℕ) → a ∧ c n ≤ ⋁ c
+      s n = ⟨ 𝓐 ⟩-trans _ _ _ (φ n) (⟨ 𝓐 ⟩-⋁-is-ub c n)
+      r : ⋁ (n ↦ a ∧ c n) ≤ ⋁ c
+      r = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _ s
+
+  ∧-is-ub-of-lbs : (a b c : A) → c ≤ a → c ≤ b → c ≤ a ∧ b
+  ∧-is-ub-of-lbs a b = σ-induction
+                        (λ c → c ≤ a → c ≤ b → c ≤ a ∧ b)
+                        (λ c → Π₂-is-prop fe (λ _ _ → ⟨ 𝓐 ⟩-order-is-prop-valued c (a ∧ b)))
+                        p q r
+   where
+    p : ⊤ ≤ a → ⊤ ≤ b → ⊤ ≤ a ∧ b
+    p l m = transport (⊤ ≤_) t (⟨ 𝓐 ⟩-refl ⊤)
+     where
+      u : ⊤ ≡ a
+      u = ⟨ 𝓐 ⟩-antisym _ _ l (⟨ 𝓐 ⟩-⊤-maximum a)
+      v : ⊤ ≡ b
+      v = ⟨ 𝓐 ⟩-antisym _ _ m (⟨ 𝓐 ⟩-⊤-maximum b)
+      w : ⊤ ≡ ⊤ ∧ ⊤
+      w = (meet⊤ ⊤)⁻¹
+      t : ⊤ ≡ a ∧ b
+      t = w ∙ ap₂ _∧_ u v
+
+    q : ⊥ ≤ a → ⊥ ≤ b → ⊥ ≤ a ∧ b
+    q _ _ = ⟨ 𝓐 ⟩-⊥-minimum (a ∧ b)
+    r : (d : ℕ → A)
+      → ((n : ℕ) → d n ≤ a → d n ≤ b → d n ≤ a ∧ b)
+      → ⋁ d ≤ a
+      → ⋁ d ≤ b
+      → ⋁ d ≤ (a ∧ b)
+    r d φ l m = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _
+                     (λ n → φ n (⟨ 𝓐 ⟩-trans _ _ _ (⟨ 𝓐 ⟩-⋁-is-ub d n) l)
+                                (⟨ 𝓐 ⟩-trans _ _ _ (⟨ 𝓐 ⟩-⋁-is-ub d n) m))
+\end{code}
+
+The ∧-semilattice axioms follow, with a standard argument:
+
+\begin{code}
+
+  ∧-idempotent : (a : A) → a ∧ a ≡ a
+  ∧-idempotent a = ⟨ 𝓐 ⟩-antisym _ _ l m
+   where
+    l : a ∧ a ≤ a
+    l = ∧-is-lb-left a a
+    m : a ≤ a ∧ a
+    m = ∧-is-ub-of-lbs a a a (⟨ 𝓐 ⟩-refl a) (⟨ 𝓐 ⟩-refl a)
+
+  ∧-commutative : (a b : A) → a ∧ b ≡ b ∧ a
+  ∧-commutative a b = ⟨ 𝓐 ⟩-antisym _ _ (l a b) (l b a)
+   where
+    l : (a b : A) → a ∧ b ≤ b ∧ a
+    l a b = ∧-is-ub-of-lbs b a (a ∧ b) (∧-is-lb-right a b) (∧-is-lb-left a b)
+
+  ∧-associative : (a b c : A) → a ∧ (b ∧ c) ≡ (a ∧ b) ∧ c
+  ∧-associative a b c = ⟨ 𝓐 ⟩-antisym _ _ l m
+   where
+    l : a ∧ (b ∧ c) ≤ (a ∧ b) ∧ c
+    l = ∧-is-ub-of-lbs _ _ _ (∧-is-ub-of-lbs _ _ _ (∧-is-lb-left a (b ∧ c)) u) v
+     where
+      u : a ∧ (b ∧ c) ≤ b
+      u = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-right  a (b ∧ c)) (∧-is-lb-left b c)
+      v : a ∧ (b ∧ c) ≤ c
+      v = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-right a (b ∧ c)) (∧-is-lb-right b c)
+
+    m : (a ∧ b) ∧ c ≤ a ∧ (b ∧ c)
+    m = ∧-is-ub-of-lbs _ _ _ (⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-left (a ∧ b) c) (∧-is-lb-left a b)) u
+     where
+      p : (a ∧ b) ∧ c ≤ b
+      p = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-left (a ∧ b) c) (∧-is-lb-right a b)
+      u : (a ∧ b) ∧ c ≤ b ∧ c
+      u = ∧-is-ub-of-lbs _ _ _ p (∧-is-lb-right (a ∧ b) c)
+
+  from-≤ : (a b : A) → a ≤ b → a ∧ b ≡ a
+  from-≤ a b l = ⟨ 𝓐 ⟩-antisym _ _ (∧-is-lb-left a b) m
+   where
+    m : a ≤ a ∧ b
+    m = ∧-is-ub-of-lbs _ _ _ (⟨ 𝓐 ⟩-refl a) l
+
+  to-≤ : (a b : A) → a ∧ b ≡ a → a ≤ b
+  to-≤ a b p = ⟨ 𝓐 ⟩-trans _ _ _ l (∧-is-lb-right a b)
+   where
+    l : a ≤ a ∧ b
+    l = transport (a ≤_) (p ⁻¹) (⟨ 𝓐 ⟩-refl a)
+
+  A-is-set = ⟨ 𝓐 ⟩-is-set
+  ⋁-is-ub = ⟨ 𝓐 ⟩-⋁-is-ub
+  ⋁-is-lb-of-ubs = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs
+
+  open σ-frame
+
+  𝓐-qua-σ-frame : σ-Frame 𝓤₀
+  𝓐-qua-σ-frame = A , (⊤ , _∧_ , ⊥ , ⋁) ,
+                   A-is-set ,
+                   ∧-idempotent ,
+                   ∧-commutative ,
+                   ∧-associative ,
+                   (λ a → ∧-commutative ⊥ a ∙ meet⊥ a) ,
+                   meet⊤ ,
+                   meet⋁ ,
+                   (λ a n → from-≤ (a n) (⋁ a) (⋁-is-ub a n)) ,
+                   (λ a u φ → from-≤ (⋁ a) u (⋁-is-lb-of-ubs a u (λ n → to-≤ (a n) u (φ n))))
 \end{code}
 
 Now we use induction to show that the initial σ-sup-lattice is also the
