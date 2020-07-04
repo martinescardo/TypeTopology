@@ -2014,6 +2014,9 @@ record, but we need Σ for our approach to SIP):
                     → ((n : ℕ) → a n ≤⟨ 𝓐 ⟩ u) → ⋁⟨ 𝓐 ⟩ a ≤⟨ 𝓐 ⟩ u
  ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-⋁-is-lb-of-ubs = ix
 
+ ⟨_⟩-refl : (𝓐 : σ-Frame 𝓤) (a : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ a
+ ⟨_⟩-refl 𝓐 a = ⟨ 𝓐 ⟩-idempotency a
+
  ⟨_⟩-trans : (𝓐 : σ-Frame 𝓤) (a b c : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ c → a ≤⟨ 𝓐 ⟩ c
  ⟨_⟩-trans 𝓐 a b c l m = (a ∧⟨ 𝓐 ⟩ c)             ≡⟨ ap (λ - → - ∧⟨ 𝓐 ⟩ c) (l ⁻¹)  ⟩
                           ((a ∧⟨ 𝓐 ⟩ b) ∧⟨ 𝓐 ⟩ c) ≡⟨ (⟨ 𝓐 ⟩-associativity a b c)⁻¹ ⟩
@@ -2031,8 +2034,7 @@ record, but we need Σ for our approach to SIP):
  being-σ-frame-homomorphism-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
                                     → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                                     → is-prop (is-σ-frame-homomorphism 𝓐 𝓑 f)
- being-σ-frame-homomorphism-is-prop fe (_ , (⊤ , _∧_ , ⊥ , ⋁) ,  _)
-                                       (_ , (⊤' , _∧'_ , ⊥' , ⋁') , (i' , _)) f =
+ being-σ-frame-homomorphism-is-prop fe (_ , _ ,  _) (_ , _ , (i' , _)) f =
    ×-is-prop i'
   (×-is-prop (Π-is-set fe (λ a →
               Π-is-set fe (λ b → i')))
@@ -2074,6 +2076,13 @@ I think I prefer to work with pointwise homomorphisms:
    × (∀ a b → f (a ∧ b) ≡ f a ∧' f b)
    × (f ⊥ ≡ ⊥')
    × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
+
+ being-σ-frame-homomorphism·-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                                    → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                    → is-prop (is-σ-frame-homomorphism· 𝓐 𝓑 f)
+ being-σ-frame-homomorphism·-is-prop fe (_ , _ ,  _) (_ , _ , (i' , _)) f =
+
+    ×₄-is-prop i' (Π₂-is-prop fe (λ a b → i')) i' (Π-is-prop fe (λ 𝕒 → i'))
 
  id-is-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) → is-σ-frame-homomorphism· 𝓐 𝓐 id
  id-is-σ-frame-homomorphism· 𝓐 = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
