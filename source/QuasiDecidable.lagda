@@ -1354,60 +1354,10 @@ module hypothetical-initial-σ-Frame where
     γ : (a : A) → P a
     γ a = transport P (happly H a) (δ a)
 
-
- {-
-  f : A → 𝓞
-  f = pr₁ (center (𝓐-initial σΩ))
-
-  h : is-σ-frame-homomorphism 𝓐 σΩ f
-  h = pr₂ (center (𝓐-initial σΩ))
-
-  is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
-  is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ A , f 𝕡 ≡ (P , i)
-
-  being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
-  being-quasidecidable-is-prop P = Σ-is-prop (being-prop-is-prop fe) (λ i → ∃!-is-prop fe)
-
-  𝟘-is-quasidecidable : is-quasidecidable 𝟘
-  𝟘-is-quasidecidable = 𝟘-is-prop , (⊥A , pr₁ (pr₂ (pr₂ h))) , c
-   where
-    d : ((𝕡 , r) : Σ 𝕡 ꞉ A , f 𝕡 ≡ ⊥) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
-    d (𝕡 , r) = to-subtype-≡ (λ 𝕡 → ⟨ σΩ ⟩-is-set) question
-     where
-      r' : f 𝕡 ≡ ⊥
-      r' = r
-      question : ⊥⟨ 𝓐 ⟩ ≡ 𝕡
-      question = {!!}
-    c : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (𝟘 , 𝟘-is-prop)) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
-    c = d
-
-  𝟙-is-quasidecidable : is-quasidecidable 𝟙
-  𝟙-is-quasidecidable = {!!}
-
-  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤 ̇ )
-                                      → ((n : ℕ) → is-quasidecidable (P n))
-                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
-  quasidecidable-closed-under-ω-joins P φ = ∃-is-prop , {!!}
-   where
-    φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ A , f 𝕡 ≡ (P n , i)
-    φ' = {!!}
-    γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ A , f 𝕢 ≡ (∃ P , j)
-    γ = ∃-is-prop , ∥∥-rec ∃-is-prop {!!} {!!}
-
-  quasidecidable-induction :
-      (F : {!!} ̇ → 𝓤 ̇ )
-    → ((P : {!!} ̇ ) → is-prop (F P))
-    → F 𝟘
-    → F 𝟙
-    → ((P : ℕ → {!!} ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-    → (P : {!!} ̇ ) →  is-quasidecidable P → F P
-
-  quasidecidable-induction = {!!}
- -}
 \end{code}
 
 We now explore the consequences of the hypothetical existence of an
-initial σ-frame.
+initial σ-frame. Coded 4th July.
 
 \begin{code}
 
