@@ -191,11 +191,22 @@ open sip public
 ⟨_⟩-is-set : (L : σ-Sup-Lattice 𝓤 𝓥) → is-set ⟨ L ⟩
 ⟨_⟩-is-set (X , s , a) = σ-sup-lattice-axiom-gives-is-set a
 
-le : (𝓐 : σ-Sup-Lattice 𝓤 𝓥)
-   → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
-le (A , (⊤ , ⊥ , ⋁) , (_≤_ , _)) = _≤_
+⟨_⟩-order : (𝓐 : σ-Sup-Lattice 𝓤 𝓥)
+            → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
+⟨ A , (⊤ , ⊥ , ⋁) , (_≤_ , _) ⟩-order = _≤_
 
-syntax le 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
+order : (𝓐 : σ-Sup-Lattice 𝓤 𝓥)
+      → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
+order = ⟨_⟩-order
+
+syntax order 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
+
+⟨_⟩-structure : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) → σ-sup-lattice-structure ⟨ 𝓐 ⟩
+⟨ A , s , (_≤_ , i-viii) ⟩-structure = s
+
+⟨_⟩-≤-is-σ-sup-compatible-order : (𝓐 : σ-Sup-Lattice 𝓤 𝓥)
+                                → is-σ-sup-compatible-order ⟨ 𝓐 ⟩-structure (⟨ 𝓐 ⟩-order)
+⟨ A , _ , (_≤_ , i-viii) ⟩-≤-is-σ-sup-compatible-order = i-viii
 
 ⟨_⟩-order-is-prop-valued : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → is-prop (a ≤⟨ 𝓐 ⟩ b)
 ⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-order-is-prop-valued = i
@@ -269,6 +280,43 @@ is-σ-sup-lattice-homomorphism·  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' 
     (f ⊤ ≡ ⊤')
   × (f ⊥ ≡ ⊥')
   × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
+
+sup-lattice-homomorphisms-preserve-⊤ : (𝓐 : σ-Sup-Lattice 𝓤 𝓦) (𝓑 : σ-Sup-Lattice 𝓥 𝓣)
+                                     → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                     → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                                     → f ⊤⟨ 𝓐 ⟩ ≡ ⊤⟨ 𝓑 ⟩
+sup-lattice-homomorphisms-preserve-⊤ 𝓐 𝓑 f (i , ii , iii) = i
+
+sup-lattice-homomorphisms-preserve-⊥ : (𝓐 : σ-Sup-Lattice 𝓤 𝓦) (𝓑 : σ-Sup-Lattice 𝓥 𝓣)
+                                     → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                     → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                                     → f ⊥⟨ 𝓐 ⟩ ≡ ⊥⟨ 𝓑 ⟩
+sup-lattice-homomorphisms-preserve-⊥ 𝓐 𝓑 f (i , ii , iii) = ii
+
+sup-lattice-homomorphisms-preserve-⋁ : (𝓐 : σ-Sup-Lattice 𝓤 𝓦) (𝓑 : σ-Sup-Lattice 𝓥 𝓣)
+                                     → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                     → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                                     → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
+sup-lattice-homomorphisms-preserve-⋁ 𝓐 𝓑 f (i , ii , iii) = iii
+
+sup-lattice-homomorphisms-preserve-≤ : (𝓐 : σ-Sup-Lattice 𝓤 𝓦) (𝓑 : σ-Sup-Lattice 𝓥 𝓣)
+                                     → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                                     → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                                     → ∀ a b → a ≤⟨ 𝓐 ⟩ b → f a ≤⟨ 𝓑 ⟩ f b
+sup-lattice-homomorphisms-preserve-≤ 𝓐 𝓑 f i a b l = m
+ where
+  c : f a * f b ∼ f ∘ (a * b)
+  c 0 = refl
+  c (succ n) = refl
+  l' : ⋁⟨ 𝓐 ⟩ (a * b) ≡ b
+  l' = lr-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓐 ⟩-order) ⟨ 𝓐 ⟩-≤-is-σ-sup-compatible-order a b) l
+  m' : ⋁⟨ 𝓑 ⟩ (f a * f b) ≡ f b
+  m' = ⋁⟨ 𝓑 ⟩ (f a * f b)   ≡⟨ ap ⋁⟨ 𝓑 ⟩ (dfunext fe c)                                 ⟩
+       ⋁⟨ 𝓑 ⟩ (f ∘ (a * b)) ≡⟨ (sup-lattice-homomorphisms-preserve-⋁ 𝓐 𝓑 f i (a * b))⁻¹ ⟩
+       f (⋁⟨ 𝓐 ⟩ (a * b))   ≡⟨ ap f l'                                                  ⟩
+       f b                   ∎
+  m : f a ≤⟨ 𝓑 ⟩ f b
+  m = rl-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓑 ⟩-order) ⟨ 𝓑 ⟩-≤-is-σ-sup-compatible-order  (f a) (f b)) m'
 
 id-is-σ-sup-lattice-homomorphism· : (𝓐 : σ-Sup-Lattice 𝓤 𝓥) → is-σ-sup-lattice-homomorphism· 𝓐 𝓐 id
 id-is-σ-sup-lattice-homomorphism· 𝓐 = refl , refl , (λ 𝕒 → refl)

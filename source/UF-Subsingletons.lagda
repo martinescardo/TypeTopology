@@ -22,15 +22,6 @@ open import UF-Base
 is-prop : 𝓤 ̇ → 𝓤 ̇
 is-prop X = (x y : X) → x ≡ y
 
-Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
-Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
-
-_holds : Ω 𝓤 → 𝓤 ̇
-_holds = pr₁
-
-holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
-holds-is-prop = pr₂
-
 \end{code}
 
 And of course we could adopt a terminology borrowed from topos logic:
@@ -112,10 +103,6 @@ The two prototypical propositions:
 
 𝟙-is-prop : is-prop (𝟙 {𝓤})
 𝟙-is-prop {𝓤} * * = refl {𝓤}
-
-⊥ ⊤ : Ω 𝓤
-⊥ = 𝟘 , 𝟘-is-prop   -- false
-⊤ = 𝟙 , 𝟙-is-prop   -- true
 
 \end{code}
 
@@ -539,4 +526,23 @@ Added 16th June 2020 by Martin Escardo. (Should have added this ages ago to avoi
              {X₀ : 𝓥₀ ̇ } {X₁ : 𝓥₁ ̇ } {X₂ : 𝓥₂ ̇ } {X₃ : 𝓥₃ ̇ } {X₄ : 𝓥₄ ̇ } {X₅ : 𝓥₅ ̇ } {X₆ : 𝓥₆ ̇ } {X₇ : 𝓥₇ ̇ }
            → is-prop X₀ → is-prop X₁ → is-prop X₂ → is-prop X₃ → is-prop X₄ → is-prop X₅ → is-prop X₆ → is-prop X₇ → is-prop (X₀ × X₁ × X₂ × X₃ × X₄ × X₅ × X₆ × X₇)
 ×₈-is-prop i₀ i₁ i₂ i₃ i₄ i₅ i₆ i₇ = ×-is-prop i₀ (×₇-is-prop i₁ i₂ i₃ i₄ i₅ i₆ i₇)
+\end{code}
+
+The type of truth values.
+
+\begin{code}
+
+Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
+Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
+
+_holds : Ω 𝓤 → 𝓤 ̇
+_holds = pr₁
+
+holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
+holds-is-prop = pr₂
+
+⊥ ⊤ : Ω 𝓤
+⊥ = 𝟘 , 𝟘-is-prop   -- false
+⊤ = 𝟙 , 𝟙-is-prop   -- true
+
 \end{code}

@@ -1093,141 +1093,140 @@ module Ω-is-σ-frame {𝓤 : Universe} where
 
  𝓞 = Ω 𝓤
 
- private
-   ⊤ : 𝓞
-   ⊤ = 𝟙 , 𝟙-is-prop
+ ⊤Ω : 𝓞
+ ⊤Ω = 𝟙 , 𝟙-is-prop
 
-   _∧_ : 𝓞 → 𝓞 → 𝓞
-   (P , i) ∧ (Q , j) = (P × Q) , ×-is-prop i j
+ _∧Ω_ : 𝓞 → 𝓞 → 𝓞
+ (P , i) ∧Ω (Q , j) = (P × Q) , ×-is-prop i j
 
-   ⊥ : 𝓞
-   ⊥ = 𝟘 , 𝟘-is-prop
+ ⊥Ω : 𝓞
+ ⊥Ω = 𝟘 , 𝟘-is-prop
 
-   ⋁ : (ℕ → 𝓞) → 𝓞
-   ⋁ 𝕡 = (∃ n ꞉ ℕ , 𝕡 n holds) , ∃-is-prop
+ ⋁Ω : (ℕ → 𝓞) → 𝓞
+ ⋁Ω 𝕡 = (∃ n ꞉ ℕ , 𝕡 n holds) , ∃-is-prop
 
-   ∧-is-idempotent : (𝕡 : 𝓞) → 𝕡 ∧ 𝕡 ≡ 𝕡
-   ∧-is-idempotent (P , i) = γ
-    where
-     r : P × P ≡ P
-     r = pe (×-is-prop i i) i pr₁ (λ p → (p , p))
+ ∧Ω-is-idempotent : (𝕡 : 𝓞) → 𝕡 ∧Ω 𝕡 ≡ 𝕡
+ ∧Ω-is-idempotent (P , i) = γ
+  where
+   r : P × P ≡ P
+   r = pe (×-is-prop i i) i pr₁ (λ p → (p , p))
 
-     γ : ((P × P) , _) ≡ (P , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+   γ : ((P × P) , _) ≡ (P , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
-   ∧-is-commutative : (𝕡 𝕢 : 𝓞) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
-   ∧-is-commutative (P , i) (Q , j) = γ
-    where
-     r : P × Q ≡ Q × P
-     r = pe (×-is-prop i j)
-            (×-is-prop j i)
-            (λ (p , q) → (q , p))
-            (λ (q , p) → (p , q))
+ ∧Ω-is-commutative : (𝕡 𝕢 : 𝓞) → 𝕡 ∧Ω 𝕢 ≡ 𝕢 ∧Ω 𝕡
+ ∧Ω-is-commutative (P , i) (Q , j) = γ
+  where
+   r : P × Q ≡ Q × P
+   r = pe (×-is-prop i j)
+          (×-is-prop j i)
+          (λ (p , q) → (q , p))
+          (λ (q , p) → (p , q))
 
-     γ : ((P × Q) , _) ≡ ((Q × P) , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+   γ : ((P × Q) , _) ≡ ((Q × P) , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
-   ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓞) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
-   ∧-is-associative (P , i) (Q , j) (R , k) = γ
-    where
-     r : P × (Q × R) ≡ (P × Q) × R
-     r = pe (×-is-prop i (×-is-prop j k))
-            (×-is-prop (×-is-prop i j) k)
-            (λ (p , (q , r)) → ((p , q) , r))
-            (λ ((p , q) , r) → (p , (q , r)))
+ ∧Ω-is-associative : (𝕡 𝕢 𝕣 : 𝓞) → 𝕡 ∧Ω (𝕢 ∧Ω 𝕣) ≡ (𝕡 ∧Ω 𝕢) ∧Ω 𝕣
+ ∧Ω-is-associative (P , i) (Q , j) (R , k) = γ
+  where
+   r : P × (Q × R) ≡ (P × Q) × R
+   r = pe (×-is-prop i (×-is-prop j k))
+          (×-is-prop (×-is-prop i j) k)
+          (λ (p , (q , r)) → ((p , q) , r))
+          (λ ((p , q) , r) → (p , (q , r)))
 
-     γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+   γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
-   _≤_ : 𝓞 → 𝓞 → 𝓤 ⁺ ̇
-   𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
+ _≤Ω_ : 𝓞 → 𝓞 → 𝓤 ⁺ ̇
+ 𝕡 ≤Ω 𝕢 = 𝕡 ∧Ω 𝕢 ≡ 𝕡
 
-   ⊥-is-minimum : (𝕡 : 𝓞) → ⊥ ≤ 𝕡
-   ⊥-is-minimum (P , i) = γ
-    where
-     r : 𝟘 × P ≡ 𝟘
-     r = pe (×-is-prop 𝟘-is-prop i)
-            𝟘-is-prop
-            pr₁
-            unique-from-𝟘
+ ⊥Ω-is-minimum : (𝕡 : 𝓞) → ⊥Ω ≤Ω 𝕡
+ ⊥Ω-is-minimum (P , i) = γ
+  where
+   r : 𝟘 × P ≡ 𝟘
+   r = pe (×-is-prop 𝟘-is-prop i)
+          𝟘-is-prop
+          pr₁
+          unique-from-𝟘
 
-     γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+   γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
-   ⊤-is-maximum : (𝕡 : 𝓞) → 𝕡 ≤ ⊤
-   ⊤-is-maximum (P , i) = γ
-    where
-     r : P × 𝟙 ≡ P
-     r = pe (×-is-prop i 𝟙-is-prop)
-            i
-            (λ (p , _) → p)
-            (λ p → (p , *))
+ ⊤Ω-is-maximum : (𝕡 : 𝓞) → 𝕡 ≤Ω ⊤Ω
+ ⊤Ω-is-maximum (P , i) = γ
+  where
+   r : P × 𝟙 ≡ P
+   r = pe (×-is-prop i 𝟙-is-prop)
+          i
+          (λ (p , _) → p)
+          (λ p → (p , *))
 
-     γ : ((P × 𝟙) , _) ≡ (P , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+   γ : ((P × 𝟙) , _) ≡ (P , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
-   ≤-is-prop-valued : (𝕡 𝕢 : 𝓞) → is-prop (𝕡 ≤ 𝕢)
-   ≤-is-prop-valued 𝕡 𝕢 = Ω-is-set fe pe {𝕡 ∧ 𝕢} {𝕡}
+ ≤Ω-is-prop-valued : (𝕡 𝕢 : 𝓞) → is-prop (𝕡 ≤Ω 𝕢)
+ ≤Ω-is-prop-valued 𝕡 𝕢 = Ω-is-set fe pe {𝕡 ∧Ω 𝕢} {𝕡}
 
-   from-≤ : {𝕡 𝕢 : 𝓞} → 𝕡 ≤ 𝕢 → (𝕡 holds → 𝕢 holds)
-   from-≤ {P , i} {Q , j} l p = γ
-    where
-     r : P × Q ≡ P
-     r = ap (_holds) l
+ from-≤Ω : {𝕡 𝕢 : 𝓞} → 𝕡 ≤Ω 𝕢 → (𝕡 holds → 𝕢 holds)
+ from-≤Ω {P , i} {Q , j} l p = γ
+  where
+   r : P × Q ≡ P
+   r = ap (_holds) l
 
-     g : P → P × Q
-     g = idtofun P (P × Q) (r ⁻¹)
+   g : P → P × Q
+   g = idtofun P (P × Q) (r ⁻¹)
 
-     γ : Q
-     γ = pr₂ (g p)
+   γ : Q
+   γ = pr₂ (g p)
 
-   to-≤ : {𝕡 𝕢 : 𝓞} → (𝕡 holds → 𝕢 holds) → 𝕡 ≤ 𝕢
-   to-≤ {P , i} {Q , j} f = γ
-    where
-     r : P × Q ≡ P
-     r = pe (×-is-prop i j) i pr₁ (λ p → (p , f p))
+ to-≤Ω : {𝕡 𝕢 : 𝓞} → (𝕡 holds → 𝕢 holds) → 𝕡 ≤Ω 𝕢
+ to-≤Ω {P , i} {Q , j} f = γ
+  where
+   r : P × Q ≡ P
+   r = pe (×-is-prop i j) i pr₁ (λ p → (p , f p))
 
-     γ : ((P × Q) , _) ≡ (P , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
+   γ : ((P × Q) , _) ≡ (P , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r -- is-prop r
 
-   ∧-⋁-distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
-   ∧-⋁-distributivity (P , i) 𝕢 = γ
-    where
-     Q : ℕ → 𝓤 ̇
-     Q n = 𝕢 n holds
+ ∧-⋁-Ω-distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧Ω (⋁Ω 𝕢) ≡ ⋁Ω (n ↦ 𝕡 ∧Ω 𝕢 n)
+ ∧-⋁-Ω-distributivity (P , i) 𝕢 = γ
+  where
+   Q : ℕ → 𝓤 ̇
+   Q n = 𝕢 n holds
 
-     r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
-     r = prop-frame-distr pe P i Q λ n → holds-is-prop (𝕢 n)
+   r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
+   r = prop-frame-distr pe P i Q λ n → holds-is-prop (𝕢 n)
 
-     γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
-     γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
+   γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
+   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
-   ⋁-is-ub : (𝕡 : ℕ → 𝓞) → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
-   ⋁-is-ub 𝕡 n = to-≤ {𝕡 n} {⋁ 𝕡} (λ p → ∣ n , p ∣)
+ ⋁Ω-is-ub : (𝕡 : ℕ → 𝓞) → (n : ℕ) → 𝕡 n ≤Ω ⋁Ω 𝕡
+ ⋁Ω-is-ub 𝕡 n = to-≤Ω {𝕡 n} {⋁Ω 𝕡} (λ p → ∣ n , p ∣)
 
-   ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓞) → (𝕦 : 𝓞) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
-   ⋁-is-lb-of-ubs 𝕡 (U , i) φ = to-≤ {⋁ 𝕡} {𝕦} γ
-    where
-     𝕦 = (U , i)
+ ⋁Ω-is-lb-of-ubs : (𝕡 : ℕ → 𝓞) → (𝕦 : 𝓞) → ((n : ℕ) → 𝕡 n ≤Ω 𝕦) → ⋁Ω 𝕡 ≤Ω 𝕦
+ ⋁Ω-is-lb-of-ubs 𝕡 (U , i) φ = to-≤Ω {⋁Ω 𝕡} {𝕦} γ
+  where
+   𝕦 = (U , i)
 
-     δ : (Σ n ꞉ ℕ , 𝕡 n holds) → U
-     δ (n , p) = from-≤ {𝕡 n} {𝕦} (φ n) p
+   δ : (Σ n ꞉ ℕ , 𝕡 n holds) → U
+   δ (n , p) = from-≤Ω {𝕡 n} {𝕦} (φ n) p
 
-     γ : (∃ n ꞉ ℕ , 𝕡 n holds) → U
-     γ = ∥∥-rec i δ
+   γ : (∃ n ꞉ ℕ , 𝕡 n holds) → U
+   γ = ∥∥-rec i δ
 
  σΩ : σ-Frame (𝓤 ⁺)
  σΩ = 𝓞 ,
-     (⊤ , _∧_ , ⊥ , ⋁) ,
+     (⊤Ω , _∧Ω_ , ⊥Ω , ⋁Ω) ,
      Ω-is-set fe pe ,
-     ∧-is-idempotent ,
-     ∧-is-commutative ,
-     ∧-is-associative ,
-     ⊥-is-minimum ,
-     ⊤-is-maximum ,
-     ∧-⋁-distributivity ,
-     ⋁-is-ub ,
-     ⋁-is-lb-of-ubs
+     ∧Ω-is-idempotent ,
+     ∧Ω-is-commutative ,
+     ∧Ω-is-associative ,
+     ⊥Ω-is-minimum ,
+     ⊤Ω-is-maximum ,
+     ∧-⋁-Ω-distributivity ,
+     ⋁Ω-is-ub ,
+     ⋁Ω-is-lb-of-ubs
 
 \end{code}
 
@@ -1354,10 +1353,60 @@ module hypothetical-initial-σ-Frame where
     γ : (a : A) → P a
     γ a = transport P (happly H a) (δ a)
 
+
+ {-
+  f : A → 𝓞
+  f = pr₁ (center (𝓐-initial σΩ))
+
+  h : is-σ-frame-homomorphism 𝓐 σΩ f
+  h = pr₂ (center (𝓐-initial σΩ))
+
+  is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
+  is-quasidecidable P = Σ i ꞉ is-prop P , ∃! 𝕡 ꞉ A , f 𝕡 ≡ (P , i)
+
+  being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
+  being-quasidecidable-is-prop P = Σ-is-prop (being-prop-is-prop fe) (λ i → ∃!-is-prop fe)
+
+  𝟘-is-quasidecidable : is-quasidecidable 𝟘
+  𝟘-is-quasidecidable = 𝟘-is-prop , (⊥A , pr₁ (pr₂ (pr₂ h))) , c
+   where
+    d : ((𝕡 , r) : Σ 𝕡 ꞉ A , f 𝕡 ≡ ⊥) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+    d (𝕡 , r) = to-subtype-≡ (λ 𝕡 → ⟨ σΩ ⟩-is-set) question
+     where
+      r' : f 𝕡 ≡ ⊥
+      r' = r
+      question : ⊥⟨ 𝓐 ⟩ ≡ 𝕡
+      question = {!!}
+    c : ((𝕡 , r) : Σ 𝕡 ꞉ ⟨ 𝓐 ⟩ , f 𝕡 ≡ (𝟘 , 𝟘-is-prop)) → (⊥⟨ 𝓐 ⟩ , pr₁ (pr₂ (pr₂ h))) ≡ (𝕡 , r)
+    c = d
+
+  𝟙-is-quasidecidable : is-quasidecidable 𝟙
+  𝟙-is-quasidecidable = {!!}
+
+  quasidecidable-closed-under-ω-joins : (P : ℕ → 𝓤 ̇ )
+                                      → ((n : ℕ) → is-quasidecidable (P n))
+                                      → is-quasidecidable (∃ n ꞉ ℕ , P n)
+  quasidecidable-closed-under-ω-joins P φ = ∃-is-prop , {!!}
+   where
+    φ' : (n : ℕ) → Σ i ꞉ is-prop (P n) , ∃ 𝕡 ꞉ A , f 𝕡 ≡ (P n , i)
+    φ' = {!!}
+    γ : Σ j ꞉ is-prop (∃ P) , ∃ 𝕢 ꞉ A , f 𝕢 ≡ (∃ P , j)
+    γ = ∃-is-prop , ∥∥-rec ∃-is-prop {!!} {!!}
+
+  quasidecidable-induction :
+      (F : {!!} ̇ → 𝓤 ̇ )
+    → ((P : {!!} ̇ ) → is-prop (F P))
+    → F 𝟘
+    → F 𝟙
+    → ((P : ℕ → {!!} ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+    → (P : {!!} ̇ ) →  is-quasidecidable P → F P
+
+  quasidecidable-induction = {!!}
+ -}
 \end{code}
 
 We now explore the consequences of the hypothetical existence of an
-initial σ-frame. Coded 4th July.
+initial σ-frame.
 
 \begin{code}
 
@@ -1388,12 +1437,39 @@ We first introduce some abbreviations:
 
   _≤_ : A → A → 𝓤₀ ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
+
+  ≡-gives-≤ : (a b : A) → a ≡ b → a ≤ b
+  ≡-gives-≤ a b p = transport (a ≤_) p (⟨ 𝓐 ⟩-refl a)
+
+\end{code}
+
+\begin{code}
+
+  σ-rec : (𝓑 : σ-Sup-Lattice 𝓤 𝓥) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
+  σ-rec 𝓑 = pr₁ (center (𝓐-is-initial 𝓑))
+
+  σ-rec-is-homomorphism : (𝓑 : σ-Sup-Lattice 𝓤 𝓥)
+                        → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 (σ-rec 𝓑)
+  σ-rec-is-homomorphism 𝓑 = pr₂ (center (𝓐-is-initial 𝓑))
+
+  σ-rec-is-unique : (𝓑 : σ-Sup-Lattice 𝓤 𝓥)
+                  → (f : A → ⟨ 𝓑 ⟩)
+                  → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                  → σ-rec 𝓑 ≡ f
+  σ-rec-is-unique 𝓑 f i = ap pr₁ (centrality (𝓐-is-initial 𝓑) (f , i))
+
+  at-most-one-homomorphism : (𝓑 : σ-Sup-Lattice 𝓤 𝓥)
+                           → (f g : A → ⟨ 𝓑 ⟩)
+                           → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
+                           → is-σ-sup-lattice-homomorphism· 𝓐 𝓑 g
+                           → f ≡ g
+  at-most-one-homomorphism 𝓑 f g i j = ap pr₁ (singletons-are-props (𝓐-is-initial 𝓑) (f , i) (g , j))
+
 \end{code}
 
 We then prove an induction principle:
 
 \begin{code}
-
 
   σ-induction : (P : A → 𝓥 ̇ )
               → ((a : A) → is-prop (P a))
@@ -1433,26 +1509,19 @@ We then prove an induction principle:
     g-is-homomorphism : is-σ-sup-lattice-homomorphism· 𝓑 𝓐 g
     g-is-homomorphism = refl , refl , (λ 𝕒 → refl)
 
-    f : A → X
-    f = pr₁ (center (𝓐-is-initial 𝓑))
-
-    f-is-homomorphism : is-σ-sup-lattice-homomorphism· 𝓐 𝓑 f
-    f-is-homomorphism = pr₂ (center (𝓐-is-initial 𝓑))
-
     h : A → A
-    h = g ∘ f
+    h = g ∘ σ-rec 𝓑
 
     h-is-homomorphism : is-σ-sup-lattice-homomorphism· 𝓐 𝓐 h
-    h-is-homomorphism = ∘-σ-sup-lattice-homomorphism· 𝓐 𝓑 𝓐 f g f-is-homomorphism g-is-homomorphism
+    h-is-homomorphism = ∘-σ-sup-lattice-homomorphism· 𝓐 𝓑 𝓐
+                         (σ-rec 𝓑) g (σ-rec-is-homomorphism 𝓑) g-is-homomorphism
 
     H : h ≡ id
-    H = ap pr₁ p
-     where
-      p : (h , h-is-homomorphism) ≡ (id , id-is-σ-sup-lattice-homomorphism· 𝓐)
-      p = singletons-are-props (𝓐-is-initial 𝓐) _ _
+    H = at-most-one-homomorphism 𝓐 h id h-is-homomorphism
+          (id-is-σ-sup-lattice-homomorphism· 𝓐)
 
     δ : (a : A) → P (h a)
-    δ a = pr₂ (f a)
+    δ a = pr₂ (σ-rec 𝓑 a)
 
     γ : (a : A) → P a
     γ a = transport P (happly H a) (δ a)
@@ -1618,20 +1687,21 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
     l : a ≤ a ∧ b
     l = transport (a ≤_) (p ⁻¹) (⟨ 𝓐 ⟩-refl a)
 
-  open σ-frame renaming
+  open σ-frame hiding (order)
+               renaming
                 (⟨_⟩ to ⟨_⟩' ;
-                ⊥⟨_⟩ to ⊥⟨_⟩' ;
-                ⊤⟨_⟩ to ⊤⟨_⟩' ;
-                meet to meet' ;
-                ⋁⟨_⟩ to ⋁⟨_⟩' ;
-                ⟨_⟩-is-set to ⟨_⟩'-is-set ;
-                ⟨_⟩-refl to ⟨_⟩'-refl ;
-                ⟨_⟩-trans to ⟨_⟩'-trans ;
-                ⟨_⟩-antisym to ⟨_⟩'-antisym ;
-                ⟨_⟩-⊤-maximum to ⟨_⟩'-⊤-maximum ;
-                ⟨_⟩-⊥-minimum to ⟨_⟩'-⊥-minimum ;
-                ⟨_⟩-⋁-is-ub to ⟨_⟩'-⋁-is-ub ;
-                ⟨_⟩-⋁-is-lb-of-ubs to ⟨_⟩'-⋁-is-lb-of-ubs)
+                 ⊥⟨_⟩ to ⊥⟨_⟩' ;
+                 ⊤⟨_⟩ to ⊤⟨_⟩' ;
+                 meet to meet' ;
+                 ⋁⟨_⟩ to ⋁⟨_⟩' ;
+                 ⟨_⟩-is-set to ⟨_⟩'-is-set ;
+                 ⟨_⟩-refl to ⟨_⟩'-refl ;
+                 ⟨_⟩-trans to ⟨_⟩'-trans ;
+                 ⟨_⟩-antisym to ⟨_⟩'-antisym ;
+                 ⟨_⟩-⊤-maximum to ⟨_⟩'-⊤-maximum ;
+                 ⟨_⟩-⊥-minimum to ⟨_⟩'-⊥-minimum ;
+                 ⟨_⟩-⋁-is-ub to ⟨_⟩'-⋁-is-ub ;
+                 ⟨_⟩-⋁-is-lb-of-ubs to ⟨_⟩'-⋁-is-lb-of-ubs)
 
   𝓐-qua-σ-frame : σ-Frame 𝓤₀
   𝓐-qua-σ-frame = A , (⊤ , _∧_ , ⊥ , ⋁) ,
@@ -1645,6 +1715,18 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
                    (λ a n → from-≤ (a n) (⋁ a) (⟨ 𝓐 ⟩-⋁-is-ub a n)) ,
                    (λ a u φ → from-≤ (⋁ a) u (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u (λ n → to-≤ (a n) u (φ n))))
 
+  σ-frames-are-σ-sup-lattices : σ-Frame 𝓤 → σ-Sup-Lattice 𝓤 𝓤
+  σ-frames-are-σ-sup-lattices 𝓑  = ⟨ 𝓑 ⟩' , (⊤⟨ 𝓑 ⟩' , ⊥⟨ 𝓑 ⟩' , ⋁⟨ 𝓑 ⟩') ,
+                                          (λ x y → meet' 𝓑 x y ≡ x) ,
+                                          (λ x y → ⟨ 𝓑 ⟩'-is-set) ,
+                                          (⟨ 𝓑 ⟩'-refl) ,
+                                          ⟨ 𝓑 ⟩'-trans ,
+                                          ⟨ 𝓑 ⟩'-antisym ,
+                                          ⟨ 𝓑 ⟩'-⊤-maximum ,
+                                          ⟨ 𝓑 ⟩'-⊥-minimum ,
+                                          ⟨ 𝓑 ⟩'-⋁-is-ub ,
+                                          ⟨ 𝓑 ⟩'-⋁-is-lb-of-ubs
+
   𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓤)
                             → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-homomorphism· 𝓐-qua-σ-frame 𝓑 f
   𝓐-qua-σ-frame-is-initial {𝓤} 𝓑 = γ
@@ -1653,16 +1735,8 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
     _∧'_ = meet' 𝓑
 
     𝓑-qua-σ-sup-lattice : σ-Sup-Lattice 𝓤 𝓤
-    𝓑-qua-σ-sup-lattice = ⟨ 𝓑 ⟩' , (⊤⟨ 𝓑 ⟩' , ⊥⟨ 𝓑 ⟩' , ⋁⟨ 𝓑 ⟩') ,
-                          (λ x y → x ∧' y ≡ x) ,
-                          (λ x y → ⟨ 𝓑 ⟩'-is-set) ,
-                          (⟨ 𝓑 ⟩'-refl) ,
-                          ⟨ 𝓑 ⟩'-trans ,
-                          ⟨ 𝓑 ⟩'-antisym ,
-                          ⟨ 𝓑 ⟩'-⊤-maximum ,
-                          ⟨ 𝓑 ⟩'-⊥-minimum ,
-                          ⟨ 𝓑 ⟩'-⋁-is-ub ,
-                          ⟨ 𝓑 ⟩'-⋁-is-lb-of-ubs
+    𝓑-qua-σ-sup-lattice = σ-frames-are-σ-sup-lattices 𝓑
+
     f : A → ⟨ 𝓑 ⟩'
     f = pr₁ (center (𝓐-is-initial 𝓑-qua-σ-sup-lattice))
 
@@ -1675,11 +1749,11 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
                        (λ b → ⟨ 𝓑 ⟩'-is-set)
                        (f (a ∧ ⊤)       ≡⟨ ap f (meet⊤ a) ⟩
                         f a             ≡⟨ (⟨ 𝓑 ⟩'-⊤-maximum (f a))⁻¹ ⟩
-                        f a ∧' ⊤⟨ 𝓑 ⟩'  ≡⟨ ap (f a ∧'_) ((pr₁ f-is-homomorphism)⁻¹) ⟩
+                        f a ∧' ⊤⟨ 𝓑 ⟩'  ≡⟨ ap (f a ∧'_) ((sup-lattice-homomorphisms-preserve-⊤ 𝓐 𝓑-qua-σ-sup-lattice f f-is-homomorphism)⁻¹) ⟩
                         f a ∧' f ⊤      ∎)
 
                        (f (a ∧ ⊥)       ≡⟨ ap f (meet⊥ a) ⟩
-                        f ⊥             ≡⟨ pr₁ (pr₂ f-is-homomorphism)  ⟩
+                        f ⊥             ≡⟨ sup-lattice-homomorphisms-preserve-⊥ 𝓐 𝓑-qua-σ-sup-lattice f f-is-homomorphism ⟩
                         ⊥⟨ 𝓑 ⟩'         ≡⟨ (⟨ 𝓑 ⟩'-⊥-minimum (f a))⁻¹ ⟩
                         ⊥⟨ 𝓑 ⟩' ∧' f a  ≡⟨ ap (λ - → - ∧' f a) ((pr₁ (pr₂ f-is-homomorphism))⁻¹) ⟩
                         f ⊥ ∧' f a      ≡⟨ ⟨ 𝓑 ⟩-commutativity (f ⊥) (f a) ⟩
@@ -1689,14 +1763,15 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
                                 f (⋁ (n ↦ a ∧ c n))            ≡⟨ pr₂ (pr₂ f-is-homomorphism) (λ n → a ∧ c n) ⟩
                                 ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ≡⟨ ap ⋁⟨ 𝓑 ⟩' (dfunext fe p) ⟩
                                 ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ≡⟨ (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹ ⟩
-                                f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ≡⟨ ap (f a ∧'_) ((pr₂ (pr₂ f-is-homomorphism) c)⁻¹) ⟩
+                                f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ≡⟨ ap (f a ∧'_) ((sup-lattice-homomorphisms-preserve-⋁ 𝓐 𝓑-qua-σ-sup-lattice f
+                                                                                   f-is-homomorphism c)⁻¹) ⟩
                                 f a ∧' f (⋁ c)                 ∎)
 
     f-is-homomorphism' : is-σ-frame-homomorphism· 𝓐-qua-σ-frame 𝓑 f
-    f-is-homomorphism' = pr₁ f-is-homomorphism ,
+    f-is-homomorphism' = sup-lattice-homomorphisms-preserve-⊤ 𝓐 𝓑-qua-σ-sup-lattice f f-is-homomorphism ,
                          f-preserves-∧ ,
-                         pr₁ (pr₂ f-is-homomorphism) ,
-                         pr₂ (pr₂ f-is-homomorphism)
+                         sup-lattice-homomorphisms-preserve-⊥ 𝓐 𝓑-qua-σ-sup-lattice f f-is-homomorphism ,
+                         sup-lattice-homomorphisms-preserve-⋁ 𝓐 𝓑-qua-σ-sup-lattice f f-is-homomorphism
 
     forget : (g : A → ⟨ 𝓑 ⟩') → is-σ-frame-homomorphism· 𝓐-qua-σ-frame 𝓑 g
                               →  is-σ-sup-lattice-homomorphism· 𝓐 𝓑-qua-σ-sup-lattice g
@@ -1714,9 +1789,155 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
                                       (being-σ-frame-homomorphism·-is-prop fe 𝓐-qua-σ-frame 𝓑)
                                       (uniqueness g g-is-homomorphism'))
 
+  σΩ : σ-Sup-Lattice 𝓤₁ 𝓤₁
+  σΩ = σ-frames-are-σ-sup-lattices Ω-is-σ-frame.σΩ
+
+  ⊥'   = ⊥⟨ σΩ ⟩
+  ⊤'   = ⊤⟨ σΩ ⟩
+  ⋁'  = ⋁⟨ σΩ ⟩
+  _≤'_ : Ω 𝓤₀ → Ω 𝓤₀ → (𝓤₀ ⁺) ̇
+  x ≤' y = x ≤⟨ σΩ ⟩ y
+
+  τ : A → Ω 𝓤₀
+  τ = σ-rec σΩ
+
+  τ-hom  : is-σ-sup-lattice-homomorphism· 𝓐 σΩ τ
+  τ-hom = σ-rec-is-homomorphism σΩ
+
+  τ-reflects-⊤ : (a : A) → τ a ≡ ⊤' → a ≡ ⊤
+  τ-reflects-⊤ = σ-induction
+                  (λ a → τ a ≡ ⊤' → a ≡ ⊤)
+                  (λ a → Π-is-prop fe (λ _ → ⟨ 𝓐 ⟩-is-set)) i⊤ i⊥ i⋁
+   where
+    i⊤ : τ ⊤ ≡ ⊤' → ⊤ ≡ ⊤
+    i⊤ _ = refl
+
+    i⊥ : τ ⊥ ≡ ⊤' → ⊥ ≡ ⊤
+    i⊥ p = unique-from-𝟘 (𝟘-is-not-𝟙 r)
+     where
+      q : ⊥' ≡ ⊤'
+      q = (sup-lattice-homomorphisms-preserve-⊥ 𝓐 σΩ τ τ-hom)⁻¹ ∙ p
+
+      r : 𝟘 ≡ 𝟙
+      r = ap pr₁ q
+
+    i⋁ : (a : ℕ → A) → ((n : ℕ) → τ (a n) ≡ ⊤' → a n ≡ ⊤) → τ (⋁ a) ≡ ⊤' → ⋁ a ≡ ⊤
+    i⋁ a φ p = ∥∥-rec ⟨ 𝓐 ⟩-is-set iii ii
+     where
+      i : ⋁' (τ ∘ a) ≡ ⊤'
+      i = (sup-lattice-homomorphisms-preserve-⋁ 𝓐 σΩ τ τ-hom a)⁻¹ ∙ p
+
+      ii : ∃ n ꞉ ℕ , τ (a n) holds
+      ii = equal-⊤-gives-holds (⋁' (τ ∘ a)) i
+
+      iii : (Σ n ꞉ ℕ , τ (a n) holds) → ⋁ a ≡ ⊤
+      iii (n , h) = vii
+       where
+        iv : τ (a n) ≡ ⊤'
+        iv = holds-gives-equal-⊤ pe fe (τ (a n)) h
+
+        v : a n ≡ ⊤
+        v = φ n iv
+
+        vi : ⊤ ≤ ⋁ a
+        vi = transport (_≤ ⋁ a) v (⟨ 𝓐 ⟩-⋁-is-ub a n)
+
+        vii : ⋁ a ≡ ⊤
+        vii = ⟨ 𝓐 ⟩-antisym _ _ (⟨ 𝓐 ⟩-⊤-maximum (⋁ a)) vi
+\end{code}
+
+A frame is called compact if every open cover of its top element has a
+finite subcover. It is supercompact (I think the terminology is due to
+Isbell) if every cover of the top element has a singleton
+subcover. This motivates the name of the following theorem, whose
+crucial ingredient is the homomorphism τ and the fact that it reflects
+top elements.
+
+\begin{code}
+
+  𝓐-is-σ-super-compact : (a : ℕ → A) → ⋁ a ≡ ⊤ → ∃ n ꞉ ℕ , a n ≡ ⊤
+  𝓐-is-σ-super-compact a p = vi
+   where
+    i : ⋁' (τ ∘ a) ≡ ⊤'
+    i = ⋁' (τ ∘ a) ≡⟨ (sup-lattice-homomorphisms-preserve-⋁ 𝓐 σΩ τ τ-hom a)⁻¹ ⟩
+        τ (⋁ a)    ≡⟨ ap τ p ⟩
+        τ ⊤        ≡⟨ sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom ⟩
+        ⊤'         ∎
+
+    ii : (∃ n ꞉ ℕ , τ (a n) holds) ≡ 𝟙
+    ii = ap _holds i
+
+    iii : (Σ n ꞉ ℕ , τ (a n) holds) → (Σ n ꞉ ℕ , a n ≡ ⊤)
+    iii (n , h) = n , v
+     where
+      iv : τ (a n) ≡ ⊤'
+      iv = holds-gives-equal-⊤ pe fe (τ (a n)) h
+
+      v : a n ≡ ⊤
+      v = τ-reflects-⊤ (a n) iv
 
 
+    vi : ∃ n ꞉ ℕ , a n ≡ ⊤
+    vi = ∥∥-functor iii (equal-𝟙-gives-holds (∃ n ꞉ ℕ , τ (a n) holds) ii)
 
+{- Use 𝓐-is-σ-super-compact to complete this easily:
+
+  M : (a : A) (b : a ≡ ⊤ → A) → Σ m ꞉ A , ((p : a ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : a ≡ ⊤) → l ≤ b p) → l ≤ m)
+  M = σ-induction P P-is-prop-valued M⊤ M⊥ M⋁
+   where
+    P : A → {!!} ̇
+    P a = (b : a ≡ ⊤ → A) → Σ m ꞉ A , ((p : a ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : a ≡ ⊤) → l ≤ b p) → l ≤ m)
+    P-is-prop-valued : (a : A) → is-prop (P a)
+    P-is-prop-valued a = {!!}
+    M⊤ : (b : ⊤ ≡ ⊤ → A) → Σ m ꞉ A , ((p : ⊤ ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : ⊤ ≡ ⊤) → l ≤ b p) → l ≤ m)
+    M⊤ b = {!!}
+    M⊥ : (b : ⊥ ≡ ⊤ → A) → Σ m ꞉ A , ((p : ⊥ ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : ⊥ ≡ ⊤) → l ≤ b p) → l ≤ m)
+    M⊥ b = {!!}
+    M⋁ : (c : ℕ → A) → ((n : ℕ) → P (c n)) → P (⋁ c)
+    M⋁ c φ b = ⋁ m , γ₁ , γ₂
+     where
+      u : (n : ℕ) → c n ≡ ⊤ → ⋁ c ≡ ⊤
+      u n q = {!!}
+      σ-compact : ⊤ ≤ ⋁ c → Σ n ꞉ ℕ , ⊤ ≤ c n
+      σ-compact l = {!!}
+      d : ⋁ c ≡ ⊤ → Σ n ꞉ ℕ , c n ≡ ⊤
+      d p = {!!}
+
+      m : ℕ → A
+      m n = pr₁ (φ n (λ q → b (u n q)))
+
+      φ₁ : (n : ℕ) → (p : c n ≡ ⊤) → m n ≤ b (u n p)
+      φ₁ n = pr₁ (pr₂ (φ n (λ q → b (u n q))))
+
+      φ₂ : (n : ℕ) (l : A) → ((p : c n ≡ ⊤) → l ≤ b (u n p)) → l ≤ m n
+      φ₂ n = pr₂ (pr₂ (φ n (λ q → b (u n q))))
+
+      γ₁ : (p : ⋁ c ≡ ⊤) → ⋁ m ≤ b p
+      γ₁ = {!!}
+
+      γ₂ : (l : A) → ((p : ⋁ c ≡ ⊤) → l ≤ b p) → l ≤ ⋁ m
+      γ₂ = {!!}
+-}
+
+{-
+  is-top : A → Ω 𝓤₀
+  is-top a = (a ≡ ⊤) , ⟨ 𝓐 ⟩-is-set
+
+  is-top-⊤ : is-top ⊤ ≡ ⊤'
+  is-top-⊤ = to-subtype-≡
+               (λ p → being-prop-is-prop fe)
+               (pe ⟨ 𝓐 ⟩-is-set 𝟙-is-prop (λ _ → *) (λ _ → refl))
+
+  is-top-⊥ : is-top ⊥ ≡ ⊥'
+  is-top-⊥ = to-subtype-≡
+               (λ p → being-prop-is-prop fe)
+               (pe ⟨ 𝓐 ⟩-is-set 𝟘-is-prop (λ (p : ⊥ ≡ ⊤) → {!!}) unique-from-𝟘)
+
+  is-top-⋁ : (a : ℕ → A) → is-top (⋁ a) ≡ ⋁' (n ↦ is-top (a n))
+  is-top-⋁ a = to-subtype-≡
+               (λ p → being-prop-is-prop fe)
+               (pe ⟨ 𝓐 ⟩-is-set ∃-is-prop {!!} {!!})
+-}
 \end{code}
 
 To be continued.

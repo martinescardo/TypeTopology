@@ -1988,11 +1988,11 @@ record, but we need Σ for our approach to SIP):
                    → a ∧⟨ 𝓐 ⟩ (b ∧⟨ 𝓐 ⟩ c) ≡ (a ∧⟨ 𝓐 ⟩ b) ∧⟨ 𝓐 ⟩ c
  ⟨ A , _ , (i , ii , iii , iv , v , vi , vii , viii , ix) ⟩-associativity = iv
 
- le : (𝓐 : σ-Frame 𝓤)
+ order : (𝓐 : σ-Frame 𝓤)
     → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓤 ̇
- le 𝓐 a b = a ∧⟨ 𝓐 ⟩ b ≡ a
+ order 𝓐 a b = a ∧⟨ 𝓐 ⟩ b ≡ a
 
- syntax le 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
+ syntax order 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
 
  ⟨_⟩-⊥-minimum : (𝓐 : σ-Frame 𝓤) (a : ⟨ 𝓐 ⟩)
                → ⊥⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a

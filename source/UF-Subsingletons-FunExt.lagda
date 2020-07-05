@@ -186,6 +186,15 @@ true-is-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is
 true-is-equal-⊤ pe fe P i p = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p) ,
                                       being-prop-is-prop fe _ _)
 
+holds-gives-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → p holds → p ≡ ⊤
+holds-gives-equal-⊤ pe fe (P , i) = true-is-equal-⊤ pe fe P i
+
+equal-𝟙-gives-holds : (P : 𝓤 ̇ ) → P ≡ 𝟙 → P
+equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) *
+
+equal-⊤-gives-holds : (p : Ω 𝓤) → p ≡ ⊤ → p holds
+equal-⊤-gives-holds p r = equal-𝟙-gives-holds (p holds) (ap pr₁ r)
+
 false-is-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
                  → ¬ P → (P , i) ≡ ⊥
 false-is-equal-⊥ pe fe P i f = to-Σ-≡ (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
