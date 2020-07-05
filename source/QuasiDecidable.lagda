@@ -1437,7 +1437,6 @@ We first introduce some abbreviations:
 
   _≤_ : A → A → 𝓤₀ ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
-
   ≡-gives-≤ : (a b : A) → a ≡ b → a ≤ b
   ≡-gives-≤ a b p = transport (a ≤_) p (⟨ 𝓐 ⟩-refl a)
 
@@ -1822,7 +1821,7 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
       q = (sup-lattice-homomorphisms-preserve-⊥ 𝓐 σΩ τ τ-hom)⁻¹ ∙ p
 
       r : 𝟘 ≡ 𝟙
-      r = ap pr₁ q
+      r = ap _holds q
 
     i⋁ : (a : ℕ → A) → ((n : ℕ) → τ (a n) ≡ ⊤' → a n ≡ ⊤) → τ (⋁ a) ≡ ⊤' → ⋁ a ≡ ⊤
     i⋁ a φ p = ∥∥-rec ⟨ 𝓐 ⟩-is-set iii ii
@@ -1961,9 +1960,101 @@ top elements.
     r : b ≤ a
     r = τ-order-lc b a (≡-gives-≤' (τ b) (τ a) (p ⁻¹))
 
+  τ-is-embedding : is-embedding τ
+  τ-is-embedding = lc-maps-into-sets-are-embeddings τ τ-lc (Ω-is-set fe pe)
+
+  holds-is-embedding : is-embedding (_holds {𝓤})
+  holds-is-embedding = pr₁-is-embedding (λ _ → being-prop-is-prop fe)
+
+  Q : A → 𝓤₀ ̇
+  Q a = τ a holds
+
+  Q-is-embedding : is-embedding Q
+  Q-is-embedding = ∘-is-embedding τ-is-embedding holds-is-embedding
+
+  is-quasidecidable : 𝓤₀ ̇ → 𝓤₁ ̇
+  is-quasidecidable = fiber Q
+
+  being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
+  being-quasidecidable-is-prop = Q-is-embedding
+
+  quasidecidable-types-are-props : ∀ P → is-quasidecidable P → is-prop P
+  quasidecidable-types-are-props P (a , p) = transport is-prop p (holds-is-prop (τ a))
+
+  𝟘-is-quasidecidable : is-quasidecidable 𝟘
+  𝟘-is-quasidecidable = ⊥ , ap _holds (sup-lattice-homomorphisms-preserve-⊥ 𝓐 σΩ τ τ-hom)
+
+  𝟙-is-quasidecidable : is-quasidecidable 𝟙
+  𝟙-is-quasidecidable = ⊤ , ap _holds (sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom)
+
+  quasidecidable-closed-under-ω-joins :
+     (P : ℕ → 𝓤₀ ̇ )
+   → ((n : ℕ) → is-quasidecidable (P n))
+   → is-quasidecidable (∃ n ꞉ ℕ , P n)
+  quasidecidable-closed-under-ω-joins P φ = ⋁ (n ↦ fiber-point (φ n)) , vi
+   where
+    i : (n : ℕ) → Q (fiber-point (φ n)) ≡ P n
+    i n = fiber-identification (φ n)
+
+    ii : (n : ℕ) → τ (fiber-point (φ n)) ≡ P n , quasidecidable-types-are-props (P n) (φ n)
+    ii n = to-subtype-≡ (λ _ → being-prop-is-prop fe) (i n)
+
+    iii : τ (⋁ (n ↦ fiber-point (φ n))) ≡ ⋁' (λ n → P n , quasidecidable-types-are-props (P n) (φ n))
+    iii = τ (⋁ (n ↦ fiber-point (φ n)))                               ≡⟨ iv ⟩
+          ⋁' (n ↦ τ (fiber-point (φ n)))                              ≡⟨ v  ⟩
+          ⋁' (n ↦ (P n , quasidecidable-types-are-props (P n) (φ n))) ∎
+     where
+      iv = sup-lattice-homomorphisms-preserve-⋁ 𝓐 σΩ τ τ-hom (λ n → fiber-point (φ n))
+      v  = ap ⋁' (dfunext fe ii)
+
+    vi : Q (⋁ (n ↦ fiber-point (φ n))) ≡ (∃ n ꞉ ℕ , P n)
+    vi = ap _holds iii
+
+  quasidecidable-induction :
+     (F : 𝓤₀ ̇ → 𝓤 ̇ )
+   → ((P : 𝓤₀ ̇ ) → is-prop (F P))
+   → F 𝟘
+   → F 𝟙
+   → ((P : ℕ → 𝓤₀ ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+   → (P : 𝓤₀ ̇ ) → is-quasidecidable P → F P
+  quasidecidable-induction F i F₀ F₁ Fω P (a , r) = γ a P r
+   where
+    γ : (a : A) (P : 𝓤₀ ̇ ) → τ a holds ≡ P → F P
+    γ = σ-induction {!!} {!!} γ⊤ γ⊥ γ⋁
+{-    γ : (a : A) → τ a holds ≡ P → F P
+    γ = σ-induction (λ a → τ a holds ≡ P → F P) (λ a → Π-is-prop fe (λ _ → i P))
+         γ⊤ γ⊥ γ⋁
+-}
+     where
+      γ⊤ : (P : 𝓤₀ ̇ ) → τ ⊤ holds ≡ P → F P
+      γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
+       where
+        t : τ ⊤ holds ≡ 𝟙
+        t = ap _holds (sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom)
+      γ⊥ : (P : 𝓤₀ ̇ ) → τ ⊥ holds ≡ P → F P
+      γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
+       where
+        t : τ ⊥ holds ≡ 𝟘
+        t = ap _holds (sup-lattice-homomorphisms-preserve-⊥ 𝓐 σΩ τ τ-hom)
+
+      γ⋁ : (a : ℕ → A)
+         → ((n : ℕ) (P : 𝓤₀ ̇) → (τ (a n) holds) ≡ P → F P)
+         → (P : 𝓤₀ ̇) → (τ (⋁ a) holds) ≡ P → F P
+      γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
+       where
+        t : τ (⋁ a) holds ≡ (∃ n ꞉ ℕ , τ (a n) holds)
+        t = ap _holds (sup-lattice-homomorphisms-preserve-⋁ 𝓐 σΩ τ τ-hom a)
+        ψ : (n : ℕ) → F (τ (a n) holds)
+        ψ n = φ n (τ (a n) holds) refl
+
+
+
+
 {- Use 𝓐-is-σ-super-compact to complete this easily:
 
-  M : (a : A) (b : a ≡ ⊤ → A) → Σ m ꞉ A , ((p : a ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : a ≡ ⊤) → l ≤ b p) → l ≤ m)
+  M : (a : A) (b : a ≡ ⊤ → A)
+                     → Σ m ꞉ A , ((p : a ≡ ⊤) → m ≤ b p)
+                               × ((l : A) → ((p : a ≡ ⊤) → l ≤ b p) → l ≤ m)
   M = σ-induction P P-is-prop-valued M⊤ M⊥ M⋁
    where
     P : A → {!!} ̇
@@ -2000,25 +2091,6 @@ top elements.
       γ₂ = {!!}
 -}
 
-{-
-  is-top : A → Ω 𝓤₀
-  is-top a = (a ≡ ⊤) , ⟨ 𝓐 ⟩-is-set
-
-  is-top-⊤ : is-top ⊤ ≡ ⊤'
-  is-top-⊤ = to-subtype-≡
-               (λ p → being-prop-is-prop fe)
-               (pe ⟨ 𝓐 ⟩-is-set 𝟙-is-prop (λ _ → *) (λ _ → refl))
-
-  is-top-⊥ : is-top ⊥ ≡ ⊥'
-  is-top-⊥ = to-subtype-≡
-               (λ p → being-prop-is-prop fe)
-               (pe ⟨ 𝓐 ⟩-is-set 𝟘-is-prop (λ (p : ⊥ ≡ ⊤) → {!!}) unique-from-𝟘)
-
-  is-top-⋁ : (a : ℕ → A) → is-top (⋁ a) ≡ ⋁' (n ↦ is-top (a n))
-  is-top-⋁ a = to-subtype-≡
-               (λ p → being-prop-is-prop fe)
-               (pe ⟨ 𝓐 ⟩-is-set ∃-is-prop {!!} {!!})
--}
 \end{code}
 
 To be continued.
