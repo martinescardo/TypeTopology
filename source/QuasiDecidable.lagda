@@ -1798,6 +1798,9 @@ We show that the initial σ-sup-lattice is also the initial σ-frame.
   _≤'_ : Ω 𝓤₀ → Ω 𝓤₀ → (𝓤₀ ⁺) ̇
   x ≤' y = x ≤⟨ σΩ ⟩ y
 
+  ≡-gives-≤' : (p q : Ω 𝓤₀) → p ≡ q → p ≤' q
+  ≡-gives-≤' p q r = transport (p ≤'_) r (⟨ σΩ ⟩-refl p)
+
   τ : A → Ω 𝓤₀
   τ = σ-rec σΩ
 
@@ -1876,9 +1879,87 @@ top elements.
       v : a n ≡ ⊤
       v = τ-reflects-⊤ (a n) iv
 
-
     vi : ∃ n ꞉ ℕ , a n ≡ ⊤
     vi = ∥∥-functor iii (equal-𝟙-gives-holds (∃ n ꞉ ℕ , τ (a n) holds) ii)
+
+  τ-charac→ : (a : A) → τ a holds → a ≡ ⊤
+  τ-charac→ a h = τ-reflects-⊤ a (holds-gives-equal-⊤ pe fe (τ a) h)
+
+  τ-charac← : (a : A) → a ≡ ⊤ → τ a holds
+  τ-charac← a p = equal-⊤-gives-holds (τ a)
+                   (τ a ≡⟨ ap τ p ⟩
+                    τ ⊤ ≡⟨ sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom ⟩
+                    ⊤' ∎)
+
+  τ-charac : (a : A) → τ a ≡ ((a ≡ ⊤) , ⟨ 𝓐 ⟩-is-set)
+  τ-charac a = to-subtype-≡ (λ a → being-prop-is-prop fe)
+                (pe (holds-is-prop (τ a)) ⟨ 𝓐 ⟩-is-set (τ-charac→ a) (τ-charac← a))
+
+  non-trivial : ⊥ ≢ ⊤
+  non-trivial p = ⊥-is-not-⊤ q
+   where
+    q : ⊥' ≡ ⊤'
+    q = ⊥' ≡⟨ (sup-lattice-homomorphisms-preserve-⊥ 𝓐 σΩ τ τ-hom)⁻¹ ⟩
+        τ ⊥ ≡⟨ ap τ p ⟩
+        τ ⊤ ≡⟨ sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom ⟩
+        ⊤' ∎
+
+  order-charac : (a b : A) → (a ≡ ⊤ → b ≡ ⊤) → a ≤ b
+  order-charac = σ-induction
+                 (λ a → (b : A) → (a ≡ ⊤ → b ≡ ⊤) → a ≤ b)
+                 (λ a → Π₂-is-prop fe (λ b _ → ⟨ 𝓐 ⟩-order-is-prop-valued a b))
+                 i⊤
+                 i⊥
+                 i⋁
+   where
+    i⊤ : (b : A) → (⊤ ≡ ⊤ → b ≡ ⊤) → ⊤ ≤ b
+    i⊤ b f = ≡-gives-≤ ⊤ b ((f refl)⁻¹)
+
+    i⊥ : (b : A) → (⊥ ≡ ⊤ → b ≡ ⊤) → ⊥ ≤ b
+    i⊥ b _ = ⟨ 𝓐 ⟩-⊥-minimum b
+
+    i⋁ : (a : ℕ → A)
+       → ((n : ℕ) (b : A) → (a n ≡ ⊤ → b ≡ ⊤) → a n ≤ b)
+       → (b : A)
+       → (⋁ a ≡ ⊤ → b ≡ ⊤)
+       → ⋁ a ≤ b
+    i⋁ a φ b ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a b
+                      (λ n → φ n b
+                               (λ (p : a n ≡ ⊤) → ψ (f n p)))
+     where
+      f : (n : ℕ) → a n ≡ ⊤ → ⋁ a ≡ ⊤
+      f n p = ⟨ 𝓐 ⟩-antisym _ _ (⟨ 𝓐 ⟩-⊤-maximum (⋁ a)) l
+       where
+        l : ⊤ ≤ ⋁ a
+        l = ⟨ 𝓐 ⟩-trans _ _ _ (≡-gives-≤ ⊤ (a n) (p ⁻¹)) (⟨ 𝓐 ⟩-⋁-is-ub a n)
+
+  τ-order-lc : (a b : A) → τ a ≤' τ b → a ≤ b
+  τ-order-lc a b l = iv
+   where
+    i : τ a holds → τ b holds
+    i = Ω-is-σ-frame.from-≤Ω {𝓤₀} {τ a} {τ b} l
+
+    ii : τ a ≡ ⊤' → τ b ≡ ⊤'
+    ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))
+
+    iii : a ≡ ⊤ → b ≡ ⊤
+    iii q = τ-reflects-⊤ b (ii r)
+     where
+      r = τ a ≡⟨ ap τ q ⟩
+          τ ⊤ ≡⟨ sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom ⟩
+          ⊤' ∎
+
+    iv : a ≤ b
+    iv = order-charac a b iii
+
+  τ-lc : left-cancellable τ
+  τ-lc {a} {b} p = ⟨ 𝓐 ⟩-antisym a b l r
+   where
+    l : a ≤ b
+    l = τ-order-lc a b (≡-gives-≤' (τ a) (τ b) p)
+
+    r : b ≤ a
+    r = τ-order-lc b a (≡-gives-≤' (τ b) (τ a) (p ⁻¹))
 
 {- Use 𝓐-is-σ-super-compact to complete this easily:
 

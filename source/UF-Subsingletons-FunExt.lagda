@@ -181,9 +181,12 @@ TODO. In the following, rather than using a P and i, use a p = (P , i) in Ω �
 
 \begin{code}
 
+holds-gives-equal-𝟙 : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) → is-prop P → P → P ≡ 𝟙
+holds-gives-equal-𝟙 pe fe P i p = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
+
 true-is-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
                 → P → (P , i) ≡ ⊤
-true-is-equal-⊤ pe fe P i p = to-Σ-≡ (pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p) ,
+true-is-equal-⊤ pe fe P i p = to-Σ-≡ (holds-gives-equal-𝟙 pe fe P i p ,
                                       being-prop-is-prop fe _ _)
 
 holds-gives-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (p : Ω 𝓤) → p holds → p ≡ ⊤
