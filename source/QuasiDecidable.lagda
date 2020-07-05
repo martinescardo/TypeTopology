@@ -2020,11 +2020,10 @@ top elements.
   quasidecidable-induction F i F₀ F₁ Fω P (a , r) = γ a P r
    where
     γ : (a : A) (P : 𝓤₀ ̇ ) → τ a holds ≡ P → F P
-    γ = σ-induction {!!} {!!} γ⊤ γ⊥ γ⋁
-{-    γ : (a : A) → τ a holds ≡ P → F P
-    γ = σ-induction (λ a → τ a holds ≡ P → F P) (λ a → Π-is-prop fe (λ _ → i P))
+    γ = σ-induction
+         (λ a → (P : 𝓤₀ ̇ ) → τ a holds ≡ P → F P)
+         (λ a → Π₂-is-prop fe (λ P _ → i P))
          γ⊤ γ⊥ γ⋁
--}
      where
       γ⊤ : (P : 𝓤₀ ̇ ) → τ ⊤ holds ≡ P → F P
       γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
