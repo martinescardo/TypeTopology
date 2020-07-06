@@ -2167,6 +2167,43 @@ is-top a holds as a ≡ ⊤.
 
   binary-meet' a b = dependent-binary-meet' a (λ _ → b)
 
+  binary-meet'-observation : (a b c : A)
+                           → (c ≡ ⊤ ⇔ ((a ≡ ⊤) × (b ≡ ⊤)))
+                           → c ≡ a ∧ b
+  binary-meet'-observation a b c (f , g) = viii
+   where
+    i : c ≤ a
+    i = ≤-criterion c a (λ (p : c ≡ ⊤) → pr₁ (f p))
+
+    ii : c ≤ b
+    ii = ≤-criterion c b (λ (p : c ≡ ⊤) → pr₂ (f p))
+
+    iii : c ≤ a ∧ b
+    iii = ∧-is-ub-of-lbs a b c i ii
+
+    iv : a ∧ b ≡ ⊤ → a ≡ ⊤
+    iv p = ⟨ 𝓐 ⟩-antisym a ⊤
+                (⟨ 𝓐 ⟩-⊤-maximum a)
+                (⟨ 𝓐 ⟩-trans ⊤ (a ∧ b) a
+                      (≡-gives-≤ ⊤ (a ∧ b) (p ⁻¹))
+                      (∧-is-lb-left a b))
+
+    v : a ∧ b ≡ ⊤ → b ≡ ⊤
+    v p = ⟨ 𝓐 ⟩-antisym b ⊤
+               (⟨ 𝓐 ⟩-⊤-maximum b)
+               (⟨ 𝓐 ⟩-trans ⊤ (a ∧ b) b
+                     (≡-gives-≤ ⊤ (a ∧ b) (p ⁻¹))
+                     (∧-is-lb-right a b))
+
+    vi : a ∧ b ≡ ⊤ → c ≡ ⊤
+    vi p = g (iv p , v p)
+
+    vii : a ∧ b ≤ c
+    vii = ≤-criterion (a ∧ b) c vi
+
+    viii : c ≡ a ∧ b
+    viii = ⟨ 𝓐 ⟩-antisym c (a ∧ b) iii vii
+
 \end{code}
 
 To be continued. And better organized.
