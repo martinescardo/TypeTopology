@@ -1981,6 +1981,38 @@ top elements.
   quasidecidable-types-are-props : ∀ P → is-quasidecidable P → is-prop P
   quasidecidable-types-are-props P (a , p) = transport is-prop p (holds-is-prop (τ a))
 
+\end{code}
+
+NB. We have the following small version of quasi-decidability:
+
+\begin{code}
+
+  is-quasidecidable₀ : 𝓤₀ ̇ → 𝓤₀ ̇
+  is-quasidecidable₀ P = Σ a ꞉ A , (τ a holds ≃ P)
+
+\end{code}
+
+It is equivalent to the large version without the need for univalence
+- propositional and functional extensionality suffice.
+
+\begin{code}
+
+  quasidecidability-resizing : (P : 𝓤₀ ̇ ) → is-quasidecidable P ≃ is-quasidecidable₀ P
+  quasidecidability-resizing P = Σ-cong e
+   where
+    e : (a : A) → (τ a holds ≡ P) ≃ (τ a holds ≃ P)
+    e a = prop-univalent-≃' pe fe P (τ a holds) (holds-is-prop (τ a))
+
+  being-quasidecidable₀-is-prop : (P : 𝓤₀ ̇ ) → is-prop (is-quasidecidable₀ P)
+  being-quasidecidable₀-is-prop P = equiv-to-prop (≃-sym (quasidecidability-resizing P)) (being-quasidecidable-is-prop P)
+
+\end{code}
+
+However, it is much more convenient to work with the large version of
+quasidecidability.
+
+\begin{code}
+
   𝟘-is-quasidecidable : is-quasidecidable 𝟘
   𝟘-is-quasidecidable = ⊥ , ap _holds (sup-lattice-homomorphisms-preserve-⊥ 𝓐 σΩ τ τ-hom)
 
@@ -2030,6 +2062,7 @@ top elements.
        where
         t : τ ⊤ holds ≡ 𝟙
         t = ap _holds (sup-lattice-homomorphisms-preserve-⊤ 𝓐 σΩ τ τ-hom)
+
       γ⊥ : (P : 𝓤₀ ̇ ) → τ ⊥ holds ≡ P → F P
       γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
        where
@@ -2045,50 +2078,6 @@ top elements.
         t = ap _holds (sup-lattice-homomorphisms-preserve-⋁ 𝓐 σΩ τ τ-hom a)
         ψ : (n : ℕ) → F (τ (a n) holds)
         ψ n = φ n (τ (a n) holds) refl
-
-
-
-
-{- Use 𝓐-is-σ-super-compact to complete this easily:
-
-  M : (a : A) (b : a ≡ ⊤ → A)
-                     → Σ m ꞉ A , ((p : a ≡ ⊤) → m ≤ b p)
-                               × ((l : A) → ((p : a ≡ ⊤) → l ≤ b p) → l ≤ m)
-  M = σ-induction P P-is-prop-valued M⊤ M⊥ M⋁
-   where
-    P : A → {!!} ̇
-    P a = (b : a ≡ ⊤ → A) → Σ m ꞉ A , ((p : a ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : a ≡ ⊤) → l ≤ b p) → l ≤ m)
-    P-is-prop-valued : (a : A) → is-prop (P a)
-    P-is-prop-valued a = {!!}
-    M⊤ : (b : ⊤ ≡ ⊤ → A) → Σ m ꞉ A , ((p : ⊤ ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : ⊤ ≡ ⊤) → l ≤ b p) → l ≤ m)
-    M⊤ b = {!!}
-    M⊥ : (b : ⊥ ≡ ⊤ → A) → Σ m ꞉ A , ((p : ⊥ ≡ ⊤) → m ≤ b p) × ((l : A) → ((p : ⊥ ≡ ⊤) → l ≤ b p) → l ≤ m)
-    M⊥ b = {!!}
-    M⋁ : (c : ℕ → A) → ((n : ℕ) → P (c n)) → P (⋁ c)
-    M⋁ c φ b = ⋁ m , γ₁ , γ₂
-     where
-      u : (n : ℕ) → c n ≡ ⊤ → ⋁ c ≡ ⊤
-      u n q = {!!}
-      σ-compact : ⊤ ≤ ⋁ c → Σ n ꞉ ℕ , ⊤ ≤ c n
-      σ-compact l = {!!}
-      d : ⋁ c ≡ ⊤ → Σ n ꞉ ℕ , c n ≡ ⊤
-      d p = {!!}
-
-      m : ℕ → A
-      m n = pr₁ (φ n (λ q → b (u n q)))
-
-      φ₁ : (n : ℕ) → (p : c n ≡ ⊤) → m n ≤ b (u n p)
-      φ₁ n = pr₁ (pr₂ (φ n (λ q → b (u n q))))
-
-      φ₂ : (n : ℕ) (l : A) → ((p : c n ≡ ⊤) → l ≤ b (u n p)) → l ≤ m n
-      φ₂ n = pr₂ (pr₂ (φ n (λ q → b (u n q))))
-
-      γ₁ : (p : ⋁ c ≡ ⊤) → ⋁ m ≤ b p
-      γ₁ = {!!}
-
-      γ₂ : (l : A) → ((p : ⋁ c ≡ ⊤) → l ≤ b p) → l ≤ ⋁ m
-      γ₂ = {!!}
--}
 
 \end{code}
 

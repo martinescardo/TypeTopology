@@ -16,6 +16,7 @@ open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-FunExt
 open import UF-Equiv
+open import UF-EquivalenceExamples
 
 being-vv-equiv-is-prop' : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -242,7 +243,7 @@ propext-funext-give-prop-ua : propext 𝓤 → funext 𝓤 𝓤
 propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
  where
   l : X ≃ P → is-prop X
-  l (f , _ , (s , fs)) = retract-of-prop (s , (f , fs)) i
+  l e = equiv-to-prop e i
   eqtoid : X ≃ P → X ≡ P
   eqtoid (f , (r , rf) , h) = pe (l (f , (r , rf) , h)) i f r
   m : is-prop (X ≃ P)
@@ -255,6 +256,12 @@ propext-funext-give-prop-ua {𝓤} pe fe X P i = (eqtoid , η) , (eqtoid , ε)
 
 prop-univalent-≃ : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇ ) → is-prop P → (X ≡ P) ≃ (X ≃ P)
 prop-univalent-≃ pe fe X P i = idtoeq X P , propext-funext-give-prop-ua pe fe X P i
+
+prop-univalent-≃' : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇ ) → is-prop P → (P ≡ X) ≃ (P ≃ X)
+prop-univalent-≃' pe fe X P i = (P ≡ X) ≃⟨ ≡-flip                       ⟩
+                                (X ≡ P) ≃⟨ prop-univalent-≃ pe fe X P i ⟩
+                                (X ≃ P) ≃⟨ ≃-Sym'' fe                   ⟩
+                                (P ≃ X) ■
 
 \end{code}
 
