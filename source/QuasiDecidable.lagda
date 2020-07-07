@@ -1504,34 +1504,40 @@ taking its down set:
 
 \begin{code}
 
-  ↓ : A → 𝓣 ̇
-  ↓ a = Σ d ꞉ A , d ≤ a
+  _↓_ : (𝓑 : σ-Sup-Lattice 𝓤 𝓥) → ⟨ 𝓑 ⟩ → 𝓤 ⊔ 𝓥 ̇
+  𝓑 ↓ t = Σ x ꞉ ⟨ 𝓑 ⟩ , x ≤⟨ 𝓑 ⟩ t
 
+  ↓-inclusion : (𝓑 : σ-Sup-Lattice 𝓤 𝓥) (t : ⟨ 𝓑 ⟩) → 𝓑 ↓ t → ⟨ 𝓑 ⟩
+  ↓-inclusion 𝓑 t (x , l) = x
 
-  down : A → σ-Sup-Lattice 𝓣 𝓣
-  down t = ↓ t ,
-           ((t , ⟨ 𝓐 ⟩-refl t) ,
-            (⊥ , ⟨ 𝓐 ⟩-⊥-minimum t) ,
-            (λ x → ⋁ (pr₁ ∘ x) , ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) t (pr₂ ∘ x))) ,
-           (λ (a , _)(b , _) → a ≤ b) ,
-           (λ (a , _) (b , _) → ⟨ 𝓐 ⟩-order-is-prop-valued a b) ,
-           (λ (a , _) → ⟨ 𝓐 ⟩-refl a) ,
-           (λ (a , _) (b , _) (c , _) → ⟨ 𝓐 ⟩-trans a b c) ,
-           (λ (a , _) (b , _) l m → to-subtype-≡ (λ a → ⟨ 𝓐 ⟩-order-is-prop-valued a t) (⟨ 𝓐 ⟩-antisym a b l m)) ,
-           (λ (a , l) → l) ,
-           (λ (a , _) → ⟨ 𝓐 ⟩-⊥-minimum a) ,
-           (λ x n → ⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n) ,
-           (λ x (u , _) φ → ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) u φ)
+  ⟨_⟩-is-bounded : (𝓑 : σ-Sup-Lattice 𝓤 𝓥) {t : ⟨ 𝓑 ⟩} (𝔁 : 𝓑 ↓ t) → ↓-inclusion 𝓑 t 𝔁 ≤⟨ 𝓑 ⟩ t
+  ⟨ 𝓑 ⟩-is-bounded (x , l) = l
+
+  _⇓_ :  (𝓑 : σ-Sup-Lattice 𝓤 𝓥) → ⟨ 𝓑 ⟩ → σ-Sup-Lattice (𝓤 ⊔ 𝓥) 𝓥
+  𝓑 ⇓ t = 𝓑 ↓ t ,
+           ((t , ⟨ 𝓑 ⟩-refl t) ,
+            (⊥⟨ 𝓑 ⟩ , ⟨ 𝓑 ⟩-⊥-minimum t) ,
+            (λ (𝔁 : ℕ → 𝓑 ↓ t) → ⋁⟨ 𝓑 ⟩ (↓-inclusion 𝓑 t ∘ 𝔁) ,
+                                   ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (↓-inclusion 𝓑 t ∘ 𝔁) t (⟨ 𝓑 ⟩-is-bounded ∘ 𝔁))) ,
+           (λ (x , _)(y , _) → x ≤⟨ 𝓑 ⟩ y) ,
+           (λ (x , _) (y , _) → ⟨ 𝓑 ⟩-order-is-prop-valued x y) ,
+           (λ (x , _) → ⟨ 𝓑 ⟩-refl x) ,
+           (λ (x , _) (y , _) (z , _) → ⟨ 𝓑 ⟩-trans x y z) ,
+           (λ (x , _) (y , _) l m → to-subtype-≡ (λ x → ⟨ 𝓑 ⟩-order-is-prop-valued x t) (⟨ 𝓑 ⟩-antisym x y l m)) ,
+           (λ (x , l) → l) ,
+           (λ (x , _) → ⟨ 𝓑 ⟩-⊥-minimum x) ,
+           (λ 𝔁 n → ⟨ 𝓑 ⟩-⋁-is-ub (↓-inclusion 𝓑  t ∘ 𝔁) n) ,
+           (λ 𝔁 (u , _) φ → ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (↓-inclusion 𝓑 t ∘ 𝔁) u φ)
 \end{code}
 
 Then we apply initiality:
 
 \begin{code}
-  meet : (a : A) → A → ↓ a
-  meet a = σ-rec (down a)
+  meet : (a : A) → A → 𝓐 ↓ a
+  meet a = σ-rec (𝓐 ⇓ a)
 
-  meet-is-hom : (a : A) → is-σ-sup-lattice-hom· 𝓐 (down a) (meet a)
-  meet-is-hom a = σ-rec-is-homomorphism (down a)
+  meet-is-hom : (a : A) → is-σ-sup-lattice-hom· 𝓐 (𝓐 ⇓ a) (meet a)
+  meet-is-hom a = σ-rec-is-homomorphism (𝓐 ⇓ a)
 
   _∧_ : A → A → A
   a ∧ b = pr₁ (meet a b)
@@ -1542,13 +1548,13 @@ Then we apply initiality:
   ∧-is-lb-left a b = pr₂ (meet a b)
 
   meet⊤ : (a : A) → a ∧ ⊤ ≡ a
-  meet⊤ a = ap pr₁ (σ-sup-lattice-homs-⊤ 𝓐 (down a) (meet a) (meet-is-hom a))
+  meet⊤ a = ap pr₁ (σ-sup-lattice-homs-⊤ 𝓐 (𝓐 ⇓ a) (meet a) (meet-is-hom a))
 
   meet⊥ : (a : A) → a ∧ ⊥ ≡ ⊥
-  meet⊥ a = ap pr₁ (σ-sup-lattice-homs-⊥ 𝓐 (down a) (meet a) (meet-is-hom a))
+  meet⊥ a = ap pr₁ (σ-sup-lattice-homs-⊥ 𝓐 (𝓐 ⇓ a) (meet a) (meet-is-hom a))
 
   meet⋁ : (a : A) (b : ℕ → A) → a ∧ ⋁ b ≡ ⋁ (n ↦ a ∧ b n)
-  meet⋁ a b = ap pr₁ (σ-sup-lattice-homs-⋁ 𝓐 (down a) (meet a) (meet-is-hom a) b)
+  meet⋁ a b = ap pr₁ (σ-sup-lattice-homs-⋁ 𝓐 (𝓐 ⇓ a) (meet a) (meet-is-hom a) b)
 
 \end{code}
 
@@ -2203,6 +2209,9 @@ is-top a holds as a ≡ ⊤.
 
     viii : c ≡ a ∧ b
     viii = ⟨ 𝓐 ⟩-antisym c (a ∧ b) iii vii
+
+
+
 
 \end{code}
 
