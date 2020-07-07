@@ -2264,7 +2264,9 @@ a family f (cf. the initiality-lemma above):
 \end{code}
 
 The following generalizes the above initiality-lemma. It says that
-σ-sup-lattices have joins of quasidecidable-indexed families:
+σ-sup-lattices have joins of quasidecidable-indexed families (so their
+underlying sets are algebras of the lifting monad induced by the
+quasidecidability dominance):
 
 \begin{code}
 
@@ -2295,6 +2297,7 @@ The following generalizes the above initiality-lemma. It says that
      where
       g : (n : ℕ) → P n → ⟨ 𝓑 ⟩
       g n p = f ∣ n , p ∣
+
       h : (n : ℕ) → Σ b ꞉ ⟨ 𝓑 ⟩ , (in⟨ 𝓑 ⟩ b is-the-join-of g n)
       h n = φ n (g n)
 
