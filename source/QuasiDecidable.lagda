@@ -1352,7 +1352,6 @@ module hypothetical-initial-σ-Frame where
     g-is-hom : is-σ-frame-hom 𝓑 𝓐 g
     g-is-hom = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
 
-
     f : A → X
     f = σ-rec 𝓑
 
@@ -1381,7 +1380,7 @@ initial σ-sup-lattice.
 
 \begin{code}
 
-module hypothetical-initial-σ-Suplat
+module hypothetical-initial-σ-SupLat
         (fe : Fun-Ext)
         (pe : Prop-Ext)
        where
@@ -1389,8 +1388,8 @@ module hypothetical-initial-σ-Suplat
  open import sigma-sup-lattice fe pe
 
  module _
-        (𝓐 : σ-Suplat 𝓣 𝓣)
-        (𝓐-is-initial : {𝓤 𝓥 : Universe} (𝓑 : σ-Suplat 𝓤 𝓥)
+        (𝓐 : σ-SupLat 𝓣 𝓣)
+        (𝓐-is-initial : {𝓤 𝓥 : Universe} (𝓑 : σ-SupLat 𝓤 𝓥)
                       → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-suplat-hom 𝓐 𝓑 f)
         where
 
@@ -1415,20 +1414,20 @@ We first introduce some abbreviations:
 
 \begin{code}
 
-  σ-rec : (𝓑 : σ-Suplat 𝓤 𝓥) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
+  σ-rec : (𝓑 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
   σ-rec 𝓑 = pr₁ (center (𝓐-is-initial 𝓑))
 
-  σ-rec-is-hom : (𝓑 : σ-Suplat 𝓤 𝓥)
+  σ-rec-is-hom : (𝓑 : σ-SupLat 𝓤 𝓥)
                → is-σ-suplat-hom 𝓐 𝓑 (σ-rec 𝓑)
   σ-rec-is-hom 𝓑 = pr₂ (center (𝓐-is-initial 𝓑))
 
-  σ-rec-is-unique : (𝓑 : σ-Suplat 𝓤 𝓥)
+  σ-rec-is-unique : (𝓑 : σ-SupLat 𝓤 𝓥)
                   → (f : A → ⟨ 𝓑 ⟩)
                   → is-σ-suplat-hom 𝓐 𝓑 f
                   → σ-rec 𝓑 ≡ f
   σ-rec-is-unique 𝓑 f i = ap pr₁ (centrality (𝓐-is-initial 𝓑) (f , i))
 
-  at-most-one-hom : (𝓑 : σ-Suplat 𝓤 𝓥)
+  at-most-one-hom : (𝓑 : σ-SupLat 𝓤 𝓥)
                   → (f g : A → ⟨ 𝓑 ⟩)
                   → is-σ-suplat-hom 𝓐 𝓑 f
                   → is-σ-suplat-hom 𝓐 𝓑 g
@@ -1461,7 +1460,7 @@ We then prove an induction principle:
     _≤'_ : X → X → 𝓣 ̇
     (a , _) ≤' (b , _) = a ≤ b
 
-    𝓑 : σ-Suplat (𝓣 ⊔ 𝓥) 𝓣
+    𝓑 : σ-SupLat (𝓣 ⊔ 𝓥) 𝓣
     𝓑 = X , (⊤' , ⊥' , ⋁') ,
          _≤'_ ,
          (λ (a , _) (b , _) → ⟨ 𝓐 ⟩-order-is-prop-valued a b) ,
@@ -1502,16 +1501,16 @@ taking its down set:
 
 \begin{code}
 
-  _↓_ : (𝓑 : σ-Suplat 𝓤 𝓥) → ⟨ 𝓑 ⟩ → 𝓤 ⊔ 𝓥 ̇
+  _↓_ : (𝓑 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓑 ⟩ → 𝓤 ⊔ 𝓥 ̇
   𝓑 ↓ t = Σ x ꞉ ⟨ 𝓑 ⟩ , x ≤⟨ 𝓑 ⟩ t
 
-  ↓-inclusion : (𝓑 : σ-Suplat 𝓤 𝓥) (t : ⟨ 𝓑 ⟩) → 𝓑 ↓ t → ⟨ 𝓑 ⟩
+  ↓-inclusion : (𝓑 : σ-SupLat 𝓤 𝓥) (t : ⟨ 𝓑 ⟩) → 𝓑 ↓ t → ⟨ 𝓑 ⟩
   ↓-inclusion 𝓑 t (x , l) = x
 
-  ⟨_⟩-is-bound : (𝓑 : σ-Suplat 𝓤 𝓥) {t : ⟨ 𝓑 ⟩} (𝔁 : 𝓑 ↓ t) → ↓-inclusion 𝓑 t 𝔁 ≤⟨ 𝓑 ⟩ t
+  ⟨_⟩-is-bound : (𝓑 : σ-SupLat 𝓤 𝓥) {t : ⟨ 𝓑 ⟩} (𝔁 : 𝓑 ↓ t) → ↓-inclusion 𝓑 t 𝔁 ≤⟨ 𝓑 ⟩ t
   ⟨ 𝓑 ⟩-is-bound (x , l) = l
 
-  _⇓_ :  (𝓑 : σ-Suplat 𝓤 𝓥) → ⟨ 𝓑 ⟩ → σ-Suplat (𝓤 ⊔ 𝓥) 𝓥
+  _⇓_ :  (𝓑 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓑 ⟩ → σ-SupLat (𝓤 ⊔ 𝓥) 𝓥
   𝓑 ⇓ t = 𝓑 ↓ t ,
            ((t , ⟨ 𝓑 ⟩-refl t) ,
             (⊥⟨ 𝓑 ⟩ , ⟨ 𝓑 ⟩-⊥-minimum t) ,
@@ -1531,6 +1530,7 @@ taking its down set:
 Then we apply initiality:
 
 \begin{code}
+
   meet : (a : A) → A → 𝓐 ↓ a
   meet a = σ-rec (𝓐 ⇓ a)
 
@@ -1692,7 +1692,7 @@ The following renaming is annoying.
                    (λ a n → from-≤ (a n) (⋁ a) (⟨ 𝓐 ⟩-⋁-is-ub a n)) ,
                    (λ a u φ → from-≤ (⋁ a) u (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u (λ n → to-≤ (a n) u (φ n))))
 
-  σ-frames-are-σ-suplats : σ-Frame 𝓤 → σ-Suplat 𝓤 𝓤
+  σ-frames-are-σ-suplats : σ-Frame 𝓤 → σ-SupLat 𝓤 𝓤
   σ-frames-are-σ-suplats 𝓑  = ⟨ 𝓑 ⟩' , (⊤⟨ 𝓑 ⟩' , ⊥⟨ 𝓑 ⟩' , ⋁⟨ 𝓑 ⟩') ,
                                           (λ x y → meet' 𝓑 x y ≡ x) ,
                                           (λ x y → ⟨ 𝓑 ⟩'-is-set) ,
@@ -1711,7 +1711,7 @@ The following renaming is annoying.
     _∧'_ : ⟨ 𝓑 ⟩ → ⟨ 𝓑 ⟩ → ⟨ 𝓑 ⟩
     _∧'_ = meet' 𝓑
 
-    𝓑-qua-σ-suplat : σ-Suplat 𝓤 𝓤
+    𝓑-qua-σ-suplat : σ-SupLat 𝓤 𝓤
     𝓑-qua-σ-suplat = σ-frames-are-σ-suplats 𝓑
 
     f : A → ⟨ 𝓑 ⟩'
@@ -1763,7 +1763,7 @@ The following renaming is annoying.
                                (being-σ-frame-hom-is-prop fe 𝓐-qua-σ-frame 𝓑)
                                (uniqueness g g-is-hom'))
 
-  σΩ : σ-Suplat (𝓣 ⁺) (𝓣 ⁺)
+  σΩ : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
   σΩ = σ-frames-are-σ-suplats (Ω-is-σ-frame.σΩ {𝓣})
 
   ⊥'   = ⊥⟨ σΩ ⟩
@@ -2208,9 +2208,6 @@ is-top a holds as a ≡ ⊤.
 
     viii : c ≡ a ∧ b
     viii = ⟨ 𝓐 ⟩-antisym c (a ∧ b) iii vii
-
-
-
 
 \end{code}
 
