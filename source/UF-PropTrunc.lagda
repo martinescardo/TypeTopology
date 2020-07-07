@@ -36,6 +36,19 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
 
  open propositional-truncations-exist pt public
 
+ ∥∥-induction : {X : 𝓤 ̇ } {P : ∥ X ∥ → 𝓥 ̇ }
+             → ((s : ∥ X ∥) → is-prop (P s))
+             → ((x : X) → P ∣ x ∣)
+             → (s : ∥ X ∥) → P s
+
+ ∥∥-induction {𝓤} {𝓥} {X} {P} i f s = φ' s
+  where
+   φ : X → P s
+   φ x = transport P (∥∥-is-prop ∣ x ∣ s) (f x)
+   φ' : ∥ X ∥ → P s
+   φ' = ∥∥-rec (i s) φ
+
+
  is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
