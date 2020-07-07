@@ -2069,30 +2069,30 @@ record, but we need Σ for our approach to SIP):
 I think I prefer to work with pointwise homomorphisms:
 
 \begin{code}
- is-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
-                          → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
- is-σ-frame-homomorphism·  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
+ is-σ-frame-hom : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
+ is-σ-frame-hom  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' , ⋁') , _) f =
      (f ⊤ ≡ ⊤')
    × (∀ a b → f (a ∧ b) ≡ f a ∧' f b)
    × (f ⊥ ≡ ⊥')
    × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
 
- being-σ-frame-homomorphism·-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
-                                    → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-                                    → is-prop (is-σ-frame-homomorphism· 𝓐 𝓑 f)
- being-σ-frame-homomorphism·-is-prop fe (_ , _ ,  _) (_ , _ , (i' , _)) f =
+ being-σ-frame-hom-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+                           → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                           → is-prop (is-σ-frame-hom 𝓐 𝓑 f)
+ being-σ-frame-hom-is-prop fe (_ , _ ,  _) (_ , _ , (i' , _)) f =
 
     ×₄-is-prop i' (Π₂-is-prop fe (λ a b → i')) i' (Π-is-prop fe (λ 𝕒 → i'))
 
- id-is-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) → is-σ-frame-homomorphism· 𝓐 𝓐 id
- id-is-σ-frame-homomorphism· 𝓐 = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
+ id-is-σ-frame-hom : (𝓐 : σ-Frame 𝓤) → is-σ-frame-hom 𝓐 𝓐 id
+ id-is-σ-frame-hom 𝓐 = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
 
- ∘-σ-frame-homomorphism· : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
-                           (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
-                         → is-σ-frame-homomorphism· 𝓐 𝓑 f
-                         → is-σ-frame-homomorphism· 𝓑 𝓒 g
-                         → is-σ-frame-homomorphism· 𝓐 𝓒 (g ∘ f)
- ∘-σ-frame-homomorphism· 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
+ ∘-σ-frame-hom : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
+                 (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+               → is-σ-frame-hom 𝓐 𝓑 f
+               → is-σ-frame-hom 𝓑 𝓒 g
+               → is-σ-frame-hom 𝓐 𝓒 (g ∘ f)
+ ∘-σ-frame-hom 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
   where
    p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
         g ⊤⟨ 𝓑 ⟩     ≡⟨ p₁         ⟩
