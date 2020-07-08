@@ -132,6 +132,9 @@ types in this collection are automatically propositions. The
 minimality condition of the collection amounts to an induction
 principle.
 
+Convention in this file. 𝓣 is the universe where the quasidecidable
+properties are chosen to live.
+
 \begin{code}
 
 module hypothetical-quasidecidability
@@ -1959,8 +1962,11 @@ We have the following small version of quasi-decidability:
 
 \begin{code}
 
+  is-quasidecidable' : 𝓤 ̇ → 𝓣 ⊔ 𝓤 ̇
+  is-quasidecidable' P = Σ a ꞉ A , (τ a holds ≃ P)
+
   is-quasidecidable₀ : 𝓣 ̇ → 𝓣 ̇
-  is-quasidecidable₀ P = Σ a ꞉ A , (τ a holds ≃ P)
+  is-quasidecidable₀ = is-quasidecidable' {𝓣}
 
 \end{code}
 
@@ -2341,6 +2347,92 @@ The following generalizes the above initiality-lemma. It says that
 
 \end{code}
 
+Notice that the universe 𝓣 is a module parameter. In the following,
+the type X can be in any universe smaller than or equal 𝓣, but there
+is no way to say this in Agda. So we make the only choices that can be
+written down:
+
+\begin{code}
+
+  is-q-embedding₀ : {X : 𝓤₀ ̇ } {Y : 𝓣 ̇ } → (X → Y) → 𝓣 ⁺ ̇
+  is-q-embedding₀ f = ∀ y → is-quasidecidable (fiber f y)
+
+  is-q-embedding₁ : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → 𝓣 ⁺ ̇
+  is-q-embedding₁ f = ∀ y → is-quasidecidable (fiber f y)
+
+\end{code}
+
+Or we can use one of the alternate versions of quasidecidability,
+which is what we will need, for size reasons:
+
+\begin{code}
+
+  is-q-embedding : ∀ 𝓤 → {X : 𝓣 ⊔ 𝓤 ⊔ 𝓥 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓣 ⊔ 𝓤 ⊔ 𝓥 ̇
+  is-q-embedding 𝓤 f = ∀ y → is-quasidecidable' (fiber f y)
+
+  σ-suplats-have-quasidecidable-joins' : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓣 ⊔ 𝓦 ̇ }
+                                       → (f : I → ℕ)
+                                       → is-q-embedding 𝓦 f
+                                       → (b : ℕ → ⟨ 𝓑 ⟩)
+                                       → Σ c ꞉ ⟨ 𝓑 ⟩ , (in⟨ 𝓑 ⟩ c is-the-join-of (b ∘ f))
+  σ-suplats-have-quasidecidable-joins' {𝓤} {𝓥} {𝓦} 𝓑 {I} f q b = c , α , β
+   where
+    g : I → ⟨ 𝓑 ⟩
+    g = b ∘ f
+
+    a : ℕ → A
+    a n = pr₁ (q n)
+
+    e : (n : ℕ) → τ (a n) holds ≃ (Σ i ꞉ I , f i ≡ n)
+    e n = pr₂ (q n)
+
+    γ : (n : ℕ) → τ (a n) holds → (Σ i ꞉ I , f i ≡ n)
+    γ n = ⌜ e n ⌝
+
+    δ : (n : ℕ)  → (Σ i ꞉ I , f i ≡ n) → τ (a n) holds
+    δ n = ⌜ ≃-sym (e n) ⌝
+
+    g' : (n : ℕ) → τ (a n) holds → ⟨ 𝓑 ⟩
+    g' n h = g (pr₁ (γ n h))
+
+    b' : ℕ → ⟨ 𝓑 ⟩
+    b' n = sup 𝓑 (τ (a n) holds) (a n , refl) (g' n)
+
+    c : ⟨ 𝓑 ⟩
+    c = ⋁⟨ 𝓑 ⟩ b'
+
+    α : ∀ i → b (f i) ≤⟨ 𝓑 ⟩ c
+    α i = ⟨ 𝓑 ⟩-trans (b (f i)) (b' (f i)) c l₂ l₀
+     where
+      l₀ : b' (f i) ≤⟨ 𝓑 ⟩ c
+      l₀ = ⟨ 𝓑 ⟩-⋁-is-ub b' (f i)
+
+      l₁ : g' (f i) (δ (f i) (i , refl)) ≤⟨ 𝓑 ⟩ b' (f i)
+      l₁ = sup-is-ub 𝓑 (τ (a (f i)) holds) (a (f i) , refl) (g' (f i)) (δ (f i) (i , refl))
+
+      r : g' (f i) (δ (f i) (i , refl)) ≡ b (f (pr₁ (γ (f i) (δ (f i) (i , refl)))))
+      r = refl
+
+      s : b (f (pr₁ (γ (f i) (δ (f i) (i , refl))))) ≡ b (f i)
+      s = ap (λ - → b (f (pr₁ -))) (≃-sym-is-rinv (e (f i)) (i , refl))
+
+      t : g' (f i) (δ (f i) (i , refl)) ≡ b (f i)
+      t = s
+
+      l₂ : b (f i) ≤⟨ 𝓑 ⟩ b' (f i)
+      l₂ = transport (λ - → - ≤⟨ 𝓑 ⟩ b' (f i)) s l₁
+
+    β : (u : ⟨ 𝓑 ⟩) → (∀ i → b (f i) ≤⟨ 𝓑 ⟩ u) → c ≤⟨ 𝓑 ⟩ u
+    β u φ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs b' u l
+     where
+      φ' : (n : ℕ) (h : τ (a n) holds) → g' n h ≤⟨ 𝓑 ⟩ u
+      φ' n h = φ (pr₁ (γ n h))
+
+      l : (n : ℕ) → b' n ≤⟨ 𝓑 ⟩ u
+      l n = sup-is-lb-of-ubs 𝓑 (τ (a n) holds) (a n , refl) (g' n) u (φ' n)
+
+\end{code}
+
 TODO:
 
   * This join is absolute, in the sense that it is preserved by
@@ -2350,11 +2442,6 @@ TODO:
     monad induced by the quasidecidability dominance. And the algebras
     are precisely the posets that have joins of quasidecidable-indexed
     families.
-
-  * Define a σ-embedding to be a map whose fibers are all
-    quasidecidable. Then σ-suplattices have joins of families indexed
-    by types σ-embedded in ℕ, which are the total spaces of subsets of
-    ℕ whose membership relation is quasidecidable.
 
   * Very little here has to do with the nature of the type ℕ. We never
     used zero, successor, or induction! Any indexing type replacing ℕ
