@@ -2264,9 +2264,7 @@ a family f (cf. the initiality-lemma above):
 \end{code}
 
 The following generalizes the above initiality-lemma. It says that
-σ-sup-lattices have joins of quasidecidable-indexed families (so their
-underlying sets are algebras of the lifting monad induced by the
-quasidecidability dominance):
+σ-sup-lattices have joins of quasidecidable-indexed families:
 
 \begin{code}
 
@@ -2326,5 +2324,40 @@ quasidecidability dominance):
         l n = β n u (λ p → ψ ∣ n , p ∣)
 
 \end{code}
+
+TODO:
+
+  * This join is absolute, in the sense that it is preserved by
+    homomorphisms.
+
+  * The underlying sets of σ-sup-lattices are algebras of the lifting
+    monad induced by the quasidecidability dominance. And the algebras
+    are precisely the posets that have joins of quasidecidable-indexed
+    families.
+
+  * Define a σ-embedding to be a map whose fibers are all
+    quasidecidable. Then σ-suplattices have joins of families indexed
+    by types σ-embedded in ℕ, which are the total spaces of subsets of
+    ℕ whose membership relation is quasidecidable.
+
+  * Very little here has to do with the nature of the type ℕ. We never
+    used zero, successor, or induction! Any indexing type replacing ℕ
+    works in the above development, with the definition of
+    σ-sup-lattice generalized to have an arbitrary (but fixed)
+    indexing type in place of ℕ. (We could have multiple indexing
+    types, but this would require a modification of the above
+    development.)
+
+  * Define, by induction (or as a W-type) a type similar to the
+    Brouwer ordinals, with two constructors 0 and 1 and a formal
+    ℕ-indexed sup operation. We have a unique map to the initial
+    σ-sup-lattice that transforms formal sups into sups and maps 0 to
+    ⊥ and 1 to ⊤. Is this function a surjection (it is definitely not
+    an injection), or what (known) axioms are needed for it to be a
+    surjection? Countable choice suffices. But is it necessary? It
+    seems likely that the choice principle studied in the above paper
+    with Cory Knapp is necessary and sufficient. This principle
+    implies that the quasidecidable propositions agree with the
+    semidecidable ones.
 
 To be continued. And better organized.
