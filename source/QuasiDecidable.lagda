@@ -2323,6 +2323,22 @@ The following generalizes the above initiality-lemma. It says that
         l : (n : ℕ) → b n ≤⟨ 𝓑 ⟩ u
         l n = β n u (λ p → ψ ∣ n , p ∣)
 
+  module _ {𝓤 𝓥 : Universe}
+           (𝓑 : σ-SupLat 𝓤 𝓥)
+           (P : 𝓣 ̇ )
+           (i : is-quasidecidable P)
+           (f : P → ⟨ 𝓑 ⟩)
+         where
+
+    sup : ⟨ 𝓑 ⟩
+    sup = pr₁ (σ-suplats-have-quasidecidable-joins 𝓑 P i f)
+
+    sup-is-ub : (p : P) → f p ≤⟨ 𝓑 ⟩ sup
+    sup-is-ub = pr₁ (pr₂ (σ-suplats-have-quasidecidable-joins 𝓑 P i f))
+
+    sup-is-lb-of-ubs : (u : ⟨ 𝓑 ⟩) → ((p : P) → f p ≤⟨ 𝓑 ⟩ u) → sup ≤⟨ 𝓑 ⟩ u
+    sup-is-lb-of-ubs = pr₂ (pr₂ (σ-suplats-have-quasidecidable-joins 𝓑 P i f))
+
 \end{code}
 
 TODO:
