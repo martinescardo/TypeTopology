@@ -2077,6 +2077,30 @@ I think I prefer to work with pointwise homomorphisms:
    × (f ⊥ ≡ ⊥')
    × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
 
+ σ-frame-hom-⊤ : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+               → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+               → is-σ-frame-hom 𝓐 𝓑 f
+               → f ⊤⟨ 𝓐 ⟩ ≡ ⊤⟨ 𝓑 ⟩
+ σ-frame-hom-⊤ 𝓐 𝓑 f (i , ii , iii , vi) = i
+
+ σ-frame-hom-∧ : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+               → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+               → is-σ-frame-hom 𝓐 𝓑 f
+               → ∀ a b → f (a ∧⟨ 𝓐 ⟩ b) ≡ f a ∧⟨ 𝓑 ⟩ f b
+ σ-frame-hom-∧ 𝓐 𝓑 f (i , ii , iii , vi) = ii
+
+ σ-frame-hom-⊥ : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+               → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+               → is-σ-frame-hom 𝓐 𝓑 f
+               → f ⊥⟨ 𝓐 ⟩ ≡ ⊥⟨ 𝓑 ⟩
+ σ-frame-hom-⊥ 𝓐 𝓑 f (i , ii , iii , vi) = iii
+
+ σ-frame-hom-⋁ : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+               → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+               → is-σ-frame-hom 𝓐 𝓑 f
+               → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
+ σ-frame-hom-⋁ 𝓐 𝓑 f (i , ii , iii , vi) = vi
+
  being-σ-frame-hom-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
                            → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                            → is-prop (is-σ-frame-hom 𝓐 𝓑 f)

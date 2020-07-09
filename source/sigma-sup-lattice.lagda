@@ -1,9 +1,7 @@
 Martin Escardo, 15 June 2020
 
-We consider bounded σ-sup-lattices. We have ℕ-indexed joins and ⊥ (and
-hence finite joins). We also have a top element ⊤ (the bound). For the
-sake of brevity, we speak of σ-sup-lattices rather than bounded
-σ-sup-lattices.
+We consider σ-sup-lattices. We have ℕ-indexed joins and ⊥ (and
+hence finite joins).
 
 \begin{code}
 
@@ -25,7 +23,7 @@ open import UF-Univalence
 open import UF-Subsingletons-FunExt
 
 σ-suplat-structure : 𝓤 ̇ → 𝓤 ̇
-σ-suplat-structure X = X × X × ((ℕ → X) → X)
+σ-suplat-structure X = X × ((ℕ → X) → X)
 
 \end{code}
 
@@ -37,16 +35,15 @@ element, and ⋁ x is the least upper bound of the sequence x.
 \begin{code}
 
 is-σ-sup-compatible-order : {X : 𝓤 ̇ } → σ-suplat-structure X → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-is-σ-sup-compatible-order {𝓤} {𝓥} {X} (⊤ , ⊥ , ⋁) _≤_ = I × II × III × IV × V × VI × VII × VIII
+is-σ-sup-compatible-order {𝓤} {𝓥} {X} (⊥ , ⋁) _≤_ = I × II × III × IV × V × VI × VII
  where
-  I    = (x y : X) → is-prop (x ≤ y)
-  II   = (x : X) → x ≤ x
-  III  = (x y z : X) → x ≤ y → y ≤ z → x ≤ z
-  IV   = (x y : X) → x ≤ y → y ≤ x → x ≡ y
-  V    = (x : X) → x ≤ ⊤
-  VI   = (x : X) → ⊥ ≤ x
-  VII  = (x : ℕ → X) (n : ℕ) → x n ≤ ⋁ x
-  VIII = (x : ℕ → X) (u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u
+  I   = (x y : X) → is-prop (x ≤ y)
+  II  = (x : X) → x ≤ x
+  III = (x y z : X) → x ≤ y → y ≤ z → x ≤ z
+  IV  = (x y : X) → x ≤ y → y ≤ x → x ≡ y
+  V   = (x : X) → ⊥ ≤ x
+  VI  = (x : ℕ → X) (n : ℕ) → x n ≤ ⋁ x
+  VII = (x : ℕ → X) (u : X) → ((n : ℕ) → x n ≤ u) → ⋁ x ≤ u
 \end{code}
 
 We can define the binary sup x ∨ y of two elements x and y by
@@ -61,7 +58,7 @@ private _*_ : {X : 𝓤 ̇} → X → X → (ℕ → X)
 (x * y) (succ _) = y
 
 intrinsic-order : {X : 𝓤 ̇ } → σ-suplat-structure X → (X → X → 𝓤 ̇ )
-intrinsic-order (⊤ , ⊥ , ⋁) x y = ⋁ (x * y) ≡ y
+intrinsic-order (⊥ , ⋁) x y = ⋁ (x * y) ≡ y
 
 syntax intrinsic-order s x y = x ≤[ s ] y
 
@@ -74,9 +71,9 @@ Any compatible order is logically equivalent to the intrinsic order:
 any-σ-sup-order-is-intrinsic-order : {X : 𝓤 ̇ } (s : σ-suplat-structure X) (_≤_ : X → X → 𝓥 ̇ )
                                    → is-σ-sup-compatible-order s _≤_
                                    → (x y : X) → x ≤ y ⇔ x ≤[ s ] y
-any-σ-sup-order-is-intrinsic-order {𝓥} {X} (⊤ , ⊥ , ⋁) _≤_ (≤-prop-valued , ≤-refl , ≤-trans , ≤-anti , top , bottom , ⋁-is-ub , ⋁-is-lb-of-ubs) x y = a , b
+any-σ-sup-order-is-intrinsic-order {𝓥} {X} (⊥ , ⋁) _≤_ (≤-prop-valued , ≤-refl , ≤-trans , ≤-anti , bottom , ⋁-is-ub , ⋁-is-lb-of-ubs) x y = a , b
  where
-  s = (⊤ , ⊥ , ⋁)
+  s = (⊥ , ⋁)
   a : x ≤ y → x ≤[ s ] y
   a l = iv
    where
@@ -139,17 +136,16 @@ Hence being order compatible is property (rather than just data):
 
 being-σ-sup-order-is-prop : {X : 𝓤 ̇ } (s : σ-suplat-structure X) (_≤_ : X → X → 𝓥 ̇ )
                           → is-prop (is-σ-sup-compatible-order s _≤_)
-being-σ-sup-order-is-prop (⊤ , ⊥ , ⋁) _≤_ = prop-criterion γ
+being-σ-sup-order-is-prop (⊥ , ⋁) _≤_ = prop-criterion γ
  where
-  s = (⊤ , ⊥ , ⋁)
+  s = (⊥ , ⋁)
   γ : is-σ-sup-compatible-order s _≤_ → is-prop (is-σ-sup-compatible-order s _≤_)
-  γ (≤-prop-valued , ≤-refl , ≤-trans , ≤-anti , top , bottom , ⋁-is-ub , ⋁-is-lb-of-ubs) =
-    ×₈-is-prop (Π₂-is-prop fe (λ x y → being-prop-is-prop fe))
+  γ (≤-prop-valued , ≤-refl , ≤-trans , ≤-anti , bottom , ⋁-is-ub , ⋁-is-lb-of-ubs) =
+    ×₇-is-prop (Π₂-is-prop fe (λ x y → being-prop-is-prop fe))
                (Π-is-prop  fe (λ x → ≤-prop-valued x x))
                (Π₅-is-prop fe (λ x _ z _ _ → ≤-prop-valued x z))
                (Π₄-is-prop fe (λ x y _ _ → type-with-prop-valued-refl-antisym-rel-is-set
                                             _≤_ ≤-prop-valued ≤-refl ≤-anti))
-               (Π-is-prop  fe (λ x → ≤-prop-valued x ⊤))
                (Π-is-prop  fe (λ x → ≤-prop-valued ⊥ x))
                (Π₂-is-prop fe (λ x n → ≤-prop-valued (x n) (⋁ x)))
                (Π₃-is-prop fe (λ x u _ → ≤-prop-valued (⋁ x) u))
@@ -181,21 +177,18 @@ which is then unique by the above:
 
 open sip public
 
-⊤⟨_⟩ : (𝓐 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓐 ⟩
-⊤⟨ A , (⊤ , ⊥ , ⋁) , _ ⟩ = ⊤
-
 ⊥⟨_⟩ : (𝓐 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓐 ⟩
-⊥⟨ A , (⊤ , ⊥ , ⋁) , _ ⟩ = ⊥
+⊥⟨ A , (⊥ , ⋁) , _ ⟩ = ⊥
 
 ⋁⟨_⟩ : (𝓐 : σ-SupLat 𝓤 𝓥) → (ℕ → ⟨ 𝓐 ⟩) → ⟨ 𝓐 ⟩
-⋁⟨ A , (⊤ , ⊥ , ⋁) , _ ⟩ = ⋁
+⋁⟨ A , (⊥ , ⋁) , _ ⟩ = ⋁
 
 ⟨_⟩-is-set : (L : σ-SupLat 𝓤 𝓥) → is-set ⟨ L ⟩
 ⟨_⟩-is-set (X , s , a) = σ-suplat-axiom-gives-is-set a
 
 ⟨_⟩-order : (𝓐 : σ-SupLat 𝓤 𝓥)
             → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
-⟨ A , (⊤ , ⊥ , ⋁) , (_≤_ , _) ⟩-order = _≤_
+⟨ A , (⊥ , ⋁) , (_≤_ , _) ⟩-order = _≤_
 
 order : (𝓐 : σ-SupLat 𝓤 𝓥)
       → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩ → 𝓥 ̇
@@ -211,35 +204,31 @@ syntax order 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
 ⟨ A , _ , (_≤_ , i-viii) ⟩-≤-is-σ-sup-compatible-order = i-viii
 
 ⟨_⟩-order-is-prop-valued : (𝓐 : σ-SupLat 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → is-prop (a ≤⟨ 𝓐 ⟩ b)
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-order-is-prop-valued = i
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-order-is-prop-valued = i
 
 ⟨_⟩-refl : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ a
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-refl = ii
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-refl = ii
 
 
 ⟨_⟩-trans : (𝓐 : σ-SupLat 𝓤 𝓥) (a b c : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ c → a ≤⟨ 𝓐 ⟩ c
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-trans = iii
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-trans = iii
 
 
 ⟨_⟩-antisym : (𝓐 : σ-SupLat 𝓤 𝓥) (a b : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ b → b ≤⟨ 𝓐 ⟩ a → a ≡ b
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-antisym = iv
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-antisym = iv
 
 
-⟨_⟩-⊤-maximum : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → a ≤⟨ 𝓐 ⟩ ⊤⟨ 𝓐 ⟩
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⊤-maximum = v
-
-
-⟨_⟩-⊥-minimum : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → ⊥⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⊥-minimum = vi
+⟨_⟩-⊥-is-minimum : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ⟨ 𝓐 ⟩) → ⊥⟨ 𝓐 ⟩ ≤⟨ 𝓐 ⟩ a
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-⊥-is-minimum = v
 
 
 ⟨_⟩-⋁-is-ub : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ℕ → ⟨ 𝓐 ⟩) (n : ℕ) → a n ≤⟨ 𝓐 ⟩ ⋁⟨ 𝓐 ⟩ a
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⋁-is-ub = vii
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-⋁-is-ub = vi
 
 ⟨_⟩-⋁-is-lb-of-ubs : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ℕ → ⟨ 𝓐 ⟩) (u : ⟨ 𝓐 ⟩)
                    → ((n : ℕ) → a n ≤⟨ 𝓐 ⟩ u)
                    → ⋁⟨ 𝓐 ⟩ a ≤⟨ 𝓐 ⟩ u
-⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii , viii) ⟩-⋁-is-lb-of-ubs = viii
+⟨ A , _ , (_≤_ , i , ii , iii , iv , v , vi , vii) ⟩-⋁-is-lb-of-ubs = vii
 
 ⟨_⟩-≡-gives-≤ : (𝓐 : σ-SupLat 𝓤 𝓥) {a b : ⟨ 𝓐 ⟩} → a ≡ b → a ≤⟨ 𝓐 ⟩ b
 ⟨ 𝓐 ⟩-≡-gives-≤ {a} refl = ⟨ 𝓐 ⟩-refl a
@@ -265,15 +254,6 @@ infixl 100 binary-join
   f : (n : ℕ) → (a * b) n ≤⟨ 𝓐 ⟩ u
   f 0 = l
   f (succ n) = m
-
-⟨_⟩-⋁-⊤ : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ℕ → ⟨ 𝓐 ⟩) (n : ℕ)
-         → a n ≡ ⊤⟨ 𝓐 ⟩
-         → ⋁⟨ 𝓐 ⟩ a ≡ ⊤⟨ 𝓐 ⟩
-⟨ 𝓐 ⟩-⋁-⊤ a n p = ⟨ 𝓐 ⟩-antisym (⋁⟨ 𝓐 ⟩ a) ⊤⟨ 𝓐 ⟩
-                         (⟨ 𝓐 ⟩-⊤-maximum (⋁⟨ 𝓐 ⟩ a))
-                         (⟨ 𝓐 ⟩-trans ⊤⟨ 𝓐 ⟩ (a n) (⋁⟨ 𝓐 ⟩ a)
-                                (⟨ 𝓐 ⟩-≡-gives-≤ (p ⁻¹))
-                                (⟨ 𝓐 ⟩-⋁-is-ub a n))
 
 ⟨_⟩-⋁-idempotent : (𝓐 : σ-SupLat 𝓤 𝓥) (a : ⟨ 𝓐 ⟩)
                   → ⋁⟨ 𝓐 ⟩ (n ↦ a) ≡ a
@@ -311,36 +291,22 @@ infixl 100 binary-join
   m : ⋁ (i ↦ ⋁ (j ↦ c i j)) ≤ ⋁ (j ↦ ⋁ (i ↦ c i j))
   m = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _ (λ i → ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _ (λ j → q i j))
 
-is-⊥-⋁-hom : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
-           → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-⊥-⋁-hom  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' , ⋁') , _) f =
-    (f ⊥ ≡ ⊥')
-  × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
-
 is-σ-suplat-hom : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                  → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
-is-σ-suplat-hom  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' , ⋁') , _) f =
-    (f ⊤ ≡ ⊤')
-  × (f ⊥ ≡ ⊥')
-  × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
-
-σ-suplat-hom-⊤ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
-               → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
-               → is-σ-suplat-hom 𝓐 𝓑 f
-               → f ⊤⟨ 𝓐 ⟩ ≡ ⊤⟨ 𝓑 ⟩
-σ-suplat-hom-⊤ 𝓐 𝓑 f (i , ii , iii) = i
+is-σ-suplat-hom  (_ , (⊥ , ⋁) , _) (_ , (⊥' , ⋁') , _) f = (f ⊥ ≡ ⊥')
+                                                         × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
 
 σ-suplat-hom-⊥ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                → is-σ-suplat-hom 𝓐 𝓑 f
                → f ⊥⟨ 𝓐 ⟩ ≡ ⊥⟨ 𝓑 ⟩
-σ-suplat-hom-⊥ 𝓐 𝓑 f (i , ii , iii) = ii
+σ-suplat-hom-⊥ 𝓐 𝓑 f (i , ii) = i
 
 σ-suplat-hom-⋁ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                 → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                 → is-σ-suplat-hom 𝓐 𝓑 f
                 → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
-σ-suplat-hom-⋁ 𝓐 𝓑 f (i , ii , iii) = iii
+σ-suplat-hom-⋁ 𝓐 𝓑 f (i , ii) = ii
 
 is-monotone : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
             → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
@@ -366,20 +332,15 @@ is-monotone 𝓐 𝓑 f = ∀ a b → a ≤⟨ 𝓐 ⟩ b → f a ≤⟨ 𝓑 �
   m = rl-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓑 ⟩-order) ⟨ 𝓑 ⟩-≤-is-σ-sup-compatible-order  (f a) (f b)) m'
 
 id-is-σ-suplat-hom : (𝓐 : σ-SupLat 𝓤 𝓥) → is-σ-suplat-hom 𝓐 𝓐 id
-id-is-σ-suplat-hom 𝓐 = refl , refl , (λ 𝕒 → refl)
+id-is-σ-suplat-hom 𝓐 = refl , (λ 𝕒 → refl)
 
 ∘-σ-suplat-hom : (𝓐 : σ-SupLat 𝓤 𝓤') (𝓑 : σ-SupLat 𝓥 𝓥') (𝓒 : σ-SupLat 𝓦 𝓦')
                  (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
                → is-σ-suplat-hom 𝓐 𝓑 f
                → is-σ-suplat-hom 𝓑 𝓒 g
                → is-σ-suplat-hom 𝓐 𝓒 (g ∘ f)
-∘-σ-suplat-hom 𝓐 𝓑 𝓒 f g (p₀ , r₀ , s₀) (p₁ , r₁ , s₁) = (p₂ , r₂ , s₂)
+∘-σ-suplat-hom 𝓐 𝓑 𝓒 f g (r₀ , s₀) (r₁ , s₁) = (r₂ , s₂)
  where
-  p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
-       g ⊤⟨ 𝓑 ⟩     ≡⟨ p₁      ⟩
-       ⊤⟨ 𝓒 ⟩       ∎
-
-
   r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
        g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁      ⟩
        ⊥⟨ 𝓒 ⟩       ∎
