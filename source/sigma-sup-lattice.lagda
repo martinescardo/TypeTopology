@@ -1,7 +1,9 @@
 Martin Escardo, 15 June 2020
 
-We consider topped σ-sup-lattices. We have ℕ-indexed joins and ⊥ (and
-hence finite joins). We also have a top element ⊤.
+We consider bounded σ-sup-lattices. We have ℕ-indexed joins and ⊥ (and
+hence finite joins). We also have a top element ⊤ (the bound). For the
+sake of brevity, we speak of σ-sup-lattices rather than bounded
+σ-sup-lattices.
 
 \begin{code}
 
@@ -309,6 +311,12 @@ infixl 100 binary-join
   m : ⋁ (i ↦ ⋁ (j ↦ c i j)) ≤ ⋁ (j ↦ ⋁ (i ↦ c i j))
   m = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _ (λ i → ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _ (λ j → q i j))
 
+is-⊥-⋁-hom : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
+           → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
+is-⊥-⋁-hom  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' , ⋁') , _) f =
+    (f ⊥ ≡ ⊥')
+  × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
+
 is-σ-suplat-hom : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                  → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ̇
 is-σ-suplat-hom  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' , ⋁') , _) f =
@@ -334,10 +342,14 @@ is-σ-suplat-hom  (_ , (⊤ , ⊥ , ⋁) , _) (_ , (⊤' , ⊥' , ⋁') , _) f =
                 → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
 σ-suplat-hom-⋁ 𝓐 𝓑 f (i , ii , iii) = iii
 
+is-monotone : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
+            → (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
+is-monotone 𝓐 𝓑 f = ∀ a b → a ≤⟨ 𝓐 ⟩ b → f a ≤⟨ 𝓑 ⟩ f b
+
 σ-suplat-hom-≤ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                → is-σ-suplat-hom 𝓐 𝓑 f
-               → ∀ a b → a ≤⟨ 𝓐 ⟩ b → f a ≤⟨ 𝓑 ⟩ f b
+               → is-monotone 𝓐 𝓑 f
 σ-suplat-hom-≤ 𝓐 𝓑 f i a b l = m
  where
   c : f a * f b ∼ f ∘ (a * b)

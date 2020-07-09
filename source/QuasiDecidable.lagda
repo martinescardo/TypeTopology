@@ -1238,147 +1238,6 @@ module Ω-is-σ-frame {𝓤 : Universe} where
 \end{code}
 
 We now explore the consequences of the hypothetical existence of an
-initial σ-frame.
-
-\begin{code}
-
-module hypothetical-initial-σ-Frame where
-
- open σ-frame
-
- module _ (𝓐 : σ-Frame 𝓣)
-          (𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤)
-                        → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f)
-        where
-
-  private
-   A   = ⟨ 𝓐 ⟩
-   ⊥   = ⊥⟨ 𝓐 ⟩
-   ⊤   = ⊤⟨ 𝓐 ⟩
-   _∧_ = λ a b → a ∧⟨ 𝓐 ⟩ b
-   ⋁  = ⋁⟨ 𝓐 ⟩
-
-  σ-rec : (𝓑 : σ-Frame 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
-  σ-rec 𝓑 = pr₁ (center (𝓐-is-initial 𝓑))
-
-  σ-rec-is-hom : (𝓑 : σ-Frame 𝓤)
-               → is-σ-frame-hom 𝓐 𝓑 (σ-rec 𝓑)
-  σ-rec-is-hom 𝓑 = pr₂ (center (𝓐-is-initial 𝓑))
-
-  σ-rec-is-unique : (𝓑 : σ-Frame 𝓤)
-                  → (f : A → ⟨ 𝓑 ⟩)
-                  → is-σ-frame-hom 𝓐 𝓑 f
-                  → σ-rec 𝓑 ≡ f
-  σ-rec-is-unique 𝓑 f i = ap pr₁ (centrality (𝓐-is-initial 𝓑) (f , i))
-
-  at-most-one-hom : (𝓑 : σ-Frame 𝓤)
-                  → (f g : A → ⟨ 𝓑 ⟩)
-                  → is-σ-frame-hom 𝓐 𝓑 f
-                  → is-σ-frame-hom 𝓐 𝓑 g
-                  → f ≡ g
-  at-most-one-hom 𝓑 f g i j = ap pr₁ (singletons-are-props (𝓐-is-initial 𝓑) (f , i) (g , j))
-
-  σ-induction : (P : A → 𝓥 ̇ )
-              → ((a : A) → is-prop (P a))
-              → P ⊤
-              → ((a b : A) → P a → P b → P (a ∧ b))
-              → P ⊥
-              → ((a : (ℕ → A)) → ((n : ℕ) → P (a n)) → P (⋁ a))
-              → (a : A) → P a
-  σ-induction {𝓥} P P-is-prop-valued ⊤-closure ∧-closure ⊥-closure ⋁-closure = γ
-   where
-    X = Σ a ꞉ A , P a
-
-    ⊤' ⊥' : X
-    ⊤' = (⊤ , ⊤-closure)
-    ⊥' = (⊥ , ⊥-closure)
-
-    _∧'_ : X → X → X
-    (a , p) ∧' (b , q) = (a ∧ b , ∧-closure a b p q)
-
-    ⋁' : (ℕ → X) → X
-    ⋁' x = (⋁ (pr₁ ∘ x) , ⋁-closure (pr₁ ∘ x) (pr₂ ∘ x))
-
-    X-is-set : is-set X
-    X-is-set = subtypes-of-sets-are-sets pr₁
-                (pr₁-lc (λ {a : A} → P-is-prop-valued a)) ⟨ 𝓐 ⟩-is-set
-
-    ∧'-is-idempotent : (x : X) → x ∧' x ≡ x
-    ∧'-is-idempotent (a , p) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-idempotency a)
-
-    ∧'-is-commutative : (x y : X) → x ∧' y ≡ y ∧' x
-    ∧'-is-commutative (a , _) (b , _) = to-subtype-≡ P-is-prop-valued
-                                         (⟨ 𝓐 ⟩-commutativity a b)
-
-    ∧'-is-associative : (x y z : X) → x ∧' (y ∧' z) ≡ (x ∧' y) ∧' z
-    ∧'-is-associative (a , _) (b , _) (c , _) = to-subtype-≡ P-is-prop-valued
-                                                 (⟨ 𝓐 ⟩-associativity a b c)
-
-    _≤'_ : X → X → 𝓣 ⊔ 𝓥 ̇
-    x ≤' y = x ∧' y ≡ x
-
-    ⊤'-is-maximum : (x : X) → x ≤' ⊤'
-    ⊤'-is-maximum (a , _) = to-subtype-≡ P-is-prop-valued
-                             (⟨ 𝓐 ⟩-⊤-maximum a)
-
-    ⊥'-is-minimum : (x : X) → ⊥' ≤' x
-    ⊥'-is-minimum (a , _) = to-subtype-≡ P-is-prop-valued
-                             (⟨ 𝓐 ⟩-⊥-minimum a)
-
-    ∧'-⋁'-distributivity : (x : X) (y : ℕ → X) → x ∧' (⋁' y) ≡ ⋁' (n ↦ x ∧' y n)
-    ∧'-⋁'-distributivity (x , _) y = to-subtype-≡ P-is-prop-valued
-                                       (⟨ 𝓐 ⟩-distributivity x (pr₁ ∘ y))
-
-    ⋁'-is-ub : (x : ℕ → X) → (n : ℕ) → x n ≤' ⋁' x
-    ⋁'-is-ub x n = to-subtype-≡ P-is-prop-valued
-                     (⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n)
-
-    ⋁'-is-lb-of-ubs : (x : ℕ → X) → (u : X) → ((n : ℕ) → x n ≤' u) → ⋁' x ≤' u
-    ⋁'-is-lb-of-ubs x (a , _) φ = to-subtype-≡ P-is-prop-valued
-                                    (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) a (λ n → ap pr₁ (φ n)))
-
-    𝓑 : σ-Frame (𝓣 ⊔ 𝓥)
-    𝓑 = X , (⊤' , _∧'_ , ⊥' , ⋁') ,
-         X-is-set ,
-         ∧'-is-idempotent ,
-         ∧'-is-commutative ,
-         ∧'-is-associative ,
-         ⊥'-is-minimum ,
-         ⊤'-is-maximum ,
-         ∧'-⋁'-distributivity ,
-         ⋁'-is-ub ,
-         ⋁'-is-lb-of-ubs
-
-    g : X → A
-    g = pr₁
-
-    g-is-hom : is-σ-frame-hom 𝓑 𝓐 g
-    g-is-hom = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
-
-    f : A → X
-    f = σ-rec 𝓑
-
-    f-is-hom : is-σ-frame-hom 𝓐 𝓑 f
-    f-is-hom = σ-rec-is-hom 𝓑
-
-    h : A → A
-    h = g ∘ f
-
-    h-is-hom : is-σ-frame-hom 𝓐 𝓐 h
-    h-is-hom = ∘-σ-frame-hom 𝓐 𝓑 𝓐 f g f-is-hom g-is-hom
-
-    H : h ≡ id
-    H = at-most-one-hom 𝓐 h id h-is-hom (id-is-σ-frame-hom 𝓐)
-
-    δ : (a : A) → P (h a)
-    δ a = pr₂ (f a)
-
-    γ : (a : A) → P a
-    γ a = transport P (happly H a) (δ a)
-
-\end{code}
-
-We now explore the consequences of the hypothetical existence of an
 initial σ-sup-lattice.
 
 \begin{code}
@@ -1437,7 +1296,8 @@ We first introduce some abbreviations:
 
 \end{code}
 
-We then prove an induction principle:
+
+We now prove the induction principle for the initial σ-sup-lattice:
 
 \begin{code}
 
@@ -1496,6 +1356,60 @@ We then prove an induction principle:
 
 \end{code}
 
+We now characterize σ-rec as a least upper bound:
+
+\begin{code}
+
+  in⟨_⟩_is-the-join-of_ : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓦 ̇ } → ⟨ 𝓑 ⟩ → (I → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  in⟨ 𝓑 ⟩ x is-the-join-of f = (∀ i → f i ≤⟨ 𝓑 ⟩ x)
+                             × ((u : ⟨ 𝓑 ⟩) → (∀ i → f i ≤⟨ 𝓑 ⟩ u) → x ≤⟨ 𝓑 ⟩ u)
+
+  being-join-is-prop : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓦 ̇ } (x : ⟨ 𝓑 ⟩) (f : I → ⟨ 𝓑 ⟩)
+                     → is-prop (in⟨ 𝓑 ⟩ x is-the-join-of f)
+  being-join-is-prop 𝓑 x f = ×-is-prop
+                               (Π-is-prop fe (λ i → ⟨ 𝓑 ⟩-order-is-prop-valued (f i) x))
+                               (Π₂-is-prop fe λ u _ → ⟨ 𝓑 ⟩-order-is-prop-valued x u)
+
+  at-most-one-join : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓦 ̇ } (x x' : ⟨ 𝓑 ⟩) (f : I → ⟨ 𝓑 ⟩)
+                   → in⟨ 𝓑 ⟩ x is-the-join-of f
+                   → in⟨ 𝓑 ⟩ x' is-the-join-of f
+                   → x ≡ x'
+  at-most-one-join 𝓑 x x' f (α , β) (α' , β') = ⟨ 𝓑 ⟩-antisym x x' (β x' α') (β' x α)
+
+  σ-rec-is-join : (𝓑 : σ-SupLat 𝓤 𝓥) (a : A)
+                → in⟨ 𝓑 ⟩ (σ-rec 𝓑 a) is-the-join-of (λ (_ : a ≡ ⊤) → ⊤⟨ 𝓑 ⟩)
+  σ-rec-is-join 𝓑 a = α , β
+   where
+    h = σ-rec 𝓑
+    h-is-hom = σ-rec-is-hom 𝓑
+
+    α : a ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ h a
+    α p = ⟨ 𝓑 ⟩-≡-gives-≤ (⊤⟨ 𝓑 ⟩  ≡⟨ (σ-suplat-hom-⊤ 𝓐 𝓑 h (σ-rec-is-hom 𝓑))⁻¹ ⟩
+                            h ⊤     ≡⟨ ap h (p ⁻¹)                              ⟩
+                            h a     ∎)
+
+    β : (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h a ≤⟨ 𝓑 ⟩ u
+    β = σ-induction
+         (λ a → (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h a ≤⟨ 𝓑 ⟩ u)
+         (λ a → Π₂-is-prop fe (λ u p → ⟨ 𝓑 ⟩-order-is-prop-valued (h a) u))
+         g⊤ g⊥ g⋁ a
+     where
+      g⊤ : (u : ⟨ 𝓑 ⟩) → (⊤ ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h ⊤ ≤⟨ 𝓑 ⟩ u
+      g⊤ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-suplat-hom-⊤ 𝓐 𝓑 h h-is-hom)⁻¹) (φ refl)
+
+      g⊥ : (u : ⟨ 𝓑 ⟩) → (⊥ ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h ⊥ ≤⟨ 𝓑 ⟩ u
+      g⊥ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-suplat-hom-⊥ 𝓐 𝓑 h h-is-hom)⁻¹) (⟨ 𝓑 ⟩-⊥-minimum u)
+
+      g⋁ : (c : ℕ → A)
+         → ((n : ℕ) (u : ⟨ 𝓑 ⟩) → (c n ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h (c n) ≤⟨ 𝓑 ⟩ u)
+         → (u : ⟨ 𝓑 ⟩) → (⋁ c ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h (⋁ c) ≤⟨ 𝓑 ⟩ u
+      g⋁ c ψ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-suplat-hom-⋁ 𝓐 𝓑 h h-is-hom c)⁻¹) γ
+       where
+        γ : ⋁⟨ 𝓑 ⟩ (h ∘ c) ≤⟨ 𝓑 ⟩ u
+        γ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (h ∘ c) u (λ n → ψ n u (λ (p : c n ≡ ⊤) → φ (⟨ 𝓐 ⟩-⋁-⊤ c n p)))
+
+\end{code}
+
 In order to show that the initial σ-suplat has binary meets, we
 define a sub-σ-suplat for any element of the initial one, by
 taking its down set:
@@ -1526,60 +1440,177 @@ taking its down set:
            (λ (x , _) → ⟨ 𝓑 ⟩-⊥-minimum x) ,
            (λ 𝔁 n → ⟨ 𝓑 ⟩-⋁-is-ub (↓-inclusion 𝓑  t ∘ 𝔁) n) ,
            (λ 𝔁 (u , _) φ → ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (↓-inclusion 𝓑 t ∘ 𝔁) u φ)
+
+  ⇓-hom : (𝓑 : σ-SupLat 𝓤 𝓥) (𝓒 : σ-SupLat 𝓤' 𝓥') (t : ⟨ 𝓑 ⟩)
+          (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+        → is-σ-suplat-hom 𝓑 𝓒 f
+        → 𝓑 ↓ t → 𝓒 ↓ f t
+  ⇓-hom 𝓑 𝓒 t f f-is-hom (x , l) = f x , σ-suplat-hom-≤ 𝓑 𝓒 f f-is-hom x t l
+
+  ⇓-hom-is-hom : (𝓑 : σ-SupLat 𝓤 𝓥) (𝓒 : σ-SupLat 𝓤' 𝓥') (t : ⟨ 𝓑 ⟩)
+                 (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                 (i : is-σ-suplat-hom 𝓑 𝓒 f)
+               → is-σ-suplat-hom (𝓑 ⇓ t) (𝓒 ⇓ f t) (⇓-hom 𝓑 𝓒 t f i)
+  ⇓-hom-is-hom 𝓑 𝓒 t f i = to-subtype-≡ (λ c → ⟨ 𝓒 ⟩-order-is-prop-valued c (f t)) refl ,
+                            to-subtype-≡ (λ c → ⟨ 𝓒 ⟩-order-is-prop-valued c (f t)) (σ-suplat-hom-⊥ 𝓑 𝓒 f i) ,
+                            (λ 𝔁 → to-subtype-≡ (λ c → ⟨ 𝓒 ⟩-order-is-prop-valued c (f t)) (σ-suplat-hom-⋁ 𝓑 𝓒 f i (↓-inclusion 𝓑 t ∘ 𝔁)))
+
 \end{code}
 
-Then we apply initiality:
+Then we apply initiality. Binary meets in 𝓐 will be certain joins.
 
 \begin{code}
 
-  meet : (a : A) → A → 𝓐 ↓ a
-  meet a = σ-rec (𝓐 ⇓ a)
+  Join : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) → A → 𝓑 ↓ b
+  Join 𝓑 b = σ-rec (𝓑 ⇓ b)
 
-  meet-is-hom : (a : A) → is-σ-suplat-hom 𝓐 (𝓐 ⇓ a) (meet a)
-  meet-is-hom a = σ-rec-is-hom (𝓐 ⇓ a)
+  Join-is-hom : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) → is-σ-suplat-hom 𝓐 (𝓑 ⇓ b) (Join 𝓑 b)
+  Join-is-hom 𝓑 b = σ-rec-is-hom (𝓑 ⇓ b)
 
-  _∧_ : A → A → A
-  a ∧ b = ↓-inclusion 𝓐 a (meet a b)
+  join : (𝓑 : σ-SupLat 𝓤 𝓥) → ⟨ 𝓑 ⟩ → A → ⟨ 𝓑 ⟩
+  join 𝓑 b a = ↓-inclusion 𝓑 b (Join 𝓑 b a)
 
-  infix 100 _∧_
+  join-is-bounded : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) (a : A) → join 𝓑 b a ≤⟨ 𝓑 ⟩ b
+  join-is-bounded 𝓑 b a = ⟨ 𝓑 ⟩-is-bound (Join 𝓑 b a)
 
-  ∧-is-lb-left : (a b : A) → a ∧ b ≤ a
-  ∧-is-lb-left a b = ⟨ 𝓐 ⟩-is-bound (meet a b)
+  join⊤ : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) → join 𝓑 b ⊤ ≡ b
+  join⊤ 𝓑 b = ap (↓-inclusion 𝓑 b) (σ-suplat-hom-⊤ 𝓐 (𝓑 ⇓ b) (Join 𝓑 b) (Join-is-hom 𝓑 b))
 
-  meet⊤ : (a : A) → a ∧ ⊤ ≡ a
-  meet⊤ a = ap (↓-inclusion 𝓐 a) (σ-suplat-hom-⊤ 𝓐 (𝓐 ⇓ a) (meet a) (meet-is-hom a))
+  join⊥ : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) → join 𝓑 b ⊥ ≡ ⊥⟨ 𝓑 ⟩
+  join⊥ 𝓑 b = ap (↓-inclusion 𝓑 b) (σ-suplat-hom-⊥ 𝓐 (𝓑 ⇓ b) (Join 𝓑 b) (Join-is-hom 𝓑 b))
 
-  meet⊥ : (a : A) → a ∧ ⊥ ≡ ⊥
-  meet⊥ a = ap (↓-inclusion 𝓐 a) (σ-suplat-hom-⊥ 𝓐 (𝓐 ⇓ a) (meet a) (meet-is-hom a))
-
-  meet⋁ : (a : A) (b : ℕ → A) → a ∧ ⋁ b ≡ ⋁ (n ↦ a ∧ b n)
-  meet⋁ a b = ap (↓-inclusion 𝓐 a) (σ-suplat-hom-⋁ 𝓐 (𝓐 ⇓ a) (meet a) (meet-is-hom a) b)
+  join⋁ : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) (a : ℕ → A) → join 𝓑 b (⋁ a) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ join 𝓑 b (a n))
+  join⋁ 𝓑 b a = ap (↓-inclusion 𝓑 b) (σ-suplat-hom-⋁ 𝓐 (𝓑 ⇓ b) (Join 𝓑 b) (Join-is-hom 𝓑 b) a)
 
 \end{code}
 
-Using this, we show that a ∧ b is the greatest lower bound to a and b,
-by induction:
+The following generalizes the characterization of σ-rec as a join of a
+weakly constant family. (Could we derive it as a corollary? Not
+directly, as far as I can see.)
+
+\begin{code}
+
+  join-is-join : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) (a : A)
+               → in⟨ 𝓑 ⟩ (join 𝓑 b a) is-the-join-of (λ (_ : a ≡ ⊤) → b)
+  join-is-join 𝓑 b a = α , β
+   where
+    h = join 𝓑 b
+
+    α : a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ h a
+    α p = ⟨ 𝓑 ⟩-≡-gives-≤ (b    ≡⟨ (join⊤ 𝓑 b)⁻¹ ⟩
+                            h ⊤ ≡⟨ ap (h) (p ⁻¹) ⟩
+                            h a ∎)
+
+    β : (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → h a ≤⟨ 𝓑 ⟩ u
+    β = σ-induction
+         (λ a → (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → h a ≤⟨ 𝓑 ⟩ u)
+         (λ a → Π₂-is-prop fe (λ u p → ⟨ 𝓑 ⟩-order-is-prop-valued (h a) u))
+         g⊤ g⊥ g⋁ a
+     where
+      g⊤ : (u : ⟨ 𝓑 ⟩) → (⊤ ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → h ⊤ ≤⟨ 𝓑 ⟩ u
+      g⊤ u φ = transport (λ - → order 𝓑 - u) ((join⊤ 𝓑 b)⁻¹) (φ refl)
+
+      g⊥ : (u : ⟨ 𝓑 ⟩) → (⊥ ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → h ⊥ ≤⟨ 𝓑 ⟩ u
+      g⊥ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((join⊥ 𝓑 b)⁻¹) (⟨ 𝓑 ⟩-⊥-minimum u)
+
+      g⋁ : (c : ℕ → A)
+         → ((n : ℕ) (u : ⟨ 𝓑 ⟩) → (c n ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → h (c n) ≤⟨ 𝓑 ⟩ u)
+         → (u : ⟨ 𝓑 ⟩) → (⋁ c ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → h (⋁ c) ≤⟨ 𝓑 ⟩ u
+      g⋁ c ψ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((join⋁ 𝓑 b c)⁻¹) γ
+       where
+        γ : ⋁⟨ 𝓑 ⟩ (h ∘ c) ≤⟨ 𝓑 ⟩ u
+        γ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (h ∘ c) u (λ n → ψ n u (λ (p : c n ≡ ⊤) → φ (⟨ 𝓐 ⟩-⋁-⊤ c n p)))
+
+  join-is-ub : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) (a : A)
+             → a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ join 𝓑 b a
+  join-is-ub 𝓑 b a = pr₁ (join-is-join 𝓑 b a)
+
+  join-is-lb-of-ubs : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) (a : A)
+                    → (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → join 𝓑 b a ≤⟨ 𝓑 ⟩ u
+  join-is-lb-of-ubs 𝓑 b a = pr₂ (join-is-join 𝓑 b a)
+
+\end{code}
+
+An attempt to derive the above as a special case of σ-rec-is-join gets stuck as follows:
+
+  join-is-join' : (𝓑 : σ-SupLat 𝓤 𝓥) (b : ⟨ 𝓑 ⟩) (a : A)
+                → in⟨ 𝓑 ⟩ (join 𝓑 b a) is-the-join-of (λ (_ : a ≡ ⊤) → b)
+  join-is-join' 𝓑 b a = α , β
+   where
+    j : in⟨ 𝓑 ⇓ b ⟩ Join 𝓑 b a is-the-join-of (λ _ → ⊤⟨ 𝓑 ⇓ b ⟩)
+    j = σ-rec-is-join (𝓑 ⇓ b) a
+    α : a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ join 𝓑 b a
+    α = pr₁ j
+    β : (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → b ≤⟨ 𝓑 ⟩ u) → join 𝓑 b a ≤⟨ 𝓑 ⟩ u
+    β u φ = pr₂ j (u , ?) φ
+
+
+Such joins are absolute, in the sense that they are preserved by all homomorphism:
+
+\begin{code}
+
+  Joins-absolute : (𝓑 : σ-SupLat 𝓤 𝓥) (𝓒 : σ-SupLat 𝓤' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                 → (i : is-σ-suplat-hom 𝓑 𝓒 f)
+                 → (b : ⟨ 𝓑 ⟩) → ⇓-hom 𝓑 𝓒 b f i ∘ Join 𝓑 b ≡ Join 𝓒 (f b)
+  Joins-absolute 𝓑 𝓒 f i = γ
+   where
+    h : (b : ⟨ 𝓑 ⟩) → A → 𝓒 ↓ f b
+    h b = ⇓-hom 𝓑 𝓒 b f i ∘ Join 𝓑 b
+
+    h-is-hom : (b : ⟨ 𝓑 ⟩) → is-σ-suplat-hom 𝓐 (𝓒 ⇓ f b) (h b)
+    h-is-hom b = ∘-σ-suplat-hom 𝓐 (𝓑 ⇓ b) (𝓒 ⇓ f b)
+                  (Join 𝓑 b)
+                  (⇓-hom 𝓑 𝓒 b f i)
+                  (Join-is-hom 𝓑 b)
+                  (⇓-hom-is-hom 𝓑 𝓒 b f i)
+
+    γ : (b : ⟨ 𝓑 ⟩) → h b ≡ Join 𝓒 (f b)
+    γ b = at-most-one-hom (𝓒 ⇓ f b) (h b) (Join 𝓒 (f b)) (h-is-hom b) (Join-is-hom 𝓒 (f b))
+
+
+  joins-absolute : (𝓑 : σ-SupLat 𝓤 𝓥) (𝓒 : σ-SupLat 𝓤' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                 → is-σ-suplat-hom 𝓑 𝓒 f
+                 → (b : ⟨ 𝓑 ⟩) (a : A) → f (join 𝓑 b a) ≡ join 𝓒 (f b) a
+  joins-absolute 𝓑 𝓒 f i b a = ap (↓-inclusion 𝓒 (f b))
+                                   (happly (Joins-absolute 𝓑 𝓒 f i b) a)
+
+\end{code}
+
+We now derive meets in the initial fram 𝓐 from the above kind of joins.
+\begin{code}
+
+  _∧_ : A → A → A
+  a ∧ b = join 𝓐 a b
+
+  infix 100 _∧_
+
+  σ-rec-∧-join : (𝓑 : σ-SupLat 𝓤 𝓥) (a b : A) → σ-rec 𝓑 (a ∧ b) ≡ join 𝓑 (σ-rec 𝓑 a) b
+  σ-rec-∧-join 𝓑 a b = joins-absolute 𝓐 𝓑 (σ-rec 𝓑) (σ-rec-is-hom 𝓑) a b
+
+  ∧-is-lb-left : (a b : A) → a ∧ b ≤ a
+  ∧-is-lb-left = join-is-bounded 𝓐
+
+  meet⊤ : (a : A) → a ∧ ⊤ ≡ a
+  meet⊤ = join⊤ 𝓐
+
+  meet⊥ : (a : A) → a ∧ ⊥ ≡ ⊥
+  meet⊥ = join⊥ 𝓐
+
+  meet⋁ : (a : A) (b : ℕ → A) → a ∧ ⋁ b ≡ ⋁ (n ↦ a ∧ b n)
+  meet⋁ = join⋁ 𝓐
+
+\end{code}
+
+Using this, we show that a ∧ b is the greatest lower bound to a and b.
+One step needs σ-induction:
 
 \begin{code}
 
   ∧-is-lb-right : (a b : A) → a ∧ b ≤ b
-  ∧-is-lb-right a = σ-induction (λ b → (a ∧ b) ≤ b)
-                     (λ b → ⟨ 𝓐 ⟩-order-is-prop-valued (a ∧ b) b)
-                     (⟨ 𝓐 ⟩-⊤-maximum (a ∧ ⊤))
-                     (transport (_≤ ⊥) ((meet⊥ a)⁻¹) (⟨ 𝓐 ⟩-refl ⊥))
-                     p
+  ∧-is-lb-right a b = join-is-lb-of-ubs 𝓐 a b b f
    where
-    p : (c : ℕ → A)
-      → ((n : ℕ) → a ∧ c n ≤ c n)
-      → a ∧ ⋁ c ≤ ⋁ c
-    p c φ = transport (_≤ ⋁ c) (q ⁻¹) r
-     where
-      q : a ∧ ⋁ c ≡ ⋁ (n ↦ a ∧ c n)
-      q = meet⋁ a c
-      s : (n : ℕ) → a ∧ c n ≤ ⋁ c
-      s n = ⟨ 𝓐 ⟩-trans _ _ _ (φ n) (⟨ 𝓐 ⟩-⋁-is-ub c n)
-      r : ⋁ (n ↦ a ∧ c n) ≤ ⋁ c
-      r = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _ s
+    f : b ≡ ⊤ → a ≤ b
+    f r = transport (a ≤_) (r ⁻¹) (⟨ 𝓐 ⟩-⊤-maximum a)
 
   ∧-is-ub-of-lbs : (a b c : A) → c ≤ a → c ≤ b → c ≤ a ∧ b
   ∧-is-ub-of-lbs a b = σ-induction
@@ -1588,27 +1619,24 @@ by induction:
                         p q r
    where
     p : ⊤ ≤ a → ⊤ ≤ b → ⊤ ≤ a ∧ b
-    p l m = transport (⊤ ≤_) t (⟨ 𝓐 ⟩-refl ⊤)
+    p l m = ⟨ 𝓐 ⟩-trans _ _ _ l ii
      where
-      u : ⊤ ≡ a
-      u = ⟨ 𝓐 ⟩-antisym _ _ l (⟨ 𝓐 ⟩-⊤-maximum a)
-      v : ⊤ ≡ b
-      v = ⟨ 𝓐 ⟩-antisym _ _ m (⟨ 𝓐 ⟩-⊤-maximum b)
-      w : ⊤ ≡ ⊤ ∧ ⊤
-      w = (meet⊤ ⊤)⁻¹
-      t : ⊤ ≡ a ∧ b
-      t = w ∙ ap₂ _∧_ u v
+      i : b ≡ ⊤
+      i = ⟨ 𝓐 ⟩-antisym _ _ (⟨ 𝓐 ⟩-⊤-maximum b) m
+      ii : a ≤ a ∧ b
+      ii = join-is-ub 𝓐 a b i
 
     q : ⊥ ≤ a → ⊥ ≤ b → ⊥ ≤ a ∧ b
     q _ _ = ⟨ 𝓐 ⟩-⊥-minimum (a ∧ b)
+
     r : (d : ℕ → A)
       → ((n : ℕ) → d n ≤ a → d n ≤ b → d n ≤ a ∧ b)
       → ⋁ d ≤ a
       → ⋁ d ≤ b
       → ⋁ d ≤ (a ∧ b)
-    r d φ l m = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs _ _
-                     (λ n → φ n (⟨ 𝓐 ⟩-trans _ _ _ (⟨ 𝓐 ⟩-⋁-is-ub d n) l)
-                                (⟨ 𝓐 ⟩-trans _ _ _ (⟨ 𝓐 ⟩-⋁-is-ub d n) m))
+    r d φ l m = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs d (a ∧ b)
+                     (λ n → φ n (⟨ 𝓐 ⟩-trans (d n) _ a (⟨ 𝓐 ⟩-⋁-is-ub d n) l)
+                                (⟨ 𝓐 ⟩-trans (d n) _ b (⟨ 𝓐 ⟩-⋁-is-ub d n) m))
 \end{code}
 
 We show that the initial σ-suplat is also the initial σ-frame.
@@ -1620,6 +1648,7 @@ We show that the initial σ-suplat is also the initial σ-frame.
    where
     l : a ∧ a ≤ a
     l = ∧-is-lb-left a a
+
     m : a ≤ a ∧ a
     m = ∧-is-ub-of-lbs a a a (⟨ 𝓐 ⟩-refl a) (⟨ 𝓐 ⟩-refl a)
 
@@ -1633,20 +1662,28 @@ We show that the initial σ-suplat is also the initial σ-frame.
   ∧-associative a b c = ⟨ 𝓐 ⟩-antisym _ _ l m
    where
     l : a ∧ (b ∧ c) ≤ (a ∧ b) ∧ c
-    l = ∧-is-ub-of-lbs _ _ _ (∧-is-ub-of-lbs _ _ _ (∧-is-lb-left a (b ∧ c)) u) v
+    l = ∧-is-ub-of-lbs _ _ _ (∧-is-ub-of-lbs _ _ _ (∧-is-lb-left a (b ∧ c)) i) ii
      where
-      u : a ∧ (b ∧ c) ≤ b
-      u = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-right  a (b ∧ c)) (∧-is-lb-left b c)
-      v : a ∧ (b ∧ c) ≤ c
-      v = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-right a (b ∧ c)) (∧-is-lb-right b c)
+      i : a ∧ (b ∧ c) ≤ b
+      i = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-right  a (b ∧ c)) (∧-is-lb-left b c)
+
+      ii : a ∧ (b ∧ c) ≤ c
+      ii = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-right a (b ∧ c)) (∧-is-lb-right b c)
 
     m : (a ∧ b) ∧ c ≤ a ∧ (b ∧ c)
-    m = ∧-is-ub-of-lbs _ _ _ (⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-left (a ∧ b) c) (∧-is-lb-left a b)) u
+    m = ∧-is-ub-of-lbs _ _ _ (⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-left (a ∧ b) c) (∧-is-lb-left a b)) ii
      where
-      p : (a ∧ b) ∧ c ≤ b
-      p = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-left (a ∧ b) c) (∧-is-lb-right a b)
-      u : (a ∧ b) ∧ c ≤ b ∧ c
-      u = ∧-is-ub-of-lbs _ _ _ p (∧-is-lb-right (a ∧ b) c)
+      i : (a ∧ b) ∧ c ≤ b
+      i = ⟨ 𝓐 ⟩-trans _ _ _ (∧-is-lb-left (a ∧ b) c) (∧-is-lb-right a b)
+
+      ii : (a ∧ b) ∧ c ≤ b ∧ c
+      ii = ∧-is-ub-of-lbs _ _ _ i (∧-is-lb-right (a ∧ b) c)
+
+\end{code}
+
+The intrinsic order coincides with the ∧-semilattice order:
+
+\begin{code}
 
   from-≤ : (a b : A) → a ≤ b → a ∧ b ≡ a
   from-≤ a b l = ⟨ 𝓐 ⟩-antisym _ _ (∧-is-lb-left a b) m
@@ -1706,7 +1743,7 @@ The following renaming is annoying.
                                           ⟨ 𝓑 ⟩'-⋁-is-lb-of-ubs
 
   𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓤)
-                            → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
+                           → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
   𝓐-qua-σ-frame-is-initial {𝓤} 𝓑 = γ
    where
     _∧'_ : ⟨ 𝓑 ⟩ → ⟨ 𝓑 ⟩ → ⟨ 𝓑 ⟩
@@ -2219,54 +2256,6 @@ a family f (cf. the initiality-lemma above):
 
 \begin{code}
 
-  in⟨_⟩_is-the-join-of_ : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓦 ̇ } → ⟨ 𝓑 ⟩ → (I → ⟨ 𝓑 ⟩) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  in⟨ 𝓑 ⟩ x is-the-join-of f = (∀ i → f i ≤⟨ 𝓑 ⟩ x)
-                             × ((u : ⟨ 𝓑 ⟩) → (∀ i → f i ≤⟨ 𝓑 ⟩ u) → x ≤⟨ 𝓑 ⟩ u)
-
-  being-join-is-prop : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓦 ̇ } (x : ⟨ 𝓑 ⟩) (f : I → ⟨ 𝓑 ⟩)
-                     → is-prop (in⟨ 𝓑 ⟩ x is-the-join-of f)
-  being-join-is-prop 𝓑 x f = ×-is-prop
-                               (Π-is-prop fe (λ i → ⟨ 𝓑 ⟩-order-is-prop-valued (f i) x))
-                               (Π₂-is-prop fe λ u _ → ⟨ 𝓑 ⟩-order-is-prop-valued x u)
-
-
-  at-most-one-join : (𝓑 : σ-SupLat 𝓤 𝓥) {I : 𝓦 ̇ } (x x' : ⟨ 𝓑 ⟩) (f : I → ⟨ 𝓑 ⟩)
-                   → in⟨ 𝓑 ⟩ x is-the-join-of f
-                   → in⟨ 𝓑 ⟩ x' is-the-join-of f
-                   → x ≡ x'
-  at-most-one-join 𝓑 x x' f (α , β) (α' , β') = ⟨ 𝓑 ⟩-antisym x x' (β x' α') (β' x α)
-
-  σ-rec-is-join : (𝓑 : σ-SupLat 𝓤 𝓥) (a : A)
-                → in⟨ 𝓑 ⟩ (σ-rec 𝓑 a) is-the-join-of (λ (_ : a ≡ ⊤) → ⊤⟨ 𝓑 ⟩)
-  σ-rec-is-join 𝓑 a = f , g
-   where
-    h = σ-rec 𝓑
-    h-is-hom = σ-rec-is-hom 𝓑
-
-    f : a ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ h a
-    f p = ⟨ 𝓑 ⟩-≡-gives-≤ (⊤⟨ 𝓑 ⟩  ≡⟨ (σ-suplat-hom-⊤ 𝓐 𝓑 (h) (σ-rec-is-hom 𝓑))⁻¹ ⟩
-                            h ⊤     ≡⟨ ap (h) (p ⁻¹)                              ⟩
-                            h a     ∎)
-
-    g : (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h a ≤⟨ 𝓑 ⟩ u
-    g = σ-induction
-         (λ a → (u : ⟨ 𝓑 ⟩) → (a ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h a ≤⟨ 𝓑 ⟩ u)
-         (λ a → Π₂-is-prop fe (λ u p → ⟨ 𝓑 ⟩-order-is-prop-valued (h a) u))
-         g⊤ g⊥ g⋁ a
-     where
-      g⊤ : (u : ⟨ 𝓑 ⟩) → (⊤ ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h ⊤ ≤⟨ 𝓑 ⟩ u
-      g⊤ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-suplat-hom-⊤ 𝓐 𝓑 h h-is-hom)⁻¹) (φ refl)
-
-      g⊥ : (u : ⟨ 𝓑 ⟩) → (⊥ ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h ⊥ ≤⟨ 𝓑 ⟩ u
-      g⊥ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-suplat-hom-⊥ 𝓐 𝓑 h h-is-hom)⁻¹) (⟨ 𝓑 ⟩-⊥-minimum u)
-
-      g⋁ : (c : ℕ → A)
-         → ((n : ℕ) (u : ⟨ 𝓑 ⟩) → (c n ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h (c n) ≤⟨ 𝓑 ⟩ u)
-         → (u : ⟨ 𝓑 ⟩) → (⋁ c ≡ ⊤ → ⊤⟨ 𝓑 ⟩ ≤⟨ 𝓑 ⟩ u) → h (⋁ c) ≤⟨ 𝓑 ⟩ u
-      g⋁ c ψ u φ = transport (λ - → - ≤⟨ 𝓑 ⟩ u) ((σ-suplat-hom-⋁ 𝓐 𝓑 h h-is-hom c)⁻¹) γ
-       where
-        γ : ⋁⟨ 𝓑 ⟩ (h ∘ c) ≤⟨ 𝓑 ⟩ u
-        γ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs (h ∘ c) u (λ n → ψ n u (λ (p : c n ≡ ⊤) → φ (⟨ 𝓐 ⟩-⋁-⊤ c n p)))
 \end{code}
 
 The following generalizes the above initiality-lemma. It says that
@@ -2464,3 +2453,143 @@ TODO:
     semidecidable ones.
 
 To be continued. And better organized.
+
+We are not going to use this, at least not for the moment:
+
+\begin{code}
+
+module hypothetical-initial-σ-Frame where
+
+ open σ-frame
+
+ module _ (𝓐 : σ-Frame 𝓣)
+          (𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤)
+                        → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f)
+        where
+
+  private
+   A   = ⟨ 𝓐 ⟩
+   ⊥   = ⊥⟨ 𝓐 ⟩
+   ⊤   = ⊤⟨ 𝓐 ⟩
+   _∧_ = λ a b → a ∧⟨ 𝓐 ⟩ b
+   ⋁  = ⋁⟨ 𝓐 ⟩
+
+  σ-rec : (𝓑 : σ-Frame 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩
+  σ-rec 𝓑 = pr₁ (center (𝓐-is-initial 𝓑))
+
+  σ-rec-is-hom : (𝓑 : σ-Frame 𝓤)
+               → is-σ-frame-hom 𝓐 𝓑 (σ-rec 𝓑)
+  σ-rec-is-hom 𝓑 = pr₂ (center (𝓐-is-initial 𝓑))
+
+  σ-rec-is-unique : (𝓑 : σ-Frame 𝓤)
+                  → (f : A → ⟨ 𝓑 ⟩)
+                  → is-σ-frame-hom 𝓐 𝓑 f
+                  → σ-rec 𝓑 ≡ f
+  σ-rec-is-unique 𝓑 f i = ap pr₁ (centrality (𝓐-is-initial 𝓑) (f , i))
+
+  at-most-one-hom : (𝓑 : σ-Frame 𝓤)
+                  → (f g : A → ⟨ 𝓑 ⟩)
+                  → is-σ-frame-hom 𝓐 𝓑 f
+                  → is-σ-frame-hom 𝓐 𝓑 g
+                  → f ≡ g
+  at-most-one-hom 𝓑 f g i j = ap pr₁ (singletons-are-props (𝓐-is-initial 𝓑) (f , i) (g , j))
+
+  σ-induction : (P : A → 𝓥 ̇ )
+              → ((a : A) → is-prop (P a))
+              → P ⊤
+              → ((a b : A) → P a → P b → P (a ∧ b))
+              → P ⊥
+              → ((a : (ℕ → A)) → ((n : ℕ) → P (a n)) → P (⋁ a))
+              → (a : A) → P a
+  σ-induction {𝓥} P P-is-prop-valued ⊤-closure ∧-closure ⊥-closure ⋁-closure = γ
+   where
+    X = Σ a ꞉ A , P a
+
+    ⊤' ⊥' : X
+    ⊤' = (⊤ , ⊤-closure)
+    ⊥' = (⊥ , ⊥-closure)
+
+    _∧'_ : X → X → X
+    (a , p) ∧' (b , q) = (a ∧ b , ∧-closure a b p q)
+
+    ⋁' : (ℕ → X) → X
+    ⋁' x = (⋁ (pr₁ ∘ x) , ⋁-closure (pr₁ ∘ x) (pr₂ ∘ x))
+
+    X-is-set : is-set X
+    X-is-set = subtypes-of-sets-are-sets pr₁
+                (pr₁-lc (λ {a : A} → P-is-prop-valued a)) ⟨ 𝓐 ⟩-is-set
+
+    ∧'-is-idempotent : (x : X) → x ∧' x ≡ x
+    ∧'-is-idempotent (a , p) = to-subtype-≡ P-is-prop-valued (⟨ 𝓐 ⟩-idempotency a)
+
+    ∧'-is-commutative : (x y : X) → x ∧' y ≡ y ∧' x
+    ∧'-is-commutative (a , _) (b , _) = to-subtype-≡ P-is-prop-valued
+                                         (⟨ 𝓐 ⟩-commutativity a b)
+
+    ∧'-is-associative : (x y z : X) → x ∧' (y ∧' z) ≡ (x ∧' y) ∧' z
+    ∧'-is-associative (a , _) (b , _) (c , _) = to-subtype-≡ P-is-prop-valued
+                                                 (⟨ 𝓐 ⟩-associativity a b c)
+
+    _≤'_ : X → X → 𝓣 ⊔ 𝓥 ̇
+    x ≤' y = x ∧' y ≡ x
+
+    ⊤'-is-maximum : (x : X) → x ≤' ⊤'
+    ⊤'-is-maximum (a , _) = to-subtype-≡ P-is-prop-valued
+                             (⟨ 𝓐 ⟩-⊤-maximum a)
+
+    ⊥'-is-minimum : (x : X) → ⊥' ≤' x
+    ⊥'-is-minimum (a , _) = to-subtype-≡ P-is-prop-valued
+                             (⟨ 𝓐 ⟩-⊥-minimum a)
+
+    ∧'-⋁'-distributivity : (x : X) (y : ℕ → X) → x ∧' (⋁' y) ≡ ⋁' (n ↦ x ∧' y n)
+    ∧'-⋁'-distributivity (x , _) y = to-subtype-≡ P-is-prop-valued
+                                       (⟨ 𝓐 ⟩-distributivity x (pr₁ ∘ y))
+
+    ⋁'-is-ub : (x : ℕ → X) → (n : ℕ) → x n ≤' ⋁' x
+    ⋁'-is-ub x n = to-subtype-≡ P-is-prop-valued
+                     (⟨ 𝓐 ⟩-⋁-is-ub (pr₁ ∘ x) n)
+
+    ⋁'-is-lb-of-ubs : (x : ℕ → X) → (u : X) → ((n : ℕ) → x n ≤' u) → ⋁' x ≤' u
+    ⋁'-is-lb-of-ubs x (a , _) φ = to-subtype-≡ P-is-prop-valued
+                                    (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (pr₁ ∘ x) a (λ n → ap pr₁ (φ n)))
+
+    𝓑 : σ-Frame (𝓣 ⊔ 𝓥)
+    𝓑 = X , (⊤' , _∧'_ , ⊥' , ⋁') ,
+         X-is-set ,
+         ∧'-is-idempotent ,
+         ∧'-is-commutative ,
+         ∧'-is-associative ,
+         ⊥'-is-minimum ,
+         ⊤'-is-maximum ,
+         ∧'-⋁'-distributivity ,
+         ⋁'-is-ub ,
+         ⋁'-is-lb-of-ubs
+
+    g : X → A
+    g = pr₁
+
+    g-is-hom : is-σ-frame-hom 𝓑 𝓐 g
+    g-is-hom = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
+
+    f : A → X
+    f = σ-rec 𝓑
+
+    f-is-hom : is-σ-frame-hom 𝓐 𝓑 f
+    f-is-hom = σ-rec-is-hom 𝓑
+
+    h : A → A
+    h = g ∘ f
+
+    h-is-hom : is-σ-frame-hom 𝓐 𝓐 h
+    h-is-hom = ∘-σ-frame-hom 𝓐 𝓑 𝓐 f g f-is-hom g-is-hom
+
+    H : h ≡ id
+    H = at-most-one-hom 𝓐 h id h-is-hom (id-is-σ-frame-hom 𝓐)
+
+    δ : (a : A) → P (h a)
+    δ a = pr₂ (f a)
+
+    γ : (a : A) → P a
+    γ a = transport P (happly H a) (δ a)
+
+\end{code}
