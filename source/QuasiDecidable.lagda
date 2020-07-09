@@ -1564,13 +1564,6 @@ One step needs σ-induction:
 
 \end{code}
 
-We now show that the initial σ-suplat is also the initial σ-frame.
-
-\begin{code}
-
-
-\end{code}
-
 The intrinsic order coincides with the ∧-semilattice order:
 
 \begin{code}
@@ -1589,7 +1582,8 @@ The intrinsic order coincides with the ∧-semilattice order:
 
 \end{code}
 
-The following renaming is annoying.
+We now show that the initial σ-suplat is also the initial σ-frame. The
+following renaming is annoying.
 
 \begin{code}
   open σ-frame hiding (order)
