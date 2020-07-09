@@ -1660,12 +1660,13 @@ following renaming is annoying.
           f ⊥ ∧' f a     ≡⟨ ⟨ 𝓑 ⟩-commutativity (f ⊥) (f a)                                      ⟩
           f a ∧' f ⊥     ∎
 
-      r = λ c p → f (a ∧ ⋁ c)                    ≡⟨ ap f (meet⋁ a c) ⟩
-                  f (⋁ (n ↦ a ∧ c n))            ≡⟨ σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom (λ n → a ∧ c n)      ⟩
-                  ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ≡⟨ ap ⋁⟨ 𝓑 ⟩' (dfunext fe p)                                       ⟩
-                  ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ≡⟨ (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹                  ⟩
-                  f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ≡⟨ ap (f a ∧'_) ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹) ⟩
-                  f a ∧' f (⋁ c)                 ∎
+      r = λ c p →
+          f (a ∧ ⋁ c)                    ≡⟨ ap f (meet⋁ a c) ⟩
+          f (⋁ (n ↦ a ∧ c n))            ≡⟨ σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom (λ n → a ∧ c n)      ⟩
+          ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ≡⟨ ap ⋁⟨ 𝓑 ⟩' (dfunext fe p)                                       ⟩
+          ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ≡⟨ (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹                  ⟩
+          f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ≡⟨ ap (f a ∧'_) ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹) ⟩
+          f a ∧' f (⋁ c)                 ∎
 
     f-is-hom' : is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
     f-is-hom' = σ-rec-⊤ 𝓑-qua-σ-suplat ⊤' ,
@@ -1786,6 +1787,13 @@ top elements.
 
     vi : ∃ n ꞉ ℕ , a n ≡ ⊤
     vi = ∥∥-functor iii (equal-𝟙-gives-holds (∃ n ꞉ ℕ , τ (a n) holds) ii)
+
+\end{code}
+
+We have that τ a holds precisely when a ≡ ⊤ (hence the name τ for the
+function):
+
+\begin{code}
 
   τ-charac→ : (a : A) → τ a holds → a ≡ ⊤
   τ-charac→ a h = τ-reflects-⊤ a (holds-gives-equal-⊤ pe fe (τ a) h)
