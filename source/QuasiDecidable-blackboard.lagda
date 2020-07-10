@@ -1087,8 +1087,8 @@ module hypothetical-free-σ-SupLat-on-one-generator where
  open import sigma-sup-lattice fe pe
 
  module _
-        {𝓤 𝓣 : Universe}
-        (𝓐 : σ-SupLat 𝓤 𝓣)
+        {𝓣 𝓗 : Universe}
+        (𝓐 : σ-SupLat 𝓣 𝓗)
         (⊤ : ⟨ 𝓐 ⟩)
         (𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
                 → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
@@ -1106,7 +1106,7 @@ We first introduce some abbreviations:
    ⊥   = ⊥⟨ 𝓐 ⟩
    ⋁  = ⋁⟨ 𝓐 ⟩
 
-  _≤_ : A → A → 𝓣 ̇
+  _≤_ : A → A → 𝓗 ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
 
   abstract
@@ -1170,10 +1170,10 @@ want to prove.
     ⋁' : (ℕ → X) → X
     ⋁' x = (⋁ (pr₁ ∘ x) , ⋁-closure (pr₁ ∘ x) (pr₂ ∘ x))
 
-    _≤'_ : X → X → 𝓣 ̇
+    _≤'_ : X → X → 𝓗 ̇
     (a , _) ≤' (b , _) = a ≤ b
 
-    𝓑 : σ-SupLat (𝓤 ⊔ 𝓥) 𝓣
+    𝓑 : σ-SupLat (𝓣 ⊔ 𝓥) 𝓗
     𝓑 = X , (⊥' , ⋁') ,
          _≤'_ ,
          (λ (a , _) (b , _) → ⟨ 𝓐 ⟩-order-is-prop-valued a b) ,
@@ -1309,7 +1309,7 @@ Such joins are absolute, in the sense that they are preserved by all homomorphis
 
 \begin{code}
 
-  σ-rec-joins-absolute : (𝓑 : σ-SupLat 𝓥 𝓦) (𝓒 : σ-SupLat 𝓤' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+  σ-rec-joins-absolute : (𝓑 : σ-SupLat 𝓥 𝓦) (𝓒 : σ-SupLat 𝓣' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
                        → is-σ-suplat-hom 𝓑 𝓒 f
                        → (t : ⟨ 𝓑 ⟩) (a : A) → f (σ-rec 𝓑 t a) ≡ σ-rec 𝓒 (f t) a
   σ-rec-joins-absolute 𝓑 𝓒 f i t = happly γ
@@ -1449,7 +1449,7 @@ following renaming is annoying.
                  ⟨_⟩-⋁-is-ub to ⟨_⟩'-⋁-is-ub ;
                  ⟨_⟩-⋁-is-lb-of-ubs to ⟨_⟩'-⋁-is-lb-of-ubs)
 
-  𝓐-qua-σ-frame : σ-Frame 𝓤
+  𝓐-qua-σ-frame : σ-Frame 𝓣
   𝓐-qua-σ-frame = A ,
                   (⊤ , _∧_ , ⊥ , ⋁) ,
                   ⟨ 𝓐 ⟩-is-set ,
@@ -1474,7 +1474,7 @@ following renaming is annoying.
                               ⟨ 𝓑 ⟩'-⋁-is-ub ,
                               ⟨ 𝓑 ⟩'-⋁-is-lb-of-ubs
 
-  𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓤)
+  𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓣)
                            → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
   𝓐-qua-σ-frame-is-initial 𝓑 = γ
    where
@@ -1483,7 +1483,7 @@ following renaming is annoying.
     _∧'_ : B → B → B
     _∧'_ = meet' 𝓑
 
-    𝓑-qua-σ-suplat : σ-SupLat 𝓤 𝓤
+    𝓑-qua-σ-suplat : σ-SupLat 𝓣 𝓣
     𝓑-qua-σ-suplat = σ-frames-are-σ-suplats 𝓑
 
     ⊤' : B
@@ -1550,20 +1550,20 @@ We now regard the type of propositions as a σ-sup-lattice σΩ:
 
 \begin{code}
 
-  σΩ-qua-σ-Frame : σ-Frame (𝓤 ⁺)
+  σΩ-qua-σ-Frame : σ-Frame (𝓣 ⁺)
   σΩ-qua-σ-Frame = Ω-is-σ-frame.σΩ
 
-  σΩ : σ-SupLat (𝓤 ⁺) (𝓤 ⁺)
+  σΩ : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
   σΩ = σ-frames-are-σ-suplats σΩ-qua-σ-Frame
 
   private
    ⊥'   = ⊥⟨ σΩ ⟩
    ⊤'   = ⊤⟨ σΩ-qua-σ-Frame ⟩'
    ⋁'  = ⋁⟨ σΩ ⟩
-   _≤'_ : Ω 𝓤 → Ω 𝓤 → 𝓤 ⁺ ̇
+   _≤'_ : Ω 𝓣 → Ω 𝓣 → 𝓣 ⁺ ̇
    x ≤' y = x ≤⟨ σΩ ⟩ y
 
-  ≡-gives-≤' : (p q : Ω 𝓤) → p ≡ q → p ≤' q
+  ≡-gives-≤' : (p q : Ω 𝓣) → p ≡ q → p ≤' q
   ≡-gives-≤' p q r = ⟨ σΩ ⟩-≡-gives-≤ r
 
   τ : A → ⟨ σΩ ⟩
@@ -1726,7 +1726,7 @@ a set:
   τ-order-lc a b l = iv
    where
     i : τ a holds → τ b holds
-    i = Ω-is-σ-frame.from-≤Ω {𝓤} {τ a} {τ b} l
+    i = Ω-is-σ-frame.from-≤Ω {𝓣} {τ a} {τ b} l
 
     ii : τ a ≡ ⊤' → τ b ≡ ⊤'
     ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))
@@ -1753,16 +1753,16 @@ a set:
   τ-is-embedding : is-embedding τ
   τ-is-embedding = lc-maps-into-sets-are-embeddings τ τ-lc (Ω-is-set fe pe)
 
-  holds-is-embedding : is-embedding (_holds {𝓤})
+  holds-is-embedding : is-embedding (_holds {𝓣})
   holds-is-embedding = pr₁-is-embedding (λ _ → being-prop-is-prop fe)
 
 \end{code}
 
-Hence the composite τ-holds is an embedding of A into the universe 𝓣:
+Hence the composite τ-holds is an embedding of A into the universe 𝓗:
 
 \begin{code}
 
-  τ-holds : A → 𝓤 ̇
+  τ-holds : A → 𝓣 ̇
   τ-holds a = τ a holds
 
   τ-holds-is-embedding : is-embedding τ-holds
@@ -1777,7 +1777,7 @@ construction:
 
 \begin{code}
 
-  is-quasidecidable : 𝓤 ̇ → 𝓤 ⁺ ̇
+  is-quasidecidable : 𝓣 ̇ → 𝓣 ⁺ ̇
   is-quasidecidable P = Σ a ꞉ A , (τ a holds ≡ P)
 
   being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
@@ -1798,7 +1798,7 @@ construction:
   𝟙-is-quasidecidable = ⊤ , ap _holds (σ-rec-⊤ σΩ ⊤')
 
   quasidecidable-closed-under-ω-joins :
-     (P : ℕ → 𝓤 ̇ )
+     (P : ℕ → 𝓣 ̇ )
    → ((n : ℕ) → is-quasidecidable (P n))
    → is-quasidecidable (∃ n ꞉ ℕ , P n)
   quasidecidable-closed-under-ω-joins P φ = vii
@@ -1830,35 +1830,35 @@ Then we get quasidecidable induction by σ-induction:
 \begin{code}
 
   quasidecidable-induction :
-     (F : 𝓤 ̇ → 𝓥 ̇ )
-   → ((P : 𝓤 ̇ ) → is-prop (F P))
+     (F : 𝓣 ̇ → 𝓥 ̇ )
+   → ((P : 𝓣 ̇ ) → is-prop (F P))
    → F 𝟘
    → F 𝟙
-   → ((P : ℕ → 𝓤 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
-   → (P : 𝓤 ̇ ) → is-quasidecidable P → F P
+   → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+   → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
   quasidecidable-induction {𝓥} F i F₀ F₁ Fω P (a , r) = γ a P r
    where
-    γ : (a : A) (P : 𝓤 ̇ ) → τ a holds ≡ P → F P
+    γ : (a : A) (P : 𝓣 ̇ ) → τ a holds ≡ P → F P
     γ = σ-induction
-         (λ a → (P : 𝓤 ̇ ) → τ a holds ≡ P → F P)
+         (λ a → (P : 𝓣 ̇ ) → τ a holds ≡ P → F P)
          (λ a → Π₂-is-prop fe (λ P _ → i P))
          γ⊤ γ⊥ γ⋁
      where
-      γ⊤ : (P : 𝓤 ̇ ) → τ ⊤ holds ≡ P → F P
+      γ⊤ : (P : 𝓣 ̇ ) → τ ⊤ holds ≡ P → F P
       γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
        where
         t : τ ⊤ holds ≡ 𝟙
         t = ap _holds (σ-rec-⊤ σΩ ⊤')
 
-      γ⊥ : (P : 𝓤 ̇ ) → τ ⊥ holds ≡ P → F P
+      γ⊥ : (P : 𝓣 ̇ ) → τ ⊥ holds ≡ P → F P
       γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
        where
         t : τ ⊥ holds ≡ 𝟘
         t = ap _holds (σ-suplat-hom-⊥ 𝓐 σΩ τ τ-is-hom)
 
       γ⋁ : (a : ℕ → A)
-         → ((n : ℕ) (P : 𝓤 ̇) → (τ (a n) holds) ≡ P → F P)
-         → (P : 𝓤 ̇) → (τ (⋁ a) holds) ≡ P → F P
+         → ((n : ℕ) (P : 𝓣 ̇) → (τ (a n) holds) ≡ P → F P)
+         → (P : 𝓣 ̇) → (τ (⋁ a) holds) ≡ P → F P
       γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
        where
         t : τ (⋁ a) holds ≡ (∃ n ꞉ ℕ , τ (a n) holds)
@@ -1874,8 +1874,8 @@ hypothetical-quasidecidability.
 
 \begin{code}
   quasidecidable-closed-under-Σ :
-      (P : 𝓤 ̇ )
-    → (Q : P → 𝓤 ̇ )
+      (P : 𝓣 ̇ )
+    → (Q : P → 𝓣 ̇ )
     → is-quasidecidable P
     → ((p : P) → is-quasidecidable (Q p))
     → is-quasidecidable (Σ Q)
@@ -2012,14 +2012,14 @@ meets:
 
 \begin{code}
 
-  σ-suplats-have-quasidecidable-joins : (𝓑 : σ-SupLat 𝓥 𝓦) (P : 𝓤 ̇ )
+  σ-suplats-have-quasidecidable-joins : (𝓑 : σ-SupLat 𝓥 𝓦) (P : 𝓣 ̇ )
                                       → is-quasidecidable P
                                       → (f : P → ⟨ 𝓑 ⟩)
                                       → Σ b ꞉ ⟨ 𝓑 ⟩ , (b is-the-join-of f on 𝓑)
   σ-suplats-have-quasidecidable-joins {𝓥} {𝓦} 𝓑 =
     quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
    where
-    F : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+    F : 𝓣 ̇ → 𝓣 ⊔ 𝓥 ⊔ 𝓦 ̇
     F P = (f : P → ⟨ 𝓑 ⟩) → Σ b ꞉ ⟨ 𝓑 ⟩ , (b is-the-join-of f on 𝓑)
 
     F-is-prop-valued : ∀ P → is-prop (F P)
@@ -2035,7 +2035,7 @@ meets:
     F₁ : F 𝟙
     F₁ f = f * , (λ * → ⟨ 𝓑 ⟩-refl (f *)) , λ u ψ → ψ *
 
-    Fω : ((P : ℕ → 𝓤 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+    Fω : ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
     Fω P φ f = b∞ , α∞ , β∞
      where
       g : (n : ℕ) → P n → ⟨ 𝓑 ⟩
@@ -2070,7 +2070,7 @@ meets:
 
   module _ {𝓥 𝓦 : Universe}
            (𝓑 : σ-SupLat 𝓥 𝓦)
-           (P : 𝓤 ̇ )
+           (P : 𝓣 ̇ )
            (i : is-quasidecidable P)
            (f : P → ⟨ 𝓑 ⟩)
          where
@@ -2084,11 +2084,75 @@ meets:
     sup-is-lb-of-ubs : (u : ⟨ 𝓑 ⟩) → ((p : P) → f p ≤⟨ 𝓑 ⟩ u) → sup ≤⟨ 𝓑 ⟩ u
     sup-is-lb-of-ubs = pr₂ (pr₂ (σ-suplats-have-quasidecidable-joins 𝓑 P i f))
 
-  is-q-embedding : {X : 𝓤 ̇ } {Y : 𝓤 ̇ } → (X → Y) → 𝓤 ⁺ ̇
+  is-q-embedding : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → 𝓣 ⁺ ̇
   is-q-embedding f = ∀ y → is-quasidecidable (fiber f y)
 
-  is-q-embedding₀ : {X : 𝓤 ̇ } {Y : 𝓤₀ ̇ } → (X → Y) → 𝓤 ⁺ ̇
-  is-q-embedding₀ f = ∀ y → is-quasidecidable (fiber f y)
+  is-q-embeddingl : {X : 𝓣 ̇ } {Y : 𝓤₀ ̇ } → (X → Y) → 𝓣 ⁺ ̇
+  is-q-embeddingl f = ∀ y → is-quasidecidable (fiber f y)
+
+  is-q-embeddingr : {X : 𝓤₀ ̇ } {Y : 𝓣 ̇ } → (X → Y) → 𝓣 ⁺ ̇
+  is-q-embeddingr f = ∀ y → is-quasidecidable (fiber f y)
+
+  σ-suplats-have-quasidecidable-joins' : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓣 ̇ }
+                                       → (f : I → ℕ)
+                                       → is-q-embeddingl f
+                                       → (b : ℕ → ⟨ 𝓑 ⟩)
+                                       → Σ c ꞉ ⟨ 𝓑 ⟩ , (c is-the-join-of (b ∘ f) on 𝓑)
+  σ-suplats-have-quasidecidable-joins' {𝓥} {𝓦} 𝓑 {I} f q b = c , α , β
+   where
+    g : I → ⟨ 𝓑 ⟩
+    g = b ∘ f
+
+    a : ℕ → A
+    a n = pr₁ (q n)
+
+    e : (n : ℕ) → τ (a n) holds ≡ (Σ i ꞉ I , f i ≡ n)
+    e n = pr₂ (q n)
+
+    γ : (n : ℕ) → τ (a n) holds → (Σ i ꞉ I , f i ≡ n)
+    γ n = Idtofun (e n)
+
+    δ : (n : ℕ)  → (Σ i ꞉ I , f i ≡ n) → τ (a n) holds
+    δ n = Idtofun ((e n)⁻¹)
+
+    g' : (n : ℕ) → τ (a n) holds → ⟨ 𝓑 ⟩
+    g' n h = g (pr₁ (γ n h))
+
+    b' : ℕ → ⟨ 𝓑 ⟩
+    b' n = sup 𝓑 (τ (a n) holds) (a n , refl) (g' n)
+
+    c : ⟨ 𝓑 ⟩
+    c = ⋁⟨ 𝓑 ⟩ b'
+
+    α : ∀ i → b (f i) ≤⟨ 𝓑 ⟩ c
+    α i = ⟨ 𝓑 ⟩-trans (b (f i)) (b' (f i)) c l₂ l₀
+     where
+      l₀ : b' (f i) ≤⟨ 𝓑 ⟩ c
+      l₀ = ⟨ 𝓑 ⟩-⋁-is-ub b' (f i)
+
+      l₁ : g' (f i) (δ (f i) (i , refl)) ≤⟨ 𝓑 ⟩ b' (f i)
+      l₁ = sup-is-ub 𝓑 (τ (a (f i)) holds) (a (f i) , refl) (g' (f i)) (δ (f i) (i , refl))
+
+      r : g' (f i) (δ (f i) (i , refl)) ≡ b (f (pr₁ (γ (f i) (δ (f i) (i , refl)))))
+      r = refl
+
+      s : b (f (pr₁ (γ (f i) (δ (f i) (i , refl))))) ≡ b (f i)
+      s = ap (λ - → b (f (pr₁ -))) (Idtofun-retraction (e (f i)) (i , refl))
+
+      t : g' (f i) (δ (f i) (i , refl)) ≡ b (f i)
+      t = s
+
+      l₂ : b (f i) ≤⟨ 𝓑 ⟩ b' (f i)
+      l₂ = transport (λ - → - ≤⟨ 𝓑 ⟩ b' (f i)) s l₁
+
+    β : (u : ⟨ 𝓑 ⟩) → (∀ i → b (f i) ≤⟨ 𝓑 ⟩ u) → c ≤⟨ 𝓑 ⟩ u
+    β u φ = ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs b' u l
+     where
+      φ' : (n : ℕ) (h : τ (a n) holds) → g' n h ≤⟨ 𝓑 ⟩ u
+      φ' n h = φ (pr₁ (γ n h))
+
+      l : (n : ℕ) → b' n ≤⟨ 𝓑 ⟩ u
+      l n = sup-is-lb-of-ubs 𝓑 (τ (a n) holds) (a n , refl) (g' n) u (φ' n)
 
 \end{code}
 

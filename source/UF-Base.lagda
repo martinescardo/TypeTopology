@@ -52,6 +52,12 @@ back-transport₂ A refl refl = id
 Idtofun : {X Y : 𝓤 ̇ } → X ≡ Y → X → Y
 Idtofun = transport id
 
+Idtofun-retraction : {X Y : 𝓤 ̇ } (p : X ≡ Y) → Idtofun p ∘ Idtofun (p ⁻¹) ∼ id
+Idtofun-retraction refl _ = refl
+
+Idtofun-section : {X Y : 𝓤 ̇ } (p : X ≡ Y) → Idtofun (p ⁻¹) ∘ Idtofun p ∼ id
+Idtofun-section refl _ = refl
+
 back-Idtofun : {X Y : 𝓤 ̇ } → X ≡ Y → Y → X
 back-Idtofun = back-transport id
 
