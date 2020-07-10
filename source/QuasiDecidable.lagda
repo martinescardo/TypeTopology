@@ -169,6 +169,7 @@ theorem₁ {𝓣} q = record {
           quasidecidable-induction
 
 
+{-
 theorem₂ : free-σ-SupLat-on-one-generator-exists 𝓣 𝓣
          → quasidecidable-propositions-exist 𝓣
 theorem₂ {𝓣} = {!!}
@@ -180,5 +181,5 @@ theorem₃ {𝓣} = {!!}
 theorem₄ : Propositional-Resizing
          → quasidecidable-propositions-exist 𝓣
 theorem₄ = {!!}
-
+-}
 \end{code}
