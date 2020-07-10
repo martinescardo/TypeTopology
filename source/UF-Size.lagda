@@ -59,6 +59,8 @@ X has-size 𝓥 = Σ Y ꞉ 𝓥 ̇ , Y ≃ X
 propositional-resizing : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 propositional-resizing 𝓤 𝓥 = (P : 𝓤 ̇ ) → is-prop P → P has-size 𝓥
 
+Propositional-Resizing : 𝓤ω
+Propositional-Resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 \end{code}
 
 Propositional resizing from a universe to a higher universe just holds, of course:

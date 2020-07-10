@@ -79,6 +79,7 @@ module QuasiDecidable
 
 open import QuasiDecidable-blackboard fe pe pt
 
+open import UF-Size
 import UF-SIP-Examples
 import sigma-sup-lattice
 
@@ -136,12 +137,12 @@ And finally the existence of the free σ-sup-lattice on one generator:
 
 \begin{code}
 
-record free-σ-SupLat-on-one-generator-exists (𝓣 : Universe) : 𝓤ω where
+record free-σ-SupLat-on-one-generator-exists (𝓤 𝓣 : Universe) : 𝓤ω where
  open sigma-sup-lattice fe pe
  field
-  𝓐 : σ-SupLat 𝓣 𝓣
+  𝓐 : σ-SupLat 𝓤 𝓣
   ⊤ : ⟨ 𝓐 ⟩
-  𝓐-free : {𝓤 𝓥 : Universe} (𝓑 : σ-SupLat 𝓤 𝓥) (t : ⟨ 𝓑 ⟩)
+  𝓐-free : {𝓤 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
          → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
                                   × (f ⊤ ≡ t)
 \end{code}
@@ -149,5 +150,35 @@ record free-σ-SupLat-on-one-generator-exists (𝓣 : Universe) : 𝓤ω where
 The main theorems are as follows:
 
 \begin{code}
+
+theorem₁ : quasidecidable-propositions-exist 𝓣
+         → free-σ-SupLat-on-one-generator-exists (𝓣 ⁺) 𝓣
+theorem₁ {𝓣} q = record {
+                   𝓐 = QD ;
+                   ⊤ = ⊤ ;
+                   𝓐-free = QD-is-free-σ-SupLat
+                   }
+ where
+  open  quasidecidable-propositions-exist q
+  open  hypothetical-quasidecidability {𝓣}
+          is-quasidecidable
+          being-quasidecidable-is-prop
+          𝟘-is-quasidecidable
+          𝟙-is-quasidecidable
+          quasidecidable-closed-under-ω-joins
+          quasidecidable-induction
+
+
+theorem₂ : free-σ-SupLat-on-one-generator-exists 𝓣 𝓣
+         → quasidecidable-propositions-exist 𝓣
+theorem₂ {𝓣} = {!!}
+
+theorem₃ : free-σ-SupLat-on-one-generator-exists 𝓣
+         → initial-σ-frame-exists 𝓣
+theorem₃ {𝓣} = {!!}
+
+theorem₄ : Propositional-Resizing
+         → quasidecidable-propositions-exist 𝓣
+theorem₄ = {!!}
 
 \end{code}
