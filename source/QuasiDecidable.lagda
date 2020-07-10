@@ -1730,7 +1730,7 @@ We now regard the type of propositions as a σ-sup-lattice σΩ:
 
 \end{code}
 
-A crucial property of the map τ is that it reflect top elements:
+A crucial property of the map τ is that it reflects top elements:
 
 \begin{code}
 
