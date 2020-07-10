@@ -296,6 +296,13 @@ is-σ-suplat-hom : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
 is-σ-suplat-hom  (_ , (⊥ , ⋁) , _) (_ , (⊥' , ⋁') , _) f = (f ⊥ ≡ ⊥')
                                                          × (∀ 𝕒 → f (⋁ 𝕒) ≡ ⋁' (n ↦ f (𝕒 n)))
 
+being-σ-suplat-hom-is-prop : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
+                             (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
+                           → is-prop (is-σ-suplat-hom 𝓐 𝓑 f)
+being-σ-suplat-hom-is-prop 𝓐 𝓑 f = ×-is-prop
+                                     ⟨ 𝓑 ⟩-is-set
+                                     (Π-is-prop fe (λ _ → ⟨ 𝓑 ⟩-is-set))
+
 σ-suplat-hom-⊥ : (𝓐 : σ-SupLat 𝓤 𝓦) (𝓑 : σ-SupLat 𝓥 𝓣)
                → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                → is-σ-suplat-hom 𝓐 𝓑 f

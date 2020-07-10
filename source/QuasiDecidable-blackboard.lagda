@@ -57,6 +57,8 @@ open import UF-SIP-Examples
 open import UF-Embeddings
 open import UF-Powerset
 
+import sigma-sup-lattice
+
 \end{code}
 
 Before considering quasidecidable propositions, we review
@@ -409,153 +411,42 @@ The following summarizes the dominance conditions:
 \end{code}
 
 We now give the quasidecidable propositions the structure of a
-σ-frame. We have already defined ⊥, ⊤ and ⋁. So it remains to define ∧
-and prove the σ-frame axioms.
+σ-sup-lattice. We have already defined ⊥, ⊤ and ⋁.
 
 \begin{code}
 
- _∧_ : 𝓠 → 𝓠 → 𝓠
- (P , i) ∧ (Q , j) = (P × Q) , quasidecidable-closed-under-× P i Q (λ _ → j)
 
- ∧-is-idempotent : (𝕡 : 𝓠) → 𝕡 ∧ 𝕡 ≡ 𝕡
- ∧-is-idempotent (P , i) = γ
-  where
-   i' : is-prop P
-   i' = quasidecidable-types-are-props P i
-
-   r : P × P ≡ P
-   r = pe (×-is-prop i' i') i' pr₁ (λ p → (p , p))
-
-   γ : ((P × P) , _) ≡ (P , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
-
- ∧-is-commutative : (𝕡 𝕢 : 𝓠) → 𝕡 ∧ 𝕢 ≡ 𝕢 ∧ 𝕡
- ∧-is-commutative (P , i) (Q , j) = γ
-  where
-   i' : is-prop P
-   i' = quasidecidable-types-are-props P i
-
-   j' : is-prop Q
-   j' = quasidecidable-types-are-props Q j
-
-   r : P × Q ≡ Q × P
-   r = pe (×-is-prop i' j')
-          (×-is-prop j' i')
-          (λ (p , q) → (q , p))
-          (λ (q , p) → (p , q))
-
-   γ : ((P × Q) , _) ≡ ((Q × P) , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
-
- ∧-is-associative : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ∧ (𝕢 ∧ 𝕣) ≡ (𝕡 ∧ 𝕢) ∧ 𝕣
- ∧-is-associative (P , i) (Q , j) (R , k) = γ
-  where
-   i' : is-prop P
-   i' = quasidecidable-types-are-props P i
-
-   j' : is-prop Q
-   j' = quasidecidable-types-are-props Q j
-
-   k' : is-prop R
-   k' = quasidecidable-types-are-props R k
-
-   r : P × (Q × R) ≡ (P × Q) × R
-   r = pe (×-is-prop i' (×-is-prop j' k'))
-          (×-is-prop (×-is-prop i' j') k')
-          (λ (p , (q , r)) → ((p , q) , r))
-          (λ ((p , q) , r) → (p , (q , r)))
-
-   γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
-
- _≤_ : 𝓠 → 𝓠 → 𝓣 ⁺ ̇
- 𝕡 ≤ 𝕢 = 𝕡 ∧ 𝕢 ≡ 𝕡
-
- ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ≤ 𝕡
- ⊥-is-minimum (P , i) = γ
-  where
-   i' : is-prop P
-   i' = quasidecidable-types-are-props P i
-
-   r : 𝟘 × P ≡ 𝟘
-   r = pe (×-is-prop 𝟘-is-prop i')
-          𝟘-is-prop
-          pr₁
-          unique-from-𝟘
-
-   γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
-
- ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ≤ ⊤
- ⊤-is-maximum (P , i) = γ
-  where
-   i' : is-prop P
-   i' = quasidecidable-types-are-props P i
-
-   r : P × 𝟙 ≡ P
-   r = pe (×-is-prop i' 𝟙-is-prop)
-          i'
-          (λ (p , _) → p)
-          (λ p → (p , *))
-
-   γ : ((P × 𝟙) , _) ≡ (P , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
+ _≤_ : 𝓠 → 𝓠 → 𝓣 ̇
+ 𝕡 ≤ 𝕢 = 𝕡 is-true → 𝕢 is-true
 
  ≤-is-prop-valued : (𝕡 𝕢 : 𝓠) → is-prop (𝕡 ≤ 𝕢)
- ≤-is-prop-valued 𝕡 𝕢 = 𝓠-is-set {𝕡 ∧ 𝕢} {𝕡}
+ ≤-is-prop-valued 𝕡 𝕢 = Π-is-prop fe (λ _ → being-true-is-prop 𝕢)
 
- from-≤ : {𝕡 𝕢 : 𝓠} → 𝕡 ≤ 𝕢 → (𝕡 is-true → 𝕢 is-true)
- from-≤ {P , i} {Q , j} l p = γ
-  where
-   r : P × Q ≡ P
-   r = ap (_is-true) l
+ ≤-refl : (𝕡 : 𝓠) → 𝕡 ≤ 𝕡
+ ≤-refl 𝕡 = id
 
-   g : P → P × Q
-   g = idtofun P (P × Q) (r ⁻¹)
+ ≤-trans : (𝕡 𝕢 𝕣 : 𝓠) → 𝕡 ≤ 𝕢 → 𝕢 ≤ 𝕣 → 𝕡 ≤ 𝕣
+ ≤-trans 𝕡 𝕢 𝕣 l m = m ∘ l
 
-   γ : Q
-   γ = pr₂ (g p)
+ ≤-antisym : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → 𝕢 ≤ 𝕡 → 𝕡 ≡ 𝕢
+ ≤-antisym 𝕡 𝕢 l m = to-subtype-≡
+                        being-quasidecidable-is-prop
+                        (pe (being-true-is-prop 𝕡) (being-true-is-prop 𝕢) l m)
 
- to-≤ : {𝕡 𝕢 : 𝓠} → (𝕡 is-true → 𝕢 is-true) → 𝕡 ≤ 𝕢
- to-≤ {P , i} {Q , j} f = γ
-  where
-   i' : is-prop P
-   i' = quasidecidable-types-are-props P i
+ ⊥-is-minimum : (𝕡 : 𝓠) → ⊥ ≤ 𝕡
+ ⊥-is-minimum 𝕡 = unique-from-𝟘
 
-   j' : is-prop Q
-   j' = quasidecidable-types-are-props Q j
-
-   r : P × Q ≡ P
-   r = pe (×-is-prop i' j') i' pr₁ (λ p → (p , f p))
-
-   γ : ((P × Q) , _) ≡ (P , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
-
- ∧-⋁-distributivity : (𝕡 : 𝓠) (𝕢 : ℕ → 𝓠) → 𝕡 ∧ (⋁ 𝕢) ≡ ⋁ (n ↦ 𝕡 ∧ 𝕢 n)
- ∧-⋁-distributivity (P , i) 𝕢 = γ
-  where
-   Q : ℕ → 𝓣 ̇
-   Q n = 𝕢 n is-true
-
-   j : (n : ℕ) → is-quasidecidable (Q n)
-   j n = being-true-is-quasidecidable (𝕢 n)
-
-   r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
-   r = prop-frame-distr pe
-        P (quasidecidable-types-are-props P i)
-        Q (λ n → quasidecidable-types-are-props (Q n) (j n))
-
-   γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
-   γ = to-subtype-≡ being-quasidecidable-is-prop r
+ ⊤-is-maximum : (𝕡 : 𝓠) → 𝕡 ≤ ⊤
+ ⊤-is-maximum 𝕡 = unique-to-𝟙
 
  ⋁-is-ub : (𝕡 : ℕ → 𝓠) → (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
- ⋁-is-ub 𝕡 n = to-≤ (λ p → ∣ n , p ∣)
+ ⋁-is-ub 𝕡 n = (λ p → ∣ n , p ∣)
 
  ⋁-is-lb-of-ubs : (𝕡 : ℕ → 𝓠) → (𝕦 : 𝓠) → ((n : ℕ) → 𝕡 n ≤ 𝕦) → ⋁ 𝕡 ≤ 𝕦
- ⋁-is-lb-of-ubs 𝕡 (U , i) φ = to-≤ γ
+ ⋁-is-lb-of-ubs 𝕡 (U , i) φ = γ
   where
    δ : (Σ n ꞉ ℕ , 𝕡 n is-true) → U
-   δ (n , p) = from-≤ (φ n) p
+   δ (n , p) = φ n p
 
    γ : (∃ n ꞉ ℕ , 𝕡 n is-true) → U
    γ = ∥∥-rec (quasidecidable-types-are-props U i) δ
@@ -567,20 +458,19 @@ propositions:
 
 \begin{code}
 
- open σ-frame
+ open import sigma-sup-lattice fe pe
 
- QD : σ-Frame (𝓣 ⁺)
+ QD : σ-SupLat (𝓣 ⁺) 𝓣
  QD = 𝓠 ,
-     (⊤ , _∧_ , ⊥ , ⋁) ,
-     (𝓠-is-set ,
-      ∧-is-idempotent ,
-      ∧-is-commutative ,
-      ∧-is-associative ,
+     (⊥ , ⋁) ,
+     _≤_ ,
+     ≤-is-prop-valued ,
+     ≤-refl ,
+     ≤-trans ,
+     ≤-antisym ,
       ⊥-is-minimum ,
-      ⊤-is-maximum ,
-      ∧-⋁-distributivity ,
       ⋁-is-ub ,
-      ⋁-is-lb-of-ubs)
+      ⋁-is-lb-of-ubs
 
 \end{code}
 
@@ -589,7 +479,10 @@ frame 𝓐 in an arbitrary universe 𝓤:
 
 \begin{code}
 
- module _ {𝓤 : Universe} (𝓐 : σ-Frame 𝓤) where
+ module _ {𝓤 : Universe}
+          (𝓐 : σ-SupLat 𝓤 𝓥)
+          (t : ⟨ 𝓐 ⟩)
+        where
 
 \end{code}
 
@@ -602,59 +495,9 @@ notational convenience:
 
     A = ⟨ 𝓐 ⟩
     ⊥' = ⊥⟨ 𝓐 ⟩
-    ⊤' = ⊤⟨ 𝓐 ⟩
     ⋁' = ⋁⟨ 𝓐 ⟩
-    _≤'_ : A → A → 𝓤 ̇
+    _≤'_ : A → A → 𝓥 ̇
     a ≤' b = a ≤⟨ 𝓐 ⟩ b
-    _∧'_ : A → A → A
-    a ∧' b = a ∧⟨ 𝓐 ⟩ b
-
-\end{code}
-
-We first show that any ⊥,⊤,⋁-homomorphism on QD is automatically a
-∧-homomorphism, by 𝓠-induction.
-
-\begin{code}
-
-  ⊥⊤⋁-hom-on-QD-is-∧-hom : (f : 𝓠 → A)
-                         → f ⊥ ≡ ⊥'
-                         → f ⊤ ≡ ⊤'
-                         → ((λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n))))
-                         → (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
-
-  ⊥⊤⋁-hom-on-QD-is-∧-hom f f⊥ f⊤ f⋁ = γ
-   where
-    δ : (𝕡 𝕢 : 𝓠) → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢)
-    δ 𝕡 = 𝓠-induction (λ 𝕢 → f (𝕡 ∧ 𝕢) ≡ (f 𝕡 ∧' f 𝕢))
-                      (λ 𝕢 → ⟨ 𝓐 ⟩-is-set {f (𝕡 ∧ 𝕢)} {f 𝕡 ∧' f 𝕢})
-                      l₀ l₁ lω
-     where
-      l₀ = f (𝕡 ∧ ⊥)    ≡⟨ ap f (∧-is-commutative 𝕡 ⊥)     ⟩
-           f (⊥ ∧ 𝕡)    ≡⟨ ap f (⊥-is-minimum 𝕡)           ⟩
-           f ⊥          ≡⟨ f⊥                              ⟩
-           ⊥'           ≡⟨ (⟨ 𝓐 ⟩-⊥-minimum (f 𝕡))⁻¹       ⟩
-           (⊥' ∧' f 𝕡)  ≡⟨ ap (λ - → - ∧' f 𝕡) (f⊥ ⁻¹)     ⟩
-           (f ⊥ ∧' f 𝕡) ≡⟨ ⟨ 𝓐 ⟩-commutativity (f ⊥) (f 𝕡) ⟩
-           (f 𝕡 ∧' f ⊥) ∎
-
-      l₁ = f (𝕡 ∧ ⊤)    ≡⟨ ap f (⊤-is-maximum 𝕡)       ⟩
-           f 𝕡          ≡⟨ (⟨ 𝓐 ⟩-⊤-maximum (f 𝕡))⁻¹   ⟩
-           (f 𝕡 ∧' ⊤')  ≡⟨ ap (λ - → f 𝕡 ∧' -) (f⊤ ⁻¹) ⟩
-           (f 𝕡 ∧' f ⊤) ∎
-
-      lω : (𝕢 : ℕ → 𝓠)
-         → ((n : ℕ) → f (𝕡 ∧ 𝕢 n) ≡ (f 𝕡 ∧' f (𝕢 n)))
-         → f (𝕡 ∧ ⋁ 𝕢) ≡ (f 𝕡 ∧' f (⋁ 𝕢))
-
-      lω 𝕢 φ = f (𝕡 ∧ ⋁ 𝕢)               ≡⟨ ap f (∧-⋁-distributivity 𝕡 𝕢)                      ⟩
-               f ( ⋁ (n ↦ 𝕡 ∧ 𝕢 n))      ≡⟨ ap (λ - → - (n ↦ 𝕡 ∧ 𝕢 n)) f⋁                      ⟩
-               ⋁' (n ↦ f (𝕡 ∧ 𝕢 n))      ≡⟨ ap ⋁' (dfunext fe φ)                               ⟩
-               ⋁' (n ↦ f 𝕡 ∧' f (𝕢 n))   ≡⟨ (⟨ 𝓐 ⟩-distributivity (f 𝕡) (n ↦ f (𝕢 n)))⁻¹       ⟩
-               (f 𝕡 ∧' ⋁' (n ↦ f (𝕢 n))) ≡⟨ ap (λ - → meet 𝓐 (f 𝕡) -) (ap (λ - → - 𝕢) (f⋁ ⁻¹)) ⟩
-               (f 𝕡 ∧' f (⋁ 𝕢))          ∎
-
-    γ : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
-    γ = dfunext fe (λ 𝕡 → dfunext fe (δ 𝕡))
 
 \end{code}
 
@@ -664,24 +507,26 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 \begin{code}
 
   at-most-one-hom : (g h : 𝓠 → A)
-                  → is-σ-frame-homomorphism QD 𝓐 g
-                  → is-σ-frame-homomorphism QD 𝓐 h
+                  → is-σ-suplat-hom QD 𝓐 g
+                  → is-σ-suplat-hom QD 𝓐 h
+                  → g ⊤ ≡ t
+                  → h ⊤ ≡ t
                   → g ≡ h
 
-  at-most-one-hom g h (g⊤ , _ , g⊥ , g⋁) (h⊤ , _ , h⊥ , h⋁) = dfunext fe r
+  at-most-one-hom g h (g⊥ , g⋁) (h⊥ , h⋁) g⊤ h⊤ = dfunext fe r
    where
     i₀ = g ⊥ ≡⟨ g⊥    ⟩
          ⊥'  ≡⟨ h⊥ ⁻¹ ⟩
          h ⊥ ∎
 
     i₁ = g ⊤ ≡⟨ g⊤    ⟩
-         ⊤'  ≡⟨ h⊤ ⁻¹ ⟩
+         t   ≡⟨ h⊤ ⁻¹ ⟩
          h ⊤ ∎
 
     iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
-    iω 𝕡 φ = g (⋁ 𝕡)          ≡⟨ ap (λ - → - 𝕡) g⋁     ⟩
+    iω 𝕡 φ = g (⋁ 𝕡)          ≡⟨ g⋁ 𝕡                  ⟩
              ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ)  ⟩
-             ⋁' (n ↦ h (𝕡 n)) ≡⟨ (ap (λ - → - 𝕡) h⋁)⁻¹ ⟩
+             ⋁' (n ↦ h (𝕡 n)) ≡⟨ (h⋁ 𝕡)⁻¹              ⟩
              h (⋁ 𝕡)          ∎
 
     r : g ∼ h
@@ -700,20 +545,20 @@ applied to prop-valued predicates only.
 
   initiality-lemma : (P : 𝓣 ̇ )
                    → is-quasidecidable P
-                   → Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+                   → Σ a ꞉ A , (P → t ≤' a) × ((u : A) → (P → t ≤' u) → a ≤' u)
 
   initiality-lemma = quasidecidable-induction F F-is-prop-valued F₀ F₁ Fω
    where
-    F : 𝓣 ̇ → 𝓣 ⊔ 𝓤 ̇
-    F P = Σ a ꞉ A , (P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u)
+    F : 𝓣 ̇ → 𝓣 ⊔ 𝓤 ⊔ 𝓥 ̇
+    F P = Σ a ꞉ A , (P → t ≤' a) × ((u : A) → (P → t ≤' u) → a ≤' u)
 
     F-is-prop-valued : (P : 𝓣 ̇ ) → is-prop (F P)
     F-is-prop-valued P (a , α , β) (a' , α' , β') = γ
      where
-      j : (a : A) → is-prop ((P → ⊤' ≤' a) × ((u : A) → (P → ⊤' ≤' u) → a ≤' u))
+      j : (a : A) → is-prop ((P → t ≤' a) × ((u : A) → (P → t ≤' u) → a ≤' u))
       j a = ×-is-prop
-            (Π-is-prop fe (λ p → ⟨ 𝓐 ⟩-is-set {⊤' ∧' a} {⊤'}))
-            (Π₂-is-prop fe (λ u ψ → ⟨ 𝓐 ⟩-is-set {a ∧' u} {a}))
+             (Π-is-prop fe (λ _ → ⟨ 𝓐 ⟩-order-is-prop-valued t a))
+             (Π₂-is-prop fe (λ u _ → ⟨ 𝓐 ⟩-order-is-prop-valued a u))
 
       r : a ≡ a'
       r = ⟨ 𝓐 ⟩-antisym a a' (β  a' α') (β' a α)
@@ -722,10 +567,10 @@ applied to prop-valued predicates only.
       γ = to-subtype-≡ j r
 
     F₀ : F 𝟘
-    F₀ = ⊥' , unique-from-𝟘 , (λ u ψ → ⟨ 𝓐 ⟩-⊥-minimum u)
+    F₀ = ⊥' , unique-from-𝟘 , (λ u ψ → ⟨ 𝓐 ⟩-⊥-is-minimum u)
 
     F₁ : F 𝟙
-    F₁ = ⊤' , (λ p → ⟨ 𝓐 ⟩-⊤-maximum ⊤') , (λ u ψ → ψ *)
+    F₁ = t , (λ _ → ⟨ 𝓐 ⟩-refl t) , (λ u ψ → ψ *)
 
     Fω :  (P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n)
     Fω P φ = a∞ , α∞ , β∞
@@ -733,22 +578,22 @@ applied to prop-valued predicates only.
       a : ℕ → A
       a n = pr₁ (φ n)
 
-      α : (n : ℕ) → P n → ⊤' ≤' a n
+      α : (n : ℕ) → P n → t ≤' a n
       α n = pr₁ (pr₂ (φ n))
 
-      β : (n : ℕ) (u : A) → (P n → ⊤' ≤' u) → a n ≤' u
+      β : (n : ℕ) (u : A) → (P n → t ≤' u) → a n ≤' u
       β n = pr₂ (pr₂ (φ n))
 
       a∞ : A
       a∞ = ⋁' a
 
-      α∞ : (∃ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-      α∞ = ∥∥-rec ⟨ 𝓐 ⟩-is-set α∞'
+      α∞ : (∃ n ꞉ ℕ , P n) → t ≤' a∞
+      α∞ = ∥∥-rec (⟨ 𝓐 ⟩-order-is-prop-valued t a∞)  α∞'
        where
-        α∞' : (Σ n ꞉ ℕ , P n) → ⊤' ≤' a∞
-        α∞' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (a n) a∞ (α n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
+        α∞' : (Σ n ꞉ ℕ , P n) → t ≤' a∞
+        α∞' (n , p) = ⟨ 𝓐 ⟩-trans t (a n) a∞ (α n p) (⟨ 𝓐 ⟩-⋁-is-ub a n)
 
-      β∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → ⊤' ≤' u) → a∞ ≤' u
+      β∞ : (u : A) → ((∃ n ꞉ ℕ , P n) → t ≤' u) → a∞ ≤' u
       β∞ u ψ = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u l
        where
         l : (n : ℕ) → a n ≤' u
@@ -763,16 +608,17 @@ homomorphism.
 
 \begin{code}
 
-  QD-is-initial-σ-Frame : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩), is-σ-frame-homomorphism QD 𝓐 f
-  QD-is-initial-σ-Frame = γ
+  QD-is-free-σ-SupLat : ∃! f ꞉ (⟨ QD ⟩ → ⟨ 𝓐 ⟩) , is-σ-suplat-hom QD 𝓐 f
+                                                × (f ⊤ ≡ t)
+  QD-is-free-σ-SupLat = γ
    where
     f : 𝓠 → A
     f (P , i) = pr₁ (initiality-lemma P i)
 
-    α : (𝕡 : 𝓠) → 𝕡 is-true → ⊤' ≤' f 𝕡
+    α : (𝕡 : 𝓠) → 𝕡 is-true → t ≤' f 𝕡
     α (P , i) = pr₁ (pr₂ (initiality-lemma P i))
 
-    β : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → ⊤' ≤' u) → f 𝕡 ≤' u)
+    β : (𝕡 : 𝓠) → ((u : A) → (𝕡 is-true → t ≤' u) → f 𝕡 ≤' u)
     β (P , i) = pr₂ (pr₂ (initiality-lemma P i))
 
 \end{code}
@@ -782,68 +628,58 @@ homomorphism, and are all we need for that purpose.
 
 \begin{code}
 
-    ⊤-preservation : f ⊤ ≡ ⊤'
-    ⊤-preservation = ⟨ 𝓐 ⟩-antisym (f ⊤) ⊤' (⟨ 𝓐 ⟩-⊤-maximum (f ⊤)) (α ⊤ *)
+    f⊤ : f ⊤ ≡ t
+    f⊤ = ⟨ 𝓐 ⟩-antisym (f ⊤) t (β ⊤ t (λ _ → ⟨ 𝓐 ⟩-refl t)) (α ⊤ *)
 
-    ⊥-preservation : f ⊥ ≡ ⊥'
-    ⊥-preservation = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (β ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-minimum (f ⊥))
+    f⊥ : f ⊥ ≡ ⊥'
+    f⊥ = ⟨ 𝓐 ⟩-antisym (f ⊥) ⊥' (β ⊥ ⊥' unique-from-𝟘) (⟨ 𝓐 ⟩-⊥-is-minimum (f ⊥))
 
     f-is-monotone : (𝕡 𝕢 : 𝓠) → 𝕡 ≤ 𝕢 → f 𝕡 ≤' f 𝕢
-    f-is-monotone 𝕡 𝕢 l = β 𝕡 (f 𝕢) (λ p → α 𝕢 (from-≤ l p))
+    f-is-monotone 𝕡 𝕢 l = β 𝕡 (f 𝕢) (λ p → α 𝕢 (l p))
 
-    ⋁-preservation' : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
-    ⋁-preservation' 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n))) v w
+    f⋁ : (𝕡 : ℕ → 𝓠) → f (⋁ 𝕡) ≡ ⋁' (n ↦ f (𝕡 n))
+    f⋁ 𝕡 = ⟨ 𝓐 ⟩-antisym (f (⋁ 𝕡)) (⋁' (n ↦ f (𝕡 n))) v w
       where
-       φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
-       φ' (n , p) = ⟨ 𝓐 ⟩-trans ⊤' (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n))) r s
+       φ' : (Σ n ꞉ ℕ , 𝕡 n is-true) → t ≤' ⋁' (n ↦ f (𝕡 n))
+       φ' (n , p) = ⟨ 𝓐 ⟩-trans t (f (𝕡 n)) (⋁' (n ↦ f (𝕡 n))) r s
          where
-          r : ⊤' ≤' f (𝕡 n)
+          r : t ≤' f (𝕡 n)
           r = α (𝕡 n) p
 
           s : f (𝕡 n) ≤' ⋁' (n ↦ f (𝕡 n))
           s = ⟨ 𝓐 ⟩-⋁-is-ub (n ↦ f (𝕡 n)) n
 
-       φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → ⊤' ≤' ⋁' (n ↦ f (𝕡 n))
-       φ = ∥∥-rec ⟨ 𝓐 ⟩-is-set φ'
+       φ : (∃ n ꞉ ℕ , 𝕡 n is-true) → t ≤' ⋁' (n ↦ f (𝕡 n))
+       φ = ∥∥-rec (⟨ 𝓐 ⟩-order-is-prop-valued _ _) φ'
 
        v : f (⋁ 𝕡) ≤' ⋁' (n ↦ f (𝕡 n))
        v = β (⋁ 𝕡) (⋁' (n ↦ f (𝕡 n))) φ
 
-       t' : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
-       t' = ⋁-is-ub 𝕡
+       l : (n : ℕ) → 𝕡 n ≤ ⋁ 𝕡
+       l = ⋁-is-ub 𝕡
 
-       t : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
-       t n = f-is-monotone (𝕡 n) (⋁ 𝕡) (t' n)
+       m : (n : ℕ) → f (𝕡 n) ≤' f (⋁ 𝕡)
+       m n = f-is-monotone (𝕡 n) (⋁ 𝕡) (l n)
 
        w : ⋁' (n ↦ f (𝕡 n)) ≤' f (⋁ 𝕡)
-       w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) t
-
-    ⋁-preservation : (λ 𝕡 → f (⋁ 𝕡)) ≡ (λ 𝕡 → ⋁' (n ↦ f (𝕡 n)))
-    ⋁-preservation = dfunext fe ⋁-preservation'
-
-\end{code}
-
-By the above, binary meets are automatically preserved:
-
-\begin{code}
-
-    ∧-preservation : (λ 𝕡 𝕢 → f (𝕡 ∧ 𝕢)) ≡ (λ 𝕡 𝕢 → f 𝕡 ∧' f 𝕢)
-    ∧-preservation = ⊥⊤⋁-hom-on-QD-is-∧-hom f ⊥-preservation ⊤-preservation ⋁-preservation
-
+       w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) m
 \end{code}
 
 And then we are done:
 
 \begin{code}
 
-    f-is-hom : is-σ-frame-homomorphism QD 𝓐 f
-    f-is-hom = ⊤-preservation , ∧-preservation , ⊥-preservation , ⋁-preservation
+    f-is-hom : is-σ-suplat-hom QD 𝓐 f
+    f-is-hom = f⊥ , f⋁
 
-    γ : ∃! f ꞉ (⟨ QD ⟩ → A), is-σ-frame-homomorphism QD 𝓐 f
-    γ = (f , f-is-hom) ,
-        (λ (g , g-is-hom) → to-subtype-≡
-                             (being-σ-frame-homomorphism-is-prop fe QD 𝓐)
-                             (at-most-one-hom f g f-is-hom g-is-hom))
+    γ : ∃! f ꞉ (⟨ QD ⟩ → A), is-σ-suplat-hom QD 𝓐 f
+                          × (f ⊤ ≡ t)
+    γ = (f , f-is-hom , f⊤) ,
+        (λ (g , g-is-hom , g⊤) → to-subtype-≡
+                                   (λ f → ×-is-prop
+                                           (being-σ-suplat-hom-is-prop QD 𝓐 f)
+                                           ⟨ 𝓐 ⟩-is-set)
+                                   (at-most-one-hom f g f-is-hom g-is-hom f⊤ g⊤))
 \end{code}
 
 This concludes the anonymous module and the module
@@ -1037,19 +873,22 @@ universe 𝓤 rather than the first universe 𝓣 as above.
 
 \end{code}
 
-Hence the initial σ-frame exists under propositional resizing: we
-simply plug the construction of the quasidecidable propositions to the
-above hypothetical development.
+Hence the free σ-sup-lattice on one generator exists under
+propositional resizing: we simply plug the construction of the
+quasidecidable propositions to the above hypothetical development.
 
 \begin{code}
 
- open σ-frame
+ open sigma-sup-lattice fe pe
 
- initial-σ-Frame-exists :
+ free-σ-suplat-on-one-generator-exists :
 
-  Σ 𝓐 ꞉ σ-Frame (𝓣 ⁺) , ((𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-homomorphism 𝓐 𝓑 f)
+  Σ 𝓐 ꞉ σ-SupLat (𝓣 ⁺) 𝓣 ,
+  Σ t ꞉ ⟨ 𝓐 ⟩ ,
+      ((𝓑 : σ-SupLat 𝓤 𝓥) (u : ⟨ 𝓑 ⟩) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
+                                                               × (f t ≡ u))
 
- initial-σ-Frame-exists {𝓤} = QD , QD-is-initial-σ-Frame
+ free-σ-suplat-on-one-generator-exists {𝓤} = QD , ⊤ , QD-is-free-σ-SupLat
   where
    open hypothetical-quasidecidability
           is-quasidecidable
