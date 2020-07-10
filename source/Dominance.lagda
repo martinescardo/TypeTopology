@@ -5,12 +5,12 @@ http://www.cs.bham.ac.uk/~mhe/papers/partial-elements-and-recursion.pdf
 
 Convention:
 
-  * 𝓣 is the universe where the dominant truth values live, and
+  * 𝓣 is the universe where the dominant truth values live.
 
   * 𝓚 is the universe where the knowledge they are dominant lives.
 
-  * A dominance is given by a function d : 𝓣 ̇ → 𝓚 ̇ equipped with
-    suitable data.
+  * A dominance is given by a function d : 𝓣 ̇ → 𝓚 ̇ subject to suitable
+    properties.
 
 \begin{code}
 
