@@ -94,10 +94,10 @@ a record:
 
 \begin{code}
 
-record quasidecidable-propositions-exist (𝓣 : Universe) : 𝓤ω where
+record quasidecidable-propositions-exist (𝓣 𝓚 : Universe) : 𝓤ω where
  open PropositionalTruncation pt
  field
-  is-quasidecidable : 𝓣 ̇ → 𝓣 ̇
+  is-quasidecidable : 𝓣 ̇ → 𝓚 ̇
 
   being-quasidecidable-is-prop : ∀ P → is-prop (is-quasidecidable P)
 
@@ -128,8 +128,8 @@ We also formulate the existence of the initial σ-frame as a record.
 record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
  open UF-SIP-Examples.σ-frame
  field
-  𝓐 : σ-Frame (𝓣 ⁺)
-  𝓐-is-initial : (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-homomorphism 𝓐 𝓑 f
+  𝓐 : σ-Frame 𝓣
+  𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
 
 \end{code}
 
@@ -137,49 +137,91 @@ And finally the existence of the free σ-sup-lattice on one generator:
 
 \begin{code}
 
-record free-σ-SupLat-on-one-generator-exists (𝓤 𝓣 : Universe) : 𝓤ω where
+record free-σ-SupLat-on-one-generator-exists (𝓣 𝓚 : Universe) : 𝓤ω where
  open sigma-sup-lattice fe pe
  field
-  𝓐 : σ-SupLat 𝓤 𝓣
+  𝓐 : σ-SupLat 𝓣 𝓚
   ⊤ : ⟨ 𝓐 ⟩
-  𝓐-free : {𝓤 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
+  𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
          → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
                                   × (f ⊤ ≡ t)
 \end{code}
 
-The main theorems are as follows:
+The main theorems are as follows, with the following conventions:
+
+  * 𝓣 is the universe where the quasidecidable truth values live.
+
+    Typically 𝓣 will be 𝓤₀ or 𝓤₁.
+
+  * 𝓚 is the universe where the knowledge they are quasidecidable lives.
+
+    Typically 𝓚 will be 𝓣 or 𝓣 ⁺
 
 \begin{code}
 
-theorem₁ : quasidecidable-propositions-exist 𝓣
-         → free-σ-SupLat-on-one-generator-exists (𝓣 ⁺) 𝓣
-theorem₁ {𝓣} q = record {
-                   𝓐 = QD ;
-                   ⊤ = ⊤ ;
-                   𝓐-free = QD-is-free-σ-SupLat
-                   }
+variable 𝓚 : Universe
+
+theorem₁ : quasidecidable-propositions-exist 𝓣 𝓚
+         → free-σ-SupLat-on-one-generator-exists (𝓣 ⁺ ⊔ 𝓚) 𝓣
+theorem₁ {𝓣} {𝓤} q = record {
+                       𝓐 = QD ;
+                       ⊤ = ⊤ ;
+                       𝓐-free = QD-is-free-σ-SupLat
+                       }
  where
-  open  quasidecidable-propositions-exist q
-  open  hypothetical-quasidecidability {𝓣}
-          is-quasidecidable
-          being-quasidecidable-is-prop
-          𝟘-is-quasidecidable
-          𝟙-is-quasidecidable
-          quasidecidable-closed-under-ω-joins
-          quasidecidable-induction
+  open quasidecidable-propositions-exist q
+  open hypothetical-quasidecidability {𝓣} {𝓤}
+        is-quasidecidable
+        being-quasidecidable-is-prop
+        𝟘-is-quasidecidable
+        𝟙-is-quasidecidable
+        quasidecidable-closed-under-ω-joins
+        quasidecidable-induction
+
+theorem₂ : free-σ-SupLat-on-one-generator-exists 𝓣 𝓤
+         → quasidecidable-propositions-exist 𝓣 𝓣
+theorem₂ {𝓣} {𝓤} f =
+ record {
+  is-quasidecidable = is-quasidecidable₀ ;
+  being-quasidecidable-is-prop = being-quasidecidable₀-is-prop ;
+  𝟘-is-quasidecidable = 𝟘-is-quasidecidable₀ ;
+  𝟙-is-quasidecidable = 𝟙-is-quasidecidable₀ ;
+  quasidecidable-closed-under-ω-joins = quasidecidable₀-closed-under-ω-joins ;
+  quasidecidable-induction = quasidecidable₀-induction
+  }
+
+ where
+  open free-σ-SupLat-on-one-generator-exists f
+  open hypothetical-free-σ-SupLat-on-one-generator
+  open assumption {𝓣} {𝓤} 𝓐 ⊤ 𝓐-free
 
 
-{-
-theorem₂ : free-σ-SupLat-on-one-generator-exists 𝓣 𝓣
-         → quasidecidable-propositions-exist 𝓣
-theorem₂ {𝓣} = {!!}
-
-theorem₃ : free-σ-SupLat-on-one-generator-exists 𝓣
+theorem₃ : free-σ-SupLat-on-one-generator-exists 𝓣 𝓚
          → initial-σ-frame-exists 𝓣
-theorem₃ {𝓣} = {!!}
+theorem₃ {𝓣} {𝓚} f =
+ record {
+  𝓐 = 𝓐-qua-σ-frame ;
+  𝓐-is-initial = 𝓐-qua-σ-frame-is-initial
+  }
+ where
+  open free-σ-SupLat-on-one-generator-exists f
+  open hypothetical-free-σ-SupLat-on-one-generator
+  open assumption {𝓣} {𝓚} 𝓐 ⊤ 𝓐-free
+
 
 theorem₄ : Propositional-Resizing
-         → quasidecidable-propositions-exist 𝓣
-theorem₄ = {!!}
--}
+         → quasidecidable-propositions-exist 𝓣 𝓚
+theorem₄ {𝓣} {𝓚} ρ =
+ record {
+  is-quasidecidable = is-quasidecidable ;
+  being-quasidecidable-is-prop = being-quasidecidable-is-prop ;
+  𝟘-is-quasidecidable = 𝟘-is-quasidecidable ;
+  𝟙-is-quasidecidable = 𝟙-is-quasidecidable ;
+  quasidecidable-closed-under-ω-joins = quasidecidable-closed-under-ω-joins ;
+  quasidecidable-induction = quasidecidable-induction
+  }
+
+ where
+  open quasidecidability-construction-from-resizing 𝓣 𝓚 ρ
+
 \end{code}
