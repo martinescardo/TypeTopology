@@ -32,7 +32,6 @@ notes:
 
   * ∞-bigmagma
   * ∞-hugemagma
-  * frame
 
 \begin{code}
 
@@ -1845,7 +1844,8 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
 
 We use the above in another module to define σ-frames.
 
-We now consider ∞-bigmagmas with all operations of all arities.
+We now consider ∞-bigmagmas with all operations of all arities, which
+we use in another module to define frames.
 
 \begin{code}
 
@@ -1888,91 +1888,5 @@ module ∞-hugemagma {𝓤 𝓥 : Universe} where
                                    → (A B : ∞-Hugemagma)
                                    → (A ≡ B) ≃ (A ≅[∞-Hugemagma] B)
  characterization-of-∞-Hugemagma-≡ ua = characterization-of-≡ ua sns-data
-
-\end{code}
-
-We now consider frames.
-
-\begin{code}
-
-module frame (𝓤 𝓥 : Universe) where
-
- frame-structure : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
- frame-structure X = X × (X → X → X) × ({N : 𝓥 ̇ } → ((N → X) → X))
-
- frame-axioms : (X : 𝓤 ̇ ) → frame-structure X → 𝓤 ⊔ (𝓥 ⁺) ̇
- frame-axioms X (⊤ , _∧_ , ⋁) = I × II × III × IV × V × VI × VII
-  where
-   I   = is-set X
-   II  = (x : X) → x ∧ x ≡ x
-   III = (x y : X) → x ∧ y ≡ y ∧ x
-   IV  = (x y z : X) → x ∧ (y ∧ z) ≡ (x ∧ y) ∧ z
-   V   = (x : X) → x ∧ ⊤ ≡ x
-   VI  = (x : X) {N : 𝓥 ̇ } (y : N → X) → x ∧ (⋁ y) ≡ ⋁ (n ↦ (x ∧ y n))
-   _≤_ : X → X → 𝓤 ̇
-   x ≤ y = x ∧ y ≡ x
-   VII = {N : 𝓥 ̇ } (x : N → X)
-       → ((n : N) → x n ≤ ⋁ x)
-       × ((u : X) → ((n : N) → x n ≤ u) → ⋁ x ≤ u)
- \end{code}
-
- Axioms I-IV say that (X , ⊤ , ∧) is a bounded semilattice, axiom VII
- says that ⋁ gives least upper bounds w.r.t. the induced partial order,
- and axiom VI says that binary meets distribute over countable joins.
-
- \begin{code}
-
- frame-axioms-is-prop : funext 𝓤 𝓤
-                      → funext 𝓤 (𝓤 ⊔ (𝓥 ⁺)) → funext (𝓥 ⁺) (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) 𝓤
-                      → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → funext 𝓥 𝓤 → funext 𝓤 (𝓤 ⊔ 𝓥)
-                      → (X : 𝓤 ̇ ) (s : frame-structure X)
-                      → is-prop (frame-axioms X s)
- frame-axioms-is-prop fe fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ X (⊤ , _∧_ , ⋁) = prop-criterion δ
-  where
-   δ : frame-axioms X (⊤ , _∧_ , ⋁) → is-prop (frame-axioms X (⊤ , _∧_ , ⋁))
-   δ (i , ii-vii) =
-     ×-is-prop (being-set-is-prop fe)
-    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ x} {x}))
-    (×-is-prop (Π-is-prop fe (λ x →
-                Π-is-prop fe (λ y →            i {x ∧ y} {y ∧ x})))
-    (×-is-prop (Π-is-prop fe (λ x →
-                Π-is-prop fe (λ y →
-                Π-is-prop fe (λ z →            i {x ∧ (y ∧ z)} {(x ∧ y) ∧ z}))))
-    (×-is-prop (Π-is-prop fe (λ x →            i {x ∧ ⊤} {x}))
-    (×-is-prop (Π-is-prop fe₁ (λ x →
-                Π-is-prop' fe₂ (λ N →
-                Π-is-prop fe₃ (λ y →           i {x ∧ ⋁ y} {⋁ (λ n → x ∧ y n)}))))
-               (Π-is-prop' fe₂ (λ n
-              → Π-is-prop  fe₄  (λ 𝕪 →
-              ×-is-prop (Π-is-prop fe₅ (λ n →  i {𝕪 n ∧ ⋁ 𝕪} {𝕪 n}))
-                        (Π-is-prop fe₆ (λ u →
-                         Π-is-prop fe₃ (λ _ →  i {⋁ 𝕪 ∧ u} {⋁ 𝕪})))))))))))
- Frame : (𝓤 ⊔ 𝓥)⁺ ̇
- Frame = Σ A ꞉ 𝓤 ̇ , Σ s ꞉ frame-structure A , frame-axioms A s
-
- _≅[Frame]_ : Frame → Frame → 𝓤 ⊔ (𝓥 ⁺) ̇
- (A , (⊤ , _∧_ , ⋁) , _) ≅[Frame] (A' , (⊤' , _∧'_ , ⋁') , _) =
-
-                         Σ f ꞉ (A → A')
-                             , is-equiv f
-                             × (f ⊤ ≡ ⊤')
-                             × ((λ a b → f (a ∧ b)) ≡ (λ a b → f a ∧' f b))
-                             × ((λ {N} (𝕒 : N → A) → f (⋁ 𝕒)) ≡ (λ {N} 𝕒 → ⋁' (n ↦ f (𝕒 n))))
-
- characterization-of-Frame-≡ : is-univalent 𝓤
-                             → funext 𝓤 (𝓤 ⊔ (𝓥 ⁺)) → funext (𝓥 ⁺) (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) 𝓤
-                             → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → funext 𝓥 𝓤 → funext 𝓤 (𝓤 ⊔ 𝓥)
-                             → (A B : Frame)
-                             → (A ≡ B) ≃ (A ≅[Frame] B)
- characterization-of-Frame-≡ ua fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ =
-   sip.characterization-of-≡ ua
-    (sip-with-axioms.add-axioms
-       frame-axioms
-       (frame-axioms-is-prop (univalence-gives-funext ua) fe₁ fe₂ fe₃ fe₄ fe₅ fe₆)
-      (sip-join.join
-        pointed-type.sns-data
-      (sip-join.join
-        ∞-magma.sns-data
-        ∞-hugemagma.sns-data)))
 
 \end{code}

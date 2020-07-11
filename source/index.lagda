@@ -132,6 +132,7 @@ import Empty
 import Escardo-Simpson-LICS2001
 import ExtendedSumCompact
 import Fin
+import frame
 import FailureOfTotalSeparatedness
 import GeneralNotation
 import GenericConvergentSequence
