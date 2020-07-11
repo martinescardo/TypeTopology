@@ -126,7 +126,7 @@ We also formulate the existence of the initial σ-frame as a record.
 \begin{code}
 
 record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
- open sigma-frame
+ open sigma-frame fe
  field
   𝓐 : σ-Frame 𝓣
   𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
@@ -138,7 +138,7 @@ And finally the existence of the free σ-sup-lattice on one generator:
 \begin{code}
 
 record free-σ-SupLat-on-one-generator-exists (𝓣 𝓚 : Universe) : 𝓤ω where
- open sigma-sup-lattice fe pe
+ open sigma-sup-lattice fe
  field
   𝓐 : σ-SupLat 𝓣 𝓚
   ⊤ : ⟨ 𝓐 ⟩

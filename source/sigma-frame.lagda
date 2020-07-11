@@ -26,7 +26,7 @@ open import SpartanMLTT hiding (*)
 open import UF-FunExt
 open import UF-Subsingletons
 
-module sigma-frame where
+module sigma-frame (fe : Fun-Ext) where
 
 open import UF-Base
 open import UF-SIP
@@ -62,10 +62,9 @@ and axiom VI says that binary meets distribute over countable joins.
 
 \begin{code}
 
-σ-frame-axioms-is-prop : funext 𝓤 𝓤 → funext 𝓤₀ 𝓤
-                       → (X : 𝓤 ̇ ) (s : σ-frame-structure X)
+σ-frame-axioms-is-prop : (X : 𝓤 ̇ ) (s : σ-frame-structure X)
                        → is-prop (σ-frame-axioms X s)
-σ-frame-axioms-is-prop fe fe₀ X (⊤ , _∧_ , ⊥ , ⋁) = prop-criterion δ
+σ-frame-axioms-is-prop X (⊤ , _∧_ , ⊥ , ⋁) = prop-criterion δ
  where
   δ : σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁) → is-prop (σ-frame-axioms X (⊤ , _∧_ , ⊥ , ⋁))
   δ (i , ii-ix) =
@@ -81,7 +80,7 @@ and axiom VI says that binary meets distribute over countable joins.
    (×-is-prop (Π-is-prop fe (λ x →
                Π-is-prop fe (λ y →  i {x ∧ ⋁ y} {⋁ (n ↦ x ∧ y n)})))
    (×-is-prop (Π-is-prop fe (λ x →
-               Π-is-prop fe₀ (λ n → i {x n ∧ ⋁ x} {x n})))
+               Π-is-prop fe (λ n → i {x n ∧ ⋁ x} {x n})))
               (Π-is-prop fe (λ x →
                Π-is-prop fe (λ u →
                Π-is-prop fe (λ _ →  i {⋁ x ∧ u} {⋁ x})))))))))))
@@ -100,26 +99,17 @@ is-σ-frame-homomorphism  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'
   × (f ⊥ ≡ ⊥')
   × ((λ 𝕒 → f (⋁ 𝕒)) ≡ (λ 𝕒 → ⋁' (n ↦ f (𝕒 n))))
 
-\end{code}
-
-TODO: is-univalent 𝓤 implies funext 𝓤₀ 𝓤 because funext 𝓤 𝓤 implies
-funext 𝓤₀ 𝓤 (see MGS lecture notes for a proof). Hence the assumption
-funext 𝓤₀ 𝓤 is superfluous in the following.
-
-\begin{code}
-
 _≅[σ-Frame]_ : σ-Frame 𝓤 → σ-Frame 𝓤 → 𝓤 ̇
 𝓐 ≅[σ-Frame] 𝓑 = Σ f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-equiv f × is-σ-frame-homomorphism 𝓐 𝓑 f
 
 characterization-of-σ-Frame-≡ : is-univalent 𝓤
-                              → funext 𝓤₀ 𝓤
                               → (A B : σ-Frame 𝓤)
                               → (A ≡ B) ≃ (A ≅[σ-Frame] B)
-characterization-of-σ-Frame-≡ ua fe₀ =
+characterization-of-σ-Frame-≡ ua =
   sip.characterization-of-≡ ua
    (sip-with-axioms.add-axioms
       σ-frame-axioms
-      (σ-frame-axioms-is-prop (univalence-gives-funext ua) fe₀)
+      σ-frame-axioms-is-prop
      (sip-join.join
        pointed-type.sns-data
      (sip-join.join
@@ -207,22 +197,21 @@ syntax order 𝓐 x y = x ≤⟨ 𝓐 ⟩ y
                         b             ∎
 
 
-being-σ-frame-homomorphism-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+being-σ-frame-homomorphism-is-prop : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
                                    → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                                    → is-prop (is-σ-frame-homomorphism 𝓐 𝓑 f)
-being-σ-frame-homomorphism-is-prop fe (_ , _ ,  _) (_ , _ , (i' , _)) f =
+being-σ-frame-homomorphism-is-prop (_ , _ ,  _) (_ , _ , (i' , _)) f =
   ×-is-prop i'
  (×-is-prop (Π-is-set fe (λ a →
              Π-is-set fe (λ b → i')))
  (×-is-prop i' (Π-is-set fe (λ 𝕒 → i'))))
 
-∘-σ-frame-homomorphism : Fun-Ext
-                       → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
+∘-σ-frame-homomorphism : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥) (𝓒 : σ-Frame 𝓦)
                          (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) (g : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
                        → is-σ-frame-homomorphism 𝓐 𝓑 f
                        → is-σ-frame-homomorphism 𝓑 𝓒 g
                        → is-σ-frame-homomorphism 𝓐 𝓒 (g ∘ f)
-∘-σ-frame-homomorphism fe 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
+∘-σ-frame-homomorphism 𝓐 𝓑 𝓒 f g (p₀ , q₀ , r₀ , s₀) (p₁ , q₁ , r₁ , s₁) = (p₂ , q₂ , r₂ , s₂)
  where
   p₂ = g (f ⊤⟨ 𝓐 ⟩) ≡⟨ ap g p₀ ⟩
        g ⊤⟨ 𝓑 ⟩     ≡⟨ p₁         ⟩
@@ -277,10 +266,10 @@ is-σ-frame-hom  (_ , (⊤ , _∧_ , ⊥ , ⋁) , _) (_ , (⊤' , _∧'_ , ⊥' 
               → ∀ 𝕒 → f (⋁⟨ 𝓐 ⟩ 𝕒) ≡ ⋁⟨ 𝓑 ⟩ (n ↦ f (𝕒 n))
 σ-frame-hom-⋁ 𝓐 𝓑 f (i , ii , iii , vi) = vi
 
-being-σ-frame-hom-is-prop : Fun-Ext → (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
+being-σ-frame-hom-is-prop : (𝓐 : σ-Frame 𝓤) (𝓑 : σ-Frame 𝓥)
                           → (f : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
                           → is-prop (is-σ-frame-hom 𝓐 𝓑 f)
-being-σ-frame-hom-is-prop fe (_ , _ ,  _) (_ , _ , (i' , _)) f =
+being-σ-frame-hom-is-prop (_ , _ ,  _) (_ , _ , (i' , _)) f =
 
    ×₄-is-prop i' (Π₂-is-prop fe (λ a b → i')) i' (Π-is-prop fe (λ 𝕒 → i'))
 
@@ -309,4 +298,20 @@ id-is-σ-frame-hom 𝓐 = refl , (λ a b → refl) , refl , (λ 𝕒 → refl)
   s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ≡⟨ ap g (s₀ 𝕒)        ⟩
              g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ≡⟨ s₁ (λ n → f (𝕒 n)) ⟩
              ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n))) ∎
+
+import sigma-sup-lattice
+
+private σ-SupLat = sigma-sup-lattice.σ-SupLat fe
+
+σ-frames-are-σ-suplats : σ-Frame 𝓤 → σ-SupLat 𝓤 𝓤
+σ-frames-are-σ-suplats 𝓑  = ⟨ 𝓑 ⟩ ,
+                            (⊥⟨ 𝓑 ⟩ , ⋁⟨ 𝓑 ⟩) ,
+                            (λ x y → x ∧⟨ 𝓑 ⟩ y ≡ x) ,
+                            (λ x y → ⟨ 𝓑 ⟩-is-set) ,
+                            (⟨ 𝓑 ⟩-refl) ,
+                            ⟨ 𝓑 ⟩-trans ,
+                            ⟨ 𝓑 ⟩-antisym ,
+                            ⟨ 𝓑 ⟩-⊥-minimum ,
+                            ⟨ 𝓑 ⟩-⋁-is-ub ,
+                            ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs
 \end{code}

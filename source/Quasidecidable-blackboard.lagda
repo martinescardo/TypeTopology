@@ -464,7 +464,7 @@ propositions:
 
 \begin{code}
 
- open import sigma-sup-lattice fe pe
+ open import sigma-sup-lattice fe
 
  QD : σ-SupLat (𝓣 ⁺ ⊔ 𝓚) 𝓣
  QD = 𝓠 ,
@@ -883,7 +883,7 @@ quasidecidable propositions to the above hypothetical development.
 
 \begin{code}
 
- open sigma-sup-lattice fe pe
+ open sigma-sup-lattice fe
 
  free-σ-suplat-on-one-generator-exists :
 
@@ -936,7 +936,7 @@ restrict to a σ-Frame in the future):
 
 module Ω-is-σ-frame {𝓤 : Universe} where
 
- open sigma-frame
+ open sigma-frame fe
 
  𝓞 = Ω 𝓤
 
@@ -1084,7 +1084,7 @@ free σ-sup-lattice on one generator ⊤.
 
 module hypothetical-free-σ-SupLat-on-one-generator where
 
- open import sigma-sup-lattice fe pe
+ open import sigma-sup-lattice fe
 
  module assumption
         {𝓣 𝓚 : Universe}
@@ -1434,7 +1434,7 @@ We now show that the initial σ-suplat is also the initial σ-frame. The
 following renaming is annoying.
 
 \begin{code}
-  open sigma-frame
+  open sigma-frame fe
         hiding (order)
         renaming
          (⟨_⟩ to ⟨_⟩' ;
@@ -1463,18 +1463,6 @@ following renaming is annoying.
                   meet⋁ ,
                   (λ a n → from-≤ (a n) (⋁ a) (⟨ 𝓐 ⟩-⋁-is-ub a n)) ,
                   (λ a u φ → from-≤ (⋁ a) u (⟨ 𝓐 ⟩-⋁-is-lb-of-ubs a u (λ n → to-≤ (a n) u (φ n))))
-
-  σ-frames-are-σ-suplats : ∀ {𝓥} → σ-Frame 𝓥 → σ-SupLat 𝓥 𝓥
-  σ-frames-are-σ-suplats 𝓑  = ⟨ 𝓑 ⟩' ,
-                              (⊥⟨ 𝓑 ⟩' , ⋁⟨ 𝓑 ⟩') ,
-                              (λ x y → meet' 𝓑 x y ≡ x) ,
-                              (λ x y → ⟨ 𝓑 ⟩'-is-set) ,
-                              (⟨ 𝓑 ⟩'-refl) ,
-                              ⟨ 𝓑 ⟩'-trans ,
-                              ⟨ 𝓑 ⟩'-antisym ,
-                              ⟨ 𝓑 ⟩'-⊥-minimum ,
-                              ⟨ 𝓑 ⟩'-⋁-is-ub ,
-                              ⟨ 𝓑 ⟩'-⋁-is-lb-of-ubs
 
   𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓥)
                            → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
@@ -1544,7 +1532,7 @@ following renaming is annoying.
     γ : ∃! f ꞉ (A → B), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
     γ = (f , f-is-hom') ,
         (λ (g , g-is-hom') → to-subtype-≡
-                               (being-σ-frame-hom-is-prop fe 𝓐-qua-σ-frame 𝓑)
+                               (being-σ-frame-hom-is-prop 𝓐-qua-σ-frame 𝓑)
                                (f-uniqueness g g-is-hom'))
 \end{code}
 
@@ -2246,7 +2234,7 @@ not going to throw it away, just in case it is needed in the future:
 
 module hypothetical-initial-σ-Frame where
 
- open sigma-frame
+ open sigma-frame fe
 
  module _ (𝓐 : σ-Frame 𝓣)
           (𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤)

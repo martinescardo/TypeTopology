@@ -11,10 +11,7 @@ open import SpartanMLTT hiding (*)
 open import UF-FunExt
 open import UF-Subsingletons
 
-module sigma-sup-lattice
-        (fe : Fun-Ext)
-        (pe : Prop-Ext)
-       where
+module sigma-sup-lattice (fe : Fun-Ext) where
 
 open import UF-Base
 open import UF-SIP
@@ -103,11 +100,12 @@ most one compatible order:
 
 \begin{code}
 
-at-most-one-σ-sup-order : {X : 𝓤 ̇ } (s : σ-suplat-structure X) (_≤_ _≤'_ : X → X → 𝓥 ̇ )
+at-most-one-σ-sup-order : Prop-Ext
+                        → {X : 𝓤 ̇ } (s : σ-suplat-structure X) (_≤_ _≤'_ : X → X → 𝓥 ̇ )
                         → is-σ-sup-compatible-order s _≤_
                         → is-σ-sup-compatible-order s _≤'_
                         → _≤_ ≡ _≤'_
-at-most-one-σ-sup-order s _≤_ _≤'_ (i , i') (j , j') = γ
+at-most-one-σ-sup-order pe s _≤_ _≤'_ (i , i') (j , j') = γ
  where
   a : ∀ x y → x ≤ y → x ≤' y
   a x y = v ∘ u
@@ -165,12 +163,13 @@ which is then unique by the above:
   type-with-prop-valued-refl-antisym-rel-is-set _≤_ ≤-prop-valued ≤-refl ≤-anti
 
 
-σ-suplat-axiom-is-prop : {𝓥 : Universe}
+σ-suplat-axiom-is-prop : Prop-Ext
+                       → {𝓥 : Universe}
                        → {X : 𝓤 ̇ } (s : σ-suplat-structure X)
                        → is-prop (σ-suplat-axiom 𝓥 {X} s)
-σ-suplat-axiom-is-prop s (_≤_ , a) (_≤'_ , a') = to-subtype-≡
-                                                        (being-σ-sup-order-is-prop s)
-                                                        (at-most-one-σ-sup-order s _≤_ _≤'_ a a')
+σ-suplat-axiom-is-prop pe s (_≤_ , a) (_≤'_ , a') = to-subtype-≡
+                                                      (being-σ-sup-order-is-prop s)
+                                                      (at-most-one-σ-sup-order pe s _≤_ _≤'_ a a')
 
 σ-SupLat : (𝓤 𝓥  : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
 σ-SupLat 𝓤 𝓥 = Σ X ꞉  𝓤 ̇ , Σ s ꞉ σ-suplat-structure X , σ-suplat-axiom 𝓥 s
