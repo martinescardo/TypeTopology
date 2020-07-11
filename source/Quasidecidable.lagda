@@ -71,13 +71,13 @@ We have:
 open import SpartanMLTT
 open import UF-PropTrunc hiding (⊥ ; ⊤)
 
-module QuasiDecidable
+module Quasidecidable
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
         (pt  : propositional-truncations-exist)
        where
 
-open import QuasiDecidable-blackboard fe pe pt
+open import Quasidecidable-blackboard fe pe pt
 
 open import UF-Size
 import UF-SIP-Examples

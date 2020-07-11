@@ -37,7 +37,7 @@ propositional truncations, as explicit hypotheses.
 open import SpartanMLTT
 open import UF-PropTrunc hiding (⊥ ; ⊤)
 
-module QuasiDecidable-blackboard
+module Quasidecidable-blackboard
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
         (pt  : propositional-truncations-exist)

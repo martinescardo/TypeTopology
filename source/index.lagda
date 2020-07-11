@@ -179,8 +179,8 @@ import PlusOneLC
 import Plus-Properties
 import PropInfTychonoff
 import PropTychonoff
-import QuasiDecidable-blackboard
-import QuasiDecidable
+import Quasidecidable-blackboard
+import Quasidecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
