@@ -700,7 +700,7 @@ propositional resizing is available:
 open import UF-Size
 
 module quasidecidability-construction-from-resizing
-        {𝓣 𝓚 : Universe}
+        (𝓣 𝓚 : Universe)
         (ρ : Propositional-Resizing)
        where
 
@@ -1086,9 +1086,9 @@ module hypothetical-free-σ-SupLat-on-one-generator where
 
  open import sigma-sup-lattice fe pe
 
- module _
-        {𝓣 𝓗 : Universe}
-        (𝓐 : σ-SupLat 𝓣 𝓗)
+ module assumption
+        {𝓣 𝓚 : Universe}
+        (𝓐 : σ-SupLat 𝓣 𝓚)
         (⊤ : ⟨ 𝓐 ⟩)
         (𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
                 → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
@@ -1106,7 +1106,7 @@ We first introduce some abbreviations:
    ⊥   = ⊥⟨ 𝓐 ⟩
    ⋁  = ⋁⟨ 𝓐 ⟩
 
-  _≤_ : A → A → 𝓗 ̇
+  _≤_ : A → A → 𝓚 ̇
   a ≤ b = a ≤⟨ 𝓐 ⟩ b
 
   abstract
@@ -1170,10 +1170,10 @@ want to prove.
     ⋁' : (ℕ → X) → X
     ⋁' x = (⋁ (pr₁ ∘ x) , ⋁-closure (pr₁ ∘ x) (pr₂ ∘ x))
 
-    _≤'_ : X → X → 𝓗 ̇
+    _≤'_ : X → X → 𝓚 ̇
     (a , _) ≤' (b , _) = a ≤ b
 
-    𝓑 : σ-SupLat (𝓣 ⊔ 𝓥) 𝓗
+    𝓑 : σ-SupLat (𝓣 ⊔ 𝓥) 𝓚
     𝓑 = X , (⊥' , ⋁') ,
          _≤'_ ,
          (λ (a , _) (b , _) → ⟨ 𝓐 ⟩-order-is-prop-valued a b) ,
@@ -1309,10 +1309,10 @@ Such joins are absolute, in the sense that they are preserved by all homomorphis
 
 \begin{code}
 
-  σ-rec-joins-absolute : (𝓑 : σ-SupLat 𝓥 𝓦) (𝓒 : σ-SupLat 𝓣' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
-                       → is-σ-suplat-hom 𝓑 𝓒 f
-                       → (t : ⟨ 𝓑 ⟩) (a : A) → f (σ-rec 𝓑 t a) ≡ σ-rec 𝓒 (f t) a
-  σ-rec-joins-absolute 𝓑 𝓒 f i t = happly γ
+  σ-suplat-homs-preserve-σ-rec : (𝓑 : σ-SupLat 𝓥 𝓦) (𝓒 : σ-SupLat 𝓣' 𝓥') (f : ⟨ 𝓑 ⟩ → ⟨ 𝓒 ⟩)
+                               → is-σ-suplat-hom 𝓑 𝓒 f
+                               → (t : ⟨ 𝓑 ⟩) (a : A) → f (σ-rec 𝓑 t a) ≡ σ-rec 𝓒 (f t) a
+  σ-suplat-homs-preserve-σ-rec 𝓑 𝓒 f i t = happly γ
    where
     h = f ∘ σ-rec 𝓑 t
 
@@ -1349,7 +1349,8 @@ of joins.
 
   σ-rec-∧ : (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩) (a b : A)
           → σ-rec 𝓑 t (a ∧ b) ≡ σ-rec 𝓑 (σ-rec 𝓑 t a) b
-  σ-rec-∧ 𝓑 t a b = σ-rec-joins-absolute 𝓐 𝓑 (σ-rec 𝓑 t) (σ-rec-is-hom 𝓑 t) a b
+  σ-rec-∧ 𝓑 t a b = σ-suplat-homs-preserve-σ-rec 𝓐 𝓑
+                      (σ-rec 𝓑 t) (σ-rec-is-hom 𝓑 t) a b
 
   ∧-associative : (a b c : A) → a ∧ (b ∧ c) ≡ (a ∧ b) ∧ c
   ∧-associative = σ-rec-∧ 𝓐
@@ -1474,16 +1475,16 @@ following renaming is annoying.
                               ⟨ 𝓑 ⟩'-⋁-is-ub ,
                               ⟨ 𝓑 ⟩'-⋁-is-lb-of-ubs
 
-  𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓣)
+  𝓐-qua-σ-frame-is-initial : (𝓑 : σ-Frame 𝓥)
                            → ∃! f ꞉ (A → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐-qua-σ-frame 𝓑 f
-  𝓐-qua-σ-frame-is-initial 𝓑 = γ
+  𝓐-qua-σ-frame-is-initial {𝓥} 𝓑 = γ
    where
     B = ⟨ 𝓑 ⟩
 
     _∧'_ : B → B → B
     _∧'_ = meet' 𝓑
 
-    𝓑-qua-σ-suplat : σ-SupLat 𝓣 𝓣
+    𝓑-qua-σ-suplat : σ-SupLat 𝓥 𝓥
     𝓑-qua-σ-suplat = σ-frames-are-σ-suplats 𝓑
 
     ⊤' : B
@@ -1758,7 +1759,7 @@ a set:
 
 \end{code}
 
-Hence the composite τ-holds is an embedding of A into the universe 𝓗:
+Hence the composite τ-holds is an embedding of A into the universe 𝓣:
 
 \begin{code}
 
@@ -2153,6 +2154,57 @@ meets:
 
       l : (n : ℕ) → b' n ≤⟨ 𝓑 ⟩ u
       l n = sup-is-lb-of-ubs 𝓑 (τ (a n) holds) (a n , refl) (g' n) u (φ' n)
+
+\end{code}
+
+We now generalize and resize part of the above (without resizing
+axioms) by replacing equality by equivalence in the definition of
+quasidecidability:
+
+\begin{code}
+
+  is-quasidecidable' : 𝓥 ̇ → 𝓣 ⊔ 𝓥 ̇
+  is-quasidecidable' P = Σ a ꞉ A , (τ a holds ≃ P)
+
+  is-quasidecidable₀ : 𝓣 ̇ → 𝓣 ̇
+  is-quasidecidable₀ = is-quasidecidable' {𝓣}
+
+  quasidecidability-resizing : (P : 𝓣 ̇ ) → is-quasidecidable P ≃ is-quasidecidable₀ P
+  quasidecidability-resizing P = Σ-cong e
+   where
+    e : (a : A) → (τ a holds ≡ P) ≃ (τ a holds ≃ P)
+    e a = prop-univalent-≃' pe fe P (τ a holds) (holds-is-prop (τ a))
+
+  being-quasidecidable₀-is-prop : (P : 𝓣 ̇ ) → is-prop (is-quasidecidable₀ P)
+  being-quasidecidable₀-is-prop P = equiv-to-prop
+                                      (≃-sym (quasidecidability-resizing P))
+                                      (being-quasidecidable-is-prop P)
+
+  𝟘-is-quasidecidable₀ : is-quasidecidable₀ 𝟘
+  𝟘-is-quasidecidable₀ = ⌜ quasidecidability-resizing 𝟘 ⌝ 𝟘-is-quasidecidable
+
+  𝟙-is-quasidecidable₀ : is-quasidecidable₀ 𝟙
+  𝟙-is-quasidecidable₀ = ⌜ quasidecidability-resizing 𝟙 ⌝ 𝟙-is-quasidecidable
+
+  quasidecidable₀-closed-under-ω-joins :
+     (P : ℕ → 𝓣 ̇ )
+   → ((n : ℕ) → is-quasidecidable₀ (P n))
+   → is-quasidecidable₀ (∃ n ꞉ ℕ , P n)
+  quasidecidable₀-closed-under-ω-joins P φ = ⌜ quasidecidability-resizing (∃ n ꞉ ℕ , P n) ⌝
+                                               (quasidecidable-closed-under-ω-joins P φ')
+   where
+    φ' : (n : ℕ) → is-quasidecidable (P n)
+    φ' n = ⌜ ≃-sym (quasidecidability-resizing (P n)) ⌝ (φ n)
+
+  quasidecidable₀-induction :
+     (F : 𝓣 ̇ → 𝓥 ̇ )
+   → ((P : 𝓣 ̇ ) → is-prop (F P))
+   → F 𝟘
+   → F 𝟙
+   → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
+   → (P : 𝓣 ̇ ) → is-quasidecidable₀ P → F P
+  quasidecidable₀-induction F i F₀ F₁ Fω P q = quasidecidable-induction F i F₀ F₁ Fω
+                                                P (⌜ ≃-sym (quasidecidability-resizing P) ⌝ q)
 
 \end{code}
 
