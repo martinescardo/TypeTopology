@@ -53,10 +53,10 @@ open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-EquivalenceExamples
 open import UF-Yoneda
-open import UF-SIP-Examples
 open import UF-Embeddings
 open import UF-Powerset
 
+import sigma-frame
 import sigma-sup-lattice
 
 \end{code}
@@ -936,7 +936,7 @@ restrict to a σ-Frame in the future):
 
 module Ω-is-σ-frame {𝓤 : Universe} where
 
- open σ-frame
+ open sigma-frame
 
  𝓞 = Ω 𝓤
 
@@ -1434,21 +1434,22 @@ We now show that the initial σ-suplat is also the initial σ-frame. The
 following renaming is annoying.
 
 \begin{code}
-  open σ-frame hiding (order)
-               renaming
-                (⟨_⟩ to ⟨_⟩' ;
-                 ⊥⟨_⟩ to ⊥⟨_⟩' ;
-                 ⊤⟨_⟩ to ⊤⟨_⟩' ;
-                 meet to meet' ;
-                 ⋁⟨_⟩ to ⋁⟨_⟩' ;
-                 ⟨_⟩-is-set to ⟨_⟩'-is-set ;
-                 ⟨_⟩-refl to ⟨_⟩'-refl ;
-                 ⟨_⟩-trans to ⟨_⟩'-trans ;
-                 ⟨_⟩-antisym to ⟨_⟩'-antisym ;
-                 ⟨_⟩-⊤-maximum to ⟨_⟩'-⊤-maximum ;
-                 ⟨_⟩-⊥-minimum to ⟨_⟩'-⊥-minimum ;
-                 ⟨_⟩-⋁-is-ub to ⟨_⟩'-⋁-is-ub ;
-                 ⟨_⟩-⋁-is-lb-of-ubs to ⟨_⟩'-⋁-is-lb-of-ubs)
+  open sigma-frame
+        hiding (order)
+        renaming
+         (⟨_⟩ to ⟨_⟩' ;
+          ⊥⟨_⟩ to ⊥⟨_⟩' ;
+          ⊤⟨_⟩ to ⊤⟨_⟩' ;
+          meet to meet' ;
+          ⋁⟨_⟩ to ⋁⟨_⟩' ;
+          ⟨_⟩-is-set to ⟨_⟩'-is-set ;
+          ⟨_⟩-refl to ⟨_⟩'-refl ;
+          ⟨_⟩-trans to ⟨_⟩'-trans ;
+          ⟨_⟩-antisym to ⟨_⟩'-antisym ;
+          ⟨_⟩-⊤-maximum to ⟨_⟩'-⊤-maximum ;
+          ⟨_⟩-⊥-minimum to ⟨_⟩'-⊥-minimum ;
+          ⟨_⟩-⋁-is-ub to ⟨_⟩'-⋁-is-ub ;
+          ⟨_⟩-⋁-is-lb-of-ubs to ⟨_⟩'-⋁-is-lb-of-ubs)
 
   𝓐-qua-σ-frame : σ-Frame 𝓣
   𝓐-qua-σ-frame = A ,
@@ -2245,7 +2246,7 @@ not going to throw it away, just in case it is needed in the future:
 
 module hypothetical-initial-σ-Frame where
 
- open σ-frame
+ open sigma-frame
 
  module _ (𝓐 : σ-Frame 𝓣)
           (𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤)

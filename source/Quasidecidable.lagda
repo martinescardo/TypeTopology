@@ -78,9 +78,9 @@ module Quasidecidable
        where
 
 open import Quasidecidable-blackboard fe pe pt
-
 open import UF-Size
-import UF-SIP-Examples
+
+import sigma-frame
 import sigma-sup-lattice
 
 \end{code}
@@ -126,7 +126,7 @@ We also formulate the existence of the initial σ-frame as a record.
 \begin{code}
 
 record initial-σ-frame-exists (𝓣 : Universe) : 𝓤ω where
- open UF-SIP-Examples.σ-frame
+ open sigma-frame
  field
   𝓐 : σ-Frame 𝓣
   𝓐-is-initial : {𝓤 : Universe} (𝓑 : σ-Frame 𝓤) → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩), is-σ-frame-hom 𝓐 𝓑 f
