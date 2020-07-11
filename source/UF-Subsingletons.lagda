@@ -536,13 +536,14 @@ The type of truth values.
 Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
 
 _holds : Ω 𝓤 → 𝓤 ̇
-_holds = pr₁
+(P , i) holds = P
+
 
 holds-is-prop : (p : Ω 𝓤) → is-prop (p holds)
-holds-is-prop = pr₂
+holds-is-prop (P , i) = i
 
-⊥ ⊤ : Ω 𝓤
-⊥ = 𝟘 , 𝟘-is-prop   -- false
-⊤ = 𝟙 , 𝟙-is-prop   -- true
+⊥Ω ⊤Ω : Ω 𝓤
+⊥Ω = 𝟘 , 𝟘-is-prop   -- false
+⊤Ω = 𝟙 , 𝟙-is-prop   -- true
 
 \end{code}

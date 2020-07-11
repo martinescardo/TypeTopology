@@ -9,7 +9,7 @@ The ordinal of truth values in a universe 𝓤.
 open import SpartanMLTT
 open import OrdinalNotions
 open import UF-FunExt
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-Subsingletons-FunExt
 
 module OrdinalOfTruthValues

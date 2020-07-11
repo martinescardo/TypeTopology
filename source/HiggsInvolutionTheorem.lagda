@@ -23,7 +23,7 @@ to any universe 𝓤 (easy).
 
 open import SpartanMLTT
 open import UF-Base
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 

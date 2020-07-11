@@ -9,6 +9,7 @@ open import UF-Base public
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-Embeddings
+open import UF-Subsingletons
 open import UF-PropTrunc
 open import UF-Retracts
 

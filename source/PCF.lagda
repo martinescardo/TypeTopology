@@ -14,11 +14,12 @@ module PCF (pt : propositional-truncations-exist) where
 open PropositionalTruncation pt
 
 open import SpartanMLTT
+open import UF-Subsingletons
 
 data type : 𝓤₀ ̇ where
   ι   : type
   _⇒_ : type → type → type
-  
+
 infixr 1 _⇒_
 
 data PCF : (σ : type) → 𝓤₀ ̇ where
@@ -30,7 +31,7 @@ data PCF : (σ : type) → 𝓤₀ ̇ where
   K      : {σ τ : type}   → PCF(σ ⇒ τ ⇒ σ)
   S      : {ρ σ τ : type} → PCF((ρ ⇒ σ ⇒ τ) ⇒ (ρ ⇒ σ) ⇒ ρ ⇒ τ)
   _·_    : {σ τ : type}   → PCF(σ ⇒ τ) → PCF σ → PCF τ
-  
+
 infixl 1 _·_
 
 ⌜_⌝ : ℕ → PCF ι
@@ -53,7 +54,7 @@ data _▹'_ : {σ : type} → PCF σ → PCF σ → 𝓤₀ ̇ where
   ifZero-arg  : (s t r r' : PCF ι) →
                 r ▹' r' → (ifZero · s · t · r) ▹' (ifZero · s · t · r')
 
-_▹_ : {σ : type} → PCF σ → PCF σ → 𝓤₀ ̇ 
+_▹_ : {σ : type} → PCF σ → PCF σ → 𝓤₀ ̇
 s ▹ t = ∥ s ▹' t ∥
 
 data _▹*'_ : {σ : type} → PCF σ → PCF σ → 𝓤₀ ̇ where
@@ -73,7 +74,7 @@ s ▹* t = ∥ s ▹*' t ∥
   a = ∥∥-is-prop
   b : (step : s ▹' t) → ∥ f s ▹' f t ∥
   b step = ∣ f-preserves-▹' s t step ∣
-  
+
 ▹'-to-▹*' f f-preserves-▹' s s (refl s) = refl (f s)
 ▹'-to-▹*' f f-preserves-▹' s r (trans {σ} {s} {t} {r} rel₁ rel₂) = trans IH₁ IH₂
  where

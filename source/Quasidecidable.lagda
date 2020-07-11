@@ -69,7 +69,9 @@ We have:
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-PropTrunc hiding (⊥ ; ⊤)
+open import UF-PropTrunc
+open import UF-FunExt
+open import UF-Subsingletons
 
 module Quasidecidable
         (fe  : Fun-Ext)

@@ -10,11 +10,14 @@ open import SpartanMLTT
 
 open import Two-Properties
 open import UF-Base
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Embeddings
 open import UF-PropTrunc
 open import UF-ExcludedMiddle
+open import UF-FunExt
+
 
 ⊥-⊤-density : funext 𝓤 𝓤 → propext 𝓤 → (f : Ω 𝓤 → 𝟚)
             → f ⊥ ≡ ₁ → f ⊤ ≡ ₁ → (p : Ω 𝓤) → f p ≡ ₁

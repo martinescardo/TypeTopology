@@ -145,6 +145,7 @@ open import SpartanMLTT hiding (_^_)
 
 module ArithmeticViaEquivalence where
 
+open import UF-Subsingletons
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import Fin

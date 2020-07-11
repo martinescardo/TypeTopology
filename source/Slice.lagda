@@ -10,7 +10,7 @@ open import SpartanMLTT
 
 module Slice (𝓣 : Universe) where
 
-open import UF-Subsingletons hiding (⊥)
+open import UF-Subsingletons
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
 𝓕 X = Σ I ꞉ 𝓣 ̇ , (I → X)

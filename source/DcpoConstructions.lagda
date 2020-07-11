@@ -10,7 +10,9 @@ Tom de Jong, 27 May 2019.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-PropTrunc hiding (⊥)
+open import UF-FunExt
+open import UF-Subsingletons
+open import UF-PropTrunc
 
 module DcpoConstructions
         (pt : propositional-truncations-exist)
@@ -18,8 +20,9 @@ module DcpoConstructions
        where
 
 open PropositionalTruncation pt
+open import UF-Base
 open import UF-Miscelanea
-open import UF-Subsingletons hiding (⊥)
+open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import NaturalsAddition renaming (_+_ to _+'_)

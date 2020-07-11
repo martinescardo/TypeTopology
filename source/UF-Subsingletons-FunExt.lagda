@@ -16,7 +16,7 @@ module UF-Subsingletons-FunExt where
 open import SpartanMLTT
 
 open import UF-Base
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
 open import UF-LeftCancellable
 open import UF-Retracts
@@ -241,7 +241,7 @@ as this is where negations take values in.
 
 \begin{code}
 
-⊥-is-not-⊤ : ¬(⊥ {𝓤} ≡ ⊤ {𝓤})
+⊥-is-not-⊤ : ⊥ {𝓤} ≢ ⊤ {𝓤}
 ⊥-is-not-⊤ b = 𝟘-elim(𝟘-is-not-𝟙 (ap _holds b))
 
 \end{code}

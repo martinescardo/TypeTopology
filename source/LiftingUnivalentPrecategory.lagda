@@ -20,7 +20,7 @@ module LiftingUnivalentPrecategory
        where
 
 open import UF-Base
-open import UF-Subsingletons hiding (⊥)
+open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Embeddings
 open import UF-Equiv

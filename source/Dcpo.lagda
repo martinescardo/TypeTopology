@@ -9,6 +9,10 @@ Tom de Jong & Martin Escardo, 20 May 2019.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import UF-Base
+open import UF-PropTrunc
+open import UF-Subsingletons
+open import UF-FunExt
 open import UF-PropTrunc
 
 module Dcpo

@@ -21,6 +21,7 @@ open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Embeddings
 open import UF-PropTrunc
+open import UF-FunExt
 
 \end{code}
 

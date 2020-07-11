@@ -6,6 +6,8 @@ Tom de Jong, 31 May 2019
 
 open import SpartanMLTT
 open import UF-PropTrunc
+open import UF-FunExt
+open import UF-Subsingletons
 
 module ScottModelOfPCF
         (pt : propositional-truncations-exist)
@@ -38,7 +40,7 @@ open import LiftingMonad 𝓤₀ hiding (μ)
 ⟦ Pred ⟧ₑ            = 𝓛̇ pred , 𝓛̇-continuous ℕ-is-set ℕ-is-set pred
 ⟦ ifZero ⟧ₑ          = ⦅ifZero⦆
 ⟦ Fix {σ} ⟧ₑ         = μ ⟦ σ ⟧
-⟦ K {σ} {τ} ⟧ₑ       = Kᵈᶜᵖᵒ⊥ ⟦ σ ⟧ ⟦ τ ⟧ 
+⟦ K {σ} {τ} ⟧ₑ       = Kᵈᶜᵖᵒ⊥ ⟦ σ ⟧ ⟦ τ ⟧
 ⟦ S {ρ} {σ} {τ} ⟧ₑ   = Sᵈᶜᵖᵒ⊥ ⟦ ρ ⟧ ⟦ σ ⟧ ⟦ τ ⟧
 ⟦ _·_ {σ} {τ} s t ⟧ₑ = (underlying-function ⟪ ⟦ σ ⟧ ⟫ ⟪ ⟦ τ ⟧ ⟫ ⟦ s ⟧ₑ) ⟦ t ⟧ₑ
 

@@ -113,6 +113,7 @@ open import UF-Univalence
 open import UF-IdEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Size
 open import UF-PropTrunc
 open import UF-UniverseEmbedding

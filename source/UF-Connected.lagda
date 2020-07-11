@@ -18,6 +18,8 @@ module UF-Connected (pt : propositional-truncations-exist) where
 open PropositionalTruncation pt
 
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
+open import UF-FunExt
 
 is-wconnected : 𝓤 ̇ → 𝓤 ̇
 is-wconnected X = (x y : X) → ∥ x ≡ y ∥

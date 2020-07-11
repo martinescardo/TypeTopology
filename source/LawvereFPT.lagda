@@ -34,6 +34,8 @@ applications:
 
 open import Two-Properties
 open import NaturalNumbers-Properties
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Equiv
 open import UF-Miscelanea

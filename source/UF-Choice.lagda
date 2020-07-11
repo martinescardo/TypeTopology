@@ -36,6 +36,8 @@ open import SpartanMLTT
 
 open import Two-Prop-Density
 open import UF-Base
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
+open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-PropTrunc
 open import UF-ImageAndSurjection

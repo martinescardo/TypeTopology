@@ -9,10 +9,10 @@ module UF-PropTrunc where
 open import SpartanMLTT
 
 open import Plus-Properties
-open import UF-Base public
-open import UF-Subsingletons public
-open import UF-FunExt public
-open import UF-Subsingletons-FunExt public
+open import UF-Base
+open import UF-Subsingletons
+open import UF-FunExt
+open import UF-Subsingletons-FunExt
 open import UF-Equiv
 
 \end{code}
@@ -84,31 +84,6 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  syntax Exists A (λ x → b) = ∃ x ꞉ A , b
 
  infixr -1 Exists
-
- prop-frame-distr→ : {N : 𝓤 ̇ } (P : 𝓥 ̇ ) (Q : N → 𝓥 ̇ ) → P × ∃ Q → ∃ n ꞉ N , P × Q n
- prop-frame-distr→ P Q (p , e) = ∥∥-rec ∃-is-prop (λ (n , q) → ∣ n , p , q ∣) e
-
- prop-frame-distr← : {N : 𝓤 ̇ } (P : 𝓥 ̇ ) (Q : N → 𝓥 ̇ ) → is-prop P → (∃ n ꞉ N , P × Q n) → P × ∃ Q
- prop-frame-distr← P Q i e = p , e'
-  where
-   p : P
-   p = ∥∥-rec i (λ (n , p , q) → p) e
-
-   e' : ∃ Q
-   e' = ∥∥-rec ∃-is-prop (λ (n , p , q) → ∣ n , q ∣) e
-
- prop-frame-distr : propext (𝓤 ⊔ 𝓥)
-   → {N : 𝓤 ̇ }
-     (P : 𝓥 ̇ )
-   → is-prop P
-   → (Q : N → 𝓥 ̇ )
-   → ((n : N) → is-prop (Q n))
-   → P × ∃ Q ≡ (∃ n ꞉ N , P × Q n)
-
- prop-frame-distr pe P i Q φ = pe (×-is-prop i ∃-is-prop)
-                                  ∃-is-prop
-                                  (prop-frame-distr→ P Q)
-                                  (prop-frame-distr← P Q i)
 
  _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥

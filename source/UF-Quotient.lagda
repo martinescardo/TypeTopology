@@ -36,6 +36,7 @@ open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-ImageAndSurjection
 
 module UF-Quotient where

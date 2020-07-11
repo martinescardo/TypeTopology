@@ -35,7 +35,9 @@ propositional truncations, as explicit hypotheses.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-PropTrunc hiding (⊥ ; ⊤)
+open import UF-PropTrunc
+open import UF-Subsingletons
+open import UF-FunExt
 
 module Quasidecidable-blackboard
         (fe  : Fun-Ext)
@@ -46,6 +48,8 @@ module Quasidecidable-blackboard
 open PropositionalTruncation pt
 
 open import DecidableAndDetachable
+open import UF-Base
+open import UF-Subsingletons-FunExt
 open import Dominance
 open import UF-Equiv
 open import UF-Equiv-FunExt
@@ -56,6 +60,7 @@ open import UF-Yoneda
 open import UF-Embeddings
 open import UF-Powerset
 
+import frame
 import sigma-frame
 import sigma-sup-lattice
 
@@ -928,155 +933,6 @@ To think about. Can we construct the collection of quasidecidable
 propositions without resizing and without higher-inductive types other
 than propositional truncation?
 
-The type of propositions is a frame. But here we need its restricted
-structure of a σ-frame (we should define this as a frame and then
-restrict to a σ-Frame in the future):
-
-\begin{code}
-
-module Ω-is-σ-frame {𝓤 : Universe} where
-
- open sigma-frame fe
-
- 𝓞 = Ω 𝓤
-
- ⊤Ω : 𝓞
- ⊤Ω = 𝟙 , 𝟙-is-prop
-
- _∧Ω_ : 𝓞 → 𝓞 → 𝓞
- (P , i) ∧Ω (Q , j) = (P × Q) , ×-is-prop i j
-
- ⊥Ω : 𝓞
- ⊥Ω = 𝟘 , 𝟘-is-prop
-
- ⋁Ω : (ℕ → 𝓞) → 𝓞
- ⋁Ω 𝕡 = (∃ n ꞉ ℕ , 𝕡 n holds) , ∃-is-prop
-
- ∧Ω-is-idempotent : (𝕡 : 𝓞) → 𝕡 ∧Ω 𝕡 ≡ 𝕡
- ∧Ω-is-idempotent (P , i) = γ
-  where
-   r : P × P ≡ P
-   r = pe (×-is-prop i i) i pr₁ (λ p → (p , p))
-
-   γ : ((P × P) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- ∧Ω-is-commutative : (𝕡 𝕢 : 𝓞) → 𝕡 ∧Ω 𝕢 ≡ 𝕢 ∧Ω 𝕡
- ∧Ω-is-commutative (P , i) (Q , j) = γ
-  where
-   r : P × Q ≡ Q × P
-   r = pe (×-is-prop i j)
-          (×-is-prop j i)
-          (λ (p , q) → (q , p))
-          (λ (q , p) → (p , q))
-
-   γ : ((P × Q) , _) ≡ ((Q × P) , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- ∧Ω-is-associative : (𝕡 𝕢 𝕣 : 𝓞) → 𝕡 ∧Ω (𝕢 ∧Ω 𝕣) ≡ (𝕡 ∧Ω 𝕢) ∧Ω 𝕣
- ∧Ω-is-associative (P , i) (Q , j) (R , k) = γ
-  where
-   r : P × (Q × R) ≡ (P × Q) × R
-   r = pe (×-is-prop i (×-is-prop j k))
-          (×-is-prop (×-is-prop i j) k)
-          (λ (p , (q , r)) → ((p , q) , r))
-          (λ ((p , q) , r) → (p , (q , r)))
-
-   γ : ((P × (Q × R)) , _) ≡ (((P × Q) × R) , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- _≤Ω_ : 𝓞 → 𝓞 → 𝓤 ⁺ ̇
- 𝕡 ≤Ω 𝕢 = 𝕡 ∧Ω 𝕢 ≡ 𝕡
-
- ⊥Ω-is-minimum : (𝕡 : 𝓞) → ⊥Ω ≤Ω 𝕡
- ⊥Ω-is-minimum (P , i) = γ
-  where
-   r : 𝟘 × P ≡ 𝟘
-   r = pe (×-is-prop 𝟘-is-prop i)
-          𝟘-is-prop
-          pr₁
-          unique-from-𝟘
-
-   γ : ((𝟘 × P) , _) ≡ (𝟘 , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- ⊤Ω-is-maximum : (𝕡 : 𝓞) → 𝕡 ≤Ω ⊤Ω
- ⊤Ω-is-maximum (P , i) = γ
-  where
-   r : P × 𝟙 ≡ P
-   r = pe (×-is-prop i 𝟙-is-prop)
-          i
-          (λ (p , _) → p)
-          (λ p → (p , *))
-
-   γ : ((P × 𝟙) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- ≤Ω-is-prop-valued : (𝕡 𝕢 : 𝓞) → is-prop (𝕡 ≤Ω 𝕢)
- ≤Ω-is-prop-valued 𝕡 𝕢 = Ω-is-set fe pe {𝕡 ∧Ω 𝕢} {𝕡}
-
- from-≤Ω : {𝕡 𝕢 : 𝓞} → 𝕡 ≤Ω 𝕢 → (𝕡 holds → 𝕢 holds)
- from-≤Ω {P , i} {Q , j} l p = γ
-  where
-   r : P × Q ≡ P
-   r = ap (_holds) l
-
-   g : P → P × Q
-   g = idtofun P (P × Q) (r ⁻¹)
-
-   γ : Q
-   γ = pr₂ (g p)
-
- to-≤Ω : {𝕡 𝕢 : 𝓞} → (𝕡 holds → 𝕢 holds) → 𝕡 ≤Ω 𝕢
- to-≤Ω {P , i} {Q , j} f = γ
-  where
-   r : P × Q ≡ P
-   r = pe (×-is-prop i j) i pr₁ (λ p → (p , f p))
-
-   γ : ((P × Q) , _) ≡ (P , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- ∧-⋁-Ω-distributivity : (𝕡 : 𝓞) (𝕢 : ℕ → 𝓞) → 𝕡 ∧Ω (⋁Ω 𝕢) ≡ ⋁Ω (n ↦ 𝕡 ∧Ω 𝕢 n)
- ∧-⋁-Ω-distributivity (P , i) 𝕢 = γ
-  where
-   Q : ℕ → 𝓤 ̇
-   Q n = 𝕢 n holds
-
-   r : P × (∃ n ꞉ ℕ , Q n) ≡ (∃ n ꞉ ℕ , P × Q n)
-   r = prop-frame-distr pe P i Q λ n → holds-is-prop (𝕢 n)
-
-   γ : ((P × (∃ n ꞉ ℕ , Q n)) , _) ≡ ((∃ n ꞉ ℕ , P × Q n) , _)
-   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
-
- ⋁Ω-is-ub : (𝕡 : ℕ → 𝓞) → (n : ℕ) → 𝕡 n ≤Ω ⋁Ω 𝕡
- ⋁Ω-is-ub 𝕡 n = to-≤Ω {𝕡 n} {⋁Ω 𝕡} (λ p → ∣ n , p ∣)
-
- ⋁Ω-is-lb-of-ubs : (𝕡 : ℕ → 𝓞) → (𝕦 : 𝓞) → ((n : ℕ) → 𝕡 n ≤Ω 𝕦) → ⋁Ω 𝕡 ≤Ω 𝕦
- ⋁Ω-is-lb-of-ubs 𝕡 (U , i) φ = to-≤Ω {⋁Ω 𝕡} {𝕦} γ
-  where
-   𝕦 = (U , i)
-
-   δ : (Σ n ꞉ ℕ , 𝕡 n holds) → U
-   δ (n , p) = from-≤Ω {𝕡 n} {𝕦} (φ n) p
-
-   γ : (∃ n ꞉ ℕ , 𝕡 n holds) → U
-   γ = ∥∥-rec i δ
-
- σΩ : σ-Frame (𝓤 ⁺)
- σΩ = 𝓞 ,
-     (⊤Ω , _∧Ω_ , ⊥Ω , ⋁Ω) ,
-     Ω-is-set fe pe ,
-     ∧Ω-is-idempotent ,
-     ∧Ω-is-commutative ,
-     ∧Ω-is-associative ,
-     ⊥Ω-is-minimum ,
-     ⊤Ω-is-maximum ,
-     ∧-⋁-Ω-distributivity ,
-     ⋁Ω-is-ub ,
-     ⋁Ω-is-lb-of-ubs
-
-\end{code}
-
 We now explore the consequences of the hypothetical existence of an
 free σ-sup-lattice on one generator ⊤.
 
@@ -1540,33 +1396,58 @@ We now regard the type of propositions as a σ-sup-lattice σΩ:
 
 \begin{code}
 
-  σΩ-qua-σ-Frame : σ-Frame (𝓣 ⁺)
-  σΩ-qua-σ-Frame = Ω-is-σ-frame.σΩ
+  Ω-qua-σ-Frame : σ-Frame (𝓣 ⁺)
+  Ω-qua-σ-Frame = sigma-frame.Ω-qua-σ-frame fe pe pt
 
-  σΩ : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
-  σΩ = σ-frames-are-σ-suplats σΩ-qua-σ-Frame
+  Ω-qua-σ-SupLat : σ-SupLat (𝓣 ⁺) (𝓣 ⁺)
+  Ω-qua-σ-SupLat = sigma-frame.Ω-qua-σ-suplat fe pe pt
 
   private
-   ⊥'   = ⊥⟨ σΩ ⟩
-   ⊤'   = ⊤⟨ σΩ-qua-σ-Frame ⟩'
-   ⋁'  = ⋁⟨ σΩ ⟩
+   ⊥'   = ⊥⟨ Ω-qua-σ-SupLat ⟩
+   ⊤'   = ⊤⟨ Ω-qua-σ-Frame ⟩'
+   ⋁'  = ⋁⟨ Ω-qua-σ-SupLat ⟩
    _≤'_ : Ω 𝓣 → Ω 𝓣 → 𝓣 ⁺ ̇
-   x ≤' y = x ≤⟨ σΩ ⟩ y
+   x ≤' y = x ≤⟨ Ω-qua-σ-SupLat ⟩ y
 
   ≡-gives-≤' : (p q : Ω 𝓣) → p ≡ q → p ≤' q
-  ≡-gives-≤' p q r = ⟨ σΩ ⟩-≡-gives-≤ r
+  ≡-gives-≤' p q r = ⟨ Ω-qua-σ-SupLat ⟩-≡-gives-≤ r
 
-  τ : A → ⟨ σΩ ⟩
-  τ = σ-rec σΩ ⊤'
+  τ : A → ⟨ Ω-qua-σ-SupLat ⟩
+  τ = σ-rec Ω-qua-σ-SupLat ⊤'
 
-  τ-is-hom : is-σ-suplat-hom 𝓐 σΩ τ
-  τ-is-hom = σ-rec-is-hom σΩ ⊤'
+  τ-is-hom : is-σ-suplat-hom 𝓐 Ω-qua-σ-SupLat τ
+  τ-is-hom = σ-rec-is-hom Ω-qua-σ-SupLat ⊤'
 
 \end{code}
 
 A crucial property of the map τ is that it reflects top elements:
 
 \begin{code}
+
+  ⊥-holds-is-𝟘 : ⊥' holds ≡ 𝟘
+  ⊥-holds-is-𝟘 = p
+   where
+    p : (∃ x ꞉ 𝟘 , unique-from-𝟘 x holds) ≡ 𝟘
+    p = pe ∃-is-prop
+           𝟘-is-prop
+           (∥∥-rec 𝟘-is-prop (unique-from-𝟘 ∘ pr₁))
+           unique-from-𝟘
+
+  Ω-qua-suplat-non-trivial : ⊥' ≢ ⊤'
+  Ω-qua-suplat-non-trivial q = 𝟘-is-not-𝟙 r
+     where
+      r : 𝟘 ≡ 𝟙
+      r = (⊥-holds-is-𝟘)⁻¹ ∙ ap _holds q
+
+  𝓐-non-trivial : ⊥ ≢ ⊤
+  𝓐-non-trivial p = Ω-qua-suplat-non-trivial q
+   where
+    q : ⊥' ≡ ⊤'
+    q = ⊥'  ≡⟨ (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹   ⟩
+        τ ⊥ ≡⟨ ap τ p                                           ⟩
+        τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
+        ⊤'  ∎
+
 
   τ-reflects-⊤ : (a : A) → τ a ≡ ⊤' → a ≡ ⊤
   τ-reflects-⊤ = σ-induction
@@ -1578,19 +1459,16 @@ A crucial property of the map τ is that it reflects top elements:
     i⊤ _ = refl
 
     i⊥ : τ ⊥ ≡ ⊤' → ⊥ ≡ ⊤
-    i⊥ p = unique-from-𝟘 (𝟘-is-not-𝟙 r)
+    i⊥ p = 𝟘-elim (Ω-qua-suplat-non-trivial q)
      where
       q : ⊥' ≡ ⊤'
-      q = (σ-suplat-hom-⊥ 𝓐 σΩ τ τ-is-hom)⁻¹ ∙ p
-
-      r : 𝟘 ≡ 𝟙
-      r = ap _holds q
+      q = (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹ ∙ p
 
     i⋁ : (a : ℕ → A) → ((n : ℕ) → τ (a n) ≡ ⊤' → a n ≡ ⊤) → τ (⋁ a) ≡ ⊤' → ⋁ a ≡ ⊤
     i⋁ a φ p = ∥∥-rec ⟨ 𝓐 ⟩-is-set iii ii
      where
       i : ⋁' (τ ∘ a) ≡ ⊤'
-      i = (σ-suplat-hom-⋁ 𝓐 σΩ τ τ-is-hom a)⁻¹ ∙ p
+      i = (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ∙ p
 
       ii : ∃ n ꞉ ℕ , τ (a n) holds
       ii = equal-⊤-gives-holds (⋁' (τ ∘ a)) i
@@ -1622,9 +1500,9 @@ top elements.
   𝓐-is-σ-super-compact a p = vi
    where
     i : ⋁' (τ ∘ a) ≡ ⊤'
-    i = ⋁' (τ ∘ a) ≡⟨ (σ-suplat-hom-⋁ 𝓐 σΩ τ τ-is-hom a)⁻¹ ⟩
-        τ (⋁ a)    ≡⟨ ap τ p                               ⟩
-        τ ⊤        ≡⟨ σ-rec-⊤ σΩ ⊤'                        ⟩
+    i = ⋁' (τ ∘ a) ≡⟨ (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ⟩
+        τ (⋁ a)    ≡⟨ ap τ p                                           ⟩
+        τ ⊤        ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
         ⊤'         ∎
 
     ii : (∃ n ꞉ ℕ , τ (a n) holds) ≡ 𝟙
@@ -1654,8 +1532,8 @@ function):
 
   τ-charac← : (a : A) → a ≡ ⊤ → τ a holds
   τ-charac← a p = equal-⊤-gives-holds (τ a)
-                        (τ a ≡⟨ ap τ p        ⟩
-                         τ ⊤ ≡⟨ σ-rec-⊤ σΩ ⊤' ⟩
+                        (τ a ≡⟨ ap τ p                    ⟩
+                         τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
                          ⊤'  ∎)
 
   τ-charac' : (a : A) → τ a holds ≡ (a ≡ ⊤)
@@ -1663,15 +1541,6 @@ function):
 
   τ-charac : (a : A) → τ a ≡ ((a ≡ ⊤) , ⟨ 𝓐 ⟩-is-set)
   τ-charac a = to-subtype-≡ (λ a → being-prop-is-prop fe) (τ-charac' a)
-
-  non-trivial : ⊥ ≢ ⊤
-  non-trivial p = ⊥-is-not-⊤ q
-   where
-    q : ⊥' ≡ ⊤'
-    q = ⊥'  ≡⟨ (σ-suplat-hom-⊥ 𝓐 σΩ τ τ-is-hom)⁻¹   ⟩
-        τ ⊥ ≡⟨ ap τ p                               ⟩
-        τ ⊤ ≡⟨ σ-rec-⊤ σΩ ⊤'                        ⟩
-        ⊤'  ∎
 
 \end{code}
 
@@ -1716,7 +1585,7 @@ a set:
   τ-order-lc a b l = iv
    where
     i : τ a holds → τ b holds
-    i = Ω-is-σ-frame.from-≤Ω {𝓣} {τ a} {τ b} l
+    i = frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
 
     ii : τ a ≡ ⊤' → τ b ≡ ⊤'
     ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))
@@ -1724,8 +1593,8 @@ a set:
     iii : a ≡ ⊤ → b ≡ ⊤
     iii q = τ-reflects-⊤ b (ii r)
      where
-      r = τ a ≡⟨ ap τ q        ⟩
-          τ ⊤ ≡⟨ σ-rec-⊤ σΩ ⊤' ⟩
+      r = τ a ≡⟨ ap τ q                    ⟩
+          τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
           ⊤'  ∎
 
     iv : a ≤ b
@@ -1782,10 +1651,10 @@ construction:
 \begin{code}
 
   𝟘-is-quasidecidable : is-quasidecidable 𝟘
-  𝟘-is-quasidecidable = ⊥ , ap _holds (σ-suplat-hom-⊥ 𝓐 σΩ τ τ-is-hom)
+  𝟘-is-quasidecidable = ⊥ , (ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘)
 
   𝟙-is-quasidecidable : is-quasidecidable 𝟙
-  𝟙-is-quasidecidable = ⊤ , ap _holds (σ-rec-⊤ σΩ ⊤')
+  𝟙-is-quasidecidable = ⊤ , ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
 
   quasidecidable-closed-under-ω-joins :
      (P : ℕ → 𝓣 ̇ )
@@ -1804,7 +1673,7 @@ construction:
           ⋁' (n ↦ τ (fiber-point (φ n)))                              ≡⟨ v  ⟩
           ⋁' (n ↦ (P n , quasidecidable-types-are-props (P n) (φ n))) ∎
      where
-      iv = σ-suplat-hom-⋁ 𝓐 σΩ τ τ-is-hom (λ n → fiber-point (φ n))
+      iv = σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom (λ n → fiber-point (φ n))
       v  = ap ⋁' (dfunext fe ii)
 
     vi : τ-holds (⋁ (n ↦ fiber-point (φ n))) ≡ (∃ n ꞉ ℕ , P n)
@@ -1838,13 +1707,13 @@ Then we get quasidecidable induction by σ-induction:
       γ⊤ P s = transport F (t ⁻¹ ∙ s) F₁
        where
         t : τ ⊤ holds ≡ 𝟙
-        t = ap _holds (σ-rec-⊤ σΩ ⊤')
+        t = ap _holds (σ-rec-⊤ Ω-qua-σ-SupLat ⊤')
 
       γ⊥ : (P : 𝓣 ̇ ) → τ ⊥ holds ≡ P → F P
       γ⊥ P s = transport F (t ⁻¹ ∙ s) F₀
        where
         t : τ ⊥ holds ≡ 𝟘
-        t = ap _holds (σ-suplat-hom-⊥ 𝓐 σΩ τ τ-is-hom)
+        t = ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘
 
       γ⋁ : (a : ℕ → A)
          → ((n : ℕ) (P : 𝓣 ̇) → (τ (a n) holds) ≡ P → F P)
@@ -1852,7 +1721,7 @@ Then we get quasidecidable induction by σ-induction:
       γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
        where
         t : τ (⋁ a) holds ≡ (∃ n ꞉ ℕ , τ (a n) holds)
-        t = ap _holds (σ-suplat-hom-⋁ 𝓐 σΩ τ τ-is-hom a)
+        t = ap _holds (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)
         ψ : (n : ℕ) → F (τ (a n) holds)
         ψ n = φ n (τ (a n) holds) refl
 

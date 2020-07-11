@@ -15,6 +15,8 @@ open import Two-Properties
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import WLPO
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-PropTrunc
 open import UF-Retracts

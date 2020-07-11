@@ -21,7 +21,7 @@ open import SpartanMLTT
 open import OrdinalNotions hiding (_≤_)
 open import OrdinalsType fe
 open import UF-Base
-open import UF-Subsingletons hiding (⊤)
+open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
 open import UF-Embeddings

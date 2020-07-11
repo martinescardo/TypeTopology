@@ -18,7 +18,7 @@ Convention:
 
 open import SpartanMLTT
 open import UF-Equiv
-open import UF-Subsingletons hiding (⊤)
+open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
 

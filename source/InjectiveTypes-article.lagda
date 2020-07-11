@@ -213,6 +213,9 @@ imported later.
 \begin{code}
 
 open import Plus-Properties
+open import UF-Base
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-Embeddings

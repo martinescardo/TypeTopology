@@ -40,7 +40,7 @@ On 22/07/18 06:17, Michael Shulman wrote:
 open import SpartanMLTT
 
 open import UF-FunExt
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 
 module OrdinalsShulmanTaboo
        (fe : FunExt)

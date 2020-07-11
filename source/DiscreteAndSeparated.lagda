@@ -17,7 +17,7 @@ open import NaturalNumbers-Properties
 open import DecidableAndDetachable
 open import Two-Prop-Density
 open import UF-Base
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-Retracts
