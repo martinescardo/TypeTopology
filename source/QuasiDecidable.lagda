@@ -79,7 +79,7 @@ the existence of propositional truncations, as explicit hypotheses for
 this file.
 
 \begin{code}
-module Quasidecidable
+module QuasiDecidable
         (fe  : Fun-Ext)
         (pe  : Prop-Ext)
         (pt  : propositional-truncations-exist)
