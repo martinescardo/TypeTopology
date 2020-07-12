@@ -180,7 +180,6 @@ import PlusOneLC
 import Plus-Properties
 import PropInfTychonoff
 import PropTychonoff
-import Quasidecidable-blackboard
 import Quasidecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
