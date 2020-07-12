@@ -180,7 +180,7 @@ import PlusOneLC
 import Plus-Properties
 import PropInfTychonoff
 import PropTychonoff
-import Quasidecidable
+import QuasiDecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
