@@ -59,10 +59,6 @@ We have:
   have that σ-sup-lattices (and hence σ-Frames) have joins of families
   indexed by quasidecidable propositions.
 
-  This means that they are algebras of the partiality monad induced by
-  the dominance of quasipropositions (we haven't formalized this fact
-  yet).
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -2305,11 +2301,6 @@ theorem₄ {𝓣} {𝓚} ρ = quasidecidable-propositions
 \end{code}
 
 TODO:
-
-  * The underlying sets of σ-sup-lattices are algebras of the lifting
-    monad induced by the quasidecidability dominance. And the algebras
-    are precisely the posets that have joins of quasidecidable-indexed
-    families.
 
   * Very little here has to do with the nature of the type ℕ. We never
     used zero, successor, or induction! (But they are used in another
