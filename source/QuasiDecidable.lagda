@@ -26,7 +26,7 @@ type theory. Their specifications are as follows:
     countable existential quantification, or countable joins in the
     frame of propositions.
 
-    They form a dominance.
+    They for a dominance.
 
   * The initial σ-frame.
 
@@ -56,7 +56,7 @@ We have:
    homomorphisms.
 
 * Assuming that the free σ-sup-lattice on one generator exists, we
-  have that σ-sup-lattices (and hence σ-Frames) have joins of families
+  have that σ-sup-lattices (and hence σ-frames) have joins of families
   indexed by quasidecidable propositions.
 
 \begin{code}
