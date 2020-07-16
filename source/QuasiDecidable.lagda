@@ -51,7 +51,7 @@ We have:
    initial σ-frame.
 
    We have that σ-sup-lattice homomorphisms from the free
-   σ-sup-lattice on one generator into σ-Frame qua σ-sup-lattice
+   σ-sup-lattice on one generator into a σ-frame qua σ-sup-lattice
    automatically preserve finite meets and hence are σ-frame
    homomorphisms.
 
