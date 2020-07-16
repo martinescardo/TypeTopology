@@ -693,12 +693,12 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 
 \end{code}
 
-The condition in the conclusion of the following initiality lemma says
-that the element a : A is the least upper bound of the (weakly)
-constant family λ (p : P) → ⊤'.  Because least upper bounds are unique
-when they exist, the type in the conclusion of the lemma is a
-proposition. This is crucial because the induction principle can be
-applied to prop-valued predicates only.
+The condition in the conclusion of the following lemma says that the
+element a : A is the least upper bound of the (weakly) constant family
+λ (p : P) → ⊤'.  Because least upper bounds are unique when they
+exist, the type in the conclusion of the lemma is a proposition. This
+is crucial because the induction principle can be applied to
+prop-valued predicates only.
 
 \begin{code}
 
