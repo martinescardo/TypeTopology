@@ -996,7 +996,7 @@ case to this particular case.
 
 To get the full induction principle we apply the above particular case
 with back and forth resizing coercions. The point is that now F has
-values in any universe 𝓤 rather than the universe 𝓣 as above.
+values in any universe 𝓤 rather than the universe 𝓚 as above.
 
 \begin{code}
 
