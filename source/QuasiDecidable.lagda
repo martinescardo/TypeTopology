@@ -1554,7 +1554,7 @@ following renaming is annoying.
                                (f-uniqueness g g-is-hom'))
 \end{code}
 
-We now regard the type of propositions as a σ-sup-lattice σΩ:
+We now regard the type of propositions as a σ-sup-lattice:
 
 \begin{code}
 
