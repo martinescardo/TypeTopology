@@ -948,7 +948,7 @@ closure condition:
    ii : (n : ℕ) (A : 𝓣 ̇ → Ω 𝓚) → A ∈ QD-closed-types → P n ∈ A
    ii n = from-⋂ QD-closed-types (P n) (i n)
 
-   iii : (A : 𝓣 ̇ → Σ (λ X → (x y : X) → x ≡ y)) → A ∈ QD-closed-types → ∃ P ∈ A
+   iii : (A : 𝓣 ̇ → Ω 𝓚) → A ∈ QD-closed-types → ∃ P ∈ A
    iii A (c₁ , c₂ , cω) = cω P (λ n → ii n A (c₁ , c₂ , cω))
 
    iv : ∃ P ∈ ⋂ QD-closed-types
