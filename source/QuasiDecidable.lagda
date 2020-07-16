@@ -444,9 +444,7 @@ ways.
               → ((𝕡 : ℕ → 𝓠) → ((n : ℕ) → 𝕡 n ∈ 𝓖) → ⋁ 𝕡 ∈ 𝓖)
               → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
 
- 𝓠-induction' {𝓤} 𝓖 = 𝓠-induction
-                        (λ (P , i) → pr₁ (𝓖 (P , i)))
-                        (λ (P , i) → pr₂ (𝓖 (P , i)))
+ 𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ 𝕡 → pr₁ (𝓖 𝕡)) (λ 𝕡 → pr₂ (𝓖 𝕡))
 \end{code}
 
 The quasidecidable propositions form a dominance, with a proof by
