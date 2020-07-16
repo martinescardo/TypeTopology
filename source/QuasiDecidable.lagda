@@ -1264,8 +1264,8 @@ define joins and their basic properties:
 
 \end{code}
 
-We have that the following characterization of σ-rec 𝓑 t a as a least
-upper bound of the weakly constant family λ (_ : a ≡ ⊤) → t:
+We have that the following characterization of (σ-rec 𝓑 t a) as the
+least upper bound of the weakly constant family λ (_ : a ≡ ⊤) → t:
 
 \begin{code}
 
@@ -1619,7 +1619,6 @@ Using τ we derive the non-triviality of 𝓐 from that of Ω:
   𝓐-non-trivial : ⊥ ≢ ⊤
   𝓐-non-trivial p = Ω-non-trivial q
    where
-    q : ⊥' ≡ ⊤'
     q = ⊥'  ≡⟨ (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹   ⟩
         τ ⊥ ≡⟨ ap τ p                                           ⟩
         τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
@@ -1684,7 +1683,6 @@ top elements.
   𝓐-is-σ-super-compact : (a : ℕ → A) → ⋁ a ≡ ⊤ → ∃ n ꞉ ℕ , a n ≡ ⊤
   𝓐-is-σ-super-compact a p = vi
    where
-    i : ⋁' (τ ∘ a) ≡ ⊤'
     i = ⋁' (τ ∘ a) ≡⟨ (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ⟩
         τ (⋁ a)    ≡⟨ ap τ p                                           ⟩
         τ ⊤        ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
