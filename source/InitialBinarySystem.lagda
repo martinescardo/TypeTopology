@@ -10,6 +10,9 @@ functions f g : A → A such that
  (2) b = g b,
  (3) f b = g a.
 
+We don't require the type A to be a set in the sense of univalent
+mathematics.
+
 The initial binary system is the closed interval of dyadic rationals
 (see below for a picture).
 
@@ -59,10 +62,10 @@ copies with a common overlapping point.
 
 To perform the identifications, we could quotient or use a HIT (higher
 inductive type). We instead take a retract, defined by the fixed
-points of an idempotent normalization
+points of an idempotent normalization function.
 
 We take the biased choice l R for C before we perform the
-identification (3). This will be the canonical, or normal-form,
+identification (3). This will be the canonical, or normal-form
 representative of the common point of the images.
 
 More generally, a binary system is a type A with distinguished points
@@ -72,7 +75,7 @@ a b : A and functions f g : A → A such that
  (2) b = g b,
  (3) f b = g a.
 
-What we want to do it to quotient the type 𝔹, so that the quotient map
+What we want to do is to quotient the type 𝔹, so that the quotient map
 is retraction, to get the initial binary system.
 
 \begin{code}
@@ -131,11 +134,11 @@ and r that preserve normality.
 𝕝 (r x) = l (r x)
 
 𝕣 : 𝔹 → 𝔹
-𝕣 L = C
-𝕣 R = R
-𝕣 (l x) = r (l x)
-𝕣 (r L) = r C
-𝕣 (r R) = R
+𝕣 L         = C
+𝕣 R         = R
+𝕣 (l x)     = r (l x)
+𝕣 (r L)     = r C
+𝕣 (r R)     = R
 𝕣 (r (l x)) = r (r (l x))
 𝕣 (r (r x)) = r (r (r x))
 
@@ -188,7 +191,7 @@ normalize-is-normal (r x) = 𝕣-preserves-normality (normalize x) (normalize-is
 
 \end{code}
 
-We now proof that normal points are fixed points of the normalization
+We now prove that normal points are fixed points of the normalization
 function. We need a simple lemma for that purpose, proved by case
 analysis.
 
@@ -203,38 +206,36 @@ analysis.
 \end{code}
 
 To prove that normal points are fixed points of the normalization
-function by induction, we need to simultaneously prove two related
-lemmas by induction:
+function, we need to simultaneously prove two lemmas by induction:
 
 \begin{code}
 
-normals-are-fixed-points-l : (x : 𝔹) → is-normal (l x) → 𝕝 (normalize x) ≡ l x
-normals-are-fixed-points-r : (x : 𝔹) → is-normal (r x) → 𝕣 (normalize x) ≡ r x
+nfp-lemma-l : (x : 𝔹) → is-normal (l x) → 𝕝 (normalize x) ≡ l x
+nfp-lemma-r : (x : 𝔹) → is-normal (r x) → 𝕣 (normalize x) ≡ r x
 
-normals-are-fixed-points-l L     i = 𝟘-elim i
-normals-are-fixed-points-l R     * = refl
-normals-are-fixed-points-l (l x) i = ap 𝕝 (normals-are-fixed-points-l x i)
-normals-are-fixed-points-l (r x) i = ap 𝕝 (normals-are-fixed-points-r x i)
+nfp-lemma-l L     i = 𝟘-elim i
+nfp-lemma-l R     * = refl
+nfp-lemma-l (l x) i = ap 𝕝 (nfp-lemma-l x i)
+nfp-lemma-l (r x) i = ap 𝕝 (nfp-lemma-r x i)
 
-normals-are-fixed-points-r L     i = 𝟘-elim i
-normals-are-fixed-points-r R     i = 𝟘-elim i
-normals-are-fixed-points-r (l x) i = ap 𝕣 (normals-are-fixed-points-l x i)
-normals-are-fixed-points-r (r x) i = 𝕣 (𝕣 (normalize x)) ≡⟨ ap 𝕣 (normals-are-fixed-points-r x i) ⟩
-                                     𝕣 (r x)             ≡⟨ 𝕣r-equation x i                       ⟩
-                                     r (r x)             ∎
-
+nfp-lemma-r L     i = 𝟘-elim i
+nfp-lemma-r R     i = 𝟘-elim i
+nfp-lemma-r (l x) i = ap 𝕣 (nfp-lemma-l x i)
+nfp-lemma-r (r x) i = 𝕣 (𝕣 (normalize x)) ≡⟨ ap 𝕣 (nfp-lemma-r x i) ⟩
+                      𝕣 (r x)                 ≡⟨ 𝕣r-equation x i                             ⟩
+                      r (r x)                 ∎
 \end{code}
 
 Now the proof of the desired result is by cases (without induction),
-by applying the above two lemmas.
+using the above two lemmas.
 
 \begin{code}
 
 normals-are-fixed-points : (x : 𝔹) → is-normal x → normalize x ≡ x
 normals-are-fixed-points L     * = refl
 normals-are-fixed-points R     * = refl
-normals-are-fixed-points (l x) i = normals-are-fixed-points-l x i
-normals-are-fixed-points (r x) i = normals-are-fixed-points-r x i
+normals-are-fixed-points (l x) i = nfp-lemma-l x i
+normals-are-fixed-points (r x) i = nfp-lemma-r x i
 
 \end{code}
 
@@ -242,17 +243,17 @@ We have the following two corollaries:
 
 \begin{code}
 
-normalization-idemp : (x : 𝔹) → normalize (normalize x) ≡ normalize x
-normalization-idemp x = normals-are-fixed-points (normalize x) (normalize-is-normal x)
-
 fixed-points-are-normal : (x : 𝔹) → normalize x ≡ x → is-normal x
 fixed-points-are-normal x p = transport is-normal p (normalize-is-normal x)
+
+normalization-idemp : (x : 𝔹) → normalize (normalize x) ≡ normalize x
+normalization-idemp x = normals-are-fixed-points (normalize x) (normalize-is-normal x)
 
 \end{code}
 
 But we actually don't need the normalization procedure to construct
-the initial binary system, whose underlying type will be called 𝕄. But
-we will use some of the above machinery.
+the initial binary system, whose underlying type will be called 𝕄.
+However, we will use some of the above machinery.
 
 \begin{code}
 
@@ -324,6 +325,7 @@ perhaps unexpected proof):
             → ((x : 𝕄) → P x → P (left x))
             → ((x : 𝕄) → P x → P (right x))
             → (x : 𝕄) → P x
+
 𝕄-induction P a b f g (L ,           *) = a
 𝕄-induction P a b f g (R ,           *) = b
 𝕄-induction P a b f g (l R ,         i) = f (R , *) b
@@ -337,10 +339,10 @@ perhaps unexpected proof):
 
 \end{code}
 
-In MLTT induction principles come with equations. In our case they are
-the expected ones. But notice that some of these equations require
-(expected) binary-system-like equations in their premises. The first
-two don't, and they hold by construction:
+In MLTT, induction principles come with equations. In our case they
+are the expected ones. But notice that some of these equations require
+(expected) binary-system-like equations in their premises. Only the
+first two don't, and they hold by construction:
 
 \begin{code}
 
@@ -350,6 +352,7 @@ two don't, and they hold by construction:
                       (f : (x : 𝕄) → P x → P (left x))
                       (g : (x : 𝕄) → P x → P (right x))
                     → 𝕄-induction P a b f g Left ≡ a
+
 𝕄-induction-eq-Left P a b f g = refl
 
 𝕄-induction-eq-Right : (P : 𝕄 → 𝓤 ̇ )
@@ -358,6 +361,7 @@ two don't, and they hold by construction:
                       (f : (x : 𝕄) → P x → P (left x))
                       (g : (x : 𝕄) → P x → P (right x))
                      → 𝕄-induction P a b f g Right ≡ b
+
 𝕄-induction-eq-Right P a b f g = refl
 
 \end{code}
@@ -367,7 +371,6 @@ assumption a ≡ f Left a:
 
 \begin{code}
 
-
 𝕄-induction-eq-left : (P : 𝕄 → 𝓤 ̇ )
                       (a : P Left)
                       (b : P Right)
@@ -375,6 +378,7 @@ assumption a ≡ f Left a:
                       (g : (x : 𝕄) → P x → P (right x))
                     → a ≡ f Left a
                     → (x : 𝕄) → 𝕄-induction P a b f g (left x) ≡ f x (𝕄-induction P a b f g x)
+
 𝕄-induction-eq-left P a b f g p (L ,   *) = p
 𝕄-induction-eq-left P a b f g p (R ,   *) = refl
 𝕄-induction-eq-left P a b f g p (l x , i) = refl
@@ -383,7 +387,7 @@ assumption a ≡ f Left a:
 \end{code}
 
 And for the last equation for the induction principle, we need the two
-equations f Right b ≡ g Left a and b ≡ g Right b:
+equations f Right b ≡ g Left a and b ≡ g Right b as assumptions:
 
 \begin{code}
 
@@ -395,6 +399,7 @@ equations f Right b ≡ g Left a and b ≡ g Right b:
                     → f Right b ≡ g Left a
                     → b ≡ g Right b
                     → (x : 𝕄) → 𝕄-induction P a b f g (right x) ≡ g x (𝕄-induction P a b f g x)
+
 𝕄-induction-eq-right P a b f g p q (L ,       *) = p
 𝕄-induction-eq-right P a b f g p q (R ,       *) = q
 𝕄-induction-eq-right P a b f g p q (l R ,     i) = refl
@@ -405,11 +410,12 @@ equations f Right b ≡ g Left a and b ≡ g Right b:
 
 \end{code}
 
-So the complete set of required assumptions is
+So the complete set of required equational assumptions for the
+equations for the induction principle are
 
  (1) a ≡ f Left a,
  (2) b ≡ g Right b,
- (3) f Right b ≡ g Left a.
+ (3) f Right b ≡ g Left a,
 
 which correspond to the equations for binary systems.
 
@@ -472,35 +478,45 @@ Some boiler plate code to name the projections follows:
 ⟨_⟩-Left : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-Left = a
 
+
 ⟨_⟩-Right : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-Right = b
+
 
 ⟨_⟩-left : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-left = f
 
+
 ⟨_⟩-right : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩ → ⟨ 𝓐 ⟩
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-right = g
+
 
 ⟨_⟩-eql : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩-Left ≡ ⟨ 𝓐 ⟩-left ⟨ 𝓐 ⟩-Left
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-eql = eql
 
+
 ⟨_⟩-eqr : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩-Right ≡ ⟨ 𝓐 ⟩-right ⟨ 𝓐 ⟩-Right
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-eqr = eqr
 
+
 ⟨_⟩-eqlr : (𝓐 : BS 𝓤) → ⟨ 𝓐 ⟩-left ⟨ 𝓐 ⟩-Right ≡ ⟨ 𝓐 ⟩-right ⟨ 𝓐 ⟩-Left
 ⟨ (A , (a , b , f , g) , (eql , eqlr , eqr)) ⟩-eqlr = eqlr
+
 
 is-hom-Left : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
             → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-Left) ≡ ⟨ 𝓑 ⟩-Left
 is-hom-Left 𝓐 𝓑 h (i , ii , iii , iv) = i
 
+
 is-hom-Right : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
              → is-hom 𝓐 𝓑 h → h (⟨ 𝓐 ⟩-Right) ≡ ⟨ 𝓑 ⟩-Right
 is-hom-Right 𝓐 𝓑 h (i , ii , iii , iv) = ii
 
+
 is-hom-left : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
             → is-hom 𝓐 𝓑 h → h ∘ ⟨ 𝓐 ⟩-left ∼ ⟨ 𝓑 ⟩-left ∘ h
 is-hom-left 𝓐 𝓑 h (i , ii , iii , iv) = iii
+
 
 is-hom-right : (𝓐 : BS 𝓤) (𝓑 : BS 𝓥) (h : ⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩)
              → is-hom 𝓐 𝓑 h → h ∘ ⟨ 𝓐 ⟩-right ∼ ⟨ 𝓑 ⟩-right ∘ h
@@ -542,10 +558,11 @@ system.
 
 \end{code}
 
-Notice that we didn't require binary systems to have types that are
-sets (in the sense of univalent mathematics) as their underlying
-object, but that the underlying type of the initial binary system,
-having decidable equality, is a set.
+Notice that we didn't require binary systems to have underlying types
+that are sets (in the sense of univalent mathematics) as their
+underlying objects, but that the underlying type of the initial binary
+system, having decidable equality, is a set. This is similar to what
+happens with the unary system (ℕ , zero, succ) of natural numbers.
 
 In another file, we will define the midpoint operation
 
