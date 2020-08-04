@@ -144,6 +144,10 @@ and r that preserve normality.
 
 \end{code}
 
+The fact that the construction of 𝕣 is not the symmetric version of
+that of 𝕝 (and that it is longer) corresponds to the fact that we made
+a biased choice for the normal form of the center C, favouring l.
+
 The preservation proofs are by case analysis without induction:
 
 \begin{code}
@@ -282,6 +286,12 @@ right (x , i) = 𝕣 x , 𝕣-preserves-normality x i
 
 𝕄-eq-rm : right Left ≡ Center
 𝕄-eq-rm = refl
+
+\end{code}
+
+We now use the above to show that 𝕄 is the initial binary system.
+
+\begin{code}
 
 binary-system-structure : 𝓤 ̇ → 𝓤 ̇
 binary-system-structure A = A × A × (A → A) × (A → A)
