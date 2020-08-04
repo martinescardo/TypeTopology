@@ -40,7 +40,7 @@ We want to perform the identifications
  (2) R = r R,
  (3) l R = r L,
 
-so that l and r are congruences. We call C (for "center") the equal
+so that l and r become congruences. We call C (for "center") the equal
 points of (3).
 
 Here is a pictorial illustration of what we have in mind:
