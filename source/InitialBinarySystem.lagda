@@ -1,7 +1,7 @@
 Martin Escardo, 4th August 2020. (Going back to 1993 or earlier.)
 
-A construction of initial binary system in Spartan MLTT, without HITs
-or quotients, or extensionality axioms.
+A construction of the initial binary system in Spartan MLTT, without
+HITs or quotients, or extensionality axioms.
 
 A binary system is a type A with distinguished points a b : A and
 functions f g : A → A such that
@@ -556,5 +556,5 @@ midpoint algebra over two generators (taken to be Left and Right, as
 expected), where the midpoint algebra axioms are
 
    (idempotency)    x ⊕ x ≡ x,
-   (commutativity)  x ⊕ y ≡ y ⊕ y,
+   (commutativity)  x ⊕ y ≡ y ⊕ x,
    (transposition)  (u ⊕ v) ⊕ (x ⊕ y) ≡ (u ⊕ x) ⊕ (v ⊕ y).

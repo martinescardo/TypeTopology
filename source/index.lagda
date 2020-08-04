@@ -139,6 +139,7 @@ import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
 import InfCompact
+import InitialBinarySystem
 import InjectiveTypes-article
 import InjectiveTypes
 import LawvereFPT

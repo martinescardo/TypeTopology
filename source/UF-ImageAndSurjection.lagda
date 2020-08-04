@@ -24,26 +24,29 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
+ _is-in-the-image-of_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+ y is-in-the-image-of f = ∃ x ꞉ domain f , f x ≡ y
+
  image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- image f = Σ y ꞉ codomain f , ∃ x ꞉ domain f , f x ≡ y
+ image f = Σ y ꞉ codomain f , y is-in-the-image-of f
 
  restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-            → image f → Y
+             → image f → Y
  restriction f (y , _) = y
 
  restriction-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                      → is-embedding(restriction f)
+                       → is-embedding(restriction f)
  restriction-embedding f = pr₁-is-embedding (λ y → ∥∥-is-prop)
 
  corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-             → X → image f
+               → X → image f
  corestriction f x = f x , ∣ x , refl ∣
 
  wconstant-maps-to-sets-have-propositional-images : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
-                                                 → is-set Y
-                                                 → (f : X → Y)
-                                                 → wconstant f
-                                                 → is-prop (image f)
+                                                  → is-set Y
+                                                  → (f : X → Y)
+                                                  → wconstant f
+                                                  → is-prop (image f)
  wconstant-maps-to-sets-have-propositional-images X s f c (y , p) (y' , p') =
   to-Σ-≡ (∥∥-rec s (λ u → ∥∥-rec s (λ v → h u v) p') p ,
           ∥∥-is-prop _ p')
@@ -55,28 +58,28 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                           y'   ∎
 
  wconstant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
-                                               → is-set Y
-                                               → (f : X → Y)
-                                               → wconstant f
-                                               → ∥ X ∥ → image f
+                                                → is-set Y
+                                                 → (f : X → Y)
+                                                → wconstant f
+                                                → ∥ X ∥ → image f
  wconstant-map-to-set-truncation-of-domain-map' X s f c =
   ∥∥-rec
   (wconstant-maps-to-sets-have-propositional-images X s f c)
   (corestriction f)
 
  wconstant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
-                                              → is-set Y
-                                              → (f : X → Y)
-                                              → wconstant f
-                                              → ∥ X ∥ → Y
+                                               → is-set Y
+                                               → (f : X → Y)
+                                               → wconstant f
+                                                 → ∥ X ∥ → Y
  wconstant-map-to-set-truncation-of-domain-map X s f c =
   restriction f ∘ wconstant-map-to-set-truncation-of-domain-map' X s f c
 
  wconstant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
-                                                            (s : is-set Y)
-                                                            (f : X → Y)
-                                                            (c : wconstant f)
-                                                          → f ∼ (wconstant-map-to-set-truncation-of-domain-map X s f c) ∘ ∣_∣
+                                                             (s : is-set Y)
+                                                             (f : X → Y)
+                                                             (c : wconstant f)
+                                                           → f ∼ (wconstant-map-to-set-truncation-of-domain-map X s f c) ∘ ∣_∣
  wconstant-map-to-set-factors-through-truncation-of-domain X s f c = γ
   where
    g : ∥ X ∥ → image f
