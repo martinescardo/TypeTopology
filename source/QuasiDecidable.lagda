@@ -693,12 +693,12 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 
 \end{code}
 
-The condition in the conclusion of the following lemma says that the
-element a : A is the least upper bound of the (weakly) constant family
-λ (p : P) → ⊤'.  Because least upper bounds are unique when they
-exist, the type in the conclusion of the lemma is a proposition. This
-is crucial because the induction principle can be applied to
-prop-valued predicates only.
+The condition in the conclusion of the following initiality lemma says
+that the element a : A is the least upper bound of the (weakly)
+constant family λ (p : P) → ⊤'.  Because least upper bounds are unique
+when they exist, the type in the conclusion of the lemma is a
+proposition. This is crucial because the induction principle can be
+applied to prop-valued predicates only.
 
 \begin{code}
 
@@ -948,7 +948,7 @@ closure condition:
    ii : (n : ℕ) (A : 𝓣 ̇ → Ω 𝓚) → A ∈ QD-closed-types → P n ∈ A
    ii n = from-⋂ QD-closed-types (P n) (i n)
 
-   iii : (A : 𝓣 ̇ → Ω 𝓚) → A ∈ QD-closed-types → ∃ P ∈ A
+   iii : (A : 𝓣 ̇ → Σ (λ X → (x y : X) → x ≡ y)) → A ∈ QD-closed-types → ∃ P ∈ A
    iii A (c₁ , c₂ , cω) = cω P (λ n → ii n A (c₁ , c₂ , cω))
 
    iv : ∃ P ∈ ⋂ QD-closed-types
@@ -1264,8 +1264,8 @@ define joins and their basic properties:
 
 \end{code}
 
-We have that the following characterization of (σ-rec 𝓑 t a) as the
-least upper bound of the weakly constant family λ (_ : a ≡ ⊤) → t:
+We have that the following characterization of σ-rec 𝓑 t a as a least
+upper bound of the weakly constant family λ (_ : a ≡ ⊤) → t:
 
 \begin{code}
 
@@ -1554,7 +1554,7 @@ following renaming is annoying.
                                (f-uniqueness g g-is-hom'))
 \end{code}
 
-We now regard the type of propositions as a σ-sup-lattice:
+We now regard the type of propositions as a σ-sup-lattice σΩ:
 
 \begin{code}
 
@@ -1619,6 +1619,7 @@ Using τ we derive the non-triviality of 𝓐 from that of Ω:
   𝓐-non-trivial : ⊥ ≢ ⊤
   𝓐-non-trivial p = Ω-non-trivial q
    where
+    q : ⊥' ≡ ⊤'
     q = ⊥'  ≡⟨ (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹   ⟩
         τ ⊥ ≡⟨ ap τ p                                           ⟩
         τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
@@ -1683,6 +1684,7 @@ top elements.
   𝓐-is-σ-super-compact : (a : ℕ → A) → ⋁ a ≡ ⊤ → ∃ n ꞉ ℕ , a n ≡ ⊤
   𝓐-is-σ-super-compact a p = vi
    where
+    i : ⋁' (τ ∘ a) ≡ ⊤'
     i = ⋁' (τ ∘ a) ≡⟨ (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ⟩
         τ (⋁ a)    ≡⟨ ap τ p                                           ⟩
         τ ⊤        ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
