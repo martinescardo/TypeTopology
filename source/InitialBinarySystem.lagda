@@ -13,7 +13,7 @@ functions f g : A → A such that
 The initial binary system is the closed interval of dyadic rationals
 (see below for a picture).
 
-We construct is as a quotient of the following type 𝔹, with L,R,l,r
+We construct it as a quotient of the following type 𝔹, with L,R,l,r
 corresponding to a,b,f,g, without assuming that our type theory has
 quotients - it just happens to have the quotient we want.
 
