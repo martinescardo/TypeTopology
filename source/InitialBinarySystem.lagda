@@ -10,7 +10,7 @@ functions f g : A → A such that
  (2) b = g b,
  (3) f b = g a.
 
-The initial binary system is the closed interval of dyadic intervals
+The initial binary system is the closed interval of dyadic rationals
 (see below for a picture).
 
 We construct is as a quotient of the following type 𝔹, with L,R,l,r
