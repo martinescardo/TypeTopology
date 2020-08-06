@@ -14,7 +14,7 @@ relation coinciding with the binary meet order.
 
 open import SpartanMLTT hiding (*)
 open import UF-FunExt
-open import UF-Subsingletons
+open import UF-Subsingletons hiding (Ω₀)
 
 module frame (fe : Fun-Ext) where
 

@@ -535,6 +535,8 @@ The type of truth values.
 Ω : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ω 𝓤 = Σ P ꞉ 𝓤 ̇ , is-prop P
 
+Ω₀ = Ω 𝓤₀
+
 _holds : Ω 𝓤 → 𝓤 ̇
 (P , i) holds = P
 
