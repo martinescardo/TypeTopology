@@ -1144,6 +1144,7 @@ We now need to assume function extensionality.
 
 \begin{code}
 
+open import UF-Base
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
@@ -1224,16 +1225,75 @@ module _ (fe  : Fun-Ext) where
  mid-is-hom-L : mid Left ≡ 𝐿𝑒𝑓𝑡
  mid-is-hom-L = is-hom-L 𝓜 𝓕 mid mid-is-hom
 
+ mid-is-hom-L' : (y : 𝕄) → Left ⊕ y ≡ left y
+ mid-is-hom-L' y = ap (λ - → pr₁ - y) mid-is-hom-L
+
  mid-is-hom-R : mid Right ≡ 𝑅𝑖𝑔ℎ𝑡
  mid-is-hom-R = is-hom-R 𝓜 𝓕 mid mid-is-hom
+
+ mid-is-hom-R' : (y : 𝕄) → Right ⊕ y ≡ right y
+ mid-is-hom-R' y = ap (λ - → pr₁ - y) mid-is-hom-R
 
  mid-is-hom-l : (x : 𝕄) → mid (left x) ≡ 𝑙𝑒𝑓𝑡 (mid x)
  mid-is-hom-l = is-hom-l 𝓜 𝓕 mid mid-is-hom
 
+ mid-is-hom-l' : (x y : 𝕄)
+               → (left x ⊕ Left    ≡ left   (x ⊕ Left))
+               × (left x ⊕ Right   ≡ center (x ⊕ Right))
+               × (left x ⊕ left y  ≡ left   (x ⊕ y))
+               × (left x ⊕ right y ≡ center (x ⊕ y))
+ mid-is-hom-l' x y = u , v , w , t
+  where
+   α = λ y → left x ⊕ y           ≡⟨ refl ⟩
+             pr₁ (mid (left x)) y ≡⟨ happly (ap pr₁ (mid-is-hom-l x)) y ⟩
+             pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ≡⟨ refl ⟩
+             𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
+
+   u = α Left  ∙ 𝕄-cases-L (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
+   v = α Right ∙ 𝕄-cases-R (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
+   w = α (left y)  ∙ 𝕄-cases-l (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
+   t = α (right y) ∙ 𝕄-cases-r (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
+
  mid-is-hom-r : (x : 𝕄) → mid (right x) ≡ 𝑟𝑖𝑔ℎ𝑡 (mid x)
  mid-is-hom-r = is-hom-r 𝓜 𝓕 mid mid-is-hom
 
+ mid-is-hom-r' : (x y : 𝕄)
+               → (right x ⊕ Right   ≡ right  (x ⊕ Right))
+               × (right x ⊕ Left    ≡ center (x ⊕ Left))
+               × (right x ⊕ left y  ≡ center (x ⊕ y))
+               × (right x ⊕ right y ≡ right  (x ⊕ y))
+ mid-is-hom-r' x y = u , v , w , t
+  where
+   α = λ y → right x ⊕ y           ≡⟨ refl ⟩
+             pr₁ (mid (right x)) y ≡⟨ happly (ap pr₁ (mid-is-hom-r x)) y ⟩
+             pr₁ (𝑟𝑖𝑔ℎ𝑡 (mid x)) y   ≡⟨ refl ⟩
+             𝕄𝕄-cases (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (pr₂ (⊕-property x)) y ∎
+
+   u = α Right ∙ 𝕄-cases-R (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x))
+   v = α Left ∙ 𝕄-cases-L (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x))
+   w = α (left y)  ∙ 𝕄-cases-l (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x)) y
+   t = α (right y) ∙ 𝕄-cases-r (center ∘ (x ⊕_)) (right ∘ (x ⊕_)) (𝕄-is-set , pr₂ (⊕-property x)) y
+
 \end{code}
+
+So, the set of defining equations is the following, where it can be
+seen that there is some redundancy:
+
+     (  left   (x ⊕ Right) ≡ center (x ⊕ Left)  )
+   × (  center (x ⊕ Right) ≡ right  (x ⊕ Left)  )
+
+   × (  Left    ⊕ y        ≡ left y             )
+   × (  Right   ⊕ y        ≡ right y            )
+   × (  left x  ⊕ Left     ≡ left (x ⊕ Left)    )
+   × (  left x  ⊕ Right    ≡ center (x ⊕ Right) )
+   × (  left x  ⊕ left y   ≡ left (x ⊕ y)       )
+   × (  left x  ⊕ right y  ≡ center (x ⊕ y)     )
+   × (  right x ⊕ Right    ≡ right (x ⊕ Right)  )
+   × (  right x ⊕ Left     ≡ center (x ⊕ Left)  )
+   × (  right x ⊕ left y   ≡ center (x ⊕ y)     )
+   × (  right x ⊕ right y  ≡ right (x ⊕ y)      )
+
+The first two come from the binary system F and the remaining ones from the homomorphism condition and cases analysis.
 
 Next we want to show that
 
