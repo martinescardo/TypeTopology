@@ -226,7 +226,7 @@ nfp-lemma-r L     i = 𝟘-elim i
 nfp-lemma-r R     i = 𝟘-elim i
 nfp-lemma-r (l x) i = ap 𝕣 (nfp-lemma-l x i)
 nfp-lemma-r (r x) i = 𝕣 (𝕣 (normalize x)) ≡⟨ ap 𝕣 (nfp-lemma-r x i) ⟩
-                      𝕣 (r x)             ≡⟨ 𝕣r-equation x i        ⟩
+                      𝕣 (r x)             ≡⟨ 𝕣r-equation x i ⟩
                       r (r x)             ∎
 \end{code}
 
@@ -704,11 +704,11 @@ system.
                                   ⟨ 𝓐 ⟩-is-set (ϕ Right β) (γ Left α) ,
                                   ⟨ 𝓐 ⟩-is-set β (γ Right β))
  where
-  α = h Left       ≡⟨ is-hom-L 𝓜 𝓐 h u     ⟩
+  α = h Left       ≡⟨ is-hom-L 𝓜 𝓐 h u ⟩
       ⟨ 𝓐 ⟩-Left   ≡⟨ (is-hom-L 𝓜 𝓐 k v)⁻¹ ⟩
       k Left ∎
 
-  β = h Right       ≡⟨ is-hom-R 𝓜 𝓐 h u     ⟩
+  β = h Right       ≡⟨ is-hom-R 𝓜 𝓐 h u ⟩
        ⟨ 𝓐 ⟩-Right   ≡⟨ (is-hom-R 𝓜 𝓐 k v)⁻¹ ⟩
        k Right ∎
 
@@ -783,18 +783,18 @@ primitive-recursive a b f g h =
   A-is-set : is-set A
   A-is-set = ι₁ arbitrary-element-of-𝕄
 
-  α = h Left ≡⟨ hL    ⟩
+  α = h Left ≡⟨ hL ⟩
       a      ≡⟨ kL ⁻¹ ⟩
       k Left ∎
 
-  β = h Right ≡⟨ hR    ⟩
+  β = h Right ≡⟨ hR ⟩
       b       ≡⟨ kR ⁻¹ ⟩
       k Right ∎
 
   ϕ : (x : 𝕄) → h x ≡ k x → h (left x) ≡ k (left x)
-  ϕ x p = h (left x) ≡⟨ hl x       ⟩
+  ϕ x p = h (left x) ≡⟨ hl x ⟩
           f x (h x)  ≡⟨ ap (f x) p ⟩
-          f x (k x)  ≡⟨ (kl x)⁻¹   ⟩
+          f x (k x)  ≡⟨ (kl x)⁻¹ ⟩
           k (left x) ∎
 
   γ : (x : 𝕄) → h x ≡ k x → h (right x) ≡ k (right x)
@@ -831,14 +831,20 @@ primitive-recursive a b f g h =
                                             h (𝕄-primrec a b f g ι)
                                             hph (𝕄-primrec-primitive-recursive a b f g ι)
 
+\end{code}
+
+Under some special conditions that often hold in practice, we can
+remove the "base" case in the uniqueness theorem.
+
+\begin{code}
 
 is-wprimrec : {A : 𝓤 ̇ } → (𝕄 → A → A) → (𝕄 → A → A) → (𝕄 → A) → 𝓤 ̇
 is-wprimrec f g h = ((x : 𝕄) → h (left x)  ≡ f x (h x))
-               × ((x : 𝕄) → h (right x) ≡ g x (h x))
+                  × ((x : 𝕄) → h (right x) ≡ g x (h x))
 
 
 primrec-is-wprimrec : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) (h : 𝕄 → A)
-              → primitive-recursive a b f g h → is-wprimrec f g h
+                    → primitive-recursive a b f g h → is-wprimrec f g h
 primrec-is-wprimrec a b f g h (hL , hR , hl , hr) = (hl , hr)
 
 
@@ -847,11 +853,11 @@ fixed-point-conditions a b f g = (∀ a' → a' ≡ f Left  a' → a' ≡ a)
                               × (∀ b' → b' ≡ g Right b' → b' ≡ b)
 
 wprimrec-primitive-recursive : {A : 𝓤 ̇ } (a b : A) (f g : 𝕄 → A → A) (h : 𝕄 → A)
-              → fixed-point-conditions a b f g
-              → is-wprimrec f g h → primitive-recursive a b f g h
+                             → fixed-point-conditions a b f g
+                             → is-wprimrec f g h → primitive-recursive a b f g h
 wprimrec-primitive-recursive a b f g h (fixa , fixb) (hl , hr) = (hL , hR , hl , hr)
  where
-  hL' = h Left          ≡⟨ refl    ⟩
+  hL' = h Left          ≡⟨ refl ⟩
         h (left Left)   ≡⟨ hl Left ⟩
         f Left (h Left) ∎
 
@@ -909,39 +915,41 @@ follows:
 For this to be well defined we need the following endpoint agreement
 conditions:
 
-  (1) a ≡ f Left
-  (2) f Right ≡ g Left
-  (3) b ≡ g Right
-
+  (1) a ≡ f Left,
+  (2) f Right ≡ g Left,
+  (3) b ≡ g Right.
 
 If we take a = f Left and b = g Left, so that (1) and (2) hold, we are
 left with condition (3) as the only assumption, and the condition on h
 becomes
 
-      h Left      ≡ f Left
-      h Right     ≡ g Right
-      h (left x)  = f x
-      h (right x) = g x
+      h Left      ≡ f Left,
+      h Right     ≡ g Right,
+      h (left x)  = f x,
+      h (right x) = g x.
 
 But also the first two equations follow from the second two, since
 
      h Left  = h (left Left)   = f Left,
-     h Right = h (right Right) = g right
+     h Right = h (right Right) = g right.
 
 Hence it is enough to consider the endpoint agreement condition (3)
 and work with the equations
 
-      h (left x)  = f x
-      h (right x) = g x
+      h (left x)  = f x,
+      h (right x) = g x.
 
 Hence 𝕄-cases gives the mediating map of a pushout diagram that glues
 two copies of the dyadic interval, identifying the end of one with the
-beginning of the other.
+beginning of the other, so that 𝕄 is equivalent to the pushout 𝕄 +₁ 𝕄:
+
+      𝕄 ≃ 𝕄 +₁ 𝕄
+
+when f = left and g = right. The function 𝕄-cases defined below
+produces the mediating map of the pushout:
 
 The following constructions and facts are all particular cases of
 those for 𝕄-primrec.
-
-The function 𝕄-cases produces the mediating map of the pushout:
 
 \begin{code}
 
@@ -969,7 +977,11 @@ case-equations f g h = (h ∘ left  ∼ f)
                   × (𝕄-cases f g p ∘ left  ∼ f)
                   × (𝕄-cases f g p ∘ right ∼ g)
 
-𝕄-cases-redundant-equations f g ι = 𝕄-primrec-primitive-recursive (f Left) (g Right) (λ x _ → f x) (λ x _ → g x) (𝕄-caseable-gives-pinductive _ f g ι)
+𝕄-cases-redundant-equations f g ι = 𝕄-primrec-primitive-recursive
+                                      (f Left) (g Right)
+                                      (λ x _ → f x)
+                                      (λ x _ → g x)
+                                      (𝕄-caseable-gives-pinductive _ f g ι)
 
 
 𝕄-cases-equations : {A : 𝓤 ̇ }
@@ -988,7 +1000,11 @@ case-equations f g h = (h ∘ left  ∼ f)
                    → case-equations f g k
                    → h ∼ k
 
-𝕄-at-most-one-cases f g ι = 𝕄-at-most-one-wprimrec (f Left) (g Right) (λ x _ → f x) (λ x _ → g x)
+𝕄-at-most-one-cases f g ι = 𝕄-at-most-one-wprimrec
+                              (f Left)
+                              (g Right)
+                              (λ x _ → f x)
+                              (λ x _ → g x)
                               (𝕄-caseable-gives-pinductive _ f g ι)
                               (u , v)
   where
@@ -997,7 +1013,6 @@ case-equations f g h = (h ∘ left  ∼ f)
 
    v : ∀ b' → b' ≡ g Right → b' ≡ g Right
    v a' p = p
-
 
 𝕄-cases-uniqueness : {A : 𝓤 ̇ }
                  (f g : 𝕄 → A)
@@ -1008,21 +1023,25 @@ case-equations f g h = (h ∘ left  ∼ f)
 
 𝕄-cases-uniqueness f g p h he = 𝕄-at-most-one-cases f g p h (𝕄-cases f g p) he (𝕄-cases-equations f g p)
 
-𝕄-cases-L : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g) → 𝕄-cases f g p Left ≡ f Left
+𝕄-cases-L : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
+          → 𝕄-cases f g p Left ≡ f Left
 𝕄-cases-L f g p = pr₁ (𝕄-cases-redundant-equations f g p)
 
-𝕄-cases-R : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g) → 𝕄-cases f g p Right ≡ g Right
+𝕄-cases-R : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
+          → 𝕄-cases f g p Right ≡ g Right
 𝕄-cases-R f g p = pr₁ (pr₂ (𝕄-cases-redundant-equations f g p))
 
-𝕄-cases-l : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g) → 𝕄-cases f g p ∘ left ∼ f
+𝕄-cases-l : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
+          → 𝕄-cases f g p ∘ left ∼ f
 𝕄-cases-l f g p = pr₁ (pr₂ (pr₂ ((𝕄-cases-redundant-equations f g p))))
 
-𝕄-cases-r : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g) → 𝕄-cases f g p ∘ right ∼ g
+𝕄-cases-r : {A : 𝓤 ̇ } (f g : 𝕄 → A) (p : 𝕄-caseable A f g)
+          → 𝕄-cases f g p ∘ right ∼ g
 𝕄-cases-r f g p = pr₂ (pr₂ (pr₂ ((𝕄-cases-redundant-equations f g p))))
 
 \end{code}
 
-We now specialize to A = 𝕄 for convenience:
+We now specialize to A = 𝕄 for notational convenience:
 
 \begin{code}
 
@@ -1077,34 +1096,34 @@ is-𝓡-function f = 𝕄𝕄-caseable (center ∘ f) (right ∘ f)
 
 preservation-𝓛𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓛-function (𝓛 f 𝓵)
 preservation-𝓛𝓛 f 𝓵 𝓻 =
-  left (𝓛 f 𝓵 Right)      ≡⟨ ap left (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵))        ⟩
-  left (center (f Right)) ≡⟨ ap left 𝓻                                                         ⟩
-  left (right (f Left))   ≡⟨ (center-l (f Left))⁻¹                                             ⟩
+  left (𝓛 f 𝓵 Right)      ≡⟨ ap left (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)) ⟩
+  left (center (f Right)) ≡⟨ ap left 𝓻 ⟩
+  left (right (f Left))   ≡⟨ (center-l (f Left))⁻¹ ⟩
   center (left (f Left))  ≡⟨ (ap center (𝕄-cases-L (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)))⁻¹ ⟩
   center (𝓛 f 𝓵 Left)     ∎
 
 preservation-𝓛𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓡-function (𝓛 f 𝓵)
 preservation-𝓛𝓡 f 𝓵 𝓻 =
-  center (𝓛 f 𝓵 Right)      ≡⟨ ap center (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵))    ⟩
-  center (center (f Right)) ≡⟨ ap center 𝓻                                                     ⟩
-  center (right (f Left))   ≡⟨ center-r (f Left)                                               ⟩
+  center (𝓛 f 𝓵 Right)      ≡⟨ ap center (𝕄-cases-R (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵)) ⟩
+  center (center (f Right)) ≡⟨ ap center 𝓻 ⟩
+  center (right (f Left))   ≡⟨ center-r (f Left) ⟩
   right (left (f Left))     ≡⟨ ap right ((𝕄-cases-L (left ∘ f) (center ∘ f) (𝕄-is-set , 𝓵))⁻¹) ⟩
   right (𝓛 f 𝓵 Left)        ∎
 
 preservation-𝓡𝓛 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓛-function (𝓡 f 𝓻)
 preservation-𝓡𝓛 f 𝓵 𝓻 =
-  left (𝓡 f 𝓻 Right)       ≡⟨ ap left (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))       ⟩
-  left (right (f Right))   ≡⟨ (center-l (f Right))⁻¹                                            ⟩
-  center (left (f Right))  ≡⟨ ap center 𝓵                                                       ⟩
+  left (𝓡 f 𝓻 Right)       ≡⟨ ap left (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻)) ⟩
+  left (right (f Right))   ≡⟨ (center-l (f Right))⁻¹ ⟩
+  center (left (f Right))  ≡⟨ ap center 𝓵 ⟩
   center (center (f Left)) ≡⟨ ap center ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹) ⟩
   center (𝓡 f 𝓻 Left)      ∎
 
 preservation-𝓡𝓡 : (f : 𝕄 → 𝕄) (𝓵 : is-𝓛-function f) (𝓻 : is-𝓡-function f) → is-𝓡-function (𝓡 f 𝓻)
 preservation-𝓡𝓡 f 𝓵 𝓻 =
-  center (𝓡 f 𝓻 Right)     ≡⟨ ap center (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))       ⟩
+  center (𝓡 f 𝓻 Right)     ≡⟨ ap center (𝕄-cases-R (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻)) ⟩
   center (right (f Right)) ≡⟨ 𝕄-cases-r (left ∘ right) (right ∘ left) (𝕄-is-set , refl) (f Right) ⟩
-  right (left (f Right))   ≡⟨ ap right 𝓵                                                          ⟩
-  right (center (f Left))  ≡⟨ ap right ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹)    ⟩
+  right (left (f Right))   ≡⟨ ap right 𝓵 ⟩
+  right (center (f Left))  ≡⟨ ap right ((𝕄-cases-L (center ∘ f) (right ∘ f) (𝕄-is-set , 𝓻))⁻¹) ⟩
   right (𝓡 f 𝓻 Left)       ∎
 
 is-𝓛𝓡-function : (𝕄 → 𝕄) → 𝓤₀ ̇
@@ -1134,8 +1153,9 @@ open import UF-Subsingletons-FunExt
 module _ (fe  : Fun-Ext) where
 
  F-is-set : is-set F
- F-is-set = subsets-of-sets-are-sets (𝕄 → 𝕄) is-𝓛𝓡-function (Π-is-set fe
-             (λ _ → 𝕄-is-set)) (λ {f} → being-𝓛𝓡-function-is-prop f)
+ F-is-set = subsets-of-sets-are-sets (𝕄 → 𝕄) is-𝓛𝓡-function
+             (Π-is-set fe (λ _ → 𝕄-is-set))
+             (λ {f} → being-𝓛𝓡-function-is-prop f)
 
  𝑙𝑒𝑓𝑡 𝑟𝑖𝑔ℎ𝑡 : F → F
  𝑙𝑒𝑓𝑡 (f , (𝓵 , 𝓻))  = 𝓛 f 𝓵 , preservation-𝓛𝓛 f 𝓵 𝓻 , preservation-𝓛𝓡 f 𝓵 𝓻
@@ -1158,12 +1178,12 @@ module _ (fe  : Fun-Ext) where
  F-eq-lr : 𝑙𝑒𝑓𝑡 𝑅𝑖𝑔ℎ𝑡 ≡ 𝑟𝑖𝑔ℎ𝑡 𝐿𝑒𝑓𝑡
  F-eq-lr = to-subtype-≡ being-𝓛𝓡-function-is-prop v
   where
-   i = λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (left x) ≡⟨ 𝕄-cases-l _ _ (𝕄-is-set , refl) x    ⟩
-                   left (right x)                                           ≡⟨ (center-l x)⁻¹                     ⟩
+   i = λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (left x) ≡⟨ 𝕄-cases-l _ _ (𝕄-is-set , refl) x ⟩
+                   left (right x)                                           ≡⟨ (center-l x)⁻¹ ⟩
                    center (left x)                                          ∎
 
    ii =  λ (x : 𝕄) → 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl (right x)   ≡⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
-                     center (right x)                                          ≡⟨ center-r x                        ⟩
+                     center (right x)                                          ≡⟨ center-r x ⟩
                      right (left x)                                            ∎
 
    iii : 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl ∼ 𝕄𝕄-cases (center ∘ left) (right ∘ left) refl
@@ -1199,13 +1219,6 @@ module _ (fe  : Fun-Ext) where
             → (left   (x ⊕ Right) ≡ center (x ⊕ Left))
             × (center (x ⊕ Right) ≡ right  (x ⊕ Left))
  ⊕-property x = pr₂ (mid x)
-
-\end{code}
-
-This property is also a consequence of the homomorphism property of
-mid:
-
-\begin{code}
 
  mid-is-hom : is-hom 𝓜 𝓕 (𝓜-rec 𝓕)
  mid-is-hom = 𝓜-rec-is-hom 𝓕
