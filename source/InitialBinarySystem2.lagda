@@ -33,7 +33,7 @@ l (η (right x)) = η (left (right x))
 r : 𝕄 → 𝕄
 r L             = C
 r R             = R
-r C         = η (right center)
+r C             = η (right center)
 r (η (left x))  = η (right (left x))
 r (η (right x)) = η (right (right x))
 
