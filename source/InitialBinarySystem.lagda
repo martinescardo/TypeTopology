@@ -1032,6 +1032,12 @@ We now specialize to A = 𝕄 for convenience:
 𝕄𝕄-cases : (f g : 𝕄 → 𝕄) → 𝕄𝕄-caseable f g → (𝕄 → 𝕄)
 𝕄𝕄-cases f g p = 𝕄-cases f g (𝕄-is-set , p)
 
+\end{code}
+
+Here are some examples:
+
+\begin{code}
+
 center : 𝕄 → 𝕄
 center = 𝕄𝕄-cases (left ∘ right) (right ∘ left) refl
 
@@ -1048,6 +1054,14 @@ left-by-cases = 𝕄-cases-uniqueness _ _
 right-by-cases : right ∼ 𝕄𝕄-cases (center ∘ right) (right ∘ right) refl
 right-by-cases = 𝕄-cases-uniqueness _ _
                    (𝕄-is-set , refl) right ((λ x → (center-r x)⁻¹) , (λ x → refl))
+
+\end{code}
+
+We now define the midpoint operation _⊕_ : 𝕄 → (𝕄 → 𝕄) by
+initiality. We will work with a subset of the function type 𝕄 → 𝕄 and
+make it into a binary system.
+
+\begin{code}
 
 is-𝓛-function : (𝕄 → 𝕄) → 𝓤₀ ̇
 is-𝓛-function f = 𝕄𝕄-caseable (left ∘ f) (center ∘ f)
@@ -1101,10 +1115,16 @@ being-𝓛𝓡-function-is-prop f = ×-is-prop 𝕄-is-set 𝕄-is-set
 
 \end{code}
 
-We now define the midpoint operation on 𝕄. We will work with a subset
-of 𝕄 → 𝕄 and make it into a binary system.
+The desired subset of the function type 𝕄 → 𝕄 is this:
 
-We need to assume function extensionality.
+\begin{code}
+
+F : 𝓤₀ ̇
+F = Σ f ꞉ (𝕄 → 𝕄) , is-𝓛𝓡-function f
+
+\end{code}
+
+We now need to assume function extensionality.
 
 \begin{code}
 
@@ -1112,9 +1132,6 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
 module _ (fe  : Fun-Ext) where
-
- F : 𝓤₀ ̇
- F = Σ f ꞉ (𝕄 → 𝕄) , is-𝓛𝓡-function f
 
  F-is-set : is-set F
  F-is-set = subsets-of-sets-are-sets (𝕄 → 𝕄) is-𝓛𝓡-function (Π-is-set fe
@@ -1178,6 +1195,18 @@ module _ (fe  : Fun-Ext) where
  _⊕_ : 𝕄 → 𝕄 → 𝕄
  x ⊕ y = pr₁ (mid x) y
 
+ ⊕-property : (x : 𝕄)
+            → (left   (x ⊕ Right) ≡ center (x ⊕ Left))
+            × (center (x ⊕ Right) ≡ right  (x ⊕ Left))
+ ⊕-property x = pr₂ (mid x)
+
+\end{code}
+
+This property is also a consequence of the homomorphism property of
+mid:
+
+\begin{code}
+
  mid-is-hom : is-hom 𝓜 𝓕 (𝓜-rec 𝓕)
  mid-is-hom = 𝓜-rec-is-hom 𝓕
 
@@ -1193,11 +1222,6 @@ module _ (fe  : Fun-Ext) where
  mid-is-hom-r : (x : 𝕄) → mid (right x) ≡ 𝑟𝑖𝑔ℎ𝑡 (mid x)
  mid-is-hom-r = is-hom-r 𝓜 𝓕 mid mid-is-hom
 
- ⊕-property : (x : 𝕄)
-            → (left   (x ⊕ Right) ≡ center (x ⊕ Left))
-            × (center (x ⊕ Right) ≡ right  (x ⊕ Left))
- ⊕-property x = pr₂ (mid x)
-
 \end{code}
 
 Next we want to show that
@@ -1212,7 +1236,8 @@ midpoint axioms are
    (commutativity)  x ⊕ y ≡ y ⊕ x,
    (transposition)  (u ⊕ v) ⊕ (x ⊕ y) ≡ (u ⊕ x) ⊕ (v ⊕ y).
 
-In fact there is a unique midpoint operation _⊕_ such that
+In fact, in the initial binary system, there is a unique midpoint
+operation _⊕_ such that
 
    L ⊕ x = left x,
    R ⊕ x = right x.
