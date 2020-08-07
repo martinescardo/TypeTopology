@@ -3,15 +3,12 @@ Martin Escardo, 4th August 2020. (Going back to 1993 or earlier.)
 A construction of the initial binary system in Spartan MLTT, without
 HITs or quotients, or extensionality axioms.
 
-A binary system is a type A with distinguished points a b : A and
+A binary system is a set A with distinguished points a b : A and
 functions f g : A → A such that
 
  (1) a = f a,
  (2) b = g b,
  (3) f b = g a.
-
-We don't require the type A to be a set in the sense of univalent
-mathematics.
 
 The initial binary system is the closed interval of dyadic rationals
 (see below for a picture).
@@ -1186,7 +1183,8 @@ module _ (fe  : Fun-Ext) where
                      center (right x)                                          ≡⟨ center-r x ⟩
                      right (left x)                                            ∎
 
-   iii : 𝕄𝕄-cases (left ∘ right) (center ∘ right) refl ∼ 𝕄𝕄-cases (center ∘ left) (right ∘ left) refl
+   iii : 𝕄𝕄-cases (left ∘ right)  (center ∘ right) refl
+       ∼ 𝕄𝕄-cases (center ∘ left) (right ∘ left)   refl
    iii = 𝕄-cases-uniqueness _ _ (𝕄-is-set , refl) (𝕄𝕄-cases _ _ refl) (i , ii)
 
    iv : 𝓛 right refl ∼ 𝓡 left refl
