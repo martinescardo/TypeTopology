@@ -139,7 +139,8 @@ import GenericConvergentSequence
 import HiggsInvolutionTheorem
 import Id
 import InfCompact
-import InitialBinarySystem
+import InitialBinarySystem    -- More work than needed!
+import InitialBinarySystem2   -- No need to work with subtype of normal elements.
 import InjectiveTypes-article
 import InjectiveTypes
 import LawvereFPT

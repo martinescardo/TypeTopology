@@ -1,4 +1,4 @@
-Martin Escardo, 4th August 2020. (Going back to 1993 or earlier.)
+xMartin Escardo, 4th August 2020. (Going back to 1993 or earlier.)
 
 A construction of the initial binary system in Spartan MLTT, without
 HITs or quotients, or extensionality axioms.
@@ -1249,8 +1249,8 @@ module _ (fe  : Fun-Ext) where
              pr₁ (𝑙𝑒𝑓𝑡 (mid x)) y   ≡⟨ refl ⟩
              𝕄𝕄-cases (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (pr₁ (⊕-property x)) y ∎
 
-   u = α Left  ∙ 𝕄-cases-L (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
-   v = α Right ∙ 𝕄-cases-R (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
+   u = α Left      ∙ 𝕄-cases-L (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
+   v = α Right     ∙ 𝕄-cases-R (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x))
    w = α (left y)  ∙ 𝕄-cases-l (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
    t = α (right y) ∙ 𝕄-cases-r (left ∘ (x ⊕_)) (center ∘ (x ⊕_)) (𝕄-is-set , pr₁ (⊕-property x)) y
 
