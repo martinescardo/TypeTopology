@@ -1,7 +1,7 @@
-Martin Escardo, 7th August 2020. (Going back to 1993 or earlier.)
+Martin Escardo, 7th August 2020.
 
-See the file InitialBinarySystem.lagda. This tried to improve on that,
-and also gives the background for this file.
+This file improves the file InitialBinarySystem.lagda, which gives the
+background for this file.
 
 \begin{code}
 
