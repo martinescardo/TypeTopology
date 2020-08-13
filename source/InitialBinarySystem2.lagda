@@ -832,13 +832,12 @@ module _ (fe  : Fun-Ext) where
                    l (r x)                                    ≡⟨ (middle-l x)⁻¹ ⟩
                    middle (l x)                               ∎
 
-   ii =  λ (x : 𝕄) → 𝕄𝕄-cases (l ∘ r) (middle ∘ r) refl (r x)   ≡⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
-                     middle (r x)                                          ≡⟨ middle-r x ⟩
-                     r (l x)                                            ∎
+   ii = λ (x : 𝕄) → 𝕄𝕄-cases (l ∘ r) (middle ∘ r) refl (r x) ≡⟨ 𝕄-cases-r _ _ (𝕄-is-set , refl) x ⟩
+                    middle (r x)                             ≡⟨ middle-r x ⟩
+                    r (l x)                                  ∎
 
-   iii : 𝕄𝕄-cases (l ∘ r)  (middle ∘ r) refl
-       ∼ 𝕄𝕄-cases (middle ∘ l) (r ∘ l)   refl
-
+   iii : 𝕄𝕄-cases (l ∘ r)      (middle ∘ r) refl
+       ∼ 𝕄𝕄-cases (middle ∘ l) (r ∘ l)      refl
    iii = 𝕄-cases-uniqueness _ _ (𝕄-is-set , refl) (𝕄𝕄-cases _ _ refl) (i , ii)
 
    iv : 𝓛 r refl ∼ 𝓡 l refl
@@ -967,3 +966,101 @@ operation _⊕_ such that
    R ⊕ x = r x.
 
 To be continued.
+
+\begin{code}
+
+ m = middle
+
+ lm : 𝕄 → 𝕄
+ lm = 𝕄𝕄-cases (l ∘ m) (m ∘ m) refl
+
+ switch-l-m : (a b : 𝕄) → l a ⊕ m b ≡ m a ⊕ l b
+ switch-l-m a b = l a ⊕ m b  ≡⟨ {!!} ⟩
+                  lm (a ⊕ b) ≡⟨ {!!} ⟩
+                  lm (b ⊕ a) ≡⟨ {!!} ⟩
+                  l b ⊕ m a  ≡⟨ {!!} ⟩
+                  m a ⊕ l b  ∎
+ switch-r-m : (a b : 𝕄) → r a ⊕ m b ≡ m a ⊕ r b
+ switch-r-m = {!!}
+
+ lr-equation  : (x : 𝕄) → l (r x) ≡ m (m x) ⊕ l (m x)
+ lr-equation' : (x : 𝕄) → l (r x) ≡ m x ⊕ l C
+ rl-equation' : (x : 𝕄) → r (l x) ≡ m x ⊕ r C
+
+ lr-equation  x = l (r x) ≡⟨ {!!} ⟩
+                  m (l x) ≡⟨ {!!} ⟩
+                  m (L ⊕ x) ≡⟨ {!!} ⟩
+                  m (x ⊕ L) ≡⟨ {!!} ⟩
+                  m x ⊕ m L ≡⟨ {!!} ⟩ -- m x ⊕ l C
+                  m x ⊕ l C ≡⟨ {!!} ⟩
+                  (l x) ≡⟨ {!!} ⟩
+                  {!m x ⊕ l !} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  m (m x) ⊕ l (m x) ∎
+ rl-equation  = {!!}
+ lr-equation' = {!!}
+ rl-equation' = {!!}
+
+{-
+
+  R ⊕ y ≡ r y
+
+  m (y ⊕ R) = m (r y)
+  r (y ⊕ L) = m (r y)
+
+  r (l y)  = m
+
+  middle (x ⊕ R) = middle (R ⊕ x) = middle (r x) = r (l x)
+
+ l a ⊕ m b =
+ lm (a ⊕ b) =
+
+
+-}
+
+ l-m-transp : (a b : 𝕄) → l a ⊕ m b ≡ m (a ⊕ b) ⊕ l (a ⊕ b)
+ l-m-transp a b = l a ⊕ m b ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  {!!} ≡⟨ {!!} ⟩
+                  m (a ⊕ b) ⊕ l (a ⊕ b) ∎
+
+ l-m-transp' : (a b x y : 𝕄) → a ⊕ b ≡ x ⊕ y → l a ⊕ m b ≡ l x ⊕ m y
+ l-m-transp' = {!!}
+
+ r-m-transp : (a b : 𝕄) → r a ⊕ m b ≡ m (a ⊕ b) ⊕ r (a ⊕ b)
+ r-m-transp = {!!}
+
+ r-m-transp' : (a b x y : 𝕄) → a ⊕ b ≡ x ⊕ y → r a ⊕ m b ≡ r x ⊕ m y
+ r-m-transp' = {!!}
+
+{-
+
+ m (l x ⊕ (y ⊕ z) =
+ m (l x) ⊕ m (y ⊕ z)
+ l (r x) ⊕ m (y ⊕ z)
+ lm (r x ⊕ (y ⊕ z))
+ lm ((x ⊕ y) ⊕ r z)
+ l (x ⊕ y) ⊕ m (r z)
+ l (x ⊕ y) ⊕ r (l z)
+ m ((x ⊕ y) ⊕ l z)
+
+
+
+
+-}
+
+ l-assoc : (x y z : 𝕄) → l x ⊕ (y ⊕ z) ≡ (x ⊕ y) ⊕ l z
+ r-assoc : (x y z : 𝕄) → r x ⊕ (y ⊕ z) ≡ (x ⊕ y) ⊕ r z
+
+ l-assoc = {!!}
+ r-assoc = {!!}
+
+ ⊕-transp : ∀ a b x y → (a ⊕ b) ⊕ (x ⊕ y) ≡ (a ⊕ x) ⊕ (b ⊕ y)
+ ⊕-transp = {!!}
+
+\end{code}

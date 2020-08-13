@@ -1,4 +1,4 @@
-xMartin Escardo, 4th August 2020. (Going back to 1993 or earlier.)
+Martin Escardo, 4th August 2020. (Going back to 1993 or earlier.)
 
 A construction of the initial binary system in Spartan MLTT, without
 HITs or quotients, or extensionality axioms.
