@@ -21,39 +21,18 @@ data 𝕄 : 𝓤₀ ̇ where
  R : 𝕄
  η : 𝔹 → 𝕄
 
-pattern C     = η center
-pattern lC    = η (left center)
-pattern 𝕝 x   = η (left x)
-pattern l𝕝 x  = η (left (left x))
-pattern l𝕣 x  = η (left (right x))
-pattern rC    = η (right center)
-pattern 𝕣 x   = η (right x)
-pattern r𝕝 x  = η (right (left x))
-pattern r𝕣 x  = η (right (right x))
+C : 𝕄
+C = η center
 
 l : 𝕄 → 𝕄
 l L     = L
 l R     = C
-l C     = lC
-l (𝕝 x) = l𝕝 x
-l (𝕣 x) = l𝕣 x
+l (η x) = η (left x)
 
 r : 𝕄 → 𝕄
 r L     = C
 r R     = R
-r C     = rC
-r (𝕝 x) = r𝕝 x
-r (𝕣 x) = r𝕣 x
-
-l∘η-is-𝕝 : l ∘ η ∼ 𝕝
-l∘η-is-𝕝 center    = refl
-l∘η-is-𝕝 (left x)  = refl
-l∘η-is-𝕝 (right x) = refl
-
-r∘η-is-𝕣 : r ∘ η ∼ 𝕣
-r∘η-is-𝕣 center    = refl
-r∘η-is-𝕣 (left x)  = refl
-r∘η-is-𝕣 (right x) = refl
+r (η x) = η (right x)
 
 𝕄-eq-l : L ≡ l L
 𝕄-eq-l = refl
@@ -85,14 +64,12 @@ open import UF-Subsingletons hiding (center)
             → (g : (x : 𝕄) → P x → P (r x))
             → 𝕄-inductive P a b f g
             → (x : 𝕄) → P x
+𝕄-induction P a b f g ι L             = a
+𝕄-induction P a b f g ι R             = b
+𝕄-induction P a b f g ι (η center)    = f R b -- or g L a, but then the proofs below change.
+𝕄-induction P a b f g ι (η (left x))  = f (η x) (𝕄-induction P a b f g ι (η x))
+𝕄-induction P a b f g ι (η (right x)) = g (η x) (𝕄-induction P a b f g ι (η x))
 
-𝕄-induction P a b f g ι L     = a
-𝕄-induction P a b f g ι R     = b
-𝕄-induction P a b f g ι C     = f R b -- or g L a, but then the proofs below change.
-𝕄-induction P a b f g ι (𝕝 x) = transport P (l∘η-is-𝕝 x)
-                                (f (η x) (𝕄-induction P a b f g ι (η x)))
-𝕄-induction P a b f g ι (𝕣 x) = transport P (r∘η-is-𝕣 x)
-                                (g (η x) (𝕄-induction P a b f g ι (η x)))
 \end{code}
 
 In MLTT, induction principles come with equations. In our case they
@@ -138,9 +115,7 @@ assumption a ≡ f L a:
 
 𝕄-induction-l P a b f g ι L     = pr₁ (pr₂ ι)
 𝕄-induction-l P a b f g ι R     = refl
-𝕄-induction-l P a b f g ι C     = refl
-𝕄-induction-l P a b f g ι (𝕝 x) = refl
-𝕄-induction-l P a b f g ι (𝕣 x) = refl
+𝕄-induction-l P a b f g ι (η x) = refl
 
 \end{code}
 
@@ -159,9 +134,7 @@ equations f R b ≡ g L a and b ≡ g R b as assumptions:
 
 𝕄-induction-r P a b f g ι L     = pr₁ (pr₂ (pr₂ ι))
 𝕄-induction-r P a b f g ι R     = pr₂ (pr₂ (pr₂ ι))
-𝕄-induction-r P a b f g ι C     = refl
-𝕄-induction-r P a b f g ι (𝕝 x) = refl
-𝕄-induction-r P a b f g ι (𝕣 x) = refl
+𝕄-induction-r P a b f g ι (η x) = refl
 
 \end{code}
 
@@ -966,101 +939,3 @@ operation _⊕_ such that
    R ⊕ x = r x.
 
 To be continued.
-
-\begin{code}
-
- m = middle
-
- lm : 𝕄 → 𝕄
- lm = 𝕄𝕄-cases (l ∘ m) (m ∘ m) refl
-
- switch-l-m : (a b : 𝕄) → l a ⊕ m b ≡ m a ⊕ l b
- switch-l-m a b = l a ⊕ m b  ≡⟨ {!!} ⟩
-                  lm (a ⊕ b) ≡⟨ {!!} ⟩
-                  lm (b ⊕ a) ≡⟨ {!!} ⟩
-                  l b ⊕ m a  ≡⟨ {!!} ⟩
-                  m a ⊕ l b  ∎
- switch-r-m : (a b : 𝕄) → r a ⊕ m b ≡ m a ⊕ r b
- switch-r-m = {!!}
-
- lr-equation  : (x : 𝕄) → l (r x) ≡ m (m x) ⊕ l (m x)
- lr-equation' : (x : 𝕄) → l (r x) ≡ m x ⊕ l C
- rl-equation' : (x : 𝕄) → r (l x) ≡ m x ⊕ r C
-
- lr-equation  x = l (r x) ≡⟨ {!!} ⟩
-                  m (l x) ≡⟨ {!!} ⟩
-                  m (L ⊕ x) ≡⟨ {!!} ⟩
-                  m (x ⊕ L) ≡⟨ {!!} ⟩
-                  m x ⊕ m L ≡⟨ {!!} ⟩ -- m x ⊕ l C
-                  m x ⊕ l C ≡⟨ {!!} ⟩
-                  (l x) ≡⟨ {!!} ⟩
-                  {!m x ⊕ l !} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  m (m x) ⊕ l (m x) ∎
- rl-equation  = {!!}
- lr-equation' = {!!}
- rl-equation' = {!!}
-
-{-
-
-  R ⊕ y ≡ r y
-
-  m (y ⊕ R) = m (r y)
-  r (y ⊕ L) = m (r y)
-
-  r (l y)  = m
-
-  middle (x ⊕ R) = middle (R ⊕ x) = middle (r x) = r (l x)
-
- l a ⊕ m b =
- lm (a ⊕ b) =
-
-
--}
-
- l-m-transp : (a b : 𝕄) → l a ⊕ m b ≡ m (a ⊕ b) ⊕ l (a ⊕ b)
- l-m-transp a b = l a ⊕ m b ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  {!!} ≡⟨ {!!} ⟩
-                  m (a ⊕ b) ⊕ l (a ⊕ b) ∎
-
- l-m-transp' : (a b x y : 𝕄) → a ⊕ b ≡ x ⊕ y → l a ⊕ m b ≡ l x ⊕ m y
- l-m-transp' = {!!}
-
- r-m-transp : (a b : 𝕄) → r a ⊕ m b ≡ m (a ⊕ b) ⊕ r (a ⊕ b)
- r-m-transp = {!!}
-
- r-m-transp' : (a b x y : 𝕄) → a ⊕ b ≡ x ⊕ y → r a ⊕ m b ≡ r x ⊕ m y
- r-m-transp' = {!!}
-
-{-
-
- m (l x ⊕ (y ⊕ z) =
- m (l x) ⊕ m (y ⊕ z)
- l (r x) ⊕ m (y ⊕ z)
- lm (r x ⊕ (y ⊕ z))
- lm ((x ⊕ y) ⊕ r z)
- l (x ⊕ y) ⊕ m (r z)
- l (x ⊕ y) ⊕ r (l z)
- m ((x ⊕ y) ⊕ l z)
-
-
-
-
--}
-
- l-assoc : (x y z : 𝕄) → l x ⊕ (y ⊕ z) ≡ (x ⊕ y) ⊕ l z
- r-assoc : (x y z : 𝕄) → r x ⊕ (y ⊕ z) ≡ (x ⊕ y) ⊕ r z
-
- l-assoc = {!!}
- r-assoc = {!!}
-
- ⊕-transp : ∀ a b x y → (a ⊕ b) ⊕ (x ⊕ y) ≡ (a ⊕ x) ⊕ (b ⊕ y)
- ⊕-transp = {!!}
-
-\end{code}
