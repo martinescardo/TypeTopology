@@ -1,8 +1,10 @@
 \documentclass{article}
 
 \title{The Cantor-Schr\"oder-Bernstein Theorem for $\infty$-groupoids}
-
-\author{Mart\'{\i}n H\"otzel Escard\'o \\ School of Computer Science \\ University of Birmingham, UK}
+\author{Mart\'{\i}n H\"otzel Escard\'o
+  \\ {\small School of Computer Science}
+  \\ {\small University of Birmingham, UK}}
+%\date{\small Version of \today}
 
 \usepackage{amsmath,stmaryrd,amssymb,amsthm,url,hyperref,color}
 
@@ -34,7 +36,8 @@
   two types, if each one is embedded into the other, then they are
   equivalent. The argument is developed in the language of homotopy
   type theory, or Voevodsky's univalent foundations (HoTT/UF), and
-  requires classical logic.
+  requires classical logic. It follows that the theorem holds in any
+  boolean $\infty$-topos.
 \end{abstract}
 
 \section{Introduction}
@@ -72,23 +75,36 @@ A map of sets is an embedding if and only if it is left-cancellable. However, fo
 
 \section{Cantor-Schr\"oder-Bernstein for $\infty$-groupoids}
 
-We assume the terminology and notation of the HoTT book~\cite{hottbook}.
+As explained in the introduction, our argument is in the language of
+HoTT/UF and requires classical logic. Because HoTT/UF can be
+interpreted in any $\infty$-topos~\cite{shulman:infty}, it follows
+that the following theorem holds in any \emph{boolean} $\infty$-topos.
+We assume the terminology and notation of the HoTT
+book~\cite{hottbook}.
 
 \begin{theorem}
 For any two types, if each one is embedded into the
 other, then they are equivalent, in the presence of excluded middle.
 \end{theorem}
 
-We adapt Halmos' proof~\cite{MR0453532} for sets. We don't need to
-invoke univalence, the existence of propositional truncations or any
-other higher inductive type for our construction. But we do rely on
-function extensionality. An Agda~\cite{agda} version of the following
-argument is available~\cite{2019arXiv191100580H,escardo:csb}.
+We adapt Halmos' proof~\cite{MR0453532} for sets. We need to
+refomulate the argument so that excluded middle is applied to
+truth-valued, rather than type-valued, mathematical statements, and
+this is the contribution in this note (see Remark~\ref{main:remark}
+below).  We don't need to invoke univalence, the existence of
+propositional truncations or any other higher inductive type for our
+construction. But we do rely on function extensionality. An
+Agda~\cite{agda} version of the following argument is
+available~\cite{2019arXiv191100580H,escardo:csb}.
 
 \begin{proof}
 Let $f : X \to Y$ and $g : Y \to X$ be embeddings of arbitrary types $X$ and~$Y$.
 %
-We say that $x:X$ is a $g$-point if for any $x_0 : X$ and $n : \mathbb{N}$ with $(g \circ f)^n (x_0)=x$, the $g$-fiber of $x_0$ is inhabited. Using function extensionality and the assumption that $g$ is an embedding, we see that being a $g$-point is property rather than data, because subsingletons are closed under products.
+We say that $x:X$ is a $g$-point if for any $x_0 : X$ and
+$n : \mathbb{N}$ with $(g \circ f)^n (x_0)=x$, the $g$-fiber of $x_0$
+is inhabited. Using the assumption that $g$ is an embedding, we see
+that being a $g$-point is property rather than data, because
+subsingletons are closed under products by function extensionality.
 
 Considering $x_0=x$ and $n=0$, we see that if $x$ is a $g$-point then
 the $g$-fiber of $x$ is inhabited, and hence we get a function
@@ -128,14 +144,14 @@ To prove the claim, first notice that it is impossible that $g(y)$ is not an $f$
 We can now resume the proof that $h$ is a split surjection. For any $y:Y$, we check whether $g(y)$ is a $g$-point. If it is, we map $y$ to $g(y)$, and if it isn't we map $y$ to the point $x : X$ given by the claim, which concludes the proof of the theorem.
 \end{proof}
 
-\begin{remark}
-So, in this argument we don't apply excluded middle to equality
-directly, which we wouldn't be able to as the types $X$ and $Y$ are
-not necessarily sets. We instead apply it to (1) the property of being
-a $g$-point, defined in terms of the fibers of $g$, (2) a fiber of
-$g$, and (3) a subtype of a fiber of $f$. These three types are
-propositions because the functions $f$ and $g$ are embeddings rather
-than merely left-cancellable maps.
+\begin{remark} \label{main:remark} So, in this argument we don't apply
+  excluded middle to equality directly, which we wouldn't be able to
+  as the types $X$ and $Y$ are not necessarily sets. We instead apply
+  it to (1) the property of being a $g$-point, defined in terms of the
+  fibers of $g$, to define $h$, (2) a fiber of $g$, and (3) a subtype
+  of a fiber of $f$. These three types are propositions because the
+  functions $f$ and $g$ are embeddings rather than merely
+  left-cancellable maps.
 \end{remark}
 
 \begin{remark}
@@ -157,5 +173,12 @@ than merely left-cancellable maps.
 
 \bibliographystyle{plain}
 \bibliography{csb}
+
+\vfill
+
+% \noindent Mart\'{\i}n H\"otzel Escard\'o \\
+% \noindent School of Computer Science \\
+% \noindent University of Birmingham, UK
+
 
 \end{document}
