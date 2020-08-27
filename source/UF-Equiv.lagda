@@ -231,6 +231,9 @@ equiv-to-prop e = retract-of-prop (≃-gives-◁ e)
 equiv-to-singleton : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y ≃ X → is-singleton X → is-singleton Y
 equiv-to-singleton e = retract-of-singleton (≃-gives-◁ e)
 
+equiv-to-singleton' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-singleton X → is-singleton Y
+equiv-to-singleton' e = retract-of-singleton (≃-gives-▷ e)
+
 pt-pf-equiv : {X : 𝓤 ̇ } (x : X) → singleton-type x ≃ singleton-type' x
 pt-pf-equiv x = f , ((g , fg) , (g , gf))
  where

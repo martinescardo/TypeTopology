@@ -152,6 +152,10 @@ ap-∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y z : X} (p : x ≡ y) (
      → ap f (p ∙ q) ≡ ap f p ∙ ap f q
 ap-∙ f refl refl = refl
 
+ap-∙' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y : X} (p : x ≡ y)
+     → ap f (p ⁻¹) ∙ ap f p ≡ refl
+ap-∙' f refl = refl
+
 ap-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) {x y : X} (p : x ≡ y)
        → (ap f p) ⁻¹ ≡ ap f (p ⁻¹)
 ap-sym f refl = refl
@@ -215,6 +219,16 @@ cancel-left {𝓤} {X} {x} {y} {z} {p} {q} {r} s =
        (p ⁻¹ ∙ p) ∙ r ≡⟨ ap (λ - → - ∙ r) (left-inverse p) ⟩
        refl ∙ r       ≡⟨ refl-left-neutral ⟩
        r ∎
+
+\end{code}
+
+It is shorter to prove the above using pattern matching on refl, of course.
+
+\begin{code}
+
+cancel₄ : {X : 𝓤 ̇ } {x y z : X} (p : x ≡ y) (q : z ≡ y)
+        → (p ∙ q ⁻¹) ∙ (q ∙ p ⁻¹) ≡ refl
+cancel₄ refl refl = refl
 
 \end{code}
 
