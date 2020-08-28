@@ -159,10 +159,13 @@ econstruction {𝓤} {𝓥} {X} P x₀ s j i k d' lc = econstruction' P z s i h 
  where
   z : P → X
   z p = x₀
+
   h : (p : P) → is-h-isolated (z p)
   h p = isolated-is-h-isolated x₀ k
+
   d : disjoint-images z s
   d p = d'
+
   e : is-embedding s
   e = lc-maps-into-sets-are-embeddings s lc j
 
@@ -337,7 +340,7 @@ invertible at g-points, because, by definition, we have that
 
 \begin{code}
 
-  g-is-invertible-at-g-points : (x : X) (γ : is-g-point x) → fiber g x
+  g-is-invertible-at-g-points : (x : X) → is-g-point x → fiber g x
   g-is-invertible-at-g-points x γ = γ x 0 (by-definition ∶ ((g ∘ f) ^ 0) x ≡ x)
 
 \end{code}
