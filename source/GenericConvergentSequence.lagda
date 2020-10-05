@@ -558,6 +558,20 @@ below-isolated fe u v (n , r , l) = back-transport is-isolated r (finite-isolate
 ∞-≺-maximal : (n : ℕ) → under n ≺ ∞
 ∞-≺-maximal n = n , refl , ∞-⊏-maximal n
 
+≺-implies-finite : (a b : ℕ∞) → a ≺ b → is-finite a
+≺-implies-finite a b (n , p , _) = n , (p ⁻¹)
+
+under-≺-diagonal : (n : ℕ) → under n ≺ under (succ n)
+under-≺-diagonal n = n , refl , under-diagonal₁ n
+
+finite-≺-Succ : (a : ℕ∞) → is-finite a → a ≺ Succ a
+finite-≺-Succ a (n , p) = transport (_≺ Succ a) p 
+                            (transport (under n ≺_) (ap Succ p) 
+                              (under-≺-diagonal n))
+
+≺-Succ : (a b : ℕ∞) → a ≺ b → Succ a ≺ Succ b
+≺-Succ a b (n , p , q) = succ n , ap Succ p , q
+
 open import NaturalsOrder
 
 <-gives-⊏ : (m n : ℕ) → m < n →  m ⊏ under n
@@ -588,6 +602,14 @@ open import OrdinalNotions hiding (_≤_) hiding (≤-refl) hiding (_≼_)
 
 ≺-trans : is-transitive _≺_
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
+
+≺-Succ-r : (a b : ℕ∞) → a ≺ b → a ≺ Succ b
+≺-Succ-r a b a≺b = ≺-trans a (Succ a) (Succ b) 
+                     (finite-≺-Succ a (≺-implies-finite a b a≺b)) 
+                     (≺-Succ a b a≺b)
+
+≺≼-gives-≺ : (x y z : ℕ∞) → x ≺ y → y ≼ z → x ≺ z
+≺≼-gives-≺ x y z (n , p , q) y≼z = n , p , y≼z n q
 
 finite-accessible : (n : ℕ) → is-accessible _≺_ (under n)
 finite-accessible = course-of-values-induction (λ n → is-accessible _≺_ (under n)) φ
