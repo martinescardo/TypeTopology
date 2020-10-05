@@ -21,7 +21,9 @@ open import UF-FunExt
 
 module Escardo-Simpson-LICS2001 (fe : FunExt) where
 
-open import UF-Subsingletons public
+open import UF-Base
+open import UF-Miscelanea
+open import UF-Subsingletons
 open import Sequence fe
 
 \end{code}
@@ -32,10 +34,10 @@ as well as a specific property about equality of streams under some arithmetic.
 \begin{code}
 
 associative commutative idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ≡ (a ∙ b) ∙ c
-commutative     _∙_ = ∀ a b     → a ∙ b             ≡ b ∙ a
-idempotent      _∙_ = ∀ a       → a ∙ a             ≡ a
-transpositional _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ≡ (a ∙ c) ∙ (b ∙ d)
+associative     _∙_ = ∀ {a} {b} {c}     → a ∙ (b ∙ c)       ≡ (a ∙ b) ∙ c
+commutative     _∙_ = ∀ {a} {b}         → a ∙ b             ≡ b ∙ a
+idempotent      _∙_ = ∀ {a}             → a ∙ a             ≡ a
+transpositional _∙_ = ∀ {a} {b} {c} {d} → (a ∙ b) ∙ (c ∙ d) ≡ (a ∙ c) ∙ (b ∙ d)
 
 seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (n : ℕ)
              → (λ (i : ℕ) → α (succ i +ℕ n)) ≡ (λ (i : ℕ) → α (succ (i +ℕ n)))
@@ -128,15 +130,15 @@ id-is-⊕-homomorphism 𝓐 x y = refl
 ⊕-is-⊕-homomorphism-r : (𝓐 : Convex-body 𝓤)
                     → (a : ⟨ 𝓐 ⟩) → is-⊕-homomorphism 𝓐 𝓐 (λ y → a ⊕⟨ 𝓐 ⟩ y)
 ⊕-is-⊕-homomorphism-r (𝓐 , _⊕_ , (_ , ⊕-idem , _ , ⊕-tran) , _) a x y
- =    a    ⊕ (x ⊕ y) ≡⟨ ap (_⊕ (x ⊕ y)) (⊕-idem a ⁻¹) ⟩
-   (a ⊕ a) ⊕ (x ⊕ y) ≡⟨ ⊕-tran a a x y ⟩
+ =    a    ⊕ (x ⊕ y) ≡⟨ ap (_⊕ (x ⊕ y)) (⊕-idem ⁻¹) ⟩
+   (a ⊕ a) ⊕ (x ⊕ y) ≡⟨ ⊕-tran ⟩
    (a ⊕ x) ⊕ (a ⊕ y) ∎
 
 ⊕-is-⊕-homomorphism-l : (𝓐 : Convex-body 𝓤)
                     → (b : ⟨ 𝓐 ⟩) → is-⊕-homomorphism 𝓐 𝓐 (λ x → x ⊕⟨ 𝓐 ⟩ b)
 ⊕-is-⊕-homomorphism-l (𝓐 , _⊕_ , (_ , ⊕-idem , _ , ⊕-tran) , _) b x y
- = (x ⊕ y) ⊕    b    ≡⟨ ap ((x ⊕ y) ⊕_) (⊕-idem b ⁻¹) ⟩
-   (x ⊕ y) ⊕ (b ⊕ b) ≡⟨ ⊕-tran x y b b ⟩
+ = (x ⊕ y) ⊕    b    ≡⟨ ap ((x ⊕ y) ⊕_) (⊕-idem ⁻¹) ⟩
+   (x ⊕ y) ⊕ (b ⊕ b) ≡⟨ ⊕-tran ⟩
    (x ⊕ b) ⊕ (y ⊕ b) ∎
 
 ⊕-hom-composition : (𝓐 : Convex-body 𝓤) (𝓑 : Convex-body 𝓥) (𝓒 : Convex-body 𝓦)
@@ -181,7 +183,7 @@ record Interval-object (𝓤 : Universe) : 𝓤ω where
   mpaa : midpoint-algebra-axioms 𝕀 _⊕_
   ca : cancellative _⊕_
   ia : iterative _⊕_
-  universal-property : is-interval-object (𝕀 , _⊕_ , mpaa , ca , ia) 𝓤 u v
+  universal-property : {𝓥 : Universe} → is-interval-object (𝕀 , _⊕_ , mpaa , ca , ia) 𝓥 u v
 
 \end{code}
 
@@ -219,6 +221,9 @@ module basic-interval-object-development {𝓤 : Universe}
 
 
  open Interval-object io public
+
+ 𝕀-set : is-set 𝕀
+ 𝕀-set = pr₁ mpaa
 
  ⊕-idem : idempotent _⊕_
  ⊕-idem = pr₁ (pr₂ mpaa)
@@ -270,11 +275,11 @@ module basic-interval-object-development {𝓤 : Universe}
 
 \begin{code}
 
- affine-uv-involutive : affine u v ∼ id
- affine-uv-involutive = affine-uniqueness· id u v refl refl (id-is-⊕-homomorphism 𝓘)
+ affine-uv-identity : affine u v ≡ id
+ affine-uv-identity = affine-uniqueness id u v refl refl (id-is-⊕-homomorphism 𝓘)
 
  affine-constant : (a : 𝕀) (x : 𝕀) → affine a a x ≡ a
- affine-constant a = affine-uniqueness· (λ _ → a) a a refl refl (λ _ _ → ⊕-idem a ⁻¹)
+ affine-constant a = affine-uniqueness· (λ _ → a) a a refl refl (λ _ _ → ⊕-idem ⁻¹)
 
 \end{code}
 
@@ -293,7 +298,7 @@ module basic-interval-object-development {𝓤 : Universe}
  M-prop₂ = pr₂ (pr₂ ia)
 
  M-idem : (x : 𝕀) → M (λ _ → x) ≡ x
- M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem x ⁻¹) ⁻¹
+ M-idem x = M-prop₂ (λ _ → x) (λ _ → x) (λ _ → ⊕-idem ⁻¹) ⁻¹
 
  M-hom : (x y : ℕ → 𝕀) → (M x ⊕ M y) ≡ M (λ i → x i ⊕ y i)
  M-hom x y = M-prop₂ M' (λ i → x i ⊕ y i) γ where
@@ -307,9 +312,7 @@ module basic-interval-object-development {𝓤 : Universe}
              ≡⟨ ap ((x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕_)
                    (M-prop₁ (λ n → y (n +ℕ i)))             ⟩
          (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ (y (0 +ℕ i) ⊕ M (λ n → y (succ n +ℕ i)))
-             ≡⟨ ⊕-tran
-                   (x (0 +ℕ i)) (M (λ n → x (succ n +ℕ i)))
-                   (y (0 +ℕ i)) (M (λ n → y (succ n +ℕ i))) ⟩
+             ≡⟨ ⊕-tran ⟩
          ((x (0 +ℕ i) ⊕ y (0 +ℕ i)) ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
              ≡⟨ ap (λ - → (x - ⊕ y -)
                         ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
@@ -415,7 +418,7 @@ module basic-interval-object-development {𝓤 : Universe}
  O-inverse =    − O      ≡⟨ −-is-⊕-homomorphism −1 +1 ⟩
              − −1 ⊕ − +1 ≡⟨ ap (_⊕ − +1) −1-inverse   ⟩
                +1 ⊕ − +1 ≡⟨ ap (+1 ⊕_)   +1-inverse   ⟩
-               +1 ⊕ −1   ≡⟨ ⊕-comm +1 −1              ⟩
+               +1 ⊕ −1   ≡⟨ ⊕-comm                    ⟩
                   O      ∎
 
  −1-neg-inv : − − −1 ≡ −1
@@ -430,7 +433,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
  −-involutive : (x : 𝕀) → − − x ≡ x
  −-involutive x =         − − x ≡⟨ negation-involutive' x ⁻¹ ⟩
-                 affine −1 +1 x ≡⟨ affine-uv-involutive x ⟩
+                 affine −1 +1 x ≡⟨ happly affine-uv-identity x ⟩
                               x  ∎
   where
    −−-is-⊕-homomorphism : is-⊕-homomorphism 𝓘 𝓘 (λ x → − (− x))
@@ -464,10 +467,10 @@ module basic-interval-object-development {𝓤 : Universe}
     ⊖-fact' : affine O O x ≡ x ⊖ x
     ⊖-fact' = affine-uniqueness· (λ x → x ⊖ x) O O
               (ap (−1 ⊕_) −1-inverse)
-              (ap (+1 ⊕_) +1-inverse ∙ ⊕-comm +1 −1)
+              (ap (+1 ⊕_) +1-inverse ∙ ⊕-comm)
               (λ x y → ap ((x ⊕ y) ⊕_)
                           (−-is-⊕-homomorphism x y)
-                     ∙ ⊕-tran x y (− x) (− y))
+                     ∙ ⊕-tran )
               x
 
 \end{code}
@@ -493,19 +496,20 @@ module basic-interval-object-development {𝓤 : Universe}
  *-gives-id-l x = affine-equation-r (− x) x
 
  *-gives-id-r : (y : 𝕀) → +1 * y ≡ y
- *-gives-id-r y = ap (λ - → affine - +1 y) +1-inverse ∙ affine-uv-involutive y
+ *-gives-id-r y = ap (λ - → affine - +1 y) +1-inverse
+                ∙ happly affine-uv-identity y
 
  *-is-⊕-homomorphism-l : (a : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (a *_)
  *-is-⊕-homomorphism-l a x y = affine-is-⊕-homomorphism (− a) a x y
 
  *-commutative : commutative _*_
- *-commutative x y = γ y
+ *-commutative {x} {y} = γ y
   where
    j : (a b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (λ x → a * x ⊕ b * x)
    j a b x y
        = ap (_⊕ b * (x ⊕ y)) (*-is-⊕-homomorphism-l a x y)
        ∙ ap ((a * x ⊕ a * y) ⊕_) (*-is-⊕-homomorphism-l b x y)
-       ∙ ⊕-tran (a * x) (a * y) (affine (− b) b x) (affine (− b) b y)
+       ∙ ⊕-tran
    i : is-⊕-homomorphism 𝓘 𝓘 (λ y → y * x)
    i y z = p
     where
@@ -524,14 +528,14 @@ module basic-interval-object-development {𝓤 : Universe}
 
  *-is-⊕-homomorphism-r : (b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (_* b)
  *-is-⊕-homomorphism-r b x y =
-      (x ⊕ y) * b       ≡⟨ *-commutative (x ⊕ y) b             ⟩
+      (x ⊕ y) * b       ≡⟨ *-commutative            ⟩
       b * (x ⊕ y)       ≡⟨ *-is-⊕-homomorphism-l b x y           ⟩
-      (b * x) ⊕ (b * y) ≡⟨ ap ((b * x) ⊕_) (*-commutative b y) ⟩
-      (b * x) ⊕ (y * b) ≡⟨ ap (_⊕ (y * b)) (*-commutative b x) ⟩
+      (b * x) ⊕ (b * y) ≡⟨ ap ((b * x) ⊕_) (*-commutative) ⟩
+      (b * x) ⊕ (y * b) ≡⟨ ap (_⊕ (y * b)) (*-commutative) ⟩
       (x * b) ⊕ (y * b) ∎
 
- *-prop : (x y : 𝕀) → x * y ≡ − (x * − y)
- *-prop x y = affine-uniqueness· (λ - → − (x * (− -))) (− x) x l r i y
+ *-swap : (x y : 𝕀) → x * y ≡ − (x * − y)
+ *-swap x y = affine-uniqueness· (λ - → − (x * (− -))) (− x) x l r i y
   where
    l = − (x * (− −1)) ≡⟨ ap (λ - → − (x * -)) −1-inverse ⟩
        − (x *    +1 ) ≡⟨ ap −_ (*-gives-id-l x)          ⟩
@@ -553,8 +557,8 @@ module basic-interval-object-development {𝓤 : Universe}
  *-assoc x y z = γ z ⁻¹
   where
    l =      x * (y * −1) ≡⟨ ap (x *_) (*-gives-negation-l y) ⟩
-            x *  (− y)   ≡⟨ −-involutive (x * (− y)) ⁻¹      ⟩
-     (− (− (x * − y)))   ≡⟨ ap −_ (*-prop x y ⁻¹)          ⟩
+            x * − y      ≡⟨ −-involutive (x * − y) ⁻¹ ⟩
+       − − (x * − y)     ≡⟨ ap (−_) (*-swap x y ⁻¹) ⟩
          − (x * y)       ∎
    r = x * (y * +1) ≡⟨ ap (x *_) (*-gives-id-l y) ⟩
        x * y        ∎
@@ -592,7 +596,7 @@ module basic-interval-object-development {𝓤 : Universe}
  −-half x = −-is-⊕-homomorphism x O ∙ ap (− x ⊕_) O-inverse
 
  O-half : O /2 ≡ O
- O-half = ⊕-idem O
+ O-half = ⊕-idem
 
  −1-half : − +1/2 ≡ −1/2
  −1-half = −-half +1 ∙ ap _/2 +1-inverse
@@ -633,16 +637,16 @@ module basic-interval-object-development {𝓤 : Universe}
  x −𝕀 y = double (x ⊖ y)
 
  +𝕀-comm : commutative _+𝕀_
- +𝕀-comm x y = ap double (⊕-comm x y)
+ +𝕀-comm {x} {y} = ap double ⊕-comm
 
  +𝕀-itself : (x : 𝕀) → x +𝕀 x ≡ double x
- +𝕀-itself x = ap double (⊕-idem x)
+ +𝕀-itself x = ap double ⊕-idem
 
  +𝕀-tran : (x y s t : 𝕀) → (x ⊕ y) +𝕀 (s ⊕ t) ≡ (x ⊕ s) +𝕀 (y ⊕ t)
- +𝕀-tran x y s t = ap double (⊕-tran x y s t)
+ +𝕀-tran x y s t = ap double ⊕-tran
 
  +𝕀-fact : (x y : 𝕀) → x +𝕀 − y ≡ double (− (y ⊖ x))
- +𝕀-fact x y = ap double (fact x y ∙ ap −_ (⊕-comm (− x) y))
+ +𝕀-fact x y = ap double (fact x y ∙ ap −_ ⊕-comm)
 
 \end{code}
 
@@ -664,7 +668,7 @@ module basic-interval-object-development {𝓤 : Universe}
                         O ∎
 
  double-O-is-O : double O ≡ O
- double-O-is-O = double O       ≡⟨ ap double (⊕-idem O ⁻¹) ⟩
+ double-O-is-O = double O       ≡⟨ ap double (⊕-idem ⁻¹) ⟩
                  double (O ⊕ O) ≡⟨ double-mid O            ⟩
                  O ∎
 
@@ -675,10 +679,10 @@ module basic-interval-object-development {𝓤 : Universe}
  double-+1/2-is-+1 = double-mid +1
 
  double-−1-is-−1 : double −1 ≡ −1
- double-−1-is-−1 = ap double (⊕-idem −1 ⁻¹ ∙ ap (−1 ⊕_) (⊕-idem −1 ⁻¹)) ∙ double-left −1
+ double-−1-is-−1 = ap double (⊕-idem ⁻¹ ∙ ap (−1 ⊕_) (⊕-idem ⁻¹)) ∙ double-left −1
 
  double-+1-is-+1 : double +1 ≡ +1
- double-+1-is-+1 = ap double (⊕-idem +1 ⁻¹ ∙ ap (+1 ⊕_) (⊕-idem +1 ⁻¹)) ∙ double-right +1
+ double-+1-is-+1 = ap double (⊕-idem ⁻¹ ∙ ap (+1 ⊕_) (⊕-idem ⁻¹)) ∙ double-right +1
 
  maxO-O-is-O : maxO O ≡ O
  maxO-O-is-O = maxO O
@@ -694,7 +698,7 @@ module basic-interval-object-development {𝓤 : Universe}
  _∨_ = max
 
  max-idem : idempotent _∨_
- max-idem a = a ∨ a
+ max-idem {a} = a ∨ a
                 ≡⟨ ap (λ - → double ((a /2) +𝕀 maxO -))
                       (⊖-zero a)                 ⟩
               double (double (a /2 ⊕ maxO O))
@@ -725,6 +729,8 @@ module basic-interval-object-development {𝓤 : Universe}
  abs : 𝕀 → 𝕀
  abs x = max (− x) x
 
+ abs-O-is-O : abs O ≡ O
+ abs-O-is-O = transport (λ - → max - O ≡ O) (O-inverse ⁻¹) max-idem
 
 \end{code}
 
@@ -738,3 +744,32 @@ module basic-interval-object-development {𝓤 : Universe}
            (ℕ      →      ℕ          →           𝕀)
            numerator     denominator   numer/denom
            (binary expansion stream applied to M).
+
+\begin{code}
+
+ 𝟙-Convex-body : Convex-body 𝓤
+ 𝟙-Convex-body = 𝟙 , (λ _ _ → ⋆) , axioms
+   where
+     axioms : convex-body-axioms 𝟙 (λ _ _ → ⋆)
+     pr₁ (pr₁ axioms) = discrete-types-are-sets γ where
+       γ : (x y : 𝟙) → decidable (x ≡ y)
+       γ ⋆ ⋆ = inl refl
+     pr₁ (pr₂ (pr₁ axioms)) {⋆} = refl
+     pr₁ (pr₂ (pr₂ (pr₁ axioms))) {⋆} {⋆} = refl
+     pr₂ (pr₂ (pr₂ (pr₁ axioms))) {⋆} {⋆} {⋆} {⋆} = refl
+     pr₁ (pr₂ axioms) ⋆ ⋆ ⋆ refl = refl
+     pr₁ (pr₂ (pr₂ axioms)) _ = ⋆
+     pr₁ (pr₂ (pr₂ (pr₂ axioms))) _ = refl
+     pr₂ (pr₂ (pr₂ (pr₂ axioms))) _ _ p = p 0
+
+ 𝟙-Interval-object-implies-u≡v : is-interval-object 𝟙-Convex-body 𝓤 ⋆ ⋆ → u ≡ v
+ 𝟙-Interval-object-implies-u≡v 𝓐 = h⋆≡u ⁻¹ ∙ h⋆≡v
+   where
+     h : 𝟙 {𝓤} → 𝕀
+     h = pr₁ (pr₁ (𝓐 𝓘 u v))
+     h⋆≡u : h ⋆ ≡ u
+     h⋆≡u = pr₁ (pr₂ (pr₁ (𝓐 𝓘 u v)))
+     h⋆≡v : h ⋆ ≡ v
+     h⋆≡v = pr₁ (pr₂ (pr₂ (pr₁ (𝓐 𝓘 u v))))
+
+\end{code}
