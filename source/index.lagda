@@ -108,6 +108,7 @@ All modules in alphabetical order:
 import ADecidableQuantificationOverTheNaturals
 import AlternativePlus
 import ArithmeticViaEquivalence
+import BanachFixedPointTheorem
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import CantorSchroederBernstein
