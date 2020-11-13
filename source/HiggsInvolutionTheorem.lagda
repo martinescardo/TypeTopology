@@ -14,9 +14,6 @@ The proof given here is based on an exercise in page 160 of Lambek and
 Scott's Introduction to Higher-Order Categorical Logic, attributed to
 Scedrov. Thanks to Phil Scott for bringing my attention to this proof.
 
-TODO. Generalize from the type Ω 𝓤₀ of propositions in the universe 𝓤₀
-to any universe 𝓤 (easy).
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -28,32 +25,32 @@ open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
 module HiggsInvolutionTheorem
-        (fe : funext 𝓤₀ 𝓤₀)
-        (pe : propext 𝓤₀)
+        (fe : funext 𝓤 𝓤)
+        (pe : propext 𝓤)
        where
 
-involutive : {X : 𝓤 ̇ } → (f : X → X) → 𝓤 ̇
+involutive : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
 involutive f = ∀ x → f (f x) ≡ x
 
-higgs : (f : Ω 𝓤₀ → Ω 𝓤₀) → left-cancellable f → involutive f
+higgs : (f : Ω 𝓤 → Ω 𝓤) → left-cancellable f → involutive f
 higgs f c = VIII
   where
-   I : (p : Ω 𝓤₀) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
+   I : (p : Ω 𝓤) → f p ≡ ⊤ → p ≡ ⊤ → f ⊤ ≡ ⊤
    I p r s = transport (λ - → f - ≡ ⊤) s r
 
-   II : (p : Ω 𝓤₀) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
+   II : (p : Ω 𝓤) → f p ≡ ⊤ → f ⊤ ≡ ⊤ → p ≡ ⊤
    II p r s = c (r ∙ s ⁻¹)
 
-   III : (p : Ω 𝓤₀) → f p ≡ ⊤ → p ≡ f ⊤
+   III : (p : Ω 𝓤) → f p ≡ ⊤ → p ≡ f ⊤
    III p r = Ω-ext' pe fe (I p r) (II p r)
 
-   IV : (p : Ω 𝓤₀) → f (f p) ≡ ⊤ → p ≡ ⊤
+   IV : (p : Ω 𝓤) → f (f p) ≡ ⊤ → p ≡ ⊤
    IV p r = c (III (f p) r)
 
-   V : (p : Ω 𝓤₀) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
+   V : (p : Ω 𝓤) → f (f (f p)) ≡ ⊤ → f p ≡ ⊤
    V p = IV (f p)
 
-   VI : (p : Ω 𝓤₀) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
+   VI : (p : Ω 𝓤) → f p ≡ ⊤ → f (f (f p)) ≡ ⊤
    VI p r = iv ∙ r
     where
      i : f (f p) ≡ f ⊤
@@ -68,10 +65,10 @@ higgs f c = VIII
      iv : f (f (f p)) ≡ f p
      iv = ap f iii
 
-   VII : (p : Ω 𝓤₀) → f (f (f p)) ≡ f p
+   VII : (p : Ω 𝓤) → f (f (f p)) ≡ f p
    VII p = Ω-ext' pe fe (V p) (VI p)
 
-   VIII : (p : Ω 𝓤₀) → f (f p) ≡ p
+   VIII : (p : Ω 𝓤) → f (f p) ≡ p
    VIII p = c (VII p)
 
 \end{code}
