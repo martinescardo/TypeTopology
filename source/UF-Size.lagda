@@ -157,10 +157,10 @@ instead of univalence:
 \begin{code}
 
 prop-has-size-is-prop : PropExt
-                        → FunExt
-                        → (P : 𝓤 ̇ )
-                        → is-prop P
-                        → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
+                      → FunExt
+                      → (P : 𝓤 ̇ )
+                      → is-prop P
+                      → (𝓥 :  Universe) → is-prop (P has-size 𝓥)
 prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
  where
   j : is-prop (lift 𝓥 P)
