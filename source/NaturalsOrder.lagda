@@ -313,3 +313,34 @@ minimal-from-given A δ (k , a) = γ
   γ = cases f g (βμ A δ k)
 
 \end{code}
+
+20th November 2020.
+
+\begin{code}
+
+open import NaturalsAddition renaming (_+_ to _∔_)
+
+max : ℕ → ℕ → ℕ
+max zero     n        = n
+max (succ m) zero     = succ m
+max (succ m) (succ n) = succ (max m n)
+
+minus : (m n : ℕ) → n ≤ m → ℕ
+minus zero     n        le = zero
+minus (succ m) zero     *  = succ m
+minus (succ m) (succ n) le = minus m n le
+
+minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ≡ m
+minus-property zero     zero     *  = refl
+minus-property (succ m) zero     *  = refl
+minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
+
+max-≤-property : (m n : ℕ) → m ≤ max m n
+max-≤-property zero     n        = *
+max-≤-property (succ m) zero     = ≤-refl m
+max-≤-property (succ m) (succ n) = max-≤-property m n
+
+max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-property m n) ∔ m ≡ max m n
+max-minus-property m n = minus-property (max m n) m (max-≤-property m n)
+
+\end{code}
