@@ -18,7 +18,7 @@ open import SpartanMLTT
 
 open import Two-Properties
 open import NaturalsAddition renaming (_+_ to _∔_)
-open import NaturalsOrder
+open import NaturalsOrder hiding (max)
 open import DiscreteAndSeparated
 open import UF-Base
 open import UF-Subsingletons
