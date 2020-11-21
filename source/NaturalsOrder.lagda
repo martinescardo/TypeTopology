@@ -325,6 +325,37 @@ max zero     n        = n
 max (succ m) zero     = succ m
 max (succ m) (succ n) = succ (max m n)
 
+max-idemp : (x : ℕ) → max x x ≡ x
+max-idemp zero     = refl
+max-idemp (succ x) = ap succ (max-idemp x)
+
+max-comm : (m n : ℕ) → max m n ≡ max n m
+max-comm zero     zero     = refl
+max-comm zero     (succ n) = refl
+max-comm (succ m) zero     = refl
+max-comm (succ m) (succ n) = ap succ (max-comm m n)
+
+max-assoc : (x y z : ℕ) → max (max x y) z ≡ max x (max y z)
+max-assoc zero     y        z        = refl
+max-assoc (succ x) zero     z        = refl
+max-assoc (succ x) (succ y) zero     = refl
+max-assoc (succ x) (succ y) (succ z) = ap succ (max-assoc x y z)
+
+max-ord→ : (x y : ℕ) → x ≤ y → max x y ≡ y
+max-ord→ zero     y        le = refl
+max-ord→ (succ x) zero     le = 𝟘-elim le
+max-ord→ (succ x) (succ y) le = ap succ (max-ord→ x y le)
+
+max-ord← : (x y : ℕ) → max x y ≡ y → x ≤ y
+max-ord← zero     y        p = *
+max-ord← (succ x) zero     p = 𝟘-elim (positive-not-zero x p)
+max-ord← (succ x) (succ y) p = max-ord← x y (succ-lc p)
+
+max-≤-upper-bound : (m n : ℕ) → m ≤ max m n
+max-≤-upper-bound zero     n        = *
+max-≤-upper-bound (succ m) zero     = ≤-refl m
+max-≤-upper-bound (succ m) (succ n) = max-≤-upper-bound m n
+
 minus : (m n : ℕ) → n ≤ m → ℕ
 minus zero     n        le = zero
 minus (succ m) zero     *  = succ m
@@ -335,12 +366,7 @@ minus-property zero     zero     *  = refl
 minus-property (succ m) zero     *  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
-max-≤-property : (m n : ℕ) → m ≤ max m n
-max-≤-property zero     n        = *
-max-≤-property (succ m) zero     = ≤-refl m
-max-≤-property (succ m) (succ n) = max-≤-property m n
-
-max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-property m n) ∔ m ≡ max m n
-max-minus-property m n = minus-property (max m n) m (max-≤-property m n)
+max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ≡ max m n
+max-minus-property m n = minus-property (max m n) m (max-≤-upper-bound m n)
 
 \end{code}
