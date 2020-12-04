@@ -10,6 +10,10 @@ open import SpartanMLTT
 
 module Slice (𝓣 : Universe) where
 
+open import UF-Base
+open import UF-Equiv
+open import UF-EquivalenceExamples
+open import UF-FunExt
 open import UF-Subsingletons
 
 𝓕 : 𝓤 ̇ → 𝓤 ⊔ 𝓣 ⁺ ̇
@@ -49,42 +53,57 @@ ppr₃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
      → (z : pullback f g) → f (ppr₁ z) ≡ g (ppr₂ z)
 ppr₃ (x , y , p) = p
 
+to-span : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+          (f : A → C) (g : B → C)
+          (X : 𝓤' ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ̇
+to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
+ Σ k ꞉ (X → A) , Σ l ꞉ (X → B) , (f ∘ k ∼ g ∘ l)
 
-open import UF-Base
-
-{- TODO.
-pullback-mediating : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
-                     {f : A → C} {g : B → C}
-                     {T : 𝓤' ̇ }
-                     (φ : T → A) (γ : T → B)
-                   → f ∘ φ  ∼ g ∘ γ
-                   → ∃! h ꞉ T → pullback f g , (ppr₁ ∘ h ∼ φ) × (ppr₂ ∘ h ∼ γ)
-pullback-mediating {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} {f} {g} {T} φ γ r = (h , p , q) , o
- where
-  h : T → pullback f g
-  h t = φ t , γ t , r t
-  p : ppr₁ ∘ h ∼ φ
-  p t = refl
-  q : ppr₂ ∘ h ∼ γ
-  q t = refl
-  o : (σ : Σ h' ꞉ T → pullback f g , (ppr₁ ∘ h' ∼ φ) × (ppr₂ ∘ h' ∼ γ)) → h , p , q ≡ σ
-  o (h' , p' , q') = to-Σ-≡ ({!!} , {!!})
--}
-
+→-pullback-≃ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
+               (f : A → C) (g : B → C)
+               (X : 𝓤' ̇ )
+             → funext 𝓤' (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+             → (X → pullback f g) ≃ to-span f g X
+→-pullback-≃ {𝓤} {𝓥} {𝓦} {𝓤̇} {A} {B} {C} f g X fe =
+ (X → pullback f g)                              ≃⟨ i   ⟩
+ (X → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))       ≃⟨ ii  ⟩
+ (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j) ≃⟨ iii ⟩
+ to-span f g X                                   ■
+  where
+   i   = Π-cong fe fe X (λ _ → pullback f g)
+                        (λ _ → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))
+                        (λ x → ≃-sym Σ-assoc)
+   ii  = ΠΣ-distr-≃
+   iii = qinveq ϕ (ψ , (λ x → refl) , (λ x → refl))
+    where
+     ϕ : (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j)
+       → to-span f g X
+     ϕ (j , H) = (pr₁ ∘ j , pr₂ ∘ j , H)
+     ψ : to-span f g X
+       → (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j)
+     ψ (k , l , H) = ((λ x → (k x , l x)) , H)
 
 pbf : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → (𝓕 Y → 𝓕 X)
 pbf f (Y , γ) = pullback f γ , ppr₁
 
 ∑ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
-∑ f (X , φ) = X , f ∘ φ
+∑ f (A , φ) = A , f ∘ φ
 
-{-
-
-∏ : {X : {!!} ̇ } {Y : {!!} ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
-∏ f (X , φ) = {!!}
-
--}
-
+-- Using Proposition 2.3 of
+-- https://ncatlab.org/nlab/show/locally+cartesian+closed+category
+∏ : {X : 𝓣 ̇ } {Y : 𝓣 ̇ } → (X → Y) → (𝓕 X → 𝓕 Y)
+∏ {X} {Y} f (E , φ) = pullback k l , ppr₁
+ where
+  A : 𝓣 ̇
+  A = Y
+  B : 𝓣 ̇
+  B = Σ τ ꞉ (X → E) , f ∼ f ∘ φ ∘ τ
+  C : 𝓣 ̇
+  C = Σ σ ꞉ (X → X) , f ∼ f ∘ σ
+  k : Y → C
+  k y = (id , λ x → refl)
+  l : B → C
+  l (τ , H) = (φ ∘ τ , H)
 
 open import UF-Classifiers
 open import UF-Equiv
