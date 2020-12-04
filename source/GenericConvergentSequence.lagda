@@ -18,7 +18,7 @@ open import SpartanMLTT
 
 open import Two-Properties
 open import NaturalsAddition renaming (_+_ to _∔_)
-open import NaturalsOrder
+open import NaturalsOrder hiding (max)
 open import DiscreteAndSeparated
 open import UF-Base
 open import UF-Subsingletons
@@ -565,8 +565,8 @@ under-≺-diagonal : (n : ℕ) → under n ≺ under (succ n)
 under-≺-diagonal n = n , refl , under-diagonal₁ n
 
 finite-≺-Succ : (a : ℕ∞) → is-finite a → a ≺ Succ a
-finite-≺-Succ a (n , p) = transport (_≺ Succ a) p 
-                            (transport (under n ≺_) (ap Succ p) 
+finite-≺-Succ a (n , p) = transport (_≺ Succ a) p
+                            (transport (under n ≺_) (ap Succ p)
                               (under-≺-diagonal n))
 
 ≺-Succ : (a b : ℕ∞) → a ≺ b → Succ a ≺ Succ b
@@ -604,8 +604,8 @@ open import OrdinalNotions hiding (_≤_) hiding (≤-refl) hiding (_≼_)
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , ⊏-trans m n w (transport (λ t → m ⊏ t) s a) b
 
 ≺-Succ-r : (a b : ℕ∞) → a ≺ b → a ≺ Succ b
-≺-Succ-r a b a≺b = ≺-trans a (Succ a) (Succ b) 
-                     (finite-≺-Succ a (≺-implies-finite a b a≺b)) 
+≺-Succ-r a b a≺b = ≺-trans a (Succ a) (Succ b)
+                     (finite-≺-Succ a (≺-implies-finite a b a≺b))
                      (≺-Succ a b a≺b)
 
 ≺≼-gives-≺ : (x y z : ℕ∞) → x ≺ y → y ≼ z → x ≺ z

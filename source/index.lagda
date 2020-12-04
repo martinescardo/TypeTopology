@@ -121,6 +121,7 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
+-- import CubicalBinarySystem -- works with Agda 2.6.2 only
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DiscreteAndSeparated
