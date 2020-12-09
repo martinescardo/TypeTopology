@@ -312,6 +312,8 @@ with the assumption that
 
 Then the previous few functions would be a particular case of this.
 
+Question: Can we relax the assumption that X is discrete to the
+assumption that X is totally separated in the above closure under Σ?
 
 The following can also be considered as a special case of Σ (indexed by the type 𝟚):
 
@@ -331,6 +333,8 @@ The following can also be considered as a special case of Σ (indexed by the typ
     ap inr (u (λ p → φ (cases (λ (_ : X) → ₀) p)))
 
 \end{code}
+
+The Cantor type ℕ → 𝟚 is totally separated:
 
 \begin{code}
 
@@ -362,48 +366,49 @@ module _ (fe : FunExt)  where
 
  open import InjectiveTypes fe
 
- /-is-totally-separated : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
+ /-is-totally-separated : (fe : FunExt)
+                          {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                           (j : X → A)
                           (Y : X → 𝓦 ̇ )
                         → ((x : X) → is-totally-separated (Y x))
                         → (a : A) → is-totally-separated ((Y / j) a)
- /-is-totally-separated {𝓤} {𝓥} {𝓦} j Y t a = Π-is-totally-separated (fe (𝓤 ⊔ 𝓥) 𝓦)
-                                                 (λ (σ : fiber j a) → t (pr₁ σ))
+ /-is-totally-separated {𝓤} {𝓥} {𝓦} fe j Y t a = Π-is-totally-separated (fe (𝓤 ⊔ 𝓥) 𝓦)
+                                                    (λ (σ : fiber j a) → t (pr₁ σ))
 
 \end{code}
 
 We now characterize the totally separated types X as those such that
-the map eval {X} is an embedding, in order to construct totally
-separated reflections.
+the map eval X defined below is an embedding, in order to construct
+totally separated reflections.
 
 \begin{code}
 
-eval : {X : 𝓤 ̇ } → X → ((X → 𝟚) → 𝟚)
-eval x = λ p → p x
+eval : (X : 𝓤 ̇ ) → X → ((X → 𝟚) → 𝟚)
+eval X = λ x p → p x
 
-tsieeval : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-totally-separated X → is-embedding(eval {𝓤} {X})
+tsieeval : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-totally-separated X → is-embedding(eval X)
 tsieeval {𝓤} {X} fe ts φ (x , p) (y , q) = to-Σ-≡ (t , r)
   where
-   s : eval x ≡ eval y
+   s : eval X x ≡ eval X y
    s = p ∙ q ⁻¹
 
    t : x ≡ y
    t = ts (happly s)
 
-   r : transport (λ - → eval - ≡ φ) t p ≡ q
+   r : transport (λ - → eval X - ≡ φ) t p ≡ q
    r = totally-separated-types-are-sets fe
          ((X → 𝟚) → 𝟚) (Π-is-totally-separated fe (λ p → 𝟚-is-totally-separated)) _ q
 
-ieevalts : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-embedding(eval {𝓤} {X}) → is-totally-separated X
+ieevalts : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-embedding(eval X) → is-totally-separated X
 ieevalts {𝓤} {X} fe i {x} {y} e = ap pr₁ q
   where
    φ : (X → 𝟚) → 𝟚
-   φ = eval x
+   φ = eval X x
 
-   h : is-prop (fiber eval  φ)
+   h : is-prop (fiber (eval X) φ)
    h = i φ
 
-   g : eval y ≡ φ
+   g : eval X y ≡ φ
    g = dfunext fe (λ p → (e p)⁻¹)
 
    q : x , refl ≡ y , g
@@ -433,7 +438,7 @@ We construct the reflection as the image of the evaluation map.
 \begin{code}
 
  𝕋 : 𝓤 ̇ → 𝓤 ̇
- 𝕋 {𝓤} X = image (eval {𝓤} {X})
+ 𝕋 X = image (eval X)
 
  tts : {X : 𝓤 ̇ } → is-totally-separated(𝕋 X)
  tts {𝓤} {X} {φ , s} {γ , t} = g
@@ -453,17 +458,17 @@ the reflector.
 \begin{code}
 
 
- η : {X : 𝓤 ̇ } → X → 𝕋 X
- η {X} = corestriction (eval {X})
+ η : (X : 𝓤 ̇ ) → X → 𝕋 X
+ η X = corestriction (eval X)
 
- η-surjection : {X : 𝓤 ̇ } → is-surjection(η {𝓤} {X})
- η-surjection = corestriction-surjection eval
+ η-surjection : {X : 𝓤 ̇ } → is-surjection(η X)
+ η-surjection {𝓤} {X} = corestriction-surjection (eval X)
 
  η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
              → ((x' : 𝕋 X) → is-prop(P x'))
-             → ((x : X) → P(η x))
+             → ((x : X) → P(η X x))
              → (x' : 𝕋 X) → P x'
- η-induction = surjection-induction η η-surjection
+ η-induction {𝓤} {𝓦} {X} = surjection-induction (η X) η-surjection
 
 \end{code}
 
@@ -473,25 +478,25 @@ rather than direct proofs (as in the proof of tight reflection below).
 \begin{code}
 
  totally-separated-reflection : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
-                              → (f : X → A) → ∃! f' ꞉ (𝕋 X → A) , f' ∘ η ≡ f
+                              → (f : X → A) → ∃! f' ꞉ (𝕋 X → A) , f' ∘ η X ≡ f
  totally-separated-reflection {𝓤} {𝓥} {X} {A} ts f = go
   where
    iss : is-set A
    iss = totally-separated-types-are-sets (fe 𝓥 𝓤₀) A ts
 
-   ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ a ꞉ A , eval a ≡ γ)
+   ie : (γ : (A → 𝟚) → 𝟚) → is-prop (Σ a ꞉ A , eval A a ≡ γ)
    ie = tsieeval (fe 𝓥 𝓤₀) ts
 
-   h : (φ : (X → 𝟚) → 𝟚) → (∃ x ꞉ X , eval x ≡ φ) → Σ a ꞉ A , eval a ≡ (λ q → φ(q ∘ f))
+   h : (φ : (X → 𝟚) → 𝟚) → (∃ x ꞉ X , eval X x ≡ φ) → Σ a ꞉ A , eval A a ≡ (λ q → φ(q ∘ f))
    h φ = ∥∥-rec (ie γ) u
     where
      γ : (A → 𝟚) → 𝟚
      γ q = φ (q ∘ f)
 
-     u : (Σ x ꞉ X , (λ p → p x) ≡ φ) → Σ a ꞉ A , eval a ≡ γ
+     u : (Σ x ꞉ X , (λ p → p x) ≡ φ) → Σ a ꞉ A , eval A a ≡ γ
      u (x , r) = f x , dfunext (fe 𝓥 𝓤₀) (λ q → happly r (q ∘ f))
 
-   h' : (x' : 𝕋 X) → Σ a ꞉ A , eval a ≡ (λ q → pr₁ x' (q ∘ f))
+   h' : (x' : 𝕋 X) → Σ a ꞉ A , eval A a ≡ (λ q → pr₁ x' (q ∘ f))
    h' (φ , s) = h φ s
 
    f' : 𝕋 X → A
@@ -500,25 +505,25 @@ rather than direct proofs (as in the proof of tight reflection below).
    b : (x' : 𝕋 X) (q : A → 𝟚) → q(f' x') ≡ pr₁ x' (q ∘ f)
    b (φ , s) = happly (pr₂ (h φ s))
 
-   r : f' ∘ η ≡ f
-   r = dfunext (fe 𝓤 𝓥) (λ x → ts (b (η x)))
+   r : f' ∘ η X ≡ f
+   r = dfunext (fe 𝓤 𝓥) (λ x → ts (b (η X x)))
 
-   c : (σ : Σ f'' ꞉ (𝕋 X → A) , f'' ∘ η ≡ f) → (f' , r) ≡ σ
+   c : (σ : Σ f'' ꞉ (𝕋 X → A) , f'' ∘ η X ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡ (t , v)
     where
-     w : ∀ x → f'(η x) ≡ f''(η x)
+     w : ∀ x → f'(η X x) ≡ f''(η X x)
      w = happly (r ∙ s ⁻¹)
 
      t : f' ≡ f''
      t = dfunext (fe 𝓤 𝓥) (η-induction _ (λ _ → iss) w)
 
-     u : f'' ∘ η ≡ f
-     u = transport (λ - → - ∘ η ≡ f) t r
+     u : f'' ∘ η X ≡ f
+     u = transport (λ - → - ∘ η X ≡ f) t r
 
      v : u ≡ s
      v = Π-is-set (fe 𝓤 𝓥) (λ _ → iss) u s
 
-   go : ∃! f' ꞉ (𝕋 X → A) , f' ∘ η ≡ f
+   go : ∃! f' ꞉ (𝕋 X → A) , f' ∘ η X ≡ f
    go = (f' , r) , c
 
 \end{code}
@@ -529,12 +534,12 @@ We package the above as follows for convenient use elsewhere
 \begin{code}
 
  totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
-                              → is-equiv (λ (f' : 𝕋 X → A) → f' ∘ η)
+                              → is-equiv (λ (f' : 𝕋 X → A) → f' ∘ η X)
  totally-separated-reflection' ts = vv-equivs-are-equivs _ (totally-separated-reflection ts)
 
  totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
                                → (𝕋 X → A) ≃ (X → A)
- totally-separated-reflection'' ts = (λ f' → f' ∘ η) , totally-separated-reflection' ts
+ totally-separated-reflection'' ts = (λ f' → f' ∘ η _) , totally-separated-reflection' ts
 
 \end{code}
 
