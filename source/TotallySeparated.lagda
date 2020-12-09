@@ -177,7 +177,38 @@ totally-separated-types-are-sets fe X t = separated-types-are-sets fe (totally-s
 
 The converse fails: the type of propositions is a set, but its total
 separatedness implies excluded middle. In fact, its separatedness
-already implies excluded middle (exercise).
+already implies excluded middle:
+
+\begin{code}
+
+open import UF-ExcludedMiddle
+
+Ω-separated-gives-DNE : propext 𝓤 → funext 𝓤 𝓤
+                      → is-separated (Ω 𝓤) → DNE 𝓤
+Ω-separated-gives-DNE {𝓤} pe fe Ω-is-separated P P-is-prop not-not-P = d
+ where
+  p : Ω 𝓤
+  p = (P , P-is-prop)
+
+  b : ¬¬ (p ≡ ⊤Ω)
+  b = ¬¬-functor (holds-gives-equal-⊤ pe fe p) not-not-P
+
+  c : p ≡ ⊤Ω
+  c = Ω-is-separated p ⊤Ω b
+
+  d : P
+  d = equal-⊤-gives-holds p c
+
+Ω-separated-gives-EM : propext 𝓤 → funext 𝓤 𝓤₀ → funext 𝓤 𝓤
+                     → is-separated (Ω 𝓤) → EM 𝓤
+Ω-separated-gives-EM pe fe₀ fe Ω-is-separated = DNE-gives-EM fe₀ (Ω-separated-gives-DNE pe fe Ω-is-separated)
+
+Ω-totally-separated-gives-EM : propext 𝓤 → funext 𝓤 𝓤₀ → funext 𝓤 𝓤
+                             → is-totally-separated (Ω 𝓤) → EM 𝓤
+Ω-totally-separated-gives-EM {𝓤} pe fe₀ fe Ω-is-totally-separated =
+  Ω-separated-gives-EM pe fe₀ fe
+    (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
+\end{code}
 
 The need to define f and g in the following proof arises because the
 function is-prop-is-exponential ideal requires a dependent function
