@@ -281,11 +281,11 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
  extension : (X → 𝟚) → (𝕋 X → 𝟚)
  extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p))
 
- extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
+ extension-property : (p : X → 𝟚) (x : X) → extension p (η X x) ≡ p x
  extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
 
  ∃-compact-gives-∃-compact-𝕋 : ∃-compact X → ∃-compact (𝕋 X)
- ∃-compact-gives-∃-compact-𝕋 = surjection-∃-compact η (η-surjection)
+ ∃-compact-gives-∃-compact-𝕋 = surjection-∃-compact (η X) η-surjection
 
  ∃-compact-𝕋-gives-∃-compact : ∃-compact (𝕋 X) → ∃-compact X
  ∃-compact-𝕋-gives-∃-compact c p = h (c (extension p))
@@ -293,29 +293,29 @@ module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
    f : (Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → ∃ x ꞉ X , p x ≡ ₀
    f (x' , r) = ∥∥-functor f' (η-surjection x')
     where
-     f' : (Σ x ꞉ X , η x ≡ x') → Σ x ꞉ X , p x ≡ ₀
+     f' : (Σ x ꞉ X , η X x ≡ x') → Σ x ꞉ X , p x ≡ ₀
      f' (x , s) = x , ((extension-property p x) ⁻¹ ∙ ap (extension p) s ∙ r)
 
    g : (Σ x ꞉ X , p x ≡ ₀) → Σ x' ꞉ 𝕋 X , extension p x' ≡ ₀
-   g (x , r) = η x , (extension-property p x ∙ r)
+   g (x , r) = η X x , (extension-property p x ∙ r)
 
    h : decidable (∃ x' ꞉ 𝕋 X , extension p x' ≡ ₀) → decidable (∃ x ꞉ X , p x ≡ ₀)
    h (inl x) = inl (∥∥-rec ∥∥-is-prop f x)
    h (inr u) = inr (contrapositive (∥∥-functor g) u)
 
  Π-compact-gives-Π-compact-𝕋 : Π-compact X → Π-compact (𝕋 X)
- Π-compact-gives-Π-compact-𝕋 = surjection-Π-compact η (η-surjection)
+ Π-compact-gives-Π-compact-𝕋 = surjection-Π-compact (η X) (η-surjection)
 
  Π-compact-𝕋-gives-Π-compact : Π-compact (𝕋 X) → Π-compact X
  Π-compact-𝕋-gives-Π-compact c p = h (c (extension p))
   where
    f : ((x' : 𝕋 X) → extension p x' ≡ ₁) → ((x : X) → p x ≡ ₁)
-   f α x = (extension-property p x)⁻¹ ∙ α (η x)
+   f α x = (extension-property p x)⁻¹ ∙ α (η X x)
 
    g : (α : (x : X) → p x ≡ ₁) → ((x' : 𝕋 X) → extension p x' ≡ ₁)
    g α = η-induction (λ x' → extension p x' ≡ ₁) (λ _ → 𝟚-is-set) g'
      where
-      g' : (x : X) → extension p (η x) ≡ ₁
+      g' : (x : X) → extension p (η X x) ≡ ₁
       g' x = extension-property p x ∙ α x
 
    h : decidable ((x' : 𝕋 X) → extension p x' ≡ ₁) → decidable ((x : X) → p x ≡ ₁)
