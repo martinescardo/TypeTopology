@@ -290,16 +290,22 @@ the following particular cases:
     f : {u : X} → (u ≡ x) + ¬(u ≡ x) → Y u → 𝟚
     f (inl m) v = q (transport Y m v)
     f (inr _) v = ₀ --<-- What we choose here is irrelevant.
+
     p : Σ Y → 𝟚
     p (u , v) = f (d u x) v
+
     i : p (a , b) ≡ q (transport Y r b)
     i = ap (λ - → f - b) (discrete-inl d a x r)
+
     j : p (a , b) ≡ p (x , y)
     j = φ p
+
     k : p (x , y) ≡ q (transport Y refl y)
     k = ap (λ - → f - y) (discrete-inl d x x refl)
+
     g : q (transport Y r b) ≡ q y
     g = i ⁻¹ ∙ j ∙ k
+
   s : transport Y r b ≡ y
   s = t x s₂
 
@@ -457,7 +463,6 @@ the reflector.
 
 \begin{code}
 
-
  η : (X : 𝓤 ̇ ) → X → 𝕋 X
  η X = corestriction (eval X)
 
@@ -534,11 +539,11 @@ We package the above as follows for convenient use elsewhere
 \begin{code}
 
  totally-separated-reflection' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
-                              → is-equiv (λ (f' : 𝕋 X → A) → f' ∘ η X)
+                               → is-equiv (λ (f' : 𝕋 X → A) → f' ∘ η X)
  totally-separated-reflection' ts = vv-equivs-are-equivs _ (totally-separated-reflection ts)
 
  totally-separated-reflection'' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } → is-totally-separated A
-                               → (𝕋 X → A) ≃ (X → A)
+                                → (𝕋 X → A) ≃ (X → A)
  totally-separated-reflection'' ts = (λ f' → f' ∘ η _) , totally-separated-reflection' ts
 
 \end{code}
@@ -558,7 +563,7 @@ open neighbourhoods are equal).
 \end{code}
 
 TODO: example of 𝟚-separated type that fails to be 𝟚-sober, 𝟚-sober
-reflection.
+reflection (or 𝟚-sobrification).
 
 TODO: most of what we said doesn't depend on the type 𝟚, and total
 separatedness can be generalized to S-separatedness for an arbitrary
@@ -745,7 +750,7 @@ apartness relation _♯₂ is tight:
    f a p = i y (transport (λ - → - ♯ y) p a)
 
  tight-is-separated : {X : 𝓤 ̇ } → (_♯_ : X → X → 𝓥 ̇ )
-                 → is-apartness _♯_ → is-tight _♯_ → is-separated X
+                    → is-apartness _♯_ → is-tight _♯_ → is-separated X
  tight-is-separated _♯_ a t = f
   where
    f : ∀ x y → ¬¬(x ≡ y) → x ≡ y
@@ -897,9 +902,9 @@ apartness on it.
   η-surjection = corestriction-surjection apart
 
   η-induction : (P : X' → 𝓦 ̇ )
-             → ((x' : X') → is-prop(P x'))
-             → ((x : X) → P(η x))
-             → (x' : X') → P x'
+              → ((x' : X') → is-prop(P x'))
+              → ((x : X) → P(η x))
+              → (x' : X') → P x'
   η-induction = surjection-induction η η-surjection
 
 \end{code}
@@ -1051,14 +1056,14 @@ apartness on it.
 
   We now show that the above data provide the tight reflection, or
   universal strongly extensional map from X to tight apartness types,
-  where unique existence is expressed by by saying that a Σ type is a
+  where unique existence is expressed by saying that a Σ type is a
   singleton, as usual in univalent mathematics and homotopy type
   theory. Notice the use of η-induction to avoid dealing directly with
   the details of the constructions performed above.
 
 \begin{code}
 
-  tight-reflection : ∀ {𝓣} (A : 𝓦 ̇ ) (_♯ᴬ_ : A → A → 𝓣 ̇ )
+  tight-reflection : (A : 𝓦 ̇ ) (_♯ᴬ_ : A → A → 𝓣 ̇ )
                    → is-apartness _♯ᴬ_
                    → is-tight _♯ᴬ_
                    → (f : X → A)
