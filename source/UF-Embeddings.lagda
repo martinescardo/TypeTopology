@@ -136,6 +136,12 @@ pr₁-is-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
     h : is-prop(Y x)
     h = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
+embedding-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+                         → is-embedding f
+                         → g ∼ f
+                         → is-embedding g
+embedding-closed-under-∼ f g e H y = equiv-to-prop (∼-fiber-≃ H y) (e y)
+
 K-idtofun-lc : K-axiom (𝓤 ⁺) → {X : 𝓤 ̇ } (x y : X) (A : X → 𝓤 ̇ )
              → left-cancellable(idtofun (Id x y) (A y))
 K-idtofun-lc {𝓤} k {X} x y A {p} {q} r = k (𝓤 ̇ ) p q
