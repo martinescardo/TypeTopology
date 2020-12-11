@@ -60,7 +60,7 @@ open import UF-Subsingletons hiding (center)
 𝕄-induction : (P : 𝕄 → 𝓤 ̇ )
             → (a : P L)
             → (b : P R)
-              → (f : (x : 𝕄) → P x → P (l x))
+            → (f : (x : 𝕄) → P x → P (l x))
             → (g : (x : 𝕄) → P x → P (r x))
             → 𝕄-inductive P a b f g
             → (x : 𝕄) → P x

@@ -15,6 +15,7 @@ open import Two-Properties
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import WLPO
+open import Plus-Properties
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
@@ -183,8 +184,71 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 \begin{code}
 
+disconnected : 𝓤 ̇ → 𝓤 ̇
+disconnected X = retract 𝟚 of X
+
+disconnected₁ : 𝓤 ̇ → 𝓤 ̇
+disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
+
+disconnected₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
+disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
+
+
+disconnected-eq : (X : 𝓤 ̇ )
+                → (disconnected  X → disconnected₁ X)
+                × (disconnected₁ X → disconnected₂ X)
+                × (disconnected₂ X → disconnected  X)
+
+disconnected-eq {𝓤} X = (f , g , h)
+ where
+  f : (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
+    → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁)
+  f (p , s , e) = p , (s ₀ , e ₀) , (s ₁ , e ₁)
+
+  g : (Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁))
+    → Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
+  g (p , (x₀ , e₀) , (x₁ , e₁)) = (Σ x ꞉ X , p x ≡ ₀) ,
+                                  (Σ x ꞉ X , p x ≡ ₁) ,
+                                  (x₀ , e₀) ,
+                                  (x₁ , e₁) ,
+                                  qinveq ϕ (γ , γϕ , ϕγ)
+   where
+    ϕ : X → (Σ x ꞉ X , p x ≡ ₀) + (Σ x ꞉ X , p x ≡ ₁)
+    ϕ x = 𝟚-equality-cases
+           (λ (r₀ : p x ≡ ₀) → inl (x , r₀))
+           (λ (r₁ : p x ≡ ₁) → inr (x , r₁))
+
+    γ : (Σ x ꞉ X , p x ≡ ₀) + (Σ x ꞉ X , p x ≡ ₁) → X
+    γ (inl (x , r₀)) = x
+    γ (inr (x , r₁)) = x
+
+    ϕγ : ϕ ∘ γ ∼ id
+    ϕγ (inl (x , r₀)) = 𝟚-equality-cases₀ r₀
+    ϕγ (inr (x , r₁)) = 𝟚-equality-cases₁ r₁
+
+    γϕ : γ ∘ ϕ ∼ id
+    γϕ x = 𝟚-equality-cases
+           (λ (r₀ : p x ≡ ₀) → ap γ (𝟚-equality-cases₀ r₀))
+           (λ (r₁ : p x ≡ ₁) → ap γ (𝟚-equality-cases₁ r₁))
+
+  h : (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁))
+    → (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
+  h (X₀ , X₁ , x₀ , x₁ , (γ , (ϕ , γϕ) , (ϕ' , ϕ'γ))) = p , s , ps
+   where
+    p : X → 𝟚
+    p x = Cases (γ x) (λ _ → ₀) (λ _ → ₁)
+
+    s : 𝟚 → X
+    s ₀ = ϕ (inl x₀)
+    s ₁ = ϕ (inr x₁)
+
+    ps : p ∘ s ∼ id
+    ps ₀ = ap (cases (λ _ → ₀) (λ _ → ₁)) (γϕ (inl x₀))
+    ps ₁ = ap (cases (λ _ → ₀) (λ _ → ₁)) (γϕ (inr x₁))
+
+
 power-of-two-or-more-discrete-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                                     → retract 𝟚 of Y → is-discrete(X → Y) → Π-compact X
+                                                     → disconnected Y → is-discrete(X → Y) → Π-compact X
 power-of-two-or-more-discrete-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d = γ
  where
   a : retract (X → 𝟚) of (X → Y)
@@ -368,14 +432,14 @@ corollaries:
 \begin{code}
 
 tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇ }
-      → is-totally-separated X → retract 𝟚 of Y
+      → is-totally-separated X → disconnected Y
       → Π-compact (X → Y) → is-discrete X
 tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (retract-contravariance (fe 𝓤₀ 𝓤₀) r) c)
 
 open TotallySeparatedReflection fe pt
 
 tscd₁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-      → retract 𝟚 of Y
+      → disconnected Y
       → Π-compact (X → Y) → is-discrete (𝕋 X)
 tscd₁ {𝓤} {𝓥} {X} {Y} r c = f
  where
@@ -532,8 +596,8 @@ module.
 \begin{code}
 
 detachable-subset-retract : {X : 𝓤 ̇ } {A : X → 𝟚}
-                          → (Σ x ꞉ X , A(x) ≡ ₀)
-                          → retract (Σ x ꞉ X , A(x) ≡ ₀) of X
+                          → (Σ x ꞉ X , A x ≡ ₀)
+                          → retract (Σ x ꞉ X , A x ≡ ₀) of X
 detachable-subset-retract {𝓤} {X} {A} (x₀ , e₀) = r , pr₁ , rs
  where
   r : X → Σ x ꞉ X , A x ≡ ₀
@@ -564,7 +628,7 @@ allows us to decide inhabitedness, and ∃-compactness is a proposition.
 
 detachable-subset-∃-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → ∃-compact X
-                            → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
+                            → ∃-compact(Σ x ꞉ X , A x ≡ ₀)
 detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
  where
   g : decidable (∃ x ꞉ X , A x ≡ ₀) → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
@@ -580,7 +644,7 @@ ingredients (and with a longer proof (is there a shorter one?)).
 \begin{code}
 
 detachable-subset-Π-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
-                            → Π-compact X → Π-compact(Σ x ꞉ X , A(x) ≡ ₁)
+                            → Π-compact X → Π-compact(Σ x ꞉ X , A x ≡ ₁)
 detachable-subset-Π-compact {𝓤} {X} A c q = g (c p)
  where
   p₀ : (x : X) → A x ≡ ₀ → 𝟚
