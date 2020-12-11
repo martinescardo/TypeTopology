@@ -742,8 +742,8 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
          (pointed-props-are-singletons refl (props-are-sets 𝟙-is-prop))
 
 ∼-fiber-identifications-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
-                → f ∼ g
-                → (y : Y) (x : X) → (f x ≡ y) ≃ (g x ≡ y)
+                          → f ∼ g
+                          → (y : Y) (x : X) → (f x ≡ y) ≃ (g x ≡ y)
 ∼-fiber-identifications-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y x = qinveq α (β , (βα , αβ))
  where
   α : f x ≡ y → g x ≡ y
@@ -768,6 +768,6 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
 ∼-fiber-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y} {g : X → Y}
           → f ∼ g
           → (y : Y) → fiber f y ≃ fiber g y
-∼-fiber-≃ {𝓤} {𝓥} {X} {Y} {f} {g} H y = Σ-cong (∼-fiber-identifications-≃ H y)
+∼-fiber-≃ H y = Σ-cong (∼-fiber-identifications-≃ H y)
 
 \end{code}
