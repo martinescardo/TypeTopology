@@ -117,10 +117,10 @@ non-trivial-discrete-gives-disconnected (y₀ , y₁ , ne) d =
   non-trivial-with-isolated-point-gives-disconnected (y₀ , y₁ , ne , d y₀)
 
 
-retract-of-disconnected : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                        → retract X of Y
-                        → disconnected X
-                        → disconnected Y
-retract-of-disconnected = retracts-compose
+disconnected-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     → retract X of Y
+                     → disconnected X
+                     → disconnected Y
+disconnected-retract = retracts-compose
 
 \end{code}
