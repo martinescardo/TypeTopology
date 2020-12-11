@@ -193,13 +193,16 @@ disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
 disconnected₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
 disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
 
+disconnected₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
+disconnected₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
 
 disconnected-eq : (X : 𝓤 ̇ )
                 → (disconnected₀ X → disconnected₁ X)
                 × (disconnected₁ X → disconnected₂ X)
-                × (disconnected₂ X → disconnected₀ X)
+                × (disconnected₂ X → disconnected₃ X)
+                × (disconnected₃ X → disconnected₀ X)
 
-disconnected-eq {𝓤} X = (f , g , h)
+disconnected-eq {𝓤} X = (f , g , h , k)
  where
   f : (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
     → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁)
@@ -232,8 +235,12 @@ disconnected-eq {𝓤} X = (f , g , h)
            (λ (r₁ : p x ≡ ₁) → ap γ (𝟚-equality-cases₁ r₁))
 
   h : (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁))
-    → (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
-  h (X₀ , X₁ , x₀ , x₁ , (γ , (ϕ , γϕ) , (ϕ' , ϕ'γ))) = p , s , ps
+    → (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X))
+  h (X₀ , X₁ , x₀ , x₁ , (γ , (ϕ , γϕ) , _)) = (X₀ , X₁ , x₀ , x₁ , (γ , ϕ , γϕ))
+
+  k : (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X))
+    → Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id
+  k (X₀ , X₁ , x₀ , x₁ , (γ , ϕ , γϕ)) = p , s , ps
    where
     p : X → 𝟚
     p x = Cases (γ x) (λ _ → ₀) (λ _ → ₁)
@@ -264,8 +271,8 @@ power-of-two-or-more-discrete-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d 
 power-of-two-or-more-discrete-gives-compact-exponent' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                       → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
                                                       → is-discrete Y → is-discrete(X → Y) → Π-compact X
-power-of-two-or-more-discrete-gives-compact-exponent' (y₀ , y₁ , ne) dy =
-  power-of-two-or-more-discrete-gives-compact-exponent (𝟚-retract-of-discrete ne dy)
+power-of-two-or-more-discrete-gives-compact-exponent' (y₀ , y₁ , ne) d =
+  power-of-two-or-more-discrete-gives-compact-exponent (𝟚-retract-of-discrete ne d)
 
 \end{code}
 
@@ -296,7 +303,7 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
   g (inr u) = inr (contrapositive (∥∥-rec ∥∥-is-prop k) u)
 
 image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-               → ∃-compact X → ∃-compact (image f)
+                → ∃-compact X → ∃-compact (image f)
 image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-surjection f)
 
 surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
