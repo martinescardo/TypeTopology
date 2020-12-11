@@ -184,8 +184,8 @@ x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
 
 \begin{code}
 
-disconnected : 𝓤 ̇ → 𝓤 ̇
-disconnected X = retract 𝟚 of X
+disconnected₀ : 𝓤 ̇ → 𝓤 ̇
+disconnected₀ X = retract 𝟚 of X
 
 disconnected₁ : 𝓤 ̇ → 𝓤 ̇
 disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
@@ -195,9 +195,9 @@ disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X
 
 
 disconnected-eq : (X : 𝓤 ̇ )
-                → (disconnected  X → disconnected₁ X)
+                → (disconnected₀ X → disconnected₁ X)
                 × (disconnected₁ X → disconnected₂ X)
-                × (disconnected₂ X → disconnected  X)
+                × (disconnected₂ X → disconnected₀ X)
 
 disconnected-eq {𝓤} X = (f , g , h)
  where
@@ -246,6 +246,9 @@ disconnected-eq {𝓤} X = (f , g , h)
     ps ₀ = ap (cases (λ _ → ₀) (λ _ → ₁)) (γϕ (inl x₀))
     ps ₁ = ap (cases (λ _ → ₀) (λ _ → ₁)) (γϕ (inr x₁))
 
+
+disconnected : 𝓤 ̇ → 𝓤 ̇
+disconnected = disconnected₀
 
 power-of-two-or-more-discrete-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                                      → disconnected Y → is-discrete(X → Y) → Π-compact X
