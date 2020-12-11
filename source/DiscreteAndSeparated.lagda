@@ -122,19 +122,23 @@ retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
   g (inl p) = inl ((φ y) ⁻¹ ∙ ap f p ∙ φ y')
   g (inr u) = inr (contrapositive (ap s) u)
 
-𝟚-retract-of-discrete : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≢ x₁ → is-discrete X → retract 𝟚 of X
-𝟚-retract-of-discrete {𝓤} {X} {x₀} {x₁} ne d = r , (s , rs)
+𝟚-retract-of-non-trivial-type-with-isolated-point : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≢ x₁
+                                                  → is-isolated x₀ → retract 𝟚 of X
+𝟚-retract-of-non-trivial-type-with-isolated-point {𝓤} {X} {x₀} {x₁} ne d = r , (s , rs)
  where
   r : X → 𝟚
-  r = pr₁ (characteristic-function (d x₀))
+  r = pr₁ (characteristic-function d)
   φ : (x : X) → (r x ≡ ₀ → x₀ ≡ x) × (r x ≡ ₁ → ¬ (x₀ ≡ x))
-  φ = pr₂ (characteristic-function (d x₀))
+  φ = pr₂ (characteristic-function d)
   s : 𝟚 → X
   s ₀ = x₀
   s ₁ = x₁
   rs : (n : 𝟚) → r (s n) ≡ n
   rs ₀ = different-from-₁-equal-₀ (λ p → pr₂ (φ x₀) p refl)
   rs ₁ = different-from-₀-equal-₁ λ p → 𝟘-elim (ne (pr₁ (φ x₁) p))
+
+𝟚-retract-of-discrete : {X : 𝓤 ̇ } {x₀ x₁ : X} → x₀ ≢ x₁ → is-discrete X → retract 𝟚 of X
+𝟚-retract-of-discrete {𝓤} {X} {x₀} {x₁} ne d = 𝟚-retract-of-non-trivial-type-with-isolated-point ne (d x₀)
 
 \end{code}
 

@@ -12,6 +12,7 @@ open import SpartanMLTT
 open import CompactTypes
 open import TotallySeparated
 open import Two-Properties
+open import DisconnectedTypes
 open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import WLPO
@@ -175,91 +176,9 @@ First, to decide Π(p:X→𝟚), p(x)=1, decide p = λ x → ₁:
 power-of-two-discrete-gives-compact-exponent : {X : 𝓤 ̇ } → is-discrete(X → 𝟚) → Π-compact X
 power-of-two-discrete-gives-compact-exponent d = Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
 
-\end{code}
-
-A type X has 𝟚 as a retract iff it can be written as X₀+X₁ with X₀ and
-X₁ pointed. A sufficient (but by no means necessary) condition for
-this is that there is an isolated point x₀ and a point different from
-x₀ (in this case the decomposition is with X₀ ≃ 𝟙).
-
-\begin{code}
-
-disconnected₀ : 𝓤 ̇ → 𝓤 ̇
-disconnected₀ X = retract 𝟚 of X
-
-disconnected₁ : 𝓤 ̇ → 𝓤 ̇
-disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
-
-disconnected₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
-disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
-
-disconnected₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
-disconnected₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
-
-disconnected-eq : (X : 𝓤 ̇ )
-                → (disconnected₀ X → disconnected₁ X)
-                × (disconnected₁ X → disconnected₂ X)
-                × (disconnected₂ X → disconnected₃ X)
-                × (disconnected₃ X → disconnected₀ X)
-
-disconnected-eq {𝓤} X = (f , g , h , k)
- where
-  f : (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
-    → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁)
-  f (p , s , e) = p , (s ₀ , e ₀) , (s ₁ , e ₁)
-
-  g : (Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁))
-    → Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
-  g (p , (x₀ , e₀) , (x₁ , e₁)) = (Σ x ꞉ X , p x ≡ ₀) ,
-                                  (Σ x ꞉ X , p x ≡ ₁) ,
-                                  (x₀ , e₀) ,
-                                  (x₁ , e₁) ,
-                                  qinveq ϕ (γ , γϕ , ϕγ)
-   where
-    ϕ : X → (Σ x ꞉ X , p x ≡ ₀) + (Σ x ꞉ X , p x ≡ ₁)
-    ϕ x = 𝟚-equality-cases
-           (λ (r₀ : p x ≡ ₀) → inl (x , r₀))
-           (λ (r₁ : p x ≡ ₁) → inr (x , r₁))
-
-    γ : (Σ x ꞉ X , p x ≡ ₀) + (Σ x ꞉ X , p x ≡ ₁) → X
-    γ (inl (x , r₀)) = x
-    γ (inr (x , r₁)) = x
-
-    ϕγ : ϕ ∘ γ ∼ id
-    ϕγ (inl (x , r₀)) = 𝟚-equality-cases₀ r₀
-    ϕγ (inr (x , r₁)) = 𝟚-equality-cases₁ r₁
-
-    γϕ : γ ∘ ϕ ∼ id
-    γϕ x = 𝟚-equality-cases
-           (λ (r₀ : p x ≡ ₀) → ap γ (𝟚-equality-cases₀ r₀))
-           (λ (r₁ : p x ≡ ₁) → ap γ (𝟚-equality-cases₁ r₁))
-
-  h : (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁))
-    → (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X))
-  h (X₀ , X₁ , x₀ , x₁ , (γ , (ϕ , γϕ) , _)) = (X₀ , X₁ , x₀ , x₁ , (γ , ϕ , γϕ))
-
-  k : (Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X))
-    → Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id
-  k (X₀ , X₁ , x₀ , x₁ , (γ , ϕ , γϕ)) = p , s , ps
-   where
-    p : X → 𝟚
-    p x = Cases (γ x) (λ _ → ₀) (λ _ → ₁)
-
-    s : 𝟚 → X
-    s ₀ = ϕ (inl x₀)
-    s ₁ = ϕ (inr x₁)
-
-    ps : p ∘ s ∼ id
-    ps ₀ = ap (cases (λ _ → ₀) (λ _ → ₁)) (γϕ (inl x₀))
-    ps ₁ = ap (cases (λ _ → ₀) (λ _ → ₁)) (γϕ (inr x₁))
-
-
-disconnected : 𝓤 ̇ → 𝓤 ̇
-disconnected = disconnected₀
-
-power-of-two-or-more-discrete-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                                     → disconnected Y → is-discrete(X → Y) → Π-compact X
-power-of-two-or-more-discrete-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d = γ
+discrete-power-of-disconnected-gives-compact-exponent : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                      → disconnected Y → is-discrete(X → Y) → Π-compact X
+discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d = γ
  where
   a : retract (X → 𝟚) of (X → Y)
   a = retract-contravariance (fe 𝓤 𝓤₀) ρ
@@ -268,11 +187,11 @@ power-of-two-or-more-discrete-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d 
   γ : Π-compact X
   γ = power-of-two-discrete-gives-compact-exponent b
 
-power-of-two-or-more-discrete-gives-compact-exponent' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                                                      → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
-                                                      → is-discrete Y → is-discrete(X → Y) → Π-compact X
-power-of-two-or-more-discrete-gives-compact-exponent' (y₀ , y₁ , ne) d =
-  power-of-two-or-more-discrete-gives-compact-exponent (𝟚-retract-of-discrete ne d)
+discrete-power-of-non-trivial-discrete-gives-compact-exponent' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                                               → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
+                                                               → is-discrete Y → is-discrete(X → Y) → Π-compact X
+discrete-power-of-non-trivial-discrete-gives-compact-exponent' w d =
+  discrete-power-of-disconnected-gives-compact-exponent (non-trivial-discrete-gives-disconnected w d)
 
 \end{code}
 
