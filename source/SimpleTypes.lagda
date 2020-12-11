@@ -13,6 +13,8 @@ holds (Tychonoff Theorem).)
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import DisconnectedTypes
+
 open import UF-FunExt
 open import UF-PropTrunc
 
@@ -28,21 +30,6 @@ data simple-type : 𝓤₀ ̇ → 𝓤₁ ̇ where
 open import TotallySeparated
 open import WeaklyCompactTypes fe pt renaming (Π-compact to compact)
 open import DiscreteAndSeparated
-
-𝟚-retract-of-ℕ : retract 𝟚 of ℕ
-𝟚-retract-of-ℕ = (r , (s , rs))
- where
-  r : ℕ → 𝟚
-  r zero = ₀
-  r (succ n) = ₁
-
-  s : 𝟚 → ℕ
-  s ₀ = zero
-  s ₁ = succ zero
-
-  rs : (n : 𝟚) → r (s n) ≡ n
-  rs ₀ = refl
-  rs ₁ = refl
 
 ℕ-is-totally-separated : is-totally-separated ℕ
 ℕ-is-totally-separated = discrete-totally-separated (ℕ-is-discrete)
@@ -64,9 +51,12 @@ simple-types-r rn (step s t) = retracts-of-closed-under-exponentials
                                  (simple-types-r rn s)
                                  (simple-types-r rn t)
 
-cfdbce : {X Y : 𝓤₀ ̇ } → simple-type X → simple-type Y
-       → compact (X → Y) → is-discrete X × compact Y
-cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r 𝟚-retract-of-ℕ t) c ,
+cfdbce : {X Y : 𝓤₀ ̇ }
+       → simple-type X
+       → simple-type Y
+       → compact (X → Y)
+       → is-discrete X × compact Y
+cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r ℕ-disconnected t) c ,
                Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types-pointed s) c)
 
 \end{code}
@@ -132,18 +122,20 @@ simple-types₂-pointed base₂      = ₀
 simple-types₂-pointed base       = zero
 simple-types₂-pointed (step s t) = λ x → simple-types₂-pointed t
 
-simple-types₂-r𝟚 : {X : 𝓤₀ ̇ } → simple-type₂ X → retract 𝟚 of X
-simple-types₂-r𝟚 base₂      = identity-retraction
-simple-types₂-r𝟚 base       = 𝟚-retract-of-ℕ
-simple-types₂-r𝟚 (step s t) = retracts-of-closed-under-exponentials
-                                 (fe 𝓤₀ 𝓤₀)
-                                 (simple-types₂-pointed s)
-                                 (simple-types₂-r𝟚 s)
-                                 (simple-types₂-r𝟚 t)
+simple-types₂-disconnected : {X : 𝓤₀ ̇ } → simple-type₂ X → disconnected X
+simple-types₂-disconnected base₂      = identity-retraction
+simple-types₂-disconnected base       = ℕ-disconnected
+simple-types₂-disconnected (step s t) = retracts-of-closed-under-exponentials
+                                         (fe 𝓤₀ 𝓤₀)
+                                         (simple-types₂-pointed s)
+                                         (simple-types₂-disconnected s)
+                                         (simple-types₂-disconnected t)
 
-cfdbce₂ : {X Y : 𝓤₀ ̇ } → simple-type₂ X → simple-type₂ Y
+cfdbce₂ : {X Y : 𝓤₀ ̇ }
+        → simple-type₂ X
+        → simple-type₂ Y
         → compact (X → Y) → is-discrete X × compact Y
-cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-r𝟚 t) c ,
+cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-disconnected t) c ,
                  Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types₂-pointed s) c)
 
 \end{code}

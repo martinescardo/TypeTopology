@@ -11,6 +11,7 @@ module DisconnectedTypes where
 
 open import SpartanMLTT
 open import Two-Properties
+open import NaturalNumbers-Properties
 open import DiscreteAndSeparated
 open import UF-Retracts
 open import UF-Equiv
@@ -103,6 +104,21 @@ Some examples:
 𝟚-disconnected : disconnected 𝟚
 𝟚-disconnected = identity-retraction
 
+ℕ-disconnected : disconnected ℕ
+ℕ-disconnected = (r , s , rs)
+ where
+  r : ℕ → 𝟚
+  r zero     = ₀
+  r (succ n) = ₁
+
+  s : 𝟚 → ℕ
+  s ₀ = zero
+  s ₁ = succ zero
+
+  rs : (n : 𝟚) → r (s n) ≡ n
+  rs ₀ = refl
+  rs ₁ = refl
+
 non-trivial-with-isolated-point-gives-disconnected : {Y : 𝓥 ̇ }
                                                    → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≢ y₁) × is-isolated y₀ )
                                                    → disconnected Y
@@ -117,6 +133,9 @@ non-trivial-discrete-gives-disconnected (y₀ , y₁ , ne) d =
   non-trivial-with-isolated-point-gives-disconnected (y₀ , y₁ , ne , d y₀)
 
 
+ℕ-disconnected' : disconnected ℕ
+ℕ-disconnected' = non-trivial-discrete-gives-disconnected (0 , 1 , succ-no-fp 0) ℕ-is-discrete
+
 disconnected-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → retract X of Y
                      → disconnected X
@@ -124,3 +143,6 @@ disconnected-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 disconnected-retract = retracts-compose
 
 \end{code}
+
+TODO. Define totally disconnected. Then maybe for compact types the
+notions of total disconnectedness and total separatedness agree.
