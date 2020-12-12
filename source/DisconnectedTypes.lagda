@@ -229,47 +229,23 @@ being-connected-is-prop {𝓤} {X} fe = Π₃-is-prop fe (λ f x y → 𝟚-is-s
 
 \end{code}
 
-Tentative definition of total disconnecteness mimicking the classical
-topological case:
+We now develop an alternative characterization of total separatedness.
 
 \begin{code}
 
-connected-component : {X : 𝓤 ̇ } → X → 𝓤 ̇
-connected-component {𝓤} {X} x = Σ y ꞉ X , x ≡₂ y
+𝟚-component : {X : 𝓤 ̇ } → X → 𝓤 ̇
+𝟚-component {𝓤} {X} x = Σ y ꞉ X , x ≡₂ y
 
-connected-component-pointed : {X : 𝓤 ̇ } (x : X) → connected-component x
-connected-component-pointed {𝓤} {X} x = (x , λ p → refl)
+𝟚-component-canonical-point : {X : 𝓤 ̇ } (x : X) → 𝟚-component x
+𝟚-component-canonical-point {𝓤} {X} x = (x , λ p → refl)
 
-\end{code}
+is-totally-separated₁ : 𝓤 ̇ → 𝓤 ̇
+is-totally-separated₁ X = (x : X) → is-prop (𝟚-component x)
 
-We should have the following, but at the moment I don't see how to prove it:
-
-\begin{code}
-
-{-
-
-connected-component-is-connected : {X : 𝓤 ̇ } (x : X) → is-connected (connected-component x)
-connected-component-is-connected {𝓤} {X} x f (y , a) (z , b) = γ
- where
-  c : y ≡₂ z
-  c p = (a p)⁻¹ ∙ b p
-
-  γ : f (y , a) ≡ f (z , b)
-  γ = {!!}
--}
-
-\end{code}
-
-Our tentative definition is the following:
-
-\begin{code}
-
-is-totally-disconnected : 𝓤 ̇ → 𝓤 ̇
-is-totally-disconnected X = (x : X) → is-prop (connected-component x)
 
 totally-separated-types-are-totally-disconnected : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
                                                  → is-totally-separated X
-                                                 → is-totally-disconnected X
+                                                 → is-totally-separated₁ X
 totally-separated-types-are-totally-disconnected {𝓤} {X} fe fe₀ ts x (y , a) (z , b) = γ
  where
   c : y ≡₂ z
@@ -281,21 +257,13 @@ totally-separated-types-are-totally-disconnected {𝓤} {X} fe fe₀ ts x (y , a
   γ : (y , a) ≡ (z , b)
   γ = to-subtype-≡ (≡₂-is-prop-valued fe fe₀ X x) q
 
-\end{code}
-
-In the classical topological case, the following theorem requires the
-assumption that X be compact. So perhaps we haven't got our definition
-of total disconnectedness right (the potential culprit is our
-definition of connected component).
-
-\begin{code}
 
 totally-disconnected-types-are-totally-separated : {X : 𝓤 ̇ }
-                                                         → is-totally-disconnected X
-                                                         → is-totally-separated X
+                                                 → is-totally-separated₁ X
+                                                 → is-totally-separated X
 totally-disconnected-types-are-totally-separated {𝓤} {X} td {x} {y} ϕ = γ
  where
-  a b : connected-component x
+  a b : 𝟚-component x
   a = x , λ p → refl
   b = y , ϕ
 
