@@ -191,7 +191,8 @@ discrete-power-of-non-trivial-discrete-gives-compact-exponent' : {X : 𝓤 ̇ } 
                                                                → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
                                                                → is-discrete Y → is-discrete(X → Y) → Π-compact X
 discrete-power-of-non-trivial-discrete-gives-compact-exponent' w d =
-  discrete-power-of-disconnected-gives-compact-exponent (non-trivial-discrete-gives-disconnected w d)
+  discrete-power-of-disconnected-gives-compact-exponent
+   (discrete-type-with-two-different-points-gives-disconnected w d)
 
 \end{code}
 
