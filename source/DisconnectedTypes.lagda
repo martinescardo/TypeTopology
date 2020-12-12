@@ -243,10 +243,10 @@ is-totally-separated₁ : 𝓤 ̇ → 𝓤 ̇
 is-totally-separated₁ X = (x : X) → is-prop (𝟚-component x)
 
 
-totally-separated-types-are-totally-disconnected : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+totally-separated-types-are-totally-separated₁ : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
                                                  → is-totally-separated X
                                                  → is-totally-separated₁ X
-totally-separated-types-are-totally-disconnected {𝓤} {X} fe fe₀ ts x (y , a) (z , b) = γ
+totally-separated-types-are-totally-separated₁ {𝓤} {X} fe fe₀ ts x (y , a) (z , b) = γ
  where
   c : y ≡₂ z
   c p = (a p)⁻¹ ∙ b p
@@ -258,10 +258,10 @@ totally-separated-types-are-totally-disconnected {𝓤} {X} fe fe₀ ts x (y , a
   γ = to-subtype-≡ (≡₂-is-prop-valued fe fe₀ X x) q
 
 
-totally-disconnected-types-are-totally-separated : {X : 𝓤 ̇ }
+totally-separated₁-types-are-totally-separated : {X : 𝓤 ̇ }
                                                  → is-totally-separated₁ X
                                                  → is-totally-separated X
-totally-disconnected-types-are-totally-separated {𝓤} {X} td {x} {y} ϕ = γ
+totally-separated₁-types-are-totally-separated {𝓤} {X} td {x} {y} ϕ = γ
  where
   a b : 𝟚-component x
   a = x , λ p → refl
@@ -274,3 +274,6 @@ totally-disconnected-types-are-totally-separated {𝓤} {X} td {x} {y} ϕ = γ
   γ = ap pr₁ e
 
 \end{code}
+
+TODO. Is it possible to define sensible analogues for types of total
+disconnectedness and zero-dimensionality for topological spaces?
