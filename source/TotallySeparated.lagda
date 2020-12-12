@@ -77,6 +77,7 @@ open import UF-Embeddings
 open import UF-FunExt
 open import UF-PropTrunc
 open import UF-ImageAndSurjection
+open import UF-Miscelanea
 
 \end{code}
 
@@ -86,6 +87,10 @@ An equality defined by a Leibniz principle with 𝟚-valued functions:
 
 _≡₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
 x ≡₂ y = (p : _ → 𝟚) → p x ≡ p y
+
+≡₂-is-prop-valued : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+                  → (X : 𝓤 ̇ ) (x y : X) → is-prop (x ≡₂ y)
+≡₂-is-prop-valued fe fe₀ X x y = Π-is-prop fe₀ (λ p → 𝟚-is-set)
 
 \end{code}
 
@@ -168,7 +173,6 @@ totally-separated-types-are-separated X ts = g
     h : (p : X → 𝟚) → p x ≡ p y
     h p = 𝟚-is-separated (p x) (p y) (a p)
 
-open import UF-Miscelanea
 
 totally-separated-types-are-sets : funext 𝓤 𝓤₀ → (X : 𝓤 ̇ ) → is-totally-separated X → is-set X
 totally-separated-types-are-sets fe X t = separated-types-are-sets fe (totally-separated-types-are-separated X t)
@@ -208,26 +212,29 @@ open import UF-ExcludedMiddle
 Ω-totally-separated-gives-EM {𝓤} pe fe₀ fe Ω-is-totally-separated =
   Ω-separated-gives-EM pe fe₀ fe
     (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
+
 \end{code}
 
 The need to define f and g in the following proof arises because the
-function is-prop-is-exponential ideal requires a dependent function
-with explicit arguments, but total separatedness is defined with
-implicit arguments. The essence of the proof is that of p in the where
-clause.
+function Π-is-prop requires a dependent function with explicit
+arguments, but total separatedness is defined with implicit
+arguments. The essence of the proof is that of p in the where clause.
 
 \begin{code}
 
-total-separatedness-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
-                              → (X : 𝓤 ̇ ) → is-prop(is-totally-separated X)
-total-separatedness-is-prop {𝓤} fe fe₀ X = γ
+being-totally-separated-is-prop : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+                                → (X : 𝓤 ̇ ) → is-prop(is-totally-separated X)
+being-totally-separated-is-prop {𝓤} fe fe₀ X = γ
  where
   T : 𝓤 ̇
   T = (x y : X) → x ≡₂ y → x ≡ y
+
   f : T → is-totally-separated X
   f t {x} {y} φ = t x y φ
+
   g : is-totally-separated X → T
   g t x y φ = t {x} {y} φ
+
   p : is-prop T
   p t = Π-is-prop fe
            (λ x → Π-is-prop fe
