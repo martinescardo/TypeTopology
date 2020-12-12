@@ -18,7 +18,10 @@ open import DisconnectedTypes
 open import UF-FunExt
 open import UF-PropTrunc
 
-module SimpleTypes (fe : FunExt) (pt : propositional-truncations-exist) where
+module SimpleTypes
+        (fe : FunExt)
+        (pt : propositional-truncations-exist)
+       where
 
 open import UF-Retracts
 open import UF-Retracts-FunExt
@@ -31,10 +34,12 @@ open import TotallySeparated
 open import WeaklyCompactTypes fe pt renaming (Π-compact to compact)
 open import DiscreteAndSeparated
 
-simple-types-totally-separated : {X : 𝓤₀ ̇ } → simple-type X → is-totally-separated X
-simple-types-totally-separated base       = ℕ-is-totally-separated
-simple-types-totally-separated (step s t) = Π-is-totally-separated (fe 𝓤₀ 𝓤₀)
-                                              λ _ → simple-types-totally-separated t
+simple-types-are-totally-separated : {X : 𝓤₀ ̇ }
+                                   → simple-type X
+                                   → is-totally-separated X
+simple-types-are-totally-separated base       = ℕ-is-totally-separated
+simple-types-are-totally-separated (step s t) = Π-is-totally-separated (fe 𝓤₀ 𝓤₀)
+                                                 λ _ → simple-types-are-totally-separated t
 
 simple-types-pointed : {X : 𝓤₀ ̇ } → simple-type X → X
 simple-types-pointed base       = zero
@@ -53,13 +58,15 @@ cfdbce : {X Y : 𝓤₀ ̇ }
        → simple-type Y
        → compact (X → Y)
        → is-discrete X × compact Y
-cfdbce s t c = (tscd₀ (simple-types-totally-separated s) (simple-types-r ℕ-disconnected t) c ,
-               Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types-pointed s) c)
+cfdbce s t c = tscd₀ (simple-types-are-totally-separated s) (simple-types-r ℕ-disconnected t) c ,
+               Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types-pointed s) c
 
 \end{code}
 
 TODO: prove that WLPO' is equivalent to WLPO. But notice that WLPO' is
 the original formalution of WLPO by Bishop (written in type theory).
+
+We have that simple types are "not" compact:
 
 \begin{code}
 
@@ -94,8 +101,8 @@ definition of simple types:
 
 data simple-type₂ : 𝓤₀ ̇ → 𝓤₁ ̇ where
  base₂ : simple-type₂ 𝟚
- base : simple-type₂ ℕ
- step : {X Y : 𝓤₀ ̇ } → simple-type₂ X → simple-type₂ Y → simple-type₂ (X → Y)
+ base  : simple-type₂ ℕ
+ step  : {X Y : 𝓤₀ ̇ } → simple-type₂ X → simple-type₂ Y → simple-type₂ (X → Y)
 
 \end{code}
 
@@ -131,8 +138,9 @@ simple-types₂-disconnected (step s t) = retracts-of-closed-under-exponentials
 cfdbce₂ : {X Y : 𝓤₀ ̇ }
         → simple-type₂ X
         → simple-type₂ Y
-        → compact (X → Y) → is-discrete X × compact Y
-cfdbce₂ s t c = (tscd₀ (simple-types₂-totally-separated s) (simple-types₂-disconnected t) c ,
-                 Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types₂-pointed s) c)
+        → compact (X → Y)
+        → is-discrete X × compact Y
+cfdbce₂ s t c = tscd₀ (simple-types₂-totally-separated s) (simple-types₂-disconnected t) c ,
+                Π-compact-exponential-with-pointed-domain-has-Π-compact-domain (simple-types₂-pointed s) c
 
 \end{code}
