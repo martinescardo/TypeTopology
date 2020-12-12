@@ -1,7 +1,19 @@
 Martin Escardo, December 2020
 
 A notion of disconnectedness. This is different from homotopy
-disconnectedness in the sense of the HoTT book.
+disconnectedness in the sense of the HoTT book. It is based on the
+topological, rather than homotopical, interpretation of types.
+
+A discussion of such models is in
+
+  M.H. Escardo and Chuangjie Xu. A constructive manifestation of the
+  Kleene-Kreisel continuous functionals. Annals of Pure and Applied
+  Logic, 2016.
+
+and
+
+  M.H. Escardo and Thomas Streicher. Annals of Pure and Applied Logic,
+  2016.
 
 \begin{code}
 
@@ -19,29 +31,31 @@ open import UF-Equiv
 \end{code}
 
 The following notions of disconnectedness are data rather than
-property:
+property, and hence we use the terminology "disconnection" rather than
+"disconnected". Then disconnectedness is the existence of a
+disconnection.
 
 \begin{code}
 
-disconnected₀ : 𝓤 ̇ → 𝓤 ̇
-disconnected₀ X = retract 𝟚 of X
+disconnection₀ : 𝓤 ̇ → 𝓤 ̇
+disconnection₀ X = retract 𝟚 of X
 
-disconnected₁ : 𝓤 ̇ → 𝓤 ̇
-disconnected₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
+disconnection₁ : 𝓤 ̇ → 𝓤 ̇
+disconnection₁ X = Σ p ꞉ (X → 𝟚) , fiber p ₀ × fiber p ₁
 
-disconnected₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
-disconnected₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
+disconnection₂ : 𝓤 ̇ → 𝓤 ⁺ ̇
+disconnection₂ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (X ≃ X₀ + X₁)
 
-disconnected₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
-disconnected₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
+disconnection₃ : 𝓤 ̇ → 𝓤 ⁺ ̇
+disconnection₃ {𝓤} X = Σ X₀ ꞉ 𝓤 ̇ , Σ X₁ ꞉ 𝓤 ̇ , X₀ × X₁ × (retract (X₀ + X₁) of X)
 
-disconnected-eq : (X : 𝓤 ̇ )
-                → (disconnected₀ X → disconnected₁ X)
-                × (disconnected₁ X → disconnected₂ X)
-                × (disconnected₂ X → disconnected₃ X)
-                × (disconnected₃ X → disconnected₀ X)
+disconnection-eq : (X : 𝓤 ̇ )
+                → (disconnection₀ X → disconnection₁ X)
+                × (disconnection₁ X → disconnection₂ X)
+                × (disconnection₂ X → disconnection₃ X)
+                × (disconnection₃ X → disconnection₀ X)
 
-disconnected-eq {𝓤} X = (f , g , h , k)
+disconnection-eq {𝓤} X = (f , g , h , k)
  where
   f : (Σ p ꞉ (X → 𝟚) , Σ s ꞉ (𝟚 → X) , p ∘ s ∼ id)
     → Σ p ꞉ (X → 𝟚) , (Σ x ꞉ X , p x ≡ ₀) × (Σ x ꞉ X , p x ≡ ₁)
@@ -94,13 +108,13 @@ disconnected-eq {𝓤} X = (f , g , h , k)
 
 \end{code}
 
-The following is our official notion of disconnectedness (logically
+The following is our official notion of disconnection (logically
 equivalent to the other ones):
 
 \begin{code}
 
-disconnected : 𝓤 ̇ → 𝓤 ̇
-disconnected = disconnected₀
+disconnection : 𝓤 ̇ → 𝓤 ̇
+disconnection = disconnection₀
 
 \end{code}
 
@@ -108,11 +122,11 @@ Some examples:
 
 \begin{code}
 
-𝟚-disconnected : disconnected 𝟚
-𝟚-disconnected = identity-retraction
+𝟚-disconnection : disconnection 𝟚
+𝟚-disconnection = identity-retraction
 
-ℕ-disconnected : disconnected ℕ
-ℕ-disconnected = (r , s , rs)
+ℕ-disconnection : disconnection ℕ
+ℕ-disconnection = (r , s , rs)
  where
   r : ℕ → 𝟚
   r zero     = ₀
@@ -126,33 +140,43 @@ Some examples:
   rs ₀ = refl
   rs ₁ = refl
 
-non-trivial-with-isolated-point-gives-disconnected : {Y : 𝓥 ̇ }
-                                                   → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≢ y₁) × is-isolated y₀ )
-                                                   → disconnected Y
-non-trivial-with-isolated-point-gives-disconnected (y₀ , y₁ , ne , i) =
+isolated-point-different-from-another-point-gives-disconnection :
+
+    {Y : 𝓥 ̇ }
+  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , (y₀ ≢ y₁) × is-isolated y₀ )
+  → disconnection Y
+
+isolated-point-different-from-another-point-gives-disconnection (y₀ , y₁ , ne , i) =
   𝟚-retract-of-non-trivial-type-with-isolated-point ne i
 
-non-trivial-discrete-gives-disconnected : {Y : 𝓥 ̇ }
-                                        → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
-                                        → is-discrete Y
-                                        → disconnected Y
-non-trivial-discrete-gives-disconnected (y₀ , y₁ , ne) d =
-  non-trivial-with-isolated-point-gives-disconnected (y₀ , y₁ , ne , d y₀)
+discrete-type-with-two-different-points-has-disconnection :
 
+    {Y : 𝓥 ̇ }
+  → (Σ y₀ ꞉ Y , Σ y₁ ꞉ Y , y₀ ≢ y₁)
+  → is-discrete Y
+  → disconnection Y
 
-ℕ-disconnected' : disconnected ℕ
-ℕ-disconnected' = non-trivial-discrete-gives-disconnected (0 , 1 , succ-no-fp 0) ℕ-is-discrete
+discrete-type-with-two-different-points-has-disconnection (y₀ , y₁ , ne) d =
+  isolated-point-different-from-another-point-gives-disconnection (y₀ , y₁ , ne , d y₀)
 
-disconnected-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+ℕ-disconnection' : disconnection ℕ
+ℕ-disconnection' = discrete-type-with-two-different-points-has-disconnection
+                     (0 , 1 , succ-no-fp 0)
+                     ℕ-is-discrete
+
+disconnection-retract : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → retract X of Y
-                     → disconnected X
-                     → disconnected Y
-disconnected-retract = retracts-compose
+                     → disconnection X
+                     → disconnection Y
+disconnection-retract = retracts-compose
 
 \end{code}
 
-TODO. Define totally disconnected. Then maybe for compact types the
-notions of total disconnectedness and total separatedness agree.
+TODO. Define totally disconnection. Then maybe for compact types the
+notions of total disconnectionness and total separatedness agree.
+
+The negation of the availability of disconnection data can be
+expressed positively in various equivalent ways.
 
 \begin{code}
 
@@ -170,7 +194,7 @@ is-connected₁ : 𝓤 ̇ → 𝓤 ̇
 is-connected₁ X = (x y : X) → x ≡₂ y
 
 is-connected₂ : 𝓤 ̇ → 𝓤 ̇
-is-connected₂ X = ¬ disconnected X
+is-connected₂ X = ¬ disconnection X
 
 
 is-connected₀-gives-is-connected₁ : {X : 𝓤 ̇ } → is-connected₀ X → is-connected₁ X
@@ -188,8 +212,8 @@ is-connected₀-gives-is-connected₂ c (r , s , rs) = n (c r)
                          r (s ₁) ≡⟨ rs ₁ ⟩
                          ₁       ∎)
 
-disconnected-types-are-not-connected : {X : 𝓤 ̇ } → disconnected X → ¬ is-connected₀ X
-disconnected-types-are-not-connected c d = is-connected₀-gives-is-connected₂ d c
+types-with-disconnection-are-not-connected : {X : 𝓤 ̇ } → disconnection X → ¬ is-connected₀ X
+types-with-disconnection-are-not-connected c d = is-connected₀-gives-is-connected₂ d c
 
 is-connected₂-gives-is-connected₀ : {X : 𝓤 ̇ } → is-connected₂ X → is-connected₀ X
 is-connected₂-gives-is-connected₀ {𝓤} {X} n f x y = 𝟚-is-separated (f x) (f y) ϕ
@@ -237,4 +261,4 @@ being-connected-is-prop {𝓤} {X} fe = Π₃-is-prop fe (λ f x y → 𝟚-is-s
 \end{code}
 
 TODO. Is it possible to define sensible analogues for types of total
-disconnectedness and zero-dimensionality for topological spaces?
+disconnectionness and zero-dimensionality for topological spaces?
