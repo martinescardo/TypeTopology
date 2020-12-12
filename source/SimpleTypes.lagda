@@ -31,9 +31,6 @@ open import TotallySeparated
 open import WeaklyCompactTypes fe pt renaming (Π-compact to compact)
 open import DiscreteAndSeparated
 
-ℕ-is-totally-separated : is-totally-separated ℕ
-ℕ-is-totally-separated = discrete-totally-separated (ℕ-is-discrete)
-
 simple-types-totally-separated : {X : 𝓤₀ ̇ } → simple-type X → is-totally-separated X
 simple-types-totally-separated base       = ℕ-is-totally-separated
 simple-types-totally-separated (step s t) = Π-is-totally-separated (fe 𝓤₀ 𝓤₀)

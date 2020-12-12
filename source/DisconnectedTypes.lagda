@@ -16,6 +16,13 @@ open import DiscreteAndSeparated
 open import UF-Retracts
 open import UF-Equiv
 
+\end{code}
+
+The following notions of disconnectedness are data rather than
+property:
+
+\begin{code}
+
 disconnected₀ : 𝓤 ̇ → 𝓤 ̇
 disconnected₀ X = retract 𝟚 of X
 
@@ -226,52 +233,6 @@ is-connected = is-connected₀
 
 being-connected-is-prop : {X : 𝓤 ̇ } → Fun-Ext → is-prop (is-connected X)
 being-connected-is-prop {𝓤} {X} fe = Π₃-is-prop fe (λ f x y → 𝟚-is-set)
-
-\end{code}
-
-We now develop an alternative characterization of total separatedness.
-
-\begin{code}
-
-𝟚-component : {X : 𝓤 ̇ } → X → 𝓤 ̇
-𝟚-component {𝓤} {X} x = Σ y ꞉ X , x ≡₂ y
-
-𝟚-component-canonical-point : {X : 𝓤 ̇ } (x : X) → 𝟚-component x
-𝟚-component-canonical-point {𝓤} {X} x = (x , λ p → refl)
-
-is-totally-separated₁ : 𝓤 ̇ → 𝓤 ̇
-is-totally-separated₁ X = (x : X) → is-prop (𝟚-component x)
-
-
-totally-separated-types-are-totally-separated₁ : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → funext 𝓤 𝓤₀
-                                                 → is-totally-separated X
-                                                 → is-totally-separated₁ X
-totally-separated-types-are-totally-separated₁ {𝓤} {X} fe fe₀ ts x (y , a) (z , b) = γ
- where
-  c : y ≡₂ z
-  c p = (a p)⁻¹ ∙ b p
-
-  q : y ≡ z
-  q = ts c
-
-  γ : (y , a) ≡ (z , b)
-  γ = to-subtype-≡ (≡₂-is-prop-valued fe fe₀ X x) q
-
-
-totally-separated₁-types-are-totally-separated : {X : 𝓤 ̇ }
-                                                 → is-totally-separated₁ X
-                                                 → is-totally-separated X
-totally-separated₁-types-are-totally-separated {𝓤} {X} td {x} {y} ϕ = γ
- where
-  a b : 𝟚-component x
-  a = x , λ p → refl
-  b = y , ϕ
-
-  e : a ≡ b
-  e = td x a b
-
-  γ : x ≡ y
-  γ = ap pr₁ e
 
 \end{code}
 

@@ -78,16 +78,18 @@ is-contr : 𝓤 ̇ → 𝓤 ̇
 is-contr = is-singleton
 
 𝟙-is-singleton : is-singleton (𝟙 {𝓤})
-𝟙-is-singleton {𝓤} = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
+𝟙-is-singleton = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
 
 singletons-are-props : {X : 𝓤 ̇ } → is-singleton X → is-prop X
-singletons-are-props {𝓤} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
+singletons-are-props (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩
+                                   c ≡⟨ φ y ⟩
+                                   y ∎
 
 prop-criterion' : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
-prop-criterion' {𝓤} {X} φ x = singletons-are-props (φ x) x
+prop-criterion' φ x = singletons-are-props (φ x) x
 
 prop-criterion : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
-prop-criterion {𝓤} {X} φ x y = φ x x y
+prop-criterion φ x = φ x x
 
 pointed-props-are-singletons : {X : 𝓤 ̇ } → X → is-prop X → is-singleton X
 pointed-props-are-singletons x h = x , h x
