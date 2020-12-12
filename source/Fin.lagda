@@ -677,7 +677,7 @@ Finite types are compact, or exhaustively searchable.
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
 
- finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
+ finite-∃-compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
  finite-∃-compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
 
 \end{code}
