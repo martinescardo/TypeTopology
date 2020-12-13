@@ -58,8 +58,10 @@ prop-indexed-product {P} i α = Π X ,
  where
   X : P → 𝓤₀ ̇
   X p = ⟨ α p ⟩
+
   _<_ : {p : P} → X p → X p → 𝓤₀ ̇
   _<_ {p} x y = x ≺⟨ α p ⟩ y
+
   _≺_ : Π X → Π X → 𝓤₀ ̇
   f ≺ g = Σ p ꞉ P , f p < g p
 
@@ -83,8 +85,8 @@ succₒ α = α +ₒ 𝟙ₒ  ,
            (prop.topped 𝟙 𝟙-is-prop *)
 
 𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
-𝟙ᵒ = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop *
-𝟚ᵒ = succₒ 𝟙ₒ
+𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop *
+𝟚ᵒ  = succₒ 𝟙ₒ
 ℕ∞ᵒ = (ℕ∞ₒ , ∞ , ∞-top)
 
 \end{code}
@@ -169,6 +171,5 @@ less-is-left α (inr *) (inr *) l = 𝟘-elim l
 right-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩) → ¬(inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
 right-is-not-smaller α (inl a) l = 𝟘-elim l
 right-is-not-smaller α (inr *) l = 𝟘-elim l
-
 
 \end{code}

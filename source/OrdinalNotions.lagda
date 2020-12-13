@@ -21,7 +21,7 @@ module OrdinalNotions
        where
 
 is-prop-valued : 𝓤 ⊔ 𝓥 ̇
-is-prop-valued = (x y : X) → is-prop(x < y)
+is-prop-valued = (x y : X) → is-prop (x < y)
 
 data is-accessible : X → 𝓤 ⊔ 𝓥 ̇ where
  next : (x : X) → ((y : X) → y < x → is-accessible y) → is-accessible x
@@ -37,27 +37,31 @@ accessible-induction P step = h
    h x (next .x σ) = step x σ (λ y l → h y (σ y l))
 
 prev : (x : X) → is-accessible x → (y : X) → y < x → is-accessible y
-prev = accessible-induction (λ x _ → (y : X) → y < x → is-accessible y)
-                            (λ x σ f → σ)
+prev = accessible-induction
+        (λ x _ → (y : X) → y < x → is-accessible y)
+        (λ x σ f → σ)
 
-prev-behaviour : (x : X) (a : is-accessible x) → next x (prev x a) ≡ a
+prev-behaviour : (x : X) (a : is-accessible x)
+               → next x (prev x a) ≡ a
 prev-behaviour = accessible-induction _ (λ _ _ _ → refl)
 
-prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y) → prev x (next x σ) ≡ σ
+prev-behaviour' : (x : X) (σ : (y : X) → y < x → is-accessible y)
+                → prev x (next x σ) ≡ σ
 prev-behaviour' x σ = refl
 
 transfinite-induction' :  (P : X → 𝓦 ̇ )
                        → ((x : X) → (∀(y : X) → y < x → P y) → P x)
                        → (x : X) → is-accessible x → P x
-transfinite-induction' P f = accessible-induction (λ x _ → P x)
-                                                  (λ x _ → f x)
+transfinite-induction' P f = accessible-induction
+                              (λ x _ → P x)
+                              (λ x _ → f x)
 
 is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
 Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
 Well-founded {𝓦} = (P : X → 𝓦 ̇ ) → ((x : X) → ((y : X) → y < x → P y) → P x)
-                                → (x : X) → P x
+                                 → (x : X) → P x
 
 transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)
@@ -93,8 +97,9 @@ is-extensional' : 𝓤 ⊔ 𝓥 ̇
 is-extensional' = (x y : X) → ((u : X) → (u < x) ⇔ (u < y)) → x ≡ y
 
 extensional-gives-extensional' : is-extensional → is-extensional'
-extensional-gives-extensional' e x y f = e x y (λ u l → pr₁ (f u) l)
-                                               (λ u l → pr₂ (f u) l)
+extensional-gives-extensional' e x y f = e x y
+                                          (λ u l → pr₁ (f u) l)
+                                          (λ u l → pr₂ (f u) l)
 
 extensional'-gives-extensional : is-extensional' → is-extensional
 extensional'-gives-extensional e' x y g h = e' x y (λ u → (g u , h u))
@@ -135,10 +140,11 @@ accessibility-is-prop fe = accessible-induction P φ
   φ x σ IH b = next x σ ≡⟨ ap (next x)
                               (dfunext (fe 𝓤 (𝓤 ⊔ 𝓥)) (λ y → dfunext (fe 𝓥 (𝓤 ⊔ 𝓥)) (h y))) ⟩
                next x τ ≡⟨ prev-behaviour x b ⟩
-               b ∎
+               b        ∎
    where
     τ : (y : X) (l : y < x) → is-accessible y
     τ = prev x b
+
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
     h y l = IH y l (τ y l)
 
@@ -152,9 +158,11 @@ extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ
   f : {x y :  X} → x ≡ y → x ≡ y
   f {x} {y} p = e x y (transport (λ - → x ≼ -) p (≼-refl {x}))
                       (transport (λ - → - ≼ x) p (≼-refl {x}))
+
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp x y l l')
                                              (≼-prop-valued-order fe isp y x m m')
+
   κ : {x y : X} → wconstant (f {x} {y})
   κ p q = ec
 
