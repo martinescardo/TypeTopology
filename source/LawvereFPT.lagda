@@ -23,15 +23,6 @@ module LawvereFPT where
 
 open import SpartanMLTT
 
-\end{code}
-
-The following pointwise weakening of split surjection is sufficient to
-prove LFPT and allows us to avoid function extensionality in its
-applications:
-
-\begin{code}
-
-
 open import Two-Properties
 open import NaturalNumbers-Properties
 open import UF-Subsingletons
@@ -41,9 +32,14 @@ open import UF-Equiv
 open import UF-Miscelanea
 open import UF-FunExt
 
+
 module retract-version where
 
 \end{code}
+
+The following pointwise weakening of split surjection is sufficient to
+prove LFPT and allows us to avoid function extensionality in its
+applications:
 
 We will use the decoration "·" for pointwise versions of notions and
 constructions (for example, we can read "has-section· r" as saying
