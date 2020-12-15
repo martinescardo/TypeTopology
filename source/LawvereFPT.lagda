@@ -289,6 +289,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    s y x = Cases (i x)
             (λ (p : x₀ ≡ x) → transport Y p y)
             (λ (_ : x₀ ≢ x) → g x)
+
    rs : (y : Y x₀) → s y x₀ ≡ y
    rs y = ap (λ - → Cases - _ _) a
     where
@@ -313,11 +314,13 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    where
     B : 𝓤 ⊔ 𝓥 ̇
     B = (a : A) → X a → 𝟚
+
     φ : (a : A) → ¬(X a ≃ B)
     φ a p = uncurry complement-no-fp (γ complement)
      where
       ρ : retract B of (X a)
       ρ = ≃-gives-▷ p
+
       γ : (f : 𝟚 → 𝟚) → Σ b ꞉ 𝟚 , b ≡ f b
       γ = udr-lemma X 𝟚 a (d a) ₀ ρ
 
@@ -337,10 +340,13 @@ module Blechschmidt (pt : propositional-truncations-exist) where
   where
    B : 𝓤 ⊔ 𝓥 ̇
    B = pr₁(universe-discretely-regular {𝓤} {𝓥} {A} X d)
+
    φ : ∀ a → X a ≢ B
    φ = pr₂(universe-discretely-regular {𝓤} {𝓥} {A} X d)
+
    e : ∃ a ꞉ A , X a ≡ B
    e = s B
+
    n : ¬(Σ a ꞉ A , X a ≡ B)
    n = uncurry φ
 
@@ -368,6 +374,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
   where
    s : (X a₀ → Ω (𝓤 ⊔ 𝓦)) → ((a : A) → X a → Ω (𝓤 ⊔ 𝓦))
    s φ a x = (∃ p ꞉ a ≡ a₀ , φ (transport X p x) holds) , ∥∥-is-prop
+
    rs : (φ : X a₀ → Ω (𝓤 ⊔ 𝓦)) → s φ a₀ ≡ φ
    rs φ = dfunext fe γ
     where
@@ -379,10 +386,13 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
         where
          r : p ≡ refl
          r = ish p refl
+
          t : φ (transport X p x₀) ≡ φ x₀
          t = ap (λ - → φ(transport X - x₀)) r
+
      b : (x₀ : X a₀) → φ x₀ holds → ∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds
      b x₀ h = ∣ refl , h ∣
+
      γ : (x₀ : X a₀) → (∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds) , ∥∥-is-prop ≡ φ x₀
      γ x₀ = to-Σ-≡ (pe ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                      being-prop-is-prop fe' (holds-is-prop _) (holds-is-prop (φ x₀)))
@@ -404,14 +414,14 @@ We now work with the following assumptions:
 \begin{code}
 
  module _
-   (𝓤 𝓥 : Universe)
-   (fe' : funext (𝓤 ⁺ ⊔ 𝓥) (𝓤 ⁺))
-   (fe  : funext 𝓤 𝓤)
-   (fe₀ : funext 𝓤 𝓤₀)
-   (pe  : propext 𝓤)
-   (A   : 𝓤 ̇ )
-   (X   : A → 𝓤 ⁺ ⊔ 𝓥 ̇ )
-   (iss : is-set A)
+   (𝓤 𝓥     : Universe)
+   (fe'      : funext (𝓤 ⁺ ⊔ 𝓥) (𝓤 ⁺))
+   (fe       : funext 𝓤 𝓤)
+   (fe₀      : funext 𝓤 𝓤₀)
+   (pe       : propext 𝓤)
+   (A        : 𝓤 ̇ )
+   (X        : A → 𝓤 ⁺ ⊔ 𝓥 ̇ )
+   (A-is-set : is-set A)
    where
 
 \end{code}
@@ -430,8 +440,9 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
       where
        ρ : retract B of (X a)
        ρ = ≃-gives-▷ p
+
        γ : (f : Ω 𝓤 → Ω 𝓤) → Σ p ꞉ Ω 𝓤 , p ≡ f p
-       γ = usr-lemma {𝓤} {𝓥 ⊔ 𝓤 ⁺} {𝓤} {A} X fe' fe pe a iss ρ
+       γ = usr-lemma {𝓤} {𝓥 ⊔ 𝓤 ⁺} {𝓤} {A} X fe' fe pe a A-is-set ρ
 
   universe-set-regular : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
   universe-set-regular = γ universe-set-regular'
@@ -445,8 +456,10 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
    where
     B : 𝓤 ⁺ ⊔ 𝓥 ̇
     B = pr₁ universe-set-regular
+
     φ : ∀ a → X a ≢ B
     φ = pr₂ universe-set-regular
+
     e : ∃ a ꞉ A , X a ≡ B
     e = s B
 
@@ -497,24 +510,32 @@ module Coquand where
    module _ (X : 𝓤 ̇ ) where
     H : 𝕎 → 𝓤 ̇
     H w = α w w → X
+
     R : 𝕎
     R = sup {S (Σ H)} (pr₁ ∘ ρ)
+
     B : 𝓤 ̇
     B = α R R
+
     r : B → (B → X)
     r (t , p) = transport H p (pr₂ (ρ t))
+
     s : (B → X) → B
     s f = σ (R , f) , ap pr₁ (η (R , f))
+
     rs : (f : B → X) → r (s f) ≡ f
-    rs f = r (s f)
-                   ≡⟨ refl ⟩
-           transport H (ap pr₁ (η (R , f))) (pr₂ (ρ (σ {Σ H} (R , f))))
-                   ≡⟨ (transport-ap H pr₁ (η (R , f)))⁻¹ ⟩
-           transport (H ∘ pr₁) (η (R , f)) (pr₂ (ρ (σ {Σ H} (R , f))))
-                   ≡⟨ apd pr₂ (η (R , f)) ⟩
-           pr₂ ((R , f) ∶ Σ H)
-                   ≡⟨ refl ⟩
-           f       ∎
+    rs f = r (s f)                                      ≡⟨ refl ⟩
+           transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ≡⟨ i    ⟩
+           transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ≡⟨ ii   ⟩
+           pr₂ Rf                                       ≡⟨ refl ⟩
+           f                                            ∎
+         where
+          Rf : Σ H
+          Rf = (R , f)
+
+          i = (transport-ap H pr₁ (η (Rf)))⁻¹
+          ii = apd pr₂ (η Rf)
+
     γ : (f : X → X) → Σ x ꞉ X , x ≡ f x
     γ = retract-version.LFPT (r , s , rs)
 
