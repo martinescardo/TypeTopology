@@ -20,7 +20,7 @@ open import InfCompact
 open import GenericConvergentSequence
 
 ℕ∞-inf-compact : inf-compact _≼_
-ℕ∞-inf-compact p = a , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
+ℕ∞-inf-compact p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
  where
   α : ℕ → 𝟚
   α 0       = p(under 0)
@@ -114,4 +114,17 @@ open import GenericConvergentSequence
     lemma₀ = lower-bounder a
     lemma₁ : p a ≡ ₁ → l ≼ a
     lemma₁ r n x = ap (λ - → incl - n) (Claim₁ r)
+\end{code}
+
+
+Added 16th December 2020:
+
+\begin{code}
+
+sup : (ℕ → ℕ∞) → ℕ∞
+sup f = {!!}
+ where
+  P : ℕ∞ → {!!} ̇
+  P = {!!}
+
 \end{code}

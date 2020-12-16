@@ -17,7 +17,6 @@ open import UF-FunExt
 
 module ADecidableQuantificationOverTheNaturals (fe : funext 𝓤₀ 𝓤₀) where
 
-
 open import Two-Properties
 open import GenericConvergentSequence
 open import CompactTypes
