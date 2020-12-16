@@ -220,7 +220,7 @@ retract-totally-separated (r , s , rs) τ {y} {y'} α = section-lc s (r , rs) h
 
 \end{code}
 
-Recall that a type is called separated if the doubly negated equality
+Recall that a type is called ¬¬-separated if the doubly negated equality
 of any two element implies their equality, and that such a type is a
 set.
 
@@ -228,7 +228,7 @@ set.
 
 totally-separated-types-are-separated : (X : 𝓤 ̇ )
                                       → is-totally-separated X
-                                      → is-separated X
+                                      → is-¬¬-separated X
 totally-separated-types-are-separated X τ = g
  where
   g : (x y : X) → ¬¬(x ≡ y) → x ≡ y
@@ -238,19 +238,19 @@ totally-separated-types-are-separated X τ = g
     a p = ¬¬-functor (ap p {x} {y}) φ
 
     h : (p : X → 𝟚) → p x ≡ p y
-    h p = 𝟚-is-separated (p x) (p y) (a p)
+    h p = 𝟚-is-¬¬-separated (p x) (p y) (a p)
 
 totally-separated-types-are-sets : funext 𝓤 𝓤₀
                                  → (X : 𝓤 ̇ )
                                  → is-totally-separated X
                                  → is-set X
 totally-separated-types-are-sets fe X t =
-  separated-types-are-sets fe (totally-separated-types-are-separated X t)
+  ¬¬-separated-types-are-sets fe (totally-separated-types-are-separated X t)
 
 \end{code}
 
 The converse fails: the type of propositions is a set, but its total
-separatedness implies excluded middle. In fact, its separatedness
+separatedness implies excluded middle. In fact, its ¬¬-separatedness
 already implies excluded middle:
 
 \begin{code}
@@ -259,9 +259,9 @@ open import UF-ExcludedMiddle
 
 Ω-separated-gives-DNE : propext 𝓤
                       → funext 𝓤 𝓤
-                      → is-separated (Ω 𝓤)
+                      → is-¬¬-separated (Ω 𝓤)
                       → DNE 𝓤
-Ω-separated-gives-DNE {𝓤} pe fe Ω-is-separated P P-is-prop not-not-P = d
+Ω-separated-gives-DNE {𝓤} pe fe Ω-is-¬¬-separated P P-is-prop not-not-P = d
  where
   p : Ω 𝓤
   p = (P , P-is-prop)
@@ -270,7 +270,7 @@ open import UF-ExcludedMiddle
   b = ¬¬-functor (holds-gives-equal-⊤ pe fe p) not-not-P
 
   c : p ≡ ⊤Ω
-  c = Ω-is-separated p ⊤Ω b
+  c = Ω-is-¬¬-separated p ⊤Ω b
 
   d : P
   d = equal-⊤-gives-holds p c
@@ -278,10 +278,10 @@ open import UF-ExcludedMiddle
 Ω-separated-gives-EM : propext 𝓤
                      → funext 𝓤 𝓤₀
                      → funext 𝓤 𝓤
-                     → is-separated (Ω 𝓤)
+                     → is-¬¬-separated (Ω 𝓤)
                      → EM 𝓤
-Ω-separated-gives-EM pe fe₀ fe Ω-is-separated =
-  DNE-gives-EM fe₀ (Ω-separated-gives-DNE pe fe Ω-is-separated)
+Ω-separated-gives-EM pe fe₀ fe Ω-is-¬¬-separated =
+  DNE-gives-EM fe₀ (Ω-separated-gives-DNE pe fe Ω-is-¬¬-separated)
 
 Ω-totally-separated-gives-EM : propext 𝓤
                              → funext 𝓤 𝓤₀
@@ -326,7 +326,7 @@ being-totally-separated-is-prop {𝓤} fe fe₀ X = γ
   γ = subtype-of-prop-is-prop g (λ {t} {u} (r : g t ≡ g u) → ap f r) (prop-criterion p)
 \end{code}
 
-Old proof, which by-passes the step via separatedness and has a
+Old proof, which by-passes the step via ¬¬-separatedness and has a
 different extensionlity hypothesis:
 
 \begin{code}
@@ -534,7 +534,7 @@ totally-separated₂-gives-totally-separated fe {X} i {x} {y} e = ap pr₁ q
 
  Now, if a type X is not (necessarily) totally separated, we can
  consider the image of the map eval X, and this gives the totally
- separated reflection, with the corestriction of eval X to its image
+ ¬¬-separated reflection, with the corestriction of eval X to its image
  as its reflector.
 
 \begin{code}
@@ -777,7 +777,7 @@ apartness relation _♯₂ is tight:
    h (p , u) = na ∣ p , u ∣
 
    α : (p : X → 𝟚) → p x ≡ p y
-   α p = 𝟚-is-separated (p x) (p y) (λ u → h (p , u))
+   α p = 𝟚-is-¬¬-separated (p x) (p y) (λ u → h (p , u))
 
 \end{code}
 
@@ -886,11 +886,11 @@ apartness relation _♯₂ is tight:
    f : x ♯ y → ¬(x ≡ y)
    f a p = i y (transport (λ - → - ♯ y) p a)
 
- tight-is-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
-                    → is-apartness _♯_
-                    → is-tight _♯_
-                    → is-separated X
- tight-is-separated _♯_ a t = f
+ tight-is-¬¬-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
+                       → is-apartness _♯_
+                       → is-tight _♯_
+                       → is-¬¬-separated X
+ tight-is-¬¬-separated _♯_ a t = f
   where
    f : ∀ x y → ¬¬(x ≡ y) → x ≡ y
    f x y φ = t x y (not-not-equal-not-apart x y _♯_ a φ)
@@ -900,12 +900,12 @@ apartness relation _♯₂ is tight:
               → is-apartness _♯_
               → is-tight _♯_
               → is-set X
- tight-is-set _♯_ fe a t = separated-types-are-sets fe (tight-is-separated _♯_ a t)
+ tight-is-set _♯_ fe a t = ¬¬-separated-types-are-sets fe (tight-is-¬¬-separated _♯_ a t)
 
 \end{code}
 
  The above use apartness data, but its existence is enough, because
- being a separated type and being a set are propositions.
+ being a ¬¬-separated type and being a set are propositions.
 
 \begin{code}
 
@@ -913,11 +913,11 @@ apartness relation _♯₂ is tight:
                   → funext 𝓤 𝓤₀
                   → {X : 𝓤 ̇ }
                   → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
-                  → is-separated X
+                  → is-¬¬-separated X
  tight-separated' {𝓤} fe fe₀ {X} = ∥∥-rec (is-prop-separated fe fe₀) f
    where
-    f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-separated X
-    f (_♯_ , a , t) = tight-is-separated _♯_ a t
+    f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-¬¬-separated X
+    f (_♯_ , a , t) = tight-is-¬¬-separated _♯_ a t
 
  tight-is-set' : funext 𝓤 𝓤
                → funext 𝓤 𝓤₀

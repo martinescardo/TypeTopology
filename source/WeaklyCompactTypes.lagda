@@ -65,8 +65,8 @@ LPO with WLPO.
 
 Π-compactness-is-prop : {X : 𝓤 ̇ } → is-prop (Π-compact X)
 Π-compactness-is-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
-                         (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
-                                  (Π-is-prop (fe 𝓤 𝓤₀) λ _ → 𝟚-is-set))
+                             (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
+                                      (Π-is-prop (fe 𝓤 𝓤₀) λ _ → 𝟚-is-set))
 
 ∃-compact-gives-Π-compact : {X : 𝓤 ̇ } → ∃-compact X → Π-compact X
 ∃-compact-gives-Π-compact {𝓤} {X} c p = f (c p)

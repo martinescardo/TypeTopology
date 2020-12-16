@@ -163,19 +163,19 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
   g : (x y : X) → f x ≡ f y
   g x y = ap s (claim₁ x y)
 
-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-separated X → Id-collapsible X
-separated-is-Id-collapsible fe s = stable-is-collapsible fe (s _ _)
+¬¬-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-¬¬-separated X → Id-collapsible X
+¬¬-separated-is-Id-collapsible fe s = stable-is-collapsible fe (s _ _)
 
-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-separated X → is-set X
-separated-types-are-sets fe s = Id-collapsibles-are-sets (separated-is-Id-collapsible fe s)
+¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-¬¬-separated X → is-set X
+¬¬-separated-types-are-sets fe s = Id-collapsibles-are-sets (¬¬-separated-is-Id-collapsible fe s)
 
-is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop(is-separated X)
+is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop(is-¬¬-separated X)
 is-prop-separated fe fe₀ {X} = prop-criterion f
  where
-  f : is-separated X → is-prop(is-separated X)
+  f : is-¬¬-separated X → is-prop(is-¬¬-separated X)
   f s = Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ →
-        Π-is-prop fe (λ _ → separated-types-are-sets fe₀ s)))
+        Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets fe₀ s)))
 
 \end{code}
 

@@ -117,7 +117,7 @@ module concrete-example where
  open import DiscreteAndSeparated
 
  𝟚-indistinguishability : ¬ WLPO → (p : X → 𝟚) → p ∞₀ ≡ p ∞₁
- 𝟚-indistinguishability nwlpo p = 𝟚-is-separated (p ∞₀) (p ∞₁)
+ 𝟚-indistinguishability nwlpo p = 𝟚-is-¬¬-separated (p ∞₀) (p ∞₁)
                                     (not-Σ-implies-Π-not
                                     (contrapositive (λ σ → failure (pr₁ σ) (pr₂ σ)) nwlpo) p)
 
@@ -237,9 +237,9 @@ two embeddings e₀ and e₁:
 The following theorem shows that, because not every type X has
 decidable equality, the points a₀,a₁ of Y cannot necessarily be
 distinguished by maps into the discrete set 𝟚. To get the desired
-conclusion, it is enough to consider X = (ℕ → 𝟚), which is separated,
-in the sense that ¬¬(x ≡ y) → x ≡ y, assuming extensionality. (Cf. the
-module DiscreteAndSeparated.)
+conclusion, it is enough to consider X = (ℕ → 𝟚), which is
+¬¬-separated, in the sense that ¬¬(x ≡ y) → x ≡ y, assuming
+extensionality. (Cf. the module DiscreteAndSeparated.)
 
 \begin{code}
 

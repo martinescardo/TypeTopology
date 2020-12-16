@@ -394,7 +394,7 @@ Head-Cons = λ u φ → ap (λ - → - φ) (γ u)
 
   γ : (u : ℕ∞) → (λ φ → Head (Cons (u , φ))) ≡ (λ φ → u)
   γ = ℕ∞-ddensity fe₀
-        (λ {u} → Π-is-separated fe₀ (λ φ → ℕ∞-is-separated fe₀))
+        (λ {u} → Π-is-¬¬-separated fe₀ (λ φ → ℕ∞-is-¬¬-separated fe₀))
         (λ n → dfunext fe₀ (Head-Cons-finite n))
         (dfunext fe₀ Head-Cons-∞)
 

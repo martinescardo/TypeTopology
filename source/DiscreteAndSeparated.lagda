@@ -142,17 +142,18 @@ retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
 
 \end{code}
 
-Separated types form an exponential ideal, assuming
+¬¬-Separated types form an exponential ideal, assuming
 extensionality. More generally:
 
 \begin{code}
 
-is-separated : 𝓤 ̇ → 𝓤 ̇
-is-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
+is-¬¬-separated : 𝓤 ̇ → 𝓤 ̇
+is-¬¬-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
 
-Π-is-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-               → ((x : X) → is-separated(Y x)) → is-separated(Π Y)
-Π-is-separated fe s f g h = dfunext fe lemma₂
+Π-is-¬¬-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                  → ((x : X) → is-¬¬-separated(Y x))
+                  → is-¬¬-separated(Π Y)
+Π-is-¬¬-separated fe s f g h = dfunext fe lemma₂
  where
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ - → - x) r
@@ -161,20 +162,22 @@ is-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
   lemma₂ : ∀ x → f x ≡ g x
   lemma₂ x =  s x (f x) (g x) (lemma₁ x)
 
-discrete-is-separated : {X : 𝓤 ̇ } → is-discrete X → is-separated X
-discrete-is-separated d x y = ¬¬-elim(d x y)
+discrete-is-¬¬-separated : {X : 𝓤 ̇ } → is-discrete X → is-¬¬-separated X
+discrete-is-¬¬-separated d x y = ¬¬-elim(d x y)
 
-𝟚-is-separated : is-separated 𝟚
-𝟚-is-separated = discrete-is-separated 𝟚-is-discrete
+𝟚-is-¬¬-separated : is-¬¬-separated 𝟚
+𝟚-is-¬¬-separated = discrete-is-¬¬-separated 𝟚-is-discrete
 
-subtype-of-separated-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
-                                  → left-cancellable m → is-separated Y → is-separated X
-subtype-of-separated-is-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
+subtype-of-separated-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+                                     → left-cancellable m
+                                     → is-¬¬-separated Y
+                                     → is-¬¬-separated X
+subtype-of-separated-is-¬¬-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
 
 \end{code}
 
-The following is an apartness relation when Y is separated, but we
-define it without this assumption. (Are all types separated? See
+The following is an apartness relation when Y is ¬¬-separated, but we
+define it without this assumption. (Are all types ¬¬-separated? See
 below.)
 
 \begin{code}
@@ -214,7 +217,7 @@ assuming extensionality:
 \begin{code}
 
 tight : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
-      → ((x : X) → is-separated(Y x))
+      → ((x : X) → is-¬¬-separated(Y x))
       → (f g : (x : X) → Y x)
       → ¬(f ♯ g) → f ≡ g
 tight fe s f g h = dfunext fe lemma₁
@@ -226,7 +229,7 @@ tight fe s f g h = dfunext fe lemma₁
 
 tight' : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
        → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
-tight' fe d = tight fe (λ x → discrete-is-separated(d x))
+tight' fe d = tight fe (λ x → discrete-is-¬¬-separated(d x))
 
 \end{code}
 
@@ -235,9 +238,11 @@ easy:
 
 \begin{code}
 
-binary-product-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                            → is-separated X → is-separated Y → is-separated(X × Y)
-binary-product-is-separated s t (x , y) (x' , y') φ =
+binary-product-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                               → is-¬¬-separated X
+                               → is-¬¬-separated Y
+                               → is-¬¬-separated(X × Y)
+binary-product-is-¬¬-separated s t (x , y) (x' , y') φ =
  lemma(lemma₀ φ)(lemma₁ φ)
  where
   lemma₀ : ¬¬((x , y) ≡ (x' , y')) → x ≡ x'
@@ -255,9 +260,11 @@ special case is also easy:
 
 \begin{code}
 
-binary-sum-is-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                        → is-separated X → is-separated Y → is-separated(X + Y)
-binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
+binary-sum-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                           → is-¬¬-separated X
+                           → is-¬¬-separated Y
+                           → is-¬¬-separated(X + Y)
+binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
  where
   claim : inl x ≡ inl x' → x ≡ x'
   claim = ap p
@@ -265,12 +272,13 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
     p : X + Y → X
     p(inl u) = u
     p(inr v) = x
+
   lemma : ¬¬(inl x ≡ inl x') → inl x ≡ inl x'
   lemma = ap inl ∘ s x x' ∘ ¬¬-functor claim
 
-binary-sum-is-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
-binary-sum-is-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹))
-binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
+binary-sum-is-¬¬-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
+binary-sum-is-¬¬-separated s t (inr y) (inl x)  = λ φ → 𝟘-elim(φ(+disjoint ∘ _⁻¹))
+binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
  where
   claim : inr y ≡ inr y' → y ≡ y'
   claim = ap q
@@ -278,13 +286,15 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
     q : X + Y → Y
     q(inl u) = y
     q(inr v) = v
+
   lemma : ¬¬(inr y ≡ inr y') → inr y ≡ inr y'
   lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
 
 ⊥-⊤-density' : funext 𝓤 𝓤 → propext 𝓤
              → ∀ {𝓥} {X : 𝓥 ̇ }
-             → is-separated X
-             → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤ → wconstant f
+             → is-¬¬-separated X
+             → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤
+             → wconstant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
     a : ∀ p → ¬¬(f p ≡ f ⊤)
@@ -292,8 +302,10 @@ binary-sum-is-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
       where
         b : p ≢ ⊥
         b u = t (ap f u ∙ r)
+
         c : p ≢ ⊤
         c u = t (ap f u)
+
     g : ∀ p → f p ≡ f ⊤
     g p = s (f p) (f ⊤) (a p)
 

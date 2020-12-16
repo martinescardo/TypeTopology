@@ -214,7 +214,7 @@ disconnected-types-are-not-connected : {X : 𝓤 ̇ } → disconnected X → ¬ 
 disconnected-types-are-not-connected c d = is-connected₀-gives-is-connected₂ d c
 
 is-connected₂-gives-is-connected₀ : {X : 𝓤 ̇ } → is-connected₂ X → is-connected₀ X
-is-connected₂-gives-is-connected₀ {𝓤} {X} n f x y = 𝟚-is-separated (f x) (f y) ϕ
+is-connected₂-gives-is-connected₀ {𝓤} {X} n f x y = 𝟚-is-¬¬-separated (f x) (f y) ϕ
  where
   ϕ : ¬¬ (f x ≡ f y)
   ϕ u = n (f , s , fs)
@@ -253,7 +253,7 @@ is-connected : 𝓤 ̇ → 𝓤 ̇
 is-connected = is-connected₀
 
 being-connected-is-prop : {X : 𝓤 ̇ } → Fun-Ext → is-prop (is-connected X)
-being-connected-is-prop {𝓤} {X} fe = Π₃-is-prop fe (λ f x y → 𝟚-is-set)
+being-connected-is-prop fe = Π₃-is-prop fe (λ f x y → 𝟚-is-set)
 
 \end{code}
 

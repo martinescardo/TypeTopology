@@ -105,14 +105,14 @@ force-decreasing-is-not-much-smaller β (succ n) p = f c
     f (inl q) = succ n , q
     f (inr r) = force-decreasing-is-not-much-smaller β n r
 
-Cantor-is-separated : funext₀ → is-separated (ℕ → 𝟚)
-Cantor-is-separated fe = Π-is-separated fe (λ _ → 𝟚-is-separated)
+Cantor-is-¬¬-separated : funext₀ → is-¬¬-separated (ℕ → 𝟚)
+Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-separated)
 
-ℕ∞-is-separated : funext₀ → is-separated ℕ∞
-ℕ∞-is-separated fe = subtype-of-separated-is-separated pr₁ (incl-lc fe) (Cantor-is-separated fe)
+ℕ∞-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞
+ℕ∞-is-¬¬-separated fe = subtype-of-separated-is-¬¬-separated pr₁ (incl-lc fe) (Cantor-is-¬¬-separated fe)
 
 ℕ∞-is-set : funext₀ → is-set ℕ∞
-ℕ∞-is-set fe = separated-types-are-sets fe (ℕ∞-is-separated fe)
+ℕ∞-is-set fe = ¬¬-separated-types-are-sets fe (ℕ∞-is-¬¬-separated fe)
 
 open import TotallySeparated
 
@@ -324,7 +324,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   lemma (succ n) = different-from-₀-equal-₁(λ r → f(succ n)(Succ-criterion fe (lemma n) r))
 
 ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇ }
-            → ({u : ℕ∞} → is-separated (Y u))
+            → ({u : ℕ∞} → is-¬¬-separated (Y u))
             → {f g : Π Y}
             → ((n : ℕ) → f(under n) ≡ g(under n))
             → f ∞ ≡ g ∞
@@ -340,7 +340,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
 
 ℕ∞-density : funext₀
            → {Y : 𝓤 ̇ }
-           → is-separated Y
+           → is-¬¬-separated Y
            → {f g : ℕ∞ → Y}
            → ((n : ℕ) → f(under n) ≡ g(under n))
            → f ∞ ≡ g ∞
@@ -352,7 +352,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
              → ((n : ℕ) → p(under n) ≡ ₁)
              → p ∞ ≡ ₁
              → (u : ℕ∞) → p u ≡ ₁
-ℕ∞-𝟚-density fe = ℕ∞-density fe 𝟚-is-separated
+ℕ∞-𝟚-density fe = ℕ∞-density fe 𝟚-is-¬¬-separated
 
 under𝟙 : ℕ + 𝟙 → ℕ∞
 under𝟙 = cases {𝓤₀} {𝓤₀} under (λ _ → ∞)
