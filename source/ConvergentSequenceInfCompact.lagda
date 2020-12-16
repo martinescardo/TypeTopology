@@ -115,16 +115,3 @@ open import GenericConvergentSequence
     lemma₁ : p a ≡ ₁ → l ≼ a
     lemma₁ r n x = ap (λ - → incl - n) (Claim₁ r)
 \end{code}
-
-
-Added 16th December 2020:
-
-\begin{code}
-
-sup : (ℕ → ℕ∞) → ℕ∞
-sup f = {!!}
- where
-  P : ℕ∞ → {!!} ̇
-  P = {!!}
-
-\end{code}
