@@ -501,42 +501,45 @@ module Coquand where
           (σ : {X : 𝓤 ̇ } → X → T (S X))
           (η : {X : 𝓤 ̇ } (x : X) → ρ (σ x) ≡ x)
         → 𝟘
- Lemma₀ 𝓤 A T S ρ σ η = pr₁ (γ 𝟘 id )
+ Lemma₀ 𝓤 A T S ρ σ η = γ
   where
    α : W T → (W T → 𝓤 ̇ )
    α (sup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
-    H : W T → 𝓤 ̇
-    H w = α w w → X
+     H : W T → 𝓤 ̇
+     H w = α w w → X
 
-    R : W T
-    R = sup (S (Σ H)) (pr₁ ∘ ρ)
+     R : W T
+     R = sup (S (Σ H)) (pr₁ ∘ ρ)
 
-    B : 𝓤 ̇
-    B = α R R
+     B : 𝓤 ̇
+     B = α R R
 
-    r : B → (B → X)
-    r (t , p) = transport H p (pr₂ (ρ t))
+     r : B → (B → X)
+     r (t , p) = transport H p (pr₂ (ρ t))
 
-    s : (B → X) → B
-    s f = σ (R , f) , ap pr₁ (η (R , f))
+     s : (B → X) → B
+     s f = σ (R , f) , ap pr₁ (η (R , f))
 
-    rs : (f : B → X) → r (s f) ≡ f
-    rs f = r (s f)                                      ≡⟨ refl ⟩
-           transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ≡⟨ i    ⟩
-           transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ≡⟨ ii   ⟩
-           pr₂ Rf                                       ≡⟨ refl ⟩
-           f                                            ∎
-         where
-          Rf : Σ H
-          Rf = (R , f)
+     rs : (f : B → X) → r (s f) ≡ f
+     rs f = r (s f)                                      ≡⟨ refl ⟩
+            transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ≡⟨ i    ⟩
+            transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ≡⟨ ii   ⟩
+            pr₂ Rf                                       ≡⟨ refl ⟩
+            f                                            ∎
+          where
+           Rf : Σ H
+           Rf = (R , f)
 
-          i = (transport-ap H pr₁ (η (Rf)))⁻¹
-          ii = apd pr₂ (η Rf)
+           i = (transport-ap H pr₁ (η (Rf)))⁻¹
+           ii = apd pr₂ (η Rf)
 
-    γ : (f : X → X) → Σ x ꞉ X , x ≡ f x
-    γ = retract-version.LFPT (r , s , rs)
+     δ : (f : X → X) → Σ x ꞉ X , x ≡ f x
+     δ = retract-version.LFPT (r , s , rs)
+
+   γ : 𝟘
+   γ = pr₁ (δ 𝟘 id)
 
 \end{code}
 
