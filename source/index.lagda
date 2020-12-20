@@ -213,6 +213,7 @@ import Unit-Properties
 import Universes
 import WeaklyCompactTypes
 import W
+import W-Properties
 import WLPO
 import UF
 import UF-Base

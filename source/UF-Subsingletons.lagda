@@ -270,7 +270,7 @@ singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ≡ x') → 
 singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → 𝓤 ̇
-  A x x' r = _≡_ {_} {Σ x' ꞉ X , x ≡ x'} (singleton-inclusion x) (x' , r)
+  A x x' r = singleton-inclusion x ≡[ Σ x' ꞉ X , x ≡ x' ] (x' , r)
 
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton(singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
