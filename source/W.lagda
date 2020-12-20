@@ -11,6 +11,12 @@ open import SpartanMLTT
 data W {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  sup : (x : X) → (A x → W A) → W A
 
+\end{code}
+
+The record version of W in case we need it:
+
+\begin{code}
+
 record W' {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  inductive
  constructor
@@ -21,7 +27,7 @@ record W' {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 
 
 \end{code}
 
-Indexed version:
+Indexed version of W:
 
 \begin{code}
 
@@ -37,7 +43,7 @@ data Wᵢ {𝓤 𝓥 𝓦 : Universe}
 
 \end{code}
 
-E.g. for taped terms:
+E.g. for typed terms:
 
   I    tape of "tapes"
   A    tape of operations

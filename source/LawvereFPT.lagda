@@ -491,6 +491,8 @@ Lemma₀ by a second application of LFPT (todo).
 
 module Coquand where
 
+ open import W
+
  Lemma₀ : (𝓤 : Universe)
           (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
@@ -501,18 +503,15 @@ module Coquand where
         → 𝟘
  Lemma₀ 𝓤 A T S ρ σ η = pr₁ (γ 𝟘 id )
   where
-   data 𝕎 : 𝓤 ̇ where
-    sup : {a : A} → (T a → 𝕎) → 𝕎
-
-   α : 𝕎 → (𝕎 → 𝓤 ̇ )
-   α (sup φ) = fiber φ
+   α : W T → (W T → 𝓤 ̇ )
+   α (sup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
-    H : 𝕎 → 𝓤 ̇
+    H : W T → 𝓤 ̇
     H w = α w w → X
 
-    R : 𝕎
-    R = sup {S (Σ H)} (pr₁ ∘ ρ)
+    R : W T
+    R = sup (S (Σ H)) (pr₁ ∘ ρ)
 
     B : 𝓤 ̇
     B = α R R
