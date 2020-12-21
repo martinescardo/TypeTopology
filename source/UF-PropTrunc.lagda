@@ -49,7 +49,7 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
    φ' = ∥∥-rec (i s) φ
 
 
- is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop(is-prop X × ∥ X ∥)
+ is-singleton'-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X × ∥ X ∥)
  is-singleton'-is-prop fe = Σ-is-prop (being-prop-is-prop fe) (λ _ → ∥∥-is-prop)
 
  the-singletons-are-the-inhabited-propositions : {X : 𝓤 ̇ } → is-singleton X ⇔ is-prop X × ∥ X ∥

@@ -17,11 +17,11 @@ open import UF-FunExt
 open import UF-Univalence
 open import UF-PropTrunc
 
-ip-ie-idtofun : (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇ ) (p : X ≡ Y) → is-prop(is-equiv(idtofun X Y p))
+ip-ie-idtofun : (fe : funext 𝓤 𝓤) (X Y : 𝓤 ̇ ) (p : X ≡ Y) → is-prop (is-equiv(idtofun X Y p))
 ip-ie-idtofun {𝓤} fe X = Jbased X B go
  where
    B : (Y : 𝓤 ̇ ) → X ≡ Y → 𝓤 ̇
-   B Y p = is-prop(is-equiv(idtofun X Y p))
+   B Y p = is-prop (is-equiv(idtofun X Y p))
    A = Σ f ꞉ X → X , f ≡ id
    a : is-prop A
    a = singletons-are-props (singleton-types'-are-singletons id)
@@ -36,11 +36,11 @@ ip-ie-idtofun {𝓤} fe X = Jbased X B go
    h-lc = NatΣ-lc (X → X) (λ f → f ∼ id) (λ f → f ≡ id) η η-lc
    b : is-prop A'
    b = left-cancellable-reflects-is-prop h h-lc a
-   go : is-prop(A' × A')
+   go : is-prop (A' × A')
    go = ×-is-prop b b
 
 jip : is-univalent 𝓤 → funext 𝓤 𝓤 → {X Y : 𝓤 ̇ }
-   → (f : X → Y) → is-prop(is-equiv f)
+   → (f : X → Y) → is-prop (is-equiv f)
 jip {𝓤} ua fe {X} {Y} f ije = h ije
   where
     e : X ≃ Y
@@ -49,7 +49,7 @@ jip {𝓤} ua fe {X} {Y} f ije = h ije
     p = eqtoid ua X Y e
     f' : X → Y
     f' = idtofun X Y p
-    h' : is-prop(is-equiv f')
+    h' : is-prop (is-equiv f')
     h' = ip-ie-idtofun fe X Y p
     ije' : is-equiv f'
     ije' = Idtofun-is-equiv X Y p
@@ -59,7 +59,7 @@ jip {𝓤} ua fe {X} {Y} f ije = h ije
     q = idtoeq-eqtoid ua X Y e
     q₁ : f' ≡ f
     q₁ = ap pr₁ q
-    h : is-prop(is-equiv f)
-    h = yoneda-nat f' (λ f → is-prop(is-equiv f)) h' f q₁
+    h : is-prop (is-equiv f)
+    h = yoneda-nat f' (λ f → is-prop (is-equiv f)) h' f q₁
 
 \end{code}

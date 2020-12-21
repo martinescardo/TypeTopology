@@ -74,7 +74,7 @@ LPO with WLPO.
   f : decidable (∃ x ꞉ X , p x ≡ ₀) → decidable (Π x ꞉ X , p x ≡ ₁)
   f (inl s) = inr (λ α → ∥∥-rec 𝟘-is-prop (g α) s)
    where
-    g : ((x : X) → p x ≡ ₁) → ¬(Σ x ꞉ X , p x ≡ ₀)
+    g : ((x : X) → p x ≡ ₁) → ¬ (Σ x ꞉ X , p x ≡ ₀)
     g α (x , r) = zero-is-not-one (r ⁻¹ ∙ α x)
   f (inr u) = inl (not-exists₀-implies-forall₁ pt p u)
 
@@ -115,7 +115,7 @@ predicate λ x → ₁:
 Π-compact' : 𝓤 ̇ → 𝓤 ̇
 Π-compact' X = (p : X → 𝟚) → decidable (p ≡ λ x → ₁)
 
-Π-compactness'-is-prop : {X : 𝓤 ̇ } → is-prop(Π-compact' X)
+Π-compactness'-is-prop : {X : 𝓤 ̇ } → is-prop (Π-compact' X)
 Π-compactness'-is-prop {𝓤} = Π-is-prop (fe 𝓤 𝓤)
                                 (λ p → decidability-of-prop-is-prop (fe 𝓤 𝓤₀)
                                          (Π-is-set (fe 𝓤 𝓤₀) (λ x → 𝟚-is-set)))
@@ -385,7 +385,7 @@ tscd {𝓤} {X} ts c x y = g (a s)
   a (inl f) = inl (λ p → pr₂ (r p) (f p))
   a (inr φ) = inr h
    where
-    h : ¬((p : X → 𝟚) → p x ≡ p y)
+    h : ¬ ((p : X → 𝟚) → p x ≡ p y)
     h α = φ (λ p → b p (α p))
 
   g : decidable ((p : X → 𝟚) → p x ≡ p y) → decidable(x ≡ y)
@@ -583,7 +583,7 @@ negations-of-propositions-whose-decidability-is-Π-compact-are-decidable X isp c
   α u (inl x) = 𝟘-elim (u x)
   α u (inr v) = refl
 
-  m : ¬((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
+  m : ¬ ((z : X + ¬ X) → p z ≡ ₁) → ¬ X + ¬¬ X
   m φ = inr(λ u → φ(α u))
 
 \end{code}
@@ -809,7 +809,7 @@ being-∃-compact∙-and-empty-is-prop {𝓤} {X} = sum-of-contradictory-props
 _has-inf_ : {X : 𝓤 ̇ } → (X → 𝟚) → 𝟚 → 𝓤 ̇
 p has-inf n = (∀ x → n ≤₂ p x) × (∀ m → (∀ x → m ≤₂ p x) → m ≤₂ n)
 
-having-inf-is-prop : {X : 𝓤 ̇ } (p : X → 𝟚) (n : 𝟚) → is-prop(p has-inf n)
+having-inf-is-prop : {X : 𝓤 ̇ } (p : X → 𝟚) (n : 𝟚) → is-prop (p has-inf n)
 having-inf-is-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-≡ r s
  where
   r : f ≡ f'
@@ -823,7 +823,7 @@ at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (
 has-infs : 𝓤 ̇ → 𝓤 ̇
 has-infs X = ∀(p : X → 𝟚) → Σ n ꞉ 𝟚 , p has-inf n
 
-having-infs-is-prop : {X : 𝓤 ̇ } → is-prop(has-infs X)
+having-infs-is-prop : {X : 𝓤 ̇ } → is-prop (has-infs X)
 having-infs-is-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
 
 Π-compact-has-infs : {X : 𝓤 ̇ } → Π-compact X → has-infs X
@@ -1188,7 +1188,7 @@ is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
 being-clopen-map-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → FunExt
-                           → (f : X → Y) → is-prop(is-clopen-map f)
+                           → (f : X → Y) → is-prop (is-clopen-map f)
 being-clopen-map-is-prop {𝓤} {𝓥} fe f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ p → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))

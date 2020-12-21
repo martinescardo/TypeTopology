@@ -252,7 +252,7 @@ singleton-types'-are-singletons x = retract-of-singleton
                                       (pr₁(pr₂((pt-pf-equiv x)))))
                                       (singleton-types-are-singletons x)
 
-singleton-types'-are-props : {X : 𝓤 ̇ } (x : X) → is-prop(singleton-type' x)
+singleton-types'-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type' x)
 singleton-types'-are-props x = singletons-are-props (singleton-types'-are-singletons x)
 
 \end{code}

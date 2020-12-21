@@ -303,8 +303,8 @@ _∼_ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → Π A → Π A → 𝓤 ⊔ 𝓥 
 f ∼ g = ∀ x → f x ≡ g x
 
 ¬¬ ¬¬¬ : 𝓤 ̇ → 𝓤 ̇
-¬¬  A = ¬(¬ A)
-¬¬¬ A = ¬(¬¬ A)
+¬¬  A = ¬ (¬ A)
+¬¬¬ A = ¬ (¬¬ A)
 
 dni : (A : 𝓤 ̇ ) → A → ¬¬ A
 dni A a u = u a
@@ -334,7 +334,7 @@ absurdity³-is-absurdity {𝓤} {A} = firstly , secondly
   secondly = dni (¬ A)
 
 _≢_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
-x ≢ y = ¬(x ≡ y)
+x ≢ y = ¬ (x ≡ y)
 
 ≢-sym : {X : 𝓤 ̇ } {x y : X} → x ≢ y → y ≢ x
 ≢-sym {𝓤} {X} {x} {y} u = λ (p : y ≡ x) → u (p ⁻¹)
@@ -589,7 +589,7 @@ module basic-arithmetic-and-order where
 
   infix 10 _<_
 
-  not-<-gives-≥ : (m n : ℕ) → ¬(n < m) → m ≤ n
+  not-<-gives-≥ : (m n : ℕ) → ¬ (n < m) → m ≤ n
   not-<-gives-≥ zero n u = zero-minimal n
   not-<-gives-≥ (succ m) zero = dni (zero < succ m) (zero-minimal m)
   not-<-gives-≥ (succ m) (succ n) = not-<-gives-≥ m n
@@ -623,13 +623,13 @@ module basic-arithmetic-and-order where
 
   at-most-one-minimal-root f m n (p , φ) (q , ψ) = c m n a b
    where
-    a : ¬(m < n)
+    a : ¬ (m < n)
     a u = ψ m u p
 
-    b : ¬(n < m)
+    b : ¬ (n < m)
     b v = φ n v q
 
-    c : (m n : ℕ) → ¬(m < n) → ¬(n < m) → m ≡ n
+    c : (m n : ℕ) → ¬ (m < n) → ¬ (n < m) → m ≡ n
     c m n u v = ≤-anti m n (not-<-gives-≥ m n v) (not-<-gives-≥ n m u)
 
   minimal-root : (ℕ → ℕ) → 𝓤₀ ̇
@@ -660,7 +660,7 @@ module basic-arithmetic-and-order where
   root-gives-minimal-root : ∀ f → root f → minimal-root f
   root-gives-minimal-root f (n , p) = γ
    where
-    g : ¬(f has-no-root< (succ n))
+    g : ¬ (f has-no-root< (succ n))
     g φ = φ n (≤-refl n) p
 
     γ : minimal-root f

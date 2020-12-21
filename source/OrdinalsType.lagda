@@ -105,7 +105,7 @@ tunderlying-order ((X , _<_ , o) , t) = _<_
 syntax tunderlying-order τ x y = x ≺⟪ τ ⟫ y
 
 tunderlying-rorder : (τ : Ordinalᵀ 𝓤) → ⟪ τ ⟫ → ⟪ τ ⟫ → 𝓤 ̇
-tunderlying-rorder τ x y = ¬(y ≺⟪ τ ⟫ x)
+tunderlying-rorder τ x y = ¬ (y ≺⟪ τ ⟫ x)
 
 syntax tunderlying-rorder τ x y = x ≼⟪ τ ⟫ y
 

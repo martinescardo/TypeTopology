@@ -370,7 +370,7 @@ Hedberg's Theorem.
 
 \begin{code}
 
-≡[𝔹]-is-decidable : (x y : 𝔹) → (x ≡[𝔹] y) + ¬(x ≡[𝔹] y)
+≡[𝔹]-is-decidable : (x y : 𝔹) → (x ≡[𝔹] y) + ¬ (x ≡[𝔹] y)
 ≡[𝔹]-is-decidable L     L     = inl *
 ≡[𝔹]-is-decidable L     R     = inr id
 ≡[𝔹]-is-decidable L     (l y) = inr id
@@ -388,10 +388,10 @@ Hedberg's Theorem.
 ≡[𝔹]-is-decidable (r x) (l y) = inr id
 ≡[𝔹]-is-decidable (r x) (r y) = ≡[𝔹]-is-decidable x y
 
-𝔹-has-decidable-equality : (x y : 𝔹) → (x ≡ y) + ¬(x ≡ y)
+𝔹-has-decidable-equality : (x y : 𝔹) → (x ≡ y) + ¬ (x ≡ y)
 𝔹-has-decidable-equality x y = δ (≡[𝔹]-is-decidable x y)
  where
-  δ : (x ≡[𝔹] y) + ¬(x ≡[𝔹] y) → (x ≡ y) + ¬(x ≡ y)
+  δ : (x ≡[𝔹] y) + ¬ (x ≡[𝔹] y) → (x ≡ y) + ¬ (x ≡ y)
   δ (inl p) = inl (from-≡[𝔹] x y p)
   δ (inr ν) = inr (contrapositive (to-≡[𝔹] x y) ν)
 

@@ -17,7 +17,7 @@ open import Unit-Properties
 +-commutative : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → A + B → B + A
 +-commutative = cases inr inl
 
-+disjoint : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬(inl x ≡ inr y)
++disjoint : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬ (inl x ≡ inr y)
 +disjoint {𝓤} {𝓥} {X} {Y} p = 𝟙-is-not-𝟘 q
  where
   f : X + Y → 𝓤₀ ̇
@@ -28,7 +28,7 @@ open import Unit-Properties
   q = ap f p
 
 
-+disjoint' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬(inr y ≡ inl x)
++disjoint' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x : X} {y : Y} → ¬ (inr y ≡ inl x)
 +disjoint' p = +disjoint (p ⁻¹)
 
 inl-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → inl {𝓤} {𝓥} {X} {Y} x ≡ inl x' → x ≡ x'

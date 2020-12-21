@@ -192,7 +192,7 @@ module blechschmidt where
  is-prop X = (x y : X) → x ≡ y
 
  is-set : Set → Set
- is-set X = {x y : X} → is-prop(x ≡ y)
+ is-set X = {x y : X} → is-prop (x ≡ y)
 
  postulate K-axiom : (X : Set) → is-set X
 
@@ -395,12 +395,12 @@ module blechschmidt where
 
  \begin{code}
 
- universe-regular-≃ : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬(X a ≃ B))
+ universe-regular-≃ : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬ (X a ≃ B))
  universe-regular-≃ A X = B , φ
    where
     B : Set
     B = (a : A) → X a → Ω
-    φ : (a : A) → ¬(X a ≃ B)
+    φ : (a : A) → ¬ (X a ≃ B)
     φ a p = not-no-fp (γ not)
      where
       retr : retract B of (X a)
@@ -408,11 +408,11 @@ module blechschmidt where
       γ : (f : Ω → Ω) → Σ P ꞉ Ω , P ≡ f P
       γ = usr-lemma {A} X a retr
 
- universe-regular : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬(X a ≡ B))
+ universe-regular : (A : Set) (X : A → Set) → Σ B ꞉ Set , ((a : A) → ¬ (X a ≡ B))
  universe-regular A X = γ (universe-regular-≃ A X)
   where
-   γ : (Σ B ꞉ Set , ((a : A) → ¬(X a ≃ B)))
-     → (Σ B ꞉ Set , ((a : A) → ¬(X a ≡ B)))
+   γ : (Σ B ꞉ Set , ((a : A) → ¬ (X a ≃ B)))
+     → (Σ B ꞉ Set , ((a : A) → ¬ (X a ≡ B)))
    γ (B , φ) = B , (λ a p → φ a (idtoeq (X a) B p))
 
  \end{code}
@@ -426,7 +426,7 @@ module blechschmidt where
   where
    B : Set
    B = pr₁ (universe-regular A X)
-   φ : ∀ a → ¬(X a ≡ B)
+   φ : ∀ a → ¬ (X a ≡ B)
    φ = pr₂ (universe-regular A X)
 
  \end{code}

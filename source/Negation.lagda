@@ -16,7 +16,7 @@ open import Sigma
 ¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬ A = A → 𝟘 {𝓤₀}
 _≢_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
-x ≢ y = ¬(x ≡ y)
+x ≢ y = ¬ (x ≡ y)
 
 ≢-sym : {X : 𝓤 ̇ } → {x y : X} → x ≢ y → y ≢ x
 ≢-sym u r = u(r ⁻¹)
@@ -25,7 +25,7 @@ is-empty : 𝓤 ̇ → 𝓤 ̇
 is-empty = ¬_
 
 ¬¬_ : 𝓤 ̇ → 𝓤 ̇
-¬¬ A = ¬(¬ A)
+¬¬ A = ¬ (¬ A)
 
 dual : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (R : 𝓦 ̇ ) → (X → Y) → (Y → R) → (X → R)
 dual R f p = p ∘ f
@@ -45,24 +45,24 @@ decidable A = A + ¬ A
 double-negation-intro : {A : 𝓤 ̇ } → A → ¬¬ A
 double-negation-intro x u = u x
 
-three-negations-imply-one : {A : 𝓤 ̇ } → ¬(¬¬ A) → ¬ A
+three-negations-imply-one : {A : 𝓤 ̇ } → ¬ (¬¬ A) → ¬ A
 three-negations-imply-one = contrapositive double-negation-intro
 
-double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ¬¬((x : X) → A x) → (x : X) → ¬¬(A x)
+double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ¬¬ ((x : X) → A x) → (x : X) → ¬¬ (A x)
 double-negation-unshift f x g = f (λ h → g (h x))
 
-dnu : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬(A × B) → ¬¬ A × ¬¬ B
+dnu : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A × B) → ¬¬ A × ¬¬ B
 dnu φ = (¬¬-functor pr₁ φ) , (¬¬-functor pr₂ φ)
 
-und : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ A × ¬¬ B → ¬¬(A × B)
+und : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ A × ¬¬ B → ¬¬ (A × B)
 und (φ , γ) w = γ (λ y → φ (λ x → w (x , y)))
 
 not-Σ-implies-Π-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                    → ¬(Σ x ꞉ X , A x) → (x : X) → ¬(A x)
+                    → ¬ (Σ x ꞉ X , A x) → (x : X) → ¬ (A x)
 not-Σ-implies-Π-not = curry
 
 Π-not-implies-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
-                    → ((x : X) → ¬(A x)) → ¬(Σ x ꞉ X , A x)
+                    → ((x : X) → ¬ (A x)) → ¬ (Σ x ꞉ X , A x)
 Π-not-implies-not-Σ = uncurry
 
 \end{code}

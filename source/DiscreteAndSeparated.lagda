@@ -35,12 +35,12 @@ is-isolated' x = ∀ y → decidable(y ≡ x)
 decidable-eq-sym : {X : 𝓤 ̇ } (x y : X) → decidable (x ≡ y) → decidable (y ≡ x)
 decidable-eq-sym x y = cases
                         (λ (p : x ≡ y) → inl (p ⁻¹))
-                        (λ (n : ¬(x ≡ y)) → inr (λ (q : y ≡ x) → n (q ⁻¹)))
+                        (λ (n : ¬ (x ≡ y)) → inr (λ (q : y ≡ x) → n (q ⁻¹)))
 
 -is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated' x → is-isolated x
 -is-isolated'-gives-is-isolated x i' y = cases
                                    (λ (p : y ≡ x) → inl (p ⁻¹))
-                                   (λ (n : ¬(y ≡ x)) → inr (λ (p : x ≡ y) → n (p ⁻¹)))
+                                   (λ (n : ¬ (y ≡ x)) → inr (λ (p : x ≡ y) → n (p ⁻¹)))
                                    (i' y)
 
 is-isolated'-gives-is-isolated : {X : 𝓤 ̇ } (x : X) → is-isolated' x → is-isolated x
@@ -88,13 +88,13 @@ props-are-discrete i x y = inl (i x y)
 +discrete d e (inl x) (inl x') =
     Cases (d x x')
      (λ (p : x ≡ x') → inl(ap inl p))
-     (λ (n : ¬(x ≡ x')) → inr (contrapositive inl-lc n))
+     (λ (n : ¬ (x ≡ x')) → inr (contrapositive inl-lc n))
 +discrete d e (inl x) (inr y) = inr +disjoint
 +discrete d e (inr y) (inl x) = inr +disjoint'
 +discrete d e (inr y) (inr y') =
     Cases (e y y')
      (λ (p : y ≡ y') → inl(ap inr p))
-     (λ (n : ¬(y ≡ y')) → inr (contrapositive inr-lc n))
+     (λ (n : ¬ (y ≡ y')) → inr (contrapositive inr-lc n))
 
 \end{code}
 
@@ -148,7 +148,7 @@ extensionality. More generally:
 \begin{code}
 
 is-¬¬-separated : 𝓤 ̇ → 𝓤 ̇
-is-¬¬-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
+is-¬¬-separated X = (x y : X) → ¬¬ (x ≡ y) → x ≡ y
 
 Π-is-¬¬-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                   → ((x : X) → is-¬¬-separated(Y x))
@@ -157,7 +157,7 @@ is-¬¬-separated X = (x y : X) → ¬¬(x ≡ y) → x ≡ y
  where
   lemma₀ : f ≡ g → ∀ x → f x ≡ g x
   lemma₀ r x = ap (λ - → - x) r
-  lemma₁ : ∀ x → ¬¬(f x ≡ g x)
+  lemma₁ : ∀ x → ¬¬ (f x ≡ g x)
   lemma₁ = double-negation-unshift(¬¬-functor lemma₀ h)
   lemma₂ : ∀ x → f x ≡ g x
   lemma₂ x =  s x (f x) (g x) (lemma₁ x)
@@ -219,16 +219,16 @@ assuming extensionality:
 tight : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
       → ((x : X) → is-¬¬-separated(Y x))
       → (f g : (x : X) → Y x)
-      → ¬(f ♯ g) → f ≡ g
+      → ¬ (f ♯ g) → f ≡ g
 tight fe s f g h = dfunext fe lemma₁
  where
-  lemma₀ : ∀ x → ¬¬(f x ≡ g x)
+  lemma₀ : ∀ x → ¬¬ (f x ≡ g x)
   lemma₀ = not-Σ-implies-Π-not h
   lemma₁ : ∀ x → f x ≡ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
 
 tight' : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
-       → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬(f ♯ g) → f ≡ g
+       → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬ (f ♯ g) → f ≡ g
 tight' fe d = tight fe (λ x → discrete-is-¬¬-separated(d x))
 
 \end{code}
@@ -245,9 +245,9 @@ binary-product-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 binary-product-is-¬¬-separated s t (x , y) (x' , y') φ =
  lemma(lemma₀ φ)(lemma₁ φ)
  where
-  lemma₀ : ¬¬((x , y) ≡ (x' , y')) → x ≡ x'
+  lemma₀ : ¬¬ ((x , y) ≡ (x' , y')) → x ≡ x'
   lemma₀ = (s x x') ∘ ¬¬-functor(ap pr₁)
-  lemma₁ : ¬¬((x , y) ≡ (x' , y')) → y ≡ y'
+  lemma₁ : ¬¬ ((x , y) ≡ (x' , y')) → y ≡ y'
   lemma₁ = (t y y') ∘ ¬¬-functor(ap pr₂)
   lemma : x ≡ x' → y ≡ y' → (x , y) ≡ (x' , y')
   lemma = ap₂ (_,_)
@@ -273,7 +273,7 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
     p(inl u) = u
     p(inr v) = x
 
-  lemma : ¬¬(inl x ≡ inl x') → inl x ≡ inl x'
+  lemma : ¬¬ (inl x ≡ inl x') → inl x ≡ inl x'
   lemma = ap inl ∘ s x x' ∘ ¬¬-functor claim
 
 binary-sum-is-¬¬-separated s t (inl x) (inr y) =  λ φ → 𝟘-elim(φ +disjoint )
@@ -287,7 +287,7 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
     q(inl u) = y
     q(inr v) = v
 
-  lemma : ¬¬(inr y ≡ inr y') → inr y ≡ inr y'
+  lemma : ¬¬ (inr y ≡ inr y') → inr y ≡ inr y'
   lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
 
 ⊥-⊤-density' : funext 𝓤 𝓤 → propext 𝓤
@@ -297,7 +297,7 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
              → wconstant f
 ⊥-⊤-density' fe pe s f r p q = g p ∙ (g q)⁻¹
   where
-    a : ∀ p → ¬¬(f p ≡ f ⊤)
+    a : ∀ p → ¬¬ (f p ≡ f ⊤)
     a p t = no-truth-values-other-than-⊥-or-⊤ fe pe (p , (b , c))
       where
         b : p ≢ ⊥

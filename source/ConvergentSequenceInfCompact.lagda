@@ -72,9 +72,9 @@ open import GenericConvergentSequence
   putative-root-lemma : (Σ u ꞉ ℕ∞ , p u ≡ ₀) → p a ≡ ₀
   putative-root-lemma (x , r) = lemma claim
    where
-    lemma : ¬((x : ℕ∞) → p x ≡ ₁) → p a ≡ ₀
+    lemma : ¬ ((x : ℕ∞) → p x ≡ ₁) → p a ≡ ₀
     lemma = different-from-₁-equal-₀ ∘ (contrapositive Lemma)
-    claim : ¬((x : ℕ∞) → p x ≡ ₁)
+    claim : ¬ ((x : ℕ∞) → p x ≡ ₁)
     claim f = equal-₁-different-from-₀ (f x) r
 
   lower-bound-lemma : (u : ℕ∞)→ p u ≡ ₀ → a ≼ u

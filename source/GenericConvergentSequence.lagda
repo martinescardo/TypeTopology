@@ -41,7 +41,7 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 decreasing : (ℕ → 𝟚) → 𝓤₀ ̇
 decreasing α = (i : ℕ) → α(succ i) ≤₂ α i
 
-being-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop(decreasing α)
+being-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop (decreasing α)
 being-decreasing-is-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
 ℕ∞ : 𝓤₀ ̇
@@ -156,10 +156,10 @@ u ⊑ n = incl u n ≡ ₀
 _⊏_ : ℕ → ℕ∞ → 𝓤₀ ̇
 n ⊏ u = incl u n ≡ ₁
 
-not-⊏-is-⊒ : {m : ℕ} {u : ℕ∞} → ¬(m ⊏ u) → u ⊑ m
+not-⊏-is-⊒ : {m : ℕ} {u : ℕ∞} → ¬ (m ⊏ u) → u ⊑ m
 not-⊏-is-⊒ f = different-from-₁-equal-₀ f
 
-not-⊑-is-⊐ : {m : ℕ} {u : ℕ∞} → ¬(u ⊑ m) → m ⊏ u
+not-⊑-is-⊐ : {m : ℕ} {u : ℕ∞} → ¬ (u ⊑ m) → m ⊏ u
 not-⊑-is-⊐ f = different-from-₀-equal-₁ f
 
 is-Zero : ℕ∞ → 𝓤₀ ̇
@@ -290,7 +290,7 @@ not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
 positive-is-not-Zero : {u : ℕ∞} → is-positive u → u ≢ Zero
 positive-is-not-Zero {u} r s = lemma r
  where
-  lemma : ¬(is-positive u)
+  lemma : ¬ (is-positive u)
   lemma = equal-₀-different-from-₁(ap positivity s)
 
 positive-equal-Succ : funext₀ → {u : ℕ∞} → is-positive u → u ≡ Succ(Pred u)
@@ -352,7 +352,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
   b : f u ≢ g u → u ≢ ∞
   b = contrapositive (λ (r : u ≡ ∞) → back-transport (λ - → f - ≡ g -) r h∞)
 
-  c : ¬¬(f u ≡ g u)
+  c : ¬¬ (f u ≡ g u)
   c = λ t → b t (not-finite-is-∞ fe (a t))
 
 ℕ∞-density : funext₀
@@ -386,10 +386,10 @@ under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-em
 under𝟙-dense : funext₀ → is-dense under𝟙
 under𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
  where
-  g : ¬(u ≡ ∞)
+  g : ¬ (u ≡ ∞)
   g p = f ((inr *) , (p ⁻¹))
 
-  h : (n : ℕ) → ¬(u ≡ under n)
+  h : (n : ℕ) → ¬ (u ≡ under n)
   h n p = f (inl n , (p ⁻¹))
 
 \end{code}
@@ -474,7 +474,7 @@ is-finite-up' fe u i = 𝟚-equality-cases
                                (positive-equal-Succ fe p)
                                (is-finite-up (Pred u) i))
 
-is-infinite-∞ : ¬(is-finite ∞)
+is-infinite-∞ : ¬ (is-finite ∞)
 is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
 
 \end{code}
@@ -498,7 +498,7 @@ u ≼ v = (n : ℕ) → n ⊏ u → n ⊏ v
 Zero-minimal : (u : ℕ∞) → Zero ≼ u
 Zero-minimal u n = λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
 
-Succ-not-≼-Zero : (u : ℕ∞) → ¬(Succ u ≼ Zero)
+Succ-not-≼-Zero : (u : ℕ∞) → ¬ (Succ u ≼ Zero)
 Succ-not-≼-Zero u l = zero-is-not-one (l zero refl)
 
 Succ-monotone : (u v : ℕ∞) → u ≼ v → Succ u ≼ Succ v
@@ -567,7 +567,7 @@ as the need arises.
 _≺_ : ℕ∞ → ℕ∞ → 𝓤₀ ̇
 u ≺ v = Σ n ꞉ ℕ , (u ≡ under n) × n ⊏ v
 
-∞-top : (u : ℕ∞) → ¬(∞ ≺ u)
+∞-top : (u : ℕ∞) → ¬ (∞ ≺ u)
 ∞-top u (n , r , l) = ∞-is-not-finite n r
 
 below-isolated : funext₀ → (u v : ℕ∞) → u ≺ v → is-isolated u
@@ -812,7 +812,7 @@ Needed 28 July 2018:
 ≼-is-prop-valued : funext₀ → (u v : ℕ∞) → is-prop (u ≼ v)
 ≼-is-prop-valued fe u v = Π-is-prop fe (λ n → Π-is-prop fe (λ l → 𝟚-is-set))
 
-≼-not-≺ : (u v : ℕ∞) → u ≼ v → ¬(v ≺ u)
+≼-not-≺ : (u v : ℕ∞) → u ≼ v → ¬ (v ≺ u)
 ≼-not-≺ u v l (n , (p , m)) = zero-is-not-one (e ⁻¹ ∙ d)
  where
   a : v ≺ u
@@ -833,7 +833,7 @@ Needed 28 July 2018:
   e : incl (under k) k ≡ ₀
   e = under-diagonal₀ k
 
-not-≺-≼ : funext₀ → (u v : ℕ∞) → ¬(v ≺ u) → u ≼ v
+not-≺-≼ : funext₀ → (u v : ℕ∞) → ¬ (v ≺ u) → u ≼ v
 not-≺-≼ fe u v φ n l = 𝟚-equality-cases f g
  where
   f : v ⊑ n → n ⊏ v

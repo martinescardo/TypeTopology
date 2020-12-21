@@ -238,7 +238,7 @@ The following theorem shows that, because not every type X has
 decidable equality, the points a₀,a₁ of Y cannot necessarily be
 distinguished by maps into the discrete set 𝟚. To get the desired
 conclusion, it is enough to consider X = (ℕ → 𝟚), which is
-¬¬-separated, in the sense that ¬¬(x ≡ y) → x ≡ y, assuming
+¬¬-separated, in the sense that ¬¬ (x ≡ y) → x ≡ y, assuming
 extensionality. (Cf. the module DiscreteAndSeparated.)
 
 \begin{code}
@@ -264,7 +264,7 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
      fact : f a ≡ ₀
      fact = ap f (r ⁻¹) ∙ p
 
-   claim₁' : (x : X) → f x ≡ ₁ → ¬(x ≢ a)
+   claim₁' : (x : X) → f x ≡ ₁ → ¬ (x ≢ a)
    claim₁' x p φ = 𝟘-elim(equal-₀-different-from-₁ fact p)
     where
      fact : f x ≡ ₀

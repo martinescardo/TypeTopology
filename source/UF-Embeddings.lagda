@@ -20,11 +20,11 @@ open import UF-Univalence
 open import UF-UA-FunExt
 
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-is-embedding f = ∀ y → is-prop(fiber f y)
+is-embedding f = ∀ y → is-prop (fiber f y)
 
 being-embedding-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                          → is-prop(is-embedding f)
+                          → is-prop (is-embedding f)
 being-embedding-is-prop fe fe' f = Π-is-prop fe (λ x → being-prop-is-prop fe')
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -108,24 +108,24 @@ embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
             (section-lc _ (pr₂ (pr₂ (fiber-lemma f y)))) (g' y)
 
 pr₁-is-embedding : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                 → ((x : X) → is-prop(Y x))
+                 → ((x : X) → is-prop (Y x))
                  → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-is-embedding f x ((.x , y') , refl) ((.x , y'') , refl) = g
  where
   g : (x , y') , refl ≡ (x , y'') , refl
   g = ap (λ - → (x , -) , refl) (f x y' y'')
 
-pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop(Y x)) → left-cancellable pr₁
+pr₁-lc-bis : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop (Y x)) → left-cancellable pr₁
 pr₁-lc-bis f {u} {v} r = embeddings-are-lc pr₁ (pr₁-is-embedding (λ x → f {x})) r
 
 pr₁-is-embedding-converse : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                           → is-embedding (pr₁ {𝓤} {𝓥} {X} {Y})
-                          → ((x : X) → is-prop(Y x))
+                          → ((x : X) → is-prop (Y x))
 pr₁-is-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
   where
     e : Σ Y → X
     e = pr₁ {𝓤} {𝓥} {X} {Y}
-    isp : is-prop(fiber e x)
+    isp : is-prop (fiber e x)
     isp = ie x
     s : Y x → fiber e x
     s y = (x , y) , refl
@@ -133,7 +133,7 @@ pr₁-is-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
     r ((x , y) , refl) = y
     rs : (y : Y x) → r(s y) ≡ y
     rs y = refl
-    h : is-prop(Y x)
+    h : is-prop (Y x)
     h = left-cancellable-reflects-is-prop s (section-lc s (r , rs)) isp
 
 embedding-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)

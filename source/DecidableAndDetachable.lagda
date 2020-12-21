@@ -143,12 +143,12 @@ detachable A = ∀ x → decidable(A x)
 characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                         → detachable A
                         → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ →   A x)
-                                                   × (p x ≡ ₁ → ¬(A x)))
+                                                   × (p x ≡ ₁ → ¬ (A x)))
 characteristic-function = indicator
 
 co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                            → detachable A
-                           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → ¬(A x))
+                           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → ¬ (A x))
                                                       × (p x ≡ ₁ →   A x))
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 

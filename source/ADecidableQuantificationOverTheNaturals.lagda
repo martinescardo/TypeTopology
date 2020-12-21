@@ -72,11 +72,11 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
   claim₂ : (Σ y ꞉ ℕ∞ , p y ≢ p(Succ y)) + ((y : ℕ∞) → p y ≡ p(Succ y))
   claim₂ = g(ℕ∞-compact q)
    where
-    fact : (y : ℕ∞) → (p y ≢ p(Succ y)) + ¬(p y ≢ p(Succ y))
+    fact : (y : ℕ∞) → (p y ≢ p(Succ y)) + ¬ (p y ≢ p(Succ y))
     fact y = ¬-preserves-decidability(𝟚-is-discrete (p y) (p(Succ y)))
 
     f : Σ q ꞉ (ℕ∞ → 𝟚), ((y : ℕ∞) → (q y ≡ ₀ → p y ≢ p(Succ y))
-                                  × (q y ≡ ₁ → ¬(p y ≢ p(Succ y))))
+                                  × (q y ≡ ₁ → ¬ (p y ≢ p(Succ y))))
     f = characteristic-function fact
     q : ℕ∞ → 𝟚
     q = pr₁ f
@@ -98,9 +98,9 @@ Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
    where
     x : ℕ∞
     x = pr₁ e
-    c₀ : ¬((n : ℕ) → x ≢ under n)
+    c₀ : ¬ ((n : ℕ) → x ≢ under n)
     c₀ = λ g → pr₁(pr₂ e) (not-finite-is-∞ fe g)
-    c₁ : ¬((n : ℕ) → p(under n) ≡ ₁)
+    c₁ : ¬ ((n : ℕ) → p(under n) ≡ ₁)
     c₁ g = c₀ d
      where
       d : (n : ℕ) → x ≢ under n
@@ -123,7 +123,7 @@ module examples where
 \end{code}
 
     0 means that (n : ℕ) → p(under n) ≡ ₁
-    1 means that ¬((n : ℕ) → p(under n) ≡ ₁)
+    1 means that ¬ ((n : ℕ) → p(under n) ≡ ₁)
 
 \begin{code}
 

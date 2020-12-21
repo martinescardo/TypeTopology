@@ -312,7 +312,7 @@ pigeonhole-principle m n f g = γ
   d : ¬¬ (f has-a-repetition)
   d ψ = c δ
    where
-    ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
+    ε : (i j : Fin m) → f i ≡ f j → ¬ (i ≢ j)
     ε i j p ν = ψ (i , j , ν , p)
     δ : (i j : Fin m) → f i ≡ f j → i ≡ j
     δ i j p = ¬¬-elim (Fin-is-discrete m i j) (ε i j p)

@@ -231,10 +231,10 @@ totally-separated-types-are-separated : (X : 𝓤 ̇ )
                                       → is-¬¬-separated X
 totally-separated-types-are-separated X τ = g
  where
-  g : (x y : X) → ¬¬(x ≡ y) → x ≡ y
+  g : (x y : X) → ¬¬ (x ≡ y) → x ≡ y
   g x y φ  = τ h
    where
-    a : (p : X → 𝟚) → ¬¬(p x ≡ p y)
+    a : (p : X → 𝟚) → ¬¬ (p x ≡ p y)
     a p = ¬¬-functor (ap p {x} {y}) φ
 
     h : (p : X → 𝟚) → p x ≡ p y
@@ -304,7 +304,7 @@ arguments. The essence of the proof is that of p in the where clause.
 being-totally-separated-is-prop : funext 𝓤 𝓤
                                 → funext 𝓤 𝓤₀
                                 → (X : 𝓤 ̇ )
-                                → is-prop(is-totally-separated X)
+                                → is-prop (is-totally-separated X)
 being-totally-separated-is-prop {𝓤} fe fe₀ X = γ
  where
   T : 𝓤 ̇
@@ -378,7 +378,7 @@ the following particular cases:
   s₂ : transport Y r b ≡₂ y
   s₂ q = g
    where
-    f : {u : X} → (u ≡ x) + ¬(u ≡ x) → Y u → 𝟚
+    f : {u : X} → (u ≡ x) + ¬ (u ≡ x) → Y u → 𝟚
     f (inl m) v = q (transport Y m v)
     f (inr _) v = ₀ --<-- What we choose here is irrelevant.
 
@@ -580,7 +580,7 @@ the reflector.
  η-is-surjection {𝓤} {X} = corestriction-surjection (eval X)
 
  η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
-             → ((x' : 𝕋 X) → is-prop(P x'))
+             → ((x' : 𝕋 X) → is-prop (P x'))
              → ((x : X) → P(η x))
              → (x' : 𝕋 X) → P x'
  η-induction {𝓤} {𝓦} {X} = surjection-induction η η-is-surjection
@@ -694,7 +694,7 @@ types.
 
 Another useful thing is that in any type X we can define an apartness
 relation x♯y by ∃(p:X→𝟚), p(x)‌≠p(y), which is tight iff X is totally
-separated, where tightness means ¬(x♯y)→x=y. Part of the following
+separated, where tightness means ¬ (x♯y)→x=y. Part of the following
 should be moved to another module about apartness, but I keep it here
 for the moment.
 
@@ -709,11 +709,11 @@ module Apartness (pt : propositional-truncations-exist) where
  is-prop-valued is-irreflexive is-symmetric is-cotransitive is-tight is-apartness
      : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 
- is-prop-valued  _♯_ = ∀ x y → is-prop(x ♯ y)
- is-irreflexive  _♯_ = ∀ x → ¬(x ♯ x)
+ is-prop-valued  _♯_ = ∀ x y → is-prop (x ♯ y)
+ is-irreflexive  _♯_ = ∀ x → ¬ (x ♯ x)
  is-symmetric    _♯_ = ∀ x y → x ♯ y → y ♯ x
  is-cotransitive _♯_ = ∀ x y z → x ♯ y → x ♯ z ∨ y ♯ z
- is-tight        _♯_ = ∀ x y → ¬(x ♯ y) → x ≡ y
+ is-tight        _♯_ = ∀ x y → ¬ (x ♯ y) → x ≡ y
  is-apartness    _♯_ = is-prop-valued _♯_ × is-irreflexive _♯_ × is-symmetric _♯_ × is-cotransitive _♯_
 
 \end{code}
@@ -811,7 +811,7 @@ apartness relation _♯₂ is tight:
                     → funext 𝓤 𝓤₀
                     → (_♯_ : X → X → 𝓤 ̇ )
                     → is-apartness _♯_
-                    → is-equivalence-rel (λ x y → ¬(x ♯ y))
+                    → is-equivalence-rel (λ x y → ¬ (x ♯ y))
  neg-apart-is-equiv {𝓤} {X} fe _♯_ (♯p , ♯i , ♯s , ♯c) = p , ♯i , s , t
   where
    p : (x y : X) → is-prop (¬ (x ♯ y))
@@ -828,7 +828,7 @@ apartness relation _♯₂ is tight:
 
  \end{code}
 
- The following positive formulation of ¬(x ♯ y), which says that two
+ The following positive formulation of ¬ (x ♯ y), which says that two
  elements have the same elements apart from them iff they are not
  apart, gives another way to see that it is an equivalence relation:
 
@@ -836,7 +836,7 @@ apartness relation _♯₂ is tight:
 
  not-apart-have-same-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                            → is-apartness _♯_
-                           → ¬(x ♯ y)
+                           → ¬ (x ♯ y)
                            → ((z : X) → x ♯ z ⇔ y ♯ z)
  not-apart-have-same-apart {𝓤} {𝓥} {X} x y _♯_ (p , i , s , c) = g
   where
@@ -849,7 +849,7 @@ apartness relation _♯₂ is tight:
        b : (x ♯ y) ∨ (z ♯ y)
        b = c x z y a
 
-     n' : ¬(y ♯ x)
+     n' : ¬ (y ♯ x)
      n' a = n (s y x a)
 
      g₂ : y ♯ z → x ♯ z
@@ -861,7 +861,7 @@ apartness relation _♯₂ is tight:
  have-same-apart-are-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                                → is-apartness _♯_
                                → ((z : X) → x ♯ z ⇔ y ♯ z)
-                               → ¬(x ♯ y)
+                               → ¬ (x ♯ y)
  have-same-apart-are-not-apart {𝓤} {𝓥} {X} x y _♯_ (p , i , s , c) = f
   where
    f : ((z : X) → x ♯ z ⇔ y ♯ z) → ¬ (x ♯ y)
@@ -880,10 +880,10 @@ apartness relation _♯₂ is tight:
 
  not-not-equal-not-apart : {X : 𝓤 ̇ } (x y : X) (_♯_ : X → X → 𝓥 ̇ )
                          → is-apartness _♯_
-                         → ¬¬(x ≡ y) → ¬(x ♯ y)
+                         → ¬¬ (x ≡ y) → ¬ (x ♯ y)
  not-not-equal-not-apart x y _♯_ (_ , i , _ , _) = contrapositive f
   where
-   f : x ♯ y → ¬(x ≡ y)
+   f : x ♯ y → ¬ (x ≡ y)
    f a p = i y (transport (λ - → - ♯ y) p a)
 
  tight-is-¬¬-separated : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
@@ -892,7 +892,7 @@ apartness relation _♯₂ is tight:
                        → is-¬¬-separated X
  tight-is-¬¬-separated _♯_ a t = f
   where
-   f : ∀ x y → ¬¬(x ≡ y) → x ≡ y
+   f : ∀ x y → ¬¬ (x ≡ y) → x ≡ y
    f x y φ = t x y (not-not-equal-not-apart x y _♯_ a φ)
 
  tight-is-set : {X : 𝓤 ̇ } (_♯_ : X → X → 𝓥 ̇ )
@@ -963,7 +963,7 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
   _~_ : X → X → 𝓥 ̇
-  x ~ y = ¬(x ♯ y)
+  x ~ y = ¬ (x ♯ y)
 
 \end{code}
 
@@ -1107,7 +1107,7 @@ apartness on it.
   ♯'i : is-irreflexive _♯'_
   ♯'i = by-induction
    where
-    induction-step : ∀ x → ¬(η x ♯' η x)
+    induction-step : ∀ x → ¬ (η x ♯' η x)
     induction-step x a = ♯i x (η-is-strongly-extensional a)
 
     by-induction : _
@@ -1344,7 +1344,7 @@ apartness on it.
       i : ¬ (η x ♯' η y) → x ≡ y
       i = t x y ∘ contrapositive (η-preserves-apartness {x} {y})
 
-      h : ¬(η x ♯' η y)
+      h : ¬ (η x ♯' η y)
       h a = ♯'i (η y) (transport (λ - → - ♯' η y) p a)
 
     e : is-embedding η

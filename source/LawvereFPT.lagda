@@ -169,7 +169,7 @@ As a simple application, it follows that negation doesn't have fixed points:
  not-no-fp : (fe : funext 𝓤 𝓤₀) → ¬ (Σ P ꞉ Ω 𝓤 , P ≡ not fe P)
  not-no-fp {𝓤} fe (P , p) = ¬-no-fp (P holds , q)
   where
-   q : P holds ≡ ¬(P holds)
+   q : P holds ≡ ¬ (P holds)
    q = ap _holds p
 
  cantor-theorem : funext 𝓤 𝓤₀
@@ -283,7 +283,7 @@ module surjection-version (pt : propositional-truncations-exist) where
 
  open import Two
 
- cantor-uncountable : ¬(Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
+ cantor-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → 𝟚)), is-surjection φ)
  cantor-uncountable (φ , s) = γ
   where
    t : ∃ n ꞉ 𝟚 , n ≡ complement n
@@ -292,7 +292,7 @@ module surjection-version (pt : propositional-truncations-exist) where
    γ : 𝟘
    γ = ∥∥-rec 𝟘-is-prop (uncurry complement-no-fp) t
 
- baire-uncountable : ¬(Σ φ ꞉ (ℕ → (ℕ → ℕ)), is-surjection φ)
+ baire-uncountable : ¬ (Σ φ ꞉ (ℕ → (ℕ → ℕ)), is-surjection φ)
  baire-uncountable (φ , s) = ∥∥-rec 𝟘-is-prop (uncurry succ-no-fp) t
   where
    t : ∃ n ꞉ ℕ , n ≡ succ n
@@ -349,13 +349,13 @@ module Blechschmidt (pt : propositional-truncations-exist) where
 
  universe-discretely-regular' : (A : 𝓤 ̇ ) (X : A → 𝓤 ⊔ 𝓥 ̇ )
                               → is-discrete A
-                              → Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬(X a ≃ B))
+                              → Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B))
  universe-discretely-regular' {𝓤} {𝓥} A X d  = γ
    where
     B : 𝓤 ⊔ 𝓥 ̇
     B = (a : A) → X a → 𝟚
 
-    φ : (a : A) → ¬(X a ≃ B)
+    φ : (a : A) → ¬ (X a ≃ B)
     φ a p = uncurry complement-no-fp (δ complement)
      where
       ρ : retract B of (X a)
@@ -364,7 +364,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
       δ : designated-fixed-point-property 𝟚
       δ = udr-lemma X 𝟚 a (d a) ₀ ρ
 
-    γ : Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬(X a ≃ B))
+    γ : Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B))
     γ = B , φ
 
  universe-discretely-regular : {A : 𝓤 ̇ } (X : A → 𝓤 ⊔ 𝓥 ̇ )
@@ -372,7 +372,7 @@ module Blechschmidt (pt : propositional-truncations-exist) where
                              → Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
  universe-discretely-regular {𝓤} {𝓥} {A} X d = γ
   where
-   δ : (Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬(X a ≃ B)))
+   δ : (Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B)))
      → (Σ B ꞉ 𝓤 ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B))
    δ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
@@ -394,10 +394,10 @@ module Blechschmidt (pt : propositional-truncations-exist) where
    e : ∃ a ꞉ A , X a ≡ B
    e = s B
 
-   n : ¬(Σ a ꞉ A , X a ≡ B)
+   n : ¬ (Σ a ꞉ A , X a ≡ B)
    n = uncurry φ
 
- Universe-uncountable : {𝓤 : Universe} → ¬(Σ X ꞉ (ℕ → 𝓤 ̇ ), is-surjection X)
+ Universe-uncountable : {𝓤 : Universe} → ¬ (Σ X ꞉ (ℕ → 𝓤 ̇ ), is-surjection X)
  Universe-uncountable (X , s) = Universe-discretely-regular X ℕ-is-discrete s
 
 \end{code}
@@ -485,13 +485,13 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
 \begin{code}
 
-  universe-set-regular' : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → ¬(X a ≃ B))
+  universe-set-regular' : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B))
   universe-set-regular' = B , φ
     where
      B : 𝓤 ⁺ ⊔ 𝓥 ̇
      B = (a : A) → X a → Ω 𝓤
 
-     φ : (a : A) → ¬(X a ≃ B)
+     φ : (a : A) → ¬ (X a ≃ B)
      φ a p = retract-version.not-no-fp fe₀ (γ (not fe₀))
       where
        ρ : retract B of (X a)
@@ -503,7 +503,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
   universe-set-regular : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
   universe-set-regular = γ universe-set-regular'
    where
-    γ : (Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → ¬(X a ≃ B)))
+    γ : (Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → ¬ (X a ≃ B)))
       → (Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B))
     γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
@@ -615,7 +615,7 @@ universe 𝓤₀, which is where our negations take values:
 \begin{code}
 
  Lemma₁ : (A : 𝓤 ̇ ) (T : A → 𝓤 ̇ ) (S : 𝓤 ̇ → A)
-        → ¬((X : 𝓤 ̇ ) → retract X of (T (S X)))
+        → ¬ ((X : 𝓤 ̇ ) → retract X of (T (S X)))
  Lemma₁ A T S ρ = 𝟘-elim (Lemma₀ A T S
                            (λ {X} → retraction (ρ X))
                            (λ {X} → section (ρ X))
@@ -628,7 +628,7 @@ Because equivalences are retractions, it follows that
 \begin{code}
 
  Lemma₂ : (A : 𝓤 ̇ ) (T : A → 𝓤 ̇ ) (S : 𝓤 ̇ → A)
-        → ¬((X : 𝓤 ̇ ) → T (S X) ≃ X)
+        → ¬ ((X : 𝓤 ̇ ) → T (S X) ≃ X)
  Lemma₂ A T S e = Lemma₁ A T S (λ X → ≃-gives-▷ (e X))
 
 \end{code}
@@ -638,7 +638,7 @@ And because identitities are equivalences, it follows that
 \begin{code}
 
  Lemma₃ : (A : 𝓤 ̇ ) (T : A → 𝓤 ̇ ) (S : 𝓤 ̇ → A)
-        → ¬((X : 𝓤 ̇ ) → T (S X) ≡ X)
+        → ¬ ((X : 𝓤 ̇ ) → T (S X) ≡ X)
  Lemma₃ A T S p = Lemma₂ A T S (λ X → idtoeq (T (S X)) X (p X))
 
 \end{code}
@@ -647,7 +647,7 @@ This means that a universe 𝓤 cannot be a retract of any type in 𝓤:
 
 \begin{code}
 
- Lemma₄ : ¬(Σ A ꞉ 𝓤 ̇ , retract 𝓤 ̇ of A)
+ Lemma₄ : ¬ (Σ A ꞉ 𝓤 ̇ , retract 𝓤 ̇ of A)
  Lemma₄ (A , T , S , TS) = Lemma₃ A T S TS
 
 \end{code}
@@ -656,7 +656,7 @@ In particular, the successor universe 𝓤 ⁺ is not a retract of 𝓤:
 
 \begin{code}
 
- corollary : ∀ 𝓤 → ¬(retract 𝓤 ⁺ ̇ of (𝓤 ̇ ))
+ corollary : ∀ 𝓤 → ¬ (retract 𝓤 ⁺ ̇ of (𝓤 ̇ ))
  corollary 𝓤 ρ = Lemma₄ ((𝓤 ̇ ) , ρ)
 
 \end{code}
@@ -666,7 +666,7 @@ equivalent to a type in 𝓤:
 
 \begin{code}
 
- Theorem : ¬(Σ X ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ X)
+ Theorem : ¬ (Σ X ꞉ 𝓤 ̇ , 𝓤 ̇ ≃ X)
  Theorem (X , e) = Lemma₄ (X , ≃-gives-◁ e)
 
 \end{code}
@@ -675,7 +675,7 @@ And in particular, the successor universe 𝓤 ⁺ is not equivalent to 𝓤:
 
 \begin{code}
 
- Corollary : ¬(𝓤 ⁺ ̇ ≃ 𝓤 ̇ )
+ Corollary : ¬ (𝓤 ⁺ ̇ ≃ 𝓤 ̇ )
  Corollary {𝓤} e = Theorem ((𝓤 ̇ ), e)
 
 \end{code}
@@ -766,7 +766,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
          → P A
          → (T : A → 𝓤 ̇ )
          → (S : (X : 𝓤 ̇ ) → P X → A)
-         → ¬((X : 𝓤 ̇ ) (p : P X) → retract X of (T (S X p)))
+         → ¬ ((X : 𝓤 ̇ ) (p : P X) → retract X of (T (S X p)))
   lemma₁ A A-is-P T S ρ = 𝟘-elim
                            (lemma₀ A A-is-P T S
                              (λ {X} p → retraction (ρ X p))
@@ -777,17 +777,17 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
          → P A
          → (T : A → 𝓤 ̇ )
          → (S : (X : 𝓤 ̇ ) → P X → A)
-         → ¬((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≃ X)
+         → ¬ ((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≃ X)
   lemma₂ A A-is-P T S e = lemma₁ A A-is-P T S (λ X p → ≃-gives-▷ (e X p))
 
   lemma₃ : (A : 𝓤 ̇ )
          → P A
          → (T : A → 𝓤 ̇ )
          → (S : (X : 𝓤 ̇ ) → P X → A)
-         → ¬((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≡ X)
+         → ¬ ((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≡ X)
   lemma₃ A A-is-P T S e = lemma₂ A A-is-P T S (λ X p → idtoeq (T (S X p)) X (e X p))
 
-  lemma₄ : ¬(Σ (A , A-is-P) ꞉ Σ P , retract (Σ P) of A)
+  lemma₄ : ¬ (Σ (A , A-is-P) ꞉ Σ P , retract (Σ P) of A)
   lemma₄ ((A , A-is-P) , r , s , rs) = lemma₃ A A-is-P T S TS
    where
     T : A → 𝓤 ̇
@@ -802,7 +802,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     TS : (X : 𝓤 ̇) (p : P X) → T (S X p) ≡ X
     TS X p = ap pr₁ (rs (X , p))
 
-  theorem : ¬(Σ (A , A-is-P) ꞉ Σ P , Σ P ≃ A)
+  theorem : ¬ (Σ (A , A-is-P) ꞉ Σ P , Σ P ≃ A)
   theorem (σ , e) = lemma₄ (σ , ≃-gives-◁ e)
 
 \end{code}
@@ -817,7 +817,7 @@ extensionality:
 
 open import W-Properties
 
-silly-theorem : funext 𝓤 𝓤 → ¬(Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
+silly-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
 silly-theorem {𝓤} fe (A , A-is-set , e) =
  Coquand-further-generalized.theorem
   𝓤
@@ -837,7 +837,7 @@ don't need this machinery to prove the following theorem:
 
 \begin{code}
 
-sillier-theorem : funext 𝓤 𝓤 → ¬(Σ A ꞉ 𝓤 ̇ , is-prop A × (Ω 𝓤 ≃ A))
+sillier-theorem : funext 𝓤 𝓤 → ¬ (Σ A ꞉ 𝓤 ̇ , is-prop A × (Ω 𝓤 ≃ A))
 sillier-theorem {𝓤} fe (A , A-is-prop , e) =
  Coquand-further-generalized.theorem
   𝓤
@@ -853,17 +853,17 @@ sillier-theorem {𝓤} fe (A , A-is-prop , e) =
 
 What we (Bezem, Coquand, Dybjer, Escardo) really want to prove is that
 
-  ¬(Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A), (†)
+  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A), (†)
 
 without requiring that A is a set.
 
 Marc Bezem wants this:
 
-  ¬(Σ A ꞉ 𝓤 ̇ , ∥ 𝓤 ∥₀ ≃ A).  (††)
+  ¬ (Σ A ꞉ 𝓤 ̇ , ∥ 𝓤 ∥₀ ≃ A).  (††)
 
 Does it follow from this that
 
-  ¬(Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A)?
+  ¬ (Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A)?
 
 What does follow from (††) is that the inclusion hSet 𝓤 → hSet (𝓤 ⁺) is
 not an equivalence, which is what we want. So (††) implies (†).

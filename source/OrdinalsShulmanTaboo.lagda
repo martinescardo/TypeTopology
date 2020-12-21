@@ -68,7 +68,7 @@ in this module is instantiated to 𝓤₀.
 \begin{code}
 
 X : 𝓤₁ ̇
-X = Σ p ꞉ ⟨ Ωₒ ⟩ , ¬(p ≡ ⊥)
+X = Σ p ꞉ ⟨ Ωₒ ⟩ , ¬ (p ≡ ⊥)
 
 recall-that : is-extensional (underlying-order Ωₒ)
 recall-that = Extensionality Ωₒ

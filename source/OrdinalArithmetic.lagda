@@ -168,7 +168,7 @@ less-is-left α (inl a) y l = a , refl
 less-is-left α (inr *) (inl a) l = 𝟘-elim l
 less-is-left α (inr *) (inr *) l = 𝟘-elim l
 
-right-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩) → ¬(inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
+right-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩) → ¬ (inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
 right-is-not-smaller α (inl a) l = 𝟘-elim l
 right-is-not-smaller α (inr *) l = 𝟘-elim l
 

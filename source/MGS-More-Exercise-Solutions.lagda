@@ -171,7 +171,7 @@ module surjection-classifier
 
 positive-cantors-diagonal : (e : ℕ → (ℕ → ℕ)) → Σ α ꞉ (ℕ → ℕ), ((n : ℕ) → α ≢ e n)
 
-cantors-diagonal : ¬(Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
+cantors-diagonal : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
 
 𝟚-has-𝟚-automorphisms : dfunext 𝓤₀ 𝓤₀ → (𝟚 ≃ 𝟚) ≃ 𝟚
 
@@ -180,7 +180,7 @@ lifttwo : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ 
 DNE : ∀ 𝓤 → 𝓤 ⁺ ̇
 DNE 𝓤 = (P : 𝓤 ̇ ) → is-subsingleton P → ¬¬ P → P
 
-ne : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
+ne : (X : 𝓤 ̇ ) → ¬¬ (X + ¬ X)
 
 DNE-gives-EM : dfunext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 
@@ -220,7 +220,7 @@ positive-cantors-diagonal = sol
 
 cantors-diagonal = sol
  where
-  sol : ¬(Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
+  sol : ¬ (Σ e ꞉ (ℕ → (ℕ → ℕ)) , ((α : ℕ → ℕ) → Σ n ꞉ ℕ , α ≡ e n))
   sol (e , γ) = c
    where
     α : ℕ → ℕ
@@ -317,8 +317,8 @@ hde-is-subsingleton fe₀ fe X h h' = c h h'
 
 ne = sol
  where
-  sol : (X : 𝓤 ̇ ) → ¬¬(X + ¬ X)
-  sol X = λ (f : ¬(X + ¬ X)) → f (inr (λ (x : X) → f (inl x)))
+  sol : (X : 𝓤 ̇ ) → ¬¬ (X + ¬ X)
+  sol X = λ (f : ¬ (X + ¬ X)) → f (inr (λ (x : X) → f (inl x)))
 
 DNE-gives-EM = sol
  where
@@ -348,7 +348,7 @@ SN-gives-DNE = sol
     g : ¬ X → P
     g = pr₂ (pr₂ (sn P i))
 
-    f' : ¬¬ P → ¬(¬¬ X)
+    f' : ¬¬ P → ¬ (¬¬ X)
     f' = contrapositive (contrapositive f)
 
     h : ¬¬ P → P

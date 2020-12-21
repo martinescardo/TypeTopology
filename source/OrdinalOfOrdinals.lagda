@@ -77,7 +77,7 @@ order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , 
     m = q y (f x) l
 
 order-preservation-is-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
-                             → is-prop (is-order-preserving α β f)
+                           → is-prop (is-order-preserving α β f)
 order-preservation-is-prop {𝓤} {𝓥} α β f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ x → Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
@@ -95,17 +95,17 @@ order-reflection-is-prop {𝓤} {𝓥} α β f =
 being-order-embedding-is-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                                 → is-prop (is-order-embedding α β f)
 being-order-embedding-is-prop α β f = ×-is-prop
-                                          (order-preservation-is-prop α β f)
-                                          (order-reflection-is-prop α β f)
+                                       (order-preservation-is-prop α β f)
+                                       (order-reflection-is-prop α β f)
 
 being-order-equiv-is-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                           → is-prop (is-order-equiv α β f)
 being-order-equiv-is-prop α β f = ×-is-prop
-                                      (order-preservation-is-prop α β f)
-                                      (Σ-is-prop
-                                         (being-equiv-is-prop fe f)
-                                         (λ e → order-preservation-is-prop β α
-                                                   (back-eqtofun (f , e))))
+                                   (order-preservation-is-prop α β f)
+                                   (Σ-is-prop
+                                      (being-equiv-is-prop fe f)
+                                      (λ e → order-preservation-is-prop β α
+                                                (back-eqtofun (f , e))))
 
 simulations-are-lc : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                    → is-simulation α β f
@@ -155,7 +155,7 @@ being-initial-segment-is-prop {𝓤} {𝓥} α β f p i =
             λ z → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
                     λ l → φ x z l) i
   where
-   φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop(Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
+   φ : ∀ x y → y ≺⟨ β ⟩ f x → is-prop (Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y))
    φ x y l (x' , (m , r)) (x'' , (m' , r')) = to-Σ-≡ (a , b)
     where
      c : f x' ≡ f x''
@@ -195,6 +195,7 @@ at-most-one-simulation α β f f' (i , p) (i' , p') x = φ x (Well-foundedness �
    where
     IH : ∀ y → y ≺⟨ α ⟩ x → f y ≡ f' y
     IH y l = φ y (u y l)
+
     a : (z : ⟨ β ⟩) → z ≺⟨ β ⟩ f x → z ≺⟨ β ⟩ f' x
     a z l = transport (λ - → - ≺⟨ β ⟩ f' x) t m
      where
@@ -269,7 +270,7 @@ _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
   to-Σ-≡ (dfunext (fe 𝓤 𝓥) (at-most-one-simulation α β f f'
                            (order-equivs-are-simulations α β f  (p  , e ,  q))
                            (order-equivs-are-simulations α β f' (p' , e' , q'))) ,
-         being-order-equiv-is-prop α β _ _ _)
+          being-order-equiv-is-prop α β _ _ _)
 
 ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
                                  → α ≃ₒ β → (α ⊴ β) × (β ⊴ α)
@@ -315,6 +316,7 @@ eqtoidₒ {𝓤} ua α β (f , p , e , q) = JEq ua ⟨ α ⟩ A a ⟨ β ⟩ (f 
         → is-order-preserving α (Y , σ) ⌜ e ⌝
         → is-order-preserving (Y , σ) α (back-eqtofun e)
         → α ≡ (Y , σ)
+
   a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)
   a σ φ ψ = g
    where
@@ -507,7 +509,7 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
        → w ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t → Σ t' ꞉ ⟨ α ↓ u ⟩ , (t' ≺⟨ α ↓ u ⟩ t) × (f t' ≡ w)
      i (x , n) ((x' , m') , n') o = (x' , n') ,
                                     (o , to-Σ-≡ (to-Σ-≡' (Prop-valuedness α x' b _ _) ,
-                                                Prop-valuedness α x' u _ _))
+                                                 Prop-valuedness α x' u _ _))
 
      p : (t t' : ⟨ α ↓ u ⟩) → t ≺⟨ α ↓ u ⟩ t' → f t ≺⟨ (α ↓ b) ↓ (u , l) ⟩ f t'
      p t t' = id
@@ -838,6 +840,8 @@ module example where
  corollary₄ ua lpo = eqtoid ua ℕ∞ (ℕ + 𝟙) (corollary₂ lpo)
 
 \end{code}
+
+TODO.
 
 Question. Do we have (finite or arbitrary) joins of ordinals? Probably not.
 

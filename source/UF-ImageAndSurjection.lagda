@@ -188,7 +188,7 @@ Surjections can be characterized as follows, modulo size:
 
  imageInduction : ∀ {𝓦 𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
  imageInduction {𝓦} {𝓤} {𝓥} {X} {Y} f =
-                (P : Y → 𝓦 ̇ ) → ((y : Y) → is-prop(P y)) → ((x : X) → P(f x)) → (y : Y) → P y
+                (P : Y → 𝓦 ̇ ) → ((y : Y) → is-prop (P y)) → ((x : X) → P(f x)) → (y : Y) → P y
 
  surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-surjection f → imageInduction {𝓦} f
@@ -204,7 +204,7 @@ Surjections can be characterized as follows, modulo size:
 
  image-induction : ∀ {𝓦} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                  (f : X → Y) (P : image f → 𝓦 ̇ )
-               → (∀ y' → is-prop(P y'))
+               → (∀ y' → is-prop (P y'))
                → (∀ x → P(corestriction f x))
                → ∀ y' → P y'
  image-induction f = surjection-induction (corestriction f)

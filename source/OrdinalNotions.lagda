@@ -80,7 +80,7 @@ is-transitive = (x y z : X) → x < y → y < z → x < z
 _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued-order : FunExt → is-prop-valued → (x y : X) → is-prop(x ≼ y)
+≼-prop-valued-order : FunExt → is-prop-valued → (x y : X) → is-prop (x ≼ y)
 ≼-prop-valued-order fe isp x y = Π-is-prop (fe 𝓤 𝓥)
                                   (λ u → Π-is-prop (fe 𝓥 𝓥) (λ l → isp u y))
 
@@ -128,7 +128,7 @@ transitivity : is-well-order → is-transitive
 transitivity (p , w , e , t) = t
 
 accessibility-is-prop : FunExt
-                        → (x : X) → is-prop(is-accessible x)
+                        → (x : X) → is-prop (is-accessible x)
 accessibility-is-prop fe = accessible-induction P φ
  where
   P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
@@ -198,7 +198,7 @@ being-well-order-is-prop fe o = ×-is-prop (Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
                                             o
 
 _≤_ : X → X → 𝓥 ̇
-x ≤ y = ¬(y < x)
+x ≤ y = ¬ (y < x)
 
 is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≤ x
@@ -256,16 +256,16 @@ no-minimal-is-empty : is-well-founded
                     → is-empty(Σ P)
 no-minimal-is-empty w P s (x , p) = f s x p
  where
-  f : ((x : X) → P x → Σ y ꞉ X , (y < x) × P y) → (x : X) → ¬(P x)
+  f : ((x : X) → P x → Σ y ꞉ X , (y < x) × P y) → (x : X) → ¬ (P x)
   f s x p = g x (w x) p
    where
-    g : (x : X) → is-accessible x → ¬(P x)
+    g : (x : X) → is-accessible x → ¬ (P x)
     g x (next .x σ) p = IH (pr₁ (s x p)) (pr₁(pr₂(s x p))) (pr₂(pr₂(s x p)))
      where
-      IH : (y : X) → y < x → ¬(P y)
+      IH : (y : X) → y < x → ¬ (P y)
       IH y l = g y (σ y l)
 
-  NB : Σ P → ¬((x : X) → P x → Σ y ꞉ X , (y < x) × P y)
+  NB : Σ P → ¬ ((x : X) → P x → Σ y ꞉ X , (y < x) × P y)
   NB (x , p) s = f s x p
 
 \end{code}
@@ -338,7 +338,7 @@ open import DiscreteAndSeparated
   g (p , (r , s) , φ) = Cases (𝟚-is-discrete (p z) ₀)
                          (λ (t : p z ≡ ₀)
                             → inr (pr₂ (φ z y) (t , s)))
-                         (λ (t : ¬(p z ≡ ₀))
+                         (λ (t : ¬ (p z ≡ ₀))
                             → inl (pr₂ (φ x z) (r , (different-from-₀-equal-₁ t))))
 
 \end{code}

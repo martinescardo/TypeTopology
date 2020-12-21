@@ -531,7 +531,7 @@ I am not sure this is going to be useful:
    g : (u : Π X) → ¬ ((λ q → transport X (P-is-prop p q) (pr₁ (f p))) ≺ u)
    g u (q , l) = h n
     where
-     h : ¬(pr₁(f q) < u q)
+     h : ¬ (pr₁(f q) < u q)
      h = pr₂ (f q) (u q)
 
      m : transport X (P-is-prop q q) (pr₁ (f q)) < u q

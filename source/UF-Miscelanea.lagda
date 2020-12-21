@@ -80,7 +80,7 @@ discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ≡ y) → d 
 discrete-inl d x = isolated-inl x (d x)
 
 discrete-inr : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀
-             → (d : is-discrete X) (x y : X) (n : ¬(x ≡ y)) → d x y ≡ inr n
+             → (d : is-discrete X) (x y : X) (n : ¬ (x ≡ y)) → d x y ≡ inr n
 discrete-inr fe d x = isolated-inr fe x (d x)
 
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ≡ x)
@@ -169,10 +169,10 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
 ¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-¬¬-separated X → is-set X
 ¬¬-separated-types-are-sets fe s = Id-collapsibles-are-sets (¬¬-separated-is-Id-collapsible fe s)
 
-is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop(is-¬¬-separated X)
+is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop (is-¬¬-separated X)
 is-prop-separated fe fe₀ {X} = prop-criterion f
  where
-  f : is-¬¬-separated X → is-prop(is-¬¬-separated X)
+  f : is-¬¬-separated X → is-prop (is-¬¬-separated X)
   f s = Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets fe₀ s)))

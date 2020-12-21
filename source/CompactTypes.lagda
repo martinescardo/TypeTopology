@@ -257,13 +257,13 @@ putative-root {𝓤} {X} ε p = x₀ , lemma₀ , lemma₁
   x₀ : X
   x₀ = pr₁(ε p)
 
-  lemma : ¬((x : X) → p x ≡ ₁) → p x₀ ≡ ₀
+  lemma : ¬ ((x : X) → p x ≡ ₁) → p x₀ ≡ ₀
   lemma = different-from-₁-equal-₀ ∘ contrapositive(pr₂(ε p))
 
   lemma₀ : p has-a-root → x₀ is-a-root-of p
   lemma₀ (x , r) = lemma claim
    where
-    claim : ¬((x : X) → p x ≡ ₁)
+    claim : ¬ ((x : X) → p x ≡ ₁)
     claim f = equal-₁-different-from-₀ (f x) r
 
   lemma₁ : x₀ is-a-root-of p → p has-a-root
@@ -676,7 +676,7 @@ Compactness-gives-Markov {𝓤} {X} c A δ φ = γ (c A δ)
 compact-gives-Compact : (X : 𝓤 ̇ ) → compact X → Compact X {𝓥}
 compact-gives-Compact X c A d = iii
  where
-  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x)))
+  i : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x)))
   i = characteristic-function d
 
   p : X → 𝟚
@@ -726,12 +726,12 @@ and hence to a type in the universe 𝓤₀.
 Π-Compact {𝓤} X {𝓥} = (A : X → 𝓥 ̇ ) → detachable A → decidable (Π A)
 
 Σ-Compact-gives-Π-Compact : (X : 𝓤 ̇ ) → Σ-Compact X {𝓥} → Π-Compact X {𝓥}
-Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬(A x)) e)
+Σ-Compact-gives-Π-Compact X C A d = γ (C (λ x → ¬ (A x)) e)
  where
-  e : detachable (λ x → ¬(A x))
+  e : detachable (λ x → ¬ (A x))
   e x = ¬-preserves-decidability (d x)
 
-  γ : decidable (Σ x ꞉ X , ¬(A x)) → decidable (Π x ꞉ X , A x)
+  γ : decidable (Σ x ꞉ X , ¬ (A x)) → decidable (Π x ꞉ X , A x)
   γ (inl (x , v)) = inr (λ φ → v (φ x))
   γ (inr u)       = inl (λ x → ¬¬-elim (d x) (λ n → u (x , n)))
 

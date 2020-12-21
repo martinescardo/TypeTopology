@@ -43,7 +43,7 @@ EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
                                (decidability-of-prop-is-prop (fe 𝓤 𝓤₀)))
 
 LEM : ∀ 𝓤 → 𝓤 ⁺ ̇
-LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬(p holds)
+LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬ (p holds)
 
 EM-gives-LEM : EM 𝓤 → LEM 𝓤
 EM-gives-LEM em p = em (p holds) (holds-is-prop p)
