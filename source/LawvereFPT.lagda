@@ -211,13 +211,16 @@ module surjection-version (pt : propositional-truncations-exist) where
   where
    g : A → X
    g a = f (φ a a)
+
    e : ∃ a ꞉ A , φ a ≡ g
    e = s g
+
    γ : (Σ a ꞉ A , φ a ≡ g) → Σ x ꞉ X , x ≡ f x
    γ (a , q) = x , p
     where
      x : X
      x = φ a a
+
      p : x ≡ f x
      p = x         ≡⟨ refl ⟩
          φ a a     ≡⟨ ap (λ - → - a) q ⟩
@@ -470,11 +473,13 @@ We now work with the following assumptions:
    (fe₀      : funext 𝓤 𝓤₀)
    (pe       : propext 𝓤)
    (A        : 𝓤 ̇ )
-   (X        : A → 𝓤 ⁺ ⊔ 𝓥 ̇ )
    (A-is-set : is-set A)
+   (X        : A → 𝓤 ⁺ ⊔ 𝓥 ̇ )
    where
 
 \end{code}
+
+We show that such an X cannot be a surjection.
 
 NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
@@ -492,7 +497,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
        ρ : retract B of (X a)
        ρ = ≃-gives-▷ p
 
-       γ : (f : Ω 𝓤 → Ω 𝓤) → Σ p ꞉ Ω 𝓤 , p ≡ f p
+       γ : designated-fixed-point-property (Ω 𝓤)
        γ = usr-lemma {(𝓤 ⁺) ⊔ 𝓥} {𝓤} {𝓤} fe' fe pe X a A-is-set ρ
 
   universe-set-regular : Σ B ꞉ 𝓤 ⁺ ⊔ 𝓥 ̇ , ((a : A) → X a ≢ B)
@@ -503,7 +508,7 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
     γ (B , φ) = B , (λ a → contrapositive (idtoeq (X a) B) (φ a))
 
   Universe-set-regular : ¬ is-surjection X
-  Universe-set-regular s = ∥∥-rec 𝟘-is-prop (uncurry φ) e
+  Universe-set-regular s = γ
    where
     B : 𝓤 ⁺ ⊔ 𝓥 ̇
     B = pr₁ universe-set-regular
@@ -513,6 +518,12 @@ NB. If 𝓥 is 𝓤 or 𝓤', then X : A → 𝓤 ⁺ ̇.
 
     e : ∃ a ꞉ A , X a ≡ B
     e = s B
+
+    γ : 𝟘
+    γ = ∥∥-rec 𝟘-is-prop (uncurry φ) e
+
+  Universe-set-regular' : ¬ has-section X
+  Universe-set-regular' h = Universe-set-regular (retraction-surjection X h)
 
 \end{code}
 
@@ -828,8 +839,6 @@ silly-theorem {𝓤} fe (A , A-is-set , e) =
 
 What we really want to prove is that
 
-  ¬ Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A,
+  ¬(Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A),
 
 without requiring that A is a set.
-
-The above technique doesn't seem to be applicable for this purpose.
