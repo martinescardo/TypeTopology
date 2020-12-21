@@ -837,8 +837,54 @@ silly-theorem {𝓤} fe (A , A-is-set , e) =
 
 \end{code}
 
-What we really want to prove is that
+The following application is even sillier, because any proposition A
+has at most one element, but Ω has at least two elements, and so we
+don't need this machinery to prove the following theorem:
 
-  ¬(Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A),
+\begin{code}
+
+sillier-theorem : funext 𝓤 𝓤 → ¬(Σ A ꞉ 𝓤 ̇ , is-prop A × (Ω 𝓤 ≃ A))
+sillier-theorem {𝓤} fe (A , A-is-prop , e) =
+ Coquand-further-generalized.theorem
+  𝓤
+  𝓤
+  is-prop
+  𝟘-is-prop
+  (λ X Y X-is-prop → Π-is-prop fe (λ _ → X-is-prop))
+  (λ X Y → Σ-is-prop)
+  (λ X X-is-set → W-is-prop fe)
+  ((A , A-is-prop) , e)
+
+\end{code}
+
+What we (Bezem, Coquand, Dybjer, Escardo) really want to prove is that
+
+  ¬(Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A), (†)
 
 without requiring that A is a set.
+
+Marc Bezem wants this:
+
+  ¬(Σ A ꞉ 𝓤 ̇ , ∥ 𝓤 ∥₀ ≃ A).  (††)
+
+Does it follow from this that
+
+  ¬(Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A)?
+
+What does follow from (††) is that the inclusion hSet 𝓤 → hSet (𝓤 ⁺) is
+not an equivalence, which is what we want. So (††) implies (†).
+
+Thierry Coquand asks: does the following help:
+
+\begin{code}
+
+Gylterud : 𝓤 ⁺ ̇
+Gylterud {𝓤} = W (hSet 𝓤) pr₁
+
+\end{code}
+
+Intuitively, this is the groupoid of multisets. This occurs in Håkon
+Gylterud's PhD thesis (Multisets in Type Theory, 2016).
+
+Tonny Hurkens has a different way to get a contradiction from
+type-in-type, that maybe can be adapted to get what we want.
