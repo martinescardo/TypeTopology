@@ -8,8 +8,8 @@ module W where
 
 open import SpartanMLTT
 
-data W {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
- sup : (x : X) → (A x → W A) → W A
+data W {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
+ sup : (x : X) → (A x → W X A) → W X A
 
 \end{code}
 
@@ -17,13 +17,13 @@ The record version of W in case we need it:
 
 \begin{code}
 
-record W' {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
+record W' {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) : 𝓤 ⊔ 𝓥 ̇ where
  inductive
  constructor
   sup
  field
   pr₁ : X
-  pr₂ : A pr₁ → W A
+  pr₂ : A pr₁ → W' X A
 
 \end{code}
 
@@ -45,8 +45,8 @@ data Wᵢ {𝓤 𝓥 𝓦 : Universe}
 
 E.g. for typed terms:
 
-  I    tape of "tapes"
-  A    tape of operations
-  t    tape of the result
-  B    arita assignment
+  I    type of "types"
+  A    type of operations
+  t    type of the result
+  B    arity assignment
   s    type of arguments

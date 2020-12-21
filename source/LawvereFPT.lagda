@@ -553,8 +553,6 @@ Lemma₀ by a second application of LFPT (todo).
 
 module GeneralizedCoquand where
 
- open import W
-
  Lemma₀ : (A : 𝓤 ̇ )
           (T : A → 𝓤 ̇ )
           (S : 𝓤 ̇ → A)
@@ -564,8 +562,10 @@ module GeneralizedCoquand where
         → 𝟘
  Lemma₀ {𝓤} A T S ρ σ η = γ
   where
+   open import W
+
    𝕎 : 𝓤 ̇
-   𝕎 = W T
+   𝕎 = W A T
 
    α : 𝕎 → (𝕎 → 𝓤 ̇ )
    α (sup _ φ) = fiber φ
@@ -708,7 +708,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
 
          (W-is-P : (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
                  → P X
-                 → P (W Y))
+                 → P (W X Y))
        where
 
   lemma₀ : (A : 𝓤 ̇ )
@@ -722,7 +722,7 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
   lemma₀ A A-is-P T S ρ σ η = γ
    where
     𝕎 :  𝓤 ̇
-    𝕎 = W T
+    𝕎 = W A T
 
     α : 𝕎 → (𝕎 → 𝓤 ̇ )
     α (sup _ φ) = fiber φ

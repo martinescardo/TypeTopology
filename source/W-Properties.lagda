@@ -16,16 +16,16 @@ open import UF-Subsingletons-FunExt
 
 W-≡-fold : funext 𝓥 (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-           {x  : X} {f  : A x  → W A}
-           {x' : X} {f' : A x' → W A}
+           {x  : X} {f  : A x  → W X A}
+           {x' : X} {f' : A x' → W X A}
          → (Σ p ꞉ x ≡ x' , ((a : A x) → f a ≡ f' (transport A p a)))
-         → sup x f ≡[ W A ] sup x' f'
+         → sup x f ≡[ W X A ] sup x' f'
 W-≡-fold fe {X} {A} {x} {f} {x} {f'} (refl , ϕ) = ap (sup x) (dfunext fe ϕ)
 
 W-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥)
           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → is-prop X
-          → is-prop (W A)
+          → is-prop (W X A)
 W-is-prop fe {X} {A} X-is-prop (sup x f) (sup x' f') = γ
  where
   p : x ≡ x'
@@ -38,17 +38,17 @@ W-is-prop fe {X} {A} X-is-prop (sup x f) (sup x' f') = γ
   γ = W-≡-fold fe (p , IH)
 
 W-≡-unfold : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-             {x  : X} {f  : A x  → W A}
-             {x' : X} {f' : A x' → W A}
-           → sup x f ≡[ W A ] sup x' f'
+             {x  : X} {f  : A x  → W X A}
+             {x' : X} {f' : A x' → W X A}
+           → sup x f ≡[ W X A ] sup x' f'
            → Σ p ꞉ x ≡ x' , ((a : A x) → f a ≡ f' (transport A p a))
 W-≡-unfold refl = refl , (λ a → refl)
 
 W-≡-fold-unfold : (fe : funext 𝓥 (𝓤 ⊔ 𝓥))
                   {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                  {x  : X} {f  : A x  → W A}
-                  {x' : X} {f' : A x' → W A}
-                → (q : sup x f ≡[ W A ] sup x' f')
+                  {x  : X} {f  : A x  → W X A}
+                  {x' : X} {f' : A x' → W X A}
+                → (q : sup x f ≡[ W X A ] sup x' f')
                 → W-≡-fold fe (W-≡-unfold q) ≡ q
 W-≡-fold-unfold fe {X} {A} {x} {f} {x} {f} refl = γ
  where
@@ -58,7 +58,7 @@ W-≡-fold-unfold fe {X} {A} {x} {f} {x} {f} refl = γ
 W-is-set : funext 𝓥 (𝓤 ⊔ 𝓥)
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
          → is-set X
-         → is-set (W A)
+         → is-set (W X A)
 W-is-set fe {X} {A} X-is-set {sup x f} {sup x' f'} = γ
  where
   S = Σ p ꞉ x ≡ x' , ((a : A x) → f a ≡ f' (transport A p a))
