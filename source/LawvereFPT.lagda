@@ -489,7 +489,7 @@ Lemma₀ by a second application of LFPT (todo).
 
 \begin{code}
 
-module Coquand where
+module GeneralizedCoquand where
 
  open import W
 
@@ -503,14 +503,18 @@ module Coquand where
         → 𝟘
  Lemma₀ 𝓤 A T S ρ σ η = γ
   where
-   α : W T → (W T → 𝓤 ̇ )
+   𝕎 : 𝓤 ̇
+   𝕎 = W T
+
+   α : 𝕎 → (𝕎 → 𝓤 ̇ )
    α (sup _ φ) = fiber φ
 
    module _ (X : 𝓤 ̇ ) where
-     H : W T → 𝓤 ̇
+
+     H : 𝕎 → 𝓤 ̇
      H w = α w w → X
 
-     R : W T
+     R : 𝕎
      R = sup (S (Σ H)) (pr₁ ∘ ρ)
 
      B : 𝓤 ̇
@@ -602,3 +606,169 @@ equivalent to a type in 𝓤:
  Corollary 𝓤 e = Theorem (𝓤 ⁺) ((𝓤 ̇ ), e)
 
 \end{code}
+
+Added 20th December 2020. The following is work in progress, probably
+useless.
+
+Further generalization, where we intend to use P = is-set.
+
+\begin{code}
+
+open import W
+
+module Coquand-further-generalized (𝓤 𝓥 : Universe)
+         (P : 𝓤 ̇ → 𝓥 ̇ )
+         (𝟘-is-P : P 𝟘)
+
+         (P-exponential-ideal : (X Y : 𝓤 ̇ ) → P X → P (Y → X))
+
+         (Σ-is-P : (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                 → P X
+                 → ((x : X) → P (Y x))
+                 → P (Σ Y))
+
+         (W-is-P : (X : 𝓤 ̇ ) (Y : X → 𝓤 ̇ )
+                 → P X
+                 → P (W Y))
+       where
+
+  lemma₀ : (A : 𝓤 ̇ )
+           (A-is-P : P A)
+           (T : A → 𝓤 ̇ )
+           (S : (X : 𝓤 ̇ ) (p : P X) → A)
+           (ρ : {X : 𝓤 ̇ } (p : P X) → T (S X p) → X)
+           (σ : {X : 𝓤 ̇ } (p : P X) → X → T (S X p))
+           (η : {X : 𝓤 ̇ } (p : P X) (x : X) → ρ p (σ p x) ≡ x)
+         → 𝟘
+  lemma₀ A A-is-P T S ρ σ η = γ
+   where
+    𝕎 :  𝓤 ̇
+    𝕎 = W T
+
+    α : 𝕎 → (𝕎 → 𝓤 ̇ )
+    α (sup _ φ) = fiber φ
+
+    module _ (X : 𝓤 ̇ ) (X-is-P : P X) where
+
+      H : 𝕎 → 𝓤 ̇
+      H w = α w w → X
+
+      p : P (Σ H)
+      p = Σ-is-P 𝕎 H
+            (W-is-P A T A-is-P)
+            (λ w → P-exponential-ideal X (α w w) X-is-P)
+
+      R : 𝕎
+      R = sup (S (Σ H) p) (pr₁ ∘ ρ p)
+
+      B : 𝓤 ̇
+      B = α R R
+
+      r : B → (B → X)
+      r (t , e) = transport H e (pr₂ (ρ p t))
+
+      s : (B → X) → B
+      s f = σ p (R , f) , ap pr₁ (η p (R , f))
+
+      rs : (f : B → X) → r (s f) ≡ f
+      rs f = r (s f)                                            ≡⟨ refl ⟩
+             transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ≡⟨ i    ⟩
+             transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ≡⟨ ii   ⟩
+             pr₂ Rf                                             ≡⟨ refl ⟩
+             f                                                  ∎
+           where
+            Rf : Σ H
+            Rf = (R , f)
+
+            i = (transport-ap H pr₁ (η p (Rf)))⁻¹
+            ii = apd pr₂ (η p Rf)
+
+      δ : (f : X → X) → Σ x ꞉ X , x ≡ f x
+      δ = retract-version.LFPT (r , s , rs)
+
+    γ : 𝟘
+    γ = pr₁ (δ 𝟘 𝟘-is-P id)
+
+  lemma₁ : (A : 𝓤 ̇ )
+         → P A
+         → (T : A → 𝓤 ̇ )
+         → (S : (X : 𝓤 ̇ ) → P X → A)
+         → ¬((X : 𝓤 ̇ ) (p : P X) → retract X of (T (S X p)))
+  lemma₁ A A-is-P T S ρ = 𝟘-elim
+                           (lemma₀ A A-is-P T S
+                             (λ {X} p → retraction (ρ X p))
+                             (λ {X} p → section (ρ X p))
+                             (λ {X} p → retract-condition (ρ X p)))
+
+  lemma₂ : (A : 𝓤 ̇ )
+         → P A
+         → (T : A → 𝓤 ̇ )
+         → (S : (X : 𝓤 ̇ ) → P X → A)
+         → ¬((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≃ X)
+  lemma₂ A A-is-P T S e = lemma₁ A A-is-P T S (λ X p → ≃-gives-▷ (e X p))
+
+  lemma₃ : (A : 𝓤 ̇ )
+         → P A
+         → (T : A → 𝓤 ̇ )
+         → (S : (X : 𝓤 ̇ ) → P X → A)
+         → ¬((X : 𝓤 ̇ ) (p : P X) → T (S X p) ≡ X)
+  lemma₃ A A-is-P T S e = lemma₂ A A-is-P T S (λ X p → idtoeq (T (S X p)) X (e X p))
+
+  lemma₄ : ¬(Σ (A , A-is-P) ꞉ Σ P , retract (Σ P) of A)
+  lemma₄ ((A , A-is-P) , r , s , rs) = lemma₃ A A-is-P T S TS
+   where
+    T : A → 𝓤 ̇
+    T a = pr₁ (r a)
+
+    T-is-P-valued : (a : A) → P (T a) -- Not used.
+    T-is-P-valued a = pr₂ (r a)       -- So the hypothesis is stronger
+                                      -- then necessary.
+    S : (X : 𝓤 ̇) → P X → A
+    S X p = s (X , p)
+
+    TS : (X : 𝓤 ̇) (p : P X) → T (S X p) ≡ X
+    TS X p = ap pr₁ (rs (X , p))
+
+  theorem : ¬(Σ (A , A-is-P) ꞉ Σ P , Σ P ≃ A)
+  theorem (σ , e) = lemma₄ (σ , ≃-gives-◁ e)
+
+\end{code}
+
+Example:
+
+\begin{code}
+
+hSet : (𝓤 : Universe) → 𝓤 ⁺ ̇
+hSet 𝓤 = Σ A ꞉ 𝓤 ̇ , is-set A
+
+\end{code}
+
+We already know the following, because the type of sets is not a set
+by univalence. But notice that the following assumes only function
+extensionality:
+
+\begin{code}
+
+open import W-Properties
+
+silly-theorem : funext 𝓤 𝓤 → ¬(Σ A ꞉ 𝓤 ̇ , is-set A × (hSet 𝓤 ≃ A))
+silly-theorem {𝓤} fe (A , A-is-set , e) =
+ Coquand-further-generalized.theorem
+  𝓤
+  𝓤
+  is-set
+  𝟘-is-set
+  (λ X Y X-is-set → Π-is-set fe (λ _ → X-is-set))
+  (λ X Y → Σ-is-set)
+  (λ X X-is-set → W-is-set fe)
+  ((A , A-is-set) , e)
+
+\end{code}
+
+What we really want to prove is that
+
+  ¬ Σ A ꞉ 𝓤 ̇ , hSet 𝓤 ≃ A
+
+without requiring that A is a set.
+
+The above technique doesn't seem to be applicable for this purpose.

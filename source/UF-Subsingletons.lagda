@@ -120,6 +120,9 @@ is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = {x : X} → is-h-isolated x
 
+𝟘-is-set : is-set (𝟘 {𝓤})
+𝟘-is-set {𝓤} {x} = 𝟘-elim x
+
 refl-is-set : (X : 𝓤 ̇ )
             → ((x : X) (p : x ≡ x) → p ≡ refl)
             → is-set X
