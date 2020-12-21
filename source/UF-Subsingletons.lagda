@@ -120,6 +120,9 @@ is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = {x : X} → is-h-isolated x
 
+hSet : (𝓤 : Universe) → 𝓤 ⁺ ̇
+hSet 𝓤 = Σ A ꞉ 𝓤 ̇ , is-set A
+
 𝟘-is-set : is-set (𝟘 {𝓤})
 𝟘-is-set {𝓤} {x} = 𝟘-elim x
 
