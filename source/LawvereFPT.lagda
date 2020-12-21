@@ -603,12 +603,6 @@ module GeneralizedCoquand where
      δ : designated-fixed-point-property X
      δ = retract-version.LFPT (r , s , rs)
 
-\end{code}
-
-Because X is arbitrary, we can choose X = 𝟘 to get the desired contradiction:
-
-\begin{code}
-
    γ : 𝟘
    γ = pr₁ (δ 𝟘 id)
 
