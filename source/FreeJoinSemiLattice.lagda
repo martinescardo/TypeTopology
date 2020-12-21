@@ -21,8 +21,8 @@ open ImageAndSurjection pt
 
 open import UF-Powerset
 
-𝕋_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
-𝕋_ {𝓤} {X} A = Σ x ꞉ X , (x ∈ A)
+𝕋  : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
+𝕋  {𝓤} {X} A = Σ x ꞉ X , (x ∈ A)
 
 η' : {X : 𝓤 ̇ } → is-set X → X → 𝓟 X
 η' i x = (λ y → ((y ≡ x) , i))
@@ -69,10 +69,10 @@ being-Kuratowski-finite-is-prop = ∥∥-is-prop
 η : {X : 𝓤 ̇ } → is-set X → X → 𝓚 X
 η i x = η' i x , κ
  where
-  κ : is-Kuratowski-finite (𝕋 η' i x)
+  κ : is-Kuratowski-finite (𝕋 (η' i x))
   κ = ∣ 1 , e , σ ∣
    where
-    e : Fin 1 → 𝕋 η' i x
+    e : Fin 1 → 𝕋 (η' i x)
     e (inr *) = x , refl
     σ : is-surjection e
     σ (x , refl) = ∣ inr * , refl ∣
@@ -193,11 +193,18 @@ _∨[𝓚]_ {𝓤} {X} (A , κ₁) (B , κ₂) = (A ∪ B) , κ
 ∨[𝓚]-is-lowerbound-of-upperbounds {𝓤} {X} A B C =
  ∪-is-lowerbound-of-upperbounds ⟨ A ⟩ ⟨ B ⟩ ⟨ C ⟩
 
-⊥[𝓚] : {X : 𝓤 ̇ } → 𝓚 X
-⊥[𝓚] {X} = ∅ , κ
+from-Fin-0 : {X : 𝓤 ̇ } → Fin 0 → X
+from-Fin-0 = unique-from-𝟘
+
+∅-is-Kuratowski-finite : {X : 𝓤 ̇ }
+                       → is-Kuratowski-finite (𝕋 {𝓤} {X} ∅)
+∅-is-Kuratowski-finite = ∣ 0 , from-Fin-0 , σ ∣
  where
-  κ : is-Kuratowski-finite (𝕋 ∅)
-  κ = ∣ 0 , unique-from-𝟘 , (λ (y : 𝕋 ∅) → unique-from-𝟘 (pr₂ y)) ∣
+  σ : (t : 𝕋 ∅) → ∃ k ꞉ Fin 0 , from-Fin-0 k ≡ t
+  σ (x , e) = unique-from-𝟘 e
+
+⊥[𝓚] : {X : 𝓤 ̇ } → 𝓚 X
+⊥[𝓚] {X} = ∅ , ∅-is-Kuratowski-finite
 
 ⊥[𝓚]-is-least : {X : 𝓤 ̇ } (A : 𝓚 X) → ⊥[𝓚] ⊑[𝓚] A
 ⊥[𝓚]-is-least {𝓤} {X} A = ∅-is-least ⟨ A ⟩
@@ -462,6 +469,21 @@ module _
     v = ∨-is-lowerbound-of-upperbounds _ _ _
         (g-is-monotone A (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₁ A B))
         (g-is-monotone B (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₂ A B))
+
+  g-preserves-⊥ : g (⊥[𝓚]) ≡ ⊥
+  g-preserves-⊥ = ⊑-is-antisymmetric _ _ u v
+   where
+    u : g ⊥[𝓚] ⊑ ⊥
+    u = g ⊥[𝓚]                              ⊑⟨ u₁ ⟩
+        ∨ⁿ (f ∘ pr₁ ∘ from-Fin-0 {𝓤} {𝕋 ∅}) ⊑⟨ u₂ ⟩
+        ⊥ ⊑∎
+     where
+      σ : is-surjection (from-Fin-0 {𝓤} {𝕋 ∅})
+      σ (x , e) = unique-from-𝟘 e
+      u₁ = ≡-to-⊑ (g-in-terms-of-g' ∅ σ ∅-is-Kuratowski-finite)
+      u₂ = ⊑-is-reflexive ⊥
+    v : ⊥ ⊑ g ⊥[𝓚]
+    v = ⊥-is-least (g ⊥[𝓚])
 
 {-
 
