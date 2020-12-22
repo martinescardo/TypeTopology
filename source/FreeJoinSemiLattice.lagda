@@ -216,25 +216,69 @@ record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
     L : 𝓥 ̇
     L-is-set : is-set L
     _⊑_ : L → L → 𝓣 ̇
-    ⊑-is-prop-valued : (x y : L) → is-prop (x ⊑ y)
+    ⊑-is-prop : (x y : L) → is-prop (x ⊑ y)
     ⊑-is-reflexive : (x : L) → x ⊑ x
     ⊑-is-transitive : (x y z : L) → x ⊑ y → y ⊑ z → x ⊑ z
     ⊑-is-antisymmetric : (x y : L) → x ⊑ y → y ⊑ x → x ≡ y
     ⊥ : L
-    _∨_ : L → L → L
     ⊥-is-least : (x : L) → ⊥ ⊑ x
+    _∨_ : L → L → L
     ∨-is-upperbound₁ : (x y : L) → x ⊑ (x ∨ y)
     ∨-is-upperbound₂ : (x y : L) → y ⊑ (x ∨ y)
     ∨-is-lowerbound-of-upperbounds : (x y z : L) → x ⊑ z → y ⊑ z → (x ∨ y) ⊑ z
+
+  transitivity' : (x : L) {y z : L}
+                → x ⊑ y → y ⊑ z → x ⊑ z
+  transitivity' x {y} {z} = ⊑-is-transitive x y z
+
+  syntax transitivity' x u v = x ⊑⟨ u ⟩ v
+  infixr 0 transitivity'
+
+  reflexivity' : (x : L) → x ⊑ x
+  reflexivity' x = ⊑-is-reflexive x
+
+  syntax reflexivity' x = x ⊑∎
+  infix 1 reflexivity'
+
+  ≡-to-⊑ : {x y : L} → x ≡ y → x ⊑ y
+  ≡-to-⊑ {x} {x} refl = reflexivity' x
+
+  ∨ⁿ : {n : ℕ} → (Fin n → L) → L
+  ∨ⁿ {zero}   e = ⊥
+  ∨ⁿ {succ m} e = (∨ⁿ (e ∘ inl)) ∨ (e (inr *))
+
+  ∨ⁿ-is-upperbound : {n : ℕ} (σ : Fin n → L)
+                   → (k : Fin n) → σ k ⊑ ∨ⁿ σ
+  ∨ⁿ-is-upperbound {succ n} σ (inl k) = σ (inl k)    ⊑⟨ IH ⟩
+                                        ∨ⁿ (σ ∘ inl) ⊑⟨ ∨-is-upperbound₁ _ _ ⟩
+                                        ∨ⁿ σ         ⊑∎
+   where
+    IH = ∨ⁿ-is-upperbound (σ ∘ inl) k
+  ∨ⁿ-is-upperbound {succ n} σ (inr *) = ∨-is-upperbound₂ _ _
+
+  ∨ⁿ-is-lowerbound-of-upperbounds : {n : ℕ} (σ : Fin n → L)
+                                    (x : L)
+                                  → ((k : Fin n) → σ k ⊑ x)
+                                  → ∨ⁿ σ ⊑ x
+  ∨ⁿ-is-lowerbound-of-upperbounds {zero}   σ x ub = ⊥-is-least x
+  ∨ⁿ-is-lowerbound-of-upperbounds {succ n} σ x ub =
+   ∨-is-lowerbound-of-upperbounds _ _ _ u v
+    where
+     u : ∨ⁿ (σ ∘ inl) ⊑ x
+     u = ∨ⁿ-is-lowerbound-of-upperbounds {n} (σ ∘ inl) x (λ k → ub (inl k))
+     v : σ (inr *) ⊑ x
+     v = ub (inr *)
 
 module _
         (pe : propext 𝓤)
         (fe₁ : funext 𝓤 𝓤)
         (fe₂ : funext 𝓤 (𝓤 ⁺))
+        (X : 𝓤 ̇ )
+        (X-is-set : is-set X)
        where
 
- 𝓚-join-semilattice : (X : 𝓤 ̇ ) → JoinSemiLattice (𝓤 ⁺) 𝓤
- 𝓚-join-semilattice X = joinsemilattice
+ 𝓚-join-semilattice : JoinSemiLattice (𝓤 ⁺) 𝓤
+ 𝓚-join-semilattice = joinsemilattice
                           (𝓚 X)
                           (𝓚-is-set fe₁ pe fe₂)
                           _⊑[𝓚]_
@@ -243,68 +287,41 @@ module _
                           ⊑[𝓚]-is-transitive
                           (⊑[𝓚]-is-antisymmetric fe₁ pe fe₂)
                           ⊥[𝓚]
-                          _∨[𝓚]_
                           ⊥[𝓚]-is-least
+                          _∨[𝓚]_
                           ∨[𝓚]-is-upperbound₁
                           ∨[𝓚]-is-upperbound₂
                           ∨[𝓚]-is-lowerbound-of-upperbounds
+
+ open JoinSemiLattice 𝓚-join-semilattice
+
+ Kuratowski-finite-subset-expressed-as-finite-join : (A : 𝓚 X)
+                                                     {n : ℕ}
+                                                     {e : Fin n → 𝕋 ⟨ A ⟩}
+                                                     (σ : is-surjection e)
+                                                   → A ≡ ∨ⁿ (η X-is-set ∘ pr₁ ∘ e)
+ Kuratowski-finite-subset-expressed-as-finite-join A {n} {e} σ = γ
+  where
+   γ : A ≡ ∨ⁿ (η X-is-set ∘ pr₁ ∘ e)
+   γ = ⊑[𝓚]-is-antisymmetric fe₁ pe fe₂ A (∨ⁿ (η X-is-set ∘ pr₁ ∘ e)) u v
+    where
+     u : A ⊑[𝓚] ∨ⁿ (η X-is-set ∘ pr₁ ∘ e)
+     u x a = ∥∥-rec (∈-is-prop ⟨ ∨ⁿ (η X-is-set ∘ pr₁ ∘ e) ⟩ x) μ (σ (x , a))
+      where
+       μ : (Σ k ꞉ Fin n , e k ≡ (x , a))
+         → x ∈ ⟨ ∨ⁿ (η X-is-set ∘ pr₁ ∘ e) ⟩
+       μ (k , refl) = ∨ⁿ-is-upperbound (η X-is-set ∘ pr₁ ∘ e) k x refl
+     v : ∨ⁿ (η X-is-set ∘ pr₁ ∘ e) ⊑[𝓚] A
+     v = ∨ⁿ-is-lowerbound-of-upperbounds (η X-is-set ∘ pr₁ ∘ e) A ν
+      where
+       ν : (k : Fin n) → (η X-is-set ∘ pr₁ ∘ e) k ⊑[𝓚] A
+       ν k x refl = pr₂ (e k)
 
 module _
         (𝓛 : JoinSemiLattice 𝓥 𝓣)
        where
 
  open JoinSemiLattice 𝓛
-
- transitivity' : (x : L) {y z : L}
-               → x ⊑ y → y ⊑ z → x ⊑ z
- transitivity' x {y} {z} = ⊑-is-transitive x y z
-
- syntax transitivity' x u v = x ⊑⟨ u ⟩ v
- infixr 0 transitivity'
-
- reflexivity' : (x : L) → x ⊑ x
- reflexivity' x = ⊑-is-reflexive x
-
- syntax reflexivity' x = x ⊑∎
- infix 1 reflexivity'
-
- ≡-to-⊑ : {x y : L} → x ≡ y → x ⊑ y
- ≡-to-⊑ {x} {x} refl = reflexivity' x
-
- ∨ⁿ : {n : ℕ} → (Fin n → L) → L
- ∨ⁿ {zero}   e = ⊥
- ∨ⁿ {succ m} e = (∨ⁿ (e ∘ inl)) ∨ (e (inr *))
- {-
-  where
-   e' : Fin m → L
-   e' = e ∘ inl
-   x : L
-   x = e (inr *)
-   IH : L
-   IH = ∨ⁿ e'
- -}
-
- ∨ⁿ-is-upperbound : {n : ℕ} (σ : Fin n → L)
-                  → (k : Fin n) → σ k ⊑ ∨ⁿ σ
- ∨ⁿ-is-upperbound {succ n} σ (inl k) = σ (inl k)    ⊑⟨ IH ⟩
-                                       ∨ⁿ (σ ∘ inl) ⊑⟨ ∨-is-upperbound₁ _ _ ⟩
-                                       ∨ⁿ σ         ⊑∎
-  where
-   IH = ∨ⁿ-is-upperbound (σ ∘ inl) k
- ∨ⁿ-is-upperbound {succ n} σ (inr *) = ∨-is-upperbound₂ _ _
-
- ∨ⁿ-is-lowerbound-of-upperbounds : {n : ℕ} (σ : Fin n → L)
-                                   (x : L)
-                                 → ((k : Fin n) → σ k ⊑ x)
-                                 → ∨ⁿ σ ⊑ x
- ∨ⁿ-is-lowerbound-of-upperbounds {zero}   σ x ub = ⊥-is-least x
- ∨ⁿ-is-lowerbound-of-upperbounds {succ n} σ x ub =
-  ∨-is-lowerbound-of-upperbounds _ _ _ u v
-   where
-    u : ∨ⁿ (σ ∘ inl) ⊑ x
-    u = ∨ⁿ-is-lowerbound-of-upperbounds {n} (σ ∘ inl) x (λ k → ub (inl k))
-    v : σ (inr *) ⊑ x
-    v = ub (inr *)
 
  module _
          (X : 𝓤 ̇ )
@@ -324,7 +341,7 @@ module _
     u = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e) (∨ⁿ (f ∘ pr₁ ∘ e')) γ
      where
       γ : (k : Fin n) → f (pr₁ (e k)) ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
-      γ k = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ' (e k))
+      γ k = ∥∥-rec (⊑-is-prop _ _) ϕ (σ' (e k))
        where
         ϕ : (Σ k' ꞉ Fin n' , e' k' ≡ e k) → f (pr₁ (e k)) ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
         ϕ (k' , p) = (f ∘ pr₁) (e k)   ⊑⟨ ≡-to-⊑ (ap (f ∘ pr₁) (p ⁻¹)) ⟩
@@ -334,7 +351,7 @@ module _
     v = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e') (∨ⁿ (f ∘ pr₁ ∘ e)) γ
      where
       γ : (k' : Fin n') → f (pr₁ (e' k')) ⊑ ∨ⁿ (λ x → f (pr₁ (e x)))
-      γ k' = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ (e' k'))
+      γ k' = ∥∥-rec (⊑-is-prop _ _) ϕ (σ (e' k'))
        where
         ϕ : (Σ k ꞉ Fin n , e k ≡ e' k') → f (pr₁ (e' k')) ⊑ ∨ⁿ (λ x → f (pr₁ (e x)))
         ϕ (k , p) = (f ∘ pr₁) (e' k') ⊑⟨ ≡-to-⊑ (ap (f ∘ pr₁) (p ⁻¹)) ⟩
@@ -373,16 +390,16 @@ module _
     II = ⊑-is-antisymmetric _ _
           (∨-is-lowerbound-of-upperbounds _ _ _
            (⊥-is-least (f x)) (⊑-is-reflexive (f x)))
-          (∨-is-upperbound₂ _ _) -- ∨-is-upperbound₂
+          (∨-is-upperbound₂ _ _)
 
   g-is-monotone : (A B : 𝓚 X)
                 → ((x : X) → x ∈ ⟨ A ⟩ → x ∈ ⟨ B ⟩)
                 → g A ⊑ g B
-  g-is-monotone (A , κ₁) (B , κ₂) s = ∥∥-rec (⊑-is-prop-valued _ _) γ₁ κ₁
+  g-is-monotone (A , κ₁) (B , κ₂) s = ∥∥-rec (⊑-is-prop _ _) γ₁ κ₁
    where
     γ₁ : (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 A) , is-surjection e)
       → g (A , κ₁) ⊑ g (B , κ₂)
-    γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop-valued _ _) γ₂ κ₂
+    γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop _ _) γ₂ κ₂
      where
       γ₂ : (Σ n' ꞉ ℕ , Σ e' ꞉ (Fin n' → 𝕋 B) , is-surjection e')
         → g (A , κ₁) ⊑ g (B , κ₂)
@@ -396,7 +413,7 @@ module _
         u₂ = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e) (∨ⁿ (f ∘ pr₁ ∘ e')) γ₃
          where
           γ₃ : (k : Fin n) → (f ∘ pr₁ ∘ e) k ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
-          γ₃ k = ∥∥-rec (⊑-is-prop-valued _ _) γ₄ t
+          γ₃ k = ∥∥-rec (⊑-is-prop _ _) γ₄ t
            where
             x : X
             x = pr₁ (e k)
@@ -418,57 +435,70 @@ module _
                 q = ap pr₁ (p ⁻¹)
               v₂ = ∨ⁿ-is-upperbound (f ∘ pr₁ ∘ e') k'
 
-
-  -- TO DO: Clean this a bit
   g-preserves-∨ : (A B : 𝓚 X) → g (A ∨[𝓚] B) ≡ g A ∨ g B
   g-preserves-∨ A B = ⊑-is-antisymmetric _ _ u v
    where
+    v : (g A ∨ g B) ⊑ g (A ∨[𝓚] B)
+    v = ∨-is-lowerbound-of-upperbounds _ _ _
+        (g-is-monotone A (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₁ A B))
+        (g-is-monotone B (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₂ A B))
     u : g (A ∨[𝓚] B) ⊑ (g A ∨ g B)
-    u = ∥∥-rec (⊑-is-prop-valued (g (A ∨[𝓚] B)) (g A ∨ g B))
-        γ₁ (⟨ A ⟩₂)
+    u = ∥∥-rec (⊑-is-prop (g (A ∨[𝓚] B)) (g A ∨ g B)) γ₁ (⟨ A ⟩₂)
      where
       γ₁ : (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 ⟨ A ⟩) , is-surjection e)
          → g (A ∨[𝓚] B) ⊑ (g A ∨ g B)
-      γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop-valued _ _) γ₂ (⟨ B ⟩₂)
+      γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop _ _) γ₂ (⟨ B ⟩₂)
        where
         γ₂ : (Σ n' ꞉ ℕ , Σ e' ꞉ (Fin n' → 𝕋 ⟨ B ⟩) , is-surjection e')
            → g (A ∨[𝓚] B) ⊑ (g A ∨ g B)
-        γ₂ (n' , e' , σ') = g (A ∨[𝓚] B) ⊑⟨ ≡-to-⊑ kkk ⟩
-                            ∨ⁿ (f ∘ pr₁ ∘ [e,e']) ⊑⟨ ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ [e,e']) (g A ∨ g B) γ ⟩
-                            (g A ∨ g B) ⊑∎
+        γ₂ (n' , e' , σ') = g (A ∨[𝓚] B)          ⊑⟨ l₁ ⟩
+                            ∨ⁿ (f ∘ pr₁ ∘ [e,e']) ⊑⟨ l₂ ⟩
+                            (g A ∨ g B)           ⊑∎
          where
           [e,e'] : Fin (n +' n') → 𝕋 (⟨ A ⟩ ∪ ⟨ B ⟩)
           [e,e'] = (∪-enum ⟨ A ⟩ ⟨ B ⟩ e e')
           τ : is-surjection [e,e']
           τ = ∪-enum-is-surjection ⟨ A ⟩ ⟨ B ⟩ e e' σ σ'
-          kkk : g (A ∨[𝓚] B) ≡ g' (⟨ A ⟩ ∪ ⟨ B ⟩) (n +' n' , [e,e'] , τ)
-          kkk = g-in-terms-of-g' (⟨ A ⟩ ∪ ⟨ B ⟩) τ ⟨ A ∨[𝓚] B ⟩₂
-          γ : (k : Fin (n +' n'))
-            → (f ∘ pr₁ ∘ [e,e']) k ⊑ (g A ∨ g B)
-          γ k = (f ∘ pr₁ ∘ [e,e']) k                   ⊑⟨ ⊑-is-reflexive _ ⟩
-                (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') c ⊑⟨ γ' c ⟩
-                (g A ∨ g B)                            ⊑∎
+          l₁ = ≡-to-⊑ p
            where
-            c : Fin n + Fin n'
-            c = ⌜ Fin+homo n n' ⌝ k
-            γ' : (c : Fin n + Fin n')
-               → (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') c ⊑ (g A ∨ g B)
-            γ' (inl k) = (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') (inl k) ⊑⟨ ⊑-is-reflexive ((f ∘ pr₁ ∘ e) k) ⟩
-                         (f ∘ pr₁ ∘ e) k                              ⊑⟨ ∨ⁿ-is-upperbound (f ∘ pr₁ ∘ e) k ⟩
-                         ∨ⁿ (f ∘ pr₁ ∘ e)                             ⊑⟨ ⊑-is-reflexive (∨ⁿ (f ∘ pr₁ ∘ e)) ⟩
-                         g' ⟨ A ⟩ (n , e , σ)                         ⊑⟨ ≡-to-⊑ ((g-in-terms-of-g' ⟨ A ⟩ σ ⟨ A ⟩₂) ⁻¹) ⟩
-                         g A                                          ⊑⟨ ∨-is-upperbound₁ (g A) (g B) ⟩
-                         g A ∨ g B                                    ⊑∎
-            γ' (inr k) = (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') (inr k) ⊑⟨ ⊑-is-reflexive ((f ∘ pr₁ ∘ e') k) ⟩
-                         (f ∘ pr₁ ∘ e') k                             ⊑⟨ ∨ⁿ-is-upperbound (f ∘ pr₁ ∘ e') k ⟩
-                         ∨ⁿ (f ∘ pr₁ ∘ e')                            ⊑⟨ ⊑-is-reflexive (∨ⁿ (f ∘ pr₁ ∘ e')) ⟩
-                         g' ⟨ B ⟩ (n' , e' , σ')                      ⊑⟨ ≡-to-⊑ ((g-in-terms-of-g' ⟨ B ⟩ σ' ⟨ B ⟩₂) ⁻¹) ⟩
-                         g B                                          ⊑⟨ ∨-is-upperbound₂ (g A) (g B) ⟩
-                         g A ∨ g B                                    ⊑∎
-    v : (g A ∨ g B) ⊑ g (A ∨[𝓚] B)
-    v = ∨-is-lowerbound-of-upperbounds _ _ _
-        (g-is-monotone A (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₁ A B))
-        (g-is-monotone B (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₂ A B))
+            p : g (A ∨[𝓚] B) ≡ g' (⟨ A ⟩ ∪ ⟨ B ⟩) (n +' n' , [e,e'] , τ)
+            p = g-in-terms-of-g' (⟨ A ⟩ ∪ ⟨ B ⟩) τ ⟨ A ∨[𝓚] B ⟩₂
+          l₂ = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ [e,e']) (g A ∨ g B) ϕ
+           where
+            ϕ : (k : Fin (n +' n'))
+              → (f ∘ pr₁ ∘ [e,e']) k ⊑ (g A ∨ g B)
+            ϕ k = (f ∘ pr₁ ∘ [e,e']) k                   ⊑⟨ ⊑-is-reflexive _ ⟩
+                  (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') c ⊑⟨ ψ c ⟩
+                  (g A ∨ g B)                            ⊑∎
+             where
+              c : Fin n + Fin n'
+              c = ⌜ Fin+homo n n' ⌝ k
+              ψ : (c : Fin n + Fin n')
+                 → (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') c ⊑ (g A ∨ g B)
+              ψ (inl k) = (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') (inl k) ⊑⟨ u₁ ⟩
+                          (f ∘ pr₁ ∘ e) k                              ⊑⟨ u₂ ⟩
+                          ∨ⁿ (f ∘ pr₁ ∘ e)                             ⊑⟨ u₃ ⟩
+                          g' ⟨ A ⟩ (n , e , σ)                         ⊑⟨ u₄ ⟩
+                          g A                                          ⊑⟨ u₅ ⟩
+                          g A ∨ g B                                    ⊑∎
+               where
+                u₁ = ⊑-is-reflexive ((f ∘ pr₁ ∘ e) k)
+                u₂ = ∨ⁿ-is-upperbound (f ∘ pr₁ ∘ e) k
+                u₃ = ⊑-is-reflexive (∨ⁿ (f ∘ pr₁ ∘ e))
+                u₄ = ≡-to-⊑ ((g-in-terms-of-g' ⟨ A ⟩ σ ⟨ A ⟩₂) ⁻¹)
+                u₅ = ∨-is-upperbound₁ (g A) (g B)
+              ψ (inr k) = (f ∘ pr₁ ∘ ∪-enum' ⟨ A ⟩ ⟨ B ⟩ e e') (inr k) ⊑⟨ u₁' ⟩
+                          (f ∘ pr₁ ∘ e') k                             ⊑⟨ u₂' ⟩
+                          ∨ⁿ (f ∘ pr₁ ∘ e')                            ⊑⟨ u₃' ⟩
+                          g' ⟨ B ⟩ (n' , e' , σ')                      ⊑⟨ u₄' ⟩
+                          g B                                          ⊑⟨ u₅' ⟩
+                          g A ∨ g B                                    ⊑∎
+               where
+                u₁' = ⊑-is-reflexive ((f ∘ pr₁ ∘ e') k)
+                u₂' = ∨ⁿ-is-upperbound (f ∘ pr₁ ∘ e') k
+                u₃' = ⊑-is-reflexive (∨ⁿ (f ∘ pr₁ ∘ e'))
+                u₄' = ≡-to-⊑ ((g-in-terms-of-g' ⟨ B ⟩ σ' ⟨ B ⟩₂) ⁻¹)
+                u₅' = ∨-is-upperbound₂ (g A) (g B)
 
   g-preserves-⊥ : g (⊥[𝓚]) ≡ ⊥
   g-preserves-⊥ = ⊑-is-antisymmetric _ _ u v
@@ -484,6 +514,48 @@ module _
       u₂ = ⊑-is-reflexive ⊥
     v : ⊥ ⊑ g ⊥[𝓚]
     v = ⊥-is-least (g ⊥[𝓚])
+
+module _
+        (𝓛 : JoinSemiLattice 𝓥 𝓣)
+       where
+
+ open JoinSemiLattice 𝓛
+
+ module _
+         (𝓛' : JoinSemiLattice 𝓥' 𝓣')
+        where
+
+  open JoinSemiLattice 𝓛' renaming (L to L'
+                                  ; L-is-set to L'-is-set
+                                  ; _⊑_ to _⊑'_
+                                  ; ⊑-is-prop to ⊑'-is-prop
+                                  ; ⊑-is-reflexive to ⊑'-is-reflexive
+                                  ; ⊑-is-transitive to ⊑'-is-transitive
+                                  ; ⊑-is-antisymmetric to ⊑'-is-antisymmetric
+                                  ; ⊥ to ⊥'
+                                  ; ⊥-is-least to ⊥'-is-least
+                                  ; _∨_ to _∨'_
+                                  ; ∨-is-upperbound₁ to ∨'-is-upperbound₁
+                                  ; ∨-is-upperbound₂ to ∨'-is-upperbound₂
+                                  ; ∨-is-lowerbound-of-upperbounds to
+                                    ∨'-is-lowerbound-of-upperbounds
+                                  ; ∨ⁿ to ∨'ⁿ)
+
+  finite-join-preservation : (f : L → L')
+                           → f ⊥ ≡ ⊥'
+                           → ((x y : L) → f (x ∨ y) ≡ (f  x) ∨' (f y))
+                           → {n : ℕ} (e : Fin n → L)
+                           → f (∨ⁿ e) ≡ ∨'ⁿ (f ∘ e)
+  finite-join-preservation f p₁ p₂ {zero} e = p₁
+  finite-join-preservation f p₁ p₂ {succ n} e =
+   f (∨ⁿ e)                               ≡⟨ refl ⟩
+   f (∨ⁿ (e ∘ inl) ∨ e (inr *))           ≡⟨ p₂ (∨ⁿ (e ∘ inl)) (e (inr *)) ⟩
+   (f (∨ⁿ (e ∘ inl))) ∨' (f (e (inr *)))  ≡⟨ ap (λ - → - ∨' f (e (inr *))) IH ⟩
+   (∨'ⁿ (f ∘ e ∘ inl)) ∨' (f (e (inr *))) ≡⟨ refl ⟩
+   ∨'ⁿ (f ∘ e)                            ∎
+    where
+     IH : f (∨ⁿ (e ∘ inl)) ≡ ∨'ⁿ (f ∘ e ∘ inl)
+     IH = finite-join-preservation f p₁ p₂ (e ∘ inl)
 
 {-
 
