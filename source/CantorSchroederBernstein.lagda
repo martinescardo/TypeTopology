@@ -96,7 +96,7 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
   d x = equality-cases (r x)
          (λ (a : A) (u : r x ≡ inl a) → inl (a , u))
          (λ (y : X) (v : r x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
-                                                                    r x   ≡⟨ v    ⟩
+                                                                    r x   ≡⟨ v ⟩
                                                                     inr y ∎)))
 
   e : decidable (Σ x ꞉ X , P x)
@@ -435,8 +435,8 @@ left-cancellability of h:
    where
     q : g (f x) ≡ x'
     q = have p ∶ f x ≡ g⁻¹ x' γ
-        so-use (g (f x)      ≡⟨ ap g p            ⟩
-                g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
+        so-use (g (f x)      ≡⟨ ap g p ⟩
+                g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ ⟩
                 x'           ∎)
 
     u : ¬ is-g-point (g (f x))
@@ -468,8 +468,8 @@ prove properties of H and then specialize them to h:
 
     l (inl γ) (inl γ') p = have p ∶ g⁻¹ x γ ≡ g⁻¹ x' γ'
                            so (x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
-                               g (g⁻¹ x γ)   ≡⟨ ap g p              ⟩
-                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                               g (g⁻¹ x γ)   ≡⟨ ap g p ⟩
+                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ' ⟩
                                x'            ∎)
 
     l (inl γ) (inr ν') p = have p ∶ g⁻¹ x γ ≡ f x'
@@ -568,7 +568,7 @@ purpose.
     a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
-      ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition    ⟩
+      ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition ⟩
                    g⁻¹ (g y) γ'     ≡⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
@@ -589,7 +589,7 @@ purpose.
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
       ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
-                  f x         ≡⟨ p             ⟩
+                  f x         ≡⟨ p ⟩
                   y           ∎
 
     b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ≡ y)
@@ -600,7 +600,7 @@ purpose.
 
     p : h x ≡ y
     p = h x       ≡⟨ by-construction ⟩
-        H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
+        H x (δ x) ≡⟨ pr₂ b (δ x) ⟩
         y         ∎
 
 \end{code}
@@ -737,8 +737,8 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
                         → f x ≢ g⁻¹ x' γ
   f-g⁻¹-disjoint-images x x' ν γ p = 𝟘-elim (v γ)
    where
-    q = g (f x)      ≡⟨ ap g p            ⟩
-        g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ  ⟩
+    q = g (f x)      ≡⟨ ap g p ⟩
+        g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ ⟩
         x'           ∎
 
     u : ¬ is-g-point (g (f x))
@@ -764,9 +764,9 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
   h-lc {x} {x'} = l (δ x) (δ x')
    where
     l : (d : decidable (is-g-point x)) (d' : decidable (is-g-point x')) → H x d ≡ H x' d' → x ≡ x'
-    l (inl γ) (inl γ') p = x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹     ⟩
-                           g (g⁻¹ x γ)   ≡⟨ ap g p                  ⟩
-                           g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+    l (inl γ) (inl γ') p = x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
+                           g (g⁻¹ x γ)   ≡⟨ ap g p ⟩
+                           g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ' ⟩
                            x'            ∎
     l (inl γ) (inr ν') p = 𝟘-elim(f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
     l (inr ν) (inl γ') p = 𝟘-elim(f-g⁻¹-disjoint-images x  x' ν  γ' p)
@@ -838,7 +838,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
 
     p : h x ≡ y
     p = h x       ≡⟨ by-construction ⟩
-        H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
+        H x (δ x) ≡⟨ pr₂ b (δ x) ⟩
         y         ∎
 
   𝒽 : X ≃ Y
@@ -894,9 +894,9 @@ is-prop-total-gives-is-prop-each A j i x a a' = t
   q : (x , a) ≡ (x , a')
   q = i (x , a) (x , a')
 
-  t = a                        ≡⟨ by-definition                                ⟩
+  t = a                        ≡⟨ by-definition ⟩
       transport A refl       a ≡⟨ ap (- ↦ transport A - a) (j refl (ap pr₁ q)) ⟩
-      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q                                  ⟩
+      transport A (ap pr₁ q) a ≡⟨ from-Σ-≡' q ⟩
       a'                       ∎
 
 \end{code}
@@ -976,7 +976,7 @@ blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ
   d x = equality-cases (f x)
          (λ (p : P) (u : f x ≡ inl p) → inl (p , u))
          (λ (y : X) (v : f x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
-                                                                    f x   ≡⟨ v    ⟩
+                                                                    f x   ≡⟨ v ⟩
                                                                     inr y ∎)))
 
   k : (x : X) → is-prop (A x)
@@ -986,9 +986,9 @@ blemma {𝓤} {𝓥 } P {X} j i (f , (s , η) , (r , ε)) = A , d , l , (φ , γ
   l (x , p , u) (x' , p' , u') = t
    where
     q : x ≡ x'
-    q = equivs-are-lc f ((s , η) , (r , ε)) (f x    ≡⟨ u               ⟩
+    q = equivs-are-lc f ((s , η) , (r , ε)) (f x    ≡⟨ u ⟩
                                              inl p  ≡⟨ ap inl (i p p') ⟩
-                                             inl p' ≡⟨ u' ⁻¹           ⟩
+                                             inl p' ≡⟨ u' ⁻¹ ⟩
                                              f x'   ∎)
 
     t : x , p , u ≡ x' , p' , u'
@@ -1085,9 +1085,9 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
     a : x ≡ f (P , i , p)
     a = ap f (c (P , i , p))
 
-    b = inr y                                 ≡⟨ r ⁻¹                          ⟩
-        ⌜ φ P i ⌝ x                           ≡⟨ ap ⌜ φ P i ⌝ a                ⟩
-        ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition                 ⟩
+    b = inr y                                 ≡⟨ r ⁻¹ ⟩
+        ⌜ φ P i ⌝ x                           ≡⟨ ap ⌜ φ P i ⌝ a ⟩
+        ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition ⟩
         ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
         inl p                                 ∎
 

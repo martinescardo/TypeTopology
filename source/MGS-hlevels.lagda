@@ -36,9 +36,9 @@ Hedberg : {X : 𝓤 ̇ } (x : X)
 
 Hedberg {𝓤} {X} x c y p q =
 
- p                         ≡⟨ a y p                                     ⟩
+ p                         ≡⟨ a y p ⟩
  (f x (refl x))⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
- (f x (refl x))⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹                                 ⟩
+ (f x (refl x))⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹ ⟩
  q                         ∎
 
  where

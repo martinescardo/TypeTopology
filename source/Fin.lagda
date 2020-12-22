@@ -174,7 +174,7 @@ open import UF-LeftCancellable
   m : left-cancellable g
   m {x} {x'} p = q
    where
-    r = f (suc x)  ≡⟨ a x      ⟩
+    r = f (suc x)  ≡⟨ a x ⟩
         suc (g x)  ≡⟨ ap suc p ⟩
         suc (g x') ≡⟨ (a x')⁻¹ ⟩
         f (suc x') ∎

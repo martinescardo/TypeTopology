@@ -170,7 +170,7 @@ hfunext₂-≃ : hfunext 𝓤 (𝓥 ⊔ 𝓦) → hfunext 𝓥 𝓦
 
 hfunext₂-≃ fe fe' {X} f g =
 
- (f ≡ g)                  ≃⟨ i  ⟩
+ (f ≡ g)                  ≃⟨ i ⟩
  (∀ x → f x ≡ g x)        ≃⟨ ii ⟩
  (∀ x y → f x y ≡ g x y)  ■
 
@@ -291,10 +291,10 @@ being-hae-is-subsingleton fe₀ fe₁ fe₂ {X} {Y} f = subsingleton-criterion' 
     i  = λ g ε x → Σ-≡-≃ (g (f x) , ε (f x)) (x , refl (f x))
     ii = λ g ε x → Σ-cong (λ p → transport-ap-≃ f p (ε (f x)))
 
-  b = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))         ≃⟨ i   ⟩
-      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))          ≃⟨ ii  ⟩
+  b = (Σ (g , ε) ꞉ has-section f , ∀ x → (g (f x) , ε (f x)) ≡ (x , refl (f x)))         ≃⟨ i ⟩
+      (Σ (g , ε) ꞉ has-section f , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))          ≃⟨ ii ⟩
       (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , ∀ x → Σ  p ꞉ g (f x) ≡ x , ap f p ≡ ε (f x))   ≃⟨ iii ⟩
-      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ≡ ε (f x)) ≃⟨ iv  ⟩
+      (Σ g ꞉ (Y → X) , Σ ε ꞉ f ∘ g ∼ id , Σ η ꞉ g ∘ f ∼ id , ∀ x → ap f (η x) ≡ ε (f x)) ≃⟨ iv ⟩
       is-hae f                                                                           ■
    where
     i   = Σ-cong (λ (g , ε) → Π-cong fe₂ fe₂ (a g ε))

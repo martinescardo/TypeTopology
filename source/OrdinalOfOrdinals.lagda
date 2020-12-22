@@ -632,7 +632,7 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
 
 \end{code}
 
- We denote the ordinal of ordinals in the universe U by O. It lives in
+ We denote the ordinal of ordinals in the universe 𝓤 by O. It lives in
  the next universe 𝓤 ⁺.
 
 \begin{code}

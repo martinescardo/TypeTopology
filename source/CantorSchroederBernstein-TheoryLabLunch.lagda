@@ -233,7 +233,7 @@ Pradic-Brown-lemma {𝓤} {𝓥} {X} {A} (r , s , η) c = γ e
   d x = equality-cases (r x)
          (λ (a : A) (u : r x ≡ inl a) → inl (a , u))
          (λ (y : X) (v : r x ≡ inr y) → inr (λ (a , u) → +disjoint (inl a ≡⟨ u ⁻¹ ⟩
-                                                                    r x   ≡⟨ v    ⟩
+                                                                    r x   ≡⟨ v ⟩
                                                                     inr y ∎)))
 
   e : decidable (Σ x ꞉ X , P x)
@@ -567,7 +567,7 @@ left-cancellability of h:
    where
     q : g (f x) ≡ x'
     q = have p ∶ f x ≡ g⁻¹ x' γ
-        so-use (g (f x)      ≡⟨ ap g p           ⟩
+        so-use (g (f x)      ≡⟨ ap g p ⟩
                 g (g⁻¹ x' γ) ≡⟨ g⁻¹-is-rinv x' γ ⟩
                 x'           ∎)
     u : ¬ is-g-point (g (f x))
@@ -598,8 +598,8 @@ prove properties of H and then specialize them to h:
 
     l (inl γ) (inl γ') p = have p ∶ g⁻¹ x γ  ≡ g⁻¹ x'  γ'
                            so (x             ≡⟨ (g⁻¹-is-rinv x γ)⁻¹ ⟩
-                               g (g⁻¹ x  γ ) ≡⟨ ap g p              ⟩
-                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ'   ⟩
+                               g (g⁻¹ x  γ ) ≡⟨ ap g p ⟩
+                               g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ' ⟩
                                x'            ∎)
 
     l (inl γ) (inr ν') p = have p ∶ g⁻¹ x γ ≡ f x'
@@ -697,7 +697,7 @@ purpose.
     a (inl γ) = g y , ψ
      where
       ψ : (d : decidable (is-g-point (g y))) → H (g y) d ≡ y
-      ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition    ⟩
+      ψ (inl γ') = H (g y) (inl γ') ≡⟨ by-definition ⟩
                    g⁻¹ (g y) γ'     ≡⟨ g⁻¹-is-linv y γ' ⟩
                    y                ∎
       ψ (inr ν)  = have ν ∶ ¬ is-g-point (g y)
@@ -715,7 +715,7 @@ purpose.
       ψ (inl γ) = have γ ∶ is-g-point x
                   which-is-impossible-by (pr₂ w ∶ ¬ is-g-point x)
       ψ (inr ν) = H x (inr ν) ≡⟨ by-definition ⟩
-                  f x         ≡⟨ p             ⟩
+                  f x         ≡⟨ p ⟩
                   y           ∎
     b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))
@@ -723,7 +723,7 @@ purpose.
     x = pr₁ b
     p : h x ≡ y
     p = h x       ≡⟨ by-construction ⟩
-        H x (δ x) ≡⟨ pr₂ b (δ x)     ⟩
+        H x (δ x) ≡⟨ pr₂ b (δ x) ⟩
         y         ∎
 
 \end{code}

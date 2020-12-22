@@ -40,7 +40,7 @@ module ℕ-more where
   ≼-prop-valued x y (z , p) (z' , p') = γ
    where
     q : z ≡ z'
-    q = +-lc x z z' (x ∔ z  ≡⟨ p     ⟩
+    q = +-lc x z z' (x ∔ z  ≡⟨ p ⟩
                      y      ≡⟨ p' ⁻¹ ⟩
                      x ∔ z' ∎)
 
@@ -98,9 +98,9 @@ G↑-≃-equation : (ua : is-univalent (𝓤 ⊔ 𝓥))
               → (a : A (Lift 𝓥 X , ≃-Lift X))
               → G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡ a
 G↑-≃-equation {𝓤} {𝓥} {𝓦} ua X A a =
-  G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl (transport A p a)       ⟩
+  G↑-≃ ua X A a (Lift 𝓥 X) (≃-Lift X) ≡⟨ refl (transport A p a) ⟩
   transport A p a                     ≡⟨ ap (λ - → transport A - a) q ⟩
-  transport A (refl t) a              ≡⟨ refl a                       ⟩
+  transport A (refl t) a              ≡⟨ refl a ⟩
   a                                   ∎
  where
   t : (Σ Y ꞉ 𝓤 ⊔ 𝓥 ̇ , X ≃ Y)
@@ -133,9 +133,9 @@ pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
- retractions-into Y                                              ≃⟨ i      ⟩
+ retractions-into Y                                              ≃⟨ i ⟩
  (Σ X ꞉ 𝓤 ̇ , Σ f ꞉ (X → Y) , ((y : Y) → Σ x ꞉ X , f x ≡ y))     ≃⟨ id-≃ _ ⟩
- ((𝓤 /[ id ] Y))                                                 ≃⟨ ii     ⟩
+ ((𝓤 /[ id ] Y))                                                 ≃⟨ ii ⟩
  (Y → pointed-types 𝓤)                                           ■
  where
   i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))
@@ -214,7 +214,7 @@ positive-cantors-diagonal = sol
     φ : (n : ℕ) → α ≢ e n
     φ n p = succ-no-fixed-point (e n n) q
      where
-      q = succ (e n n)  ≡⟨ refl (α n)       ⟩
+      q = succ (e n n)  ≡⟨ refl (α n) ⟩
           α n           ≡⟨ ap (λ - → - n) p ⟩
           e n n         ∎
 
@@ -253,7 +253,7 @@ cantors-diagonal = sol
       γ : (m n : 𝟚) → h ₀ ≡ m → h ₁ ≡ n → g (h ₀) ≡ (h , e)
 
       γ ₀ ₀ p q = !𝟘 (g (h ₀) ≡ (h , e))
-                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q    ⟩
+                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
                                                      ₀   ≡⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
@@ -261,28 +261,28 @@ cantors-diagonal = sol
                      (being-equiv-is-subsingleton fe fe)
                      (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
                                (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                                pr₁ (g ₀) ₀     ≡⟨ refl ₀                   ⟩
-                                ₀               ≡⟨ p ⁻¹                     ⟩
+                                pr₁ (g ₀) ₀     ≡⟨ refl ₀ ⟩
+                                ₀               ≡⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
                                (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                                pr₁ (g ₀) ₁     ≡⟨ refl ₁                   ⟩
-                                ₁               ≡⟨ q ⁻¹                     ⟩
+                                pr₁ (g ₀) ₁     ≡⟨ refl ₁ ⟩
+                                ₁               ≡⟨ q ⁻¹ ⟩
                                 h ₁             ∎)))
 
       γ ₁ ₀ p q = to-subtype-≡
                      (being-equiv-is-subsingleton fe fe)
                      (fe (𝟚-induction (λ n → pr₁ (g (h ₀)) n ≡ h n)
                                (pr₁ (g (h ₀)) ₀ ≡⟨ ap (λ - → pr₁ (g -) ₀) p ⟩
-                                pr₁ (g ₁) ₀     ≡⟨ refl ₁                   ⟩
-                                ₁               ≡⟨ p ⁻¹                     ⟩
+                                pr₁ (g ₁) ₀     ≡⟨ refl ₁ ⟩
+                                ₁               ≡⟨ p ⁻¹ ⟩
                                 h ₀             ∎)
                                (pr₁ (g (h ₀)) ₁ ≡⟨ ap (λ - → pr₁ (g -) ₁) p ⟩
-                                pr₁ (g ₁) ₁     ≡⟨ refl ₀                   ⟩
-                                ₀               ≡⟨ q ⁻¹                     ⟩
+                                pr₁ (g ₁) ₁     ≡⟨ refl ₀ ⟩
+                                ₀               ≡⟨ q ⁻¹ ⟩
                                 h ₁             ∎)))
 
       γ ₁ ₁ p q = !𝟘 (g (h ₀) ≡ (h , e))
-                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q    ⟩
+                     (₁-is-not-₀ (equivs-are-lc h e (h ₁ ≡⟨ q ⟩
                                                      ₁   ≡⟨ p ⁻¹ ⟩
                                                      h ₀ ∎)))
 
@@ -295,9 +295,9 @@ lifttwo = sol
   sol : is-univalent 𝓤₀ → is-univalent 𝓤₁ → (𝟚 ≡ 𝟚) ≡ Lift 𝓤₁ 𝟚
   sol ua₀ ua₁ = Eq→Id ua₁ (𝟚 ≡ 𝟚) (Lift 𝓤₁ 𝟚) e
    where
-    e = (𝟚 ≡ 𝟚)   ≃⟨ Id→Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚                                  ⟩
+    e = (𝟚 ≡ 𝟚)   ≃⟨ Id→Eq 𝟚 𝟚 , ua₀ 𝟚 𝟚 ⟩
         (𝟚 ≃ 𝟚)   ≃⟨ 𝟚-has-𝟚-automorphisms (univalence-gives-dfunext ua₀) ⟩
-        𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚)                                     ⟩
+        𝟚         ≃⟨ ≃-sym (Lift-≃ 𝟚) ⟩
         Lift 𝓤₁ 𝟚 ■
 
 hde-is-subsingleton : dfunext 𝓤 𝓤₀

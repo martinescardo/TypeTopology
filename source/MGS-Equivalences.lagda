@@ -77,7 +77,7 @@ invertibles-are-equivs {𝓤} {𝓥} {X} {Y} f (g , η , ε) y₀ = iii
 
   ii : fiber f y₀ ◁ singleton-type y₀
   ii = (Σ x ꞉ X , f x ≡ y₀)     ◁⟨ Σ-reindexing-retract g (f , η) ⟩
-       (Σ y ꞉ Y , f (g y) ≡ y₀) ◁⟨ Σ-retract i                    ⟩
+       (Σ y ꞉ Y , f (g y) ≡ y₀) ◁⟨ Σ-retract i ⟩
        (Σ y ꞉ Y , y ≡ y₀)       ◀
 
   iii : is-singleton (fiber f y₀)
@@ -105,11 +105,11 @@ id-invertible X = 𝑖𝑑 X , refl , refl
   g ∘ g' , η , ε
  where
   η = λ x → g (g' (f' (f x))) ≡⟨ ap g (gf' (f x)) ⟩
-            g (f x)           ≡⟨ gf x             ⟩
+            g (f x)           ≡⟨ gf x ⟩
             x                 ∎
 
   ε = λ z → f' (f (g (g' z))) ≡⟨ ap f' (fg (g' z)) ⟩
-            f' (g' z)         ≡⟨ fg' z             ⟩
+            f' (g' z)         ≡⟨ fg' z ⟩
             z                 ∎
 
 id-is-equiv : (X : 𝓤 ̇ ) → is-equiv (𝑖𝑑 X)
@@ -133,9 +133,9 @@ inverse-of-∘ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
 
 inverse-of-∘ f g i j z =
 
-  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹                         ⟩
+  f' (g' z)             ≡⟨ (ap (f' ∘ g') (s z))⁻¹ ⟩
   f' (g' (g (f (h z)))) ≡⟨ ap f' (inverses-are-retractions g j (f (h z))) ⟩
-  f' (f (h z))          ≡⟨ inverses-are-retractions f i (h z)             ⟩
+  f' (f (h z))          ≡⟨ inverses-are-retractions f i (h z) ⟩
   h z                   ∎
 
  where

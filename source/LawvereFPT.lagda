@@ -589,8 +589,8 @@ module GeneralizedCoquand where
 
      rs : (f : B → X) → r (s f) ≡ f
      rs f = r (s f)                                      ≡⟨ refl ⟩
-            transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ≡⟨ i    ⟩
-            transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ≡⟨ ii   ⟩
+            transport H (ap pr₁ (η Rf)) (pr₂ (ρ (σ Rf))) ≡⟨ i ⟩
+            transport (H ∘ pr₁) (η Rf)  (pr₂ (ρ (σ Rf))) ≡⟨ ii ⟩
             pr₂ Rf                                       ≡⟨ refl ⟩
             f                                            ∎
           where
@@ -745,8 +745,8 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
 
       rs : (f : B → X) → r (s f) ≡ f
       rs f = r (s f)                                            ≡⟨ refl ⟩
-             transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ≡⟨ i    ⟩
-             transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ≡⟨ ii   ⟩
+             transport H (ap pr₁ (η p Rf)) (pr₂ (ρ p (σ p Rf))) ≡⟨ i ⟩
+             transport (H ∘ pr₁) (η p Rf)  (pr₂ (ρ p (σ p Rf))) ≡⟨ ii ⟩
              pr₂ Rf                                             ≡⟨ refl ⟩
              f                                                  ∎
            where

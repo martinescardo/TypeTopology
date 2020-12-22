@@ -36,7 +36,7 @@ is-subsingleton X = (x y : X) → x ≡ y
 
 singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
-                                             c ≡⟨ φ y     ⟩
+                                             c ≡⟨ φ y ⟩
                                              y ∎
 
 𝟙-is-subsingleton : is-subsingleton 𝟙

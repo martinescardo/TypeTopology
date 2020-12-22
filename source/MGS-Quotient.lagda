@@ -109,9 +109,9 @@ module quotient
        h : (Σ x' ꞉ X , (η x' ≡ η x) × (f x' ≡ a))
          → (Σ y' ꞉ X , (η y' ≡ η x) × (f y' ≡ b))
          → a ≡ b
-       h (x' , r , s) (y' , t , u) = a    ≡⟨ s ⁻¹                         ⟩
+       h (x' , r , s) (y' , t , u) = a    ≡⟨ s ⁻¹ ⟩
                                      f x' ≡⟨ τ (η-equal-equiv (r ∙ t ⁻¹)) ⟩
-                                     f y' ≡⟨ u                            ⟩
+                                     f y' ≡⟨ u ⟩
                                      b    ∎
 
        p : a ≡ b
@@ -136,7 +136,7 @@ module quotient
      g y = pr₂ (k (η y))
 
      j : (y : X) → (Σ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
-     j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹                ⟩
+     j y (x , p , q) = f' (η y) ≡⟨ q ⁻¹ ⟩
                        f x      ≡⟨ τ (η-equal-equiv p) ⟩
                        f y      ∎
 

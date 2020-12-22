@@ -379,11 +379,11 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  inv-lemma X _·_  e (s , l , r , a) x y z q p =
 
-    y             ≡⟨ (r y)⁻¹          ⟩
+    y             ≡⟨ (r y)⁻¹ ⟩
     (y · e)       ≡⟨ ap (y ·_) (p ⁻¹) ⟩
-    (y · (x · z)) ≡⟨ (a y x z)⁻¹      ⟩
-    ((y · x) · z) ≡⟨ ap (_· z) q      ⟩
-    (e · z)       ≡⟨ l z              ⟩
+    (y · (x · z)) ≡⟨ (a y x z)⁻¹ ⟩
+    ((y · x) · z) ≡⟨ ap (_· z) q ⟩
+    (e · z)       ≡⟨ l z ⟩
     z             ∎
 
  group-axiom-is-prop : (X : 𝓤 ̇ )
@@ -491,11 +491,11 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
  idempotent-is-unit G x p = γ
   where
    x' = inv G x
-   γ = x                        ≡⟨ (unit-left G x)⁻¹                        ⟩
+   γ = x                        ≡⟨ (unit-left G x)⁻¹ ⟩
        unit G ·⟨ G ⟩ x          ≡⟨ (ap (λ - → - ·⟨ G ⟩ x) (inv-left G x))⁻¹ ⟩
-       (x' ·⟨ G ⟩ x) ·⟨ G ⟩ x   ≡⟨ assoc G x' x x                           ⟩
-       x' ·⟨ G ⟩ (x ·⟨ G ⟩ x)   ≡⟨ ap (λ - → x' ·⟨ G ⟩ -) p                 ⟩
-       x' ·⟨ G ⟩ x              ≡⟨ inv-left G x                             ⟩
+       (x' ·⟨ G ⟩ x) ·⟨ G ⟩ x   ≡⟨ assoc G x' x x ⟩
+       x' ·⟨ G ⟩ (x ·⟨ G ⟩ x)   ≡⟨ ap (λ - → x' ·⟨ G ⟩ -) p ⟩
+       x' ·⟨ G ⟩ x              ≡⟨ inv-left G x ⟩
        unit G                   ∎
 
  unit-preservation-lemma : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
@@ -506,8 +506,8 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
   where
    e  = f (unit G)
 
-   p = e ·⟨ H ⟩ e               ≡⟨ ap (λ - → - (unit G) (unit G)) (m ⁻¹)    ⟩
-       f (unit G ·⟨ G ⟩ unit G) ≡⟨ ap f (unit-left G (unit G))              ⟩
+   p = e ·⟨ H ⟩ e               ≡⟨ ap (λ - → - (unit G) (unit G)) (m ⁻¹) ⟩
+       f (unit G ·⟨ G ⟩ unit G) ≡⟨ ap f (unit-left G (unit G)) ⟩
        e                        ∎
 
  inv-Lemma : (G : Group) (x y z : ⟨ G ⟩)
@@ -538,8 +538,8 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  inv-preservation-lemma G H f m x = γ
   where
-   p = f (inv G x) ·⟨ H ⟩ f x ≡⟨ (ap (λ - → - (inv G x) x) m)⁻¹  ⟩
-       f (inv G x ·⟨ G ⟩ x)   ≡⟨ ap f (inv-left G x)             ⟩
+   p = f (inv G x) ·⟨ H ⟩ f x ≡⟨ (ap (λ - → - (inv G x) x) m)⁻¹ ⟩
+       f (inv G x ·⟨ G ⟩ x)   ≡⟨ ap f (inv-left G x) ⟩
        f (unit G)             ≡⟨ unit-preservation-lemma G H f m ⟩
        unit H                 ∎
 
@@ -716,11 +716,11 @@ module subgroup
      i' = (pmult' , punit')
 
      p : _*_ ≡ _*'_
-     p = dfunext fe (λ x → dfunext fe (λ y → h-lc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult     ⟩
+     p = dfunext fe (λ x → dfunext fe (λ y → h-lc (h (x * y)  ≡⟨  ap (λ - → - x y) pmult ⟩
                                                    h x · h y  ≡⟨ (ap (λ - → - x y) pmult')⁻¹ ⟩
                                                    h (x *' y) ∎)))
      q : unitH ≡ unitH'
-     q = h-lc (h unitH  ≡⟨  punit     ⟩
+     q = h-lc (h unitH  ≡⟨  punit ⟩
                unit G   ≡⟨  punit' ⁻¹ ⟩
                h unitH' ∎)
 
@@ -764,38 +764,38 @@ module subgroup
      pinv x = fiber-identification (invc (h x) (φ x))
 
      unitH-left : (x : X) → unitH * x ≡ x
-     unitH-left x = h-lc (h (unitH * x) ≡⟨ pmul unitH x      ⟩
+     unitH-left x = h-lc (h (unitH * x) ≡⟨ pmul unitH x ⟩
                           h unitH · h x ≡⟨ ap (_· h x) punit ⟩
                           unit G · h x  ≡⟨ unit-left G (h x) ⟩
                           h x           ∎)
 
      unitH-right : (x : X) → x * unitH ≡ x
-     unitH-right x = h-lc (h (x * unitH) ≡⟨ pmul x unitH       ⟩
-                           h x · h unitH ≡⟨ ap (h x ·_) punit  ⟩
+     unitH-right x = h-lc (h (x * unitH) ≡⟨ pmul x unitH ⟩
+                           h x · h unitH ≡⟨ ap (h x ·_) punit ⟩
                            h x · unit G  ≡⟨ unit-right G (h x) ⟩
                            h x           ∎)
 
      assocH : (x y z : X) → ((x * y) * z) ≡ (x * (y * z))
-     assocH x y z = h-lc (h ((x * y) * z)   ≡⟨ pmul (x * y) z             ⟩
-                          h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y)     ⟩
-                          (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z)  ⟩
+     assocH x y z = h-lc (h ((x * y) * z)   ≡⟨ pmul (x * y) z ⟩
+                          h (x * y) · h z   ≡⟨ ap (_· h z) (pmul x y) ⟩
+                          (h x · h y) · h z ≡⟨ assoc G (h x) (h y) (h z) ⟩
                           h x · (h y · h z) ≡⟨ (ap (h x ·_) (pmul y z))⁻¹ ⟩
-                          h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹         ⟩
+                          h x · h (y * z)   ≡⟨ (pmul x (y * z))⁻¹ ⟩
                           h (x * (y * z))   ∎)
 
      group-axiomH : (x : X) → Σ x' ꞉ X , (x * x' ≡ unitH) × (x' * x ≡ unitH)
      group-axiomH x = invH x ,
 
-                      h-lc (h (x * invH x)     ≡⟨ pmul x (invH x)      ⟩
+                      h-lc (h (x * invH x)     ≡⟨ pmul x (invH x) ⟩
                             h x · h (invH x)   ≡⟨ ap (h x ·_) (pinv x) ⟩
-                            h x · inv G (h x)  ≡⟨ inv-right G (h x)    ⟩
-                            unit G             ≡⟨ punit ⁻¹             ⟩
+                            h x · inv G (h x)  ≡⟨ inv-right G (h x) ⟩
+                            unit G             ≡⟨ punit ⁻¹ ⟩
                             h unitH            ∎),
 
-                      h-lc ((h (invH x * x)    ≡⟨ pmul (invH x) x      ⟩
+                      h-lc ((h (invH x * x)    ≡⟨ pmul (invH x) x ⟩
                              h (invH x) · h x  ≡⟨ ap (_· h x) (pinv x) ⟩
-                             inv G (h x) · h x ≡⟨ inv-left G (h x)     ⟩
-                             unit G            ≡⟨ punit ⁻¹             ⟩
+                             inv G (h x) · h x ≡⟨ inv-left G (h x) ⟩
+                             unit G            ≡⟨ punit ⁻¹ ⟩
                              h unitH           ∎))
 
      j : is-set X
@@ -822,14 +822,14 @@ module subgroup
 
      mulc : ((x y : ⟨ G ⟩) → fiber h x → fiber h y → fiber h (x · y))
      mulc x y (a , p) (b , q) = (a * b) ,
-                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult    ⟩
+                                (h (a * b) ≡⟨ ap (λ - → - a b) pmult ⟩
                                  h a · h b ≡⟨ ap₂ (λ - -' → - · -') p q ⟩
                                  x · y     ∎)
 
      invc : ((x : ⟨ G ⟩) → fiber h x → fiber h (inv G x))
      invc x (a , p) = inv H a ,
                       (h (inv H a) ≡⟨ inv-preservation-lemma H G h pmult a ⟩
-                       inv G (h a) ≡⟨ ap (inv G) p                         ⟩
+                       inv G (h a) ≡⟨ ap (inv G) p ⟩
                        inv G x     ∎)
 
    fiber-structure-lemma : group-closed (fiber h)
@@ -847,13 +847,13 @@ module subgroup
                                                            × is-homomorphism H G h)
   characterization-of-the-type-of-subgroups =
 
-   Subgroups                                                                                       ≃⟨ i    ⟩
-   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii   ⟩
-   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii  ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv   ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v    ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi   ⟩
-   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii  ⟩
+   Subgroups                                                                                       ≃⟨ i ⟩
+   (Σ A ꞉ 𝓟 ⟨ G ⟩ , group-closed (_∈ A))                                                           ≃⟨ ii ⟩
+   (Σ (X , h , e) ꞉ Subtypes ⟨ G ⟩ , group-closed (fiber h))                                       ≃⟨ iii ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , group-closed (fiber h))                                     ≃⟨ iv ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ (h , e) ꞉ X ↪ ⟨ G ⟩ , Σ τ ꞉ T X , is-homomorphism (X , τ) G h)                    ≃⟨ v ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ e ꞉ is-embedding h , Σ τ ꞉ T X , is-homomorphism (X , τ) G h) ≃⟨ vi ⟩
+   (Σ X ꞉ 𝓤 ̇ , Σ h ꞉ (X → ⟨ G ⟩) , Σ τ ꞉ T X , Σ e ꞉ is-embedding h , is-homomorphism (X , τ) G h) ≃⟨ vii ⟩
    (Σ X ꞉ 𝓤 ̇ , Σ τ ꞉ T X , Σ h ꞉ (X → ⟨ G ⟩) , is-embedding h × is-homomorphism (X , τ) G h)       ≃⟨ viii ⟩
    (Σ H ꞉ Group , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩) , is-embedding h × is-homomorphism H G h)                  ■
 
@@ -917,7 +917,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
      a : (O O' : R) → ((x : R) → x + O ≡ x) → ((x : R) → x + O' ≡ x) → O ≡ O'
      a O O' f f' = O       ≡⟨ (f' O)⁻¹ ⟩
                   (O + O') ≡⟨ iii O O' ⟩
-                  (O' + O) ≡⟨ f O'     ⟩
+                  (O' + O) ≡⟨ f O' ⟩
                    O'      ∎
 
      b : (O : R) → is-prop ((x : R) → x + O ≡ x)
@@ -929,13 +929,13 @@ module ring {𝓤 : Universe} (ua : Univalence) where
      c O f x (x' , p') (x'' , p'') = to-subtype-≡ (λ y → i {x + y} {O}) r
       where
        r : x' ≡ x''
-       r = x'               ≡⟨ (f x')⁻¹               ⟩
-           (x' + O)         ≡⟨ ap (x' +_) (p'' ⁻¹)    ⟩
-           (x' + (x + x'')) ≡⟨ (ii x' x x'')⁻¹        ⟩
+       r = x'               ≡⟨ (f x')⁻¹ ⟩
+           (x' + O)         ≡⟨ ap (x' +_) (p'' ⁻¹) ⟩
+           (x' + (x + x'')) ≡⟨ (ii x' x x'')⁻¹ ⟩
            ((x' + x) + x'') ≡⟨ ap (_+ x'') (iii x' x) ⟩
-           ((x + x') + x'') ≡⟨ ap (_+ x'') p'         ⟩
-           (O + x'')        ≡⟨ iii O x''              ⟩
-           (x'' + O)        ≡⟨ f x''                  ⟩
+           ((x + x') + x'') ≡⟨ ap (_+ x'') p' ⟩
+           (O + x'')        ≡⟨ iii O x'' ⟩
+           (x'' + O)        ≡⟨ f x'' ⟩
            x''              ∎
 
      d : (O : R) → is-prop (A O)
@@ -1114,7 +1114,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
   characterization-of-nrng-≡ 𝓡 𝓡' =
 
-    (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+    (𝓡 ≡ 𝓡')                               ≃⟨ i ⟩
     (forget-Noether 𝓡 ≡ forget-Noether 𝓡') ≃⟨ ii ⟩
     (𝓡 ≅[NoetherianRng] 𝓡')                ■
 
@@ -1183,7 +1183,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
 
   characterization-of-CNL-ring-≡ 𝓡 𝓡' =
 
-     (𝓡 ≡ 𝓡')                               ≃⟨ i  ⟩
+     (𝓡 ≡ 𝓡')                               ≃⟨ i ⟩
      (forget-CNL 𝓡 ≡ forget-CNL 𝓡')         ≃⟨ ii ⟩
      (𝓡 ≅[CNL] 𝓡')                          ■
 
@@ -1560,11 +1560,11 @@ module type-valued-preorder
 
  lemma 𝓧 𝓐 F = γ
   where
-   e = (hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))                            ≃⟨ i   ⟩
-       (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                        ≃⟨ ii  ⟩
+   e = (hom 𝓧 ≡ λ x y → hom 𝓐 (F x) (F y))                            ≃⟨ i ⟩
+       (∀ x y → hom 𝓧 x y ≡ hom 𝓐 (F x) (F y))                        ≃⟨ ii ⟩
        (∀ x y → hom 𝓧 x y ≃ hom 𝓐 (F x) (F y))                        ≃⟨ iii ⟩
        (∀ x → Σ φ ꞉ (∀ y → hom 𝓧 x y → hom 𝓐 (F x) (F y))
-                  , ∀ y → is-equiv (φ y))                             ≃⟨ iv  ⟩
+                  , ∀ y → is-equiv (φ y))                             ≃⟨ iv ⟩
        (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
             , (∀ x y → is-equiv (𝓕 x y)))                             ■
     where
@@ -1584,10 +1584,10 @@ module type-valued-preorder
    γ =
 
     (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
-         , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ vi   ⟩
+         , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)) ≃⟨ vi ⟩
 
     (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
-         , functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p)))                     ≃⟨ vii  ⟩
+         , functorial 𝓧 𝓐 F (pr₁ (⌜ e ⌝ p)))                     ≃⟨ vii ⟩
 
     (Σ σ ꞉ (Σ 𝓕 ꞉ ((x y : Ob 𝓧) → hom 𝓧 x y → hom 𝓐 (F x) (F y))
                 , (∀ x y → is-equiv (𝓕 x y)))
@@ -1615,7 +1615,7 @@ module type-valued-preorder
 
  characterization-of-type-valued-preorder-≡ 𝓧 𝓐 =
 
-   (𝓧 ≡ 𝓐)                                                              ≃⟨ i  ⟩
+   (𝓧 ≡ 𝓐)                                                              ≃⟨ i ⟩
    (Σ F ꞉ (Ob 𝓧 → Ob 𝓐)
         , is-equiv F
         × (Σ p ꞉ hom 𝓧 ≡ (λ x y → hom 𝓐 (F x) (F y))
@@ -1661,7 +1661,7 @@ module type-valued-preorder-with-axioms
 
  characterization-of-type-valued-preorder-≡-with-axioms 𝓧' 𝓐' =
 
-  (𝓧' ≡ 𝓐')                     ≃⟨ i  ⟩
+  (𝓧' ≡ 𝓐')                     ≃⟨ i ⟩
   ([ 𝓧' ] ≃[ sns-data ] [ 𝓐' ]) ≃⟨ ii ⟩
   _                              ■
 

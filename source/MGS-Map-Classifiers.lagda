@@ -57,7 +57,7 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   observation = refl _
 
   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-map-along-≃ ua e pr₁ ⟩
-      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl _                         ⟩
+      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl _ ⟩
       f                             ∎
 
   r : (Σ (fiber f) , pr₁) ≡ (X , f)

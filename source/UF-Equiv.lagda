@@ -149,8 +149,8 @@ equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
   sf : (x : X) → s(f x) ≡ x
   sf x = s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
-         r(f(s(f x))) ≡⟨ ap r (fs (f x))  ⟩
-         r(f x)       ≡⟨ rf x             ⟩
+         r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
+         r(f x)       ≡⟨ rf x ⟩
          x            ∎
 
 inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
@@ -352,22 +352,22 @@ qinvs-are-haes {𝓤} {𝓥} {X} {Y} f (g , (η , ε)) = g , η , ε' , τ
          y               ∎
 
   a : (x : X) → η (g (f x)) ≡ ap g (ap f (η x))
-  a x = η (g (f x))      ≡⟨ id-homotopies-are-natural (g ∘ f) η  ⟩
+  a x = η (g (f x))      ≡⟨ id-homotopies-are-natural (g ∘ f) η ⟩
         ap (g ∘ f) (η x)  ≡⟨ (ap-ap f g (η x))⁻¹ ⟩
         ap g (ap f (η x)) ∎
 
   b : (x : X) → ap f (η (g (f x))) ∙ ε (f x) ≡ ε (f (g (f x))) ∙ ap f (η x)
-  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x))                                 ⟩
-        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x)))                          ⟩
+  b x = ap f (η (g (f x))) ∙ ε (f x)         ≡⟨ ap (λ - → - ∙ ε (f x)) (ap (ap f) (a x)) ⟩
+        ap f (ap g (ap f (η x))) ∙ ε (f x)   ≡⟨ ap (λ - → - ∙ ε (f x)) (ap-ap g f (ap f (η x))) ⟩
         ap (f ∘ g) (ap f (η x)) ∙ ε (f x)    ≡⟨ (homotopies-are-natural (f ∘ g) id ε {f (g (f x))} {f x} {ap f (η x)})⁻¹ ⟩
-        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x))                        ⟩
+        ε (f (g (f x))) ∙ ap id (ap f (η x)) ≡⟨ ap (λ - → ε (f (g (f x))) ∙ -) (ap-ap f id (η x)) ⟩
         ε (f (g (f x))) ∙ ap f (η x)         ∎
 
   τ : (x : X) → ap f (η x) ≡ ε' (f x)
-  τ x = ap f (η x)                                           ≡⟨ refl-left-neutral ⁻¹                                        ⟩
+  τ x = ap f (η x)                                           ≡⟨ refl-left-neutral ⁻¹ ⟩
         refl ∙ ap f (η x)                                    ≡⟨ ap (λ - → - ∙ ap f (η x)) ((trans-sym (ε (f (g (f x)))))⁻¹) ⟩
         (ε (f (g (f x))))⁻¹ ∙ ε (f (g (f x))) ∙ ap f (η x)   ≡⟨ ∙assoc ((ε (f (g (f x))))⁻¹) (ε (f (g (f x)))) (ap f (η x)) ⟩
-        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹                  ⟩
+        (ε (f (g (f x))))⁻¹ ∙ (ε (f (g (f x))) ∙ ap f (η x)) ≡⟨ ap (λ - → (ε (f (g (f x))))⁻¹ ∙ -) (b x)⁻¹ ⟩
         (ε (f (g (f x))))⁻¹ ∙ (ap f (η (g (f x))) ∙ ε (f x)) ≡⟨ refl ⟩
         ε' (f x)                                             ∎
 
@@ -410,14 +410,14 @@ haes-are-vv-equivs {𝓤} {𝓥} {X} f (g , η , ε , τ) y = (c , λ σ → α 
     γ = (ap g p)⁻¹ ∙ η x
     q : ap f γ ∙ p ≡ ε y
     q = ap f γ ∙ p                          ≡⟨ refl ⟩
-        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ - → - ∙ p) (ap-∙ f ((ap g p)⁻¹) (η x))                              ⟩
-        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p)                           ⟩
-        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x)                               ⟩
-        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹))                             ⟩
+        ap f ((ap g p)⁻¹ ∙ η x) ∙ p         ≡⟨ ap (λ - → - ∙ p) (ap-∙ f ((ap g p)⁻¹) (η x)) ⟩
+        ap f ((ap g p)⁻¹) ∙ ap f (η x) ∙ p  ≡⟨ ap (λ - → ap f - ∙ ap f (η x) ∙ p) (ap-sym g p) ⟩
+        ap f (ap g (p ⁻¹)) ∙ ap f (η x) ∙ p ≡⟨ ap (λ - → ap f (ap g (p ⁻¹)) ∙ - ∙ p) (τ x) ⟩
+        ap f (ap g (p ⁻¹)) ∙ ε (f x) ∙ p    ≡⟨ ap (λ - → - ∙ ε (f x) ∙ p) (ap-ap g f (p ⁻¹)) ⟩
         ap (f ∘ g) (p ⁻¹) ∙ ε (f x) ∙ p     ≡⟨ ap (λ - → - ∙ p) (homotopies-are-natural (f ∘ g) id ε {y} {f x} {p ⁻¹})⁻¹ ⟩
-        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹))                               ⟩
-        ε y ∙ p ⁻¹ ∙ p                      ≡⟨ ∙assoc (ε y) (p ⁻¹) p                                                     ⟩
-        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ - → ε y ∙ -) (trans-sym p)                                          ⟩
+        ε y ∙ ap id (p ⁻¹) ∙ p              ≡⟨ ap (λ - → ε y ∙ - ∙ p) (ap-id-is-id (p ⁻¹)) ⟩
+        ε y ∙ p ⁻¹ ∙ p                      ≡⟨ ∙assoc (ε y) (p ⁻¹) p         ⟩
+        ε y ∙ (p ⁻¹ ∙ p)                    ≡⟨ ap (λ - → ε y ∙ -) (trans-sym p) ⟩
         ε y ∙ refl                          ≡⟨ refl ⟩
         ε y                                 ∎
 

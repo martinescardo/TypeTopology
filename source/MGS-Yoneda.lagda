@@ -223,8 +223,8 @@ being-representable-is-subsingleton fe {X} A r₀ r₁ = γ
            (being-fiberwise-equiv-is-subsingleton fe τ)
 
   ε : (x : X) → (𝓨 x ≃̇ A) ≃ A x
-  ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃             ⟩
-        (Σ τ ꞉ Nat (𝓨 x) A , is-fiberwise-equiv τ)    ≃⟨ pr₁-≃ (i x)            ⟩
+  ε x = ((y : X) → 𝓨 x y ≃ A y)                       ≃⟨ ΠΣ-distr-≃ ⟩
+        (Σ τ ꞉ Nat (𝓨 x) A , is-fiberwise-equiv τ)    ≃⟨ pr₁-≃ (i x) ⟩
         Nat (𝓨 x) A                                   ≃⟨ Yoneda-Lemma fe fe A x ⟩
         A x                                           ■
 

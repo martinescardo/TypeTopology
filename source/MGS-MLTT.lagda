@@ -443,9 +443,9 @@ module basic-arithmetic-and-order where
   +-assoc x y zero     = (x ∔ y) ∔ 0 ≡⟨ refl _ ⟩
                          x ∔ (y ∔ 0) ∎
 
-  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _     ⟩
+  +-assoc x y (succ z) = (x ∔ y) ∔ succ z   ≡⟨ refl _ ⟩
                          succ ((x ∔ y) ∔ z) ≡⟨ ap succ IH ⟩
-                         succ (x ∔ (y ∔ z)) ≡⟨ refl _     ⟩
+                         succ (x ∔ (y ∔ z)) ≡⟨ refl _ ⟩
                          x ∔ (y ∔ succ z)   ∎
    where
     IH : (x ∔ y) ∔ z ≡ x ∔ (y ∔ z)
@@ -459,7 +459,7 @@ module basic-arithmetic-and-order where
 
   +-base-on-first 0        = refl 0
 
-  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _     ⟩
+  +-base-on-first (succ x) = 0 ∔ succ x   ≡⟨ refl _ ⟩
                              succ (0 ∔ x) ≡⟨ ap succ IH ⟩
                              succ x       ∎
    where
@@ -470,7 +470,7 @@ module basic-arithmetic-and-order where
 
   +-step-on-first x zero     = refl (succ x)
 
-  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _     ⟩
+  +-step-on-first x (succ y) = succ x ∔ succ y   ≡⟨ refl _ ⟩
                                succ (succ x ∔ y) ≡⟨ ap succ IH ⟩
                                succ (x ∔ succ y) ∎
    where
@@ -484,8 +484,8 @@ module basic-arithmetic-and-order where
                y ∔ 0 ∎
 
   +-comm (succ x) y = succ x ∔ y  ≡⟨ +-step-on-first x y ⟩
-                      succ(x ∔ y) ≡⟨ ap succ IH          ⟩
-                      succ(y ∔ x) ≡⟨ refl _              ⟩
+                      succ(x ∔ y) ≡⟨ ap succ IH ⟩
+                      succ(y ∔ x) ≡⟨ refl _ ⟩
                       y ∔ succ x  ∎
     where
      IH : x ∔ y ≡ y ∔ x
@@ -494,15 +494,15 @@ module basic-arithmetic-and-order where
   +-lc : (x y z : ℕ) → x ∔ y ≡ x ∔ z → y ≡ z
 
   +-lc 0        y z p = y     ≡⟨ (+-base-on-first y)⁻¹ ⟩
-                        0 ∔ y ≡⟨ p                     ⟩
-                        0 ∔ z ≡⟨ +-base-on-first z     ⟩
+                        0 ∔ y ≡⟨ p ⟩
+                        0 ∔ z ≡⟨ +-base-on-first z ⟩
                         z     ∎
 
   +-lc (succ x) y z p = IH
    where
     q = succ (x ∔ y) ≡⟨ (+-step-on-first x y)⁻¹ ⟩
-        succ x ∔ y   ≡⟨ p                       ⟩
-        succ x ∔ z   ≡⟨ +-step-on-first x z     ⟩
+        succ x ∔ y   ≡⟨ p ⟩
+        succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
         succ (x ∔ z) ∎
 
     IH : y ≡ z
@@ -528,7 +528,7 @@ module basic-arithmetic-and-order where
 
     γ : succ x ≼ succ y
     γ = z , (succ x ∔ z   ≡⟨ +-step-on-first x z ⟩
-             succ (x ∔ z) ≡⟨ ap succ p           ⟩
+             succ (x ∔ z) ≡⟨ ap succ p ⟩
              succ y       ∎)
 
   ≼-gives-≤ : (x y : ℕ) → x ≼ y → x ≤ y
@@ -540,13 +540,13 @@ module basic-arithmetic-and-order where
   ≼-gives-≤ (succ x) 0        (z , p) = positive-not-zero (x ∔ z) q
    where
     q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ≡⟨ p                       ⟩
+        succ x ∔ z   ≡⟨ p ⟩
         zero         ∎
 
   ≼-gives-≤ (succ x) (succ y) (z , p) = IH
    where
     q = succ (x ∔ z) ≡⟨ (+-step-on-first x z)⁻¹ ⟩
-        succ x ∔ z   ≡⟨ p                       ⟩
+        succ x ∔ z   ≡⟨ p ⟩
         succ y       ∎
 
     IH : x ≤ y

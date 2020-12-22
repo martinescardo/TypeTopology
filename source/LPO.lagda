@@ -189,15 +189,15 @@ has-section-under𝟙-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 
 has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
  where
   ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ n ꞉ ℕ , u ≡ under n)
-  ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹    ⟩
+  ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
                           under𝟙 (s u) ≡⟨ ap under𝟙 p ⟩
                           under n      ∎))
   ψ (inr *) p = inr γ
    where
     γ : ¬ (Σ n ꞉ ℕ , u ≡ under n)
     γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
-                                   under𝟙 (s u) ≡⟨ ε u             ⟩
-                                   u            ≡⟨ q               ⟩
+                                   under𝟙 (s u) ≡⟨ ε u ⟩
+                                   u            ≡⟨ q ⟩
                                    under n      ∎)
 
 under𝟙-inverse : (u : ℕ∞) → decidable(Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}

@@ -304,8 +304,8 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
         x'       ∎
   ρap : (p : x ≡ x') → ρ (ap s p) ≡ p
   ρap p = ρ (ap s p)                          ≡⟨ by-definition ⟩
-          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i   ⟩
-          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii  ⟩
+          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i ⟩
+          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii ⟩
           (rs x) ⁻¹ ∙ ap (r ∘ s) p ∙  rs x'   ≡⟨ iii ⟩
           ap id p                             ≡⟨ (ap-id-is-id' p) ⁻¹ ⟩
           p                                   ∎

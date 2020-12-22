@@ -194,7 +194,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      a x = pr₂ (inl-preservation f p (sections-are-lc f (g , η)) x)
 
      q = g (inr *)     ≡⟨ (ap g p)⁻¹ ⟩
-         g (f (inr *)) ≡⟨ η (inr *)  ⟩
+         g (f (inr *)) ≡⟨ η (inr *) ⟩
          inr *         ∎
 
      g' : Y → X
@@ -204,15 +204,15 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
      b y = pr₂ (inl-preservation g q (sections-are-lc g (f , ε)) y)
 
      η' : g' ∘ f' ∼ id
-     η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹   ⟩
+     η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹ ⟩
                     g (inl (f' x))  ≡⟨ (ap g (a x))⁻¹ ⟩
-                    g (f (inl x))   ≡⟨ η (inl x)      ⟩
+                    g (f (inl x))   ≡⟨ η (inl x) ⟩
                     inl x           ∎)
 
      ε' : f' ∘ g' ∼ id
-     ε' y = inl-lc (inl (f' (g' y)) ≡⟨ (a (g' y))⁻¹   ⟩
+     ε' y = inl-lc (inl (f' (g' y)) ≡⟨ (a (g' y))⁻¹ ⟩
                     f (inl (g' y))  ≡⟨ (ap f (b y))⁻¹ ⟩
-                    f (g (inl y))   ≡⟨ ε (inl y)      ⟩
+                    f (g (inl y))   ≡⟨ ε (inl y) ⟩
                     inl y           ∎)
 
      h : f ∼ +functor f' unique-to-𝟙
@@ -392,7 +392,7 @@ discrete-factorial X d = γ
  where
  i = ×cong (≃-sym (≃-cods (X + 𝟙) ( +discrete d 𝟙-is-discrete))) (≃-refl (Aut X))
 
- γ = (X + 𝟙) × Aut X                ≃⟨ i                   ⟩
+ γ = (X + 𝟙) × Aut X                ≃⟨ i ⟩
      co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X ⟩
      Aut (X + 𝟙)                    ■
 
@@ -400,9 +400,9 @@ perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
                   → Aut X ≃ Aut (X + 𝟙)
 perfect-factorial X i =
-  Aut X                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})                               ⟩
+  Aut X                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X}) ⟩
   𝟙 × Aut X                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X)) ⟩
-  co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X                                                              ⟩
+  co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X                  ⟩
   Aut (X + 𝟙)                    ■
 
 \end{code}
