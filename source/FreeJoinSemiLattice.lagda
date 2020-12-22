@@ -22,7 +22,7 @@ open ImageAndSurjection pt
 open import UF-Powerset
 
 𝕋  : {X : 𝓤 ̇ } → 𝓟 X → 𝓤 ̇
-𝕋  {𝓤} {X} A = Σ x ꞉ X , (x ∈ A)
+𝕋 {𝓤} {X} A = Σ x ꞉ X , (x ∈ A)
 
 η' : {X : 𝓤 ̇ } → is-set X → X → 𝓟 X
 η' i x = (λ y → ((y ≡ x) , i))
@@ -317,6 +317,46 @@ module _
        ν : (k : Fin n) → (η X-is-set ∘ pr₁ ∘ e) k ⊑[𝓚] A
        ν k x refl = pr₂ (e k)
 
+
+module _
+        (𝓛 : JoinSemiLattice 𝓥 𝓣)
+        (𝓛' : JoinSemiLattice 𝓥' 𝓣')
+       where
+
+ open JoinSemiLattice 𝓛
+
+ open JoinSemiLattice 𝓛' renaming (L to L'
+                                 ; L-is-set to L'-is-set
+                                 ; _⊑_ to _⊑'_
+                                 ; ⊑-is-prop to ⊑'-is-prop
+                                 ; ⊑-is-reflexive to ⊑'-is-reflexive
+                                 ; ⊑-is-transitive to ⊑'-is-transitive
+                                 ; ⊑-is-antisymmetric to ⊑'-is-antisymmetric
+                                 ; ⊥ to ⊥'
+                                 ; ⊥-is-least to ⊥'-is-least
+                                 ; _∨_ to _∨'_
+                                 ; ∨-is-upperbound₁ to ∨'-is-upperbound₁
+                                 ; ∨-is-upperbound₂ to ∨'-is-upperbound₂
+                                 ; ∨-is-lowerbound-of-upperbounds to
+                                   ∨'-is-lowerbound-of-upperbounds
+                                 ; ∨ⁿ to ∨'ⁿ)
+
+ finite-join-preservation : (f : L → L')
+                          → f ⊥ ≡ ⊥'
+                          → ((x y : L) → f (x ∨ y) ≡ (f  x) ∨' (f y))
+                          → {n : ℕ} (e : Fin n → L)
+                          → f (∨ⁿ e) ≡ ∨'ⁿ (f ∘ e)
+ finite-join-preservation f p₁ p₂ {zero} e = p₁
+ finite-join-preservation f p₁ p₂ {succ n} e =
+  f (∨ⁿ e)                               ≡⟨ refl ⟩
+  f (∨ⁿ (e ∘ inl) ∨ e (inr *))           ≡⟨ p₂ (∨ⁿ (e ∘ inl)) (e (inr *)) ⟩
+  (f (∨ⁿ (e ∘ inl))) ∨' (f (e (inr *)))  ≡⟨ ap (λ - → - ∨' f (e (inr *))) IH ⟩
+  (∨'ⁿ (f ∘ e ∘ inl)) ∨' (f (e (inr *))) ≡⟨ refl ⟩
+  ∨'ⁿ (f ∘ e)                            ∎
+   where
+    IH : f (∨ⁿ (e ∘ inl)) ≡ ∨'ⁿ (f ∘ e ∘ inl)
+    IH = finite-join-preservation f p₁ p₂ (e ∘ inl)
+
 module _
         (𝓛 : JoinSemiLattice 𝓥 𝓣)
        where
@@ -515,54 +555,54 @@ module _
     v : ⊥ ⊑ g ⊥[𝓚]
     v = ⊥-is-least (g ⊥[𝓚])
 
-module _
-        (𝓛 : JoinSemiLattice 𝓥 𝓣)
-       where
+  module _
+          (pe : propext 𝓤)
+          (fe₁ : funext 𝓤 𝓤)
+          (fe₂ : funext 𝓤 (𝓤 ⁺))
+         where
 
- open JoinSemiLattice 𝓛
-
- module _
-         (𝓛' : JoinSemiLattice 𝓥' 𝓣')
-        where
-
-  open JoinSemiLattice 𝓛' renaming (L to L'
-                                  ; L-is-set to L'-is-set
-                                  ; _⊑_ to _⊑'_
-                                  ; ⊑-is-prop to ⊑'-is-prop
-                                  ; ⊑-is-reflexive to ⊑'-is-reflexive
-                                  ; ⊑-is-transitive to ⊑'-is-transitive
-                                  ; ⊑-is-antisymmetric to ⊑'-is-antisymmetric
-                                  ; ⊥ to ⊥'
-                                  ; ⊥-is-least to ⊥'-is-least
-                                  ; _∨_ to _∨'_
-                                  ; ∨-is-upperbound₁ to ∨'-is-upperbound₁
-                                  ; ∨-is-upperbound₂ to ∨'-is-upperbound₂
-                                  ; ∨-is-lowerbound-of-upperbounds to
-                                    ∨'-is-lowerbound-of-upperbounds
-                                  ; ∨ⁿ to ∨'ⁿ)
-
-  finite-join-preservation : (f : L → L')
-                           → f ⊥ ≡ ⊥'
-                           → ((x y : L) → f (x ∨ y) ≡ (f  x) ∨' (f y))
-                           → {n : ℕ} (e : Fin n → L)
-                           → f (∨ⁿ e) ≡ ∨'ⁿ (f ∘ e)
-  finite-join-preservation f p₁ p₂ {zero} e = p₁
-  finite-join-preservation f p₁ p₂ {succ n} e =
-   f (∨ⁿ e)                               ≡⟨ refl ⟩
-   f (∨ⁿ (e ∘ inl) ∨ e (inr *))           ≡⟨ p₂ (∨ⁿ (e ∘ inl)) (e (inr *)) ⟩
-   (f (∨ⁿ (e ∘ inl))) ∨' (f (e (inr *)))  ≡⟨ ap (λ - → - ∨' f (e (inr *))) IH ⟩
-   (∨'ⁿ (f ∘ e ∘ inl)) ∨' (f (e (inr *))) ≡⟨ refl ⟩
-   ∨'ⁿ (f ∘ e)                            ∎
+   g-is-unique : (h : 𝓚 X → L)
+               → h ⊥[𝓚] ≡ ⊥
+               → ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
+               → (h ∘ η X-is-set ∼ f)
+               → h ∼ g
+   g-is-unique h p₁ p₂ H A = ∥∥-rec L-is-set γ ⟨ A ⟩₂
     where
-     IH : f (∨ⁿ (e ∘ inl)) ≡ ∨'ⁿ (f ∘ e ∘ inl)
-     IH = finite-join-preservation f p₁ p₂ (e ∘ inl)
+     γ : (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 ⟨ A ⟩) , is-surjection e) → h A ≡ g A
+     γ (n , e , σ) = h A                                             ≡⟨ I    ⟩
+                     h (JoinSemiLattice.∨ⁿ 𝕂 (η X-is-set ∘ pr₁ ∘ e)) ≡⟨ II   ⟩
+                     ∨ⁿ (h ∘ η X-is-set ∘ pr₁ ∘ e)                   ≡⟨ III  ⟩
+                     ∨ⁿ (f ∘ pr₁ ∘ e)                                ≡⟨ refl ⟩
+                     g' ⟨ A ⟩ (n , e , σ)                            ≡⟨ IV   ⟩
+                     g A                                             ∎
+      where
+       𝕂 : JoinSemiLattice (𝓤 ⁺) 𝓤
+       𝕂 = 𝓚-join-semilattice pe fe₁ fe₂ X X-is-set
+       I   = ap h (Kuratowski-finite-subset-expressed-as-finite-join pe fe₁ fe₂ X X-is-set A σ)
+       II  = finite-join-preservation 𝕂 𝓛 h p₁ p₂ (η X-is-set ∘ pr₁ ∘ e)
+       IV  = (g-in-terms-of-g' ⟨ A ⟩ σ ⟨ A ⟩₂) ⁻¹
+       -- This could be proven quicker using just H at the price of assuming funext 𝓤 𝓥.
+       III = ⊑-is-antisymmetric _ _ u v
+        where
+         u : ∨ⁿ (h ∘ η X-is-set ∘ pr₁ ∘ e) ⊑ ∨ⁿ (f ∘ pr₁ ∘ e)
+         u = ∨ⁿ-is-lowerbound-of-upperbounds (h ∘ η X-is-set ∘ pr₁ ∘ e) (∨ⁿ (f ∘ pr₁ ∘ e)) μ
+          where
+           μ : (k : Fin n) → (h ∘ η X-is-set ∘ pr₁ ∘ e) k ⊑ ∨ⁿ (f ∘ pr₁ ∘ e)
+           μ k = (h ∘ η X-is-set ∘ pr₁ ∘ e) k ⊑⟨ u₁ ⟩
+                 (f ∘ pr₁ ∘ e) k              ⊑⟨ u₂ ⟩
+                 ∨ⁿ (f ∘ pr₁ ∘ e)             ⊑∎
+            where
+             u₁ = ≡-to-⊑ (H (pr₁ (e k)))
+             u₂ = ∨ⁿ-is-upperbound (f ∘ pr₁ ∘ e) k
+         v : ∨ⁿ (f ∘ pr₁ ∘ e) ⊑ ∨ⁿ (h ∘ η X-is-set ∘ pr₁ ∘ e)
+         v = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e) (∨ⁿ (h ∘ η X-is-set ∘ pr₁ ∘ e)) ν
+          where
+           ν : (k : Fin n) → (f ∘ pr₁ ∘ e) k ⊑ ∨ⁿ (h ∘ η X-is-set ∘ pr₁ ∘ e)
+           ν k = (f ∘ pr₁ ∘ e) k               ⊑⟨ v₁ ⟩
+                 (h ∘ η X-is-set ∘ pr₁ ∘ e) k  ⊑⟨ v₂ ⟩
+                 ∨ⁿ (h ∘ η X-is-set ∘ pr₁ ∘ e) ⊑∎
+            where
+             v₁ = ≡-to-⊑ ((H (pr₁ (e k))) ⁻¹)
+             v₂ = ∨ⁿ-is-upperbound (h ∘ η X-is-set ∘ pr₁ ∘ e) k
 
-{-
-
-module _
-        (L : 𝓥 ̇ )
-
-       where
-
--}
 \end{code}
