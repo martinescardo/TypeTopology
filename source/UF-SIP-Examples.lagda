@@ -10,22 +10,22 @@ Each example is in a submodule:
 
   * ∞-magma
   * magma
-  * pointed-type
+  * pointed type
   * pointed-∞-magma
   * monoid
-  * associative-∞-magma
+  * associative ∞-magma
   * group
   * subgroups of an ambient group
   * ring
   * slice
   * universe á la Tarski
-  * generalized-metric-space
-  * generalized-topological-space
-  * selection-space
-  * contrived-example
-  * generalized-functor-algebra
-  * type-valued-preorder
-  * type-valued-preorder-with-axioms
+  * generalized metric space
+  * generalized topological space
+  * selection space
+  * contrived example
+  * generalized functor algebra
+  * type-valued preorder
+  * type-valued preorder with- xioms
   * category
 
 We also consider the following, which are not in the above lecture
