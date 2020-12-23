@@ -204,6 +204,7 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
+import ToppedOrdinalArithmetic
 import Two
 import Two-Prop-Density
 import Two-Properties

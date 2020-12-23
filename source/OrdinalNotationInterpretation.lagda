@@ -116,6 +116,7 @@ the theorems and constructions to be performed here:
 
 open import OrdinalsType fe
 open import OrdinalArithmetic fe
+open import ToppedOrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
 open import CompactTypes

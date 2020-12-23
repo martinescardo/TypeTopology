@@ -17,6 +17,7 @@ open import Two-Properties
 open import AlternativePlus
 open import OrdinalsType fe
 open import OrdinalArithmetic fe
+open import ToppedOrdinalArithmetic fe
 open import OrdinalNotions hiding (_≤_)
 open import OrdinalsWellOrderArithmetic
 open import CompactTypes

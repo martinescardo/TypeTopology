@@ -12,6 +12,7 @@ import SquashedSum
 import SquashedCantor
 import OrdinalsWellOrderArithmetic
 import OrdinalArithmetic
+import ToppedOrdinalArithmetic
 import LexicographicOrder
 import OrdinalsClosure
 import OrdinalCodes
