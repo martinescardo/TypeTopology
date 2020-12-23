@@ -205,6 +205,7 @@ import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
 import ToppedOrdinalArithmetic
+import ToppedOrdinalsType
 import Two
 import Two-Prop-Density
 import Two-Properties

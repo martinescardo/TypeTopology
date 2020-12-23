@@ -8,6 +8,7 @@ OrdinalNotationInterpretation.
 
 import OrdinalNotions
 import OrdinalsType
+import ToppedOrdinalsType
 import SquashedSum
 import SquashedCantor
 import OrdinalsWellOrderArithmetic

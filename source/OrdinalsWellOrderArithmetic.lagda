@@ -77,6 +77,15 @@ module plus
   (inr y) ⊏ (inl x') = 𝟘
   (inr y) ⊏ (inr y') = y ≺ y'
 
+\end{code}
+
+TODO. We would like to generalize _≺_ : Y → Y → 𝓣 ̇ with an arbitrary
+universe 𝓣, and then _⊏_ : X + Y → X + Y → 𝓦 ⊔ 𝓣 ̇. In this case, we
+would need to lift x < x' amd y ≺ y', in the above definition of _⊏_
+and then adapt the following definitions.
+
+\begin{code}
+
  order = _⊏_
 
  prop-valued : is-prop-valued _<_
@@ -147,7 +156,7 @@ module plus
 
 \end{code}
 
-Successor (probably get rid of it).
+Successor (probably get rid of it as we can do _+ₒ 𝟙ₒ):
 
 \begin{code}
 

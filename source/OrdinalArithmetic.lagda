@@ -2,12 +2,6 @@ Martin Escardo, 29 June 2018
 
 Some operations and constructions on ordinals.
 
-TODO. Generalize this from 𝓤₀ to an arbitrary universe. The
-(practical) problem is that the type of natural numbers is defined at
-𝓤₀. We could (1) either using universe lifting, or (2) define the type
-in any universe (like we did for the the types 𝟘 and 𝟙). But (1) is
-cumbersome and (2) requires much work in other modules.
-
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -29,21 +23,55 @@ open import UF-Embeddings
 
 Ord  = Ordinal  𝓤₀
 
-prop-ordinal : (P : 𝓤₀ ̇ ) → is-prop P → Ord
+prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
 
-𝟘ₒ 𝟙ₒ ℕₒ ℕ∞ₒ : Ord
-𝟘ₒ = prop-ordinal 𝟘 𝟘-is-prop
+\end{code}
+
+Here the subscript is the letter "o":
+
+\begin{code}
+
+𝟘ₒ 𝟙ₒ : {𝓤 : Universe} → Ordinal 𝓤
 𝟙ₒ = prop-ordinal 𝟙 𝟙-is-prop
+𝟘ₒ = prop-ordinal 𝟘 𝟘-is-prop
+
+\end{code}
+
+Here the subscript is the number "0" on the left and the letter "o" on
+the righthand side of the equality sign:
+
+\begin{code}
+
+𝟘₀ 𝟙₀ : Ord
+
+𝟘₀ = 𝟘ₒ
+𝟙₀ = 𝟙ₒ
+
+\end{code}
+
+Here the subscript is the letter "o":
+
+\begin{code}
+
+ℕₒ ℕ∞ₒ : Ord
 ℕₒ = (ℕ , _≺[ℕ]_ , ℕ-ordinal)
 ℕ∞ₒ = (ℕ∞ , _≺[ℕ∞]_ , ℕ∞-ordinal (fe 𝓤₀ 𝓤₀))
 
-_+ₒ_ : Ord → Ord → Ord
+\end{code}
+
+There is trouble generalizing the type of the following definition of
+ordinal addition to Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥). Check
+plus.order to see why.
+
+\begin{code}
+
+_+ₒ_ : Ordinal 𝓤  → Ordinal 𝓤 → Ordinal 𝓤
 (X , _<_ , o) +ₒ (Y , _≺_ , p) = (X + Y) ,
                                  plus.order _<_ _≺_ ,
                                  plus.well-order _<_ _≺_ o p
 
-_×ₒ_ : Ord → Ord → Ord
+_×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
 (X , _<_ , o) ×ₒ (Y , _≺_ , p) = (X × Y) ,
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
