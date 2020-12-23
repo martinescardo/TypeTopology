@@ -335,6 +335,28 @@ module _
        ν : (k : Fin n) → (η X-is-set ∘ pr₁ ∘ e) k ⊑[𝓚] A
        ν k x refl = pr₂ (e k)
 
+ Kuratowski-finite-subset-induction : {𝓣 : Universe}
+                                      (P : 𝓚 X → 𝓣 ̇ )
+                                    → ((A : 𝓚 X) → is-prop (P A))
+                                    → P (⊥[𝓚])
+                                    → ((x : X) → P (η X-is-set x))
+                                    → ((A B : 𝓚 X) → P A → P B → P (A ∨[𝓚] B))
+                                    → (A : 𝓚 X) → P A
+ Kuratowski-finite-subset-induction P i p₁ p₂ p₃ A = ∥∥-rec (i A) γ ⟨ A ⟩₂
+  where
+   γ : (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 ⟨ A ⟩) , is-surjection e)
+     → P A
+   γ (n , e , σ) = transport P ϕ (ψ n (pr₁ ∘ e))
+    where
+     ϕ : ∨ⁿ (η X-is-set ∘ pr₁ ∘ e) ≡ A
+     ϕ = (Kuratowski-finite-subset-expressed-as-finite-join A σ) ⁻¹
+     ψ : (m : ℕ) (f : Fin m → X) → P (∨ⁿ (η X-is-set ∘ f))
+     ψ zero f = p₁
+     ψ (succ m) f = p₃
+                     (∨ⁿ (η X-is-set ∘ f ∘ inl))
+                     ((η X-is-set ∘ f) (inr *))
+                     (ψ m (f ∘ inl))
+                     (p₂ (f (inr *)))
 
 module _
         (𝓛 : JoinSemiLattice 𝓥 𝓣)
@@ -568,6 +590,34 @@ module _
           (fe₁ : funext 𝓤 𝓤)
           (fe₂ : funext 𝓤 (𝓤 ⁺))
          where
+
+   g-is-unique' : (h : 𝓚 X → L)
+                → h ⊥[𝓚] ≡ ⊥
+                → ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
+                → (h ∘ η X-is-set ∼ f)
+                → h ∼ g
+   g-is-unique' h p₁ p₂ p₃ = Kuratowski-finite-subset-induction pe fe₁ fe₂
+                             X X-is-set
+                             (λ A → h A ≡ g A)
+                             (λ _ → L-is-set)
+                             q₁ q₂ q₃
+    where
+     q₁ : h ⊥[𝓚] ≡ g ⊥[𝓚]
+     q₁ = h ⊥[𝓚] ≡⟨ p₁ ⟩
+          ⊥      ≡⟨ g-preserves-⊥ ⁻¹ ⟩
+          g ⊥[𝓚] ∎
+     q₂ : (x : X) → h (η X-is-set x) ≡ g (η X-is-set x)
+     q₂ x = h (η X-is-set x) ≡⟨ p₃ x ⟩
+            f x              ≡⟨ (g-after-η-is-f x) ⁻¹ ⟩
+            g (η X-is-set x) ∎
+     q₃ : (A B : 𝓚 X)
+        → h A ≡ g A
+        → h B ≡ g B
+        → h (A ∨[𝓚] B) ≡ g (A ∨[𝓚] B)
+     q₃ A B r₁ r₂ = h (A ∨[𝓚] B) ≡⟨ p₂ A B ⟩
+                    h A ∨ h B    ≡⟨ ap₂ _∨_ r₁ r₂ ⟩
+                    g A ∨ g B    ≡⟨ (g-preserves-∨ A B) ⁻¹ ⟩
+                    g (A ∨[𝓚] B) ∎
 
    g-is-unique : (h : 𝓚 X → L)
                → h ⊥[𝓚] ≡ ⊥
