@@ -54,6 +54,10 @@ Lift' 𝓥 X = X + 𝟘 {𝓥}
 lift' : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift' 𝓥 X
 lift' 𝓥 = inl
 
+lower' : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift' 𝓥 X → X
+lower' (inl x) = x
+lower' (inr x) = 𝟘-elim x
+
 Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
 Lift'-≃ 𝓥 X = 𝟘-rneutral'
 
@@ -71,6 +75,9 @@ Lift 𝓥 X = X × 𝟙 {𝓥}
 
 lift : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift 𝓥 X
 lift 𝓥 x = (x , *)
+
+lower : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift 𝓥 X → X
+lower (x , *) = x
 
 Lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
 Lift-≃ 𝓥 X = 𝟙-rneutral
@@ -161,6 +168,5 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
   q = ap A p
 
 global-≃-ap ua = global-≃-ap' ua id
-
 
 \end{code}

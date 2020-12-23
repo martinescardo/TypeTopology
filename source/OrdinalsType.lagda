@@ -20,6 +20,13 @@ module OrdinalsType
        (fe : FunExt)
        where
 
+\end{code}
+
+An ordinal is a type equipped with ordinal structure. Such a type is
+automatically a set.
+
+\begin{code}
+
 OrdinalStructure : 𝓤 ̇ → 𝓤 ⁺ ̇
 OrdinalStructure {𝓤} X = Σ _<_ ꞉ (X → X → 𝓤 ̇ ) , (is-well-order _<_)
 
@@ -27,9 +34,6 @@ Ordinal : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ordinal 𝓤 = Σ X ꞉ 𝓤 ̇ , OrdinalStructure X
 
 \end{code}
-
-An ordinal is a type equipped with ordinal structure. Such a type is
-automatically a set.
 
 NB. Perhaps we will eventually need to have two parameters U (the
 universe where the underlying type X lives) and V (the universe where

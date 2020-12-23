@@ -18,6 +18,7 @@ Each example is in a submodule:
   * subgroups of an ambient group
   * ring
   * slice
+  * universe á la Tarski
   * generalized-metric-space
   * generalized-topological-space
   * selection-space
@@ -154,7 +155,6 @@ module pointed-type {𝓤 : Universe} where
                                     → (A ≡ B) ≃ (A ≅ B)
 
  characterization-of-pointed-type-≡ ua = characterization-of-≡ ua sns-data
-
 
 module pointed-∞-magma {𝓤 : Universe} where
 
@@ -1234,15 +1234,86 @@ module slice
  𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
 
  _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
- (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f )
+ (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × (g ≡ h ∘ f)
 
  characterization-of-/-≡ : is-univalent 𝓤 → (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-/-≡ ua = characterization-of-≡ ua sns-data
 
-module generalized-metric-space
+module slice-variation
         {𝓤 𝓥 : Universe}
         (R : 𝓥 ̇ )
-        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓤 ⊔ 𝓥 ̇ )
+        (ua : is-univalent 𝓤)
+        (fe : funext 𝓤 𝓥)
+       where
+
+ open sip
+
+ S : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+ S X = X → R
+
+ sns-data : SNS S (𝓤 ⊔ 𝓥)
+ sns-data = (ι , ρ , θ)
+  where
+   ι : (A B : Σ S) → ⟨ A ⟩ ≃ ⟨ B ⟩ → 𝓤 ⊔ 𝓥 ̇
+   ι (X , g) (Y , h) (f , _) = ((x : X) → g x ≡ h (f x))
+
+   ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩)
+   ρ (X , g) = λ x → refl─ (g x)
+
+   k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ happly' g h
+   k (refl {g}) = refl─ (λ x → refl─ (g x))
+
+   θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
+   θ g h = equiv-closed-under-∼ (happly' g h) (canonical-map ι ρ g h) (fe g h) k
+
+ _/_ : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
+ 𝓤 / Y = Σ X ꞉ 𝓤 ̇ , (X → Y)
+
+ _≅_  : 𝓤 / R → 𝓤 / R → 𝓤 ⊔ 𝓥 ̇
+ (X , g) ≅ (Y , h) = Σ f ꞉ (X → Y), is-equiv f × ((x : X) → g x ≡ h (f x))
+
+ characterization-of-/-≡ : (A B : 𝓤 / R) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-/-≡ = characterization-of-≡ ua sns-data
+
+module universe-a-la-tarski
+        (𝓤 𝓥 : Universe)
+        (ua : is-univalent 𝓤)
+        (fe : funext 𝓤 (𝓥 ⁺))
+       where
+
+ TarskiUniverse : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+ TarskiUniverse 𝓤 𝓥 = Σ X ꞉ 𝓤 ̇ , (X → 𝓥 ̇ )
+
+ _≅_  : TarskiUniverse 𝓤 𝓥 → TarskiUniverse 𝓤 𝓥 → 𝓤 ⊔ (𝓥 ⁺) ̇
+ (X , T) ≅ (X' , T') = Σ f ꞉ (X → X'), is-equiv f × ((x : X) → T x ≡ T' (f x) )
+
+ characterization-of-Tarski-≡ : (A B : TarskiUniverse 𝓤 𝓥)
+                              → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-Tarski-≡ = slice-variation.characterization-of-/-≡ (𝓥 ̇) ua fe
+
+module universe-a-la-tarski-hSet-example
+        (𝓤 : Universe)
+        (ua : is-univalent (𝓤 ⁺))
+       where
+
+ fe : funext (𝓤 ⁺) (𝓤 ⁺)
+ fe = univalence-gives-funext ua
+
+ open universe-a-la-tarski (𝓤 ⁺) 𝓤 ua fe
+
+ hset : TarskiUniverse (𝓤 ⁺) 𝓤
+ hset = hSet 𝓤 , pr₁
+
+ example : (X : 𝓤 ⁺ ̇ ) (T : X → 𝓤 ̇ )
+         → ((X , T) ≡ hset) ≃ (Σ f ꞉ (X → hSet 𝓤) , is-equiv f
+                                                  × ((x : X) → T x ≡ pr₁ (f x)))
+
+ example X T = characterization-of-Tarski-≡ (X , T) hset
+
+module generalized-metric-space
+        {𝓤 𝓥 𝓦  : Universe}
+        (R : 𝓥 ̇ )
+        (axioms  : (X : 𝓤 ̇ ) → (X → X → R) → 𝓦 ̇ )
         (axiomss : (X : 𝓤 ̇ ) (d : X → X → R) → is-prop (axioms X d))
        where
 
@@ -1267,7 +1338,7 @@ module generalized-metric-space
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
    θ d e = equiv-closed-under-∼ id (canonical-map ι ρ d e) (id-is-equiv (d ≡ e)) h
 
- M : 𝓤 ⁺ ⊔ 𝓥  ̇
+ M : 𝓤 ⁺ ⊔ 𝓥 ⊔ 𝓦 ̇
  M = Σ X ꞉ 𝓤 ̇ , Σ d ꞉ (X → X → R) , axioms X d
 
  _≅_  : M → M → 𝓤 ⊔ 𝓥 ̇
