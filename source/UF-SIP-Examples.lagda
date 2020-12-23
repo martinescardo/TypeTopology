@@ -30,7 +30,7 @@ Each example is in a submodule:
 We also consider the following, which are not in the above lecture
 notes:
 
-  * universe á la Tarski
+  * universe à la Tarski
   * ∞-bigmagma
   * ∞-hugemagma
 
