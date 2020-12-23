@@ -1,4 +1,4 @@
-Tom de Jong, 18 December 2020
+Tom de Jong, 18-22 December 2020
 (Formalizing a paper proof sketch from 12 November 2020)
 
 \begin{code}
@@ -91,8 +91,8 @@ module _
         (fe₁ : funext 𝓤 𝓤)
        where
 
- ⊑[𝓚]-is-prop : {X : 𝓤 ̇ } (A B : 𝓚 X) → is-prop (A ⊑[𝓚] B)
- ⊑[𝓚]-is-prop {X} A B = ⊆-is-prop fe₁ fe₁ ⟨ A ⟩ ⟨ B ⟩
+ ⊑[𝓚]-is-prop-valued : {X : 𝓤 ̇ } (A B : 𝓚 X) → is-prop (A ⊑[𝓚] B)
+ ⊑[𝓚]-is-prop-valued {X} A B = ⊆-is-prop fe₁ fe₁ ⟨ A ⟩ ⟨ B ⟩
 
  module _
         (pe : propext 𝓤)
@@ -216,7 +216,7 @@ record JoinSemiLattice (𝓥 𝓣 : Universe) : 𝓤ω where
     L : 𝓥 ̇
     L-is-set : is-set L
     _⊑_ : L → L → 𝓣 ̇
-    ⊑-is-prop : (x y : L) → is-prop (x ⊑ y)
+    ⊑-is-prop-valued : (x y : L) → is-prop (x ⊑ y)
     ⊑-is-reflexive : (x : L) → x ⊑ x
     ⊑-is-transitive : (x y z : L) → x ⊑ y → y ⊑ z → x ⊑ z
     ⊑-is-antisymmetric : (x y : L) → x ⊑ y → y ⊑ x → x ≡ y
@@ -277,21 +277,39 @@ module _
         (X-is-set : is-set X)
        where
 
+ -- We use "copatterns" instead of the below, because copatterns are said to
+ --   avoid unnecessary unfoldings in typechecking.
  𝓚-join-semilattice : JoinSemiLattice (𝓤 ⁺) 𝓤
+ JoinSemiLattice.L                              𝓚-join-semilattice = 𝓚 X
+ JoinSemiLattice.L-is-set                       𝓚-join-semilattice = 𝓚-is-set fe₁ pe fe₂
+ JoinSemiLattice._⊑_                            𝓚-join-semilattice = _⊑[𝓚]_
+ JoinSemiLattice.⊑-is-prop-valued               𝓚-join-semilattice = ⊑[𝓚]-is-prop-valued fe₁
+ JoinSemiLattice.⊑-is-reflexive                 𝓚-join-semilattice = ⊑[𝓚]-is-reflexive
+ JoinSemiLattice.⊑-is-transitive                𝓚-join-semilattice = ⊑[𝓚]-is-transitive
+ JoinSemiLattice.⊑-is-antisymmetric             𝓚-join-semilattice = ⊑[𝓚]-is-antisymmetric fe₁ pe fe₂
+ JoinSemiLattice.⊥                              𝓚-join-semilattice = ⊥[𝓚]
+ JoinSemiLattice.⊥-is-least                     𝓚-join-semilattice = ⊥[𝓚]-is-least
+ JoinSemiLattice._∨_                            𝓚-join-semilattice = _∨[𝓚]_
+ JoinSemiLattice.∨-is-upperbound₁               𝓚-join-semilattice = ∨[𝓚]-is-upperbound₁
+ JoinSemiLattice.∨-is-upperbound₂               𝓚-join-semilattice = ∨[𝓚]-is-upperbound₂
+ JoinSemiLattice.∨-is-lowerbound-of-upperbounds 𝓚-join-semilattice = ∨[𝓚]-is-lowerbound-of-upperbounds
+
+ {-
  𝓚-join-semilattice = joinsemilattice
-                          (𝓚 X)
-                          (𝓚-is-set fe₁ pe fe₂)
-                          _⊑[𝓚]_
-                          (⊑[𝓚]-is-prop fe₁)
-                          ⊑[𝓚]-is-reflexive
-                          ⊑[𝓚]-is-transitive
-                          (⊑[𝓚]-is-antisymmetric fe₁ pe fe₂)
-                          ⊥[𝓚]
-                          ⊥[𝓚]-is-least
-                          _∨[𝓚]_
-                          ∨[𝓚]-is-upperbound₁
-                          ∨[𝓚]-is-upperbound₂
-                          ∨[𝓚]-is-lowerbound-of-upperbounds
+                        (𝓚 X)
+                        (𝓚-is-set fe₁ pe fe₂)
+                        _⊑[𝓚]_
+                        (⊑[𝓚]-is-prop-valued fe₁)
+                        ⊑[𝓚]-is-reflexive
+                        ⊑[𝓚]-is-transitive
+                        (⊑[𝓚]-is-antisymmetric fe₁ pe fe₂)
+                        ⊥[𝓚]
+                        ⊥[𝓚]-is-least
+                        _∨[𝓚]_
+                        ∨[𝓚]-is-upperbound₁
+                        ∨[𝓚]-is-upperbound₂
+                        ∨[𝓚]-is-lowerbound-of-upperbounds
+ -}
 
  open JoinSemiLattice 𝓚-join-semilattice
 
@@ -326,20 +344,10 @@ module _
  open JoinSemiLattice 𝓛
 
  open JoinSemiLattice 𝓛' renaming (L to L'
-                                 ; L-is-set to L'-is-set
-                                 ; _⊑_ to _⊑'_
-                                 ; ⊑-is-prop to ⊑'-is-prop
-                                 ; ⊑-is-reflexive to ⊑'-is-reflexive
-                                 ; ⊑-is-transitive to ⊑'-is-transitive
-                                 ; ⊑-is-antisymmetric to ⊑'-is-antisymmetric
-                                 ; ⊥ to ⊥'
-                                 ; ⊥-is-least to ⊥'-is-least
-                                 ; _∨_ to _∨'_
-                                 ; ∨-is-upperbound₁ to ∨'-is-upperbound₁
-                                 ; ∨-is-upperbound₂ to ∨'-is-upperbound₂
-                                 ; ∨-is-lowerbound-of-upperbounds to
-                                   ∨'-is-lowerbound-of-upperbounds
-                                 ; ∨ⁿ to ∨'ⁿ)
+                                  ; _⊑_ to _⊑'_
+                                  ; ⊥ to ⊥'
+                                  ; _∨_ to _∨'_
+                                  ; ∨ⁿ to ∨'ⁿ)
 
  finite-join-preservation : (f : L → L')
                           → f ⊥ ≡ ⊥'
@@ -381,7 +389,7 @@ module _
     u = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e) (∨ⁿ (f ∘ pr₁ ∘ e')) γ
      where
       γ : (k : Fin n) → f (pr₁ (e k)) ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
-      γ k = ∥∥-rec (⊑-is-prop _ _) ϕ (σ' (e k))
+      γ k = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ' (e k))
        where
         ϕ : (Σ k' ꞉ Fin n' , e' k' ≡ e k) → f (pr₁ (e k)) ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
         ϕ (k' , p) = (f ∘ pr₁) (e k)   ⊑⟨ ≡-to-⊑ (ap (f ∘ pr₁) (p ⁻¹)) ⟩
@@ -391,7 +399,7 @@ module _
     v = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e') (∨ⁿ (f ∘ pr₁ ∘ e)) γ
      where
       γ : (k' : Fin n') → f (pr₁ (e' k')) ⊑ ∨ⁿ (λ x → f (pr₁ (e x)))
-      γ k' = ∥∥-rec (⊑-is-prop _ _) ϕ (σ (e' k'))
+      γ k' = ∥∥-rec (⊑-is-prop-valued _ _) ϕ (σ (e' k'))
        where
         ϕ : (Σ k ꞉ Fin n , e k ≡ e' k') → f (pr₁ (e' k')) ⊑ ∨ⁿ (λ x → f (pr₁ (e x)))
         ϕ (k , p) = (f ∘ pr₁) (e' k') ⊑⟨ ≡-to-⊑ (ap (f ∘ pr₁) (p ⁻¹)) ⟩
@@ -435,11 +443,11 @@ module _
   g-is-monotone : (A B : 𝓚 X)
                 → ((x : X) → x ∈ ⟨ A ⟩ → x ∈ ⟨ B ⟩)
                 → g A ⊑ g B
-  g-is-monotone (A , κ₁) (B , κ₂) s = ∥∥-rec (⊑-is-prop _ _) γ₁ κ₁
+  g-is-monotone (A , κ₁) (B , κ₂) s = ∥∥-rec (⊑-is-prop-valued _ _) γ₁ κ₁
    where
     γ₁ : (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 A) , is-surjection e)
       → g (A , κ₁) ⊑ g (B , κ₂)
-    γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop _ _) γ₂ κ₂
+    γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop-valued _ _) γ₂ κ₂
      where
       γ₂ : (Σ n' ꞉ ℕ , Σ e' ꞉ (Fin n' → 𝕋 B) , is-surjection e')
         → g (A , κ₁) ⊑ g (B , κ₂)
@@ -453,7 +461,7 @@ module _
         u₂ = ∨ⁿ-is-lowerbound-of-upperbounds (f ∘ pr₁ ∘ e) (∨ⁿ (f ∘ pr₁ ∘ e')) γ₃
          where
           γ₃ : (k : Fin n) → (f ∘ pr₁ ∘ e) k ⊑ ∨ⁿ (f ∘ pr₁ ∘ e')
-          γ₃ k = ∥∥-rec (⊑-is-prop _ _) γ₄ t
+          γ₃ k = ∥∥-rec (⊑-is-prop-valued _ _) γ₄ t
            where
             x : X
             x = pr₁ (e k)
@@ -483,11 +491,11 @@ module _
         (g-is-monotone A (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₁ A B))
         (g-is-monotone B (A ∨[𝓚] B) (∨[𝓚]-is-upperbound₂ A B))
     u : g (A ∨[𝓚] B) ⊑ (g A ∨ g B)
-    u = ∥∥-rec (⊑-is-prop (g (A ∨[𝓚] B)) (g A ∨ g B)) γ₁ (⟨ A ⟩₂)
+    u = ∥∥-rec (⊑-is-prop-valued (g (A ∨[𝓚] B)) (g A ∨ g B)) γ₁ (⟨ A ⟩₂)
      where
       γ₁ : (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 ⟨ A ⟩) , is-surjection e)
          → g (A ∨[𝓚] B) ⊑ (g A ∨ g B)
-      γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop _ _) γ₂ (⟨ B ⟩₂)
+      γ₁ (n , e , σ) = ∥∥-rec (⊑-is-prop-valued _ _) γ₂ (⟨ B ⟩₂)
        where
         γ₂ : (Σ n' ꞉ ℕ , Σ e' ꞉ (Fin n' → 𝕋 ⟨ B ⟩) , is-surjection e')
            → g (A ∨[𝓚] B) ⊑ (g A ∨ g B)
@@ -604,5 +612,35 @@ module _
             where
              v₁ = ≡-to-⊑ ((H (pr₁ (e k))) ⁻¹)
              v₂ = ∨ⁿ-is-upperbound (h ∘ η X-is-set ∘ pr₁ ∘ e) k
+
+   open import UF-Subsingletons-FunExt
+   module _
+           (fe₃ : funext 𝓤 𝓥)
+           (fe₄ : funext (𝓤 ⁺) 𝓥)
+           (fe₅ : funext (𝓤 ⁺) (𝓤 ⁺ ⊔ 𝓥))
+          where
+
+    uniqueness-of-g : ∃! h ꞉ (𝓚 X → L) , (h ⊥[𝓚] ≡ ⊥)
+                                       × ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
+                                       × h ∘ η X-is-set ∼ f
+    uniqueness-of-g = (g , g-preserves-⊥ , g-preserves-∨ , g-after-η-is-f) , γ
+     where
+      γ : ((h , p₁ , p₂ , H) : (Σ h ꞉ (𝓚 X → L) , (h ⊥[𝓚] ≡ ⊥)
+                                               × ((A B : 𝓚 X) → h (A ∨[𝓚] B)
+                                                              ≡ h A ∨ h B)
+                                               × h ∘ η X-is-set ∼ f))
+        → (g , g-preserves-⊥ , g-preserves-∨ , g-after-η-is-f) ≡ (h , p₁ , p₂ , H)
+      γ (h , p₁ , p₂ , H) = to-subtype-≡ ψ
+                             (dfunext fe₄ (λ A → (g-is-unique h p₁ p₂ H A) ⁻¹))
+       where
+        ψ : (k : 𝓚 X → L)
+          → is-prop ((k ⊥[𝓚] ≡ ⊥)
+                    × ((A B : 𝓚 X) → k (A ∨[𝓚] B) ≡ (k A ∨ k B))
+                    × k ∘ η X-is-set ∼ f)
+        ψ k = ×-is-prop L-is-set (×-is-prop
+                                   (Π-is-prop fe₅
+                                     (λ _ → Π-is-prop fe₄
+                                     (λ _ → L-is-set)))
+                                   (Π-is-prop fe₃ (λ _ → L-is-set)))
 
 \end{code}
