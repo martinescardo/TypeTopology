@@ -157,14 +157,14 @@ inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equi
                       → f ∘ inverse f e ∼ id
 inverses-are-sections f ((s , fs) , (r , rf)) = fs
 
-inverse-is-retraction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                      → inverse f e ∘ f ∼ id
-inverse-is-retraction f e = pr₁ (pr₂(equivs-are-qinvs f e))
+inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+                         → inverse f e ∘ f ∼ id
+inverses-are-retractions f e = pr₁ (pr₂(equivs-are-qinvs f e))
 
 inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                  → is-equiv (inverse f e)
 
-inverse-is-equiv f e = (f , inverse-is-retraction f e) , (f , inverses-are-sections f e)
+inverse-is-equiv f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
 
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
@@ -207,7 +207,7 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
 
 ≃-sym-is-linv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (x : X)
               → ⌜ ≃-sym 𝓯 ⌝ (⌜ 𝓯 ⌝ x) ≡ x
-≃-sym-is-linv (f , e) x = inverse-is-retraction f e x
+≃-sym-is-linv (f , e) x = inverses-are-retractions f e x
 
 ≃-sym-is-rinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (y : Y)
               → ⌜ 𝓯 ⌝ (⌜ ≃-sym 𝓯 ⌝ y) ≡ y

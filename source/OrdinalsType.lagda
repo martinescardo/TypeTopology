@@ -16,9 +16,7 @@ open import UF-Subsingletons-FunExt
 open import OrdinalNotions hiding (_≤_)
 open import UF-Embeddings
 
-module OrdinalsType
-       (fe : FunExt)
-       where
+module OrdinalsType where
 
 \end{code}
 
@@ -86,15 +84,15 @@ principle:
 open import UF-Equiv
 open import UF-Univalence
 
-Ordinal-≡ : is-univalent 𝓤
+Ordinal-≡ : FunExt → is-univalent 𝓤
           → (α β : Ordinal 𝓤)
           → (α ≡ β)
           ≃ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) ,
                  is-equiv f
                × ((λ x x' → x ≺⟨ α ⟩ x') ≡ (λ x x' → f x ≺⟨ β ⟩ f x')))
-Ordinal-≡ {𝓤} = generalized-metric-space.characterization-of-M-≡ (𝓤 ̇)
-                 (λ _ → is-well-order)
-                 (λ X _<_ → being-well-order-is-prop _<_ fe)
+Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤 ̇)
+                    (λ _ → is-well-order)
+                    (λ X _<_ → being-well-order-is-prop _<_ fe)
  where
   open import UF-SIP-Examples
 

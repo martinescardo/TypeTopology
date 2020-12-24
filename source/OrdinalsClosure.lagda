@@ -15,7 +15,7 @@ module OrdinalsClosure
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
-open import OrdinalsType fe
+open import OrdinalsType
 open import ToppedOrdinalsType fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe

@@ -205,7 +205,7 @@ a neutral element for ordinary function composition, definitionally:
 ≃-sym-right-inverse {𝓤} {𝓥} fe (f , e) = to-Σ-≡ (p , being-equiv-is-prop fe _ _ _)
  where
   p : inverse f e ∘ f ≡ id
-  p = dfunext (fe 𝓤 𝓤) (inverse-is-retraction f e)
+  p = dfunext (fe 𝓤 𝓤) (inverses-are-retractions f e)
 
 ≃-Comp : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 ≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)

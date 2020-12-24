@@ -14,7 +14,7 @@ module OrdinalArithmetic
        where
 
 open import OrdinalNotions
-open import OrdinalsType fe
+open import OrdinalsType
 open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)

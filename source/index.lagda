@@ -108,12 +108,12 @@ All modules in alphabetical order:
 import ADecidableQuantificationOverTheNaturals
 import AlternativePlus
 import ArithmeticViaEquivalence
-import BanachFixedPointTheorem
+import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
-import Codistance
+import Codistance              -- By M.E. and Todd Waugh Ambridge
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
@@ -121,7 +121,7 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
--- import CubicalBinarySystem -- works with Agda 2.6.2 only
+-- import CubicalBinarySystem -- works with Agda 2.6.2 only. By M.E. and Alex Rice
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DisconnectedTypes
@@ -132,11 +132,12 @@ import Dyadics
 import Dominance
 import DummettDisjunction
 import Empty
-import Escardo-Simpson-LICS2001
+import Escardo-Simpson-LICS2001 -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
 import frame
 import FailureOfTotalSeparatedness
+import FreeJoinSemiLattice    -- By Tom de Jong
 import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem

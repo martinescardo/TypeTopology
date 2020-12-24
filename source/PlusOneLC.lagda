@@ -58,7 +58,7 @@ open import DiscreteAndSeparated
 
   η : g ∘ f ∼ id
   η z = inverse φ i (s (s (φ z))) ≡⟨ ap (inverse φ i) (h (φ z)) ⟩
-        inverse φ i (φ z)         ≡⟨ inverse-is-retraction φ i z ⟩
+        inverse φ i (φ z)         ≡⟨ inverses-are-retractions φ i z ⟩
         z                         ∎
 
   ε : f ∘ g ∼ id

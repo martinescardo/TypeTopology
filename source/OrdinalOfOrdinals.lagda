@@ -19,7 +19,7 @@ module OrdinalOfOrdinals
 open import SpartanMLTT
 
 open import OrdinalNotions hiding (_≤_)
-open import OrdinalsType fe
+open import OrdinalsType
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -54,7 +54,7 @@ is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x
 is-order-embedding  α β f = is-order-preserving α β f × is-order-reflecting α β f
 
 is-order-equiv      α β f = is-order-preserving α β f
-                          × (Σ e ꞉ is-equiv f , is-order-preserving β α (back-eqtofun (f , e)))
+                          × (Σ e ꞉ is-equiv f , is-order-preserving β α (inverse f e))
 
 is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
                           → y ≺⟨ β ⟩ f x → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
@@ -490,9 +490,8 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
  _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ̇
  α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃ₒ (β ↓ b)
 
- ⊲-is-equivalent-to-⊲⁻ : is-univalent 𝓤
-                       → (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
- ⊲-is-equivalent-to-⊲⁻ ua α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ ua α (β ↓ b))
+ ⊲-is-equivalent-to-⊲⁻ : (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
+ ⊲-is-equivalent-to-⊲⁻ α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ ua α (β ↓ b))
 
 \end{code}
 

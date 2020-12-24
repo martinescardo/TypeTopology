@@ -27,7 +27,7 @@ module ToppedOrdinalArithmetic
        where
 
 open import OrdinalArithmetic fe
-open import OrdinalsType fe
+open import OrdinalsType
 open import ToppedOrdinalsType fe
 open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)

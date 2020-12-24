@@ -21,7 +21,7 @@ module ToppedOrdinalsType
        (fe : FunExt)
        where
 
-open import OrdinalsType fe
+open import OrdinalsType
 
 \end{code}
 
