@@ -13,15 +13,14 @@ module OrdinalArithmetic
         (fe : FunExt)
        where
 
-
+open import OrdinalNotions
 open import OrdinalsType fe
 open import OrdinalsWellOrderArithmetic
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import UF-Subsingletons
-open import UF-Embeddings
 
-Ord  = Ordinal  𝓤₀
+Ord  = Ordinal 𝓤₀
 
 prop-ordinal : (P : 𝓤 ̇ ) → is-prop P → Ordinal 𝓤
 prop-ordinal P i = P , prop.order P i , prop.well-order P i
@@ -44,7 +43,6 @@ the righthand side of the equality sign:
 \begin{code}
 
 𝟘₀ 𝟙₀ : Ord
-
 𝟘₀ = 𝟘ₒ
 𝟙₀ = 𝟙ₒ
 
@@ -76,20 +74,23 @@ _×ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → Ordinal (𝓤 ⊔ 𝓥)
                                  times.order _<_ _≺_ ,
                                  times.well-order _<_ _≺_ fe o p
 
-prop-indexed-product : {P : 𝓤₀ ̇ } → is-prop P → (P → Ord) → Ord
-prop-indexed-product {P} i α = Π X ,
-                               _≺_ ,
-                               pip.well-order (fe 𝓤₀ 𝓤₀) P i X _<_
-                                  (λ p → is-well-ordered (α p))
+prop-indexed-product : {P : 𝓤 ̇ }
+                     → is-prop P
+                     → (P → Ordinal 𝓥)
+                     → Ordinal (𝓤 ⊔ 𝓥)
+prop-indexed-product {𝓤} {𝓥} {P} i α = Π X , _≺_ , w
  where
-  X : P → 𝓤₀ ̇
+  X : P → 𝓥 ̇
   X p = ⟨ α p ⟩
 
-  _<_ : {p : P} → X p → X p → 𝓤₀ ̇
+  _<_ : {p : P} → X p → X p → 𝓥 ̇
   _<_ {p} x y = x ≺⟨ α p ⟩ y
 
-  _≺_ : Π X → Π X → 𝓤₀ ̇
+  _≺_ : Π X → Π X → 𝓤 ⊔ 𝓥 ̇
   f ≺ g = Σ p ꞉ P , f p < g p
+
+  w : is-well-order _≺_
+  w = pip.well-order (fe 𝓤 𝓥) P i X _<_ (λ p → is-well-ordered (α p))
 
 \end{code}
 

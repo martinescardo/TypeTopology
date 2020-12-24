@@ -21,5 +21,6 @@ import OrdinalNotationInterpretation
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
+import OrdinalsWellOrderTransport
 
 \end{code}

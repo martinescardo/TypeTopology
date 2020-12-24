@@ -131,23 +131,11 @@ Taken from the MGS'2019 lecture notes (22 December 2020):
 
 \begin{code}
 
-global-property-of-types : 𝓤ω
-global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
-
-cumulative : global-property-of-types → 𝓤ω
-cumulative A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
-
-global-≃-ap : Univalence
-            → (A : global-property-of-types)
-            → cumulative A
-            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
-
 global-≃-ap' : Univalence
              → (F : Universe → Universe)
              → (A : {𝓤 : Universe} → 𝓤 ̇ → (F 𝓤) ̇ )
              → ({𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X))
              → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
-
 global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
   A X          ≃⟨ φ X ⟩
@@ -167,6 +155,28 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
   q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
   q = ap A p
 
+global-property-of-types : 𝓤ω
+global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+
+global-property-of-types⁺ : 𝓤ω
+global-property-of-types⁺ = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇
+
+cumulative : global-property-of-types → 𝓤ω
+cumulative A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
+
+cumulative⁺ : global-property-of-types⁺ → 𝓤ω
+cumulative⁺ A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
+
+global-≃-ap : Univalence
+            → (A : global-property-of-types)
+            → cumulative A
+            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
 global-≃-ap ua = global-≃-ap' ua id
+
+global-≃-ap⁺ : Univalence
+            → (A : global-property-of-types⁺)
+            → cumulative⁺ A
+            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+global-≃-ap⁺ ua = global-≃-ap' ua (_⁺)
 
 \end{code}

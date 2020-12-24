@@ -350,6 +350,11 @@ type-of-ordinals-is-set : is-univalent 𝓤 → is-set (Ordinal 𝓤)
 type-of-ordinals-is-set {𝓤} ua {α} {β} = equiv-to-prop
                                              (idtoeqₒ α β , UAₒ ua α β)
                                              (≃ₒ-prop-valued α β)
+
+UAₒ-≃ : is-univalent 𝓤
+      → (α β : Ordinal 𝓤) → (α ≡ β) ≃ (α ≃ₒ β)
+UAₒ-≃ ua α β = idtoeqₒ α β , UAₒ ua α β
+
 \end{code}
 
 One of the many applications of the univalence axiom is to manufacture
@@ -472,7 +477,26 @@ module ordinal-of-ordinals {𝓤} (ua : is-univalent 𝓤) where
  NB. We could instead define α ⊲ β to mean that we have b with
  α ≃ₒ (β ↓ b), or with α ⊴ (β ↓ b) and (β ↓ b) ⊴ α, by antisymmetry,
  and these two alternative, equivalent, definitions make ⊲ to have
- values in the universe U rather than the next universe 𝓤 ⁺.
+ values in the universe 𝓤 rather than the next universe 𝓤 ⁺.
+
+ Added 23 December 2020. The previous observation turns out to be
+ useful to resize down the relation _⊲_ in certain applications. So we
+ make it official:
+
+\begin{code}
+
+ open import UF-EquivalenceExamples
+
+ _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ̇
+ α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃ₒ (β ↓ b)
+
+ ⊲-is-equivalent-to-⊲⁻ : is-univalent 𝓤
+                       → (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
+ ⊲-is-equivalent-to-⊲⁻ ua α β = Σ-cong (λ (b : ⟨ β ⟩) → UAₒ-≃ ua α (β ↓ b))
+
+\end{code}
+
+ Back to the past.
 
  A lower set of a lower set is a lower set:
 

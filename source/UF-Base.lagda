@@ -44,6 +44,11 @@ transport₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → Y → 𝓦 ̇ )
              → x ≡ x' → y ≡ y' → A x y → A x' y'
 transport₂ A refl refl = id
 
+transport₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (A : X → Y → Z → 𝓣 ̇ )
+             {x x' : X} {y y' : Y} {z z' : Z}
+             → x ≡ x' → y ≡ y' → z ≡ z' → A x y z → A x' y' z'
+transport₃ A refl refl refl = id
+
 back-transport₂ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → Y → 𝓦 ̇ )
                   {x x' : X} {y y' : Y}
                → x ≡ x' → y ≡ y' → A x' y' → A x y

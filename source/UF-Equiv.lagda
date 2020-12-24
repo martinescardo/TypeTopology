@@ -522,8 +522,8 @@ pr₁-is-equiv : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
 pr₁-is-equiv {𝓤} {𝓥} X Y iss = vv-equivs-are-equivs pr₁ (pr₁-is-vv-equiv X Y iss)
 
 pr₁-is-vv-equiv-converse : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                      → is-vv-equiv (pr₁ {𝓤} {𝓥} {X} {A})
-                      → ((x : X) → is-singleton(A x))
+                         → is-vv-equiv (pr₁ {𝓤} {𝓥} {X} {A})
+                         → ((x : X) → is-singleton(A x))
 pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
   where
     f : Σ A → X
@@ -535,16 +535,30 @@ pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r
     rs : (a : A x) → r(s a) ≡ a
     rs a = refl
 
-logically-equivalent-props-are-equivalent : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop P → is-prop Q
-                                          → (P → Q) → (Q → P) → P ≃ Q
-logically-equivalent-props-are-equivalent i j f g = qinveq f (g , (λ p → i (g (f p)) p) ,
-                                                                  (λ q → j (f (g q)) q))
+logically-equivalent-props-give-is-equiv : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                                         → is-prop P
+                                         → is-prop Q
+                                         → (f : P → Q)
+                                         → (Q → P)
+                                         → is-equiv f
+logically-equivalent-props-give-is-equiv i j f g =
+  qinvs-are-equivs f (g , (λ x → i (g (f x)) x) ,
+                          (λ x → j (f (g x)) x))
+
+logically-equivalent-props-are-equivalent : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
+                                          → is-prop P
+                                          → is-prop Q
+                                          → (P → Q)
+                                          → (Q → P)
+                                          → P ≃ Q
+logically-equivalent-props-are-equivalent i j f g =
+  (f , logically-equivalent-props-give-is-equiv i j f g)
 
 equiv-to-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → is-set Y → is-set X
 equiv-to-set e = subtypes-of-sets-are-sets ⌜ e ⌝ (equivs-are-lc ⌜ e ⌝ (⌜⌝-is-equiv e))
 \end{code}
 
-5th March 2019. A more direct proof the quasi-invertible maps
+5th March 2019. A more direct proof that quasi-invertible maps
 are Voevodky equivalences (have contractible fibers).
 
 \begin{code}
