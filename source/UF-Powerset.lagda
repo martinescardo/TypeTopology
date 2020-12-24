@@ -53,6 +53,9 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
 ⊆-refl A x = id
 
+⊆-trans : {X : 𝓤 ̇ } (A B C : 𝓟 X) → A ⊆ B → B ⊆ C → A ⊆ C
+⊆-trans A B C s t x a = t x (s x a)
+
 ⊆-refl-consequence : {X : 𝓤 ̇ } (A B : 𝓟 X)
                    → A ≡ B → (A ⊆ B) × (B ⊆ A)
 

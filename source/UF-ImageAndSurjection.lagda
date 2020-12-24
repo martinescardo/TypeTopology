@@ -237,3 +237,26 @@ Added 13 February 2020 by Tom de Jong.
     γ y = singleton-≃-𝟙 (pointed-props-are-singletons (s y) ∥∥-is-prop)
 
 \end{code}
+
+Added 18 December 2020 by Tom de Jong.
+
+\begin{code}
+
+ ∘-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
+                 → is-surjection f → is-surjection g → is-surjection (g ∘ f)
+ ∘-is-surjection {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} σ τ z =
+  ∥∥-rec ∥∥-is-prop γ₁ (τ z)
+   where
+    γ₁ : (Σ y ꞉ Y , g y ≡ z) → ∃ x ꞉ X , (g ∘ f) x ≡ z
+    γ₁ (y , q) = ∥∥-functor γ₂ (σ y)
+     where
+      γ₂ : (Σ x ꞉ X , f x ≡ y) → Σ x ꞉ X , (g ∘ f) x ≡ z
+      γ₂ (x , p) = (x , (g (f x) ≡⟨ ap g p ⟩
+                         g y     ≡⟨ q ⟩
+                         z       ∎))
+
+ equivs-are-surjections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
+                        → is-equiv f → is-surjection f
+ equivs-are-surjections ((ρ , η) , (σ , ε)) y = ∣ ρ y , η y ∣
+
+\end{code}
