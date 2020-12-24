@@ -36,9 +36,9 @@ Hedberg : {X : 𝓤 ̇ } (x : X)
 
 Hedberg {𝓤} {X} x c y p q =
 
- p                         ≡⟨ a y p                                     ⟩
+ p                         ≡⟨ a y p ⟩
  (f x (refl x))⁻¹ ∙ f y p  ≡⟨ ap (λ - → (f x (refl x))⁻¹ ∙ -) (κ y p q) ⟩
- (f x (refl x))⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹                                 ⟩
+ (f x (refl x))⁻¹ ∙ f y q  ≡⟨ (a y q)⁻¹ ⟩
  q                         ∎
 
  where
@@ -141,10 +141,10 @@ hlevel-upper X (succ n) = λ h x y → hlevel-upper (x ≡ y) n (h x y)
 
 _has-minimal-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X has-minimal-hlevel 0        = X is-of-hlevel 0
-X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬(X is-of-hlevel n)
+X has-minimal-hlevel (succ n) = (X is-of-hlevel (succ n)) × ¬ (X is-of-hlevel n)
 
 _has-minimal-hlevel-∞ : 𝓤 ̇ → 𝓤 ̇
-X has-minimal-hlevel-∞ = (n : ℕ) → ¬(X is-of-hlevel n)
+X has-minimal-hlevel-∞ = (n : ℕ) → ¬ (X is-of-hlevel n)
 
 pointed-types-have-wconstant-endomap : {X : 𝓤 ̇ } → X → wconstant-endomap X
 pointed-types-have-wconstant-endomap x = ((λ y → x) , (λ y y' → refl x))

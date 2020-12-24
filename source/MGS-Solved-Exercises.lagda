@@ -225,8 +225,8 @@ sections-are-lc = sol
   sol : {X : 𝓤 ̇ } {A : 𝓥 ̇ } (s : X → A)
       → has-retraction s → left-cancellable s
   sol s (r , ε) {x} {y} p = x       ≡⟨ (ε x)⁻¹ ⟩
-                            r (s x) ≡⟨ ap r p  ⟩
-                            r (s y) ≡⟨ ε y     ⟩
+                            r (s x) ≡⟨ ap r p ⟩
+                            r (s y) ≡⟨ ε y ⟩
                             y       ∎
 
 equivs-have-retractions = sol
@@ -259,7 +259,7 @@ comp-inverses = sol
       → g' ∼ inverse g j
       → f' ∘ g' ∼ inverse (g ∘ f) (∘-is-equiv j i)
   sol f g i j f' g' h k z =
-   f' (g' z)                          ≡⟨ h (g' z)               ⟩
+   f' (g' z)                          ≡⟨ h (g' z) ⟩
    inverse f i (g' z)                 ≡⟨ ap (inverse f i) (k z) ⟩
    inverse f i (inverse g j z)        ≡⟨ inverse-of-∘ f g i j z ⟩
    inverse (g ∘ f) (∘-is-equiv j i) z ∎
@@ -275,7 +275,7 @@ sections-closed-under-∼ = sol
       → has-retraction f → g ∼ f → has-retraction g
   sol f g (r , rf) h = (r ,
                         λ x → r (g x) ≡⟨ ap r (h x) ⟩
-                              r (f x) ≡⟨ rf x       ⟩
+                              r (f x) ≡⟨ rf x ⟩
                               x       ∎)
 
 retractions-closed-under-∼ = sol
@@ -284,7 +284,7 @@ retractions-closed-under-∼ = sol
       → has-section f → g ∼ f → has-section g
   sol f g (s , fs) h = (s ,
                         λ y → g (s y) ≡⟨ h (s y) ⟩
-                              f (s y) ≡⟨ fs y    ⟩
+                              f (s y) ≡⟨ fs y ⟩
                               y ∎)
 
 one-inverse = sol
@@ -295,7 +295,7 @@ one-inverse = sol
       → (f ∘ s ∼ id)
       → r ∼ s
   sol X Y f r s h k y = r y         ≡⟨ ap r ((k y)⁻¹) ⟩
-                        r (f (s y)) ≡⟨ h (s y)        ⟩
+                        r (f (s y)) ≡⟨ h (s y) ⟩
                         s y         ∎
 
 joyal-equivs-are-invertible = sol
@@ -305,8 +305,8 @@ joyal-equivs-are-invertible = sol
   sol f ((s , ε) , (r , η)) = (s , sf , ε)
    where
     sf = λ (x : domain f) → s(f x)       ≡⟨ (η (s (f x)))⁻¹ ⟩
-                            r(f(s(f x))) ≡⟨ ap r (ε (f x))  ⟩
-                            r(f x)       ≡⟨ η x             ⟩
+                            r(f(s(f x))) ≡⟨ ap r (ε (f x)) ⟩
+                            r(f x)       ≡⟨ η x ⟩
                             x            ∎
 
 joyal-equivs-are-equivs = sol

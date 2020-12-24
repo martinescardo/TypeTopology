@@ -20,7 +20,6 @@ We look at decidable propositions and subsets (using the terminogy
 
 \begin{code}
 
-
 ¬¬-elim : {A : 𝓤 ̇ } → decidable A → ¬¬ A → A
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)
@@ -35,26 +34,34 @@ pointed-decidable = inl
 𝟙-decidable = pointed-decidable *
 
 ×-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                         → decidable A → decidable B → decidable (A × B)
+                         → decidable A
+                         → decidable B
+                         → decidable (A × B)
 ×-preserves-decidability (inl a) (inl b) = inl (a , b)
 ×-preserves-decidability (inl a) (inr v) = inr (λ c → v (pr₂ c))
 ×-preserves-decidability (inr u) _       = inr (λ c → u (pr₁ c))
 
 
 +-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                         → decidable A → decidable B → decidable (A + B)
+                         → decidable A
+                         → decidable B
+                         → decidable (A + B)
 +-preserves-decidability (inl a) _       = inl (inl a)
 +-preserves-decidability (inr u) (inl b) = inl (inr b)
 +-preserves-decidability (inr u) (inr v) = inr (cases u v)
 
 →-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                         → decidable A → decidable B → decidable (A → B)
+                         → decidable A
+                         → decidable B
+                         → decidable (A → B)
 →-preserves-decidability d       (inl b) = inl (λ _ → b)
 →-preserves-decidability (inl a) (inr v) = inr (λ f → v (f a))
 →-preserves-decidability (inr u) (inr v) = inl (λ a → 𝟘-elim (u a))
 
 →-preserves-decidability' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                          → (¬ B →  decidable A) →  decidable B → decidable (A → B)
+                          → (¬ B →  decidable A)
+                          → decidable B
+                          → decidable (A → B)
 →-preserves-decidability' φ (inl b) = inl (λ _ → b)
 →-preserves-decidability' {𝓤} {𝓥} {A} {B} φ (inr v) = γ (φ v)
  where
@@ -63,7 +70,9 @@ pointed-decidable = inl
   γ (inr u) = inl (λ a → 𝟘-elim (u a))
 
 →-preserves-decidability'' : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-                           → decidable A →  (A → decidable B) → decidable (A → B)
+                           → decidable A
+                           → (A → decidable B)
+                           → decidable (A → B)
 →-preserves-decidability'' {𝓤} {𝓥} {A} {B} (inl a) φ = γ (φ a)
  where
   γ : decidable B → decidable (A → B)
@@ -73,12 +82,14 @@ pointed-decidable = inl
 →-preserves-decidability'' (inr u) φ = inl (λ a → 𝟘-elim (u a))
 
 ¬-preserves-decidability : {A : 𝓤 ̇ }
-                         → decidable A → decidable(¬ A)
+                         → decidable A
+                         → decidable(¬ A)
 ¬-preserves-decidability d = →-preserves-decidability d 𝟘-decidable
 
 which-of : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
-         → A + B → Σ b ꞉ 𝟚 , (b ≡ ₀ → A) × (b ≡ ₁ → B)
-
+         → A + B
+         → Σ b ꞉ 𝟚 , (b ≡ ₀ → A)
+                   × (b ≡ ₁ → B)
 which-of (inl a) = ₀ , (λ (r : ₀ ≡ ₀) → a) , λ (p : ₀ ≡ ₁) → 𝟘-elim (zero-is-not-one p)
 which-of (inr b) = ₁ , (λ (p : ₁ ≡ ₀) → 𝟘-elim (zero-is-not-one (p ⁻¹))) , (λ (r : ₁ ≡ ₁) → b)
 
@@ -89,7 +100,9 @@ The following is a special case we are interested in:
 \begin{code}
 
 boolean-value : {A : 𝓤 ̇ }
-            → decidable A → Σ b ꞉ 𝟚 , (b ≡ ₀ → A) × (b ≡ ₁ → ¬ A)
+            → decidable A
+            → Σ b ꞉ 𝟚 , (b ≡ ₀ →   A)
+                      × (b ≡ ₁ → ¬ A)
 boolean-value = which-of
 
 \end{code}
@@ -105,7 +118,8 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇ }
           → ((x : X) → A x + B x)
-          → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x))
+          → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x)
+                                     × (p x ≡ ₁ → B x))
 indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
   lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
@@ -127,15 +141,21 @@ detachable : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 detachable A = ∀ x → decidable(A x)
 
 characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-  → detachable A → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬(A x)))
+                        → detachable A
+                        → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ →   A x)
+                                                   × (p x ≡ ₁ → ¬ (A x)))
 characteristic-function = indicator
 
 co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-  → detachable A → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → ¬(A x)) × (p x ≡ ₁ → A x))
+                           → detachable A
+                           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → ¬ (A x))
+                                                      × (p x ≡ ₁ →   A x))
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
 decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X
-                         → decidable X → ((x : X) → decidable (Y x)) → decidable (Σ Y)
+                         → decidable X
+                         → ((x : X) → decidable (Y x))
+                         → decidable (Σ Y)
 decidable-closed-under-Σ {𝓤} {𝓥} {X} {Y} isp d e = g d
  where
   g : decidable X → decidable (Σ Y)
@@ -164,11 +184,13 @@ module _ (pt : propositional-truncations-exist) where
  open PropositionalTruncation pt
 
  not-exists₀-implies-forall₁ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → ¬ (∃ x ꞉ X , p x ≡ ₀) → (∀ (x : X) → p x ≡ ₁)
+                            → ¬ (∃ x ꞉ X , p x ≡ ₀)
+                            → ∀ (x : X) → p x ≡ ₁
  not-exists₀-implies-forall₁ p u x = different-from-₀-equal-₁ (not-Σ-implies-Π-not (u ∘ ∣_∣) x)
 
  forall₁-implies-not-exists₀ : {X : 𝓤 ̇ } (p : X → 𝟚)
-                            → (∀ (x : X) → p x ≡ ₁) → ¬ (∃ x ꞉ X , p x ≡ ₀)
+                            → (∀ (x : X) → p x ≡ ₁)
+                            → ¬ (∃ x ꞉ X , p x ≡ ₀)
  forall₁-implies-not-exists₀ {𝓤} {X} p α = ∥∥-rec 𝟘-is-prop h
   where
    h : (Σ x ꞉ X , p x ≡ ₀) → 𝟘

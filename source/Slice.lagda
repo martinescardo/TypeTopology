@@ -55,7 +55,8 @@ ppr₃ (x , y , p) = p
 
 to-span : {A : 𝓤 ̇ } {B : 𝓥 ̇ } {C : 𝓦 ̇ }
           (f : A → C) (g : B → C)
-          (X : 𝓤' ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ̇
+          (X : 𝓤' ̇ )
+        → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓤' ̇
 to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
  Σ k ꞉ (X → A) , Σ l ꞉ (X → B) , (f ∘ k ∼ g ∘ l)
 
@@ -65,20 +66,22 @@ to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
              → funext 𝓤' (𝓤 ⊔ 𝓥 ⊔ 𝓦)
              → (X → pullback f g) ≃ to-span f g X
 →-pullback-≃ {𝓤} {𝓥} {𝓦} {𝓤̇} {A} {B} {C} f g X fe =
- (X → pullback f g)                              ≃⟨ i   ⟩
- (X → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))       ≃⟨ ii  ⟩
+ (X → pullback f g)                              ≃⟨ i ⟩
+ (X → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))       ≃⟨ ii ⟩
  (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j) ≃⟨ iii ⟩
  to-span f g X                                   ■
   where
-   i   = Π-cong fe fe X (λ _ → pullback f g)
-                        (λ _ → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))
-                        (λ x → ≃-sym Σ-assoc)
+   i   = Π-cong fe fe X
+          (λ _ → pullback f g)
+          (λ _ → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))
+          (λ x → ≃-sym Σ-assoc)
    ii  = ΠΣ-distr-≃
    iii = qinveq ϕ (ψ , (λ x → refl) , (λ x → refl))
     where
      ϕ : (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j)
        → to-span f g X
      ϕ (j , H) = (pr₁ ∘ j , pr₂ ∘ j , H)
+
      ψ : to-span f g X
        → (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j)
      ψ (k , l , H) = ((λ x → (k x , l x)) , H)
@@ -96,12 +99,16 @@ pbf f (Y , γ) = pullback f γ , ppr₁
  where
   A : 𝓣 ̇
   A = Y
+
   B : 𝓣 ̇
   B = Σ τ ꞉ (X → E) , f ∼ f ∘ φ ∘ τ
+
   C : 𝓣 ̇
   C = Σ σ ꞉ (X → X) , f ∼ f ∘ σ
+
   k : Y → C
   k y = (id , λ x → refl)
+
   l : B → C
   l (τ , H) = (φ ∘ τ , H)
 
@@ -126,10 +133,13 @@ open import UF-EquivalenceExamples
  where
   fe : FunExt
   fe = FunExt-from-Univalence ua
+
   φ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣
   φ (I , φ) = fiber φ , I , ≃-sym (total-fiber-is-domain φ)
+
   ψ : (Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → 𝓕 X
   ψ (A , I , (f , e)) = I , pr₁ ∘ f
+
   φψ : (σ : Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣) → φ (ψ σ) ≡ σ
   φψ (A , I , (f , e)) = p
    where
@@ -137,6 +147,7 @@ open import UF-EquivalenceExamples
     h x = (Σ i ꞉ I , pr₁ (f i) ≡ x) ≃⟨ Σ-change-of-variable (λ (σ : Σ A) → pr₁ σ ≡ x) f e ⟩
           (Σ σ ꞉ Σ A , pr₁ σ ≡ x)   ≃⟨ fiber-equiv x ⟩
           A x                          ■
+
     p : fiber (pr₁ ∘ f) , I , ≃-sym (total-fiber-is-domain (pr₁ ∘ f)) ≡ A , I , f , e
     p = to-Σ-≡ (dfunext (fe 𝓤 ((𝓣 ⊔ 𝓤) ⁺)) (λ x → eqtoid (ua (𝓣 ⊔ 𝓤)) (fiber (pr₁ ∘ f) x) (A x) (h x)) ,
                 has-size-is-prop ua (Σ A) 𝓣 _ (I , f , e))

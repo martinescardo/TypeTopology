@@ -57,13 +57,13 @@ open import DiscreteAndSeparated
   h = swap-involutive (φ z₀) t₀ k l
 
   η : g ∘ f ∼ id
-  η z = inverse φ i (s (s (φ z))) ≡⟨ ap (inverse φ i) (h (φ z))  ⟩
+  η z = inverse φ i (s (s (φ z))) ≡⟨ ap (inverse φ i) (h (φ z)) ⟩
         inverse φ i (φ z)         ≡⟨ inverse-is-retraction φ i z ⟩
         z                         ∎
 
   ε : f ∘ g ∼ id
   ε t = s (φ (inverse φ i (s t))) ≡⟨ ap s (inverses-are-sections φ i (s t)) ⟩
-        s (s t)                   ≡⟨ h t                                 ⟩
+        s (s t)                   ≡⟨ h t ⟩
         t                         ∎
 
   f' : X → Y
@@ -73,7 +73,7 @@ open import DiscreteAndSeparated
   a x = pr₂ (inl-preservation f p (sections-are-lc f (g , η)) x)
 
   q = g t₀     ≡⟨ ap g (p ⁻¹) ⟩
-      g (f z₀) ≡⟨ η z₀   ⟩
+      g (f z₀) ≡⟨ η z₀ ⟩
       inr *    ∎
 
   g' : Y → X
@@ -83,15 +83,15 @@ open import DiscreteAndSeparated
   b y = pr₂ (inl-preservation g q (sections-are-lc g (f , ε)) y)
 
   η' : (x : X) → g' (f' x) ≡ x
-  η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹   ⟩
+  η' x = inl-lc (inl (g' (f' x)) ≡⟨ (b (f' x))⁻¹ ⟩
                  g (inl (f' x))  ≡⟨ (ap g (a x))⁻¹ ⟩
-                 g (f (inl x))   ≡⟨ η (inl x)      ⟩
+                 g (f (inl x))   ≡⟨ η (inl x) ⟩
                  inl x           ∎)
 
   ε' : (y : Y) → f' (g' y) ≡ y
-  ε' y = inl-lc (inl (f' (g' y)) ≡⟨ (a (g' y))⁻¹   ⟩
+  ε' y = inl-lc (inl (f' (g' y)) ≡⟨ (a (g' y))⁻¹ ⟩
                  f (inl (g' y))  ≡⟨ (ap f (b y))⁻¹ ⟩
-                 f (g (inl y))   ≡⟨ ε (inl y)      ⟩
+                 f (g (inl y))   ≡⟨ ε (inl y) ⟩
                  inl y           ∎)
 
 \end{code}
@@ -180,12 +180,12 @@ module old (fe : FunExt) where
 
  +𝟙-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
  +𝟙-cancellable' {𝓤} {𝓥} {X} {Y} (φ , e) =
-    X                  ≃⟨ add-and-remove-point                              ⟩
-   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *)    ⟩
+    X                  ≃⟨ add-and-remove-point ⟩
+   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *) ⟩
    (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
                            (φ (inr *))
                            (equivs-preserve-isolatedness φ e (inr *)
-                             new-point-is-isolated)                         ⟩
+                             new-point-is-isolated) ⟩
     Y ■
 
 \end{code}

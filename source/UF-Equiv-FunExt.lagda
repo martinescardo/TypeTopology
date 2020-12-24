@@ -20,14 +20,14 @@ open import UF-EquivalenceExamples
 
 being-vv-equiv-is-prop' : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                        → is-prop(is-vv-equiv f)
+                        → is-prop (is-vv-equiv f)
 being-vv-equiv-is-prop' {𝓤} {𝓥} fe fe' f = Π-is-prop
                                              fe
                                              (λ x → being-singleton-is-prop fe' )
 
 being-vv-equiv-is-prop : FunExt
                        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                       → is-prop(is-vv-equiv f)
+                       → is-prop (is-vv-equiv f)
 being-vv-equiv-is-prop {𝓤} {𝓥} fe = being-vv-equiv-is-prop' (fe 𝓥 (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥))
 
 qinv-post' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
@@ -73,7 +73,7 @@ qinv-pre {𝓤} {𝓥} {𝓦} nfe = qinv-pre' (nfe 𝓥 𝓦) (nfe 𝓤 𝓦)
 
 retractions-have-at-most-one-section' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                       → funext 𝓥 𝓤 → funext 𝓥 𝓥
-                                      → (f : X → Y) → is-section f → is-prop(has-section f)
+                                      → (f : X → Y) → is-section f → is-prop (has-section f)
 retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h , fh) =
  singletons-are-props c (h , fh)
  where
@@ -95,7 +95,7 @@ retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h
 
 sections-have-at-most-one-retraction' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                                       → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                                      → (f : X → Y) → has-section f → is-prop(is-section f)
+                                      → (f : X → Y) → has-section f → is-prop (is-section f)
 sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h , hf) =
  singletons-are-props c (h , hf)
  where
@@ -116,26 +116,26 @@ sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h
   c = retract-of-singleton (r , s , rs) b
 
 retractions-have-at-most-one-section : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                     → is-section f → is-prop(has-section f)
+                                     → is-section f → is-prop (has-section f)
 retractions-have-at-most-one-section {𝓤} {𝓥} fe = retractions-have-at-most-one-section' (fe 𝓥 𝓤) (fe 𝓥 𝓥)
 
 sections-have-at-most-one-retraction : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                                     → has-section f → is-prop(is-section f)
+                                     → has-section f → is-prop (is-section f)
 sections-have-at-most-one-retraction {𝓤} {𝓥} fe = sections-have-at-most-one-retraction' (fe 𝓤 𝓤) (fe 𝓥 𝓤)
 
 being-equiv-is-prop' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                      → funext 𝓥 𝓤 → funext 𝓥 𝓥 → funext 𝓤 𝓤 → funext 𝓥 𝓤
-                     → (f : X → Y) → is-prop(is-equiv f)
+                     → (f : X → Y) → is-prop (is-equiv f)
 being-equiv-is-prop' fe fe' fe'' fe''' f = ×-prop-criterion (retractions-have-at-most-one-section' fe fe' f ,
                                                                sections-have-at-most-one-retraction' fe'' fe''' f)
 
 being-equiv-is-prop : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                    → is-prop(is-equiv f)
+                    → is-prop (is-equiv f)
 being-equiv-is-prop {𝓤} {𝓥} fe f = being-equiv-is-prop' (fe 𝓥 𝓤) (fe 𝓥 𝓥) (fe 𝓤 𝓤) (fe 𝓥 𝓤) f
 
 being-equiv-is-prop'' : {X Y : 𝓤 ̇ }
                       → funext 𝓤 𝓤
-                      → (f : X → Y) → is-prop(is-equiv f)
+                      → (f : X → Y) → is-prop (is-equiv f)
 being-equiv-is-prop'' fe = being-equiv-is-prop' fe fe fe fe
 
 ≃-assoc : FunExt
@@ -210,23 +210,23 @@ a neutral element for ordinary function composition, definitionally:
 ≃-Comp : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (Z : 𝓦 ̇ ) → X ≃ Y → (Y ≃ Z) ≃ (X ≃ Z)
 ≃-Comp fe Z α = qinveq (α ●_) ((≃-sym α ●_), p , q)
  where
-  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β            ⟩
+  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ≃-assoc fe (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe α) ⟩
-            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _                    ⟩
+            ≃-refl _ ● β      ≡⟨ ≃-refl-left fe _ ⟩
             β                 ∎
 
-  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ             ⟩
+  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ≃-assoc fe α (≃-sym α) γ ⟩
             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe α) ⟩
-            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _                     ⟩
+            ≃-refl _ ● γ      ≡⟨ ≃-refl-left fe _ ⟩
             γ                 ∎
 
 Eq-Eq-cong : FunExt
            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
            → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
 Eq-Eq-cong fe {X} {Y} {A} {B} α β =
- (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α)  ⟩
- (A ≃ Y)  ≃⟨ ≃-Sym fe               ⟩
- (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β)  ⟩
+ (X ≃ Y)  ≃⟨ ≃-Comp fe Y (≃-sym α) ⟩
+ (A ≃ Y)  ≃⟨ ≃-Sym fe ⟩
+ (Y ≃ A)  ≃⟨ ≃-Comp fe A (≃-sym β) ⟩
  (B ≃ A)  ≃⟨ ≃-Sym fe ⟩
  (A ≃ B)  ■
 
@@ -258,9 +258,9 @@ prop-univalent-≃ : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇ ) → 
 prop-univalent-≃ pe fe X P i = idtoeq X P , propext-funext-give-prop-ua pe fe X P i
 
 prop-univalent-≃' : propext 𝓤 → funext 𝓤 𝓤 → (X P : 𝓤 ̇ ) → is-prop P → (P ≡ X) ≃ (P ≃ X)
-prop-univalent-≃' pe fe X P i = (P ≡ X) ≃⟨ ≡-flip                       ⟩
+prop-univalent-≃' pe fe X P i = (P ≡ X) ≃⟨ ≡-flip ⟩
                                 (X ≡ P) ≃⟨ prop-univalent-≃ pe fe X P i ⟩
-                                (X ≃ P) ≃⟨ ≃-Sym'' fe                   ⟩
+                                (X ≃ P) ≃⟨ ≃-Sym'' fe ⟩
                                 (P ≃ X) ■
 
 \end{code}

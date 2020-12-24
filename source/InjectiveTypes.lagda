@@ -1197,16 +1197,16 @@ automatically embeddings (Shulman 2015, https://arxiv.org/abs/1507.03634).
 universe-retract : Univalence → Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
-universe-retract ua R 𝓤 𝓥 = ρ , (lift-is-embedding ua)
+universe-retract ua R 𝓤 𝓥 = ρ , (Lift-is-embedding ua)
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤} (ua 𝓤)
-  b : is-embedding (lift 𝓥)
+  b : is-embedding (Lift 𝓥)
     → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
-  b = embedding-retract (𝓤 ̇ ) (𝓤 ⊔ 𝓥 ̇ ) (lift 𝓥)
+  b = embedding-retract (𝓤 ̇ ) (𝓤 ⊔ 𝓥 ̇ ) (Lift 𝓥)
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
-  ρ = b (lift-is-embedding ua) (ainjective-resizing R (𝓤 ̇ ) a)
+  ρ = b (Lift-is-embedding ua) (ainjective-resizing R (𝓤 ̇ ) a)
 
 \end{code}
 
@@ -1246,7 +1246,7 @@ Added 23rd January 2019:
 
 \begin{code}
 
-module ainjectivity-of-lifting (𝓤 : Universe) where
+module ainjectivity-of-Lifting (𝓤 : Universe) where
 
  open import Lifting 𝓤 public
  open import LiftingAlgebras 𝓤
@@ -1256,7 +1256,7 @@ module ainjectivity-of-lifting (𝓤 : Universe) where
 
 \end{code}
 
-The underlying types of algebras of the lifting monad are aflabby, and
+The underlying types of algebras of the Lifting monad are aflabby, and
 hence injective, and so in particular the underlying objects of the
 free 𝓛-algebras are injective.
 
@@ -1283,7 +1283,7 @@ free 𝓛-algebras are injective.
                                        (𝓛-algebra-gives-alg (free-𝓛-algebra ua X))
 \end{code}
 
-Because the unit of the lifting monad is an embedding, it follows that
+Because the unit of the Lifting monad is an embedding, it follows that
 injective types are retracts of underlying objects of free algebras:
 
 \begin{code}
@@ -1295,7 +1295,7 @@ injective types are retracts of underlying objects of free algebras:
 \end{code}
 
 With propositional resizing, the injective types are precisely the
-retracts of the underlying objects of free algebras of the lifting
+retracts of the underlying objects of free algebras of the Lifting
 monad:
 
 \begin{code}
@@ -1504,7 +1504,7 @@ Added 8th Feb. Solves a problem formulated above.
  injectivity-in-terms-of-ainjectivity {𝓤} ω₀ ua D = γ , ∥ainjective∥-gives-injective D
   where
    open import LiftingSize 𝓤
-   open ainjectivity-of-lifting 𝓤
+   open ainjectivity-of-Lifting 𝓤
 
    L : 𝓤 ̇
    L = pr₁ (𝓛-resizing ω₀ D)

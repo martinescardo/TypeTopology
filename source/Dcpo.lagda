@@ -32,7 +32,7 @@ module _ {𝓤 𝓣 : Universe}
        where
 
  is-prop-valued : 𝓤 ⊔ 𝓣 ̇
- is-prop-valued = (x y : D) → is-prop(x ⊑ y)
+ is-prop-valued = (x y : D) → is-prop (x ⊑ y)
 
  is-reflexive : 𝓤 ⊔ 𝓣 ̇
  is-reflexive = (x : D) → x ⊑ x

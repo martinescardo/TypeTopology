@@ -37,7 +37,7 @@ is-subsingleton = is-prop
 \begin{code}
 
 Σ-is-prop : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-          → is-prop X → ((x : X) → is-prop(A x)) → is-prop(Σ A)
+          → is-prop X → ((x : X) → is-prop (A x)) → is-prop (Σ A)
 Σ-is-prop {𝓤} {𝓥} {X} {A} i j (x , a) (y , b) =
   to-Σ-≡ (i x y , j y (transport A (i x y) a) b)
 
@@ -78,16 +78,18 @@ is-contr : 𝓤 ̇ → 𝓤 ̇
 is-contr = is-singleton
 
 𝟙-is-singleton : is-singleton (𝟙 {𝓤})
-𝟙-is-singleton {𝓤} = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
+𝟙-is-singleton = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
 
 singletons-are-props : {X : 𝓤 ̇ } → is-singleton X → is-prop X
-singletons-are-props {𝓤} {X} (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩ c ≡⟨ φ y ⟩ y ∎
+singletons-are-props (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩
+                                   c ≡⟨ φ y ⟩
+                                   y ∎
 
 prop-criterion' : {X : 𝓤 ̇ } → (X → is-singleton X) → is-prop X
-prop-criterion' {𝓤} {X} φ x = singletons-are-props (φ x) x
+prop-criterion' φ x = singletons-are-props (φ x) x
 
 prop-criterion : {X : 𝓤 ̇ } → (X → is-prop X) → is-prop X
-prop-criterion {𝓤} {X} φ x y = φ x x y
+prop-criterion φ x = φ x x
 
 pointed-props-are-singletons : {X : 𝓤 ̇ } → X → is-prop X → is-singleton X
 pointed-props-are-singletons x h = x , h x
@@ -117,6 +119,12 @@ is-h-isolated x = ∀ {y} → is-prop (x ≡ y)
 
 is-set : 𝓤 ̇ → 𝓤 ̇
 is-set X = {x : X} → is-h-isolated x
+
+hSet : (𝓤 : Universe) → 𝓤 ⁺ ̇
+hSet 𝓤 = Σ A ꞉ 𝓤 ̇ , is-set A
+
+𝟘-is-set : is-set (𝟘 {𝓤})
+𝟘-is-set {𝓤} {x} = 𝟘-elim x
 
 refl-is-set : (X : 𝓤 ̇ )
             → ((x : X) (p : x ≡ x) → p ≡ refl)
@@ -268,7 +276,7 @@ singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ≡ x') → 
 singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → 𝓤 ̇
-  A x x' r = _≡_ {_} {Σ x' ꞉ X , x ≡ x'} (singleton-inclusion x) (x' , r)
+  A x x' r = singleton-inclusion x ≡[ Σ x' ꞉ X , x ≡ x' ] (x' , r)
 
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton(singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
@@ -276,23 +284,23 @@ singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singl
 singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X} → is-central (singleton-type x) (x , refl)
 singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
 
-singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop(singleton-type x)
+singleton-types-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type x)
 singleton-types-are-props x = singletons-are-props (singleton-types-are-singletons x)
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ y ꞉ type-of x , y ≡ x
 
 ×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                           → is-prop(X × Y) → (Y → is-prop X) × (X → is-prop Y)
+                           → is-prop (X × Y) → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y ))) ,
                                (λ x y y' → ap pr₂ (i (x , y) (x  , y')))
 
 ×-prop-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                 → (Y → is-prop X) × (X → is-prop Y) → is-prop(X × Y)
+                 → (Y → is-prop X) × (X → is-prop Y) → is-prop (X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
 ×-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-          → is-prop X → is-prop Y → is-prop(X × Y)
+          → is-prop X → is-prop Y → is-prop (X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))
 
 to-subtype-≡ : {X : 𝓦 ̇ } {A : X → 𝓥 ̇ }
@@ -315,14 +323,14 @@ subtypes-of-sets-are-sets {𝓤} {𝓥} {X} m i h = Id-collapsibles-are-sets (f 
   g : {x x' : X} (r s : x ≡ x') → f r ≡ f s
   g r s = ap i (h (ap m r) (ap m s))
 
-pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop(Y x))
+pr₁-lc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → ({x : X} → is-prop (Y x))
        → left-cancellable (pr₁ {𝓤} {𝓥} {X} {Y})
 pr₁-lc f p = to-Σ-≡ (p , (f _ _))
 
 subsets-of-sets-are-sets : (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
                          → is-set X
-                         → ({x : X} → is-prop(Y x))
-                         → is-set(Σ x ꞉ X , Y x)
+                         → ({x : X} → is-prop (Y x))
+                         → is-set (Σ x ꞉ X , Y x)
 subsets-of-sets-are-sets X Y h p = subtypes-of-sets-are-sets pr₁ (pr₁-lc p) h
 
 inl-lc-is-section : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {x x' : X} → (p : inl {𝓤} {𝓥} {X} {Y} x ≡ inl x') → p ≡ ap inl (inl-lc p)
@@ -391,7 +399,7 @@ proposition is a proposition:
 \begin{code}
 
 sum-of-contradictory-props : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
-                           → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop(P + Q)
+                           → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop (P + Q)
 sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = go
  where
   go : (x y : P + Q) → x ≡ y

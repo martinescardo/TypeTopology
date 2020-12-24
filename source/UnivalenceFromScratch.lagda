@@ -219,9 +219,9 @@ considered to be a function A:X→𝓥 for some universe 𝓥.
 Universes are also used to construct types of mathematical structures,
 such as the type of groups, whose definition starts like this:
 
- Grp := Σ(G: 𝓤), is-set(G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
+ Grp := Σ(G: 𝓤), is-set (G) × Σ(e:G), Σ(_∙_:G×G→G), (Π(x:G), Id(e∙x,x)) × ⋯
 
-Here is-set(G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
+Here is-set (G):=Π(x,y:G),Π(p,q:Id(x,y)),Id(p,q), as above. With
 univalence, Grp itself will not be a set, but a 1-groupoid instead,
 namely a type whose identity types are all sets. Moreover, if 𝓤
 satisfies the univalence axiom, then for A,B:Grp, the identity type

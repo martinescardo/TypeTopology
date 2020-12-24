@@ -115,7 +115,9 @@ the theorems and constructions to be performed here:
 \begin{code}
 
 open import OrdinalsType fe
+open import ToppedOrdinalsType fe
 open import OrdinalArithmetic fe
+open import ToppedOrdinalArithmetic fe
 open import OrdinalsClosure fe
 open import OrdinalCodes
 open import CompactTypes

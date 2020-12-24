@@ -58,7 +58,7 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   observation = refl
 
   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-is-pre-comp' ua e pr₁ ⟩
-      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl                            ⟩
+      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl ⟩
       f                             ∎
 
   r : (Σ (fiber f) , pr₁) ≡ (X , f)
@@ -146,8 +146,8 @@ pointed-types 𝓤 = Σ X ꞉ 𝓤 ̇ , X
 retraction-classifier : Univalence
                       → (Y : 𝓤 ̇ ) → retractions-into Y ≃ (Y → pointed-types 𝓤)
 retraction-classifier {𝓤} ua Y =
- retractions-into Y                                              ≃⟨ i      ⟩
- ((𝓤 /[ id ] Y))                                                 ≃⟨ ii     ⟩
+ retractions-into Y                                              ≃⟨ i ⟩
+ ((𝓤 /[ id ] Y))                                                 ≃⟨ ii ⟩
  (Y → pointed-types 𝓤)                                           ■
  where
   i  = ≃-sym (Σ-cong (λ X → Σ-cong (λ f → ΠΣ-distr-≃)))

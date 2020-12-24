@@ -34,8 +34,10 @@ open import OrdinalsType fe
    where
     t : (q : Ω 𝓤) →  q ≺ ⊥ → is-accessible _≺_ q
     t .⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
+
     ⊥-accessible : is-accessible _≺_ ⊥
     ⊥-accessible = next ⊥ t
+
     s : (q : Ω 𝓤) → q ≺ p → is-accessible _≺_ q
     s .⊥ (refl , b) = ⊥-accessible
 
@@ -44,6 +46,7 @@ open import OrdinalsType fe
    where
     φ : p ≡ ⊤ → q ≡ ⊤
     φ a = pr₂ (f ⊥ (refl , a))
+
     ψ : q ≡ ⊤ → p ≡ ⊤
     ψ b = pr₂ (g ⊥ (refl , b))
 

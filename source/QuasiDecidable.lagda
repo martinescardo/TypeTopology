@@ -272,10 +272,10 @@ totality-of-semidecidability-data : is-univalent 𝓤₀
                                   → (Σ X ꞉ 𝓤₀ ̇ , semidecidability-data X) ≃ (ℕ → 𝟚)
 totality-of-semidecidability-data ua =
 
-  (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ i   ⟩
-  (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ ii  ⟩
+  (Σ X ꞉ 𝓤₀ ̇ , Σ α ꞉ (ℕ → 𝟚), X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ i ⟩
+  (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁)) ≃⟨ ii ⟩
   (Σ α ꞉ (ℕ → 𝟚), Σ X ꞉ 𝓤₀ ̇ , (∃ n ꞉ ℕ , α n ≡ ₁) ≃ X) ≃⟨ iii ⟩
-  (ℕ → 𝟚) × 𝟙 {𝓤₀}                                     ≃⟨ iv  ⟩
+  (ℕ → 𝟚) × 𝟙 {𝓤₀}                                     ≃⟨ iv ⟩
   (ℕ → 𝟚)                                              ■
  where
   i   = Σ-flip
@@ -674,18 +674,18 @@ And then again by 𝓠-induction, there is at most one homomorphism from
 
   at-most-one-hom g h (g⊥ , g⋁) (h⊥ , h⋁) g⊤ h⊤ = dfunext fe r
    where
-    i₀ = g ⊥ ≡⟨ g⊥    ⟩
+    i₀ = g ⊥ ≡⟨ g⊥ ⟩
          ⊥'  ≡⟨ h⊥ ⁻¹ ⟩
          h ⊥ ∎
 
-    i₁ = g ⊤ ≡⟨ g⊤    ⟩
+    i₁ = g ⊤ ≡⟨ g⊤ ⟩
          t   ≡⟨ h⊤ ⁻¹ ⟩
          h ⊤ ∎
 
     iω : (𝕡 : ℕ → 𝓠) → ((n : ℕ) → g (𝕡 n) ≡ h (𝕡 n)) → g (⋁ 𝕡) ≡ h (⋁ 𝕡)
-    iω 𝕡 φ = g (⋁ 𝕡)          ≡⟨ g⋁ 𝕡                  ⟩
-             ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ)  ⟩
-             ⋁' (n ↦ h (𝕡 n)) ≡⟨ (h⋁ 𝕡)⁻¹              ⟩
+    iω 𝕡 φ = g (⋁ 𝕡)          ≡⟨ g⋁ 𝕡 ⟩
+             ⋁' (n ↦ g (𝕡 n)) ≡⟨ ap ⋁' (dfunext fe φ) ⟩
+             ⋁' (n ↦ h (𝕡 n)) ≡⟨ (h⋁ 𝕡)⁻¹ ⟩
              h (⋁ 𝕡)          ∎
 
     r : g ∼ h
@@ -1509,23 +1509,23 @@ following renaming is annoying.
                        f⊥
                        f⋁
      where
-      f⊤ = f (a ∧ ⊤)  ≡⟨ ap f (meet⊤ a)                               ⟩
-           f a        ≡⟨ (⟨ 𝓑 ⟩'-⊤-maximum (f a))⁻¹                   ⟩
+      f⊤ = f (a ∧ ⊤)  ≡⟨ ap f (meet⊤ a) ⟩
+           f a        ≡⟨ (⟨ 𝓑 ⟩'-⊤-maximum (f a))⁻¹ ⟩
            f a ∧' ⊤'  ≡⟨ ap (f a ∧'_) ((σ-rec-⊤ 𝓑-qua-σ-suplat ⊤')⁻¹) ⟩
            f a ∧' f ⊤ ∎
 
-      f⊥ = f (a ∧ ⊥)      ≡⟨ ap f (meet⊥ a)                                                       ⟩
-           f ⊥            ≡⟨ σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom                           ⟩
-           ⊥⟨ 𝓑 ⟩'        ≡⟨ (⟨ 𝓑 ⟩'-⊥-minimum (f a))⁻¹                                           ⟩
+      f⊥ = f (a ∧ ⊥)      ≡⟨ ap f (meet⊥ a)           ⟩
+           f ⊥            ≡⟨ σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom ⟩
+           ⊥⟨ 𝓑 ⟩'        ≡⟨ (⟨ 𝓑 ⟩'-⊥-minimum (f a))⁻¹ ⟩
            ⊥⟨ 𝓑 ⟩' ∧' f a ≡⟨ ap (λ - → - ∧' f a) ((σ-suplat-hom-⊥ 𝓐 𝓑-qua-σ-suplat f f-is-hom)⁻¹) ⟩
-           f ⊥ ∧' f a     ≡⟨ ⟨ 𝓑 ⟩-commutativity (f ⊥) (f a)                                      ⟩
+           f ⊥ ∧' f a     ≡⟨ ⟨ 𝓑 ⟩-commutativity (f ⊥) (f a) ⟩
            f a ∧' f ⊥     ∎
 
       f⋁ = λ c p →
            f (a ∧ ⋁ c)                    ≡⟨ ap f (meet⋁ a c) ⟩
-           f (⋁ (n ↦ a ∧ c n))            ≡⟨ σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom (λ n → a ∧ c n)      ⟩
-           ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ≡⟨ ap ⋁⟨ 𝓑 ⟩' (dfunext fe p)                                       ⟩
-           ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ≡⟨ (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹                  ⟩
+           f (⋁ (n ↦ a ∧ c n))            ≡⟨ σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom (λ n → a ∧ c n) ⟩
+           ⋁⟨ 𝓑 ⟩' (n ↦ f (a ∧ c n))      ≡⟨ ap ⋁⟨ 𝓑 ⟩' (dfunext fe p) ⟩
+           ⋁⟨ 𝓑 ⟩' (n ↦ f a ∧' f (c n))   ≡⟨ (⟨ 𝓑 ⟩-distributivity (f a) (λ n → f (c n)))⁻¹ ⟩
            f a ∧' ⋁⟨ 𝓑 ⟩' (λ n → f (c n)) ≡⟨ ap (f a ∧'_) ((σ-suplat-hom-⋁ 𝓐 𝓑-qua-σ-suplat f f-is-hom c)⁻¹) ⟩
            f a ∧' f (⋁ c)                 ∎
 
@@ -1619,9 +1619,9 @@ Using τ we derive the non-triviality of 𝓐 from that of Ω:
   𝓐-non-trivial : ⊥ ≢ ⊤
   𝓐-non-trivial p = Ω-non-trivial q
    where
-    q = ⊥'  ≡⟨ (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹   ⟩
-        τ ⊥ ≡⟨ ap τ p                                           ⟩
-        τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
+    q = ⊥'  ≡⟨ (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom)⁻¹ ⟩
+        τ ⊥ ≡⟨ ap τ p ⟩
+        τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
         ⊤'  ∎
 
 \end{code}
@@ -1684,8 +1684,8 @@ top elements.
   𝓐-is-σ-super-compact a p = vi
    where
     i = ⋁' (τ ∘ a) ≡⟨ (σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom a)⁻¹ ⟩
-        τ (⋁ a)    ≡⟨ ap τ p                                           ⟩
-        τ ⊤        ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤'                        ⟩
+        τ (⋁ a)    ≡⟨ ap τ p ⟩
+        τ ⊤        ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
         ⊤'         ∎
 
     ii : (∃ n ꞉ ℕ , τ (a n) holds) ≡ 𝟙
@@ -1715,7 +1715,7 @@ function):
 
   τ-charac← : (a : A) → a ≡ ⊤ → τ a holds
   τ-charac← a p = equal-⊤-gives-holds (τ a)
-                        (τ a ≡⟨ ap τ p                    ⟩
+                        (τ a ≡⟨ ap τ p ⟩
                          τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
                          ⊤'  ∎)
 
@@ -1776,7 +1776,7 @@ a set:
     iii : a ≡ ⊤ → b ≡ ⊤
     iii q = τ-reflects-⊤ b (ii r)
      where
-      r = τ a ≡⟨ ap τ q                    ⟩
+      r = τ a ≡⟨ ap τ q ⟩
           τ ⊤ ≡⟨ σ-rec-⊤ Ω-qua-σ-SupLat ⊤' ⟩
           ⊤'  ∎
 
@@ -1851,7 +1851,7 @@ construction:
 
     iii : τ (⋁ (n ↦ fiber-point (φ n))) ≡ ⋁' (λ n → P n , quasidecidable-types-are-props (P n) (φ n))
     iii = τ (⋁ (n ↦ fiber-point (φ n)))                               ≡⟨ iv ⟩
-          ⋁' (n ↦ τ (fiber-point (φ n)))                              ≡⟨ v  ⟩
+          ⋁' (n ↦ τ (fiber-point (φ n)))                              ≡⟨ v ⟩
           ⋁' (n ↦ (P n , quasidecidable-types-are-props (P n) (φ n))) ∎
      where
       iv = σ-suplat-hom-⋁ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom (λ n → fiber-point (φ n))

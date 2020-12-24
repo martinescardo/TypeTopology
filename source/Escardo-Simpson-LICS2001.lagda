@@ -302,10 +302,10 @@ module basic-interval-object-development {𝓤 : Universe}
    γ : (i : ℕ) → M' i ≡ ((x i ⊕ y i) ⊕ M' (succ i))
    γ i = M (λ n → x (n +ℕ i)) ⊕ M (λ n → y (n +ℕ i))
              ≡⟨ ap (_⊕ M (λ n → y (n +ℕ i)))
-                   (M-prop₁ (λ n → x (n +ℕ i)))             ⟩
+                   (M-prop₁ (λ n → x (n +ℕ i))) ⟩
          (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ M (λ n → y (n +ℕ i))
              ≡⟨ ap ((x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕_)
-                   (M-prop₁ (λ n → y (n +ℕ i)))             ⟩
+                   (M-prop₁ (λ n → y (n +ℕ i))) ⟩
          (x (0 +ℕ i) ⊕ M (λ n → x (succ n +ℕ i))) ⊕ (y (0 +ℕ i) ⊕ M (λ n → y (succ n +ℕ i)))
              ≡⟨ ⊕-tran
                    (x (0 +ℕ i)) (M (λ n → x (succ n +ℕ i)))
@@ -316,10 +316,10 @@ module basic-interval-object-development {𝓤 : Universe}
                    (zero-left-neutral i) ⟩
          ((x i ⊕ y i) ⊕ (M (λ n → x (succ n +ℕ i)) ⊕ M (λ n → y (succ n +ℕ i))))
              ≡⟨ ap (λ - → (x i ⊕ y i) ⊕ (M - ⊕ M (λ n → y (succ n +ℕ i))))
-                   (seq-add-push x i)    ⟩
+                   (seq-add-push x i) ⟩
          ((x i ⊕ y i) ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M (λ n → y (succ n +ℕ i))))
              ≡⟨ ap (λ - → (x i ⊕ y i) ⊕ (M (λ n → x (succ (n +ℕ i))) ⊕ M -))
-                   (seq-add-push y i)    ⟩
+                   (seq-add-push y i) ⟩
          (x i ⊕ y i) ⊕ M' (succ i) ∎
 
  M-prop₁-inner : (x : ℕ → ℕ → 𝕀) → M (λ i → M (λ j → x i j))
@@ -332,14 +332,14 @@ module basic-interval-object-development {𝓤 : Universe}
    M' n = M (λ i → M (λ j → x i (j +ℕ n)))
    γ : (i : ℕ) → M' i ≡ (pr₁ ia (λ j → x j i) ⊕ M' (succ i))
    γ n = M (λ i → M (λ j → x i (j +ℕ n)))
-             ≡⟨ M-prop₁-inner (λ i j → x i (j +ℕ n))          ⟩
+             ≡⟨ M-prop₁-inner (λ i j → x i (j +ℕ n)) ⟩
          M (λ i → x i (0 +ℕ n) ⊕ M (λ j → x i (succ j +ℕ n)))
              ≡⟨ M-hom (λ i → x i (0 +ℕ n))
-                      (λ i → M (λ j → x i (succ j +ℕ n))) ⁻¹  ⟩
+                      (λ i → M (λ j → x i (succ j +ℕ n))) ⁻¹ ⟩
          M (λ i → x i (0 +ℕ n)) ⊕ M (λ i → M (λ j → x i (succ j +ℕ n)))
              ≡⟨ ap (λ - → M (λ i → x i -)
                     ⊕ M (λ i → M (λ j → x i (succ j +ℕ n))))
-                   (zero-left-neutral n)                      ⟩
+                   (zero-left-neutral n) ⟩
          M (λ i → x i n) ⊕ M (λ i → M (λ j → x i (succ j +ℕ n)))
              ≡⟨ ap (M (λ j → x j n) ⊕_) (seq-seq-add-push x n) ⟩
          M (λ j → x j n) ⊕ M' (succ n) ∎
@@ -364,7 +364,7 @@ module basic-interval-object-development {𝓤 : Universe}
    M' i = h (M (λ n → z (n +ℕ i)))
    γ : (i : ℕ) → M' i ≡ (h (z i) ⊕ M' (succ i))
    γ i = h (M (λ n → z (n +ℕ i)))
-            ≡⟨ ap h (M-prop₁ (λ n → z (n +ℕ i)))            ⟩
+            ≡⟨ ap h (M-prop₁ (λ n → z (n +ℕ i))) ⟩
          h (z (0 +ℕ i) ⊕ M (λ n → z (succ n +ℕ i)))
             ≡⟨ hom (z (0 +ℕ i)) (M (λ n → z (succ n +ℕ i))) ⟩
          h (z (0 +ℕ i)) ⊕ h (M (λ n → z (succ n +ℕ i)))
@@ -372,7 +372,7 @@ module basic-interval-object-development {𝓤 : Universe}
                   (zero-left-neutral i) ⟩
          h (z i) ⊕ h (M (λ n → z (succ n +ℕ i)))
             ≡⟨ ap (λ - → h (z i) ⊕ h (M -))
-                  (seq-add-push z i)    ⟩
+                  (seq-add-push z i) ⟩
          h (z i) ⊕ M' (succ i)
             ∎
 
@@ -413,9 +413,9 @@ module basic-interval-object-development {𝓤 : Universe}
 
  O-inverse : − O ≡ O
  O-inverse =    − O      ≡⟨ −-is-⊕-homomorphism −1 +1 ⟩
-             − −1 ⊕ − +1 ≡⟨ ap (_⊕ − +1) −1-inverse   ⟩
-               +1 ⊕ − +1 ≡⟨ ap (+1 ⊕_)   +1-inverse   ⟩
-               +1 ⊕ −1   ≡⟨ ⊕-comm +1 −1              ⟩
+             − −1 ⊕ − +1 ≡⟨ ap (_⊕ − +1) −1-inverse ⟩
+               +1 ⊕ − +1 ≡⟨ ap (+1 ⊕_)   +1-inverse ⟩
+               +1 ⊕ −1   ≡⟨ ⊕-comm +1 −1 ⟩
                   O      ∎
 
  −1-neg-inv : − − −1 ≡ −1
@@ -457,7 +457,7 @@ module basic-interval-object-development {𝓤 : Universe}
  x ⊖ y = x ⊕ (− y)
 
  ⊖-zero : (x : 𝕀) → x ⊖ x ≡ O
- ⊖-zero x = x ⊖ x        ≡⟨ ⊖-fact' ⁻¹          ⟩
+ ⊖-zero x = x ⊖ x        ≡⟨ ⊖-fact' ⁻¹ ⟩
             affine O O x ≡⟨ affine-constant O x ⟩
             O            ∎
    where
@@ -524,8 +524,8 @@ module basic-interval-object-development {𝓤 : Universe}
 
  *-is-⊕-homomorphism-r : (b : 𝕀) → is-⊕-homomorphism 𝓘 𝓘 (_* b)
  *-is-⊕-homomorphism-r b x y =
-      (x ⊕ y) * b       ≡⟨ *-commutative (x ⊕ y) b             ⟩
-      b * (x ⊕ y)       ≡⟨ *-is-⊕-homomorphism-l b x y           ⟩
+      (x ⊕ y) * b       ≡⟨ *-commutative (x ⊕ y) b ⟩
+      b * (x ⊕ y)       ≡⟨ *-is-⊕-homomorphism-l b x y ⟩
       (b * x) ⊕ (b * y) ≡⟨ ap ((b * x) ⊕_) (*-commutative b y) ⟩
       (b * x) ⊕ (y * b) ≡⟨ ap (_⊕ (y * b)) (*-commutative b x) ⟩
       (x * b) ⊕ (y * b) ∎
@@ -534,17 +534,17 @@ module basic-interval-object-development {𝓤 : Universe}
  *-prop x y = affine-uniqueness· (λ - → − (x * (− -))) (− x) x l r i y
   where
    l = − (x * (− −1)) ≡⟨ ap (λ - → − (x * -)) −1-inverse ⟩
-       − (x *    +1 ) ≡⟨ ap −_ (*-gives-id-l x)          ⟩
+       − (x *    +1 ) ≡⟨ ap −_ (*-gives-id-l x) ⟩
        −  x           ∎
    r = − (x * (− +1)) ≡⟨ ap (λ - → − (x * -)) +1-inverse ⟩
-       − (x *    −1 ) ≡⟨ ap −_ (*-gives-negation-l x)    ⟩
-       −  (− x)       ≡⟨ −-involutive x                  ⟩
+       − (x *    −1 ) ≡⟨ ap −_ (*-gives-negation-l x) ⟩
+       −  (− x)       ≡⟨ −-involutive x ⟩
              x        ∎
    i : is-⊕-homomorphism 𝓘 𝓘 (λ - → − (x * (− -)))
    i a b = −  (x * (− (a ⊕ b)))
-                ≡⟨ ap (λ - → − (x * -)) (−-is-⊕-homomorphism a b)         ⟩
+                ≡⟨ ap (λ - → − (x * -)) (−-is-⊕-homomorphism a b) ⟩
            −  (x * (− a ⊕ − b))
-                ≡⟨ ap −_ (affine-is-⊕-homomorphism (− x) x (− a) (− b))   ⟩
+                ≡⟨ ap −_ (affine-is-⊕-homomorphism (− x) x (− a) (− b)) ⟩
            − ((x * − a) ⊕ (x * − b))
                 ≡⟨ affine-is-⊕-homomorphism +1 −1 (x * (− a)) (x * (− b)) ⟩
            − (x * − a) ⊕ − (x * − b) ∎
@@ -553,14 +553,14 @@ module basic-interval-object-development {𝓤 : Universe}
  *-assoc x y z = γ z ⁻¹
   where
    l =      x * (y * −1) ≡⟨ ap (x *_) (*-gives-negation-l y) ⟩
-            x *  (− y)   ≡⟨ −-involutive (x * (− y)) ⁻¹      ⟩
-     (− (− (x * − y)))   ≡⟨ ap −_ (*-prop x y ⁻¹)          ⟩
+            x *  (− y)   ≡⟨ −-involutive (x * (− y)) ⁻¹ ⟩
+     (− (− (x * − y)))   ≡⟨ ap −_ (*-prop x y ⁻¹) ⟩
          − (x * y)       ∎
    r = x * (y * +1) ≡⟨ ap (x *_) (*-gives-id-l y) ⟩
        x * y        ∎
    i : is-⊕-homomorphism 𝓘 𝓘 (λ z → x * (y * z))
    i a b = x * (y * (a ⊕ b))
-                ≡⟨ ap (x *_) (*-is-⊕-homomorphism-l y a b)          ⟩
+                ≡⟨ ap (x *_) (*-is-⊕-homomorphism-l y a b) ⟩
            x * (y * a ⊕ y * b)
                 ≡⟨ affine-is-⊕-homomorphism (− x) x (y * a) (y * b) ⟩
            x * (y * a) ⊕ x * (y * b) ∎
@@ -660,12 +660,12 @@ module basic-interval-object-development {𝓤 : Universe}
 
  O-midpoint-of-halves : −1/2 ⊕ +1/2 ≡ O
  O-midpoint-of-halves = −1/2 ⊕ +1/2     ≡⟨ ap (−1/2 ⊕_) (+1-half ⁻¹) ⟩
-                        −1/2 ⊕ (− −1/2) ≡⟨ ⊖-zero −1/2               ⟩
+                        −1/2 ⊕ (− −1/2) ≡⟨ ⊖-zero −1/2 ⟩
                         O ∎
 
  double-O-is-O : double O ≡ O
  double-O-is-O = double O       ≡⟨ ap double (⊕-idem O ⁻¹) ⟩
-                 double (O ⊕ O) ≡⟨ double-mid O            ⟩
+                 double (O ⊕ O) ≡⟨ double-mid O ⟩
                  O ∎
 
  double-−1/2-is-−1 : double −1/2 ≡ −1
@@ -696,14 +696,14 @@ module basic-interval-object-development {𝓤 : Universe}
  max-idem : idempotent _∨_
  max-idem a = a ∨ a
                 ≡⟨ ap (λ - → double ((a /2) +𝕀 maxO -))
-                      (⊖-zero a)                 ⟩
+                      (⊖-zero a) ⟩
               double (double (a /2 ⊕ maxO O))
                 ≡⟨ ap (λ - → double ((a /2) +𝕀 -))
-                      maxO-O-is-O                ⟩
+                      maxO-O-is-O ⟩
               double (a /2 +𝕀 O)
                 ≡⟨ ap double (double-mid (a /2)) ⟩
               double (a /2)
-                ≡⟨ double-mid a                  ⟩
+                ≡⟨ double-mid a ⟩
               a ∎
 
  -- max-comm : commutative _∨_

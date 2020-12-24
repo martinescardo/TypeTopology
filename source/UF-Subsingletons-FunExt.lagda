@@ -64,7 +64,7 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
   k : (X : 𝓤 ̇ ) → wconstant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
-being-singleton-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop(is-singleton X)
+being-singleton-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-singleton X)
 being-singleton-is-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe λ z → iss {y} {z} _ _)
  where
   isp : is-prop X
@@ -76,12 +76,12 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe 
 ∃!-is-prop fe = being-singleton-is-prop fe
 
 Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → ((x : X) → is-set(A x)) → is-set(Π A)
+         → ((x : X) → is-set (A x)) → is-set (Π A)
 Π-is-set {𝓤} {𝓥} fe {X} {A} isa {f} {g} = b
  where
   a : is-prop (f ∼ g)
   a p q = dfunext fe λ x → isa x (p x) (q x)
-  b : is-prop(f ≡ g)
+  b : is-prop (f ≡ g)
   b = left-cancellable-reflects-is-prop happly (section-lc happly (pr₂ (fe f g))) a
 
 \end{code}
@@ -98,7 +98,7 @@ being-set-is-prop : funext 𝓤 𝓤 → {X : 𝓤 ̇ } → is-prop (is-set X)
 being-set-is-prop {𝓤} fe {X} = h
  where
   is-set' : 𝓤 ̇ → 𝓤 ̇
-  is-set' X = (x y : X) → is-prop(x ≡ y)
+  is-set' X = (x y : X) → is-prop (x ≡ y)
 
   being-set-is-prop' : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-set' X)
   being-set-is-prop' fe = Π-is-prop fe
@@ -118,7 +118,7 @@ being-set-is-prop {𝓤} fe {X} = h
 
 \begin{code}
 
-decidability-of-prop-is-prop : funext 𝓤 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → is-prop(P + ¬ P)
+decidability-of-prop-is-prop : funext 𝓤 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → is-prop (P + ¬ P)
 decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
                                       i
                                       (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
@@ -135,7 +135,7 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
-  A-is-prop : (p q : Ω 𝓤) → is-prop(A p q)
+  A-is-prop : (p q : Ω 𝓤) → is-prop (A p q)
   A-is-prop p q = Σ-is-prop (Π-is-prop fe
                                    (λ _ → holds-is-prop q))
                                    (λ _ → Π-is-prop fe (λ _ → holds-is-prop p))
@@ -161,7 +161,7 @@ powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext �
                    → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
 
-negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop(¬ X)
+negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤

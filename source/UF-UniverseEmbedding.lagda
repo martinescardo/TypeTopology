@@ -48,14 +48,42 @@ hence is an embedding:
 
 \begin{code}
 
-lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-lift 𝓥 X = X + 𝟘 {𝓥}
+Lift' : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+Lift' 𝓥 X = X + 𝟘 {𝓥}
 
-lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → lift 𝓥 X ≃ X
-lift-≃ 𝓥 X = 𝟘-rneutral'
+lift' : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift' 𝓥 X
+lift' 𝓥 = inl
 
-lift-is-embedding : Univalence → is-embedding (lift {𝓤} 𝓥)
-lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (lift 𝓥) (lift-≃ 𝓥)
+lower' : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift' 𝓥 X → X
+lower' (inl x) = x
+lower' (inr x) = 𝟘-elim x
+
+Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
+Lift'-≃ 𝓥 X = 𝟘-rneutral'
+
+Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
+Lift'-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (Lift' 𝓥) (Lift'-≃ 𝓥)
+
+\end{code}
+
+The following embedding has better definitional properties:
+
+\begin{code}
+
+Lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
+Lift 𝓥 X = X × 𝟙 {𝓥}
+
+lift : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift 𝓥 X
+lift 𝓥 x = (x , *)
+
+lower : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift 𝓥 X → X
+lower (x , *) = x
+
+Lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
+Lift-≃ 𝓥 X = 𝟙-rneutral
+
+Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
+Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (Lift 𝓥) (Lift-≃ 𝓥)
 
 \end{code}
 
@@ -75,21 +103,80 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
  where
   k : is-prop (f P)
   k = back-transport is-prop r j
+
   l : is-prop P
   l = equiv-to-prop (≃-sym (i P)) k
+
   a : (X : 𝓤 ̇ ) → (f X ≡ f P) ≃ (X ≡ P)
   a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (f X) (f P) k ⟩
         (f X ≃ f P)  ≃⟨ Eq-Eq-cong fe (i X) (i P) ⟩
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
         (X ≡ P)      ■
+
   b : (Σ X ꞉ 𝓤 ̇ , f X ≡ f P) ≃ (Σ X ꞉ 𝓤 ̇  , X ≡ P)
   b = Σ-cong a
+
   c : is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ f P)
   c = equiv-to-prop b (singleton-types'-are-props P)
+
   d : is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ Q)
   d = transport (λ - → is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ -)) r c
 
-prop-fiber-lift : PropExt → FunExt → (Q : 𝓤 ⊔ 𝓥 ̇ ) → is-prop Q → is-prop (fiber (lift 𝓥) Q)
-prop-fiber-lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 𝓥 (lift {𝓤} 𝓥) (lift-≃ 𝓥)
+prop-fiber-Lift : PropExt → FunExt → (Q : 𝓤 ⊔ 𝓥 ̇ ) → is-prop Q → is-prop (fiber (Lift 𝓥) Q)
+prop-fiber-Lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 𝓥 (Lift {𝓤} 𝓥) (Lift-≃ 𝓥)
+
+\end{code}
+
+Taken from the MGS'2019 lecture notes (22 December 2020):
+
+\begin{code}
+
+global-≃-ap' : Univalence
+             → (F : Universe → Universe)
+             → (A : {𝓤 : Universe} → 𝓤 ̇ → (F 𝓤) ̇ )
+             → ({𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X))
+             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
+
+  A X          ≃⟨ φ X ⟩
+  A (Lift 𝓥 X) ≃⟨ idtoeq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
+  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
+  A Y          ■
+ where
+  d : Lift 𝓥 X ≃ Lift 𝓤 Y
+  d = Lift 𝓥 X ≃⟨ Lift-≃ 𝓥 X ⟩
+      X        ≃⟨ e ⟩
+      Y        ≃⟨ ≃-sym (Lift-≃ 𝓤 Y) ⟩
+      Lift 𝓤 Y ■
+
+  p : Lift 𝓥 X ≡ Lift 𝓤 Y
+  p = eqtoid (ua (𝓤 ⊔ 𝓥)) (Lift 𝓥 X) (Lift 𝓤 Y) d
+
+  q : A (Lift 𝓥 X) ≡ A (Lift 𝓤 Y)
+  q = ap A p
+
+global-property-of-types : 𝓤ω
+global-property-of-types = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇
+
+global-property-of-types⁺ : 𝓤ω
+global-property-of-types⁺ = {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇
+
+cumulative : global-property-of-types → 𝓤ω
+cumulative A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
+
+cumulative⁺ : global-property-of-types⁺ → 𝓤ω
+cumulative⁺ A = {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) → A X ≃ A (Lift 𝓥 X)
+
+global-≃-ap : Univalence
+            → (A : global-property-of-types)
+            → cumulative A
+            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+global-≃-ap ua = global-≃-ap' ua id
+
+global-≃-ap⁺ : Univalence
+            → (A : global-property-of-types⁺)
+            → cumulative⁺ A
+            → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
+global-≃-ap⁺ ua = global-≃-ap' ua (_⁺)
 
 \end{code}

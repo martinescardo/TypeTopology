@@ -172,8 +172,8 @@ NatΠ-is-embedding v w {X} {A} τ i = embedding-criterion (NatΠ τ) γ
  where
   γ : (f g : Π A) → (NatΠ τ f ≡ NatΠ τ g) ≃ (f ≡ g)
   γ f g = (NatΠ τ f ≡ NatΠ τ g) ≃⟨ hfunext-≃ w (NatΠ τ f) (NatΠ τ g) ⟩
-          (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b                                 ⟩
-          (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g)           ⟩
+          (NatΠ τ f ∼ NatΠ τ g) ≃⟨ b ⟩
+          (f ∼ g)               ≃⟨ ≃-sym (hfunext-≃ v f g) ⟩
           (f ≡ g)               ■
 
    where

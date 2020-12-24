@@ -31,7 +31,7 @@ transport-identifications-along-identifications' : {X : 𝓤 ̇ } {x : X} (p : x
 transport-identifications-along-identifications'  p f q = transport-identifications-along-identifications p id f q
                                     ∙ ap (λ - → - ⁻¹ ∙ q ∙ (ap f p)) ((ap-id-is-id' p)⁻¹)
 
-Kraus-Lemma : {X : 𝓤 ̇ } → (f : X → X) → wconstant f → is-prop(fix f)
+Kraus-Lemma : {X : 𝓤 ̇ } → (f : X → X) → wconstant f → is-prop (fix f)
 Kraus-Lemma {𝓤} {X} f g (x , p) (y , q) =
   -- p : x ≡ f x
   -- q : y ≡ f y

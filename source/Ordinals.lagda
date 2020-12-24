@@ -8,10 +8,12 @@ OrdinalNotationInterpretation.
 
 import OrdinalNotions
 import OrdinalsType
+import ToppedOrdinalsType
 import SquashedSum
 import SquashedCantor
 import OrdinalsWellOrderArithmetic
 import OrdinalArithmetic
+import ToppedOrdinalArithmetic
 import LexicographicOrder
 import OrdinalsClosure
 import OrdinalCodes
@@ -19,5 +21,6 @@ import OrdinalNotationInterpretation
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
+import OrdinalsWellOrderTransport
 
 \end{code}

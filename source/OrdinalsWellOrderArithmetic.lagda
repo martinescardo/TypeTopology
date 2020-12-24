@@ -77,6 +77,15 @@ module plus
   (inr y) ⊏ (inl x') = 𝟘
   (inr y) ⊏ (inr y') = y ≺ y'
 
+\end{code}
+
+TODO. We would like to generalize _≺_ : Y → Y → 𝓣 ̇ with an arbitrary
+universe 𝓣, and then _⊏_ : X + Y → X + Y → 𝓦 ⊔ 𝓣 ̇. In this case, we
+would need to lift x < x' amd y ≺ y', in the above definition of _⊏_
+and then adapt the following definitions.
+
+\begin{code}
+
  order = _⊏_
 
  prop-valued : is-prop-valued _<_
@@ -99,11 +108,11 @@ module plus
  transitive : is-transitive _<_
             → is-transitive _≺_
             → is-transitive _⊏_
- transitive t t' (inl x) (inl x') (inl z) l m = t x x' z l m
+ transitive t t' (inl x) (inl x') (inl z)  l m = t x x' z l m
  transitive t t' (inl x) (inl x') (inr z') l m = *
- transitive t t' (inl x) (inr y') (inl z) l m = 𝟘-elim m
+ transitive t t' (inl x) (inr y') (inl z)  l m = 𝟘-elim m
  transitive t t' (inl x) (inr y') (inr z') l m = *
- transitive t t' (inr y) (inl x') z l m = 𝟘-elim l
+ transitive t t' (inr y) (inl x') _        l m = 𝟘-elim l
  transitive t t' (inr y) (inr y') (inl z') l m = 𝟘-elim m
  transitive t t' (inr y) (inr y') (inr z') l m = t' y y' z' l m
 
@@ -113,17 +122,19 @@ module plus
  well-founded w w' = g
   where
    φ : (x : X) → is-accessible _<_ x → is-accessible _⊏_ (inl x)
-   φ x (next .x σ) = next (inl x) τ
+   φ x (next x σ) = next (inl x) τ
     where
      τ : (s : X + Y) → s ⊏ inl x → is-accessible _⊏_ s
      τ (inl x') l = φ x' (σ x' l)
      τ (inr y') l = 𝟘-elim l
+
    γ : (y : Y) → is-accessible _≺_ y → is-accessible _⊏_ (inr y)
    γ y (next .y σ) = next (inr y) τ
     where
      τ : (s : X + Y) → s ⊏ inr y → is-accessible _⊏_ s
-     τ (inl x) l = φ x (w x)
+     τ (inl x)  l = φ x (w x)
      τ (inr y') l = γ y' (σ y' l)
+
    g : is-well-founded _⊏_
    g (inl x) = φ x (w x)
    g (inr y) = γ y (w' y)
@@ -145,7 +156,7 @@ module plus
 
 \end{code}
 
-Successor (probably get rid of it).
+Successor (probably get rid of it as we can do _+ₒ 𝟙ₒ):
 
 \begin{code}
 
@@ -201,6 +212,7 @@ module times
   where
    P : X × Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
+
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P(x' , y')) → (y : Y) → P(x , y)
    γ x step = transfinite-induction _≺_ w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
     where
@@ -210,8 +222,10 @@ module times
       where
        α : P(x , y')
        α = f y' m
+
        p : (x' , y') ≡ (x , y')
        p = to-×-≡ r refl
+
    φ : (x : X) (y : Y) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y) → P(x , y)) γ
 
@@ -221,9 +235,9 @@ module times
  transitive t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
-   f (inl l) (inl m) = inl (t _ _ _ l m)
-   f (inl l) (inr (q , m)) = inl (transport (λ - → a < -) q l)
-   f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
+   f (inl l)       (inl m)          = inl (t _ _ _ l m)
+   f (inl l)       (inr (q , m))    = inl (transport (λ - → a < -) q l)
+   f (inr (r , l)) (inl m)          = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' _ _ _ l m))
 
  extensional : is-well-founded _<_
@@ -237,12 +251,15 @@ module times
    f' u l = Cases (f (u , y) (inl l))
              (λ (m : u < x) → m)
              (λ (σ : (u ≡ x) × (y ≺ y)) → 𝟘-elim (≤-refl _≺_ y (w' y) (pr₂ σ)))
+
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g ((u , b)) (inl l))
              (λ (m : u < a) → m)
              (λ (σ : (u ≡ a) × (b ≺ b)) → 𝟘-elim (≤-refl _≺_ b (w' b) (pr₂ σ)))
+
    p : a ≡ x
    p = e a x f' g'
+
    f'' : (v : Y) → v ≺ b → v ≺ y
    f'' v l = Cases (f (a , v) (inr (refl , l)))
               (λ (m : a < x)
@@ -263,6 +280,7 @@ module times
                         → 𝟘-elim (≤-refl _≺_ y (w' y) (pr₂ σ))))
               (λ (σ : (x ≡ a) × (v ≺ b))
                  → pr₂ σ)
+
    q : b ≡ y
    q = e' b y f'' g''
 
@@ -302,13 +320,14 @@ not used for our purposes).
 \begin{code}
 
 retract-accessible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
-                       (r : X → Y) (s : Y → X)
+                     (r : X → Y) (s : Y → X)
                    → ((y : Y) → r(s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
                    → (x : X) → is-accessible _<_ x → is-accessible _≺_ (r x)
 retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
  where
   P = λ x → is-accessible _≺_ (r x)
+
   γ : ∀ x → (∀ x' → x' < x → is-accessible _≺_ (r x')) → is-accessible _≺_ (r x)
   γ x τ = next (r x) σ
    where
@@ -320,13 +339,14 @@ retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
 
 retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
                        (r : X → Y) (s : Y → X)
-                    → ((y : Y) → r(s y) ≡ y)
-                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
-                    → is-well-founded _<_ → is-well-founded _≺_
+                     → ((y : Y) → r(s y) ≡ y)
+                     → ((x : X) (y : Y) → y ≺ r x → s y < x)
+                     → is-well-founded _<_ → is-well-founded _≺_
 retract-well-founded {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ w = w'
  where
   wr : (x : X) → is-accessible _≺_ (r x)
   wr x = retract-accessible _<_ _≺_ r s η φ x (w x)
+
   w' : (y : Y) → is-accessible _≺_ y
   w' y = transport (is-accessible _≺_) (η y) (wr (s y))
 
@@ -340,7 +360,7 @@ module pip
         {𝓤 𝓥 𝓦}
         (fe : funext 𝓤 𝓥)
         (P : 𝓤 ̇ )
-        (isp : is-prop P)
+        (P-is-prop : is-prop P)
         (X : P → 𝓥 ̇ )
         (_<_ : {p : P} → X p → X p → 𝓦 ̇ )
        where
@@ -360,13 +380,13 @@ constructed in the module UF-PropIndexedPiSigma:
   φ p u = u p
 
   ψ : (p : P) → X p → Π X
-  ψ p x q = transport X (isp p q) x
+  ψ p x q = transport X (P-is-prop p q) x
 
   η : (p : P) (u : Π X) → ψ p (φ p u) ≡ u
-  η p = pr₂(pr₂(pr₂ (prop-indexed-product fe isp p)))
+  η p = pr₂(pr₂(pr₂ (prop-indexed-product fe P-is-prop p)))
 
   ε : (p : P) (x : X p) → φ p (ψ p x) ≡ x
-  ε p = pr₂(pr₁(pr₂ (prop-indexed-product fe isp p)))
+  ε p = pr₂(pr₁(pr₂ (prop-indexed-product fe P-is-prop p)))
 
 \end{code}
 
@@ -390,7 +410,7 @@ _<_ {p} on the components of the product are prop-valued.
 
  prop-valued : ((p : P) → is-prop-valued (_<_ {p}))
              → is-prop-valued _≺_
- prop-valued f u v = Σ-is-prop isp (λ p → f p (φ p u) (φ p v))
+ prop-valued f u v = Σ-is-prop P-is-prop (λ p → f p (φ p u) (φ p v))
 
 \end{code}
 
@@ -408,33 +428,46 @@ that φ is a retraction.
     where
      l' : φ p (ψ p x) < φ p u
      l' = back-transport (λ - → - < φ p u) (ε p x) l
+
      a : ψ p x ≺ u
      a = p , l'
+
      m : ψ p x ≺ v
      m = f (ψ p x) a
+
      q : P
      q = pr₁ m
+
      n : φ q (ψ p x) < φ q v
      n = pr₂ m
+
      n' : φ p (ψ p x) < φ p v
-     n' = transport (λ - → ψ p x - < φ - v) (isp q p) n
+     n' = transport (λ - → ψ p x - < φ - v) (P-is-prop q p) n
+
    g' : (p : P) (x : X p) → x < φ p v → x < φ p u
    g' p x l = transport (λ - → - < φ p u) (ε p x) n'
     where
      l' : φ p (ψ p x) < φ p v
      l' = back-transport (λ - → - < φ p v) (ε p x) l
+
      a : ψ p x ≺ v
      a = p , l'
+
      m : ψ p x ≺ u
      m = g (ψ p x) a
+
      q : P
      q = pr₁ m
+
      n : φ q (ψ p x) < φ q u
      n = pr₂ m
+
      n' : φ p (ψ p x) < φ p u
-     n' = transport (λ - → ψ p x - < φ - u) (isp q p) n
+     n' = transport (λ - → ψ p x - < φ - u) (P-is-prop q p) n
+
    δ : (p : P) → φ p u ≡ φ p v
    δ p = e p (φ p u) (φ p v) (f' p) (g' p)
+
    γ : u ∼ v
    γ = δ
 
@@ -452,8 +485,9 @@ that it is an equivalence (or a retraction or a section).
   where
    f : φ p u < φ p v → φ p v < φ p w → φ p u < φ p w
    f = t p (φ p u) (φ p v) (φ p w)
+
    m' : φ p v < φ p w
-   m' = transport (λ - → φ - v < φ - w) (isp q p) m
+   m' = transport (λ - → φ - v < φ - w) (P-is-prop q p) m
 
 \end{code}
 
@@ -474,6 +508,7 @@ lemma.
     where
      b : is-accessible _<_ (φ p v)
      b = prev _<_ (φ p u) (w p (φ p u)) (φ p v) l
+
      c : is-accessible _≺_ (ψ p (φ p v))
      c = retract-accessible _<_ _≺_ (ψ p) (φ p) (η p) f (φ p v) b
       where
@@ -481,7 +516,8 @@ lemma.
        f x u (q , l) = transport (λ - → φ p u < -) (ε p x) l'
         where
          l' : u p < ψ p x p
-         l' = transport (λ - → u - < ψ p x -) (isp q p) l
+         l' = transport (λ - → u - < ψ p x -) (P-is-prop q p) l
+
      d : is-accessible _≺_ v
      d = transport (is-accessible _≺_) (η p v) c
 
@@ -499,17 +535,19 @@ I am not sure this is going to be useful:
 \begin{code}
 
  top-preservation : P → ((p : P) → has-top (_<_ {p})) → has-top _≺_
- top-preservation p f = (λ q → transport X (isp p q) (pr₁ (f p))) , g
+ top-preservation p f = (λ q → transport X (P-is-prop p q) (pr₁ (f p))) , g
   where
-   g : (u : Π X) → ¬ ((λ q → transport X (isp p q) (pr₁ (f p))) ≺ u)
+   g : (u : Π X) → ¬ ((λ q → transport X (P-is-prop p q) (pr₁ (f p))) ≺ u)
    g u (q , l) = h n
     where
-     h : ¬(pr₁(f q) < u q)
+     h : ¬ (pr₁(f q) < u q)
      h = pr₂ (f q) (u q)
-     m : transport X (isp q q) (pr₁ (f q)) < u q
-     m = transport (λ p → transport X (isp p q) (pr₁ (f p)) < u q) (isp p q) l
+
+     m : transport X (P-is-prop q q) (pr₁ (f q)) < u q
+     m = transport (λ p → transport X (P-is-prop p q) (pr₁ (f p)) < u q) (P-is-prop p q) l
+
      n : pr₁ (f q) < u q
-     n = transport (λ - → transport X - (pr₁ (f q)) < u q) (props-are-sets isp (isp q q) refl) m
+     n = transport (λ - → transport X - (pr₁ (f q)) < u q) (props-are-sets P-is-prop (P-is-prop q q) refl) m
 
 \end{code}
 
@@ -545,6 +583,7 @@ module sum
   where
    P : Σ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
+
    γ : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
    γ x step = transfinite-induction _≺_ (w' x) (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
     where
@@ -554,8 +593,10 @@ module sum
       where
        α : P(x , transport Y r y')
        α = f (transport Y r y') m
+
        p : (x' , y') ≡ (x , transport Y r y')
        p = to-Σ-≡ (r , refl)
+
    φ : (x : X) (y : Y x) → P(x , y)
    φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
 
@@ -565,9 +606,9 @@ module sum
  transitive t t' (a , b) (x , y) (u , v) = f
   where
    f : (a , b) ⊏ (x , y) → (x , y) ⊏ (u , v) → (a , b) ⊏ (u , v)
-   f (inl l) (inl m) = inl (t _ _ _ l m)
-   f (inl l) (inr (q , m)) = inl (transport (λ - → a < -) q l)
-   f (inr (r , l)) (inl m) = inl (back-transport (λ - → - < u) r m)
+   f (inl l)       (inl m)          = inl (t _ _ _ l m)
+   f (inl l)       (inr (q , m))    = inl (transport (λ - → a < -) q l)
+   f (inr (r , l)) (inl m)          = inl (back-transport (λ - → - < u) r m)
    f (inr (r , l)) (inr (refl , m)) = inr (r , (t' x _ _ _ l m))
 
  prop-valued : FunExt
@@ -622,14 +663,17 @@ module sum-top
                 → m)
              (λ (σ : Σ r ꞉ u ≡ x , transport Y r (top u) ≺ y)
                 → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
+
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g (u , top u) (inl l))
              (λ (m : u < a)
                 → m)
              (λ (σ : Σ r ꞉ u ≡ a , transport Y r (top u) ≺ b)
                 → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
+
    p : a ≡ x
    p =  e a x f' g'
+
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
    f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
@@ -642,6 +686,7 @@ module sum-top
                             (λ - → transport Y - v ≺ y)
                             (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
                             l
+
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
@@ -651,6 +696,7 @@ module sum-top
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
                      (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
+
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
 
@@ -659,11 +705,12 @@ module sum-top
             → is-well-order _⊏_
  well-order (p , w , e , t) f = prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
                                 well-founded w (λ x → well-foundedness _≺_ (f x)) ,
-                                extensional (prop-valuedness _<_ (p , w , e , t))
-                                            w
-                                            (λ x → well-foundedness _≺_ (f x))
-                                            e
-                                            (λ x → extensionality _≺_ (f x)) ,
+                                extensional
+                                  (prop-valuedness _<_ (p , w , e , t))
+                                     w
+                                     (λ x → well-foundedness _≺_ (f x))
+                                     e
+                                     (λ x → extensionality _≺_ (f x)) ,
                                 transitive t (λ x → transitivity _≺_ (f x))
 
  top-preservation : has-top _<_ → has-top _⊏_
@@ -709,6 +756,7 @@ module sum-cotransitive
                 → let n : (x , y) ⊏ (x , y)
                       n = f (x , y) (inl m)
                   in 𝟘-elim (≤-refl _⊏_ (x , y) (sum.well-founded _<_ _≺_ w w' (x , y)) n))
+
    g' : (u : X) → u < x → u < a
    g' u l = Cases (c u x a l)
              (λ (m : u < a)
@@ -719,6 +767,7 @@ module sum-cotransitive
                   in 𝟘-elim (≤-refl _⊏_ (a , b) (sum.well-founded _<_ _≺_ w w' (a , b)) n))
    p : a ≡ x
    p =  e a x f' g'
+
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
    f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
@@ -731,6 +780,7 @@ module sum-cotransitive
                             (λ r → transport Y r v ≺ y)
                             (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
                             l
+
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
@@ -740,6 +790,7 @@ module sum-cotransitive
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
                      (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
+
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
 
@@ -748,11 +799,12 @@ module sum-cotransitive
             → is-well-order _⊏_
  well-order (p , w , e , t) f = prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
                                 well-founded w (λ x → well-foundedness _≺_ (f x)) ,
-                                extensional (prop-valuedness _<_ (p , w , e , t))
-                                            w
-                                            (λ x → well-foundedness _≺_ (f x))
-                                            e
-                                            (λ x → extensionality _≺_ (f x)) ,
+                                extensional
+                                  (prop-valuedness _<_ (p , w , e , t))
+                                  w
+                                  (λ x → well-foundedness _≺_ (f x))
+                                  e
+                                  (λ x → extensionality _≺_ (f x)) ,
                                 transitive t (λ x → transitivity _≺_ (f x))
 
 \end{code}
@@ -792,7 +844,7 @@ module extension
         {A : 𝓥 ̇ }
         (Y : X → 𝓦 ̇ )
         (j : X → A)
-        (ise : is-embedding j)
+        (j-is-embedding : is-embedding j)
         (_<_ : {x : X} → Y x → Y x → 𝓦 ̇ )
         (a : A)
        where
@@ -810,7 +862,7 @@ module extension
  well-order o = pip.well-order
                  (fe (𝓤 ⊔ 𝓥) 𝓦)
                  (fiber j a)
-                 (ise a)
+                 (j-is-embedding a)
                  (λ (p : fiber j a) → Y (pr₁ p))
                  (λ {p : fiber j a} y y' → y < y')
                  (λ (p : fiber j a) → o (pr₁ p))
@@ -820,6 +872,7 @@ module extension
    where
     φ : (p : fiber j a) → Y (pr₁ p)
     φ (x , r) = pr₁(f x)
+
     g : (ψ : (Y / j) a) → ¬ (φ ≺ ψ)
     g ψ ((x , r) , l) = pr₂ (f x) (ψ (x , r)) l
 

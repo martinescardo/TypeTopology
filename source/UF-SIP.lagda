@@ -79,10 +79,10 @@ module sip where
 
                        → (A ≡ B) ≃ (A ≃[ σ ] B)
  characterization-of-≡ ua {S} σ A B =
-    (A ≡ B)                                                           ≃⟨ i   ⟩
-    (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii  ⟩
+    (A ≡ B)                                                           ≃⟨ i ⟩
+    (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , transport S p (structure A) ≡ structure B) ≃⟨ ii ⟩
     (Σ p ꞉ ⟨ A ⟩ ≡ ⟨ B ⟩ , ι A B (idtoeq ⟨ A ⟩ ⟨ B ⟩ p))               ≃⟨ iii ⟩
-    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv  ⟩
+    (Σ e ꞉ ⟨ A ⟩ ≃ ⟨ B ⟩ , ι A B e)                                   ≃⟨ iv ⟩
     (A ≃[ σ ] B)                                                      ■
   where
    ι   = homomorphic σ
@@ -235,8 +235,8 @@ module sip-join where
        r (s (a , b))                              ≡⟨ refl─ _ ⟩
        r (to-×-≡  (f' a) (g' b))                  ≡⟨ refl─ _ ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a) (g' b))) ,
-        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a) (g' b))))  ≡⟨ ii      ⟩
-       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii     ⟩
+        g y₀ y₁ (ap pr₂ (to-×-≡ (f' a) (g' b))))  ≡⟨ ii ⟩
+       (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
        a , b                                      ∎
       where
        ii  = ap₂ (λ p q → f x₀ x₁ p , g y₀ y₁ q)

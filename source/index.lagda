@@ -24,7 +24,7 @@
    * We have also used this development for learning other people's
      results, and so some previously known constructions and theorems
      are included (sometimes with embellishments). In our last count,
-     this development has 40000 lines, including comments and blank
+     this development has 62000 lines, including comments and blank
      lines.
 
    * The required material on HoTT/UF has been developed on demand
@@ -124,6 +124,7 @@ import ConvergentSequenceInfCompact
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
+import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
 import DyadicOrder
@@ -177,6 +178,7 @@ import Ordinals
 import OrdinalsShulmanTaboo
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
+import OrdinalsWellOrderTransport
 import PartialElements
 import Pi
 import Plus
@@ -203,6 +205,8 @@ import sigma-sup-lattice
 import sigma-frame
 import TheTopologyOfTheUniverse
 import TotallySeparated
+import ToppedOrdinalArithmetic
+import ToppedOrdinalsType
 import Two
 import Two-Prop-Density
 import Two-Properties
@@ -212,6 +216,7 @@ import Unit-Properties
 import Universes
 import WeaklyCompactTypes
 import W
+import W-Properties
 import WLPO
 import UF
 import UF-Base
@@ -344,7 +349,7 @@ import ConvergentSequenceCompact
 An interesting consequence of the compactness of ℕ∞ is that the
 following property, an instance of WLPO, holds constructively:
 
-  (p : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ ₁) + ¬((n : ℕ) → p(under n) ≡ ₁).
+  (p : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ ₁) + ¬ ((n : ℕ) → p(under n) ≡ ₁).
 
 where
 

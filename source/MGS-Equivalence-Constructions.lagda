@@ -52,14 +52,14 @@ id-≃-left fe fe' α = to-subtype-≡ (being-equiv-is-subsingleton fe fe') (ref
 ≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Z α = invertibility-gives-≃ (α ●_)
                                       ((≃-sym α ●_) , p , q)
  where
-  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β        ⟩
+  p = λ β → ≃-sym α ● (α ● β) ≡⟨ ●-assoc fe₀ fe₁ (≃-sym α) α β ⟩
             (≃-sym α ● α) ● β ≡⟨ ap (_● β) (≃-sym-left-inverse fe₂ α) ⟩
-            id-≃ _ ● β        ≡⟨ id-≃-left fe₀ fe₁ _                  ⟩
+            id-≃ _ ● β        ≡⟨ id-≃-left fe₀ fe₁ _ ⟩
             β                 ∎
 
-  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc fe₃ fe₄ α (≃-sym α) γ         ⟩
+  q = λ γ → α ● (≃-sym α ● γ) ≡⟨ ●-assoc fe₃ fe₄ α (≃-sym α) γ ⟩
             (α ● ≃-sym α) ● γ ≡⟨ ap (_● γ) (≃-sym-right-inverse fe₅ α) ⟩
-            id-≃ _ ● γ        ≡⟨ id-≃-left fe₃ fe₄ _                   ⟩
+            id-≃ _ ● γ        ≡⟨ id-≃-left fe₃ fe₄ _ ⟩
             γ                 ∎
 
 Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → dfunext 𝓤 𝓤
@@ -71,10 +71,10 @@ Eq-Eq-cong' : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔
 
 Eq-Eq-cong' fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ fe₆ fe₇ fe₈ fe₉ fe₁₀ fe₁₁ {X} {Y} {A} {B} α β =
 
-  X ≃ Y   ≃⟨ ≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Y (≃-sym α)  ⟩
-  A ≃ Y   ≃⟨ ≃-Sym fe₃ fe₆ fe₄                           ⟩
+  X ≃ Y   ≃⟨ ≃-Comp fe₀ fe₁ fe₂ fe₃ fe₄ fe₅ Y (≃-sym α) ⟩
+  A ≃ Y   ≃⟨ ≃-Sym fe₃ fe₆ fe₄ ⟩
   Y ≃ A   ≃⟨ ≃-Comp fe₆ fe₄ fe₇ fe₈ fe₉ fe₁₀ A (≃-sym β) ⟩
-  B ≃ A   ≃⟨ ≃-Sym fe₈ fe₁₁ fe₉                          ⟩
+  B ≃ A   ≃⟨ ≃-Sym fe₈ fe₁₁ fe₉ ⟩
   A ≃ B   ■
 
 Eq-Eq-cong : global-dfunext

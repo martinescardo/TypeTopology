@@ -28,7 +28,6 @@ constructively, well, taboos!
 module WLPO where
 
 open import SpartanMLTT
-
 open import GenericConvergentSequence
 
 WLPO : 𝓤₀ ̇

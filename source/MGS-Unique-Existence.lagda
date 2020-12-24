@@ -64,14 +64,14 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
    where
     s : (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) → h ∼ ℕ-iteration Y y₀ g
     s (p , K) 0 = p
-    s (p , K) (succ n) = h (succ n)                  ≡⟨ K n                ⟩
+    s (p , K) (succ n) = h (succ n)                  ≡⟨ K n ⟩
                          g (h n)                     ≡⟨ ap g (s (p , K) n) ⟩
-                         g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _             ⟩
+                         g (ℕ-iteration Y y₀ g n)    ≡⟨ refl _ ⟩
                          ℕ-iteration Y y₀ g (succ n) ∎
 
     r : codomain s → domain s
-    r H = H 0 , (λ n → h (succ n)                  ≡⟨ H (succ n)     ⟩
-                       ℕ-iteration Y y₀ g (succ n) ≡⟨ refl _         ⟩
+    r H = H 0 , (λ n → h (succ n)                  ≡⟨ H (succ n) ⟩
+                       ℕ-iteration Y y₀ g (succ n) ≡⟨ refl _ ⟩
                        g (ℕ-iteration Y y₀ g n)    ≡⟨ ap g ((H n)⁻¹) ⟩
                        g (h n )                    ∎)
 
@@ -83,10 +83,10 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
      where
       v = λ n →
        s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))                  ≡⟨ refl _ ⟩
-       K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ≡⟨ i   n  ⟩
-       K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n  ⟩
-       K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n  ⟩
-       K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n  ⟩
+       K n ∙  ap g (s (p , K) n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))           ≡⟨ i   n ⟩
+       K n ∙  ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹)                    ≡⟨ ii  n ⟩
+       K n ∙ (ap g (s (p , K) n) ∙  ap g ((s (p , K) n) ⁻¹))                   ≡⟨ iii n ⟩
+       K n ∙ (ap g (s (p , K) n) ∙ (ap g  (s (p , K) n))⁻¹)                    ≡⟨ iv  n ⟩
        K n ∙ refl _                                                            ≡⟨ refl _ ⟩
        K n                                                                     ∎
         where
@@ -97,14 +97,14 @@ weak-unique-existence-gives-unique-existence-sometimes A i ((x , a) , u) = (x , 
          iv  = λ n → ap (K n ∙_) (⁻¹-right∙ (ap g (s (p , K) n)))
 
       q = r (s (p , K))                                                      ≡⟨ refl _ ⟩
-          p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ≡⟨ vi     ⟩
+          p , (λ n → s (p , K) (succ n) ∙ (refl _ ∙ ap g ((s (p , K) n)⁻¹))) ≡⟨ vi ⟩
           p , K                                                              ∎
        where
          vi = ap (p ,_) (fe v)
 
-  lemma₁ = λ h → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h) ◁⟨ i h      ⟩
+  lemma₁ = λ h → (h 0 ≡ y₀) × (h ∘ succ ≡ g ∘ h) ◁⟨ i h ⟩
                  (h 0 ≡ y₀) × (h ∘ succ ∼ g ∘ h) ◁⟨ lemma₀ h ⟩
-                 (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ ii h     ⟩
+                 (h ∼ ℕ-iteration Y y₀ g)        ◁⟨ ii h ⟩
                  (h ≡ ℕ-iteration Y y₀ g)        ◀
    where
     i  = λ h → Σ-retract (λ _ → ≃-gives-◁ (happly (h ∘ succ) (g ∘ h) , hfe _ _))

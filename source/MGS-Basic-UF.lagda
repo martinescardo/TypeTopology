@@ -36,7 +36,7 @@ is-subsingleton X = (x y : X) → x ≡ y
 
 singletons-are-subsingletons : (X : 𝓤 ̇ ) → is-singleton X → is-subsingleton X
 singletons-are-subsingletons X (c , φ) x y = x ≡⟨ (φ x)⁻¹ ⟩
-                                             c ≡⟨ φ y     ⟩
+                                             c ≡⟨ φ y ⟩
                                              y ∎
 
 𝟙-is-subsingleton : is-subsingleton 𝟙
@@ -83,7 +83,7 @@ EM'-gives-EM em' X s = γ (em' X s)
   γ (inl i) = inl (center X i)
   γ (inr x) = inr x
 
-no-unicorns : ¬(Σ X ꞉ 𝓤 ̇ , is-subsingleton X × ¬(is-singleton X) × ¬(is-empty X))
+no-unicorns : ¬ (Σ X ꞉ 𝓤 ̇ , is-subsingleton X × ¬ (is-singleton X) × ¬ (is-empty X))
 no-unicorns (X , i , f , g) = c
  where
   e : is-empty X

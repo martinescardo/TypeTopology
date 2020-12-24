@@ -52,7 +52,7 @@ cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k
 zero-minimal : (n : ℕ) → zero ≤ n
 zero-minimal n = *
 
-zero-minimal' : (n : ℕ) → ¬(succ n ≤ zero)
+zero-minimal' : (n : ℕ) → ¬ (succ n ≤ zero)
 zero-minimal' n l = l
 
 zero-minimal'' : (n : ℕ) → n ≤ zero → n ≡ zero
@@ -132,19 +132,19 @@ m < n = succ m ≤ n
 
 x > y = y < x
 
-not-less-than-itself : (n : ℕ) → ¬(n < n)
+not-less-than-itself : (n : ℕ) → ¬ (n < n)
 not-less-than-itself zero l = l
 not-less-than-itself (succ n) l = not-less-than-itself n l
 
-not-less-bigger-or-equal : (m n : ℕ) → ¬(n < m) → n ≥ m
+not-less-bigger-or-equal : (m n : ℕ) → ¬ (n < m) → n ≥ m
 not-less-bigger-or-equal zero n u = zero-minimal n
 not-less-bigger-or-equal (succ m) zero = double-negation-intro (zero-minimal m)
 not-less-bigger-or-equal (succ m) (succ n) = not-less-bigger-or-equal m n
 
-bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬(n < m)
+bigger-or-equal-not-less : (m n : ℕ) → n ≥ m → ¬ (n < m)
 bigger-or-equal-not-less m n l u = not-less-than-itself n (≤-trans (succ n) m n u l)
 
-less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬(n ≤ m)
+less-not-bigger-or-equal : (m n : ℕ) → m < n → ¬ (n ≤ m)
 less-not-bigger-or-equal m n l u = bigger-or-equal-not-less n m u l
 
 bounded-∀-next : (A : ℕ → 𝓤 ̇ ) (k : ℕ)
@@ -166,7 +166,7 @@ Added 20th June 2018:
 
 \begin{code}
 
-<-is-prop-valued : (m n : ℕ) → is-prop(m < n)
+<-is-prop-valued : (m n : ℕ) → is-prop (m < n)
 <-is-prop-valued m n = ≤-is-prop-valued (succ m) n
 
 <-coarser-than-≤ : (m n : ℕ) → m < n → m ≤ n

@@ -53,13 +53,17 @@ happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
              → happly (dfunext fe h) ≡ h
 happly-funext fe f g = pr₂(pr₁(fe f g))
 
-funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥)
-         → (f g : Π A) → left-cancellable (dfunext fe {X} {A} {f} {g})
+funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
+          → left-cancellable (dfunext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
 
 happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
          → left-cancellable(happly' f g)
 happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
+
+dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f : Π A)
+             → dfunext fe (λ (x : X) → refl─ (f x)) ≡ refl
+dfunext-refl fe f = happly-lc fe f f (happly-funext fe f f (λ x → refl))
 
 ap-funext : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } (f g : X → Y) {A : 𝓦' ̇ } (k : Y → A) (h : f ∼ g)
           → (fe : funext 𝓥 𝓦) (x : X) → ap (λ (- : X → Y) → k (- x)) (dfunext fe h) ≡ ap k (h x)

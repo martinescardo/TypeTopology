@@ -101,7 +101,7 @@ module _ (hfe : global-hfunext) where
 
  transport-hunapply A R f g φ h x =
 
-   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i  ⟩
+   transport (λ - → ∀ x → R x (- x)) (hunapply h) φ x ≡⟨ i ⟩
    transport (R x) (happly f g (hunapply h) x) (φ x)  ≡⟨ ii ⟩
    transport (R x) (h x) (φ x)                        ∎
 
@@ -152,8 +152,8 @@ module _ (hfe : global-hfunext) where
      p = hunapply (λ x → c₁ x (f x) (φ x))
 
      q : transport (λ - → (x : X) → R x (- x)) p φ₀ ∼ φ
-     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ≡⟨ i   ⟩
-           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ≡⟨ ii  ⟩
+     q x = transport (λ - → (x : X) → R x (- x)) p φ₀ x           ≡⟨ i ⟩
+           transport (R x) (ap pr₁ (c x (f x , φ x))) (φ₀ x)      ≡⟨ ii ⟩
            transport (λ σ → R x (pr₁ σ)) (c x (f x , φ x)) (φ₀ x) ≡⟨ iii ⟩
            φ x                                                    ∎
       where

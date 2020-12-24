@@ -174,7 +174,7 @@ open import UF-LeftCancellable
   m : left-cancellable g
   m {x} {x'} p = q
    where
-    r = f (suc x)  ≡⟨ a x      ⟩
+    r = f (suc x)  ≡⟨ a x ⟩
         suc (g x)  ≡⟨ ap suc p ⟩
         suc (g x') ≡⟨ (a x')⁻¹ ⟩
         f (suc x') ∎
@@ -312,7 +312,7 @@ pigeonhole-principle m n f g = γ
   d : ¬¬ (f has-a-repetition)
   d ψ = c δ
    where
-    ε : (i j : Fin m) → f i ≡ f j → ¬(i ≢ j)
+    ε : (i j : Fin m) → f i ≡ f j → ¬ (i ≢ j)
     ε i j p ν = ψ (i , j , ν , p)
     δ : (i j : Fin m) → f i ≡ f j → i ≡ j
     δ i j p = ¬¬-elim (Fin-is-discrete m i j) (ε i j p)
@@ -677,7 +677,7 @@ Finite types are compact, or exhaustively searchable.
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
 
- finite-∃-compact : FunExt → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
+ finite-∃-compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
  finite-∃-compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
 
 \end{code}

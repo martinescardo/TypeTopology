@@ -92,8 +92,8 @@ universe-embedding-criterion {𝓤} {𝓥} ua ua' f e = embedding-criterion f γ
   fe₁ = lower-dfunext 𝓥 𝓥 𝓤 (𝓤 ⊔ 𝓥) fe
 
   γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ i   ⟩
-            (f X ≃ f X')  ≃⟨ ii  ⟩
+  γ X X' =  (f X ≡ f X')  ≃⟨ i ⟩
+            (f X ≃ f X')  ≃⟨ ii ⟩
             (X ≃ X')      ≃⟨ iii ⟩
             (X ≡ X')      ■
    where
@@ -133,8 +133,8 @@ module _ {𝓤 𝓥 : Universe}
   where
    abstract
      e : (Y : 𝓥 ̇ ) → (X ≃ Y) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
-     e Y = (X ≃ Y)                 ≃⟨ i   ⟩
-           (Y ≃ X)                 ≃⟨ ii  ⟩
+     e Y = (X ≃ Y)                 ≃⟨ i ⟩
+           (Y ≃ X)                 ≃⟨ ii ⟩
            (Lift 𝓤 Y ≃ Lift 𝓥 X)   ≃⟨ iii ⟩
            (Lift 𝓤 Y ≡ Lift 𝓥 X)   ■
       where
@@ -335,14 +335,14 @@ global-≃-ap' : Univalence
 
 global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
 
-  A X          ≃⟨ φ X                                   ⟩
+  A X          ≃⟨ φ X ⟩
   A (Lift 𝓥 X) ≃⟨ Id→Eq (A (Lift 𝓥 X)) (A (Lift 𝓤 Y)) q ⟩
-  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y)                           ⟩
+  A (Lift 𝓤 Y) ≃⟨ ≃-sym (φ Y) ⟩
   A Y          ■
  where
   d : Lift 𝓥 X ≃ Lift 𝓤 Y
-  d = Lift 𝓥 X ≃⟨ Lift-≃ X         ⟩
-      X        ≃⟨ e                ⟩
+  d = Lift 𝓥 X ≃⟨ Lift-≃ X ⟩
+      X        ≃⟨ e ⟩
       Y        ≃⟨ ≃-sym (Lift-≃ Y) ⟩
       Lift 𝓤 Y ■
 

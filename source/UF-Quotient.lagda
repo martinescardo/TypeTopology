@@ -71,7 +71,7 @@ is-prop-valued
  equivalence
    : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 
-is-prop-valued _≈_ = ∀ x y → is-prop(x ≈ y)
+is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
 reflexive      _≈_ = ∀ x → x ≈ x
 symmetric      _≈_ = ∀ x y → x ≈ y → y ≈ x
 transitive     _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
@@ -162,7 +162,7 @@ values in any universe 𝓦 we please:
 \begin{code}
 
  η-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇ )
-             → ((x' : X/≈) → is-prop(P x'))
+             → ((x' : X/≈) → is-prop (P x'))
              → ((x : X) → P(η x))
              → (x' : X/≈) → P x'
  η-induction = surjection-induction η η-surjection

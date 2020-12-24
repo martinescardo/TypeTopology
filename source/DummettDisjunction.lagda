@@ -41,7 +41,7 @@ and strengthens classical disjunction:
 
 \begin{code}
 
-stronger-than-classical : (P Q : Set) → P ⊞ Q → ¬(¬ P × ¬ Q)
+stronger-than-classical : (P Q : Set) → P ⊞ Q → ¬ (¬ P × ¬ Q)
 stronger-than-classical P Q = more-generally 𝟘 𝟘-elim
   where
     more-generally : (R : Set) → (R → P) → P ⊞ Q → ((P → R) × (Q → R)) → R
@@ -312,7 +312,7 @@ P ⊕ Q = (P → Q) → Q
 ⊕-weaker-than-intuitionistic P Q (inl p) = ⊕-inL P Q p
 ⊕-weaker-than-intuitionistic P Q (inr q) = ⊕-inR P Q q
 
-⊕-stronger-than-classical : (P Q : Set) → P ⊕ Q → ¬(¬ P × ¬ Q)
+⊕-stronger-than-classical : (P Q : Set) → P ⊕ Q → ¬ (¬ P × ¬ Q)
 ⊕-stronger-than-classical P Q = more-generally 𝟘 𝟘-elim
   where
     more-generally : (R : Set) → (R → Q) → P ⊕ Q → ((P → R) × (Q → R)) → R
@@ -345,7 +345,7 @@ Curry-Howard-EM-gives-⊕-Curry-Howard-EM-left em P = more-generally P (em P)
 -- asymetric notion of disjunction, on both sides, but we already know
 -- the right case:
 
-⊕-wem-left : (P : Set) → ¬(¬ P) ⊕ ¬ P
+⊕-wem-left : (P : Set) → ¬ (¬ P) ⊕ ¬ P
 ⊕-wem-left P = λ φ p → φ (λ u → u p) p
 
 -- Curry-Howard disjunction agrees with weak Dummet disjunction iff
@@ -371,10 +371,10 @@ Curry-Howard-EM-gives-agreement em P Q = more-generally P Q (em P)
 
 -- We also have, of course:
 
-equivalent-to-classical : Curry-Howard-EM → (P Q : Set) → ¬(¬ P × ¬ Q) → P ⊕ Q
+equivalent-to-classical : Curry-Howard-EM → (P Q : Set) → ¬ (¬ P × ¬ Q) → P ⊕ Q
 equivalent-to-classical em P Q = more-generally P Q (em P) (em Q)
  where
-  more-generally : (P Q : Set) → decidable P → decidable Q → ¬(¬ P × ¬ Q) → P ⊕ Q
+  more-generally : (P Q : Set) → decidable P → decidable Q → ¬ (¬ P × ¬ Q) → P ⊕ Q
   more-generally P Q (inl p) e v w = w p
   more-generally P Q (inr p) (inl q) v w = q
   more-generally P Q (inr p) (inr q) v w = 𝟘-elim (v ((λ p → q (w p)) , q))
@@ -411,13 +411,13 @@ D P = ∀ i → (∀ x → P x → P i) → P i
 
 \end{code}
 
-If X is empty then D P holds, but ¬(∀ x → ¬(P x)) fails because
-∀ x → ¬(P x) holds vacuously.  However D strengthens the classical
+If X is empty then D P holds, but ¬ (∀ x → ¬ (P x)) fails because
+∀ x → ¬ (P x) holds vacuously.  However D strengthens the classical
 existential quantifier for X non-empty:
 
 \begin{code}
 
-D-stronger-than-classical : {X : Set} (P : X → Set) → ¬(¬ X) → D P → ¬(∀ x → ¬(P x))
+D-stronger-than-classical : {X : Set} (P : X → Set) → ¬ (¬ X) → D P → ¬ (∀ x → ¬ (P x))
 D-stronger-than-classical P ne d u = ne (λ i → u i (d i (λ x p → 𝟘-elim (u x p))))
  where
   -- More slowly:

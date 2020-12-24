@@ -175,7 +175,7 @@ meaning of numbers as types.
     φ = pr₂ IH
 
     φ' =  Fin k + 𝟙           ≃⟨ Ap+ 𝟙 φ ⟩
-         (Fin m + Fin n) + 𝟙  ≃⟨ +assoc  ⟩
+         (Fin m + Fin n) + 𝟙  ≃⟨ +assoc ⟩
          (Fin m + Fin n + 𝟙)  ■
 
     g : Σ k' ꞉ ℕ , Fin k' ≃ Fin m + Fin (succ n)
@@ -227,8 +227,8 @@ addition:
 
 +'-comm : (m n : ℕ) → m +' n ≡ n +' m
 +'-comm m n = Fin-lc (m +' n) (n +' m)
- (Fin (m +' n)   ≃⟨ Fin+homo m n         ⟩
-  Fin m + Fin n  ≃⟨ +comm                ⟩
+ (Fin (m +' n)   ≃⟨ Fin+homo m n ⟩
+  Fin m + Fin n  ≃⟨ +comm ⟩
   Fin n + Fin m  ≃⟨ ≃-sym (Fin+homo n m) ⟩
   Fin (n +' m)   ■)
 
@@ -249,9 +249,9 @@ We now repeat this story for multiplication:
     φ : Fin k ≃ Fin m × Fin n
     φ = pr₂ IH
 
-    φ' = Fin (k +' m)          ≃⟨ Fin+homo k m  ⟩
+    φ' = Fin (k +' m)          ≃⟨ Fin+homo k m ⟩
          Fin k + Fin m         ≃⟨ Ap+ (Fin m) φ ⟩
-         Fin m × Fin n + Fin m ≃⟨ 𝟙distr        ⟩
+         Fin m × Fin n + Fin m ≃⟨ 𝟙distr ⟩
          Fin m × (Fin n + 𝟙)   ■
 
     g : Σ k' ꞉ ℕ , Fin k' ≃ Fin m × Fin (succ n)
@@ -273,8 +273,8 @@ Fin×homo m n = pr₂(×construction m n)
 
 ×'-comm : (m n : ℕ) → m ×' n ≡ n ×' m
 ×'-comm m n = Fin-lc (m ×' n) (n ×' m)
- (Fin (m ×' n)   ≃⟨ Fin×homo m n         ⟩
-  Fin m × Fin n  ≃⟨ ×comm                ⟩
+ (Fin (m ×' n)   ≃⟨ Fin×homo m n ⟩
+  Fin m × Fin n  ≃⟨ ×comm ⟩
   Fin n × Fin m  ≃⟨ ≃-sym (Fin×homo n m) ⟩
   Fin (n ×' m)   ■)
 
@@ -295,7 +295,7 @@ module exponentiation-and-factorial (fe : FunExt) where
  →construction : (m n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ (Fin m → Fin n)
  →construction zero n = succ zero ,
                         (𝟘 + 𝟙        ≃⟨ 𝟘-lneutral ⟩
-                         𝟙            ≃⟨ 𝟘→ fe₀     ⟩
+                         𝟙            ≃⟨ 𝟘→ fe₀ ⟩
                         (𝟘 → Fin n)   ■)
  →construction (succ m) n = g
   where
@@ -306,9 +306,9 @@ module exponentiation-and-factorial (fe : FunExt) where
    φ : Fin k ≃ (Fin m → Fin n)
    φ = pr₂ IH
 
-   φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n     ⟩
+   φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n ⟩
         Fin k × Fin n                  ≃⟨ ×cong φ (𝟙→ fe₀) ⟩
-       (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀)   ⟩
+       (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀) ⟩
        (Fin m + 𝟙 → Fin n)             ■
 
    g : Σ k' ꞉ ℕ , Fin k' ≃ (Fin (succ m) → Fin n)
@@ -336,20 +336,20 @@ module exponentiation-and-factorial (fe : FunExt) where
 
  ^+homo : (k m n : ℕ) → k ^ (m +' n) ≡ (k ^ m) ×' (k ^ n)
  ^+homo k m n = Fin-lc (k ^ (m +' n)) (k ^ m ×' k ^ n)
-  (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k                                 ⟩
-  (Fin (m +' n) → Fin k)             ≃⟨ →cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k))      ⟩
-  (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀                                              ⟩
+  (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k ⟩
+  (Fin (m +' n) → Fin k)             ≃⟨ →cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k)) ⟩
+  (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀  ⟩
   (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
-   Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n))                    ⟩
+   Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n)) ⟩
    Fin (k ^ m ×' k ^ n)              ■)
 
  iterated^ : (k m n : ℕ) → k ^ (m ×' n) ≡ (k ^ n) ^ m
  iterated^ k m n = Fin-lc (k ^ (m ×' n)) (k ^ n ^ m)
-    (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k                                    ⟩
-    (Fin (m ×' n) → Fin k)     ≃⟨ →cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k))         ⟩
-    (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe                                       ⟩
+    (Fin (k ^ (m ×' n))        ≃⟨ Fin^homo (m ×' n) k ⟩
+    (Fin (m ×' n) → Fin k)     ≃⟨ →cong fe₀ fe₀ (Fin×homo m n) (≃-refl (Fin k)) ⟩
+    (Fin m × Fin n → Fin k)    ≃⟨ curry-uncurry fe ⟩
     (Fin m → (Fin n → Fin k))  ≃⟨ →cong fe₀ fe₀ (≃-refl (Fin m)) (≃-sym (Fin^homo n k)) ⟩
-    (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n))                             ⟩
+    (Fin m → Fin (k ^ n))      ≃⟨ ≃-sym (Fin^homo m (k ^ n)) ⟩
      Fin (k ^ n ^ m)           ■)
 
 \end{code}
@@ -365,7 +365,7 @@ actually necessary - see the comments in the module UF-Factorial).
  !construction : (n : ℕ) → Σ k ꞉ ℕ , Fin k ≃ Aut (Fin n)
  !construction zero = 1 ,
                       (Fin 1          ≃⟨ ≃-refl (Fin 1) ⟩
-                       𝟘 + 𝟙          ≃⟨ 𝟘-lneutral     ⟩
+                       𝟘 + 𝟙          ≃⟨ 𝟘-lneutral ⟩
                        𝟙              ≃⟨ factorial-base ⟩
                        Aut (Fin zero) ■)
  !construction (succ n) = g
@@ -377,8 +377,8 @@ actually necessary - see the comments in the module UF-Factorial).
    φ : Fin k ≃ Aut(Fin n)
    φ = pr₂ IH
 
-   φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k                            ⟩
-        Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ                ⟩
+   φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k ⟩
+        Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ ⟩
         (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
         Aut (Fin n + 𝟙)           ■
 
@@ -432,7 +432,7 @@ module _ (pt : propositional-truncations-exist)
  Aut-finite (n , α) = n ! , γ
   where
    δ : X ≃ Fin n → Aut X ≃ Fin (n !)
-   δ d = Aut X       ≃⟨ Eq-Eq-cong fe d d             ⟩
+   δ d = Aut X       ≃⟨ Eq-Eq-cong fe d d ⟩
          Aut (Fin n) ≃⟨ ≃-sym (pr₂ (!construction n)) ⟩
          Fin (n !)   ■
    γ : ∥ Aut X ≃ Fin (n !) ∥
@@ -447,7 +447,7 @@ module _ (pt : propositional-truncations-exist)
   +finite (m , α) (n , β) = m +' n , γ
    where
     δ : X ≃ Fin m → Y ≃ Fin n → X + Y ≃ Fin (m +' n)
-    δ d e = X + Y         ≃⟨ +cong d e                       ⟩
+    δ d e = X + Y         ≃⟨ +cong d e ⟩
             Fin m + Fin n ≃⟨ ≃-sym (pr₂ (+construction m n)) ⟩
             Fin (m +' n)  ■
     γ : ∥ X + Y ≃ Fin (m +' n) ∥
@@ -456,7 +456,7 @@ module _ (pt : propositional-truncations-exist)
   ×finite (m , α) (n , β) = m ×' n , γ
    where
     δ : X ≃ Fin m → Y ≃ Fin n → X × Y ≃ Fin (m ×' n)
-    δ d e = X × Y         ≃⟨ ×cong d e                       ⟩
+    δ d e = X × Y         ≃⟨ ×cong d e ⟩
             Fin m × Fin n ≃⟨ ≃-sym (pr₂ (×construction m n)) ⟩
             Fin (m ×' n)  ■
     γ : ∥ X × Y ≃ Fin (m ×' n) ∥
@@ -465,8 +465,8 @@ module _ (pt : propositional-truncations-exist)
   →finite (m , α) (n , β) = n ^ m , γ
    where
     δ : X ≃ Fin m → Y ≃ Fin n → (X → Y) ≃ Fin (n ^ m)
-    δ d e = (X → Y)         ≃⟨ →cong (fe 𝓤₀ 𝓤₀) (fe 𝓤 𝓥) d e    ⟩
-            (Fin m → Fin n) ≃⟨ ≃-sym (pr₂ (→construction m n))  ⟩
+    δ d e = (X → Y)         ≃⟨ →cong (fe 𝓤₀ 𝓤₀) (fe 𝓤 𝓥) d e ⟩
+            (Fin m → Fin n) ≃⟨ ≃-sym (pr₂ (→construction m n)) ⟩
             Fin (n ^ m)     ■
     γ : ∥ (X → Y) ≃ Fin (n ^ m) ∥
     γ = ∥∥-functor₂ δ α β
@@ -483,7 +483,7 @@ open import UF-PropIndexedPiSigma
 
 Σconstruction : (n : ℕ) (a : Fin n → ℕ)
               → Σ k ꞉ ℕ , Fin k ≃ (Σ i ꞉ Fin n , Fin (a i))
-Σconstruction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _                         ⟩
+Σconstruction 0 a = 0 , (Fin 0                    ≃⟨ ≃-refl _ ⟩
                          𝟘                        ≃⟨ ≃-sym (prop-indexed-sum-zero id) ⟩
                          (Σ i ꞉ 𝟘 , Fin (a i)) ■)
 Σconstruction (succ n) a = g
@@ -494,10 +494,10 @@ open import UF-PropIndexedPiSigma
   k = pr₁ IH
   φ : Fin k ≃ (Σ i ꞉ Fin n , Fin (a (suc i)))
   φ = pr₂ IH
-  φ' = Fin (a 𝟎 +' k)                                                      ≃⟨ i   ⟩
-       Fin (a 𝟎) + Fin k                                                   ≃⟨ ii  ⟩
+  φ' = Fin (a 𝟎 +' k)                                                      ≃⟨ i ⟩
+       Fin (a 𝟎) + Fin k                                                   ≃⟨ ii ⟩
        Fin k + Fin (a 𝟎)                                                   ≃⟨ iii ⟩
-       (Σ i ꞉ Fin n , Fin (a (suc i))) + (Σ i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv  ⟩
+       (Σ i ꞉ Fin n , Fin (a (suc i))) + (Σ i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv ⟩
       (Σ i ꞉ Fin n + 𝟙 , Fin (a i))                                     ■
    where
     i   = pr₂ (+construction (a 𝟎) k)
@@ -541,10 +541,10 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
 
  Πconstruction : (n : ℕ) (a : Fin n → ℕ)
                → Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a i))
- Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ i   ⟩
-                          𝟘 + 𝟙                        ≃⟨ ii  ⟩
+ Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ i ⟩
+                          𝟘 + 𝟙                        ≃⟨ ii ⟩
                           𝟙                            ≃⟨ iii ⟩
-                          (Π i ꞉ 𝟘 , Fin (a i))     ≃⟨ iv  ⟩
+                          (Π i ꞉ 𝟘 , Fin (a i))     ≃⟨ iv ⟩
                           (Π i ꞉ Fin 0 , Fin (a i)) ■)
   where
    i   = ≃-refl _
@@ -560,10 +560,10 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
    k = pr₁ IH
    φ : Fin k ≃ (Π i ꞉ Fin n , Fin (a (suc i)))
    φ = pr₂ IH
-   φ' = Fin (a 𝟎 ×' k)                                                      ≃⟨ i   ⟩
-        Fin (a 𝟎) × Fin k                                                   ≃⟨ ii  ⟩
+   φ' = Fin (a 𝟎 ×' k)                                                      ≃⟨ i ⟩
+        Fin (a 𝟎) × Fin k                                                   ≃⟨ ii ⟩
         Fin k × Fin (a 𝟎)                                                   ≃⟨ iii ⟩
-        (Π i ꞉ Fin n , Fin (a (suc i))) × (Π i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv  ⟩
+        (Π i ꞉ Fin n , Fin (a (suc i))) × (Π i ꞉ 𝟙 , Fin (a (inr i))) ≃⟨ iv ⟩
         (Π i ꞉ Fin n + 𝟙 , Fin (a i))                                    ■
     where
      i   = pr₂ (×construction (a 𝟎) k)

@@ -330,9 +330,9 @@ is-monotone 𝓐 𝓑 f = ∀ a b → a ≤⟨ 𝓐 ⟩ b → f a ≤⟨ 𝓑 �
   l' : ⋁⟨ 𝓐 ⟩ (a * b) ≡ b
   l' = lr-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓐 ⟩-order) ⟨ 𝓐 ⟩-≤-is-σ-sup-compatible-order a b) l
   m' : ⋁⟨ 𝓑 ⟩ (f a * f b) ≡ f b
-  m' = ⋁⟨ 𝓑 ⟩ (f a * f b)   ≡⟨ ap ⋁⟨ 𝓑 ⟩ (dfunext fe c)           ⟩
+  m' = ⋁⟨ 𝓑 ⟩ (f a * f b)   ≡⟨ ap ⋁⟨ 𝓑 ⟩ (dfunext fe c) ⟩
        ⋁⟨ 𝓑 ⟩ (f ∘ (a * b)) ≡⟨ (σ-suplat-hom-⋁ 𝓐 𝓑 f i (a * b))⁻¹ ⟩
-       f (⋁⟨ 𝓐 ⟩ (a * b))   ≡⟨ ap f l'                            ⟩
+       f (⋁⟨ 𝓐 ⟩ (a * b))   ≡⟨ ap f l' ⟩
        f b                   ∎
   m : f a ≤⟨ 𝓑 ⟩ f b
   m = rl-implication (any-σ-sup-order-is-intrinsic-order _ (⟨ 𝓑 ⟩-order) ⟨ 𝓑 ⟩-≤-is-σ-sup-compatible-order  (f a) (f b)) m'
@@ -348,10 +348,10 @@ id-is-σ-suplat-hom 𝓐 = refl , (λ 𝕒 → refl)
 ∘-σ-suplat-hom 𝓐 𝓑 𝓒 f g (r₀ , s₀) (r₁ , s₁) = (r₂ , s₂)
  where
   r₂ = g (f ⊥⟨ 𝓐 ⟩) ≡⟨ ap g r₀ ⟩
-       g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁      ⟩
+       g ⊥⟨ 𝓑 ⟩     ≡⟨ r₁ ⟩
        ⊥⟨ 𝓒 ⟩       ∎
 
-  s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ≡⟨ ap g (s₀ 𝕒)        ⟩
+  s₂ = λ 𝕒 → g (f (⋁⟨ 𝓐 ⟩ 𝕒))           ≡⟨ ap g (s₀ 𝕒) ⟩
              g (⋁⟨ 𝓑 ⟩ (λ n → f (𝕒 n))) ≡⟨ s₁ (λ n → f (𝕒 n)) ⟩
              ⋁⟨ 𝓒 ⟩ (λ n → g (f (𝕒 n))) ∎
 \end{code}

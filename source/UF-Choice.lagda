@@ -65,11 +65,11 @@ We observe that this is equivalent to
 This generalizes the T-condition that the double negation shift is
 equivalent to
 
-   ¬¬(Π x ꞉ X , A x + ¬(A x))
+   ¬¬ (Π x ꞉ X , A x + ¬ (A x))
 
 or
 
-   ¬¬(Π x ꞉ X , ¬¬ A x → A x)
+   ¬¬ (Π x ꞉ X , ¬¬ A x → A x)
 
 \begin{code}
 
@@ -217,10 +217,10 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  β {X} φ = cases (λ s → s) (λ u → 𝟘-elim (φ (contrapositive ∣_∣ u))) (em ∥ X ∥ ∥∥-is-prop)
 
  DNS = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
-     → (Π x ꞉ X , ¬¬ A x) → ¬¬(Π x ꞉ X , A x)
+     → (Π x ꞉ X , ¬¬ A x) → ¬¬ (Π x ꞉ X , A x)
 
  DNA = (X : 𝓤 ̇ ) (A : X → 𝓤 ̇ ) → is-set X → ((x : X) → is-set (A x))
-     → ¬¬(Π x ꞉ X , (¬¬ A x → A x))
+     → ¬¬ (Π x ꞉ X , (¬¬ A x → A x))
 
  Fact : AC' → DNS
  Fact ac X A isx isa f = α (ac X A isx isa (λ x → β (f x)))
@@ -228,7 +228,7 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
  Fact' : DNS → AC'
  Fact' dns X A isx isa g = β (dns X A isx isa (λ x → α (g x)))
 
- l : {X : 𝓤 ̇ } → is-set(¬¬ X)
+ l : {X : 𝓤 ̇ } → is-set (¬¬ X)
  l {X} = props-are-sets (Π-is-prop (fe 𝓤 𝓤₀) (λ _ → 𝟘-is-prop))
 
  fact : DNS → DNA
@@ -313,7 +313,7 @@ module AC-renders-all-sets-discrete
    A : X → 𝓤 ̇
    A x = Σ i ꞉ 𝟚 , a i ≡ x
 
-   isa : (x : X) → is-set(A x)
+   isa : (x : X) → is-set (A x)
    isa x = subsets-of-sets-are-sets 𝟚 (λ i → a i ≡ x) 𝟚-is-set isx
 
    ac'' : AC''
@@ -376,7 +376,7 @@ module Observation (𝓤 : Universe)
  open import UF-Miscelanea
 
  observation : {X : 𝓤 ̇ } (a : 𝟚 → X)
-        → ((x : X) → ¬¬(Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
+        → ((x : X) → ¬¬ (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x)
         → decidable(a ₀ ≡ a ₁)
  observation {X} a c = claim (𝟚-is-discrete (s(r ₀)) (s(r ₁)))
   where

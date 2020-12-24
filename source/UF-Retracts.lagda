@@ -47,6 +47,23 @@ retract-of-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 retract-of-prop (r , s , rs) = subtype-of-prop-is-prop s
                                         (sections-are-lc s (r , rs))
 
+Σ-is-set : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+         → is-set X
+         → ((x : X) → is-set (A x))
+         → is-set (Σ A)
+Σ-is-set {𝓤} {𝓥} {X} {A} i j {σ} {τ} = γ
+ where
+  S = Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ
+
+  a : is-prop S
+  a = Σ-is-prop i (λ p → j (pr₁ τ))
+
+  b : retract (σ ≡ τ) of S
+  b = to-Σ-≡ , from-Σ-≡ , tofrom-Σ-≡
+
+  γ : is-prop (σ ≡ τ)
+  γ = retract-of-prop b a
+
 identity-retraction : {X : 𝓤 ̇ } → retract X of X
 identity-retraction = id , id , λ x → refl
 
@@ -287,8 +304,8 @@ ap-of-section-is-section {𝓤} {𝓥} {X} {Y} s (r , rs) x x' = ρ , ρap
         x'       ∎
   ρap : (p : x ≡ x') → ρ (ap s p) ≡ p
   ρap p = ρ (ap s p)                          ≡⟨ by-definition ⟩
-          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i   ⟩
-          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii  ⟩
+          (rs x) ⁻¹ ∙ (ap r (ap s p) ∙ rs x') ≡⟨ i ⟩
+          (rs x) ⁻¹ ∙ ap r (ap s p) ∙ rs x'   ≡⟨ ii ⟩
           (rs x) ⁻¹ ∙ ap (r ∘ s) p ∙  rs x'   ≡⟨ iii ⟩
           ap id p                             ≡⟨ (ap-id-is-id' p) ⁻¹ ⟩
           p                                   ∎

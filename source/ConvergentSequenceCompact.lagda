@@ -50,35 +50,35 @@ This is the main theorem proved in this module:
   a = (α , d)
 
   Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
-  Dagger₀ 0 r =  p (under 0)      ≡⟨ refl                  ⟩
+  Dagger₀ 0 r =  p (under 0)      ≡⟨ refl ⟩
                  α 0              ≡⟨ ap (λ - → incl - 0) r ⟩
-                 incl (under 0) 0 ≡⟨ refl                  ⟩
+                 incl (under 0) 0 ≡⟨ refl ⟩
                  ₀                ∎
 
-  Dagger₀ (succ n) r = p (under (succ n))             ≡⟨ w ⁻¹                         ⟩
+  Dagger₀ (succ n) r = p (under (succ n))             ≡⟨ w ⁻¹ ⟩
                        α (succ n)                     ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-                       incl (under (succ n)) (succ n) ≡⟨ under-diagonal₀ n            ⟩
+                       incl (under (succ n)) (succ n) ≡⟨ under-diagonal₀ n ⟩
                        ₀                              ∎
    where
     t : α n ≡ ₁
     t = α n                     ≡⟨ ap (λ - → incl - n) r  ⟩
-        incl (under (succ n)) n ≡⟨ under-diagonal₁ n      ⟩
+        incl (under (succ n)) n ≡⟨ under-diagonal₁ n ⟩
         ₁                       ∎
 
     w : α(succ n) ≡ p(under(succ n))
     w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p(under(succ n)))) t ⟩
-        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl                                   ⟩
+        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
         p(under(succ n))            ∎
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
-  Dagger₁ r 0 = p (under 0) ≡⟨ refl                  ⟩
+  Dagger₁ r 0 = p (under 0) ≡⟨ refl ⟩
                 α 0         ≡⟨ ap (λ - → incl - 0) r ⟩
-                incl ∞ 0    ≡⟨ refl                  ⟩
+                incl ∞ 0    ≡⟨ refl ⟩
                 ₁           ∎
 
-  Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⁻¹                         ⟩
+  Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⁻¹ ⟩
                        α (succ n)         ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-                       incl ∞ (succ n)    ≡⟨ refl                         ⟩
+                       incl ∞ (succ n)    ≡⟨ refl ⟩
                        ₁                  ∎
    where
     s : α n ≡ ₁
@@ -86,14 +86,14 @@ This is the main theorem proved in this module:
 
     w : α(succ n) ≡ p(under(succ n))
     w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p(under(succ n)))) s ⟩
-        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl                                   ⟩
+        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
         p (under (succ n))          ∎
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
     Lemma : a ≡ under n → p a ≡ ₀
-    Lemma t = p a         ≡⟨ ap p t      ⟩
+    Lemma t = p a         ≡⟨ ap p t ⟩
               p (under n) ≡⟨ Dagger₀ n t ⟩
               ₀           ∎
 
@@ -105,7 +105,7 @@ This is the main theorem proved in this module:
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
   Claim₃ r = p ∞ ≡⟨ (ap p (Claim₁ r))⁻¹ ⟩
-             p a ≡⟨ r                   ⟩
+             p a ≡⟨ r ⟩
              ₁   ∎
 
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁

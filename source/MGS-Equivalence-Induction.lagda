@@ -88,9 +88,9 @@ univalence→ ua X = singletons-are-subsingletons
 
 𝔾-≃-equation {𝓤} {𝓥} ua X A a =
 
-  𝔾-≃ ua X A a X (id-≃ X) ≡⟨ refl _                       ⟩
+  𝔾-≃ ua X A a X (id-≃ X) ≡⟨ refl _ ⟩
   transport A p a         ≡⟨ ap (λ - → transport A - a) q ⟩
-  transport A (refl t) a  ≡⟨ refl _                       ⟩
+  transport A (refl t) a  ≡⟨ refl _ ⟩
   a                       ∎
 
  where
@@ -229,7 +229,7 @@ transport-map-along-≃ {𝓤} ua {X} {Y} {Z} = 𝕁-≃ ua A a X Y
   A X Y e = (g : X → Z) → transport (λ - → - → Z) (Eq→Id ua X Y e) g
                         ≡ g ∘ ⌜ ≃-sym e ⌝
   a : (X : 𝓤 ̇ ) → A X X (id-≃ X)
-  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ≡⟨ q      ⟩
+  a X g = transport (λ - → - → Z) (Eq→Id ua X X (id-≃ X)) g ≡⟨ q ⟩
           transport (λ - → - → Z) (refl X) g                ≡⟨ refl _ ⟩
           g                                                 ∎
     where

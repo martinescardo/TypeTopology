@@ -392,7 +392,7 @@ module basic-powerset-development
 
   full = λ x → (Lift _ 𝟙 , equiv-to-subsingleton (Lift-≃ 𝟙) 𝟙-is-subsingleton)
 
-  ∅-property : (X : 𝓤 ̇ ) → (x : X) → ¬(x ∈ ∅)
+  ∅-property : (X : 𝓤 ̇ ) → (x : X) → ¬ (x ∈ ∅)
   ∅-property X x = lower
 
   full-property : (X : 𝓤 ̇ ) → (x : X) → x ∈ full

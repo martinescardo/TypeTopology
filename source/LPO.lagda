@@ -46,7 +46,7 @@ LPO = (x : ℕ∞) → decidable(Σ n ꞉ ℕ , x ≡ under n)
 LPO-is-prop : is-prop LPO
 LPO-is-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
  where
-  a : (x : ℕ∞) → is-prop(Σ n ꞉ ℕ , x ≡ under n)
+  a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ≡ under n)
   a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe 𝓤₀ 𝓤₀)_ _)
 
   f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ≡ under n))
@@ -189,15 +189,15 @@ has-section-under𝟙-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 
 has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
  where
   ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ n ꞉ ℕ , u ≡ under n)
-  ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹    ⟩
+  ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
                           under𝟙 (s u) ≡⟨ ap under𝟙 p ⟩
                           under n      ∎))
   ψ (inr *) p = inr γ
    where
     γ : ¬ (Σ n ꞉ ℕ , u ≡ under n)
     γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
-                                   under𝟙 (s u) ≡⟨ ε u             ⟩
-                                   u            ≡⟨ q               ⟩
+                                   under𝟙 (s u) ≡⟨ ε u ⟩
+                                   u            ≡⟨ q ⟩
                                    under n      ∎)
 
 under𝟙-inverse : (u : ℕ∞) → decidable(Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}

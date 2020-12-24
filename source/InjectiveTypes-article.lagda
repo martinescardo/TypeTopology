@@ -1058,7 +1058,7 @@ our situation.
 universe-retract : Propositional-resizing
                  → (𝓤 𝓥 : Universe)
                  → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
-universe-retract R 𝓤 𝓥 = ρ , lift-is-embedding ua
+universe-retract R 𝓤 𝓥 = ρ , Lift-is-embedding ua
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤}
@@ -1066,7 +1066,7 @@ universe-retract R 𝓤 𝓥 = ρ , lift-is-embedding ua
   b = ainjective-resizing R (𝓤 ̇ ) a
   c : ainjective-type (𝓤 ̇ ) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
-  c i = ainjective-retract-of-subtype (𝓤 ̇ ) i (𝓤 ⊔ 𝓥 ̇ ) (lift 𝓥 , lift-is-embedding ua)
+  c i = ainjective-retract-of-subtype (𝓤 ̇ ) i (𝓤 ⊔ 𝓥 ̇ ) (Lift 𝓥 , Lift-is-embedding ua)
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
   ρ = c b
 
@@ -1075,7 +1075,7 @@ universe-retract R 𝓤 𝓥 = ρ , lift-is-embedding ua
 Here are are using the fact that every injective type is a retract of
 any type in which it is embedded, in conjunction with resizing, and
 that there is an embedding of any universe into any larger universe,
-assuming univalence (the map lift).
+assuming univalence (the map Lift).
 
 It may be of interest to unfold the above proof to see a direct
 argument from first principles avoiding flabbiness and injectivity (we
@@ -1087,12 +1087,12 @@ publication):
 universe-retract-unfolded : Propositional-resizing
                           → (𝓤 𝓥 : Universe)
                           → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
-universe-retract-unfolded R 𝓤 𝓥 = (r , lift 𝓥 , rs) , lift-is-embedding ua
+universe-retract-unfolded R 𝓤 𝓥 = (r , Lift 𝓥 , rs) , Lift-is-embedding ua
  where
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
-  s = lift 𝓥
+  s = Lift 𝓥
   e : is-embedding s
-  e = lift-is-embedding ua
+  e = Lift-is-embedding ua
   F : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   F Y = resize R (fiber s Y) (e Y)
   f : (Y : 𝓤 ⊔ 𝓥 ̇ ) → F Y → fiber s Y
