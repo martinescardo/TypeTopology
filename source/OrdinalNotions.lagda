@@ -214,6 +214,9 @@ has-top = Σ x ꞉ X , is-top x
 ≤-refl : (x : X) → is-accessible x → x ≤ x
 ≤-refl x a l = <-coarser-than-≤ x a x l l
 
+accessible-points-are-irreflexive : (x : X) → is-accessible x → ¬ (x < x)
+accessible-points-are-irreflexive = ≤-refl
+
 non-strict-trans : (z : X) → is-accessible z
                  → (x y : X) → x < y → y < z → x ≤ z
 non-strict-trans = transfinite-induction'

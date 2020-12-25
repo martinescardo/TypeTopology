@@ -23,8 +23,8 @@ is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = ∀ y → is-prop (fiber f y)
 
 being-embedding-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
-                          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                          → is-prop (is-embedding f)
+                        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                        → is-prop (is-embedding f)
 being-embedding-is-prop fe fe' f = Π-is-prop fe (λ x → being-prop-is-prop fe')
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -91,7 +91,8 @@ embedding-criterion-converse f e x' x = ≃-sym
                                          (ap f {x'} {x} ,
                                           embedding-embedding' f e x' x)
 
-embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-embedding' f → is-embedding f
+embedding'-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → is-embedding' f → is-embedding f
 embedding'-embedding {𝓤} {𝓥} {X} {Y} f ise = g
  where
   e : (x : X) → is-central (Σ x' ꞉ X , f x ≡ f x') (x , refl)
@@ -157,9 +158,10 @@ lc-maps-into-sets-are-embeddings {𝓤} {𝓥} {X} {Y} f f-lc iss y (x , p) (x' 
    q : yoneda-nat x (λ x → f x ≡ y) p x' r ≡ p'
    q = iss (yoneda-nat x (λ x → f x ≡ y) p x' r) p'
 
-lc-maps-are-embeddings-with-K :
-    {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-  → left-cancellable f → K-axiom 𝓥 → is-embedding f
+lc-maps-are-embeddings-with-K : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                              → left-cancellable f
+                              → K-axiom 𝓥
+                              → is-embedding f
 lc-maps-are-embeddings-with-K {𝓤} {𝓥} {X} {Y} f f-lc k =
     lc-maps-into-sets-are-embeddings f f-lc (k Y)
 
@@ -271,7 +273,7 @@ id-is-dense : {X : 𝓤 ̇ } → is-dense (id {𝓤} {X})
 id-is-dense (y , n) = n (y , refl)
 
 comp-dense : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                {f : X → Y} {g : Y → Z}
+             {f : X → Y} {g : Y → Z}
            → is-dense f
            → is-dense g
            → is-dense (g ∘ f)

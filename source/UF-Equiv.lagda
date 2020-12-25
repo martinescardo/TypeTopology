@@ -29,7 +29,7 @@ equivs-have-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
 equivs-have-sections f = pr₁
 
 equivs-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                        → is-equiv f → is-section f
+                    → is-equiv f → is-section f
 equivs-are-sections f = pr₂
 
 section-retraction-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)

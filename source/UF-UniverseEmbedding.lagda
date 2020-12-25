@@ -22,6 +22,7 @@ module UF-UniverseEmbedding where
 
 open import SpartanMLTT
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Embeddings
 open import UF-Equiv
 open import UF-EquivalenceExamples
@@ -29,11 +30,14 @@ open import UF-FunExt
 open import UF-Equiv-FunExt
 open import UF-UA-FunExt
 
-universe-embedding-criterion : Univalence
-                             → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
-                             → ((X : 𝓤 ̇ ) → f X ≃ X)
-                             → is-embedding f
-universe-embedding-criterion ua 𝓤 𝓥 f i = embedding-criterion' f γ
+is-universe-embedding : (𝓤 ̇ → 𝓥 ̇) → (𝓤 ⁺) ⊔ 𝓥 ̇
+is-universe-embedding f = ∀ X → f X ≃ X
+
+universe-embeddings-are-embeddings : Univalence
+                                   → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                                   → is-universe-embedding f
+                                   → is-embedding f
+universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
  where
   γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
   γ X X' =  (f X ≡ f X')  ≃⟨ univalence-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
@@ -62,7 +66,7 @@ Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
 Lift'-≃ 𝓥 X = 𝟘-rneutral'
 
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
-Lift'-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (Lift' 𝓥) (Lift'-≃ 𝓥)
+Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥 (Lift' 𝓥) (Lift'-≃ 𝓥)
 
 \end{code}
 
@@ -83,7 +87,7 @@ Lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
 Lift-≃ 𝓥 X = 𝟙-rneutral
 
 Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
-Lift-is-embedding {𝓤} {𝓥} ua = universe-embedding-criterion ua 𝓤 𝓥 (Lift 𝓥) (Lift-≃ 𝓥)
+Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥 (Lift 𝓥) (Lift-≃ 𝓥)
 
 \end{code}
 
@@ -96,9 +100,11 @@ are propositions. (For use in the module UF-Resize.)
 prop-fiber-criterion : PropExt
                      → FunExt
                      → (𝓤 𝓥 : Universe)
-                     → (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
-                     → ((X : 𝓤 ̇ ) → f X ≃ X)
-                     → (Q : 𝓤 ⊔ 𝓥 ̇ ) → is-prop Q → is-prop (fiber f Q)
+                     → (f : 𝓤 ̇ → 𝓥 ̇ )
+                     → is-universe-embedding f
+                     → (Q : 𝓥 ̇ )
+                     → is-prop Q
+                     → is-prop (fiber f Q)
 prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
  where
   k : is-prop (f P)
@@ -108,7 +114,7 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
   l = equiv-to-prop (≃-sym (i P)) k
 
   a : (X : 𝓤 ̇ ) → (f X ≡ f P) ≃ (X ≡ P)
-  a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (f X) (f P) k ⟩
+  a X = (f X ≡ f P)  ≃⟨ prop-univalent-≃ (pe 𝓥) (fe 𝓥 𝓥) (f X) (f P) k ⟩
         (f X ≃ f P)  ≃⟨ Eq-Eq-cong fe (i X) (i P) ⟩
         (X ≃ P)      ≃⟨ ≃-sym (prop-univalent-≃ (pe 𝓤) (fe 𝓤 𝓤) X P l) ⟩
         (X ≡ P)      ■
@@ -122,9 +128,13 @@ prop-fiber-criterion pe fe 𝓤 𝓥 f i Q j (P , r) = d (P , r)
   d : is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ Q)
   d = transport (λ - → is-prop (Σ X ꞉ 𝓤 ̇ , f X ≡ -)) r c
 
-prop-fiber-Lift : PropExt → FunExt → (Q : 𝓤 ⊔ 𝓥 ̇ ) → is-prop Q → is-prop (fiber (Lift 𝓥) Q)
-prop-fiber-Lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 𝓥 (Lift {𝓤} 𝓥) (Lift-≃ 𝓥)
-
+prop-fiber-Lift : PropExt
+                → FunExt
+                → (Q : 𝓤 ⊔ 𝓥 ̇ )
+                → is-prop Q
+                → is-prop (fiber (Lift 𝓥) Q)
+prop-fiber-Lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 (𝓤 ⊔ 𝓥)
+                                  (Lift {𝓤} 𝓥) (Lift-≃ 𝓥)
 \end{code}
 
 Taken from the MGS'2019 lecture notes (22 December 2020):
@@ -178,5 +188,37 @@ global-≃-ap⁺ : Univalence
             → cumulative⁺ A
             → (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → A X ≃ A Y
 global-≃-ap⁺ ua = global-≃-ap' ua (_⁺)
+
+\end{code}
+
+Lifting of hSets.
+
+\begin{code}
+
+Lift-is-set : ∀ 𝓥 {𝓤}  (X : 𝓤 ̇ ) → is-set X → is-set (Lift 𝓥 X)
+Lift-is-set 𝓥 X X-is-set = equiv-to-set (Lift-≃ 𝓥 X) X-is-set
+
+Lift-hSet : (𝓥 : Universe) → hSet 𝓤 → hSet (𝓤 ⊔ 𝓥)
+Lift-hSet 𝓥 = pair-fun (Lift 𝓥) (Lift-is-set 𝓥)
+
+Lift-is-set-is-embedding : funext 𝓤 𝓤
+                         → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+                         → (X : 𝓤 ̇ ) → is-embedding (Lift-is-set 𝓥 X)
+Lift-is-set-is-embedding {𝓤} {𝓥} fe fe' X = maps-of-props-are-embeddings
+                                              (Lift-is-set 𝓥 X)
+                                              (being-set-is-prop fe)
+                                              (being-set-is-prop fe')
+
+Lift-hSet-is-embedding : Univalence → is-embedding (Lift-hSet {𝓤} 𝓥)
+Lift-hSet-is-embedding {𝓤} {𝓥} ua = pair-fun-embedding
+                                      (Lift 𝓥)
+                                      (Lift-is-set 𝓥)
+                                      (Lift-is-embedding ua)
+                                      (Lift-is-set-is-embedding
+                                        (fe  𝓤 𝓤)
+                                        (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+ where
+  fe : FunExt
+  fe = FunExt-from-Univalence ua
 
 \end{code}
