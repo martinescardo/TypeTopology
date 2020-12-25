@@ -1,8 +1,9 @@
 Martin Escardo, 21-25 December 2020.
 
 We use the argument of the Burali-Forti paradox to show that the
-canonical inclusion hSet 𝓤 → hSet (𝓤 ⁺) is not an equivalence, and is
-the canonical inclusion 𝓤 ̇ → 𝓤 ⁺ ̇ , or indeed any universe embedding.
+canonical inclusion hSet 𝓤 → hSet (𝓤 ⁺) is not an equivalence, and
+neither is the canonical inclusion 𝓤 ̇ → 𝓤 ⁺ ̇ , or indeed any universe
+embedding.
 
 \begin{code}
 
@@ -25,7 +26,6 @@ open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv
 open import UF-UniverseEmbedding
-open import UF-Equiv
 
 \end{code}
 
