@@ -10,6 +10,8 @@ Univalence is used twice: (1) to know that the type of ordinals is a
 values of the order relation of the ordinal of ordinals, so that the
 Burali-Forti argument goes through.
 
+We work with ordinals as defined in the HoTT book.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
