@@ -1,8 +1,8 @@
 Martin Escardo, 21-25 December 2020.
 
 We use the argument of the Burali-Forti paradox to show that the
-canonical inclusion hSet 𝓤 → hSet (𝓤 ⁺) is not an equivalence, and
-neither is the canonical inclusion 𝓤 → 𝓤⁺ of a universe into it
+canonical inclusion hSet 𝓤 → hSet 𝓤⁺ is not an equivalence, and
+neither is the canonical inclusion 𝓤 → 𝓤⁺ of a universe into its
 successor, or indeed any universe embedding 𝓤 → 𝓤⁺.
 
 \begin{code}
@@ -35,8 +35,8 @@ underlying sets that preserves and reflects order.
 
 \begin{code}
 
-Burali-Forti : (α : Ordinal 𝓤 ) → ¬ (α ≃ₒ OrdinalOfOrdinals 𝓤)
-Burali-Forti {𝓤} α 𝕗 = γ
+Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤  , α ≃ₒ OrdinalOfOrdinals 𝓤)
+Burali-Forti {𝓤} (α , 𝕗) = γ
  where
   A : Ordinal (𝓤 ⁺)
   A = OrdinalOfOrdinals 𝓤
@@ -95,7 +95,7 @@ is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large {𝓤} 𝓧 = ¬ (Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧)
 
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
-the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = Burali-Forti (X , pr₁ γ) (pr₂ γ)
+the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = Burali-Forti ((X , pr₁ γ) , pr₂ γ)
  where
   γ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OrdinalOfOrdinals 𝓤
   γ = transfer-structure fe X (OrdinalOfOrdinals 𝓤)
