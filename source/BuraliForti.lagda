@@ -103,7 +103,7 @@ the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = Burali-Forti (X , pr₁ γ) (p
 
 \end{code}
 
-Recall that Lift-hSet {𝓤} (𝓤 ⁺) is the canonical embedding hSet 𝓤 → hSet 𝓤 ⁺.
+Recall that Lift-hSet {𝓤} (𝓤 ⁺) is the canonical embedding hSet 𝓤 → hSet 𝓤⁺.
 
 \begin{code}
 
@@ -123,6 +123,13 @@ Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
   γ = the-type-of-ordinals-is-large (X , e)
 
 
+\end{code}
+
+The following says that the type of sets in 𝓤⁺ is larger than that of
+sets in 𝓤:
+
+\begin{code}
+
 Lift-hSet-is-not-equiv : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
                                 (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
@@ -130,7 +137,10 @@ Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
 
 Recall that a universe embedding is a map f of universes such that
 X ≃ f X.  Such maps are automatically embeddings (have singleton
-fibers).
+fibers), as shown in the module UF-UniverseEmbeddings.
+
+So the following says that the universe 𝓤⁺ is strictly larger than the
+universe 𝓤:
 
 \begin{code}
 
