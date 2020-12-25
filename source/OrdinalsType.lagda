@@ -9,11 +9,12 @@ ordinals with a top element.
 
 open import SpartanMLTT
 
+open import OrdinalNotions hiding (_≤_)
+
 open import UF-Base
 open import UF-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
-open import OrdinalNotions hiding (_≤_)
 open import UF-Embeddings
 
 module OrdinalsType where
@@ -76,6 +77,17 @@ Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 
 \end{code}
 
+TODO. We should add further properties of the order from the module
+OrdinalNotions. For the moment, we add this:
+
+\begin{code}
+
+irrefl : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ¬(x ≺⟨ α ⟩ x)
+irrefl α x = accessible-points-are-irreflexive
+              (underlying-order α) x (Well-foundedness α x)
+
+\end{code}
+
 Characterization of equality of ordinals using the structure identity
 principle:
 
@@ -95,5 +107,43 @@ Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤
                     (λ X _<_ → being-well-order-is-prop _<_ fe)
  where
   open import UF-SIP-Examples
+
+\end{code}
+
+Sometimes it is convenient to work with the following notion of
+ordinal equivalence:
+
+\begin{code}
+
+is-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                    → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
+is-order-preserving α β f = (x y : ⟨ α ⟩) → x ≺⟨ α ⟩ y → f x ≺⟨ β ⟩ f y
+
+is-order-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
+is-order-equiv α β f = is-order-preserving α β f
+                     × (Σ e ꞉ is-equiv f , is-order-preserving β α (inverse f e))
+
+_≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
+α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
+
+\end{code}
+
+See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is
+canonically equivalence to α ≃ β. (For historical reasons, that proof
+doesn't use the structure identity principle.)
+
+\begin{code}
+
+≃ₒ-sym : ∀ {𝓤} {𝓥} (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
+       → α ≃ₒ β → β ≃ₒ α
+≃ₒ-sym α β (f , p , e , q) = inverse f e , q , inverse-is-equiv f e , p
+
+≃ₒ-trans : ∀ {𝓤} {𝓥} {𝓦} (α : Ordinal 𝓤) (β : Ordinal 𝓥 ) (γ : Ordinal 𝓦)
+         → α ≃ₒ β → β ≃ₒ γ → α ≃ₒ γ
+≃ₒ-trans α β γ (f , p , e , q) (f' , p' , e' , q') =
+  f' ∘ f ,
+  (λ x y l → p' (f x) (f y) (p x y l)) ,
+  ∘-is-equiv e e' ,
+  (λ x y l → q (inverse f' e' x) (inverse f' e' y) (q' x y l))
 
 \end{code}

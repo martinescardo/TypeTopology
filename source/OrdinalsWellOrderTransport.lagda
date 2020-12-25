@@ -41,7 +41,7 @@ transport-ordinal-structure ua X Y = γ
 
 \end{code}
 
-The above can be done without univance, but we won't bother.
+The above can be done without univance.
 
 We could hope to get, more generally,
 
@@ -55,9 +55,13 @@ The reason is that it is not possible to transport an order _<_ : X →
 X → 𝓤 to an order _≺_ : Y → Y → 𝓥 along a given equivalence X ≃ Y
 without propositional resizing, which we prefer not to assume.
 
+However, it a particular order is resizable we can perform the
+transport, although univalence won't help, which is what we do in this
+file.
+
 \begin{code}
 
-module order-transport₁
+module order-transfer-lemma₁
          (X : 𝓤 ̇ )
          (Y : 𝓥 ̇ )
          (𝕗 : X ≃ Y)
@@ -91,10 +95,16 @@ So we make one further assumption and a definition:
 
   module _ (_<_ : X → X → 𝓥 ̇ ) where
     private
-      _≺_ : (Y → Y → 𝓥 ̇ )
-      y ≺ y' = g y < g y'
+       _≺_ : (Y → Y → 𝓥 ̇ )
+       y ≺ y' = g y < g y'
 
     order = _≺_
+
+    order-preservation→ : (x x' : X) → x < x' → f x ≺ f x'
+    order-preservation→ x x' = transport₂ _<_ ((η x)⁻¹) ((η x')⁻¹)
+
+    order-preservation← : (y y' : Y) → y ≺ y' → g y < g y'
+    order-preservation← y y' = id
 
 \end{code}
 
@@ -246,11 +256,9 @@ So we see how much work univalence is performing behind the scenes,
 when it is available, as in the construction
 transport-ordinal-structure.
 
-...............................
-
 \begin{code}
 
-module order-transport₂-lemma
+module order-transfer-lemma₂-lemma
          (X   : 𝓤 ̇ )
          (_<_ : X → X → 𝓥 ̇ )
          (_≺_ : X → X → 𝓦 ̇ )
@@ -286,7 +294,7 @@ module order-transport₂-lemma
     is-transitive→ : is-transitive _<_ → is-transitive _≺_
     is-transitive→ t x y z l m = f (t x y z (g l) (g m))
 
-module order-transport₂
+module order-transfer-lemma₂
          (X   : 𝓤 ̇ )
          (_<_ : X → X → 𝓤 ̇ )
          (_≺_ : X → X → 𝓥 ̇ )
@@ -299,7 +307,7 @@ module order-transport₂
                                   is-extensional→ e ,
                                   is-transitive→ t
      where
-      open order-transport₂-lemma X _<_ _≺_ 𝕗
+      open order-transfer-lemma₂-lemma X _<_ _≺_ 𝕗
 
     well-order← : is-well-order _≺_ → is-well-order _<_
     well-order← (p , w , e , t) = is-prop-valued→ p ,
@@ -307,7 +315,7 @@ module order-transport₂
                                   is-extensional→ e ,
                                   is-transitive→ t
      where
-      open order-transport₂-lemma X _≺_ _<_ (λ x y → ≃-sym (𝕗 x y))
+      open order-transfer-lemma₂-lemma X _≺_ _<_ (λ x y → ≃-sym (𝕗 x y))
 
     transport-well-order : is-well-order _<_ ⇔ is-well-order _≺_
     transport-well-order = well-order→ , well-order←
@@ -320,5 +328,59 @@ module order-transport₂
                                (rl-implication transport-well-order)
 \end{code}
 
-So we see how much work univalence is performing behind the scenes,
-when it is available, as in transport-ordinal-structure.
+We can transport structures of ordinals with resizable order:
+
+\begin{code}
+
+resizable-order : Ordinal 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
+resizable-order α 𝓥 = Σ _<_ ꞉ (⟨ α ⟩ → ⟨ α ⟩ → 𝓥 ̇ ) ,
+                             ((x y : ⟨ α ⟩) → (x ≺⟨ α ⟩ y) ≃ (x < y))
+
+
+transfer-structure : (X : 𝓤 ̇ ) (α : Ordinal 𝓥)
+                   → X ≃ ⟨ α ⟩
+                   → resizable-order α 𝓤
+                   → Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α
+transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
+ where
+  f : X → ⟨ α ⟩
+  f = ⌜ 𝕗 ⌝
+
+  g : ⟨ α ⟩ → X
+  g = inverse f (⌜⌝-is-equiv 𝕗)
+
+  η : g ∘ f ∼ id
+  η = inverses-are-retractions f (⌜⌝-is-equiv 𝕗)
+
+  ε : f ∘ g ∼ id
+  ε = inverses-are-sections f (⌜⌝-is-equiv 𝕗)
+
+  w⁻ : is-well-order _<_
+  w⁻ = order-transfer-lemma₂.well-order→ ⟨ α ⟩ (underlying-order α) _<_
+                               <-is-equivalent-to-≺ (is-well-ordered α)
+
+  _≺_ : X → X → 𝓤 ̇
+  x ≺ y = f x < f y
+
+  w : is-well-order _≺_
+  w = order-transfer-lemma₁.well-order→ ⟨ α ⟩ X (≃-sym 𝕗) _<_ w⁻
+
+  g-preserves-order : (a b : ⟨ α ⟩) → a ≺⟨ α ⟩ b → g a ≺ g b
+  g-preserves-order a b l = γ
+   where
+    δ : a < b
+    δ = ⌜ <-is-equivalent-to-≺ a b ⌝ l
+
+    γ : f (g a) < f (g b)
+    γ = transport₂ _<_ ((ε a)⁻¹) ((ε b)⁻¹) δ
+
+  f-preserves-order : (x y : X) → x ≺ y → f x ≺⟨ α ⟩ f y
+  f-preserves-order x y = ⌜ ≃-sym (<-is-equivalent-to-≺ (f x) (f y)) ⌝
+
+  e : (X , _≺_ , w) ≃ₒ α
+  e = (f , f-preserves-order , ⌜⌝-is-equiv 𝕗 , g-preserves-order)
+
+  γ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ α
+  γ = ((_≺_ , w) , e)
+
+\end{code}
