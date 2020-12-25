@@ -7,8 +7,8 @@ successor, or indeed any universe embedding 𝓤 → 𝓤⁺.
 
 Univalence is used twice: (1) to know that the type of ordinals is a
 0-type and hence all ordinals form an ordinal, (2) to resize down the
-order relation of the ordinal of ordinals, so that the Burali-Forti
-argument goes through.
+values of the order relation of the ordinal of ordinals, so that the
+Burali-Forti argument goes through.
 
 \begin{code}
 
