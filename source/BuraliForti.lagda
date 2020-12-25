@@ -136,7 +136,7 @@ Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
 \end{code}
 
 Recall that a universe embedding is a map f of universes such that
-X ≃ f X.  Such maps are automatically embeddings (have singleton
+X ≃ f X.  Such maps are automatically embeddings (have subsingleton
 fibers), as shown in the module UF-UniverseEmbeddings.
 
 So the following says that the universe 𝓤⁺ is strictly larger than the
