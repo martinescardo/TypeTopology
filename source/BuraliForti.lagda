@@ -1,6 +1,6 @@
 Martin Escardo, 21-25 December 2020.
 
-We use the argument of the Burali-Forti paradox to show that the the
+We use the argument of the Burali-Forti paradox to show that the
 canonical inclusion hSet 𝓤 → hSet (𝓤 ⁺) is not an equivalence, and is
 the canonical inclusion 𝓤 ̇ → 𝓤 ⁺ ̇ , or indeed any universe embedding.
 
@@ -80,6 +80,10 @@ hang when it reaches d in the definition of e':
 
 Some corollaries follows.
 
+The main work in the first one happens in the function
+transfer-structure, which is developed in the module
+OrdinalsWellOrderTransport, where the difficulties are explained.
+
 \begin{code}
 
 the-type-of-ordinals-is-large : (X : 𝓤 ̇ ) → ¬ (X ≃ Ordinal 𝓤)
@@ -89,6 +93,11 @@ the-type-of-ordinals-is-large {𝓤} X 𝕗 = Burali-Forti (X , pr₁ γ) (pr₂
   γ = transfer-structure fe X (OrdinalOfOrdinals 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
 
+\end{code}
+
+Recall that Lift-hSet {𝓤} (𝓤 ⁺) is the canonical embedding hSet 𝓤 → hSet 𝓤 ⁺.
+
+\begin{code}
 
 Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
@@ -109,7 +118,6 @@ Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
 Lift-hSet-is-not-equiv : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
                                 (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
-
 \end{code}
 
 Recall that a universe embedding is a map f of universes such that
@@ -143,6 +151,11 @@ successive-universe-embeddings-are-not-equivs f i j =
   successive-universe-embeddings-dont-have-sections f i
    (equivs-have-sections f j)
 
+\end{code}
+
+Recall that Lift {𝓤} (𝓤 ⁺) is the canonical embedding 𝓤 ̇ → 𝓤 ⁺ ̇
+
+\begin{code}
 
 Lift-doesnt-have-section : ¬ has-section (Lift {𝓤} (𝓤 ⁺))
 Lift-doesnt-have-section {𝓤} h =
