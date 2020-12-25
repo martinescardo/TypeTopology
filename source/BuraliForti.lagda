@@ -125,8 +125,8 @@ Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
 
 \end{code}
 
-The following says that the type of sets in 𝓤⁺ is larger than that of
-sets in 𝓤:
+The following says that the type of sets in 𝓤⁺ is strictly larger than
+that of sets in 𝓤:
 
 \begin{code}
 
