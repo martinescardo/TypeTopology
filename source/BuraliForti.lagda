@@ -1,7 +1,7 @@
 Martin Escardo, 21-25 December 2020.
 
 We use the argument of the Burali-Forti paradox to show that the
-canonical inclusion hSet 𝓤 → hSet 𝓤⁺ is not an equivalence, and
+canonical inclusion hSet 𝓤 → hSet 𝓤⁺ is not an equivalence, and that
 neither is the canonical inclusion 𝓤 → 𝓤⁺ of a universe into its
 successor, or indeed any universe embedding 𝓤 → 𝓤⁺.
 
@@ -92,9 +92,9 @@ The main work in the first one happens in the function
 transfer-structure, which is developed in the module
 OrdinalsWellOrderTransport, where the difficulties are explained.
 
-The type Ordinals 𝓤 of ordinals in the universe 𝓤 lives in the next
-universe 𝓤⁺. We say that a type in the successor universe 𝓤⁺ is large
-if it is not equivalent to any type in 𝓤:
+The type OrdinalOfOrdinals 𝓤 of ordinals in the universe 𝓤 lives in
+the next universe 𝓤⁺. We say that a type in the successor universe 𝓤⁺
+is large if it is not equivalent to any type in 𝓤:
 
 \begin{code}
 
