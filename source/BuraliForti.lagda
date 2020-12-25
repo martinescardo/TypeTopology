@@ -68,7 +68,7 @@ Burali-Forti {𝓤} (α , 𝕗) = γ
 
 \end{code}
 
-The following cleaner rendering of the above make Agda 2.6.1 (and the
+The following cleaner rendering of the above makes Agda 2.6.1 (and the
 development version 2.6.2 as of 25 December 2020) hang when it reaches
 d in the definition of e':
 
@@ -83,7 +83,6 @@ d in the definition of e':
   γ' : 𝟘
   γ' = irrefl 𝓐 A e
 -}
-
 \end{code}
 
 Some corollaries follow.
@@ -178,7 +177,8 @@ successive-universe-embeddings-are-not-equivs f i j =
 
 \end{code}
 
-Recall that Lift {𝓤} (𝓤 ⁺) is the canonical embedding 𝓤 ̇ → 𝓤 ⁺ ̇
+In particular, we have the following, where Lift {𝓤} (𝓤 ⁺) is the
+canonical embedding of the universe 𝓤 into the universe 𝓤⁺.
 
 \begin{code}
 
