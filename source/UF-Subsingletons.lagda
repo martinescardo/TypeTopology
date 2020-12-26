@@ -123,6 +123,9 @@ is-set X = {x : X} → is-h-isolated x
 hSet : (𝓤 : Universe) → 𝓤 ⁺ ̇
 hSet 𝓤 = Σ A ꞉ 𝓤 ̇ , is-set A
 
+underlying-set : hSet 𝓤 → 𝓤 ̇
+underlying-set = pr₁
+
 𝟘-is-set : is-set (𝟘 {𝓤})
 𝟘-is-set {𝓤} {x} = 𝟘-elim x
 

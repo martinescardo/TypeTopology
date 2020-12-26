@@ -1,9 +1,9 @@
 Martin Escardo, 21-25 December 2020.
 
-We use the argument of the Burali-Forti paradox to show that the
-canonical inclusion hSet 𝓤 → hSet 𝓤⁺ is not an equivalence, and that
-neither is the canonical inclusion 𝓤 → 𝓤⁺ of a universe into its
-successor, or indeed any universe embedding 𝓤 → 𝓤⁺.
+We use the argument of the Burali-Forti paradox to show that, in
+HoTT/UF, the canonical inclusion hSet 𝓤 → hSet 𝓤⁺ is not an
+equivalence, and that neither is the canonical inclusion 𝓤 → 𝓤⁺ of a
+universe into its successor, and hence any universe embedding 𝓤 → 𝓤⁺.
 
 Univalence is used twice: (1) to know that the type of ordinals is a
 0-type and hence all ordinals form an ordinal, (2) to resize down the
@@ -23,7 +23,7 @@ module BuraliForti
        (ua : Univalence)
        where
 
-open import OrdinalNotions hiding (_≤_)
+open import OrdinalNotions
 open import OrdinalsType
 open import OrdinalOfOrdinals ua
 open import OrdinalsWellOrderTransport
@@ -100,6 +100,12 @@ is large if it is not equivalent to any type in 𝓤:
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large {𝓤} 𝓧 = ¬ (Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧)
 
+\end{code}
+
+The type of ordinals is large, as expected:
+
+\begin{code}
+
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
 the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = Burali-Forti ((X , pr₁ γ) , pr₂ γ)
  where
@@ -142,7 +148,8 @@ Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
 \end{code}
 
 Recall that a universe embedding is a map f of universes such that
-X ≃ f X.  Such maps are automatically embeddings (have subsingleton
+X ≃ f X.  Of course, any two universe embeddings are equal. Moreover,
+universe embeddings are automatically embeddings (have subsingleton
 fibers), as shown in the module UF-UniverseEmbeddings.
 
 So the following says that the universe 𝓤⁺ is strictly larger than the
@@ -178,7 +185,7 @@ successive-universe-embeddings-are-not-equivs f i j =
 \end{code}
 
 In particular, we have the following, where Lift {𝓤} (𝓤 ⁺) is the
-canonical embedding of the universe 𝓤 into the universe 𝓤⁺.
+canonical embedding of the universe 𝓤 into the successor universe 𝓤⁺.
 
 \begin{code}
 

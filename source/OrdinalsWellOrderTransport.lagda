@@ -9,7 +9,6 @@ be done with univalence when the types live in different universes.
 
 open import SpartanMLTT
 open import UF-FunExt
-open import UF-Univalence
 
 module OrdinalsWellOrderTransport (fe : FunExt) where
 
@@ -20,6 +19,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv
+open import UF-Univalence
 
 \end{code}
 
@@ -51,9 +51,9 @@ We could hope to get, more generally,
 
 But this not possible, not even assuming univalence.
 
-The reason is that it is not possible to transport an order _<_ : X →
-X → 𝓤 to an order _≺_ : Y → Y → 𝓥 along a given equivalence X ≃ Y
-without propositional resizing, which we prefer not to assume.
+The reason is that it is not possible to transport an order
+_<_ : X → X → 𝓤 to an order _≺_ : Y → Y → 𝓥 along a given equivalence
+X ≃ Y without propositional resizing, which we prefer not to assume.
 
 However, it a particular order is resizable we can perform the
 transport, although univalence won't help, which is what we do in this
@@ -334,7 +334,7 @@ We can transport structures of ordinals with resizable order:
 
 resizable-order : Ordinal 𝓤 → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
 resizable-order α 𝓥 = Σ _<_ ꞉ (⟨ α ⟩ → ⟨ α ⟩ → 𝓥 ̇ ) ,
-                             ((x y : ⟨ α ⟩) → (x ≺⟨ α ⟩ y) ≃ (x < y))
+                              ((x y : ⟨ α ⟩) → (x ≺⟨ α ⟩ y) ≃ (x < y))
 
 
 transfer-structure : (X : 𝓤 ̇ ) (α : Ordinal 𝓥)
@@ -348,9 +348,6 @@ transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
 
   g : ⟨ α ⟩ → X
   g = inverse f (⌜⌝-is-equiv 𝕗)
-
-  η : g ∘ f ∼ id
-  η = inverses-are-retractions f (⌜⌝-is-equiv 𝕗)
 
   ε : f ∘ g ∼ id
   ε = inverses-are-sections f (⌜⌝-is-equiv 𝕗)
