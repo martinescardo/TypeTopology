@@ -120,41 +120,10 @@ the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
 
 \end{code}
 
-Recall that Lift-hSet {𝓤} (𝓤 ⁺) is the canonical embedding hSet 𝓤 → hSet 𝓤⁺.
-
-\begin{code}
-
-Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
-Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
- where
-  X : 𝓤 ̇
-  X = pr₁ (s (Ordinal 𝓤 , type-of-ordinals-is-set))
-
-  p : Lift (𝓤 ⁺) X ≡ Ordinal 𝓤
-  p = ap pr₁ (η (Ordinal 𝓤 , type-of-ordinals-is-set))
-
-  e : X ≃ Ordinal 𝓤
-  e = transport (X ≃_) p (≃-sym (Lift-≃ (𝓤 ⁺) X))
-
-  γ : 𝟘
-  γ = the-type-of-ordinals-is-large (X , e)
-
-\end{code}
-
-The following says that the type of sets in 𝓤⁺ is strictly larger than
-that of sets in 𝓤:
-
-\begin{code}
-
-Lift-hSet-is-not-equiv : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
-Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
-                                (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
-\end{code}
-
-Recall that a universe embedding is a map f of universes such that
-X ≃ f X.  Of course, any two universe embeddings are equal. Moreover,
-universe embeddings are automatically embeddings (have subsingleton
-fibers), as shown in the module UF-UniverseEmbeddings.
+A universe embedding is a map f of universes such that f X ≃ X.  Of
+course, any two universe embeddings are equal. Moreover, universe
+embeddings are automatically embeddings (have subsingleton fibers), as
+shown in the module UF-UniverseEmbeddings.
 
 So the following says that the universe 𝓤⁺ is strictly larger than the
 universe 𝓤:
@@ -201,4 +170,39 @@ Lift-doesnt-have-section {𝓤} h =
 Lift-is-not-equiv : ¬ is-equiv (Lift {𝓤} (𝓤 ⁺))
 Lift-is-not-equiv {𝓤} e = Lift-doesnt-have-section
                            (equivs-have-sections (Lift (𝓤 ⁺)) e)
+\end{code}
+
+An hSet-embedding is a map f : hSet 𝓤 → hSet 𝓥 such that such that
+the underlying type of f 𝓧 is equivalent to the underlying type of 𝓧
+for every 𝓧 : hSet 𝓤, that is, pr₁ (f 𝓧) ≃ pr₁ 𝓧.  Any hSet-embedding
+is an embedding, and any two hSet-embeddings are equal. The map
+Lift-hSet {𝓤} (𝓤 ⁺) is the canonical embedding hSet 𝓤 → hSet 𝓤⁺.
+
+\begin{code}
+
+Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
+Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
+ where
+  X : 𝓤 ̇
+  X = pr₁ (s (Ordinal 𝓤 , type-of-ordinals-is-set))
+
+  p : Lift (𝓤 ⁺) X ≡ Ordinal 𝓤
+  p = ap pr₁ (η (Ordinal 𝓤 , type-of-ordinals-is-set))
+
+  e : X ≃ Ordinal 𝓤
+  e = transport (X ≃_) p (≃-sym (Lift-≃ (𝓤 ⁺) X))
+
+  γ : 𝟘
+  γ = the-type-of-ordinals-is-large (X , e)
+
+\end{code}
+
+The following says that the type of sets in 𝓤⁺ is strictly larger than
+that of sets in 𝓤:
+
+\begin{code}
+
+Lift-hSet-is-not-equiv : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
+Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
+                                (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
 \end{code}

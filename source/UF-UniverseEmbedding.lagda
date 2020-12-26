@@ -61,10 +61,14 @@ universe-embeddings-are-embeddings : Univalence
 universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
  where
   γ : (X X' : 𝓤 ̇ ) → (f X ≡ f X') ≃ (X ≡ X')
-  γ X X' =  (f X ≡ f X')  ≃⟨ univalence-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X') ⟩
-            (f X ≃ f X')  ≃⟨ Eq-Eq-cong (FunExt-from-Univalence ua) (i X) (i X') ⟩
-            (X ≃ X')      ≃⟨ ≃-sym (univalence-≃ (ua 𝓤) X X') ⟩
+  γ X X' =  (f X ≡ f X')  ≃⟨ a ⟩
+            (f X ≃ f X')  ≃⟨ b ⟩
+            (X ≃ X')      ≃⟨ c ⟩
             (X ≡ X')      ■
+   where
+    a = univalence-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X')
+    b = Eq-Eq-cong (FunExt-from-Univalence ua) (i X) (i X')
+    c = ≃-sym (univalence-≃ (ua 𝓤) X X')
 
 \end{code}
 
@@ -87,8 +91,8 @@ Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
 Lift'-≃ 𝓥 X = 𝟘-rneutral'
 
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
-Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥 (Lift' 𝓥) (Lift'-≃ 𝓥)
-
+Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥
+                                  (Lift' 𝓥) (Lift'-≃ 𝓥)
 \end{code}
 
 The following embedding has better definitional properties:
@@ -213,13 +217,13 @@ global-≃-ap⁺ ua = global-≃-ap' ua (_⁺)
 \end{code}
 
 Cumulativity in the above sense doesn't always hold. See the module
-UF-Size.
+LawvereFPT for a counter-example.
 
-Lifting of hSets.
+Added 24th December 2020. Lifting of hSets.
 
 \begin{code}
 
-Lift-is-set : ∀ 𝓥 {𝓤}  (X : 𝓤 ̇ ) → is-set X → is-set (Lift 𝓥 X)
+Lift-is-set : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) → is-set X → is-set (Lift 𝓥 X)
 Lift-is-set 𝓥 X X-is-set = equiv-to-set (Lift-≃ 𝓥 X) X-is-set
 
 Lift-hSet : (𝓥 : Universe) → hSet 𝓤 → hSet (𝓤 ⊔ 𝓥)
@@ -233,17 +237,15 @@ Lift-is-set-is-embedding {𝓤} {𝓥} fe fe' X = maps-of-props-are-embeddings
                                               (being-set-is-prop fe)
                                               (being-set-is-prop fe')
 
-Lift-hSet-is-embedding : Univalence → is-embedding (Lift-hSet {𝓤} 𝓥)
+Lift-hSet-is-embedding : Univalence
+                       → is-embedding (Lift-hSet {𝓤} 𝓥)
 Lift-hSet-is-embedding {𝓤} {𝓥} ua = pair-fun-embedding
-                                      (Lift 𝓥)
-                                      (Lift-is-set 𝓥)
-                                      (Lift-is-embedding ua)
-                                      (Lift-is-set-is-embedding
-                                        (fe  𝓤 𝓤)
-                                        (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
- where
-  fe : FunExt
-  fe = FunExt-from-Univalence ua
+                                     (Lift 𝓥)
+                                     (Lift-is-set 𝓥)
+                                     (Lift-is-embedding ua)
+                                     (Lift-is-set-is-embedding
+                                       (FunExt-from-Univalence ua  𝓤 𝓤)
+                                       (FunExt-from-Univalence ua (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
 
 is-hSet-embedding : (hSet 𝓤 → hSet 𝓥) → (𝓤 ⁺) ⊔ 𝓥 ̇
 is-hSet-embedding {𝓤} {𝓥} f = (𝓧 : hSet 𝓤) → underlying-set (f 𝓧)

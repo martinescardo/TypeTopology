@@ -680,6 +680,37 @@ And in particular, the successor universe 𝓤 ⁺ is not equivalent to 𝓤:
 
 \end{code}
 
+Added 23 December 2020, modified 26th December after a suggestion by
+Mike Shulman.
+
+\begin{code}
+
+ global-invariance-under-≃-false :
+
+    ((A : ∀ {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇)
+     {𝓤 𝓥 : Universe}
+     (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
+    → X ≃ Y → A X ≃ A Y)
+    → 𝟘
+
+ global-invariance-under-≃-false i = γ
+  where
+   A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇
+   A {𝓤} _ = 𝓤 ̇
+
+   e : 𝟘 {𝓤₁} ≃ 𝟘 {𝓤₀}
+   e = qinveq 𝟘-elim (𝟘-elim , (λ x → 𝟘-elim x) , (λ x → 𝟘-elim x))
+
+   δ : (𝓤₁ ̇ ) ≃ (𝓤₀ ̇ )
+   δ = i A (𝟘 {𝓤₁}) (𝟘 {𝓤₀}) e
+
+   γ : 𝟘 {𝓤₀}
+   γ = Corollary δ
+
+\end{code}
+
+TODO. Can we change the type of A to {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇?
+
 Added 20th December 2020. The following is work in progress, probably
 useless.
 
