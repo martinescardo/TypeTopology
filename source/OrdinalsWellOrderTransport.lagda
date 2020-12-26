@@ -55,7 +55,7 @@ The reason is that it is not possible to transport an order
 _<_ : X → X → 𝓤 to an order _≺_ : Y → Y → 𝓥 along a given equivalence
 X ≃ Y without propositional resizing, which we prefer not to assume.
 
-However, it a particular order is resizable we can perform the
+However, if a particular order is resizable we can perform the
 transport, although univalence won't help, which is what we do in this
 file.
 
@@ -87,7 +87,9 @@ but we would need it to have values in the universe 𝓥. If the relation
 is proposition-valued and propositional resizing holds, then this is
 not a problem, but we prefer not to assume propositional resizing.
 
-So we assume that the order relation on X already has values in 𝓥, and, as it turns out, this will be enough for our intended application of this file.
+So we assume that the order relation on X already has values in 𝓥,
+and, as it turns out, this will be enough for our intended application
+of this file.
 
 So we make one further assumption and a definition:
 
@@ -258,7 +260,7 @@ transport-ordinal-structure.
 
 \begin{code}
 
-module order-transfer-lemma₂-lemma
+module order-transfer-lemma₂
          (X   : 𝓤 ̇ )
          (_<_ : X → X → 𝓥 ̇ )
          (_≺_ : X → X → 𝓦 ̇ )
@@ -294,7 +296,7 @@ module order-transfer-lemma₂-lemma
     is-transitive→ : is-transitive _<_ → is-transitive _≺_
     is-transitive→ t x y z l m = f (t x y z (g l) (g m))
 
-module order-transfer-lemma₂
+module order-transfer-lemma₃
          (X   : 𝓤 ̇ )
          (_<_ : X → X → 𝓤 ̇ )
          (_≺_ : X → X → 𝓥 ̇ )
@@ -307,7 +309,7 @@ module order-transfer-lemma₂
                                   is-extensional→ e ,
                                   is-transitive→ t
      where
-      open order-transfer-lemma₂-lemma X _<_ _≺_ 𝕗
+      open order-transfer-lemma₂ X _<_ _≺_ 𝕗
 
     well-order← : is-well-order _≺_ → is-well-order _<_
     well-order← (p , w , e , t) = is-prop-valued→ p ,
@@ -315,7 +317,7 @@ module order-transfer-lemma₂
                                   is-extensional→ e ,
                                   is-transitive→ t
      where
-      open order-transfer-lemma₂-lemma X _≺_ _<_ (λ x y → ≃-sym (𝕗 x y))
+      open order-transfer-lemma₂ X _≺_ _<_ (λ x y → ≃-sym (𝕗 x y))
 
     transport-well-order : is-well-order _<_ ⇔ is-well-order _≺_
     transport-well-order = well-order→ , well-order←
@@ -353,7 +355,7 @@ transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
   ε = inverses-are-sections f (⌜⌝-is-equiv 𝕗)
 
   w⁻ : is-well-order _<_
-  w⁻ = order-transfer-lemma₂.well-order→ ⟨ α ⟩ (underlying-order α) _<_
+  w⁻ = order-transfer-lemma₃.well-order→ ⟨ α ⟩ (underlying-order α) _<_
                                <-is-equivalent-to-≺ (is-well-ordered α)
 
   _≺_ : X → X → 𝓤 ̇
