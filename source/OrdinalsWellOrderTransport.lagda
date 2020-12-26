@@ -97,7 +97,7 @@ So we make one further assumption and a definition:
 
   module _ (_<_ : X → X → 𝓥 ̇ ) where
     private
-       _≺_ : (Y → Y → 𝓥 ̇ )
+       _≺_ : Y → Y → 𝓥 ̇
        y ≺ y' = g y < g y'
 
     order = _≺_

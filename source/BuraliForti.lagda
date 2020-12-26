@@ -5,10 +5,12 @@ HoTT/UF, the canonical inclusion hSet 𝓤 → hSet 𝓤⁺ is not an
 equivalence, and that neither is the canonical inclusion 𝓤 → 𝓤⁺ of a
 universe into its successor, and hence any universe embedding 𝓤 → 𝓤⁺.
 
-Univalence is used twice: (1) to know that the type of ordinals is a
-0-type and hence all ordinals form an ordinal, (2) to resize down the
-values of the order relation of the ordinal of ordinals, so that the
-Burali-Forti argument goes through.
+Univalence is used three times (at least): (1) to know that the type
+of ordinals is a 0-type and hence all ordinals form an ordinal, (2) to
+develop the Burali-Forti argument that no ordinal is equivalent to the
+ordinal of all ordinals, (3) to resize down the values of the order
+relation of the ordinal of ordinals, to conclude that the ordinal of
+ordinal is large.
 
 We work with ordinals as defined in the HoTT book.
 
@@ -107,11 +109,14 @@ The type of ordinals is large, as expected:
 \begin{code}
 
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
-the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = Burali-Forti ((X , pr₁ γ) , pr₂ γ)
+the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
  where
-  γ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OrdinalOfOrdinals 𝓤
-  γ = transfer-structure fe X (OrdinalOfOrdinals 𝓤)
+  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OrdinalOfOrdinals 𝓤
+  δ = transfer-structure fe X (OrdinalOfOrdinals 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
+
+  γ : 𝟘
+  γ = Burali-Forti ((X , pr₁ δ) , pr₂ δ)
 
 \end{code}
 
@@ -133,7 +138,6 @@ Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
 
   γ : 𝟘
   γ = the-type-of-ordinals-is-large (X , e)
-
 
 \end{code}
 
