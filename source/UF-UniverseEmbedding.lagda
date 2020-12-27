@@ -108,12 +108,12 @@ lift 𝓥 x = (x , *)
 lower : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift 𝓥 X → X
 lower (x , *) = x
 
-Lift-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
-Lift-≃ 𝓥 X = 𝟙-rneutral
+Lift-is-universe-embedding : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
+Lift-is-universe-embedding 𝓥 X = 𝟙-rneutral
 
 Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
 Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥
-                                 (Lift 𝓥) (Lift-≃ 𝓥)
+                                 (Lift 𝓥) (Lift-is-universe-embedding 𝓥)
 \end{code}
 
 Added 7th Feb 2019. Assuming propositional and functional
@@ -159,7 +159,7 @@ prop-fiber-Lift : PropExt
                 → is-prop Q
                 → is-prop (fiber (Lift 𝓥) Q)
 prop-fiber-Lift {𝓤} {𝓥} pe fe = prop-fiber-criterion pe fe 𝓤 (𝓤 ⊔ 𝓥)
-                                  (Lift {𝓤} 𝓥) (Lift-≃ 𝓥)
+                                  (Lift {𝓤} 𝓥) (Lift-is-universe-embedding 𝓥)
 \end{code}
 
 Taken from the MGS'2019 lecture notes (22 December 2020):
@@ -179,9 +179,9 @@ global-≃-ap' {𝓤} {𝓥} ua F A φ X Y e =
   A Y          ■
  where
   d : Lift 𝓥 X ≃ Lift 𝓤 Y
-  d = Lift 𝓥 X ≃⟨ Lift-≃ 𝓥 X ⟩
+  d = Lift 𝓥 X ≃⟨ Lift-is-universe-embedding 𝓥 X ⟩
       X        ≃⟨ e ⟩
-      Y        ≃⟨ ≃-sym (Lift-≃ 𝓤 Y) ⟩
+      Y        ≃⟨ ≃-sym (Lift-is-universe-embedding 𝓤 Y) ⟩
       Lift 𝓤 Y ■
 
   p : Lift 𝓥 X ≡ Lift 𝓤 Y
@@ -224,7 +224,9 @@ Added 24th December 2020. Lifting of hSets.
 \begin{code}
 
 Lift-is-set : ∀ {𝓤} 𝓥 (X : 𝓤 ̇ ) → is-set X → is-set (Lift 𝓥 X)
-Lift-is-set 𝓥 X X-is-set = equiv-to-set (Lift-≃ 𝓥 X) X-is-set
+Lift-is-set 𝓥 X X-is-set = equiv-to-set
+                            (Lift-is-universe-embedding 𝓥 X)
+                            X-is-set
 
 Lift-hSet : (𝓥 : Universe) → hSet 𝓤 → hSet (𝓤 ⊔ 𝓥)
 Lift-hSet 𝓥 = pair-fun (Lift 𝓥) (Lift-is-set 𝓥)
@@ -275,7 +277,8 @@ the-only-hSet-embedding-is-Lift-hSet : Univalence
                                      → f ≡ Lift-hSet 𝓥
 the-only-hSet-embedding-is-Lift-hSet {𝓤} {𝓥} ua f i =
    at-most-one-hSet-embedding ua f
-     (Lift-hSet 𝓥) i (λ 𝓧 → Lift-≃ 𝓥 (underlying-set 𝓧))
+     (Lift-hSet 𝓥) i
+     (λ 𝓧 → Lift-is-universe-embedding 𝓥 (underlying-set 𝓧))
 
 hSet-embeddings-are-embeddings : Univalence
                                → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))

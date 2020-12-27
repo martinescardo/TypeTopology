@@ -68,7 +68,7 @@ Propositional resizing from a universe to a higher universe just holds, of cours
 \begin{code}
 
 resize-up : (X : 𝓤 ̇ ) → X has-size (𝓤 ⊔ 𝓥)
-resize-up {𝓤} {𝓥} X = Lift 𝓥 X , Lift-≃ 𝓥 X
+resize-up {𝓤} {𝓥} X = Lift 𝓥 X , Lift-is-universe-embedding 𝓥 X
 
 resize-up-proposition : propositional-resizing 𝓤 (𝓤 ⊔ 𝓥)
 resize-up-proposition {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
@@ -132,9 +132,15 @@ has-size-is-prop {𝓤} ua X 𝓥 = c
   fe : FunExt
   fe = FunExt-from-Univalence ua
   a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
-  a Y = (Y ≃ X)                ≃⟨ Eq-Eq-cong fe (≃-sym (Lift-≃ 𝓤 Y)) (≃-sym (Lift-≃ 𝓥 X)) ⟩
-        (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _) ⟩
+  a Y = (Y ≃ X)                ≃⟨ a₀ ⟩
+        (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ a₁ ⟩
         (Lift 𝓤 Y ≡ Lift 𝓥 X)  ■
+   where
+    a₀ = Eq-Eq-cong fe
+           (≃-sym (Lift-is-universe-embedding 𝓤 Y))
+           (≃-sym (Lift-is-universe-embedding 𝓥 X))
+    a₁ = ≃-sym (univalence-≃ (ua (𝓤 ⊔ 𝓥)) _ _)
+
   b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
   b = Σ-cong a
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
@@ -164,13 +170,21 @@ prop-has-size-is-prop : PropExt
 prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
  where
   j : is-prop (Lift 𝓥 P)
-  j = equiv-to-prop (Lift-≃ 𝓥 P) i
+  j = equiv-to-prop (Lift-is-universe-embedding 𝓥 P) i
   a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 P)
-  a Y = (Y ≃ P)                ≃⟨ Eq-Eq-cong fe (≃-sym (Lift-≃ 𝓤 Y)) (≃-sym (Lift-≃ 𝓥 P)) ⟩
-        (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ ≃-sym (prop-univalent-≃ (pe (𝓤 ⊔ 𝓥)) (fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 P) j) ⟩
+  a Y = (Y ≃ P)                ≃⟨ a₀ ⟩
+        (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
         (Lift 𝓤 Y ≡ Lift 𝓥 P)  ■
+   where
+    a₀ = Eq-Eq-cong fe
+           (≃-sym (Lift-is-universe-embedding 𝓤 Y))
+           (≃-sym (Lift-is-universe-embedding 𝓥 P))
+    a₁ = ≃-sym (prop-univalent-≃
+           (pe (𝓤 ⊔ 𝓥))(fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 P) j)
+
   b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ P) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 P)
   b = Σ-cong a
+
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ P)
   c = equiv-to-prop b (prop-fiber-Lift pe fe (Lift 𝓥 P) j)
 
