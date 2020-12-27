@@ -22,8 +22,12 @@ Univalence is used three times (at least):
     (3) to resize down the values of the order relation of the ordinal
         of ordinals, to conclude that the ordinal of ordinals is large.
 
-We work with ordinals as defined in the HoTT book. An ordinal in a
-universe 𝓤 is a type X : 𝓤 equipped with a relation
+There are also a number of uses of univalence via functional and
+propositional extensionality.
+
+We work with ordinals as defined in the HoTT book.
+
+An ordinal in a universe 𝓤 is a type X : 𝓤 equipped with a relation
 
     _≺_ : X → X → 𝓤
 
@@ -39,7 +43,7 @@ required to be
       the principle of transfinite induction holds).
 
 The HoTT book additionally requires X to be a set, but this follows
-automatically from the requirements for the order.
+automatically from the above requirements for the order.
 
 We denote by
 
@@ -196,7 +200,7 @@ the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
 
 It is crucial in the above proof, in order to be able to transfer the
 ordinal structure of the ordinal of ordinals to the type X, that the
-order _⊲_ has a resized-down _⊲⁻_ version, as mentioned above.
+order _⊲_ has a resized-down version _⊲⁻_ , as mentioned above.
 
 By a *universe embedding* we mean a map
 
