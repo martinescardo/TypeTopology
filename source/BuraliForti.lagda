@@ -5,9 +5,9 @@ HoTT/UF, no hSet embedding
 
     hSet 𝓤 → hSet 𝓤⁺
 
-of the type of sets in a universe 𝓤 into the type of sets in the
-successor universe 𝓤⁺ is an equivalence, and that neither is any
-universe embedding
+of the type of sets of a universe 𝓤 into that of the successor
+universe 𝓤⁺ is an equivalence, and that neither is any universe
+embedding
 
     𝓤 → 𝓤⁺.
 
