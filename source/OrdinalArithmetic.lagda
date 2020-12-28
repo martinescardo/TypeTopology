@@ -41,7 +41,7 @@ the righthand side of the equality sign:
 
 \begin{code}
 
-𝟘₀ 𝟙₀ : Ordinal 𝓤₀
+𝟘₀ 𝟙₀ : Ord
 𝟘₀ = 𝟘ₒ
 𝟙₀ = 𝟙ₒ
 
@@ -51,7 +51,7 @@ Here the subscript is the letter "o":
 
 \begin{code}
 
-ℕₒ ℕ∞ₒ : Ordinal 𝓤₀
+ℕₒ ℕ∞ₒ : Ord
 ℕₒ = (ℕ , _≺[ℕ]_ , ℕ-ordinal)
 ℕ∞ₒ = (ℕ∞ , _≺[ℕ∞]_ , ℕ∞-ordinal (fe 𝓤₀ 𝓤₀))
 
@@ -97,14 +97,14 @@ Miscelanea:
 
 \begin{code}
 
-less-is-left : (α : Ordinal 𝓤₀) (x y : ⟨ α +ₒ 𝟙ₒ ⟩)
+less-is-left : (α : Ord) (x y : ⟨ α +ₒ 𝟙ₒ ⟩)
              → x ≺⟨ α +ₒ 𝟙ₒ ⟩ y
              → Σ a ꞉ ⟨ α ⟩ , x ≡ inl a
 less-is-left α (inl a) y l = a , refl
 less-is-left α (inr *) (inl a) l = 𝟘-elim l
 less-is-left α (inr *) (inr *) l = 𝟘-elim l
 
-right-is-not-smaller : (α : Ordinal 𝓤₀) (y : ⟨ α +ₒ 𝟙ₒ ⟩)
+right-is-not-smaller : (α : Ord) (y : ⟨ α +ₒ 𝟙ₒ ⟩)
                      → ¬ (inr * ≺⟨ α +ₒ 𝟙ₒ ⟩ y)
 right-is-not-smaller α (inl a) l = 𝟘-elim l
 right-is-not-smaller α (inr *) l = 𝟘-elim l
