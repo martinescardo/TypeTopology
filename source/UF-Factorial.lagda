@@ -261,7 +261,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
 
  step₂ : co-derived-set (Y+𝟙) × (X ≃ Y)
        ≃ co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *)
- step₂ = ×cong (≃-refl (co-derived-set (Y+𝟙))) step₁
+ step₂ = ×-cong (≃-refl (co-derived-set (Y+𝟙))) step₁
 
 
  step₃ : (co-derived-set (Y+𝟙) × (Σ e ꞉ X+𝟙 ≃ Y+𝟙 , ⌜ e ⌝ (inr *) ≡ inr *))
@@ -390,7 +390,7 @@ discrete-factorial : (X : 𝓤 ̇ )
                    → (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
 discrete-factorial X d = γ
  where
- i = ×cong (≃-sym (≃-cods (X + 𝟙) ( +discrete d 𝟙-is-discrete))) (≃-refl (Aut X))
+ i = ×-cong (≃-sym (≃-cods (X + 𝟙) ( +discrete d 𝟙-is-discrete))) (≃-refl (Aut X))
 
  γ = (X + 𝟙) × Aut X                ≃⟨ i ⟩
      co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X ⟩
@@ -401,7 +401,7 @@ perfect-factorial : (X : 𝓤 ̇ )
                   → Aut X ≃ Aut (X + 𝟙)
 perfect-factorial X i =
   Aut X                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X}) ⟩
-  𝟙 × Aut X                      ≃⟨ ×cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X)) ⟩
+  𝟙 × Aut X                      ≃⟨ ×-cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X)) ⟩
   co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X                  ⟩
   Aut (X + 𝟙)                    ■
 

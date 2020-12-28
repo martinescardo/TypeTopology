@@ -349,9 +349,9 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
          → (X → A) → (Y → B) → X × Y → A × B
 ×functor f g (x , y) = f x , g y
 
-×cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+×-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
       → X ≃ A → Y ≃ B → X × Y ≃ A × B
-×cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
+×-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (f , (g , e) , (g' , d)) (φ , (γ , ε) , (γ' , δ)) =
  ×functor f φ , (×functor g γ , E) , (×functor g' γ' , D)
  where
   E : (c : A × B) → ×functor f φ (×functor g γ c) ≡ c

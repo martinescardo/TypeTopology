@@ -103,9 +103,9 @@ eqtofun ⌜_⌝ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X → Y
 eqtofun = Eqtofun _ _
 ⌜_⌝     = eqtofun
 
-eqtofun-is-an-equiv ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝
-eqtofun-is-an-equiv = pr₂
-⌜⌝-is-equiv         = eqtofun-is-an-equiv
+eqtofun- ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝
+eqtofun- = pr₂
+⌜⌝-is-equiv         = eqtofun-
 
 back-eqtofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))

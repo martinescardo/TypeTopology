@@ -60,8 +60,9 @@ is-well-founded : 𝓤 ⊔ 𝓥 ̇
 is-well-founded = (x : X) → is-accessible x
 
 Well-founded : 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
-Well-founded {𝓦} = (P : X → 𝓦 ̇ ) → ((x : X) → ((y : X) → y < x → P y) → P x)
-                                 → (x : X) → P x
+Well-founded {𝓦} = (P : X → 𝓦 ̇ )
+                 → ((x : X) → ((y : X) → y < x → P y) → P x)
+                 → (x : X) → P x
 
 transfinite-induction : is-well-founded → ∀ {𝓦} → Well-founded {𝓦}
 transfinite-induction w P f x = transfinite-induction' P f x (w x)

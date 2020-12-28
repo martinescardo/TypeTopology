@@ -238,7 +238,7 @@ to-from fe l m ((f , δ) , g) = b
 ⊑-anti-equiv : is-univalent 𝓣 → funext 𝓣 𝓤
              → (l m : 𝓛 X)
              → (l ⊑ m) × (m ⊑ l) ≃ (l ≡ m) × (m ≡ l)
-⊑-anti-equiv ua fe l m = γ ● (×cong (⊑-anti-equiv-lemma ua fe l m)
+⊑-anti-equiv ua fe l m = γ ● (×-cong (⊑-anti-equiv-lemma ua fe l m)
                                      (⊑-anti-equiv-lemma ua fe m l))
  where
   A = (l ⊑ m) × (m ⊑ l)
@@ -357,7 +357,7 @@ Using this we have the following, as promised:
 
   a = ⊑-open fe fe₀ fe₂ l m
   b =  ≃-sym 𝟙-rneutral
-  c = ×cong (≃-refl _) (≃-sym s)
+  c = ×-cong (≃-refl _) (≃-sym s)
   d = ≃-sym ΠΣ-distr-≃
   e = →cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
 

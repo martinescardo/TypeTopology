@@ -300,7 +300,7 @@ bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) =
 ≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
 
 idtoeqₒ : (α β : Ordinal 𝓤) → α ≡ β → α ≃ₒ β
-idtoeqₒ α .α refl = ≃ₒ-refl α
+idtoeqₒ α α refl = ≃ₒ-refl α
 
 eqtoidₒ : (α β : Ordinal 𝓤)
         → α ≃ₒ β → α ≡ β

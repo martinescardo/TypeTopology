@@ -59,7 +59,7 @@ Equivalence of ordinals,
     _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥,
 
 means that that there is an equivalence of the underlying types that
-preserves (and automatically reflects) order.
+preserves and reflects order.
 
 For ordinals α and β in the *same* universe, their identity type α ≡ β
 is canonically equivalent to the ordinal-equivalence type α ≃ₒ β,

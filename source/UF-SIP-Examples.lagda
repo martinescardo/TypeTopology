@@ -87,8 +87,8 @@ module ∞-magma {𝓤 : Universe} where
 
  (X , _·_) ≅ (Y , _*_) =
 
-           Σ f ꞉ (X → Y), is-equiv f
-                        × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
+           Σ f ꞉ (X → Y) , is-equiv f
+                         × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
 
  characterization-of-∞-Magma-≡ : is-univalent 𝓤 → (A B : ∞-Magma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-Magma-≡ ua = characterization-of-≡ ua sns-data
@@ -1353,6 +1353,29 @@ module generalized-metric-space
  characterization-of-M-≡ ua = characterization-of-≡-with-axioms ua
                                 sns-data
                                 axioms axiomss
+
+ _≅'_  : M → M → 𝓤 ⊔ 𝓥 ̇
+ (X , d , _) ≅' (Y , e , _)
+             = Σ f ꞉ (X → Y), is-equiv f
+                            × ((x x' : X) → d x x' ≡ e (f x) (f x'))
+
+
+ characterization-of-M-≡' :
+
+     Univalence
+   → ((X , d , a) (Y , e , b) : M)
+   → ((X , d , a) ≡ (Y , e , b))
+                  ≃  (Σ f ꞉ (X → Y), is-equiv f
+                                   × ((x x' : X) → d x x' ≡ e (f x) (f x')))
+
+ characterization-of-M-≡' ua (X , d , a) (Y , e , b) =
+     characterization-of-M-≡ (ua 𝓤) (X , d , a) (Y , e , b)
+   ● Σ-cong (λ f → ×-cong (≃-refl (is-equiv f))
+                         (≃-funext₂ (FunExt-from-Univalence ua 𝓤 (𝓤 ⊔ 𝓥))
+                                    (FunExt-from-Univalence ua 𝓤 𝓥)
+                                    (λ x y → d x y)
+                                    (λ x x' → e (f x) (f x'))))
+
 
 module generalized-topological-space
         (𝓤 𝓥 : Universe)

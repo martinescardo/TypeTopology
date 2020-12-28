@@ -109,7 +109,7 @@ module subtype-classifier
                     → transport (λ - → - ↪ Y) (eqtoid ua X X' e) (g , i)
                     ≡ g ∘ eqtofun (≃-sym e) , ∘-is-embedding
                                                  (equivs-are-embeddings (eqtofun (≃-sym e))
-                                                                        (eqtofun-is-an-equiv (≃-sym e))) i
+                                                                        (eqtofun- (≃-sym e))) i
  transport-embedding {X} {X'} {Y} e g i = τ (eqtoid ua X X' e) refl
   where
    τ : (p : X ≡ X')
@@ -117,7 +117,7 @@ module subtype-classifier
      → transport (λ - → - ↪ Y) p (g , i)
      ≡ g ∘ eqtofun (≃-sym e) , ∘-is-embedding
                                   (equivs-are-embeddings (eqtofun (≃-sym e))
-                                                         (eqtofun-is-an-equiv (≃-sym e))) i
+                                                         (eqtofun- (≃-sym e))) i
    τ refl q = to-Σ-≡ (ap (λ h → g ∘ h) s ,
                       being-embedding-is-prop fe fe (g ∘ eqtofun (≃-sym e)) _ _)
     where

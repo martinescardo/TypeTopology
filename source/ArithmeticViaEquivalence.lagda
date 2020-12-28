@@ -307,7 +307,7 @@ module exponentiation-and-factorial (fe : FunExt) where
    φ = pr₂ IH
 
    φ' = Fin (k ×' n)                   ≃⟨ Fin×homo k n ⟩
-        Fin k × Fin n                  ≃⟨ ×cong φ (𝟙→ fe₀) ⟩
+        Fin k × Fin n                  ≃⟨ ×-cong φ (𝟙→ fe₀) ⟩
        (Fin m → Fin n) × (𝟙 → Fin n)   ≃⟨ ≃-sym (+→ fe₀) ⟩
        (Fin m + 𝟙 → Fin n)             ■
 
@@ -339,7 +339,7 @@ module exponentiation-and-factorial (fe : FunExt) where
   (Fin (k ^ (m +' n))                ≃⟨ Fin^homo (m +' n) k ⟩
   (Fin (m +' n) → Fin k)             ≃⟨ →cong fe₀ fe₀ (Fin+homo m n) (≃-refl (Fin k)) ⟩
   (Fin m + Fin n → Fin k)            ≃⟨ +→ fe₀  ⟩
-  (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
+  (Fin m → Fin k) × (Fin n → Fin k)  ≃⟨ ×-cong (≃-sym (Fin^homo m k)) (≃-sym (Fin^homo n k)) ⟩
    Fin (k ^ m) × Fin (k ^ n)         ≃⟨ ≃-sym (Fin×homo (k ^ m) (k ^ n)) ⟩
    Fin (k ^ m ×' k ^ n)              ■)
 
@@ -378,7 +378,7 @@ actually necessary - see the comments in the module UF-Factorial).
    φ = pr₂ IH
 
    φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k ⟩
-        Fin (succ n) × Fin k      ≃⟨ ×cong (≃-refl (Fin (succ n))) φ ⟩
+        Fin (succ n) × Fin k      ≃⟨ ×-cong (≃-refl (Fin (succ n))) φ ⟩
         (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
         Aut (Fin n + 𝟙)           ■
 
@@ -456,7 +456,7 @@ module _ (pt : propositional-truncations-exist)
   ×finite (m , α) (n , β) = m ×' n , γ
    where
     δ : X ≃ Fin m → Y ≃ Fin n → X × Y ≃ Fin (m ×' n)
-    δ d e = X × Y         ≃⟨ ×cong d e ⟩
+    δ d e = X × Y         ≃⟨ ×-cong d e ⟩
             Fin m × Fin n ≃⟨ ≃-sym (pr₂ (×construction m n)) ⟩
             Fin (m ×' n)  ■
     γ : ∥ X × Y ≃ Fin (m ×' n) ∥
@@ -568,7 +568,7 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
     where
      i   = pr₂ (×construction (a 𝟎) k)
      ii  = ×comm
-     iii = ×cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
+     iii = ×-cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
      iv  = Π×+ fe
 
    g : Σ k' ꞉ ℕ , Fin k' ≃ (Π i ꞉ Fin (succ n) , Fin (a i))
