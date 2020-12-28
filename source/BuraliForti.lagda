@@ -223,8 +223,8 @@ of universes such that
 
     f X ≃ X.
 
-Of course, any two universe embeddings are equal, so that there is at
-most one universe embedding.
+Of course, any two universe embeddings are equal, by univalence, so
+that there is at most one universe embedding.
 
 Moreover, universe embeddings are automatically type embeddings
 (meaning that they have subsingleton fibers), as shown in the module
@@ -292,7 +292,7 @@ underlying type of 𝕏, that is,
     pr₁ (f 𝕏) ≃ pr₁ 𝕏 for all 𝕏 : hSet 𝓤.
 
 Any hSet-embedding is a type embedding, and any two hSet-embeddings
-are equal. The map
+are equal by univalence. The map
 
     Lift-hSet {𝓤} (𝓤 ⁺)
 
