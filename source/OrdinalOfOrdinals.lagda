@@ -17,17 +17,16 @@ module OrdinalOfOrdinals
        where
 
 open import SpartanMLTT
-
 open import OrdinalNotions hiding (_≤_)
 open import OrdinalsType
+
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
-open import UF-Retracts
 open import UF-Embeddings
+open import UF-FunExt
 open import UF-Equiv
 open import UF-Equiv-FunExt
-open import UF-FunExt
 open import UF-UA-FunExt
 open import UF-Yoneda
 open import UF-EquivalenceExamples
@@ -806,7 +805,8 @@ module example where
  fact = under𝟙 , i , p
   where
    i : (x : ⟨ ℕₒ +ₒ 𝟙ₒ ⟩) (y : ⟨ ℕ∞ₒ ⟩)
-     → y ≺⟨ ℕ∞ₒ ⟩ under𝟙 x → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (under𝟙 x' ≡ y)
+     → y ≺⟨ ℕ∞ₒ ⟩ under𝟙 x
+     → Σ x' ꞉ ⟨ ℕₒ +ₒ 𝟙ₒ ⟩ , (x' ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ x) × (under𝟙 x' ≡ y)
    i (inl m) y (n , r , l) = inl n , ⊏-gives-< n m l , (r ⁻¹)
    i (inr *) y (n , r , l) = inl n , * , (r ⁻¹)
 
@@ -817,13 +817,16 @@ module example where
    p (inr *) (inr *) l = 𝟘-elim l
 
  converse-fails-constructively : ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ) → LPO
- converse-fails-constructively l = has-section-under𝟙-gives-LPO (equivs-have-sections under𝟙 e)
+ converse-fails-constructively l = γ
   where
    b : (ℕₒ +ₒ 𝟙ₒ) ≃ₒ ℕ∞ₒ
    b = bisimilarity-gives-ordinal-equiv (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ fact l
 
    e : is-equiv under𝟙
    e = pr₂ (≃ₒ-gives-≃ (ℕₒ +ₒ 𝟙ₒ) ℕ∞ₒ b)
+
+   γ : LPO
+   γ = has-section-under𝟙-gives-LPO (equivs-have-sections under𝟙 e)
 
  converse-fails-constructively-converse : LPO → ℕ∞ₒ ⊴ (ℕₒ +ₒ 𝟙ₒ)
  converse-fails-constructively-converse lpo = (λ x → under𝟙-inverse x (lpo x)) ,
@@ -843,12 +846,15 @@ module example where
    i .(under n) (inl (n , refl)) (inr *) l = 𝟘-elim l
    i x (inr g) (inl n) * =
      under n ,
-     transport (underlying-order ℕ∞ₒ (under n)) ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g)) ⁻¹) (∞-≺-maximal n) ,
+     transport (underlying-order ℕ∞ₒ (under n))
+               ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g)) ⁻¹)
+               (∞-≺-maximal n) ,
      under𝟙-inverse-inl (under n) (lpo (under n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
    p : (x y : ℕ∞)  (d : decidable(Σ n ꞉ ℕ , x ≡ under n)) (e : decidable(Σ m ꞉ ℕ , y ≡ under m))
-     →  x ≺⟨ ℕ∞ₒ ⟩ y → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
+     →  x ≺⟨ ℕ∞ₒ ⟩ y
+     → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
    p .(under n) .(under m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
     back-transport (λ - → - < m) (under-lc r) (⊏-gives-< k m l)
    p .(under n) y (inl (n , refl)) (inr f) l = *
@@ -856,7 +862,9 @@ module example where
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
 
  corollary₁ : LPO → ℕ∞ₒ ≃ₒ (ℕₒ +ₒ 𝟙ₒ)
- corollary₁ lpo = bisimilarity-gives-ordinal-equiv ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (converse-fails-constructively-converse lpo) fact
+ corollary₁ lpo = bisimilarity-gives-ordinal-equiv
+                   ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ)
+                   (converse-fails-constructively-converse lpo) fact
 
  corollary₂ : LPO → ℕ∞ ≃ (ℕ + 𝟙)
  corollary₂ lpo = ≃ₒ-gives-≃ ℕ∞ₒ (ℕₒ +ₒ 𝟙ₒ) (corollary₁ lpo)

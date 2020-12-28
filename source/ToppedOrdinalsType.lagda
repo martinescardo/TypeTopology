@@ -7,21 +7,18 @@ ordinals with a top element.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT
-
-open import UF-Base
 open import UF-FunExt
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import OrdinalNotions hiding (_≤_)
-open import UF-Embeddings
-
 
 module ToppedOrdinalsType
        (fe : FunExt)
        where
 
+open import SpartanMLTT
+open import OrdinalNotions hiding (_≤_)
 open import OrdinalsType
+
+open import UF-Base
+open import UF-Subsingletons
 
 \end{code}
 

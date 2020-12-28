@@ -32,6 +32,8 @@ OrdinalStructure {𝓤} X = Σ _<_ ꞉ (X → X → 𝓤 ̇ ) , (is-well-order _
 Ordinal : ∀ 𝓤 → 𝓤 ⁺ ̇
 Ordinal 𝓤 = Σ X ꞉ 𝓤 ̇ , OrdinalStructure X
 
+Ord = Ordinal 𝓤₀
+
 \end{code}
 
 NB. Perhaps we will eventually need to have two parameters U (the

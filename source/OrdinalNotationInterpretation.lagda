@@ -126,6 +126,7 @@ open import TotallySeparated
 open import SquashedSum fe
 open import SquashedCantor fe hiding (Κ)
 open import DiscreteAndSeparated
+
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Embeddings

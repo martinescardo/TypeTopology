@@ -19,21 +19,22 @@ cumbersome and (2) requires much work in other modules.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT
 open import UF-FunExt
 
 module ToppedOrdinalArithmetic
         (fe : FunExt)
        where
 
-open import OrdinalArithmetic fe
+open import SpartanMLTT
 open import OrdinalsType
-open import ToppedOrdinalsType fe
+open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
+open import ToppedOrdinalsType fe
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
 open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import InjectiveTypes fe
 open import SquashedSum fe
+
 open import UF-Subsingletons
 open import UF-Embeddings
 

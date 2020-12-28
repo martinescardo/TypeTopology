@@ -15,15 +15,11 @@ module OrdinalsClosure
 open import SpartanMLTT
 open import Two-Properties
 open import AlternativePlus
-open import OrdinalsType hiding (is-order-preserving)
 open import ToppedOrdinalsType fe
 open import OrdinalArithmetic fe
 open import ToppedOrdinalArithmetic fe
-open import OrdinalNotions hiding (_≤_)
-open import OrdinalsWellOrderArithmetic
 open import CompactTypes
 open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
-open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
 open import SquashedSum fe
 open import SquashedCantor fe
 open import LexicographicOrder
@@ -34,12 +30,13 @@ open import DiscreteAndSeparated
 open import BinaryNaturals hiding (_+_ ; l ; r)
 open import InfCompact
 open import Plus-Properties
+
 open import UF-Base
 open import UF-Equiv
 open import UF-Subsingletons
-open import UF-Embeddings
 open import InjectiveTypes fe
 open import UF-Retracts
+open import UF-Embeddings
 open import UF-Miscelanea
 
 \end{code}
@@ -183,8 +180,6 @@ preserving.
 
 \begin{code}
 
-open import UF-Embeddings
-
 is-order-preserving  is-order-reflecting  : (τ υ : Ordᵀ) → (⟪ τ ⟫ → ⟪ υ ⟫) → 𝓤₀ ̇
 
 is-order-preserving τ υ f = (x y : ⟪ τ ⟫) → x ≺⟪ τ ⟫ y → f x ≺⟪ υ ⟫ f y
@@ -301,8 +296,6 @@ Overᵒ-is-order-preserving τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 And now order reflection.
 
 \begin{code}
-
-open import UF-Embeddings
 
 comp-is-order-reflecting : (τ υ φ : Ordᵀ)  (f : ⟪ τ ⟫ → ⟪ υ ⟫) (g : ⟪ υ ⟫ → ⟪ φ ⟫)
                          → is-order-reflecting τ υ f
