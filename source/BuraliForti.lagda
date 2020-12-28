@@ -59,10 +59,11 @@ Equivalence of ordinals,
     _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥,
 
 means that that there is an equivalence of the underlying types that
-preserves and reflects order.
+preserves (and automatically reflects) order.
 
 For ordinals α and β in the *same* universe, their identity type α ≡ β
-is canonicallly equivalent to the ordinal-equivalence type α ≃ₒ β.
+is canonically equivalent to the ordinal-equivalence type α ≃ₒ β,
+by univalence.
 
 The lower set of a point x : ⟨ α ⟩ is written α ↓ x, and is itself an
 ordinal under the inherited order. The ordinals in a universe 𝓤 form
@@ -176,8 +177,11 @@ universe 𝓤⁺ is large if it is not equivalent to any type in 𝓤:
 
 \begin{code}
 
+is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+is-small {𝓤} 𝓧 = Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧
+
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-large {𝓤} 𝓧 = ¬ (Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧)
+is-large 𝓧 = ¬ is-small 𝓧
 
 \end{code}
 
@@ -334,3 +338,10 @@ Lift-hSet-is-not-equiv : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
                                 (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
 \end{code}
+
+This doesn't show that ¬ (hSet 𝓤 ≃ hSet 𝓤⁺). It only shows that no
+hSet embedding hSet 𝓤 → hSet 𝓤⁺ can be an equivalence. Anyway, there
+is only one such hSet embedding, assuming univalence, namely
+Lift-hSet.
+
+Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀).
