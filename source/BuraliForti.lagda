@@ -96,6 +96,12 @@ corollaries of Burali-Forti, but not for Burali-Forti itself.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
+\end{code}
+
+As discussed above, we assume univalence as a hypothesis:
+
+\begin{code}
+
 open import UF-Univalence
 
 module BuraliForti
@@ -163,6 +169,9 @@ when it reaches d in the definition of e':
   γ' = irrefl 𝓐 A e
 -}
 \end{code}
+
+The uncommented version is a manually beta-reduced form of the
+commented version.
 
 Some corollaries follow.
 
