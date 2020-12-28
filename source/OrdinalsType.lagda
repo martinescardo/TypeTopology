@@ -118,8 +118,8 @@ Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤
 
 \end{code}
 
-Sometimes it is convenient to work with the following notion of
-ordinal equivalence:
+Often it is convenient to work with the following alternative notion
+of ordinal equivalence, which we take as the official one:
 
 \begin{code}
 
@@ -137,7 +137,7 @@ _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 \end{code}
 
 See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is
-canonically equivalence to α ≃ β. (For historical reasons, that proof
+canonically equivalent to α ≡ β. (For historical reasons, that proof
 doesn't use the structure identity principle.)
 
 \begin{code}

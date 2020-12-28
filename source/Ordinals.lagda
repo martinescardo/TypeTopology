@@ -22,5 +22,6 @@ import OrdinalOfOrdinals
 import OrdinalOfTruthValues
 import OrdinalsShulmanTaboo
 import OrdinalsWellOrderTransport
+import BuraliForti
 
 \end{code}

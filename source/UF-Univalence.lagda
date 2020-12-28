@@ -259,12 +259,12 @@ prop valued.
 
 \begin{code}
 
-ua-all-from-id : is-univalent 𝓤
+equiv-induction : is-univalent 𝓤
                → (X : 𝓤 ̇ )
                → (P : (Y : 𝓤 ̇ ) → (X → Y) → 𝓥 ̇ )
                → P X id
                → (Y : 𝓤 ̇ ) (f : X → Y) → is-equiv f → P Y f
-ua-all-from-id {𝓤} {𝓥} ua X P b Y f e = JEq ua X A b Y (f , e)
+equiv-induction {𝓤} {𝓥} ua X P b Y f e = JEq ua X A b Y (f , e)
  where
   A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇
   A Y (f , _) = P Y f

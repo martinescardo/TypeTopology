@@ -289,12 +289,21 @@ Added 16th June 2020 by Martin Escardo. (Should have added this ages ago to avoi
 
 \begin{code}
 
-Π₂-is-prop : Fun-Ext → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ }
-           → ((x : X) (y : Y x) → is-prop (Z x y)) → is-prop ((x : X) (y : Y x) → Z x y)
+Π₂-is-prop : Fun-Ext
+           → {X : 𝓤 ̇ }
+             {Y : X → 𝓥 ̇ }
+             {Z : (x : X) → Y x → 𝓦 ̇ }
+           → ((x : X) (y : Y x) → is-prop (Z x y))
+           → is-prop ((x : X) (y : Y x) → Z x y)
 Π₂-is-prop fe i = Π-is-prop fe (λ x → Π-is-prop fe (i x))
 
-Π₃-is-prop : Fun-Ext → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (x : X) → Y x → 𝓦 ̇ } {T : (x : X) (y : Y x) → Z x y → 𝓣 ̇ }
-           → ((x : X) (y : Y x) (z : Z x y) → is-prop (T x y z)) → is-prop ((x : X) (y : Y x) (z : Z x y) → T x y z)
+Π₃-is-prop : Fun-Ext
+           → {X : 𝓤 ̇ }
+             {Y : X → 𝓥 ̇ }
+             {Z : (x : X) → Y x → 𝓦 ̇ }
+             {T : (x : X) (y : Y x) → Z x y → 𝓣 ̇ }
+           → ((x : X) (y : Y x) (z : Z x y) → is-prop (T x y z))
+           → is-prop ((x : X) (y : Y x) (z : Z x y) → T x y z)
 Π₃-is-prop fe i = Π-is-prop fe (λ x → Π₂-is-prop fe (i x))
 
 Π₄-is-prop : Fun-Ext

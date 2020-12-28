@@ -152,13 +152,15 @@ accessibility-is-prop fe = accessible-induction P φ
 well-foundedness-is-prop : FunExt → is-prop is-well-founded
 well-foundedness-is-prop fe = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) (accessibility-is-prop fe)
 
-extensionally-ordered-types-are-sets : FunExt → is-prop-valued
-                                     → is-extensional → is-set X
+extensionally-ordered-types-are-sets : FunExt
+                                     → is-prop-valued
+                                     → is-extensional
+                                     → is-set X
 extensionally-ordered-types-are-sets fe isp e = Id-collapsibles-are-sets (f , κ)
  where
   f : {x y :  X} → x ≡ y → x ≡ y
-  f {x} {y} p = e x y (transport (λ - → x ≼ -) p (≼-refl {x}))
-                      (transport (λ - → - ≼ x) p (≼-refl {x}))
+  f {x} {y} p = e x y (transport (x ≼_) p (≼-refl {x}))
+                      (transport (_≼ x) p (≼-refl {x}))
 
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y) (≼-prop-valued-order fe isp x y l l')
