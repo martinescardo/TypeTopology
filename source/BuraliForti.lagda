@@ -1,4 +1,4 @@
-Martin Escardo, 21-25 December 2020.
+Martin Escardo, 21-25 December 2020. Burali-Forti in HoTT/UF in Agda notation.
 
 The Burali-Forti argument in HoTT/UF
 ------------------------------------
