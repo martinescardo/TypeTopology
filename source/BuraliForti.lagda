@@ -1,15 +1,25 @@
 Martin Escardo, 21-25 December 2020.
 
-We use the argument of the Burali-Forti paradox to show that, in
-HoTT/UF, no hSet embedding
+The Burali-Forti argument in HoTT/UF
+------------------------------------
+
+Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
+no universe embedding
+
+    𝓤 → 𝓤⁺.
+
+of a universe 𝓤 into its successor 𝓤⁺ is an equivalence, and neither
+is any hSet embedding
 
     hSet 𝓤 → hSet 𝓤⁺
 
-of the type of sets of a universe 𝓤 into that of the successor
-universe 𝓤⁺ is an equivalence, and that neither is any universe
-embedding
+of the type of sets of 𝓤 into that of 𝓤⁺.
 
-    𝓤 → 𝓤⁺.
+We work with ordinals as defined in the HoTT book.
+https://homotopytypetheory.org/book/
+
+Introduction
+------------
 
 Univalence is used three times (at least):
 
@@ -25,22 +35,20 @@ Univalence is used three times (at least):
 There are also a number of uses of univalence via functional and
 propositional extensionality.
 
-We work with ordinals as defined in the HoTT book.
-
 An ordinal in a universe 𝓤 is a type X : 𝓤 equipped with a relation
 
     _≺_ : X → X → 𝓤
 
 required to be
 
-    * proposition-valued,
+    1. proposition-valued,
 
-    * transitive,
+    2. transitive,
 
-    * extensional (any two points with same lower set are the same),
+    3. extensional (any two points with same lower set are the same),
 
-    * well founded (every element is accessible, or, equivalently,
-      the principle of transfinite induction holds).
+    3. well founded (every element is accessible, or, equivalently,
+       the principle of transfinite induction holds).
 
 The HoTT book additionally requires X to be a set, but this follows
 automatically from the above requirements for the order.
@@ -91,6 +99,9 @@ defined by
 
 The existence of such a resized-down order is crucial for the
 corollaries of Burali-Forti, but not for Burali-Forti itself.
+
+Agda formulation of the Burali-Forti argument and its corollaries
+-----------------------------------------------------------------
 
 \begin{code}
 
@@ -156,7 +167,6 @@ Burali-Forti {𝓤} (α , 𝕗) = γ
 Side-remark. The following cleaner rendering of the above makes Agda
 2.6.1 (and the development version 2.6.2 as of 25 December 2020) hang
 when it reaches d in the definition of e':
-
 \begin{code}
 {-
   𝓐 : Ordinal (𝓤 ⁺ ⁺)
@@ -171,7 +181,7 @@ when it reaches d in the definition of e':
 \end{code}
 
 The uncommented version is a manually beta-reduced form of the
-commented version.
+commented-out version.
 
 Some corollaries follow.
 
@@ -263,7 +273,8 @@ successive-universe-embeddings-are-not-equivs f i j =
 \end{code}
 
 In particular, we have the following, where Lift {𝓤} (𝓤 ⁺) is the
-canonical embedding of the universe 𝓤 into the successor universe 𝓤⁺:
+canonical embedding of the universe 𝓤 into the successor universe 𝓤⁺
+defined in the module UF-UniverseEmbedding:
 
 \begin{code}
 
@@ -294,13 +305,9 @@ underlying type of 𝕏, that is,
 Any hSet-embedding is a type embedding, and any two hSet-embeddings
 are equal by univalence. The map
 
-    Lift-hSet {𝓤} (𝓤 ⁺)
+    Lift-hSet {𝓤} (𝓤 ⁺) : hSet 𝓤 → hSet 𝓤⁺
 
-is the canonical (and unique) hSet embedding
-
-    hSet 𝓤 → hSet 𝓤⁺,
-
-defined by
+is the canonical (and unique) hSet embedding defined by
 
     Lift-hSet 𝓥 (X , i) = Lift 𝓥 X , Lift-is-set X i)
 
@@ -348,9 +355,11 @@ Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
                                 (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
 \end{code}
 
-This doesn't show that ¬ (hSet 𝓤 ≃ hSet 𝓤⁺). It only shows that no
-hSet embedding hSet 𝓤 → hSet 𝓤⁺ can be an equivalence. Anyway, there
-is only one such hSet embedding, assuming univalence, namely
-Lift-hSet.
+This doesn't show that ¬ (hSet 𝓤 ≃ hSet 𝓤⁺), which we leave as an open
+problem. It only shows that no hSet embedding hSet 𝓤 → hSet 𝓤⁺ can be
+an equivalence. The above also doesn't show that ¬ (𝓤 ≃ 𝓤⁺), but we
+know that this is the case by a different argument, which generalizes
+Thierry Coquand's "paradox of trees", developed in the module
+LawvereFPT.
 
 Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀).
