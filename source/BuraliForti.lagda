@@ -35,6 +35,8 @@ Univalence is used three times (at least):
 There are also a number of uses of univalence via functional and
 propositional extensionality.
 
+Propositional resizing is not needed, thanks to (3).
+
 An ordinal in a universe 𝓤 is a type X : 𝓤 equipped with a relation
 
     _≺_ : X → X → 𝓤
