@@ -1,5 +1,7 @@
 Martin Escardo, 21-25 December 2020. Burali-Forti in HoTT/UF in Agda notation.
 
+In collaboration with Marc Bezem, Thierry Coquand, and Peter Dybjer.
+
 The Burali-Forti argument in HoTT/UF
 ------------------------------------
 
@@ -15,7 +17,7 @@ is any hSet embedding
 
 of the type of sets of 𝓤 into that of 𝓤⁺.
 
-We work with ordinals as defined in the HoTT book.
+We work with ordinals as defined in the HoTT book for that purpose.
 https://homotopytypetheory.org/book/
 
 Introduction
