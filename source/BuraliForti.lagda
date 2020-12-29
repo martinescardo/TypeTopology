@@ -49,7 +49,7 @@ required to be
 
     3. extensional (any two points with same lower set are the same),
 
-    3. well founded (every element is accessible, or, equivalently,
+    4. well founded (every element is accessible, or, equivalently,
        the principle of transfinite induction holds).
 
 The HoTT book additionally requires X to be a set, but this follows
@@ -310,7 +310,7 @@ By an *hSet embedding* we mean a map
 such that the underlying type of f 𝕏 is equivalent to the
 underlying type of 𝕏, that is,
 
-    pr₁ (f 𝕏) ≃ pr₁ 𝕏
+    pr₁ (f 𝕏) ≃ pr₁ 𝕏,
 
 for all 𝕏 : hSet 𝓤.
 
