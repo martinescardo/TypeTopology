@@ -92,8 +92,9 @@ This order has type
     _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤⁺,
 
 as required for it to make the type Ordinal 𝓤 into an ordinal in the
-next universe, but it is pointwise equivalent to the "resized down"
-order
+next universe.
+
+But it is pointwise equivalent to the "resized down" order
 
     _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤
 
