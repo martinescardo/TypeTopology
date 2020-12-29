@@ -6,16 +6,16 @@ The Burali-Forti argument in HoTT/UF
 ------------------------------------
 
 Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
-no universe embedding
+the universe embedding
 
     𝓤 → 𝓤⁺.
 
-of a universe 𝓤 into its successor 𝓤⁺ is an equivalence, and neither
-is any hSet embedding
+of a universe 𝓤 into its successor 𝓤⁺ is not equivalence, and that
+the hSet embedding
 
     hSet 𝓤 → hSet 𝓤⁺
 
-of the type of sets of 𝓤 into that of 𝓤⁺.
+of the type of sets of 𝓤 into that of 𝓤⁺ in not an equivalence either.
 
 We work with ordinals as defined in the HoTT book for that purpose.
 https://homotopytypetheory.org/book/
@@ -283,7 +283,7 @@ In particular, we have the following, where
   Lift {𝓤} (𝓤 ⁺) : 𝓤 → 𝓤⁺
 
 is the canonical embedding of the universe 𝓤 into the successor
-universe 𝓤⁺ defined in the module UF-UniverseEmbedding:
+universe 𝓤⁺, defined in the module UF-UniverseEmbedding:
 
 \begin{code}
 
