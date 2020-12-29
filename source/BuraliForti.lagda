@@ -77,7 +77,7 @@ by univalence.
 
 The lower set of a point x : ⟨ α ⟩ is written α ↓ x, and is itself an
 ordinal under the inherited order. The ordinals in a universe 𝓤 form
-an ordinal in the the successor universe 𝓤⁺, denoted by
+an ordinal in the successor universe 𝓤⁺, denoted by
 
     OrdinalOfOrdinals 𝓤 : Ordinal 𝓤⁺.
 
@@ -89,8 +89,8 @@ This order has type
 
     _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤⁺,
 
-as required for it to make the the type Ordinal 𝓤 into an ordinal in
-the next universe, but it is pointwise equivalent to the "resized down"
+as required for it to make the type Ordinal 𝓤 into an ordinal in the
+next universe, but it is pointwise equivalent to the "resized down"
 order
 
     _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤
@@ -187,14 +187,15 @@ commented-out version.
 
 Some corollaries follow.
 
-The main work in the first one, which says that the type of of all
+The main work in the first one, which says that the type of all
 ordinals is large, happens in the function transfer-structure, which
 is developed in the module OrdinalsWellOrderTransport, where the
 difficulties are explained.
 
 As discussed above, the type OrdinalOfOrdinals 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
-universe 𝓤⁺ is large if it is not equivalent to any type in 𝓤:
+universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
+otherwise:
 
 \begin{code}
 
@@ -224,8 +225,9 @@ the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
 \end{code}
 
 It is crucial in the above proof, in order to be able to transfer the
-ordinal structure of the ordinal of ordinals to the type X, that the
-order _⊲_ has a resized-down version _⊲⁻_ , as mentioned above.
+ordinal structure of the ordinal of ordinals to the type X along the
+hypothetical equivalence 𝕗 : X ≃ Ordinal 𝓤, that the order _⊲_ has a
+resized-down version _⊲⁻_ , as mentioned above.
 
 By a *universe embedding* we mean a map
 
@@ -274,9 +276,12 @@ successive-universe-embeddings-are-not-equivs f i j =
 
 \end{code}
 
-In particular, we have the following, where Lift {𝓤} (𝓤 ⁺) is the
-canonical embedding of the universe 𝓤 into the successor universe 𝓤⁺
-defined in the module UF-UniverseEmbedding:
+In particular, we have the following, where
+
+  Lift {𝓤} (𝓤 ⁺) : 𝓤 → 𝓤⁺
+
+is the canonical embedding of the universe 𝓤 into the successor
+universe 𝓤⁺ defined in the module UF-UniverseEmbedding:
 
 \begin{code}
 
@@ -290,8 +295,11 @@ Lift-is-not-equiv {𝓤} e = Lift-doesnt-have-section
                            (equivs-have-sections (Lift (𝓤 ⁺)) e)
 \end{code}
 
-For a universe 𝓤, we define the type hSet 𝓤 : 𝓤⁺ of sets in the
-universe 𝓤 by
+For a universe 𝓤, we define the type
+
+    hSet 𝓤 : 𝓤⁺
+
+of sets in the universe 𝓤 by
 
     hSet 𝓤 = Σ A ꞉ 𝓤 ̇ , is-set A.
 
@@ -309,7 +317,7 @@ are equal by univalence. The map
 
     Lift-hSet {𝓤} (𝓤 ⁺) : hSet 𝓤 → hSet 𝓤⁺
 
-is the canonical (and unique) hSet embedding defined by
+is the unique hSet embedding, given by
 
     Lift-hSet 𝓥 (X , i) = Lift 𝓥 X , Lift-is-set X i)
 
@@ -357,11 +365,20 @@ Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
                                 (equivs-have-sections (Lift-hSet (𝓤 ⁺)) e)
 \end{code}
 
-This doesn't show that ¬ (hSet 𝓤 ≃ hSet 𝓤⁺), which we leave as an open
-problem. It only shows that no hSet embedding hSet 𝓤 → hSet 𝓤⁺ can be
-an equivalence. The above also doesn't show that ¬ (𝓤 ≃ 𝓤⁺), but we
-know that this is the case by a different argument, which generalizes
+This doesn't show that ¬ (hSet 𝓤 ≃ hSet 𝓤⁺), as in principle there may
+be an equivalence that is not an hSet embedding in the sense defined
+above, which we leave as an open problem. Notice that excluded middle,
+which is not assumed but is consistenmt, implies that there is an
+automorphism of hSet 𝓤 that swaps the empty set 𝟘 and the one-point
+set 𝟙 and leaves all the other sets unchanged, so that potentially
+there are automorphisms of hSet 𝓤 that are not hSet embeddings. We
+don't know whether such a rogue equivalence hSet 𝓤 ≃ hSet 𝓤⁺ exists,
+but this shouldn't be the case, of course.
+
+Similarly, the above also doesn't show that ¬ (𝓤 ≃ 𝓤⁺), but we know
+that this is the case by a different argument, which generalizes
 Thierry Coquand's "paradox of trees", developed in the module
 LawvereFPT.
 
-Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀).
+Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀), that is, there
+is no type in 𝓤 equivalent to the set truncation of 𝓤.
