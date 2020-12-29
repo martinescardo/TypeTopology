@@ -317,7 +317,7 @@ for all 𝕏 : hSet 𝓤.
 Any hSet-embedding is a type embedding, and any two hSet-embeddings
 are equal by univalence. The map
 
-    Lift-hSet {𝓤} (𝓤 ⁺) : hSet 𝓤 → hSet 𝓤⁺
+    Lift-hSet {𝓤} 𝓥 : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥)
 
 is the unique hSet embedding, given by
 
