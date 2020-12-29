@@ -23,14 +23,14 @@ Introduction
 
 Univalence is used three times (at least):
 
-    (1) to know that the type of ordinals is a 0-type and hence all
-        ordinals form an ordinal in the next universe,
+    1. to know that the type of ordinals is a 0-type and hence all
+       ordinals form an ordinal in the next universe,
 
-    (2) to develop the Burali-Forti argument that no ordinal is
-        equivalent to the ordinal of all ordinals,
+    2. to develop the Burali-Forti argument that no ordinal is
+       equivalent to the ordinal of all ordinals,
 
-    (3) to resize down the values of the order relation of the ordinal
-        of ordinals, to conclude that the ordinal of ordinals is large.
+    3. to resize down the values of the order relation of the ordinal
+       of ordinals, to conclude that the ordinal of ordinals is large.
 
 There are also a number of uses of univalence via functional and
 propositional extensionality.
@@ -310,7 +310,9 @@ By an *hSet embedding* we mean a map
 such that the underlying type of f 𝕏 is equivalent to the
 underlying type of 𝕏, that is,
 
-    pr₁ (f 𝕏) ≃ pr₁ 𝕏 for all 𝕏 : hSet 𝓤.
+    pr₁ (f 𝕏) ≃ pr₁ 𝕏
+
+for all 𝕏 : hSet 𝓤.
 
 Any hSet-embedding is a type embedding, and any two hSet-embeddings
 are equal by univalence. The map
@@ -368,7 +370,7 @@ Lift-hSet-is-not-equiv {𝓤} e = Lift-hSet-doesnt-have-section
 This doesn't show that ¬ (hSet 𝓤 ≃ hSet 𝓤⁺), as in principle there may
 be an equivalence that is not an hSet embedding in the sense defined
 above, which we leave as an open problem. Notice that excluded middle,
-which is not assumed but is consistenmt, implies that there is an
+which is not assumed but is consistent, implies that there is an
 automorphism of hSet 𝓤 that swaps the empty set 𝟘 and the one-point
 set 𝟙 and leaves all the other sets unchanged, so that potentially
 there are automorphisms of hSet 𝓤 that are not hSet embeddings. We
