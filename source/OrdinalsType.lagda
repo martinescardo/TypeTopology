@@ -9,7 +9,7 @@ ordinals with a top element.
 
 open import SpartanMLTT
 
-open import OrdinalNotions hiding (_≤_)
+open import OrdinalNotions
 
 open import UF-Base
 open import UF-FunExt
@@ -36,8 +36,8 @@ Ord = Ordinal 𝓤₀
 
 \end{code}
 
-NB. Perhaps we will eventually need to have two parameters U (the
-universe where the underlying type X lives) and V (the universe where
+NB. Perhaps we will eventually need to have two parameters 𝓤 (the
+universe where the underlying type X lives) and 𝓥 (the universe where
 _<_ takes values in) for Ordinal.
 
 Ordinals are ranged over by α,β,γ.
@@ -85,6 +85,16 @@ Transfinite-induction α = transfinite-induction
 Extensionality : (α : Ordinal 𝓤) → is-extensional (underlying-order α)
 Extensionality α = extensionality (underlying-order α) (is-well-ordered α)
 
+underlying-type-is-set : FunExt
+                       → (α : Ordinal 𝓤)
+                       → is-set ⟨ α ⟩
+underlying-type-is-set fe α =
+ extensionally-ordered-types-are-sets
+  (underlying-order α)
+  fe
+  (Prop-valuedness α)
+  (Extensionality α)
+
 \end{code}
 
 TODO. We should add further properties of the order from the module
@@ -93,8 +103,7 @@ OrdinalNotions. For the moment, we add this:
 \begin{code}
 
 irrefl : (α : Ordinal 𝓤) (x : ⟨ α ⟩) → ¬(x ≺⟨ α ⟩ x)
-irrefl α x = accessible-points-are-irreflexive
-              (underlying-order α) x (Well-foundedness α x)
+irrefl α x = irreflexive (underlying-order α) x (Well-foundedness α x)
 
 \end{code}
 

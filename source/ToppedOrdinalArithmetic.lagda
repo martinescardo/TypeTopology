@@ -93,7 +93,7 @@ _↗_ : {X A : 𝓤₀ ̇ } → (X → Ordᵀ) → (Σ j ꞉ (X → A), is-embed
 τ ↗ (j , e) = λ a → ((Y / j) a ,
                      Extension.order a ,
                      Extension.well-order a (λ x → tis-well-ordered (τ x))) ,
-                    Extension.top-preservation a (λ x → topped (τ x))
+                     Extension.top-preservation a (λ x → topped (τ x))
  where
   Y : domain τ → 𝓤₀ ̇
   Y x = ⟪ τ x ⟫

@@ -14,7 +14,7 @@ module ToppedOrdinalsType
        where
 
 open import SpartanMLTT
-open import OrdinalNotions hiding (_≤_)
+open import OrdinalNotions
 open import OrdinalsType
 
 open import UF-Base

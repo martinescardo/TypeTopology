@@ -162,7 +162,7 @@ Burali-Forti {𝓤} (α , 𝕗) = γ
   e = α , d
 
   γ : 𝟘
-  γ = accessible-points-are-irreflexive _⊲_ A (⊲-is-well-founded A) e
+  γ = irreflexive _⊲_ A (⊲-is-well-founded A) e
 
 \end{code}
 

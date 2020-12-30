@@ -78,10 +78,10 @@ crucial for compactness purposes, as dicussed below.
     The discrete ordinals, being retracts of ℕ, cannot be retracts of
     the Cantor space. This is because the Cantor space is potentially
     compact, in the presence of Brouwerian axioms (which we are not
-    assuming), and compactness is inherited by retracts, and the
-    compactnesss of the infinite discrete ordinals is equivalent to
-    Bishop's LPO (limited principle of omnscient), which is not
-    provable in any variety of constructive mathematics.
+    assuming but are consistent), and compactness is inherited by
+    retracts, and the compactnesss of the infinite discrete ordinals
+    is equivalent to Bishop's LPO (limited principle of omnscient),
+    which is not provable in any variety of constructive mathematics.
 
 The Δ and Κ interpretation of One, Add and Mul are as expected. They
 differ only in the interpretation of Sum1.
@@ -160,7 +160,8 @@ _≺⟪ τ ⟫_ denotes its underlying order.
                             → ι x ≺⟪ Κ ν ⟫ ι y
                             →   x ≺⟪ Δ ν ⟫   y
 
-Κ-inf-compact          : propext 𝓤₀ → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
+Κ-inf-compact          : propext 𝓤₀
+                       → (ν : OE) → inf-compact (λ x y → x ≼⟪ Κ ν ⟫ y)
 
 brouwer-to-oe          : B → OE
 ε₀-upper-bound         : Ordᵀ
@@ -191,13 +192,12 @@ The underlying sets  of such ordinals are compact∙:
 
 \begin{code}
 
-Κ-compact∙ One = 𝟙-compact∙
-Κ-compact∙ (Add ν μ) =
- Σ-compact∙
-  𝟙+𝟙-compact∙
-  (dep-cases (λ _ → Κ-compact∙ ν) (λ _ → Κ-compact∙ μ))
+Κ-compact∙ One       = 𝟙-compact∙
+Κ-compact∙ (Add ν μ) = Σ-compact∙
+                        𝟙+𝟙-compact∙
+                        (dep-cases (λ _ → Κ-compact∙ ν) (λ _ → Κ-compact∙ μ))
 Κ-compact∙ (Mul ν μ) = Σ-compact∙ (Κ-compact∙ ν) (λ _ → Κ-compact∙ μ)
-Κ-compact∙ (Sum1 ν) = Σ¹-compact∙ (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-compact∙ (ν i))
+Κ-compact∙ (Sum1 ν)  = Σ¹-compact∙ (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-compact∙ (ν i))
 
 \end{code}
 
@@ -205,14 +205,15 @@ Completed 20th July 2018:
 
 The compact∙ ordinals are retracts of the Cantor type (ℕ → 𝟚).
 
-
 \begin{code}
 
-Κ-Cantor-retract One = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
-Κ-Cantor-retract (Add ν μ) = +-retract-of-Cantor (Κ ν) (Κ μ) (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
-Κ-Cantor-retract (Mul ν μ) = ×-retract-of-Cantor (Κ ν) (Κ μ) (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
-Κ-Cantor-retract (Sum1 ν)  = Σ¹-Cantor-retract (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-Cantor-retract (ν i))
-
+Κ-Cantor-retract One       = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
+Κ-Cantor-retract (Add ν μ) = +-retract-of-Cantor (Κ ν) (Κ μ)
+                              (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
+Κ-Cantor-retract (Mul ν μ) = ×-retract-of-Cantor (Κ ν) (Κ μ)
+                              (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
+Κ-Cantor-retract (Sum1 ν)  = Σ¹-Cantor-retract
+                               (λ n → ⟪ Κ (ν n) ⟫) (λ i → Κ-Cantor-retract (ν i))
 \end{code}
 
 And hence they are totally separated:
@@ -239,19 +240,20 @@ many interesting properties, formulated above and proved below.
 
 \begin{code}
 
-Δ One = 𝟙ᵒ
+Δ One       = 𝟙ᵒ
 Δ (Add ν μ) = Δ ν +ᵒ Δ μ
 Δ (Mul ν μ) = Δ ν ×ᵒ  Δ μ
-Δ (Sum1 ν) = ∑₁ λ(i : ℕ) → Δ(ν i)
+Δ (Sum1 ν)  = ∑₁ λ(i : ℕ) → Δ(ν i)
 
-Δ-is-discrete One  = 𝟙-is-discrete
-Δ-is-discrete (Add ν μ) =
- Σ-is-discrete
-  (+discrete 𝟙-is-discrete 𝟙-is-discrete)
-  (dep-cases (λ _ → Δ-is-discrete ν) (λ _ → Δ-is-discrete μ))
+Δ-is-discrete One       = 𝟙-is-discrete
+Δ-is-discrete (Add ν μ) = Σ-is-discrete
+                           (+discrete 𝟙-is-discrete 𝟙-is-discrete)
+                          (dep-cases (λ _ → Δ-is-discrete ν)
+                          (λ _ → Δ-is-discrete μ))
 Δ-is-discrete (Mul ν μ) = Σ-is-discrete (Δ-is-discrete ν) (λ _ → Δ-is-discrete μ)
-Δ-is-discrete (Sum1 ν) = Σ₁-is-discrete (λ n → ⟪ Δ (ν n) ⟫) (λ i → Δ-is-discrete (ν i))
-
+Δ-is-discrete (Sum1 ν)  = Σ₁-is-discrete
+                            (λ n → ⟪ Δ (ν n) ⟫)
+                            (λ i → Δ-is-discrete (ν i))
 \end{code}
 
 Completed 27 July 2018. There is a dense embedding ι of the discrete
@@ -261,105 +263,94 @@ order preserving and reflecting (28 July 2018).
 
 \begin{code}
 
-ι {One} = id
+ι {One}     = id
 ι {Add ν μ} = pair-fun id (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
 ι {Mul ν μ} = pair-fun (ι {ν}) (λ _ → ι {μ})
-ι {Sum1 ν} = ∑↑ (λ n → Δ (ν n)) (λ n → Κ (ν n)) (λ n → ι {ν n})
+ι {Sum1 ν}  = ∑↑ (λ n → Δ (ν n)) (λ n → Κ (ν n)) (λ n → ι {ν n})
 
-ι-dense One = id-is-dense
-ι-dense (Add ν μ) =
- pair-fun-dense
-  id
-  (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-  id-is-dense
-  (dep-cases (λ _ → ι-dense ν) (λ _ → ι-dense μ))
-ι-dense (Mul ν μ) =
- pair-fun-dense _ _
-  (ι-dense ν)
-  (λ _ → ι-dense μ)
-ι-dense (Sum1 ν) =
- Σ↑-dense
-  (λ n → ⟪ Δ (ν n) ⟫)
-  (λ n → ⟪ Κ (ν n) ⟫)
-  (λ n → ι {ν n})
-  (λ i → ι-dense (ν i))
+ι-dense One       = id-is-dense
+ι-dense (Add ν μ) = pair-fun-dense
+                     id
+                    (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                    id-is-dense
+                    (dep-cases (λ _ → ι-dense ν) (λ _ → ι-dense μ))
+ι-dense (Mul ν μ) = pair-fun-dense _ _
+                    (ι-dense ν)
+                    (λ _ → ι-dense μ)
+ι-dense (Sum1 ν) =  Σ↑-dense
+                     (λ n → ⟪ Δ (ν n) ⟫)
+                     (λ n → ⟪ Κ (ν n) ⟫)
+                     (λ n → ι {ν n})
+                     (λ i → ι-dense (ν i))
 
-ι-embedding One = id-is-embedding
-ι-embedding (Add ν μ) =
- pair-fun-embedding
-  id
-  (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-  id-is-embedding
-  (dep-cases (λ _ → ι-embedding ν) (λ _ → ι-embedding μ))
-ι-embedding (Mul ν μ) =
- pair-fun-embedding _ _
-  (ι-embedding ν)
-  (λ _ → ι-embedding μ)
-ι-embedding (Sum1 ν) =
- Σ↑-embedding
-  (λ n → ⟪ Δ (ν n) ⟫)
-  (λ n → ⟪ Κ (ν n) ⟫)
-  (λ n → ι {ν n})
-  (λ i → ι-embedding (ν i))
+ι-embedding One       = id-is-embedding
+ι-embedding (Add ν μ) = pair-fun-embedding
+                         id
+                         (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                         id-is-embedding
+                         (dep-cases (λ _ → ι-embedding ν) (λ _ → ι-embedding μ))
+ι-embedding (Mul ν μ) = pair-fun-embedding _ _
+                         (ι-embedding ν)
+                         (λ _ → ι-embedding μ)
+ι-embedding (Sum1 ν)  = Σ↑-embedding
+                         (λ n → ⟪ Δ (ν n) ⟫)
+                         (λ n → ⟪ Κ (ν n) ⟫)
+                         (λ n → ι {ν n})
+                         (λ i → ι-embedding (ν i))
 
-ι-order-preserving One = λ x y l → l
-ι-order-preserving (Add ν μ) =
- pair-fun-is-order-preserving
-   𝟚ᵒ
-   𝟚ᵒ
-   (cases (λ _ → Δ ν) (λ _ → Δ μ))
-   (cases (λ _ → Κ ν) (λ _ → Κ μ))
-   id
-   (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-   (λ x y l → l)
-   (dep-cases (λ _ → ι-order-preserving ν) λ _ → ι-order-preserving μ)
-ι-order-preserving (Mul ν μ) =
- pair-fun-is-order-preserving
-  (Δ ν)
-  (Κ ν)
-  (λ _ → Δ μ)
-  (λ _ → Κ μ)
-  (ι {ν})
-  (λ _ → ι {μ})
-  (ι-order-preserving ν)
-  (λ _ → ι-order-preserving μ)
-ι-order-preserving (Sum1 ν) =
- ∑↑-is-order-preserving
-   (Δ ∘ ν)
-   (Κ ∘ ν)
-   (λ n → ι {ν n})
-   (λ i → ι-order-preserving (ν i))
+ι-order-preserving One       = λ x y l → l
+ι-order-preserving (Add ν μ) = pair-fun-is-order-preserving
+                                𝟚ᵒ
+                                𝟚ᵒ
+                                (cases (λ _ → Δ ν) (λ _ → Δ μ))
+                                (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                                id
+                                (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                                (λ x y l → l)
+                                (dep-cases (λ _ → ι-order-preserving ν)
+                                           (λ _ → ι-order-preserving μ))
+ι-order-preserving (Mul ν μ) = pair-fun-is-order-preserving
+                                (Δ ν)
+                                (Κ ν)
+                                (λ _ → Δ μ)
+                                (λ _ → Κ μ)
+                                (ι {ν})
+                                (λ _ → ι {μ})
+                                (ι-order-preserving ν)
+                                (λ _ → ι-order-preserving μ)
+ι-order-preserving (Sum1 ν) = ∑↑-is-order-preserving
+                                (Δ ∘ ν)
+                                (Κ ∘ ν)
+                                (λ n → ι {ν n})
+                                (λ i → ι-order-preserving (ν i))
 
-ι-order-reflecting One = λ x y l → l
-ι-order-reflecting (Add ν μ) =
- pair-fun-is-order-reflecting
-   𝟚ᵒ
-   𝟚ᵒ
-   (cases (λ _ → Δ ν) (λ _ → Δ μ))
-   (cases (λ _ → Κ ν) (λ _ → Κ μ))
-   id
-   (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
-   (λ x y l → l)
-   id-is-embedding
-   (dep-cases (λ _ → ι-order-reflecting ν) λ _ → ι-order-reflecting μ)
-ι-order-reflecting (Mul ν μ) =
- pair-fun-is-order-reflecting
-  (Δ ν)
-  (Κ ν)
-  (λ _ → Δ μ)
-  (λ _ → Κ μ)
-  (ι {ν})
-  (λ _ → ι {μ})
-  (ι-order-reflecting ν)
-  (ι-embedding ν)
-  (λ _ → ι-order-reflecting μ)
-ι-order-reflecting (Sum1 ν)  =
- ∑↑-is-order-reflecting
-   (Δ ∘ ν)
-   (Κ ∘ ν)
-   (λ n → ι {ν n})
-   (λ i → ι-order-reflecting (ν i))
-
+ι-order-reflecting One       = λ x y l → l
+ι-order-reflecting (Add ν μ) = pair-fun-is-order-reflecting
+                                𝟚ᵒ
+                                𝟚ᵒ
+                                (cases (λ _ → Δ ν) (λ _ → Δ μ))
+                                (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                                id
+                                (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
+                                (λ x y l → l)
+                                id-is-embedding
+                                (dep-cases (λ _ → ι-order-reflecting ν)
+                                           (λ _ → ι-order-reflecting μ))
+ι-order-reflecting (Mul ν μ) = pair-fun-is-order-reflecting
+                                (Δ ν)
+                                (Κ ν)
+                                (λ _ → Δ μ)
+                                (λ _ → Κ μ)
+                                (ι {ν})
+                                (λ _ → ι {μ})
+                                (ι-order-reflecting ν)
+                                (ι-embedding ν)
+                                (λ _ → ι-order-reflecting μ)
+ι-order-reflecting (Sum1 ν)  = ∑↑-is-order-reflecting
+                                (Δ ∘ ν)
+                                (Κ ∘ ν)
+                                (λ n → ι {ν n})
+                                (λ i → ι-order-reflecting (ν i))
 \end{code}
 
 As discussed in the module Ordinals, propositional extensionality in
@@ -368,42 +359,36 @@ much easier (given the mathematics we have already developed).
 
 \begin{code}
 
-Κ-inf-compact pe One = 𝟙ᵒ-inf-compact
-Κ-inf-compact pe (Add ν μ) =
- ∑-inf-compact pe
-  𝟚ᵒ
-  (cases (λ _ → Κ ν) (λ _ → Κ μ))
-  𝟚ᵒ-inf-compact
-  (dep-cases
-    (λ _ → Κ-inf-compact pe ν)
-    (λ _ → Κ-inf-compact pe μ))
-Κ-inf-compact pe (Mul ν μ) =
- ∑-inf-compact pe
-  (Κ ν)
-  (λ _ → Κ μ)
-  (Κ-inf-compact pe ν)
-  (λ _ → Κ-inf-compact pe μ)
-Κ-inf-compact pe (Sum1 ν) =
- ∑₁-inf-compact
-  pe
-  (Κ ∘ ν)
-  (λ i → Κ-inf-compact pe (ν i))
-
+Κ-inf-compact pe One       = 𝟙ᵒ-inf-compact
+Κ-inf-compact pe (Add ν μ) = ∑-inf-compact pe
+                               𝟚ᵒ
+                               (cases (λ _ → Κ ν) (λ _ → Κ μ))
+                               𝟚ᵒ-inf-compact
+                               (dep-cases (λ _ → Κ-inf-compact pe ν)
+                                          (λ _ → Κ-inf-compact pe μ))
+Κ-inf-compact pe (Mul ν μ) = ∑-inf-compact pe
+                               (Κ ν)
+                               (λ _ → Κ μ)
+                               (Κ-inf-compact pe ν)
+                               (λ _ → Κ-inf-compact pe μ)
+Κ-inf-compact pe (Sum1 ν) = ∑₁-inf-compact
+                               pe
+                               (Κ ∘ ν)
+                               (λ i → Κ-inf-compact pe (ν i))
 \end{code}
 
 Added 31 July 2018:
 
 \begin{code}
 
-Δ-retract-of-ℕ One = (λ _ → *) , (λ _ → 0) , 𝟙-is-prop *
-Δ-retract-of-ℕ (Add ν μ) =
- Σ-retract-of-ℕ
-  retract-𝟙+𝟙-of-ℕ
-  (dep-cases (λ _ → Δ-retract-of-ℕ ν) (λ _ → Δ-retract-of-ℕ μ))
-Δ-retract-of-ℕ (Mul ν μ) =
- Σ-retract-of-ℕ
- (Δ-retract-of-ℕ ν)
- (λ _ → Δ-retract-of-ℕ μ)
+Δ-retract-of-ℕ One       = (λ _ → *) , (λ _ → 0) , 𝟙-is-prop *
+Δ-retract-of-ℕ (Add ν μ) = Σ-retract-of-ℕ
+                             retract-𝟙+𝟙-of-ℕ
+                             (dep-cases (λ _ → Δ-retract-of-ℕ ν)
+                                        (λ _ → Δ-retract-of-ℕ μ))
+Δ-retract-of-ℕ (Mul ν μ) = Σ-retract-of-ℕ
+                             (Δ-retract-of-ℕ ν)
+                             (λ _ → Δ-retract-of-ℕ μ)
 Δ-retract-of-ℕ (Sum1 ν) = Σ₁-ℕ-retract (λ i → Δ-retract-of-ℕ (ν i))
 
 \end{code}
@@ -422,7 +407,7 @@ bigger or equal, because sums dominate suprema.
 
 brouwer-to-oe    Z  = One
 brouwer-to-oe (S ν) = Add One (brouwer-to-oe ν)
-brouwer-to-oe (L ν) = Sum1(λ i → brouwer-to-oe(ν i))
+brouwer-to-oe (L ν) = Sum1 (λ i → brouwer-to-oe (ν i))
 
 \end{code}
 
@@ -431,9 +416,9 @@ ordinal ε₀ (because sums dominate suprema):
 
 \begin{code}
 
-ε₀-upper-bound = Κ(brouwer-to-oe B-ε₀)
+ε₀-upper-bound = Κ (brouwer-to-oe B-ε₀)
 
-compact∙-ε₀-ub = Κ-compact∙(brouwer-to-oe B-ε₀)
+compact∙-ε₀-ub = Κ-compact∙ (brouwer-to-oe B-ε₀)
 
 \end{code}
 

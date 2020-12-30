@@ -12,7 +12,7 @@ open import UF-FunExt
 
 module OrdinalsWellOrderTransport (fe : FunExt) where
 
-open import OrdinalNotions hiding (_≤_)
+open import OrdinalNotions
 open import OrdinalsType
 open import OrdinalsWellOrderArithmetic
 open import UF-Base

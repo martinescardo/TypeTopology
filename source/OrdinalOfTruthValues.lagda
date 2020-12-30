@@ -35,13 +35,13 @@ open import UF-Subsingletons-FunExt
   w p = next p s
    where
     t : (q : Ω 𝓤) →  q ≺ ⊥ → is-accessible _≺_ q
-    t .⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
+    t ⊥ (refl , b) = 𝟘-elim (⊥-is-not-⊤ b)
 
     ⊥-accessible : is-accessible _≺_ ⊥
     ⊥-accessible = next ⊥ t
 
     s : (q : Ω 𝓤) → q ≺ p → is-accessible _≺_ q
-    s .⊥ (refl , b) = ⊥-accessible
+    s ⊥ (refl , b) = ⊥-accessible
 
   e : is-extensional _≺_
   e p q f g = Ω-ext' pe (fe 𝓤 𝓤) φ ψ

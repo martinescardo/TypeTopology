@@ -11,7 +11,7 @@ still use the terminology "ordinal" here.
 module OrdinalsWellOrderArithmetic where
 
 open import SpartanMLTT
-open import OrdinalNotions hiding (_≤_)
+open import OrdinalNotions
 
 open import UF-Base
 open import UF-Subsingletons
@@ -101,8 +101,8 @@ and then adapt the following definitions.
              → is-extensional _≺_
              → is-extensional _⊏_
  extensional w e e' (inl x) (inl x') f g = ap inl (e x x' (f ∘ inl) (g ∘ inl))
- extensional w e e' (inl x) (inr y') f g = 𝟘-elim (≤-refl _<_ x (w x) (g (inl x) *))
- extensional w e e' (inr y) (inl x') f g = 𝟘-elim (≤-refl _<_ x' (w x') (f (inl x') *))
+ extensional w e e' (inl x) (inr y') f g = 𝟘-elim (irreflexive _<_ x (w x) (g (inl x) *))
+ extensional w e e' (inr y) (inl x') f g = 𝟘-elim (irreflexive _<_ x' (w x') (f (inl x') *))
  extensional w e e' (inr y) (inr y') f g = ap inr (e' y y' (f ∘ inr) (g ∘ inr))
 
  transitive : is-transitive _<_
@@ -250,12 +250,12 @@ module times
    f' : (u : X) → u < a → u < x
    f' u l = Cases (f (u , y) (inl l))
              (λ (m : u < x) → m)
-             (λ (σ : (u ≡ x) × (y ≺ y)) → 𝟘-elim (≤-refl _≺_ y (w' y) (pr₂ σ)))
+             (λ (σ : (u ≡ x) × (y ≺ y)) → 𝟘-elim (irreflexive _≺_ y (w' y) (pr₂ σ)))
 
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g ((u , b)) (inl l))
              (λ (m : u < a) → m)
-             (λ (σ : (u ≡ a) × (b ≺ b)) → 𝟘-elim (≤-refl _≺_ b (w' b) (pr₂ σ)))
+             (λ (σ : (u ≡ a) × (b ≺ b)) → 𝟘-elim (irreflexive _≺_ b (w' b) (pr₂ σ)))
 
    p : a ≡ x
    p = e a x f' g'
@@ -263,10 +263,10 @@ module times
    f'' : (v : Y) → v ≺ b → v ≺ y
    f'' v l = Cases (f (a , v) (inr (refl , l)))
               (λ (m : a < x)
-                 → 𝟘-elim (≤-refl _≺_ b (w' b)
+                 → 𝟘-elim (irreflexive _≺_ b (w' b)
                              (Cases (g (a , b) (inl m))
-                              (λ (n : a < a) → 𝟘-elim (≤-refl _<_ a (w a) n))
-                              (λ (σ : (a ≡ a) × (b ≺ b)) → 𝟘-elim (≤-refl _≺_ b (w' b) (pr₂ σ))))))
+                              (λ (n : a < a) → 𝟘-elim (irreflexive _<_ a (w a) n))
+                              (λ (σ : (a ≡ a) × (b ≺ b)) → 𝟘-elim (irreflexive _≺_ b (w' b) (pr₂ σ))))))
               (λ (σ : (a ≡ x) × (v ≺ y))
                  → pr₂ σ)
 
@@ -275,9 +275,9 @@ module times
               (λ (m : x < a)
                  → Cases (f (x , y) (inl m))
                      (λ (m : x < x)
-                        → 𝟘-elim (≤-refl _<_ x (w x) m))
+                        → 𝟘-elim (irreflexive _<_ x (w x) m))
                      (λ (σ : (x ≡ x) × (y ≺ y))
-                        → 𝟘-elim (≤-refl _≺_ y (w' y) (pr₂ σ))))
+                        → 𝟘-elim (irreflexive _≺_ y (w' y) (pr₂ σ))))
               (λ (σ : (x ≡ a) × (v ≺ b))
                  → pr₂ σ)
 
@@ -297,9 +297,9 @@ module times
    prop-valued (a , b) (x , y) (inl l) (inl m) =
      ap inl (p a x l m)
    prop-valued (a , b) (x , y) (inl l) (inr (s , m)) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) s l))
+     𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) s l))
    prop-valued (a , b) (x , y) (inr (r , l)) (inl m) =
-     𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
+     𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) r m))
    prop-valued (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
      ap inr (to-×-≡ (well-ordered-types-are-sets _<_ fe (p , w , e , t) r s) (p' b y l m))
 
@@ -620,9 +620,9 @@ module sum
  prop-valued fe p w e f (a , b) (x , y) (inl l) (inl m) =
    ap inl (p a x l m)
  prop-valued fe p w e f (a , b) (x , y) (inl l) (inr (s , m)) =
-   𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) s l))
+   𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) s l))
  prop-valued fe p w e f (a , b) (x , y) (inr (r , l)) (inl m) =
-   𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → - < x) r m))
+   𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → - < x) r m))
  prop-valued fe p _ e f (a , b) (x , y) (inr (r , l)) (inr (s , m)) =
    ap inr (to-Σ-≡ (extensionally-ordered-types-are-sets _<_ fe p e r s ,
                      (f x (transport Y s b) y _ m)))
@@ -677,7 +677,7 @@ module sum-top
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
    f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
-                 → 𝟘-elim (≤-refl _<_ x (w x) l))
+                 → 𝟘-elim (irreflexive _<_ x (w x) l))
               (λ (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y)
                  → φ σ)
               where
@@ -690,7 +690,7 @@ module sum-top
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
-                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → x < -) p l)))
+                 → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
               λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
@@ -755,7 +755,7 @@ module sum-cotransitive
              (λ (m : x < a)
                 → let n : (x , y) ⊏ (x , y)
                       n = f (x , y) (inl m)
-                  in 𝟘-elim (≤-refl _⊏_ (x , y) (sum.well-founded _<_ _≺_ w w' (x , y)) n))
+                  in 𝟘-elim (irreflexive _⊏_ (x , y) (sum.well-founded _<_ _≺_ w w' (x , y)) n))
 
    g' : (u : X) → u < x → u < a
    g' u l = Cases (c u x a l)
@@ -764,14 +764,14 @@ module sum-cotransitive
              (λ (m : a < x)
                 → let n : (a , b) ⊏ (a , b)
                       n = g (a , b) (inl m)
-                  in 𝟘-elim (≤-refl _⊏_ (a , b) (sum.well-founded _<_ _≺_ w w' (a , b)) n))
+                  in 𝟘-elim (irreflexive _⊏_ (a , b) (sum.well-founded _<_ _≺_ w w' (a , b)) n))
    p : a ≡ x
    p =  e a x f' g'
 
    f'' : (v : Y x) → v ≺ transport Y p b → v ≺ y
    f'' v l = Cases (f (x , v) (inr ((p ⁻¹) , transport-rel _≺_ a x b v p l)))
               (λ (l : x < x)
-                 → 𝟘-elim (≤-refl _<_ x (w x) l))
+                 → 𝟘-elim (irreflexive _<_ x (w x) l))
               (λ (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y)
                  → φ σ)
               where
@@ -784,7 +784,7 @@ module sum-cotransitive
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
-                 → 𝟘-elim (≤-refl _<_ x (w x) (transport (λ - → x < -) p l)))
+                 → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
               λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
