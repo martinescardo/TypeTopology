@@ -71,12 +71,12 @@ module ∞-magma {𝓤 : Universe} where
    ι (X , _·_) (Y , _*_) (f , _) = (λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')
 
    ρ : (A : ∞-Magma) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , _·_) = refl─ _·_
+   ρ (X , _·_) = 𝓻𝓮𝒻𝓵  _·_
 
    h : {X : 𝓤 ̇ } {_·_ _*_ : ∞-magma-structure X}
      → canonical-map ι ρ _·_ _*_ ∼ -id (_·_ ≡ _*_)
 
-   h (refl {_·_}) = refl─ (refl─ _·_)
+   h (refl {_·_}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 _·_)
 
    θ : {X : 𝓤 ̇ } (_·_ _*_ : ∞-magma-structure X)
      → is-equiv (canonical-map ι ρ _·_ _*_)
@@ -97,11 +97,11 @@ module ∞-magma {𝓤 : Universe} where
 
     (ua : is-univalent 𝓤) (A : ∞-Magma)
   →
-    ⌜ characterization-of-∞-Magma-≡ ua A A ⌝ (refl─ A)
+    ⌜ characterization-of-∞-Magma-≡ ua A A ⌝ (𝓻𝓮𝒻𝓵 A)
   ≡
-    (-id ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl─ _)
+    (-id ⟨ A ⟩ , id-is-equiv ⟨ A ⟩ , refl)
 
- characterization-of-characterization-of-∞-Magma-≡ ua A = refl─ _
+ characterization-of-characterization-of-∞-Magma-≡ ua A = refl
 
 
 module magma {𝓤 : Universe} where
@@ -138,13 +138,13 @@ module pointed-type {𝓤 : Universe} where
    ι (X , x₀) (Y , y₀) (f , _) = (f x₀ ≡ y₀)
 
    ρ : (A : Σ Pointed) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , x₀) = refl─ x₀
+   ρ (X , x₀) = 𝓻𝓮𝒻𝓵 x₀
 
    θ : {X : 𝓤 ̇ } (x₀ x₁ : Pointed X) → is-equiv (canonical-map ι ρ x₀ x₁)
    θ x₀ x₁ = equiv-closed-under-∼ _ _ (id-is-equiv (x₀ ≡ x₁)) h
     where
      h : canonical-map ι ρ x₀ x₁ ∼ -id (x₀ ≡ x₁)
-     h (refl {x₀}) = refl─ (refl─ x₀)
+     h (refl {x₀}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 x₀)
 
  _≅_ : Σ Pointed → Σ Pointed → 𝓤 ̇
  (X , x₀) ≅ (Y , y₀) = Σ f ꞉ (X → Y), is-equiv f × (f x₀ ≡ y₀)
@@ -294,10 +294,10 @@ module associative-∞-magma
    βf x y z = β (f x) (f y) (f z)
 
  remark : {X : 𝓤 ̇ } (_·_ : X → X → X) (α β : associative _·_ )
-        → respect-assoc _·_ _·_ α β id (refl─ _·_)
-        ≡ ((λ x y z → refl─ ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
+        → respect-assoc _·_ _·_ α β id (𝓻𝓮𝒻𝓵 _·_)
+        ≡ ((λ x y z → 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)) ≡ β)
 
- remark _·_ α β = refl─ _
+ remark _·_ α β = refl
 
  open sip hiding (homomorphic)
 
@@ -312,12 +312,12 @@ module associative-∞-magma
    ρ (X , _·_ , α) = h , p
     where
      h : homomorphic _·_ _·_ id
-     h = refl─ _·_
+     h = 𝓻𝓮𝒻𝓵 _·_
 
-     q : ∀ x y z → refl─ ((x · y) · z) ∙ ap id (α x y z) ≡ α x y z
+     q : ∀ x y z → 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z) ≡ α x y z
      q x y z = refl-left-neutral ∙ ap-id-is-id (α x y z)
 
-     p : (λ x y z → refl─ ((x · y) · z) ∙ ap id (α x y z)) ≡ α
+     p : (λ x y z → 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)) ≡ α
      p =  dfunext fe (λ x → dfunext fe (λ y → dfunext fe (λ z → q x y z)))
 
    u : (X : 𝓤 ̇ ) → ∀ s → ∃! t ꞉ ∞-amagma-structure X , ι (X , s) (X , t) (≃-refl X)
@@ -330,10 +330,10 @@ module associative-∞-magma
      φ ((_·_ , β) , refl {_·_} , k) = γ
       where
        a : associative _·_
-       a x y z = refl─ ((x · y) · z) ∙ ap id (α x y z)
+       a x y z = 𝓻𝓮𝒻𝓵 ((x · y) · z) ∙ ap id (α x y z)
 
        g : singleton-type a → Σ t ꞉ ∞-amagma-structure X , ι (X , _·_ , α) (X , t) (≃-refl X)
-       g (β , k) = (_·_ , β) , (refl─ _·_) , k
+       g (β , k) = (_·_ , β) , (𝓻𝓮𝒻𝓵 _·_) , k
 
        i : is-prop (singleton-type a)
        i = singletons-are-props (singleton-types-are-singletons a)
@@ -341,7 +341,7 @@ module associative-∞-magma
        q : α , pr₂ (ρ (X , _·_ , α)) ≡ β , k
        q = i _ _
 
-       γ : c ≡ (_·_ , β) , refl─ _·_ , k
+       γ : c ≡ (_·_ , β) , 𝓻𝓮𝒻𝓵 _·_ , k
        γ = ap g q
 
    θ : {X : 𝓤 ̇ } (s t : ∞-amagma-structure X) → is-equiv (canonical-map ι ρ s t)
@@ -593,7 +593,7 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
  forget-unit-preservation G H (f , e , m , _) = f , e , m
 
  NB : (G H : Group) → ⌜ ≅-agreement G H ⌝ ≡ forget-unit-preservation G H
- NB G H = refl─ _
+ NB G H = refl
 
  forget-unit-preservation-is-equiv : (G H : Group)
                                    → is-equiv (forget-unit-preservation G H)
@@ -743,7 +743,7 @@ module subgroup
    group-closed-fiber-gives-homomorphic-structure (unitc , mulc , invc) = τ , i
     where
      φ : (x : X) → fiber h (h x)
-     φ x = (x , refl─ (h x))
+     φ x = (x , 𝓻𝓮𝒻𝓵 (h x))
 
      unitH : X
      unitH = fiber-point unitc
@@ -1222,10 +1222,10 @@ module slice
    ι (X , g) (Y , h) (f , _) = (g ≡ h ∘ f)
 
    ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , g) = refl─ g
+   ρ (X , g) = 𝓻𝓮𝒻𝓵 g
 
    k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ -id (g ≡ h)
-   k (refl {g}) = refl─ (refl─ g)
+   k (refl {g}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 g)
 
    θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
    θ g h = equiv-closed-under-∼ id (canonical-map ι ρ g h) (id-is-equiv (g ≡ h)) k
@@ -1258,10 +1258,10 @@ module slice-variation
    ι (X , g) (Y , h) (f , _) = ((x : X) → g x ≡ h (f x))
 
    ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , g) = λ x → refl─ (g x)
+   ρ (X , g) = λ x → 𝓻𝓮𝒻𝓵 (g x)
 
    k : {X : 𝓤 ̇ } {g h : S X} → canonical-map ι ρ g h ∼ happly' g h
-   k (refl {g}) = refl─ (λ x → refl─ (g x))
+   k (refl {g}) = 𝓻𝓮𝒻𝓵 (λ x → 𝓻𝓮𝒻𝓵 (g x))
 
    θ : {X : 𝓤 ̇ } (g h : S X) → is-equiv (canonical-map ι ρ g h)
    θ g h = equiv-closed-under-∼ (happly' g h) (canonical-map ι ρ g h) (fe g h) k
@@ -1330,10 +1330,10 @@ module generalized-metric-space
    ι (X , d) (Y , e) (f , _) = (d ≡ λ x x' → e (f x) (f x'))
 
    ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , d) = refl─ d
+   ρ (X , d) = 𝓻𝓮𝒻𝓵 d
 
    h : {X : 𝓤 ̇ } {d e : S X} → canonical-map ι ρ d e ∼ -id (d ≡ e)
-   h (refl {d}) = refl─ (refl─ d)
+   h (refl {d}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 d)
 
    θ : {X : 𝓤 ̇ } (d e : S X) → is-equiv (canonical-map ι ρ d e)
    θ d e = equiv-closed-under-∼ id (canonical-map ι ρ d e) (id-is-equiv (d ≡ e)) h
@@ -1409,10 +1409,10 @@ module generalized-topological-space
    ι (X , 𝓞X) (Y , 𝓞Y) (f , _) = (λ (V : ℙ Y) → inverse-image f V ∊ 𝓞X) ≡ 𝓞Y
 
    ρ : (A : Σ ℙℙ) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , 𝓞) = refl─ 𝓞
+   ρ (X , 𝓞) = 𝓻𝓮𝒻𝓵 𝓞
 
    h : {X : 𝓤 ̇ } {𝓞 𝓞' : ℙℙ X} → canonical-map ι ρ 𝓞 𝓞' ∼ -id (𝓞 ≡ 𝓞')
-   h (refl {𝓞}) = refl─ (refl─ 𝓞)
+   h (refl {𝓞}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 𝓞)
 
    θ : {X : 𝓤 ̇ } (𝓞 𝓞' : ℙℙ X) → is-equiv (canonical-map ι ρ 𝓞 𝓞')
    θ {X} 𝓞 𝓞' = equiv-closed-under-∼ id (canonical-map ι ρ 𝓞 𝓞') (id-is-equiv (𝓞 ≡ 𝓞')) h
@@ -1469,13 +1469,13 @@ module selection-space
    ι (X , ε) (Y , δ) (f , _) = (λ (q : Y → R) → f (ε (q ∘ f))) ≡ δ
 
    ρ : (A : Σ S) → ι A A (≃-refl ⟨ A ⟩)
-   ρ (X , ε) = refl─ ε
+   ρ (X , ε) = 𝓻𝓮𝒻𝓵 ε
 
    θ : {X : 𝓤 ̇ } (ε δ : S X) → is-equiv (canonical-map ι ρ ε δ)
    θ {X} ε δ = γ
     where
      h : canonical-map ι ρ ε δ ∼ -id (ε ≡ δ)
-     h (refl {ε}) = refl─ (refl─ ε)
+     h (refl {ε}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 ε)
 
      γ : is-equiv (canonical-map ι ρ ε δ)
      γ = equiv-closed-under-∼ id (canonical-map ι ρ ε δ) (id-is-equiv (ε ≡ δ)) h
@@ -1511,8 +1511,8 @@ module contrived-example (𝓤 : Universe) where
  contrived-≡ ua X Y φ γ =
    characterization-of-≡ ua
     ((λ (X , φ) (Y , γ) (f , i) → (λ (g : Y → Y) → f (φ (inverse f i ∘ g ∘ f))) ≡ γ) ,
-     (λ (X , φ) → refl─ φ) ,
-     (λ φ γ → equiv-closed-under-∼ _ _ (id-is-equiv (φ ≡ γ)) (λ {(refl {φ}) → refl─ (refl─ φ)})))
+     (λ (X , φ) → 𝓻𝓮𝒻𝓵 φ) ,
+     (λ φ γ → equiv-closed-under-∼ _ _ (id-is-equiv (φ ≡ γ)) (λ {(refl {φ}) → 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 φ)})))
     (X , φ) (Y , γ)
 
 module generalized-functor-algebra
@@ -1548,7 +1548,7 @@ module generalized-functor-algebra
 
      h : canonical-map ι ρ α β ∼ c
      h refl = ρ (X , α)           ≡⟨ refl-left-neutral ⁻¹ ⟩
-              refl─ α ∙ ρ (X , α) ∎
+              𝓻𝓮𝒻𝓵 α ∙ ρ (X , α) ∎
 
      γ : is-equiv (canonical-map ι ρ α β)
      γ = equiv-closed-under-∼ c (canonical-map ι ρ α β) i h
@@ -1624,7 +1624,7 @@ module type-valued-preorder
                        , functorial 𝓧 𝓐 F (λ x y → transport (λ - → - x y) p)
 
    ρ : (𝓧 : Σ S) → ι 𝓧 𝓧 (≃-refl ⟨ 𝓧 ⟩)
-   ρ 𝓧 = refl─ (hom 𝓧) , refl─ (𝒾𝒹 𝓧) , refl─ (comp 𝓧)
+   ρ 𝓧 = 𝓻𝓮𝒻𝓵 (hom 𝓧) , 𝓻𝓮𝒻𝓵 (𝒾𝒹 𝓧) , 𝓻𝓮𝒻𝓵 (comp 𝓧)
 
    θ : {X : 𝓤 ̇ } (s t : S X) → is-equiv (canonical-map ι ρ s t)
    θ {X} (homX , idX , compX) (homA , idA , compA) = g
@@ -1872,8 +1872,8 @@ module category
                               id-is-equiv (Ob 𝓧 ) ,
                               (λ x y → -id (hom 𝓧 x y)) ,
                               (λ x y → id-is-equiv (hom 𝓧 x y)) ,
-                              refl─ (𝒾𝒹 𝓧) ,
-                              refl─ (comp 𝓧)
+                              𝓻𝓮𝒻𝓵 (𝒾𝒹 𝓧) ,
+                              𝓻𝓮𝒻𝓵 (comp 𝓧)
 
  characterization-of-category-≡ : (𝓧 𝓐 : Cat) → (𝓧 ≡ 𝓐) ≃ (𝓧 ⋍ 𝓐)
  characterization-of-category-≡ = characterization-of-type-valued-preorder-≡-with-axioms
@@ -1885,7 +1885,7 @@ module category
                            (γ 𝓧 𝓐)
   where
    γ : (𝓧 𝓐 : Cat) → idtoeqCat 𝓧 𝓐 ∼ ⌜ characterization-of-category-≡ 𝓧 𝓐 ⌝
-   γ 𝓧 𝓧 (refl {𝓧}) = refl─ (idtoeqCat 𝓧 𝓧 (refl─ 𝓧))
+   γ 𝓧 𝓧 (refl {𝓧}) = 𝓻𝓮𝒻𝓵 (idtoeqCat 𝓧 𝓧 (𝓻𝓮𝒻𝓵 𝓧))
 
 \end{code}
 
@@ -1911,12 +1911,12 @@ module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
    ι (A , sup) (A' , sup') (f , _) = (λ 𝕒 → f (sup 𝕒)) ≡ (λ 𝕒 → sup' (n ↦ f (𝕒 n)))
 
    ρ : (𝓐 : ∞-Bigmagma) → ι 𝓐 𝓐 (≃-refl ⟨ 𝓐 ⟩)
-   ρ (A , sup) = refl─ sup
+   ρ (A , sup) = 𝓻𝓮𝒻𝓵 sup
 
    h : {A : 𝓤 ̇ } {sup sup' : ∞-bigmagma-structure A}
      → canonical-map ι ρ sup sup' ∼ -id (sup ≡ sup')
 
-   h (refl {sup}) = refl─ (refl─ sup)
+   h (refl {sup}) = 𝓻𝓮𝒻𝓵 (𝓻𝓮𝒻𝓵 sup)
 
    θ : {A : 𝓤 ̇ } (sup sup' : ∞-bigmagma-structure A)
      → is-equiv (canonical-map ι ρ sup sup')

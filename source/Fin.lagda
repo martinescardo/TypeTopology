@@ -351,20 +351,16 @@ Added 2nd December 2019. An isomorphic copy of the type Fin n:
 Fin' : ℕ → 𝓤₀ ̇
 Fin' n = Σ k ꞉ ℕ , k < n
 
-
 𝟎' : {n : ℕ} → Fin' (succ n)
 𝟎' {n} = 0 , zero-minimal n
 
-
 suc' : {n : ℕ} → Fin' n → Fin' (succ n)
 suc' (k , l) = succ k , l
-
 
 Fin-unprime : (n : ℕ) → Fin' n → Fin n
 Fin-unprime 0        (k , l)      = 𝟘-elim l
 Fin-unprime (succ n) (0 , l)      = 𝟎
 Fin-unprime (succ n) (succ k , l) = suc (Fin-unprime n (k , l))
-
 
 Fin-prime : (n : ℕ) → Fin n → Fin' n
 Fin-prime 0        i       = 𝟘-elim i
@@ -382,9 +378,9 @@ Fin-prime (succ n) 𝟎       = 𝟎'
 εFin (succ n) (suc i) = ap suc (εFin n i)
 εFin (succ n) 𝟎       = refl
 
-
 Fin-prime-is-equiv : (n : ℕ) → is-equiv (Fin-prime n)
-Fin-prime-is-equiv n = qinvs-are-equivs (Fin-prime n) ((Fin-unprime n) , εFin n , ηFin n)
+Fin-prime-is-equiv n = qinvs-are-equivs (Fin-prime n)
+                        (Fin-unprime n , εFin n , ηFin n)
 
 
 ≃-Fin : (n : ℕ) → Fin n ≃ Fin' n
@@ -981,7 +977,6 @@ Standard operations on (generalized) vectors:
 pattern []       = *
 pattern _∷_ x xs = (x , xs)
 
-
 hd : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec (succ n) X → X 𝟎
 hd (x ∷ xs) = x
 
@@ -1024,7 +1019,8 @@ tl' xs = λ i → xs (suc i)
 []' = λ i → unique-from-𝟘 i
 
 
-_∷'_ : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → X 𝟎 → vec' n (X ∘ suc) → vec' (succ n) X
+_∷'_ : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ }
+     → X 𝟎 → vec' n (X ∘ suc) → vec' (succ n) X
 (x ∷' xs) 𝟎       = x
 (x ∷' xs) (suc i) = xs i
 
@@ -1066,5 +1062,4 @@ The desired compactness theorem:
  finitely-indexed-product-compact n X c = Compact-closed-under-≃
                                            (vec-≃ n)
                                            (finite-product-compact n X c)
-
 \end{code}

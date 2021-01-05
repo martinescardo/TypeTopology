@@ -96,7 +96,7 @@ module sip where
  Id→homEq-is-equiv ua {S} σ A B = γ
   where
    h : (A B : Σ S) → Id→homEq σ A B ∼ ⌜ characterization-of-≡ ua σ A B ⌝
-   h A A (refl {A}) = refl─ _
+   h A A (refl {A}) = refl
 
    γ : is-equiv (Id→homEq σ A B)
    γ = equiv-closed-under-∼ _ _
@@ -178,7 +178,7 @@ module sip-with-axioms where
      l : canonical-map ι' ρ' (s , a) (t , b)
        ∼ canonical-map ι ρ s t ∘ ap π {s , a} {t , b}
 
-     l (refl {s , a}) = refl─ (ρ (X , s))
+     l (refl {s , a}) = 𝓻𝓮𝒻𝓵 (ρ (X , s))
 
      e : is-equiv (canonical-map ι ρ s t ∘ ap π {s , a} {t , b})
      e = ∘-is-equiv k (θ s t)
@@ -232,8 +232,8 @@ module sip-join where
 
      η : (c : A x₀ x₁ × B y₀ y₁) → r (s c) ≡ c
      η (a , b) =
-       r (s (a , b))                              ≡⟨ refl─ _ ⟩
-       r (to-×-≡  (f' a) (g' b))                  ≡⟨ refl─ _ ⟩
+       r (s (a , b))                              ≡⟨ refl ⟩
+       r (to-×-≡  (f' a) (g' b))                  ≡⟨ refl ⟩
        (f x₀ x₁ (ap pr₁ (to-×-≡ (f' a) (g' b))) ,
         g y₀ y₁ (ap pr₂ (to-×-≡ (f' a) (g' b))))  ≡⟨ ii ⟩
        (f x₀ x₁ (f' a) , g y₀ y₁ (g' b))          ≡⟨ iii ⟩
@@ -296,7 +296,7 @@ module sip-join where
           θ₀ θ₁ (s₀ , s₁) (t₀ , t₁)
 
      e : canonical-map ι ρ (s₀ , s₁) (t₀ , t₁) ∼ c
-     e (refl {s₀ , s₁}) = refl─ (ρ₀ (X , s₀) , ρ₁ (X , s₁))
+     e (refl {s₀ , s₁}) = 𝓻𝓮𝒻𝓵 (ρ₀ (X , s₀) , ρ₁ (X , s₁))
 
      γ : is-equiv (canonical-map ι ρ (s₀ , s₁) (t₀ , t₁))
      γ = equiv-closed-under-∼ _ _ i e

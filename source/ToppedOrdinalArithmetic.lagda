@@ -66,6 +66,7 @@ Sum of an ordinal-indexed family of ordinals:
  where
   _≺_ : {x : X} → ⟪ υ x ⟫ → ⟪ υ x ⟫ → 𝓤₀ ̇
   y ≺ z = y ≺⟪ υ _ ⟫ z
+
   module Sum = sum-top fe _<_ _≺_ (λ x → top (υ x)) (λ x → top-is-top (υ x))
 
 \end{code}

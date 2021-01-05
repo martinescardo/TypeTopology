@@ -50,19 +50,21 @@ is-monotone
  is-initial-segment
  is-simulation       : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 
-is-monotone α β f         = (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → f x ≼⟨ β ⟩ f y
+is-monotone         α β f = (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → f x ≼⟨ β ⟩ f y
 
 is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
 
 is-order-embedding  α β f = is-order-preserving α β f × is-order-reflecting α β f
 
 is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
-                          → y ≺⟨ β ⟩ f x → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+                          → y ≺⟨ β ⟩ f x
+                          → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
 
 is-simulation       α β f = is-initial-segment α β f × is-order-preserving α β f
 
 
-order-equivs-are-simulations : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+order-equivs-are-simulations : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                               (f : ⟨ α ⟩ → ⟨ β ⟩)
                              → is-order-equiv α β f
                              → is-simulation α β f
 order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , p
@@ -70,10 +72,13 @@ order-equivs-are-simulations α β f (p , e , q) = h (equivs-are-qinvs f e) q , 
   h : (d : qinv f)
     → is-order-preserving β α (pr₁ d)
     → is-initial-segment α β f
-  h (g , ε , η) q x y l = g y , transport (λ - → g y ≺⟨ α ⟩ -) (ε x) m , η y
+  h (g , ε , η) q x y l = g y , r , η y
    where
     m : g y ≺⟨ α ⟩ g (f x)
     m = q y (f x) l
+
+    r : g y ≺⟨ α ⟩ x
+    r = transport (λ - → g y ≺⟨ α ⟩ -) (ε x) m
 
 order-preservation-is-prop : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
                            → is-prop (is-order-preserving α β f)

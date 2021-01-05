@@ -393,7 +393,7 @@ implicit arguments made explicit:
 \begin{code}
 
 automatic-functoriality-id : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x : X}
-                           → f [ refl─ x ] ≡ id─ (f x)
+                           → f [ 𝓻𝓮𝒻𝓵 x ] ≡ 𝒾𝓭 (f x)
 automatic-functoriality-id f = refl
 
 automatic-functoriality-∘ : {X : 𝓤 ̇ } (f : X → 𝓥 ̇ ) {x y z : X} (p : Id x y) (q : Id y z)

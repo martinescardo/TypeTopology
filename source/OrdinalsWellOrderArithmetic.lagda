@@ -319,9 +319,10 @@ not used for our purposes).
 
 \begin{code}
 
-retract-accessible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
+retract-accessible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                     (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
                      (r : X → Y) (s : Y → X)
-                   → ((y : Y) → r(s y) ≡ y)
+                   → ((y : Y) → r (s y) ≡ y)
                    → ((x : X) (y : Y) → y ≺ r x → s y < x)
                    → (x : X) → is-accessible _<_ x → is-accessible _≺_ (r x)
 retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
@@ -337,9 +338,10 @@ retract-accessible _<_ _≺_ r s η φ = transfinite-induction' _<_ P γ
       m : is-accessible _≺_ (r (s y))
       m = τ (s y) (φ x y l)
 
-retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
+retract-well-founded : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                       (_<_ : X → X → 𝓦 ̇ ) (_≺_ : Y → Y → 𝓣 ̇ )
                        (r : X → Y) (s : Y → X)
-                     → ((y : Y) → r(s y) ≡ y)
+                     → ((y : Y) → r (s y) ≡ y)
                      → ((x : X) (y : Y) → y ≺ r x → s y < x)
                      → is-well-founded _<_ → is-well-founded _≺_
 retract-well-founded {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _<_ _≺_ r s η φ w = w'
@@ -383,10 +385,10 @@ constructed in the module UF-PropIndexedPiSigma:
   ψ p x q = transport X (P-is-prop p q) x
 
   η : (p : P) (u : Π X) → ψ p (φ p u) ≡ u
-  η p = pr₂(pr₂(pr₂ (prop-indexed-product fe P-is-prop p)))
+  η p = pr₂ (pr₂ (pr₂ (prop-indexed-product fe P-is-prop p)))
 
   ε : (p : P) (x : X p) → φ p (ψ p x) ≡ x
-  ε p = pr₂(pr₁(pr₂ (prop-indexed-product fe P-is-prop p)))
+  ε p = pr₂ (pr₁ (pr₂ (prop-indexed-product fe P-is-prop p)))
 
 \end{code}
 
@@ -584,10 +586,16 @@ module sum
    P : Σ Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
 
-   γ : (x : X) → ((x' : X) → x' < x → (y' : Y x') → P(x' , y')) → (y : Y x) → P(x , y)
-   γ x step = transfinite-induction _≺_ (w' x) (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
+   γ : (x : X)
+     → ((x' : X) → x' < x → (y' : Y x') → P(x' , y'))
+     → (y : Y x) → P(x , y)
+   γ x step = transfinite-induction _≺_ (w' x)
+               (λ y → P(x , y))
+               (λ y f → next (x , y) (ψ y f))
     where
-     ψ : (y : Y x) → ((y' : Y x) → y' ≺ y → P (x , y')) → (z' : Σ Y) → z' ⊏ (x , y) → P z'
+     ψ : (y : Y x)
+       → ((y' : Y x) → y' ≺ y → P (x , y'))
+       → (z' : Σ Y) → z' ⊏ (x , y) → P z'
      ψ y f (x' , y') (inl l) = step x' l y'
      ψ y f (x' , y') (inr (r , m)) = back-transport P p α
       where
@@ -662,14 +670,16 @@ module sum-top
              (λ (m : u < x)
                 → m)
              (λ (σ : Σ r ꞉ u ≡ x , transport Y r (top u) ≺ y)
-                → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) x (pr₁ σ) y (pr₂ σ)))
+                → 𝟘-elim (transport-fam (is-top _≺_) u (top u)
+                           (ist u) x (pr₁ σ) y (pr₂ σ)))
 
    g' : (u : X) → u < x → u < a
    g' u l = Cases (g (u , top u) (inl l))
              (λ (m : u < a)
                 → m)
              (λ (σ : Σ r ꞉ u ≡ a , transport Y r (top u) ≺ b)
-                → 𝟘-elim (transport-fam (is-top _≺_) u (top u) (ist u) a (pr₁ σ) b (pr₂ σ)))
+                → 𝟘-elim (transport-fam (is-top _≺_) u (top u)
+                           (ist u) a (pr₁ σ) b (pr₂ σ)))
 
    p : a ≡ x
    p =  e a x f' g'
@@ -691,11 +701,11 @@ module sum-top
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
                  → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
-              λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
+              (λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
                      (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
+                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ)))
 
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
@@ -717,7 +727,7 @@ module sum-top
  top-preservation (x , f) = (x , top x) , g
   where
    g : (σ : Σ Y) → ¬ ((x , top x) ⊏ σ)
-   g (x' , y) (inl l) = f x' l
+   g (x' , y) (inl l)          = f x' l
    g (x' , y) (inr (refl , l)) = ist x' y l
 
 \end{code}
@@ -755,7 +765,8 @@ module sum-cotransitive
              (λ (m : x < a)
                 → let n : (x , y) ⊏ (x , y)
                       n = f (x , y) (inl m)
-                  in 𝟘-elim (irreflexive _⊏_ (x , y) (sum.well-founded _<_ _≺_ w w' (x , y)) n))
+                  in 𝟘-elim (irreflexive _⊏_ (x , y)
+                      (sum.well-founded _<_ _≺_ w w' (x , y)) n))
 
    g' : (u : X) → u < x → u < a
    g' u l = Cases (c u x a l)
@@ -764,7 +775,8 @@ module sum-cotransitive
              (λ (m : a < x)
                 → let n : (a , b) ⊏ (a , b)
                       n = g (a , b) (inl m)
-                  in 𝟘-elim (irreflexive _⊏_ (a , b) (sum.well-founded _<_ _≺_ w w' (a , b)) n))
+                  in 𝟘-elim (irreflexive _⊏_ (a , b)
+                      (sum.well-founded _<_ _≺_ w w' (a , b)) n))
    p : a ≡ x
    p =  e a x f' g'
 
@@ -778,18 +790,20 @@ module sum-cotransitive
                φ : (σ : Σ r ꞉ x ≡ x , transport Y r v ≺ y) → v ≺ y
                φ (r , l) = transport
                             (λ r → transport Y r v ≺ y)
-                            (extensionally-ordered-types-are-sets _<_ fe ispv e r refl)
+                            (extensionally-ordered-types-are-sets _<_ fe
+                              ispv e r refl)
                             l
 
    g'' : (u : Y x) → u ≺ y → u ≺ transport Y p b
    g'' u m = Cases (g (x , u) (inr (refl , m)))
               (λ (l : x < a)
                  → 𝟘-elim (irreflexive _<_ x (w x) (transport (λ - → x < -) p l)))
-              λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
+              (λ (σ : Σ r ꞉ x ≡ a , transport Y r u ≺ b)
                  → transport
                      (λ - → u ≺ transport Y - b)
-                     (extensionally-ordered-types-are-sets _<_ fe ispv e ((pr₁ σ)⁻¹) p)
-                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ))
+                     (extensionally-ordered-types-are-sets _<_ fe
+                       ispv e ((pr₁ σ)⁻¹) p)
+                     (transport-rel' _≺_ a x b u (pr₁ σ) (pr₂ σ)))
 
    q : transport Y p b ≡ y
    q = e' x (transport Y p b) y f'' g''
@@ -797,23 +811,24 @@ module sum-cotransitive
  well-order : is-well-order _<_
             → ((x : X) → is-well-order (_≺_ {x}))
             → is-well-order _⊏_
- well-order (p , w , e , t) f = prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
-                                well-founded w (λ x → well-foundedness _≺_ (f x)) ,
-                                extensional
-                                  (prop-valuedness _<_ (p , w , e , t))
-                                  w
-                                  (λ x → well-foundedness _≺_ (f x))
-                                  e
-                                  (λ x → extensionality _≺_ (f x)) ,
-                                transitive t (λ x → transitivity _≺_ (f x))
+ well-order (p , w , e , t) f =
+   prop-valued fe p w e (λ x → prop-valuedness _≺_ (f x)) ,
+   well-founded w (λ x → well-foundedness _≺_ (f x)) ,
+   extensional
+     (prop-valuedness _<_ (p , w , e , t))
+     w
+     (λ x → well-foundedness _≺_ (f x))
+     e
+     (λ x → extensionality _≺_ (f x)) ,
+   transitive t (λ x → transitivity _≺_ (f x))
 
 \end{code}
 
 28 June 2018.
 
-For a universe (and hence an injective type) W and an embedding
-j : X → A, if every type in a family Y : X → W has the structure of an
-ordinal, then so does every type in the extended family Y/j : A → W.
+For a universe (and hence an injective type) 𝓦 and an embedding
+j : X → A, if every type in a family Y : X → 𝓦 has the structure of an
+ordinal, then so does every type in the extended family Y/j : A → 𝓦.
 
                    j
               X ------> A

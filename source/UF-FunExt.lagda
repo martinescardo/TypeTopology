@@ -62,7 +62,7 @@ happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : �
 happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
 
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f : Π A)
-             → dfunext fe (λ (x : X) → refl─ (f x)) ≡ refl
+             → dfunext fe (λ (x : X) → 𝓻𝓮𝒻𝓵 (f x)) ≡ refl
 dfunext-refl fe f = happly-lc fe f f (happly-funext fe f f (λ x → refl))
 
 ap-funext : {X : 𝓥 ̇ } {Y : 𝓦 ̇ } (f g : X → Y) {A : 𝓦' ̇ } (k : Y → A) (h : f ∼ g)

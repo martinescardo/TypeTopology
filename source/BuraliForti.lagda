@@ -346,6 +346,9 @@ Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
   X : 𝓤 ̇
   X = pr₁ 𝕏
 
+  have : (Lift (𝓤 ⁺) X , _) ≡ 𝕐
+  have = η 𝕐
+
   p : Lift (𝓤 ⁺) X ≡ Ordinal 𝓤
   p = ap pr₁ (η 𝕐)
 
@@ -384,6 +387,9 @@ Similarly, the above also doesn't show that ¬ (𝓤 ≃ 𝓤⁺), but we know
 that this is the case by a different argument, which generalizes
 Thierry Coquand's "paradox of trees", developed in the module
 LawvereFPT.
+
+We also wish to know that e.g. the types of groups in the universes 𝓤
+and 𝓤⁺ are not equivalent.
 
 Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀), that is, there
 is no type in 𝓤 equivalent to the set truncation of 𝓤.

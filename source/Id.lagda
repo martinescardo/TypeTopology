@@ -11,8 +11,8 @@ open import Pi
 
 open import Identity-Type renaming (_≡_ to infix 0 _≡_) public
 
-refl─ : {X : 𝓤 ̇ } (x : X) → x ≡ x
-refl─ x = refl {_} {_} {x}
+𝓻𝓮𝒻𝓵 : {X : 𝓤 ̇ } (x : X) → x ≡ x
+𝓻𝓮𝒻𝓵 x = refl {_} {_} {x}
 
 by-definition : {X : 𝓤 ̇ } {x : X} → x ≡ x
 by-definition = refl

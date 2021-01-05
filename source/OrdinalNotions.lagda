@@ -138,7 +138,7 @@ transitivity : is-well-order → is-transitive
 transitivity (p , w , e , t) = t
 
 accessibility-is-prop : FunExt
-                         → (x : X) → is-prop (is-accessible x)
+                      → (x : X) → is-prop (is-accessible x)
 accessibility-is-prop fe = accessible-induction P φ
  where
   P : (x : X) → is-accessible x → 𝓤 ⊔ 𝓥 ̇
@@ -151,7 +151,7 @@ accessibility-is-prop fe = accessible-induction P φ
                next x τ ≡⟨ prev-behaviour x b ⟩
                b        ∎
    where
-    τ : (y : X) (l : y < x) → is-accessible y
+    τ : (y : X) → y < x → is-accessible y
     τ = prev x b
 
     h :  (y : X) (l : y < x) → σ y l ≡ τ y l
