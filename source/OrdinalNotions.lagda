@@ -305,111 +305,116 @@ trichomous-gives-discrete w t x y = f (t x y)
 \end{code}
 
 The following proof that excluded middle gives trichotomy, added 11th
-Jan 2021, is the same as that in the HoTT book, except that we
-use negation instead of the assumption of existence of propositional
+Jan 2021, is the same as that in the HoTT book, except that we use
+negation instead of the assumption of existence of propositional
 truncations to get a proposition to which we can apply excluded
 middle.  But notice that, under excluded middle and function
 extensionality, double negation is the same thing as propositional
-truncation. Notice also that we need excluded middle for two
-universes, and that we additionally need function extensionality as an
-assumption (to know that the negation of a type is a proposition).
+truncation. Notice also we additionally need function extensionality
+as an assumption (to know that the negation of a type is a
+proposition).
 
 \begin{code}
 
-trichotomy : EM 𝓥
-           → EM (𝓤 ⊔ 𝓥)
+trichotomy : EM (𝓤 ⊔ 𝓥)
            → funext (𝓤 ⊔ 𝓥) 𝓤₀
            → is-well-order
            → is-trichotomous
-trichotomy em em' fe (p , w , e , t) = transfinite-induction w (λ x → ∀ y → P x y) ϕ
+trichotomy em fe (p , w , e , t) = γ
  where
+  em' : EM 𝓥
+  em' = lower-EM 𝓤 em
+
   P : X → X → 𝓤 ⊔ 𝓥 ̇
   P x y = (x < y) + (x ≡ y) + (y < x)
 
-  ϕ : (x : X)
-    → ((x' : X) → x' < x → (y : X) → P x' y)
-    → (y : X) → P x y
-  ϕ x f = transfinite-induction w (λ y → P x y) ψ
+  γ : (x y : X) → P x y
+  γ = transfinite-induction w (λ x → ∀ y → P x y) ϕ
    where
-    ψ : (y : X)
-      → ((y' : X) → y' < y → P x y')
-      → P x y
-    ψ y g = γ
+    ϕ : (x : X)
+      → ((x' : X) → x' < x → (y : X) → P x' y)
+      → (y : X) → P x y
+    ϕ x IH-x = transfinite-induction w (λ y → P x y) ψ
      where
-      A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
-
-      ¬¬A-gives-P : ¬¬ A → P x y
-      ¬¬A-gives-P = b
+      ψ : (y : X)
+        → ((y' : X) → y' < y → P x y')
+        → P x y
+      ψ y IH-y = δ
        where
-        a : A → y < x
-        a (x' , l , inl m) = t y x' x m l
-        a (x' , l , inr p) = transport (_< x) p l
+        A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
 
-        b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
-        b = inr ∘ inr ∘ EM-gives-DNE em (y < x) (p y x) ∘ ¬¬-functor a
+        ¬¬A-gives-P : ¬¬ A → P x y
+        ¬¬A-gives-P = b
+         where
+          a : A → y < x
+          a (x' , l , inl m) = t y x' x m l
+          a (x' , l , inr p) = transport (_< x) p l
 
-      ¬A-gives-≼ : ¬ A → x ≼ y
-      ¬A-gives-≼ ν x' l = c
-       where
-        a : ¬ ((y < x') + (x' ≡ y))
-        a k = ν (x' , l , k)
+          b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
+          b = inr ∘ inr ∘ EM-gives-DNE em' (y < x) (p y x) ∘ ¬¬-functor a
 
-        IH : P x' y
-        IH = f x' l y
+        ¬A-gives-≼ : ¬ A → x ≼ y
+        ¬A-gives-≼ ν x' l = d
+         where
+          a : ¬ ((y < x') + (x' ≡ y))
+          a f = ν (x' , l , f)
 
-        b : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
-        b h (inl i)         = i
-        b h (inr (inl ii))  = 𝟘-elim (h (inr ii))
-        b h (inr (inr iii)) = 𝟘-elim (h (inl iii))
+          b : P x' y
+          b = IH-x x' l y
 
-        c : x' < y
-        c = b a IH
+          c : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
+          c g (inl i)         = i
+          c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
+          c g (inr (inr iii)) = 𝟘-elim (g (inl iii))
 
-      B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
+          d : x' < y
+          d = c a b
 
-      ¬¬B-gives-P : ¬¬ B → P x y
-      ¬¬B-gives-P = b
-       where
-        a : B → x < y
-        a (y' , l , inl m) = t x y' y m l
-        a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
+        B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
 
-        b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
-        b = inl ∘ EM-gives-DNE em (x < y) (p x y) ∘ ¬¬-functor a
+        ¬¬B-gives-P : ¬¬ B → P x y
+        ¬¬B-gives-P = b
+         where
+          a : B → x < y
+          a (y' , l , inl m) = t x y' y m l
+          a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
 
-      ¬B-gives-≼ : ¬ B → y ≼ x
-      ¬B-gives-≼ ν y' l = c
-       where
-        a : ¬ ((x < y') + (x ≡ y'))
-        a k = ν (y' , l , k)
+          b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
+          b = inl ∘ EM-gives-DNE em' (x < y) (p x y) ∘ ¬¬-functor a
 
-        IH : P x y'
-        IH = g y' l
+        ¬B-gives-≼ : ¬ B → y ≼ x
+        ¬B-gives-≼ ν y' l = d
+         where
+          a : ¬ ((x < y') + (x ≡ y'))
+          a f = ν (y' , l , f)
 
-        b : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
-        b h (inl i)         = 𝟘-elim (h (inl i))
-        b h (inr (inl ii))  = 𝟘-elim (h (inr ii))
-        b h (inr (inr iii)) = iii
+          b : P x y'
+          b = IH-y y' l
 
-        c : y' < x
-        c = b a IH
+          c : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
+          c g (inl i)         = 𝟘-elim (g (inl i))
+          c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
+          c g (inr (inr iii)) = iii
 
-      ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
-      ¬A-and-¬B-give-P ν ν' = b
-       where
-        a : ¬ A → ¬ B → x ≡ y
-        a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
+          d : y' < x
+          d = c a b
 
-        b : (x < y) + (x ≡ y) + (y < x)
-        b = inr (inl (a ν ν'))
+        ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
+        ¬A-and-¬B-give-P ν ν' = b
+         where
+          a : ¬ A → ¬ B → x ≡ y
+          a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
 
-      γ : P x y
-      γ = Cases (em' (¬ A) (¬-is-prop fe))
-           (λ (ν : ¬ A)
-                 → Cases (em' (¬ B) (¬-is-prop fe))
-                    (¬A-and-¬B-give-P ν)
-                    ¬¬B-gives-P)
-           ¬¬A-gives-P
+          b : (x < y) + (x ≡ y) + (y < x)
+          b = inr (inl (a ν ν'))
+
+        δ : P x y
+        δ = Cases (em (¬ A) (¬-is-prop fe))
+             (λ (ν : ¬ A)
+                   → Cases (em (¬ B) (¬-is-prop fe))
+                      (¬A-and-¬B-give-P ν)
+                      ¬¬B-gives-P)
+             ¬¬A-gives-P
 
 \end{code}
 

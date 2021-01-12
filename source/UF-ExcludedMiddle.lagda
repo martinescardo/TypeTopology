@@ -24,6 +24,7 @@ open import UF-Equiv
 open import UF-Embeddings
 open import UF-PropTrunc
 open import UF-FunExt
+open import UF-UniverseEmbedding
 
 \end{code}
 
@@ -35,6 +36,16 @@ which we refer to as the density of the decidable truth values.
 
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
+
+lower-EM : ∀ 𝓥 → EM (𝓤 ⊔ 𝓥) → EM 𝓤
+lower-EM 𝓥 em P P-is-prop = f d
+ where
+  d : Lift 𝓥 P + ¬ Lift 𝓥 P
+  d = em (Lift 𝓥 P) (equiv-to-prop (Lift-is-universe-embedding 𝓥 P) P-is-prop)
+
+  f : Lift 𝓥 P + ¬ Lift 𝓥 P → P + ¬ P
+  f (inl p) = inl (lower p)
+  f (inr ν) = inr (λ p → ν (lift 𝓥 p))
 
 Global-EM : 𝓤ω
 Global-EM = ∀ {𝓤} → EM 𝓤
