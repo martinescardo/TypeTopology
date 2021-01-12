@@ -105,11 +105,14 @@ Lift 𝓥 X = X × 𝟙 {𝓥}
 lift : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift 𝓥 X
 lift 𝓥 x = (x , *)
 
-lower : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift 𝓥 X → X
+lower : {X : 𝓤 ̇ } → Lift 𝓥 X → X
 lower (x , *) = x
 
+lower-is-equiv : {X : 𝓤 ̇ } → is-equiv (lower {𝓤} {𝓥} {X})
+lower-is-equiv {𝓤} {𝓥} = (lift 𝓥 , λ x → refl) , (lift 𝓥 , λ x → refl)
+
 Lift-is-universe-embedding : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
-Lift-is-universe-embedding 𝓥 X = 𝟙-rneutral
+Lift-is-universe-embedding 𝓥 X = lower , lower-is-equiv
 
 Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
 Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥

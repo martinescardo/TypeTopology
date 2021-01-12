@@ -8,9 +8,11 @@ module UF-FunExt-Properties where
 
 open import SpartanMLTT
 open import UF-Base
+open import UF-Subsingletons
 open import UF-Equiv
-open import UF-LeftCancellable
+open import UF-Embeddings
 open import UF-FunExt
+open import UF-FunExt-from-Naive-FunExt
 open import UF-UniverseEmbedding
 
 \end{code}
@@ -19,8 +21,8 @@ Taken from the MGS 2019 lecture notes:
 
 \begin{code}
 
-lower-dfunext : ∀ 𝓦 𝓣 𝓤 𝓥 → DN-funext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → DN-funext 𝓤 𝓥
-lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
+lower-DN-funext : ∀ 𝓦 𝓣 → DN-funext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → DN-funext 𝓤 𝓥
+lower-DN-funext {𝓤} {𝓥} 𝓦 𝓣 fe {X} {A} {f} {g} h = p
  where
   A' : Lift 𝓦 X → 𝓥 ⊔ 𝓣 ̇
   A' y = Lift 𝓣 (A (lower y))
@@ -37,5 +39,13 @@ lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe {X} {A} {f} {g} h = p
 
   p : f ≡ g
   p = ap (λ f' x → lower (f' (lift 𝓦 x))) p'
+
+lower-funext : ∀ 𝓤 𝓥 → funext 𝓤 (𝓤 ⊔ 𝓥) → funext 𝓤 𝓥
+lower-funext 𝓤 𝓥 fe = naive-funext-gives-funext' a b
+ where
+  a : DN-funext 𝓤 (𝓤 ⊔ 𝓥)
+  a = dfunext fe
+  b : naive-funext 𝓤 𝓤
+  b = lower-DN-funext 𝓤 𝓥 a
 
 \end{code}

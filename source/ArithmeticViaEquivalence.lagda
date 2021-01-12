@@ -541,9 +541,9 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
 
  Πconstruction : (n : ℕ) (a : Fin n → ℕ)
                → Σ k ꞉ ℕ , Fin k ≃ (Π i ꞉ Fin n , Fin (a i))
- Πconstruction 0 a = 1 , (Fin 1                        ≃⟨ i ⟩
-                          𝟘 + 𝟙                        ≃⟨ ii ⟩
-                          𝟙                            ≃⟨ iii ⟩
+ Πconstruction 0 a = 1 , (Fin 1                     ≃⟨ i ⟩
+                          𝟘 + 𝟙                     ≃⟨ ii ⟩
+                          𝟙                         ≃⟨ iii ⟩
                           (Π i ꞉ 𝟘 , Fin (a i))     ≃⟨ iv ⟩
                           (Π i ꞉ Fin 0 , Fin (a i)) ■)
   where
