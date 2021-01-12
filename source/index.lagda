@@ -235,6 +235,7 @@ import UF-Factorial
 import UF-FunExt-from-Naive-FunExt-alternate
 import UF-FunExt-from-Naive-FunExt
 import UF-FunExt
+import UF-FunExt-Properties
 import UF-hlevels
 import UF-IdEmbedding
 import UF-ImageAndSurjection
