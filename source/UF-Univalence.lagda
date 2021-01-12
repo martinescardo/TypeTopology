@@ -1,4 +1,8 @@
-Formulation of univalence.
+Martin Escardo.
+
+Formulation of univalence. Notice that this file doesn't postulate
+univalence. It only defines the notion of univalent
+universe. Univalence, when used, is taken as an explicit hypothesis.
 
 \begin{code}
 

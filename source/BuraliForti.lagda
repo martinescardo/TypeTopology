@@ -6,12 +6,12 @@ The Burali-Forti argument in HoTT/UF
 ------------------------------------
 
 Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
-the universe embedding
+the embedding
 
     𝓤 → 𝓤⁺.
 
 of a universe 𝓤 into its successor 𝓤⁺ is not equivalence, and that
-the hSet embedding
+the embedding
 
     hSet 𝓤 → hSet 𝓤⁺
 
@@ -26,10 +26,10 @@ Introduction
 Univalence is used three times (at least):
 
     1. to know that the type of ordinals is a 0-type and hence all
-       ordinals form an ordinal in the next universe,
+       ordinals in a universe form an ordinal in the next universe,
 
-    2. to develop the Burali-Forti argument that no ordinal is
-       equivalent to the ordinal of all ordinals,
+    2. to develop the Burali-Forti argument that no ordinal in the
+       universe 𝓤 is equivalent to the ordinal of ordinals in 𝓤.
 
     3. to resize down the values of the order relation of the ordinal
        of ordinals, to conclude that the ordinal of ordinals is large.
@@ -94,7 +94,8 @@ This order has type
 as required for it to make the type Ordinal 𝓤 into an ordinal in the
 next universe.
 
-But it is pointwise equivalent to the "resized down" order
+But, by univalence, it is pointwise equivalent to the "resized down"
+order
 
     _⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤
 

@@ -14,6 +14,7 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
+open import UF-ExcludedMiddle
 
 module OrdinalNotions
         {𝓤 𝓥 : Universe}
@@ -32,10 +33,10 @@ accessible-induction : (P : (x : X) → is-accessible x → 𝓦 ̇ )
                          → ((y : X) (l : y < x) → P y (σ y l))
                          → P x (next x σ))
                      → (x : X) (a : is-accessible x) → P x a
-accessible-induction P step = h
+accessible-induction P f = h
   where
    h : (x : X) (a : is-accessible x) → P x a
-   h x (next x σ) = step x σ (λ y l → h y (σ y l))
+   h x (next x σ) = f x σ (λ y l → h y (σ y l))
 
 prev : (x : X)
      → is-accessible x
@@ -85,10 +86,10 @@ is-transitive = (x y z : X) → x < y → y < z → x < z
 _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
 x ≼ y = ∀ u → u < x → u < y
 
-≼-prop-valued-order : FunExt
-                    → is-prop-valued
-                    → (x y : X) → is-prop (x ≼ y)
-≼-prop-valued-order fe isp x y = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+≼-is-prop-valued : FunExt
+                 → is-prop-valued
+                 → (x y : X) → is-prop (x ≼ y)
+≼-is-prop-valued fe isp x y = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
                                    (λ u l → isp u y)
 
 ≼-refl : {x : X} → x ≼ x
@@ -176,8 +177,8 @@ extensionally-ordered-types-are-sets fe isp e = γ
 
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y)
-                                     (≼-prop-valued-order fe isp x y l l')
-                                     (≼-prop-valued-order fe isp y x m m')
+                                     (≼-is-prop-valued fe isp x y l l')
+                                     (≼-is-prop-valued fe isp y x m m')
 
   κ : {x y : X} → wconstant (f {x} {y})
   κ p q = ec
@@ -236,13 +237,21 @@ no-minimal-is-empty w P s (x , p) = γ
 _≾_ : X → X → 𝓥 ̇
 x ≾ y = ¬ (y < x)
 
+≾-is-prop-valued : funext 𝓥 𝓤₀ → is-prop-valued → (x y : X) → is-prop (x ≾ y)
+≾-is-prop-valued fe p x y = ¬-is-prop fe
+
 is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≾ x
 
 has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ x ꞉ X , is-top x
 
-<-coarser-than-≾  : (x : X) → is-accessible x → ∀ y → y < x → y ≾ x
+is-bottom : X → 𝓤 ⊔ 𝓥 ̇
+is-bottom x = (y : X) → x ≾ y
+
+<-coarser-than-≾  : (x : X)
+                  → is-accessible x
+                  → (y : X) → y < x → y ≾ x
 <-coarser-than-≾ = transfinite-induction'
                      (λ x → (y : X) → y < x → y ≾ x)
                      (λ x f y l m → f y l x m l)
@@ -253,12 +262,9 @@ has-top = Σ x ꞉ X , is-top x
 irreflexive : (x : X) → is-accessible x → ¬ (x < x)
 irreflexive = ≾-refl
 
-non-strict-trans : (z : X)
-                 → is-accessible z
-                 → (x y : X) → x < y → y < z → x ≾ z
-non-strict-trans = transfinite-induction'
-                    (λ z → (x y : X) → x < y → y < z → x ≾ z)
-                    (λ z f x y l m n → f y m z x n l m)
+less-gives-not-equal : is-well-founded
+                     → (x y : X) → x < y → ¬ (x ≡ y)
+less-gives-not-equal w x y l p = irreflexive y (w y) (transport (_< y) p l)
 
 <-coarser-than-≼ : is-transitive → {x y : X} → x < y → x ≼ y
 <-coarser-than-≼ t {x} {y} l u m = t u x y m l
@@ -266,8 +272,124 @@ non-strict-trans = transfinite-induction'
 ≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
 
-trichotomous : 𝓤 ⊔ 𝓥 ̇
-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
+\end{code}
+
+The remainder of this file is not needed anywhere else (at least at
+the time of writing, namely 11th January 2021).
+
+\begin{code}
+
+is-trichotomous : 𝓤 ⊔ 𝓥 ̇
+is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
+
+\end{code}
+
+The following proof that excluded middle gives trichotomy, added 11th
+Jan 2021, is the same as the proof in the HoTT book, except that we
+use negation instead of the assumption of existence of propositional
+truncations to get a proposition to which we can apply excluded
+middle.  But notice that, under excluded middle and function
+extensionality, double negation is the same thing as propositional
+truncation. Notice also that we need excluded middle for two
+universes, and that we additionally need function extensionality as an
+assumption (to know that the negation of a type is a proposition).
+
+\begin{code}
+
+trichotomy : EM 𝓥
+           → EM (𝓤 ⊔ 𝓥)
+           → funext (𝓤 ⊔ 𝓥) 𝓤₀
+           → is-well-order
+           → is-trichotomous
+trichotomy em em' fe (p , w , e , t) = transfinite-induction w (λ x → ∀ y → P x y) ϕ
+ where
+  P : X → X → 𝓤 ⊔ 𝓥 ̇
+  P x y = (x < y) + (x ≡ y) + (y < x)
+
+  ϕ : (x : X)
+    → ((x' : X) → x' < x → (y : X) → P x' y)
+    → (y : X) → P x y
+  ϕ x f = transfinite-induction w (λ y → P x y) ψ
+   where
+    ψ : (y : X)
+      → ((y' : X) → y' < y → P x y')
+      → P x y
+    ψ y g = γ
+     where
+      A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
+
+      ¬¬A-gives-P : ¬¬ A → P x y
+      ¬¬A-gives-P = b
+       where
+        a : A → y < x
+        a (x' , l , inl m) = t y x' x m l
+        a (x' , l , inr p) = transport (_< x) p l
+
+        b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
+        b = inr ∘ inr ∘ EM-gives-DNE em (y < x) (p y x) ∘ ¬¬-functor a
+
+      ¬A-gives-≼ : ¬ A → x ≼ y
+      ¬A-gives-≼ ν x' l = c
+       where
+        a : ¬ ((y < x') + (x' ≡ y))
+        a k = ν (x' , l , k)
+
+        IH : P x' y
+        IH = f x' l y
+
+        b : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
+        b h (inl i)         = i
+        b h (inr (inl ii))  = 𝟘-elim (h (inr ii))
+        b h (inr (inr iii)) = 𝟘-elim (h (inl iii))
+
+        c : x' < y
+        c = b a IH
+
+      B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
+
+      ¬¬B-gives-P : ¬¬ B → P x y
+      ¬¬B-gives-P = b
+       where
+        a : B → x < y
+        a (y' , l , inl m) = t x y' y m l
+        a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
+
+        b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
+        b = inl ∘ EM-gives-DNE em (x < y) (p x y) ∘ ¬¬-functor a
+
+      ¬B-gives-≼ : ¬ B → y ≼ x
+      ¬B-gives-≼ ν y' l = c
+       where
+        a : ¬ ((x < y') + (x ≡ y'))
+        a k = ν (y' , l , k)
+
+        IH : P x y'
+        IH = g y' l
+
+        b : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
+        b h (inl i)         = 𝟘-elim (h (inl i))
+        b h (inr (inl ii))  = 𝟘-elim (h (inr ii))
+        b h (inr (inr iii)) = iii
+
+        c : y' < x
+        c = b a IH
+
+      ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
+      ¬A-and-¬B-give-P ν ν' = b
+       where
+        a : ¬ A → ¬ B → x ≡ y
+        a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
+
+        b : (x < y) + (x ≡ y) + (y < x)
+        b = inr (inl (a ν ν'))
+
+      γ : P x y
+      γ = Cases (em' (¬ A) (¬-is-prop fe))
+           (λ (ν : ¬ A)
+                 → Cases (em' (¬ B) (¬-is-prop fe))
+                    (¬A-and-¬B-give-P ν)
+                    ¬¬B-gives-P)
+           ¬¬A-gives-P
 
 \end{code}
 
@@ -292,9 +414,11 @@ cotransitive-≾-coarser-than-≼ c x y n u l = γ (c u x y l)
 
 \end{code}
 
-Originally we needed the following weakening of well-foundedness
-(transfinite induction for detachable subsets), but now it is not
-needed any longer:
+Originally, in 2011 (see my JSL publication), we needed to work with
+the following weakening of well-foundedness (transfinite induction for
+detachable subsets), but as of Summer 2018, it is not needed any
+longer as we are able to show that our compact ordinals are
+well-founded in the standard, stronger, sense.
 
 \begin{code}
 
