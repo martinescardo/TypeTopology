@@ -9,6 +9,7 @@ Ordinals like in the HoTT book and variations.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import DiscreteAndSeparated
 
 open import UF-Base
 open import UF-Subsingletons
@@ -262,9 +263,9 @@ is-bottom x = (y : X) → x ≾ y
 irreflexive : (x : X) → is-accessible x → ¬ (x < x)
 irreflexive = ≾-refl
 
-less-gives-not-equal : is-well-founded
-                     → (x y : X) → x < y → ¬ (x ≡ y)
-less-gives-not-equal w x y l p = irreflexive y (w y) (transport (_< y) p l)
+<-gives-≢ : is-well-founded
+          → (x y : X) → x < y → x ≢ y
+<-gives-≢ w x y l p = irreflexive y (w y) (transport (_< y) p l)
 
 <-coarser-than-≼ : is-transitive → {x y : X} → x < y → x ≼ y
 <-coarser-than-≼ t {x} {y} l u m = t u x y m l
@@ -284,8 +285,27 @@ is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
 
 \end{code}
 
+Not all ordinals are trichotomous, in the absence of excluded middle
+or even just LPO, because ℕ∞ is not discrete unless LPO holds, but its
+natural order is well-founded, and types well-founded trichotomous
+relations are discrete (have decidable equality):
+
+\begin{code}
+
+trichomous-gives-discrete : is-well-founded
+                          → is-trichotomous
+                          → is-discrete X
+trichomous-gives-discrete w t x y = f (t x y)
+ where
+  f : (x < y) + (x ≡ y) + (y < x) → (x ≡ y) + (x ≢ y)
+  f (inl l)       = inr (<-gives-≢ w x y l)
+  f (inr (inl p)) = inl p
+  f (inr (inr l)) = inr (≢-sym (<-gives-≢ w y x l))
+
+\end{code}
+
 The following proof that excluded middle gives trichotomy, added 11th
-Jan 2021, is the same as the proof in the HoTT book, except that we
+Jan 2021, is the same as that in the HoTT book, except that we
 use negation instead of the assumption of existence of propositional
 truncations to get a proposition to which we can apply excluded
 middle.  But notice that, under excluded middle and function
@@ -469,8 +489,6 @@ x ≺₂ y = Σ p ꞉ (X → 𝟚) , (p x <₂ p y)
 
 𝟚-order-separated : 𝓤 ⊔ 𝓥 ̇
 𝟚-order-separated = (x y : X) → x < y → x ≺₂ y
-
-open import DiscreteAndSeparated
 
 𝟚-order-separated-gives-cotransitive : 𝟚-order-separated → cotransitive
 𝟚-order-separated-gives-cotransitive s x y z l = g (s x y l)
