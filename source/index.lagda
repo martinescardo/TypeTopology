@@ -163,6 +163,7 @@ import LiftingSize
 import LiftingUnivalentPrecategory
 import LPO
 import Lumsdaine
+import MGS-TypeTopology-Interface
 import NaturalNumbers
 import NaturalNumbers-Properties
 import NaturalsAddition
@@ -232,10 +233,9 @@ import UF-Equiv-FunExt
 import UF-Equiv
 import UF-ExcludedMiddle
 import UF-Factorial
-import UF-FunExt-from-Naive-FunExt-alternate
-import UF-FunExt-from-Naive-FunExt
-import UF-FunExt
+import UF-FunExt-from-Naive-FunExt -- By Cory Knapp
 import UF-FunExt-Properties
+import UF-FunExt
 import UF-hlevels
 import UF-IdEmbedding
 import UF-ImageAndSurjection

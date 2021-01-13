@@ -21,7 +21,7 @@ open import UF-Equiv
 open import UF-Univalence
 open import UF-LeftCancellable
 open import UF-FunExt
-open import UF-FunExt-from-Naive-FunExt
+open import UF-FunExt-Properties
 open import UF-Equiv-FunExt
 
 naive-univalence-gives-funext : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
