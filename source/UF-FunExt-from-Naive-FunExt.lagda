@@ -28,27 +28,42 @@ open import UF-EquivalenceExamples
 naive-funext-gives-funext' : naive-funext 𝓤 (𝓤 ⊔ 𝓥) → naive-funext 𝓤 𝓤 → funext 𝓤 𝓥
 naive-funext-gives-funext' {𝓤} {𝓥} nfe nfe' = funext-via-singletons γ
  where
-  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
-  γ X A φ = retract-of-singleton (r , s , rs) iss
+  γ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+    → ((x : X) → is-singleton (A x))
+    → is-singleton (Π A)
+  γ X A φ = δ
    where
     f : Σ A → X
     f = pr₁
-    eqf : is-equiv f
-    eqf = pr₁-equivalence X A φ
+
+    f-is-equiv : is-equiv f
+    f-is-equiv = pr₁-equivalence X A φ
+
     g : (X → Σ A) → (X → X)
     g h = f ∘ h
-    eqg : is-equiv g
-    eqg = equiv-post nfe nfe' f eqf
-    iss : ∃! h ꞉ (X → Σ A) , f ∘ h ≡ id
-    iss = equivs-are-vv-equivs g eqg id
+
+    g-is-equiv : is-equiv g
+    g-is-equiv = equiv-post nfe nfe' f f-is-equiv
+
+    e : ∃! h ꞉ (X → Σ A) , f ∘ h ≡ id
+    e = equivs-are-vv-equivs g g-is-equiv id
+
     r : (Σ h ꞉ (X → Σ A) , f ∘ h ≡ id) → Π A
     r (h , p) x = transport A (happly p x) (pr₂ (h x))
+
     s : Π A → (Σ h ꞉ (X → Σ A) , f ∘ h ≡ id)
     s φ = (λ x → x , φ x) , refl
+
     rs : ∀ φ → r (s φ) ≡ φ
     rs φ = refl
 
+    δ : is-singleton (Π A)
+    δ = retract-of-singleton (r , s , rs) e
+
 naive-funext-gives-funext : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤
 naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
+
+naive-funext-gives-funext₀ : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+naive-funext-gives-funext₀ fe = naive-funext-gives-funext' fe fe
 
 \end{code}

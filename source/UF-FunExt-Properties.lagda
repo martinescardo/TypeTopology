@@ -45,7 +45,11 @@ lower-funext 𝓤 𝓥 fe = naive-funext-gives-funext' a b
  where
   a : DN-funext 𝓤 (𝓤 ⊔ 𝓥)
   a = dfunext fe
+
   b : naive-funext 𝓤 𝓤
   b = lower-DN-funext 𝓤 𝓥 a
+
+lower-funext₀ : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+lower-funext₀ {𝓤} = lower-funext 𝓤 𝓤₀
 
 \end{code}
