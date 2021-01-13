@@ -21,6 +21,7 @@ open import UF-Subsingletons
 open import UF-Equiv
 open import UF-Univalence
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-UA-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Equiv-FunExt
@@ -44,7 +45,8 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 ∈-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∈ A)
 ∈-is-prop A x = holds-is-prop (A x)
 
-⊆-is-prop : funext 𝓤 𝓥 → funext 𝓥 𝓥
+⊆-is-prop : funext 𝓤 𝓥
+          → funext 𝓥 𝓥
           → {X : 𝓤 ̇ } (A B : X → Ω 𝓥) → is-prop (A ⊆ B)
 ⊆-is-prop fe fe' A B = Π-is-prop fe
                         (λ x → Π-is-prop fe'
@@ -61,15 +63,16 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
 ⊆-refl-consequence {X} A A (refl) = ⊆-refl A , ⊆-refl A
 
-subset-extensionality : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 (𝓤 ⁺)
+subset-extensionality : propext 𝓤
+                      → funext 𝓤 (𝓤 ⁺)
                       → {X : 𝓤 ̇ } {A B : 𝓟 X}
                       → A ⊆ B → B ⊆ A → A ≡ B
 
-subset-extensionality pe fe fe' {X} {A} {B} h k = dfunext fe' φ
+subset-extensionality {𝓤} pe fe {X} {A} {B} h k = dfunext fe φ
  where
   φ : (x : X) → A x ≡ B x
   φ x = to-subtype-≡
-           (λ _ → being-prop-is-prop fe)
+           (λ _ → being-prop-is-prop (lower-funext 𝓤 (𝓤 ⁺) fe))
            (pe (holds-is-prop (A x)) (holds-is-prop (B x))
                (h x) (k x))
 
@@ -79,7 +82,6 @@ subset-extensionality' : Univalence
 
 subset-extensionality' {𝓤} ua = subset-extensionality
                                  (univalence-gives-propext (ua 𝓤))
-                                 (univalence-gives-funext (ua 𝓤))
                                  (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
 
 infix  40 _∈_

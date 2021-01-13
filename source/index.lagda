@@ -235,6 +235,7 @@ import UF-ExcludedMiddle
 import UF-Factorial
 import UF-FunExt-from-Naive-FunExt -- By Cory Knapp
 import UF-FunExt-Properties
+import UF-Lower-FunExt
 import UF-FunExt
 import UF-hlevels
 import UF-IdEmbedding

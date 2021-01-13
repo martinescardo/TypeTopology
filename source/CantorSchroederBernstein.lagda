@@ -55,6 +55,7 @@ open import UF-Equiv
 open import UF-Embeddings
 open import UF-ExcludedMiddle
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Miscelanea
 open import UF-PropTrunc
 open import UF-Retracts
@@ -232,12 +233,14 @@ module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
  wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
  wCantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → wCSB X Y
 
- wCantorSchröderBernstein-gives-EM : funext 𝓤₀ 𝓤₀
-                                   → funext 𝓥 𝓤₀
+ wCantorSchröderBernstein-gives-EM : funext 𝓥 𝓤₀
                                    → wCantorSchröderBernstein 𝓤₀ 𝓥
                                    → EM 𝓥
- wCantorSchröderBernstein-gives-EM fe₀ fe w P i = γ
+ wCantorSchröderBernstein-gives-EM {𝓥} fe w P i = γ
   where
+   fe₀ : funext 𝓤₀ 𝓤₀
+   fe₀ = lower-funext 𝓥 𝓤₀ fe
+
    s : ∥ ℕ∞ ≃ P + ℕ∞ ∥
    s = w (econstruction-ℕ∞ fe₀ P i)
 
@@ -279,12 +282,10 @@ reference to the blog post.
 
 \begin{code}
 
-EM-gives-CantorSchröderBernstein : funext 𝓤 (𝓤 ⊔ 𝓥)
-                                 → funext (𝓤 ⊔ 𝓥) 𝓤₀
-                                 → funext 𝓤₀ (𝓤 ⊔ 𝓥)
+EM-gives-CantorSchröderBernstein : Fun-Ext
                                  → EM (𝓤 ⊔ 𝓥)
                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) =
+EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) =
 
   need X ≃ Y which-is-given-by 𝒽
 
@@ -327,11 +328,10 @@ requires function extensionality:
 \begin{code}
 
   being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-prop x =
-   Π-is-prop fe  (λ (x₀ : X                   ) →
-   Π-is-prop fe₁ (λ (n  : ℕ                   ) →
-   Π-is-prop fe  (λ (p  : ((g ∘ f) ^ n) x₀ ≡ x) → need is-prop (fiber g x₀)
-                                                  which-is-given-by (g-is-emb x₀))))
+  being-g-point-is-prop x = Π₃-is-prop fe λ x₀ n (p : ((g ∘ f) ^ n) x₀ ≡ x)
+                               → need is-prop (fiber g x₀)
+                                 which-is-given-by (g-is-emb x₀)
+
 \end{code}
 
 By construction, considering x₀ = x and n = 0, we have that g is
@@ -546,7 +546,7 @@ doesn't refer to the notion of f-point.
 
     iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
     iv = have f-is-emb y ∶ is-prop (fiber f y)
-         so-apply subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀))
+         so-apply subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe))
 
     v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
     v = double-negation-elimination excluded-middle _ iv iii
@@ -619,10 +619,10 @@ We record the following special case:
 
 \begin{code}
 
-EM-gives-CantorSchröderBernstein₀ : funext 𝓤₀ 𝓤₀
+EM-gives-CantorSchröderBernstein₀ : Fun-Ext
                                   → EM 𝓤₀
                                   → CantorSchröderBernstein 𝓤₀ 𝓤₀
-EM-gives-CantorSchröderBernstein₀ fe = EM-gives-CantorSchröderBernstein fe fe fe
+EM-gives-CantorSchröderBernstein₀ = EM-gives-CantorSchröderBernstein
 
 \end{code}
 
@@ -706,12 +706,10 @@ indicating types explicitly).
 
 \begin{code}
 
-EM-gives-CantorSchröderBernstein' : funext 𝓤 (𝓤 ⊔ 𝓥)
-                                  → funext (𝓤 ⊔ 𝓥) 𝓤₀
-                                  → funext 𝓤₀ (𝓤 ⊔ 𝓥)
+EM-gives-CantorSchröderBernstein' : Fun-Ext
                                   → EM (𝓤 ⊔ 𝓥)
                                   → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
+EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -748,7 +746,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
     v = transport (- ↦ ¬ is-g-point -) q u
 
   being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-prop x = Π-is-prop fe (λ x₀ → Π-is-prop fe₁ (λ _ → Π-is-prop fe (λ _ → g-is-emb x₀)))
+  being-g-point-is-prop x = Π₃-is-prop fe (λ x₀ n _ → g-is-emb x₀)
 
   δ : (x : X) → decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-prop x)
@@ -804,7 +802,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe fe₀ fe₁ excluded-middle 
    iii = double-contrapositive ii i
 
    iv : is-prop (Σ (x , p) ꞉ fiber f y , ¬ is-g-point x)
-   iv = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe₀)) (f-is-emb y)
+   iv = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe)) (f-is-emb y)
 
    v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
    v = double-negation-elimination excluded-middle _ iv iii

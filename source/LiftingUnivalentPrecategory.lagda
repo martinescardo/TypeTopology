@@ -27,6 +27,7 @@ open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-EquivalenceExamples
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
 open import UF-StructureIdentityPrinciple
@@ -64,7 +65,8 @@ cod {l} {m} α = m
 𝓛-comp-unit-left : funext 𝓣 𝓤 → (l m : 𝓛 X) (α : l ⊑ m) → 𝓛-comp l l m (𝓛-id l) α ≡ α
 𝓛-comp-unit-left fe l m α = to-Σ-≡ (refl , dfunext fe λ p → refl-left-neutral)
 
-𝓛-comp-assoc : funext 𝓣 𝓤 → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
+𝓛-comp-assoc : funext 𝓣 𝓤
+             → {l m n o : 𝓛 X} (α : l ⊑ m) (β : m ⊑ n) (γ : n ⊑ o)
              →  𝓛-comp l n o (𝓛-comp l m n α β) γ ≡ 𝓛-comp l m o α (𝓛-comp m n o β γ)
 𝓛-comp-assoc fe (f , δ) (g , ε) (h , ζ) =
    to-Σ-≡ (refl , dfunext fe (λ p → ∙assoc (δ p) (ε (f p)) (ζ (g (f p)))))
@@ -82,7 +84,8 @@ If X is a set, then _⊑_ is a partial order:
 
 \begin{code}
 
-⊑-prop-valued : funext 𝓣 𝓣 → funext 𝓣 𝓤
+⊑-prop-valued : funext 𝓣 𝓣
+              → funext 𝓣 𝓤
               → is-set X → (l m : 𝓛 X) → is-prop (l ⊑ m)
 ⊑-prop-valued fe fe' s l m (f , δ) (g , ε) =
   to-Σ-≡ (dfunext fe (λ p → being-defined-is-prop m (f p) (g p)) ,
@@ -102,7 +105,9 @@ embedding.
 
 \begin{code}
 
-⊑-anti-lemma : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+⊑-anti-lemma : propext 𝓣
+             → funext 𝓣 𝓣
+             → funext 𝓣 𝓤
              → {l m : 𝓛 X} → l ⊑ m → (is-defined m → is-defined l) → l ≡ m
 ⊑-anti-lemma pe fe fe' {Q , ψ , j} {P , φ , i} (f , δ) g = e
  where
@@ -123,7 +128,9 @@ embedding.
   e : Q , ψ , j ≡ P , φ , i
   e = to-Σ-≡ (a , to-×-≡ d (being-prop-is-prop fe _ i))
 
-⊑-anti : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+⊑-anti : propext 𝓣
+       → funext 𝓣 𝓣
+       → funext 𝓣 𝓤
        → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
 ⊑-anti pe fe fe' ((f , δ) , (g , ε)) = ⊑-anti-lemma pe fe fe' (f , δ) g
 
@@ -135,7 +142,10 @@ We can now establish the promised fact:
 
 open import LiftingEmbeddingDirectly 𝓣
 
-η-fiber-same-as-is-defined : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
+η-fiber-same-as-is-defined : propext 𝓣
+                           → funext 𝓣 𝓣
+                           → funext 𝓣 𝓤
+                           → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
                            → (l : 𝓛 X) → (Σ x ꞉ X , η x ≡ l) ≃ is-defined l
 η-fiber-same-as-is-defined pe fe fe' fe'' l = qinveq (f l) (g l , gf , fg)
  where
@@ -164,7 +174,10 @@ formulation of the above equivalence:
 \begin{code}
 
 private
- η-fiber-same-as-is-defined' : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
+ η-fiber-same-as-is-defined' : propext 𝓣
+                             → funext 𝓣 𝓣
+                             → funext 𝓣 𝓤
+                             → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
                              → (l : 𝓛 X) → (fiber η l    ∶ 𝓣 ⁺ ⊔ 𝓤 ̇ )
                                          ≃ (is-defined l ∶ 𝓣 ̇ )
  η-fiber-same-as-is-defined' = η-fiber-same-as-is-defined
@@ -180,7 +193,8 @@ construction of _⋍·_ in another module:
 
 \begin{code}
 
-⊑-anti-sip : is-univalent 𝓣 → funext 𝓣 𝓤
+⊑-anti-sip : is-univalent 𝓣
+           → funext 𝓣 𝓤
            → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
 ⊑-anti-sip ua fe {Q , ψ , j} {P , φ , i} ((f , δ) , (g , ε)) =
  ⌜ ≃-sym (𝓛-Id· ua fe (Q , ψ , j) (P , φ , i)) ⌝ γ
@@ -228,31 +242,38 @@ to-from fe l m ((f , δ) , g) = b
                    → (l ⊑ m) × (is-defined m → is-defined l) ≃ (l ⋍· m)
 ⊑-anti-equiv-lemma' fe l m = to-⋍· l m , ⊑-anti-equiv-lemma'' fe l m
 
-⊑-anti-equiv-lemma : is-univalent 𝓣 → funext 𝓣 𝓤
+⊑-anti-equiv-lemma : is-univalent 𝓣
+                   → funext 𝓣 𝓤
                    → (l m : 𝓛 X)
                    → (l ⊑ m) × (is-defined m → is-defined l) ≃ (l ≡ m)
 ⊑-anti-equiv-lemma ua fe l m =
   (⊑-anti-equiv-lemma' (univalence-gives-funext ua) l m)
   ● (≃-sym (𝓛-Id· ua fe l m))
 
-⊑-anti-equiv : is-univalent 𝓣 → funext 𝓣 𝓤
+⊑-anti-equiv : is-univalent 𝓣
+             → funext 𝓣 𝓤
              → (l m : 𝓛 X)
              → (l ⊑ m) × (m ⊑ l) ≃ (l ≡ m) × (m ≡ l)
 ⊑-anti-equiv ua fe l m = γ ● (×-cong (⊑-anti-equiv-lemma ua fe l m)
                                      (⊑-anti-equiv-lemma ua fe m l))
  where
   A = (l ⊑ m) × (m ⊑ l)
+
   B = ((l ⊑ m) × (is-defined m → is-defined l))
     × ((m ⊑ l) × (is-defined l → is-defined m))
+
   γ : A ≃ B
   γ = qinveq u (v , vu , uv)
     where
      u : A → B
      u ((f , δ) , (g , ε)) = ((f , δ) , g) , ((g , ε) , f)
+
      v : B → A
      v (((f , δ) , h) , ((g , ε) , k)) = (f , δ) , (g , ε)
+
      vu : (a : A) → v (u a) ≡ a
      vu a = refl
+
      uv : (b : B) → u (v b) ≡ b
      uv (((f , δ) , h) , ((g , ε) , k)) = t
       where
@@ -262,6 +283,7 @@ to-from fe l m ((f , δ) , g) = b
        s : f ≡ k
        s = dfunext (univalence-gives-funext ua)
                    (λ p → being-defined-is-prop m (f p) (k p))
+
        t : ((f , δ) , g) , (g , ε) , f ≡ ((f , δ) , h) , (g , ε) , k
        t = ap₂ (λ -₀ -₁ → ((f , δ) , -₀) , (g , ε) , -₁) r s
 
@@ -276,30 +298,40 @@ proposition "is-defined l" (and gave me a headache):
 
 \begin{code}
 
-⊑-open : funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⊔ 𝓤)
+⊑-open : funext 𝓣 𝓣
+       → funext 𝓣 (𝓣 ⊔ 𝓤)
        → (l m : 𝓛 X) → (l ⊑ m) ≃ (is-defined l → l ⊑ m)
-⊑-open fe fe' fe'' (Q , ψ , j) (P , φ , i) = qinveq π (ρ , ρπ , πρ)
+⊑-open fe fe'' (Q , ψ , j) (P , φ , i) = qinveq π (ρ , ρπ , πρ)
  where
   l = (Q , ψ , j)
+
   m = (P , φ , i)
+
   π : l ⊑ m → (is-defined l → l ⊑ m)
   π α d = α
+
   ρ : (is-defined l → l ⊑ m) → l ⊑ m
   ρ h = (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d)
+
   ρπ : ρ ∘ π ∼ id
   ρπ α = refl
+
   ρ-lemma : (h : is-defined l → l ⊑ m) (q : is-defined l) → ρ h ≡ h q
   ρ-lemma h q = γ
    where
     remark = h q  ≡⟨ refl ⟩  (λ d → pr₁ (h q) d) , (λ d → pr₂ (h q) d) ∎
+
     k : (d : Q) → pr₁ (h d) d ≡ pr₁ (h q) d
     k d = ap (λ - → pr₁ (h -) d) (j d q)
+
     a : (λ d → pr₁ (h d) d) ≡ pr₁ (h q)
     a = dfunext fe k
+
     u : (d : Q) {f g : Q → P} (k : f ∼ g)
       → ap (λ (- : Q → P) → φ (- d)) (dfunext fe k)
       ≡ ap φ (k d)
     u d {f} {g} k = ap-funext f g φ k fe d
+
     v : (d : Q) → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a
                 ≡ pr₂ (h q) d
     v d = pr₂ (h d) d ∙ ap (λ - → φ (- d)) a                  ≡⟨ using-u ⟩
@@ -322,7 +354,7 @@ proposition "is-defined l" (and gave me a headache):
     t refl h = refl
 
     b = transport (λ - → ψ ∼ φ ∘ -) a (λ d → pr₂ (h d) d) ≡⟨ t a (λ d → pr₂ (h d) d) ⟩
-        (λ d → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a)        ≡⟨ dfunext fe' v ⟩
+        (λ d → pr₂ (h d) d ∙ ap (λ - → φ (- d)) a)        ≡⟨ dfunext (lower-funext 𝓣 𝓣 fe'') v ⟩
         pr₂ (h q)                                         ∎
 
     γ : (λ d → pr₁ (h d) d) , (λ d → pr₂ (h d) d) ≡ h q
@@ -337,9 +369,10 @@ Using this we have the following, as promised:
 
 \begin{code}
 
-⊑-in-terms-of-≡ : is-univalent 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤) → funext 𝓣 (𝓣 ⊔ 𝓤)
+⊑-in-terms-of-≡ : is-univalent 𝓣
+                → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤)
                 → (l m : 𝓛 X) → (l ⊑ m) ≃ (is-defined l → l ≡ m)
-⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m =
+⊑-in-terms-of-≡ ua fe⁺ l m =
  l ⊑ m                                                                 ≃⟨ a ⟩
  (is-defined l → l ⊑ m)                                                ≃⟨ b ⟩
  ((is-defined l → l ⊑ m) × 𝟙)                                          ≃⟨ c ⟩
@@ -355,11 +388,11 @@ Using this we have the following, as promised:
                        (λ d → Π-is-prop fe
                                 (λ e → being-defined-is-prop l)) (λ d e → d))
 
-  a = ⊑-open fe fe₀ fe₂ l m
+  a = ⊑-open fe (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) l m
   b =  ≃-sym 𝟙-rneutral
   c = ×-cong (≃-refl _) (≃-sym s)
   d = ≃-sym ΠΣ-distr-≃
-  e = →cong fe₁ fe₂ (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua fe₀ l m)
+  e = →cong fe⁺ (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) (≃-refl (is-defined l)) (⊑-anti-equiv-lemma ua (lower-funext 𝓣 ((𝓣 ⁺) ⊔ 𝓤) fe⁺) l m)
 
 \end{code}
 
@@ -369,13 +402,12 @@ elements of hom-type l ⊑ m as partial element of identity the type l ≡ m.
 
 \begin{code}
 
-⊑-lift : is-univalent 𝓣 → funext 𝓣 𝓤 → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤) → funext 𝓣 (𝓣 ⊔ 𝓤)
+⊑-lift : is-univalent 𝓣
+       → funext 𝓣 (𝓣 ⁺ ⊔ 𝓤)
        → (l m : 𝓛 X) → l ⊑ m → 𝓛 (l ≡ m)
-⊑-lift ua fe₀ fe₁ fe₂ l m α = is-defined l ,
-                              ⌜ ⊑-in-terms-of-≡ ua fe₀ fe₁ fe₂ l m ⌝ α ,
-                              being-defined-is-prop l
-
-
+⊑-lift ua fe l m α = is-defined l ,
+                     ⌜ ⊑-in-terms-of-≡ ua fe l m ⌝ α ,
+                     being-defined-is-prop l
 \end{code}
 
 We now show that the pre-∞-category 𝓛 X is univalent if the universe 𝓣
@@ -389,10 +421,10 @@ is univalent and we have enough function extensionality for 𝓣 and 𝓤.
 is-𝓛-equiv : (l m : 𝓛 X) → l ⊑ m → 𝓣 ⁺ ⊔ 𝓤 ̇
 is-𝓛-equiv l m α = (n : 𝓛 X) → is-equiv (𝓛-pre-comp-with l m α n)
 
-being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤) → funext (𝓣 ⊔ 𝓤) (𝓣 ⊔ 𝓤)
+being-𝓛-equiv-is-prop : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⊔ 𝓤)
                         → (l m : 𝓛 X) (α : l ⊑ m) → is-prop (is-𝓛-equiv l m α)
-being-𝓛-equiv-is-prop fe fe' l m α =
- Π-is-prop fe (λ n → being-equiv-is-prop'' fe' (𝓛-pre-comp-with l m α n))
+being-𝓛-equiv-is-prop fe l m α =
+ Π-is-prop fe (λ n → being-equiv-is-prop'' (lower-funext (𝓣 ⁺) 𝓤 fe) (𝓛-pre-comp-with l m α n))
 
 is-𝓛-equiv→ : (l m : 𝓛 X) (α : l ⊑ m) → is-𝓛-equiv l m α → is-equiv (pr₁ α)
 is-𝓛-equiv→ l m α e = qinvs-are-equivs (pr₁ α)
@@ -405,7 +437,9 @@ is-𝓛-equiv→ l m α e = qinvs-are-equivs (pr₁ α)
   β : m ⊑ l
   β = inverse u (e l) (𝓛-id l)
 
-is-𝓛-equiv← : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+is-𝓛-equiv← : propext 𝓣
+            → funext 𝓣 𝓣
+            → funext 𝓣 𝓤
             → (l m : 𝓛 X) (α : l ⊑ m) → is-equiv (pr₁ α) → is-𝓛-equiv l m α
 is-𝓛-equiv← pe fe fe' l m α e = γ
  where
@@ -468,7 +502,7 @@ is probably not worth the trouble (we'll see)).
 \begin{code}
 
 module univalence-of-𝓛 (ua : is-univalent 𝓣)
-                       (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+                       (fe : Fun-Ext)
        where
 
  pe : propext 𝓣
@@ -481,7 +515,7 @@ module univalence-of-𝓛 (ua : is-univalent 𝓣)
                            (is-defined m → is-defined l) ■
   where
    a = logically-equivalent-props-are-equivalent
-        (being-𝓛-equiv-is-prop fe fe l m α)
+        (being-𝓛-equiv-is-prop fe l m α)
         (being-equiv-is-prop'' fe (pr₁ α))
         (is-𝓛-equiv→ l m α)
         (is-𝓛-equiv← pe fe fe l m α)
@@ -544,7 +578,9 @@ We have yet another equivalence, using the above techniques:
 ⊥-least : (l : 𝓛 X) → ⊥ ⊑ l
 ⊥-least l = unique-from-𝟘 , λ z → unique-from-𝟘 z
 
-⊥-initial : funext 𝓣 𝓣 → funext 𝓣 𝓤 → (l : 𝓛 X) → is-singleton(⊥ ⊑ l)
+⊥-initial : funext 𝓣 𝓣
+          → funext 𝓣 𝓤
+          → (l : 𝓛 X) → is-singleton(⊥ ⊑ l)
 ⊥-initial fe fe' l = ⊥-least l ,
                      (λ α → to-Σ-≡ (dfunext fe (λ z → unique-from-𝟘 z) ,
                                     dfunext fe'(λ z → unique-from-𝟘 z)))
@@ -555,7 +591,8 @@ We have yet another equivalence, using the above techniques:
 η-⊑-gives-≡ : {x y : X} → η x ⊑ η y → x ≡ y
 η-⊑-gives-≡ (f , δ) = δ *
 
-η-≡-gives-⊑-is-equiv : funext 𝓣 𝓣 → funext 𝓣 𝓤
+η-≡-gives-⊑-is-equiv : funext 𝓣 𝓣
+                     → funext 𝓣 𝓤
                      → {x y : X} → is-equiv (η-≡-gives-⊑ {x} {y})
 η-≡-gives-⊑-is-equiv fe fe' {x} {y} =
  qinvs-are-equivs η-≡-gives-⊑ (η-⊑-gives-≡ , α , β)
@@ -567,7 +604,8 @@ We have yet another equivalence, using the above techniques:
   β (f , δ) = to-×-≡ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
                      (dfunext fe' (λ x → ap δ (𝟙-is-prop * x)))
 
-Id-via-lifting : funext 𝓣 𝓣 → funext 𝓣 𝓤
+Id-via-lifting : funext 𝓣 𝓣
+               → funext 𝓣 𝓤
                → {x y : X} → (x ≡ y) ≃ (η x ⊑ η y)
 Id-via-lifting fe fe' = η-≡-gives-⊑ , η-≡-gives-⊑-is-equiv fe fe'
 

@@ -44,7 +44,8 @@ l ⋍ m = Σ e ꞉ source l ≃ source m , family l ≡ family m ∘ ⌜ e ⌝
 _⋍·_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍· m = Σ e ꞉ source l ≃ source m , family l ∼ family m ∘ ⌜ e ⌝
 
-𝓕-Id· : is-univalent 𝓣 → funext 𝓣 𝓤
+𝓕-Id· : is-univalent 𝓣
+      → funext 𝓣 𝓤
       → (l m : 𝓕 X) → (l ≡ m) ≃ (l ⋍· m)
 𝓕-Id· ua fe l m = (𝓕-Id ua l m) ● (Σ-cong (λ e → ≃-funext fe (family l) (family m ∘ ⌜ e ⌝)))
 

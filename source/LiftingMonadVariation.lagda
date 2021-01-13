@@ -24,8 +24,13 @@ open import LiftingEmbeddingDirectly
                       (λ p → pr₁ (pr₂ p)) ,
                       Σ-is-prop j (e ∘ ψ)
 
-μ* : (𝓣 𝓣' : Universe) {X : 𝓤 ̇ } → funext 𝓣 𝓣 → funext 𝓣' 𝓣' → funext 𝓣' 𝓤 → funext 𝓤 (𝓤 ⊔ (𝓣' ⁺)) → propext 𝓣'
-  → 𝓛 𝓣 (𝓛 𝓣' X) → 𝓛 (𝓤 ⊔ 𝓣 ⊔ (𝓣' ⁺)) X
+μ* : (𝓣 𝓣' : Universe) {X : 𝓤 ̇ }
+   → funext 𝓣 𝓣
+   → funext 𝓣' 𝓣'
+   → funext 𝓣' 𝓤
+   → funext 𝓤 (𝓤 ⊔ (𝓣' ⁺))
+   → propext 𝓣'
+   → 𝓛 𝓣 (𝓛 𝓣' X) → 𝓛 (𝓤 ⊔ 𝓣 ⊔ (𝓣' ⁺)) X
 μ* {𝓤} 𝓣 𝓣' {X} fe fe' fe'' fe''' pe = 𝓛* (η 𝓣') (η-is-embedding 𝓣' pe fe' fe'' fe''')
 
 \end{code}

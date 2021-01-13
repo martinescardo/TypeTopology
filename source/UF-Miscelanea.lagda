@@ -15,6 +15,7 @@ open import NaturalNumbers-Properties
 open import UF-Base
 open import UF-Subsingletons
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Embeddings
 
@@ -56,7 +57,8 @@ isolated-inl x i y r =
     (λ (p : x ≡ y) (q : i y ≡ inl p) → q ∙ ap inl (isolated-is-h-isolated x i p r))
     (λ (h : x ≢ y) (q : i y ≡ inr h) → 𝟘-elim(h r))
 
-isolated-inr : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀
+isolated-inr : {X : 𝓤 ̇ }
+             → funext 𝓤 𝓤₀
              → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → i y ≡ inr n
 isolated-inr fe x i y n =
   equality-cases (i y)
@@ -79,7 +81,8 @@ isolated-inr' x i y n =
 discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
 discrete-inl d x = isolated-inl x (d x)
 
-discrete-inr : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀
+discrete-inr : {X : 𝓤 ̇ }
+             → funext 𝓤 𝓤₀
              → (d : is-discrete X) (x y : X) (n : ¬ (x ≡ y)) → d x y ≡ inr n
 discrete-inr fe d x = isolated-inr fe x (d x)
 
@@ -151,7 +154,8 @@ decidable-is-stable : {X : 𝓤 ̇ } → decidable X → stable X
 decidable-is-stable (inl x) φ = x
 decidable-is-stable (inr u) φ = unique-from-𝟘(φ u)
 
-stable-is-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → stable X → collapsible X
+stable-is-collapsible : funext 𝓤 𝓤₀
+                      → {X : 𝓤 ̇ } → stable X → collapsible X
 stable-is-collapsible {𝓤} fe {X} s = (f , g)
  where
   f : X → X
@@ -163,19 +167,25 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
   g : (x y : X) → f x ≡ f y
   g x y = ap s (claim₁ x y)
 
-¬¬-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-¬¬-separated X → Id-collapsible X
+¬¬-separated-is-Id-collapsible : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
+                               → is-¬¬-separated X
+                               → Id-collapsible X
 ¬¬-separated-is-Id-collapsible fe s = stable-is-collapsible fe (s _ _)
 
-¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-¬¬-separated X → is-set X
+¬¬-separated-types-are-sets : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ }
+                            → is-¬¬-separated X
+                            → is-set X
 ¬¬-separated-types-are-sets fe s = Id-collapsibles-are-sets (¬¬-separated-is-Id-collapsible fe s)
 
-is-prop-separated : funext 𝓤 𝓤 → funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop (is-¬¬-separated X)
-is-prop-separated fe fe₀ {X} = prop-criterion f
+being-¬¬-separated-is-prop : funext 𝓤 𝓤
+                           → {X : 𝓤 ̇ }
+                           → is-prop (is-¬¬-separated X)
+being-¬¬-separated-is-prop {𝓤} fe {X} = prop-criterion f
  where
   f : is-¬¬-separated X → is-prop (is-¬¬-separated X)
   f s = Π-is-prop fe (λ _ →
         Π-is-prop fe (λ _ →
-        Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets fe₀ s)))
+        Π-is-prop fe (λ _ → ¬¬-separated-types-are-sets (lower-funext 𝓤 𝓤 fe) s)))
 
 \end{code}
 

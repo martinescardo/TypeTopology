@@ -117,7 +117,8 @@ open import UF-Equiv
 open import UF-FunExt
 open import UF-Univalence
 
-𝓕-equiv-particular : is-univalent 𝓣 → funext 𝓣 (𝓣 ⁺)
+𝓕-equiv-particular : is-univalent 𝓣
+                   → funext 𝓣 (𝓣 ⁺)
                    → (X : 𝓣 ̇ ) → 𝓕 X ≃ (X → 𝓣 ̇ )
 𝓕-equiv-particular = map-classification
 

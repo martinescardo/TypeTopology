@@ -150,7 +150,8 @@ extensionality. More generally:
 is-¬¬-separated : 𝓤 ̇ → 𝓤 ̇
 is-¬¬-separated X = (x y : X) → ¬¬ (x ≡ y) → x ≡ y
 
-Π-is-¬¬-separated : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Π-is-¬¬-separated : funext 𝓤 𝓥
+                  → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                   → ((x : X) → is-¬¬-separated(Y x))
                   → is-¬¬-separated(Π Y)
 Π-is-¬¬-separated fe s f g h = dfunext fe lemma₂
@@ -216,7 +217,9 @@ assuming extensionality:
 
 \begin{code}
 
-tight : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
+tight : {X : 𝓤 ̇ }
+      → funext 𝓤 𝓥
+      → {Y : X → 𝓥 ̇ }
       → ((x : X) → is-¬¬-separated(Y x))
       → (f g : (x : X) → Y x)
       → ¬ (f ♯ g) → f ≡ g
@@ -227,7 +230,9 @@ tight fe s f g h = dfunext fe lemma₁
   lemma₁ : ∀ x → f x ≡ g x
   lemma₁ x = (s x (f x) (g x)) (lemma₀ x)
 
-tight' : {X : 𝓤 ̇ } → funext 𝓤 𝓥 → {Y : X → 𝓥 ̇ }
+tight' : {X : 𝓤 ̇ }
+       → funext 𝓤 𝓥
+       → {Y : X → 𝓥 ̇ }
        → ((x : X) → is-discrete(Y x)) → (f g : (x : X) → Y x) → ¬ (f ♯ g) → f ≡ g
 tight' fe d = tight fe (λ x → discrete-is-¬¬-separated(d x))
 
@@ -290,7 +295,8 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
   lemma : ¬¬ (inr y ≡ inr y') → inr y ≡ inr y'
   lemma = (ap inr) ∘ (t y y') ∘ ¬¬-functor claim
 
-⊥-⊤-density' : funext 𝓤 𝓤 → propext 𝓤
+⊥-⊤-density' : funext 𝓤 𝓤
+             → propext 𝓤
              → ∀ {𝓥} {X : 𝓥 ̇ }
              → is-¬¬-separated X
              → (f : Ω 𝓤 → X) → f ⊥ ≡ f ⊤

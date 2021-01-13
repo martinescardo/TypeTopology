@@ -153,6 +153,12 @@ As a simple application, it follows that negation doesn't have fixed points:
  Cantor-theorem-for-universes A r h =
   𝟘-elim (pr₁ (cantor-theorem-for-universes A r h 𝟘 id))
 
+ Cantor-theorem-for-universes-corollary : ¬ (𝓤 ̇ ≃ (𝓤 ̇ → 𝓤 ̇ ))
+ Cantor-theorem-for-universes-corollary {𝓤} 𝕗 =
+  Cantor-theorem-for-universes (𝓤 ̇) ⌜ 𝕗 ⌝
+   (section-gives-section· ⌜ 𝕗 ⌝
+     (equivs-have-sections ⌜ 𝕗 ⌝ (⌜⌝-is-equiv 𝕗)))
+
  \end{code}
 
  The original version of Cantor's theorem was for powersets, which

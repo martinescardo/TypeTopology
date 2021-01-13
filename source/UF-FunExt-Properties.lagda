@@ -1,4 +1,4 @@
-Martin Escardo, 19th May 2018, 13th January 2021.
+Martin Escardo, 19th May 2018.
 
 Properties of function extensionality.
 
@@ -18,14 +18,6 @@ open import UF-Subsingletons
 open import UF-Retracts
 open import UF-EquivalenceExamples
 
-open import UF-FunExt
-
-open import MGS-TypeTopology-Interface
-
-import MGS-Equivalences
-import MGS-FunExt-from-Univalence
-import MGS-Universe-Lifting
-
 \end{code}
 
 Vladimir Voevodsky proved in Coq that naive function extensionality
@@ -35,7 +27,7 @@ functions):
 
   https://github.com/vladimirias/Foundations/blob/master/Generalities/uu0.v
 
-Here is an Agda version.
+Here is an Agda version, with explicit indication of the universe levels.
 
 \begin{code}
 
@@ -79,35 +71,5 @@ naive-funext-gives-funext fe = naive-funext-gives-funext' fe fe
 
 naive-funext-gives-funext₀ : naive-funext 𝓤 𝓤 → funext 𝓤 𝓤₀
 naive-funext-gives-funext₀ fe = naive-funext-gives-funext' fe fe
-
-\end{code}
-
-Interface to code from my MGS 2019 lecture notes:
-
-\begin{code}
-
-lower-DN-funext : ∀ 𝓦 𝓣 → DN-funext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → DN-funext 𝓤 𝓥
-lower-DN-funext {𝓤} {𝓥} 𝓦 𝓣 fe {X} {A} {f} {g} = MGS-Universe-Lifting.lower-dfunext 𝓦 𝓣 𝓤 𝓥 fe
-
-DN-funext-gives-funext : {𝓤 𝓥 : Universe} → DN-funext 𝓤 𝓥 → funext 𝓤 𝓥
-DN-funext-gives-funext dnfe {X} {A} f g = γ
- where
-  h : f ≡ g → f ∼ g
-  h = MGS-FunExt-from-Univalence.happly f g
-
-  a : is-equiv h
-  a = MGS-equivs-are-equivs h (MGS-FunExt-from-Univalence.dfunext-gives-hfunext dnfe f g)
-
-  b : is-equiv (happly' f g)
-  b = equiv-closed-under-∼ h (happly' f g) a (happly'-is-MGS-happly f g)
-
-  c :  MGS-Equivalences.is-equiv (happly' f g)
-  c = equivs-are-MGS-equivs (happly' f g) b
-
-  γ : is-equiv (happly' f g)
-  γ = MGS-equivs-are-equivs (happly' f g) c
-
-lower-funext : ∀ 𝓦 𝓣 → funext (𝓤 ⊔ 𝓦) (𝓥 ⊔ 𝓣) → funext 𝓤 𝓥
-lower-funext {𝓤} {𝓥} 𝓦 𝓣 fe = DN-funext-gives-funext (lower-DN-funext 𝓦 𝓣 (dfunext fe))
 
 \end{code}

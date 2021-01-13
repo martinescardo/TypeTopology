@@ -301,7 +301,8 @@ The above use of the word "is" is justified by the following:
 
 \begin{code}
 
-nat-retraction-is-section-uniquely : FunExt → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+nat-retraction-is-section-uniquely : FunExt
+                                   → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                                      (x : X) (η : Nat (Id x) A)
                                    → ((y : X) → has-section(η y))
                                    → ((y : X) → is-singleton(is-section(η y)))
@@ -309,9 +310,10 @@ nat-retraction-is-section-uniquely fe x η hs y = pointed-props-are-singletons
                                                   (nat-retraction-is-section x η hs y)
                                                   (sections-have-at-most-one-retraction fe (η y) (hs y))
 
-nat-having-section-is-prop : FunExt → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                               (x : X) (η : Nat (Id x) A)
-                             → is-prop ((y : X) → has-section (η y))
+nat-having-section-is-prop : FunExt
+                           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                             (x : X) (η : Nat (Id x) A)
+                           → is-prop ((y : X) → has-section (η y))
 nat-having-section-is-prop {𝓤} {𝓥} fe {X} x η φ = Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥)) γ φ
   where
    γ : (y : X) → is-prop (has-section (η y))
@@ -708,16 +710,19 @@ NatΣ-lc' {𝓤} {𝓥} {𝓦} {X} {A} {B} ζ ζ-lc {(x , a)} {(y , b)} pq = g
     g : x , a ≡ y , b
     g = to-Σ-Id (p , t)
 
-yoneda-equivalence-Σ : FunExt → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+yoneda-equivalence-Σ : FunExt
+                     → {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                      → Σ A ≃ (Σ x ꞉ X , Nat (Id x) A)
 yoneda-equivalence-Σ fe A = Σ-cong (λ x → yoneda-equivalence fe x A)
 
 
-nats-are-uniquely-transports : FunExt → {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
+nats-are-uniquely-transports : FunExt
+                             → {X : 𝓤 ̇ } (x : X) (A : X → 𝓥 ̇ ) (η : Nat (Id x) A)
                              → ∃! a ꞉ A x , (λ y p → transport A p a) ≡ η
 nats-are-uniquely-transports fe x A = equivs-are-vv-equivs (yoneda-nat x A) (yoneda-nat-is-equiv fe x A)
 
-adj-obs : FunExt → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X) (x : X)
+adj-obs : FunExt
+        → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (g : Y → X) (x : X)
           (η : (y : Y) → f x ≡ y → g y ≡ x)
         → ∃! q ꞉ g (f x) ≡ x , (λ y p → transport (λ - → g - ≡ x) p q) ≡ η
 adj-obs fe f g x = nats-are-uniquely-transports fe (f x) (λ y → g y ≡ x)

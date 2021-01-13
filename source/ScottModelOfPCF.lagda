@@ -11,7 +11,7 @@ open import UF-Subsingletons
 
 module ScottModelOfPCF
         (pt : propositional-truncations-exist)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
         (pe : propext 𝓤₀)
        where
 
