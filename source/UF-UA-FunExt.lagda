@@ -23,9 +23,6 @@ open import UF-LeftCancellable
 open import UF-FunExt
 open import UF-FunExt-Properties
 open import UF-Equiv-FunExt
-open import UF-Retracts
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
 
 naive-univalence-gives-funext : is-univalent 𝓤 → ∀ {𝓥} → naive-funext 𝓥 𝓤
 naive-univalence-gives-funext {𝓤} ua {𝓥} {X} {Y} {f₀} {f₁} h = γ
