@@ -125,7 +125,8 @@ postcomp-invertible {𝓤} {𝓥} {𝓦} {X} {Y} {A} nfe nfe' f (g , η , ε) = 
   γ = (g' , η' , ε')
 
 postcomp-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
-                  → funext 𝓦 𝓤 → funext 𝓦 𝓥
+                  → funext 𝓦 𝓤
+                  → funext 𝓦 𝓥
                   → (f : X → Y)
                   → is-equiv f
                   → is-equiv (λ (h : A → X) → f ∘ h)
