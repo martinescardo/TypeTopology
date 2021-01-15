@@ -8,7 +8,6 @@ We construct the free sup-lattice on a set X as the powerset of X.
 
 open import SpartanMLTT
 
---open import UF-Equiv
 open import UF-FunExt
 open import UF-Powerset
 open import UF-PropTrunc
@@ -63,13 +62,12 @@ We start with some basic constructions on the powerset.
 
 \end{code}
 
+We define sup-lattices using a record. We also introduce convenient helpers
+and syntax for reasoning about the order ⊑.
+
 \begin{code}
 
-\end{code}
-
-\begin{code}
-
-record Lattice (𝓥 𝓤 𝓣 : Universe) : 𝓤ω where
+record SupLattice (𝓥 𝓤 𝓣 : Universe) : 𝓤ω where
   constructor
     lattice
   field
@@ -124,6 +122,9 @@ record Lattice (𝓥 𝓤 𝓣 : Universe) : 𝓤ω where
 
 \end{code}
 
+The powerset of X is an example of a sup-lattice and every subset can be written
+as a union of singletons (this will come in useful later).
+
 \begin{code}
 
 module _
@@ -134,21 +135,21 @@ module _
         (X-is-set : is-set X)
        where
 
- 𝓟-lattice : Lattice 𝓥 (𝓥 ⁺) 𝓥
- Lattice.L 𝓟-lattice                              = 𝓟 X
- Lattice.L-is-set 𝓟-lattice                       = powersets-are-sets fe₂ fe₁ pe
- Lattice._⊑_ 𝓟-lattice                            = _⊆_
- Lattice.⊑-is-prop-valued 𝓟-lattice               = ⊆-is-prop fe₁ fe₁
- Lattice.⊑-is-reflexive 𝓟-lattice                 = ⊆-refl
- Lattice.⊑-is-transitive 𝓟-lattice                = ⊆-trans
- Lattice.⊑-is-antisymmetric 𝓟-lattice             = (λ A B → subset-extensionality pe fe₁ fe₂)
- Lattice.⋁ 𝓟-lattice                              = ⋃
- Lattice.⋁-is-upperbound 𝓟-lattice                = ⋃-is-upperbound
- Lattice.⋁-is-lowerbound-of-upperbounds 𝓟-lattice = ⋃-is-lowerbound-of-upperbounds
+ 𝓟-lattice : SupLattice 𝓥 (𝓥 ⁺) 𝓥
+ SupLattice.L 𝓟-lattice                              = 𝓟 X
+ SupLattice.L-is-set 𝓟-lattice                       = powersets-are-sets fe₂ fe₁ pe
+ SupLattice._⊑_ 𝓟-lattice                            = _⊆_
+ SupLattice.⊑-is-prop-valued 𝓟-lattice               = ⊆-is-prop fe₁ fe₁
+ SupLattice.⊑-is-reflexive 𝓟-lattice                 = ⊆-refl
+ SupLattice.⊑-is-transitive 𝓟-lattice                = ⊆-trans
+ SupLattice.⊑-is-antisymmetric 𝓟-lattice             = (λ A B → subset-extensionality pe fe₁ fe₂)
+ SupLattice.⋁ 𝓟-lattice                              = ⋃
+ SupLattice.⋁-is-upperbound 𝓟-lattice                = ⋃-is-upperbound
+ SupLattice.⋁-is-lowerbound-of-upperbounds 𝓟-lattice = ⋃-is-lowerbound-of-upperbounds
 
- express-subset-as-union : (A : 𝓟 X)
-                         → A ≡ ⋃ {𝓥} {X} {𝕋 A} (⦅_⦆[ X-is-set ] ∘ pr₁)
- express-subset-as-union A = subset-extensionality pe fe₁ fe₂ u v
+ express-subset-as-union-of-singletons :
+  (A : 𝓟 X) → A ≡ ⋃ {𝓥} {X} {𝕋 A} (⦅_⦆[ X-is-set ] ∘ pr₁)
+ express-subset-as-union-of-singletons A = subset-extensionality pe fe₁ fe₂ u v
   where
    u : A ⊆ ⋃ (⦅_⦆[ X-is-set ] ∘ pr₁)
    u x a = ∣ (x , a) , refl ∣
@@ -160,13 +161,29 @@ module _
 
 \end{code}
 
+Finally we will show that 𝓟 X is the free sup-lattice on a set X.
+Concretely, if L is a (𝓥-)sup-lattice and f : X → L is any function,
+then there is a *unique* mediating map f♭ : 𝓟 X → L such that:
+(i)  f♭ is a sup-lattice homomorphism, i.e.
+     - f♭ preserves joins (of families indexed by types in 𝓥)
+(ii) the diagram
+           f
+     X ---------> L
+      \          ^
+       \        /
+      η \      / ∃! f♭
+         \    /
+          v  /
+          𝓟 X
+     commutes.
+
 \begin{code}
 
 module _
-        (𝓛 : Lattice 𝓥 𝓤 𝓣)
+        (𝓛 : SupLattice 𝓥 𝓤 𝓣)
        where
 
- open Lattice 𝓛
+ open SupLattice 𝓛
 
  module _
          (X : 𝓥 ̇ )
@@ -228,6 +245,8 @@ module _
 
 \end{code}
 
+Finally we prove that f♭ is the unique map with the above properties (i) & (ii).
+
 \begin{code}
 
   module _
@@ -241,11 +260,20 @@ module _
                 → (h ∘ η ∼ f)
                 → h ∼ f♭
    f♭-is-unique h p₁ p₂ A =
-    h A               ≡⟨ ap h (express-subset-as-union pe fe₁ fe₂ X X-is-set A) ⟩
+    h A               ≡⟨ ap h (express-subset-as-union-of-singletons pe fe₁ fe₂ X X-is-set A) ⟩
     h (⋃ (η ∘ pr₁))   ≡⟨ p₁ (𝕋 A) (η ∘ pr₁) ⟩
     ⋁ (h ∘ η ∘ pr₁)   ≡⟨ ⋁-transport (h ∘ η ∘ pr₁) (f ∘ pr₁) (λ p → p₂ (pr₁ p)) ⟩
     ⋁ (f ∘ pr₁)       ≡⟨ refl ⟩
     f♭ A ∎
+
+\end{code}
+
+Assuming some more function extensionality axioms, we can prove "homotopy
+uniqueness", i.e. the tuple consisting of f♭ together with the proofs of (i) and
+(ii) is unique. This follows easily from the above, because (i) and (ii) are
+subsingletons (as L is a set).
+
+\begin{code}
 
    module _
            (fe₃ : funext 𝓥 𝓤)
