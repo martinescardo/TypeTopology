@@ -27,6 +27,9 @@ is-empty = ¬_
 ¬¬_ : 𝓤 ̇ → 𝓤 ̇
 ¬¬ A = ¬ (¬ A)
 
+is-nonempty : 𝓤 ̇ → 𝓤 ̇
+is-nonempty = ¬¬_
+
 dual : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (R : 𝓦 ̇ ) → (X → Y) → (Y → R) → (X → R)
 dual R f p = p ∘ f
 
@@ -57,15 +60,41 @@ dnu φ = (¬¬-functor pr₁ φ) , (¬¬-functor pr₂ φ)
 und : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ A × ¬¬ B → ¬¬ (A × B)
 und (φ , γ) w = γ (λ y → φ (λ x → w (x , y)))
 
+
+Double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                  {R : 𝓦 ̇ } {S : 𝓣 ̇ } {T : 𝓣' ̇ }
+                                → (((A → B) → T) → S)
+                                → (((A → S) → R) × (B → T)) → R
+Double-negation-of-implication← f g = pr₁ g (λ a → f (λ h → pr₂ g (h a)))
+
+Double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                                  (R : 𝓦 ̇ ) {S : 𝓣 ̇ } {T : 𝓣' ̇ } {U : 𝓣' ̇ }
+                                → (S → B)
+                                → ((((A → S) → T) × (B → T)) → U)
+                                → ((A → B) → T) → U
+Double-negation-of-implication→ R k f g = f ((λ h → g (λ a → k (h a))) ,
+                                             (λ b → g (λ a → b)))
+
+double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A → B) → ¬(¬¬ A × ¬ B)
+double-negation-of-implication← = Double-negation-of-implication←
+
+double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬ (¬¬ A × ¬ B) → ¬¬ (A → B)
+double-negation-of-implication→ f g = Double-negation-of-implication→ (𝟘 {𝓤₀}) 𝟘-elim f g
+
 not-Σ-implies-Π-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                     → ¬ (Σ x ꞉ X , A x)
                     → (x : X) → ¬ (A x)
 not-Σ-implies-Π-not = curry
 
-Π-not-implies-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
+Π-not-implies-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                     → ((x : X) → ¬ (A x))
                     → ¬ (Σ x ꞉ X , A x)
 Π-not-implies-not-Σ = uncurry
+
+not-Π-implies-not-not-Σ' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                    → ¬ ((x : X) → ¬¬ (A x))
+                    → ¬¬ (Σ x ꞉ X , ¬ (A x))
+not-Π-implies-not-not-Σ' = contrapositive not-Σ-implies-Π-not
 
 \end{code}
 

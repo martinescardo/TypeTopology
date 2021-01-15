@@ -82,7 +82,7 @@ Given any root, we can find a minimal root.
 \begin{code}
 
 minimal-root : ∀ α n → α n ≡ z → α has-a-minimal-root< (succ n)
-minimal-root α n p = Right-fails-then-left-holds (fpo (succ n) α) g
+minimal-root α n p = Right-fails-gives-left-holds (fpo (succ n) α) g
  where
   g : ¬ (α has-no-root< (succ n))
   g φ = φ n (≤-refl n) p

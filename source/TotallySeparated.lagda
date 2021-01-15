@@ -819,7 +819,7 @@ apartness relation _♯₂ is tight:
    s x y u a = u (♯s y x a)
 
    t : (x y z : X) → ¬ (x ♯ y) → ¬ (y ♯ z) → ¬ (x ♯ z)
-   t x y z u v a = v (♯s z y (left-fails-then-right-holds (♯p z y) b u))
+   t x y z u v a = v (♯s z y (left-fails-gives-right-holds (♯p z y) b u))
     where
      b : (x ♯ y) ∨ (z ♯ y)
      b = ♯c x z y a
@@ -842,7 +842,7 @@ apartness relation _♯₂ is tight:
    g n z = g₁ , g₂
     where
      g₁ : x ♯ z → y ♯ z
-     g₁ a = s z y (left-fails-then-right-holds (p z y) b n)
+     g₁ a = s z y (left-fails-gives-right-holds (p z y) b n)
       where
        b : (x ♯ y) ∨ (z ♯ y)
        b = c x z y a
@@ -851,7 +851,7 @@ apartness relation _♯₂ is tight:
      n' a = n (s y x a)
 
      g₂ : y ♯ z → x ♯ z
-     g₂ a = s z x (left-fails-then-right-holds (p z x) b n')
+     g₂ a = s z x (left-fails-gives-right-holds (p z x) b n')
       where
        b : (y ♯ x) ∨ (z ♯ x)
        b = c y z x a
@@ -1029,7 +1029,7 @@ apartness on it.
 
   X'-is-set : is-set X'
   X'-is-set = subsets-of-sets-are-sets (X → Ω 𝓥) _
-                (powersets-are-sets (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-prop
+                (powersets-are-sets'' (fe 𝓤 (𝓥 ⁺)) (fe 𝓥 𝓥) pe) ∥∥-is-prop
 
   η : X → X'
   η = corestriction α

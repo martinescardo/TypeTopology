@@ -20,6 +20,7 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-LeftCancellable
 open import UF-Retracts
 
@@ -166,11 +167,16 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
   pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , wconstant f
   pc {p} {q} = (f p q , wconstant-f p q)
 
-powersets-are-sets : funext 𝓤 (𝓥 ⁺)
-                   → funext 𝓥 𝓥
+powersets-are-sets'' : funext 𝓤 (𝓥 ⁺)
+                     → funext 𝓥 𝓥
+                     → propext 𝓥
+                     → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
+powersets-are-sets'' fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
+
+powersets-are-sets : funext 𝓥 (𝓥 ⁺)
                    → propext 𝓥
-                   → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
-powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
+                   → {A : 𝓥 ̇ } → is-set (A → Ω 𝓥)
+powersets-are-sets {𝓥} fe = powersets-are-sets'' fe (lower-funext 𝓥 (𝓥 ⁺) fe)
 
 negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)

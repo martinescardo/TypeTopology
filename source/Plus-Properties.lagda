@@ -50,13 +50,13 @@ Cases-equality-r : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → A) (g
                  → (z : X + Y) (y : Y) → z ≡ inr y → Cases z f g ≡ g y
 Cases-equality-r f g .(inr y) y refl = refl
 
-Left-fails-then-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ P → Q
-Left-fails-then-right-holds (inl p) u = 𝟘-elim (u p)
-Left-fails-then-right-holds (inr q) u = q
+Left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ P → Q
+Left-fails-gives-right-holds (inl p) u = 𝟘-elim (u p)
+Left-fails-gives-right-holds (inr q) u = q
 
-Right-fails-then-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q → P
-Right-fails-then-left-holds (inl p) u = p
-Right-fails-then-left-holds (inr q) u = 𝟘-elim (u q)
+Right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → P + Q → ¬ Q → P
+Right-fails-gives-left-holds (inl p) u = p
+Right-fails-gives-left-holds (inr q) u = 𝟘-elim (u q)
 
 open import Unit
 open import Sigma

@@ -33,7 +33,6 @@ powersets-are-sets' : Univalence → {X : 𝓤 ̇ } → is-set (𝓟 X)
 
 powersets-are-sets' {𝓤} ua = powersets-are-sets
                                (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
-                               (univalence-gives-funext (ua 𝓤))
                                (univalence-gives-propext (ua 𝓤))
 
 _∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
