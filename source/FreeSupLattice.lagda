@@ -9,6 +9,7 @@ We construct the free 𝓥-sup-lattice on a set X : 𝓥 as the (𝓥-)powerset 
 open import SpartanMLTT
 
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Powerset
 open import UF-PropTrunc
 open import UF-Subsingletons
@@ -129,27 +130,26 @@ as a union of singletons (this will come in useful later).
 
 module _
         (pe : propext 𝓥)
-        (fe₁ : funext 𝓥 𝓥)
-        (fe₂ : funext 𝓥 (𝓥 ⁺))
+        (fe : funext 𝓥 (𝓥 ⁺))
         (X : 𝓥 ̇ )
         (X-is-set : is-set X)
        where
 
  𝓟-lattice : SupLattice 𝓥 (𝓥 ⁺) 𝓥
  SupLattice.L 𝓟-lattice                              = 𝓟 X
- SupLattice.L-is-set 𝓟-lattice                       = powersets-are-sets fe₂ fe₁ pe
+ SupLattice.L-is-set 𝓟-lattice                       = powersets-are-sets fe pe
  SupLattice._⊑_ 𝓟-lattice                            = _⊆_
- SupLattice.⊑-is-prop-valued 𝓟-lattice               = ⊆-is-prop fe₁ fe₁
+ SupLattice.⊑-is-prop-valued 𝓟-lattice               = ⊆-is-prop (lower-funext 𝓥 (𝓥 ⁺) fe)
  SupLattice.⊑-is-reflexive 𝓟-lattice                 = ⊆-refl
  SupLattice.⊑-is-transitive 𝓟-lattice                = ⊆-trans
- SupLattice.⊑-is-antisymmetric 𝓟-lattice             = (λ A B → subset-extensionality pe fe₁ fe₂)
+ SupLattice.⊑-is-antisymmetric 𝓟-lattice             = (λ A B → subset-extensionality pe fe)
  SupLattice.⋁ 𝓟-lattice                              = ⋃
  SupLattice.⋁-is-upperbound 𝓟-lattice                = ⋃-is-upperbound
  SupLattice.⋁-is-lowerbound-of-upperbounds 𝓟-lattice = ⋃-is-lowerbound-of-upperbounds
 
  express-subset-as-union-of-singletons :
   (A : 𝓟 X) → A ≡ ⋃ {𝓥} {X} {𝕋 A} (⦅_⦆[ X-is-set ] ∘ pr₁)
- express-subset-as-union-of-singletons A = subset-extensionality pe fe₁ fe₂ u v
+ express-subset-as-union-of-singletons A = subset-extensionality pe fe u v
   where
    u : A ⊆ ⋃ (⦅_⦆[ X-is-set ] ∘ pr₁)
    u x a = ∣ (x , a) , refl ∣
@@ -251,8 +251,7 @@ Finally we prove that f♭ is the unique map with the above properties (i) & (ii
 
   module _
           (pe : propext 𝓥)
-          (fe₁ : funext 𝓥 𝓥)
-          (fe₂ : funext 𝓥 (𝓥 ⁺))
+          (fe : funext 𝓥 (𝓥 ⁺))
          where
 
    f♭-is-unique : (h : 𝓟 X → L)
@@ -260,7 +259,7 @@ Finally we prove that f♭ is the unique map with the above properties (i) & (ii
                 → (h ∘ η ∼ f)
                 → h ∼ f♭
    f♭-is-unique h p₁ p₂ A =
-    h A               ≡⟨ ap h (express-subset-as-union-of-singletons pe fe₁ fe₂ X X-is-set A) ⟩
+    h A               ≡⟨ ap h (express-subset-as-union-of-singletons pe fe X X-is-set A) ⟩
     h (⋃ (η ∘ pr₁))   ≡⟨ p₁ (𝕋 A) (η ∘ pr₁) ⟩
     ⋁ (h ∘ η ∘ pr₁)   ≡⟨ ⋁-transport (h ∘ η ∘ pr₁) (f ∘ pr₁) (λ p → p₂ (pr₁ p)) ⟩
     ⋁ (f ∘ pr₁)       ≡⟨ refl ⟩
@@ -275,32 +274,35 @@ subsingletons (as L is a set).
 
 \begin{code}
 
-   module _
-           (fe₃ : funext 𝓥 𝓤)
-           (fe₄ : funext (𝓥 ⁺) 𝓤)
-           (fe₅ : funext (𝓥 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-          where
+  module _
+          (pe : propext 𝓥)
+          (fe : funext (𝓥 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+         where
 
-    homotopy-uniqueness-of-f♭ :
-     ∃! h ꞉ (𝓟 X → L) , (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α)))
-                      × (h ∘ η ∼ f)
-    homotopy-uniqueness-of-f♭ =
-     (f♭ , f♭-preserves-joins , f♭-after-η-is-f) , γ
-      where
-       γ : (t : (Σ h ꞉ (𝓟 X → L) ,
-                    (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α)))
-                  × (h ∘ η ∼ f)))
-         → (f♭ , f♭-preserves-joins , f♭-after-η-is-f) ≡ t
-       γ (h , p₁ , p₂) = to-subtype-≡ ψ
-                         (dfunext fe₄ (λ A → (f♭-is-unique h p₁ p₂ A) ⁻¹))
-        where
-         ψ : (k : 𝓟 X → L)
-           → is-prop (((I : 𝓥 ̇) (α : I → 𝓟 X) → k (⋃ α) ≡ ⋁ (k ∘ α))
-                     × k ∘ η ∼ f)
-         ψ k = ×-is-prop (Π-is-prop fe₅
-                               (λ _ → Π-is-prop fe₄
-                               (λ _ → L-is-set)))
-                             (Π-is-prop fe₃
-                               (λ _ → L-is-set))
+   homotopy-uniqueness-of-f♭ :
+    ∃! h ꞉ (𝓟 X → L) , (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α)))
+                     × (h ∘ η ∼ f)
+   homotopy-uniqueness-of-f♭ =
+    (f♭ , f♭-preserves-joins , f♭-after-η-is-f) , γ
+     where
+      γ : (t : (Σ h ꞉ (𝓟 X → L) ,
+                   (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → h (⋃ α) ≡ ⋁ (h ∘ α)))
+                 × (h ∘ η ∼ f)))
+        → (f♭ , f♭-preserves-joins , f♭-after-η-is-f) ≡ t
+      γ (h , p₁ , p₂) = to-subtype-≡ ψ
+                        (dfunext (lower-funext (𝓥 ⁺) (𝓥 ⁺) fe)
+                          (λ A → (f♭-is-unique
+                                   pe
+                                   (lower-funext (𝓥 ⁺) 𝓤 fe)
+                                   h p₁ p₂ A) ⁻¹))
+       where
+        ψ : (k : 𝓟 X → L)
+          → is-prop (((I : 𝓥 ̇) (α : I → 𝓟 X) → k (⋃ α) ≡ ⋁ (k ∘ α))
+                    × k ∘ η ∼ f)
+        ψ k = ×-is-prop (Π-is-prop fe
+                              (λ _ → Π-is-prop (lower-funext (𝓥 ⁺) (𝓥 ⁺) fe)
+                              (λ _ → L-is-set)))
+                            (Π-is-prop (lower-funext (𝓥 ⁺) (𝓥 ⁺) fe)
+                              (λ _ → L-is-set))
 
 \end{code}
