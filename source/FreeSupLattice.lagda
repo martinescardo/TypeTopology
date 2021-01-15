@@ -1,6 +1,6 @@
 Tom de Jong, 8 & 15 January 2021
 
-We construct the free lattice on a set X as the powerset of X.
+We construct the free sup-lattice on a set X as the powerset of X.
 
 \begin{code}
 
@@ -15,7 +15,7 @@ open import UF-PropTrunc
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
-module FreeLattice
+module FreeSupLattice
         (pt : propositional-truncations-exist)
        where
 
