@@ -214,27 +214,6 @@ being-well-order-is-prop fe = prop-criterion γ
                    (extensionality-is-prop fe (prop-valuedness o))
                    (transitivity-is-prop fe (prop-valuedness o))
 
-no-minimal-is-empty : is-well-founded
-                    → ∀ {𝓦} (P : X → 𝓦 ̇ )
-                    → ((x : X) → P x → Σ y ꞉ X , (y < x) × P y)
-                    → is-empty (Σ P)
-no-minimal-is-empty w P s (x , p) = γ
- where
-  f : ((x : X) → P x → Σ y ꞉ X , (y < x) × P y) → (x : X) → ¬ (P x)
-  f s x p = g x (w x) p
-   where
-    g : (x : X) → is-accessible x → ¬ (P x)
-    g x (next x σ) p = IH (pr₁ (s x p)) (pr₁ (pr₂ (s x p))) (pr₂ (pr₂ (s x p)))
-     where
-      IH : (y : X) → y < x → ¬ (P y)
-      IH y l = g y (σ y l)
-
-  NB : Σ P → ¬ ((x : X) → P x → Σ y ꞉ X , (y < x) × P y)
-  NB (x , p) s = f s x p
-
-  γ : 𝟘
-  γ = f s x p
-
 _≾_ : X → X → 𝓥 ̇
 x ≾ y = ¬ (y < x)
 
@@ -272,6 +251,27 @@ irreflexive = ≾-refl
 
 ≼-coarser-than-≾ : (y : X) → is-accessible y → (x : X) → x ≼ y → x ≾ y
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
+
+no-minimal-is-empty : is-well-founded
+                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                    → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+                    → is-empty (Σ A)
+no-minimal-is-empty w A s (x , p) = γ
+ where
+  f : ((x : X) → A x → Σ y ꞉ X , (y < x) × A y) → (x : X) → ¬ (A x)
+  f s x p = g x (w x) p
+   where
+    g : (x : X) → is-accessible x → ¬ (A x)
+    g x (next x σ) p = IH (pr₁ (s x p)) (pr₁ (pr₂ (s x p))) (pr₂ (pr₂ (s x p)))
+     where
+      IH : (y : X) → y < x → ¬ (A y)
+      IH y l = g y (σ y l)
+
+  NB : Σ A → ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+  NB (x , p) s = f s x p
+
+  γ : 𝟘
+  γ = f s x p
 
 \end{code}
 
@@ -415,7 +415,56 @@ trichotomy em fe (p , w , e , t) = γ
                       (¬A-and-¬B-give-P ν)
                       ¬¬B-gives-P)
              ¬¬A-gives-P
+{-
+nonempty-has-minimal : Fun-Ext
+                     → EM (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+                     → is-well-order
+                     → (A : X → 𝓦 ̇ )
+                     → ((x : X) → is-prop (A x))
+                     → is-nonempty (Σ A)
+                     → Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
+nonempty-has-minimal {𝓦} fe em W A A-is-prop-valued f = γ
+ where
+  B : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  B = Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
 
+  j : (x : X) → is-prop ((y : X) → A y → x ≾ y)
+  j x = Π₃-is-prop fe (λ x a l → 𝟘-is-prop)
+
+  i : (x : X) → is-prop (A x × ((y : X) → A y → x ≾ y))
+  i x = ×-is-prop (A-is-prop-valued x) (j x)
+
+  B-is-prop : is-prop B
+  B-is-prop (x , a , f) (x' , a' , f') = to-subtype-≡ i q
+   where
+
+    q : x ≡ x'
+    q = h (trichotomy (lower-EM 𝓦 em) fe W x x')
+     where
+      h : (x < x') + (x ≡ x') + (x' < x) → x ≡ x'
+      h (inl l)       = 𝟘-elim (f' x a l)
+      h (inr (inl p)) = p
+      h (inr (inr l)) = 𝟘-elim (f x' a' l)
+
+  C : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  C = (x : X) → A x → Σ y ꞉ X , (y < x) × A y
+
+  g : ¬ C
+  g = contrapositive (no-minimal-is-empty (well-foundedness W) A) f
+
+  h : ¬ B → (x : X) → ¬ (A x) + ¬ ((y : X) → A y → x ≾ y)
+  h ν x = de-Morgan (lower-EM (𝓤 ⊔ 𝓥) em) em
+            (A-is-prop-valued x) (j x) (λ z → ν (x , z))
+
+  ϕ : (x : X) → ¬ (A x × ((y : X) → A y → x ≾ y)) → ?
+  ϕ x ν = ?
+
+  k : ¬ B → (x : X) → ¬ (A x × ((y : X) → A y → x ≾ y))
+  k ν x z = ν (x , z)
+
+  γ : B
+  γ = {!!}
+-}
 \end{code}
 
 When do we get x ≾ y → x ≼ y (say for ordinals)? When do we get

@@ -101,7 +101,7 @@ order
 
 defined by
 
-    α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃₀ (β ↓ b).
+    α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃ₒ (β ↓ b).
 
 The existence of such a resized-down order is crucial for the
 corollaries of Burali-Forti, but not for Burali-Forti itself.

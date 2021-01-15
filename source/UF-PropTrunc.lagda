@@ -88,11 +88,11 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  _∨_  : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  P ∨ Q = ∥ P + Q ∥
 
- left-fails-then-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop Q → P ∨ Q → ¬ P → Q
- left-fails-then-right-holds i d u = ∥∥-rec i (λ d → Left-fails-then-right-holds d u) d
+ left-fails-gives-right-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop Q → P ∨ Q → ¬ P → Q
+ left-fails-gives-right-holds i d u = ∥∥-rec i (λ d → Left-fails-gives-right-holds d u) d
 
- right-fails-then-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop P → P ∨ Q → ¬ Q → P
- right-fails-then-left-holds i d u = ∥∥-rec i (λ d → Right-fails-then-left-holds d u) d
+ right-fails-gives-left-holds : {P : 𝓤 ̇ } {Q : 𝓥 ̇ } → is-prop P → P ∨ Q → ¬ Q → P
+ right-fails-gives-left-holds i d u = ∥∥-rec i (λ d → Right-fails-gives-left-holds d u) d
 
  pt-gdn : {X : 𝓤 ̇ } → ∥ X ∥ → ∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P
  pt-gdn {𝓤} {X} s {𝓥} P isp u = ∥∥-rec isp u s
