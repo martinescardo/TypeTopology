@@ -1,6 +1,6 @@
 Tom de Jong, 8 & 15 January 2021
 
-We construct the free sup-lattice on a set X as the powerset of X.
+We construct the free 𝓥-sup-lattice on a set (X : 𝓥) as the (𝓥-)powerset of X.
 
 \begin{code}
 
