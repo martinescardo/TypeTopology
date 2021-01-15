@@ -1,6 +1,6 @@
 Tom de Jong, 8 & 15 January 2021
 
-We construct the free 𝓥-sup-lattice on a set (X : 𝓥) as the (𝓥-)powerset of X.
+We construct the free 𝓥-sup-lattice on a set X : 𝓥 as the (𝓥-)powerset of X.
 
 \begin{code}
 
@@ -161,8 +161,8 @@ module _
 
 \end{code}
 
-Finally we will show that 𝓟 X is the free sup-lattice on a set X.
-Concretely, if L is a (𝓥-)sup-lattice and f : X → L is any function,
+Finally we will show that 𝓟 X is the free 𝓥-sup-lattice on a set X : 𝓥.
+Concretely, if L is a 𝓥-sup-lattice and f : X → L is any function,
 then there is a *unique* mediating map f♭ : 𝓟 X → L such that:
 (i)  f♭ is a sup-lattice homomorphism, i.e.
      - f♭ preserves joins (of families indexed by types in 𝓥)
