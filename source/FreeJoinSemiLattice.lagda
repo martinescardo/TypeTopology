@@ -14,6 +14,7 @@ open import SpartanMLTT
 
 open import UF-Equiv
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-ImageAndSurjection
 open import UF-Powerset
 open import UF-PropTrunc
@@ -144,25 +145,24 @@ A ⊑[𝓚] B = ⟨ A ⟩ ⊆ ⟨ B ⟩
 ⊑[𝓚]-is-transitive {𝓤} {X} A B C = ⊆-trans ⟨ A ⟩ ⟨ B ⟩ ⟨ C ⟩
 
 module _
-        (fe₁ : funext 𝓤 𝓤)
+        (fe : funext 𝓤 (𝓤 ⁺))
        where
 
  ⊑[𝓚]-is-prop-valued : {X : 𝓤 ̇ } (A B : 𝓚 X) → is-prop (A ⊑[𝓚] B)
- ⊑[𝓚]-is-prop-valued {X} A B = ⊆-is-prop fe₁ fe₁ ⟨ A ⟩ ⟨ B ⟩
+ ⊑[𝓚]-is-prop-valued {X} A B = ⊆-is-prop (lower-funext 𝓤 (𝓤 ⁺) fe) ⟨ A ⟩ ⟨ B ⟩
 
  module _
         (pe : propext 𝓤)
-        (fe₂ : funext 𝓤 (𝓤 ⁺))
        where
 
   ⊑[𝓚]-is-antisymmetric : {X : 𝓤 ̇ } (A B : 𝓚 X) → A ⊑[𝓚] B → B ⊑[𝓚] A → A ≡ B
   ⊑[𝓚]-is-antisymmetric {X} A B s t =
    to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop)
-   (subset-extensionality pe fe₂ s t)
+   (subset-extensionality pe fe s t)
 
   𝓚-is-set : {X : 𝓤 ̇} → is-set (𝓚 X)
   𝓚-is-set {X} =
-   subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe₂ fe₁ pe)
+   subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
     where
      s : left-cancellable ⟨_⟩
      s e = to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop) e
@@ -337,8 +337,7 @@ The Kuratowski finite subsets are an example of a join-semilattice.
 
 module _
         (pe : propext 𝓤)
-        (fe₁ : funext 𝓤 𝓤)
-        (fe₂ : funext 𝓤 (𝓤 ⁺))
+        (fe : funext 𝓤 (𝓤 ⁺))
         (X : 𝓤 ̇ )
         (X-is-set : is-set X)
        where
@@ -347,12 +346,12 @@ module _
  -- because copatterns are said to avoid unnecessary unfoldings in typechecking.
  𝓚-join-semilattice : JoinSemiLattice (𝓤 ⁺) 𝓤
  JoinSemiLattice.L                              𝓚-join-semilattice = 𝓚 X
- JoinSemiLattice.L-is-set                       𝓚-join-semilattice = 𝓚-is-set fe₁ pe fe₂
+ JoinSemiLattice.L-is-set                       𝓚-join-semilattice = 𝓚-is-set fe pe
  JoinSemiLattice._⊑_                            𝓚-join-semilattice = _⊑[𝓚]_
- JoinSemiLattice.⊑-is-prop-valued               𝓚-join-semilattice = ⊑[𝓚]-is-prop-valued fe₁
+ JoinSemiLattice.⊑-is-prop-valued               𝓚-join-semilattice = ⊑[𝓚]-is-prop-valued fe
  JoinSemiLattice.⊑-is-reflexive                 𝓚-join-semilattice = ⊑[𝓚]-is-reflexive
  JoinSemiLattice.⊑-is-transitive                𝓚-join-semilattice = ⊑[𝓚]-is-transitive
- JoinSemiLattice.⊑-is-antisymmetric             𝓚-join-semilattice = ⊑[𝓚]-is-antisymmetric fe₁ pe fe₂
+ JoinSemiLattice.⊑-is-antisymmetric             𝓚-join-semilattice = ⊑[𝓚]-is-antisymmetric fe pe
  JoinSemiLattice.⊥                              𝓚-join-semilattice = ⊥[𝓚]
  JoinSemiLattice.⊥-is-least                     𝓚-join-semilattice = ⊥[𝓚]-is-least
  JoinSemiLattice._∨_                            𝓚-join-semilattice = _∨[𝓚]_
@@ -363,12 +362,12 @@ module _
  {-
  𝓚-join-semilattice = joinsemilattice
                         (𝓚 X)
-                        (𝓚-is-set fe₁ pe fe₂)
+                        (𝓚-is-set fe pe)
                         _⊑[𝓚]_
-                        (⊑[𝓚]-is-prop-valued fe₁)
+                        (⊑[𝓚]-is-prop-valued fe)
                         ⊑[𝓚]-is-reflexive
                         ⊑[𝓚]-is-transitive
-                        (⊑[𝓚]-is-antisymmetric fe₁ pe fe₂)
+                        (⊑[𝓚]-is-antisymmetric fe pe)
                         ⊥[𝓚]
                         ⊥[𝓚]-is-least
                         _∨[𝓚]_
@@ -399,7 +398,7 @@ abstract induction principle for Kuratowski finite subsets.
    ε : Fin n → 𝓚 X
    ε = η X-is-set ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e
    γ : A ≡ ∨ⁿ ε
-   γ = ⊑[𝓚]-is-antisymmetric fe₁ pe fe₂ A (∨ⁿ ε) u v
+   γ = ⊑[𝓚]-is-antisymmetric fe pe A (∨ⁿ ε) u v
     where
      u : A ⊑[𝓚] ∨ⁿ ε
      u x a = ∥∥-rec (∈-is-prop ⟨ ∨ⁿ ε ⟩ x) μ (σ (x , a))
@@ -718,8 +717,7 @@ We do so by using the aforementioned induction principle.
 
   module _
           (pe : propext 𝓤)
-          (fe₁ : funext 𝓤 𝓤)
-          (fe₂ : funext 𝓤 (𝓤 ⁺))
+          (fe : funext 𝓤 (𝓤 ⁺))
          where
 
    f♭-is-unique : (h : 𝓚 X → L)
@@ -727,7 +725,7 @@ We do so by using the aforementioned induction principle.
                 → ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
                 → (h ∘ η X-is-set ∼ f)
                 → h ∼ f♭
-   f♭-is-unique h p₁ p₂ p₃ = Kuratowski-finite-subset-induction pe fe₁ fe₂
+   f♭-is-unique h p₁ p₂ p₃ = Kuratowski-finite-subset-induction pe fe
                              X X-is-set
                              (λ A → h A ≡ f♭ A)
                              (λ _ → L-is-set)
@@ -759,34 +757,38 @@ subsingletons (as L is a set).
 
 \begin{code}
 
-   module _
-           (fe₃ : funext 𝓤 𝓥)
-           (fe₄ : funext (𝓤 ⁺) 𝓥)
-           (fe₅ : funext (𝓤 ⁺) (𝓤 ⁺ ⊔ 𝓥))
-          where
+  module _
+          (pe : propext 𝓤)
+          (fe : funext (𝓤 ⁺) (𝓤 ⁺ ⊔ 𝓥))
+         where
 
-    homotopy-uniqueness-of-f♭ :
-     ∃! h ꞉ (𝓚 X → L) , (h ⊥[𝓚] ≡ ⊥)
-                      × ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
-                      × h ∘ η X-is-set ∼ f
-    homotopy-uniqueness-of-f♭ =
-     (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) , γ
-      where
-       γ : (t : (Σ h ꞉ (𝓚 X → L) , (h ⊥[𝓚] ≡ ⊥)
-                                 × ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
-                                 × h ∘ η X-is-set ∼ f))
-         → (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) ≡ t
-       γ (h , p₁ , p₂ , p₃) = to-subtype-≡ ψ
-                              (dfunext fe₄ (λ A → (f♭-is-unique h p₁ p₂ p₃ A) ⁻¹))
-        where
-         ψ : (k : 𝓚 X → L)
-           → is-prop ((k ⊥[𝓚] ≡ ⊥)
-                     × ((A B : 𝓚 X) → k (A ∨[𝓚] B) ≡ (k A ∨ k B))
-                     × k ∘ η X-is-set ∼ f)
-         ψ k = ×-is-prop L-is-set (×-is-prop
-                                    (Π-is-prop fe₅
-                                      (λ _ → Π-is-prop fe₄
-                                      (λ _ → L-is-set)))
-                                    (Π-is-prop fe₃ (λ _ → L-is-set)))
+   homotopy-uniqueness-of-f♭ :
+    ∃! h ꞉ (𝓚 X → L) , (h ⊥[𝓚] ≡ ⊥)
+                     × ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
+                     × h ∘ η X-is-set ∼ f
+   homotopy-uniqueness-of-f♭ =
+    (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) , γ
+     where
+      γ : (t : (Σ h ꞉ (𝓚 X → L) , (h ⊥[𝓚] ≡ ⊥)
+                                × ((A B : 𝓚 X) → h (A ∨[𝓚] B) ≡ h A ∨ h B)
+                                × h ∘ η X-is-set ∼ f))
+        → (f♭ , f♭-preserves-⊥ , f♭-preserves-∨ , f♭-after-η-is-f) ≡ t
+      γ (h , p₁ , p₂ , p₃) = to-subtype-≡ ψ
+                             (dfunext (lower-funext (𝓤 ⁺) (𝓤 ⁺) fe)
+                               (λ A → (f♭-is-unique
+                                         pe
+                                         (lower-funext (𝓤 ⁺) 𝓥 fe)
+                                         h p₁ p₂ p₃ A) ⁻¹))
+       where
+        ψ : (k : 𝓚 X → L)
+          → is-prop ((k ⊥[𝓚] ≡ ⊥)
+                    × ((A B : 𝓚 X) → k (A ∨[𝓚] B) ≡ (k A ∨ k B))
+                    × k ∘ η X-is-set ∼ f)
+        ψ k = ×-is-prop L-is-set (×-is-prop
+                                   (Π-is-prop fe
+                                     (λ _ → Π-is-prop (lower-funext (𝓤 ⁺) (𝓤 ⁺) fe)
+                                     (λ _ → L-is-set)))
+                                   (Π-is-prop (lower-funext (𝓤 ⁺) (𝓤 ⁺) fe)
+                                     (λ _ → L-is-set)))
 
 \end{code}

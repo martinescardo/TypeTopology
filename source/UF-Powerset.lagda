@@ -44,12 +44,16 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 ∈-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∈ A)
 ∈-is-prop A x = holds-is-prop (A x)
 
-⊆-is-prop : funext 𝓤 𝓥
-          → funext 𝓥 𝓥
-          → {X : 𝓤 ̇ } (A B : X → Ω 𝓥) → is-prop (A ⊆ B)
-⊆-is-prop fe fe' A B = Π-is-prop fe
-                        (λ x → Π-is-prop fe'
-                        (λ _ → ∈-is-prop B x))
+⊆-is-prop' : funext 𝓤 𝓥
+           → funext 𝓥 𝓥
+           → {X : 𝓤 ̇ } (A B : X → Ω 𝓥) → is-prop (A ⊆ B)
+⊆-is-prop' fe fe' A B = Π-is-prop fe
+                         (λ x → Π-is-prop fe'
+                         (λ _ → ∈-is-prop B x))
+
+⊆-is-prop : funext 𝓤 𝓤
+          → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-prop (A ⊆ B)
+⊆-is-prop fe = ⊆-is-prop' fe fe
 
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
 ⊆-refl A x = id

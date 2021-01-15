@@ -139,6 +139,7 @@ import Fin
 import frame
 import FailureOfTotalSeparatedness
 import FreeJoinSemiLattice    -- By Tom de Jong
+import FreeSupLattice         -- By Tom de Jong
 import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
