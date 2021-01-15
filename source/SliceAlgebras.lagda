@@ -130,6 +130,6 @@ universe-is-algebra-Π ua = prod , k , ι
   k X = eqtoid ua (𝟙 → X) X (≃-sym (𝟙→ (univalence-gives-funext ua)))
   ι : (I : 𝓣 ̇ ) (J : I → 𝓣 ̇ ) (f : Σ J → 𝓣 ̇ )
     → Π f ≡ Π (λ i → Π (λ j → f (i , j)))
-  ι I J f = eqtoid ua _ _ (curry-uncurry' fe fe fe)
+  ι I J f = eqtoid ua _ _ (curry-uncurry' fe fe)
 
 \end{code}

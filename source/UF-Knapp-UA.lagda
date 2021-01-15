@@ -23,7 +23,7 @@ open import UF-Equiv
 open import UF-Equiv-FunExt
 open import UF-Univalence
 open import UF-FunExt
-open import UF-FunExt-from-Naive-FunExt
+open import UF-FunExt-Properties
 open import UF-Yoneda
 
 \end{code}

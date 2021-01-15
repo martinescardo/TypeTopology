@@ -210,7 +210,9 @@ type injectivity purposes).
 𝓛-alg-Law₀' {𝓤} {X} ∐ = (P : 𝓣 ̇ ) (i : is-prop P) (f : P → X) (p : P) → ∐ i f ≡ f p
 
 
-𝓛-alg-Law₀-gives₀' : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+𝓛-alg-Law₀-gives₀' : propext 𝓣
+                   → funext 𝓣 𝓣
+                     → funext 𝓣 𝓤
                    → {X : 𝓤 ̇ } (∐ : joinop X)
                    → 𝓛-alg-Law₀ ∐ → 𝓛-alg-Law₀' ∐
 𝓛-alg-Law₀-gives₀' pe fe fe' {X} ∐ κ P i f p = γ
@@ -315,7 +317,8 @@ Using this we can prove the other direction of the logical equivalence claimed a
 \begin{code}
 
 𝓛-alg-Law₁'-gives₁ : {X : 𝓤 ̇ } (∐ : joinop X)
-                    → is-univalent 𝓣 → funext 𝓣 𝓤
+                    → is-univalent 𝓣
+                    → funext 𝓣 𝓤
                     → 𝓛-alg-Law₁' ∐ → 𝓛-alg-Law₁ ∐
 𝓛-alg-Law₁'-gives₁ {𝓤} {X} ∐ ua fe a P Q i j f =
  ∐ {Σ Q} (Σ-is-prop i j) f                                         ≡⟨ b ⟩
@@ -401,6 +404,6 @@ universe-is-algebra-Π ua = prod , k , ι
   ι : (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) (i : is-prop P)
       (j : (p : P) → is-prop (Q p)) (f : Σ Q → 𝓣 ̇ )
     → Π f ≡ Π (λ p → Π (λ q → f (p , q)))
-  ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe fe)
+  ι P Q i j f = eqtoid ua _ _ (curry-uncurry' fe fe)
 
 \end{code}

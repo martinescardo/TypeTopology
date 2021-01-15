@@ -58,11 +58,13 @@ und : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ A × ¬¬ B → ¬¬ (A × B)
 und (φ , γ) w = γ (λ y → φ (λ x → w (x , y)))
 
 not-Σ-implies-Π-not : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                    → ¬ (Σ x ꞉ X , A x) → (x : X) → ¬ (A x)
+                    → ¬ (Σ x ꞉ X , A x)
+                    → (x : X) → ¬ (A x)
 not-Σ-implies-Π-not = curry
 
 Π-not-implies-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓤 ̇ }
-                    → ((x : X) → ¬ (A x)) → ¬ (Σ x ꞉ X , A x)
+                    → ((x : X) → ¬ (A x))
+                    → ¬ (Σ x ꞉ X , A x)
 Π-not-implies-not-Σ = uncurry
 
 \end{code}

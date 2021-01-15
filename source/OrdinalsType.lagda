@@ -115,7 +115,8 @@ principle:
 open import UF-Equiv
 open import UF-Univalence
 
-Ordinal-≡ : FunExt → is-univalent 𝓤
+Ordinal-≡ : FunExt
+          → is-univalent 𝓤
           → (α β : Ordinal 𝓤)
           → (α ≡ β)
           ≃ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) ,

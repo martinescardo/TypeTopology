@@ -10,29 +10,31 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 module UF-EquivalenceExamples where
 
-curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦 → funext (𝓤 ⊔ 𝓥) 𝓦
+curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦)
+               → funext (𝓤 ⊔ 𝓥) 𝓦
                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
                → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z(x , y))
-curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' fe'' {X} {Y} {Z} = qinveq c (u , uc , cu)
+curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' {X} {Y} {Z} = qinveq c (u , uc , cu)
  where
   c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
   c f x y = f (x , y)
   u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
   u g (x , y) = g x y
   cu : ∀ g → c (u g) ≡ g
-  cu g = dfunext fe (λ x → dfunext fe' (λ y → refl))
+  cu g = dfunext fe (λ x → dfunext (lower-funext 𝓤 𝓦 fe') (λ y → refl))
   uc : ∀ f → u (c f) ≡ f
-  uc f = dfunext fe'' (λ w → refl)
+  uc f = dfunext fe' (λ w → refl)
 
 curry-uncurry : (fe : FunExt)
               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
               → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z(x , y))
-curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe 𝓥 𝓦) (fe (𝓤 ⊔ 𝓥) 𝓦)
+curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe (𝓤 ⊔ 𝓥) 𝓦)
 
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
       → (σ ≡ τ) ≃ (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
@@ -127,7 +129,8 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε (inl _ , _) = refl
   ε (inr _ , _) = refl
 
-Π-cong : funext 𝓤 𝓥 → funext 𝓤 𝓦
+Π-cong : funext 𝓤 𝓥
+       → funext 𝓤 𝓦
        → (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) (Y' : X → 𝓦 ̇ )
        → ((x : X) → Y x ≃ Y' x) → Π Y ≃ Π Y'
 Π-cong fe fe' X Y Y' φ = (F , (G , FG) , (H , HF))
@@ -168,7 +171,8 @@ An application of Π-cong is the following:
 
 \begin{code}
 
-≃-funext₂ : funext 𝓤 (𝓥 ⊔ 𝓦) → funext 𝓥 𝓦
+≃-funext₂ : funext 𝓤 (𝓥 ⊔ 𝓦)
+          → funext 𝓥 𝓦
           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {A : (x : X) → Y x → 𝓦 ̇ }
             (f g : (x : X) (y : Y x) → A x y) → (f ≡ g) ≃ (∀ x y → f x y ≡ g x y)
 ≃-funext₂ fe fe' {X} f g =
@@ -359,7 +363,8 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   D : (z : X × Y) → ×functor g' γ' (×functor f φ z) ≡ z
   D (x , y) = to-×-≡ (d x) (δ y)
 
-𝟘→ : {X : 𝓤 ̇ } → funext 𝓦 𝓤
+𝟘→ : {X : 𝓤 ̇ }
+   → funext 𝓦 𝓤
    → 𝟙 {𝓥} ≃ (𝟘 {𝓦} → X)
 𝟘→ {𝓤} {𝓥} {𝓦} {X} fe = qinveq f (g , ε , η)
  where
@@ -372,7 +377,8 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   ε : (y : 𝟙) → g (f y) ≡ y
   ε * = refl
 
-𝟙→ : {X : 𝓤 ̇ } → funext 𝓥 𝓤
+𝟙→ : {X : 𝓤 ̇ }
+   → funext 𝓥 𝓤
    → X ≃ (𝟙 {𝓥} → X)
 𝟙→ {𝓤} {𝓥} {X} fe = qinveq f (g , ε , η)
  where
@@ -423,7 +429,8 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   ε (l , r) = refl
 
 
-+→ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
++→ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+   → funext (𝓤 ⊔ 𝓥) 𝓦
    → ((X + Y) → Z) ≃ (X → Z) × (Y → Z)
 +→ fe = ≃-sym (Π×+ fe)
 
@@ -441,7 +448,8 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   η (γ , δ) = refl
 
 →cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-      → funext 𝓦 𝓣 → funext 𝓤 𝓥
+      → funext 𝓦 𝓣
+      → funext 𝓤 𝓥
       → X ≃ A → Y ≃ B → (X → Y) ≃ (A → B)
 →cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} fe fe' (f , i) (φ , j) =
  H (equivs-are-qinvs f i) (equivs-are-qinvs φ j)
@@ -459,7 +467,8 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
     D h = dfunext fe' (λ x → ε (h (g (f x))) ∙ ap h (e x))
 
 →cong' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {B : 𝓣 ̇ }
-       → funext 𝓤 𝓣 → funext 𝓤 𝓥
+       → funext 𝓤 𝓣
+       → funext 𝓤 𝓥
        → Y ≃ B → (X → Y) ≃ (X → B)
 →cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →cong fe fe' (≃-refl X)
 
@@ -578,24 +587,24 @@ NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
   fiber (NatΠ ζ) g                              ■
 
 NatΠ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-              → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
+              → funext 𝓤 (𝓥 ⊔ 𝓦)
               → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΠ ζ)
-NatΠ-vv-equiv A B ζ fe fe' i g = equiv-to-singleton
-                                    (≃-sym (NatΠ-fiber-equiv A B ζ fe g))
-                                    (Π-is-singleton fe' (λ x → i x (g x)))
+NatΠ-vv-equiv {𝓤} {𝓥} {𝓦} A B ζ fe i g = equiv-to-singleton
+                                           (≃-sym (NatΠ-fiber-equiv A B ζ (lower-funext 𝓤 𝓥 fe) g))
+                                           (Π-is-singleton fe (λ x → i x (g x)))
 
 NatΠ-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-           → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
+           → funext 𝓤 (𝓥 ⊔ 𝓦)
            → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΠ ζ)
-NatΠ-equiv A B ζ fe fe' i = vv-equivs-are-equivs
+NatΠ-equiv A B ζ fe i = vv-equivs-are-equivs
                              (NatΠ ζ)
-                             (NatΠ-vv-equiv A B ζ fe fe'
+                             (NatΠ-vv-equiv A B ζ fe
                                (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
 Π-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
-        → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
+        → funext 𝓤 (𝓥 ⊔ 𝓦)
         → ((x : X) → A x ≃ B x) → Π A ≃ Π B
-Π-cong' A B fe fe' e = NatΠ (λ x → pr₁(e x)) , NatΠ-equiv A B (λ x → pr₁(e x)) fe fe' (λ x → pr₂(e x))
+Π-cong' A B fe e = NatΠ (λ x → pr₁(e x)) , NatΠ-equiv A B (λ x → pr₁(e x)) fe (λ x → pr₂(e x))
 
 ≡-cong : {X : 𝓤 ̇ } (x y : X) {x' y' : X} → x ≡ x' → y ≡ y' → (x ≡ y) ≃ (x' ≡ y')
 ≡-cong x y refl refl = ≃-refl (x ≡ y)
@@ -618,8 +627,11 @@ singleton-≃-𝟙 i = singleton-≃ i 𝟙-is-singleton
 singleton-≃-𝟙' : {X : 𝓤 ̇ } → is-singleton X → 𝟙 {𝓥} ≃ X
 singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
 
-𝟙-≡-≃ : (P : 𝓤 ̇ ) → funext 𝓤 𝓤 → propext 𝓤
-      → is-prop P → (𝟙 ≡ P) ≃ P
+𝟙-≡-≃ : (P : 𝓤 ̇ )
+      → funext 𝓤 𝓤
+      → propext 𝓤
+      → is-prop P
+      → (𝟙 ≡ P) ≃ P
 𝟙-≡-≃ P fe pe i = qinveq (λ q → Idtofun q *) (f , ε , η)
  where
   f : P → 𝟙 ≡ P

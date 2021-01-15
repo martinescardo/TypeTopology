@@ -1,4 +1,8 @@
-Formulation of univalence.
+Martin Escardo.
+
+Formulation of univalence. Notice that this file doesn't postulate
+univalence. It only defines the notion of univalent
+universe. Univalence, when used, is taken as an explicit hypothesis.
 
 \begin{code}
 
@@ -202,8 +206,16 @@ JEq : is-univalent 𝓤 → ∀ {𝓥} → ≃-induction 𝓤 𝓥
 JEq ua = pr₁ (JEq-improve (JEq' ua))
 
 JEq-comp : (ua : is-univalent 𝓤) (X : 𝓤 ̇ ) (A : (Y : 𝓤 ̇ ) → X ≃ Y → 𝓥 ̇ ) (b : A X (≃-refl X))
-        → JEq ua X A b X (≃-refl X) ≡ b
+         → JEq ua X A b X (≃-refl X) ≡ b
 JEq-comp ua = pr₂ (JEq-improve (JEq' ua))
+
+\end{code}
+
+A much more transparent and shorter construction of JEq and JEq-comp
+is in my MGS'2019 lecture notes and in the module
+MGS-Equivalence-induction.
+
+\begin{code}
 
 ≃-transport : is-univalent 𝓤
             → ∀ {𝓥} (A : 𝓤 ̇ → 𝓥 ̇ ) {X Y : 𝓤 ̇ } → X ≃ Y → A X → A Y

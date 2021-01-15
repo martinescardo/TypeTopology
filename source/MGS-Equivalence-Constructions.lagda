@@ -13,7 +13,8 @@ module MGS-Equivalence-Constructions where
 
 open import MGS-More-FunExt-Consequences public
 
-id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥) → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+id-≃-left : dfunext 𝓥 (𝓤 ⊔ 𝓥)
+          → dfunext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (α : X ≃ Y)
           → id-≃ X ● α ≡ α
 

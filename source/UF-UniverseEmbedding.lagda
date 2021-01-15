@@ -25,6 +25,7 @@ open import UF-Embeddings
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Equiv-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
@@ -105,11 +106,14 @@ Lift 𝓥 X = X × 𝟙 {𝓥}
 lift : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift 𝓥 X
 lift 𝓥 x = (x , *)
 
-lower : {𝓥 : Universe} {X : 𝓤 ̇ } → Lift 𝓥 X → X
+lower : {X : 𝓤 ̇ } → Lift 𝓥 X → X
 lower (x , *) = x
 
+lower-is-equiv : {X : 𝓤 ̇ } → is-equiv (lower {𝓤} {𝓥} {X})
+lower-is-equiv {𝓤} {𝓥} = (lift 𝓥 , λ x → refl) , (lift 𝓥 , λ x → refl)
+
 Lift-is-universe-embedding : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
-Lift-is-universe-embedding 𝓥 X = 𝟙-rneutral
+Lift-is-universe-embedding 𝓥 X = lower , lower-is-equiv
 
 Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
 Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥
@@ -231,13 +235,12 @@ Lift-is-set 𝓥 X X-is-set = equiv-to-set
 Lift-hSet : (𝓥 : Universe) → hSet 𝓤 → hSet (𝓤 ⊔ 𝓥)
 Lift-hSet 𝓥 = pair-fun (Lift 𝓥) (Lift-is-set 𝓥)
 
-Lift-is-set-is-embedding : funext 𝓤 𝓤
-                         → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+Lift-is-set-is-embedding : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                          → (X : 𝓤 ̇ ) → is-embedding (Lift-is-set 𝓥 X)
-Lift-is-set-is-embedding {𝓤} {𝓥} fe fe' X = maps-of-props-are-embeddings
-                                              (Lift-is-set 𝓥 X)
-                                              (being-set-is-prop fe)
-                                              (being-set-is-prop fe')
+Lift-is-set-is-embedding {𝓤} {𝓥} fe X = maps-of-props-are-embeddings
+                                          (Lift-is-set 𝓥 X)
+                                          (being-set-is-prop (lower-funext 𝓥 𝓥 fe))
+                                          (being-set-is-prop fe)
 
 Lift-hSet-is-embedding : Univalence
                        → is-embedding (Lift-hSet {𝓤} 𝓥)
@@ -246,7 +249,6 @@ Lift-hSet-is-embedding {𝓤} {𝓥} ua = pair-fun-embedding
                                      (Lift-is-set 𝓥)
                                      (Lift-is-embedding ua)
                                      (Lift-is-set-is-embedding
-                                       (FunExt-from-Univalence ua  𝓤 𝓤)
                                        (FunExt-from-Univalence ua (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
 
 is-hSet-embedding : (hSet 𝓤 → hSet 𝓥) → (𝓤 ⁺) ⊔ 𝓥 ̇

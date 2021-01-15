@@ -118,6 +118,7 @@ open import UF-Size
 open import UF-PropTrunc
 open import UF-UniverseEmbedding
 open import UF-ExcludedMiddle
+open import UF-Lower-FunExt
 
 \end{code}
 
@@ -465,28 +466,31 @@ There is more to do about this.
                           → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f / j) ∘ j ≡ f
 Π-extension-is-extension' ua fe j e f = dfunext fe (Π-extension-is-extension ua j e f)
 
-Π-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺) → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
+Π-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥)
+                           → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
                            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                            → is-embedding j
                            → (λ f → (f / j) ∘ j) ≡ id
-Π-extension-is-extension'' ua fe fe' j e = dfunext fe' (Π-extension-is-extension' ua fe j e)
+Π-extension-is-extension'' {𝓤} {𝓥} ua fe j e = dfunext fe (Π-extension-is-extension' ua (lower-fun-ext 𝓤 fe) j e)
 
 Σ-extension-is-extension : is-univalent (𝓤 ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                          → is-embedding j
                          → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ∼ f
 Σ-extension-is-extension ua j e f x = eqtoid ua _ _ (Σ-extension-in-range f j e x)
 
-Σ-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
+Σ-extension-is-extension' : is-univalent (𝓤 ⊔ 𝓥)
+                          → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺)
                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                           → is-embedding j
                           → (f : X → 𝓤 ⊔ 𝓥 ̇ ) → (f ∖ j) ∘ j ≡ f
 Σ-extension-is-extension' ua fe j e f = dfunext fe (Σ-extension-is-extension ua j e f)
 
-Σ-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥) → funext 𝓤 ((𝓤 ⊔ 𝓥)⁺) → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
+Σ-extension-is-extension'' : is-univalent (𝓤 ⊔ 𝓥)
+                           → funext ((𝓤 ⊔ 𝓥)⁺) ((𝓤 ⊔ 𝓥)⁺)
                            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (j : X → Y)
                            → is-embedding j
                            → (λ f → (f ∖ j) ∘ j) ≡ id
-Σ-extension-is-extension'' ua fe fe' j e = dfunext fe' (Σ-extension-is-extension' ua fe j e)
+Σ-extension-is-extension'' {𝓤} {𝓥} ua fe j e = dfunext fe (Σ-extension-is-extension' ua (lower-fun-ext 𝓤 fe) j e)
 
 \end{code}
 
@@ -1476,7 +1480,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
 
    Id-set₀-is-embedding : is-embedding Id-set₀
    Id-set₀-is-embedding = ∘-is-embedding
-                           (Id-set-is-embedding (fe 𝓤 𝓤) (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
+                           (Id-set-is-embedding (fe 𝓤 (𝓤 ⁺)) (pe 𝓤) i)
                            down-is-embedding
 
    injective-set-retract-of-powerset : injective-type D 𝓤 𝓤 → ∥ retract D of (D → Ω₀) ∥

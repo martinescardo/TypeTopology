@@ -64,7 +64,8 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   r : (Σ (fiber f) , pr₁) ≡ (X , f)
   r = to-Σ-≡ (p , q)
 
-χε : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+χε : is-univalent 𝓤
+   → funext 𝓤 (𝓤 ⁺)
    → (Y : 𝓤 ̇ ) (A : Y → 𝓤 ̇ ) → χ Y (𝕋 Y A) ≡ A
 χε ua fe Y A = dfunext fe γ
  where
@@ -79,12 +80,14 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   γ : ∀ y → fiber pr₁ y ≡ A y
   γ y = eqtoid ua _ _ (qinveq (f y) (g y , η y , ε y))
 
-universes-are-map-classifiers : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+universes-are-map-classifiers : is-univalent 𝓤
+                              → funext 𝓤 (𝓤 ⁺)
                               → is-map-classifier 𝓤
 universes-are-map-classifiers ua fe Y = qinvs-are-equivs (χ Y)
                                          (𝕋 Y , χη ua Y , χε ua fe Y)
 
-map-classification : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+map-classification : is-univalent 𝓤
+                   → funext 𝓤 (𝓤 ⁺)
                    → (Y : 𝓤 ̇ ) → 𝓤 / Y ≃ (Y → 𝓤 ̇ )
 map-classification ua fe Y = χ Y , universes-are-map-classifiers ua fe Y
 
@@ -116,12 +119,14 @@ mc-gives-sc {𝓤} s P Y = γ
   γ : is-equiv (χ-special P Y)
   γ = ⌜⌝-is-equiv e
 
-χ-special-is-equiv : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+χ-special-is-equiv : is-univalent 𝓤
+                   → funext 𝓤 (𝓤 ⁺)
                    → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                    → is-equiv (χ-special P Y)
 χ-special-is-equiv {𝓤} ua fe P Y = mc-gives-sc (universes-are-map-classifiers ua fe) P Y
 
-special-map-classifier : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
+special-map-classifier : is-univalent 𝓤
+                       → funext 𝓤 (𝓤 ⁺)
                        → (P : 𝓤 ̇ → 𝓥 ̇ ) (Y : 𝓤 ̇ )
                        → 𝓤 /[ P ] Y ≃ (Y → Σ P)
 special-map-classifier {𝓤} ua fe P Y = χ-special P Y , χ-special-is-equiv ua fe P Y

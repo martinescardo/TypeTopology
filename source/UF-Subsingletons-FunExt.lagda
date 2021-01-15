@@ -1,3 +1,5 @@
+Martin Escardo
+
 In univalent logic, as opposed to Curry-Howard logic, a proposition is
 a prop or a type such that any two of its elements are
 identified.
@@ -21,18 +23,21 @@ open import UF-FunExt
 open import UF-LeftCancellable
 open import UF-Retracts
 
-Π-is-prop : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+Π-is-prop : funext 𝓤 𝓥
+          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
           → ((x : X) → is-prop (A x)) → is-prop (Π A)
 Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
 
-Π-is-prop' : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-        → ((x : X) → is-prop (A x)) → is-prop ({x : X} → A x)
+Π-is-prop' : funext 𝓤 𝓥
+           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+           → ((x : X) → is-prop (A x)) → is-prop ({x : X} → A x)
 Π-is-prop' fe {X} {A} i = retract-of-prop retr (Π-is-prop fe i)
  where
   retr : retract ({x : X} → A x) of Π A
   retr = (λ f {x} → f x) , (λ g x → g {x}) , (λ x → refl)
 
-Π-is-singleton : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+Π-is-singleton : funext 𝓤 𝓥
+               → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
 Π-is-singleton fe i = (λ x → pr₁ (i x)) , (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
 
@@ -48,9 +53,12 @@ being-prop-is-prop {𝓤} {X} fe f g = c₁
   c₁ : f ≡ g
   c₁  = dfunext fe c₀
 
-identifications-of-props-are-props : propext 𝓤 → funext 𝓤 𝓤
-                                   → (P : 𝓤 ̇ ) → is-prop P
-                                   → (X : 𝓤 ̇ ) → is-prop (X ≡ P)
+identifications-of-props-are-props : propext 𝓤
+                                   → funext 𝓤 𝓤
+                                   → (P : 𝓤 ̇ )
+                                   → is-prop P
+                                   → (X : 𝓤 ̇ )
+                                   → is-prop (X ≡ P)
 identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X → g X ∘ f X , k X)
  where
   f : (X : 𝓤 ̇ ) → X ≡ P → is-prop X × (X ⇔ P)
@@ -75,7 +83,8 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe 
 ∃!-is-prop : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥) → is-prop (∃! A)
 ∃!-is-prop fe = being-singleton-is-prop fe
 
-Π-is-set : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+Π-is-set : funext 𝓤 𝓥
+         → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
          → ((x : X) → is-set (A x)) → is-set (Π A)
 Π-is-set {𝓤} {𝓥} fe {X} {A} isa {f} {g} = b
  where
@@ -157,7 +166,9 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
   pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , wconstant f
   pc {p} {q} = (f p q , wconstant-f p q)
 
-powersets-are-sets : funext 𝓤 (𝓥 ⁺) → funext 𝓥 𝓥 → propext 𝓥
+powersets-are-sets : funext 𝓤 (𝓥 ⁺)
+                   → funext 𝓥 𝓥
+                   → propext 𝓥
                    → {A : 𝓤 ̇ } → is-set (A → Ω 𝓥)
 powersets-are-sets fe fe' pe = Π-is-set fe (λ x → Ω-is-set fe' pe)
 
@@ -184,7 +195,9 @@ TODO. In the following, rather than using a P and i, use a p = (P , i) in Ω �
 holds-gives-equal-𝟙 : propext 𝓤 → (P : 𝓤 ̇ ) → is-prop P → P → P ≡ 𝟙
 holds-gives-equal-𝟙 pe P i p = pe i 𝟙-is-prop unique-to-𝟙 (λ _ → p)
 
-true-is-equal-⊤ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
+true-is-equal-⊤ : propext 𝓤
+                → funext 𝓤 𝓤
+                → (P : 𝓤 ̇ ) (i : is-prop P)
                 → P → (P , i) ≡ ⊤
 true-is-equal-⊤ pe fe P i p = to-Σ-≡ (holds-gives-equal-𝟙 pe P i p ,
                                       being-prop-is-prop fe _ _)
@@ -219,7 +232,8 @@ Without excluded middle, we have that:
 
 \begin{code}
 
-no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤 → propext 𝓤
+no-truth-values-other-than-⊥-or-⊤ : funext 𝓤 𝓤
+                                  → propext 𝓤
                                   → ¬ (Σ p ꞉ Ω 𝓤 , (p ≢ ⊥) × (p ≢ ⊤))
 no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
  where
@@ -252,7 +266,8 @@ type nameless:
 
 \begin{code}
 
-𝟙-is-true-props-center : funext 𝓤 𝓤 → propext 𝓤
+𝟙-is-true-props-center : funext 𝓤 𝓤
+                       → propext 𝓤
                        → (σ : Σ P ꞉ 𝓤 ̇ , is-prop P × P) → (𝟙 , 𝟙-is-prop , *) ≡ σ
 𝟙-is-true-props-center fe pe = γ
  where
@@ -265,12 +280,14 @@ type nameless:
     s : 𝟙 ≡ P
     s = pe 𝟙-is-prop i (λ _ → p) (λ _ → *)
 
-the-true-props-form-a-singleton-type : funext 𝓤 𝓤 → propext 𝓤
+the-true-props-form-a-singleton-type : funext 𝓤 𝓤
+                                     → propext 𝓤
                                      → is-singleton (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
 the-true-props-form-a-singleton-type fe pe = (𝟙 , 𝟙-is-prop , *) , 𝟙-is-true-props-center fe pe
 
 
-the-true-props-form-a-prop : funext 𝓤 𝓤 → propext 𝓤
+the-true-props-form-a-prop : funext 𝓤 𝓤
+                           → propext 𝓤
                            → is-prop (Σ P ꞉ 𝓤 ̇ , is-prop P × P)
 the-true-props-form-a-prop fe pe = singletons-are-props (the-true-props-form-a-singleton-type fe pe)
 

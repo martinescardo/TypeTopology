@@ -158,7 +158,7 @@ module _
   ⊑[𝓚]-is-antisymmetric : {X : 𝓤 ̇ } (A B : 𝓚 X) → A ⊑[𝓚] B → B ⊑[𝓚] A → A ≡ B
   ⊑[𝓚]-is-antisymmetric {X} A B s t =
    to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop)
-   (subset-extensionality pe fe₁ fe₂ s t)
+   (subset-extensionality pe fe₂ s t)
 
   𝓚-is-set : {X : 𝓤 ̇} → is-set (𝓚 X)
   𝓚-is-set {X} =

@@ -15,6 +15,7 @@ open import UF-LeftCancellable
 open import UF-Yoneda
 open import UF-Retracts
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
@@ -22,10 +23,10 @@ open import UF-UA-FunExt
 is-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-embedding f = ∀ y → is-prop (fiber f y)
 
-being-embedding-is-prop : funext 𝓥 (𝓤 ⊔ 𝓥) → funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
+being-embedding-is-prop : funext (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)
                         → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                         → is-prop (is-embedding f)
-being-embedding-is-prop fe fe' f = Π-is-prop fe (λ x → being-prop-is-prop fe')
+being-embedding-is-prop {𝓤} {𝓥} fe f = Π-is-prop (lower-funext 𝓤 𝓤 fe) (λ x → being-prop-is-prop fe)
 
 embedding-criterion : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → ((x : X) → is-prop (fiber f (f x)))
@@ -415,11 +416,12 @@ NatΣ-is-embedding-converse A B ζ e x b = equiv-to-prop
                                           (e (x , b))
 
 NatΠ-is-embedding : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                  → funext 𝓤 𝓦  → funext 𝓤 (𝓥 ⊔ 𝓦)
+                  → funext 𝓤 (𝓥 ⊔ 𝓦)
                   → ((x : X) → is-embedding(ζ x)) → is-embedding(NatΠ ζ)
-NatΠ-is-embedding A B ζ fe fe' i g = equiv-to-prop
-                                      (≃-sym (NatΠ-fiber-equiv A B ζ fe g))
-                                      (Π-is-prop fe' (λ x → i x (g x)))
+NatΠ-is-embedding {𝓤} {𝓥} {𝓦} A B ζ fe i g =
+ equiv-to-prop
+   (≃-sym (NatΠ-fiber-equiv A B ζ (lower-funext 𝓤 𝓥 fe) g))
+   (Π-is-prop fe (λ x → i x (g x)))
 
 \end{code}
 

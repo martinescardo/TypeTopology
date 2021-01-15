@@ -41,7 +41,8 @@ of which is actually an equivalence).
 𝓚→𝓛 : (X : 𝓤 ̇ ) → 𝓚 X → 𝓛 X
 𝓚→𝓛 X = NatΣ (ζ X)
 
-η-composite : funext 𝓣 𝓣 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
+η-composite : funext 𝓣 𝓣
+            → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
             → {X : 𝓤 ̇ } → η ≡ 𝓚→𝓛 X ∘ κ
 η-composite fe fe' {X} = dfunext fe' h
  where
@@ -68,8 +69,7 @@ NatΣ-embedding.:
                             (being-singleton-is-prop fe)
                             (being-prop-is-prop fe))
 
-𝓚→𝓛-is-embedding : funext 𝓣 𝓣
-                  → (X : 𝓤 ̇ ) → is-embedding (𝓚→𝓛 X)
+𝓚→𝓛-is-embedding : funext 𝓣 𝓣 → (X : 𝓤 ̇ ) → is-embedding (𝓚→𝓛 X)
 𝓚→𝓛-is-embedding fe X = NatΣ-is-embedding
                           (λ P → (P → X) × is-singleton P)
                           (λ P → (P → X) × is-prop P)
@@ -84,7 +84,9 @@ itself.
 
 \begin{code}
 
-κ-is-equiv : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤
+κ-is-equiv : propext 𝓣
+           → funext 𝓣 𝓣
+           → funext 𝓣 𝓤
            → {X : 𝓤 ̇ } → is-equiv (κ {𝓤} {X})
 κ-is-equiv {𝓤} pe fe fe' {X} = qinvs-are-equivs κ (ρ , (ρκ , κρ))
  where
@@ -126,7 +128,10 @@ two embeddings:
 
 \begin{code}
 
-η-is-embedding : propext 𝓣 → funext 𝓣 𝓣 → funext 𝓣 𝓤 → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
+η-is-embedding : propext 𝓣
+               → funext 𝓣 𝓣
+               → funext 𝓣 𝓤
+               → funext 𝓤 (𝓣 ⁺ ⊔ 𝓤)
                → {X : 𝓤 ̇ } → is-embedding (η {𝓤} {X})
 η-is-embedding pe fe fe' fe'' {X} =
   back-transport

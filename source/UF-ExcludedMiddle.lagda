@@ -1,6 +1,8 @@
 Martin Escardo.
 
-Excluded middle related things.
+Excluded middle related things. Notice that this file doesn't
+postulate excluded middle. It only defines what the principle of
+excluded middle is.
 
 In the Curry-Howard interpretation, excluded middle say that every
 type has an inhabitant or os empty. In univalent foundations, where
@@ -22,6 +24,7 @@ open import UF-Equiv
 open import UF-Embeddings
 open import UF-PropTrunc
 open import UF-FunExt
+open import UF-UniverseEmbedding
 
 \end{code}
 
@@ -33,6 +36,16 @@ which we refer to as the density of the decidable truth values.
 
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
+
+lower-EM : ∀ 𝓥 → EM (𝓤 ⊔ 𝓥) → EM 𝓤
+lower-EM 𝓥 em P P-is-prop = f d
+ where
+  d : Lift 𝓥 P + ¬ Lift 𝓥 P
+  d = em (Lift 𝓥 P) (equiv-to-prop (Lift-is-universe-embedding 𝓥 P) P-is-prop)
+
+  f : Lift 𝓥 P + ¬ Lift 𝓥 P → P + ¬ P
+  f (inl p) = inl (lower p)
+  f (inr ν) = inr (λ p → ν (lift 𝓥 p))
 
 Global-EM : 𝓤ω
 Global-EM = ∀ {𝓤} → EM 𝓤
@@ -67,6 +80,18 @@ DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
                              (decidability-of-prop-is-prop fe isp)
                              (λ u → u (inr (λ p → u (inl p))))
+
+de-Morgan : EM 𝓤
+          → EM 𝓥
+          → {A : 𝓤 ̇ } {B : 𝓥 ̇}
+          → is-prop A
+          → is-prop B
+          → ¬ (A × B) → ¬ A + ¬ B
+de-Morgan em em' {A} {B} i j n = Cases (em A i)
+                                  (λ a → Cases (em' B j)
+                                          (λ b → 𝟘-elim (n (a , b)))
+                                          inr)
+                                  inl
 
 fem-proptrunc : FunExt → Global-EM → propositional-truncations-exist
 fem-proptrunc fe em = record {

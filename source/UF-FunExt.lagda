@@ -1,4 +1,8 @@
-Formulation of function extensionality
+Martin Escardo.
+
+Formulation of function extensionality. Notice that this file doesn't
+postulate function extensionality. It only defines the concept, which
+is used explicitly as a hypothesis each time it is needed.
 
 \begin{code}
 

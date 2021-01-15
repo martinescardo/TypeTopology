@@ -76,6 +76,7 @@ open import UF-Equiv
 open import UF-LeftCancellable
 open import UF-Embeddings
 open import UF-FunExt
+open import UF-Lower-FunExt
 open import UF-PropTrunc
 open import UF-ImageAndSurjection
 open import UF-Miscelanea
@@ -89,9 +90,9 @@ An equality defined by a Leibniz principle with 𝟚-valued functions:
 _≡₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
 x ≡₂ y = (p : _ → 𝟚) → p x ≡ p y
 
-≡₂-is-prop-valued : funext 𝓤 𝓤 → funext 𝓤 𝓤₀
+≡₂-is-prop-valued : funext 𝓤 𝓤₀
                   → (X : 𝓤 ̇ ) (x y : X) → is-prop (x ≡₂ y)
-≡₂-is-prop-valued fe fe₀ X x y = Π-is-prop fe₀ (λ p → 𝟚-is-set)
+≡₂-is-prop-valued fe X x y = Π-is-prop fe (λ p → 𝟚-is-set)
 
 \end{code}
 
@@ -130,12 +131,11 @@ quasi-component of any point is a subsingleton, and hence a singleton:
 is-totally-separated₁ : 𝓤 ̇ → 𝓤 ̇
 is-totally-separated₁ X = (x : X) → is-prop (quasi-component x)
 
-totally-separated-gives-totally-separated₁ : funext 𝓤 𝓤
-                                           → funext 𝓤 𝓤₀
+totally-separated-gives-totally-separated₁ : funext 𝓤 𝓤₀
                                            → {X : 𝓤 ̇ }
                                            → is-totally-separated X
                                            → is-totally-separated₁ X
-totally-separated-gives-totally-separated₁ fe fe₀ {X} ts x (y , a) (z , b) = γ
+totally-separated-gives-totally-separated₁ fe {X} ts x (y , a) (z , b) = γ
  where
   c : y ≡₂ z
   c p = (a p)⁻¹ ∙ b p
@@ -144,7 +144,7 @@ totally-separated-gives-totally-separated₁ fe fe₀ {X} ts x (y , a) (z , b) =
   q = ts c
 
   γ : (y , a) ≡ (z , b)
-  γ = to-subtype-≡ (≡₂-is-prop-valued fe fe₀ X x) q
+  γ = to-subtype-≡ (≡₂-is-prop-valued fe X x) q
 
 totally-separated₁-types-are-totally-separated : {X : 𝓤 ̇ }
                                                → is-totally-separated₁ X
@@ -276,20 +276,18 @@ open import UF-ExcludedMiddle
   d = equal-⊤-gives-holds p c
 
 Ω-separated-gives-EM : propext 𝓤
-                     → funext 𝓤 𝓤₀
                      → funext 𝓤 𝓤
                      → is-¬¬-separated (Ω 𝓤)
                      → EM 𝓤
-Ω-separated-gives-EM pe fe₀ fe Ω-is-¬¬-separated =
-  DNE-gives-EM fe₀ (Ω-separated-gives-DNE pe fe Ω-is-¬¬-separated)
+Ω-separated-gives-EM {𝓤} pe fe Ω-is-¬¬-separated =
+  DNE-gives-EM (lower-funext 𝓤 𝓤 fe) (Ω-separated-gives-DNE pe fe Ω-is-¬¬-separated)
 
 Ω-totally-separated-gives-EM : propext 𝓤
-                             → funext 𝓤 𝓤₀
                              → funext 𝓤 𝓤
                              → is-totally-separated (Ω 𝓤)
                              → EM 𝓤
-Ω-totally-separated-gives-EM {𝓤} pe fe₀ fe Ω-is-totally-separated =
-  Ω-separated-gives-EM pe fe₀ fe
+Ω-totally-separated-gives-EM {𝓤} pe fe Ω-is-totally-separated =
+  Ω-separated-gives-EM pe fe
     (totally-separated-types-are-separated (Ω 𝓤) Ω-is-totally-separated)
 
 \end{code}
@@ -302,10 +300,9 @@ arguments. The essence of the proof is that of p in the where clause.
 \begin{code}
 
 being-totally-separated-is-prop : funext 𝓤 𝓤
-                                → funext 𝓤 𝓤₀
                                 → (X : 𝓤 ̇ )
                                 → is-prop (is-totally-separated X)
-being-totally-separated-is-prop {𝓤} fe fe₀ X = γ
+being-totally-separated-is-prop {𝓤} fe X = γ
  where
   T : 𝓤 ̇
   T = (x y : X) → x ≡₂ y → x ≡ y
@@ -320,7 +317,8 @@ being-totally-separated-is-prop {𝓤} fe fe₀ X = γ
   p t = Π-is-prop fe
            (λ x → Π-is-prop fe
                     (λ y → Π-is-prop fe
-                              (λ p → totally-separated-types-are-sets fe₀ X (f t))))
+                              (λ p → totally-separated-types-are-sets
+                                      (lower-funext 𝓤 𝓤 fe) X (f t))))
 
   γ : is-prop (is-totally-separated X)
   γ = subtype-of-prop-is-prop g (λ {t} {u} (r : g t ≡ g u) → ap f r) (prop-criterion p)
@@ -910,24 +908,22 @@ apartness relation _♯₂ is tight:
 \begin{code}
 
  tight-separated' : funext 𝓤 𝓤
-                  → funext 𝓤 𝓤₀
                   → {X : 𝓤 ̇ }
                   → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
                   → is-¬¬-separated X
- tight-separated' {𝓤} fe fe₀ {X} = ∥∥-rec (is-prop-separated fe fe₀) f
+ tight-separated' {𝓤} fe {X} = ∥∥-rec (being-¬¬-separated-is-prop fe) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-¬¬-separated X
     f (_♯_ , a , t) = tight-is-¬¬-separated _♯_ a t
 
  tight-is-set' : funext 𝓤 𝓤
-               → funext 𝓤 𝓤₀
                → {X : 𝓤 ̇ }
                → (∃ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_)
                → is-set X
- tight-is-set' {𝓤} fe fe₀ {X} = ∥∥-rec (being-set-is-prop fe) f
+ tight-is-set' {𝓤} fe {X} = ∥∥-rec (being-set-is-prop fe) f
    where
     f : (Σ _♯_ ꞉ (X → X → 𝓤 ̇ ), is-apartness _♯_ × is-tight _♯_) → is-set X
-    f (_♯_ , a , t) = tight-is-set _♯_ fe₀ a t
+    f (_♯_ , a , t) = tight-is-set _♯_ (lower-funext 𝓤 𝓤 fe) a t
 
 \end{code}
 

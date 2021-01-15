@@ -83,7 +83,8 @@ but not definitionally.
            → 𝓛̇ f ∘ μ ∼ μ ∘ 𝓛̇ (𝓛̇ f)
 μ-natural∼ f _ = refl
 
-μ-natural : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⁺ ⊔ 𝓥) → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+μ-natural : funext (𝓣 ⁺ ⊔ 𝓤) (𝓣 ⁺ ⊔ 𝓥)
+          → {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
           → 𝓛̇ f ∘ μ ≡ μ ∘ 𝓛̇ (𝓛̇ f)
 μ-natural fe f = dfunext fe (μ-natural∼ f)
 

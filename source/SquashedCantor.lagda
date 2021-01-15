@@ -520,7 +520,8 @@ We also need the following retractions (the first with X=ℕ):
 
 \begin{code}
 
-pair-seq-retract : {X : 𝓤 ̇ } → funext 𝓤₀ 𝓤
+pair-seq-retract : {X : 𝓤 ̇ }
+                 → funext 𝓤₀ 𝓤
                  → retract ((ℕ → X) × (ℕ → X)) of (ℕ → X)
 pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where

@@ -1,3 +1,5 @@
+Martin Escardo, January 2019.
+
 Minimal development of hlevels. For simplicity, for the moment we
 assume univalence globally, although it is not necessary. Our
 convention here is that propositions are at level zero (apologies).

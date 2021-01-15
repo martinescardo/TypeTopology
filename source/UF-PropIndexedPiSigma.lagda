@@ -18,7 +18,8 @@ open import UF-Equiv
 Π-incl : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X → (a : X) → Y a → Π Y
 Π-incl {𝓤} {𝓥} {X} {Y} i a y x = transport Y (i a x) y
 
-Π-proj-is-equiv : funext 𝓤 𝓥 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+Π-proj-is-equiv : funext 𝓤 𝓥
+                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                 → is-prop X → (a : X) → is-equiv (Π-proj a)
 Π-proj-is-equiv {𝓤} {𝓥} fe {X} {Y} i a = qinvs-are-equivs (Π-proj a) (Π-incl i a , ε , η)
  where

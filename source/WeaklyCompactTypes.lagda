@@ -1187,9 +1187,9 @@ is-clopen-map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 is-clopen-map {𝓤} {𝓥} {X} {Y} f = (p : X → 𝟚) (y : Y)
                                 → decidable (Image f (λ x → p x ≡ ₀) y)
 
-being-clopen-map-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → FunExt
+being-clopen-map-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → (f : X → Y) → is-prop (is-clopen-map f)
-being-clopen-map-is-prop {𝓤} {𝓥} fe f =
+being-clopen-map-is-prop {𝓤} {𝓥} f =
  Π-is-prop (fe 𝓤 (𝓤 ⊔ 𝓥))
    (λ p → Π-is-prop (fe 𝓥 (𝓤 ⊔ 𝓥))
             (λ y → decidability-of-prop-is-prop (fe (𝓤 ⊔ 𝓥) 𝓤₀) ∥∥-is-prop))

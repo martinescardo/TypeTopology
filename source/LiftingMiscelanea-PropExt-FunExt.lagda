@@ -18,7 +18,7 @@ open import UF-Subsingletons
 module LiftingMiscelanea-PropExt-FunExt
         (𝓣 : Universe)
         (pe : propext 𝓣)
-        (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
+        (fe : Fun-Ext)
        where
 
 open import UF-Base
@@ -91,7 +91,7 @@ module _ {𝓤 : Universe}
  ⊑'-to-⊑ : {l m : 𝓛 X} → l ⊑' m → l ⊑ m
  ⊑'-to-⊑ {l} {m} a = back-eqtofun e g where
   e : (l ⊑ m) ≃ (is-defined l → l ⊑ m)
-  e = ⊑-open fe fe fe l m
+  e = ⊑-open fe fe l m
   g : is-defined l → l ⊑ m
   g d = transport (_⊑_ l) (a d) (𝓛-id l)
 
