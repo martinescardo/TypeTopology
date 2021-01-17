@@ -80,15 +80,15 @@ retractions-have-at-most-one-section' {𝓤} {𝓥} {X} {Y} fe fe' f (g , gf) (h
   a : qinv f
   a = equivs-are-qinvs f ((h , fh) , g , gf)
   b : is-singleton(fiber (λ h →  f ∘ h) id)
-  b = qinvs-are-vv-equivs (λ h →  f ∘ h) (qinv-post' (nfunext fe) (nfunext fe') f a) id
+  b = qinvs-are-vv-equivs (λ h →  f ∘ h) (qinv-post' (dfunext fe) (dfunext fe') f a) id
   r : fiber (λ h →  f ∘ h) id → has-section f
   r (h , p) = (h , happly' (f ∘ h) id p)
   s : has-section f → fiber (λ h →  f ∘ h) id
-  s (h , η) = (h , nfunext fe' η)
+  s (h , η) = (h , dfunext fe' η)
   rs : (σ : has-section f) → r (s σ) ≡ σ
   rs (h , η) = ap (λ - → (h , -)) q
    where
-    q : happly' (f ∘ h) id (nfunext fe' η) ≡ η
+    q : happly' (f ∘ h) id (dfunext fe' η) ≡ η
     q = happly-funext fe' (f ∘ h) id η
   c : is-singleton (has-section f)
   c = retract-of-singleton (r , s , rs) b
@@ -102,7 +102,7 @@ sections-have-at-most-one-retraction' {𝓤} {𝓥} {X} {Y} fe fe' f (g , fg) (h
   a : qinv f
   a = equivs-are-qinvs f ((g , fg) , (h , hf))
   b : is-singleton(fiber (λ h →  h ∘ f) id)
-  b = qinvs-are-vv-equivs (λ h →  h ∘ f) (qinv-pre' (nfunext fe') (nfunext fe) f a) id
+  b = qinvs-are-vv-equivs (λ h →  h ∘ f) (qinv-pre' (dfunext fe') (dfunext fe) f a) id
   r : fiber (λ h →  h ∘ f) id → is-section f
   r (h , p) = (h , happly' (h ∘ f) id p)
   s : is-section f → fiber (λ h →  h ∘ f) id

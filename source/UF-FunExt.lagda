@@ -49,9 +49,6 @@ FunExt' = {𝓤 𝓥 : Universe} → funext 𝓤 𝓥
 dfunext : funext 𝓤 𝓥 → DN-funext 𝓤 𝓥
 dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
 
-nfunext : funext 𝓤 𝓥 → naive-funext 𝓤 𝓥
-nfunext fe = dfunext fe
-
 happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
              → happly (dfunext fe h) ≡ h

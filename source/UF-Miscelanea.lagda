@@ -63,7 +63,7 @@ isolated-inr : {X : 𝓤 ̇ }
 isolated-inr fe x i y n =
   equality-cases (i y)
   (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
-  (λ (m : x ≢ y) (q : i y ≡ inr m) → q ∙ ap inr (nfunext fe (λ (p : x ≡ y) → 𝟘-elim (m p))))
+  (λ (m : x ≢ y) (q : i y ≡ inr m) → q ∙ ap inr (dfunext fe (λ (p : x ≡ y) → 𝟘-elim (m p))))
 
 \end{code}
 
