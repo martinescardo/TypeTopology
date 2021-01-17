@@ -549,7 +549,7 @@ doesn't refer to the notion of f-point.
          so-apply subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe))
 
     v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
-    v = double-negation-elimination excluded-middle _ iv iii
+    v = double-negation-elim excluded-middle _ iv iii
 
 \end{code}
 
@@ -805,7 +805,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f 
    iv = subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe)) (f-is-emb y)
 
    v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
-   v = double-negation-elimination excluded-middle _ iv iii
+   v = double-negation-elim excluded-middle _ iv iii
 
   h-split-surjection : (y : Y) → Σ x ꞉ X , h x ≡ y
   h-split-surjection y = x , p
@@ -931,7 +931,7 @@ dBKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
  where
   γ : (Σ A ꞉ (ℕ → 𝓤 ̇ ) , ((n : ℕ) → decidable (A n)) × is-prop (Σ A) × (P ⇔ Σ A))
     → ¬¬ P → P
-  γ (A , d , j , f , g) = dne
+  γ (A , d , j , f , g) = δ
    where
     f' : ¬¬ P → ¬¬ Σ A
     f' = double-contrapositive f
@@ -939,8 +939,8 @@ dBKS⁺-and-MP-give-DNE {𝓤} bks mp P i = γ (bks P i)
     h : ¬¬ Σ A → Σ A
     h = mp A d j
 
-    dne : ¬¬ P → P
-    dne = g ∘ h ∘ f'
+    δ : ¬¬ P → P
+    δ = g ∘ h ∘ f'
 
 \end{code}
 

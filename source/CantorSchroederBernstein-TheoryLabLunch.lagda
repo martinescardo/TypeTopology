@@ -677,7 +677,7 @@ doesn't refer to the notion of f-point.
          so-apply subtype-of-prop-is-prop pr₁ (pr₁-lc (λ {σ} → negations-are-props fe))
 
     v : Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
-    v = double-negation-elimination excluded-middle _ iv iii
+    v = double-negation-elim excluded-middle _ iv iii
 
 \end{code}
 

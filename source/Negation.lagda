@@ -51,6 +51,14 @@ double-negation-intro x u = u x
 three-negations-imply-one : {A : 𝓤 ̇ } → ¬ (¬¬ A) → ¬ A
 three-negations-imply-one = contrapositive double-negation-intro
 
+dne' : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → (¬¬ B → B) → ¬¬ A → B
+dne' f h ϕ = h (λ g → ϕ (λ a → g (f a)))
+
+dne : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬ B) → ¬¬ A → ¬ B
+dne f ϕ b = ϕ (λ a → f a b)
+
+
+
 double-negation-unshift : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ¬¬ ((x : X) → A x) → (x : X) → ¬¬ (A x)
 double-negation-unshift f x g = f (λ h → g (h x))
 
@@ -95,6 +103,13 @@ not-Π-implies-not-not-Σ' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                     → ¬ ((x : X) → ¬¬ (A x))
                     → ¬¬ (Σ x ꞉ X , ¬ (A x))
 not-Π-implies-not-not-Σ' = contrapositive not-Σ-implies-Π-not
+
+not-Π-implies-not-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                        → ((x : X) → ¬¬ (A x) → A x)
+                        → ¬ ((x : X) → A x)
+                        → ¬¬ (Σ x ꞉ X , ¬ (A x))
+not-Π-implies-not-not-Σ f g h = g (λ x → f x (λ u → h (x , u)))
+
 
 \end{code}
 

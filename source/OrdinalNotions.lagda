@@ -253,25 +253,39 @@ irreflexive = ≾-refl
 ≼-coarser-than-≾ y a x f l = ≾-refl y a (f y l)
 
 no-minimal-is-empty : is-well-founded
-                    → ∀ {𝓦} (A : X → 𝓦 ̇ )
-                    → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
-                    → is-empty (Σ A)
+                     → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                     → ((x : X) → A x → is-nonempty (Σ y ꞉ X , (y < x) × A y))
+                     → is-empty (Σ A)
 no-minimal-is-empty w A s (x , p) = γ
  where
-  f : ((x : X) → A x → Σ y ꞉ X , (y < x) × A y) → (x : X) → ¬ (A x)
-  f s x p = g x (w x) p
+  g : (x : X) → is-accessible x → ¬ (A x)
+  g x (next x σ) ν = δ
    where
-    g : (x : X) → is-accessible x → ¬ (A x)
-    g x (next x σ) p = IH (pr₁ (s x p)) (pr₁ (pr₂ (s x p))) (pr₂ (pr₂ (s x p)))
-     where
-      IH : (y : X) → y < x → ¬ (A y)
-      IH y l = g y (σ y l)
+    h : ¬¬ (Σ y ꞉ X , (y < x) × A y)
+    h = s x ν
 
-  NB : Σ A → ¬ ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
-  NB (x , p) s = f s x p
+    IH : (y : X) → y < x → ¬ (A y)
+    IH y l = g y (σ y l)
+
+    k : ¬ (Σ y ꞉ X , (y < x) × A y)
+    k (y , l , a) = IH y l a
+
+    δ : 𝟘
+    δ = h k
+
+  f : ((x : X) → A x → ¬¬ (Σ y ꞉ X , (y < x) × A y))
+    → (x : X) → ¬ (A x)
+  f s x p = g x (w x) p
 
   γ : 𝟘
   γ = f s x p
+
+no-minimal-is-empty-weaker-version : is-well-founded
+                                   → ∀ {𝓦} (A : X → 𝓦 ̇ )
+                                   → ((x : X) → A x → Σ y ꞉ X , (y < x) × A y)
+                                   → is-empty (Σ A)
+no-minimal-is-empty-weaker-version w A s =
+  no-minimal-is-empty w A (λ x a → double-negation-intro (s x a))
 
 \end{code}
 
@@ -316,155 +330,168 @@ proposition).
 
 \begin{code}
 
-trichotomy : EM (𝓤 ⊔ 𝓥)
-           → funext (𝓤 ⊔ 𝓥) 𝓤₀
-           → is-well-order
-           → is-trichotomous
-trichotomy em fe (p , w , e , t) = γ
- where
-  em' : EM 𝓥
-  em' = lower-EM 𝓤 em
+module _ (fe : Fun-Ext)
+         (em : Excluded-Middle)
+      where
 
-  P : X → X → 𝓤 ⊔ 𝓥 ̇
-  P x y = (x < y) + (x ≡ y) + (y < x)
+ trichotomy : is-well-order
+            → is-trichotomous
+ trichotomy (p , w , e , t) = γ
+  where
+   P : X → X → 𝓤 ⊔ 𝓥 ̇
+   P x y = (x < y) + (x ≡ y) + (y < x)
 
-  γ : (x y : X) → P x y
-  γ = transfinite-induction w (λ x → ∀ y → P x y) ϕ
-   where
-    ϕ : (x : X)
-      → ((x' : X) → x' < x → (y : X) → P x' y)
-      → (y : X) → P x y
-    ϕ x IH-x = transfinite-induction w (λ y → P x y) ψ
-     where
-      ψ : (y : X)
-        → ((y' : X) → y' < y → P x y')
-        → P x y
-      ψ y IH-y = δ
-       where
-        A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
+   γ : (x y : X) → P x y
+   γ = transfinite-induction w (λ x → ∀ y → P x y) ϕ
+    where
+     ϕ : (x : X)
+       → ((x' : X) → x' < x → (y : X) → P x' y)
+       → (y : X) → P x y
+     ϕ x IH-x = transfinite-induction w (λ y → P x y) ψ
+      where
+       ψ : (y : X)
+         → ((y' : X) → y' < y → P x y')
+         → P x y
+       ψ y IH-y = δ
+        where
+         A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
 
-        ¬¬A-gives-P : ¬¬ A → P x y
-        ¬¬A-gives-P = b
-         where
-          a : A → y < x
-          a (x' , l , inl m) = t y x' x m l
-          a (x' , l , inr p) = transport (_< x) p l
+         ¬¬A-gives-P : ¬¬ A → P x y
+         ¬¬A-gives-P = b
+          where
+           a : A → y < x
+           a (x' , l , inl m) = t y x' x m l
+           a (x' , l , inr p) = transport (_< x) p l
 
-          b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
-          b = inr ∘ inr ∘ EM-gives-DNE em' (y < x) (p y x) ∘ ¬¬-functor a
+           b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
+           b = inr ∘ inr ∘ EM-gives-DNE em (y < x) (p y x) ∘ ¬¬-functor a
 
-        ¬A-gives-≼ : ¬ A → x ≼ y
-        ¬A-gives-≼ ν x' l = d
-         where
-          a : ¬ ((y < x') + (x' ≡ y))
-          a f = ν (x' , l , f)
+         ¬A-gives-≼ : ¬ A → x ≼ y
+         ¬A-gives-≼ ν x' l = d
+          where
+           a : ¬ ((y < x') + (x' ≡ y))
+           a f = ν (x' , l , f)
 
-          b : P x' y
-          b = IH-x x' l y
+           b : P x' y
+           b = IH-x x' l y
 
-          c : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
-          c g (inl i)         = i
-          c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
-          c g (inr (inr iii)) = 𝟘-elim (g (inl iii))
+           c : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
+           c g (inl i)         = i
+           c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
+           c g (inr (inr iii)) = 𝟘-elim (g (inl iii))
 
-          d : x' < y
-          d = c a b
+           d : x' < y
+           d = c a b
 
-        B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
+         B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
 
-        ¬¬B-gives-P : ¬¬ B → P x y
-        ¬¬B-gives-P = b
-         where
-          a : B → x < y
-          a (y' , l , inl m) = t x y' y m l
-          a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
+         ¬¬B-gives-P : ¬¬ B → P x y
+         ¬¬B-gives-P = b
+          where
+           a : B → x < y
+           a (y' , l , inl m) = t x y' y m l
+           a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
 
-          b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
-          b = inl ∘ EM-gives-DNE em' (x < y) (p x y) ∘ ¬¬-functor a
+           b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
+           b = inl ∘ EM-gives-DNE em (x < y) (p x y) ∘ ¬¬-functor a
 
-        ¬B-gives-≼ : ¬ B → y ≼ x
-        ¬B-gives-≼ ν y' l = d
-         where
-          a : ¬ ((x < y') + (x ≡ y'))
-          a f = ν (y' , l , f)
+         ¬B-gives-≼ : ¬ B → y ≼ x
+         ¬B-gives-≼ ν y' l = d
+          where
+           a : ¬ ((x < y') + (x ≡ y'))
+           a f = ν (y' , l , f)
 
-          b : P x y'
-          b = IH-y y' l
+           b : P x y'
+           b = IH-y y' l
 
-          c : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
-          c g (inl i)         = 𝟘-elim (g (inl i))
-          c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
-          c g (inr (inr iii)) = iii
+           c : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
+           c g (inl i)         = 𝟘-elim (g (inl i))
+           c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
+           c g (inr (inr iii)) = iii
 
-          d : y' < x
-          d = c a b
+           d : y' < x
+           d = c a b
 
-        ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
-        ¬A-and-¬B-give-P ν ν' = b
-         where
-          a : ¬ A → ¬ B → x ≡ y
-          a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
+         ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
+         ¬A-and-¬B-give-P ν ν' = b
+          where
+           a : ¬ A → ¬ B → x ≡ y
+           a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
 
-          b : (x < y) + (x ≡ y) + (y < x)
-          b = inr (inl (a ν ν'))
+           b : (x < y) + (x ≡ y) + (y < x)
+           b = inr (inl (a ν ν'))
 
-        δ : P x y
-        δ = Cases (em (¬ A) (¬-is-prop fe))
-             (λ (ν : ¬ A)
-                   → Cases (em (¬ B) (¬-is-prop fe))
-                      (¬A-and-¬B-give-P ν)
-                      ¬¬B-gives-P)
-             ¬¬A-gives-P
-{-
-nonempty-has-minimal : Fun-Ext
-                     → EM (𝓤 ⊔ 𝓥 ⊔ 𝓦)
-                     → is-well-order
-                     → (A : X → 𝓦 ̇ )
-                     → ((x : X) → is-prop (A x))
-                     → is-nonempty (Σ A)
-                     → Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
-nonempty-has-minimal {𝓦} fe em W A A-is-prop-valued f = γ
- where
-  B : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  B = Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
+         δ : P x y
+         δ = Cases (em (¬ A) (¬-is-prop fe))
+              (λ (ν : ¬ A)
+                    → Cases (em (¬ B) (¬-is-prop fe))
+                       (¬A-and-¬B-give-P ν)
+                       ¬¬B-gives-P)
+              ¬¬A-gives-P
 
-  j : (x : X) → is-prop ((y : X) → A y → x ≾ y)
-  j x = Π₃-is-prop fe (λ x a l → 𝟘-is-prop)
 
-  i : (x : X) → is-prop (A x × ((y : X) → A y → x ≾ y))
-  i x = ×-is-prop (A-is-prop-valued x) (j x)
+\end{code}
 
-  B-is-prop : is-prop B
-  B-is-prop (x , a , f) (x' , a' , f') = to-subtype-≡ i q
-   where
+Because we assume function extensionality and excluded middle in this
+annonymous submodule, propositional truncations are available, and it
+amounts to double negation.
 
-    q : x ≡ x'
-    q = h (trichotomy (lower-EM 𝓦 em) fe W x x')
-     where
-      h : (x < x') + (x ≡ x') + (x' < x) → x ≡ x'
-      h (inl l)       = 𝟘-elim (f' x a l)
-      h (inr (inl p)) = p
-      h (inr (inr l)) = 𝟘-elim (f x' a' l)
+\begin{code}
 
-  C : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  C = (x : X) → A x → Σ y ꞉ X , (y < x) × A y
+ open import UF-PropTrunc
+ open PropositionalTruncation (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
 
-  g : ¬ C
-  g = contrapositive (no-minimal-is-empty (well-foundedness W) A) f
+ nonempty-has-minimal : is-well-order
+                      → (A : X → 𝓦 ̇ )
+                      → ((x : X) → is-prop (A x))
+                      → ∃ x ꞉ X , A x
+                      → Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
+ nonempty-has-minimal {𝓦} W A A-is-prop-valued f = γ
+  where
+   B : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+   B = Σ x ꞉ X , A x × ((y : X) → A y → x ≾ y)
 
-  h : ¬ B → (x : X) → ¬ (A x) + ¬ ((y : X) → A y → x ≾ y)
-  h ν x = de-Morgan (lower-EM (𝓤 ⊔ 𝓥) em) em
-            (A-is-prop-valued x) (j x) (λ z → ν (x , z))
+   g : ¬ ((x : X) → A x → ∃ y ꞉ X , (y < x) × A y)
+   g = contrapositive (no-minimal-is-empty (well-foundedness W) A) f
 
-  ϕ : (x : X) → ¬ (A x × ((y : X) → A y → x ≾ y)) → ?
-  ϕ x ν = ?
+   h : ∃ x ꞉ X , ¬ (A x → ∃ y ꞉ X , (y < x) × A y)
+   h = not-Π-implies-not-not-Σ
+        (λ x → EM-gives-DNE em
+                (A x → ∃ y ꞉ X , (y < x) × A y)
+                (Π₂-is-prop fe (λ _ _ → 𝟘-is-prop)))
+        g
 
-  k : ¬ B → (x : X) → ¬ (A x × ((y : X) → A y → x ≾ y))
-  k ν x z = ν (x , z)
+   ϕ : (x : X)
+     → ¬ (A x → ∃ y ꞉ X , (y < x) × A y)
+     → A x × ((y : X) → A y → x ≾ y)
+   ϕ x ψ = EM-gives-DNE em (A x)
+             (A-is-prop-valued x)
+             ((λ ν → ψ (λ a _ → ν a))) ,
+           λ y a l → ψ (λ _ ν → ν (y , l , a))
 
-  γ : B
-  γ = {!!}
--}
+   δ : ¬¬ B
+   δ = ¬¬-functor (λ (x , f) → x , ϕ x f) h
+
+   j : (x : X) → is-prop ((y : X) → A y → x ≾ y)
+   j x = Π₃-is-prop fe (λ x a l → 𝟘-is-prop)
+
+   i : (x : X) → is-prop (A x × ((y : X) → A y → x ≾ y))
+   i x = ×-is-prop (A-is-prop-valued x) (j x)
+
+   B-is-prop : is-prop B
+   B-is-prop (x , a , f) (x' , a' , f') = to-subtype-≡ i q
+    where
+     q : x ≡ x'
+     q = k (trichotomy W x x')
+      where
+       k : (x < x') + (x ≡ x') + (x' < x) → x ≡ x'
+       k (inl l)       = 𝟘-elim (f' x a l)
+       k (inr (inl p)) = p
+       k (inr (inr l)) = 𝟘-elim (f x' a' l)
+
+   γ : B
+   γ = EM-gives-DNE em B B-is-prop δ
+
 \end{code}
 
 When do we get x ≾ y → x ≼ y (say for ordinals)? When do we get
@@ -487,6 +514,9 @@ cotransitive-≾-coarser-than-≼ c x y n u l = γ (c u x y l)
   γ (inr l) = 𝟘-elim (n l)
 
 \end{code}
+
+This is the end of the submodule with the assumption of excluded
+middle.
 
 Originally, in 2011 (see my JSL publication), we needed to work with
 the following weakening of well-foundedness (transfinite induction for

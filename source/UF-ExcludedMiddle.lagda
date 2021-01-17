@@ -47,8 +47,8 @@ lower-EM 𝓥 em P P-is-prop = f d
   f (inl p) = inl (lower p)
   f (inr ν) = inr (λ p → ν (lift 𝓥 p))
 
-Global-EM : 𝓤ω
-Global-EM = ∀ {𝓤} → EM 𝓤
+Excluded-Middle : 𝓤ω
+Excluded-Middle = ∀ {𝓤} → EM 𝓤
 
 EM-is-prop : FunExt → is-prop (EM 𝓤)
 EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
@@ -73,8 +73,8 @@ DNE 𝓤 = (P : 𝓤 ̇ ) → is-prop P → ¬¬ P → P
 EM-gives-DNE : EM 𝓤 → DNE 𝓤
 EM-gives-DNE em P isp φ = cases (λ p → p) (λ u → 𝟘-elim (φ u)) (em P isp)
 
-double-negation-elimination : EM 𝓤 → DNE 𝓤
-double-negation-elimination = EM-gives-DNE
+double-negation-elim : EM 𝓤 → DNE 𝓤
+double-negation-elim = EM-gives-DNE
 
 DNE-gives-EM : funext 𝓤 𝓤₀ → DNE 𝓤 → EM 𝓤
 DNE-gives-EM fe dne P isp = dne (P + ¬ P)
@@ -93,10 +93,10 @@ de-Morgan em em' {A} {B} i j n = Cases (em A i)
                                           inr)
                                   inl
 
-fem-proptrunc : FunExt → Global-EM → propositional-truncations-exist
+fem-proptrunc : FunExt → Excluded-Middle → propositional-truncations-exist
 fem-proptrunc fe em = record {
   ∥_∥          = λ X → ¬¬ X ;
-  ∥∥-is-prop = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
+  ∥∥-is-prop   = Π-is-prop (fe _ _) (λ _ → 𝟘-is-prop) ;
   ∣_∣         = λ x u → u x ;
   ∥∥-rec       = λ i u φ → EM-gives-DNE em _ i (¬¬-functor u φ) }
 

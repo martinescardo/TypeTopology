@@ -87,7 +87,7 @@ _≺_ : X → X → 𝓤₁ ̇
 (p , _) ≺ (q , _) = p ≺⟨ Ωₒ ⟩ q
 
 shulmans-taboo : is-extensional _≺_ → EM 𝓤₀
-shulmans-taboo e = DNE-gives-EM fe₀ dne
+shulmans-taboo e = DNE-gives-EM fe₀ δ
  where
   i : is-prop X
   i x y = e x y f g
@@ -97,8 +97,8 @@ shulmans-taboo e = DNE-gives-EM fe₀ dne
     g : (z : X) → z ≺ y → z ≺ x
     g (q , ψ) (b , _) = 𝟘-elim (ψ b)
 
-  dne : (P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P
-  dne P j φ = Idtofun s φ
+  δ : (P : 𝓤₀ ̇ ) → is-prop P → ¬¬ P → P
+  δ P j φ = Idtofun s φ
    where
     p q : X
     p = (¬¬ P , negations-are-props fe₀) ,
