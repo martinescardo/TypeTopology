@@ -450,7 +450,8 @@ module _ (A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
                                (equivs-have-sections (Lift-𝓐 (𝓤 ⁺)) e)
 \end{code}
 
-Examples of the above situation include hSets, pointed types, ∞-magmas, magmas and monoids:
+Examples of the above situation include hSets, pointed types,
+∞-magmas, magmas and monoids:
 
 \begin{code}
 
@@ -463,12 +464,10 @@ hSet again:
 \begin{code}
 
  Lift-hSet-is-not-equiv-bis : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
- Lift-hSet-is-not-equiv-bis {𝓤} =
-  Lift-𝓐-is-not-equiv
-   is-set
-   (λ 𝓥 {X} → Lift-is-set 𝓥 X)
-   type-of-ordinals-is-set
-
+ Lift-hSet-is-not-equiv-bis {𝓤} = Lift-𝓐-is-not-equiv
+                                    is-set
+                                    (λ 𝓥 {X} → Lift-is-set 𝓥 X)
+                                    type-of-ordinals-is-set
 \end{code}
 
 Pointed types:
@@ -505,12 +504,10 @@ Pointed types:
  Lift-∞-Magma {𝓤} 𝓥 (X , _·_) = Lift 𝓥 X , lift-∞-Magma-structure 𝓥 _·_
 
  Lift-∞-Magma-is-not-equiv : ¬ is-equiv (Lift-∞-Magma {𝓤} (𝓤 ⁺))
- Lift-∞-Magma-is-not-equiv {𝓤} =
-  Lift-𝓐-is-not-equiv
-    ∞-Magma-structure
-    lift-∞-Magma-structure
-    _+ₒ_
-
+ Lift-∞-Magma-is-not-equiv {𝓤} = Lift-𝓐-is-not-equiv
+                                   ∞-Magma-structure
+                                   lift-∞-Magma-structure
+                                   _+ₒ_
 \end{code}
 
 Magmas:
@@ -544,8 +541,6 @@ Magmas:
 Monoids:
 
 \begin{code}
-
-module monoid-example where
 
  open import OrdinalArithmetic-Properties ua
 
@@ -609,10 +604,8 @@ module monoid-example where
                                              +ₒ-assoc
 
  Lift-Monoid-structure-is-not-equiv : ¬ is-equiv (Lift-Monoid {𝓤} (𝓤 ⁺))
- Lift-Monoid-structure-is-not-equiv {𝓤} =
-  Lift-𝓐-is-not-equiv
-    Monoid-structure
-    lift-Monoid-structure
-    type-of-ordinals-has-Monoid-structure
-
+ Lift-Monoid-structure-is-not-equiv {𝓤} = Lift-𝓐-is-not-equiv
+                                            Monoid-structure
+                                            lift-Monoid-structure
+                                            type-of-ordinals-has-Monoid-structure
 \end{code}
