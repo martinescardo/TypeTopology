@@ -101,7 +101,7 @@ order
 
 defined by
 
-    α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃ₒ (β ↓ b).
+    α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃₀ (β ↓ b).
 
 The existence of such a resized-down order is crucial for the
 corollaries of Burali-Forti, but not for Burali-Forti itself.
@@ -125,17 +125,24 @@ module BuraliForti
        (ua : Univalence)
        where
 
-open import SpartanMLTT
-open import OrdinalNotions
-open import OrdinalsType
-open import OrdinalOfOrdinals ua
-open import OrdinalsWellOrderTransport
-
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv
 open import UF-UniverseEmbedding
+open import UF-UA-FunExt
+open import UF-FunExt
+
+private
+ fe : FunExt
+ fe = FunExt-from-Univalence ua
+
+open import SpartanMLTT
+open import OrdinalNotions
+open import OrdinalsType
+open import OrdinalsWellOrderTransport
+open import OrdinalOfOrdinals ua
+open import OrdinalArithmetic fe
 
 \end{code}
 
@@ -394,3 +401,218 @@ and 𝓤⁺ are not equivalent.
 
 Marc Bezem conjectures that ¬ (Σ A : 𝓤 ̇ , A ≃ ∥ 𝓤 ̇ ∥₀), that is, there
 is no type in 𝓤 equivalent to the set truncation of 𝓤.
+
+Added 18th January 2021. The following generalizes
+Lift-hSet-is-not-equiv.
+
+\begin{code}
+
+module _ (A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
+         (A-lifts : ∀ {𝓤} 𝓥 {X : 𝓤 ̇ } → A X → A (Lift 𝓥 X))
+         (type-of-ordinals-is-A : {𝓤 : Universe} → A (Ordinal 𝓤))
+       where
+
+ 𝓐 : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ 𝓐 𝓤 = Σ X ꞉ 𝓤 ̇ , A X
+
+ Lift-𝓐 : ∀ {𝓤} 𝓥 → 𝓐 𝓤 → 𝓐 (𝓤 ⊔ 𝓥)
+ Lift-𝓐 {𝓤} 𝓥 (X , a) = Lift 𝓥 X , A-lifts 𝓥 a
+
+ Lift-𝓐-doesnt-have-section : ¬ has-section (Lift-𝓐 {𝓤} (𝓤 ⁺))
+ Lift-𝓐-doesnt-have-section {𝓤} (s , η) = γ
+  where
+   𝕐 : 𝓐 (𝓤 ⁺)
+   𝕐 = (Ordinal 𝓤 , type-of-ordinals-is-A)
+
+   𝕏 : 𝓐 𝓤
+   𝕏 = s 𝕐
+
+   X : 𝓤 ̇
+   X = pr₁ 𝕏
+
+   have : (Lift (𝓤 ⁺) X , _) ≡ 𝕐
+   have = η 𝕐
+
+   p : Lift (𝓤 ⁺) X ≡ Ordinal 𝓤
+   p = ap pr₁ (η 𝕐)
+
+   d : X ≃ Lift (𝓤 ⁺) X
+   d = ≃-sym (Lift-is-universe-embedding (𝓤 ⁺) X)
+
+   e : X ≃ Ordinal 𝓤
+   e = transport (X ≃_) p d
+
+   γ : 𝟘
+   γ = the-type-of-ordinals-is-large (X , e)
+
+ Lift-𝓐-is-not-equiv : ¬ is-equiv (Lift-𝓐 {𝓤} (𝓤 ⁺))
+ Lift-𝓐-is-not-equiv {𝓤} e = Lift-𝓐-doesnt-have-section
+                               (equivs-have-sections (Lift-𝓐 (𝓤 ⁺)) e)
+\end{code}
+
+Examples of the above situation include hSets, pointed types, ∞-magmas, magmas and monoids:
+
+\begin{code}
+
+module examples where
+
+\end{code}
+
+hSet again:
+
+\begin{code}
+
+ Lift-hSet-is-not-equiv-bis : ¬ is-equiv (Lift-hSet {𝓤} (𝓤 ⁺))
+ Lift-hSet-is-not-equiv-bis {𝓤} =
+  Lift-𝓐-is-not-equiv
+   is-set
+   (λ 𝓥 {X} → Lift-is-set 𝓥 X)
+   type-of-ordinals-is-set
+
+\end{code}
+
+Pointed types:
+
+\begin{code}
+
+ PointedType : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ PointedType 𝓤 = Σ X ꞉ 𝓤 ̇ , X
+
+ Lift-PointedType : ∀ {𝓤} 𝓥 → PointedType 𝓤 → PointedType (𝓤 ⊔ 𝓥)
+ Lift-PointedType {𝓤} 𝓥 (X , x) = Lift 𝓥 X , lift 𝓥 x
+
+ Lift-PointedType-is-not-equiv : ¬ is-equiv (Lift-PointedType {𝓤} (𝓤 ⁺))
+ Lift-PointedType-is-not-equiv {𝓤} = Lift-𝓐-is-not-equiv id lift 𝟘ₒ
+
+\end{code}
+
+∞-magmas:
+
+\begin{code}
+
+ ∞-Magma-structure : 𝓤 ̇ → 𝓤 ̇
+ ∞-Magma-structure X = X → X → X
+
+ ∞-Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ ∞-Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , ∞-Magma-structure X
+
+ lift-∞-Magma-structure : ∀ 𝓥 {X : 𝓤 ̇ }
+                        → ∞-Magma-structure X
+                        → ∞-Magma-structure (Lift 𝓥 X)
+ lift-∞-Magma-structure 𝓥 _·_ x y = lift 𝓥 (lower x · lower y)
+
+ Lift-∞-Magma : ∀ {𝓤} 𝓥 → ∞-Magma 𝓤 → ∞-Magma (𝓤 ⊔ 𝓥)
+ Lift-∞-Magma {𝓤} 𝓥 (X , _·_) = Lift 𝓥 X , lift-∞-Magma-structure 𝓥 _·_
+
+ Lift-∞-Magma-is-not-equiv : ¬ is-equiv (Lift-∞-Magma {𝓤} (𝓤 ⁺))
+ Lift-∞-Magma-is-not-equiv {𝓤} =
+  Lift-𝓐-is-not-equiv
+    ∞-Magma-structure
+    lift-∞-Magma-structure
+    _+ₒ_
+
+\end{code}
+
+Magmas:
+
+\begin{code}
+
+ Magma-structure : 𝓤 ̇ → 𝓤 ̇
+ Magma-structure X = is-set X × (X → X → X)
+
+ Magma : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Magma 𝓤 = Σ X ꞉ 𝓤 ̇ , Magma-structure X
+
+ lift-Magma-structure : ∀ 𝓥 {X : 𝓤 ̇ }
+                        → Magma-structure X
+                        → Magma-structure (Lift 𝓥 X)
+ lift-Magma-structure 𝓥 {X} (X-is-set , _·_) = Lift-is-set 𝓥 X X-is-set ,
+                                               λ x y → lift 𝓥 (lower x · lower y)
+
+ Lift-Magma : ∀ {𝓤} 𝓥 → Magma 𝓤 → Magma (𝓤 ⊔ 𝓥)
+ Lift-Magma {𝓤} 𝓥 (X , _·_) = Lift 𝓥 X , lift-Magma-structure 𝓥 _·_
+
+ Lift-Magma-structure-is-not-equiv : ¬ is-equiv (Lift-Magma {𝓤} (𝓤 ⁺))
+ Lift-Magma-structure-is-not-equiv {𝓤} =
+  Lift-𝓐-is-not-equiv
+    Magma-structure
+    lift-Magma-structure
+    (type-of-ordinals-is-set , _+ₒ_)
+
+\end{code}
+
+Monoids:
+
+\begin{code}
+
+module monoid-example where
+
+ open import OrdinalArithmetic-Properties ua
+
+ monoid-structure : 𝓤 ̇ → 𝓤 ̇
+ monoid-structure X = (X → X → X) × X
+
+ left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+ left-neutral e _·_ = ∀ x → e · x ≡ x
+
+ right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+ right-neutral e _·_ = ∀ x → x · e ≡ x
+
+ associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+ associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+
+ monoid-axioms : (X : 𝓤 ̇ ) → monoid-structure X → 𝓤 ̇
+ monoid-axioms X (_·_ , e) = is-set X
+                           × left-neutral  e _·_
+                           × right-neutral e _·_
+                           × associative     _·_
+
+ Monoid-structure : 𝓤 ̇ → 𝓤 ̇
+ Monoid-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
+
+ Monoid : (𝓤 : Universe) → 𝓤 ⁺ ̇
+ Monoid 𝓤 = Σ X ꞉ 𝓤 ̇ , Monoid-structure X
+
+ lift-Monoid-structure : ∀ 𝓥 {X : 𝓤 ̇ }
+                       → Monoid-structure X
+                       → Monoid-structure (Lift 𝓥 X)
+ lift-Monoid-structure 𝓥 {X} ((_·_ , e) , X-is-set , l , r , a) = γ
+  where
+   X' = Lift 𝓥 X
+
+   _·'_ : X' → X' → X'
+   x' ·' y' = lift 𝓥 (lower x' · lower y')
+
+   e' : X'
+   e' = lift 𝓥 e
+
+   l' : left-neutral e' _·'_
+   l' x' = ap (lift 𝓥) (l (lower x'))
+
+   r' : right-neutral e' _·'_
+   r' x' = ap (lift 𝓥) (r (lower x'))
+
+   a' : associative _·'_
+   a' x' y' z' = ap (lift 𝓥) (a (lower x') (lower y') (lower z'))
+
+   γ : Monoid-structure (Lift 𝓥 X)
+   γ = (_·'_ , e') , Lift-is-set 𝓥 X X-is-set , l' , r' , a'
+
+ Lift-Monoid : ∀ {𝓤} 𝓥 → Monoid 𝓤 → Monoid (𝓤 ⊔ 𝓥)
+ Lift-Monoid {𝓤} 𝓥 (X , _·_) = Lift 𝓥 X , lift-Monoid-structure 𝓥 _·_
+
+ type-of-ordinals-has-Monoid-structure : {𝓤 : Universe} → Monoid-structure (Ordinal 𝓤)
+ type-of-ordinals-has-Monoid-structure {𝓤} = (_+ₒ_ , 𝟘ₒ) ,
+                                             type-of-ordinals-is-set ,
+                                             𝟘ₒ-left-neutral ,
+                                             𝟘ₒ-right-neutral ,
+                                             +ₒ-assoc
+
+ Lift-Monoid-structure-is-not-equiv : ¬ is-equiv (Lift-Monoid {𝓤} (𝓤 ⁺))
+ Lift-Monoid-structure-is-not-equiv {𝓤} =
+  Lift-𝓐-is-not-equiv
+    Monoid-structure
+    lift-Monoid-structure
+    type-of-ordinals-has-Monoid-structure
+
+\end{code}

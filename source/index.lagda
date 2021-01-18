@@ -172,6 +172,7 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import OrdinalArithmetic
+import OrdinalArithmetic-Properties
 import OrdinalCodes
 import OrdinalNotationInterpretation
 import OrdinalNotions

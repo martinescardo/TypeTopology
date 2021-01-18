@@ -109,8 +109,16 @@ lift 𝓥 x = (x , *)
 lower : {X : 𝓤 ̇ } → Lift 𝓥 X → X
 lower (x , *) = x
 
+η-Lift : (𝓥 : Universe) {X : 𝓤 ̇ } (𝔁 : Lift 𝓥 X)
+       → lift 𝓥 (lower 𝔁) ≡ 𝔁
+η-Lift  𝓥 𝔁 = refl
+
+ε-Lift : (𝓥 : Universe) {X : 𝓤 ̇ } (x : X)
+       → lower (lift 𝓥 x) ≡ x
+ε-Lift  𝓥 x = refl
+
 lower-is-equiv : {X : 𝓤 ̇ } → is-equiv (lower {𝓤} {𝓥} {X})
-lower-is-equiv {𝓤} {𝓥} = (lift 𝓥 , λ x → refl) , (lift 𝓥 , λ x → refl)
+lower-is-equiv {𝓤} {𝓥} = (lift 𝓥 , ε-Lift 𝓥) , (lift 𝓥 , η-Lift 𝓥)
 
 Lift-is-universe-embedding : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift 𝓥 X ≃ X
 Lift-is-universe-embedding 𝓥 X = lower , lower-is-equiv

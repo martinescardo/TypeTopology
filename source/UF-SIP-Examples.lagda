@@ -210,10 +210,10 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  Monoid : 𝓤 ⁺ ̇
  Monoid = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure X , monoid-axioms X s
 
- monoid-axioms-prop : (X : 𝓤 ̇ ) (s : monoid-structure X)
-                            → is-prop (monoid-axioms X s)
+ monoid-axioms-is-prop : (X : 𝓤 ̇ ) (s : monoid-structure X)
+                       → is-prop (monoid-axioms X s)
 
- monoid-axioms-prop X (_·_ , e) s = γ s
+ monoid-axioms-is-prop X (_·_ , e) s = γ s
   where
    i : is-set X
    i = pr₁ s
@@ -234,7 +234,7 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
  sns-data : SNS (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s) 𝓤
  sns-data = add-axioms
-              monoid-axioms monoid-axioms-prop
+              monoid-axioms monoid-axioms-is-prop
               (join
                  ∞-magma.sns-data
                  pointed-type.sns-data)
@@ -387,8 +387,8 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
     z             ∎
 
  group-axiom-is-prop : (X : 𝓤 ̇ )
-                             → (s : group-structure X)
-                             → is-prop (group-axiom X (pr₁ s))
+                     → (s : group-structure X)
+                     → is-prop (group-axiom X (pr₁ s))
 
  group-axiom-is-prop X ((_·_ , e) , (s , l , r , a)) = γ
   where
@@ -730,9 +730,7 @@ module subgroup
      δ : τ ≡ τ'
      δ = to-subtype-≡
            (group-axiom-is-prop X)
-           (to-subtype-≡
-              (monoid-axioms-prop X)
-              r)
+           (to-subtype-≡ (monoid-axioms-is-prop X) r)
 
      γ : (τ  , i) ≡ (τ' , i')
      γ = to-subtype-≡ (λ τ → being-homomorphism-is-prop (X , τ) G h) δ

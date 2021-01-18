@@ -143,8 +143,53 @@ is-order-equiv : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨
 is-order-equiv α β f = is-order-preserving α β f
                      × (Σ e ꞉ is-equiv f , is-order-preserving β α (inverse f e))
 
+is-order-reflecting : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                    → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
+is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
+
+order-equiv-criterion : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+                      → is-equiv f
+                      → is-order-preserving α β f
+                      → is-order-reflecting α β f
+                      → is-order-equiv α β f
+order-equiv-criterion α β f e p r = p , e , q
+ where
+  g : ⟨ β ⟩ → ⟨ α ⟩
+  g = inverse f e
+
+  q : is-order-preserving β α g
+  q x y l = m
+   where
+    l' : f (g x) ≺⟨ β ⟩ f (g y)
+    l' = transport₂ (λ x y → x ≺⟨ β ⟩ y)
+           ((inverses-are-sections f e x)⁻¹) ((inverses-are-sections f e y)⁻¹) l
+
+    s : f (g x) ≺⟨ β ⟩ f (g y) → g x ≺⟨ α ⟩ g y
+    s = r (g x) (g y)
+
+    m : g x ≺⟨ α ⟩ g y
+    m = s l'
+
+
+order-equiv-criterion-converse : (α : Ordinal 𝓤) (β : Ordinal 𝓥) (f : ⟨ α ⟩ → ⟨ β ⟩)
+                               → is-order-equiv α β f
+                               → is-order-reflecting α β f
+order-equiv-criterion-converse α β f (p , e , q) x y l = r
+ where
+  g : ⟨ β ⟩ → ⟨ α ⟩
+  g = inverse f e
+
+  s : g (f x) ≺⟨ α ⟩ g (f y)
+  s = q (f x) (f y) l
+
+  r : x ≺⟨ α ⟩ y
+  r = transport₂ (λ x y → x ≺⟨ α ⟩ y)
+       (inverses-are-retractions f e x) (inverses-are-retractions f e y) s
+
 _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
+
+
 
 \end{code}
 

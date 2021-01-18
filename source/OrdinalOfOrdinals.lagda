@@ -31,11 +31,12 @@ open import UF-UA-FunExt
 open import UF-Yoneda
 open import UF-EquivalenceExamples
 
-fe : FunExt
-fe = FunExt-from-Univalence ua
+private
+ fe : FunExt
+ fe = FunExt-from-Univalence ua
 
-fe' : Fun-Ext
-fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 \end{code}
 
@@ -45,14 +46,11 @@ ordinals, making them into a poset, as proved below.
 \begin{code}
 
 is-monotone
- is-order-reflecting
  is-order-embedding
  is-initial-segment
  is-simulation       : (α : Ordinal 𝓤) (β : Ordinal 𝓥) → (⟨ α ⟩ → ⟨ β ⟩) → 𝓤 ⊔ 𝓥 ̇
 
 is-monotone         α β f = (x y : ⟨ α ⟩) → x ≼⟨ α ⟩ y → f x ≼⟨ β ⟩ f y
-
-is-order-reflecting α β f = (x y : ⟨ α ⟩) → f x ≺⟨ β ⟩ f y → x ≺⟨ α ⟩ y
 
 is-order-embedding  α β f = is-order-preserving α β f × is-order-reflecting α β f
 

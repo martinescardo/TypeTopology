@@ -13,6 +13,7 @@ import SquashedSum
 import SquashedCantor
 import OrdinalsWellOrderArithmetic
 import OrdinalArithmetic
+import OrdinalArithmetic-Properties
 import ToppedOrdinalArithmetic
 import LexicographicOrder
 import OrdinalsClosure
