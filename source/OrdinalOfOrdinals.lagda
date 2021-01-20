@@ -976,9 +976,41 @@ the joint image in any upper bound.
 
 Added 19-20 January 2021.
 
+The partial order _⊴_ is equivalent to _≼_.
+
+We first observe that, almost tautologically, the relation α ≼ β is
+logically equivalent to the condition (a : ⟨ α ⟩) → (α ↓ a) ⊲ β.
+
 \begin{code}
 
-⊴-gives-≼ : (α β : Ordinal 𝓤) → α ⊴ β → α ≼⟨ O 𝓤 ⟩ β
+_≼_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
+α ≼ β = α ≼⟨ O _ ⟩ β
+
+to-≼ : {α β : Ordinal 𝓤}
+     → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)
+     → α ≼ β
+to-≼ {𝓤} {α} {β} ϕ α' (a , p) = m
+ where
+  l : (α ↓ a) ⊲ β
+  l = ϕ a
+
+  m : α' ⊲ β
+  m = transport (_⊲ β) (p ⁻¹) l
+
+from-≼ : {α β : Ordinal 𝓤}
+       → α ≼ β
+       → (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
+from-≼ {𝓤} {α} {β} l a = l (α ↓ a) m
+ where
+  m : (α ↓ a) ⊲ α
+  m = (a , refl)
+
+\end{code}
+
+
+\begin{code}
+
+⊴-gives-≼ : (α β : Ordinal 𝓤) → α ⊴ β → α ≼ β
 ⊴-gives-≼ α β (f , f-is-initial-segment , f-is-order-preserving) α' (a , p) = l
  where
   f-is-simulation : is-simulation α β f
@@ -1051,12 +1083,18 @@ Added 19-20 January 2021.
          h-is-order-preserving)
 
   l : α' ⊲ β
-  l = back-transport (_⊲ β) p (f a , q)
+  l = transport (_⊲ β) (p ⁻¹) (f a , q)
 
-⊴-criterion : (α β : Ordinal 𝓤)
-            → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)
-            → α ⊴ β
-⊴-criterion α β ϕ = f , f-is-initial-segment , f-is-order-preserving
+\end{code}
+
+For the converse of the above, it suffices to show the following:
+
+\begin{code}
+
+to-⊴ : (α β : Ordinal 𝓤)
+     → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)
+     → α ⊴ β
+to-⊴ α β ϕ = g
  where
   f : ⟨ α ⟩ → ⟨ β ⟩
   f a = pr₁ (ϕ a)
@@ -1101,25 +1139,13 @@ Added 19-20 January 2021.
     q : y ≡ f x'
     q = ↓-lc β y (f x') p
 
-≼-gives-⊴ : (α β : Ordinal 𝓤) → α ≼⟨ O 𝓤 ⟩ β → α ⊴ β
-≼-gives-⊴ {𝓤} α β l = ⊴-criterion α β ϕ
- where
-  ψ : (a : ⟨ α ⟩) → Σ b ꞉ ⟨ β ⟩ , α ↓ a ≡ β ↓ b
-  ψ a = l (α ↓ a) (a , refl)
+  g : α ⊴ β
+  g = f , f-is-initial-segment , f-is-order-preserving
 
-  ϕ : (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
-  ϕ a = transport (_⊲ β) p m
-   where
-    b : ⟨ β ⟩
-    b = pr₁ (ψ a)
+≼-gives-⊴ : (α β : Ordinal 𝓤) → α ≼ β → α ⊴ β
+≼-gives-⊴ {𝓤} α β l = to-⊴ α β (from-≼ l)
 
-    p : β ↓ b ≡ α ↓ a
-    p = (pr₂ (ψ a))⁻¹
-
-    m : (β ↓ b) ⊲ β
-    m = b , refl
-
-⊲-gives-≼ : (α β : Ordinal 𝓤) → α ⊲ β → α ≼⟨ O 𝓤 ⟩ β
+⊲-gives-≼ : (α β : Ordinal 𝓤) → α ⊲ β → α ≼ β
 ⊲-gives-≼ {𝓤} α β l α' m = Transitivity (O 𝓤) α' α β m l
 
 ⊲-gives-⊴ : (α β : Ordinal 𝓤) → α ⊲ β → α ⊴ β

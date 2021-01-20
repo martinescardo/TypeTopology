@@ -57,7 +57,7 @@ underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-order (X , _<_ , o) = _<_
 
 underlying-porder : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
-underlying-porder (X , _<_ , o) = _≼_ _<_
+underlying-porder (X , _<_ , o) = extensional-po _<_
 
 syntax underlying-order  α x y = x ≺⟨ α ⟩ y
 syntax underlying-porder α x y = x ≼⟨ α ⟩ y

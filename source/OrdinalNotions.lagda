@@ -84,14 +84,17 @@ transfinite-recursion w {𝓦} {Y} = transfinite-induction w (λ x → Y)
 is-transitive : 𝓤 ⊔ 𝓥 ̇
 is-transitive = (x y z : X) → x < y → y < z → x < z
 
-_≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
-x ≼ y = ∀ u → u < x → u < y
+private
+  _≼_ : X → X → 𝓤 ⊔ 𝓥 ̇
+  x ≼ y = ∀ u → u < x → u < y
 
-≼-is-prop-valued : FunExt
-                 → is-prop-valued
-                 → (x y : X) → is-prop (x ≼ y)
-≼-is-prop-valued fe isp x y = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
-                                   (λ u l → isp u y)
+extensional-po = _≼_
+
+extensional-po-is-prop-valued : FunExt
+                              → is-prop-valued
+                              → (x y : X) → is-prop (x ≼ y)
+extensional-po-is-prop-valued fe isp x y =
+  Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) (λ u l → isp u y)
 
 ≼-refl : {x : X} → x ≼ x
 ≼-refl u l = l
@@ -178,8 +181,8 @@ extensionally-ordered-types-are-sets fe isp e = γ
 
   ec : {x y : X} {l l' : x ≼ y} {m m' : y ≼ x} → e x y l m ≡ e x y l' m'
   ec {x} {y} {l} {l'} {m} {m'} = ap₂ (e x y)
-                                     (≼-is-prop-valued fe isp x y l l')
-                                     (≼-is-prop-valued fe isp y x m m')
+                                     (extensional-po-is-prop-valued fe isp x y l l')
+                                     (extensional-po-is-prop-valued fe isp y x m m')
 
   κ : {x y : X} → wconstant (f {x} {y})
   κ p q = ec

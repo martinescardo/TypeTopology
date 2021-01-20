@@ -90,9 +90,42 @@ open import OrdinalArithmetic fe
   h = f , order-equiv-criterion ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ)) f
            (⌜⌝-is-equiv +assoc) f-preserves-order f-reflects-order
 
-+ₒ-↓-lemma : (α β : Ordinal 𝓤) (b : ⟨ β ⟩)
++ₒ-↓-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
+          → (α ↓ a) ≡ ((α  +ₒ β) ↓ inl a)
++ₒ-↓-left {𝓤} {α} {β} a = h
+ where
+  γ = α ↓ a
+  δ = (α  +ₒ β) ↓ inl a
+
+  f : ⟨ γ ⟩ → ⟨ δ ⟩
+  f (x , l) = inl x , l
+
+  g :  ⟨ δ ⟩ → ⟨ γ ⟩
+  g (inl x , l) = x , l
+
+  η : g ∘ f ∼ id
+  η u = refl
+
+  ε : f ∘ g ∼ id
+  ε (inl x , l) = refl
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+
+  f-is-order-preserving : is-order-preserving γ δ f
+  f-is-order-preserving (x , _) (x' , _) l = l
+
+
+  g-is-order-preserving : is-order-preserving δ γ g
+  g-is-order-preserving (inl x , _) (inl x' , _) l = l
+
+  h : γ ≡ δ
+  h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
+
+
++ₒ-↓-right : {α β : Ordinal 𝓤} (b : ⟨ β ⟩)
            → (α  +ₒ (β ↓ b)) ≡ ((α  +ₒ β) ↓ inr b)
-+ₒ-↓-lemma α β b = h
++ₒ-↓-right {𝓤} {α} {β} b = h
  where
   γ = α  +ₒ (β ↓ b)
   δ = (α  +ₒ β) ↓ inr b
@@ -129,11 +162,91 @@ open import OrdinalArithmetic fe
   h : γ ≡ δ
   h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
 
-+ₒ-increasing-on-right : (α β γ : Ordinal 𝓤) → β ⊲ γ → (α  +ₒ β) ⊲ (α  +ₒ γ)
-+ₒ-increasing-on-right {𝓤} α β γ (c , p) = inr c , q
++ₒ-increasing-on-right : {α β γ : Ordinal 𝓤} → β ⊲ γ → (α  +ₒ β) ⊲ (α  +ₒ γ)
++ₒ-increasing-on-right {𝓤} {α} {β} {γ} (c , p) = inr c , q
  where
   q =  (α +ₒ β)           ≡⟨ ap (α +ₒ_) p ⟩
-       (α +ₒ (γ ↓ c))     ≡⟨ +ₒ-↓-lemma α γ c ⟩
+       (α +ₒ (γ ↓ c))     ≡⟨ +ₒ-↓-right c ⟩
        ((α +ₒ γ) ↓ inr c) ∎
 
++ₒ-⊲-left : {α β : Ordinal 𝓤} (a : ⟨ α ⟩)
+          → (α  ↓ a) ⊲ (α  +ₒ β)
++ₒ-⊲-left {𝓤} {α} {β} a = inl a , +ₒ-↓-left a
+
++ₒ-right-monotone : (α β γ : Ordinal 𝓤)
+                  → β ≼ γ
+                  → (α  +ₒ β) ≼ (α  +ₒ γ)
++ₒ-right-monotone α β γ m = to-≼ ϕ
+ where
+  l : (a : ⟨ α ⟩) → ((α  +ₒ β) ↓ inl a) ⊲  (α  +ₒ γ)
+  l a = o
+   where
+    n : (α  ↓ a) ⊲ (α  +ₒ γ)
+    n = +ₒ-⊲-left a
+
+    o : ((α  +ₒ β) ↓ inl a) ⊲  (α  +ₒ γ)
+    o = transport (_⊲ (α +ₒ γ)) (+ₒ-↓-left a) n
+
+  r : (b : ⟨ β ⟩) → ((α  +ₒ β) ↓ inr b) ⊲  (α  +ₒ γ)
+  r b = s
+   where
+    o : (β ↓ b) ⊲ γ
+    o = from-≼ m b
+
+    p : (α +ₒ (β ↓ b)) ⊲ (α  +ₒ γ)
+    p = +ₒ-increasing-on-right o
+
+    q : α +ₒ (β ↓ b) ≡ (α  +ₒ β) ↓ inr b
+    q = +ₒ-↓-right b
+
+    s : ((α  +ₒ β) ↓ inr b) ⊲  (α  +ₒ γ)
+    s = transport (_⊲  (α  +ₒ γ)) q p
+
+  ϕ : (x : ⟨ α  +ₒ β ⟩) → ((α  +ₒ β) ↓ x) ⊲  (α  +ₒ γ)
+  ϕ = dep-cases l r
+
+{- TODO
++ₒ-left-cancellable' : (α β γ : Ordinal 𝓤)
+                     → (α  +ₒ β) ≼ (α  +ₒ γ)
+                     → β ≼ γ
++ₒ-left-cancellable' {𝓤} α β γ = Transfinite-induction (O 𝓤) P ϕ β
+{-
+Pick u ◁ β. Then u ≡ β ↓ b for some b : ⟨ β ⟩.
+Then u ◁ α  +ₒ β because β ↓ b ≡ δ
+
+γ ≡ δ
+
+
+-}
+ where
+  P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+  P β = (α  +ₒ β) ≼ (α  +ₒ γ) → β ≼ γ
+
+  ϕ : (β : Ordinal 𝓤)
+    → ((β' : Ordinal 𝓤 ) → β' ⊲ β → P β')
+    → P β
+  ϕ β f p β' l = g
+   where
+    IH : (α +ₒ β') ≼ (α +ₒ γ) → β' ≼ γ
+    IH = f β' l
+    r : (α +ₒ β') ≼ (α +ₒ γ)
+    r = {!!}
+    g : β' ⊲ γ
+    g = {!≼⟨ OrdinalOfOrdinals 𝓤 ⟩!}
+
+
++ₒ-left-cancellable : (α β γ : Ordinal 𝓤) → (α  +ₒ β) ≡ (α  +ₒ γ) → β ≡ γ
++ₒ-left-cancellable {𝓤} = Transfinite-induction (OrdinalOfOrdinals 𝓤) P ϕ
+ where
+  P : Ordinal 𝓤 → 𝓤 ⁺ ̇
+  P α = (β γ : Ordinal 𝓤) → (α  +ₒ β) ≡ (α  +ₒ γ) → β ≡ γ
+
+  ϕ : (α : Ordinal 𝓤)
+    → ((α' : Ordinal 𝓤 ) → α' ⊲ α → P α')
+    → P α
+  ϕ α f p = {!!}
+   where
+    IH : {!!}
+    IH = {!!}
+-}
 \end{code}

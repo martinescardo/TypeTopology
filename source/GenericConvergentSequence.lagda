@@ -627,7 +627,7 @@ open import NaturalsOrder
 ⊏-trans : (m n : ℕ) (u : ℕ∞) → m ⊏ under n → n ⊏ u → m ⊏ u
 ⊏-trans m n u a = ⊏-trans' m n u (⊏-gives-< m n a)
 
-open import OrdinalNotions hiding (_≼_ ; ≼-is-prop-valued)
+open import OrdinalNotions
 
 ≺-trans : is-transitive _≺_
 ≺-trans u v w (m , r , a) (n , s , b) = m , r , c
