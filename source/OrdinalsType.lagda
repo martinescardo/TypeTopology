@@ -199,6 +199,9 @@ doesn't use the structure identity principle.)
 
 \begin{code}
 
+≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
+≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
+
 ≃ₒ-sym : ∀ {𝓤} {𝓥} (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
        → α ≃ₒ β → β ≃ₒ α
 ≃ₒ-sym α β (f , p , e , q) = inverse f e , q , inverse-is-equiv f e , p

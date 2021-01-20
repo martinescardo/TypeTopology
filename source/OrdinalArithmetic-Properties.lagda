@@ -10,6 +10,8 @@ module OrdinalArithmetic-Properties
        (ua : Univalence)
        where
 
+open import UF-Base
+open import UF-Subsingletons
 open import UF-Equiv
 open import UF-UA-FunExt
 open import UF-FunExt
@@ -87,5 +89,51 @@ open import OrdinalArithmetic fe
   h : ((α  +ₒ β) +ₒ γ) ≃ₒ (α  +ₒ (β +ₒ γ))
   h = f , order-equiv-criterion ((α  +ₒ β) +ₒ γ) (α  +ₒ (β +ₒ γ)) f
            (⌜⌝-is-equiv +assoc) f-preserves-order f-reflects-order
+
++ₒ-↓-lemma : (α β : Ordinal 𝓤) (b : ⟨ β ⟩)
+           → (α  +ₒ (β ↓ b)) ≡ ((α  +ₒ β) ↓ inr b)
++ₒ-↓-lemma α β b = h
+ where
+  γ = α  +ₒ (β ↓ b)
+  δ = (α  +ₒ β) ↓ inr b
+
+  f : ⟨ γ ⟩ → ⟨ δ ⟩
+  f (inl a)       = inl a , *
+  f (inr (y , l)) = inr y , l
+
+  g :  ⟨ δ ⟩ → ⟨ γ ⟩
+  g (inl a , *) = inl a
+  g (inr y , l) = inr (y , l)
+
+  η : g ∘ f ∼ id
+  η (inl a)       = refl
+  η (inr (y , l)) = refl
+
+  ε : f ∘ g ∼ id
+  ε (inl a , *) = refl
+  ε (inr y , l) = refl
+
+  f-is-equiv : is-equiv f
+  f-is-equiv = qinvs-are-equivs f (g , η , ε)
+
+  f-is-order-preserving : is-order-preserving γ δ f
+  f-is-order-preserving (inl _) (inl _) l = l
+  f-is-order-preserving (inl _) (inr _) l = l
+  f-is-order-preserving (inr _) (inr _) l = l
+
+  g-is-order-preserving : is-order-preserving δ γ g
+  g-is-order-preserving (inl _ , _) (inl _ , _) l = l
+  g-is-order-preserving (inl _ , _) (inr _ , _) l = l
+  g-is-order-preserving (inr _ , _) (inr _ , _) l = l
+
+  h : γ ≡ δ
+  h = eqtoidₒ γ δ (f , f-is-order-preserving , f-is-equiv , g-is-order-preserving)
+
++ₒ-increasing-on-right : (α β γ : Ordinal 𝓤) → β ⊲ γ → (α  +ₒ β) ⊲ (α  +ₒ γ)
++ₒ-increasing-on-right {𝓤} α β γ (c , p) = inr c , q
+ where
+  q =  (α +ₒ β)           ≡⟨ ap (α +ₒ_) p ⟩
+       (α +ₒ (γ ↓ c))     ≡⟨ +ₒ-↓-lemma α γ c ⟩
+       ((α +ₒ γ) ↓ inr c) ∎
 
 \end{code}

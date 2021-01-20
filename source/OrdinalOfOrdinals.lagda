@@ -61,6 +61,20 @@ is-initial-segment  α β f = (x : ⟨ α ⟩) (y : ⟨ β ⟩)
 is-simulation       α β f = is-initial-segment α β f × is-order-preserving α β f
 
 
+simulations-are-order-preserving : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                   (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                 → is-simulation α β f
+                                 → is-order-preserving α β f
+simulations-are-order-preserving α β f (i , p) = p
+
+
+simulations-are-initial-segments : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
+                                   (f : ⟨ α ⟩ → ⟨ β ⟩)
+                                 → is-simulation α β f
+                                 → is-initial-segment α β f
+simulations-are-initial-segments α β f (i , p) = i
+
+
 order-equivs-are-simulations : (α : Ordinal 𝓤) (β : Ordinal 𝓥)
                                (f : ⟨ α ⟩ → ⟨ β ⟩)
                              → is-order-equiv α β f
@@ -333,9 +347,6 @@ bisimilarity-gives-ordinal-equiv α β (f , s) (g , t) = γ
   γ : α ≃ₒ β
   γ =  f , pr₂ s , qinvs-are-equivs f (g , ε , η) , pr₂ t
 
-≃ₒ-refl : (α : Ordinal 𝓤) → α ≃ₒ α
-≃ₒ-refl α = id , (λ x y → id) , id-is-equiv ⟨ α ⟩ , (λ x y → id)
-
 idtoeqₒ : (α β : Ordinal 𝓤) → α ≡ β → α ≃ₒ β
 idtoeqₒ α α refl = ≃ₒ-refl α
 
@@ -455,7 +466,7 @@ segment-⊴ : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
 segment-⊴ α a = segment-inclusion α a , segment-inclusion-is-simulation α a
 
 ↓-⊴-lc : (α : Ordinal 𝓤) (a b : ⟨ α ⟩)
-       → (α ↓ a)  ⊴  (α ↓ b ) → a ≼⟨ α ⟩ b
+       → (α ↓ a) ⊴ (α ↓ b ) → a ≼⟨ α ⟩ b
 ↓-⊴-lc {𝓤} α a b (f , s) u l = n
  where
   h : segment-inclusion α a ∼ segment-inclusion α b ∘ f
@@ -962,3 +973,156 @@ Question. Do we have (finite or arbitrary) joins of ordinals? Probably not.
 
 Conjecture. We have bounded joins. The construction would be to take
 the joint image in any upper bound.
+
+Added 19-20 January 2021.
+
+\begin{code}
+
+⊴-gives-≼ : (α β : Ordinal 𝓤) → α ⊴ β → α ≼⟨ O 𝓤 ⟩ β
+⊴-gives-≼ α β (f , f-is-initial-segment , f-is-order-preserving) α' (a , p) = l
+ where
+  f-is-simulation : is-simulation α β f
+  f-is-simulation = f-is-initial-segment , f-is-order-preserving
+
+  g : ⟨ α ↓ a ⟩ → ⟨ β ↓ f a ⟩
+  g (x , l) = f x , f-is-order-preserving x a l
+
+  h : ⟨ β ↓ f a ⟩ → ⟨ α ↓ a ⟩
+  h (y , m) = pr₁ σ , pr₁ (pr₂ σ)
+   where
+    σ : Σ x ꞉ ⟨ α ⟩ , (x ≺⟨ α ⟩ a) × (f x ≡ y)
+    σ = f-is-initial-segment a y m
+
+  η : h ∘ g ∼ id
+  η (x , l) = to-subtype-≡ (λ - → Prop-valuedness α - a) r
+   where
+    σ : Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ a) × (f x' ≡ f x)
+    σ = f-is-initial-segment a (f x) (f-is-order-preserving x a l)
+
+    x' = pr₁ σ
+
+    have : pr₁ (h (g (x , l))) ≡ x'
+    have = refl
+
+    s : f x' ≡ f x
+    s = pr₂ (pr₂ σ)
+
+    r : x' ≡ x
+    r = simulations-are-lc α β f f-is-simulation s
+
+  ε : g ∘ h ∼ id
+  ε (y , m) = to-subtype-≡ (λ - → Prop-valuedness β - (f a)) r
+   where
+    r : f (pr₁ (f-is-initial-segment a y m)) ≡ y
+    r = pr₂ (pr₂ (f-is-initial-segment a y m))
+
+  g-is-order-preserving : is-order-preserving (α ↓ a) (β ↓ f a) g
+  g-is-order-preserving (x , _) (x' , _) = f-is-order-preserving x x'
+
+  h-is-order-preserving : is-order-preserving (β ↓ f a) (α ↓ a) h
+  h-is-order-preserving (y , m) (y' , m') l = o
+   where
+    have : y ≺⟨ β ⟩ y'
+    have = l
+
+    σ  = f-is-initial-segment a y  m
+    σ' = f-is-initial-segment a y' m'
+
+    x  = pr₁ σ
+    x' = pr₁ σ'
+
+    s : f x ≡ y
+    s = pr₂ (pr₂ σ)
+
+    s' : f x' ≡ y'
+    s' = pr₂ (pr₂ σ')
+
+    t : f x ≺⟨ β ⟩ f x'
+    t = transport₂ (λ y y' → y ≺⟨ β ⟩ y') (s ⁻¹) (s' ⁻¹) l
+
+    o : x ≺⟨ α ⟩ x'
+    o = simulations-are-order-reflecting α β f f-is-simulation x x' t
+
+  q : (α ↓ a) ≡ (β ↓ f a)
+  q = eqtoidₒ (α ↓ a) (β ↓ f a)
+        (g ,
+         g-is-order-preserving ,
+         qinvs-are-equivs g (h , η , ε) ,
+         h-is-order-preserving)
+
+  l : α' ⊲ β
+  l = back-transport (_⊲ β) p (f a , q)
+
+⊴-criterion : (α β : Ordinal 𝓤)
+            → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)
+            → α ⊴ β
+⊴-criterion α β ϕ = f , f-is-initial-segment , f-is-order-preserving
+ where
+  f : ⟨ α ⟩ → ⟨ β ⟩
+  f a = pr₁ (ϕ a)
+
+  f-property : (a : ⟨ α ⟩) → (α ↓ a) ≡ (β ↓ f a)
+  f-property a = pr₂ (ϕ a)
+
+  f-is-order-preserving : is-order-preserving α β f
+  f-is-order-preserving a a' l = o
+   where
+    m : (α ↓ a) ⊲ (α ↓ a')
+    m = ↓-preserves-order α a a' l
+
+    n : (β ↓ f a) ⊲ (β ↓ f a')
+    n = transport₂ _⊲_ (f-property a) (f-property a') m
+
+    o : f a ≺⟨ β ⟩ f a'
+    o = ↓-reflects-order β (f a) (f a') n
+
+  f-is-initial-segment : (x : ⟨ α ⟩) (y : ⟨ β ⟩)
+                       → y ≺⟨ β ⟩ f x
+                       → Σ x' ꞉ ⟨ α ⟩ , (x' ≺⟨ α ⟩ x) × (f x' ≡ y)
+  f-is-initial-segment x y l = x' , o , (q ⁻¹)
+   where
+    m : (β ↓ y) ⊲ (β ↓ f x)
+    m = ↓-preserves-order β y (f x) l
+
+    n : (β ↓ y) ⊲ (α ↓ x)
+    n = transport ((β ↓ y) ⊲_) ((f-property x)⁻¹) m
+
+    x' : ⟨ α ⟩
+    x' = pr₁ (pr₁ n)
+
+    o : x' ≺⟨ α ⟩ x
+    o = pr₂ (pr₁ n)
+
+    p = (β ↓ y)              ≡⟨ pr₂ n ⟩
+        ((α ↓ x) ↓ (x' , o)) ≡⟨ iterated-↓ α x x' o ⟩
+        (α ↓ x')             ≡⟨ f-property x' ⟩
+        (β ↓ f x')           ∎
+
+    q : y ≡ f x'
+    q = ↓-lc β y (f x') p
+
+≼-gives-⊴ : (α β : Ordinal 𝓤) → α ≼⟨ O 𝓤 ⟩ β → α ⊴ β
+≼-gives-⊴ {𝓤} α β l = ⊴-criterion α β ϕ
+ where
+  ψ : (a : ⟨ α ⟩) → Σ b ꞉ ⟨ β ⟩ , α ↓ a ≡ β ↓ b
+  ψ a = l (α ↓ a) (a , refl)
+
+  ϕ : (a : ⟨ α ⟩) → (α ↓ a) ⊲ β
+  ϕ a = transport (_⊲ β) p m
+   where
+    b : ⟨ β ⟩
+    b = pr₁ (ψ a)
+
+    p : β ↓ b ≡ α ↓ a
+    p = (pr₂ (ψ a))⁻¹
+
+    m : (β ↓ b) ⊲ β
+    m = b , refl
+
+⊲-gives-≼ : (α β : Ordinal 𝓤) → α ⊲ β → α ≼⟨ O 𝓤 ⟩ β
+⊲-gives-≼ {𝓤} α β l α' m = Transitivity (O 𝓤) α' α β m l
+
+⊲-gives-⊴ : (α β : Ordinal 𝓤) → α ⊲ β → α ⊴ β
+⊲-gives-⊴ α β l = ≼-gives-⊴ α β (⊲-gives-≼ α β l)
+
+\end{code}
