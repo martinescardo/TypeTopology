@@ -1152,3 +1152,19 @@ to-⊴ α β ϕ = g
 ⊲-gives-⊴ α β l = ≼-gives-⊴ α β (⊲-gives-≼ α β l)
 
 \end{code}
+
+Transfinite induction on the ordinal of ordinals:
+
+\begin{code}
+
+transfinite-induction-on-O : (P : Ordinal 𝓤 → 𝓥 ̇ )
+                           → ((α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+                           → (α : Ordinal 𝓤) → P α
+transfinite-induction-on-O {𝓤} {𝓥} P f = Transfinite-induction (O 𝓤) P f'
+ where
+  f' : (α : Ordinal 𝓤)
+     → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
+     → P α
+  f' α g = f α (λ a → g (α ↓ a) (a , refl))
+
+\end{code}
