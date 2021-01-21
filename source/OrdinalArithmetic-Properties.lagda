@@ -17,6 +17,7 @@ open import UF-Equiv
 open import UF-UA-FunExt
 open import UF-FunExt
 open import UF-EquivalenceExamples
+open import UF-Embeddings
 open import UF-ExcludedMiddle
 
 private
@@ -322,6 +323,12 @@ lemma₃ b (inr c) p = c , refl
   g : (β : Ordinal 𝓤) → P β
   g = transfinite-induction-on-O P ϕ
 
+
+left-+ₒ-is-embedding : (α : Ordinal 𝓤) → is-embedding (α +ₒ_)
+left-+ₒ-is-embedding α = lc-maps-into-sets-are-embeddings (α +ₒ_)
+                           (λ {β} {γ} → +ₒ-left-cancellable α β γ)
+                           type-of-ordinals-is-set
+
 \end{code}
 
 This implies that the function α +ₒ_ reflects the _⊲_ ordering:
@@ -375,8 +382,9 @@ partial ordering:
 
 \end{code}
 
-Classically, if α ≼ β then there is (a necessarily unique) γ
-with α +ₒ γ ≡ β. But this not the case constructively.
+Classically, if α ≼ β then there is (a necessarily unique) γ with
+α +ₒ γ ≡ β. But this not the case constructively. For that purpose, we
+first consider characterize the order to subsingleton ordinals.
 
 \begin{code}
 
@@ -445,12 +453,9 @@ existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
 existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β
 
 existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
-existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) i
- where
-  i : (α β : Ordinal 𝓤) → α ≼ β → is-prop (Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β)
-  i α β l (γ , p) (γ' , p') = to-subtype-≡
-                                (λ γ → type-of-ordinals-is-set)
-                                (+ₒ-left-cancellable α γ γ' (p ∙ p' ⁻¹))
+existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                                     (λ α β l → left-+ₒ-is-embedding α β)
+
 
 ordinal-subtraction-taboo : existence-of-subtraction 𝓤 → EM 𝓤
 ordinal-subtraction-taboo {𝓤} ϕ P P-is-prop = g
@@ -492,3 +497,9 @@ ordinal-subtraction-taboo {𝓤} ϕ P P-is-prop = g
   g = Cases t inl (λ c → inr (f c))
 
 \end{code}
+
+Another example where subtraction doesn't exist is (ℕₒ +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
+discussed in the module OrdinalOfOrdinals. The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
+are equal if and only if LPO holds. Without assuming LPO, the image of
+the inclusion (ℕₒ +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
+nothing that can be added to (ℕₒ +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
