@@ -263,6 +263,9 @@ univalence-gives-propext ua {P} {Q} i j f g = eqtoid ua P Q
                                        (g , (λ y → j (f (g y)) y)) ,
                                        (g , (λ x → i (g (f x)) x)))
 
+Univalence-gives-PropExt : Univalence → PropExt
+Univalence-gives-PropExt ua 𝓤 = univalence-gives-propext (ua 𝓤)
+
 \end{code}
 
 If the identity function satisfies some property, then all

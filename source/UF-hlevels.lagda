@@ -21,7 +21,7 @@ open import UF-Equiv
 open import UF-EquivalenceExamples
 
 private fe : FunExt
-fe = FunExt-from-Univalence ua
+fe = Univalence-gives-FunExt ua
 
 _is-of-hlevel_ : 𝓤 ̇ → ℕ → 𝓤 ̇
 X is-of-hlevel zero     = is-prop X

@@ -302,6 +302,12 @@ singleton-type' x = Σ y ꞉ type-of x , y ≡ x
                  → (Y → is-prop X) × (X → is-prop Y) → is-prop (X × Y)
 ×-prop-criterion (i , j) (x , y) (x' , y') = to-Σ-≡ (i y x x' , j x _ _)
 
+×-𝟘-is-prop : {X : 𝓤 ̇ } → is-prop (X × 𝟘 {𝓥})
+×-𝟘-is-prop (x , z) _ = 𝟘-elim z
+
+𝟘-×-is-prop : {X : 𝓤 ̇ } → is-prop (𝟘 {𝓥} × X)
+𝟘-×-is-prop (z , x) _ = 𝟘-elim z
+
 ×-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → is-prop X → is-prop Y → is-prop (X × Y)
 ×-is-prop i j = ×-prop-criterion ((λ _ → i) , (λ _ → j))

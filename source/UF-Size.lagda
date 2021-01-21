@@ -130,7 +130,7 @@ has-size-is-prop : Univalence → (X : 𝓤 ̇ ) (𝓥 :  Universe)
 has-size-is-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
-  fe = FunExt-from-Univalence ua
+  fe = Univalence-gives-FunExt ua
   a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
   a Y = (Y ≃ X)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ a₁ ⟩
@@ -152,7 +152,7 @@ propositional-resizing-is-prop {𝓤} {𝓥} ua =  Π-is-prop (fe (𝓤 ⁺) (�
                                                 (λ i → has-size-is-prop ua P 𝓥))
  where
   fe : FunExt
-  fe = FunExt-from-Univalence ua
+  fe = Univalence-gives-FunExt ua
 
 \end{code}
 
@@ -375,7 +375,7 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
     X' : 𝓤 ̇
     X' = pr₁ v
     a : r (s X) ≃ X'
-    a = prop-indexed-product (FunExt-from-Univalence ua 𝓤 𝓤) (i (s X)) u
+    a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
     b : s X' ≡ s X
     b = pr₂ v
     c : X' ≡ X

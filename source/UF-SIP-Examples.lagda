@@ -1369,8 +1369,8 @@ module generalized-metric-space
  characterization-of-M-≡' ua (X , d , a) (Y , e , b) =
      characterization-of-M-≡ (ua 𝓤) (X , d , a) (Y , e , b)
    ● Σ-cong (λ f → ×-cong (≃-refl (is-equiv f))
-                         (≃-funext₂ (FunExt-from-Univalence ua 𝓤 (𝓤 ⊔ 𝓥))
-                                    (FunExt-from-Univalence ua 𝓤 𝓥)
+                         (≃-funext₂ (Univalence-gives-FunExt ua 𝓤 (𝓤 ⊔ 𝓥))
+                                    (Univalence-gives-FunExt ua 𝓤 𝓥)
                                     (λ x y → d x y)
                                     (λ x x' → e (f x) (f x'))))
 
@@ -1572,7 +1572,7 @@ module type-valued-preorder
  open sip
 
  fe : Fun-Ext
- fe {𝓤} {𝓥} = FunExt-from-Univalence ua 𝓤 𝓥
+ fe {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
 
  S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  S = type-valued-preorder-S {𝓤} {𝓥}
@@ -1769,7 +1769,7 @@ module category
  open type-valued-preorder-with-axioms 𝓤 𝓥 (𝓤 ⊔ 𝓥) ua
 
  fe : Fun-Ext
- fe {𝓤} {𝓥} = FunExt-from-Univalence ua 𝓤 𝓥
+ fe {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
 
  S : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
  S = type-valued-preorder-S {𝓤} {𝓥}

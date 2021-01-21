@@ -133,7 +133,7 @@ open import UF-EquivalenceExamples
 𝓕-equiv {𝓤} ua X = qinveq φ (ψ , ψφ , φψ)
  where
   fe : FunExt
-  fe = FunExt-from-Univalence ua
+  fe = Univalence-gives-FunExt ua
 
   φ : 𝓕 X → Σ A ꞉ (X → 𝓣 ⊔ 𝓤 ̇ ), (Σ A) has-size 𝓣
   φ (I , φ) = fiber φ , I , ≃-sym (total-fiber-is-domain φ)

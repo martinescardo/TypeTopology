@@ -135,7 +135,7 @@ open import UF-FunExt
 
 private
  fe : FunExt
- fe = FunExt-from-Univalence ua
+ fe = Univalence-gives-FunExt ua
 
 open import SpartanMLTT
 open import OrdinalNotions

@@ -53,7 +53,7 @@ at-most-one-universe-embedding {𝓤} {𝓥} ua f g i j = p
   H X = eqtoid (ua (𝓤 ⊔ 𝓥)) (f X) (g X) (h X)
 
   p : f ≡ g
-  p = dfunext (FunExt-from-Univalence ua (𝓤 ⁺) ((𝓤 ⊔ 𝓥)⁺)) H
+  p = dfunext (Univalence-gives-FunExt ua (𝓤 ⁺) ((𝓤 ⊔ 𝓥)⁺)) H
 
 universe-embeddings-are-embeddings : Univalence
                                    → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
@@ -68,7 +68,7 @@ universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
             (X ≡ X')      ■
    where
     a = univalence-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X')
-    b = Eq-Eq-cong (FunExt-from-Univalence ua) (i X) (i X')
+    b = Eq-Eq-cong (Univalence-gives-FunExt ua) (i X) (i X')
     c = ≃-sym (univalence-≃ (ua 𝓤) X X')
 
 \end{code}
@@ -257,7 +257,7 @@ Lift-hSet-is-embedding {𝓤} {𝓥} ua = pair-fun-embedding
                                      (Lift-is-set 𝓥)
                                      (Lift-is-embedding ua)
                                      (Lift-is-set-is-embedding
-                                       (FunExt-from-Univalence ua (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
+                                       (Univalence-gives-FunExt ua (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)))
 
 is-hSet-embedding : (hSet 𝓤 → hSet 𝓥) → (𝓤 ⁺) ⊔ 𝓥 ̇
 is-hSet-embedding {𝓤} {𝓥} f = (𝓧 : hSet 𝓤) → underlying-set (f 𝓧)
@@ -279,7 +279,7 @@ at-most-one-hSet-embedding {𝓤} {𝓥} ua f g i j = p
           (eqtoid (ua 𝓥) (underlying-set (f 𝓧)) (underlying-set (g 𝓧)) (h 𝓧))
 
   p : f ≡ g
-  p = dfunext (FunExt-from-Univalence ua (𝓤 ⁺) (𝓥 ⁺)) H
+  p = dfunext (Univalence-gives-FunExt ua (𝓤 ⁺) (𝓥 ⁺)) H
 
 the-only-hSet-embedding-is-Lift-hSet : Univalence
                                      → (f : hSet 𝓤 → hSet (𝓤 ⊔ 𝓥 ))

@@ -33,7 +33,7 @@ open import UF-EquivalenceExamples
 
 private
  fe : FunExt
- fe = FunExt-from-Univalence ua
+ fe = Univalence-gives-FunExt ua
 
  fe' : Fun-Ext
  fe' {𝓤} {𝓥} = fe 𝓤 𝓥

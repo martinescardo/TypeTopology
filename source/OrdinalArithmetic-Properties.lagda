@@ -12,19 +12,26 @@ module OrdinalArithmetic-Properties
 
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-UA-FunExt
 open import UF-FunExt
 open import UF-EquivalenceExamples
+open import UF-ExcludedMiddle
 
 private
  fe : FunExt
- fe = FunExt-from-Univalence ua
+ fe = Univalence-gives-FunExt ua
+
+ pe : PropExt
+ pe = Univalence-gives-PropExt ua
 
 open import SpartanMLTT
 open import OrdinalsType
+open import OrdinalNotions
 open import OrdinalOfOrdinals ua
 open import OrdinalArithmetic fe
+open import Plus-Properties
 
 𝟘ₒ-left-neutral : (α : Ordinal 𝓤) → 𝟘ₒ +ₒ α ≡ α
 𝟘ₒ-left-neutral α = eqtoidₒ (𝟘ₒ +ₒ α) α h
@@ -365,5 +372,123 @@ partial ordering:
 
     o : (β ↓ b) ⊲ γ
     o = +ₒ-left-reflects-⊲ α (β ↓ b) γ n
+
+\end{code}
+
+Classically, if α ≼ β then there is (a necessarily unique) γ
+with α +ₒ γ ≡ β. But this not the case constructively.
+
+\begin{code}
+
+module _ {𝓤 : Universe}
+         (P Q : 𝓤 ̇ )
+         (P-is-prop : is-prop P)
+         (Q-is-prop : is-prop Q)
+       where
+
+ private
+   p q : Ordinal 𝓤
+   p = prop-ordinal P P-is-prop
+   q = prop-ordinal Q Q-is-prop
+
+ fact₀ : p ⊲ q → ¬ P × Q
+ fact₀ (y , r) = u , y
+  where
+   s : P ≡ (Q × 𝟘)
+   s = ap ⟨_⟩ r
+
+   u : ¬ P
+   u p = 𝟘-elim (pr₂ (⌜ idtoeq P (Q × 𝟘) s ⌝ p))
+
+ fact₀-converse : ¬ P × Q → p ⊲ q
+ fact₀-converse (u , y) = (y , g)
+  where
+   r : P ≡ Q × 𝟘
+   r = univalence-gives-propext (ua 𝓤)
+        P-is-prop
+        ×-𝟘-is-prop
+        (λ p → 𝟘-elim (u p))
+        (λ (q , z) → 𝟘-elim z)
+
+   g : p ≡ (q ↓ y)
+   g = to-Σ-≡ (r ,
+       to-Σ-≡ (dfunext (fe 𝓤 (𝓤 ⁺)) (λ (y , z) → 𝟘-elim z) ,
+               being-well-order-is-prop (underlying-order (q ↓ y)) fe _ _))
+
+ fact₁ : p ≼ q → (P → Q)
+ fact₁ l x = pr₁ (from-≼ {𝓤} {p} {q} l x)
+
+ fact₁-converse : (P → Q) → p ≼ q
+ fact₁-converse f = to-≼ {𝓤} {p} {q} ϕ
+  where
+   r : P × 𝟘 ≡ Q × 𝟘
+   r = univalence-gives-propext (ua 𝓤)
+        ×-𝟘-is-prop
+        ×-𝟘-is-prop
+        (λ (p , z) → 𝟘-elim z)
+        (λ (q , z) → 𝟘-elim z)
+
+   ϕ : (x : ⟨ p ⟩) → (p ↓ x) ⊲ q
+   ϕ x = f x , s
+    where
+     s : ((P × 𝟘) , (λ x x' → 𝟘) , _) ≡ ((Q × 𝟘) , (λ y y' → 𝟘) , _)
+     s = to-Σ-≡ (r ,
+         to-Σ-≡ (dfunext (fe 𝓤 (𝓤 ⁺)) (λ z → 𝟘-elim (pr₂ z)) ,
+                 being-well-order-is-prop (underlying-order (q ↓ f x)) fe _ _))
+\end{code}
+
+The existence of ordinal subtraction implies excluded middle.
+
+\begin{code}
+
+existence-of-subtraction : (𝓤 : Universe) → 𝓤 ⁺ ̇
+existence-of-subtraction 𝓤 = (α β : Ordinal 𝓤) → α ≼ β → Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β
+
+existence-of-subtraction-is-prop : is-prop (existence-of-subtraction 𝓤)
+existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥) i
+ where
+  i : (α β : Ordinal 𝓤) → α ≼ β → is-prop (Σ γ ꞉ Ordinal 𝓤 , α +ₒ γ ≡ β)
+  i α β l (γ , p) (γ' , p') = to-subtype-≡
+                                (λ γ → type-of-ordinals-is-set)
+                                (+ₒ-left-cancellable α γ γ' (p ∙ p' ⁻¹))
+
+ordinal-subtraction-taboo : existence-of-subtraction 𝓤 → EM 𝓤
+ordinal-subtraction-taboo {𝓤} ϕ P P-is-prop = g
+ where
+  α = prop-ordinal P P-is-prop
+  β = prop-ordinal 𝟙 𝟙-is-prop
+  σ = ϕ α β (fact₁-converse {𝓤} P 𝟙 P-is-prop 𝟙-is-prop (λ _ → *))
+  γ : Ordinal 𝓤
+  γ = pr₁ σ
+
+  r : α +ₒ γ ≡ β
+  r = pr₂ σ
+
+  s : P + ⟨ γ ⟩ ≡ 𝟙
+  s = ap ⟨_⟩ r
+
+  t : P + ⟨ γ ⟩
+  t = idtofun 𝟙 (P + ⟨ γ ⟩) (s ⁻¹) *
+
+  f : ⟨ γ ⟩ → ¬ P
+  f c p = z
+   where
+    A : 𝓤 ̇ → 𝓤 ̇
+    A X = Σ x ꞉ X , Σ y ꞉ X , x ≢ y
+
+    u : A (P + ⟨ γ ⟩)
+    u = inl p , inr c , +disjoint
+
+    v : ¬ A 𝟙
+    v (x , y , d) = d (𝟙-is-prop x y)
+
+    w : A (P + ⟨ γ ⟩) → A 𝟙
+    w = transport A s
+
+    z : 𝟘
+    z = v (w u)
+
+  g : P + ¬ P
+  g = Cases t inl (λ c → inr (f c))
 
 \end{code}

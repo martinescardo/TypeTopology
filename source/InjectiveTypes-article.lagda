@@ -235,7 +235,7 @@ extensionality:
 \begin{code}
 
 fe : FunExt
-fe = FunExt-from-Univalence ua
+fe = Univalence-gives-FunExt ua
 
 pe : PropExt
 pe 𝓤 = univalence-gives-propext (ua 𝓤)
