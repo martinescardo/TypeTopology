@@ -51,6 +51,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   η : (t : (x ≡ y) × (a ≡ b)) → from-×-≡' (to-×-≡' t) ≡ t
   η (refl , refl) = refl
+
   ε : (u : x , a ≡ y , b) → to-×-≡' (from-×-≡' u) ≡ u
   ε refl = refl
 
@@ -60,6 +61,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   c : Σ Z → Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)
   c ((x , y) , z) = (x , (y , z))
+
   u : (Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)) → Σ Z
   u (x , (y , z)) = ((x , y) , z)
 
@@ -69,10 +71,13 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   f : (Σ x ꞉ X , Σ y ꞉ Y , A x y) → (Σ y ꞉ Y , Σ x ꞉ X , A x y)
   f (x , y , p) = y , x , p
+
   g : (Σ y ꞉ Y , Σ x ꞉ X , A x y) → (Σ x ꞉ X , Σ y ꞉ Y , A x y)
   g (y , x , p) = x , y , p
+
   ε : ∀ σ → g (f σ) ≡ σ
   ε (x , y , p) = refl
+
   η : ∀ τ → f (g τ) ≡ τ
   η (y , x , p) = refl
 
@@ -82,23 +87,31 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   f : (x : X) → Y x → Y' x
   f x = pr₁(φ x)
+
   g : (x : X) → Y' x → Y x
   g x = pr₁(pr₁(pr₂(φ x)))
+
   fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
   fg x = pr₂(pr₁(pr₂(φ x)))
+
   h : (x : X) → Y' x → Y x
   h x = pr₁(pr₂(pr₂(φ x)))
+
   hf : (x : X) (y : Y x) → h x (f x y) ≡ y
   hf x = pr₂(pr₂(pr₂(φ x)))
 
   F : Σ Y → Σ Y'
   F (x , y) = x , f x y
+
   G : Σ Y' → Σ Y
   G (x , y') = x , g x y'
+
   H : Σ Y' → Σ Y
   H (x , y') = x , h x y'
+
   FG : (w' : Σ Y') → F(G w') ≡ w'
   FG (x , y') = to-Σ-≡' (fg x y')
+
   HF : (w : Σ Y) → H(F w) ≡ w
   HF (x , y) = to-Σ-≡' (hf x y)
 
@@ -108,6 +121,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   η :  ΠΣ-distr {𝓤} {𝓥} {𝓦} {X} {A} {P} ∘ ΠΣ-distr-back ∼ id
   η _ = refl
+
   ε : ΠΣ-distr-back ∘ ΠΣ-distr ∼ id
   ε _ = refl
 
@@ -119,12 +133,15 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   f : (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y)) → (Σ z ꞉ X + Y , A z)
   f (inl (x , a)) = inl x , a
   f (inr (y , a)) = inr y , a
+
   g : (Σ z ꞉ X + Y , A z) → (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y))
   g (inl x , a) = inl (x , a)
   g (inr y , a) = inr (y , a)
+
   η : g ∘ f ∼ id
   η (inl _) = refl
   η (inr _) = refl
+
   ε : f ∘ g ∼ id
   ε (inl _ , _) = refl
   ε (inr _ , _) = refl
@@ -137,19 +154,25 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
  where
   f : (x : X) → Y x → Y' x
   f x = pr₁(φ x)
+
   g : (x : X) → Y' x → Y x
   g x =  pr₁(pr₁(pr₂(φ x)))
+
   fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
   fg x = pr₂(pr₁(pr₂(φ x)))
+
   h : (x : X) → Y' x → Y x
   h x = pr₁(pr₂(pr₂(φ x)))
+
   hf : (x : X) (y : Y x) → h x (f x y) ≡ y
   hf x = pr₂(pr₂(pr₂(φ x)))
 
   F : ((x : X) → Y x) → ((x : X) → Y' x)
   F = λ z x → pr₁ (φ x) (z x)
+
   G : ((x : X) → Y' x) → (x : X) → Y x
   G u x = g x (u x)
+
   H : ((x : X) → Y' x) → (x : X) → Y x
   H u' x = h x (u' x)
 
@@ -188,10 +211,13 @@ An application of Π-cong is the following:
  where
    f : 𝟙 × Y → Y
    f (o , y) = y
+
    g : Y → 𝟙 × Y
    g y = (* , y)
+
    η : ∀ x → f (g x) ≡ x
    η y = refl
+
    ε : ∀ z → g (f z) ≡ z
    ε (o , y) = ap (_, y) (𝟙-is-prop * o)
 
@@ -218,12 +244,15 @@ An application of Π-cong is the following:
    f : X + Y → Y + X
    f (inl x) = inr x
    f (inr y) = inl y
+
    g : Y + X → X + Y
    g (inl y) = inr y
    g (inr x) = inl x
+
    ε : (t : Y + X) → (f ∘ g) t ≡ t
    ε (inl y) = refl
    ε (inr x) = refl
+
    η : (u : X + Y) → (g ∘ f) u ≡ u
    η (inl x) = refl
    η (inr y) = refl
@@ -233,12 +262,15 @@ An application of Π-cong is the following:
  where
    f : X → X + 𝟘
    f = inl
+
    g : X + 𝟘 → X
    g (inl x) = x
    g (inr y) = 𝟘-elim y
+
    ε : (y : X + 𝟘) → (f ∘ g) y ≡ y
    ε (inl x) = refl
    ε (inr y) = 𝟘-elim y
+
    η : (x : X) → (g ∘ f) x ≡ x
    η x = refl
 
@@ -260,14 +292,17 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
    f (inl (inl x)) = inl x
    f (inl (inr y)) = inr (inl y)
    f (inr z)       = inr (inr z)
+
    g : X + (Y + Z) → (X + Y) + Z
    g (inl x)       = inl (inl x)
    g (inr (inl y)) = inl (inr y)
    g (inr (inr z)) = inr z
+
    ε : (t : X + (Y + Z)) → (f ∘ g) t ≡ t
    ε (inl x)       = refl
    ε (inr (inl y)) = refl
    ε (inr (inr z)) = refl
+
    η : (u : (X + Y) + Z) → (g ∘ f) u ≡ u
    η (inl (inl x)) = refl
    η (inl (inr x)) = refl
@@ -286,6 +321,7 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
   E : (c : A + B) → +functor f φ (+functor g γ c) ≡ c
   E (inl a) = ap inl (e a)
   E (inr b) = ap inr (ε b)
+
   D : (z : X + Y) → +functor g' γ' (+functor f φ z) ≡ z
   D (inl x) = ap inl (d x)
   D (inr y) = ap inr (δ y)
@@ -295,10 +331,13 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
  where
    f : 𝟘 → X × 𝟘
    f = unique-from-𝟘
+
    g : X × 𝟘 → 𝟘
    g (x , y) = 𝟘-elim y
+
    ε : (t : X × 𝟘) → (f ∘ g) t ≡ t
    ε (x , y) = 𝟘-elim y
+
    η : (u : 𝟘) → (g ∘ f) u ≡ u
    η = 𝟘-induction
 
@@ -308,12 +347,15 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
    f : X × Y + X → X × (Y + 𝟙)
    f (inl (x , y)) = x , inl y
    f (inr x)       = x , inr *
+
    g : X × (Y + 𝟙) → X × Y + X
    g (x , inl y) = inl (x , y)
    g (x , inr O) = inr x
+
    ε : (t : X × (Y + 𝟙)) → (f ∘ g) t ≡ t
    ε (x , inl y) = refl
    ε (x , inr *) = refl
+
    η : (u : X × Y + X) → (g ∘ f) u ≡ u
    η (inl (x , y)) = refl
    η (inr x)       = refl
@@ -324,15 +366,19 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
    f' : X + Z → Y + Z
    f' (inl x) = inl (f x)
    f' (inr z) = inr z
+
    g' : Y + Z → X + Z
    g' (inl y) = inl (g y)
    g' (inr z) = inr z
+
    h' : Y + Z → X + Z
    h' (inl y) = inl (h y)
    h' (inr z) = inr z
+
    ε' : (t : Y + Z) → (f' ∘ g') t ≡ t
    ε' (inl y) = ap inl (ε y)
    ε' (inr z) = refl
+
    η' : (u : X + Z) → (h' ∘ f') u ≡ u
    η' (inl x) = ap inl (η x)
    η' (inr z) = refl
@@ -342,10 +388,13 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
  where
    f : X × Y → Y × X
    f (x , y) = (y , x)
+
    g : Y × X → X × Y
    g (y , x) = (x , y)
+
    ε : (t : Y × X) → (f ∘ g) t ≡ t
    ε (y , x) = refl
+
    η : (u : X × Y) → (g ∘ f) u ≡ u
    η (x , y) = refl
 
@@ -360,6 +409,7 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
  where
   E : (c : A × B) → ×functor f φ (×functor g γ c) ≡ c
   E (a , b) = to-×-≡ (e a) (ε b)
+
   D : (z : X × Y) → ×functor g' γ' (×functor f φ z) ≡ z
   D (x , y) = to-×-≡ (d x) (δ y)
 
@@ -370,10 +420,13 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
  where
   f : 𝟙 → 𝟘 → X
   f * y = 𝟘-elim y
+
   g : (𝟘 → X) → 𝟙
   g h = *
+
   η : (h : 𝟘 → X) → f (g h) ≡ h
   η h = dfunext fe (λ z → 𝟘-elim z)
+
   ε : (y : 𝟙) → g (f y) ≡ y
   ε * = refl
 
@@ -384,13 +437,16 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
  where
   f : X → 𝟙 → X
   f x * = x
+
   g : (𝟙 → X) → X
   g h = h *
+
   η : (h : 𝟙 → X) → f (g h) ≡ h
   η h = dfunext fe γ
    where
     γ : (t : 𝟙) → f (g h) t ≡ h t
     γ * = refl
+
   ε : (x : X) → g (f x) ≡ x
   ε x = refl
 
@@ -400,10 +456,13 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
  where
   f : (X → 𝟙) → 𝟙
   f = unique-to-𝟙
+
   g : (t : 𝟙) → X → 𝟙
   g t = unique-to-𝟙
+
   ε : (α : X → 𝟙) → g * ≡ α
   ε α = dfunext fe λ (x : X) → 𝟙-is-prop (g * x) (α x)
+
   η : (t : 𝟙) → * ≡ t
   η = 𝟙-is-prop *
 
@@ -417,14 +476,17 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   f : (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y)) → (Π z ꞉ X + Y , A z)
   f (l , r) (inl x) = l x
   f (l , r) (inr y) = r y
+
   g : (Π z ꞉ X + Y , A z) → (Π x ꞉ X , A (inl x)) × (Π y ꞉ Y , A (inr y))
   g h = h ∘ inl , h ∘ inr
+
   η : f ∘ g ∼ id
   η h = dfunext fe γ
    where
     γ : (z : X + Y) → (f ∘ g) h z ≡ h z
     γ (inl x) = refl
     γ (inr y) = refl
+
   ε : g ∘ f ∼ id
   ε (l , r) = refl
 
@@ -440,10 +502,13 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
  where
   f : ((a : A) → X a × Y a) → Π X × Π Y
   f φ = (λ a → pr₁ (φ a)) , (λ a → pr₂ (φ a))
+
   g : Π X × Π Y → (a : A) → X a × Y a
   g (γ , δ) a = γ a , δ a
+
   ε : (φ : (a : A) → X a × Y a) → g (f φ) ≡ φ
   ε φ = refl
+
   η : (α : Π X × Π Y) → f (g α) ≡ α
   η (γ , δ) = refl
 
@@ -459,10 +524,13 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
    where
     F : (X → Y) → (A → B)
     F h = φ ∘ h ∘ g
+
     G : (A → B) → (X → Y)
     G k = γ ∘ k ∘ f
+
     E : (k : A → B) → F (G k) ≡ k
     E k = dfunext fe (λ a → δ (k (f (g a))) ∙ ap k (d a))
+
     D : (h : X → Y) → G (F h) ≡ h
     D h = dfunext fe' (λ x → ε (h (g (f x))) ∙ ap h (e x))
 
@@ -479,8 +547,10 @@ pr₁-equivalence {𝓤} {𝓥} X A iss = qinvs-are-equivs pr₁ (g , ε , η)
  where
   g : X → Σ A
   g x = x , pr₁(iss x)
+
   η : (x : X) → pr₁ (g x) ≡ x
   η x = refl
+
   ε : (σ : Σ A) → g(pr₁ σ) ≡ σ
   ε (x , a) = to-Σ-≡ (η x , singletons-are-props (iss x) _ _)
 
@@ -490,10 +560,13 @@ NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
  where
   f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
   f .(ζ x a) (a , refl) = (x , a) , refl
+
   g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
   g .(ζ x a) ((.x , a) , refl) = a , refl
+
   ε : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ≡ w
   ε .(ζ x a) (a , refl) = refl
+
   η : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
   η b (a , refl) = refl
 
@@ -538,10 +611,13 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
  where
   s : Σ B → Σ A
   s (x , b) = x , pr₁ (pr₁ (i x)) b
+
   ζs : (β : Σ B) → (NatΣ ζ ∘ s) β ≡ β
   ζs (x , b) = ap (λ - → (x , -)) (pr₂ (pr₁ (i x)) b)
+
   r : Σ B → Σ A
   r (x , b) = x , (pr₁ (pr₂ (i x)) b)
+
   rζ : (α : Σ A) → (r ∘ NatΣ ζ) α ≡ α
   rζ (x , a) = ap (λ - → (x , -)) (pr₂ (pr₂ (i x)) a)
 
@@ -551,40 +627,47 @@ NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
  where
   γ : (Σ y ꞉ Y , A (g y)) → Σ A
   γ (y , a) = (g y , a)
+
   φ : Σ A → Σ y ꞉ Y , A (g y)
   φ (x , a) = (f x , back-transport A (ε x) a)
+
   γφ : (σ : Σ A) → γ (φ σ) ≡ σ
   γφ (x , a) = to-Σ-≡ (ε x , p)
    where
     p : transport A (ε x) (back-transport A (ε x) a) ≡ a
     p = back-and-forth-transport (ε x)
+
   φγ : (τ : (Σ y ꞉ Y , A (g y))) → φ (γ τ) ≡ τ
   φγ (y , a) = to-Σ-≡ (η y , q)
    where
-    q : transport (λ - → A (g -)) (η y) (back-transport A (ε (g y)) a) ≡ a
-    q = transport (λ - → A (g -)) (η y) (back-transport A (ε (g y)) a) ≡⟨ transport-ap A g (η y) ⟩
-        transport A (ap g (η y)) (back-transport A (ε (g y)) a)        ≡⟨ ap (λ - → transport A - (back-transport A (ε (g y)) a)) (α y) ⟩
-        transport A (ε (g y)) (back-transport A (ε (g y)) a)           ≡⟨ back-and-forth-transport (ε (g y)) ⟩
+    q = transport (λ - → A (g -)) (η y) (back-transport A (ε (g y)) a) ≡⟨ i ⟩
+        transport A (ap g (η y)) (back-transport A (ε (g y)) a)        ≡⟨ ii ⟩
+        transport A (ε (g y)) (back-transport A (ε (g y)) a)           ≡⟨ iii ⟩
         a                                                              ∎
+     where
+      i   = transport-ap A g (η y)
+      ii  = ap (λ - → transport A - (back-transport A (ε (g y)) a)) (α y)
+      iii = back-and-forth-transport (ε (g y))
 
 Σ-change-of-variable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X → 𝓦 ̇ ) (g : Y → X)
                       → is-equiv g → (Σ y ꞉ Y , A (g y)) ≃ Σ A
 Σ-change-of-variable {𝓤} {𝓥} {𝓦} {X} {Y} A g e = γ , qinvs-are-equivs γ q
  where
   γ :  (Σ y ꞉ Y , A (g y)) → Σ A
-  γ = pr₁(Σ-change-of-variable' A g (equivs-are-haes g e))
+  γ = pr₁ (Σ-change-of-variable' A g (equivs-are-haes g e))
+
   q :  qinv γ
-  q = pr₂(Σ-change-of-variable' A g (equivs-are-haes g e))
+  q = pr₂ (Σ-change-of-variable' A g (equivs-are-haes g e))
 
 NatΠ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                  → funext 𝓤 𝓦
                  → (g : Π B) → (Π x ꞉ X , fiber (ζ x) (g x)) ≃ fiber (NatΠ ζ) g
 NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
-  (Π x ꞉ X , fiber (ζ x) (g x))              ≃⟨ ≃-refl _ ⟩
+  (Π x ꞉ X , fiber (ζ x) (g x))           ≃⟨ ≃-refl _ ⟩
   (Π x ꞉ X , Σ a ꞉ A x , ζ x a ≡ g x)     ≃⟨ ΠΣ-distr-≃ ⟩
   (Σ f ꞉ Π A , Π x ꞉ X , ζ x (f x) ≡ g x) ≃⟨ Σ-cong (λ f → ≃-sym (≃-funext fe (λ x → ζ x (f x)) g)) ⟩
-  (Σ f ꞉ Π A , (λ x → ζ x (f x)) ≡ g)        ≃⟨ ≃-refl _ ⟩
-  fiber (NatΠ ζ) g                              ■
+  (Σ f ꞉ Π A , (λ x → ζ x (f x)) ≡ g)     ≃⟨ ≃-refl _ ⟩
+  fiber (NatΠ ζ) g                        ■
 
 NatΠ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
               → funext 𝓤 (𝓥 ⊔ 𝓦)
@@ -636,8 +719,10 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
  where
   f : P → 𝟙 ≡ P
   f p = pe 𝟙-is-prop i (λ _ → p) unique-to-𝟙
+
   η : (p : P) → Idtofun (f p) * ≡ p
   η p = i (Idtofun (f p) *) p
+
   ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
   ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q *)) q
 
@@ -661,10 +746,13 @@ total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = qinveq h (g , ε , η)
  where
   g : X → Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y
   g x = f x , x , refl
+
   h : (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → X
   h (.(f x) , x , refl) = x
+
   ε : (σ : Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) → g (h σ )≡ σ
   ε (.(f x) , x , refl) = refl
+
   η : (x : X) → h (g x) ≡ x
   η x = refl
 
@@ -673,18 +761,21 @@ left-Id-equiv {𝓤} {𝓥} {X} {Y} x = qinveq f (g , gf , fg)
  where
   f : (Σ x' ꞉ X , (x' ≡ x) × Y x') → Y x
   f (.x , refl , y) = y
+
   g : (y : Y x) → Σ (λ x' → (x' ≡ x) × Y x')
   g y = x , refl , y
+
   gf : (σ : Σ x' ꞉ X , (x' ≡ x) × Y x') → g (f σ) ≡ σ
   gf (.x , refl , y) = refl
+
   fg : (y : Y x) → f (g y) ≡ y
   fg y = refl
 
 fiber-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
-fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                      ≃⟨ Σ-assoc ⟩
+fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
                                 (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
                                 (Σ x' ꞉ X , (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
-                                Y x                              ■
+                                Y x                           ■
 
 \end{code}
 
@@ -710,10 +801,13 @@ retract-pointed-fibers {𝓤} {𝓥} {X} {Y} {r} = qinveq f (g , (p , q))
  where
   f : (Σ s ꞉ (X → Y) , r ∘ s ∼ id) → Π (fiber r)
   f (s , rs) x = (s x) , (rs x)
+
   g : ((x : X) → fiber r x) → Σ s ꞉ (X → Y) , r ∘ s ∼ id
   g α = (λ (x : X) → pr₁ (α x)) , (λ (x : X) → pr₂ (α x))
+
   p : (srs : Σ s ꞉ (X → Y) , r ∘ s ∼ id) → g (f srs) ≡ srs
   p (s , rs) = refl
+
   q : (α : Π x ꞉ X , fiber r x) → f (g α) ≡ α
   q α = refl
 
@@ -733,11 +827,14 @@ fiber-of-composite {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g z =
    ϕ : fiber (g ∘ f) z
      → (Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
    ϕ (x , p) = ((f x) , p) , (x , refl)
+
    ψ : (Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
      → fiber (g ∘ f) z
    ψ ((y , q) , (x , p)) = x , ((ap g p) ∙ q)
+
    ψϕ : (w : fiber (g ∘ f) z) → ψ (ϕ w) ≡ w
    ψϕ (x , refl) = refl
+
    ϕψ : (w : Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
       → ϕ (ψ w) ≡ w
    ϕψ ((.(f x) , refl) , (x , refl)) = refl
@@ -760,16 +857,17 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
  where
   α : f x ≡ y → g x ≡ y
   α p = (H x) ⁻¹ ∙ p
+
   β : g x ≡ y → f x ≡ y
   β q = (H x) ∙ q
+
   βα : (p : f x ≡ y) → β (α p) ≡ p
   βα p = β (α p)                ≡⟨ refl ⟩
          (H x) ∙ ((H x) ⁻¹ ∙ p) ≡⟨ (∙assoc (H x) ((H x) ⁻¹) p) ⁻¹ ⟩
-         (H x) ∙ (H x) ⁻¹ ∙ p   ≡⟨ i ⟩
+         (H x) ∙ (H x) ⁻¹ ∙ p   ≡⟨ ap (λ - → - ∙ p) ((right-inverse (H x)) ⁻¹) ⟩
          refl ∙ p               ≡⟨ refl-left-neutral ⟩
          p                      ∎
-   where
-    i = ap (λ - → - ∙ p) ((right-inverse (H x)) ⁻¹)
+
   αβ : (q : g x ≡ y) → α (β q) ≡ q
   αβ q = α (β q)                ≡⟨ refl ⟩
          (H x) ⁻¹ ∙ ((H x) ∙ q) ≡⟨ (∙assoc ((H x) ⁻¹) (H x) q) ⁻¹ ⟩

@@ -56,11 +56,15 @@ structure (X , s) = s
 underlying-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-order (X , _<_ , o) = _<_
 
+underlying-weak-order : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
+underlying-weak-order α x y = ¬ (underlying-order α y x)
+
 underlying-porder : (α : Ordinal 𝓤) → ⟨ α ⟩ → ⟨ α ⟩ → 𝓤 ̇
 underlying-porder (X , _<_ , o) = extensional-po _<_
 
-syntax underlying-order  α x y = x ≺⟨ α ⟩ y
-syntax underlying-porder α x y = x ≼⟨ α ⟩ y
+syntax underlying-order       α x y = x ≺⟨ α ⟩ y
+syntax underlying-weak-order  α x y = x ≾⟨ α ⟩ y
+syntax underlying-porder      α x y = x ≼⟨ α ⟩ y
 
 is-well-ordered : (α : Ordinal 𝓤) → is-well-order (underlying-order α)
 is-well-ordered (X , _<_ , o) = o

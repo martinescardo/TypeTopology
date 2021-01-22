@@ -1172,8 +1172,11 @@ transfinite-recursion-on-O : (X : 𝓥 ̇ )
                            → Ordinal 𝓤 → X
 transfinite-recursion-on-O {𝓤} {𝓥} X = transfinite-induction-on-O (λ _ → X)
 
+has-minimal-element : Ordinal 𝓤 → 𝓤 ̇
+has-minimal-element α = Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
+
 has-no-minimal-element : Ordinal 𝓤 → 𝓤 ̇
-has-no-minimal-element α = ((a : ⟨ α ⟩) → ¬¬ (Σ a' ꞉ ⟨ α ⟩ , a' ≺⟨ α ⟩ a))
+has-no-minimal-element α = ((a : ⟨ α ⟩) → ¬¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
 
 ordinal-with-no-minimal-element-is-empty : (α : Ordinal 𝓤)
                                          → has-no-minimal-element α
@@ -1195,20 +1198,33 @@ ordinal-with-no-minimal-element-is-empty {𝓤} = transfinite-induction-on-O P �
         o : z ≺⟨ α ⟩ x
         o = Transitivity α z y x m l
 
+non-empty-classically-has-minimal-element : (α : Ordinal 𝓤)
+                                          → is-nonempty ⟨ α ⟩
+                                          → ¬¬ has-minimal-element α
+non-empty-classically-has-minimal-element {𝓤} α n = iv
+ where
+  i : ¬ has-no-minimal-element α
+  i = contrapositive (ordinal-with-no-minimal-element-is-empty α) n
 
-has-no-minimal-element' : Ordinal 𝓤 → 𝓤 ̇
-has-no-minimal-element' α = ((a : ⟨ α ⟩) → (Σ a' ꞉ ⟨ α ⟩ , a' ≺⟨ α ⟩ a))
+  ii : ¬¬ (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
+  ii = not-Π-implies-not-not-Σ' i
 
-has-no-minimal-element'-is-stronger : (α : Ordinal 𝓤)
-                                    → has-no-minimal-element' α
-                                    → has-no-minimal-element α
-has-no-minimal-element'-is-stronger α h a = double-negation-intro (h a)
+  iii : (Σ a ꞉ ⟨ α ⟩ , ¬ (Σ x ꞉ ⟨ α ⟩ , x ≺⟨ α ⟩ a))
+      → (Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x))
+  iii (a , n) = a , not-Σ-implies-Π-not n
 
-ordinal-with-no-minimal-element'-is-empty : (α : Ordinal 𝓤)
-                                         → has-no-minimal-element' α
-                                         → is-empty ⟨ α ⟩
-ordinal-with-no-minimal-element'-is-empty {𝓤} α h' =
- ordinal-with-no-minimal-element-is-empty α
-  (has-no-minimal-element'-is-stronger α h')
+  iv : ¬¬ (Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x))
+  iv = ¬¬-functor iii ii
+
+NB-minimal : (α : Ordinal 𝓤) (a : ⟨ α ⟩)
+           →  ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
+           ⇔  ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
+NB-minimal α a = f , g
+ where
+  f : ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x) → ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x)
+  f h x u l = 𝟘-elim (h u l)
+
+  g : ((x : ⟨ α ⟩) → a ≼⟨ α ⟩ x) → ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
+  g k x m = irrefl α x (k x x m)
 
 \end{code}

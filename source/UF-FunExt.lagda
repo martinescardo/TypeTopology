@@ -47,20 +47,20 @@ FunExt' = {𝓤 𝓥 : Universe} → funext 𝓤 𝓥
 ≃-funext fe f g = happly' f g , fe f g
 
 dfunext : funext 𝓤 𝓥 → DN-funext 𝓤 𝓥
-dfunext fe {X} {A} {f} {g} = pr₁(pr₁(fe f g))
+dfunext fe {X} {A} {f} {g} = inverse (happly' f g) (fe f g)
 
 happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
              → happly (dfunext fe h) ≡ h
-happly-funext fe f g = pr₂(pr₁(fe f g))
+happly-funext fe f g = inverses-are-sections happly (fe f g)
 
 funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
           → left-cancellable (dfunext fe {X} {A} {f} {g})
 funext-lc fe f g = section-lc (dfunext fe) (happly , happly-funext fe f g)
 
 happly-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
-         → left-cancellable(happly' f g)
-happly-lc fe f g = section-lc happly ((pr₂ (fe f g)))
+          → left-cancellable (happly' f g)
+happly-lc fe f g = section-lc happly (equivs-are-sections happly (fe f g))
 
 dfunext-refl : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f : Π A)
              → dfunext fe (λ (x : X) → 𝓻𝓮𝒻𝓵 (f x)) ≡ refl
