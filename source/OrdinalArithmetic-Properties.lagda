@@ -24,6 +24,9 @@ private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
+
  pe : PropExt
  pe = Univalence-gives-PropExt ua
 
@@ -420,7 +423,7 @@ module _ {𝓤 : Universe}
 
    g : p ≡ (q ↓ y)
    g = to-Σ-≡ (r ,
-       to-Σ-≡ (dfunext (fe 𝓤 (𝓤 ⁺)) (λ (y , z) → 𝟘-elim z) ,
+       to-Σ-≡ (dfunext fe' (λ (y , z) → 𝟘-elim z) ,
                being-well-order-is-prop (underlying-order (q ↓ y)) fe _ _))
 
  fact₁ : p ≼ q → (P → Q)
@@ -441,7 +444,7 @@ module _ {𝓤 : Universe}
     where
      s : ((P × 𝟘) , (λ x x' → 𝟘) , _) ≡ ((Q × 𝟘) , (λ y y' → 𝟘) , _)
      s = to-Σ-≡ (r ,
-         to-Σ-≡ (dfunext (fe 𝓤 (𝓤 ⁺)) (λ z → 𝟘-elim (pr₂ z)) ,
+         to-Σ-≡ (dfunext fe' (λ z → 𝟘-elim (pr₂ z)) ,
                  being-well-order-is-prop (underlying-order (q ↓ f x)) fe _ _))
 \end{code}
 
@@ -457,8 +460,8 @@ existence-of-subtraction-is-prop = Π₃-is-prop (λ {𝓤} {𝓥} → fe 𝓤 �
                                      (λ α β l → left-+ₒ-is-embedding α β)
 
 
-ordinal-subtraction-taboo : existence-of-subtraction 𝓤 → EM 𝓤
-ordinal-subtraction-taboo {𝓤} ϕ P P-is-prop = g
+ordinal-subtraction-gives-excluded-middle : existence-of-subtraction 𝓤 → EM 𝓤
+ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
  where
   α = prop-ordinal P P-is-prop
   β = prop-ordinal 𝟙 𝟙-is-prop

@@ -1167,4 +1167,48 @@ transfinite-induction-on-O {𝓤} {𝓥} P f = Transfinite-induction (O 𝓤) P 
      → P α
   f' α g = f α (λ a → g (α ↓ a) (a , refl))
 
+transfinite-recursion-on-O : (X : 𝓥 ̇ )
+                           → ((α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+                           → Ordinal 𝓤 → X
+transfinite-recursion-on-O {𝓤} {𝓥} X = transfinite-induction-on-O (λ _ → X)
+
+has-no-minimal-element : Ordinal 𝓤 → 𝓤 ̇
+has-no-minimal-element α = ((a : ⟨ α ⟩) → ¬¬ (Σ a' ꞉ ⟨ α ⟩ , a' ≺⟨ α ⟩ a))
+
+ordinal-with-no-minimal-element-is-empty : (α : Ordinal 𝓤)
+                                         → has-no-minimal-element α
+                                         → is-empty ⟨ α ⟩
+ordinal-with-no-minimal-element-is-empty {𝓤} = transfinite-induction-on-O P ϕ
+ where
+  P : Ordinal 𝓤 → 𝓤 ̇
+  P α = has-no-minimal-element α → is-empty ⟨ α ⟩
+
+  ϕ : (α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α
+  ϕ α f g x = g x (f x h)
+   where
+    h : has-no-minimal-element (α ↓ x)
+    h (y , l) u = g y (contrapositive k u)
+     where
+      k : ⟨ α ↓ y ⟩ → ⟨ (α ↓ x) ↓ (y , l) ⟩
+      k (z , m) = (z , o) , m
+       where
+        o : z ≺⟨ α ⟩ x
+        o = Transitivity α z y x m l
+
+
+has-no-minimal-element' : Ordinal 𝓤 → 𝓤 ̇
+has-no-minimal-element' α = ((a : ⟨ α ⟩) → (Σ a' ꞉ ⟨ α ⟩ , a' ≺⟨ α ⟩ a))
+
+has-no-minimal-element'-is-stronger : (α : Ordinal 𝓤)
+                                    → has-no-minimal-element' α
+                                    → has-no-minimal-element α
+has-no-minimal-element'-is-stronger α h a = double-negation-intro (h a)
+
+ordinal-with-no-minimal-element'-is-empty : (α : Ordinal 𝓤)
+                                         → has-no-minimal-element' α
+                                         → is-empty ⟨ α ⟩
+ordinal-with-no-minimal-element'-is-empty {𝓤} α h' =
+ ordinal-with-no-minimal-element-is-empty α
+  (has-no-minimal-element'-is-stronger α h')
+
 \end{code}

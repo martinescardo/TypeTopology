@@ -181,6 +181,15 @@ powersets-are-sets {𝓥} fe = powersets-are-sets'' fe (lower-funext 𝓥 (𝓥 
 negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
 negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
+empty-types-are-props : {X : 𝓤 ̇ } → ¬ X → is-prop X
+empty-types-are-props f x = 𝟘-elim (f x)
+
+empty-types-are-≡-𝟘 : funext 𝓤 𝓤₀ → propext 𝓤 → {X : 𝓤 ̇ } → ¬ X → X ≡ 𝟘
+empty-types-are-≡-𝟘 fe pe f = pe (empty-types-are-props f)
+                                 𝟘-is-prop
+                                 (λ x → 𝟘-elim (f x))
+                                 𝟘-elim
+
 not : funext 𝓤 𝓤₀ → Ω 𝓤 → Ω 𝓤
 not fe (P , i) = (¬ P , negations-are-props fe)
 
@@ -308,7 +317,10 @@ Added 5 March 2020 by Tom de Jong.
 
 \end{code}
 
-Added 16th June 2020 by Martin Escardo. (Should have added this ages ago to avoid boiler-plate code.)
+But notice that the above already exists in this file as negations-are-props!
+
+Added 16th June 2020 by Martin Escardo. (Should have added this ages
+ago to avoid boiler-plate code.)
 
 \begin{code}
 
