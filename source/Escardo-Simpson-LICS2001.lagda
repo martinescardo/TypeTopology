@@ -31,11 +31,10 @@ as well as a specific property about equality of streams under some arithmetic.
 
 \begin{code}
 
-associative commutative idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
-associative     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ≡ (a ∙ b) ∙ c
-commutative     _∙_ = ∀ a b     → a ∙ b             ≡ b ∙ a
-idempotent      _∙_ = ∀ a       → a ∙ a             ≡ a
-transpositional _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ≡ (a ∙ c) ∙ (b ∙ d)
+associative' idempotent transpositional : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+associative'     _∙_ = ∀ a b c   → a ∙ (b ∙ c)       ≡ (a ∙ b) ∙ c
+idempotent       _∙_ = ∀ a       → a ∙ a             ≡ a
+transpositional  _∙_ = ∀ a b c d → (a ∙ b) ∙ (c ∙ d) ≡ (a ∙ c) ∙ (b ∙ d)
 
 seq-add-push : {A : 𝓤 ̇ } (α : ℕ → A) (n : ℕ)
              → (λ (i : ℕ) → α (succ i +ℕ n)) ≡ (λ (i : ℕ) → α (succ (i +ℕ n)))
@@ -474,7 +473,7 @@ module basic-interval-object-development {𝓤 : Universe}
 
  The multiplication function and related properties,
  culminating in proving multiplication is
- commutative and associative.
+ commutative and associative'.
 
 \begin{code}
 
@@ -651,7 +650,7 @@ module basic-interval-object-development {𝓤 : Universe}
  this is then used to define max itself.
 
  We wish to prove that max is a semi-lattice
- (idempotent, commutative and associative).
+ (idempotent, commutative and associative').
 
 \begin{code}
 
@@ -709,7 +708,7 @@ module basic-interval-object-development {𝓤 : Universe}
  -- max-comm : commutative _∨_
  -- max-comm x y = {!!}
 
- -- max-assoc : associative _∨_
+ -- max-assoc : associative' _∨_
  -- max-assoc = {!!}
 
 

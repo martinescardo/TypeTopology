@@ -192,15 +192,6 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  monoid-structure : 𝓤 ̇ → 𝓤 ̇
  monoid-structure X = (X → X → X) × X
 
- left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
- left-neutral e _·_ = ∀ x → e · x ≡ x
-
- right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
- right-neutral e _·_ = ∀ x → x · e ≡ x
-
- associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
- associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
-
  monoid-axioms : (X : 𝓤 ̇ ) → monoid-structure X → 𝓤 ̇
  monoid-axioms X (_·_ , e) = is-set X
                            × left-neutral  e _·_
@@ -262,9 +253,6 @@ module associative-∞-magma
  abstract
    fe : funext 𝓤 𝓤
    fe = univalence-gives-funext ua
-
- associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
- associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 
  ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
  ∞-amagma-structure X = Σ _·_ ꞉ (X → X → X), (associative _·_)
