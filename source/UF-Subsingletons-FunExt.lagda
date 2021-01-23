@@ -226,10 +226,39 @@ equal-𝟙-gives-holds P r = Idtofun (r ⁻¹) *
 equal-⊤-gives-holds : (p : Ω 𝓤) → p ≡ ⊤ → p holds
 equal-⊤-gives-holds p r = equal-𝟙-gives-holds (p holds) (ap pr₁ r)
 
+not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
+           → propext 𝓤 → (¬ 𝟘) ≡ 𝟙
+not-𝟘-is-𝟙 fe pe = pe (negations-are-props fe)
+                      𝟙-is-prop
+                      (λ _ → *)
+                      (λ _ z → 𝟘-elim z)
+
+equal-⊥-gives-not-equal-⊤ : (fe : Fun-Ext)
+                          (pe : propext 𝓤)
+                          (p : Ω 𝓤) → p ≡ ⊥ → not fe p ≡ ⊤
+equal-⊥-gives-not-equal-⊤ fe pe p r = to-subtype-≡ (λ _ → being-prop-is-prop fe) t
+ where
+  s : p holds ≡ 𝟘
+  s = ap _holds r
+
+  t : ¬ (p holds) ≡ 𝟙
+  t = ap ¬_ s ∙ not-𝟘-is-𝟙 fe pe
+
 false-is-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
                  → ¬ P → (P , i) ≡ ⊥
 false-is-equal-⊥ pe fe P i f = to-Σ-≡ (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
                                        being-prop-is-prop fe _ _)
+
+not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
+                            (pe : propext 𝓤)
+                            (p : Ω 𝓤) → not fe p ≡ ⊤ → p ≡ ⊥
+not-equal-⊤-gives-equal-⊥ fe pe p r = to-subtype-≡ (λ _ → being-prop-is-prop fe) t
+ where
+  f : (not fe p) holds
+  f = Idtofun (ap _holds r ⁻¹) *
+
+  t : p holds ≡ 𝟘
+  t = empty-types-are-≡-𝟘 fe pe f
 
 Ω-ext' : propext 𝓤 → funext 𝓤 𝓤 → {p q : Ω 𝓤}
       → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q

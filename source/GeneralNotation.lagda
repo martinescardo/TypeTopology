@@ -1,4 +1,4 @@
-General notation.
+General terminology and notation.
 
 \begin{code}
 
@@ -10,6 +10,21 @@ open import Sigma
 open import Universes
 open import Id
 open import Negation public
+
+involutive : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
+involutive f = ∀ x → f (f x) ≡ x
+
+left-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+left-neutral e _·_ = ∀ x → e · x ≡ x
+
+right-neutral : {X : 𝓤 ̇ } → X → (X → X → X) → 𝓤 ̇
+right-neutral e _·_ = ∀ x → x · e ≡ x
+
+associative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
+
+commutative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
+commutative _·_ = ∀ x y → (x · y) ≡ (y · x)
 
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 A ⇔ B = (A → B) × (B → A)

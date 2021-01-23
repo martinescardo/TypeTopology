@@ -37,6 +37,9 @@ which we refer to as the density of the decidable truth values.
 EM : ∀ 𝓤 → 𝓤 ⁺ ̇
 EM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
 
+excluded-middle = EM
+
+
 lower-EM : ∀ 𝓥 → EM (𝓤 ⊔ 𝓥) → EM 𝓤
 lower-EM 𝓥 em P P-is-prop = f d
  where
