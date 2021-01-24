@@ -91,9 +91,8 @@ higgs f lc = VIII
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
 as an application of Higgs Theorem. I am not sure whether this is
-already known in the literature or the folkore. I certainly haven't
-seen it in print or the folkore. I've written a blog post about
-this here:
+already known in the literature or the folkore. I've written a blog
+post about this here:
 
 https://homotopytypetheory.org/2021/01/23/can-the-type-of-truth-values-be-given-the-structure-of-a-group/
 
