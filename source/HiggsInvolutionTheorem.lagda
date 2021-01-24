@@ -12,7 +12,8 @@ There is a proof by diagram chasing with iterated pullbacks, in page
 
 The proof given here is based on an exercise in page 160 of Lambek and
 Scott's Introduction to Higher-Order Categorical Logic, attributed to
-Scedrov. Thanks to Phil Scott for bringing my attention to this proof.
+Scedrov. Thanks to Phil Scott for bringing my attention to this proof
+during a visit to Birmingham.
 
 \begin{code}
 
@@ -89,8 +90,12 @@ higgs f lc = VIII
 \end{code}
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. I am not sure whether This is
-known. I certainly haven't seen it in print or otherwise.
+as an application of Higgs Theorem. I am not sure whether this is
+lready known in the literature or the folkore. I certainly haven't
+seen it in print or otherwise. I've written a blog post about this
+here:
+
+https://homotopytypetheory.org/2021/01/23/can-the-type-of-truth-values-be-given-the-structure-of-a-group/
 
 Such a group structure is necessarily abelian.
 
