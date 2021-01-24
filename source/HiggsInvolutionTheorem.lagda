@@ -145,19 +145,6 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ ln rn assoc lc = γ
                O ⊕ q       ≡⟨ ln _ ⟩
                q           ∎
 
-  from-≡ : (p q : Ω) → p ≡ q → p ⊕ q ≡ O
-  from-≡ p q e = p ⊕ q ≡⟨ ap (_⊕ q) e ⟩
-                 q ⊕ q ≡⟨ own-inv q ⟩
-                 O     ∎
-
-  comm : (p q : Ω) → p ⊕ q ≡ q ⊕ p
-  comm p q = to-≡ _ _ ((p ⊕ q) ⊕ (q ⊕ p) ≡⟨ assoc _ _ _ ⟩
-                       p ⊕ (q ⊕ (q ⊕ p)) ≡⟨ ap (p ⊕_) ((assoc _ _ _)⁻¹) ⟩
-                       p ⊕ ((q ⊕ q) ⊕ p) ≡⟨ ap (λ - → p ⊕ (- ⊕ p)) (own-inv q) ⟩
-                       p ⊕ (O ⊕ p)       ≡⟨ ap (p ⊕_) (ln p) ⟩
-                       p ⊕ p             ≡⟨ own-inv p ⟩
-                       O                 ∎)
-
   f : Ω → Ω
   f p = p ⊕ (⊥ ⊕ ⊤)
 
@@ -210,3 +197,26 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ ln rn assoc lc = γ
   γ = DNE-gives-EM fe δ
 
 \end{code}
+
+Additional facts that are not needed to conclude exxcluded middle:
+
+\begin{code}
+
+  from-≡ : (p q : Ω) → p ≡ q → p ⊕ q ≡ O
+  from-≡ p q e = p ⊕ q ≡⟨ ap (_⊕ q) e ⟩
+                 q ⊕ q ≡⟨ own-inv q ⟩
+                 O     ∎
+
+  abelian : (p q : Ω) → p ⊕ q ≡ q ⊕ p
+  abelian p q = to-≡ _ _
+                  ((p ⊕ q) ⊕ (q ⊕ p) ≡⟨ assoc _ _ _ ⟩
+                   p ⊕ (q ⊕ (q ⊕ p)) ≡⟨ ap (p ⊕_) ((assoc _ _ _)⁻¹) ⟩
+                   p ⊕ ((q ⊕ q) ⊕ p) ≡⟨ ap (λ - → p ⊕ (- ⊕ p)) (own-inv q) ⟩
+                   p ⊕ (O ⊕ p)       ≡⟨ ap (p ⊕_) (ln p) ⟩
+                   p ⊕ p             ≡⟨ own-inv p ⟩
+                   O                 ∎)
+
+\end{code}
+
+This shows that any cancellative monoid structure on Ω is
+automatically an abelian group structure.
