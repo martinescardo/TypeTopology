@@ -219,4 +219,6 @@ Additional facts that are not needed to conclude exxcluded middle:
 \end{code}
 
 This shows that any cancellative monoid structure on Ω is
-automatically an abelian group structure.
+automatically an abelian group structure (which is not very surprising
+given that we have already established excluded middle, but justifies
+our additive notation).
