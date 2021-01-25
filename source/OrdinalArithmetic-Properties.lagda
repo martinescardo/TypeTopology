@@ -506,3 +506,30 @@ discussed in the module OrdinalOfOrdinals. The types ℕₒ +ₒ 𝟙ₒ and ℕ
 are equal if and only if LPO holds. Without assuming LPO, the image of
 the inclusion (ℕₒ +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
 nothing that can be added to (ℕₒ +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
+
+\begin{code}
+
+open import UF-Retracts
+
+retract-Ω-of-Ordinal : retract (Ω 𝓤) of (Ordinal 𝓤)
+retract-Ω-of-Ordinal {𝓤} = r , s , η
+ where
+  s : Ω 𝓤 → Ordinal 𝓤
+  s (P , i) = prop-ordinal P i
+
+  r : Ordinal 𝓤 → Ω 𝓤
+  r α = has-bottom α , having-bottom-is-prop fe' α
+
+  η : r ∘ s ∼ id
+  η (P , i) = to-subtype-≡ (λ _ → being-prop-is-prop fe') t
+   where
+    f : P → has-bottom (prop-ordinal P i)
+    f p = p , (λ x u → id)
+
+    g : has-bottom (prop-ordinal P i) → P
+    g (p , _) = p
+
+    t : has-bottom (prop-ordinal P i) ≡ P
+    t = pe 𝓤 (having-bottom-is-prop fe' (prop-ordinal P i)) i g f
+
+\end{code}

@@ -99,6 +99,15 @@ underlying-type-is-set fe α =
   (Prop-valuedness α)
   (Extensionality α)
 
+has-bottom : Ordinal 𝓤 → 𝓤 ̇
+has-bottom α = Σ ⊥ ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → ⊥ ≼⟨ α ⟩ x)
+
+having-bottom-is-prop : Fun-Ext → (α : Ordinal 𝓤) → is-prop (has-bottom α)
+having-bottom-is-prop fe α (⊥ , l) (⊥' , l') =
+  to-subtype-≡
+    (λ _ → Π₃-is-prop fe (λ x y _ → Prop-valuedness α y x))
+    (Extensionality α ⊥ ⊥' (l ⊥') (l' ⊥))
+
 \end{code}
 
 TODO. We should add further properties of the order from the module

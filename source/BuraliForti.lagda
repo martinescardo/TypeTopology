@@ -129,13 +129,18 @@ open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
 open import UF-Equiv
+open import UF-EquivalenceExamples
 open import UF-UniverseEmbedding
 open import UF-UA-FunExt
 open import UF-FunExt
 
+
 private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
+
+ fe' : Fun-Ext
+ fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import SpartanMLTT
 open import OrdinalNotions
@@ -405,6 +410,9 @@ is no type in 𝓤 equivalent to the set truncation of 𝓤.
 Added 18th January 2021. The following generalizes
 Lift-hSet-is-not-equiv.
 
+In the following, A generalizes is-set, and A-lifts generalizes the
+fact that the lift of a set is a set.
+
 \begin{code}
 
 module _ (A : {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ̇ )
@@ -480,12 +488,21 @@ Pointed types:
  Lift-PointedType : ∀ {𝓤} 𝓥 → PointedType 𝓤 → PointedType (𝓤 ⊔ 𝓥)
  Lift-PointedType {𝓤} 𝓥 (X , x) = Lift 𝓥 X , lift 𝓥 x
 
+\end{code}
+
+In the following, A is the identity function, and to prove that the
+ordinal or ordinals is pointed, we choose the ordinal zero:
+
+\begin{code}
+
  Lift-PointedType-is-not-equiv : ¬ is-equiv (Lift-PointedType {𝓤} (𝓤 ⁺))
  Lift-PointedType-is-not-equiv {𝓤} = Lift-𝓐-is-not-equiv id lift 𝟘ₒ
 
 \end{code}
 
-∞-magmas:
+∞-magmas.
+
+In the following, A is magma structure:
 
 \begin{code}
 
@@ -553,6 +570,13 @@ Monoids:
                            × right-neutral e _·_
                            × associative     _·_
 
+\end{code}
+
+We will consider A = Monoid-structure (with capital M), and
+𝓐 = Monoid.
+
+\begin{code}
+
  Monoid-structure : 𝓤 ̇ → 𝓤 ̇
  Monoid-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
 
@@ -599,4 +623,10 @@ Monoids:
                                             Monoid-structure
                                             lift-Monoid-structure
                                             type-of-ordinals-has-Monoid-structure
+\end{code}
+
+TODO. Groups. Possible strategy. Embed the ordinal of ordinals into a
+group with large underlying sets. A natural candidate is the free
+group.
+
 \end{code}

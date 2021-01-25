@@ -229,9 +229,6 @@ is-top x = (y : X) → y ≾ x
 has-top : 𝓤 ⊔ 𝓥 ̇
 has-top = Σ x ꞉ X , is-top x
 
-is-bottom : X → 𝓤 ⊔ 𝓥 ̇
-is-bottom x = (y : X) → x ≾ y
-
 <-coarser-than-≾  : (x : X)
                   → is-accessible x
                   → (y : X) → y < x → y ≾ x
