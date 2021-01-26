@@ -133,7 +133,7 @@ open import UF-EquivalenceExamples
 open import UF-UniverseEmbedding
 open import UF-UA-FunExt
 open import UF-FunExt
-
+open import UF-Size
 
 private
  fe : FunExt
@@ -211,17 +211,7 @@ difficulties are explained.
 As discussed above, the type OrdinalOfOrdinals 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
 universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
-otherwise:
-
-\begin{code}
-
-is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-small {𝓤} 𝓧 = Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧
-
-is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-large 𝓧 = ¬ is-small 𝓧
-
-\end{code}
+otherwise. This is define in the module UF-Size.
 
 Our first corollary of Burali-Forti is that the type of ordinals is
 large, as expected:
@@ -628,5 +618,12 @@ We will consider A = Monoid-structure (with capital M), and
 TODO. Groups. Possible strategy. Embed the ordinal of ordinals into a
 group with large underlying sets. A natural candidate is the free
 group.
+
+Things that may be useful in the future.
+
+\begin{code}
+
+the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
+the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
 
 \end{code}

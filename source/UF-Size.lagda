@@ -554,3 +554,63 @@ has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
     (has-size-idempotent-≃ ua 𝓤 𝓥 Y i)
 
 \end{code}
+
+Added 26th Janruary. The following is based on work with Tom de Jong.
+
+\begin{code}
+
+is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+is-small {𝓤} 𝓧 = Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧
+
+is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+is-large 𝓧 = ¬ is-small 𝓧
+
+is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
+is-small-map f = ∀ y → is-small (fiber f y)
+
+small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
+                     → is-small-map f
+                     → is-small Y
+                     → is-small X
+small-contravariance {𝓤} {X} {Y} f f-is-small Y-is-small = X-is-small
+ where
+  F : Y → 𝓤 ̇
+  F y = pr₁ (f-is-small y)
+
+  F-is-fiber : (y : Y) → F y ≃ fiber f y
+  F-is-fiber y = pr₂ (f-is-small y)
+
+  Y' : 𝓤 ̇
+  Y' = pr₁ Y-is-small
+
+  𝕘 : Y' ≃ Y
+  𝕘 = pr₂ Y-is-small
+
+  X' : 𝓤 ̇
+  X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
+
+  e = X'                            ≃⟨ Σ-change-of-variable F ⌜ 𝕘 ⌝ (⌜⌝-is-equiv 𝕘) ⟩
+      (Σ y ꞉ Y , F y)               ≃⟨ Σ-cong F-is-fiber ⟩
+      (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃⟨ total-fiber-is-domain f ⟩
+      X                             ■
+
+  X-is-small : is-small X
+  X-is-small = X' , e
+
+large-covariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
+                 → ((y : Y) → is-small (fiber f y))
+                 → is-large X
+                 → is-large Y
+large-covariance f ϕ = contrapositive (small-contravariance f ϕ)
+
+\end{code}
+
+The following notion of local smallness is due to Egbert Rijke, in his
+join-construction paper https://arxiv.org/abs/1701.07538.
+
+\begin{code}
+
+is-locally-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+is-locally-small X = (x y : X) → is-small (x ≡ y)
+
+\end{code}
