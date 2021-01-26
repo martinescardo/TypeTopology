@@ -555,7 +555,7 @@ has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
 
 \end{code}
 
-Added 26th Janruary. The following is based on work with Tom de Jong.
+Added 26th January 2021. The following is based on work with Tom de Jong.
 
 \begin{code}
 
