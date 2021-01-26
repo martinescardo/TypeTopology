@@ -556,7 +556,8 @@ has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
 
 \end{code}
 
-Added 26th January 2021. The following is based on work with Tom de Jong.
+Added 26th January 2021. The following is based on work with Tom de
+Jong with Martin Escardo.
 
 \begin{code}
 
@@ -573,9 +574,9 @@ _Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) �
 f Has-size 𝓦 = ∀ y → (fiber f y) has-size 𝓦
 
 size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                     → f Has-size 𝓦
-                     → Y has-size 𝓦
-                     → X has-size 𝓦
+                    → f Has-size 𝓦
+                    → Y has-size 𝓦
+                    → X has-size 𝓦
 size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size Y-size = X-size
  where
   F : Y → 𝓦 ̇
