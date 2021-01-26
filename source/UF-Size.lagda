@@ -45,6 +45,7 @@ open import UF-UA-FunExt
 open import UF-UniverseEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-PropTrunc
+open import UF-KrausLemma
 
 \end{code}
 
@@ -560,33 +561,36 @@ Added 26th January 2021. The following is based on work with Tom de Jong.
 \begin{code}
 
 is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-small {𝓤} 𝓧 = Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧
-
-is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-large 𝓧 = ¬ is-small 𝓧
+is-small {𝓤} X = X has-size 𝓤
 
 is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
 is-small-map f = ∀ y → is-small (fiber f y)
 
-small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
-                     → is-small-map f
-                     → is-small Y
-                     → is-small X
-small-contravariance {𝓤} {X} {Y} f f-is-small Y-is-small = X-is-small
+is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
+is-large 𝓧 = ¬ is-small 𝓧
+
+_Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+f Has-size 𝓦 = ∀ y → (fiber f y) has-size 𝓦
+
+size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → f Has-size 𝓦
+                     → Y has-size 𝓦
+                     → X has-size 𝓦
+size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size Y-size = X-size
  where
-  F : Y → 𝓤 ̇
-  F y = pr₁ (f-is-small y)
+  F : Y → 𝓦 ̇
+  F y = pr₁ (f-size y)
 
   F-is-fiber : (y : Y) → F y ≃ fiber f y
-  F-is-fiber y = pr₂ (f-is-small y)
+  F-is-fiber y = pr₂ (f-size y)
 
-  Y' : 𝓤 ̇
-  Y' = pr₁ Y-is-small
+  Y' : 𝓦 ̇
+  Y' = pr₁ Y-size
 
   𝕘 : Y' ≃ Y
-  𝕘 = pr₂ Y-is-small
+  𝕘 = pr₂ Y-size
 
-  X' : 𝓤 ̇
+  X' : 𝓦 ̇
   X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
 
   e = X'                    ≃⟨ Σ-change-of-variable F ⌜ 𝕘 ⌝ (⌜⌝-is-equiv 𝕘) ⟩
@@ -594,14 +598,91 @@ small-contravariance {𝓤} {X} {Y} f f-is-small Y-is-small = X-is-small
       (Σ y ꞉ Y , fiber f y) ≃⟨ total-fiber-is-domain f ⟩
       X                     ■
 
-  X-is-small : is-small X
-  X-is-small = X' , e
+  X-size : X has-size 𝓦
+  X-size = X' , e
+
+small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
+                     → is-small-map f
+                     → is-small Y
+                     → is-small X
+small-contravariance = size-contravariance
 
 large-covariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
                  → is-small-map f
                  → is-large X
                  → is-large Y
 large-covariance f ϕ = contrapositive (small-contravariance f ϕ)
+
+size-of-section-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                          → is-section s
+                          → is-embedding s
+                          → s Has-size 𝓥
+size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = B , γ
+ where
+  g : Y → Y
+  g = s ∘ r
+
+  A : 𝓤 ⊔ 𝓥 ̇
+  A = fiber s y
+
+  ϕ : g y ≡ y → A
+  ϕ p = r y , (s (r y)         ≡⟨ ap (s ∘ r) (p ⁻¹) ⟩
+               s (r (s (r y))) ≡⟨ ap s (η (r y)) ⟩
+               s (r y)         ≡⟨ p ⟩
+               y               ∎)
+
+  ψ : A → g y ≡ y
+  ψ (x , q) = g y         ≡⟨ ap g (q ⁻¹) ⟩
+              s (r (s x)) ≡⟨ ap s (η x) ⟩
+              s x         ≡⟨ q ⟩
+              y           ∎
+
+  f : g y ≡ y → g y ≡ y
+  f = ψ ∘ ϕ
+
+  B : 𝓥 ̇
+  B = fix f
+
+  κ : (p p' : g y ≡ y) → f p ≡ f p'
+  κ p p' = ap ψ (e y (ϕ p) (ϕ p'))
+
+  i : is-prop B
+  i = Kraus-Lemma f κ
+
+  α : B → A
+  α = ϕ ∘ from-fix f
+
+  β : A → B
+  β = to-fix f κ ∘ ψ
+
+  γ : B ≃ A
+  γ = logically-equivalent-props-are-equivalent i (e y) α β
+
+section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                      → is-embedding f
+                                      → is-section f
+                                      → Y has-size 𝓦
+                                      → X has-size 𝓦
+section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) (Y' , h , i) = γ
+ where
+  h⁻¹ : Y → Y'
+  h⁻¹ = inverse h i
+
+  f' : X → Y'
+  f' = h⁻¹ ∘ f
+
+  p : g ∘ h ∘ h⁻¹ ∘ f ∼ id
+  p x = g (h (h⁻¹ (f x))) ≡⟨ ap g (inverses-are-sections h i (f x)) ⟩
+        g (f x)           ≡⟨ η x ⟩
+        id x              ∎
+
+  δ : f' Has-size 𝓦
+  δ = size-of-section-embedding f' (g ∘ h , p)
+       (∘-is-embedding e (equivs-are-embeddings h⁻¹
+                         (inverses-are-equivs h i)))
+
+  γ : X has-size 𝓦
+  γ = size-contravariance f' δ (Y' , ≃-refl Y')
 
 \end{code}
 

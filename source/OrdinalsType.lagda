@@ -217,7 +217,7 @@ doesn't use the structure identity principle.)
 
 ≃ₒ-sym : ∀ {𝓤} {𝓥} (α : Ordinal 𝓤) (β : Ordinal 𝓥 )
        → α ≃ₒ β → β ≃ₒ α
-≃ₒ-sym α β (f , p , e , q) = inverse f e , q , inverse-is-equiv f e , p
+≃ₒ-sym α β (f , p , e , q) = inverse f e , q , inverses-are-equivs f e , p
 
 ≃ₒ-trans : ∀ {𝓤} {𝓥} {𝓦} (α : Ordinal 𝓤) (β : Ordinal 𝓥 ) (γ : Ordinal 𝓦)
          → α ≃ₒ β → β ≃ₒ γ → α ≃ₒ γ
