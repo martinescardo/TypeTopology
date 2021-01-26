@@ -589,16 +589,16 @@ small-contravariance {𝓤} {X} {Y} f f-is-small Y-is-small = X-is-small
   X' : 𝓤 ̇
   X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
 
-  e = X'                            ≃⟨ Σ-change-of-variable F ⌜ 𝕘 ⌝ (⌜⌝-is-equiv 𝕘) ⟩
-      (Σ y ꞉ Y , F y)               ≃⟨ Σ-cong F-is-fiber ⟩
-      (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃⟨ total-fiber-is-domain f ⟩
-      X                             ■
+  e = X'                    ≃⟨ Σ-change-of-variable F ⌜ 𝕘 ⌝ (⌜⌝-is-equiv 𝕘) ⟩
+      (Σ y ꞉ Y , F y)       ≃⟨ Σ-cong F-is-fiber ⟩
+      (Σ y ꞉ Y , fiber f y) ≃⟨ total-fiber-is-domain f ⟩
+      X                     ■
 
   X-is-small : is-small X
   X-is-small = X' , e
 
 large-covariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
-                 → ((y : Y) → is-small (fiber f y))
+                 → is-small-map f
                  → is-large X
                  → is-large Y
 large-covariance f ϕ = contrapositive (small-contravariance f ϕ)
