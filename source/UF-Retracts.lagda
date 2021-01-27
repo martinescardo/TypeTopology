@@ -273,8 +273,12 @@ Y ◁ X = retract Y of X
 _◁⟨_⟩_ : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ◁ Y → Y ◁ Z → X ◁ Z
 _ ◁⟨ d ⟩ e = retracts-compose e d
 
+◁-refl : (X : 𝓤 ̇ ) → X ◁ X
+◁-refl X = identity-retraction {universe-of X} {X}
+
+
 _◀ : (X : 𝓤 ̇ ) → X ◁ X
-X ◀ = identity-retraction {universe-of X} {X}
+_◀ = ◁-refl
 
 \end{code}
 

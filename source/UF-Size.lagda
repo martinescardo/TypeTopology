@@ -485,7 +485,7 @@ is not necessary.
 
 Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
 
-It turns out that a proposition Y has size 𝓥 precisely if the proposition
+It turns out that a proposition Y has size 𝓥 precisely if
 (Y has-size 𝓥) has size 𝓥.
 
 Hence, if you can resize the propositions of the form (Y has-size 𝓥)
@@ -522,8 +522,8 @@ has-size-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y has-size 𝓥) has-size 𝓥
 
 has-size-resizing-implies-propositional-resizing : (ua : Univalence)
                                                    (𝓤 𝓥 : Universe)
-                                                   → has-size-resizing 𝓤 𝓥
-                                                   → propositional-resizing 𝓤 𝓥
+                                                 → has-size-resizing 𝓤 𝓥
+                                                 → propositional-resizing 𝓤 𝓥
 has-size-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
   has-size-idempotent ua 𝓤 𝓥 P i (r P)
 
@@ -564,14 +564,14 @@ Jong with Martin Escardo.
 is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-small {𝓤} X = X has-size 𝓤
 
-is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
-is-small-map f = ∀ y → is-small (fiber f y)
-
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-large 𝓧 = ¬ is-small 𝓧
 
 _Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
 f Has-size 𝓦 = ∀ y → (fiber f y) has-size 𝓦
+
+is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
+is-small-map f = ∀ y → is-small (fiber f y)
 
 size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → f Has-size 𝓦

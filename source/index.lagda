@@ -252,6 +252,7 @@ import UF-PropTrunc
 import UF-Quotient
 import UF-Retracts-FunExt
 import UF-Retracts
+import UF-Section-Embedding
 import UF-Size
 import UF-StructureIdentityPrinciple  -- Old, probably delete.
 import UF-SIP                         -- New, better, version.

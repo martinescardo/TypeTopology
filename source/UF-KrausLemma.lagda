@@ -71,6 +71,14 @@ from-fix f = pr₁
 to-fix : {X : 𝓤 ̇ } (f : X → X) → wconstant f → X → fix f
 to-fix f g x = (f x , g x (f x))
 
+from-to-fix : {X : 𝓤 ̇ } (f : X → X) (κ : wconstant f)
+            → from-fix f ∘ to-fix f κ ∼ f
+from-to-fix f κ w = refl
+
+to-from-fix : {X : 𝓤 ̇ } (f : X → X) (κ : wconstant f)
+            → to-fix f κ ∘ from-fix f ∼ id
+to-from-fix f κ _ = Kraus-Lemma f κ _ _
+
 \end{code}
 
 A main application is to show that, in pure spartan MLTT, if a type
@@ -98,5 +106,22 @@ collapsible-has-prop-truncation : {X : 𝓤 ̇ }
                                 → collapsible X
                                 → ∀ 𝓥 → has-prop-truncation 𝓥 X
 collapsible-has-prop-truncation {𝓤} {X} c = split-truncation (fix-has-split-support c)
+
+open import UF-PropTrunc
+
+module _ (pe : propositional-truncations-exist) where
+
+ open PropositionalTruncation pe
+
+ collapsible-gives-split-support : {X : 𝓤 ̇ }
+                                 → collapsible X
+                                 → ∥ X ∥ → X
+ collapsible-gives-split-support (f , κ) s = from-fix f (∥∥-rec (Kraus-Lemma f κ) (to-fix f κ) s)
+
+
+ split-support-gives-collapsible : {X : 𝓤 ̇ }
+                                 → (∥ X ∥ → X)
+                                 → collapsible X
+ split-support-gives-collapsible g = (λ x → g ∣ x ∣) , (λ x y → ap g (∥∥-is-prop ∣ x ∣ ∣ y ∣))
 
 \end{code}

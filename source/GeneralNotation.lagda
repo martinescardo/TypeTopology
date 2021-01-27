@@ -11,6 +11,9 @@ open import Universes
 open import Id
 open import Negation public
 
+idempotent-map : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
+idempotent-map f = ∀ x → f (f x) ≡ f x
+
 involutive : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
 involutive f = ∀ x → f (f x) ≡ x
 

@@ -820,7 +820,7 @@ Added 10 February 2020 by Tom de Jong.
 fiber-of-composite : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
                    → (z : Z)
                    → fiber (g ∘ f) z
-                   ≃ (Σ w ꞉ (fiber g z) , fiber f (fiber-point w))
+                   ≃ (Σ (y , _) ꞉ fiber g z , fiber f y)
 fiber-of-composite {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g z =
  qinveq ϕ (ψ , (ψϕ , ϕψ))
   where
