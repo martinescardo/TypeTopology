@@ -12,19 +12,10 @@ module UF-Section-Embedding where
 open import SpartanMLTT
 
 open import UF-Base
-open import UF-FunExt
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
-open import UF-Subsingletons-FunExt
 open import UF-Equiv
-open import UF-Equiv-FunExt
 open import UF-Retracts
 open import UF-Embeddings
-open import UF-EquivalenceExamples
-open import UF-ExcludedMiddle
-open import UF-Univalence
-open import UF-UA-FunExt
-open import UF-UniverseEmbedding
-open import UF-PropIndexedPiSigma
 open import UF-PropTrunc
 open import UF-KrausLemma
 

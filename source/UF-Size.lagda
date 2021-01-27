@@ -1,4 +1,5 @@
 Martin Escardo, 24th January 2019.
+With several additions after that, including by Tom de Jong.
 
 Voedvodsky (Types'2011) considered resizing rules for a type theory
 for univalent foundations. These rules govern the syntax of the formal
@@ -46,6 +47,7 @@ open import UF-UniverseEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-PropTrunc
 open import UF-KrausLemma
+open import UF-Section-Embedding
 
 \end{code}
 
@@ -127,7 +129,7 @@ hypotheses below).
 \begin{code}
 
 has-size-is-prop : Univalence → (X : 𝓤 ̇ ) (𝓥 :  Universe)
-                   → is-prop (X has-size 𝓥)
+                 → is-prop (X has-size 𝓥)
 has-size-is-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
@@ -556,8 +558,8 @@ has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
 
 \end{code}
 
-Added 26th January 2021. The following is based on work with Tom de
-Jong with Martin Escardo.
+Added 26th January 2021. The following is based on joint work of Tom
+de Jong with Martin Escardo.
 
 \begin{code}
 
@@ -577,19 +579,13 @@ size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → f Has-size 𝓦
                     → Y has-size 𝓦
                     → X has-size 𝓦
-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size Y-size = X-size
+size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
  where
   F : Y → 𝓦 ̇
   F y = pr₁ (f-size y)
 
   F-is-fiber : (y : Y) → F y ≃ fiber f y
   F-is-fiber y = pr₂ (f-size y)
-
-  Y' : 𝓦 ̇
-  Y' = pr₁ Y-size
-
-  𝕘 : Y' ≃ Y
-  𝕘 = pr₂ Y-size
 
   X' : 𝓦 ̇
   X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
@@ -599,8 +595,8 @@ size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size Y-size = X-size
       (Σ y ꞉ Y , fiber f y) ≃⟨ total-fiber-is-domain f ⟩
       X                     ■
 
-  X-size : X has-size 𝓦
-  X-size = X' , e
+  γ : X has-size 𝓦
+  γ = X' , e
 
 small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
                      → is-small-map f
@@ -618,46 +614,37 @@ size-of-section-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                           → is-section s
                           → is-embedding s
                           → s Has-size 𝓥
-size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = B , γ
+size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
  where
-  g : Y → Y
-  g = s ∘ r
+  c : (x : Y) → collapsible (s (r x) ≡ x)
+  c = section-embedding-gives-collapsible r s η e
 
-  A : 𝓤 ⊔ 𝓥 ̇
-  A = fiber s y
+  κ : s (r y) ≡ y → s (r y) ≡ y
+  κ = pr₁ (c y)
 
-  ϕ : g y ≡ y → A
-  ϕ p = r y , (s (r y)         ≡⟨ ap (s ∘ r) (p ⁻¹) ⟩
-               s (r (s (r y))) ≡⟨ ap s (η (r y)) ⟩
-               s (r y)         ≡⟨ p ⟩
-               y               ∎)
-
-  ψ : A → g y ≡ y
-  ψ (x , q) = g y         ≡⟨ ap g (q ⁻¹) ⟩
-              s (r (s x)) ≡⟨ ap s (η x) ⟩
-              s x         ≡⟨ q ⟩
-              y           ∎
-
-  f : g y ≡ y → g y ≡ y
-  f = ψ ∘ ϕ
+  κ-constant : (p p' : s (r y) ≡ y) → κ p ≡ κ p'
+  κ-constant = pr₂ (c y)
 
   B : 𝓥 ̇
-  B = fix f
+  B = fix κ
 
-  κ : (p p' : g y ≡ y) → f p ≡ f p'
-  κ p p' = ap ψ (e y (ϕ p) (ϕ p'))
+  B-is-prop : is-prop B
+  B-is-prop = Kraus-Lemma κ κ-constant
 
-  i : is-prop B
-  i = Kraus-Lemma f κ
+  α : B → fiber s y
+  α = (λ p → r y , p) ∘ from-fix κ
 
-  α : B → A
-  α = ϕ ∘ from-fix f
+  β : fiber s y → B
+  β = to-fix κ κ-constant ∘ λ (x , p) → s (r y)     ≡⟨ ap (s ∘ r) (p ⁻¹) ⟩
+                                        s (r (s x)) ≡⟨ ap s (η x) ⟩
+                                        s x         ≡⟨ p ⟩
+                                        y           ∎
 
-  β : A → B
-  β = to-fix f κ ∘ ψ
+  δ : B ≃ fiber s y
+  δ = logically-equivalent-props-are-equivalent B-is-prop (e y) α β
 
-  γ : B ≃ A
-  γ = logically-equivalent-props-are-equivalent i (e y) α β
+  γ : (fiber s y) has-size 𝓥
+  γ = B , δ
 
 section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                       → is-embedding f
@@ -696,3 +683,6 @@ is-locally-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-locally-small X = (x y : X) → is-small (x ≡ y)
 
 \end{code}
+
+For example, by univalence, universes are locally small, and so is the
+(large) type of ordinals in a universe.

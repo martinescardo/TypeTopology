@@ -197,7 +197,7 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ ln rn assoc lc = γ
 
 \end{code}
 
-Additional facts that are not needed to conclude exxcluded middle:
+Additional facts that are not needed to conclude excluded middle:
 
 \begin{code}
 
