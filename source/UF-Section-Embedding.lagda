@@ -1,4 +1,4 @@
-Martin Escardo, Jan 27 2021.
+Martin Escardo, 27 Jan 2021.
 
 We write down in Agda a result attributed to Martin Escardo by Shulman
 (2015) https://arxiv.org/abs/1507.03634
