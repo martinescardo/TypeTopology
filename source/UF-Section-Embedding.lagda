@@ -138,24 +138,24 @@ module _ (pe : propositional-truncations-exist) where
  open PropositionalTruncation pe
 
  split-via-embedding-gives-split-support : {X : 𝓤 ̇ } (f : X → X)
-                                        → ((A , r , s , η , h) : splits f 𝓥)
-                                        → is-embedding s
-                                        → (x : X) → ∥ f x ≡ x ∥ → f x ≡ x
+                                         → ((A , r , s , η , h) : splits f 𝓥)
+                                         → is-embedding s
+                                         → (x : X) → ∥ f x ≡ x ∥ → f x ≡ x
  split-via-embedding-gives-split-support f σ e x =
    collapsible-gives-split-support pe (split-via-embedding-gives-collapsible f σ e x)
 
 
  split-support-gives-split-via-embedding : {X : 𝓤 ̇ } (f : X → X)
-                                      → idempotent-map f
-                                      → ((x : X) → ∥ f x ≡ x ∥ → f x ≡ x)
-                                      → Σ (A , r , s , η , h) ꞉ splits f 𝓤 , is-embedding s
+                                         → idempotent-map f
+                                         → ((x : X) → ∥ f x ≡ x ∥ → f x ≡ x)
+                                         → Σ (A , r , s , η , h) ꞉ splits f 𝓤 , is-embedding s
  split-support-gives-split-via-embedding f i g =
    collapsible-gives-split-via-embedding f i (λ x → split-support-gives-collapsible pe (g x))
 
  section-embedding-gives-split-support : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
-                                       (r : X → A) (s : A → X) (η : r ∘ s ∼ id)
-                                     → is-embedding s
-                                     → (x : X) → ∥ s (r x) ≡ x ∥ → s (r x) ≡ x
+                                         (r : X → A) (s : A → X) (η : r ∘ s ∼ id)
+                                       → is-embedding s
+                                       → (x : X) → ∥ s (r x) ≡ x ∥ → s (r x) ≡ x
  section-embedding-gives-split-support r s η e x =
    collapsible-gives-split-support pe (section-embedding-gives-collapsible r s η e x)
 
