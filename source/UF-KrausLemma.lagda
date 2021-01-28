@@ -139,7 +139,7 @@ collapsible-has-prop-truncation {𝓤} {X} c = split-truncation (fix-has-split-s
 
 open import UF-PropTrunc
 
-module _ (pe : propositional-truncations-exist) where
+module assuming-propositional-truncation (pe : propositional-truncations-exist) where
 
  open PropositionalTruncation pe
 
