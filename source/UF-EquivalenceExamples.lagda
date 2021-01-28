@@ -577,26 +577,30 @@ NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
   η b (a , refl) = refl
 
 NatΣ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-              → ((x : X) → is-vv-equiv(ζ x)) → is-vv-equiv(NatΣ ζ)
+              → ((x : X) → is-vv-equiv(ζ x))
+              → is-vv-equiv(NatΣ ζ)
 NatΣ-vv-equiv A B ζ i (x , b) = equiv-to-singleton
                                    (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                    (i x b)
 
 NatΣ-vv-equiv-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                       → is-vv-equiv(NatΣ ζ) → ((x : X) → is-vv-equiv(ζ x))
+                       → is-vv-equiv(NatΣ ζ)
+                       → ((x : X) → is-vv-equiv(ζ x))
 NatΣ-vv-equiv-converse A B ζ e x b = equiv-to-singleton
                                       (NatΣ-fiber-equiv A B ζ x b)
                                       (e (x , b))
 
 NatΣ-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-           → ((x : X) → is-equiv(ζ x)) → is-equiv(NatΣ ζ)
+           → ((x : X) → is-equiv(ζ x))
+           → is-equiv(NatΣ ζ)
 NatΣ-equiv A B ζ i = vv-equivs-are-equivs
                          (NatΣ ζ)
                          (NatΣ-vv-equiv A B ζ
                            (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
 NatΣ-equiv-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                    → is-equiv(NatΣ ζ) → ((x : X) → is-equiv(ζ x))
+                    → is-equiv(NatΣ ζ)
+                    → ((x : X) → is-equiv(ζ x))
 NatΣ-equiv-converse A B ζ e x = vv-equivs-are-equivs (ζ x)
                                  (NatΣ-vv-equiv-converse A B ζ
                                    (equivs-are-vv-equivs (NatΣ ζ) e) x)
@@ -765,10 +769,11 @@ left-Id-equiv {𝓤} {𝓥} {X} {Y} x =
    a = prop-indexed-sum (singleton-types'-are-props x) (singleton'-center x)
 
 fiber-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
-fiber-equiv {𝓤} {𝓥} {X} {Y} x = fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
-                                (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
-                                (Σ x' ꞉ X , (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
-                                Y x                           ■
+fiber-equiv {𝓤} {𝓥} {X} {Y} x =
+  fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
+  (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
+  (Σ x' ꞉ X , (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
+  Y x                           ■
 
 \end{code}
 
