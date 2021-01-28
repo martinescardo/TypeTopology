@@ -221,7 +221,7 @@ _≾_ : X → X → 𝓥 ̇
 x ≾ y = ¬ (y < x)
 
 ≾-is-prop-valued : funext 𝓥 𝓤₀ → is-prop-valued → (x y : X) → is-prop (x ≾ y)
-≾-is-prop-valued fe p x y = ¬-is-prop fe
+≾-is-prop-valued fe p x y = negations-are-props fe
 
 is-top : X → 𝓤 ⊔ 𝓥 ̇
 is-top x = (y : X) → y ≾ x
@@ -422,9 +422,9 @@ module _ (fe : Fun-Ext)
            b = inr (inl (a ν ν'))
 
          δ : P x y
-         δ = Cases (em (¬ A) (¬-is-prop fe))
+         δ = Cases (em (¬ A) (negations-are-props fe))
               (λ (ν : ¬ A)
-                    → Cases (em (¬ B) (¬-is-prop fe))
+                    → Cases (em (¬ B) (negations-are-props fe))
                        (¬A-and-¬B-give-P ν)
                        ¬¬B-gives-P)
               ¬¬A-gives-P

@@ -25,6 +25,13 @@ open import UF-Subsingletons renaming (Ω to Ω' ; ⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 
+\end{code}
+
+We work with a universe 𝓤 and assume functional and propositional
+extensionality:
+
+\begin{code}
+
 module HiggsInvolutionTheorem
         {𝓤 : Universe}
         (fe : Fun-Ext)
@@ -58,7 +65,7 @@ higgs f lc = VIII
                   f ⊤ ∎)
 
    III : (p : Ω) → f p ≡ ⊤ → p ≡ f ⊤
-   III p r = Ω-ext' pe fe (I p r) (II p r)
+   III p r = Ω-ext pe fe (I p r) (II p r)
 
    IV : (p : Ω) → f (f p) ≡ ⊤ → p ≡ ⊤
    IV p r = lc (III (f p) r)
@@ -82,7 +89,7 @@ higgs f lc = VIII
      iv = ap f iii
 
    VII : (p : Ω) → f (f (f p)) ≡ f p
-   VII p = Ω-ext' pe fe (V p) (VI p)
+   VII p = Ω-ext pe fe (V p) (VI p)
 
    VIII : (p : Ω) → f (f p) ≡ p
    VIII p = lc (VII p)
@@ -115,16 +122,13 @@ assuming in this module. We introduce friendlier notation for it:
 
 open import UF-ExcludedMiddle
 
-lc-monoid-structure-on-Ω-gives-EM :
-
-    (O : Ω)
-    (_⊕_ : Ω → Ω → Ω)
-  → left-neutral O _⊕_
-  → right-neutral O _⊕_
-  → associative _⊕_
-  → ((p : Ω) → left-cancellable (p ⊕_))
-  → excluded-middle 𝓤
-
+lc-monoid-structure-on-Ω-gives-EM : (O : Ω)
+                                    (_⊕_ : Ω → Ω → Ω)
+                                  → left-neutral O _⊕_
+                                  → right-neutral O _⊕_
+                                  → associative _⊕_
+                                  → ((p : Ω) → left-cancellable (p ⊕_))
+                                  → excluded-middle 𝓤
 lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc = γ
  where
   invol : (p : Ω) → involutive (p ⊕_)
@@ -173,7 +177,7 @@ lc-monoid-structure-on-Ω-gives-EM O _⊕_ left-neutral right-neutral assoc lc =
           ⊤           ∎
 
   characterization-of-f : (p : Ω) → f p ≡ ⇁ p
-  characterization-of-f p = Ω-ext' pe fe a b
+  characterization-of-f p = Ω-ext pe fe a b
    where
     a : f p ≡ ⊤ → (⇁ p) ≡ ⊤
     a e = equal-⊥-gives-not-equal-⊤ fe pe p (α p e)
@@ -211,6 +215,15 @@ Additional facts that are not needed to conclude excluded middle:
                       p ⊕ (O ⊕ p)       ≡⟨ ap (p ⊕_) (left-neutral p) ⟩
                       p ⊕ p             ≡⟨ own-inv p ⟩
                       O                 ∎)
+
+  charac₂-of-f : (p : Ω) → f p ≡ (⊥ ⊕ ⊤) ⊕ p
+  charac₂-of-f p = abelian p (⊥ ⊕ ⊤)
+
+  f-invol' : involutive f
+  f-invol' p = f (f p)                   ≡⟨ charac₂-of-f (f p) ⟩
+               ((⊥ ⊕ ⊤) ⊕ f p)           ≡⟨ ap ((⊥ ⊕ ⊤) ⊕_) (charac₂-of-f p) ⟩
+               ((⊥ ⊕ ⊤) ⊕ ((⊥ ⊕ ⊤) ⊕ p)) ≡⟨ higgs ((⊥ ⊕ ⊤) ⊕_) (lc (⊥ ⊕ ⊤)) p ⟩
+               p ∎
 
 \end{code}
 

@@ -357,7 +357,10 @@ module AC-gives-EM
   where
    g : decidable (⊤ ≡ (P , isp)) → decidable P
    g (inl r) = inl (idtofun 𝟙 P (ap pr₁ r) *)
-   g (inr u) = inr (contrapositive (λ p → Ω-ext (fe 𝓤₀ 𝓤₀) pe (λ _ → p) (λ _ → *)) u)
+   g (inr u) = inr (contrapositive
+                      (λ p → Ω-extensionality (fe 𝓤₀ 𝓤₀)
+                               pe (λ _ → p) (λ _ → *))
+                      u)
 
 \end{code}
 
