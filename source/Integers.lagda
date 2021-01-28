@@ -342,7 +342,6 @@ succ-ℤ (neg (succ n)) = neg n
    XII  = 𝟙-rneutral
    XIII = ≃-sym (𝟙→ fe)
 
-{-
 pred-ℤ : ℤ → ℤ
 pred-ℤ 𝟎              = neg 0
 pred-ℤ (pos 0)        = 𝟎
@@ -360,6 +359,8 @@ pred-retraction-of-succ 𝟎              = refl
 pred-retraction-of-succ (pos n)        = refl
 pred-retraction-of-succ (neg zero)     = refl
 pred-retraction-of-succ (neg (succ n)) = refl
--}
+
+succ-ℤ-≃ : ℤ ≃ ℤ
+succ-ℤ-≃ = qinveq succ-ℤ (pred-ℤ , pred-retraction-of-succ , pred-section-of-succ)
 
 \end{code}
