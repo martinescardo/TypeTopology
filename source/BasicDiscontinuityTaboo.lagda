@@ -23,7 +23,7 @@ open import GenericConvergentSequence
 open import WLPO
 
 basic-discontinuity : (ℕ∞ → 𝟚) → 𝓤₀ ̇
-basic-discontinuity p = ((n : ℕ) → p(under n) ≡ ₀) × (p ∞ ≡ ₁)
+basic-discontinuity p = ((n : ℕ) → p (under n) ≡ ₀) × (p ∞ ≡ ₁)
 
 basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → WLPO
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
@@ -65,12 +65,12 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₁ : (r : u ≢ ∞) → f u ≡ inr r → 𝟚
     case₁ r s = ₀
 
-  d : (n : ℕ) → p(under n) ≡ ₀
+  d : (n : ℕ) → p (under n) ≡ ₀
   d n = equality-cases (f(under n)) case₀ case₁
    where
-    case₀ : (r : under n ≡ ∞) → f(under n) ≡ inl r → p(under n) ≡ ₀
+    case₀ : (r : under n ≡ ∞) → f(under n) ≡ inl r → p (under n) ≡ ₀
     case₀ r s = 𝟘-elim(∞-is-not-finite n (r ⁻¹))
-    case₁ : (g : under n ≢ ∞) → f(under n) ≡ inr g → p(under n) ≡ ₀
+    case₁ : (g : under n ≢ ∞) → f(under n) ≡ inr g → p (under n) ≡ ₀
     case₁ g = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
   d∞ : p ∞ ≡ ₁
@@ -88,7 +88,7 @@ at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ q(under n)) → p ∞ ≢ q ∞ → WLPO
+disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q(under n)) → p ∞ ≢ q ∞ → WLPO
 disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
  where
   r : ℕ∞ → 𝟚
@@ -102,7 +102,7 @@ disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
 
 open import DiscreteAndSeparated
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ q(under n)) → p ∞ ≡ q ∞
+agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q(under n)) → p ∞ ≡ q ∞
 agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
 
 \end{code}

@@ -20,8 +20,9 @@ open import UF-Equiv
 
 Π-proj-is-equiv : funext 𝓤 𝓥
                 → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-                → is-prop X → (a : X) → is-equiv (Π-proj a)
-Π-proj-is-equiv {𝓤} {𝓥} fe {X} {Y} i a = qinvs-are-equivs (Π-proj a) (Π-incl i a , ε , η)
+                → is-prop X
+                → (a : X) → is-equiv (Π-proj a)
+Π-proj-is-equiv {𝓤} {𝓥} fe {X} {Y} i a = γ
  where
   l : (x : X) → i x x ≡ refl
   l x = props-are-sets i (i x x) refl
@@ -38,6 +39,9 @@ open import UF-Equiv
   ε : (f : Π Y) → Π-incl i a (Π-proj a f) ≡ f
   ε φ = dfunext fe (ε' φ)
 
+  γ : is-equiv (Π-proj a)
+  γ = qinvs-are-equivs (Π-proj a) (Π-incl i a , ε , η)
+
 prop-indexed-product : funext 𝓤 𝓥
                      → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                      → is-prop X
@@ -48,7 +52,7 @@ prop-indexed-product-one : funext 𝓤 𝓥
                          → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                          → (X → 𝟘 {𝓦})
                          → Π Y ≃ 𝟙 {𝓣}
-prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = qinveq unique-to-𝟙 (g , ε , η)
+prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = γ
  where
   g : 𝟙 → Π Y
   g * x = unique-from-𝟘 {𝓥} {𝓦} (v x)
@@ -61,6 +65,9 @@ prop-indexed-product-one {𝓤} {𝓥} {𝓦} {𝓣} fe {X} {Y} v = qinveq uniqu
    where
     u : (x : X) → g (unique-to-𝟙 φ) x ≡ φ x
     u x = unique-from-𝟘 (v x)
+
+  γ : Π Y ≃ 𝟙 {𝓣}
+  γ = qinveq unique-to-𝟙 (g , ε , η)
 
 \end{code}
 

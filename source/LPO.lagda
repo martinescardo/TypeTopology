@@ -156,7 +156,7 @@ open import PropTychonoff
    f : LPO → compact∙ ℕ
    f lpo = compact-pointed-gives-compact∙ (LPO-gives-compact-ℕ lpo) 0
 
-[LPO→ℕ]-compact : compact(LPO → ℕ)
+[LPO→ℕ]-compact : compact (LPO → ℕ)
 [LPO→ℕ]-compact = compact∙-gives-compact [LPO→ℕ]-compact∙
 
 [LPO→ℕ]-Compact : Compact (LPO → ℕ) {𝓤}

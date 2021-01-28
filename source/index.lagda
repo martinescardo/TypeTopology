@@ -356,7 +356,7 @@ import ConvergentSequenceCompact
 An interesting consequence of the compactness of ℕ∞ is that the
 following property, an instance of WLPO, holds constructively:
 
-  (p : ℕ∞ → 𝟚) → ((n : ℕ) → p(under n) ≡ ₁) + ¬ ((n : ℕ) → p(under n) ≡ ₁).
+  (p : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ ₁) + ¬ ((n : ℕ) → p (under n) ≡ ₁).
 
 where
 

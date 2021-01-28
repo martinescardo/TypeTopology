@@ -366,7 +366,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
 
 ℕ∞-𝟚-density : funext₀
              → {p : ℕ∞ → 𝟚}
-             → ((n : ℕ) → p(under n) ≡ ₁)
+             → ((n : ℕ) → p (under n) ≡ ₁)
              → p ∞ ≡ ₁
              → (u : ℕ∞) → p u ≡ ₁
 ℕ∞-𝟚-density fe = ℕ∞-density fe 𝟚-is-¬¬-separated
@@ -694,8 +694,8 @@ proved above, that ≺ is well founded:
     h : (u : ℕ∞) → u ≺ under n → p u ≡ ₁
     h u (m , r , l) = back-transport (λ v → p v ≡ ₁) r (g m (⊏-gives-< m n l))
 
-  a : (n : ℕ) → p(under n) ≡ ₁
-  a = course-of-values-induction (λ n → p(under n) ≡ ₁) γ
+  a : (n : ℕ) → p (under n) ≡ ₁
+  a = course-of-values-induction (λ n → p (under n) ≡ ₁) γ
 
   f : (u : ℕ∞) → u ≺ ∞ → p u ≡ ₁
   f u (n , r , l) = back-transport (λ v → p v ≡ ₁) r (a n)

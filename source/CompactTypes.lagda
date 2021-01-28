@@ -276,7 +276,7 @@ selection functions.
 \begin{code}
 
 _has-selection_ : (X : 𝓤 ̇ ) → ((X → 𝟚) → X) → 𝓤 ̇
-X has-selection ε = (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x ≡ ₁
+X has-selection ε = (p : X → 𝟚) → p (ε p) ≡ ₁ → (x : X) → p x ≡ ₁
 
 compact∙' : 𝓤 ̇ → 𝓤 ̇
 compact∙' X = Σ ε ꞉ ((X → 𝟚) → X) , X has-selection ε
@@ -287,7 +287,7 @@ compact∙-gives-compact∙' {𝓤} {X} ε' = ε , lemma
   ε : (X → 𝟚) → X
   ε p = pr₁(ε' p)
 
-  lemma : (p : X → 𝟚) → p(ε p) ≡ ₁ → (x : X) → p x ≡ ₁
+  lemma : (p : X → 𝟚) → p (ε p) ≡ ₁ → (x : X) → p x ≡ ₁
   lemma p = pr₂(ε' p)
 
 compact∙'-gives-compact∙ : {X : 𝓤 ̇ } → compact∙' X → compact∙ X
@@ -408,7 +408,7 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
              → quantifier X
              → ((x : X)  → quantifier (Y x))
              → quantifier (Σ Y)
-  quant-prod φ γ p = φ(λ x → γ x (λ y → p(x , y)))
+  quant-prod φ γ p = φ(λ x → γ x (λ y → p (x , y)))
 
   selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   selection X = (X → R) → X
@@ -420,9 +420,9 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
   sel-prod {X} {Y} ε δ p = (x₀ , y₀)
     where
      next : (x : X) → Y x
-     next x = δ x (λ y → p(x , y))
+     next x = δ x (λ y → p (x , y))
      x₀ : X
-     x₀ = ε(λ x → p(x , next x))
+     x₀ = ε(λ x → p (x , next x))
      y₀ : Y x₀
      y₀ = next x₀
 
@@ -433,7 +433,7 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
 \begin{code}
 
   overline : {X : 𝓤 ̇ } → selection X → quantifier X
-  overline ε p = p(ε p)
+  overline ε p = p (ε p)
 
   sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
             → selection X → ((x : X)
@@ -442,9 +442,9 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
   sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X
-    x₀ = ε(λ x → overline(δ x) (λ y → p(x , y)))
+    x₀ = ε(λ x → overline(δ x) (λ y → p (x , y)))
     y₀ : Y x₀
-    y₀ = δ x₀ (λ y → p(x₀ , y))
+    y₀ = δ x₀ (λ y → p (x₀ , y))
 
 \end{code}
 
@@ -458,28 +458,28 @@ Back to compact sets:
            → compact∙(Σ Y)
 Σ-compact∙ {i} {j} {X} {Y} ε δ p = (x₀ , y₀) , correctness
  where
-  lemma-next : (x : X) → Σ y₀ ꞉ Y x , (p(x , y₀) ≡ ₁ → (y : Y x) → p(x , y) ≡ ₁)
-  lemma-next x = δ x (λ y → p(x , y))
+  lemma-next : (x : X) → Σ y₀ ꞉ Y x , (p (x , y₀) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁)
+  lemma-next x = δ x (λ y → p (x , y))
 
   next : (x : X) → Y x
   next x = pr₁(lemma-next x)
 
-  next-correctness : (x : X) → p(x , next x) ≡ ₁ → (y : Y x) → p(x , y) ≡ ₁
+  next-correctness : (x : X) → p (x , next x) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁
   next-correctness x = pr₂(lemma-next x)
 
-  lemma-first : Σ x₀ ꞉ X , (p(x₀ , next x₀) ≡ ₁ → (x : X) → p(x , next x) ≡ ₁)
-  lemma-first = ε(λ x → p(x , next x))
+  lemma-first : Σ x₀ ꞉ X , (p (x₀ , next x₀) ≡ ₁ → (x : X) → p (x , next x) ≡ ₁)
+  lemma-first = ε(λ x → p (x , next x))
 
   x₀ : X
   x₀ = pr₁ lemma-first
 
-  first-correctness : p(x₀ , next x₀) ≡ ₁ → (x : X) → p(x , next x) ≡ ₁
+  first-correctness : p (x₀ , next x₀) ≡ ₁ → (x : X) → p (x , next x) ≡ ₁
   first-correctness = pr₂ lemma-first
 
   y₀ : Y x₀
   y₀ = next x₀
 
-  correctness : p(x₀ , y₀) ≡ ₁ → (t : (Σ x ꞉ X , Y x)) → p t ≡ ₁
+  correctness : p (x₀ , y₀) ≡ ₁ → (t : (Σ x ꞉ X , Y x)) → p t ≡ ₁
   correctness r (x , y) = next-correctness x (first-correctness r x) y
 
 \end{code}

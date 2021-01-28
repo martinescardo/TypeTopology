@@ -19,14 +19,15 @@ open import UF-Equiv
 open import UF-Retracts
 open import UF-Embeddings
 open import UF-EquivalenceExamples
-open import UF-PropIndexedPiSigma
 open import UF-KrausLemma
 open import UF-PropTrunc
 
 splits : {X : 𝓤 ̇ } → (X → X) → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-splits {𝓤} {X} f 𝓥 = Σ A ꞉ 𝓥 ̇ , Σ r ꞉ (X → A) , Σ s ꞉ (A → X)
-                          , (r ∘ s ∼ id)
-                          × (f ∼ s ∘ r)
+splits {𝓤} {X} f 𝓥 = Σ A ꞉ 𝓥 ̇
+                   , Σ r ꞉ (X → A)
+                   , Σ s ꞉ (A → X)
+                   , (r ∘ s ∼ id)
+                   × (f ∼ s ∘ r)
 
 splits-gives-idempotent : {X : 𝓤 ̇ } (f : X → X)
                         → splits f 𝓥
@@ -112,11 +113,8 @@ collapsible-gives-split-via-embedding {𝓤} {X} f i c = γ
   𝕘 : (x : X) → fiber s x ≃ P x
   𝕘 x = (Σ (x' , _) ꞉ (Σ x ꞉ X , P x) , x' ≡ x) ≃⟨ Σ-assoc ⟩
         (Σ x' ꞉ X , P x' × (x' ≡ x))            ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
-        (Σ x' ꞉ X , (x' ≡ x) × P x')            ≃⟨ ≃-sym Σ-assoc ⟩
-        (Σ (x' , _) ꞉ singleton-type' x , P x') ≃⟨ a ⟩
+        (Σ x' ꞉ X , (x' ≡ x) × P x')            ≃⟨ left-Id-equiv x ⟩
         P x                                     ■
-   where
-    a = prop-indexed-sum (singleton-types'-are-props x) (singleton'-inclusion x)
 
   e : (x : X) → is-prop (fiber s x)
   e x = equiv-to-prop (𝕘 x) (P-is-prop-valued x)

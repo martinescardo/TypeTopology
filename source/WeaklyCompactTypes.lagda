@@ -178,7 +178,7 @@ discrete-to-the-power-Π-compact-is-discrete {𝓤} {𝓥} {X} {Y} c d f g = δ
 If an exponential with discrete base is discrete, then its exponent is
 compact, provided the base has at least two points.
 
-First, to decide Π(p:X→𝟚), p(x)=1, decide p = λ x → ₁:
+First, to decide Π(p:X→𝟚), p (x)=1, decide p = λ x → ₁:
 
 \begin{code}
 
@@ -354,10 +354,10 @@ compact, then X is discrete if it is totally separated. This is a new
 result as far as I know. I didn't know it before 12th January 2018.
 
 The following proof works as follows. For any given x,y:X, define
-q:(X→𝟚)→𝟚 such that q(p)=1 ⇔ p(x)=p(y), which is possible because 𝟚
+q:(X→𝟚)→𝟚 such that q(p)=1 ⇔ p (x)=p (y), which is possible because 𝟚
 has decidable equality (it is discrete). By the Π-compactness of X→𝟚,
 the condition (p:X→𝟚)→q(p)=1 is decidable, which amounts to saying
-that (p:X→𝟚) → p(x)=p(y) is decidable. But because X is totally
+that (p:X→𝟚) → p (x)=p (y) is decidable. But because X is totally
 separated, the latter is equivalent to x=y, which shows that X is
 discrete.
 
@@ -565,7 +565,7 @@ negations-of-Π-compact-propositions-are-decidable X isp c = f a
 negations-of-propositions-whose-decidability-is-Π-compact-are-decidable :
     (X : 𝓤 ̇ )
   → is-prop X
-  → Π-compact(decidable X)
+  → Π-compact (decidable X)
   → decidable (¬ X)
 negations-of-propositions-whose-decidability-is-Π-compact-are-decidable X isp c = Cases a l m
  where
@@ -633,10 +633,10 @@ allows us to decide inhabitedness, and ∃-compactness is a proposition.
 
 detachable-subset-∃-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → ∃-compact X
-                            → ∃-compact(Σ x ꞉ X , A x ≡ ₀)
+                            → ∃-compact (Σ x ꞉ X , A x ≡ ₀)
 detachable-subset-∃-compact {𝓤} {X} A c = g (c A)
  where
-  g : decidable (∃ x ꞉ X , A x ≡ ₀) → ∃-compact(Σ x ꞉ X , A(x) ≡ ₀)
+  g : decidable (∃ x ꞉ X , A x ≡ ₀) → ∃-compact (Σ x ꞉ X , A(x) ≡ ₀)
   g (inl e) = retract-∃-compact' (∥∥-functor detachable-subset-retract e) c
   g (inr u) = empty-types-are-∃-compact (contrapositive ∣_∣ u)
 
@@ -650,7 +650,7 @@ ingredients (and with a longer proof (is there a shorter one?)).
 
 detachable-subset-Π-compact : {X : 𝓤 ̇ } (A : X → 𝟚)
                             → Π-compact X
-                            → Π-compact(Σ x ꞉ X , A x ≡ ₁)
+                            → Π-compact (Σ x ꞉ X , A x ≡ ₁)
 detachable-subset-Π-compact {𝓤} {X} A c q = g (c p)
  where
   p₀ : (x : X) → A x ≡ ₀ → 𝟚
@@ -1199,7 +1199,7 @@ fst _ _ = pr₁
 
 ∃-compact-clopen-projections : (X : 𝓤 ̇ )
                              → ∃-compact X
-                             → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map(fst A X))
+                             → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
 ∃-compact-clopen-projections X c A p a = g (c (λ x → p (a , x)))
  where
   g : decidable (∃ x ꞉ X , p (a , x) ≡ ₀)
@@ -1214,9 +1214,9 @@ fst _ _ = pr₁
     h ((a' , x) , (r , s)) = x , transport (λ - → p (- , x) ≡ ₀) s r
 
 clopen-projections-∃-compact : ∀ {𝓤 𝓦} (X : 𝓤 ̇ )
-                             → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map(fst A X))
+                             → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
                              → ∃-compact X
-clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p(pr₂ z)) *)
+clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p (pr₂ z)) *)
  where
   g : decidable (∃ z ꞉ 𝟙 {𝓦} × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
     → decidable (∃ x ꞉ X , p x ≡ ₀)

@@ -466,11 +466,11 @@ module original-version-and-equivalence-with-new-version where
    lemma₁ : (n : ℕ) → under n ≡ u → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
    lemma₁ n r e = claim₃
     where
-     claim₀ : (y : Y) → p(F n u r (G n u r y)) ≡ p y
+     claim₀ : (y : Y) → p (F n u r (G n u r y)) ≡ p y
      claim₀ y = ap p (FG n u r y)
-     claim₁ : p(F n u r (G n u r y₀)) ≡ ₁ → (x : X n) → p(F n u r x) ≡ ₁
+     claim₁ : p (F n u r (G n u r y₀)) ≡ ₁ → (x : X n) → p (F n u r x) ≡ ₁
      claim₁ =  pr₂(ε n (p ∘ (F n u r)))
-     claim₂ : (x : X n) → p(F n u r x) ≡ ₁
+     claim₂ : (x : X n) → p (F n u r x) ≡ ₁
      claim₂ = claim₁ (claim₀ y₀ ∙ e)
      claim₃ : (y : Y) → p y ≡ ₁
      claim₃ y = (claim₀ y)⁻¹ ∙ claim₂ (G n u r y)

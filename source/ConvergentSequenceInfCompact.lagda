@@ -23,13 +23,13 @@ open import GenericConvergentSequence
 ℕ∞-inf-compact p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
  where
   α : ℕ → 𝟚
-  α 0       = p(under 0)
-  α(succ n) = min𝟚 (α n) (p(under(succ n)))
+  α 0       = p (under 0)
+  α(succ n) = min𝟚 (α n) (p (under(succ n)))
 
   a : ℕ∞
   a = (α , λ i → Lemma[minab≤₂a])
 
-  Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
+  Dagger₀ : (n : ℕ) → a ≡ under n → p (under n) ≡ ₀
   Dagger₀ 0 r =  ap (λ - → incl - 0) r
   Dagger₀ (succ n) r = w ∙ t
    where
@@ -37,10 +37,10 @@ open import GenericConvergentSequence
     s = ap (λ - → incl - n) r ∙ under-diagonal₁ n
     t : α(succ n) ≡ ₀
     t = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀ n
-    w : p(under(succ n)) ≡ α(succ n)
-    w = (ap (λ - → min𝟚 - (p(under(succ n)))) s)⁻¹
+    w : p (under(succ n)) ≡ α(succ n)
+    w = (ap (λ - → min𝟚 - (p (under(succ n)))) s)⁻¹
 
-  Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
+  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (under n) ≡ ₁
   Dagger₁ r 0 = ap (λ - → incl - 0) r
   Dagger₁ r (succ n) = w ∙ t
    where
@@ -48,8 +48,8 @@ open import GenericConvergentSequence
     s = ap (λ - → incl - n) r
     t : α(succ n) ≡ ₁
     t = ap (λ - → incl - (succ n)) r
-    w : p(under(succ n)) ≡ α(succ n)
-    w = (ap (λ - → min𝟚 - (p(under(succ n)))) s)⁻¹
+    w : p (under(succ n)) ≡ α(succ n)
+    w = (ap (λ - → min𝟚 - (p (under(succ n)))) s)⁻¹
 
   Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
@@ -60,7 +60,7 @@ open import GenericConvergentSequence
   Claim₁ : p a ≡ ₁ → a ≡ ∞
   Claim₁ r = not-finite-is-∞ fe₀ (Claim₀ r)
 
-  Claim₂ : p a ≡ ₁ → (n : ℕ) → p(under n) ≡ ₁
+  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (under n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
@@ -89,16 +89,16 @@ open import GenericConvergentSequence
 
   lower-bound-lemma u r (succ n) s = lemma
    where
-    -- s : min𝟚 (incl a n) (p(under(succ n))) ≡ ₁
+    -- s : min𝟚 (incl a n) (p (under(succ n))) ≡ ₁
     IH : incl a n ≡ ₁ → incl u n ≡ ₁
     IH = lower-bound-lemma u r n
     claim₀ : incl u n ≡ ₁
     claim₀ = IH(Lemma[min𝟚ab≡₁→a≡₁] s)
-    claim₁ : p(under(succ n)) ≡ ₁
+    claim₁ : p (under(succ n)) ≡ ₁
     claim₁ = Lemma[min𝟚ab≡₁→b≡₁]{(incl a n)} s
     claim₂ : incl u (succ n) ≡ ₀ → u ≡ under(succ n)
     claim₂ = Succ-criterion fe₀ claim₀
-    claim₃ : incl u (succ n) ≡ ₀ → p u ≡ p(under(succ n))
+    claim₃ : incl u (succ n) ≡ ₀ → p u ≡ p (under(succ n))
     claim₃ t = ap p (claim₂ t)
     claim₄ : incl u (succ n) ≡ ₀ → p u ≡ ₁
     claim₄ t = claim₃ t ∙ claim₁

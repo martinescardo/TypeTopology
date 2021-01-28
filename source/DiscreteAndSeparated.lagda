@@ -77,7 +77,7 @@ props-are-discrete i x y = inl (i x y)
 ℕ-is-discrete 0 0 = inl refl
 ℕ-is-discrete 0 (succ n) = inr (λ (p : zero ≡ succ n) → positive-not-zero n (p ⁻¹))
 ℕ-is-discrete (succ m) 0 = inr (λ (p : succ m ≡ zero) → positive-not-zero m p)
-ℕ-is-discrete (succ m) (succ n) =  step(ℕ-is-discrete m n)
+ℕ-is-discrete (succ m) (succ n) =  step (ℕ-is-discrete m n)
   where
    step : (m ≡ n) + (m ≢ n) → (succ m ≡ succ n) + (succ m ≢ succ n)
    step (inl r) = inl(ap succ r)
@@ -275,8 +275,8 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inl x) (inl x') = lemma
   claim = ap p
    where
     p : X + Y → X
-    p(inl u) = u
-    p(inr v) = x
+    p (inl u) = u
+    p (inr v) = x
 
   lemma : ¬¬ (inl x ≡ inl x') → inl x ≡ inl x'
   lemma = ap inl ∘ s x x' ∘ ¬¬-functor claim

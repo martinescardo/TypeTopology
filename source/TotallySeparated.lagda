@@ -441,7 +441,7 @@ The Cantor type ℕ → 𝟚 is totally separated:
 Π-is-totally-separated fe {X} {Y} t {f} {g} e = dfunext fe h
  where
    P : (x : X) (p : Y x → 𝟚) → Π Y → 𝟚
-   P x p f = p(f x)
+   P x p f = p (f x)
 
    h : (x : X) → f x ≡ g x
    h x = t x (λ p → e(P x p))
@@ -691,7 +691,7 @@ this context, it makes sense to restrict our attention to S-separated
 types.
 
 Another useful thing is that in any type X we can define an apartness
-relation x♯y by ∃(p:X→𝟚), p(x)‌≠p(y), which is tight iff X is totally
+relation x♯y by ∃(p:X→𝟚), p (x)‌≠p (y), which is tight iff X is totally
 separated, where tightness means ¬ (x♯y)→x=y. Part of the following
 should be moved to another module about apartness, but I keep it here
 for the moment.

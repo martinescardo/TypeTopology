@@ -299,7 +299,7 @@ module general-classifier
    g' : green-map f'
    g' = pr₂ (pr₂ (T (χ (X , f , g))))
    e : X ≃ X'
-   e = domain-is-total-fiber X Y f
+   e = domain-is-total-fiber f
    a : X' ≡ X
    a = (eqtoid ua X X' e) ⁻¹
    B : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
