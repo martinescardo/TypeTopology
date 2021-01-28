@@ -113,6 +113,7 @@ module Circle
  loop : base ≡ base
  loop = to-Tℤ-≡' base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , refl)
 
+{-
  yyy : {X Y : Tℤ} (p : X ≡ Y)
      → idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ p) ≡ pr₁ (⌜ characterization-of-Tℤ-≡' X Y ⌝ p) , pr₁ (pr₂ (⌜ characterization-of-Tℤ-≡' X Y ⌝ p))
  yyy refl = refl
@@ -121,6 +122,7 @@ module Circle
        (e : X → Y) (i : is-equiv e) (h : e ∘ f ≡ g ∘ e)
      → ap ⟨_⟩ (to-Tℤ-≡' (X , f , t) (Y , g , s) (e , i , h)) ≡ eqtoid ua X Y (e , i)
  xxx {(X , f , t)} {(Y , g , s)} e i h = {!!}
+-}
 
  module _
          {A : 𝓤 ̇ }
@@ -129,32 +131,116 @@ module Circle
          (p : a ≡ a)
         where
 
-  Qₚ : {X : 𝓤₀ ̇ } → (X → X) → 𝓤 ̇
-  Qₚ {X} f = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
+  Qₚ : (Σ X ꞉ 𝓤₀ ̇ , (X → X)) → 𝓤 ̇
+  Qₚ (X , f) = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
+
+  Qₚ-base : 𝓤 ̇
+  Qₚ-base = Qₚ (ℤ , succ-ℤ)
+
+  Qₚ-base-is-singleton : is-singleton Qₚ-base
+  Qₚ-base-is-singleton = equiv-to-singleton ϕ (singleton-types-are-singletons a)
+   where
+    ϕ : Qₚ-base ≃ singleton-type a
+    ϕ = Σ-cong ψ
+     where
+      ψ : (a' : A)
+        → (Σ h ꞉ (ℤ → a ≡ a') , ((z : ℤ) → h (succ-ℤ z) ≡ p ∙ h z))
+        ≃ (a ≡ a')
+      ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe)
+              (λ (_ : ℤ) → a ≡ a') (λ (_ : ℤ) → g)
+       where
+        g : (a ≡ a') ≃ (a ≡ a')
+        g = (λ q → p ∙ q) , (∙-is-equiv₁ p)
+
+  cₚ-base : Qₚ-base
+  cₚ-base = center (Qₚ-base-is-singleton)
+
+  cₚ¹-base : A
+  cₚ¹-base = pr₁ cₚ-base
+
+  cₚ²-base : ℤ → a ≡ cₚ¹-base
+  cₚ²-base = pr₁ (pr₂ (cₚ-base))
+
+  cₚ³-base : (z : ℤ) → cₚ²-base (succ-ℤ z) ≡ p ∙ cₚ²-base z
+  cₚ³-base = pr₂ (pr₂ (cₚ-base))
+
+  ∥∥-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
+                (i : is-prop P) (f : X → P) (x : X)
+              → ∥∥-rec i f ∣ x ∣ ≡ f x
+  ∥∥-rec-comp i f x = i (∥∥-rec i f ∣ x ∣) (f x)
+
+  Qₚ-is-singleton : ((X , f , t) : Tℤ)
+                  → is-singleton (Qₚ (X , f))
+  Qₚ-is-singleton (X , f , t) = ∥∥-rec (being-singleton-is-prop fe) γ t
+   where
+    γ : (X , f) ≡ (ℤ , succ-ℤ) → is-singleton (Qₚ (X , f))
+    γ refl = Qₚ-base-is-singleton
+
+  cₚ : ((X , f , _) : Tℤ) → Qₚ (X , f)
+  cₚ (X , f , t) =
+   ∥∥-rec (singletons-are-props (Qₚ-is-singleton (X , f , t)))
+    (λ e → back-transport Qₚ e cₚ-base) t
+
+  cₚ-on-base : cₚ base ≡ cₚ-base
+  cₚ-on-base = ∥∥-rec-comp (singletons-are-props (Qₚ-is-singleton base))
+   (λ e → back-transport Qₚ e cₚ-base) refl
+
+  cₚ¹ : Tℤ → A
+  cₚ¹ X = pr₁ (cₚ X)
+
+  cₚ¹-on-base : cₚ¹ base ≡ cₚ¹-base
+  cₚ¹-on-base = ap pr₁ cₚ-on-base
+
+  cₚ² : (X : Tℤ) → (⟨ X ⟩ → a ≡ cₚ¹ X)
+  cₚ² X = pr₁ (pr₂ (cₚ X))
+
+{-
+  cₚ²-on-base : cₚ² base ≡ back-transport (λ - → ℤ → a ≡ -) cₚ¹-on-base cₚ²-base
+  cₚ²-on-base = {!!}
+-}
+
+  ⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
+  ⟨ (X , f , _) ⟩₂ = f
+
+  cₚ³ : (X : Tℤ) → (x : ⟨ X ⟩)
+      → cₚ² X (⟨ X ⟩₂ x) ≡ p ∙ cₚ² X x
+  cₚ³ X = pr₂ (pr₂ (cₚ X))
+
+  lemma : {X Y : Tℤ} (e : X ≡ Y) (x : ⟨ X ⟩)
+        → ap cₚ¹ e
+        ≡ (cₚ² X x) ⁻¹ ∙ cₚ² Y (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ e) ⌝ x)
+  lemma {X} {Y} refl x =
+   ap cₚ¹ refl                                  ≡⟨ refl ⟩
+   refl                                         ≡⟨ left-inverse (cₚ² X x) ⁻¹ ⟩
+   (cₚ² X x) ⁻¹ ∙ cₚ² X x                       ≡⟨ refl ⟩
+   (cₚ² X x) ⁻¹ ∙ cₚ² X (⌜ idtoeq _ _ refl ⌝ x) ∎
+
+  lemma' : ap cₚ¹ loop ≡
+             (cₚ² base 𝟎) ⁻¹ ∙
+             cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎)
+  lemma' = lemma loop 𝟎
+
+  kkk : ap cₚ¹ loop ≡ (cₚ² base 𝟎) ⁻¹ ∙ (p ∙ (cₚ² base 𝟎))
+  kkk = ap cₚ¹ loop ≡⟨ lemma' ⟩
+        cₚ² base 𝟎 ⁻¹ ∙
+          cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ cₚ² base -) lemma'' ⟩
+        cₚ² base 𝟎 ⁻¹ ∙ cₚ² base (succ-ℤ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ -) (cₚ³ base 𝟎) ⟩
+        cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎) ∎
+   where
+    lemma'' : ⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎 ≡ succ-ℤ 𝟎
+    lemma'' = {!!}
+
+{-
+  zzz : ap ⟨_⟩ loop ≡ eqtoid ua ℤ ℤ succ-ℤ-≃
+  zzz = ap ⟨_⟩ (to-Tℤ-≡ base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , (λ z → refl))) ≡⟨ {!!} ⟩
+        {!!} ≡⟨ {!!} ⟩
+        {!!} ∎
+-}
+
+
+
 
   {-
-  Qₚ-of-succ-ℤ-is-singleton : is-singleton (Qₚ succ-ℤ)
-  Qₚ-of-succ-ℤ-is-singleton =
-   equiv-to-singleton ϕ (singleton-types-are-singletons a)
-    where
-     ϕ : Qₚ succ-ℤ ≃ singleton-type a
-     ϕ = Σ-cong ψ
-      where
-       ψ : (a' : A)
-         → (Σ h ꞉ (ℤ → a ≡ a') , ((z : ℤ) → h (succ-ℤ z) ≡ p ∙ h z))
-         ≃ (a ≡ a')
-       ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe)
-               (λ (_ : ℤ) → a ≡ a') (λ (_ : ℤ) → g)
-        where
-         g : (a ≡ a') ≃ (a ≡ a')
-         g = (λ q → p ∙ q) , (∙-is-equiv₁ p)
-  -}
-
-  ∥∥-rec-foo : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
-               (i : is-prop P) (f : X → P) (x : X)
-             → ∥∥-rec i f ∣ x ∣ ≡ f x
-  ∥∥-rec-foo i f x = i (∥∥-rec i f ∣ x ∣) (f x)
-
   Qₚ-is-singleton : {X : 𝓤₀ ̇ } (f : X → X)
                   → ∥ (X , f) ≡ (ℤ , succ-ℤ) ∥
                   → is-singleton (Qₚ f)
@@ -169,7 +255,9 @@ module Circle
        where
         g : (a' : A) → (z : ℤ) → (a ≡ a') ≃ (a ≡ a')
         g a' _ = (λ q → p ∙ q) , (∙-is-equiv₁ p)
+  -}
 
+  {-
   Tℤ-recursion : Tℤ → A
   Tℤ-recursion (X , f , t) = pr₁ (center (Qₚ-is-singleton f t))
 
@@ -209,6 +297,7 @@ module Circle
             {!!} ≡⟨ {!!} ⟩
             {!!} ≡⟨ {!!} ⟩
             p ∙ cₚ base 𝟎 ∎
+ -}
 {-
 --  yyy :
 
