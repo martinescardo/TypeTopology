@@ -1,7 +1,9 @@
 Martin Escardo, 27 Jan 2021.
 
 We write down in Agda a result attributed to Martin Escardo by Shulman
-(2015) https://arxiv.org/abs/1507.03634
+(2015) https://arxiv.org/abs/1507.03634, Logical Methods in Computer
+Science, April 27, 2017, Volume 12, Issue 3,
+https://lmcs.episciences.org/2027
 
 \begin{code}
 
