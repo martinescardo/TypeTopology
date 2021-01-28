@@ -24,8 +24,10 @@ curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' {X} {Y} {Z} = qinveq c (u , uc , cu)
  where
   c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
   c f x y = f (x , y)
+
   u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
   u g (x , y) = g x y
+
   cu : ∀ g → c (u g) ≡ g
   cu g = dfunext fe (λ x → dfunext (lower-funext 𝓤 𝓦 fe') (λ y → refl))
   uc : ∀ f → u (c f) ≡ f

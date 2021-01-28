@@ -18,11 +18,15 @@ open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-Equiv
 open import UF-Retracts
 open import UF-Embeddings
-open import UF-PropTrunc
+open import UF-EquivalenceExamples
+open import UF-PropIndexedPiSigma
 open import UF-KrausLemma
+open import UF-PropTrunc
 
 splits : {X : 𝓤 ̇ } → (X → X) → (𝓥 : Universe) → 𝓤 ⊔ (𝓥 ⁺) ̇
-splits {𝓤} {X} f 𝓥 = Σ A ꞉ 𝓥 ̇ , Σ r ꞉ (X → A) , Σ s ꞉ (A → X) , (r ∘ s ∼ id) × (f ∼ s ∘ r)
+splits {𝓤} {X} f 𝓥 = Σ A ꞉ 𝓥 ̇ , Σ r ꞉ (X → A) , Σ s ꞉ (A → X)
+                          , (r ∘ s ∼ id)
+                          × (f ∼ s ∘ r)
 
 splits-gives-idempotent : {X : 𝓤 ̇ } (f : X → X)
                         → splits f 𝓥
@@ -74,7 +78,8 @@ section-embedding-gives-collapsible {𝓤} {𝓥} {X} {A} r s η =
 collapsible-gives-split-via-embedding : {X : 𝓤 ̇ } (f : X → X)
                                       → idempotent-map f
                                       → ((x : X) → collapsible (f x ≡ x))
-                                      → Σ (A , r , s , η , h) ꞉ splits f 𝓤 , is-embedding s
+                                      → Σ (A , r , s , η , h) ꞉ splits f 𝓤
+                                                              , is-embedding s
 collapsible-gives-split-via-embedding {𝓤} {X} f i c = γ
  where
   κ : (x : X) → f x ≡ x → f x ≡ x
@@ -104,17 +109,17 @@ collapsible-gives-split-via-embedding {𝓤} {X} f i c = γ
   h : f ∼ s ∘ r
   h x = refl
 
-  α : (x : X) → fiber s x → P x
-  α x ((x' , u , v) , p) = transport P p (u , v)
+  𝕘 : (x : X) → fiber s x ≃ P x
+  𝕘 x = (Σ (x' , _) ꞉ (Σ x ꞉ X , P x) , x' ≡ x) ≃⟨ Σ-assoc ⟩
+        (Σ x' ꞉ X , P x' × (x' ≡ x))            ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
+        (Σ x' ꞉ X , (x' ≡ x) × P x')            ≃⟨ ≃-sym Σ-assoc ⟩
+        (Σ (x' , _) ꞉ singleton-type' x , P x') ≃⟨ a ⟩
+        P x                                     ■
+   where
+    a = prop-indexed-sum (singleton-types'-are-props x) (singleton'-inclusion x)
 
-  β : (x : X) → P x → fiber s x
-  β x (u , v) = (x , u , v) , refl
-
-  βα : (x : X) → β x ∘ α x ∼ id
-  βα x ((.x , u , v) , refl) = refl
-
-  e : is-embedding s
-  e x = retract-of-prop (β x , α x , βα x) (P-is-prop-valued x)
+  e : (x : X) → is-prop (fiber s x)
+  e x = equiv-to-prop (𝕘 x) (P-is-prop-valued x)
 
   γ : Σ (A , r , s , η , h) ꞉ splits f 𝓤 , is-embedding s
   γ = (A , r , s , η , h) , e

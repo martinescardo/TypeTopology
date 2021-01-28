@@ -293,6 +293,9 @@ singleton-types-are-props x = singletons-are-props (singleton-types-are-singleto
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ y ꞉ type-of x , y ≡ x
 
+singleton'-inclusion : {X : 𝓤 ̇ } (x : X) → singleton-type' x
+singleton'-inclusion x = (x , refl)
+
 ×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-prop (X × Y) → (Y → is-prop X) × (X → is-prop Y)
 ×-prop-criterion-necessity i = (λ y x x' → ap pr₁ (i (x , y) (x' , y ))) ,
