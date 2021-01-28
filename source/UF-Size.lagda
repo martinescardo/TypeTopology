@@ -743,13 +743,12 @@ section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) 
   f' : X → Y'
   f' = h⁻¹ ∘ f
 
-  p : g ∘ h ∘ h⁻¹ ∘ f ∼ id
-  p x = g (h (h⁻¹ (f x))) ≡⟨ ap g (inverses-are-sections h i (f x)) ⟩
-        g (f x)           ≡⟨ η x ⟩
-        id x              ∎
+  η' = λ x → g (h (h⁻¹ (f x))) ≡⟨ ap g (inverses-are-sections h i (f x)) ⟩
+             g (f x)           ≡⟨ η x ⟩
+             x                 ∎
 
   δ : f' Has-size 𝓦
-  δ = size-of-section-embedding f' (g ∘ h , p)
+  δ = size-of-section-embedding f' (g ∘ h , η')
        (∘-is-embedding e (equivs-are-embeddings h⁻¹
                          (inverses-are-equivs h i)))
 

@@ -139,7 +139,7 @@ module _ (pe : propositional-truncations-exist) where
                                          → is-embedding s
                                          → (x : X) → has-split-support (f x ≡ x)
  split-via-embedding-gives-split-support f σ e x =
-   collapsible-gives-split-support (split-via-embedding-gives-collapsible f σ e x)
+  collapsible-gives-split-support (split-via-embedding-gives-collapsible f σ e x)
 
 
  split-support-gives-split-via-embedding : {X : 𝓤 ̇ } (f : X → X)
@@ -148,15 +148,13 @@ module _ (pe : propositional-truncations-exist) where
                                          → Σ (A , r , s , η , h) ꞉ splits f 𝓤
                                                                  , is-embedding s
  split-support-gives-split-via-embedding f i g =
-   collapsible-gives-split-via-embedding f i
-    (λ x → split-support-gives-collapsible (g x))
+  collapsible-gives-split-via-embedding f i (λ x → split-support-gives-collapsible (g x))
 
  section-embedding-gives-split-support : {X : 𝓤 ̇ } {A : 𝓥 ̇ }
                                          (r : X → A) (s : A → X) (η : r ∘ s ∼ id)
                                        → is-embedding s
                                        → (x : X) → has-split-support (s (r x) ≡ x)
  section-embedding-gives-split-support r s η e x =
-   collapsible-gives-split-support
-    (section-embedding-gives-collapsible r s η e x)
+  collapsible-gives-split-support (section-embedding-gives-collapsible r s η e x)
 
 \end{code}
