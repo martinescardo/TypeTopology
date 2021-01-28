@@ -218,7 +218,7 @@ module general-classifier
 
  fiber-equiv-≡ : (A : Y → Green) (y : Y) → pr₁ (A y) ≡ fiber pr₁ y
  fiber-equiv-≡ A y =
-  (eqtoid ua (fiber pr₁ y) (pr₁ (A y)) (fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y)) ⁻¹
+  (eqtoid ua (fiber pr₁ y) (pr₁ (A y)) (pr₁-fiber-equiv {𝓤} {𝓤} {Y} {pr₁ ∘ A} y)) ⁻¹
 
  T : (Y → Green) → Green-map
  T A = Σ (pr₁ ∘ A) , pr₁ , g
@@ -332,7 +332,7 @@ module general-classifier
         p : fiber (f' ∘ eqtofun e) y ≡ fiber f' y
         p = eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f' y)
         q : fiber f' y ≡ fiber f y
-        q = eqtoid ua (fiber f' y) (fiber f y) (fiber-equiv y)
+        q = eqtoid ua (fiber f' y) (fiber f y) (pr₁-fiber-equiv y)
         i  = (transport-comp green (q ⁻¹) (p ⁻¹)) ⁻¹
         ii = ap (λ - → transport green - (g y)) v
          where
@@ -349,7 +349,7 @@ module general-classifier
               ϕ : fiber (f' ∘ eqtofun e) y ≃ fiber f' y
               ϕ = precomposition-with-equiv-does-not-change-fibers e f' y
               ψ : fiber pr₁ y ≃ pr₁ (χ (X , f , g) y)
-              ψ = fiber-equiv y
+              ψ = pr₁-fiber-equiv y
               ϕψ : ϕ ● ψ ≡ ≃-refl (fiber (f' ∘ eqtofun e) y)
               ϕψ = to-Σ-≡ (dfunext fe'' ϕψ' ,
                            being-equiv-is-prop'' fe'' id _ (id-is-equiv _))

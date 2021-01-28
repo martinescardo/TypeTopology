@@ -112,8 +112,7 @@ collapsible-gives-split-via-embedding {𝓤} {X} f i c = γ
 
   𝕘 : (x : X) → fiber s x ≃ P x
   𝕘 x = (Σ (x' , _) ꞉ (Σ x ꞉ X , P x) , x' ≡ x) ≃⟨ Σ-assoc ⟩
-        (Σ x' ꞉ X , P x' × (x' ≡ x))            ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
-        (Σ x' ꞉ X , (x' ≡ x) × P x')            ≃⟨ left-Id-equiv x ⟩
+        (Σ x' ꞉ X , P x' × (x' ≡ x))            ≃⟨ right-Id-equiv x ⟩
         P x                                     ■
 
   e : (x : X) → is-prop (fiber s x)

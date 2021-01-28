@@ -760,7 +760,8 @@ total-fiber-is-domain : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃ X
 total-fiber-is-domain {𝓤} {𝓥} {X} {Y} f = ≃-sym (domain-is-total-fiber f)
 
-left-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → (Σ x' ꞉ X , (x' ≡ x) × Y x') ≃ Y x
+left-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X)
+              → (Σ x' ꞉ X , (x' ≡ x) × Y x') ≃ Y x
 left-Id-equiv {𝓤} {𝓥} {X} {Y} x =
    (Σ x' ꞉ X , (x' ≡ x) × Y x')            ≃⟨ ≃-sym Σ-assoc ⟩
    (Σ (x' , _) ꞉ singleton-type' x , Y x') ≃⟨ a ⟩
@@ -768,11 +769,19 @@ left-Id-equiv {𝓤} {𝓥} {X} {Y} x =
   where
    a = prop-indexed-sum (singleton-types'-are-props x) (singleton'-center x)
 
-fiber-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X) → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
-fiber-equiv {𝓤} {𝓥} {X} {Y} x =
+right-Id-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X)
+               → (Σ x' ꞉ X , Y x' × (x' ≡ x)) ≃ Y x
+right-Id-equiv {𝓤} {𝓥} {X} {Y} x =
+   (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
+   (Σ x' ꞉ X , (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
+   Y x                           ■
+
+
+pr₁-fiber-equiv : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (x : X)
+                → fiber (pr₁ {𝓤} {𝓥} {X} {Y}) x ≃ Y x
+pr₁-fiber-equiv {𝓤} {𝓥} {X} {Y} x =
   fiber pr₁ x                   ≃⟨ Σ-assoc ⟩
-  (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ Σ-cong (λ x' → ×-comm) ⟩
-  (Σ x' ꞉ X , (x' ≡ x) × Y x')  ≃⟨ left-Id-equiv x ⟩
+  (Σ x' ꞉ X , Y x' × (x' ≡ x))  ≃⟨ right-Id-equiv x ⟩
   Y x                           ■
 
 \end{code}
