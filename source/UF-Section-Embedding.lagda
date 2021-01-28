@@ -87,7 +87,7 @@ collapsible-gives-split-via-embedding {𝓤} {X} f i c = γ
   P x = fix (κ x)
 
   P-is-prop-valued : (x : X) → is-prop (P x)
-  P-is-prop-valued x = Kraus-Lemma (κ x) (κ-constant x)
+  P-is-prop-valued x = fix-is-prop (κ x) (κ-constant x)
 
   A : 𝓤 ̇
   A = Σ x ꞉ X , P x

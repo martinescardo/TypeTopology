@@ -713,7 +713,7 @@ size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
   B = fix κ
 
   B-is-prop : is-prop B
-  B-is-prop = Kraus-Lemma κ κ-constant
+  B-is-prop = fix-is-prop κ κ-constant
 
   α : B → fiber s y
   α = (λ p → r y , p) ∘ from-fix κ

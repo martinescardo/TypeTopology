@@ -146,7 +146,7 @@ roots-truncation : (ℕ → Z) → 𝓤 ̇
 roots-truncation α = Σ r ꞉ roots α , r ≡ μρ α r
 
 roots-truncation-is-prop : (α : ℕ → Z) → is-prop (roots-truncation α)
-roots-truncation-is-prop α = Kraus-Lemma (μρ α) (μρ-constant α)
+roots-truncation-is-prop α = fix-is-prop (μρ α) (μρ-constant α)
 
 roots-η : (α : ℕ → Z) → roots α → roots-truncation α
 roots-η α = to-fix (μρ α) (μρ-constant α)
@@ -184,7 +184,7 @@ module ExitRootTruncations (pt : propositional-truncations-exist) where
    f = to-fix (μρ α) (μρ-constant α)
 
    g : ∥(Σ n ꞉ ℕ , α n ≡ z)∥ → fix (μρ α)
-   g = ∥∥-rec (Kraus-Lemma (μρ α) (μρ-constant α)) f
+   g = ∥∥-rec (fix-is-prop (μρ α) (μρ-constant α)) f
 
    h : fix (μρ α) → Σ n ꞉ ℕ , α n ≡ z
    h = from-fix (μρ α)
