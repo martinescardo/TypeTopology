@@ -132,7 +132,7 @@ reformulate the above as follows:
 module _ (pe : propositional-truncations-exist) where
 
  open PropositionalTruncation pe
- open assuming-propositional-truncation pe
+ open split-support-and-collapsibility pe
 
  split-via-embedding-gives-split-support : {X : 𝓤 ̇ } (f : X → X)
                                          → ((A , r , s , η , h) : splits f 𝓥)
