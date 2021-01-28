@@ -75,14 +75,17 @@ module Circle
      → is-equiv (canonical-map ι ρ f g)
    θ f g = equiv-closed-under-∼ _ _ (id-is-equiv (f ≡ g)) h
 
+{-
  _≃[Tℤ]_ : Tℤ → Tℤ → 𝓤₀ ̇
  (X , f , _) ≃[Tℤ] (Y , g , _) = Σ e ꞉ (X → Y) , is-equiv e
                                                × (e ∘ f ≡ g ∘ e)
+-}
 
  _≅_ : Tℤ → Tℤ → 𝓤₀ ̇
  (X , f , _) ≅ (Y , g , _) = Σ e ꞉ (X → Y) , is-equiv e
-                                           × (e ∘ f ∼ g ∘ e)
+                                           × (e ∘ f ≡ g ∘ e)
 
+{-
  characterization-of-Tℤ-≡' : (X Y : Tℤ)
                            → (X ≡ Y) ≃ (X ≃[Tℤ] Y)
  characterization-of-Tℤ-≡' =
@@ -90,39 +93,55 @@ module Circle
    sns-data
    (λ X f → ∥ (X , f) ≡ (ℤ , succ-ℤ) ∥)
    (λ X f → ∥∥-is-prop)
+-}
 
  characterization-of-Tℤ-≡ : (X Y : Tℤ)
-                           → (X ≡ Y) ≃ (X ≅ Y)
- characterization-of-Tℤ-≡ X Y = (X ≡ Y)     ≃⟨ characterization-of-Tℤ-≡' X Y ⟩
-                                (X ≃[Tℤ] Y) ≃⟨ γ ⟩
-                                (X ≅ Y)     ■
-  where
-   γ = Σ-cong (λ h → ×-cong (≃-refl (is-equiv h))
-                     (≃-funext (univalence-gives-funext ua) _ _))
+                          → (X ≡ Y) ≃ (X ≅ Y)
+ characterization-of-Tℤ-≡ =
+  characterization-of-≡-with-axioms ua
+   sns-data
+   (λ X f → ∥ (X , f) ≡ (ℤ , succ-ℤ) ∥)
+   (λ X f → ∥∥-is-prop)
 
  to-Tℤ-≡ : (X Y : Tℤ) → X ≅ Y → X ≡ Y
  to-Tℤ-≡ X Y = ⌜ ≃-sym (characterization-of-Tℤ-≡ X Y) ⌝
 
+{-
  to-Tℤ-≡' : (X Y : Tℤ) → X ≃[Tℤ] Y → X ≡ Y
  to-Tℤ-≡' X Y = ⌜ ≃-sym (characterization-of-Tℤ-≡' X Y) ⌝
 
  _≃[Tℤ⁻]_ : Tℤ⁻ → Tℤ⁻ → 𝓤₀ ̇
  (X , f) ≃[Tℤ⁻] (Y , g) = Σ e ꞉ (X → Y) , is-equiv e
                                    × (e ∘ f ≡ g ∘ e)
+-}
 
  loop : base ≡ base
- loop = to-Tℤ-≡' base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , refl)
+ loop = to-Tℤ-≡ base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , refl)
 
-{-
+ Tℤ-≡-to-≃-of-carriers : {X Y : Tℤ} → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
+ Tℤ-≡-to-≃-of-carriers p = pr₁ c , pr₁ (pr₂ c)
+  where
+   c = ⌜ characterization-of-Tℤ-≡ _ _ ⌝ p
+
  yyy : {X Y : Tℤ} (p : X ≡ Y)
-     → idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ p) ≡ pr₁ (⌜ characterization-of-Tℤ-≡' X Y ⌝ p) , pr₁ (pr₂ (⌜ characterization-of-Tℤ-≡' X Y ⌝ p))
+     → idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ p) ≡ Tℤ-≡-to-≃-of-carriers p
  yyy refl = refl
 
- xxx : {(X , f , t) (Y , g , s) : Tℤ}
-       (e : X → Y) (i : is-equiv e) (h : e ∘ f ≡ g ∘ e)
-     → ap ⟨_⟩ (to-Tℤ-≡' (X , f , t) (Y , g , s) (e , i , h)) ≡ eqtoid ua X Y (e , i)
- xxx {(X , f , t)} {(Y , g , s)} e i h = {!!}
--}
+ xxx : idtoeq ℤ ℤ (ap ⟨_⟩ loop) ≡ succ-ℤ-≃
+ xxx = idtoeq ℤ ℤ (ap ⟨_⟩ loop) ≡⟨ yyy loop ⟩
+       Tℤ-≡-to-≃-of-carriers loop ≡⟨ refl ⟩
+        pr₁ (ϕ loop) , pr₁ (pr₂ (ϕ loop)) ≡⟨ refl ⟩
+        pr₁ (ϕ (ψ l)) , pr₁ (pr₂ (ϕ (ψ l))) ≡⟨ ap (λ - → pr₁ - , pr₁ (pr₂ -)) (s l) ⟩
+        pr₁ l , pr₁ (pr₂ l) ∎
+  where
+   ϕ : base ≡ base → base ≅ base
+   ϕ = ⌜ characterization-of-Tℤ-≡ base base ⌝
+   ψ : base ≅ base → base ≡ base
+   ψ = ⌜ ≃-sym (characterization-of-Tℤ-≡ base base) ⌝
+   s : ϕ ∘ ψ ∼ id
+   s = inverses-are-sections ϕ (⌜⌝-is-equiv (characterization-of-Tℤ-≡ base base))
+   l : base ≅ base
+   l = (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , refl)
 
  module _
          {A : 𝓤 ̇ }
@@ -228,91 +247,17 @@ module Circle
         cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎) ∎
    where
     lemma'' : ⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎 ≡ succ-ℤ 𝟎
-    lemma'' = {!!}
+    lemma'' = ap (λ - → ⌜ - ⌝ 𝟎) xxx
 
-{-
-  zzz : ap ⟨_⟩ loop ≡ eqtoid ua ℤ ℤ succ-ℤ-≃
-  zzz = ap ⟨_⟩ (to-Tℤ-≡ base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , (λ z → refl))) ≡⟨ {!!} ⟩
-        {!!} ≡⟨ {!!} ⟩
-        {!!} ∎
--}
+  lll : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
+      → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ (p ∙ q)
+  lll refl p = (refl ⁻¹ ∙ (p ∙ refl) ≡⟨ refl              ⟩
+                refl ⁻¹ ∙ p          ≡⟨ refl-left-neutral ⟩
+                p                    ∎                     ) ⁻¹
 
-
-
-
-  {-
-  Qₚ-is-singleton : {X : 𝓤₀ ̇ } (f : X → X)
-                  → ∥ (X , f) ≡ (ℤ , succ-ℤ) ∥
-                  → is-singleton (Qₚ f)
-  Qₚ-is-singleton {X} f t = ∥∥-rec (being-singleton-is-prop fe) γ t
-   where
-    γ : (X , f) ≡ (ℤ , succ-ℤ) → is-singleton (Qₚ f)
-    γ refl = equiv-to-singleton ϕ (singleton-types-are-singletons a)
-     where
-      ϕ : Qₚ succ-ℤ ≃ (Σ a' ꞉ A , a ≡ a')
-      ϕ = Σ-cong (λ a' → ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe)
-                          (λ _ → a ≡ a') (g a'))
-       where
-        g : (a' : A) → (z : ℤ) → (a ≡ a') ≃ (a ≡ a')
-        g a' _ = (λ q → p ∙ q) , (∙-is-equiv₁ p)
-  -}
-
-  {-
-  Tℤ-recursion : Tℤ → A
-  Tℤ-recursion (X , f , t) = pr₁ (center (Qₚ-is-singleton f t))
-
-  Tℤ-recursion-on-base : Tℤ-recursion base ≡ a
-  Tℤ-recursion-on-base =
-   Tℤ-recursion base                               ≡⟨ I    ⟩
-   pr₁ (center (singleton-types-are-singletons a)) ≡⟨ refl ⟩
-   a                                               ∎
-    where
-     I = ap (pr₁ ∘ center) (∥∥-rec-foo (being-singleton-is-prop fe) _ refl)
-
-  cₚ : ((X , f , t) : Tℤ)
-     → X → a ≡ Tℤ-recursion (X , f , t)
-  cₚ (X , f , t) = pr₁ (pr₂ (center (Qₚ-is-singleton f t)))
-
-  cₚ-on-base : cₚ base ∼ (λ z → p ∙ cₚ base (pred-ℤ z))
-  cₚ-on-base 𝟎 = {!!}
-  cₚ-on-base (pos n) = {!!}
-  cₚ-on-base (neg n) = {!!}
-
-  lemma : {X Y : Tℤ} (e : X ≡ Y) (x : ⟨ X ⟩)
-        → ap Tℤ-recursion e
-        ≡ (cₚ X x) ⁻¹ ∙ cₚ Y (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ e) ⌝ x)
-  lemma {X} {Y} refl x =
-   ap Tℤ-recursion refl                       ≡⟨ refl ⟩
-   refl                                       ≡⟨ left-inverse (cₚ X x) ⁻¹ ⟩
-   (cₚ X x) ⁻¹ ∙ cₚ X x                       ≡⟨ refl ⟩
-   (cₚ X x) ⁻¹ ∙ cₚ X (⌜ idtoeq _ _ refl ⌝ x) ∎
-
-  lemma' : ap Tℤ-recursion loop ≡
-             (cₚ base 𝟎) ⁻¹ ∙
-             cₚ base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎)
-  lemma' = lemma loop 𝟎
-
-  lemma'' : cₚ base (pos 0) ≡ p ∙ cₚ base 𝟎
-  lemma'' = cₚ base (pos 0) ≡⟨ {!!} ⟩
-            {!!} ≡⟨ {!!} ⟩
-            {!!} ≡⟨ {!!} ⟩
-            p ∙ cₚ base 𝟎 ∎
- -}
-{-
---  yyy :
-
-
-  zzz : ap ⟨_⟩ loop ≡ eqtoid ua ℤ ℤ succ-ℤ-≃
-  zzz = ap ⟨_⟩ (to-Tℤ-≡ base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , (λ z → refl))) ≡⟨ {!!} ⟩
-        {!!} ≡⟨ {!!} ⟩
-        {!!} ∎
-
-  lemma'' : ⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎 ≡ succ-ℤ 𝟎
-  lemma'' = {!!}
-
-  Tℤ-recursion-on-loop : ap (Tℤ-recursion) loop ≡ back-transport (λ - → - ≡ -) (Tℤ-recursion-on-base) p
-    -- Tℤ-recursion-on-base ∙ (p ∙ Tℤ-recursion-on-base ⁻¹)
-  Tℤ-recursion-on-loop = {!!}
--}
+  mmm : ap cₚ¹ loop ≡ transport (λ - → - ≡ -) (cₚ² base 𝟎) p
+  mmm = ap cₚ¹ loop                            ≡⟨ kkk ⟩
+        cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎)       ≡⟨ (lll (cₚ² base 𝟎) p) ⁻¹ ⟩
+        transport (λ - → - ≡ -) (cₚ² base 𝟎) p ∎
 
 \end{code}
