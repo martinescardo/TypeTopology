@@ -84,6 +84,20 @@ module Circle
  _≅_ : Tℤ → Tℤ → 𝓤₀ ̇
  (X , f , _) ≅ (Y , g , _) = Σ e ꞉ (X → Y) , is-equiv e
                                            × (e ∘ f ≡ g ∘ e)
+{-
+
+
+
+(base ≡ base) ≃ Σ e ꞉ (ℤ → ℤ) , is-equiv e
+                              × (e ∘ succ-ℤ ≡ succ-ℤ e)
+              ≃  Σ e ꞉ (ℤ → ℤ) , is-equiv e
+                              × (e ∼ λ x → e 𝟎 +ℤ x)
+              ≃  Σ e ꞉ (ℤ → ℤ) , is-equiv e
+                              × (e ≡ λ x → e 𝟎 +ℤ x)
+              ≃  Σ e ꞉ (ℤ → ℤ) , (e ∼ λ x → e 𝟎 +ℤ x)
+              ≃ ℤ
+
+-}
 
 {-
  characterization-of-Tℤ-≡' : (X Y : Tℤ)
@@ -116,7 +130,7 @@ module Circle
 -}
 
  loop : base ≡ base
- loop = to-Tℤ-≡ base base (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , refl)
+ loop = to-Tℤ-≡ base base (succ-ℤ , succ-ℤ-is-equiv , refl)
 
  Tℤ-≡-to-≃-of-carriers : {X Y : Tℤ} → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
  Tℤ-≡-to-≃-of-carriers p = pr₁ c , pr₁ (pr₂ c)
@@ -141,7 +155,7 @@ module Circle
    s : ϕ ∘ ψ ∼ id
    s = inverses-are-sections ϕ (⌜⌝-is-equiv (characterization-of-Tℤ-≡ base base))
    l : base ≅ base
-   l = (succ-ℤ , ⌜⌝-is-equiv succ-ℤ-≃ , refl)
+   l = (succ-ℤ , succ-ℤ-is-equiv , refl)
 
  module _
          {A : 𝓤 ̇ }
@@ -239,12 +253,12 @@ module Circle
              cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎)
   lemma' = lemma loop 𝟎
 
-  kkk : ap cₚ¹ loop ≡ (cₚ² base 𝟎) ⁻¹ ∙ (p ∙ (cₚ² base 𝟎))
-  kkk = ap cₚ¹ loop ≡⟨ lemma' ⟩
-        cₚ² base 𝟎 ⁻¹ ∙
-          cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ cₚ² base -) lemma'' ⟩
-        cₚ² base 𝟎 ⁻¹ ∙ cₚ² base (succ-ℤ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ -) (cₚ³ base 𝟎) ⟩
-        cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎) ∎
+  kkkk : ap cₚ¹ loop ≡ (cₚ² base 𝟎) ⁻¹ ∙ (p ∙ (cₚ² base 𝟎))
+  kkkk = ap cₚ¹ loop ≡⟨ lemma' ⟩
+         cₚ² base 𝟎 ⁻¹ ∙
+           cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ cₚ² base -) lemma'' ⟩
+         cₚ² base 𝟎 ⁻¹ ∙ cₚ² base (succ-ℤ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ -) (cₚ³ base 𝟎) ⟩
+         cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎) ∎
    where
     lemma'' : ⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎 ≡ succ-ℤ 𝟎
     lemma'' = ap (λ - → ⌜ - ⌝ 𝟎) xxx
@@ -256,7 +270,7 @@ module Circle
                 p                    ∎                     ) ⁻¹
 
   mmm : ap cₚ¹ loop ≡ transport (λ - → - ≡ -) (cₚ² base 𝟎) p
-  mmm = ap cₚ¹ loop                            ≡⟨ kkk ⟩
+  mmm = ap cₚ¹ loop                            ≡⟨ kkkk ⟩
         cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎)       ≡⟨ (lll (cₚ² base 𝟎) p) ⁻¹ ⟩
         transport (λ - → - ≡ -) (cₚ² base 𝟎) p ∎
 

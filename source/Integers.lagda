@@ -137,11 +137,11 @@ exercise fe Y g = qinveq π₀ (r , ε , η)
 -}
 
 ℤ : 𝓤₀ ̇
-ℤ = ℕ + 𝟙 + ℕ
+ℤ = 𝟙 + ℕ + ℕ
 
-pattern 𝟎 = inr (inl *)
-pattern pos i = inr (inr i)
-pattern neg i = inl i
+pattern 𝟎 = inl *
+pattern pos i = inr (inl i)
+pattern neg i = inr (inr i)
 
 ℕ-to-ℤ₊ : ℕ → ℤ
 ℕ-to-ℤ₊ 0        = 𝟎
@@ -187,35 +187,33 @@ succ-ℤ (neg (succ n)) = neg n
                       ≃ A 𝟎
 ℤ-symmetric-induction {𝓤} fe A f =
  (Σ h ꞉ Π A , Q₁ h)                                               ≃⟨ I    ⟩
- (Σ h ꞉ (Π (A ∘ neg) × Π (A ∘ inr)) , Q₁ (g₁ h))                  ≃⟨ II   ⟩
- (Σ hₙ ꞉ Π (A ∘ neg) , Σ hᵣ ꞉ Π (A ∘ inr) , Q₁ (g₁ (hₙ , hᵣ)))    ≃⟨ III  ⟩
- (Σ hₙ ꞉ Π (A ∘ neg) , Σ hᵣ ꞉ (Π (A ∘ ⌜𝟎⌝) × Π (A ∘ pos)) ,
-                         Q₂ hₙ (g₂ hᵣ))                           ≃⟨ IV   ⟩
- (Σ hₙ ꞉ Π (A ∘ neg) , Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) ,
-                       Σ hₚ ꞉ Π (A ∘ pos) , Q₂ hₙ (g₂ (hₒ , hₚ))) ≃⟨ V    ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) ,
-                       Σ hₚ ꞉ Π (A ∘ pos) , Q₂ hₙ (g₂ (hₒ , hₚ))) ≃⟨ VI   ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) ,
-                       Σ hₚ ꞉ Π (A ∘ pos) , Qₙ' (hₒ *) hₙ
-                                          × Qₚ (hₒ *) hₚ)         ≃⟨ VII  ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ)
-                     × (Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ *) hₚ))       ≃⟨ VIII ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ) × 𝟙)  ≃⟨ IX   ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ))      ≃⟨ X    ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ (hₒ *) hₙ))       ≃⟨ XI   ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , 𝟙)                                         ≃⟨ XII  ⟩
- Π (A ∘ ⌜𝟎⌝)                                                      ≃⟨ XIII ⟩
- A 𝟎                                                              ■
+ (Σ h ꞉ (Π (A ∘ ⌜𝟎⌝) × Π (A ∘ inr)) , Q₁ (g₁ h))                  ≃⟨ II   ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hᵣ ꞉ Π (A ∘ inr) , Q₁ (g₁ (hₒ , hᵣ)))    ≃⟨ III  ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hᵣ ꞉ (Π (A ∘ pos) × Π (A ∘ neg)),
+                         Q₂ hₒ (g₂ hᵣ))                           ≃⟨ IV   ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₚ ꞉ Π (A ∘ pos) ,
+                       Σ hₙ ꞉ Π (A ∘ neg) , Q₂ hₒ (g₂ (hₚ , hₙ))) ≃⟨ V    ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₚ ꞉ Π (A ∘ pos) ,
+                       Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ *) hₚ
+                                          × Qₙ' (hₒ *) hₙ)        ≃⟨ VI   ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , ((Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ *) hₚ)
+                     ×  (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ)))    ≃⟨ VII  ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , 𝟙 × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ))  ≃⟨ VIII ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ)        ≃⟨ IX   ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) , Qₙ (hₒ *) hₙ)         ≃⟨ X    ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , 𝟙)                                         ≃⟨ XI   ⟩
+ Π (A ∘ ⌜𝟎⌝)                                                      ≃⟨ XII  ⟩
+ A 𝟎 ■
   where
    ⌜𝟎⌝ : 𝟙 {𝓤₀} → ℤ
    ⌜𝟎⌝ _ = 𝟎
    Q₁ : Π A → 𝓤 ̇
    Q₁ h = (z : ℤ) → h (succ-ℤ z) ≡ ⌜ f z ⌝ (h z)
-   g₁ : Π (A ∘ neg) × Π (A ∘ inr) → Π A
+   g₁ : Π (A ∘ ⌜𝟎⌝) × Π (A ∘ inr) → Π A
    g₁ = ⌜ Π×+ fe ⌝
-   Q₂ : Π (A ∘ neg) → Π (A ∘ inr) → 𝓤 ̇
-   Q₂ hₙ hᵣ = Q₁ (g₁ (hₙ , hᵣ))
-   g₂ : Π (A ∘ ⌜𝟎⌝) × Π (A ∘ pos) → Π (A ∘ inr)
+   Q₂ : Π (A ∘ ⌜𝟎⌝) → Π (A ∘ inr) → 𝓤 ̇
+   Q₂ hₒ hᵣ = Q₁ (g₁ (hₒ , hᵣ))
+   g₂ : Π (A ∘ pos) × Π (A ∘ neg) → Π (A ∘ inr)
    g₂ = ⌜ Π×+ fe ⌝
    Qₚ : A 𝟎 → Π (A ∘ pos) → 𝓤 ̇
    Qₚ aₒ hₚ = (hₚ 0 ≡ ⌜ f 𝟎 ⌝ aₒ)
@@ -226,24 +224,23 @@ succ-ℤ (neg (succ n)) = neg n
    Qₙ : A 𝟎 → Π (A ∘ neg) → 𝓤 ̇
    Qₙ aₒ hₙ = (hₙ 0 ≡ ⌜ ≃-sym (f (neg 0)) ⌝ aₒ)
             × ((n : ℕ) → hₙ (succ n) ≡ ⌜ ≃-sym (f (neg (succ n))) ⌝ (hₙ n))
-   I    =  ≃-sym (Σ-change-of-variable Q₁ g₁ (⌜⌝-is-equiv (Π×+ fe)))
+   I    = ≃-sym (Σ-change-of-variable Q₁ g₁ (⌜⌝-is-equiv (Π×+ fe)))
    II   = Σ-assoc
    III  = Σ-cong
-          (λ hₙ → ≃-sym (Σ-change-of-variable (Q₂ hₙ) g₂ (⌜⌝-is-equiv (Π×+ fe))))
-   IV   = Σ-cong (λ hᵣ → Σ-assoc)
-   V    = Σ-flip
-   VI   = Σ-cong (λ hₒ → Σ-cong (λ hₙ → Σ-cong (λ hₚ → γ hₒ hₙ hₚ)))
+          (λ hₒ → ≃-sym (Σ-change-of-variable (Q₂ hₒ) g₂ (⌜⌝-is-equiv (Π×+ fe))))
+   IV   = Σ-cong (λ _ → Σ-assoc)
+   V    = Σ-cong λ hₒ → Σ-cong (λ hₚ → Σ-cong (λ hₙ → γ hₒ hₚ hₙ))
     where
-     γ : (hₒ : Π (A ∘ ⌜𝟎⌝)) (hₙ : Π (A ∘ neg)) (hₚ : Π (A ∘ pos))
-       → Q₂ hₙ (g₂ (hₒ , hₚ)) ≃ Qₙ' (hₒ *) hₙ × Qₚ (hₒ *) hₚ
-     γ hₒ hₙ hₚ = qinveq φ (ψ , η , ε)
+     γ : (hₒ : Π (A ∘ ⌜𝟎⌝))  (hₚ : Π (A ∘ pos)) (hₙ : Π (A ∘ neg))
+       → Q₂ hₒ (g₂ (hₚ , hₙ)) ≃ Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ
+     γ hₒ hₚ hₙ = qinveq φ (ψ , η , ε)
       where
-       φ : Q₂ hₙ (g₂ (hₒ , hₚ)) → Qₙ' (hₒ *) hₙ × Qₚ (hₒ *) hₚ
-       φ q = ((q (neg 0) , q ∘ neg ∘ succ) , (q 𝟎 , q ∘ pos))
-       ψ : (Qₙ' (hₒ *) hₙ × Qₚ (hₒ *) hₚ) → Q₂ hₙ (g₂ (hₒ , hₚ))
-       ψ ((qₒ' , qₙ') , (qₒ , qₚ)) = c
+       φ : Q₂ hₒ (g₂ (hₚ , hₙ)) → Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ
+       φ q = ((q 𝟎 , q ∘ pos) , (q (neg 0) , q ∘ neg ∘ succ))
+       ψ : (Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ) → Q₂ hₒ (g₂ (hₚ , hₙ))
+       ψ ((qₒ , qₚ) , (qₒ' , qₙ')) = c
         where
-         c : Q₂ hₙ (g₂ (hₒ , hₚ))
+         c : Q₂ hₒ (g₂ (hₚ , hₙ))
          c 𝟎              = qₒ
          c (pos n)        = qₚ n
          c (neg zero)     = qₒ'
@@ -258,13 +255,12 @@ succ-ℤ (neg (succ n)) = neg n
          c (pos n)        = refl
          c (neg zero)     = refl
          c (neg (succ n)) = refl
-   VII  = Σ-cong γ
+   VI   = Σ-cong γ
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
-       → (Σ hₙ ꞉ Π (A ∘ neg) , Σ hₚ ꞉ Π (A ∘ pos) , Qₙ' (hₒ *) hₙ
-                                                  × Qₚ  (hₒ *) hₚ)
-       ≃ ((Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ)
-        × (Σ hₚ ꞉ Π (A ∘ pos) , Qₚ  (hₒ *) hₚ))
+       → (Σ hₚ ꞉ Π (A ∘ pos) , Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ)
+       ≃ (  (Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ *) hₚ)
+          × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ))
      γ hₒ = qinveq φ (ψ , η , ε)
       where
        φ : _
@@ -275,7 +271,7 @@ succ-ℤ (neg (succ n)) = neg n
        η _ = refl
        ε : φ ∘ ψ ∼ id
        ε _ = refl
-   VIII = Σ-cong (λ hₒ → Σ-cong (λ _ → singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ)))
+   VII  = Σ-cong (λ hₒ → ×-cong (singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ)) (≃-refl _))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
        → is-singleton ((Σ hₚ ꞉ Π (A ∘ pos) , Qₚ  (hₒ *) hₚ))
@@ -285,8 +281,8 @@ succ-ℤ (neg (succ n)) = neg n
        a₀ = ⌜ (f 𝟎) ⌝ (hₒ *)
        s : (n : ℕ) → A (pos n) → A (pos (succ n))
        s n = ⌜ f (pos n) ⌝
-   IX   = Σ-cong (λ _ → 𝟙-rneutral)
-   X    = Σ-cong (λ hₒ → Σ-cong (λ hₙ → γ hₒ hₙ))
+   VIII = Σ-cong (λ hₒ → 𝟙-lneutral)
+   IX   = Σ-cong (λ hₒ → Σ-cong (λ hₙ → γ hₒ hₙ))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝)) (hₙ : Π (A ∘ neg))
        → Qₙ' (hₒ *) hₙ ≃ Qₙ (hₒ *) hₙ
@@ -329,7 +325,7 @@ succ-ℤ (neg (succ n)) = neg n
          IIIₙ = embedding-criterion-converse (fₙ n)
                  (equivs-are-embeddings (fₙ n) (eₙ n))
                  (hₙ (succ n)) (fₙ⁻¹ n (hₙ n))
-   XI   = Σ-cong (λ hₒ → singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ))
+   X    = Σ-cong (λ hₒ → singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
        → is-singleton ((Σ hₙ ꞉ Π (A ∘ neg) , Qₙ  (hₒ *) hₙ))
@@ -339,8 +335,8 @@ succ-ℤ (neg (succ n)) = neg n
        a₀ = ⌜ ≃-sym (f (neg 0)) ⌝ (hₒ *)
        s : (n : ℕ) → A (neg n) → A (neg (succ n))
        s n = ⌜ ≃-sym (f (neg (succ n))) ⌝
-   XII  = 𝟙-rneutral
-   XIII = ≃-sym (𝟙→ fe)
+   XI   = 𝟙-rneutral
+   XII  = ≃-sym (𝟙→ fe)
 
 pred-ℤ : ℤ → ℤ
 pred-ℤ 𝟎              = neg 0
@@ -360,7 +356,349 @@ pred-retraction-of-succ (pos n)        = refl
 pred-retraction-of-succ (neg zero)     = refl
 pred-retraction-of-succ (neg (succ n)) = refl
 
+succ-ℤ-is-equiv : is-equiv succ-ℤ
+succ-ℤ-is-equiv = qinvs-are-equivs succ-ℤ
+                   (pred-ℤ , pred-retraction-of-succ , pred-section-of-succ)
+
 succ-ℤ-≃ : ℤ ≃ ℤ
-succ-ℤ-≃ = qinveq succ-ℤ (pred-ℤ , pred-retraction-of-succ , pred-section-of-succ)
+succ-ℤ-≃ = (succ-ℤ , succ-ℤ-is-equiv)
+
+\end{code}
+
+\begin{code}
+
+{-
+succ-ℤ-iterated : ℤ → ℤ → ℤ
+succ-ℤ-iterated 𝟎       = id
+succ-ℤ-iterated (pos n) = succ-ℤ ^ (succ n)
+succ-ℤ-iterated (neg n) = pred-ℤ ^ (succ n)
+-}
+
+_+ℤ_ : ℤ → ℤ → ℤ
+_+ℤ_ 𝟎 = id
+_+ℤ_ (pos n) = succ-ℤ ^ (succ n)
+_+ℤ_ (neg n) = pred-ℤ ^ (succ n)
+
+bazz : (f : ℤ → ℤ)
+     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+     → f ∘ pred-ℤ ∼ pred-ℤ ∘ f
+bazz f h z = ⌜ embedding-criterion-converse succ-ℤ
+                (equivs-are-embeddings succ-ℤ succ-ℤ-is-equiv)
+                  ((f ∘ pred-ℤ) z) ((pred-ℤ ∘ f) z) ⌝ γ
+ where
+  γ : succ-ℤ (f (pred-ℤ z)) ≡ succ-ℤ (pred-ℤ (f z))
+  γ = succ-ℤ (f (pred-ℤ z)) ≡⟨ (h (pred-ℤ z)) ⁻¹               ⟩
+      f (succ-ℤ (pred-ℤ z)) ≡⟨ ap f (pred-section-of-succ z)   ⟩
+      f z                   ≡⟨ (pred-section-of-succ (f z)) ⁻¹ ⟩
+      succ-ℤ (pred-ℤ (f z)) ∎
+
+fooo : (f : ℤ → ℤ)
+     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+     → (x y : ℤ) → f (x +ℤ y) ≡ x +ℤ f y
+fooo f h 𝟎 y = refl
+fooo f h (pos n) y = f (succ-ℤ yₙ) ≡⟨ h yₙ ⟩
+                     succ-ℤ (f yₙ) ≡⟨ ap succ-ℤ (γ n) ⟩
+                     succ-ℤ fyₙ    ≡⟨ refl ⟩
+                     (pos n +ℤ f y) ∎
+ where
+  yₙ = (succ-ℤ ^ n) y
+  fyₙ = (succ-ℤ ^ n) (f y)
+  γ : (n : ℕ) → f ((succ-ℤ ^ n) y) ≡ (succ-ℤ ^ n) (f y)
+  γ zero = refl
+  γ (succ n) = h ((succ-ℤ ^ n) y) ∙ ap succ-ℤ (γ n)
+fooo f h (neg n) y = {!!}
+
+barr : (f : ℤ → ℤ)
+     → ((x y : ℤ) → f (x +ℤ y) ≡ x +ℤ f y)
+     → f ∼ _+ℤ_ (f 𝟎)
+barr f h 𝟎 = {!!}
+barr f h (pos n) = γ n
+ where
+  γ : (n : ℕ) → f (pos n) ≡ (f 𝟎 +ℤ pos n)
+  γ zero = {!!}
+  γ (succ n) = {!!}
+
+{-
+
+(Σ f ꞉ ℤ ≃ ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f) [[≃]]
+(Σ f ꞉ ℤ → ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f) ≃ ℤ
+===
+
+
+(f : ℤ → ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f) × f 𝟎 = 𝟎 (†)
+-------------------------------------
+f ≡ id, which is an equivalence
+
+-}
+
+final-test : (f : ℤ → ℤ)
+           → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+           → f 𝟎 ≡ 𝟎
+           → f ∼ id
+final-test f h p 𝟎 = p
+final-test f h p (pos n) = γ n
+ where
+  γ : (n : ℕ) → f (pos n) ≡ pos n
+  γ zero = f (pos 0)    ≡⟨ refl ⟩
+           f (succ-ℤ 𝟎) ≡⟨ h 𝟎 ⟩
+           succ-ℤ (f 𝟎) ≡⟨ ap succ-ℤ p ⟩
+           succ-ℤ 𝟎     ∎
+  γ (succ n) = h (pos n) ∙ ap succ-ℤ (γ n)
+final-test f h p (neg n) = {!γ!}
+ where
+  γ : (n : ℕ) →
+
+{-
+
+(f : ℤ → ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
+-------------------------------------
+f = f ∘ pred-ℤ ^ (f 0) ∘ succ-ℤ ^ (f 0)   (f 𝟎 > 𝟎)
+f = f ∘ succ-ℤ ^ (f 0) ∘ pred-ℤ ^ (f 0)   (f 𝟎 < 𝟎)
+
+g = f ∘ pred-ℤ ^ (f 0)
+g satisfies (†) -- g 𝟎 = pred-ℤ ^ (f 𝟎) (f 𝟎)
+----------------------
+g is an equivalence
+
+==> f is an equivalence
+
+
+-}
+{- f z        ≡⟨ refl  ⟩
+             f (𝟎 +ℤ z) ≡⟨ h 𝟎 z ⟩
+             f 𝟎 +ℤ z   ∎ -}
+
+open import NaturalsAddition renaming (_+_ to _+ℕ_)
+
+{-
+_+ℤ_ : ℤ → ℤ → ℤ
+z +ℤ 𝟎 = z
+z +ℤ (pos n) = (succ-ℤ ^ (succ n)) z
+z +ℤ (neg n) = (pred-ℤ ^ (succ n)) z
+
+bazz : (f : ℤ → ℤ)
+     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+     → f ∘ pred-ℤ ∼ pred-ℤ ∘ f
+bazz f h z = ⌜ embedding-criterion-converse succ-ℤ
+                (equivs-are-embeddings succ-ℤ succ-ℤ-is-equiv)
+                  ((f ∘ pred-ℤ) z) ((pred-ℤ ∘ f) z) ⌝ γ
+ where
+  γ : succ-ℤ (f (pred-ℤ z)) ≡ succ-ℤ (pred-ℤ (f z))
+  γ = succ-ℤ (f (pred-ℤ z)) ≡⟨ (h (pred-ℤ z)) ⁻¹               ⟩
+      f (succ-ℤ (pred-ℤ z)) ≡⟨ ap f (pred-section-of-succ z)   ⟩
+      f z                   ≡⟨ (pred-section-of-succ (f z)) ⁻¹ ⟩
+      succ-ℤ (pred-ℤ (f z)) ∎
+
+fooo : (f : ℤ → ℤ)
+     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+     → (x y : ℤ) → f (x +ℤ y) ≡ f x +ℤ y
+fooo f h x 𝟎 = refl
+fooo f h x (pos n) = f (succ-ℤ xₙ)  ≡⟨ h xₙ ⟩
+                     succ-ℤ (f xₙ)  ≡⟨ γ n  ⟩
+                     succ-ℤ fxₙ     ≡⟨ refl ⟩
+                     (f x +ℤ pos n) ∎
+ where
+  fxₙ : ℤ
+  fxₙ = (succ-ℤ ^ n) (f x)
+  xₙ : ℤ
+  xₙ = (succ-ℤ ^ n) x
+  γ : (n : ℕ) → succ-ℤ (f ((succ-ℤ ^ n) x)) ≡ succ-ℤ ((succ-ℤ ^ n) (f x))
+  γ zero = refl
+  γ (succ n) = ap succ-ℤ (h ((succ-ℤ ^ n) x) ∙ γ n)
+fooo f h x (neg n) = f (pred-ℤ xₙ) ≡⟨ bazz f h xₙ ⟩
+                     pred-ℤ (f xₙ) ≡⟨ γ n         ⟩
+                     pred-ℤ fxₙ    ≡⟨ refl        ⟩
+                     (f x +ℤ neg n) ∎
+ where
+  xₙ : ℤ
+  xₙ = (pred-ℤ ^ n) x
+  fxₙ : ℤ
+  fxₙ = (pred-ℤ ^ n) (f x)
+  γ : (n : ℕ) → pred-ℤ (f ((pred-ℤ ^ n) x)) ≡ pred-ℤ ((pred-ℤ ^ n) (f x))
+  γ zero = refl
+  γ (succ n) = ap pred-ℤ (bazz f h ((pred-ℤ ^ n) x) ∙ γ n)
+
+𝟎-left-neutral : (z : ℤ) → 𝟎 +ℤ z ≡ z
+𝟎-left-neutral 𝟎 = refl
+𝟎-left-neutral (pos n) = γ n
+ where
+  γ : (n : ℕ) → (succ-ℤ ^ (succ n)) 𝟎 ≡ pos n
+  γ zero     = refl
+  γ (succ n) = ap succ-ℤ (γ n)
+𝟎-left-neutral (neg n) = γ n
+ where
+  γ : (n : ℕ) → (pred-ℤ ^ (succ n)) 𝟎 ≡ neg n
+  γ zero     = refl
+  γ (succ n) = ap pred-ℤ (γ n)
+
+barr : (f : ℤ → ℤ)
+     → ((x y : ℤ) → f (x +ℤ y) ≡ f x +ℤ y) -- x +ℤ f y
+     → f ∼ (λ z → f 𝟎 +ℤ z)
+barr f h z = f z        ≡⟨ ap f ((𝟎-left-neutral z) ⁻¹) ⟩
+             f (𝟎 +ℤ z) ≡⟨ h 𝟎 z                        ⟩
+             f 𝟎 +ℤ z   ∎
+
+kkk : (x y : ℤ) → x +ℤ (succ-ℤ y) ≡ succ-ℤ (x +ℤ y)
+kkk x 𝟎 = refl
+kkk x (pos n) = refl
+kkk x (neg zero) = (pred-section-of-succ x) ⁻¹
+kkk x (neg (succ n)) = (pred-section-of-succ ((pred-ℤ ^ succ n) x)) ⁻¹
+
+barrz : (f : ℤ → ℤ)
+      → f ∼ (λ z → f 𝟎 +ℤ z)
+      → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+barrz f h z = f (succ-ℤ z) ≡⟨ h (succ-ℤ z) ⟩
+              f 𝟎 +ℤ (succ-ℤ z) ≡⟨ kkk (f 𝟎) z ⟩
+              succ-ℤ (f 𝟎 +ℤ z) ≡⟨ ap succ-ℤ ((h z) ⁻¹) ⟩
+              succ-ℤ (f z) ∎
+
+-ℤ : ℤ → ℤ
+-ℤ 𝟎       = 𝟎
+-ℤ (pos n) = neg n
+-ℤ (neg n) = pos n
+
+calin : (x : ℤ) → (-ℤ x +ℤ x) ≡ 𝟎
+calin 𝟎 = {!!}
+calin (pos n) = {!!}
+calin (neg n) = {!!}
+
+alex : (x : ℤ)
+     → is-equiv (λ y → x +ℤ y)
+alex 𝟎 = equiv-closed-under-∼ id (λ y → 𝟎 +ℤ y) (id-is-equiv ℤ) (λ y → 𝟎-left-neutral y)
+alex (pos n) = γ n
+ where
+  γ : (n : ℕ) → is-equiv (λ y → (pos n) +ℤ y)
+  γ zero = equiv-closed-under-∼ succ-ℤ _ succ-ℤ-is-equiv ψ
+   where
+    ψ : (λ v → pos zero +ℤ v) ∼ succ-ℤ
+    ψ 𝟎 = refl
+    ψ (pos m) = {!!}
+    ψ (neg m) = ϕ m
+     where
+      ϕ : (m : ℕ) → (pred-ℤ ^ succ m) (pos zero) ≡ succ-ℤ (neg m)
+      ϕ zero = refl
+      ϕ (succ m) = {!!}
+  γ (succ n) = equiv-closed-under-∼ (succ-ℤ ^ n) _ {!!} ψ
+   where
+    ψ : (λ v → pos (succ n) +ℤ v) ∼ (succ-ℤ ^ n)
+    ψ z = {!γ n!}
+
+
+open import UF-Miscelanea
+
+ℤ-is-set : is-set ℤ
+ℤ-is-set = +-is-set 𝟙 (ℕ + ℕ) (props-are-sets 𝟙-is-prop)
+            (+-is-set ℕ ℕ ℕ-is-set ℕ-is-set)
+-}
+{-
+pos-succ-ℤ-iterated : (n : ℕ) → pos n ≡ (succ-ℤ ^ (succ n)) 𝟎
+pos-succ-ℤ-iterated zero     = refl
+pos-succ-ℤ-iterated (succ n) = ap succ-ℤ IH
+ where
+  IH : pos n ≡ (succ-ℤ ^ succ n) 𝟎
+  IH = pos-succ-ℤ-iterated n
+
+neg-pred-ℤ-iterated : (n : ℕ) → neg n ≡ (pred-ℤ ^ (succ n)) 𝟎
+neg-pred-ℤ-iterated zero     = refl
+neg-pred-ℤ-iterated (succ n) = ap pred-ℤ IH
+ where
+  IH : neg n ≡ (pred-ℤ ^ succ n) 𝟎
+  IH = neg-pred-ℤ-iterated n
+
+ℤ-normal-form : (z : ℤ) → z ≡ (succ-ℤ-iterated z 𝟎)
+ℤ-normal-form 𝟎       = refl
+ℤ-normal-form (pos n) = pos-succ-ℤ-iterated n
+ℤ-normal-form (neg n) = neg-pred-ℤ-iterated n
+
+ℤ-normal-form' : (z : ℤ)
+               → (z ≡ 𝟎) + (Σ n ꞉ ℕ , z ≡ (succ-ℤ ^ (succ n)) 𝟎)
+                         + (Σ n ꞉ ℕ , z ≡ (pred-ℤ ^ (succ n)) 𝟎)
+ℤ-normal-form' 𝟎 = inl refl
+ℤ-normal-form' (pos n) = inr (inl (n , (pos-succ-ℤ-iterated n)))
+ℤ-normal-form' (neg n) = inr (inr (n , (neg-pred-ℤ-iterated n)))
+
+{-
+succ-ℤ-iterated-flip : (z₁ z₂ : ℤ)
+                     → succ-ℤ-iterated z₁ z₂ ≡ succ-ℤ-iterated z₂ z₁
+succ-ℤ-iterated-flip 𝟎 z       = ℤ-normal-form z
+succ-ℤ-iterated-flip (pos zero) z = {!!}
+succ-ℤ-iterated-flip (pos (succ n)) z = {!!}
+-}
+
+{-
+commute-with-succ-ℤ : (e : ℤ → ℤ)
+                    → e ∘ succ-ℤ ∼ succ-ℤ ∘ e
+                    → (z : ℤ) → e ∘ succ-ℤ-iterated z ∼ succ-ℤ-iterated z ∘ e
+commute-with-succ-ℤ = {!!}
+-}
+
+test-pos : (e : ℤ → ℤ) → e ∘ succ-ℤ ∼ succ-ℤ ∘ e
+         → (n : ℕ) → e (pos n) ≡ succ-ℤ-iterated (e 𝟎) (pos n)
+test-pos e h zero     = e (pos 0) ≡⟨ refl ⟩
+                        e (succ-ℤ 𝟎) ≡⟨ h 𝟎 ⟩
+                        succ-ℤ (e 𝟎) ≡⟨ {!!} ⟩
+                        succ-ℤ-iterated (e 𝟎) (pos 0) ∎
+test-pos e h (succ n) = {!!}
+
+ppp : (z : ℤ) → z ≡ succ-ℤ-iterated z 𝟎
+ppp 𝟎 = refl
+ppp (pos n) = γ n
+ where
+  γ : (n : ℕ) → pos n ≡ succ-ℤ-iterated (pos n) 𝟎
+  γ zero = refl
+  γ (succ m) = ap succ-ℤ (γ m)
+ppp (neg n) = γ n
+ where
+  γ : (n : ℕ) → neg n ≡ succ-ℤ-iterated (neg n) 𝟎
+  γ zero = refl
+  γ (succ m) = ap pred-ℤ (γ m)
+
+
+qqq : (n : ℕ) (z : ℤ) → succ-ℤ-iterated (pos n) z ≡ succ-ℤ-iterated z (pos n)
+qqq zero 𝟎 = refl
+qqq zero (pos n) = γ n
+ where
+  γ : (n : ℕ) → succ-ℤ (pos n) ≡ succ-ℤ ((succ-ℤ ^ n) (pos 0))
+  γ zero = refl
+  γ (succ n) = ap succ-ℤ (γ n)
+qqq zero (neg n) = γ n
+ where
+  γ : (n : ℕ) → succ-ℤ (neg n) ≡ pred-ℤ ((pred-ℤ ^ n) (pos 0))
+  γ zero = refl
+  γ (succ n) = succ-ℤ (neg (succ n))              ≡⟨ refl ⟩
+               succ-ℤ (pred-ℤ (neg n))            ≡⟨ refl ⟩
+               neg n                              ≡⟨ (pred-retraction-of-succ (neg n)) ⁻¹ ⟩
+               pred-ℤ (succ-ℤ (neg n))            ≡⟨ ap pred-ℤ (γ n) ⟩
+               pred-ℤ ((pred-ℤ ^ succ n) (pos 0)) ∎
+qqq (succ n) z = γ
+ where
+  γ : succ-ℤ-iterated (pos (succ n)) z ≡ succ-ℤ-iterated z (pos (succ n))
+  γ = {!!}
+  IH : succ-ℤ-iterated (pos n) z ≡ succ-ℤ-iterated z (pos n)
+  IH = qqq n z
+
+test : (e : ℤ → ℤ)
+     → e ∘ succ-ℤ ∼ succ-ℤ ∘ e
+     → e ∼ succ-ℤ-iterated (e 𝟎)
+test e h z = γ (ℤ-normal-form' z)
+ where
+  γ : ((z ≡ 𝟎) + (Σ n ꞉ ℕ , z ≡ (succ-ℤ ^ (succ n)) 𝟎)
+               + (Σ n ꞉ ℕ , z ≡ (pred-ℤ ^ (succ n)) 𝟎))
+    → e z ≡ succ-ℤ-iterated (e 𝟎) z
+  γ (inl refl) = ppp (e 𝟎)
+  γ (inr (inl (n , refl))) = ϕ n
+   where
+    ϕ : (n : ℕ)
+      → e ((succ-ℤ ^ succ n) 𝟎) ≡ succ-ℤ-iterated (e 𝟎) ((succ-ℤ ^ succ n) 𝟎)
+    ϕ zero = {!!}
+    ϕ (succ n) = {!!}
+  γ (inr (inr (n , refl))) = {!!}
+-}
+
+{- z = e z                     ≡⟨ ap e (ℤ-normal-form z) ⟩
+             e (succ-ℤ-iterated z 𝟎) ≡⟨ commute-with-succ-ℤ e h z 𝟎 ⟩
+             succ-ℤ-iterated z (e 𝟎) ≡⟨ {!!} ⟩
+             succ-ℤ-iterated (e 𝟎) z ∎
+-}
 
 \end{code}
