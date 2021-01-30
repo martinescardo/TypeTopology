@@ -54,11 +54,11 @@ is-map-classifier 𝓤 = (Y : 𝓤 ̇ ) → is-equiv (χ Y)
   p : Σ (fiber f) ≡ X
   p = eqtoid ua (Σ (fiber f)) X e
 
-  observation : ⌜ ≃-sym e ⌝ ≡ (λ x → f x , x , refl)
+  observation : ⌜ e ⌝⁻¹ ≡ (λ x → f x , x , refl)
   observation = refl
 
   q = transport (λ - → - → Y) p pr₁ ≡⟨ transport-is-pre-comp' ua e pr₁ ⟩
-      pr₁ ∘ ⌜ ≃-sym e ⌝             ≡⟨ refl ⟩
+      pr₁ ∘ ⌜ e ⌝⁻¹                 ≡⟨ refl ⟩
       f                             ∎
 
   r : (Σ (fiber f) , pr₁) ≡ (X , f)

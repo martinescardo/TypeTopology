@@ -89,7 +89,7 @@ module _ {𝓤 : Universe}
     g = pr₂ a d
 
  ⊑'-to-⊑ : {l m : 𝓛 X} → l ⊑' m → l ⊑ m
- ⊑'-to-⊑ {l} {m} a = back-eqtofun e g where
+ ⊑'-to-⊑ {l} {m} a = ⌜ e ⌝⁻¹ g where
   e : (l ⊑ m) ≃ (is-defined l → l ⊑ m)
   e = ⊑-open fe fe l m
   g : is-defined l → l ⊑ m
@@ -120,15 +120,15 @@ module _ {𝓤 : Universe}
    a : l ⊑ m
    a = ⌜ deq ⌝ , happly veq
    b : m ⊑ l
-   b = (back-eqtofun deq , h)
+   b = (⌜ deq ⌝⁻¹ , h)
     where
-     h : (d : is-defined m) → value m d ≡ value l (back-eqtofun deq d)
+     h : (d : is-defined m) → value m d ≡ value l (⌜ deq ⌝⁻¹ d)
      h d = value m d  ≡⟨ value-is-constant m d d' ⟩
            value m d' ≡⟨ (happly veq e)⁻¹ ⟩
            value l e  ∎
       where
        e : is-defined l
-       e = back-eqtofun deq d
+       e = ⌜ deq ⌝⁻¹ d
        d' : is-defined m
        d' = ⌜ deq ⌝ e
 

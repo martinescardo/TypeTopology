@@ -44,7 +44,7 @@ l ⋍ m = Σ e ꞉ is-defined l ≃ is-defined m , value l ≡ value m ∘ ⌜ e
         (λ A τ υ → refl-left-neutral)
 
 ⋍-gives-≡ : is-univalent 𝓣 → {l m : 𝓛 X} → (l ⋍ m) → l ≡ m
-⋍-gives-≡ ua = ⌜ ≃-sym (𝓛-Id ua _ _) ⌝
+⋍-gives-≡ ua = ⌜ 𝓛-Id ua _ _ ⌝⁻¹
 
 \end{code}
 

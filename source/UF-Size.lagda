@@ -104,7 +104,7 @@ Definitions:
 
 resize         ρ P i   = pr₁ (ρ P i)
 resize-is-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
-to-resize      ρ P i   = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
+to-resize      ρ P i   = ⌜ pr₂ (ρ P i) ⌝⁻¹
 from-resize    ρ P i   = ⌜ pr₂ (ρ P i) ⌝
 
 Propositional-resizing : 𝓤ω

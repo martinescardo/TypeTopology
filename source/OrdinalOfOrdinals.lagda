@@ -315,7 +315,7 @@ ordinal-equiv-gives-bisimilarity : (α β : Ordinal 𝓤)
 ordinal-equiv-gives-bisimilarity α β (f , p , e , q) = γ
  where
   g : ⟨ β ⟩ → ⟨ α ⟩
-  g = ⌜ ≃-sym (f , e) ⌝
+  g = ⌜ f , e ⌝⁻¹
 
   d : is-equiv g
   d = ⌜⌝-is-equiv (≃-sym (f , e))
@@ -356,7 +356,7 @@ eqtoidₒ {𝓤} α β (f , p , e , q) = γ
   A : (Y : 𝓤 ̇ ) → ⟨ α ⟩ ≃ Y → 𝓤 ⁺ ̇
   A Y e = (σ : OrdinalStructure Y)
         → is-order-preserving α (Y , σ) ⌜ e ⌝
-        → is-order-preserving (Y , σ) α ⌜ ≃-sym e ⌝
+        → is-order-preserving (Y , σ) α ⌜ e ⌝⁻¹
         → α ≡ (Y , σ)
 
   a : A ⟨ α ⟩ (≃-refl ⟨ α ⟩)

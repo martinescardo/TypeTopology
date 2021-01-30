@@ -88,7 +88,7 @@ open import UF-Equiv
 Fin-lc : (m n : ℕ) → Fin m ≃ Fin n → m ≡ n
 Fin-lc 0           0       p = refl
 Fin-lc (succ m)    0       p = 𝟘-elim (⌜ p ⌝ 𝟎)
-Fin-lc 0          (succ n) p = 𝟘-elim (⌜ ≃-sym p ⌝ 𝟎)
+Fin-lc 0          (succ n) p = 𝟘-elim (⌜ p ⌝⁻¹ 𝟎)
 Fin-lc (succ m)   (succ n) p = ap succ r
  where
   IH : Fin m ≃ Fin n → m ≡ n
