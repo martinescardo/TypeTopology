@@ -367,11 +367,12 @@ succ-ℤ-is-equiv = qinvs-are-equivs succ-ℤ
 succ-ℤ-≃ : ℤ ≃ ℤ
 succ-ℤ-≃ = (succ-ℤ , succ-ℤ-is-equiv)
 
+pred-ℤ-is-equiv : is-equiv pred-ℤ
+pred-ℤ-is-equiv = ⌜⌝-is-equiv (≃-sym succ-ℤ-≃)
+
 \end{code}
 
 \begin{code}
-
--- pos-succ-ℤ-iterated : (n : ℕ) → pos
 
 -- TO DO: Possibly move this?
 commute-with-iterated-function : {X : 𝓤 ̇ } (f g : X → X)
@@ -386,41 +387,25 @@ commute-with-iterated-function f g h (succ n) x =
    IH : f ∘ (g ^ n) ∼ (g ^ n) ∘ f
    IH = commute-with-iterated-function f g h n
 
+iterated-function-section : {X : 𝓤 ̇ } (s : X → X) (r : X → X)
+                          → r ∘ s ∼ id
+                          → (n : ℕ) → (r ^ n) ∘ (s ^ n) ∼ id
+iterated-function-section s r ρ zero     x = refl
+iterated-function-section s r ρ (succ n) x =
+ (r ∘ (r ^ n) ∘ s ∘ (s ^ n)) x ≡⟨ I   ⟩
+ (r ∘ (r ^ n) ∘ (s ^ n) ∘ s) x ≡⟨ II  ⟩
+ (r ∘ s) x                     ≡⟨ ρ x ⟩
+ x                             ∎
+  where
+   I  = ap (r ^ (succ n)) (commute-with-iterated-function s s (λ x → refl) n x)
+   II = ap r (iterated-function-section s r ρ n (s x))
+
 iterated-function-is-equiv : {X : 𝓤 ̇ } (f : X → X)
                            → is-equiv f
                            → (n : ℕ) → is-equiv (f ^ n)
-iterated-function-is-equiv {𝓤} {X} f i n = qinvs-are-equivs (f ^ n) (γ n)
- where
-  γ : (n : ℕ) → qinv (f ^ n)
-  γ zero     = id-qinv X
-  γ (succ n) = gₙ ∘ g₁ , η , ε
-   where
-    j : qinv f
-    j = equivs-are-qinvs f i
-    g₁ : X → X
-    g₁ = pr₁ j
-    η₁ : g₁ ∘ f ∼ id
-    η₁ = pr₁ (pr₂ j)
-    ε₁ : f ∘ g₁ ∼ id
-    ε₁ = pr₂ (pr₂ j)
-    IH : qinv (f ^ n)
-    IH = γ n
-    gₙ : X → X
-    gₙ = pr₁ IH
-    ηₙ : gₙ ∘ (f ^ n) ∼ id
-    ηₙ = pr₁ (pr₂ IH)
-    εₙ : (f ^ n) ∘ gₙ ∼ id
-    εₙ = pr₂ (pr₂ IH)
-    η : gₙ ∘ g₁ ∘ (f ^ (succ n)) ∼ id
-    η x = (gₙ ∘ g₁ ∘ (f ^ (succ n))) x ≡⟨ refl                   ⟩
-          (gₙ ∘ g₁ ∘ f ∘ (f ^ n))    x ≡⟨ ap gₙ (η₁ ((f ^ n) x)) ⟩
-          (gₙ ∘ (f ^ n))             x ≡⟨ ηₙ x                   ⟩
-          x                            ∎
-    ε : (f ^ (succ n)) ∘ gₙ ∘ g₁ ∼ id
-    ε x = ((f ^ (succ n)) ∘ gₙ ∘ g₁) x ≡⟨ refl             ⟩
-          (f ∘ (f ^ n) ∘ gₙ ∘ g₁)    x ≡⟨ ap f (εₙ (g₁ x)) ⟩
-          (f ∘ g₁)                   x ≡⟨ ε₁ x             ⟩
-          x                            ∎
+iterated-function-is-equiv f ((s , ε) , (r , η)) n =
+ (((s ^ n) , (iterated-function-section s f ε n)) ,
+  ((r ^ n) , (iterated-function-section f r η n)))
 
 commute-with-succ-ℤ-iterated : (f : ℤ → ℤ)
                              → (f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
@@ -486,36 +471,12 @@ commute-with-succ-ℤ-equiv-𝟎 f c p =
      IV  = (neg-pred-ℤ-iterated n) ⁻¹
 
 pred-section-of-succ-iterated : (n : ℕ) → (succ-ℤ ^ n) ∘ (pred-ℤ ^ n) ∼ id
-pred-section-of-succ-iterated zero     z = refl
-pred-section-of-succ-iterated (succ n) z =
- (succ-ℤ ∘ (succ-ℤ ^ n) ∘ pred-ℤ ∘ (pred-ℤ ^ n)) z ≡⟨ I   ⟩
- (succ-ℤ ∘ (succ-ℤ ^ n) ∘ (pred-ℤ ^ n) ∘ pred-ℤ) z ≡⟨ II  ⟩
- succ-ℤ (pred-ℤ z)                                 ≡⟨ III ⟩
- z                                                 ∎
-  where
-   I   = ap (succ-ℤ ^ (succ n))
-          (commute-with-iterated-function pred-ℤ pred-ℤ (λ _ → refl) n z)
-   II  = ap succ-ℤ (IH (pred-ℤ z))
-    where
-     IH : ((succ-ℤ ^ n) ∘ (pred-ℤ ^ n)) ∼ id
-     IH = pred-section-of-succ-iterated n
-   III = pred-section-of-succ z
+pred-section-of-succ-iterated =
+ iterated-function-section pred-ℤ succ-ℤ pred-section-of-succ
 
 pred-retraction-of-succ-iterated : (n : ℕ) → (pred-ℤ ^ n) ∘ (succ-ℤ ^ n) ∼ id
-pred-retraction-of-succ-iterated zero     z = refl
-pred-retraction-of-succ-iterated (succ n) z =
- (pred-ℤ ∘ (pred-ℤ ^ n) ∘ succ-ℤ ∘ (succ-ℤ ^ n)) z ≡⟨ I   ⟩
- (pred-ℤ ∘ (pred-ℤ ^ n) ∘ (succ-ℤ ^ n) ∘ succ-ℤ) z ≡⟨ II  ⟩
- pred-ℤ (succ-ℤ z)                                 ≡⟨ III ⟩
- z                                                 ∎
-  where
-   I   = ap (pred-ℤ ^ (succ n))
-          (commute-with-iterated-function succ-ℤ succ-ℤ (λ _ → refl) n z)
-   II  = ap pred-ℤ (IH (succ-ℤ z))
-    where
-     IH : ((pred-ℤ ^ n) ∘ (succ-ℤ ^ n)) ∼ id
-     IH = pred-retraction-of-succ-iterated n
-   III = pred-retraction-of-succ z
+pred-retraction-of-succ-iterated =
+ iterated-function-section succ-ℤ pred-ℤ pred-retraction-of-succ
 
 commute-with-succ-ℤ-equiv-pos : (f : ℤ → ℤ)
                               → (f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
@@ -551,356 +512,57 @@ commute-with-succ-ℤ-equiv-pos f c n p =
    g-is-equiv : is-equiv g
    g-is-equiv = commute-with-succ-ℤ-equiv-𝟎 g g-commutes-with-succ g-is-𝟎-on-𝟎
 
-{-
-final-test f h p (pos n) = γ n
- where
-  γ : (n : ℕ) → f (pos n) ≡ pos n
-  γ zero = f (pos 0)    ≡⟨ refl ⟩
-           f (succ-ℤ 𝟎) ≡⟨ h 𝟎 ⟩
-           succ-ℤ (f 𝟎) ≡⟨ ap succ-ℤ p ⟩
-           succ-ℤ 𝟎     ∎
-  γ (succ n) = h (pos n) ∙ ap succ-ℤ (γ n)
-final-test f h p (neg n) = {!γ!}
- where
-  γ : (n : ℕ) → {!!}
-  γ = {!!}
--}
+commute-with-succ-ℤ-equiv-neg : (f : ℤ → ℤ)
+                              → (f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
+                              → (n : ℕ)
+                              → f 𝟎 ≡ neg n
+                              → is-equiv f
+commute-with-succ-ℤ-equiv-neg f c n p =
+ equiv-closed-under-∼ (pred-ℤ ^ (succ n) ∘ g) f
+  (∘-is-equiv g-is-equiv
+   (iterated-function-is-equiv pred-ℤ pred-ℤ-is-equiv (succ n)))
+  (λ z → (pred-retraction-of-succ-iterated (succ n) (f z)) ⁻¹)
+  where
+   g : ℤ → ℤ
+   g = (succ-ℤ ^ (succ n)) ∘ f
+   g-is-𝟎-on-𝟎 : g 𝟎 ≡ 𝟎
+   g-is-𝟎-on-𝟎 = ((succ-ℤ ^ (succ n)) ∘ f) 𝟎              ≡⟨ I   ⟩
+                  (succ-ℤ ^ succ n) (neg n)               ≡⟨ II  ⟩
+                  (succ-ℤ ^ succ n) ((pred-ℤ ^ succ n) 𝟎) ≡⟨ III ⟩
+                  𝟎                                       ∎
+    where
+     I   = ap (succ-ℤ ^ (succ n)) p
+     II  = ap (succ-ℤ ^ (succ n)) (neg-pred-ℤ-iterated n)
+     III = pred-section-of-succ-iterated (succ n) 𝟎
+   g-commutes-with-succ : g ∘ succ-ℤ ∼ succ-ℤ ∘ g
+   g-commutes-with-succ z = ((succ-ℤ ^ (succ n)) ∘ f ∘ succ-ℤ) z ≡⟨ I  ⟩
+                            ((succ-ℤ ^ (succ n)) ∘ succ-ℤ ∘ f) z ≡⟨ II ⟩
+                            (succ-ℤ ∘ (succ-ℤ ^ (succ n)) ∘ f) z ∎
+    where
+     I  = ap (succ-ℤ ^ (succ n)) (c z)
+     II = (commute-with-iterated-function succ-ℤ succ-ℤ
+            (λ x → refl) (succ n) (f z)) ⁻¹
+   g-is-equiv : is-equiv g
+   g-is-equiv = commute-with-succ-ℤ-equiv-𝟎 g g-commutes-with-succ g-is-𝟎-on-𝟎
 
-{-
-succ-ℤ-iterated : ℤ → ℤ → ℤ
-succ-ℤ-iterated 𝟎       = id
-succ-ℤ-iterated (pos n) = succ-ℤ ^ (succ n)
-succ-ℤ-iterated (neg n) = pred-ℤ ^ (succ n)
--}
+commute-with-succ-ℤ-equiv : (f : ℤ → ℤ)
+                          → (f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
+                          → is-equiv f
+commute-with-succ-ℤ-equiv f c = γ (f 𝟎) refl
+ where
+  γ : (z : ℤ) → f 𝟎 ≡ z → is-equiv f
+  γ 𝟎       p = commute-with-succ-ℤ-equiv-𝟎 f c p
+  γ (pos n) p = commute-with-succ-ℤ-equiv-pos f c n p
+  γ (neg n) p = commute-with-succ-ℤ-equiv-neg f c n p
 
 \end{code}
 
-_+ℤ_ : ℤ → ℤ → ℤ
-_+ℤ_ 𝟎 = id
-_+ℤ_ (pos n) = succ-ℤ ^ (succ n)
-_+ℤ_ (neg n) = pred-ℤ ^ (succ n)
-
-bazz : (f : ℤ → ℤ)
-     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-     → f ∘ pred-ℤ ∼ pred-ℤ ∘ f
-bazz f h z = ⌜ embedding-criterion-converse succ-ℤ
-                (equivs-are-embeddings succ-ℤ succ-ℤ-is-equiv)
-                  ((f ∘ pred-ℤ) z) ((pred-ℤ ∘ f) z) ⌝ γ
- where
-  γ : succ-ℤ (f (pred-ℤ z)) ≡ succ-ℤ (pred-ℤ (f z))
-  γ = succ-ℤ (f (pred-ℤ z)) ≡⟨ (h (pred-ℤ z)) ⁻¹               ⟩
-      f (succ-ℤ (pred-ℤ z)) ≡⟨ ap f (pred-section-of-succ z)   ⟩
-      f z                   ≡⟨ (pred-section-of-succ (f z)) ⁻¹ ⟩
-      succ-ℤ (pred-ℤ (f z)) ∎
-
-fooo : (f : ℤ → ℤ)
-     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-     → (x y : ℤ) → f (x +ℤ y) ≡ x +ℤ f y
-fooo f h 𝟎 y = refl
-fooo f h (pos n) y = f (succ-ℤ yₙ) ≡⟨ h yₙ ⟩
-                     succ-ℤ (f yₙ) ≡⟨ ap succ-ℤ (γ n) ⟩
-                     succ-ℤ fyₙ    ≡⟨ refl ⟩
-                     (pos n +ℤ f y) ∎
- where
-  yₙ = (succ-ℤ ^ n) y
-  fyₙ = (succ-ℤ ^ n) (f y)
-  γ : (n : ℕ) → f ((succ-ℤ ^ n) y) ≡ (succ-ℤ ^ n) (f y)
-  γ zero = refl
-  γ (succ n) = h ((succ-ℤ ^ n) y) ∙ ap succ-ℤ (γ n)
-fooo f h (neg n) y = {!!}
-
-barr : (f : ℤ → ℤ)
-     → ((x y : ℤ) → f (x +ℤ y) ≡ x +ℤ f y)
-     → f ∼ _+ℤ_ (f 𝟎)
-barr f h 𝟎 = {!!}
-barr f h (pos n) = γ n
- where
-  γ : (n : ℕ) → f (pos n) ≡ (f 𝟎 +ℤ pos n)
-  γ zero = {!!}
-  γ (succ n) = {!!}
-
-{-
-
-(Σ f ꞉ ℤ ≃ ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f) [[≃]]
-(Σ f ꞉ ℤ → ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f) ≃ ℤ
-===
-
-
-(f : ℤ → ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f) × f 𝟎 = 𝟎 (†)
--------------------------------------
-f ≡ id, which is an equivalence
-
--}
-
-final-test : (f : ℤ → ℤ)
-           → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-           → f 𝟎 ≡ 𝟎
-           → f ∼ id
-final-test f h p 𝟎 = p
-final-test f h p (pos n) = γ n
- where
-  γ : (n : ℕ) → f (pos n) ≡ pos n
-  γ zero = f (pos 0)    ≡⟨ refl ⟩
-           f (succ-ℤ 𝟎) ≡⟨ h 𝟎 ⟩
-           succ-ℤ (f 𝟎) ≡⟨ ap succ-ℤ p ⟩
-           succ-ℤ 𝟎     ∎
-  γ (succ n) = h (pos n) ∙ ap succ-ℤ (γ n)
-final-test f h p (neg n) = {!γ!}
- where
-  γ : (n : ℕ) → {!!}
-  γ = {!!}
-
-{-
-
-(f : ℤ → ℤ , f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
--------------------------------------
-f = f ∘ pred-ℤ ^ (f 0) ∘ succ-ℤ ^ (f 0)   (f 𝟎 > 𝟎)
-f = f ∘ succ-ℤ ^ (f 0) ∘ pred-ℤ ^ (f 0)   (f 𝟎 < 𝟎)
-
-g = f ∘ pred-ℤ ^ (f 0)
-g satisfies (†) -- g 𝟎 = pred-ℤ ^ (f 𝟎) (f 𝟎)
-----------------------
-g is an equivalence
-
-==> f is an equivalence
-
-
--}
-{- f z        ≡⟨ refl  ⟩
-             f (𝟎 +ℤ z) ≡⟨ h 𝟎 z ⟩
-             f 𝟎 +ℤ z   ∎ -}
-
-open import NaturalsAddition renaming (_+_ to _+ℕ_)
-
-{-
-_+ℤ_ : ℤ → ℤ → ℤ
-z +ℤ 𝟎 = z
-z +ℤ (pos n) = (succ-ℤ ^ (succ n)) z
-z +ℤ (neg n) = (pred-ℤ ^ (succ n)) z
-
-bazz : (f : ℤ → ℤ)
-     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-     → f ∘ pred-ℤ ∼ pred-ℤ ∘ f
-bazz f h z = ⌜ embedding-criterion-converse succ-ℤ
-                (equivs-are-embeddings succ-ℤ succ-ℤ-is-equiv)
-                  ((f ∘ pred-ℤ) z) ((pred-ℤ ∘ f) z) ⌝ γ
- where
-  γ : succ-ℤ (f (pred-ℤ z)) ≡ succ-ℤ (pred-ℤ (f z))
-  γ = succ-ℤ (f (pred-ℤ z)) ≡⟨ (h (pred-ℤ z)) ⁻¹               ⟩
-      f (succ-ℤ (pred-ℤ z)) ≡⟨ ap f (pred-section-of-succ z)   ⟩
-      f z                   ≡⟨ (pred-section-of-succ (f z)) ⁻¹ ⟩
-      succ-ℤ (pred-ℤ (f z)) ∎
-
-fooo : (f : ℤ → ℤ)
-     → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-     → (x y : ℤ) → f (x +ℤ y) ≡ f x +ℤ y
-fooo f h x 𝟎 = refl
-fooo f h x (pos n) = f (succ-ℤ xₙ)  ≡⟨ h xₙ ⟩
-                     succ-ℤ (f xₙ)  ≡⟨ γ n  ⟩
-                     succ-ℤ fxₙ     ≡⟨ refl ⟩
-                     (f x +ℤ pos n) ∎
- where
-  fxₙ : ℤ
-  fxₙ = (succ-ℤ ^ n) (f x)
-  xₙ : ℤ
-  xₙ = (succ-ℤ ^ n) x
-  γ : (n : ℕ) → succ-ℤ (f ((succ-ℤ ^ n) x)) ≡ succ-ℤ ((succ-ℤ ^ n) (f x))
-  γ zero = refl
-  γ (succ n) = ap succ-ℤ (h ((succ-ℤ ^ n) x) ∙ γ n)
-fooo f h x (neg n) = f (pred-ℤ xₙ) ≡⟨ bazz f h xₙ ⟩
-                     pred-ℤ (f xₙ) ≡⟨ γ n         ⟩
-                     pred-ℤ fxₙ    ≡⟨ refl        ⟩
-                     (f x +ℤ neg n) ∎
- where
-  xₙ : ℤ
-  xₙ = (pred-ℤ ^ n) x
-  fxₙ : ℤ
-  fxₙ = (pred-ℤ ^ n) (f x)
-  γ : (n : ℕ) → pred-ℤ (f ((pred-ℤ ^ n) x)) ≡ pred-ℤ ((pred-ℤ ^ n) (f x))
-  γ zero = refl
-  γ (succ n) = ap pred-ℤ (bazz f h ((pred-ℤ ^ n) x) ∙ γ n)
-
-𝟎-left-neutral : (z : ℤ) → 𝟎 +ℤ z ≡ z
-𝟎-left-neutral 𝟎 = refl
-𝟎-left-neutral (pos n) = γ n
- where
-  γ : (n : ℕ) → (succ-ℤ ^ (succ n)) 𝟎 ≡ pos n
-  γ zero     = refl
-  γ (succ n) = ap succ-ℤ (γ n)
-𝟎-left-neutral (neg n) = γ n
- where
-  γ : (n : ℕ) → (pred-ℤ ^ (succ n)) 𝟎 ≡ neg n
-  γ zero     = refl
-  γ (succ n) = ap pred-ℤ (γ n)
-
-barr : (f : ℤ → ℤ)
-     → ((x y : ℤ) → f (x +ℤ y) ≡ f x +ℤ y) -- x +ℤ f y
-     → f ∼ (λ z → f 𝟎 +ℤ z)
-barr f h z = f z        ≡⟨ ap f ((𝟎-left-neutral z) ⁻¹) ⟩
-             f (𝟎 +ℤ z) ≡⟨ h 𝟎 z                        ⟩
-             f 𝟎 +ℤ z   ∎
-
-kkk : (x y : ℤ) → x +ℤ (succ-ℤ y) ≡ succ-ℤ (x +ℤ y)
-kkk x 𝟎 = refl
-kkk x (pos n) = refl
-kkk x (neg zero) = (pred-section-of-succ x) ⁻¹
-kkk x (neg (succ n)) = (pred-section-of-succ ((pred-ℤ ^ succ n) x)) ⁻¹
-
-barrz : (f : ℤ → ℤ)
-      → f ∼ (λ z → f 𝟎 +ℤ z)
-      → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-barrz f h z = f (succ-ℤ z) ≡⟨ h (succ-ℤ z) ⟩
-              f 𝟎 +ℤ (succ-ℤ z) ≡⟨ kkk (f 𝟎) z ⟩
-              succ-ℤ (f 𝟎 +ℤ z) ≡⟨ ap succ-ℤ ((h z) ⁻¹) ⟩
-              succ-ℤ (f z) ∎
-
--ℤ : ℤ → ℤ
--ℤ 𝟎       = 𝟎
--ℤ (pos n) = neg n
--ℤ (neg n) = pos n
-
-calin : (x : ℤ) → (-ℤ x +ℤ x) ≡ 𝟎
-calin 𝟎 = {!!}
-calin (pos n) = {!!}
-calin (neg n) = {!!}
-
-alex : (x : ℤ)
-     → is-equiv (λ y → x +ℤ y)
-alex 𝟎 = equiv-closed-under-∼ id (λ y → 𝟎 +ℤ y) (id-is-equiv ℤ) (λ y → 𝟎-left-neutral y)
-alex (pos n) = γ n
- where
-  γ : (n : ℕ) → is-equiv (λ y → (pos n) +ℤ y)
-  γ zero = equiv-closed-under-∼ succ-ℤ _ succ-ℤ-is-equiv ψ
-   where
-    ψ : (λ v → pos zero +ℤ v) ∼ succ-ℤ
-    ψ 𝟎 = refl
-    ψ (pos m) = {!!}
-    ψ (neg m) = ϕ m
-     where
-      ϕ : (m : ℕ) → (pred-ℤ ^ succ m) (pos zero) ≡ succ-ℤ (neg m)
-      ϕ zero = refl
-      ϕ (succ m) = {!!}
-  γ (succ n) = equiv-closed-under-∼ (succ-ℤ ^ n) _ {!!} ψ
-   where
-    ψ : (λ v → pos (succ n) +ℤ v) ∼ (succ-ℤ ^ n)
-    ψ z = {!γ n!}
-
+\begin{code}
 
 open import UF-Miscelanea
 
 ℤ-is-set : is-set ℤ
 ℤ-is-set = +-is-set 𝟙 (ℕ + ℕ) (props-are-sets 𝟙-is-prop)
             (+-is-set ℕ ℕ ℕ-is-set ℕ-is-set)
--}
-{-
-pos-succ-ℤ-iterated : (n : ℕ) → pos n ≡ (succ-ℤ ^ (succ n)) 𝟎
-pos-succ-ℤ-iterated zero     = refl
-pos-succ-ℤ-iterated (succ n) = ap succ-ℤ IH
- where
-  IH : pos n ≡ (succ-ℤ ^ succ n) 𝟎
-  IH = pos-succ-ℤ-iterated n
-
-neg-pred-ℤ-iterated : (n : ℕ) → neg n ≡ (pred-ℤ ^ (succ n)) 𝟎
-neg-pred-ℤ-iterated zero     = refl
-neg-pred-ℤ-iterated (succ n) = ap pred-ℤ IH
- where
-  IH : neg n ≡ (pred-ℤ ^ succ n) 𝟎
-  IH = neg-pred-ℤ-iterated n
-
-ℤ-normal-form : (z : ℤ) → z ≡ (succ-ℤ-iterated z 𝟎)
-ℤ-normal-form 𝟎       = refl
-ℤ-normal-form (pos n) = pos-succ-ℤ-iterated n
-ℤ-normal-form (neg n) = neg-pred-ℤ-iterated n
-
-ℤ-normal-form' : (z : ℤ)
-               → (z ≡ 𝟎) + (Σ n ꞉ ℕ , z ≡ (succ-ℤ ^ (succ n)) 𝟎)
-                         + (Σ n ꞉ ℕ , z ≡ (pred-ℤ ^ (succ n)) 𝟎)
-ℤ-normal-form' 𝟎 = inl refl
-ℤ-normal-form' (pos n) = inr (inl (n , (pos-succ-ℤ-iterated n)))
-ℤ-normal-form' (neg n) = inr (inr (n , (neg-pred-ℤ-iterated n)))
-
-{-
-succ-ℤ-iterated-flip : (z₁ z₂ : ℤ)
-                     → succ-ℤ-iterated z₁ z₂ ≡ succ-ℤ-iterated z₂ z₁
-succ-ℤ-iterated-flip 𝟎 z       = ℤ-normal-form z
-succ-ℤ-iterated-flip (pos zero) z = {!!}
-succ-ℤ-iterated-flip (pos (succ n)) z = {!!}
--}
-
-{-
-commute-with-succ-ℤ : (e : ℤ → ℤ)
-                    → e ∘ succ-ℤ ∼ succ-ℤ ∘ e
-                    → (z : ℤ) → e ∘ succ-ℤ-iterated z ∼ succ-ℤ-iterated z ∘ e
-commute-with-succ-ℤ = {!!}
--}
-
-test-pos : (e : ℤ → ℤ) → e ∘ succ-ℤ ∼ succ-ℤ ∘ e
-         → (n : ℕ) → e (pos n) ≡ succ-ℤ-iterated (e 𝟎) (pos n)
-test-pos e h zero     = e (pos 0) ≡⟨ refl ⟩
-                        e (succ-ℤ 𝟎) ≡⟨ h 𝟎 ⟩
-                        succ-ℤ (e 𝟎) ≡⟨ {!!} ⟩
-                        succ-ℤ-iterated (e 𝟎) (pos 0) ∎
-test-pos e h (succ n) = {!!}
-
-ppp : (z : ℤ) → z ≡ succ-ℤ-iterated z 𝟎
-ppp 𝟎 = refl
-ppp (pos n) = γ n
- where
-  γ : (n : ℕ) → pos n ≡ succ-ℤ-iterated (pos n) 𝟎
-  γ zero = refl
-  γ (succ m) = ap succ-ℤ (γ m)
-ppp (neg n) = γ n
- where
-  γ : (n : ℕ) → neg n ≡ succ-ℤ-iterated (neg n) 𝟎
-  γ zero = refl
-  γ (succ m) = ap pred-ℤ (γ m)
-
-
-qqq : (n : ℕ) (z : ℤ) → succ-ℤ-iterated (pos n) z ≡ succ-ℤ-iterated z (pos n)
-qqq zero 𝟎 = refl
-qqq zero (pos n) = γ n
- where
-  γ : (n : ℕ) → succ-ℤ (pos n) ≡ succ-ℤ ((succ-ℤ ^ n) (pos 0))
-  γ zero = refl
-  γ (succ n) = ap succ-ℤ (γ n)
-qqq zero (neg n) = γ n
- where
-  γ : (n : ℕ) → succ-ℤ (neg n) ≡ pred-ℤ ((pred-ℤ ^ n) (pos 0))
-  γ zero = refl
-  γ (succ n) = succ-ℤ (neg (succ n))              ≡⟨ refl ⟩
-               succ-ℤ (pred-ℤ (neg n))            ≡⟨ refl ⟩
-               neg n                              ≡⟨ (pred-retraction-of-succ (neg n)) ⁻¹ ⟩
-               pred-ℤ (succ-ℤ (neg n))            ≡⟨ ap pred-ℤ (γ n) ⟩
-               pred-ℤ ((pred-ℤ ^ succ n) (pos 0)) ∎
-qqq (succ n) z = γ
- where
-  γ : succ-ℤ-iterated (pos (succ n)) z ≡ succ-ℤ-iterated z (pos (succ n))
-  γ = {!!}
-  IH : succ-ℤ-iterated (pos n) z ≡ succ-ℤ-iterated z (pos n)
-  IH = qqq n z
-
-test : (e : ℤ → ℤ)
-     → e ∘ succ-ℤ ∼ succ-ℤ ∘ e
-     → e ∼ succ-ℤ-iterated (e 𝟎)
-test e h z = γ (ℤ-normal-form' z)
- where
-  γ : ((z ≡ 𝟎) + (Σ n ꞉ ℕ , z ≡ (succ-ℤ ^ (succ n)) 𝟎)
-               + (Σ n ꞉ ℕ , z ≡ (pred-ℤ ^ (succ n)) 𝟎))
-    → e z ≡ succ-ℤ-iterated (e 𝟎) z
-  γ (inl refl) = ppp (e 𝟎)
-  γ (inr (inl (n , refl))) = ϕ n
-   where
-    ϕ : (n : ℕ)
-      → e ((succ-ℤ ^ succ n) 𝟎) ≡ succ-ℤ-iterated (e 𝟎) ((succ-ℤ ^ succ n) 𝟎)
-    ϕ zero = {!!}
-    ϕ (succ n) = {!!}
-  γ (inr (inr (n , refl))) = {!!}
--}
-
-{- z = e z                     ≡⟨ ap e (ℤ-normal-form z) ⟩
-             e (succ-ℤ-iterated z 𝟎) ≡⟨ commute-with-succ-ℤ e h z 𝟎 ⟩
-             succ-ℤ-iterated z (e 𝟎) ≡⟨ {!!} ⟩
-             succ-ℤ-iterated (e 𝟎) z ∎
--}
 
 \end{code}
