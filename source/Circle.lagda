@@ -119,11 +119,11 @@ characterization-of-Tℤ-≡ =
   (λ X f → ∥∥-is-prop)
 
 to-Tℤ-≡ : (X Y : Tℤ) → X ≅ Y → X ≡ Y
-to-Tℤ-≡ X Y = ⌜ ≃-sym (characterization-of-Tℤ-≡ X Y) ⌝
+to-Tℤ-≡ X Y = ⌜ characterization-of-Tℤ-≡ X Y ⌝⁻¹
 
 {-
 to-Tℤ-≡' : (X Y : Tℤ) → X ≃[Tℤ] Y → X ≡ Y
-to-Tℤ-≡' X Y = ⌜ ≃-sym (characterization-of-Tℤ-≡' X Y) ⌝
+to-Tℤ-≡' X Y = ⌜ characterization-of-Tℤ-≡' X Y ⌝⁻¹
 
 _≃[Tℤ⁻]_ : Tℤ⁻ → Tℤ⁻ → 𝓤₀ ̇
 (X , f) ≃[Tℤ⁻] (Y , g) = Σ e ꞉ (X → Y) , is-equiv e
@@ -191,7 +191,7 @@ xxx = idtoeq ℤ ℤ (ap ⟨_⟩ loop) ≡⟨ yyy loop ⟩
   ϕ : base ≡ base → base ≅ base
   ϕ = ⌜ characterization-of-Tℤ-≡ base base ⌝
   ψ : base ≅ base → base ≡ base
-  ψ = ⌜ ≃-sym (characterization-of-Tℤ-≡ base base) ⌝
+  ψ = ⌜ characterization-of-Tℤ-≡ base base ⌝⁻¹
   s : ϕ ∘ ψ ∼ id
   s = inverses-are-sections ϕ (⌜⌝-is-equiv (characterization-of-Tℤ-≡ base base))
   l : base ≅ base

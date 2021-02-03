@@ -222,8 +222,8 @@ succ-ℤ (neg (succ n)) = neg n
    Qₙ' a₀ hₙ = (a₀ ≡ ⌜ f (neg 0) ⌝ (hₙ 0))
              × ((n : ℕ) → hₙ n ≡ ⌜ f (neg (succ n)) ⌝ (hₙ (succ n)))
    Qₙ : A 𝟎 → Π (A ∘ neg) → 𝓤 ̇
-   Qₙ aₒ hₙ = (hₙ 0 ≡ ⌜ ≃-sym (f (neg 0)) ⌝ aₒ)
-            × ((n : ℕ) → hₙ (succ n) ≡ ⌜ ≃-sym (f (neg (succ n))) ⌝ (hₙ n))
+   Qₙ aₒ hₙ = (hₙ 0 ≡ ⌜ (f (neg 0)) ⌝⁻¹ aₒ)
+            × ((n : ℕ) → hₙ (succ n) ≡ ⌜ (f (neg (succ n))) ⌝⁻¹ (hₙ n))
    I    = ≃-sym (Σ-change-of-variable Q₁ g₁ (⌜⌝-is-equiv (Π×+ fe)))
    II   = Σ-assoc
    III  = Σ-cong
@@ -289,7 +289,7 @@ succ-ℤ (neg (succ n)) = neg n
      γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe ℕ _ _ γₙ)
       where
        f₀ = ⌜ f (neg 0) ⌝
-       f₀⁻¹ = ⌜ ≃-sym (f (neg 0)) ⌝
+       f₀⁻¹ = ⌜ (f (neg 0)) ⌝⁻¹
        e₀ : is-equiv f₀
        e₀ = ⌜⌝-is-equiv (f (neg 0))
        γ₀ : (hₒ * ≡ f₀ (hₙ 0))
@@ -310,7 +310,7 @@ succ-ℤ (neg (succ n)) = neg n
        eₙ : (n : ℕ) → is-equiv (fₙ n)
        eₙ n = ⌜⌝-is-equiv (f (neg (succ n)))
        fₙ⁻¹ : (n : ℕ) → A (neg n) → A (neg (succ n))
-       fₙ⁻¹ n = ⌜ ≃-sym (f (neg (succ n))) ⌝
+       fₙ⁻¹ n = ⌜ (f (neg (succ n))) ⌝⁻¹
        γₙ : (n : ℕ)
           → (hₙ n ≡ fₙ n (hₙ (succ n)))
           ≃ (hₙ (succ n) ≡ fₙ⁻¹ n (hₙ n))
@@ -332,9 +332,9 @@ succ-ℤ (neg (succ n)) = neg n
      γ hₒ = (ℕ-is-nno-dep fe (A ∘ neg) a₀ s)
       where
        a₀ : A (neg 0)
-       a₀ = ⌜ ≃-sym (f (neg 0)) ⌝ (hₒ *)
+       a₀ = ⌜ (f (neg 0)) ⌝⁻¹ (hₒ *)
        s : (n : ℕ) → A (neg n) → A (neg (succ n))
-       s n = ⌜ ≃-sym (f (neg (succ n))) ⌝
+       s n = ⌜ (f (neg (succ n))) ⌝⁻¹
    XI   = 𝟙-rneutral
    XII  = ≃-sym (𝟙→ fe)
 
