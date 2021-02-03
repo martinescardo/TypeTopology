@@ -1072,7 +1072,7 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
   c = 𝟙-is-true-props-center fe pe
 
   f : T → X
-  f (P , i , p) = ⌜ ≃-sym (φ P i) ⌝ (inl p)
+  f (P , i , p) = ⌜ φ P i ⌝⁻¹ (inl p)
 
   x : X
   x = f (𝟙 , 𝟙-is-prop , *)
@@ -1083,11 +1083,11 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
     a : x ≡ f (P , i , p)
     a = ap f (c (P , i , p))
 
-    b = inr y                                 ≡⟨ r ⁻¹ ⟩
-        ⌜ φ P i ⌝ x                           ≡⟨ ap ⌜ φ P i ⌝ a ⟩
-        ⌜ φ P i ⌝ (f (P , i , p))             ≡⟨ by-definition ⟩
-        ⌜ φ P i ⌝ (⌜ ≃-sym (φ P i) ⌝ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
-        inl p                                 ∎
+    b = inr y                           ≡⟨ r ⁻¹ ⟩
+        ⌜ φ P i ⌝ x                     ≡⟨ ap ⌜ φ P i ⌝ a ⟩
+        ⌜ φ P i ⌝ (f (P , i , p))       ≡⟨ by-definition ⟩
+        ⌜ φ P i ⌝ (⌜ φ P i ⌝⁻¹ (inl p)) ≡⟨ ≃-sym-is-rinv (φ P i) (inl p) ⟩
+        inl p                           ∎
 
     γ : 𝟘
     γ = +disjoint' b

@@ -37,10 +37,10 @@ This is the main theorem proved in this module:
 ℕ∞-compact∙ p = a , Lemma
  where
   α : ℕ → 𝟚
-  α 0       = p(under 0)
-  α(succ n) = min𝟚 (α n) (p(under(succ n)))
+  α 0       = p (under 0)
+  α(succ n) = min𝟚 (α n) (p (under(succ n)))
 
-  d' : (n : ℕ) → min𝟚 (α n) (p(under(succ n))) ≡ ₁ → α n ≡ ₁
+  d' : (n : ℕ) → min𝟚 (α n) (p (under(succ n))) ≡ ₁ → α n ≡ ₁
   d' n = Lemma[minab≤₂a] {α n}
 
   d : decreasing α
@@ -49,7 +49,7 @@ This is the main theorem proved in this module:
   a : ℕ∞
   a = (α , d)
 
-  Dagger₀ : (n : ℕ) → a ≡ under n → p(under n) ≡ ₀
+  Dagger₀ : (n : ℕ) → a ≡ under n → p (under n) ≡ ₀
   Dagger₀ 0 r =  p (under 0)      ≡⟨ refl ⟩
                  α 0              ≡⟨ ap (λ - → incl - 0) r ⟩
                  incl (under 0) 0 ≡⟨ refl ⟩
@@ -65,12 +65,12 @@ This is the main theorem proved in this module:
         incl (under (succ n)) n ≡⟨ under-diagonal₁ n ⟩
         ₁                       ∎
 
-    w : α(succ n) ≡ p(under(succ n))
-    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p(under(succ n)))) t ⟩
+    w : α(succ n) ≡ p (under(succ n))
+    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p (under(succ n)))) t ⟩
         min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
-        p(under(succ n))            ∎
+        p (under(succ n))            ∎
 
-  Dagger₁ : a ≡ ∞ → (n : ℕ) → p(under n) ≡ ₁
+  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (under n) ≡ ₁
   Dagger₁ r 0 = p (under 0) ≡⟨ refl ⟩
                 α 0         ≡⟨ ap (λ - → incl - 0) r ⟩
                 incl ∞ 0    ≡⟨ refl ⟩
@@ -84,8 +84,8 @@ This is the main theorem proved in this module:
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
 
-    w : α(succ n) ≡ p(under(succ n))
-    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p(under(succ n)))) s ⟩
+    w : α(succ n) ≡ p (under(succ n))
+    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p (under(succ n)))) s ⟩
         min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
         p (under (succ n))          ∎
 
@@ -100,7 +100,7 @@ This is the main theorem proved in this module:
   Claim₁ : p a ≡ ₁ → a ≡ ∞
   Claim₁ r = not-finite-is-∞ fe (Claim₀ r)
 
-  Claim₂ : p a ≡ ₁ → (n : ℕ) → p(under n) ≡ ₁
+  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (under n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁

@@ -107,8 +107,9 @@ eqtofun- ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-eq
 eqtofun- = pr₂
 ⌜⌝-is-equiv         = eqtofun-
 
-back-eqtofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y → X
+back-eqtofun ⌜_⌝⁻¹ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
+⌜_⌝⁻¹          = back-eqtofun
 
 idtoeq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 idtoeq X Y p = transport (Eq X) p (≃-refl X)
@@ -161,13 +162,13 @@ inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-e
                          → inverse f e ∘ f ∼ id
 inverses-are-retractions f e = pr₁ (pr₂(equivs-are-qinvs f e))
 
-inverse-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
+inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                  → is-equiv (inverse f e)
 
-inverse-is-equiv f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
+inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
 
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                     → inverse (inverse f e) (inverse-is-equiv f e) ≡ f
+                     → inverse (inverse f e) (inverses-are-equivs f e) ≡ f
 inversion-involutive f e = refl
 
 \end{code}
@@ -203,14 +204,14 @@ lc-split-surjections-are-equivs f l s = qinvs-are-equivs f (g , η , ε)
 
 
 ≃-sym : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  → X ≃ Y → Y ≃ X
-≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverse-is-equiv f e
+≃-sym {𝓤} {𝓥} {X} {Y} (f , e) = inverse f e , inverses-are-equivs f e
 
-≃-sym-is-linv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (x : X)
-              → ⌜ ≃-sym 𝓯 ⌝ (⌜ 𝓯 ⌝ x) ≡ x
+≃-sym-is-linv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y)
+              → ⌜ 𝓯 ⌝⁻¹ ∘ ⌜ 𝓯 ⌝ ∼ id
 ≃-sym-is-linv (f , e) x = inverses-are-retractions f e x
 
-≃-sym-is-rinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y) (y : Y)
-              → ⌜ 𝓯 ⌝ (⌜ ≃-sym 𝓯 ⌝ y) ≡ y
+≃-sym-is-rinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }  (𝓯 : X ≃ Y)
+              → ⌜ 𝓯 ⌝ ∘ ⌜ 𝓯 ⌝⁻¹ ∼ id
 ≃-sym-is-rinv (f , e) y = inverses-are-sections f e y
 
 ≃-gives-◁ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ◁ Y

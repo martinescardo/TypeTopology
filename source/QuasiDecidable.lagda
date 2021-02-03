@@ -1989,11 +1989,11 @@ We can replace the bi-implication by an equality:
    where
     f : (Σ c ꞉ A , (c ≡ ⊤ ⇔ (Σ p ꞉ a ≡ ⊤ , b p ≡ ⊤)))
       → Σ c ꞉ A , ((c ≡ ⊤) ≡ (Σ p ꞉ a ≡ ⊤ , b p ≡ ⊤))
-    f (c , g , h) = c , ⌜ ≃-sym (prop-univalent-≃ pe fe (c ≡ ⊤) (Σ p ꞉ a ≡ ⊤ , b p ≡ ⊤)
-                                  (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set))) ⌝
-                                  (logically-equivalent-props-are-equivalent
-                                     ⟨ 𝓐 ⟩-is-set
-                                     (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) g h)
+    f (c , g , h) = c , ⌜ prop-univalent-≃ pe fe (c ≡ ⊤) (Σ p ꞉ a ≡ ⊤ , b p ≡ ⊤)
+                           (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) ⌝⁻¹
+                              (logically-equivalent-props-are-equivalent
+                                 ⟨ 𝓐 ⟩-is-set
+                                 (Σ-is-prop ⟨ 𝓐 ⟩-is-set (λ p → ⟨ 𝓐 ⟩-is-set)) g h)
 \end{code}
 
 The non-dependent special case:
@@ -2235,7 +2235,7 @@ quasidecidability:
                                                (quasidecidable-closed-under-ω-joins P φ')
    where
     φ' : (n : ℕ) → is-quasidecidable (P n)
-    φ' n = ⌜ ≃-sym (quasidecidability-resizing (P n)) ⌝ (φ n)
+    φ' n = ⌜ quasidecidability-resizing (P n) ⌝⁻¹ (φ n)
 
   quasidecidable₀-induction :
      (F : 𝓣 ̇ → 𝓥 ̇ )
@@ -2245,7 +2245,7 @@ quasidecidability:
    → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
    → (P : 𝓣 ̇ ) → is-quasidecidable₀ P → F P
   quasidecidable₀-induction F i F₀ F₁ Fω P q = quasidecidable-induction F i F₀ F₁ Fω
-                                                P (⌜ ≃-sym (quasidecidability-resizing P) ⌝ q)
+                                                P (⌜ quasidecidability-resizing P ⌝⁻¹ q)
 
 \end{code}
 

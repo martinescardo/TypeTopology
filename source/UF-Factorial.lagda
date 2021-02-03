@@ -130,7 +130,7 @@ Then we get a map
 where the choice of isolated point a:Y+𝟙 controls which equivalence
 X+𝟙≃Y+𝟙 we get from the equivalence f: X≃Y:
 
-       f+𝟙       swap(a,inr(⋆))
+       f+𝟙       swap (a,inr(⋆))
   X+𝟙 ----> Y+𝟙 ---------------> Y+𝟙
 
 The claim is that the above map is an equivalence.

@@ -1,4 +1,5 @@
 Martin Escardo, 24th January 2019.
+With several additions after that, including by Tom de Jong.
 
 Voedvodsky (Types'2011) considered resizing rules for a type theory
 for univalent foundations. These rules govern the syntax of the formal
@@ -45,6 +46,8 @@ open import UF-UA-FunExt
 open import UF-UniverseEmbedding
 open import UF-PropIndexedPiSigma
 open import UF-PropTrunc
+open import UF-KrausLemma
+open import UF-Section-Embedding
 
 \end{code}
 
@@ -63,7 +66,8 @@ Propositional-Resizing : 𝓤ω
 Propositional-Resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥
 \end{code}
 
-Propositional resizing from a universe to a higher universe just holds, of course:
+Propositional resizing from a universe to a higher universe just
+holds, of course:
 
 \begin{code}
 
@@ -75,18 +79,32 @@ resize-up-proposition {𝓤} {𝓥} P i = resize-up {𝓤} {𝓥} P
 
 \end{code}
 
-We use the following to work with propositional resizing more abstractly:
+We use the following to work with propositional resizing more
+abstractly. We first define the type of some functions and then define
+them.
 
 \begin{code}
 
-resize           : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇ ) (i : is-prop P) → 𝓥 ̇
-resize-is-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P) → is-prop (resize ρ P i)
-to-resize        : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P) → P → resize ρ P i
-from-resize      : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P) → resize ρ P i → P
+resize : propositional-resizing 𝓤 𝓥 → (P : 𝓤 ̇ ) (i : is-prop P) → 𝓥 ̇
+
+resize-is-prop : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P)
+               → is-prop (resize ρ P i)
+
+to-resize : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P)
+          → P → resize ρ P i
+
+from-resize : (ρ : propositional-resizing 𝓤 𝓥) (P : 𝓤 ̇ ) (i : is-prop P)
+            → resize ρ P i → P
+
+\end{code}
+
+Definitions:
+
+\begin{code}
 
 resize         ρ P i   = pr₁ (ρ P i)
 resize-is-prop ρ P i = equiv-to-prop (pr₂ (ρ P i)) i
-to-resize      ρ P i   = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
+to-resize      ρ P i   = ⌜ pr₂ (ρ P i) ⌝⁻¹
 from-resize    ρ P i   = ⌜ pr₂ (ρ P i) ⌝
 
 Propositional-resizing : 𝓤ω
@@ -105,17 +123,22 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
    Q : decidable P → 𝓥 ̇
    Q (inl p) = 𝟙
    Q (inr n) = 𝟘
+
    j : (d : decidable P) → is-prop (Q d)
    j (inl p) = 𝟙-is-prop
    j (inr n) = 𝟘-is-prop
+
    f : (d : decidable P) → P → Q d
    f (inl p) p' = *
    f (inr n) p  = 𝟘-elim (n p)
+
    g : (d : decidable P) → Q d → P
    g (inl p) q = p
    g (inr n) q = 𝟘-elim q
+
    e : Q (em P i) ≃ P
-   e = logically-equivalent-props-are-equivalent (j (em P i)) i (g (em P i)) (f (em P i))
+   e = logically-equivalent-props-are-equivalent
+        (j (em P i)) i (g (em P i)) (f (em P i))
 
 \end{code}
 
@@ -125,12 +148,14 @@ hypotheses below).
 
 \begin{code}
 
-has-size-is-prop : Univalence → (X : 𝓤 ̇ ) (𝓥 :  Universe)
-                   → is-prop (X has-size 𝓥)
+has-size-is-prop : Univalence
+                 → (X : 𝓤 ̇ ) (𝓥 :  Universe)
+                 → is-prop (X has-size 𝓥)
 has-size-is-prop {𝓤} ua X 𝓥 = c
  where
   fe : FunExt
   fe = Univalence-gives-FunExt ua
+
   a : (Y : 𝓥 ̇ ) → (Y ≃ X) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 X)
   a Y = (Y ≃ X)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 X)  ≃⟨ a₁ ⟩
@@ -143,6 +168,7 @@ has-size-is-prop {𝓤} ua X 𝓥 = c
 
   b : (Σ Y ꞉ 𝓥 ̇ , Y ≃ X) ≃ (Σ Y ꞉ 𝓥 ̇  , Lift 𝓤 Y ≡ Lift 𝓥 X)
   b = Σ-cong a
+
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ X)
   c = equiv-to-prop b (Lift-is-embedding ua (Lift 𝓥 X))
 
@@ -171,6 +197,7 @@ prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
  where
   j : is-prop (Lift 𝓥 P)
   j = equiv-to-prop (Lift-is-universe-embedding 𝓥 P) i
+
   a : (Y : 𝓥 ̇ ) → (Y ≃ P) ≃ (Lift 𝓤 Y ≡ Lift 𝓥 P)
   a Y = (Y ≃ P)                ≃⟨ a₀ ⟩
         (Lift 𝓤 Y ≃ Lift 𝓥 P)  ≃⟨ a₁ ⟩
@@ -179,6 +206,7 @@ prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
     a₀ = Eq-Eq-cong fe
            (≃-sym (Lift-is-universe-embedding 𝓤 Y))
            (≃-sym (Lift-is-universe-embedding 𝓥 P))
+
     a₁ = ≃-sym (prop-univalent-≃
            (pe (𝓤 ⊔ 𝓥))(fe (𝓤 ⊔ 𝓥) (𝓤 ⊔ 𝓥)) (Lift 𝓤 Y) (Lift 𝓥 P) j)
 
@@ -188,10 +216,13 @@ prop-has-size-is-prop {𝓤} pe fe P i 𝓥 = c
   c : is-prop (Σ Y ꞉ 𝓥 ̇ , Y ≃ P)
   c = equiv-to-prop b (prop-fiber-Lift pe fe (Lift 𝓥 P) j)
 
-propositional-resizing-is-prop' : PropExt → FunExt → is-prop (propositional-resizing 𝓤 𝓥)
-propositional-resizing-is-prop' {𝓤} {𝓥} pe fe =  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
-                                                     (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
-                                                     (λ i → prop-has-size-is-prop pe fe P i 𝓥))
+propositional-resizing-is-prop' : PropExt
+                                → FunExt
+                                → is-prop (propositional-resizing 𝓤 𝓥)
+propositional-resizing-is-prop' {𝓤} {𝓥} pe fe =
+  Π-is-prop (fe (𝓤 ⁺) (𝓥 ⁺ ⊔ 𝓤))
+   (λ P → Π-is-prop (fe 𝓤 (𝓥 ⁺ ⊔ 𝓤))
+           (λ i → prop-has-size-is-prop pe fe P i 𝓥))
 \end{code}
 
 Impredicativity. We begin with this strong notion, which says that the
@@ -203,23 +234,34 @@ universe (i.e. in all universes except the first).
 Ω⁺-resizing : (𝓤 : Universe) → 𝓤ω
 Ω⁺-resizing 𝓤 = (𝓥 : Universe) → (Ω 𝓤) has-size (𝓥 ⁺)
 
-Ω⁺-resizing-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+Ω⁺-resizing-from-pr-pe-fe : Propositional-resizing
+                          → PropExt
+                          → FunExt
                           → Ω⁺-resizing 𝓤
-Ω⁺-resizing-from-pr-pe-fe {𝓤} ρ pe fe 𝓥 = Ω 𝓥 , qinveq φ (γ , γφ , φγ)
+Ω⁺-resizing-from-pr-pe-fe {𝓤} ρ pe fe 𝓥 = γ
  where
   φ : Ω 𝓥 → Ω 𝓤
   φ (Q , j) = resize ρ Q j , resize-is-prop ρ Q j
-  γ : Ω 𝓤 → Ω 𝓥
-  γ (P , i) = resize ρ P i , resize-is-prop ρ P i
-  φγ : (p : Ω 𝓤) → φ (γ p) ≡ p
-  φγ (P , i) = Ω-ext (fe 𝓤 𝓤) (pe 𝓤)
-               (from-resize ρ P i ∘ from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
-               (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘ to-resize ρ P i)
-  γφ : (q : Ω 𝓥) → γ (φ q) ≡ q
-  γφ (Q , j) = Ω-ext (fe 𝓥 𝓥) (pe 𝓥)
-               (from-resize ρ Q j ∘ from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
-               (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘ to-resize ρ Q j)
 
+  ψ : Ω 𝓤 → Ω 𝓥
+  ψ (P , i) = resize ρ P i , resize-is-prop ρ P i
+
+  φψ : (p : Ω 𝓤) → φ (ψ p) ≡ p
+  φψ (P , i) = Ω-extensionality (fe 𝓤 𝓤) (pe 𝓤)
+               (from-resize ρ P i ∘
+                from-resize ρ (resize ρ P i) (resize-is-prop ρ P i))
+               (to-resize ρ (resize ρ P i) (resize-is-prop ρ P i) ∘
+                to-resize ρ P i)
+
+  ψφ : (q : Ω 𝓥) → ψ (φ q) ≡ q
+  ψφ (Q , j) = Ω-extensionality (fe 𝓥 𝓥) (pe 𝓥)
+               (from-resize ρ Q j ∘
+                from-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j))
+               (to-resize ρ (resize ρ Q j) (resize-is-prop ρ Q j) ∘
+                to-resize ρ Q j)
+
+  γ : (Ω 𝓤) has-size (𝓥 ⁺)
+  γ = Ω 𝓥 , qinveq φ (ψ , ψφ , φψ)
 \end{code}
 
 A more standard notion of impredicativity is that the type Ω 𝓤 of
@@ -238,7 +280,9 @@ impredicative, but it does imply that all other, successor, universes
 
 \begin{code}
 
-Ω-resizing⁺-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+Ω-resizing⁺-from-pr-pe-fe : Propositional-resizing
+                          → PropExt
+                          → FunExt
                           → Ω-resizing (𝓤 ⁺)
 Ω-resizing⁺-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤
 
@@ -256,29 +300,35 @@ universe, and of all other universes, of course:
                                 → propext 𝓤
                                 → funext 𝓤 𝓤
                                 → (𝓥 : Universe) → Ω-Resizing 𝓤 𝓥
-Ω-global-resizing-from-em-pe-fe {𝓤} lem pe fe 𝓥 =
- (𝟙 {𝓥} + 𝟙 {𝓥}) ,
- qinveq φ
- ((λ p → γ p (em p)) ,
-  (λ z → γφ z (em (φ z))) ,
-  (λ p → φγ p (em p)))
+Ω-global-resizing-from-em-pe-fe {𝓤} lem pe fe 𝓥 = γ
  where
   em : LEM 𝓤
   em = EM-gives-LEM lem
+
   φ : 𝟙 + 𝟙 → Ω 𝓤
   φ (inl x) = ⊥
   φ (inr y) = ⊤
-  γ : (p : Ω 𝓤) → decidable (p holds) → 𝟙 + 𝟙
-  γ p (inl h) = inr *
-  γ p (inr n) = inl *
-  γφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → γ (φ z) d ≡ z
-  γφ (inl x) (inl h) = 𝟘-elim h
-  γφ (inl x) (inr n) = ap inl (𝟙-is-prop * x)
-  γφ (inr y) (inl h) = ap inr (𝟙-is-prop * y)
-  γφ (inr y) (inr n) = 𝟘-elim (n *)
-  φγ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (γ p d) ≡ p
-  φγ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
-  φγ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
+
+  ψ : (p : Ω 𝓤) → decidable (p holds) → 𝟙 + 𝟙
+  ψ p (inl h) = inr *
+  ψ p (inr n) = inl *
+
+  ψφ : (z : 𝟙 + 𝟙) (d : decidable ((φ z) holds)) → ψ (φ z) d ≡ z
+  ψφ (inl x) (inl h) = 𝟘-elim h
+  ψφ (inl x) (inr n) = ap inl (𝟙-is-prop * x)
+  ψφ (inr y) (inl h) = ap inr (𝟙-is-prop * y)
+  ψφ (inr y) (inr n) = 𝟘-elim (n *)
+
+  φψ : (p : Ω 𝓤) (d : decidable (p holds)) → φ (ψ p d) ≡ p
+  φψ p (inl h) = (true-is-equal-⊤  pe fe (p holds) (holds-is-prop p) h)⁻¹
+  φψ p (inr n) = (false-is-equal-⊥ pe fe (p holds) (holds-is-prop p) n)⁻¹
+
+  γ : Ω-Resizing 𝓤 𝓥
+  γ =  (𝟙 {𝓥} + 𝟙 {𝓥}) ,
+       qinveq φ
+         ((λ p → ψ p (em p)) ,
+          (λ z → ψφ z (em (φ z))) ,
+          (λ p → φψ p (em p)))
 
 \end{code}
 
@@ -291,27 +341,38 @@ universes:
                                         → propext 𝓤
                                         → funext 𝓤 𝓤
                                         → propositional-resizing 𝓤 𝓥
-Ω-resizing-gives-propositional-resizing {𝓤} {𝓥} (O , e) pe fe P i = Q , ε
+Ω-resizing-gives-propositional-resizing {𝓤} {𝓥} (O , e) pe fe P i = γ
  where
   down : Ω 𝓤 → O
   down = ⌜ ≃-sym e ⌝
+
   O-is-set : is-set O
   O-is-set = equiv-to-set e (Ω-is-set fe pe)
+
   Q : 𝓥 ̇
   Q = down ⊤ ≡ down (P , i)
+
   j : is-prop Q
   j = O-is-set
+
   φ : Q → P
   φ q = idtofun 𝟙 P (ap pr₁ (equivs-are-lc down (⌜⌝-is-equiv (≃-sym e)) q)) *
-  γ : P → Q
-  γ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) , being-prop-is-prop fe _ _))
+
+  ψ : P → Q
+  ψ p = ap down (to-Σ-≡ (pe 𝟙-is-prop i (λ _ → p) (λ _ → *) ,
+                         being-prop-is-prop fe _ _))
+
   ε : Q ≃ P
-  ε = logically-equivalent-props-are-equivalent j i φ γ
+  ε = logically-equivalent-props-are-equivalent j i φ ψ
+
+  γ : Σ Q ꞉ 𝓥 ̇ , Q ≃ P
+  γ = Q , ε
 
 Ω-resizing₀ : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Ω-resizing₀ 𝓤 = (Ω 𝓤) has-size 𝓤₀
 
-Ω-resizing₀-from-em-pe-fe₀ : EM 𝓤 → propext 𝓤
+Ω-resizing₀-from-em-pe-fe₀ : EM 𝓤
+                           → propext 𝓤
                            → funext 𝓤 𝓤
                            → Ω-resizing₀ 𝓤
 Ω-resizing₀-from-em-pe-fe₀ {𝓤} em pe fe = Ω-global-resizing-from-em-pe-fe em pe fe 𝓤₀
@@ -327,13 +388,18 @@ the second universe 𝓤₁:
 Ω-resizing₁ : (𝓤 : Universe) → 𝓤 ⁺ ⊔ 𝓤₂ ̇
 Ω-resizing₁ 𝓤 = (Ω 𝓤) has-size 𝓤₁
 
-Ω-resizing₁-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+Ω-resizing₁-from-pr-pe-fe : Propositional-resizing
+                          → PropExt
+                          → FunExt
                           → Ω-resizing₁ 𝓤
 Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe = Ω⁺-resizing-from-pr-pe-fe ρ pe fe 𝓤₀
 
-Ω-resizing₁-≃-from-pr-pe-fe : Propositional-resizing → PropExt → FunExt
+Ω-resizing₁-≃-from-pr-pe-fe : Propositional-resizing
+                            → PropExt
+                            → FunExt
                             → Ω 𝓤 ≃ Ω 𝓤₀
-Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe = ≃-sym (pr₂ (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
+Ω-resizing₁-≃-from-pr-pe-fe {𝓤} ρ pe fe =
+  ≃-sym (pr₂ (Ω-resizing₁-from-pr-pe-fe {𝓤} ρ pe fe))
 
 Ω-𝓤₀-lives-in-𝓤₁ : universe-of (Ω 𝓤₀) ≡ 𝓤₁
 Ω-𝓤₀-lives-in-𝓤₁ = refl
@@ -353,35 +419,49 @@ Lift-is-section ua R 𝓤 𝓥 = (r , rs)
  where
   s : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   s = Lift 𝓥
+
   e : is-embedding s
   e = Lift-is-embedding ua
+
   F : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   F Y = resize R (fiber s Y) (e Y)
+
   f : (Y : 𝓤 ⊔ 𝓥 ̇ ) → F Y → fiber s Y
   f Y = from-resize R (fiber s Y) (e Y)
+
   r : 𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇
   r Y = (p : F Y) → pr₁ (f Y p)
+
   rs : (X : 𝓤 ̇ ) → r (s X) ≡ X
   rs X = γ
    where
     g : (Y : 𝓤 ⊔ 𝓥 ̇ ) → fiber s Y → F Y
     g Y = to-resize R (fiber s Y) (e Y)
+
     u : F (s X)
     u = g (s X) (X , refl)
+
     v : fiber s (s X)
     v = f (s X) u
+
     i : (Y : 𝓤 ⊔ 𝓥 ̇ ) → is-prop (F Y)
     i Y = resize-is-prop R (fiber s Y) (e Y)
+
     X' : 𝓤 ̇
     X' = pr₁ v
+
     a : r (s X) ≃ X'
     a = prop-indexed-product (Univalence-gives-FunExt ua 𝓤 𝓤) (i (s X)) u
+
     b : s X' ≡ s X
     b = pr₂ v
+
     c : X' ≡ X
     c = embeddings-are-lc s e b
+
     d : r (s X) ≃ X
     d = transport (λ - → r (s X) ≃ -) c a
+
     γ : r (s X) ≡ X
     γ = eqtoid (ua 𝓤) (r (s X)) X d
 
@@ -399,7 +479,7 @@ Hence it is worth stating this explicitly:
 universe-retract' : Univalence
                   → Propositional-resizing
                   → (𝓤 𝓥 : Universe)
-                  → Σ ρ ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding (section ρ)
+                  → Σ (r , s , η) ꞉ retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ ), is-embedding s
 universe-retract' ua R 𝓤 𝓥 = (pr₁ a , Lift 𝓥 , pr₂ a) , Lift-is-embedding ua
  where
   a : Σ lower ꞉ (𝓤 ⊔ 𝓥 ̇ → 𝓤 ̇ ) , lower ∘ Lift 𝓥 ∼ id
@@ -435,15 +515,18 @@ universes).
 ∥∥⁺-rec : {X P : 𝓤 ̇ } → is-prop P → (X → P) → ∥ X ∥⁺ → P
 ∥∥⁺-rec {𝓤} {X} {P} i u s = s P i u
 
-resizing-truncation : FunExt → Propositional-resizing → propositional-truncations-exist
+resizing-truncation : FunExt
+                    → Propositional-resizing
+                    → propositional-truncations-exist
 resizing-truncation fe R = record {
     ∥_∥          = λ {𝓤} X → resize R ∥ X ∥⁺ (∥∥⁺-is-prop fe)
-  ; ∥∥-is-prop = λ {𝓤} {X} → resize-is-prop R ∥ X ∥⁺ (∥∥⁺-is-prop fe)
+  ; ∥∥-is-prop   = λ {𝓤} {X} → resize-is-prop R ∥ X ∥⁺ (∥∥⁺-is-prop fe)
   ; ∣_∣          = λ {𝓤} {X} x → to-resize R ∥ X ∥⁺ (∥∥⁺-is-prop fe) ∣ x ∣⁺
   ; ∥∥-rec       = λ {𝓤} {𝓥} {X} {P} i u s → from-resize R P i
                                               (∥∥⁺-rec (resize-is-prop R P i)
                                                        (to-resize R P i ∘ u)
-                                                       (from-resize R ∥ X ∥⁺ (∥∥⁺-is-prop fe) s))
+                                                       (from-resize R ∥ X ∥⁺
+                                                         (∥∥⁺-is-prop fe) s))
   }
 
 \end{code}
@@ -484,7 +567,7 @@ is not necessary.
 
 Added 24 January 2020 (originally proved 19 November 2019) by Tom de Jong.
 
-It turns out that a proposition Y has size 𝓥 precisely if the proposition
+It turns out that a proposition Y has size 𝓥 precisely if
 (Y has-size 𝓥) has size 𝓥.
 
 Hence, if you can resize the propositions of the form (Y has-size 𝓥)
@@ -500,19 +583,23 @@ has-size-idempotent ua 𝓤 𝓥 Y i (H , e) = X , γ
  where
   X : 𝓥 ̇
   X = Σ h ꞉ H , pr₁ (eqtofun e h)
+
   γ = X  ≃⟨ Σ-change-of-variable pr₁ (eqtofun e) (eqtofun- e) ⟩
       X' ≃⟨ ϕ ⟩
       Y  ■
    where
     X' : 𝓥 ⁺ ⊔ 𝓤 ̇
     X' = Σ h ꞉ Y has-size 𝓥 , pr₁ h
+
     ϕ = logically-equivalent-props-are-equivalent j i f g
      where
       j : is-prop X'
       j = Σ-is-prop (has-size-is-prop ua Y 𝓥)
             (λ (h : Y has-size 𝓥) → equiv-to-prop (pr₂ h) i)
+
       f : X' → Y
       f (e' , x) = eqtofun (pr₂ e') x
+
       g : Y → X'
       g y = (𝟙{𝓥} , singleton-≃-𝟙' (pointed-props-are-singletons y i)) , *
 
@@ -521,8 +608,8 @@ has-size-resizing 𝓤 𝓥 = (Y : 𝓤 ̇ ) → (Y has-size 𝓥) has-size 𝓥
 
 has-size-resizing-implies-propositional-resizing : (ua : Univalence)
                                                    (𝓤 𝓥 : Universe)
-                                                   → has-size-resizing 𝓤 𝓥
-                                                   → propositional-resizing 𝓤 𝓥
+                                                 → has-size-resizing 𝓤 𝓥
+                                                 → propositional-resizing 𝓤 𝓥
 has-size-resizing-implies-propositional-resizing ua 𝓤 𝓥 r P i =
   has-size-idempotent ua 𝓤 𝓥 P i (r P)
 
@@ -555,53 +642,118 @@ has-size-idempotent-≡ ua 𝓤 𝓥 Y i =
 
 \end{code}
 
-Added 26th Janruary. The following is based on work with Tom de Jong.
+Added 26th January 2021. The following is based on joint work of Tom
+de Jong with Martin Escardo.
 
 \begin{code}
 
 is-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-small {𝓤} 𝓧 = Σ X ꞉ 𝓤 ̇ , X ≃ 𝓧
+is-small {𝓤} X = X has-size 𝓤
 
 is-large : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
-is-large 𝓧 = ¬ is-small 𝓧
+is-large X = ¬ is-small X
+
+_Has-size_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → (𝓦 : Universe) → 𝓤 ⊔ 𝓥 ⊔ (𝓦 ⁺) ̇
+f Has-size 𝓦 = ∀ y → (fiber f y) has-size 𝓦
 
 is-small-map : {X Y : 𝓤 ⁺ ̇ } → (X → Y) → 𝓤 ⁺ ̇
 is-small-map f = ∀ y → is-small (fiber f y)
+
+size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → f Has-size 𝓦
+                    → Y has-size 𝓦
+                    → X has-size 𝓦
+size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
+ where
+  F : Y → 𝓦 ̇
+  F y = pr₁ (f-size y)
+
+  F-is-fiber : (y : Y) → F y ≃ fiber f y
+  F-is-fiber y = pr₂ (f-size y)
+
+  X' : 𝓦 ̇
+  X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
+
+  e = X'                    ≃⟨ Σ-change-of-variable F ⌜ 𝕘 ⌝ (⌜⌝-is-equiv 𝕘) ⟩
+      (Σ y ꞉ Y , F y)       ≃⟨ Σ-cong F-is-fiber ⟩
+      (Σ y ꞉ Y , fiber f y) ≃⟨ total-fiber-is-domain f ⟩
+      X                     ■
+
+  γ : X has-size 𝓦
+  γ = X' , e
 
 small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
                      → is-small-map f
                      → is-small Y
                      → is-small X
-small-contravariance {𝓤} {X} {Y} f f-is-small Y-is-small = X-is-small
- where
-  F : Y → 𝓤 ̇
-  F y = pr₁ (f-is-small y)
-
-  F-is-fiber : (y : Y) → F y ≃ fiber f y
-  F-is-fiber y = pr₂ (f-is-small y)
-
-  Y' : 𝓤 ̇
-  Y' = pr₁ Y-is-small
-
-  𝕘 : Y' ≃ Y
-  𝕘 = pr₂ Y-is-small
-
-  X' : 𝓤 ̇
-  X' = Σ y' ꞉ Y' , F (⌜ 𝕘 ⌝ y')
-
-  e = X'                            ≃⟨ Σ-change-of-variable F ⌜ 𝕘 ⌝ (⌜⌝-is-equiv 𝕘) ⟩
-      (Σ y ꞉ Y , F y)               ≃⟨ Σ-cong F-is-fiber ⟩
-      (Σ y ꞉ Y , Σ x ꞉ X , f x ≡ y) ≃⟨ total-fiber-is-domain f ⟩
-      X                             ■
-
-  X-is-small : is-small X
-  X-is-small = X' , e
+small-contravariance = size-contravariance
 
 large-covariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
-                 → ((y : Y) → is-small (fiber f y))
+                 → is-small-map f
                  → is-large X
                  → is-large Y
 large-covariance f ϕ = contrapositive (small-contravariance f ϕ)
+
+size-of-section-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
+                          → is-section s
+                          → is-embedding s
+                          → s Has-size 𝓥
+size-of-section-embedding {𝓤} {𝓥} {X} {Y} s (r , η) e y = γ
+ where
+  c : (x : Y) → collapsible (s (r x) ≡ x)
+  c = section-embedding-gives-collapsible r s η e
+
+  κ : s (r y) ≡ y → s (r y) ≡ y
+  κ = pr₁ (c y)
+
+  κ-constant : (p p' : s (r y) ≡ y) → κ p ≡ κ p'
+  κ-constant = pr₂ (c y)
+
+  B : 𝓥 ̇
+  B = fix κ
+
+  B-is-prop : is-prop B
+  B-is-prop = fix-is-prop κ κ-constant
+
+  α : B → fiber s y
+  α = (λ p → r y , p) ∘ from-fix κ
+
+  β : fiber s y → B
+  β = to-fix κ κ-constant ∘ λ (x , p) → s (r y)     ≡⟨ ap (s ∘ r) (p ⁻¹) ⟩
+                                        s (r (s x)) ≡⟨ ap s (η x) ⟩
+                                        s x         ≡⟨ p ⟩
+                                        y           ∎
+
+  δ : B ≃ fiber s y
+  δ = logically-equivalent-props-are-equivalent B-is-prop (e y) α β
+
+  γ : (fiber s y) has-size 𝓥
+  γ = B , δ
+
+section-embedding-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                      → is-embedding f
+                                      → is-section f
+                                      → Y has-size 𝓦
+                                      → X has-size 𝓦
+section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) (Y' , h , i) = γ
+ where
+  h⁻¹ : Y → Y'
+  h⁻¹ = inverse h i
+
+  f' : X → Y'
+  f' = h⁻¹ ∘ f
+
+  η' = λ x → g (h (h⁻¹ (f x))) ≡⟨ ap g (inverses-are-sections h i (f x)) ⟩
+             g (f x)           ≡⟨ η x ⟩
+             x                 ∎
+
+  δ : f' Has-size 𝓦
+  δ = size-of-section-embedding f' (g ∘ h , η')
+       (∘-is-embedding e (equivs-are-embeddings h⁻¹
+                         (inverses-are-equivs h i)))
+
+  γ : X has-size 𝓦
+  γ = size-contravariance f' δ (Y' , ≃-refl Y')
 
 \end{code}
 
@@ -614,3 +766,6 @@ is-locally-small : 𝓤 ⁺ ̇ → 𝓤 ⁺ ̇
 is-locally-small X = (x y : X) → is-small (x ≡ y)
 
 \end{code}
+
+For example, by univalence, universes are locally small, and so is the
+(large) type of ordinals in a universe.

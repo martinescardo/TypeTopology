@@ -39,7 +39,7 @@ l ⋍ m = Σ e ꞉ source l ≃ source m , family l ≡ family m ∘ ⌜ e ⌝
         (λ A τ υ → refl-left-neutral)
 
 ⋍-gives-≡ : is-univalent 𝓣 → {l m : 𝓕 X} → (l ⋍ m) → l ≡ m
-⋍-gives-≡ ua = ⌜ ≃-sym (𝓕-Id ua _ _) ⌝
+⋍-gives-≡ ua = ⌜ 𝓕-Id ua _ _ ⌝⁻¹
 
 _⋍·_ : 𝓕 X → 𝓕 X → 𝓣 ⊔ 𝓤 ̇
 l ⋍· m = Σ e ꞉ source l ≃ source m , family l ∼ family m ∘ ⌜ e ⌝

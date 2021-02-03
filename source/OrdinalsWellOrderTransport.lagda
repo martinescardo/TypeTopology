@@ -374,7 +374,7 @@ transfer-structure {𝓤} {𝓥} X α 𝕗 (_<_ , <-is-equivalent-to-≺) = γ
     γ = transport₂ _<_ ((ε a)⁻¹) ((ε b)⁻¹) δ
 
   f-preserves-order : (x y : X) → x ≺ y → f x ≺⟨ α ⟩ f y
-  f-preserves-order x y = ⌜ ≃-sym (<-is-equivalent-to-≺ (f x) (f y)) ⌝
+  f-preserves-order x y = ⌜ <-is-equivalent-to-≺ (f x) (f y) ⌝⁻¹
 
   e : (X , _≺_ , w) ≃ₒ α
   e = (f , f-preserves-order , ⌜⌝-is-equiv 𝕗 , g-preserves-order)

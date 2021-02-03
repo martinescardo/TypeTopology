@@ -1117,7 +1117,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
   isomorphic-NoetherianRng-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ≡ 𝓡'
-    p = ⌜ ≃-sym (characterization-of-nrng-≡ 𝓡 𝓡') ⌝ i
+    p = ⌜ characterization-of-nrng-≡ 𝓡 𝓡' ⌝⁻¹ i
 
     a' : A 𝓡'
     a' = transport A p a
@@ -1186,7 +1186,7 @@ module ring {𝓤 : Universe} (ua : Univalence) where
   isomorphic-CNL-Ring-transport A 𝓡 𝓡' i a = a'
    where
     p : 𝓡 ≡ 𝓡'
-    p = ⌜ ≃-sym (characterization-of-CNL-ring-≡ 𝓡 𝓡') ⌝ i
+    p = ⌜ characterization-of-CNL-ring-≡ 𝓡 𝓡' ⌝⁻¹ i
 
     a' : A 𝓡'
     a' = transport A p a

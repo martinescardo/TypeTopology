@@ -26,12 +26,14 @@ open import UF-Retracts
 
 Π-is-prop : funext 𝓤 𝓥
           → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-          → ((x : X) → is-prop (A x)) → is-prop (Π A)
+          → ((x : X) → is-prop (A x))
+          → is-prop (Π A)
 Π-is-prop fe i f g = dfunext fe (λ x → i x (f x) (g x))
 
 Π-is-prop' : funext 𝓤 𝓥
            → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-           → ((x : X) → is-prop (A x)) → is-prop ({x : X} → A x)
+           → ((x : X) → is-prop (A x))
+           → is-prop ({x : X} → A x)
 Π-is-prop' fe {X} {A} i = retract-of-prop retr (Π-is-prop fe i)
  where
   retr : retract ({x : X} → A x) of Π A
@@ -39,18 +41,24 @@ open import UF-Retracts
 
 Π-is-singleton : funext 𝓤 𝓥
                → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-               → ((x : X) → is-singleton (A x)) → is-singleton (Π A)
+               → ((x : X) → is-singleton (A x))
+               → is-singleton (Π A)
 Π-is-singleton fe i = (λ x → pr₁ (i x)) , (λ f → dfunext fe (λ x → pr₂ (i x) (f x)))
 
-being-prop-is-prop : {X : 𝓤 ̇ } → funext 𝓤 𝓤 → is-prop (is-prop X)
+being-prop-is-prop : {X : 𝓤 ̇ }
+                   → funext 𝓤 𝓤
+                   → is-prop (is-prop X)
 being-prop-is-prop {𝓤} {X} fe f g = c₁
  where
   l : is-set X
   l = props-are-sets f
+
   c : (x y : X) → f x y ≡ g x y
   c x y = l (f x y) (g x y)
+
   c₀ : (x : X) → f x ≡ g x
   c₀ x = dfunext fe (c x)
+
   c₁ : f ≡ g
   c₁  = dfunext fe c₀
 
@@ -64,12 +72,15 @@ identifications-of-props-are-props {𝓤} pe fe P i = local-hedberg' P (λ X →
  where
   f : (X : 𝓤 ̇ ) → X ≡ P → is-prop X × (X ⇔ P)
   f X refl = i , (id , id)
+
   g : (X : 𝓤 ̇ ) → is-prop X × (X ⇔ P) → X ≡ P
   g X (l , φ , γ) = pe l i φ γ
+
   j : (X : 𝓤 ̇ ) → is-prop (is-prop X × (X ⇔ P))
   j X = ×-prop-criterion ((λ _ → being-prop-is-prop fe) ,
                           (λ l → ×-is-prop (Π-is-prop fe (λ x → i))
                                             (Π-is-prop fe (λ p → l))))
+
   k : (X : 𝓤 ̇ ) → wconstant (g X ∘ f X)
   k X p q = ap (g X) (j X (f X p) (f X q))
 
@@ -78,6 +89,7 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe 
  where
   isp : is-prop X
   isp = singletons-are-props (y , γ)
+
   iss : is-set X
   iss = props-are-sets isp
 
@@ -86,11 +98,13 @@ being-singleton-is-prop fe {X} (x , φ) (y , γ) = to-Σ-≡ (φ y , dfunext fe 
 
 Π-is-set : funext 𝓤 𝓥
          → {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-         → ((x : X) → is-set (A x)) → is-set (Π A)
+         → ((x : X) → is-set (A x))
+         → is-set (Π A)
 Π-is-set {𝓤} {𝓥} fe {X} {A} isa {f} {g} = b
  where
   a : is-prop (f ∼ g)
   a p q = dfunext fe λ x → isa x (p x) (q x)
+
   b : is-prop (f ≡ g)
   b = left-cancellable-reflects-is-prop happly (section-lc happly (pr₂ (fe f g))) a
 
@@ -134,9 +148,14 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
                                       (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
                                       (λ p u → u p)
 
-Ω-ext : funext 𝓤 𝓤 → propext 𝓤 → {p q : Ω 𝓤}
-        → (p holds → q holds) → (q holds → p holds) → p ≡ q
-Ω-ext {𝓤} fe pe {p} {q} f g =
+Ω-extensionality : funext 𝓤 𝓤
+                 → propext 𝓤
+                 → {p q : Ω 𝓤}
+                 → (p holds → q holds)
+                 → (q holds → p holds)
+                 → p ≡ q
+
+Ω-extensionality {𝓤} fe pe {p} {q} f g =
  to-Σ-≡ (pe (holds-is-prop p) (holds-is-prop q) f g ,
          being-prop-is-prop fe _ _)
 
@@ -145,25 +164,33 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
  where
   A : (p q : Ω 𝓤) → 𝓤 ̇
   A p q = (p holds → q holds) × (q holds → p holds)
+
   A-is-prop : (p q : Ω 𝓤) → is-prop (A p q)
   A-is-prop p q = Σ-is-prop (Π-is-prop fe
                                    (λ _ → holds-is-prop q))
                                    (λ _ → Π-is-prop fe (λ _ → holds-is-prop p))
+
   g : (p q : Ω 𝓤) → p ≡ q → A p q
   g p q e = (b , c)
    where
     a : p holds ≡ q holds
     a = ap _holds e
+
     b : p holds → q holds
     b = transport (λ X → X) a
+
     c : q holds → p holds
     c = transport (λ X → X) (a ⁻¹)
+
   h  : (p q : Ω 𝓤) → A p q → p ≡ q
-  h p q (u , v) = Ω-ext fe pe u v
+  h p q (u , v) = Ω-extensionality fe pe u v
+
   f  : (p q : Ω 𝓤) → p ≡ q → p ≡ q
   f p q e = h p q (g p q e)
+
   wconstant-f : (p q : Ω 𝓤) (d e : p ≡ q) → f p q d ≡ f p q e
   wconstant-f p q d e = ap (h p q) (A-is-prop p q (g p q d) (g p q e))
+
   pc : {p q : Ω 𝓤} → Σ f ꞉ (p ≡ q → p ≡ q) , wconstant f
   pc {p} {q} = (f p q , wconstant-f p q)
 
@@ -198,6 +225,7 @@ equal-⊤-is-true P hp r = f *
  where
   s : 𝟙 ≡ P
   s = (ap pr₁ r)⁻¹
+
   f : 𝟙 → P
   f = transport id s
 
@@ -227,15 +255,17 @@ equal-⊤-gives-holds : (p : Ω 𝓤) → p ≡ ⊤ → p holds
 equal-⊤-gives-holds p r = equal-𝟙-gives-holds (p holds) (ap pr₁ r)
 
 not-𝟘-is-𝟙 : funext 𝓤 𝓤₀
-           → propext 𝓤 → (¬ 𝟘) ≡ 𝟙
+           → propext 𝓤
+           → (¬ 𝟘) ≡ 𝟙
 not-𝟘-is-𝟙 fe pe = pe (negations-are-props fe)
                       𝟙-is-prop
                       (λ _ → *)
                       (λ _ z → 𝟘-elim z)
 
 equal-⊥-gives-not-equal-⊤ : (fe : Fun-Ext)
-                          (pe : propext 𝓤)
-                          (p : Ω 𝓤) → p ≡ ⊥ → not fe p ≡ ⊤
+                            (pe : propext 𝓤)
+                            (p : Ω 𝓤)
+                            → p ≡ ⊥ → not fe p ≡ ⊤
 equal-⊥-gives-not-equal-⊤ fe pe p r = to-subtype-≡ (λ _ → being-prop-is-prop fe) t
  where
   s : p holds ≡ 𝟘
@@ -244,14 +274,17 @@ equal-⊥-gives-not-equal-⊤ fe pe p r = to-subtype-≡ (λ _ → being-prop-is
   t : ¬ (p holds) ≡ 𝟙
   t = ap ¬_ s ∙ not-𝟘-is-𝟙 fe pe
 
-false-is-equal-⊥ : propext 𝓤 → funext 𝓤 𝓤 → (P : 𝓤 ̇ ) (i : is-prop P)
+false-is-equal-⊥ : propext 𝓤
+                 → funext 𝓤 𝓤
+                 → (P : 𝓤 ̇ ) (i : is-prop P)
                  → ¬ P → (P , i) ≡ ⊥
 false-is-equal-⊥ pe fe P i f = to-Σ-≡ (pe i 𝟘-is-prop (λ p → 𝟘-elim (f p)) 𝟘-elim ,
                                        being-prop-is-prop fe _ _)
 
 not-equal-⊤-gives-equal-⊥ : (fe : Fun-Ext)
                             (pe : propext 𝓤)
-                            (p : Ω 𝓤) → not fe p ≡ ⊤ → p ≡ ⊥
+                            (p : Ω 𝓤)
+                          → not fe p ≡ ⊤ → p ≡ ⊥
 not-equal-⊤-gives-equal-⊥ fe pe p r = to-subtype-≡ (λ _ → being-prop-is-prop fe) t
  where
   f : (not fe p) holds
@@ -260,13 +293,19 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = to-subtype-≡ (λ _ → being-prop-is
   t : p holds ≡ 𝟘
   t = empty-types-are-≡-𝟘 fe pe f
 
-Ω-ext' : propext 𝓤 → funext 𝓤 𝓤 → {p q : Ω 𝓤}
-      → (p ≡ ⊤ → q ≡ ⊤) → (q ≡ ⊤ → p ≡ ⊤) → p ≡ q
-Ω-ext' pe fe {(P , i)} {(Q , j)} f g = to-Σ-≡ (pe i j I II ,
+Ω-ext : propext 𝓤
+       → funext 𝓤 𝓤
+       → {p q : Ω 𝓤}
+       → (p ≡ ⊤ → q ≡ ⊤)
+       → (q ≡ ⊤ → p ≡ ⊤)
+       → p ≡ q
+
+Ω-ext pe fe {(P , i)} {(Q , j)} f g = to-Σ-≡ (pe i j I II ,
                                               being-prop-is-prop fe _ _ )
  where
   I : P → Q
   I x = equal-⊤-is-true Q j (f (true-is-equal-⊤ pe fe P i x))
+
   II : Q → P
   II y = equal-⊤-is-true P i (g (true-is-equal-⊤ pe fe Q j y))
 
@@ -285,12 +324,13 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
   u p = g l
     where
      l : (P , i) ≡ ⊤
-     l = Ω-ext fe pe unique-to-𝟙 (λ _ → p)
+     l = Ω-extensionality fe pe unique-to-𝟙 (λ _ → p)
+
   φ : ¬¬ P
   φ u = f l
     where
      l : (P , i) ≡ ⊥
-     l = Ω-ext fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
+     l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
 \end{code}
 
@@ -337,19 +377,8 @@ the-true-props-form-a-prop fe pe = singletons-are-props (the-true-props-form-a-s
 
 \end{code}
 
-Added 5 March 2020 by Tom de Jong.
-
-\begin{code}
-
-¬-is-prop : funext 𝓤 𝓤₀ → {X : 𝓤 ̇ } → is-prop (¬ X)
-¬-is-prop fe = Π-is-prop fe (λ x → 𝟘-is-prop)
-
-\end{code}
-
-But notice that the above already exists in this file as negations-are-props!
-
-Added 16th June 2020 by Martin Escardo. (Should have added this ages
-ago to avoid boiler-plate code.)
+Added 16th June 2020. (Should have added this ages ago to avoid
+boiler-plate code.)
 
 \begin{code}
 
@@ -372,25 +401,25 @@ ago to avoid boiler-plate code.)
 
 Π₄-is-prop : Fun-Ext
            → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ : Universe}
-             {X₀ : 𝓤 ̇ }
-             {X₁ : X₀ → 𝓥₀ ̇ }
-             {X₂ : (x₀ : X₀) → X₁ x₀ → 𝓥₁ ̇ }
-             {X₃ : (x₀ : X₀) (x₁ : X₁ x₀) → X₂ x₀ x₁ → 𝓥₂ ̇ }
-             {X₄ : (x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) → X₃ x₀ x₁ x₂ → 𝓥₃ ̇ }
-           → ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) → is-prop (X₄ x₀ x₁ x₂ x₃))
-           → is-prop ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) → X₄ x₀ x₁ x₂ x₃)
+             {A : 𝓤 ̇ }
+             {B : A → 𝓥₀ ̇ }
+             {C : (a : A) → B a → 𝓥₁ ̇ }
+             {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
+             {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
+           → ((a : A) (b : B a) (c : C a b) (d : D a b c) → is-prop (E a b c d))
+           → is-prop ((a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d)
 Π₄-is-prop fe i = Π-is-prop fe (λ x → Π₃-is-prop fe (i x))
 
 Π₅-is-prop : Fun-Ext
            → {𝓥₀ 𝓥₁ 𝓥₂ 𝓥₃ 𝓥₄ : Universe}
-             {X₀ : 𝓤 ̇ }
-             {X₁ : X₀ → 𝓥₀ ̇ }
-             {X₂ : (x₀ : X₀) → X₁ x₀ → 𝓥₁ ̇ }
-             {X₃ : (x₀ : X₀) (x₁ : X₁ x₀) → X₂ x₀ x₁ → 𝓥₂ ̇ }
-             {X₄ : (x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) → X₃ x₀ x₁ x₂ → 𝓥₃ ̇ }
-             {X₅ : (x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) → X₄ x₀ x₁ x₂ x₃ → 𝓥₄ ̇ }
-           → ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) (x₄ : X₄ x₀ x₁ x₂ x₃) → is-prop (X₅ x₀ x₁ x₂ x₃ x₄))
-           → is-prop ((x₀ : X₀) (x₁ : X₁ x₀) (x₂ : X₂ x₀ x₁) (x₃ : X₃ x₀ x₁ x₂) (x₄ : X₄ x₀ x₁ x₂ x₃) → X₅ x₀ x₁ x₂ x₃ x₄)
+             {A : 𝓤 ̇ }
+             {B : A → 𝓥₀ ̇ }
+             {C : (a : A) → B a → 𝓥₁ ̇ }
+             {D : (a : A) (b : B a) → C a b → 𝓥₂ ̇ }
+             {E : (a : A) (b : B a) (c : C a b) → D a b c → 𝓥₃ ̇ }
+             {F : (a : A) (b : B a) (c : C a b) (d : D a b c) → E a b c d → 𝓥₄ ̇ }
+           → ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) → is-prop (F a b c d e))
+           → is-prop ((a : A) (b : B a) (c : C a b) (d : D a b c) (e : E a b c d) → F a b c d e)
 Π₅-is-prop fe i = Π-is-prop fe (λ x → Π₄-is-prop fe (i x))
 
 \end{code}

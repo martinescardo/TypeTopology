@@ -50,7 +50,7 @@ produce a classical conclusion from the hypothetical premise.
 Our assumption of the axiom of extensionality may seem dubious. In
 any case, we do get a meta-theorem that does not rely on
 extensionality: For all closed terms p: U → 𝟚 with p extensional
-and X,Y: U, there is no closed term of type p(X) ≡ ₀ ∧ P(Y) ≡ ₁,
+and X,Y: U, there is no closed term of type p (X) ≡ ₀ ∧ P(Y) ≡ ₁,
 where U is the universe of types and where 𝟚 is a type with two
 distinct elements ₀ and ₁, and with decidable equality.
 
@@ -106,7 +106,7 @@ Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma ,
   p : ℕ∞ → 𝟚
   p u = P(Q u)
 
-  p-lemma : (i : ℕ) → p(under i) ≡ ₀
+  p-lemma : (i : ℕ) → p (under i) ≡ ₀
   p-lemma i = e (Q(under i)) X (Q-lemma i) ∙ r
 
   p-lemma∞ : p ∞ ≡ ₁

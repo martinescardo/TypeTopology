@@ -39,7 +39,6 @@ EM 𝓤 = (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
 
 excluded-middle = EM
 
-
 lower-EM : ∀ 𝓥 → EM (𝓤 ⊔ 𝓥) → EM 𝓤
 lower-EM 𝓥 em P P-is-prop = f d
  where
@@ -54,9 +53,8 @@ Excluded-Middle : 𝓤ω
 Excluded-Middle = ∀ {𝓤} → EM 𝓤
 
 EM-is-prop : FunExt → is-prop (EM 𝓤)
-EM-is-prop {𝓤} fe = Π-is-prop (fe (𝓤 ⁺) 𝓤)
-                      (λ P → Π-is-prop (fe 𝓤 𝓤)
-                               (decidability-of-prop-is-prop (fe 𝓤 𝓤₀)))
+EM-is-prop {𝓤} fe = Π₂-is-prop (λ {𝓤} {𝓥} → fe 𝓤 𝓥)
+                       (λ _ → decidability-of-prop-is-prop (fe 𝓤 𝓤₀))
 
 LEM : ∀ 𝓤 → 𝓤 ⁺ ̇
 LEM 𝓤 = (p : Ω 𝓤) → p holds + ¬ (p holds)

@@ -272,17 +272,17 @@ empty-types-are-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
 singleton-type : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
 singleton-type x = Σ y ꞉ type-of x , x ≡ y
 
-singleton-inclusion : {X : 𝓤 ̇ } (x : X) → singleton-type x
-singleton-inclusion x = (x , refl)
+singleton-center : {X : 𝓤 ̇ } (x : X) → singleton-type x
+singleton-center x = (x , refl)
 
-singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ≡ x') → singleton-inclusion x ≡ (x' , r)
+singleton-types-are-singletons'' : {X : 𝓤 ̇ } {x x' : X} (r : x ≡ x') → singleton-center x ≡ (x' , r)
 singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
  where
   A : (x x' : X) → x ≡ x' → 𝓤 ̇
-  A x x' r = singleton-inclusion x ≡[ Σ x' ꞉ X , x ≡ x' ] (x' , r)
+  A x x' r = singleton-center x ≡[ Σ x' ꞉ X , x ≡ x' ] (x' , r)
 
 singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton(singleton-type x₀)
-singleton-types-are-singletons x₀ = singleton-inclusion x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
+singleton-types-are-singletons x₀ = singleton-center x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
 
 singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X} → is-central (singleton-type x) (x , refl)
 singleton-types-are-singletons' {𝓤} {X} (y , refl) = refl
@@ -292,6 +292,9 @@ singleton-types-are-props x = singletons-are-props (singleton-types-are-singleto
 
 singleton-type' : {X : 𝓤 ̇ } → X → 𝓤 ̇
 singleton-type' x = Σ y ꞉ type-of x , y ≡ x
+
+singleton'-center : {X : 𝓤 ̇ } (x : X) → singleton-type' x
+singleton'-center x = (x , refl)
 
 ×-prop-criterion-necessity : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → is-prop (X × Y) → (Y → is-prop X) × (X → is-prop Y)

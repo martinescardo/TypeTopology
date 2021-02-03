@@ -26,7 +26,7 @@ ku φ = (K-functor pr₁ φ , K-functor pr₂ φ)
 
 quant-prod : {X R : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
     → KK R X → ((x : X)  → KK R (Y x)) → KK R ((Σ x ꞉ X , Y x))
-quant-prod φ γ p = φ(λ x → γ x (λ y → p(x , y)))
+quant-prod φ γ p = φ(λ x → γ x (λ y → p (x , y)))
 
 JJ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 JJ R X = (X → R) → X
@@ -36,9 +36,9 @@ sel-prod : {R : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : X → 𝓦 ̇ }
 sel-prod {𝓤} {𝓥} {𝓦} {R} {X} {Y} ε δ p = (x₀ , y₀)
    where
     next : (x : X) → Y x
-    next x = δ x (λ y → p(x , y))
+    next x = δ x (λ y → p (x , y))
     x₀ : X
-    x₀ = ε(λ x → p(x , next x))
+    x₀ = ε(λ x → p (x , next x))
     y₀ : Y x₀
     y₀ = next x₀
 
@@ -49,15 +49,15 @@ Alternative, equivalent, construction:
 \begin{code}
 
 overline : {R : 𝓤 ̇ } {X : 𝓥 ̇ } → JJ R X → KK R X
-overline ε p = p(ε p)
+overline ε p = p (ε p)
 
 sel-prod' : {R : 𝓤 ̇ } {X : 𝓥 ̇ } {Y : X → 𝓦 ̇ }
           → JJ R X → ((x : X) → JJ R (Y x)) → JJ R (Σ x ꞉ X , Y x)
 sel-prod' {𝓤} {𝓥} {𝓦} {R} {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X
-    x₀ = ε(λ x → overline(δ x) (λ y → p(x , y)))
+    x₀ = ε(λ x → overline(δ x) (λ y → p (x , y)))
     y₀ : Y x₀
-    y₀ = δ x₀ (λ y → p(x₀ , y))
+    y₀ = δ x₀ (λ y → p (x₀ , y))
 
 \end{code}

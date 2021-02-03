@@ -538,7 +538,7 @@ riap m = (first m , second m)
 pair-riap : (m : ℕ) → pair(riap m) ≡ m
 pair-riap m = ap unary (pair'-lemma (binary m)) ∙ unary-binary m
 
-riap-pair : (z : ℕ × ℕ) → riap(pair z) ≡ z
+riap-pair : (z : ℕ × ℕ) → riap (pair z) ≡ z
 riap-pair (n , k) = to-×-≡ (first-pair n k) (second-pair n k)
 
 pairing : ℕ × ℕ ≃ ℕ

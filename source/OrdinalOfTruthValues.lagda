@@ -44,7 +44,7 @@ open import UF-Subsingletons-FunExt
     s ⊥ (refl , b) = ⊥-accessible
 
   e : is-extensional _≺_
-  e p q f g = Ω-ext' pe (fe 𝓤 𝓤) φ ψ
+  e p q f g = Ω-ext pe (fe 𝓤 𝓤) φ ψ
    where
     φ : p ≡ ⊤ → q ≡ ⊤
     φ a = pr₂ (f ⊥ (refl , a))

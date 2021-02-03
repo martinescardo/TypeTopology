@@ -22,7 +22,7 @@ lemma X a c = equal-or-different
   κ-constant x = pr₂(c x)
 
   prop-fix : (x : X) → is-prop (fix(κ x))
-  prop-fix x = Kraus-Lemma (κ x) (κ-constant x)
+  prop-fix x = fix-is-prop (κ x) (κ-constant x)
 
   choice : (x : X) → fix(κ x) → Σ i ꞉ 𝟚 , a i ≡ x
   choice x = pr₁

@@ -103,13 +103,13 @@ module concrete-example where
  failure p = disagreement-taboo fe p₀ p₁ lemma
   where
    p₀ : ℕ∞ → 𝟚
-   p₀ u = p(u , λ r → ₀)
+   p₀ u = p (u , λ r → ₀)
 
    p₁ : ℕ∞ → 𝟚
-   p₁ u = p(u , λ r → ₁)
+   p₁ u = p (u , λ r → ₁)
 
    lemma : (n : ℕ) → p₀(under n) ≡ p₁(under n)
-   lemma n = ap (λ - → p(under n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
+   lemma n = ap (λ - → p (under n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
     where
      claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
      claim s = 𝟘-elim(∞-is-not-finite n (s ⁻¹))

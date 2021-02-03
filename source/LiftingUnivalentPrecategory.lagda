@@ -197,7 +197,7 @@ construction of _⋍·_ in another module:
            → funext 𝓣 𝓤
            → {l m : 𝓛 X} → (l ⊑ m) × (m ⊑ l) → l ≡ m
 ⊑-anti-sip ua fe {Q , ψ , j} {P , φ , i} ((f , δ) , (g , ε)) =
- ⌜ ≃-sym (𝓛-Id· ua fe (Q , ψ , j) (P , φ , i)) ⌝ γ
+ ⌜ 𝓛-Id· ua fe (Q , ψ , j) (P , φ , i) ⌝⁻¹ γ
  where
   e : Q ≃ P
   e = f , ((g , (λ p → i (f (g p)) p)) , (g , (λ q → j (g (f q)) q)))
