@@ -101,9 +101,7 @@ D-induction R r s t A-included-in-R = D-included-in-R
   D-included-in-R x y (succ n , z , b , c) = t x z y (B-induction R s A-included-in-R x z b)
                                                      (D-included-in-R z y (n , c))
 
-module _ (pt : propositional-truncations-exist)
-         (A-is-prop-valued : (x y : X) → is-prop (A x y))
-       where
+module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
@@ -134,3 +132,8 @@ module _ (pt : propositional-truncations-exist)
              → ((x y : X) → E x y → R x y)
  E-induction R r s t R-is-prop-valued A-included-in-R x y =
   ∥∥-rec (R-is-prop-valued x y) (D-induction R r s t A-included-in-R x y)
+
+\end{code}
+
+TODO. Consider relations with rank (with applications to the
+construction of free groups (without higher inductive types.
