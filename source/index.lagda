@@ -205,6 +205,7 @@ import SliceMonad
 import SpartanMLTT
 import SquashedCantor
 import SquashedSum
+import SRTClosure
 import Swap
 import sigma-sup-lattice
 import sigma-frame

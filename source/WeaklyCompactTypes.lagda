@@ -197,7 +197,7 @@ discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d
   a : retract (X → 𝟚) of (X → Y)
   a = retract-contravariance (fe 𝓤 𝓤₀) ρ
   b : is-discrete (X → 𝟚)
-  b = retract-discrete-discrete a d
+  b = retract-is-discrete a d
   γ : Π-compact X
   γ = power-of-two-discrete-gives-compact-exponent b
 

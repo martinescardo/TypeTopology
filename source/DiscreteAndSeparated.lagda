@@ -114,9 +114,9 @@ discrete-is-cotransitive d {x} {y} {z} φ = f(d x z)
   f (inl r) = inr (λ s → φ(r ∙ s))
   f (inr γ) = inl γ
 
-retract-discrete-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+retract-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → retract Y of X → is-discrete X → is-discrete Y
-retract-discrete-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
+retract-is-discrete (f , (s , φ)) d y y' = g (d (s y) (s y'))
  where
   g : decidable (s y ≡ s y') → decidable (y ≡ y')
   g (inl p) = inl ((φ y) ⁻¹ ∙ ap f p ∙ φ y')
