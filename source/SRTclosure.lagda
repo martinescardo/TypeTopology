@@ -167,7 +167,8 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
-The proposition-valued, symmetric-reflexive-transitive closure of A:
+The proposition-valued, symmetric-reflexive-transitive closure of a
+relation A:
 
 \begin{code}
 
@@ -191,7 +192,6 @@ module psrt
 
  psrt-reflexive : Reflexive psrt-closure
  psrt-reflexive x = ∣ srt-reflexive A x ∣
-
 
  psrt-transitive : Transitive psrt-closure
  psrt-transitive x y z = ∥∥-functor₂ (srt-transitive A x y z)
