@@ -566,3 +566,40 @@ open import UF-Miscelanea
             (+-is-set ℕ ℕ ℕ-is-set ℕ-is-set)
 
 \end{code}
+
+\begin{code}
+
+succᶻ : ℤ → ℤ → ℤ
+succᶻ 𝟎       = id
+succᶻ (pos n) = (succ-ℤ ^ (succ n))
+succᶻ (neg n) = (pred-ℤ ^ (succ n))
+
+succᶻ⁻¹ : ℤ → ℤ → ℤ
+succᶻ⁻¹ 𝟎       = id
+succᶻ⁻¹ (pos n) = (pred-ℤ ^ (succ n))
+succᶻ⁻¹ (neg n) = (succ-ℤ ^ (succ n))
+
+{-
+succᶻ-≃ : ℤ → ℤ ≃ ℤ
+succᶻ-≃ 𝟎       = (id , id-is-equiv ℤ)
+succᶻ-≃ (pos n) = (succᶻ (pos n) ,
+                   qinvs-are-equivs (succᶻ (pos n)) (succᶻ⁻¹ (pos n) ,
+                    pred-retraction-of-succ-iterated n ,
+                    pred-section-of-succ-iterated n))
+succᶻ-≃ (neg n) = (succᶻ (neg n) ,
+                   qinvs-are-equivs (succᶻ (neg n)) (succᶻ⁻¹ (neg n) ,
+                    pred-section-of-succ-iterated n ,
+                    pred-retraction-of-succ-iterated n))
+-}
+
+succᶻ⁻¹-section-of-succᶻ : (z : ℤ) → succᶻ z ∘ succᶻ⁻¹ z ∼ id
+succᶻ⁻¹-section-of-succᶻ 𝟎       = (λ x → refl)
+succᶻ⁻¹-section-of-succᶻ (pos n) = pred-section-of-succ-iterated (succ n)
+succᶻ⁻¹-section-of-succᶻ (neg n) = pred-retraction-of-succ-iterated (succ n)
+
+succᶻ⁻¹-retraction-of-succᶻ : (z : ℤ) → succᶻ⁻¹ z ∘ succᶻ z ∼ id
+succᶻ⁻¹-retraction-of-succᶻ 𝟎       = (λ x → refl)
+succᶻ⁻¹-retraction-of-succᶻ (pos n) = pred-retraction-of-succ-iterated (succ n)
+succᶻ⁻¹-retraction-of-succᶻ (neg n) = pred-section-of-succ-iterated (succ n)
+
+\end{code}

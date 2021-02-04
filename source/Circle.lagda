@@ -121,6 +121,22 @@ characterization-of-Tℤ-≡ =
 to-Tℤ-≡ : (X Y : Tℤ) → X ≅ Y → X ≡ Y
 to-Tℤ-≡ X Y = ⌜ characterization-of-Tℤ-≡ X Y ⌝⁻¹
 
+to-≃-of-⟨⟩ : (X Y : Tℤ) → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
+to-≃-of-⟨⟩ X Y q = pr₁ h , pr₁ (pr₂ h)
+ where
+  h : X ≅ Y
+  h = (⌜ characterization-of-Tℤ-≡ X Y ⌝ q)
+
+⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
+⟨ (X , f , _) ⟩₂ = f
+
+⟨⟩-≃-commutes : (X Y : Tℤ) (q : X ≡ Y)
+              → ⌜ to-≃-of-⟨⟩ X Y q ⌝ ∘ ⟨ X ⟩₂ ≡ ⟨ Y ⟩₂ ∘ ⌜ to-≃-of-⟨⟩ X Y q ⌝
+⟨⟩-≃-commutes X Y q = pr₂ (pr₂ h)
+ where
+  h : X ≅ Y
+  h = (⌜ characterization-of-Tℤ-≡ X Y ⌝ q)
+
 {-
 to-Tℤ-≡' : (X Y : Tℤ) → X ≃[Tℤ] Y → X ≡ Y
 to-Tℤ-≡' X Y = ⌜ characterization-of-Tℤ-≡' X Y ⌝⁻¹
@@ -132,6 +148,7 @@ _≃[Tℤ⁻]_ : Tℤ⁻ → Tℤ⁻ → 𝓤₀ ̇
 
 loop : base ≡ base
 loop = to-Tℤ-≡ base base (succ-ℤ , succ-ℤ-is-equiv , refl)
+
 
 \end{code}
 
@@ -276,9 +293,6 @@ module Tℤ-rec
  cₚ²-on-base = {!!}
 -}
 
- ⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
- ⟨ (X , f , _) ⟩₂ = f
-
  cₚ³ : (X : Tℤ) → (x : ⟨ X ⟩)
      → cₚ² X (⟨ X ⟩₂ x) ≡ p ∙ cₚ² X x
  cₚ³ X = pr₂ (pr₂ (cₚ X))
@@ -322,36 +336,142 @@ module Tℤ-rec
 
 \begin{code}
 
-{-
-module Tℤ-ind
-        {A : Tℤ → 𝓤 ̇ }
---        (fe : funext 𝓤 𝓤)
-        (a : A base)
-        (p : transport A loop a ≡ a)
+module _
+        -- {A : 𝓤 ̇ }
+        -- (fe  : funext 𝓤  𝓤)
+        (fe₀ : funext 𝓤₀ 𝓤₀)
+        -- (fe₁ : funext 𝓤₁ 𝓤)
        where
 
- ⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
- ⟨ (X , f , _) ⟩₂ = f
-
- szzz : (X : Tℤ) → ⟨ X ⟩ → base ≡ X
- szzz (X , f , t) x = to-Tℤ-≡ base (X , f , t) γ
+ ⟨⟩₂-is-equiv : (X : Tℤ) → is-equiv ⟨ X ⟩₂
+ ⟨⟩₂-is-equiv (X , f , t) = ∥∥-rec (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ f) γ t
   where
-   γ : (ℤ , succ-ℤ , ∣ refl ∣) ≅ (X , f , t)
-   γ = e , {!!} , {!!}
-    where
-     f⁻¹ : X → X
-     f⁻¹ = {!!}
-     e : ℤ → X
-     e 𝟎       = f x
-     e (pos n) = (f ^ (succ n)) x
-     e (neg n) = (f⁻¹ ^ (succ n)) x
+   γ : (X , f) ≡ (ℤ , succ-ℤ) → is-equiv f
+   γ refl = succ-ℤ-is-equiv
 
- Qₚ : Tℤ → 𝓤 ̇
- Qₚ X = Σ a' ꞉ A X ,
-        Σ h ꞉ (⟨ X ⟩ → transport A {!!} a ≡ a')
-      , ((x : ⟨ X ⟩) → h (⟨ X ⟩₂ x) ≡ {!!}) -- p ∙ h x)
+ ⟨_⟩₂⁻¹ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
+ ⟨ X ⟩₂⁻¹ = inverse ⟨ X ⟩₂ (⟨⟩₂-is-equiv X)
 
+ ⟨⟩₂-of-base-is-succ-ℤ : ⟨ base ⟩₂ ≡ succ-ℤ
+ ⟨⟩₂-of-base-is-succ-ℤ = refl
+
+ ⟨⟩₂⁻¹-of-base-is-pred-ℤ : {!!}
+ ⟨⟩₂⁻¹-of-base-is-pred-ℤ = {!!}
+
+ ⟨⟩-≃-commutes⁻¹ : (X Y : Tℤ) (q : X ≡ Y)
+                 → ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹ ∘ ⟨ Y ⟩₂⁻¹
+                 ≡ ⟨ X ⟩₂⁻¹ ∘ ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹
+ ⟨⟩-≃-commutes⁻¹ X Y q = {!!}
+
+{-
+ ⟨⟩-≃-commutes⁻¹ : (X Y : Tℤ) (q : X ≡ Y)
+                 → ⟨ X ⟩₂⁻¹ ∘ ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹
+                 ≡ ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹ ∘  ⟨ Y ⟩₂⁻¹
+ ⟨⟩-≃-commutes⁻¹ X Y q = ⟨ X ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹                       ≡⟨ refl       ⟩
+                         ⌜ ≃-comp (⟨ X ⟩₂ , ⟨⟩₂-is-equiv X) t ⌝⁻¹ ≡⟨ ap ⌜_⌝⁻¹ γ ⟩
+                         ⌜ ≃-comp t (⟨ Y ⟩₂ , ⟨⟩₂-is-equiv Y) ⌝⁻¹ ≡⟨ refl       ⟩
+                         ⌜ t ⌝⁻¹ ∘ ⟨ Y ⟩₂⁻¹                       ∎
+  where
+   t : ⟨ X ⟩ ≃ ⟨ Y ⟩
+   t = to-≃-of-⟨⟩ X Y q
+   γ : ≃-comp (⟨ X ⟩₂ , ⟨⟩₂-is-equiv X) t
+     ≡ ≃-comp t (⟨ Y ⟩₂ , ⟨⟩₂-is-equiv Y)
+   γ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀) (⟨⟩-≃-commutes X Y q)
 -}
+
+ ⟨⟩-is-set : (X : Tℤ) → is-set ⟨ X ⟩
+ ⟨⟩-is-set (X , f , t) = ∥∥-rec (being-set-is-prop fe₀) γ t
+  where
+   γ : (X , f) ≡ (ℤ , succ-ℤ) → is-set X
+   γ refl = ℤ-is-set
+
+ Tℤ-action : (X : Tℤ) → ⟨ X ⟩ → ℤ → ⟨ X ⟩
+ Tℤ-action X x 𝟎       = x
+ Tℤ-action X x (pos n) = (⟨ X ⟩₂   ^ (succ n)) x
+ Tℤ-action X x (neg n) = (⟨ X ⟩₂⁻¹ ^ (succ n)) x
+
+ Tℤ-action-lemma : (X : Tℤ) (q : base ≡ X) (x : ⟨ X ⟩) (z : ℤ)
+                 → Tℤ-action X x z
+                 ≡ (⌜ to-≃-of-⟨⟩ base X q ⌝
+                   ∘ succᶻ z
+                   ∘ ⌜ to-≃-of-⟨⟩ base X q ⌝⁻¹) x
+ Tℤ-action-lemma X q x 𝟎       = (≃-sym-is-rinv (to-≃-of-⟨⟩ base X q) x) ⁻¹
+ Tℤ-action-lemma X q x (pos n) = γ n
+  where
+   t : ℤ ≃ ⟨ X ⟩
+   t = to-≃-of-⟨⟩ base X q
+   γ : (n : ℕ)
+     → Tℤ-action X x (pos n) ≡ (⌜ t ⌝ ∘ (succ-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x
+   γ zero     = ⟨ X ⟩₂ x                     ≡⟨ I  ⟩
+                (⟨ X ⟩₂ ∘ ⌜ t ⌝ ∘ ⌜ t ⌝⁻¹) x ≡⟨ II ⟩
+                (⌜ t ⌝ ∘ succ-ℤ ∘ ⌜ t ⌝⁻¹) x ∎
+    where
+     I  = ap ⟨ X ⟩₂ (≃-sym-is-rinv t x) ⁻¹
+     II = happly ((⟨⟩-≃-commutes base X q) ⁻¹) (⌜ t ⌝⁻¹ x)
+   γ (succ n) = (⟨ X ⟩₂ ∘ (⟨ X ⟩₂ ^ (succ n))) x                 ≡⟨ I  ⟩
+                (⟨ X ⟩₂ ∘ ⌜ t ⌝ ∘ succ-ℤ ^ (succ n) ∘ ⌜ t ⌝⁻¹) x ≡⟨ II ⟩
+                (⌜ t ⌝ ∘ (succ-ℤ ^ succ (succ n)) ∘ ⌜ t ⌝⁻¹) x ∎
+    where
+     I  = ap ⟨ X ⟩₂ (γ n)
+     II = happly ((⟨⟩-≃-commutes base X q) ⁻¹)
+           (((succ-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x)
+ Tℤ-action-lemma X q x (neg n) = γ n
+  where
+   t : ℤ ≃ ⟨ X ⟩
+   t = to-≃-of-⟨⟩ base X q
+   γ : (n : ℕ)
+     → Tℤ-action X x (neg n) ≡ (⌜ t ⌝ ∘ (pred-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x
+   γ zero     = ⟨ X ⟩₂⁻¹                        x ≡⟨ I  ⟩
+                (⌜ t ⌝ ∘ ⌜ t ⌝⁻¹ ∘ ⟨ X ⟩₂⁻¹)    x ≡⟨ II ⟩
+                (⌜ t ⌝ ∘ ⟨ base ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹) x ≡⟨ {!!} ⟩
+                (⌜ t ⌝ ∘ pred-ℤ ∘ ⌜ t ⌝⁻¹)      x ∎
+    where
+     I  = (≃-sym-is-rinv t (⟨ X ⟩₂⁻¹ x)) ⁻¹
+     II = ap ⌜ t ⌝ (happly (⟨⟩-≃-commutes⁻¹ base X q) x)
+   γ (succ n) = {!!} {- (⟨ X ⟩₂ ∘ (⟨ X ⟩₂ ^ (succ n))) x                 ≡⟨ I  ⟩
+                (⟨ X ⟩₂ ∘ ⌜ t ⌝ ∘ succ-ℤ ^ (succ n) ∘ ⌜ t ⌝⁻¹) x ≡⟨ II ⟩
+                (⌜ t ⌝ ∘ (succ-ℤ ^ succ (succ n)) ∘ ⌜ t ⌝⁻¹) x ∎
+    where
+     I  = ap ⟨ X ⟩₂ (γ n)
+     II = happly ((⟨⟩-≃-commutes base X q) ⁻¹)
+           (((succ-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x) -}
+
+ Tℤ-action-is-equiv : (X : Tℤ) (x : ⟨ X ⟩)
+                           → is-equiv (Tℤ-action X x)
+ Tℤ-action-is-equiv (X , f , t) x =
+  ∥∥-rec (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀
+   (Tℤ-action (X , f , t) x)) γ t
+   where
+    γ : (X , f) ≡ (ℤ , succ-ℤ)
+      → is-equiv (Tℤ-action (X , f , t) x)
+    γ q = {!!}
+
+ generalized-loop-≅ : (X : Tℤ) → ⟨ X ⟩ → base ≅ X
+ generalized-loop-≅ (X , f , t) x = e , i , {!!}
+  where
+   f⁻¹ : X → X
+   f⁻¹ = inverse f (⟨⟩₂-is-equiv (X , f , t))
+   e : ℤ → X
+   e 𝟎       =           x
+   e (pos n) = (f   ^ n) x
+   e (neg n) = (f⁻¹ ^ n) x
+   e⁻¹ : X → ℤ
+   e⁻¹ y = {!!}
+   i : is-equiv e
+   i = qinvs-are-equivs {!!} {!!}
+
+\end{code}
+
+ module _
+         (f : Tℤ → A)
+        where
+
+  open Tℤ-rec {𝓤} {A} fe (ap f loop)
+
+  lift-to-Qₚ : (Y : Tℤ) → Qₚ (⟨ Y ⟩ , ⟨ Y ⟩₂)
+  lift-to-Qₚ (Y , g , t) = (f (Y , g , t)) , ({!!} , {!!})
+
+\end{code}
 
 module _
         {A : 𝓤 ̇ }
