@@ -349,35 +349,37 @@ module _
    γ : (X , f) ≡ (ℤ , succ-ℤ) → is-equiv f
    γ refl = succ-ℤ-is-equiv
 
+ ⟨⟩₂-≃ : (X : Tℤ) → ⟨ X ⟩ ≃ ⟨ X ⟩
+ ⟨⟩₂-≃ X = (⟨ X ⟩₂ , ⟨⟩₂-is-equiv X)
+
  ⟨_⟩₂⁻¹ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
- ⟨ X ⟩₂⁻¹ = inverse ⟨ X ⟩₂ (⟨⟩₂-is-equiv X)
+ ⟨ X ⟩₂⁻¹ = ⌜ ⟨⟩₂-≃ X ⌝⁻¹
 
  ⟨⟩₂-of-base-is-succ-ℤ : ⟨ base ⟩₂ ≡ succ-ℤ
  ⟨⟩₂-of-base-is-succ-ℤ = refl
 
- ⟨⟩₂⁻¹-of-base-is-pred-ℤ : {!!}
- ⟨⟩₂⁻¹-of-base-is-pred-ℤ = {!!}
+ ⟨⟩₂⁻¹-of-base-is-pred-ℤ : ⟨ base ⟩₂⁻¹ ≡ pred-ℤ
+ ⟨⟩₂⁻¹-of-base-is-pred-ℤ = ap ⌜_⌝⁻¹ γ
+  where
+   γ : ⟨⟩₂-≃ base ≡ succ-ℤ-≃
+   γ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀) refl
 
  ⟨⟩-≃-commutes⁻¹ : (X Y : Tℤ) (q : X ≡ Y)
                  → ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹ ∘ ⟨ Y ⟩₂⁻¹
                  ≡ ⟨ X ⟩₂⁻¹ ∘ ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹
- ⟨⟩-≃-commutes⁻¹ X Y q = {!!}
-
-{-
- ⟨⟩-≃-commutes⁻¹ : (X Y : Tℤ) (q : X ≡ Y)
-                 → ⟨ X ⟩₂⁻¹ ∘ ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹
-                 ≡ ⌜ to-≃-of-⟨⟩ X Y q ⌝⁻¹ ∘  ⟨ Y ⟩₂⁻¹
- ⟨⟩-≃-commutes⁻¹ X Y q = ⟨ X ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹                       ≡⟨ refl       ⟩
-                         ⌜ ≃-comp (⟨ X ⟩₂ , ⟨⟩₂-is-equiv X) t ⌝⁻¹ ≡⟨ ap ⌜_⌝⁻¹ γ ⟩
-                         ⌜ ≃-comp t (⟨ Y ⟩₂ , ⟨⟩₂-is-equiv Y) ⌝⁻¹ ≡⟨ refl       ⟩
-                         ⌜ t ⌝⁻¹ ∘ ⟨ Y ⟩₂⁻¹                       ∎
+ ⟨⟩-≃-commutes⁻¹ X Y q = γ
   where
    t : ⟨ X ⟩ ≃ ⟨ Y ⟩
    t = to-≃-of-⟨⟩ X Y q
-   γ : ≃-comp (⟨ X ⟩₂ , ⟨⟩₂-is-equiv X) t
-     ≡ ≃-comp t (⟨ Y ⟩₂ , ⟨⟩₂-is-equiv Y)
-   γ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀) (⟨⟩-≃-commutes X Y q)
--}
+   γ : ⌜ t ⌝⁻¹ ∘ ⟨ Y ⟩₂⁻¹ ≡ ⟨ X ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹
+   γ = ⌜ t ⌝⁻¹ ∘ ⟨ Y ⟩₂⁻¹ ≡⟨ refl ⟩
+       ⌜ ≃-comp t (⟨⟩₂-≃ Y) ⌝⁻¹ ≡⟨ ap ⌜_⌝⁻¹ ψ ⟩
+       ⌜ ≃-comp (⟨⟩₂-≃ X) t ⌝⁻¹ ≡⟨ refl ⟩
+       ⟨ X ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹ ∎
+    where
+     ψ : ≃-comp t (⟨⟩₂-≃ Y) ≡ ≃-comp (⟨⟩₂-≃ X) t
+     ψ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀)
+          ((⟨⟩-≃-commutes X Y q) ⁻¹)
 
  ⟨⟩-is-set : (X : Tℤ) → is-set ⟨ X ⟩
  ⟨⟩-is-set (X , f , t) = ∥∥-rec (being-set-is-prop fe₀) γ t
@@ -415,26 +417,43 @@ module _
      I  = ap ⟨ X ⟩₂ (γ n)
      II = happly ((⟨⟩-≃-commutes base X q) ⁻¹)
            (((succ-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x)
- Tℤ-action-lemma X q x (neg n) = γ n
+ Tℤ-action-lemma X q x (neg n) = γ n x
   where
    t : ℤ ≃ ⟨ X ⟩
    t = to-≃-of-⟨⟩ base X q
-   γ : (n : ℕ)
+   γ : (n : ℕ) (x : ⟨ X ⟩)
      → Tℤ-action X x (neg n) ≡ (⌜ t ⌝ ∘ (pred-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x
-   γ zero     = ⟨ X ⟩₂⁻¹                        x ≡⟨ I  ⟩
-                (⌜ t ⌝ ∘ ⌜ t ⌝⁻¹ ∘ ⟨ X ⟩₂⁻¹)    x ≡⟨ II ⟩
-                (⌜ t ⌝ ∘ ⟨ base ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹) x ≡⟨ {!!} ⟩
-                (⌜ t ⌝ ∘ pred-ℤ ∘ ⌜ t ⌝⁻¹)      x ∎
+   γ zero x    = I ∙ (II ∙ III)
+    -- The equational reasoning below is very slow for some reason...
+    {-
+       ⟨ X ⟩₂⁻¹                        x ≡⟨ I   ⟩
+       (⌜ t ⌝ ∘ ⌜ t ⌝⁻¹ ∘ ⟨ X ⟩₂⁻¹)    x ≡⟨ II  ⟩
+       (⌜ t ⌝ ∘ ⟨ base ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹) x ≡⟨ III ⟩
+       (⌜ t ⌝ ∘ pred-ℤ ∘ ⌜ t ⌝⁻¹)      x ∎
+    -}
     where
-     I  = (≃-sym-is-rinv t (⟨ X ⟩₂⁻¹ x)) ⁻¹
-     II = ap ⌜ t ⌝ (happly (⟨⟩-≃-commutes⁻¹ base X q) x)
-   γ (succ n) = {!!} {- (⟨ X ⟩₂ ∘ (⟨ X ⟩₂ ^ (succ n))) x                 ≡⟨ I  ⟩
-                (⟨ X ⟩₂ ∘ ⌜ t ⌝ ∘ succ-ℤ ^ (succ n) ∘ ⌜ t ⌝⁻¹) x ≡⟨ II ⟩
-                (⌜ t ⌝ ∘ (succ-ℤ ^ succ (succ n)) ∘ ⌜ t ⌝⁻¹) x ∎
+     I   = (≃-sym-is-rinv t (⟨ X ⟩₂⁻¹ x)) ⁻¹
+     II  = ap (λ - → (⌜ t ⌝ ∘ -) x) (⟨⟩-≃-commutes⁻¹ _ _ q)
+     III = ap ⌜ t ⌝ (happly ⟨⟩₂⁻¹-of-base-is-pred-ℤ (⌜ t ⌝⁻¹ x))
+   γ (succ n) x = I ∙ (II ∙ (III ∙ (IV ∙ V)))
+    {-
+       (⟨ X ⟩₂⁻¹ ∘ (⟨ X ⟩₂⁻¹ ^ (succ n)))                  x ≡⟨ I   ⟩
+       ((⟨ X ⟩₂⁻¹ ^ (succ n)) ∘ ⟨ X ⟩₂⁻¹)                  x ≡⟨ II  ⟩
+       (⌜ t ⌝ ∘ pred-ℤ ^ (succ n) ∘ ⌜ t ⌝⁻¹ ∘ ⟨ X ⟩₂⁻¹)    x ≡⟨ III ⟩
+       (⌜ t ⌝ ∘ pred-ℤ ^ (succ n) ∘ ⟨ base ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹) x ≡⟨ IV  ⟩
+       (⌜ t ⌝ ∘ pred-ℤ ^ (succ n) ∘ pred-ℤ ∘ ⌜ t ⌝⁻¹)      x ≡⟨ V   ⟩
+       (⌜ t ⌝ ∘ (pred-ℤ ^ succ (succ n)) ∘ ⌜ t ⌝⁻¹)        x ∎
+    -}
     where
-     I  = ap ⟨ X ⟩₂ (γ n)
-     II = happly ((⟨⟩-≃-commutes base X q) ⁻¹)
-           (((succ-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x) -}
+     I   = commute-with-iterated-function ⟨ X ⟩₂⁻¹ ⟨ X ⟩₂⁻¹
+            (λ _ → refl) (succ n) x
+     II  = γ n (⟨ X ⟩₂⁻¹ x)
+     III = ap (λ - → (⌜ t ⌝ ∘ pred-ℤ ^ (succ n) ∘ -) x) (⟨⟩-≃-commutes⁻¹ _ _ q)
+     IV  = ap (⌜ t ⌝ ∘ pred-ℤ ^ (succ n))
+            (happly ⟨⟩₂⁻¹-of-base-is-pred-ℤ (⌜ t ⌝⁻¹ x))
+     V   = ap ⌜ t ⌝
+            ((commute-with-iterated-function pred-ℤ pred-ℤ (λ _ → refl) (succ n)
+               (⌜ t ⌝⁻¹ x)) ⁻¹)
 
  Tℤ-action-is-equiv : (X : Tℤ) (x : ⟨ X ⟩)
                            → is-equiv (Tℤ-action X x)
