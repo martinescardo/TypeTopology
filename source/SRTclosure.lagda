@@ -1,7 +1,6 @@
 Martin Escardo, 03 February 2021.
 
-Symmetric, reflexive, transitive closure of a relation. Also of a
-relation with rank.
+Symmetric, reflexive, transitive closure of a relation.
 
 \begin{code}
 
@@ -9,115 +8,162 @@ relation with rank.
 
 open import SpartanMLTT
 
-module SRTclosure
-       (𝓤 : Universe)
-       (X : 𝓤 ̇ )
-       (A : X → X → 𝓤 ̇ )
-       where
-
-open import NaturalsAddition renaming (_+_ to right-addition)
+module SRTclosure where
 
 open import UF-Subsingletons
 open import UF-PropTrunc
 
-\end{code}
-
-The symmetric closure of A:
-
-\begin{code}
-
-B : X → X → 𝓤 ̇
-B x y = A x y + A y x
-
-_⊑_ : (X → X → 𝓤 ̇ ) → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-R ⊑ S = ∀ x y → R x y → S x y
-
-B-symmetric : (x y : X) → B x y → B y x
-B-symmetric x y (inl a) = inr a
-B-symmetric x y (inr a) = inl a
-
-A-included-in-B : A ⊑ B
-A-included-in-B x y = inl
-
-B-induction : (R : X → X → 𝓥 ̇ )
-            → Symmetric R
-            → A ⊑ R
-            → B ⊑ R
-B-induction R s A-included-in-R x y (inl a) = A-included-in-R x y a
-B-induction R s A-included-in-R x y (inr a) = s y x (A-included-in-R y x a)
-
-\end{code}
-
-To define the relexive-transitive closure of B, we consider an
-intermmediate step:
-
-\begin{code}
-
-C : ℕ → X → X → 𝓤 ̇
-C zero     x y = x ≡ y
-C (succ n) x y = Σ z ꞉ X , B x z × C n z y
+open import NaturalsAddition renaming (_+_ to right-addition)
 
 _∔_ : ℕ → ℕ → ℕ
 m ∔ n = right-addition n m
 
-C-reflexive : (x : X) → C 0 x x
-C-reflexive x = refl
-
-CB-transitive : (n : ℕ) (x y z : X) → C n x y → B y z → C (succ n) x z
-CB-transitive zero     x x z refl        b  = z , b , refl
-CB-transitive (succ n) x y z (t , b , c) b' = t , b , CB-transitive n t y z c b'
-
-C-symmetric : (m : ℕ) (x y : X) → C m x y → C m y x
-C-symmetric zero     x x refl        = refl
-C-symmetric (succ m) x y (z , b , c) = γ
-  where
-   c' : C m y z
-   c' = C-symmetric m z y c
-
-   γ : C (succ m) y x
-   γ = CB-transitive m y z x c' (B-symmetric x z b)
-
-C-transitive : (m n : ℕ) (x y z : X) → C m x y → C n y z → C (m ∔ n) x z
-C-transitive zero     n x x z refl        c' = c'
-C-transitive (succ m) n x y z (t , b , c) c' = t , b , C-transitive m n t y z c c'
+_⊑_ : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+R ⊑ S = ∀ x y → R x y → S x y
 
 \end{code}
 
-The reflexive-transitive closure of B, and hence the
-symmetric-reflexive-transitive closure of A:
+The symmetric closure of a relation A:
 
 \begin{code}
 
-D : X → X → 𝓤 ̇
-D x y = Σ n ꞉ ℕ , C n x y
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         (A : X → X → 𝓥 ̇ )
+       where
 
-D-reflexive : Reflexive D
-D-reflexive x = 0 , refl
+ s-closure : X → X → 𝓥 ̇
+ s-closure x y = A x y + A y x
 
-D-symmetric : Symmetric D
-D-symmetric x y (m , c) = m , C-symmetric m x y c
+ s-symmetric : Symmetric s-closure
+ s-symmetric x y (inl a) = inr a
+ s-symmetric x y (inr a) = inl a
 
-D-transitive : Transitive D
-D-transitive x y z (m , c) (m' , c') = (m ∔ m') , C-transitive m m' x y z c c'
+ s-extension : A ⊑ s-closure
+ s-extension x y = inl
 
-B-included-in-D : B ⊑ D
-B-included-in-D x y b = 1 , y , b , refl
+ s-induction : (R : X → X → 𝓦 ̇ )
+             → Symmetric R
+             → A ⊑ R
+             → s-closure ⊑ R
+ s-induction R s A-included-in-R x y (inl a) = A-included-in-R x y a
+ s-induction R s A-included-in-R x y (inr a) = s y x (A-included-in-R y x a)
 
-A-included-in-D : A ⊑ D
-A-included-in-D x y a = B-included-in-D x y (A-included-in-B x y a)
+\end{code}
 
-D-induction : (R : X → X → 𝓥 ̇)
-            → Reflexive R
-            → Symmetric R
-            → Transitive R
-            → A ⊑ R
-            → D ⊑ R
-D-induction R r s t A-included-in-R = γ
- where
-  γ : (x y : X) → D x y → R x y
-  γ x x (zero , refl)        = r x
-  γ x y (succ n , z , b , c) = t x z y (B-induction R s A-included-in-R x z b)
-                                       (γ z y (n , c))
+To define the reflexive-transitive closure, we first consider the
+iteration of a relation B:
+
+\begin{code}
+
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         (B : X → X → 𝓤 ̇ )
+       where
+
+ iteration : ℕ → X → X → 𝓤 ̇
+ iteration zero     x y = x ≡ y
+ iteration (succ n) x y = Σ z ꞉ X , B x z × iteration n z y
+
+ iteration-reflexive : (x : X) → iteration 0 x x
+ iteration-reflexive x = refl
+
+ iteration-transitive' : (n : ℕ) (x y z : X) → iteration n x y → B y z → iteration (succ n) x z
+ iteration-transitive' zero     x x z refl        b  = z , b , refl
+ iteration-transitive' (succ n) x y z (t , b , c) b' = t , b , iteration-transitive' n t y z c b'
+
+ iteration-symmetric : Symmetric B → (m : ℕ) → Symmetric (iteration m)
+ iteration-symmetric sym zero     x x refl        = refl
+ iteration-symmetric sym (succ m) x y (z , b , c) = γ
+   where
+    c' : iteration m y z
+    c' = iteration-symmetric sym m z y c
+
+    γ : iteration (succ m) y x
+    γ = iteration-transitive' m y z x c' (sym x z b)
+
+ iteration-transitive : (m n : ℕ) (x y z : X) → iteration m x y → iteration n y z → iteration (m ∔ n) x z
+ iteration-transitive zero     n x x z refl        c' = c'
+ iteration-transitive (succ m) n x y z (t , b , c) c' = t , b , iteration-transitive m n t y z c c'
+
+\end{code}
+
+The reflexive-transitive closure of a relation B:
+
+\begin{code}
+
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         (B : X → X → 𝓤 ̇ )
+       where
+
+ rt-closure : X → X → 𝓤 ̇
+ rt-closure x y = Σ n ꞉ ℕ , iteration B n x y
+
+ rt-reflexive : Reflexive rt-closure
+ rt-reflexive x = 0 , refl
+
+ rt-symmetric : Symmetric B → Symmetric rt-closure
+ rt-symmetric s x y (m , c) = m , iteration-symmetric B s m x y c
+
+ rt-transitive : Transitive rt-closure
+ rt-transitive x y z (m , c) (m' , c') = (m ∔ m') , iteration-transitive B m m' x y z c c'
+
+ rt-extension : B ⊑ rt-closure
+ rt-extension x y b = 1 , y , b , refl
+
+ rt-induction : (R : X → X → 𝓥 ̇)
+              → Reflexive R
+              → Transitive R
+              → B ⊑ R
+              → rt-closure ⊑ R
+ rt-induction R r t B-included-in-R = γ
+  where
+   γ : (x y : X) → rt-closure x y → R x y
+   γ x x (zero , refl)        = r x
+   γ x y (succ n , z , b , c) = t x z y (B-included-in-R x z b) (γ z y (n , c))
+
+\end{code}
+
+By combining the symmetric closure with the reflective-transitive
+closure, we get the symmetric-reflexive-transitive-closure:
+
+\begin{code}
+
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         (A : X → X → 𝓤 ̇ )
+       where
+
+ srt-closure : X → X → 𝓤 ̇
+ srt-closure = rt-closure (s-closure A)
+
+ srt-symmetric : Symmetric srt-closure
+ srt-symmetric = rt-symmetric (s-closure A) (s-symmetric A)
+
+ srt-reflexive : Reflexive srt-closure
+ srt-reflexive = rt-reflexive (s-closure A)
+
+ srt-transitive : Transitive srt-closure
+ srt-transitive = rt-transitive (s-closure A)
+
+ srt-extension : A ⊑ srt-closure
+ srt-extension x y a = rt-extension (s-closure A) x y (s-extension A x y a)
+
+ srt-induction : (R : X → X → 𝓥 ̇)
+               → Symmetric R
+               → Reflexive R
+               → Transitive R
+               → A ⊑ R
+               → srt-closure ⊑ R
+ srt-induction R s r t A-included-in-R x y = γ
+  where
+   δ : s-closure A ⊑ R
+   δ = s-induction A R s A-included-in-R
+
+   γ : srt-closure x y → R x y
+   γ = rt-induction (s-closure A) R r t δ x y
+
 
 \end{code}
 
@@ -125,51 +171,42 @@ The proposition-valued, symmetric-reflexive-transitive closure of A:
 
 \begin{code}
 
-module _ (pt : propositional-truncations-exist) where
+module psrt
+        (pt : propositional-truncations-exist)
+        {𝓤 : Universe}
+        {X : 𝓤 ̇ }
+        (A : X → X → 𝓤 ̇ )
+       where
 
  open PropositionalTruncation pt
 
- E : X → X → 𝓤 ̇
- E x y = ∥ D x y ∥
+ psrt-closure : X → X → 𝓤 ̇
+ psrt-closure x y = ∥ srt-closure A x y ∥
 
- E-is-prop-valued : (x y : X) → is-prop (E x y)
- E-is-prop-valued x y = ∥∥-is-prop
+ psrt-is-prop-valued : (x y : X) → is-prop (psrt-closure x y)
+ psrt-is-prop-valued x y = ∥∥-is-prop
 
- E-reflexive : Reflexive E
- E-reflexive x = ∣ D-reflexive x ∣
+ psrt-symmetric : Symmetric psrt-closure
+ psrt-symmetric x y = ∥∥-functor (srt-symmetric A x y)
 
- E-symmetric : Symmetric E
- E-symmetric x y = ∥∥-functor (D-symmetric x y)
-
- E-transitive : Transitive E
- E-transitive x y z = ∥∥-functor₂ (D-transitive x y z)
-
- A-included-in-E : A ⊑ E
- A-included-in-E x y a = ∥∥-functor (A-included-in-D x y) ∣ a ∣
-
- E-induction : (R : X → X → 𝓥 ̇)
-             → Reflexive R
-             → Symmetric R
-             → Transitive R
-             → ((x y : X) → is-prop (R x y))
-             → A ⊑ R
-             → E ⊑ R
- E-induction R r s t R-is-prop-valued A-included-in-R x y =
-  ∥∥-rec (R-is-prop-valued x y) (D-induction R r s t A-included-in-R x y)
-
-\end{code}
-
-TODO. Consider relations with rank (with applications to the
-construction of free groups (without higher inductive types.
-
-\begin{code}
-
-open import NaturalsOrder
-
-module _ (ℓ : X → ℕ)
-         (δ : (x y : X) → A x y → ℓ x > ℓ y)
-       where
+ psrt-reflexive : Reflexive psrt-closure
+ psrt-reflexive x = ∣ srt-reflexive A x ∣
 
 
+ psrt-transitive : Transitive psrt-closure
+ psrt-transitive x y z = ∥∥-functor₂ (srt-transitive A x y z)
+
+ psrt-extension : A ⊑ psrt-closure
+ psrt-extension x y a = ∥∥-functor (srt-extension A x y) ∣ a ∣
+
+ psrt-induction : (R : X → X → 𝓥 ̇)
+                → ((x y : X) → is-prop (R x y))
+                → Reflexive R
+                → Symmetric R
+                → Transitive R
+                → A ⊑ R
+                → psrt-closure ⊑ R
+ psrt-induction R p r s t A-included-in-R x y =
+  ∥∥-rec (p x y) (srt-induction A R s r t A-included-in-R x y)
 
 \end{code}
