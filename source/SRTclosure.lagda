@@ -1,6 +1,14 @@
 Martin Escardo, 03 February 2021.
 
-Symmetric, reflexive, transitive closure of a relation.
+* Symmetric closure of a relation.
+
+* Iteration of a relation.
+
+* Reflexive-transitive closure of a relation.
+
+* Symmetric-reflexive-transitive closure of a relation.
+
+* propositional, symmetric-reflexive-transitive closure of a relation.
 
 \begin{code}
 
@@ -14,6 +22,12 @@ open import UF-Subsingletons
 open import UF-PropTrunc
 
 open import NaturalsAddition renaming (_+_ to right-addition)
+
+\end{code}
+
+We work with addition defined by induction on the left argument:
+
+\begin{code}
 
 _∔_ : ℕ → ℕ → ℕ
 m ∔ n = right-addition n m
