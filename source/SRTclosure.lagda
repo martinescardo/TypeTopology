@@ -15,39 +15,50 @@ module SRTclosure
        (A : X → X → 𝓤 ̇ )
        where
 
+open import NaturalsAddition renaming (_+_ to right-addition)
+
 open import UF-Subsingletons
-open import UF-Base
-open import UF-Retracts
-open import UF-Equiv
-open import UF-UniverseEmbedding
-open import UF-UA-FunExt
-open import UF-FunExt
 open import UF-PropTrunc
+
+\end{code}
+
+The symmetric closure of A:
+
+\begin{code}
 
 B : X → X → 𝓤 ̇
 B x y = A x y + A y x
+
+_⊑_ : (X → X → 𝓤 ̇ ) → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+R ⊑ S = ∀ x y → R x y → S x y
 
 B-symmetric : (x y : X) → B x y → B y x
 B-symmetric x y (inl a) = inr a
 B-symmetric x y (inr a) = inl a
 
-A-included-in-B : (x y : X) → A x y → B x y
+A-included-in-B : A ⊑ B
 A-included-in-B x y = inl
 
 B-induction : (R : X → X → 𝓥 ̇ )
             → Symmetric R
-            → ((x y : X) → A x y → R x y)
-            → ((x y : X) → B x y → R x y)
+            → A ⊑ R
+            → B ⊑ R
 B-induction R s A-included-in-R x y (inl a) = A-included-in-R x y a
 B-induction R s A-included-in-R x y (inr a) = s y x (A-included-in-R y x a)
+
+\end{code}
+
+To define the relexive-transitive closure of B, we consider an
+intermmediate step:
+
+\begin{code}
 
 C : ℕ → X → X → 𝓤 ̇
 C zero     x y = x ≡ y
 C (succ n) x y = Σ z ꞉ X , B x z × C n z y
 
 _∔_ : ℕ → ℕ → ℕ
-zero   ∔ n = n
-succ m ∔ n = succ (m ∔ n)
+m ∔ n = right-addition n m
 
 C-reflexive : (x : X) → C 0 x x
 C-reflexive x = refl
@@ -70,6 +81,13 @@ C-transitive : (m n : ℕ) (x y z : X) → C m x y → C n y z → C (m ∔ n) x
 C-transitive zero     n x x z refl        c' = c'
 C-transitive (succ m) n x y z (t , b , c) c' = t , b , C-transitive m n t y z c c'
 
+\end{code}
+
+The reflexive-transitive closure of B, and hence the
+symmetric-reflexive-transitive closure of A:
+
+\begin{code}
+
 D : X → X → 𝓤 ̇
 D x y = Σ n ꞉ ℕ , C n x y
 
@@ -82,24 +100,30 @@ D-symmetric x y (m , c) = m , C-symmetric m x y c
 D-transitive : Transitive D
 D-transitive x y z (m , c) (m' , c') = (m ∔ m') , C-transitive m m' x y z c c'
 
-B-included-in-D : (x y : X) → B x y → D x y
+B-included-in-D : B ⊑ D
 B-included-in-D x y b = 1 , y , b , refl
 
-A-included-in-D : (x y : X) → A x y → D x y
+A-included-in-D : A ⊑ D
 A-included-in-D x y a = B-included-in-D x y (A-included-in-B x y a)
 
 D-induction : (R : X → X → 𝓥 ̇)
             → Reflexive R
             → Symmetric R
             → Transitive R
-            → ((x y : X) → A x y → R x y)
-            → ((x y : X) → D x y → R x y)
-D-induction R r s t A-included-in-R = D-included-in-R
+            → A ⊑ R
+            → D ⊑ R
+D-induction R r s t A-included-in-R = γ
  where
-  D-included-in-R : (x y : X) → D x y → R x y
-  D-included-in-R x x (zero , refl) = r x
-  D-included-in-R x y (succ n , z , b , c) = t x z y (B-induction R s A-included-in-R x z b)
-                                                     (D-included-in-R z y (n , c))
+  γ : (x y : X) → D x y → R x y
+  γ x x (zero , refl)        = r x
+  γ x y (succ n , z , b , c) = t x z y (B-induction R s A-included-in-R x z b)
+                                       (γ z y (n , c))
+
+\end{code}
+
+The proposition-valued, symmetric-reflexive-transitive closure of A:
+
+\begin{code}
 
 module _ (pt : propositional-truncations-exist) where
 
@@ -120,7 +144,7 @@ module _ (pt : propositional-truncations-exist) where
  E-transitive : Transitive E
  E-transitive x y z = ∥∥-functor₂ (D-transitive x y z)
 
- A-included-in-E : (x y : X) → A x y → E x y
+ A-included-in-E : A ⊑ E
  A-included-in-E x y a = ∥∥-functor (A-included-in-D x y) ∣ a ∣
 
  E-induction : (R : X → X → 𝓥 ̇)
@@ -128,8 +152,8 @@ module _ (pt : propositional-truncations-exist) where
              → Symmetric R
              → Transitive R
              → ((x y : X) → is-prop (R x y))
-             → ((x y : X) → A x y → R x y)
-             → ((x y : X) → E x y → R x y)
+             → A ⊑ R
+             → E ⊑ R
  E-induction R r s t R-is-prop-valued A-included-in-R x y =
   ∥∥-rec (R-is-prop-valued x y) (D-induction R r s t A-included-in-R x y)
 
@@ -137,3 +161,15 @@ module _ (pt : propositional-truncations-exist) where
 
 TODO. Consider relations with rank (with applications to the
 construction of free groups (without higher inductive types.
+
+\begin{code}
+
+open import NaturalsOrder
+
+module _ (ℓ : X → ℕ)
+         (δ : (x y : X) → A x y → ℓ x > ℓ y)
+       where
+
+
+
+\end{code}
