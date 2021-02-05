@@ -387,6 +387,16 @@ commute-with-iterated-function f g h (succ n) x =
    IH : f ∘ (g ^ n) ∼ (g ^ n) ∘ f
    IH = commute-with-iterated-function f g h n
 
+commute-with-iterated-function⁺ : {X : 𝓤 ̇ } (f g : X → X)
+                                → f ∘ g ∼ g ∘ f
+                                → (n m : ℕ)
+                                → (f ^ n) ∘ (g ^ m) ∼ (g ^ m) ∘ (f ^ n)
+commute-with-iterated-function⁺ f g h n m =
+ commute-with-iterated-function (f ^ n) g γ m
+  where
+   γ : (f ^ n) ∘ g ∼ g ∘ (f ^ n)
+   γ x = (commute-with-iterated-function g f (λ y → h y ⁻¹) n x) ⁻¹
+
 iterated-function-section : {X : 𝓤 ̇ } (s : X → X) (r : X → X)
                           → r ∘ s ∼ id
                           → (n : ℕ) → (r ^ n) ∘ (s ^ n) ∼ id
@@ -425,6 +435,12 @@ commute-with-pred-ℤ f c z =
       f (succ-ℤ (pred-ℤ z)) ≡⟨ ap f (pred-section-of-succ z)   ⟩
       f z                   ≡⟨ (pred-section-of-succ (f z)) ⁻¹ ⟩
       succ-ℤ (pred-ℤ (f z)) ∎
+
+succ-commutes-with-pred : succ-ℤ ∘ pred-ℤ ∼ pred-ℤ ∘ succ-ℤ
+succ-commutes-with-pred = commute-with-pred-ℤ succ-ℤ (λ x → refl)
+
+pred-commutes-with-succ : pred-ℤ ∘ succ-ℤ ∼ succ-ℤ ∘ pred-ℤ
+pred-commutes-with-succ x = (succ-commutes-with-pred x) ⁻¹
 
 commute-with-pred-ℤ-iterated : (f : ℤ → ℤ)
                              → (f ∘ succ-ℤ ∼ succ-ℤ ∘ f)
@@ -614,17 +630,91 @@ open import NaturalsAddition renaming (_+_ to _+ℕ_)
 +ℤ-is-commutative 𝟎 (pos m) = pos-succ-ℤ-iterated m
 +ℤ-is-commutative 𝟎 (neg m) = neg-pred-ℤ-iterated m
 +ℤ-is-commutative (pos n) 𝟎 = (pos-succ-ℤ-iterated n) ⁻¹
++ℤ-is-commutative (neg n) 𝟎 = (neg-pred-ℤ-iterated n) ⁻¹
 +ℤ-is-commutative (pos n) (pos m) =
- (succ-ℤ ^ (succ n)) (pos m) ≡⟨ ap (succ-ℤ ^ (succ n)) (pos-succ-ℤ-iterated m) ⟩
- ((succ-ℤ ^ (succ n) ∘ (succ-ℤ ^ (succ m))) 𝟎) ≡⟨ commute-with-iterated-function (succ-ℤ ^ succ n) succ-ℤ (λ x → (commute-with-iterated-function succ-ℤ succ-ℤ (λ _ → refl) (succ n) x) ⁻¹) (succ m) 𝟎 ⟩
- ((succ-ℤ ^ (succ m)) ∘ (succ-ℤ ^ (succ n))) 𝟎  ≡⟨ ap (succ-ℤ ^ (succ m)) ((pos-succ-ℤ-iterated n) ⁻¹) ⟩
- (succ-ℤ ^ (succ m)) (pos n) ≡⟨ refl ⟩
- (pos m +ℤ pos n) ∎
+ (succ-ℤ ^ succ n) (pos m)               ≡⟨ I    ⟩
+ (succ-ℤ ^ succ n) ((succ-ℤ ^ succ m) 𝟎) ≡⟨ II   ⟩
+ (succ-ℤ ^ succ m) ((succ-ℤ ^ succ n) 𝟎) ≡⟨ III  ⟩
+ (succ-ℤ ^ succ m) (pos n)               ≡⟨ refl ⟩
+ pos m +ℤ pos n                          ∎
+  where
+   I   = ap (succ-ℤ ^ (succ n)) (pos-succ-ℤ-iterated m)
+   II  = commute-with-iterated-function⁺ succ-ℤ succ-ℤ
+          (λ x → refl) (succ n) (succ m) 𝟎
+   III = ap (succ-ℤ ^ (succ m)) ((pos-succ-ℤ-iterated n) ⁻¹)
 +ℤ-is-commutative (pos n) (neg m) =
- (succ-ℤ ^ succ n) (neg m) ≡⟨ ap (succ-ℤ ^ succ n) (neg-pred-ℤ-iterated m) ⟩
- (succ-ℤ ^ succ n) ((pred-ℤ ^ succ m) 𝟎) ≡⟨ commute-with-iterated-function (succ-ℤ ^ succ n) pred-ℤ (λ x → (commute-with-iterated-function pred-ℤ succ-ℤ (λ y → pred-retraction-of-succ y ∙ (pred-section-of-succ y) ⁻¹) (succ n) x) ⁻¹) (succ m) 𝟎 ⟩
- ((pred-ℤ ^ succ m) ∘ (succ-ℤ ^ succ n)) 𝟎 ≡⟨ ap (pred-ℤ ^ succ m) ((pos-succ-ℤ-iterated n) ⁻¹) ⟩
- (pred-ℤ ^ succ m) (pos n) ∎
-+ℤ-is-commutative (neg n) y = {!!}
+ (succ-ℤ ^ succ n) (neg m)               ≡⟨ I   ⟩
+ (succ-ℤ ^ succ n) ((pred-ℤ ^ succ m) 𝟎) ≡⟨ II  ⟩
+ (pred-ℤ ^ succ m) ((succ-ℤ ^ succ n) 𝟎) ≡⟨ III ⟩
+ (pred-ℤ ^ succ m) (pos n)               ≡⟨ refl ⟩
+ neg m +ℤ pos n                          ∎
+  where
+   I   = ap (succ-ℤ ^ succ n) (neg-pred-ℤ-iterated m)
+   II  = commute-with-iterated-function⁺ succ-ℤ pred-ℤ
+          succ-commutes-with-pred (succ n) (succ m) 𝟎
+   III = ap (pred-ℤ ^ succ m) ((pos-succ-ℤ-iterated n) ⁻¹)
++ℤ-is-commutative (neg n) (pos m) =
+ (pred-ℤ ^ succ n) (pos m)               ≡⟨ I    ⟩
+ (pred-ℤ ^ succ n) ((succ-ℤ ^ succ m) 𝟎) ≡⟨ II   ⟩
+ (succ-ℤ ^ succ m) ((pred-ℤ ^ succ n) 𝟎) ≡⟨ III  ⟩
+ (succ-ℤ ^ succ m) (neg n)               ≡⟨ refl ⟩
+ pos m +ℤ neg n                          ∎
+  where
+   I   = ap (pred-ℤ ^ succ n) (pos-succ-ℤ-iterated m)
+   II  = commute-with-iterated-function⁺ pred-ℤ succ-ℤ
+          pred-commutes-with-succ (succ n) (succ m) 𝟎
+   III = ap (succ-ℤ ^ succ m) ((neg-pred-ℤ-iterated n) ⁻¹)
++ℤ-is-commutative (neg n) (neg m) =
+ (pred-ℤ ^ succ n) (neg m)               ≡⟨ I    ⟩
+ (pred-ℤ ^ succ n) ((pred-ℤ ^ succ m) 𝟎) ≡⟨ II   ⟩
+ (pred-ℤ ^ succ m) ((pred-ℤ ^ succ n) 𝟎) ≡⟨ III  ⟩
+ (pred-ℤ ^ succ m) (neg n)               ≡⟨ refl ⟩
+ neg m +ℤ neg n                          ∎
+  where
+   I   = ap (pred-ℤ ^ succ n) (neg-pred-ℤ-iterated m)
+   II  = commute-with-iterated-function⁺ pred-ℤ pred-ℤ
+          (λ x → refl) (succ n) (succ m) 𝟎
+   III = ap (pred-ℤ ^ succ m) ((neg-pred-ℤ-iterated n) ⁻¹)
+
+─_ : ℤ → ℤ
+─ 𝟎       = 𝟎
+─ (pos n) = neg n
+─ (neg n) = pos n
+
+─-is-linv : (x : ℤ) → x +ℤ (─ x) ≡ 𝟎
+─-is-linv 𝟎 = refl
+─-is-linv (pos n) =
+ (succ-ℤ ^ succ n) (neg n)               ≡⟨ I  ⟩
+ (succ-ℤ ^ succ n) ((pred-ℤ ^ succ n) 𝟎) ≡⟨ II ⟩
+ 𝟎                                       ∎
+  where
+   I  = ap (succ-ℤ ^ succ n) (neg-pred-ℤ-iterated n)
+   II = pred-section-of-succ-iterated (succ n) 𝟎
+─-is-linv (neg n) =
+ (pred-ℤ ^ succ n) (pos n)               ≡⟨ I  ⟩
+ (pred-ℤ ^ succ n) ((succ-ℤ ^ succ n) 𝟎) ≡⟨ II ⟩
+ 𝟎                                       ∎
+  where
+   I  = ap (pred-ℤ ^ succ n) (pos-succ-ℤ-iterated n)
+   II = pred-retraction-of-succ-iterated (succ n) 𝟎
+
+─-is-involutive : (x : ℤ) → ─ ─ x ≡ x
+─-is-involutive 𝟎       = refl
+─-is-involutive (pos n) = refl
+─-is-involutive (neg n) = refl
+
+─-is-rinv : (x : ℤ) → (─ x) +ℤ x ≡ 𝟎
+─-is-rinv x = (─ x) +ℤ x ≡⟨ +ℤ-is-commutative (─ x) x ⟩
+              x +ℤ (─ x) ≡⟨ ─-is-linv x ⟩
+              𝟎          ∎
+
++ℤ-is-equiv₁ : (x : ℤ) → is-equiv (λ y → x +ℤ y)
++ℤ-is-equiv₁ 𝟎 = id-is-equiv ℤ
++ℤ-is-equiv₁ (pos n) = iterated-function-is-equiv succ-ℤ succ-ℤ-is-equiv (succ n)
++ℤ-is-equiv₁ (neg n) = iterated-function-is-equiv pred-ℤ pred-ℤ-is-equiv (succ n)
+
++ℤ-is-equiv₂ : (y : ℤ) → is-equiv (λ x → x +ℤ y)
++ℤ-is-equiv₂ y = equiv-closed-under-∼ (λ x → y +ℤ x) (λ x → x +ℤ y)
+                  (+ℤ-is-equiv₁ y) (λ x → +ℤ-is-commutative x y)
 
 \end{code}
