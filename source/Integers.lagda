@@ -717,4 +717,26 @@ open import NaturalsAddition renaming (_+_ to _+ℕ_)
 +ℤ-is-equiv₂ y = equiv-closed-under-∼ (λ x → y +ℤ x) (λ x → x +ℤ y)
                   (+ℤ-is-equiv₁ y) (λ x → +ℤ-is-commutative x y)
 
+shift-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
+                             → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+                             → f ∼ (λ x → x +ℤ f 𝟎)
+shift-if-commute-with-succ-ℤ f h 𝟎 = refl
+shift-if-commute-with-succ-ℤ f h (pos n) =
+ f (pos n)                 ≡⟨ ap f (pos-succ-ℤ-iterated n)   ⟩
+ f ((succ-ℤ ^ succ n) 𝟎)   ≡⟨ commute-with-iterated-function
+                               f succ-ℤ h (succ n) 𝟎         ⟩
+ (succ-ℤ ^ (succ n)) (f 𝟎) ∎
+shift-if-commute-with-succ-ℤ f h (neg n) =
+ f (neg n)                 ≡⟨ ap f (neg-pred-ℤ-iterated n)                   ⟩
+ f ((pred-ℤ ^ succ n) 𝟎)   ≡⟨ commute-with-iterated-function
+                               f pred-ℤ (commute-with-pred-ℤ f h) (succ n) 𝟎 ⟩
+ (pred-ℤ ^ (succ n)) (f 𝟎) ∎
+
+equiv-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
+                             → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+                             → is-equiv f
+equiv-if-commute-with-succ-ℤ f h =
+ equiv-closed-under-∼ (λ x → x +ℤ f 𝟎) f
+  (+ℤ-is-equiv₂ (f 𝟎)) (shift-if-commute-with-succ-ℤ f h)
+
 \end{code}
