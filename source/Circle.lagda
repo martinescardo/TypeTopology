@@ -51,7 +51,7 @@ open sip
 open sip-with-axioms
 
 Tℤ : 𝓤₁ ̇
-Tℤ = Σ X ꞉ 𝓤₀ ̇ , Σ f ꞉ (X → X) , ∥ (X , f) ≡ (ℤ , succ-ℤ) ∥
+Tℤ = Σ X ꞉ 𝓤₀ ̇ , Σ f ꞉ (X → X) , ∥ (ℤ , succ-ℤ) ≡ (X , f) ∥
 
 base : Tℤ
 base = (ℤ , succ-ℤ , ∣ refl ∣)
@@ -115,7 +115,7 @@ characterization-of-Tℤ-≡ : (X Y : Tℤ)
 characterization-of-Tℤ-≡ =
  characterization-of-≡-with-axioms ua
   sns-data
-  (λ X f → ∥ (X , f) ≡ (ℤ , succ-ℤ) ∥)
+  (λ X f → ∥ (ℤ , succ-ℤ) ≡ (X , f) ∥)
   (λ X f → ∥∥-is-prop)
 
 to-Tℤ-≡ : (X Y : Tℤ) → X ≅ Y → X ≡ Y
@@ -263,13 +263,13 @@ module Tℤ-rec
                  → is-singleton (Qₚ (X , f))
  Qₚ-is-singleton (X , f , t) = ∥∥-rec (being-singleton-is-prop fe) γ t
   where
-   γ : (X , f) ≡ (ℤ , succ-ℤ) → is-singleton (Qₚ (X , f))
+   γ :  (ℤ , succ-ℤ) ≡ (X , f) → is-singleton (Qₚ (X , f))
    γ refl = Qₚ-base-is-singleton
 
  cₚ : ((X , f , _) : Tℤ) → Qₚ (X , f)
  cₚ (X , f , t) =
   ∥∥-rec (singletons-are-props (Qₚ-is-singleton (X , f , t)))
-   (λ e → back-transport Qₚ e cₚ-base) t
+   (λ e → transport Qₚ e cₚ-base) t
 
 {-
  cₚ-on-base : cₚ base ≡ cₚ-base
@@ -346,7 +346,7 @@ module _
  ⟨⟩₂-is-equiv : (X : Tℤ) → is-equiv ⟨ X ⟩₂
  ⟨⟩₂-is-equiv (X , f , t) = ∥∥-rec (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ f) γ t
   where
-   γ : (X , f) ≡ (ℤ , succ-ℤ) → is-equiv f
+   γ : (ℤ , succ-ℤ) ≡ (X , f) → is-equiv f
    γ refl = succ-ℤ-is-equiv
 
  ⟨⟩₂-≃ : (X : Tℤ) → ⟨ X ⟩ ≃ ⟨ X ⟩
@@ -384,7 +384,7 @@ module _
  ⟨⟩-is-set : (X : Tℤ) → is-set ⟨ X ⟩
  ⟨⟩-is-set (X , f , t) = ∥∥-rec (being-set-is-prop fe₀) γ t
   where
-   γ : (X , f) ≡ (ℤ , succ-ℤ) → is-set X
+   γ : (ℤ , succ-ℤ) ≡ (X , f) → is-set X
    γ refl = ℤ-is-set
 
  Tℤ-action : (X : Tℤ) → ⟨ X ⟩ → ℤ → ⟨ X ⟩
@@ -424,8 +424,13 @@ module _
    γ : (n : ℕ) (x : ⟨ X ⟩)
      → Tℤ-action X x (neg n) ≡ (⌜ t ⌝ ∘ (pred-ℤ ^ (succ n)) ∘ ⌜ t ⌝⁻¹) x
    γ zero x    = I ∙ (II ∙ III)
-    -- The equational reasoning below is very slow for some reason...
     {-
+       The equational reasoning below is very slow to typecheck. I suspect it is
+       because one of the types is equal to, but not quite what Agda expects to
+       see, triggering some huge normalization procedure. I also suspect that
+       adding the --experimental-lossy-unification flags speeds up the
+       typechecking.
+
        ⟨ X ⟩₂⁻¹                        x ≡⟨ I   ⟩
        (⌜ t ⌝ ∘ ⌜ t ⌝⁻¹ ∘ ⟨ X ⟩₂⁻¹)    x ≡⟨ II  ⟩
        (⌜ t ⌝ ∘ ⟨ base ⟩₂⁻¹ ∘ ⌜ t ⌝⁻¹) x ≡⟨ III ⟩
@@ -461,9 +466,68 @@ module _
   ∥∥-rec (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀
    (Tℤ-action (X , f , t) x)) γ t
    where
-    γ : (X , f) ≡ (ℤ , succ-ℤ)
+    γ : (ℤ , succ-ℤ) ≡ (X , f)
       → is-equiv (Tℤ-action (X , f , t) x)
-    γ q = {!!}
+    γ refl = {!ψ x!}
+     where
+      ψ : (z : ℤ) → is-equiv (Tℤ-action base z)
+      ψ 𝟎 = equiv-closed-under-∼ id (Tℤ-action base 𝟎) (id-is-equiv ℤ) rrr
+       where
+        rrr : Tℤ-action base 𝟎 ∼ id
+        rrr 𝟎 = refl
+        rrr (pos n) = (pos-succ-ℤ-iterated n) ⁻¹
+        rrr (neg n) = (neg-pred-ℤ-iterated n ∙
+                       happly (ap (λ - → - ^ succ n)
+                        (⟨⟩₂⁻¹-of-base-is-pred-ℤ ⁻¹)) 𝟎) ⁻¹
+      ψ (pos n) = {!!}
+       where
+        rrr : Tℤ-action base (pos n) ∼ (succ-ℤ ^ (succ n))
+        rrr 𝟎 = pos-succ-ℤ-iterated n
+        rrr (pos m) = {!!}
+        rrr (neg m) = {!!}
+
+{-
+ Tℤ-action-is-equiv : (X : Tℤ) (x : ⟨ X ⟩)
+                           → is-equiv (Tℤ-action X x)
+ Tℤ-action-is-equiv (X , f , t) x =
+  ∥∥-rec (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀
+   (Tℤ-action (X , f , t) x)) γ t
+   where
+    γ : (ℤ , succ-ℤ) ≡ (X , f)
+      → is-equiv (Tℤ-action (X , f , t) x)
+    γ q = qinvs-are-equivs (Tℤ-action (X , f , t) x) (φ , η , ε)
+     where
+      q⁺ : base ≡ (X , f , t)
+      q⁺ = ap ⌜ Σ-assoc ⌝ (to-subtype-≡ (λ _ → ∥∥-is-prop) q)
+      e : ℤ ≃ X
+      e = to-≃-of-⟨⟩ base (X , f , t) q⁺
+      φ : X → ℤ
+      φ y = succᶻ⁻¹ (⌜ e ⌝⁻¹ x) (⌜ e ⌝⁻¹ y) -- succᶻ⁻¹ (⌜ e ⌝⁻¹ y) (⌜ e ⌝⁻¹ x)
+      η : φ ∘ (Tℤ-action (X , f , t) x) ∼ id
+      η z = φ (Tℤ-action (X , f , t) x z) ≡⟨ ap φ (Tℤ-action-lemma (X , f , t) q⁺ x z) ⟩
+            φ ((⌜ e ⌝ ∘ succᶻ z ∘ ⌜ e ⌝⁻¹) x) ≡⟨ refl ⟩
+            succᶻ⁻¹ (⌜ e ⌝⁻¹ x) ((⌜ e ⌝⁻¹ ∘ ⌜ e ⌝ ∘ succᶻ z ∘ ⌜ e ⌝⁻¹) x) ≡⟨ {!!} ⟩
+            succᶻ⁻¹ (⌜ e ⌝⁻¹ x) (succᶻ z (⌜ e ⌝⁻¹ x)) ≡⟨ succᶻ⁻¹-retraction-of-succᶻ {!!} {!!} ⟩
+            {!!} ≡⟨ {!!} ⟩
+            {!!} ∎
+      {-
+      η 𝟎 = φ ((Tℤ-action (X , f , t) x) 𝟎) ≡⟨ ap φ (Tℤ-action-lemma (X , f , t) q⁺ x 𝟎) ⟩
+            (φ ∘ ⌜ e ⌝ ∘ ⌜ e ⌝⁻¹) x ≡⟨ refl ⟩
+            succᶻ⁻¹ (⌜ e ⌝⁻¹ (⌜ e ⌝ (⌜ e ⌝⁻¹ x))) (⌜ e ⌝⁻¹ x) ≡⟨ {!!} ⟩
+            {!!} ≡⟨ {!!} ⟩
+            id 𝟎 ∎ -}
+      ε : (λ x₁ → Tℤ-action (X , f , t) x (φ x₁)) ∼ (λ x₁ → x₁)
+      ε = {!!}
+-}
+
+{-
+
+                 → Tℤ-action X x z
+                 ≡ (⌜ to-≃-of-⟨⟩ base X q ⌝
+                   ∘ succᶻ z
+                   ∘ ⌜ to-≃-of-⟨⟩ base X q ⌝⁻¹) x
+
+-}
 
  generalized-loop-≅ : (X : Tℤ) → ⟨ X ⟩ → base ≅ X
  generalized-loop-≅ (X , f , t) x = e , i , {!!}
@@ -477,7 +541,7 @@ module _
    e⁻¹ : X → ℤ
    e⁻¹ y = {!!}
    i : is-equiv e
-   i = qinvs-are-equivs {!!} {!!}
+   i = qinvs-are-equivs (λ z → e z) {!!}
 
 \end{code}
 
