@@ -950,7 +950,7 @@ vec : (n : ℕ) → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 vec 0        X = 𝟙
 vec (succ n) X = X 𝟎 × vec n (X ∘ suc)
 
-Vec : 𝓤 ̇ → (n : ℕ) → 𝓤 ̇
+Vec : 𝓤 ̇ → ℕ → 𝓤 ̇
 Vec X n = vec n (λ _ → X)
 
 \end{code}
@@ -992,6 +992,9 @@ index (succ n) (x ∷ xs) (suc i) = index n xs i
 
 _!!_ : {n : ℕ} {X : Fin n → 𝓤 ̇ } → vec n X → (i : Fin n) → X i
 _!!_ {𝓤} {n} = index n
+
+List : 𝓤 ̇ → 𝓤 ̇
+List X = Σ n ꞉ ℕ , Vec X n
 
 \end{code}
 
