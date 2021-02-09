@@ -21,7 +21,10 @@ future.
 
 \end{code}
 
-NB. This repository is supposed to use --exact-split, but even though everything has been developed using case-split, the --exact-split check fails (in Agda 2.6.1) in the helper function f of the function churros. This seems to be a bug.
+NB. This repository is supposed to use exact-split, but even though
+everything has been developed using case-split, the exact-split check
+fails (in Agda 2.6.1) in the helper function f of the function
+churros. This seems to be a bug.
 
 \begin{code}
 
