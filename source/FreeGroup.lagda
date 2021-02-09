@@ -13,9 +13,7 @@ publicly visible.
 This is part of the Martin Escardo's Agda development TypeTopology,
 whose philosophy is to be Spartan. At the moment we are a bit
 Athenian, though, although we intend to fix this in the
-future. Moreover, we even leave the realm of (any kind of) Martin-Löf
-type theory at certain (indicated) points, and we also intend to fix
-this in due course.
+future.
 
 \begin{code}
 
@@ -23,7 +21,7 @@ this in due course.
 
 \end{code}
 
-NB. This repository is supposed to use --exact-split, but even though everything has been developed using case-split, the --exact-split check fails (in Agda 2.6.1) in the helper function f of the function churros.
+NB. This repository is supposed to use --exact-split, but even though everything has been developed using case-split, the --exact-split check fails (in Agda 2.6.1) in the helper function f of the function churros. This seems to be a bug.
 
 \begin{code}
 
@@ -58,41 +56,19 @@ data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
 
 infixr 2 _∷_
 
-\end{code}
-
-The following are not MLTT proofs:
-
-\begin{code}
-
 equal-heads : {X : 𝓤 ̇ } {x y : X} {s t : List X}
-            → x ∷ s ≡ y ∷ t
-            → x ≡ y
-equal-heads refl = refl
-
-equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
-            → x ∷ s ≡ y ∷ t
-            → s ≡ t
-equal-tails refl = refl
-
-\end{code}
-
-But this is easy to rectify:
-
-\begin{code}
-
-equal-heads' : {X : 𝓤 ̇ } {x y : X} {s t : List X}
              → x ∷ s ≡ y ∷ t
              → x ≡ y
-equal-heads' {𝓤} {X} {x} {y} {s} {t} = ap f
+equal-heads {𝓤} {X} {x} {y} {s} {t} = ap f
  where
   f : List X → X
   f []      = x
   f (z ∷ s) = z
 
-equal-tails' : {X : 𝓤 ̇ } {x y : X} {s t : List X}
+equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
              → x ∷ s ≡ y ∷ t
              → s ≡ t
-equal-tails' {𝓤} {X} {x} {y} {s} {t} = ap f
+equal-tails {𝓤} {X} {x} {y} {s} {t} = ap f
  where
   f : List X → List X
   f []      = []
