@@ -161,8 +161,14 @@ module _ {𝓤 : Universe}
  srt-transitive : Transitive srt-closure
  srt-transitive = rt-transitive (s-closure A)
 
+ srt-extension'' : s-closure A ⊑ srt-closure
+ srt-extension'' = rt-extension (s-closure A)
+
+ srt-extension' : A ⊑ s-closure A
+ srt-extension' = s-extension A
+
  srt-extension : A ⊑ srt-closure
- srt-extension x y a = rt-extension (s-closure A) x y (s-extension A x y a)
+ srt-extension x y = srt-extension'' x y ∘ srt-extension' x y
 
  srt-induction : (R : X → X → 𝓥 ̇)
                → Symmetric R

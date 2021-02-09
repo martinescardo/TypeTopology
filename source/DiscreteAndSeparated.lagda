@@ -169,11 +169,11 @@ discrete-is-¬¬-separated d x y = ¬¬-elim(d x y)
 𝟚-is-¬¬-separated : is-¬¬-separated 𝟚
 𝟚-is-¬¬-separated = discrete-is-¬¬-separated 𝟚-is-discrete
 
-subtype-of-separated-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
+subtype-is-¬¬-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (m : X → Y)
                                      → left-cancellable m
                                      → is-¬¬-separated Y
                                      → is-¬¬-separated X
-subtype-of-separated-is-¬¬-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
+subtype-is-¬¬-separated {𝓤} {𝓥} {X} m i s x x' e = i (s (m x) (m x') (¬¬-functor (ap m) e))
 
 \end{code}
 
