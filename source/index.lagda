@@ -138,6 +138,7 @@ import ExtendedSumCompact
 import Fin
 import frame
 import FailureOfTotalSeparatedness
+import FreeGroup
 import FreeJoinSemiLattice    -- By Tom de Jong
 import FreeSupLattice         -- By Tom de Jong
 import GeneralNotation
