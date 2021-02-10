@@ -49,7 +49,8 @@ open import UF-FunExt
 \end{code}
 
 It is possible to work with lists *defined* from the ingredients of
-our Spartan MLTT (see the module Fin.lagda).
+our Spartan MLTT (see the module Fin.lagda). For the moment we are
+Athenian in this respect:
 
 \begin{code}
 
@@ -62,20 +63,20 @@ infixr 2 _∷_
 equal-heads : {X : 𝓤 ̇ } {x y : X} {s t : List X}
              → x ∷ s ≡ y ∷ t
              → x ≡ y
-equal-heads {𝓤} {X} {x} {y} {s} {t} = ap f
+equal-heads {𝓤} {X} {x} = ap f
  where
   f : List X → X
   f []      = x
-  f (z ∷ s) = z
+  f (z ∷ _) = z
 
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
              → x ∷ s ≡ y ∷ t
              → s ≡ t
-equal-tails {𝓤} {X} {x} {y} {s} {t} = ap f
+equal-tails {𝓤} {X} = ap f
  where
   f : List X → List X
   f []      = []
-  f (z ∷ s) = s
+  f (z ∷ u) = u
 
 [_] : {X : 𝓤 ̇ } → X → List X
 [ x ] = x ∷ []
