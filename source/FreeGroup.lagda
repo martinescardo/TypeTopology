@@ -76,7 +76,7 @@ equal-tails {𝓤} {X} = ap f
  where
   f : List X → List X
   f []      = []
-  f (z ∷ u) = u
+  f (_ ∷ u) = u
 
 [_] : {X : 𝓤 ̇ } → X → List X
 [ x ] = x ∷ []
@@ -228,9 +228,9 @@ induction on u₀ and u₁:
 
    f (y₀ ∷ z₀ ∷ u₀) [] p = inr γ
     where
-     have-p : y₀ ∷ z₀   ∷ u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀ ≡
-              x₁ ∷ x₁ ⁻ ∷ v₁
-     have-p = p
+     have : y₀ ∷ z₀   ∷ u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀
+          ≡ x₁ ∷ x₁ ⁻ ∷ v₁
+     have = p
 
      q = y₀ ⁻ ≡⟨ ap (_⁻) (equal-heads p) ⟩
          x₁ ⁻ ≡⟨ (equal-heads (equal-tails p))⁻¹ ⟩
