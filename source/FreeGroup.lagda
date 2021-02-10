@@ -165,11 +165,14 @@ induction on u₀ and u₁:
      → u₀ ++  [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀ ≡ u₁ ++  [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
      → (u₀ ++ v₀ ≡ u₁ ++ v₁) + (Σ t ꞉ FA , (u₀ ++ v₀ ▷ t) × (u₁ ++ v₁ ▷ t))
 
-   f [] [] p = inl (equal-tails (equal-tails p))
+   f [] [] p = inl γ
     where
      have : x₀ ∷ x₀ ⁻  ∷ v₀
           ≡ x₁ ∷ x₁ ⁻  ∷ v₁
      have = p
+
+     γ : v₀ ≡ v₁
+     γ = equal-tails (equal-tails p)
 
    f [] (y₁ ∷ []) p = inl γ
     where
@@ -185,7 +188,7 @@ induction on u₀ and u₁:
      γ : v₀ ≡ y₁ ∷ v₁
      γ = transport (λ - → v₀ ≡ - ∷ v₁) q (equal-tails (equal-tails p))
 
-   f [] (y₁ ∷ z₁ ∷ u₁) p = inr ((u₁ ++ v₁) , d , e)
+   f [] (y₁ ∷ z₁ ∷ u₁) p = inr γ
     where
      have : x₀ ∷ x₀ ⁻ ∷ v₀
           ≡ y₁ ∷ z₁   ∷ u₁ ++ [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
@@ -206,6 +209,9 @@ induction on u₀ and u₁:
 
      e : y₁ ∷ z₁ ∷ u₁ ++ v₁ ▷ u₁ ++ v₁
      e = transport (λ - → y₁ ∷ - ∷ u₁ ++ v₁ ▷ u₁ ++ v₁) q e'
+
+     γ : Σ t ꞉ FA , (v₀ ▷ t) × (y₁ ∷ z₁ ∷ u₁ ++ v₁ ▷ t)
+     γ = (u₁ ++ v₁) , d , e
 
    f (y₀ ∷ []) [] p = inl γ
     where
@@ -275,6 +281,12 @@ induction on u₀ and u₁:
    γ (inr (t , p , q)) = inr (t , transport (_▷ t) (q₀ ⁻¹) p ,
                                   transport (_▷ t) (q₁ ⁻¹) q)
 
+\end{code}
+
+The symmetric closure of _▷_:
+
+\begin{code}
+
  open import SRTclosure
 
  _◁▷_ : FA → FA → 𝓤 ̇
@@ -282,13 +294,33 @@ induction on u₀ and u₁:
 
  infix 1 _◁▷_
 
+\end{code}
+
+Symmetric, reflexive, transitive closure of _▷_:
+
+\begin{code}
+
  open psrt pt
 
  _∾_ : FA → FA → 𝓤 ̇
  _∾_ = srt-closure _▷_
 
+\end{code}
+
+Propositional, symmetric, reflexive, transitive closure of _▷_:
+
+\begin{code}
+
  _∾ₚ_ : FA → FA → 𝓤 ̇
  _∾ₚ_ = psrt-closure _▷_
+
+\end{code}
+
+The above is just the truncation of _∾_. Most of the work will be done
+before truncation. The following is for reasoning with chain of
+equivalences:
+
+\begin{code}
 
  infix 1 _∾_
 
@@ -298,8 +330,16 @@ induction on u₀ and u₁:
  _∾∎ : (s : FA) → s ∾ s
  _∾∎ _ = srt-reflexive _▷_ _
 
- infix  1 _∾∎
  infixr 0 _∾⟨_⟩_
+ infix  1 _∾∎
+
+\end{code}
+
+The group operation before quotienting is simply concatenation.
+
+Concatenation is a left congruence:
+
+\begin{code}
 
  ++-▷-left : (s s' t : FA) → s ▷ s' → s ++ t ▷ s' ++ t
  ++-▷-left s s' t (u , v , x , p , q) = u , (v ++ t) , x , p' , q'
@@ -327,6 +367,12 @@ induction on u₀ and u₁:
  ++-cong-left : (s s' t : FA) → s ∾ s' → s ++ t ∾ s' ++ t
  ++-cong-left s s' t (n , a) = n , ++-iteration-left s s' t n a
 
+\end{code}
+
+It is also a right congruence:
+
+\begin{code}
+
  ∷-◁▷ : (x : X) {s t : FA} → s ◁▷ t → x ∷ s ◁▷ x ∷ t
  ∷-◁▷ x (inl e) = inl (∷-▷ x e)
  ∷-◁▷ x (inr e) = inr (∷-▷ x e)
@@ -344,13 +390,31 @@ induction on u₀ and u₁:
  ++-cong-right []      e = e
  ++-cong-right (x ∷ s) e = ∷-cong x (++-cong-right s e)
 
+\end{code}
+
+And therefore it is a two-sided congruence:
+
+\begin{code}
+
  ++-cong : {s s' t t' : FA} → s ∾ s' → t ∾ t' → s ++ t ∾ s' ++ t'
  ++-cong {s} {s'} {t} {t'} d e = s ++ t   ∾⟨ ++-cong-left s s' t d ⟩
                                  s' ++ t  ∾⟨ ++-cong-right s' e ⟩
                                  s' ++ t' ∾∎
+\end{code}
+
+The group inverse, before quotienting:
+
+\begin{code}
+
  inv : FA → FA
  inv [] = []
  inv (x ∷ s) = inv s ++ [ x ⁻ ]
+
+\end{code}
+
+It is a congruence:
+
+\begin{code}
 
  inv-++ : (s t : FA) → inv (s ++ t) ≡ inv t ++ inv s
  inv-++ []      t = []-right-neutral (inv t)
@@ -396,6 +460,12 @@ induction on u₀ and u₁:
  inv-cong : {s t : FA} → s ∾ t → inv s ∾ inv t
  inv-cong (n , a) = n , inv-iteration n a
 
+\end{code}
+
+The inverse really is an inverse:
+
+\begin{code}
+
  =-∾ : {s s' : FA} → s ≡ s' → s ∾ s'
  =-∾ {s} refl = srt-reflexive _▷_ s
 
@@ -440,8 +510,14 @@ induction on u₀ and u₁:
      III = ++-cong-right (inv s) (++-cong-left _ _ _ (inv-lemma' x))
      IV  = inv-property' s
 
- η-injective : (a b : A) → η a ≡ η b → a ≡ b
- η-injective a b = ap f
+\end{code}
+
+The insertion of generators is left cancellable before quotienting:
+
+\begin{code}
+
+ η-lc : (a b : A) → η a ≡ η b → a ≡ b
+ η-lc a b = ap f
   where
    f : FA → A
    f []            = a
@@ -449,7 +525,9 @@ induction on u₀ and u₁:
 
 \end{code}
 
-Now we should be able to prove this from the Church-Rosser property:
+Now we should be able to prove this from the Church-Rosser property,
+which will give that the insertion of generators is injective after
+quotienting:
 
 \begin{code}
 {-
