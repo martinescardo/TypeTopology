@@ -61,8 +61,8 @@ data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
 infixr 2 _∷_
 
 equal-heads : {X : 𝓤 ̇ } {x y : X} {s t : List X}
-             → x ∷ s ≡ y ∷ t
-             → x ≡ y
+            → x ∷ s ≡ y ∷ t
+            → x ≡ y
 equal-heads {𝓤} {X} {x} = ap f
  where
   f : List X → X
@@ -70,8 +70,8 @@ equal-heads {𝓤} {X} {x} = ap f
   f (z ∷ _) = z
 
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
-             → x ∷ s ≡ y ∷ t
-             → s ≡ t
+            → x ∷ s ≡ y ∷ t
+            → s ≡ t
 equal-tails {𝓤} {X} = ap f
  where
   f : List X → List X
@@ -118,8 +118,8 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
-We will quotient the following type FA to get undelying type of the
-free group:
+We will quotient the following type FA to get the undelying type of
+the free group:
 
 \begin{code}
 
@@ -226,7 +226,7 @@ induction on u₀ and u₁:
          x₀ ⁻ ∷ v₀     ≡⟨ equal-tails (equal-tails p) ⟩
          v₁            ∎
 
-   f (y₀ ∷ z₀ ∷ u₀) [] p = inr ((u₀ ++ v₀) , d , e)
+   f (y₀ ∷ z₀ ∷ u₀) [] p = inr γ
     where
      have-p : y₀ ∷ z₀   ∷ u₀ ++ [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀ ≡
               x₁ ∷ x₁ ⁻ ∷ v₁
@@ -247,6 +247,9 @@ induction on u₀ and u₁:
 
      e : v₁ ▷ u₀ ++ v₀
      e = transport (_▷ u₀ ++ v₀) (equal-tails (equal-tails p)) e'
+
+     γ : Σ t ꞉ FA , (y₀ ∷ z₀ ∷ u₀ ++ v₀ ▷ t) × (v₁ ▷ t)
+     γ = (u₀ ++ v₀) , d , e
 
    f (y₀ ∷ u₀) (y₁ ∷ u₁) p = γ
     where
