@@ -28,18 +28,14 @@ churros. This seems to be a bug.
 
 \begin{code}
 
-open import UF-PropTrunc
-open import UF-Univalence
-
-module FreeGroup
-       (pt : propositional-truncations-exist)
-       (ua : Univalence)
-       where
+module FreeGroup where
 
 open import SpartanMLTT
 open import Two
 open import Two-Properties
 
+open import UF-PropTrunc
+open import UF-Univalence
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Equiv
@@ -63,20 +59,12 @@ infixr 2 _∷_
 equal-heads : {X : 𝓤 ̇ } {x y : X} {s t : List X}
             → x ∷ s ≡ y ∷ t
             → x ≡ y
-equal-heads {𝓤} {X} {x} = ap f
- where
-  f : List X → X
-  f []      = x
-  f (z ∷ _) = z
+equal-heads refl = refl
 
 equal-tails : {X : 𝓤 ̇ } {x y : X} {s t : List X}
             → x ∷ s ≡ y ∷ t
             → s ≡ t
-equal-tails {𝓤} {X} = ap f
- where
-  f : List X → List X
-  f []      = []
-  f (_ ∷ u) = u
+equal-tails {𝓤} {X} refl = refl
 
 [_] : {X : 𝓤 ̇ } → X → List X
 [ x ] = x ∷ []
@@ -287,43 +275,55 @@ induction on u₀ and u₁:
 
 \end{code}
 
-The n-fold iteration of the reduction relation:
+The following import defines
+
+  _◁▷_      the symmetric closure of _▷_,
+  _∾_       the symmetric, reflexive, transitive closure of _▷_,
+  _▷*_      the reflexive, transitive closure of _▷_,
+  _▷[ n ]_  the n-fold iteration of _▷_.
 
 \begin{code}
 
  open import SRTclosure
-
-
-\end{code}
-
-The symmetric closure of _▷_:
-
-\begin{code}
-
- _◁▷_ : FA → FA → 𝓤 ̇
- _◁▷_ = s-closure _▷_
-
- infix 1 _◁▷_
+ open Church-Rosser _▷_
 
 \end{code}
 
-Symmetric, reflexive, transitive closure of _▷_:
+The insertion of generators is left cancellable before quotienting:
 
 \begin{code}
 
- _∾_ : FA → FA → 𝓤 ̇
- _∾_ = srt-closure _▷_
+ η-lc : {a b : A} → η a ≡ η b → a ≡ b
+ η-lc refl = refl
 
 \end{code}
 
-Propositional, symmetric, reflexive, transitive closure of _▷_:
+The following give that the insertion of generators is injective after
+quotienting:
 
 \begin{code}
 
- open psrt pt
+ η-irreducible : {a : A} {s : FA} → ¬ (η a ▷ s)
+ η-irreducible ((x ∷ []) , v , y , () , refl)
+ η-irreducible ((x ∷ y ∷ u) , v , z , () , q)
 
- _∾ₚ_ : FA → FA → 𝓤 ̇
- _∾ₚ_ = psrt-closure _▷_
+ η-irreducible* : {a : A} {s : FA} → η a ▷* s → η a ≡ s
+ η-irreducible* {a} {s} (n , r) = f n r
+  where
+   f : (n : ℕ) → η a ▷[ n ] s → η a ≡ s
+   f zero     refl = refl
+   f (succ n) (t , r , i) = 𝟘-elim (η-irreducible r)
+
+ η-∾ : (a b : A) → η a ∾ η b → a ≡ b
+ η-∾ a b e = η-lc p
+  where
+   σ : Σ s ꞉ FA , (η a ▷* s) × (η b ▷* s)
+   σ = from-∾ Church-Rosser (η a) (η b) e
+   s = pr₁ σ
+
+   p = η a ≡⟨  η-irreducible* (pr₁ (pr₂ σ)) ⟩
+       s   ≡⟨ (η-irreducible* (pr₂ (pr₂ σ)))⁻¹ ⟩
+       η b ∎
 
 \end{code}
 
@@ -332,8 +332,6 @@ before truncation. The following is for reasoning with chain of
 equivalences:
 
 \begin{code}
-
- infix 1 _∾_
 
  _∾⟨_⟩_ : (s : FA) {t u : FA} → s ∾ t → t ∾ u → s ∾ u
  _ ∾⟨ p ⟩ q = srt-transitive _▷_ _ _ _ p q
@@ -523,32 +521,23 @@ The inverse really is an inverse:
 
 \end{code}
 
-The insertion of generators is left cancellable before quotienting:
+The propositional, symmetric, reflexive, transitive closure of _▷_:
 
 \begin{code}
 
- η-lc : (a b : A) → η a ≡ η b → a ≡ b
- η-lc a b = ap f
-  where
-   f : FA → A
-   f []            = a
-   f ((n , c) ∷ s) = c
+ module _ (pt : propositional-truncations-exist) where
 
-\end{code}
+  open PropositionalTruncation pt
 
-Now we should be able to prove this from the Church-Rosser property,
-which will give that the insertion of generators is injective after
-quotienting:
+  _∾ₚ_ : FA → FA → 𝓤 ̇
+  x ∾ₚ y = ∥ x ▷ y ∥
 
-\begin{code}
 {-
- η-∾ : (a b : A) → η a ∾ η b → a ≡ b
- η-∾ a b e = ?
-
- η-∾ₚ : (a b : A) → is-set A → η a ∾ₚ η b → a ≡ b
- η-∾ₚ = by η-∾ because A is a set and hence a ≡ b is a
-        proposition and because η a ∾ₚ η b is ∥ η a ∾ η b ∥
+  η-∾ₚ : (a b : A) → is-set A → η a ∾ₚ η b → a ≡ b
+  η-∾ₚ = by η-∾ because A is a set and hence a ≡ b is a
+         proposition and because η a ∾ₚ η b is ∥ η a ∾ η b ∥
 -}
+
 \end{code}
 
 To be continued.

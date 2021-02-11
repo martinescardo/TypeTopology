@@ -285,6 +285,10 @@ module Church-Rosser
          (_▷_ : X → X → 𝓤 ̇ )
        where
 
+  infix 1 _◁▷_
+  infix 1 _▷*_
+  infix 1 _▷[_]_
+  infix 1 _∾_
   _◁▷_ : X → X → 𝓤 ̇
   _◁▷_ = s-closure _▷_
 
@@ -294,8 +298,8 @@ module Church-Rosser
   _▷*_ : X → X → 𝓤 ̇
   _▷*_ = rt-closure _▷_
 
-  _▷^[_]_ : X → ℕ → X → 𝓤 ̇
-  x ▷^[ n ] y = iteration _▷_ n x y
+  _▷[_]_ : X → ℕ → X → 𝓤 ̇
+  x ▷[ n ] y = iteration _▷_ n x y
 
   to-∾ : (x y : X)
        → (Σ z ꞉ X , (x ▷* z) × (y ▷* z))
@@ -317,7 +321,7 @@ module Church-Rosser
    Church-Rosser* x y₀ y₁ (m , i) b = f m x y₀ y₁ i b
     where
      f : (m : ℕ) (x y₀ y₁ : X)
-         → x ▷^[ m ] y₀
+         → x ▷[ m ] y₀
          → x ▷  y₁
          → Σ y ꞉ X , (y₀ ▷* y) × (y₁ ▷* y)
      f zero x x y₁ refl e = y₁ , rt-extension _▷_ x y₁ e , rt-reflexive _▷_ y₁
