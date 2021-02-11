@@ -10,11 +10,13 @@ Martin Escardo, 03 February 2021.
 
 * propositional, symmetric-reflexive-transitive closure of a relation.
 
+* A special kind of Church-Rosser property.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (_^_)
 
 module SRTclosure where
 
@@ -86,6 +88,27 @@ module _ {𝓤 : Universe}
  iteration-transitive' zero     x x z refl        b  = z , b , refl
  iteration-transitive' (succ n) x y z (t , b , c) b' = t , b , iteration-transitive' n t y z c b'
 
+ iteration-transitive'-converse : (n : ℕ) (x z : X)
+                                → iteration (succ n) x z
+                                → Σ y ꞉ X , iteration n x y × B y z
+ iteration-transitive'-converse zero x z (z , b , refl) = x , refl , b
+ iteration-transitive'-converse (succ n) x z (y , b , t , b' , i) = γ
+  where
+   IH : Σ u ꞉ X , iteration n y u × B u z
+   IH = iteration-transitive'-converse n y z (t , b' , i)
+
+   u : X
+   u = pr₁ IH
+
+   i' : iteration n y u
+   i' = pr₁ (pr₂ IH)
+
+   b'' : B u z
+   b'' = pr₂ (pr₂ IH)
+
+   γ : Σ u ꞉ X , iteration (succ n) x u × B u z
+   γ = u , (y , b , i') , b''
+
  iteration-symmetric : Symmetric B → (m : ℕ) → Symmetric (iteration m)
  iteration-symmetric sym zero     x x refl        = refl
  iteration-symmetric sym (succ m) x y (z , b , c) = γ
@@ -102,6 +125,16 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
+This is regarding the above anonymous module but needs to be outside it:
+
+\begin{code}
+
+private
+ _^_ : {X : 𝓤 ̇ } → (X → X → 𝓤 ̇ ) → ℕ → (X → X → 𝓤 ̇ )
+ _^_ = iteration
+
+\end{code}
+
 The reflexive-transitive closure of a relation B:
 
 \begin{code}
@@ -112,7 +145,7 @@ module _ {𝓤 : Universe}
        where
 
  rt-closure : X → X → 𝓤 ̇
- rt-closure x y = Σ n ꞉ ℕ , iteration B n x y
+ rt-closure x y = Σ n ꞉ ℕ , (B ^ n) x y
 
  rt-reflexive : Reflexive rt-closure
  rt-reflexive x = 0 , refl
@@ -169,6 +202,17 @@ module _ {𝓤 : Universe}
 
  srt-extension : A ⊑ srt-closure
  srt-extension x y = srt-extension'' x y ∘ srt-extension' x y
+
+ rt-gives-srt : (x y : X) → rt-closure A x y → srt-closure x y
+ rt-gives-srt x y (m , i) = g m x y i
+  where
+   f : (n : ℕ) (x y : X) → iteration A n x y → iteration (s-closure A) n x y
+   f zero     x x refl        = refl
+   f (succ n) x y (z , e , i) = z , inl e , (f n z y i)
+
+   g : (n : ℕ) (x y : X) → iteration A n x y → srt-closure x y
+   g zero     x x refl        = srt-reflexive x
+   g (succ n) x y (z , e , i) = succ n , z , inl e , f n z y i
 
  srt-induction : (R : X → X → 𝓥 ̇)
                → Symmetric R
@@ -228,5 +272,88 @@ module psrt
                 → psrt-closure ⊑ R
  psrt-induction R p r s t A-included-in-R x y =
   ∥∥-rec (p x y) (srt-induction A R s r t A-included-in-R x y)
+
+\end{code}
+
+We consider one special kind of Church-Rosser property motivated by our applications of this module for other purposes.
+
+\begin{code}
+
+module Church-Rosser
+         {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         (_▷_ : X → X → 𝓤 ̇ )
+       where
+
+  _◁▷_ : X → X → 𝓤 ̇
+  _◁▷_ = s-closure _▷_
+
+  _∾_ : X → X → 𝓤 ̇
+  _∾_ = srt-closure _▷_
+
+  _▷*_ : X → X → 𝓤 ̇
+  _▷*_ = rt-closure _▷_
+
+  _▷^[_]_ : X → ℕ → X → 𝓤 ̇
+  x ▷^[ n ] y = iteration _▷_ n x y
+
+  to-∾ : (x y : X)
+       → (Σ z ꞉ X , (x ▷* z) × (y ▷* z))
+       → x ∾ y
+  to-∾ x y (z , r , s) = srt-transitive _▷_ x z y
+                          (rt-gives-srt _▷_ x z r)
+                          (srt-symmetric _▷_ y z (rt-gives-srt _▷_ y z s))
+
+  module _ (Church-Rosser : (x y₀ y₁ : X)
+                         → x ▷ y₀
+                         → x ▷ y₁
+                         → (y₀ ≡ y₁) + (Σ y ꞉ X , (y₀ ▷ y) × (y₁ ▷ y)))
+         where
+
+   Church-Rosser* : (x y₀ y₁ : X)
+                  → x ▷* y₀
+                  → x ▷  y₁
+                  → Σ y ꞉ X , (y₀ ▷* y) × (y₁ ▷* y)
+   Church-Rosser* x y₀ y₁ (m , i) b = f m x y₀ y₁ i b
+    where
+     f : (m : ℕ) (x y₀ y₁ : X)
+         → x ▷^[ m ] y₀
+         → x ▷  y₁
+         → Σ y ꞉ X , (y₀ ▷* y) × (y₁ ▷* y)
+     f zero x x y₁ refl e = y₁ , rt-extension _▷_ x y₁ e , rt-reflexive _▷_ y₁
+     f (succ m) x y₀ y₁ (t , d , i) e = γ c
+      where
+       c : (y₁ ≡ t) + (Σ y ꞉ X , (y₁ ▷ y) × (t ▷ y))
+       c = Church-Rosser x y₁ t e d
+
+       γ : type-of c → Σ u ꞉ X , (y₀ ▷* u) × (y₁ ▷* u)
+       γ (inl refl) = y₀ , rt-reflexive _▷_ y₀ , m , i
+       γ (inr (y , a , b)) = δ IH
+        where
+         IH : Σ u ꞉ X , (y₀ ▷* u) × (y ▷* u)
+         IH = f m t y₀ y i b
+
+         δ : type-of IH → Σ u ꞉ X , (y₀ ▷* u) × (y₁ ▷* u)
+         δ (u , b , n , j) = u , b , succ n , y , a , j
+
+   from-∾ : (x y : X) → x ∾ y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
+   from-∾ x y (m , e) = f m x y e
+    where
+     f : (m : ℕ) (x y : X) → (_◁▷_ ^ m) x y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
+     f zero x x refl = x , rt-reflexive _▷_ x , rt-reflexive _▷_ x
+     f (succ m) x y (z , d , i) = γ IH d
+      where
+       IH : Σ t ꞉ X , (z ▷* t) × (y ▷* t)
+       IH = f m z y i
+
+       γ : type-of IH → x ◁▷ z → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
+       γ (t , (n , i) , a) (inl c) = t , (succ n , z , c , i) , a
+       γ (t , (n , i) , a) (inr c) = δ h
+        where
+         h : Σ u ꞉ X , (t ▷* u) × (x ▷* u)
+         h = Church-Rosser* z t x (n , i) c
+
+         δ : type-of h → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
+         δ (u , d , e) = u , e , rt-transitive _▷_ y t u a d
 
 \end{code}

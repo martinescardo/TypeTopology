@@ -181,10 +181,10 @@ induction on u₀ and u₁:
           ≡ y₁ ∷ x₁   ∷ x₁ ⁻ ∷ v₁
      have = p
 
-     q = x₁ ⁻     ≡⟨ ap _⁻ ((equal-heads (equal-tails p))⁻¹) ⟩
-         (x₀ ⁻) ⁻ ≡⟨ inv-invol x₀ ⟩
-         x₀       ≡⟨ equal-heads p ⟩
-         y₁       ∎
+     q = x₁ ⁻    ≡⟨ ap _⁻ ((equal-heads (equal-tails p))⁻¹) ⟩
+         (x₀ ⁻)⁻ ≡⟨ inv-invol x₀ ⟩
+         x₀      ≡⟨ equal-heads p ⟩
+         y₁      ∎
 
      γ : v₀ ≡ y₁ ∷ v₁
      γ = transport (λ - → v₀ ≡ - ∷ v₁) q (equal-tails (equal-tails p))
@@ -220,11 +220,11 @@ induction on u₀ and u₁:
           ≡ x₁ ∷ x₁ ⁻ ∷ v₁
      have = p
 
-     γ = y₀ ∷ v₀       ≡⟨ ap (_∷ v₀) (equal-heads p) ⟩
-         x₁ ∷ v₀       ≡⟨ ap (_∷ v₀) ((inv-invol x₁)⁻¹) ⟩
-         (x₁ ⁻) ⁻ ∷ v₀ ≡⟨ ap (λ - → - ⁻ ∷ v₀) ((equal-heads (equal-tails p))⁻¹) ⟩
-         x₀ ⁻ ∷ v₀     ≡⟨ equal-tails (equal-tails p) ⟩
-         v₁            ∎
+     γ = y₀ ∷ v₀      ≡⟨ ap (_∷ v₀) (equal-heads p) ⟩
+         x₁ ∷ v₀      ≡⟨ ap (_∷ v₀) ((inv-invol x₁)⁻¹) ⟩
+         (x₁ ⁻)⁻ ∷ v₀ ≡⟨ ap (λ - → - ⁻ ∷ v₀) ((equal-heads (equal-tails p))⁻¹) ⟩
+         x₀ ⁻ ∷ v₀    ≡⟨ equal-tails (equal-tails p) ⟩
+         v₁           ∎
 
    f (y₀ ∷ z₀ ∷ u₀) [] p = inr γ
     where
@@ -287,11 +287,18 @@ induction on u₀ and u₁:
 
 \end{code}
 
-The symmetric closure of _▷_:
+The n-fold iteration of the reduction relation:
 
 \begin{code}
 
  open import SRTclosure
+
+
+\end{code}
+
+The symmetric closure of _▷_:
+
+\begin{code}
 
  _◁▷_ : FA → FA → 𝓤 ̇
  _◁▷_ = s-closure _▷_
@@ -304,8 +311,6 @@ Symmetric, reflexive, transitive closure of _▷_:
 
 \begin{code}
 
- open psrt pt
-
  _∾_ : FA → FA → 𝓤 ̇
  _∾_ = srt-closure _▷_
 
@@ -314,6 +319,8 @@ Symmetric, reflexive, transitive closure of _▷_:
 Propositional, symmetric, reflexive, transitive closure of _▷_:
 
 \begin{code}
+
+ open psrt pt
 
  _∾ₚ_ : FA → FA → 𝓤 ̇
  _∾ₚ_ = psrt-closure _▷_
