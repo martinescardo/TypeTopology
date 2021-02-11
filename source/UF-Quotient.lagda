@@ -64,18 +64,10 @@ _≈_ is a variable:
 
 \begin{code}
 
-is-prop-valued
- reflexive
- symmetric
- transitive
- equivalence
-   : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-prop-valued equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 
 is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
-reflexive      _≈_ = ∀ x → x ≈ x
-symmetric      _≈_ = ∀ x y → x ≈ y → y ≈ x
-transitive     _≈_ = ∀ x y z → x ≈ y → y ≈ z → x ≈ z
-equivalence    _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
+equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
 
 \end{code}
 
@@ -87,10 +79,10 @@ X : 𝓤 ̇, and an equivalence relation _≈_ with values in 𝓥 ̇.
 
 \begin{code}
 
-module _
+module quotient
+       {𝓤 𝓥 : Universe}
        (pt  : propositional-truncations-exist)
        (fe  : FunExt)
-       {𝓤 𝓥 : Universe}
        (pe  : propext 𝓥)
        (X   : 𝓤 ̇ )
        (_≈_ : X → X → 𝓥 ̇ )
@@ -277,5 +269,61 @@ universe 𝓦.
 
    ic : ∃! f' ꞉ (X/≈ → A), f' ∘ η ≡ f
    ic = (f' , r) , c
+
+\end{code}
+
+Added 11th February 2021. We now repackage the above for convenient
+use:
+
+\begin{code}
+
+module Quotient
+        (𝓤 𝓥 : Universe)
+        (pt  : propositional-truncations-exist)
+        (fe  : FunExt)
+        (pe  : propext 𝓥)
+       where
+
+ open quotient {𝓤} {𝓥} pt fe pe
+ open ImageAndSurjection pt
+
+ EqRel : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
+ EqRel X = Σ _≈_ ꞉ (X → X → 𝓥 ̇ ) , equiv-relation _≈_
+
+ _≈[_]_ : {X : 𝓤 ̇ } → X → EqRel X → X → 𝓥 ̇
+ x ≈[ _≈_ , _ ] y = x ≈ y
+
+ _/_ : (X : 𝓤 ̇ ) → EqRel X → 𝓤 ⊔ (𝓥 ⁺) ̇
+ X / (_≈_ , p , r , s , t) = X/≈ X _≈_ p r s t
+
+ quotient-is-set : {X : 𝓤 ̇ } (R : EqRel X) → is-set (X / R)
+ quotient-is-set (_≈_ , p , r , s , t) = X/≈-is-set _ _≈_ p r s t
+
+ η/ : {X : 𝓤 ̇ } (R : EqRel X) → X → X / R
+ η/  (_≈_ , p , r , s , t) = η _ _≈_ p r s t
+
+ η/_is-surjection : {X : 𝓤 ̇ } (R : EqRel X) → is-surjection (η/ R)
+ η/ (_≈_ , p , r , s , t) is-surjection = η-surjection _ _≈_ p r s t
+
+ η/_identification-property : {X : 𝓤 ̇ } (R : EqRel X) {x y : X}
+                            → x ≈[ R ] y
+                            → η/ R x ≡ η/ R y
+ η/_identification-property (_≈_ , p , r , s , t) = η-equiv-equal _ _≈_ p r s t
+
+
+ η/_identification-property' : {X : 𝓤 ̇ } (R : EqRel X) {x y : X}
+                             → η/ R x ≡ η/ R y
+                             → x ≈[ R ] y
+ η/_identification-property' (_≈_ , p , r , s , t) = η-equal-equiv _ _≈_ p r s t
+
+
+ universal-property/ : {X : 𝓤 ̇ } (R : EqRel X)
+                       {𝓦 : Universe} (A : 𝓦 ̇ )
+                     → is-set A
+                     → (f : X → A)
+                     → ({x x' : X} → x ≈[ R ]  x' → f x ≡ f x')
+                     → ∃! f' ꞉( X / R → A), f' ∘ η/ R ≡ f
+ universal-property/ (_≈_ , p , r , s , t) = universal-property _ _≈_ p r s t
+
 
 \end{code}

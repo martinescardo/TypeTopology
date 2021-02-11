@@ -11,17 +11,17 @@ open import Universes
 open import Id
 open import Negation public
 
-Reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Reflexive R = ∀ x → R x x
+reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+reflexive R = ∀ x → R x x
 
-Symmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Symmetric R = ∀ x y → R x y → R y x
+symmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+symmetric R = ∀ x y → R x y → R y x
 
-Antisymmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Antisymmetric R = ∀ x y → R x y → R y x → x ≡ y
+antisymmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+antisymmetric R = ∀ x y → R x y → R y x → x ≡ y
 
-Transitive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Transitive R = ∀ x y z → R x y → R y z → R x z
+transitive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+transitive R = ∀ x y z → R x y → R y z → R x z
 
 idempotent-map : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
 idempotent-map f = ∀ x → f (f x) ≡ f x

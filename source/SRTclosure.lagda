@@ -51,7 +51,7 @@ module _ {𝓤 : Universe}
  s-closure : X → X → 𝓥 ̇
  s-closure x y = A x y + A y x
 
- s-symmetric : Symmetric s-closure
+ s-symmetric : symmetric s-closure
  s-symmetric x y (inl a) = inr a
  s-symmetric x y (inr a) = inl a
 
@@ -59,7 +59,7 @@ module _ {𝓤 : Universe}
  s-extension x y = inl
 
  s-induction : (R : X → X → 𝓦 ̇ )
-             → Symmetric R
+             → symmetric R
              → A ⊑ R
              → s-closure ⊑ R
  s-induction R s A-included-in-R x y (inl a) = A-included-in-R x y a
@@ -109,7 +109,7 @@ module _ {𝓤 : Universe}
    γ : Σ u ꞉ X , iteration (succ n) x u × B u z
    γ = u , (y , b , i') , b''
 
- iteration-symmetric : Symmetric B → (m : ℕ) → Symmetric (iteration m)
+ iteration-symmetric : symmetric B → (m : ℕ) → symmetric (iteration m)
  iteration-symmetric sym zero     x x refl        = refl
  iteration-symmetric sym (succ m) x y (z , b , c) = γ
    where
@@ -147,21 +147,21 @@ module _ {𝓤 : Universe}
  rt-closure : X → X → 𝓤 ̇
  rt-closure x y = Σ n ꞉ ℕ , (B ^ n) x y
 
- rt-reflexive : Reflexive rt-closure
+ rt-reflexive : reflexive rt-closure
  rt-reflexive x = 0 , refl
 
- rt-symmetric : Symmetric B → Symmetric rt-closure
+ rt-symmetric : symmetric B → symmetric rt-closure
  rt-symmetric s x y (m , c) = m , iteration-symmetric B s m x y c
 
- rt-transitive : Transitive rt-closure
+ rt-transitive : transitive rt-closure
  rt-transitive x y z (m , c) (m' , c') = (m ∔ m') , iteration-transitive B m m' x y z c c'
 
  rt-extension : B ⊑ rt-closure
  rt-extension x y b = 1 , y , b , refl
 
  rt-induction : (R : X → X → 𝓥 ̇)
-              → Reflexive R
-              → Transitive R
+              → reflexive R
+              → transitive R
               → B ⊑ R
               → rt-closure ⊑ R
  rt-induction R r t B-included-in-R = γ
@@ -185,13 +185,13 @@ module _ {𝓤 : Universe}
  srt-closure : X → X → 𝓤 ̇
  srt-closure = rt-closure (s-closure A)
 
- srt-symmetric : Symmetric srt-closure
+ srt-symmetric : symmetric srt-closure
  srt-symmetric = rt-symmetric (s-closure A) (s-symmetric A)
 
- srt-reflexive : Reflexive srt-closure
+ srt-reflexive : reflexive srt-closure
  srt-reflexive = rt-reflexive (s-closure A)
 
- srt-transitive : Transitive srt-closure
+ srt-transitive : transitive srt-closure
  srt-transitive = rt-transitive (s-closure A)
 
  srt-extension'' : s-closure A ⊑ srt-closure
@@ -215,9 +215,9 @@ module _ {𝓤 : Universe}
    g (succ n) x y (z , e , i) = succ n , z , inl e , f n z y i
 
  srt-induction : (R : X → X → 𝓥 ̇)
-               → Symmetric R
-               → Reflexive R
-               → Transitive R
+               → symmetric R
+               → reflexive R
+               → transitive R
                → A ⊑ R
                → srt-closure ⊑ R
  srt-induction R s r t A-included-in-R x y = γ
@@ -251,13 +251,13 @@ module psrt
  psrt-is-prop-valued : (x y : X) → is-prop (psrt-closure x y)
  psrt-is-prop-valued x y = ∥∥-is-prop
 
- psrt-symmetric : Symmetric psrt-closure
+ psrt-symmetric : symmetric psrt-closure
  psrt-symmetric x y = ∥∥-functor (srt-symmetric A x y)
 
- psrt-reflexive : Reflexive psrt-closure
+ psrt-reflexive : reflexive psrt-closure
  psrt-reflexive x = ∣ srt-reflexive A x ∣
 
- psrt-transitive : Transitive psrt-closure
+ psrt-transitive : transitive psrt-closure
  psrt-transitive x y z = ∥∥-functor₂ (srt-transitive A x y z)
 
  psrt-extension : A ⊑ psrt-closure
@@ -265,9 +265,9 @@ module psrt
 
  psrt-induction : (R : X → X → 𝓥 ̇)
                 → ((x y : X) → is-prop (R x y))
-                → Reflexive R
-                → Symmetric R
-                → Transitive R
+                → reflexive R
+                → symmetric R
+                → transitive R
                 → A ⊑ R
                 → psrt-closure ⊑ R
  psrt-induction R p r s t A-included-in-R x y =

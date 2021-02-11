@@ -553,8 +553,38 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
 
 \end{code}
 
-To be continued.
+To perform the quotient, we assume functional and propositional
+extensionality.
 
-TODO. Quotient FA to get the free group, with a proof that the insertion
-of generators is left-cancellable and hence, being a map of sets, an
-embedding.
+\begin{code}
+
+  module _ (fe  : FunExt)
+           (pe  : propext 𝓤)
+        where
+
+
+   open import UF-Quotient
+   open Quotient 𝓤 𝓤 pt fe pe
+   open psrt pt _▷_
+
+
+   ∾ : EqRel FA
+   ∾ = _∾_ , psrt-is-prop-valued , psrt-reflexive , psrt-symmetric , psrt-transitive
+
+\end{code}
+
+Our quotients constructed via propositional truncation increase
+universe levels:
+
+\begin{code}
+
+   FA/∾ : 𝓤 ⁺ ̇
+   FA/∾ = FA / ∾
+
+\end{code}
+
+This won't be a problem for our intended application, the free group
+over the type of ordinals, because although this type is large, it is
+locally small.
+
+To be continued.
