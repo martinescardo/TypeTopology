@@ -562,7 +562,6 @@ extensionality.
            (pe  : propext 𝓤)
         where
 
-
    open import UF-Quotient
    open Quotient 𝓤 𝓤 pt fe pe
    open psrt pt _▷_
@@ -580,7 +579,14 @@ universe levels:
 
    FA/∾ : 𝓤 ⁺ ̇
    FA/∾ = FA / ∾
+{-
+   invv : FA/∾ → FA/∾
+   invv = {!!}
 
+
+   _·_ : FA/∾ → FA/∾ → FA/∾
+   x · y = {!!}
+-}
 \end{code}
 
 This won't be a problem for our intended application, the free group

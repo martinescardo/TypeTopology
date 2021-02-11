@@ -17,6 +17,8 @@ open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import WLPO
 open import Plus-Properties
+
+open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt

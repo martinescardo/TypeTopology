@@ -465,7 +465,12 @@ Unique existence.
 existsUnique : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 existsUnique X A = ∃! A
 
-syntax existsUnique A (λ x → b) = ∃! x ꞉ A , b
+syntax existsUnique X (λ x → b) = ∃! x ꞉ X , b
+
+witness-uniqueness : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                   → (∃! x ꞉ X , A x)
+                   → (x y : X) → A x → A y → x ≡ y
+witness-uniqueness A e x y a b = ap pr₁ (singletons-are-props e (x , a) (y , b))
 
 infixr -1 existsUnique
 

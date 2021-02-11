@@ -25,6 +25,8 @@ open import SpartanMLTT
 
 open import Two-Properties
 open import NaturalNumbers-Properties
+
+open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Retracts

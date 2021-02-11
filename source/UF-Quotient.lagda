@@ -34,7 +34,7 @@ is postulated - any non-MLTT axiom has to be an explicit assumption
 open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
-open import UF-Base
+open import UF-Base hiding (_≈_)
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-ImageAndSurjection
@@ -65,7 +65,6 @@ _≈_ is a variable:
 \begin{code}
 
 is-prop-valued equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-
 is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
 equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
 
@@ -288,7 +287,7 @@ module Quotient
  open ImageAndSurjection pt
 
  EqRel : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
- EqRel X = Σ _≈_ ꞉ (X → X → 𝓥 ̇ ) , equiv-relation _≈_
+ EqRel X = Σ R ꞉ (X → X → 𝓥 ̇ ) , equiv-relation R
 
  _≈[_]_ : {X : 𝓤 ̇ } → X → EqRel X → X → 𝓥 ̇
  x ≈[ _≈_ , _ ] y = x ≈ y
@@ -296,34 +295,98 @@ module Quotient
  _/_ : (X : 𝓤 ̇ ) → EqRel X → 𝓤 ⊔ (𝓥 ⁺) ̇
  X / (_≈_ , p , r , s , t) = X/≈ X _≈_ p r s t
 
- quotient-is-set : {X : 𝓤 ̇ } (R : EqRel X) → is-set (X / R)
- quotient-is-set (_≈_ , p , r , s , t) = X/≈-is-set _ _≈_ p r s t
+ module _ {X : 𝓤 ̇ }
+          ((_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel X)
+        where
 
- η/ : {X : 𝓤 ̇ } (R : EqRel X) → X → X / R
- η/  (_≈_ , p , r , s , t) = η _ _≈_ p r s t
+  ≋ : EqRel X
+  ≋ = (_≈_ , ≈p , ≈r , ≈s , ≈t)
 
- η/_is-surjection : {X : 𝓤 ̇ } (R : EqRel X) → is-surjection (η/ R)
- η/ (_≈_ , p , r , s , t) is-surjection = η-surjection _ _≈_ p r s t
+  quotient-is-set : is-set (X / ≋)
+  quotient-is-set = X/≈-is-set _ _≈_ ≈p ≈r ≈s ≈t
 
- η/_identification-property : {X : 𝓤 ̇ } (R : EqRel X) {x y : X}
-                            → x ≈[ R ] y
-                            → η/ R x ≡ η/ R y
- η/_identification-property (_≈_ , p , r , s , t) = η-equiv-equal _ _≈_ p r s t
+  η/ : X → X / ≋
+  η/ = η X _≈_ ≈p ≈r ≈s ≈t
+
+  η/-is-surjection : is-surjection η/
+  η/-is-surjection = η-surjection X _≈_ ≈p ≈r ≈s ≈t
+
+  identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+  identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
+
+  η-identifies-related-points : identifies-related-points η/
+  η-identifies-related-points = η-equiv-equal X _≈_ ≈p ≈r ≈s ≈t
+
+  η-relates-identified-points : {x y : X}
+                              → η/ x ≡ η/ y
+                              → x ≈ y
+  η-relates-identified-points = η-equal-equiv X _≈_ ≈p ≈r ≈s ≈t
+
+  module _ {𝓦 : Universe}
+           {A : 𝓦 ̇ }
+         where
+
+   universal-property/ : is-set A
+                       → (f : X → A)
+                       → identifies-related-points f
+                       → ∃! f' ꞉ (X / ≋ → A), f' ∘ η/ ≡ f
+   universal-property/ = universal-property X _≈_ ≈p ≈r ≈s ≈t A
+
+   mediating-map/ : is-set A
+                  → (f : X → A)
+                  → identifies-related-points f
+                  → X / ≋ → A
+   mediating-map/ i f p = pr₁ (center (universal-property/ i f p))
+
+   universality-triangle/≡ : (i : is-set A) (f : X → A)
+                             (p : identifies-related-points f)
+                           → mediating-map/ i f p ∘ η/ ≡ f
+   universality-triangle/≡ i f p = pr₂ (center (universal-property/ i f p))
 
 
- η/_identification-property' : {X : 𝓤 ̇ } (R : EqRel X) {x y : X}
-                             → η/ R x ≡ η/ R y
-                             → x ≈[ R ] y
- η/_identification-property' (_≈_ , p , r , s , t) = η-equal-equiv _ _≈_ p r s t
+   universality-triangle/ : (i : is-set A) (f : X → A)
+                            (p : identifies-related-points f)
+                          → mediating-map/ i f p ∘ η/ ∼ f
+   universality-triangle/ i f p = happly (universality-triangle/≡ i f p)
 
 
- universal-property/ : {X : 𝓤 ̇ } (R : EqRel X)
-                       {𝓦 : Universe} (A : 𝓦 ̇ )
-                     → is-set A
-                     → (f : X → A)
-                     → ({x x' : X} → x ≈[ R ]  x' → f x ≡ f x')
-                     → ∃! f' ꞉( X / R → A), f' ∘ η/ R ≡ f
- universal-property/ (_≈_ , p , r , s , t) = universal-property _ _≈_ p r s t
+   at-most-one-mediating-map/ : is-set A
+                              → (g h : X / ≋ → A)
+                              → g ∘ η/ ≡ h ∘ η/
+                              → g ≡ h
+   at-most-one-mediating-map/ i g h p = q ⁻¹ ∙ r
+    where
+     f = g ∘ η/
 
+     j : identifies-related-points f
+     j e = ap g (η-identifies-related-points e)
 
+     q : mediating-map/ i f j ≡ g
+     q = witness-uniqueness (λ f' → f' ∘ η/ ≡ f)
+          (universal-property/ i f j)
+          (mediating-map/ i f j) g (universality-triangle/≡ i f j)
+          refl
+
+     r : mediating-map/ i f j ≡ h
+     r = witness-uniqueness (λ f' → f' ∘ η/ ≡ f)
+          (universal-property/ i f j)
+          (mediating-map/ i f j) h (universality-triangle/≡ i f j)
+          (p ⁻¹)
+
+\end{code}
+
+Extending unary and binary operations to the quotient:
+
+\begin{code}
+{-
+  extend/ : (f : X → X)
+          → ((x y : X) → x ≈ y → f x ≈ f y)
+          → X / ≋ → X / ≋
+  extend/ f p = {!!}
+
+  extend₂/ : (f : X → X → X)
+           → ((x y x' y' : X) → x ≈ x' → y ≈ y' → f x y ≈ f x' y')
+           → X / ≋ → X / ≋ → X / ≋
+  extend₂/ f p = {!!}
+-}
 \end{code}

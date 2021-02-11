@@ -347,7 +347,7 @@ module Church-Rosser
    from-∿ : (x y : X) → x ∿ y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
    from-∿ x y (m , e) = f m x y e
     where
-     f : (m : ℕ) (x y : X) → (_◁▷_ ^ m) x y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
+     f : (m : ℕ) (x y : X) → x ◁▷[ m ] y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
      f zero x x refl = x , rt-reflexive _▷_ x , rt-reflexive _▷_ x
      f (succ m) x y (z , d , i) = γ IH d
       where

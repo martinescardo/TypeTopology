@@ -82,6 +82,8 @@ open import Plus-Properties
 open import AlternativePlus
 open import DiscreteAndSeparated
 open import DecidableAndDetachable public
+
+open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-Subsingletons-FunExt
 open import UF-FunExt

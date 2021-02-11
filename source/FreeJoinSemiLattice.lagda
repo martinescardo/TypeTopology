@@ -12,6 +12,7 @@ open import ArithmeticViaEquivalence
 open import Fin
 open import SpartanMLTT
 
+open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
 open import UF-Lower-FunExt
