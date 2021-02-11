@@ -54,7 +54,7 @@ data List {𝓤} (X : 𝓤 ̇ ) : 𝓤 ̇  where
  [] : List X
  _∷_ : X → List X → List X
 
-infixr 2 _∷_
+infixr 3 _∷_
 
 equal-heads : {X : 𝓤 ̇ } {x y : X} {s t : List X}
             → x ∷ s ≡ y ∷ t
@@ -277,10 +277,11 @@ induction on u₀ and u₁:
 
 The following import defines
 
-  _◁▷_      the symmetric closure of _▷_,
-  _∾_       the symmetric, reflexive, transitive closure of _▷_,
-  _▷*_      the reflexive, transitive closure of _▷_,
-  _▷[ n ]_  the n-fold iteration of _▷_.
+  _◁▷_       the symmetric closure of _▷_,
+  _∿_        the symmetric, reflexive, transitive closure of _▷_,
+  _▷*_       the reflexive, transitive closure of _▷_,
+  _▷[ n ]_   the n-fold iteration of _▷_.
+  _◁▷[ n ]_  the n-fold iteration of _◁▷_.
 
 \begin{code}
 
@@ -298,8 +299,8 @@ The insertion of generators is left cancellable before quotienting:
 
 \end{code}
 
-The following give that the insertion of generators is injective after
-quotienting:
+The following will give that the insertion of generators is injective
+after quotienting:
 
 \begin{code}
 
@@ -314,11 +315,11 @@ quotienting:
    f zero     refl = refl
    f (succ n) (t , r , i) = 𝟘-elim (η-irreducible r)
 
- η-∾ : (a b : A) → η a ∾ η b → a ≡ b
- η-∾ a b e = η-lc p
+ η-∿ : {a b : A} → η a ∿ η b → a ≡ b
+ η-∿ {a} {b} e = η-lc p
   where
    σ : Σ s ꞉ FA , (η a ▷* s) × (η b ▷* s)
-   σ = from-∾ Church-Rosser (η a) (η b) e
+   σ = from-∿ Church-Rosser (η a) (η b) e
    s = pr₁ σ
 
    p = η a ≡⟨  η-irreducible* (pr₁ (pr₂ σ)) ⟩
@@ -327,20 +328,21 @@ quotienting:
 
 \end{code}
 
-The above is just the truncation of _∾_. Most of the work will be done
-before truncation. The following is for reasoning with chain of
-equivalences:
+We need to work with the truncation of _∿_ to construct the free
+group, but most of the work will be done before truncation.
+
+The following is for reasoning with chains of equivalences _∿_:
 
 \begin{code}
 
- _∾⟨_⟩_ : (s : FA) {t u : FA} → s ∾ t → t ∾ u → s ∾ u
- _ ∾⟨ p ⟩ q = srt-transitive _▷_ _ _ _ p q
+ _∿⟨_⟩_ : (s : FA) {t u : FA} → s ∿ t → t ∿ u → s ∿ u
+ _ ∿⟨ p ⟩ q = srt-transitive _▷_ _ _ _ p q
 
- _∾∎ : (s : FA) → s ∾ s
- _∾∎ _ = srt-reflexive _▷_ _
+ _∿∎ : (s : FA) → s ∿ s
+ _∿∎ _ = srt-reflexive _▷_ _
 
- infixr 0 _∾⟨_⟩_
- infix  1 _∾∎
+ infixr 0 _∿⟨_⟩_
+ infix  1 _∿∎
 
 \end{code}
 
@@ -366,14 +368,14 @@ Concatenation is a left congruence:
  ++-◁▷-left s s' t (inr a) = inr (++-▷-left s' s t a)
 
  ++-iteration-left : (s s' t : FA) (n : ℕ)
-                   → iteration _◁▷_ n s s'
-                   → iteration _◁▷_ n (s ++ t) (s' ++ t)
+                   → s ◁▷[ n ] s'
+                   → s ++ t ◁▷[ n ] s' ++ t
  ++-iteration-left s s  t zero     refl        = refl
  ++-iteration-left s s' t (succ n) (u , b , c) = (u ++ t) ,
                                                  ++-◁▷-left s u t b ,
                                                  ++-iteration-left u s' t n c
 
- ++-cong-left : (s s' t : FA) → s ∾ s' → s ++ t ∾ s' ++ t
+ ++-cong-left : (s s' t : FA) → s ∿ s' → s ++ t ∿ s' ++ t
  ++-cong-left s s' t (n , a) = n , ++-iteration-left s s' t n a
 
 \end{code}
@@ -387,15 +389,15 @@ It is also a right congruence:
  ∷-◁▷ x (inr e) = inr (∷-▷ x e)
 
  ∷-iteration : (x : X) {s t : FA} (n : ℕ)
-             → iteration _◁▷_ n s t
-             → iteration _◁▷_ n (x ∷ s) (x ∷ t)
+             → s ◁▷[ n ] t
+             → x ∷ s ◁▷[ n ] x ∷ t
  ∷-iteration x zero refl = refl
  ∷-iteration x (succ n) (u , b , c) = (x ∷ u) , ∷-◁▷ x b , ∷-iteration x n c
 
- ∷-cong : (x : X) {s t : FA} → s ∾ t → x ∷ s ∾ x ∷ t
+ ∷-cong : (x : X) {s t : FA} → s ∿ t → x ∷ s ∿ x ∷ t
  ∷-cong x (n , a) = n , ∷-iteration x n a
 
- ++-cong-right : (s {t t'} : FA) → t ∾ t' → s ++ t ∾ s ++ t'
+ ++-cong-right : (s {t t'} : FA) → t ∿ t' → s ++ t ∿ s ++ t'
  ++-cong-right []      e = e
  ++-cong-right (x ∷ s) e = ∷-cong x (++-cong-right s e)
 
@@ -405,10 +407,10 @@ And therefore it is a two-sided congruence:
 
 \begin{code}
 
- ++-cong : {s s' t t' : FA} → s ∾ s' → t ∾ t' → s ++ t ∾ s' ++ t'
- ++-cong {s} {s'} {t} {t'} d e = s ++ t   ∾⟨ ++-cong-left s s' t d ⟩
-                                 s' ++ t  ∾⟨ ++-cong-right s' e ⟩
-                                 s' ++ t' ∾∎
+ ++-cong-∿ : {s s' t t' : FA} → s ∿ s' → t ∿ t' → s ++ t ∿ s' ++ t'
+ ++-cong-∿ {s} {s'} {t} {t'} d e = s ++ t   ∿⟨ ++-cong-left s s' t d ⟩
+                                   s' ++ t  ∿⟨ ++-cong-right s' e ⟩
+                                   s' ++ t' ∿∎
 \end{code}
 
 The group inverse, before quotienting:
@@ -461,13 +463,13 @@ It is a congruence:
  inv-◁▷ (inr e) = inr (inv-▷ e)
 
  inv-iteration : {s t : FA} (n : ℕ)
-               → iteration _◁▷_ n s t
-               → iteration _◁▷_ n (inv s) (inv t)
+               → s ◁▷[ n ] t
+               → inv s ◁▷[ n ] inv t
  inv-iteration zero refl = refl
  inv-iteration (succ n) (u , b , c) = inv u , inv-◁▷ b , inv-iteration n c
 
- inv-cong : {s t : FA} → s ∾ t → inv s ∾ inv t
- inv-cong (n , a) = n , inv-iteration n a
+ inv-cong-∿ : {s t : FA} → s ∿ t → inv s ∿ inv t
+ inv-cong-∿ (n , a) = n , inv-iteration n a
 
 \end{code}
 
@@ -475,49 +477,49 @@ The inverse really is an inverse:
 
 \begin{code}
 
- =-∾ : {s s' : FA} → s ≡ s' → s ∾ s'
- =-∾ {s} refl = srt-reflexive _▷_ s
+ =-∿ : {s s' : FA} → s ≡ s' → s ∿ s'
+ =-∿ {s} refl = srt-reflexive _▷_ s
 
- inv-lemma : (x : X) → [ x ] ++ [ x ⁻ ] ∾ []
+ inv-lemma : (x : X) → [ x ] ++ [ x ⁻ ] ∿ []
  inv-lemma x = srt-extension _▷_ _ [] ([] , [] , x , refl , refl)
 
- inv-lemma' : (x : X) → [ x ⁻ ] ++ [ x ] ∾ []
+ inv-lemma' : (x : X) → [ x ⁻ ] ++ [ x ] ∿ []
  inv-lemma' x = srt-extension _▷_ _ _
                  ([] ,
                   [] ,
                   (x ⁻) ,
                   ap (λ - → [ x ⁻ ] ++ [ - ]) ((inv-invol x)⁻¹) , refl)
 
- inv-property : (s : FA) → s ++ inv s ∾ []
- inv-property []      = srt-reflexive _▷_ []
- inv-property (x ∷ s) = γ
+ inv-property-∿ : (s : FA) → s ++ inv s ∿ []
+ inv-property-∿ []      = srt-reflexive _▷_ []
+ inv-property-∿ (x ∷ s) = γ
   where
-   IH : s ++ inv s ∾ []
-   IH = inv-property s
+   IH : s ++ inv s ∿ []
+   IH = inv-property-∿ s
 
-   γ = [ x ] ++ s ++ inv s ++ [ x ⁻ ]   ∾⟨ I ⟩
-       [ x ] ++ (s ++ inv s) ++ [ x ⁻ ] ∾⟨ II ⟩
-       [ x ] ++ [ x ⁻ ]                 ∾⟨ III ⟩
-       []                               ∾∎
+   γ = [ x ] ++ s ++ inv s ++ [ x ⁻ ]   ∿⟨ I ⟩
+       [ x ] ++ (s ++ inv s) ++ [ x ⁻ ] ∿⟨ II ⟩
+       [ x ] ++ [ x ⁻ ]                 ∿⟨ III ⟩
+       []                               ∿∎
     where
-     I   = =-∾  (ap (x ∷_) (++-assoc s (inv s) [ x ⁻ ])⁻¹)
+     I   = =-∿  (ap (x ∷_) (++-assoc s (inv s) [ x ⁻ ])⁻¹)
      II  = ++-cong-right [ x ] (++-cong-left _ _ _ IH)
      III = inv-lemma x
 
- inv-property' : (s : FA) → inv s ++ s ∾ []
- inv-property' []      = srt-reflexive _▷_ []
- inv-property' (x ∷ s) = γ
+ inv-property'-∿ : (s : FA) → inv s ++ s ∿ []
+ inv-property'-∿ []      = srt-reflexive _▷_ []
+ inv-property'-∿ (x ∷ s) = γ
   where
-   γ = (inv s ++ [ x ⁻ ]) ++ (x ∷ s)    ∾⟨ I ⟩
-       inv s ++ ([ x ⁻ ] ++ [ x ] ++ s) ∾⟨ II ⟩
-       inv s ++ ([ x ⁻ ] ++ [ x ]) ++ s ∾⟨ III ⟩
-       inv s ++ s                       ∾⟨ IV ⟩
-       []                               ∾∎
+   γ = (inv s ++ [ x ⁻ ]) ++ (x ∷ s)    ∿⟨ I ⟩
+       inv s ++ ([ x ⁻ ] ++ [ x ] ++ s) ∿⟨ II ⟩
+       inv s ++ ([ x ⁻ ] ++ [ x ]) ++ s ∿⟨ III ⟩
+       inv s ++ s                       ∿⟨ IV ⟩
+       []                               ∿∎
     where
-     I   = =-∾ (++-assoc (inv s) [ x ⁻ ] (x ∷ s))
-     II  = =-∾ (ap (inv s ++_) ((++-assoc [ x ⁻ ] [ x ] s)⁻¹))
+     I   = =-∿ (++-assoc (inv s) [ x ⁻ ] (x ∷ s))
+     II  = =-∿ (ap (inv s ++_) ((++-assoc [ x ⁻ ] [ x ] s)⁻¹))
      III = ++-cong-right (inv s) (++-cong-left _ _ _ (inv-lemma' x))
-     IV  = inv-property' s
+     IV  = inv-property'-∿ s
 
 \end{code}
 
@@ -529,14 +531,25 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
 
   open PropositionalTruncation pt
 
-  _∾ₚ_ : FA → FA → 𝓤 ̇
-  x ∾ₚ y = ∥ x ▷ y ∥
+  _∾_ : FA → FA → 𝓤 ̇
+  x ∾ y = ∥ x ∿ y ∥
 
-{-
-  η-∾ₚ : (a b : A) → is-set A → η a ∾ₚ η b → a ≡ b
-  η-∾ₚ = by η-∾ because A is a set and hence a ≡ b is a
-         proposition and because η a ∾ₚ η b is ∥ η a ∾ η b ∥
--}
+  infix 1 _∾_
+
+  η-∾ : {a b : A} → is-set A → η a ∾ η b → a ≡ b
+  η-∾ i = ∥∥-rec i η-∿
+
+  ++-cong : {s s' t t' : FA} → s ∾ s' → t ∾ t' → s ++ t ∾ s' ++ t'
+  ++-cong = ∥∥-functor₂ ++-cong-∿
+
+  inv-cong : {s t : FA} → s ∾ t → inv s ∾ inv t
+  inv-cong = ∥∥-functor inv-cong-∿
+
+  inv-property : (s : FA) → s ++ inv s ∾ []
+  inv-property s = ∣ inv-property-∿ s ∣
+
+  inv-property' : (s : FA) → inv s ++ s ∾ []
+  inv-property' s = ∣ inv-property'-∿ s ∣
 
 \end{code}
 

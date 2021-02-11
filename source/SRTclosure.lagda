@@ -286,14 +286,18 @@ module Church-Rosser
        where
 
   infix 1 _◁▷_
+  infix 1 _◁▷[_]_
   infix 1 _▷*_
   infix 1 _▷[_]_
-  infix 1 _∾_
+  infix 1 _∿_
   _◁▷_ : X → X → 𝓤 ̇
   _◁▷_ = s-closure _▷_
 
-  _∾_ : X → X → 𝓤 ̇
-  _∾_ = srt-closure _▷_
+  _◁▷[_]_ : X → ℕ → X → 𝓤 ̇
+  x ◁▷[ n ] y = iteration _◁▷_ n x y
+
+  _∿_ : X → X → 𝓤 ̇
+  _∿_ = srt-closure _▷_
 
   _▷*_ : X → X → 𝓤 ̇
   _▷*_ = rt-closure _▷_
@@ -301,10 +305,10 @@ module Church-Rosser
   _▷[_]_ : X → ℕ → X → 𝓤 ̇
   x ▷[ n ] y = iteration _▷_ n x y
 
-  to-∾ : (x y : X)
+  to-∿ : (x y : X)
        → (Σ z ꞉ X , (x ▷* z) × (y ▷* z))
-       → x ∾ y
-  to-∾ x y (z , r , s) = srt-transitive _▷_ x z y
+       → x ∿ y
+  to-∿ x y (z , r , s) = srt-transitive _▷_ x z y
                           (rt-gives-srt _▷_ x z r)
                           (srt-symmetric _▷_ y z (rt-gives-srt _▷_ y z s))
 
@@ -321,9 +325,9 @@ module Church-Rosser
    Church-Rosser* x y₀ y₁ (m , i) b = f m x y₀ y₁ i b
     where
      f : (m : ℕ) (x y₀ y₁ : X)
-         → x ▷[ m ] y₀
-         → x ▷  y₁
-         → Σ y ꞉ X , (y₀ ▷* y) × (y₁ ▷* y)
+       → x ▷[ m ] y₀
+       → x ▷  y₁
+       → Σ y ꞉ X , (y₀ ▷* y) × (y₁ ▷* y)
      f zero x x y₁ refl e = y₁ , rt-extension _▷_ x y₁ e , rt-reflexive _▷_ y₁
      f (succ m) x y₀ y₁ (t , d , i) e = γ c
       where
@@ -340,8 +344,8 @@ module Church-Rosser
          δ : type-of IH → Σ u ꞉ X , (y₀ ▷* u) × (y₁ ▷* u)
          δ (u , b , n , j) = u , b , succ n , y , a , j
 
-   from-∾ : (x y : X) → x ∾ y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
-   from-∾ x y (m , e) = f m x y e
+   from-∿ : (x y : X) → x ∿ y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
+   from-∿ x y (m , e) = f m x y e
     where
      f : (m : ℕ) (x y : X) → (_◁▷_ ^ m) x y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
      f zero x x refl = x , rt-reflexive _▷_ x , rt-reflexive _▷_ x
@@ -352,12 +356,12 @@ module Church-Rosser
 
        γ : type-of IH → x ◁▷ z → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
        γ (t , (n , i) , a) (inl c) = t , (succ n , z , c , i) , a
-       γ (t , (n , i) , a) (inr c) = δ h
+       γ (t , (n , i) , a) (inr c) = δ σ
         where
-         h : Σ u ꞉ X , (t ▷* u) × (x ▷* u)
-         h = Church-Rosser* z t x (n , i) c
+         σ : Σ u ꞉ X , (t ▷* u) × (x ▷* u)
+         σ = Church-Rosser* z t x (n , i) c
 
-         δ : type-of h → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
+         δ : type-of σ → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
          δ (u , d , e) = u , e , rt-transitive _▷_ y t u a d
 
 \end{code}
