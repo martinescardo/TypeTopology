@@ -6,8 +6,8 @@ For the moment this file is not for public consumption, but it is
 publicly visible.
 
 We construct free groups in HoTT/UF in Agda without HIT's other than
-propositional truncation, and no consequence of univalence other than
-function extensionality and propositional extensionality.
+propositional truncation, and with no consequence of univalence other
+than function extensionality and propositional extensionality.
 
 This is based on Fred Richman's book on constructive algebra. In
 particular, this construction shows that the inclusion of generators
@@ -15,7 +15,7 @@ is injective (and hence an embedding in the sense of HoTT/UF). It is
 noteworthy and surprising that the set of generators is not required
 to have decidable equality.
 
-This is part of the Martin Escardo's Agda development TypeTopology,
+This is part of Martin Escardo's Agda development TypeTopology,
 whose philosophy is to be Spartan. At the moment we are a little bit
 Athenian, though, with the use of Agda lists rather than Spartan-MLTT
 constructed lists, although we intend to fix this in the future. (The
@@ -121,8 +121,9 @@ module _ {𝓤 : Universe}
 
 \end{code}
 
-The idea is that list concatenation will be the group operation after
-suitable quotienting, with the empty list as the neutral element.
+The idea is that list concatenation _++_ will be the group operation
+after suitable quotienting, with the empty list [] as the neutral
+element.
 
 We will quotient the following type FA to get the undelying type of
 the free group:
@@ -133,7 +134,7 @@ the free group:
  FA = List X
 
  η : A → FA
- η a = [ ₀ , a ]
+ η a = [ (₀ , a) ]
 
 \end{code}
 
@@ -380,7 +381,8 @@ The following is for reasoning with chains of equivalences _∿_:
 
 \end{code}
 
-The group operation before quotienting is simply concatenation.
+As discussed above, the group operation before quotienting is simply
+concatenation, with the empty list as the neutral element.
 
 Concatenation is a left congruence. We establish this in several
 steps:
@@ -598,14 +600,31 @@ extensionality.
    fe : Fun-Ext
    fe {𝓤} {𝓥} = fe' 𝓤 𝓥
 
+\end{code}
+
+We work with quotients constructed in the module UF-Quotient using
+functional extensionality and propositional extensionality, and no
+higher-inductive types other than propositional truncation:
+
+\begin{code}
+
    open import UF-Quotient
    open Quotient 𝓤 𝓤 pt fe' pe
    open psrt pt _▷_
+
+\end{code}
+
+We have that _∾_ is an equivalence relation:
+
+\begin{code}
 
    -∾- : EqRel FA
    -∾- = _∾_ , psrt-is-prop-valued , psrt-reflexive , psrt-symmetric , psrt-transitive
 
 \end{code}
+
+The acronym "psrt" stands for propositional, reflexive, symmetric and
+transitive closure of a relation, in this case _▷_.
 
 Our quotients constructed via propositional truncation increase
 universe levels (this won't be a problem for our intended application,
@@ -626,10 +645,10 @@ The above function η/∾ is the universal map into the quotient.
 
 We have too many η's now. The insertion of generators of the free
 group is obtained by composing the universal map into the quotient
-with our original η : A → FA that inserts the generators into the
-freely generated "pre-group". Because the insertion of generators into
-the "real group" is the composition of these two η's, we use a double
-η to denote it.
+with our original map η : A → FA that inserts the generators into the
+freely generated "pre-group" of lists. Because the insertion of
+generators into the "real group" is the composition of these two η's,
+we use a double η to denote it.
 
 \begin{code}
 
@@ -646,7 +665,7 @@ left-cancellable map:
 
    ηη-lc : is-set A → (a b : A) → ηη a ≡ ηη b → a ≡ b
    ηη-lc i a b p = η-identifies-∾-related-points i
-                    (η/-relates-identified-points -∾- p)
+                     (η/-relates-identified-points -∾- p)
 
    η/∾-identifies-related-points : {s t : FA} → s ∾ t → η/∾ s ≡ η/∾ t
    η/∾-identifies-related-points = η/-identifies-related-points -∾-
@@ -654,7 +673,7 @@ left-cancellable map:
 \end{code}
 
 We now need to make FA/∾ into a group. We will use "/" in names to
-indicate constructions on the quotient FA/∾.
+indicate constructions on the quotient type FA/∾.
 
 \begin{code}
 
@@ -666,6 +685,13 @@ indicate constructions on the quotient FA/∾.
 
    _·_ : FA/∾ → FA/∾ → FA/∾
    _·_ = extension₂/ -∾- _++_ ++-cong
+
+\end{code}
+
+The following two naturality conditions (in the categorical sense) are
+crucial:
+
+\begin{code}
 
    inv/-natural : (s : FA) → inv/ (η/∾ s) ≡ η/∾ (inv s)
    inv/-natural = naturality/ -∾- inv inv-cong
@@ -682,6 +708,8 @@ as the equivalence class of s. Then quotient induction says that in
 order to prove a property of equivalence classes, it is enough to
 prove it for all equivalence classes of given elements (this is proved
 in the module UF-Quotient).
+
+The following proofs rely on the above naturality conditions:
 
 \begin{code}
 
@@ -737,8 +765,8 @@ in the module UF-Quotient).
                η/∾ s · (η/∾ t · η/∾ u) ∎
 \end{code}
 
-So we have constructed a group with underlying set FA/∾ and a map ηη :
-A → FA/∾.
+So we have constructed a group with underlying set FA/∾ and a map
+ηη : A → FA/∾.
 
 To prove that ηη is the universal map of the set A into a group, we
 assume another group G with a map f : A → G:
@@ -763,7 +791,7 @@ assume another group G with a map f : A → G:
 
 Our objective is to constructe f' from f making the universality
 triangle commute. As a first step in the construction of f', we
-construct h by induction of lists:
+construct a map h by induction of lists:
 
 \begin{code}
 
@@ -789,9 +817,9 @@ We need the following property of h with respect to formal inverses:
                  e                     ∎
 \end{code}
 
-By construction, h is a list homomorphism. It is also a monoid
-homomorphism (it would be a group homomorphism is FA were a group,
-which it isn't):
+By construction, the function h is a list homomorphism. It is also a
+monoid homomorphism (it would be a group homomorphism if FA were a
+group, which it isn't):
 
 \begin{code}
 
@@ -812,8 +840,8 @@ which it isn't):
 
 \end{code}
 
-We also need the following property of h in order to construct our
-desired group homomorphism f':
+We also need the following property of the map h in order to construct
+our desired group homomorphism f':
 
 \begin{code}
 
@@ -849,8 +877,8 @@ desired group homomorphism f':
 
 \end{code}
 
-We then construct the unique homorphism f' extending f using the
-universal property of quotients:
+We can then finally construct the unique homorphism f' extending f
+using the universal property of quotients, using the above map h:
 
 \begin{code}
 
@@ -867,12 +895,18 @@ free group:
 
 \begin{code}
 
-
     f'-triangle : f' ∘ ηη ∼ f
     f'-triangle a = f' (η/∾ (η a)) ≡⟨ f'-/triangle (η a) ⟩
                     h (η a)        ≡⟨ refl ⟩
                     f a ⋆ e        ≡⟨ rn (f a) ⟩
                     f a            ∎
+
+\end{code}
+
+Which is a group homormorphism (rather than merely a monoid
+homomorphism like h):
+
+\begin{code}
 
     f'-is-hom : (x y : FA/∾) → f' (x · y) ≡ f' x ⋆ f' y
     f'-is-hom = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ (f' x ⋆ f' y))
@@ -888,9 +922,21 @@ free group:
               h s ⋆ h t               ≡⟨ ap₂ _⋆_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹) ⟩
               f' (η/∾ s) ⋆ f' (η/∾ t) ∎
 
-    f'-uniqueness : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
-    f'-uniqueness f₀ f₁ p q = at-most-one-mediating-map/ -∾- G-is-set f₀ f₁
+\end{code}
+
+Notice that for the following uniqueness property of f' we don't need
+to assume that f₀ and f₁ are group homomorphisms:
+
+\begin{code}
+
+    f'-uniqueness-∾ : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
+    f'-uniqueness-∾ f₀ f₁ p q = at-most-one-mediating-map/ -∾- G-is-set f₀ f₁
                                  (λ s → p s ∙ (q s)⁻¹)
+
+{- Oh. We forgot to prove this, which will require f₀ and f₁ to be homomorphisms:
+    f'-uniqueness : (f₀ f₁ : FA/∾ → G) → f₀ ∘ ηη ∼ f → f₁ ∘ ηη ∼ f → f₀ ∼ f₁
+    f'-uniqueness f₀ f₁ p q = {!!}
+-}
 
 \end{code}
 
