@@ -1,4 +1,4 @@
-Martin Escardo, 04 January 2021.
+η/∾Martin Escardo, 04 January 2021.
 
 Ongoing joint work with Marc Bezem, Thierry Coquand, and Peter Dybjer.
 
@@ -38,6 +38,7 @@ open import UF-PropTrunc
 open import UF-Univalence
 open import UF-Base
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 open import UF-Equiv
 open import UF-UA-FunExt
 open import UF-FunExt
@@ -545,11 +546,11 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
   inv-cong : {s t : FA} → s ∾ t → inv s ∾ inv t
   inv-cong = ∥∥-functor inv-cong-∿
 
-  inv-property : (s : FA) → s ++ inv s ∾ []
-  inv-property s = ∣ inv-property-∿ s ∣
+  inv-right : (s : FA) → s ++ inv s ∾ []
+  inv-right s = ∣ inv-property-∿ s ∣
 
-  inv-property' : (s : FA) → inv s ++ s ∾ []
-  inv-property' s = ∣ inv-property'-∿ s ∣
+  inv-left : (s : FA) → inv s ++ s ∾ []
+  inv-left s = ∣ inv-property'-∿ s ∣
 
 \end{code}
 
@@ -558,12 +559,15 @@ extensionality.
 
 \begin{code}
 
-  module _ (fe  : FunExt)
+  module _ (fe' : FunExt)
            (pe  : propext 𝓤)
         where
 
+   fe : Fun-Ext
+   fe {𝓤} {𝓥} = fe' 𝓤 𝓥
+
    open import UF-Quotient
-   open Quotient 𝓤 𝓤 pt fe pe
+   open Quotient 𝓤 𝓤 pt fe' pe
    open psrt pt _▷_
 
    R : EqRel FA
@@ -596,18 +600,215 @@ We have too many η's now. The insertion of generators is the following:
    ηη-lc : is-set A → (a b : A) → ηη a ≡ ηη b → a ≡ b
    ηη-lc i a b p = η-∾ i (η/-relates-identified-points R p)
 
-   inve : FA/∾ → FA/∾
-   inve = extension₁/ R inv inv-cong
+   η/∾-identifies-related-points : {s t : FA} → s ∾ t → η/∾ s ≡ η/∾ t
+   η/∾-identifies-related-points = η/-identifies-related-points R
+
+\end{code}
+
+We now need to make FA/∾ into a group. We will use "/" in names to
+indicate constructions on the quotient FA/∾.
+
+\begin{code}
+
+   e/ : FA/∾
+   e/ = η/∾ []
+
+   inv/ : FA/∾ → FA/∾
+   inv/ = extension₁/ R inv inv-cong
 
    _·_ : FA/∾ → FA/∾ → FA/∾
    _·_ = extension₂/ R _++_ ++-cong
 
-   inv-natural : (s : FA) → inve (η/∾ s) ≡ η/∾ (inv s)
-   inv-natural = naturality/ R inv inv-cong
+   inv/-natural : (s : FA) → inv/ (η/∾ s) ≡ η/∾ (inv s)
+   inv/-natural = naturality/ R inv inv-cong
 
    ·-natural : (s t : FA) → η/∾ s · η/∾ t ≡ η/∾ (s ++ t)
    ·-natural = naturality₂/ R _++_ ++-cong
 
+   ln/ : left-neutral e/ _·_
+   ln/ = /-induction R (λ x → e/ · x ≡ x) (λ x → quotient-is-set R) γ
+    where
+     γ : (s : FA) → η/∾ [] · η/∾ s ≡ η/∾ s
+     γ = ·-natural []
+
+   rn/ : right-neutral e/ _·_
+   rn/ = /-induction R (λ x → x · e/ ≡ x) (λ x → quotient-is-set R) γ
+    where
+     γ : (s : FA) → η/∾ s · η/∾ [] ≡ η/∾ s
+     γ s = η/∾ s · η/∾ [] ≡⟨ ·-natural s [] ⟩
+           η/∾ (s ++ [])  ≡⟨ ap η/∾ ([]-right-neutral s ⁻¹) ⟩
+           η/∾ s          ∎
+
+   invl/ : (x : FA/∾) → inv/ x · x ≡ e/
+   invl/ = /-induction R (λ x → (inv/ x · x) ≡ e/) (λ x → quotient-is-set R) γ
+    where
+     γ : (s : FA) → inv/ (η/∾ s) · η/∾ s ≡ e/
+     γ s = inv/ (η/∾ s) · η/∾ s ≡⟨ ap (_· η/∾ s) (inv/-natural s) ⟩
+           η/∾ (inv s) · η/∾ s  ≡⟨ ·-natural (inv s) s ⟩
+           η/∾ (inv s ++ s)     ≡⟨ η/∾-identifies-related-points (inv-left s) ⟩
+           η/∾ []               ≡⟨ refl ⟩
+           e/                   ∎
+
+   invr/ : (x : FA/∾) → x · inv/ x ≡ e/
+   invr/ = /-induction R (λ x → x · inv/ x ≡ e/) (λ x → quotient-is-set R) γ
+    where
+     γ : (s : FA) → η/∾ s · inv/ (η/∾ s) ≡ e/
+     γ s = η/∾ s · inv/ (η/∾ s) ≡⟨ ap (η/∾ s ·_) (inv/-natural s) ⟩
+           η/∾ s · η/∾ (inv s)  ≡⟨ ·-natural s (inv s) ⟩
+           η/∾ (s ++ inv s)     ≡⟨ η/∾-identifies-related-points (inv-right s) ⟩
+           η/∾ []               ≡⟨ refl ⟩
+           e/                   ∎
+
+   assoc/ : associative _·_
+   assoc/ = /-induction R (λ x → ∀ y z → (x · y) · z ≡ x · (y · z))
+              (λ x → Π₂-is-prop fe (λ y z → quotient-is-set R))
+              (λ s → /-induction R (λ y → ∀ z → (η/∾ s · y) · z ≡ η/∾ s · (y · z))
+                       (λ y → Π-is-prop fe (λ z → quotient-is-set R))
+                       (λ t → /-induction R (λ z → (η/∾ s · η/∾ t) · z ≡ η/∾ s · (η/∾ t · z))
+                                (λ z → quotient-is-set R)
+                                (γ s t)))
+    where
+     γ : (s t u : FA) → (η/∾ s · η/∾ t) · η/∾ u ≡ η/∾ s · (η/∾ t · η/∾ u)
+     γ s t u = (η/∾ s · η/∾ t) · η/∾ u ≡⟨ ap (_· η/∾ u) (·-natural s t) ⟩
+               η/∾ (s ++ t) · η/∾ u    ≡⟨ ·-natural (s ++ t) u ⟩
+               η/∾ ((s ++ t) ++ u)     ≡⟨ ap η/∾ (++-assoc s t u) ⟩
+               η/∾ (s ++ (t ++ u))     ≡⟨ (·-natural s (t ++ u))⁻¹ ⟩
+               η/∾ s · η/∾ (t ++ u)    ≡⟨ ap (η/∾ s ·_) ((·-natural t u)⁻¹) ⟩
+               η/∾ s · (η/∾ t · η/∾ u) ∎
 \end{code}
 
-To be continued.
+So we have constructed a group with underlying set FA/∾ and a map ηη :
+A → FA/∾.
+
+To prove that ηη is the universal map of the set A into a group, we
+assume another group G:
+
+\begin{code}
+
+   module _ {𝓥 : Universe}
+            (G : 𝓥 ̇ )
+            (G-is-set : is-set G)
+            (e : G)
+            (invg : G → G)
+            (_⋆_ : G → G → G)
+            (ln : left-neutral e _⋆_)
+            (rn : right-neutral e _⋆_)
+            (invl : (g : G) → invg g ⋆ g ≡ e)
+            (invr : (g : G) → g ⋆ invg g ≡ e)
+            (assoc : associative _⋆_)
+            (f : A → G)
+         where
+
+    h : FA → G
+    h [] = e
+    h ((₀ , a) ∷ s) = f a ⋆ h s
+    h ((₁ , a) ∷ s) = invg (f a) ⋆ h s
+
+    h⁻ : (x : X) → h (x  ∷  x ⁻ ∷ []) ≡ e
+
+    h⁻ (₀ , a) = f a ⋆ (invg (f a) ⋆ e)≡⟨ ap (f a ⋆_) (rn (invg (f a))) ⟩
+                 f a ⋆ invg (f a)      ≡⟨ invr (f a) ⟩
+                 e                     ∎
+
+    h⁻ (₁ , a) = invg (f a) ⋆ (f a ⋆ e)≡⟨ ap (invg (f a) ⋆_) (rn (f a)) ⟩
+                 invg (f a) ⋆ f a      ≡⟨ invl (f a) ⟩
+                 e                     ∎
+
+    h-is-hom : (s t : FA) → h (s ++ t) ≡ h s ⋆ h t
+
+    h-is-hom [] t = h  t    ≡⟨ (ln (h t))⁻¹ ⟩
+                    e ⋆ h t ∎
+
+    h-is-hom ((₀ , a) ∷ s) t = f a ⋆ h (s ++ t)    ≡⟨ ap (f a ⋆_) (h-is-hom s t) ⟩
+                               f a ⋆ (h s ⋆ h t)   ≡⟨ (assoc (f a) (h s) (h t))⁻¹ ⟩
+                               (f a ⋆ h s) ⋆ h t   ≡⟨ refl ⟩
+                               h (₀ , a ∷ s) ⋆ h t ∎
+
+    h-is-hom (₁ , a ∷ s) t = invg (f a) ⋆ h (s ++ t)  ≡⟨ ap (invg (f a) ⋆_) (h-is-hom s t) ⟩
+                             invg (f a) ⋆ (h s ⋆ h t) ≡⟨ (assoc (invg (f a)) (h s) (h t))⁻¹ ⟩
+                             (invg (f a) ⋆ h s) ⋆ h t ≡⟨ refl ⟩
+                             h (₁ , a ∷ s) ⋆ h t      ∎
+
+    h-identifies-▷-related-points : {s t : FA} → s ▷ t → h s ≡ h t
+    h-identifies-▷-related-points {s} {t} (u , v , y , p , q) =
+       h s ≡⟨ ap h p ⟩
+       h (u ++ [ y ] ++ [ y ⁻ ] ++ v)   ≡⟨ h-is-hom u ([ y ] ++ [ y ⁻ ] ++ v) ⟩
+       h u ⋆ h (y ∷ y ⁻ ∷ v)            ≡⟨ ap (h u ⋆_) (h-is-hom (y ∷ y ⁻ ∷ []) v) ⟩
+       h u ⋆ (h (y ∷ (y ⁻) ∷ []) ⋆ h v) ≡⟨ ap (λ - → h u ⋆ (- ⋆ h v)) (h⁻ y) ⟩
+       h u ⋆ (e ⋆ h v)                  ≡⟨ ap (h u ⋆_) (ln (h v)) ⟩
+       h u ⋆ h v                        ≡⟨ (h-is-hom u v)⁻¹ ⟩
+       h (u ++ v)                       ≡⟨ ap h (q ⁻¹) ⟩
+       h t ∎
+
+    h-identifies-▷*-related-points : {s t : FA} → s ▷* t → h s ≡ h t
+    h-identifies-▷*-related-points {s} {t} (n , r) = γ n s t r
+     where
+      γ : (n : ℕ) (s t : FA) → s ▷[ n ] t → h s ≡ h t
+      γ zero s s refl  = refl
+      γ (succ n) s t (u , r , i) = h s ≡⟨ h-identifies-▷-related-points r ⟩
+                                   h u ≡⟨ γ n u t i ⟩
+                                   h t ∎
+
+    h-identifies-∾-related-points : {s t : FA} → s ∾ t → h s ≡ h t
+    h-identifies-∾-related-points {s} {t} e = γ
+     where
+      δ : (Σ u ꞉ FA , (s ▷* u) × (t ▷* u)) → h s ≡ h t
+      δ (u , σ , τ) = h s ≡⟨ (h-identifies-▷*-related-points σ) ⟩
+                      h u ≡⟨ (h-identifies-▷*-related-points τ)⁻¹ ⟩
+                      h t ∎
+      γ : h s ≡ h t
+      γ = ∥∥-rec G-is-set δ (∥∥-functor (from-∿ Church-Rosser s t) e)
+
+\end{code}
+
+We then construct the unique homorphism extending f using the
+universal property of quotients:
+
+\begin{code}
+
+
+    f' : FA/∾ → G
+    f' = mediating-map/ R G-is-set h h-identifies-∾-related-points
+
+    f'-/triangle : f' ∘ η/∾ ∼ h
+    f'-/triangle = universality-triangle/ R G-is-set h h-identifies-∾-related-points
+
+\end{code}
+
+And from this we get the triangle for the universal property of the
+free group:
+
+\begin{code}
+
+
+    f'-triangle : f' ∘ ηη ∼ f
+    f'-triangle a = f' (η/∾ (η a)) ≡⟨ f'-/triangle (η a) ⟩
+                    h (η a)        ≡⟨ refl ⟩
+                    f a ⋆ e        ≡⟨ rn (f a) ⟩
+                    f a            ∎
+
+    f'-is-hom : (x y : FA/∾) → f' (x · y) ≡ f' x ⋆ f' y
+    f'-is-hom = /-induction R (λ x → ∀ y → f' (x · y) ≡ (f' x ⋆ f' y))
+                  (λ x → Π-is-prop fe (λ y → G-is-set))
+                  (λ s → /-induction R (λ y → f' (η/∾ s · y) ≡ (f' (η/∾ s) ⋆ f' y))
+                           (λ a → G-is-set)
+                           (γ s))
+     where
+      γ : (s t : FA) → f' (η/∾ s · η/∾ t) ≡ f' (η/∾ s) ⋆ f' (η/∾ t)
+      γ s t = f' (η/∾ s · η/∾ t)      ≡⟨ ap f' (·-natural s t) ⟩
+              f' (η/∾ (s ++ t))       ≡⟨ f'-/triangle (s ++ t) ⟩
+              h (s ++ t)              ≡⟨ h-is-hom s t ⟩
+              h s ⋆ h t               ≡⟨ ap₂ _⋆_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹) ⟩
+              f' (η/∾ s) ⋆ f' (η/∾ t) ∎
+
+    f'-uniqueness : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
+    f'-uniqueness f₀ f₁ p q = at-most-one-mediating-map/ R G-is-set f₀ f₁
+                                 (λ s → p s ∙ (q s)⁻¹)
+
+\end{code}
+
+What we wanted to know is now proved.
+
+Last thing to do: Package the above into a single theorem, using a
+type of groups, asserting the existence of free groups with injective
+insertion of generators.

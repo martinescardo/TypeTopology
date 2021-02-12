@@ -152,11 +152,11 @@ values in any universe 𝓦 we please:
 
 \begin{code}
 
- η-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇ )
-             → ((x' : X/≈) → is-prop (P x'))
-             → ((x : X) → P (η x))
-             → (x' : X/≈) → P x'
- η-induction = surjection-induction η η-surjection
+ quotient-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇ )
+                    → ((x' : X/≈) → is-prop (P x'))
+                    → ((x : X) → P (η x))
+                    → (x' : X/≈) → P x'
+ quotient-induction = surjection-induction η η-surjection
 
 \end{code}
 
@@ -214,7 +214,7 @@ universe 𝓦.
  universal-property {𝓦} A iss f pr = ic
   where
    φ : (x' : X/≈) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ≡ x') × (f x ≡ a))
-   φ = η-induction _ γ induction-step
+   φ = quotient-induction _ γ induction-step
      where
       induction-step : (y : X) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ≡ η y) × (f x ≡ a))
       induction-step x (a , d) (b , e) = to-Σ-≡ (p , ∥∥-is-prop _ _)
@@ -231,7 +231,7 @@ universe 𝓦.
       γ x' = being-prop-is-prop (fe (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦) (𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓦))
 
    k : (x' : X/≈) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ x') × (f x ≡ a)
-   k = η-induction _ φ induction-step
+   k = quotient-induction _ φ induction-step
     where
      induction-step : (y : X) → Σ a ꞉ A , ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ a)
      induction-step x = f x , ∣ x , refl , refl ∣
@@ -258,7 +258,7 @@ universe 𝓦.
      w = happly (r ∙ s ⁻¹)
 
      t : f' ≡ f''
-     t = dfunext (fe (𝓤 ⊔ 𝓥 ⁺) 𝓦) (η-induction _ (λ _ → iss) w)
+     t = dfunext (fe (𝓤 ⊔ 𝓥 ⁺) 𝓦) (quotient-induction _ (λ _ → iss) w)
 
      u : f'' ∘ η ≡ f
      u = transport (λ - → - ∘ η ≡ f) t r
@@ -312,11 +312,11 @@ module Quotient
   η/-is-surjection : is-surjection η/
   η/-is-surjection = η-surjection X _≈_ ≈p ≈r ≈s ≈t
 
-  η/-induction : ∀ {𝓦} (P : X / ≋ → 𝓦 ̇ )
-               → ((x' : X / ≋) → is-prop (P x'))
-               → ((x : X) → P (η/ x))
-               → (x' : X / ≋) → P x'
-  η/-induction = surjection-induction η/ η/-is-surjection
+  /-induction : ∀ {𝓦} (P : X / ≋ → 𝓦 ̇ )
+              → ((x' : X / ≋) → is-prop (P x'))
+              → ((x : X) → P (η/ x))
+              → (x' : X / ≋) → P x'
+  /-induction = surjection-induction η/ η/-is-surjection
 
   identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
@@ -325,8 +325,8 @@ module Quotient
   η/-identifies-related-points = η-equiv-equal X _≈_ ≈p ≈r ≈s ≈t
 
   η/-relates-identified-points : {x y : X}
-                              → η/ x ≡ η/ y
-                              → x ≈ y
+                               → η/ x ≡ η/ y
+                               → x ≈ y
   η/-relates-identified-points = η-equal-equiv X _≈_ ≈p ≈r ≈s ≈t
 
   module _ {𝓦 : Universe}
@@ -357,11 +357,11 @@ module Quotient
    universality-triangle/ i f p = happly (universality-triangle/≡ i f p)
 
 
-   at-most-one-mediating-map/ : is-set A
+   at-most-one-mediating-map/≡ : is-set A
                               → (g h : X / ≋ → A)
                               → g ∘ η/ ≡ h ∘ η/
                               → g ≡ h
-   at-most-one-mediating-map/ i g h p = q ⁻¹ ∙ r
+   at-most-one-mediating-map/≡ i g h p = q ⁻¹ ∙ r
     where
      f = g ∘ η/
 
@@ -380,6 +380,12 @@ module Quotient
           (mediating-map/ i f j) h (universality-triangle/≡ i f j)
           (p ⁻¹)
 
+   at-most-one-mediating-map/ : is-set A
+                              → (g h : X / ≋ → A)
+                              → g ∘ η/ ∼ h ∘ η/
+                              → g ∼ h
+   at-most-one-mediating-map/ i g h p = happly (at-most-one-mediating-map/≡ i g h
+                                                   (dfunext (fe 𝓤 𝓦) p))
 \end{code}
 
 Extending unary and binary operations to the quotient:
@@ -437,8 +443,8 @@ Extending unary and binary operations to the quotient:
        f₁ x' (η/ y)  ∎
 
      ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ≡ f₁ x' b
-     ρ b {x} {x'} e =  η/-induction (λ b → f₁ x b ≡ f₁ x' b)
-                         (λ y → quotient-is-set) (δ e) b
+     ρ b {x} {x'} e = /-induction (λ b → f₁ x b ≡ f₁ x' b)
+                        (λ y → quotient-is-set) (δ e) b
 
      f₂ : X / ≋ → X / ≋ → X / ≋
      f₂ d e = extension/ (λ x → f₁ x e) (ρ e) d
@@ -454,3 +460,6 @@ Extending unary and binary operations to the quotient:
      η/ (f x y)       ∎
 
 \end{code}
+
+Without the above abstract declarations, the use of naturality₂/ takes
+for ever in the module FreeGroup.lagda.
