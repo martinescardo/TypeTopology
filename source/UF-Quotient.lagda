@@ -299,8 +299,9 @@ module Quotient
           ((_≈_ , ≈p , ≈r , ≈s , ≈t) : EqRel X)
         where
 
-  ≋ : EqRel X
-  ≋ = (_≈_ , ≈p , ≈r , ≈s , ≈t)
+  private
+   ≋ : EqRel X
+   ≋ = (_≈_ , ≈p , ≈r , ≈s , ≈t)
 
   quotient-is-set : is-set (X / ≋)
   quotient-is-set = X/≈-is-set _ _≈_ ≈p ≈r ≈s ≈t
@@ -320,13 +321,13 @@ module Quotient
   identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
 
-  η-identifies-related-points : identifies-related-points η/
-  η-identifies-related-points = η-equiv-equal X _≈_ ≈p ≈r ≈s ≈t
+  η/-identifies-related-points : identifies-related-points η/
+  η/-identifies-related-points = η-equiv-equal X _≈_ ≈p ≈r ≈s ≈t
 
-  η-relates-identified-points : {x y : X}
+  η/-relates-identified-points : {x y : X}
                               → η/ x ≡ η/ y
                               → x ≈ y
-  η-relates-identified-points = η-equal-equiv X _≈_ ≈p ≈r ≈s ≈t
+  η/-relates-identified-points = η-equal-equiv X _≈_ ≈p ≈r ≈s ≈t
 
   module _ {𝓦 : Universe}
            {A : 𝓦 ̇ }
@@ -365,7 +366,7 @@ module Quotient
      f = g ∘ η/
 
      j : identifies-related-points f
-     j e = ap g (η-identifies-related-points e)
+     j e = ap g (η/-identifies-related-points e)
 
      q : mediating-map/ i f j ≡ g
      q = witness-uniqueness (λ f' → f' ∘ η/ ≡ f)
@@ -399,9 +400,10 @@ Extending unary and binary operations to the quotient:
            (p : {x y : X} → x ≈ y → f x ≈ f y)
          where
 
-   private
-     π : identifies-related-points (η/ ∘ f)
-     π e = η-identifies-related-points (p e)
+   abstract
+    private
+      π : identifies-related-points (η/ ∘ f)
+      π e = η/-identifies-related-points (p e)
 
    extension₁/ : X / ≋ → X / ≋
    extension₁/ = extension/ (η/ ∘ f) π
@@ -413,40 +415,42 @@ Extending unary and binary operations to the quotient:
            (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → f x y ≈ f x' y')
          where
 
-   private
-    π : (x : X) → identifies-related-points (η/ ∘ f x)
-    π x {y} {y'} e = η-identifies-related-points (p {x} {y} {x} {y'} (≈r x) e)
+   abstract
+    private
+     π : (x : X) → identifies-related-points (η/ ∘ f x)
+     π x {y} {y'} e = η/-identifies-related-points (p {x} {y} {x} {y'} (≈r x) e)
 
-    p' : (x : X) {y y' : X} → y ≈ y' → f x y ≈ f x y'
-    p' x {x'} {y'} = p {x} {x'} {x} {y'} (≈r x)
+     p' : (x : X) {y y' : X} → y ≈ y' → f x y ≈ f x y'
+     p' x {x'} {y'} = p {x} {x'} {x} {y'} (≈r x)
 
-    f₁ : X → X / ≋ → X / ≋
-    f₁ x = extension₁/ (f x) (p' x)
+     f₁ : X → X / ≋ → X / ≋
+     f₁ x = extension₁/ (f x) (p' x)
 
-    n/ : (x : X) → f₁ x ∘ η/ ∼ η/ ∘ f x
-    n/ x = naturality/ (f x) (p' x)
+     n/ : (x : X) → f₁ x ∘ η/ ∼ η/ ∘ f x
+     n/ x = naturality/ (f x) (p' x)
 
-    δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ y) ≡ f₁ x' (η/ y)
-    δ {x} {x'} e y =
-      f₁ x (η/ y)   ≡⟨ naturality/ (f x) (p' x) y ⟩
-      η/ (f x y)    ≡⟨ η-identifies-related-points (p e (≈r y)) ⟩
-      η/ (f x' y)   ≡⟨ (naturality/ (f x') (p' x') y)⁻¹ ⟩
-      f₁ x' (η/ y)  ∎
+     δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ y) ≡ f₁ x' (η/ y)
+     δ {x} {x'} e y =
+       f₁ x (η/ y)   ≡⟨ naturality/ (f x) (p' x) y ⟩
+       η/ (f x y)    ≡⟨ η/-identifies-related-points (p e (≈r y)) ⟩
+       η/ (f x' y)   ≡⟨ (naturality/ (f x') (p' x') y)⁻¹ ⟩
+       f₁ x' (η/ y)  ∎
 
-    ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ≡ f₁ x' b
-    ρ b {x} {x'} e =  η/-induction (λ b → f₁ x b ≡ f₁ x' b)
-                        (λ y → quotient-is-set) (δ e) b
+     ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ≡ f₁ x' b
+     ρ b {x} {x'} e =  η/-induction (λ b → f₁ x b ≡ f₁ x' b)
+                         (λ y → quotient-is-set) (δ e) b
 
-    f₂ : X / ≋ → X / ≋ → X / ≋
-    f₂ d e = extension/ (λ x → f₁ x e) (ρ e) d
+     f₂ : X / ≋ → X / ≋ → X / ≋
+     f₂ d e = extension/ (λ x → f₁ x e) (ρ e) d
 
    extension₂/ : X / ≋ → X / ≋ → X / ≋
    extension₂/ = f₂
 
-   naturality₂/ : (x y : X) → f₂ (η/ x) (η/ y) ≡ η/ (f x y)
-   naturality₂/ x y =
-    f₂ (η/ x) (η/ y) ≡⟨ extension-triangle/ (λ x → f₁ x (η/ y)) (ρ (η/ y)) x ⟩
-    f₁ x (η/ y)      ≡⟨ naturality/ (f x) (p (≈r x)) y ⟩
-    η/ (f x y)       ∎
+   abstract
+    naturality₂/ : (x y : X) → f₂ (η/ x) (η/ y) ≡ η/ (f x y)
+    naturality₂/ x y =
+     f₂ (η/ x) (η/ y) ≡⟨ extension-triangle/ (λ x → f₁ x (η/ y)) (ρ (η/ y)) x ⟩
+     f₁ x (η/ y)      ≡⟨ naturality/ (f x) (p (≈r x)) y ⟩
+     η/ (f x y)       ∎
 
 \end{code}

@@ -566,31 +566,48 @@ extensionality.
    open Quotient 𝓤 𝓤 pt fe pe
    open psrt pt _▷_
 
-
-   ∾ : EqRel FA
-   ∾ = _∾_ , psrt-is-prop-valued , psrt-reflexive , psrt-symmetric , psrt-transitive
+   R : EqRel FA
+   R = _∾_ , psrt-is-prop-valued , psrt-reflexive , psrt-symmetric , psrt-transitive
 
 \end{code}
 
 Our quotients constructed via propositional truncation increase
-universe levels:
+universe levels (this won't be a problem for our intended application,
+the free group over the type of ordinals, because although this type
+is large, it is locally small):
 
 \begin{code}
 
    FA/∾ : 𝓤 ⁺ ̇
-   FA/∾ = FA / ∾
-{-
-   invv : FA/∾ → FA/∾
-   invv = {!!}
+   FA/∾ = FA / R
 
+   η/∾ : FA → FA/∾
+   η/∾ = η/ R
 
-   _·_ : FA/∾ → FA/∾ → FA/∾
-   x · y = {!!}
--}
 \end{code}
 
-This won't be a problem for our intended application, the free group
-over the type of ordinals, because although this type is large, it is
-locally small.
+We have too many η's now. The insertion of generators is the following:
+
+\begin{code}
+
+   ηη : A → FA/∾
+   ηη a = η/∾ (η a)
+
+   ηη-lc : is-set A → (a b : A) → ηη a ≡ ηη b → a ≡ b
+   ηη-lc i a b p = η-∾ i (η/-relates-identified-points R p)
+
+   inve : FA/∾ → FA/∾
+   inve = extension₁/ R inv inv-cong
+
+   _·_ : FA/∾ → FA/∾ → FA/∾
+   _·_ = extension₂/ R _++_ ++-cong
+
+   inv-natural : (s : FA) → inve (η/∾ s) ≡ η/∾ (inv s)
+   inv-natural = naturality/ R inv inv-cong
+
+   ·-natural : (s t : FA) → η/∾ s · η/∾ t ≡ η/∾ (s ++ t)
+   ·-natural = naturality₂/ R _++_ ++-cong
+
+\end{code}
 
 To be continued.
