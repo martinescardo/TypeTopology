@@ -682,7 +682,7 @@ So we have constructed a group with underlying set FA/∾ and a map ηη :
 A → FA/∾.
 
 To prove that ηη is the universal map of the set A into a group, we
-assume another group G:
+assume another group G with a map f : A → G:
 
 \begin{code}
 
