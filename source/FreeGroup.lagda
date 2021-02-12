@@ -945,3 +945,6 @@ What we wanted to know is now proved.
 Last thing to do: Package the above into a single theorem, using a
 type of groups, asserting the existence of free groups with injective
 insertion of generators.
+
+Last remark: the packaging of all the above into a single theorem will
+allow us to be confident that we didn't forget to prove anything.
