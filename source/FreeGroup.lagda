@@ -482,22 +482,22 @@ The inverse really is an inverse:
  =-∿ : {s s' : FA} → s ≡ s' → s ∿ s'
  =-∿ {s} refl = srt-reflexive _▷_ s
 
- inv-lemma : (x : X) → [ x ] ++ [ x ⁻ ] ∿ []
- inv-lemma x = srt-extension _▷_ _ [] ([] , [] , x , refl , refl)
+ inv-lemma-right : (x : X) → [ x ] ++ [ x ⁻ ] ∿ []
+ inv-lemma-right x = srt-extension _▷_ _ [] ([] , [] , x , refl , refl)
 
- inv-lemma' : (x : X) → [ x ⁻ ] ++ [ x ] ∿ []
- inv-lemma' x = srt-extension _▷_ _ _
+ inv-lemma-left : (x : X) → [ x ⁻ ] ++ [ x ] ∿ []
+ inv-lemma-left x = srt-extension _▷_ _ _
                  ([] ,
                   [] ,
                   (x ⁻) ,
                   ap (λ - → [ x ⁻ ] ++ [ - ]) ((inv-invol x)⁻¹) , refl)
 
- inv-property-∿ : (s : FA) → s ++ inv s ∿ []
- inv-property-∿ []      = srt-reflexive _▷_ []
- inv-property-∿ (x ∷ s) = γ
+ inv-right-∿ : (s : FA) → s ++ inv s ∿ []
+ inv-right-∿ []      = srt-reflexive _▷_ []
+ inv-right-∿ (x ∷ s) = γ
   where
    IH : s ++ inv s ∿ []
-   IH = inv-property-∿ s
+   IH = inv-right-∿ s
 
    γ = [ x ] ++ s ++ inv s ++ [ x ⁻ ]   ∿⟨ I ⟩
        [ x ] ++ (s ++ inv s) ++ [ x ⁻ ] ∿⟨ II ⟩
@@ -506,11 +506,11 @@ The inverse really is an inverse:
     where
      I   = =-∿  (ap (x ∷_) (++-assoc s (inv s) [ x ⁻ ])⁻¹)
      II  = ++-cong-right [ x ] (++-cong-left _ _ _ IH)
-     III = inv-lemma x
+     III = inv-lemma-right x
 
- inv-property'-∿ : (s : FA) → inv s ++ s ∿ []
- inv-property'-∿ []      = srt-reflexive _▷_ []
- inv-property'-∿ (x ∷ s) = γ
+ inv-left-∿ : (s : FA) → inv s ++ s ∿ []
+ inv-left-∿ []      = srt-reflexive _▷_ []
+ inv-left-∿ (x ∷ s) = γ
   where
    γ = (inv s ++ [ x ⁻ ]) ++ (x ∷ s)    ∿⟨ I ⟩
        inv s ++ ([ x ⁻ ] ++ [ x ] ++ s) ∿⟨ II ⟩
@@ -520,8 +520,8 @@ The inverse really is an inverse:
     where
      I   = =-∿ (++-assoc (inv s) [ x ⁻ ] (x ∷ s))
      II  = =-∿ (ap (inv s ++_) ((++-assoc [ x ⁻ ] [ x ] s)⁻¹))
-     III = ++-cong-right (inv s) (++-cong-left _ _ _ (inv-lemma' x))
-     IV  = inv-property'-∿ s
+     III = ++-cong-right (inv s) (++-cong-left _ _ _ (inv-lemma-left x))
+     IV  = inv-left-∿ s
 
 \end{code}
 
@@ -548,10 +548,10 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
   inv-cong = ∥∥-functor inv-cong-∿
 
   inv-right : (s : FA) → s ++ inv s ∾ []
-  inv-right s = ∣ inv-property-∿ s ∣
+  inv-right s = ∣ inv-right-∿ s ∣
 
   inv-left : (s : FA) → inv s ++ s ∾ []
-  inv-left s = ∣ inv-property'-∿ s ∣
+  inv-left s = ∣ inv-left-∿ s ∣
 
 \end{code}
 
