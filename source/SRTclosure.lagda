@@ -279,7 +279,7 @@ We consider one special kind of Church-Rosser property motivated by our applicat
 
 \begin{code}
 
-module Church-Rosser
+module Church-Rosser-consequences
          {𝓤 : Universe}
          {X : 𝓤 ̇ }
          (_▷_ : X → X → 𝓤 ̇ )
@@ -313,9 +313,9 @@ module Church-Rosser
                           (srt-symmetric _▷_ y z (rt-gives-srt _▷_ y z s))
 
   module _ (Church-Rosser : (x y₀ y₁ : X)
-                         → x ▷ y₀
-                         → x ▷ y₁
-                         → (y₀ ≡ y₁) + (Σ y ꞉ X , (y₀ ▷ y) × (y₁ ▷ y)))
+                          → x ▷ y₀
+                          → x ▷ y₁
+                          → (y₀ ≡ y₁) + (Σ y ꞉ X , (y₀ ▷ y) × (y₁ ▷ y)))
          where
 
    Church-Rosser* : (x y₀ y₁ : X)
