@@ -154,7 +154,7 @@ values in any universe 𝓦 we please:
 
  η-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇ )
              → ((x' : X/≈) → is-prop (P x'))
-             → ((x : X) → P(η x))
+             → ((x : X) → P (η x))
              → (x' : X/≈) → P x'
  η-induction = surjection-induction η η-surjection
 
@@ -311,6 +311,12 @@ module Quotient
   η/-is-surjection : is-surjection η/
   η/-is-surjection = η-surjection X _≈_ ≈p ≈r ≈s ≈t
 
+  η/-induction : ∀ {𝓦} (P : X / ≋ → 𝓦 ̇ )
+               → ((x' : X / ≋) → is-prop (P x'))
+               → ((x : X) → P (η/ x))
+               → (x' : X / ≋) → P x'
+  η/-induction = surjection-induction η/ η/-is-surjection
+
   identifies-related-points : {A : 𝓦 ̇ } → (X → A) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
   identifies-related-points f = ∀ {x x'} → x ≈ x' → f x ≡ f x'
 
@@ -378,15 +384,69 @@ module Quotient
 Extending unary and binary operations to the quotient:
 
 \begin{code}
-{-
-  extend/ : (f : X → X)
-          → ((x y : X) → x ≈ y → f x ≈ f y)
-          → X / ≋ → X / ≋
-  extend/ f p = {!!}
 
-  extend₂/ : (f : X → X → X)
-           → ((x y x' y' : X) → x ≈ x' → y ≈ y' → f x y ≈ f x' y')
-           → X / ≋ → X / ≋ → X / ≋
-  extend₂/ f p = {!!}
--}
+  extension/ : (f : X → X / ≋)
+             → identifies-related-points f
+             → (X / ≋ → X / ≋)
+  extension/ = mediating-map/ quotient-is-set
+
+  extension-triangle/ : (f : X → X / ≋)
+                        (i : identifies-related-points f)
+                      → extension/ f i ∘ η/ ∼ f
+  extension-triangle/ = universality-triangle/ quotient-is-set
+
+  module _ (f : X → X)
+           (p : {x y : X} → x ≈ y → f x ≈ f y)
+         where
+
+   private
+     π : identifies-related-points (η/ ∘ f)
+     π e = η-identifies-related-points (p e)
+
+   extension₁/ : X / ≋ → X / ≋
+   extension₁/ = extension/ (η/ ∘ f) π
+
+   naturality/ : extension₁/ ∘ η/ ∼ η/ ∘ f
+   naturality/ = universality-triangle/ quotient-is-set (η/ ∘ f) π
+
+  module _ (f : X → X → X)
+           (p : {x y x' y' : X} → x ≈ x' → y ≈ y' → f x y ≈ f x' y')
+         where
+
+   private
+    π : (x : X) → identifies-related-points (η/ ∘ f x)
+    π x {y} {y'} e = η-identifies-related-points (p {x} {y} {x} {y'} (≈r x) e)
+
+    p' : (x : X) {y y' : X} → y ≈ y' → f x y ≈ f x y'
+    p' x {x'} {y'} = p {x} {x'} {x} {y'} (≈r x)
+
+    f₁ : X → X / ≋ → X / ≋
+    f₁ x = extension₁/ (f x) (p' x)
+
+    n/ : (x : X) → f₁ x ∘ η/ ∼ η/ ∘ f x
+    n/ x = naturality/ (f x) (p' x)
+
+    δ : {x x' : X} → x ≈ x' → (y : X) → f₁ x (η/ y) ≡ f₁ x' (η/ y)
+    δ {x} {x'} e y =
+      f₁ x (η/ y)   ≡⟨ naturality/ (f x) (p' x) y ⟩
+      η/ (f x y)    ≡⟨ η-identifies-related-points (p e (≈r y)) ⟩
+      η/ (f x' y)   ≡⟨ (naturality/ (f x') (p' x') y)⁻¹ ⟩
+      f₁ x' (η/ y)  ∎
+
+    ρ : (b : X / ≋) {x x' : X} → x ≈ x' → f₁ x b ≡ f₁ x' b
+    ρ b {x} {x'} e =  η/-induction (λ b → f₁ x b ≡ f₁ x' b)
+                        (λ y → quotient-is-set) (δ e) b
+
+    f₂ : X / ≋ → X / ≋ → X / ≋
+    f₂ d e = extension/ (λ x → f₁ x e) (ρ e) d
+
+   extension₂/ : X / ≋ → X / ≋ → X / ≋
+   extension₂/ = f₂
+
+   naturality₂/ : (x y : X) → f₂ (η/ x) (η/ y) ≡ η/ (f x y)
+   naturality₂/ x y =
+    f₂ (η/ x) (η/ y) ≡⟨ extension-triangle/ (λ x → f₁ x (η/ y)) (ρ (η/ y)) x ⟩
+    f₁ x (η/ y)      ≡⟨ naturality/ (f x) (p (≈r x)) y ⟩
+    η/ (f x y)       ∎
+
 \end{code}
