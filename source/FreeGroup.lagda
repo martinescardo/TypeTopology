@@ -1,4 +1,4 @@
-η/∾Martin Escardo, 04 January 2021.
+Martin Escardo, 04 January 2021.
 
 Ongoing joint work with Marc Bezem, Thierry Coquand, and Peter Dybjer.
 
