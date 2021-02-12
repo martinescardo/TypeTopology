@@ -1,9 +1,10 @@
-Martin Escardo, 04 January 2021.
+Martin Escardo, January - February 2021.
 
 Ongoing joint work with Marc Bezem, Thierry Coquand, and Peter Dybjer.
 
 We construct free groups in HoTT/UF in Agda without HIT's other than
-propositional truncation.
+propositional truncation, and no consequence of univalence other than
+function extensionality and propositional extensionality.
 
 Based on Richman's book on constructive algebra.
 
