@@ -777,12 +777,12 @@ assume another group G with a map f : A → G:
             (G : 𝓥 ̇ )
             (G-is-set : is-set G)
             (e : G)
-            (invg : G → G)
+            (invG : G → G)
             (_⋆_ : G → G → G)
             (ln : left-neutral e _⋆_)
             (rn : right-neutral e _⋆_)
-            (invl : (g : G) → invg g ⋆ g ≡ e)
-            (invr : (g : G) → g ⋆ invg g ≡ e)
+            (invl : (g : G) → invG g ⋆ g ≡ e)
+            (invr : (g : G) → g ⋆ invG g ≡ e)
             (assoc : associative _⋆_)
             (f : A → G)
          where
@@ -798,7 +798,7 @@ construct a map h by induction of lists:
     h : FA → G
     h [] = e
     h ((₀ , a) ∷ s) = f a ⋆ h s
-    h ((₁ , a) ∷ s) = invg (f a) ⋆ h s
+    h ((₁ , a) ∷ s) = invG (f a) ⋆ h s
 
 \end{code}
 
@@ -808,12 +808,12 @@ We need the following property of h with respect to formal inverses:
 
     h⁻ : (x : X) → h ([ x ] ++ [ x ⁻ ]) ≡ e
 
-    h⁻ (₀ , a) = f a ⋆ (invg (f a) ⋆ e)≡⟨ ap (f a ⋆_) (rn (invg (f a))) ⟩
-                 f a ⋆ invg (f a)      ≡⟨ invr (f a) ⟩
+    h⁻ (₀ , a) = f a ⋆ (invG (f a) ⋆ e)≡⟨ ap (f a ⋆_) (rn (invG (f a))) ⟩
+                 f a ⋆ invG (f a)      ≡⟨ invr (f a) ⟩
                  e                     ∎
 
-    h⁻ (₁ , a) = invg (f a) ⋆ (f a ⋆ e)≡⟨ ap (invg (f a) ⋆_) (rn (f a)) ⟩
-                 invg (f a) ⋆ f a      ≡⟨ invl (f a) ⟩
+    h⁻ (₁ , a) = invG (f a) ⋆ (f a ⋆ e)≡⟨ ap (invG (f a) ⋆_) (rn (f a)) ⟩
+                 invG (f a) ⋆ f a      ≡⟨ invl (f a) ⟩
                  e                     ∎
 \end{code}
 
@@ -833,9 +833,9 @@ group, which it isn't):
                                (f a ⋆ h s) ⋆ h t   ≡⟨ refl ⟩
                                h (₀ , a ∷ s) ⋆ h t ∎
 
-    h-is-hom (₁ , a ∷ s) t = invg (f a) ⋆ h (s ++ t)  ≡⟨ ap (invg (f a) ⋆_) (h-is-hom s t) ⟩
-                             invg (f a) ⋆ (h s ⋆ h t) ≡⟨ (assoc (invg (f a)) (h s) (h t))⁻¹ ⟩
-                             (invg (f a) ⋆ h s) ⋆ h t ≡⟨ refl ⟩
+    h-is-hom (₁ , a ∷ s) t = invG (f a) ⋆ h (s ++ t)  ≡⟨ ap (invG (f a) ⋆_) (h-is-hom s t) ⟩
+                             invG (f a) ⋆ (h s ⋆ h t) ≡⟨ (assoc (invG (f a)) (h s) (h t))⁻¹ ⟩
+                             (invG (f a) ⋆ h s) ⋆ h t ≡⟨ refl ⟩
                              h (₁ , a ∷ s) ⋆ h t      ∎
 
 \end{code}
@@ -908,19 +908,55 @@ homomorphism like h):
 
 \begin{code}
 
-    f'-is-hom : (x y : FA/∾) → f' (x · y) ≡ f' x ⋆ f' y
-    f'-is-hom = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ (f' x ⋆ f' y))
+    is-hom : (FA/∾ → G) → (𝓤 ⁺) ⊔ 𝓥 ̇
+    is-hom φ = (x y : FA/∾) → φ (x · y) ≡ φ x ⋆ φ y
+
+    hom-preserves-unit : {φ : FA/∾ → G} → is-hom φ → φ e/ ≡ e
+    hom-preserves-unit {φ} i =
+     φ e/                        ≡⟨ (ln (φ e/))⁻¹ ⟩
+     e ⋆ φ e/                    ≡⟨ ap (_⋆ φ e/) ((invl (φ e/))⁻¹) ⟩
+     (invG (φ e/) ⋆ φ e/) ⋆ φ e/ ≡⟨ assoc (invG (φ e/)) (φ e/) (φ e/) ⟩
+     invG (φ e/) ⋆ (φ e/ ⋆ φ e/) ≡⟨ ap (invG (φ e/) ⋆_) ((i e/ e/)⁻¹) ⟩
+     invG (φ e/) ⋆ φ (e/ · e/)   ≡⟨ ap (λ - → invG (φ e/) ⋆ φ -) (ln/ e/) ⟩
+     invG (φ e/) ⋆ φ e/          ≡⟨ invl (φ e/) ⟩
+     e                           ∎
+
+
+    hom-preserves-inverse : {φ : FA/∾ → G}
+                          → is-hom φ
+                          → (x : FA/∾) → φ (inv/ x) ≡ invG (φ x)
+    hom-preserves-inverse {φ} i x =
+      φ (inv/ x)                      ≡⟨ (rn (φ (inv/ x)))⁻¹ ⟩
+      φ (inv/ x) ⋆ e                  ≡⟨ ap (φ (inv/ x) ⋆_) ((invr (φ x))⁻¹) ⟩
+      φ (inv/ x) ⋆ (φ x ⋆ invG (φ x)) ≡⟨ (assoc _ _ _)⁻¹ ⟩
+      (φ (inv/ x) ⋆ φ x) ⋆ invG (φ x) ≡⟨ ap (_⋆ invG (φ x)) p ⟩
+      e ⋆ invG (φ x)                  ≡⟨ ln (invG (φ x)) ⟩
+      invG (φ x)                      ∎
+
+     where
+      p = φ (inv/ x) ⋆ φ x ≡⟨ (i (inv/ x) x)⁻¹ ⟩
+          φ (inv/ x · x)   ≡⟨ ap φ (invl/ x) ⟩
+          φ e/             ≡⟨ hom-preserves-unit i ⟩
+          e                ∎
+
+    f'-is-hom : is-hom f'
+    f'-is-hom = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ f' x ⋆ f' y)
                   (λ x → Π-is-prop fe (λ y → G-is-set))
-                  (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ≡ (f' (η/∾ s) ⋆ f' y))
+                  (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ≡ f' (η/∾ s) ⋆ f' y)
                            (λ a → G-is-set)
                            (γ s))
      where
       γ : (s t : FA) → f' (η/∾ s · η/∾ t) ≡ f' (η/∾ s) ⋆ f' (η/∾ t)
-      γ s t = f' (η/∾ s · η/∾ t)      ≡⟨ ap f' (·-natural s t) ⟩
-              f' (η/∾ (s ++ t))       ≡⟨ f'-/triangle (s ++ t) ⟩
-              h (s ++ t)              ≡⟨ h-is-hom s t ⟩
-              h s ⋆ h t               ≡⟨ ap₂ _⋆_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹) ⟩
+      γ s t = f' (η/∾ s · η/∾ t)      ≡⟨ I ⟩
+              f' (η/∾ (s ++ t))       ≡⟨ II ⟩
+              h (s ++ t)              ≡⟨ III ⟩
+              h s ⋆ h t               ≡⟨ IV ⟩
               f' (η/∾ s) ⋆ f' (η/∾ t) ∎
+        where
+         I   = ap f' (·-natural s t)
+         II  = f'-/triangle (s ++ t)
+         III = h-is-hom s t
+         IV  = ap₂ _⋆_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹)
 
 \end{code}
 
@@ -931,12 +967,60 @@ to assume that f₀ and f₁ are group homomorphisms:
 
     f'-uniqueness-∾ : (f₀ f₁ : FA/∾ → G) → f₀ ∘ η/∾ ∼ h → f₁ ∘ η/∾ ∼ h → f₀ ∼ f₁
     f'-uniqueness-∾ f₀ f₁ p q = at-most-one-mediating-map/ -∾- G-is-set f₀ f₁
-                                 (λ s → p s ∙ (q s)⁻¹)
+                                   (λ s → p s ∙ (q s)⁻¹)
 
-{- Oh. We forgot to prove this, which will require f₀ and f₁ to be homomorphisms:
-    f'-uniqueness : (f₀ f₁ : FA/∾ → G) → f₀ ∘ ηη ∼ f → f₁ ∘ ηη ∼ f → f₀ ∼ f₁
-    f'-uniqueness f₀ f₁ p q = {!!}
--}
+\end{code}
+
+But for this one we do:
+
+\begin{code}
+
+    f'-uniqueness : (f₀ f₁ : FA/∾ → G)
+                  → is-hom f₀
+                  → is-hom f₁
+                  → f₀ ∘ ηη ∼ f
+                  → f₁ ∘ ηη ∼ f
+                  → f₀ ∼ f₁
+    f'-uniqueness f₀ f₁ i₀ i₁ p₀ p₁ = γ
+     where
+      p : f₀ ∘ ηη ∼ f₁ ∘ ηη
+      p x = p₀ x ∙ (p₁ x)⁻¹
+
+      δ : (s : FA) → f₀ (η/∾ s) ≡ f₁ (η/∾ s)
+      δ [] = f₀ (η/∾ []) ≡⟨ hom-preserves-unit i₀ ⟩
+             e           ≡⟨ (hom-preserves-unit i₁)⁻¹ ⟩
+             f₁ (η/∾ []) ∎
+      δ ((₀ , a) ∷ s) =
+             f₀ (η/∾ (η a ++ s))    ≡⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
+             f₀ (ηη a · η/∾ s)      ≡⟨ i₀ (ηη a) (η/∾ s) ⟩
+             f₀ (ηη a) ⋆ f₀ (η/∾ s) ≡⟨ ap₂ _⋆_ (p a) (δ s) ⟩
+             f₁ (ηη a) ⋆ f₁ (η/∾ s) ≡⟨ (i₁ (ηη a) (η/∾ s))⁻¹ ⟩
+             f₁ (ηη a · η/∾ s)      ≡⟨ ap f₁ (·-natural (η a) s) ⟩
+             f₁ (η/∾ (η a ++ s))    ∎
+      δ ((₁ , a) ∷ s) =
+             f₀ (η/∾ (inv (η a) ++ s))         ≡⟨ I ⟩
+             f₀ (η/∾ (inv (η a)) · η/∾ s)      ≡⟨ II ⟩
+             f₀ (η/∾ (inv (η a))) ⋆ f₀ (η/∾ s) ≡⟨ III ⟩
+             f₀ (inv/ (ηη a)) ⋆ f₀ (η/∾ s)     ≡⟨ IV ⟩
+             invG (f₀ (ηη a)) ⋆ f₀ (η/∾ s)     ≡⟨ IH ⟩
+             invG (f₁ (ηη a)) ⋆ f₁ (η/∾ s)     ≡⟨ IV' ⟩
+             f₁ (inv/ (ηη a)) ⋆ f₁ (η/∾ s)     ≡⟨ III' ⟩
+             f₁ (η/∾ (inv (η a))) ⋆ f₁ (η/∾ s) ≡⟨ II' ⟩
+             f₁ (η/∾ (inv (η a)) · η/∾ s)      ≡⟨ I' ⟩
+             f₁ (η/∾ (inv (η a) ++ s))         ∎
+            where
+             I    = ap f₀ ((·-natural (inv (η a)) s)⁻¹)
+             II   = i₀ (η/∾ (inv (η a))) (η/∾ s)
+             III  = ap (λ - → f₀ - ⋆ f₀ (η/∾ s)) ((inv/-natural (η a))⁻¹)
+             IV   = ap (_⋆ f₀ (η/∾ s)) (hom-preserves-inverse i₀ (ηη a))
+             IH   = ap₂ (λ - -' → invG - ⋆ -') (p a) (δ s)
+             IV'  = ap (_⋆ f₁ (η/∾ s)) ((hom-preserves-inverse i₁ (ηη a))⁻¹)
+             III' = ap (λ - → f₁ - ⋆ f₁ (η/∾ s)) (inv/-natural (η a))
+             II'  = (i₁ (η/∾ (inv (η a))) (η/∾ s))⁻¹
+             I'   = ap f₁ (·-natural (inv (η a)) s)
+
+      γ : f₀ ∼ f₁
+      γ = /-induction -∾- (λ x → f₀ x ≡ f₁ x) (λ x → G-is-set) δ
 
 \end{code}
 
