@@ -37,6 +37,7 @@ churros. This seems to be a bug, but we are not sure.
 module FreeGroup where
 
 open import SpartanMLTT
+open import Groups
 open import Two
 open import Two-Properties
 
@@ -45,6 +46,7 @@ open import UF-Univalence
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
+open import UF-Embeddings
 open import UF-Equiv
 open import UF-UA-FunExt
 open import UF-FunExt
@@ -106,8 +108,9 @@ assumption in the following anonymous module:
 
 \begin{code}
 
-module _ {𝓤 : Universe}
-         {A : 𝓤 ̇ }
+module free-group-construction
+        {𝓤 : Universe}
+        (A : 𝓤 ̇ )
        where
 
  X : 𝓤 ̇
@@ -455,9 +458,9 @@ given list and formally invert all its elements:
 
 \begin{code}
 
- inv : FA → FA
- inv [] = []
- inv (x ∷ s) = inv s ++ [ x ⁻ ]
+ finv : FA → FA
+ finv [] = []
+ finv (x ∷ s) = finv s ++ [ x ⁻ ]
 
 \end{code}
 
@@ -465,49 +468,49 @@ It is a congruence, which is proved in several steps:
 
 \begin{code}
 
- inv-++ : (s t : FA) → inv (s ++ t) ≡ inv t ++ inv s
- inv-++ []      t = []-right-neutral (inv t)
- inv-++ (x ∷ s) t = inv (s ++ t) ++ [ x ⁻ ]     ≡⟨ IH ⟩
-                    (inv t ++ inv s) ++ [ x ⁻ ] ≡⟨ assoc ⟩
-                    inv t ++ (inv s ++ [ x ⁻ ]) ∎
+ finv-++ : (s t : FA) → finv (s ++ t) ≡ finv t ++ finv s
+ finv-++ []      t = []-right-neutral (finv t)
+ finv-++ (x ∷ s) t = finv (s ++ t) ++ [ x ⁻ ]      ≡⟨ IH ⟩
+                     (finv t ++ finv s) ++ [ x ⁻ ] ≡⟨ a ⟩
+                     finv t ++ (finv s ++ [ x ⁻ ]) ∎
   where
-   IH    = ap (_++ [ x ⁻ ]) (inv-++ s t)
-   assoc = ++-assoc (inv t) (inv s) [ x ⁻ ]
+   IH = ap (_++ [ x ⁻ ]) (finv-++ s t)
+   a  = ++-assoc (finv t) (finv s) [ x ⁻ ]
 
- inv-▷ : {s t : FA} → s ▷ t → inv s ▷ inv t
- inv-▷ {s} {t} (u , v , y , p , q) = inv v , inv u , y , p' , q'
+ finv-▷ : {s t : FA} → s ▷ t → finv s ▷ finv t
+ finv-▷ {s} {t} (u , v , y , p , q) = finv v , finv u , y , p' , q'
   where
-   p' = inv s                                     ≡⟨ I ⟩
-        inv (u ++ [ y ] ++ [ y ⁻ ] ++ v)          ≡⟨ II ⟩
-        inv ([ y ] ++ [ y ⁻ ] ++ v) ++ inv u      ≡⟨ III ⟩
-        inv (([ y ] ++ [ y ⁻ ]) ++ v) ++ inv u    ≡⟨ IV ⟩
-        (inv v ++ [ (y ⁻)⁻ ] ++ [ y ⁻ ]) ++ inv u ≡⟨ V ⟩
-        (inv v ++ [ y ] ++ [ y ⁻ ]) ++ inv u      ≡⟨ VI ⟩
-        inv v ++ [ y ] ++ [ y ⁻ ] ++ inv u        ∎
+   p' = finv s                                      ≡⟨ I ⟩
+        finv (u ++ [ y ] ++ [ y ⁻ ] ++ v)           ≡⟨ II ⟩
+        finv ([ y ] ++ [ y ⁻ ] ++ v) ++ finv u      ≡⟨ III ⟩
+        finv (([ y ] ++ [ y ⁻ ]) ++ v) ++ finv u    ≡⟨ IV ⟩
+        (finv v ++ [ (y ⁻)⁻ ] ++ [ y ⁻ ]) ++ finv u ≡⟨ V ⟩
+        (finv v ++ [ y ] ++ [ y ⁻ ]) ++ finv u      ≡⟨ VI ⟩
+        finv v ++ [ y ] ++ [ y ⁻ ] ++ finv u        ∎
     where
-     I   = ap inv p
-     II  = inv-++ u ([ y ] ++ [ y ⁻ ] ++ v)
-     III = ap (λ - → inv - ++ inv u) ((++-assoc [ y ] [ y ⁻ ] v)⁻¹)
-     IV  = ap (_++ inv u) (inv-++ ([ y ] ++ [ y ⁻ ]) v)
-     V   = ap (λ - → (inv v ++ [ - ] ++ [ y ⁻ ]) ++ inv u) (inv-invol y)
-     VI  = ++-assoc (inv v) ([ y ] ++ [ y ⁻ ]) (inv u)
+     I   = ap finv p
+     II  = finv-++ u ([ y ] ++ [ y ⁻ ] ++ v)
+     III = ap (λ - → finv - ++ finv u) ((++-assoc [ y ] [ y ⁻ ] v)⁻¹)
+     IV  = ap (_++ finv u) (finv-++ ([ y ] ++ [ y ⁻ ]) v)
+     V   = ap (λ - → (finv v ++ [ - ] ++ [ y ⁻ ]) ++ finv u) (inv-invol y)
+     VI  = ++-assoc (finv v) ([ y ] ++ [ y ⁻ ]) (finv u)
 
-   q' = inv t          ≡⟨ ap inv q ⟩
-        inv (u ++ v)   ≡⟨ inv-++ u v ⟩
-        inv v ++ inv u ∎
+   q' = finv t          ≡⟨ ap finv q ⟩
+        finv (u ++ v)   ≡⟨ finv-++ u v ⟩
+        finv v ++ finv u ∎
 
- inv-◁▷ : {s t : FA} → s ◁▷ t → inv s ◁▷ inv t
- inv-◁▷ (inl e) = inl (inv-▷ e)
- inv-◁▷ (inr e) = inr (inv-▷ e)
+ finv-◁▷ : {s t : FA} → s ◁▷ t → finv s ◁▷ finv t
+ finv-◁▷ (inl e) = inl (finv-▷ e)
+ finv-◁▷ (inr e) = inr (finv-▷ e)
 
- inv-iteration : {s t : FA} (n : ℕ)
-               → s ◁▷[ n ] t
-               → inv s ◁▷[ n ] inv t
- inv-iteration zero refl = refl
- inv-iteration (succ n) (u , b , c) = inv u , inv-◁▷ b , inv-iteration n c
+ finv-iteration : {s t : FA} (n : ℕ)
+                → s ◁▷[ n ] t
+                → finv s ◁▷[ n ] finv t
+ finv-iteration zero refl = refl
+ finv-iteration (succ n) (u , b , c) = finv u , finv-◁▷ b , finv-iteration n c
 
- inv-cong-∿ : {s t : FA} → s ∿ t → inv s ∿ inv t
- inv-cong-∿ (n , a) = n , inv-iteration n a
+ finv-cong-∿ : {s t : FA} → s ∿ t → finv s ∿ finv t
+ finv-cong-∿ (n , a) = n , finv-iteration n a
 
 \end{code}
 
@@ -515,46 +518,46 @@ The inverse really is an inverse:
 
 \begin{code}
 
- inv-lemma-right : (x : X) → [ x ] ++ [ x ⁻ ] ∿ []
- inv-lemma-right x = srt-extension _▷_ _ [] ([] , [] , x , refl , refl)
+ finv-lemma-right : (x : X) → [ x ] ++ [ x ⁻ ] ∿ []
+ finv-lemma-right x = srt-extension _▷_ _ [] ([] , [] , x , refl , refl)
 
- inv-lemma-left : (x : X) → [ x ⁻ ] ++ [ x ] ∿ []
- inv-lemma-left x = srt-extension _▷_ _ _
-                 ([] ,
-                  [] ,
-                  (x ⁻) ,
-                  ap (λ - → [ x ⁻ ] ++ [ - ]) ((inv-invol x)⁻¹) , refl)
+ finv-lemma-left : (x : X) → [ x ⁻ ] ++ [ x ] ∿ []
+ finv-lemma-left x = srt-extension _▷_ _ _
+                      ([] ,
+                       [] ,
+                       (x ⁻) ,
+                       ap (λ - → [ x ⁻ ] ++ [ - ]) ((inv-invol x)⁻¹) , refl)
 
- inv-right-∿ : (s : FA) → s ++ inv s ∿ []
- inv-right-∿ []      = srt-reflexive _▷_ []
- inv-right-∿ (x ∷ s) = γ
+ finv-right-∿ : (s : FA) → s ++ finv s ∿ []
+ finv-right-∿ []      = srt-reflexive _▷_ []
+ finv-right-∿ (x ∷ s) = γ
   where
-   IH : s ++ inv s ∿ []
-   IH = inv-right-∿ s
+   IH : s ++ finv s ∿ []
+   IH = finv-right-∿ s
 
-   γ = [ x ] ++ s ++ inv s ++ [ x ⁻ ]   ∿⟨ I ⟩
-       [ x ] ++ (s ++ inv s) ++ [ x ⁻ ] ∿⟨ II ⟩
-       [ x ] ++ [ x ⁻ ]                 ∿⟨ III ⟩
-       []                               ∿∎
+   γ = [ x ] ++ s ++ finv s ++ [ x ⁻ ]   ∿⟨ I ⟩
+       [ x ] ++ (s ++ finv s) ++ [ x ⁻ ] ∿⟨ II ⟩
+       [ x ] ++ [ x ⁻ ]                  ∿⟨ III ⟩
+       []                                ∿∎
     where
-     I   = ≡-gives-∿  (ap (x ∷_) (++-assoc s (inv s) [ x ⁻ ])⁻¹)
+     I   = ≡-gives-∿  (ap (x ∷_) (++-assoc s (finv s) [ x ⁻ ])⁻¹)
      II  = ++-cong-right [ x ] (++-cong-left _ _ _ IH)
-     III = inv-lemma-right x
+     III = finv-lemma-right x
 
- inv-left-∿ : (s : FA) → inv s ++ s ∿ []
- inv-left-∿ []      = srt-reflexive _▷_ []
- inv-left-∿ (x ∷ s) = γ
+ finv-left-∿ : (s : FA) → finv s ++ s ∿ []
+ finv-left-∿ []      = srt-reflexive _▷_ []
+ finv-left-∿ (x ∷ s) = γ
   where
-   γ = (inv s ++ [ x ⁻ ]) ++ (x ∷ s)    ∿⟨ I ⟩
-       inv s ++ ([ x ⁻ ] ++ [ x ] ++ s) ∿⟨ II ⟩
-       inv s ++ ([ x ⁻ ] ++ [ x ]) ++ s ∿⟨ III ⟩
-       inv s ++ s                       ∿⟨ IV ⟩
-       []                               ∿∎
+   γ = (finv s ++ [ x ⁻ ]) ++ (x ∷ s)    ∿⟨ I ⟩
+       finv s ++ ([ x ⁻ ] ++ [ x ] ++ s) ∿⟨ II ⟩
+       finv s ++ ([ x ⁻ ] ++ [ x ]) ++ s ∿⟨ III ⟩
+       finv s ++ s                       ∿⟨ IV ⟩
+       []                                ∿∎
     where
-     I   = ≡-gives-∿ (++-assoc (inv s) [ x ⁻ ] (x ∷ s))
-     II  = ≡-gives-∿ (ap (inv s ++_) ((++-assoc [ x ⁻ ] [ x ] s)⁻¹))
-     III = ++-cong-right (inv s) (++-cong-left _ _ _ (inv-lemma-left x))
-     IV  = inv-left-∿ s
+     I   = ≡-gives-∿ (++-assoc (finv s) [ x ⁻ ] (x ∷ s))
+     II  = ≡-gives-∿ (ap (finv s ++_) ((++-assoc [ x ⁻ ] [ x ] s)⁻¹))
+     III = ++-cong-right (finv s) (++-cong-left _ _ _ (finv-lemma-left x))
+     IV  = finv-left-∿ s
 
 \end{code}
 
@@ -562,7 +565,9 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
 
 \begin{code}
 
- module _ (pt : propositional-truncations-exist) where
+ module free-group-construction-assumption₁
+         (pt : propositional-truncations-exist)
+        where
 
   open PropositionalTruncation pt
 
@@ -577,14 +582,14 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
   ++-cong : {s s' t t' : FA} → s ∾ s' → t ∾ t' → s ++ t ∾ s' ++ t'
   ++-cong = ∥∥-functor₂ ++-cong-∿
 
-  inv-cong : {s t : FA} → s ∾ t → inv s ∾ inv t
-  inv-cong = ∥∥-functor inv-cong-∿
+  finv-cong : {s t : FA} → s ∾ t → finv s ∾ finv t
+  finv-cong = ∥∥-functor finv-cong-∿
 
-  inv-right : (s : FA) → s ++ inv s ∾ []
-  inv-right s = ∣ inv-right-∿ s ∣
+  finv-right : (s : FA) → s ++ finv s ∾ []
+  finv-right s = ∣ finv-right-∿ s ∣
 
-  inv-left : (s : FA) → inv s ++ s ∾ []
-  inv-left s = ∣ inv-left-∿ s ∣
+  finv-left : (s : FA) → finv s ++ s ∾ []
+  finv-left s = ∣ finv-left-∿ s ∣
 
 \end{code}
 
@@ -593,12 +598,13 @@ extensionality.
 
 \begin{code}
 
-  module _ (fe' : FunExt)
-           (pe  : propext 𝓤)
+  module free-group-construction-assumption₂
+          (fe : FunExt)
+          (pe : propext 𝓤)
         where
 
-   fe : Fun-Ext
-   fe {𝓤} {𝓥} = fe' 𝓤 𝓥
+   fe' : Fun-Ext
+   fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 \end{code}
 
@@ -609,7 +615,7 @@ higher-inductive types other than propositional truncation:
 \begin{code}
 
    open import UF-Quotient
-   open Quotient 𝓤 𝓤 pt fe' pe
+   open Quotient 𝓤 𝓤 pt fe pe
    open psrt pt _▷_
 
 \end{code}
@@ -663,9 +669,9 @@ left-cancellable map:
 
 \begin{code}
 
-   ηη-lc : is-set A → (a b : A) → ηη a ≡ ηη b → a ≡ b
-   ηη-lc i a b p = η-identifies-∾-related-points i
-                     (η/-relates-identified-points -∾- p)
+   ηη-lc : is-set A → {a b : A} → ηη a ≡ ηη b → a ≡ b
+   ηη-lc i p = η-identifies-∾-related-points i
+                (η/-relates-identified-points -∾- p)
 
    η/∾-identifies-related-points : {s t : FA} → s ∾ t → η/∾ s ≡ η/∾ t
    η/∾-identifies-related-points = η/-identifies-related-points -∾-
@@ -681,7 +687,7 @@ indicate constructions on the quotient type FA/∾.
    e/ = η/∾ []
 
    inv/ : FA/∾ → FA/∾
-   inv/ = extension₁/ -∾- inv inv-cong
+   inv/ = extension₁/ -∾- finv finv-cong
 
    _·_ : FA/∾ → FA/∾ → FA/∾
    _·_ = extension₂/ -∾- _++_ ++-cong
@@ -693,8 +699,8 @@ crucial:
 
 \begin{code}
 
-   inv/-natural : (s : FA) → inv/ (η/∾ s) ≡ η/∾ (inv s)
-   inv/-natural = naturality/ -∾- inv inv-cong
+   inv/-natural : (s : FA) → inv/ (η/∾ s) ≡ η/∾ (finv s)
+   inv/-natural = naturality/ -∾- finv finv-cong
 
    ·-natural : (s t : FA) → η/∾ s · η/∾ t ≡ η/∾ (s ++ t)
    ·-natural = naturality₂/ -∾- _++_ ++-cong
@@ -731,27 +737,27 @@ The following proofs rely on the above naturality conditions:
    invl/ = /-induction -∾- (λ x → (inv/ x · x) ≡ e/) (λ x → quotient-is-set -∾-) γ
     where
      γ : (s : FA) → inv/ (η/∾ s) · η/∾ s ≡ e/
-     γ s = inv/ (η/∾ s) · η/∾ s ≡⟨ ap (_· η/∾ s) (inv/-natural s) ⟩
-           η/∾ (inv s) · η/∾ s  ≡⟨ ·-natural (inv s) s ⟩
-           η/∾ (inv s ++ s)     ≡⟨ η/∾-identifies-related-points (inv-left s) ⟩
-           η/∾ []               ≡⟨ refl ⟩
-           e/                   ∎
+     γ s = inv/ (η/∾ s) · η/∾ s  ≡⟨ ap (_· η/∾ s) (inv/-natural s) ⟩
+           η/∾ (finv s) · η/∾ s  ≡⟨ ·-natural (finv s) s ⟩
+           η/∾ (finv s ++ s)     ≡⟨ η/∾-identifies-related-points (finv-left s) ⟩
+           η/∾ []                ≡⟨ refl ⟩
+           e/                    ∎
 
    invr/ : (x : FA/∾) → x · inv/ x ≡ e/
    invr/ = /-induction -∾- (λ x → x · inv/ x ≡ e/) (λ x → quotient-is-set -∾-) γ
     where
      γ : (s : FA) → η/∾ s · inv/ (η/∾ s) ≡ e/
-     γ s = η/∾ s · inv/ (η/∾ s) ≡⟨ ap (η/∾ s ·_) (inv/-natural s) ⟩
-           η/∾ s · η/∾ (inv s)  ≡⟨ ·-natural s (inv s) ⟩
-           η/∾ (s ++ inv s)     ≡⟨ η/∾-identifies-related-points (inv-right s) ⟩
-           η/∾ []               ≡⟨ refl ⟩
-           e/                   ∎
+     γ s = η/∾ s · inv/ (η/∾ s)  ≡⟨ ap (η/∾ s ·_) (inv/-natural s) ⟩
+           η/∾ s · η/∾ (finv s)  ≡⟨ ·-natural s (finv s) ⟩
+           η/∾ (s ++ finv s)     ≡⟨ η/∾-identifies-related-points (finv-right s) ⟩
+           η/∾ []                ≡⟨ refl ⟩
+           e/                    ∎
 
    assoc/ : associative _·_
    assoc/ = /-induction -∾- (λ x → ∀ y z → (x · y) · z ≡ x · (y · z))
-              (λ x → Π₂-is-prop fe (λ y z → quotient-is-set -∾-))
+              (λ x → Π₂-is-prop fe' (λ y z → quotient-is-set -∾-))
               (λ s → /-induction -∾- (λ y → ∀ z → (η/∾ s · y) · z ≡ η/∾ s · (y · z))
-                       (λ y → Π-is-prop fe (λ z → quotient-is-set -∾-))
+                       (λ y → Π-is-prop fe' (λ z → quotient-is-set -∾-))
                        (λ t → /-induction -∾- (λ z → (η/∾ s · η/∾ t) · z ≡ η/∾ s · (η/∾ t · z))
                                 (λ z → quotient-is-set -∾-)
                                 (γ s t)))
@@ -766,26 +772,39 @@ The following proofs rely on the above naturality conditions:
 \end{code}
 
 So we have constructed a group with underlying set FA/∾ and a map
-ηη : A → FA/∾.
+ηη : A → FA/∾. We now put everyhing together:
+
+\begin{code}
+
+   𝓕 : Group (𝓤 ⁺)
+   𝓕 = (FA/∾ , _·_ , quotient-is-set -∾- , assoc/ , e/ , ln/ , rn/ ,
+          (λ x → inv/ x , invl/ x , invr/ x))
+\end{code}
 
 To prove that ηη is the universal map of the set A into a group, we
 assume another group G with a map f : A → G:
 
 \begin{code}
 
-   module _ {𝓥 : Universe}
+   module free-group-construction-assumption₃
+            {𝓥 : Universe}
             (G : 𝓥 ̇ )
             (G-is-set : is-set G)
             (e : G)
             (invG : G → G)
             (_⋆_ : G → G → G)
-            (ln : left-neutral e _⋆_)
-            (rn : right-neutral e _⋆_)
-            (invl : (g : G) → invG g ⋆ g ≡ e)
-            (invr : (g : G) → g ⋆ invG g ≡ e)
-            (assoc : associative _⋆_)
+            (G-ln : left-neutral e _⋆_)
+            (G-rn : right-neutral e _⋆_)
+            (G-invl : (g : G) → invG g ⋆ g ≡ e)
+            (G-invr : (g : G) → g ⋆ invG g ≡ e)
+            (G-assoc : associative _⋆_)
             (f : A → G)
          where
+
+    𝓖 : Group 𝓥
+    𝓖 = (G , _⋆_ ,
+         G-is-set , G-assoc , e , G-ln , G-rn ,
+         (λ x → invG x , G-invl x , G-invr x))
 
 \end{code}
 
@@ -808,12 +827,12 @@ We need the following property of h with respect to formal inverses:
 
     h⁻ : (x : X) → h ([ x ] ++ [ x ⁻ ]) ≡ e
 
-    h⁻ (₀ , a) = f a ⋆ (invG (f a) ⋆ e)≡⟨ ap (f a ⋆_) (rn (invG (f a))) ⟩
-                 f a ⋆ invG (f a)      ≡⟨ invr (f a) ⟩
+    h⁻ (₀ , a) = f a ⋆ (invG (f a) ⋆ e)≡⟨ ap (f a ⋆_) (G-rn (invG (f a))) ⟩
+                 f a ⋆ invG (f a)      ≡⟨ G-invr (f a) ⟩
                  e                     ∎
 
-    h⁻ (₁ , a) = invG (f a) ⋆ (f a ⋆ e)≡⟨ ap (invG (f a) ⋆_) (rn (f a)) ⟩
-                 invG (f a) ⋆ f a      ≡⟨ invl (f a) ⟩
+    h⁻ (₁ , a) = invG (f a) ⋆ (f a ⋆ e)≡⟨ ap (invG (f a) ⋆_) (G-rn (f a)) ⟩
+                 invG (f a) ⋆ f a      ≡⟨ G-invl (f a) ⟩
                  e                     ∎
 \end{code}
 
@@ -825,18 +844,21 @@ group, which it isn't):
 
     h-is-hom : (s t : FA) → h (s ++ t) ≡ h s ⋆ h t
 
-    h-is-hom [] t = h  t    ≡⟨ (ln (h t))⁻¹ ⟩
-                    e ⋆ h t ∎
+    h-is-hom [] t =
+     h  t    ≡⟨ (G-ln (h t))⁻¹ ⟩
+     e ⋆ h t ∎
 
-    h-is-hom ((₀ , a) ∷ s) t = f a ⋆ h (s ++ t)    ≡⟨ ap (f a ⋆_) (h-is-hom s t) ⟩
-                               f a ⋆ (h s ⋆ h t)   ≡⟨ (assoc (f a) (h s) (h t))⁻¹ ⟩
-                               (f a ⋆ h s) ⋆ h t   ≡⟨ refl ⟩
-                               h (₀ , a ∷ s) ⋆ h t ∎
+    h-is-hom ((₀ , a) ∷ s) t =
+     f a ⋆ h (s ++ t)    ≡⟨ ap (f a ⋆_) (h-is-hom s t) ⟩
+     f a ⋆ (h s ⋆ h t)   ≡⟨ (G-assoc (f a) (h s) (h t))⁻¹ ⟩
+     (f a ⋆ h s) ⋆ h t   ≡⟨ refl ⟩
+     h (₀ , a ∷ s) ⋆ h t ∎
 
-    h-is-hom (₁ , a ∷ s) t = invG (f a) ⋆ h (s ++ t)  ≡⟨ ap (invG (f a) ⋆_) (h-is-hom s t) ⟩
-                             invG (f a) ⋆ (h s ⋆ h t) ≡⟨ (assoc (invG (f a)) (h s) (h t))⁻¹ ⟩
-                             (invG (f a) ⋆ h s) ⋆ h t ≡⟨ refl ⟩
-                             h (₁ , a ∷ s) ⋆ h t      ∎
+    h-is-hom (₁ , a ∷ s) t =
+     invG (f a) ⋆ h (s ++ t)  ≡⟨ ap (invG (f a) ⋆_) (h-is-hom s t) ⟩
+     invG (f a) ⋆ (h s ⋆ h t) ≡⟨ (G-assoc (invG (f a)) (h s) (h t))⁻¹ ⟩
+     (invG (f a) ⋆ h s) ⋆ h t ≡⟨ refl ⟩
+     h (₁ , a ∷ s) ⋆ h t      ∎
 
 \end{code}
 
@@ -851,7 +873,7 @@ our desired group homomorphism f':
        h (u ++ [ y ] ++ [ y ⁻ ] ++ v)   ≡⟨ h-is-hom u ([ y ] ++ [ y ⁻ ] ++ v) ⟩
        h u ⋆ h (y ∷ y ⁻ ∷ v)            ≡⟨ ap (h u ⋆_) (h-is-hom (y ∷ y ⁻ ∷ []) v) ⟩
        h u ⋆ (h (y ∷ (y ⁻) ∷ []) ⋆ h v) ≡⟨ ap (λ - → h u ⋆ (- ⋆ h v)) (h⁻ y) ⟩
-       h u ⋆ (e ⋆ h v)                  ≡⟨ ap (h u ⋆_) (ln (h v)) ⟩
+       h u ⋆ (e ⋆ h v)                  ≡⟨ ap (h u ⋆_) (G-ln (h v)) ⟩
        h u ⋆ h v                        ≡⟨ (h-is-hom u v)⁻¹ ⟩
        h (u ++ v)                       ≡⟨ ap h (q ⁻¹) ⟩
        h t ∎
@@ -898,7 +920,7 @@ free group:
     f'-triangle : f' ∘ ηη ∼ f
     f'-triangle a = f' (η/∾ (η a)) ≡⟨ f'-/triangle (η a) ⟩
                     h (η a)        ≡⟨ refl ⟩
-                    f a ⋆ e        ≡⟨ rn (f a) ⟩
+                    f a ⋆ e        ≡⟨ G-rn (f a) ⟩
                     f a            ∎
 
 \end{code}
@@ -908,46 +930,11 @@ homomorphism like h):
 
 \begin{code}
 
-    is-hom : (FA/∾ → G) → (𝓤 ⁺) ⊔ 𝓥 ̇
-    is-hom φ = (x y : FA/∾) → φ (x · y) ≡ φ x ⋆ φ y
-
-    hom-preserves-unit : {φ : FA/∾ → G} → is-hom φ → φ e/ ≡ e
-    hom-preserves-unit {φ} i =
-     φ e/                        ≡⟨ (ln (φ e/))⁻¹ ⟩
-     e ⋆ φ e/                    ≡⟨ ap (_⋆ φ e/) ((invl (φ e/))⁻¹) ⟩
-     (invG (φ e/) ⋆ φ e/) ⋆ φ e/ ≡⟨ assoc (invG (φ e/)) (φ e/) (φ e/) ⟩
-     invG (φ e/) ⋆ (φ e/ ⋆ φ e/) ≡⟨ ap (invG (φ e/) ⋆_) ((i e/ e/)⁻¹) ⟩
-     invG (φ e/) ⋆ φ (e/ · e/)   ≡⟨ ap (λ - → invG (φ e/) ⋆ φ -) (ln/ e/) ⟩
-     invG (φ e/) ⋆ φ e/          ≡⟨ invl (φ e/) ⟩
-     e                           ∎
-
-
-    hom-preserves-inverse : {φ : FA/∾ → G}
-                          → is-hom φ
-                          → (x : FA/∾) → φ (inv/ x) ≡ invG (φ x)
-    hom-preserves-inverse {φ} i x =
-      φ (inv/ x)                      ≡⟨ (rn (φ (inv/ x)))⁻¹ ⟩
-      φ (inv/ x) ⋆ e                  ≡⟨ ap (φ (inv/ x) ⋆_) ((invr (φ x))⁻¹) ⟩
-      φ (inv/ x) ⋆ (φ x ⋆ invG (φ x)) ≡⟨ (assoc _ _ _)⁻¹ ⟩
-      (φ (inv/ x) ⋆ φ x) ⋆ invG (φ x) ≡⟨ ap (_⋆ invG (φ x)) p ⟩
-      e ⋆ invG (φ x)                  ≡⟨ ln (invG (φ x)) ⟩
-      invG (φ x)                      ∎
-
+    f'-is-hom : is-hom 𝓕 𝓖 f'
+    f'-is-hom {x} {y} = γ x y
      where
-      p = φ (inv/ x) ⋆ φ x ≡⟨ (i (inv/ x) x)⁻¹ ⟩
-          φ (inv/ x · x)   ≡⟨ ap φ (invl/ x) ⟩
-          φ e/             ≡⟨ hom-preserves-unit i ⟩
-          e                ∎
-
-    f'-is-hom : is-hom f'
-    f'-is-hom = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ f' x ⋆ f' y)
-                  (λ x → Π-is-prop fe (λ y → G-is-set))
-                  (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ≡ f' (η/∾ s) ⋆ f' y)
-                           (λ a → G-is-set)
-                           (γ s))
-     where
-      γ : (s t : FA) → f' (η/∾ s · η/∾ t) ≡ f' (η/∾ s) ⋆ f' (η/∾ t)
-      γ s t = f' (η/∾ s · η/∾ t)      ≡⟨ I ⟩
+      δ : (s t : FA) → f' (η/∾ s · η/∾ t) ≡ f' (η/∾ s) ⋆ f' (η/∾ t)
+      δ s t = f' (η/∾ s · η/∾ t)      ≡⟨ I ⟩
               f' (η/∾ (s ++ t))       ≡⟨ II ⟩
               h (s ++ t)              ≡⟨ III ⟩
               h s ⋆ h t               ≡⟨ IV ⟩
@@ -958,6 +945,12 @@ homomorphism like h):
          III = h-is-hom s t
          IV  = ap₂ _⋆_ ((f'-/triangle s)⁻¹) ((f'-/triangle t)⁻¹)
 
+      γ : (x y : FA / -∾-) → f' (x · y) ≡ f' x ⋆ f' y
+      γ = /-induction -∾- (λ x → ∀ y → f' (x · y) ≡ f' x ⋆ f' y)
+           (λ x → Π-is-prop fe' (λ y → G-is-set))
+           (λ s → /-induction -∾- (λ y → f' (η/∾ s · y) ≡ f' (η/∾ s) ⋆ f' y)
+                   (λ a → G-is-set)
+                   (δ s))
 \end{code}
 
 Notice that for the following uniqueness property of f' we don't need
@@ -976,48 +969,48 @@ But for this one we do:
 \begin{code}
 
     f'-uniqueness : (f₀ f₁ : FA/∾ → G)
-                  → is-hom f₀
-                  → is-hom f₁
+                  → is-hom 𝓕 𝓖 f₀
+                  → is-hom 𝓕 𝓖 f₁
                   → f₀ ∘ ηη ∼ f
                   → f₁ ∘ ηη ∼ f
                   → f₀ ∼ f₁
-    f'-uniqueness f₀ f₁ i₀ i₁ p₀ p₁ = γ
+    f'-uniqueness f₀ f₁ i₀ i₁ f₀-triangle f₁-triangle = γ
      where
       p : f₀ ∘ ηη ∼ f₁ ∘ ηη
-      p x = p₀ x ∙ (p₁ x)⁻¹
+      p x = f₀-triangle x ∙ (f₁-triangle x)⁻¹
 
       δ : (s : FA) → f₀ (η/∾ s) ≡ f₁ (η/∾ s)
-      δ [] = f₀ (η/∾ []) ≡⟨ hom-preserves-unit i₀ ⟩
-             e           ≡⟨ (hom-preserves-unit i₁)⁻¹ ⟩
+      δ [] = f₀ (η/∾ []) ≡⟨ homs-preserve-unit 𝓕 𝓖 f₀ i₀ ⟩
+             e           ≡⟨ (homs-preserve-unit 𝓕 𝓖 f₁ i₁)⁻¹ ⟩
              f₁ (η/∾ []) ∎
       δ ((₀ , a) ∷ s) =
              f₀ (η/∾ (η a ++ s))    ≡⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
-             f₀ (ηη a · η/∾ s)      ≡⟨ i₀ (ηη a) (η/∾ s) ⟩
+             f₀ (ηη a · η/∾ s)      ≡⟨ i₀  ⟩
              f₀ (ηη a) ⋆ f₀ (η/∾ s) ≡⟨ ap₂ _⋆_ (p a) (δ s) ⟩
-             f₁ (ηη a) ⋆ f₁ (η/∾ s) ≡⟨ (i₁ (ηη a) (η/∾ s))⁻¹ ⟩
+             f₁ (ηη a) ⋆ f₁ (η/∾ s) ≡⟨ i₁ ⁻¹ ⟩
              f₁ (ηη a · η/∾ s)      ≡⟨ ap f₁ (·-natural (η a) s) ⟩
              f₁ (η/∾ (η a ++ s))    ∎
       δ ((₁ , a) ∷ s) =
-             f₀ (η/∾ (inv (η a) ++ s))         ≡⟨ I ⟩
-             f₀ (η/∾ (inv (η a)) · η/∾ s)      ≡⟨ II ⟩
-             f₀ (η/∾ (inv (η a))) ⋆ f₀ (η/∾ s) ≡⟨ III ⟩
-             f₀ (inv/ (ηη a)) ⋆ f₀ (η/∾ s)     ≡⟨ IV ⟩
-             invG (f₀ (ηη a)) ⋆ f₀ (η/∾ s)     ≡⟨ IH ⟩
-             invG (f₁ (ηη a)) ⋆ f₁ (η/∾ s)     ≡⟨ IV' ⟩
-             f₁ (inv/ (ηη a)) ⋆ f₁ (η/∾ s)     ≡⟨ III' ⟩
-             f₁ (η/∾ (inv (η a))) ⋆ f₁ (η/∾ s) ≡⟨ II' ⟩
-             f₁ (η/∾ (inv (η a)) · η/∾ s)      ≡⟨ I' ⟩
-             f₁ (η/∾ (inv (η a) ++ s))         ∎
+             f₀ (η/∾ (finv (η a) ++ s))         ≡⟨ I ⟩
+             f₀ (η/∾ (finv (η a)) · η/∾ s)      ≡⟨ II ⟩
+             f₀ (η/∾ (finv (η a))) ⋆ f₀ (η/∾ s) ≡⟨ III ⟩
+             f₀ (inv/ (ηη a)) ⋆ f₀ (η/∾ s)      ≡⟨ IV ⟩
+             invG (f₀ (ηη a)) ⋆ f₀ (η/∾ s)      ≡⟨ IH ⟩
+             invG (f₁ (ηη a)) ⋆ f₁ (η/∾ s)      ≡⟨ IV' ⟩
+             f₁ (inv/ (ηη a)) ⋆ f₁ (η/∾ s)      ≡⟨ III' ⟩
+             f₁ (η/∾ (finv (η a))) ⋆ f₁ (η/∾ s) ≡⟨ II' ⟩
+             f₁ (η/∾ (finv (η a)) · η/∾ s)      ≡⟨ I' ⟩
+             f₁ (η/∾ (finv (η a) ++ s))         ∎
             where
-             I    = ap f₀ ((·-natural (inv (η a)) s)⁻¹)
-             II   = i₀ (η/∾ (inv (η a))) (η/∾ s)
+             I    = ap f₀ ((·-natural (finv (η a)) s)⁻¹)
+             II   = i₀
              III  = ap (λ - → f₀ - ⋆ f₀ (η/∾ s)) ((inv/-natural (η a))⁻¹)
-             IV   = ap (_⋆ f₀ (η/∾ s)) (hom-preserves-inverse i₀ (ηη a))
+             IV   = ap (_⋆ f₀ (η/∾ s)) (homs-preserve-invs 𝓕 𝓖 f₀ i₀ (ηη a))
              IH   = ap₂ (λ - -' → invG - ⋆ -') (p a) (δ s)
-             IV'  = ap (_⋆ f₁ (η/∾ s)) ((hom-preserves-inverse i₁ (ηη a))⁻¹)
+             IV'  = ap (_⋆ f₁ (η/∾ s)) ((homs-preserve-invs 𝓕 𝓖 f₁ i₁ (ηη a))⁻¹)
              III' = ap (λ - → f₁ - ⋆ f₁ (η/∾ s)) (inv/-natural (η a))
-             II'  = (i₁ (η/∾ (inv (η a))) (η/∾ s))⁻¹
-             I'   = ap f₁ (·-natural (inv (η a)) s)
+             II'  = i₁ ⁻¹
+             I'   = ap f₁ (·-natural (finv (η a)) s)
 
       γ : f₀ ∼ f₁
       γ = /-induction -∾- (λ x → f₀ x ≡ f₁ x) (λ x → G-is-set) δ
@@ -1026,9 +1019,59 @@ But for this one we do:
 
 What we wanted to know is now proved.
 
-Last thing to do: Package the above into a single theorem, using a
-type of groups, asserting the existence of free groups with injective
-insertion of generators.
+We now package the into a single theorem.
 
-Last remark: the packaging of all the above into a single theorem will
-allow us to be confident that we didn't forget to prove anything.
+Notice that we don't need to assume that the type A of
+generators is a set to construct the free group and establish its
+universal property.
+
+But if A is a set then the universal map η is left-cancellable and
+hence an embedding.
+
+\begin{code}
+
+free-group : propositional-truncations-exist
+           → FunExt
+           → propext 𝓤
+           → (A : 𝓤 ̇ )
+           → Σ 𝓕 ꞉ Group (𝓤 ⁺)
+           , Σ η ꞉ (A → ⟨ 𝓕 ⟩)
+           , ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+                 → ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ η ∼ f)
+           × (is-set A → is-embedding η)
+free-group {𝓤} {𝓥} pt fe pe A = 𝓕  , ηη , u , η-is-embedding
+ where
+  open free-group-construction A
+  open free-group-construction-assumption₁ pt
+  open free-group-construction-assumption₂ fe pe
+
+  u : ((𝓖 : Group 𝓥) (f : A → ⟨ 𝓖 ⟩)
+    → ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f)
+  u (G , _⋆_ , G-is-set , G-assoc , e , l , r , inversion) f = γ
+   where
+    open free-group-construction-assumption₃
+     G G-is-set e (λ x → pr₁ (inversion x)) _⋆_ l r
+     (λ x → pr₁ (pr₂ (inversion x))) (λ x → pr₂ (pr₂ (inversion x))) G-assoc f
+
+    c : Σ f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f
+    c = (f' , f'-is-hom , f'-triangle)
+
+    i : is-central _ c
+    i (f₀ , f₀-is-hom , f₀-triangle) = to-subtype-≡ a b
+     where
+      a : (f' : ⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) → is-prop (is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f)
+      a f' = ×-is-prop (being-hom-is-prop fe' 𝓕 𝓖 f')
+                       (Π-is-prop fe' (λ a → group-is-set 𝓖))
+
+      b : f' ≡ f₀
+      b = dfunext fe' (f'-uniqueness f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
+
+    γ : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f
+    γ = c , i
+
+  η-is-embedding : is-set A → is-embedding ηη
+  η-is-embedding i = lc-maps-into-sets-are-embeddings ηη
+                       (ηη-lc i)
+                       (group-is-set 𝓕)
+
+\end{code}
