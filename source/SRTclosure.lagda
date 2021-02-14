@@ -1,4 +1,4 @@
-Martin Escardo, 03 February 2021.
+Martin Escardo, 3 February 2021.
 
 * Symmetric closure of a relation.
 
@@ -280,7 +280,7 @@ We consider one special kind of Church-Rosser property motivated by our applicat
 \begin{code}
 
 module Church-Rosser-consequences
-         {𝓤 : Universe}
+         {𝓤 𝓥 : Universe}
          {X : 𝓤 ̇ }
          (_▷_ : X → X → 𝓤 ̇ )
        where
@@ -364,4 +364,14 @@ module Church-Rosser-consequences
          δ : type-of σ → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
          δ (u , d , e) = u , e , rt-transitive _▷_ y t u a d
 
+\end{code}
+
+\begin{code}
+{-
+resize-prst-closure : {X : 𝓤 ̇ }
+                      (_▷_ : X → X → 𝓤 ̇ )
+                    → (_▷'_ : X → X → 𝓥 ̇ )
+
+resize-prst-closure = ?
+-}
 \end{code}

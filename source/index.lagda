@@ -163,6 +163,7 @@ import LiftingMonad
 import LiftingMonadVariation
 import LiftingSize
 import LiftingUnivalentPrecategory
+import List
 import LPO
 import Lumsdaine
 import MGS-TypeTopology-Interface
