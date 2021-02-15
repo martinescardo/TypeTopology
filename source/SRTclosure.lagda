@@ -37,6 +37,12 @@ m ∔ n = right-addition n m
 _⊑_ : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → (X → X → 𝓦 ̇ ) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 R ⊑ S = ∀ x y → R x y → S x y
 
+is-prop-valued-rel is-equiv-rel : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-prop-valued-rel A = ∀ x y → is-prop (A x y)
+is-equiv-rel       A = is-prop-valued-rel A
+                     × reflexive A
+                     × symmetric A
+                     × transitive A
 \end{code}
 
 The symmetric closure of a relation A:
@@ -78,20 +84,20 @@ module _ {𝓤 : Universe}
        where
 
  iteration : ℕ → X → X → 𝓤 ̇
- iteration zero     x y = x ≡ y
+ iteration 0        x y = x ≡ y
  iteration (succ n) x y = Σ z ꞉ X , B x z × iteration n z y
 
  iteration-reflexive : (x : X) → iteration 0 x x
  iteration-reflexive x = refl
 
  iteration-transitive' : (n : ℕ) (x y z : X) → iteration n x y → B y z → iteration (succ n) x z
- iteration-transitive' zero     x x z refl        b  = z , b , refl
+ iteration-transitive' 0        x x z refl        b  = z , b , refl
  iteration-transitive' (succ n) x y z (t , b , c) b' = t , b , iteration-transitive' n t y z c b'
 
  iteration-transitive'-converse : (n : ℕ) (x z : X)
                                 → iteration (succ n) x z
                                 → Σ y ꞉ X , iteration n x y × B y z
- iteration-transitive'-converse zero x z (z , b , refl) = x , refl , b
+ iteration-transitive'-converse 0        x z (z , b , refl)       = x , refl , b
  iteration-transitive'-converse (succ n) x z (y , b , t , b' , i) = γ
   where
    IH : Σ u ꞉ X , iteration n y u × B u z
@@ -110,7 +116,7 @@ module _ {𝓤 : Universe}
    γ = u , (y , b , i') , b''
 
  iteration-symmetric : symmetric B → (m : ℕ) → symmetric (iteration m)
- iteration-symmetric sym zero     x x refl        = refl
+ iteration-symmetric sym 0        x x refl        = refl
  iteration-symmetric sym (succ m) x y (z , b , c) = γ
    where
     c' : iteration m y z
@@ -120,7 +126,7 @@ module _ {𝓤 : Universe}
     γ = iteration-transitive' m y z x c' (sym x z b)
 
  iteration-transitive : (m n : ℕ) (x y z : X) → iteration m x y → iteration n y z → iteration (m ∔ n) x z
- iteration-transitive zero     n x x z refl        c' = c'
+ iteration-transitive 0        n x x z refl        c' = c'
  iteration-transitive (succ m) n x y z (t , b , c) c' = t , b , iteration-transitive m n t y z c c'
 
 \end{code}
@@ -167,7 +173,7 @@ module _ {𝓤 : Universe}
  rt-induction R r t B-included-in-R = γ
   where
    γ : (x y : X) → rt-closure x y → R x y
-   γ x x (zero , refl)        = r x
+   γ x x (0      , refl)      = r x
    γ x y (succ n , z , b , c) = t x z y (B-included-in-R x z b) (γ z y (n , c))
 
 \end{code}
@@ -207,11 +213,11 @@ module _ {𝓤 : Universe}
  rt-gives-srt x y (m , i) = g m x y i
   where
    f : (n : ℕ) (x y : X) → iteration A n x y → iteration (s-closure A) n x y
-   f zero     x x refl        = refl
+   f 0        x x refl        = refl
    f (succ n) x y (z , e , i) = z , inl e , (f n z y i)
 
    g : (n : ℕ) (x y : X) → iteration A n x y → srt-closure x y
-   g zero     x x refl        = srt-reflexive x
+   g 0        x x refl        = srt-reflexive x
    g (succ n) x y (z , e , i) = succ n , z , inl e , f n z y i
 
  srt-induction : (R : X → X → 𝓥 ̇)
@@ -273,6 +279,39 @@ module psrt
  psrt-induction R p r s t A-included-in-R x y =
   ∥∥-rec (p x y) (srt-induction A R s r t A-included-in-R x y)
 
+ psrt-is-equiv-rel : is-equiv-rel psrt-closure
+ psrt-is-equiv-rel = psrt-is-prop-valued ,
+                     psrt-reflexive ,
+                     psrt-symmetric ,
+                     psrt-transitive
+\end{code}
+
+Any proposition-valued relation that is logically equivalent to an
+equivalence relation is itself an equivalence relation:
+
+\begin{code}
+
+
+
+is-equiv-rel-transport : {X : 𝓤 ̇ }
+                         (A : X → X → 𝓥 ̇ )
+                         (B : X → X → 𝓦 ̇ )
+                       → is-prop-valued-rel B
+                       → ((x y : X) → A x y ⇔ B x y)
+                       → is-equiv-rel A
+                       → is-equiv-rel B
+is-equiv-rel-transport {X} A B p' e (p , r , s , t) = (p' , r' , s' , t')
+ where
+  r' : reflexive B
+  r' x = lr-implication (e x x) (r x)
+
+  s' : symmetric B
+  s' x y b = lr-implication (e y x) (s x y (rl-implication (e x y) b))
+
+  t' : transitive B
+  t' x y z b b' = lr-implication (e x z)
+                    (t x y z (rl-implication (e x y) b)
+                             (rl-implication (e y z) b'))
 \end{code}
 
 We consider one special kind of Church-Rosser property motivated by our applications of this module for other purposes.
@@ -328,7 +367,7 @@ module Church-Rosser-consequences
        → x ▷[ m ] y₀
        → x ▷  y₁
        → Σ y ꞉ X , (y₀ ▷* y) × (y₁ ▷* y)
-     f zero x x y₁ refl e = y₁ , rt-extension _▷_ x y₁ e , rt-reflexive _▷_ y₁
+     f 0        x x  y₁ refl        e = y₁ , rt-extension _▷_ x y₁ e , rt-reflexive _▷_ y₁
      f (succ m) x y₀ y₁ (t , d , i) e = γ c
       where
        c : (y₁ ≡ t) + (Σ y ꞉ X , (y₁ ▷ y) × (t ▷ y))
@@ -348,7 +387,7 @@ module Church-Rosser-consequences
    from-∿ x y (m , e) = f m x y e
     where
      f : (m : ℕ) (x y : X) → x ◁▷[ m ] y → Σ z ꞉ X , (x ▷* z) × (y ▷* z)
-     f zero x x refl = x , rt-reflexive _▷_ x , rt-reflexive _▷_ x
+     f 0        x x refl        = x , rt-reflexive _▷_ x , rt-reflexive _▷_ x
      f (succ m) x y (z , d , i) = γ IH d
       where
        IH : Σ t ꞉ X , (z ▷* t) × (y ▷* t)
@@ -364,14 +403,4 @@ module Church-Rosser-consequences
          δ : type-of σ → Σ u ꞉ X , (x ▷* u) × (y ▷* u)
          δ (u , d , e) = u , e , rt-transitive _▷_ y t u a d
 
-\end{code}
-
-\begin{code}
-{-
-resize-prst-closure : {X : 𝓤 ̇ }
-                      (_▷_ : X → X → 𝓤 ̇ )
-                    → (_▷'_ : X → X → 𝓥 ̇ )
-
-resize-prst-closure = ?
--}
 \end{code}

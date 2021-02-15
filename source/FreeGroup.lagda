@@ -30,7 +30,7 @@ way to do it is already present in the module Fin.lagda.)
 NB. This repository is supposed to use exact-split, but even though
 everything has been developed using case-split, the exact-split check
 fails (in Agda 2.6.1) in the helper function f of the function
-churros. This seems to be a bug, but we are not sure.
+church-rosser. This seems to be a bug, but we are not sure.
 
 \begin{code}
 
@@ -119,15 +119,15 @@ induction on u₀ and u₁:
 
 \begin{code}
 
- churros : (u₀ v₀ u₁ v₁ : FA) (x₀ x₁ : X)
+ church-rosser : (u₀ v₀ u₁ v₁ : FA) (x₀ x₁ : X)
 
-         → u₀ ++  [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀
-         ≡ u₁ ++  [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
+               → u₀ ++  [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀
+               ≡ u₁ ++  [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
 
-         → (u₀ ++ v₀ ≡ u₁ ++ v₁)
-         + (Σ t ꞉ FA , (u₀ ++ v₀ ▷ t) × (u₁ ++ v₁ ▷ t))
+               → (u₀ ++ v₀ ≡ u₁ ++ v₁)
+               + (Σ t ꞉ FA , (u₀ ++ v₀ ▷ t) × (u₁ ++ v₁ ▷ t))
 
- churros u₀ v₀ u₁ v₁ x₀ x₁ = f u₀ u₁
+ church-rosser u₀ v₀ u₁ v₁ x₀ x₁ = f u₀ u₁
   where
    f : (u₀ u₁ : FA)
      → u₀ ++  [ x₀ ] ++ [ x₀ ⁻ ] ++ v₀ ≡ u₁ ++  [ x₁ ] ++ [ x₁ ⁻ ] ++ v₁
@@ -245,7 +245,7 @@ induction on u₀ and u₁:
  Church-Rosser s t₀ t₁ (u₀ , v₀ , x₀ , p₀ , q₀) (u₁ , v₁ , x₁ , p₁ , q₁) = γ δ
   where
    δ : (u₀ ++ v₀ ≡ u₁ ++ v₁) + (Σ t ꞉ FA , (u₀ ++ v₀ ▷ t) × (u₁ ++ v₁ ▷ t))
-   δ = churros u₀ v₀ u₁ v₁ x₀ x₁ (p₀ ⁻¹ ∙ p₁)
+   δ = church-rosser u₀ v₀ u₁ v₁ x₀ x₁ (p₀ ⁻¹ ∙ p₁)
 
    γ : type-of δ → (t₀ ≡ t₁) + (Σ t ꞉ FA , (t₀ ▷ t) × (t₁ ▷ t))
    γ (inl q)           = inl (q₀ ∙ q ∙ q₁ ⁻¹)
@@ -271,7 +271,7 @@ consequences of the Church-Rosser property in a general setting.
 \begin{code}
 
  open import SRTclosure
- open Church-Rosser-consequences {𝓤} {𝓤} _▷_
+ open Church-Rosser-consequences {𝓤} {𝓤} _▷_ public
 
 \end{code}
 
@@ -521,7 +521,7 @@ The propositional, symmetric, reflexive, transitive closure of _▷_:
          (pt : propositional-truncations-exist)
         where
 
-  open PropositionalTruncation pt
+  open PropositionalTruncation pt public
 
   _∾_ : FA → FA → 𝓤 ̇
   x ∾ y = ∥ x ∿ y ∥
@@ -572,8 +572,11 @@ We have that _∾_ is an equivalence relation:
 
 \begin{code}
 
+   ∾-is-equiv-rel : is-equiv-rel _∾_
+   ∾-is-equiv-rel = psrt-is-equiv-rel
+
    -∾- : EqRel FA
-   -∾- = _∾_ , psrt-is-prop-valued , psrt-reflexive , psrt-symmetric , psrt-transitive
+   -∾- = _∾_ , ∾-is-equiv-rel
 
 \end{code}
 
@@ -581,9 +584,7 @@ The acronym "psrt" stands for propositional, reflexive, symmetric and
 transitive closure of a relation, in this case _▷_.
 
 Our quotients constructed via propositional truncation increase
-universe levels (this won't be a problem for our intended application,
-the free group over the type of ordinals, because although this type
-is large, it is locally small):
+universe levels:
 
 \begin{code}
 

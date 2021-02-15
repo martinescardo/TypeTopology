@@ -202,8 +202,6 @@ order-equiv-criterion-converse α β f (p , e , q) x y l = r
 _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
 
-
-
 \end{code}
 
 See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is

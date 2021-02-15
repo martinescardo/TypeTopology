@@ -180,9 +180,10 @@ import OrdinalNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues
+import Ordinals
 import OrdinalsClosure
 import Ordinals
-import OrdinalsShulmanTaboo
+import OrdinalsFreeGroup
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport

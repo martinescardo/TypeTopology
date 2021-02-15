@@ -70,9 +70,9 @@ _≈_ is a variable:
 
 \begin{code}
 
-is-prop-valued equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
+is-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
 
 \end{code}
 
@@ -286,7 +286,7 @@ module _ {𝓤 𝓥 : Universe} where
  open ImageAndSurjection pt
 
  EqRel : 𝓤 ̇ → 𝓤 ⊔ (𝓥 ⁺) ̇
- EqRel X = Σ R ꞉ (X → X → 𝓥 ̇ ) , equiv-relation R
+ EqRel X = Σ R ꞉ (X → X → 𝓥 ̇ ) , is-equiv-relation R
 
  _≈[_]_ : {X : 𝓤 ̇ } → X → EqRel X → X → 𝓥 ̇
  x ≈[ _≈_ , _ ] y = x ≈ y
