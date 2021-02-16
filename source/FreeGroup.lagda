@@ -1,6 +1,5 @@
-Martin Escardo, January - February 2021.
-
-Joint work with Marc Bezem, Thierry Coquand, and Peter Dybjer.
+Martin Escardo, Marc Bezem, Thierry Coquand, and Peter Dybjer.
+January - February 2021.
 
 We construct free groups in HoTT/UF in Agda without HIT's other than
 propositional truncation, and with no consequence of univalence other

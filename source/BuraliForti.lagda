@@ -1,9 +1,8 @@
-Martin Escardo, 21-25 December 2020. Burali-Forti in HoTT/UF in Agda notation.
+Martin Escardo, Marc Bezem, Thierry Coquand, and Peter Dybjer.
+21-25 December 2020.
 
-In collaboration with Marc Bezem, Thierry Coquand, and Peter Dybjer.
-
-The Burali-Forti argument in HoTT/UF
-------------------------------------
+The Burali-Forti argument in HoTT/UF in Agda notation
+-----------------------------------------------------
 
 Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
 the embedding
