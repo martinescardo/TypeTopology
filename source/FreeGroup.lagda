@@ -564,7 +564,7 @@ higher-inductive types other than propositional truncation:
 \begin{code}
 
    open import UF-Quotient pt fe pe
-   open psrt pt _▷_
+   open psrt pt _▷_ public
 
 \end{code}
 
@@ -629,6 +629,9 @@ left-cancellable map:
 
    η/∾-identifies-related-points : {s t : FA} → s ∾ t → η/∾ s ≡ η/∾ t
    η/∾-identifies-related-points = η/-identifies-related-points -∾-
+
+   η/∾--relates-identified-points : {s t : FA} → η/∾ s ≡ η/∾ t → s ∾ t
+   η/∾--relates-identified-points = η/-relates-identified-points -∾-
 
 \end{code}
 

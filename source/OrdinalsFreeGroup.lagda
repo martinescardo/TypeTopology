@@ -20,12 +20,6 @@ module OrdinalsFreeGroup
         (ua : Univalence)
        where
 
-fe : Fun-Ext
-fe {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
-
-pe : Prop-Ext
-pe {𝓤} = univalence-gives-propext (ua 𝓤)
-
 open import SpartanMLTT
 open import Groups
 open import FreeGroup
@@ -33,6 +27,12 @@ open import OrdinalsType hiding (⟨_⟩)
 open import OrdinalOfOrdinals
 open import UF-Embeddings
 open import UF-Univalence
+
+fe : Fun-Ext
+fe {𝓤} {𝓥} = Univalence-gives-FunExt ua 𝓤 𝓥
+
+pe : Prop-Ext
+pe {𝓤} = univalence-gives-propext (ua 𝓤)
 
 open FreeGroupInterface pt fe pe
 
@@ -107,6 +107,7 @@ module _ {𝓤 : Universe} where
   where
    IH : s ▷ t
    IH = ◗-gives-▷ r
+
    γ : x ≡ y → s ▷ t → (x ∷ s) ▷ (y ∷ t)
    γ refl = ∷-▷ x
 
@@ -115,9 +116,7 @@ module _ {𝓤 : Universe} where
   where
    f : (u v : FA) (x : X) → (u ++ [ x ] ++ [ x ⁻ ] ++ v) ◗ (u ++ v)
    f []      []      x = to-≡[X] {x ⁻} refl , *
-   f []      (y ∷ v) x = inl (to-≡[X] {x ⁻} refl ,
-                              to-≡[X] {y} refl ,
-                              to-≡[FA] {v} refl)
+   f []      (y ∷ v) x = inl (to-≡[X] {x ⁻} refl , to-≡[X] {y} refl , to-≡[FA] {v} refl)
    f (y ∷ u) v       x = inr (to-≡[X] {y} refl , f u v x)
 
  redex : FA → 𝓤 ̇
@@ -159,9 +158,11 @@ module _ {𝓤 : Universe} where
  chain-reduct s 0        ρ       = s
  chain-reduct s (succ n) (r , ρ) = chain-reduct (reduct s r) n ρ
 
- red : (s : FA) (n : ℕ) (ρ : redex-chain n s) → s ▷[ n ] chain-reduct s n ρ
- red s 0 ρ = refl
- red s (succ n) (r , ρ) = reduct s r , ◗-gives-▷ (lemma-reduct→ s r) , red (reduct s r) n ρ
+ chain-lemma→ : (s : FA) (n : ℕ) (ρ : redex-chain n s) → s ▷[ n ] chain-reduct s n ρ
+ chain-lemma→ s 0 ρ = refl
+ chain-lemma→ s (succ n) (r , ρ) = reduct s r ,
+                                   ◗-gives-▷ (lemma-reduct→ s r) ,
+                                   chain-lemma→ (reduct s r) n ρ
 
  _≏_ : FA → FA → 𝓤 ̇
  s ≏ t = Σ m ꞉ ℕ ,
@@ -174,10 +175,10 @@ module _ {𝓤 : Universe} where
  ≏-gives-∿ s t (m , n , ρ , σ , p) = γ
   where
    a : s ▷* chain-reduct s m ρ
-   a = m , red s m ρ
+   a = m , chain-lemma→ s m ρ
 
    b : t ▷* chain-reduct t n σ
-   b = n , red t n σ
+   b = n , chain-lemma→ t n σ
 
    c : Σ u ꞉ FA , (s ▷* u) × (t ▷* u)
    c = chain-reduct t n σ  , transport (s ▷*_) (from-≡[FA] p) a , b
@@ -185,12 +186,12 @@ module _ {𝓤 : Universe} where
    γ : s ∿ t
    γ = to-∿ s t c
 
- der : (s t : FA) (n : ℕ) → s ▷[ n ] t → Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ t
- der s t 0 r = * , r
- der s t (succ n) (u , b , c) = γ IH l
+ chain-lemma← : (s t : FA) (n : ℕ) → s ▷[ n ] t → Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ t
+ chain-lemma← s t 0 r = * , r
+ chain-lemma← s t (succ n) (u , b , c) = γ IH l
   where
    IH : Σ ρ ꞉ redex-chain n u , (chain-reduct u n ρ ≡ t)
-   IH = der u t n c
+   IH = chain-lemma← u t n c
 
    b' : s ◗ u
    b' = ▷-gives-◗ b
@@ -214,10 +215,10 @@ module _ {𝓤 : Universe} where
    γ (u , (m , ρ) , (n , σ)) = δ b c
     where
      b : Σ ρ ꞉ redex-chain m s , chain-reduct s m ρ ≡ u
-     b = der s u m ρ
+     b = chain-lemma← s u m ρ
 
      c : Σ σ ꞉ redex-chain n t , chain-reduct t n σ ≡ u
-     c = der t u n σ
+     c = chain-lemma← t u n σ
 
      δ : type-of b → type-of c → s ≏ t
      δ (ρ , p) (σ , q) = m , n , ρ , σ , to-≡[FA] (p ∙ q ⁻¹)
@@ -227,57 +228,128 @@ module _ {𝓤 : Universe} where
  _∥≏∥_ : FA → FA → 𝓤 ̇
  s ∥≏∥ t = ∥ s ≏ t ∥
 
+ open import UF-Equiv
+
  ∿-is-logically-equivalent-to-∥≏∥ : (s t : FA) → s ∾ t ⇔ s ∥≏∥ t
  ∿-is-logically-equivalent-to-∥≏∥ s t = ∥∥-functor (∿-gives-≏ s t) ,
                                        ∥∥-functor (≏-gives-∿ s t)
+ ∿-is-equivalent-to-∥≏∥ : (s t : FA) → (s ∾ t) ≃ (s ∥≏∥ t)
+ ∿-is-equivalent-to-∥≏∥ s t = logically-equivalent-props-are-equivalent
+                               ∥∥-is-prop
+                               ∥∥-is-prop
+                               (lr-implication (∿-is-logically-equivalent-to-∥≏∥ s t))
+                               (rl-implication (∿-is-logically-equivalent-to-∥≏∥ s t))
+
  open import UF-Size
  open import UF-Quotient pt fe pe
  open import SRTclosure
  open free-group-construction-step₂ fe pe
- open import UF-Equiv
+
+ -∥≏∥- : EqRel {𝓤 ⁺} {𝓤} FA
+ -∥≏∥- = _∥≏∥_ , is-equiv-rel-transport _∾_ _∥≏∥_ (λ s t → ∥∥-is-prop)
+                 ∿-is-logically-equivalent-to-∥≏∥ ∾-is-equiv-rel
+ FA/∥≏∥ : 𝓤 ⁺ ̇
+ FA/∥≏∥ = FA / -∥≏∥-
+
+ FA/∾-is-equivalent-to-FA/∥≏∥ : FA/∾ ≃ FA/∥≏∥
+ FA/∾-is-equivalent-to-FA/∥≏∥ = quotients-equivalent FA -∾- -∥≏∥-
+                                (λ {s} {t} → ∿-is-logically-equivalent-to-∥≏∥ s t)
 
  native-size-of-ordinals-free-group : type-of ⟨ free-group (Ordinal 𝓤) ⟩ ≡ (𝓤 ⁺⁺ ̇ )
  native-size-of-ordinals-free-group = refl
 
-
- resize-ordinals-free-group : ⟨ free-group (Ordinal 𝓤) ⟩ has-size (𝓤 ⁺)
- resize-ordinals-free-group = γ
+ resizing-ordinals-free-group : ⟨ free-group (Ordinal 𝓤) ⟩ has-size (𝓤 ⁺)
+ resizing-ordinals-free-group = γ
   where
-   -∥≏∥- : EqRel {𝓤 ⁺} {𝓤} FA
-   -∥≏∥- = _∥≏∥_ , is-equiv-rel-transport _∾_ _∥≏∥_ (λ s t → ∥∥-is-prop)
-                   ∿-is-logically-equivalent-to-∥≏∥ ∾-is-equiv-rel
-   FA/∥≏∥ : 𝓤 ⁺ ̇
-   FA/∥≏∥ = FA / -∥≏∥-
-
-   e : FA/∾ ≃ FA/∥≏∥
-   e = quotients-equivalent FA -∾- -∥≏∥-
-        (λ {s} {t} → ∿-is-logically-equivalent-to-∥≏∥ s t)
-
    γ : Σ F ꞉ 𝓤 ⁺ ̇ , F ≃ ⟨ free-group (Ordinal 𝓤) ⟩
-   γ = FA/∥≏∥ , ≃-sym e
+   γ = FA/∥≏∥ , ≃-sym FA/∾-is-equivalent-to-FA/∥≏∥
+
+ open import UF-EquivalenceExamples
+
+ ηη-native-size : ηη Has-size (𝓤 ⁺⁺)
+ ηη-native-size y = fiber ηη y , ≃-refl _
+
+ ηη-is-small : ηη Has-size (𝓤 ⁺)
+ ηη-is-small = /-induction -∾- (λ y → fiber ηη y has-size (𝓤 ⁺))
+                (λ y → has-size-is-prop ua (fiber ηη y) (𝓤 ⁺)) γ
+  where
+   e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∥≏∥ s)
+   e a s = (η/∾ (η a) ≡ η/∾ s) ≃⟨ I ⟩
+           (η a ∾ s)           ≃⟨ II ⟩
+           (η a ∥≏∥ s)         ■
+    where
+     I = logically-equivalent-props-are-equivalent
+            (quotient-is-set -∾-)
+            ∥∥-is-prop
+            η/∾--relates-identified-points
+            η/∾-identifies-related-points
+     II = ∿-is-equivalent-to-∥≏∥ (η a) s
+
+   d : (s : FA) → fiber ηη (η/∾ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
+   d s = (Σ a ꞉ A , η/∾ (η a) ≡ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
+         (Σ a ꞉ A , η a ∥≏∥ s) ■
+
+   γ : (s : FA) → fiber ηη (η/∾ s) has-size (𝓤 ⁺)
+   γ s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (d s)
+    where
+     notice : 𝓤 ⁺⁺ ̇
+     notice = fiber ηη (η/∾ s)
+
+ η/∥≏∥ : FA → FA/∥≏∥
+ η/∥≏∥ = η/ -∥≏∥-
+
+ ηη' : A → FA/∥≏∥
+ ηη' = η/ -∥≏∥- ∘ η
+
+ ηη'-native-size : ηη' Has-size (𝓤 ⁺)
+ ηη'-native-size y = fiber ηη' y , ≃-refl _
 
 \end{code}
 
-Discussion to be used later:
+The following doesn't do anything useful, but see the comment below:
 
-      ηη
-    η   image       FA → FA → Ω
-  A → FA → FA/≈
+\begin{code}
 
-  fiber ηη (η' s) ≃ Σ a : A , [(₀,a)] ≃ s
+ ηη'-is-small : ηη' Has-size (𝓤 ⁺)
+ ηη'-is-small = /-induction -∥≏∥- (λ y → fiber ηη' y has-size (𝓤 ⁺))
+                (λ y → has-size-is-prop ua (fiber ηη' y) (𝓤 ⁺)) γ
+  where
+   e : (a : A) (s : FA) → (η/∥≏∥ (η a) ≡ η/∥≏∥ s) ≃ (η a ∥≏∥ s)
+   e a s = (η/∥≏∥ (η a) ≡ η/∥≏∥ s) ≃⟨ I ⟩
+           (η a ∥≏∥ s)         ■
+    where
+     I = logically-equivalent-props-are-equivalent
+            (quotient-is-set -∥≏∥-)
+            ∥∥-is-prop
+            (η/-relates-identified-points -∥≏∥-)
+            (η/-identifies-related-points -∥≏∥-)
 
-  η a = [(₀,a)]
+   d : (s : FA) → fiber ηη' (η/∥≏∥ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
+   d s = (Σ a ꞉ A , η/∥≏∥ (η a) ≡ η/∥≏∥ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
+         (Σ a ꞉ A , η a ∥≏∥ s) ■
+--       ^^^^^^^^^^^^^^^^^^^^
+-- To make this smaller, replace it, to avoid mentioning elements of A, by
+-- Σ n ꞉ ℕ , Σ ρ : redex-chain m s , is-positive-singleton (chain-reduct t n σ),
+-- which should be an equivalent type, living in 𝓤 rather than 𝓤 ⁺.
 
-  fiber η [] ≃ 𝟘
-  fiber η (x ∷ y ∷ s) ≃ 𝟘
-  fiber η [(₀,a)] ≃ 𝟙
-  fiber η [(₁,a)] ≃ 𝟘
+   γ : (s : FA) → fiber ηη' (η/∥≏∥ s) has-size (𝓤 ⁺)
+   γ s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (d s)
+    where
+     notice : 𝓤 ⁺ ̇
+     notice = fiber ηη' (η/∥≏∥ s)
 
-Using this it should follow that the universal map into the free group
-should have small fibers, and hence the free group over the type of
-ordinals is large.
+\end{code}
 
-The remainder of this file has useless stuff, kept for discussion
+We can complete this if we can show that the map ηη' has size 𝓤, perhaps using the above strategy.
+
+\begin{code}
+{-
+ desired-result : ¬ (FA/∥≏∥ has-size 𝓤)
+ desired-result = {!!}
+-}
+\end{code}
+
+The remainder of this file has useless stuff, kept maybe for discussion
 only, before we delete it:
 
 \begin{code}
