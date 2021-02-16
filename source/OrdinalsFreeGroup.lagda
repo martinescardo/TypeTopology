@@ -20,7 +20,7 @@ quotients (which we use to construct free groups) are constructed
 using propositional truncation and function extensionality and
 prositional extensionality. In this module, as well as in the
 Burali-Forti module, univalence plays a crucial role in various
-ways. In particular, it allows use to resize down our quotient
+ways. In particular, it allows us to resize down our quotient
 construction.
 
 The main difficulty is to show that the carrier of the group freely
@@ -456,8 +456,8 @@ But the above resizing of ηη is not small enough for our purposes.
 The fiber type Σ a ꞉ A , η a ≡ s lives in the universe 𝓤⁺. In the next
 step we construct a copy in the first universe 𝓤₀.
 
-(The following construction also shows that η has decidable fibers,
-but at the moment we don't have any use for this fact.)
+The following construction also shows that η has decidable fibers,
+which is used implicitly in our definitions by pattern matching.
 
 \begin{code}
 
@@ -469,6 +469,12 @@ but at the moment we don't have any use for this fact.)
  fiber₀-η (x ∷ y ∷ s)    = 𝟘
  fiber₀-η ((₀ , a) ∷ []) = 𝟙
  fiber₀-η ((₁ , a) ∷ []) = 𝟘
+
+ NB-fiber₀-η-decidable : (s : FA) → fiber₀-η s + ¬ (fiber₀-η s)
+ NB-fiber₀-η-decidable []             = inr id
+ NB-fiber₀-η-decidable (x ∷ y ∷ s)    = inr id
+ NB-fiber₀-η-decidable ((₀ , a) ∷ []) = inl *
+ NB-fiber₀-η-decidable ((₁ , a) ∷ []) = inr id
 
  fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ≡ s)
  fiber-η→ [] ()
