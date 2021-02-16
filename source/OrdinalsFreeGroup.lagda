@@ -5,6 +5,16 @@ Ongoing joint work with Marc Bezem, Thierry Coquand, and Peter Dybjer.
 For the moment this file is not for public consumption, but it is
 publicly visible.
 
+At the moment this file is a mess in many respects. It will be tidied
+up soon. But at least we have proved the desired result.
+
+  For any universe 𝓤, there is a group in the successor universe 𝓤⁺
+  which is not isomorphic to any group in 𝓤.
+
+Of course, in the other direction, any group in 𝓤 has an isomorphic
+copy in 𝓤⁺, so the above says that there are strictly more groups in
+𝓤⁺ than in 𝓤.
+
 \begin{code}
 
 {-# OPTIONS --without-K --safe #-}
@@ -48,6 +58,9 @@ OFG 𝓤 = free-group (Ordinal 𝓤)
 module _ {𝓤 : Universe} where
 
  A = Ordinal 𝓤
+
+ A-is-set : is-set A
+ A-is-set = type-of-ordinals-is-set ua
 
  open free-group-construction A
  open import List
@@ -269,8 +282,8 @@ module _ {𝓤 : Universe} where
  ηη-native-size : ηη Has-size (𝓤 ⁺⁺)
  ηη-native-size y = fiber ηη y , ≃-refl _
 
- ηη-is-small : ηη Has-size (𝓤 ⁺)
- ηη-is-small = /-induction -∾- (λ y → fiber ηη y has-size (𝓤 ⁺))
+ ηη-is-medium : ηη Has-size (𝓤 ⁺)
+ ηη-is-medium = /-induction -∾- (λ y → fiber ηη y has-size (𝓤 ⁺))
                 (λ y → has-size-is-prop ua (fiber ηη y) (𝓤 ⁺)) γ
   where
    e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∥≏∥ s)
@@ -295,6 +308,12 @@ module _ {𝓤 : Universe} where
      notice : 𝓤 ⁺⁺ ̇
      notice = fiber ηη (η/∾ s)
 
+\end{code}
+
+But the above is not small enough.
+
+\begin{code}
+
  η/∥≏∥ : FA → FA/∥≏∥
  η/∥≏∥ = η/ -∥≏∥-
 
@@ -310,47 +329,124 @@ The following doesn't do anything useful, but see the comment below:
 
 \begin{code}
 
- ηη'-is-small : ηη' Has-size (𝓤 ⁺)
- ηη'-is-small = /-induction -∥≏∥- (λ y → fiber ηη' y has-size (𝓤 ⁺))
-                (λ y → has-size-is-prop ua (fiber ηη' y) (𝓤 ⁺)) γ
+ is-generator : FA → 𝓤₀ ̇
+ is-generator [] = 𝟘
+ is-generator (x ∷ y ∷ s) = 𝟘
+ is-generator ((₀ , a) ∷ []) = 𝟙
+ is-generator ((₁ , a) ∷ []) = 𝟘
+
+ generator-lemma→ : (s : FA) → is-generator s → (Σ a ꞉ A , η a ≡ s)
+ generator-lemma→ [] ()
+ generator-lemma→ (₀ , a ∷ []) * = a , refl
+ generator-lemma→ (₁ , a ∷ []) ()
+ generator-lemma→ (x ∷ y ∷ s) ()
+
+
+ generator-lemma← : (s : FA) → (Σ a ꞉ A , η a ≡ s) → is-generator s
+ generator-lemma← .(η a) (a , refl) = *
+
+ η-is-generator : (a : A) → is-generator (η a)
+ η-is-generator a = *
+
+ is-gen : FA → 𝓤 ̇
+ is-gen s = Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , is-generator (chain-reduct s n ρ)
+
+ ppp : (s : FA) → is-prop (Σ a ꞉ A , η a ∾ s)
+ ppp s (a , e) (a' , e') = to-subtype-≡ (λ x → ∥∥-is-prop)
+                            (η-identifies-∾-related-points A-is-set
+                              (psrt-transitive (η a) s (η a')
+                                e (psrt-symmetric (η a') s e')))
+
+ gen-lemma→ : (s : FA) → (Σ a ꞉ A , η a ∾ s) → ∥ is-gen s ∥
+ gen-lemma→ s (a , e) = ∥∥-functor f e
   where
-   e : (a : A) (s : FA) → (η/∥≏∥ (η a) ≡ η/∥≏∥ s) ≃ (η a ∥≏∥ s)
-   e a s = (η/∥≏∥ (η a) ≡ η/∥≏∥ s) ≃⟨ I ⟩
-           (η a ∥≏∥ s)         ■
+   f : η a ∿ s → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , is-generator (chain-reduct s n ρ)
+   f e = γ (d c)
+    where
+     c : Σ u ꞉ FA , (η a ▷* u) × (s ▷* u)
+     c = from-∿ Church-Rosser (η a) s e
+     d : type-of c → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
+     d (u , r , r') = δ r''
+      where
+       p : η a ≡ u
+       p = η-irreducible* r
+       r'' : s  ▷* η a
+       r'' = transport (s ▷*_) (p ⁻¹) r'
+       δ : s  ▷* η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
+       δ (n , r''') = (n , chain-lemma← s (η a) n r''')
+     γ : type-of (d c) → codomain f
+     γ (n , ρ , p) = n , ρ , transport is-generator (p ⁻¹) (η-is-generator a)
+
+ gen-lemma← : (s : FA) → ∥ is-gen s ∥ → (Σ a ꞉ A , η a ∾ s)
+ gen-lemma← s = ∥∥-rec (ppp s) f
+  where
+   f : is-gen s → (Σ a ꞉ A , η a ∾ s)
+   f (n , ρ , i) = IV III
+    where
+     I : s ▷[ n ] chain-reduct s n ρ
+     I = chain-lemma→ s n ρ
+     II : chain-reduct s n ρ ∾ s
+     II = ∣ to-∿ (chain-reduct s n ρ) s (chain-reduct s n ρ , (0 , refl) , (n , I)) ∣
+     III : Σ a ꞉ A , (η a ≡ chain-reduct s n ρ)
+     III = generator-lemma→ (chain-reduct s n ρ) i
+     IV : type-of III → Σ a ꞉ A , η a ∾ s
+     IV (a , p) = a , transport (_∾ s) (p ⁻¹) II
+
+ gen-lemma : (s : FA) → (Σ a ꞉ A , η a ∾ s) ≃ ∥ is-gen s ∥
+ gen-lemma s = logically-equivalent-props-are-equivalent
+                (ppp s)
+                ∥∥-is-prop
+                (gen-lemma→ s)
+                (gen-lemma← s)
+
+ ηη-is-small : ηη Has-size 𝓤
+ ηη-is-small = /-induction -∾- (λ y → fiber ηη y has-size 𝓤)
+                (λ y → has-size-is-prop ua (fiber ηη y) 𝓤) γ
+  where
+   e : (a : A) (s : FA) → (η/∾ (η a) ≡ η/∾ s) ≃ (η a ∾ s)
+   e a s = (η/∾ (η a) ≡ η/∾ s) ≃⟨ I ⟩
+           (η a ∾ s)           ■
     where
      I = logically-equivalent-props-are-equivalent
-            (quotient-is-set -∥≏∥-)
+            (quotient-is-set -∾-)
             ∥∥-is-prop
-            (η/-relates-identified-points -∥≏∥-)
-            (η/-identifies-related-points -∥≏∥-)
+            η/∾--relates-identified-points
+            η/∾-identifies-related-points
 
-   d : (s : FA) → fiber ηη' (η/∥≏∥ s) ≃ (Σ a ꞉ A , η a ∥≏∥ s)
-   d s = (Σ a ꞉ A , η/∥≏∥ (η a) ≡ η/∥≏∥ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
-         (Σ a ꞉ A , η a ∥≏∥ s) ■
---       ^^^^^^^^^^^^^^^^^^^^
--- To make this smaller, replace it, to avoid mentioning elements of A, by
--- Σ n ꞉ ℕ , Σ ρ : redex-chain m s , is-positive-singleton (chain-reduct t n σ),
--- which should be an equivalent type, living in 𝓤 rather than 𝓤 ⁺.
+   d : (s : FA) → fiber ηη (η/∾ s) ≃ ∥ is-gen s ∥
+   d s = (Σ a ꞉ A , η/∾ (η a) ≡ η/∾ s) ≃⟨ Σ-cong (λ a → e a s) ⟩
+         (Σ a ꞉ A , η a ∾ s) ≃⟨ gen-lemma s ⟩
+         ∥ is-gen s ∥  ■
 
-   γ : (s : FA) → fiber ηη' (η/∥≏∥ s) has-size (𝓤 ⁺)
-   γ s = (Σ a ꞉ A , η a ∥≏∥ s) , ≃-sym (d s)
+   γ : (s : FA) → fiber ηη (η/∾ s) has-size 𝓤
+   γ s = ∥ is-gen s ∥ , ≃-sym (d s)
     where
-     notice : 𝓤 ⁺ ̇
-     notice = fiber ηη' (η/∥≏∥ s)
+     notice : 𝓤 ⁺⁺ ̇
+     notice = fiber ηη (η/∾ s)
 
 \end{code}
 
-We can complete this if we can show that the map ηη' has size 𝓤, perhaps using the above strategy.
+So we finally obtain our desired result:
 
 \begin{code}
-{-
- desired-result : ¬ (FA/∥≏∥ has-size 𝓤)
- desired-result = {!!}
--}
+
+ recall₁ : type-of ⟨ free-group (Ordinal 𝓤) ⟩ ≡ (𝓤 ⁺⁺ ̇ )
+ recall₁ = native-size-of-ordinals-free-group
+
+ recall₂ : ⟨ free-group (Ordinal 𝓤) ⟩ has-size (𝓤 ⁺)
+ recall₂ = resizing-ordinals-free-group
+
+ desired-result : ¬ (⟨ free-group (Ordinal 𝓤) ⟩ has-size 𝓤)
+ desired-result h = the-type-of-ordinals-is-large
+                     (size-contravariance ηη ηη-is-small h)
+  where
+   open import BuraliForti ua
+
 \end{code}
 
-The remainder of this file has useless stuff, kept maybe for discussion
-only, before we delete it:
+The remainder of this file has useless stuff, kept maybe for
+discussion only, before we delete it. (There is also useless stuff
+above to be deleted.)
 
 \begin{code}
 
