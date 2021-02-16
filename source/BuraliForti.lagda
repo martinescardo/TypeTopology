@@ -615,11 +615,9 @@ We will consider A = Monoid-structure (with capital M), and
                                             type-of-ordinals-has-Monoid-structure
 \end{code}
 
-TODO. Groups. Possible strategy. Embed the ordinal of ordinals into a
-group with large underlying sets. A natural candidate is the free
-group.
-
-Things that may be useful in the future.
+The module OrdinalsFreeGroup (which imports this module) proves the
+same for the type of groups, using the following crucial property of
+the type of ordinals:
 
 \begin{code}
 
