@@ -424,7 +424,7 @@ manually).
 We say that a type has size 𝓥 if it is equivalent to some type in the
 universe 𝓥, and that a map has size 𝓥 if its fibers all have size 𝓥.
 
-The native size of the universal map ηᴳʳᵖ : FA → FA/∾ into the free
+The native size of the universal map ηᴳʳᵖ : A → FA/∾ into the free
 group is rather large:
 
 \begin{code}
@@ -435,7 +435,13 @@ group is rather large:
 \end{code}
 
 Using the above development, we can make it smaller. In the following
-construction, η/∾ : FA → FA/∾ is the universal map into the quotient.
+construction, η/∾ : FA → FA/∾ is the universal map into the quotient,
+and, by construction, the universal map ηᴳʳᵖ : A → FA/∾ into the free
+group is the composite η/∾ ∘ η where η : A → FA is the insertion of
+generators before quotienting. The result is prove by quotient
+inductions, which means that in order to prove a property of all
+elements of the quotient, it suffices to prove it for elements of the
+form η/∾ s with s : FA.
 
 \begin{code}
 
@@ -470,7 +476,7 @@ construction, η/∾ : FA → FA/∾ is the universal map into the quotient.
 But the above resizing of ηᴳʳᵖ is not small enough for our purposes.
 
 The fiber type Σ a ꞉ A , η a ≡ s lives in the universe 𝓤⁺. In the next
-step we construct a copy in the first universe 𝓤₀.
+step we construct a copy of the fiber in the first universe 𝓤₀.
 
 The following construction also shows that the map η : A → FA has
 decidable fibers, which is used implicitly in our definitions by
@@ -495,9 +501,9 @@ pattern matching.
 
  fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ≡ s)
  fiber-η→ [] ()
+ fiber-η→ (x ∷ y ∷ s) ()
  fiber-η→ (₀ , a ∷ []) * = a , refl
  fiber-η→ (₁ , a ∷ []) ()
- fiber-η→ (x ∷ y ∷ s) ()
 
  fiber-η← : (s : FA) → (Σ a ꞉ A , η a ≡ s) → fiber₀-η s
  fiber-η← .(η a) (a , refl) = *
