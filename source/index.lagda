@@ -139,6 +139,7 @@ import Fin
 import frame
 import FailureOfTotalSeparatedness
 import FreeGroup
+import FreeGroupResizeDown
 import FreeJoinSemiLattice    -- By Tom de Jong
 import FreeSupLattice         -- By Tom de Jong
 import GeneralNotation
@@ -195,6 +196,7 @@ import Plus-Properties
 import PropInfTychonoff
 import PropTychonoff
 import QuasiDecidable
+import FreeGroupResizeDown
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
