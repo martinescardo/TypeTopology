@@ -603,8 +603,8 @@ we use a double η to denote it.
 
 \begin{code}
 
-   ηη : A → FA/∾
-   ηη a = η/∾ (η a)
+   ηᴳʳᵖ : A → FA/∾
+   ηᴳʳᵖ a = η/∾ (η a)
 
 \end{code}
 
@@ -614,13 +614,13 @@ left-cancellable map:
 
 \begin{code}
 
-   ηη-lc : is-set A → {a b : A} → ηη a ≡ ηη b → a ≡ b
-   ηη-lc i p = η-identifies-∾-related-points i
+   ηᴳʳᵖ-lc : is-set A → {a b : A} → ηᴳʳᵖ a ≡ ηᴳʳᵖ b → a ≡ b
+   ηᴳʳᵖ-lc i p = η-identifies-∾-related-points i
                 (η/-relates-identified-points -∾- p)
 
-   ηη-is-embedding : is-set A → is-embedding ηη
-   ηη-is-embedding i = lc-maps-into-sets-are-embeddings ηη
-                         (ηη-lc i)
+   ηᴳʳᵖ-is-embedding : is-set A → is-embedding ηᴳʳᵖ
+   ηᴳʳᵖ-is-embedding i = lc-maps-into-sets-are-embeddings ηᴳʳᵖ
+                         (ηᴳʳᵖ-lc i)
                          (quotient-is-set -∾-)
 
    η/∾-identifies-related-points : {s t : FA} → s ∾ t → η/∾ s ≡ η/∾ t
@@ -725,7 +725,7 @@ The following proofs rely on the above naturality conditions:
 \end{code}
 
 So we have constructed a group with underlying set FA/∾ and a map
-ηη : A → FA/∾. We now put everyhing together:
+ηᴳʳᵖ : A → FA/∾. We now put everyhing together:
 
 \begin{code}
 
@@ -734,7 +734,7 @@ So we have constructed a group with underlying set FA/∾ and a map
           (λ x → inv/ x , invl/ x , invr/ x))
 \end{code}
 
-To prove that ηη is the universal map of the set A into a group, we
+To prove that ηᴳʳᵖ is the universal map of the set A into a group, we
 assume another group G with a map f : A → G:
 
 \begin{code}
@@ -870,7 +870,7 @@ free group:
 
 \begin{code}
 
-    f'-triangle : f' ∘ ηη ∼ f
+    f'-triangle : f' ∘ ηᴳʳᵖ ∼ f
     f'-triangle a = f' (η/∾ (η a)) ≡⟨ f'-/triangle (η a) ⟩
                     h (η a)        ≡⟨ refl ⟩
                     f a ⋆ e        ≡⟨ G-rn (f a) ⟩
@@ -924,12 +924,12 @@ But for this one we do:
     f'-uniqueness' : (f₀ f₁ : FA/∾ → G)
                   → is-hom 𝓕 𝓖 f₀
                   → is-hom 𝓕 𝓖 f₁
-                  → f₀ ∘ ηη ∼ f
-                  → f₁ ∘ ηη ∼ f
+                  → f₀ ∘ ηᴳʳᵖ ∼ f
+                  → f₁ ∘ ηᴳʳᵖ ∼ f
                   → f₀ ∼ f₁
     f'-uniqueness' f₀ f₁ i₀ i₁ f₀-triangle f₁-triangle = γ
      where
-      p : f₀ ∘ ηη ∼ f₁ ∘ ηη
+      p : f₀ ∘ ηᴳʳᵖ ∼ f₁ ∘ ηᴳʳᵖ
       p x = f₀-triangle x ∙ (f₁-triangle x)⁻¹
 
       δ : (s : FA) → f₀ (η/∾ s) ≡ f₁ (η/∾ s)
@@ -938,19 +938,19 @@ But for this one we do:
              f₁ (η/∾ []) ∎
       δ ((₀ , a) ∷ s) =
              f₀ (η/∾ (η a ++ s))    ≡⟨ ap f₀ ((·-natural (η a) s)⁻¹) ⟩
-             f₀ (ηη a · η/∾ s)      ≡⟨ i₀  ⟩
-             f₀ (ηη a) ⋆ f₀ (η/∾ s) ≡⟨ ap₂ _⋆_ (p a) (δ s) ⟩
-             f₁ (ηη a) ⋆ f₁ (η/∾ s) ≡⟨ i₁ ⁻¹ ⟩
-             f₁ (ηη a · η/∾ s)      ≡⟨ ap f₁ (·-natural (η a) s) ⟩
+             f₀ (ηᴳʳᵖ a · η/∾ s)      ≡⟨ i₀  ⟩
+             f₀ (ηᴳʳᵖ a) ⋆ f₀ (η/∾ s) ≡⟨ ap₂ _⋆_ (p a) (δ s) ⟩
+             f₁ (ηᴳʳᵖ a) ⋆ f₁ (η/∾ s) ≡⟨ i₁ ⁻¹ ⟩
+             f₁ (ηᴳʳᵖ a · η/∾ s)      ≡⟨ ap f₁ (·-natural (η a) s) ⟩
              f₁ (η/∾ (η a ++ s))    ∎
       δ ((₁ , a) ∷ s) =
              f₀ (η/∾ (finv (η a) ++ s))         ≡⟨ I ⟩
              f₀ (η/∾ (finv (η a)) · η/∾ s)      ≡⟨ II ⟩
              f₀ (η/∾ (finv (η a))) ⋆ f₀ (η/∾ s) ≡⟨ III ⟩
-             f₀ (inv/ (ηη a)) ⋆ f₀ (η/∾ s)      ≡⟨ IV ⟩
-             invG (f₀ (ηη a)) ⋆ f₀ (η/∾ s)      ≡⟨ IH ⟩
-             invG (f₁ (ηη a)) ⋆ f₁ (η/∾ s)      ≡⟨ IV' ⟩
-             f₁ (inv/ (ηη a)) ⋆ f₁ (η/∾ s)      ≡⟨ III' ⟩
+             f₀ (inv/ (ηᴳʳᵖ a)) ⋆ f₀ (η/∾ s)      ≡⟨ IV ⟩
+             invG (f₀ (ηᴳʳᵖ a)) ⋆ f₀ (η/∾ s)      ≡⟨ IH ⟩
+             invG (f₁ (ηᴳʳᵖ a)) ⋆ f₁ (η/∾ s)      ≡⟨ IV' ⟩
+             f₁ (inv/ (ηᴳʳᵖ a)) ⋆ f₁ (η/∾ s)      ≡⟨ III' ⟩
              f₁ (η/∾ (finv (η a))) ⋆ f₁ (η/∾ s) ≡⟨ II' ⟩
              f₁ (η/∾ (finv (η a)) · η/∾ s)      ≡⟨ I' ⟩
              f₁ (η/∾ (finv (η a) ++ s))         ∎
@@ -958,9 +958,9 @@ But for this one we do:
              I    = ap f₀ ((·-natural (finv (η a)) s)⁻¹)
              II   = i₀
              III  = ap (λ - → f₀ - ⋆ f₀ (η/∾ s)) ((inv/-natural (η a))⁻¹)
-             IV   = ap (_⋆ f₀ (η/∾ s)) (homs-preserve-invs 𝓕 𝓖 f₀ i₀ (ηη a))
+             IV   = ap (_⋆ f₀ (η/∾ s)) (homs-preserve-invs 𝓕 𝓖 f₀ i₀ (ηᴳʳᵖ a))
              IH   = ap₂ (λ - -' → invG - ⋆ -') (p a) (δ s)
-             IV'  = ap (_⋆ f₁ (η/∾ s)) ((homs-preserve-invs 𝓕 𝓖 f₁ i₁ (ηη a))⁻¹)
+             IV'  = ap (_⋆ f₁ (η/∾ s)) ((homs-preserve-invs 𝓕 𝓖 f₁ i₁ (ηᴳʳᵖ a))⁻¹)
              III' = ap (λ - → f₁ - ⋆ f₁ (η/∾ s)) (inv/-natural (η a))
              II'  = i₁ ⁻¹
              I'   = ap f₁ (·-natural (finv (η a)) s)
@@ -969,23 +969,23 @@ But for this one we do:
       γ = /-induction -∾- (λ x → f₀ x ≡ f₁ x) (λ x → G-is-set) δ
 
     f'-uniqueness : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f'
-                                             × f' ∘ ηη ∼ f
+                                             × f' ∘ ηᴳʳᵖ ∼ f
     f'-uniqueness = γ
      where
-      c : Σ f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f
+      c : Σ f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f
       c = (f' , f'-is-hom , f'-triangle)
 
       i : is-central _ c
       i (f₀ , f₀-is-hom , f₀-triangle) = to-subtype-≡ a b
        where
-        a : (f' : ⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) → is-prop (is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f)
+        a : (f' : ⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) → is-prop (is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f)
         a f' = ×-is-prop (being-hom-is-prop fe 𝓕 𝓖 f')
                          (Π-is-prop fe (λ a → group-is-set 𝓖))
 
         b : f' ≡ f₀
         b = dfunext fe (f'-uniqueness' f' f₀ f'-is-hom f₀-is-hom f'-triangle f₀-triangle)
 
-      γ : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηη ∼ f
+      γ : ∃! f' ꞉ (⟨ 𝓕 ⟩ → ⟨ 𝓖 ⟩) , is-hom 𝓕 𝓖 f' × f' ∘ ηᴳʳᵖ ∼ f
       γ = c , i
 
 \end{code}
@@ -1012,10 +1012,10 @@ module FreeGroupInterface
  free-group = 𝓕
 
  η-free-group : A → ⟨ free-group ⟩
- η-free-group = ηη
+ η-free-group = ηᴳʳᵖ
 
  η-free-group-is-embedding : is-set A → is-embedding η-free-group
- η-free-group-is-embedding = ηη-is-embedding
+ η-free-group-is-embedding = ηᴳʳᵖ-is-embedding
 
  module _ ((G , _⋆_ , G-is-set , G-assoc , e , l , r , inversion) : Group 𝓥)
           (f : A → G)
