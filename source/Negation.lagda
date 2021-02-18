@@ -120,12 +120,12 @@ Notation to try to make proofs readable:
 contradiction : 𝓤₀ ̇
 contradiction = 𝟘
 
-have_which-is-impossible-by_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
+have_which-is-impossible-by_ : {A : 𝓤 ̇ } {B : 𝓦 ̇ }
                              → A → (A → 𝟘 {𝓤₀}) → B
 have a which-is-impossible-by ν = 𝟘-elim (ν a)
 
 
-have_which-contradicts_ : {A : 𝓤 ̇ } {B : 𝓦 ̇}
+have_which-contradicts_ : {A : 𝓤 ̇ } {B : 𝓦 ̇ }
                         → (A → 𝟘 {𝓤₀}) → A → B
 have ν which-contradicts a = 𝟘-elim (ν a)
 

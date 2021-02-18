@@ -50,7 +50,7 @@ order by x ≤ y iff x ∨ y = y.
 
 \begin{code}
 
-private _*_ : {X : 𝓤 ̇} → X → X → (ℕ → X)
+private _*_ : {X : 𝓤 ̇ } → X → X → (ℕ → X)
 (x * y)       0  = x
 (x * y) (succ _) = y
 

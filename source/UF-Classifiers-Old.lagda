@@ -181,7 +181,7 @@ The examples are obtained by specialising to a specific property green:
 
 \begin{code}
 
-eqtoid-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇} (f : X ≃ Y) (g : Y ≃ Z)
+eqtoid-comp : (ua : is-univalent 𝓤) {X Y Z : 𝓤 ̇ } (f : X ≃ Y) (g : Y ≃ Z)
             → (eqtoid ua X Y f) ∙ (eqtoid ua Y Z g) ≡ eqtoid ua X Z (f ● g)
 eqtoid-comp {𝓤} ua {X} {Y} {Z} f =
  JEq ua Y (λ Z g → eqtoid ua X Y f ∙ eqtoid ua Y Z g ≡ eqtoid ua X Z (f ● g)) γ Z

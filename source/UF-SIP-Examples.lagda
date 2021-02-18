@@ -617,7 +617,7 @@ module subgroup
 
   infixl 42 _·_
 
-  group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+  group-closed : (⟨ G ⟩ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   group-closed 𝓐 = 𝓐 (unit G)
                  × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
                  × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
@@ -1288,7 +1288,7 @@ module universe-a-la-tarski
 
  characterization-of-Tarski-≡ : (A B : TarskiUniverse 𝓤 𝓥)
                               → (A ≡ B) ≃ (A ≅ B)
- characterization-of-Tarski-≡ = slice-variation.characterization-of-/-≡ (𝓥 ̇) ua fe
+ characterization-of-Tarski-≡ = slice-variation.characterization-of-/-≡ (𝓥 ̇ ) ua fe
 
 module universe-a-la-tarski-hSet-example
         (𝓤 : Universe)
@@ -1893,7 +1893,7 @@ operation of arbitrary arity. This is used to define σ-frames.
 
 \begin{code}
 
-module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
+module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇ ) where
 
  open sip
 

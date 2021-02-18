@@ -96,7 +96,7 @@ being-Kuratowski-finite-is-prop = ∥∥-is-prop
 ⟨_⟩ : {X : 𝓤 ̇ } → 𝓚 X → 𝓟 X
 ⟨_⟩ = pr₁
 
-⟨_⟩₂ : {X : 𝓤 ̇} (A : 𝓚 X) → is-Kuratowski-finite (𝕋 ⟨ A ⟩)
+⟨_⟩₂ : {X : 𝓤 ̇ } (A : 𝓚 X) → is-Kuratowski-finite (𝕋 ⟨ A ⟩)
 ⟨_⟩₂ = pr₂
 
 \end{code}
@@ -161,7 +161,7 @@ module _
    to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop)
    (subset-extensionality pe fe s t)
 
-  𝓚-is-set : {X : 𝓤 ̇} → is-set (𝓚 X)
+  𝓚-is-set : {X : 𝓤 ̇ } → is-set (𝓚 X)
   𝓚-is-set {X} =
    subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
     where

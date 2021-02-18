@@ -84,7 +84,7 @@ DNE-gives-EM fe dne P isp = dne (P + ¬ P)
 
 de-Morgan : EM 𝓤
           → EM 𝓥
-          → {A : 𝓤 ̇ } {B : 𝓥 ̇}
+          → {A : 𝓤 ̇ } {B : 𝓥 ̇ }
           → is-prop A
           → is-prop B
           → ¬ (A × B) → ¬ A + ¬ B

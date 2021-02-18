@@ -884,7 +884,7 @@ proposition, as this is automatic because ℕ is a set:
 
 \begin{code}
 
-is-prop-total-gives-is-prop-each : {X : 𝓤 ̇} (A : X → 𝓥 ̇ )
+is-prop-total-gives-is-prop-each : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                                  → is-set X
                                  → is-prop (Σ A) → (x : X) → is-prop (A x)
 is-prop-total-gives-is-prop-each A j i x a a' = t

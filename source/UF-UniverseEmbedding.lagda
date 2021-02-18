@@ -30,7 +30,7 @@ open import UF-Equiv-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
 
-is-universe-embedding : (𝓤 ̇ → 𝓥 ̇) → (𝓤 ⁺) ⊔ 𝓥 ̇
+is-universe-embedding : (𝓤 ̇ → 𝓥 ̇ ) → (𝓤 ⁺) ⊔ 𝓥 ̇
 is-universe-embedding f = ∀ X → f X ≃ X
 
 \end{code}

@@ -48,7 +48,7 @@ midpoint-algebra-structure X = Σ (midpoint-algebra-axioms X)
 midpoint-algebra : 𝓤 ⁺ ̇
 midpoint-algebra = Σ (midpoint-algebra-structure)
 
-midpoint-algebra-prop : {X : 𝓤 ̇} (_⊕_ : X → X → X)
+midpoint-algebra-prop : {X : 𝓤 ̇ } (_⊕_ : X → X → X)
                       → is-set X
                       → is-prop (midpoint-algebra-axioms X _⊕_)
 midpoint-algebra-prop _⊕_ i = ×-is-prop
@@ -70,7 +70,7 @@ midpoint-algebra-sns : SNS midpoint-algebra-structure 𝓤
 midpoint-algebra-sns = add-axioms midpoint-algebra-axioms s
                                   ∞-magma.sns-data
   where
-   s : (X : 𝓤 ̇) (_⊕_ : X → X → X) → is-prop (midpoint-algebra-axioms X _⊕_)
+   s : (X : 𝓤 ̇ ) (_⊕_ : X → X → X) → is-prop (midpoint-algebra-axioms X _⊕_)
    s X _⊕_ (i , p) = midpoint-algebra-prop _⊕_ i (i , p)
 
 _≊⟨midpoint-algebra⟩_ : midpoint-algebra → midpoint-algebra → 𝓤 ̇
@@ -96,7 +96,7 @@ convex-body-structure X = Σ (convex-body-axioms X)
 convex-body : 𝓤 ⁺ ̇
 convex-body = Σ (convex-body-structure)
 
-full-iterative-uniqueness : (A : 𝓤 ̇) → (_⊕_ : A → A → A)
+full-iterative-uniqueness : (A : 𝓤 ̇ ) → (_⊕_ : A → A → A)
                           → is-set A
                           → (F M : iterative _⊕_)
                           → F ≡ M
@@ -109,7 +109,7 @@ full-iterative-uniqueness A _⊕_ i M₁-iterative M₂-iterative
                            (λ _ → i {a 0} {M x})))))
      (iterative-uniqueness _⊕_ M₁-iterative M₂-iterative)
 
-convex-body-prop : (X : 𝓤 ̇) (_⊕_ : X → X → X)
+convex-body-prop : (X : 𝓤 ̇ ) (_⊕_ : X → X → X)
                  → is-prop (convex-body-axioms X _⊕_)
 convex-body-prop X _⊕_ ((i , p) , q) = γ ((i , p) , q)
   where
@@ -156,7 +156,7 @@ interval-object-structure 𝓥 X = Σ (interval-object-axioms 𝓥 X)
 interval-object : (𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
 interval-object 𝓥 = Σ (interval-object-structure 𝓥)
 
-interval-axioms-prop : (𝓥 : Universe) → (X : 𝓤 ̇)
+interval-axioms-prop : (𝓥 : Universe) → (X : 𝓤 ̇ )
                      → (_⊕_uv : (X → X → X) × X × X)
                      → is-set X
                      → is-prop (interval-object-axioms 𝓥 X _⊕_uv)
@@ -176,7 +176,7 @@ interval-object-sns 𝓥 = add-axioms (interval-object-axioms 𝓥) s
                             (join pointed-type.sns-data
                                   pointed-type.sns-data))
  where
-  s : (X : 𝓤 ̇) (s : (X → X → X) × X × X)
+  s : (X : 𝓤 ̇ ) (s : (X → X → X) × X × X)
     → is-prop (interval-object-axioms 𝓥 X s)
   s X _⊕_uv (((i , p) , q) , r)
     = interval-axioms-prop 𝓥 X _⊕_uv i (((i , p) , q) , r)

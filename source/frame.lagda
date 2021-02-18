@@ -141,7 +141,7 @@ module _ (pe : Prop-Ext)
    γ : ((P × Q) , _) ≡ (P , _)
    γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r
 
- ⋁Ω : {N : 𝓤 ̇} → (N → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ⋁Ω : {N : 𝓤 ̇ } → (N → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ⋁Ω {𝓤} {𝓥} {N} 𝕡 = (∃ n ꞉ N , (𝕡 n holds)) , ∃-is-prop
 
  Ω-qua-frame : ∀ 𝓤 𝓥 → Frame ((𝓤 ⊔ 𝓥)⁺) 𝓤

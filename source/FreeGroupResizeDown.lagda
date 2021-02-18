@@ -47,7 +47,7 @@ module FreeGroupResizeDown
         (pt       : propositional-truncations-exist)
         (ua       : Univalence)
         {𝓤        : Universe}
-        (A        : 𝓤 ⁺ ̇)
+        (A        : 𝓤 ⁺ ̇ )
         (A-is-set : is-set A)
         (_≡₀_     : A → A → 𝓤 ̇ )
         (refl₀    : (a : A) → a ≡₀ a)

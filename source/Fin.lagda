@@ -158,7 +158,7 @@ open import Plus-Properties
 open import Swap
 open import UF-LeftCancellable
 
-+𝟙-cancel-lemma : {X Y : 𝓤 ̇}
++𝟙-cancel-lemma : {X Y : 𝓤 ̇ }
                 → (𝒇 : X + 𝟙 ↣ Y + 𝟙)
                 → ⌈ 𝒇 ⌉ 𝟎 ≡ 𝟎
                 → X ↣ Y
@@ -183,7 +183,7 @@ open import UF-LeftCancellable
     q = inl-lc (l r)
 
 
-+𝟙-cancel : {X Y : 𝓤 ̇}
++𝟙-cancel : {X Y : 𝓤 ̇ }
           → is-discrete Y
           → X + 𝟙 ↣ Y + 𝟙
           → X ↣ Y

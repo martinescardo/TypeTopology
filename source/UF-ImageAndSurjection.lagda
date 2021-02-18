@@ -57,7 +57,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                           f x' ≡⟨ e' ⟩
                           y'   ∎
 
- wconstant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
+ wconstant-map-to-set-truncation-of-domain-map' : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
                                                 → is-set Y
                                                  → (f : X → Y)
                                                 → wconstant f
@@ -67,7 +67,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
   (wconstant-maps-to-sets-have-propositional-images X s f c)
   (corestriction f)
 
- wconstant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
+ wconstant-map-to-set-truncation-of-domain-map : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
                                                → is-set Y
                                                → (f : X → Y)
                                                → wconstant f
@@ -75,7 +75,7 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  wconstant-map-to-set-truncation-of-domain-map X s f c =
   restriction f ∘ wconstant-map-to-set-truncation-of-domain-map' X s f c
 
- wconstant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇ ) {Y : 𝓥 ̇}
+ wconstant-map-to-set-factors-through-truncation-of-domain : (X : 𝓤 ̇ ) {Y : 𝓥 ̇ }
                                                              (s : is-set Y)
                                                              (f : X → Y)
                                                              (c : wconstant f)

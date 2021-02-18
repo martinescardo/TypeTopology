@@ -165,7 +165,7 @@ module _ {𝓤 : Universe}
  rt-extension : B ⊑ rt-closure
  rt-extension x y b = 1 , y , b , refl
 
- rt-induction : (R : X → X → 𝓥 ̇)
+ rt-induction : (R : X → X → 𝓥 ̇ )
               → reflexive R
               → transitive R
               → B ⊑ R
@@ -220,7 +220,7 @@ module _ {𝓤 : Universe}
    g 0        x x refl        = srt-reflexive x
    g (succ n) x y (z , e , i) = succ n , z , inl e , f n z y i
 
- srt-induction : (R : X → X → 𝓥 ̇)
+ srt-induction : (R : X → X → 𝓥 ̇ )
                → symmetric R
                → reflexive R
                → transitive R
@@ -269,7 +269,7 @@ module psrt
  psrt-extension : A ⊑ psrt-closure
  psrt-extension x y a = ∥∥-functor (srt-extension A x y) ∣ a ∣
 
- psrt-induction : (R : X → X → 𝓥 ̇)
+ psrt-induction : (R : X → X → 𝓥 ̇ )
                 → ((x y : X) → is-prop (R x y))
                 → reflexive R
                 → symmetric R
