@@ -16,6 +16,10 @@ the embedding
 
 of the type of sets of 𝓤 into that of 𝓤⁺ in not an equivalence either.
 
+We also establish this for the types of Magmas, Monoids and Groups,
+where the case of Groups requires much more work (invoked here but
+performed in the modules FreeGroup and FreeGroupOfLargeLocallySmallSet).
+
 We work with ordinals as defined in the HoTT book for that purpose.
 https://homotopytypetheory.org/book/
 
