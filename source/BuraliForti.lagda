@@ -127,7 +127,7 @@ module BuraliForti
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
-open import UF-Equiv
+open import UF-Equiv hiding (_≅_)
 open import UF-EquivalenceExamples
 open import UF-UniverseEmbedding
 open import UF-UA-FunExt
@@ -614,13 +614,59 @@ We will consider A = Monoid-structure (with capital M), and
                                             type-of-ordinals-has-Monoid-structure
 \end{code}
 
-The module OrdinalsFreeGroup (which imports this module) proves the
-same for the type of groups, using the following crucial property of
-the type of ordinals:
+Added 18 Feb 2021. The same is true for groups, using the following
+fact and a fact proved in the module
+FreeGroupOfLargeLocallySmallSet. We need to assume that propositional
+truncations exist.
 
 \begin{code}
 
 the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
 the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
+
+
+open import FreeGroupOfLargeLocallySmallSet
+open import Groups
+open import UF-PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ there-is-a-large-group : Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
+ there-is-a-large-group {𝓤} = large-group-with-no-small-copy pt ua
+                               (Ordinal 𝓤 ,
+                                type-of-ordinals-is-set ,
+                                the-type-of-ordinals-is-large ,
+                                the-type-of-ordinals-is-locally-small)
+\end{code}
+
+And from this it of course follows that the embedding of the type of
+groups of one universe into that of its successor universe is not an
+equivalence:
+
+\begin{code}
+
+ Lift-Group-structure-is-not-equiv : ¬ is-equiv (Lift-Group {𝓤} (𝓤 ⁺))
+ Lift-Group-structure-is-not-equiv {𝓤} e = γ there-is-a-large-group
+  where
+   Lower : Group (𝓤 ⁺) → Group 𝓤
+   Lower = inverse (Lift-Group (𝓤 ⁺)) e
+
+   γ : (Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))) → 𝟘
+   γ (F , ϕ) = ϕ G i
+     where
+      G : Group 𝓤
+      G = Lower F
+
+      F' : Group (𝓤 ⁺)
+      F' = Lift-Group (𝓤 ⁺) G
+
+      p : F' ≡ F
+      p = inverses-are-sections (Lift-Group (𝓤 ⁺)) e F
+
+      j : G ≅ F'
+      j = ≅-sym F' G (Lifted-Group-is-isomorphic G)
+
+      i : G ≅ F
+      i = transport (G ≅_) p j
 
 \end{code}

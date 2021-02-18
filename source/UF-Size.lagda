@@ -795,3 +795,19 @@ is-locally-small X = (x y : X) → is-small (x ≡ y)
 
 For example, by univalence, universes are locally small, and so is the
 (large) type of ordinals in a universe.
+
+\begin{code}
+
+_≡⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
+x ≡⟦ ls ⟧ y = pr₁ (ls x y)
+
+Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
+Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
+
+≡⟦_⟧-gives-≡ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x y : X) → x ≡⟦ ls ⟧ y → x ≡ y
+≡⟦ ls ⟧-gives-≡ x y = ⌜ pr₂ (ls x y) ⌝
+
+⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ≡⟦ ls ⟧ x
+⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
+
+\end{code}
