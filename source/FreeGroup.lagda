@@ -1074,4 +1074,10 @@ free-groups-exist pt fe pe A = free-group A  ,
 \end{code}
 
 Notice that the free group construction increases the universe level,
-but the universal property eliminates into any universe.
+but the universal property eliminates into any universe. This is
+because our construction of quotients via propositional truncation
+increses universe levels. In the module FreeGroupOfLargeLocallySmallSet
+
+we show that for a large, locally small type type A : 𝓤⁺, the free
+group has a copy in the same universe 𝓤+ as A, and moreover, if the
+free group has a copy in 𝓤 then so must have the type A.

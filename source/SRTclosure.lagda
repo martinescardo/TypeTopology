@@ -287,11 +287,11 @@ module psrt
 \end{code}
 
 Any proposition-valued relation that is logically equivalent to an
-equivalence relation is itself an equivalence relation:
+equivalence relation is itself an equivalence relation. Unfortunately,
+we cannot use univalence to perform this transport as the types live
+in different universes.
 
 \begin{code}
-
-
 
 is-equiv-rel-transport : {X : 𝓤 ̇ }
                          (A : X → X → 𝓥 ̇ )

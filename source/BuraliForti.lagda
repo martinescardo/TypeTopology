@@ -615,15 +615,13 @@ We will consider A = Monoid-structure (with capital M), and
 \end{code}
 
 Added 18 Feb 2021. The same is true for groups, using the following
-fact and a fact proved in the module
-FreeGroupOfLargeLocallySmallSet. We need to assume that propositional
-truncations exist.
+fact and a fact proved in the module FreeGroupOfLargeLocallySmallSet.
+We need to assume that propositional truncations exist.
 
 \begin{code}
 
 the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
 the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
-
 
 open import FreeGroupOfLargeLocallySmallSet
 open import Groups
