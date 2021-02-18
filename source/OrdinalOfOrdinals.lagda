@@ -390,8 +390,8 @@ UAₒ {𝓤} α = nats-with-sections-are-equivs α
     → idtoeqₒ α β (eqtoidₒ α β e) ≡ e
   η β e = ≃ₒ-is-prop-valued α β (idtoeqₒ α β (eqtoidₒ α β e)) e
 
-type-of-ordinals-is-set : is-set (Ordinal 𝓤)
-type-of-ordinals-is-set {𝓤} {α} {β} = equiv-to-prop
+the-type-of-ordinals-is-a-set : is-set (Ordinal 𝓤)
+the-type-of-ordinals-is-a-set {𝓤} {α} {β} = equiv-to-prop
                                         (idtoeqₒ α β , UAₒ α β)
                                         (≃ₒ-is-prop-valued α β)
 
@@ -518,7 +518,7 @@ _⊲_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
   r = ↓-lc β b b' q
 
   γ : (b , p) ≡ (b' , p')
-  γ = to-subtype-≡ (λ x → type-of-ordinals-is-set) r
+  γ = to-subtype-≡ (λ x → the-type-of-ordinals-is-a-set) r
 
 \end{code}
 

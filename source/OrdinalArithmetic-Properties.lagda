@@ -330,7 +330,7 @@ lemma₃ b (inr c) p = c , refl
 left-+ₒ-is-embedding : (α : Ordinal 𝓤) → is-embedding (α +ₒ_)
 left-+ₒ-is-embedding α = lc-maps-into-sets-are-embeddings (α +ₒ_)
                            (λ {β} {γ} → +ₒ-left-cancellable α β γ)
-                           type-of-ordinals-is-set
+                           the-type-of-ordinals-is-a-set
 
 \end{code}
 

@@ -340,7 +340,7 @@ Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
  where
   𝕐 : hSet (𝓤 ⁺)
-  𝕐 = (Ordinal 𝓤 , type-of-ordinals-is-set)
+  𝕐 = (Ordinal 𝓤 , the-type-of-ordinals-is-a-set)
 
   𝕏 : hSet 𝓤
   𝕏 = s 𝕐
@@ -464,7 +464,7 @@ hSet again:
  Lift-hSet-is-not-equiv-bis {𝓤} = Lift-𝓐-is-not-equiv
                                     is-set
                                     (λ 𝓥 {X} → Lift-is-set 𝓥 X)
-                                    type-of-ordinals-is-set
+                                    the-type-of-ordinals-is-a-set
 \end{code}
 
 Pointed types:
@@ -540,7 +540,7 @@ Magmas:
   Lift-𝓐-is-not-equiv
     Magma-structure
     lift-Magma-structure
-    (type-of-ordinals-is-set , _+ₒ_)
+    (the-type-of-ordinals-is-a-set , _+ₒ_)
 
 \end{code}
 
@@ -602,7 +602,7 @@ We will consider A = Monoid-structure (with capital M), and
 
  type-of-ordinals-has-Monoid-structure : {𝓤 : Universe} → Monoid-structure (Ordinal 𝓤)
  type-of-ordinals-has-Monoid-structure {𝓤} = (_+ₒ_ , 𝟘ₒ) ,
-                                             type-of-ordinals-is-set ,
+                                             the-type-of-ordinals-is-a-set ,
                                              𝟘ₒ-left-neutral ,
                                              𝟘ₒ-right-neutral ,
                                              +ₒ-assoc
@@ -632,7 +632,7 @@ module _ (pt : propositional-truncations-exist) where
  there-is-a-large-group : Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
  there-is-a-large-group {𝓤} = large-group-with-no-small-copy pt ua
                                (Ordinal 𝓤 ,
-                                type-of-ordinals-is-set ,
+                                the-type-of-ordinals-is-a-set ,
                                 the-type-of-ordinals-is-large ,
                                 the-type-of-ordinals-is-locally-small)
 \end{code}
@@ -646,14 +646,14 @@ equivalence:
  Lift-Group-structure-is-not-equiv : ¬ is-equiv (Lift-Group {𝓤} (𝓤 ⁺))
  Lift-Group-structure-is-not-equiv {𝓤} e = γ there-is-a-large-group
   where
-   Lower : Group (𝓤 ⁺) → Group 𝓤
-   Lower = inverse (Lift-Group (𝓤 ⁺)) e
+   Lower-Group : Group (𝓤 ⁺) → Group 𝓤
+   Lower-Group = inverse (Lift-Group (𝓤 ⁺)) e
 
    γ : (Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))) → 𝟘
    γ (F , ϕ) = ϕ G i
      where
       G : Group 𝓤
-      G = Lower F
+      G = Lower-Group F
 
       F' : Group (𝓤 ⁺)
       F' = Lift-Group (𝓤 ⁺) G
