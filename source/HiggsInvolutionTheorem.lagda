@@ -15,6 +15,10 @@ Scott's Introduction to Higher-Order Categorical Logic, attributed to
 Scedrov. Thanks to Phil Scott for bringing my attention to this proof
 during a visit to Birmingham.
 
+Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
+as an application of Higgs Theorem. This doesn't seems to be known in
+the topos theory community.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -97,9 +101,8 @@ higgs f lc = VIII
 \end{code}
 
 Added 23 Jan 2021. From a group structure on Ω we get excluded middle,
-as an application of Higgs Theorem. I am not sure whether this is
-already known in the literature or the folkore. I've written a blog
-post about this here:
+as an application of Higgs Theorem. This doesn't seems to be known in
+the topos theory community. I've written a blog post about this here:
 
 https://homotopytypetheory.org/2021/01/23/can-the-type-of-truth-values-be-given-the-structure-of-a-group/
 
