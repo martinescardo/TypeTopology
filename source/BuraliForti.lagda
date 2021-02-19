@@ -142,9 +142,6 @@ private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
 
- fe' : Fun-Ext
- fe' {𝓤} {𝓥} = fe 𝓤 𝓥
-
 open import SpartanMLTT
 open import OrdinalNotions
 open import OrdinalsType
