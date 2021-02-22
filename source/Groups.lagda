@@ -363,3 +363,47 @@ Lifted-Group-is-isomorphic {𝓤} {𝓥} G =
  pr₂ (resized-group G (Lift 𝓥 ⟨ G ⟩ , Lift-is-universe-embedding 𝓥 ⟨ G ⟩))
 
 \end{code}
+
+Boolean groups.
+
+\begin{code}
+
+boolean-groups-are-abelian' : {X : 𝓤 ̇ } (_·_ : X → X → X) (e : X)
+                            → associative _·_
+                            → left-neutral e _·_
+                            → right-neutral e _·_
+                            → ((x : X) → x · x ≡ e)
+                            → commutative _·_
+boolean-groups-are-abelian' _·_  e a ln rn b x y =
+  xy                  ≡⟨ ap (x ·_) ((ln y)⁻¹) ⟩
+  x · (e · y)         ≡⟨ ap (λ - → x · (- · y)) ((b xy)⁻¹) ⟩
+  x · ((xy · xy) · y) ≡⟨ (a x (xy · xy) y)⁻¹ ⟩
+  (x · (xy · xy)) · y ≡⟨ ap (_· y) ((a x xy xy)⁻¹) ⟩
+  ((x · xy) · xy) · y ≡⟨ ap (λ - → (- · xy) · y) ((a x x y)⁻¹) ⟩
+  ((xx · y) · xy) · y ≡⟨ ap (λ - → (( - · y) · xy) · y) (b x) ⟩
+  ((e · y) · xy) · y  ≡⟨ ap (λ - → (- · xy) · y) (ln y) ⟩
+  (y · xy) · y        ≡⟨ a y xy y ⟩
+  y · (xy · y)        ≡⟨ ap (y ·_) (a x y y) ⟩
+  y · (x · yy)        ≡⟨ ap (λ - → y · (x · -)) (b y) ⟩
+  y · (x · e)         ≡⟨ ap (y ·_) (rn x) ⟩
+  yx                  ∎
+
+ where
+  xx = x · x
+  xy = x · y
+  yx = y · x
+  yy = y · y
+
+is-boolean : Group 𝓤 → 𝓤 ̇
+is-boolean G = (x : ⟨ G ⟩) → x ·⟨ G ⟩ x ≡ e⟨ G ⟩
+
+is-abelian : Group 𝓤 → 𝓤 ̇
+is-abelian G = (x y : ⟨ G ⟩) → x ·⟨ G ⟩ y ≡ y ·⟨ G ⟩ x
+
+boolean-groups-are-abelian : (G : Group 𝓤)
+                           → is-boolean G
+                           → is-abelian G
+boolean-groups-are-abelian (G , _·_ , _ , a , e , ln , rn , _) =
+ boolean-groups-are-abelian' _·_ e a ln rn
+
+\end{code}

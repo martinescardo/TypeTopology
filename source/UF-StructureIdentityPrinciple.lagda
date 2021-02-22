@@ -672,7 +672,7 @@ possibly axioms for them, before we know they form (∞-)categories, and
 even if they don't.
 
 Another example that should be accounted for by the methods developed
-here is identity of ordinals (in the module OrdinalOfOrdinals), which
+here is identity of ordinals (in the module ), which
 is what prompted us to think about the subject of this module.
 
 Added 8th December 2018. I came across a situation where the universe

@@ -114,7 +114,7 @@ import BinaryNaturals
 import BuraliForti
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
-import Codistance              -- By M.E. and Todd Waugh Ambridge
+import Codistance              -- By Todd Waugh Ambridge and Martin Escardo
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
@@ -133,15 +133,15 @@ import Dyadics
 import Dominance
 import DummettDisjunction
 import Empty
-import Escardo-Simpson-LICS2001 -- By Todd Waugh Ambridge
+import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
 import frame
 import FailureOfTotalSeparatedness
-import FreeGroup
-import FreeGroupOfLargeLocallySmallSet
-import FreeJoinSemiLattice    -- By Tom de Jong
-import FreeSupLattice         -- By Tom de Jong
+import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
+import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
+import FreeJoinSemiLattice             -- By Tom de Jong
+import FreeSupLattice                  -- By Tom de Jong
 import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem

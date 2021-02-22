@@ -502,7 +502,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 \end{code}
 
 Another example where subtraction doesn't exist is (ℕₒ +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
-discussed in the module OrdinalOfOrdinals. The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
+discussed in the module . The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
 are equal if and only if LPO holds. Without assuming LPO, the image of
 the inclusion (ℕₒ +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
 nothing that can be added to (ℕₒ +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.

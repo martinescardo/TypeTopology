@@ -1,4 +1,4 @@
-Martin Escardo, Marc Bezem, Thierry Coquand, and Peter Dybjer.
+Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 15 February 2021.
 
 This module has the technical lemmas necessary to prove the

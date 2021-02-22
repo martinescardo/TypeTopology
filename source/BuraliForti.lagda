@@ -1,4 +1,4 @@
-Martin Escardo, Marc Bezem, Thierry Coquand, and Peter Dybjer.
+Marc Bezem, Thierry Coquand, Peter Dybjer, and Martin Escardo.
 21-25 December 2020.
 
 The Burali-Forti argument in HoTT/UF in Agda notation
@@ -9,16 +9,13 @@ the embedding
 
     𝓤 → 𝓤⁺.
 
-of a universe 𝓤 into its successor 𝓤⁺ is not equivalence, and that
-the embedding
+of a universe 𝓤 into its successor 𝓤⁺ is not equivalence.
 
-    hSet 𝓤 → hSet 𝓤⁺
-
-of the type of sets of 𝓤 into that of 𝓤⁺ in not an equivalence either.
-
-We also establish this for the types of Magmas, Monoids and Groups,
-where the case of Groups requires much more work (invoked here but
-performed in the modules FreeGroup and FreeGroupOfLargeLocallySmallSet).
+Similarly, the embedding hSet 𝓤 → hSet 𝓤⁺ of the type of sets of 𝓤
+into that of 𝓤⁺ in not an equivalence either.  We also establish this
+for the types of magmas, monoids and groups, where the case of groups
+requires considerable more work (invoked here but performed in the
+modules FreeGroup.lagda and FreeGroupOfLargeLocallySmallSet.lagda).
 
 We work with ordinals as defined in the HoTT book for that purpose.
 https://homotopytypetheory.org/book/
@@ -156,11 +153,11 @@ universe 𝓤 equivalent to the ordinal of all ordinals in the universe 𝓤.
 
 \begin{code}
 
-Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ OrdinalOfOrdinals 𝓤)
+Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ Ordinal-of-Ordinals 𝓤)
 Burali-Forti {𝓤} (α , 𝕗) = γ
  where
   A : Ordinal (𝓤 ⁺)
-  A = OrdinalOfOrdinals 𝓤
+  A = Ordinal-of-Ordinals 𝓤
 
   a : A ≃ₒ α
   a = ≃ₒ-sym α A 𝕗
@@ -188,7 +185,7 @@ when it reaches d in the definition of e':
 \begin{code}
 {-
   𝓐 : Ordinal (𝓤 ⁺ ⁺)
-  𝓐 = OrdinalOfOrdinals (𝓤 ⁺)
+  𝓐 = Ordinal-of-Ordinals (𝓤 ⁺)
 
   e' : A ≺⟨ 𝓐 ⟩ A
   e' = α , d
@@ -208,7 +205,7 @@ ordinals is large, happens in the function transfer-structure, which
 is developed in the module OrdinalsWellOrderTransport, where the
 difficulties are explained.
 
-As discussed above, the type OrdinalOfOrdinals 𝓤 of ordinals in the
+As discussed above, the type Ordinal-of-Ordinals 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
 universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
 otherwise. This is define in the module UF-Size.
@@ -221,8 +218,8 @@ large, as expected:
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
 the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
  where
-  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OrdinalOfOrdinals 𝓤
-  δ = transfer-structure fe X (OrdinalOfOrdinals 𝓤)
+  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ Ordinal-of-Ordinals 𝓤
+  δ = transfer-structure fe X (Ordinal-of-Ordinals 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
 
   γ : 𝟘

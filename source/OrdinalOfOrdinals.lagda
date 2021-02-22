@@ -733,15 +733,15 @@ It remains to show that _⊲_ is a well-order:
                   ⊲-is-transitive
 \end{code}
 
-We denote the ordinal of ordinals in the universe 𝓤 by OrdinalOfOrdinals 𝓤,
+We denote the ordinal of ordinals in the universe 𝓤 by  𝓤,
 abbreviated as O 𝓤. It lives in the next universe 𝓤 ⁺.
 
 \begin{code}
 
-OrdinalOfOrdinals : (𝓤 : Universe) → Ordinal (𝓤 ⁺)
-OrdinalOfOrdinals 𝓤 = Ordinal 𝓤 , _⊲_ , ⊲-is-well-order
+Ordinal-of-Ordinals : (𝓤 : Universe) → Ordinal (𝓤 ⁺)
+Ordinal-of-Ordinals 𝓤 = Ordinal 𝓤 , _⊲_ , ⊲-is-well-order
 
-O = OrdinalOfOrdinals
+O = Ordinal-of-Ordinals
 
 \end{code}
 

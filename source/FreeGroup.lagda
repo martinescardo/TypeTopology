@@ -1,4 +1,4 @@
-Martin Escardo, Marc Bezem, Thierry Coquand, and Peter Dybjer.
+Marc Bezem, Thierry Coquand, Peter Dybjer, Martin Escardo.
 January - February 2021.
 
 We construct free groups in HoTT/UF in Agda without HIT's other than
@@ -780,13 +780,13 @@ We need the following property of h with respect to formal inverses:
 
     h⁻ : (x : X) → h ([ x ] ++ [ x ⁻ ]) ≡ e
 
-    h⁻ (₀ , a) = f a ⋆ (invG (f a) ⋆ e)≡⟨ ap (f a ⋆_) (G-rn (invG (f a))) ⟩
-                 f a ⋆ invG (f a)      ≡⟨ G-invr (f a) ⟩
-                 e                     ∎
+    h⁻ (₀ , a) = f a ⋆ (invG (f a) ⋆ e) ≡⟨ ap (f a ⋆_) (G-rn (invG (f a))) ⟩
+                 f a ⋆ invG (f a)       ≡⟨ G-invr (f a) ⟩
+                 e                      ∎
 
-    h⁻ (₁ , a) = invG (f a) ⋆ (f a ⋆ e)≡⟨ ap (invG (f a) ⋆_) (G-rn (f a)) ⟩
-                 invG (f a) ⋆ f a      ≡⟨ G-invl (f a) ⟩
-                 e                     ∎
+    h⁻ (₁ , a) = invG (f a) ⋆ (f a ⋆ e) ≡⟨ ap (invG (f a) ⋆_) (G-rn (f a)) ⟩
+                 invG (f a) ⋆ f a       ≡⟨ G-invl (f a) ⟩
+                 e                      ∎
 \end{code}
 
 By construction, the function h is a list homomorphism. It is also a
@@ -823,13 +823,13 @@ our desired group homomorphism f':
     h-identifies-▷-related-points : {s t : FA} → s ▷ t → h s ≡ h t
     h-identifies-▷-related-points {s} {t} (u , v , y , p , q) =
        h s ≡⟨ ap h p ⟩
-       h (u ++ [ y ] ++ [ y ⁻ ] ++ v)   ≡⟨ h-is-hom u ([ y ] ++ [ y ⁻ ] ++ v) ⟩
-       h u ⋆ h (y ∷ y ⁻ ∷ v)            ≡⟨ ap (h u ⋆_) (h-is-hom (y ∷ y ⁻ ∷ []) v) ⟩
-       h u ⋆ (h (y ∷ (y ⁻) ∷ []) ⋆ h v) ≡⟨ ap (λ - → h u ⋆ (- ⋆ h v)) (h⁻ y) ⟩
-       h u ⋆ (e ⋆ h v)                  ≡⟨ ap (h u ⋆_) (G-ln (h v)) ⟩
-       h u ⋆ h v                        ≡⟨ (h-is-hom u v)⁻¹ ⟩
-       h (u ++ v)                       ≡⟨ ap h (q ⁻¹) ⟩
-       h t ∎
+       h (u ++ [ y ] ++ [ y ⁻ ] ++ v) ≡⟨ h-is-hom u ([ y ] ++ [ y ⁻ ] ++ v) ⟩
+       h u ⋆ h (y ∷ y ⁻ ∷ v)          ≡⟨ ap (h u ⋆_) (h-is-hom (y ∷ y ⁻ ∷ []) v) ⟩
+       h u ⋆ (h (y ∷ y ⁻ ∷ []) ⋆ h v) ≡⟨ ap (λ - → h u ⋆ (- ⋆ h v)) (h⁻ y) ⟩
+       h u ⋆ (e ⋆ h v)                ≡⟨ ap (h u ⋆_) (G-ln (h v)) ⟩
+       h u ⋆ h v                      ≡⟨ (h-is-hom u v)⁻¹ ⟩
+       h (u ++ v)                     ≡⟨ ap h (q ⁻¹) ⟩
+       h t                            ∎
 
     h-identifies-▷*-related-points : {s t : FA} → s ▷* t → h s ≡ h t
     h-identifies-▷*-related-points {s} {t} (n , r) = γ n s t r
