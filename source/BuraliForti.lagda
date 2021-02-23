@@ -153,11 +153,11 @@ universe 𝓤 equivalent to the ordinal of all ordinals in the universe 𝓤.
 
 \begin{code}
 
-Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ Ordinal-of-Ordinals 𝓤)
+Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ Ordinal-of-ordinals 𝓤)
 Burali-Forti {𝓤} (α , 𝕗) = γ
  where
   A : Ordinal (𝓤 ⁺)
-  A = Ordinal-of-Ordinals 𝓤
+  A = Ordinal-of-ordinals 𝓤
 
   a : A ≃ₒ α
   a = ≃ₒ-sym α A 𝕗
@@ -185,7 +185,7 @@ when it reaches d in the definition of e':
 \begin{code}
 {-
   𝓐 : Ordinal (𝓤 ⁺ ⁺)
-  𝓐 = Ordinal-of-Ordinals (𝓤 ⁺)
+  𝓐 = Ordinal-of-ordinals (𝓤 ⁺)
 
   e' : A ≺⟨ 𝓐 ⟩ A
   e' = α , d
@@ -205,7 +205,7 @@ ordinals is large, happens in the function transfer-structure, which
 is developed in the module OrdinalsWellOrderTransport, where the
 difficulties are explained.
 
-As discussed above, the type Ordinal-of-Ordinals 𝓤 of ordinals in the
+As discussed above, the type Ordinal-of-ordinals 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
 universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
 otherwise. This is define in the module UF-Size.
@@ -218,8 +218,8 @@ large, as expected:
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
 the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
  where
-  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ Ordinal-of-Ordinals 𝓤
-  δ = transfer-structure fe X (Ordinal-of-Ordinals 𝓤)
+  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ Ordinal-of-ordinals 𝓤
+  δ = transfer-structure fe X (Ordinal-of-ordinals 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
 
   γ : 𝟘

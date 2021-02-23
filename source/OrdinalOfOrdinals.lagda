@@ -533,7 +533,7 @@ make it official:
 
 \begin{code}
 
-_⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ̇
+_⊲⁻_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ⊲⁻ β = Σ b ꞉ ⟨ β ⟩ , α ≃ₒ (β ↓ b)
 
 ⊲-is-equivalent-to-⊲⁻ : (α β : Ordinal 𝓤) → (α ⊲ β) ≃ (α ⊲⁻ β)
@@ -738,10 +738,10 @@ abbreviated as O 𝓤. It lives in the next universe 𝓤 ⁺.
 
 \begin{code}
 
-Ordinal-of-Ordinals : (𝓤 : Universe) → Ordinal (𝓤 ⁺)
-Ordinal-of-Ordinals 𝓤 = Ordinal 𝓤 , _⊲_ , ⊲-is-well-order
+Ordinal-of-ordinals : (𝓤 : Universe) → Ordinal (𝓤 ⁺)
+Ordinal-of-ordinals 𝓤 = Ordinal 𝓤 , _⊲_ , ⊲-is-well-order
 
-O = Ordinal-of-Ordinals
+O = Ordinal-of-ordinals
 
 \end{code}
 
