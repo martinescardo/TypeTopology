@@ -8,7 +8,7 @@ propositional truncation, and with no consequence of univalence other
 than function extensionality and propositional extensionality.
 
 This is based on the book "A course in constructive algebra" by Ray
-Mines, Fred Richman and Wim Ruttenberg, 1988. In particular, this
+Mines, Fred Richman and Wim Ruitenburg, 1988. In particular, this
 construction shows that the inclusion of generators is injective (and
 hence an embedding in the sense of HoTT/UF). It is noteworthy and
 surprising that the set of generators is not required to have
