@@ -239,7 +239,7 @@ lemma₀ {𝓤} {α} {β} = to-≼ ϕ
 lemma₁ : {α β : Ordinal 𝓤}
          (a : ⟨ α ⟩)
        → (α +ₒ β) ≢ (α ↓ a)
-lemma₁ {𝓤} {α} {β} a p = irrefl (O 𝓤) (α +ₒ β) m
+lemma₁ {𝓤} {α} {β} a p = irrefl (OO 𝓤) (α +ₒ β) m
  where
   l : (α +ₒ β) ⊲ α
   l = (a , p)
@@ -273,7 +273,7 @@ lemma₃ b (inr c) p = c , refl
   ϕ : ∀ β
     → (∀ b → P (β ↓ b))
     → P β
-  ϕ β f γ p = Extensionality (O 𝓤) β γ (to-≼ u) (to-≼ v)
+  ϕ β f γ p = Extensionality (OO 𝓤) β γ (to-≼ u) (to-≼ v)
    where
     u : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
     u b = c , t
@@ -324,7 +324,7 @@ lemma₃ b (inr c) p = c , refl
       t = f b (γ ↓ c) (q ⁻¹)
 
   g : (β : Ordinal 𝓤) → P β
-  g = transfinite-induction-on-O P ϕ
+  g = transfinite-induction-on-OO P ϕ
 
 
 left-+ₒ-is-embedding : (α : Ordinal 𝓤) → is-embedding (α +ₒ_)

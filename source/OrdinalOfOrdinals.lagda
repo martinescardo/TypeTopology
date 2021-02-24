@@ -733,53 +733,51 @@ It remains to show that _⊲_ is a well-order:
                   ⊲-is-transitive
 \end{code}
 
-We denote the ordinal of ordinals in the universe 𝓤 by  𝓤,
-abbreviated as O 𝓤. It lives in the next universe 𝓤 ⁺.
+We denote the ordinal of ordinals in the universe 𝓤 by OO 𝓤. It lives
+in the next universe 𝓤 ⁺.
 
 \begin{code}
 
-Ordinal-of-ordinals : (𝓤 : Universe) → Ordinal (𝓤 ⁺)
-Ordinal-of-ordinals 𝓤 = Ordinal 𝓤 , _⊲_ , ⊲-is-well-order
-
-O = Ordinal-of-ordinals
+OO : (𝓤 : Universe) → Ordinal (𝓤 ⁺)
+OO 𝓤 = Ordinal 𝓤 , _⊲_ , ⊲-is-well-order
 
 \end{code}
 
-Any ordinal in O 𝓤 is embedded in O as an initial segment:
+Any ordinal in OO 𝓤 is embedded in OO 𝓤 as an initial segment:
 
 \begin{code}
 
-ordinals-in-O-are-embedded-in-O : (α : ⟨ O 𝓤 ⟩) → α ⊴ O 𝓤
-ordinals-in-O-are-embedded-in-O {𝓤} α = (λ x → α ↓ x) , i , ↓-preserves-order α
+ordinals-in-OO-are-embedded-in-OO : (α : ⟨ OO 𝓤 ⟩) → α ⊴ OO 𝓤
+ordinals-in-OO-are-embedded-in-OO {𝓤} α = (λ x → α ↓ x) , i , ↓-preserves-order α
  where
-  i : is-initial-segment α (O 𝓤) (λ x → α ↓ x)
+  i : is-initial-segment α (OO 𝓤) (λ x → α ↓ x)
   i x β ((u , l) , p) = u , l , ((p ∙ iterated-↓ α x u l)⁻¹)
 
 \end{code}
 
-Any ordinal in O 𝓤 is a lower set of O 𝓤:
+Any ordinal in OO 𝓤 is a lower set of OO 𝓤:
 
 \begin{code}
 
-ordinals-in-O-are-lowersets-of-O : (α : ⟨ O 𝓤 ⟩) → α ≃ₒ (O 𝓤 ↓ α)
-ordinals-in-O-are-lowersets-of-O {𝓤} α = f , p , ((g , η) , (g , ε)) , q
+ordinals-in-OO-are-lowersets-of-OO : (α : ⟨ OO 𝓤 ⟩) → α ≃ₒ (OO 𝓤 ↓ α)
+ordinals-in-OO-are-lowersets-of-OO {𝓤} α = f , p , ((g , η) , (g , ε)) , q
  where
-  f : ⟨ α ⟩ → ⟨ O 𝓤 ↓ α ⟩
+  f : ⟨ α ⟩ → ⟨ OO 𝓤 ↓ α ⟩
   f x = α ↓ x , x , refl
 
-  p : is-order-preserving α (O 𝓤 ↓ α) f
+  p : is-order-preserving α (OO 𝓤 ↓ α) f
   p x y l = (x , l) , ((iterated-↓ α y x l)⁻¹)
 
-  g : ⟨ O 𝓤 ↓ α ⟩ → ⟨ α ⟩
+  g : ⟨ OO 𝓤 ↓ α ⟩ → ⟨ α ⟩
   g (β , x , r) = x
 
-  η : (σ : ⟨ O 𝓤 ↓ α ⟩) → f (g σ) ≡ σ
+  η : (σ : ⟨ OO 𝓤 ↓ α ⟩) → f (g σ) ≡ σ
   η (.(α ↓ x) , x , refl) = refl
 
   ε : (x : ⟨ α ⟩) → g (f x) ≡ x
   ε x = refl
 
-  q : is-order-preserving (O 𝓤 ↓ α) α g
+  q : is-order-preserving (OO 𝓤 ↓ α) α g
   q (.(α ↓ x) , x , refl) (.(α ↓ x') , x' , refl) = ↓-reflects-order α x x'
 
 \end{code}
@@ -984,7 +982,7 @@ logically equivalent to the condition (a : ⟨ α ⟩) → (α ↓ a) ⊲ β.
 \begin{code}
 
 _≼_ : Ordinal 𝓤 → Ordinal 𝓤 → 𝓤 ⁺ ̇
-α ≼ β = α ≼⟨ O _ ⟩ β
+α ≼ β = α ≼⟨ OO _ ⟩ β
 
 to-≼ : {α β : Ordinal 𝓤}
      → ((a : ⟨ α ⟩) → (α ↓ a) ⊲ β)
@@ -1146,7 +1144,7 @@ to-⊴ α β ϕ = g
 ≼-gives-⊴ {𝓤} α β l = to-⊴ α β (from-≼ l)
 
 ⊲-gives-≼ : (α β : Ordinal 𝓤) → α ⊲ β → α ≼ β
-⊲-gives-≼ {𝓤} α β l α' m = Transitivity (O 𝓤) α' α β m l
+⊲-gives-≼ {𝓤} α β l α' m = Transitivity (OO 𝓤) α' α β m l
 
 ⊲-gives-⊴ : (α β : Ordinal 𝓤) → α ⊲ β → α ⊴ β
 ⊲-gives-⊴ α β l = ≼-gives-⊴ α β (⊲-gives-≼ α β l)
@@ -1157,20 +1155,20 @@ Transfinite induction on the ordinal of ordinals:
 
 \begin{code}
 
-transfinite-induction-on-O : (P : Ordinal 𝓤 → 𝓥 ̇ )
-                           → ((α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
-                           → (α : Ordinal 𝓤) → P α
-transfinite-induction-on-O {𝓤} {𝓥} P f = Transfinite-induction (O 𝓤) P f'
+transfinite-induction-on-OO : (P : Ordinal 𝓤 → 𝓥 ̇ )
+                            → ((α : Ordinal 𝓤) → ((a : ⟨ α ⟩) → P (α ↓ a)) → P α)
+                            → (α : Ordinal 𝓤) → P α
+transfinite-induction-on-OO {𝓤} {𝓥} P f = Transfinite-induction (OO 𝓤) P f'
  where
   f' : (α : Ordinal 𝓤)
      → ((α' : Ordinal 𝓤) → α' ⊲ α → P α')
      → P α
   f' α g = f α (λ a → g (α ↓ a) (a , refl))
 
-transfinite-recursion-on-O : (X : 𝓥 ̇ )
-                           → ((α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
-                           → Ordinal 𝓤 → X
-transfinite-recursion-on-O {𝓤} {𝓥} X = transfinite-induction-on-O (λ _ → X)
+transfinite-recursion-on-OO : (X : 𝓥 ̇ )
+                            → ((α : Ordinal 𝓤) → (⟨ α ⟩ → X) → X)
+                            → Ordinal 𝓤 → X
+transfinite-recursion-on-OO {𝓤} {𝓥} X = transfinite-induction-on-OO (λ _ → X)
 
 has-minimal-element : Ordinal 𝓤 → 𝓤 ̇
 has-minimal-element α = Σ a ꞉ ⟨ α ⟩ , ((x : ⟨ α ⟩) → a ≾⟨ α ⟩ x)
@@ -1181,7 +1179,7 @@ has-no-minimal-element α = ((a : ⟨ α ⟩) → ¬¬ (Σ x ꞉ ⟨ α ⟩ , x 
 ordinal-with-no-minimal-element-is-empty : (α : Ordinal 𝓤)
                                          → has-no-minimal-element α
                                          → is-empty ⟨ α ⟩
-ordinal-with-no-minimal-element-is-empty {𝓤} = transfinite-induction-on-O P ϕ
+ordinal-with-no-minimal-element-is-empty {𝓤} = transfinite-induction-on-OO P ϕ
  where
   P : Ordinal 𝓤 → 𝓤 ̇
   P α = has-no-minimal-element α → is-empty ⟨ α ⟩

@@ -1,5 +1,7 @@
-Marc Bezem, Thierry Coquand, Peter Dybjer, and Martin Escardo.
+Martin Escardo
 21-25 December 2020.
+
+In collaboration with  Marc Bezem, Thierry Coquand, Peter Dybjer.
 
 The Burali-Forti argument in HoTT/UF in Agda notation
 -----------------------------------------------------
@@ -153,50 +155,28 @@ universe 𝓤 equivalent to the ordinal of all ordinals in the universe 𝓤.
 
 \begin{code}
 
-Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ Ordinal-of-ordinals 𝓤)
+Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ OO 𝓤)
 Burali-Forti {𝓤} (α , 𝕗) = γ
  where
-  A : Ordinal (𝓤 ⁺)
-  A = Ordinal-of-ordinals 𝓤
+  a : OO 𝓤 ≃ₒ α
+  a = ≃ₒ-sym α (OO 𝓤) 𝕗
 
-  a : A ≃ₒ α
-  a = ≃ₒ-sym α A 𝕗
+  b : α ≃ₒ (OO 𝓤 ↓ α)
+  b = ordinals-in-OO-are-lowersets-of-OO α
 
-  b : α ≃ₒ (A ↓ α)
-  b = ordinals-in-O-are-lowersets-of-O α
+  c : OO 𝓤 ≃ₒ (OO 𝓤 ↓ α)
+  c = ≃ₒ-trans (OO 𝓤) α (OO 𝓤 ↓ α) a b
 
-  c : A ≃ₒ (A ↓ α)
-  c = ≃ₒ-trans A α (A ↓ α) a b
+  d : OO 𝓤 ≡ (OO 𝓤 ↓ α)
+  d = eqtoidₒ (OO 𝓤) (OO 𝓤 ↓ α) c
 
-  d : A ≡ (A ↓ α)
-  d = eqtoidₒ A (A ↓ α) c
-
-  e : A ⊲ A
+  e : OO 𝓤 ⊲ OO 𝓤
   e = α , d
 
   γ : 𝟘
-  γ = irreflexive _⊲_ A (⊲-is-well-founded A) e
+  γ = irreflexive _⊲_ (OO 𝓤) (⊲-is-well-founded (OO 𝓤)) e
 
 \end{code}
-
-Side-remark. The following cleaner rendering of the above makes Agda
-2.6.1 (and the development version 2.6.2 as of 25 December 2020) hang
-when it reaches d in the definition of e':
-\begin{code}
-{-
-  𝓐 : Ordinal (𝓤 ⁺ ⁺)
-  𝓐 = Ordinal-of-ordinals (𝓤 ⁺)
-
-  e' : A ≺⟨ 𝓐 ⟩ A
-  e' = α , d
-
-  γ' : 𝟘
-  γ' = irrefl 𝓐 A e
--}
-\end{code}
-
-The uncommented version is a manually beta-reduced form of the
-commented-out version.
 
 Some corollaries follow.
 
@@ -205,10 +185,10 @@ ordinals is large, happens in the function transfer-structure, which
 is developed in the module OrdinalsWellOrderTransport, where the
 difficulties are explained.
 
-As discussed above, the type Ordinal-of-ordinals 𝓤 of ordinals in the
+As discussed above, the type OO 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
 universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
-otherwise. This is define in the module UF-Size.
+otherwise. This is defined in the module UF-Size.
 
 Our first corollary of Burali-Forti is that the type of ordinals is
 large, as expected:
@@ -218,8 +198,8 @@ large, as expected:
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
 the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
  where
-  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ Ordinal-of-ordinals 𝓤
-  δ = transfer-structure fe X (Ordinal-of-ordinals 𝓤)
+  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OO 𝓤
+  δ = transfer-structure fe X (OO 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
 
   γ : 𝟘

@@ -40,7 +40,7 @@ Of course:
 \begin{code}
 
 at-most-one-universe-embedding : Univalence
-                               → (f g : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                               → (f g : 𝓤 ̇ → 𝓥 ̇ )
                                → is-universe-embedding f
                                → is-universe-embedding g
                                → f ≡ g
@@ -50,13 +50,13 @@ at-most-one-universe-embedding {𝓤} {𝓥} ua f g i j = p
   h X = i X ● ≃-sym (j X)
 
   H : f ∼ g
-  H X = eqtoid (ua (𝓤 ⊔ 𝓥)) (f X) (g X) (h X)
+  H X = eqtoid (ua 𝓥) (f X) (g X) (h X)
 
   p : f ≡ g
-  p = dfunext (Univalence-gives-FunExt ua (𝓤 ⁺) ((𝓤 ⊔ 𝓥)⁺)) H
+  p = dfunext (Univalence-gives-Fun-Ext ua) H
 
 universe-embeddings-are-embeddings : Univalence
-                                   → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ )
+                                   → (𝓤 𝓥 : Universe) (f : 𝓤 ̇ → 𝓥 ̇ )
                                    → is-universe-embedding f
                                    → is-embedding f
 universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
@@ -67,7 +67,7 @@ universe-embeddings-are-embeddings ua 𝓤 𝓥 f i = embedding-criterion' f γ
             (X ≃ X')      ≃⟨ c ⟩
             (X ≡ X')      ■
    where
-    a = univalence-≃ (ua (𝓤 ⊔ 𝓥)) (f X) (f X')
+    a = univalence-≃ (ua 𝓥) (f X) (f X')
     b = Eq-Eq-cong (Univalence-gives-FunExt ua) (i X) (i X')
     c = ≃-sym (univalence-≃ (ua 𝓤) X X')
 
@@ -92,7 +92,7 @@ Lift'-≃ : (𝓥 : Universe) (X : 𝓤 ̇ ) → Lift' 𝓥 X ≃ X
 Lift'-≃ 𝓥 X = 𝟘-rneutral'
 
 Lift'-is-embedding : Univalence → is-embedding (Lift' {𝓤} 𝓥)
-Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥
+Lift'-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥)
                                   (Lift' 𝓥) (Lift'-≃ 𝓥)
 \end{code}
 
@@ -133,7 +133,7 @@ Lift-is-universe-embedding : (𝓥 : Universe) → is-universe-embedding (Lift {
 Lift-is-universe-embedding = Lift-≃
 
 Lift-is-embedding : Univalence → is-embedding (Lift {𝓤} 𝓥)
-Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 𝓥
+Lift-is-embedding {𝓤} {𝓥} ua = universe-embeddings-are-embeddings ua 𝓤 (𝓤 ⊔ 𝓥)
                                  (Lift 𝓥) (Lift-is-universe-embedding 𝓥)
 \end{code}
 

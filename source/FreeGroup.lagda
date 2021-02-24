@@ -1,15 +1,18 @@
-Marc Bezem, Thierry Coquand, Peter Dybjer, Martin Escardo.
+Martin Escardo
 January - February 2021.
+
+In collaboration with Marc Bezem, Thierry Coquand and Peter Dybjer
 
 We construct free groups in HoTT/UF in Agda without HIT's other than
 propositional truncation, and with no consequence of univalence other
 than function extensionality and propositional extensionality.
 
-This is based on Fred Richman's book on constructive algebra. In
-particular, this construction shows that the inclusion of generators
-is injective (and hence an embedding in the sense of HoTT/UF). It is
-noteworthy and surprising that the set of generators is not required
-to have decidable equality.
+This is based on the book "A course in constructive algebra" by Ray
+Mines, Fred Richman and Wim Ruttenberg, 1988. In particular, this
+construction shows that the inclusion of generators is injective (and
+hence an embedding in the sense of HoTT/UF). It is noteworthy and
+surprising that the set of generators is not required to have
+decidable equality.
 
 This is part of Martin Escardo's Agda development TypeTopology,
 whose philosophy is to be Spartan. At the moment we are a little bit
@@ -250,8 +253,8 @@ induction on u₀ and u₁:
 \end{code}
 
 It is noteworthy and remarkable that the above doesn't need decidable
-equality on A. We repeat that this construction is due to Fred
-Richman.
+equality on A. We repeat that this construction is due to Mines,
+Richman and Ruttenberg
 
 The following import defines
 
