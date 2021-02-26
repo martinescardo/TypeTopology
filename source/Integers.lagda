@@ -606,10 +606,10 @@ shift-if-commute-with-succ-ℤ f h (neg n) =
                                f pred-ℤ (commute-with-pred-ℤ f h) (succ n) 𝟎 ⟩
  (pred-ℤ ^ (succ n)) (f 𝟎) ∎
 
-equiv-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
-                             → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
-                             → is-equiv f
-equiv-if-commute-with-succ-ℤ f h =
+is-equiv-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
+                                → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
+                                → is-equiv f
+is-equiv-if-commute-with-succ-ℤ f h =
  equiv-closed-under-∼ (λ x → x +ℤ f 𝟎) f
   (+ℤ-is-equiv₁ (f 𝟎)) (shift-if-commute-with-succ-ℤ f h)
 
