@@ -60,6 +60,9 @@ transport-along-≡ refl p = (refl ⁻¹ ∙ (p ∙ refl) ≡⟨ refl           
 
 \begin{code}
 
+fe₀ : funext 𝓤₀ 𝓤₀
+fe₀ = univalence-gives-funext ua
+
 open PropositionalTruncation pt
 open sip
 open sip-with-axioms
@@ -124,8 +127,11 @@ to-Tℤ-≡ X Y = ⌜ characterization-of-Tℤ-≡ X Y ⌝⁻¹
 
 \begin{code}
 
+loop-≅ : base ≅ base
+loop-≅ = (succ-ℤ , succ-ℤ-is-equiv , refl)
+
 loop : base ≡ base
-loop = to-Tℤ-≡ base base (succ-ℤ , succ-ℤ-is-equiv , refl)
+loop = to-Tℤ-≡ base base loop-≅
 
 \end{code}
 
@@ -140,11 +146,9 @@ fundamental-group-of-circle-is-ℤ =
  (Σ e ꞉ (ℤ → ℤ) , (e ∘ succ-ℤ ∼ succ-ℤ ∘ e))              ≃⟨ V   ⟩
  ℤ                                                        ■
   where
-   fe : funext 𝓤₀ 𝓤₀
-   fe = univalence-gives-funext ua
    I   = characterization-of-Tℤ-≡ base base
    II  = Σ-cong (λ e → ×-cong (≃-refl (is-equiv e))
-                              (≃-funext fe (e ∘ succ-ℤ) (succ-ℤ ∘ e)))
+                              (≃-funext fe₀ (e ∘ succ-ℤ) (succ-ℤ ∘ e)))
    III = Σ-cong (λ e → ×-comm)
    IV  = Σ-cong γ
     where
@@ -157,32 +161,28 @@ fundamental-group-of-circle-is-ℤ =
          → (e ∘ succ-ℤ ∼ succ-ℤ ∘ e) × is-equiv e
        ϕ c = (c , is-equiv-if-commute-with-succ-ℤ e c)
        η : ϕ ∘ pr₁ ∼ id
-       η (i , c) = to-subtype-≡ (λ _ → being-equiv-is-prop' fe fe fe fe e) refl
+       η (i , c) = to-subtype-≡ (λ _ → being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ e) refl
        ε : pr₁ ∘ ϕ ∼ id
        ε _ = refl
-   V   = ℤ-symmetric-induction fe (λ _ → ℤ) (λ _ → succ-ℤ-≃)
+   V   = ℤ-symmetric-induction fe₀ (λ _ → ℤ) (λ _ → succ-ℤ-≃)
 
 \end{code}
 
 \begin{code}
 
-⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
-⟨ (X , f , t) ⟩₂ = f
-
-Tℤ-≡-to-≃-of-carriers : {X Y : Tℤ} → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
-Tℤ-≡-to-≃-of-carriers {X} {Y} p = pr₁ c , pr₁ (pr₂ c)
+to-≃-of-⟨⟩ : {X Y : Tℤ} → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
+to-≃-of-⟨⟩ {X} {Y} p = pr₁ c , pr₁ (pr₂ c)
  where
   c = ⌜ characterization-of-Tℤ-≡ X Y ⌝ p
 
-Tℤ-≡-to-≃-of-carriers-is-idtoeq : {X Y : Tℤ} (p : X ≡ Y)
-                                → idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ p)
-                                ≡ Tℤ-≡-to-≃-of-carriers p
-Tℤ-≡-to-≃-of-carriers-is-idtoeq refl = refl
+to-≃-of-⟨⟩-is-idtoeq : {X Y : Tℤ} (p : X ≡ Y)
+                     → idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ p) ≡ to-≃-of-⟨⟩ p
+to-≃-of-⟨⟩-is-idtoeq refl = refl
 
 idtoeq-of-loop-is-succ-ℤ-≃ : idtoeq ℤ ℤ (ap ⟨_⟩ loop) ≡ succ-ℤ-≃
 idtoeq-of-loop-is-succ-ℤ-≃ =
  idtoeq ℤ ℤ (ap ⟨_⟩ loop)                        ≡⟨ I    ⟩
- Tℤ-≡-to-≃-of-carriers loop                      ≡⟨ refl ⟩
+ to-≃-of-⟨⟩ loop                                 ≡⟨ refl ⟩
  (pr₁ (ϕ loop)       , pr₁ (pr₂ (ϕ loop)))       ≡⟨ refl ⟩
  (pr₁ (ϕ (ψ loop-≅)) , pr₁ (pr₂ (ϕ (ψ loop-≅)))) ≡⟨ II   ⟩
  (pr₁ loop-≅         , pr₁ (pr₂ loop-≅))         ∎
@@ -191,13 +191,39 @@ idtoeq-of-loop-is-succ-ℤ-≃ =
    ϕ = ⌜ characterization-of-Tℤ-≡ base base ⌝
    ψ : base ≅ base → base ≡ base
    ψ = ⌜ characterization-of-Tℤ-≡ base base ⌝⁻¹
-   loop-≅ : base ≅ base
-   loop-≅ = (succ-ℤ , succ-ℤ-is-equiv , refl)
-   I  = Tℤ-≡-to-≃-of-carriers-is-idtoeq loop
+   I  = to-≃-of-⟨⟩-is-idtoeq loop
    II = ap (λ - → (pr₁ - , pr₁ (pr₂ -))) (ε loop-≅)
     where
      ε : ϕ ∘ ψ ∼ id
      ε = inverses-are-sections ϕ (⌜⌝-is-equiv (characterization-of-Tℤ-≡ base base))
+
+\end{code}
+
+\begin{code}
+
+⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
+⟨ (X , f , t) ⟩₂ = f
+
+\end{code}
+
+\begin{code}
+
+_⁻ : Tℤ → Tℤ⁻
+X ⁻ = ⟨ X ⟩ , ⟨ X ⟩₂
+
+Tℤ-≡-from-Tℤ⁻-≡ : {X Y : Tℤ}
+                → X ⁻ ≡ Y ⁻
+                → X ≡ Y
+Tℤ-≡-from-Tℤ⁻-≡ q = ap ⌜ Σ-assoc ⌝ (to-subtype-≡ (λ _ → ∥∥-is-prop) q)
+
+Tℤ-prop-induction : {𝓤 : Universe} {P : Tℤ → 𝓤 ̇ }
+                  → ((X : Tℤ) → is-prop (P X))
+                  → P base
+                  → (X : Tℤ) → P X
+Tℤ-prop-induction {𝓤} {P} i p (X , f , t) = ∥∥-rec (i (X , f , t)) γ t
+ where
+  γ : (ℤ , succ-ℤ) ≡ (X , f) → P (X , f , t)
+  γ q = transport P (Tℤ-≡-from-Tℤ⁻-≡ q) p
 
 \end{code}
 
@@ -231,10 +257,8 @@ module Tℤ-rec
        g = ((λ q → p ∙ q) , ∙-is-equiv₁ p)
 
  BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
- BBG-is-singleton (X , f , t) = ∥∥-rec (being-singleton-is-prop fe) γ t
-  where
-   γ : (ℤ , succ-ℤ) ≡ (X , f) → is-singleton (BBG (X , f))
-   γ refl = BBG-base-is-singleton
+ BBG-is-singleton = Tℤ-prop-induction (λ _ → being-singleton-is-prop fe)
+                     BBG-base-is-singleton
 
  Tℤ-rec : Tℤ → A
  Tℤ-rec X = pr₁ (center (BBG-is-singleton X))
@@ -292,6 +316,197 @@ module Tℤ-rec
 
 \begin{code}
 
+⟨⟩-is-set : (X : Tℤ) → is-set ⟨ X ⟩
+⟨⟩-is-set = Tℤ-prop-induction (λ _ → being-set-is-prop fe₀) ℤ-is-set
+
+⟨⟩₂-is-equiv : (X : Tℤ) → is-equiv ⟨ X ⟩₂
+⟨⟩₂-is-equiv = Tℤ-prop-induction
+                (λ X → being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ ⟨ X ⟩₂)
+                succ-ℤ-is-equiv
+
+⟨_⟩₂-≃ : (X : Tℤ) → ⟨ X ⟩ ≃ ⟨ X ⟩
+⟨_⟩₂-≃ X = (⟨ X ⟩₂ , ⟨⟩₂-is-equiv X)
+
+⟨_⟩₂⁻¹ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
+⟨_⟩₂⁻¹ X = ⌜ ⟨ X ⟩₂-≃ ⌝⁻¹
+
+
+\end{code}
+
+\begin{code}
+
+≅-comp-Tℤ : (X Y Z : Tℤ) → X ≅ Y → Y ≅ Z → X ≅ Z
+≅-comp-Tℤ X Y Z (e , i , c) (e' , i' , c') =
+ (e' ∘ e , ∘-is-equiv i i' , dfunext fe₀ γ)
+  where
+   γ : e' ∘ e ∘ ⟨ X ⟩₂ ∼ ⟨ Z ⟩₂ ∘ e' ∘ e
+   γ x = e' (e (⟨ X ⟩₂ x)) ≡⟨ ap e' (happly c x) ⟩
+         e' (⟨ Y ⟩₂ (e x)) ≡⟨ happly c' (e x) ⟩
+         ⟨ Z ⟩₂ (e' (e x)) ∎
+
+to-≡-of-≅ : {X Y : Tℤ} {f g : X ≅ Y}
+          → pr₁ f ∼ pr₁ g
+          → f ≡ g
+to-≡-of-≅ {X} {Y} h =
+ to-subtype-≡
+  (λ f' → ×-is-prop (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ f')
+         (equiv-to-prop (≃-funext fe₀ _ _)
+          (Π-is-prop fe₀ (λ _ → ⟨⟩-is-set Y))))
+  (dfunext fe₀ h)
+
+\end{code}
+
+\begin{code}
+
+Tℤ-action : (X : Tℤ) → ⟨ X ⟩ → ℤ → ⟨ X ⟩
+Tℤ-action X x 𝟎       = x
+Tℤ-action X x (pos n) = (⟨ X ⟩₂   ^ (succ n)) x
+Tℤ-action X x (neg n) = (⟨ X ⟩₂⁻¹ ^ (succ n)) x
+
+Tℤ-action-commutes-with-⟨⟩₂ : (X : Tℤ) (x : ⟨ X ⟩)
+                            → Tℤ-action X (⟨ X ⟩₂ x)
+                            ∼ ⟨ X ⟩₂ ∘ Tℤ-action X x
+Tℤ-action-commutes-with-⟨⟩₂ X x 𝟎       = refl
+Tℤ-action-commutes-with-⟨⟩₂ X x (pos n) =
+ ap ⟨ X ⟩₂ ((commute-with-iterated-function ⟨ X ⟩₂ ⟨ X ⟩₂ (λ _ → refl) n x) ⁻¹)
+Tℤ-action-commutes-with-⟨⟩₂ X x (neg n) = γ
+ where
+  γ : (⟨ X ⟩₂⁻¹ ^ (succ n)) (⟨ X ⟩₂ x) ≡ ⟨ X ⟩₂ ((⟨ X ⟩₂⁻¹ ^ (succ n)) x)
+  γ = (commute-with-iterated-function ⟨ X ⟩₂ ⟨ X ⟩₂⁻¹ ϕ (succ n) x) ⁻¹
+   where
+    ϕ : ⟨ X ⟩₂ ∘ ⟨ X ⟩₂⁻¹ ∼ ⟨ X ⟩₂⁻¹ ∘ ⟨ X ⟩₂
+    ϕ y = ⟨ X ⟩₂ (⟨ X ⟩₂⁻¹ y) ≡⟨ I  ⟩
+          y                   ≡⟨ II ⟩
+          ⟨ X ⟩₂⁻¹ (⟨ X ⟩₂ y) ∎
+     where
+      I  = inverses-are-sections ⟨ X ⟩₂ (⟨⟩₂-is-equiv X) y
+      II = (inverses-are-retractions ⟨ X ⟩₂ (⟨⟩₂-is-equiv X) y) ⁻¹
+
+Tℤ-action-commutes-with-⟨⟩₂-≡ : (X : Tℤ) (x : ⟨ X ⟩)
+                              → Tℤ-action X (⟨ X ⟩₂ x) ≡ ⟨ X ⟩₂ ∘ Tℤ-action X x
+Tℤ-action-commutes-with-⟨⟩₂-≡ X x = dfunext fe₀ (Tℤ-action-commutes-with-⟨⟩₂ X x)
+
+Tℤ-action-base-is-shift : (x : ℤ) → Tℤ-action base x ∼ (λ y → y +ℤ x)
+Tℤ-action-base-is-shift x 𝟎       = refl
+Tℤ-action-base-is-shift x (pos n) = refl
+Tℤ-action-base-is-shift x (neg n) = ap (λ - → (- ^ succ n) x) (ap ⌜_⌝⁻¹ ϕ)
+      where
+       ϕ : ⟨ base ⟩₂-≃ ≡ succ-ℤ-≃
+       ϕ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀) refl
+
+Tℤ-action-is-equiv : (X : Tℤ) (x : ⟨ X ⟩) → is-equiv (Tℤ-action X x)
+Tℤ-action-is-equiv =
+ Tℤ-prop-induction (λ X → Π-is-prop fe₀
+                   (λ x → being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ (Tℤ-action X x)))
+                   γ
+  where
+   γ : (x : ℤ) → is-equiv (Tℤ-action base x)
+   γ x = equiv-closed-under-∼ (λ y → y +ℤ x) (Tℤ-action base x)
+          (+ℤ-is-equiv₁ x) (Tℤ-action-base-is-shift x)
+
+Tℤ-action-is-Tℤ-map : (X : Tℤ) (x : ⟨ X ⟩)
+                    → (Tℤ-action X x ∘ succ-ℤ ≡ ⟨ X ⟩₂ ∘ Tℤ-action X x)
+Tℤ-action-is-Tℤ-map = Tℤ-prop-induction i γ
+ where
+  i : (X : Tℤ)
+    → is-prop ((x : ⟨ X ⟩) → (Tℤ-action X x ∘ succ-ℤ ≡ ⟨ X ⟩₂ ∘ Tℤ-action X x))
+  i X = Π-is-prop fe₀
+         (λ x → equiv-to-prop
+                 (≃-funext fe₀ (Tℤ-action X x ∘ succ-ℤ) (⟨ X ⟩₂ ∘ Tℤ-action X x))
+                 (Π-is-prop fe₀ (λ _ → ⟨⟩-is-set X)))
+  γ : (x : ℤ)
+    →  Tℤ-action base x ∘ succ-ℤ ≡ succ-ℤ ∘ Tℤ-action base x
+  γ x = dfunext fe₀ h
+   where
+    h : Tℤ-action base x ∘ succ-ℤ ∼ succ-ℤ ∘ Tℤ-action base x
+    h y = Tℤ-action base x (succ-ℤ y) ≡⟨ I   ⟩
+          (succ-ℤ y) +ℤ x             ≡⟨ II  ⟩
+          succ-ℤ (y +ℤ x)             ≡⟨ III ⟩
+          succ-ℤ (Tℤ-action base x y) ∎
+     where
+      I   = Tℤ-action-base-is-shift x (succ-ℤ y)
+      II  = shift-commutes-with-succ-ℤ₂ x y
+      III = ap succ-ℤ ((Tℤ-action-base-is-shift x y) ⁻¹)
+
+Tℤ-action-≅ : (X : Tℤ) (x : ⟨ X ⟩) → base ≅ X
+Tℤ-action-≅ X x =
+ (Tℤ-action X x , Tℤ-action-is-equiv X x , Tℤ-action-is-Tℤ-map X x)
+
+Tℤ-action-≡ : (X : Tℤ) (x : ⟨ X ⟩) → base ≡ X
+Tℤ-action-≡ X x = to-Tℤ-≡ base X (Tℤ-action-≅ X x)
+
+\end{code}
+
+\begin{code}
+
+Tℤ-action-lemma : (X : Tℤ) (x : ⟨ X ⟩)
+                → Tℤ-action X (⟨ X ⟩₂ x)
+                ≡ Tℤ-action X x ∘ succ-ℤ
+Tℤ-action-lemma X x = Tℤ-action-commutes-with-⟨⟩₂-≡ X x
+                    ∙ (Tℤ-action-is-Tℤ-map X x) ⁻¹
+
+Tℤ-action-≡-lemma : (X : Tℤ) (x : ⟨ X ⟩)
+                  → Tℤ-action-≡ X (⟨ X ⟩₂ x) ≡ loop ∙ Tℤ-action-≡ X x
+Tℤ-action-≡-lemma X x =
+ Tℤ-action-≡ X (⟨ X ⟩₂ x)                                        ≡⟨ refl ⟩
+ to-Tℤ-≡ base X (Tℤ-action-≅ X (f x))                            ≡⟨ {!!} ⟩ -- ap (to-Tℤ-≡ base X) ϕ ⟩
+ to-Tℤ-≡ base X (≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)) ≡⟨ {!!} ⟩
+ to-Tℤ-≡ base base loop-≅ ∙ to-Tℤ-≡ base X (Tℤ-action-≅ X x)     ≡⟨ refl ⟩
+ loop ∙ Tℤ-action-≡ X x                                          ∎
+  where
+   f : ⟨ X ⟩ → ⟨ X ⟩
+   f = ⟨ X ⟩₂
+   ϕ : Tℤ-action-≅ X (f x) ≡ ≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)
+   ϕ = to-≡-of-≅ {base} {X} (happly (Tℤ-action-lemma X x))
+
+\end{code}
+
+\begin{code}
+
+module _
+        {A : 𝓤 ̇ }
+        (r : Tℤ → A)
+       where
+
+ aᵣ : A
+ aᵣ = r base
+
+ pᵣ : aᵣ ≡ aᵣ
+ pᵣ = ap r loop
+
+ BBG-map : (X : Tℤ) → ⟨ X ⟩ → aᵣ ≡ r X
+ BBG-map X x = ap r (Tℤ-action-≡ X x)
+
+ BBG-map-lemma : (X : Tℤ) (x : ⟨ X ⟩)
+               → BBG-map X (⟨ X ⟩₂ x) ≡ pᵣ ∙ BBG-map X x
+ BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x) ≡⟨ refl ⟩
+                     ap r (Tℤ-action-≡ X (⟨ X ⟩₂ x)) ≡⟨ ap (ap r) (Tℤ-action-≡-lemma X x) ⟩
+                     ap r (loop ∙ Tℤ-action-≡ X x) ≡⟨ ap-∙ r loop (Tℤ-action-≡ X x) ⟩
+                     ap r loop ∙ ap r (Tℤ-action-≡ X x) ≡⟨ refl ⟩
+                     pᵣ ∙ BBG-map X x ∎
+
+ module _
+         (fe : funext 𝓤 𝓤)
+        where
+
+  open Tℤ-rec fe (aᵣ , pᵣ)
+
+  bbg : (X : Tℤ) → BBG (X ⁻)
+  bbg X = (r X , BBG-map X , BBG-map-lemma X)
+
+  -- This will give the uniqueness principle
+  test : r ∼ Tℤ-rec
+  test X = r X ≡⟨ refl ⟩
+           pr₁ (bbg X) ≡⟨ ap pr₁ (singletons-are-props (BBG-is-singleton X) (bbg X) (center (BBG-is-singleton X))) ⟩
+           pr₁ (center (BBG-is-singleton X)) ≡⟨ refl ⟩
+           Tℤ-rec X ∎
+
+-- BBG (X , f) = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
+
+\end{code}
+
+\begin{code}
+
 {-
 to-≃-of-⟨⟩ : (X Y : Tℤ) → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
 to-≃-of-⟨⟩ X Y q = pr₁ h , pr₁ (pr₂ h)
@@ -313,149 +528,6 @@ to-≃-of-⟨⟩ X Y q = pr₁ h , pr₁ (pr₂ h)
 \end{code}
 
 \begin{code}
-
--- Tℤ-≡-to-≃-of-carriers : {X Y : Tℤ} → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
--- Tℤ-≡-to-≃-of-carriers p = pr₁ c , pr₁ (pr₂ c)
---  where
---   c = ⌜ characterization-of-Tℤ-≡ _ _ ⌝ p
-
--- yyy : {X Y : Tℤ} (p : X ≡ Y)
---     → idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ p) ≡ Tℤ-≡-to-≃-of-carriers p
--- yyy refl = refl
-
--- xxx : idtoeq ℤ ℤ (ap ⟨_⟩ loop) ≡ succ-ℤ-≃
--- xxx = idtoeq ℤ ℤ (ap ⟨_⟩ loop) ≡⟨ yyy loop ⟩
---       Tℤ-≡-to-≃-of-carriers loop ≡⟨ refl ⟩
---        pr₁ (ϕ loop) , pr₁ (pr₂ (ϕ loop)) ≡⟨ refl ⟩
---        pr₁ (ϕ (ψ l)) , pr₁ (pr₂ (ϕ (ψ l))) ≡⟨ ap (λ - → pr₁ - , pr₁ (pr₂ -)) (s l) ⟩
---        pr₁ l , pr₁ (pr₂ l) ∎
---  where
---   ϕ : base ≡ base → base ≅ base
---   ϕ = ⌜ characterization-of-Tℤ-≡ base base ⌝
---   ψ : base ≅ base → base ≡ base
---   ψ = ⌜ characterization-of-Tℤ-≡ base base ⌝⁻¹
---   s : ϕ ∘ ψ ∼ id
---   s = inverses-are-sections ϕ (⌜⌝-is-equiv (characterization-of-Tℤ-≡ base base))
---   l : base ≅ base
---   l = (succ-ℤ , succ-ℤ-is-equiv , refl)
-
--- module Tℤ-rec
---         {A : 𝓤 ̇ }
---         (fe : funext 𝓤 𝓤)
---         {a : A}
---         (p : a ≡ a)
---        where
-
---  Qₚ : (Σ X ꞉ 𝓤₀ ̇ , (X → X)) → 𝓤 ̇
---  Qₚ (X , f) = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
-
---  Qₚ-base : 𝓤 ̇
---  Qₚ-base = Qₚ (ℤ , succ-ℤ)
-
---  Qₚ-base-is-singleton : is-singleton Qₚ-base
---  Qₚ-base-is-singleton = equiv-to-singleton ϕ (singleton-types-are-singletons a)
---   where
---    ϕ : Qₚ-base ≃ singleton-type a
---    ϕ = Σ-cong ψ
---     where
---      ψ : (a' : A)
---        → (Σ h ꞉ (ℤ → a ≡ a') , ((z : ℤ) → h (succ-ℤ z) ≡ p ∙ h z))
---        ≃ (a ≡ a')
---      ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe)
---              (λ (_ : ℤ) → a ≡ a') (λ (_ : ℤ) → g)
---       where
---        g : (a ≡ a') ≃ (a ≡ a')
---        g = (λ q → p ∙ q) , (∙-is-equiv₁ p)
-
---  cₚ-base : Qₚ-base
---  cₚ-base = center (Qₚ-base-is-singleton)
-
---  cₚ¹-base : A
---  cₚ¹-base = pr₁ cₚ-base
-
---  cₚ²-base : ℤ → a ≡ cₚ¹-base
---  cₚ²-base = pr₁ (pr₂ (cₚ-base))
-
---  cₚ³-base : (z : ℤ) → cₚ²-base (succ-ℤ z) ≡ p ∙ cₚ²-base z
---  cₚ³-base = pr₂ (pr₂ (cₚ-base))
-
---  ∥∥-rec-comp : {𝓤 𝓥 : Universe} {X : 𝓤 ̇ } {P : 𝓥 ̇ }
---                (i : is-prop P) (f : X → P) (x : X)
---              → ∥∥-rec i f ∣ x ∣ ≡ f x
---  ∥∥-rec-comp i f x = i (∥∥-rec i f ∣ x ∣) (f x)
-
---  Qₚ-is-singleton : ((X , f , t) : Tℤ)
---                  → is-singleton (Qₚ (X , f))
---  Qₚ-is-singleton (X , f , t) = ∥∥-rec (being-singleton-is-prop fe) γ t
---   where
---    γ :  (ℤ , succ-ℤ) ≡ (X , f) → is-singleton (Qₚ (X , f))
---    γ refl = Qₚ-base-is-singleton
-
---  cₚ : ((X , f , _) : Tℤ) → Qₚ (X , f)
---  cₚ (X , f , t) =
---   ∥∥-rec (singletons-are-props (Qₚ-is-singleton (X , f , t)))
---    (λ e → transport Qₚ e cₚ-base) t
-
--- {-
---  cₚ-on-base : cₚ base ≡ cₚ-base
---  cₚ-on-base = ∥∥-rec-comp (singletons-are-props (Qₚ-is-singleton base))
---   (λ e → back-transport Qₚ e cₚ-base) refl
--- -}
-
---  cₚ¹ : Tℤ → A
---  cₚ¹ X = pr₁ (cₚ X)
-
--- {-
---  cₚ¹-on-base : cₚ¹ base ≡ cₚ¹-base
---  cₚ¹-on-base = ap pr₁ cₚ-on-base
--- -}
-
---  cₚ² : (X : Tℤ) → (⟨ X ⟩ → a ≡ cₚ¹ X)
---  cₚ² X = pr₁ (pr₂ (cₚ X))
-
--- {-
---  cₚ²-on-base : cₚ² base ≡ back-transport (λ - → ℤ → a ≡ -) cₚ¹-on-base cₚ²-base
---  cₚ²-on-base = {!!}
--- -}
-
---  cₚ³ : (X : Tℤ) → (x : ⟨ X ⟩)
---      → cₚ² X (⟨ X ⟩₂ x) ≡ p ∙ cₚ² X x
---  cₚ³ X = pr₂ (pr₂ (cₚ X))
-
---  lemma : {X Y : Tℤ} (e : X ≡ Y) (x : ⟨ X ⟩)
---        → ap cₚ¹ e
---        ≡ (cₚ² X x) ⁻¹ ∙ cₚ² Y (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ e) ⌝ x)
---  lemma {X} {Y} refl x =
---   ap cₚ¹ refl                                  ≡⟨ refl ⟩
---   refl                                         ≡⟨ left-inverse (cₚ² X x) ⁻¹ ⟩
---   (cₚ² X x) ⁻¹ ∙ cₚ² X x                       ≡⟨ refl ⟩
---   (cₚ² X x) ⁻¹ ∙ cₚ² X (⌜ idtoeq _ _ refl ⌝ x) ∎
-
---  lemma' : ap cₚ¹ loop ≡
---             (cₚ² base 𝟎) ⁻¹ ∙
---             cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎)
---  lemma' = lemma loop 𝟎
-
---  kkkk : ap cₚ¹ loop ≡ (cₚ² base 𝟎) ⁻¹ ∙ (p ∙ (cₚ² base 𝟎))
---  kkkk = ap cₚ¹ loop ≡⟨ lemma' ⟩
---         cₚ² base 𝟎 ⁻¹ ∙
---           cₚ² base (⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ cₚ² base -) lemma'' ⟩
---         cₚ² base 𝟎 ⁻¹ ∙ cₚ² base (succ-ℤ 𝟎) ≡⟨ ap (λ - → cₚ² base 𝟎 ⁻¹ ∙ -) (cₚ³ base 𝟎) ⟩
---         cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎) ∎
---   where
---    lemma'' : ⌜ idtoeq ⟨ base ⟩ ⟨ base ⟩ (ap ⟨_⟩ loop) ⌝ 𝟎 ≡ succ-ℤ 𝟎
---    lemma'' = ap (λ - → ⌜ - ⌝ 𝟎) xxx
-
---  lll : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
---      → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ (p ∙ q)
---  lll refl p = (refl ⁻¹ ∙ (p ∙ refl) ≡⟨ refl              ⟩
---                refl ⁻¹ ∙ p          ≡⟨ refl-left-neutral ⟩
---                p                    ∎                     ) ⁻¹
-
---  mmm : ap cₚ¹ loop ≡ transport (λ - → - ≡ -) (cₚ² base 𝟎) p
---  mmm = ap cₚ¹ loop                            ≡⟨ kkkk ⟩
---        cₚ² base 𝟎 ⁻¹ ∙ (p ∙ cₚ² base 𝟎)       ≡⟨ (lll (cₚ² base 𝟎) p) ⁻¹ ⟩
---        transport (λ - → - ≡ -) (cₚ² base 𝟎) p ∎
 
 -- \end{code}
 
