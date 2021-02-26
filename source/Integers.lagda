@@ -606,6 +606,22 @@ shift-if-commute-with-succ-ℤ f h (neg n) =
                                f pred-ℤ (commute-with-pred-ℤ f h) (succ n) 𝟎 ⟩
  (pred-ℤ ^ (succ n)) (f 𝟎) ∎
 
+shift-commutes-with-succ-ℤ₁ : (x : ℤ)
+                            → (λ y → x +ℤ y) ∘ succ-ℤ ∼ succ-ℤ ∘ (λ y → x +ℤ y)
+shift-commutes-with-succ-ℤ₁ 𝟎 y = refl
+shift-commutes-with-succ-ℤ₁ (pos n) y =
+ (commute-with-succ-ℤ^n succ-ℤ (λ _ → refl) (succ n) y) ⁻¹
+shift-commutes-with-succ-ℤ₁ (neg n) y =
+ (commute-with-pred-ℤ^n succ-ℤ (λ _ → refl) (succ n) y) ⁻¹
+
+shift-commutes-with-succ-ℤ₂ : (y : ℤ)
+                            → (λ x → x +ℤ y) ∘ succ-ℤ ∼ succ-ℤ ∘ (λ x → x +ℤ y)
+shift-commutes-with-succ-ℤ₂ y x =
+ (succ-ℤ x) +ℤ y ≡⟨ +ℤ-is-commutative (succ-ℤ x) y ⟩
+ y +ℤ (succ-ℤ x) ≡⟨ shift-commutes-with-succ-ℤ₁ y x ⟩
+ succ-ℤ (y +ℤ x) ≡⟨ ap succ-ℤ (+ℤ-is-commutative y x) ⟩
+ succ-ℤ (x +ℤ y) ∎
+
 is-equiv-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
                                 → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
                                 → is-equiv f
