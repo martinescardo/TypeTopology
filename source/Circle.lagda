@@ -337,22 +337,67 @@ module Tℤ-rec
 
 ≅-comp-Tℤ : (X Y Z : Tℤ) → X ≅ Y → Y ≅ Z → X ≅ Z
 ≅-comp-Tℤ X Y Z (e , i , c) (e' , i' , c') =
- (e' ∘ e , ∘-is-equiv i i' , dfunext fe₀ γ)
+ (e' ∘ e , ∘-is-equiv-abstract i i' , dfunext fe₀ γ)
   where
    γ : e' ∘ e ∘ ⟨ X ⟩₂ ∼ ⟨ Z ⟩₂ ∘ e' ∘ e
    γ x = e' (e (⟨ X ⟩₂ x)) ≡⟨ ap e' (happly c x) ⟩
          e' (⟨ Y ⟩₂ (e x)) ≡⟨ happly c' (e x) ⟩
          ⟨ Z ⟩₂ (e' (e x)) ∎
 
-to-≡-of-≅ : {X Y : Tℤ} {f g : X ≅ Y}
+to-≡-of-≅ : (X Y : Tℤ) {f g : X ≅ Y}
           → pr₁ f ∼ pr₁ g
           → f ≡ g
-to-≡-of-≅ {X} {Y} h =
+to-≡-of-≅ X Y h =
  to-subtype-≡
   (λ f' → ×-is-prop (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀ f')
          (equiv-to-prop (≃-funext fe₀ _ _)
           (Π-is-prop fe₀ (λ _ → ⟨⟩-is-set Y))))
   (dfunext fe₀ h)
+
+to-Tℤ-≡-comp : (X Y Z : Tℤ) (f : X ≅ Y) (g : Y ≅ Z)
+             → to-Tℤ-≡ X Z (≅-comp-Tℤ X Y Z f g)
+             ≡ to-Tℤ-≡ X Y f ∙ to-Tℤ-≡ Y Z g
+to-Tℤ-≡-comp X Y Z f g =
+ ϕ X Z (≅-comp-Tℤ X Y Z f g)                 ≡⟨ I    ⟩
+ ϕ X Z (ψ X Z (p ∙ q))                       ≡⟨ II   ⟩
+ p ∙ q                                       ≡⟨ refl ⟩
+ ϕ X Y f ∙ ϕ Y Z g                           ∎
+  where
+   ϕ : (X Y : Tℤ) → X ≅ Y → X ≡ Y
+   ϕ = to-Tℤ-≡
+   ψ : (X Y : Tℤ) → X ≡ Y → X ≅ Y
+   ψ X Y = ⌜ characterization-of-Tℤ-≡ X Y ⌝
+   p : X ≡ Y
+   p = ϕ X Y f
+   q : Y ≡ Z
+   q = ϕ Y Z g
+   II = η X Z (p ∙ q)
+    where
+     η : (X Y : Tℤ) → ϕ X Y ∘ ψ X Y ∼ id
+     η X Y = inverses-are-retractions (ψ X Y)
+              (⌜⌝-is-equiv (characterization-of-Tℤ-≡ X Y))
+   I = ap (ϕ X Z) γ
+    -- The proofs below are done with to-≡-of-≅ (rather than directly) for
+    -- type-checking efficiency reasons.
+    where
+     γ = ≅-comp-Tℤ X Y Z f g                 ≡⟨ to-≡-of-≅ X Z w      ⟩
+         ≅-comp-Tℤ X Y Z (ψ X Y p) (ψ Y Z q) ≡⟨ (lemma X Y Z p q) ⁻¹ ⟩
+         ψ X Z (p ∙ q)                       ∎
+      where
+       lemma : (X Y Z : Tℤ) (p : X ≡ Y) (q : Y ≡ Z)
+             → ψ X Z (p ∙ q) ≡ ≅-comp-Tℤ X Y Z (ψ X Y p) (ψ Y Z q)
+       lemma X Y Z refl refl = to-≡-of-≅ X Z (λ x → refl)
+       w : pr₁ g ∘ pr₁ f ∼ pr₁ (ψ Y Z (to-Tℤ-≡ Y Z g)) ∘ pr₁ (ψ X Y p)
+       w x = v (pr₁ f x) ∙ ap (pr₁ (ψ Y Z q)) (u x)
+        where
+         ε : (X Y : Tℤ) → ψ X Y ∘ ϕ X Y ∼ id
+         ε X Y = inverses-are-sections (ψ X Y)
+                  (⌜⌝-is-equiv (characterization-of-Tℤ-≡ X Y))
+         u : pr₁ f ∼ pr₁ (ψ X Y p)
+         u = happly (ap pr₁ ((ε X Y f) ⁻¹))
+         v : pr₁ g ∼ pr₁ (ψ Y Z q)
+         v = happly (ap pr₁ ((ε Y Z g) ⁻¹))
+
 
 \end{code}
 
@@ -447,17 +492,28 @@ Tℤ-action-lemma X x = Tℤ-action-commutes-with-⟨⟩₂-≡ X x
 
 Tℤ-action-≡-lemma : (X : Tℤ) (x : ⟨ X ⟩)
                   → Tℤ-action-≡ X (⟨ X ⟩₂ x) ≡ loop ∙ Tℤ-action-≡ X x
-Tℤ-action-≡-lemma X x =
- Tℤ-action-≡ X (⟨ X ⟩₂ x)                                        ≡⟨ refl ⟩
- to-Tℤ-≡ base X (Tℤ-action-≅ X (f x))                            ≡⟨ {!!} ⟩ -- ap (to-Tℤ-≡ base X) ϕ ⟩
- to-Tℤ-≡ base X (≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)) ≡⟨ {!!} ⟩
- to-Tℤ-≡ base base loop-≅ ∙ to-Tℤ-≡ base X (Tℤ-action-≅ X x)     ≡⟨ refl ⟩
- loop ∙ Tℤ-action-≡ X x                                          ∎
+Tℤ-action-≡-lemma X x = I ∙ II
+{-
+  Unfortunately, Agda doesn't quite like the types below and starts normalizing
+  like crazy, resulting in extremely slow typechecking. Therefore, I have
+  omitted the types in the proof, but left the equational reasoning to help
+  human readers.
+  I bet that the --experimental-lossy-unification flag would result in quick
+  typechecking.
+
+   Tℤ-action-≡ X (⟨ X ⟩₂ x)                                        ≡⟨ refl ⟩
+   to-Tℤ-≡ base X (Tℤ-action-≅ X (f x))                            ≡⟨ I    ⟩
+   to-Tℤ-≡ base X (≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)) ≡⟨ II   ⟩
+   to-Tℤ-≡ base base loop-≅ ∙ to-Tℤ-≡ base X (Tℤ-action-≅ X x)     ≡⟨ refl ⟩
+   loop ∙ Tℤ-action-≡ X x                                          ∎
+-}
   where
    f : ⟨ X ⟩ → ⟨ X ⟩
    f = ⟨ X ⟩₂
-   ϕ : Tℤ-action-≅ X (f x) ≡ ≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)
-   ϕ = to-≡-of-≅ {base} {X} (happly (Tℤ-action-lemma X x))
+   I  = ap (to-Tℤ-≡ base X) ϕ
+    where
+     ϕ = to-≡-of-≅ base X (happly (Tℤ-action-lemma X x))
+   II = to-Tℤ-≡-comp base base X loop-≅ (Tℤ-action-≅ X x)
 
 \end{code}
 
@@ -479,29 +535,74 @@ module _
 
  BBG-map-lemma : (X : Tℤ) (x : ⟨ X ⟩)
                → BBG-map X (⟨ X ⟩₂ x) ≡ pᵣ ∙ BBG-map X x
- BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x) ≡⟨ refl ⟩
-                     ap r (Tℤ-action-≡ X (⟨ X ⟩₂ x)) ≡⟨ ap (ap r) (Tℤ-action-≡-lemma X x) ⟩
-                     ap r (loop ∙ Tℤ-action-≡ X x) ≡⟨ ap-∙ r loop (Tℤ-action-≡ X x) ⟩
+ BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x)               ≡⟨ refl ⟩
+                     ap r (Tℤ-action-≡ X (⟨ X ⟩₂ x))    ≡⟨ I    ⟩
+                     ap r (loop ∙ Tℤ-action-≡ X x)      ≡⟨ II   ⟩
                      ap r loop ∙ ap r (Tℤ-action-≡ X x) ≡⟨ refl ⟩
-                     pᵣ ∙ BBG-map X x ∎
+                     pᵣ ∙ BBG-map X x                   ∎
+  where
+   I  = ap (ap r) (Tℤ-action-≡-lemma X x)
+   II = ap-∙ r loop (Tℤ-action-≡ X x)
 
  module _
          (fe : funext 𝓤 𝓤)
         where
 
-  open Tℤ-rec fe (aᵣ , pᵣ)
+  open Tℤ-rec {𝓤} {A} fe (aᵣ , pᵣ)
 
-  bbg : (X : Tℤ) → BBG (X ⁻)
-  bbg X = (r X , BBG-map X , BBG-map-lemma X)
+  ∼-to-Tℤ-rec : r ∼ Tℤ-rec -- (aᵣ , pᵣ)
+  ∼-to-Tℤ-rec X = γ
+   where
+    abstract
+     γ : r X ≡ Tℤ-rec X
+     γ = ap pr₁ e
+      where
+       b₁ = (r X , BBG-map X , BBG-map-lemma X)
+       b₂ = center (BBG-is-singleton X)
+       e = singletons-are-props (BBG-is-singleton X) b₁ b₂
 
-  -- This will give the uniqueness principle
-  test : r ∼ Tℤ-rec
-  test X = r X ≡⟨ refl ⟩
-           pr₁ (bbg X) ≡⟨ ap pr₁ (singletons-are-props (BBG-is-singleton X) (bbg X) (center (BBG-is-singleton X))) ⟩
-           pr₁ (center (BBG-is-singleton X)) ≡⟨ refl ⟩
-           Tℤ-rec X ∎
+{- {!ap pr₁ e!} {- r X                ≡⟨ refl     ⟩
+                  pr₁ b₁             ≡⟨ ap pr₁ e ⟩
+                  pr₁ b₂             ≡⟨ refl     ⟩
+                  Tℤ-rec (aᵣ , pᵣ) X ∎ -}
+   where
+    c₁ : (Y : Tℤ) → BBG (aᵣ , pᵣ) (Y ⁻)
+    c₁ Y = (r Y , BBG-map Y , BBG-map-lemma Y)
+    baz : (λ Y → pr₁ (c₁ Y)) ∼ (λ Y → pr₁ (center (BBG-is-singleton (aᵣ , pᵣ) Y)))
+    baz Y = {!!} -- ap pr₁ (singletons-are-props (BBG-is-singleton (aᵣ , pᵣ) Y) (c₁ Y) (center (BBG-is-singleton (aᵣ , pᵣ) Y)))
+--    b₁ : BBG (aᵣ , pᵣ) (X ⁻)
+    b₁ = (r X , BBG-map X , BBG-map-lemma X)
+--    b₂ : BBG (aᵣ , pᵣ) (X ⁻)
+    b₂ = center (BBG-is-singleton (aᵣ , pᵣ) X)
+--    e : b₁ ≡ b₂
+    e = singletons-are-props (BBG-is-singleton (aᵣ , pᵣ) X) b₁ b₂
+    test : pr₁ b₂ ≡ Tℤ-rec (aᵣ , pᵣ) X
+    test = {!!} -- happly foo X
+     where
+      foo : (λ Y → pr₁ (center (BBG-is-singleton (aᵣ , pᵣ) Y))) ≡ Tℤ-rec (aᵣ , pᵣ)
+      foo = refl -}
 
--- BBG (X , f) = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
+\end{code}
+
+\begin{code}
+
+module _
+        (A : 𝓤 ̇ )
+        (fe : funext 𝓤 𝓤)
+       where
+
+ open Tℤ-rec -- {𝓤} {A} fe
+
+ Tℤ-uniqueness-principle-∼ : (f g : Tℤ → A)
+                           → (f base , ap f loop)
+                           ≡[ Σ a ꞉ A , a ≡ a ] (g base , ap g loop)
+                           → f ∼ g
+ Tℤ-uniqueness-principle-∼ f g p x = ∼-to-ℤ-rec {𝓤} {A} fe _ ∙ (ap (Tℤ-rec {𝓤} {A} fe) p) ∙ Tℤ-rec {𝓤} {A} fe _
+  where
+   kkk : f ∼ Tℤ-rec {𝓤} {A} fe _ -- (aᵣ f , pᵣ f) -- (f base , ap f loop)
+   kkk = ∼-to-Tℤ-rec f fe -- ∼-to-Tℤ-rec f fe (f base , ap f loop)
+   -- lll : g ∼ Tℤ-rec {𝓤} {A} fe _
+   -- lll x = ? -- (∼-to-Tℤ-rec g fe x) ∙ (happly ((ap (Tℤ-rec {𝓤} {A} fe) p) ⁻¹) x)
 
 \end{code}
 
