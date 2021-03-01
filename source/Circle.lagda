@@ -508,14 +508,12 @@ Tℤ-action-≡-lemma X x = I ∙ II
   typechecking.
 
    Tℤ-action-≡ X (⟨ X ⟩₂ x)                                        ≡⟨ refl ⟩
-   to-Tℤ-≡ base X (Tℤ-action-≅ X (f x))                            ≡⟨ I    ⟩
+   to-Tℤ-≡ base X (Tℤ-action-≅ X (⟨ X ⟩₂ x))                       ≡⟨ I    ⟩
    to-Tℤ-≡ base X (≅-comp-Tℤ base base X loop-≅ (Tℤ-action-≅ X x)) ≡⟨ II   ⟩
    to-Tℤ-≡ base base loop-≅ ∙ to-Tℤ-≡ base X (Tℤ-action-≅ X x)     ≡⟨ refl ⟩
    loop ∙ Tℤ-action-≡ X x                                          ∎
 -}
   where
-   f : ⟨ X ⟩ → ⟨ X ⟩
-   f = ⟨ X ⟩₂
    I  = ap (to-Tℤ-≡ base X) ϕ
     where
      ϕ = to-≡-of-≅ base X (happly (Tℤ-action-lemma X x))
@@ -613,6 +611,83 @@ module _
    where
     e : (Tℤ → A) ≃ (Σ a ꞉ A , a ≡ a)
     e = Tℤ-universal-property fe fe' A
+
+\end{code}
+
+\begin{code}
+
+Tℤ-induction : funext (𝓤₁ ⊔ 𝓤) (𝓤₁ ⊔ 𝓤)
+             → (A : Tℤ → 𝓤 ̇ )
+             → (a : A base) → transport A loop a ≡ a
+             → (t : Tℤ) → A t
+Tℤ-induction {𝓤} fe A a l = γ
+ where
+  γ : Π A
+  γ t = transport A (lemma t) (pr₂ (Tℤ-rec l⁺ t))
+   where
+    open Tℤ-rec {𝓤₁ ⊔ 𝓤} {Σ A} fe
+    l⁺ : Σ x ꞉ (Σ A) , x ≡ x
+    l⁺ = ((base , a) , to-Σ-≡ (loop , l))
+    lemma : pr₁ ∘ Tℤ-rec l⁺ ∼ id
+    lemma = Tℤ-uniqueness-principle-∼ Tℤ (lower-funext 𝓤 𝓤 fe)
+             (pr₁ ∘ Tℤ-rec l⁺) id ϕ
+     where
+      ϕ : pr₁ (Tℤ-rec l⁺ base) , ap (pr₁ ∘ (Tℤ-rec l⁺)) loop
+        ≡ base , ap id loop
+      ϕ = to-Σ-≡ (d₁ , ψ)
+       where
+        c : Tℤ-rec l⁺ base , ap (Tℤ-rec l⁺) loop ≡ l⁺
+        c = Tℤ-rec-comp l⁺
+        c₁ : Tℤ-rec l⁺ base ≡ (base , a)
+        c₁ = pr₁ (from-Σ-≡ c)
+        d₁ : pr₁ (Tℤ-rec l⁺ base) ≡ base
+        d₁ = ap pr₁ c₁
+        ψ : transport (λ - → - ≡ -) d₁ (ap (pr₁ ∘ (Tℤ-rec l⁺)) loop) ≡ ap id loop
+        ψ = transport (λ - → - ≡ -) d₁ (ap (pr₁ ∘ (Tℤ-rec l⁺)) loop) ≡⟨ transport-along-≡ d₁ (ap (pr₁ ∘ (Tℤ-rec l⁺)) loop) ⟩
+            d₁ ⁻¹ ∙ (ap (pr₁ ∘ (Tℤ-rec l⁺)) loop ∙ d₁) ≡⟨ ap (λ - → - ∙ (ap (pr₁ ∘ (Tℤ-rec l⁺)) loop ∙ d₁)) (ap-sym pr₁ c₁) ⟩
+            ap pr₁ (c₁ ⁻¹) ∙ (ap (λ x → pr₁ (Tℤ-rec l⁺ x)) loop ∙ d₁) ≡⟨ {!!} ⟩
+            {!!} ≡⟨ {!!} ⟩
+            {!!} ≡⟨ {!!} ⟩
+            ap id loop ∎
+        {-
+        c₂ : transport (λ - → - ≡ -) c₁ (ap (Tℤ-rec l⁺) loop) ≡ pr₂ l⁺
+        c₂ = pr₂ (from-Σ-≡ c)
+        d₂ : c₁ ⁻¹ ∙ (ap (Tℤ-rec l⁺) loop ∙ c₁) ≡ pr₂ l⁺
+        d₂ = (transport-along-≡ c₁ (ap (Tℤ-rec l⁺) loop)) ⁻¹ ∙ c₂
+        e₂ : ap pr₁ (c₁ ⁻¹ ∙ (ap (Tℤ-rec l⁺) loop ∙ c₁)) ≡ ap pr₁ (pr₂ l⁺)
+        e₂ = ap (ap pr₁) d₂  -}
+        {- d₁ ⁻¹ ∙ ap pr₁ (ap (Tℤ-rec l⁺) loop) ∙ d₁ ≡⟨ ? ⟩
+           d₁ ⁻¹ ∙ ap (pr₁ ∘ (Tℤ-rec l⁺)) loop  ∙ d₁ ≡⟨ ? ⟩
+           ap pr₁ (pr₂ l⁺)                           ≡⟨ ? ⟩
+           ap pr₁ (to-Σ-≡ (loop , l))                ≡⟨ ? ⟩
+           loop -}
+{-
+  foo : Σ 𝓁 ꞉ (Σ A) , 𝓁 ≡ 𝓁
+  foo = ((base , a) , to-Σ-≡ (loop , l))
+  {-
+  e : (Tℤ → Σ A) ≃ (Σ 𝓁 ꞉ (Σ A) , 𝓁 ≡ 𝓁)
+  e = Tℤ-universal-property fe (lower-funext 𝓤 𝓤 fe) (Σ A) -}
+  baz : Tℤ → Σ A
+  baz = Tℤ-rec foo -- ⌜ e ⌝⁻¹ foo
+  key : (t : Tℤ) → t ≡ pr₁ (baz t)
+  key = Tℤ-uniqueness-principle-∼ Tℤ (lower-funext 𝓤 𝓤 fe) id (pr₁ ∘ baz) u
+   where
+    v : baz base , ap baz loop ≡ foo
+    v = Tℤ-rec-comp foo
+    v₁ : baz base ≡ pr₁ foo
+    v₁ = pr₁ (from-Σ-≡ v)
+    v₂ : transport (λ - → - ≡ -) v₁ (ap baz loop) ≡ to-Σ-≡ (loop , l)
+    v₂ = pr₂ (from-Σ-≡ v)
+    v₂' : ap pr₁ (transport (λ - → - ≡ -) v₁ (ap baz loop)) ≡
+            ap pr₁ (pr₂ foo)
+    v₂' = ap (ap pr₁) v₂
+
+    u : base , ap id loop ≡ pr₁ (baz base) , ap (pr₁ ∘ baz) loop
+    u = {!!}
+
+  γ : Π A
+  γ t = {!!}
+-}
 
 \end{code}
 
