@@ -232,85 +232,91 @@ Tℤ-prop-induction {𝓤} {P} i p (X , f , t) = ∥∥-rec (i (X , f , t)) γ t
 module Tℤ-rec
         {A : 𝓤 ̇ }
         (fe : funext 𝓤 𝓤)
-        ((a , p) : Σ a' ꞉ A , a' ≡ a')
        where
 
- -- Bezem, Buchholtz, Grayson
- BBG : (X : Tℤ⁻) → 𝓤 ̇
- BBG (X , f) = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
+ module _
+         ((a , p) : Σ a' ꞉ A , a' ≡ a')
+        where
 
- BBG-base : 𝓤 ̇
- BBG-base = BBG (ℤ , succ-ℤ)
+  -- Bezem, Buchholtz, Grayson
+  BBG : (X : Tℤ⁻) → 𝓤 ̇
+  BBG (X , f) = Σ a' ꞉ A , Σ h ꞉ (X → a ≡ a') , ((x : X) → h (f x) ≡ p ∙ h x)
 
- BBG-base-is-singleton : is-singleton BBG-base
- BBG-base-is-singleton = equiv-to-singleton ϕ (singleton-types-are-singletons a)
-  where
-   ϕ : BBG-base ≃ singleton-type a
-   ϕ = Σ-cong ψ
+  BBG-base : 𝓤 ̇
+  BBG-base = BBG (ℤ , succ-ℤ)
+
+  BBG-base-is-singleton : is-singleton BBG-base
+  BBG-base-is-singleton = equiv-to-singleton ϕ (singleton-types-are-singletons a)
+   where
+    ϕ : BBG-base ≃ singleton-type a
+    ϕ = Σ-cong ψ
+     where
+      ψ : (a' : A)
+        → (Σ h ꞉ (ℤ → a ≡ a') , ((z : ℤ) → h (succ-ℤ z) ≡ p ∙ h z))
+        ≃ (a ≡ a')
+      ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe) (λ _ → a ≡ a') (λ _ → g)
+       where
+        g : (a ≡ a') ≃ (a ≡ a')
+        g = ((λ q → p ∙ q) , ∙-is-equiv₁ p)
+
+  BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
+  BBG-is-singleton = γ
+   where
+    abstract
+     γ = Tℤ-prop-induction (λ _ → being-singleton-is-prop fe)
+                      BBG-base-is-singleton
+
+  Tℤ-rec : Tℤ → A
+  Tℤ-rec X = pr₁ (center (BBG-is-singleton X))
+
+  Tℤ-rec-lemma₁ : (X : Tℤ) → (⟨ X ⟩) → a ≡ Tℤ-rec X
+  Tℤ-rec-lemma₁ X = pr₁ (pr₂ (center (BBG-is-singleton X)))
+
+  Tℤ-rec-lemma₂ : (X : Tℤ) (x : ⟨ X ⟩)
+                → Tℤ-rec-lemma₁ X (⟨ X ⟩₂ x) ≡ p ∙ Tℤ-rec-lemma₁ X x
+  Tℤ-rec-lemma₂ X = pr₂ (pr₂ (center (BBG-is-singleton X)))
+
+  ap-Tℤ-rec-lemma : {X Y : Tℤ} (e : X ≡ Y) (x : ⟨ X ⟩)
+                  → ap Tℤ-rec e
+                  ≡ (Tℤ-rec-lemma₁ X x) ⁻¹
+                    ∙ (Tℤ-rec-lemma₁ Y (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ e) ⌝ x))
+  ap-Tℤ-rec-lemma {X} {Y} refl x =
+   ap Tℤ-rec refl                                     ≡⟨ refl ⟩
+   refl                                               ≡⟨ γ    ⟩
+   (t X x) ⁻¹ ∙ (t X x)                               ≡⟨ refl ⟩
+   (t X x) ⁻¹ ∙ (t X (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ refl ⌝ x)) ∎
     where
-     ψ : (a' : A)
-       → (Σ h ꞉ (ℤ → a ≡ a') , ((z : ℤ) → h (succ-ℤ z) ≡ p ∙ h z))
-       ≃ (a ≡ a')
-     ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe) (λ _ → a ≡ a') (λ _ → g)
-      where
-       g : (a ≡ a') ≃ (a ≡ a')
-       g = ((λ q → p ∙ q) , ∙-is-equiv₁ p)
+     t : (W : Tℤ) → ⟨ W ⟩ → a ≡ Tℤ-rec W
+     t = Tℤ-rec-lemma₁
+     γ = (left-inverse (t X x)) ⁻¹
 
- BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
- BBG-is-singleton = Tℤ-prop-induction (λ _ → being-singleton-is-prop fe)
-                     BBG-base-is-singleton
+  ap-Tℤ-rec-loop-lemma₁ : ap Tℤ-rec loop
+                        ≡ (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ (p ∙ Tℤ-rec-lemma₁ base 𝟎)
+  ap-Tℤ-rec-loop-lemma₁ =
+   ap Tℤ-rec loop                                            ≡⟨ I   ⟩
+   (t base 𝟎) ⁻¹ ∙ (t base (⌜ idtoeq ℤ ℤ (ap ⟨_⟩ loop) ⌝ 𝟎)) ≡⟨ II  ⟩
+   (t base 𝟎) ⁻¹ ∙ (t base (succ-ℤ 𝟎))                       ≡⟨ III ⟩
+   (t base 𝟎) ⁻¹ ∙ (p ∙ t base 𝟎)                            ∎
+    where
+     t : (X : Tℤ) → ⟨ X ⟩ → a ≡ Tℤ-rec X
+     t = Tℤ-rec-lemma₁
+     I   = ap-Tℤ-rec-lemma loop 𝟎
+     II  = ap (λ - → (t base 𝟎) ⁻¹ ∙ (t base (⌜ - ⌝ 𝟎)))
+            idtoeq-of-loop-is-succ-ℤ-≃
+     III = ap (λ - → (t base 𝟎) ⁻¹ ∙ -) (Tℤ-rec-lemma₂ base 𝟎)
 
- Tℤ-rec : Tℤ → A
- Tℤ-rec X = pr₁ (center (BBG-is-singleton X))
+  ap-Tℤ-rec-loop-lemma₂ : ap Tℤ-rec loop
+                        ≡ transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p
+  ap-Tℤ-rec-loop-lemma₂ =
+   ap Tℤ-rec loop                                         ≡⟨ I  ⟩
+   (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ (p ∙ Tℤ-rec-lemma₁ base 𝟎) ≡⟨ II ⟩
+   transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p       ∎
+    where
+     I  = ap-Tℤ-rec-loop-lemma₁
+     II = (transport-along-≡ (Tℤ-rec-lemma₁ base 𝟎) p) ⁻¹
 
- Tℤ-rec-lemma₁ : (X : Tℤ) → (⟨ X ⟩) → a ≡ Tℤ-rec X
- Tℤ-rec-lemma₁ X = pr₁ (pr₂ (center (BBG-is-singleton X)))
-
- Tℤ-rec-lemma₂ : (X : Tℤ) (x : ⟨ X ⟩)
-               → Tℤ-rec-lemma₁ X (⟨ X ⟩₂ x) ≡ p ∙ Tℤ-rec-lemma₁ X x
- Tℤ-rec-lemma₂ X = pr₂ (pr₂ (center (BBG-is-singleton X)))
-
- ap-Tℤ-rec-lemma : {X Y : Tℤ} (e : X ≡ Y) (x : ⟨ X ⟩)
-                 → ap Tℤ-rec e
-                 ≡ (Tℤ-rec-lemma₁ X x) ⁻¹
-                   ∙ (Tℤ-rec-lemma₁ Y (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ (ap ⟨_⟩ e) ⌝ x))
- ap-Tℤ-rec-lemma {X} {Y} refl x =
-  ap Tℤ-rec refl                                     ≡⟨ refl ⟩
-  refl                                               ≡⟨ γ    ⟩
-  (t X x) ⁻¹ ∙ (t X x)                               ≡⟨ refl ⟩
-  (t X x) ⁻¹ ∙ (t X (⌜ idtoeq ⟨ X ⟩ ⟨ Y ⟩ refl ⌝ x)) ∎
-   where
-    t : (W : Tℤ) → ⟨ W ⟩ → a ≡ Tℤ-rec W
-    t = Tℤ-rec-lemma₁
-    γ = (left-inverse (t X x)) ⁻¹
-
- ap-Tℤ-rec-loop-lemma₁ : ap Tℤ-rec loop
-                       ≡ (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ (p ∙ Tℤ-rec-lemma₁ base 𝟎)
- ap-Tℤ-rec-loop-lemma₁ =
-  ap Tℤ-rec loop                                            ≡⟨ I   ⟩
-  (t base 𝟎) ⁻¹ ∙ (t base (⌜ idtoeq ℤ ℤ (ap ⟨_⟩ loop) ⌝ 𝟎)) ≡⟨ II  ⟩
-  (t base 𝟎) ⁻¹ ∙ (t base (succ-ℤ 𝟎))                       ≡⟨ III ⟩
-  (t base 𝟎) ⁻¹ ∙ (p ∙ t base 𝟎)                            ∎
-   where
-    t : (X : Tℤ) → ⟨ X ⟩ → a ≡ Tℤ-rec X
-    t = Tℤ-rec-lemma₁
-    I   = ap-Tℤ-rec-lemma loop 𝟎
-    II  = ap (λ - → (t base 𝟎) ⁻¹ ∙ (t base (⌜ - ⌝ 𝟎)))
-           idtoeq-of-loop-is-succ-ℤ-≃
-    III = ap (λ - → (t base 𝟎) ⁻¹ ∙ -) (Tℤ-rec-lemma₂ base 𝟎)
-
- ap-Tℤ-rec-loop-lemma₂ : ap Tℤ-rec loop
-                       ≡ transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p
- ap-Tℤ-rec-loop-lemma₂ =
-  ap Tℤ-rec loop                                         ≡⟨ I  ⟩
-  (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ (p ∙ Tℤ-rec-lemma₁ base 𝟎) ≡⟨ II ⟩
-  transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p       ∎
-   where
-    I  = ap-Tℤ-rec-loop-lemma₁
-    II = (transport-along-≡ (Tℤ-rec-lemma₁ base 𝟎) p) ⁻¹
-
- Tℤ-rec-comp : (Tℤ-rec base , ap Tℤ-rec loop) ≡[ Σ a' ꞉ A , a' ≡ a' ] (a , p)
- Tℤ-rec-comp = (to-Σ-≡ ((Tℤ-rec-lemma₁ base 𝟎) , (ap-Tℤ-rec-loop-lemma₂ ⁻¹))) ⁻¹
+  Tℤ-rec-comp : (Tℤ-rec base , ap Tℤ-rec loop) ≡ (a , p)
+  Tℤ-rec-comp = (to-Σ-≡ ((Tℤ-rec-lemma₁ base 𝟎) , (ap-Tℤ-rec-loop-lemma₂ ⁻¹))) ⁻¹
 
 \end{code}
 
@@ -524,22 +530,16 @@ module _
         (r : Tℤ → A)
        where
 
- aᵣ : A
- aᵣ = r base
-
- pᵣ : aᵣ ≡ aᵣ
- pᵣ = ap r loop
-
- BBG-map : (X : Tℤ) → ⟨ X ⟩ → aᵣ ≡ r X
+ BBG-map : (X : Tℤ) → ⟨ X ⟩ → r base ≡ r X
  BBG-map X x = ap r (Tℤ-action-≡ X x)
 
  BBG-map-lemma : (X : Tℤ) (x : ⟨ X ⟩)
-               → BBG-map X (⟨ X ⟩₂ x) ≡ pᵣ ∙ BBG-map X x
- BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x)               ≡⟨ refl ⟩
-                     ap r (Tℤ-action-≡ X (⟨ X ⟩₂ x))    ≡⟨ I    ⟩
-                     ap r (loop ∙ Tℤ-action-≡ X x)      ≡⟨ II   ⟩
-                     ap r loop ∙ ap r (Tℤ-action-≡ X x) ≡⟨ refl ⟩
-                     pᵣ ∙ BBG-map X x                   ∎
+               → BBG-map X (⟨ X ⟩₂ x) ≡ ap r loop ∙ BBG-map X x
+ BBG-map-lemma X x = BBG-map X (⟨ X ⟩₂ x)                      ≡⟨ refl ⟩
+                     ap r (Tℤ-action-≡ X (⟨ X ⟩₂ x))           ≡⟨ I    ⟩
+                     ap r (loop ∙ Tℤ-action-≡ X x)             ≡⟨ II   ⟩
+                     ap r loop ∙ ap r (Tℤ-action-≡ X x)        ≡⟨ refl ⟩
+                     ap r loop ∙ BBG-map X x                   ∎
   where
    I  = ap (ap r) (Tℤ-action-≡-lemma X x)
    II = ap-∙ r loop (Tℤ-action-≡ X x)
@@ -548,39 +548,36 @@ module _
          (fe : funext 𝓤 𝓤)
         where
 
-  open Tℤ-rec {𝓤} {A} fe (aᵣ , pᵣ)
+  open Tℤ-rec {𝓤} {A} fe
 
-  ∼-to-Tℤ-rec : r ∼ Tℤ-rec -- (aᵣ , pᵣ)
-  ∼-to-Tℤ-rec X = γ
+  ∼-to-Tℤ-rec : r ∼ Tℤ-rec (r base , ap r loop)
+  ∼-to-Tℤ-rec X = ap pr₁ e
    where
-    abstract
-     γ : r X ≡ Tℤ-rec X
-     γ = ap pr₁ e
-      where
-       b₁ = (r X , BBG-map X , BBG-map-lemma X)
-       b₂ = center (BBG-is-singleton X)
-       e = singletons-are-props (BBG-is-singleton X) b₁ b₂
-
-{- {!ap pr₁ e!} {- r X                ≡⟨ refl     ⟩
-                  pr₁ b₁             ≡⟨ ap pr₁ e ⟩
-                  pr₁ b₂             ≡⟨ refl     ⟩
-                  Tℤ-rec (aᵣ , pᵣ) X ∎ -}
-   where
-    c₁ : (Y : Tℤ) → BBG (aᵣ , pᵣ) (Y ⁻)
-    c₁ Y = (r Y , BBG-map Y , BBG-map-lemma Y)
-    baz : (λ Y → pr₁ (c₁ Y)) ∼ (λ Y → pr₁ (center (BBG-is-singleton (aᵣ , pᵣ) Y)))
-    baz Y = {!!} -- ap pr₁ (singletons-are-props (BBG-is-singleton (aᵣ , pᵣ) Y) (c₁ Y) (center (BBG-is-singleton (aᵣ , pᵣ) Y)))
---    b₁ : BBG (aᵣ , pᵣ) (X ⁻)
+    b₁ : BBG (r base , ap r loop) (X ⁻)
     b₁ = (r X , BBG-map X , BBG-map-lemma X)
---    b₂ : BBG (aᵣ , pᵣ) (X ⁻)
-    b₂ = center (BBG-is-singleton (aᵣ , pᵣ) X)
---    e : b₁ ≡ b₂
-    e = singletons-are-props (BBG-is-singleton (aᵣ , pᵣ) X) b₁ b₂
-    test : pr₁ b₂ ≡ Tℤ-rec (aᵣ , pᵣ) X
-    test = {!!} -- happly foo X
-     where
-      foo : (λ Y → pr₁ (center (BBG-is-singleton (aᵣ , pᵣ) Y))) ≡ Tℤ-rec (aᵣ , pᵣ)
-      foo = refl -}
+    b₂ : BBG (r base , ap r loop) (X ⁻)
+    b₂ = center (BBG-is-singleton (r base , ap r loop) X)
+    e : b₁ ≡ b₂
+    e = singletons-are-props (BBG-is-singleton (r base , ap r loop) X) b₁ b₂
+
+\end{code}
+
+\begin{code}
+
+Tℤ-universal-property : funext 𝓤 𝓤 → funext 𝓤₁ 𝓤
+                      → (A : 𝓤 ̇ )
+                      → (Tℤ → A) ≃ (Σ a ꞉ A , a ≡ a)
+Tℤ-universal-property {𝓤} fe fe₁ A = qinveq ϕ (ψ , η , ε)
+ where
+  open Tℤ-rec {𝓤} {A} fe
+  ϕ : (Tℤ → A) → (Σ a ꞉ A , a ≡ a)
+  ϕ f = (f base , ap f loop)
+  ψ : (Σ a ꞉ A , a ≡ a) → (Tℤ → A)
+  ψ (a , p) = Tℤ-rec (a , p)
+  η : ψ ∘ ϕ ∼ id
+  η f = dfunext fe₁ (λ X → ∼-to-Tℤ-rec f fe X ⁻¹)
+  ε : ϕ ∘ ψ ∼ id
+  ε = Tℤ-rec-comp
 
 \end{code}
 
@@ -591,22 +588,50 @@ module _
         (fe : funext 𝓤 𝓤)
        where
 
- open Tℤ-rec -- {𝓤} {A} fe
+ open Tℤ-rec {𝓤} {A} fe
 
  Tℤ-uniqueness-principle-∼ : (f g : Tℤ → A)
-                           → (f base , ap f loop)
-                           ≡[ Σ a ꞉ A , a ≡ a ] (g base , ap g loop)
+                           → (f base , ap f loop) ≡ (g base , ap g loop)
                            → f ∼ g
- Tℤ-uniqueness-principle-∼ f g p x = ∼-to-ℤ-rec {𝓤} {A} fe _ ∙ (ap (Tℤ-rec {𝓤} {A} fe) p) ∙ Tℤ-rec {𝓤} {A} fe _
-  where
-   kkk : f ∼ Tℤ-rec {𝓤} {A} fe _ -- (aᵣ f , pᵣ f) -- (f base , ap f loop)
-   kkk = ∼-to-Tℤ-rec f fe -- ∼-to-Tℤ-rec f fe (f base , ap f loop)
-   -- lll : g ∼ Tℤ-rec {𝓤} {A} fe _
-   -- lll x = ? -- (∼-to-Tℤ-rec g fe x) ∙ (happly ((ap (Tℤ-rec {𝓤} {A} fe) p) ⁻¹) x)
+ Tℤ-uniqueness-principle-∼ f g p X =
+  f X                           ≡⟨ ∼-to-Tℤ-rec f fe X      ⟩
+  Tℤ-rec (f base , ap f loop) X ≡⟨ ap (λ - → Tℤ-rec - X) p ⟩
+  Tℤ-rec (g base , ap g loop) X ≡⟨ (∼-to-Tℤ-rec g fe X) ⁻¹ ⟩
+  g X                           ∎
+
+ Tℤ-uniqueness-principle-≡ : funext 𝓤₁ 𝓤
+                           → (f g : Tℤ → A)
+                           → (f base , ap f loop) ≡ (g base , ap g loop)
+                           → f ≡ g
+ Tℤ-uniqueness-principle-≡ fe' f g p = dfunext fe' (Tℤ-uniqueness-principle-∼ f g p)
+
+ Tℤ-uniquess-principle : funext 𝓤₁ 𝓤
+                       → (a : A) (p : a ≡ a)
+                       → ∃! r ꞉ (Tℤ → A) , (r base , ap r loop) ≡ (a , p)
+ Tℤ-uniquess-principle fe' a p =
+  equivs-are-vv-equivs ⌜ e ⌝ (⌜⌝-is-equiv e) (a , p)
+   where
+    e : (Tℤ → A) ≃ (Σ a ꞉ A , a ≡ a)
+    e = Tℤ-universal-property fe fe' A
 
 \end{code}
 
 \begin{code}
+
+{-
+ Tℤ-uniqueness-principle : (a : A) (p : a ≡ a)
+                         → ∃! r ꞉ (Tℤ → A) ,
+                              (r base , ap r loop) ≡[ Σ a ꞉ A , a ≡ a ] (a , p)
+ Tℤ-uniqueness-principle a p = pointed-props-are-singletons (Tℤ-rec (a , p) , Tℤ-rec-comp (a , p)) γ
+  where
+   γ : is-prop (Σ r ꞉ (Tℤ → A) ,
+                  (r base , ap r loop) ≡[ Σ a ꞉ A , a ≡ a ] (a , p))
+   γ (f , u) (g , v) = {!!}
+ {- (Tℤ-rec (a , p) , Tℤ-rec-comp (a , p)) , {!γ!}
+  where
+   γ : {!!}
+   γ = {!!} -}
+-}
 
 {-
 to-≃-of-⟨⟩ : (X Y : Tℤ) → X ≡ Y → ⟨ X ⟩ ≃ ⟨ Y ⟩
