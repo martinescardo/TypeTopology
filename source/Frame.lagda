@@ -176,10 +176,10 @@ module PosetReasoning (P : poset 𝓤 𝓥) where
 
 module HSetNotation ((A , iss) : hSet 𝓤) where
 
- infix 1 _≡Ω≡_
+ infix 1 _≣_
 
- _≡Ω≡_ : A → A → Ω 𝓤
- x ≡Ω≡ y = (x ≡ y) , iss
+ _≣_ : A → A → Ω 𝓤
+ x ≣ y = (x ≡ y) , iss
 
 \end{code}
 
@@ -274,7 +274,7 @@ satisfies-frame-laws {𝓦 = 𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_ , iss) 
   meets          = ∀[ (x , y) ∶ (A × A) ] ((x ⊓ y) is-glb-of (x , y))
   joins          = ∀[ U ∶ Fam 𝓦 A ] (⊔ U) is-lub-of U
   distributivity = ∀[ (x , U) ∶ A × Fam 𝓦 A ]
-                    (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≡Ω≡ ⋁⟨ i ⟩ x ⊓ (U [ i ]) )
+                    (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≣ ⋁⟨ i ⟩ x ⊓ (U [ i ]) )
 
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
 frame-structure 𝓥 𝓦 A =
