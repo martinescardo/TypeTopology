@@ -35,6 +35,14 @@ private
 Fam : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 Fam 𝓤 A = Σ I ꞉ (𝓤 ̇) , (I → A)
 
+fmap-syntax : {A : 𝓤 ̇} {B : 𝓥 ̇}
+            → (A → B) → Fam 𝓦 A → Fam 𝓦 B
+fmap-syntax h (I , f) = I , h ∘ f
+
+infix 2 fmap-syntax
+
+syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
+
 infixr 4 _∧_
 
 _∧_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
