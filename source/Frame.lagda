@@ -281,7 +281,7 @@ frame-data 𝓥 𝓦 A = (A → A → Ω 𝓥)   -- order
 
 satisfies-frame-laws : {A : 𝓤 ̇} → frame-data 𝓥 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_) =
- Σ p ꞉ is-partial A _≤_ , (rest p holds )
+ Σ p ꞉ is-partial A _≤_ , rest p holds
  where
   open Meets _≤_
   open Joins _≤_
