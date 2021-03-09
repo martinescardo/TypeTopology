@@ -1,0 +1,21 @@
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    name: Typecheck
+    steps:
+    - name: "Clone repository"
+      uses: actions/checkout@v2
+    - name: Run Agda
+      id: typecheck
+      uses: ayberkt/agda-github-action@v1.5
+      with:
+        main-file: AllModulesIndex.lagda
+        source-dir: source
