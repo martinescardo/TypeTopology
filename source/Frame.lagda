@@ -101,23 +101,19 @@ is-transitive {A = A} _≤_ = P , γ
          Π-is-prop fe λ _ →
           Π-is-prop fe λ _ → holds-is-prop (x ≤ z)
 
-is-antisymmetric : ((A , _) : hSet 𝓤) → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-antisymmetric {𝓤 = 𝓤} {𝓥} (A , iss) _≤_ = P , γ
- where
-  P : 𝓤 ⊔ 𝓥 ̇
-  P = (x y z : A) → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
+is-preorder : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
 
-  γ : is-prop P
-  γ = Π-is-prop fe λ _ →
-       Π-is-prop fe λ _ →
-        Π-is-prop fe λ _ →
-         Π-is-prop fe λ _ →
-          Π-is-prop fe λ _ → iss
+-- Antisymmetry is not propositional unless A is a set. We will always
+-- work with sets but the fact they are sets will be a corollary of
+-- their equipment with an antisymmetric order so they are not sets a
+-- priori.
+is-antisymmetric : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
+is-antisymmetric {A = A} _≤_ =
+ (x y : A) → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
 
-is-partial : ((A , _) : hSet 𝓤) → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-partial {_} {_} A _≤_ = is-reflexive _≤_
-                         ∧ is-transitive _≤_
-                         ∧ is-antisymmetric A _≤_
+is-partial : (A : 𝓤 ̇) → (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+is-partial A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
 
 \end{code}
 
@@ -130,15 +126,15 @@ A (𝓤, 𝓥)-poset is a poset whose
 
 \begin{code}
 
-poset-structure : (𝓥 : Universe) → hSet 𝓤 → 𝓤 ⊔ 𝓥 ⁺ ̇
-poset-structure 𝓥 (A , iss) =
- Σ _≤_ ꞉ (A → A → Ω 𝓥) , (is-partial (A , iss) _≤_ holds)
+poset-structure : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ̇
+poset-structure 𝓥 A =
+ Σ _≤_ ꞉ (A → A → Ω 𝓥) , (is-partial A _≤_)
 
 poset : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
-poset 𝓤 𝓥 = Σ A ꞉ hSet 𝓤 , poset-structure 𝓥 A
+poset 𝓤 𝓥 = Σ A ꞉ 𝓤 ̇ , poset-structure 𝓥 A
 
 ∣_∣ₚ : poset 𝓤 𝓥 → 𝓤 ̇
-∣ (A , _) , _ ∣ₚ = A
+∣ A , _ ∣ₚ = A
 
 rel-syntax : (P : poset 𝓤 𝓥)  → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
 rel-syntax (_ , _≤_ , _) = _≤_
@@ -150,16 +146,25 @@ poset-eq-syntax P x y = x ≤[ P ] y ∧ y ≤[ P ] x
 
 syntax poset-eq-syntax P x y = x ≣[ P ] y
 
-≤-is-transitive : (P : poset 𝓤 𝓥)
-                → is-transitive (λ x y → x ≤[ P ] y) holds
-≤-is-transitive (_ , _ , (_ , t , _)) = t
-
 ≤-is-reflexive : (P : poset 𝓤 𝓥)
                → is-reflexive (λ x y → x ≤[ P ] x) holds
-≤-is-reflexive (_ , _ , (r , _ , _)) = r
+≤-is-reflexive (_ , _ , ((r , _) , _)) = r
+
+≤-is-transitive : (P : poset 𝓤 𝓥)
+                → is-transitive (λ x y → x ≤[ P ] y) holds
+≤-is-transitive (_ , _ , ((_ , t) , _)) = t
+
+≤-is-antisymmetric : (P : poset 𝓤 𝓥)
+                   → is-antisymmetric (λ x y → x ≤[ P ] y)
+≤-is-antisymmetric (_ , _ , (_ , a)) = a
 
 carrier-of-[_]-is-set : (P : poset 𝓤 𝓥) → is-set ∣ P ∣ₚ
-carrier-of-[_]-is-set ((_ , iss) , _)= iss
+carrier-of-[_]-is-set P@(A , _)=
+ type-with-prop-valued-refl-antisym-rel-is-set
+  (λ x y → (x ≤[ P ] y) holds)
+  (λ x y → holds-is-prop (x ≤[ P ] y))
+  (≤-is-reflexive P)
+  (≤-is-antisymmetric P)
 
 \end{code}
 
@@ -273,27 +278,33 @@ frame-data 𝓥 𝓦 A = (A → A → Ω 𝓥)   -- order
                  × A               -- top element
                  × (A → A → A)     -- binary meets
                  × (Fam 𝓦 A → A)   -- arbitrary joins
-                 × is-set A        -- carrier is a set
 
-satisfies-frame-laws : {A : 𝓤 ̇} → frame-data 𝓥 𝓦 A → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-satisfies-frame-laws {𝓦 = 𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_ , iss) =
- partial ∧ top ∧ meets ∧ joins ∧ distributivity
+satisfies-frame-laws : {A : 𝓤 ̇} → frame-data 𝓥 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
+satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_) =
+ Σ p ꞉ is-partial A _≤_ , (rest p holds )
  where
   open Meets _≤_
   open Joins _≤_
   open JoinNotation ⊔_
 
-  partial = is-partial (A , iss) _≤_
-  top = is-top 𝟏
-  meets = ∀[ (x , y) ∶ (A × A) ] ((x ⊓ y) is-glb-of (x , y))
-  joins = ∀[ U ∶ Fam 𝓦 A ] (⊔ U) is-lub-of U
-  distributivity =
-   ∀[ (x , U) ∶ A × Fam 𝓦 A ]
-   (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≡[ iss ]≡ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
+  rest : is-partial A _≤_ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+  rest p = β ∧ γ ∧ δ ∧ ε
+   where
+    P : poset 𝓤 𝓥
+    P = A , _≤_ , p
+
+    iss : is-set A
+    iss = carrier-of-[ P ]-is-set
+
+    β = is-top 𝟏
+    γ = ∀[ (x , y) ∶ (A × A) ] ((x ⊓ y) is-glb-of (x , y))
+    δ = ∀[ U ∶ Fam 𝓦 A ] (⊔ U) is-lub-of U
+    ε = ∀[ (x , U) ∶ A × Fam 𝓦 A ]
+        (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≡[ iss ]≡ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
 frame-structure 𝓥 𝓦 A =
-  Σ d ꞉ (frame-data 𝓥 𝓦 A) , satisfies-frame-laws d holds
+  Σ d ꞉ (frame-data 𝓥 𝓦 A) , satisfies-frame-laws d
 
 \end{code}
 
@@ -311,20 +322,20 @@ Some projections.
 \begin{code}
 
 ∣_∣ : frame 𝓤 𝓥 𝓦 → 𝓤 ̇
-∣ (A , (_≤_ , _ , _ , _ , iss) , p , _) ∣ = A
+∣ (A , (_≤_ , _ , _ , _) , p , _) ∣ = A
 
 𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ∣ F ∣
-𝟏[ (A , (_ , 𝟏 , _ , _ , _) , p , _) ] = 𝟏
+𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
 
 meet-of : (F : frame 𝓤 𝓥 𝓦) → ∣ F ∣ → ∣ F ∣ → ∣ F ∣
-meet-of (_ , (_ , _ , _∧_ , _ , _) , _ , _) x y = x ∧ y
+meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
 
 infix 4 meet-of
 
 syntax meet-of F x y = x ∧[ F ] y
 
 join-of : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ∣ F ∣ → ∣ F ∣
-join-of (_ , (_ , _ , _ , ⋁_ , _) , _ , _) = ⋁_
+join-of (_ , (_ , _ , _ , ⋁_) , _ , _) = ⋁_
 
 infix 3 join-of
 
@@ -337,7 +348,7 @@ The underlying poset of a frame:
 \begin{code}
 
 poset-of : frame 𝓤 𝓥 𝓦 → poset 𝓤 𝓥
-poset-of (A , (_≤_ , _ , _ , _ , iss) , p , _) = (A , iss) , _≤_ , p
+poset-of (A , (_≤_ , _ , _ , _) , p , _) = A , _≤_ , p
 
 \end{code}
 
