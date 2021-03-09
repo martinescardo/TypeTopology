@@ -145,6 +145,11 @@ rel-syntax (_ , _≤_ , _) = _≤_
 
 syntax rel-syntax P x y = x ≤[ P ] y
 
+poset-eq-syntax : (P : poset 𝓤 𝓥) → ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
+poset-eq-syntax P x y = x ≤[ P ] y ∧ y ≤[ P ] x
+
+syntax poset-eq-syntax P x y = x ≣[ P ] y
+
 ≤-is-transitive : (P : poset 𝓤 𝓥)
                 → is-transitive (λ x y → x ≤[ P ] y) holds
 ≤-is-transitive (_ , _ , (_ , t , _)) = t
