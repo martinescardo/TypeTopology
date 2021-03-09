@@ -191,12 +191,10 @@ module PosetReasoning (P : poset 𝓤 𝓥) where
  infixr 0 _≤⟨_⟩_
  infix  1 _■
 
-module HSetNotation ((A , iss) : hSet 𝓤) where
+infix 1 _≡[_]≡_
 
- infix 1 _≣_
-
- _≣_ : A → A → Ω 𝓤
- x ≣ y = (x ≡ y) , iss
+_≡[_]≡_ : {A : 𝓤 ̇} → A → is-set A → A → Ω 𝓤
+x ≡[ iss ]≡ y = (x ≡ y) , iss
 
 \end{code}
 
@@ -281,17 +279,17 @@ satisfies-frame-laws : {A : 𝓤 ̇} → frame-data 𝓥 𝓦 A → Ω (𝓤 ⊔
 satisfies-frame-laws {𝓦 = 𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_ , iss) =
  partial ∧ top ∧ meets ∧ joins ∧ distributivity
  where
-  open HSetNotation (A , iss)
   open Meets _≤_
   open Joins _≤_
   open JoinNotation ⊔_
 
-  partial        = is-partial (A , iss) _≤_
-  top            = is-top 𝟏
-  meets          = ∀[ (x , y) ∶ (A × A) ] ((x ⊓ y) is-glb-of (x , y))
-  joins          = ∀[ U ∶ Fam 𝓦 A ] (⊔ U) is-lub-of U
-  distributivity = ∀[ (x , U) ∶ A × Fam 𝓦 A ]
-                    (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≣ ⋁⟨ i ⟩ x ⊓ (U [ i ]) )
+  partial = is-partial (A , iss) _≤_
+  top = is-top 𝟏
+  meets = ∀[ (x , y) ∶ (A × A) ] ((x ⊓ y) is-glb-of (x , y))
+  joins = ∀[ U ∶ Fam 𝓦 A ] (⊔ U) is-lub-of U
+  distributivity =
+   ∀[ (x , U) ∶ A × Fam 𝓦 A ]
+   (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≡[ iss ]≡ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
 frame-structure 𝓥 𝓦 A =
