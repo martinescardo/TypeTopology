@@ -169,10 +169,13 @@ Some convenient syntax for reasoning with posets.
 
 module PosetNotation (P : poset 𝓤 𝓥) where
 
-  _≤_ : ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
-  x ≤ y = x ≤[ P ] y
+ _≤_ : ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
+ x ≤ y = x ≤[ P ] y
 
-  infixr 4 _≤_
+ infix 4 _≤_
+
+ _≣_ : ∣ P ∣ₚ → ∣ P ∣ₚ → Ω 𝓥
+ x ≣ y = x ≣[ P ] y
 
 module PosetReasoning (P : poset 𝓤 𝓥) where
 
