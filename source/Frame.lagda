@@ -115,8 +115,9 @@ is-antisymmetric {𝓤 = 𝓤} {𝓥} (A , iss) _≤_ = P , γ
           Π-is-prop fe λ _ → iss
 
 is-partial : ((A , _) : hSet 𝓤) → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-partial {_} {_} A _≤_ =
- is-reflexive _≤_ ∧ is-transitive _≤_ ∧ is-antisymmetric A _≤_
+is-partial {_} {_} A _≤_ = is-reflexive _≤_
+                         ∧ is-transitive _≤_
+                         ∧ is-antisymmetric A _≤_
 
 \end{code}
 
