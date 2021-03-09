@@ -302,7 +302,33 @@ The type of (𝓤, 𝓥, 𝓦)-frames is then defined as:
 \begin{code}
 
 frame : (𝓤 𝓥 𝓦 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
-frame 𝓤 𝓥 𝓦 = Σ A ꞉ (𝓤 ̇) , frame-structure 𝓥 𝓦 A 
+frame 𝓤 𝓥 𝓦 = Σ A ꞉ (𝓤 ̇) , frame-structure 𝓥 𝓦 A
+
+\end{code}
+
+Some projections.
+
+\begin{code}
+
+∣_∣ : frame 𝓤 𝓥 𝓦 → 𝓤 ̇
+∣ (A , (_≤_ , _ , _ , _ , iss) , p , _) ∣ = A
+
+𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ∣ F ∣
+𝟏[ (A , (_ , 𝟏 , _ , _ , _) , p , _) ] = 𝟏
+
+meet-of : (F : frame 𝓤 𝓥 𝓦) → ∣ F ∣ → ∣ F ∣ → ∣ F ∣
+meet-of (_ , (_ , _ , _∧_ , _ , _) , _ , _) x y = x ∧ y
+
+infix 4 meet-of
+
+syntax meet-of F x y = x ∧[ F ] y
+
+join-of : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ∣ F ∣ → ∣ F ∣
+join-of (_ , (_ , _ , _ , ⋁_ , _) , _ , _) = ⋁_
+
+infix 3 join-of
+
+syntax join-of F U = ⋁[ F ] U
 
 \end{code}
 
