@@ -138,6 +138,7 @@ import ExtendedSumCompact
 import Fin
 import frame
 import FailureOfTotalSeparatedness
+import Frame                           -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
