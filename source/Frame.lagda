@@ -55,12 +55,8 @@ infix 3 forall-syntax
 forall-syntax : (I : 𝓤 ̇) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 forall-syntax I P = ((i : I) → P i holds) , γ
  where
- γ : is-prop ((i : I) → P i holds)
- γ = Π-is-prop fe (holds-is-prop ∘ P)
-
-forall₂-syntax : (I : 𝓤 ̇) → (I × I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-forall₂-syntax I P =
- forall-syntax I λ i → forall-syntax I λ j → P (i , j)
+  γ : is-prop ((i : I) → P i holds)
+  γ = Π-is-prop fe (holds-is-prop ∘ P)
 
 syntax forall-syntax I (λ i → e) = ∀[ i ∶ I ] e
 
