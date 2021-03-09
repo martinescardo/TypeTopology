@@ -28,6 +28,10 @@ living in universe 𝓤.
 
 \begin{code}
 
+private
+  variable
+    𝓤′ 𝓥′ 𝓦′ : Universe
+
 Fam : (𝓤 : Universe) → 𝓥 ̇ → 𝓤 ⁺ ⊔ 𝓥 ̇
 Fam 𝓤 A = Σ I ꞉ (𝓤 ̇) , (I → A)
 
