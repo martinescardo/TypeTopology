@@ -340,3 +340,31 @@ poset-of : frame 𝓤 𝓥 𝓦 → poset 𝓤 𝓥
 poset-of (A , (_≤_ , _ , _ , _ , iss) , p , _) = (A , iss) , _≤_ , p
 
 \end{code}
+
+\section{Frame homomorphisms}
+
+\begin{code}
+
+is-a-frame-homomorphism : (F : frame 𝓤  𝓥  𝓦)
+                          (G : frame 𝓤′ 𝓥′ 𝓦′)
+                        → (∣ F ∣ → ∣ G ∣)
+                        → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
+is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
+ where
+  P = poset-of G
+
+  iss : is-set ∣ G ∣
+  iss = carrier-of-[ P ]-is-set
+
+  open Joins (λ x y → x ≤[ P ] y)
+
+  α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
+  β = ∀[ (x , y) ∶ ∣ F ∣ × ∣ F ∣ ]
+       (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
+  γ = ∀[ U ∶ Fam 𝓦 ∣ F ∣ ] f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
+
+_─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
+F ─f→ G =
+ Σ f ꞉ (∣ F ∣ → ∣ G ∣) , (is-a-frame-homomorphism F G f) holds
+
+\end{code}
