@@ -114,7 +114,7 @@ is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
 -- priori.
 is-antisymmetric : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
 is-antisymmetric {A = A} _≤_ =
- (x y : A) → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
+ {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
 
 is-partial : (A : 𝓤 ̇) → (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
 is-partial A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
@@ -168,7 +168,7 @@ carrier-of-[_]-is-set P@(A , _)=
   (λ x y → (x ≤[ P ] y) holds)
   (λ x y → holds-is-prop (x ≤[ P ] y))
   (≤-is-reflexive P)
-  (≤-is-antisymmetric P)
+  (λ x y → ≤-is-antisymmetric P {x} {y})
 
 \end{code}
 
