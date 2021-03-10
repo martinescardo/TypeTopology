@@ -27,7 +27,7 @@ module Conjunction where
  P ∧ Q = (P holds × Q holds) , γ
   where
    γ = ×-is-prop (holds-is-prop P) (holds-is-prop Q)
- 
+
  infixr 4 _∧_
 
 \end{code}
@@ -50,7 +50,7 @@ module Universal (fe : Fun-Ext) where
 
  infix 3 ∀[∶]-syntax
  infix 3 ∀[]-syntax
- 
+
  syntax ∀[∶]-syntax I (λ i → e) = ∀[ i ∶ I ] e
  syntax ∀[]-syntax    (λ i → e) = ∀[ i ] e
 
