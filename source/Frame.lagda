@@ -108,10 +108,14 @@ is-transitive {A = A} _≤_ = P , γ
 is-preorder : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
 
--- Antisymmetry is not propositional unless A is a set. We will always
--- work with sets but the fact they are sets will be a corollary of
--- their equipment with an antisymmetric order so they are not sets a
--- priori.
+\end{code}
+
+Antisymmetry is not propositional unless A is a set. We will always
+work with sets but the fact they are sets will be a corollary of their
+equipment with an antisymmetric order so they are not sets a priori.
+
+\begin{code}
+
 is-antisymmetric : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
 is-antisymmetric {A = A} _≤_ =
  {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
