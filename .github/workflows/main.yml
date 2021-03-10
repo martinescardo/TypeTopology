@@ -19,3 +19,4 @@ jobs:
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
+        unsafe: true
