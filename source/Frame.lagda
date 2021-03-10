@@ -21,7 +21,10 @@ module Frame
        where
 
 open import UF-Subsingletons
+open import UF-Subsingleton-Combinators
 open import UF-Subsingletons-FunExt
+
+open AllCombinators pt fe
 
 \end{code}
 
@@ -47,23 +50,6 @@ infix 2 fmap-syntax
 
 syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
 
-infixr 4 _∧_
-
-_∧_ : Ω 𝓤 → Ω 𝓥 → Ω (𝓤 ⊔ 𝓥)
-P ∧ Q = (P holds × Q holds) , γ
- where
-  γ = ×-is-prop (holds-is-prop P) (holds-is-prop Q)
-
-infix 3 forall-syntax
-
-forall-syntax : (I : 𝓤 ̇) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-forall-syntax I P = ((i : I) → P i holds) , γ
- where
-  γ : is-prop ((i : I) → P i holds)
-  γ = Π-is-prop fe (holds-is-prop ∘ P)
-
-syntax forall-syntax I (λ i → e) = ∀[ i ∶ I ] e
-
 \end{code}
 
 We define two projections for families: (1) for the index type,
@@ -88,22 +74,11 @@ module to be imported by both this module and the `Dcpo` module.
 \begin{code}
 
 is-reflexive : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-reflexive {A = A} _≤_ = ((x : A) → (x ≤ x) holds) , γ
- where
-  γ : is-prop ((x : A) → (x ≤ x) holds)
-  γ = Π-is-prop fe λ x → holds-is-prop (x ≤ x)
+is-reflexive {A = A} _≤_ = ∀[ x ∶ A ] x ≤ x
 
 is-transitive : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-transitive {A = A} _≤_ = P , γ
- where
-  P = (x y z : A) → (x ≤ y) holds → (y ≤ z) holds → (x ≤ z) holds
-
-  γ : is-prop P
-  γ = Π-is-prop fe λ x →
-       Π-is-prop fe λ _ →
-        Π-is-prop fe λ z →
-         Π-is-prop fe λ _ →
-          Π-is-prop fe λ _ → holds-is-prop (x ≤ z)
+is-transitive {A = A} _≤_ =
+ ∀[ x ∶ A ] ∀[ y ∶ A ] ∀[ z ∶ A ] x ≤ y ⇒ y ≤ z ⇒ x ≤ z
 
 is-preorder : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
@@ -218,10 +193,7 @@ x ≡[ iss ]≡ y = (x ≡ y) , iss
 module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 
  is-top : A → Ω (𝓤 ⊔ 𝓥)
- is-top t = ((x : A) → (x ≤ t) holds) , γ
-   where
-   γ : is-prop ((x : A) → (x ≤ t) holds)
-   γ = Π-is-prop fe λ x → holds-is-prop (x ≤ t)
+ is-top t = ∀[ x ∶ A ] (x ≤ t)
 
  _is-a-lower-bound-of_ : A → A × A → Ω 𝓥
  l is-a-lower-bound-of (x , y) = (l ≤ x) ∧ (l ≤ y)
@@ -243,10 +215,7 @@ module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 module Joins {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 
  _is-an-upper-bound-of_ : A → Fam 𝓦 A → Ω (𝓥 ⊔ 𝓦)
- u is-an-upper-bound-of U = Q , γ
-  where
-   Q = (i : index U) → ((U [ i ]) ≤ u) holds
-   γ = Π-is-prop fe λ i → holds-is-prop ((U [ i ]) ≤ u)
+ u is-an-upper-bound-of U = ∀[ i ∶ index U ] (U [ i ]) ≤ u
 
  upper-bound : Fam 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  upper-bound U = Σ u ꞉ A , (u is-an-upper-bound-of U) holds
