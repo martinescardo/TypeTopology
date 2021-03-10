@@ -267,6 +267,7 @@ import UF-SIP-Examples
 import UF-SIP-IntervalObject
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
+import UF-Subsingleton-Combinators
 import UF-UA-FunExt
 import UF-Univalence
 import UF-UniverseEmbedding
