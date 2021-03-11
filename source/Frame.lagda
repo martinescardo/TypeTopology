@@ -298,20 +298,20 @@ Some projections.
 
 \begin{code}
 
-∣_∣ : frame 𝓤 𝓥 𝓦 → 𝓤 ̇
-∣ (A , (_≤_ , _ , _ , _) , p , _) ∣ = A
+⟨_⟩ : frame 𝓤 𝓥 𝓦 → 𝓤 ̇
+⟨ (A , (_≤_ , _ , _ , _) , p , _) ⟩ = A
 
-𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ∣ F ∣
+𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ⟨ F ⟩
 𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
 
-meet-of : (F : frame 𝓤 𝓥 𝓦) → ∣ F ∣ → ∣ F ∣ → ∣ F ∣
+meet-of : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
 meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
 
 infix 4 meet-of
 
 syntax meet-of F x y = x ∧[ F ] y
 
-join-of : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ∣ F ∣ → ∣ F ∣
+join-of : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → ⟨ F ⟩
 join-of (_ , (_ , _ , _ , ⋁_) , _ , _) = ⋁_
 
 infix 3 join-of
@@ -335,24 +335,24 @@ poset-of (A , (_≤_ , _ , _ , _) , p , _) = A , _≤_ , p
 
 is-a-frame-homomorphism : (F : frame 𝓤  𝓥  𝓦)
                           (G : frame 𝓤′ 𝓥′ 𝓦′)
-                        → (∣ F ∣ → ∣ G ∣)
+                        → (⟨ F ⟩ → ⟨ G ⟩)
                         → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
 is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
  where
   P = poset-of G
 
-  iss : is-set ∣ G ∣
+  iss : is-set ⟨ G ⟩
   iss = carrier-of-[ P ]-is-set
 
   open Joins (λ x y → x ≤[ P ] y)
 
   α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
-  β = ∀[ (x , y) ∶ ∣ F ∣ × ∣ F ∣ ]
+  β = ∀[ (x , y) ∶ ⟨ F ⟩ × ⟨ F ⟩ ]
        (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
-  γ = ∀[ U ∶ Fam 𝓦 ∣ F ∣ ] f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
+  γ = ∀[ U ∶ Fam 𝓦 ⟨ F ⟩ ] f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
- Σ f ꞉ (∣ F ∣ → ∣ G ∣) , (is-a-frame-homomorphism F G f) holds
+ Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , (is-a-frame-homomorphism F G f) holds
 
 \end{code}
