@@ -10,7 +10,6 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
-open import UF-PropTrunc
 open import UF-Univalence
 open import UF-UA-FunExt
 
@@ -71,9 +70,11 @@ This gives us a poset structure at universe 𝓤:
 
 \begin{code}
 
+open propositional-truncations-exist pt
+
 𝟎-𝔽𝕣𝕞 : frame (𝓤 ⁺) 𝓤 𝓤
 𝟎-𝔽𝕣𝕞 = Ω 𝓤 , (_⊑_ , ⊤Ω {𝓤} , _∧_ , ⋁_)
-      , ⊑-is-partial , top , meet , {!!}
+      , ⊑-is-partial , top , meet , join , {!!}
  where
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
   ⋁ U = ∃[ i ∶ index U ] U [ i ]
@@ -89,8 +90,16 @@ This gives us a poset structure at universe 𝓤:
     β : ((P ∧ Q) is-a-lower-bound-of (P , Q)) holds
     β = pr₁ , pr₂
 
-    γ : {!!}
-    γ = {!!}
+    γ : (∀[ (R , _) ∶ lower-bound (P , Q ) ] R ⊑ (P ∧ Q)) holds
+    γ (R , ϕ , ψ) r = ϕ r , ψ r
+
+  open Joins _⊑_
+
+  join : (∀[ U ∶ Fam 𝓤 (Ω 𝓤) ] ((⋁ U) is-lub-of U)) holds
+  join U = (λ i u → ∣ i , u ∣) , γ
+   where
+    γ : (∀[ (P , _) ∶ upper-bound U ] (⋁ U) ⊑ P) holds
+    γ ((A , A-prop) , q) r = ∥∥-rec A-prop (uncurry q) r
 
 \end{code}
 
