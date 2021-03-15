@@ -119,7 +119,6 @@ being-partial-order-is-prop A _≤_ = prop-criterion γ
          (pr₁ p)
          (λ x y → a {x} {y})
 
-
 \end{code}
 
 \section{Definition of poset}
