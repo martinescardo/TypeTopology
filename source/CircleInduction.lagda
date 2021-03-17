@@ -13,6 +13,25 @@ open import UF-Subsingletons
 
 module CircleInduction where
 
+transport-along-≡-dup : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
+                      → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ p ∙ q
+transport-along-≡-dup refl p = p                  ≡⟨ refl-left-neutral ⁻¹ ⟩
+                               refl ∙ p           ≡⟨ refl                 ⟩
+                               refl ⁻¹ ∙ p ∙ refl ∎
+
+ap-pr₁-refl-lemma : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+                    (x : X) (y y' : Y x)
+                    (w : (x , y) ≡[ Σ Y ] (x , y'))
+                  → ap pr₁ w ≡ refl
+                  → y ≡ y'
+ap-pr₁-refl-lemma Y x y y' w p = γ (ap pr₁ w) p ∙ h
+ where
+  γ : (r : x ≡ x) → (r ≡ refl) → y ≡ transport Y r y
+  γ r refl = refl
+  h = transport Y (ap pr₁ w) y ≡⟨ (transport-ap Y pr₁ w) ⁻¹ ⟩
+      transport (Y ∘ pr₁) w y  ≡⟨ apd pr₂ w ⟩
+      y'                       ∎
+
 𝓛 : (X : 𝓤 ̇ ) → 𝓤 ̇
 𝓛 X = Σ x ꞉ X , x ≡ x
 
@@ -29,8 +48,14 @@ module CircleInduction where
                → 𝓛-functor g ∘ 𝓛-functor f ∼ 𝓛-functor (g ∘ f)
 𝓛-functor-comp f g (x , p) = to-Σ-≡ (refl , (ap-ap f g p))
 
+{-
 𝓛-functor-dep : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } (f : (x : X) → Y x) → 𝓛 X → 𝓛 (Σ Y)
 𝓛-functor-dep f (x , p) = (x , f x) , to-Σ-≡ (p , (apd f p))
+-}
+
+\end{code}
+
+\begin{code}
 
 module _
         (𝕊¹ : 𝓤 ̇ )
@@ -41,6 +66,17 @@ module _
  𝕊¹-universal-map : (A : 𝓥 ̇ )
                   → (𝕊¹ → A) → 𝓛 A
  𝕊¹-universal-map A f = (f base) , (ap f loop)
+
+ ap-𝓛-lemma : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
+              (u : 𝓛-functor f (base , loop) ≡ (a , p))
+              (v : 𝓛-functor g (base , loop) ≡ (a , p))
+              (w : (f , u) ≡ (g , v))
+            → ap (λ - → 𝓛-functor - (base , loop)) (ap pr₁ w) ≡ u ∙ v ⁻¹
+ ap-𝓛-lemma a p f g refl v refl = refl
+
+ \end{code}
+
+ \begin{code}
 
  module _
          (𝕊¹-universal-property : {𝓥 : Universe} (A : 𝓥 ̇ )
@@ -53,165 +89,449 @@ module _
     equivs-are-vv-equivs (𝕊¹-universal-map A)
                          (𝕊¹-universal-property A) (a , p)
 
+  𝕊¹-at-most-one-function : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
+                          → is-prop (Σ r ꞉ (𝕊¹ → A) , (r base , ap r loop) ≡ (a , p))
+  𝕊¹-at-most-one-function a p = singletons-are-props (𝕊¹-uniqueness-principle a p)
+
+  {-
+  𝕊¹-uniqueness-principle-≡ : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
+                              (f g : 𝕊¹ → A)
+                            → 𝓛-functor f (base , loop) ≡[ 𝓛 A ] 𝓛-functor g (base , loop)
+                            → f ≡ g
+  𝕊¹-uniqueness-principle-≡ a p f g e =
+   ap pr₁ (singletons-are-props
+           (𝕊¹-uniqueness-principle (g base) (ap g loop))
+                                    (f , e) (g , refl))
+  -}
+
   𝕊¹-rec : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
          → 𝕊¹ → A
   𝕊¹-rec {𝓥} {A} a p = (∃!-witness (𝕊¹-uniqueness-principle a p))
 
   𝕊¹-rec-comp : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
-              → (𝕊¹-rec a p base , ap (𝕊¹-rec a p) loop) ≡[ 𝓛 A ] (a , p)
+              → 𝓛-functor (𝕊¹-rec a p) (base , loop) ≡[ 𝓛 A ] (a , p)
   𝕊¹-rec-comp {𝓥} {A} a p = ∃!-is-witness (𝕊¹-uniqueness-principle a p)
 
   𝕊¹-rec-on-base : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
-                 → 𝕊¹-rec a p base ≡ a
-  𝕊¹-rec-on-base a p = pr₁ (from-Σ-≡ (𝕊¹-rec-comp a p))
+                  → 𝕊¹-rec a p base ≡ a
+  𝕊¹-rec-on-base a p = ap pr₁ (𝕊¹-rec-comp a p)
 
   𝕊¹-rec-on-loop : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
-                 → transport (λ - → - ≡ -) (𝕊¹-rec-on-base a p)
+                 → transport (λ - → pr₁ - ≡ pr₁ -) (𝕊¹-rec-comp a p)
                     (ap (𝕊¹-rec a p) loop)
                  ≡ p
-  𝕊¹-rec-on-loop a p = pr₂ (from-Σ-≡ (𝕊¹-rec-comp a p))
+  𝕊¹-rec-on-loop a p = apd pr₂ (𝕊¹-rec-comp a p)
 
-  coherence : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
-              (u : 𝓛-functor f (base , loop) ≡ (a , p))
-              (v : 𝓛-functor g (base , loop) ≡ (a , p))
-            → ap (λ - → 𝓛-functor - (base , loop))
-               (ap pr₁ (singletons-are-props
-                        (𝕊¹-uniqueness-principle a p) (f , u) (g , v)))
-            ≡ u ∙ v ⁻¹
-  coherence {𝓥} {A} a p f g refl v = γ
+  𝕊¹-rec-on-base' : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
+                  → 𝕊¹-rec a p base ≡ a
+  𝕊¹-rec-on-base' a p = pr₁ (from-Σ-≡ (𝕊¹-rec-comp a p))
+
+  𝕊¹-rec-on-loop' : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
+                  → transport (λ - → - ≡ -) (𝕊¹-rec-on-base' a p)
+                     (ap (𝕊¹-rec a p) loop)
+                  ≡ p
+  𝕊¹-rec-on-loop' a p = pr₂ (from-Σ-≡ (𝕊¹-rec-comp a p))
+
+\end{code}
+
+\begin{code}
+
+  𝕊¹-uniqueness-principle-comp : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
+                                 (u : 𝓛-functor f (base , loop) ≡ (a , p))
+                                 (v : 𝓛-functor g (base , loop) ≡ (a , p))
+                               → ap (λ - → 𝓛-functor - (base , loop))
+                                  (ap pr₁ (𝕊¹-at-most-one-function a p
+                                            (f , u) (g , v)))
+                               ≡ u ∙ v ⁻¹
+  𝕊¹-uniqueness-principle-comp a p f g u v =
+   ap-𝓛-lemma a p f g u v (𝕊¹-at-most-one-function a p (f , u) (g , v))
+
+  𝕊¹-uniqueness-principle-comp₁ : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
+                                  (u : 𝓛-functor f (base , loop) ≡ (a , p))
+                                  (v : 𝓛-functor g (base , loop) ≡ (a , p))
+                                → happly (ap pr₁ (𝕊¹-at-most-one-function a p
+                                                   (f , u) (g , v))) base
+                                ≡ (ap pr₁ u) ∙ (ap pr₁ v) ⁻¹
+  𝕊¹-uniqueness-principle-comp₁ a p f g u v = γ
    where
-    υ : (f , refl) ≡ (g , v)
-    υ = singletons-are-props (𝕊¹-uniqueness-principle a p) (f , refl) (g , v)
-    υ₁ : f ≡ g
-    υ₁ = ap pr₁ υ
-    υ₂ : transport
-          (λ - → 𝓛-functor (pr₁ -) (base , loop) ≡ 𝓛-functor f (base , loop))
-          υ refl
-       ≡ v
-    υ₂ = apd pr₂ υ
-    γ : ap (λ - → 𝓛-functor - (base , loop))
-          (ap pr₁
-           (singletons-are-props
-            (𝕊¹-uniqueness-principle (f base) (ap f loop)) (f , refl) (g , v)))
-          ≡ refl ∙ v ⁻¹
-    γ = ap (λ - → 𝓛-functor - (base , loop))
-          (ap pr₁
-           (singletons-are-props
-            (𝕊¹-uniqueness-principle (f base) (ap f loop)) (f , refl) (g , v))) ≡⟨ ap-ap pr₁ (λ - → 𝓛-functor - (base , loop)) υ ⟩
-        ap (λ - → 𝓛-functor (pr₁ -) (base , loop)) υ ≡⟨ refl ⟩
-        transport (λ - → 𝓛-functor f (base , loop) ≡ 𝓛-functor (pr₁ -) (base , loop)) υ refl ≡⟨ ψ f g refl v υ ⟩
-        (transport
-          (λ - → 𝓛-functor (pr₁ -) (base , loop) ≡ 𝓛-functor f (base , loop))
-          υ refl) ⁻¹ ≡⟨ ap _⁻¹ υ₂ ⟩
-        v ⁻¹ ≡⟨ refl-left-neutral ⁻¹ ⟩
-        refl ∙ v ⁻¹ ∎
+    σ : (f , u) ≡ (g , v)
+    σ = 𝕊¹-at-most-one-function a p (f , u) (g , v)
+    γ = happly (ap pr₁ σ) base                                   ≡⟨ I   ⟩
+        ap pr₁ (ap (λ - → 𝓛-functor - (base , loop)) (ap pr₁ σ)) ≡⟨ II  ⟩
+        ap pr₁ (u ∙ v ⁻¹)                                        ≡⟨ III ⟩
+        ap pr₁ u ∙ ap pr₁ (v ⁻¹)                                 ≡⟨ IV  ⟩
+        ap pr₁ u ∙ ap pr₁ v ⁻¹                                   ∎
      where
-      ψ : (f g : 𝕊¹ → A) (u : 𝓛-functor f (base , loop) ≡ (a , p))
-          (v : 𝓛-functor g (base , loop) ≡ (a , p))
-          (ω : (f , u) ≡ (g , v))
-        → transport (λ - → 𝓛-functor f (base , loop) ≡ 𝓛-functor (pr₁ -) (base , loop)) ω refl
-        ≡ (transport (λ - → 𝓛-functor (pr₁ -) (base , loop) ≡ 𝓛-functor f (base , loop)) ω refl) ⁻¹
-      ψ f g u v refl = refl
+      I   = (ap-ap (λ - → 𝓛-functor - (base , loop)) pr₁ (ap pr₁ σ)) ⁻¹
+      II  = ap (ap pr₁) (𝕊¹-uniqueness-principle-comp a p f g u v)
+      III = ap-∙ pr₁ u (v ⁻¹)
+      IV  = ap (_∙_ (ap pr₁ u)) ((ap-sym pr₁ v) ⁻¹)
 
---   module 𝕊¹-induction
---           (A : 𝕊¹ → 𝓥 ̇ )
---           (a : A base)
---           (l : transport A loop a ≡ a)
---           (fe : funext 𝓤 (𝓤 ⊔ 𝓥))
---          where
+{-
+  𝕊¹-uniqueness-principle-comp₂ : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
+                                  (u : 𝓛-functor f (base , loop) ≡ (a , p))
+                                  (v : 𝓛-functor g (base , loop) ≡ (a , p))
+                                → transport (λ - → {!!}) {!!} {!!}
+                                ≡ (apd pr₂ u) ∙ (apd pr₂ v) ⁻¹
 
---    -- (base , a) : Σ A
 
---    l⁺ : (base , a) ≡[ Σ A ] (base , a)
---    l⁺ = to-Σ-≡ (loop , l)
+{- transport
+                                    (λ z →
+                                       transport (λ z₁ → pr₁ z₁ ≡ pr₁ z₁) z
+                                       (pr₂ (𝓛-functor f (base , loop)))
+                                       ≡ pr₂ (𝓛-functor g (base , loop)))
+                                    (𝕊¹-uniqueness-principle-comp a p f g u v)
+                                    (apd pr₂
+                                     (ap (λ - → 𝓛-functor - (base , loop))
+                                      (ap pr₁ (𝕊¹-at-most-one-function a p (f , u) (g , v)))))
+                                    ≡ apd pr₂ (u ∙ v ⁻¹) -}
+  𝕊¹-uniqueness-principle-comp₂ a p f g u v = {!!} -- apd (apd pr₂) (𝕊¹-uniqueness-principle-comp a p f g u v)
+-}
 
---    r : 𝕊¹ → Σ A
---    r = 𝕊¹-rec (base , a) l⁺
+\end{code}
 
---    -- pr₁ ∘ r : 𝕊¹ → Σ A → 𝕊¹ is this id?
+\begin{code}
 
---    𝕊¹-induction-key-≡ : ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop)
---                       ≡[ 𝓛 𝕊¹ ] (base , loop)
---    𝕊¹-induction-key-≡ =
---     ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop) ≡⟨ I    ⟩
---     (pr₁ (r base) , ap pr₁ (ap r loop))  ≡⟨ refl ⟩
---     𝓛-functor pr₁ (r base , ap r loop)   ≡⟨ II   ⟩
---     𝓛-functor pr₁ ((base , a) , l⁺)      ≡⟨ refl ⟩
---     (base , ap pr₁ l⁺)                   ≡⟨ refl ⟩
---     (base , ap pr₁ (to-Σ-≡ (loop , l)))  ≡⟨ III  ⟩
---     (base , loop)                        ∎
---      where
---       I   = ap (λ - → ((pr₁ ∘ r) base , -)) ((ap-ap r pr₁ loop) ⁻¹)
---       II  = ap (𝓛-functor pr₁) (𝕊¹-rec-comp (base , a) l⁺)
---       III = ap (λ - → (base , -)) (ap-pr₁-to-Σ-≡ (loop , l))
+  module 𝕊¹-induction
+          (A : 𝕊¹ → 𝓥 ̇ )
+          (a : A base)
+          (l : transport A loop a ≡ a)
+          -- (fe : funext 𝓤 (𝓤 ⊔ 𝓥))
+         where
 
---    𝕊¹-induction-key-lemma : pr₁ ∘ r ≡ id
---    𝕊¹-induction-key-lemma =
---     pr₁ (from-Σ-≡ (singletons-are-props (𝕊¹-uniqueness-principle base loop)
---              (pr₁ ∘ r , 𝕊¹-induction-key-≡              )
---              (id      , to-Σ-≡ (refl , ap-id-is-id loop))))
+   l⁺ : (base , a) ≡[ Σ A ] (base , a)
+   l⁺ = to-Σ-≡ (loop , l)
 
---    𝕊¹-induction : (x : 𝕊¹) → A x
---    𝕊¹-induction x = transport A (happly 𝕊¹-induction-key-lemma x) (pr₂ (r x))
---    -- pr₂ (r x) : A (pr₁ (r x))
---    --                  ||
---    -- transport ... : A(x)
+   r : 𝕊¹ → Σ A
+   r = 𝕊¹-rec (base , a) l⁺
 
---    𝕊¹-induction-comp : (𝕊¹-induction base , apd 𝕊¹-induction loop)
---                      ≡[ Σ y ꞉ A base , transport A loop y ≡ y ] (a , l)
---    𝕊¹-induction-comp = {!!}
+   {-
+   r-on-base : (pr₁ ∘ r) base ≡ base
+   r-on-base = ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)
 
---    ρ : 𝕊¹ → Σ A
---    ρ x = (x , 𝕊¹-induction x)
+   r-on-loop : transport (λ - → - ≡ -) r-on-base (ap (pr₁ ∘ r) loop) ≡ loop
+   r-on-loop = transport (λ - → - ≡ -) r-on-base (ap (pr₁ ∘ r) loop) ≡⟨ transport-along-≡-dup r-on-base (ap (pr₁ ∘ r) loop) ⟩
+               r-on-base ⁻¹ ∙ ap (pr₁ ∘ r) loop ∙ r-on-base ≡⟨ refl ⟩
+               (ap pr₁ b) ⁻¹ ∙ ap (pr₁ ∘ r) loop ∙ ap pr₁ b ≡⟨ ap (λ - → - ∙ ap (pr₁ ∘ r) loop ∙ ap pr₁ b) (ap-sym pr₁ b) ⟩
+               ap pr₁ (b ⁻¹) ∙ ap (pr₁ ∘ r) loop ∙ ap pr₁ b ≡⟨ ap (λ - → ap pr₁ (b ⁻¹) ∙ - ∙ ap pr₁ b) ((ap-ap r pr₁ loop) ⁻¹) ⟩
+               ap pr₁ (b ⁻¹) ∙ ap pr₁ (ap r loop) ∙ ap pr₁ b ≡⟨ ap (λ - → - ∙ ap pr₁ b) ((ap-∙ pr₁ (b ⁻¹) (ap r loop)) ⁻¹) ⟩
+               ap pr₁ (b ⁻¹ ∙ ap r loop) ∙ ap pr₁ b ≡⟨ ap-∙ pr₁ (b ⁻¹ ∙ ap r loop) b ⁻¹ ⟩
+               ap pr₁ (b ⁻¹ ∙ ap r loop ∙ b) ≡⟨ ap (ap pr₁) e' ⟩
+               ap pr₁ l⁺ ≡⟨ refl ⟩
+               ap pr₁ (to-Σ-≡ (loop , l)) ≡⟨ ap-pr₁-to-Σ-≡ (loop , l) ⟩
+               loop ∎
+    where
+     b = 𝕊¹-rec-on-base (base , a) l⁺
+     e : transport (λ - → pr₁ - ≡ pr₁ -) (𝕊¹-rec-comp (base , a) l⁺)
+           (ap r loop)
+           ≡ l⁺
+     e = 𝕊¹-rec-on-loop (base , a) l⁺
+     e' : b ⁻¹ ∙ ap r loop ∙ b ≡ l⁺
+     e' = b ⁻¹ ∙ ap r loop ∙ b ≡⟨ (transport-along-≡-dup b (ap r loop)) ⁻¹ ⟩
+          transport (λ - → - ≡ -) b (ap r loop) ≡⟨ (transport-ap (λ - → - ≡ -) pr₁ (𝕊¹-rec-comp (base , a) l⁺)) ⁻¹ ⟩
+          transport ((λ - → - ≡ -) ∘ pr₁) (𝕊¹-rec-comp (base , a) l⁺)
+            (ap r loop) ≡⟨ e ⟩
+          l⁺ ∎
+   -}
 
---    lemma₁ : (r base , ap r loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
---    lemma₁ = 𝕊¹-rec-comp (base , a) l⁺
+   {- transport (λ - → - ≡ -) r-on-base (ap (pr₁ ∘ r) loop) ≡⟨ (transport-ap (λ - → - ≡ -) pr₁ (𝕊¹-rec-on-base (base , a) l⁺)) ⁻¹ ⟩
+               transport (λ - → pr₁ - ≡ pr₁ -) (𝕊¹-rec-on-base (base , a) l⁺)
+                 (ap (pr₁ ∘ r) loop) ≡⟨ {!!} ⟩
+               {!!} ≡⟨ {!!} ⟩
+               {!!} ≡⟨ {!!} ⟩
+               loop ∎
+    where
+     c : 𝓛-functor pr₁ (r base , ap r loop) ≡
+           𝓛-functor pr₁ ((base , a) , l⁺)
+     c = ap (𝓛-functor pr₁) (𝕊¹-rec-comp (base , a) l⁺)
+     d : transport (λ - → pr₁ - ≡ pr₁ -) c
+           (ap pr₁ (ap r loop))
+           ≡ ap pr₁ l⁺
+     d = apd pr₂ c
+     e : transport (λ - → - ≡ -) (𝕊¹-rec-on-base (base , a) l⁺)
+           (ap  r loop)
+           ≡ l⁺
+     e = 𝕊¹-rec-on-loop (base , a) l⁺
+     f : transport (λ z → pr₁ z ≡ pr₁ z) (𝕊¹-rec-comp (base , a) l⁺)
+           (pr₂ (𝓛-functor (𝕊¹-rec (base , a) l⁺) (base , loop)))
+           ≡ l⁺
+     f = apd pr₂ (𝕊¹-rec-comp (base , a) l⁺) -}
 
---    lemma₂ : ρ ∼ r
---    lemma₂ x = to-Σ-≡ ((γ₁ ⁻¹) , γ₂)
---     where
---      γ₁ : pr₁ (r x) ≡ pr₁ (ρ x)
---      γ₁ = happly 𝕊¹-induction-key-lemma x
---      γ₂ = transport A (γ₁ ⁻¹) (pr₂ (ρ x))                  ≡⟨ refl ⟩
---           transport A (γ₁ ⁻¹) (transport A γ₁ (pr₂ (r x))) ≡⟨ I    ⟩
---           transport A (γ₁ ∙ γ₁ ⁻¹) (pr₂ (r x))             ≡⟨ II   ⟩
---           transport A refl (pr₂ (r x))                     ≡⟨ refl ⟩
---           pr₂ (r x)                                        ∎
---       where
---        I  = (transport-comp A γ₁ (γ₁ ⁻¹)) ⁻¹
---        II = ap (λ - → transport A - (pr₂ (r x))) ((right-inverse γ₁) ⁻¹)
+   {-
+   𝕊¹-induction-key-≡ : ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop)
+                      ≡[ 𝓛 𝕊¹ ] (base , loop)
+   𝕊¹-induction-key-≡ = to-Σ-≡ (r-on-base , r-on-loop)
+   -}
 
---    transport-along-≡-dup : {X : 𝓦 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
---                          → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ p ∙ q
---    transport-along-≡-dup refl p = p                  ≡⟨ refl-left-neutral ⁻¹ ⟩
---                                   refl ∙ p           ≡⟨ refl                 ⟩
---                                   refl ⁻¹ ∙ p ∙ refl ∎
+   𝕊¹-induction-key-≡ : ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop)
+                      ≡[ 𝓛 𝕊¹ ] (base , loop)
+   𝕊¹-induction-key-≡ =
+    ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop) ≡⟨ I    ⟩
+    𝓛-functor pr₁ (r base , ap r loop)   ≡⟨ II   ⟩
+    (base , ap pr₁ (to-Σ-≡ (loop , l)))  ≡⟨ III  ⟩
+    (base , loop)                        ∎
+     where
+      I   = to-Σ-≡ (refl , ((ap-ap r pr₁ loop) ⁻¹))
+      II  = ap (𝓛-functor pr₁) (𝕊¹-rec-comp (base , a) l⁺)
+      III = to-Σ-≡ (refl , (ap-pr₁-to-Σ-≡ (loop , l)))
 
---    lemma₃ : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)
---    lemma₃ = to-Σ-≡ (lemma₂ base , γ)
---     where
---      γ = transport (λ - → - ≡ -) (lemma₂ base) (ap ρ loop) ≡⟨ I  ⟩
---          lemma₂ base ⁻¹ ∙ ap ρ loop ∙ lemma₂ base          ≡⟨ II ⟩
---          ap r loop ∎
---       where
---        I  = transport-along-≡-dup (lemma₂ base) (ap ρ loop)
---        II = homotopies-are-natural'' ρ r lemma₂ {base} {base} {loop}
+   𝕊¹-induction-key-lemma : pr₁ ∘ r ≡ id
+   𝕊¹-induction-key-lemma = ap pr₁ (𝕊¹-at-most-one-function base loop
+                                     (pr₁ ∘ r , 𝕊¹-induction-key-≡)
+                                     (id , to-Σ-≡ (refl , ap-id-is-id loop)))
 
---    lemma₂' : ρ ≡ r
---    lemma₂' = dfunext fe lemma₂
+   𝕊¹-induction : (x : 𝕊¹) → A x
+   𝕊¹-induction x = transport A (happly 𝕊¹-induction-key-lemma x) (pr₂ (r x))
 
---    lemma₃' : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)
---    lemma₃' = happly (ap 𝓛-functor lemma₂') (base , loop)
+   {-
+   𝕊¹-induction-comp : (𝕊¹-induction base , apd 𝕊¹-induction loop)
+                     ≡[ Σ y ꞉ A base , transport A loop y ≡ y ] (a , l)
+   𝕊¹-induction-comp = {!!}
+   -}
 
---    {-
---    this : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , to-Σ-≡ (loop , l))
---    this = lemma₃ ∙ lemma₁
+\end{code}
 
---     𝓛-functor ρ (base , loop)
+\begin{code}
 
---    that : ((base , 𝕊¹-induction base) , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , to-Σ-≡ (loop , l))
---    that = lemma₃' ∙ lemma₁
---    -}
+   pr₁-𝕊¹-induction-key-≡ : ap pr₁ 𝕊¹-induction-key-≡
+                          ≡ ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)
+   pr₁-𝕊¹-induction-key-≡ =
+    ap pr₁ 𝕊¹-induction-key-≡    ≡⟨ I    ⟩
+    ap pr₁ (κ₁ ∙ (κ₂ ∙ κ₃))      ≡⟨ II   ⟩
+    ap pr₁ κ₁ ∙ ap pr₁ (κ₂ ∙ κ₃) ≡⟨ III  ⟩
+    refl ∙ ap pr₁ (κ₂ ∙ κ₃)      ≡⟨ IV   ⟩
+    ap pr₁ (κ₂ ∙ κ₃)             ≡⟨ V    ⟩
+    ap pr₁ κ₂ ∙ ap pr₁ κ₃        ≡⟨ VI   ⟩
+    ap pr₁ κ₂ ∙ refl             ≡⟨ refl ⟩
+    ap pr₁ κ₂                    ≡⟨ VII  ⟩
+    ap (pr₁ ∘ 𝓛-functor pr₁) c   ≡⟨ refl ⟩
+    ap (pr₁ ∘ pr₁) c             ≡⟨ VIII ⟩
+    ap pr₁ (ap pr₁ c)            ≡⟨ refl ⟩
+    ap pr₁ b                     ∎
+    where
+     b = 𝕊¹-rec-on-base (base , a) l⁺
+     c = 𝕊¹-rec-comp (base , a) l⁺
+     κ₁ = to-Σ-≡ (refl , ((ap-ap r pr₁ loop) ⁻¹))
+     κ₂ = ap (𝓛-functor pr₁) c
+     κ₃ = to-Σ-≡ (refl , (ap-pr₁-to-Σ-≡ (loop , l)))
+     I   = ap (ap pr₁) e
+      where
+       e : 𝕊¹-induction-key-≡ ≡ κ₁ ∙ (κ₂ ∙ κ₃)
+       e = refl
+     II  = ap-∙ pr₁ κ₁ (κ₂ ∙ κ₃)
+     III = ap (λ - → - ∙ ap pr₁ (κ₂ ∙ κ₃))
+            (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
+             (refl , ((ap-ap r pr₁ loop) ⁻¹)))
+     IV  = refl-left-neutral
+     V   = ap-∙ pr₁ κ₂ κ₃
+     VI  = ap (_∙_ (ap pr₁ κ₂))
+            (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
+             (refl , ap-pr₁-to-Σ-≡ (loop , l)))
+     VII = ap-ap (𝓛-functor pr₁) pr₁ c
+     VIII = (ap-ap pr₁ pr₁ c) ⁻¹
+
+   ρ : 𝕊¹ → Σ A
+   ρ x = (x , 𝕊¹-induction x)
+
+   lemma₁ : (r base , ap r loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
+   lemma₁ = 𝕊¹-rec-comp (base , a) l⁺
+
+   lemma₂ : ρ ∼ r
+   lemma₂ x = to-Σ-≡ ((γ₁ ⁻¹) , γ₂)
+    where
+     γ₁ : pr₁ (r x) ≡ pr₁ (ρ x)
+     γ₁ = happly 𝕊¹-induction-key-lemma x
+     γ₂ = transport A (γ₁ ⁻¹) (pr₂ (ρ x))                  ≡⟨ refl ⟩
+          transport A (γ₁ ⁻¹) (transport A γ₁ (pr₂ (r x))) ≡⟨ I    ⟩
+          transport A (γ₁ ∙ γ₁ ⁻¹) (pr₂ (r x))             ≡⟨ II   ⟩
+          transport A refl (pr₂ (r x))                     ≡⟨ refl ⟩
+          pr₂ (r x)                                        ∎
+      where
+       I  = (transport-comp A γ₁ (γ₁ ⁻¹)) ⁻¹
+       II = ap (λ - → transport A - (pr₂ (r x))) ((right-inverse γ₁) ⁻¹)
+
+   lemma₃ : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)
+   lemma₃ = to-Σ-≡ (lemma₂ base , γ)
+    where
+     γ = transport (λ - → - ≡ -) (lemma₂ base) (ap ρ loop) ≡⟨ I  ⟩
+         lemma₂ base ⁻¹ ∙ ap ρ loop ∙ lemma₂ base          ≡⟨ II ⟩
+         ap r loop                                         ∎
+      where
+       I  = transport-along-≡-dup (lemma₂ base) (ap ρ loop)
+       II = homotopies-are-natural'' ρ r lemma₂ {base} {base} {loop}
+
+   lemma₄ : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
+   lemma₄ = lemma₃ ∙ lemma₁
+
+   pr₁-lemma₁ : ap (pr₁ ∘ pr₁) lemma₁ ≡ happly 𝕊¹-induction-key-lemma base
+   pr₁-lemma₁ = γ ⁻¹
+    where
+     κ = 𝕊¹-induction-key-≡
+     γ = happly 𝕊¹-induction-key-lemma base                    ≡⟨ I    ⟩
+         ap pr₁ κ ∙ ap π (to-Σ-≡ (refl , ap-id-is-id loop)) ⁻¹ ≡⟨ II   ⟩
+         ap pr₁ κ ∙ refl ⁻¹                                    ≡⟨ refl ⟩
+         ap pr₁ κ                                              ≡⟨ III  ⟩
+         ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)                 ≡⟨ refl ⟩
+         ap pr₁ (ap pr₁ lemma₁)                                ≡⟨ IV   ⟩
+         ap (pr₁ ∘ pr₁) lemma₁                                 ∎
+      where
+       π : 𝓛 (𝕊¹) → 𝕊¹
+       π = pr₁
+       I   = 𝕊¹-uniqueness-principle-comp₁ base loop (pr₁ ∘ r) id κ
+              (to-Σ-≡ (refl , (ap-id-is-id loop)))
+       II  = ap (λ - → ap pr₁ κ ∙ - ⁻¹)
+              (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
+               (refl , ap-id-is-id loop))
+       III = pr₁-𝕊¹-induction-key-≡
+       IV  = ap-ap pr₁ pr₁ lemma₁
+
+   pr₁-lemma₃ : ap (pr₁ ∘ pr₁) lemma₃ ≡ (happly 𝕊¹-induction-key-lemma base) ⁻¹
+   pr₁-lemma₃ = ap (pr₁ ∘ pr₁) lemma₃  ≡⟨ I   ⟩
+                ap pr₁ (ap pr₁ lemma₃) ≡⟨ II  ⟩
+                ap pr₁ (lemma₂ base)   ≡⟨ III ⟩
+                p ⁻¹                   ∎
+    where
+     p = happly 𝕊¹-induction-key-lemma base
+     I   = (ap-ap pr₁ pr₁ lemma₃) ⁻¹
+     II  = ap (ap pr₁) (ap-pr₁-to-Σ-≡ (lemma₂ base , _))
+     III = ap-pr₁-to-Σ-≡ ((p ⁻¹) , _)
+
+   ρ-comp₁ : ap pr₁ (ap pr₁ lemma₄) ≡ refl
+   ρ-comp₁ = ap pr₁ (ap pr₁ lemma₄)                        ≡⟨ I   ⟩
+             ap (pr₁ ∘ pr₁) lemma₄                         ≡⟨ II  ⟩
+             ap (pr₁ ∘ pr₁) lemma₃ ∙ ap (pr₁ ∘ pr₁) lemma₁ ≡⟨ III ⟩
+             p ⁻¹ ∙ p                                      ≡⟨ IV  ⟩
+             refl ∎
+    where
+     p = happly 𝕊¹-induction-key-lemma base
+     I   = ap-ap pr₁ pr₁ lemma₄
+     II  = ap-∙ (pr₁ ∘ pr₁) lemma₃ lemma₁
+     III = ap₂ _∙_ pr₁-lemma₃ pr₁-lemma₁
+     IV  = left-inverse p
+
+   𝕊¹-induction-on-base : 𝕊¹-induction base ≡ a
+   𝕊¹-induction-on-base =
+    ap-pr₁-refl-lemma A base (𝕊¹-induction base) a (ap pr₁ lemma₄) ρ-comp₁
+
+   𝕊¹-induction-on-loop : transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base (apd 𝕊¹-induction loop) ≡ l
+   𝕊¹-induction-on-loop = ?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   {-
+    𝕊¹-induction base                                        ≡⟨ refl ⟩
+    transport A refl (𝕊¹-induction base)                     ≡⟨ I    ⟩
+    transport A (ap (pr₁ ∘ pr₁) lemma₄) (𝕊¹-induction base)  ≡⟨ {!II!} ⟩
+    transport A (ap pr₁ (ap pr₁ lemma₄)) (𝕊¹-induction base) ≡⟨ III   ⟩
+    transport (A ∘ pr₁) foo (𝕊¹-induction base)              ≡⟨ IV  ⟩
+    a                                                        ∎
+    where
+     I   = ap (λ - → transport A - (𝕊¹-induction base)) (ρ-comp₁ ⁻¹)
+     II  = {!!}
+     III = {!!}
+     foo : (base , 𝕊¹-induction base) ≡ (base , a)
+     foo = ap pr₁ lemma₄
+     IV = apd pr₂ foo
+   -}
+
+   {-
+   ρ-comp₁ : ap (pr₁ ∘ pr₁) lemma₄ ≡ refl
+   ρ-comp₁ = ap (pr₁ ∘ pr₁) lemma₄                         ≡⟨ I   ⟩
+             ap (pr₁ ∘ pr₁) lemma₃ ∙ ap (pr₁ ∘ pr₁) lemma₁ ≡⟨ II  ⟩
+             p ⁻¹ ∙ p                                      ≡⟨ III ⟩
+             refl                                          ∎
+    where
+     p : pr₁ (r base) ≡ pr₁ (ρ base)
+     p = happly 𝕊¹-induction-key-lemma base
+     I   = ap-∙ (pr₁ ∘ pr₁) lemma₃ lemma₁
+     III = left-inverse p
+     II  = ap₂ _∙_ γ₁ (γ₂ ⁻¹)
+      where
+       γ₁ = ap (pr₁ ∘ pr₁) lemma₃  ≡⟨ I₁   ⟩
+            ap pr₁ (ap pr₁ lemma₃) ≡⟨ II₁  ⟩
+            ap pr₁ (lemma₂ base)   ≡⟨ III₁ ⟩
+            p ⁻¹                   ∎
+        where
+         I₁   = (ap-ap pr₁ pr₁ lemma₃) ⁻¹
+         II₁  = ap (ap pr₁) (ap-pr₁-to-Σ-≡ (lemma₂ base , _))
+         III₁ = ap-pr₁-to-Σ-≡ ((p ⁻¹) , _)
+       γ₂ : p ≡ ap (pr₁ ∘ pr₁) lemma₁
+       γ₂ = p                                                         ≡⟨ I₂   ⟩
+            ap pr₁ κ ∙ (ap (pr₁ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)}) (to-Σ-≡ (refl , ap-id-is-id loop))) ⁻¹ ≡⟨ II₂  ⟩
+            ap pr₁ κ                                                  ≡⟨ refl ⟩
+            ap pr₁ (to-Σ-≡ (r-on-base , r-on-loop))                   ≡⟨ III₂ ⟩
+            r-on-base                                                 ≡⟨ refl ⟩
+            ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)                     ≡⟨ IV₂  ⟩
+            ap pr₁ (ap pr₁ lemma₁)                                    ≡⟨ V₂   ⟩
+            ap (pr₁ ∘ pr₁) lemma₁                                     ∎
+        where
+         κ = 𝕊¹-induction-key-≡
+         I₂   = 𝕊¹-uniqueness-principle-comp₁ base loop (pr₁ ∘ r) id κ
+                 (to-Σ-≡ (refl , (ap-id-is-id loop)))
+         II₂  = ap (λ - → ap pr₁ κ ∙ - ⁻¹)
+                 (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_} (refl , ap-id-is-id loop))
+         III₂ = ap-pr₁-to-Σ-≡ (r-on-base , r-on-loop)
+         IV₂ : ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺) ≡ ap pr₁ (ap pr₁ lemma₁)
+         IV₂  = ap (ap pr₁) e -- refl
+          where
+           e : 𝕊¹-rec-on-base (base , a) l⁺ ≡ ap pr₁ lemma₁
+           e = refl
+         V₂   = ap-ap pr₁ pr₁ lemma₁
+   -}
+
+{- ap (pr₁ ∘ pr₁) lemma₁ ≡⟨ (ap-ap {!!} {!!} {!!}) ⁻¹ ⟩
+            ap pr₁ (ap pr₁ lemma₁) ≡⟨ ap (ap pr₁) refl ⟩
+            -- {!!} ≡⟨ {!!} ⟩
+            ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺) ≡⟨ refl ⟩
+            r-on-base ≡⟨ ap-pr₁-to-Σ-≡ (r-on-base , r-on-loop) ⁻¹ ⟩
+            ap pr₁ 𝕊¹-induction-key-≡ ≡⟨ refl ⟩
+            ap pr₁ 𝕊¹-induction-key-≡ ∙ refl ≡⟨ ap (λ - → ap pr₁ 𝕊¹-induction-key-≡ ∙ (- ⁻¹)) ((ap-pr₁-to-Σ-≡ (refl , _)) ⁻¹) ⟩
+            ap pr₁ 𝕊¹-induction-key-≡ ∙ (ap pr₁ (to-Σ-≡ (refl , _))) ⁻¹ ≡⟨ (𝕊¹-uniqueness-principle-comp₁ base loop (pr₁ ∘ r) id 𝕊¹-induction-key-≡ (to-Σ-≡ (refl , ap-id-is-id loop))) ⁻¹ ⟩
+            p ∎
+-}
+
+   {-
+   lemma₂' : ρ ≡ r
+   lemma₂' = dfunext fe lemma₂
+
+   lemma₃' : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)
+   lemma₃' = happly (ap 𝓛-functor lemma₂') (base , loop)
+   -}
+
+   {-
+   this : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , to-Σ-≡ (loop , l))
+   this = lemma₃ ∙ lemma₁
+
+    𝓛-functor ρ (base , loop)
+
+   that : ((base , 𝕊¹-induction base) , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , to-Σ-≡ (loop , l))
+   that = lemma₃' ∙ lemma₁
+   -}
 
 --    this' : (ρ base) ≡[ Σ A ] (base , a)
 --    this' = lemma₂ base ∙ 𝕊¹-rec-on-base (base , a) l⁺
