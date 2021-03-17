@@ -353,6 +353,6 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
 
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
- Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , (is-a-frame-homomorphism F G f) holds
+ Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , is-a-frame-homomorphism F G f holds
 
 \end{code}
