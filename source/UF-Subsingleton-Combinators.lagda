@@ -97,10 +97,10 @@ module Existential (pt : propositional-truncations-exist) where
 
  open propositional-truncations-exist pt
 
- ∃[∶]-syntax : (I : 𝓤 ̇) → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
- ∃[∶]-syntax I P = ∥ Σ i ꞉ I , P i holds ∥ , ∥∥-is-prop
+ ∃[∶]-syntax : (I : 𝓤 ̇) → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
+ ∃[∶]-syntax I A = ∥ Σ i ꞉ I , A i ∥ , ∥∥-is-prop
 
- ∃[]-syntax : {I : 𝓤 ̇} → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
+ ∃[]-syntax : {I : 𝓤 ̇} → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
  ∃[]-syntax {I = I} P = ∃[∶]-syntax I P
 
  infix 2 ∃[∶]-syntax

@@ -363,6 +363,7 @@ module _ {𝓤 𝓥 : Universe} where
                                → g ≡ h
     at-most-one-mediating-map/≡ i g h p = q ⁻¹ ∙ r
      where
+      f : X → A
       f = g ∘ η/
 
       j : identifies-related-points f

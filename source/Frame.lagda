@@ -92,11 +92,32 @@ equipment with an antisymmetric order so they are not sets a priori.
 \begin{code}
 
 is-antisymmetric : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → (𝓤 ⊔ 𝓥) ̇
-is-antisymmetric {A = A} _≤_ =
- {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
+is-antisymmetric {A = A} _≤_ = {x y : A} → (x ≤ y) holds → (y ≤ x) holds → x ≡ y
 
-is-partial : (A : 𝓤 ̇) → (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
-is-partial A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
+being-antisymmetric-is-prop : {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥)
+                            → is-set A
+                            → is-prop (is-antisymmetric _≤_)
+being-antisymmetric-is-prop {𝓤} {A} _≤_ A-is-set =
+ Π-is-prop' fe (λ x → Π-is-prop' fe (λ y → Π₂-is-prop fe (λ _ _ → A-is-set {x} {y})))
+
+is-partial-order : (A : 𝓤 ̇) → (A → A → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+is-partial-order A _≤_ = is-preorder _≤_ holds ×  is-antisymmetric _≤_
+
+being-partial-order-is-prop : (A : 𝓤 ̇) (_≤_ : A → A → Ω 𝓥)
+                            → is-prop (is-partial-order A _≤_)
+being-partial-order-is-prop A _≤_ = prop-criterion γ
+ where
+  γ : is-partial-order A _≤_ → is-prop (is-partial-order A _≤_)
+  γ (p , a) = ×-is-prop
+               (holds-is-prop (is-preorder _≤_))
+               (being-antisymmetric-is-prop _≤_ i)
+   where
+    i : is-set A
+    i = type-with-prop-valued-refl-antisym-rel-is-set
+         (λ x y → (x ≤ y) holds)
+         (λ x y → holds-is-prop (x ≤ y))
+         (pr₁ p)
+         (λ x y → a {x} {y})
 
 \end{code}
 
@@ -111,7 +132,7 @@ A (𝓤, 𝓥)-poset is a poset whose
 
 poset-structure : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ̇
 poset-structure 𝓥 A =
- Σ _≤_ ꞉ (A → A → Ω 𝓥) , (is-partial A _≤_)
+ Σ _≤_ ꞉ (A → A → Ω 𝓥) , (is-partial-order A _≤_)
 
 poset : (𝓤 𝓥 : Universe) → 𝓤 ⁺ ⊔ 𝓥 ⁺ ̇
 poset 𝓤 𝓥 = Σ A ꞉ 𝓤 ̇ , poset-structure 𝓥 A
@@ -258,13 +279,13 @@ frame-data 𝓥 𝓦 A = (A → A → Ω 𝓥)   -- order
 
 satisfies-frame-laws : {A : 𝓤 ̇} → frame-data 𝓥 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇
 satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ , ⊔_) =
- Σ p ꞉ is-partial A _≤_ , rest p holds
+ Σ p ꞉ is-partial-order A _≤_ , rest p holds
  where
   open Meets _≤_
   open Joins _≤_
   open JoinNotation ⊔_
 
-  rest : is-partial A _≤_ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+  rest : is-partial-order A _≤_ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
   rest p = β ∧ γ ∧ δ ∧ ε
    where
     P : poset 𝓤 𝓥
