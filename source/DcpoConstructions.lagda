@@ -206,7 +206,7 @@ This will be used in ScottModelOfPCF.
    S₀ᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ]
           → DCPO[ 𝓓 , 𝓔 ]
           → DCPO[ 𝓓 , 𝓕 ]
-   S₀ᵈᶜᵖᵒ (𝕗@(f , cf)) (𝕘@(g , cg)) = (λ x → underlying-function 𝓔 𝓕 (f x) (g x)) , c
+   S₀ᵈᶜᵖᵒ (f , cf) (g , cg) = (λ x → underlying-function 𝓔 𝓕 (f x) (g x)) , c
     where
 
      c : is-continuous 𝓓 𝓕 (λ x → underlying-function 𝓔 𝓕 (f x) (g x))
@@ -223,10 +223,10 @@ This will be used in ScottModelOfPCF.
               (g (∐ 𝓓 δ)) m)
         where
          l : f (α i) ⊑⟨ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ⟩ f (∐ 𝓓 δ)
-         l = continuous-functions-are-monotone 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) 𝕗 (α i)
+         l = continuous-functions-are-monotone 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) (α i)
              (∐ 𝓓 δ) (∐-is-upperbound 𝓓 δ i)
          m : g (α i) ⊑⟨ 𝓔 ⟩ g (∐ 𝓓 δ)
-         m = continuous-functions-are-monotone 𝓓 𝓔 𝕘 (α i) (∐ 𝓓 δ)
+         m = continuous-functions-are-monotone 𝓓 𝓔 (g , cg) (α i) (∐ 𝓓 δ)
              (∐-is-upperbound 𝓓 δ i)
        v : (y : ⟨ 𝓕 ⟩)
          → ((i : I) → (underlying-function 𝓔 𝓕 (f (α i)) (g (α i))) ⊑⟨ 𝓕 ⟩ y)
@@ -237,10 +237,10 @@ This will be used in ScottModelOfPCF.
          γ = transport (λ - → underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) - ⊑⟨ 𝓕 ⟩ y)
              e₀ γ₀
           where
-           e₀ : ∐ 𝓔 (image-is-directed 𝓓 𝓔 𝕘 δ) ≡ g (∐ 𝓓 δ)
-           e₀ = (continuous-function-∐-≡ 𝓓 𝓔 𝕘 δ) ⁻¹
+           e₀ : ∐ 𝓔 (image-is-directed 𝓓 𝓔 (g , cg) δ) ≡ g (∐ 𝓓 δ)
+           e₀ = (continuous-function-∐-≡ 𝓓 𝓔 (g , cg) δ) ⁻¹
            ε₀ : is-Directed 𝓔 (g ∘ α)
-           ε₀ = image-is-directed 𝓓 𝓔 𝕘 δ
+           ε₀ = image-is-directed 𝓓 𝓔 (g , cg) δ
            γ₀ : (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (∐ 𝓔 ε₀)) ⊑⟨ 𝓕 ⟩ y
            γ₀ = transport (λ - → - ⊑⟨ 𝓕 ⟩ y) e₁ γ₁
             where
@@ -260,9 +260,9 @@ This will be used in ScottModelOfPCF.
                       e₂ γ₃
                 where
                  ε₂ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f ∘ α)
-                 ε₂ = image-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) 𝕗 δ
+                 ε₂ = image-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ
                  e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ≡ f (∐ 𝓓 δ)
-                 e₂ = (continuous-function-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) 𝕗 δ) ⁻¹
+                 e₂ = (continuous-function-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
                  γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂) (g (α i))
                     ⊑⟨ 𝓕 ⟩ y
                  γ₃ = ∐-is-lowerbound-of-upperbounds 𝓕
@@ -292,20 +292,20 @@ This will be used in ScottModelOfPCF.
                                        (continuous-functions-are-monotone 𝓔 𝓕
                                          (f (α k)) (g (α i)) (g (α k))
                                         (continuous-functions-are-monotone 𝓓 𝓔
-                                         𝕘 (α i) (α k) l)))
+                                         (g , cg) (α i) (α k) l)))
                                       (ineqs k)
                       where
                        s : f (α j) ⊑⟨ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ⟩ f (α k)
                        s = continuous-functions-are-monotone 𝓓
-                            (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) 𝕗 (α j) (α k) m
+                            (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) (α j) (α k) m
 
 
    S₁ᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ]
           → DCPO[ 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 , 𝓓 ⟹ᵈᶜᵖᵒ 𝓕 ]
-   S₁ᵈᶜᵖᵒ (𝕗@(f , cf)) = h , c
+   S₁ᵈᶜᵖᵒ (f , cf) = h , c
     where
      h : DCPO[ 𝓓 , 𝓔 ] → DCPO[ 𝓓 , 𝓕 ]
-     h = (S₀ᵈᶜᵖᵒ 𝕗)
+     h = (S₀ᵈᶜᵖᵒ (f , cf))
      c : is-continuous (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓 ⟹ᵈᶜᵖᵒ 𝓕) h
      c I α δ = u , v
       where
