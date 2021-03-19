@@ -277,6 +277,6 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
        f g (¬¬-functor (ap _holds) a)
 
   γ : p ≡ q
-  γ = to-subtype-≡ (λ - → being-prop-is-prop fe) δ
+  γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) δ
 
 \end{code}

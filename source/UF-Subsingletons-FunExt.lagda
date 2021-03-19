@@ -374,10 +374,10 @@ no-three-distinct-propositions fe pe ((p , q , r) , u , v , w) = XI
 
 (The above function was added 19th March 2021.)
 
-TODO. Add in a suitable module that the above implies that if Fin n is
-embedded in Ω 𝓤, then n ≤ 2. That is, every finite subset of Ω has at
-most two elements. (And also think about what can be said about
-Kuratowski finite subsets of Ω.)
+The above implies that if Fin n is embedded in Ω 𝓤, then n ≤ 2. That
+is, every finite subset of Ω has at most two elements. See the module
+Fin.lagda.
+
 
 In the above and in the following, 𝟘-elim is used to coerce from 𝟘 {𝓤}
 to 𝟘 {𝓤₀} as this is where negations take values in.

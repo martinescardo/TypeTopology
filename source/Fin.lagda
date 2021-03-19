@@ -1160,3 +1160,44 @@ revₐ : {X : 𝓤 ̇ } (m : ℕ) → Vec X m → Vec X (m +ₐ zero)
 revₐ n s = rev-append n zero s ⟨⟩
 
 \end{code}
+
+Added 19th March 2021.
+
+\begin{code}
+
+finite-subsets-of-Ω-have-at-most-2-elements : funext 𝓤 𝓤
+                                            → propext 𝓤
+                                            → (k : ℕ)
+                                            → Fin k ↪ Ω 𝓤
+                                            → k ≤ 2
+finite-subsets-of-Ω-have-at-most-2-elements {𝓤} fe pe k e = γ
+ where
+  δ : (k : ℕ) → Fin k ↪ Ω 𝓤 → ¬ (k ≥ 3)
+  δ (succ (succ (succ k))) (f , f-is-emb) * = α
+   where
+    p q r : Ω 𝓤
+    p = f 𝟎
+    q = f (suc 𝟎)
+    r = f (suc (suc 𝟎))
+
+    f-lc : left-cancellable f
+    f-lc = embeddings-are-lc f f-is-emb
+
+    u : p ≢ q
+    u a = +disjoint' (f-lc a)
+
+    v : q ≢ r
+    v a = +disjoint' (inl-lc (f-lc a))
+
+    w : r ≢ p
+    w a = +disjoint (f-lc a)
+
+    α : 𝟘
+    α = no-three-distinct-propositions fe pe ((p , q , r) , u , v , w)
+
+  γ : k ≤ 2
+  γ = not-less-bigger-or-equal k 2 (δ k e)
+
+\end{code}
+
+TODO. Think about Kuratowski finite subsets of Ω.
