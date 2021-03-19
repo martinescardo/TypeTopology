@@ -239,28 +239,44 @@ Added 19th March 2021.
 
 \begin{code}
 
-Ω-is-¬¬-separated : funext 𝓤 𝓤
-                  → propext 𝓤
-                  → (p q : Ω 𝓤)
-                  → ¬¬-stable (p holds)
-                  → ¬¬-stable (q holds)
-                  → ¬¬-stable (p ≡ q)
-Ω-is-¬¬-separated fe pe p q f g a = V
+equality-of-¬¬stable-propositions' : propext 𝓤
+                                   → (P Q : 𝓤 ̇ )
+                                   → is-prop P
+                                   → is-prop Q
+                                   → ¬¬-stable P
+                                   → ¬¬-stable Q
+                                   → ¬¬-stable (P ≡ Q)
+equality-of-¬¬stable-propositions' pe P Q i j f g a = V
  where
-  I : ¬¬ (p holds → q holds)
-  I = ¬¬-functor (transport _holds) a
+  I : ¬¬ (P → Q)
+  I = ¬¬-functor (transport id) a
 
-  II : p holds → q holds
+  II : P → Q
   II = →-is-¬¬-stable g I
 
-  III : ¬¬ (q holds → p holds)
-  III = ¬¬-functor (transport _holds ∘ _⁻¹) a
+  III : ¬¬ (Q → P)
+  III = ¬¬-functor (transport id ∘ _⁻¹) a
 
-  IV : q holds → p holds
+  IV : Q → P
   IV = →-is-¬¬-stable f III
 
-  V : p ≡ q
-  V = Ω-extensionality fe pe II IV
+  V : P ≡ Q
+  V = pe i j II IV
 
+equality-of-¬¬stable-propositions : funext 𝓤 𝓤
+                                  → propext 𝓤
+                                  → (p q : Ω 𝓤)
+                                  → ¬¬-stable (p holds)
+                                  → ¬¬-stable (q holds)
+                                  → ¬¬-stable (p ≡ q)
+equality-of-¬¬stable-propositions fe pe p q f g a = γ
+ where
+  δ : p holds ≡ q holds
+  δ = equality-of-¬¬stable-propositions'
+       pe (p holds) (q holds) (holds-is-prop p) (holds-is-prop q)
+       f g (¬¬-functor (ap _holds) a)
+
+  γ : p ≡ q
+  γ = to-subtype-≡ (λ - → being-prop-is-prop fe) δ
 
 \end{code}
