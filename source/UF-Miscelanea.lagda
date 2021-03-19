@@ -279,4 +279,22 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
   γ : p ≡ q
   γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) δ
 
+
+Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
+Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
+
+Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → is-¬¬-separated (Ω¬¬ 𝓤)
+Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
+ where
+  α : ¬¬ (p ≡ q)
+  α = ¬¬-functor (ap pr₁) ν
+
+  δ : p ≡ q
+  δ = equality-of-¬¬stable-propositions fe pe p q s t α
+
+  γ : (p , s) ≡ (q , t)
+  γ = to-subtype-≡ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
+
 \end{code}

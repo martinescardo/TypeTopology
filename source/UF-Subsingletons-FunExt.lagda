@@ -332,9 +332,12 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
      l : (P , i) ≡ ⊥
      l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
-no-three-distinct-propositions : funext 𝓤 𝓤
-                               → propext 𝓤
-                               → ¬ (Σ (p , q , r) ꞉ Ω 𝓤 × Ω 𝓤 × Ω 𝓤 , (p ≢ q) × (q ≢ r) × (r ≢ p))
+no-three-distinct-propositions :
+
+    funext 𝓤 𝓤
+  → propext 𝓤
+  → ¬ (Σ (p , q , r) ꞉ Ω 𝓤 × Ω 𝓤 × Ω 𝓤 , (p ≢ q) × (q ≢ r) × (r ≢ p))
+
 no-three-distinct-propositions fe pe ((p , q , r) , u , v , w) = XI
  where
   I : p ≢ ⊥
