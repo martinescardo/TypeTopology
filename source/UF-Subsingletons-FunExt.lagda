@@ -332,7 +332,50 @@ no-truth-values-other-than-⊥-or-⊤ fe pe ((P , i) , (f , g)) = φ u
      l : (P , i) ≡ ⊥
      l = Ω-extensionality fe pe (λ p → 𝟘-elim (u p)) unique-from-𝟘
 
+no-three-distinct-propositions : funext 𝓤 𝓤
+                               → propext 𝓤
+                               → ¬ (Σ (p , q , r) ꞉ Ω 𝓤 × Ω 𝓤 × Ω 𝓤 , (p ≢ q) × (q ≢ r) × (r ≢ p))
+no-three-distinct-propositions fe pe ((p , q , r) , u , v , w) = XI
+ where
+  I : p ≢ ⊥
+  I a = no-truth-values-other-than-⊥-or-⊤ fe pe (q , II , III)
+   where
+    II : q ≢ ⊥
+    II b = u (a ∙ b ⁻¹)
+
+    III : q ≢ ⊤
+    III c = no-truth-values-other-than-⊥-or-⊤ fe pe (r , IV , V)
+     where
+      IV : r ≢ ⊥
+      IV d = w (d ∙ a ⁻¹)
+
+      V : r ≢ ⊤
+      V e = v (c ∙ e ⁻¹)
+
+  VI : p ≢ ⊤
+  VI a = no-truth-values-other-than-⊥-or-⊤ fe pe (q , VII , X)
+   where
+    VII : q ≢ ⊥
+    VII b = no-truth-values-other-than-⊥-or-⊤ fe pe (r , VIII , IX)
+     where
+      VIII : r ≢ ⊥
+      VIII c = v (b ∙ c ⁻¹)
+
+      IX : r ≢ ⊤
+      IX d = w (d ∙ a ⁻¹)
+
+    X : q ≢ ⊤
+    X e = u (a ∙ e ⁻¹)
+
+  XI : 𝟘
+  XI = no-truth-values-other-than-⊥-or-⊤ fe pe (p , I , VI)
+
 \end{code}
+
+TODO. Add in a suitable module that the above implies that if Fin n is
+embedded in Ω 𝓤, then n ≤ 2. That is, every finite subset of Ω has at
+most two elements. (And also think about what can be said about
+Kuratowski finite subsets of Ω.)
 
 The above and following 𝟘-elim is used to coerce from 𝟘 {𝓤} to 𝟘 {𝓤₀}
 as this is where negations take values in.
