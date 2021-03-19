@@ -233,5 +233,34 @@ maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ 
 maps-of-props-into-isolated-points-are-embeddings f i j = maps-of-props-into-h-isolated-points-are-embeddings
                                                            f i (λ p → isolated-is-h-isolated (f p) (j p))
 
+\end{code}
+
+Added 19th March 2021.
+
+\begin{code}
+
+Ω-is-¬¬-separated : funext 𝓤 𝓤
+                  → propext 𝓤
+                  → (p q : Ω 𝓤)
+                  → ¬¬-stable (p holds)
+                  → ¬¬-stable (q holds)
+                  → ¬¬-stable (p ≡ q)
+Ω-is-¬¬-separated fe pe p q f g a = V
+ where
+  I : ¬¬ (p holds → q holds)
+  I = ¬¬-functor (transport _holds) a
+
+  II : p holds → q holds
+  II = →-is-¬¬-stable g I
+
+  III : ¬¬ (q holds → p holds)
+  III = ¬¬-functor (transport _holds ∘ _⁻¹) a
+
+  IV : q holds → p holds
+  IV = →-is-¬¬-stable f III
+
+  V : p ≡ q
+  V = Ω-extensionality fe pe II IV
+
 
 \end{code}
