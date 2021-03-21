@@ -28,6 +28,7 @@ open import UF-FunExt
       where
         b : p ≢ ⊥
         b u = zero-is-not-one (t ⁻¹ ∙ ap f u ∙ r)
+
         c : p ≢ ⊤
         c u = zero-is-not-one (t ⁻¹ ∙ ap f u ∙ s)
 

@@ -148,7 +148,7 @@ extensionality. More generally:
 \begin{code}
 
 is-¬¬-separated : 𝓤 ̇ → 𝓤 ̇
-is-¬¬-separated X = (x y : X) → ¬¬ (x ≡ y) → x ≡ y
+is-¬¬-separated X = (x y : X) → ¬¬-stable (x ≡ y)
 
 Π-is-¬¬-separated : funext 𝓤 𝓥
                   → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }

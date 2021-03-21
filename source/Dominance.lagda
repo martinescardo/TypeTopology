@@ -60,19 +60,26 @@ and condition D5' below is easier to check:
   where
    Q' : 𝓣 ̇
    Q' = Σ Q
+
    k : is-prop P
    k = d3 P i
+
    l : (p : P) → is-prop (Q p)
    l p = d3 (Q p) (j p)
+
    m : is-prop Q'
    m = Σ-is-prop k l
+
    n : (p : P) → Q p ≡ Q'
    n p = pe (l p) m (λ q        → (p , q))
                     (λ (p' , q) → transport Q (k p' p) q)
+
    j' : P → d Q'
    j' p = transport d (n p) (j p)
+
    u : d (P × Q')
    u = d5' P Q' i j'
+
    v : P × Q' ≡ Σ Q
    v = pe (×-is-prop k m) m (λ (p , p' , q) → (p' , q))
                             (λ (p' , q)     → (p' , p' , q))
