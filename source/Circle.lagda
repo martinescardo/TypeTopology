@@ -28,38 +28,6 @@ module Circle
         (ua : is-univalent 𝓤₀)
        where
 
-\end{code}
-
-TO DO: Move this somewhere
-
-\begin{code}
-
-∙-is-equiv₁ : {X : 𝓤 ̇ } {x y : X} (p : x ≡ x)
-            → is-equiv (λ (q : x ≡ y) → p ∙ q)
-∙-is-equiv₁ {𝓤} {X} {x} {y} p =
- qinvs-are-equivs (λ q → p ∙ q) ((λ q → p ⁻¹ ∙ q) , η , ε)
-  where
-   ε : (q : x ≡ y) → p ∙ (p ⁻¹ ∙ q) ≡ q
-   ε q = p ∙ (p ⁻¹ ∙ q) ≡⟨ (∙assoc p (p ⁻¹) q) ⁻¹                  ⟩
-         (p ∙ p ⁻¹) ∙ q ≡⟨ ap (λ - → - ∙ q) ((right-inverse p) ⁻¹) ⟩
-         refl ∙ q       ≡⟨ refl-left-neutral                       ⟩
-         q              ∎
-   η : (q : x ≡ y) → p ⁻¹ ∙ (p ∙ q) ≡ q
-   η q = p ⁻¹ ∙ (p ∙ q) ≡⟨ (∙assoc (p ⁻¹) p q) ⁻¹            ⟩
-         (p ⁻¹ ∙ p) ∙ q ≡⟨ ap (λ - → - ∙ q) (left-inverse p) ⟩
-         refl ∙ q       ≡⟨ refl-left-neutral                 ⟩
-         q              ∎
-
-transport-along-≡ : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
-                  → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ (p ∙ q)
-transport-along-≡ refl p = (refl ⁻¹ ∙ (p ∙ refl) ≡⟨ refl              ⟩
-                            refl ⁻¹ ∙ p          ≡⟨ refl-left-neutral ⟩
-                            p                    ∎                     ) ⁻¹
-
-\end{code}
-
-\begin{code}
-
 fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = univalence-gives-funext ua
 
@@ -257,7 +225,7 @@ module Tℤ-rec
       ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe) (λ _ → a ≡ a') (λ _ → g)
        where
         g : (a ≡ a') ≃ (a ≡ a')
-        g = ((λ q → p ∙ q) , ∙-is-equiv₁ p)
+        g = ((λ q → p ∙ q) , ∙-is-equiv-left p)
 
   BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
   BBG-is-singleton = γ
@@ -291,12 +259,13 @@ module Tℤ-rec
      γ = (left-inverse (t X x)) ⁻¹
 
   ap-Tℤ-rec-loop-lemma₁ : ap Tℤ-rec loop
-                        ≡ (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ (p ∙ Tℤ-rec-lemma₁ base 𝟎)
+                        ≡ (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ p ∙ Tℤ-rec-lemma₁ base 𝟎
   ap-Tℤ-rec-loop-lemma₁ =
    ap Tℤ-rec loop                                            ≡⟨ I   ⟩
    (t base 𝟎) ⁻¹ ∙ (t base (⌜ idtoeq ℤ ℤ (ap ⟨_⟩ loop) ⌝ 𝟎)) ≡⟨ II  ⟩
    (t base 𝟎) ⁻¹ ∙ (t base (succ-ℤ 𝟎))                       ≡⟨ III ⟩
-   (t base 𝟎) ⁻¹ ∙ (p ∙ t base 𝟎)                            ∎
+   (t base 𝟎) ⁻¹ ∙ (p ∙ t base 𝟎)                            ≡⟨ IV  ⟩
+   (t base 𝟎) ⁻¹ ∙ p ∙ t base 𝟎                              ∎
     where
      t : (X : Tℤ) → ⟨ X ⟩ → a ≡ Tℤ-rec X
      t = Tℤ-rec-lemma₁
@@ -304,13 +273,14 @@ module Tℤ-rec
      II  = ap (λ - → (t base 𝟎) ⁻¹ ∙ (t base (⌜ - ⌝ 𝟎)))
             idtoeq-of-loop-is-succ-ℤ-≃
      III = ap (λ - → (t base 𝟎) ⁻¹ ∙ -) (Tℤ-rec-lemma₂ base 𝟎)
+     IV  = ∙assoc (t base 𝟎 ⁻¹) p (t base 𝟎) ⁻¹
 
   ap-Tℤ-rec-loop-lemma₂ : ap Tℤ-rec loop
                         ≡ transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p
   ap-Tℤ-rec-loop-lemma₂ =
-   ap Tℤ-rec loop                                         ≡⟨ I  ⟩
-   (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ (p ∙ Tℤ-rec-lemma₁ base 𝟎) ≡⟨ II ⟩
-   transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p       ∎
+   ap Tℤ-rec loop                                       ≡⟨ I  ⟩
+   (Tℤ-rec-lemma₁ base 𝟎) ⁻¹ ∙ p ∙ Tℤ-rec-lemma₁ base 𝟎 ≡⟨ II ⟩
+   transport (λ - → - ≡ -) (Tℤ-rec-lemma₁ base 𝟎) p     ∎
     where
      I  = ap-Tℤ-rec-loop-lemma₁
      II = (transport-along-≡ (Tℤ-rec-lemma₁ base 𝟎) p) ⁻¹
@@ -453,7 +423,7 @@ Tℤ-action-is-equiv =
   where
    γ : (x : ℤ) → is-equiv (Tℤ-action base x)
    γ x = equiv-closed-under-∼ (λ y → y +ℤ x) (Tℤ-action base x)
-          (+ℤ-is-equiv₁ x) (Tℤ-action-base-is-shift x)
+          (+ℤ-is-equiv-right x) (Tℤ-action-base-is-shift x)
 
 Tℤ-action-is-Tℤ-map : (X : Tℤ) (x : ⟨ X ⟩)
                     → (Tℤ-action X x ∘ succ-ℤ ≡ ⟨ X ⟩₂ ∘ Tℤ-action X x)

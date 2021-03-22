@@ -13,46 +13,6 @@ open import UF-Subsingletons
 
 module CircleInduction where
 
-gen : {X : 𝓦 ̇ } {Y : X → 𝓦' ̇ } (f : (x : X) → Y x)
-      {x x' : X} (p : x ≡ x')
-    → ap (λ x → (x , f x)) p ≡ to-Σ-≡ (p , apd f p)
-gen f refl = refl
-
-transport-along-≡-dup : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
-                      → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ p ∙ q
-transport-along-≡-dup refl p = p                  ≡⟨ refl-left-neutral ⁻¹ ⟩
-                               refl ∙ p           ≡⟨ refl                 ⟩
-                               refl ⁻¹ ∙ p ∙ refl ∎
-
-transport-along-≡-to-Σ-≡-lemma : {X : 𝓦 ̇ } {Y : X → 𝓦' ̇ } {x : X} (p : x ≡ x) {y y' : Y x}
-                                 (q : y ≡ y') (q' : transport Y p y ≡ y)
-                               → transport (λ - → - ≡ -) (to-Σ-≡ (refl , q)) (to-Σ-≡ (p , q'))
-                               ≡ to-Σ-≡ (p , transport (λ - → transport Y p - ≡ -) q q')
-transport-along-≡-to-Σ-≡-lemma p refl q' = refl
-
-transport-along-≡' : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y)
-                   → transport (λ - → x ≡ -) q ≡ (λ (p : (x ≡ x)) → p ∙ q)
-transport-along-≡' refl = refl
-
-ap-pr₁-refl-lemma : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
-                    (x : X) (y y' : Y x)
-                    (w : (x , y) ≡[ Σ Y ] (x , y'))
-                  → ap pr₁ w ≡ refl
-                  → y ≡ y'
-ap-pr₁-refl-lemma Y x y y' w p = γ (ap pr₁ w) p ∙ h
- where
-  γ : (r : x ≡ x) → (r ≡ refl) → y ≡ transport Y r y
-  γ r refl = refl
-  h : transport Y (ap pr₁ w) y ≡ y'
-  h = from-Σ-≡' w
-
-transport-along-→ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) (Z : X → 𝓦 ̇ )
-                    {x y : X}
-                    (p : x ≡ y) (f : Y x → Z x)
-                  → transport (λ - → (Y - → Z -)) p f
-                  ≡ transport Z p ∘ f ∘ transport Y (p ⁻¹)
-transport-along-→ Y Z refl f = refl
-
 𝓛 : (X : 𝓤 ̇ ) → 𝓤 ̇
 𝓛 X = Σ x ꞉ X , x ≡ x
 
@@ -289,7 +249,7 @@ module _
          lemma₂ base ⁻¹ ∙ ap ρ loop ∙ lemma₂ base          ≡⟨ II ⟩
          ap r loop                                         ∎
       where
-       I  = transport-along-≡-dup (lemma₂ base) (ap ρ loop)
+       I  = transport-along-≡ (lemma₂ base) (ap ρ loop)
        II = homotopies-are-natural'' ρ r lemma₂ {base} {base} {loop}
 
    lemma₄ : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
@@ -349,7 +309,12 @@ module _
     -- ap-pr₁-refl-lemma A base (𝕊¹-induction base) a (ap pr₁ lemma₄) ρ-comp₁
 
    test : ap ρ loop ≡ to-Σ-≡ (loop , apd 𝕊¹-induction loop)
-   test = gen 𝕊¹-induction loop
+   test = γ 𝕊¹-induction loop
+    where
+     γ : {X : 𝓦 ̇ } {Y : X → 𝓦' ̇ } (f : (x : X) → Y x)
+         {x x' : X} (p : x ≡ x')
+       → ap (λ x → (x , f x)) p ≡ to-Σ-≡ (p , apd f p)
+     γ f refl = refl
 
    test2 : ap pr₁ lemma₄ ≡ to-Σ-≡ (refl , 𝕊¹-induction-on-base)
    test2 = ap pr₁ lemma₄                        ≡⟨ I ⟩
@@ -375,7 +340,13 @@ module _
 
    need : transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base)) (to-Σ-≡ (loop , apd 𝕊¹-induction loop))
         ≡ to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base (apd 𝕊¹-induction loop))
-   need = transport-along-≡-to-Σ-≡-lemma loop 𝕊¹-induction-on-base (apd 𝕊¹-induction loop)
+   need = γ loop 𝕊¹-induction-on-base (apd 𝕊¹-induction loop)
+    where
+     γ : {X : 𝓦 ̇ } {Y : X → 𝓦' ̇ } {x : X} (p : x ≡ x) {y y' : Y x}
+         (q : y ≡ y') (q' : transport Y p y ≡ y)
+       → transport (λ - → - ≡ -) (to-Σ-≡ (refl , q)) (to-Σ-≡ (p , q'))
+       ≡ to-Σ-≡ (p , transport (λ - → transport Y p - ≡ -) q q')
+     γ p refl q' = refl
 
    test4 : to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base (apd 𝕊¹-induction loop)) ≡ l⁺
    test4 = need ⁻¹ ∙ test3''
@@ -421,37 +392,6 @@ module _
           (ua : is-univalent 𝓤₀)
          where
 
-   -- TO DO: Move and generalize universe level (easy)
-   -- {-
-   idtofun-eqtoid : {X Y : 𝓤₀ ̇ } (e : X ≃ Y)
-                  → idtofun X Y (eqtoid ua X Y e) ≡ ⌜ e ⌝
-   idtofun-eqtoid {X} {Y} e = ap pr₁ (idtoeq-eqtoid ua X Y e)
-
-   Idtofun-eqtoid : {X Y : 𝓤₀ ̇ } (e : X ≃ Y)
-                  → Idtofun (eqtoid ua X Y e) ≡ ⌜ e ⌝
-   Idtofun-eqtoid {X} {Y} e =
-    (idtofun-agreement X Y (eqtoid ua X Y e)) ⁻¹ ∙ idtofun-eqtoid e
-
-   Idtofun-∙ : {X Y Z : 𝓤₀ ̇ } (p : X ≡ Y) (q : Y ≡ Z)
-             → Idtofun (p ∙ q) ≡ Idtofun q ∘ Idtofun p
-   Idtofun-∙ refl refl = refl
-
-   idtofun-eqtoid-⁻¹ : {X Y : 𝓤₀ ̇ } (e : X ≃ Y)
-                     → idtofun Y X ((eqtoid ua X Y e) ⁻¹) ≡ ⌜ e ⌝⁻¹
-   idtofun-eqtoid-⁻¹ {X} {Y} e =
-    idtofun Y X ((eqtoid ua X Y e) ⁻¹)    ≡⟨ I  ⟩
-    idtofun Y X (eqtoid ua Y X (≃-sym e)) ≡⟨ II ⟩
-    ⌜ e ⌝⁻¹                               ∎
-     where
-      I  = ap (idtofun Y X) (eqtoid-inverse ua e)
-      II = idtofun-eqtoid (≃-sym e)
-
-   Idtofun-eqtoid-⁻¹ : {X Y : 𝓤₀ ̇ } (e : X ≃ Y)
-                     → Idtofun ((eqtoid ua X Y e) ⁻¹) ≡ ⌜ e ⌝⁻¹
-   Idtofun-eqtoid-⁻¹ {X} {Y} e =
-    (idtofun-agreement Y X ((eqtoid ua X Y e) ⁻¹)) ⁻¹ ∙ idtofun-eqtoid-⁻¹ e
-   -- -}
-
    succ-ℤ-≡ : ℤ ≡ ℤ
    succ-ℤ-≡ = eqtoid ua ℤ ℤ succ-ℤ-≃
 
@@ -485,11 +425,11 @@ module _
       ε = ℤ-to-code-base
       δ = code-base-to-ℤ
       I   = ap (λ - → δ ∘ - ∘ ε) (transport-ap' id code loop)
-      II  = ap (_∘_ (Idtofun cob)) ((Idtofun-∙ (cob ⁻¹) acl) ⁻¹)
-      III = (Idtofun-∙ (cob ⁻¹ ∙ acl) cob) ⁻¹
-      IV  = ap Idtofun ((transport-along-≡-dup cob acl) ⁻¹
+      II  = ap (_∘_ (Idtofun cob)) ((Idtofun-∙ ua (cob ⁻¹) acl) ⁻¹)
+      III = (Idtofun-∙ ua (cob ⁻¹ ∙ acl) cob) ⁻¹
+      IV  = ap Idtofun ((transport-along-≡ cob acl) ⁻¹
                        ∙ (𝕊¹-rec-on-loop ℤ succ-ℤ-≡))
-      V   = Idtofun-eqtoid succ-ℤ-≃
+      V   = Idtofun-eqtoid ua succ-ℤ-≃
 
    transport-code-loop⁻¹-is-pred-ℤ : code-base-to-ℤ
                                    ∘ transport code (loop ⁻¹)
@@ -534,8 +474,6 @@ module _
    encode : (x : 𝕊¹) → (base ≡ x) → code x
    encode x p = transport code p (ℤ-to-code-base 𝟎)
 
-   {- TO DO: Move this somewhere else? -}
-   {- -}
    iterated-path : {X : 𝓦 ̇ } {x : X} → x ≡ x → ℕ → x ≡ x
    iterated-path p zero     = refl
    iterated-path p (succ n) = p ∙ iterated-path p n
@@ -551,7 +489,6 @@ module _
     where
      I  =  ∙assoc p (iterated-path p n) p
      II = ap (_∙_ p) (iterated-path-comm p n)
-   {- -}
 
    loops : ℤ → base ≡ base
    loops 𝟎       = refl
@@ -608,7 +545,7 @@ module _
       f : code base → base ≡ base
       f = loops ∘ δ
       I   = transport-along-→ code (_≡_ base) loop f
-      II  = ap (λ - → - ∘ f ∘ transport code (loop ⁻¹)) (transport-along-≡' loop)
+      II  = refl
       III = ap (λ - → (λ - → - ∙ loop) ∘ f ∘ -)
              (dfunext (lower-funext 𝓤₀ 𝓤 fe) transport-code-loop⁻¹-is-pred-ℤ')
       IV  = ap (λ - → (λ - → - ∙ loop) ∘ loops ∘ - ∘ pred-ℤ ∘ δ)

@@ -582,14 +582,14 @@ _+ℤ_ (neg n) = (pred-ℤ ^ (succ n))
               x +ℤ (─ x) ≡⟨ ─-is-linv x               ⟩
               𝟎          ∎
 
-+ℤ-is-equiv₂ : (x : ℤ) → is-equiv (λ y → x +ℤ y)
-+ℤ-is-equiv₂ 𝟎       = id-is-equiv ℤ
-+ℤ-is-equiv₂ (pos n) = iterated-function-is-equiv succ-ℤ succ-ℤ-is-equiv (succ n)
-+ℤ-is-equiv₂ (neg n) = iterated-function-is-equiv pred-ℤ pred-ℤ-is-equiv (succ n)
++ℤ-is-equiv-left : (x : ℤ) → is-equiv (λ y → x +ℤ y)
++ℤ-is-equiv-left 𝟎       = id-is-equiv ℤ
++ℤ-is-equiv-left (pos n) = iterated-function-is-equiv succ-ℤ succ-ℤ-is-equiv (succ n)
++ℤ-is-equiv-left (neg n) = iterated-function-is-equiv pred-ℤ pred-ℤ-is-equiv (succ n)
 
-+ℤ-is-equiv₁ : (y : ℤ) → is-equiv (λ x → x +ℤ y)
-+ℤ-is-equiv₁ y = equiv-closed-under-∼ (λ x → y +ℤ x) (λ x → x +ℤ y)
-                  (+ℤ-is-equiv₂ y) (λ x → +ℤ-is-commutative x y)
++ℤ-is-equiv-right : (y : ℤ) → is-equiv (λ x → x +ℤ y)
++ℤ-is-equiv-right y = equiv-closed-under-∼ (λ x → y +ℤ x) (λ x → x +ℤ y)
+                  (+ℤ-is-equiv-left y) (λ x → +ℤ-is-commutative x y)
 
 shift-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
                              → f ∘ succ-ℤ ∼ succ-ℤ ∘ f
@@ -627,6 +627,6 @@ is-equiv-if-commute-with-succ-ℤ : (f : ℤ → ℤ)
                                 → is-equiv f
 is-equiv-if-commute-with-succ-ℤ f h =
  equiv-closed-under-∼ (λ x → x +ℤ f 𝟎) f
-  (+ℤ-is-equiv₁ (f 𝟎)) (shift-if-commute-with-succ-ℤ f h)
+  (+ℤ-is-equiv-right (f 𝟎)) (shift-if-commute-with-succ-ℤ f h)
 
 \end{code}
