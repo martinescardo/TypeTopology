@@ -110,7 +110,7 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 transport-ap A f refl = refl
 
 transport-ap' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
-                (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+                (f : X → Y) {x x' : X} (p : x ≡ x')
               → transport (A ∘ f) p ≡ transport A (ap f p)
 transport-ap' A f refl = refl
 
@@ -279,16 +279,22 @@ tofrom-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
              → p ≡ to-×-≡ (pr₁ (from-×-≡' p)) (pr₂ (from-×-≡' p))
 tofrom-×-≡ refl = refl
 
-from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
-         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ (pr₂ τ)
-from-Σ-≡ refl = refl , refl
-
 from-Σ-≡' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {u v : Σ Y} (r : u ≡ v)
           → transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
 from-Σ-≡' {𝓤} {𝓥} {X} {Y} {u} {v} = J A (λ u → refl) {u} {v}
  where
   A : (u v : Σ Y) → u ≡ v → 𝓥 ̇
   A u v r = transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
+
+{-
+from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ (pr₂ τ)
+from-Σ-≡ refl = refl , refl
+-}
+
+from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ (pr₂ τ)
+from-Σ-≡ r = (ap pr₁ r , from-Σ-≡' r)
 
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
        → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
