@@ -110,7 +110,7 @@ transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
 transport-ap A f refl = refl
 
 transport-ap' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
-                (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
+                (f : X → Y) {x x' : X} (p : x ≡ x')
               → transport (A ∘ f) p ≡ transport A (ap f p)
 transport-ap' A f refl = refl
 
