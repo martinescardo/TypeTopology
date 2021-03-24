@@ -185,7 +185,7 @@ First, to decide Π(p:X→𝟚), p (x)=1, decide p = λ x → ₁:
 \begin{code}
 
 power-of-two-discrete-gives-compact-exponent : {X : 𝓤 ̇ }
-                                             → is-discrete(X → 𝟚)
+                                             → is-discrete (X → 𝟚)
                                              → Π-compact X
 power-of-two-discrete-gives-compact-exponent d =
   Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
