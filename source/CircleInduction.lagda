@@ -43,8 +43,9 @@ module _
 
  𝕊¹-universal-map : (A : 𝓥 ̇ )
                   → (𝕊¹ → A) → 𝓛 A
- 𝕊¹-universal-map A f = (f base) , (ap f loop)
+ 𝕊¹-universal-map A f = (f base , ap f loop)
 
+ -- TO DO: Inline where used
  ap-𝓛-lemma : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
               (u : 𝓛-functor f (base , loop) ≡ (a , p))
               (v : 𝓛-functor g (base , loop) ≡ (a , p))
@@ -73,7 +74,7 @@ module _
 
   𝕊¹-rec : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
          → 𝕊¹ → A
-  𝕊¹-rec {𝓥} {A} a p = (∃!-witness (𝕊¹-uniqueness-principle a p))
+  𝕊¹-rec {𝓥} {A} a p = ∃!-witness (𝕊¹-uniqueness-principle a p)
 
   𝕊¹-rec-comp : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
               → 𝓛-functor (𝕊¹-rec a p) (base , loop) ≡[ 𝓛 A ] (a , p)

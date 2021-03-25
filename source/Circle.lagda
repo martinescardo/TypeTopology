@@ -6,6 +6,8 @@ Tom de Jong, 28 January 2020
 open import SpartanMLTT
 open import UF-Base
 open import Integers
+open import Integers-Properties
+open import Integers-SymmetricInduction
 
 open import UF-Embeddings
 open import UF-Equiv hiding (_≅_)
@@ -446,7 +448,7 @@ Tℤ-action-is-Tℤ-map = Tℤ-prop-induction i γ
           succ-ℤ (Tℤ-action base x y) ∎
      where
       I   = Tℤ-action-base-is-shift x (succ-ℤ y)
-      II  = shift-commutes-with-succ-ℤ₂ x y
+      II  = right-shift-commutes-with-succ-ℤ x y
       III = ap succ-ℤ ((Tℤ-action-base-is-shift x y) ⁻¹)
 
 Tℤ-action-≅ : (X : Tℤ) (x : ⟨ X ⟩) → base ≅ X
