@@ -227,7 +227,7 @@ module Tℤ-rec
       ψ a' = ℤ-symmetric-induction (lower-funext 𝓤 𝓤 fe) (λ _ → a ≡ a') (λ _ → g)
        where
         g : (a ≡ a') ≃ (a ≡ a')
-        g = ((λ q → p ∙ q) , ∙-is-equiv-left p)
+        g = ((p ∙_) , ∙-is-equiv-left p)
 
   BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
   BBG-is-singleton = γ

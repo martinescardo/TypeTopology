@@ -11,6 +11,7 @@ open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons
 
+
 module CircleInduction where
 
 𝓛 : (X : 𝓤 ̇ ) → 𝓤 ̇
@@ -44,14 +45,6 @@ module _
  𝕊¹-universal-map : (A : 𝓥 ̇ )
                   → (𝕊¹ → A) → 𝓛 A
  𝕊¹-universal-map A f = (f base , ap f loop)
-
- -- TO DO: Inline where used
- ap-𝓛-lemma : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
-              (u : 𝓛-functor f (base , loop) ≡ (a , p))
-              (v : 𝓛-functor g (base , loop) ≡ (a , p))
-              (w : (f , u) ≡ (g , v))
-            → ap (λ - → 𝓛-functor - (base , loop)) (ap pr₁ w) ≡ u ∙ v ⁻¹
- ap-𝓛-lemma a p f g refl v refl = refl
 
  \end{code}
 
@@ -90,18 +83,6 @@ module _
                  ≡ p
   𝕊¹-rec-on-loop a p = from-Σ-≡' (𝕊¹-rec-comp a p)
 
-  {-
-  𝕊¹-rec-on-base' : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
-                  → 𝕊¹-rec a p base ≡ a
-  𝕊¹-rec-on-base' a p = pr₁ (from-Σ-≡ (𝕊¹-rec-comp a p))
-
-  𝕊¹-rec-on-loop' : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
-                  → transport (λ - → - ≡ -) (𝕊¹-rec-on-base' a p)
-                     (ap (𝕊¹-rec a p) loop)
-                  ≡ p
-  𝕊¹-rec-on-loop' a p = pr₂ (from-Σ-≡ (𝕊¹-rec-comp a p))
-  -}
-
 \end{code}
 
 \begin{code}
@@ -113,8 +94,13 @@ module _
                                   (ap pr₁ (𝕊¹-at-most-one-function a p
                                             (f , u) (g , v)))
                                ≡ u ∙ v ⁻¹
-  𝕊¹-uniqueness-principle-comp a p f g u v =
-   ap-𝓛-lemma a p f g u v (𝕊¹-at-most-one-function a p (f , u) (g , v))
+  𝕊¹-uniqueness-principle-comp a p f g u v = γ u v (𝕊¹-at-most-one-function a p (f , u) (g , v))
+   where
+    γ : (u : 𝓛-functor f (base , loop) ≡ (a , p))
+        (v : 𝓛-functor g (base , loop) ≡ (a , p))
+        (w : (f , u) ≡ (g , v))
+      → ap (λ - → 𝓛-functor - (base , loop)) (ap pr₁ w) ≡ u ∙ v ⁻¹
+    γ refl v refl = refl
 
   𝕊¹-uniqueness-principle-comp₁ : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
                                   (u : 𝓛-functor f (base , loop) ≡ (a , p))
@@ -153,21 +139,12 @@ module _
    r : 𝕊¹ → Σ A
    r = 𝕊¹-rec (base , a) l⁺
 
-   {-
-   r-on-base : (pr₁ ∘ r) base ≡ base
-   r-on-base = ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)
-
-   𝕊¹-induction-key-≡ : ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop)
-                      ≡[ 𝓛 𝕊¹ ] (base , loop)
-   𝕊¹-induction-key-≡ = to-Σ-≡ (r-on-base , r-on-loop)
-   -}
-
    𝕊¹-induction-key-≡ : ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop)
                       ≡[ 𝓛 𝕊¹ ] (base , loop)
    𝕊¹-induction-key-≡ =
-    ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop) ≡⟨ I    ⟩
-    𝓛-functor pr₁ (r base , ap r loop)   ≡⟨ II   ⟩
-    (base , ap pr₁ (to-Σ-≡ (loop , l)))  ≡⟨ III  ⟩
+    ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop) ≡⟨ I   ⟩
+    𝓛-functor pr₁ (r base , ap r loop)   ≡⟨ II  ⟩
+    (base , ap pr₁ (to-Σ-≡ (loop , l)))  ≡⟨ III ⟩
     (base , loop)                        ∎
      where
       I   = to-Σ-≡ (refl , ((ap-ap r pr₁ loop) ⁻¹))
@@ -212,12 +189,12 @@ module _
        e : 𝕊¹-induction-key-≡ ≡ κ₁ ∙ (κ₂ ∙ κ₃)
        e = refl
      II  = ap-∙ pr₁ κ₁ (κ₂ ∙ κ₃)
-     III = ap (λ - → - ∙ ap pr₁ (κ₂ ∙ κ₃))
+     III = ap (_∙ (ap pr₁ (κ₂ ∙ κ₃)))
             (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
              (refl , ((ap-ap r pr₁ loop) ⁻¹)))
      IV  = refl-left-neutral
      V   = ap-∙ pr₁ κ₂ κ₃
-     VI  = ap (_∙_ (ap pr₁ κ₂))
+     VI  = ap ((ap pr₁ κ₂) ∙_)
             (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
              (refl , ap-pr₁-to-Σ-≡ (loop , l)))
      VII = ap-ap (𝓛-functor pr₁) pr₁ c
@@ -303,79 +280,66 @@ module _
      IV  = left-inverse p
 
    𝕊¹-induction-on-base : 𝕊¹-induction base ≡ a
-   𝕊¹-induction-on-base = transport (λ - → transport A - (pr₂ (ρ base)) ≡ a) ρ-comp₁ γ
-    where
-     γ : transport A (ap pr₁ (ap pr₁ lemma₄)) (pr₂ (ρ base)) ≡ a
-     γ = from-Σ-≡' (ap pr₁ lemma₄)
-    -- ap-pr₁-refl-lemma A base (𝕊¹-induction base) a (ap pr₁ lemma₄) ρ-comp₁
+   𝕊¹-induction-on-base =
+    transport (λ - → transport A - (pr₂ (ρ base)) ≡ a) ρ-comp₁ γ
+     where
+      γ : transport A (ap pr₁ (ap pr₁ lemma₄)) (pr₂ (ρ base)) ≡ a
+      γ = from-Σ-≡' (ap pr₁ lemma₄)
+     -- ap-pr₁-refl-lemma A base (𝕊¹-induction base) a (ap pr₁ lemma₄) ρ-comp₁
 
-   test : ap ρ loop ≡ to-Σ-≡ (loop , apd 𝕊¹-induction loop)
-   test = γ 𝕊¹-induction loop
-    where
-     γ : {X : 𝓦 ̇ } {Y : X → 𝓦' ̇ } (f : (x : X) → Y x)
-         {x x' : X} (p : x ≡ x')
-       → ap (λ x → (x , f x)) p ≡ to-Σ-≡ (p , apd f p)
-     γ f refl = refl
-
-   test2 : ap pr₁ lemma₄ ≡ to-Σ-≡ (refl , 𝕊¹-induction-on-base)
-   test2 = ap pr₁ lemma₄                        ≡⟨ I ⟩
-           to-Σ-≡ (from-Σ-≡ (ap pr₁ lemma₄))    ≡⟨ II ⟩
-           to-Σ-≡ (refl , 𝕊¹-induction-on-base) ∎
-    where
-     I  = tofrom-Σ-≡ (ap pr₁ lemma₄) ⁻¹
-     II = ap to-Σ-≡ (to-Σ-≡ (ρ-comp₁ , refl))
-
-   test3 : transport (λ - → - ≡ -) (ap pr₁ lemma₄) (ap ρ loop) ≡ l⁺
-   test3 = from-Σ-≡' lemma₄
-
-   test3' : transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base)) (ap ρ loop) ≡ l⁺
-   test3' = transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base)) (ap ρ loop) ≡⟨ happly blah (ap ρ loop) ⟩
-            transport (λ - → - ≡ -) (ap pr₁ lemma₄) (ap ρ loop) ≡⟨ test3 ⟩
-            l⁺ ∎
-    where
-     blah : transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base)) ≡ transport (λ - → - ≡ -) (ap pr₁ lemma₄)
-     blah = ap (transport (λ - → - ≡ -)) (test2 ⁻¹)
-
-   test3'' : transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base)) (to-Σ-≡ (loop , apd 𝕊¹-induction loop)) ≡ l⁺
-   test3'' = ap (transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base))) (test ⁻¹) ∙ test3'
-
-   need : transport (λ - → - ≡ -) (to-Σ-≡ (refl , 𝕊¹-induction-on-base)) (to-Σ-≡ (loop , apd 𝕊¹-induction loop))
-        ≡ to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base (apd 𝕊¹-induction loop))
-   need = γ loop 𝕊¹-induction-on-base (apd 𝕊¹-induction loop)
-    where
-     γ : {X : 𝓦 ̇ } {Y : X → 𝓦' ̇ } {x : X} (p : x ≡ x) {y y' : Y x}
-         (q : y ≡ y') (q' : transport Y p y ≡ y)
-       → transport (λ - → - ≡ -) (to-Σ-≡ (refl , q)) (to-Σ-≡ (p , q'))
-       ≡ to-Σ-≡ (p , transport (λ - → transport Y p - ≡ -) q q')
-     γ p refl q' = refl
-
-   test4 : to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base (apd 𝕊¹-induction loop)) ≡ l⁺
-   test4 = need ⁻¹ ∙ test3''
-
-   test5 : from-Σ-≡
-             (to-Σ-≡
-              (loop ,
-               transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base
-               (apd 𝕊¹-induction loop)))
-             ≡ from-Σ-≡ l⁺
-   test5 = ap from-Σ-≡ test4
-
-   test6 : (loop , transport (λ - → transport A loop - ≡ -) 𝕊¹-induction-on-base (apd 𝕊¹-induction loop))
-         ≡ (loop , l)
-   test6 = (fromto-Σ-≡ _) ⁻¹ ∙ test5 ∙ fromto-Σ-≡ (loop , l)
+   𝕊¹-induction-on-loop-lemma : (loop , transport (λ - → transport A loop - ≡ -)
+                                         𝕊¹-induction-on-base
+                                         (apd 𝕊¹-induction loop))
+                              ≡ (loop , l)
+   𝕊¹-induction-on-loop-lemma =
+      (fromto-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) σ τ)) ⁻¹
+    ∙ (ap from-Σ-≡ γ) ∙ (fromto-Σ-≡ (loop , l))
+     where
+      σ = 𝕊¹-induction-on-base
+      τ = apd 𝕊¹-induction loop
+      γ : to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) σ τ)
+        ≡ to-Σ-≡ (loop , l)
+      γ = to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) σ τ)    ≡⟨ I   ⟩
+          transport (λ - → - ≡ -) (to-Σ-≡ (refl , σ)) (to-Σ-≡ (loop , τ)) ≡⟨ II  ⟩
+          transport (λ - → - ≡ -) (ap pr₁ lemma₄) (to-Σ-≡ (loop , τ))     ≡⟨ III ⟩
+          transport (λ - → - ≡ -) (ap pr₁ lemma₄) (ap ρ loop)             ≡⟨ IV  ⟩
+          to-Σ-≡ (loop , l)                                               ∎
+       where
+        I   = h loop σ τ
+         where
+          h : {X : 𝓦 ̇ } {Y : X → 𝓣 ̇ } {x : X} (p : x ≡ x) {y y' : Y x}
+              (q : y ≡ y') (q' : transport Y p y ≡ y)
+            → to-Σ-≡ (p , transport (λ - → transport Y p - ≡ -) q q')
+            ≡ transport (λ - → - ≡ -) (to-Σ-≡ (refl , q)) (to-Σ-≡ (p , q'))
+          h p refl q' = refl
+        II  = ap (λ - → transport (λ - → - ≡ -) - (to-Σ-≡ (loop , τ))) h
+         where
+          h = to-Σ-≡ (refl , σ)                 ≡⟨ I' ⟩
+              to-Σ-≡ (from-Σ-≡ (ap pr₁ lemma₄)) ≡⟨ II' ⟩
+              ap pr₁ lemma₄                     ∎
+           where
+            I'  = (ap to-Σ-≡ (to-Σ-≡ (ρ-comp₁ , refl))) ⁻¹
+            II' = tofrom-Σ-≡ (ap pr₁ lemma₄)
+        III = ap (transport (λ - → - ≡ -) (ap pr₁ lemma₄)) (h 𝕊¹-induction loop)
+         where
+          h : {X : 𝓦 ̇ } {Y : X → 𝓣 ̇ } (f : (x : X) → Y x)
+              {x x' : X} (p : x ≡ x')
+            → to-Σ-≡ (p , apd f p) ≡ ap (λ x → (x , f x)) p
+          h f refl = refl
+        IV  = from-Σ-≡' lemma₄
 
    module _
            (base-sethood : is-set (base ≡ base))
           where
 
-    first-component-is-refl : ap pr₁ test6 ≡ refl
-    first-component-is-refl = base-sethood (ap pr₁ test6) refl
+    first-component-is-refl : ap pr₁ 𝕊¹-induction-on-loop-lemma ≡ refl
+    first-component-is-refl = base-sethood (ap pr₁ 𝕊¹-induction-on-loop-lemma) refl
 
     𝕊¹-induction-on-loop : transport (λ - → transport A loop - ≡ -)
                             𝕊¹-induction-on-base (apd 𝕊¹-induction loop)
                          ≡ l
     𝕊¹-induction-on-loop = ap-pr₁-refl-lemma (λ - → transport A - a ≡ a)
-                            loop t l test6 first-component-is-refl
+                            loop t l 𝕊¹-induction-on-loop-lemma first-component-is-refl
      where
       t : transport A loop a ≡ a
       t = transport (λ - → transport A loop - ≡ -)
@@ -386,8 +350,10 @@ module _
     𝕊¹-induction-comp = to-Σ-≡ (𝕊¹-induction-on-base , 𝕊¹-induction-on-loop)
 
 
-  open import UF-Univalence
   open import Integers
+  open import Integers-Properties
+
+  open import UF-Univalence
 
   module _
           (ua : is-univalent 𝓤₀)
@@ -440,11 +406,11 @@ module _
     where
      γ : (succ-ℤ ∘ code-base-to-ℤ ∘ transport code (loop ⁻¹) ∘ ℤ-to-code-base) x
        ≡ (succ-ℤ ∘ pred-ℤ) x
-     γ = (succ-ℤ ∘ δ ∘ t⁻¹ ∘ ε) x    ≡⟨ I ⟩
-         (δ ∘ t ∘ ε ∘ δ ∘ t⁻¹ ∘ ε) x ≡⟨ II ⟩
+     γ = (succ-ℤ ∘ δ ∘ t⁻¹ ∘ ε) x    ≡⟨ I   ⟩
+         (δ ∘ t ∘ ε ∘ δ ∘ t⁻¹ ∘ ε) x ≡⟨ II  ⟩
          (δ ∘ t ∘ t⁻¹ ∘ ε) x         ≡⟨ III ⟩
-         (δ ∘ ε) x                   ≡⟨ IV ⟩
-         x                           ≡⟨ V ⟩
+         (δ ∘ ε) x                   ≡⟨ IV  ⟩
+         x                           ≡⟨ V   ⟩
          (succ-ℤ ∘ pred-ℤ) x         ∎
       where
        ε = ℤ-to-code-base
@@ -489,7 +455,7 @@ module _
                                    p ∙ (p ∙ iterated-path p n) ∎
     where
      I  =  ∙assoc p (iterated-path p n) p
-     II = ap (_∙_ p) (iterated-path-comm p n)
+     II = ap (p ∙_) (iterated-path-comm p n)
 
    loops : ℤ → base ≡ base
    loops 𝟎       = refl
@@ -502,7 +468,7 @@ module _
 
     open import UF-Lower-FunExt
 
-    loops-lemma : (λ - → - ∙ loop) ∘ loops ∘ pred-ℤ ≡ loops
+    loops-lemma : (_∙ loop) ∘ loops ∘ pred-ℤ ≡ loops
     loops-lemma = dfunext fe h
      where
       h : (k : ℤ) → loops (pred-ℤ k) ∙ loop ≡ loops k
@@ -523,20 +489,20 @@ module _
          I'   = ap (λ - → loop ⁻¹ ∙ - ∙ loop)
                  ((iterated-path-comm (loop ⁻¹) n) ⁻¹)
          II'  = ∙assoc (loop ⁻¹) (iterated-path (loop ⁻¹) n ∙ loop ⁻¹) loop
-              ∙ ap (_∙_ (loop ⁻¹))
+              ∙ ap (loop ⁻¹ ∙_)
                  (∙assoc (iterated-path (loop ⁻¹) n) (loop ⁻¹) loop)
               ∙ (∙assoc (loop ⁻¹) (iterated-path (loop ⁻¹) n)
                   (loop ⁻¹ ∙ loop)) ⁻¹
-         III' = ap (_∙_ (loop ⁻¹ ∙ iterated-path (loop ⁻¹) n))
+         III' = ap ((loop ⁻¹ ∙ iterated-path (loop ⁻¹) n) ∙_)
                  (left-inverse loop)
 
     l : transport (λ - → code - → base ≡ -) loop (loops ∘ code-base-to-ℤ)
       ≡ (loops ∘ code-base-to-ℤ)
     l = transport (λ - → code - → base ≡ -) loop f                     ≡⟨ I   ⟩
         transport (λ - → base ≡ -) loop ∘ f ∘ transport code (loop ⁻¹) ≡⟨ II  ⟩
-        (λ - → - ∙ loop) ∘ f ∘ transport code (loop ⁻¹)                ≡⟨ III ⟩
-        (λ - → - ∙ loop) ∘ loops ∘ δ ∘ ε ∘ pred-ℤ ∘ δ                  ≡⟨ IV  ⟩
-        (λ - → - ∙ loop) ∘ loops ∘ pred-ℤ ∘ δ                          ≡⟨ V   ⟩
+        (_∙ loop) ∘ f ∘ transport code (loop ⁻¹)                       ≡⟨ III ⟩
+        (_∙ loop) ∘ loops ∘ δ ∘ ε ∘ pred-ℤ ∘ δ                         ≡⟨ IV  ⟩
+        (_∙ loop) ∘ loops ∘ pred-ℤ ∘ δ                                 ≡⟨ V   ⟩
         loops ∘ δ                                                      ∎
      where
       ε : ℤ → code base
@@ -547,11 +513,11 @@ module _
       f = loops ∘ δ
       I   = transport-along-→ code (_≡_ base) loop f
       II  = refl
-      III = ap (λ - → (λ - → - ∙ loop) ∘ f ∘ -)
+      III = ap ((_∙ loop) ∘ f ∘_)
              (dfunext (lower-funext 𝓤₀ 𝓤 fe) transport-code-loop⁻¹-is-pred-ℤ')
-      IV  = ap (λ - → (λ - → - ∙ loop) ∘ loops ∘ - ∘ pred-ℤ ∘ δ)
+      IV  = ap (λ - → (_∙ loop) ∘ loops ∘ - ∘ pred-ℤ ∘ δ)
              (dfunext (lower-funext 𝓤₀ 𝓤 fe) (Idtofun-retraction code-on-base))
-      V   = ap (λ - → - ∘ δ) loops-lemma
+      V   = ap (_∘ δ) loops-lemma
 
 
     open 𝕊¹-induction (λ - → code - → base ≡ -) (loops ∘ code-base-to-ℤ) l
