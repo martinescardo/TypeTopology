@@ -317,6 +317,70 @@ binary-sum-is-¬¬-separated {𝓤} {𝓥} {X} {Y} s t (inr y) (inr y') = lemma
 
 \end{code}
 
+Added 19th March 2021.
+
+\begin{code}
+
+equality-of-¬¬stable-propositions' : propext 𝓤
+                                   → (P Q : 𝓤 ̇ )
+                                   → is-prop P
+                                   → is-prop Q
+                                   → ¬¬-stable P
+                                   → ¬¬-stable Q
+                                   → ¬¬-stable (P ≡ Q)
+equality-of-¬¬stable-propositions' pe P Q i j f g a = V
+ where
+  I : ¬¬ (P → Q)
+  I = ¬¬-functor (transport id) a
+
+  II : P → Q
+  II = →-is-¬¬-stable g I
+
+  III : ¬¬ (Q → P)
+  III = ¬¬-functor (transport id ∘ _⁻¹) a
+
+  IV : Q → P
+  IV = →-is-¬¬-stable f III
+
+  V : P ≡ Q
+  V = pe i j II IV
+
+equality-of-¬¬stable-propositions : funext 𝓤 𝓤
+                                  → propext 𝓤
+                                  → (p q : Ω 𝓤)
+                                  → ¬¬-stable (p holds)
+                                  → ¬¬-stable (q holds)
+                                  → ¬¬-stable (p ≡ q)
+equality-of-¬¬stable-propositions fe pe p q f g a = γ
+ where
+  δ : p holds ≡ q holds
+  δ = equality-of-¬¬stable-propositions'
+       pe (p holds) (q holds) (holds-is-prop p) (holds-is-prop q)
+       f g (¬¬-functor (ap _holds) a)
+
+  γ : p ≡ q
+  γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) δ
+
+
+Ω¬¬ : (𝓤 : Universe)  → 𝓤 ⁺ ̇
+Ω¬¬ 𝓤 = Σ p ꞉ Ω 𝓤 , ¬¬-stable (p holds)
+
+Ω¬¬-is-¬¬-separated : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → is-¬¬-separated (Ω¬¬ 𝓤)
+Ω¬¬-is-¬¬-separated fe pe (p , s) (q , t) ν = γ
+ where
+  α : ¬¬ (p ≡ q)
+  α = ¬¬-functor (ap pr₁) ν
+
+  δ : p ≡ q
+  δ = equality-of-¬¬stable-propositions fe pe p q s t α
+
+  γ : (p , s) ≡ (q , t)
+  γ = to-subtype-≡ (λ p → Π-is-prop fe (λ _ → holds-is-prop p)) δ
+
+\end{code}
+
 21 March 2018
 
 \begin{code}
