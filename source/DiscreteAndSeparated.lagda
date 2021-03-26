@@ -380,21 +380,21 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
 
 ⊥-⊤-Density : funext 𝓤 𝓤
             → propext 𝓤
-            → (X : 𝓥 ̇ )
+            → {X : 𝓥 ̇ }
               (f : Ω 𝓤 → X)
             → is-¬¬-separated X
             → f ⊥ ≡ f ⊤
-            → (p : Ω 𝓤) → f p ≡ f ⊥
-⊥-⊤-Density fe pe X f s r p = s (f p) (f ⊥) a
+            → (p : Ω 𝓤) → f p ≡ f ⊤
+⊥-⊤-Density fe pe f s r p = s (f p) (f ⊤) a
  where
-  a : ¬¬ (f p ≡ f ⊥)
+  a : ¬¬ (f p ≡ f ⊤)
   a u = no-truth-values-other-than-⊥-or-⊤ fe pe (p , b , c)
    where
     b : p ≢ ⊥
-    b v = u (ap f v)
+    b v = u (ap f v ∙ r)
 
     c : p ≢ ⊤
-    c w = u (ap f w ∙ r ⁻¹)
+    c w = u (ap f w)
 
 ⊥-⊤-density : funext 𝓤 𝓤
             → propext 𝓤
@@ -402,7 +402,7 @@ equality-of-¬¬stable-propositions fe pe p q f g a = γ
             → f ⊥ ≡ ₁
             → f ⊤ ≡ ₁
             → (p : Ω 𝓤) → f p ≡ ₁
-⊥-⊤-density fe pe f r s p = ⊥-⊤-Density fe pe 𝟚 f 𝟚-is-¬¬-separated (r ∙ s ⁻¹) p ∙ r
+⊥-⊤-density fe pe f r s p = ⊥-⊤-Density fe pe f 𝟚-is-¬¬-separated (r ∙ s ⁻¹) p ∙ s
 
 \end{code}
 
