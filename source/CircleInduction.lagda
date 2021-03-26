@@ -271,7 +271,7 @@ module _
              ap (pr₁ ∘ pr₁) lemma₄                         ≡⟨ II  ⟩
              ap (pr₁ ∘ pr₁) lemma₃ ∙ ap (pr₁ ∘ pr₁) lemma₁ ≡⟨ III ⟩
              p ⁻¹ ∙ p                                      ≡⟨ IV  ⟩
-             refl ∎
+             refl                                          ∎
     where
      p = happly 𝕊¹-induction-key-lemma base
      I   = ap-ap pr₁ pr₁ lemma₄
@@ -281,11 +281,10 @@ module _
 
    𝕊¹-induction-on-base : 𝕊¹-induction base ≡ a
    𝕊¹-induction-on-base =
-    transport (λ - → transport A - (pr₂ (ρ base)) ≡ a) ρ-comp₁ γ
+    transport (λ - → transport A - (𝕊¹-induction base) ≡ a) ρ-comp₁ γ
      where
-      γ : transport A (ap pr₁ (ap pr₁ lemma₄)) (pr₂ (ρ base)) ≡ a
+      γ : transport A (ap pr₁ (ap pr₁ lemma₄)) (𝕊¹-induction base) ≡ a
       γ = from-Σ-≡' (ap pr₁ lemma₄)
-     -- ap-pr₁-refl-lemma A base (𝕊¹-induction base) a (ap pr₁ lemma₄) ρ-comp₁
 
    𝕊¹-induction-on-loop-lemma : (loop , transport (λ - → transport A loop - ≡ -)
                                          𝕊¹-induction-on-base
@@ -332,15 +331,14 @@ module _
            (base-sethood : is-set (base ≡ base))
           where
 
-    first-component-is-refl : ap pr₁ 𝕊¹-induction-on-loop-lemma ≡ refl
-    first-component-is-refl = base-sethood (ap pr₁ 𝕊¹-induction-on-loop-lemma) refl
-
     𝕊¹-induction-on-loop : transport (λ - → transport A loop - ≡ -)
                             𝕊¹-induction-on-base (apd 𝕊¹-induction loop)
                          ≡ l
-    𝕊¹-induction-on-loop = ap-pr₁-refl-lemma (λ - → transport A - a ≡ a)
-                            loop t l 𝕊¹-induction-on-loop-lemma first-component-is-refl
+    𝕊¹-induction-on-loop =
+     ap-pr₁-refl-lemma (λ - → transport A - a ≡ a) 𝕊¹-induction-on-loop-lemma γ
      where
+      γ : ap pr₁ 𝕊¹-induction-on-loop-lemma ≡ refl
+      γ = base-sethood (ap pr₁ 𝕊¹-induction-on-loop-lemma) refl
       t : transport A loop a ≡ a
       t = transport (λ - → transport A loop - ≡ -)
            𝕊¹-induction-on-base (apd 𝕊¹-induction loop)

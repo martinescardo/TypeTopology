@@ -335,11 +335,11 @@ Added by Tom de Jong
 \begin{code}
 
 ap-pr₁-refl-lemma : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
-                    (x : X) (y y' : Y x)
+                    {x : X} {y y' : Y x}
                     (w : (x , y) ≡[ Σ Y ] (x , y'))
                   → ap pr₁ w ≡ refl
                   → y ≡ y'
-ap-pr₁-refl-lemma Y x y y' w p = γ (ap pr₁ w) p ∙ h
+ap-pr₁-refl-lemma Y {x} {y} {y'} w p = γ (ap pr₁ w) p ∙ h
  where
   γ : (r : x ≡ x) → (r ≡ refl) → y ≡ transport Y r y
   γ r refl = refl
