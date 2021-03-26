@@ -77,7 +77,6 @@ module CompactTypes where
 open import SpartanMLTT
 
 open import Two-Properties
-open import Two-Prop-Density
 open import Plus-Properties
 open import AlternativePlus
 open import DiscreteAndSeparated
@@ -205,7 +204,7 @@ extensionality, which is a consequence of univalence):
 \begin{code}
 
 Ω-compact∙ : funext 𝓤 𝓤 → propext 𝓤 → compact∙ (Ω 𝓤)
-Ω-compact∙ {𝓤} fe pe p = 𝟚-equality-cases a b
+Ω-compact∙ {𝓤} fe pe p = γ
   where
     A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ≡ ₁ → (x : Ω 𝓤) → p x ≡ ₁)
 
@@ -214,6 +213,9 @@ extensionality, which is a consequence of univalence):
 
     b : p ⊥ ≡ ₁ → A
     b r = ⊤ , ⊥-⊤-density fe pe p r
+
+    γ : A
+    γ = 𝟚-equality-cases a b
 
 𝟙-compact∙ : compact∙ (𝟙 {𝓤})
 𝟙-compact∙ p = * , f

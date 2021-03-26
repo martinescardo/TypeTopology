@@ -220,7 +220,6 @@ import TotallySeparated
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
 import Two
-import Two-Prop-Density
 import Two-Properties
 import UnivalenceFromScratch
 import Unit
