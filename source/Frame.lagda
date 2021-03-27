@@ -50,6 +50,13 @@ infix 2 fmap-syntax
 
 syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
 
+compr-syntax : {A : 𝓤 ̇} (I : 𝓦 ̇) → (I → A) → Fam 𝓦 A
+compr-syntax I f = I , f
+
+infix 2 compr-syntax
+
+syntax compr-syntax I (λ x → e) = ⁅ e ∣ x ∶ I ⁆
+
 \end{code}
 
 We define two projections for families: (1) for the index type,
@@ -315,6 +322,15 @@ frame 𝓤 𝓥 𝓦 = Σ A ꞉ (𝓤 ̇) , frame-structure 𝓥 𝓦 A
 
 \end{code}
 
+The underlying poset of a frame:
+
+\begin{code}
+
+poset-of : frame 𝓤 𝓥 𝓦 → poset 𝓤 𝓥
+poset-of (A , (_≤_ , _ , _ , _) , p , _) = A , _≤_ , p
+
+\end{code}
+
 Some projections.
 
 \begin{code}
@@ -324,6 +340,9 @@ Some projections.
 
 𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ⟨ F ⟩
 𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
+
+𝟏-is-top : (F : frame 𝓤 𝓥 𝓦) → (x : ⟨ F ⟩) → (x ≤[ poset-of F ] 𝟏[ F ]) holds
+𝟏-is-top (A , _ , _ , p , _) = p
 
 meet-of : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
 meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
@@ -341,12 +360,36 @@ syntax join-of F U = ⋁[ F ] U
 
 \end{code}
 
-The underlying poset of a frame:
+\begin{code}
+
+∧[_]-lower₁ : (A : frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+            → ((x ∧[ A ] y) ≤[ poset-of A ] x) holds
+∧[_]-lower₁ (A , _ , _ , (_ , γ , _ , _)) x y = pr₁ (pr₁ (γ (x , y)))
+
+∧[_]-lower₂ : (A : frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+            → ((x ∧[ A ] y) ≤[ poset-of A ] y) holds
+∧[_]-lower₂ (A , _ , _ , (_ , γ , _ , _)) x y = pr₂ (pr₁ (γ (x , y)))
+
+∧[_]-greatest : (A : frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+              → (z : ⟨ A ⟩)
+              → (z ≤[ poset-of A ] x) holds
+              → (z ≤[ poset-of A ] y) holds
+              → (z ≤[ poset-of A ] (x ∧[ A ] y)) holds
+∧[_]-greatest (A , _ , _ , (_ , γ , _ , _)) x y z p q =
+  pr₂ (γ (x , y)) (z , p , q)
+
+\end{code}
 
 \begin{code}
 
-poset-of : frame 𝓤 𝓥 𝓦 → poset 𝓤 𝓥
-poset-of (A , (_≤_ , _ , _ , _) , p , _) = A , _≤_ , p
+⋁[_]-upper : (A : frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 ⟨ A ⟩) (i : index U)
+        → ((U [ i ]) ≤[ poset-of A ] (⋁[ A ] U)) holds
+⋁[_]-upper (A , _ , _ , (_ , _ , c , _)) U i = pr₁ (c U) i
+
+⋁[_]-least : (A : frame 𝓤 𝓥 𝓦) → (U : Fam 𝓦 ⟨ A ⟩)
+           → let open Joins (λ x y → x ≤[ poset-of A ] y)
+             in ((u , _) : upper-bound U) → ((⋁[ A ] U) ≤[ poset-of A ] u) holds
+⋁[_]-least (A , _ , _ , (_ , _ , c , _)) U = pr₂ (c U)
 
 \end{code}
 
@@ -375,5 +418,66 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
  Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , is-a-frame-homomorphism F G f holds
+
+\end{code}
+
+\section{Some properties of frames}
+
+\begin{code}
+
+∧[_]-unique : (F : frame 𝓤 𝓥 𝓦) {x y z : ⟨ F ⟩}
+            → let open Meets (λ x y → x ≤[ poset-of F ] y) in
+              (z is-glb-of (x , y)) holds → z ≡ (x ∧[ F ] y)
+∧[ F ]-unique {x} {y} {z} (p , q) = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  β : (z ≤[ poset-of F ] (x ∧[ F ] y)) holds
+  β = ∧[ F ]-greatest x y z (pr₁ p) (pr₂ p)
+
+  γ : ((x ∧[ F ] y) ≤[ poset-of F ] z) holds
+  γ = q ((x ∧[ F ] y) , ∧[ F ]-lower₁ x y , ∧[ F ]-lower₂ x y)
+
+\end{code}
+
+\begin{code}
+
+⋁[_]-unique : (F : frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 ⟨ F ⟩) (u : ⟨ F ⟩)
+         → let open Joins (λ x y → x ≤[ poset-of F ] y) in
+           (u is-lub-of U) holds → u ≡ ⋁[ F ] U
+⋁[_]-unique F U u (p , q) = ≤-is-antisymmetric (poset-of F) γ β
+ where
+  open PosetNotation (poset-of F)
+
+  γ : (u ≤ (⋁[ F ] U)) holds
+  γ = q ((⋁[ F ] U) , ⋁[ F ]-upper U)
+
+  β : ((⋁[ F ] U) ≤ u) holds
+  β = ⋁[ F ]-least U (u , p)
+
+\end{code}
+
+\begin{code}
+
+⋁[_]-flattening : (F : frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇) (J : I → 𝓦 ̇)
+                → (f : (i : I) → J i → ⟨ F ⟩)
+                → ⋁[ F ] ((Σ i ꞉ I , J i) , uncurry f)
+                ≡ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
+⋁[ F ]-flattening I J f = ⋁[ F ]-unique _ _ (β , γ)
+ where
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+  open PosetReasoning (poset-of F) renaming (_■ to _QED)
+
+  β : ((⋁[ F ] (Σ J , uncurry f))
+      is-an-upper-bound-of
+      ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆) holds
+  β i = ⋁[ F ]-least _ (_ , λ jᵢ → ⋁[ F ]-upper _ (i , jᵢ))
+
+  γ : (∀[ (u , _) ∶ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ]
+      (⋁[ F ] (Σ J , uncurry f)) ≤[ poset-of F ] _ ) holds
+  γ (u , p) = ⋁[ F ]-least (Σ J , uncurry f) (_ , δ)
+   where
+    δ : (u is-an-upper-bound-of (Σ J , uncurry f)) holds
+    δ  (i , j) = f i j                      ≤⟨ ⋁[ F ]-upper _ j ⟩
+                 ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ≤⟨ p i              ⟩
+                 u                          QED
 
 \end{code}
