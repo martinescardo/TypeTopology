@@ -50,6 +50,13 @@ infix 2 fmap-syntax
 
 syntax fmap-syntax (λ x → e) U = ⁅ e ∣ x ε U ⁆
 
+compr-syntax : {A : 𝓤 ̇} (I : 𝓦 ̇) → (I → A) → Fam 𝓦 A
+compr-syntax I f = I , f
+
+infix 2 compr-syntax
+
+syntax compr-syntax I (λ x → e) = ⁅ e ∣ x ∶ I ⁆
+
 \end{code}
 
 We define two projections for families: (1) for the index type,
@@ -153,6 +160,11 @@ syntax poset-eq-syntax P x y = x ≣[ P ] y
 ≤-is-reflexive : (P : poset 𝓤 𝓥)
                → is-reflexive (λ x y → x ≤[ P ] x) holds
 ≤-is-reflexive (_ , _ , ((r , _) , _)) = r
+
+reflexivity+ : (P : poset 𝓤 𝓥)
+             → {x y : pr₁ P} → x ≡ y → (x ≤[ P ] y) holds
+reflexivity+ P {x} {y} p =
+ transport (λ - → (x ≤[ P ] -) holds) p (≤-is-reflexive P x)
 
 ≤-is-transitive : (P : poset 𝓤 𝓥)
                 → is-transitive (λ x y → x ≤[ P ] y) holds
@@ -315,32 +327,6 @@ frame 𝓤 𝓥 𝓦 = Σ A ꞉ (𝓤 ̇) , frame-structure 𝓥 𝓦 A
 
 \end{code}
 
-Some projections.
-
-\begin{code}
-
-∣_∣ : frame 𝓤 𝓥 𝓦 → 𝓤 ̇
-∣ (A , (_≤_ , _ , _ , _) , p , _) ∣ = A
-
-𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ∣ F ∣
-𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
-
-meet-of : (F : frame 𝓤 𝓥 𝓦) → ∣ F ∣ → ∣ F ∣ → ∣ F ∣
-meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
-
-infix 4 meet-of
-
-syntax meet-of F x y = x ∧[ F ] y
-
-join-of : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ∣ F ∣ → ∣ F ∣
-join-of (_ , (_ , _ , _ , ⋁_) , _ , _) = ⋁_
-
-infix 3 join-of
-
-syntax join-of F U = ⋁[ F ] U
-
-\end{code}
-
 The underlying poset of a frame:
 
 \begin{code}
@@ -350,30 +336,263 @@ poset-of (A , (_≤_ , _ , _ , _) , p , _) = A , _≤_ , p
 
 \end{code}
 
+Some projections.
+
+\begin{code}
+
+⟨_⟩ : frame 𝓤 𝓥 𝓦 → 𝓤 ̇
+⟨ (A , (_≤_ , _ , _ , _) , p , _) ⟩ = A
+
+𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ⟨ F ⟩
+𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
+
+𝟏-is-top : (F : frame 𝓤 𝓥 𝓦) → (x : ⟨ F ⟩) → (x ≤[ poset-of F ] 𝟏[ F ]) holds
+𝟏-is-top (A , _ , _ , p , _) = p
+
+meet-of : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
+meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
+
+infix 4 meet-of
+
+syntax meet-of F x y = x ∧[ F ] y
+
+join-of : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → ⟨ F ⟩
+join-of (_ , (_ , _ , _ , ⋁_) , _ , _) = ⋁_
+
+infix 3 join-of
+
+syntax join-of F U = ⋁[ F ] U
+
+\end{code}
+
+\begin{code}
+
+∧[_]-lower₁ : (A : frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+            → ((x ∧[ A ] y) ≤[ poset-of A ] x) holds
+∧[_]-lower₁ (A , _ , _ , (_ , γ , _ , _)) x y = pr₁ (pr₁ (γ (x , y)))
+
+∧[_]-lower₂ : (A : frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+            → ((x ∧[ A ] y) ≤[ poset-of A ] y) holds
+∧[_]-lower₂ (A , _ , _ , (_ , γ , _ , _)) x y = pr₂ (pr₁ (γ (x , y)))
+
+∧[_]-greatest : (A : frame 𝓤 𝓥 𝓦) (x y : ⟨ A ⟩)
+              → (z : ⟨ A ⟩)
+              → (z ≤[ poset-of A ] x) holds
+              → (z ≤[ poset-of A ] y) holds
+              → (z ≤[ poset-of A ] (x ∧[ A ] y)) holds
+∧[_]-greatest (A , _ , _ , (_ , γ , _ , _)) x y z p q =
+  pr₂ (γ (x , y)) (z , p , q)
+
+\end{code}
+
+\begin{code}
+
+⋁[_]-upper : (A : frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 ⟨ A ⟩) (i : index U)
+        → ((U [ i ]) ≤[ poset-of A ] (⋁[ A ] U)) holds
+⋁[_]-upper (A , _ , _ , (_ , _ , c , _)) U i = pr₁ (c U) i
+
+⋁[_]-least : (A : frame 𝓤 𝓥 𝓦) → (U : Fam 𝓦 ⟨ A ⟩)
+           → let open Joins (λ x y → x ≤[ poset-of A ] y)
+             in ((u , _) : upper-bound U) → ((⋁[ A ] U) ≤[ poset-of A ] u) holds
+⋁[_]-least (A , _ , _ , (_ , _ , c , _)) U = pr₂ (c U)
+
+\end{code}
+
+\begin{code}
+
+distributivity : (F : frame 𝓤 𝓥 𝓦)
+               → (x : ⟨ F ⟩)
+               → (U : Fam 𝓦 ⟨ F ⟩)
+               → let open JoinNotation (λ - → ⋁[ F ] -) in
+                 x ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))
+               ≡ ⋁⟨ i ⟩ (x ∧[ F ] (U [ i ]))
+distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
+
+\end{code}
+
 \section{Frame homomorphisms}
 
 \begin{code}
 
 is-a-frame-homomorphism : (F : frame 𝓤  𝓥  𝓦)
                           (G : frame 𝓤′ 𝓥′ 𝓦′)
-                        → (∣ F ∣ → ∣ G ∣)
+                        → (⟨ F ⟩ → ⟨ G ⟩)
                         → Ω (𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
 is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
  where
   P = poset-of G
 
-  iss : is-set ∣ G ∣
+  iss : is-set ⟨ G ⟩
   iss = carrier-of-[ P ]-is-set
 
   open Joins (λ x y → x ≤[ P ] y)
 
   α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
-  β = ∀[ (x , y) ∶ ∣ F ∣ × ∣ F ∣ ]
+  β = ∀[ (x , y) ∶ ⟨ F ⟩ × ⟨ F ⟩ ]
        (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
-  γ = ∀[ U ∶ Fam 𝓦 ∣ F ∣ ] f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
+  γ = ∀[ U ∶ Fam 𝓦 ⟨ F ⟩ ] f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
- Σ f ꞉ (∣ F ∣ → ∣ G ∣) , (is-a-frame-homomorphism F G f) holds
+ Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , is-a-frame-homomorphism F G f holds
+
+is-monotonic : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′)
+             → (pr₁ P → pr₁ Q) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓥′)
+is-monotonic P Q f =
+ ∀[ (x , y) ∶ (pr₁ P × pr₁ P) ] ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
+
+\end{code}
+
+\section{Some properties of frames}
+
+\begin{code}
+
+∧[_]-unique : (F : frame 𝓤 𝓥 𝓦) {x y z : ⟨ F ⟩}
+            → let open Meets (λ x y → x ≤[ poset-of F ] y) in
+              (z is-glb-of (x , y)) holds → z ≡ (x ∧[ F ] y)
+∧[ F ]-unique {x} {y} {z} (p , q) = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  β : (z ≤[ poset-of F ] (x ∧[ F ] y)) holds
+  β = ∧[ F ]-greatest x y z (pr₁ p) (pr₂ p)
+
+  γ : ((x ∧[ F ] y) ≤[ poset-of F ] z) holds
+  γ = q ((x ∧[ F ] y) , ∧[ F ]-lower₁ x y , ∧[ F ]-lower₂ x y)
+
+\end{code}
+
+\begin{code}
+
+⋁[_]-unique : (F : frame 𝓤 𝓥 𝓦) (U : Fam 𝓦 ⟨ F ⟩) (u : ⟨ F ⟩)
+         → let open Joins (λ x y → x ≤[ poset-of F ] y) in
+           (u is-lub-of U) holds → u ≡ ⋁[ F ] U
+⋁[_]-unique F U u (p , q) = ≤-is-antisymmetric (poset-of F) γ β
+ where
+  open PosetNotation (poset-of F)
+
+  γ : (u ≤ (⋁[ F ] U)) holds
+  γ = q ((⋁[ F ] U) , ⋁[ F ]-upper U)
+
+  β : ((⋁[ F ] U) ≤ u) holds
+  β = ⋁[ F ]-least U (u , p)
+
+connecting-lemma₁ : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                  → (x ≤[ poset-of F ] y) holds
+                  → x ≡ x ∧[ F ] y
+connecting-lemma₁ F x y p = ∧[ F ]-unique (β , γ)
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  β : (x is-a-lower-bound-of (x , y)) holds
+  β = ≤-is-reflexive (poset-of F) x , p
+
+  γ : (∀[ (z , _) ∶ lower-bound (x , y) ] z ≤[ poset-of F ] x) holds
+  γ (z , q , _) = q
+
+frame-morphisms-are-monotonic : (F : frame 𝓤  𝓥  𝓦)
+                                (G : frame 𝓤′ 𝓥′ 𝓦′)
+                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                              → is-a-frame-homomorphism F G f holds
+                              → is-monotonic (poset-of F) (poset-of G) f holds
+frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
+ f x            ≤⟨ i                         ⟩
+ f (x ∧[ F ] y) ≤⟨ ii                        ⟩
+ f x ∧[ G ] f y ≤⟨ ∧[ G ]-lower₂ (f x) (f y) ⟩
+ f y            ■
+  where
+   open PosetReasoning (poset-of G)
+
+   i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F x y p))
+   ii = reflexivity+ (poset-of G) (ψ (x , y))
+
+
+\end{code}
+
+\begin{code}
+
+∧[_]-is-commutative : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                 → x ∧[ F ] y ≡ y ∧[ F ] x
+∧[ F ]-is-commutative x y = ∧[ F ]-unique (β , γ)
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+  open PosetNotation (poset-of F) using (_≤_)
+
+  β : ((x ∧[ F ] y) is-a-lower-bound-of (y , x)) holds
+  β = (∧[ F ]-lower₂ x y) , (∧[ F ]-lower₁ x y)
+
+  γ : (∀[ (l , _) ∶ lower-bound (y , x) ] l ≤ (x ∧[ F ] y)) holds
+  γ (l , p , q) = ∧[ F ]-greatest x y l q p
+
+\end{code}
+
+\begin{code}
+
+⋁[_]-iterated-join : (F : frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇) (J : I → 𝓦 ̇)
+                → (f : (i : I) → J i → ⟨ F ⟩)
+                → ⋁[ F ] ((Σ i ꞉ I , J i) , uncurry f)
+                ≡ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
+⋁[ F ]-iterated-join I J f = ⋁[ F ]-unique _ _ (β , γ)
+ where
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+  open PosetReasoning (poset-of F) renaming (_■ to _QED)
+
+  β : ((⋁[ F ] (Σ J , uncurry f))
+      is-an-upper-bound-of
+      ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆) holds
+  β i = ⋁[ F ]-least _ (_ , λ jᵢ → ⋁[ F ]-upper _ (i , jᵢ))
+
+  γ : (∀[ (u , _) ∶ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ]
+       (⋁[ F ] (Σ J , uncurry f)) ≤[ poset-of F ] _ ) holds
+  γ (u , p) = ⋁[ F ]-least (Σ J , uncurry f) (_ , δ)
+   where
+    δ : (u is-an-upper-bound-of (Σ J , uncurry f)) holds
+    δ  (i , j) = f i j                      ≤⟨ ⋁[ F ]-upper _ j ⟩
+                 ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ≤⟨ p i              ⟩
+                 u                          QED
+
+\end{code}
+
+\begin{code}
+
+∧[_]-is-idempotent : (F : frame 𝓤 𝓥 𝓦)
+                   → (x : ⟨ F ⟩) → x ≡ x ∧[ F ] x
+∧[ F ]-is-idempotent x = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  α : (x ≤[ poset-of F ] x) holds
+  α = ≤-is-reflexive (poset-of F) x
+
+  β : (x ≤[ poset-of F ] (x ∧[ F ] x)) holds
+  β = ∧[ F ]-greatest x x x α α
+
+  γ : ((x ∧[ F ] x) ≤[ poset-of F ] x) holds
+  γ = ∧[ F ]-lower₁ x x
+
+\end{code}
+
+\begin{code}
+
+distributivity+ : (F : frame 𝓤 𝓥 𝓦)
+                → let open JoinNotation (λ - → ⋁[ F ] -) in
+                  (U@(I , _) V@(J , _) : Fam 𝓦 ⟨ F ⟩)
+                → (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))
+                ≡ (⋁⟨ (i , j) ∶ (I × J)  ⟩ ((U [ i ]) ∧[ F ] (V [ j ])))
+distributivity+ F U@(I , _) V@(J , _) =
+ (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))     ≡⟨ i   ⟩
+ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))     ≡⟨ ii  ⟩
+ (⋁⟨ i ⟩ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (U [ i ]))     ≡⟨ iii ⟩
+ (⋁⟨ i ⟩ (U [ i ] ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))))     ≡⟨ iv  ⟩
+ (⋁⟨ i ⟩ (⋁⟨ j ⟩ (U [ i ] ∧[ F ] V [ j ])))       ≡⟨ v   ⟩
+ (⋁⟨ (i , j) ∶ I × J  ⟩ (U [ i ] ∧[ F ] V [ j ])) ∎
+ where
+  open JoinNotation (λ - → ⋁[ F ] -)
+
+  i   = ∧[ F ]-is-commutative (⋁⟨ i ⟩ (U [ i ])) (⋁⟨ j ⟩ (V [ j ]))
+  ii  = distributivity F (⋁⟨ j ⟩ (V [ j ])) U
+  iii = ap
+         (λ - → ⋁[ F ] (I , -))
+         (dfunext fe λ i → ∧[ F ]-is-commutative (⋁⟨ j ⟩ V [ j ]) (U [ i ]))
+  iv  = ap
+         (λ - → join-of F (I , -))
+         (dfunext fe λ i → distributivity F (U [ i ]) V)
+  v   = ⋁[ F ]-iterated-join I (λ _ → J) (λ i j → U [ i ] ∧[ F ] V [ j ]) ⁻¹
 
 \end{code}
