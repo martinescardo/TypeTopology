@@ -203,11 +203,11 @@ module _
    ρ : 𝕊¹ → Σ A
    ρ x = (x , 𝕊¹-induction x)
 
-   lemma₁ : (r base , ap r loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
-   lemma₁ = 𝕊¹-rec-comp (base , a) l⁺
+   r-comp : (r base , ap r loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
+   r-comp = 𝕊¹-rec-comp (base , a) l⁺
 
-   lemma₂ : ρ ∼ r
-   lemma₂ x = to-Σ-≡ ((γ₁ ⁻¹) , γ₂)
+   ρ-r-homotopy : ρ ∼ r
+   ρ-r-homotopy x = to-Σ-≡ ((γ₁ ⁻¹) , γ₂)
     where
      γ₁ : pr₁ (r x) ≡ pr₁ (ρ x)
      γ₁ = happly 𝕊¹-induction-key-lemma x
@@ -220,21 +220,21 @@ module _
        I  = (transport-comp A γ₁ (γ₁ ⁻¹)) ⁻¹
        II = ap (λ - → transport A - (pr₂ (r x))) ((right-inverse γ₁) ⁻¹)
 
-   lemma₃ : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)
-   lemma₃ = to-Σ-≡ (lemma₂ base , γ)
+   ρ-and-r-on-base-and-loop : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)
+   ρ-and-r-on-base-and-loop = to-Σ-≡ (ρ-r-homotopy base , γ)
     where
-     γ = transport (λ - → - ≡ -) (lemma₂ base) (ap ρ loop) ≡⟨ I  ⟩
-         lemma₂ base ⁻¹ ∙ ap ρ loop ∙ lemma₂ base          ≡⟨ II ⟩
-         ap r loop                                         ∎
+     γ = transport (λ - → - ≡ -) (ρ-r-homotopy base) (ap ρ loop) ≡⟨ I  ⟩
+         ρ-r-homotopy base ⁻¹ ∙ ap ρ loop ∙ ρ-r-homotopy base    ≡⟨ II ⟩
+         ap r loop                                               ∎
       where
-       I  = transport-along-≡ (lemma₂ base) (ap ρ loop)
-       II = homotopies-are-natural'' ρ r lemma₂ {base} {base} {loop}
+       I  = transport-along-≡ (ρ-r-homotopy base) (ap ρ loop)
+       II = homotopies-are-natural'' ρ r ρ-r-homotopy {base} {base} {loop}
 
-   lemma₄ : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
-   lemma₄ = lemma₃ ∙ lemma₁
+   ρ-comp : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
+   ρ-comp = ρ-and-r-on-base-and-loop ∙ r-comp
 
-   pr₁-lemma₁ : ap (pr₁ ∘ pr₁) lemma₁ ≡ happly 𝕊¹-induction-key-lemma base
-   pr₁-lemma₁ = γ ⁻¹
+   r-comp-lemma : ap (pr₁ ∘ pr₁) r-comp ≡ happly 𝕊¹-induction-key-lemma base
+   r-comp-lemma = γ ⁻¹
     where
      κ = 𝕊¹-induction-key-≡
      γ = happly 𝕊¹-induction-key-lemma base                    ≡⟨ I    ⟩
@@ -242,8 +242,8 @@ module _
          ap pr₁ κ ∙ refl ⁻¹                                    ≡⟨ refl ⟩
          ap pr₁ κ                                              ≡⟨ III  ⟩
          ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)                 ≡⟨ refl ⟩
-         ap pr₁ (ap pr₁ lemma₁)                                ≡⟨ IV   ⟩
-         ap (pr₁ ∘ pr₁) lemma₁                                 ∎
+         ap pr₁ (ap pr₁ r-comp)                                ≡⟨ IV   ⟩
+         ap (pr₁ ∘ pr₁) r-comp                                 ∎
       where
        π : 𝓛 (𝕊¹) → 𝕊¹
        π = pr₁
@@ -253,38 +253,59 @@ module _
               (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
                (refl , ap-id-is-id loop))
        III = pr₁-𝕊¹-induction-key-≡
-       IV  = ap-ap pr₁ pr₁ lemma₁
+       IV  = ap-ap pr₁ pr₁ r-comp
 
-   pr₁-lemma₃ : ap (pr₁ ∘ pr₁) lemma₃ ≡ (happly 𝕊¹-induction-key-lemma base) ⁻¹
-   pr₁-lemma₃ = ap (pr₁ ∘ pr₁) lemma₃  ≡⟨ I   ⟩
-                ap pr₁ (ap pr₁ lemma₃) ≡⟨ II  ⟩
-                ap pr₁ (lemma₂ base)   ≡⟨ III ⟩
-                p ⁻¹                   ∎
+   ρ-comp-lemma : ap pr₁ (ap pr₁ ρ-comp) ≡ refl
+   ρ-comp-lemma =
+    ap pr₁ (ap pr₁ ρ-comp)                                          ≡⟨ I   ⟩
+    ap (pr₁ ∘ pr₁) ρ-comp                                           ≡⟨ II  ⟩
+    ap (pr₁ ∘ pr₁) ρ-and-r-on-base-and-loop ∙ ap (pr₁ ∘ pr₁) r-comp ≡⟨ III ⟩
+    p ⁻¹ ∙ p                                                        ≡⟨ IV  ⟩
+    refl                                                            ∎
     where
      p = happly 𝕊¹-induction-key-lemma base
-     I   = (ap-ap pr₁ pr₁ lemma₃) ⁻¹
-     II  = ap (ap pr₁) (ap-pr₁-to-Σ-≡ (lemma₂ base , _))
-     III = ap-pr₁-to-Σ-≡ ((p ⁻¹) , _)
-
-   ρ-comp₁ : ap pr₁ (ap pr₁ lemma₄) ≡ refl
-   ρ-comp₁ = ap pr₁ (ap pr₁ lemma₄)                        ≡⟨ I   ⟩
-             ap (pr₁ ∘ pr₁) lemma₄                         ≡⟨ II  ⟩
-             ap (pr₁ ∘ pr₁) lemma₃ ∙ ap (pr₁ ∘ pr₁) lemma₁ ≡⟨ III ⟩
-             p ⁻¹ ∙ p                                      ≡⟨ IV  ⟩
-             refl                                          ∎
-    where
-     p = happly 𝕊¹-induction-key-lemma base
-     I   = ap-ap pr₁ pr₁ lemma₄
-     II  = ap-∙ (pr₁ ∘ pr₁) lemma₃ lemma₁
-     III = ap₂ _∙_ pr₁-lemma₃ pr₁-lemma₁
+     I   = ap-ap pr₁ pr₁ ρ-comp
+     II  = ap-∙ (pr₁ ∘ pr₁) ρ-and-r-on-base-and-loop r-comp
      IV  = left-inverse p
+     III = ap₂ _∙_ γ₁ γ₂
+      where
+       γ₁ : ap (pr₁ ∘ pr₁) ρ-and-r-on-base-and-loop  ≡ p ⁻¹
+       γ₁ = ap (pr₁ ∘ pr₁) ρ-and-r-on-base-and-loop  ≡⟨ I₁   ⟩
+            ap pr₁ (ap pr₁ ρ-and-r-on-base-and-loop) ≡⟨ II₁  ⟩
+            ap pr₁ (ρ-r-homotopy base)               ≡⟨ III₁ ⟩
+            p ⁻¹                                     ∎
+        where
+         I₁   = (ap-ap pr₁ pr₁ ρ-and-r-on-base-and-loop) ⁻¹
+         II₁  = ap (ap pr₁) (ap-pr₁-to-Σ-≡ (ρ-r-homotopy base , _))
+         III₁ = ap-pr₁-to-Σ-≡ ((p ⁻¹) , _)
+       γ₂ : ap (pr₁ ∘ pr₁) r-comp ≡ p
+       γ₂ = ϕ ⁻¹
+        where
+         κ = 𝕊¹-induction-key-≡
+         ϕ = p                                                     ≡⟨ I₂    ⟩
+             ap pr₁ κ ∙ ap π (to-Σ-≡ (refl , ap-id-is-id loop)) ⁻¹ ≡⟨ II₂   ⟩
+             ap pr₁ κ ∙ refl ⁻¹                                    ≡⟨ refl  ⟩
+             ap pr₁ κ                                              ≡⟨ III₂  ⟩
+             ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)                 ≡⟨ refl  ⟩
+             ap pr₁ (ap pr₁ r-comp)                                ≡⟨ IV₂   ⟩
+             ap (pr₁ ∘ pr₁) r-comp                                 ∎
+          where
+           π : 𝓛 (𝕊¹) → 𝕊¹
+           π = pr₁
+           I₂   = 𝕊¹-uniqueness-principle-comp₁ base loop (pr₁ ∘ r) id κ
+                   (to-Σ-≡ (refl , (ap-id-is-id loop)))
+           II₂  = ap (λ - → ap pr₁ κ ∙ - ⁻¹)
+                   (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
+                    (refl , ap-id-is-id loop))
+           III₂ = pr₁-𝕊¹-induction-key-≡
+           IV₂  = ap-ap pr₁ pr₁ r-comp
 
    𝕊¹-induction-on-base : 𝕊¹-induction base ≡ a
    𝕊¹-induction-on-base =
-    transport (λ - → transport A - (𝕊¹-induction base) ≡ a) ρ-comp₁ γ
+    transport (λ - → transport A - (𝕊¹-induction base) ≡ a) ρ-comp-lemma γ
      where
-      γ : transport A (ap pr₁ (ap pr₁ lemma₄)) (𝕊¹-induction base) ≡ a
-      γ = from-Σ-≡' (ap pr₁ lemma₄)
+      γ : transport A (ap pr₁ (ap pr₁ ρ-comp)) (𝕊¹-induction base) ≡ a
+      γ = from-Σ-≡' (ap pr₁ ρ-comp)
 
    𝕊¹-induction-on-loop-lemma : (loop , transport (λ - → transport A loop - ≡ -)
                                          𝕊¹-induction-on-base
@@ -300,8 +321,8 @@ module _
         ≡ to-Σ-≡ (loop , l)
       γ = to-Σ-≡ (loop , transport (λ - → transport A loop - ≡ -) σ τ)    ≡⟨ I   ⟩
           transport (λ - → - ≡ -) (to-Σ-≡ (refl , σ)) (to-Σ-≡ (loop , τ)) ≡⟨ II  ⟩
-          transport (λ - → - ≡ -) (ap pr₁ lemma₄) (to-Σ-≡ (loop , τ))     ≡⟨ III ⟩
-          transport (λ - → - ≡ -) (ap pr₁ lemma₄) (ap ρ loop)             ≡⟨ IV  ⟩
+          transport (λ - → - ≡ -) (ap pr₁ ρ-comp) (to-Σ-≡ (loop , τ))     ≡⟨ III ⟩
+          transport (λ - → - ≡ -) (ap pr₁ ρ-comp) (ap ρ loop)             ≡⟨ IV  ⟩
           to-Σ-≡ (loop , l)                                               ∎
        where
         I   = h loop σ τ
@@ -313,19 +334,19 @@ module _
           h p refl q' = refl
         II  = ap (λ - → transport (λ - → - ≡ -) - (to-Σ-≡ (loop , τ))) h
          where
-          h = to-Σ-≡ (refl , σ)                 ≡⟨ I' ⟩
-              to-Σ-≡ (from-Σ-≡ (ap pr₁ lemma₄)) ≡⟨ II' ⟩
-              ap pr₁ lemma₄                     ∎
+          h = to-Σ-≡ (refl , σ)                 ≡⟨ I'  ⟩
+              to-Σ-≡ (from-Σ-≡ (ap pr₁ ρ-comp)) ≡⟨ II' ⟩
+              ap pr₁ ρ-comp                     ∎
            where
-            I'  = (ap to-Σ-≡ (to-Σ-≡ (ρ-comp₁ , refl))) ⁻¹
-            II' = tofrom-Σ-≡ (ap pr₁ lemma₄)
-        III = ap (transport (λ - → - ≡ -) (ap pr₁ lemma₄)) (h 𝕊¹-induction loop)
+            I'  = (ap to-Σ-≡ (to-Σ-≡ (ρ-comp-lemma , refl))) ⁻¹
+            II' = tofrom-Σ-≡ (ap pr₁ ρ-comp)
+        III = ap (transport (λ - → - ≡ -) (ap pr₁ ρ-comp)) (h 𝕊¹-induction loop)
          where
           h : {X : 𝓦 ̇ } {Y : X → 𝓣 ̇ } (f : (x : X) → Y x)
               {x x' : X} (p : x ≡ x')
             → to-Σ-≡ (p , apd f p) ≡ ap (λ x → (x , f x)) p
           h f refl = refl
-        IV  = from-Σ-≡' lemma₄
+        IV  = from-Σ-≡' ρ-comp
 
    module _
            (base-sethood : is-set (base ≡ base))
