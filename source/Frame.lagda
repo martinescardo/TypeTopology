@@ -161,6 +161,11 @@ syntax poset-eq-syntax P x y = x ≣[ P ] y
                → is-reflexive (λ x y → x ≤[ P ] x) holds
 ≤-is-reflexive (_ , _ , ((r , _) , _)) = r
 
+reflexivity+ : (P : poset 𝓤 𝓥)
+             → {x y : pr₁ P} → x ≡ y → (x ≤[ P ] y) holds
+reflexivity+ P {x} {y} p =
+ transport (λ - → (x ≤[ P ] -) holds) p (≤-is-reflexive P x)
+
 ≤-is-transitive : (P : poset 𝓤 𝓥)
                 → is-transitive (λ x y → x ≤[ P ] y) holds
 ≤-is-transitive (_ , _ , ((_ , t) , _)) = t
@@ -393,6 +398,18 @@ syntax join-of F U = ⋁[ F ] U
 
 \end{code}
 
+\begin{code}
+
+distributivity : (F : frame 𝓤 𝓥 𝓦)
+               → (x : ⟨ F ⟩)
+               → (U : Fam 𝓦 ⟨ F ⟩)
+               → let open JoinNotation (λ - → ⋁[ F ] -) in
+                 x ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))
+               ≡ ⋁⟨ i ⟩ (x ∧[ F ] (U [ i ]))
+distributivity (_ , _ , _ , (_ , _ , _ , d)) x U = d (x , U)
+
+\end{code}
+
 \section{Frame homomorphisms}
 
 \begin{code}
@@ -418,6 +435,11 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
  Σ f ꞉ (⟨ F ⟩ → ⟨ G ⟩) , is-a-frame-homomorphism F G f holds
+
+is-monotonic : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′)
+             → (pr₁ P → pr₁ Q) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓥′)
+is-monotonic P Q f =
+ ∀[ (x , y) ∶ (pr₁ P × pr₁ P) ] ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
 
 \end{code}
 
@@ -453,6 +475,53 @@ F ─f→ G =
   β : ((⋁[ F ] U) ≤ u) holds
   β = ⋁[ F ]-least U (u , p)
 
+connecting-lemma₁ : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                  → (x ≤[ poset-of F ] y) holds
+                  → x ≡ x ∧[ F ] y
+connecting-lemma₁ F x y p = ∧[ F ]-unique (β , γ)
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+
+  β : (x is-a-lower-bound-of (x , y)) holds
+  β = ≤-is-reflexive (poset-of F) x , p
+
+  γ : (∀[ (z , _) ∶ lower-bound (x , y) ] z ≤[ poset-of F ] x) holds
+  γ (z , q , _) = q
+
+frame-morphisms-are-monotonic : (F : frame 𝓤  𝓥  𝓦)
+                                (G : frame 𝓤′ 𝓥′ 𝓦′)
+                              → (f : ⟨ F ⟩ → ⟨ G ⟩)
+                              → is-a-frame-homomorphism F G f holds
+                              → is-monotonic (poset-of F) (poset-of G) f holds
+frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
+ f x            ≤⟨ i                         ⟩
+ f (x ∧[ F ] y) ≤⟨ ii                        ⟩
+ f x ∧[ G ] f y ≤⟨ ∧[ G ]-lower₂ (f x) (f y) ⟩
+ f y            ■
+  where
+   open PosetReasoning (poset-of G)
+
+   i  = reflexivity+ (poset-of G) (ap f (connecting-lemma₁ F x y p))
+   ii = reflexivity+ (poset-of G) (ψ (x , y))
+
+
+\end{code}
+
+\begin{code}
+
+∧[_]-is-commutative : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                 → x ∧[ F ] y ≡ y ∧[ F ] x
+∧[ F ]-is-commutative x y = ∧[ F ]-unique (β , γ)
+ where
+  open Meets (λ x y → x ≤[ poset-of F ] y)
+  open PosetNotation (poset-of F) using (_≤_)
+
+  β : ((x ∧[ F ] y) is-a-lower-bound-of (y , x)) holds
+  β = (∧[ F ]-lower₂ x y) , (∧[ F ]-lower₁ x y)
+
+  γ : (∀[ (l , _) ∶ lower-bound (y , x) ] l ≤ (x ∧[ F ] y)) holds
+  γ (l , p , q) = ∧[ F ]-greatest x y l q p
+
 \end{code}
 
 \begin{code}
@@ -472,12 +541,58 @@ F ─f→ G =
   β i = ⋁[ F ]-least _ (_ , λ jᵢ → ⋁[ F ]-upper _ (i , jᵢ))
 
   γ : (∀[ (u , _) ∶ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ]
-      (⋁[ F ] (Σ J , uncurry f)) ≤[ poset-of F ] _ ) holds
+       (⋁[ F ] (Σ J , uncurry f)) ≤[ poset-of F ] _ ) holds
   γ (u , p) = ⋁[ F ]-least (Σ J , uncurry f) (_ , δ)
    where
     δ : (u is-an-upper-bound-of (Σ J , uncurry f)) holds
     δ  (i , j) = f i j                      ≤⟨ ⋁[ F ]-upper _ j ⟩
                  ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ≤⟨ p i              ⟩
                  u                          QED
+
+\end{code}
+
+\begin{code}
+
+∧[_]-is-idempotent : (F : frame 𝓤 𝓥 𝓦)
+                   → (x : ⟨ F ⟩) → x ≡ x ∧[ F ] x
+∧[ F ]-is-idempotent x = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  α : (x ≤[ poset-of F ] x) holds
+  α = ≤-is-reflexive (poset-of F) x
+
+  β : (x ≤[ poset-of F ] (x ∧[ F ] x)) holds
+  β = ∧[ F ]-greatest x x x α α
+
+  γ : ((x ∧[ F ] x) ≤[ poset-of F ] x) holds
+  γ = ∧[ F ]-lower₁ x x
+
+\end{code}
+
+\begin{code}
+
+distributivity+ : (F : frame 𝓤 𝓥 𝓦)
+                → let open JoinNotation (λ - → ⋁[ F ] -) in
+                  (U@(I , _) V@(J , _) : Fam 𝓦 ⟨ F ⟩)
+                → (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))
+                ≡ (⋁⟨ (i , j) ∶ (I × J)  ⟩ ((U [ i ]) ∧[ F ] (V [ j ])))
+distributivity+ F U@(I , _) V@(J , _) =
+ (⋁⟨ i ⟩ (U [ i ])) ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))     ≡⟨ i   ⟩
+ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (⋁⟨ i ⟩ (U [ i ]))     ≡⟨ ii  ⟩
+ (⋁⟨ i ⟩ (⋁⟨ j ⟩ (V [ j ])) ∧[ F ] (U [ i ]))     ≡⟨ iii ⟩
+ (⋁⟨ i ⟩ (U [ i ] ∧[ F ] (⋁⟨ j ⟩ (V [ j ]))))     ≡⟨ iv  ⟩
+ (⋁⟨ i ⟩ (⋁⟨ j ⟩ (U [ i ] ∧[ F ] V [ j ])))       ≡⟨ v   ⟩
+ (⋁⟨ (i , j) ∶ I × J  ⟩ (U [ i ] ∧[ F ] V [ j ])) ∎
+ where
+  open JoinNotation (λ - → ⋁[ F ] -)
+
+  i   = ∧[ F ]-is-commutative (⋁⟨ i ⟩ (U [ i ])) (⋁⟨ j ⟩ (V [ j ])) 
+  ii  = distributivity F (⋁⟨ j ⟩ (V [ j ])) U
+  iii = ap
+         (λ - → ⋁[ F ] (I , -))
+         (dfunext fe λ i → ∧[ F ]-is-commutative (⋁⟨ j ⟩ V [ j ]) (U [ i ]))
+  iv  = ap
+         (λ - → join-of F (I , -))
+         (dfunext fe λ i → distributivity F (U [ i ]) V)
+  v   = ⋁[ F ]-flattening I (λ _ → J) (λ i j → U [ i ] ∧[ F ] V [ j ]) ⁻¹
 
 \end{code}
