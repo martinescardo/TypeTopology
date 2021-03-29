@@ -526,11 +526,11 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
 
 \begin{code}
 
-⋁[_]-flattening : (F : frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇) (J : I → 𝓦 ̇)
+⋁[_]-iterated-join : (F : frame 𝓤 𝓥 𝓦) (I : 𝓦 ̇) (J : I → 𝓦 ̇)
                 → (f : (i : I) → J i → ⟨ F ⟩)
                 → ⋁[ F ] ((Σ i ꞉ I , J i) , uncurry f)
                 ≡ ⋁[ F ] ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆
-⋁[ F ]-flattening I J f = ⋁[ F ]-unique _ _ (β , γ)
+⋁[ F ]-iterated-join I J f = ⋁[ F ]-unique _ _ (β , γ)
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)
   open PosetReasoning (poset-of F) renaming (_■ to _QED)
@@ -585,7 +585,7 @@ distributivity+ F U@(I , _) V@(J , _) =
  where
   open JoinNotation (λ - → ⋁[ F ] -)
 
-  i   = ∧[ F ]-is-commutative (⋁⟨ i ⟩ (U [ i ])) (⋁⟨ j ⟩ (V [ j ])) 
+  i   = ∧[ F ]-is-commutative (⋁⟨ i ⟩ (U [ i ])) (⋁⟨ j ⟩ (V [ j ]))
   ii  = distributivity F (⋁⟨ j ⟩ (V [ j ])) U
   iii = ap
          (λ - → ⋁[ F ] (I , -))
@@ -593,6 +593,6 @@ distributivity+ F U@(I , _) V@(J , _) =
   iv  = ap
          (λ - → join-of F (I , -))
          (dfunext fe λ i → distributivity F (U [ i ]) V)
-  v   = ⋁[ F ]-flattening I (λ _ → J) (λ i j → U [ i ] ∧[ F ] V [ j ]) ⁻¹
+  v   = ⋁[ F ]-iterated-join I (λ _ → J) (λ i j → U [ i ] ∧[ F ] V [ j ]) ⁻¹
 
 \end{code}
