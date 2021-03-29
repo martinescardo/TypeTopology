@@ -208,6 +208,7 @@ This will be used in ScottModelOfPCF.
           → DCPO[ 𝓓 , 𝓕 ]
    S₀ᵈᶜᵖᵒ (f , cf) (g , cg) = (λ x → underlying-function 𝓔 𝓕 (f x) (g x)) , c
     where
+
      c : is-continuous 𝓓 𝓕 (λ x → underlying-function 𝓔 𝓕 (f x) (g x))
      c I α δ = u , v
       where
@@ -260,11 +261,10 @@ This will be used in ScottModelOfPCF.
                 where
                  ε₂ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f ∘ α)
                  ε₂ = image-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ
-                 e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) ε₂ ≡ f (∐ 𝓓 δ)
+                 e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ≡ f (∐ 𝓓 δ)
                  e₂ = (continuous-function-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
-                 γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂)
-                       (g (α i))
-                      ⊑⟨ 𝓕 ⟩ y
+                 γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂) (g (α i))
+                    ⊑⟨ 𝓕 ⟩ y
                  γ₃ = ∐-is-lowerbound-of-upperbounds 𝓕
                        (pointwise-family-is-directed 𝓔 𝓕 (f ∘ α) ε₂ (g (α i)))
                        y h

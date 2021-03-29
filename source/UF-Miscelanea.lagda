@@ -13,7 +13,7 @@ open import SpartanMLTT
 open import Plus-Properties
 open import NaturalNumbers-Properties
 open import UF-Base
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-FunExt
 open import UF-Lower-FunExt
 open import UF-Subsingletons-FunExt
@@ -144,6 +144,16 @@ embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings
 ℕ-is-set : is-set ℕ
 ℕ-is-set = discrete-types-are-sets ℕ-is-discrete
 
+𝟚inΩ : 𝟚 → Ω 𝓤
+𝟚inΩ ₀ = ⊥
+𝟚inΩ ₁ = ⊤
+
+𝟚inΩ-embedding : funext 𝓤 𝓤 → propext 𝓤 → is-embedding (𝟚inΩ {𝓤})
+𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₀ , q) = to-Σ-≡ (refl , Ω-is-set fe pe p q)
+𝟚inΩ-embedding fe pe (P , isp) (₀ , p) (₁ , q) = 𝟘-elim (⊥-is-not-⊤ (p ∙ q ⁻¹))
+𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₀ , q) = 𝟘-elim (⊥-is-not-⊤ (q ∙ p ⁻¹))
+𝟚inΩ-embedding fe pe (P , isp) (₁ , p) (₁ , q) = to-Σ-≡ (refl , Ω-is-set fe pe p q)
+
 nonempty : 𝓤 ̇ → 𝓤 ̇
 nonempty X = is-empty(is-empty X)
 
@@ -232,6 +242,5 @@ maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ 
                                                   → is-embedding f
 maps-of-props-into-isolated-points-are-embeddings f i j = maps-of-props-into-h-isolated-points-are-embeddings
                                                            f i (λ p → isolated-is-h-isolated (f p) (j p))
-
 
 \end{code}

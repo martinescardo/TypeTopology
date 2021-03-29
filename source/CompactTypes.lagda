@@ -77,7 +77,6 @@ module CompactTypes where
 open import SpartanMLTT
 
 open import Two-Properties
-open import Two-Prop-Density
 open import Plus-Properties
 open import AlternativePlus
 open import DiscreteAndSeparated
@@ -148,7 +147,7 @@ compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
   case₁ r = inr(lemma r)
 
 compact∙-gives-pointed : {X : 𝓤 ̇ } → compact∙ X → X
-compact∙-gives-pointed ε = pr₁(ε(λ x → ₀))
+compact∙-gives-pointed ε = pr₁(ε (λ x → ₀))
 
 \end{code}
 
@@ -199,13 +198,13 @@ checking the two possibilities, we can always take x₀ = p ₀.
 \end{code}
 
 Even though excluded middle is undecided, the set Ω 𝓤 of univalent
-propositions in any universe U is compact (assuming propositional
+propositions in any universe 𝓤 is compact (assuming propositional
 extensionality, which is a consequence of univalence):
 
 \begin{code}
 
 Ω-compact∙ : funext 𝓤 𝓤 → propext 𝓤 → compact∙ (Ω 𝓤)
-Ω-compact∙ {𝓤} fe pe p = 𝟚-equality-cases a b
+Ω-compact∙ {𝓤} fe pe p = γ
   where
     A = Σ x₀ ꞉ Ω 𝓤 , (p x₀ ≡ ₁ → (x : Ω 𝓤) → p x ≡ ₁)
 
@@ -213,20 +212,10 @@ extensionality, which is a consequence of univalence):
     a r = ⊥ , λ s → 𝟘-elim (zero-is-not-one (r ⁻¹ ∙ s))
 
     b : p ⊥ ≡ ₁ → A
-    b r = 𝟚-equality-cases c d
-      where
-        c : p ⊤ ≡ ₀ → A
-        c s = ⊤ , λ t → 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ t))
+    b r = ⊤ , ⊥-⊤-density fe pe p r
 
-        d : p ⊤ ≡ ₁ → A
-        d s = ⊤ , ⊥-⊤-density fe pe p r
-
-\end{code}
-
-We could have used the same idea of proof as for 𝟚-compact, again
-using density.
-
-\begin{code}
+    γ : A
+    γ = 𝟚-equality-cases a b
 
 𝟙-compact∙ : compact∙ (𝟙 {𝓤})
 𝟙-compact∙ p = * , f
@@ -326,7 +315,7 @@ is called discreteness. More generally we have:
 apart-or-equal : funext 𝓤 𝓥
                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → compact X
-               → ((x : X) → is-discrete(Y x))
+               → ((x : X) → is-discrete (Y x))
                → (f g : (x : X) → Y x)
                → (f ♯ g) + (f ≡ g)
 apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
@@ -351,7 +340,7 @@ apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
 compact-discrete-discrete : funext 𝓤 𝓥
                           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                           → compact X
-                          → ((x : X) → is-discrete(Y x))
+                          → ((x : X) → is-discrete (Y x))
                           → is-discrete((x : X) → Y x)
 
 compact-discrete-discrete fe φ d f g = h (apart-or-equal fe φ d f g)
@@ -375,6 +364,7 @@ compact-decidable X φ = f a
  where
   a : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁)
   a = φ (λ x → ₀)
+
   f : (X × (₀ ≡ ₀)) + (X → ₀ ≡ ₁) → decidable X
   f (inl (x , _)) = inl x
   f (inr u)       = inr (λ x → zero-is-not-one (u x))
@@ -387,6 +377,7 @@ decidable-prop-compact X isp δ p = g δ
    where
     b : p x ≡ ₀ → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
     b r = inl (x , r)
+
     c : p x ≡ ₁ → (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
     c r = inr (λ y → transport (λ - → p - ≡ ₁) (isp x y) r)
   g (inr u) = inr (λ x → 𝟘-elim (u x))
@@ -423,8 +414,10 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
     where
      next : (x : X) → Y x
      next x = δ x (λ y → p (x , y))
+
      x₀ : X
-     x₀ = ε(λ x → p (x , next x))
+     x₀ = ε (λ x → p (x , next x))
+
      y₀ : Y x₀
      y₀ = next x₀
 
@@ -444,7 +437,8 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
   sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X
-    x₀ = ε(λ x → overline(δ x) (λ y → p (x , y)))
+    x₀ = ε (λ x → overline(δ x) (λ y → p (x , y)))
+
     y₀ : Y x₀
     y₀ = δ x₀ (λ y → p (x₀ , y))
 
@@ -456,8 +450,8 @@ Back to compact sets:
 
 Σ-compact∙ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
            → compact∙ X
-           → ((x : X) → compact∙(Y x))
-           → compact∙(Σ Y)
+           → ((x : X) → compact∙ (Y x))
+           → compact∙ (Σ Y)
 Σ-compact∙ {i} {j} {X} {Y} ε δ p = (x₀ , y₀) , correctness
  where
   lemma-next : (x : X) → Σ y₀ ꞉ Y x , (p (x , y₀) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁)
@@ -467,10 +461,10 @@ Back to compact sets:
   next x = pr₁(lemma-next x)
 
   next-correctness : (x : X) → p (x , next x) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁
-  next-correctness x = pr₂(lemma-next x)
+  next-correctness x = pr₂ (lemma-next x)
 
   lemma-first : Σ x₀ ꞉ X , (p (x₀ , next x₀) ≡ ₁ → (x : X) → p (x , next x) ≡ ₁)
-  lemma-first = ε(λ x → p (x , next x))
+  lemma-first = ε (λ x → p (x , next x))
 
   x₀ : X
   x₀ = pr₁ lemma-first
@@ -490,13 +484,13 @@ Corollary: Binary products preserve compactness:
 
 \begin{code}
 
-binary-Tychonoff : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → compact∙ X → compact∙ Y → compact∙(X × Y)
+binary-Tychonoff : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → compact∙ X → compact∙ Y → compact∙ (X × Y)
 binary-Tychonoff ε δ = Σ-compact∙ ε (λ i → δ)
 
 binary-Σ-compact∙' : {X₀ : 𝓤 ̇ } {X₁ : 𝓤 ̇ }
                    → compact∙ X₀
                    → compact∙ X₁
-                   → compact∙(X₀ +' X₁)
+                   → compact∙ (X₀ +' X₁)
 binary-Σ-compact∙' {𝓤} {X₀} {X₁} ε₀ ε₁ = Σ-compact∙ 𝟚-compact∙ ε
  where
   ε : (i : 𝟚) → _
@@ -719,8 +713,8 @@ NB-Compact X C = compact-gives-Compact X (Compact-gives-compact X C)
 \end{code}
 
 Exercise. Prove the converse of the previous observation, using the
-fact that any decidable type is logically equivalent to either 𝟘 or 𝟙,
-and hence to a type in the universe 𝓤₀.
+fact that any decidable proposition is logically equivalent to either
+𝟘 or 𝟙, and hence to a type in the universe 𝓤₀.
 
 \begin{code}
 
@@ -768,12 +762,16 @@ and hence to a type in the universe 𝓤₀.
  where
   B : X → 𝓥 ⊔ 𝓦 ̇
   B x = Σ y ꞉ Y x , A (x , y)
+
   ζ : (x : X) → detachable (λ y → A (x , y))
   ζ x y = δ (x , y)
+
   ε : detachable B
   ε x = d x (λ y → A (x , y)) (ζ x)
+
   e : decidable (Σ B)
   e = c B ε
+
   γ : decidable (Σ B) → decidable (Σ A)
   γ (inl (x , (y , a))) = inl ((x , y) , a)
   γ (inr u)             = inr (λ {((x , y) , a) → u (x , (y , a))})
@@ -874,7 +872,8 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
                             → ∃-Compact X {𝓥}
                             → (A : X → 𝓥 ̇ )
                             → detachable A
-                            → ¬¬ ∃ A → ∃ A
+                            → ¬¬ ∃ A
+                            → ∃ A
  ∃-Compactness-gives-Markov {𝓤} {𝓥} {X} c A δ = ¬¬-elim (c A δ)
 
  ∥Compact∥-gives-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → ∥ Compact X {𝓥} ∥ → ∃-Compact X {𝓥}
@@ -947,7 +946,6 @@ Compact-propositions-are-decidable X i c = γ
 
   γ : decidable X
   γ = f a
-
 
 discrete-to-the-power-Compact-is-discrete : funext 𝓤 𝓥
                                           → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }

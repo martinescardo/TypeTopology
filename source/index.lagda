@@ -3,7 +3,7 @@
    -------------------------------------------------------------
 
    Martin Escardo
-   2010--2020--∞, continuously evolving.
+   2010--2021--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
@@ -220,7 +220,6 @@ import TotallySeparated
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
 import Two
-import Two-Prop-Density
 import Two-Properties
 import UnivalenceFromScratch
 import Unit

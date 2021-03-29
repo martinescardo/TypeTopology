@@ -11,11 +11,9 @@ open import UF-FunExt
 
 module PropInfTychonoff (fe : FunExt) where
 
-
 open import Two-Properties
 open import CompactTypes
 open import InfCompact
-open import Two-Prop-Density
 open import UF-Base
 open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
