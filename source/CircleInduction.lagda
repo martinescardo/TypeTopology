@@ -576,6 +576,7 @@ After all, we only wanted to show that (base ≡ base) is a set.
 \begin{code}
 
   module 𝕊¹-induction'
+          {𝓥 : Universe}
           (A : 𝕊¹ → 𝓥 ̇ )
           (a : A base)
           (l : transport A loop a ≡ a)

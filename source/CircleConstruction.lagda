@@ -23,9 +23,9 @@ open import UF-PropTrunc
 open import UF-Univalence
 open import UF-UA-FunExt
 
-open import UF-SIP -- Maybe use MGS-SIP?
+open import UF-SIP
 
-module Circle
+module CircleConstruction
         (pt : propositional-truncations-exist)
         (ua : is-univalent 𝓤₀)
        where
@@ -534,56 +534,44 @@ module _
 
 \begin{code}
 
-Tℤ-universal-property : funext 𝓤 𝓤 → funext 𝓤₁ 𝓤
+Tℤ-universal-map : (A : 𝓤 ̇ ) → (Tℤ → A) → Σ a ꞉ A , a ≡ a
+Tℤ-universal-map A f = (f base , ap f loop)
+
+Tℤ-universal-property : FunExt
                       → (A : 𝓤 ̇ )
-                      → (Tℤ → A) ≃ (Σ a ꞉ A , a ≡ a)
-Tℤ-universal-property {𝓤} fe fe₁ A = qinveq ϕ (ψ , η , ε)
+                      → is-equiv (Tℤ-universal-map A)
+Tℤ-universal-property {𝓤} fe A = qinvs-are-equivs ϕ (ψ , η , ε)
  where
-  open Tℤ-rec {𝓤} {A} fe
+  open Tℤ-rec {𝓤} {A} (fe 𝓤 𝓤)
   ϕ : (Tℤ → A) → (Σ a ꞉ A , a ≡ a)
   ϕ f = (f base , ap f loop)
   ψ : (Σ a ꞉ A , a ≡ a) → (Tℤ → A)
   ψ (a , p) = Tℤ-rec (a , p)
   η : ψ ∘ ϕ ∼ id
-  η f = dfunext fe₁ (λ X → ∼-to-Tℤ-rec f fe X ⁻¹)
+  η f = dfunext (fe 𝓤₁ 𝓤) (λ X → ∼-to-Tℤ-rec f (fe 𝓤 𝓤) X ⁻¹)
   ε : ϕ ∘ ψ ∼ id
   ε = Tℤ-rec-comp
 
 \end{code}
 
-TO DO: Prove this from Tℤ-uniqueness-principle directly?
-
 \begin{code}
 
+open import CircleInduction
+
 module _
-        (A : 𝓤 ̇ )
-        (fe : funext 𝓤 𝓤)
+        (fe : FunExt)
+        (A : Tℤ → 𝓤 ̇ )
+        (a : A base)
+        (l : transport A loop a ≡ a)
        where
 
- open Tℤ-rec {𝓤} {A} fe
+ open 𝕊¹-induction Tℤ base loop (Tℤ-universal-property fe) A a l
 
- Tℤ-uniqueness-principle-∼ : (f g : Tℤ → A)
-                           → (f base , ap f loop) ≡ (g base , ap g loop)
-                           → f ∼ g
- Tℤ-uniqueness-principle-∼ f g p X =
-  f X                           ≡⟨ ∼-to-Tℤ-rec f fe X      ⟩
-  Tℤ-rec (f base , ap f loop) X ≡⟨ ap (λ - → Tℤ-rec - X) p ⟩
-  Tℤ-rec (g base , ap g loop) X ≡⟨ (∼-to-Tℤ-rec g fe X) ⁻¹ ⟩
-  g X                           ∎
+ Tℤ-induction : (x : Tℤ) → A x
+ Tℤ-induction = 𝕊¹-induction
 
- Tℤ-uniqueness-principle-≡ : funext 𝓤₁ 𝓤
-                           → (f g : Tℤ → A)
-                           → (f base , ap f loop) ≡ (g base , ap g loop)
-                           → f ≡ g
- Tℤ-uniqueness-principle-≡ fe' f g p = dfunext fe' (Tℤ-uniqueness-principle-∼ f g p)
-
- Tℤ-uniquess-principle : funext 𝓤₁ 𝓤
-                       → (a : A) (p : a ≡ a)
-                       → ∃! r ꞉ (Tℤ → A) , (r base , ap r loop) ≡ (a , p)
- Tℤ-uniquess-principle fe' a p =
-  equivs-are-vv-equivs ⌜ e ⌝ (⌜⌝-is-equiv e) (a , p)
-   where
-    e : (Tℤ → A) ≃ (Σ a ꞉ A , a ≡ a)
-    e = Tℤ-universal-property fe fe' A
+ Tℤ-induction-comp : (Tℤ-induction base , apd Tℤ-induction loop)
+                   ≡[ Σ y ꞉ A base , transport A loop y ≡ y ] (a , l)
+ Tℤ-induction-comp = 𝕊¹-induction-comp (equiv-to-set fundamental-group-of-circle-is-ℤ ℤ-is-set)
 
 \end{code}
