@@ -91,9 +91,10 @@ import LawvereFPT
 import PartialElements
 import UF
 import Types2019
-import MGS        -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
-import PCFModules -- by Tom de Jong
-import Dyadics    -- by Tom de Jong
+import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
+import PCFModules    -- by Tom de Jong
+import Dyadics       -- by Tom de Jong
+import CircleModules -- by Tom de Jong
 
 \end{code}
 

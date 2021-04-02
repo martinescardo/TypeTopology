@@ -888,3 +888,17 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
 ∼-fiber-≃ H y = Σ-cong (∼-fiber-identifications-≃ H y)
 
 \end{code}
+
+\begin{code}
+
+∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ≡ x)
+                → is-equiv (λ (q : x ≡ y) → p ∙ q)
+∙-is-equiv-left {𝓤} {X} {x} {y} refl =
+ equiv-closed-under-∼ id (refl ∙_) (id-is-equiv (x ≡ y))
+  (λ _ → refl-left-neutral)
+
+∙-is-equiv-right : {X : 𝓤 ̇ } {x y z : X} (q : x ≡ y)
+                 → is-equiv (λ (p : z ≡ x) → p ∙ q)
+∙-is-equiv-right {𝓤} {X} {x} {y} {z} refl = id-is-equiv (z ≡ y)
+
+\end{code}

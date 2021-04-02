@@ -279,16 +279,16 @@ tofrom-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z z' : X × Y}
              → p ≡ to-×-≡ (pr₁ (from-×-≡' p)) (pr₂ (from-×-≡' p))
 tofrom-×-≡ refl = refl
 
-from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
-         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ (pr₂ τ)
-from-Σ-≡ refl = refl , refl
-
 from-Σ-≡' : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {u v : Σ Y} (r : u ≡ v)
           → transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
 from-Σ-≡' {𝓤} {𝓥} {X} {Y} {u} {v} = J A (λ u → refl) {u} {v}
  where
   A : (u v : Σ Y) → u ≡ v → 𝓥 ̇
   A u v r = transport Y (ap pr₁ r) (pr₂ u) ≡ (pr₂ v)
+
+from-Σ-≡ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {σ τ : Σ Y} (r : σ ≡ τ)
+         → Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport Y p (pr₂ σ) ≡ (pr₂ τ)
+from-Σ-≡ r = (ap pr₁ r , from-Σ-≡' r)
 
 to-Σ-≡ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
        → (Σ p ꞉ pr₁ σ ≡ pr₁ τ , transport A p (pr₂ σ) ≡ pr₂ τ)
@@ -326,5 +326,37 @@ ap-pr₂-to-×-≡ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {z t : X × Y}
               → (p₂ : pr₂ z ≡ pr₂ t)
               → ap pr₂ (to-×-≡ p₁ p₂) ≡ p₂
 ap-pr₂-to-×-≡ refl refl = refl
+
+\end{code}
+
+Added by Tom de Jong
+22 March 2021:
+
+\begin{code}
+
+ap-pr₁-refl-lemma : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ )
+                    {x : X} {y y' : Y x}
+                    (w : (x , y) ≡[ Σ Y ] (x , y'))
+                  → ap pr₁ w ≡ refl
+                  → y ≡ y'
+ap-pr₁-refl-lemma Y {x} {y} {y'} w p = γ (ap pr₁ w) p ∙ h
+ where
+  γ : (r : x ≡ x) → (r ≡ refl) → y ≡ transport Y r y
+  γ r refl = refl
+  h : transport Y (ap pr₁ w) y ≡ y'
+  h = from-Σ-≡' w
+
+transport-along-≡ : {X : 𝓤 ̇ } {x y : X} (q : x ≡ y) (p : x ≡ x)
+                  → transport (λ - → - ≡ -) q p ≡ q ⁻¹ ∙ p ∙ q
+transport-along-≡ refl p = (refl ⁻¹ ∙ (p ∙ refl) ≡⟨ refl              ⟩
+                            refl ⁻¹ ∙ p          ≡⟨ refl-left-neutral ⟩
+                            p                    ∎                     ) ⁻¹
+
+transport-along-→ : {X : 𝓤 ̇ } (Y : X → 𝓥 ̇ ) (Z : X → 𝓦 ̇ )
+                    {x y : X}
+                    (p : x ≡ y) (f : Y x → Z x)
+                  → transport (λ - → (Y - → Z -)) p f
+                  ≡ transport Z p ∘ f ∘ transport Y (p ⁻¹)
+transport-along-→ Y Z refl f = refl
 
 \end{code}

@@ -22,50 +22,62 @@ is-univalent 𝓤 = (X Y : 𝓤 ̇ ) → is-equiv(idtoeq X Y)
 Univalence : 𝓤ω
 Univalence = (𝓤 : Universe) → is-univalent 𝓤
 
-eqtoid : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
-eqtoid ua X Y = pr₁(pr₁(ua X Y))
-
-idtoeq-eqtoid : (ua : is-univalent 𝓤)
-              → (X Y : 𝓤 ̇ ) (e : X ≃ Y) → idtoeq X Y (eqtoid ua X Y e) ≡ e
-idtoeq-eqtoid ua X Y = pr₂(pr₁(ua X Y))
-
-eqtoid-idtoeq : (ua : is-univalent 𝓤)
-              → (X Y : 𝓤 ̇ ) (p : X ≡ Y) →  eqtoid ua X Y (idtoeq X Y p) ≡ p
-eqtoid-idtoeq ua X Y = pr₁(pr₂ (equivs-are-qinvs (idtoeq X Y) (ua X Y)))
-
-eqtoid-refl : (ua : is-univalent 𝓤) (X : 𝓤 ̇ )
-            → eqtoid ua X X (≃-refl X) ≡ refl
-eqtoid-refl ua X = eqtoid-idtoeq ua X X refl
-
 idtoeq' : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 idtoeq' X Y p = (Idtofun p , transports-are-equivs p)
 
 idtoEqs-agree : (X Y : 𝓤 ̇ ) → idtoeq' X Y ∼ idtoeq X Y
 idtoEqs-agree X _ refl = refl
 
-idtoeq'-eqtoid : (ua : is-univalent 𝓤)
-               → (X Y : 𝓤 ̇ ) → idtoeq' X Y ∘ eqtoid ua X Y ∼ id
-idtoeq'-eqtoid ua X Y e = idtoEqs-agree X Y (eqtoid ua X Y e) ∙ idtoeq-eqtoid ua X Y e
-
 Idtofun-is-equiv : (X Y : 𝓤 ̇ ) (p : X ≡ Y) → is-equiv(idtofun X Y p)
 Idtofun-is-equiv X Y p = pr₂(idtoeq X Y p)
 
-univalence-≃ : is-univalent 𝓤 → (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
-univalence-≃ ua X Y = idtoeq X Y , ua X Y
+module _
+        (ua : is-univalent 𝓤)
+       where
 
-back-transport-is-pre-comp' : (ua : is-univalent 𝓤)
-                            → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X' → Y)
-                            → back-transport (λ - → - → Y) (eqtoid ua X X' e) g ≡ g ∘ ⌜ e ⌝
-back-transport-is-pre-comp' ua {X} {X'} e g = back-transport-is-pre-comp (eqtoid ua X X' e) g ∙ q
- where
-  q : g ∘ Idtofun (eqtoid ua X X' e) ≡ g ∘ ⌜ e ⌝
-  q = ap (g ∘_) (ap ⌜_⌝ (idtoeq'-eqtoid ua X X' e))
+ eqtoid : (X Y : 𝓤 ̇ ) → X ≃ Y → X ≡ Y
+ eqtoid X Y = pr₁(pr₁(ua X Y))
 
-pre-comp-is-equiv : (ua : is-univalent 𝓤)
-                  → {X Y Z : 𝓤 ̇ } (f : X → Y) → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
-pre-comp-is-equiv ua {X} {Y} f ise =
- equiv-closed-under-∼' (back-transports-are-equivs (eqtoid ua X Y (f , ise)))
-                       (back-transport-is-pre-comp' ua (f , ise))
+ idtoeq-eqtoid : (X Y : 𝓤 ̇ ) (e : X ≃ Y) → idtoeq X Y (eqtoid X Y e) ≡ e
+ idtoeq-eqtoid X Y = pr₂(pr₁(ua X Y))
+
+ eqtoid-idtoeq : (X Y : 𝓤 ̇ ) (p : X ≡ Y) →  eqtoid X Y (idtoeq X Y p) ≡ p
+ eqtoid-idtoeq X Y = pr₁(pr₂ (equivs-are-qinvs (idtoeq X Y) (ua X Y)))
+
+ eqtoid-refl : (X : 𝓤 ̇ ) → eqtoid X X (≃-refl X) ≡ refl
+ eqtoid-refl X = eqtoid-idtoeq X X refl
+
+ idtoeq'-eqtoid : (X Y : 𝓤 ̇ ) → idtoeq' X Y ∘ eqtoid X Y ∼ id
+ idtoeq'-eqtoid X Y e = idtoEqs-agree X Y (eqtoid X Y e) ∙ idtoeq-eqtoid X Y e
+
+ idtofun-eqtoid : {X Y : 𝓤 ̇ } (e : X ≃ Y)
+                → idtofun X Y (eqtoid X Y e) ≡ ⌜ e ⌝
+ idtofun-eqtoid {X} {Y} e = ap pr₁ (idtoeq-eqtoid X Y e)
+
+ Idtofun-eqtoid : {X Y : 𝓤 ̇ } (e : X ≃ Y)
+                → Idtofun (eqtoid X Y e) ≡ ⌜ e ⌝
+ Idtofun-eqtoid {X} {Y} e =
+  (idtofun-agreement X Y (eqtoid X Y e)) ⁻¹ ∙ idtofun-eqtoid e
+
+ Idtofun-∙ : {X Y Z : 𝓤 ̇ } (p : X ≡ Y) (q : Y ≡ Z)
+           → Idtofun (p ∙ q) ≡ Idtofun q ∘ Idtofun p
+ Idtofun-∙ refl refl = refl
+
+ univalence-≃ : (X Y : 𝓤 ̇ ) → (X ≡ Y) ≃ (X ≃ Y)
+ univalence-≃ X Y = idtoeq X Y , ua X Y
+
+ back-transport-is-pre-comp' : {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X' → Y)
+                             → back-transport (λ - → - → Y) (eqtoid X X' e) g ≡ g ∘ ⌜ e ⌝
+ back-transport-is-pre-comp' {X} {X'} e g = back-transport-is-pre-comp (eqtoid X X' e) g ∙ q
+  where
+   q : g ∘ Idtofun (eqtoid X X' e) ≡ g ∘ ⌜ e ⌝
+   q = ap (g ∘_) (ap ⌜_⌝ (idtoeq'-eqtoid X X' e))
+
+ pre-comp-is-equiv : {X Y Z : 𝓤 ̇ } (f : X → Y)
+                   → is-equiv f → is-equiv (λ (g : Y → Z) → g ∘ f)
+ pre-comp-is-equiv {X} {Y} f ise =
+  equiv-closed-under-∼' (back-transports-are-equivs (eqtoid X Y (f , ise)))
+                        (back-transport-is-pre-comp' (f , ise))
 
 \end{code}
 
@@ -98,6 +110,21 @@ eqtoid-inverse ua {X} {X'} = JEq' ua X (λ X' e → (eqtoid ua X X' e)⁻¹ ≡ 
  where
   p : (eqtoid ua X X (≃-refl X))⁻¹ ≡ eqtoid ua X X (≃-sym (≃-refl X))
   p = ap _⁻¹ (eqtoid-refl ua X) ∙ (eqtoid-refl ua X)⁻¹
+
+idtofun-eqtoid-⁻¹ : (ua : is-univalent 𝓤) {X Y : 𝓤 ̇ } (e : X ≃ Y)
+                  → idtofun Y X ((eqtoid ua X Y e) ⁻¹) ≡ ⌜ e ⌝⁻¹
+idtofun-eqtoid-⁻¹ ua {X} {Y} e =
+ idtofun Y X ((eqtoid ua X Y e) ⁻¹)    ≡⟨ I  ⟩
+ idtofun Y X (eqtoid ua Y X (≃-sym e)) ≡⟨ II ⟩
+ ⌜ e ⌝⁻¹                               ∎
+  where
+   I  = ap (idtofun Y X) (eqtoid-inverse ua e)
+   II = idtofun-eqtoid ua (≃-sym e)
+
+Idtofun-eqtoid-⁻¹ : (ua : is-univalent 𝓤) {X Y : 𝓤 ̇ } (e : X ≃ Y)
+                  → Idtofun ((eqtoid ua X Y e) ⁻¹) ≡ ⌜ e ⌝⁻¹
+Idtofun-eqtoid-⁻¹ ua {X} {Y} e =
+ (idtofun-agreement Y X ((eqtoid ua X Y e) ⁻¹)) ⁻¹ ∙ idtofun-eqtoid-⁻¹ ua e
 
 transport-is-pre-comp' : (ua : is-univalent 𝓤)
                        → {X X' Y : 𝓤 ̇ } (e : X ≃ X') (g : X → Y)
