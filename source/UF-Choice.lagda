@@ -34,7 +34,6 @@ choice where X is a proposition (see https://arxiv.org/abs/1610.03346).
 
 open import SpartanMLTT
 
-open import Two-Prop-Density
 open import UF-Base
 open import UF-Subsingletons renaming (⊤Ω to ⊤ ; ⊥Ω to ⊥)
 open import UF-Subsingletons-FunExt

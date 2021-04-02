@@ -180,10 +180,7 @@ module pointed-∞-magma {𝓤 : Universe} where
                                             ∞-magma.sns-data
                                             pointed-type.sns-data
 
-module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
-
- fe : funext 𝓤 𝓤
- fe = univalence-gives-funext ua
+module monoid {𝓤 : Universe} where
 
  open sip
  open sip-join
@@ -201,10 +198,11 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
  Monoid : 𝓤 ⁺ ̇
  Monoid = Σ X ꞉ 𝓤 ̇ , Σ s ꞉ monoid-structure X , monoid-axioms X s
 
- monoid-axioms-is-prop : (X : 𝓤 ̇ ) (s : monoid-structure X)
+ monoid-axioms-is-prop : funext 𝓤 𝓤
+                       → (X : 𝓤 ̇ ) (s : monoid-structure X)
                        → is-prop (monoid-axioms X s)
 
- monoid-axioms-is-prop X (_·_ , e) s = γ s
+ monoid-axioms-is-prop fe X (_·_ , e) s = γ s
   where
    i : is-set X
    i = pr₁ s
@@ -223,12 +221,13 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
            (λ y → Π-is-prop fe
            (λ z → i {(x · y) · z} {x · (y · z)}))))))
 
- sns-data : SNS (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s) 𝓤
- sns-data = add-axioms
-              monoid-axioms monoid-axioms-is-prop
-              (join
-                 ∞-magma.sns-data
-                 pointed-type.sns-data)
+ sns-data : funext 𝓤 𝓤
+          → SNS (λ X → Σ s ꞉ monoid-structure X , monoid-axioms X s) 𝓤
+ sns-data fe = add-axioms
+                monoid-axioms (monoid-axioms-is-prop fe)
+                (join
+                   ∞-magma.sns-data
+                   pointed-type.sns-data)
 
  _≅_ : Monoid → Monoid → 𝓤 ̇
 
@@ -243,7 +242,8 @@ module monoid {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
                               → (A ≡ B) ≃ (A ≅ B)
 
- characterization-of-monoid-≡ ua = characterization-of-≡ ua sns-data
+ characterization-of-monoid-≡ ua = characterization-of-≡ ua
+                                    (sns-data (univalence-gives-funext ua))
 
 module associative-∞-magma
         {𝓤 : Universe}
@@ -344,10 +344,10 @@ module associative-∞-magma
  characterization-of-∞-aMagma-≡ : (A B : ∞-aMagma) → (A ≡ B) ≃ (A ≅ B)
  characterization-of-∞-aMagma-≡ = characterization-of-≡ ua sns-data
 
-module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
+module group {𝓤 : Universe} where
  open sip
  open sip-with-axioms
- open monoid {𝓤} ua hiding (sns-data ; _≅_)
+ open monoid {𝓤} hiding (sns-data ; _≅_)
 
  group-structure : 𝓤 ̇ → 𝓤 ̇
  group-structure X = Σ s ꞉ monoid-structure X , monoid-axioms X s
@@ -374,11 +374,12 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
     (e · z)       ≡⟨ l z ⟩
     z             ∎
 
- group-axiom-is-prop : (X : 𝓤 ̇ )
+ group-axiom-is-prop : funext 𝓤 𝓤
+                     → (X : 𝓤 ̇ )
                      → (s : group-structure X)
                      → is-prop (group-axiom X (pr₁ s))
 
- group-axiom-is-prop X ((_·_ , e) , (s , l , r , a)) = γ
+ group-axiom-is-prop fe X ((_·_ , e) , (s , l , r , a)) = γ
   where
    i : (x : X) → is-prop (Σ x' ꞉ X , (x · x' ≡ e) × (x' · x ≡ e))
    i x (y , _ , q) (z , p , _) = u
@@ -392,10 +393,11 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
    γ : is-prop (group-axiom X (_·_ , e))
    γ = Π-is-prop fe i
 
- sns-data : SNS (λ X → Σ s ꞉ group-structure X , group-axiom X (pr₁ s)) 𝓤
- sns-data = add-axioms
-             (λ X s → group-axiom X (pr₁ s)) group-axiom-is-prop
-             (monoid.sns-data ua)
+ sns-data : funext 𝓤 𝓤
+          → SNS (λ X → Σ s ꞉ group-structure X , group-axiom X (pr₁ s)) 𝓤
+ sns-data fe = add-axioms
+                (λ X s → group-axiom X (pr₁ s)) (group-axiom-is-prop fe)
+                (monoid.sns-data fe)
 
  _≅_ : Group → Group → 𝓤 ̇
 
@@ -405,8 +407,9 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
                          × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
                          × (f d ≡ e)
 
- characterization-of-group-≡ : (A B : Group) → (A ≡ B) ≃ (A ≅ B)
- characterization-of-group-≡ = characterization-of-≡ ua sns-data
+ characterization-of-group-≡ : is-univalent 𝓤 → (A B : Group) → (A ≡ B) ≃ (A ≅ B)
+ characterization-of-group-≡ ua = characterization-of-≡ ua
+                                   (sns-data (univalence-gives-funext ua))
 
  _≅'_ : Group → Group → 𝓤 ̇
 
@@ -538,28 +541,31 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
  is-homomorphism G H f = preserves-multiplication G H f
                        × preserves-unit G H f
 
- preservation-of-mult-is-prop : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
-                                      → is-prop (preserves-multiplication G H f)
- preservation-of-mult-is-prop G H f = j
+ preservation-of-mult-is-prop : funext 𝓤 𝓤
+                              → (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                              → is-prop (preserves-multiplication G H f)
+ preservation-of-mult-is-prop fe G H f = j
   where
    j : is-prop (preserves-multiplication G H f)
    j = Π-is-set fe (λ _ → Π-is-set fe (λ _ → group-is-set H))
 
- being-homomorphism-is-prop : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
-                                    → is-prop (is-homomorphism G H f)
- being-homomorphism-is-prop G H f = i
+ being-homomorphism-is-prop : funext 𝓤 𝓤
+                            → (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+                            → is-prop (is-homomorphism G H f)
+ being-homomorphism-is-prop fe G H f = i
   where
 
    i : is-prop (is-homomorphism G H f)
    i = ×-is-prop
-        (preservation-of-mult-is-prop G H f)
+        (preservation-of-mult-is-prop fe G H f)
         (group-is-set H)
 
- notions-of-homomorphism-agree : (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
+ notions-of-homomorphism-agree : funext 𝓤 𝓤
+                               → (G H : Group) (f : ⟨ G ⟩ → ⟨ H ⟩)
                                → is-homomorphism G H f
                                ≃ preserves-multiplication G H f
 
- notions-of-homomorphism-agree G H f = γ
+ notions-of-homomorphism-agree fe G H f = γ
   where
    α : is-homomorphism G H f → preserves-multiplication G H f
    α = pr₁
@@ -569,36 +575,38 @@ module group {𝓤 : Universe} (ua : is-univalent 𝓤) where
 
    γ : is-homomorphism G H f ≃ preserves-multiplication G H f
    γ = logically-equivalent-props-are-equivalent
-        (being-homomorphism-is-prop G H f)
-        (preservation-of-mult-is-prop G H f)
+        (being-homomorphism-is-prop fe G H f)
+        (preservation-of-mult-is-prop fe G H f)
         α
         β
 
- ≅-agreement : (G H : Group) → (G ≅ H) ≃ (G ≅' H)
- ≅-agreement G H = Σ-cong (λ f → Σ-cong (λ _ → notions-of-homomorphism-agree G H f))
+ ≅-agreement : funext 𝓤 𝓤 → (G H : Group) → (G ≅ H) ≃ (G ≅' H)
+ ≅-agreement fe G H = Σ-cong (λ f → Σ-cong (λ _ → notions-of-homomorphism-agree fe G H f))
 
  forget-unit-preservation : (G H : Group) → (G ≅ H) → (G ≅' H)
  forget-unit-preservation G H (f , e , m , _) = f , e , m
 
- NB : (G H : Group) → ⌜ ≅-agreement G H ⌝ ≡ forget-unit-preservation G H
- NB G H = refl
+ NB : (fe : funext 𝓤 𝓤)
+    → (G H : Group) → ⌜ ≅-agreement fe G H ⌝ ≡ forget-unit-preservation G H
+ NB fe G H = refl
 
- forget-unit-preservation-is-equiv : (G H : Group)
+ forget-unit-preservation-is-equiv : funext 𝓤 𝓤
+                                   → (G H : Group)
                                    → is-equiv (forget-unit-preservation G H)
 
- forget-unit-preservation-is-equiv G H = ⌜⌝-is-equiv (≅-agreement G H)
+ forget-unit-preservation-is-equiv fe G H = ⌜⌝-is-equiv (≅-agreement fe G H)
 
 module subgroup
         (𝓤  : Universe)
         (ua : Univalence)
        where
 
- gfe : ∀ {𝓥} {𝓦} → funext 𝓥 𝓦
- gfe {𝓥} {𝓦} = univalence-gives-funext' 𝓥 𝓦 (ua 𝓥) (ua (𝓥 ⊔ 𝓦))
+ fe : ∀ {𝓥} {𝓦} → funext 𝓥 𝓦
+ fe {𝓥} {𝓦} = univalence-gives-funext' 𝓥 𝓦 (ua 𝓥) (ua (𝓥 ⊔ 𝓦))
 
  open sip
- open monoid {𝓤} (ua 𝓤) hiding (sns-data ; _≅_)
- open group {𝓤} (ua 𝓤)
+ open monoid {𝓤} hiding (sns-data ; _≅_)
+ open group {𝓤}
  open import UF-Powerset
  open import UF-Classifiers
 
@@ -609,7 +617,7 @@ module subgroup
 
   infixl 42 _·_
 
-  group-closed : (⟨ G ⟩ → 𝓥 ̇) → 𝓤 ⊔ 𝓥 ̇
+  group-closed : (⟨ G ⟩ → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
   group-closed 𝓐 = 𝓐 (unit G)
                  × ((x y : ⟨ G ⟩) → 𝓐 x → 𝓐 y → 𝓐 (x · y))
                  × ((x : ⟨ G ⟩) → 𝓐 x → 𝓐 (inv G x))
@@ -620,18 +628,19 @@ module subgroup
   ⟪_⟫ : Subgroups → 𝓟 ⟨ G ⟩
   ⟪ A , u , c , ι ⟫ = A
 
-  being-group-closed-subset-is-prop : (A : 𝓟 ⟨ G ⟩) → is-prop (group-closed (_∈ A))
+  being-group-closed-subset-is-prop : (A : 𝓟 ⟨ G ⟩)
+                                    → is-prop (group-closed (_∈ A))
   being-group-closed-subset-is-prop A = ×-is-prop
-                                                  (∈-is-prop A (unit G))
-                                               (×-is-prop
-                                                  (Π-is-prop fe
-                                                     (λ x → Π-is-prop fe
-                                                     (λ y → Π-is-prop fe
-                                                     (λ _ → Π-is-prop fe
-                                                     (λ _ → ∈-is-prop A (x · y))))))
-                                                  (Π-is-prop fe
-                                                     (λ x → Π-is-prop fe
-                                                     (λ _ → ∈-is-prop A (inv G x)))))
+                                            (∈-is-prop A (unit G))
+                                         (×-is-prop
+                                            (Π-is-prop fe
+                                               (λ x → Π-is-prop fe
+                                               (λ y → Π-is-prop fe
+                                               (λ _ → Π-is-prop fe
+                                               (λ _ → ∈-is-prop A (x · y))))))
+                                            (Π-is-prop fe
+                                               (λ x → Π-is-prop fe
+                                               (λ _ → ∈-is-prop A (inv G x)))))
 
   ⟪⟫-is-embedding : is-embedding ⟪_⟫
   ⟪⟫-is-embedding = pr₁-is-embedding being-group-closed-subset-is-prop
@@ -643,7 +652,9 @@ module subgroup
   ap-⟪⟫-is-equiv = embedding-embedding' ⟪_⟫ ⟪⟫-is-embedding
 
   subgroups-form-a-set : is-set Subgroups
-  subgroups-form-a-set {S} {T} = equiv-to-prop (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T) (powersets-are-sets' ua)
+  subgroups-form-a-set {S} {T} = equiv-to-prop
+                                  (ap-⟪⟫ S T , ap-⟪⟫-is-equiv S T)
+                                  (powersets-are-sets' ua)
 
   subgroup-equality : (S T : Subgroups)
                     → (S ≡ T)
@@ -685,7 +696,7 @@ module subgroup
 
    having-group-closed-fiber-is-prop : is-prop (group-closed (fiber h))
    having-group-closed-fiber-is-prop = being-group-closed-subset-is-prop
-                                                (λ x → (fiber h x , e x))
+                                        (λ x → (fiber h x , e x))
 
    at-most-one-homomorphic-structure : is-prop (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
    at-most-one-homomorphic-structure
@@ -717,16 +728,17 @@ module subgroup
 
      δ : τ ≡ τ'
      δ = to-subtype-≡
-           (group-axiom-is-prop X)
-           (to-subtype-≡ (monoid-axioms-is-prop X) r)
+           (group-axiom-is-prop fe X)
+           (to-subtype-≡ (monoid-axioms-is-prop fe X) r)
 
      γ : (τ  , i) ≡ (τ' , i')
-     γ = to-subtype-≡ (λ τ → being-homomorphism-is-prop (X , τ) G h) δ
+     γ = to-subtype-≡ (λ τ → being-homomorphism-is-prop fe (X , τ) G h) δ
 
-   group-closed-fiber-gives-homomorphic-structure : group-closed (fiber h)
+   group-closed-fiber-gives-homomorphic-structure : funext 𝓤 𝓤
+                                                  → group-closed (fiber h)
                                                   → (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
 
-   group-closed-fiber-gives-homomorphic-structure (unitc , mulc , invc) = τ , i
+   group-closed-fiber-gives-homomorphic-structure fe (unitc , mulc , invc) = τ , i
     where
      φ : (x : X) → fiber h (h x)
      φ x = (x , 𝓻𝓮𝒻𝓵 (h x))
@@ -818,19 +830,20 @@ module subgroup
                        inv G (h a) ≡⟨ ap (inv G) p ⟩
                        inv G x     ∎)
 
-   fiber-structure-lemma : group-closed (fiber h)
+   fiber-structure-lemma : funext 𝓤 𝓤
+                         → group-closed (fiber h)
                          ≃ (Σ τ ꞉ T X , is-homomorphism (X , τ) G h)
 
-   fiber-structure-lemma = logically-equivalent-props-are-equivalent
-                             having-group-closed-fiber-is-prop
-                             at-most-one-homomorphic-structure
-                             group-closed-fiber-gives-homomorphic-structure
-                             homomorphic-structure-gives-group-closed-fiber
+   fiber-structure-lemma fe = logically-equivalent-props-are-equivalent
+                               having-group-closed-fiber-is-prop
+                               at-most-one-homomorphic-structure
+                               (group-closed-fiber-gives-homomorphic-structure fe)
+                               homomorphic-structure-gives-group-closed-fiber
 
-  characterization-of-the-type-of-subgroups :  Subgroups ≃  (Σ H ꞉ Group
-                                                           , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
-                                                           , is-embedding h
-                                                           × is-homomorphism H G h)
+  characterization-of-the-type-of-subgroups : Subgroups ≃ (Σ H ꞉ Group
+                                                         , Σ h ꞉ (⟨ H ⟩ → ⟨ G ⟩)
+                                                         , is-embedding h
+                                                         × is-homomorphism H G h)
   characterization-of-the-type-of-subgroups =
 
    Subgroups                                                                                       ≃⟨ i ⟩
@@ -848,12 +861,12 @@ module subgroup
        φ = χ-special is-prop ⟨ G ⟩
 
        j : is-equiv φ
-       j = χ-special-is-equiv (ua 𝓤) gfe is-prop ⟨ G ⟩
+       j = χ-special-is-equiv (ua 𝓤) fe is-prop ⟨ G ⟩
 
        i    = ≃-refl Subgroups
        ii   = ≃-sym (Σ-change-of-variable (λ (A : 𝓟 ⟨ G ⟩) → group-closed (_∈ A)) φ j)
        iii  = Σ-assoc
-       iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e))
+       iv   = Σ-cong (λ X → Σ-cong (λ (h , e) → fiber-structure-lemma h e fe))
        v    = Σ-cong (λ X → Σ-assoc)
        vi   = Σ-cong (λ X → Σ-cong (λ h → Σ-flip))
        vii  = Σ-cong (λ X → Σ-flip)
@@ -1275,7 +1288,7 @@ module universe-a-la-tarski
 
  characterization-of-Tarski-≡ : (A B : TarskiUniverse 𝓤 𝓥)
                               → (A ≡ B) ≃ (A ≅ B)
- characterization-of-Tarski-≡ = slice-variation.characterization-of-/-≡ (𝓥 ̇) ua fe
+ characterization-of-Tarski-≡ = slice-variation.characterization-of-/-≡ (𝓥 ̇ ) ua fe
 
 module universe-a-la-tarski-hSet-example
         (𝓤 : Universe)
@@ -1880,7 +1893,7 @@ operation of arbitrary arity. This is used to define σ-frames.
 
 \begin{code}
 
-module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇) where
+module ∞-bigmagma {𝓤 𝓥 : Universe} (I : 𝓥 ̇ ) where
 
  open sip
 

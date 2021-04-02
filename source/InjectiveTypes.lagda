@@ -947,7 +947,7 @@ module ∖-extension-is-embedding
  κ g y ((x , p) , C) = transport g p C
 
  M : (𝓤 ⁺) ̇
- M = Σ g ꞉ (Y → 𝓤 ̇), ((y : Y) → is-equiv (κ g y))
+ M = Σ g ꞉ (Y → 𝓤 ̇ ), ((y : Y) → is-equiv (κ g y))
 
  φ : (X → 𝓤 ̇ ) → M
  φ f = s f , e

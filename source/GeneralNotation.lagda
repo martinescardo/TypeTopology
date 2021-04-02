@@ -11,6 +11,18 @@ open import Universes
 open import Id
 open import Negation public
 
+reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+reflexive R = ∀ x → R x x
+
+symmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+symmetric R = ∀ x y → R x y → R y x
+
+antisymmetric : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+antisymmetric R = ∀ x y → R x y → R y x → x ≡ y
+
+transitive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
+transitive R = ∀ x y z → R x y → R y z → R x z
+
 idempotent-map : {X : 𝓥 ̇ } → (f : X → X) → 𝓥 ̇
 idempotent-map f = ∀ x → f (f x) ≡ f x
 

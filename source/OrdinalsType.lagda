@@ -135,7 +135,7 @@ Ordinal-≡ : FunExt
           ≃ (Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) ,
                  is-equiv f
                × ((λ x x' → x ≺⟨ α ⟩ x') ≡ (λ x x' → f x ≺⟨ β ⟩ f x')))
-Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤 ̇)
+Ordinal-≡ {𝓤} fe = generalized-metric-space.characterization-of-M-≡ (𝓤 ̇ )
                     (λ _ → is-well-order)
                     (λ X _<_ → being-well-order-is-prop _<_ fe)
  where
@@ -202,11 +202,9 @@ order-equiv-criterion-converse α β f (p , e , q) x y l = r
 _≃ₒ_ : Ordinal 𝓤 → Ordinal 𝓥 → 𝓤 ⊔ 𝓥 ̇
 α ≃ₒ β = Σ f ꞉ (⟨ α ⟩ → ⟨ β ⟩) , is-order-equiv α β f
 
-
-
 \end{code}
 
-See the module OrdinalOfOrdinals for a proof that α ≃ₒ β is
+See the module  for a proof that α ≃ₒ β is
 canonically equivalent to α ≡ β. (For historical reasons, that proof
 doesn't use the structure identity principle.)
 

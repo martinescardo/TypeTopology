@@ -1,21 +1,23 @@
-Martin Escardo, 21-25 December 2020. Burali-Forti in HoTT/UF in Agda notation.
+Martin Escardo
+21-25 December 2020.
 
-In collaboration with Marc Bezem, Thierry Coquand, and Peter Dybjer.
+In collaboration with  Marc Bezem, Thierry Coquand, Peter Dybjer.
 
-The Burali-Forti argument in HoTT/UF
-------------------------------------
+The Burali-Forti argument in HoTT/UF in Agda notation
+-----------------------------------------------------
 
 Abstract. We use the Burali-Forti argument to show that, in HoTT/UF,
 the embedding
 
     𝓤 → 𝓤⁺.
 
-of a universe 𝓤 into its successor 𝓤⁺ is not equivalence, and that
-the embedding
+of a universe 𝓤 into its successor 𝓤⁺ is not equivalence.
 
-    hSet 𝓤 → hSet 𝓤⁺
-
-of the type of sets of 𝓤 into that of 𝓤⁺ in not an equivalence either.
+Similarly, the embedding hSet 𝓤 → hSet 𝓤⁺ of the type of sets of 𝓤
+into that of 𝓤⁺ in not an equivalence either.  We also establish this
+for the types of magmas, monoids and groups, where the case of groups
+requires considerable more work (invoked here but performed in the
+modules FreeGroup.lagda and FreeGroupOfLargeLocallySmallSet.lagda).
 
 We work with ordinals as defined in the HoTT book for that purpose.
 https://homotopytypetheory.org/book/
@@ -128,7 +130,7 @@ module BuraliForti
 open import UF-Base
 open import UF-Subsingletons
 open import UF-Retracts
-open import UF-Equiv
+open import UF-Equiv hiding (_≅_)
 open import UF-EquivalenceExamples
 open import UF-UniverseEmbedding
 open import UF-UA-FunExt
@@ -138,9 +140,6 @@ open import UF-Size
 private
  fe : FunExt
  fe = Univalence-gives-FunExt ua
-
- fe' : Fun-Ext
- fe' {𝓤} {𝓥} = fe 𝓤 𝓥
 
 open import SpartanMLTT
 open import OrdinalNotions
@@ -156,50 +155,28 @@ universe 𝓤 equivalent to the ordinal of all ordinals in the universe 𝓤.
 
 \begin{code}
 
-Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ OrdinalOfOrdinals 𝓤)
+Burali-Forti : ¬ (Σ α ꞉ Ordinal 𝓤 , α ≃ₒ OO 𝓤)
 Burali-Forti {𝓤} (α , 𝕗) = γ
  where
-  A : Ordinal (𝓤 ⁺)
-  A = OrdinalOfOrdinals 𝓤
+  a : OO 𝓤 ≃ₒ α
+  a = ≃ₒ-sym α (OO 𝓤) 𝕗
 
-  a : A ≃ₒ α
-  a = ≃ₒ-sym α A 𝕗
+  b : α ≃ₒ (OO 𝓤 ↓ α)
+  b = ordinals-in-OO-are-lowersets-of-OO α
 
-  b : α ≃ₒ (A ↓ α)
-  b = ordinals-in-O-are-lowersets-of-O α
+  c : OO 𝓤 ≃ₒ (OO 𝓤 ↓ α)
+  c = ≃ₒ-trans (OO 𝓤) α (OO 𝓤 ↓ α) a b
 
-  c : A ≃ₒ (A ↓ α)
-  c = ≃ₒ-trans A α (A ↓ α) a b
+  d : OO 𝓤 ≡ (OO 𝓤 ↓ α)
+  d = eqtoidₒ (OO 𝓤) (OO 𝓤 ↓ α) c
 
-  d : A ≡ (A ↓ α)
-  d = eqtoidₒ A (A ↓ α) c
-
-  e : A ⊲ A
+  e : OO 𝓤 ⊲ OO 𝓤
   e = α , d
 
   γ : 𝟘
-  γ = irreflexive _⊲_ A (⊲-is-well-founded A) e
+  γ = irreflexive _⊲_ (OO 𝓤) (⊲-is-well-founded (OO 𝓤)) e
 
 \end{code}
-
-Side-remark. The following cleaner rendering of the above makes Agda
-2.6.1 (and the development version 2.6.2 as of 25 December 2020) hang
-when it reaches d in the definition of e':
-\begin{code}
-{-
-  𝓐 : Ordinal (𝓤 ⁺ ⁺)
-  𝓐 = OrdinalOfOrdinals (𝓤 ⁺)
-
-  e' : A ≺⟨ 𝓐 ⟩ A
-  e' = α , d
-
-  γ' : 𝟘
-  γ' = irrefl 𝓐 A e
--}
-\end{code}
-
-The uncommented version is a manually beta-reduced form of the
-commented-out version.
 
 Some corollaries follow.
 
@@ -208,10 +185,10 @@ ordinals is large, happens in the function transfer-structure, which
 is developed in the module OrdinalsWellOrderTransport, where the
 difficulties are explained.
 
-As discussed above, the type OrdinalOfOrdinals 𝓤 of ordinals in the
+As discussed above, the type OO 𝓤 of ordinals in the
 universe 𝓤 lives in the next universe 𝓤⁺. We say that a type in the
 universe 𝓤⁺ is small if it is equivalent to some type in 𝓤, and large
-otherwise. This is define in the module UF-Size.
+otherwise. This is defined in the module UF-Size.
 
 Our first corollary of Burali-Forti is that the type of ordinals is
 large, as expected:
@@ -221,8 +198,8 @@ large, as expected:
 the-type-of-ordinals-is-large : is-large (Ordinal 𝓤)
 the-type-of-ordinals-is-large {𝓤} (X , 𝕗) = γ
  where
-  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OrdinalOfOrdinals 𝓤
-  δ = transfer-structure fe X (OrdinalOfOrdinals 𝓤)
+  δ : Σ s ꞉ OrdinalStructure X , (X , s) ≃ₒ OO 𝓤
+  δ = transfer-structure fe X (OO 𝓤)
        𝕗 (_⊲⁻_ , ⊲-is-equivalent-to-⊲⁻)
 
   γ : 𝟘
@@ -341,7 +318,7 @@ Lift-hSet-doesnt-have-section : ¬ has-section (Lift-hSet {𝓤} (𝓤 ⁺))
 Lift-hSet-doesnt-have-section {𝓤} (s , η) = γ
  where
   𝕐 : hSet (𝓤 ⁺)
-  𝕐 = (Ordinal 𝓤 , type-of-ordinals-is-set)
+  𝕐 = (Ordinal 𝓤 , the-type-of-ordinals-is-a-set)
 
   𝕏 : hSet 𝓤
   𝕏 = s 𝕐
@@ -465,7 +442,7 @@ hSet again:
  Lift-hSet-is-not-equiv-bis {𝓤} = Lift-𝓐-is-not-equiv
                                     is-set
                                     (λ 𝓥 {X} → Lift-is-set 𝓥 X)
-                                    type-of-ordinals-is-set
+                                    the-type-of-ordinals-is-a-set
 \end{code}
 
 Pointed types:
@@ -541,7 +518,7 @@ Magmas:
   Lift-𝓐-is-not-equiv
     Magma-structure
     lift-Magma-structure
-    (type-of-ordinals-is-set , _+ₒ_)
+    (the-type-of-ordinals-is-a-set , _+ₒ_)
 
 \end{code}
 
@@ -603,7 +580,7 @@ We will consider A = Monoid-structure (with capital M), and
 
  type-of-ordinals-has-Monoid-structure : {𝓤 : Universe} → Monoid-structure (Ordinal 𝓤)
  type-of-ordinals-has-Monoid-structure {𝓤} = (_+ₒ_ , 𝟘ₒ) ,
-                                             type-of-ordinals-is-set ,
+                                             the-type-of-ordinals-is-a-set ,
                                              𝟘ₒ-left-neutral ,
                                              𝟘ₒ-right-neutral ,
                                              +ₒ-assoc
@@ -615,15 +592,57 @@ We will consider A = Monoid-structure (with capital M), and
                                             type-of-ordinals-has-Monoid-structure
 \end{code}
 
-TODO. Groups. Possible strategy. Embed the ordinal of ordinals into a
-group with large underlying sets. A natural candidate is the free
-group.
-
-Things that may be useful in the future.
+Added 18 Feb 2021. The same is true for groups, using the following
+fact and a fact proved in the module FreeGroupOfLargeLocallySmallSet.
+We need to assume that propositional truncations exist.
 
 \begin{code}
 
 the-type-of-ordinals-is-locally-small : is-locally-small (Ordinal 𝓤)
 the-type-of-ordinals-is-locally-small α β = (α ≃ₒ β) , ≃-sym (UAₒ-≃ α β)
+
+open import FreeGroupOfLargeLocallySmallSet
+open import Groups
+open import UF-PropTrunc
+
+module _ (pt : propositional-truncations-exist) where
+
+ there-is-a-large-group : Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))
+ there-is-a-large-group {𝓤} = large-group-with-no-small-copy pt ua
+                               (Ordinal 𝓤 ,
+                                the-type-of-ordinals-is-a-set ,
+                                the-type-of-ordinals-is-large ,
+                                the-type-of-ordinals-is-locally-small)
+\end{code}
+
+And from this it of course follows that the embedding of the type of
+groups of one universe into that of its successor universe is not an
+equivalence:
+
+\begin{code}
+
+ Lift-Group-structure-is-not-equiv : ¬ is-equiv (Lift-Group {𝓤} (𝓤 ⁺))
+ Lift-Group-structure-is-not-equiv {𝓤} e = γ there-is-a-large-group
+  where
+   Lower-Group : Group (𝓤 ⁺) → Group 𝓤
+   Lower-Group = inverse (Lift-Group (𝓤 ⁺)) e
+
+   γ : (Σ F ꞉ Group (𝓤 ⁺) , ((G : Group 𝓤) → ¬ (G ≅ F))) → 𝟘
+   γ (F , ϕ) = ϕ G i
+     where
+      G : Group 𝓤
+      G = Lower-Group F
+
+      F' : Group (𝓤 ⁺)
+      F' = Lift-Group (𝓤 ⁺) G
+
+      p : F' ≡ F
+      p = inverses-are-sections (Lift-Group (𝓤 ⁺)) e F
+
+      j : G ≅ F'
+      j = ≅-sym F' G (Lifted-Group-is-isomorphic G)
+
+      i : G ≅ F
+      i = transport (G ≅_) p j
 
 \end{code}

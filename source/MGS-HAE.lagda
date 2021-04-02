@@ -19,7 +19,7 @@ is-hae f = Σ g ꞉ (codomain f → domain f)
          , Σ ε ꞉ f ∘ g ∼ id
          , ((x : domain f) → ap f (η x) ≡ ε (f x))
 
-haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇} (f : X → Y)
+haes-are-invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-hae f → invertible f
 
 haes-are-invertible f (g , η , ε , τ) = g , η , ε

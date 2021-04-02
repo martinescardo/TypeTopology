@@ -79,10 +79,10 @@ module _ {𝓤 𝓣 : Universe}
  is-directed : {I : 𝓥 ̇ } → (I → D) → 𝓥 ⊔ 𝓣 ̇
  is-directed {I} α = ∥ I ∥ × ((i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k))
 
- is-directed-gives-inhabited : {I : 𝓥 ̇} (α : I → D) → is-directed α → ∥ I ∥
+ is-directed-gives-inhabited : {I : 𝓥 ̇ } (α : I → D) → is-directed α → ∥ I ∥
  is-directed-gives-inhabited α = pr₁
 
- is-directed-order : {I : 𝓥 ̇} (α : I → D) → is-directed α
+ is-directed-order : {I : 𝓥 ̇ } (α : I → D) → is-directed α
                    → (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
  is-directed-order α = pr₂
 
@@ -203,10 +203,10 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → 𝓥 ⊔ 𝓣 ̇
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
- is-Directed-gives-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α → ∥ I ∥
+ is-Directed-gives-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α → ∥ I ∥
  is-Directed-gives-inhabited 𝓓 α = pr₁
 
- is-Directed-order : (𝓓 : DCPO) {I : 𝓥 ̇} (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α
+ is-Directed-order : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α
                    → (i j : I) → ∃ k ꞉ I , (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k)
  is-Directed-order 𝓓 α = pr₂
 
@@ -342,7 +342,7 @@ constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v where
           (is-directed-gives-inhabited (underlying-order 𝓓) α δ)
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                    (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                    (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
 image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
@@ -359,7 +359,7 @@ image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
       (continuous-functions-are-monotone 𝓓 𝓔 (f , c) (α j) (α k) m))
 
 continuous-function-∐-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                          (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
+                          (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                           (δ : is-Directed 𝓓 α)
                         → (underlying-function 𝓓 𝓔 f) (∐ 𝓓 δ) ≡
                           ∐ 𝓔 (image-is-directed 𝓓 𝓔 f δ)

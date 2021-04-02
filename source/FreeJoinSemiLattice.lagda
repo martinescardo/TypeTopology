@@ -9,9 +9,10 @@ subsets of X.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import ArithmeticViaEquivalence
-open import Fin
+open import Fin hiding (⟨_⟩)
 open import SpartanMLTT
 
+open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
 open import UF-Lower-FunExt
@@ -69,8 +70,7 @@ to-∪₂ A B b = ∣ inr b ∣
 
 ∪-is-lowerbound-of-upperbounds : {X : 𝓤 ̇ } (A B C : 𝓟 X)
                                → A ⊆ C → B ⊆ C → (A ∪ B) ⊆ C
-∪-is-lowerbound-of-upperbounds {𝓤} {X} A B C s t x =
- ∥∥-rec (∈-is-prop C x) γ
+∪-is-lowerbound-of-upperbounds {𝓤} {X} A B C s t x = ∥∥-rec (∈-is-prop C x) γ
   where
    γ : (x ∈ A + x ∈ B) → x ∈ C
    γ (inl a) = s x a
@@ -83,8 +83,8 @@ Kuratowski finite subsets of X.
 
 \begin{code}
 
-is-Kuratowski-finite : (X : 𝓤 ̇ ) → 𝓤 ̇
-is-Kuratowski-finite X = ∥ (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → X) , is-surjection e) ∥
+is-Kuratowski-finite :  𝓤 ̇ → 𝓤 ̇
+is-Kuratowski-finite X = ∃ n ꞉ ℕ , Σ e ꞉ (Fin n → X) , is-surjection e
 
 being-Kuratowski-finite-is-prop : {X : 𝓤 ̇ } → is-prop (is-Kuratowski-finite X)
 being-Kuratowski-finite-is-prop = ∥∥-is-prop
@@ -95,7 +95,7 @@ being-Kuratowski-finite-is-prop = ∥∥-is-prop
 ⟨_⟩ : {X : 𝓤 ̇ } → 𝓚 X → 𝓟 X
 ⟨_⟩ = pr₁
 
-⟨_⟩₂ : {X : 𝓤 ̇} (A : 𝓚 X) → is-Kuratowski-finite (𝕋 ⟨ A ⟩)
+⟨_⟩₂ : {X : 𝓤 ̇ } (A : 𝓚 X) → is-Kuratowski-finite (𝕋 ⟨ A ⟩)
 ⟨_⟩₂ = pr₂
 
 \end{code}
@@ -158,11 +158,10 @@ module _
   ⊑[𝓚]-is-antisymmetric : {X : 𝓤 ̇ } (A B : 𝓚 X) → A ⊑[𝓚] B → B ⊑[𝓚] A → A ≡ B
   ⊑[𝓚]-is-antisymmetric {X} A B s t =
    to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop)
-   (subset-extensionality pe fe s t)
+                (subset-extensionality pe fe s t)
 
-  𝓚-is-set : {X : 𝓤 ̇} → is-set (𝓚 X)
-  𝓚-is-set {X} =
-   subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
+  𝓚-is-set : {X : 𝓤 ̇ } → is-set (𝓚 X)
+  𝓚-is-set {X} = subtypes-of-sets-are-sets ⟨_⟩ s (powersets-are-sets fe pe)
     where
      s : left-cancellable ⟨_⟩
      s e = to-subtype-≡ (λ _ → being-Kuratowski-finite-is-prop) e
@@ -342,8 +341,14 @@ module _
         (X-is-set : is-set X)
        where
 
- -- We use copatterns instead of the below (which we left for comparison),
- -- because copatterns are said to avoid unnecessary unfoldings in typechecking.
+\end{code}
+
+We use copatterns instead of the below (which we left for comparison),
+because copatterns are said to avoid unnecessary unfoldings in
+typechecking.
+
+\begin{code}
+
  𝓚-join-semilattice : JoinSemiLattice (𝓤 ⁺) 𝓤
  JoinSemiLattice.L                              𝓚-join-semilattice = 𝓚 X
  JoinSemiLattice.L-is-set                       𝓚-join-semilattice = 𝓚-is-set fe pe
@@ -459,9 +464,8 @@ join ∨ⁿ (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) in L, where e is some eumera
 However, since Kuratowski finite subsets come with an *unspecified* such
 enumeration, we must show that the choice of enumeration is irrelevant, i.e. any
 two enumerations give rise to the same finite join. We then use a theorem by
-Kraus et al. [1] (see
-wconstant-map-to-set-factors-through-truncation-of-domain) to construct the
-desired mapping.
+Kraus et al. [1] (see wconstant-map-to-set-factors-through-truncation-of-domain)
+to construct the desired mapping.
 
 [1] Theorem 5.4 in
     "Notions of Anonymous Existence in Martin-Löf Type Theory"
@@ -792,3 +796,16 @@ subsingletons (as L is a set).
                                      (λ _ → L-is-set)))
 
 \end{code}
+
+Added 17th March 2021 by Martin Escardo. Alternative definition of 𝓚:
+
+\begin{code}
+
+open import UF-Embeddings
+
+𝓚' : 𝓤 ̇ → 𝓤 ⁺ ̇
+𝓚' {𝓤} X = Σ A ꞉ 𝓤 ̇ , (A ↪ X) × is-Kuratowski-finite A
+
+\end{code}
+
+TODO. Show that 𝓚' X is equivalent to 𝓚 X (using UF-Classifiers).

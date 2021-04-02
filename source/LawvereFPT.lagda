@@ -25,6 +25,8 @@ open import SpartanMLTT
 
 open import Two-Properties
 open import NaturalNumbers-Properties
+
+open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-Retracts
@@ -155,7 +157,7 @@ As a simple application, it follows that negation doesn't have fixed points:
 
  Cantor-theorem-for-universes-corollary : ¬ (𝓤 ̇ ≃ (𝓤 ̇ → 𝓤 ̇ ))
  Cantor-theorem-for-universes-corollary {𝓤} 𝕗 =
-  Cantor-theorem-for-universes (𝓤 ̇) ⌜ 𝕗 ⌝
+  Cantor-theorem-for-universes (𝓤 ̇ ) ⌜ 𝕗 ⌝
    (section-gives-section· ⌜ 𝕗 ⌝
      (equivs-have-sections ⌜ 𝕗 ⌝ (⌜⌝-is-equiv 𝕗)))
 
@@ -693,7 +695,7 @@ Mike Shulman.
 
  global-invariance-under-≃-false :
 
-    ((A : ∀ {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇)
+    ((A : ∀ {𝓤 : Universe} → 𝓤 ̇ → 𝓤 ⁺ ̇ )
      {𝓤 𝓥 : Universe}
      (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
     → X ≃ Y → A X ≃ A Y)
@@ -833,10 +835,10 @@ module Coquand-further-generalized (𝓤 𝓥 : Universe)
     T-is-P-valued : (a : A) → P (T a) -- Not used.
     T-is-P-valued a = pr₂ (r a)       -- So the hypothesis is stronger
                                       -- then necessary.
-    S : (X : 𝓤 ̇) → P X → A
+    S : (X : 𝓤 ̇ ) → P X → A
     S X p = s (X , p)
 
-    TS : (X : 𝓤 ̇) (p : P X) → T (S X p) ≡ X
+    TS : (X : 𝓤 ̇ ) (p : P X) → T (S X p) ≡ X
     TS X p = ap pr₁ (rs (X , p))
 
   theorem : ¬ (Σ (A , A-is-P) ꞉ Σ P , Σ P ≃ A)

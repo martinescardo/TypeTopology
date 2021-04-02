@@ -1013,7 +1013,7 @@ values in any universe 𝓤 rather than the universe 𝓚 as above.
     F' : 𝓣 ̇ → 𝓚 ̇
     F' P = resize ρ (F P) (i P)
 
-    i' : (P : 𝓣 ̇) → is-prop (F' P)
+    i' : (P : 𝓣 ̇ ) → is-prop (F' P)
     i' P = resize-is-prop ρ (F P) (i P)
 
     δ : F' P
@@ -1244,7 +1244,7 @@ define joins and their basic properties:
 
 \begin{code}
 
-  join-of : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓦' ̇} → (I → ⟨ 𝓑 ⟩) → ⟨ 𝓑 ⟩ → 𝓥 ⊔ 𝓦 ⊔ 𝓦' ̇
+  join-of : (𝓑 : σ-SupLat 𝓥 𝓦) {I : 𝓦' ̇ } → (I → ⟨ 𝓑 ⟩) → ⟨ 𝓑 ⟩ → 𝓥 ⊔ 𝓦 ⊔ 𝓦' ̇
   join-of 𝓑 f x = (∀ i → f i ≤⟨ 𝓑 ⟩ x)
                 × ((u : ⟨ 𝓑 ⟩) → (∀ i → f i ≤⟨ 𝓑 ⟩ u) → x ≤⟨ 𝓑 ⟩ u)
 
@@ -1899,8 +1899,8 @@ Then we get quasidecidable induction by σ-induction:
         t = ap _holds (σ-suplat-hom-⊥ 𝓐 Ω-qua-σ-SupLat τ τ-is-hom) ∙ ⊥-holds-is-𝟘
 
       γ⋁ : (a : ℕ → A)
-         → ((n : ℕ) (P : 𝓣 ̇) → (τ (a n) holds) ≡ P → F P)
-         → (P : 𝓣 ̇) → (τ (⋁ a) holds) ≡ P → F P
+         → ((n : ℕ) (P : 𝓣 ̇ ) → (τ (a n) holds) ≡ P → F P)
+         → (P : 𝓣 ̇ ) → (τ (⋁ a) holds) ≡ P → F P
       γ⋁ a φ P s = transport F (t ⁻¹ ∙ s) (Fω (λ n → τ (a n) holds) ψ)
        where
         t : τ (⋁ a) holds ≡ (∃ n ꞉ ℕ , τ (a n) holds)

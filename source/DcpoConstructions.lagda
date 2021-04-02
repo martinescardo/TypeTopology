@@ -48,10 +48,10 @@ module DcpoConstructionsGeneral
   _hom-⊑_ : DCPO[ 𝓓 , 𝓔 ] → DCPO[ 𝓓 , 𝓔 ] → 𝓤 ⊔ 𝓣' ̇
   (f , _) hom-⊑ (g , _) = ∀ d → f d ⊑⟨ 𝓔 ⟩ g d
 
-  pointwise-family : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ]) → ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
+  pointwise-family : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ]) → ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
   pointwise-family α d i = underlying-function 𝓓 𝓔 (α i) d
 
-  pointwise-family-is-directed : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ])
+  pointwise-family-is-directed : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
                                  (δ : is-directed _hom-⊑_ α)
                                  (d : ⟨ 𝓓 ⟩)
                                → is-directed (underlying-order 𝓔)
@@ -66,7 +66,7 @@ module DcpoConstructionsGeneral
          → Σ (\k → (β d i) ⊑⟨ 𝓔 ⟩ (β d k) × (β d j) ⊑⟨ 𝓔 ⟩ (β d k))
      h i j (k , l , m) = k , l d , m d
 
-  continuous-functions-sup : {I : 𝓥 ̇} (α : I → DCPO[ 𝓓 , 𝓔 ])
+  continuous-functions-sup : {I : 𝓥 ̇ } (α : I → DCPO[ 𝓓 , 𝓔 ])
                            → is-directed _hom-⊑_ α → DCPO[ 𝓓 , 𝓔 ]
   continuous-functions-sup {I} α δ = f , c
    where
@@ -208,6 +208,7 @@ This will be used in ScottModelOfPCF.
           → DCPO[ 𝓓 , 𝓕 ]
    S₀ᵈᶜᵖᵒ (f , cf) (g , cg) = (λ x → underlying-function 𝓔 𝓕 (f x) (g x)) , c
     where
+
      c : is-continuous 𝓓 𝓕 (λ x → underlying-function 𝓔 𝓕 (f x) (g x))
      c I α δ = u , v
       where
@@ -260,11 +261,10 @@ This will be used in ScottModelOfPCF.
                 where
                  ε₂ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f ∘ α)
                  ε₂ = image-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ
-                 e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) ε₂ ≡ f (∐ 𝓓 δ)
+                 e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ≡ f (∐ 𝓓 δ)
                  e₂ = (continuous-function-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
-                 γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂)
-                       (g (α i))
-                      ⊑⟨ 𝓕 ⟩ y
+                 γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂) (g (α i))
+                    ⊑⟨ 𝓕 ⟩ y
                  γ₃ = ∐-is-lowerbound-of-upperbounds 𝓕
                        (pointwise-family-is-directed 𝓔 𝓕 (f ∘ α) ε₂ (g (α i)))
                        y h
@@ -405,10 +405,10 @@ lowest universe), because ℕ lives in 𝓤₀.
     (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ g (iter n f) (iter n g)
      (iter-is-monotone n f g l))
 
-  n-family : {I : 𝓥 ̇} (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩) (n : ℕ) → I → ⟨ ⟪ 𝓓 ⟫ ⟩
+  n-family : {I : 𝓥 ̇ } (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩) (n : ℕ) → I → ⟨ ⟪ 𝓓 ⟫ ⟩
   n-family α n i = iter n (α i)
 
-  n-family-is-directed : {I : 𝓥 ̇} (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩)
+  n-family-is-directed : {I : 𝓥 ̇ } (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩)
                          (δ : is-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α)
                          (n : ℕ) → is-Directed ⟪ 𝓓 ⟫ (n-family α n)
   n-family-is-directed {I} α δ n =
@@ -425,7 +425,7 @@ lowest universe), because ℕ lives in 𝓤₀.
       h (k , l , m) = k , (iter-is-monotone n (α i) (α k) l) ,
                       (iter-is-monotone n (α j) (α k) m)
 
-  double-∐-lemma : {I : 𝓥 ̇} (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩)
+  double-∐-lemma : {I : 𝓥 ̇ } (α : I → ⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩)
                    (δ : is-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α)
                    (n : ℕ)
                  → ∐ ⟪ 𝓓 ⟫ (pointwise-family-is-directed ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α δ
@@ -696,12 +696,12 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
            (s : is-set X)
          where
 
-   family-value-map : {I : 𝓤₀ ̇}
+   family-value-map : {I : 𝓤₀ ̇ }
                     → (α : I → 𝓛 X)
                     → (Σ i ꞉ I , is-defined (α i)) → X
    family-value-map α (i , d) = value (α i) d
 
-   directed-family-value-map-is-wconstant : {I : 𝓤₀ ̇}
+   directed-family-value-map-is-wconstant : {I : 𝓤₀ ̇ }
                                           → (α : I → 𝓛 X)
                                           → (δ : is-directed _⊑'_ α )
                                           → wconstant (family-value-map α)
@@ -722,7 +722,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
          value (α i₁) d₁                         ≡⟨ refl ⟩
          f (i₁ , d₁)                             ∎
 
-   lifting-sup-value : {I : 𝓤₀ ̇}
+   lifting-sup-value : {I : 𝓤₀ ̇ }
                      → (α : I → 𝓛 X)
                      → (δ : is-directed _⊑'_ α )
                      → (∃ i ꞉ I , is-defined (α i)) → X
@@ -731,11 +731,11 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
      (Σ i ꞉ I , is-defined (α i))
      s (family-value-map α) (directed-family-value-map-is-wconstant α δ)
 
-   lifting-sup : {I : 𝓤₀ ̇} → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
+   lifting-sup : {I : 𝓤₀ ̇ } → (α : I → 𝓛 X) → (δ : is-directed _⊑'_ α) → 𝓛 X
    lifting-sup {I} α δ =
     (∃ i ꞉ I , is-defined (α i)) , lifting-sup-value α δ , ∥∥-is-prop
 
-   lifting-sup-is-upperbound : {I : 𝓤₀ ̇} → (α : I → 𝓛 X)
+   lifting-sup-is-upperbound : {I : 𝓤₀ ̇ } → (α : I → 𝓛 X)
                                (δ : is-directed _⊑'_ α)
                              → (i : I) → α i ⊑' lifting-sup α δ
    lifting-sup-is-upperbound {I} α δ i = γ
@@ -756,7 +756,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
               (directed-family-value-map-is-wconstant α δ)
               (i , d)
 
-   family-defined-somewhere-sup-≡ : {I : 𝓤₀ ̇} {α : I → 𝓛 X}
+   family-defined-somewhere-sup-≡ : {I : 𝓤₀ ̇ } {α : I → 𝓛 X}
                                   → (δ : is-directed _⊑'_ α)
                                   → (i : I)
                                   → is-defined (α i)
@@ -764,7 +764,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
    family-defined-somewhere-sup-≡ {I} {α} δ i d =
     (lifting-sup-is-upperbound α δ i) d
 
-   lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓤₀ ̇}
+   lifting-sup-is-lowerbound-of-upperbounds : {I : 𝓤₀ ̇ }
                                             → {α : I → 𝓛 X}
                                             → (δ : is-directed _⊑'_ α)
                                             → (v : 𝓛 X)

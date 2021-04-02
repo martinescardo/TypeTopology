@@ -195,20 +195,22 @@ type-with-prop-valued-refl-antisym-rel-is-set : {X : 𝓤 ̇ }
                                               → is-set X
 type-with-prop-valued-refl-antisym-rel-is-set {𝓤} {𝓥} {X} _≤_ ≤-prop-valued ≤-refl ≤-anti = γ
  where
-  α : ∀ {x} {y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ≡ ≤-anti x y l' m'
-  α {x} {y} l l' m m' = ap₂ (≤-anti x y) (≤-prop-valued x y l l') (≤-prop-valued y x m m')
+  α : ∀ {x y} (l l' : x ≤ y) (m m' : y ≤ x) → ≤-anti x y l m ≡ ≤-anti x y l' m'
+  α {x} {y} l l' m m' = ap₂ (≤-anti x y)
+                            (≤-prop-valued x y l l')
+                            (≤-prop-valued y x m m')
 
   g : ∀ {x y} → x ≡ y → x ≤ y
-  g {x} {y} p = transport (x ≤_) p (≤-refl x)
+  g {x} p = transport (x ≤_) p (≤-refl x)
 
   h : ∀ {x y} → x ≡ y → y ≤ x
-  h {x} {y} p = g (p ⁻¹)
+  h p = g (p ⁻¹)
 
   f : ∀ {x y} → x ≡ y → x ≡ y
   f {x} {y} p = ≤-anti x y (g p) (h p)
 
-  κ : ∀ {x} {y} p q → f {x} {y} p ≡ f {x} {y} q
-  κ {x} {y} p q = α (g p) (g q) (h p) (h q)
+  κ : ∀ {x y} p q → f {x} {y} p ≡ f {x} {y} q
+  κ p q = α (g p) (g q) (h p) (h q)
 
   γ : is-set X
   γ = Id-collapsibles-are-sets (f , κ)
@@ -465,7 +467,12 @@ Unique existence.
 existsUnique : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 existsUnique X A = ∃! A
 
-syntax existsUnique A (λ x → b) = ∃! x ꞉ A , b
+syntax existsUnique X (λ x → b) = ∃! x ꞉ X , b
+
+witness-uniqueness : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                   → (∃! x ꞉ X , A x)
+                   → (x y : X) → A x → A y → x ≡ y
+witness-uniqueness A e x y a b = ap pr₁ (singletons-are-props e (x , a) (y , b))
 
 infixr -1 existsUnique
 

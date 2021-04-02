@@ -65,7 +65,7 @@ to-span {𝓤} {𝓥} {𝓦} {𝓤'} {A} {B} {C} f g X =
                (X : 𝓤' ̇ )
              → funext 𝓤' (𝓤 ⊔ 𝓥 ⊔ 𝓦)
              → (X → pullback f g) ≃ to-span f g X
-→-pullback-≃ {𝓤} {𝓥} {𝓦} {𝓤̇} {A} {B} {C} f g X fe =
+→-pullback-≃ {𝓤} {𝓥} {𝓦} {𝓤̇ } {A} {B} {C} f g X fe =
  (X → pullback f g)                              ≃⟨ i ⟩
  (X → Σ p ꞉ A × B , f (pr₁ p) ≡ g (pr₂ p))       ≃⟨ ii ⟩
  (Σ j ꞉ (X → A × B) , f ∘ pr₁ ∘ j ∼ g ∘ pr₂ ∘ j) ≃⟨ iii ⟩

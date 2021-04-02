@@ -54,7 +54,6 @@ open import UF-Subsingletons
 open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
-open import Two-Prop-Density
 
 \end{code}
 

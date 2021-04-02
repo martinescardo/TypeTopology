@@ -3,7 +3,7 @@
    -------------------------------------------------------------
 
    Martin Escardo
-   2010--2020--∞, continuously evolving.
+   2010--2021--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
@@ -114,7 +114,7 @@ import BinaryNaturals
 import BuraliForti
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
-import Codistance              -- By M.E. and Todd Waugh Ambridge
+import Codistance              -- By Todd Waugh Ambridge and Martin Escardo
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
@@ -133,13 +133,17 @@ import Dyadics
 import Dominance
 import DummettDisjunction
 import Empty
-import Escardo-Simpson-LICS2001 -- By Todd Waugh Ambridge
+import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
 import frame
 import FailureOfTotalSeparatedness
-import FreeJoinSemiLattice    -- By Tom de Jong
-import FreeSupLattice         -- By Tom de Jong
+import Frame                           -- By Ayberk Tosun
+import InitialFrame                    -- By Ayberk Tosun
+import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
+import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
+import FreeJoinSemiLattice             -- By Tom de Jong
+import FreeSupLattice                  -- By Tom de Jong
 import GeneralNotation
 import GenericConvergentSequence
 import HiggsInvolutionTheorem
@@ -162,6 +166,7 @@ import LiftingMonad
 import LiftingMonadVariation
 import LiftingSize
 import LiftingUnivalentPrecategory
+import List
 import LPO
 import Lumsdaine
 import MGS-TypeTopology-Interface
@@ -178,9 +183,10 @@ import OrdinalNotationInterpretation
 import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues
+import Ordinals
 import OrdinalsClosure
 import Ordinals
-import OrdinalsShulmanTaboo
+import OrdinalsFreeGroup
 import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
@@ -192,6 +198,7 @@ import Plus-Properties
 import PropInfTychonoff
 import PropTychonoff
 import QuasiDecidable
+import FreeGroupOfLargeLocallySmallSet
 import RicesTheoremForTheUniverse
 import RootsTruncation
 import Sequence
@@ -205,6 +212,7 @@ import SliceMonad
 import SpartanMLTT
 import SquashedCantor
 import SquashedSum
+import SRTclosure
 import Swap
 import sigma-sup-lattice
 import sigma-frame
@@ -213,7 +221,6 @@ import TotallySeparated
 import ToppedOrdinalArithmetic
 import ToppedOrdinalsType
 import Two
-import Two-Prop-Density
 import Two-Properties
 import UnivalenceFromScratch
 import Unit
@@ -260,6 +267,7 @@ import UF-SIP-Examples
 import UF-SIP-IntervalObject
 import UF-Subsingletons-FunExt
 import UF-Subsingletons
+import UF-Subsingleton-Combinators
 import UF-UA-FunExt
 import UF-Univalence
 import UF-UniverseEmbedding

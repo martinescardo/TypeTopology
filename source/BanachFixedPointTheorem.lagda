@@ -74,7 +74,7 @@ A CUT C is complete if every Cauchy sequence on C has a limit.
 
 \begin{code}
 
-has-limit : {X : 𝓤 ̇} → (ℕ → X) → 𝓤 ̇
+has-limit : {X : 𝓤 ̇ } → (ℕ → X) → 𝓤 ̇
 has-limit {X} s = Σ i ꞉ ℕ , Π n ꞉ ℕ , (i ≤ n → s n ≡ s i)
 
 CUT-Complete : CoUltrametricType → 𝓤 ̇

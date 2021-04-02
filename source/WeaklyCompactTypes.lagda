@@ -17,6 +17,8 @@ open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import WLPO
 open import Plus-Properties
+
+open import UF-Base
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 open import UF-FunExt
@@ -183,7 +185,7 @@ First, to decide Π(p:X→𝟚), p (x)=1, decide p = λ x → ₁:
 \begin{code}
 
 power-of-two-discrete-gives-compact-exponent : {X : 𝓤 ̇ }
-                                             → is-discrete(X → 𝟚)
+                                             → is-discrete (X → 𝟚)
                                              → Π-compact X
 power-of-two-discrete-gives-compact-exponent d =
   Π-compact'-gives-Π-compact (λ p → d p (λ x → ₁))
@@ -197,7 +199,7 @@ discrete-power-of-disconnected-gives-compact-exponent {𝓤} {𝓥} {X} {Y} ρ d
   a : retract (X → 𝟚) of (X → Y)
   a = retract-contravariance (fe 𝓤 𝓤₀) ρ
   b : is-discrete (X → 𝟚)
-  b = retract-discrete-discrete a d
+  b = retract-is-discrete a d
   γ : Π-compact X
   γ = power-of-two-discrete-gives-compact-exponent b
 

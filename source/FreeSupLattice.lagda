@@ -297,7 +297,7 @@ subsingletons (as L is a set).
                                    h p₁ p₂ A) ⁻¹))
        where
         ψ : (k : 𝓟 X → L)
-          → is-prop (((I : 𝓥 ̇) (α : I → 𝓟 X) → k (⋃ α) ≡ ⋁ (k ∘ α))
+          → is-prop (((I : 𝓥 ̇ ) (α : I → 𝓟 X) → k (⋃ α) ≡ ⋁ (k ∘ α))
                     × k ∘ η ∼ f)
         ψ k = ×-is-prop (Π-is-prop fe
                               (λ _ → Π-is-prop (lower-funext (𝓥 ⁺) (𝓥 ⁺) fe)

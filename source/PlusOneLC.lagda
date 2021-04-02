@@ -21,7 +21,7 @@ open import UF-Retracts
 open import Swap
 open import DiscreteAndSeparated
 
-+𝟙-cancellable : {X : 𝓤 ̇} {Y : 𝓥 ̇}
++𝟙-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇}
                → (X + 𝟙 {𝓦} ≃ Y + 𝟙 {𝓣})
                → X ≃ Y
 +𝟙-cancellable {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} (φ , i) = qinveq f' (g' , η' , ε')

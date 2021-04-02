@@ -114,7 +114,7 @@ Cantor-is-¬¬-separated : funext₀ → is-¬¬-separated (ℕ → 𝟚)
 Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-separated)
 
 ℕ∞-is-¬¬-separated : funext₀ → is-¬¬-separated ℕ∞
-ℕ∞-is-¬¬-separated fe = subtype-of-separated-is-¬¬-separated
+ℕ∞-is-¬¬-separated fe = subtype-is-¬¬-separated
                          pr₁
                          (incl-lc fe)
                          (Cantor-is-¬¬-separated fe)

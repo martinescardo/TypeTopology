@@ -144,7 +144,8 @@ EM-gives-PR {𝓤} {𝓥} em P i = Q (em P i) , e
 
 To show that the axiom of propositional resizing is itself a
 proposition, we use univalence here (and there is a proof with weaker
-hypotheses below).
+hypotheses below). But notice that the type "X has-size 𝓥" is a
+proposition if and only if univalence holds.
 
 \begin{code}
 
@@ -682,6 +683,12 @@ size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f f-size (Y' , 𝕘) = γ
   γ : X has-size 𝓦
   γ = X' , e
 
+size-covariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                    → f Has-size 𝓦
+                    → ¬ (X has-size 𝓦)
+                    → ¬ (Y has-size 𝓦)
+size-covariance f ϕ = contrapositive (size-contravariance f ϕ)
+
 small-contravariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
                      → is-small-map f
                      → is-small Y
@@ -692,7 +699,7 @@ large-covariance : {X Y : 𝓤 ⁺ ̇ } (f : X → Y)
                  → is-small-map f
                  → is-large X
                  → is-large Y
-large-covariance f ϕ = contrapositive (small-contravariance f ϕ)
+large-covariance = size-covariance
 
 size-of-section-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (s : X → Y)
                           → is-section s
@@ -755,6 +762,25 @@ section-embedding-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} f e (g , η) 
   γ : X has-size 𝓦
   γ = size-contravariance f' δ (Y' , ≃-refl Y')
 
+
+
+≃-size-contravariance : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                      → X ≃ Y
+                      → Y has-size 𝓦
+                      → X has-size 𝓦
+≃-size-contravariance {𝓤} {𝓥} {𝓦} {X} {Y} e (Z , d) = Z , ≃-comp d (≃-sym e)
+
+singletons-have-any-size : {X : 𝓤 ̇ }
+                         → is-singleton X
+                         → X has-size 𝓥
+singletons-have-any-size i = 𝟙 , singleton-≃-𝟙' i
+
+equivs-have-any-size : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                     → is-equiv f
+                     → f Has-size 𝓦
+equivs-have-any-size {𝓤} {𝓥} {𝓦} {X} {Y} f e y =
+ singletons-have-any-size (equivs-are-vv-equivs f e y)
+
 \end{code}
 
 The following notion of local smallness is due to Egbert Rijke, in his
@@ -769,3 +795,19 @@ is-locally-small X = (x y : X) → is-small (x ≡ y)
 
 For example, by univalence, universes are locally small, and so is the
 (large) type of ordinals in a universe.
+
+\begin{code}
+
+_≡⟦_⟧_ : {X : 𝓤 ⁺ ̇ } → X → is-locally-small X → X → 𝓤 ̇
+x ≡⟦ ls ⟧ y = pr₁ (ls x y)
+
+Id⟦_⟧ : {X : 𝓤 ⁺ ̇ } → is-locally-small X → X → X → 𝓤 ̇
+Id⟦ ls ⟧ x y = x ≡⟦ ls ⟧ y
+
+≡⟦_⟧-gives-≡ : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x y : X) → x ≡⟦ ls ⟧ y → x ≡ y
+≡⟦ ls ⟧-gives-≡ x y = ⌜ pr₂ (ls x y) ⌝
+
+⟦_⟧-refl : {X : 𝓤 ⁺ ̇ } (ls : is-locally-small X) (x : X) → x ≡⟦ ls ⟧ x
+⟦ ls ⟧-refl x = ⌜ ≃-sym (pr₂ (ls x x)) ⌝ refl
+
+\end{code}

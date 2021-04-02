@@ -239,7 +239,7 @@ lemma₀ {𝓤} {α} {β} = to-≼ ϕ
 lemma₁ : {α β : Ordinal 𝓤}
          (a : ⟨ α ⟩)
        → (α +ₒ β) ≢ (α ↓ a)
-lemma₁ {𝓤} {α} {β} a p = irrefl (O 𝓤) (α +ₒ β) m
+lemma₁ {𝓤} {α} {β} a p = irrefl (OO 𝓤) (α +ₒ β) m
  where
   l : (α +ₒ β) ⊲ α
   l = (a , p)
@@ -273,7 +273,7 @@ lemma₃ b (inr c) p = c , refl
   ϕ : ∀ β
     → (∀ b → P (β ↓ b))
     → P β
-  ϕ β f γ p = Extensionality (O 𝓤) β γ (to-≼ u) (to-≼ v)
+  ϕ β f γ p = Extensionality (OO 𝓤) β γ (to-≼ u) (to-≼ v)
    where
     u : (b : ⟨ β ⟩) → (β ↓ b) ⊲ γ
     u b = c , t
@@ -324,13 +324,13 @@ lemma₃ b (inr c) p = c , refl
       t = f b (γ ↓ c) (q ⁻¹)
 
   g : (β : Ordinal 𝓤) → P β
-  g = transfinite-induction-on-O P ϕ
+  g = transfinite-induction-on-OO P ϕ
 
 
 left-+ₒ-is-embedding : (α : Ordinal 𝓤) → is-embedding (α +ₒ_)
 left-+ₒ-is-embedding α = lc-maps-into-sets-are-embeddings (α +ₒ_)
                            (λ {β} {γ} → +ₒ-left-cancellable α β γ)
-                           type-of-ordinals-is-set
+                           the-type-of-ordinals-is-a-set
 
 \end{code}
 
@@ -502,7 +502,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
 \end{code}
 
 Another example where subtraction doesn't exist is (ℕₒ +ₒ 𝟙ₒ) ≼ ℕ∞ₒ,
-discussed in the module OrdinalOfOrdinals. The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
+discussed in the module . The types ℕₒ +ₒ 𝟙ₒ and ℕ∞ₒ
 are equal if and only if LPO holds. Without assuming LPO, the image of
 the inclusion (ℕₒ +ₒ 𝟙ₒ) → ℕ∞ₒ, has empty complement, and so there is
 nothing that can be added to (ℕₒ +ₒ 𝟙ₒ) to get ℕ∞ₒ, unless LPO holds.
