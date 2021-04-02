@@ -1,5 +1,14 @@
 Tom de Jong, 1-18 March 2021
 
+We show that the induction principle for 𝕊¹ with propositional computation rules
+follows from the universal property of 𝕊¹.
+
+This is claimed at the end of Section 6.2 in the HoTT Book and follows from a
+general result by Sojakova in her PhD Thesis "Higher Inductive Types as
+Homotopy-Initial Algebras" (CMU-CS-16-125). The proof of the general result is
+quite complicated (see for instance Lemma 105 in the PhD thesis) and the below
+offers an alternative proof for 𝕊¹.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -11,30 +20,10 @@ open import UF-Equiv
 open import UF-FunExt
 open import UF-Subsingletons
 
+open import CirclePreliminaries
+
 
 module CircleInduction where
-
-𝓛 : (X : 𝓤 ̇ ) → 𝓤 ̇
-𝓛 X = Σ x ꞉ X , x ≡ x
-
-𝓛-functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → 𝓛 X → 𝓛 Y
-𝓛-functor f (x , p) = f x , ap f p
-
-{-
-𝓛-functor-id : {X : 𝓤 ̇ } → 𝓛-functor id ∼ id {𝓤} {𝓛 X}
-𝓛-functor-id {𝓤} {X} (x , p) = to-Σ-≡ (refl , γ p)
- where
-  γ : {y z : X} (q : y ≡ z) → transport (λ - → y ≡ -) q refl ≡ q
-  γ refl = refl
-
-𝓛-functor-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } (f : X → Y) (g : Y → Z)
-               → 𝓛-functor g ∘ 𝓛-functor f ∼ 𝓛-functor (g ∘ f)
-𝓛-functor-comp f g (x , p) = to-Σ-≡ (refl , (ap-ap f g p))
--}
-
-\end{code}
-
-\begin{code}
 
 module _
         (𝕊¹ : 𝓤 ̇ )
@@ -45,10 +34,6 @@ module _
  𝕊¹-universal-map : (A : 𝓥 ̇ )
                   → (𝕊¹ → A) → 𝓛 A
  𝕊¹-universal-map A f = (f base , ap f loop)
-
- \end{code}
-
- \begin{code}
 
  module _
          (𝕊¹-universal-property : {𝓥 : Universe} (A : 𝓥 ̇ )
@@ -64,6 +49,13 @@ module _
   𝕊¹-at-most-one-function : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
                           → is-prop (Σ r ꞉ (𝕊¹ → A) , (r base , ap r loop) ≡ (a , p))
   𝕊¹-at-most-one-function a p = singletons-are-props (𝕊¹-uniqueness-principle a p)
+
+\end{code}
+
+The recursion principle for 𝕊¹ with its computation rule follows immediately
+from the universal property of 𝕊¹.
+
+\begin{code}
 
   𝕊¹-rec : {A : 𝓥 ̇ } (a : A) (p : a ≡ a)
          → 𝕊¹ → A
@@ -85,45 +77,11 @@ module _
 
 \end{code}
 
-\begin{code}
+The induction principle for 𝕊¹ also follows quite directly. The idea is to turn
+a type family A over 𝕊¹ to the type Σ A and consider a nondependent map 𝕊¹ → Σ A
+as a substitute for the dependent function (x : 𝕊¹) → A x.
 
-  𝕊¹-uniqueness-principle-comp : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
-                                 (u : 𝓛-functor f (base , loop) ≡ (a , p))
-                                 (v : 𝓛-functor g (base , loop) ≡ (a , p))
-                               → ap (λ - → 𝓛-functor - (base , loop))
-                                  (ap pr₁ (𝕊¹-at-most-one-function a p
-                                            (f , u) (g , v)))
-                               ≡ u ∙ v ⁻¹
-  𝕊¹-uniqueness-principle-comp a p f g u v = γ u v (𝕊¹-at-most-one-function a p (f , u) (g , v))
-   where
-    γ : (u : 𝓛-functor f (base , loop) ≡ (a , p))
-        (v : 𝓛-functor g (base , loop) ≡ (a , p))
-        (w : (f , u) ≡ (g , v))
-      → ap (λ - → 𝓛-functor - (base , loop)) (ap pr₁ w) ≡ u ∙ v ⁻¹
-    γ refl v refl = refl
-
-  𝕊¹-uniqueness-principle-comp₁ : {A : 𝓥 ̇ } (a : A) (p : a ≡ a) (f g : 𝕊¹ → A)
-                                  (u : 𝓛-functor f (base , loop) ≡ (a , p))
-                                  (v : 𝓛-functor g (base , loop) ≡ (a , p))
-                                → happly (ap pr₁ (𝕊¹-at-most-one-function a p
-                                                   (f , u) (g , v))) base
-                                ≡ (ap pr₁ u) ∙ (ap pr₁ v) ⁻¹
-  𝕊¹-uniqueness-principle-comp₁ a p f g u v = γ
-   where
-    σ : (f , u) ≡ (g , v)
-    σ = 𝕊¹-at-most-one-function a p (f , u) (g , v)
-    γ = happly (ap pr₁ σ) base                                   ≡⟨ I   ⟩
-        ap pr₁ (ap (λ - → 𝓛-functor - (base , loop)) (ap pr₁ σ)) ≡⟨ II  ⟩
-        ap pr₁ (u ∙ v ⁻¹)                                        ≡⟨ III ⟩
-        ap pr₁ u ∙ ap pr₁ (v ⁻¹)                                 ≡⟨ IV  ⟩
-        ap pr₁ u ∙ ap pr₁ v ⁻¹                                   ∎
-     where
-      I   = (ap-ap (λ - → 𝓛-functor - (base , loop)) pr₁ (ap pr₁ σ)) ⁻¹
-      II  = ap (ap pr₁) (𝕊¹-uniqueness-principle-comp a p f g u v)
-      III = ap-∙ pr₁ u (v ⁻¹)
-      IV  = ap (_∙_ (ap pr₁ u)) ((ap-sym pr₁ v) ⁻¹)
-
-\end{code}
+What is significantly harder is showing that it obeys the computation rules.
 
 \begin{code}
 
@@ -139,9 +97,15 @@ module _
    r : 𝕊¹ → Σ A
    r = 𝕊¹-rec (base , a) l⁺
 
-   𝕊¹-induction-key-≡ : ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop)
-                      ≡[ 𝓛 𝕊¹ ] (base , loop)
-   𝕊¹-induction-key-≡ =
+\end{code}
+
+Next we show that r is a retraction of pr₁ : Σ A → 𝕊¹. This tells us that:
+r(x) = (x , pr₂ (r x)), so that we can define 𝕊¹-induction by transport.
+
+\begin{code}
+
+   r-retraction-lemma : 𝓛-functor (pr₁ ∘ r) (base , loop) ≡[ 𝓛 𝕊¹ ] (base , loop)
+   r-retraction-lemma =
     ((pr₁ ∘ r) base , ap (pr₁ ∘ r) loop) ≡⟨ I   ⟩
     𝓛-functor pr₁ (r base , ap r loop)   ≡⟨ II  ⟩
     (base , ap pr₁ (to-Σ-≡ (loop , l)))  ≡⟨ III ⟩
@@ -151,54 +115,19 @@ module _
       II  = ap (𝓛-functor pr₁) (𝕊¹-rec-comp (base , a) l⁺)
       III = to-Σ-≡ (refl , (ap-pr₁-to-Σ-≡ (loop , l)))
 
-   𝕊¹-induction-key-lemma : pr₁ ∘ r ≡ id
-   𝕊¹-induction-key-lemma = ap pr₁ (𝕊¹-at-most-one-function base loop
-                                     (pr₁ ∘ r , 𝕊¹-induction-key-≡)
+   r-is-retraction-of-pr₁ : pr₁ ∘ r ≡ id
+   r-is-retraction-of-pr₁ = ap pr₁ (𝕊¹-at-most-one-function base loop
+                                     (pr₁ ∘ r , r-retraction-lemma)
                                      (id , to-Σ-≡ (refl , ap-id-is-id loop)))
 
    𝕊¹-induction : (x : 𝕊¹) → A x
-   𝕊¹-induction x = transport A (happly 𝕊¹-induction-key-lemma x) (pr₂ (r x))
+   𝕊¹-induction x = transport A (happly r-is-retraction-of-pr₁ x) (pr₂ (r x))
 
 \end{code}
 
-\begin{code}
+Next we set out to prove the computation rules for 𝕊¹-induction.
 
-   pr₁-𝕊¹-induction-key-≡ : ap pr₁ 𝕊¹-induction-key-≡
-                          ≡ ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)
-   pr₁-𝕊¹-induction-key-≡ =
-    ap pr₁ 𝕊¹-induction-key-≡    ≡⟨ I    ⟩
-    ap pr₁ (κ₁ ∙ (κ₂ ∙ κ₃))      ≡⟨ II   ⟩
-    ap pr₁ κ₁ ∙ ap pr₁ (κ₂ ∙ κ₃) ≡⟨ III  ⟩
-    refl ∙ ap pr₁ (κ₂ ∙ κ₃)      ≡⟨ IV   ⟩
-    ap pr₁ (κ₂ ∙ κ₃)             ≡⟨ V    ⟩
-    ap pr₁ κ₂ ∙ ap pr₁ κ₃        ≡⟨ VI   ⟩
-    ap pr₁ κ₂ ∙ refl             ≡⟨ refl ⟩
-    ap pr₁ κ₂                    ≡⟨ VII  ⟩
-    ap (pr₁ ∘ 𝓛-functor pr₁) c   ≡⟨ refl ⟩
-    ap (pr₁ ∘ pr₁) c             ≡⟨ VIII ⟩
-    ap pr₁ (ap pr₁ c)            ≡⟨ refl ⟩
-    ap pr₁ b                     ∎
-    where
-     b = 𝕊¹-rec-on-base (base , a) l⁺
-     c = 𝕊¹-rec-comp (base , a) l⁺
-     κ₁ = to-Σ-≡ (refl , ((ap-ap r pr₁ loop) ⁻¹))
-     κ₂ = ap (𝓛-functor pr₁) c
-     κ₃ = to-Σ-≡ (refl , (ap-pr₁-to-Σ-≡ (loop , l)))
-     I   = ap (ap pr₁) e
-      where
-       e : 𝕊¹-induction-key-≡ ≡ κ₁ ∙ (κ₂ ∙ κ₃)
-       e = refl
-     II  = ap-∙ pr₁ κ₁ (κ₂ ∙ κ₃)
-     III = ap (_∙ (ap pr₁ (κ₂ ∙ κ₃)))
-            (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
-             (refl , ((ap-ap r pr₁ loop) ⁻¹)))
-     IV  = refl-left-neutral
-     V   = ap-∙ pr₁ κ₂ κ₃
-     VI  = ap ((ap pr₁ κ₂) ∙_)
-            (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
-             (refl , ap-pr₁-to-Σ-≡ (loop , l)))
-     VII = ap-ap (𝓛-functor pr₁) pr₁ c
-     VIII = (ap-ap pr₁ pr₁ c) ⁻¹
+\begin{code}
 
    ρ : 𝕊¹ → Σ A
    ρ x = (x , 𝕊¹-induction x)
@@ -210,7 +139,7 @@ module _
    ρ-r-homotopy x = to-Σ-≡ ((γ₁ ⁻¹) , γ₂)
     where
      γ₁ : pr₁ (r x) ≡ pr₁ (ρ x)
-     γ₁ = happly 𝕊¹-induction-key-lemma x
+     γ₁ = happly r-is-retraction-of-pr₁ x
      γ₂ = transport A (γ₁ ⁻¹) (pr₂ (ρ x))                  ≡⟨ refl ⟩
           transport A (γ₁ ⁻¹) (transport A γ₁ (pr₂ (r x))) ≡⟨ I    ⟩
           transport A (γ₁ ∙ γ₁ ⁻¹) (pr₂ (r x))             ≡⟨ II   ⟩
@@ -233,27 +162,14 @@ module _
    ρ-comp : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] ((base , a) , l⁺)
    ρ-comp = ρ-and-r-on-base-and-loop ∙ r-comp
 
-   r-comp-lemma : ap (pr₁ ∘ pr₁) r-comp ≡ happly 𝕊¹-induction-key-lemma base
-   r-comp-lemma = γ ⁻¹
-    where
-     κ = 𝕊¹-induction-key-≡
-     γ = happly 𝕊¹-induction-key-lemma base                    ≡⟨ I    ⟩
-         ap pr₁ κ ∙ ap π (to-Σ-≡ (refl , ap-id-is-id loop)) ⁻¹ ≡⟨ II   ⟩
-         ap pr₁ κ ∙ refl ⁻¹                                    ≡⟨ refl ⟩
-         ap pr₁ κ                                              ≡⟨ III  ⟩
-         ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)                 ≡⟨ refl ⟩
-         ap pr₁ (ap pr₁ r-comp)                                ≡⟨ IV   ⟩
-         ap (pr₁ ∘ pr₁) r-comp                                 ∎
-      where
-       π : 𝓛 (𝕊¹) → 𝕊¹
-       π = pr₁
-       I   = 𝕊¹-uniqueness-principle-comp₁ base loop (pr₁ ∘ r) id κ
-              (to-Σ-≡ (refl , (ap-id-is-id loop)))
-       II  = ap (λ - → ap pr₁ κ ∙ - ⁻¹)
-              (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
-               (refl , ap-id-is-id loop))
-       III = pr₁-𝕊¹-induction-key-≡
-       IV  = ap-ap pr₁ pr₁ r-comp
+\end{code}
+
+Looking at ρ-comp, we see that ρ base = (base , 𝕊¹-induction base) ≡ (base , a),
+which looks promising, for if we can show that the equality in the first
+component is refl, then 𝕊¹-induction base ≡ a would follow. So that's exactly
+what we do next.
+
+\begin{code}
 
    ρ-comp-lemma : ap pr₁ (ap pr₁ ρ-comp) ≡ refl
    ρ-comp-lemma =
@@ -263,7 +179,7 @@ module _
     p ⁻¹ ∙ p                                                        ≡⟨ IV  ⟩
     refl                                                            ∎
     where
-     p = happly 𝕊¹-induction-key-lemma base
+     p = happly r-is-retraction-of-pr₁ base
      I   = ap-ap pr₁ pr₁ ρ-comp
      II  = ap-∙ (pr₁ ∘ pr₁) ρ-and-r-on-base-and-loop r-comp
      IV  = left-inverse p
@@ -281,24 +197,51 @@ module _
        γ₂ : ap (pr₁ ∘ pr₁) r-comp ≡ p
        γ₂ = ϕ ⁻¹
         where
-         κ = 𝕊¹-induction-key-≡
+         κ = r-retraction-lemma
          ϕ = p                                                     ≡⟨ I₂    ⟩
              ap pr₁ κ ∙ ap π (to-Σ-≡ (refl , ap-id-is-id loop)) ⁻¹ ≡⟨ II₂   ⟩
              ap pr₁ κ ∙ refl ⁻¹                                    ≡⟨ refl  ⟩
              ap pr₁ κ                                              ≡⟨ III₂  ⟩
-             ap pr₁ (𝕊¹-rec-on-base (base , a) l⁺)                 ≡⟨ refl  ⟩
              ap pr₁ (ap pr₁ r-comp)                                ≡⟨ IV₂   ⟩
              ap (pr₁ ∘ pr₁) r-comp                                 ∎
           where
            π : 𝓛 (𝕊¹) → 𝕊¹
            π = pr₁
-           I₂   = 𝕊¹-uniqueness-principle-comp₁ base loop (pr₁ ∘ r) id κ
-                   (to-Σ-≡ (refl , (ap-id-is-id loop)))
+           I₂   = happly-𝓛-functor-lemma (pr₁ ∘ r) id loop loop
+                   κ (to-Σ-≡ (refl , ap-id-is-id loop))
+                   (𝕊¹-at-most-one-function base loop
+                     (pr₁ ∘ r , r-retraction-lemma)
+                     (id , to-Σ-≡ (refl , ap-id-is-id loop)))
            II₂  = ap (λ - → ap pr₁ κ ∙ - ⁻¹)
                    (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
                     (refl , ap-id-is-id loop))
-           III₂ = pr₁-𝕊¹-induction-key-≡
            IV₂  = ap-ap pr₁ pr₁ r-comp
+           III₂ = ap pr₁ κ                        ≡⟨ refl ⟩
+                  ap pr₁ (κ₁ ∙ (κ₂ ∙ κ₃))         ≡⟨ I'   ⟩
+                  ap pr₁ κ₁ ∙ ap pr₁ (κ₂ ∙ κ₃)    ≡⟨ II'  ⟩
+                  refl ∙ ap pr₁ (κ₂ ∙ κ₃)         ≡⟨ III' ⟩
+                  ap pr₁ (κ₂ ∙ κ₃)                ≡⟨ IV'  ⟩
+                  ap pr₁ κ₂ ∙ ap pr₁ κ₃           ≡⟨ V'   ⟩
+                  ap pr₁ κ₂ ∙ refl                ≡⟨ refl ⟩
+                  ap pr₁ κ₂                       ≡⟨ VI'  ⟩
+                  ap (pr₁ ∘ 𝓛-functor pr₁) r-comp ≡⟨ refl ⟩
+                  ap (pr₁ ∘ pr₁) r-comp           ≡⟨ VII' ⟩
+                  ap pr₁ (ap pr₁ r-comp)          ∎
+                  where
+                   κ₁ = to-Σ-≡ (refl , ((ap-ap r pr₁ loop) ⁻¹))
+                   κ₂ = ap (𝓛-functor pr₁) r-comp
+                   κ₃ = to-Σ-≡ (refl , (ap-pr₁-to-Σ-≡ (loop , l)))
+                   I'   = ap-∙ pr₁ κ₁ (κ₂ ∙ κ₃)
+                   II'  = ap (_∙ (ap pr₁ (κ₂ ∙ κ₃)))
+                           (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
+                            (refl , ((ap-ap r pr₁ loop) ⁻¹)))
+                   III' = refl-left-neutral
+                   IV'  = ap-∙ pr₁ κ₂ κ₃
+                   V'   = ap ((ap pr₁ κ₂) ∙_)
+                           (ap-pr₁-to-Σ-≡ {𝓤} {𝓤} {𝕊¹} {λ - → (- ≡ -)} {_} {_}
+                            (refl , ap-pr₁-to-Σ-≡ (loop , l)))
+                   VI'  = ap-ap (𝓛-functor pr₁) pr₁ r-comp
+                   VII' = (ap-ap pr₁ pr₁ r-comp) ⁻¹
 
    𝕊¹-induction-on-base : 𝕊¹-induction base ≡ a
    𝕊¹-induction-on-base =
@@ -306,6 +249,23 @@ module _
      where
       γ : transport A (ap pr₁ (ap pr₁ ρ-comp)) (𝕊¹-induction base) ≡ a
       γ = from-Σ-≡' (ap pr₁ ρ-comp)
+
+\end{code}
+
+This takes care of the first computation rule for 𝕊¹-induction. We can get a fairly direct proof of the
+second computation rule (the one for loop) by assuming that base ≡ base is a
+set, because this tells us that every element of loop ≡ loop must be refl.
+
+We can satisfy this assumption for our intended application (see
+CircleConstruction.lagda), because for the construction involving ℤ-torsors it's
+is quite easy to prove that base ≡ base is a set.
+
+However, for completeness sake, below we also show that assuming function
+extensionality and univalence, it is possible to prove that base ≡ base is a
+set, by using both computation rules for 𝕊¹-rec and the first computation rule
+for 𝕊¹-induction.
+
+\begin{code}
 
    𝕊¹-induction-on-loop-lemma : (loop , transport (λ - → transport A loop - ≡ -)
                                          𝕊¹-induction-on-base
@@ -360,14 +320,22 @@ module _
      where
       γ : ap pr₁ 𝕊¹-induction-on-loop-lemma ≡ refl
       γ = base-sethood (ap pr₁ 𝕊¹-induction-on-loop-lemma) refl
-      t : transport A loop a ≡ a
-      t = transport (λ - → transport A loop - ≡ -)
-           𝕊¹-induction-on-base (apd 𝕊¹-induction loop)
 
     𝕊¹-induction-comp : (𝕊¹-induction base , apd 𝕊¹-induction loop)
                       ≡[ Σ y ꞉ A base , transport A loop y ≡ y ] (a , l)
     𝕊¹-induction-comp = to-Σ-≡ (𝕊¹-induction-on-base , 𝕊¹-induction-on-loop)
 
+\end{code}
+
+As promised above, here follows a proof, assuming function extensionality and
+univalence, that base ≡ base is a set, using both computation rules for 𝕊¹-rec
+and the first computation rule for 𝕊¹-induction.
+
+The proof uses the encode-decode (Section 8.1.4 of the HoTT Book) to show that
+base ≡ base is a retract of ℤ. Since sets are closed under retracts, the claim
+follows.
+
+\begin{code}
 
   open import Integers
   open import Integers-Properties
@@ -384,6 +352,7 @@ module _
    code : 𝕊¹ → 𝓤₀ ̇
    code = 𝕊¹-rec ℤ succ-ℤ-≡
 
+   -- Using the first computation rule for 𝕊¹-rec
    code-on-base : code base ≡ ℤ
    code-on-base = 𝕊¹-rec-on-base ℤ succ-ℤ-≡
 
@@ -413,6 +382,7 @@ module _
       I   = ap (λ - → δ ∘ - ∘ ε) (transport-ap' id code loop)
       II  = ap (_∘_ (Idtofun cob)) ((Idtofun-∙ ua (cob ⁻¹) acl) ⁻¹)
       III = (Idtofun-∙ ua (cob ⁻¹ ∙ acl) cob) ⁻¹
+      -- Using the second computation rule for 𝕊¹-rec
       IV  = ap Idtofun ((transport-along-≡ cob acl) ⁻¹
                        ∙ (𝕊¹-rec-on-loop ℤ succ-ℤ-≡))
       V   = Idtofun-eqtoid ua succ-ℤ-≃
@@ -515,31 +485,35 @@ module _
          III' = ap ((loop ⁻¹ ∙ iterated-path (loop ⁻¹) n) ∙_)
                  (left-inverse loop)
 
-    l : transport (λ - → code - → base ≡ -) loop (loops ∘ code-base-to-ℤ)
-      ≡ (loops ∘ code-base-to-ℤ)
-    l = transport (λ - → code - → base ≡ -) loop f                     ≡⟨ I   ⟩
-        transport (λ - → base ≡ -) loop ∘ f ∘ transport code (loop ⁻¹) ≡⟨ II  ⟩
-        (_∙ loop) ∘ f ∘ transport code (loop ⁻¹)                       ≡⟨ III ⟩
-        (_∙ loop) ∘ loops ∘ δ ∘ ε ∘ pred-ℤ ∘ δ                         ≡⟨ IV  ⟩
-        (_∙ loop) ∘ loops ∘ pred-ℤ ∘ δ                                 ≡⟨ V   ⟩
-        loops ∘ δ                                                      ∎
-     where
-      ε : ℤ → code base
-      ε = ℤ-to-code-base
-      δ : code base → ℤ
-      δ = code-base-to-ℤ
-      f : code base → base ≡ base
-      f = loops ∘ δ
-      I   = transport-along-→ code (_≡_ base) loop f
-      II  = refl
-      III = ap ((_∙ loop) ∘ f ∘_)
-             (dfunext (lower-funext 𝓤₀ 𝓤 fe) transport-code-loop⁻¹-is-pred-ℤ')
-      IV  = ap (λ - → (_∙ loop) ∘ loops ∘ - ∘ pred-ℤ ∘ δ)
-             (dfunext (lower-funext 𝓤₀ 𝓤 fe) (Idtofun-retraction code-on-base))
-      V   = ap (_∘ δ) loops-lemma
+    transport-loops-lemma : transport (λ - → code - → base ≡ -) loop
+                             (loops ∘ code-base-to-ℤ)
+                          ≡ (loops ∘ code-base-to-ℤ)
+    transport-loops-lemma =
+     transport (λ - → code - → base ≡ -) loop f                     ≡⟨ I   ⟩
+     transport (λ - → base ≡ -) loop ∘ f ∘ transport code (loop ⁻¹) ≡⟨ II  ⟩
+     (_∙ loop) ∘ f ∘ transport code (loop ⁻¹)                       ≡⟨ III ⟩
+     (_∙ loop) ∘ loops ∘ δ ∘ ε ∘ pred-ℤ ∘ δ                         ≡⟨ IV  ⟩
+     (_∙ loop) ∘ loops ∘ pred-ℤ ∘ δ                                 ≡⟨ V   ⟩
+     loops ∘ δ                                                      ∎
+      where
+       ε : ℤ → code base
+       ε = ℤ-to-code-base
+       δ : code base → ℤ
+       δ = code-base-to-ℤ
+       f : code base → base ≡ base
+       f = loops ∘ δ
+       I   = transport-along-→ code (_≡_ base) loop f
+       II  = refl
+       III = ap ((_∙ loop) ∘ f ∘_)
+              (dfunext (lower-funext 𝓤₀ 𝓤 fe) transport-code-loop⁻¹-is-pred-ℤ')
+       IV  = ap (λ - → (_∙ loop) ∘ loops ∘ - ∘ pred-ℤ ∘ δ)
+              (dfunext (lower-funext 𝓤₀ 𝓤 fe) (Idtofun-retraction code-on-base))
+       V   = ap (_∘ δ) loops-lemma
 
 
-    open 𝕊¹-induction (λ - → code - → base ≡ -) (loops ∘ code-base-to-ℤ) l
+    open 𝕊¹-induction (λ - → code - → base ≡ -)
+                      (loops ∘ code-base-to-ℤ)
+                      transport-loops-lemma
 
     decode : (x : 𝕊¹) → code x → base ≡ x
     decode = 𝕊¹-induction
@@ -553,15 +527,9 @@ module _
      loops 𝟎                                              ≡⟨ refl ⟩
      refl                                                 ∎
       where
-       I  = happly 𝕊¹-induction-on-base (ℤ-to-code-base 𝟎) -- Use of the first computation rule for 𝕊¹-induction!
+       -- Using the first computation rule for 𝕊¹-induction
+       I  = happly 𝕊¹-induction-on-base (ℤ-to-code-base 𝟎)
        II = ap loops (Idtofun-retraction code-on-base 𝟎)
-
-\end{code}
-
-We could show that encode x (decode x c) = c, but we don't.
-After all, we only wanted to show that (base ≡ base) is a set.
-
-\begin{code}
 
     open import UF-Retracts
 
@@ -570,10 +538,6 @@ After all, we only wanted to show that (base ≡ base) is a set.
                   (sections-are-lc (encode base)
                    ((decode base) , (decode-encode base)))
                    (transport is-set (code-on-base ⁻¹) ℤ-is-set)
-
-\end{code}
-
-\begin{code}
 
   module 𝕊¹-induction'
           {𝓥 : Universe}
