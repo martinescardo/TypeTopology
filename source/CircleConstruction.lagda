@@ -156,10 +156,6 @@ loops-at-base-equivalent-to-ℤ =
        ε _ = refl
    V   = ℤ-symmetric-induction fe₀ (λ _ → ℤ) (λ _ → succ-ℤ-≃)
 
-\end{code}
-
-\begin{code}
-
 ⟨_⟩₂ : (X : Tℤ) → ⟨ X ⟩ → ⟨ X ⟩
 ⟨ (X , f , t) ⟩₂ = f
 
