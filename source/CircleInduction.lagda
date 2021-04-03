@@ -6,8 +6,8 @@ follows from the universal property of 𝕊¹.
 This is claimed at the end of Section 6.2 in the HoTT Book and follows from a
 general result by Sojakova in her PhD Thesis "Higher Inductive Types as
 Homotopy-Initial Algebras" (CMU-CS-16-125). The proof of the general result is
-quite complicated (see for instance Lemma 105 in the PhD thesis) and the below
-offers an alternative proof for 𝕊¹.
+quite complicated (see for instance Lemma 105 in the PhD thesis) and the
+development below offers an alternative proof for 𝕊¹.
 
 \begin{code}
 
@@ -295,9 +295,10 @@ what we do next.
 
 \end{code}
 
-This takes care of the first computation rule for 𝕊¹-induction. We can get a fairly direct proof of the
-second computation rule (the one for loop) by assuming that base ≡ base is a
-set, because this tells us that every element of loop ≡ loop must be refl.
+This takes care of the first computation rule for 𝕊¹-induction. We can
+get a fairly direct proof of the second computation rule (the one for
+loop) by assuming that base ≡ base is a set, because this tells us
+that every element of loop ≡ loop must be refl.
 
 We can satisfy this assumption for our intended application (see
 CircleConstruction.lagda), because for the construction involving ℤ-torsors it's
