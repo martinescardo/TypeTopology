@@ -127,5 +127,3 @@ module AllCombinators
  open Existential pt public
 
 \end{code}
-
-\end{code}
