@@ -142,7 +142,7 @@ What is significantly harder is showing that it obeys the computation rules.
 
 \end{code}
 
-Next we show that r is a retraction of pr₁ : Σ A → 𝕊¹. This tells us that:
+Next we show that r is a retraction of pr₁ : Σ A → 𝕊¹. This tells us that
 r(x) = (x , pr₂ (r x)), so that we can define 𝕊¹-induction by transport.
 
 \begin{code}
@@ -371,13 +371,14 @@ for 𝕊¹-induction.
 
 \end{code}
 
-As promised above, here follows a proof, assuming function extensionality and
-univalence, that base ≡ base is a set, using both computation rules for 𝕊¹-rec
-and the first computation rule for 𝕊¹-induction.
+As promised above, here follows a proof, assuming function
+extensionality and univalence, that base ≡ base is a set, using both
+computation rules for 𝕊¹-rec and the first computation rule for
+𝕊¹-induction.
 
-The proof uses the encode-decode (Section 8.1.4 of the HoTT Book) to show that
-base ≡ base is a retract of ℤ. Since sets are closed under retracts, the claim
-follows.
+The proof uses the encode-decode method (Section 8.1.4 of the HoTT
+Book) to show that base ≡ base is a retract of ℤ. Since sets are
+closed under retracts, the claim follows.
 
 \begin{code}
 
@@ -396,7 +397,12 @@ follows.
    code : 𝕊¹ → 𝓤₀ ̇
    code = 𝕊¹-rec ℤ succ-ℤ-≡
 
-   -- Using the first computation rule for 𝕊¹-rec
+\end{code}
+
+   Using the first computation rule for 𝕊¹-rec:
+
+\begin{code}
+
    code-on-base : code base ≡ ℤ
    code-on-base = 𝕊¹-rec-on-base ℤ succ-ℤ-≡
 
@@ -426,7 +432,13 @@ follows.
       I   = ap (λ - → δ ∘ - ∘ ε) (transport-ap' id code loop)
       II  = ap (_∘_ (Idtofun cob)) ((Idtofun-∙ ua (cob ⁻¹) acl) ⁻¹)
       III = (Idtofun-∙ ua (cob ⁻¹ ∙ acl) cob) ⁻¹
-      -- Using the second computation rule for 𝕊¹-rec
+
+\end{code}
+
+      Using the second computation rule for 𝕊¹-rec
+
+\begin{code}
+
       IV  = ap Idtofun ((transport-along-≡ cob acl) ⁻¹
                        ∙ (𝕊¹-rec-on-loop ℤ succ-ℤ-≡))
       V   = Idtofun-eqtoid ua succ-ℤ-≃
@@ -571,7 +583,13 @@ follows.
      loops 𝟎                                              ≡⟨ refl ⟩
      refl                                                 ∎
       where
-       -- Using the first computation rule for 𝕊¹-induction
+
+\end{code}
+
+       Using the first computation rule for 𝕊¹-induction
+
+\begin{code}
+
        I  = happly 𝕊¹-induction-on-base (ℤ-to-code-base 𝟎)
        II = ap loops (Idtofun-retraction code-on-base 𝟎)
 

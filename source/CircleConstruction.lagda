@@ -233,20 +233,17 @@ module Tℤ-rec
         g : (a ≡ a') ≃ (a ≡ a')
         g = ((p ∙_) , ∙-is-equiv-left p)
 
-  BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
-  BBG-is-singleton = γ
-   where
-    abstract
-     γ : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
-     γ = Tℤ-prop-induction (λ _ → being-singleton-is-prop fe)
-                      BBG-base-is-singleton
+  abstract
+   BBG-is-singleton : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
+   BBG-is-singleton = Tℤ-prop-induction (λ _ → being-singleton-is-prop fe)
+                                        BBG-base-is-singleton
 
   Tℤ-rec : Tℤ → A
   Tℤ-rec X = pr₁ (center (BBG-is-singleton X))
 
 \end{code}
 
-That was fairly easy. The corresponding computation rule is a bit more work.
+The corresponding computation rule is a bit more work.
 
 \begin{code}
 
@@ -379,8 +376,14 @@ to-Tℤ-≡-comp X Y Z f g =
      η X Y = inverses-are-retractions (ψ X Y)
               (⌜⌝-is-equiv (characterization-of-Tℤ-≡ X Y))
    I = ap (ϕ X Z) γ
-    -- The proof below is done with to-≡-of-≅ (rather than directly) for
-    -- type-checking efficiency reasons.
+
+\end{code}
+
+    The proof below is done with to-≡-of-≅ (rather than directly) for
+    type-checking efficiency reasons.
+
+\begin{code}
+
     where
      γ = ≅-comp-Tℤ X Y Z f g                 ≡⟨ to-≡-of-≅ X Z w      ⟩
          ≅-comp-Tℤ X Y Z (ψ X Y p) (ψ Y Z q) ≡⟨ (lemma X Y Z p q) ⁻¹ ⟩
