@@ -336,12 +336,16 @@ First some general lemmas.
 
 ≅-comp-Tℤ : (X Y Z : Tℤ) → X ≅ Y → Y ≅ Z → X ≅ Z
 ≅-comp-Tℤ X Y Z (e , i , c) (e' , i' , c') =
- (e' ∘ e , ∘-is-equiv-abstract i i' , dfunext fe₀ γ)
+ (e' ∘ e , ∘-is-equiv-abstract i i' , ψ)
   where
-   γ : e' ∘ e ∘ ⟨ X ⟩₂ ∼ ⟨ Z ⟩₂ ∘ e' ∘ e
-   γ x = e' (e (⟨ X ⟩₂ x)) ≡⟨ ap e' (happly c x) ⟩
-         e' (⟨ Y ⟩₂ (e x)) ≡⟨ happly c' (e x) ⟩
-         ⟨ Z ⟩₂ (e' (e x)) ∎
+   abstract
+    ψ : e' ∘ e ∘ ⟨ X ⟩₂ ≡ ⟨ Z ⟩₂ ∘ e' ∘ e
+    ψ = dfunext fe₀ γ
+     where
+      γ : e' ∘ e ∘ ⟨ X ⟩₂ ∼ ⟨ Z ⟩₂ ∘ e' ∘ e
+      γ x = e' (e (⟨ X ⟩₂ x)) ≡⟨ ap e' (happly c x) ⟩
+            e' (⟨ Y ⟩₂ (e x)) ≡⟨ happly c' (e x) ⟩
+            ⟨ Z ⟩₂ (e' (e x)) ∎
 
 to-≡-of-≅ : (X Y : Tℤ) {f g : X ≅ Y}
           → pr₁ f ∼ pr₁ g
@@ -441,10 +445,10 @@ Tℤ-action-commutes-with-⟨⟩₂-≡ X x = dfunext fe₀ (Tℤ-action-commute
 Tℤ-action-base-is-shift : (x : ℤ) → Tℤ-action base x ∼ (λ y → y +ℤ x)
 Tℤ-action-base-is-shift x 𝟎       = refl
 Tℤ-action-base-is-shift x (pos n) = refl
-Tℤ-action-base-is-shift x (neg n) = ap (λ - → (- ^ succ n) x) (ap ⌜_⌝⁻¹ ϕ)
-      where
-       ϕ : ⟨ base ⟩₂-≃ ≡ succ-ℤ-≃
-       ϕ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀) refl
+Tℤ-action-base-is-shift x (neg n) = happly (ap (_^ succ n) (ap ⌜_⌝⁻¹ ϕ)) x
+ where
+  ϕ : ⟨ base ⟩₂-≃ ≡ succ-ℤ-≃
+  ϕ = to-subtype-≡ (being-equiv-is-prop' fe₀ fe₀ fe₀ fe₀) refl
 
 Tℤ-action-is-equiv : (X : Tℤ) (x : ⟨ X ⟩) → is-equiv (Tℤ-action X x)
 Tℤ-action-is-equiv =
