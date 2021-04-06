@@ -237,6 +237,7 @@ module Tℤ-rec
   BBG-is-singleton = γ
    where
     abstract
+     γ : ((X , f , _) : Tℤ) → is-singleton (BBG (X , f))
      γ = Tℤ-prop-induction (λ _ → being-singleton-is-prop fe)
                       BBG-base-is-singleton
 

@@ -271,14 +271,14 @@ transport-Group-structure {𝓤} {𝓥} (X , _·_ , i , a , e , l , r , ι)
   G = X , _·_ , i , a , e , l , r , ι
 
   abstract
-    g : X → Y
-    g = inverse f f-is-equiv
+   g : X → Y
+   g = inverse f f-is-equiv
 
-    η : f ∘ g ∼ id
-    η = inverses-are-sections f f-is-equiv
+   η : f ∘ g ∼ id
+   η = inverses-are-sections f f-is-equiv
 
-    ε : g ∘ f ∼ id
-    ε = inverses-are-retractions f f-is-equiv
+   ε : g ∘ f ∼ id
+   ε = inverses-are-retractions f f-is-equiv
 
   f-is-hom : {y y' : Y} → f (g (f y · f y')) ≡ f y · f y'
   f-is-hom {y} {y'} = η (f y · f y')

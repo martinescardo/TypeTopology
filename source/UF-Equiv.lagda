@@ -74,12 +74,7 @@ For type-checking efficiency reasons:
  where
   abstract
    γ : is-equiv f → is-equiv f' → is-equiv (f' ∘ f)
-   γ ((g , fg) , (h , hf)) ((g' , fg') , (h' , hf')) = (g ∘ g' , fg'') , (h ∘ h' , hf'')
-    where
-     fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
-     fg'' z =  ap f' (fg (g' z)) ∙ fg' z
-     hf'' : (x : X) → h(h'(f'(f x))) ≡ x
-     hf'' x = ap h (hf' (f x)) ∙ hf x
+   γ = ∘-is-equiv
 
 ≃-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≃ Y → Y ≃ Z → X ≃ Z
 ≃-comp {𝓤} {𝓥} {𝓦} {X} {Y} {Z} (f , d) (f' , e) = f' ∘ f , ∘-is-equiv d e

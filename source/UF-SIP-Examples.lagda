@@ -251,8 +251,8 @@ module associative-∞-magma
        where
 
  abstract
-   fe : funext 𝓤 𝓤
-   fe = univalence-gives-funext ua
+  fe : funext 𝓤 𝓤
+  fe = univalence-gives-funext ua
 
  ∞-amagma-structure : 𝓤 ̇ → 𝓤 ̇
  ∞-amagma-structure X = Σ _·_ ꞉ (X → X → X), (associative _·_)

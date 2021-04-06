@@ -21,13 +21,13 @@ equiv-singleton-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
 
 equiv-singleton-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
+  e : (y : X) → (x ≡ y) ≃ A y
+  e y = (f y , i y)
+
+  d : singleton-type' x ≃ Σ A
+  d = Σ-cong e
+
   abstract
-   e : (y : X) → (x ≡ y) ≃ A y
-   e y = (f y , i y)
-
-   d : singleton-type' x ≃ Σ A
-   d = Σ-cong e
-
    γ : is-singleton (Σ A)
    γ = equiv-to-singleton (≃-sym d) (singleton-types'-are-singletons X x)
 
@@ -38,13 +38,13 @@ singleton-equiv-lemma : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (x : X)
 
 singleton-equiv-lemma {𝓤} {𝓥} {X} {A} x f i = γ
  where
+  g : singleton-type' x → Σ A
+  g = NatΣ f
+
+  e : is-equiv g
+  e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
+
   abstract
-   g : singleton-type' x → Σ A
-   g = NatΣ f
-
-   e : is-equiv g
-   e = maps-of-singletons-are-equivs g (singleton-types'-are-singletons X x) i
-
    γ : (y : X) → is-equiv (f y)
    γ = NatΣ-equiv-gives-fiberwise-equiv f e
 
