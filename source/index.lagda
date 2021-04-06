@@ -24,7 +24,7 @@
    * We have also used this development for learning other people's
      results, and so some previously known constructions and theorems
      are included (sometimes with embellishments). In our last count,
-     this development has 62000 lines, including comments and blank
+     this development has 74000 lines, including comments and blank
      lines.
 
    * The required material on HoTT/UF has been developed on demand

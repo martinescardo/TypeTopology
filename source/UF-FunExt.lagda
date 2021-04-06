@@ -46,13 +46,14 @@ FunExt' = {𝓤 𝓥 : Universe} → funext 𝓤 𝓥
          → (f ≡ g) ≃ (f ∼ g)
 ≃-funext fe f g = happly' f g , fe f g
 
-dfunext : funext 𝓤 𝓥 → DN-funext 𝓤 𝓥
-dfunext fe {X} {A} {f} {g} = inverse (happly' f g) (fe f g)
+abstract
+ dfunext : funext 𝓤 𝓥 → DN-funext 𝓤 𝓥
+ dfunext fe {X} {A} {f} {g} = inverse (happly' f g) (fe f g)
 
-happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-               (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
-             → happly (dfunext fe h) ≡ h
-happly-funext fe f g = inverses-are-sections happly (fe f g)
+ happly-funext : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                (fe : funext 𝓤 𝓥) (f g : Π A) (h : f ∼ g)
+              → happly (dfunext fe h) ≡ h
+ happly-funext fe f g = inverses-are-sections happly (fe f g)
 
 funext-lc : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (fe : funext 𝓤 𝓥) (f g : Π A)
           → left-cancellable (dfunext fe {X} {A} {f} {g})
