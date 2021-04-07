@@ -29,7 +29,7 @@ using the corresponding property for (finite) types.
 
 open import SpartanMLTT
 
-module Fin  where
+module Fin where
 
 Fin : ℕ → 𝓤₀ ̇
 Fin 0        = 𝟘
@@ -1165,6 +1165,24 @@ Added 19th March 2021.
 
 \begin{code}
 
+having-three-distinct-points-covariant : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                                       → X ↪ Y
+                                       → has-three-distinct-points X
+                                       → has-three-distinct-points Y
+having-three-distinct-points-covariant (f , f-is-emb) ((x , y , z) , u , v , w) = γ
+ where
+  l : left-cancellable f
+  l = embeddings-are-lc f f-is-emb
+
+  γ : has-three-distinct-points (codomain f)
+  γ = ((f x , f y , f z) , (λ p → u (l p)) , (λ q → v (l q)) , (λ r → w (l r)))
+
+finite-type-with-three-distict-points : (k : ℕ)
+                                      → k ≥ 3
+                                      → has-three-distinct-points (Fin k)
+finite-type-with-three-distict-points (succ (succ (succ k))) * =
+ ((𝟎 , suc 𝟎 , suc (suc 𝟎)) , +disjoint' , (λ a → +disjoint' (inl-lc a)) , +disjoint)
+
 finite-subsets-of-Ω-have-at-most-2-elements : funext 𝓤 𝓤
                                             → propext 𝓤
                                             → (k : ℕ)
@@ -1172,31 +1190,14 @@ finite-subsets-of-Ω-have-at-most-2-elements : funext 𝓤 𝓤
                                             → k ≤ 2
 finite-subsets-of-Ω-have-at-most-2-elements {𝓤} fe pe k e = γ
  where
-  δ : (k : ℕ) → Fin k ↪ Ω 𝓤 → ¬ (k ≥ 3)
-  δ (succ (succ (succ k))) (f , f-is-emb) * = α
-   where
-    p q r : Ω 𝓤
-    p = f 𝟎
-    q = f (suc 𝟎)
-    r = f (suc (suc 𝟎))
+  α : k ≥ 3 → has-three-distinct-points (Ω 𝓤)
+  α g = having-three-distinct-points-covariant e (finite-type-with-three-distict-points k g)
 
-    f-lc : left-cancellable f
-    f-lc = embeddings-are-lc f f-is-emb
-
-    u : p ≢ q
-    u a = +disjoint' (f-lc a)
-
-    v : q ≢ r
-    v a = +disjoint' (inl-lc (f-lc a))
-
-    w : r ≢ p
-    w a = +disjoint (f-lc a)
-
-    α : 𝟘
-    α = no-three-distinct-propositions fe pe ((p , q , r) , u , v , w)
+  β : ¬ (k ≥ 3)
+  β = contrapositive α (no-three-distinct-propositions fe pe)
 
   γ : k ≤ 2
-  γ = not-less-bigger-or-equal k 2 (δ k e)
+  γ = not-less-bigger-or-equal k 2 β
 
 \end{code}
 
