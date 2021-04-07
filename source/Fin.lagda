@@ -1201,4 +1201,8 @@ finite-subsets-of-Ω-have-at-most-2-elements {𝓤} fe pe k e = γ
 
 \end{code}
 
-TODO. Think about Kuratowski finite subsets of Ω.
+TODO. Think about Kuratowski finite subsets of Ω.  That is, types
+A ↪ Ω 𝓤 for which there is some surjection Fin k ↠ A.  Because any
+such type A doesn't have three distinct points, we are looking at
+characterizations of surjections of Fin k into types with no three
+distinct points.
