@@ -1332,13 +1332,12 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
   B : 𝓤 ⁺ ̇
   B = Σ q ꞉ Ω 𝓤 , (q ≡ p) ∨ (q ≡ ⊤)
 
+  open example (Ω 𝓤) (Ω-is-set fe pe) p ⊤ fe
+
   B-is-Kuratowski-finite : is-Kuratowski-finite B
   B-is-Kuratowski-finite = A-is-Kuratowski-finite
-   where
-    open example (Ω 𝓤) (Ω-is-set fe pe) p ⊤ fe
 
   finiteness-of-B-equiv-to-EM : is-finite B ⇔ decidable (p ≡ ⊤)
   finiteness-of-B-equiv-to-EM = finiteness-of-A
-   where
-    open example (Ω 𝓤) (Ω-is-set fe pe) p ⊤ fe
+
 \end{code}
