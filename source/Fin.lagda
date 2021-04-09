@@ -1226,11 +1226,12 @@ necessarily finite in the above sense (equivalent to some Fin n).
 
 \begin{code}
 
- module example {𝓤 : Universe}
-                (X : 𝓤 ̇ )
-                (X-is-set : is-set X)
-                (x₀ x₁ : X)
-                (fe : Fun-Ext)
+ module example
+         {𝓤 : Universe}
+         (X : 𝓤 ̇ )
+         (X-is-set : is-set X)
+         (x₀ x₁ : X)
+         (fe : Fun-Ext)
        where
 
   A : 𝓤 ̇
