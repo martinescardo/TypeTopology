@@ -1276,6 +1276,7 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
      where
       k : is-prop (Fin 1)
       k 𝟎 𝟎 = refl
+
       γ : A ≃ Fin 1 → x₀ ≡ x₁
       γ (g , i) = ap pr₁ (equivs-are-lc g i (k (g (ι 𝟎)) (g (ι (suc 𝟎)))))
 
@@ -1284,9 +1285,6 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
       γ : A ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
       γ (g , i) = β (Fin-is-discrete (succ (succ n)) (g (ι 𝟎)) (g (ι (suc 𝟎))))
        where
-        α : is-discrete A
-        α = retract-is-discrete (≃-gives-◁ (g , i)) (Fin-is-discrete (succ (succ n)))
-
         β : decidable (g (ι 𝟎) ≡ g (ι (suc 𝟎))) → decidable (x₀ ≡ x₁)
         β (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
         β (inr ν) = inr (contrapositive (λ p → ap g (to-subtype-≡ (λ _ → ∥∥-is-prop) p)) ν)
