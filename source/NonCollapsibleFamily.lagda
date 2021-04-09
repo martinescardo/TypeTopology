@@ -1,4 +1,4 @@
-Martin Escardo 2013
+Martin Escardo, 1st April 2013
 
 \begin{code}
 
@@ -13,11 +13,14 @@ open import UF-Subsingletons
 open import UF-KrausLemma
 open import DiscreteAndSeparated
 
-lemma : (X : 𝓤₀ ̇ ) (a : 𝟚 → X) → ((x : X) → collapsible(Σ i ꞉ 𝟚 , a i ≡ x)) → decidable(a ₀ ≡ a ₁)
-lemma X a c = equal-or-different
+decidable-equality-criterion : (X : 𝓤 ̇ )
+                               (a : 𝟚 → X) → ((x : X) → collapsible(Σ i ꞉ 𝟚 , a i ≡ x))
+                             → decidable(a ₀ ≡ a ₁)
+decidable-equality-criterion {𝓤} X a c = equal-or-different
  where
   κ : (x : X) → (Σ i ꞉ 𝟚 , a i ≡ x) → Σ i ꞉ 𝟚 , a i ≡ x
   κ x = pr₁(c x)
+
   κ-constant : (x : X) → wconstant(κ x)
   κ-constant x = pr₂(c x)
 
@@ -30,7 +33,7 @@ lemma X a c = equal-or-different
   η : (x : X) → (Σ i ꞉ 𝟚 , a i ≡ x) → fix(κ x)
   η x σ = κ x σ , κ-constant x σ (κ x σ)
 
-  E : 𝓤₀ ̇
+  E : 𝓤 ̇
   E = Σ x ꞉ X , fix(κ x)
 
   r : 𝟚 → E
