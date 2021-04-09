@@ -76,9 +76,9 @@ type Σ A.
 
 Id-Embedding-Lemma : FunExt
                    → {X : 𝓤 ̇ }
-                  → ((x y : X) (A : X → 𝓤 ̇ )
-                  → left-cancellable (idtofun (Id x y) (A y)))
-                  → is-embedding(Id {𝓤} {X})
+                   → ((x y : X) (A : X → 𝓤 ̇ )
+                   → left-cancellable (idtofun (Id x y) (A y)))
+                   → is-embedding(Id {𝓤} {X})
 Id-Embedding-Lemma {𝓤} fe {X} iflc A (x₀ , p₀) = h (x₀ , p₀)
  where
   T = Σ x ꞉ X , Id x ≡ A

@@ -98,7 +98,7 @@ props-are-discrete i x y = inl (i x y)
 \end{code}
 
 The closure of discrete types under Σ is proved in the module
-UF-SetExamples (as this requires to first prove that discrete types
+UF-Miscelanea (as this requires to first prove that discrete types
 are sets).
 
 General properties:

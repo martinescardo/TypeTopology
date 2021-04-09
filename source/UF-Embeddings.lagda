@@ -208,8 +208,10 @@ embedding-factor {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g i j = embedding-criterion'
  where
   a : (x x' : X) → (x ≡ x') ≃ (g (f x) ≡ g (f x'))
   a x x' = ap (g ∘ f) {x} {x'} , embedding-embedding' (g ∘ f) i x x'
+
   b : (y y' : Y) → (y ≡ y') ≃ (g y ≡ g y')
   b y y' = ap g {y} {y'} , embedding-embedding' g j y y'
+
   c : (x x' : X) → (f x ≡ f x') ≃ (x ≡ x')
   c x x' = (f x ≡ f x')         ≃⟨ b (f x) (f x') ⟩
            (g (f x) ≡ g (f x')) ≃⟨ ≃-sym (a x x') ⟩
@@ -223,6 +225,7 @@ embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = embedding-criter
  where
   g : (φ φ' : A → X) (a : A) → (φ a ≡ φ' a) ≃ (f(φ a) ≡ f(φ' a))
   g φ φ' a = ap f {φ a} {φ' a} , embedding-embedding' f i (φ a) (φ' a)
+
   h : (φ φ' : A → X) → φ ∼ φ' ≃ f ∘ φ ∼ f ∘ φ'
   h φ φ' = Π-cong (fe 𝓦 𝓤) (fe 𝓦 𝓥) A (λ a → φ a ≡ φ' a) (λ a → f (φ a) ≡ f (φ' a)) (g φ φ')
   k : (φ φ' : A → X) → (f ∘ φ ≡ f ∘ φ') ≃ (φ ≡ φ')
@@ -237,10 +240,10 @@ disjoint-images f g = ∀ x y → f x ≢ g y
 disjoint-cases-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } (f : X → A) (g : Y → A)
                          → is-embedding f → is-embedding g → disjoint-images f g
                          → is-embedding (cases f g)
-disjoint-cases-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g ef eg d = go
+disjoint-cases-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g ef eg d = γ
   where
-   go : (a : A) (σ τ : Σ z ꞉ X + Y , cases f g z ≡ a) → σ ≡ τ
-   go a (inl x , p) (inl x' , p') = r
+   γ : (a : A) (σ τ : Σ z ꞉ X + Y , cases f g z ≡ a) → σ ≡ τ
+   γ a (inl x , p) (inl x' , p') = r
      where
        q : x , p ≡ x' , p'
        q = ef a (x , p) (x' , p')
@@ -248,9 +251,9 @@ disjoint-cases-embedding {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g ef eg d = go
        h (x , p) = inl x , p
        r : inl x , p ≡ inl x' , p'
        r = ap h q
-   go a (inl x , p) (inr y  , q) = 𝟘-elim (d x y (p ∙ q ⁻¹))
-   go a (inr y , q) (inl x  , p) = 𝟘-elim (d x y (p ∙ q ⁻¹))
-   go a (inr y , q) (inr y' , q') = r
+   γ a (inl x , p) (inr y  , q) = 𝟘-elim (d x y (p ∙ q ⁻¹))
+   γ a (inr y , q) (inl x  , p) = 𝟘-elim (d x y (p ∙ q ⁻¹))
+   γ a (inr y , q) (inr y' , q') = r
      where
        p : y , q ≡ y' , q'
        p = eg a (y , q) (y' , q')

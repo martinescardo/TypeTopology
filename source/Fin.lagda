@@ -598,7 +598,33 @@ Finite X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, then the type Finite X has n! elements.
+Exercise: If X ≃ Fin n, then the type Finite X has n! elements (solve
+elsewhere in TypeTopology).
+
+\begin{code}
+
+open import UF-Univalence
+open import UF-Equiv-FunExt
+open import UF-UniverseEmbedding
+open import UF-UA-FunExt
+
+type-of-Finite-types-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , Finite X) ≃ ℕ
+type-of-Finite-types-is-ℕ {𝓤} ua =
+  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , X ≃ Fin n)          ≃⟨ i ⟩
+  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Fin n ≃ X)          ≃⟨ ii ⟩
+  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Lift 𝓤 (Fin n) ≃ X) ≃⟨ iii ⟩
+  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Lift 𝓤 (Fin n) ≡ X) ≃⟨ iv ⟩
+  ℕ                                         ■
+ where
+  fe : FunExt
+  fe = Univalence-gives-FunExt ua
+
+  i   = Σ-cong (λ X → Σ-cong (λ n → ≃-Sym fe))
+  ii  = Σ-cong (λ X → Σ-cong (λ n → ≃-Comp fe X (Lift-≃ 𝓤 (Fin n))))
+  iii = Σ-cong (λ X → Σ-cong (λ n → ≃-sym (univalence-≃ (ua 𝓤) (Lift 𝓤 (Fin n)) X)))
+  iv  = total-fiber-is-domain (Lift 𝓤 ∘ Fin)
+
+\end{code}
 
 Hence one considers the following notion of finiteness, which is
 property rather than structure:
@@ -644,17 +670,14 @@ Equivalently, one can define finiteness as follows:
  is-finite' : 𝓤 ̇ → 𝓤 ̇
  is-finite' X = ∃ n ꞉ ℕ , X ≃ Fin n
 
-
  being-finite'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
  being-finite'-is-prop X = ∥∥-is-prop
-
 
  finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
  finite-unprime X = ∥∥-rec (being-finite-is-prop X) γ
   where
    γ : (Σ n ꞉ ℕ , X ≃ Fin n) → Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥
    γ (n , e) = n , ∣ e ∣
-
 
  finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
  finite-prime X (n , s) = ∥∥-rec ∥∥-is-prop (λ e → ∣ n , e ∣) s
@@ -671,7 +694,6 @@ Finite types are compact, or exhaustively searchable.
  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
-
  finite-∃-compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
  finite-∃-compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
 
@@ -686,7 +708,6 @@ Finite types are discrete and hence sets:
   where
    γ : X ≃ Fin n → is-discrete X
    γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
-
 
  finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
  finite-types-are-sets fe φ = discrete-types-are-sets (finite-types-are-discrete fe φ)
@@ -737,7 +758,6 @@ explicit existence:
              → detachable A → is-prop-valued A → ∃ A → Σₘᵢₙ A
 
  Σₘᵢₙ-from-∃ fe A δ h = ∥∥-rec (Σₘᵢₙ-is-prop fe A h) (Σ-gives-Σₘᵢₙ A δ)
-
 
  Fin-Σ-from-∃' : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
                → detachable A → is-prop-valued A → ∃ A → Σ A
@@ -794,7 +814,6 @@ We now consider further variations of the finite pigeonhole principle.
   repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
   repeated-values f x = Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
 
-
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
                          → detachable (repeated-values f)
@@ -805,7 +824,6 @@ We now consider further variations of the finite pigeonhole principle.
     (λ j → ×-preserves-decidability
             (¬-preserves-decidability (Fin-is-discrete m i j))
             (finite-types-are-discrete fe (n , t) (f i) (f j)))
-
 
   finite-pigeonhole-principle' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                                  (ψ : is-finite Y)
@@ -855,7 +873,6 @@ Further versions of the pigeonhole principle are the following.
     (repeated-values f)
     (repetitions-detachable f φ)
     (finite-pigeonhole-principle' f φ g)
-
 
   ℕ-finite-pigeonhole-principle : {Y : 𝓥 ̇ } (f : ℕ → Y)
                                 → is-finite Y
@@ -1283,11 +1300,14 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
     j (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
      where
       γ : A ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
-      γ (g , i) = β (Fin-is-discrete (succ (succ n)) (g (ι 𝟎)) (g (ι (suc 𝟎))))
+      γ (g , i) = β
        where
-        β : decidable (g (ι 𝟎) ≡ g (ι (suc 𝟎))) → decidable (x₀ ≡ x₁)
-        β (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
-        β (inr ν) = inr (contrapositive (λ p → ap g (to-subtype-≡ (λ _ → ∥∥-is-prop) p)) ν)
+        α : decidable (g (ι 𝟎) ≡ g (ι (suc 𝟎))) → decidable (x₀ ≡ x₁)
+        α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
+        α (inr ν) = inr (contrapositive (λ p → ap g (to-subtype-≡ (λ _ → ∥∥-is-prop) p)) ν)
+
+        β : decidable (x₀ ≡ x₁)
+        β = α (Fin-is-discrete (succ (succ n)) (g (ι 𝟎)) (g (ι (suc 𝟎))))
 
     k : decidable (x₀ ≡ x₁) → is-finite A
     k (inl p) = 1 , ∣ singleton-≃ m l ∣
@@ -1297,6 +1317,7 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
        where
         c : is-central (Fin 1) 𝟎
         c 𝟎 = refl
+
       m : is-singleton A
       m = (ι 𝟎 , c)
        where
