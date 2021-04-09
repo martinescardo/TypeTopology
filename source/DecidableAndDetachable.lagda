@@ -152,7 +152,8 @@ co-characteristic-function : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                                                       × (p x ≡ ₁ →   A x))
 co-characteristic-function d = indicator(λ x → +-commutative(d x))
 
-decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X
+decidable-closed-under-Σ : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                         → is-prop X
                          → decidable X
                          → ((x : X) → decidable (Y x))
                          → decidable (Σ Y)

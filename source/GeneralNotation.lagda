@@ -41,6 +41,12 @@ associative _·_ = ∀ x y z → (x · y) · z ≡ x · (y · z)
 commutative : {X : 𝓤 ̇ } → (X → X → X) → 𝓤 ̇
 commutative _·_ = ∀ x y → (x · y) ≡ (y · x)
 
+left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
+
+left-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
+
 _⇔_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 A ⇔ B = (A → B) × (B → A)
 
@@ -62,7 +68,7 @@ type-of {𝓤} {X} x = X
 \end{code}
 
 We use the following to indicate the type of a subterm (where "∶"
-(typed "\:" in emacs) is not the same as ":":
+(typed "\:" in emacs) is not the same as ":"):
 
 \begin{code}
 
@@ -139,18 +145,6 @@ infixr -1 Sigma!
 
 Note: Σ! is to be avoided, in favour of the contractibility of Σ,
 following univalent mathematics.
-
-I am not sure where to put this, so it goes here for the moment:
-
-\begin{code}
-
-left-cancellable : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable f = ∀ {x x'} → f x ≡ f x' → x ≡ x'
-
-left-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-left-cancellable' f = ∀ x x' → f x ≡ f x' → x ≡ x'
-
-\end{code}
 
 Fixities:
 

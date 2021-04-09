@@ -1,4 +1,4 @@
-Martin Escardo, 2014, 21 March 2018, November-December 2019.
+Martin Escardo, 2014, 21 March 2018, November-December 2019, March-April 2021
 
 The type Fin n is a discrete set with n elements.
 
@@ -118,7 +118,7 @@ Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
 Fin-is-discrete 0        = 𝟘-is-discrete
 Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
 
-open import UF-Subsingletons
+open import UF-Subsingletons renaming (⊤Ω to ⊤)
 open import UF-Miscelanea
 
 Fin-is-set : (n : ℕ) → is-set (Fin n)
@@ -294,7 +294,6 @@ as the existence of an injection Fin m → Fin n:
 
 _has-a-repetition : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 f has-a-repetition = Σ x ꞉ domain f , Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
-
 
 pigeonhole-principle : (m n : ℕ) (f : Fin m → Fin n)
                      → m > n → f has-a-repetition
@@ -1206,3 +1205,140 @@ A ↪ Ω 𝓤 for which there is some surjection Fin k ↠ A.  Because any
 such type A doesn't have three distinct points, we are looking at
 characterizations of surjections of Fin k into types with no three
 distinct points.
+
+Addded 8th April 2021.
+
+\begin{code}
+
+module Kuratowski-finiteness (pt : propositional-truncations-exist) where
+
+ open finiteness pt
+ open import UF-ImageAndSurjection
+ open ImageAndSurjection pt
+
+ is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇
+ is-Kuratowski-finite X = ∃ n ꞉ ℕ , Fin n ↠ X
+
+\end{code}
+
+We now give an example of a Kuratowski finite set which is not
+necessarily finite in the above sense (equivalent to some Fin n).
+
+\begin{code}
+
+ module example {𝓤 : Universe}
+                (X : 𝓤 ̇ )
+                (X-is-set : is-set X)
+                (x₀ x₁ : X)
+                (fe : Fun-Ext)
+       where
+
+  A : 𝓤 ̇
+  A = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
+
+  A-is-set : is-set A
+  A-is-set = subsets-of-sets-are-sets X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) X-is-set ∥∥-is-prop
+
+  ι : Fin 2 → A
+  ι 𝟎       = x₀ , ∣ inl refl ∣
+  ι (suc x) = x₁ , ∣ inr refl ∣
+
+  ι-surj : is-surjection ι
+  ι-surj (x , s) = ∥∥-functor γ s
+   where
+    γ : (x ≡ x₀) + (x ≡ x₁) → Σ n ꞉ Fin 2 , ι n ≡ (x , s)
+    γ (inl p) = 𝟎 ,     to-subtype-≡ (λ _ → ∥∥-is-prop) (p ⁻¹)
+    γ (inr q) = suc 𝟎 , to-subtype-≡ (λ _ → ∥∥-is-prop) (q ⁻¹)
+
+  A-is-Kuratowski-finite : is-Kuratowski-finite A
+  A-is-Kuratowski-finite = ∣ 2 , ι , ι-surj ∣
+
+\end{code}
+
+But A is finite if and only if the equality x₀ ≡ x₁ is decidable,
+which is not the case in general. In fact, if we choose X as the type
+Ω of truth-values and x₁ = ⊤ (true) and leave x₀ : Ω arbitrary, then
+the decidability of x₀ ≡ x₁ amounts to excluded middle.
+
+\begin{code}
+
+  finiteness-of-A : is-finite A ⇔ decidable (x₀ ≡ x₁)
+  finiteness-of-A = (j , k)
+   where
+    j : is-finite A → decidable (x₀ ≡ x₁)
+    j (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
+     where
+      γ : A ≃ 𝟘 → decidable (x₀ ≡ x₁)
+      γ (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
+
+    j (1 , s) = inl (∥∥-rec X-is-set γ s)
+     where
+      k : is-prop (Fin 1)
+      k 𝟎 𝟎 = refl
+      γ : A ≃ Fin 1 → x₀ ≡ x₁
+      γ (g , i) = ap pr₁ (equivs-are-lc g i (k (g (ι 𝟎)) (g (ι (suc 𝟎)))))
+
+    j (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
+     where
+      γ : A ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
+      γ (g , i) = β (Fin-is-discrete (succ (succ n)) (g (ι 𝟎)) (g (ι (suc 𝟎))))
+       where
+        α : is-discrete A
+        α = retract-is-discrete (≃-gives-◁ (g , i)) (Fin-is-discrete (succ (succ n)))
+
+        β : decidable (g (ι 𝟎) ≡ g (ι (suc 𝟎))) → decidable (x₀ ≡ x₁)
+        β (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
+        β (inr ν) = inr (contrapositive (λ p → ap g (to-subtype-≡ (λ _ → ∥∥-is-prop) p)) ν)
+
+    k : decidable (x₀ ≡ x₁) → is-finite A
+    k (inl p) = 1 , ∣ singleton-≃ m l ∣
+     where
+      l : is-singleton (Fin 1)
+      l = 𝟎 , c
+       where
+        c : is-central (Fin 1) 𝟎
+        c 𝟎 = refl
+      m : is-singleton A
+      m = (ι 𝟎 , c)
+       where
+        c : is-central A (ι 𝟎)
+        c (x , s) = to-subtype-≡ (λ _ → ∥∥-is-prop) (∥∥-rec X-is-set γ s)
+         where
+          γ : (x ≡ x₀) + (x ≡ x₁) → x₀ ≡ x
+          γ (inl p) = p ⁻¹
+          γ (inr q) = p ∙ q ⁻¹
+
+    k (inr ν) = 2 , ∣ ≃-sym (ι , ι-is-equiv) ∣
+     where
+      ι-lc : left-cancellable ι
+      ι-lc {𝟎}     {𝟎}     p = refl
+      ι-lc {𝟎}     {suc 𝟎} p = 𝟘-elim (ν (ap pr₁ p))
+      ι-lc {suc 𝟎} {𝟎}     p = 𝟘-elim (ν (ap pr₁ (p ⁻¹)))
+      ι-lc {suc 𝟎} {suc 𝟎} p = refl
+
+      ι-emb : is-embedding ι
+      ι-emb = lc-maps-into-sets-are-embeddings ι ι-lc A-is-set
+
+      ι-is-equiv : is-equiv ι
+      ι-is-equiv = surjective-embeddings-are-equivs ι ι-emb ι-surj
+
+ module example-excluded-middle
+         {𝓤 : Universe}
+         {p : Ω 𝓤}
+         (fe : Fun-Ext)
+         (pe : Prop-Ext)
+        where
+
+  B : 𝓤 ⁺ ̇
+  B = Σ q ꞉ Ω 𝓤 , (q ≡ p) ∨ (q ≡ ⊤)
+
+  B-is-Kuratowski-finite : is-Kuratowski-finite B
+  B-is-Kuratowski-finite = A-is-Kuratowski-finite
+   where
+    open example (Ω 𝓤) (Ω-is-set fe pe) p ⊤ fe
+
+  finiteness-of-B-equiv-to-EM : is-finite B ⇔ decidable (p ≡ ⊤)
+  finiteness-of-B-equiv-to-EM = finiteness-of-A
+   where
+    open example (Ω 𝓤) (Ω-is-set fe pe) p ⊤ fe
+\end{code}

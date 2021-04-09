@@ -95,6 +95,9 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
  is-surjection f = ∀ y → ∃ x ꞉ domain f , f x ≡ y
 
+ _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
+ X ↠ Y = Σ f ꞉ (X → Y) , is-surjection f
+
  vv-equiv-iff-embedding-and-surjection  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                         → is-vv-equiv f ⇔ is-embedding f × is-surjection f
  vv-equiv-iff-embedding-and-surjection f = g , h
@@ -213,9 +216,6 @@ Surjections can be characterized as follows, modulo size:
  retraction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → has-section f → is-surjection f
  retraction-surjection {𝓤} {𝓥} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
-
- _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
- X ↠ Y = Σ f ꞉ (X → Y), is-surjection f
 
 \end{code}
 
