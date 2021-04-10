@@ -60,7 +60,7 @@ module quotient
  η = corestriction equiv-rel
 
  η-surjection : is-surjection η
- η-surjection = corestriction-surjection equiv-rel
+ η-surjection = corestriction-is-surjection equiv-rel
 
  η-induction : (P : X/≈ → 𝓦 ̇ )
              → ((x' : X/≈) → is-subsingleton (P x'))

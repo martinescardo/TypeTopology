@@ -27,6 +27,10 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  _is-in-the-image-of_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → 𝓤 ⊔ 𝓥 ̇
  y is-in-the-image-of f = ∃ x ꞉ domain f , f x ≡ y
 
+ being-in-the-image-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y) (f : X → Y)
+                            → is-prop (y is-in-the-image-of f)
+ being-in-the-image-is-prop y f = ∃-is-prop
+ 
  image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
  image f = Σ y ꞉ codomain f , y is-in-the-image-of f
 
@@ -117,9 +121,9 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
                                   → is-embedding f → is-surjection f → is-equiv f
  surjective-embeddings-are-equivs f e s = vv-equivs-are-equivs f (surjective-embeddings-are-vv-equivs f e s)
 
- corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+ corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                          → is-surjection (corestriction f)
- corestriction-surjection f (y , s) = ∥∥-functor g s
+ corestriction-is-surjection f (y , s) = ∥∥-functor g s
   where
    g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-prop _ _)
@@ -144,7 +148,7 @@ It was done by Tom de Jong on 4 December 2020.
     f' : domain f → image f
     f' = corestriction f
     s' : is-surjection f'
-    s' = corestriction-surjection f
+    s' = corestriction-is-surjection f
     e' : is-embedding f'
     e' (y , p) = retract-of-prop γ (e y)
      where
@@ -211,7 +215,7 @@ Surjections can be characterized as follows, modulo size:
                → (∀ x → P(corestriction f x))
                → ∀ y' → P y'
  image-induction f = surjection-induction (corestriction f)
-                                          (corestriction-surjection f)
+                                          (corestriction-is-surjection f)
 
  retraction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → has-section f → is-surjection f

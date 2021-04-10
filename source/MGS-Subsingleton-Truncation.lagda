@@ -192,10 +192,10 @@ module basic-truncation-development
   being-surjection-is-subsingleton f = Π-is-subsingleton hunapply
                                         (λ y → ∃-is-subsingleton)
 
-  corestriction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+  corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                            → is-surjection (corestriction f)
 
-  corestriction-surjection f (y , s) = ∥∥-functor g s
+  corestriction-is-surjection f (y , s) = ∥∥-functor g s
    where
     g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
     g (x , p) = x , to-subtype-≡ (λ _ → ∃-is-subsingleton) p

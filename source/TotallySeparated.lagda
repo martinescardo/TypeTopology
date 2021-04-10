@@ -575,7 +575,7 @@ the reflector.
  η {𝓤} {X} = corestriction (eval X)
 
  η-is-surjection : {X : 𝓤 ̇ } → is-surjection η
- η-is-surjection {𝓤} {X} = corestriction-surjection (eval X)
+ η-is-surjection {𝓤} {X} = corestriction-is-surjection (eval X)
 
  η-induction :  {X : 𝓤 ̇ } (P : 𝕋 X → 𝓦 ̇ )
              → ((x' : 𝕋 X) → is-prop (P x'))
@@ -1045,7 +1045,7 @@ apartness on it.
 \begin{code}
 
   η-is-surjection : is-surjection η
-  η-is-surjection = corestriction-surjection α
+  η-is-surjection = corestriction-is-surjection α
 
   η-induction : (P : X' → 𝓦 ̇ )
               → ((x' : X') → is-prop (P x'))

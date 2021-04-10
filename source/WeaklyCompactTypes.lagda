@@ -243,7 +243,7 @@ surjection-∃-compact {𝓤} {𝓥} {X} {Y} f su c q = g (c (q ∘ f))
 image-∃-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → ∃-compact X
                 → ∃-compact (image f)
-image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-surjection f)
+image-∃-compact f = surjection-∃-compact (corestriction f) (corestriction-is-surjection f)
 
 surjection-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-surjection f
@@ -270,7 +270,7 @@ retract-∃-compact' t c = ∥∥-rec ∃-compactness-is-prop (λ r → retract-
 image-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                 → Π-compact X
                 → Π-compact (image f)
-image-Π-compact f = surjection-Π-compact (corestriction f) (corestriction-surjection f)
+image-Π-compact f = surjection-Π-compact (corestriction f) (corestriction-is-surjection f)
 
 retract-Π-compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                   → retract Y of X
