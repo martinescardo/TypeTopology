@@ -1270,7 +1270,7 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
 
 \end{code}
 
-We now give an example of a Kuratowski finite set which is not
+We now give an example of a Kuratowski finite set that is not
 necessarily finite in the above sense (equivalent to some Fin n).
 
 \begin{code}
@@ -1500,6 +1500,8 @@ We prove more than what is needed in order to conclude that.
 There is a lemma contributed by Tom de Jong (with attribution given
 below).
 
+We also include an open problem related to this.
+
 \begin{code}
 
  open import Two-Properties
@@ -1610,7 +1612,7 @@ below).
 
 Hence finding an equivalence from the existence of an equivalence is
 logically equivalent to finding a point from the existence of
-univalence (exercise: these two things are also typally equivalent):
+an equivalence (exercise: these two things are also typally equivalent):
 
 \begin{code}
 
@@ -1641,8 +1643,8 @@ The following no-selection lemma is contributed by Tom de Jong:
    n : 𝟚
    n = ϕ 𝟚 ∣ ≃-refl 𝟚 ∣
 
-   α : (X : 𝓤₀ ̇ ) (p : X ≡ 𝟚) → ϕ X ∣ f p ∣ ≡  ⌜ f p ⌝⁻¹ n
-   α .𝟚 refl = refl
+   α : {X : 𝓤₀ ̇ } (p : X ≡ 𝟚) → ϕ X ∣ f p ∣ ≡  ⌜ f p ⌝⁻¹ n
+   α refl = refl
 
    e : 𝟚 ≃ 𝟚
    e = qinveq complement (complement , complement-involutive , complement-involutive)
@@ -1651,9 +1653,9 @@ The following no-selection lemma is contributed by Tom de Jong:
    p = eqtoid ua 𝟚 𝟚 e
 
    q = n               ≡⟨ refl ⟩
-       ⌜ f refl ⌝⁻¹ n  ≡⟨ (α 𝟚 refl)⁻¹ ⟩
+       ⌜ f refl ⌝⁻¹ n  ≡⟨ (α refl)⁻¹ ⟩
        ϕ 𝟚 ∣ f refl ∣  ≡⟨ ap (ϕ 𝟚) (∥∥-is-prop ∣ f refl ∣ ∣ f p ∣) ⟩
-       ϕ 𝟚 ∣ f p ∣     ≡⟨ α 𝟚 p ⟩
+       ϕ 𝟚 ∣ f p ∣     ≡⟨ α p ⟩
        ⌜ f p ⌝⁻¹ n     ≡⟨ ap (λ - → ⌜ - ⌝⁻¹ n) (idtoeq-eqtoid ua 𝟚 𝟚 e) ⟩
        ⌜ e ⌝⁻¹ n       ≡⟨ refl ⟩
        complement n    ∎
@@ -1736,8 +1738,11 @@ The following no-selection lemma is contributed by Tom de Jong:
 Because univalence is consistent, it follows that, without univalence,
 the statement
 
-  (X : 𝓤 ̇ ) → is-finite X → finite X
+  (X : 𝓤 ̇ ) → is-finite X → finite-linear-order X
+
 is not provable.
+
+The same holds if we replace is-finite by is-Kuratowski-finite:
 
 \begin{code}
 
@@ -1752,6 +1757,6 @@ is not provable.
 
 TODO. Without univalence, maybe it is the case that from
 
-  ((X : 𝓤 ̇ ) → ∥ X ≃ 𝟚 ∥ → X)
+  (X : 𝓤 ̇ ) → ∥ X ≃ 𝟚 ∥ → X
 
 we can deduce excluded middle or some other constructive taboo.
