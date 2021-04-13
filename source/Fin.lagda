@@ -1775,3 +1775,26 @@ TODO. Without univalence, maybe it is the case that from
   (X : 𝓤 ̇ ) → ∥ X ≃ 𝟚 ∥ → X
 
 we can deduce excluded middle or some other constructive taboo.
+
+One more question:
+
+\begin{code}
+
+ is-subfinite : 𝓤 ̇ → 𝓤 ̇
+ is-subfinite X = ∃ n ꞉ ℕ , Fin n ↪ X
+
+\end{code}
+
+TODO. What can say about types that are both Kuratowski finite and
+subfinite?
+
+Summary of finiteness notions for a type X:
+
+     ∃ n ꞉ ℕ , X ≃ Fin n  (is-finite X)
+     Σ n ꞉ ℕ , X ≃ Fin n  (finite-linear-order X)
+
+     ∃ n ꞉ ℕ , Fin n ↠ X  (is-Kuratowski-finite X)
+     Σ n ꞉ ℕ , Fin n ↠ X  (nameless, not considered yet)
+
+     ∃ n ꞉ ℕ , Fin n ↪ X  (subfinite)
+     Σ n ꞉ ℕ , Fin n ↪ X  (nameless, not considered yet)
