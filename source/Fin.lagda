@@ -1785,7 +1785,7 @@ One more question:
 
 \end{code}
 
-TODO. What can say about types that are both Kuratowski finite and
+TODO. What can we say about types that are both Kuratowski finite and
 subfinite?
 
 Summary of finiteness notions for a type X:
