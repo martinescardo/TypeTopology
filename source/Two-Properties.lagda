@@ -35,6 +35,17 @@ open import Unit-Properties
 𝟚-possibilities ₀ = inl refl
 𝟚-possibilities ₁ = inr refl
 
+
+𝟚-excluded-third : (b : 𝟚) → b ≢ ₀ → b ≢ ₁ → 𝟘 {𝓤₀}
+𝟚-excluded-third ₀ u v = u refl
+𝟚-excluded-third ₁ u v = v refl
+
+𝟚-things-distinct-from-a-third-are-equal : (x y z : 𝟚) → x ≢ z → y ≢ z → x ≡ y
+𝟚-things-distinct-from-a-third-are-equal ₀ ₀ z u v = refl
+𝟚-things-distinct-from-a-third-are-equal ₀ ₁ z u v = 𝟘-elim (𝟚-excluded-third z (≢-sym u) (≢-sym v))
+𝟚-things-distinct-from-a-third-are-equal ₁ ₀ z u v = 𝟘-elim (𝟚-excluded-third z (≢-sym v) (≢-sym u))
+𝟚-things-distinct-from-a-third-are-equal ₁ ₁ z u v = refl
+
 one-is-not-zero : ₁ ≢ ₀
 one-is-not-zero p = 𝟙-is-not-𝟘 q
  where

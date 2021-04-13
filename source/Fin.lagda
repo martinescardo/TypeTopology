@@ -81,6 +81,22 @@ Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 We will not use this induction principle explicitly. Instead, we will
 use the above pattern for similar definitions by induction.
 
+\begin{code}
+
+open import Unit-Properties
+
+positive-not-𝟎 : {n : ℕ} {x : Fin (succ n)} → suc x ≢ 𝟎
+positive-not-𝟎 {n} {x} p = 𝟙-is-not-𝟘 (g p)
+ where
+  f : Fin (succ (succ n)) → 𝓤₀ ̇
+  f 𝟎       = 𝟘
+  f (suc x) = 𝟙
+
+  g : suc x ≡ 𝟎 → 𝟙 ≡ 𝟘
+  g = ap f
+
+\end{code}
+
 The left cancellability of Fin uses the construction +𝟙-cancellable
 defined in the module PlusOneLC.lagda.
 
@@ -1305,7 +1321,7 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
        where
         h : x₀ ≡ x₁ → ι 𝟎 ≡ ι 𝟏
         h = to-subtype-≡ (λ _ → ∨-is-prop)
-        
+
         α : decidable (g (ι 𝟎) ≡ g (ι 𝟏)) → decidable (x₀ ≡ x₁)
         α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
         α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
@@ -1417,14 +1433,14 @@ Try to see if a more conceptual definition of A gives a shorter proof:
        where
         h : x 𝟎 ≡ x 𝟏 → ι 𝟎 ≡ ι 𝟏
         h = to-subtype-≡ (λ y → being-in-the-image-is-prop y x)
-        
+
         α : decidable (g (ι 𝟎) ≡ g (ι 𝟏)) → decidable (x 𝟎 ≡ x 𝟏)
         α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
         α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
 
         β : decidable (x 𝟎 ≡ x 𝟏)
         β = α (Fin-is-discrete (succ (succ n)) (g (ι 𝟎)) (g (ι 𝟏)))
-    
+
     k : decidable (x 𝟎 ≡ x 𝟏) → is-finite A
     k (inl p) = 1 , ∣ singleton-≃ m l ∣
      where
@@ -1457,5 +1473,136 @@ Try to see if a more conceptual definition of A gives a shorter proof:
 
       ι-is-equiv : is-equiv ι
       ι-is-equiv = surjective-embeddings-are-equivs ι ι-emb ι-surj
+
+\end{code}
+
+Added 13 April 2021. Can every (Kuratowski) finite be equipped with a
+linear order?
+
+\begin{code}
+
+ open import Two-Properties
+
+ select-equiv-with-𝟚-lemma : FunExt
+                           → {X : 𝓤 ̇ }
+                           → X ≃ 𝟚
+                           → (x₀ : X) → ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+ select-equiv-with-𝟚-lemma fe {X} 𝕙 x₀ = VII
+  where
+   n₀ : 𝟚
+   n₀ = ⌜ 𝕙 ⌝ x₀
+
+   x₁ : X
+   x₁ = ⌜ 𝕙 ⌝⁻¹ (complement n₀)
+
+   f : 𝟚 → X
+   f = 𝟚-cases x₀ x₁
+
+   I : ⌜ 𝕙 ⌝ x₁ ≡ complement n₀
+   I = ≃-sym-is-rinv 𝕙 (complement n₀)
+
+   II : x₀ ≢ x₁
+   II p = complement-no-fp n₀ q
+    where
+     q : n₀ ≡ complement n₀
+     q = ap ⌜ 𝕙 ⌝ p ∙ I
+
+   III : (x : X) → x ≢ x₀ → x ≡ x₁
+   III x ν = equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) q
+    where
+     u : ⌜ 𝕙 ⌝ x ≢ ⌜ 𝕙 ⌝ x₀
+     u p = ν (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) p)
+
+     v : ⌜ 𝕙 ⌝ x₁ ≢ ⌜ 𝕙 ⌝ x₀
+     v p = II (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) (p ⁻¹))
+
+     q : ⌜ 𝕙 ⌝ x ≡ ⌜ 𝕙 ⌝ x₁
+     q = 𝟚-things-distinct-from-a-third-are-equal (⌜ 𝕙 ⌝ x) (⌜ 𝕙 ⌝ x₁) (⌜ 𝕙 ⌝ x₀) u v
+
+   δ : is-discrete X
+   δ = equiv-to-discrete (≃-sym 𝕙) 𝟚-is-discrete
+
+   γ : (x : X) → decidable (x ≡ x₀) → 𝟚
+   γ x (inl p) = ₀
+   γ x (inr ν) = ₁
+
+   g : X → 𝟚
+   g x = γ x (δ x x₀)
+
+   IV : (n : 𝟚) (d : decidable (f n ≡ x₀)) → γ (f n) d ≡ n
+   IV ₀ (inl p) = refl
+   IV ₀ (inr ν) = 𝟘-elim (ν refl)
+   IV ₁ (inl p) = 𝟘-elim (II (p ⁻¹))
+   IV ₁ (inr ν) = refl
+
+   η : g ∘ f ∼ id
+   η n = IV n (δ (f n) x₀)
+
+   V : (x : X) (d : decidable (x ≡ x₀)) → f (γ x d) ≡ x
+   V x (inl p) = p ⁻¹
+   V x (inr ν) = (III x ν)⁻¹
+
+   ε : f ∘ g ∼ id
+   ε x = V x (δ x x₀)
+
+   f-is-equiv : is-equiv f
+   f-is-equiv = qinvs-are-equivs f (g , η , ε)
+
+   c : Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   c = x₁ , f-is-equiv
+
+   VI : is-central _ c
+   VI (x , t) = q
+    where
+     ν : x₀ ≢ x
+     ν r = zero-is-not-one s
+      where
+       s : ₀ ≡ ₁
+       s = equivs-are-lc (𝟚-cases x₀ x) t r
+
+     p : x₁ ≡ x
+     p = (III x (≢-sym ν))⁻¹
+
+     q : c ≡ (x , t)
+     q = to-subtype-≡ (λ x → being-equiv-is-prop fe (𝟚-cases x₀ x)) p
+
+   VII : ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   VII = c , VI
+
+ select-equiv-with-𝟚 : FunExt
+                     → {X : 𝓤 ̇ }
+                     → ∥ X ≃ 𝟚 ∥
+                     → X
+                     → X ≃ 𝟚
+ select-equiv-with-𝟚 fe {X} s x₀ = γ
+  where
+   α : ∥ X ≃ 𝟚 ∥ → ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   α = ∥∥-rec (∃!-is-prop (fe _ _)) (λ 𝕙 → select-equiv-with-𝟚-lemma fe 𝕙 x₀)
+
+   β : Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   β = description (α s)
+
+   γ : X ≃ 𝟚
+   γ = ≃-sym (𝟚-cases x₀ (pr₁ β) , pr₂ β)
+
+\end{code}
+
+Hence finding an equivalence from the existence of an equivalence is
+logically equivalent to finding a point from the existence of
+univalence (exercise: these two things are also typally equivalent):
+
+\begin{code}
+
+ select-equiv-with-𝟚-theorem : FunExt
+                             → {X : 𝓤 ̇ }
+                             → (∥ X ≃ 𝟚 ∥ → X ≃ 𝟚)
+                             ⇔ (∥ X ≃ 𝟚 ∥ → X)
+ select-equiv-with-𝟚-theorem fe {X} = α , β
+  where
+   α : (∥ X ≃ 𝟚 ∥ → X ≃ 𝟚) → ∥ X ≃ 𝟚 ∥ → X
+   α f s = ⌜ ≃-sym (f s) ⌝ ₀
+
+   β : (∥ X ≃ 𝟚 ∥ → X) → ∥ X ≃ 𝟚 ∥ → X ≃ 𝟚
+   β g s = select-equiv-with-𝟚 fe s (g s)
 
 \end{code}

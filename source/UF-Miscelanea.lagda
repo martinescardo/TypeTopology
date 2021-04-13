@@ -81,9 +81,12 @@ isolated-inr' x i y n =
 discrete-inl : {X : 𝓤 ̇ } (d : is-discrete X) (x y : X) (r : x ≡ y) → d x y ≡ inl r
 discrete-inl d x = isolated-inl x (d x)
 
-discrete-inr : {X : 𝓤 ̇ }
-             → funext 𝓤 𝓤₀
-             → (d : is-discrete X) (x y : X) (n : ¬ (x ≡ y)) → d x y ≡ inr n
+discrete-inr : funext 𝓤 𝓤₀
+             → {X : 𝓤 ̇ }
+               (d : is-discrete X)
+               (x y : X)
+               (n : ¬ (x ≡ y))
+             → d x y ≡ inr n
 discrete-inr fe d x = isolated-inr fe x (d x)
 
 isolated-Id-is-prop : {X : 𝓤 ̇ } (x : X) → is-isolated' x → (y : X) → is-prop (y ≡ x)
@@ -100,22 +103,46 @@ lc-maps-reflect-isolatedness f l x i y = γ (i (f y))
 
 lc-maps-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                              → left-cancellable f
-                             → is-discrete Y → is-discrete X
+                             → is-discrete Y
+                             → is-discrete X
 lc-maps-reflect-discreteness f l d x = lc-maps-reflect-isolatedness f l x (d (f x))
 
 embeddings-reflect-isolatedness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
-                                → (x : X) → is-isolated (f x) → is-isolated x
+                                → (x : X) → is-isolated (f x)
+                                → is-isolated x
 embeddings-reflect-isolatedness f e x i y = lc-maps-reflect-isolatedness f
                                               (embeddings-are-lc f e) x i y
 
 embeddings-reflect-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                 → is-embedding f
-                                → is-discrete Y → is-discrete X
+                                → is-discrete Y
+                                → is-discrete X
 embeddings-reflect-discreteness f e = lc-maps-reflect-discreteness f (embeddings-are-lc f e)
 
+
+open import UF-Equiv
+
+equivs-preserve-discreteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                             → is-equiv f
+                             → is-discrete X
+                             → is-discrete Y
+equivs-preserve-discreteness f e = lc-maps-reflect-discreteness
+                                     (inverse f e)
+                                     (equivs-are-lc
+                                        (inverse f e)
+                                        (inverses-are-equivs f e))
+
+equiv-to-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                  → X ≃ Y
+                  → is-discrete X
+                  → is-discrete Y
+equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
+
 Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
-              → is-discrete X → ((x : X) → is-discrete(Y x)) → is-discrete(Σ Y)
+              → is-discrete X
+              → ((x : X) → is-discrete(Y x))
+              → is-discrete(Σ Y)
 Σ-is-discrete {𝓤} {𝓥} {X} {Y} d e (x , y) (x' , y') = g (d x x')
  where
   g : decidable(x ≡ x') → decidable(x , y ≡ x' , y')
