@@ -1796,5 +1796,5 @@ Summary of finiteness notions for a type X:
      ∃ n ꞉ ℕ , Fin n ↠ X  (is-Kuratowski-finite X)
      Σ n ꞉ ℕ , Fin n ↠ X  (nameless, not considered yet)
 
-     ∃ n ꞉ ℕ , Fin n ↪ X  (subfinite)
-     Σ n ꞉ ℕ , Fin n ↪ X  (nameless, not considered yet)
+     ∃ n ꞉ ℕ , X ↪ Fin n  (subfinite)
+     Σ n ꞉ ℕ , X ↪ Fin n  (nameless, not considered yet)
