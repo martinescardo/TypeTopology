@@ -99,8 +99,8 @@ eqtofun = Eqtofun _ _
 ⌜_⌝     = eqtofun
 
 eqtofun- ⌜⌝-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝
-eqtofun- = pr₂
-⌜⌝-is-equiv         = eqtofun-
+eqtofun-     = pr₂
+⌜⌝-is-equiv  = eqtofun-
 
 back-eqtofun ⌜_⌝⁻¹ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → Y → X
 back-eqtofun e = pr₁ (pr₁ (pr₂ e))
@@ -161,6 +161,9 @@ inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv 
                  → is-equiv (inverse f e)
 
 inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
+
+⌜⌝⁻¹-is-equiv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (e : X ≃ Y) → is-equiv ⌜ e ⌝⁻¹
+⌜⌝⁻¹-is-equiv (f , i) = inverses-are-equivs f i
 
 inversion-involutive : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                      → inverse (inverse f e) (inverses-are-equivs f e) ≡ f

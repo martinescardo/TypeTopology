@@ -613,8 +613,8 @@ type of finite linear orders on X.
 
 \begin{code}
 
-Finite : 𝓤 ̇ → 𝓤 ̇
-Finite X = Σ n ꞉ ℕ , X ≃ Fin n
+finite-linear-order : 𝓤 ̇ → 𝓤 ̇
+finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
@@ -628,7 +628,7 @@ open import UF-Equiv-FunExt
 open import UF-UniverseEmbedding
 open import UF-UA-FunExt
 
-type-of-Finite-types-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , Finite X) ≃ ℕ
+type-of-Finite-types-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , finite-linear-order X) ≃ ℕ
 type-of-Finite-types-is-ℕ {𝓤} ua =
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , X ≃ Fin n)          ≃⟨ i ⟩
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Fin n ≃ X)          ≃⟨ ii ⟩
@@ -680,7 +680,8 @@ module finiteness (pt : propositional-truncations-exist) where
 
 \end{code}
 
-Equivalently, one can define finiteness as follows:
+Equivalently, one can define finiteness as follows, with the
+truncation outside the Σ:
 
 \begin{code}
 
@@ -1253,6 +1254,20 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
  is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇
  is-Kuratowski-finite X = ∃ n ꞉ ℕ , Fin n ↠ X
 
+ being-Kuratowski-finite-is-prop : {X : 𝓤 ̇ } → is-prop (is-Kuratowski-finite X)
+ being-Kuratowski-finite-is-prop = ∃-is-prop
+
+ finite-sets-are-Kuratowski-finite : {X : 𝓤 ̇ }
+                                   → is-finite X
+                                   → is-Kuratowski-finite X
+ finite-sets-are-Kuratowski-finite {𝓤} {X} X-is-finite = γ
+  where
+   δ : finite-linear-order X → is-Kuratowski-finite X
+   δ (n , 𝕗) = ∣ n , (⌜ 𝕗 ⌝⁻¹ , equivs-are-surjections (⌜⌝⁻¹-is-equiv 𝕗)) ∣
+
+   γ : is-Kuratowski-finite X
+   γ = ∥∥-rec being-Kuratowski-finite-is-prop δ (finite-prime X X-is-finite)
+
 \end{code}
 
 We now give an example of a Kuratowski finite set which is not
@@ -1382,7 +1397,8 @@ the decidability of x₀ ≡ x₁ amounts to excluded middle.
 
 \end{code}
 
-Try to see if a more conceptual definition of A gives a shorter proof:
+Try to see if a more conceptual definition of A gives a shorter proof
+(only marginally, it turns out):
 
 \begin{code}
 
@@ -1476,8 +1492,13 @@ Try to see if a more conceptual definition of A gives a shorter proof:
 
 \end{code}
 
-Added 13 April 2021. Can every (Kuratowski) finite be equipped with a
-linear order?
+Added 13 April 2021. Can every (Kuratowski) finite type be equipped with a
+linear order? Not in the presence of univalence.
+
+We prove more than what is needed in order to conclude that.
+
+There is a lemma contributed by Tom de Jong (with attribution given
+below).
 
 \begin{code}
 
@@ -1606,3 +1627,131 @@ univalence (exercise: these two things are also typally equivalent):
    β g s = select-equiv-with-𝟚 fe s (g s)
 
 \end{code}
+
+The following no-selection lemma is contributed by Tom de Jong:
+
+\begin{code}
+
+ no-selection : is-univalent 𝓤₀ → ¬ ((X : 𝓤₀ ̇ ) → ∥ X ≃ 𝟚 ∥ → X)
+ no-selection ua ϕ = γ
+  where
+   f : {X : 𝓤₀ ̇ } → X ≡ 𝟚 → X ≃ 𝟚
+   f {X} = idtoeq X 𝟚
+
+   n : 𝟚
+   n = ϕ 𝟚 ∣ ≃-refl 𝟚 ∣
+
+   α : (X : 𝓤₀ ̇ ) (p : X ≡ 𝟚) → ϕ X ∣ f p ∣ ≡  ⌜ f p ⌝⁻¹ n
+   α .𝟚 refl = refl
+
+   e : 𝟚 ≃ 𝟚
+   e = qinveq complement (complement , complement-involutive , complement-involutive)
+
+   p : 𝟚 ≡ 𝟚
+   p = eqtoid ua 𝟚 𝟚 e
+
+   q = n               ≡⟨ refl ⟩
+       ⌜ f refl ⌝⁻¹ n  ≡⟨ (α 𝟚 refl)⁻¹ ⟩
+       ϕ 𝟚 ∣ f refl ∣  ≡⟨ ap (ϕ 𝟚) (∥∥-is-prop ∣ f refl ∣ ∣ f p ∣) ⟩
+       ϕ 𝟚 ∣ f p ∣     ≡⟨ α 𝟚 p ⟩
+       ⌜ f p ⌝⁻¹ n     ≡⟨ ap (λ - → ⌜ - ⌝⁻¹ n) (idtoeq-eqtoid ua 𝟚 𝟚 e) ⟩
+       ⌜ e ⌝⁻¹ n       ≡⟨ refl ⟩
+       complement n    ∎
+
+   γ : 𝟘
+   γ = complement-no-fp n q
+
+
+ 𝟚-is-Fin2 : 𝟚 ≃ Fin 2
+ 𝟚-is-Fin2 = qinveq (𝟚-cases 𝟎 𝟏) (g , η , ε)
+  where
+   g : Fin 2 → 𝟚
+   g 𝟎 = ₀
+   g 𝟏 = ₁
+
+   η : g ∘ 𝟚-cases 𝟎 𝟏 ∼ id
+   η ₀ = refl
+   η ₁ = refl
+
+   ε : 𝟚-cases 𝟎 𝟏 ∘ g ∼ id
+   ε 𝟎 = refl
+   ε 𝟏 = refl
+
+ open import UF-UA-FunExt
+
+ no-orderability-of-finite-types : Univalence
+                                 → ¬ ((X : 𝓤 ̇ ) → is-finite X → finite-linear-order X)
+ no-orderability-of-finite-types {𝓤} ua ψ = γ
+  where
+   fe : FunExt
+   fe = Univalence-gives-FunExt ua
+
+   α : (X : 𝓤₀ ̇ ) → ∥ X ≃ 𝟚 ∥ → X ≃ 𝟚
+   α X s = VII
+    where
+     X' : 𝓤 ̇
+     X' = Lift 𝓤 X
+
+     I : X ≃ 𝟚 → X' ≃ Fin 2
+     I 𝕗 = X'    ≃⟨ Lift-≃ 𝓤 X ⟩
+           X     ≃⟨ 𝕗 ⟩
+           𝟚     ≃⟨ 𝟚-is-Fin2 ⟩
+           Fin 2 ■
+
+     II : ∥ X' ≃ Fin 2 ∥
+     II = ∥∥-functor I s
+
+     III : is-finite X'
+     III = 2 , II
+
+     IV : finite-linear-order X'
+     IV = ψ X' III
+
+     n : ℕ
+     n = pr₁ IV
+
+     𝕘 : X' ≃ Fin n
+     𝕘 = pr₂ IV
+
+     V : ∥ X' ≃ Fin n ∥ → ∥ X' ≃ Fin 2 ∥ → n ≡ 2
+     V = ∥∥-rec₂ ℕ-is-set (λ 𝕗 𝕘 → Fin-lc n 2 (≃-sym 𝕗 ● 𝕘))
+
+     VI : n ≡ 2
+     VI = V ∣ 𝕘 ∣ II
+
+     VII = X     ≃⟨ ≃-Lift 𝓤 X ⟩
+           X'    ≃⟨ 𝕘 ⟩
+           Fin n ≃⟨ idtoeq (Fin n) (Fin 2) (ap Fin VI) ⟩
+           Fin 2 ≃⟨ ≃-sym 𝟚-is-Fin2 ⟩
+           𝟚     ■
+
+   ϕ : (X : 𝓤₀ ̇ ) → ∥ X ≃ 𝟚 ∥ → X
+   ϕ X = lr-implication (select-equiv-with-𝟚-theorem fe) (α X)
+
+   γ : 𝟘
+   γ = no-selection (ua 𝓤₀) ϕ
+
+\end{code}
+
+Because univalence is consistent, it follows that, without univalence,
+the statement
+
+  (X : 𝓤 ̇ ) → is-finite X → finite X
+is not provable.
+
+\begin{code}
+
+ no-orderability-of-K-finite-types : Univalence
+                                   → ¬ ((X : 𝓤 ̇ ) → is-Kuratowski-finite X → finite-linear-order X)
+ no-orderability-of-K-finite-types {𝓤} ua ϕ = no-orderability-of-finite-types ua ψ
+  where
+   ψ : (X : 𝓤 ̇ ) → is-finite X → finite-linear-order X
+   ψ X i = ϕ X (finite-sets-are-Kuratowski-finite i)
+
+\end{code}
+
+TODO. Without univalence, maybe it is the case that from
+
+  ((X : 𝓤 ̇ ) → ∥ X ≃ 𝟚 ∥ → X)
+
+we can deduce excluded middle or some other constructive taboo.
