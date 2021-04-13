@@ -1524,7 +1524,7 @@ We also include an open problem related to this.
                            → {X : 𝓤 ̇ }
                            → X ≃ 𝟚
                            → (x₀ : X) → ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
- select-equiv-with-𝟚-lemma fe {X} 𝕙 x₀ = VII
+ select-equiv-with-𝟚-lemma fe {X} 𝕙 x₀ = VI
   where
    n₀ : 𝟚
    n₀ = ⌜ 𝕙 ⌝ x₀
@@ -1535,26 +1535,25 @@ We also include an open problem related to this.
    f : 𝟚 → X
    f = 𝟚-cases x₀ x₁
 
-   I : ⌜ 𝕙 ⌝ x₁ ≡ complement n₀
-   I = ≃-sym-is-rinv 𝕙 (complement n₀)
-
-   II : x₀ ≢ x₁
-   II p = complement-no-fp n₀ q
+   I : x₀ ≢ x₁
+   I p = complement-no-fp n₀ q
     where
-     q : n₀ ≡ complement n₀
-     q = ap ⌜ 𝕙 ⌝ p ∙ I
+     q = n₀            ≡⟨ ap ⌜ 𝕙 ⌝ p ⟩
+         ⌜ 𝕙 ⌝ x₁      ≡⟨ ≃-sym-is-rinv 𝕙 (complement n₀) ⟩
+         complement n₀ ∎
 
-   III : (x : X) → x ≢ x₀ → x ≡ x₁
-   III x ν = equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) q
+   II : (x : X) → x ≢ x₀ → x ≡ x₁
+   II x ν = equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) q
     where
      u : ⌜ 𝕙 ⌝ x ≢ ⌜ 𝕙 ⌝ x₀
      u p = ν (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) p)
 
      v : ⌜ 𝕙 ⌝ x₁ ≢ ⌜ 𝕙 ⌝ x₀
-     v p = II (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) (p ⁻¹))
+     v p = I (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) (p ⁻¹))
 
      q : ⌜ 𝕙 ⌝ x ≡ ⌜ 𝕙 ⌝ x₁
-     q = 𝟚-things-distinct-from-a-third-are-equal (⌜ 𝕙 ⌝ x) (⌜ 𝕙 ⌝ x₁) (⌜ 𝕙 ⌝ x₀) u v
+     q = 𝟚-things-distinct-from-a-third-are-equal
+          (⌜ 𝕙 ⌝ x) (⌜ 𝕙 ⌝ x₁) (⌜ 𝕙 ⌝ x₀) u v
 
    δ : is-discrete X
    δ = equiv-to-discrete (≃-sym 𝕙) 𝟚-is-discrete
@@ -1566,21 +1565,21 @@ We also include an open problem related to this.
    g : X → 𝟚
    g x = γ x (δ x x₀)
 
-   IV : (n : 𝟚) (d : decidable (f n ≡ x₀)) → γ (f n) d ≡ n
-   IV ₀ (inl p) = refl
-   IV ₀ (inr ν) = 𝟘-elim (ν refl)
-   IV ₁ (inl p) = 𝟘-elim (II (p ⁻¹))
-   IV ₁ (inr ν) = refl
+   III : (n : 𝟚) (d : decidable (f n ≡ x₀)) → γ (f n) d ≡ n
+   III ₀ (inl p) = refl
+   III ₀ (inr ν) = 𝟘-elim (ν refl)
+   III ₁ (inl p) = 𝟘-elim (I (p ⁻¹))
+   III ₁ (inr ν) = refl
 
    η : g ∘ f ∼ id
-   η n = IV n (δ (f n) x₀)
+   η n = III n (δ (f n) x₀)
 
-   V : (x : X) (d : decidable (x ≡ x₀)) → f (γ x d) ≡ x
-   V x (inl p) = p ⁻¹
-   V x (inr ν) = (III x ν)⁻¹
+   IV : (x : X) (d : decidable (x ≡ x₀)) → f (γ x d) ≡ x
+   IV x (inl p) = p ⁻¹
+   IV x (inr ν) = (II x ν)⁻¹
 
    ε : f ∘ g ∼ id
-   ε x = V x (δ x x₀)
+   ε x = IV x (δ x x₀)
 
    f-is-equiv : is-equiv f
    f-is-equiv = qinvs-are-equivs f (g , η , ε)
@@ -1588,8 +1587,8 @@ We also include an open problem related to this.
    c : Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
    c = x₁ , f-is-equiv
 
-   VI : is-central _ c
-   VI (x , t) = q
+   V : is-central _ c
+   V (x , t) = q
     where
      ν : x₀ ≢ x
      ν r = zero-is-not-one s
@@ -1598,13 +1597,13 @@ We also include an open problem related to this.
        s = equivs-are-lc (𝟚-cases x₀ x) t r
 
      p : x₁ ≡ x
-     p = (III x (≢-sym ν))⁻¹
+     p = (II x (≢-sym ν))⁻¹
 
      q : c ≡ (x , t)
      q = to-subtype-≡ (λ x → being-equiv-is-prop fe (𝟚-cases x₀ x)) p
 
-   VII : ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
-   VII = c , VI
+   VI : ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   VI = c , V
 
  select-equiv-with-𝟚 : FunExt
                      → {X : 𝓤 ̇ }
@@ -1625,8 +1624,9 @@ We also include an open problem related to this.
 \end{code}
 
 Hence finding an equivalence from the existence of an equivalence is
-logically equivalent to finding a point from the existence of
-an equivalence (exercise: these two things are also typally equivalent):
+logically equivalent to finding a point from the existence of an
+equivalence (exercise: moreover, these two things are typally
+equivalent):
 
 \begin{code}
 
@@ -1661,7 +1661,9 @@ The following no-selection lemma is contributed by Tom de Jong:
    α refl = refl
 
    e : 𝟚 ≃ 𝟚
-   e = qinveq complement (complement , complement-involutive , complement-involutive)
+   e = qinveq
+        complement
+        (complement , complement-involutive , complement-involutive)
 
    p : 𝟚 ≡ 𝟚
    p = eqtoid ua 𝟚 𝟚 e
@@ -1676,7 +1678,6 @@ The following no-selection lemma is contributed by Tom de Jong:
 
    γ : 𝟘
    γ = complement-no-fp n q
-
 
  𝟚-is-Fin2 : 𝟚 ≃ Fin 2
  𝟚-is-Fin2 = qinveq (𝟚-cases 𝟎 𝟏) (g , η , ε)
