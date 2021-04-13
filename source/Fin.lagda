@@ -1495,16 +1495,19 @@ Try to see if a more conceptual definition of A gives a shorter proof
 Added 13 April 2021. Can every (Kuratowski) finite type be equipped with a
 linear order?
 
-Steve Vickers asks this question for the internal language of a 1-topos, and provides a counter model for it in Section 2.4 of the following paper:
+Steve Vickers asks this question for the internal language of a
+1-topos, and provides a counter model for it in Section 2.4 of the
+following paper:
 
   S.J. Vickers. Strongly Algebraic = SFP (Topically). Mathematical
   Structures in Computer Science 11 (2001) pp. 717-742,
-  http://dx.doi.org/10.1017/S0960129501003437 and
+  http://dx.doi.org/10.1017/S0960129501003437
   https://www.cs.bham.ac.uk/~sjv/SFP.pdf
 
 We here work in MLTT with propositional truncations, in Agda notation,
 and instead prove that, in the presence of univalence, it is false
-that every (Kuratowski) finite type be equipped with a linear order.
+that every (Kuratowski) finite type can be equipped with a linear
+order.
 
 We prove more than what is needed in order to conclude that.
 
