@@ -1781,7 +1781,7 @@ One more question:
 \begin{code}
 
  is-subfinite : 𝓤 ̇ → 𝓤 ̇
- is-subfinite X = ∃ n ꞉ ℕ , Fin n ↪ X
+ is-subfinite X = ∃ n ꞉ ℕ , X ↪ Fin n
 
 \end{code}
 
