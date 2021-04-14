@@ -23,7 +23,7 @@ And more.
 Other interesting uses of the types Fin n is in the file
 https://www.cs.bham.ac.uk/~mhe/TypeTopology/ArithmeticViaEquivalence.html
 which proves commutativity of addition and multiplication, and more,
-using the corresponding property for (finite) types.
+using the corresponding properties for (finite) types.
 
 \begin{code}
 
@@ -333,6 +333,7 @@ pigeonhole-principle m n f g = γ
    where
     ε : (i j : Fin m) → f i ≡ f j → ¬ (i ≢ j)
     ε i j p ν = ψ (i , j , ν , p)
+
     δ : (i j : Fin m) → f i ≡ f j → i ≡ j
     δ i j p = ¬¬-elim (Fin-is-discrete m i j) (ε i j p)
 
@@ -628,8 +629,8 @@ open import UF-Equiv-FunExt
 open import UF-UniverseEmbedding
 open import UF-UA-FunExt
 
-type-of-Finite-types-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , finite-linear-order X) ≃ ℕ
-type-of-Finite-types-is-ℕ {𝓤} ua =
+type-of-linear-orders-is-ℕ : Univalence → (Σ X ꞉ 𝓤 ̇ , finite-linear-order X) ≃ ℕ
+type-of-linear-orders-is-ℕ {𝓤} ua =
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , X ≃ Fin n)          ≃⟨ i ⟩
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Fin n ≃ X)          ≃⟨ ii ⟩
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , Lift 𝓤 (Fin n) ≃ X) ≃⟨ iii ⟩
@@ -817,7 +818,7 @@ But the prop-valuedness of A is actually not needed, with more work:
 
 \end{code}
 
-From now on we assume function extensionality:
+We now assume function extensionality for a while:
 
 \begin{code}
 
@@ -1512,8 +1513,8 @@ following paper:
 
 We here work in MLTT with propositional truncations, in Agda notation,
 and instead prove that, in the presence of univalence, it is false
-that every (Kuratowski) finite type can be equipped with a linear
-order.
+that every (Kuratowski) finite type with decidable equality can be
+equipped with a linear order.
 
 We prove more than what is needed in order to conclude that.
 
@@ -1782,7 +1783,8 @@ we consider discrete Kuratowski finite types.
 
 \end{code}
 
-And this gives an alternative answer the question by Steve Vickers mentioned above:
+And this gives an alternative answer the question by Steve Vickers
+mentioned above:
 
 \begin{code}
 
@@ -1792,7 +1794,7 @@ And this gives an alternative answer the question by Steve Vickers mentioned abo
 
  no-orderability-of-discrete-K-finite-types {𝓤} ua ϕ = no-orderability-of-finite-types ua ψ
   where
-   ψ : (X : 𝓤 ̇) → is-finite X → finite-linear-order X
+   ψ : (X : 𝓤 ̇ ) → is-finite X → finite-linear-order X
    ψ X i = ϕ X (finite-types-are-Kuratowski-finite i)
                (finite-types-are-discrete (Univalence-gives-FunExt ua) i)
 \end{code}
@@ -1803,7 +1805,7 @@ TODO. Without univalence, maybe it is the case that from
 
 we can deduce excluded middle or some other constructive taboo.
 
-One more question:
+One more notion of finiteness:
 
 \begin{code}
 
