@@ -1257,10 +1257,10 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
  being-Kuratowski-finite-is-prop : {X : 𝓤 ̇ } → is-prop (is-Kuratowski-finite X)
  being-Kuratowski-finite-is-prop = ∃-is-prop
 
- finite-sets-are-Kuratowski-finite : {X : 𝓤 ̇ }
-                                   → is-finite X
-                                   → is-Kuratowski-finite X
- finite-sets-are-Kuratowski-finite {𝓤} {X} X-is-finite = γ
+ finite-types-are-Kuratowski-finite : {X : 𝓤 ̇ }
+                                    → is-finite X
+                                    → is-Kuratowski-finite X
+ finite-types-are-Kuratowski-finite {𝓤} {X} X-is-finite = γ
   where
    δ : finite-linear-order X → is-Kuratowski-finite X
    δ (n , 𝕗) = ∣ n , (⌜ 𝕗 ⌝⁻¹ , equivs-are-surjections (⌜⌝⁻¹-is-equiv 𝕗)) ∣
@@ -1269,6 +1269,10 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
    γ = ∥∥-rec being-Kuratowski-finite-is-prop δ (finite-prime X X-is-finite)
 
 \end{code}
+
+TODO. Conversely, if a Kuratowski finite is discrete (that is, it has
+decidable equality) then it is finite, because we can use the
+decidable equality to remove repetitions, as observed by Tom de Jong.
 
 We now give an example of a Kuratowski finite set that is not
 necessarily finite in the above sense (equivalent to some Fin n).
@@ -1492,8 +1496,10 @@ Try to see if a more conceptual definition of A gives a shorter proof
 
 \end{code}
 
-Added 13 April 2021. Can every (Kuratowski) finite type be equipped with a
-linear order?
+Added 13 April 2021. Can every Kuratowski finite discrete type be
+equipped with a linear order?
+
+Recall that a type is called discrete if it has decidable equality.
 
 Steve Vickers asks this question for the internal language of a
 1-topos, and provides a counter model for it in Section 2.4 of the
@@ -1660,24 +1666,25 @@ The following no-selection lemma is contributed by Tom de Jong:
    α : {X : 𝓤₀ ̇ } (p : X ≡ 𝟚) → ϕ X ∣ f p ∣ ≡  ⌜ f p ⌝⁻¹ n
    α refl = refl
 
-   e : 𝟚 ≃ 𝟚
-   e = qinveq
-        complement
-        (complement , complement-involutive , complement-involutive)
-
    p : 𝟚 ≡ 𝟚
-   p = eqtoid ua 𝟚 𝟚 e
+   p = eqtoid ua 𝟚 𝟚 complement-≃
 
-   q = n               ≡⟨ refl ⟩
-       ⌜ f refl ⌝⁻¹ n  ≡⟨ (α refl)⁻¹ ⟩
-       ϕ 𝟚 ∣ f refl ∣  ≡⟨ ap (ϕ 𝟚) (∥∥-is-prop ∣ f refl ∣ ∣ f p ∣) ⟩
-       ϕ 𝟚 ∣ f p ∣     ≡⟨ α p ⟩
-       ⌜ f p ⌝⁻¹ n     ≡⟨ ap (λ - → ⌜ - ⌝⁻¹ n) (idtoeq-eqtoid ua 𝟚 𝟚 e) ⟩
-       ⌜ e ⌝⁻¹ n       ≡⟨ refl ⟩
-       complement n    ∎
+   q : ∣ f refl ∣ ≡ ∣ f p ∣
+   q = ∥∥-is-prop ∣ f refl ∣ ∣ f p ∣
+
+   r : f p ≡ complement-≃
+   r = idtoeq-eqtoid ua 𝟚 𝟚 complement-≃
+
+   s = n                     ≡⟨ refl ⟩
+       ⌜ f refl ⌝⁻¹ n        ≡⟨ (α refl)⁻¹ ⟩
+       ϕ 𝟚 ∣ f refl ∣        ≡⟨ ap (ϕ 𝟚) q ⟩
+       ϕ 𝟚 ∣ f p ∣           ≡⟨ α p ⟩
+       ⌜ f p ⌝⁻¹ n           ≡⟨ ap (λ - → ⌜ - ⌝⁻¹ n) r ⟩
+       ⌜ complement-≃ ⌝⁻¹ n  ≡⟨ refl ⟩
+       complement n          ∎
 
    γ : 𝟘
-   γ = complement-no-fp n q
+   γ = complement-no-fp n s
 
  𝟚-is-Fin2 : 𝟚 ≃ Fin 2
  𝟚-is-Fin2 = qinveq (𝟚-cases 𝟎 𝟏) (g , η , ε)
@@ -1696,8 +1703,10 @@ The following no-selection lemma is contributed by Tom de Jong:
 
  open import UF-UA-FunExt
 
- no-orderability-of-finite-types : Univalence
-                                 → ¬ ((X : 𝓤 ̇ ) → is-finite X → finite-linear-order X)
+ no-orderability-of-finite-types :
+
+  Univalence → ¬ ((X : 𝓤 ̇ ) → is-finite X → finite-linear-order X)
+
  no-orderability-of-finite-types {𝓤} ua ψ = γ
   where
    fe : FunExt
@@ -1757,17 +1766,35 @@ the statement
 
 is not provable.
 
-The same holds if we replace is-finite by is-Kuratowski-finite:
+The same holds if we replace is-finite by is-Kuratowski-finite or if
+we consider discrete Kuratowski finite types.
 
 \begin{code}
 
- no-orderability-of-K-finite-types : Univalence
-                                   → ¬ ((X : 𝓤 ̇ ) → is-Kuratowski-finite X → finite-linear-order X)
+ no-orderability-of-K-finite-types :
+
+  Univalence → ¬ ((X : 𝓤 ̇ ) → is-Kuratowski-finite X → finite-linear-order X)
+
  no-orderability-of-K-finite-types {𝓤} ua ϕ = no-orderability-of-finite-types ua ψ
   where
    ψ : (X : 𝓤 ̇ ) → is-finite X → finite-linear-order X
-   ψ X i = ϕ X (finite-sets-are-Kuratowski-finite i)
+   ψ X i = ϕ X (finite-types-are-Kuratowski-finite i)
 
+\end{code}
+
+And this gives an alternative answer the question by Steve Vickers mentioned above:
+
+\begin{code}
+
+ no-orderability-of-discrete-K-finite-types :
+
+    Univalence → ¬ ((X : 𝓤 ̇ ) → is-Kuratowski-finite X → is-discrete X → finite-linear-order X)
+
+ no-orderability-of-discrete-K-finite-types {𝓤} ua ϕ = no-orderability-of-finite-types ua ψ
+  where
+   ψ : (X : 𝓤 ̇) → is-finite X → finite-linear-order X
+   ψ X i = ϕ X (finite-types-are-Kuratowski-finite i)
+               (finite-types-are-discrete (Univalence-gives-FunExt ua) i)
 \end{code}
 
 TODO. Without univalence, maybe it is the case that from
@@ -1785,8 +1812,10 @@ One more question:
 
 \end{code}
 
-TODO. What can we say about types that are both Kuratowski finite and
-subfinite?
+Steve Vickers remarked (personal communication) that, in view of a
+remarks given above, if a type is simultaneously Kuratowski finite and
+subfinite, then it is finite, because subfinite types, being subtypes
+of types with decidable equality, have decidable equality.
 
 Summary of finiteness notions for a type X:
 

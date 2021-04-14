@@ -7,6 +7,7 @@ Expanded on demand whenever a general equivalence is needed.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Two-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
@@ -747,6 +748,14 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
 
   ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
   ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q *)) q
+
+complement-is-equiv : is-equiv complement
+complement-is-equiv = qinvs-are-equivs complement
+                       (complement , complement-involutive , complement-involutive)
+
+complement-≃ : 𝟚 ≃ 𝟚
+complement-≃ = (complement , complement-is-equiv)
+
 
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
