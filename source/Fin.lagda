@@ -1287,7 +1287,7 @@ necessarily finite in the above sense (equivalent to some Fin n).
   A = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
 
   A-is-set : is-set A
-  A-is-set = subsets-of-sets-are-sets X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) X-is-set ∥∥-is-prop
+  A-is-set = subsets-of-sets-are-sets X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) X-is-set ∨-is-prop
 
   ι : Fin 2 → A
   ι 𝟎       = x₀ , ∣ inl refl ∣
@@ -1796,5 +1796,5 @@ Summary of finiteness notions for a type X:
      ∃ n ꞉ ℕ , Fin n ↠ X  (is-Kuratowski-finite X)
      Σ n ꞉ ℕ , Fin n ↠ X  (nameless, not considered yet)
 
-     ∃ n ꞉ ℕ , X ↪ Fin n  (subfinite)
+     ∃ n ꞉ ℕ , X ↪ Fin n  (is-subfinite)
      Σ n ꞉ ℕ , X ↪ Fin n  (nameless, not considered yet)
