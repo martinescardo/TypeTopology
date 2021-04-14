@@ -1813,7 +1813,7 @@ One more question:
 \end{code}
 
 Steve Vickers remarked (personal communication) that, in view of a
-remarks given above, if a type is simultaneously Kuratowski finite and
+remark given above, if a type is simultaneously Kuratowski finite and
 subfinite, then it is finite, because subfinite types, being subtypes
 of types with decidable equality, have decidable equality.
 
