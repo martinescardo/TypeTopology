@@ -749,6 +749,9 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
   ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
   ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q *)) q
 
+empty-≃-𝟘 : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ≃ 𝟘 {𝓦}
+empty-≃-𝟘 i = qinveq (𝟘-elim ∘ i) (𝟘-elim , (λ x → 𝟘-elim (i x)) , (λ x → 𝟘-elim x))
+
 complement-is-equiv : is-equiv complement
 complement-is-equiv = qinvs-are-equivs complement
                        (complement , complement-involutive , complement-involutive)

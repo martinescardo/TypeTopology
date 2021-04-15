@@ -1497,8 +1497,10 @@ Try to see if a more conceptual definition of A gives a shorter proof
 
 \end{code}
 
-Added 13 April 2021. Can every Kuratowski finite discrete type be
-equipped with a linear order?
+Added 13 April 2021.
+
+Can every Kuratowski finite discrete type be equipped with a linear
+order?
 
 Recall that a type is called discrete if it has decidable equality.
 
@@ -1768,7 +1770,7 @@ the statement
 is not provable.
 
 The same holds if we replace is-finite by is-Kuratowski-finite or if
-we consider discrete Kuratowski finite types.
+we consider Kuratowski finite discrete types.
 
 \begin{code}
 
@@ -1783,16 +1785,16 @@ we consider discrete Kuratowski finite types.
 
 \end{code}
 
-And this gives an alternative answer the question by Steve Vickers
+And this gives an alternative answer to the question by Steve Vickers
 mentioned above:
 
 \begin{code}
 
- no-orderability-of-discrete-K-finite-types :
+ no-orderability-of-K-finite-discrete-types :
 
-    Univalence → ¬ ((X : 𝓤 ̇ ) → is-Kuratowski-finite X → is-discrete X → finite-linear-order X)
+  Univalence → ¬ ((X : 𝓤 ̇ ) → is-Kuratowski-finite X → is-discrete X → finite-linear-order X)
 
- no-orderability-of-discrete-K-finite-types {𝓤} ua ϕ = no-orderability-of-finite-types ua ψ
+ no-orderability-of-K-finite-discrete-types {𝓤} ua ϕ = no-orderability-of-finite-types ua ψ
   where
    ψ : (X : 𝓤 ̇ ) → is-finite X → finite-linear-order X
    ψ X i = ϕ X (finite-types-are-Kuratowski-finite i)
