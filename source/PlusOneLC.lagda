@@ -101,15 +101,15 @@ extensionality:
 
 \begin{code}
 
+_∖_ : (X : 𝓤 ̇ ) (a : X) → 𝓤 ̇
+X ∖ a = Σ x ꞉ X , x ≢ a
+
 open import UF-FunExt
 
 module old (fe : FunExt) where
 
  open import UF-Base
  open import UF-Subsingletons-FunExt
-
- _∖_ : (X : 𝓤 ̇ ) (a : X) → 𝓤 ̇
- X ∖ a = Σ x ꞉ X , x ≢ a
 
  add-and-remove-point : {X : 𝓤 ̇ } →  X ≃ (X + 𝟙) ∖ (inr *)
  add-and-remove-point {𝓤} {X} = qinveq f (g , ε , η)
@@ -187,5 +187,46 @@ module old (fe : FunExt) where
                            (equivs-preserve-isolatedness φ e (inr *)
                              new-point-is-isolated) ⟩
     Y ■
+
+\end{code}
+
+Added 16th April 2021.
+
+\begin{code}
+
+open import UF-Subsingletons-FunExt
+
+remove-and-add-point : funext 𝓤 𝓤₀
+                     → {X : 𝓤 ̇ } (x₀ : X)
+                     → is-isolated x₀
+                     → X ≃ (X ∖ x₀ + 𝟙 {𝓥})
+remove-and-add-point fe {X} x₀ ι = qinveq f (g , ε , η)
+ where
+  ϕ : (x : X) → decidable (x₀ ≡ x) → X ∖ x₀ + 𝟙
+  ϕ x (inl p) = inr *
+  ϕ x (inr ν) = inl (x , (λ (p : x ≡ x₀) → ν (p ⁻¹)))
+
+  f : X → X ∖ x₀ + 𝟙
+  f x = ϕ x (ι x)
+
+  g : X ∖ x₀ + 𝟙 → X
+  g (inl (x , _)) = x
+  g (inr *) = x₀
+
+  η' : (y : X ∖ x₀ + 𝟙) (d : decidable (x₀ ≡ g y)) → ϕ (g y) d ≡ y
+  η' (inl (x , ν)) (inl q) = 𝟘-elim (ν (q ⁻¹))
+  η' (inl (x , ν)) (inr _) = ap (λ - → inl (x , -)) (negations-are-props fe _ _)
+  η' (inr *) (inl p)       = refl
+  η' (inr *) (inr ν)       = 𝟘-elim (ν refl)
+
+  η : f ∘ g ∼ id
+  η y = η' y (ι (g y))
+
+  ε' : (x : X) (d : decidable (x₀ ≡ x)) → g (ϕ x d) ≡ x
+  ε' x (inl p) = p
+  ε' x (inr ν) = refl
+
+  ε : g ∘ f ∼ id
+  ε x = ε' x (ι x)
 
 \end{code}

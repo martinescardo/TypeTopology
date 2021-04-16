@@ -16,7 +16,7 @@ The type Fin n is a discrete set with n elements.
  * Various forms of the pigeonhole principle, and its application to
    show that every element of a finite group has a finite order.
 
- * Kuratowski finiteness
+ * Kuratowski finiteness.
 
 And more.
 
@@ -548,7 +548,6 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 Σₘᵢₙ : {n : ℕ} → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 Σₘᵢₙ {𝓤} {n} A = Σ i ꞉ Fin n , A i × (i is-lower-bound-of A)
 
-
 Σₘᵢₙ-gives-Σ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
              → Σₘᵢₙ A → Σ A
 
@@ -1052,7 +1051,6 @@ finite-product-compact zero     X c = 𝟙-Compact
 finite-product-compact (succ n) X c = ×-Compact
                                        (c 𝟎)
                                        (finite-product-compact n (X ∘ suc) (c ∘ suc))
-
 \end{code}
 
 Standard operations on (generalized) vectors:
@@ -1255,6 +1253,9 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
  is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇
  is-Kuratowski-finite X = ∃ n ꞉ ℕ , Fin n ↠ X
 
+ Kuratowski-data : 𝓤 ̇ → 𝓤 ̇
+ Kuratowski-data X = Σ n ꞉ ℕ , Fin n ↠ X
+
  being-Kuratowski-finite-is-prop : {X : 𝓤 ̇ } → is-prop (is-Kuratowski-finite X)
  being-Kuratowski-finite-is-prop = ∃-is-prop
 
@@ -1271,9 +1272,90 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
 
 \end{code}
 
-TODO. Conversely, if a Kuratowski finite is discrete (that is, it has
+Conversely, if a Kuratowski finite is discrete (that is, it has
 decidable equality) then it is finite, because we can use the
-decidable equality to remove repetitions, as observed by Tom de Jong.
+decidable equality to remove repetitions, as observed by Tom de Jong
+(and implemented by Martin Escardo):
+
+\begin{code}
+
+ kdf-lemma : funext 𝓤 𝓤₀
+           → {X : 𝓤 ̇ }
+           → is-discrete X
+           → Kuratowski-data X
+           → finite-linear-order X
+ kdf-lemma {𝓤} fe {X} δ (n , 𝕗) = γ X δ n 𝕗
+  where
+   γ : (X : 𝓤 ̇ ) → is-discrete X → (n : ℕ) → (Fin n ↠ X) → finite-linear-order X
+   γ X δ 0        (f , s) = 0 , empty-≃-𝟘 (λ x → ∥∥-rec 𝟘-is-prop pr₁ (s x))
+   γ X δ (succ n) (f , s) = I Δ
+    where
+     A : Fin n → 𝓤 ̇
+     A j = f (suc j) ≡ f 𝟎
+
+     Δ : decidable (Σ A)
+     Δ = Fin-Compact n A (λ j → δ (f (suc j)) (f 𝟎))
+
+     g : Fin n → X
+     g i = f (suc i)
+
+     I : decidable (Σ A) → finite-linear-order X
+     I (inl (j , p)) = IH
+      where
+       II : (x : X) → (Σ i ꞉ Fin (succ n) , f i ≡ x) → (Σ i ꞉ Fin n , g i ≡ x)
+       II x (𝟎 ,     q) = j , (p ∙ q)
+       II x (suc i , q) = i , q
+
+       III : is-surjection g
+       III x = ∥∥-functor (II x) (s x)
+
+       IH : finite-linear-order X
+       IH = γ X δ n (g , III)
+
+     I (inr ν) = succ n' , IX
+      where
+       X' = X ∖ f 𝟎
+       δ' : is-discrete X'
+       δ' = lc-maps-reflect-discreteness pr₁ (pr₁-lc (negations-are-props fe)) δ
+
+       g' : Fin n → X'
+       g' i = g i , (λ (p : f (suc i) ≡ f 𝟎) → ν (i , p))
+
+       IV : is-surjection g'
+       IV (x , u) = VII
+        where
+         V : ∃ i ꞉ Fin (succ n) , f i ≡ x
+         V = s x
+
+         VI : (Σ i ꞉ Fin (succ n) , f i ≡ x) → (Σ i ꞉ Fin n , g' i ≡ (x , u))
+         VI (𝟎     , p) = 𝟘-elim (u (p ⁻¹))
+         VI (suc i , p) = i , to-subtype-≡ (λ _ → negations-are-props fe ) p
+
+         VII : ∃ i ꞉ Fin n , g' i ≡ (x , u)
+         VII = ∥∥-functor VI V
+
+       IH : finite-linear-order X'
+       IH = γ X' δ' n (g' , IV)
+
+       n' : ℕ
+       n' = pr₁ IH
+
+       VIII : X' ≃ Fin n'
+       VIII = pr₂ IH
+
+       IX = X           ≃⟨ remove-and-add-point fe (f 𝟎) (δ (f 𝟎)) ⟩
+           (X' + 𝟙)     ≃⟨ +cong VIII (≃-refl 𝟙) ⟩
+           (Fin n' + 𝟙) ■
+
+ Kuratowski-finite-discrete-types-are-finite : funext 𝓤 𝓤₀
+                                             → {X : 𝓤 ̇ }
+                                             → is-discrete X
+                                             → is-Kuratowski-finite X
+                                             → is-finite X
+ Kuratowski-finite-discrete-types-are-finite {𝓤} fe {X} δ κ =
+  finite-unprime X (∥∥-functor (kdf-lemma fe δ) κ)
+
+\end{code}
 
 We now give an example of a Kuratowski finite set that is not
 necessarily finite in the above sense (equivalent to some Fin n).
@@ -1814,12 +1896,33 @@ One more notion of finiteness:
  is-subfinite : 𝓤 ̇ → 𝓤 ̇
  is-subfinite X = ∃ n ꞉ ℕ , X ↪ Fin n
 
+ subfiniteness-data : 𝓤 ̇ → 𝓤 ̇
+ subfiniteness-data X = Σ n ꞉ ℕ , X ↪ Fin n
+
 \end{code}
 
-TODO. Steve Vickers remarked (personal communication) that, in view of
+Steve Vickers remarked (personal communication) that, in view of
 a remark given above, if a type is simultaneously Kuratowski finite
 and subfinite, then it is finite, because subfinite types, being
 subtypes of types with decidable equality, have decidable equality.
+
+\begin{code}
+
+ Kuratowski-subfinite-types-are-finite : funext 𝓤 𝓤₀
+                                       → {X : 𝓤 ̇ }
+                                       → is-Kuratowski-finite X
+                                       → is-subfinite X
+                                       → is-finite X
+ Kuratowski-subfinite-types-are-finite fe {X} k = γ
+  where
+  δ : subfiniteness-data X → is-finite X
+  δ (n , f , e) = Kuratowski-finite-discrete-types-are-finite fe
+                   (embeddings-reflect-discreteness f e (Fin-is-discrete n)) k
+
+  γ : is-subfinite X → is-finite X
+  γ = ∥∥-rec (being-finite-is-prop X) δ
+
+\end{code}
 
 Summary of finiteness notions for a type X:
 
@@ -1827,7 +1930,7 @@ Summary of finiteness notions for a type X:
      Σ n ꞉ ℕ , X ≃ Fin n  (finite-linear-order X)
 
      ∃ n ꞉ ℕ , Fin n ↠ X  (is-Kuratowski-finite X)
-     Σ n ꞉ ℕ , Fin n ↠ X  (nameless, not considered yet)
+     Σ n ꞉ ℕ , Fin n ↠ X  (Kuratowski-data)
 
      ∃ n ꞉ ℕ , X ↪ Fin n  (is-subfinite)
-     Σ n ꞉ ℕ , X ↪ Fin n  (nameless, not considered yet)
+     Σ n ꞉ ℕ , X ↪ Fin n  (subfiniteness-data)

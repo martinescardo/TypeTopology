@@ -138,14 +138,13 @@ being-set-is-prop {𝓤} fe {X} = h
   h : is-prop (is-set X)
   h = subtype-of-prop-is-prop g (ap f) (being-set-is-prop' fe)
 
-\end{code}
-
-\begin{code}
+negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
+negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
 decidability-of-prop-is-prop : funext 𝓤 𝓤₀ → {P : 𝓤 ̇ } → is-prop P → is-prop (P + ¬ P)
 decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
                                       i
-                                      (Π-is-prop fe₀ λ _ → 𝟘-is-prop)
+                                      (negations-are-props fe₀)
                                       (λ p u → u p)
 
 Ω-extensionality : funext 𝓤 𝓤
@@ -204,9 +203,6 @@ powersets-are-sets : funext 𝓥 (𝓥 ⁺)
                    → propext 𝓥
                    → {A : 𝓥 ̇ } → is-set (A → Ω 𝓥)
 powersets-are-sets {𝓥} fe = powersets-are-sets'' fe (lower-funext 𝓥 (𝓥 ⁺) fe)
-
-negations-are-props : {X : 𝓤 ̇ } → funext 𝓤 𝓤₀ → is-prop (¬ X)
-negations-are-props fe = Π-is-prop fe (λ x → 𝟘-is-prop)
 
 empty-types-are-props : {X : 𝓤 ̇ } → ¬ X → is-prop X
 empty-types-are-props f x = 𝟘-elim (f x)
