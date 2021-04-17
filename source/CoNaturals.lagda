@@ -3,9 +3,9 @@ Martin Escardo 2012.
 We investigate coinduction and corecursion on ℕ∞, the generic
 convergent sequence.
 
-We show that set ℕ∞ satisfies the following universal property for a
-suitable coalgebra PRED : ℕ∞ → 𝟙 + ℕ∞, where 𝟙 is the singleton
-type with an element *.
+We show that the set ℕ∞ satisfies the following universal property for
+a suitable coalgebra PRED : ℕ∞ → 𝟙 + ℕ∞, where 𝟙 is the singleton type
+with an element *.
 
 For every type X and every κ : X → 𝟙 + X there is a unique h : X → ℕ∞
 such that
@@ -60,7 +60,7 @@ diagram can be considered as a (co)recursive definition of h, and
 indicates how h may be constructed.
 
 In order to show that any two functions that make the above diagram
-commute are unique, that is, that the above two conditional equations
+commute are equal, that is, that the above two conditional equations
 uniquely determine h, we develop a coinduction principle based on
 bisimulations. This gives a technique for establishing equalities on
 ℕ∞.
@@ -409,7 +409,7 @@ PRED-is-the-final-coalgebra κ = homomorphism-existence κ , homomorphism-unique
 
 There is more formalization work to do (2017): By now we know that Σ!
 (a form of unique existence) is better captured by the contractibility
-of Σ type (added 13th July 2018):
+of a Σ type (added 13th July 2018):
 
 \begin{code}
 

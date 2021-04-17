@@ -1329,7 +1329,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
 
          VI : (Σ i ꞉ Fin (succ n) , f i ≡ x) → (Σ i ꞉ Fin n , g' i ≡ (x , u))
          VI (𝟎     , p) = 𝟘-elim (u (p ⁻¹))
-         VI (suc i , p) = i , to-subtype-≡ (λ _ → negations-are-props fe ) p
+         VI (suc i , p) = i , to-subtype-≡ (λ _ → negations-are-props fe) p
 
          VII : ∃ i ꞉ Fin n , g' i ≡ (x , u)
          VII = ∥∥-functor VI V
@@ -1343,7 +1343,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
        VIII : X' ≃ Fin n'
        VIII = pr₂ IH
 
-       IX = X           ≃⟨ remove-and-add-point fe (f 𝟎) (δ (f 𝟎)) ⟩
+       IX = X           ≃⟨ remove-and-add-isolated-point fe (f 𝟎) (δ (f 𝟎)) ⟩
            (X' + 𝟙)     ≃⟨ +cong VIII (≃-refl 𝟙) ⟩
            (Fin n' + 𝟙) ■
 

@@ -196,11 +196,11 @@ Added 16th April 2021.
 
 open import UF-Subsingletons-FunExt
 
-remove-and-add-point : funext 𝓤 𝓤₀
-                     → {X : 𝓤 ̇ } (x₀ : X)
-                     → is-isolated x₀
-                     → X ≃ (X ∖ x₀ + 𝟙 {𝓥})
-remove-and-add-point fe {X} x₀ ι = qinveq f (g , ε , η)
+remove-and-add-isolated-point : funext 𝓤 𝓤₀
+                              → {X : 𝓤 ̇ } (x₀ : X)
+                              → is-isolated x₀
+                              → X ≃ (X ∖ x₀ + 𝟙 {𝓥})
+remove-and-add-isolated-point fe {X} x₀ ι = qinveq f (g , ε , η)
  where
   ϕ : (x : X) → decidable (x₀ ≡ x) → X ∖ x₀ + 𝟙
   ϕ x (inl p) = inr *

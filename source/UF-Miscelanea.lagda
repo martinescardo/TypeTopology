@@ -72,7 +72,7 @@ The following variation of the above doesn't required function extensionality:
 \begin{code}
 
 isolated-inr' : {X : 𝓤 ̇ }
-             → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ m ꞉ x ≢ y , i y ≡ inr m
+              → (x : X) (i : is-isolated x) (y : X) (n : x ≢ y) → Σ m ꞉ x ≢ y , i y ≡ inr m
 isolated-inr' x i y n =
   equality-cases (i y)
   (λ (p : x ≡ y) (q : i y ≡ inl p) → 𝟘-elim (n p))
@@ -145,10 +145,10 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
               → is-discrete(Σ Y)
 Σ-is-discrete {𝓤} {𝓥} {X} {Y} d e (x , y) (x' , y') = g (d x x')
  where
-  g : decidable(x ≡ x') → decidable(x , y ≡ x' , y')
+  g : decidable (x ≡ x') → decidable ((x , y) ≡ (x' , y'))
   g (inl p) = f (e x' (transport Y p y) y')
    where
-    f : decidable(transport Y p y ≡ y') → decidable((x , y) ≡ (x' , y'))
+    f : decidable (transport Y p y ≡ y') → decidable ((x , y) ≡ (x' , y'))
     f (inl q) = inl (to-Σ-≡ (p , q))
     f (inr ψ) = inr c
      where
@@ -157,12 +157,16 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
        where
         p' : x ≡ x'
         p' = ap pr₁ r
+
         q' : transport Y p' y ≡ y'
         q' = from-Σ-≡' r
+
         s : p' ≡ p
         s = discrete-types-are-sets d p' p
+
         q : transport Y p y ≡ y'
         q = transport (λ - → transport Y - y ≡ y') s q'
+
   g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
 𝟚-is-set : is-set 𝟚
@@ -197,10 +201,13 @@ stable-is-collapsible {𝓤} fe {X} s = (f , g)
  where
   f : X → X
   f x = s(λ u → u x)
+
   claim₀ : (x y : X) → (u : is-empty X) → u x ≡ u y
   claim₀ x y u = unique-from-𝟘(u x)
+
   claim₁ : (x y : X) → (λ u → u x) ≡ (λ u → u y)
   claim₁ x y = dfunext fe (claim₀ x y)
+
   g : (x y : X) → f x ≡ f y
   g x y = ap s (claim₁ x y)
 
@@ -258,9 +265,9 @@ Added 19th Feb 2020:
 open import UF-Embeddings
 
 maps-of-props-into-h-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
-                                                  → is-prop P
-                                                  → ((p : P) → is-h-isolated (f p))
-                                                  → is-embedding f
+                                                    → is-prop P
+                                                    → ((p : P) → is-h-isolated (f p))
+                                                    → is-embedding f
 maps-of-props-into-h-isolated-points-are-embeddings f i j q (p , s) (p' , s') = to-Σ-≡ (i p p' , j p' _ s')
 
 maps-of-props-into-isolated-points-are-embeddings : {P : 𝓤 ̇ } {X : 𝓥 ̇ } (f : P → X)
