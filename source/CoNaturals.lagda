@@ -245,7 +245,8 @@ We now discuss coinduction. We first define bisimulations.
                                 → (positivity u ≡ positivity v)
                                 ×  R (Pred u) (Pred v)
 
-ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → 𝓤 ̇ ) → ℕ∞-bisimulation R
+ℕ∞-coinduction : (R : ℕ∞ → ℕ∞ → 𝓤 ̇ )
+               → ℕ∞-bisimulation R
                → (u v : ℕ∞) → R u v → u ≡ v
 ℕ∞-coinduction R b u v r = incl-lc fe₀ (dfunext fe₀ (l u v r))
  where
@@ -358,7 +359,7 @@ coalg-morphism-Pred {𝓤} {X} κ f g a b x u v d e =
 \end{code}
 
 We are finally able to prove the uniqueness of coalgebra homomorphisms
-from p to PRED.
+from κ to PRED.
 
 \begin{code}
 
