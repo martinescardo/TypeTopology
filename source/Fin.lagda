@@ -1808,90 +1808,84 @@ Addendum.
 
 \begin{code}
 
- select-equiv-with-𝟚-lemma : FunExt
-                           → {X : 𝓤 ̇ }
-                           → X ≃ 𝟚
-                           → (x₀ : X) → ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
- select-equiv-with-𝟚-lemma fe {X} 𝕙 x₀ = VI
+ select-equiv-with-𝟚-lemma₁ : FunExt
+                            → {X : 𝓤 ̇ }
+                            → (x₀ : X)
+                            → is-prop (Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁))
+ select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = γ
   where
-   n₀ : 𝟚
-   n₀ = ⌜ 𝕙 ⌝ x₀
-
-   x₁ : X
-   x₁ = ⌜ 𝕙 ⌝⁻¹ (complement n₀)
-
-   f : 𝟚 → X
-   f = 𝟚-cases x₀ x₁
-
-   I : x₀ ≢ x₁
-   I p = complement-no-fp n₀ q
-    where
-     q = n₀            ≡⟨ ap ⌜ 𝕙 ⌝ p ⟩
-         ⌜ 𝕙 ⌝ x₁      ≡⟨ ≃-sym-is-rinv 𝕙 (complement n₀) ⟩
-         complement n₀ ∎
-
-   II : (x : X) → x ≢ x₀ → x ≡ x₁
-   II x ν = equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) q
-    where
-     u : ⌜ 𝕙 ⌝ x ≢ ⌜ 𝕙 ⌝ x₀
-     u p = ν (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) p)
-
-     v : ⌜ 𝕙 ⌝ x₁ ≢ ⌜ 𝕙 ⌝ x₀
-     v p = I (equivs-are-lc ⌜ 𝕙 ⌝ (⌜⌝-is-equiv 𝕙) (p ⁻¹))
-
-     q : ⌜ 𝕙 ⌝ x ≡ ⌜ 𝕙 ⌝ x₁
-     q = 𝟚-things-distinct-from-a-third-are-equal
-          (⌜ 𝕙 ⌝ x) (⌜ 𝕙 ⌝ x₁) (⌜ 𝕙 ⌝ x₀) u v
-
-   δ : is-discrete X
-   δ = equiv-to-discrete (≃-sym 𝕙) 𝟚-is-discrete
-
-   γ : (x : X) → decidable (x ≡ x₀) → 𝟚
-   γ x (inl p) = ₀
-   γ x (inr ν) = ₁
+   f : X → 𝟚
+   f = inverse (𝟚-cases x₀ y) i
 
    g : X → 𝟚
-   g x = γ x (δ x x₀)
+   g = inverse (𝟚-cases x₀ z) j
 
-   III : (n : 𝟚) (d : decidable (f n ≡ x₀)) → γ (f n) d ≡ n
-   III ₀ (inl p) = refl
-   III ₀ (inr ν) = 𝟘-elim (ν refl)
-   III ₁ (inl p) = 𝟘-elim (I (p ⁻¹))
-   III ₁ (inr ν) = refl
+   I : f y ≡ ₁
+   I = inverses-are-retractions (𝟚-cases x₀ y) i ₁
 
-   η : g ∘ f ∼ id
-   η n = III n (δ (f n) x₀)
+   II : g x₀ ≡ ₀
+   II = inverses-are-retractions (𝟚-cases x₀ z) j ₀
 
-   IV : (x : X) (d : decidable (x ≡ x₀)) → f (γ x d) ≡ x
-   IV x (inl p) = p ⁻¹
-   IV x (inr ν) = (II x ν)⁻¹
+   III : g z ≡ ₁
+   III = inverses-are-retractions (𝟚-cases x₀ z) j ₁
 
-   ε : f ∘ g ∼ id
-   ε x = IV x (δ x x₀)
+   IV : z ≢ x₀
+   IV p = zero-is-not-one (II ⁻¹ ∙ ap g (p ⁻¹) ∙ III)
 
-   f-is-equiv : is-equiv f
-   f-is-equiv = qinvs-are-equivs f (g , η , ε)
+   V : (n : 𝟚) → 𝟚-cases x₀ y n ≡ z → n ≡ ₁
+   V ₀ p = 𝟘-elim (IV (p ⁻¹))
+   V ₁ p = refl
 
-   c : Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
-   c = x₁ , f-is-equiv
+   VI : 𝟚-cases x₀ y (f z) ≡ z
+   VI = inverses-are-sections (𝟚-cases x₀ y) i z
 
-   V : is-central _ c
-   V (x , t) = q
+   VII : f z ≡ ₁
+   VII = V (f z) VI
+
+   VIII : y ≡ z
+   VIII = equivs-are-lc f (inverses-are-equivs (𝟚-cases x₀ y) i) (I ∙ VII ⁻¹)
+
+   γ : (y , i) ≡ (z , j)
+   γ = to-subtype-≡ (λ x₁ → being-equiv-is-prop fe (𝟚-cases x₀ x₁)) VIII
+
+ select-equiv-with-𝟚-lemma₂ : FunExt
+                             → {X : 𝓤 ̇ }
+                             → X ≃ 𝟚
+                             → (x₀ : X) → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+ select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
+  where
+   γ : (n : 𝟚) (x₀ : X) → n ≡ f x₀ → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   γ ₀ x₀ p = (x₁ , j)
     where
-     ν : x₀ ≢ x
-     ν r = zero-is-not-one s
-      where
-       s : ₀ ≡ ₁
-       s = equivs-are-lc (𝟚-cases x₀ x) t r
+     x₁ : X
+     x₁ = inverse f i ₁
 
-     p : x₁ ≡ x
-     p = (II x (≢-sym ν))⁻¹
+     h : inverse f i ∼ 𝟚-cases x₀ x₁
+     h ₀ = inverse f i ₀      ≡⟨ ap (inverse f i) p ⟩
+           inverse f i (f x₀) ≡⟨ inverses-are-retractions f i x₀ ⟩
+           x₀                 ≡⟨ refl ⟩
+           𝟚-cases x₀ x₁ ₀    ∎
+     h ₁ = refl
 
-     q : c ≡ (x , t)
-     q = to-subtype-≡ (λ x → being-equiv-is-prop fe (𝟚-cases x₀ x)) p
+     j : is-equiv (𝟚-cases x₀ x₁)
+     j = equiv-closed-under-∼' (inverses-are-equivs f i) h
 
-   VI : ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
-   VI = c , V
+   γ ₁ x₀ p = (x₁ , j)
+    where
+     x₁ : X
+     x₁ = inverse f i ₀
+
+     h : inverse f i ∘ complement ∼ 𝟚-cases x₀ x₁
+     h ₀ = inverse f i (complement ₀) ≡⟨ refl ⟩
+           inverse f i ₁              ≡⟨ ap (inverse f i) p ⟩
+           inverse f i (f x₀)         ≡⟨ inverses-are-retractions f i x₀ ⟩
+           x₀                         ≡⟨ refl  ⟩
+           𝟚-cases x₀ x₁ ₀            ∎
+     h ₁ = refl
+
+     j : is-equiv (𝟚-cases x₀ x₁)
+     j = equiv-closed-under-∼'
+         (∘-is-equiv complement-is-equiv (inverses-are-equivs f i)) h
 
  select-equiv-with-𝟚 : FunExt
                      → {X : 𝓤 ̇ }
@@ -1900,11 +1894,12 @@ Addendum.
                      → X ≃ 𝟚
  select-equiv-with-𝟚 fe {X} s x₀ = γ
   where
-   α : ∥ X ≃ 𝟚 ∥ → ∃! x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
-   α = ∥∥-rec (∃!-is-prop (fe _ _)) (λ 𝕙 → select-equiv-with-𝟚-lemma fe 𝕙 x₀)
+   α : ∥ X ≃ 𝟚 ∥ → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+   α = ∥∥-rec (select-equiv-with-𝟚-lemma₁ fe x₀)
+             (λ 𝕙 → select-equiv-with-𝟚-lemma₂ fe 𝕙 x₀)
 
    β : Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
-   β = description (α s)
+   β = α s
 
    γ : X ≃ 𝟚
    γ = ≃-sym (𝟚-cases x₀ (pr₁ β) , pr₂ β)
