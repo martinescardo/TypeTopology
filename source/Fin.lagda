@@ -1809,49 +1809,48 @@ Addendum.
 \begin{code}
 
  select-equiv-with-𝟚-lemma₁ : FunExt
-                            → {X : 𝓤 ̇ }
-                            → (x₀ : X)
+                            → {X : 𝓤 ̇ } (x₀ : X)
                             → is-prop (Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁))
- select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = γ
+ select-equiv-with-𝟚-lemma₁ fe {X} x₀ (y , i) (z , j) = V
   where
-   f : X → 𝟚
-   f = inverse (𝟚-cases x₀ y) i
+   f g : 𝟚 → X
+   f = 𝟚-cases x₀ y
+   g = 𝟚-cases x₀ z
 
-   g : X → 𝟚
-   g = inverse (𝟚-cases x₀ z) j
+   f' g' : X → 𝟚
+   f' = inverse f i
+   g' = inverse g j
 
-   I : f y ≡ ₁
-   I = inverses-are-retractions (𝟚-cases x₀ y) i ₁
+   I : z ≢ x₀
+   I p = zero-is-not-one
+          (₀        ≡⟨ (inverses-are-retractions g j ₀)⁻¹ ⟩
+           g' (g ₀) ≡⟨ refl ⟩
+           g' x₀    ≡⟨ ap g' (p ⁻¹) ⟩
+           g' z     ≡⟨ refl ⟩
+           g' (g ₁) ≡⟨ inverses-are-retractions g j ₁ ⟩
+           ₁        ∎)
 
-   II : g x₀ ≡ ₀
-   II = inverses-are-retractions (𝟚-cases x₀ z) j ₀
+   II : (n : 𝟚) → f n ≡ z → ₁ ≡ n
+   II ₀ p = 𝟘-elim (I (p ⁻¹))
+   II ₁ p = refl
 
-   III : g z ≡ ₁
-   III = inverses-are-retractions (𝟚-cases x₀ z) j ₁
+   III : f (f' z) ≡ z
+   III = inverses-are-sections f i z
 
-   IV : z ≢ x₀
-   IV p = zero-is-not-one (II ⁻¹ ∙ ap g (p ⁻¹) ∙ III)
+   IV : y ≡ z
+   IV = equivs-are-lc f' (inverses-are-equivs f i)
+         (f' y     ≡⟨ refl ⟩
+          f' (f ₁) ≡⟨ inverses-are-retractions f i ₁ ⟩
+          ₁        ≡⟨ II (f' z) III ⟩
+          f' z     ∎)
 
-   V : (n : 𝟚) → 𝟚-cases x₀ y n ≡ z → n ≡ ₁
-   V ₀ p = 𝟘-elim (IV (p ⁻¹))
-   V ₁ p = refl
-
-   VI : 𝟚-cases x₀ y (f z) ≡ z
-   VI = inverses-are-sections (𝟚-cases x₀ y) i z
-
-   VII : f z ≡ ₁
-   VII = V (f z) VI
-
-   VIII : y ≡ z
-   VIII = equivs-are-lc f (inverses-are-equivs (𝟚-cases x₀ y) i) (I ∙ VII ⁻¹)
-
-   γ : (y , i) ≡ (z , j)
-   γ = to-subtype-≡ (λ x₁ → being-equiv-is-prop fe (𝟚-cases x₀ x₁)) VIII
+   V : (y , i) ≡ (z , j)
+   V = to-subtype-≡ (λ x₁ → being-equiv-is-prop fe (𝟚-cases x₀ x₁)) IV
 
  select-equiv-with-𝟚-lemma₂ : FunExt
-                             → {X : 𝓤 ̇ }
-                             → X ≃ 𝟚
-                             → (x₀ : X) → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
+                            → {X : 𝓤 ̇ }
+                            → X ≃ 𝟚
+                            → (x₀ : X) → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)
  select-equiv-with-𝟚-lemma₂ fe {X} (f , i) x₀ = γ (f x₀) x₀ refl
   where
    γ : (n : 𝟚) (x₀ : X) → n ≡ f x₀ → Σ x₁ ꞉ X , is-equiv (𝟚-cases x₀ x₁)

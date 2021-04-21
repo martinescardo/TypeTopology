@@ -130,12 +130,19 @@ idtofun X Y p = ⌜ idtoeq X Y p ⌝
 idtofun-agreement : (X Y : 𝓤 ̇ ) (p : X ≡ Y) → idtofun X Y p ≡ Idtofun p
 idtofun-agreement X Y refl = refl
 
-equiv-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y) → is-equiv f →  g ∼ f  → is-equiv g
-equiv-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (hass , hasr) h = (has-section-closed-under-∼ f g hass h) ,
-                                                           (is-section-closed-under-∼ f g hasr h)
+equiv-closed-under-∼ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f g : X → Y)
+                     → is-equiv f
+                     →  g ∼ f
+                     → is-equiv g
+equiv-closed-under-∼ {𝓤} {𝓥} {X} {Y} f g (hass , hasr) h =
+  has-section-closed-under-∼ f g hass h ,
+  is-section-closed-under-∼ f g hasr h
 
-equiv-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y} → is-equiv f → f ∼ g → is-equiv g
-equiv-closed-under-∼' ise h = equiv-closed-under-∼ _ _ ise (λ x → (h x)⁻¹)
+equiv-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
+                      → is-equiv f
+                      → f ∼ g
+                      → is-equiv g
+equiv-closed-under-∼' ise h = equiv-closed-under-∼  _ _ ise (λ x → (h x)⁻¹)
 
 qinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
 qinv f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g ∼ id)
@@ -158,7 +165,7 @@ inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-e
 inverses-are-retractions f e = pr₁ (pr₂(equivs-are-qinvs f e))
 
 inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
-                 → is-equiv (inverse f e)
+                    → is-equiv (inverse f e)
 
 inverses-are-equivs f e = (f , inverses-are-retractions f e) , (f , inverses-are-sections f e)
 
