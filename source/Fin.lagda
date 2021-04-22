@@ -1240,7 +1240,7 @@ such type A doesn't have three distinct points, we are looking at
 characterizations of surjections of Fin k into types with no three
 distinct points.
 
-Addded 8th April 2021.
+Added 8th April 2021.
 
 \begin{code}
 
@@ -1315,6 +1315,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
      I (inr ν) = succ n' , IX
       where
        X' = X ∖ f 𝟎
+
        δ' : is-discrete X'
        δ' = lc-maps-reflect-discreteness pr₁ (pr₁-lc (negations-are-props fe)) δ
 
@@ -1373,9 +1374,6 @@ is a set).
   where
    A : 𝓤 ̇
    A = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
-
-   A-is-set : is-set A
-   A-is-set = subsets-of-sets-are-sets X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) X-is-set ∨-is-prop
 
    f : Fin 2 → A
    f 𝟎       = x₀ , ∣ inl refl ∣
@@ -1700,6 +1698,8 @@ TODO. Without univalence, maybe it is the case that from
 
 we can deduce excluded middle or some other constructive taboo.
 
+(It seems not. More later.)
+
 One more notion of finiteness:
 
 \begin{code}
@@ -1746,7 +1746,7 @@ Summary of finiteness notions for a type X:
      ∃ n ꞉ ℕ , X ↪ Fin n  (is-subfinite)
      Σ n ꞉ ℕ , X ↪ Fin n  (subfiniteness-data)
 
-Addendum. ∥
+Addendum.
 
 \begin{code}
 
