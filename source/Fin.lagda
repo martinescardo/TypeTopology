@@ -605,8 +605,8 @@ open import UF-Base
 
 Added 8th December 2019. One defines a type to be finite, in univalent
 mathematics, if it is isomorphic to Fin n for some n. But one has to
-careful to express this, if we want finiteness to be property rather
-than structure, with a suitably chosen notion of existence.
+be careful to express this, if we want finiteness to be property
+rather than structure, with a suitably chosen notion of existence.
 
 The following is structure rather than property. It amounts to the
 type of finite linear orders on X.
@@ -618,7 +618,7 @@ finite-linear-order X = Σ n ꞉ ℕ , X ≃ Fin n
 
 \end{code}
 
-Exercise: If X ≃ Fin n, then the type Finite X has n! elements (solve
+Exercise: If X ≃ Fin n, then the type Finite X has n! elements (solved
 elsewhere in TypeTopology).
 
 \begin{code}
@@ -669,14 +669,14 @@ module finiteness (pt : propositional-truncations-exist) where
  being-finite-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
  being-finite-is-prop X (m , d) (n , e) = γ
   where
-   a : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ≡ n
-   a m n d e = Fin-lc m n (≃-sym d ● e)
+   α : (m n : ℕ) → X ≃ Fin m → X ≃ Fin n → m ≡ n
+   α m n d e = Fin-lc m n (≃-sym d ● e)
 
-   b : (m n : ℕ) → ∥ X ≃ Fin m ∥ → ∥ X ≃ Fin n ∥ → m ≡ n
-   b m n = ∥∥-rec₂ ℕ-is-set (a m n)
+   β : (m n : ℕ) → ∥ X ≃ Fin m ∥ → ∥ X ≃ Fin n ∥ → m ≡ n
+   β m n = ∥∥-rec₂ ℕ-is-set (α m n)
 
    γ : m , d ≡ n , e
-   γ = to-Σ-≡ (b m n d e , ∥∥-is-prop _ _)
+   γ = to-Σ-≡ (β m n d e , ∥∥-is-prop _ _)
 
 \end{code}
 
@@ -689,7 +689,7 @@ truncation outside the Σ:
  is-finite' X = ∃ n ꞉ ℕ , X ≃ Fin n
 
  being-finite'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
- being-finite'-is-prop X = ∥∥-is-prop
+ being-finite'-is-prop X = ∃-is-prop
 
  finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
  finite-unprime X = ∥∥-rec (being-finite-is-prop X) γ
@@ -788,10 +788,11 @@ But the prop-valuedness of A is actually not needed, with more work:
 
 \begin{code}
 
- Fin-Σ-from-∃ : FunExt → {n : ℕ} (A : Fin n → 𝓤 ̇ )
+ Fin-Σ-from-∃ : FunExt
+              → {n : ℕ} (A : Fin n → 𝓤 ̇ )
               → detachable A → ∃ A → Σ A
 
- Fin-Σ-from-∃ {𝓤} fe {n} A δ e = g σ'
+ Fin-Σ-from-∃ {𝓤} fe {n} A δ e = γ
   where
    A' : Fin n → 𝓤 ̇
    A' x = ∥ A x ∥
@@ -815,6 +816,9 @@ But the prop-valuedness of A is actually not needed, with more work:
    g : Σ A' → Σ A
    g (x , a') = x , ¬¬-elim (δ x) (λ (u : ¬ A x) → ∥∥-rec 𝟘-is-prop u a')
 
+   γ : Σ A
+   γ = g σ'
+
 \end{code}
 
 We now assume function extensionality for a while:
@@ -830,7 +834,7 @@ We now consider further variations of the finite pigeonhole principle.
 \begin{code}
 
   repeated-values : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → X → 𝓤 ⊔ 𝓥 ̇
-  repeated-values f x = Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
+  repeated-values f = λ x → Σ x' ꞉ domain f , (x ≢ x') × (f x ≡ f x')
 
   repetitions-detachable : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
                          → is-finite Y
@@ -968,8 +972,8 @@ because finite types are discrete:
 Remark: the given construction finite-order already produces the
 minimal order, but it seems slightly more difficult to prove this than
 just compute the minimal order from any order. If we were interested
-in the efficiency of our constructions (functional programs!), we
-would have to consider this.
+in the efficiency of our constructions (Agda constructions are
+functional programs!), we would have to consider this.
 
 Added 15th December 2019.
 
@@ -1279,12 +1283,12 @@ decidable equality to remove repetitions, as observed by Tom de Jong
 
 \begin{code}
 
- kdf-lemma : funext 𝓤 𝓤₀
+ dkf-lemma : funext 𝓤 𝓤₀
            → {X : 𝓤 ̇ }
            → is-discrete X
            → Kuratowski-data X
            → finite-linear-order X
- kdf-lemma {𝓤} fe {X} δ (n , 𝕗) = γ X δ n 𝕗
+ dkf-lemma {𝓤} fe {X} δ (n , 𝕗) = γ X δ n 𝕗
   where
    γ : (X : 𝓤 ̇ ) → is-discrete X → (n : ℕ) → (Fin n ↠ X) → finite-linear-order X
    γ X δ 0        (f , s) = 0 , empty-≃-𝟘 (λ x → ∥∥-rec 𝟘-is-prop pr₁ (s x))
@@ -1354,11 +1358,11 @@ decidable equality to remove repetitions, as observed by Tom de Jong
                                              → is-Kuratowski-finite X
                                              → is-finite X
  Kuratowski-finite-discrete-types-are-finite {𝓤} fe {X} δ κ =
-  finite-unprime X (∥∥-functor (kdf-lemma fe δ) κ)
+  finite-unprime X (∥∥-functor (dkf-lemma fe δ) κ)
 
 \end{code}
 
-The finiteness of all Kuratowski finite sets gives the discreteness of
+The finiteness of all Kuratowski finite types gives the discreteness of
 all sets (and hence excluded middle, because the type of truth values
 is a set).
 
