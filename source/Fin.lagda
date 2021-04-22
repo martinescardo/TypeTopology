@@ -1357,139 +1357,81 @@ decidable equality to remove repetitions, as observed by Tom de Jong
 
 \end{code}
 
-We now give an example of a Kuratowski finite set that is not
-necessarily finite in the above sense (equivalent to some Fin n).
+The finiteness of all Kuratowski finite sets gives the discreteness of
+all sets (and hence excluded middle, because the type of truth values
+is a set).
 
 \begin{code}
 
- module example
-         {𝓤 : Universe}
-         (X : 𝓤 ̇ )
-         (X-is-set : is-set X)
-         (x₀ x₁ : X)
-         (fe : Fun-Ext)
-       where
+ all-K-finite-types-finite-gives-all-sets-discrete :
 
-  A : 𝓤 ̇
-  A = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
+     funext 𝓤 𝓤₀
+   → ((A : 𝓤 ̇ ) → is-Kuratowski-finite A → is-finite A)
+   → (X : 𝓤 ̇ ) → is-set X → is-discrete X
 
-  A-is-set : is-set A
-  A-is-set = subsets-of-sets-are-sets X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) X-is-set ∨-is-prop
+ all-K-finite-types-finite-gives-all-sets-discrete {𝓤} fe ϕ X X-is-set x₀ x₁ = δ
+  where
+   A : 𝓤 ̇
+   A = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
 
-  ι : Fin 2 → A
-  ι 𝟎       = x₀ , ∣ inl refl ∣
-  ι (suc x) = x₁ , ∣ inr refl ∣
+   A-is-set : is-set A
+   A-is-set = subsets-of-sets-are-sets X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) X-is-set ∨-is-prop
 
-  ι-surj : is-surjection ι
-  ι-surj (x , s) = ∥∥-functor γ s
-   where
-    γ : (x ≡ x₀) + (x ≡ x₁) → Σ n ꞉ Fin 2 , ι n ≡ (x , s)
-    γ (inl p) = 𝟎 , to-subtype-≡ (λ _ → ∨-is-prop) (p ⁻¹)
-    γ (inr q) = 𝟏 , to-subtype-≡ (λ _ → ∨-is-prop) (q ⁻¹)
+   f : Fin 2 → A
+   f 𝟎       = x₀ , ∣ inl refl ∣
+   f (suc x) = x₁ , ∣ inr refl ∣
 
-  A-is-Kuratowski-finite : is-Kuratowski-finite A
-  A-is-Kuratowski-finite = ∣ 2 , ι , ι-surj ∣
+   f-surj : is-surjection f
+   f-surj (x , s) = ∥∥-functor γ s
+    where
+     γ : (x ≡ x₀) + (x ≡ x₁) → Σ n ꞉ Fin 2 , f n ≡ (x , s)
+     γ (inl p) = 𝟎 , to-subtype-≡ (λ _ → ∨-is-prop) (p ⁻¹)
+     γ (inr q) = 𝟏 , to-subtype-≡ (λ _ → ∨-is-prop) (q ⁻¹)
+
+   i : is-Kuratowski-finite A
+   i = ∣ 2 , f , f-surj ∣
+
+   j : is-finite A → decidable (x₀ ≡ x₁)
+   j (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) α s
+    where
+     α : A ≃ 𝟘 → decidable (x₀ ≡ x₁)
+     α (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
+
+   j (1 , s) = inl (∥∥-rec X-is-set β s)
+    where
+     α : is-prop (Fin 1)
+     α 𝟎 𝟎 = refl
+
+     β : A ≃ Fin 1 → x₀ ≡ x₁
+     β (g , i) = ap pr₁ (equivs-are-lc g i (α (g (f 𝟎)) (g (f 𝟏))))
+
+   j (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
+    where
+     γ : A ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
+     γ (g , i) = β
+      where
+       h : x₀ ≡ x₁ → f 𝟎 ≡ f 𝟏
+       h = to-subtype-≡ (λ _ → ∨-is-prop)
+
+       α : decidable (g (f 𝟎) ≡ g (f 𝟏)) → decidable (x₀ ≡ x₁)
+       α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
+       α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
+
+       β : decidable (x₀ ≡ x₁)
+       β = α (Fin-is-discrete (succ (succ n)) (g (f 𝟎)) (g (f 𝟏)))
+
+   δ : decidable (x₀ ≡ x₁)
+   δ = j (ϕ A i)
 
 \end{code}
 
-But A is finite if and only if the equality x₀ ≡ x₁ is decidable,
-which is not the case in general. In fact, if we choose X as the type
-Ω of truth-values and x₁ = ⊤ (true) and leave x₀ : Ω arbitrary, then
-the decidability of x₀ ≡ x₁ amounts to excluded middle.
+Try to see if a more conceptual definition of A gives a shorter proof.
+Only marginally, it turns out. But we take the opportunity to add more
+information.
 
 \begin{code}
 
-  finiteness-of-A : is-finite A ⇔ decidable (x₀ ≡ x₁)
-  finiteness-of-A = (j , k)
-   where
-    j : is-finite A → decidable (x₀ ≡ x₁)
-    j (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
-     where
-      γ : A ≃ 𝟘 → decidable (x₀ ≡ x₁)
-      γ (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
-
-    j (1 , s) = inl (∥∥-rec X-is-set γ s)
-     where
-      δ : is-prop (Fin 1)
-      δ 𝟎 𝟎 = refl
-
-      γ : A ≃ Fin 1 → x₀ ≡ x₁
-      γ (g , i) = ap pr₁ (equivs-are-lc g i (δ (g (ι 𝟎)) (g (ι 𝟏))))
-
-    j (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
-     where
-      γ : A ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
-      γ (g , i) = β
-       where
-        h : x₀ ≡ x₁ → ι 𝟎 ≡ ι 𝟏
-        h = to-subtype-≡ (λ _ → ∨-is-prop)
-
-        α : decidable (g (ι 𝟎) ≡ g (ι 𝟏)) → decidable (x₀ ≡ x₁)
-        α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
-        α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
-
-        β : decidable (x₀ ≡ x₁)
-        β = α (Fin-is-discrete (succ (succ n)) (g (ι 𝟎)) (g (ι 𝟏)))
-
-    k : decidable (x₀ ≡ x₁) → is-finite A
-    k (inl p) = 1 , ∣ singleton-≃ m l ∣
-     where
-      l : is-singleton (Fin 1)
-      l = 𝟎 , c
-       where
-        c : is-central (Fin 1) 𝟎
-        c 𝟎 = refl
-
-      m : is-singleton A
-      m = (ι 𝟎 , c)
-       where
-        c : is-central A (ι 𝟎)
-        c (x , s) = to-subtype-≡ (λ _ → ∨-is-prop) (∥∥-rec X-is-set γ s)
-         where
-          γ : (x ≡ x₀) + (x ≡ x₁) → x₀ ≡ x
-          γ (inl q) = q ⁻¹
-          γ (inr q) = p ∙ q ⁻¹
-
-    k (inr ν) = 2 , ∣ ≃-sym (ι , ι-is-equiv) ∣
-     where
-      ι-lc : left-cancellable ι
-      ι-lc {𝟎} {𝟎} p = refl
-      ι-lc {𝟎} {𝟏} p = 𝟘-elim (ν (ap pr₁ p))
-      ι-lc {𝟏} {𝟎} p = 𝟘-elim (ν (ap pr₁ (p ⁻¹)))
-      ι-lc {𝟏} {𝟏} p = refl
-
-      ι-emb : is-embedding ι
-      ι-emb = lc-maps-into-sets-are-embeddings ι ι-lc A-is-set
-
-      ι-is-equiv : is-equiv ι
-      ι-is-equiv = surjective-embeddings-are-equivs ι ι-emb ι-surj
-
- module example-excluded-middle
-         {𝓤 : Universe}
-         {p : Ω 𝓤}
-         (fe : Fun-Ext)
-         (pe : Prop-Ext)
-        where
-
-  B : 𝓤 ⁺ ̇
-  B = Σ q ꞉ Ω 𝓤 , (q ≡ p) ∨ (q ≡ ⊤)
-
-  open example (Ω 𝓤) (Ω-is-set fe pe) p ⊤ fe
-
-  B-is-Kuratowski-finite : is-Kuratowski-finite B
-  B-is-Kuratowski-finite = A-is-Kuratowski-finite
-
-  finiteness-of-B-equiv-to-EM : is-finite B ⇔ decidable (p ≡ ⊤)
-  finiteness-of-B-equiv-to-EM = finiteness-of-A
-
-\end{code}
-
-Try to see if a more conceptual definition of A gives a shorter proof
-(only marginally, it turns out):
-
-\begin{code}
-
- module example-variation
+ module minor-variation-with-more-information
          {𝓤 : Universe}
          (X : 𝓤 ̇ )
          (X-is-set : is-set X)
@@ -1804,7 +1746,7 @@ Summary of finiteness notions for a type X:
      ∃ n ꞉ ℕ , X ↪ Fin n  (is-subfinite)
      Σ n ꞉ ℕ , X ↪ Fin n  (subfiniteness-data)
 
-Addendum.
+Addendum. ∥
 
 \begin{code}
 
