@@ -88,7 +88,7 @@ An equality defined by a Leibniz principle with 𝟚-valued functions:
 \begin{code}
 
 _≡₂_ : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
-x ≡₂ y = (p : _ → 𝟚) → p x ≡ p y
+x ≡₂ y = (p : type-of x → 𝟚) → p x ≡ p y
 
 ≡₂-is-prop-valued : funext 𝓤 𝓤₀
                   → (X : 𝓤 ̇ ) (x y : X) → is-prop (x ≡₂ y)
@@ -109,9 +109,21 @@ is-totally-separated X = {x y : X} → x ≡₂ y → x ≡ y
 
 \end{code}
 
+Synonym, emphasizing that we can use other types as separators:
+
+\begin{code}
+
+𝟚-separated : 𝓤 ̇ → 𝓤 ̇
+𝟚-separated = is-totally-separated
+
+\end{code}
+
 We now define an alternative characterization of total separatedness
 (added December 11th 2020), still using the equivalence relation ≡₂,
-and also motivated by topological considerations:
+and also motivated by topological considerations, namely that the
+quasi component of a point of a topological space is the intersection
+of all clopen sets containing x and a space is totally separated of
+the quasi-components are singletons:
 
 \begin{code}
 
@@ -165,15 +177,6 @@ totally-separated₁-types-are-totally-separated {𝓤} {X} τ {x} {y} ϕ = γ
 
 A third formulation of the notion of total separatedness, as the
 tightness of a certain apartness relation, is given below.
-
-Synonym:
-
-\begin{code}
-
-𝟚-separated : 𝓤 ̇ → 𝓤 ̇
-𝟚-separated = is-totally-separated
-
-\end{code}
 
 Excluded middle implies that all sets are discrete and hence totally
 separated:
@@ -461,7 +464,7 @@ More generally, all simple types are totally separated - see the
 module SimpleTypes.
 
 Closure under /-extensions defined in the module
-InjectiveTypes. Notice that j doesn't need to be an embedding (which
+InjectiveTypes. Notice that j doesn't need to be an embedding (in
 which case the extension is merely a Kan extension rather than a
 proper extension).
 
@@ -532,7 +535,7 @@ totally-separated₂-gives-totally-separated fe {X} i {x} {y} e = ap pr₁ q
 
  Now, if a type X is not (necessarily) totally separated, we can
  consider the image of the map eval X, and this gives the totally
- ¬¬-separated reflection, with the corestriction of eval X to its image
+ separated reflection, with the corestriction of eval X to its image
  as its reflector.
 
 \begin{code}
@@ -954,7 +957,7 @@ apartness relation _♯₂ is tight:
 
 \end{code}
 
-  We now name the standard is-equivalence relation induced by _♯_.
+  We now name the standard equivalence relation induced by _♯_.
 
 \begin{code}
 
@@ -978,7 +981,7 @@ apartness relation _♯₂ is tight:
   below it was difficult to proceed, when we need that the identity
   type apart x = apart y is a proposition. This should be the case
   because _♯_ is is-prop-valued. The most convenient way to achieve this
-  is to restrict the codomain of apart from V to Ω, so that the
+  is to restrict the codomain of apart from 𝓥 to Ω, so that the
   codomain of apart is a set.
 
 \begin{code}
@@ -1038,9 +1041,9 @@ apartness on it.
 
   The following induction principle is our main tool. Its uses look
   convoluted at times by the need to show that the property one is
-  doing induction over is is-prop-valued. Typically this involves the use
-  of the fact the propositions form an exponential ideal, and, more
-  generally, are closed under products.
+  doing induction over is proposition valued. Typically this involves
+  the use of the fact the propositions form an exponential ideal, and,
+  more generally, are closed under products.
 
 \begin{code}
 

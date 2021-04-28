@@ -67,7 +67,7 @@ isolated-inr fe x i y n =
 
 \end{code}
 
-The following variation of the above doesn't required function extensionality:
+The following variation of the above doesn't require function extensionality:
 
 \begin{code}
 
@@ -141,8 +141,8 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 
 Σ-is-discrete : {X : 𝓤 ̇ } → {Y : X → 𝓥 ̇ }
               → is-discrete X
-              → ((x : X) → is-discrete(Y x))
-              → is-discrete(Σ Y)
+              → ((x : X) → is-discrete (Y x))
+              → is-discrete (Σ Y)
 Σ-is-discrete {𝓤} {𝓥} {X} {Y} d e (x , y) (x' , y') = g (d x x')
  where
   g : decidable (x ≡ x') → decidable ((x , y) ≡ (x' , y'))

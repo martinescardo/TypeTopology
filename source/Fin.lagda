@@ -1253,6 +1253,7 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
  open finiteness pt
  open import UF-ImageAndSurjection
  open ImageAndSurjection pt
+ open CompactTypesPT pt
 
  is-Kuratowski-finite : 𝓤 ̇ → 𝓤 ̇
  is-Kuratowski-finite X = ∃ n ꞉ ℕ , Fin n ↠ X
@@ -1262,6 +1263,21 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
 
  being-Kuratowski-finite-is-prop : {X : 𝓤 ̇ } → is-prop (is-Kuratowski-finite X)
  being-Kuratowski-finite-is-prop = ∃-is-prop
+
+ Kuratowski-finite-types-are-∃-compact : Fun-Ext
+                                       → {X : 𝓤 ̇ }
+                                       → is-Kuratowski-finite X
+                                       → ∃-Compact X {𝓤}
+ Kuratowski-finite-types-are-∃-compact fe {X} i = γ
+  where
+   α : Kuratowski-data X → Compact X
+   α (n , f , s) = surjection-Compact f fe s (Fin-Compact n)
+
+   β : ∥ Compact X ∥
+   β = ∥∥-functor α i
+
+   γ : ∃-Compact X
+   γ = ∥Compact∥-gives-∃-Compact fe β
 
  finite-types-are-Kuratowski-finite : {X : 𝓤 ̇ }
                                     → is-finite X
@@ -1360,6 +1376,27 @@ decidable equality to remove repetitions, as observed by Tom de Jong
  Kuratowski-finite-discrete-types-are-finite {𝓤} fe {X} δ κ =
   finite-unprime X (∥∥-functor (dkf-lemma fe δ) κ)
 
+
+ surjections-preserve-K-finiteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
+                                   → is-surjection f
+                                   → is-Kuratowski-finite X
+                                   → is-Kuratowski-finite Y
+ surjections-preserve-K-finiteness {𝓤} {𝓥} {X} {Y} f s i = j
+  where
+   γ : Kuratowski-data X → Kuratowski-data Y
+   γ (n , g , t) = n , f ∘ g , ∘-is-surjection t s
+
+   j : is-Kuratowski-finite Y
+   j = ∥∥-functor γ i
+
+
+ total-K-finite-gives-index-type-K-finite : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                                          → is-Kuratowski-finite (Σ A)
+                                          → ((x : X) → ∥ A x ∥)
+                                          → is-Kuratowski-finite X
+ total-K-finite-gives-index-type-K-finite A i s =
+  surjections-preserve-K-finiteness pr₁ (pr₁-is-surjection A s) i
+
 \end{code}
 
 The finiteness of all Kuratowski finite types gives the discreteness of
@@ -1445,7 +1482,7 @@ information.
   A = image x
 
   A-is-set : is-set A
-  A-is-set = subsets-of-sets-are-sets X (λ y → y is-in-the-image-of x) X-is-set ∃-is-prop
+  A-is-set = subsets-of-sets-are-sets X (λ y → y ∈image x) X-is-set ∃-is-prop
 
   ι : Fin 2 → A
   ι = corestriction x

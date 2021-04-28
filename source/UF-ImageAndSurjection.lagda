@@ -24,22 +24,22 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- _is-in-the-image-of_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- y is-in-the-image-of f = ∃ x ꞉ domain f , f x ≡ y
+ _∈image_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → Y → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+ y ∈image f = ∃ x ꞉ domain f , f x ≡ y
 
  being-in-the-image-is-prop : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (y : Y) (f : X → Y)
-                            → is-prop (y is-in-the-image-of f)
+                            → is-prop (y ∈image f)
  being-in-the-image-is-prop y f = ∃-is-prop
- 
+
  image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
- image f = Σ y ꞉ codomain f , y is-in-the-image-of f
+ image f = Σ y ꞉ codomain f , y ∈image f
 
  restriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
              → image f → Y
  restriction f (y , _) = y
 
  restriction-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                       → is-embedding(restriction f)
+                       → is-embedding (restriction f)
  restriction-embedding f = pr₁-is-embedding (λ y → ∥∥-is-prop)
 
  corestriction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -102,6 +102,14 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  _↠_ : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  X ↠ Y = Σ f ꞉ (X → Y) , is-surjection f
 
+ image-is-set : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → (f : X → Y)
+              → is-set Y
+              → is-set (image f)
+ image-is-set f i = subsets-of-sets-are-sets _
+                     (λ y → y ∈image f) i
+                     (being-in-the-image-is-prop _ f)
+
  vv-equiv-iff-embedding-and-surjection  :  {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                         → is-vv-equiv f ⇔ is-embedding f × is-surjection f
  vv-equiv-iff-embedding-and-surjection f = g , h
@@ -122,13 +130,13 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  surjective-embeddings-are-equivs f e s = vv-equivs-are-equivs f (surjective-embeddings-are-vv-equivs f e s)
 
  corestriction-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
-                         → is-surjection (corestriction f)
+                             → is-surjection (corestriction f)
  corestriction-is-surjection f (y , s) = ∥∥-functor g s
   where
    g : (Σ x ꞉ domain f , f x ≡ y) → Σ x ꞉ domain f , corestriction f x ≡ (y , s)
    g (x , p) = x , to-Σ-≡ (p , ∥∥-is-prop _ _)
 
- pt-is-surjection : {X : 𝓤 ̇ } → is-surjection(λ(x : X) → ∣ x ∣)
+ pt-is-surjection : {X : 𝓤 ̇ } → is-surjection (λ (x : X) → ∣ x ∣)
  pt-is-surjection t = ∥∥-rec ∥∥-is-prop (λ x → ∣ x , ∥∥-is-prop (∣ x ∣) t ∣) t
 
 \end{code}
@@ -220,6 +228,28 @@ Surjections can be characterized as follows, modulo size:
  retraction-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                        → has-section f → is-surjection f
  retraction-surjection {𝓤} {𝓥} {X} f φ y = ∣ pr₁ φ y , pr₂ φ y ∣
+
+ pr₁-is-surjection : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                   → ((x : X) → ∥ A x ∥)
+                   → is-surjection (λ (σ : Σ A) → pr₁ σ)
+ pr₁-is-surjection A s x = γ
+  where
+   δ : A x → Σ σ ꞉ Σ A , pr₁ σ ≡ x
+   δ a = (x , a) , refl
+
+   γ : ∃ σ ꞉ Σ A , pr₁ σ ≡ x
+   γ = ∥∥-functor δ (s x)
+
+ pr₁-is-surjection-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+                            → is-surjection (λ (σ : Σ A) → pr₁ σ)
+                            → ((x : X) → ∥ A x ∥)
+ pr₁-is-surjection-converse A s x = γ
+  where
+   δ : (Σ σ ꞉ Σ A , pr₁ σ ≡ x) → A x
+   δ ((.x , a) , refl) = a
+
+   γ : ∥ A x ∥
+   γ = ∥∥-functor δ (s x)
 
 \end{code}
 
