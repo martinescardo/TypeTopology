@@ -970,4 +970,28 @@ discrete-to-the-power-Compact-is-discrete {𝓤} {𝓥} fe {X} {Y} c d f g = γ
   γ : decidable (f ≡ g)
   γ = φ b
 
+open import TotallySeparated
+
+compact-power-of-𝟚-has-discrete-exponent : {X : 𝓤 ̇ }
+                                         → is-totally-separated X
+                                         → Π-Compact (X → 𝟚)
+                                         → is-discrete X
+compact-power-of-𝟚-has-discrete-exponent {𝓤} {X} τ κ x y = γ δ
+ where
+  d : (p : X → 𝟚) → decidable (p x ≡ p y)
+  d p = 𝟚-is-discrete (p x) (p y)
+
+  δ : decidable ((p : X → 𝟚) → p x ≡ p y)
+  δ = κ (λ p → p x ≡ p y) d
+
+  α : x ≡ y → (p : X → 𝟚) → p x ≡ p y
+  α e p = ap p e
+
+  β : ¬ ((p : X → 𝟚) → p x ≡ p y) → ¬ (x ≡ y)
+  β = contrapositive α
+
+  γ : type-of δ → decidable (x ≡ y)
+  γ (inl α) = inl (τ α)
+  γ (inr u) = inr (β u)
+
 \end{code}

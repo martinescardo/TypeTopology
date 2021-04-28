@@ -1584,6 +1584,7 @@ The following no-selection lemma is contributed by Tom de Jong:
    γ : 𝟘
    γ = complement-no-fp n s
 
+
  𝟚-is-Fin2 : 𝟚 ≃ Fin 2
  𝟚-is-Fin2 = qinveq (𝟚-cases 𝟎 𝟏) (g , η , ε)
   where

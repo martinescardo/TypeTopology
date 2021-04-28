@@ -1,3 +1,7 @@
+Martin Escardo 2010-2021
+
+Some files have coauthors.
+
 We investigate discrete and compact and totally separated ordinals,
 and notations for them. The main results are collected in the module
 OrdinalNotationInterpretation.
