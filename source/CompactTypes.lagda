@@ -880,6 +880,25 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
  ∥Compact∥-gives-∃-Compact fe = ∥∥-rec (∃-Compactness-is-prop fe)
                                      Compactness-gives-∃-Compactness
 
+ ∃-Compact-propositions-are-decidable : {P : 𝓤 ̇ }
+                                      → is-prop P
+                                      → ∃-Compact P
+                                      → decidable P
+ ∃-Compact-propositions-are-decidable {𝓤} {P} i κ = γ β
+  where
+   A : P → 𝓤 ̇
+   A p = 𝟙
+
+   α : detachable A
+   α p = inl *
+
+   β : decidable (∃ p ꞉ P , A p)
+   β = κ A α
+
+   γ : type-of β → decidable P
+   γ (inl e) = inl (∥∥-rec i pr₁ e)
+   γ (inr ν) = inr (contrapositive (λ p → ∣ p , * ∣) ν)
+
 \end{code}
 
 Added 10th December 2019.

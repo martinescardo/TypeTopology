@@ -29,9 +29,10 @@ using the corresponding properties for (finite) types.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT
-
 module Fin where
+
+open import SpartanMLTT
+open import UF-Subsingletons renaming (⊤Ω to ⊤)
 
 Fin : ℕ → 𝓤₀ ̇
 Fin 0        = 𝟘
@@ -83,6 +84,21 @@ use the above pattern for similar definitions by induction.
 
 \begin{code}
 
+Fin0-is-empty : is-empty (Fin 0)
+Fin0-is-empty i = i
+
+Fin1-is-singleton : is-singleton (Fin 1)
+Fin1-is-singleton = 𝟎 , γ
+ where
+  γ : (i : Fin 1) → 𝟎 ≡ i
+  γ 𝟎 = refl
+
+Fin0-is-prop : is-prop (Fin 0)
+Fin0-is-prop i = 𝟘-elim i
+
+Fin1-is-prop : is-prop (Fin 1)
+Fin1-is-prop 𝟎 𝟎 = refl
+
 open import Unit-Properties
 
 positive-not-𝟎 : {n : ℕ} {x : Fin (succ n)} → suc x ≢ 𝟎
@@ -94,6 +110,11 @@ positive-not-𝟎 {n} {x} p = 𝟙-is-not-𝟘 (g p)
 
   g : suc x ≡ 𝟎 → 𝟙 ≡ 𝟘
   g = ap f
+
+when-Fin-is-prop : (n : ℕ) → is-prop (Fin n) → (n ≡ 0) + (n ≡ 1)
+when-Fin-is-prop 0               i = inl refl
+when-Fin-is-prop 1               i = inr refl
+when-Fin-is-prop (succ (succ n)) i = 𝟘-elim (positive-not-𝟎 (i 𝟏 𝟎))
 
 \end{code}
 
@@ -138,7 +159,6 @@ Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
 Fin-is-discrete 0        = 𝟘-is-discrete
 Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
 
-open import UF-Subsingletons renaming (⊤Ω to ⊤)
 open import UF-Miscelanea
 
 Fin-is-set : (n : ℕ) → is-set (Fin n)
@@ -712,8 +732,71 @@ Finite types are compact, or exhaustively searchable.
  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
   ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
 
- finite-∃-compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
- finite-∃-compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
+ finite-types-are-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
+ finite-types-are-∃-Compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
+
+ finite-propositions-are-decidable' : Fun-Ext
+                                    → {P : 𝓤 ̇ }
+                                    → is-prop P
+                                    → is-finite P
+                                    → decidable P
+ finite-propositions-are-decidable' fe i j =
+  ∃-Compact-propositions-are-decidable i (finite-types-are-∃-Compact fe j)
+
+\end{code}
+
+But function extensionality is not needed:
+
+\begin{code}
+
+ finite-propositions-are-decidable : {P : 𝓤 ̇ }
+                                   → is-prop P
+                                   → is-finite P
+                                   → decidable P
+ finite-propositions-are-decidable {𝓤} {P} i (0 , s) = inr γ
+  where
+   γ : P → 𝟘
+   γ p = ∥∥-rec 𝟘-is-prop (λ (f , _) → f p) s
+
+ finite-propositions-are-decidable {𝓤} {P} i (succ n , s) = inl γ
+  where
+   γ : P
+   γ = ∥∥-rec i (λ 𝕗 → ⌜ 𝕗 ⌝⁻¹ 𝟎) s
+
+ open import UF-ExcludedMiddle
+
+ summands-of-finite-sum-always-finite-gives-EM :
+
+   ((𝓤 𝓥 : Universe) (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+          → is-finite (Σ A)
+          → (x : X) → is-finite (A x))
+
+  → (𝓦 : Universe) → funext 𝓦 𝓦 → propext 𝓦 → EM 𝓦
+ summands-of-finite-sum-always-finite-gives-EM ϕ 𝓦 fe pe P i = γ
+  where
+   X : 𝓦 ⁺ ̇
+   X = Ω 𝓦
+
+   A : X → 𝓦 ̇
+   A p = p holds
+
+   e : Σ A ≃ (Σ P ꞉ 𝓦 ̇ , is-prop P × P)
+   e = Σ-assoc
+
+   s : is-singleton (Σ A)
+   s = equiv-to-singleton e (the-true-props-form-a-singleton-type fe pe)
+
+   f : Σ A ≃ Fin 1
+   f = singleton-≃ s Fin1-is-singleton
+
+   j : is-finite (Σ A)
+   j = 1 , ∣ f ∣
+
+   k : is-finite P
+   k = ϕ (𝓦 ⁺) 𝓦 X A j (P , i)
+
+   γ : P + ¬ P
+   γ = finite-propositions-are-decidable i k
 
 \end{code}
 
@@ -1390,6 +1473,26 @@ decidable equality to remove repetitions, as observed by Tom de Jong
    j = ∥∥-functor γ i
 
 
+ total-K-finite-gives-index-type-K-finite' : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
+                                           → is-Kuratowski-finite (Σ A)
+                                           → is-Kuratowski-finite (Σ x ꞉ X , ∥ A x ∥)
+ total-K-finite-gives-index-type-K-finite' X A i = γ
+  where
+   ζ : (x : X) → A x → ∥ A x ∥
+   ζ x a = ∣ a ∣
+
+   ζ-is-surjection : (x : X) → is-surjection (ζ x)
+   ζ-is-surjection x = pt-is-surjection
+
+   f : Σ A → Σ x ꞉ X , ∥ A x ∥
+   f = NatΣ ζ
+
+   f-is-surjection : is-surjection f
+   f-is-surjection = NatΣ-is-surjection A (λ x → ∥ A x ∥) ζ ζ-is-surjection
+
+   γ : is-Kuratowski-finite (Σ x ꞉ X , ∥ A x ∥)
+   γ = surjections-preserve-K-finiteness f f-is-surjection i
+
  total-K-finite-gives-index-type-K-finite : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                                           → is-Kuratowski-finite (Σ A)
                                           → ((x : X) → ∥ A x ∥)
@@ -1398,7 +1501,6 @@ decidable equality to remove repetitions, as observed by Tom de Jong
   surjections-preserve-K-finiteness pr₁ (pr₁-is-surjection A s) i
 
 \end{code}
-
 
 The finiteness of all Kuratowski finite types gives the discreteness of
 all sets (and hence excluded middle, because the type of truth values

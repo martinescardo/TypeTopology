@@ -139,6 +139,19 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  pt-is-surjection : {X : 𝓤 ̇ } → is-surjection (λ (x : X) → ∣ x ∣)
  pt-is-surjection t = ∥∥-rec ∥∥-is-prop (λ x → ∣ x , ∥∥-is-prop (∣ x ∣) t ∣) t
 
+
+ NatΣ-is-surjection : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
+                    → ((x : X) → is-surjection (ζ x))
+                    → is-surjection (NatΣ ζ)
+ NatΣ-is-surjection A B ζ i (x , b) = γ
+  where
+   δ : (Σ a ꞉ A x , ζ x a ≡ b)
+     → Σ (x' , a) ꞉ Σ A , (x' , ζ x' a) ≡ (x , b)
+   δ (a , p) = (x , a) , (ap (x ,_) p)
+
+   γ : ∃ (x' , a) ꞉ Σ A , (x' , ζ x' a) ≡ (x , b)
+   γ = ∥∥-functor δ (i x b)
+
 \end{code}
 
 The following was marked as a TODO by Martin:
