@@ -304,9 +304,9 @@ joyal-equivs-are-invertible = sol
       → is-joyal-equiv f → invertible f
   sol f ((s , ε) , (r , η)) = (s , sf , ε)
    where
-    sf = λ (x : domain f) → s(f x)       ≡⟨ (η (s (f x)))⁻¹ ⟩
-                            r(f(s(f x))) ≡⟨ ap r (ε (f x)) ⟩
-                            r(f x)       ≡⟨ η x ⟩
+    sf = λ (x : domain f) → s (f x)       ≡⟨ (η (s (f x)))⁻¹ ⟩
+                            r (f (s (f x))) ≡⟨ ap r (ε (f x)) ⟩
+                            r (f x)       ≡⟨ η x ⟩
                             x            ∎
 
 joyal-equivs-are-equivs = sol
@@ -390,7 +390,7 @@ pr₁-equiv = sol
   sol {𝓤} {𝓥} {X} {A} s = invertibles-are-equivs pr₁ (g , η , ε)
    where
     g : X → Σ A
-    g x = x , pr₁(s x)
+    g x = x , pr₁ (s x)
 
     ε : (x : X) → pr₁ (g x) ≡ x
     ε x = refl (pr₁ (g x))

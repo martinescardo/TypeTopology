@@ -13,11 +13,11 @@ open import LexicographicOrder
 open import InfCompact
 
 Σ-inf-compact : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
-  → (_≤_ : X → X → 𝓦 ̇ )
-  → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇ )
-  → inf-compact _≤_
-  → ((x : X) → inf-compact (_≼_ {x}))
-  → inf-compact (lex-order _≤_ _≼_)
+              → (_≤_ : X → X → 𝓦 ̇ )
+              → (_≼_ : {x : X} → Y x → Y x → 𝓣 ̇ )
+              → inf-compact _≤_
+              → ((x : X) → inf-compact (_≼_ {x}))
+              → inf-compact (lex-order _≤_ _≼_)
 Σ-inf-compact {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} _≤_ _≼_ ε δ p =
  (x₀ , y₀) , (putative-root-lemma , (lower-bound-lemma , uborlb-lemma))
  where
@@ -27,17 +27,17 @@ open import InfCompact
   lemma-next x = δ x (λ y → p (x , y))
 
   next : (x : X) → Y x
-  next x = pr₁(lemma-next x)
+  next x = pr₁ (lemma-next x)
 
   next-correctness : (x : X) → ((Σ y ꞉ Y x , p (x , y) ≡ ₀) → p (x , next x) ≡ ₀)
                               × ((y : Y x) → p (x , y) ≡ ₀ → next x ≼ y)
                               × ((l : Y x) → ((y : Y x) → p (x , y) ≡ ₀ → l ≼ y) → l ≼ next x)
-  next-correctness x = pr₂(lemma-next x)
+  next-correctness x = pr₂ (lemma-next x)
 
   lemma-first : Σ x₀ ꞉ X , ((Σ x ꞉ X , p (x , next x) ≡ ₀) → p (x₀ , next x₀) ≡ ₀)
                             × ((x : X) → p (x , next x) ≡ ₀ → x₀ ≤ x)
                             × ((m : X) → ((x : X) → p (x , next x) ≡ ₀ → m ≤ x) → m ≤ x₀)
-  lemma-first = ε(λ x → p (x , next x))
+  lemma-first = ε (λ x → p (x , next x))
 
   x₀ : X
   x₀ = pr₁ lemma-first
@@ -51,7 +51,7 @@ open import InfCompact
   y₀ = next x₀
 
   putative-root-lemma : (Σ t ꞉ (Σ x ꞉ X , Y x) , p t ≡ ₀) → p (x₀ , y₀) ≡ ₀
-  putative-root-lemma ((x , y) , r) = pr₁ first-correctness (x , pr₁(next-correctness x) (y , r))
+  putative-root-lemma ((x , y) , r) = pr₁ first-correctness (x , pr₁ (next-correctness x) (y , r))
 
   _⊑_ : Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇
   _⊑_ = lex-order _≤_ _≼_
@@ -64,12 +64,16 @@ open import InfCompact
    where
     f : p (x , next x) ≡ ₀ → x₀ ≤ x
     f = pr₁ (pr₂ first-correctness) x
+
     ≤-lemma : x₀ ≤ x
-    ≤-lemma = f(pr₁(next-correctness x)(y , r))
+    ≤-lemma = f (pr₁ (next-correctness x) (y , r))
+
     g : next x ≼ y
-    g = pr₁ (pr₂(next-correctness x)) y r
+    g = pr₁ (pr₂ (next-correctness x)) y r
+
     j : {x₀ x : X} (r : x₀ ≡ x) {y : Y x} → next x ≼ y → τ r (next x₀) ≼ y
     j refl = id
+
     ≼-lemma : (r : x₀ ≡ x) → τ r y₀ ≼ y
     ≼-lemma r = j r g
 
@@ -78,24 +82,24 @@ open import InfCompact
   uborlb-lemma (x , y) lower-bounder = ≤-lemma , ≼-lemma
    where
     f : ((x' : X) → p (x' , next x') ≡ ₀ → x ≤ x') → x ≤ x₀
-    f = pr₂(pr₂ first-correctness) x
-    ≤-lower-bounder : (x' : X)(y' : Y x') → p (x' , y') ≡ ₀ → x ≤ x'
-    ≤-lower-bounder x' y' r' = pr₁(lower-bounder ((x' , y')) r')
+    f = pr₂ (pr₂ first-correctness) x
+
+    ≤-lower-bounder : (x' : X) (y' : Y x') → p (x' , y') ≡ ₀ → x ≤ x'
+    ≤-lower-bounder x' y' r' = pr₁ (lower-bounder ((x' , y')) r')
+
     ≤-lemma : x ≤ x₀
-    ≤-lemma = f(λ x' → ≤-lower-bounder x' (next x'))
+    ≤-lemma = f (λ x' → ≤-lower-bounder x' (next x'))
+
     g :  ((y' : Y x) → p (x , y') ≡ ₀ → y ≼ y') → y ≼ next x
-    g = pr₂(pr₂(next-correctness x)) y
-    ≼-lower-bounder : (x' : X)(y' : Y x') → p (x' , y') ≡ ₀ → (r : x ≡ x') → τ r y ≼ y'
-    ≼-lower-bounder x' y' r' = pr₂(lower-bounder ((x' , y')) r')
+    g = pr₂ (pr₂ (next-correctness x)) y
+
+    ≼-lower-bounder : (x' : X) (y' : Y x') → p (x' , y') ≡ ₀ → (r : x ≡ x') → τ r y ≼ y'
+    ≼-lower-bounder x' y' r' = pr₂ (lower-bounder ((x' , y')) r')
+
     j : {x₀ x : X} → (r : x ≡ x₀) → {y : Y x} → y ≼ next x → τ r y ≼ next x₀
     j refl = id
+
     ≼-lemma : (r : x ≡ x₀) → τ r y ≼ y₀
-    ≼-lemma r = j r (g(λ y' r → ≼-lower-bounder x y' r refl))
+    ≼-lemma r = j r (g (λ y' r → ≼-lower-bounder x y' r refl))
 
 \end{code}
-
-Added 28th July 2018.
-
-\end{code}
-
-\begin{code}

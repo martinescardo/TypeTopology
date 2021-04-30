@@ -88,7 +88,7 @@ module concrete-example where
     p : X → 𝟚
     p x = pr₂ x refl
 
- doesn't type check (Agda says: "(pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
+ doesn't type check (Agda says: " (pr₁ (pr₁ x) x) != ₁ of type 𝟚 when
  checking that the expression refl has type pr₁ x ≡ ∞"), and hence we
  haven't distinguished ∞₀ and ∞₁ by applying the same function to
  them. This is clearly seen when enough implicit arguments are made
@@ -108,11 +108,11 @@ module concrete-example where
    p₁ : ℕ∞ → 𝟚
    p₁ u = p (u , λ r → ₁)
 
-   lemma : (n : ℕ) → p₀(under n) ≡ p₁(under n)
+   lemma : (n : ℕ) → p₀ (under n) ≡ p₁ (under n)
    lemma n = ap (λ - → p (under n , -)) (dfunext (fe 𝓤₀ 𝓤₀) claim)
     where
      claim : (r : under n ≡ ∞) → (λ r → ₀) r ≡ (λ r → ₁) r
-     claim s = 𝟘-elim(∞-is-not-finite n (s ⁻¹))
+     claim s = 𝟘-elim (∞-is-not-finite n (s ⁻¹))
 
  open import DiscreteAndSeparated
 
@@ -230,7 +230,7 @@ two embeddings e₀ and e₁:
  Lemma x φ = ap (λ - → (x , -)) claim
   where
    claim : (λ p → ₀) ≡ (λ p → ₁)
-   claim = dfunext (fe 𝓤 𝓤₀) (λ p → 𝟘-elim(φ p))
+   claim = dfunext (fe 𝓤 𝓤₀) (λ p → 𝟘-elim (φ p))
 
 \end{code}
 
@@ -244,13 +244,13 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
 \begin{code}
 
  weakly-isolated : {X : 𝓤 ̇ } (x : X) → 𝓤 ̇
- weakly-isolated x = ∀ x' → decidable(x' ≢ x)
+ weakly-isolated x = ∀ x' → decidable (x' ≢ x)
 
  Theorem : (Σ g ꞉ (Y → 𝟚), g a₀ ≢ g a₁) → weakly-isolated a
  Theorem (g , d) = λ x → 𝟚-equality-cases' (claim₀' x) (claim₁' x)
   where
    f : X → 𝟚
-   f x = g(e ₀ x) ⊕ g(e ₁ x)
+   f x = g (e ₀ x) ⊕ g (e ₁ x)
 
    claim₀ : f a ≡ ₁
    claim₀ = Lemma[b≢c→b⊕c≡₁] d
@@ -265,7 +265,7 @@ extensionality. (Cf. the module DiscreteAndSeparated.)
      fact = ap f (r ⁻¹) ∙ p
 
    claim₁' : (x : X) → f x ≡ ₁ → ¬ (x ≢ a)
-   claim₁' x p φ = 𝟘-elim(equal-₀-different-from-₁ fact p)
+   claim₁' x p φ = 𝟘-elim (equal-₀-different-from-₁ fact p)
     where
      fact : f x ≡ ₀
      fact = claim₁ x φ

@@ -115,7 +115,7 @@ As a simple application, it follows that negation doesn't have fixed points:
  \begin{code}
 
  ¬-no-fp : ¬ (Σ X ꞉ 𝓤 ̇ , X ≡ ¬ X)
- ¬-no-fp {𝓤} (X , p) = pr₁(γ id)
+ ¬-no-fp {𝓤} (X , p) = pr₁ (γ id)
   where
    γ : designated-fixed-point-property 𝟘
    γ = LFPT-≡ p
@@ -136,10 +136,10 @@ As a simple application, it follows that negation doesn't have fixed points:
  cantor-theorem-for-universes {𝓥} {𝓤} A r h X = LFPT-≡ {𝓤} {𝓤} p
   where
    B : 𝓤 ̇
-   B = pr₁(LFPT· r h (λ B → B → X))
+   B = pr₁ (LFPT· r h (λ B → B → X))
 
    p : B ≡ (B → X)
-   p = pr₂(LFPT· r h (λ B → B → X))
+   p = pr₂ (LFPT· r h (λ B → B → X))
 
  \end{code}
 
@@ -447,7 +447,7 @@ module Blechschmidt' (pt : propositional-truncations-exist) where
          r = ish p refl
 
          t : φ (transport X p x₀) ≡ φ x₀
-         t = ap (λ - → φ(transport X - x₀)) r
+         t = ap (λ - → φ (transport X - x₀)) r
 
      b : (x₀ : X a₀) → φ x₀ holds → ∃ p ꞉ a₀ ≡ a₀ , φ (transport X p x₀) holds
      b x₀ h = ∣ refl , h ∣

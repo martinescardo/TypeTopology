@@ -115,8 +115,8 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
  vv-equiv-iff-embedding-and-surjection f = g , h
   where
    g : is-vv-equiv f → is-embedding f × is-surjection f
-   g i = (λ y → pr₁(pr₁ the-singletons-are-the-inhabited-propositions (i y))) ,
-         (λ y → pr₂(pr₁ the-singletons-are-the-inhabited-propositions (i y)))
+   g i = (λ y → pr₁ (pr₁ the-singletons-are-the-inhabited-propositions (i y))) ,
+         (λ y → pr₂ (pr₁ the-singletons-are-the-inhabited-propositions (i y)))
 
    h : is-embedding f × is-surjection f → is-vv-equiv f
    h (e , s) = λ y → pr₂ the-singletons-are-the-inhabited-propositions (e y , s y)
@@ -203,7 +203,7 @@ Surjections can be characterized as follows, modulo size:
 
  imageInduction : ∀ {𝓦 𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
  imageInduction {𝓦} {𝓤} {𝓥} {X} {Y} f =
-                (P : Y → 𝓦 ̇ ) → ((y : Y) → is-prop (P y)) → ((x : X) → P(f x)) → (y : Y) → P y
+                (P : Y → 𝓦 ̇ ) → ((y : Y) → is-prop (P y)) → ((x : X) → P (f x)) → (y : Y) → P y
 
  surjection-induction : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                       → is-surjection f → imageInduction {𝓦} f
@@ -218,10 +218,10 @@ Surjections can be characterized as follows, modulo size:
                                        (λ x → ∣ x , refl ∣)
 
  image-induction : ∀ {𝓦} {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                 (f : X → Y) (P : image f → 𝓦 ̇ )
-               → (∀ y' → is-prop (P y'))
-               → (∀ x → P(corestriction f x))
-               → ∀ y' → P y'
+                   (f : X → Y) (P : image f → 𝓦 ̇ )
+                 → (∀ y' → is-prop (P y'))
+                 → (∀ x → P (corestriction f x))
+                 → ∀ y' → P y'
  image-induction f = surjection-induction (corestriction f)
                                           (corestriction-is-surjection f)
 

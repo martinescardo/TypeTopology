@@ -226,7 +226,7 @@ And now we provide all steps needed to establish transport-well-order.
     is-transitive← : is-transitive _≺_ → is-transitive _<_
     is-transitive← t x y z = γ
      where
-      δ : g(f x) < g(f y) → g(f y) < g(f z) → g(f x) < g(f z)
+      δ : g (f x) < g (f y) → g (f y) < g (f z) → g (f x) < g (f z)
       δ = t (f x) (f y) (f z)
 
       γ : x < y → y < z → x < z

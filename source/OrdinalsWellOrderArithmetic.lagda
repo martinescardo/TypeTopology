@@ -213,21 +213,21 @@ module times
    P : X × Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    P = is-accessible _⊏_
 
-   γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P(x' , y')) → (y : Y) → P(x , y)
-   γ x step = transfinite-induction _≺_ w' (λ y → P(x , y)) (λ y f → next (x , y) (ψ y f))
+   γ : (x : X) → ((x' : X) → x' < x → (y' : Y) → P (x' , y')) → (y : Y) → P (x , y)
+   γ x step = transfinite-induction _≺_ w' (λ y → P (x , y)) (λ y f → next (x , y) (ψ y f))
     where
      ψ : (y : Y) → ((y' : Y) → y' ≺ y → P (x , y')) → (z' : X × Y) → z' ⊏ (x , y) → P z'
      ψ y f (x' , y') (inl l) = step x' l y'
      ψ y f (x' , y') (inr (r , m)) = back-transport P p α
       where
-       α : P(x , y')
+       α : P (x , y')
        α = f y' m
 
        p : (x' , y') ≡ (x , y')
        p = to-×-≡ r refl
 
-   φ : (x : X) (y : Y) → P(x , y)
-   φ = transfinite-induction _<_ w (λ x → (y : Y) → P(x , y)) γ
+   φ : (x : X) (y : Y) → P (x , y)
+   φ = transfinite-induction _<_ w (λ x → (y : Y) → P (x , y)) γ
 
  transitive : is-transitive _<_
             → is-transitive _≺_
@@ -542,7 +542,7 @@ I am not sure this is going to be useful:
    g : (u : Π X) → ¬ ((λ q → transport X (P-is-prop p q) (pr₁ (f p))) ≺ u)
    g u (q , l) = h n
     where
-     h : ¬ (pr₁(f q) < u q)
+     h : ¬ (pr₁ (f q) < u q)
      h = pr₂ (f q) (u q)
 
      m : transport X (P-is-prop q q) (pr₁ (f q)) < u q
@@ -587,10 +587,10 @@ module sum
    P = is-accessible _⊏_
 
    γ : (x : X)
-     → ((x' : X) → x' < x → (y' : Y x') → P(x' , y'))
-     → (y : Y x) → P(x , y)
+     → ((x' : X) → x' < x → (y' : Y x') → P (x' , y'))
+     → (y : Y x) → P (x , y)
    γ x step = transfinite-induction _≺_ (w' x)
-               (λ y → P(x , y))
+               (λ y → P (x , y))
                (λ y f → next (x , y) (ψ y f))
     where
      ψ : (y : Y x)
@@ -599,14 +599,14 @@ module sum
      ψ y f (x' , y') (inl l) = step x' l y'
      ψ y f (x' , y') (inr (r , m)) = back-transport P p α
       where
-       α : P(x , transport Y r y')
+       α : P (x , transport Y r y')
        α = f (transport Y r y') m
 
        p : (x' , y') ≡ (x , transport Y r y')
        p = to-Σ-≡ (r , refl)
 
-   φ : (x : X) (y : Y x) → P(x , y)
-   φ = transfinite-induction _<_ w (λ x → (y : Y x) → P(x , y)) γ
+   φ : (x : X) (y : Y x) → P (x , y)
+   φ = transfinite-induction _<_ w (λ x → (y : Y x) → P (x , y)) γ
 
  transitive : is-transitive _<_
             → ((x : X) → is-transitive (_≺_ {x}))
@@ -886,7 +886,7 @@ module extension
  top-preservation f = φ , g
    where
     φ : (p : fiber j a) → Y (pr₁ p)
-    φ (x , r) = pr₁(f x)
+    φ (x , r) = pr₁ (f x)
 
     g : (ψ : (Y / j) a) → ¬ (φ ≺ ψ)
     g ψ ((x , r) , l) = pr₂ (f x) (ψ (x , r)) l

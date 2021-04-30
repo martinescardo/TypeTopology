@@ -2,7 +2,7 @@ Martin Escardo, 5th September 2018.
 
 Univalence gives the usual mathematical notion of equality for the
 subsets of a type: two subsets of a type are equal precisely when they
-have the same elements, like in ZF(C). And *not* when they are
+have the same elements, like in ZF (C). And *not* when they are
 isomorphic, for any reasonable notion of isomorphism between subsets
 of a given type.
 

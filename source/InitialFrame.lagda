@@ -220,7 +220,7 @@ main-lemma ua P p =
 𝒻-is-unique : {𝓦 : Universe} (ua : is-univalent 𝓦) (F : frame 𝓤 𝓥 𝓦)
             → (ℊ : (𝟎-𝔽𝕣𝕞 ua) ─f→ F)
             → 𝒻 ua F ≡ ℊ
-𝒻-is-unique ua F ℊ@(g , ζ@(ϕ , χ , ψ)) =
+𝒻-is-unique ua F ℊ@ (g , ζ@ (ϕ , χ , ψ)) =
  to-subtype-≡ (holds-is-prop ∘ is-a-frame-homomorphism (𝟎-𝔽𝕣𝕞 ua) F) β
  where
   open Joins (λ x y → x ≤[ poset-of F ] y)

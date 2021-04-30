@@ -59,7 +59,7 @@ id-is-equiv X = (id , λ x → refl) , (id , λ x → refl)
  where
   fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
   fg'' z =  ap f' (fg (g' z)) ∙ fg' z
-  hf'' : (x : X) → h(h'(f'(f x))) ≡ x
+  hf'' : (x : X) → h (h' (f' (f x))) ≡ x
   hf'' x = ap h (hf' (f x)) ∙ hf x
 
 \end{code}
@@ -115,7 +115,7 @@ idtoeq-traditional X _ refl = ≃-refl X
 \end{code}
 
 We would have a definitional equality if we had defined the traditional
-one using J(based), but because of the idiosyncracies of Agda, we
+one using J (based), but because of the idiosyncracies of Agda, we
 don't with the current definition:
 
 \begin{code}
@@ -150,11 +150,11 @@ qinv f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g ∼ id
 equivs-are-qinvs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → qinv f
 equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
  where
-  sf : (x : X) → s(f x) ≡ x
-  sf x = s(f x)       ≡⟨ (rf (s (f x)))⁻¹ ⟩
-         r(f(s(f x))) ≡⟨ ap r (fs (f x)) ⟩
-         r(f x)       ≡⟨ rf x ⟩
-         x            ∎
+  sf : (x : X) → s (f x) ≡ x
+  sf x = s (f x)         ≡⟨ (rf (s (f x)))⁻¹ ⟩
+         r (f (s (f x))) ≡⟨ ap r (fs (f x)) ⟩
+         r (f x)         ≡⟨ rf x ⟩
+         x               ∎
 
 inverses-are-sections : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                       → f ∘ inverse f e ∼ id
@@ -162,7 +162,7 @@ inverses-are-sections f ((s , fs) , (r , rf)) = fs
 
 inverses-are-retractions : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                          → inverse f e ∘ f ∼ id
-inverses-are-retractions f e = pr₁ (pr₂(equivs-are-qinvs f e))
+inverses-are-retractions f e = pr₁ (pr₂ (equivs-are-qinvs f e))
 
 inverses-are-equivs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) (e : is-equiv f)
                     → is-equiv (inverse f e)
@@ -252,10 +252,10 @@ pt-pf-equiv x = f , ((g , fg) , (g , gf))
   gf : g ∘ f ∼ id
   gf (y , p) = ap (λ - → y , -) (⁻¹-involutive p)
 
-singleton-types'-are-singletons : {X : 𝓤 ̇ } (x : X) → is-singleton(singleton-type' x)
+singleton-types'-are-singletons : {X : 𝓤 ̇ } (x : X) → is-singleton (singleton-type' x)
 singleton-types'-are-singletons x = retract-of-singleton
-                                      (pr₁(pt-pf-equiv x) ,
-                                      (pr₁(pr₂((pt-pf-equiv x)))))
+                                      (pr₁ (pt-pf-equiv x) ,
+                                      (pr₁ (pr₂ ((pt-pf-equiv x)))))
                                       (singleton-types-are-singletons x)
 
 singleton-types'-are-props : {X : 𝓤 ̇ } (x : X) → is-prop (singleton-type' x)
@@ -301,14 +301,14 @@ vv-equivs-are-equivs {𝓤} {𝓥} {X} {Y} f φ = (g , fg) , (g , gf)
   φ' : (y : Y) → Σ c ꞉ (Σ x ꞉ X , f x ≡ y) , ((σ : Σ x ꞉ X , f x ≡ y) → c ≡ σ)
   φ' = φ
   c : (y : Y) → Σ x ꞉ X , f x ≡ y
-  c y = pr₁(φ y)
+  c y = pr₁ (φ y)
   d : (y : Y) → (σ : Σ x ꞉ X , f x ≡ y) → c y ≡ σ
-  d y = pr₂(φ y)
+  d y = pr₂ (φ y)
   g : Y → X
-  g y = pr₁(c y)
+  g y = pr₁ (c y)
   fg : (y : Y) → f (g y) ≡ y
-  fg y = pr₂(c y)
-  e : (x : X) → g(f x) , fg (f x) ≡ x , refl
+  fg y = pr₂ (c y)
+  e : (x : X) → g (f x) , fg (f x) ≡ x , refl
   e x = d (f x) (x , refl)
   gf : (x : X) → g (f x) ≡ x
   gf x = ap pr₁ (e x)
@@ -323,9 +323,9 @@ fiber-lemma f y = g , (h , gh) , (h , hg)
   g (x , p) = x , (p ⁻¹)
   h : fiber' f y → fiber f y
   h (x , p) = x , (p ⁻¹)
-  hg : ∀ σ → h(g σ) ≡ σ
+  hg : ∀ σ → h (g σ) ≡ σ
   hg (x , refl) = refl
-  gh : ∀ τ → g(h τ) ≡ τ
+  gh : ∀ τ → g (h τ) ≡ τ
   gh (x , refl) = refl
 
 is-hae : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
@@ -342,7 +342,7 @@ id-homotopies-are-natural : {X : 𝓤 ̇ } (h : X → X) (η : h ∼ id) {x : X}
                           → η (h x) ≡ ap h (η x)
 id-homotopies-are-natural h η {x} =
    η (h x)                         ≡⟨ refl ⟩
-   η (h x) ∙ refl                  ≡⟨ ap (λ - → η(h x) ∙ -) ((trans-sym' (η x))⁻¹) ⟩
+   η (h x) ∙ refl                  ≡⟨ ap (λ - → η (h x) ∙ -) ((trans-sym' (η x))⁻¹) ⟩
    η (h x) ∙ (η x ∙ (η x)⁻¹)       ≡⟨ (∙assoc (η (h x)) (η x) (η x ⁻¹))⁻¹ ⟩
    η (h x) ∙ η x ∙ (η x)⁻¹         ≡⟨ ap (λ - → η (h x) ∙ - ∙ (η x)⁻¹) ((ap-id-is-id' (η x))) ⟩
    η (h x) ∙ ap id (η x) ∙ (η x)⁻¹ ≡⟨ homotopies-are-natural' h id η {h x} {x} {η x} ⟩
@@ -391,7 +391,7 @@ but a proof by path induction is direct:
 identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                             (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                           → (Σ γ ꞉ x ≡ x' , ap f γ ∙ p' ≡ p) → (x , p) ≡ (x' , p')
-identifications-in-fibers f .(f x) x .x refl p' (refl , r) = g
+identifications-in-fibers f . (f x) x .x refl p' (refl , r) = g
  where
   g : x , refl ≡ x , p'
   g = ap (λ - → (x , -)) (r ⁻¹ ∙ refl-left-neutral)
@@ -488,7 +488,7 @@ have:
 from-identifications-in-fibers : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                  (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
                                → (x , p) ≡ (x' , p') → Σ γ ꞉ x ≡ x' , ap f γ ∙ p' ≡ p
-from-identifications-in-fibers f .(f x) x .x refl .refl refl = refl , refl
+from-identifications-in-fibers f . (f x) x .x refl .refl refl = refl , refl
 
 η-pif : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
         (y : Y) (x x' : X) (p : f x ≡ y) (p' : f x' ≡ y)
@@ -529,7 +529,7 @@ pr₁-is-equiv {𝓤} {𝓥} X Y iss = vv-equivs-are-equivs pr₁ (pr₁-is-vv-e
 
 pr₁-is-vv-equiv-converse : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
                          → is-vv-equiv (pr₁ {𝓤} {𝓥} {X} {A})
-                         → ((x : X) → is-singleton(A x))
+                         → ((x : X) → is-singleton (A x))
 pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r , s , rs) (isv x)
   where
     f : Σ A → X
@@ -538,7 +538,7 @@ pr₁-is-vv-equiv-converse {𝓤} {𝓥} {X} {A} isv x = retract-of-singleton (r
     s a = (x , a) , refl
     r : fiber f x → A x
     r ((x , a) , refl) = a
-    rs : (a : A x) → r(s a) ≡ a
+    rs : (a : A x) → r (s a) ≡ a
     rs a = refl
 
 logically-equivalent-props-give-is-equiv : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
@@ -629,7 +629,7 @@ id-qinv X = id , (λ x → refl) , (λ x → refl)
     where
      fg'' : (z : Z) → f' (f (g (g' z))) ≡ z
      fg'' z =  ap f' (fg (g' z)) ∙ fg' z
-     gf'' : (x : X) → g(g'(f'(f x))) ≡ x
+     gf'' : (x : X) → g (g' (f' (f x))) ≡ x
      gf'' x = ap g (gf' (f x)) ∙ gf x
 
 ≅-comp : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → X ≅ Y → Y ≅ Z → X ≅ Z

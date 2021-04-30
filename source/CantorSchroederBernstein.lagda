@@ -592,7 +592,7 @@ purpose.
                   f x         ≡⟨ p ⟩
                   y           ∎
 
-    b : Σ x ꞉ X ,((d : decidable (is-g-point x)) → H x d ≡ y)
+    b : Σ x ꞉ X , ((d : decidable (is-g-point x)) → H x d ≡ y)
     b = a (δ (g y))
 
     x : X
@@ -636,7 +636,7 @@ means that one of the embeddings f and g is already an equivalence.
 Mike Shulman observed that this is true even without excluded middle:
 If X is connected and we have an embedding g : Y → X and any function
 at all f : X → Y, then g is an equivalence. In fact, for any x : X, we
-have ∥ g(f(x)) = x ∥ since X is connected; thus g is (non-split)
+have ∥ g (f (x)) = x ∥ since X is connected; thus g is (non-split)
 surjective. But a surjective embedding is an equivalence.
 
 \begin{code}
@@ -659,7 +659,7 @@ and that it is connected if additionally ∥ X ∥ is pointed.
        → is-wconnected X → is-embedding g → is-equiv g
  lemma f g w e = surjective-embeddings-are-equivs g e s
   where
-   a : ∀ x → ∥ g(f(x)) ≡ x ∥
+   a : ∀ x → ∥ g (f (x)) ≡ x ∥
    a x = w (g (f x)) x
    s : is-surjection g
    s x = ∥∥-functor (λ p → (f x , p)) (a x)
@@ -766,8 +766,8 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f 
                            g (g⁻¹ x γ)   ≡⟨ ap g p ⟩
                            g (g⁻¹ x' γ') ≡⟨ g⁻¹-is-rinv x' γ' ⟩
                            x'            ∎
-    l (inl γ) (inr ν') p = 𝟘-elim(f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
-    l (inr ν) (inl γ') p = 𝟘-elim(f-g⁻¹-disjoint-images x  x' ν  γ' p)
+    l (inl γ) (inr ν') p = 𝟘-elim (f-g⁻¹-disjoint-images x' x  ν' γ (p ⁻¹))
+    l (inr ν) (inl γ') p = 𝟘-elim (f-g⁻¹-disjoint-images x  x' ν  γ' p)
     l (inr ν) (inr ν') p = embeddings-are-lc f f-is-emb p
 
   f-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
@@ -777,7 +777,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f 
   non-f-point-is-g-point x ν x₀ n p =
    Cases (excluded-middle (fiber g x₀) (g-is-emb x₀))
     (λ (σ :   fiber g x₀) → σ)
-    (λ (u : ¬ fiber g x₀) → 𝟘-elim(ν (x₀ , (n , p) , u)))
+    (λ (u : ¬ fiber g x₀) → 𝟘-elim (ν (x₀ , (n , p) , u)))
 
   claim : (y : Y) → ¬ is-g-point (g y) → Σ (x , p) ꞉ fiber f y , ¬ is-g-point x
   claim y ν = v

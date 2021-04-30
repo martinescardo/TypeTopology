@@ -116,12 +116,15 @@ module old (fe : FunExt) where
   where
    f : X → (X + 𝟙 {𝓤}) ∖ inr *
    f x = (inl x , +disjoint)
+
    g : (X + 𝟙) ∖ inr * → X
    g (inl x , u) = x
    g (inr * , u) = 𝟘-elim (u refl)
+
    η : f ∘ g ∼ id
    η (inl x , u) = to-Σ-≡' (negations-are-props (fe 𝓤 𝓤₀) _ _)
    η (inr * , u) = 𝟘-elim (u refl)
+
    ε : g ∘ f ∼ id
    ε x = refl
 
@@ -129,11 +132,14 @@ module old (fe : FunExt) where
  remove-points {𝓤} {𝓥} {X} {Y} f (g , ε , η) a = qinveq f' (g' , ε' , η')
   where
    f' : X ∖ a → Y ∖ (f a)
-   f' (x , u) = (f x , λ(p : f x ≡ f a) → u ((ε x)⁻¹ ∙ ap g p ∙ ε a))
+   f' (x , u) = (f x , λ (p : f x ≡ f a) → u ((ε x)⁻¹ ∙ ap g p ∙ ε a))
+
    g' : Y ∖ (f a) → X ∖ a
-   g' (y , v) = (g y , λ(p : g y ≡ a) → v ((η y) ⁻¹ ∙ ap f p))
+   g' (y , v) = (g y , λ (p : g y ≡ a) → v ((η y) ⁻¹ ∙ ap f p))
+
    ε' : g' ∘ f' ∼ id
    ε' (x , _) = to-Σ-≡ (ε x , negations-are-props (fe 𝓤 𝓤₀) _ _)
+
    η' : f' ∘ g' ∼ id
    η' (y , _) = to-Σ-≡ (η y , negations-are-props (fe 𝓥 𝓤₀) _ _)
 
@@ -143,11 +149,14 @@ module old (fe : FunExt) where
    f : (Y + 𝟙) ∖ (inl b) → Y
    f (inl y , u) = y
    f (inr * , u) = b
+
    g' : (y : Y) → decidable (inl b ≡ inl y) → (Y + 𝟙) ∖ (inl b)
    g' y (inl p) = (inr * , +disjoint')
    g' y (inr u) = (inl y , contrapositive (_⁻¹) u)
+
    g : Y → (Y + 𝟙) ∖ (inl b)
    g y = g' y (i (inl y))
+
    ε : g ∘ f ∼ id
    ε (inl y , u) = to-Σ-≡ (p , negations-are-props (fe 𝓥 𝓤₀) _ _)
     where
@@ -157,7 +166,7 @@ module old (fe : FunExt) where
      ψ v q = q ∙ ap inr (negations-are-props (fe 𝓥 𝓤₀) _ _)
      h : i (inl y) ≡ inr (≢-sym u)
      h = equality-cases (i (inl y)) φ ψ
-     p : pr₁(g' y (i (inl y))) ≡ inl y
+     p : pr₁ (g' y (i (inl y))) ≡ inl y
      p = ap (pr₁ ∘ (g' y)) h
    ε (inr * , u) = equality-cases (i (inl b)) φ ψ
     where
@@ -168,6 +177,7 @@ module old (fe : FunExt) where
        r = ap (g' b) q
      ψ : (v : inl b ≢ inl b) → i (inl b) ≡ inr v → g (f (inr * , u)) ≡ (inr * , u)
      ψ v q = 𝟘-elim (v refl)
+
    η : f ∘ g ∼ id
    η y = equality-cases (i (inl y)) φ ψ
     where
@@ -186,7 +196,7 @@ module old (fe : FunExt) where
                            (φ (inr *))
                            (equivs-preserve-isolatedness φ e (inr *)
                              new-point-is-isolated) ⟩
-    Y ■
+    Y                  ■
 
 \end{code}
 

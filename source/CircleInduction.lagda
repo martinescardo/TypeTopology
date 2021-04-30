@@ -143,7 +143,7 @@ What is significantly harder is showing that it obeys the computation rules.
 \end{code}
 
 Next we show that r is a retraction of pr₁ : Σ A → 𝕊¹. This tells us that
-r(x) = (x , pr₂ (r x)), so that we can define 𝕊¹-induction by transport.
+r (x) = (x , pr₂ (r x)), so that we can define 𝕊¹-induction by transport.
 
 \begin{code}
 

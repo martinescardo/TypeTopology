@@ -36,7 +36,7 @@ module type-classifier
  T : (Y → 𝓤 ̇ ) → Σ X ꞉ 𝓤 ̇ , (X → Y)
  T A = Σ A , pr₁
 
- χT : (A : Y → 𝓤 ̇ ) → χ(T A) ≡ A
+ χT : (A : Y → 𝓤 ̇ ) → χ (T A) ≡ A
  χT A = dfunext fe' γ
   where
    f : ∀ y → (Σ σ ꞉ Σ A , pr₁ σ ≡ y) → A y
@@ -68,7 +68,7 @@ module type-classifier
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
- Tχ : (σ : Σ X ꞉ 𝓤 ̇ , (X → Y)) → T(χ σ) ≡ σ
+ Tχ : (σ : Σ X ꞉ 𝓤 ̇ , (X → Y)) → T (χ σ) ≡ σ
  Tχ (X , f) = to-Σ-≡ (eqtoid ua _ _ (total-fiber-is-domain f) ,
                        transport-map (total-fiber-is-domain f) pr₁)
 
@@ -95,7 +95,7 @@ module subtype-classifier
  T : (Y → Ω 𝓤) → Σ X ꞉ 𝓤 ̇ , X ↪ Y
  T P = (Σ y ꞉ Y , P y holds) , pr₁ , pr₁-is-embedding (λ y → holds-is-prop (P y))
 
- χT : (P : Y → Ω 𝓤) → χ(T P) ≡ P
+ χT : (P : Y → Ω 𝓤) → χ (T P) ≡ P
  χT P = dfunext fe' γ
   where
    f : ∀ y → χ (T P) y holds → P y holds
@@ -126,7 +126,7 @@ module subtype-classifier
      s : id ≡ eqtofun (≃-sym e)
      s = ap (λ - → eqtofun (≃-sym -)) r
 
- Tχ : (σ : Σ X ꞉ 𝓤 ̇ , X ↪ Y) → T(χ σ) ≡ σ
+ Tχ : (σ : Σ X ꞉ 𝓤 ̇ , X ↪ Y) → T (χ σ) ≡ σ
  Tχ (X , f , i) = to-Σ-≡ (eqtoid ua _ _ (total-fiber-is-domain f) ,
                           (transport-embedding (total-fiber-is-domain f) pr₁ (pr₁-is-embedding i)
                          ∙ to-Σ-≡' (being-embedding-is-prop fe f _ _)))
@@ -226,7 +226,7 @@ module general-classifier
    g : green-map pr₁
    g y = transport green (fiber-equiv-≡ A y) (pr₂ (A y))
 
- χT : (A : Y → Green) → χ(T A) ≡ A
+ χT : (A : Y → Green) → χ (T A) ≡ A
  χT A = dfunext fe' γ
   where
    γ : (y : Y) → χ (T A) y ≡ A y
@@ -289,7 +289,7 @@ module general-classifier
      i  = ap (λ - → transport B (- ⁻¹) (f , g)) (eqtoid-refl ua X')
      ii = to-Σ-≡ (refl , ((precomp-with-≃-refl-green-map f g) ⁻¹))
 
- Tχ : (f : Green-map) → T(χ f) ≡ f
+ Tχ : (f : Green-map) → T (χ f) ≡ f
  Tχ (X , f , g) = to-Σ-≡ (a , (to-Σ-≡ (b , c)))
   where
    X' : 𝓤 ̇

@@ -38,7 +38,7 @@ of the Cantor space:
 \begin{code}
 
 A : ((ℕ → 𝟚) → 𝟚) → 𝟚
-A = pr₁(wcompact-implies-wcompact' cantor-wcompact)
+A = pr₁ (wcompact-implies-wcompact' cantor-wcompact)
 
 \end{code}
 
@@ -48,7 +48,7 @@ Discreteness of ((ℕ → 𝟚) → ℕ):
 
 open import DiscreteAndSeparated
 
-Cantor→ℕ-is-discrete : is-discrete((ℕ → 𝟚) → ℕ)
+Cantor→ℕ-is-discrete : is-discrete ((ℕ → 𝟚) → ℕ)
 Cantor→ℕ-is-discrete = compact-discrete-discrete' (fe 𝓤₀ 𝓤₀) cantor-compact ℕ-is-discrete
 
 \end{code}
@@ -61,7 +61,7 @@ open import DecidableAndDetachable
 
 equal : ((ℕ → 𝟚) → ℕ) → ((ℕ → 𝟚) → ℕ) → 𝟚
 
-equal f  = pr₁(characteristic-function(Cantor→ℕ-is-discrete f))
+equal f  = pr₁ (characteristic-function (Cantor→ℕ-is-discrete f))
 
 \end{code}
 
@@ -74,21 +74,21 @@ number ₀ = 0
 number ₁ = 1
 
 test0 : 𝟚
-test0 = A(λ α → min𝟚(α 17)(α 180))
+test0 = A (λ α → min𝟚 (α 17) (α 180))
 
 test1 : 𝟚
-test1 = A(λ α → ₁)
+test1 = A (λ α → ₁)
 
 test2 : 𝟚
-test2 = equal (λ α → number(α 17)) (λ α → number(α 100))
+test2 = equal (λ α → number (α 17)) (λ α → number (α 100))
 
 test3 : 𝟚
-test3 = equal (λ α → number(α 100)) (λ α → number(α 100))
+test3 = equal (λ α → number (α 100)) (λ α → number (α 100))
 
 test4 : 𝟚
-test4 = equal (λ α → number(α 1000)) (λ α → number(α 1000))
+test4 = equal (λ α → number (α 1000)) (λ α → number (α 1000))
 
 test5 : 𝟚
-test5 = equal (λ α → number(α 1001)) (λ α → number(α 1000))
+test5 = equal (λ α → number (α 1001)) (λ α → number (α 1000))
 
 \end{code}

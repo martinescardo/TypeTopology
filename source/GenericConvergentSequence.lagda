@@ -39,7 +39,7 @@ We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
 \begin{code}
 
 decreasing : (ℕ → 𝟚) → 𝓤₀ ̇
-decreasing α = (i : ℕ) → α(succ i) ≤₂ α i
+decreasing α = (i : ℕ) → α (succ i) ≤₂ α i
 
 being-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop (decreasing α)
 being-decreasing-is-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
@@ -55,9 +55,9 @@ incl-lc fe = pr₁-lc (being-decreasing-is-prop fe _)
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
 force-decreasing β 0 = β 0
-force-decreasing β (succ i) = min𝟚 (β(succ i)) (force-decreasing β i)
+force-decreasing β (succ i) = min𝟚 (β (succ i)) (force-decreasing β i)
 
-force-decreasing-is-decreasing : (β : ℕ → 𝟚) → decreasing(force-decreasing β)
+force-decreasing-is-decreasing : (β : ℕ → 𝟚) → decreasing (force-decreasing β)
 force-decreasing-is-decreasing β zero     = Lemma[min𝟚ab≡₁→b≡₁] {β 1} {β zero}
 force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (succ (succ i))}
                                                              {force-decreasing β (succ i)}
@@ -84,7 +84,7 @@ force-decreasing-unchanged α d (succ i) = g
 lcni : (ℕ  → 𝟚) → ℕ∞
 lcni β = force-decreasing β , force-decreasing-is-decreasing β
 
-lcni-incl : funext₀ → (x : ℕ∞) → lcni(incl x) ≡ x
+lcni-incl : funext₀ → (x : ℕ∞) → lcni (incl x) ≡ x
 lcni-incl fe (α , d) = to-Σ-≡ (dfunext fe (force-decreasing-unchanged α d) ,
                                being-decreasing-is-prop fe α _ _)
 
@@ -178,7 +178,7 @@ is-positive-Succ : (α : ℕ∞) → is-positive (Succ α)
 is-positive-Succ α = refl
 
 Zero-not-Succ : {u : ℕ∞} → Zero ≢ Succ u
-Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
+Zero-not-Succ {u} r = zero-is-not-one (ap positivity r)
 
 ∞ : ℕ∞
 ∞ = ((λ i → ₁) , λ i → id {𝓤₀} {₁ ≡ ₁})
@@ -186,25 +186,25 @@ Zero-not-Succ {u} r = zero-is-not-one(ap positivity r)
 Succ-∞-is-∞ : funext₀ → Succ ∞ ≡ ∞
 Succ-∞-is-∞ fe = incl-lc fe (dfunext fe lemma)
  where
-   lemma : (i : ℕ) → incl(Succ ∞) i ≡ incl ∞ i
+   lemma : (i : ℕ) → incl (Succ ∞) i ≡ incl ∞ i
    lemma 0 = refl
    lemma (succ i) = refl
 
 unique-fixed-point-of-Succ : funext₀ → (u : ℕ∞) → u ≡ Succ u → u ≡ ∞
 unique-fixed-point-of-Succ fe u r = incl-lc fe claim
  where
-  fact : (i : ℕ) → incl u i ≡ incl(Succ u) i
+  fact : (i : ℕ) → incl u i ≡ incl (Succ u) i
   fact i = ap (λ - → incl - i) r
 
   lemma : (i : ℕ) → incl u i ≡ ₁
   lemma 0 = fact 0
-  lemma (succ i) = fact(succ i) ∙ lemma i
+  lemma (succ i) = fact (succ i) ∙ lemma i
 
   claim : incl u ≡ incl ∞
   claim = (dfunext fe lemma)
 
 Pred : ℕ∞ → ℕ∞
-Pred(α , d) = (α ∘ succ , d ∘ succ)
+Pred (α , d) = (α ∘ succ , d ∘ succ)
 
 Pred-Zero-is-Zero : Pred Zero ≡ Zero
 Pred-Zero-is-Zero = refl
@@ -212,7 +212,7 @@ Pred-Zero-is-Zero = refl
 Pred-Zero-is-Zero' : (u : ℕ∞) → u ≡ Zero → Pred u ≡ u
 Pred-Zero-is-Zero' u p = transport (λ - → Pred - ≡ -) (p ⁻¹) Pred-Zero-is-Zero
 
-Pred-Succ : {u : ℕ∞} → Pred(Succ u) ≡ u
+Pred-Succ : {u : ℕ∞} → Pred (Succ u) ≡ u
 Pred-Succ {u} = refl
 
 Pred-∞-is-∞ : Pred ∞ ≡ ∞
@@ -223,15 +223,15 @@ Succ-lc = ap Pred
 
 under : ℕ → ℕ∞
 under 0 = Zero
-under (succ n) = Succ(under n)
+under (succ n) = Succ (under n)
 
 _≣_ : ℕ∞ → ℕ → 𝓤₀ ̇
 u ≣ n = u ≡ under n
 
 under-lc : left-cancellable under
 under-lc {0}      {0}      r = refl
-under-lc {0}      {succ n} r = 𝟘-elim(Zero-not-Succ r)
-under-lc {succ m} {0}      r = 𝟘-elim(Zero-not-Succ (r ⁻¹))
+under-lc {0}      {succ n} r = 𝟘-elim (Zero-not-Succ r)
+under-lc {succ m} {0}      r = 𝟘-elim (Zero-not-Succ (r ⁻¹))
 under-lc {succ m} {succ n} r = ap succ (under-lc {m} {n} (Succ-lc r))
 
 under-embedding : funext₀ → is-embedding under
@@ -245,7 +245,7 @@ under-diagonal₀ : (n : ℕ) → under n ⊑ n
 under-diagonal₀ 0        = refl
 under-diagonal₀ (succ n) = under-diagonal₀ n
 
-under-diagonal₁ : (n : ℕ) → n ⊏ under(succ n)
+under-diagonal₁ : (n : ℕ) → n ⊏ under (succ n)
 under-diagonal₁ 0        = refl
 under-diagonal₁ (succ n) = under-diagonal₁ n
 
@@ -280,10 +280,10 @@ successors-same-positivity : {u u' v v' : ℕ∞}
                            → positivity u ≡ positivity v
 successors-same-positivity refl refl = refl
 
-not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ(Pred u)
+not-Zero-is-Succ : funext₀ → {u : ℕ∞} → u ≢ Zero → u ≡ Succ (Pred u)
 not-Zero-is-Succ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
-  lemma : (i : ℕ) → incl u i ≡ incl(Succ(Pred u)) i
+  lemma : (i : ℕ) → incl u i ≡ incl (Succ (Pred u)) i
   lemma 0        = different-from-₀-equal-₁ (f ∘ is-Zero-equal-Zero fe)
   lemma (succ i) = refl
 
@@ -291,12 +291,12 @@ positive-is-not-Zero : {u : ℕ∞} → is-positive u → u ≢ Zero
 positive-is-not-Zero {u} r s = lemma r
  where
   lemma : ¬ (is-positive u)
-  lemma = equal-₀-different-from-₁(ap positivity s)
+  lemma = equal-₀-different-from-₁ (ap positivity s)
 
-positive-equal-Succ : funext₀ → {u : ℕ∞} → is-positive u → u ≡ Succ(Pred u)
+positive-equal-Succ : funext₀ → {u : ℕ∞} → is-positive u → u ≡ Succ (Pred u)
 positive-equal-Succ fe r = not-Zero-is-Succ fe (positive-is-not-Zero r)
 
-Zero-or-Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + (u ≡ Succ(Pred u))
+Zero-or-Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + (u ≡ Succ (Pred u))
 Zero-or-Succ fe₀ u = 𝟚-equality-cases
                       (λ (z : is-Zero u) → inl (is-Zero-equal-Zero fe₀ z))
                       (λ (p : is-positive u) → inr (positive-equal-Succ fe₀ p))
@@ -307,11 +307,11 @@ is-Succ u = Σ w ꞉ ℕ∞ , u ≡ Succ w
 Zero+Succ : funext₀ → (u : ℕ∞) → (u ≡ Zero) + is-Succ u
 Zero+Succ fe₀ u = Cases (Zero-or-Succ fe₀ u) inl (λ p → inr (Pred u , p))
 
-Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ(under n)
+Succ-criterion : funext₀ → {u : ℕ∞} {n : ℕ} → n ⊏ u → u ⊑ succ n → u ≡ Succ (under n)
 Succ-criterion fe {u} {n} r s = incl-lc fe claim
  where
   lemma : (u : ℕ∞) (n : ℕ) → n ⊏ u → u ⊑ succ n
-        → (i : ℕ) → incl u i ≡ incl (Succ(under n)) i
+        → (i : ℕ) → incl u i ≡ incl (Succ (under n)) i
   lemma u 0 r s 0        = r
   lemma u 0 r s (succ i) = lemma₀ i
      where
@@ -335,13 +335,13 @@ not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n)
 not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
  where
   lemma : (n : ℕ) → n ⊏ u
-  lemma 0        = different-from-₀-equal-₁(λ r → f 0 (is-Zero-equal-Zero fe r))
-  lemma (succ n) = different-from-₀-equal-₁(λ r → f(succ n)(Succ-criterion fe (lemma n) r))
+  lemma 0        = different-from-₀-equal-₁ (λ r → f 0 (is-Zero-equal-Zero fe r))
+  lemma (succ n) = different-from-₀-equal-₁ (λ r → f (succ n) (Succ-criterion fe (lemma n) r))
 
 ℕ∞-ddensity : funext₀ → {Y : ℕ∞ → 𝓤 ̇ }
             → ({u : ℕ∞} → is-¬¬-separated (Y u))
             → {f g : Π Y}
-            → ((n : ℕ) → f(under n) ≡ g(under n))
+            → ((n : ℕ) → f (under n) ≡ g (under n))
             → f ∞ ≡ g ∞
             → (u : ℕ∞) → f u ≡ g u
 ℕ∞-ddensity {𝓤} fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
@@ -359,7 +359,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
            → {Y : 𝓤 ̇ }
            → is-¬¬-separated Y
            → {f g : ℕ∞ → Y}
-           → ((n : ℕ) → f(under n) ≡ g(under n))
+           → ((n : ℕ) → f (under n) ≡ g (under n))
            → f ∞ ≡ g ∞
            → (u : ℕ∞) → f u ≡ g u
 ℕ∞-density fe s = ℕ∞-ddensity fe (λ {_} → s)
@@ -396,7 +396,7 @@ under𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
 
 There should be a better proof of the following. The idea is simple:
 by the above development, u = under 0 if and only if incl u 0 ≡ 0, and
-u ≡ under(n+1) if and only if n ⊏ u ⊑ n+1.
+u ≡ under (n+1) if and only if n ⊏ u ⊑ n+1.
 
 \begin{code}
 
@@ -407,32 +407,32 @@ finite-isolated fe n u = decidable-eq-sym u (under n) (f u n)
   f u 0 = 𝟚-equality-cases g₀ g₁
    where
     g₀ : is-Zero u → decidable (u ≡ Zero)
-    g₀ r = inl(is-Zero-equal-Zero fe r)
+    g₀ r = inl (is-Zero-equal-Zero fe r)
 
     h : u ≡ Zero → is-Zero u
     h = ap (λ - → incl - 0)
 
     g₁ : is-positive u → decidable (u ≡ Zero)
-    g₁ r = inr(contrapositive h (equal-₁-different-from-₀ r))
+    g₁ r = inr (contrapositive h (equal-₁-different-from-₀ r))
 
   f u (succ n) = 𝟚-equality-cases g₀ g₁
    where
-    g : u ≡ under(succ n) → n ⊏ u
+    g : u ≡ under (succ n) → n ⊏ u
     g r = ap (λ - → incl - n) r ∙ under-diagonal₁ n
 
-    g₀ :  u ⊑ n → decidable (u ≡ under(succ n))
-    g₀ r = inr(contrapositive g (equal-₀-different-from-₁ r))
+    g₀ :  u ⊑ n → decidable (u ≡ under (succ n))
+    g₀ r = inr (contrapositive g (equal-₀-different-from-₁ r))
 
-    h : u ≡ under(succ n) → u ⊑ succ n
-    h r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀(succ n)
+    h : u ≡ under (succ n) → u ⊑ succ n
+    h r = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀ (succ n)
 
-    g₁ :  n ⊏ u → decidable (u ≡ under(succ n))
+    g₁ :  n ⊏ u → decidable (u ≡ under (succ n))
     g₁ r = 𝟚-equality-cases g₁₀ g₁₁
      where
-      g₁₀ : u ⊑ succ n → decidable (u ≡ under(succ n))
-      g₁₀ s = inl(Succ-criterion fe r s)
+      g₁₀ : u ⊑ succ n → decidable (u ≡ under (succ n))
+      g₁₀ s = inl (Succ-criterion fe r s)
 
-      g₁₁ : succ n ⊏ u → decidable (u ≡ under(succ n))
+      g₁₁ : succ n ⊏ u → decidable (u ≡ under (succ n))
       g₁₁ s = inr (contrapositive h (equal-₁-different-from-₀ s))
 
 
@@ -445,7 +445,7 @@ size (n , r) = n
 being-finite-is-prop : funext₀ → (u : ℕ∞) → is-prop (is-finite u)
 being-finite-is-prop = under-embedding
 
-under-is-finite : (n : ℕ) → is-finite(under n)
+under-is-finite : (n : ℕ) → is-finite (under n)
 under-is-finite n = (n , refl)
 
 Zero-is-finite : is-finite Zero
@@ -530,7 +530,7 @@ above-Succ-is-positive u v l = l zero refl
        → ((u ≡ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)))
        → u ≼ v
 ≼-fold .Zero v (inl refl) = Zero-minimal v
-≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
+≼-fold . (Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
 
 max : ℕ∞ → ℕ∞ → ℕ∞
 max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
@@ -743,10 +743,10 @@ under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
     m = pr₁ σ
 
     l : m ≤ n
-    l = pr₁(pr₂ σ)
+    l = pr₁ (pr₂ σ)
 
     s : w ≡ under m
-    s = pr₂(pr₂ σ)
+    s = pr₂ (pr₂ σ)
 
 ℕ∞-𝟚-order-separated : funext₀ → 𝟚-order-separated _≺_
 ℕ∞-𝟚-order-separated fe x y (n , r , l) =  p , t , h
@@ -767,7 +767,7 @@ under-lemma fe u (succ n) p = g (𝟚-is-discrete (incl u n) ₀)
     b = ⊏-gives-< n n' a
 
   g : (u v : ℕ∞) → p u <₂ p v → u ≺ v
-  g u v (a , b) = pr₁ c , pr₂(pr₂ c) , (⊏-trans'' v n (pr₁ c) (pr₁(pr₂ c)) b)
+  g u v (a , b) = pr₁ c , pr₂ (pr₂ c) , (⊏-trans'' v n (pr₁ c) (pr₁ (pr₂ c)) b)
    where
     c : Σ m ꞉ ℕ , (m ≤ n) × (u ≡ under m)
     c = under-lemma fe u n a
@@ -840,13 +840,13 @@ not-≺-≼ fe u v φ n l = 𝟚-equality-cases f g
   f m = 𝟘-elim (φ (k , (p , b)))
    where
     k : ℕ
-    k = pr₁(under-lemma fe v n m)
+    k = pr₁ (under-lemma fe v n m)
 
     a : k ≤ n
-    a = pr₁(pr₂(under-lemma fe v n m))
+    a = pr₁ (pr₂ (under-lemma fe v n m))
 
     p : v ≡ under k
-    p = pr₂(pr₂(under-lemma fe v n m))
+    p = pr₂ (pr₂ (under-lemma fe v n m))
 
     b : k ⊏ u
     b = ⊏-trans'' u n k a l

@@ -209,7 +209,7 @@ positive-cantors-diagonal = sol
   sol e = (α , φ)
    where
     α : ℕ → ℕ
-    α n = succ(e n n)
+    α n = succ (e n n)
 
     φ : (n : ℕ) → α ≢ e n
     φ n p = succ-no-fixed-point (e n n) q

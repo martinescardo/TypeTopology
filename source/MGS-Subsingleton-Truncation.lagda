@@ -352,7 +352,7 @@ module find-hidden-root where
  μρ-root-minimal f m p n q = not-<-gives-≥ (μρ-root f (m , p)) n γ
   where
    φ : ¬ (f n ≢ 0) → ¬ (n < μρ-root f (m , p))
-   φ = contrapositive (pr₂(pr₂ (root-gives-minimal-root f (m , p))) n)
+   φ = contrapositive (pr₂ (pr₂ (root-gives-minimal-root f (m , p))) n)
 
    γ : ¬ (n < μρ-root f (m , p))
    γ = φ (dni (f n ≡ 0) q)

@@ -49,8 +49,8 @@
          the non-uniform types
 
             add : O X → O X → O X
-            mul : O X → O(O X) → O X
-            exp : O(O X) → O(O X) → O X
+            mul : O X → O (O X) → O X
+            exp : O (O X) → O (O X) → O X
 
          These types are the best one can do in system T. With this we
          can define ordinals abitrarily close to, and strictly below,
@@ -58,7 +58,7 @@
 
     (2): We use the first universe and dependent products to define
 
-            O' X = Π(n : ℕ) → Oⁿ⁺¹ X
+            O' X = Π (n : ℕ) → Oⁿ⁺¹ X
 
          and hence the arithmetic operations with uniform types
 
@@ -101,10 +101,10 @@ zer : {X : 𝓤₀ ̇ } → O X
 zer = λ z → λ s → λ l → z
 
 suc : {X : 𝓤₀ ̇ } → O X → O X
-suc a = λ z → λ s → λ l → s(a z s l)
+suc a = λ z → λ s → λ l → s (a z s l)
 
 lim : {X : 𝓤₀ ̇ } → (ℕ → O X) → O X
-lim as = λ z → λ s → λ l → l(λ i → as i z s l)
+lim as = λ z → λ s → λ l → l (λ i → as i z s l)
 
 O-rec : {X : 𝓤₀ ̇ } → X → (X → X) → ((ℕ → X) → X) → (O X → X)
 O-rec z s l a = a z s l
@@ -123,17 +123,17 @@ uniform:
 add : {X : 𝓤₀ ̇ } → O X → O X → O X
 add a b = λ z → λ s → λ l → a (b z s l) s l
 
-mul : {X : 𝓤₀ ̇ } → O X → O(O X) → O X
+mul : {X : 𝓤₀ ̇ } → O X → O (O X) → O X
 mul a = O-rec zer (λ r → add r a) lim
 
-exp : {X : 𝓤₀ ̇ } → O(O X) → O(O X) → O X
+exp : {X : 𝓤₀ ̇ } → O (O X) → O (O X) → O X
 exp a = O-rec (suc zer) (λ r → mul r a) lim
 
 \end{code}
 
 Remark: if we had used O-rec to define add, it would instead have
-the type {X : 𝓤₀ ̇ } → O X → O(O X) → O X, and then mul would have
-the type {X : 𝓤₀ ̇ } → O(O X) → O(O X) → O X, with the same
+the type {X : 𝓤₀ ̇ } → O X → O (O X) → O X, and then mul would have
+the type {X : 𝓤₀ ̇ } → O (O X) → O (O X) → O X, with the same
 definition, but the same definition of exp then cannot be typed
 using iterations of O. In step (2) we will consider all finite
 iterations of O to define a type O', and give a uniform type
@@ -143,12 +143,12 @@ We will not use the following:
 
 \begin{code}
 
-down : {X : 𝓤₀ ̇ } → O(O X) → O X
+down : {X : 𝓤₀ ̇ } → O (O X) → O X
 down = O-rec zer suc lim
 
 \end{code}
 
-There is a term up : {X : 𝓤₀ ̇ } → O X → O(O X), but no such term has
+There is a term up : {X : 𝓤₀ ̇ } → O X → O (O X), but no such term has
 the desired behaviour of being a (left or right) inverse of down.
 
 Before using the first universe, we can dominate any ordinal below ε₀.
@@ -193,7 +193,7 @@ O X → O X, but rather:
 
 \begin{code}
 
-step :  {X : 𝓤₀ ̇ } → O(O X) → O X
+step :  {X : 𝓤₀ ̇ } → O (O X) → O X
 step = exp ω
 
 \end{code}
@@ -207,7 +207,7 @@ then Agda rightfully complains that this would need X = O X, which
 is impossible.
 
 Moreover, e.g. in the definition of ω₃ the use of ω has its type X
-instantiated to O(O(O(O X))), if I counted properly. Thus, although we
+instantiated to O (O (O (O X))), if I counted properly. Thus, although we
 always write ω in the definitions of ω₁, ω₂, ω₃, ..., if we are
 strictly working in system T we need a different definition of ω in
 each case (with the same raw term but with a different type).
@@ -225,7 +225,7 @@ primitive recursion using a universe.
 
 rec₁ : 𝓤₀ ̇ → (𝓤₀ ̇ → 𝓤₀ ̇ ) → ℕ → 𝓤₀ ̇
 rec₁ X F zero = X
-rec₁ X F (succ n) = F(rec₁ X F n)
+rec₁ X F (succ n) = F (rec₁ X F n)
 
 \end{code}
 
@@ -234,25 +234,25 @@ We define O' X = Π (n : ℕ) → Oⁿ⁺¹ X as follows in Agda notation:
 \begin{code}
 
 O' : 𝓤₀ ̇ → 𝓤₀ ̇
-O' X = (n : ℕ) → O(rec₁ X O n)
+O' X = (n : ℕ) → O (rec₁ X O n)
 
 zer' : {X : 𝓤₀ ̇ } → O' X
 zer' = λ n → zer
 
 suc' : {X : 𝓤₀ ̇ } → O' X → O' X
-suc' a = λ n → suc(a n)
+suc' a = λ n → suc (a n)
 
 lim' : {X : 𝓤₀ ̇ } → (ℕ → O' X) → O' X
-lim' as = λ n → lim(λ i → as i n)
+lim' as = λ n → lim (λ i → as i n)
 
 add' : {X : 𝓤₀ ̇ } → O' X → O' X → O' X
 add' a b = λ n → add (a n) (b n)
 
 mul' : {X : 𝓤₀ ̇ } → O' X → O' X → O' X
-mul' a b = λ n → mul (a n) (b(succ n))
+mul' a b = λ n → mul (a n) (b (succ n))
 
 exp' : {X : 𝓤₀ ̇ } → O' X → O' X → O' X
-exp' a b = λ n → exp (a(succ n)) (b(succ n))
+exp' a b = λ n → exp (a (succ n)) (b (succ n))
 
 ω' : {X : 𝓤₀ ̇ } → O' X
 ω' = λ n → ω
@@ -347,8 +347,8 @@ B-rec {X} z s l = h
  where
   h : B → X
   h Z = z
-  h(S u) = s(h u)
-  h(L us) = l(λ i → h(us i))
+  h (S u) = s (h u)
+  h (L us) = l (λ i → h (us i))
 \end{code}
 
 By suitable uncurrying, flipping and currying, the type of B-rec is
@@ -413,9 +413,9 @@ Here is a sketch of how this can be approached:
 
 \begin{code}
 
-Exercise₁ = (u v : B) → B-add u v ≣ O↦B(add (B↦O u) (B↦O v))
-Exercise₂ = (u v : B) → B-mul u v ≣ O↦B(mul (B↦O u) (B↦O v))
-Exercise₃ = (u v : B) → B-exp u v ≣ O↦B(exp (B↦O u) (B↦O v))
+Exercise₁ = (u v : B) → B-add u v ≣ O↦B (add (B↦O u) (B↦O v))
+Exercise₂ = (u v : B) → B-mul u v ≣ O↦B (mul (B↦O u) (B↦O v))
+Exercise₃ = (u v : B) → B-exp u v ≣ O↦B (exp (B↦O u) (B↦O v))
 
 \end{code}
 
@@ -427,11 +427,11 @@ B↦O' : {X : 𝓤₀ ̇ } → B → O' X
 B↦O' u = λ n → B↦O u
 
 O'↦B : O' B → B
-O'↦B a =  O↦B(O'↦O a)
+O'↦B a =  O↦B (O'↦O a)
 
-Exercise₁' = (u v : B) → B-add u v ≣ O'↦B(add' (B↦O' u) (B↦O' v))
-Exercise₂' = (u v : B) → B-mul u v ≣ O'↦B(mul' (B↦O' u) (B↦O' v))
-Exercise₃' = (u v : B) → B-exp u v ≣ O'↦B(exp' (B↦O' u) (B↦O' v))
+Exercise₁' = (u v : B) → B-add u v ≣ O'↦B (add' (B↦O' u) (B↦O' v))
+Exercise₂' = (u v : B) → B-mul u v ≣ O'↦B (mul' (B↦O' u) (B↦O' v))
+Exercise₃' = (u v : B) → B-exp u v ≣ O'↦B (exp' (B↦O' u) (B↦O' v))
 
 \end{code}
 
@@ -443,8 +443,8 @@ recursion or iteration B-rec on B):
 
 B-induction : {A : B → 𝓤₀ ̇ } →
    A Z →
-  ((u : B) → A u → A(S u)) →
-  ((us : ℕ → B) → ((i : ℕ) → A(us i)) → A(L us)) →
+  ((u : B) → A u → A (S u)) →
+  ((us : ℕ → B) → ((i : ℕ) → A (us i)) → A (L us)) →
 -----------------------------------------------------------
   ((u : B) → A u)
 
@@ -452,7 +452,7 @@ B-induction {A} z s l = h
  where
   h : (u : B) → A u
   h Z = z
-  h(S u) = s u (h u)
-  h(L us) = l us (λ i → h(us i))
+  h (S u) = s u (h u)
+  h (L us) = l us (λ i → h (us i))
 
 \end{code}

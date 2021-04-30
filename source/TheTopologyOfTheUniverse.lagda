@@ -49,7 +49,7 @@ We say that a sequence x : ℕ → X in a type X converges to a limit
 x∞ : X if one can construct a "limiting sequence" x' : ℕ∞ → X such
 that
 
-     x n = x'(under n)
+     x n = x' (under n)
       x∞ = x' ∞
 
 where under : ℕ → ℕ∞ (standing for "underline") is the embedding
@@ -93,7 +93,7 @@ We say that a sequence of types X : ℕ → U converges to a limit
 X∞ : U if one can find a "limiting sequence" X' : ℕ∞ → U such
 that
 
-     X n ≅ X'(under n)
+     X n ≅ X' (under n)
       X∞ ≅ X' ∞
 
 If one assumes the univalence axiom, one can replace the

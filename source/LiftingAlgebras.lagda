@@ -27,7 +27,7 @@ open import LiftingMonad 𝓣
 
 \end{code}
 
-An element of 𝓛(𝓛 X) amounts to a family of partial elements of X
+An element of 𝓛 (𝓛 X) amounts to a family of partial elements of X
 indexed by a proposition:
 
 \begin{code}

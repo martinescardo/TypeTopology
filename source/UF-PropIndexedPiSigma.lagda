@@ -89,13 +89,13 @@ prop-indexed-sum {𝓤} {𝓥} {X} {Y} i a = qinveq f (g , ε , η)
   l : (x : X) → i x x ≡ refl
   l x = props-are-sets i (i x x) refl
 
-  η : (y : Y a) → f(a , y) ≡ y
+  η : (y : Y a) → f (a , y) ≡ y
   η y = ap (λ - → transport Y - y) (l a)
 
   c : (x : X) (y : Y x) → x ≡ a → transport Y (i a x) (f (x , y)) ≡ y
   c _ y refl = η (f (a , y)) ∙ η y
 
-  ε : (σ : Σ Y) → g(f σ) ≡ σ
+  ε : (σ : Σ Y) → g (f σ) ≡ σ
   ε (x , y) = to-Σ-≡ (i a x , c x y (i x a))
 
 prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (X → 𝟘 {𝓦})
@@ -103,15 +103,15 @@ prop-indexed-sum-zero : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → (X → 𝟘 {�
 prop-indexed-sum-zero {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} φ = qinveq f (g , ε , η)
  where
   f : Σ Y → 𝟘
-  f (x , y) = 𝟘-elim(φ x)
+  f (x , y) = 𝟘-elim (φ x)
 
   g : 𝟘 → Σ Y
   g = unique-from-𝟘
 
-  η : (x : 𝟘) → f(g x) ≡ x
+  η : (x : 𝟘) → f (g x) ≡ x
   η = 𝟘-induction
 
-  ε : (σ : Σ Y) → g(f σ) ≡ σ
+  ε : (σ : Σ Y) → g (f σ) ≡ σ
   ε (x , y) = 𝟘-elim (φ x)
 
 \end{code}

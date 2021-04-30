@@ -21,13 +21,13 @@ module UF-EquivalenceExamples where
 curry-uncurry' : funext 𝓤 (𝓥 ⊔ 𝓦)
                → funext (𝓤 ⊔ 𝓥) 𝓦
                → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
-               → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z(x , y))
+               → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z (x , y))
 curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' {X} {Y} {Z} = qinveq c (u , uc , cu)
  where
-  c : (w : Π Z) → ((x : X) (y : Y x) → Z(x , y))
+  c : (w : Π Z) → ((x : X) (y : Y x) → Z (x , y))
   c f x y = f (x , y)
 
-  u : ((x : X) (y : Y x) → Z(x , y)) → Π Z
+  u : ((x : X) (y : Y x) → Z (x , y)) → Π Z
   u g (x , y) = g x y
 
   cu : ∀ g → c (u g) ≡ g
@@ -37,7 +37,7 @@ curry-uncurry' {𝓤} {𝓥} {𝓦} fe fe' {X} {Y} {Z} = qinveq c (u , uc , cu)
 
 curry-uncurry : (fe : FunExt)
               → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
-              → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z(x , y))
+              → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z (x , y))
 curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦)) (fe (𝓤 ⊔ 𝓥) 𝓦)
 
 Σ-≡-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {σ τ : Σ A}
@@ -60,7 +60,7 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε refl = refl
 
 Σ-assoc : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : Σ Y → 𝓦 ̇ }
-        → Σ Z ≃ (Σ x ꞉ X , Σ y ꞉ Y x , Z(x , y))
+        → Σ Z ≃ (Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y))
 Σ-assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq c (u , (λ τ → refl) , (λ σ → refl))
  where
   c : Σ Z → Σ x ꞉ X , Σ y ꞉ Y x , Z (x , y)
@@ -90,19 +90,19 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 Σ-cong {𝓤} {𝓥} {𝓦} {X} {Y} {Y'} φ = (F , (G , FG) , (H , HF))
  where
   f : (x : X) → Y x → Y' x
-  f x = pr₁(φ x)
+  f x = pr₁ (φ x)
 
   g : (x : X) → Y' x → Y x
-  g x = pr₁(pr₁(pr₂(φ x)))
+  g x = pr₁ (pr₁ (pr₂ (φ x)))
 
   fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
-  fg x = pr₂(pr₁(pr₂(φ x)))
+  fg x = pr₂ (pr₁ (pr₂ (φ x)))
 
   h : (x : X) → Y' x → Y x
-  h x = pr₁(pr₂(pr₂(φ x)))
+  h x = pr₁ (pr₂ (pr₂ (φ x)))
 
   hf : (x : X) (y : Y x) → h x (f x y) ≡ y
-  hf x = pr₂(pr₂(pr₂(φ x)))
+  hf x = pr₂ (pr₂ (pr₂ (φ x)))
 
   F : Σ Y → Σ Y'
   F (x , y) = x , f x y
@@ -113,10 +113,10 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   H : Σ Y' → Σ Y
   H (x , y') = x , h x y'
 
-  FG : (w' : Σ Y') → F(G w') ≡ w'
+  FG : (w' : Σ Y') → F (G w') ≡ w'
   FG (x , y') = to-Σ-≡' (fg x y')
 
-  HF : (w : Σ Y) → H(F w) ≡ w
+  HF : (w : Σ Y) → H (F w) ≡ w
   HF (x , y) = to-Σ-≡' (hf x y)
 
 ΠΣ-distr-≃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {P : (x : X) → A x → 𝓦 ̇ }
@@ -157,19 +157,19 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
 Π-cong fe fe' X Y Y' φ = (F , (G , FG) , (H , HF))
  where
   f : (x : X) → Y x → Y' x
-  f x = pr₁(φ x)
+  f x = pr₁ (φ x)
 
   g : (x : X) → Y' x → Y x
-  g x =  pr₁(pr₁(pr₂(φ x)))
+  g x =  pr₁ (pr₁ (pr₂ (φ x)))
 
   fg : (x : X) (y' : Y' x) → f x (g x y') ≡ y'
-  fg x = pr₂(pr₁(pr₂(φ x)))
+  fg x = pr₂ (pr₁ (pr₂ (φ x)))
 
   h : (x : X) → Y' x → Y x
-  h x = pr₁(pr₂(pr₂(φ x)))
+  h x = pr₁ (pr₂ (pr₂ (φ x)))
 
   hf : (x : X) (y : Y x) → h x (f x y) ≡ y
-  hf x = pr₂(pr₂(pr₂(φ x)))
+  hf x = pr₂ (pr₂ (pr₂ (φ x)))
 
   F : ((x : X) → Y x) → ((x : X) → Y' x)
   F = λ z x → pr₁ (φ x) (z x)
@@ -180,16 +180,16 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   H : ((x : X) → Y' x) → (x : X) → Y x
   H u' x = h x (u' x)
 
-  FG :  (w' : ((x : X) → Y' x)) → F(G w') ≡ w'
+  FG :  (w' : ((x : X) → Y' x)) → F (G w') ≡ w'
   FG w' = dfunext fe' FG'
    where
-    FG' : (x : X) → F(G w') x ≡ w' x
+    FG' : (x : X) → F (G w') x ≡ w' x
     FG' x = fg x (w' x)
 
-  HF : (w : ((x : X) → Y x)) → H(F w) ≡ w
+  HF : (w : ((x : X) → Y x)) → H (F w) ≡ w
   HF w = dfunext fe GF'
    where
-    GF' : (x : X) → H(F w) x ≡ w x
+    GF' : (x : X) → H (F w) x ≡ w x
     GF' x = hf x (w x)
 
 \end{code}
@@ -553,12 +553,12 @@ pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
 pr₁-equivalence {𝓤} {𝓥} X A iss = qinvs-are-equivs pr₁ (g , ε , η)
  where
   g : X → Σ A
-  g x = x , pr₁(iss x)
+  g x = x , pr₁ (iss x)
 
   η : (x : X) → pr₁ (g x) ≡ x
   η x = refl
 
-  ε : (σ : Σ A) → g(pr₁ σ) ≡ σ
+  ε : (σ : Σ A) → g (pr₁ σ) ≡ σ
   ε (x , a) = to-Σ-≡ (η x , singletons-are-props (iss x) _ _)
 
 NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
@@ -566,42 +566,42 @@ NatΣ-fiber-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ
 NatΣ-fiber-equiv A B ζ x b = qinveq (f b) (g b , ε b , η b)
  where
   f : (b : B x) → fiber (ζ x) b → fiber (NatΣ ζ) (x , b)
-  f .(ζ x a) (a , refl) = (x , a) , refl
+  f . (ζ x a) (a , refl) = (x , a) , refl
 
   g : (b : B x) → fiber (NatΣ ζ) (x , b) → fiber (ζ x) b
-  g .(ζ x a) ((.x , a) , refl) = a , refl
+  g . (ζ x a) ((.x , a) , refl) = a , refl
 
   ε : (b : B x) (w : fiber (ζ x) b) → g b (f b w) ≡ w
-  ε .(ζ x a) (a , refl) = refl
+  ε . (ζ x a) (a , refl) = refl
 
   η : (b : B x) (t : fiber (NatΣ ζ) (x , b)) → f b (g b t) ≡ t
   η b (a , refl) = refl
 
 NatΣ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-              → ((x : X) → is-vv-equiv(ζ x))
-              → is-vv-equiv(NatΣ ζ)
+              → ((x : X) → is-vv-equiv (ζ x))
+              → is-vv-equiv (NatΣ ζ)
 NatΣ-vv-equiv A B ζ i (x , b) = equiv-to-singleton
                                    (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                    (i x b)
 
 NatΣ-vv-equiv-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                       → is-vv-equiv(NatΣ ζ)
-                       → ((x : X) → is-vv-equiv(ζ x))
+                       → is-vv-equiv (NatΣ ζ)
+                       → ((x : X) → is-vv-equiv (ζ x))
 NatΣ-vv-equiv-converse A B ζ e x b = equiv-to-singleton
                                       (NatΣ-fiber-equiv A B ζ x b)
                                       (e (x , b))
 
 NatΣ-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-           → ((x : X) → is-equiv(ζ x))
-           → is-equiv(NatΣ ζ)
+           → ((x : X) → is-equiv (ζ x))
+           → is-equiv (NatΣ ζ)
 NatΣ-equiv A B ζ i = vv-equivs-are-equivs
                          (NatΣ ζ)
                          (NatΣ-vv-equiv A B ζ
                            (λ x → equivs-are-vv-equivs (ζ x) (i x)))
 
 NatΣ-equiv-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                    → is-equiv(NatΣ ζ)
-                    → ((x : X) → is-equiv(ζ x))
+                    → is-equiv (NatΣ ζ)
+                    → ((x : X) → is-equiv (ζ x))
 NatΣ-equiv-converse A B ζ e x = vv-equivs-are-equivs (ζ x)
                                  (NatΣ-vv-equiv-converse A B ζ
                                    (equivs-are-vv-equivs (NatΣ ζ) e) x)
@@ -614,11 +614,11 @@ NatΣ-equiv-gives-fiberwise-equiv = NatΣ-equiv-converse _ _
 
 Σ-cong' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
         → ((x : X) → A x ≃ B x) → Σ A ≃ Σ B
-Σ-cong' A B e = NatΣ (λ x → pr₁(e x)) , NatΣ-equiv A B (λ x → pr₁(e x)) (λ x → pr₂(e x))
+Σ-cong' A B e = NatΣ (λ x → pr₁ (e x)) , NatΣ-equiv A B (λ x → pr₁ (e x)) (λ x → pr₂ (e x))
 
 NatΣ-equiv' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-            → ((x : X) → is-equiv(ζ x))
-            → is-equiv(NatΣ ζ)
+            → ((x : X) → is-equiv (ζ x))
+            → is-equiv (NatΣ ζ)
 NatΣ-equiv' A B ζ i = ((s , ζs), (r , rζ))
  where
   s : Σ B → Σ A
@@ -689,8 +689,8 @@ NatΠ-fiber-equiv {𝓤} {𝓥} {𝓦} {X} A B ζ fe g =
 
 NatΠ-vv-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
               → funext 𝓤 (𝓥 ⊔ 𝓦)
-              → ((x : X) → is-vv-equiv(ζ x))
-              → is-vv-equiv(NatΠ ζ)
+              → ((x : X) → is-vv-equiv (ζ x))
+              → is-vv-equiv (NatΠ ζ)
 NatΠ-vv-equiv {𝓤} {𝓥} {𝓦} A B ζ fe i g = equiv-to-singleton
                                            (≃-sym (NatΠ-fiber-equiv A B ζ
                                                     (lower-funext 𝓤 𝓥 fe) g))
@@ -698,8 +698,8 @@ NatΠ-vv-equiv {𝓤} {𝓥} {𝓦} A B ζ fe i g = equiv-to-singleton
 
 NatΠ-equiv : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
            → funext 𝓤 (𝓥 ⊔ 𝓦)
-           → ((x : X) → is-equiv(ζ x))
-           → is-equiv(NatΠ ζ)
+           → ((x : X) → is-equiv (ζ x))
+           → is-equiv (NatΠ ζ)
 NatΠ-equiv A B ζ fe i = vv-equivs-are-equivs
                              (NatΠ ζ)
                              (NatΠ-vv-equiv A B ζ fe
@@ -709,8 +709,8 @@ NatΠ-equiv A B ζ fe i = vv-equivs-are-equivs
         → funext 𝓤 (𝓥 ⊔ 𝓦)
         → ((x : X) → A x ≃ B x)
         → Π A ≃ Π B
-Π-cong' A B fe e = NatΠ (λ x → pr₁(e x)) ,
-                   NatΠ-equiv A B (λ x → pr₁(e x)) fe (λ x → pr₂(e x))
+Π-cong' A B fe e = NatΠ (λ x → pr₁ (e x)) ,
+                   NatΠ-equiv A B (λ x → pr₁ (e x)) fe (λ x → pr₂ (e x))
 
 ≡-cong : {X : 𝓤 ̇ } (x y : X) {x' y' : X} → x ≡ x' → y ≡ y' → (x ≡ y) ≃ (x' ≡ y')
 ≡-cong x y refl refl = ≃-refl (x ≡ y)

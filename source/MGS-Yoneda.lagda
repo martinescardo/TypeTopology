@@ -189,7 +189,7 @@ fiberwise-◁-gives-≃ X A x ρ = γ
   e = fiberwise-retractions-are-equivs A x f (λ y → retraction-has-section (ρ y))
 
   γ : (y : X) → A y ≃ (x ≡ y)
-  γ y = ≃-sym(f y , e y)
+  γ y = ≃-sym (f y , e y)
 
 embedding-criterion' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → ((x x' : X) → (f x ≡ f x') ◁ (x ≡ x'))

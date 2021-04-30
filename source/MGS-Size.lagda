@@ -46,7 +46,7 @@ from-resize : (ρ : propositional-resizing 𝓤 𝓥)
               (P : 𝓤 ̇ ) (i : is-subsingleton P)
             → resize ρ P i → P
 
-from-resize ρ P i = ⌜ ≃-sym(pr₂ (ρ P i)) ⌝
+from-resize ρ P i = ⌜ ≃-sym (pr₂ (ρ P i)) ⌝
 
 Propositional-resizing : 𝓤ω
 Propositional-resizing = {𝓤 𝓥 : Universe} → propositional-resizing 𝓤 𝓥

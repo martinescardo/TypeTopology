@@ -175,7 +175,7 @@ reflexivity+ P {x} {y} p =
 ≤-is-antisymmetric (_ , _ , (_ , a)) = a
 
 carrier-of-[_]-is-set : (P : poset 𝓤 𝓥) → is-set ∣ P ∣ₚ
-carrier-of-[_]-is-set P@(A , _)=
+carrier-of-[_]-is-set P@ (A , _)=
  type-with-prop-valued-refl-antisym-rel-is-set
   (λ x y → (x ≤[ P ] y) holds)
   (λ x y → holds-is-prop (x ≤[ P ] y))

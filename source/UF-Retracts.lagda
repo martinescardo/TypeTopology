@@ -151,12 +151,12 @@ retracts-compose (r , s , rs) (r' , s' , rs') =
 +-retract {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} (r , s , rs) (t , u , tu) = f , g , fg
  where
   f : A + B → X + Y
-  f (inl a) = inl(r a)
-  f (inr b) = inr(t b)
+  f (inl a) = inl (r a)
+  f (inr b) = inr (t b)
 
   g : X + Y → A + B
-  g (inl x) = inl(s x)
-  g (inr y) = inr(u y)
+  g (inl x) = inl (s x)
+  g (inr y) = inr (u y)
 
   fg : (p : X + Y) → f (g p) ≡ p
   fg (inl x) = ap inl (rs x)

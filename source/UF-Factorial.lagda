@@ -130,8 +130,8 @@ Then we get a map
 where the choice of isolated point a:Y+𝟙 controls which equivalence
 X+𝟙≃Y+𝟙 we get from the equivalence f: X≃Y:
 
-       f+𝟙       swap (a,inr(⋆))
-  X+𝟙 ----> Y+𝟙 ---------------> Y+𝟙
+       f+𝟙       swap (a , inr (⋆))
+  X+𝟙 ----> Y+𝟙 --------------------> Y+𝟙
 
 The claim is that the above map is an equivalence.
 
@@ -276,6 +276,7 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
     where
      g : X+𝟙 → Y+𝟙
      g = swap t (inr *) i new-point-is-isolated ∘ f
+
      k : is-equiv g
      k = ∘-is-equiv-abstract j (swap-is-equiv t (inr *) i new-point-is-isolated)
 
@@ -284,12 +285,16 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
     where
      t : Y+𝟙
      t = g (inr *)
+
      i : is-isolated t
      i = equivs-preserve-isolatedness g k (inr *) new-point-is-isolated
+
      f : X+𝟙 → Y+𝟙
      f = swap t (inr *) i new-point-is-isolated ∘ g
+
      j : is-equiv f
      j = ∘-is-equiv-abstract k (swap-is-equiv t (inr *) i new-point-is-isolated)
+
      p : f (inr *) ≡ inr *
      p = swap-equation₀ t (inr *) i new-point-is-isolated
 
@@ -362,13 +367,16 @@ function, f : X+𝟙 → Y+𝟙, then f (inl x) is of the form inl y
     where
      z : Y+𝟙
      z = g (inr *)
+
      i : is-isolated z
      i = equivs-preserve-isolatedness g k (inr *) new-point-is-isolated
+
      h : (swap (g (inr *)) (inr *) i new-point-is-isolated)
        ∘ (swap (g (inr *)) (inr *) i new-point-is-isolated)
        ∘ g
        ∼ g
      h = swap-involutive z (inr *) i new-point-is-isolated ∘ g
+
      r : φ (γ (g , k)) ≡ (g , k)
      r = to-Σ-≡ (dfunext (fe _ _) h , being-equiv-is-prop fe g _ k)
 
@@ -400,10 +408,14 @@ perfect-factorial : (X : 𝓤 ̇ )
                   → is-perfect X
                   → Aut X ≃ Aut (X + 𝟙)
 perfect-factorial X i =
-  Aut X                          ≃⟨ ≃-sym (𝟙-lneutral {universe-of X} {universe-of X}) ⟩
-  𝟙 × Aut X                      ≃⟨ ×-cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X)) ⟩
-  co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X                  ⟩
+  Aut X                          ≃⟨ I ⟩
+  𝟙 × Aut X                      ≃⟨ II ⟩
+  co-derived-set (X + 𝟙) × Aut X ≃⟨ III ⟩
   Aut (X + 𝟙)                    ■
+   where
+    I   =  ≃-sym (𝟙-lneutral {universe-of X} {universe-of X})
+    II  = ×-cong (≃-sym (singleton-≃-𝟙 (perfect-coderived-singleton X i))) (≃-refl (Aut X))
+    III = general-factorial X
 
 \end{code}
 
@@ -420,10 +432,13 @@ factorial-base = f , ((g , η) , (g , ε))
  where
   f : 𝟙 → Aut 𝟘
   f _ = id , ((id , (λ _ → refl)) , (id , (λ _ → refl)))
+
   g : Aut 𝟘 → 𝟙
   g = unique-to-𝟙
+
   η : (e : Aut 𝟘) → f (g e) ≡ e
   η _ = to-subtype-≡ (being-equiv-is-prop fe) (dfunext (fe _ _) (λ y → 𝟘-elim y))
+
   ε : (x : 𝟙) → g (f x) ≡ x
   ε * = refl
 

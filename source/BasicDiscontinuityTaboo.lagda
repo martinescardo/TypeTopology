@@ -38,13 +38,13 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
   fact₂ = fact₁ ∘ equal-₀-different-from-₁
 
   lemma₀ : p u ≡ ₀ → (u ≡ ∞) + (u ≢ ∞)
-  lemma₀ s = inr(fact₂ s)
+  lemma₀ s = inr (fact₂ s)
 
   fact₃ : p u ≡ ₁ → ((n : ℕ) → u ≢ under n)
   fact₃ t n s = zero-is-not-one ((f n)⁻¹ ∙ (ap p s)⁻¹ ∙ t)
 
   lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
-  lemma₁ t = inl(not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
+  lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
 
 \end{code}
 
@@ -66,11 +66,11 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₁ r s = ₀
 
   d : (n : ℕ) → p (under n) ≡ ₀
-  d n = equality-cases (f(under n)) case₀ case₁
+  d n = equality-cases (f (under n)) case₀ case₁
    where
-    case₀ : (r : under n ≡ ∞) → f(under n) ≡ inl r → p (under n) ≡ ₀
-    case₀ r s = 𝟘-elim(∞-is-not-finite n (r ⁻¹))
-    case₁ : (g : under n ≢ ∞) → f(under n) ≡ inr g → p (under n) ≡ ₀
+    case₀ : (r : under n ≡ ∞) → f (under n) ≡ inl r → p (under n) ≡ ₀
+    case₀ r s = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
+    case₁ : (g : under n ≢ ∞) → f (under n) ≡ inr g → p (under n) ≡ ₀
     case₁ g = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
   d∞ : p ∞ ≡ ₁
@@ -79,7 +79,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
     case₀ : (r : ∞ ≡ ∞) → f ∞ ≡ inl r → p ∞ ≡ ₁
     case₀ r = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
     case₁ : (g : ∞ ≢ ∞) → f ∞ ≡ inr g → p ∞ ≡ ₁
-    case₁ g = 𝟘-elim(g refl)
+    case₁ g = 𝟘-elim (g refl)
 
 \end{code}
 
@@ -88,21 +88,21 @@ at ∞ too, unless WLPO holds:
 
 \begin{code}
 
-disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q(under n)) → p ∞ ≢ q ∞ → WLPO
+disagreement-taboo : (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q (under n)) → p ∞ ≢ q ∞ → WLPO
 disagreement-taboo p q f g = basic-discontinuity-taboo r (r-lemma , r-lemma∞)
  where
   r : ℕ∞ → 𝟚
   r u = (p u) ⊕ (q u)
 
-  r-lemma : (n : ℕ) → r(under n) ≡ ₀
-  r-lemma n = Lemma[b≡c→b⊕c≡₀](f n)
+  r-lemma : (n : ℕ) → r (under n) ≡ ₀
+  r-lemma n = Lemma[b≡c→b⊕c≡₀] (f n)
 
   r-lemma∞ : r ∞ ≡ ₁
   r-lemma∞ = Lemma[b≢c→b⊕c≡₁] g
 
 open import DiscreteAndSeparated
 
-agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q(under n)) → p ∞ ≡ q ∞
+agreement-cotaboo :  ¬ WLPO → (p q : ℕ∞ → 𝟚) → ((n : ℕ) → p (under n) ≡ q (under n)) → p ∞ ≡ q ∞
 agreement-cotaboo φ p q f = 𝟚-is-¬¬-separated (p ∞) (q ∞) (contrapositive (disagreement-taboo p q f) φ)
 
 \end{code}

@@ -102,7 +102,7 @@ topos.
 Given a family of types A(x) indexed by elements x of a type X, we can
 form its product and sum:
 
-    Π(x:X), A(x),
+    Π(tx:X), A(x),
     Σ(x:X), A(x),
 
 which we also write Π A and Σ A. An element of the type Π A is a

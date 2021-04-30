@@ -151,10 +151,10 @@ hlevel-relation-is-subsingleton fe (succ n) X =
   G : ((x : X) → Y' x) → (x : X) → Y x
   G γ x = g x (γ x)
 
-  FG : (γ : ((x : X) → Y' x)) → F(G γ) ≡ γ
+  FG : (γ : ((x : X) → Y' x)) → F (G γ) ≡ γ
   FG γ = fe' (λ x → fg x (γ x))
 
-  GF : (φ : ((x : X) → Y x)) → G(F φ) ≡ φ
+  GF : (φ : ((x : X) → Y x)) → G (F φ) ≡ φ
   GF φ = fe (λ x → gf x (φ x))
 
 hfunext-≃ : hfunext 𝓤 𝓥

@@ -34,16 +34,22 @@ module coquand where
     sup : (T : Set) → (T → 𝕎) → 𝕎
    e : 𝕎 → 𝕎 → Set
    e (sup T φ) w = Σ t ꞉ T , φ t ≡ w
+
    R : 𝕎
    R = sup (Σ w ꞉ 𝕎 , (e w w → X)) pr₁
+
    A : Set
    A = e R R
+
    r : A → (A → X)
    r ((.R , f) , refl) = f
+
    s : (A → X) → A
    s f = (R , f) , refl
+
    rs : (f : A → X) → r (s f) ≡ f
    rs f = refl
+
    γ : (f : X → X) → Σ x ꞉ X , x ≡ f x
    γ = retract-version.LFPT (r , s , rs)
 
@@ -139,7 +145,7 @@ module blechschmidt where
  _∘_ : {X Y : Set} {Z : Y → Set}
      → ((y : Y) → Z y)
      → (f : X → Y) (x : X) → Z (f x)
- g ∘ f = λ x → g(f x)
+ g ∘ f = λ x → g (f x)
 
  domain : {X : Set} {Y : Set} → (X → Y) → Set
  domain {X} {Y} f = X
@@ -314,8 +320,10 @@ module blechschmidt where
   where
    g : A → X
    g a = f (r a a)
+
    x : X
    x = r (s g) (s g)
+
    p : x ≡ f x
    p = ap (λ - → - (s g)) (η g)
 
@@ -332,10 +340,11 @@ module blechschmidt where
  \begin{code}
 
  not-no-fp : ¬ (Σ P ꞉ Ω , P ≡ not P)
- not-no-fp (P , p) = pr₁(γ id)
+ not-no-fp (P , p) = pr₁ (γ id)
   where
    q : P holds ≡ ¬ (P holds)
    q = ap _holds p
+
    γ : (f : 𝟘 → 𝟘) → Σ x ꞉ 𝟘 , x ≡ f x
    γ = LFPT-≡ q
 
@@ -351,7 +360,8 @@ module blechschmidt where
  Π-projection-has-section {A} {X} A₀ = s , η
   where
    s : (X A₀ → Ω) → ((A : A) → X A → Ω)
-   s φ A x = ∥(Σ p ꞉ A ≡ A₀ , φ (transport X p x) holds)∥ , ∥∥-is-prop
+   s φ A x = ∥ (Σ p ꞉ A ≡ A₀ , φ (transport X p x) holds)∥ , ∥∥-is-prop
+
    η : (φ : X A₀ → Ω) → s φ A₀ ≡ φ
    η φ = funext γ
     where
@@ -363,10 +373,13 @@ module blechschmidt where
         where
          r : p ≡ refl
          r = K-axiom A p refl
+
          t : φ (transport X p x₀) ≡ φ x₀
-         t = ap (λ - → φ(transport X - x₀)) r
+         t = ap (λ - → φ (transport X - x₀)) r
+
      b : (x₀ : X A₀) → φ x₀ holds → ∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥
      b x₀ h = ∣ refl , h ∣
+
      γ : (x₀ : X A₀) → (∥(Σ p ꞉ A₀ ≡ A₀ , φ (transport X p x₀) holds)∥ , ∥∥-is-prop) ≡ φ x₀
      γ x₀ = to-Σ-≡ (propext ∥∥-is-prop (holds-is-prop (φ x₀)) (a x₀) (b x₀) ,
                     being-prop-is-prop (holds-is-prop _) (holds-is-prop (φ x₀)) )
@@ -400,11 +413,13 @@ module blechschmidt where
    where
     B : Set
     B = (a : A) → X a → Ω
+
     φ : (a : A) → ¬ (X a ≃ B)
     φ a p = not-no-fp (γ not)
      where
       retr : retract B of (X a)
       retr = equiv-retract p
+
       γ : (f : Ω → Ω) → Σ P ꞉ Ω , P ≡ f P
       γ = usr-lemma {A} X a retr
 
@@ -426,6 +441,7 @@ module blechschmidt where
   where
    B : Set
    B = pr₁ (universe-regular A X)
+
    φ : ∀ a → ¬ (X a ≡ B)
    φ = pr₂ (universe-regular A X)
 

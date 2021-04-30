@@ -27,7 +27,7 @@ On 22/07/18 06:17, Michael Shulman wrote:
 >> Any prop is an ordinal in a unique way (with the empty order).
 >>
 >> Now suppose that X is an ordinal, and consider P:X->U prop
->> valued.  Then the lexicographic order on the sum Sigma(x:X),P(x) is
+>> valued.  Then the lexicographic order on the sum Sigma (x:X),P (x) is
 >> nothing but a subset of X. While classically the subset will remain
 >> extensional (for if we have x and y not equal, then either x<y or
 >> y<x, and hence they will not have the same lower set),
@@ -94,6 +94,7 @@ shulmans-taboo e = DNE-gives-EM fe₀ δ
    where
     f : (z : X) → z ≺ x → z ≺ y
     f (p , φ) (a , _) = 𝟘-elim (φ a)
+
     g : (z : X) → z ≺ y → z ≺ x
     g (q , ψ) (b , _) = 𝟘-elim (ψ b)
 
@@ -105,8 +106,10 @@ shulmans-taboo e = DNE-gives-EM fe₀ δ
         (λ r → Idtofun (ap pr₁ r) φ)
     q = (P , j) ,
         (λ r → φ (Idtofun (ap pr₁ r)))
+
     r : p ≡ q
     r = i p q
+
     s : ¬¬ P ≡ P
     s = ap (pr₁ ∘ pr₁) r
 

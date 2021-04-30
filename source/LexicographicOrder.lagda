@@ -66,19 +66,19 @@ module commutation
   _⊏_ : Σ Y → Σ Y → 𝓣 ⊔ 𝓤 ⊔ 𝓦 ̇
   _⊏_ = slex-order _<_ _≺_
   _≤_ : X → X → 𝓦 ̇
-  x ≤ x' = not(x' < x)
+  x ≤ x' = not (x' < x)
   _≼_ : {x : X} → Y x → Y x → 𝓣 ̇
-  y ≼ y' = not(y' ≺ y)
+  y ≼ y' = not (y' ≺ y)
   _⊑_ : Σ Y → Σ Y → 𝓣 ⊔ 𝓤 ⊔ 𝓦 ̇
   _⊑_ = lex-order _≤_ _≼_
-  forth : (x x' : X) (y : Y x) (y' : Y x') → not((x , y) ⊏ (x' , y')) → (x' , y') ⊑ (x , y)
+  forth : (x x' : X) (y : Y x) (y' : Y x') → not ((x , y) ⊏ (x' , y')) → (x' , y') ⊑ (x , y)
   forth x x' y y' f = g , h
    where
-    g : not(x < x')
+    g : not (x < x')
     g l = f (inl l)
-    h : (r : x' ≡ x) → not(y ≺ transport Y r y')
+    h : (r : x' ≡ x) → not (y ≺ transport Y r y')
     h refl l = f (inr (refl , l))
-  back : (x x' : X) (y : Y x) (y' : Y x') → (x' , y') ⊑ (x , y) → not((x , y) ⊏ (x' , y'))
+  back : (x x' : X) (y : Y x) (y' : Y x') → (x' , y') ⊑ (x , y) → not ((x , y) ⊏ (x' , y'))
   back x x' y y' (g , h) (inl l) = g l
   back x _  y y' (g , h) (inr (refl , l)) = h refl l
 

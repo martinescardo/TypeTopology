@@ -156,7 +156,7 @@ collapsible : 𝓤 ̇ → 𝓤 ̇
 collapsible X = Σ f ꞉ (X → X) , wconstant f
 
 Id-collapsible : 𝓤 ̇ → 𝓤 ̇
-Id-collapsible X = {x y : X} → collapsible(x ≡ y)
+Id-collapsible X = {x y : X} → collapsible (x ≡ y)
 
 sets-are-Id-collapsible : {X : 𝓤 ̇ } → is-set X → Id-collapsible X
 sets-are-Id-collapsible u = (id , u)
@@ -178,7 +178,7 @@ local-hedberg {𝓤} {X} x pc y p q =
   c _ refl = sym-is-inverse (f x refl)
 
 Id-collapsibles-are-sets : {X : 𝓤 ̇ } → Id-collapsible X → is-set X
-Id-collapsibles-are-sets pc {x} {y} p q = local-hedberg x (λ y → (pr₁(pc {x} {y})) , (pr₂(pc {x} {y}))) y p q
+Id-collapsibles-are-sets pc {x} {y} p q = local-hedberg x (λ y → (pr₁ (pc {x} {y})) , (pr₂ (pc {x} {y}))) y p q
 
 \end{code}
 
@@ -246,7 +246,7 @@ props-are-Id-collapsible : {X : 𝓤 ̇ } → is-prop X → Id-collapsible X
 props-are-Id-collapsible h {x} {y} = (λ p → h x y) , (λ p q → refl)
 
 props-are-sets : {X : 𝓤 ̇ } → is-prop X → is-set X
-props-are-sets h = Id-collapsibles-are-sets(props-are-Id-collapsible h)
+props-are-sets h = Id-collapsibles-are-sets (props-are-Id-collapsible h)
 
 𝟘-is-collapsible : collapsible (𝟘 {𝓤})
 𝟘-is-collapsible {𝓤} = id , (λ x y → 𝟘-elim y)
@@ -266,7 +266,7 @@ below, the type X → 𝟘 is equivalent to the type X ≡ 𝟘
 \begin{code}
 
 empty-types-are-collapsible : {X : 𝓤 ̇ } → is-empty X → collapsible X
-empty-types-are-collapsible u = (id , (λ x x' → unique-from-𝟘(u x)))
+empty-types-are-collapsible u = (id , (λ x x' → unique-from-𝟘 (u x)))
 
 𝟘-is-collapsible' : collapsible 𝟘
 𝟘-is-collapsible' = empty-types-are-collapsible id
@@ -283,7 +283,7 @@ singleton-types-are-singletons'' {𝓤} {X} = J A (λ x → refl)
   A : (x x' : X) → x ≡ x' → 𝓤 ̇
   A x x' r = singleton-center x ≡[ Σ x' ꞉ X , x ≡ x' ] (x' , r)
 
-singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton(singleton-type x₀)
+singleton-types-are-singletons : {X : 𝓤 ̇ } (x₀ : X) → is-singleton (singleton-type x₀)
 singleton-types-are-singletons x₀ = singleton-center x₀ , (λ t → singleton-types-are-singletons'' (pr₂ t))
 
 singleton-types-are-singletons' : {X : 𝓤 ̇ } {x : X} → is-central (singleton-type x) (x , refl)
@@ -430,7 +430,7 @@ values other than 𝟘 and 𝟙:
 \begin{code}
 
 no-props-other-than-𝟘-or-𝟙 : propext 𝓤 → ¬ (Σ P ꞉ 𝓤 ̇ , is-prop P × (P ≢ 𝟘) × (P ≢ 𝟙))
-no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim(φ u)
+no-props-other-than-𝟘-or-𝟙 pe (P , i , f , g) = 𝟘-elim (φ u)
  where
    u : ¬ P
    u p = g l
@@ -453,7 +453,7 @@ used in the following construction.
 \begin{code}
 
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≢ 𝟙 {𝓤}
-𝟘-is-not-𝟙 p = 𝟘-elim(Idtofun (p ⁻¹) *)
+𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) *)
 
 \end{code}
 
@@ -482,7 +482,7 @@ infixr -1 existsUnique
 ∃!-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → X
 ∃!-witness ((x , a) , o) = x
 
-∃!-is-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → A(∃!-witness u)
+∃!-is-witness : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } (u : ∃! A) → A (∃!-witness u)
 ∃!-is-witness ((x , a) , o) = a
 
 description : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } → ∃! A → Σ A

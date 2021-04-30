@@ -81,15 +81,15 @@ embedding-embedding' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                      → is-embedding' f
 embedding-embedding' {𝓤} {𝓥} {X} {Y} f ise = g
  where
-  b : (x : X) → is-singleton(fiber f (f x))
+  b : (x : X) → is-singleton (fiber f (f x))
   b x = (x , refl) , ise (f x) (x , refl)
 
-  c : (x : X) → is-singleton(fiber' f (f x))
+  c : (x : X) → is-singleton (fiber' f (f x))
   c x = retract-of-singleton
          (≃-gives-▷ (fiber-lemma f (f x)))
          (b x)
 
-  g : (x x' : X) → is-equiv(ap f {x} {x'})
+  g : (x x' : X) → is-equiv (ap f {x} {x'})
   g x = universality-equiv x refl (central-point-is-universal
                                     (λ x' → f x ≡ f x')
                                     (center (c x))
@@ -153,7 +153,7 @@ pr₁-is-embedding-converse {𝓤} {𝓥} {X} {Y} ie x = h
     r : fiber e x → Y x
     r ((x , y) , refl) = y
 
-    rs : (y : Y x) → r(s y) ≡ y
+    rs : (y : Y x) → r (s y) ≡ y
     rs y = refl
 
     h : is-prop (Y x)
@@ -167,7 +167,7 @@ embedding-closed-under-∼ f g e H y = equiv-to-prop (∼-fiber-≃ H y) (e y)
 
 K-idtofun-lc : K-axiom (𝓤 ⁺)
              → {X : 𝓤 ̇ } (x y : X) (A : X → 𝓤 ̇ )
-             → left-cancellable(idtofun (Id x y) (A y))
+             → left-cancellable (idtofun (Id x y) (A y))
 K-idtofun-lc {𝓤} k {X} x y A {p} {q} r = k (𝓤 ̇ ) p q
 
 lc-maps-into-sets-are-embeddings : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
@@ -252,7 +252,7 @@ embedding-exponential : FunExt
                       → is-embedding (λ (φ : A → X) → f ∘ φ)
 embedding-exponential {𝓤} {𝓥} {𝓦} fe {X} {Y} {A} f i = γ
  where
-  g : (φ φ' : A → X) (a : A) → (φ a ≡ φ' a) ≃ (f(φ a) ≡ f(φ' a))
+  g : (φ φ' : A → X) (a : A) → (φ a ≡ φ' a) ≃ (f (φ a) ≡ f (φ' a))
   g φ φ' a = ap f {φ a} {φ' a} , embedding-embedding' f i (φ a) (φ' a)
 
   h : (φ φ' : A → X) → φ ∼ φ' ≃ f ∘ φ ∼ f ∘ φ'
@@ -364,10 +364,10 @@ module _ {𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } where
  detofun : (X ↪ᵈ Y) → X → Y
  detofun = pr₁
 
- is-embedding-detofun : (e : X ↪ᵈ Y) → is-embedding(detofun e)
+ is-embedding-detofun : (e : X ↪ᵈ Y) → is-embedding (detofun e)
  is-embedding-detofun e = pr₁ (pr₂ e)
 
- is-dense-detofun : (e : X ↪ᵈ Y) → is-dense(detofun e)
+ is-dense-detofun : (e : X ↪ᵈ Y) → is-dense (detofun e)
  is-dense-detofun e = pr₂ (pr₂ e)
 
 
@@ -463,23 +463,23 @@ maps-of-props-are-embeddings f i j = maps-of-props-into-sets-are-embeddings f i 
   rs ((x , y) , refl) = refl
 
 NatΣ-is-embedding : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                  → ((x : X) → is-embedding(ζ x))
-                  → is-embedding(NatΣ ζ)
+                  → ((x : X) → is-embedding (ζ x))
+                  → is-embedding (NatΣ ζ)
 NatΣ-is-embedding A B ζ i (x , b) = equiv-to-prop
                                      (≃-sym (NatΣ-fiber-equiv A B ζ x b))
                                      (i x b)
 
 NatΣ-is-embedding-converse : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
-                           → is-embedding(NatΣ ζ)
-                           → ((x : X) → is-embedding(ζ x))
+                           → is-embedding (NatΣ ζ)
+                           → ((x : X) → is-embedding (ζ x))
 NatΣ-is-embedding-converse A B ζ e x b = equiv-to-prop
                                           (NatΣ-fiber-equiv A B ζ x b)
                                           (e (x , b))
 
 NatΠ-is-embedding : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ ) (ζ : Nat A B)
                   → funext 𝓤 (𝓥 ⊔ 𝓦)
-                  → ((x : X) → is-embedding(ζ x))
-                  → is-embedding(NatΠ ζ)
+                  → ((x : X) → is-embedding (ζ x))
+                  → is-embedding (NatΠ ζ)
 NatΠ-is-embedding {𝓤} {𝓥} {𝓦} A B ζ fe i g =
  equiv-to-prop
    (≃-sym (NatΠ-fiber-equiv A B ζ (lower-funext 𝓤 𝓥 fe) g))

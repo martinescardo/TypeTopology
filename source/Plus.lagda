@@ -9,8 +9,8 @@ module Plus where
 open import Plus-Type renaming (_+_ to infixr 1 _+_) public
 
 dep-cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X + Y → 𝓦 ̇ }
-          → ((x : X) → A(inl x))
-          → ((y : Y) → A(inr y))
+          → ((x : X) → A (inl x))
+          → ((y : Y) → A (inr y))
           → ((z : X + Y) → A z)
 dep-cases f g (inl x) = f x
 dep-cases f g (inr y) = g y
@@ -29,8 +29,8 @@ Cases z f g = cases f g z
 
 dep-Cases : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : X + Y → 𝓦 ̇ )
           → (z : X + Y)
-          → ((x : X) → A(inl x))
-          → ((y : Y) → A(inr y))
+          → ((x : X) → A (inl x))
+          → ((y : Y) → A (inr y))
           → A z
 dep-Cases {𝓤} {𝓥} {𝓦} {X} {Y} A z f g = dep-cases {𝓤} {𝓥} {𝓦} {X} {Y} {A} f g z
 
@@ -41,9 +41,9 @@ Added 4 March 2020 by Tom de Jong.
 \begin{code}
 
 dep-cases₃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {A : X + Y + Z → 𝓣 ̇ }
-           → ((x : X) → A(inl x))
-           → ((y : Y) → A(inr (inl y)))
-           → ((z : Z) → A(inr (inr z)))
+           → ((x : X) → A (inl x))
+           → ((y : Y) → A (inr (inl y)))
+           → ((z : Z) → A (inr (inr z)))
            → ((p : X + Y + Z) → A p)
 dep-cases₃ f g h (inl x)       = f x
 dep-cases₃ f g h (inr (inl y)) = g y

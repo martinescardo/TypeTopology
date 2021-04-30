@@ -127,27 +127,27 @@ Terminology: we call x₀ the universal witness.
 \begin{code}
 
 compact-pointed-gives-compact∙ : {X : 𝓤 ̇ } → compact X → X → compact∙ X
-compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = lemma(φ p)
+compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = lemma (φ p)
  where
   lemma : (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁) →
            Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
-  lemma (inl(x , r)) = x , (λ s → 𝟘-elim(equal-₀-different-from-₁ r s))
+  lemma (inl (x , r)) = x , (λ s → 𝟘-elim (equal-₀-different-from-₁ r s))
   lemma (inr f) = x₀ , (λ r → f)
 
 compact∙-gives-compact : {X : 𝓤 ̇ } → compact∙ X → compact X
 compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
  where
   x₀ : X
-  x₀ = pr₁(ε p)
+  x₀ = pr₁ (ε p)
   lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
-  lemma = pr₂(ε p)
+  lemma = pr₂ (ε p)
   case₀ : p x₀ ≡ ₀ → (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
-  case₀ r = inl(x₀ , r)
+  case₀ r = inl (x₀ , r)
   case₁ : p x₀ ≡ ₁ → (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
-  case₁ r = inr(lemma r)
+  case₁ r = inr (lemma r)
 
 compact∙-gives-pointed : {X : 𝓤 ̇ } → compact∙ X → X
-compact∙-gives-pointed ε = pr₁(ε (λ x → ₀))
+compact∙-gives-pointed ε = pr₁ (ε (λ x → ₀))
 
 \end{code}
 
@@ -160,18 +160,18 @@ without the assumption of pointedness implies weak excluded middle
 For example, every finite set is compact, and in particular the set 𝟚
 of binary digits ₀ and ₁ is compact. To find x₀ : 𝟚 such that
 
-   (†) p x₀ ≡ ₁ → ∀(x : X) → p x ≡ ₁,
+   (†) p x₀ ≡ ₁ → ∀ (x : X) → p x ≡ ₁,
 
 we can check whether p ₀ ≡ ₁ and p ₁ ≡ ₁.
 
-     If this is the case, then ∀(x : X) → p x ≡ ₁ holds, which is
+     If this is the case, then ∀ (x : X) → p x ≡ ₁ holds, which is
      the conclusion the implication (†), and hence we can take any
      x₀ : 𝟚 to make (†) hold.
 
      Otherwise, we can take any x₀ such that p x₀ ≡ ₀ so that the
      implication (†) holds vacuously.
 
-That is, either the conclusion ∀(x : X) → p x ≡ ₁ of (†) holds, or
+That is, either the conclusion ∀ (x : X) → p x ≡ ₁ of (†) holds, or
 its premise p x₀ ≡ ₁ fails for suitable x₀.
 
 However, there is a more direct proof: we claim that, without
@@ -246,10 +246,10 @@ putative-root : {X : 𝓤 ̇ }
 putative-root {𝓤} {X} ε p = x₀ , lemma₀ , lemma₁
  where
   x₀ : X
-  x₀ = pr₁(ε p)
+  x₀ = pr₁ (ε p)
 
   lemma : ¬ ((x : X) → p x ≡ ₁) → p x₀ ≡ ₀
-  lemma = different-from-₁-equal-₀ ∘ contrapositive(pr₂(ε p))
+  lemma = different-from-₁-equal-₀ ∘ contrapositive (pr₂ (ε p))
 
   lemma₀ : p has-a-root → x₀ is-a-root-of p
   lemma₀ (x , r) = lemma claim
@@ -276,10 +276,10 @@ compact∙-gives-compact∙' : {X : 𝓤 ̇ } → compact∙ X → compact∙' X
 compact∙-gives-compact∙' {𝓤} {X} ε' = ε , lemma
  where
   ε : (X → 𝟚) → X
-  ε p = pr₁(ε' p)
+  ε p = pr₁ (ε' p)
 
   lemma : (p : X → 𝟚) → p (ε p) ≡ ₁ → (x : X) → p x ≡ ₁
-  lemma p = pr₂(ε' p)
+  lemma p = pr₂ (ε' p)
 
 compact∙'-gives-compact∙ : {X : 𝓤 ̇ } → compact∙' X → compact∙ X
 compact∙'-gives-compact∙ {𝓤} {X} ε p = x₀ , lemma
@@ -321,7 +321,7 @@ apart-or-equal : funext 𝓤 𝓥
 apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
  where
   claim : (x : X) → (f x ≢ g x) + (f x ≡ g x)
-  claim x = +-commutative(d x (f x) (g x))
+  claim x = +-commutative (d x (f x) (g x))
 
   lemma₀ : Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → f x ≢ g x)
                          × (p x ≡ ₁ → f x ≡ g x))
@@ -334,26 +334,26 @@ apart-or-equal fe {X} {Y} φ d f g = lemma₂ lemma₁
   lemma₁ = φ p
 
   lemma₂ : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁) → (f ♯ g) + (f ≡ g)
-  lemma₂(inl(x , r)) = inl(x , (pr₁(pr₂ lemma₀ x) r))
-  lemma₂(inr h) = inr (dfunext fe (λ x → pr₂(pr₂ lemma₀ x) (h x)))
+  lemma₂ (inl (x , r)) = inl (x , (pr₁ (pr₂ lemma₀ x) r))
+  lemma₂ (inr h) = inr (dfunext fe (λ x → pr₂ (pr₂ lemma₀ x) (h x)))
 
 compact-discrete-discrete : funext 𝓤 𝓥
                           → {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                           → compact X
                           → ((x : X) → is-discrete (Y x))
-                          → is-discrete((x : X) → Y x)
+                          → is-discrete ((x : X) → Y x)
 
 compact-discrete-discrete fe φ d f g = h (apart-or-equal fe φ d f g)
  where
   h : (f ♯ g) + (f ≡ g) → (f ≡ g) + (f ≢ g)
-  h(inl a) = inr(apart-is-different a)
-  h(inr r) = inl r
+  h (inl a) = inr (apart-is-different a)
+  h (inr r) = inl r
 
 compact-discrete-discrete' : funext 𝓤 𝓥
                            → {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                            → compact X
                            → is-discrete Y
-                           → is-discrete(X → Y)
+                           → is-discrete (X → Y)
 compact-discrete-discrete' fe φ d = compact-discrete-discrete fe φ (λ x → d)
 
 𝟘-compact : compact (𝟘 {𝓤})
@@ -401,7 +401,7 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
              → quantifier X
              → ((x : X)  → quantifier (Y x))
              → quantifier (Σ Y)
-  quant-prod φ γ p = φ(λ x → γ x (λ y → p (x , y)))
+  quant-prod φ γ p = φ (λ x → γ x (λ y → p (x , y)))
 
   selection : 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
   selection X = (X → R) → X
@@ -437,7 +437,7 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
   sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
    where
     x₀ : X
-    x₀ = ε (λ x → overline(δ x) (λ y → p (x , y)))
+    x₀ = ε (λ x → overline (δ x) (λ y → p (x , y)))
 
     y₀ : Y x₀
     y₀ = δ x₀ (λ y → p (x₀ , y))
@@ -458,7 +458,7 @@ Back to compact sets:
   lemma-next x = δ x (λ y → p (x , y))
 
   next : (x : X) → Y x
-  next x = pr₁(lemma-next x)
+  next x = pr₁ (lemma-next x)
 
   next-correctness : (x : X) → p (x , next x) ≡ ₁ → (y : Y x) → p (x , y) ≡ ₁
   next-correctness x = pr₂ (lemma-next x)
@@ -504,16 +504,16 @@ retractions-preserve-compactness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f : X → Y}
 retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
   where
    p : X → 𝟚
-   p x = q(f x)
+   p x = q (f x)
 
    x₀ : X
-   x₀ = pr₁(ε p)
+   x₀ = pr₁ (ε p)
 
    y₀ : Y
    y₀ = f x₀
 
    lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
-   lemma = pr₂(ε p)
+   lemma = pr₂ (ε p)
 
    h : q y₀ ≡ ₁ → (a : Y) → q a ≡ ₁
    h r a = fact₁ ⁻¹ ∙ fact₀
@@ -524,10 +524,10 @@ retractions-preserve-compactness {i} {j} {X} {Y} {f} f-retract ε q = y₀ , h
      x : X
      x = pr₁ fact
 
-     fact₀ : q(f x) ≡ ₁
+     fact₀ : q (f x) ≡ ₁
      fact₀ = lemma r x
 
-     fact₁ : q(f x) ≡ q a
+     fact₁ : q (f x) ≡ q a
      fact₁ = ap q (pr₂ fact)
 
 retract-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -569,10 +569,10 @@ module _ (pt : propositional-truncations-exist) where
    p = q ∘ f
 
    x₀ : X
-   x₀ = pr₁(ε p)
+   x₀ = pr₁ (ε p)
 
-   g : q(f x₀) ≡ ₁ → (x : X) → q(f x) ≡ ₁
-   g = pr₂(ε p)
+   g : q (f x₀) ≡ ₁ → (x : X) → q (f x) ≡ ₁
+   g = pr₂ (ε p)
 
    y₀ : Y
    y₀ = f x₀
@@ -622,22 +622,22 @@ wcompact-implies-wcompact' : {X : 𝓤 ̇ } → wcompact X → wcompact' X
 wcompact-implies-wcompact' {𝓤} {X} φ = A , lemma
  where
   A : (X → 𝟚) → 𝟚
-  A p = pr₁(φ p)
+  A p = pr₁ (φ p)
 
   lemma : (p : X → 𝟚) → A p ≡ ₁ ⇔ ((x : X) → p x ≡ ₁)
-  lemma p = pr₂(φ p)
+  lemma p = pr₂ (φ p)
 
 compact-gives-wcompact : {X : 𝓤 ̇ } → compact∙ X → wcompact X
 compact-gives-wcompact {𝓤} {X} ε p = y , (lemma₀ , lemma₁)
  where
   x₀ : X
-  x₀ = pr₁(ε p)
+  x₀ = pr₁ (ε p)
 
   y : 𝟚
   y = p x₀
 
   lemma₀ :  y ≡ ₁ → (x : X) → p x ≡ ₁
-  lemma₀ = pr₂(ε p)
+  lemma₀ = pr₂ (ε p)
 
   lemma₁ : ((x : X) → p x ≡ ₁) → y ≡ ₁
   lemma₁ h = h x₀
@@ -928,8 +928,8 @@ Based on what was done in the module WeaklyCompactTypes before:
 
 \begin{code}
 
-Compact-propositions-are-decidable : (X : 𝓤 ̇ ) → is-prop X → Compact X → decidable X
-Compact-propositions-are-decidable X i c = γ
+Compact-types-are-decidable : (X : 𝓤 ̇ ) → Compact X → decidable X
+Compact-types-are-decidable X c = γ
  where
   A : X → 𝓤₀ ̇
   A _ = 𝟙

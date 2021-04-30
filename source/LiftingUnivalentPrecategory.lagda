@@ -580,7 +580,7 @@ We have yet another equivalence, using the above techniques:
 
 ⊥-initial : funext 𝓣 𝓣
           → funext 𝓣 𝓤
-          → (l : 𝓛 X) → is-singleton(⊥ ⊑ l)
+          → (l : 𝓛 X) → is-singleton (⊥ ⊑ l)
 ⊥-initial fe fe' l = ⊥-least l ,
                      (λ α → to-Σ-≡ (dfunext fe (λ z → unique-from-𝟘 z) ,
                                     dfunext fe'(λ z → unique-from-𝟘 z)))

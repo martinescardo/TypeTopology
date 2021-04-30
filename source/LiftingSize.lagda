@@ -47,7 +47,7 @@ don't increase the size:
 
 \begin{code}
 
-the-universe-of-𝓛𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛(𝓛 X)) ≡ universe-of (𝓛 X)
+the-universe-of-𝓛𝓛 : {X : 𝓤 ̇ } → universe-of (𝓛 (𝓛 X)) ≡ universe-of (𝓛 X)
 the-universe-of-𝓛𝓛 = refl
 
 \end{code}

@@ -919,12 +919,12 @@ module example where
                                               (λ x → i x (lpo x)) ,
                                               (λ x y → p x y (lpo x) (lpo y))
   where
-   under𝟙-inverse-inl : (u : ℕ∞) (d : decidable(Σ n ꞉ ℕ , u ≡ under n))
+   under𝟙-inverse-inl : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ under n))
                       → (m : ℕ) → u ≡ under m → under𝟙-inverse u d ≡ inl m
-   under𝟙-inverse-inl .(under n) (inl (n , refl)) m q = ap inl (under-lc q)
+   under𝟙-inverse-inl . (under n) (inl (n , refl)) m q = ap inl (under-lc q)
    under𝟙-inverse-inl u          (inr g)          m q = 𝟘-elim (g (m , q))
 
-   i : (x : ℕ∞) (d : decidable(Σ n ꞉ ℕ , x ≡ under n)) (y : ℕ + 𝟙)
+   i : (x : ℕ∞) (d : decidable (Σ n ꞉ ℕ , x ≡ under n)) (y : ℕ + 𝟙)
      → y ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse x d
      → Σ x' ꞉ ℕ∞ , (x' ≺⟨ ℕ∞ₒ ⟩ x) × (under𝟙-inverse x' (lpo x') ≡ y)
    i .(under n) (inl (n , refl)) (inl m) l =
@@ -940,7 +940,7 @@ module example where
      under𝟙-inverse-inl (under n) (lpo (under n)) n refl
    i x (inr g) (inr *) l = 𝟘-elim l
 
-   p : (x y : ℕ∞)  (d : decidable(Σ n ꞉ ℕ , x ≡ under n)) (e : decidable(Σ m ꞉ ℕ , y ≡ under m))
+   p : (x y : ℕ∞)  (d : decidable (Σ n ꞉ ℕ , x ≡ under n)) (e : decidable (Σ m ꞉ ℕ , y ≡ under m))
      →  x ≺⟨ ℕ∞ₒ ⟩ y
      → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
    p .(under n) .(under m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =

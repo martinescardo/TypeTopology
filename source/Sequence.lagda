@@ -13,15 +13,15 @@ open import UF-Base
 open import UF-Retracts
 open import NaturalsAddition
 
-_∶∶_ : {X : ℕ → 𝓤 ̇ } → X 0 → ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
+_∶∶_ : {X : ℕ → 𝓤 ̇ } → X 0 → ((n : ℕ) → X (succ n)) → ((n : ℕ) → X n)
 (x ∶∶ α) 0 = x
 (x ∶∶ α) (succ n) = α n
 
 head : {X : ℕ → 𝓤 ̇ } → ((n : ℕ) → X n) → X 0
 head α = α 0
 
-tail : {X : ℕ → 𝓤 ̇ } → ((n : ℕ) → X n) → ((n : ℕ) → X(succ n))
-tail α n = α(succ n)
+tail : {X : ℕ → 𝓤 ̇ } → ((n : ℕ) → X n) → ((n : ℕ) → X (succ n))
+tail α n = α (succ n)
 
 head-tail-eta : {X : ℕ → 𝓤 ̇ } {α : (n : ℕ) → X n} → (head α ∶∶ tail α) ≡ α
 head-tail-eta {𝓤} {X} = dfunext (fe 𝓤₀ 𝓤) lemma
@@ -30,10 +30,10 @@ head-tail-eta {𝓤} {X} = dfunext (fe 𝓤₀ 𝓤) lemma
   lemma 0 = refl
   lemma (succ i) = refl
 
-private cons : {X : ℕ → 𝓤 ̇ } → X 0 × ((n : ℕ) → X(succ n)) → ((n : ℕ) → X n)
-cons(x , α) = x ∶∶ α
+private cons : {X : ℕ → 𝓤 ̇ } → X 0 × ((n : ℕ) → X (succ n)) → ((n : ℕ) → X n)
+cons (x , α) = x ∶∶ α
 
-cons-has-section' : {X : ℕ → 𝓤 ̇ } → has-section'(cons {𝓤} {X})
+cons-has-section' : {X : ℕ → 𝓤 ̇ } → has-section' (cons {𝓤} {X})
 cons-has-section' α = (head α , tail α) , head-tail-eta
 
 \end{code}
@@ -43,8 +43,8 @@ needed.)
 
 \begin{code}
 
-itail : {X : ℕ → 𝓤 ̇ } → (n : ℕ) → ((i : ℕ) → X i) → ((i : ℕ) → X(i + n))
-itail n α i = α(i + n)
+itail : {X : ℕ → 𝓤 ̇ } → (n : ℕ) → ((i : ℕ) → X i) → ((i : ℕ) → X (i + n))
+itail n α i = α (i + n)
 
 \end{code}
 
@@ -63,7 +63,7 @@ Added 16th July 2018. Corecursion on sequences ℕ → A.
 
 
   head (f x) = h x
-  tail (f x) = f(t x)
+  tail (f x) = f (t x)
 
 Or equivalentaily
 

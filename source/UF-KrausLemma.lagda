@@ -29,7 +29,7 @@ key-lemma f g {x} refl = sym-is-inverse (g x x)
 key-insight : {X Y : 𝓤 ̇ } (f : X → Y)
             → wconstant f
             → {x : X} (p : x ≡ x) → ap f p ≡ refl
-key-insight f g p = key-lemma f g p ∙ (sym-is-inverse(g _ _))⁻¹
+key-insight f g p = key-lemma f g p ∙ (sym-is-inverse (g _ _))⁻¹
 
 transport-ids-along-ids : {X Y : 𝓤 ̇ }
                           {x y : X}

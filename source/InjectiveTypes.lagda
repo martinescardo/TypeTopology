@@ -185,8 +185,8 @@ module _ {X : 𝓤 ̇ }
        where
 
   Π-extension Σ-extension : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
-  Π-extension y = Π w ꞉ fiber j y , f(pr₁ w)
-  Σ-extension y = Σ w ꞉ fiber j y , f(pr₁ w)
+  Π-extension y = Π w ꞉ fiber j y , f (pr₁ w)
+  Σ-extension y = Σ w ꞉ fiber j y , f (pr₁ w)
 
   private
    f/j f∖j : Y → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
@@ -204,7 +204,7 @@ module _ {X : 𝓤 ̇ }
 \begin{code}
 
   ηΠ : f/j ∘ j ≾ f
-  ηΠ x C = C(x , refl)
+  ηΠ x C = C (x , refl)
 
   ηΣ : f ≾ f∖j ∘ j
   ηΣ x B = (x , refl) , B
@@ -260,7 +260,7 @@ module _ {X : 𝓤 ̇ }
 
   Conjectural conjecture: the type
 
-    Σ(f' : Y → 𝓤), Π(g : Y → 𝓤), g ≾ f' ≃ g∘j ≾ f
+    Σ (f' : Y → 𝓤), Π (g : Y → 𝓤), g ≾ f' ≃ g∘j ≾ f
 
   should be contractible assuming univalence. Similarly for left Kan
   extensions as discussed below.
@@ -271,19 +271,19 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  Π-extension-in-range : is-embedding j → (x : X) → f/j(j x) ≃ f x
+  Π-extension-in-range : is-embedding j → (x : X) → f/j (j x) ≃ f x
   Π-extension-in-range e x = prop-indexed-product (fe (𝓤 ⊔ 𝓥) 𝓦) {fiber j (j x)} {λ (z : fiber j (j x)) → f (pr₁ z)} (e (j x)) (x , refl)
 
   Π-extension-equivalence : is-embedding j → (x : X) → is-equiv (Π-proj (x , refl))
   Π-extension-equivalence e x = pr₂ (Π-extension-in-range e x)
 
-  Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≢ y) → f/j(y) ≃ 𝟙 {𝓦}
+  Π-extension-out-of-range : ∀ {𝓦} (y : Y) → ((x : X) → j x ≢ y) → f/j (y) ≃ 𝟙 {𝓦}
   Π-extension-out-of-range y φ = prop-indexed-product-one (fe (𝓤 ⊔ 𝓥) 𝓦) (uncurry φ)
 
-  Σ-extension-in-range : is-embedding j → (x : X) → f∖j(j x) ≃ f x
-  Σ-extension-in-range e x = prop-indexed-sum (e(j x)) (x , refl)
+  Σ-extension-in-range : is-embedding j → (x : X) → f∖j (j x) ≃ f x
+  Σ-extension-in-range e x = prop-indexed-sum (e (j x)) (x , refl)
 
-  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j(y) ≃ 𝟘 {𝓦}
+  Σ-extension-out-of-range : (y : Y) → ((x : X) → j x ≢ y) → f∖j (y) ≃ 𝟘 {𝓦}
   Σ-extension-out-of-range y φ = prop-indexed-sum-zero (uncurry φ)
 
 \end{code}
@@ -292,13 +292,13 @@ module _ {X : 𝓤 ̇ }
 
 \begin{code}
 
-  2nd-Π-extension-formula : (y : Y) → f/j(y) ≃ (Π x ꞉ X , (j x ≡ y → f x))
+  2nd-Π-extension-formula : (y : Y) → f/j (y) ≃ (Π x ꞉ X , (j x ≡ y → f x))
   2nd-Π-extension-formula y = curry-uncurry fe
 
-  2nd-Π-extension-formula' : (y : Y) → f/j(y) ≃ (λ x → j x ≡ y) ≾ f
+  2nd-Π-extension-formula' : (y : Y) → f/j (y) ≃ (λ x → j x ≡ y) ≾ f
   2nd-Π-extension-formula' = 2nd-Π-extension-formula
 
-  2nd-Σ-extension-formula : (y : Y) → f∖j(y) ≃ (Σ x ꞉ X , (j x ≡ y) × f x)
+  2nd-Σ-extension-formula : (y : Y) → f∖j (y) ≃ (Σ x ꞉ X , (j x ≡ y) × f x)
   2nd-Σ-extension-formula y = Σ-assoc
 
 
@@ -336,13 +336,13 @@ respectively:
       G : Π f/j → Π f
       G ψ x = ψ (j x) (x , refl)
 
-      FG' : (ψ : Π f/j) (y : Y) (σ : fiber j y) → F(G ψ) y σ ≡ ψ y σ
+      FG' : (ψ : Π f/j) (y : Y) (σ : fiber j y) → F (G ψ) y σ ≡ ψ y σ
       FG' ψ x (_ , refl) = refl
 
-      FG : (ψ : Π f/j) → F(G ψ) ≡ ψ
+      FG : (ψ : Π f/j) → F (G ψ) ≡ ψ
       FG ψ = dfunext (fe 𝓥 (𝓤 ⊔ 𝓥 ⊔ 𝓦)) (λ y → dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (FG' ψ y))
 
-      GF : (φ : Π f) → G(F φ) ≡ φ
+      GF : (φ : Π f) → G (F φ) ≡ φ
       GF φ = refl
 
   same-Σ : Σ f ≃ Σ f∖j
@@ -354,10 +354,10 @@ respectively:
       G : Σ f∖j → Σ f
       G (y , (x , p) , y') = (x , y')
 
-      FG : (σ : Σ f∖j) → F(G σ) ≡ σ
+      FG : (σ : Σ f∖j) → F (G σ) ≡ σ
       FG (x , (_ , refl) , y') = refl
 
-      GF : (σ : Σ f) → G(F σ) ≡ σ
+      GF : (σ : Σ f) → G (F σ) ≡ σ
       GF (x , y) = refl
 
 \end{code}
@@ -407,9 +407,9 @@ function same-Σ defined above. This and univalence give
 
 Hence
 
- is-singleton(Σ (Id x)) ≡ is-singleton(Σ-image j (Id x))
+ is-singleton (Σ (Id x)) ≡ is-singleton (Σ-image j (Id x))
 
-But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
+But the lhs holds, and hence is-singleton (Σ-image j (Id x)).
 
 \begin{code}
 
@@ -423,10 +423,10 @@ But the lhs holds, and hence is-singleton(Σ-image j (Id x)).
   g : Id (j x) y → Σ-image j (Id x) y
   g refl = (x , refl) , refl
 
-  gf : (i : Σ-image j (Id x) y) → g(f i) ≡ i
+  gf : (i : Σ-image j (Id x) y) → g (f i) ≡ i
   gf ((x , refl) , refl) = refl
 
-  fg : (p : Id (j x) y) → f(g p) ≡ p
+  fg : (p : Id (j x) y) → f (g p) ≡ p
   fg refl = refl
 
 Σ-image-of-singleton-lemma' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (j : X → Y) (x : X) (y : Y)
@@ -518,6 +518,7 @@ retract-of-ainjective D' D i (r , (s , rs)) {X} {Y} j e f = φ a
   where
    a : Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f
    a = i j e (s ∘ f)
+
    φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
 
@@ -591,16 +592,22 @@ retract-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} A B e ρ y = r , s , rs
  where
   R : (x : X) → B x → A x
   R x = retraction (ρ x)
+
   S : (x : X) → A x → B x
   S x = section (ρ x)
+
   RS : (x : X) (a : A x) → R x (S x a) ≡ a
   RS x = retract-condition (ρ x)
+
   r : (B / e) y → (A / e) y
   r v (x , p) = R x (v (x , p))
+
   s : (A / e) y → (B / e) y
   s u (x , p) = S x (u (x , p))
+
   h : (u : (A / e) y) (σ : fiber e y) → r (s u) σ ≡ u σ
   h u (x , p) = RS x (u (x , p))
+
   rs : (u : (A / e) y) → r (s u) ≡ u
   rs u = dfunext (fe (𝓤 ⊔ 𝓥) 𝓦) (h u)
 
@@ -617,16 +624,21 @@ iterated-extension {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {Z} {A} j k z = γ
  where
   f : ((A / j) / k) z → (A / (k ∘ j)) z
   f u (x , p) = u (j x , p) (x , refl)
+
   g : (A / (k ∘ j)) z → ((A / j) / k) z
   g v (.(j x) , q) (x , refl) = v (x , q)
+
   fg : (v : (A / (k ∘ j)) z) → f (g v) ≡ v
   fg v = refl
+
   gf' : (u : ((A / j) / k) z) (w : fiber k z) (t : fiber j (pr₁ w))
       → g (f u) w t ≡ u w t
   gf' u (.(j x) , q) (x , refl) = refl
+
   gf : (u : ((A / j) / k) z) → g (f u) ≡ u
   gf u = dfunext (fe (𝓥 ⊔ 𝓦) (𝓤 ⊔ 𝓥 ⊔ 𝓣))
           (λ w → dfunext (fe (𝓤 ⊔ 𝓥) 𝓣) (gf' u w))
+
   γ : ((A / j) / k) z ≃ (A / (k ∘ j)) z
   γ = f , ((g , fg) , (g , gf))
 
@@ -653,7 +665,7 @@ the map P → 𝟙 is an embedding.
               P ------> 𝟙
                \       /
                 \     /
-              f  \   / (f / j) (x) = Π (w : fiber j x) → f(pr₁ w)
+              f  \   / (f / j) (x) = Π (w : fiber j x) → f (pr₁ w)
                   \ /              ≃ Π (p : P) → j p ≡ x → f p
                    v               ≃ Π (p : P) → f p
                    𝓤
@@ -710,8 +722,10 @@ module /-extension-is-embedding-special-case
   where
    δ : (P → s A) → s A
    δ v p = v p p
+
    η : (v : P → s A) → κ (s A) (δ v) ≡ v
    η v = dfunext feuu (λ p → dfunext feuu (λ q → ap (λ - → v - q) (i q p)))
+
    ε : (u : Π A) → δ (κ (s A) u) ≡ u
    ε u = refl
 
@@ -782,8 +796,10 @@ module ∖-extension-is-embedding-special-case
   where
    δ : s A → P × s A
    δ (p , a) = p , p , a
+
    η : (σ : s A) → κ (s A) (δ σ) ≡ σ
    η σ = refl
+
    ε : (τ : P × s A) → δ (κ (s A) τ) ≡ τ
    ε (p , q , a) = to-×-≡ (i q p) refl
 
@@ -863,6 +879,7 @@ module /-extension-is-embedding
     where
      δ : (((f / j) ∘ j) / j) y → (f / j) y
      δ C (x , p) = C (x , p) (x , refl)
+
      η : (C : ((f / j ∘ j) / j) y) → κ (s f) y (δ C) ≡ C
      η C = dfunext feuu g
       where
@@ -874,6 +891,7 @@ module /-extension-is-embedding
           where
            q : (x , refl) ≡ (x' , p')
            q = i (j x) (x , refl) (x' , p')
+
      ε : (a : (f / j) y) → δ (κ (s f) y a) ≡ a
      ε a = dfunext feuu g
       where
@@ -958,8 +976,10 @@ module ∖-extension-is-embedding
      δ : (Σ (x , _) ꞉ fiber j y , f x)
        → Σ t ꞉ fiber j y , Σ (x , _) ꞉ fiber j (j (pr₁ t)), f x
      δ ((x , p) , C) = (x , p) , (x , refl) , C
+
      η : (σ : s f y) → κ (s f) y (δ σ) ≡ σ
      η ((x , refl) , C) = refl
+
      ε : (τ : Σ (λ w → r (s f) (pr₁ w))) → δ (κ (s f) y τ) ≡ τ
      ε ((x , refl) , (x' , p') , C) = t x x' (pa x' x p') p' C (appa x x' p')
       where
@@ -967,10 +987,13 @@ module ∖-extension-is-embedding
             ((x' , p)    , (x' , refl) , C)
           ≡ (((x  , refl) , (x' , p)    , C) ∶ (Σ (x , _) ꞉  fiber j (j x) , r (s f) x))
         t x .x refl p C refl = refl
+
         ej' : ∀ x x' → qinv (ap j {x} {x'})
         ej' x x' = equivs-are-qinvs (ap j) (embedding-embedding' j i x x')
+
         pa : ∀ x x' → j x ≡ j x' → x ≡ x'
         pa x x' = pr₁ (ej' x x')
+
         appa : ∀ x x' p' → ap j (pa x' x p') ≡ p'
         appa x x' = pr₂ (pr₂ (ej' x' x))
 
@@ -1029,6 +1052,7 @@ aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
  where
   f' : Y → D
   f' y = pr₁ (φ (fiber j y) (e y) (f ∘ pr₁))
+
   p : (x : X) → f' (j x) ≡ f x
   p x = q (x , refl)
    where
@@ -1057,8 +1081,10 @@ whereas the injectivity of the universe requires full univalence.
    where
       g : Q → f p holds
       g q = q p
+
       h : f p holds → Q
       h r p' = transport (λ - → f - holds) (i p p') r
+
       t : Q ≡ f p holds
       t = pe j (holds-is-prop (f p)) g h
 
@@ -1085,17 +1111,23 @@ aflabby-EM-lemma : (P : 𝓦 ̇ ) → is-prop P → aflabby ((P + ¬ P) + 𝟙) 
 aflabby-EM-lemma {𝓦} P i φ = γ
  where
   D = (P + ¬ P) + 𝟙 {𝓦}
+
   f : P + ¬ P → D
   f (inl p) = inl (inl p)
   f (inr n) = inl (inr n)
+
   d : D
   d = pr₁ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+
   κ : (z : P + ¬ P) → d ≡ f z
   κ = pr₂ (φ (P + ¬ P) (decidability-of-prop-is-prop (fe 𝓦 𝓤₀) i) f)
+
   a : (p : P) → d ≡ inl (inl p)
   a p = κ (inl p)
+
   b : (n : ¬ P) → d ≡ inl (inr n)
   b n = κ (inr n)
+
   δ : (d' : D) → d ≡ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
@@ -1103,8 +1135,10 @@ aflabby-EM-lemma {𝓦} P i φ = γ
    where
     n : ¬ P
     n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
+
     m : ¬¬ P
     m n = 𝟘-elim (+disjoint ((b n)⁻¹ ∙ r))
+
   γ : P + ¬ P
   γ = δ d refl
 
@@ -1159,16 +1193,22 @@ aflabbiness-resizing D 𝓤 𝓥 R φ P i f = d , h
  where
   Q : 𝓥 ̇
   Q = resize R P i
+
   j : is-prop Q
   j = resize-is-prop R P i
+
   α : P → Q
   α = to-resize R P i
+
   β : Q → P
   β = from-resize R P i
+
   d : D
   d = pr₁ (φ Q j (f ∘ β))
+
   k : (q : Q) → d ≡ f (β q)
   k = pr₂ (φ Q j (f ∘ β))
+
   h : (p : P) → d ≡ f p
   h p = d           ≡⟨ k (α p) ⟩
         f (β (α p)) ≡⟨ ap f (i (β (α p)) p) ⟩
@@ -1205,10 +1245,12 @@ universe-retract ua R 𝓤 𝓥 = ρ , (Lift-is-embedding ua)
  where
   a : ainjective-type (𝓤 ̇ ) 𝓤 𝓤
   a = universes-are-ainjective-Π {𝓤} {𝓤} (ua 𝓤)
+
   b : is-embedding (Lift 𝓥)
     → ainjective-type (𝓤 ̇ ) (𝓤 ⁺) ((𝓤 ⊔ 𝓥 )⁺)
     → retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
   b = embedding-retract (𝓤 ̇ ) (𝓤 ⊔ 𝓥 ̇ ) (Lift 𝓥)
+
   ρ : retract 𝓤 ̇ of (𝓤 ⊔ 𝓥 ̇ )
   ρ = b (Lift-is-embedding ua) (ainjective-resizing R (𝓤 ̇ ) a)
 
@@ -1233,6 +1275,7 @@ ainjective-characterization {𝓤} ua R D = a , b
    where
     c : ainjective-type D 𝓤 (𝓤 ⁺)
     c = ainjective-resizing R D i
+
     d : retract D of (D → 𝓤 ̇ )
     d = ainjective-is-retract-of-power-of-universe D ua c
 
@@ -1241,6 +1284,7 @@ ainjective-characterization {𝓤} ua R D = a , b
    where
     c : ainjective-type (X → 𝓤 ̇ ) 𝓤 𝓤
     c = power-of-ainjective (universes-are-ainjective-Σ ua)
+
     d : ainjective-type D 𝓤 𝓤
     d = retract-of-ainjective D (X → 𝓤 ̇ ) c r
 
@@ -1267,14 +1311,14 @@ free 𝓛-algebras are injective.
 \begin{code}
 
  𝓛-alg-aflabby : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 𝓥
-              → {A : 𝓥 ̇ } → 𝓛-alg A → aflabby A 𝓤
+               → {A : 𝓥 ̇ } → 𝓛-alg A → aflabby A 𝓤
  𝓛-alg-aflabby pe fe fe' (∐ , κ , ι) P i f = ∐ i f , γ
   where
    γ : (p : P) → ∐ i f ≡ f p
    γ p = 𝓛-alg-Law₀-gives₀' pe fe fe' ∐ κ P i f p
 
  𝓛-alg-ainjective : propext 𝓤 → funext 𝓤 𝓤 → funext 𝓤 𝓥
-                 → (A : 𝓥 ̇ ) → 𝓛-alg A → ainjective-type A 𝓤 𝓤
+                  → (A : 𝓥 ̇ ) → 𝓛-alg A → ainjective-type A 𝓤 𝓤
  𝓛-alg-ainjective pe fe fe' A α = aflabby-types-are-ainjective A (𝓛-alg-aflabby pe fe fe' α)
 
  free-𝓛-algebra-ainjective : is-univalent 𝓤 → funext 𝓤 (𝓤 ⁺)
@@ -1310,6 +1354,7 @@ monad:
   where
    a : ainjective-type D 𝓤 𝓤 → Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)
    a i = D , ainjective-is-retract-of-free-𝓛-algebra D ua (ainjective-resizing R D i)
+
    b : (Σ X ꞉ 𝓤 ̇ , retract D of (𝓛 X)) → ainjective-type D 𝓤 𝓤
    b (X , r) = retract-of-ainjective D (𝓛 X) (free-𝓛-algebra-ainjective ua fe X) r
 
@@ -1352,6 +1397,7 @@ module injective (pt : propositional-truncations-exist) where
   where
    a : ∃ r ꞉ (Y → D), r ∘ j ∼ id
    a = i j e id
+
    φ : (Σ r ꞉ (Y → D), r ∘ j ∼ id) → Σ r ꞉ (Y → D) , Σ s ꞉ (D → Y), r ∘ s ∼ id
    φ (r , p) = r , j , p
 
@@ -1363,8 +1409,10 @@ module injective (pt : propositional-truncations-exist) where
   where
    i' : ∃ f' ꞉ (Y → D), f' ∘ j ∼ s ∘ f
    i' = i j e (s ∘ f)
+
    φ : (Σ f' ꞉ (Y → D) , f' ∘ j ∼ s ∘ f) → Σ f'' ꞉ (Y → D'), f'' ∘ j ∼ f
    φ (f' , h) = r ∘ f' , (λ x → ap r (h x) ∙ rs (f x))
+
    γ : ∃ f'' ꞉ (Y → D') , f'' ∘ j ∼ f
    γ = ∥∥-functor φ i'
 
@@ -1382,14 +1430,19 @@ so we need a new proof, but hence also new universe assumptions.
   where
    g : X × A → D
    g = uncurry f
+
    k : X × A → Y × A
    k (x , a) = j x , a
+
    c : is-embedding k
    c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
+
    ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
+
    φ : (Σ g' ꞉ (Y × A → D), g' ∘ k ∼ g) → (Σ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f)
    φ (g' , h) = curry g' , (λ x → dfunext (fe 𝓣 (𝓣 ⊔ 𝓦)) (λ a → h (x , a)))
+
    γ : ∃ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f
    γ = ∥∥-functor φ ψ
 
@@ -1406,6 +1459,7 @@ so we need a new proof, but hence also new universe assumptions.
   where
    φ : retract D of (D → 𝓤 ̇ ) → ainjective-type D 𝓤 𝓤
    φ = retract-of-ainjective D (D → 𝓤 ̇ ) (power-of-ainjective (universes-are-ainjective-Π ua))
+
    γ : ∥ ainjective-type D 𝓤 𝓤 ∥
    γ = ∥∥-functor φ (injective-∥retract∥-of-power-of-universe D ua i)
 
@@ -1434,6 +1488,7 @@ injectivity.
   where
    a : injective-type D 𝓤 (𝓤 ⁺) → ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥
    a = ∥∥-functor (ainjective-resizing R D) ∘ injective-gives-∥ainjective∥ ua D
+
    b : ∥ ainjective-type D 𝓤 (𝓤 ⁺) ∥ → injective-type D 𝓤 (𝓤 ⁺)
    b = ∥ainjective∥-gives-injective D
 
@@ -1463,7 +1518,7 @@ The reason is that the embedding Id : D → (D → 𝓤) factors through
  set-injectivity-in-terms-of-ainjectivity : Ω-resizing₀ 𝓤
                                           → PropExt
                                           → (D  : 𝓤 ̇ ) (i  : is-set D) → injective-type D 𝓤 𝓤
-                                                                      ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
+                                                                        ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥
  set-injectivity-in-terms-of-ainjectivity {𝓤} (Ω₀ , e₀) pe D i = γ , ∥ainjective∥-gives-injective D
   where
    down-≃ : (D → Ω 𝓤) ≃ (D → Ω₀)
@@ -1514,7 +1569,7 @@ Added 8th Feb. Solves a problem formulated above.
    L = pr₁ (𝓛-resizing ω₀ D)
 
    e : 𝓛 D ≃ L
-   e = ≃-sym(pr₂ (𝓛-resizing ω₀ D))
+   e = ≃-sym (pr₂ (𝓛-resizing ω₀ D))
 
    down : 𝓛 D → L
    down = ⌜ e ⌝
@@ -1547,15 +1602,17 @@ Here are some corollaries:
 \begin{code}
 
  injective-resizing : is-univalent 𝓤 → Ω-resizing 𝓤
-                     → (D : 𝓤 ̇ )
-                     → injective-type D 𝓤 𝓤
-                     → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → injective-type D 𝓥 𝓦
+                    → (D : 𝓤 ̇ )
+                    → injective-type D 𝓤 𝓤
+                    → (𝓥 𝓦 : Universe) → propositional-resizing (𝓥 ⊔ 𝓦) 𝓤 → injective-type D 𝓥 𝓦
  injective-resizing {𝓤} ua ω₀ D i 𝓥 𝓦 R = c
   where
    a : ∥ ainjective-type D 𝓤 𝓤 ∥
    a = pr₁ (injectivity-in-terms-of-ainjectivity ω₀ ua D) i
+
    b : ∥ ainjective-type D 𝓥 𝓦 ∥
    b = ∥∥-functor (ainjective-resizing R D) a
+
    c : injective-type D 𝓥 𝓦
    c = ∥ainjective∥-gives-injective D b
 
@@ -1569,12 +1626,16 @@ Here are some corollaries:
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
    a = β ((P + ¬ P) + 𝟙) (inr *)
+
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
    b = pr₁ (injectivity-in-terms-of-ainjectivity ω ua ((P + ¬ P) + 𝟙)) a
+
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓤 ∥
    c = ∥∥-functor (ainjective-types-are-aflabby ((P + ¬ P) + 𝟙)) b
+
    d : ∥ P + ¬ P ∥
    d = ∥∥-functor (aflabby-EM-lemma P i) c
+
    e : P + ¬ P
    e =  ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) i) id d
 

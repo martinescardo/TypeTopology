@@ -105,7 +105,7 @@ module _ (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt
 
- double-negation-is-truncation-gives-DNE :((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
+ double-negation-is-truncation-gives-DNE : ((X : 𝓤 ̇ ) → ¬¬ X → ∥ X ∥) → DNE 𝓤
  double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ∥∥-rec isp id (f P u)
 
 \end{code}

@@ -36,18 +36,22 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
    where
     x : ℕ∞
     x = pr₁ e
+
     ne : p x ≢ p (Succ x)
     ne = pr₂ e
+
     case₀ : p x ≡ ₀ → Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)
     case₀ r = x , (s , r)
      where
       s : x ≢ ∞
-      s t = ne(ap p (t ∙ (Succ-∞-is-∞ fe)⁻¹ ∙ (ap Succ t)⁻¹))
+      s t = ne (ap p (t ∙ (Succ-∞-is-∞ fe)⁻¹ ∙ (ap Succ t)⁻¹))
+
     case₁ : p x ≡ ₁ → Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)
     case₁ r = (Succ x) , (s , s')
      where
       s : Succ x ≢ ∞
       s t = ne (ap p (Succ-lc (t ∙ (Succ-∞-is-∞ fe)⁻¹) ∙ t ⁻¹))
+
       s' : p (Succ x) ≡ ₀
       s' = different-from-₁-equal-₀ (λ t → ne (r ∙ t ⁻¹))
 
@@ -57,55 +61,61 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
    where
     case₀ : p Zero ≡ ₀ →
             (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (under n) ≡ ₁)
-    case₀ r = inl(Zero , (s , r))
+    case₀ r = inl (Zero , (s , r))
      where
       s : Zero ≢ ∞
       s t = ∞-is-not-finite 0 (t ⁻¹)
+
     case₁ : p Zero ≡ ₁ →
             (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (under n) ≡ ₁)
     case₁ r = inr by-induction
      where
       by-induction : (n : ℕ) → p (under n) ≡ ₁
       by-induction 0 = r
-      by-induction (succ n) = (f(under n))⁻¹ ∙ by-induction n
+      by-induction (succ n) = (f (under n))⁻¹ ∙ by-induction n
 
   claim₂ : (Σ y ꞉ ℕ∞ , p y ≢ p (Succ y)) + ((y : ℕ∞) → p y ≡ p (Succ y))
-  claim₂ = g(ℕ∞-compact q)
+  claim₂ = g (ℕ∞-compact q)
    where
     fact : (y : ℕ∞) → (p y ≢ p (Succ y)) + ¬ (p y ≢ p (Succ y))
-    fact y = ¬-preserves-decidability(𝟚-is-discrete (p y) (p (Succ y)))
+    fact y = ¬-preserves-decidability (𝟚-is-discrete (p y) (p (Succ y)))
 
     f : Σ q ꞉ (ℕ∞ → 𝟚), ((y : ℕ∞) → (q y ≡ ₀ → p y ≢ p (Succ y))
                                   × (q y ≡ ₁ → ¬ (p y ≢ p (Succ y))))
     f = characteristic-function fact
+
     q : ℕ∞ → 𝟚
     q = pr₁ f
+
     g : (Σ y ꞉ ℕ∞ , q y ≡ ₀) + ((y : ℕ∞) → q y ≡ ₁)
      → (Σ y ꞉ ℕ∞ , p y ≢ p (Succ y)) + ((y : ℕ∞) → p y ≡ p (Succ y))
-    g(inl(y , r)) = inl(y , (pr₁ (pr₂ f y) r))
-    g(inr h ) = inr(λ y → discrete-is-¬¬-separated
+    g (inl (y , r)) = inl (y , (pr₁ (pr₂ f y) r))
+    g (inr h ) = inr (λ y → discrete-is-¬¬-separated
                            𝟚-is-discrete
                            (p y) (p (Succ y))
                            (pr₂ (pr₂ f y) (h y)))
 
 
-Theorem-8·2 : (p : ℕ∞ → 𝟚) → decidable((n : ℕ) → p (under n) ≡ ₁)
+Theorem-8·2 : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (under n) ≡ ₁)
 Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
  where
   claim₀ : (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) →
-            decidable((n : ℕ) → p (under n) ≡ ₁)
+            decidable ((n : ℕ) → p (under n) ≡ ₁)
   claim₀ e = inr c₁
    where
     x : ℕ∞
     x = pr₁ e
+
     c₀ : ¬ ((n : ℕ) → x ≢ under n)
-    c₀ = λ g → pr₁(pr₂ e) (not-finite-is-∞ fe g)
+    c₀ = λ g → pr₁ (pr₂ e) (not-finite-is-∞ fe g)
+
     c₁ : ¬ ((n : ℕ) → p (under n) ≡ ₁)
     c₁ g = c₀ d
      where
       d : (n : ℕ) → x ≢ under n
-      d n r = equal-₀-different-from-₁ (pr₂(pr₂ e)) (ap p r ∙ g n)
-  claim₁ : ((n : ℕ) → p (under n) ≡ ₁) → decidable((n : ℕ) → p (under n) ≡ ₁)
+      d n r = equal-₀-different-from-₁ (pr₂ (pr₂ e)) (ap p r ∙ g n)
+
+  claim₁ : ((n : ℕ) → p (under n) ≡ ₁) → decidable ((n : ℕ) → p (under n) ≡ ₁)
   claim₁ f = inl f
 
 \end{code}

@@ -19,7 +19,7 @@ _≢_ : {X : 𝓤 ̇ } → (x y : X) → 𝓤 ̇
 x ≢ y = ¬ (x ≡ y)
 
 ≢-sym : {X : 𝓤 ̇ } → {x y : X} → x ≢ y → y ≢ x
-≢-sym u r = u(r ⁻¹)
+≢-sym u r = u (r ⁻¹)
 
 is-empty : 𝓤 ̇ → 𝓤 ̇
 is-empty = ¬_
@@ -105,7 +105,7 @@ Double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
 Double-negation-of-implication→ R k f g = f ((λ h → g (λ a → k (h a))) ,
                                              (λ b → g (λ a → b)))
 
-double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A → B) → ¬(¬¬ A × ¬ B)
+double-negation-of-implication← : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬¬ (A → B) → ¬ (¬¬ A × ¬ B)
 double-negation-of-implication← = Double-negation-of-implication←
 
 double-negation-of-implication→ : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → ¬ (¬¬ A × ¬ B) → ¬¬ (A → B)
@@ -122,8 +122,8 @@ not-Σ-implies-Π-not = curry
 Π-not-implies-not-Σ = uncurry
 
 not-Π-implies-not-not-Σ' : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
-                    → ¬ ((x : X) → ¬¬ (A x))
-                    → ¬¬ (Σ x ꞉ X , ¬ (A x))
+                         → ¬ ((x : X) → ¬¬ (A x))
+                         → ¬¬ (Σ x ꞉ X , ¬ (A x))
 not-Π-implies-not-not-Σ' = contrapositive not-Σ-implies-Π-not
 
 not-Π-implies-not-not-Σ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }

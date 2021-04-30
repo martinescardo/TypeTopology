@@ -188,7 +188,7 @@ We also need the fact that η reflects equality into equivalence:
    equiv-rel-reflect q = b (≈r y)
     where
      a : (y ≈ y) ≡ (x ≈ y)
-     a = ap (λ - → pr₁(- y)) (q ⁻¹)
+     a = ap (λ - → pr₁ (- y)) (q ⁻¹)
      b : (y ≈ y) → (x ≈ y)
      b = Idtofun a
 
@@ -214,7 +214,7 @@ universe 𝓦.
                     → is-set A
                     → (f : X → A)
                     → ({x x' : X} → x ≈ x' → f x ≡ f x')
-                    → ∃! f' ꞉( X/≈ → A), f' ∘ η ≡ f
+                    → ∃! f' ꞉ ( X/≈ → A), f' ∘ η ≡ f
  universal-property {𝓦} A iss f pr = ic
   where
    φ : (x' : X/≈) → is-prop (Σ a ꞉ A , ∃ x ꞉ X ,  (η x ≡ x') × (f x ≡ a))
@@ -241,24 +241,24 @@ universe 𝓦.
      induction-step x = f x , ∣ x , refl , refl ∣
 
    f' : X/≈ → A
-   f' x' = pr₁(k x')
+   f' x' = pr₁ (k x')
 
    r : f' ∘ η ≡ f
    r = dfunext fe h
     where
      g : (y : X) → ∃ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))
-     g y = pr₂(k(η y))
+     g y = pr₂ (k (η y))
 
-     j : (y : X) → (Σ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))) → f'(η y) ≡ f y
+     j : (y : X) → (Σ x ꞉ X , (η x ≡ η y) × (f x ≡ f' (η y))) → f' (η y) ≡ f y
      j y (x , p , q) = q ⁻¹ ∙ pr (η-equal-equiv p)
 
-     h : (y : X) → f'(η y) ≡ f y
+     h : (y : X) → f' (η y) ≡ f y
      h y = ∥∥-rec iss (j y) (g y)
 
    c : (σ : Σ f'' ꞉ (X/≈ → A), f'' ∘ η ≡ f) → (f' , r) ≡ σ
    c (f'' , s) = to-Σ-≡ (t , v)
     where
-     w : ∀ x → f'(η x) ≡ f''(η x)
+     w : ∀ x → f' (η x) ≡ f'' (η x)
      w = happly (r ∙ s ⁻¹)
 
      t : f' ≡ f''

@@ -1399,6 +1399,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
 
 \end{code}
 
+
 The finiteness of all Kuratowski finite types gives the discreteness of
 all sets (and hence excluded middle, because the type of truth values
 is a set).

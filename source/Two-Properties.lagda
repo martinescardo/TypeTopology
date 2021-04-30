@@ -28,8 +28,8 @@ open import Unit-Properties
 𝟚-equality-cases₁ {𝓤} {A} {.₁} refl = refl
 
 𝟚-equality-cases' : {A₀ A₁ : 𝓤 ̇ } {b : 𝟚} → (b ≡ ₀ → A₀) → (b ≡ ₁ → A₁) → A₀ + A₁
-𝟚-equality-cases' {𝓤} {A₀} {A₁} {₀} f₀ f₁ = inl(f₀ refl)
-𝟚-equality-cases' {𝓤} {A₀} {A₁} {₁} f₀ f₁ = inr(f₁ refl)
+𝟚-equality-cases' {𝓤} {A₀} {A₁} {₀} f₀ f₁ = inl (f₀ refl)
+𝟚-equality-cases' {𝓤} {A₀} {A₁} {₁} f₀ f₁ = inr (f₁ refl)
 
 𝟚-possibilities : (b : 𝟚) → (b ≡ ₀) + (b ≡ ₁)
 𝟚-possibilities ₀ = inl refl
@@ -91,7 +91,7 @@ complement-no-fp : (n : 𝟚) → n ≡ complement n → 𝟘 {𝓤}
 complement-no-fp ₀ p = 𝟘-elim (zero-is-not-one p)
 complement-no-fp ₁ p = 𝟘-elim (one-is-not-zero p)
 
-complement-involutive : (b : 𝟚) → complement(complement b) ≡ b
+complement-involutive : (b : 𝟚) → complement (complement b) ≡ b
 complement-involutive ₀ = refl
 complement-involutive ₁ = refl
 
@@ -159,11 +159,11 @@ min𝟚 ₀ b = ₀
 min𝟚 ₁ b = b
 
 Lemma[minab≤₂a] : {a b : 𝟚} → min𝟚 a b ≤₂ a
-Lemma[minab≤₂a] {₀} {b} r = 𝟘-elim(equal-₁-different-from-₀ r refl)
+Lemma[minab≤₂a] {₀} {b} r = 𝟘-elim (equal-₁-different-from-₀ r refl)
 Lemma[minab≤₂a] {₁} {b} r = refl
 
 Lemma[minab≤₂b] : {a b : 𝟚} → min𝟚 a b ≤₂ b
-Lemma[minab≤₂b] {₀} {b} r = 𝟘-elim(equal-₁-different-from-₀ r refl)
+Lemma[minab≤₂b] {₀} {b} r = 𝟘-elim (equal-₁-different-from-₀ r refl)
 Lemma[minab≤₂b] {₁} {b} r = r
 
 Lemma[min𝟚ab≡₁→b≡₁] : {a b : 𝟚} → min𝟚 a b ≡ ₁ → b ≡ ₁
@@ -218,7 +218,7 @@ _⊕_ : 𝟚 → 𝟚 → 𝟚
 ₀ ⊕ x = x
 ₁ ⊕ x = complement x
 
-complement-of-eq𝟚-is-⊕ : (m n : 𝟚) → complement(eq𝟚 m n) ≡ m ⊕ n
+complement-of-eq𝟚-is-⊕ : (m n : 𝟚) → complement (eq𝟚 m n) ≡ m ⊕ n
 complement-of-eq𝟚-is-⊕ ₀ n = complement-involutive n
 complement-of-eq𝟚-is-⊕ ₁ n = refl
 

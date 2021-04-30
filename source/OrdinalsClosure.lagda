@@ -318,10 +318,10 @@ pair-fun-is-order-reflecting τ υ A B f g φ e γ (x , a) (y , b) (inr (r , l))
   e' = embedding-embedding' f e x y
 
   c : f x ≡ f y → x ≡ y
-  c = pr₁(pr₁ e')
+  c = pr₁ (pr₁ e')
 
   η : (q : f x ≡ f y) → ap f (c q) ≡ q
-  η = pr₂(pr₁ e')
+  η = pr₂ (pr₁ e')
 
   i : transport (λ - → ⟪ B (f -) ⟫) (c r) (g x a)
     ≡ transport (λ - → ⟪ B - ⟫) (ap f (c r)) (g x a)

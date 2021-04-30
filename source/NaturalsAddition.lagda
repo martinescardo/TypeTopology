@@ -12,7 +12,7 @@ infixl 31 _+_
 
 _+_ : ℕ → ℕ → ℕ
 n + 0 = n
-n + (succ m) = succ(n + m)
+n + (succ m) = succ (n + m)
 
 
 zero-right-neutral : (n : ℕ) → n + 0 ≡ n

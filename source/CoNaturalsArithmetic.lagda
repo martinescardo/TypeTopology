@@ -199,7 +199,7 @@ Similarly, to prove that min is commutative, we show that the function
 function min.
 
 The following equation is derived from the above equations min-eq₀ and
-min-eq₁ by cases on whether u is Zero or a Succ(Pred u).
+min-eq₁ by cases on whether u is Zero or a Succ (Pred u).
 
 \begin{code}
 

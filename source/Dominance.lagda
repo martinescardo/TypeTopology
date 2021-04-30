@@ -36,7 +36,7 @@ module _ {𝓣 𝓚 : Universe} where
  D4 d = d 𝟙
 
  D5 : (𝓣 ̇ → 𝓚 ̇ ) → 𝓣 ⁺ ⊔ 𝓚 ̇
- D5 d = (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) → d P → ((p : P) → d(Q p)) → d(Σ Q)
+ D5 d = (P : 𝓣 ̇ ) (Q : P → 𝓣 ̇ ) → d P → ((p : P) → d (Q p)) → d (Σ Q)
 
 \end{code}
 
@@ -46,7 +46,7 @@ and condition D5' below is easier to check:
 \begin{code}
 
  D5' : (𝓣 ̇ → 𝓚 ̇ ) → 𝓣 ⁺ ⊔ 𝓚 ̇
- D5' d = (P Q' : 𝓣 ̇ ) → d P → (P → d Q') → d(P × Q')
+ D5' d = (P Q' : 𝓣 ̇ ) → d P → (P → d Q') → d (P × Q')
 
  D5-gives-D5' : (d : 𝓣 ̇ → 𝓚 ̇ ) → D5 d → D5' d
  D5-gives-D5' d d5 P Q' i j = d5 P (λ p → Q') i j
@@ -136,7 +136,7 @@ module DecidableDominance where
                                     (decidability-of-prop-is-prop fe)) ,
                           (λ X → pr₁) ,
                           (𝟙-is-prop , inl *) ,
-                          λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁(dQ p)) ,
+                          λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁ (dQ p)) ,
                                          decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
 
 module lift
@@ -152,7 +152,7 @@ module lift
  L X = Σ P ꞉ 𝓣 ̇ , d P × (P → X)
 
  LL : ∀ {𝓥} (X : 𝓥 ̇ ) → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ̇
- LL X = L(L X)
+ LL X = L (L X)
 
  _⇀_ : ∀ {𝓥 𝓦} → 𝓥 ̇ → 𝓦 ̇ → 𝓣 ⁺ ⊔ 𝓚 ⊔ 𝓥 ⊔ 𝓦 ̇
  X ⇀ Y = X → L Y
@@ -173,17 +173,17 @@ module lift
  extension {𝓥} {𝓦} {X} {Y} f (P , (isdp , φ)) = (Q , (isdq , γ))
   where
    Q : 𝓣 ̇
-   Q = Σ p ꞉ P , isDefined(f(φ p))
+   Q = Σ p ꞉ P , isDefined (f (φ p))
 
    isdq : is-dominant D Q
    isdq = dominant-closed-under-Σ D
             P
-            (λ p → isDefined(f(φ p)))
+            (λ p → isDefined (f (φ p)))
             isdp
             (λ p → is-dominantisDefined (f (φ p)))
 
    γ : Q → Y
-   γ (p , def) = value(f (φ p)) def
+   γ (p , def) = value (f (φ p)) def
 
  _♯ : ∀ {𝓥 𝓦} {X : 𝓥 ̇ } {Y : 𝓦 ̇ } → (X ⇀ Y) → (L X → L Y)
  f ♯ = extension f
@@ -192,7 +192,7 @@ module lift
      → (Y ⇀ Z) → (X ⇀ Y) → (X ⇀ Z)
  g ◌ f = g ♯ ∘ f
 
- μ : ∀ {𝓥} {X : 𝓥 ̇ } → L(L X) → L X
+ μ : ∀ {𝓥} {X : 𝓥 ̇ } → L (L X) → L X
  μ = extension id
 
  {- TODO:

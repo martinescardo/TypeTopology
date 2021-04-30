@@ -50,7 +50,7 @@ produce a classical conclusion from the hypothetical premise.
 Our assumption of the axiom of extensionality may seem dubious. In
 any case, we do get a meta-theorem that does not rely on
 extensionality: For all closed terms p: U → 𝟚 with p extensional
-and X,Y: U, there is no closed term of type p (X) ≡ ₀ ∧ P(Y) ≡ ₁,
+and X,Y: U, there is no closed term of type p (X) ≡ ₀ ∧ P (Y) ≡ ₁,
 where U is the universe of types and where 𝟚 is a type with two
 distinct elements ₀ and ₁, and with decidable equality.
 
@@ -85,7 +85,7 @@ different values is a taboo.
 
 \begin{code}
 
-extensional :(𝓤 ̇ → 𝟚) → 𝓤 ⁺ ̇
+extensional : (𝓤 ̇ → 𝟚) → 𝓤 ⁺ ̇
 extensional P = ∀ X Y → X ≃ Y → P X ≡ P Y
 
 Rice's-Theorem-for-U :
@@ -97,17 +97,17 @@ Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma ,
   Q : ℕ∞ → 𝓤 ̇
   Q = pr₁ (Universe-Indiscreteness-Theorem (λ i → X) Y)
 
-  Q-lemma : (i : ℕ) → Q(under i) ≃ X
+  Q-lemma : (i : ℕ) → Q (under i) ≃ X
   Q-lemma = pr₁ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y))
 
   Q-lemma∞ : Q ∞ ≃ Y
   Q-lemma∞ = pr₂ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y))
 
   p : ℕ∞ → 𝟚
-  p u = P(Q u)
+  p u = P (Q u)
 
   p-lemma : (i : ℕ) → p (under i) ≡ ₀
-  p-lemma i = e (Q(under i)) X (Q-lemma i) ∙ r
+  p-lemma i = e (Q (under i)) X (Q-lemma i) ∙ r
 
   p-lemma∞ : p ∞ ≡ ₁
   p-lemma∞ = e (Q ∞) Y Q-lemma∞ ∙ s
@@ -161,11 +161,14 @@ Rice's-contrapositive {𝓤} nwlpo P e = f
  where
   a : (X Y : 𝓤 ̇ ) → P X ≡ ₀ → P Y ≡ ₁ → WLPO
   a X Y = Rice's-Theorem-for-U P e X Y
+
   b : (X Y : 𝓤 ̇ ) (m n : 𝟚) → P X ≡ m → P Y ≡ n → m ≡ n
   b X Y ₀ ₀ p q = refl
   b X Y ₀ ₁ p q = 𝟘-elim (nwlpo (a X Y p q))
   b X Y ₁ ₀ p q = 𝟘-elim (nwlpo (a Y X q p))
   b X Y ₁ ₁ p q = refl
+
   f : (X Y : 𝓤 ̇ ) → P X ≡ P Y
   f X Y = b X Y (P X) (P Y) refl refl
+
 \end{code}

@@ -863,7 +863,7 @@ equivalent to some proposition in the universe 𝓥, for any two
 universes 𝓤 and 𝓥.
 
 The crucial fact exploited here is that intersections of collections
-of subcollections 𝓐:𝓟(𝓟 X) exist under propositional resizing. We
+of subcollections 𝓐:𝓟 (𝓟 X) exist under propositional resizing. We
 prove this generalizing the type of 𝓐 (the double powerset of X) as
 follows, where the membership relation defined in the module
 UF-Powerset has type
