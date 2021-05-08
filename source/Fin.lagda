@@ -1508,62 +1508,138 @@ is a set).
 
 \begin{code}
 
+ doubleton : {X : 𝓤 ̇ } → X → X → 𝓤 ̇
+ doubleton {𝓤} {X} x₀ x₁ = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
+
+ doubleton-is-set : {X : 𝓤 ̇ } (x₀ x₁ : X)
+                  → is-set X
+                  → is-set (doubleton x₀ x₁)
+ doubleton-is-set {𝓤} {X} x₀ x₁ i = subsets-of-sets-are-sets
+                                      X (λ x → (x ≡ x₀) ∨ (x ≡ x₁)) i ∨-is-prop
+
+ doubleton-map : {X : 𝓤 ̇ } (x₀ x₁ : X) → Fin 2 → doubleton x₀ x₁
+ doubleton-map x₀ x₁ 𝟎 = x₀ , ∣ inl refl ∣
+ doubleton-map x₀ x₁ 𝟏 = x₁ , ∣ inr refl ∣
+
+ doubleton-map-is-surjection : {X : 𝓤 ̇ } {x₀ x₁ : X}
+                             → is-surjection (doubleton-map x₀ x₁)
+ doubleton-map-is-surjection {𝓤} {X} {x₀} {x₁} (x , s) = ∥∥-functor γ s
+  where
+   γ : (x ≡ x₀) + (x ≡ x₁) → Σ n ꞉ Fin 2 , doubleton-map x₀ x₁ n ≡ (x , s)
+   γ (inl p) = 𝟎 , to-subtype-≡ (λ _ → ∨-is-prop) (p ⁻¹)
+   γ (inr q) = 𝟏 , to-subtype-≡ (λ _ → ∨-is-prop) (q ⁻¹)
+
+ doubletons-are-Kuratowki-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
+                                 → is-Kuratowski-finite (doubleton x₀ x₁)
+ doubletons-are-Kuratowki-finite x₀ x₁ = ∣ 2 , doubleton-map x₀ x₁ , doubleton-map-is-surjection ∣
+
+
+ decidable-equality-gives-doubleton-finite : {X : 𝓤 ̇ } (x₀ x₁ : X)
+                                           → is-set X
+                                           → decidable (x₀ ≡ x₁)
+                                           → is-finite (Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁))
+ decidable-equality-gives-doubleton-finite x₀ x₁ X-is-set δ = γ δ
+  where
+   γ : decidable (x₀ ≡ x₁) → is-finite (doubleton x₀ x₁)
+   γ (inl p) = 1 , ∣ singleton-≃ m l ∣
+    where
+     l : is-singleton (Fin 1)
+     l = 𝟎 , c
+      where
+       c : is-central (Fin 1) 𝟎
+       c 𝟎 = refl
+
+     m : is-singleton (doubleton x₀ x₁)
+     m = (doubleton-map x₀ x₁ 𝟎 , c)
+      where
+       c : is-central (doubleton x₀ x₁) (doubleton-map x₀ x₁ 𝟎)
+       c (y , s) = to-subtype-≡ (λ _ → ∨-is-prop) (∥∥-rec X-is-set α s)
+        where
+         α : (y ≡ x₀) + (y ≡ x₁) → x₀ ≡ y
+         α (inl q) = q ⁻¹
+         α (inr q) = p ∙ q ⁻¹
+
+   γ (inr ν) = 2 , ∣ ≃-sym (doubleton-map x₀ x₁ , f-is-equiv) ∣
+    where
+     doubleton-map-lc : left-cancellable (doubleton-map x₀ x₁)
+     doubleton-map-lc {𝟎} {𝟎} p = refl
+     doubleton-map-lc {𝟎} {𝟏} p = 𝟘-elim (ν (ap pr₁ p))
+     doubleton-map-lc {𝟏} {𝟎} p = 𝟘-elim (ν (ap pr₁ (p ⁻¹)))
+     doubleton-map-lc {𝟏} {𝟏} p = refl
+
+     doubleton-map-is-embedding : is-embedding (doubleton-map x₀ x₁)
+     doubleton-map-is-embedding = lc-maps-into-sets-are-embeddings
+                                   (doubleton-map x₀ x₁)
+                                   doubleton-map-lc
+                                   (doubleton-is-set x₀ x₁ X-is-set)
+
+     f-is-equiv : is-equiv (doubleton-map x₀ x₁)
+     f-is-equiv = surjective-embeddings-are-equivs
+                   (doubleton-map x₀ x₁)
+                   doubleton-map-is-embedding
+                   doubleton-map-is-surjection
+
+ doubleton-finite-gives-decidable-equality : funext 𝓤 𝓤₀
+                                           → {X : 𝓤 ̇ } (x₀ x₁ : X)
+                                           → is-set X
+                                           → is-finite (Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁))
+                                           → decidable (x₀ ≡ x₁)
+ doubleton-finite-gives-decidable-equality fe x₀ x₁ X-is-set ϕ = δ
+  where
+   γ : is-finite (doubleton x₀ x₁) → decidable (x₀ ≡ x₁)
+   γ (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) α s
+    where
+     α : doubleton x₀ x₁ ≃ 𝟘 → decidable (x₀ ≡ x₁)
+     α (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
+
+   γ (1 , s) = inl (∥∥-rec X-is-set β s)
+    where
+     α : is-prop (Fin 1)
+     α 𝟎 𝟎 = refl
+
+     β : doubleton x₀ x₁ ≃ Fin 1 → x₀ ≡ x₁
+     β (g , i) = ap pr₁ (equivs-are-lc g i (α (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏))))
+
+   γ (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) f s
+    where
+     f : doubleton x₀ x₁ ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
+     f (g , i) = β
+      where
+       h : x₀ ≡ x₁ → doubleton-map x₀ x₁ 𝟎 ≡ doubleton-map x₀ x₁ 𝟏
+       h = to-subtype-≡ (λ _ → ∨-is-prop)
+
+       α : decidable (g (doubleton-map x₀ x₁ 𝟎) ≡ g (doubleton-map x₀ x₁ 𝟏)) → decidable (x₀ ≡ x₁)
+       α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
+       α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
+
+       β : decidable (x₀ ≡ x₁)
+       β = α (Fin-is-discrete (succ (succ n)) (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏)))
+
+   δ : decidable (x₀ ≡ x₁)
+   δ = γ ϕ
+
  all-K-finite-types-finite-gives-all-sets-discrete :
 
      funext 𝓤 𝓤₀
    → ((A : 𝓤 ̇ ) → is-Kuratowski-finite A → is-finite A)
    → (X : 𝓤 ̇ ) → is-set X → is-discrete X
 
- all-K-finite-types-finite-gives-all-sets-discrete {𝓤} fe ϕ X X-is-set x₀ x₁ = δ
-  where
-   A : 𝓤 ̇
-   A = Σ x ꞉ X , (x ≡ x₀) ∨ (x ≡ x₁)
+ all-K-finite-types-finite-gives-all-sets-discrete {𝓤} fe ϕ X X-is-set x₀ x₁ =
+  doubleton-finite-gives-decidable-equality
+   fe x₀ x₁ X-is-set
+   (ϕ (doubleton x₀ x₁)
+   (doubletons-are-Kuratowki-finite x₀ x₁))
 
-   f : Fin 2 → A
-   f 𝟎       = x₀ , ∣ inl refl ∣
-   f (suc x) = x₁ , ∣ inr refl ∣
+ open import UF-ExcludedMiddle
 
-   f-surj : is-surjection f
-   f-surj (x , s) = ∥∥-functor γ s
-    where
-     γ : (x ≡ x₀) + (x ≡ x₁) → Σ n ꞉ Fin 2 , f n ≡ (x , s)
-     γ (inl p) = 𝟎 , to-subtype-≡ (λ _ → ∨-is-prop) (p ⁻¹)
-     γ (inr q) = 𝟏 , to-subtype-≡ (λ _ → ∨-is-prop) (q ⁻¹)
+ all-K-finite-types-finite-gives-EM :
 
-   i : is-Kuratowski-finite A
-   i = ∣ 2 , f , f-surj ∣
-
-   j : is-finite A → decidable (x₀ ≡ x₁)
-   j (0 , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) α s
-    where
-     α : A ≃ 𝟘 → decidable (x₀ ≡ x₁)
-     α (g , i) = 𝟘-elim (g (x₀ , ∣ inl refl ∣))
-
-   j (1 , s) = inl (∥∥-rec X-is-set β s)
-    where
-     α : is-prop (Fin 1)
-     α 𝟎 𝟎 = refl
-
-     β : A ≃ Fin 1 → x₀ ≡ x₁
-     β (g , i) = ap pr₁ (equivs-are-lc g i (α (g (f 𝟎)) (g (f 𝟏))))
-
-   j (succ (succ n) , s) = ∥∥-rec (decidability-of-prop-is-prop fe X-is-set) γ s
-    where
-     γ : A ≃ Fin (succ (succ n)) → decidable (x₀ ≡ x₁)
-     γ (g , i) = β
-      where
-       h : x₀ ≡ x₁ → f 𝟎 ≡ f 𝟏
-       h = to-subtype-≡ (λ _ → ∨-is-prop)
-
-       α : decidable (g (f 𝟎) ≡ g (f 𝟏)) → decidable (x₀ ≡ x₁)
-       α (inl p) = inl (ap pr₁ (equivs-are-lc g i p))
-       α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
-
-       β : decidable (x₀ ≡ x₁)
-       β = α (Fin-is-discrete (succ (succ n)) (g (f 𝟎)) (g (f 𝟏)))
-
-   δ : decidable (x₀ ≡ x₁)
-   δ = j (ϕ A i)
+     ((𝓤 : Universe) (A : 𝓤 ̇ ) → is-Kuratowski-finite A → is-finite A)
+   → (𝓤 : Universe) → FunExt → PropExt → EM 𝓤
+ all-K-finite-types-finite-gives-EM ϕ 𝓤 fe pe =
+  Ω-discrete-gives-EM (fe 𝓤 𝓤) (pe 𝓤)
+   (all-K-finite-types-finite-gives-all-sets-discrete
+     (fe (𝓤 ⁺) 𝓤₀) (ϕ (𝓤 ⁺)) (Ω 𝓤) (Ω-is-set (fe 𝓤 𝓤) (pe 𝓤)))
 
 \end{code}
 
