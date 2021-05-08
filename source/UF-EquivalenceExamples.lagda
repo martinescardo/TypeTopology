@@ -129,6 +129,34 @@ curry-uncurry {𝓤} {𝓥} {𝓦} fe = curry-uncurry' (fe 𝓤 (𝓥 ⊔ 𝓦))
   ε : ΠΣ-distr-back ∘ ΠΣ-distr ∼ id
   ε _ = refl
 
+Σ+ : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+   → (Σ x ꞉ X , A x + B x)
+   ≃ ((Σ x ꞉ X , A x) + (Σ x ꞉ X , B x))
+Σ+ X A B = qinveq f (g , η , ε)
+ where
+  f : (Σ x ꞉ X , A x + B x) → (Σ x ꞉ X , A x) + (Σ x ꞉ X , B x)
+  f (x , inl a) = inl (x , a)
+  f (x , inr b) = inr (x , b)
+
+  g : ((Σ x ꞉ X , A x) + (Σ x ꞉ X , B x)) → (Σ x ꞉ X , A x + B x)
+  g (inl (x , a)) = x , inl a
+  g (inr (x , b)) = x , inr b
+
+  η : g ∘ f ∼ id
+  η (x , inl a) = refl
+  η (x , inr b) = refl
+
+  ε : f ∘ g ∼ id
+  ε (inl (x , a)) = refl
+  ε (inr (x , b)) = refl
+
+\end{code}
+
+The following name is badly chosen, and probably should have been used
+for the above:
+
+\begin{code}
+
 Σ+distr : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) (A : X + Y → 𝓦 ̇ )
         → (Σ x ꞉ X , A (inl x)) + (Σ y ꞉ Y , A (inr y))
         ≃ (Σ z ꞉ X + Y , A z)
@@ -759,7 +787,6 @@ complement-is-equiv = qinvs-are-equivs complement
 complement-≃ : 𝟚 ≃ 𝟚
 complement-≃ = (complement , complement-is-equiv)
 
-
 domain-is-total-fiber : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → X ≃ Σ (fiber f)
 domain-is-total-fiber {𝓤} {𝓥} {X} {Y} f =
   X                             ≃⟨ ≃-sym (𝟙-rneutral {𝓤} {𝓤}) ⟩
@@ -898,10 +925,6 @@ fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
           → f ∼ g
           → (y : Y) → fiber f y ≃ fiber g y
 ∼-fiber-≃ H y = Σ-cong (∼-fiber-identifications-≃ H y)
-
-\end{code}
-
-\begin{code}
 
 ∙-is-equiv-left : {X : 𝓤 ̇ } {x y z : X} (p : z ≡ x)
                 → is-equiv (λ (q : x ≡ y) → p ∙ q)

@@ -306,8 +306,8 @@ module AC-renders-all-sets-discrete
         → decidable(a ₀ ≡ a ₁)
  lemma₂ is a = ∥∥-rec (decidability-of-prop-is-prop (fe 𝓤 𝓤₀) is) (lemma₁ a)
 
- ac-discrete-sets : AC → (X : 𝓤 ̇ ) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
- ac-discrete-sets ac X isx a = lemma₂ isx a (ac'' X A isx isa)
+ ac-discrete-sets' : AC → (X : 𝓤 ̇ ) → is-set X → (a : 𝟚 → X) → decidable(a ₀ ≡ a ₁)
+ ac-discrete-sets' ac X isx a = lemma₂ isx a (ac'' X A isx isa)
   where
    A : X → 𝓤 ̇
    A x = Σ i ꞉ 𝟚 , a i ≡ x
@@ -317,6 +317,9 @@ module AC-renders-all-sets-discrete
 
    ac'' : AC''
    ac'' = AC'AC'' (ACAC' ac)
+
+ ac-discrete-sets : AC → (X : 𝓤 ̇ ) → is-set X → (a₀ a₁ : X) → decidable(a₀ ≡ a₁)
+ ac-discrete-sets ac X isx a₀ a₁ = ac-discrete-sets' ac X isx (𝟚-cases a₀ a₁)
 
 \end{code}
 
@@ -337,30 +340,17 @@ because (𝟙≡P)≡P.
 \begin{code}
 
 module AC-gives-EM
+                      {𝓤 : Universe}
                       (pt : propositional-truncations-exist)
-                      (pe : propext 𝓤₀)
+                      (pe : propext 𝓤)
                       (fe : FunExt)
                       where
 
- open  AC-renders-all-sets-discrete 𝓤₁ pt fe
+ open  AC-renders-all-sets-discrete (𝓤 ⁺) pt fe
 
- lemma : AC → (P : Ω 𝓤₀) → decidable(⊤ ≡ P)
- lemma ac P = ac-discrete-sets ac (Ω 𝓤₀) (Ω-is-set (fe 𝓤₀ 𝓤₀) pe) a
-   where
-    a : 𝟚 → Ω 𝓤₀
-    a ₀ = ⊤
-    a ₁ = P
-
- ac-gives-em : AC → EM 𝓤₀
- ac-gives-em ac P isp = g (lemma ac (P , isp))
-  where
-   g : decidable (⊤ ≡ (P , isp)) → decidable P
-   g (inl r) = inl (idtofun 𝟙 P (ap pr₁ r) *)
-   g (inr u) = inr (contrapositive
-                      (λ p → Ω-extensionality (fe 𝓤₀ 𝓤₀)
-                               pe (λ _ → p) (λ _ → *))
-                      u)
-
+ ac-gives-em : AC → EM 𝓤
+ ac-gives-em ac = Ω-discrete-gives-EM (fe 𝓤 𝓤) pe
+                   (ac-discrete-sets ac (Ω 𝓤) (Ω-is-set (fe 𝓤 𝓤) pe))
 \end{code}
 
 

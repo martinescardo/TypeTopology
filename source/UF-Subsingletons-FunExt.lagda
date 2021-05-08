@@ -176,10 +176,10 @@ decidability-of-prop-is-prop fe₀ i = sum-of-contradictory-props
     a = ap _holds e
 
     b : p holds → q holds
-    b = transport (λ X → X) a
+    b = transport id a
 
     c : q holds → p holds
-    c = transport (λ X → X) (a ⁻¹)
+    c = transport id (a ⁻¹)
 
   h  : (p q : Ω 𝓤) → A p q → p ≡ q
   h p q (u , v) = Ω-extensionality fe pe u v
@@ -206,6 +206,9 @@ powersets-are-sets {𝓥} fe = powersets-are-sets'' fe (lower-funext 𝓥 (𝓥 
 
 empty-types-are-props : {X : 𝓤 ̇ } → ¬ X → is-prop X
 empty-types-are-props f x = 𝟘-elim (f x)
+
+equal-𝟘-is-empty : {X : 𝓤 ̇ } → X ≡ 𝟘 → ¬ X
+equal-𝟘-is-empty e x = 𝟘-elim (transport id e x)
 
 empty-types-are-≡-𝟘 : funext 𝓤 𝓤₀ → propext 𝓤 → {X : 𝓤 ̇ } → ¬ X → X ≡ 𝟘
 empty-types-are-≡-𝟘 fe pe f = pe (empty-types-are-props f)
@@ -304,6 +307,23 @@ not-equal-⊤-gives-equal-⊥ fe pe p r = to-subtype-≡ (λ _ → being-prop-is
 
   II : Q → P
   II y = equal-⊤-is-true P i (g (true-is-equal-⊤ pe fe Q j y))
+
+
+Ω-discrete-gives-EM : funext 𝓤 𝓤
+                    → propext 𝓤
+                    → ((p q : Ω 𝓤) → decidable (p ≡ q))
+                    → (P : 𝓤 ̇ ) → is-prop P → P + ¬ P
+Ω-discrete-gives-EM {𝓤} fe pe δ P i = f (δ p q)
+ where
+  p q : Ω 𝓤
+  p = (P , i)
+  q = (𝟙 , 𝟙-is-prop)
+
+  f : decidable (p ≡ q) → P + ¬ P
+  f (inl e) = inl (equal-𝟙-gives-holds P (ap pr₁ e))
+  f (inr ν) = inr (λ (x : P) → ν (to-subtype-≡
+                                   (λ _ → being-prop-is-prop fe)
+                                   (holds-gives-equal-𝟙 pe P i x)))
 
 \end{code}
 

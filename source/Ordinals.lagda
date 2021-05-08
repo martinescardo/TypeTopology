@@ -10,23 +10,24 @@ OrdinalNotationInterpretation.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-import OrdinalNotions
-import OrdinalsType
-import ToppedOrdinalsType
-import SquashedSum
-import SquashedCantor
-import OrdinalsWellOrderArithmetic
+import BuraliForti
+import LexicographicOrder
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties
-import ToppedOrdinalArithmetic
-import LexicographicOrder
-import OrdinalsClosure
 import OrdinalCodes
 import OrdinalNotationInterpretation
+import OrdinalNotions
 import OrdinalOfOrdinals
 import OrdinalOfTruthValues
+import OrdinalsClosure
+import OrdinalsFreeGroup
 import OrdinalsShulmanTaboo
+import OrdinalsType
+import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
-import BuraliForti
+import SquashedCantor
+import SquashedSum
+import ToppedOrdinalArithmetic
+import ToppedOrdinalsType
 
 \end{code}

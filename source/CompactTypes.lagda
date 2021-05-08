@@ -901,6 +901,40 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
 
 \end{code}
 
+Variation:
+
+\begin{code}
+
+ ∃-Compact-propositions-are-decidable' : {P : 𝓤 ̇ }
+                                      → is-prop P
+                                      → ∃-Compact (P + 𝟙 {𝓥})
+                                      → decidable P
+ ∃-Compact-propositions-are-decidable' {𝓤} {𝓥} {P} i κ = γ β
+  where
+   A : P + 𝟙 → 𝓤 ̇
+   A (inl p) = 𝟙
+   A (inr *) = 𝟘
+
+   α : detachable A
+   α (inl p) = inl *
+   α (inr *) = inr (λ z → 𝟘-elim z)
+
+   β : decidable (∃ x ꞉ P + 𝟙 , A x)
+   β = κ A α
+
+   δ : Σ A → P
+   δ (inl p , *) = p
+   δ (inr * , a) = 𝟘-elim a
+
+   ϕ : P → ∃ A
+   ϕ p = ∣ inl p , * ∣
+
+   γ : type-of β → decidable P
+   γ (inl e) = inl (∥∥-rec i δ e)
+   γ (inr ν) = inr (contrapositive ϕ ν)
+
+\end{code}
+
 Added 10th December 2019.
 
 \begin{code}
