@@ -648,8 +648,7 @@ indicate constructions on the quotient type FA/∾.
 
 \end{code}
 
-The following two naturality conditions (in the categorical sense) are
-crucial:
+The following two naturality conditions are crucial:
 
 \begin{code}
 
