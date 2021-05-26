@@ -731,7 +731,7 @@ So we have constructed a group with underlying set FA/∾ and a map
 
    𝓕 : Group (𝓤 ⁺)
    𝓕 = (FA/∾ , _·_ , quotient-is-set -∾- , assoc/ , e/ , ln/ , rn/ ,
-          (λ x → inv/ x , invl/ x , invr/ x))
+        (λ x → inv/ x , invl/ x , invr/ x))
 \end{code}
 
 To prove that ηᴳʳᵖ is the universal map of the set A into a group, we
@@ -761,7 +761,7 @@ assume another group G with a map f : A → G:
 
 \end{code}
 
-Our objective is to constructe f' from f making the universality
+Our objective is to construct f' from f making the universality
 triangle commute. As a first step in the construction of f', we
 construct a map h by induction of lists:
 
