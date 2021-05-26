@@ -597,12 +597,10 @@ universe levels:
 
 The above function η/∾ is the universal map into the quotient.
 
-We have too many η's now. The insertion of generators of the free
-group is obtained by composing the universal map into the quotient
-with our original map η : A → FA that inserts the generators into the
-freely generated "pre-group" of lists. Because the insertion of
-generators into the "real group" is the composition of these two η's,
-we use a double η to denote it.
+The insertion of generators of the free group is obtained by composing
+the universal map into the quotient with our original map η : A → FA
+that inserts the generators into the freely generated "pre-group" of
+lists.
 
 \begin{code}
 
