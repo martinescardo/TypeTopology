@@ -1,4 +1,4 @@
-Tom de Jong, 28 January 2020
+Tom de Jong, 28 January 2021
 (Following Bezem, Buchholtz, Grayson and Shulman)
 
 We construct the circle 𝕊¹ as the type of ℤ-torsors, following "Construction of
