@@ -115,6 +115,7 @@ import BinaryNaturals
 import BuraliForti
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
+import CantorSearch
 import Codistance              -- By Todd Waugh Ambridge and Martin Escardo
 import Compactness
 import CompactTypes
@@ -288,6 +289,7 @@ import BinaryNaturals
 import BuraliForti
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
+import CantorSearch
 import CircleConstruction
 import CircleInduction
 import CircleModules
