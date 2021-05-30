@@ -25,6 +25,8 @@
 import index
 import UnsafeModulesIndex
 
+arstf
+
 \end{code}
 
 There are only three, peripheral, unsafe modules. One of them is to get
