@@ -142,6 +142,7 @@ record quasidecidable-propositions-exist (𝓣 𝓚 : Universe) : 𝓤ω where
     → F 𝟙
     → ((P : ℕ → 𝓣 ̇ ) → ((n : ℕ) → F (P n)) → F (∃ n ꞉ ℕ , P n))
     → (P : 𝓣 ̇ ) → is-quasidecidable P → F P
+
 \end{code}
 
 (It follows automatically that quasidecidable types are propositions - see below.)
@@ -177,6 +178,7 @@ record free-σ-SupLat-on-one-generator-exists (𝓣 𝓚 : Universe) : 𝓤ω wh
   𝓐-free : {𝓥 𝓦 : Universe} (𝓑 : σ-SupLat 𝓥 𝓦) (t : ⟨ 𝓑 ⟩)
          → ∃! f ꞉ (⟨ 𝓐 ⟩ → ⟨ 𝓑 ⟩) , is-σ-suplat-hom 𝓐 𝓑 f
                                   × (f ⊤ ≡ t)
+
 \end{code}
 
 The main theorems are as follows, where the proofs are given after we
@@ -445,6 +447,7 @@ ways.
               → (𝕡 : 𝓠) → 𝕡 ∈ 𝓖
 
  𝓠-induction' {𝓤} 𝓖 = 𝓠-induction (λ 𝕡 → pr₁ (𝓖 𝕡)) (λ 𝕡 → pr₂ (𝓖 𝕡))
+
 \end{code}
 
 The quasidecidable propositions form a dominance, with a proof by
@@ -822,6 +825,7 @@ homomorphism, and are all we need for that purpose.
 
        w : ⋁' (n ↦ f (𝕡 n)) ≤' f (⋁ 𝕡)
        w = ⟨ 𝓐 ⟩-⋁-is-lb-of-ubs (n ↦ f (𝕡 n)) (f (⋁ 𝕡)) m
+
 \end{code}
 
 And then we are done:
@@ -863,7 +867,7 @@ equivalent to some proposition in the universe 𝓥, for any two
 universes 𝓤 and 𝓥.
 
 The crucial fact exploited here is that intersections of collections
-of subcollections 𝓐:𝓟 (𝓟 X) exist under propositional resizing. We
+of subcollections 𝓐 : 𝓟 (𝓟 X) exist under propositional resizing. We
 prove this generalizing the type of 𝓐 (the double powerset of X) as
 follows, where the membership relation defined in the module
 UF-Powerset has type
@@ -1335,6 +1339,7 @@ Such joins are absolute, in the sense that they are preserved by all homomorphis
          (σ-rec-is-hom 𝓒 (f t))
          (ap f (σ-rec-⊤ 𝓑 t))
          (σ-rec-⊤ 𝓒 (f t))
+
 \end{code}
 
 In particular, σ-rec preserves σ-rec:
@@ -1910,10 +1915,11 @@ Then we get quasidecidable induction by σ-induction:
 
 \end{code}
 
-we then get the dominance axiom for quasidecidable propositions by an
+We then get the dominance axiom for quasidecidable propositions by an
 application of the submodule hypothetical-quasidecidability.
 
 \begin{code}
+
   quasidecidable-closed-under-Σ :
       (P : 𝓣 ̇ )
     → (Q : P → 𝓣 ̇ )
@@ -2251,9 +2257,10 @@ quasidecidability:
 
 This concludes the module hypothetical-free-σ-SupLat-on-one-generator.
 
-We now gives the proofs of the main theorems by calling the above modules.
+We now give the proofs of the main theorems by calling the above modules.
 
 \begin{code}
+
 theorem₁ {𝓣} {𝓤} q = free-σ-SupLat-on-one-generator QD ⊤ QD-is-free-σ-SupLat
  where
   open quasidecidable-propositions-exist q
