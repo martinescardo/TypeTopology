@@ -39,15 +39,50 @@ private
 A𝟚 : (𝟚 → 𝟚) → 𝟚
 A𝟚 p = p (ε𝟚 p)
 
-A𝟚-property : (p : 𝟚 → 𝟚) → A𝟚 p ≡ ₁ → (n : 𝟚) → p n ≡ ₁
-A𝟚-property = motivating-fact𝟚
+\end{code}
+
+The function A𝟚 is the characteristic function of universal
+quantification:
+
+\begin{code}
+
+A𝟚-property→ : (p : 𝟚 → 𝟚) → A𝟚 p ≡ ₁ → (n : 𝟚) → p n ≡ ₁
+A𝟚-property→ = motivating-fact𝟚
+
+A𝟚-property← : (p : 𝟚 → 𝟚) → ((n : 𝟚) → p n ≡ ₁) → A𝟚 p ≡ ₁
+A𝟚-property← p ϕ = ϕ (ε𝟚 p)
 
 𝟚-searchable : (p : 𝟚 → 𝟚) → Σ n₀ ꞉ 𝟚 , (p n₀ ≡ ₁ → (n : 𝟚) → p n ≡ ₁)
-𝟚-searchable p = ε𝟚 p , A𝟚-property p
+𝟚-searchable p = ε𝟚 p , A𝟚-property→ p
 
 \end{code}
 
-We use this to search over the Cantor space. We first need some
+The function p has a root (that is, there is n with p n ≡ ₀) if and
+only if ε𝟚 p is a root. This follows from A𝟚-property→. So ε𝟚 chooses
+a root if there is some root, and otherwise chooses garbage. But we
+can check whether there is a root by checking whether or not
+p (ε𝟚 p) ≡ ₀. This is what A𝟚 does.
+
+\begin{code}
+
+ε𝟚-property→ : (p : 𝟚 → 𝟚) → (Σ n ꞉ 𝟚 , p n ≡ ₀) → p (ε𝟚 p) ≡ ₀
+ε𝟚-property→ p = III ∘ II ∘ I
+ where
+  I : (Σ n ꞉ 𝟚 , p n ≡ ₀) → ¬ ((n : 𝟚) → p n ≡ ₁)
+  I (n , e) ϕ = equal-₀-different-from-₁ e (ϕ n)
+
+  II : ¬ ((n : 𝟚) → p n ≡ ₁) → ¬ (A𝟚 p ≡ ₁)
+  II = contrapositive (A𝟚-property→ p)
+
+  III : ¬ (A𝟚 p ≡ ₁) → p (ε𝟚 p) ≡ ₀
+  III = different-from-₁-equal-₀
+
+ε𝟚-property← : (p : 𝟚 → 𝟚) → p (ε𝟚 p) ≡ ₀ → (Σ n ꞉ 𝟚 , p n ≡ ₀)
+ε𝟚-property← p e = ε𝟚 p , e
+
+\end{code}
+
+We use this to search over the Cantor type. We first need some
 preliminary definitions and facts.
 
 \begin{code}
@@ -83,7 +118,7 @@ Uniform continuity as defined below is data rather than property. This
 is because any number bigger than a modulus of uniform continuity is
 also a modulus.
 
-We first define when two binary sequences α and β agree at the firsy n
+We first define when two binary sequences α and β agree at the first n
 positions, written α ≡⟦ n ⟧ β.
 
 \begin{code}
@@ -100,6 +135,9 @@ uniformly-continuous p = Σ n ꞉ ℕ , n is-a-modulus-of-uniform-continuity-of 
 
 \end{code}
 
+Notice that if a function has modulus of continuity zero then it is
+constant.
+
 The crucial lemma for Cantor search is this:
 
 \begin{code}
@@ -109,10 +147,16 @@ cons-decreases-modulus : (p : Cantor → 𝟚)
                          (b : 𝟚)
                        → (succ n) is-a-modulus-of-uniform-continuity-of p
                        → n is-a-modulus-of-uniform-continuity-of (p ∘ cons b)
-cons-decreases-modulus p n b u α β e = γ
+cons-decreases-modulus p n b u α β = III
  where
-  γ : (p ∘ cons b) α ≡ (p ∘ cons b) β
-  γ = u (cons b α) (cons b β) (refl , e)
+  I : α ≡⟦ n ⟧ β → cons b α ≡⟦ succ n ⟧ cons b β
+  I e = refl , e
+
+  II : cons b α ≡⟦ succ n ⟧ cons b β → p (cons b α) ≡ p (cons b β)
+  II = u (cons b α) (cons b β)
+
+  III : α ≡⟦ n ⟧ β → p (cons b α) ≡ p (cons b β)
+  III = II ∘ I
 
 \end{code}
 
@@ -133,40 +177,21 @@ abstract
  c₀ : Cantor
  c₀ = λ i → ₀
 
-A : ℕ → (Cantor → 𝟚) → 𝟚
-ε : ℕ → (Cantor → 𝟚) → Cantor
+A  : ℕ → (Cantor → 𝟚) → 𝟚
+ε  : ℕ → (Cantor → 𝟚) → Cantor
 
 A n p = p (ε n p)
 
 ε 0 p        = c₀
-ε (succ n) p = cons b₀ α₀
- where
-  open import Agda.Builtin.Strict
-  b₀ : 𝟚
-  b₀ = primForce (λ b → A n (p ∘ cons b)) ε𝟚
-
-  α₀ : Cantor
-  α₀ = ε n (p ∘ cons b₀)
-
-
-epsilon : ℕ → ((ℕ → 𝟚) → 𝟚) → (ℕ → 𝟚)
-epsilon 0 p        = λ i → ₀
-epsilon (succ n) p = cons b₀ α₀
- where
-  b₀ : 𝟚
-  b₀ = p (cons ₀ (epsilon n (p ∘ cons ₀)))
-
-  α₀ : ℕ → 𝟚
-  α₀ = epsilon n (p ∘ cons b₀)
-
-
+ε (succ n) p = case ε𝟚 (λ b → A n (p ∘ cons b)) of
+                λ b₀ → cons b₀ (ε n (p ∘ cons b₀))
 \end{code}
 
 The function A is designed to satisfy the specification
 
   A n p ≡ ₁ ⇔ ((α : Cantor) → p α ≡ ₁)
 
-for any decidable predicate p with modulus of continuity n.
+for any decidable predicate p with modulus of uniform continuity n.
 
 So A is the characteristic function of universal quantification over
 uniformly continuous decidable predicates.
@@ -205,7 +230,7 @@ A-property→ p (succ n) u r α = IV
   b₀ = ε𝟚 (λ b → A n (p ∘ cons b))
 
   I : A n (p ∘ cons b₀) ≡ ₁ → (b : 𝟚) → A n (p ∘ cons b) ≡ ₁
-  I = A𝟚-property (λ b → A n (p ∘ cons b))
+  I = A𝟚-property→ (λ b → A n (p ∘ cons b))
 
   observation₀ : A (succ n) p ≡ ₁
   observation₀ = r
@@ -245,7 +270,6 @@ Cantor-uniformly-searchable p (n , u) = ε n p , A-property→ p n u
   γ ₀ r = inl (α  , r)
   γ ₁ r = inr (λ (β , s) → zero-is-not-one (s ⁻¹ ∙ A-property→ p n u r β))
 
-
 Δ' : (p : Cantor → 𝟚)
    → uniformly-continuous p
    → decidable ((α : Cantor) → p α ≡ ₁)
@@ -282,8 +306,7 @@ module examples where
 
 \end{code}
 
-In the worst case, however, A n p runs in time 2ⁿ. Or is it doubly
-exponential in Agda? The following large example doen't work for n>4.
+In the worst case, however, A n p runs in time 2ⁿ.
 
 \begin{code}
 
@@ -298,18 +321,21 @@ exponential in Agda? The following large example doen't work for n>4.
    IH : xor n (tail α) ≡ xor n (tail β)
    IH = xor-uc n (tail α) (tail β) q
 
-   γ : α 0 ⊕ xor n (tail α) ≡ β 0 ⊕ xor n (tail β)
+   γ : head α ⊕ xor n (tail α) ≡ head β ⊕ xor n (tail β)
    γ = ap₂ _⊕_ p IH
 
  xor-example : ℕ → 𝟚
  xor-example n = A n (xor n)
 
- large-xor-example : xor-example 4 ≡ ₀
+ large-xor-example : xor-example 8 ≡ ₀
  large-xor-example = refl
 
 \end{code}
 
-Another fast example:
+The xor example works with n=17 in about 25s in a core-i7 machine.
+The time 2^n for this example.
+
+Another fast example (linear):
 
 \begin{code}
 

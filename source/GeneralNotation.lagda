@@ -79,6 +79,17 @@ syntax -id X x = x ∶ X
 
 \end{code}
 
+This is used for efficiency as a substitute for lazy "let" (or "where"):
+
+\begin{code}
+
+case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((a : A) → B a) → B a
+case x of f = f x
+
+{-# NOINLINE case_of_ #-}
+
+\end{code}
+
 Notation to try to make proofs readable:
 
 \begin{code}
