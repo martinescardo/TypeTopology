@@ -281,7 +281,7 @@ Cantor-uniformly-searchable p (n , u) = ε n p , A-property→ p n u
 
 \end{code}
 
-Examples, that show that A can be fast (in this case linear time) even
+Examples that show that A can be fast (in this case linear time) even
 if the supplied modulus of uniform continuity is large:
 
 \begin{code}
