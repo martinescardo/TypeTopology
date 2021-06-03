@@ -3,7 +3,8 @@ Martin Escardo, 20th June 2019 and 28th May 2021.
 Search over uniformly continuous decidable predicates on the Cantor type.
 
 This is loosely based on my LICS'2007 paper "Infinite sets that admit
-fast exhaustive search".
+fast exhaustive search" and my LMCS'2008 paper "Exhaustible sets in
+higher-type computation".
 
 \begin{code}
 
@@ -12,6 +13,7 @@ fast exhaustive search".
 open import SpartanMLTT
 open import Two-Properties
 open import DiscreteAndSeparated
+open import NaturalsOrder
 open import UF-FunExt
 open import UF-Base
 
@@ -21,11 +23,14 @@ module CantorSearch (fe : funext 𝓤₀ 𝓤₀) where
 
 We first consider search over the type 𝟚 of binary digits ₀ and ₁.
 
+To check that for all n : 𝟚 we have p n ≡ ₁, it is enough to check
+that p (p ₀) ≡ ₁.
+
 \begin{code}
 
 private
- motivating-fact𝟚 : (p : 𝟚 → 𝟚) →  p (p ₀) ≡ ₁ → (n : 𝟚) → p n ≡ ₁
- motivating-fact𝟚 p r = f (p ₀) refl r
+ motivating-fact : (p : 𝟚 → 𝟚) →  p (p ₀) ≡ ₁ → (n : 𝟚) → p n ≡ ₁
+ motivating-fact p r = f (p ₀) refl r
   where
    f : (n₀ : 𝟚) → p ₀ ≡ n₀ → p n₀ ≡ ₁ → (n : 𝟚) → p n ≡ ₁
    f ₀ s r ₀ = r
@@ -47,7 +52,7 @@ quantification:
 \begin{code}
 
 A𝟚-property→ : (p : 𝟚 → 𝟚) → A𝟚 p ≡ ₁ → (n : 𝟚) → p n ≡ ₁
-A𝟚-property→ = motivating-fact𝟚
+A𝟚-property→ = motivating-fact
 
 A𝟚-property← : (p : 𝟚 → 𝟚) → ((n : 𝟚) → p n ≡ ₁) → A𝟚 p ≡ ₁
 A𝟚-property← p ϕ = ϕ (ε𝟚 p)
@@ -66,7 +71,7 @@ p (ε𝟚 p) ≡ ₀. This is what A𝟚 does.
 \begin{code}
 
 ε𝟚-property→ : (p : 𝟚 → 𝟚) → (Σ n ꞉ 𝟚 , p n ≡ ₀) → p (ε𝟚 p) ≡ ₀
-ε𝟚-property→ p = III ∘ II ∘ I
+ε𝟚-property→ p = IV
  where
   I : (Σ n ꞉ 𝟚 , p n ≡ ₀) → ¬ ((n : 𝟚) → p n ≡ ₁)
   I (n , e) ϕ = equal-₀-different-from-₁ e (ϕ n)
@@ -76,6 +81,9 @@ p (ε𝟚 p) ≡ ₀. This is what A𝟚 does.
 
   III : ¬ (A𝟚 p ≡ ₁) → p (ε𝟚 p) ≡ ₀
   III = different-from-₁-equal-₀
+
+  IV : (Σ n ꞉ 𝟚 , p n ≡ ₀) → p (ε𝟚 p) ≡ ₀
+  IV = III ∘ II ∘ I
 
 ε𝟚-property← : (p : 𝟚 → 𝟚) → p (ε𝟚 p) ≡ ₀ → (Σ n ꞉ 𝟚 , p n ≡ ₀)
 ε𝟚-property← p e = ε𝟚 p , e
@@ -127,6 +135,37 @@ _≡⟦_⟧_ : Cantor → ℕ → Cantor → 𝓤₀ ̇
 α ≡⟦ 0      ⟧ β = 𝟙
 α ≡⟦ succ n ⟧ β = (head α ≡ head β) × (tail α ≡⟦ n ⟧ tail β)
 
+\end{code}
+
+We have that (α ≡⟦ n ⟧ β) iff α k ≡ β k for all k < n:
+
+\begin{code}
+
+agreement→ : (α β : Cantor)
+             (n : ℕ)
+           → (α ≡⟦ n ⟧ β)
+           → ((k : ℕ) → k < n → α k ≡ β k)
+agreement→ α β 0        *       k        l = 𝟘-elim l
+agreement→ α β (succ n) (p , e) 0        l = p
+agreement→ α β (succ n) (p , e) (succ k) l = IH k l
+ where
+  IH : (k : ℕ) → k < n → α (succ k) ≡ β (succ k)
+  IH = agreement→ (tail α) (tail β) n e
+
+agreement← : (α β : Cantor)
+             (n : ℕ)
+           → ((k : ℕ) → k < n → α k ≡ β k)
+           → (α ≡⟦ n ⟧ β)
+agreement← α β 0        ϕ = *
+agreement← α β (succ n) ϕ = ϕ 0 * , agreement← (tail α) (tail β) n (λ k → ϕ (succ k))
+
+\end{code}
+
+A function is Cantor → 𝟚 is uniformly continuous if it has a modulus
+of continuity:
+
+\begin{code}
+
 _is-a-modulus-of-uniform-continuity-of_ : ℕ → (Cantor → 𝟚) → 𝓤₀ ̇
 n is-a-modulus-of-uniform-continuity-of p = (α β : Cantor) → α ≡⟦ n ⟧ β → p α ≡ p β
 
@@ -135,8 +174,29 @@ uniformly-continuous p = Σ n ꞉ ℕ , n is-a-modulus-of-uniform-continuity-of 
 
 \end{code}
 
-Notice that if a function has modulus of continuity zero then it is
-constant.
+TODO. Show that
+
+ (Σ p ꞉ (Cantor  → 𝟚) , uniformly-continuous p) ≃ (Σ n ꞉ ℕ , Fin n → 𝟚)
+
+If we define uniform continuity with ∃ rather than Σ, this is no longer the case.
+
+Notice that a function has modulus of continuity zero if and only it
+is constant.
+
+\begin{code}
+
+modulus-zero-iff-constant  : (p : Cantor → 𝟚)
+                           → 0 is-a-modulus-of-uniform-continuity-of p
+                           ⇔ ((α β : Cantor) → p α ≡ p β)
+modulus-zero-iff-constant p = I , II                           
+ where
+  I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : Cantor) → p α ≡ p β)
+  I u α β = u α β *
+  
+  II :  ((α β : Cantor) → p α ≡ p β) → 0 is-a-modulus-of-uniform-continuity-of p
+  II κ α β * = κ α β 
+  
+\end{code}
 
 The crucial lemma for Cantor search is this:
 
@@ -166,10 +226,7 @@ expanding the definition of A in that of ε, because the definition of
 A doesn't use induction.
 
 The following point c₀ of the Cantor type is arbitrary, and what we do
-works with any choice of c₀. So we make it abstract. (NB. Even if we
-postulate it, or we replace the definition by a hole, the definition
-of A computes, provided it is used with correct inputs, namely p with
-modulus of uniform continuity n. Try the examples module below.)
+works with any choice of c₀. So we make it abstract.
 
 \begin{code}
 

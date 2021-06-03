@@ -1,11 +1,11 @@
 Martin Escardo 29 April 2014.
 
-A prop-indexed product of pointed compact sets is itself compact. But
-the assumption that a prop-indexed product of compact sets is compact
-gives weak excluded middle (negative propositions are decidable).
+A proposition-indexed product of pointed compact sets is itself
+compact. But the assumption that a proposition-indexed product of
+compact sets is compact gives weak excluded middle (negative
+propositions are decidable).
 
-The definition of the compactness (or exhaustive searchability) of a
-type A is
+The definition of compactness (or exhaustive searchability) is
 
     compact A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
 
@@ -26,10 +26,10 @@ The point is that
 
     (2) This also holds for dependent products:
 
-        Π(x:X).Y x is compact if X is a proposition and Y x is
-        compact for every x:X.
+        Π x : X , Y x is compact if X is a proposition and Y x is
+        compact for every x : X.
 
-        (This product is written (x : X) → Y x or Π Y in Agda.)
+        (This product is also written (x : X) → Y x or Π Y in Agda.)
 
 Our Agda proof below can be written rather concisely by expanding the
 definitions. We deliberately don't do that, so that we have a rigorous
@@ -121,8 +121,8 @@ The following is what we get from prop-indexed-product, abstractly:
 
 \end{code}
 
-We define a predicate q x: Y x → 𝟚, for each x:X, from the predicate
-p : Π Y → 𝟚 via (part of) the above isomorphism:
+We define a predicate q x : Y x → 𝟚, for each x : X, from the
+predicate p : Π Y → 𝟚 via (part of) the above isomorphism:
 
 \begin{code}
 
@@ -192,8 +192,8 @@ Using the fact that g x (f x φ) = φ for any x:X, we get:
 
 \end{code}
 
-Notice that the point x:X vanishes from the conclusion, and so we are
-able to omit it from the hypothesis, which is crucial for what
+Notice that the point x : X vanishes from the conclusion, and so we
+are able to omit it from the hypothesis, which is crucial for what
 follows.
 
 We get the same conclusion if X is empty:
@@ -208,8 +208,8 @@ We get the same conclusion if X is empty:
 \end{code}
 
 So we would get what we want if we had excluded middle, because the
-above shows that both X and X→𝟘 give the desired conclusion that φ₀ is
-a universal witness. But excluded middle is not needed.
+above shows that both X and X → 𝟘 give the desired conclusion that φ₀
+is a universal witness. But excluded middle is not needed.
 
 We shuffle the arguments of φ₀-is-universal-witness-assuming-X:
 
@@ -278,9 +278,9 @@ prop-tychonoff-corollary X-is-prop ε = prop-tychonoff X-is-prop (λ x → ε)
 
 \end{code}
 
-This holds even for undecided X (such as X=LPO), or when we have no
-idea whether X or (X→𝟘), and hence whether (X→Y) is 1 or Y (or none,
-if this is undecided)!
+This holds even for undecided X (such as X = LPO), or when we have no
+idea whether X or (X → 𝟘), and hence whether (X → Y) is 1 or Y (or
+none, if this is undecided)!
 
 Better (9 Sep 2015):
 
