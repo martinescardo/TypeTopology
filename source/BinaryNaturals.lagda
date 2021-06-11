@@ -272,7 +272,7 @@ unary-induction-on-𝔹 {𝓤} {B} b f = h
 The following is the counter-part of the above, but with a more
 informative conclusion. Not only do we get the conclusion
 h : (n : ℕ) → A n from the hypotheses a, f, g, but also that the
-conclusion h, satisfies some equations, which can be considered as a
+conclusion h satisfies some equations, which can be considered as a
 sort of definition of h by pattern matching:
 
 \begin{code}
@@ -280,10 +280,10 @@ sort of definition of h by pattern matching:
 Binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇ }
                         (a : A zero)
                         (f : (n : ℕ) → A n → A (L n))
-                      → (g : (n : ℕ) → A n → A (R n))
-                      → Σ h ꞉ ((n : ℕ) → A n) , (          h zero  ≡ a)
-                                              × ((n : ℕ) → h (L n) ≡ f n (h n))
-                                              × ((n : ℕ) → h (R n) ≡ g n (h n))
+                        (g : (n : ℕ) → A n → A (R n))
+                      → Σ h ꞉ ((n : ℕ) → A n) , (h zero  ≡ a)
+                                    × ((n : ℕ) → h (L n) ≡ f n (h n))
+                                    × ((n : ℕ) → h (R n) ≡ g n (h n))
 Binary-induction-on-ℕ {𝓤} {A} a f g = h , refl , p , q
  where
   f' : (m : 𝔹) → A (unary m) → A (unary (l m))
@@ -374,10 +374,10 @@ Example: We can redefine the function height above as follows:
 
 \begin{code}
 
-Height : Σ height ꞉ (ℕ → ℕ) , (          height zero  ≡ zero)
-                            × ((n : ℕ) → height (L n) ≡ succ (height n))
-                            × ((n : ℕ) → height (R n) ≡ succ (height n))
-Height = Binary-induction-on-ℕ zero (λ _ → succ) λ _ → succ
+Height : Σ height ꞉ (ℕ → ℕ) , (height zero  ≡ zero)
+                  × ((n : ℕ) → height (L n) ≡ succ (height n))
+                  × ((n : ℕ) → height (R n) ≡ succ (height n))
+Height = Binary-induction-on-ℕ zero (λ _ → succ) (λ _ → succ)
 
 \end{code}
 
@@ -399,7 +399,7 @@ binary-induction-on-ℕ {𝓤} {A} a f g = pr₁ (Binary-induction-on-ℕ a f g)
 \end{code}
 
 We get a pairing function as follows, using a rather minimal amount of
-arithmetic (14th July 2018):
+arithmetic (14th July 2018).
 
 We use binary notation to simplify the definition. An alternative
 would be to work with the usual unary notation, using binary
@@ -467,7 +467,7 @@ pair : ℕ × ℕ → ℕ
 pair (n , k) = unary (pair' n k)
 
 first second : ℕ → ℕ
-first = first' ∘ binary
+first  = first' ∘ binary
 second = unary ∘ second' ∘ binary
 
 first-pair : (n k : ℕ) → first (pair (n , k)) ≡ n
@@ -572,7 +572,7 @@ module examples where
 
 \end{code}
 
-The following is from the original version in 2016, but wwe swapped it
+The following is from the original version in 2016, but we swapped it
 with the above pairing example from 2018.
 
 Some operations performed directly in modified binary, for the sake of
