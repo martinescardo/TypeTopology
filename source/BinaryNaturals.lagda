@@ -20,6 +20,8 @@ Applications:
 
  * We construct a pairing function and hence an equivalence ℕ × ℕ ≃ ℕ.
 
+ * Similarly we construct an equivalence ℕ ∔ ℕ ≃ ℕ.
+
  * We define faster arithmetic (addition and multiplication for the moment).
 
 \begin{code}
