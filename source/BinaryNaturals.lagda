@@ -1,4 +1,4 @@
-Martin Escardo, 16 Dec 2016
+Martin Escardo, 16 Dec 2016. Updated June 2021.
 
 Equivalent copy of the natural numbers with logarithmic-size elements.
 
