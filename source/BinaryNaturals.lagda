@@ -5,11 +5,22 @@ Equivalent copy of the natural numbers with logarithmic-size elements.
 We use a modification of binary notation to avoid leading zeros and
 hence multiple representations of the same number.
 
-The isomorphic copy is formally constructed from 0 iterating the
+The isomorphic copy is formally constructed from 0 by iterating the
 functions L(n)=2n+1 and R(n)=2n+2.
 
-As an application, we construct a pairing function and hence an
-equivalence ℕ × ℕ ≃ ℕ.
+Applications:
+
+ * We show how to define functions h : (n : ℕ) → A n by the recursion scheme
+
+     h zero  = a
+     h (L n) = f n (h n)
+     h (R n) = g n (h n)
+
+   from given parameters a , f , g.
+
+ * We construct a pairing function and hence an equivalence ℕ × ℕ ≃ ℕ.
+
+ * We define faster arithmetic (addition and multiplication for the moment).
 
 \begin{code}
 
@@ -24,25 +35,19 @@ open import UF-EquivalenceExamples
 
 \end{code}
 
-The doubling function n ↦ 2n:
-
-\begin{code}
-
-double : ℕ → ℕ
-double zero    = zero
-double (succ n) = succ (succ (double n))
-
-\end{code}
-
 The functions n ↦ 2n+1 and n ↦ 2n+2:
 
 \begin{code}
 
 L : ℕ → ℕ
-L n = succ (double n)
+L zero     = succ zero
+L (succ n) = succ (succ (L n))
 
 R : ℕ → ℕ
 R n = succ (L n)
+
+NB-LR : (n : ℕ) → L (succ n) ≡ succ (R n)
+NB-LR n = refl
 
 \end{code}
 
@@ -84,8 +89,7 @@ binary (succ n) = Succ (binary n)
 
 \end{code}
 
-The size of a (binary) number and the base 2 logarithm of a (unary)
-number. We have lg2 ((2^n)-1) = n (TODO).
+Example.
 
 \begin{code}
 
@@ -94,73 +98,119 @@ size zero  = zero
 size (l m) = succ (size m)
 size (r m) = succ (size m)
 
-lg2 : ℕ → ℕ
-lg2 n = size (binary n)
+height : ℕ → ℕ
+height n = size (binary n)
 
+height-examples : (height 0  ≡ 0)
+                × (height 1  ≡ 1)
+                × (height 2  ≡ 1)
+                × (height 3  ≡ 2)
+                × (height 4  ≡ 2)
+                × (height 5  ≡ 2)
+                × (height 6  ≡ 2)
+                × (height 7  ≡ 3)
+                × (height 8  ≡ 3)
+                × (height 9  ≡ 3)
+                × (height 10 ≡ 3)
+                × (height 11 ≡ 3)
+                × (height 12 ≡ 3)
+                × (height 13 ≡ 3)
+                × (height 14 ≡ 3)
+                × (height 15 ≡ 4)
+                × (height 16 ≡ 4)
+                × (height 17 ≡ 4)
+height-examples = refl , refl , refl , refl , refl , refl , refl , refl , refl ,
+                  refl , refl , refl , refl , refl , refl , refl , refl , refl
 \end{code}
+
+TODO. height n ≡ ⌊ log2 (n+1) ⌋. In particular, height (2ⁿ-1) ≡ n.
+
+The height of a number is its height in the following infinite tree,
+where the root 0 has height 0 by convention.
+
+
+  ...   ...   ...  ...  ...  ...  ...   ...
+   7     8     9    10  11   12    13   14
+     \  /       \  /      \ /        \ /
+      3           4        5          6
+        \        /          \        /
+            1                   2
+              \                /
+
+                       0
 
 Next we show that the functions binary and unary are mutually
 inverse, after we formulate and prove some lemmas for that.
 
 First some commutation properties:
 
+                L
+          ℕ ─────────► ℕ
+          │            │
+   binary │            │ binary       (ldiagram)
+          │            │
+          ▼            ▼
+          𝔹─────────► 𝔹
+                l
+
+
+                R
+          ℕ ─────────► ℕ
+          │            │
+   binary │            │ binary       (rdiagram)
+          │            │
+          ▼            ▼
+          𝔹─────────► 𝔹
+                r
+
+
+               Succ
+          𝔹 ─────────► 𝔹
+          │            │
+    unary │            │ unary       (sdiagram)
+          │            │
+          ▼            ▼
+          ℕ ─────────► ℕ
+              succ
+
+
 \begin{code}
 
-ldiagram : ∀ n → binary (L n) ≡ l (binary n)
+ldiagram : (n : ℕ) → binary (L n) ≡ l (binary n)
 ldiagram zero     = refl
 ldiagram (succ n) = ap (λ - → Succ (Succ -)) (ldiagram n)
 
-rdiagram : ∀ n → binary (R n) ≡ r(binary n)
+rdiagram : (n : ℕ) → binary (R n) ≡ r(binary n)
 rdiagram zero     = refl
 rdiagram (succ n) = ap (λ - → Succ (Succ -)) (rdiagram n)
 
-sdiagram : ∀ m → unary (Succ m) ≡ succ (unary m)
+sdiagram : (m : 𝔹) → unary (Succ m) ≡ succ (unary m)
 sdiagram zero  = refl
 sdiagram (l m) = refl
 sdiagram (r m) = ap L (sdiagram m)
 
 \end{code}
 
-The functions unary and binary are mutually inverse:
+The functions unary and binary are mutually inverse, using the above
+diagrams:
 
 \begin{code}
 
-unary-binary : ∀ n → unary (binary n) ≡ n
+unary-binary : (n : ℕ) → unary (binary n) ≡ n
 unary-binary zero     = refl
-unary-binary (succ n) = g
- where
-  IH : unary (binary n) ≡ n
-  IH = unary-binary n
+unary-binary (succ n) = unary (binary (succ n)) ≡⟨ sdiagram (binary n) ⟩
+                        succ (unary (binary n)) ≡⟨ ap succ (unary-binary n) ⟩
+                        succ n                  ∎
 
-  a : succ (unary (binary n)) ≡ succ n
-  a = ap succ IH
-
-  g : unary (Succ (binary n)) ≡ succ n
-  g = sdiagram (binary n) ∙ a
-
-binary-unary : ∀ m → binary (unary m) ≡ m
+binary-unary : (m : 𝔹) → binary (unary m) ≡ m
 binary-unary zero = refl
-binary-unary (l m) = g
- where
-  IH : binary (unary m) ≡ m
-  IH = binary-unary m
+binary-unary (l m) = binary (unary (l m)) ≡⟨ ldiagram (unary m) ⟩
+                     l (binary (unary m)) ≡⟨ ap l (binary-unary m) ⟩
+                     l m                  ∎
 
-  a : l (binary (unary m)) ≡ l m
-  a = ap l IH
-
-  g : binary (unary (l m)) ≡ l m
-  g = ldiagram (unary m) ∙ a
-
-binary-unary (r m) = g
- where
-  IH : binary (unary m) ≡ m
-  IH = binary-unary m
-
-  a : r (binary (unary m)) ≡ r m
-  a = ap r IH
-
-  g : binary (unary (r m)) ≡ r m
-  g = rdiagram (unary m) ∙ a
+binary-unary (r m) = binary (unary (r m)) ≡⟨ rdiagram (unary m) ⟩
+                     r (binary (unary m)) ≡⟨ ap r (binary-unary m) ⟩
+                     r m                  ∎
 
 binary-equiv : 𝔹 ≃ ℕ
 binary-equiv = qinveq unary (binary , binary-unary , unary-binary)
@@ -175,71 +225,353 @@ Induction principles induced by the equivalences:
             → A zero
             → (∀ n → A n → A (succ n))
             → ∀ n → A n
-ℕ-induction base step zero     = base
-ℕ-induction base step (succ n) = step n (ℕ-induction base step n)
+ℕ-induction {𝓤} {A} a f = h
+ where
+  h : ∀ n → A n
+  h zero     = a
+  h (succ n) = f n (h n)
 
 𝔹-induction : {B : 𝔹 → 𝓤 ̇ }
             → B zero
             → (∀ m → B m → B (l m))
             → (∀ m → B m → B (r m))
             → ∀ m → B m
-𝔹-induction base stepl stepr zero  = base
-𝔹-induction base stepl stepr (l m) = stepl m (𝔹-induction base stepl stepr m)
-𝔹-induction base stepl stepr (r m) = stepr m (𝔹-induction base stepl stepr m)
+𝔹-induction {𝓤} {B} b f g = h
+ where
+  h : ∀ m → B m
+  h zero  = b
+  h (l m) = f m (h m)
+  h (r m) = g m (h m)
 
 unary-induction-on-𝔹 : {B : 𝔹 → 𝓤 ̇ }
                      → B zero
                      → (∀ n → B n → B (Succ n))
                      → ∀ n → B n
-unary-induction-on-𝔹 {𝓤} {B} base step = g
+unary-induction-on-𝔹 {𝓤} {B} b f = h
  where
-  A : ℕ → 𝓤 ̇
-  A n = B (binary n)
+  f' : (n : ℕ) → B (binary n) → B (binary (succ n))
+  f' n = f (binary n)
 
-  base' : A zero
-  base' = base
+  h' : ∀ n → B (binary n)
+  h' zero     = b
+  h' (succ n) = f' n (h' n)
 
-  step' : (n : ℕ) → A n → A (succ n)
-  step' n = step (binary n)
+  β : ∀ m → B (binary (unary m))
+  β m = h' (unary m)
 
-  a : ∀ n → A n
-  a = ℕ-induction base' step'
+  t : (m : 𝔹) → B (binary (unary m)) → B m
+  t m = transport B (binary-unary m)
 
-  b : ∀ m → B (binary (unary m))
-  b m = a (unary m)
+  h : ∀ m → B m
+  h m = t m (β m)
 
-  g : ∀ m → B m
-  g m = transport B (binary-unary m) (b m)
+\end{code}
+
+The following is the counter-part of the above, but with a more
+informative conclusion. Not only do we get the conclusion
+h : (n : ℕ) → A n from the hypotheses a, f, g, but also that the
+conclusion h, satisfies some equations, which can be considered as a
+sort of definition of h by pattern matching:
+
+\begin{code}
+
+Binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇ }
+                        (a : A zero)
+                        (f : (n : ℕ) → A n → A (L n))
+                      → (g : (n : ℕ) → A n → A (R n))
+                      → Σ h ꞉ ((n : ℕ) → A n) , (          h zero  ≡ a)
+                                              × ((n : ℕ) → h (L n) ≡ f n (h n))
+                                              × ((n : ℕ) → h (R n) ≡ g n (h n))
+Binary-induction-on-ℕ {𝓤} {A} a f g = h , refl , p , q
+ where
+  f' : (m : 𝔹) → A (unary m) → A (unary (l m))
+  f' m = f (unary m)
+
+  g' : (m : 𝔹) → A (unary m) → A (unary (r m))
+  g' m = g (unary m)
+
+  h' : (m : 𝔹) → A (unary m)
+  h' zero  = a
+  h' (l m) = f' m (h' m)
+  h' (r m) = g' m (h' m)
+
+  α : (n : ℕ) → A (unary (binary n))
+  α n = h' (binary n)
+
+  t : (n : ℕ) → A (unary (binary n)) → A n
+  t n = transport A (unary-binary n)
+
+  h : (n : ℕ) → A n
+  h n = t n (α n)
+
+  u = λ n → transport (A ∘ unary) (ldiagram n) (h' (binary (L n))) ≡⟨ apd h' (ldiagram n) ⟩
+            h' (l (binary n))                                      ≡⟨ refl ⟩
+            f' (binary n) (h' (binary n))                          ∎
+
+  v = λ n → transport (A ∘ unary) (rdiagram n) (h' (binary (R n))) ≡⟨ apd h' (rdiagram n) ⟩
+            h' (r (binary n))                                      ≡⟨ refl ⟩
+            g' (binary n) (h' (binary n))                          ∎
+
+  open import UF-Miscelanea
+
+  claimL : (n : ℕ) → unary-binary (L n) ≡ ap unary (ldiagram n) ∙ ap L (unary-binary n)
+  claimL n = ℕ-is-set _ _
+
+  claimR : (n : ℕ) → unary-binary (R n) ≡ ap unary (rdiagram n) ∙ ap R (unary-binary n)
+  claimR n = ℕ-is-set _ _
+
+  p : (n : ℕ) → h (L n) ≡ f n (h n)
+  p n = h (L n)                                                                             ≡⟨ refl ⟩
+        t (L n) (α (L n))                                                                   ≡⟨ refl ⟩
+        transport A (unary-binary (L n)) (α (L n))                                          ≡⟨ because-ℕ-is-a-set ⟩
+        transport A (ap unary (ldiagram n) ∙ ap L (unary-binary n)) (α (L n))               ≡⟨ by-transport-∙ ⟩
+        transport A (ap L (unary-binary n)) (transport A (ap unary (ldiagram n)) (α (L n))) ≡⟨ by-transport-ap ⟩
+        transport A (ap L (unary-binary n)) (transport (A ∘ unary) (ldiagram n) (α (L n)))  ≡⟨ by-u ⟩
+        transport A (ap L (unary-binary n)) (f' (binary n) (α n))                           ≡⟨ refl ⟩
+        transport A (ap L (unary-binary n)) (f (unary (binary n)) (α n))                    ≡⟨ by-transport-ap-again ⟩
+        transport (A ∘ L) (unary-binary n) (f (unary (binary n)) (α n))                     ≡⟨ by-naturality ⟩
+        f n (t n (α n))                                                                     ≡⟨ refl ⟩
+        f n (h n)                                                                           ∎
+   where
+    because-ℕ-is-a-set    = ap (λ - → transport A - (α (L n))) (claimL n)
+    by-transport-∙        = transport-∙ A (ap unary (ldiagram n)) (ap L (unary-binary n))
+    by-transport-ap       = ap (transport A (ap L (unary-binary n))) ((transport-ap A unary (ldiagram n))⁻¹)
+    by-u                  = ap (transport A (ap L (unary-binary n))) (u n)
+    by-transport-ap-again = (transport-ap A L (unary-binary n))⁻¹
+    by-naturality         = (Nats-are-natural-∼ A (A ∘ L) f (unary-binary n) (α n))⁻¹
+
+  q : (n : ℕ) → h (R n) ≡ g n (h n)
+  q n = h (R n)                                                                             ≡⟨ refl ⟩
+        t (R n) (α (R n))                                                                   ≡⟨ refl ⟩
+        transport A (unary-binary (R n)) (α (R n))                                          ≡⟨ because-ℕ-is-a-set ⟩
+        transport A (ap unary (rdiagram n) ∙ ap R (unary-binary n)) (α (R n))               ≡⟨ by-transport-∙ ⟩
+        transport A (ap R (unary-binary n)) (transport A (ap unary (rdiagram n)) (α (R n))) ≡⟨ by-transport-ap ⟩
+        transport A (ap R (unary-binary n)) (transport (A ∘ unary) (rdiagram n) (α (R n)))  ≡⟨ by-v ⟩
+        transport A (ap R (unary-binary n)) (g' (binary n) (α n))                           ≡⟨ refl ⟩
+        transport A (ap R (unary-binary n)) (g (unary (binary n)) (α n))                    ≡⟨ by-transport-ap-again ⟩
+        transport (A ∘ R) (unary-binary n) (g (unary (binary n)) (α n))                     ≡⟨ by-naturarity ⟩
+        g n (t n (α n))                                                                     ≡⟨ refl ⟩
+        g n (h n)                                                                           ∎
+   where
+    because-ℕ-is-a-set    = ap (λ - → transport A - (α (R n))) (claimR n)
+    by-transport-∙        = transport-∙ A (ap unary (rdiagram n)) (ap R (unary-binary n))
+    by-transport-ap       = ap (transport A (ap R (unary-binary n))) ((transport-ap A unary (rdiagram n))⁻¹)
+    by-v                  = ap (transport A (ap R (unary-binary n))) (v n)
+    by-transport-ap-again = (transport-ap A R (unary-binary n))⁻¹
+    by-naturarity         = (Nats-are-natural-∼ A (A ∘ R) g (unary-binary n) (α n))⁻¹
+
+\end{code}
+
+(The above stronger induction principle Binary-induction-on-ℕ,
+generalizing binary-induction-on-ℕ below, was added 10th June 2021.)
+
+TODO. Replace Σ by ∃! in the statement of Binary-induction-on-ℕ
+(easy but laborious - see my MGS'2019 lecture notes).
+
+Example: We can redefine the function height above as follows:
+
+\begin{code}
+
+Height : Σ height ꞉ (ℕ → ℕ) , (          height zero  ≡ zero)
+                            × ((n : ℕ) → height (L n) ≡ succ (height n))
+                            × ((n : ℕ) → height (R n) ≡ succ (height n))
+Height = Binary-induction-on-ℕ zero (λ _ → succ) λ _ → succ
+
+\end{code}
+
+Exercise. Show that pr₁ Height is the same as height defined above (a
+form of logarithm in base 2).
+
+Of course, we get the weaker induction principle (with lower case b)
+by projection:
+
+\begin{code}
 
 binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇ }
                       → A zero
-                      → (∀ n → A n → A (L n))
-                      → (∀ n → A n → A (R n))
-                      → ∀ n → A n
-binary-induction-on-ℕ {𝓤} {A} base stepl stepr = g
- where
-  B : 𝔹 → 𝓤 ̇
-  B m = A (unary m)
-
-  base' : B zero
-  base' = base
-
-  stepl' : (m : 𝔹) → B m → B (l m)
-  stepl' m = stepl (unary m)
-
-  stepr' : (m : 𝔹) → B m → B (r m)
-  stepr' m = stepr (unary m)
-
-  b : ∀ m → B m
-  b = 𝔹-induction base' stepl' stepr'
-
-  a : ∀ n → A (unary (binary n))
-  a n = b (binary n)
-
-  g : ∀ n → A n
-  g n = transport A (unary-binary n) (a n)
+                      → ((n : ℕ) → A n → A (L n))
+                      → ((n : ℕ) → A n → A (R n))
+                      → (n : ℕ) → A n
+binary-induction-on-ℕ {𝓤} {A} a f g = pr₁ (Binary-induction-on-ℕ a f g)
 
 \end{code}
+
+We get a pairing function as follows, using a rather minimal amount of
+arithmetic (14th July 2018):
+
+We use binary notation to simplify the definition. An alternative
+would be to work with the usual unary notation, using binary
+induction. However, this would prevent us from using pattern matching,
+which gives a more intuitive definition.
+
+\begin{code}
+
+first' : 𝔹 → ℕ
+first' zero  = zero
+first' (l b) = succ (first' b)
+first' (r b) = zero
+
+second' : 𝔹 → 𝔹
+second' zero  = zero
+second' (l b) = second' b
+second' (r b) = Succ b
+
+pair' : ℕ → ℕ → 𝔹
+pair' zero zero = zero
+pair' (succ n) zero     = l (pair' n zero)
+pair' zero     (succ k) = r (binary k)
+pair' (succ n) (succ k) = l (pair' n (succ k))
+
+pair'-claim : (n k : ℕ) → pair' (succ n) k ≡ l (pair' n k)
+pair'-claim n zero     = refl
+pair'-claim n (succ k) = refl
+
+first'-lemma : (n k : ℕ) → first' (pair' n k) ≡ n
+first'-lemma zero     zero     = refl
+first'-lemma zero     (succ k) = refl
+first'-lemma (succ n) zero     = ap succ (first'-lemma n zero)
+first'-lemma (succ n) (succ k) = ap succ (first'-lemma n (succ k))
+
+second'-lemma : (n k : ℕ) → second' (pair' n k) ≡ binary k
+second'-lemma zero     zero     = refl
+second'-lemma zero     (succ k) = refl
+second'-lemma (succ n) zero     = second'-lemma n zero
+second'-lemma (succ n) (succ k) = second'-lemma n (succ k)
+
+pair'-lemma : (b : 𝔹) → pair' (first' b) (unary (second' b)) ≡ b
+pair'-lemma zero = refl
+pair'-lemma (l b) = γ
+ where
+  IH : pair' (first' b) (unary (second' b)) ≡ b
+  IH = pair'-lemma b
+
+  c : pair' (succ (first' b)) (unary (second' b)) ≡ l (pair' (first' b) (unary (second' b)))
+  c = pair'-claim (first' b) (unary (second' b))
+
+  γ : pair' (succ (first' b)) (unary (second' b)) ≡ l b
+  γ = c ∙ ap l IH
+pair'-lemma (r b) = γ
+ where
+  p : r (binary (unary b)) ≡ r b
+  p = ap r (binary-unary b)
+
+  q : pair' zero (succ (unary b)) ≡ r b
+  q = p
+
+  γ : pair' zero (unary (Succ b)) ≡ r b
+  γ = back-transport (λ - → pair' zero - ≡ r b) (sdiagram b) q
+
+pair : ℕ × ℕ → ℕ
+pair (n , k) = unary (pair' n k)
+
+first second : ℕ → ℕ
+first = first' ∘ binary
+second = unary ∘ second' ∘ binary
+
+first-pair : (n k : ℕ) → first (pair (n , k)) ≡ n
+first-pair n k = back-transport
+                  (λ - → first' - ≡ n)
+                  (binary-unary (pair' n k))
+                  (first'-lemma n k)
+
+second-pair : (n k : ℕ) → second (pair (n , k)) ≡ k
+second-pair n k = back-transport
+                   (λ - → unary (second' -) ≡ k)
+                   (binary-unary (pair' n k))
+                   (ap unary (second'-lemma n k) ∙ unary-binary k)
+
+riap : ℕ → ℕ × ℕ
+riap m = (first m , second m)
+
+pair-riap : (m : ℕ) → pair (riap m) ≡ m
+pair-riap m = ap unary (pair'-lemma (binary m)) ∙ unary-binary m
+
+riap-pair : (z : ℕ × ℕ) → riap (pair z) ≡ z
+riap-pair (n , k) = to-×-≡ (first-pair n k) (second-pair n k)
+
+pairing : ℕ × ℕ ≃ ℕ
+pairing = qinveq pair  (riap , riap-pair , pair-riap)
+
+\end{code}
+
+We now show that ℕ + ℕ ≃ ℕ (July 2018).
+
+\begin{code}
+
+ℕ-plus-𝟙 : ℕ ∔ 𝟙 ≃ ℕ
+ℕ-plus-𝟙 = qinveq f (g , ε , η)
+ where
+  f : ℕ ∔ 𝟙 {𝓤₀} → ℕ
+  f (inl n) = succ n
+  f (inr *) = zero
+
+  g : ℕ → ℕ ∔ 𝟙
+  g zero = inr *
+  g (succ n) = inl n
+
+  η : (n : ℕ) → f (g n) ≡ n
+  η zero = refl
+  η (succ n) = refl
+
+  ε : (z : ℕ ∔ 𝟙) → g (f z) ≡ z
+  ε (inl n) = refl
+  ε (inr *) = refl
+
+two-𝔹-plus-𝟙 : 𝔹 ∔ 𝔹 ∔ 𝟙 ≃ 𝔹
+two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
+ where
+  f : 𝔹 ∔ 𝔹 ∔ 𝟙 {𝓤₀} → 𝔹
+  f (inl b) = l b
+  f (inr (inl b)) = r b
+  f (inr (inr *)) = zero
+
+  g : 𝔹 → 𝔹 ∔ 𝔹 ∔ 𝟙
+  g zero = inr (inr *)
+  g (l b) = inl b
+  g (r b) = inr (inl b)
+
+  η : (b : 𝔹) → f (g b) ≡ b
+  η zero = refl
+  η (l b) = refl
+  η (r b) = refl
+
+  ε : (z : 𝔹 ∔ 𝔹 ∔ 𝟙) → g (f z) ≡ z
+  ε (inl b) = refl
+  ε (inr (inl b)) = refl
+  ε (inr (inr *)) = refl
+
+two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
+two-ℕ-plus-𝟙 =
+    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
+    𝔹 ∔ (𝔹 ∔ 𝟙)  ≃⟨ two-𝔹-plus-𝟙 ⟩
+    𝔹             ≃⟨ binary-equiv ⟩
+    ℕ ■
+
+two-ℕ : ℕ ∔ ℕ ≃ ℕ
+two-ℕ =
+   ℕ ∔ ℕ        ≃⟨ Ap+ ℕ (≃-sym ℕ-plus-𝟙) ⟩
+   (ℕ ∔ 𝟙) ∔ ℕ  ≃⟨ +comm ⟩
+   ℕ ∔ ℕ ∔ 𝟙    ≃⟨ two-ℕ-plus-𝟙 ⟩
+   ℕ ■
+
+\end{code}
+
+The following examples show that these equivalences compute:
+
+\begin{code}
+
+module examples where
+
+ example-riap : riap 17 ≡ (1 , 4)
+ example-riap = refl
+
+ example-pair : pair (1 , 4) ≡ 17
+ example-pair = refl
+
+\end{code}
+
+The following is from the original version in 2016, but wwe swapped it
+with the above pairing example from 2018.
 
 Some operations performed directly in modified binary, for the sake of
 efficiency, with their correctness verified.
@@ -247,6 +579,10 @@ efficiency, with their correctness verified.
 The doubling function n ↦ 2n:
 
 \begin{code}
+
+double : ℕ → ℕ
+double zero     = zero
+double (succ n) = succ (succ (double n))
 
 Double : 𝔹 → 𝔹
 Double zero  = zero
@@ -471,180 +807,6 @@ double₁-spec (r x) = ap l (double₂-spec x)
 double₂-spec zero = refl
 double₂-spec (l x) = ap r (double₁-spec x)
 double₂-spec (r x) = ap r (double₂-spec x)
-
-\end{code}
-
-We get a pairing function as follows, using a rather minimal amount of
-arithmetic (14th July 2018):
-
-We use binary notation to simplify the definition. An alternative
-would be to work with the usual unary notation, using binary
-induction. However, this would prevent us from using pattern matching,
-which gives a more intuitive definition.
-
-\begin{code}
-
-first' : 𝔹 → ℕ
-first' zero  = zero
-first' (l b) = succ (first' b)
-first' (r b) = zero
-
-second' : 𝔹 → 𝔹
-second' zero  = zero
-second' (l b) = second' b
-second' (r b) = Succ b
-
-pair' : ℕ → ℕ → 𝔹
-pair' zero zero = zero
-pair' (succ n) zero     = l (pair' n zero)
-pair' zero     (succ k) = r (binary k)
-pair' (succ n) (succ k) = l (pair' n (succ k))
-
-pair'-claim : (n k : ℕ) → pair' (succ n) k ≡ l (pair' n k)
-pair'-claim n zero     = refl
-pair'-claim n (succ k) = refl
-
-first'-lemma : (n k : ℕ) → first' (pair' n k) ≡ n
-first'-lemma zero     zero     = refl
-first'-lemma zero     (succ k) = refl
-first'-lemma (succ n) zero     = ap succ (first'-lemma n zero)
-first'-lemma (succ n) (succ k) = ap succ (first'-lemma n (succ k))
-
-second'-lemma : (n k : ℕ) → second' (pair' n k) ≡ binary k
-second'-lemma zero     zero     = refl
-second'-lemma zero     (succ k) = refl
-second'-lemma (succ n) zero     = second'-lemma n zero
-second'-lemma (succ n) (succ k) = second'-lemma n (succ k)
-
-pair'-lemma : (b : 𝔹) → pair' (first' b) (unary (second' b)) ≡ b
-pair'-lemma zero = refl
-pair'-lemma (l b) = γ
- where
-  IH : pair' (first' b) (unary (second' b)) ≡ b
-  IH = pair'-lemma b
-
-  c : pair' (succ (first' b)) (unary (second' b)) ≡ l (pair' (first' b) (unary (second' b)))
-  c = pair'-claim (first' b) (unary (second' b))
-
-  γ : pair' (succ (first' b)) (unary (second' b)) ≡ l b
-  γ = c ∙ ap l IH
-pair'-lemma (r b) = γ
- where
-  p : r (binary (unary b)) ≡ r b
-  p = ap r (binary-unary b)
-
-  q : pair' zero (succ (unary b)) ≡ r b
-  q = p
-
-  γ : pair' zero (unary (Succ b)) ≡ r b
-  γ = back-transport (λ - → pair' zero - ≡ r b) (sdiagram b) q
-
-pair : ℕ × ℕ → ℕ
-pair (n , k) = unary (pair' n k)
-
-first second : ℕ → ℕ
-first = first' ∘ binary
-second = unary ∘ second' ∘ binary
-
-first-pair : (n k : ℕ) → first (pair (n , k)) ≡ n
-first-pair n k = back-transport
-                  (λ - → first' - ≡ n)
-                  (binary-unary (pair' n k))
-                  (first'-lemma n k)
-
-second-pair : (n k : ℕ) → second (pair (n , k)) ≡ k
-second-pair n k = back-transport
-                   (λ - → unary (second' -) ≡ k)
-                   (binary-unary (pair' n k))
-                   (ap unary (second'-lemma n k) ∙ unary-binary k)
-
-riap : ℕ → ℕ × ℕ
-riap m = (first m , second m)
-
-pair-riap : (m : ℕ) → pair (riap m) ≡ m
-pair-riap m = ap unary (pair'-lemma (binary m)) ∙ unary-binary m
-
-riap-pair : (z : ℕ × ℕ) → riap (pair z) ≡ z
-riap-pair (n , k) = to-×-≡ (first-pair n k) (second-pair n k)
-
-pairing : ℕ × ℕ ≃ ℕ
-pairing = qinveq pair  (riap , riap-pair , pair-riap)
-
-\end{code}
-
-We now show that ℕ + ℕ ≃ ℕ (July 2018).
-
-\begin{code}
-
-ℕ-plus-𝟙 : ℕ ∔ 𝟙 ≃ ℕ
-ℕ-plus-𝟙 = qinveq f (g , ε , η)
- where
-  f : ℕ ∔ 𝟙 {𝓤₀} → ℕ
-  f (inl n) = succ n
-  f (inr *) = zero
-
-  g : ℕ → ℕ ∔ 𝟙
-  g zero = inr *
-  g (succ n) = inl n
-
-  η : (n : ℕ) → f (g n) ≡ n
-  η zero = refl
-  η (succ n) = refl
-
-  ε : (z : ℕ ∔ 𝟙) → g (f z) ≡ z
-  ε (inl n) = refl
-  ε (inr *) = refl
-
-two-𝔹-plus-𝟙 : 𝔹 ∔ 𝔹 ∔ 𝟙 ≃ 𝔹
-two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
- where
-  f : 𝔹 ∔ 𝔹 ∔ 𝟙 {𝓤₀} → 𝔹
-  f (inl b) = l b
-  f (inr (inl b)) = r b
-  f (inr (inr *)) = zero
-
-  g : 𝔹 → 𝔹 ∔ 𝔹 ∔ 𝟙
-  g zero = inr (inr *)
-  g (l b) = inl b
-  g (r b) = inr (inl b)
-
-  η : (b : 𝔹) → f (g b) ≡ b
-  η zero = refl
-  η (l b) = refl
-  η (r b) = refl
-
-  ε : (z : 𝔹 ∔ 𝔹 ∔ 𝟙) → g (f z) ≡ z
-  ε (inl b) = refl
-  ε (inr (inl b)) = refl
-  ε (inr (inr *)) = refl
-
-two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
-two-ℕ-plus-𝟙 =
-    ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
-    𝔹 ∔ (𝔹 ∔ 𝟙)  ≃⟨ two-𝔹-plus-𝟙 ⟩
-    𝔹             ≃⟨ binary-equiv ⟩
-    ℕ ■
-
-two-ℕ : ℕ ∔ ℕ ≃ ℕ
-two-ℕ =
-   ℕ ∔ ℕ        ≃⟨ Ap+ ℕ (≃-sym ℕ-plus-𝟙) ⟩
-   (ℕ ∔ 𝟙) ∔ ℕ  ≃⟨ +comm ⟩
-   ℕ ∔ ℕ ∔ 𝟙    ≃⟨ two-ℕ-plus-𝟙 ⟩
-   ℕ ■
-
-\end{code}
-
-The following examples show that these equivalences compute:
-
-\begin{code}
-
-module examples where
-
- example-riap : riap 17 ≡ (1 , 4)
- example-riap = refl
-
- example-pair : pair (1 , 4) ≡ 17
- example-pair = refl
 
 \end{code}
 

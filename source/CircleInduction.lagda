@@ -189,7 +189,7 @@ Next we set out to prove the computation rules for 𝕊¹-induction.
           transport A refl (pr₂ (r x))                     ≡⟨ refl ⟩
           pr₂ (r x)                                        ∎
       where
-       I  = (transport-comp A γ₁ (γ₁ ⁻¹)) ⁻¹
+       I  = (transport-∙ A γ₁ (γ₁ ⁻¹)) ⁻¹
        II = ap (λ - → transport A - (pr₂ (r x))) ((right-inverse γ₁) ⁻¹)
 
    ρ-and-r-on-base-and-loop : (ρ base , ap ρ loop) ≡[ 𝓛 (Σ A) ] (r base , ap r loop)

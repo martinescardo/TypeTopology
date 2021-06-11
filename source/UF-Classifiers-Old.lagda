@@ -240,7 +240,7 @@ module general-classifier
          transport green refl (pr₂ (A y))                       ≡⟨ refl ⟩
          pr₂ (A y)                                              ∎
       where
-       i  = (transport-comp green a (a ⁻¹)) ⁻¹
+       i  = (transport-∙ green a (a ⁻¹)) ⁻¹
        ii = ap (λ - → transport green - (pr₂ (A y))) (trans-sym' a)
 
  green-maps-are-closed-under-precomp-with-equivs : {X X' : 𝓤 ̇ } (e : X' ≃ X)
@@ -333,7 +333,7 @@ module general-classifier
         p = eqtoid ua _ _ (precomposition-with-equiv-does-not-change-fibers e f' y)
         q : fiber f' y ≡ fiber f y
         q = eqtoid ua (fiber f' y) (fiber f y) (pr₁-fiber-equiv y)
-        i  = (transport-comp green (q ⁻¹) (p ⁻¹)) ⁻¹
+        i  = (transport-∙ green (q ⁻¹) (p ⁻¹)) ⁻¹
         ii = ap (λ - → transport green - (g y)) v
          where
           v = q ⁻¹ ∙ p ⁻¹ ≡⟨ ⁻¹-contravariant p q ⟩

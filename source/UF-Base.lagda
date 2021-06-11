@@ -16,6 +16,11 @@ Nats-are-natural : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
                  → τ y ∘ transport A p ≡ transport B p ∘ τ x
 Nats-are-natural A B τ refl = refl
 
+Nats-are-natural-∼ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+                     (τ : Nat A B) {x y : X} (p : x ≡ y)
+                   → τ y ∘ transport A p ∼ transport B p ∘ τ x
+Nats-are-natural-∼ A B τ refl a = refl
+
 NatΣ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ } → Nat A B → Σ A → Σ B
 NatΣ ζ (x , a) = (x , ζ x a)
 
@@ -101,15 +106,15 @@ transport-× : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
             ≡ (transport A p (pr₁ c) , transport B p (pr₂ c))
 transport-× A B refl = refl
 
-transport-comp : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+transport-∙ : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                  {x y z : X} (q : x ≡ y) (p : y ≡ z) {a : A x}
                → transport A  (q ∙ p) a ≡ transport A p (transport A q a)
-transport-comp A refl refl = refl
+transport-∙ A refl refl = refl
 
-transport-comp' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
+transport-∙' : {X : 𝓤 ̇ } (A : X → 𝓥 ̇ )
                   {x y z : X} (q : x ≡ y) (p : y ≡ z)
                 → transport A  (q ∙ p) ≡ transport A p ∘ transport A q
-transport-comp' A refl refl = refl
+transport-∙' A refl refl = refl
 
 transport-ap : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (A : Y → 𝓦 ̇ )
                (f : X → Y) {x x' : X} (p : x ≡ x') {a : A(f x)}
