@@ -34,6 +34,7 @@ open import SpartanMLTT renaming (_+_ to _∔_)
 open import UF-Equiv
 open import UF-Base
 open import UF-EquivalenceExamples
+open import UF-Miscelanea
 
 \end{code}
 
@@ -193,6 +194,29 @@ sdiagram (r m) = ap L (sdiagram m)
 
 \end{code}
 
+Example. The above diagrams give the following equations for the
+function height defined above:
+
+\begin{code}
+
+height-equation0 : height zero ≡ zero
+height-equation0 = refl
+
+height-equationL : (n : ℕ) → height (L n) ≡ succ (height n)
+height-equationL n = height (L n)           ≡⟨ refl ⟩
+                     size (binary (L n))    ≡⟨ ap size (ldiagram n) ⟩
+                     size (l (binary n))    ≡⟨ refl ⟩
+                     succ (size (binary n)) ≡⟨ refl ⟩
+                     succ (height n)        ∎
+
+height-equationR : (n : ℕ) → height (R n) ≡ succ (height n)
+height-equationR n = height (R n)           ≡⟨ refl ⟩
+                     size (binary (R n))    ≡⟨ ap size (rdiagram n) ⟩
+                     size (r (binary n))    ≡⟨ refl ⟩
+                     succ (size (binary n)) ≡⟨ refl ⟩
+                     succ (height n)        ∎
+\end{code}
+
 The functions unary and binary are mutually inverse, using the above
 diagrams:
 
@@ -219,7 +243,7 @@ binary-equiv = qinveq unary (binary , binary-unary , unary-binary)
 
 \end{code}
 
-Induction principles induced by the equivalences:
+The unary and binary induction principles:
 
 \begin{code}
 
@@ -245,27 +269,33 @@ Induction principles induced by the equivalences:
   h (l m) = f m (h m)
   h (r m) = g m (h m)
 
+\end{code}
+
+But also we have unary induction on 𝔹 and binary induction on ℕ:
+
+\begin{code}
+
 unary-induction-on-𝔹 : {B : 𝔹 → 𝓤 ̇ }
                      → B zero
                      → (∀ n → B n → B (Succ n))
                      → ∀ n → B n
 unary-induction-on-𝔹 {𝓤} {B} b f = h
  where
-  f' : (n : ℕ) → B (binary n) → B (binary (succ n))
-  f' n = f (binary n)
+  𝒇 : (n : ℕ) → B (binary n) → B (binary (succ n))
+  𝒇 n = f (binary n)
 
-  h' : ∀ n → B (binary n)
-  h' zero     = b
-  h' (succ n) = f' n (h' n)
+  𝒉 : ∀ n → B (binary n)
+  𝒉 zero     = b
+  𝒉 (succ n) = 𝒇 n (𝒉 n)
 
-  β : ∀ m → B (binary (unary m))
-  β m = h' (unary m)
+  𝕙 : ∀ m → B (binary (unary m))
+  𝕙 m = 𝒉 (unary m)
 
   t : (m : 𝔹) → B (binary (unary m)) → B m
   t m = transport B (binary-unary m)
 
   h : ∀ m → B m
-  h m = t m (β m)
+  h m = t m (𝕙 m)
 
 \end{code}
 
@@ -273,129 +303,188 @@ The following is the counter-part of the above, but with a more
 informative conclusion. Not only do we get the conclusion
 h : (n : ℕ) → A n from the hypotheses a, f, g, but also that the
 conclusion h satisfies some equations, which can be considered as a
-sort of definition of h by pattern matching:
+sort of definition of h by "dependent binary recursion" on ℕ:
 
 \begin{code}
 
-Binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇ }
+Binary-induction-equations : {A : ℕ → 𝓤 ̇ }
+                             (a : A zero)
+                             (f : (n : ℕ) → A n → A (L n))
+                             (g : (n : ℕ) → A n → A (R n))
+                             (h : (n : ℕ) → A n)
+                           → 𝓤 ̇
+Binary-induction-equations a f g h = eq0 × eqL × eqR
+ where
+  eq0 = h zero ≡ a
+  eqL = (n : ℕ) → h (L n) ≡ f n (h n)
+  eqR = (n : ℕ) → h (R n) ≡ g n (h n)
+
+Binary-induction-on-ℕ : (A : ℕ → 𝓤 ̇ )
                         (a : A zero)
                         (f : (n : ℕ) → A n → A (L n))
                         (g : (n : ℕ) → A n → A (R n))
-                      → Σ h ꞉ ((n : ℕ) → A n) , (h zero  ≡ a)
-                                    × ((n : ℕ) → h (L n) ≡ f n (h n))
-                                    × ((n : ℕ) → h (R n) ≡ g n (h n))
-Binary-induction-on-ℕ {𝓤} {A} a f g = h , refl , p , q
+                      → Σ h ꞉ ((n : ℕ) → A n) , Binary-induction-equations a f g h
+Binary-induction-on-ℕ A a f g = h , refl , IIIa , IIIb
  where
-  f' : (m : 𝔹) → A (unary m) → A (unary (l m))
-  f' m = f (unary m)
+  𝒇 : (m : 𝔹) → A (unary m) → A (L (unary m))
+  𝒇 m = f (unary m)
 
-  g' : (m : 𝔹) → A (unary m) → A (unary (r m))
-  g' m = g (unary m)
+  𝒈 : (m : 𝔹) → A (unary m) → A (R (unary m))
+  𝒈 m = g (unary m)
 
-  h' : (m : 𝔹) → A (unary m)
-  h' zero  = a
-  h' (l m) = f' m (h' m)
-  h' (r m) = g' m (h' m)
+  𝒉 : (m : 𝔹) → A (unary m)
+  𝒉 zero  = a
+  𝒉 (l m) = 𝒇 m (𝒉 m)
+  𝒉 (r m) = 𝒈 m (𝒉 m)
 
-  α : (n : ℕ) → A (unary (binary n))
-  α n = h' (binary n)
+  𝕙 : (n : ℕ) → A (unary (binary n))
+  𝕙 n = 𝒉 (binary n)
 
-  t : (n : ℕ) → A (unary (binary n)) → A n
-  t n = transport A (unary-binary n)
+  τ = transport
 
   h : (n : ℕ) → A n
-  h n = t n (α n)
+  h n = τ A (unary-binary n) (𝕙 n)
 
-  u = λ n → transport (A ∘ unary) (ldiagram n) (h' (binary (L n))) ≡⟨ apd h' (ldiagram n) ⟩
-            h' (l (binary n))                                      ≡⟨ refl ⟩
-            f' (binary n) (h' (binary n))                          ∎
+  Ia : (n : ℕ) → unary-binary (L n) ≡ ap unary (ldiagram n) ∙ ap L (unary-binary n)
+  Ia n = ℕ-is-set _ _
 
-  v = λ n → transport (A ∘ unary) (rdiagram n) (h' (binary (R n))) ≡⟨ apd h' (rdiagram n) ⟩
-            h' (r (binary n))                                      ≡⟨ refl ⟩
-            g' (binary n) (h' (binary n))                          ∎
+  Ib : (n : ℕ) → unary-binary (R n) ≡ ap unary (rdiagram n) ∙ ap R (unary-binary n)
+  Ib n = ℕ-is-set _ _
 
-  open import UF-Miscelanea
+  IIa : (n : ℕ) → τ (A ∘ unary) (ldiagram n) (𝕙 (L n)) ≡ 𝒇 (binary n) (𝕙 n)
+  IIa n = τ (A ∘ unary) (ldiagram n) (𝕙 (L n))          ≡⟨ refl ⟩
+          τ (A ∘ unary) (ldiagram n) (𝒉 (binary (L n))) ≡⟨ apd 𝒉 (ldiagram n) ⟩
+          𝒉 (l (binary n))                              ≡⟨ refl ⟩
+          𝒇 (binary n) (𝒉 (binary n))                   ≡⟨ refl ⟩
+          𝒇 (binary n) (𝕙 n)                            ∎
 
-  claimL : (n : ℕ) → unary-binary (L n) ≡ ap unary (ldiagram n) ∙ ap L (unary-binary n)
-  claimL n = ℕ-is-set _ _
+  IIb : (n : ℕ) → τ (A ∘ unary) (rdiagram n) (𝕙 (R n)) ≡ 𝒈 (binary n) (𝕙 n)
+  IIb n = τ (A ∘ unary) (rdiagram n) (𝕙 (R n))          ≡⟨ refl ⟩
+          τ (A ∘ unary) (rdiagram n) (𝒉 (binary (R n))) ≡⟨ apd 𝒉 (rdiagram n) ⟩
+          𝒉 (r (binary n))                              ≡⟨ refl ⟩
+          𝒈 (binary n) (𝒉 (binary n))                   ≡⟨ refl ⟩
+          𝒈 (binary n) (𝕙 n)                            ∎
 
-  claimR : (n : ℕ) → unary-binary (R n) ≡ ap unary (rdiagram n) ∙ ap R (unary-binary n)
-  claimR n = ℕ-is-set _ _
+  IIIa : (n : ℕ) → h (L n) ≡ f n (h n)
+  IIIa n =
+   h (L n)                                                             ≡⟨ refl ⟩
+   τ A (unary-binary (L n)) (𝕙 (L n))                                  ≡⟨ by-Ia ⟩
+   τ A (ap unary (ldiagram n) ∙ ap L (unary-binary n)) (𝕙 (L n))       ≡⟨ by-transport-∙ ⟩
+   τ A (ap L (unary-binary n)) (τ A (ap unary (ldiagram n)) (𝕙 (L n))) ≡⟨ by-transport-ap ⟩
+   τ A (ap L (unary-binary n)) (τ (A ∘ unary) (ldiagram n) (𝕙 (L n)))  ≡⟨ by-IIa ⟩
+   τ A (ap L (unary-binary n)) (𝒇 (binary n) (𝕙 n))                    ≡⟨ refl ⟩
+   τ A (ap L (unary-binary n)) (f (unary (binary n)) (𝕙 n))            ≡⟨ by-transport-ap-again ⟩
+   τ (A ∘ L) (unary-binary n) (f (unary (binary n)) (𝕙 n))             ≡⟨ by-naturality ⟩
+   f n (τ A (unary-binary n) (𝕙 n))                                    ≡⟨ refl ⟩
+   f n (h n)                                                           ∎
+    where
+     by-Ia                 = ap (λ - → τ A - (𝕙 (L n))) (Ia n)
+     by-transport-∙        = transport-∙ A (ap unary (ldiagram n)) (ap L (unary-binary n))
+     by-transport-ap       = ap (τ A (ap L (unary-binary n))) ((transport-ap A unary (ldiagram n))⁻¹)
+     by-IIa                = ap (τ A (ap L (unary-binary n))) (IIa n)
+     by-transport-ap-again = (transport-ap A L (unary-binary n))⁻¹
+     by-naturality         = (Nats-are-natural-∼ A (A ∘ L) f (unary-binary n) (𝕙 n))⁻¹
 
-  p : (n : ℕ) → h (L n) ≡ f n (h n)
-  p n = h (L n)                                                                             ≡⟨ refl ⟩
-        t (L n) (α (L n))                                                                   ≡⟨ refl ⟩
-        transport A (unary-binary (L n)) (α (L n))                                          ≡⟨ because-ℕ-is-a-set ⟩
-        transport A (ap unary (ldiagram n) ∙ ap L (unary-binary n)) (α (L n))               ≡⟨ by-transport-∙ ⟩
-        transport A (ap L (unary-binary n)) (transport A (ap unary (ldiagram n)) (α (L n))) ≡⟨ by-transport-ap ⟩
-        transport A (ap L (unary-binary n)) (transport (A ∘ unary) (ldiagram n) (α (L n)))  ≡⟨ by-u ⟩
-        transport A (ap L (unary-binary n)) (f' (binary n) (α n))                           ≡⟨ refl ⟩
-        transport A (ap L (unary-binary n)) (f (unary (binary n)) (α n))                    ≡⟨ by-transport-ap-again ⟩
-        transport (A ∘ L) (unary-binary n) (f (unary (binary n)) (α n))                     ≡⟨ by-naturality ⟩
-        f n (t n (α n))                                                                     ≡⟨ refl ⟩
-        f n (h n)                                                                           ∎
-   where
-    because-ℕ-is-a-set    = ap (λ - → transport A - (α (L n))) (claimL n)
-    by-transport-∙        = transport-∙ A (ap unary (ldiagram n)) (ap L (unary-binary n))
-    by-transport-ap       = ap (transport A (ap L (unary-binary n))) ((transport-ap A unary (ldiagram n))⁻¹)
-    by-u                  = ap (transport A (ap L (unary-binary n))) (u n)
-    by-transport-ap-again = (transport-ap A L (unary-binary n))⁻¹
-    by-naturality         = (Nats-are-natural-∼ A (A ∘ L) f (unary-binary n) (α n))⁻¹
-
-  q : (n : ℕ) → h (R n) ≡ g n (h n)
-  q n = h (R n)                                                                             ≡⟨ refl ⟩
-        t (R n) (α (R n))                                                                   ≡⟨ refl ⟩
-        transport A (unary-binary (R n)) (α (R n))                                          ≡⟨ because-ℕ-is-a-set ⟩
-        transport A (ap unary (rdiagram n) ∙ ap R (unary-binary n)) (α (R n))               ≡⟨ by-transport-∙ ⟩
-        transport A (ap R (unary-binary n)) (transport A (ap unary (rdiagram n)) (α (R n))) ≡⟨ by-transport-ap ⟩
-        transport A (ap R (unary-binary n)) (transport (A ∘ unary) (rdiagram n) (α (R n)))  ≡⟨ by-v ⟩
-        transport A (ap R (unary-binary n)) (g' (binary n) (α n))                           ≡⟨ refl ⟩
-        transport A (ap R (unary-binary n)) (g (unary (binary n)) (α n))                    ≡⟨ by-transport-ap-again ⟩
-        transport (A ∘ R) (unary-binary n) (g (unary (binary n)) (α n))                     ≡⟨ by-naturarity ⟩
-        g n (t n (α n))                                                                     ≡⟨ refl ⟩
-        g n (h n)                                                                           ∎
-   where
-    because-ℕ-is-a-set    = ap (λ - → transport A - (α (R n))) (claimR n)
-    by-transport-∙        = transport-∙ A (ap unary (rdiagram n)) (ap R (unary-binary n))
-    by-transport-ap       = ap (transport A (ap R (unary-binary n))) ((transport-ap A unary (rdiagram n))⁻¹)
-    by-v                  = ap (transport A (ap R (unary-binary n))) (v n)
-    by-transport-ap-again = (transport-ap A R (unary-binary n))⁻¹
-    by-naturarity         = (Nats-are-natural-∼ A (A ∘ R) g (unary-binary n) (α n))⁻¹
+  IIIb : (n : ℕ) → h (R n) ≡ g n (h n)
+  IIIb n =
+   h (R n)                                                             ≡⟨ refl ⟩
+   τ A (unary-binary (R n)) (𝕙 (R n))                                  ≡⟨ by-Ib ⟩
+   τ A (ap unary (rdiagram n) ∙ ap R (unary-binary n)) (𝕙 (R n))       ≡⟨ by-transport-∙ ⟩
+   τ A (ap R (unary-binary n)) (τ A (ap unary (rdiagram n)) (𝕙 (R n))) ≡⟨ by-transport-ap ⟩
+   τ A (ap R (unary-binary n)) (τ (A ∘ unary) (rdiagram n) (𝕙 (R n)))  ≡⟨ by-IIb ⟩
+   τ A (ap R (unary-binary n)) (𝒈 (binary n) (𝕙 n))                    ≡⟨ refl ⟩
+   τ A (ap R (unary-binary n)) (g (unary (binary n)) (𝕙 n))            ≡⟨ by-transport-ap-again ⟩
+   τ (A ∘ R) (unary-binary n) (g (unary (binary n)) (𝕙 n))             ≡⟨ by-naturarity ⟩
+   g n (τ A (unary-binary n) (𝕙 n))                                    ≡⟨ refl ⟩
+   g n (h n)                                                           ∎
+    where
+     by-Ib                 = ap (λ - → τ A - (𝕙 (R n))) (Ib n)
+     by-transport-∙        = transport-∙ A (ap unary (rdiagram n)) (ap R (unary-binary n))
+     by-transport-ap       = ap (τ A (ap R (unary-binary n))) ((transport-ap A unary (rdiagram n))⁻¹)
+     by-IIb                = ap (τ A (ap R (unary-binary n))) (IIb n)
+     by-transport-ap-again = (transport-ap A R (unary-binary n))⁻¹
+     by-naturarity         = (Nats-are-natural-∼ A (A ∘ R) g (unary-binary n) (𝕙 n))⁻¹
 
 \end{code}
 
 (The above stronger induction principle Binary-induction-on-ℕ,
-generalizing binary-induction-on-ℕ below, was added 10th June 2021.)
+generalizing binary-induction-on-ℕ below, was added 10-11 June 2021.)
 
 TODO. Replace Σ by ∃! in the statement of Binary-induction-on-ℕ
 (easy but laborious - see my MGS'2019 lecture notes).
 
-Example: We can redefine the function height above as follows:
+Example. We can redefine the function height above as follows:
 
 \begin{code}
 
-Height : Σ height ꞉ (ℕ → ℕ) , (height zero  ≡ zero)
-                  × ((n : ℕ) → height (L n) ≡ succ (height n))
-                  × ((n : ℕ) → height (R n) ≡ succ (height n))
-Height = Binary-induction-on-ℕ zero (λ _ → succ) (λ _ → succ)
+Height : Σ height' ꞉ (ℕ → ℕ) , (height' zero  ≡ zero)
+                   × ((n : ℕ) → height' (L n) ≡ succ (height' n))
+                   × ((n : ℕ) → height' (R n) ≡ succ (height' n))
+Height = Binary-induction-on-ℕ (λ _ → ℕ) zero (λ _ → succ) (λ _ → succ)
+
+Height-example₁₃ : height 13 ≡ pr₁ Height 13
+Height-example₁₃ = refl
 
 \end{code}
 
 Exercise. Show that pr₁ Height is the same as height defined above (a
-form of logarithm in base 2).
+form of logarithm in base 2). This is solved below.
 
 Of course, we get the weaker induction principle (with lower case b)
 by projection:
 
 \begin{code}
 
-binary-induction-on-ℕ : {A : ℕ → 𝓤 ̇ }
+binary-induction-on-ℕ : (A : ℕ → 𝓤 ̇ )
                       → A zero
                       → ((n : ℕ) → A n → A (L n))
                       → ((n : ℕ) → A n → A (R n))
                       → (n : ℕ) → A n
-binary-induction-on-ℕ {𝓤} {A} a f g = pr₁ (Binary-induction-on-ℕ a f g)
+binary-induction-on-ℕ A a f g = pr₁ (Binary-induction-on-ℕ A a f g)
 
+
+Binary-induction-uniqueness : {A : ℕ → 𝓤 ̇ }
+                              (a   : A zero)
+                              (f   : (n : ℕ) → A n → A (L n))
+                              (g   : (n : ℕ) → A n → A (R n))
+                              (h k : ((n : ℕ) → A n))
+                            → Binary-induction-equations a f g h
+                            → Binary-induction-equations a f g k
+                            → h ∼ k
+Binary-induction-uniqueness a f g h k (p0 , pL , pR) (q0 , qL , qR) =
+
+ binary-induction-on-ℕ (λ n → h n ≡ k n)
+
+  (h zero ≡⟨ p0 ⟩
+   a      ≡⟨ q0 ⁻¹ ⟩
+   k zero ∎)
+
+  (λ (n : ℕ) (s : h n ≡ k n) → h (L n)   ≡⟨ pL n ⟩
+                               f n (h n) ≡⟨ ap (f n) s ⟩
+                               f n (k n) ≡⟨ (qL n)⁻¹ ⟩
+                               k (L n)   ∎)
+
+  (λ (n : ℕ) (s : h n ≡ k n) → h (R n)   ≡⟨ pR n ⟩
+                               g n (h n) ≡⟨ ap (g n) s ⟩
+                               g n (k n) ≡⟨ (qR n)⁻¹ ⟩
+                               k (R n)   ∎)
+
+\end{code}
+
+Example. Because the following functions satisfy the same defining
+equations, they coincide:
+
+\begin{code}
+
+Height-example : (n : ℕ) → height n ≡ pr₁ Height n
+Height-example = Binary-induction-uniqueness
+                  zero
+                  (λ _ → succ)
+                  (λ _ → succ)
+                  height
+                  (λ n → pr₁ Height n)
+                  (height-equation0 , height-equationL , height-equationR)
+                  (pr₁ (pr₂ Height) , pr₁ (pr₂ (pr₂ Height)) , pr₂ (pr₂ (pr₂ Height)))
 \end{code}
 
 We get a pairing function as follows, using a rather minimal amount of
