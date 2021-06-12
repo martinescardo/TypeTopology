@@ -233,7 +233,6 @@ binary-unary zero = refl
 binary-unary (l m) = binary (unary (l m)) ≡⟨ ldiagram (unary m) ⟩
                      l (binary (unary m)) ≡⟨ ap l (binary-unary m) ⟩
                      l m                  ∎
-
 binary-unary (r m) = binary (unary (r m)) ≡⟨ rdiagram (unary m) ⟩
                      r (binary (unary m)) ≡⟨ ap r (binary-unary m) ⟩
                      r m                  ∎
@@ -348,22 +347,12 @@ Binary-induction-on-ℕ A a f g = h , refl , IIIa , IIIb
   Ia : (n : ℕ) → unary-binary (L n) ≡ ap unary (ldiagram n) ∙ ap L (unary-binary n)
   Ia n = ℕ-is-set _ _
 
-  Ib : (n : ℕ) → unary-binary (R n) ≡ ap unary (rdiagram n) ∙ ap R (unary-binary n)
-  Ib n = ℕ-is-set _ _
-
   IIa : (n : ℕ) → τ (A ∘ unary) (ldiagram n) (𝕙 (L n)) ≡ 𝒇 (binary n) (𝕙 n)
   IIa n = τ (A ∘ unary) (ldiagram n) (𝕙 (L n))          ≡⟨ refl ⟩
           τ (A ∘ unary) (ldiagram n) (𝒉 (binary (L n))) ≡⟨ apd 𝒉 (ldiagram n) ⟩
           𝒉 (l (binary n))                              ≡⟨ refl ⟩
           𝒇 (binary n) (𝒉 (binary n))                   ≡⟨ refl ⟩
           𝒇 (binary n) (𝕙 n)                            ∎
-
-  IIb : (n : ℕ) → τ (A ∘ unary) (rdiagram n) (𝕙 (R n)) ≡ 𝒈 (binary n) (𝕙 n)
-  IIb n = τ (A ∘ unary) (rdiagram n) (𝕙 (R n))          ≡⟨ refl ⟩
-          τ (A ∘ unary) (rdiagram n) (𝒉 (binary (R n))) ≡⟨ apd 𝒉 (rdiagram n) ⟩
-          𝒉 (r (binary n))                              ≡⟨ refl ⟩
-          𝒈 (binary n) (𝒉 (binary n))                   ≡⟨ refl ⟩
-          𝒈 (binary n) (𝕙 n)                            ∎
 
   IIIa : (n : ℕ) → h (L n) ≡ f n (h n)
   IIIa n =
@@ -384,6 +373,22 @@ Binary-induction-on-ℕ A a f g = h , refl , IIIa , IIIb
      by-IIa                = ap (τ A (ap L (unary-binary n))) (IIa n)
      by-transport-ap-again = (transport-ap A L (unary-binary n))⁻¹
      by-naturality         = (Nats-are-natural-∼ A (A ∘ L) f (unary-binary n) (𝕙 n))⁻¹
+
+\end{code}
+
+By symmetry, the proof is concluded. But we have to write the symmetric argument in Agda:
+
+\begin{code}
+
+  Ib : (n : ℕ) → unary-binary (R n) ≡ ap unary (rdiagram n) ∙ ap R (unary-binary n)
+  Ib n = ℕ-is-set _ _
+
+  IIb : (n : ℕ) → τ (A ∘ unary) (rdiagram n) (𝕙 (R n)) ≡ 𝒈 (binary n) (𝕙 n)
+  IIb n = τ (A ∘ unary) (rdiagram n) (𝕙 (R n))          ≡⟨ refl ⟩
+          τ (A ∘ unary) (rdiagram n) (𝒉 (binary (R n))) ≡⟨ apd 𝒉 (rdiagram n) ⟩
+          𝒉 (r (binary n))                              ≡⟨ refl ⟩
+          𝒈 (binary n) (𝒉 (binary n))                   ≡⟨ refl ⟩
+          𝒈 (binary n) (𝕙 n)                            ∎
 
   IIIb : (n : ℕ) → h (R n) ≡ g n (h n)
   IIIb n =
