@@ -513,7 +513,7 @@ second' (l b) = second' b
 second' (r b) = Succ b
 
 pair' : ℕ → ℕ → 𝔹
-pair' zero zero = zero
+pair' zero     zero     = zero
 pair' (succ n) zero     = l (pair' n zero)
 pair' zero     (succ k) = r (binary k)
 pair' (succ n) (succ k) = l (pair' n (succ k))
