@@ -33,6 +33,7 @@ module Fin where
 
 open import SpartanMLTT
 open import UF-Subsingletons renaming (⊤Ω to ⊤)
+open import Plus-Properties
 
 Fin : ℕ → 𝓤₀ ̇
 Fin 0        = 𝟘
@@ -49,6 +50,13 @@ fzero = inr *
 
 fsucc : {n : ℕ} → Fin n → Fin (succ n)
 fsucc = inl
+
+suc-lc : {n : ℕ} {j k : Fin n} → fsucc j ≡ fsucc k → j ≡ k
+suc-lc = inl-lc
+
+largest : (n : ℕ) → Fin (succ n)
+largest zero     = fzero
+largest (succ n) = fsucc (largest n)
 
 \end{code}
 
@@ -194,7 +202,6 @@ difference between the embedding property and left cancellability.
 
 \begin{code}
 
-open import Plus-Properties
 open import Swap
 open import UF-LeftCancellable
 
@@ -440,7 +447,6 @@ open import NaturalNumbers-Properties
 Fin↦ℕ : {n : ℕ} → Fin n → ℕ
 Fin↦ℕ {n} = pr₁ ∘ Fin-prime n
 
-
 Fin↦ℕ-property : {n : ℕ} (i : Fin n) → Fin↦ℕ i < n
 Fin↦ℕ-property {n} i = pr₂ (Fin-prime n i)
 
@@ -455,6 +461,19 @@ Fin↦ℕ-is-embedding n = ∘-is-embedding
 Fin↦ℕ-lc : (n : ℕ) → left-cancellable (Fin↦ℕ {n})
 Fin↦ℕ-lc n = embeddings-are-lc Fin↦ℕ (Fin↦ℕ-is-embedding n)
 
+Fin< : {n : ℕ} → Fin n → Set
+Fin< i = Fin (Fin↦ℕ i)
+
+coerce : {n : ℕ} {i : Fin n} → Fin< i → Fin n
+coerce {succ n} {suc i} 𝟎       = 𝟎
+coerce {succ n} {suc i} (suc j) = suc (coerce j)
+
+coerce-lc : {n : ℕ} {i : Fin n} (j k : Fin< i)
+          → coerce {n} {i} j ≡ coerce {n} {i} k → j ≡ k
+coerce-lc {succ n} {suc i} 𝟎       𝟎       p = refl
+coerce-lc {succ n} {suc i} 𝟎       (suc j) p = 𝟘-elim (+disjoint' p)
+coerce-lc {succ n} {suc i} (suc j) 𝟎       p = 𝟘-elim (+disjoint p)
+coerce-lc {succ n} {suc i} (suc j) (suc k) p = ap suc (coerce-lc {n} j k (suc-lc p))
 
 _≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
 i ≺ j = Fin↦ℕ i < Fin↦ℕ j

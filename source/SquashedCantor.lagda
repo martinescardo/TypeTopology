@@ -527,21 +527,27 @@ pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
  where
   open import BinaryNaturals
   open import UF-Retracts-FunExt
+
   a : retract (ℕ → X) of (𝔹 → X)
   a = retract-covariance fe (unary , binary , unary-binary)
+
   b : retract ((ℕ → X) × (ℕ → X)) of ((𝔹 → X) × (𝔹 → X))
   b = ×-retract a a
+
   c : retract (𝔹 → X) of (ℕ → X)
   c = retract-covariance fe (binary , unary , binary-unary)
+
   d : retract ((𝔹 → X) × (𝔹 → X)) of (𝔹 → X)
   d = (f , g , fg)
    where
     f : (𝔹 → X) → (𝔹 → X) × (𝔹 → X)
-    f α = (α ∘ l , α ∘ r)
+    f α = (α ∘ L , α ∘ R)
+
     g : (𝔹 → X) × (𝔹 → X) → 𝔹 → X
-    g (α , β) zero = α zero -- irrelevant choice
-    g (α , β) (l b) = α b
-    g (α , β) (r b) = β b
+    g (α , β) Z     = α Z -- irrelevant choice
+    g (α , β) (L b) = α b
+    g (α , β) (R b) = β b
+
     fg : (γ : (𝔹 → X) × (𝔹 → X)) → f (g γ) ≡ γ
     fg (α , β) = refl
 
@@ -552,9 +558,11 @@ pair-seq-retract {𝓤} {X} fe = retracts-compose (retracts-compose c d) b
   f α = 𝟚-equality-cases
          (λ (l : α 0 ≡ ₀) → inl (tail α))
          (λ (r : α 0 ≡ ₁) → inr (tail α))
+
   g : Cantor + Cantor → Cantor
   g (inl α) = ₀ ∶∶ α
   g (inr β) = ₁ ∶∶ β
+
   fg : (z : Cantor + Cantor) → f (g z) ≡ z
   fg (inl α) = refl
   fg (inr β) = refl

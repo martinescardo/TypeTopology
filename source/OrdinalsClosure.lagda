@@ -27,7 +27,7 @@ open import LexicographicCompactness
 open import ConvergentSequenceInfCompact
 open import PropInfTychonoff
 open import DiscreteAndSeparated
-open import BinaryNaturals hiding (_+_ ; l ; r)
+open import BinaryNaturals hiding (_+_ ; L ; R)
 open import InfCompact
 open import Plus-Properties
 
@@ -120,10 +120,10 @@ More Cantor-retract properties are in the module SquashedCantor.
                → retract X of ℕ
                → ((x : X) → retract (Y x) of ℕ)
                → retract (Σ Y) of ℕ
-Σ-retract-of-ℕ {𝓤} {𝓥} {X} {Y} ρ R = retracts-compose b a
+Σ-retract-of-ℕ {𝓤} {𝓥} {X} {Y} ρ σ = retracts-compose b a
  where
   a : retract (Σ Y) of (ℕ × ℕ)
-  a = Σ-retract₂ ρ R
+  a = Σ-retract₂ ρ σ
 
   b : retract (ℕ × ℕ) of ℕ
   b = ≃-gives-◁ pairing
