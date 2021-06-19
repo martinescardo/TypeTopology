@@ -138,7 +138,6 @@ First some commutation properties:
           ℕ ─────────► ℕ
               succ
 
-
 \begin{code}
 
 ldiagram : (n : ℕ) → binary (left n) ≡ L (binary n)
@@ -186,8 +185,7 @@ binary-equiv = qinveq unary (binary , binary-unary , unary-binary)
 
 Example. We define a function height such that height (2ⁿ-1) = n.
 
-The height of a number is its height in the following infinite tree,
-where the root 0 has height 0 by convention.
+The height of a number is its height in the following infinite tree:
 
   ...   ...   ...  ...  ...  ...  ...   ...
    7     8     9    10  11   12    13   14

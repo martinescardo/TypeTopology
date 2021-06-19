@@ -71,8 +71,8 @@ Our formulation of Cantor-Schröder-Bernstein:
 CSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
 CSB X Y = (X ↪ Y) × (Y ↪ X) → X ≃ Y
 
-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → CSB X Y
+Cantor-Schröder-Bernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+Cantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → CSB X Y
 
 \end{code}
 
@@ -209,10 +209,10 @@ middle for propositions in the universe 𝓥:
 
 \begin{code}
 
-CantorSchröderBernstein-gives-EM : funext 𝓤₀ 𝓤₀
-                                 → CantorSchröderBernstein 𝓤₀ 𝓥
-                                 → EM 𝓥
-CantorSchröderBernstein-gives-EM fe csb P i = CSB-gives-EM fe P i csb
+Cantor-Schröder-Bernstein-gives-EM : funext 𝓤₀ 𝓤₀
+                                   → Cantor-Schröder-Bernstein 𝓤₀ 𝓥
+                                   → EM 𝓥
+Cantor-Schröder-Bernstein-gives-EM fe csb P i = CSB-gives-EM fe P i csb
 
 \end{code}
 
@@ -230,13 +230,13 @@ module wCSB-still-gives-EM (pt : propositional-truncations-exist) where
  wCSB : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
  wCSB X Y = (X ↪ Y) × (Y ↪ X) → ∥ X ≃ Y ∥
 
- wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
- wCantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → wCSB X Y
+ wCantor-Schröder-Bernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+ wCantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → wCSB X Y
 
- wCantorSchröderBernstein-gives-EM : funext 𝓥 𝓤₀
-                                   → wCantorSchröderBernstein 𝓤₀ 𝓥
-                                   → EM 𝓥
- wCantorSchröderBernstein-gives-EM {𝓥} fe w P i = γ
+ wCantor-Schröder-Bernstein-gives-EM : funext 𝓥 𝓤₀
+                                     → wCantor-Schröder-Bernstein 𝓤₀ 𝓥
+                                     → EM 𝓥
+ wCantor-Schröder-Bernstein-gives-EM {𝓥} fe w P i = γ
   where
    fe₀ : funext 𝓤₀ 𝓤₀
    fe₀ = lower-funext 𝓥 𝓤₀ fe
@@ -282,10 +282,10 @@ reference to the blog post.
 
 \begin{code}
 
-EM-gives-CantorSchröderBernstein : Fun-Ext
-                                 → EM (𝓤 ⊔ 𝓥)
-                                 → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) =
+EM-gives-Cantor-Schröder-Bernstein : Fun-Ext
+                                   → EM (𝓤 ⊔ 𝓥)
+                                   → Cantor-Schröder-Bernstein 𝓤 𝓥
+EM-gives-Cantor-Schröder-Bernstein {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) =
 
   need X ≃ Y which-is-given-by 𝒽
 
@@ -328,10 +328,10 @@ requires function extensionality:
 \begin{code}
 
   being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-prop x = Π₃-is-prop fe λ x₀ n (p : ((g ∘ f) ^ n) x₀ ≡ x)
+  being-g-point-is-prop x = Π₃-is-prop fe
+                             (λ x₀ n (p : ((g ∘ f) ^ n) x₀ ≡ x)
                                → need is-prop (fiber g x₀)
-                                 which-is-given-by (g-is-emb x₀)
-
+                                 which-is-given-by (g-is-emb x₀))
 \end{code}
 
 By construction, considering x₀ = x and n = 0, we have that g is
@@ -386,7 +386,8 @@ To show that it is left-cancellable, we first show that g⁻¹ is a
 two-sided inverse in its domain of definition.
 
 That it is a right inverse follows from the definition of fiber, by
-taking the fiber path, which is given by the second projection:
+taking the fiber identification, which is given by the second
+projection:
 
 \begin{code}
 
@@ -507,7 +508,6 @@ What is important for our argument is that non-f-points are g-points:
       (σ ꞉   fiber g x₀ ↦ σ)
       (u ꞉ ¬ fiber g x₀ ↦ have (x₀ , (n , p) , u) ∶ f-point x
                           which-is-impossible-by (ν ∶ ¬ f-point x)))
-
 \end{code}
 
 We use the notion of f-point to prove the following, whose statement
@@ -619,10 +619,10 @@ We record the following special case:
 
 \begin{code}
 
-EM-gives-CantorSchröderBernstein₀ : Fun-Ext
-                                  → EM 𝓤₀
-                                  → CantorSchröderBernstein 𝓤₀ 𝓤₀
-EM-gives-CantorSchröderBernstein₀ = EM-gives-CantorSchröderBernstein
+EM-gives-Cantor-Schröder-Bernstein₀ : Fun-Ext
+                                    → EM 𝓤₀
+                                    → Cantor-Schröder-Bernstein 𝓤₀ 𝓤₀
+EM-gives-Cantor-Schröder-Bernstein₀ = EM-gives-Cantor-Schröder-Bernstein
 
 \end{code}
 
@@ -661,6 +661,7 @@ and that it is connected if additionally ∥ X ∥ is pointed.
   where
    a : ∀ x → ∥ g (f (x)) ≡ x ∥
    a x = w (g (f x)) x
+
    s : is-surjection g
    s x = ∥∥-functor (λ p → (f x , p)) (a x)
 
@@ -694,7 +695,6 @@ finite:
 \end{code}
 
 
-
 APPENDIX I
 ----------
 
@@ -706,10 +706,10 @@ indicating types explicitly).
 
 \begin{code}
 
-EM-gives-CantorSchröderBernstein' : Fun-Ext
-                                  → EM (𝓤 ⊔ 𝓥)
-                                  → CantorSchröderBernstein 𝓤 𝓥
-EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
+EM-gives-Cantor-Schröder-Bernstein' : Fun-Ext
+                                    → EM (𝓤 ⊔ 𝓥)
+                                    → Cantor-Schröder-Bernstein 𝓤 𝓥
+EM-gives-Cantor-Schröder-Bernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f , f-is-emb) , (g , g-is-emb)) = 𝒽
  where
   is-g-point : (x : X) → 𝓤 ⊔ 𝓥 ̇
   is-g-point x = (x₀ : X) (n : ℕ) → ((g ∘ f) ^ n) x₀ ≡ x → fiber g x₀
@@ -746,7 +746,7 @@ EM-gives-CantorSchröderBernstein' {𝓤} {𝓥} fe excluded-middle {X} {Y} ((f 
     v = transport (- ↦ ¬ is-g-point -) q u
 
   being-g-point-is-prop : (x : X) → is-prop (is-g-point x)
-  being-g-point-is-prop x = Π₃-is-prop fe (λ x₀ n _ → g-is-emb x₀)
+  being-g-point-is-prop x = Π₃-is-prop fe (λ x₀ _ _ → g-is-emb x₀)
 
   δ : (x : X) → decidable (is-g-point x)
   δ x = excluded-middle (is-g-point x) (being-g-point-is-prop x)
@@ -1004,8 +1004,8 @@ rlemma : (P : 𝓤 ̇ )
        → Rosolini-data P
 rlemma P = blemma P ℕ-is-set
 
-discrete-CantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
-discrete-CantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → CSB X Y
+discrete-Cantor-Schröder-Bernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+discrete-Cantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → CSB X Y
 
 econstruction-ℕ : (P : 𝓤 ̇ ) → is-prop P → (ℕ ↪ P + ℕ) × (P + ℕ ↪ ℕ)
 econstruction-ℕ P i = econstruction P zero succ
@@ -1015,11 +1015,14 @@ econstruction-ℕ P i = econstruction P zero succ
                        succ-lc
 
 dlemma : (P : 𝓥 ̇ )
-       → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
-       → is-prop P → ℕ ≃ P + ℕ
-dlemma P csb i = csb ℕ-is-discrete (+discrete (props-are-discrete i) ℕ-is-discrete) (econstruction-ℕ P i)
+       → discrete-Cantor-Schröder-Bernstein 𝓤₀ 𝓥
+       → is-prop P
+       → ℕ ≃ P + ℕ
+dlemma P csb i = csb ℕ-is-discrete
+                  (+discrete (props-are-discrete i) ℕ-is-discrete)
+                  (econstruction-ℕ P i)
 
-discrete-CSB-gives-dBKS⁺ : discrete-CantorSchröderBernstein 𝓤₀ 𝓥 → dBKS⁺ 𝓥
+discrete-CSB-gives-dBKS⁺ : discrete-Cantor-Schröder-Bernstein 𝓤₀ 𝓥 → dBKS⁺ 𝓥
 discrete-CSB-gives-dBKS⁺ csb P i = γ
  where
   e : ℕ ≃ P + ℕ
@@ -1099,7 +1102,7 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
 
 discrete-CSB-gives-EM : funext 𝓥 𝓥
                       → propext 𝓥
-                      → discrete-CantorSchröderBernstein 𝓤₀ 𝓥
+                      → discrete-Cantor-Schröder-Bernstein 𝓤₀ 𝓥
                       → EM 𝓥
 discrete-CSB-gives-EM {𝓥} fe pe csb = ulemma fe pe φ
  where
@@ -1154,8 +1157,8 @@ wCSB:
 
  open wCSB-still-gives-EM pt
 
- discrete-wCantorSchröderBernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
- discrete-wCantorSchröderBernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → wCSB X Y
+ discrete-wCantor-Schröder-Bernstein : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥)⁺ ̇
+ discrete-wCantor-Schröder-Bernstein 𝓤 𝓥 = {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → is-discrete X → is-discrete Y → wCSB X Y
 
 \end{code}
 
@@ -1169,7 +1172,7 @@ We now consider the propositional version of BKS⁺:
  BKS⁺ : (𝓤 : Universe) → 𝓤 ⁺ ̇
  BKS⁺ 𝓤 = (P : 𝓤 ̇ ) → is-prop P → is-Rosolini P
 
- discrete-wCSB-gives-BKS⁺ : discrete-wCantorSchröderBernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
+ discrete-wCSB-gives-BKS⁺ : discrete-wCantor-Schröder-Bernstein 𝓤₀ 𝓥 → BKS⁺ 𝓥
  discrete-wCSB-gives-BKS⁺ w P i = γ
   where
    s : ∥ ℕ ≃ P + ℕ ∥
