@@ -6,7 +6,7 @@ We use a modification of binary notation to avoid leading zeros and
 hence multiple representations of the same number.
 
 The isomorphic copy is formally constructed from 0 by iterating the
-functions left(n)=2n+1 and right(n)=2n+2. This is illustrate by the
+functions left(n)=2n+1 and right(n)=2n+2. This is illustrated by the
 following tree:
 
   ...   ...   ...  ...  ...  ...  ...   ...
@@ -109,24 +109,24 @@ inverse, after we formulate and prove some lemmas for that.
 
 First some commutation properties:
 
-                left
+               left
           ℕ ─────────► ℕ
           │            │
    binary │            │ binary       (ldiagram)
           │            │
           ▼            ▼
           𝔹─────────► 𝔹
-                l
+                L
 
 
-                right
+               right
           ℕ ─────────► ℕ
           │            │
    binary │            │ binary       (rdiagram)
           │            │
           ▼            ▼
           𝔹─────────► 𝔹
-                r
+                R
 
 
                Succ
@@ -143,11 +143,11 @@ First some commutation properties:
 
 ldiagram : (n : ℕ) → binary (left n) ≡ L (binary n)
 ldiagram 0        = refl
-ldiagram (succ n) = ap (λ - → Succ (Succ -)) (ldiagram n)
+ldiagram (succ n) = ap (Succ ∘ Succ) (ldiagram n)
 
 rdiagram : (n : ℕ) → binary (right n) ≡ R (binary n)
 rdiagram 0        = refl
-rdiagram (succ n) = ap (λ - → Succ (Succ -)) (rdiagram n)
+rdiagram (succ n) = ap (Succ ∘ Succ) (rdiagram n)
 
 sdiagram : (m : 𝔹) → unary (Succ m) ≡ succ (unary m)
 sdiagram Z     = refl
@@ -230,8 +230,7 @@ height-examples = refl , refl , refl , refl , refl , refl , refl , refl , refl ,
                   refl , refl , refl , refl , refl , refl , refl , refl , refl
 \end{code}
 
-Example continued. The above diagrams give the following equations for
-the function height defined above:
+The above diagrams give the following equations for the functino height.
 
 \begin{code}
 
@@ -257,7 +256,7 @@ height-equationᵣ n =
 
 \end{code}
 
-Example continued. We now show that height (2ⁿ-1) ≡ n.
+We now show that height (2ⁿ-1) ≡ n.
 
 \begin{code}
 
@@ -269,8 +268,8 @@ double (succ n) = succ (succ (double n))
 power2 0        = 1
 power2 (succ n) = double (power2 n)
 
-height-vs-power2 : (n : ℕ) → height (pred (power2 n)) ≡ n
-height-vs-power2 n = VI
+height-power2-equation : (n : ℕ) → height (pred (power2 n)) ≡ n
+height-power2-equation n = VI
  where
   powerl : ℕ → ℕ
   powerl 0        = 0
@@ -735,14 +734,14 @@ two-ℕ-plus-𝟙 =
     ℕ ∔ (ℕ ∔ 𝟙)    ≃⟨ +cong (≃-sym binary-equiv) (Ap+ 𝟙 (≃-sym binary-equiv)) ⟩
     𝔹 ∔ (𝔹 ∔ 𝟙)    ≃⟨ two-𝔹-plus-𝟙 ⟩
     𝔹              ≃⟨ binary-equiv ⟩
-    ℕ ■
+    ℕ              ■
 
 two-ℕ : ℕ ∔ ℕ ≃ ℕ
 two-ℕ =
    ℕ ∔ ℕ        ≃⟨ Ap+ ℕ (≃-sym ℕ-plus-𝟙) ⟩
    (ℕ ∔ 𝟙) ∔ ℕ  ≃⟨ +comm ⟩
    ℕ ∔ ℕ ∔ 𝟙    ≃⟨ two-ℕ-plus-𝟙 ⟩
-   ℕ ■
+   ℕ            ■
 
 \end{code}
 
@@ -800,13 +799,13 @@ x + 0      = x
 x + succ y = succ (x + y)
 
 _+♭_ : 𝔹 → 𝔹 → 𝔹
-x    +♭ Z    = x
-Z    +♭ L y  = L y
-L x  +♭ L y  = R (x +♭ y)
-R x  +♭ L y  = L (Succ (x +♭ y))
-Z    +♭ R y  = R y
-L x  +♭ R y  = L (Succ (x +♭ y))
-R x  +♭ R y  = R (Succ (x +♭ y))
+x    +♭  Z    = x
+Z    +♭  L y  = L y
+L x  +♭  L y  = R (x +♭ y)
+R x  +♭  L y  = L (Succ (x +♭ y))
+Z    +♭  R y  = R y
+L x  +♭  R y  = L (Succ (x +♭ y))
+R x  +♭  R y  = R (Succ (x +♭ y))
 
 +♭-lemma : ∀ m n → Succ (m +♭ n) ≡ m +♭ Succ n
 +♭-lemma Z      Z    = refl
@@ -849,29 +848,29 @@ Definitions:
 
 \begin{code}
 
-x    +₀ Z    = x
-Z    +₀ L y  = L y
-L x  +₀ L y  = R (x +₀ y)
-R x  +₀ L y  = L (x +₁ y)
-Z    +₀ R y  = R y
-L x  +₀ R y  = L (x +₁ y)
-R x  +₀ R y  = R (x +₁ y)
+x    +₀  Z    = x
+Z    +₀  L y  = L y
+L x  +₀  L y  = R (x +₀ y)
+R x  +₀  L y  = L (x +₁ y)
+Z    +₀  R y  = R y
+L x  +₀  R y  = L (x +₁ y)
+R x  +₀  R y  = R (x +₁ y)
 
-x    +₁ Z    = Succ x
-Z    +₁ L y  = R y
-L x  +₁ L y  = L (x +₁ y)
-R x  +₁ L y  = R (x +₁ y)
-Z    +₁ R y  = L (Succ y)
-L x  +₁ R y  = R (x +₁ y)
-R x  +₁ R y  = L (x +₂ y)
+x    +₁  Z    = Succ x
+Z    +₁  L y  = R y
+L x  +₁  L y  = L (x +₁ y)
+R x  +₁  L y  = R (x +₁ y)
+Z    +₁  R y  = L (Succ y)
+L x  +₁  R y  = R (x +₁ y)
+R x  +₁  R y  = L (x +₂ y)
 
-x    +₂ Z    = Succ₂ x
-Z    +₂ L y  = L (Succ y)
-L x  +₂ L y  = R (x +₁ y)
-R x  +₂ L y  = L (x +₂ y)
-Z    +₂ R y  = R (Succ y)
-L x  +₂ R y  = L (x +₂ y)
-R x  +₂ R y  = R (x +₂ y)
+x    +₂  Z    = Succ₂ x
+Z    +₂  L y  = L (Succ y)
+L x  +₂  L y  = R (x +₁ y)
+R x  +₂  L y  = L (x +₂ y)
+Z    +₂  R y  = R (Succ y)
+L x  +₂  R y  = L (x +₂ y)
+R x  +₂  R y  = R (x +₂ y)
 
 Succ₂ Z     = R Z
 Succ₂ (L x) = L (Succ x)
