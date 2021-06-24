@@ -39,21 +39,28 @@ module constructions (X₀ : 𝓤₀ ̇ ) where
   A : (𝓤 : Universe) → 𝓤 ⁺ ̇
   A 𝓤 = Σ X ꞉ 𝓤 ̇ , ∥ X ≃ X₀ ∥
 
-  δ : (𝓤 : Universe) (X : 𝓤₀ ̇ ) → ∥ X ≃ X₀ ∥ → ∥ Lift 𝓤 X ≃ X₀ ∥
+\end{code}
+
+Recall that Lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇ is the unique map with
+Lift 𝓥 X ≃ X, and that Lift 𝓥 is an embedding of the universe 𝓤 into
+the universe 𝓤 ⊔ 𝓥, meaning that it has subsingleton fibers. This
+relies univalence, which we are assuming in this file.
+
+\begin{code}
+
+  δ : (𝓤 : Universe) → (X : 𝓤₀ ̇ ) → ∥ X ≃ X₀ ∥ → ∥ Lift 𝓤 X ≃ X₀ ∥
   δ 𝓤 X = ∥∥-functor (λ (e : X ≃ X₀) → Lift-≃ 𝓤 X ● e)
 
   δ-is-embedding : (X : 𝓤₀ ̇ ) → is-embedding (δ 𝓤 X)
   δ-is-embedding {𝓤} X = maps-of-props-are-embeddings (δ 𝓤 X) ∥∥-is-prop ∥∥-is-prop
 
   ϕ : (𝓤 : Universe) → A 𝓤₀ → A 𝓤
-  ϕ 𝓤 = pair-fun (Lift 𝓤) (δ 𝓤)
+  ϕ 𝓤 (X , s) = Lift 𝓤 X , δ 𝓤 X s
 
   ϕ-is-embedding : is-embedding (ϕ 𝓤)
   ϕ-is-embedding {𝓤} = pair-fun-is-embedding
-                        (Lift 𝓤)
-                        (δ 𝓤)
-                        (Lift-is-embedding ua)
-                        δ-is-embedding
+                        (Lift 𝓤) (δ 𝓤)
+                        (Lift-is-embedding ua) δ-is-embedding
 
   ϕ-is-surjection : is-surjection (ϕ 𝓤)
   ϕ-is-surjection {𝓤} (Y , t) = g
@@ -79,11 +86,12 @@ module constructions (X₀ : 𝓤₀ ̇ ) where
   ϕ-is-equiv : is-equiv (ϕ 𝓤)
   ϕ-is-equiv {𝓤} = surjective-embeddings-are-equivs (ϕ 𝓤) ϕ-is-embedding ϕ-is-surjection
 
-  lemma₀ : A 𝓤₀ ≃ A 𝓤
-  lemma₀ {𝓤} = ϕ 𝓤 , ϕ-is-equiv
+  lemma₀ : (𝓤 : Universe) → A 𝓤₀ ≃ A 𝓤
+  lemma₀ 𝓤 = ϕ 𝓤 , ϕ-is-equiv
 
   lemma : A 𝓤 ≃ A 𝓥
-  lemma = ≃-sym lemma₀ ● lemma₀
+  lemma {𝓤} {𝓥} = ≃-sym (lemma₀ 𝓤) ● lemma₀ 𝓥
+
 
 Finite : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Finite 𝓤 = Σ X ꞉ 𝓤 ̇ , is-finite X
