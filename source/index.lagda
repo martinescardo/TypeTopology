@@ -138,6 +138,7 @@ import Empty
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
+import Finiteness-Universe-Invariance
 import frame
 import FailureOfTotalSeparatedness
 import Frame                           -- By Ayberk Tosun
@@ -320,6 +321,7 @@ import Escardo-Simpson-LICS2001
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import Fin
+import Finiteness-Universe-Invariance
 import frame
 import Frame
 import FreeGroup

@@ -188,14 +188,14 @@ is constant.
 modulus-zero-iff-constant  : (p : Cantor → 𝟚)
                            → 0 is-a-modulus-of-uniform-continuity-of p
                            ⇔ ((α β : Cantor) → p α ≡ p β)
-modulus-zero-iff-constant p = I , II                           
+modulus-zero-iff-constant p = I , II
  where
   I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : Cantor) → p α ≡ p β)
   I u α β = u α β *
-  
+
   II :  ((α β : Cantor) → p α ≡ p β) → 0 is-a-modulus-of-uniform-continuity-of p
-  II κ α β * = κ α β 
-  
+  II κ α β * = κ α β
+
 \end{code}
 
 The crucial lemma for Cantor search is this:
@@ -384,7 +384,7 @@ In the worst case, however, A n p runs in time 2ⁿ.
  xor-example : ℕ → 𝟚
  xor-example n = A n (xor n)
 
- large-xor-example : xor-example 8 ≡ ₀
+ large-xor-example : xor-example 17 ≡ ₀
  large-xor-example = refl
 
 \end{code}

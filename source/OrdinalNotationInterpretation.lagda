@@ -284,12 +284,12 @@ order preserving and reflecting (28 July 2018).
                      (λ i → ι-dense (ν i))
 
 ι-embedding One       = id-is-embedding
-ι-embedding (Add ν μ) = pair-fun-embedding
+ι-embedding (Add ν μ) = pair-fun-is-embedding
                          id
                          (dep-cases (λ _ → ι {ν}) (λ _ → ι {μ}))
                          id-is-embedding
                          (dep-cases (λ _ → ι-embedding ν) (λ _ → ι-embedding μ))
-ι-embedding (Mul ν μ) = pair-fun-embedding _ _
+ι-embedding (Mul ν μ) = pair-fun-is-embedding _ _
                          (ι-embedding ν)
                          (λ _ → ι-embedding μ)
 ι-embedding (Sum1 ν)  = Σ↑-embedding

@@ -1372,7 +1372,7 @@ power-of-injective {𝓣} {𝓦} {𝓤} {𝓥} {A} {D} i {X} {Y} j e f = γ
    k : X × A → Y × A
    k (x , a) = j x , a
    c : is-embedding k
-   c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
+   c = pair-fun-is-embedding j (λ x a → a) e (λ x → id-is-embedding)
    ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
    φ : (Σ g' ꞉ (Y × A → D) , g' ∘ k ∼ g) → (Σ f' ꞉ (Y → (A → D)), f' ∘ j ∼ f)

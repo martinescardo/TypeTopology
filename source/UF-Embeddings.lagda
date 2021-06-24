@@ -58,7 +58,7 @@ X ↪ Y = Σ f ꞉ (X → Y) , is-embedding f
 Subtypes : 𝓤 ̇ → 𝓤 ⁺ ̇
 Subtypes {𝓤} Y = Σ X ꞉ 𝓤 ̇ , X ↪ Y
 
-etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → X → Y
+etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X ↪ Y) → (X → Y)
 etofun = pr₁
 
 is-embedding-etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -66,8 +66,8 @@ is-embedding-etofun : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                     → is-embedding (etofun e)
 is-embedding-etofun = pr₂
 
-equiv-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
-equiv-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e)
+equivs-embedding : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → X ↪ Y
+equivs-embedding e = ⌜ e ⌝ , equivs-are-embeddings ⌜ e ⌝ (⌜⌝-is-equiv e)
 
 embeddings-are-lc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                   → is-embedding f → left-cancellable f
@@ -383,10 +383,10 @@ module _ {𝓤 𝓥 𝓦 𝓣}
  pair-fun : Σ A → Σ B
  pair-fun (x , a) = (f x , g x a)
 
- pair-fun-embedding : is-embedding f
+ pair-fun-is-embedding : is-embedding f
                     → ((x : X) → is-embedding (g x))
                     → is-embedding pair-fun
- pair-fun-embedding e d (y , b) = h
+ pair-fun-is-embedding e d (y , b) = h
   where
    Z : 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⊔ 𝓣 ̇
    Z = Σ w ꞉ fiber f y , fiber (g (pr₁ w)) (back-transport B (pr₂ w) b)

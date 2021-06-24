@@ -261,7 +261,7 @@ Lift-is-set-is-embedding {𝓤} {𝓥} fe X = maps-of-props-are-embeddings
 
 Lift-hSet-is-embedding : Univalence
                        → is-embedding (Lift-hSet {𝓤} 𝓥)
-Lift-hSet-is-embedding {𝓤} {𝓥} ua = pair-fun-embedding
+Lift-hSet-is-embedding {𝓤} {𝓥} ua = pair-fun-is-embedding
                                      (Lift 𝓥)
                                      (Lift-is-set 𝓥)
                                      (Lift-is-embedding ua)

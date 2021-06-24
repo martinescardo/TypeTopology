@@ -696,13 +696,16 @@ module finiteness (pt : propositional-truncations-exist) where
 
  open PropositionalTruncation pt public
 
+ _has-cardinality_ : 𝓤 ̇ → ℕ → 𝓤 ̇
+ X has-cardinality n = ∥ X ≃ Fin n ∥
+
  is-finite : 𝓤 ̇ → 𝓤 ̇
- is-finite X = Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥
+ is-finite X = Σ n ꞉ ℕ , X has-cardinality n
 
  cardinality : (X : 𝓤 ̇ ) → is-finite X → ℕ
  cardinality X = pr₁
 
- cardinality-≃ : (X : 𝓤 ̇ ) (φ : is-finite X) → ∥ X ≃ Fin (cardinality X φ) ∥
+ cardinality-≃ : (X : 𝓤 ̇ ) (φ : is-finite X) → X has-cardinality (cardinality X φ)
  cardinality-≃ X = pr₂
 
  being-finite-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite X)
@@ -730,14 +733,14 @@ truncation outside the Σ:
  being-finite'-is-prop : (X : 𝓤 ̇ ) → is-prop (is-finite' X)
  being-finite'-is-prop X = ∃-is-prop
 
- finite-unprime : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
- finite-unprime X = ∥∥-rec (being-finite-is-prop X) γ
+ finite'-gives-finite : (X : 𝓤 ̇ ) → is-finite' X → is-finite X
+ finite'-gives-finite X = ∥∥-rec (being-finite-is-prop X) γ
   where
    γ : (Σ n ꞉ ℕ , X ≃ Fin n) → Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥
    γ (n , e) = n , ∣ e ∣
 
- finite-prime : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
- finite-prime X (n , s) = ∥∥-rec ∥∥-is-prop (λ e → ∣ n , e ∣) s
+ finite-gives-finite' : (X : 𝓤 ̇ ) → is-finite X → is-finite' X
+ finite-gives-finite' X (n , s) = ∥∥-rec ∥∥-is-prop (λ e → ∣ n , e ∣) s
 
 \end{code}
 
@@ -1390,7 +1393,7 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
    δ (n , 𝕗) = ∣ n , (⌜ 𝕗 ⌝⁻¹ , equivs-are-surjections (⌜⌝⁻¹-is-equiv 𝕗)) ∣
 
    γ : is-Kuratowski-finite X
-   γ = ∥∥-rec being-Kuratowski-finite-is-prop δ (finite-prime X X-is-finite)
+   γ = ∥∥-rec being-Kuratowski-finite-is-prop δ (finite-gives-finite' X X-is-finite)
 
 \end{code}
 
@@ -1476,7 +1479,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
                                              → is-Kuratowski-finite X
                                              → is-finite X
  Kuratowski-finite-discrete-types-are-finite {𝓤} fe {X} δ κ =
-  finite-unprime X (∥∥-functor (dkf-lemma fe δ) κ)
+  finite'-gives-finite X (∥∥-functor (dkf-lemma fe δ) κ)
 
 
  surjections-preserve-K-finiteness : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)

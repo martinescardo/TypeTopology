@@ -168,7 +168,7 @@ the compact type Σ¹ X:
 Σ-up X = pair-fun under𝟙 (over-under-map X)
 
 Σ-up-embedding : (X : ℕ → 𝓤 ̇ ) → is-embedding (Σ-up X)
-Σ-up-embedding X = pair-fun-embedding
+Σ-up-embedding X = pair-fun-is-embedding
                     under𝟙
                     (over-under-map X)
                     (under𝟙-embedding fe₀)
@@ -289,7 +289,7 @@ Over-embedding {𝓤} X Y f d (inr *) =
                        (f : (n : ℕ) → X n → Y n)
                      → ((n : ℕ) → is-embedding (f n))
                      → is-embedding (Σ₁-functor X Y f)
-Σ₁-functor-embedding X Y f e = pair-fun-embedding
+Σ₁-functor-embedding X Y f e = pair-fun-is-embedding
                                 id
                                 (Over X Y f)
                                 id-is-embedding

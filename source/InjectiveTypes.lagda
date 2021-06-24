@@ -1435,7 +1435,7 @@ so we need a new proof, but hence also new universe assumptions.
    k (x , a) = j x , a
 
    c : is-embedding k
-   c = pair-fun-embedding j (λ x a → a) e (λ x → id-is-embedding)
+   c = pair-fun-is-embedding j (λ x a → a) e (λ x → id-is-embedding)
 
    ψ : ∃ g' ꞉ (Y × A → D), g' ∘ k ∼ g
    ψ = i k c g
