@@ -88,9 +88,9 @@ Finite 𝓤 = Σ X ꞉ 𝓤 ̇ , is-finite X
 
 Finite-is-universe-independent : Finite 𝓤 ≃ Finite 𝓥
 Finite-is-universe-independent {𝓤} {𝓥} =
-  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , X has-cardinality n) ≃⟨ Σ-flip ⟩
-  (Σ n ꞉ ℕ , Σ X ꞉ 𝓤 ̇ , X has-cardinality n) ≃⟨ Σ-cong (λ n → lemma (Fin n)) ⟩
-  (Σ n ꞉ ℕ , Σ Y ꞉ 𝓥 ̇ , Y has-cardinality n) ≃⟨ Σ-flip ⟩
-  (Σ Y ꞉ 𝓥 ̇ , is-finite Y)                   ■
+  (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥) ≃⟨ Σ-flip ⟩
+  (Σ n ꞉ ℕ , Σ X ꞉ 𝓤 ̇ , ∥ X ≃ Fin n ∥) ≃⟨ Σ-cong (λ n → lemma (Fin n)) ⟩
+  (Σ n ꞉ ℕ , Σ Y ꞉ 𝓥 ̇ , ∥ Y ≃ Fin n ∥) ≃⟨ Σ-flip ⟩
+  (Σ Y ꞉ 𝓥 ̇ , Σ n ꞉ ℕ , ∥ Y ≃ Fin n ∥) ■
 
 \end{code}
