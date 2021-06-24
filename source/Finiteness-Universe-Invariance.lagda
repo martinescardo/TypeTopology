@@ -34,17 +34,15 @@ fe = Univalence-gives-Fun-Ext ua
 open ImageAndSurjection pt
 open finiteness pt
 
-lemma : (X₀ : 𝓤₀ ̇ )
-      → (Σ X ꞉ 𝓤 ̇ , ∥ X ≃ X₀ ∥) ≃ (Σ Y ꞉ 𝓥 ̇ , ∥ Y ≃ X₀ ∥)
-lemma X₀ = γ
- where
+module constructions (X₀ : 𝓤₀ ̇ ) where
+
   A : (𝓤 : Universe) → 𝓤 ⁺ ̇
   A 𝓤 = Σ X ꞉ 𝓤 ̇ , ∥ X ≃ X₀ ∥
 
-  δ : (𝓤 : Universe) (X : 𝓤₀ ̇) → ∥ X ≃ X₀ ∥ → ∥ Lift 𝓤 X ≃ X₀ ∥
+  δ : (𝓤 : Universe) (X : 𝓤₀ ̇ ) → ∥ X ≃ X₀ ∥ → ∥ Lift 𝓤 X ≃ X₀ ∥
   δ 𝓤 X = ∥∥-functor (λ (e : X ≃ X₀) → Lift-≃ 𝓤 X ● e)
 
-  δ-is-embedding : (X : 𝓤₀ ̇) → is-embedding (δ 𝓤 X)
+  δ-is-embedding : (X : 𝓤₀ ̇ ) → is-embedding (δ 𝓤 X)
   δ-is-embedding {𝓤} X = maps-of-props-are-embeddings (δ 𝓤 X) ∥∥-is-prop ∥∥-is-prop
 
   ϕ : (𝓤 : Universe) → A 𝓤₀ → A 𝓤
@@ -81,11 +79,11 @@ lemma X₀ = γ
   ϕ-is-equiv : is-equiv (ϕ 𝓤)
   ϕ-is-equiv {𝓤} = surjective-embeddings-are-equivs (ϕ 𝓤) ϕ-is-embedding ϕ-is-surjection
 
-  γ₀ : A 𝓤₀ ≃ A 𝓤
-  γ₀ {𝓤} = ϕ 𝓤 , ϕ-is-equiv
+  lemma₀ : A 𝓤₀ ≃ A 𝓤
+  lemma₀ {𝓤} = ϕ 𝓤 , ϕ-is-equiv
 
-  γ : A 𝓤 ≃ A 𝓥
-  γ = ≃-sym γ₀ ● γ₀
+  lemma : A 𝓤 ≃ A 𝓥
+  lemma = ≃-sym lemma₀ ● lemma₀
 
 Finite : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Finite 𝓤 = Σ X ꞉ 𝓤 ̇ , is-finite X
@@ -93,8 +91,19 @@ Finite 𝓤 = Σ X ꞉ 𝓤 ̇ , is-finite X
 Finite-is-universe-independent : Finite 𝓤 ≃ Finite 𝓥
 Finite-is-universe-independent {𝓤} {𝓥} =
   (Σ X ꞉ 𝓤 ̇ , Σ n ꞉ ℕ , ∥ X ≃ Fin n ∥) ≃⟨ Σ-flip ⟩
-  (Σ n ꞉ ℕ , Σ X ꞉ 𝓤 ̇ , ∥ X ≃ Fin n ∥) ≃⟨ Σ-cong (λ n → lemma (Fin n)) ⟩
+  (Σ n ꞉ ℕ , Σ X ꞉ 𝓤 ̇ , ∥ X ≃ Fin n ∥) ≃⟨ Σ-cong (λ n → constructions.lemma (Fin n)) ⟩
   (Σ n ꞉ ℕ , Σ Y ꞉ 𝓥 ̇ , ∥ Y ≃ Fin n ∥) ≃⟨ Σ-flip ⟩
   (Σ Y ꞉ 𝓥 ̇ , Σ n ꞉ ℕ , ∥ Y ≃ Fin n ∥) ■
+
+finite-types-are-lifts : (X : 𝓤 ̇ ) → is-finite X → Σ X₀ ꞉ 𝓤₀ ̇ , Lift 𝓤 X₀ ≡ X
+finite-types-are-lifts {𝓤} X (n , s) = X₀ , p
+ where
+  open constructions (Fin n)
+
+  X₀ : 𝓤₀ ̇
+  X₀ = pr₁ (inverse (ϕ 𝓤) ϕ-is-equiv (X , s))
+
+  p : Lift 𝓤 X₀ ≡ X
+  p = ap pr₁ (inverses-are-sections (ϕ 𝓤) ϕ-is-equiv (X , s))
 
 \end{code}
