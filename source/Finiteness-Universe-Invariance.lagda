@@ -1,6 +1,10 @@
 Martin Escardo, 23rd June 2021
 
+The type of finite types is universe invariant.
+
 After a discussion with Ulrik Buchholtz and Peter Lumsdaine.
+
+There is also a proof in Egbert Rijke's book (to appear).
 
 \begin{code}
 
