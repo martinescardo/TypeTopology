@@ -54,10 +54,6 @@ fsucc = inl
 suc-lc : {n : ℕ} {j k : Fin n} → fsucc j ≡ fsucc k → j ≡ k
 suc-lc = inl-lc
 
-largest : (n : ℕ) → Fin (succ n)
-largest zero     = fzero
-largest (succ n) = fsucc (largest n)
-
 \end{code}
 
 But it will more convenient to have them as patterns, for the sake of
@@ -90,7 +86,13 @@ Fin-induction P β σ (succ n) (suc i) = σ n i (Fin-induction P β σ n i)
 We will not use this induction principle explicitly. Instead, we will
 use the above pattern for similar definitions by induction.
 
+The largest element of Fin (succ n) is ⟪ n ⟫ (TODO: formulate and prove this).
+
 \begin{code}
+
+⟪_⟫ : (n : ℕ) → Fin (succ n)
+⟪ 0 ⟫      = fzero
+⟪ succ n ⟫ = fsucc ⟪ n ⟫
 
 Fin0-is-empty : is-empty (Fin 0)
 Fin0-is-empty i = i
@@ -109,8 +111,9 @@ Fin1-is-prop 𝟎 𝟎 = refl
 
 open import Unit-Properties
 
-positive-not-𝟎 : {n : ℕ} {x : Fin (succ n)} → suc x ≢ 𝟎
-positive-not-𝟎 {n} {x} p = 𝟙-is-not-𝟘 (g p)
+positive-not-𝟎 : {n : ℕ} {x : Fin n} → fsucc x ≢ 𝟎
+positive-not-𝟎 {0}      {x} p = 𝟘-elim x
+positive-not-𝟎 {succ n} {x} p = 𝟙-is-not-𝟘 (g p)
  where
   f : Fin (succ (succ n)) → 𝓤₀ ̇
   f 𝟎       = 𝟘
@@ -444,40 +447,66 @@ manifestation of the type Fin n.
 
 open import NaturalNumbers-Properties
 
-Fin↦ℕ : {n : ℕ} → Fin n → ℕ
-Fin↦ℕ {n} = pr₁ ∘ Fin-prime n
+⟦_⟧ : {n : ℕ} → Fin n → ℕ
+⟦_⟧ {n} = pr₁ ∘ Fin-prime n
 
-Fin↦ℕ-property : {n : ℕ} (i : Fin n) → Fin↦ℕ i < n
-Fin↦ℕ-property {n} i = pr₂ (Fin-prime n i)
+⟦⟧-property : {n : ℕ} (k : Fin n) → ⟦ k ⟧ < n
+⟦⟧-property {n} k = pr₂ (Fin-prime n k)
 
 open import UF-Embeddings
 
-Fin↦ℕ-is-embedding : (n : ℕ) → is-embedding (Fin↦ℕ {n})
-Fin↦ℕ-is-embedding n = ∘-is-embedding
-                        (equivs-are-embeddings (Fin-prime n) (Fin-prime-is-equiv n))
-                        (pr₁-is-embedding (λ i → <-is-prop-valued i n))
+⟦_⟧-is-embedding : (n : ℕ) → is-embedding (⟦_⟧ {n})
+⟦_⟧-is-embedding n = ∘-is-embedding
+                      (equivs-are-embeddings (Fin-prime n) (Fin-prime-is-equiv n))
+                      (pr₁-is-embedding (λ i → <-is-prop-valued i n))
+
+⟦⟪⟫⟧-property : {n : ℕ} → ⟦ ⟪ n ⟫ ⟧ ≡ n
+⟦⟪⟫⟧-property {0}      = refl
+⟦⟪⟫⟧-property {succ n} = ap succ (⟦⟪⟫⟧-property {n})
 
 
-Fin↦ℕ-lc : (n : ℕ) → left-cancellable (Fin↦ℕ {n})
-Fin↦ℕ-lc n = embeddings-are-lc Fin↦ℕ (Fin↦ℕ-is-embedding n)
+⟦_⟧-lc : (n : ℕ) → left-cancellable (⟦_⟧ {n})
+⟦_⟧-lc n = embeddings-are-lc ⟦_⟧ (⟦_⟧-is-embedding n)
 
-Fin< : {n : ℕ} → Fin n → Set
-Fin< i = Fin (Fin↦ℕ i)
-
-coerce : {n : ℕ} {i : Fin n} → Fin< i → Fin n
+coerce : {n : ℕ} {i : Fin n} → Fin ⟦ i ⟧ → Fin n
 coerce {succ n} {suc i} 𝟎       = 𝟎
 coerce {succ n} {suc i} (suc j) = suc (coerce j)
 
-coerce-lc : {n : ℕ} {i : Fin n} (j k : Fin< i)
+coerce-lc : {n : ℕ} {i : Fin n} (j k : Fin ⟦ i ⟧)
           → coerce {n} {i} j ≡ coerce {n} {i} k → j ≡ k
 coerce-lc {succ n} {suc i} 𝟎       𝟎       p = refl
 coerce-lc {succ n} {suc i} 𝟎       (suc j) p = 𝟘-elim (+disjoint' p)
 coerce-lc {succ n} {suc i} (suc j) 𝟎       p = 𝟘-elim (+disjoint p)
 coerce-lc {succ n} {suc i} (suc j) (suc k) p = ap suc (coerce-lc {n} j k (suc-lc p))
 
+incl : {n : ℕ} {k : ℕ} → k ≤ n → Fin k → Fin n
+incl {succ n} {succ k} l 𝟎 = 𝟎
+incl {succ n} {succ k} l (suc i) = suc (incl l i)
+
+incl-lc : {n : ℕ} {k : ℕ} (l : k ≤ n)
+        → (i j : Fin k) → incl l i ≡ incl l j → i ≡ j
+incl-lc {succ n} {succ k} l 𝟎       𝟎       p = refl
+incl-lc {succ n} {succ k} l 𝟎       (suc j) p = 𝟘-elim (positive-not-𝟎 (p ⁻¹))
+incl-lc {succ n} {succ k} l (suc i) 𝟎       p = 𝟘-elim (positive-not-𝟎 p)
+incl-lc {succ n} {succ k} l (suc i) (suc j) p = ap suc (incl-lc l i j (suc-lc p))
+
+_/_ : {n : ℕ} (k : Fin (succ n)) → Fin ⟦ k ⟧ → Fin n
+k / i = incl (⟦⟧-property k) i
+
+_╱_ :  (n : ℕ) → Fin n → Fin (succ n)
+n ╱ k = incl (≤-succ n) k
+
+\end{code}
+
+TODO. Show that the above coersions are left cancellable (easy).
+
+TODO. Find better names for the coersions (hard).
+
+\begin{code}
+
 _≺_ _≼_ : {n : ℕ} → Fin n → Fin n → 𝓤₀ ̇
-i ≺ j = Fin↦ℕ i < Fin↦ℕ j
-i ≼ j = Fin↦ℕ i ≤ Fin↦ℕ j
+i ≺ j = ⟦ i ⟧ < ⟦ j ⟧
+i ≼ j = ⟦ i ⟧ ≤ ⟦ j ⟧
 
 
 _is-lower-bound-of_ : {n : ℕ} → Fin n → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
@@ -545,7 +574,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
   γ (suc a) = 𝟎 , (φ , ψ) , ε
     where
      φ : (j : Fin (succ (succ n))) → A j → 𝟎 ≼ j
-     φ j b = zero-minimal (Fin↦ℕ j)
+     φ j b = zero-minimal (⟦_⟧ j)
 
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ 𝟎
      ψ j l = l 𝟎 a
@@ -560,7 +589,7 @@ inf-construction {𝓤} {succ n} A δ = γ (δ 𝟎)
      φ (suc j) a = l j a
 
      ψ : (j : Fin (succ (succ n))) → j is-lower-bound-of A → j ≼ suc i
-     ψ 𝟎 l = zero-minimal (Fin↦ℕ i)
+     ψ 𝟎 l = zero-minimal (⟦_⟧ i)
      ψ (suc j) l = u j (l ∘ suc)
 
      ε : Σ A → A (suc i)
@@ -622,7 +651,7 @@ open import UF-Base
 Σₘᵢₙ-is-prop {𝓤} fe {n} A h (i , a , l) (i' , a' , l') = γ
  where
   p : i ≡ i'
-  p = Fin↦ℕ-lc n (≤-anti (Fin↦ℕ i) (Fin↦ℕ i') u v)
+  p = ⟦_⟧-lc n (≤-anti (⟦_⟧ i) (⟦_⟧ i') u v)
    where
     u : i ≼ i'
     u = l i' a'
@@ -635,10 +664,24 @@ open import UF-Base
          (h j)
          (Π-is-prop (fe 𝓤₀ 𝓤)
            (λ k → Π-is-prop (fe 𝓤 𝓤₀)
-                   (λ b → ≤-is-prop-valued (Fin↦ℕ j) (Fin↦ℕ k))))
+                   (λ b → ≤-is-prop-valued (⟦_⟧ j) (⟦_⟧ k))))
 
   γ : i , a , l ≡ i' , a' , l'
   γ = to-Σ-≡ (p , H _ _ _)
+
+{-
+module _ {𝓤 : Universe}
+         {X : 𝓤 ̇ }
+         (X-is-compact : Compact X)
+         {n : ℕ}
+       where
+
+ Inf : (X → Fin n) → Fin n
+ Inf p = {!!}
+  where
+   A : X → ? ̇
+   A x = (x : X) → p x ≤
+-}
 
 \end{code}
 
@@ -1008,13 +1051,13 @@ Further versions of the pigeonhole principle are the following.
   ℕ-finite-pigeonhole-principle {𝓥} {Y} f (m , t) = r r'
    where
     f' : Fin (succ m) → Y
-    f' i = f (Fin↦ℕ i)
+    f' i = f (⟦_⟧ i)
 
     r' : f' has-a-repetition
     r' = finite-pigeonhole-principle' f'(m , t) (<-succ m)
 
     r : f' has-a-repetition → f has-a-repetition
-    r (i , j , u , p) = Fin↦ℕ i , Fin↦ℕ j , contrapositive (Fin↦ℕ-lc (succ m)) u , p
+    r (i , j , u , p) = ⟦_⟧ i , ⟦_⟧ j , contrapositive (⟦_⟧-lc (succ m)) u , p
 
 \end{code}
 
@@ -1193,8 +1236,8 @@ vec' : (n : ℕ) → (Fin n → 𝓤 ̇ ) → 𝓤 ̇
 vec' n X = (i : Fin n) → X i
 
 
-Vec' : 𝓤 ̇ → (n : ℕ) → 𝓤 ̇
-Vec' X n = vec' n (λ _ → X)
+Vec' : ℕ → 𝓤 ̇ → 𝓤 ̇
+Vec' n X = vec' n (λ _ → X)
 
 
 hd' : {n : ℕ} {X : Fin (succ n) → 𝓤 ̇ } → vec' (succ n) X → X 𝟎
