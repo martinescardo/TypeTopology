@@ -23,9 +23,7 @@
 
    * We have also used this development for learning other people's
      results, and so some previously known constructions and theorems
-     are included (sometimes with embellishments). In our last count,
-     this development has 74000 lines, including comments and blank
-     lines.
+     are included (sometimes with embellishments).
 
    * The required material on HoTT/UF has been developed on demand
      over the years to fullfil the needs of the above as they arise,
@@ -56,6 +54,9 @@
      inconsistent (as is well known), countable Tychonoff, and
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
+
+   * In our last count, this development has 74000 lines, including
+     comments and blank lines.
 
    * A module dependency graph is available, updated manually from
      time to time.
