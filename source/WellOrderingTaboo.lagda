@@ -17,7 +17,7 @@ proves the much stronger result:
   If every set has some irreflexive, extensional order, then excluded middle
   follows.
 
-In fact, we don't need full extensionality (as remarked by Dominik Krist): it
+In fact, we don't need full extensionality (as remarked by Dominik Kirst): it
 suffices that we have extensionality for minimal elements.
 
 [1] tinyurl.com/HoTT-Zulip-well-ordering
