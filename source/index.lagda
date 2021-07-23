@@ -229,6 +229,7 @@ import Unit
 import Unit-Properties
 import Universes
 import WeaklyCompactTypes
+import WellOrderingTaboo -- By Tom de Jong, based on a theorem by Andrew Swan
 import W
 import W-Properties
 import WLPO
@@ -499,6 +500,7 @@ import Unit-Type
 import UnivalenceFromScratch
 import Universes
 import WeaklyCompactTypes
+import WellOrderingTaboo
 import W
 import WLPO
 import W-Properties

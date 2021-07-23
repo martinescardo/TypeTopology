@@ -42,6 +42,9 @@ double-contrapositive = contrapositive ∘ contrapositive
 ¬¬-functor : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → B) → ¬¬ A → ¬¬ B
 ¬¬-functor = double-contrapositive
 
+¬¬-kleisli : {A : 𝓤 ̇ } {B : 𝓥 ̇ } → (A → ¬¬ B) → ¬¬ A → ¬¬ B
+¬¬-kleisli f ϕ h = ϕ (λ a → f a h)
+
 decidable : 𝓤 ̇ → 𝓤 ̇
 decidable A = A + ¬ A
 
