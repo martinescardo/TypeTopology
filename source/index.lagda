@@ -65,7 +65,7 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with Agda 2.6.1.
+   * This has been tested with Agda 2.6.1 and 2.6.2.
 
 Click at the imported module names to navigate to them:
 
