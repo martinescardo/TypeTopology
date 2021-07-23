@@ -1,7 +1,7 @@
 Tom de Jong, 22 & 23 July 2021 (following Andrew Swan)
 
 After a discussion with Dominik Kirst on propositional resizing at FSCD 2021,
-Martín Escardó asked the following question on HoTT Zulip and nlab:
+Martín Escardó asked the following question on HoTT Zulip [1] and nLab:
 
   By an inductive well-ordering I mean a well ordering in the sense of the HoTT
   book (accessible, extensional, transitive relation). If we assume that every
@@ -11,8 +11,8 @@ Martín Escardó asked the following question on HoTT Zulip and nlab:
 Andrew Swan quickly answered this question positively, presenting two proofs
 (based on the same idea). We formalize both proofs here.
 
-In turns out that transitivity and accessibility are not needed, i.e. we can
-prove the much stronger result:
+In turns out that transitivity and accessibility are not needed, i.e. Swan
+proves the much stronger result:
 
   If every set has some irreflexive, extensional order, then excluded middle
   follows.
@@ -20,16 +20,7 @@ prove the much stronger result:
 In fact, we don't need full extensionality (as remarked by Dominik Krist): it
 suffices that we have extensionality for minimal elements.
 
-We also record the following observation by Martín:
-
-  It follows that the inductive well-ordering principle implies, and hence is
-  equivalent, to the axiom of choice. This is because we can reuse the classical
-  proof: first you get the inductive well-ordering implies classical
-  well-ordering (every non-empty subset has a minimal element), using excluded
-  middle via your argument above. Then we use the classical proof that (any kind
-  of) well-ordering implies choice.
-
-Link to the discussion on HoTT Zulip: https://hott.zulipchat.com/#narrow/stream/228519-general/topic/inductive.20well-ordering.20gives.20excluded.20middle.3F
+[1] tinyurl.com/HoTT-Zulip-well-ordering
 
 \begin{code}
 
@@ -62,6 +53,10 @@ extensionality-for-minimal-elements {𝓤} {𝓣} {X} _≺_ =
 We first present Andrew Swan's second proof, which is a simplification of his
 first proof that does not need propositional truncations (which were used to
 construct quotients).
+
+Because the main results *do* use propositional truncations to have the
+existential quantifier ∃ available, we only present those later, in order to
+emphasize that Swan's construction does not need propositional truncations.
 
 We construct a family of sets Sₚ indexed by propositions P whose double negation
 holds such that if Sₚ can be equipped with an irreflexive and
@@ -146,6 +141,8 @@ module swan
 
 This construction allows us to prove the results announced above.
 
+We first need some definitions.
+
 \begin{code}
 
 module _
@@ -160,9 +157,8 @@ module _
  irreflexive-minimally-extensional-order-on-every-set : (𝓤 𝓣 : Universe)
                                                       → (𝓤 ⊔ 𝓣) ⁺ ̇
  irreflexive-minimally-extensional-order-on-every-set 𝓤 𝓣 =
-  (X : 𝓤 ̇ ) → is-set X → ∃ _≺_ ꞉ (X → X → 𝓣 ̇ ) ,
-                                 ((x : X) → ¬ (x ≺ x))
-                               × (extensionality-for-minimal-elements _≺_)
+  (X : 𝓤 ̇ ) → is-set X → ∃ _≺_ ꞉ (X → X → 𝓣 ̇ ) , ((x : X) → ¬ (x ≺ x))
+                                × (extensionality-for-minimal-elements _≺_)
 
  irreflexive-extensional-order-on-every-set : (𝓤 𝓣 : Universe) → (𝓤 ⊔ 𝓣) ⁺ ̇
  irreflexive-extensional-order-on-every-set 𝓤 𝓣 =
@@ -172,6 +168,13 @@ module _
  inductive-well-order-on-every-set : (𝓤 𝓣 : Universe) → (𝓤 ⊔ 𝓣) ⁺ ̇
  inductive-well-order-on-every-set 𝓤 𝓣 =
   (X : 𝓤 ̇ ) → is-set X → ∃ _≺_ ꞉ (X → X → 𝓣 ̇) , (is-well-order _≺_)
+
+\end{code}
+
+The following are the main theorems, which follow directly from Swan's results
+above.
+
+\begin{code}
 
  irreflexive-minimally-extensional-order-on-every-set-gives-excluded-middle :
   (𝓤 𝓣 : Universe) → irreflexive-minimally-extensional-order-on-every-set (𝓤 ⁺) 𝓣
@@ -187,7 +190,7 @@ module _
                                 × (extensionality-for-minimal-elements _≺_)
       t = IMEO S S-is-set
       h : (Σ _≺_ ꞉ (S → S → 𝓣 ̇) , ((x : S) → ¬ (x ≺ x))
-                                × (extensionality-for-minimal-elements _≺_))
+                                 × (extensionality-for-minimal-elements _≺_))
         → P
       h (_≺_ , ≺-irr , ≺-min-ext) = P-must-hold _≺_ ≺-irr ≺-min-ext
 
@@ -203,7 +206,7 @@ module _
      where
       f : (Σ _≺_ ꞉ (X → X → 𝓣 ̇) , ((x : X) → ¬ (x ≺ x)) × (is-extensional _≺_))
         → (Σ _≺_ ꞉ (X → X → 𝓣 ̇) , ((x : X) → ¬ (x ≺ x))
-                                × (extensionality-for-minimal-elements _≺_))
+                                 × (extensionality-for-minimal-elements _≺_))
       f (_≺_ , ≺-irr , ≺-ext) = _≺_ , ≺-irr , ≺-min-ext
        where
         ≺-min-ext : extensionality-for-minimal-elements _≺_
@@ -219,7 +222,7 @@ module _
     γ X X-is-set = ∥∥-functor f (IWO X X-is-set)
      where
       f : (Σ _≺_ ꞉ (X → X → 𝓣 ̇) , (is-well-order _≺_))
-        → Σ _≺_ ꞉ (X → X → 𝓣 ̇) , ((x : X) → ¬ (x ≺ x)) × (is-extensional _≺_)
+        → (Σ _≺_ ꞉ (X → X → 𝓣 ̇) , ((x : X) → ¬ (x ≺ x)) × (is-extensional _≺_))
       f (_≺_ , iwo) = (_≺_ , ≺-irr , extensionality _≺_ iwo)
        where
         ≺-irr : (x : X) → ¬ (x ≺ x)
@@ -346,3 +349,11 @@ module swan'
      γ (inr p) = p
 
 \end{code}
+
+TO DO:
+  It follows that the inductive well-ordering principle implies, and hence is
+  equivalent, to the axiom of choice. This is because we can reuse the classical
+  proof: first you get the inductive well-ordering implies classical
+  well-ordering (every non-empty subset has a minimal element), using excluded
+  middle via your argument above. Then we use the classical proof that (any kind
+  of) well-ordering implies choice.
