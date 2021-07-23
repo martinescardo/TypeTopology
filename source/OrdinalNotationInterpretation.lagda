@@ -2,6 +2,9 @@ Martin Escardo, 2012, 2018.
 
 Compact ordinals, discrete ordinals and their relationships.
 
+A 4-page abstract of a talk at Types'2019:
+https://www.cs.bham.ac.uk/~mhe/papers/compact-ordinals-Types-2019-abstract.pdf
+
 Begun December 2012, based on earlier work, circa 2010.
 
 Most of the work has been done later, and coded in July 2018 after a

@@ -357,10 +357,10 @@ module examples where
 
  prc-example : ℕ → 𝟚
  prc-example n = A (succ n) (prc n)
-
+{-
  large-prc-example : prc-example 10000 ≡ ₀
  large-prc-example = refl
-
+-}
 \end{code}
 
 In the worst case, however, A n p runs in time 2ⁿ.
@@ -383,10 +383,10 @@ In the worst case, however, A n p runs in time 2ⁿ.
 
  xor-example : ℕ → 𝟚
  xor-example n = A n (xor n)
-
+{-
  large-xor-example : xor-example 17 ≡ ₀
  large-xor-example = refl
-
+-}
 \end{code}
 
 The xor example works with n=17 in about 25s in a core-i7 machine.
@@ -408,8 +408,8 @@ Another fast example (linear):
 
  κ₁-example : ℕ → 𝟚
  κ₁-example n = A (succ n) (κ₁ n)
-
+{-
  large-κ₁-example : κ₁-example 100000 ≡ ₁
  large-κ₁-example = refl
-
+-}
 \end{code}
