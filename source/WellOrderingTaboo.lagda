@@ -11,7 +11,14 @@ Martín Escardó asked the following question on HoTT Zulip and nlab:
 Andrew Swan quickly answered this question positively, presenting two proofs
 (based on the same idea). We formalize both proofs here.
 
-TO DO: STRONGER RESULT
+In turns out that transitivity and accessibility are not needed, i.e. we can
+prove the much stronger result:
+
+  If every set has some irreflexive, extensional order, then excluded middle
+  follows.
+
+In fact, we don't need full extensionality (as remarked by Dominik Krist): it
+suffices that we have extensionality for minimal elements.
 
 We also record the following observation by Martín:
 
@@ -21,6 +28,8 @@ We also record the following observation by Martín:
   well-ordering (every non-empty subset has a minimal element), using excluded
   middle via your argument above. Then we use the classical proof that (any kind
   of) well-ordering implies choice.
+
+Link to the discussion on HoTT Zulip: https://hott.zulipchat.com/#narrow/stream/228519-general/topic/inductive.20well-ordering.20gives.20excluded.20middle.3F
 
 \begin{code}
 
@@ -47,6 +56,18 @@ extensionality-for-minimal-elements {𝓤} {𝓣} {X} _≺_ =
   (x y : X) → ((a : X) → ¬ (a ≺ x))
             → ((a : X) → ¬ (a ≺ y))
             → ((a : X) → a ≺ x ⇔ a ≺ y) → x ≡ y
+
+\end{code}
+
+We first present Andrew Swan's second proof, which is a simplification of his
+first proof that does not need propositional truncations (which were used to
+construct quotients).
+
+We construct a family of sets Sₚ indexed by propositions P whose double negation
+holds such that if Sₚ can be equipped with an irreflexive and
+minimally-extensional order, then the corresponding proposition P must hold.
+
+\begin{code}
 
 module swan
         (P : 𝓤 ̇ )
@@ -120,6 +141,12 @@ module swan
         h = ¬¬-functor
              (λ p → pe 𝟙-is-prop P-is-prop (λ _ → p) (λ _ → *))
              P-is-not-false
+
+\end{code}
+
+This construction allows us to prove the results announced above.
+
+\begin{code}
 
 module _
         (pt : propositional-truncations-exist)
@@ -200,6 +227,10 @@ module _
 
 \end{code}
 
+Finally, for comparison, we include Andrew Swan's first construction of the
+family of sets, which could also be used to derive the above results. This
+construction uses quotients, which we constuct using propositional truncations.
+
 \begin{code}
 
 module swan'
@@ -248,13 +279,19 @@ module swan'
  open quotient 𝟚 _≈_
   ≈-is-prop-valued ≈-is-reflexive ≈-is-symmetric ≈-is-transitive
 
+ S : 𝓤 ⁺ ̇
+ S = X/≈
+
  module _
-         (_≺_ : X/≈ → X/≈ → 𝓣 ̇ )
+         (_≺_ : S → S → 𝓣 ̇ )
          (≺-minimally-extensional : extensionality-for-minimal-elements _≺_)
-         (≺-irreflexive : (x : X/≈) → ¬ (x ≺ x))
+         (≺-irreflexive : (x : S) → ¬ (x ≺ x))
         where
 
-  quotient-lemma : (x : X/≈) → (x ≡ η ₀) ∨ (x ≡ η ₁)
+  S-is-set : is-set S
+  S-is-set = X/≈-is-set
+
+  quotient-lemma : (x : S) → (x ≡ η ₀) ∨ (x ≡ η ₁)
   quotient-lemma x = ∥∥-functor γ (η-surjection x)
    where
     γ : (Σ i ꞉ 𝟚 , η i ≡ x)
@@ -262,7 +299,7 @@ module swan'
     γ (₀ , e) = inl (e ⁻¹)
     γ (₁ , e) = inr (e ⁻¹)
 
-  η₀-minimal : (x : X/≈) → ¬ (x ≺ η ₀)
+  η₀-minimal : (x : S) → ¬ (x ≺ η ₀)
   η₀-minimal x h = ∥∥-rec 𝟘-is-prop γ (quotient-lemma x)
    where
     γ : (x ≡ η ₀) + (x ≡ η ₁) → 𝟘
@@ -275,7 +312,7 @@ module swan'
         claim : η ₁ ≡ η ₀
         claim = η-equiv-equal ∣ inr p ∣
 
-  η₁-minimal : (x : X/≈) → ¬ (x ≺ η ₁)
+  η₁-minimal : (x : S) → ¬ (x ≺ η ₁)
   η₁-minimal x h = ∥∥-rec 𝟘-is-prop γ (quotient-lemma x)
    where
     γ : (x ≡ η ₀) + (x ≡ η ₁) → 𝟘
@@ -292,13 +329,13 @@ module swan'
   ≈-identifies-₀-and-₁ = ≺-minimally-extensional (η ₀) (η ₁)
                           η₀-minimal η₁-minimal γ
    where
-    γ : (a : X/≈) → (a ≺ η ₀) ⇔ (a ≺ η ₁)
-    γ a = f , g
+    γ : (s : S) → (s ≺ η ₀) ⇔ (s ≺ η ₁)
+    γ s = f , g
      where
-      f : a ≺ η ₀ → a ≺ η ₁
-      f h = 𝟘-elim (η₀-minimal a h)
-      g : a ≺ η ₁ → a ≺ η ₀
-      g h = 𝟘-elim (η₁-minimal a h)
+      f : s ≺ η ₀ → s ≺ η ₁
+      f h = 𝟘-elim (η₀-minimal s h)
+      g : s ≺ η ₁ → s ≺ η ₀
+      g h = 𝟘-elim (η₁-minimal s h)
 
   P-must-hold : P
   P-must-hold =
