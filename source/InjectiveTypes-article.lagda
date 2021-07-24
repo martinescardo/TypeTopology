@@ -1,12 +1,11 @@
 Martin Escardo, 19th Feb 2019.
 
-An unformalized version of this paper was published in Mathematical
-Structures in Computer Science, Cambridge University Press, 5th
-January 2021.
-https://doi.org/10.1017/S0960129520000225
-
 Injective types in univalent mathematics, in Agda
 -------------------------------------------------
+
+An unformalized version of this file was published in Mathematical
+Structures in Computer Science, Cambridge University Press, 5th
+January 2021.  https://doi.org/10.1017/S0960129520000225
 
 Remark about the contents and organization of this Agda file.
 
