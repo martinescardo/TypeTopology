@@ -1,8 +1,12 @@
+Martin Escardo, 22nd and 24th January 2020, with further additions
+after that.
+
 The Cantor-Schröder-Bernstein for homotopy types, or ∞-groupoids, in Agda
 -------------------------------------------------------------------------
 
-Martin Escardo, 22nd and 24th January 2020, with further additions
-after that.
+An unformalized version of this file was published in
+the Journal of Homotopy and Related Structures, Springer, 28th June 2021.
+https://doi.org/10.1007/s40062-021-00284-6
 
 There are two parts, which assume function extensionality but not
 univalence or the existence of propositional truncations (any
