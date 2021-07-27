@@ -201,7 +201,7 @@ We get a path in the tree by following any given strategy:
 \begin{code}
 
 strategic-path : {Xt : DTT} → Strategy Xt → Path Xt
-strategic-path {[]}    ⟨⟩         = ⟨⟩
+strategic-path {[]}     ⟨⟩        = ⟨⟩
 strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
 
 \end{code}
@@ -256,7 +256,7 @@ In the above definition:
 
    So the first part
 
-     q (a :: strategic-path (σf a)) ≡ ϕ (λ x → q (x :: strategic-path (σf x)))
+     q (x₀ :: strategic-path (σf x₀)) ≡ ϕ (λ x → q (x :: strategic-path (σf x)))
 
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
