@@ -6,8 +6,8 @@ selection functions and dependent-type trees.
 This is based on our previous work.
 
   [1] M.H. Escardó and Paulo Oliva. Sequential Games and Optimal
-      Strategies. Proceedings of the Royal Society A, 2010.
-      https://doi.org/10.1098/rspa.2010.0471
+      Strategies. Proceedings of the Royal Society A, 467:1519-1545,
+      2011. https://doi.org/10.1098/rspa.2010.0471
 
 We generalize [1] by considering the case that the type Xₖ of moves xₖ
 at round k depends on the moves played at the previous rounds. So in a
