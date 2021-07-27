@@ -39,10 +39,10 @@ module FiniteHistoryDependentGames (fe : Fun-Ext) where
 \end{code}
 
 We represent the moves of a history-dependent sequential game by a
-dependent-type tree (DTT).  This is either a leaf [] or else has a
-type X of initial moves at the root, and, inductively, a family Xf of
-subtrees indexed by elements of X, which is written X ∷ Xf. We refer
-to the family Xf as a forest. We let Xt range over such trees.
+dependent-type tree (DTT).  This is either an empty tree [] or else
+has a type X of initial moves at the root, and, inductively, a family
+Xf of subtrees indexed by elements of X, which is written X ∷ Xf. We
+refer to the family Xf as a forest. We let Xt range over such trees.
 
  * Xt ranges over dependent-type trees.
  * Xf ranges over dependent-type forests.
