@@ -126,9 +126,9 @@ assigns selection functions to the nodes.
  * ϕf ranges over the type (x : X) → 𝓚 R (Xf x) of quantifier forests.
  * εf ranges over the type (x : X) → 𝓙 R (Xf x) of selection-function forests.
 
-Sequencing quantifiers and selections are constructed as in
-Definitions 2 and 12 of reference [1], but using our tree
-representation of games instead:
+Sequencing quantifiers and selections, as constructed in Definitions 2
+and 12 of reference [1], but using our tree representation of games
+instead:
 
 \begin{code}
 
@@ -201,7 +201,7 @@ We get a path in the tree by following any given strategy:
 \begin{code}
 
 strategic-path : {Xt : DTT} → Strategy Xt → Path Xt
-strategic-path {[]}    ⟨⟩      = ⟨⟩
+strategic-path {[]}    ⟨⟩         = ⟨⟩
 strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
 
 \end{code}
