@@ -275,7 +275,7 @@ is-optimal {game Xt R ϕt q} σ = is-sgpe {Xt} {R} ϕt q σ
 
 \end{code}
 
-The main lemma is that the optimal outcome is the same as the
+The main lemma is that the optimal outcome is the same thing as the
 application of the outcome function to the path induced by a strategy
 in perfect subgame equilibrium.
 
@@ -312,7 +312,7 @@ equilibrium-theorem (game R Xt ϕt q) = sgpe-lemma Xt R ϕt q
 
 We now show how to use selection functions to compute a sgpe strategy.
 
-We first convert a selection function into a quantifiers as in
+We first convert a selection function into a quantifier as in
 Definition 10 of [1]:
 
 \begin{code}
@@ -444,7 +444,6 @@ selection-strategy-lemma {X ∷ Xf} {R} (ε :: εf) q = h :: t
   t : (x : X) → is-sgpe (Overline (εf x)) (λ xs → q (x :: xs)) (selection-strategy (εf x) (λ xs → q (x :: xs)))
   t x = selection-strategy-lemma (εf x) (λ xs → q (x :: xs))
 
-
 \end{code}
 
 The following, which shows how to use selection functions to compute
@@ -488,4 +487,4 @@ example-permutation2 = 𝟎 , (𝟏 , λ ()) , ⟨⟩
 
 TODO. Define tic-tac-toe using no-repetitions and Fin 9.
 
-TODO. Generalize the above to multi-valued quantifiers, using monads.
+TODO. Generalize the above to multi-valued quantifiers, as in [1], using monads.
