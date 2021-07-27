@@ -150,8 +150,8 @@ J-sequence {X ∷ Xf} (ε :: εf) q = h :: t h
 
 The following is Definition 3 of the above reference [1].
 
-A game is defined by a type R of outcomes, a game tree Xt, quantifiers
-ϕt for the nodes of the tree and an outcome function q:
+A game is defined by a type R of outcomes, a game tree Xt, a
+quantifier tree ϕt and an outcome function q:
 
 \begin{code}
 
@@ -271,7 +271,7 @@ is in subgame perfect equilibrium.
 \begin{code}
 
 is-optimal : {G : Game} (σ : Strategy (G .Xt)) → Type
-is-optimal {game Xt R Xfs q} σ = is-sgpe {Xt} {R} Xfs q σ
+is-optimal {game Xt R ϕt q} σ = is-sgpe {Xt} {R} ϕt q σ
 
 \end{code}
 
@@ -306,7 +306,7 @@ This can be reformulated as follows in terms of the type of games:
 equillibrium-theorem : (G : Game) (σ : Strategy (G .Xt))
                      → is-optimal σ
                      → optimal-outcome G ≡ G .q (strategic-path σ)
-equillibrium-theorem (game R Xt Xfs q) = sgpe-lemma Xt R Xfs q
+equillibrium-theorem (game R Xt ϕt q) = sgpe-lemma Xt R ϕt q
 
 \end{code}
 
