@@ -139,6 +139,7 @@ import Empty
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
+import FiniteHistoryDependentGames     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
 import frame
 import FailureOfTotalSeparatedness
@@ -323,6 +324,7 @@ import Escardo-Simpson-LICS2001
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import Fin
+import FiniteHistoryDependentGames
 import Finiteness-Universe-Invariance
 import frame
 import Frame
