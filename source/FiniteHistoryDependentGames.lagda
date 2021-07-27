@@ -98,7 +98,7 @@ J R X = (X → R) → X
 
 \end{code}
 
-In the same way as the type of moves at a give stage of the game
+In the same way as the type of moves at a given stage of the game
 depends on the previousely played moves, so do the quantifies and
 selection functions.
 
