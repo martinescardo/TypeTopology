@@ -328,7 +328,7 @@ function of a tree:
 \begin{code}
 
 Overline : {Xt : DTT} {R : Type} → 𝓙 R Xt → 𝓚 R Xt
-Overline {[]}    ⟨⟩        = ⟨⟩
+Overline {[]}    ⟨⟩         = ⟨⟩
 Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
 
 \end{code}
