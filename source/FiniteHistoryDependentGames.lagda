@@ -151,7 +151,7 @@ J-sequence {X ∷ Xf} (ε :: εf) q = h :: t h
 The following is Definition 3 of the above reference [1].
 
 A game is defined by a type R of outcomes, a game tree Xt, quantifiers
-Xfs for the nodes of the tree and an outcome function q:
+ϕt for the nodes of the tree and an outcome function q:
 
 \begin{code}
 
