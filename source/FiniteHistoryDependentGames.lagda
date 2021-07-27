@@ -99,7 +99,7 @@ J R X = (X → R) → X
 \end{code}
 
 In the same way as the type of moves at a given stage of the game
-depends on the previously played moves, so do the quantifies and
+depends on the previously played moves, so do the quantifiers and
 selection functions.
 
 𝓚 assigns a quantifier to each node in a given tree, and similarly 𝓙
