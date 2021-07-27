@@ -15,7 +15,7 @@ sequence of moves x₀,x₁,x₂,…, we have that
 
   * the type X₀ of initial moves doesn't depend on anything,
   * the type X₁ depends on the first move x₀ : X₀,
-  * the type X₂ depends on depends on the first move x₀ : X₀ and the
+  * the type X₂ depends on the first move x₀ : X₀ and the
     second move x₁ : X₁.
 
 In order to achieve this generalization, we work with game trees
