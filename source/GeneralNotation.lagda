@@ -11,6 +11,9 @@ open import Universes
 open import Id
 open import Negation public
 
+Type  = Set
+Type₁ = Set₁
+
 reflexive : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 reflexive R = ∀ x → R x x
 
