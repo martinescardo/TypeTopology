@@ -1,4 +1,4 @@
-Martin Escardo, Paulo Oliva, 2nd July 2021
+Martin Escardo, Paulo Oliva, 2-27 July 2021
 
 We study finite, history dependent games of perfect information using
 selection functions and dependent-type trees.
@@ -99,7 +99,7 @@ J R X = (X → R) → X
 \end{code}
 
 In the same way as the type of moves at a given stage of the game
-depends on the previousely played moves, so do the quantifies and
+depends on the previously played moves, so do the quantifies and
 selection functions.
 
 𝓚 assigns a quantifier to each node in a given tree, and similarly 𝓙
@@ -208,7 +208,7 @@ strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
 
 In the notation of reference [1] above, Definition 5, a strategy σt
 for a game (Xt,R,ϕt,q) is said to be optimal, or in subgame perfect
-equillibrium (abbreviated sgpe), if for every partial play a₀,…,aₖ₋₁
+equilibrium (abbreviated sgpe), if for every partial play a₀,…,aₖ₋₁
 of length k, we have
 
    q(a₀,…,aₖ₋₁,bₖ(a₀,…,aₖ₋₁),…,bₙ₋₁(a₀,…,aₖ₋₁))
@@ -261,7 +261,7 @@ In the above definition:
    of the definition is as in the comment above, but with a partial
    play of length k=0, and the second (inductive) part, says that the
    substrategy σf x, for any deviation x, is in subgame perfect
-   equillibrium in the subgame
+   equilibrium in the subgame
 
      (Xf x , R , ϕf x , λ (xs : Path (Xf x)) → q (x :: xs)).
 
@@ -303,10 +303,10 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-equillibrium-theorem : (G : Game) (σ : Strategy (G .Xt))
-                     → is-optimal σ
-                     → optimal-outcome G ≡ G .q (strategic-path σ)
-equillibrium-theorem (game R Xt ϕt q) = sgpe-lemma Xt R ϕt q
+equilibrium-theorem : (G : Game) (σ : Strategy (G .Xt))
+                    → is-optimal σ
+                    → optimal-outcome G ≡ G .q (strategic-path σ)
+equilibrium-theorem (game R Xt ϕt q) = sgpe-lemma Xt R ϕt q
 
 \end{code}
 
@@ -473,7 +473,7 @@ Incomplete examples:
 \begin{code}
 
 no-repetitions : (n : ℕ) (X : Type) → DTT
-no-repetitions zero X     = []
+no-repetitions 0        X = []
 no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≢ x )
 
 open import Fin hiding ([] ; _∷_ ; _::_ ; hd ; tl ; _++_)
