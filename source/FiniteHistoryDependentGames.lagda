@@ -151,7 +151,7 @@ J-sequence {X ∷ Xf} (ε :: εf) q = h :: t h
 
 The following is Definition 3 of the above reference [1].
 
-A game is defined by a type R of outcomes, a game tree Xt, a
+A game is defined by a game tree Xt, a type R of outcomes, a
 quantifier tree ϕt and an outcome function q:
 
 \begin{code}
@@ -284,15 +284,15 @@ The following is Theorem 3.1 of reference [1].
 
 \begin{code}
 
-sgpe-lemma : (R : Type) (Xt : DTT) (ϕt : 𝓚 R Xt) (q : Path Xt → R) (σ : Strategy Xt)
+sgpe-lemma : (Xt : DTT) {R : Type} (ϕt : 𝓚 R Xt) (q : Path Xt → R) (σ : Strategy Xt)
            → is-sgpe ϕt q σ
            → K-sequence ϕt q ≡ q (strategic-path σ)
-sgpe-lemma R []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
-sgpe-lemma R (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
+sgpe-lemma []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
+sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
   IH : (x : X) → is-sgpe (ϕt x) (λ xs → q (x :: xs)) (σf x)
                → K-sequence (ϕt x) (λ xs → q (x :: xs)) ≡ q (x :: strategic-path (σf x))
-  IH x = sgpe-lemma R (Xf x) (ϕt x) (λ (xs : Path (Xf x)) → q (x :: xs)) (σf x)
+  IH x = sgpe-lemma (Xf x) (ϕt x) (λ (xs : Path (Xf x)) → q (x :: xs)) (σf x)
 
   γ = ϕ (λ x → K-sequence (ϕt x) (λ xs → q (x :: xs))) ≡⟨ ap ϕ (dfunext fe (λ x → IH x (t x))) ⟩
       ϕ (λ x → q (x :: strategic-path (σf x)))         ≡⟨ h ⁻¹ ⟩
@@ -307,7 +307,7 @@ This can be reformulated as follows in terms of the type of games:
 equilibrium-theorem : (G : Game) (σ : Strategy (G .Xt))
                     → is-optimal σ
                     → optimal-outcome G ≡ G .q (strategic-path σ)
-equilibrium-theorem (game R Xt ϕt q) = sgpe-lemma Xt R ϕt q
+equilibrium-theorem (game Xt R ϕt q) = sgpe-lemma Xt ϕt q
 
 \end{code}
 
