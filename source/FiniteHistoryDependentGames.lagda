@@ -17,6 +17,7 @@ sequence of moves x₀,x₁,x₂,…, we have that
   * the type X₁ depends on the first move x₀ : X₀,
   * the type X₂ depends on the first move x₀ : X₀ and the
     second move x₁ : X₁.
+  …
 
 In order to achieve this generalization, we work with game trees
 whose nodes are labelled by types that collect the allowed moves at a
@@ -68,6 +69,9 @@ Path (X ∷ Xf) = Σ x ꞉ X , Path (Xf x)
 
 As discussed above, a play in a game is defined to be such a path.
 
+The idea is that we choose a move x, and then, inductively, a path in
+the subtree Xf x.
+
 The variable xs ranges over paths, that is, elements of the type
 Path Xt for a dependent-type-tree Xt.
 
@@ -82,9 +86,6 @@ path-tail : {X : Type} {Xf : X → DTT} ((x :: xs) : Path (X ∷ Xf)) → Path (
 path-tail (x :: xs) = xs
 
 \end{code}
-
-The idea is that we choose a move x, and then, inductively, a path in
-the subtree Xf x.
 
 Quantifiers and selections, as in Sections 1 and 2 of reference [1]:
 
@@ -206,7 +207,7 @@ strategic-path {X ∷ Xf} (x :: σf) = x :: strategic-path {Xf x} (σf x)
 
 \end{code}
 
-In the notation of reference [1] above, Definition 5, a strategy σt
+In the notation of reference [1] above, Definition 5, a strategy σ
 for a game (Xt,R,ϕt,q) is said to be optimal, or in subgame perfect
 equilibrium (abbreviated sgpe), if for every partial play a₀,…,aₖ₋₁
 of length k, we have
@@ -328,7 +329,7 @@ function of a tree:
 \begin{code}
 
 Overline : {Xt : DTT} {R : Type} → 𝓙 R Xt → 𝓚 R Xt
-Overline {[]}    ⟨⟩         = ⟨⟩
+Overline {[]}     ⟨⟩        = ⟨⟩
 Overline {X ∷ Xf} (ε :: εs) = overline ε :: (λ x → Overline {Xf x} (εs x))
 
 \end{code}
