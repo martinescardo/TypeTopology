@@ -393,7 +393,7 @@ observation {X ∷ Xf} (ε :: εf) (ϕ :: ϕf) (a :: af) = γ
 \end{code}
 
 Notice that the converse is also true, that is, if Overline εt ≡ ϕt
-then εt are selection of ϕt, but we don't need this fact here.
+then εt are selections of ϕt, but we don't need this fact here.
 
 \begin{code}
 
@@ -466,6 +466,12 @@ selection-strategy-theorem εt ϕt q a = III
 
   III : is-sgpe ϕt q (selection-strategy εt q)
   III = transport (λ - → is-sgpe - q (selection-strategy εt q)) I II
+
+
+Selection-Strategy-Theorem : (G : Game) (εt : 𝓙 (G .R) (G .Xt))
+                           → εt are-selections-of (G .ϕt)
+                           → is-optimal (selection-strategy εt (G .q))
+Selection-Strategy-Theorem (game Xt R ϕt q) εt = selection-strategy-theorem εt ϕt q
 
 \end{code}
 
