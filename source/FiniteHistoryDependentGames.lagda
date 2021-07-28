@@ -176,7 +176,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 
 \begin{code}
 
-optimal-outcome : (G : Game) → G .R
+optimal-outcome : (G : Game) → R G
 optimal-outcome (game R Xt ϕt q) = K-sequence ϕt q
 
 \end{code}
@@ -272,7 +272,7 @@ is in subgame perfect equilibrium.
 
 \begin{code}
 
-is-optimal : {G : Game} (σ : Strategy (G .Xt)) → Type
+is-optimal : {G : Game} (σ : Strategy (Xt G)) → Type
 is-optimal {game Xt R ϕt q} σ = is-sgpe {Xt} {R} ϕt q σ
 
 \end{code}
@@ -305,9 +305,9 @@ This can be reformulated as follows in terms of the type of games:
 
 \begin{code}
 
-equilibrium-theorem : (G : Game) (σ : Strategy (G .Xt))
+equilibrium-theorem : (G : Game) (σ : Strategy (Xt G))
                     → is-optimal σ
-                    → optimal-outcome G ≡ G .q (strategic-path σ)
+                    → optimal-outcome G ≡ q G (strategic-path σ)
 equilibrium-theorem (game Xt R ϕt q) = sgpe-lemma Xt ϕt q
 
 \end{code}
@@ -468,9 +468,9 @@ selection-strategy-theorem εt ϕt q a = III
   III = transport (λ - → is-sgpe - q (selection-strategy εt q)) I II
 
 
-Selection-Strategy-Theorem : (G : Game) (εt : 𝓙 (G .R) (G .Xt))
-                           → εt are-selections-of (G .ϕt)
-                           → is-optimal (selection-strategy εt (G .q))
+Selection-Strategy-Theorem : (G : Game) (εt : 𝓙 (R G) (Xt G))
+                           → εt are-selections-of (ϕt G)
+                           → is-optimal (selection-strategy εt (q G))
 Selection-Strategy-Theorem (game Xt R ϕt q) εt = selection-strategy-theorem εt ϕt q
 
 \end{code}
