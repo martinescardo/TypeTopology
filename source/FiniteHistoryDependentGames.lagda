@@ -77,6 +77,7 @@ Path Xt for a dependent-type-tree Xt.
 
 \begin{code}
 
+pattern ⟨⟩        = *
 pattern _::_ x xs = (x , xs)
 
 path-head : {X : Type} {Xf : X → DTT} → Path (X ∷ Xf) → X
@@ -405,23 +406,20 @@ crucial-lemma {X ∷ Xf} εt@(ε :: εf) q = γ
   t : (x : X) → Path (Xf x)
   t x = J-sequence {Xf x} (εf x) (λ xs → q (x :: xs))
 
-  h : X
-  h = ε (λ x → q (x :: t x))
-
   x₀ : X
   x₀ = path-head (J-sequence εt q)
+
+  remark-used-implicitly : x₀ ≡ ε (λ x → q (x :: t x))
+  remark-used-implicitly = refl
 
   σf : (x : X) → Strategy (Xf x)
   σf x = selection-strategy {Xf x} (εf x) (λ xs → q (x :: xs))
 
-  IH : t h ≡ strategic-path (σf x₀)
+  IH : t x₀ ≡ strategic-path (σf x₀)
   IH = crucial-lemma (εf x₀) (λ xs → q (x₀ :: xs))
 
-  remark : h ≡ x₀
-  remark = refl
-
-  γ : h :: t h ≡ x₀ :: strategic-path (σf x₀)
-  γ = ap (h ::_) IH
+  γ : x₀ :: t x₀ ≡ x₀ :: strategic-path (σf x₀)
+  γ = ap (x₀ ::_) IH
 
 selection-strategy-lemma : {Xt : DTT} {R : Type} (εt : 𝓙 R Xt) (q : Path Xt → R)
                          → is-sgpe (Overline εt) q (selection-strategy εt q)
@@ -442,7 +440,10 @@ selection-strategy-lemma {X ∷ Xf} {R} (ε :: εf) q = h :: t
   h : g (ε f) ≡ g (ε g)
   h = ap (g ∘ ε) II
 
-  t : (x : X) → is-sgpe (Overline (εf x)) (λ xs → q (x :: xs)) (selection-strategy (εf x) (λ xs → q (x :: xs)))
+  t : (x : X) → is-sgpe
+                  (Overline (εf x))
+                  (λ xs → q (x :: xs))
+                  (selection-strategy (εf x) (λ xs → q (x :: xs)))
   t x = selection-strategy-lemma (εf x) (λ xs → q (x :: xs))
 
 \end{code}
