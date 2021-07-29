@@ -88,6 +88,18 @@ path-tail (x :: xs) = xs
 
 \end{code}
 
+NB. An alternative inductive definition of Path is the following,
+where, unfortunately, we get a higher type level, and so we won't use
+it:
+
+\begin{code}
+
+data Path₁ : DTT → Type₁ where
+ []  : Path₁ []
+ _∷_ : {X : Type} {Xf : X → DTT} (x : X) (xs : Path₁ (Xf x)) → Path₁ (X ∷ Xf)
+
+\end{code}
+
 Quantifiers and selections, as in Sections 1 and 2 of reference [1]:
 
 \begin{code}
