@@ -23,7 +23,6 @@
 {-# OPTIONS --without-K --exact-split #-}
 
 import index
-
 import UnsafeModulesIndex
 
 \end{code}
