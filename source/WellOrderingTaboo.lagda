@@ -6,7 +6,7 @@ Martín Escardó asked the following question on HoTT Zulip [1] and nLab:
   By an inductive well-ordering I mean a well ordering in the sense of the HoTT
   book (accessible, extensional, transitive relation). If we assume that every
   set can be inductively well ordered, can we conclude that excluded middle
-  holds?"
+  holds?
 
 Andrew Swan quickly answered this question positively, presenting two proofs
 (based on the same idea). We formalize both proofs here.
@@ -17,7 +17,7 @@ proves the much stronger result:
   If every set has some irreflexive, extensional order, then excluded middle
   follows.
 
-In fact, we don't need full extensionality (as remarked by Dominik Krist): it
+In fact, we don't need full extensionality (as remarked by Dominik Kirst): it
 suffices that we have extensionality for minimal elements.
 
 [1] tinyurl.com/HoTT-Zulip-well-ordering
@@ -51,8 +51,8 @@ extensionality-for-minimal-elements {𝓤} {𝓣} {X} _≺_ =
 \end{code}
 
 We first present Andrew Swan's second proof, which is a simplification of his
-first proof that does not need propositional truncations (which were used to
-construct quotients).
+first proof that does not need exact quotients (we use propositional truncations
+to construct quotients).
 
 Because the main results *do* use propositional truncations to have the
 existential quantifier ∃ available, we only present those later, in order to

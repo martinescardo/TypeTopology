@@ -23,9 +23,7 @@
 
    * We have also used this development for learning other people's
      results, and so some previously known constructions and theorems
-     are included (sometimes with embellishments). In our last count,
-     this development has 74000 lines, including comments and blank
-     lines.
+     are included (sometimes with embellishments).
 
    * The required material on HoTT/UF has been developed on demand
      over the years to fullfil the needs of the above as they arise,
@@ -57,6 +55,9 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
+   * In our last count, this development has 74000 lines, including
+     comments and blank lines.
+
    * A module dependency graph is available, updated manually from
      time to time.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/dependency-graph.pdf)
@@ -65,7 +66,7 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with Agda 2.6.1.
+   * This has been tested with Agda 2.6.1 and 2.6.2.
 
 Click at the imported module names to navigate to them:
 
@@ -138,6 +139,7 @@ import Empty
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
+import FiniteHistoryDependentGames     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
 import frame
 import FailureOfTotalSeparatedness
@@ -322,6 +324,7 @@ import Escardo-Simpson-LICS2001
 import ExtendedSumCompact
 import FailureOfTotalSeparatedness
 import Fin
+import FiniteHistoryDependentGames
 import Finiteness-Universe-Invariance
 import frame
 import Frame
