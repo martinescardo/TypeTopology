@@ -301,7 +301,7 @@ is-trichotomous = (x y : X) → (x < y) + (x ≡ y) + (y < x)
 
 Not all ordinals are trichotomous, in the absence of excluded middle
 or even just LPO, because ℕ∞ is not discrete unless LPO holds, but its
-natural order is well-founded, and types well-founded trichotomous
+natural order is well-founded, and types with well-founded trichotomous
 relations are discrete (have decidable equality):
 
 \begin{code}
