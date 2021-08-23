@@ -37,6 +37,8 @@ pointed-decidable = inl
 
 Digression: https://twitter.com/EgbertRijke/status/1429443868450295810
 
+"decidable" is almost a monad, except that it is not even functorial:
+
 \begin{code}
 
 module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
@@ -74,17 +76,21 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
     → is-nonempty X
   ϕ α u = u (α (inr u))
 
-  by-definition-of-η : {X : 𝓤 ̇ } (α : T X → X)
-                     → α ∘ η X ∼ id
+  proto-structure-map : {A : 𝓤 ̇ } (α : T A → A) → 𝓤 ̇
+  proto-structure-map {𝓤} {A} α = α ∘ η A ∼ id
 
-                     → α ∘ inl ∼ id
-  by-definition-of-η α h = h
+  ptm-characterization : {A : 𝓤 ̇ } (α : T A → A)
+                       → proto-structure-map α ⇔ (α ∘ inl ∼ id)
+                                               × ((ϕ : is-nonempty A) → α ∘ inr ∼ λ u → 𝟘-elim (ϕ u))
+  ptm-characterization {𝓤} {A} α = f , g
+   where
+    f : proto-structure-map α
+      → (α ∘ inl ∼ id) × ((ϕ : is-nonempty A) (u : is-empty A) → α (inr u) ≡ 𝟘-elim (ϕ u))
+    f h = h , λ ϕ u → 𝟘-elim (ϕ u)
 
-  vacuously : {X : 𝓤 ̇ } (α : T X → X)
-          → α ∘ η X ∼ id
-
-          → α ∘ inr ∼ λ u → 𝟘-elim (ϕ α u)
-  vacuously α h u = 𝟘-elim (ϕ α u)
+    g : (α ∘ inl ∼ id) × ((ϕ : is-nonempty A) (u : is-empty A) → α (inr u) ≡ 𝟘-elim (ϕ u))
+      → proto-structure-map α
+    g (h , _) = h
 
 \end{code}
 
