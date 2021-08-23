@@ -43,6 +43,8 @@ Digression: https://twitter.com/EgbertRijke/status/1429443868450295810
 
 module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
 
+  open import UF-Equiv
+
   T : 𝓤 ̇ → 𝓤 ̇
   T = decidable
 
@@ -53,11 +55,20 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
   μ X (inl δ) = δ
   μ X (inr u) = inr (λ x → u (inl x))
 
-\end{code}
+  μη : (X : 𝓤 ̇ ) → μ X ∘ η (T X) ∼ id
+  μη X (inl x) = refl
+  μη X (inr u) = refl
 
-Answer to Andrej Bauer's trick question:
+  ημ : (X : 𝓤 ̇ ) → η (T X) ∘ μ X ∼ id
+  ημ X (inl (inl x)) = refl
+  ημ X (inl (inr u)) = refl
+  ημ X (inr u) = 𝟘-elim (u (inr (λ x → u (inl x))))
 
-\begin{code}
+  μ-is-invertible : (X : 𝓤 ̇ ) → invertible (μ X)
+  μ-is-invertible X = η (T X) , ημ X , μη X
+
+  μ-≃ : (X : 𝓤 ̇ ) → T (T X) ≃ T X
+  μ-≃ X = qinveq (μ X) (μ-is-invertible X)
 
   raw-T-algebras-are-non-empty : {X : 𝓤 ̇ } (α : T X → X) → is-nonempty X
   raw-T-algebras-are-non-empty α u = u (α (inr u))
@@ -73,53 +84,52 @@ Answer to Andrej Bauer's trick question:
                              → α ∘ η A ∼ id
   section-of-η-is-retraction α k a = inl-lc (k (inl a))
 
-  is-proto-structure-map : {A : 𝓤 ̇ } (α : T A → A) → 𝓤 ̇
-  is-proto-structure-map {𝓤} {A} α = α ∘ η A ∼ id
+  η⁻¹ : {A : 𝓤 ̇ } → is-nonempty A → (T A → A)
+  η⁻¹ ϕ (inl a) = a
+  η⁻¹ ϕ (inr u) = 𝟘-elim (ϕ u)
 
-  proto-structure-maps-have-nonempty-carrier : {A : 𝓤 ̇ } (α : T A → A)
-                                             → is-proto-structure-map α
-                                             → is-nonempty A
-  proto-structure-maps-have-nonempty-carrier α _ = raw-T-algebras-are-non-empty α
+  η⁻¹-is-retraction : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η⁻¹ ϕ ∘ η A ∼ id
+  η⁻¹-is-retraction ϕ a = refl
 
-  open import UF-Equiv
-
-  proto-structure-maps-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
-                                      → is-proto-structure-map α
-                                      → invertible α
-  proto-structure-maps-are-invertible {𝓤} {A} α h = η A , retraction-of-η-is-section α h , h
-
-  canonical-psm : {A : 𝓤 ̇ } → is-nonempty A → (T A → A)
-  canonical-psm ϕ (inl a) = a
-  canonical-psm ϕ (inr u) = 𝟘-elim (ϕ u)
-
-  canonical-psm-is-proto-structure-map : {A : 𝓤 ̇ } (ϕ : is-nonempty A)
-                                       → is-proto-structure-map (canonical-psm ϕ)
-  canonical-psm-is-proto-structure-map ϕ a = refl
-
-  proto-structure-map-uniqueness : {A : 𝓤 ̇ } (α : T A → A)
-                                 → is-proto-structure-map α
-                                 → (ϕ : is-nonempty A) → α ∼ canonical-psm ϕ
-  proto-structure-map-uniqueness α h ϕ (inl a) = h a
-  proto-structure-map-uniqueness α h ϕ (inr u) = 𝟘-elim (ϕ u)
-
-  is-proto-algebra : 𝓤 ̇ → 𝓤 ̇
-  is-proto-algebra A = Σ α ꞉ (T A → A) , is-proto-structure-map α
-
-  proto-algebras-are-non-empty : {A : 𝓤 ̇ } → is-proto-algebra A → is-nonempty A
-  proto-algebras-are-non-empty (α , _) = raw-T-algebras-are-non-empty α
-
-  nonempty-types-are-proto-algebras : {A : 𝓤 ̇ } → is-nonempty A → is-proto-algebra A
-  nonempty-types-are-proto-algebras ϕ = canonical-psm ϕ , canonical-psm-is-proto-structure-map ϕ
-
-  ηcpsm : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η A ∘ canonical-psm ϕ ∼ id
-  ηcpsm ϕ (inl a) = refl
-  ηcpsm ϕ (inr u) = 𝟘-elim (ϕ u)
+  η⁻¹-is-section : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η A ∘ η⁻¹ ϕ ∼ id
+  η⁻¹-is-section ϕ = retraction-of-η-is-section (η⁻¹ ϕ) (η⁻¹-is-retraction ϕ)
 
   η-invertible-gives-non-empty : {X : 𝓤 ̇ } → invertible (η X) → is-nonempty X
   η-invertible-gives-non-empty (α , _ , _) = raw-T-algebras-are-non-empty α
 
   non-empty-gives-η-invertible : {X : 𝓤 ̇ } → is-nonempty X → invertible (η X)
-  non-empty-gives-η-invertible {𝓤} {X} ϕ = canonical-psm ϕ , canonical-psm-is-proto-structure-map ϕ , ηcpsm ϕ
+  non-empty-gives-η-invertible {𝓤} {X} ϕ = η⁻¹ ϕ , η⁻¹-is-retraction ϕ , η⁻¹-is-section ϕ
+
+  η-≃ : (X : 𝓤 ̇ ) → is-nonempty X → X ≃ T X
+  η-≃ X ϕ = qinveq (η X) (non-empty-gives-η-invertible ϕ)
+
+  is-retraction-of-η : {A : 𝓤 ̇ } (α : T A → A) → 𝓤 ̇
+  is-retraction-of-η {𝓤} {A} α = α ∘ η A ∼ id
+
+  retraction-of-η-gives-nonempty : {A : 𝓤 ̇ } (α : T A → A)
+                                 → is-retraction-of-η α
+                                 → is-nonempty A
+  retraction-of-η-gives-nonempty α _ = raw-T-algebras-are-non-empty α
+
+  retractions-of-η-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
+                                  → is-retraction-of-η α
+                                  → invertible α
+  retractions-of-η-are-invertible {𝓤} {A} α h = η A , retraction-of-η-is-section α h , h
+
+  retractions-of-η-are-unique : {A : 𝓤 ̇ } (α : T A → A)
+                              → is-retraction-of-η α
+                              → (ϕ : is-nonempty A) → α ∼ η⁻¹ ϕ
+  retractions-of-η-are-unique α h ϕ (inl a) = h a
+  retractions-of-η-are-unique α h ϕ (inr u) = 𝟘-elim (ϕ u)
+
+  is-proto-algebra : 𝓤 ̇ → 𝓤 ̇
+  is-proto-algebra A = Σ α ꞉ (T A → A) , is-retraction-of-η α
+
+  proto-algebras-are-non-empty : {A : 𝓤 ̇ } → is-proto-algebra A → is-nonempty A
+  proto-algebras-are-non-empty (α , _) = raw-T-algebras-are-non-empty α
+
+  nonempty-types-are-proto-algebras : {A : 𝓤 ̇ } → is-nonempty A → is-proto-algebra A
+  nonempty-types-are-proto-algebras ϕ = η⁻¹ ϕ , η⁻¹-is-retraction ϕ
 
 \end{code}
 
