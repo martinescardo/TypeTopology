@@ -55,34 +55,46 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
 
   open import UF-Equiv
 
-  η-qinv-gives-non-empty : {X : 𝓤 ̇ } → qinv (η X) → is-nonempty X
-  η-qinv-gives-non-empty (g , _ , _) u = u (g (inr u))
+  raw-T-algebras-are-non-empty : {X : 𝓤 ̇ } (α : T X → X) → is-nonempty X
+  raw-T-algebras-are-non-empty α u = u (α (inr u))
 
-  non-empty-gives-η-qinv : {X : 𝓤 ̇ } → is-nonempty X → qinv (η X)
-  non-empty-gives-η-qinv {𝓤} {X} φ = f , fη , ηf
-   where
-    f : T X → X
-    f (inl x) = x
-    f (inr u) = 𝟘-elim (φ u)
+  retraction-of-η-is-section : {A : 𝓤 ̇ } (α : T A → A)
+                             → α ∘ η A ∼ id
+                             → η A ∘ α ∼ id
+  retraction-of-η-is-section α h (inl a) = ap inl (h a)
+  retraction-of-η-is-section α h (inr u) = 𝟘-elim (raw-T-algebras-are-non-empty α u)
 
-    fη : f ∘ η X ∼ id
-    fη x = refl
-
-    ηf : η X ∘ f ∼ id
-    ηf (inl x) = refl
-    ηf (inr u) = 𝟘-elim (φ u)
-
-  ϕ : {X : 𝓤 ̇ } (α : T X → X)
-    → is-nonempty X
-  ϕ α u = u (α (inr u))
+  section-of-η-is-retraction : {A : 𝓤 ̇ } (α : T A → A)
+                             → η A ∘ α ∼ id
+                             → α ∘ η A ∼ id
+  section-of-η-is-retraction α k a = inl-lc (k (inl a))
 
   proto-structure-map : {A : 𝓤 ̇ } (α : T A → A) → 𝓤 ̇
   proto-structure-map {𝓤} {A} α = α ∘ η A ∼ id
 
-  ptm-characterization : {A : 𝓤 ̇ } (α : T A → A)
+  proto-structure-maps-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
+                                      → proto-structure-map α
+                                      → invertible α
+  proto-structure-maps-are-invertible {𝓤} {A} α h = η A , retraction-of-η-is-section α h , h
+
+  psm : {A : 𝓤 ̇ } → is-nonempty A → (T A → A)
+  psm ϕ (inl a) = a
+  psm ϕ (inr u) = 𝟘-elim (ϕ u)
+
+  psm-is-proto-structure-map : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → proto-structure-map (psm ϕ)
+  psm-is-proto-structure-map ϕ a = refl
+
+  unique-protostructure-map : {A : 𝓤 ̇ } (α : T A → A)
+                            → proto-structure-map α
+                            → (ϕ : is-nonempty A) → α ∼ psm ϕ
+  unique-protostructure-map {𝓤} {A} α h ϕ (inl a) = h a
+  unique-protostructure-map {𝓤} {A} α h ϕ (inr u) = 𝟘-elim (ϕ u)
+
+
+  ptm-characterization₁ : {A : 𝓤 ̇ } (α : T A → A)
                        → proto-structure-map α ⇔ (α ∘ inl ∼ id)
                                                × ((ϕ : is-nonempty A) → α ∘ inr ∼ λ u → 𝟘-elim (ϕ u))
-  ptm-characterization {𝓤} {A} α = f , g
+  ptm-characterization₁ {𝓤} {A} α = f , g
    where
     f : proto-structure-map α
       → (α ∘ inl ∼ id) × ((ϕ : is-nonempty A) (u : is-empty A) → α (inr u) ≡ 𝟘-elim (ϕ u))
@@ -92,7 +104,29 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
       → proto-structure-map α
     g (h , _) = h
 
+  is-proto-algebra : 𝓤 ̇ → 𝓤 ̇
+  is-proto-algebra A = Σ α ꞉ (T A → A) , proto-structure-map α
+
+  proto-algebras-are-non-empty : {A : 𝓤 ̇ } → is-proto-algebra A → is-nonempty A
+  proto-algebras-are-non-empty (α , _) = raw-T-algebras-are-non-empty α
+
+  η-invertible-gives-non-empty : {X : 𝓤 ̇ } → invertible (η X) → is-nonempty X
+  η-invertible-gives-non-empty (α , _ , _) = raw-T-algebras-are-non-empty α
+
+  non-empty-types-are-proto-algebras : {A : 𝓤 ̇ } → is-nonempty A → is-proto-algebra A
+  non-empty-types-are-proto-algebras {𝓤} {A} ϕ = psm ϕ , psm-is-proto-structure-map ϕ
+
+  ηpsm : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η A ∘ psm ϕ ∼ id
+  ηpsm ϕ (inl a) = refl
+  ηpsm ϕ (inr u) = 𝟘-elim (ϕ u)
+
+  non-empty-gives-η-invertible : {X : 𝓤 ̇ } → is-nonempty X → invertible (η X)
+  non-empty-gives-η-invertible {𝓤} {X} ϕ = psm ϕ , psm-is-proto-structure-map ϕ , ηpsm ϕ
+
 \end{code}
+
+TODO. The ptm characterization is an equivalence, rather than just an
+"if and only if", assuming function extensionality.
 
 End of digression.
 
