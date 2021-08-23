@@ -103,27 +103,19 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
   η-≃ : (X : 𝓤 ̇ ) → is-nonempty X → X ≃ T X
   η-≃ X ϕ = qinveq (η X) (non-empty-gives-η-invertible ϕ)
 
-  is-retraction-of-η : {A : 𝓤 ̇ } (α : T A → A) → 𝓤 ̇
-  is-retraction-of-η {𝓤} {A} α = α ∘ η A ∼ id
-
-  retraction-of-η-gives-nonempty : {A : 𝓤 ̇ } (α : T A → A)
-                                 → is-retraction-of-η α
-                                 → is-nonempty A
-  retraction-of-η-gives-nonempty α _ = raw-T-algebras-are-non-empty α
-
   retractions-of-η-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
-                                  → is-retraction-of-η α
+                                  → α ∘ η A ∼ id
                                   → invertible α
   retractions-of-η-are-invertible {𝓤} {A} α h = η A , retraction-of-η-is-section α h , h
 
   retractions-of-η-are-unique : {A : 𝓤 ̇ } (α : T A → A)
-                              → is-retraction-of-η α
+                              → α ∘ η A ∼ id
                               → (ϕ : is-nonempty A) → α ∼ η⁻¹ ϕ
   retractions-of-η-are-unique α h ϕ (inl a) = h a
   retractions-of-η-are-unique α h ϕ (inr u) = 𝟘-elim (ϕ u)
 
   is-proto-algebra : 𝓤 ̇ → 𝓤 ̇
-  is-proto-algebra A = Σ α ꞉ (T A → A) , is-retraction-of-η α
+  is-proto-algebra A = Σ α ꞉ (T A → A) , α ∘ η A ∼ id
 
   proto-algebras-are-non-empty : {A : 𝓤 ̇ } → is-proto-algebra A → is-nonempty A
   proto-algebras-are-non-empty (α , _) = raw-T-algebras-are-non-empty α
