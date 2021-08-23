@@ -24,11 +24,73 @@ We look at decidable propositions and subsets (using the terminogy
 ¬¬-elim (inl a) f = a
 ¬¬-elim (inr g) f = 𝟘-elim(f g)
 
+empty-decidable : {X : 𝓤 ̇ } → is-empty X → decidable X
+empty-decidable = inr
+
 𝟘-decidable : decidable (𝟘 {𝓤})
-𝟘-decidable = inr 𝟘-elim
+𝟘-decidable = empty-decidable 𝟘-elim
 
 pointed-decidable : {X : 𝓤 ̇ } → X → decidable X
 pointed-decidable = inl
+
+\end{code}
+
+Digression: https://twitter.com/EgbertRijke/status/1429443868450295810
+
+\begin{code}
+
+module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
+
+  T : 𝓤 ̇ → 𝓤 ̇
+  T = decidable
+
+  η : (X : 𝓤 ̇ ) → X → T X
+  η X = pointed-decidable
+
+  μ : (X : 𝓤 ̇ ) → T (T X) → T X
+  μ X (inl δ) = δ
+  μ X (inr u) = inr (λ x → u (inl x))
+
+  open import UF-Equiv
+
+  η-qinv-gives-non-empty : {X : 𝓤 ̇ } → qinv (η X) → is-nonempty X
+  η-qinv-gives-non-empty (g , _ , _) u = u (g (inr u))
+
+  non-empty-gives-η-qinv : {X : 𝓤 ̇ } → is-nonempty X → qinv (η X)
+  non-empty-gives-η-qinv {𝓤} {X} φ = f , fη , ηf
+   where
+    f : T X → X
+    f (inl x) = x
+    f (inr u) = 𝟘-elim (φ u)
+
+    fη : f ∘ η X ∼ id
+    fη x = refl
+
+    ηf : η X ∘ f ∼ id
+    ηf (inl x) = refl
+    ηf (inr u) = 𝟘-elim (φ u)
+
+  ϕ : {X : 𝓤 ̇ } (α : T X → X)
+    → is-nonempty X
+  ϕ α u = u (α (inr u))
+
+  by-definition-of-η : {X : 𝓤 ̇ } (α : T X → X)
+                     → α ∘ η X ∼ id
+
+                     → α ∘ inl ∼ id
+  by-definition-of-η α h = h
+
+  vacuously : {X : 𝓤 ̇ } (α : T X → X)
+          → α ∘ η X ∼ id
+
+          → α ∘ inr ∼ λ u → 𝟘-elim (ϕ α u)
+  vacuously α h u = 𝟘-elim (ϕ α u)
+
+\end{code}
+
+End of digression.
+
+\begin{code}
 
 𝟙-decidable : decidable (𝟙 {𝓤})
 𝟙-decidable = pointed-decidable *
