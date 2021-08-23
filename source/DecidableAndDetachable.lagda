@@ -59,8 +59,6 @@ Answer to Andrej Bauer's trick question:
 
 \begin{code}
 
-  open import UF-Equiv
-
   raw-T-algebras-are-non-empty : {X : 𝓤 ̇ } (α : T X → X) → is-nonempty X
   raw-T-algebras-are-non-empty α u = u (α (inr u))
 
@@ -83,6 +81,8 @@ Answer to Andrej Bauer's trick question:
                                              → is-nonempty A
   proto-structure-maps-have-nonempty-carrier α _ = raw-T-algebras-are-non-empty α
 
+  open import UF-Equiv
+
   proto-structure-maps-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
                                       → is-proto-structure-map α
                                       → invertible α
@@ -92,8 +92,9 @@ Answer to Andrej Bauer's trick question:
   canonical-psm ϕ (inl a) = a
   canonical-psm ϕ (inr u) = 𝟘-elim (ϕ u)
 
-  psm-is-proto-structure-map : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → is-proto-structure-map (canonical-psm ϕ)
-  psm-is-proto-structure-map ϕ a = refl
+  canonical-psm-is-proto-structure-map : {A : 𝓤 ̇ } (ϕ : is-nonempty A)
+                                       → is-proto-structure-map (canonical-psm ϕ)
+  canonical-psm-is-proto-structure-map ϕ a = refl
 
   proto-structure-map-uniqueness : {A : 𝓤 ̇ } (α : T A → A)
                                  → is-proto-structure-map α
@@ -108,7 +109,7 @@ Answer to Andrej Bauer's trick question:
   proto-algebras-are-non-empty (α , _) = raw-T-algebras-are-non-empty α
 
   nonempty-types-are-proto-algebras : {A : 𝓤 ̇ } → is-nonempty A → is-proto-algebra A
-  nonempty-types-are-proto-algebras ϕ = canonical-psm ϕ , psm-is-proto-structure-map ϕ
+  nonempty-types-are-proto-algebras ϕ = canonical-psm ϕ , canonical-psm-is-proto-structure-map ϕ
 
   ηcpsm : {A : 𝓤 ̇ } (ϕ : is-nonempty A) → η A ∘ canonical-psm ϕ ∼ id
   ηcpsm ϕ (inl a) = refl
@@ -118,7 +119,7 @@ Answer to Andrej Bauer's trick question:
   η-invertible-gives-non-empty (α , _ , _) = raw-T-algebras-are-non-empty α
 
   non-empty-gives-η-invertible : {X : 𝓤 ̇ } → is-nonempty X → invertible (η X)
-  non-empty-gives-η-invertible {𝓤} {X} ϕ = canonical-psm ϕ , psm-is-proto-structure-map ϕ , ηcpsm ϕ
+  non-empty-gives-η-invertible {𝓤} {X} ϕ = canonical-psm ϕ , canonical-psm-is-proto-structure-map ϕ , ηcpsm ϕ
 
 \end{code}
 
