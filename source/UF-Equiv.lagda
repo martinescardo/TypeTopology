@@ -144,8 +144,10 @@ equiv-closed-under-∼' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {f g : X → Y}
                       → is-equiv g
 equiv-closed-under-∼' ise h = equiv-closed-under-∼  _ _ ise (λ x → (h x)⁻¹)
 
-qinv : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
-qinv f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g ∼ id)
+invertible : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ̇
+invertible f = Σ g ꞉ (codomain f → domain f), (g ∘ f ∼ id) × (f ∘ g ∼ id)
+
+qinv = invertible
 
 equivs-are-qinvs : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y) → is-equiv f → qinv f
 equivs-are-qinvs {𝓤} {𝓥} {X} {Y} f ((s , fs) , (r , rf)) = s , (sf , fs)
