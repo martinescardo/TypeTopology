@@ -134,12 +134,12 @@ Univalent Choice.
 
 \begin{code}
 
-module UnivalentChoice (𝓤 : Universe)
-                       (fe : FunExt)
+module UnivalentChoice (fe : FunExt)
                        (pt : propositional-truncations-exist)
+                       (𝓤 : Universe)
                        where
 
- open PropositionalTruncation pt public
+ open PropositionalTruncation pt
 
  sei : {X Y : 𝓤 ̇ } → is-set Y → is-set (X → Y)
  sei isy = Π-is-set (fe 𝓤 𝓤) (λ x → isy)
@@ -207,7 +207,8 @@ module ChoiceUnderEM₀ (𝓤 : Universe)
                       (fe : FunExt)
                       where
 
- open UnivalentChoice 𝓤 fe pt
+ open PropositionalTruncation pt
+ open UnivalentChoice fe pt 𝓤
 
  α : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
  α s u = ∥∥-rec 𝟘-is-prop u s
@@ -257,7 +258,8 @@ module AC-renders-all-sets-discrete
                       (fe : FunExt)
                       where
 
- open UnivalentChoice 𝓤 fe pt public
+ open PropositionalTruncation pt
+ open UnivalentChoice fe pt 𝓤 public
  open ImageAndSurjection pt
  open import DiscreteAndSeparated
  open import UF-Miscelanea
