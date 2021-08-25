@@ -172,7 +172,7 @@ module concrete-example where
 
 We can generalize this as follows, without using ℕ∞.
 
-From an arbitrary given type X and distinguised element a : X, we
+From an arbitrary given type X and distinguished element a : X, we
 construct a new type Y, which will fail to be totally separated unless
 the point a is weakly isolated. The idea is to "explode" the point a
 into two different copies, which cannot be distinguished unless point

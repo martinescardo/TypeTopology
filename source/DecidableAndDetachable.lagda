@@ -49,11 +49,14 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
   T = decidable
 
   η : (X : 𝓤 ̇ ) → X → T X
-  η X = pointed-decidable
+  η X = inl
 
   μ : (X : 𝓤 ̇ ) → T (T X) → T X
-  μ X (inl δ) = δ
+  μ X (inl d) = d
   μ X (inr u) = inr (λ x → u (inl x))
+
+  T-is-nonempty : (X : 𝓤 ̇ ) → is-nonempty (T X)
+  T-is-nonempty X u = u (inr (λ x → u (inl x)))
 
   μη : (X : 𝓤 ̇ ) → μ X ∘ η (T X) ∼ id
   μη X (inl x) = refl
@@ -97,11 +100,11 @@ module EgbertRijkeTwitterDiscussion-22-August-2021-not-a-monad where
   η-invertible-gives-non-empty : {X : 𝓤 ̇ } → invertible (η X) → is-nonempty X
   η-invertible-gives-non-empty (α , _ , _) = raw-T-algebras-are-non-empty α
 
-  non-empty-gives-η-invertible : {X : 𝓤 ̇ } → is-nonempty X → invertible (η X)
-  non-empty-gives-η-invertible {𝓤} {X} ϕ = η⁻¹ ϕ , η⁻¹-is-retraction ϕ , η⁻¹-is-section ϕ
+  nonempty-gives-η-invertible : {X : 𝓤 ̇ } → is-nonempty X → invertible (η X)
+  nonempty-gives-η-invertible {𝓤} {X} ϕ = η⁻¹ ϕ , η⁻¹-is-retraction ϕ , η⁻¹-is-section ϕ
 
   η-≃ : (X : 𝓤 ̇ ) → is-nonempty X → X ≃ T X
-  η-≃ X ϕ = qinveq (η X) (non-empty-gives-η-invertible ϕ)
+  η-≃ X ϕ = qinveq (η X) (nonempty-gives-η-invertible ϕ)
 
   retractions-of-η-are-invertible : {A : 𝓤 ̇ } (α : T A → A)
                                   → α ∘ η A ∼ id
