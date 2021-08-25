@@ -330,104 +330,103 @@ proposition).
 
 \begin{code}
 
-module _ (fe : Fun-Ext)
-         (em : Excluded-Middle)
-      where
 
- trichotomy : is-well-order
-            → is-trichotomous
- trichotomy (p , w , e , t) = γ
-  where
-   P : X → X → 𝓤 ⊔ 𝓥 ̇
-   P x y = (x < y) + (x ≡ y) + (y < x)
+trichotomy : funext (𝓤 ⊔ 𝓥) 𝓤₀
+           → excluded-middle (𝓤 ⊔ 𝓥)
+           → is-well-order
+           → is-trichotomous
+trichotomy fe em (p , w , e , t) = γ
+ where
+  P : X → X → 𝓤 ⊔ 𝓥 ̇
+  P x y = (x < y) + (x ≡ y) + (y < x)
 
-   γ : (x y : X) → P x y
-   γ = transfinite-induction w (λ x → ∀ y → P x y) ϕ
-    where
-     ϕ : (x : X)
-       → ((x' : X) → x' < x → (y : X) → P x' y)
-       → (y : X) → P x y
-     ϕ x IH-x = transfinite-induction w (λ y → P x y) ψ
-      where
-       ψ : (y : X)
-         → ((y' : X) → y' < y → P x y')
-         → P x y
-       ψ y IH-y = δ
-        where
-         A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
+  γ : (x y : X) → P x y
+  γ = transfinite-induction w (λ x → ∀ y → P x y) ϕ
+   where
+    ϕ : (x : X)
+      → ((x' : X) → x' < x → (y : X) → P x' y)
+      → (y : X) → P x y
+    ϕ x IH-x = transfinite-induction w (λ y → P x y) ψ
+     where
+      ψ : (y : X)
+        → ((y' : X) → y' < y → P x y')
+        → P x y
+      ψ y IH-y = δ
+       where
+        A = Σ x' ꞉ X , (x' < x) × ((y < x') + (x' ≡ y))
 
-         ¬¬A-gives-P : ¬¬ A → P x y
-         ¬¬A-gives-P = b
-          where
-           a : A → y < x
-           a (x' , l , inl m) = t y x' x m l
-           a (x' , l , inr p) = transport (_< x) p l
+        ¬¬A-gives-P : ¬¬ A → P x y
+        ¬¬A-gives-P = b
+         where
+          a : A → y < x
+          a (x' , l , inl m) = t y x' x m l
+          a (x' , l , inr p) = transport (_< x) p l
 
-           b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
-           b = inr ∘ inr ∘ EM-gives-DNE em (y < x) (p y x) ∘ ¬¬-functor a
+          b : ¬¬ A → (x < y) + (x ≡ y) + (y < x)
+          b = inr ∘ inr ∘ EM-gives-DNE (lower-EM 𝓤 em) (y < x) (p y x) ∘ ¬¬-functor a
 
-         ¬A-gives-≼ : ¬ A → x ≼ y
-         ¬A-gives-≼ ν x' l = d
-          where
-           a : ¬ ((y < x') + (x' ≡ y))
-           a f = ν (x' , l , f)
+        ¬A-gives-≼ : ¬ A → x ≼ y
+        ¬A-gives-≼ ν x' l = d
+         where
+          a : ¬ ((y < x') + (x' ≡ y))
+          a f = ν (x' , l , f)
 
-           b : P x' y
-           b = IH-x x' l y
+          b : P x' y
+          b = IH-x x' l y
 
-           c : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
-           c g (inl i)         = i
-           c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
-           c g (inr (inr iii)) = 𝟘-elim (g (inl iii))
+          c : ¬ ((y < x') + (x' ≡ y)) → P x' y → x' < y
+          c g (inl i)         = i
+          c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
+          c g (inr (inr iii)) = 𝟘-elim (g (inl iii))
 
-           d : x' < y
-           d = c a b
+          d : x' < y
+          d = c a b
 
-         B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
+        B = Σ y' ꞉ X , (y' < y) × ((x < y') + (x ≡ y'))
 
-         ¬¬B-gives-P : ¬¬ B → P x y
-         ¬¬B-gives-P = b
-          where
-           a : B → x < y
-           a (y' , l , inl m) = t x y' y m l
-           a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
+        ¬¬B-gives-P : ¬¬ B → P x y
+        ¬¬B-gives-P = b
+         where
+          a : B → x < y
+          a (y' , l , inl m) = t x y' y m l
+          a (y' , l , inr p) = transport (_< y) (p ⁻¹) l
 
-           b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
-           b = inl ∘ EM-gives-DNE em (x < y) (p x y) ∘ ¬¬-functor a
+          b : ¬¬ B → (x < y) + (x ≡ y) + (y < x)
+          b = inl ∘ EM-gives-DNE (lower-EM 𝓤 em) (x < y) (p x y) ∘ ¬¬-functor a
 
-         ¬B-gives-≼ : ¬ B → y ≼ x
-         ¬B-gives-≼ ν y' l = d
-          where
-           a : ¬ ((x < y') + (x ≡ y'))
-           a f = ν (y' , l , f)
+        ¬B-gives-≼ : ¬ B → y ≼ x
+        ¬B-gives-≼ ν y' l = d
+         where
+          a : ¬ ((x < y') + (x ≡ y'))
+          a f = ν (y' , l , f)
 
-           b : P x y'
-           b = IH-y y' l
+          b : P x y'
+          b = IH-y y' l
 
-           c : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
-           c g (inl i)         = 𝟘-elim (g (inl i))
-           c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
-           c g (inr (inr iii)) = iii
+          c : ¬ ((x < y') + (x ≡ y')) → P x y' → y' < x
+          c g (inl i)         = 𝟘-elim (g (inl i))
+          c g (inr (inl ii))  = 𝟘-elim (g (inr ii))
+          c g (inr (inr iii)) = iii
 
-           d : y' < x
-           d = c a b
+          d : y' < x
+          d = c a b
 
-         ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
-         ¬A-and-¬B-give-P ν ν' = b
-          where
-           a : ¬ A → ¬ B → x ≡ y
-           a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
+        ¬A-and-¬B-give-P : ¬ A → ¬ B → P x y
+        ¬A-and-¬B-give-P ν ν' = b
+         where
+          a : ¬ A → ¬ B → x ≡ y
+          a ν ν' = e x y (¬A-gives-≼ ν) (¬B-gives-≼ ν')
 
-           b : (x < y) + (x ≡ y) + (y < x)
-           b = inr (inl (a ν ν'))
+          b : (x < y) + (x ≡ y) + (y < x)
+          b = inr (inl (a ν ν'))
 
-         δ : P x y
-         δ = Cases (em (¬ A) (negations-are-props fe))
-              (λ (ν : ¬ A)
-                    → Cases (em (¬ B) (negations-are-props fe))
-                       (¬A-and-¬B-give-P ν)
-                       ¬¬B-gives-P)
-              ¬¬A-gives-P
+        δ : P x y
+        δ = Cases (em (¬ A) (negations-are-props fe))
+             (λ (ν : ¬ A)
+                   → Cases (em (¬ B) (negations-are-props fe))
+                      (¬A-and-¬B-give-P ν)
+                      ¬¬B-gives-P)
+             ¬¬A-gives-P
 
 
 \end{code}
@@ -437,6 +436,11 @@ annonymous submodule, propositional truncations are available, and it
 amounts to double negation.
 
 \begin{code}
+
+module _
+        (fe : Fun-Ext)
+        (em : Excluded-Middle)
+       where
 
  open import UF-PropTrunc
  open PropositionalTruncation (fem-proptrunc (λ 𝓤 𝓥 → fe {𝓤} {𝓥}) em)
@@ -482,7 +486,7 @@ amounts to double negation.
    B-is-prop (x , a , f) (x' , a' , f') = to-subtype-≡ i q
     where
      q : x ≡ x'
-     q = k (trichotomy W x x')
+     q = k (trichotomy fe em W x x')
       where
        k : (x < x') + (x ≡ x') + (x' < x) → x ≡ x'
        k (inl l)       = 𝟘-elim (f' x a l)

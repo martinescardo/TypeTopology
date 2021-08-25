@@ -109,3 +109,19 @@ module _ (pt : propositional-truncations-exist) where
  double-negation-is-truncation-gives-DNE {𝓤} f P isp u = ∥∥-rec isp id (f P u)
 
 \end{code}
+
+Added by Tom de Jong in August 2021.
+
+\begin{code}
+
+ not-Π-not-implies-∃ : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                     → EM (𝓤 ⊔ 𝓥)
+                     → ¬ ((x : X) → ¬ A x)
+                     → ∃ x ꞉ X , A x
+ not-Π-not-implies-∃ {𝓤} {𝓥} {X} {A} em f =
+  EM-gives-DNE em (∃ A) ∥∥-is-prop γ
+   where
+    γ : ¬¬ (∃ A)
+    γ g = f (λ x a → g ∣ x , a ∣)
+
+\end{code}
