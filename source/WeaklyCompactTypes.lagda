@@ -300,15 +300,16 @@ boolean predicates as X, and hence X is ∃-compact (respectively
 
 \begin{code}
 
-module TStronglyOvertnessAndCompactness (X : 𝓤 ̇ ) where
+module _ (X : 𝓤 ̇ ) where
 
  open TotallySeparatedReflection fe pt
 
- extension : (X → 𝟚) → (𝕋 X → 𝟚)
- extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p))
+ private
+  extension : (X → 𝟚) → (𝕋 X → 𝟚)
+  extension p = pr₁ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p))
 
- extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
- extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
+  extension-property : (p : X → 𝟚) (x : X) → extension p (η x) ≡ p x
+  extension-property p = happly (pr₂ (pr₁ (totally-separated-reflection 𝟚-is-totally-separated p)))
 
  ∃-compact-gives-∃-compact-𝕋 : ∃-compact X → ∃-compact (𝕋 X)
  ∃-compact-gives-∃-compact-𝕋 = surjection-∃-compact η η-is-surjection
@@ -356,9 +357,9 @@ compact, then X is discrete if it is totally separated. This is a new
 result as far as I know. I didn't know it before 12th January 2018.
 
 The following proof works as follows. For any given x,y:X, define
-q:(X→𝟚)→𝟚 such that q(p)=1 ⇔ p (x)=p (y), which is possible because 𝟚
+q:(X→𝟚)→𝟚 such that q(p)=1 ⇔ p(x) = p(y), which is possible because 𝟚
 has decidable equality (it is discrete). By the Π-compactness of X→𝟚,
-the condition (p:X→𝟚)→q(p)=1 is decidable, which amounts to saying
+the condition (p:X→𝟚) → q(p)=1 is decidable, which amounts to saying
 that (p:X→𝟚) → p (x)=p (y) is decidable. But because X is totally
 separated, the latter is equivalent to x=y, which shows that X is
 discrete.
@@ -401,12 +402,12 @@ corollaries:
 
 \begin{code}
 
-tscd₀ : {X : 𝓤₀ ̇ } {Y : 𝓤₀ ̇ }
+tscd₀ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
       → is-totally-separated X
       → disconnected Y
       → Π-compact (X → Y)
       → is-discrete X
-tscd₀ {X} {Y} ts r c = tscd ts (retract-Π-compact (retract-contravariance (fe 𝓤₀ 𝓤₀) r) c)
+tscd₀ {𝓤} {𝓥} {X} {Y} ts r c = tscd ts (retract-Π-compact (retract-contravariance (fe 𝓤 𝓤₀) r) c)
 
 open TotallySeparatedReflection fe pt
 
@@ -442,10 +443,8 @@ types (see the module SimpleTypes). Hence, for example, the
 topological space (ℕ∞→𝟚) is not Π-compact because it is countably
 discrete, as it is a theorem of topology that discrete to the power
 compact is again discrete, which is compact iff it is finite. This
-argument is both classical and external.
-
-But here we have that the type (ℕ∞→𝟚) is "not" Π-compact, internally
-and constructively.
+argument is both classical and external. But here we have that the
+type (ℕ∞→𝟚) is "not" Π-compact, internally and constructively.
 
 \begin{code}
 
@@ -504,7 +503,7 @@ information for the moment.
 ∃-compact-propositions-are-decidable : (X : 𝓤 ̇ )
                                      → is-prop X
                                      → ∃-compact X
-                                       → decidable X
+                                     → decidable X
 ∃-compact-propositions-are-decidable X isp c = f a
  where
   a : decidable ∥ X × (₀ ≡ ₀) ∥
@@ -935,7 +934,7 @@ Right adjoints to Κ are characterized as follows:
 \begin{code}
 
 Κ⊣-charac : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
-           → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁))
+          → Κ⊣ A ⇔ ((p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁))
 Κ⊣-charac {𝓤} {X} A = f , g
  where
   f : Κ⊣ A → (p : X → 𝟚) → A p ≡ ₁ ⇔ p ≡ (λ x → ₁)
@@ -1044,7 +1043,7 @@ and hence so is the type (X → 𝟚) with the pointwise operations.
   h p = f p ∙ g p
 
 Π-compact-is-𝟚-overt : {X : 𝓤 ̇ } → (A : (X → 𝟚) → 𝟚)
-                      → Κ⊣ A → (𝟚-DeMorgan-dual A) ⊣Κ
+                     → Κ⊣ A → (𝟚-DeMorgan-dual A) ⊣Κ
 Π-compact-is-𝟚-overt {𝓤} {X} A = f
  where
   E : (X → 𝟚) → 𝟚

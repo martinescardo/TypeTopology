@@ -31,20 +31,26 @@ open import GenericConvergentSequence
 
   Dagger₀ : (n : ℕ) → a ≡ under n → p (under n) ≡ ₀
   Dagger₀ 0 r =  ap (λ - → incl - 0) r
-  Dagger₀ (succ n) r = w ∙ t
+  Dagger₀ (succ n) r = p (under (succ n)) ≡⟨ w ⟩
+                       α (succ n)         ≡⟨ t ⟩
+                       ₀                  ∎
    where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r ∙ under-diagonal₁ n
 
     t : α (succ n) ≡ ₀
-    t = ap (λ - → incl - (succ n)) r ∙ under-diagonal₀ n
+    t = α (succ n)                     ≡⟨ ap (λ - → incl - (succ n)) r ⟩
+        incl (under (succ n)) (succ n) ≡⟨ under-diagonal₀ n ⟩
+        ₀                              ∎
 
     w : p (under (succ n)) ≡ α (succ n)
     w = (ap (λ - → min𝟚 - (p (under (succ n)))) s)⁻¹
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p (under n) ≡ ₁
   Dagger₁ r 0 = ap (λ - → incl - 0) r
-  Dagger₁ r (succ n) = w ∙ t
+  Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⟩
+                       α (succ n)         ≡⟨ t ⟩
+                       ₁                  ∎
    where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
@@ -59,7 +65,9 @@ open import GenericConvergentSequence
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
     Lemma : a ≡ under n → p a ≡ ₀
-    Lemma t = ap p t ∙ Dagger₀ n t
+    Lemma t = p a         ≡⟨ ap p t ⟩
+              p (under n) ≡⟨ Dagger₀ n t ⟩
+              ₀           ∎
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
   Claim₁ r = not-finite-is-∞ fe₀ (Claim₀ r)
@@ -68,7 +76,9 @@ open import GenericConvergentSequence
   Claim₂ r = Dagger₁ (Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
-  Claim₃ r = (ap p (Claim₁ r))⁻¹ ∙ r
+  Claim₃ r = p ∞ ≡⟨ (ap p (Claim₁ r))⁻¹ ⟩
+             p a ≡⟨ r ⟩
+             ₁   ∎
 
   Lemma : p a ≡ ₁ → (v : ℕ∞) → p v ≡ ₁
   Lemma r = ℕ∞-𝟚-density fe₀ (Claim₂ r) (Claim₃ r)
@@ -89,7 +99,10 @@ open import GenericConvergentSequence
      claim₀ t = ap p (is-Zero-equal-Zero fe₀ t)
 
      claim₁ : incl u 0 ≡ ₀ → ₀ ≡ ₁
-     claim₁ t = r ⁻¹ ∙ claim₀ t ∙ s
+     claim₁ t = ₀   ≡⟨ r ⁻¹ ⟩
+                p u ≡⟨ claim₀ t ⟩
+                α 0 ≡⟨ s ⟩
+                ₁   ∎
 
      lemma : incl u 0 ≡ ₁
      lemma = different-from-₀-equal-₁ (contrapositive claim₁ zero-is-not-one)
@@ -115,7 +128,9 @@ open import GenericConvergentSequence
     claim₃ t = ap p (claim₂ t)
 
     claim₄ : incl u (succ n) ≡ ₀ → p u ≡ ₁
-    claim₄ t = claim₃ t ∙ claim₁
+    claim₄ t = p u                ≡⟨ claim₃ t ⟩
+               p (under (succ n)) ≡⟨ claim₁ ⟩
+               ₁                  ∎
 
     claim₅ : incl u (succ n) ≢ ₀
     claim₅ t = equal-₁-different-from-₀ (claim₄ t) r

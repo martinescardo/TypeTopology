@@ -29,7 +29,9 @@ basic-discontinuity-taboo : (p : ℕ∞ → 𝟚) → basic-discontinuity p → 
 basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
  where
   fact₀ : u ≡ ∞ → p u ≡ ₁
-  fact₀ t = ap p t ∙ r
+  fact₀ t = p u ≡⟨ ap p t ⟩
+            p ∞ ≡⟨ r ⟩
+            ₁   ∎
 
   fact₁ : p u ≢ ₁ → u ≢ ∞
   fact₁ = contrapositive fact₀
@@ -41,7 +43,10 @@ basic-discontinuity-taboo p (f , r) u = 𝟚-equality-cases lemma₀ lemma₁
   lemma₀ s = inr (fact₂ s)
 
   fact₃ : p u ≡ ₁ → ((n : ℕ) → u ≢ under n)
-  fact₃ t n s = zero-is-not-one ((f n)⁻¹ ∙ (ap p s)⁻¹ ∙ t)
+  fact₃ t n s = zero-is-not-one (₀           ≡⟨ (f n)⁻¹ ⟩
+                                 p (under n) ≡⟨ (ap p s)⁻¹ ⟩
+                                 p u         ≡⟨ t ⟩
+                                 ₁           ∎)
 
   lemma₁ : p u ≡ ₁ → (u ≡ ∞) + (u ≢ ∞)
   lemma₁ t = inl (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (fact₃ t))
@@ -62,6 +67,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
    where
     case₀ : (r : u ≡ ∞) → f u ≡ inl r → 𝟚
     case₀ r s = ₁
+
     case₁ : (r : u ≢ ∞) → f u ≡ inr r → 𝟚
     case₁ r s = ₀
 
@@ -70,6 +76,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
    where
     case₀ : (r : under n ≡ ∞) → f (under n) ≡ inl r → p (under n) ≡ ₀
     case₀ r s = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
+
     case₁ : (g : under n ≢ ∞) → f (under n) ≡ inr g → p (under n) ≡ ₀
     case₁ g = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
 
@@ -78,6 +85,7 @@ WLPO-is-discontinuous f = p , (d , d∞)
    where
     case₀ : (r : ∞ ≡ ∞) → f ∞ ≡ inl r → p ∞ ≡ ₁
     case₀ r = ap (λ - → equality-cases - (λ r s → ₁) (λ r s → ₀))
+
     case₁ : (g : ∞ ≢ ∞) → f ∞ ≡ inr g → p ∞ ≡ ₁
     case₁ g = 𝟘-elim (g refl)
 

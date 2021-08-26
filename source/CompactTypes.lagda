@@ -8,7 +8,7 @@ and the module WeaklyCompactTypes.
 Perhaps surprisingly, there are infinite searchable sets, such as ℕ∞
 (see the module GenericConvergentSequenceCompact).
 
-It is in general not possible to constructively decide the statement
+It is in general not possible to decide constructively the statement
 
   Σ x ꞉ X , p x ≡ ₀
 
@@ -32,7 +32,7 @@ In this module we study Σ-compactness, and in the module
 WeaklyCompactTypes we study ∃-compact and Π-compact types.
 
 If X is the finite type Fin n for some n : ℕ, then it is
-Σ-compact. But even if X is a subtype of 𝟙 ≃ Fin 1, or a univalent
+Σ-compact. But even if X is a subtype of Fin 1, or a univalent
 proposition, this is not possible in general. Even worse, X may be an
 infinite set such as ℕ, and the Σ-compactness of ℕ amounts to Bishop's
 Limited Principle of Omniscience (LPO), which is not provable in any
@@ -127,12 +127,12 @@ Terminology: we call x₀ the universal witness.
 \begin{code}
 
 compact-pointed-gives-compact∙ : {X : 𝓤 ̇ } → compact X → X → compact∙ X
-compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = lemma (φ p)
+compact-pointed-gives-compact∙ {𝓤} {X} φ x₀ p = γ (φ p)
  where
-  lemma : (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁) →
-           Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
-  lemma (inl (x , r)) = x , (λ s → 𝟘-elim (equal-₀-different-from-₁ r s))
-  lemma (inr f) = x₀ , (λ r → f)
+  γ : (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
+    → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+  γ (inl (x , r)) = x , (λ s → 𝟘-elim (equal-₀-different-from-₁ r s))
+  γ (inr f) = x₀ , (λ r → f)
 
 compact∙-gives-compact : {X : 𝓤 ̇ } → compact∙ X → compact X
 compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
@@ -152,7 +152,7 @@ compact∙-gives-pointed ε = pr₁ (ε (λ x → ₀))
 \end{code}
 
 There are examples where pointedness is crucial. For instance, the
-product of a family of compact-pointed typed indexed by a subsingleton
+product of a family of compact-pointed types indexed by a subsingleton
 is always compact (pointed), but the assumption that this holds
 without the assumption of pointedness implies weak excluded middle
 (the negation of any proposition is decidable).
@@ -198,8 +198,8 @@ checking the two possibilities, we can always take x₀ = p ₀.
 \end{code}
 
 Even though excluded middle is undecided, the set Ω 𝓤 of univalent
-propositions in any universe 𝓤 is compact (assuming propositional
-extensionality, which is a consequence of univalence):
+propositions in any universe 𝓤 is compact, assuming functional and
+propositional extensionality, which are consequences of univalence:
 
 \begin{code}
 
@@ -242,7 +242,7 @@ p has-a-root = Σ x ꞉ domain p , x is-a-root-of p
 putative-root : {X : 𝓤 ̇ }
               → compact∙ X
               → (p : X → 𝟚)
-              → Σ x₀ ꞉ X , ((p has-a-root) ⇔ (x₀ is-a-root-of p))
+              → Σ x₀ ꞉ X , (p has-a-root ⇔ x₀ is-a-root-of p)
 putative-root {𝓤} {X} ε p = x₀ , lemma₀ , lemma₁
  where
   x₀ : X
@@ -259,6 +259,7 @@ putative-root {𝓤} {X} ε p = x₀ , lemma₀ , lemma₁
 
   lemma₁ : x₀ is-a-root-of p → p has-a-root
   lemma₁ h = x₀ , h
+
 \end{code}
 
 We now relate our definition to the original definition using
@@ -286,24 +287,24 @@ compact∙'-gives-compact∙ {𝓤} {X} ε p = x₀ , lemma
  where
   x₀ : X
   x₀ = pr₁ ε p
-  lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
 
+  lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
   lemma u β = pr₂ ε p u β
 
 \end{code}
 
 Notice that Bishop's limited principle of omniscience LPO, which is a
-taboo, in Aczel's terminology, is the compactness of ℕ. LPO is
-independent - it is not provable, and its negation is not provable. In
-classical mathematics it is uncomfortable to have independent
-propositions, but of course unavoidable. Independence occurs often in
-constructive mathematics, particular in classically compatible
-constructive mathematics, like Bishop's methamatics and Martin-Löf
-type theory (in its various flavours); even the principle of excluded
-middle is independent.
+constructive taboo, in Aczel's terminology, is the compactness of the
+type ℕ. LPO is independent - it is not provable, and its negation is
+not provable. In classical mathematics it is uncomfortable to have
+independent propositions, but of course unavoidable. Independence
+occurs often in constructive mathematics, particularly in classically
+compatible constructive mathematics, like Bishop's methamatics and
+Martin-Löf type theory (in its various flavours) - even the principle
+of excluded middle is independent.
 
 We'll see that the infinite set ℕ∞ defined in the module
-ConvergentSequenceCompact.
+ConvergentSequenceCompact is compact.
 
 If a set X is compact∙ and a set Y has decidable equality, then the
 function space (X → Y) has decidable equality, if we assume function
@@ -487,11 +488,11 @@ Corollary: Binary products preserve compactness:
 binary-Tychonoff : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → compact∙ X → compact∙ Y → compact∙ (X × Y)
 binary-Tychonoff ε δ = Σ-compact∙ ε (λ i → δ)
 
-binary-Σ-compact∙' : {X₀ : 𝓤 ̇ } {X₁ : 𝓤 ̇ }
-                   → compact∙ X₀
-                   → compact∙ X₁
-                   → compact∙ (X₀ +' X₁)
-binary-Σ-compact∙' {𝓤} {X₀} {X₁} ε₀ ε₁ = Σ-compact∙ 𝟚-compact∙ ε
++'-compact∙ : {X₀ : 𝓤 ̇ } {X₁ : 𝓤 ̇ }
+            → compact∙ X₀
+            → compact∙ X₁
+            → compact∙ (X₀ +' X₁)
++'-compact∙ {𝓤} {X₀} {X₁} ε₀ ε₁ = Σ-compact∙ 𝟚-compact∙ ε
  where
   ε : (i : 𝟚) → _
   ε ₀ = ε₀
@@ -592,10 +593,8 @@ module _ (pt : propositional-truncations-exist) where
 
 \end{code}
 
-The following is from 2011 originally in the module ExhaustibleTypes,
-where "wcompact" was "exhaustible". We should remove this, or move it
-to the module WeaklyCompactTypes, as wcompact is equivalent to
-is-Π-compact.
+TODO. The following old code from 2011 seems to repeat some of the
+above. We should deal with this.
 
 \begin{code}
 
@@ -707,14 +706,14 @@ Compact-gives-compact X C p = iv
   iv : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
   iv = iii (i ii)
 
-NB-Compact : (X : 𝓤 ̇ ) → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
-NB-Compact X C = compact-gives-Compact X (Compact-gives-compact X C)
+Compact-resizeup : (X : 𝓤 ̇ ) → Σ-Compact X {𝓤₀} → Σ-Compact X {𝓥}
+Compact-resizeup X C = compact-gives-Compact X (Compact-gives-compact X C)
 
 \end{code}
 
-Exercise. Prove the converse of the previous observation, using the
-fact that any decidable proposition is logically equivalent to either
-𝟘 or 𝟙, and hence to a type in the universe 𝓤₀.
+TODO. Prove the converse of the previous observation, using the fact
+that any decidable proposition is logically equivalent to either 𝟘 or
+𝟙, and hence to a type in the universe 𝓤₀.
 
 \begin{code}
 
@@ -778,7 +777,7 @@ fact that any decidable proposition is logically equivalent to either
 
 \end{code}
 
-A direct proof of the following would give more general universe
+TODO. A direct proof of the following would give more general universe
 assignments:
 
 \begin{code}

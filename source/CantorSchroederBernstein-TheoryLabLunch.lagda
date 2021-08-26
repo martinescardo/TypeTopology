@@ -206,7 +206,7 @@ recall-Compact : {X : 𝓤 ̇ }
 recall-Compact = by-definition
 
 
-recall-ℕ∞ : ℕ∞ ≡ (Σ α ꞉ (ℕ → 𝟚) , decreasing α)
+recall-ℕ∞ : ℕ∞ ≡ (Σ α ꞉ (ℕ → 𝟚) , is-decreasing α)
 recall-ℕ∞ = by-definition
 
 

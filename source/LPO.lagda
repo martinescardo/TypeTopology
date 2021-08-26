@@ -41,7 +41,7 @@ open import CompactTypes
 open import NaturalsOrder
 
 LPO : 𝓤₀ ̇
-LPO = (x : ℕ∞) → decidable(Σ n ꞉ ℕ , x ≡ under n)
+LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ≡ under n)
 
 LPO-is-prop : is-prop LPO
 LPO-is-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
@@ -138,7 +138,7 @@ Now, if LPO is false, that is, an empty type, then the function type
   LPO → ℕ
 
 is isomorphic to the unit type 𝟙, and hence is compact. If LPO holds,
-that is, LPO is isomorphic to 𝟙 because it is a univalent proposition,
+that is, LPO is equivalent to 𝟙 because it is a univalent proposition,
 then the function type LPO → ℕ is isomorphic to ℕ, and hence the type
 LPO → ℕ is again compact by LPO. So in any case we have that the type
 LPO → ℕ is compact. However, LPO is an undecided proposition in our
@@ -150,7 +150,7 @@ knowing whether LPO holds or not!
 
 open import PropTychonoff
 
-[LPO→ℕ]-compact∙ : compact∙(LPO → ℕ)
+[LPO→ℕ]-compact∙ : compact∙ (LPO → ℕ)
 [LPO→ℕ]-compact∙ = prop-tychonoff-corollary' fe LPO-is-prop f
  where
    f : LPO → compact∙ ℕ
@@ -200,7 +200,7 @@ has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
                                    u            ≡⟨ q ⟩
                                    under n      ∎)
 
-under𝟙-inverse : (u : ℕ∞) → decidable(Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}
+under𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}
 under𝟙-inverse .(under n) (inl (n , refl)) = inl n
 under𝟙-inverse u (inr g) = inr *
 

@@ -63,7 +63,7 @@ the functor 𝟙 + (-), which we refer to as corecursion.
   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
   c : 𝓢 → 𝓢 → ℕ∞
   c = curry (ℕ∞-corec p)
- 
+
 \end{code}
 
 We use the private name "c" in this submodule, which is exported as
@@ -84,7 +84,7 @@ The two defining properties of the function c are the following:
                 → c α β ≡ Zero
  codistance-eq₁ : (α β : 𝓢) → head α ≡ head β
                 → c α β ≡ Succ (c (tail α) (tail β))
-                
+
  codistance-eq₀ α β n = γ r
   where
    t : δ (head α) (head β) ≡ inr n
@@ -122,7 +122,7 @@ coinduction on ℕ∞ using codistance-eq₁:
    b .(c α α) .∞ ((α , refl) , refl) = s , t , Pred-∞-is-∞
     where
      s : positivity (c α α) ≡ positivity ∞
-     s = successors-same-positivity (l α) ((Succ-∞-is-∞ (fe 𝓤₀ 𝓤₀))⁻¹)
+     s = ap positivity (l α)
      t : Σ α' ꞉ 𝓢 , Pred (c α α) ≡ c α' α'
      t = tail α , (ap Pred (l α) ∙ Pred-Succ)
    γ : R (c α α) ∞
@@ -178,20 +178,21 @@ Symmetric property:
      s = Cases (δ (head α) (head β)) sₕ sₜ
       where
        sₕ : head α ≡ head β → positivity (c α β) ≡ positivity (c β α)
-       sₕ h≡ = successors-same-positivity
-               (codistance-eq₁ α β h≡) (codistance-eq₁ β α (h≡ ⁻¹))
+       sₕ p = successors-same-positivity
+                (codistance-eq₁ α β p)
+                (codistance-eq₁ β α (p ⁻¹))
        sₜ : head α ≢ head β → positivity (c α β) ≡ positivity (c β α)
-       sₜ h≢ = equal-same-positivity (c α β) (c β α)
-               (codistance-eq₀ α β h≢
-               ∙ codistance-eq₀ β α (λ h≡ → h≢ (h≡ ⁻¹)) ⁻¹)
+       sₜ d = ap positivity
+               (codistance-eq₀ α β d
+               ∙ codistance-eq₀ β α (λ p → d (p ⁻¹)) ⁻¹)
      t : (head α ≡ head β) + (head α ≢ head β)
        → R (Pred (c α β)) (Pred (c β α))
-     t (inl h≡) = tail α , tail β
-                , ap Pred (codistance-eq₁ α β h≡ ∙ Pred-Succ)
-                , ap Pred (codistance-eq₁ β α (h≡ ⁻¹) ∙ Pred-Succ)
-     t (inr h≢) = α , β
-                , Pred-Zero-is-Zero' (c α β) (codistance-eq₀ α β h≢)
-                , Pred-Zero-is-Zero' (c β α) (codistance-eq₀ β α (λ h≡ → h≢ (h≡ ⁻¹)))
+     t (inl p) = tail α , tail β
+               , ap Pred (codistance-eq₁ α β p ∙ Pred-Succ)
+               , ap Pred (codistance-eq₁ β α (p ⁻¹) ∙ Pred-Succ)
+     t (inr d) = α , β
+               , Pred-Zero-is-Zero' (c α β) (codistance-eq₀ α β d)
+               , Pred-Zero-is-Zero' (c β α) (codistance-eq₀ β α (λ p → d (p ⁻¹)))
    γ : R (c α β) (c β α)
    γ = α , β , refl , refl
 
@@ -218,7 +219,7 @@ Ultra property:
  codistance-conceptually₁ α β (succ n) α≈ₙβ
   = transport (succ n ⊏_) (codistance-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
     (codistance-conceptually₁ (tail α) (tail β) n (λ m → α≈ₙβ (succ m)))
- 
+
  codistance-conceptually₂ : (α β : 𝓢) (n : ℕ)
                           → n ⊏ c α β
                           → ((k : ℕ) → k ≤ n → α k ≡ β k)

@@ -7,7 +7,7 @@ propositions are decidable).
 
 The definition of compactness (or exhaustive searchability) is
 
-    compact A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
+    compact∙ A = (p : A → 𝟚) → Σ a₀ ꞉ A , p a₀ ≡ ₁ → (a : A) → p a ≡ ₁
 
 With excluded middle for propositions, the above claim is not
 surprising, because
@@ -78,8 +78,8 @@ Recall also that such an a₀ is called a universal witness for the predicate p.
 
 prop-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
                → is-prop X
-               → ((x : X) → compact∙(Y x))
-               → compact∙(Π Y)
+               → ((x : X) → compact∙ (Y x))
+               → compact∙ (Π Y)
 prop-tychonoff {𝓤} {𝓥} {X} {Y} X-is-prop ε p = γ
  where
   have : (type-of ε ≡ ((x : X) → compact∙(Y x)))
@@ -95,8 +95,8 @@ The essence of the first part of the proof is this:
 
 \begin{code}
 
-  not-useful : X → compact∙(Π Y)
-  not-useful x = equiv-compact∙ (≃-sym(hip x)) (ε x)
+  crude : X → compact∙ (Π Y)
+  crude x = equiv-compact∙ (≃-sym(hip x)) (ε x)
 
 \end{code}
 
@@ -108,16 +108,16 @@ The following is what we get from prop-indexed-product, abstractly:
 \begin{code}
 
   f : (x : X) → Π Y → Y x
-  f x = pr₁(hip x)
+  f x = pr₁ (hip x)
 
   hrf : (x : X) → Σ r ꞉ (Y x → Π Y), r ∘ f x ∼ id
-  hrf x = pr₂(pr₂(hip x))
+  hrf x = pr₂ (pr₂ (hip x))
 
   h : (x : X) → Y x → Π Y
-  h x = pr₁(hrf x)
+  h x = pr₁ (hrf x)
 
   hf : (x : X) (φ : Π Y) → h x (f x φ) ≡ φ
-  hf x = pr₂(hrf x)
+  hf x = pr₂ (hrf x)
 
 \end{code}
 
@@ -137,7 +137,7 @@ searchability of the type Π Y wrt the predicate p:
 \begin{code}
 
   φ₀ : Π Y
-  φ₀ x = pr₁(ε x (q x))
+  φ₀ x = pr₁ (ε x (q x))
 
 \end{code}
 
@@ -146,7 +146,7 @@ By hypothesis, it satisfies:
 \begin{code}
 
   φ₀-spec : (x : X) → q x (φ₀ x) ≡ ₁ → (y : Y x) → q x y ≡ ₁
-  φ₀-spec x = pr₂(ε x (q x))
+  φ₀-spec x = pr₂ (ε x (q x))
 
 \end{code}
 
@@ -188,7 +188,13 @@ Using the fact that g x (f x φ) = φ for any x:X, we get:
 
   φ₀-is-universal-witness-assuming-X : X → p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
   φ₀-is-universal-witness-assuming-X x r φ =
-     ap p ((hf x φ)⁻¹) ∙ φ₀-spec₁-particular-case x (ap p (hf x φ₀) ∙ r) φ
+     p φ             ≡⟨ ap p ((hf x φ)⁻¹) ⟩
+     p (h x (f x φ)) ≡⟨ φ₀-spec₁-particular-case x s φ ⟩
+     ₁               ∎
+   where
+    s = p (h x (f x φ₀)) ≡⟨ ap p (hf x φ₀) ⟩
+        p φ₀             ≡⟨ r ⟩
+        ₁                ∎
 
 \end{code}
 
@@ -201,15 +207,19 @@ We get the same conclusion if X is empty:
 \begin{code}
 
   φ₀-is-universal-witness-assuming-X→𝟘 : (X → 𝟘) → p φ₀ ≡ ₁ → (φ : Π Y) → p φ ≡ ₁
-  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = ap p claim ∙ r
+  φ₀-is-universal-witness-assuming-X→𝟘 u r φ = p φ  ≡⟨ ap p claim ⟩
+                                               p φ₀ ≡⟨ r ⟩
+                                               ₁    ∎
+
    where
     claim : φ ≡ φ₀
-    claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘(u x))
+    claim = dfunext (fe 𝓤 𝓥) (λ x → unique-from-𝟘 (u x))
 \end{code}
 
-So we would get what we want if we had excluded middle, because the
-above shows that both X and X → 𝟘 give the desired conclusion that φ₀
-is a universal witness. But excluded middle is not needed.
+So we would get what we want if we had excluded middle, because X is a
+proposition and the above shows that both X and X → 𝟘 give the desired
+conclusion that φ₀ is a universal witness. But excluded middle is not
+needed.
 
 We shuffle the arguments of φ₀-is-universal-witness-assuming-X:
 
@@ -219,7 +229,7 @@ We shuffle the arguments of φ₀-is-universal-witness-assuming-X:
 
 \end{code}
 
-We then take the contra-positive of the conclusion X → p φ ≡ ₁, and
+We then take the contrapositive of the conclusion X → p φ ≡ ₁, and
 use the fact that if a point of the two-point type 𝟚 is ₀, then it is
 not ₁:
 
@@ -262,9 +272,10 @@ Finally, we do case analysis on the value of p φ:
 
 \end{code}
 
-And we are done. (9 Sep 2015: We can generalize from X being a
-subsingleton (a proposition) to X being subfinite (embedded into a
-finite type).)
+And we are done.
+
+TODO. 9 Sep 2015. We can generalize from X being a subsingleton (or
+proposition) to X being subfinite (embedded into a finite type).
 
 A particular case is the following:
 
@@ -273,13 +284,13 @@ A particular case is the following:
 prop-tychonoff-corollary : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                          → is-prop X
                          → compact∙ Y
-                         → compact∙(X → Y)
+                         → compact∙ (X → Y)
 prop-tychonoff-corollary X-is-prop ε = prop-tychonoff X-is-prop (λ x → ε)
 
 \end{code}
 
 This holds even for undecided X (such as X = LPO), or when we have no
-idea whether X or (X → 𝟘), and hence whether (X → Y) is 1 or Y (or
+idea whether X or (X → 𝟘), and hence whether (X → Y) is 𝟙 or Y (or
 none, if this is undecided)!
 
 Better (9 Sep 2015):
@@ -289,13 +300,13 @@ Better (9 Sep 2015):
 prop-tychonoff-corollary' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
                           → is-prop X
                           → (X → compact∙ Y)
-                          → compact∙(X → Y)
-prop-tychonoff-corollary' X-is-prop ε = prop-tychonoff X-is-prop ε
+                          → compact∙ (X → Y)
+prop-tychonoff-corollary' = prop-tychonoff
 
 \end{code}
 
-So the type the function type (LPO → ℕ) is compact! (See the module
-LPO for a proof.)
+So the function type (LPO → ℕ) is compact! (See the module LPO for a
+proof.)
 
 The Tychonoff theorem for prop-indexed products of compact types
 doesn't hold. To see this, first notice that a proposition is
@@ -308,20 +319,24 @@ proposition P, which is weak excluded middle, which is not provable.
 
 open import UF-ExcludedMiddle
 
-compact-prop-tychonoff-wem : ((X : 𝓤₀ ̇ ) (Y : X → 𝓤₀ ̇ )
-                                 → is-prop X
-                                 → ((x : X) → compact (Y x))
-                                 → compact (Π Y))
-                           → WEM 𝓤₀
-compact-prop-tychonoff-wem τ X X-is-prop = γ
+compact-prop-tychonoff-gives-WEM : ((X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ )
+                                       → is-prop X
+                                       → ((x : X) → compact (Y x))
+                                       → compact (Π Y))
+                                 → WEM 𝓤
+compact-prop-tychonoff-gives-WEM {𝓤} {𝓥} τ X X-is-prop = δ γ
  where
-  Y : X → 𝓤₀ ̇
+  Y : X → 𝓥 ̇
   Y x = 𝟘
 
-  negation-compact : compact (¬ X)
+  negation-compact : compact (X → 𝟘 {𝓥})
   negation-compact = τ X Y X-is-prop (λ p → 𝟘-compact)
 
-  γ : decidable (¬ X)
-  γ = compact-decidable (¬ X) negation-compact
+  γ : decidable (X → 𝟘 {𝓥})
+  γ = compact-decidable (X → 𝟘) negation-compact
+
+  δ : decidable (X → 𝟘 {𝓥}) → decidable (¬ X)
+  δ (inl f) = inl (𝟘-elim ∘ f)
+  δ (inr ϕ) = inr (contrapositive (λ f → 𝟘-elim ∘ f) ϕ)
 
 \end{code}

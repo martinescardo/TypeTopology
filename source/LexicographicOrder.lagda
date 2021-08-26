@@ -19,7 +19,10 @@ open import SpartanMLTT
 open import UF-Base
 open import UF-Subsingletons
 
-lex-order : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇ ) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
+lex-order : ∀ {𝓣} {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+          →  (X → X → 𝓦 ̇ )
+          → ({x : X} → Y x → Y x → 𝓣 ̇ )
+          → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
 lex-order _≤_ _≼_ (x , y) (x' , y') = (x ≤ x') × ((r : x ≡ x') → transport _ r y ≼ y')
 
 \end{code}
@@ -32,11 +35,13 @@ However, for a strict order, it makes sense to define
 
 \begin{code}
 
-slex-order : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } →  (X → X → 𝓦 ̇ ) → ({x : X} → Y x → Y x → 𝓣 ̇ ) → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
+slex-order : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+           →  (X → X → 𝓦 ̇ )
+           → ({x : X} → Y x → Y x → 𝓣 ̇ )
+           → (Σ Y → Σ Y → 𝓤 ⊔ 𝓦 ⊔ 𝓣 ̇ )
 slex-order _<_ _≺_ (x , y) (x' , y') = (x < x') + (Σ r ꞉ x ≡ x' , transport _ r y ≺ y')
 
 \end{code}
-
 
 Usually in such a context, a ≤ b is defined to be ¬ (b < a).
 
@@ -63,14 +68,19 @@ module commutation
  where
   not : ∀ {𝓤} → 𝓤 ̇ → 𝓤 ̇
   not A = A → R
+
   _⊏_ : Σ Y → Σ Y → 𝓣 ⊔ 𝓤 ⊔ 𝓦 ̇
   _⊏_ = slex-order _<_ _≺_
+
   _≤_ : X → X → 𝓦 ̇
   x ≤ x' = not (x' < x)
+
   _≼_ : {x : X} → Y x → Y x → 𝓣 ̇
   y ≼ y' = not (y' ≺ y)
+
   _⊑_ : Σ Y → Σ Y → 𝓣 ⊔ 𝓤 ⊔ 𝓦 ̇
   _⊑_ = lex-order _≤_ _≼_
+
   forth : (x x' : X) (y : Y x) (y' : Y x') → not ((x , y) ⊏ (x' , y')) → (x' , y') ⊑ (x , y)
   forth x x' y y' f = g , h
    where
@@ -78,6 +88,7 @@ module commutation
     g l = f (inl l)
     h : (r : x' ≡ x) → not (y ≺ transport Y r y')
     h refl l = f (inr (refl , l))
+
   back : (x x' : X) (y : Y x) (y' : Y x') → (x' , y') ⊑ (x , y) → not ((x , y) ⊏ (x' , y'))
   back x x' y y' (g , h) (inl l) = g l
   back x _  y y' (g , h) (inr (refl , l)) = h refl l

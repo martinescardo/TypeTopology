@@ -3,12 +3,14 @@ Martin Escardo, back-of-the-envelope 2011, done July 2018
 The main application of this module is to show that the compact
 ordinals we construct in other modules are totally separated. This is
 difficult because sums don't preserve total separatedness (as shown in
-the module FailureOfTotalSeparatedness). To prove the total
-separatedness, we show that our compact ordinals are retracts of the
-Cantor type, which is enough as total separatedness is inherited by
-retracts. The crucial step, developed at the end of this module as an
-application of the main development, is to show that the squashed sum
-of a family of Cantor retracts is again a Cantor retract.
+the module FailureOfTotalSeparatedness).
+
+To prove the total separatedness, we show that our compact ordinals
+are retracts of the Cantor type, which is enough as total
+separatedness is inherited by retracts. The crucial step, developed at
+the end of this module as an application of the main development, is
+to show that the squashed sum of a family of Cantor retracts is again
+a Cantor retract.
 
 \begin{code}
 
@@ -51,7 +53,7 @@ private
 Cantor : 𝓤₀ ̇
 Cantor = ℕ → 𝟚
 
-Cantor[_]   : ℕ∞ → 𝓤₀ ̇
+Cantor[_] : ℕ∞ → 𝓤₀ ̇
 Cantor[ u ] = is-finite u → Cantor
 
 \end{code}
@@ -198,12 +200,16 @@ Tail α (n , r) k = α (k ∔ succ n)
 
 Tail₀ : (α : Cantor) (i : is-finite (Head (₀ ∶∶ α)))
       → Tail (₀ ∶∶ α) i ≡ α
-Tail₀ α (zero , r) = refl
-Tail₀ α (succ n , r) = 𝟘-elim (Zero-not-Succ ((r ∙ Head₀ (₀ ∶∶ α) refl)⁻¹))
+Tail₀ α (zero   , r) = refl
+Tail₀ α (succ n , r) = 𝟘-elim (Succ-not-Zero (Succ (under n) ≡⟨ r ⟩
+                                              Head (₀ ∶∶ α)  ≡⟨ Head₀ (₀ ∶∶ α) refl ⟩
+                                              Zero           ∎))
 
 Tail₁ : (α : Cantor) (i : is-finite (Head (₁ ∶∶ α)))
       → Tail (₁ ∶∶ α) i ≡ α ∘ (λ k → k ∔ size i)
-Tail₁ α (zero , r) = 𝟘-elim (Zero-not-Succ (r ∙ Head₁ (₁ ∶∶ α) refl))
+Tail₁ α (zero   , r) = 𝟘-elim (Zero-not-Succ (Zero          ≡⟨ r ⟩
+                                              Head (₁ ∶∶ α) ≡⟨ Head₁ (₁ ∶∶ α) refl ⟩
+                                              Succ (Head α) ∎))
 Tail₁ α (succ n , r) = refl
 
 ap-Tail : {α β : Cantor} (p : α ≡ β)
@@ -231,12 +237,12 @@ inverse Cons for ⟨Head,Tail⟩:
 
 head-step : D Cantor → 𝟚
 head-step (u , φ) = 𝟚-equality-cases
-                     (λ (z : is-Zero u) → head (φ (Zero-is-finite' fe₀ u z)))
+                     (λ (z : is-Zero u)     → head (φ (Zero-is-finite' fe₀ u z)))
                      (λ (p : is-positive u) → ₁)
 
 tail-step : D Cantor → D Cantor
 tail-step (u , φ) = 𝟚-equality-cases
-                     (λ (z : is-Zero u) → u , tail ∘ φ)
+                     (λ (z : is-Zero u)     → u , tail ∘ φ)
                      (λ (p : is-positive u) → Pred u , φ ∘ is-finite-up' fe₀ u)
 
 Κ : D Cantor → Cantor
@@ -244,11 +250,12 @@ tail-step (u , φ) = 𝟚-equality-cases
 
 head-Κ-Zero : (φ : Cantor[ Zero ])
             → head (Κ (Zero , φ)) ≡ head (φ Zero-is-finite)
-head-Κ-Zero φ = seq-corec-head
-                  head-step
-                  tail-step
-                  (Zero , φ) ∙ ap (λ - → head (φ -))
-                  (being-finite-is-prop fe₀ Zero _ _)
+head-Κ-Zero φ = head (Κ (Zero , φ))     ≡⟨ I ⟩
+                head-step (Zero , φ)    ≡⟨ II ⟩
+                head (φ Zero-is-finite) ∎
+              where
+               I  = seq-corec-head head-step tail-step (Zero , φ)
+               II = ap (λ - → head (φ -)) (being-finite-is-prop fe₀ Zero _ _)
 
 tail-Κ-Zero : (φ : Cantor[ Zero ])
             → tail (Κ (Zero , φ)) ≡ Κ (Zero , tail ∘ φ)
@@ -265,8 +272,10 @@ tail-Κ-Zero φ = seq-corec-tail head-step tail-step (Zero , φ)
    where
     IH : Κ (Zero , tail ∘ φ) n ≡ φ Zero-is-finite (succ n)
     IH = l (tail ∘ φ) n
-    γ : Κ (Zero , φ) (succ n) ≡ φ Zero-is-finite (succ n)
-    γ = ap (λ - → - n) (tail-Κ-Zero φ) ∙ IH
+
+    γ = Κ (Zero , φ) (succ n)     ≡⟨ ap (λ - → - n) (tail-Κ-Zero φ) ⟩
+        Κ (Zero , tail ∘ φ) n     ≡⟨ IH ⟩
+        φ Zero-is-finite (succ n) ∎
 
 head-Κ-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
             → head (Κ (Succ u , φ ))≡ ₁
@@ -282,18 +291,19 @@ to-Κ-≡ {u} w φ refl {s} {t} =
 tail-Κ-Succ : (u : ℕ∞) (φ : Cantor[ Succ u ])
             → tail (Κ (Succ u , φ)) ≡ Κ (u , φ ∘ is-finite-up u)
 tail-Κ-Succ u φ =
-  tail (Κ (Succ u , φ))
-    ≡⟨ seq-corec-tail head-step tail-step (Succ u , φ) ⟩
-  Κ (Pred(Succ u) , φ ∘ is-finite-up' fe₀ (Succ u))
-    ≡⟨ to-Κ-≡ (Succ u) φ Pred-Succ ⟩
-  Κ (u , φ ∘ is-finite-up u) ∎
+  tail (Κ (Succ u , φ))                             ≡⟨ I ⟩
+  Κ (Pred(Succ u) , φ ∘ is-finite-up' fe₀ (Succ u)) ≡⟨ II ⟩
+  Κ (u , φ ∘ is-finite-up u)                        ∎
+   where
+    I  = seq-corec-tail head-step tail-step (Succ u , φ)
+    II = to-Κ-≡ (Succ u) φ Pred-Succ
 
 Κ₁ : (u : ℕ∞) (φ : Cantor[ Succ u ])
    → Κ (Succ u , φ) ≡ ₁ ∶∶ Κ (u , φ ∘ is-finite-up u)
 Κ₁ u φ = dfunext fe₀ h
  where
   h : (i : ℕ) → Κ (Succ u , φ) i ≡ (₁ ∶∶ Κ (u , φ ∘ is-finite-up u)) i
-  h zero = head-Κ-Succ u φ
+  h zero     = head-Κ-Succ u φ
   h (succ i) = ap (λ - → - i) (tail-Κ-Succ u φ)
 
 \end{code}
@@ -332,18 +342,22 @@ Cons (under n , φ) we get the sequence φ (under-is-finite n):
 
 tail-Cons-under : (n : ℕ) (φ : Cantor[ under n ])
                 → Cons (under n , φ) ∘ (λ k → k ∔ succ n) ≡ φ (under-is-finite n)
-tail-Cons-under zero φ = ap tail (Cons₀ φ)
+tail-Cons-under zero φ     = ap tail (Cons₀ φ)
 tail-Cons-under (succ n) φ = γ
  where
   IH : Cons (under n , φ ∘ is-finite-up (under n)) ∘ (λ k → k ∔ succ n)
      ≡ φ (is-finite-up (under n) (under-is-finite n))
   IH = tail-Cons-under n (φ ∘ is-finite-up (under n))
-  p : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
-    ≡ (Cons (under n , φ ∘ is-finite-up (under n))) ∘ (λ k → k ∔ succ n)
-  p = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (under n) φ)
+
   γ : Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))
     ≡ φ (under-is-finite (succ n))
-  γ = p ∙ IH ∙ ap φ (being-finite-is-prop fe₀ (under (succ n)) _ _)
+  γ = Cons (under (succ n) , φ) ∘ (λ k → k ∔ succ (succ n))            ≡⟨ I ⟩
+      Cons (under n , φ ∘ is-finite-up (under n)) ∘ (λ k → k ∔ succ n) ≡⟨ IH ⟩
+      φ (is-finite-up (under n) (under-is-finite n))                   ≡⟨ II ⟩
+      φ (under-is-finite (succ n)) ∎
+   where
+    I = ap (λ - → - ∘ (λ k → k ∔ succ (succ n))) (Cons₁ (under n) φ)
+    II = ap φ (being-finite-is-prop fe₀ (under (succ n)) _ _)
 
 \end{code}
 
@@ -363,34 +377,37 @@ Head-Cons = λ u φ → ap (λ - → - φ) (γ u)
                    → Head (Cons (under n , φ)) ≡ under n
   Head-Cons-finite zero φ = Head₀ (Cons (Zero , φ)) (ap head (Cons₀ φ))
   Head-Cons-finite (succ n) φ =
-    Head (Cons (Succ (under n) , φ))
-      ≡⟨ Head₁ (Cons (Succ (under n) , φ)) (ap head r) ⟩
-    Succ (Head (tail (Cons (Succ (under n) , φ))))
-      ≡⟨ ap (Succ ∘ Head ∘ tail) r ⟩
-    Succ (Head (Cons (under n , φ ∘ is-finite-up (under n))))
-      ≡⟨ ap Succ IH ⟩
+    Head (Cons (Succ (under n) , φ))                          ≡⟨ I ⟩
+    Succ (Head (tail (Cons (Succ (under n) , φ))))            ≡⟨ II ⟩
+    Succ (Head (Cons (under n , φ ∘ is-finite-up (under n)))) ≡⟨ III ⟩
     under (succ n) ∎
-    where
-     IH : Head (Cons (under n , φ ∘ is-finite-up (under n))) ≡ under n
-     IH = Head-Cons-finite n (φ ∘ is-finite-up (under n))
-     r : Cons (Succ (under n) , φ) ≡ ₁ ∶∶ Cons (under n , φ ∘ is-finite-up (under n))
-     r = Cons₁ (under n) φ
+     where
+      r : Cons (Succ (under n) , φ) ≡ ₁ ∶∶ Cons (under n , φ ∘ is-finite-up (under n))
+      r = Cons₁ (under n) φ
+
+      IH : Head (Cons (under n , φ ∘ is-finite-up (under n))) ≡ under n
+      IH = Head-Cons-finite n (φ ∘ is-finite-up (under n))
+
+      I   = Head₁ (Cons (Succ (under n) , φ)) (ap head r)
+      II  = ap (Succ ∘ Head ∘ tail) r
+      III = ap Succ IH
 
   Head-Cons-∞ : (φ : Cantor[ ∞ ]) → Head (Cons (∞ , φ)) ≡ ∞
   Head-Cons-∞ φ = unique-fixed-point-of-Succ fe₀ (Head (Cons (∞ , φ))) p
    where
     r : Cons (Succ ∞ , φ ∘ is-finite-down ∞) ≡ ₁ ∶∶ Cons (∞ , φ ∘ is-finite-down ∞ ∘ is-finite-up ∞)
     r = Cons₁ ∞ (φ ∘ is-finite-down ∞)
-    p : Head (Cons (∞ , φ)) ≡ Succ (Head (Cons (∞ , φ)))
-    p = Head (Cons (∞ , φ))
-          ≡⟨ ap Head (to-Cons-≡ ∞ φ ((Succ-∞-is-∞ fe₀)⁻¹) {id} {is-finite-down ∞}) ⟩
-        Head (Cons (Succ ∞ , φ ∘ is-finite-down ∞))
-          ≡⟨ Head₁ (Cons (Succ ∞ , φ ∘ is-finite-down ∞)) (ap head r) ⟩
-        Succ (Head (tail (Cons (Succ ∞ , φ ∘ is-finite-down ∞))))
-          ≡⟨ ap (Succ ∘ Head ∘ tail) r ⟩
-        Succ (Head (Cons (∞ , φ ∘ is-finite-down ∞ ∘ is-finite-up ∞)))
-          ≡⟨ ap (Succ ∘ Head) (to-Cons-≡ ∞ φ refl {is-finite-down ∞ ∘ is-finite-up ∞} {id}) ⟩
-        Succ (Head (Cons (∞ , φ))) ∎
+
+    p = Head (Cons (∞ , φ))                                            ≡⟨ I ⟩
+        Head (Cons (Succ ∞ , φ ∘ is-finite-down ∞))                    ≡⟨ II ⟩
+        Succ (Head (tail (Cons (Succ ∞ , φ ∘ is-finite-down ∞))))      ≡⟨ III ⟩
+        Succ (Head (Cons (∞ , φ ∘ is-finite-down ∞ ∘ is-finite-up ∞))) ≡⟨ IV ⟩
+        Succ (Head (Cons (∞ , φ)))                                     ∎
+         where
+          I   = ap Head (to-Cons-≡ ∞ φ ((Succ-∞-is-∞ fe₀)⁻¹) {id} {is-finite-down ∞})
+          II  = Head₁ (Cons (Succ ∞ , φ ∘ is-finite-down ∞)) (ap head r)
+          III = ap (Succ ∘ Head ∘ tail) r
+          IV  = ap (Succ ∘ Head) (to-Cons-≡ ∞ φ refl {is-finite-down ∞ ∘ is-finite-up ∞} {id})
 
   γ : (u : ℕ∞) → (λ φ → Head (Cons (u , φ))) ≡ (λ φ → u)
   γ = ℕ∞-ddensity fe₀
@@ -415,68 +432,92 @@ Tail-Cons u φ = dfunext fe₀ (γ u φ)
  where
    γ : (u : ℕ∞) (φ : Cantor[ u ]) (i : is-finite (Head (Cons (u , φ))))
     → Tail (Cons (u , φ)) i ≡ (φ ∘ Head-finite u φ) i
-   γ u φ (zero , r) = Tail (Cons (u , φ)) (zero , r)
-                          ≡⟨ ap₂-Tail (zero , r) q ⟩
-                      Tail (Cons (Zero , φ ∘ t)) j
-                          ≡⟨ ap₂-Tail j (Cons₀ (φ ∘ t)) ⟩
-                      Tail (₀ ∶∶ φ (t Zero-is-finite)) k
-                          ≡⟨ Tail₀ (φ (t Zero-is-finite)) k ⟩
-                      φ (t Zero-is-finite)
-                          ≡⟨ ap φ (being-finite-is-prop fe₀ u _ _) ⟩
-                      φ (Head-finite u φ (zero , r)) ∎
+   γ u φ (zero , r) = δ
     where
-     p : u ≡ Zero
-     p = (r ∙ Head-Cons u φ)⁻¹
+     p = u                   ≡⟨ (Head-Cons u φ)⁻¹ ⟩
+         Head (Cons (u , φ)) ≡⟨ r ⁻¹ ⟩
+         under zero          ∎
+
      t : is-finite Zero → is-finite u
      t = back-transport-finite p
+
      q : Cons (u , φ) ≡ Cons (Zero , φ ∘ t)
      q = ap-Cantor (λ u φ → Cons (u , φ)) p
+
      j : is-finite (Head (Cons (Zero , φ ∘ t)))
      j = transport (λ - → is-finite (Head -)) q (zero , r)
+
      k : is-finite (Head (₀ ∶∶ φ (t Zero-is-finite)))
      k = transport (λ - → is-finite (Head -)) (Cons₀ (φ ∘ t)) j
 
-   γ u φ (succ n , r) = Tail (Cons (u , φ)) (succ n , r)
-                           ≡⟨ ap₂-Tail (succ n , r) q ⟩
-                        Tail (Cons (Succ (under n) , φ ∘ t)) j
-                           ≡⟨ ap₂-Tail j (Cons₁ (under n) (φ ∘ t)) ⟩
-                        Tail (₁ ∶∶ Cons (under n , φ ∘ t')) k
-                           ≡⟨ Tail₁ (Cons (under n , φ ∘ t')) k ⟩
-                        Cons (under n , φ ∘ t') ∘ (λ l → l ∔ size k)
-                           ≡⟨ ap (λ - → Cons (under n , φ ∘ t') ∘ (λ l → l ∔ -)) k' ⟩
-                        Cons (under n , φ ∘ t') ∘ (λ l → l ∔ succ n)
-                           ≡⟨ tail-Cons-under n (φ ∘ t') ⟩
-                        φ (t' (under-is-finite n))
-                           ≡⟨ ap φ (being-finite-is-prop fe₀ u _ _) ⟩
-                        φ (Head-finite u φ (succ n , r))
-                        ∎
+     δ = Tail (Cons (u , φ)) (zero , r)     ≡⟨ I ⟩
+         Tail (Cons (Zero , φ ∘ t)) j       ≡⟨ II ⟩
+         Tail (₀ ∶∶ φ (t Zero-is-finite)) k ≡⟨ III ⟩
+         φ (t Zero-is-finite)               ≡⟨ IV ⟩
+         φ (Head-finite u φ (zero , r))     ∎
+      where
+       I   = ap₂-Tail (zero , r) q
+       II  = ap₂-Tail j (Cons₀ (φ ∘ t))
+       III = Tail₀ (φ (t Zero-is-finite)) k
+       IV  = ap φ (being-finite-is-prop fe₀ u _ _)
+
+   γ u φ (succ n , r) = δ
     where
-     p : u ≡ Succ (under n)
-     p = (r ∙ Head-Cons u φ)⁻¹
+     p = u                   ≡⟨ (Head-Cons u φ)⁻¹ ⟩
+         Head (Cons (u , φ)) ≡⟨ r ⁻¹ ⟩
+         under (succ n)      ∎
+
      t : is-finite (Succ (under n)) → is-finite u
      t = back-transport-finite p
+
      t' : is-finite (under n) → is-finite u
      t' = t ∘ is-finite-up (under n)
+
      q : Cons (u , φ) ≡ Cons (Succ (under n) , φ ∘ t)
      q = ap-Cantor (λ u φ → Cons (u , φ)) p
+
      j : is-finite (Head (Cons (Succ (under n) , φ ∘ t)))
      j = transport (λ - → is-finite (Head -)) q (succ n , r)
+
      k : is-finite (Head (₁ ∶∶ Cons (under n , φ ∘ t')))
      k = transport (λ - → is-finite (Head -)) (Cons₁ (under n) (φ ∘ t)) j
-     k' : size k ≡ succ n
-     k' = under-lc(pr₂ k ∙
-                   Head₁ (₁ ∶∶ Cons (under n , φ ∘ t')) refl ∙
-                   ap Succ (Head-Cons (under n) (φ ∘ t')))
+
+     l = under (size k)                                              ≡⟨ I ⟩
+         Head (₁ ∶∶ Cons (under n , φ ∘ t'))                         ≡⟨ II ⟩
+         Succ (Head (tail (₁ ∶∶ Cons (under n , (λ x → φ (t' x)))))) ≡⟨ III ⟩
+         Succ (under n)                                              ≡⟨ refl ⟩
+         under (succ n)                                              ∎
+          where
+           I   = pr₂ k
+           II  = Head₁ (₁ ∶∶ Cons (under n , φ ∘ t')) refl
+           III = ap Succ (Head-Cons (under n) (φ ∘ t'))
+
+     m : size k ≡ succ n
+     m = under-lc l
+
+     δ = Tail (Cons (u , φ)) (succ n , r)             ≡⟨ I ⟩
+         Tail (Cons (Succ (under n) , φ ∘ t)) j       ≡⟨ II ⟩
+         Tail (₁ ∶∶ Cons (under n , φ ∘ t')) k        ≡⟨ III ⟩
+         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ size k) ≡⟨ IV ⟩
+         Cons (under n , φ ∘ t') ∘ (λ l → l ∔ succ n) ≡⟨ V ⟩
+         φ (t' (under-is-finite n))                   ≡⟨ VI ⟩
+         φ (Head-finite u φ (succ n , r))             ∎
+      where
+       I   = ap₂-Tail (succ n , r) q
+       II  = ap₂-Tail j (Cons₁ (under n) (φ ∘ t))
+       III = Tail₁ (Cons (under n , φ ∘ t')) k
+       IV  = ap (λ - → Cons (under n , φ ∘ t') ∘ (λ l → l ∔ -)) m
+       V   = tail-Cons-under n (φ ∘ t')
+       VI  = ap φ (being-finite-is-prop fe₀ u _ _)
 
 Tail-Cons' : (u : ℕ∞) (φ : Cantor[ u ])
           → transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ))) ≡ φ
-Tail-Cons' u φ = r ∙ s
+Tail-Cons' u φ = transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ))) ≡⟨ I ⟩
+                 transport-Cantor (Head-Cons u φ) (φ ∘ Head-finite u φ) ≡⟨ II ⟩
+                 φ                                                      ∎
  where
-  r : transport-Cantor (Head-Cons u φ) (Tail (Cons (u , φ)))
-   ≡ transport-Cantor (Head-Cons u φ) (φ ∘ Head-finite u φ)
-  r = ap (transport-Cantor (Head-Cons u φ)) (Tail-Cons u φ)
-  s : transport-Cantor (Head-Cons u φ) (φ ∘ Head-finite u φ) ≡ φ
-  s = back-tpc φ (Head-Cons u φ)
+  I  = ap (transport-Cantor (Head-Cons u φ)) (Tail-Cons u φ)
+  II = back-tpc φ (Head-Cons u φ)
 
 \end{code}
 
@@ -511,6 +552,7 @@ of showing that our searchable ordinals are totally separated.
  where
   s : (u : ℕ∞) → retract (X / under) u of ((λ _ → Cantor) / under) u
   s = retract-extension X (λ _ → Cantor) under ρ
+
   r : retract (Σ¹ X) of Σ¹ (λ _ → Cantor)
   r = Σ-retract (X / under) ((λ _ → Cantor) / under) s
 

@@ -1,6 +1,7 @@
 Martin Escardo 28 July 2018
 
-Adapted from the module PropTychnoff to take order into account.
+Adapted from the module PropTychnoff to take order into account. The
+file PropTychonoff has many comments, but this one doesn't.
 
 \begin{code}
 
@@ -20,10 +21,11 @@ open import UF-PropIndexedPiSigma
 open import UF-Equiv
 open import UF-EquivalenceExamples
 
-prop-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } → is-prop X
-              → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
-              → ((x : X) → inf-compact (λ (y y' : Y x) → ¬ (y' ≺ y)))
-              → inf-compact (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
+prop-inf-tychonoff : {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ }
+                   → is-prop X
+                   → (_≺_ : {x : X} → Y x → Y x → 𝓦 ̇ )
+                   → ((x : X) → inf-compact (λ (y y' : Y x) → ¬ (y' ≺ y)))
+                   → inf-compact (λ (φ γ : Π Y) → ¬ (Σ x ꞉ X , γ x ≺ φ x))
 prop-inf-tychonoff {𝓤} {𝓥} {𝓦} {X} {Y} hp _≺_ ε p =
  φ₀ , φ₀-is-conditional-root , a , b
  where

@@ -1,7 +1,7 @@
 By Martin Escardo, 2 September 2011.
 
-Modified in December 2011 assuming the axiom of extensionality (which
-is not used directly in this module, but instead in
+Modified in December 2011 assuming function extensionality (which is
+not used directly in this module, but instead in
 GenericConvergentSequence).
 
 We prove that the generic convergent sequence ℕ∞ is compact, which
@@ -43,7 +43,7 @@ This is the main theorem proved in this module:
   d' : (n : ℕ) → min𝟚 (α n) (p (under(succ n))) ≡ ₁ → α n ≡ ₁
   d' n = Lemma[minab≤₂a] {α n}
 
-  d : decreasing α
+  d : is-decreasing α
   d = d'
 
   a : ℕ∞
@@ -68,14 +68,13 @@ This is the main theorem proved in this module:
     w : α(succ n) ≡ p (under(succ n))
     w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p (under(succ n)))) t ⟩
         min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
-        p (under(succ n))            ∎
+        p (under(succ n))           ∎
 
   Dagger₁ : a ≡ ∞ → (n : ℕ) → p (under n) ≡ ₁
   Dagger₁ r 0 = p (under 0) ≡⟨ refl ⟩
                 α 0         ≡⟨ ap (λ - → incl - 0) r ⟩
                 incl ∞ 0    ≡⟨ refl ⟩
                 ₁           ∎
-
   Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⁻¹ ⟩
                        α (succ n)         ≡⟨ ap (λ - → incl - (succ n)) r ⟩
                        incl ∞ (succ n)    ≡⟨ refl ⟩

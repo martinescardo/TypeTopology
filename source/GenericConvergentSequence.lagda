@@ -4,9 +4,9 @@ See my JSL paper "Infinite sets that satisfy the principle of
 omniscience" for a discussion of the type ℕ∞ defined here.
 Essentially, ℕ∞ is ℕ with an added point ∞.
 
-(Added December 2017. What we knew for a long time: The ℕ∞ is a
-retract of the Cantor type ℕ → 𝟚. This required adding a number of
-lemmas.)
+Added December 2017. What we knew for a long time: The ℕ∞ is a retract
+of the Cantor type ℕ → 𝟚. This required adding a number of
+lemmas. More additions after that date.
 
 \begin{code}
 
@@ -33,19 +33,19 @@ funext₀ = funext 𝓤₀ 𝓤₀
 
 \end{code}
 
-Definition (The generic convergent sequence).
-We use u,v to range over ℕ∞ and α,β to range over ₂ℕ:
+Definition (The generic convergent sequence).  We use u,v,x to range
+over ℕ∞ and α,β to range over (ℕ → 𝟚):
 
 \begin{code}
 
-decreasing : (ℕ → 𝟚) → 𝓤₀ ̇
-decreasing α = (i : ℕ) → α (succ i) ≤₂ α i
+is-decreasing : (ℕ → 𝟚) → 𝓤₀ ̇
+is-decreasing α = (i : ℕ) → α (succ i) ≤₂ α i
 
-being-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop (decreasing α)
+being-decreasing-is-prop : funext₀ → (α : ℕ → 𝟚) → is-prop (is-decreasing α)
 being-decreasing-is-prop fe α = Π-is-prop fe (λ i → Π-is-prop fe (λ p → 𝟚-is-set))
 
 ℕ∞ : 𝓤₀ ̇
-ℕ∞ = Σ α ꞉ (ℕ → 𝟚) , decreasing α
+ℕ∞ = Σ α ꞉ (ℕ → 𝟚) , is-decreasing α
 
 incl : ℕ∞ → (ℕ → 𝟚)
 incl = pr₁
@@ -54,15 +54,15 @@ incl-lc : funext₀ → left-cancellable incl
 incl-lc fe = pr₁-lc (being-decreasing-is-prop fe _)
 
 force-decreasing : (ℕ → 𝟚) → (ℕ → 𝟚)
-force-decreasing β 0 = β 0
+force-decreasing β 0        = β 0
 force-decreasing β (succ i) = min𝟚 (β (succ i)) (force-decreasing β i)
 
-force-decreasing-is-decreasing : (β : ℕ → 𝟚) → decreasing (force-decreasing β)
+force-decreasing-is-decreasing : (β : ℕ → 𝟚) → is-decreasing (force-decreasing β)
 force-decreasing-is-decreasing β zero     = Lemma[min𝟚ab≡₁→b≡₁] {β 1} {β zero}
 force-decreasing-is-decreasing β (succ i) = Lemma[minab≤₂b] {β (succ (succ i))}
-                                                             {force-decreasing β (succ i)}
+                                                            {force-decreasing β (succ i)}
 
-force-decreasing-unchanged : (α : ℕ → 𝟚) → decreasing α → force-decreasing α ∼ α
+force-decreasing-unchanged : (α : ℕ → 𝟚) → is-decreasing α → force-decreasing α ∼ α
 force-decreasing-unchanged α d zero     = refl
 force-decreasing-unchanged α d (succ i) = g
   where
@@ -125,16 +125,9 @@ Cantor-is-¬¬-separated fe = Π-is-¬¬-separated fe (λ _ → 𝟚-is-¬¬-sep
 open import TotallySeparated
 
 ℕ∞-is-totally-separated : funext₀ → is-totally-separated ℕ∞
-ℕ∞-is-totally-separated fe {x} {y} α = g
- where
-  p : ℕ → (ℕ∞ → 𝟚)
-  p i x = incl x i
-
-  l : incl x ≡ incl y
-  l = dfunext fe (λ i → α (p i))
-
-  g : x ≡ y
-  g = incl-lc fe l
+ℕ∞-is-totally-separated fe = retract-of-totally-separated
+                              (ℕ∞-retract-of-Cantor fe)
+                              (Cantor-is-totally-separated fe)
 
 Zero : ℕ∞
 Zero = ((λ i → ₀) , λ i → id {𝓤₀} {₀ ≡ ₁})
@@ -146,7 +139,7 @@ Succ (α , d) = (α' , d')
   α' 0 = ₁
   α'(succ n) = α n
 
-  d' : decreasing α'
+  d' : is-decreasing α'
   d' 0 = λ r → refl
   d' (succ i) = d i
 
@@ -180,6 +173,9 @@ is-positive-Succ α = refl
 Zero-not-Succ : {u : ℕ∞} → Zero ≢ Succ u
 Zero-not-Succ {u} r = zero-is-not-one (ap positivity r)
 
+Succ-not-Zero : {u : ℕ∞} → Succ u ≢ Zero
+Succ-not-Zero = ≢-sym Zero-not-Succ
+
 ∞ : ℕ∞
 ∞ = ((λ i → ₁) , λ i → id {𝓤₀} {₁ ≡ ₁})
 
@@ -197,11 +193,13 @@ unique-fixed-point-of-Succ fe u r = incl-lc fe claim
   fact i = ap (λ - → incl - i) r
 
   lemma : (i : ℕ) → incl u i ≡ ₁
-  lemma 0 = fact 0
-  lemma (succ i) = fact (succ i) ∙ lemma i
+  lemma 0        = fact 0
+  lemma (succ i) = incl u (succ i)        ≡⟨ fact (succ i) ⟩
+                   incl (Succ u) (succ i) ≡⟨ lemma i ⟩
+                   ₁                      ∎
 
   claim : incl u ≡ incl ∞
-  claim = (dfunext fe lemma)
+  claim = dfunext fe lemma
 
 Pred : ℕ∞ → ℕ∞
 Pred (α , d) = (α ∘ succ , d ∘ succ)
@@ -221,8 +219,16 @@ Pred-∞-is-∞ = refl
 Succ-lc : left-cancellable Succ
 Succ-lc = ap Pred
 
+\end{code}
+
+The reason of the notation "under" for the inclusion of ℕ into ℕ∞
+comes from the fact that we use \underline{n} to denote the copy of
+n:ℕ in ℕ∞ in publications.
+
+\begin{code}
+
 under : ℕ → ℕ∞
-under 0 = Zero
+under 0        = Zero
 under (succ n) = Succ (under n)
 
 _≣_ : ℕ∞ → ℕ → 𝓤₀ ̇
@@ -257,9 +263,9 @@ is-Zero-equal-Zero fe {u} base = incl-lc fe (dfunext fe lemma)
   lemma (succ i) = [a≡₁→b≡₁]-gives-[b≡₀→a≡₀] (pr₂ u i) (lemma i)
 
 same-positivity : funext₀ → (u v : ℕ∞)
-               → (u ≡ Zero → v ≡ Zero)
-               → (v ≡ Zero → u ≡ Zero)
-               → positivity u ≡ positivity v
+                → (u ≡ Zero → v ≡ Zero)
+                → (v ≡ Zero → u ≡ Zero)
+                → positivity u ≡ positivity v
 same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-gives-≤₂ a)
                                       (≤₂'-gives-≤₂ b)
  where
@@ -268,11 +274,6 @@ same-positivity fe₀ u v f g = ≤₂-anti (≤₂'-gives-≤₂ a)
 
   b : is-Zero u → is-Zero v
   b p = back-transport is-Zero (f (is-Zero-equal-Zero fe₀ p)) refl
-
-equal-same-positivity : (u v : ℕ∞)
-                      → u ≡ v
-                      → positivity u ≡ positivity v
-equal-same-positivity u .u refl = refl
 
 successors-same-positivity : {u u' v v' : ℕ∞}
                            → u ≡ Succ u'
@@ -329,7 +330,9 @@ Succ-criterion fe {u} {n} r s = incl-lc fe claim
   claim = dfunext fe (lemma u n r s)
 
 ∞-is-not-finite : (n : ℕ) → ∞ ≢ under n
-∞-is-not-finite n s = zero-is-not-one ((ap (λ - → incl - n) s ∙ under-diagonal₀ n)⁻¹)
+∞-is-not-finite n s = one-is-not-zero (₁                ≡⟨ ap (λ - → incl - n) s ⟩
+                                       incl (under n) n ≡⟨ under-diagonal₀ n ⟩
+                                       ₀                ∎)
 
 not-finite-is-∞ : funext₀ → {u : ℕ∞} → ((n : ℕ) → u ≢ under n) → u ≡ ∞
 not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
@@ -344,7 +347,7 @@ not-finite-is-∞ fe {u} f = incl-lc fe (dfunext fe lemma)
             → ((n : ℕ) → f (under n) ≡ g (under n))
             → f ∞ ≡ g ∞
             → (u : ℕ∞) → f u ≡ g u
-ℕ∞-ddensity {𝓤} fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
+ℕ∞-ddensity fe {Y} s {f} {g} h h∞ u = s (f u) (g u) c
  where
   a : f u ≢ g u → (n : ℕ) → u ≢ under n
   a t n = contrapositive (λ (r : u ≡ under n) → back-transport (λ - → f - ≡ g -) r (h n)) t
@@ -474,7 +477,7 @@ is-finite-up' fe u i = 𝟚-equality-cases
                                (positive-equal-Succ fe p)
                                (is-finite-up (Pred u) i))
 
-is-infinite-∞ : ¬ (is-finite ∞)
+is-infinite-∞ : ¬ is-finite ∞
 is-infinite-∞ (n , r) = 𝟘-elim (∞-is-not-finite n (r ⁻¹))
 
 \end{code}
@@ -529,13 +532,13 @@ above-Succ-is-positive u v l = l zero refl
 ≼-fold : (u v : ℕ∞)
        → ((u ≡ Zero) + (Σ w ꞉ ℕ∞ , Σ t ꞉ ℕ∞ , (u ≡ Succ w) × (v ≡ Succ t) × (w ≼ t)))
        → u ≼ v
-≼-fold .Zero v (inl refl) = Zero-minimal v
-≼-fold . (Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
+≼-fold Zero      v         (inl refl)                      = Zero-minimal v
+≼-fold .(Succ w) .(Succ t) (inr (w , t , refl , refl , l)) = Succ-monotone w t l
 
 max : ℕ∞ → ℕ∞ → ℕ∞
 max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
  where
-  t : decreasing (λ i → max𝟚 (α i) (β i))
+  t : is-decreasing (λ i → max𝟚 (α i) (β i))
   t i p = max𝟚-lemma-converse (α i) (β i) (f (max𝟚-lemma(α(succ i)) (β(succ i)) p))
     where
      f : (α(succ i) ≡ ₁) + (β(succ i) ≡ ₁) → (α i ≡ ₁) + (β i ≡ ₁)
@@ -545,7 +548,7 @@ max (α , r) (β , s) = (λ i → max𝟚 (α i) (β i)) , t
 min : ℕ∞ → ℕ∞ → ℕ∞
 min (α , r) (β , s) = (λ i → min𝟚 (α i) (β i)) , t
  where
-  t : decreasing (λ i → min𝟚 (α i) (β i))
+  t : is-decreasing (λ i → min𝟚 (α i) (β i))
   t i p = Lemma[a≡₁→b≡₁→min𝟚ab≡₁] (pr₁ (g e)) (pr₂ (g e))
    where
     e : (α(succ i) ≡ ₁) × (β(succ i) ≡ ₁)
@@ -911,7 +914,7 @@ TODO:
 ℕ∞-charac : ℕ∞ ≃ (Σ α ꞉ (ℕ → 𝟚), is-prop (Σ n ꞉ ℕ , α n ≡ ₀))
 ℕ∞-charac = qinveq f (g , η , ε)
  where
-  l : (α : ℕ → 𝟚) → decreasing α → (n k : ℕ) → α n ≡ ₀ → α k ≡ ₀ → n ≡ k
+  l : (α : ℕ → 𝟚) → is-decreasing α → (n k : ℕ) → α n ≡ ₀ → α k ≡ ₀ → n ≡ k
   l α d zero zero p q = refl
   l α d zero (succ k) p q = {!!}
   l α d (succ n) k p q = {!!}

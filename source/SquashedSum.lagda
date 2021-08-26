@@ -1,5 +1,7 @@
 Martin Escardo, 2 May 2014.
 
+Squashed sum.
+
 See remarks below for an explanation.
 
 \begin{code}
@@ -15,7 +17,6 @@ fe₀ : funext 𝓤₀ 𝓤₀
 fe₀ = fe 𝓤₀ 𝓤₀
 
 open import Two-Properties
-
 open import Plus-Properties
 open import UF-Base
 open import UF-Subsingletons
@@ -35,7 +36,7 @@ Recall that the map
 
   under : ℕ → ℕ∞
 
-is the natural embedding. Given a type family X : ℕ → 𝓤 ̇, we take its
+is the canonical embedding. Given a type family X : ℕ → 𝓤 ̇, we take its
 right Kan extension
 
   X / under : ℕ∞ → 𝓤 ̇
@@ -69,10 +70,10 @@ We now develop a discrete (but not compact) version Σ₁ X of Σ¹ X
 with a dense embedding into Σ¹ X, where an embedding is called dense
 if the complement of its image is empty. Recall that the function
 
-  over𝟙 : ℕ + 𝟙 → ℕ∞ is
+  over𝟙 : ℕ + 𝟙 → ℕ∞
 
-the natural embedding that maps the isolated added point to ∞, which
-is dense.
+is the canonical embedding that maps the added isolated point to ∞,
+which is dense.
 
 \begin{code}
 
@@ -131,10 +132,14 @@ over-under-map : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
                → (X / over) z → (X / under) (under𝟙 z)
 over-under-map X z = detofun (over-under X z)
 
+over-under-map-dense : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+                     → is-dense (over-under-map X z)
+over-under-map-dense X z = is-dense-detofun (over-under X z)
+
 over-under-map-left : (X : ℕ → 𝓤 ̇ ) (n : ℕ)
-                     (φ : (w : fiber over (inl n)) → X (pr₁ w))
-                   → over-under-map X (inl n) φ (n , refl)
-                   ≡ φ (n , refl)
+                      (φ : (w : fiber over (inl n)) → X (pr₁ w))
+                    → over-under-map X (inl n) φ (n , refl)
+                    ≡ φ (n , refl)
 over-under-map-left X n φ =
  transport
   (λ - → over-under-map X (inl n) φ (n , refl)
@@ -152,10 +157,6 @@ over-under-map-left X n φ =
                  (under-embedding fe₀ (under n) (n , refl) t)
                  (φ (n , refl))
   f t = refl
-
-over-under-map-dense : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-                     → is-dense (over-under-map X z)
-over-under-map-dense X z = is-dense-detofun (over-under X z)
 
 \end{code}
 
@@ -248,6 +249,7 @@ Over-dense X Y f d (inr *) =
   (is-equiv-is-dense
     ⌜ Π-extension-out-of-range Y over (inr *) (λ x → +disjoint) ⌝⁻¹
    (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+
 Over-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                  (f : (n : ℕ) → X n → Y n)
                → ((n : ℕ) → is-embedding (f n))
@@ -326,7 +328,7 @@ under𝟙-over-extension = iterated-extension over under𝟙
 
 End. What follows is an old version of part of the above.
 
-The original version of the searchability of the squashed sum, given
+The original version of the compactness of the squashed sum, given
 below was much more convoluted, as it didn't use injective types, but
 equivalent, as also shown below.
 
@@ -336,7 +338,6 @@ The theorem here is that the "squashed sum" of any countable family of
 compact∙ sets is itself compact (see the module CompactTypes,
 imported below, for the definition and fundamental facts about the
 notion).
-open import UF-InjectiveTypes fe
 
 (The terminology "squashed sum" comes from the paper "Infinite sets
 that satisfy the principle of omniscience in all varieties of
@@ -366,7 +367,7 @@ Assuming excluded middle, Σᴵ X is isomorphic to (Σ n ꞉ ℕ , X n) ⊎ 1
 where 1 is the one-point type.
 
 Assuming Brouwerian continuity axioms, Σᴵ X is the one-point
-compatification of the disjoint sum (Σ n ꞉ ℕ , X n).
+compactification of the disjoint sum (Σ n ꞉ ℕ , X n).
 
 But we don't assume excluded middle or continuiy axioms here. We work
 within intensional MLTT with function extensionality as a postulate
@@ -409,7 +410,8 @@ module original-version-and-equivalence-with-new-version where
  G : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] → X n
  G n u r y = y n r
 
- FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ) → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
+ FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ)
+   → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
  FG {X} n u r y = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
@@ -432,10 +434,13 @@ module original-version-and-equivalence-with-new-version where
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
    f = transport X
+
    claim₀ : f (under-lc (r ∙ r ⁻¹)) x ≡ f (under-lc refl) x
    claim₀ = ap (λ - → f (under-lc -) x) (trans-sym' r)
+
    claim₁ : f (under-lc refl) x ≡ x
    claim₁ = ap (λ - → f - x) (under-lc-refl n)
+
    s : f (under-lc (r ∙ r ⁻¹)) x ≡ x
    s = claim₀ ∙ claim₁
 
@@ -468,10 +473,13 @@ module original-version-and-equivalence-with-new-version where
     where
      claim₀ : (y : Y) → p (F n u r (G n u r y)) ≡ p y
      claim₀ y = ap p (FG n u r y)
+
      claim₁ : p (F n u r (G n u r y₀)) ≡ ₁ → (x : X n) → p (F n u r x) ≡ ₁
      claim₁ =  pr₂(ε n (p ∘ (F n u r)))
+
      claim₂ : (x : X n) → p (F n u r x) ≡ ₁
      claim₂ = claim₁ (claim₀ y₀ ∙ e)
+
      claim₃ : (y : Y) → p y ≡ ₁
      claim₃ y = (claim₀ y)⁻¹ ∙ claim₂ (G n u r y)
 
@@ -485,7 +493,10 @@ module original-version-and-equivalence-with-new-version where
    lemma₂' e y s r = zero-is-not-one (s ⁻¹ ∙ lemma₂ r e y)
 
    lemma : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
-   lemma r y = different-from-₀-equal-₁ (λ s → lemma₂' r y s (not-finite-is-∞ fe₀ (λ n q → lemma₁' r y s n (q ⁻¹))))
+   lemma r y = different-from-₀-equal-₁
+                (λ s → lemma₂' r y s
+                        (not-finite-is-∞ fe₀
+                          (λ n q → lemma₁' r y s n (q ⁻¹))))
 
 \end{code}
 
@@ -508,7 +519,7 @@ module original-version-and-equivalence-with-new-version where
  open import UF-EquivalenceExamples
 
  agreement-lemma : (X : ℕ → 𝓤₀ ̇ ) (u : ℕ∞)
-                → (X / under) u ≃ Π (λ x → under x ≡ u → X x)
+                 → (X / under) u ≃ Π (λ x → under x ≡ u → X x)
  agreement-lemma X = 2nd-Π-extension-formula X under
 
  agreement : (X : ℕ → 𝓤₀ ̇ ) → Σ¹ X ≃ Σᴵ X

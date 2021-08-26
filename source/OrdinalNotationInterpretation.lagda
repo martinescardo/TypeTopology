@@ -223,7 +223,7 @@ And hence they are totally separated:
 
 \begin{code}
 
-Κ-is-totally-separated ν = retract-totally-separated
+Κ-is-totally-separated ν = retract-of-totally-separated
                              (Κ-Cantor-retract ν)
                              (Cantor-is-totally-separated fe₀)
 \end{code}

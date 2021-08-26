@@ -212,11 +212,11 @@ Totally separated spaces are closed under retracts:
 
 \begin{code}
 
-retract-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-                          → retract Y of X
-                          → is-totally-separated X
-                          → is-totally-separated Y
-retract-totally-separated (r , s , rs) τ {y} {y'} α = section-lc s (r , rs) h
+retract-of-totally-separated : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+                             → retract Y of X
+                             → is-totally-separated X
+                             → is-totally-separated Y
+retract-of-totally-separated (r , s , rs) τ {y} {y'} α = section-lc s (r , rs) h
  where
   h : s y ≡ s y'
   h = τ (λ p → α (p ∘ s))
