@@ -306,10 +306,10 @@ relations are discrete (have decidable equality):
 
 \begin{code}
 
-trichomous-gives-discrete : is-well-founded
-                          → is-trichotomous
-                          → is-discrete X
-trichomous-gives-discrete w t x y = f (t x y)
+trichotomous-gives-discrete : is-well-founded
+                            → is-trichotomous
+                            → is-discrete X
+trichotomous-gives-discrete w t x y = f (t x y)
  where
   f : (x < y) + (x ≡ y) + (y < x) → (x ≡ y) + (x ≢ y)
   f (inl l)       = inr (<-gives-≢ w x y l)
