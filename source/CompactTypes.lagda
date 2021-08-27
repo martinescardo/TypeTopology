@@ -435,8 +435,8 @@ module warmup {𝓤} {𝓥} {R : 𝓥 ̇ } where
   overline ε p = p (ε p)
 
   sel-prod' : {X : 𝓤 ̇ } {Y : X → 𝓤 ̇ }
-            → selection X → ((x : X)
-            → selection (Y x))
+            → selection X
+            → ((x : X) → selection (Y x))
             → selection (Σ Y)
   sel-prod' {X} {Y} ε δ p = (x₀ , y₀)
    where

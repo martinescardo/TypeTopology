@@ -5,7 +5,7 @@ of Escardo's paper "Infinite sets that satisfy the principle of
 omniscience in all varieties of constructive mathematics", Journal of
 Symbolic Logic, volume 78, number 3, September 2013, pages 764-784.
 
-The theorem says that, for any p : ℕ∞ → ₂, the proposition
+The theorem says that, for any p : ℕ∞ → 𝟚, the proposition
 (n : ℕ) → p (under n) ≡ ₁ is decidable.
 
 \begin{code}
