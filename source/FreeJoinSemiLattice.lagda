@@ -809,3 +809,50 @@ open import UF-Embeddings
 \end{code}
 
 TODO. Show that 𝓚' X is equivalent to 𝓚 X (using UF-Classifiers).
+
+Tom de Jong, 27 August 2021. We implement this TODO.
+
+\begin{code}
+
+open import UF-Univalence
+
+module _
+        (ua : Univalence)
+       where
+
+ open import UF-Classifiers hiding (𝕋)
+ open import UF-EquivalenceExamples
+
+ 𝓚-is-equivalent-to-𝓚' : (X : 𝓤 ̇ ) →  𝓚 X ≃ 𝓚' X
+ 𝓚-is-equivalent-to-𝓚' {𝓤} X = γ
+  where
+   φ : Subtypes X ≃ 𝓟 X
+   φ = Ω-is-subtype-classifier ua X
+   κ : 𝓤 ̇ → 𝓤 ̇
+   κ = is-Kuratowski-finite
+   γ = 𝓚 X                                                ≃⟨ ≃-refl _ ⟩
+       (Σ A ꞉ 𝓟 X , κ (𝕋 A))                              ≃⟨ I        ⟩
+       (Σ S ꞉ Subtypes X , κ (𝕋 (⌜ φ ⌝ S)))               ≃⟨ Σ-assoc  ⟩
+       (Σ A ꞉ 𝓤 ̇ , Σ e ꞉ (A ↪ X) , κ (𝕋 (⌜ φ ⌝ (A , e)))) ≃⟨ II       ⟩
+       (Σ A ꞉ 𝓤 ̇ , Σ e ꞉ (A ↪ X) , κ A)                   ≃⟨ ≃-refl _ ⟩
+       (Σ A ꞉ 𝓤 ̇ , (A ↪ X) × κ A)                         ≃⟨ ≃-refl _ ⟩
+       𝓚' X                                               ■
+    where
+     I  = ≃-sym (Σ-change-of-variable (λ A → is-Kuratowski-finite (𝕋 A))
+                   ⌜ φ ⌝ (⌜⌝-is-equiv φ))
+     II = Σ-cong (λ A → Σ-cong (λ e → ψ A e))
+      where
+       ψ : (A : 𝓤 ̇ ) (e : A ↪ X)
+         → κ (𝕋 (⌜ φ ⌝ (A :: e))) ≃ κ A
+       ψ A e = idtoeq (κ A') (κ A)
+                (ap κ (eqtoid (ua 𝓤) A' A lemma))
+        where
+         A' : 𝓤 ̇
+         A' = 𝕋 (⌜ φ ⌝ (A , e))
+         lemma = A'                                   ≃⟨ ≃-refl _ ⟩
+                 (Σ x ꞉ X , Σ a ꞉ A , etofun e a ≡ x) ≃⟨ τ        ⟩
+                 A                                    ■
+          where
+           τ = total-fiber-is-domain (etofun e)
+
+\end{code}
