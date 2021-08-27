@@ -830,13 +830,13 @@ module _
    φ = Ω-is-subtype-classifier ua X
    κ : 𝓤 ̇ → 𝓤 ̇
    κ = is-Kuratowski-finite
-   γ = 𝓚 X                                                 ≃⟨ ≃-refl _ ⟩
-       (Σ A ꞉ 𝓟 X , κ (𝕋 A))                               ≃⟨ I        ⟩
-       (Σ S ꞉ Subtypes X , κ (𝕋 (⌜ φ ⌝ S)))                ≃⟨ Σ-assoc  ⟩
+   γ = 𝓚 X                                                ≃⟨ ≃-refl _ ⟩
+       (Σ A ꞉ 𝓟 X , κ (𝕋 A))                              ≃⟨ I        ⟩
+       (Σ S ꞉ Subtypes X , κ (𝕋 (⌜ φ ⌝ S)))               ≃⟨ Σ-assoc  ⟩
        (Σ A ꞉ 𝓤 ̇ , Σ e ꞉ (A ↪ X) , κ (𝕋 (⌜ φ ⌝ (A , e)))) ≃⟨ II       ⟩
        (Σ A ꞉ 𝓤 ̇ , Σ e ꞉ (A ↪ X) , κ A)                   ≃⟨ ≃-refl _ ⟩
        (Σ A ꞉ 𝓤 ̇ , (A ↪ X) × κ A)                         ≃⟨ ≃-refl _ ⟩
-       𝓚' X                                                ■
+       𝓚' X                                               ■
     where
      I  = ≃-sym (Σ-change-of-variable (λ A → is-Kuratowski-finite (𝕋 A))
                    ⌜ φ ⌝ (⌜⌝-is-equiv φ))
