@@ -139,10 +139,13 @@ compact∙-gives-compact {𝓤} {X} ε p = 𝟚-equality-cases case₀ case₁
  where
   x₀ : X
   x₀ = pr₁ (ε p)
+
   lemma : p x₀ ≡ ₁ → (x : X) → p x ≡ ₁
   lemma = pr₂ (ε p)
+
   case₀ : p x₀ ≡ ₀ → (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
   case₀ r = inl (x₀ , r)
+
   case₁ : p x₀ ≡ ₁ → (Σ x ꞉ X , p x ≡ ₀) + ((x : X) → p x ≡ ₁)
   case₁ r = inr (lemma r)
 

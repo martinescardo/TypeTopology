@@ -7,7 +7,7 @@ GenericConvergentSequence).
 We prove that the generic convergent sequence ℕ∞ is compact, which
 amounts to Theorem-3·6 of the paper
 
-   http://www.cs.bham.ac.uk/~mhe/papers/omniscient.pdf,
+   https://www.cs.bham.ac.uk/~mhe/papers/omniscient-journal-revised.pdf
    http://www.cs.bham.ac.uk/~mhe/.talks/dagstuhl2011/omniscient.pdf
 
 (Continuity axioms and the fan principle are not assumed.)
