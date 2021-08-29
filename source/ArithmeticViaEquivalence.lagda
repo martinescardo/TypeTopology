@@ -22,7 +22,7 @@ proof is
   ooo         ooooo
   ooo
 
-where "o" is an pebble. We just rotate the grid of pebbles, or swap
+where "o" is a pebble. We just rotate the grid of pebbles, or swap
 the coordinates, and doing this doesn't change the number of pebbles.
 
 How can this proof be formally rendered, as faithfully as possible to

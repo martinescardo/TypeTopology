@@ -83,7 +83,7 @@ module QuasiDecidable
 
 open import UF-Size
 
-import frame
+import Frame-version1
 import sigma-frame
 import sigma-sup-lattice
 
@@ -1773,7 +1773,7 @@ a set:
   τ-order-lc a b l = iv
    where
     i : τ a holds → τ b holds
-    i = frame.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
+    i = Frame-version1.from-≤Ω fe pe pt {𝓣} {τ a} {τ b} l
 
     ii : τ a ≡ ⊤' → τ b ≡ ⊤'
     ii p = holds-gives-equal-⊤ pe fe (τ b) (i (equal-⊤-gives-holds (τ a) p))

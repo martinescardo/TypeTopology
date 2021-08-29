@@ -141,8 +141,8 @@ import ExtendedSumCompact
 import Fin
 import FiniteHistoryDependentGames     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
-import frame
 import FailureOfTotalSeparatedness
+import Frame-version1
 import Frame                           -- By Ayberk Tosun
 import InitialFrame                    -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
@@ -326,7 +326,7 @@ import FailureOfTotalSeparatedness
 import Fin
 import FiniteHistoryDependentGames
 import Finiteness-Universe-Invariance
-import frame
+import Frame-version1
 import Frame
 import FreeGroup
 import FreeGroupOfLargeLocallySmallSet

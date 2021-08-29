@@ -315,9 +315,9 @@ private σ-SupLat = sigma-sup-lattice.σ-SupLat fe
                             ⟨ 𝓑 ⟩-⋁-is-ub ,
                             ⟨ 𝓑 ⟩-⋁-is-lb-of-ubs
 
-import frame
+import Frame-version1
 
-private Frame = frame.Frame fe
+private Frame = Frame-version1.Frame fe
 
 frames-are-sigma-frames : Frame 𝓤 𝓤₀ → σ-Frame 𝓤
 frames-are-sigma-frames (X , (⊤ , _∧_ , ⋁) , i , ii , iii , iv , v , vi , vii , viii) =
@@ -331,7 +331,7 @@ module _ (pe : Prop-Ext)
          (pt  : propositional-truncations-exist)
        where
 
- private Ω-qua-frame = frame.Ω-qua-frame fe pe pt
+ private Ω-qua-frame = Frame-version1.Ω-qua-frame fe pe pt
 
  Ω-qua-σ-frame : σ-Frame (𝓤 ⁺)
  Ω-qua-σ-frame {𝓤} = frames-are-sigma-frames (Ω-qua-frame 𝓤₀ 𝓤)
