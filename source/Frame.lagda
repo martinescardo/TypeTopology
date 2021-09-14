@@ -81,11 +81,11 @@ module to be imported by both this module and the `Dcpo` module.
 \begin{code}
 
 is-reflexive : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
-is-reflexive {A = A} _≤_ = ∀[ x ∶ A ] x ≤ x
+is-reflexive {A = A} _≤_ = Ɐ x ∶ A , x ≤ x
 
 is-transitive : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-transitive {A = A} _≤_ =
- ∀[ x ∶ A ] ∀[ y ∶ A ] ∀[ z ∶ A ] x ≤ y ⇒ y ≤ z ⇒ x ≤ z
+ Ɐ x ∶ A , Ɐ y ∶ A , Ɐ z ∶ A , x ≤ y ⇒ y ≤ z ⇒ x ≤ z
 
 is-preorder : {A : 𝓤 ̇} → (A → A → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
 is-preorder {A = A} _≤_ = is-reflexive _≤_ ∧ is-transitive _≤_
@@ -226,7 +226,7 @@ x ≡[ iss ]≡ y = (x ≡ y) , iss
 module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 
  is-top : A → Ω (𝓤 ⊔ 𝓥)
- is-top t = ∀[ x ∶ A ] (x ≤ t)
+ is-top t = Ɐ x ∶ A , (x ≤ t)
 
  _is-a-lower-bound-of_ : A → A × A → Ω 𝓥
  l is-a-lower-bound-of (x , y) = (l ≤ x) ∧ (l ≤ y)
@@ -237,7 +237,7 @@ module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 
  _is-glb-of_ : A → A × A → Ω (𝓤 ⊔ 𝓥)
  l is-glb-of (x , y) = l is-a-lower-bound-of (x , y)
-                     ∧ (∀[ (l′ , _) ∶ lower-bound (x , y) ] (l′ ≤ l))
+                     ∧ (Ɐ (l′ , _) ∶ lower-bound (x , y) , (l′ ≤ l))
 
 \end{code}
 
@@ -248,14 +248,14 @@ module Meets {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 module Joins {A : 𝓤 ̇} (_≤_ : A → A → Ω 𝓥) where
 
  _is-an-upper-bound-of_ : A → Fam 𝓦 A → Ω (𝓥 ⊔ 𝓦)
- u is-an-upper-bound-of U = ∀[ i ∶ index U ] (U [ i ]) ≤ u
+ u is-an-upper-bound-of U = Ɐ i ∶ index U , (U [ i ]) ≤ u
 
  upper-bound : Fam 𝓦 A → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
  upper-bound U = Σ u ꞉ A , (u is-an-upper-bound-of U) holds
 
  _is-lub-of_ : A → Fam 𝓦 A → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
  u is-lub-of U = (u is-an-upper-bound-of U)
-               ∧ (∀[ (u′ , _) ∶ upper-bound U ] (u ≤ u′))
+               ∧ (Ɐ (u′ , _) ∶ upper-bound U , (u ≤ u′))
 
 module JoinNotation {A : 𝓤 ̇} (⋁_ : Fam 𝓦 A → A) where
 
@@ -307,9 +307,9 @@ satisfies-frame-laws {𝓤 = 𝓤} {𝓥} {𝓦} {A = A}  (_≤_ , 𝟏 , _⊓_ 
     iss = carrier-of-[ P ]-is-set
 
     β = is-top 𝟏
-    γ = ∀[ (x , y) ∶ (A × A) ] ((x ⊓ y) is-glb-of (x , y))
-    δ = ∀[ U ∶ Fam 𝓦 A ] (⊔ U) is-lub-of U
-    ε = ∀[ (x , U) ∶ A × Fam 𝓦 A ]
+    γ = Ɐ (x , y) ∶ (A × A) , ((x ⊓ y) is-glb-of (x , y))
+    δ = Ɐ U ∶ Fam 𝓦 A , (⊔ U) is-lub-of U
+    ε = Ɐ (x , U) ∶ A × Fam 𝓦 A ,
         (x ⊓ (⋁⟨ i ⟩ U [ i ]) ≡[ iss ]≡ ⋁⟨ i ⟩ x ⊓ (U [ i ]))
 
 frame-structure : (𝓥 𝓦 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ⁺ ⊔ 𝓦 ⁺ ̇
@@ -428,9 +428,8 @@ is-a-frame-homomorphism {𝓦 = 𝓦} F G f = α ∧ β ∧ γ
   open Joins (λ x y → x ≤[ P ] y)
 
   α = f 𝟏[ F ] ≡[ iss ]≡ 𝟏[ G ]
-  β = ∀[ (x , y) ∶ ⟨ F ⟩ × ⟨ F ⟩ ]
-       (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
-  γ = ∀[ U ∶ Fam 𝓦 ⟨ F ⟩ ] f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
+  β = Ɐ (x , y) ∶ ⟨ F ⟩ × ⟨ F ⟩ , (f (x ∧[ F ] y) ≡[ iss ]≡ f x ∧[ G ] f y)
+  γ = Ɐ U ∶ Fam 𝓦 ⟨ F ⟩ , f (⋁[ F ] U) is-lub-of ⁅ f x ∣ x ε U ⁆
 
 _─f→_ : frame 𝓤 𝓥 𝓦 → frame 𝓤′ 𝓥′ 𝓦′ → 𝓤 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′ ̇
 F ─f→ G =
@@ -439,7 +438,7 @@ F ─f→ G =
 is-monotonic : (P : poset 𝓤 𝓥) (Q : poset 𝓤′ 𝓥′)
              → (pr₁ P → pr₁ Q) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓥′)
 is-monotonic P Q f =
- ∀[ (x , y) ∶ (pr₁ P × pr₁ P) ] ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
+ Ɐ (x , y) ∶ (pr₁ P × pr₁ P) , ((x ≤[ P ] y) ⇒ f x ≤[ Q ] f y)
 
 \end{code}
 
@@ -485,7 +484,7 @@ connecting-lemma₁ F x y p = ∧[ F ]-unique (β , γ)
   β : (x is-a-lower-bound-of (x , y)) holds
   β = ≤-is-reflexive (poset-of F) x , p
 
-  γ : (∀[ (z , _) ∶ lower-bound (x , y) ] z ≤[ poset-of F ] x) holds
+  γ : (Ɐ (z , _) ∶ lower-bound (x , y) , z ≤[ poset-of F ] x) holds
   γ (z , q , _) = q
 
 frame-morphisms-are-monotonic : (F : frame 𝓤  𝓥  𝓦)
@@ -519,7 +518,7 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
   β : ((x ∧[ F ] y) is-a-lower-bound-of (y , x)) holds
   β = (∧[ F ]-lower₂ x y) , (∧[ F ]-lower₁ x y)
 
-  γ : (∀[ (l , _) ∶ lower-bound (y , x) ] l ≤ (x ∧[ F ] y)) holds
+  γ : (Ɐ (l , _) ∶ lower-bound (y , x) , l ≤ (x ∧[ F ] y)) holds
   γ (l , p , q) = ∧[ F ]-greatest x y l q p
 
 \end{code}
@@ -540,7 +539,7 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
       ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆) holds
   β i = ⋁[ F ]-least _ (_ , λ jᵢ → ⋁[ F ]-upper _ (i , jᵢ))
 
-  γ : (∀[ (u , _) ∶ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ]
+  γ : (Ɐ (u , _) ∶ upper-bound ⁅ ⋁[ F ] ⁅ f i j ∣ j ∶ J i ⁆ ∣ i ∶ I ⁆ ,
        (⋁[ F ] (Σ J , uncurry f)) ≤[ poset-of F ] _ ) holds
   γ (u , p) = ⋁[ F ]-least (Σ J , uncurry f) (_ , δ)
    where
