@@ -398,7 +398,7 @@ discrete-factorial : (X : 𝓤 ̇ )
                    → (X + 𝟙) × Aut X ≃ Aut (X + 𝟙)
 discrete-factorial X d = γ
  where
- i = ×-cong (≃-sym (≃-cods (X + 𝟙) ( +discrete d 𝟙-is-discrete))) (≃-refl (Aut X))
+ i = ×-cong (≃-sym (≃-cods (X + 𝟙) ( +-is-discrete d 𝟙-is-discrete))) (≃-refl (Aut X))
 
  γ = (X + 𝟙) × Aut X                ≃⟨ i ⟩
      co-derived-set (X + 𝟙) × Aut X ≃⟨ general-factorial X ⟩

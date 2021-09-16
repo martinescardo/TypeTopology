@@ -166,14 +166,14 @@ Recall that a type is discrete if it has decidable equality.
 
 open import DiscreteAndSeparated
 
-Fin-is-discrete : (n : ℕ) → is-discrete (Fin n)
-Fin-is-discrete 0        = 𝟘-is-discrete
-Fin-is-discrete (succ n) = +discrete (Fin-is-discrete n) 𝟙-is-discrete
+Fin-is-discrete : {n : ℕ} → is-discrete (Fin n)
+Fin-is-discrete {0     } = 𝟘-is-discrete
+Fin-is-discrete {succ n} = +-is-discrete (Fin-is-discrete {n}) 𝟙-is-discrete
 
 open import UF-Miscelanea
 
-Fin-is-set : (n : ℕ) → is-set (Fin n)
-Fin-is-set n = discrete-types-are-sets (Fin-is-discrete n)
+Fin-is-set : {n : ℕ} → is-set (Fin n)
+Fin-is-set = discrete-types-are-sets Fin-is-discrete
 
 \end{code}
 
@@ -184,17 +184,17 @@ searchable.
 
 open import CompactTypes
 
-Fin-Compact : (n : ℕ) → Compact (Fin n) {𝓤}
-Fin-Compact 0        = 𝟘-Compact
-Fin-Compact (succ n) = +-Compact (Fin-Compact n) 𝟙-Compact
+Fin-Compact : {n : ℕ} → Compact (Fin n) {𝓤}
+Fin-Compact {𝓤} {0}      = 𝟘-Compact
+Fin-Compact {𝓤} {succ n} = +-Compact (Fin-Compact {𝓤} {n}) 𝟙-Compact
 
 
 Fin-Π-Compact : (n : ℕ) → Π-Compact (Fin n) {𝓤}
-Fin-Π-Compact n = Σ-Compact-gives-Π-Compact (Fin n) (Fin-Compact n)
+Fin-Π-Compact n = Σ-Compact-gives-Π-Compact (Fin n) Fin-Compact
 
 
 Fin-Compact∙ : (n : ℕ) → Compact∙ (Fin (succ n)) {𝓤}
-Fin-Compact∙ n = Compact-pointed-gives-Compact∙ (Fin-Compact (succ n)) 𝟎
+Fin-Compact∙ n = Compact-pointed-gives-Compact∙ Fin-Compact 𝟎
 
 \end{code}
 
@@ -241,10 +241,10 @@ open import UF-LeftCancellable
 +𝟙-cancel {𝓤} {X} {Y} i (f , e) = a
  where
   h : Y + 𝟙 → Y + 𝟙
-  h = swap (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
+  h = swap (f 𝟎) 𝟎 (+-is-discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   d : left-cancellable h
-  d = equivs-are-lc h (swap-is-equiv (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated)
+  d = equivs-are-lc h (swap-is-equiv (f 𝟎) 𝟎 (+-is-discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated)
 
   f' : X + 𝟙 → Y + 𝟙
   f' = h ∘ f
@@ -253,7 +253,7 @@ open import UF-LeftCancellable
   e' = left-cancellable-closed-under-∘ f h e d
 
   p : f' 𝟎 ≡ 𝟎
-  p = swap-equation₀ (f 𝟎) 𝟎 (+discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
+  p = swap-equation₀ (f 𝟎) 𝟎 (+-is-discrete i 𝟙-is-discrete (f 𝟎)) new-point-is-isolated
 
   a : X ↣ Y
   a = +𝟙-cancel-lemma (f' , e') p
@@ -275,7 +275,7 @@ by this injection property:
 ↣-gives-≤ : (m n : ℕ) → (Fin m ↣ Fin n) → m ≤ n
 ↣-gives-≤ 0        n        e       = zero-minimal n
 ↣-gives-≤ (succ m) 0        (f , i) = 𝟘-elim (f 𝟎)
-↣-gives-≤ (succ m) (succ n) e       = ↣-gives-≤ m n (+𝟙-cancel (Fin-is-discrete n) e)
+↣-gives-≤ (succ m) (succ n) e       = ↣-gives-≤ m n (+𝟙-cancel Fin-is-discrete e)
 
 
 canonical-Fin-inclusion : (m n : ℕ) → m ≤ n → (Fin m → Fin n)
@@ -365,7 +365,7 @@ pigeonhole-principle m n f g = γ
     ε i j p ν = ψ (i , j , ν , p)
 
     δ : (i j : Fin m) → f i ≡ f j → i ≡ j
-    δ i j p = ¬¬-elim (Fin-is-discrete m i j) (ε i j p)
+    δ i j p = ¬¬-elim (Fin-is-discrete i j) (ε i j p)
 
 \end{code}
 
@@ -376,14 +376,14 @@ need more steps.
 
   u : (i j : Fin m) → decidable ((i ≢ j) × (f i ≡ f j))
   u i j = ×-preserves-decidability
-           (¬-preserves-decidability (Fin-is-discrete m i j))
-           (Fin-is-discrete n (f i) (f j))
+           (¬-preserves-decidability (Fin-is-discrete i j))
+           (Fin-is-discrete (f i) (f j))
 
   v : (i : Fin m) → decidable (Σ j ꞉ Fin m , (i ≢ j) × (f i ≡ f j))
-  v i = Fin-Compact m _ (u i)
+  v i = Fin-Compact _ (u i)
 
   w : decidable (f has-a-repetition)
-  w = Fin-Compact m _ v
+  w = Fin-Compact _ v
 
   γ : f has-a-repetition
   γ = ¬¬-elim w d
@@ -634,7 +634,7 @@ inf-is-attained A δ = pr₂ (pr₂ (inf-construction A δ))
 ¬¬Σ-gives-Σₘᵢₙ : {n : ℕ} (A : Fin n → 𝓤 ̇ )
                → detachable A → ¬¬ Σ A → Σₘᵢₙ A
 
-¬¬Σ-gives-Σₘᵢₙ {𝓤} {n} A δ u = Σ-gives-Σₘᵢₙ A δ (¬¬-elim (Fin-Compact n A δ) u)
+¬¬Σ-gives-Σₘᵢₙ {𝓤} {n} A δ u = Σ-gives-Σₘᵢₙ A δ (¬¬-elim (Fin-Compact A δ) u)
 
 
 is-prop-valued : {X : 𝓤 ̇ } → (X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
@@ -795,7 +795,7 @@ Finite types are compact, or exhaustively searchable.
 
  finite-∥Compact∥ : {X : 𝓤 ̇ } → is-finite X → ∥ Compact X {𝓥} ∥
  finite-∥Compact∥ {𝓤} {𝓥} {X} (n , α) =
-  ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) (Fin-Compact n)) α
+  ∥∥-functor (λ (e : X ≃ Fin n) → Compact-closed-under-≃ (≃-sym e) Fin-Compact) α
 
  finite-types-are-∃-Compact : Fun-Ext → {X : 𝓤 ̇ } → is-finite X → ∃-Compact X {𝓥}
  finite-types-are-∃-Compact fe φ = ∥Compact∥-gives-∃-Compact fe (finite-∥Compact∥ φ)
@@ -873,7 +873,7 @@ Finite types are discrete and hence sets:
  finite-types-are-discrete fe {X} (n , s) = ∥∥-rec (being-discrete-is-prop fe) γ s
   where
    γ : X ≃ Fin n → is-discrete X
-   γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) (Fin-is-discrete n)
+   γ (f , e) = lc-maps-reflect-discreteness f (equivs-are-lc f e) Fin-is-discrete
 
  finite-types-are-sets : FunExt → {X : 𝓤 ̇ } → is-finite X → is-set X
  finite-types-are-sets fe φ = discrete-types-are-sets (finite-types-are-discrete fe φ)
@@ -989,10 +989,10 @@ We now consider further variations of the finite pigeonhole principle.
                          → detachable (repeated-values f)
 
   repetitions-detachable {𝓥} {m} {Y} f (n , t) i =
-   Fin-Compact m
+   Fin-Compact
     (λ j → (i ≢ j) × (f i ≡ f j))
     (λ j → ×-preserves-decidability
-            (¬-preserves-decidability (Fin-is-discrete m i j))
+            (¬-preserves-decidability (Fin-is-discrete i j))
             (finite-types-are-discrete fe (n , t) (f i) (f j)))
 
   finite-pigeonhole-principle' : {m : ℕ} {Y : 𝓥 ̇ } (f : Fin m → Y)
@@ -1419,7 +1419,7 @@ module Kuratowski-finiteness (pt : propositional-truncations-exist) where
  Kuratowski-finite-types-are-∃-compact fe {X} i = γ
   where
    α : Kuratowski-data X → Compact X
-   α (n , f , s) = surjection-Compact f fe s (Fin-Compact n)
+   α (n , f , s) = surjection-Compact f fe s Fin-Compact
 
    β : ∥ Compact X ∥
    β = ∥∥-functor α i
@@ -1462,7 +1462,7 @@ decidable equality to remove repetitions, as observed by Tom de Jong
      A j = f (suc j) ≡ f 𝟎
 
      Δ : decidable (Σ A)
-     Δ = Fin-Compact n A (λ j → δ (f (suc j)) (f 𝟎))
+     Δ = Fin-Compact A (λ j → δ (f (suc j)) (f 𝟎))
 
      g : Fin n → X
      g i = f (suc i)
@@ -1678,7 +1678,7 @@ is a set).
        α (inr ν) = inr (contrapositive (λ p → ap g (h p)) ν)
 
        β : decidable (x₀ ≡ x₁)
-       β = α (Fin-is-discrete (succ (succ n)) (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏)))
+       β = α (Fin-is-discrete (g (doubleton-map x₀ x₁ 𝟎)) (g (doubleton-map x₀ x₁ 𝟏)))
 
    δ : decidable (x₀ ≡ x₁)
    δ = γ ϕ
@@ -1918,7 +1918,7 @@ subtypes of types with decidable equality, have decidable equality.
   where
   δ : subfiniteness-data X → is-finite X
   δ (n , f , e) = Kuratowski-finite-discrete-types-are-finite fe
-                   (embeddings-reflect-discreteness f e (Fin-is-discrete n)) k
+                   (embeddings-reflect-discreteness f e Fin-is-discrete) k
 
   γ : is-subfinite X → is-finite X
   γ = ∥∥-rec (being-finite-is-prop X) δ

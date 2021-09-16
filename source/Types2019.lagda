@@ -13,6 +13,20 @@ Types 2019 meeting
 
 module Types2019 where
 
+\end{code}
+
+The master file is
+
+\begin{code}
+
+import OrdinalNotationInterpretation
+
+\end{code}
+
+The other files include
+
+\begin{code}
+
 import ADecidableQuantificationOverTheNaturals
 import BasicDiscontinuityTaboo
 import Compactness

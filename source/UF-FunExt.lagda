@@ -73,7 +73,7 @@ ap-funext f g k h fe x = ap (λ - → k (- x)) (dfunext fe h)    ≡⟨ refl ⟩
                          ap (k ∘ (λ - → - x)) (dfunext fe h)  ≡⟨ (ap-ap (λ - → - x) k (dfunext fe h))⁻¹ ⟩
                          ap k (ap (λ - → - x) (dfunext fe h)) ≡⟨ refl ⟩
                          ap k (happly (dfunext fe h) x)       ≡⟨ ap (λ - → ap k (- x)) (happly-funext fe f g h) ⟩
-                         ap k (h x) ∎
+                         ap k (h x)                           ∎
 
 \end{code}
 
@@ -103,5 +103,14 @@ transport-funext A P fe f g φ h x = q ∙ r
   r : transport (P x) (happly (dfunext fe h) x) (φ x)
     ≡ transport (P x) (h x) (φ x)
   r = ap (λ - → transport (P x) (- x) (φ x)) (happly-funext fe f g h)
+
+transport-funext' : {X : 𝓤 ̇ } (A : 𝓥 ̇ ) (P : X → A → 𝓦 ̇ ) (fe : funext 𝓤 𝓥)
+                   (f g : X → A)
+                   (φ : (x : X) → P x (f x))
+                   (h : f ∼ g)
+                   (x : X)
+                 → transport (λ - → (x : X) → P x (- x)) (dfunext fe h) φ x
+                 ≡ transport (P x) (h x) (φ x)
+transport-funext' A P = transport-funext (λ _ → A) P
 
 \end{code}

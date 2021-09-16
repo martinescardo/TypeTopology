@@ -82,15 +82,15 @@ props-are-discrete i x y = inl (i x y)
    step (inl r) = inl (ap succ r)
    step (inr f) = inr (λ s → f (succ-lc s))
 
-+discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
++-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → is-discrete X → is-discrete Y → is-discrete (X + Y)
-+discrete d e (inl x) (inl x') =
++-is-discrete d e (inl x) (inl x') =
     Cases (d x x')
      (λ (p : x ≡ x') → inl (ap inl p))
      (λ (n : ¬ (x ≡ x')) → inr (contrapositive inl-lc n))
-+discrete d e (inl x) (inr y) = inr +disjoint
-+discrete d e (inr y) (inl x) = inr +disjoint'
-+discrete d e (inr y) (inr y') =
++-is-discrete d e (inl x) (inr y) = inr +disjoint
++-is-discrete d e (inr y) (inl x) = inr +disjoint'
++-is-discrete d e (inr y) (inr y') =
     Cases (e y y')
      (λ (p : y ≡ y') → inl (ap inr p))
      (λ (n : ¬ (y ≡ y')) → inr (contrapositive inr-lc n))
