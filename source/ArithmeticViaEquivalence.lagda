@@ -44,6 +44,8 @@ It is also left-cancellable:
 
  (6) Fin m ≃ Fin n → m = n.
 
+Two boxes with the same number of pebbles are counted by same number.
+
 But instead of proving (3)-(5) after defining addition and
 multiplication, we prove that
 
@@ -153,7 +155,10 @@ open import Fin
 \end{code}
 
 The 1st definition by induction is that of the function Fin defined in
-the module Fin imported above.
+the module Fin imported above, namely
+
+  Fin   0  = 𝟘,
+  Fin(n+1) = Fin n + 𝟙.
 
 From a natural number n, get a finite set Fin n with n elements. This
 can be considered as an interpretation function, which defines the
@@ -234,6 +239,8 @@ addition:
 
 \end{code}
 
+Exercise. Associativity without induction.
+
 We now repeat this story for multiplication:
 
 \begin{code}
@@ -279,6 +286,8 @@ Fin×homo m n = pr₂(×construction m n)
   Fin (n ×' m)   ■)
 
 \end{code}
+
+Exercise. Associativity without induction.
 
 Added 30th August 2018: Exponentiation. Requires one more induction
 and function extensionality.
@@ -379,7 +388,7 @@ actually necessary - see the comments in the module UF-Factorial).
 
    φ' = Fin (succ n ×' k)         ≃⟨ Fin×homo (succ n) k ⟩
         Fin (succ n) × Fin k      ≃⟨ ×-cong (≃-refl (Fin (succ n))) φ ⟩
-        (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) (Fin-is-discrete n) ⟩
+        (Fin n + 𝟙) × Aut (Fin n) ≃⟨ discrete-factorial (Fin n) Fin-is-discrete ⟩
         Aut (Fin n + 𝟙)           ■
 
    g : Σ k' ꞉ ℕ , Fin k' ≃ Aut (Fin (succ n))
@@ -590,8 +599,8 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
 In order to avoid the use of the commutativity of + and × to get the
 natural inductive constructions of ∑ and ∏, it would have been better
 to have defined Fin(succ n) = 𝟙 + Fin n. In retrospect, this
-definitions seems more natural in general.
+definition seems more natural in general.
 
 Todo: Corollary. If X is a type and A is an X-indexed family of types,
-and if X is finite and A x is finite for every x : X, then the types Σ
-A and Π A are finite.
+and if X is finite and A x is finite for every x : X, then the types Σ A
+and Π A are finite.

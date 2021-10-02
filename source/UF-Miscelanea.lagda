@@ -169,6 +169,12 @@ equiv-to-discrete (f , e) = equivs-preserve-discreteness f e
 
   g (inr φ) = inr (λ q → φ (ap pr₁ q))
 
+×-is-discrete : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+              → is-discrete X
+              → is-discrete Y
+              → is-discrete (X × Y)
+×-is-discrete d e = Σ-is-discrete d (λ _ → e)
+
 𝟚-is-set : is-set 𝟚
 𝟚-is-set = discrete-types-are-sets 𝟚-is-discrete
 

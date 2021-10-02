@@ -107,7 +107,7 @@ over-is-discrete X d (inr *) = retract-is-discrete {𝓤₀}
                → ((n : ℕ) → is-discrete(X n))
                → is-discrete (Σ₁ X)
 Σ₁-is-discrete X d = Σ-is-discrete
-                       (+discrete ℕ-is-discrete 𝟙-is-discrete)
+                       (+-is-discrete ℕ-is-discrete 𝟙-is-discrete)
                        (over-is-discrete X d)
 
 \end{code}

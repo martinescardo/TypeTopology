@@ -250,7 +250,7 @@ many interesting properties, formulated above and proved below.
 
 Δ-is-discrete One       = 𝟙-is-discrete
 Δ-is-discrete (Add ν μ) = Σ-is-discrete
-                           (+discrete 𝟙-is-discrete 𝟙-is-discrete)
+                           (+-is-discrete 𝟙-is-discrete 𝟙-is-discrete)
                           (dep-cases (λ _ → Δ-is-discrete ν)
                           (λ _ → Δ-is-discrete μ))
 Δ-is-discrete (Mul ν μ) = Σ-is-discrete (Δ-is-discrete ν) (λ _ → Δ-is-discrete μ)
