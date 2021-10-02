@@ -89,16 +89,27 @@ module Disjunction (pt : propositional-truncations-exist) where
 
 \end{code}
 
+\section{Truncation}
+
+\begin{code}
+module Truncation (pt : propositional-truncations-exist) where
+
+  open PropositionalTruncation pt
+
+  ∥_∥Ω : 𝓤 ̇  → Ω 𝓤
+  ∥ A ∥Ω = ∥ A ∥ , ∥∥-is-prop
+\end{code}
+
 \section{Existential quantification}
 
 \begin{code}
 
 module Existential (pt : propositional-truncations-exist) where
 
- open propositional-truncations-exist pt
+ open Truncation pt
 
  ∃[∶]-syntax : (I : 𝓤 ̇) → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
- ∃[∶]-syntax I A = ∥ Σ i ꞉ I , A i ∥ , ∥∥-is-prop
+ ∃[∶]-syntax I A = ∥ Σ i ꞉ I , A i ∥Ω
 
  ∃[]-syntax : {I : 𝓤 ̇} → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
  ∃[]-syntax {I = I} P = ∃[∶]-syntax I P
