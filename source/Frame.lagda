@@ -9,7 +9,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (𝟚)
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
@@ -395,6 +395,34 @@ syntax join-of F U = ⋁[ F ] U
            → let open Joins (λ x y → x ≤[ poset-of A ] y)
              in ((u , _) : upper-bound U) → ((⋁[ A ] U) ≤[ poset-of A ] u) holds
 ⋁[_]-least (A , _ , _ , (_ , _ , c , _)) U = pr₂ (c U)
+
+\end{code}
+
+\begin{code}
+
+𝟚 : (𝓤 : Universe) → 𝓤 ̇
+𝟚 𝓤 = 𝟙 {𝓤} + 𝟙 {𝓤}
+
+binary-join : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
+binary-join {𝓦 = 𝓦} F x y = ⋁[ F ] 𝟚 𝓦 , α
+  where
+  α : 𝟚 𝓦 → ⟨ F ⟩
+  α (inl *) = x
+  α (inr *) = y
+
+infix 3 binary-join
+syntax binary-join F x y = x ∨[ F ] y
+
+\end{code}
+
+\begin{code}
+
+𝟎[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
+𝟎[ F ] = ⋁[ F ] 𝟘 , λ ()
+
+𝟎-is-bottom : (F : frame 𝓤 𝓥 𝓦)
+            → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
+𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
 
 \end{code}
 
