@@ -45,6 +45,16 @@ infixr 4 _++_
 ++-assoc []      t u = refl
 ++-assoc (x ∷ s) t u = ap (x ∷_) (++-assoc s t u)
 
+foldr : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y → Y) → Y → List X → Y
+foldr _·_ ε []       = ε
+foldr _·_ ε (x ∷ xs) = x · foldr _·_ ε xs
+
+map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → List X → List Y
+map f []       = []
+map f (x ∷ xs) = f x ∷ map f xs
+
+_<$>_ = map
+
 \end{code}
 
 The above is all we need about lists for the moment, in the module

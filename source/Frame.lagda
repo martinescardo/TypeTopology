@@ -4,16 +4,18 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
  * Frames.
  * Frame homomorphisms.
+ * Frame bases.
 
 \begin{code}[hide]
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT
+open import SpartanMLTT hiding (𝟚)
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
 open import UF-PropTrunc
+open import List hiding ([_])
 
 module Frame
         (pt : propositional-truncations-exist)
@@ -206,10 +208,15 @@ module PosetReasoning (P : poset 𝓤 𝓥) where
         → (x ≤ y) holds → (y ≤ z) holds → (x ≤ z) holds
  x ≤⟨ p ⟩ q = ≤-is-transitive P _ _ _ p q
 
+ _≡⟨_⟩ₚ_ : (x : ∣ P ∣ₚ) {y z : ∣ P ∣ₚ}
+         → x ≡ y → (y ≤ z) holds → (x ≤ z) holds
+ x ≡⟨ p ⟩ₚ q = transport (λ - → (- ≤ _) holds) (p ⁻¹) q
+
  _■ : (x : ∣ P ∣ₚ) → (x ≤ x) holds
  _■ = ≤-is-reflexive P
 
  infixr 0 _≤⟨_⟩_
+ infixr 0 _≡⟨_⟩ₚ_
  infix  1 _■
 
 infix 1 _≡[_]≡_
@@ -395,6 +402,121 @@ syntax join-of F U = ⋁[ F ] U
            → let open Joins (λ x y → x ≤[ poset-of A ] y)
              in ((u , _) : upper-bound U) → ((⋁[ A ] U) ≤[ poset-of A ] u) holds
 ⋁[_]-least (A , _ , _ , (_ , _ , c , _)) U = pr₂ (c U)
+
+\end{code}
+
+\begin{code}
+
+𝟚 : (𝓤 : Universe) → 𝓤 ̇
+𝟚 𝓤 = 𝟙 {𝓤} + 𝟙 {𝓤}
+
+binary-family : {A : 𝓤 ̇ } → (𝓦 : Universe) → A → A → Fam 𝓦 A
+binary-family {A = A} 𝓦 x y = 𝟚 𝓦  , α
+ where
+  α : 𝟚 𝓦 → A
+  α (inl *) = x
+  α (inr *) = y
+
+binary-join : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
+binary-join {𝓦 = 𝓦} F x y = ⋁[ F ] binary-family 𝓦 x y
+
+infix 3 binary-join
+syntax binary-join F x y = x ∨[ F ] y
+
+∨[_]-least : (F : frame 𝓤 𝓥 𝓦)
+           → let open Joins (λ x y → x ≤[ poset-of F ] y) in
+             {x y z : ⟨ F ⟩}
+           → (x ≤[ poset-of F ] z) holds
+           → (y ≤[ poset-of F ] z) holds
+           → ((x ∨[ F ] y) ≤[ poset-of F ] z) holds
+∨[_]-least {𝓦 = 𝓦} F {x} {y} {z} x≤z y≤z =
+ ⋁[ F ]-least (binary-family 𝓦 x y) (z , γ)
+  where
+   γ : _
+   γ (inl *) = x≤z
+   γ (inr *) = y≤z
+
+∨[_]-upper₁ : (F : frame 𝓤 𝓥 𝓦)
+            → let open Joins (λ x y → x ≤[ poset-of F ] y) in
+              (x y : ⟨ F ⟩) → (x ≤[ poset-of F ] (x ∨[ F ] y)) holds
+∨[_]-upper₁ {𝓦 = 𝓦} F x y = ⋁[ F ]-upper (binary-family 𝓦 x y) (inl *)
+
+∨[_]-upper₂ : (F : frame 𝓤 𝓥 𝓦)
+            → let open Joins (λ x y → x ≤[ poset-of F ] y) in
+              (x y : ⟨ F ⟩) → (y ≤[ poset-of F ] (x ∨[ F ] y)) holds
+∨[_]-upper₂ {𝓦 = 𝓦} F x y = ⋁[ F ]-upper (binary-family 𝓦 x y) (inr *)
+
+∨[_]-comm : (F : frame 𝓤 𝓥 𝓦)
+          → (x y : ⟨ F ⟩)
+          → (x ∨[ F ] y) ≡ (y ∨[ F ] x)
+∨[_]-comm F x y =
+ ≤-is-antisymmetric (poset-of F) β γ
+  where
+   open PosetNotation  (poset-of F)
+   open PosetReasoning (poset-of F)
+
+   β : ((x ∨[ F ] y) ≤ (y ∨[ F ] x)) holds
+   β = ∨[ F ]-least (∨[ F ]-upper₂ y x) (∨[ F ]-upper₁ y x)
+
+   γ : ((y ∨[ F ] x) ≤ (x ∨[ F ] y)) holds
+   γ = ∨[ F ]-least (∨[ F ]-upper₂ x y) (∨[ F ]-upper₁ x y)
+
+∨[_]-assoc : (F : frame 𝓤 𝓥 𝓦)
+           → (x y z : ⟨ F ⟩)
+           → (x ∨[ F ] y) ∨[ F ] z ≡ x ∨[ F ] (y ∨[ F ] z)
+∨[_]-assoc F x y z =
+ ≤-is-antisymmetric (poset-of F) (∨[ F ]-least β γ) (∨[ F ]-least δ ε)
+ where
+  open PosetNotation  (poset-of F)
+  open PosetReasoning (poset-of F)
+
+  η : (y ≤ ((x ∨[ F ] y) ∨[ F ] z)) holds
+  η = y                     ≤⟨ ∨[ F ]-upper₂ x y            ⟩
+      x ∨[ F ] y            ≤⟨ ∨[ F ]-upper₁ (x ∨[ F ] y) z ⟩
+      (x ∨[ F ] y) ∨[ F ] z ■
+
+  θ : (y ≤ (x ∨[ F ] (y ∨[ F ] z))) holds
+  θ = y                     ≤⟨ ∨[ F ]-upper₁ y z            ⟩
+      y ∨[ F ] z            ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
+      x ∨[ F ] (y ∨[ F ] z) ■
+
+  δ : (x ≤ ((x ∨[ F ] y) ∨[ F ] z)) holds
+  δ = x                     ≤⟨ ∨[ F ]-upper₁ x y            ⟩
+      x ∨[ F ] y            ≤⟨ ∨[ F ]-upper₁ (x ∨[ F ] y) z ⟩
+      (x ∨[ F ] y) ∨[ F ] z ■
+
+  ε : ((y ∨[ F ] z) ≤ ((x ∨[ F ] y) ∨[ F ] z)) holds
+  ε = ∨[ F ]-least η (∨[ F ]-upper₂ (x ∨[ F ] y) z)
+
+  β : ((x ∨[ F ] y) ≤ (x ∨[ F ] (y ∨[ F ] z))) holds
+  β = ∨[ F ]-least (∨[ F ]-upper₁ x (y ∨[ F ] z)) θ
+
+  γ : (z ≤ (x ∨[ F ] (y ∨[ F ] z))) holds
+  γ = z                      ≤⟨ ∨[ F ]-upper₂ y z            ⟩
+      y ∨[ F ] z             ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
+      x ∨[ F ] (y ∨[ F ] z)  ■
+\end{code}
+
+\begin{code}
+
+𝟎[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩
+𝟎[ F ] = ⋁[ F ] 𝟘 , λ ()
+
+𝟎-is-bottom : (F : frame 𝓤 𝓥 𝓦)
+            → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
+𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
+
+𝟎-unit-of-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → 𝟎[ F ] ∨[ F ] x ≡ x
+𝟎-unit-of-∨ {𝓦 = 𝓦} F x = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  open PosetNotation (poset-of F)
+
+  β : ((𝟎[ F ] ∨[ F ] x) ≤ x) holds
+  β = ∨[ F ]-least (𝟎-is-bottom F x) (≤-is-reflexive (poset-of F) x)
+
+  γ : (x ≤ (𝟎[ F ] ∨[ F ] x)) holds
+  γ = ⋁[ F ]-upper (binary-family 𝓦 𝟎[ F ] x) (inr *)
+
 
 \end{code}
 
@@ -593,5 +715,233 @@ distributivity+ F U@(I , _) V@(J , _) =
          (λ - → join-of F (I , -))
          (dfunext fe λ i → distributivity F (U [ i ]) V)
   v   = ⋁[ F ]-iterated-join I (λ _ → J) (λ i j → U [ i ] ∧[ F ] V [ j ]) ⁻¹
+
+\end{code}
+
+\section{Bases of frames}
+
+We first define the notion of a “small” basis for a frame. Given a
+(𝓤, 𝓥, 𝓦)-frame, a small basis for it is a 𝓦-family, which has a
+further subfamily covering any given element of the frame.
+
+\begin{code}
+
+is-basis-for : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+is-basis-for {𝓦 = 𝓦} F (I , β) =
+ (x : ⟨ F ⟩) → Σ J ꞉ (Fam 𝓦 I) , (x is-lub-of ⁅ β j ∣ j ε J ⁆) holds
+  where
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
+\end{code}
+
+A 𝓦-frame has a (small) basis iff there *merely* exists a 𝓦-family
+that forms a basis for it. Having a basis should be a property and
+not a structure so this is important.
+
+\begin{code}
+
+has-basis : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+has-basis {𝓦 = 𝓦} F = ∥ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ ∥Ω
+
+\end{code}
+
+We also have the notion of a directed basis, in which every covering
+family is directed.
+
+\begin{code}
+
+is-directed : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+is-directed F (I , β) =
+   ∥ I ∥Ω
+ ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
+  where open PosetNotation (poset-of F)
+
+has-directed-basis : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+has-directed-basis {𝓦 = 𝓦} F =
+ ∥ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩
+ , Σ b ꞉ is-basis-for F ℬ ,
+    Π x ꞉ ⟨ F ⟩ ,
+     is-directed F (⁅ ℬ [ i ] ∣ i ε pr₁ (b x) ⁆) holds ∥Ω
+
+\end{code}
+
+The main development in this section is that every small basis can be
+extended to a directed one whilst keeping it small.
+
+\begin{code}
+
+directify : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩
+directify F (I , α) = List I , (foldr (λ i - → α i ∨[ F ] -) 𝟎[ F ])
+ where open PosetNotation (poset-of F)
+
+\end{code}
+
+Note that `directify` is a monoid homomorphism from the free monoid on I
+to (_∨_, 𝟎).
+
+\begin{code}
+
+directify-functorial : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                     → (is js : List (index S))
+                     → directify F S [ is ++ js ]
+                     ≡ directify F S [ is ] ∨[ F ] directify F S [ js ]
+directify-functorial F S@(I , α) = γ
+ where
+  γ : (is js : List I)
+    → directify F S [ is ++ js ]
+    ≡ directify F S [ is ] ∨[ F ] directify F S [ js ]
+  γ []       js = directify F S [ [] ++ js ]          ≡⟨ refl ⟩
+                  directify F S [ js ]                ≡⟨ †    ⟩
+                  𝟎[ F ]  ∨[ F ] directify F S [ js ] ∎
+                   where
+                    † = 𝟎-unit-of-∨ F (directify F S [ js ]) ⁻¹
+  γ (i ∷ is) js =
+   directify F S [ (i ∷ is) ++ js ]                              ≡⟨ refl ⟩
+   α i ∨[ F ] directify F S [ is ++ js ]                         ≡⟨ †    ⟩
+   α i ∨[ F ] (directify F S [ is ] ∨[ F ] directify F S [ js ]) ≡⟨ ‡    ⟩
+   (α i ∨[ F ] directify F S [ is ]) ∨[ F ] directify F S [ js ] ≡⟨ refl ⟩
+   directify F S [ i ∷ is ] ∨[ F ] directify F S [ js ]          ∎
+    where
+     † = ap (λ - → binary-join F (α i) -) (γ is js)
+     ‡ = ∨[ F ]-assoc (α i) (directify F S [ is ]) (directify F S [ js ]) ⁻¹
+
+\end{code}
+
+`directify` does what it is supposed to do: the family it gives is a
+directed one.
+
+\begin{code}
+
+directify-works : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                → is-directed F (directify F S) holds
+directify-works F S@(I , α) = ∣ [] ∣ , υ
+ where
+  open PropositionalTruncation pt
+  open PosetNotation (poset-of F)
+
+  υ : (Ɐ is ∶ List I
+     , Ɐ js ∶ List I
+     , (Ǝ ks ∶ List I
+      , (((directify F S [ is ] ≤ directify F S [ ks ])
+        ∧ (directify F S [ js ] ≤ directify F S [ ks ])) holds))) holds
+  υ is js = ∣ (is ++ js) , β , γ ∣
+    where
+     open PosetReasoning (poset-of F)
+
+     ‡ = directify-functorial F S is js ⁻¹
+
+     β : (directify F S [ is ] ≤ directify F S [ is ++ js ]) holds
+     β = directify F S [ is ]                             ≤⟨ † ⟩
+         directify F S [ is ] ∨[ F ] directify F S [ js ] ≡⟨ ‡ ⟩ₚ
+         directify F S [ is ++ js ]                       ■
+          where
+           † = ∨[ F ]-upper₁ (directify F S [ is ]) (directify F S [ js ])
+
+     γ : (directify F S [ js ] ≤ directify F S [ is ++ js ]) holds
+     γ = directify F S [ js ]                             ≤⟨ † ⟩
+         directify F S [ is ] ∨[ F ] directify F S [ js ] ≡⟨ ‡ ⟩ₚ
+         directify F S [ is ++ js ] ■
+          where
+           † = ∨[ F ]-upper₂ (directify F S [ is ]) (directify F S [ js ])
+
+\end{code}
+
+`directify` also preserves the join while doing what it is supposed to
+do.
+
+\begin{code}
+
+directify-preserves-joins : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                          → ⋁[ F ] S ≡ ⋁[ F ] directify F S
+directify-preserves-joins F S = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  open PosetNotation  (poset-of F)
+  open PosetReasoning (poset-of F)
+
+  β : ((⋁[ F ] S) ≤ (⋁[ F ] directify F S)) holds
+  β = ⋁[ F ]-least S ((⋁[ F ] (directify F S)) , ν)
+   where
+    ν : (i : index S) → (S [ i ] ≤ (⋁[ F ] directify F S)) holds
+    ν i =
+     S [ i ]                   ≡⟨ 𝟎-unit-of-∨ F (S [ i ]) ⁻¹            ⟩ₚ
+     𝟎[ F ] ∨[ F ] S [ i ]     ≡⟨ ∨[ F ]-comm 𝟎[ F ] (S [ i ])          ⟩ₚ
+     S [ i ] ∨[ F ] 𝟎[ F ]     ≡⟨ refl                                  ⟩ₚ
+     directify F S [ i ∷ [] ]  ≤⟨ ⋁[ F ]-upper (directify F S) (i ∷ []) ⟩
+     ⋁[ F ] directify F S      ■
+
+  γ : ((⋁[ F ] directify F S) ≤[ poset-of F ] (⋁[ F ] S)) holds
+  γ = ⋁[ F ]-least (directify F S) ((⋁[ F ] S) , κ)
+   where
+    κ : (is : List (index S)) → ((directify F S [ is ]) ≤ (⋁[ F ] S)) holds
+    κ []       = 𝟎-is-bottom F (⋁[ F ] S)
+    κ (i ∷ is) = S [ i ] ∨[ F ] directify F S [ is ] ≤⟨ † ⟩
+                 ⋁[ F ] S                              ■
+                  where
+                   † = ∨[ F ]-least (⋁[ F ]-upper S i) (κ is)
+
+directify-preserves-joins₀ : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                           → let open Joins (λ x y → x ≤[ poset-of F ] y) in
+                             (x : ⟨ F ⟩)
+                           → (x is-lub-of S ⇒ x is-lub-of directify F S) holds
+directify-preserves-joins₀ F S x p =
+ transport (λ - → (- is-lub-of directify F S) holds) (q ⁻¹)
+  (⋁[ F ]-upper (directify F S) , ⋁[ F ]-least (directify F S))
+ where
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+
+  q : x ≡ ⋁[ F ] directify F S
+  q = x                    ≡⟨ ⋁[ F ]-unique S x p           ⟩
+      ⋁[ F ] S             ≡⟨ directify-preserves-joins F S ⟩
+      ⋁[ F ] directify F S ∎
+
+\end{code}
+
+\begin{code}
+
+directify-basis : (F : frame 𝓤 𝓥 𝓦)
+                → (has-basis F ⇒ has-directed-basis F) holds
+directify-basis {𝓦 = 𝓦} F =
+ ∥∥-rec (holds-is-prop (has-directed-basis F)) γ
+ where
+  open PropositionalTruncation pt
+  open PosetNotation (poset-of F)
+  open Joins (λ x y → x ≤ y)
+
+  γ : Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ → has-directed-basis F holds
+  γ (ℬ@(I , _) , b) = ∣ directify F ℬ , β , δ ∣
+   where
+    𝒥 : ⟨ F ⟩ → Fam 𝓦 I
+    𝒥 x = pr₁ (b x)
+
+    𝒦 : ⟨ F ⟩ → Fam 𝓦 (List I)
+    𝒦 x = List (index (𝒥 x)) , (λ - → 𝒥 x [ - ]) <$>_
+
+    φ : (x : ⟨ F ⟩)
+      → (is : List (index (𝒥 x)))
+      → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
+      ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
+    φ x []       = refl
+    φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
+
+    ψ : (x : ⟨ F ⟩)
+      → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+    ψ x = to-Σ-≡ (refl , dfunext fe (φ x))
+
+    β : (x : ⟨ F ⟩)
+      → Σ J ꞉ Fam 𝓦 (List I)
+        , (x is-lub-of ⁅ directify F ℬ [ j ] ∣ j ε J ⁆) holds
+    β x = 𝒦 x , transport (λ - → (x is-lub-of -) holds) (ψ x ⁻¹) δ
+     where
+      p : (x is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆) holds
+      p = pr₂ (b x)
+
+      δ : (x is-lub-of directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆) holds
+      δ = directify-preserves-joins₀ F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ x p
+
+    δ : (x : ⟨ F ⟩)
+      → is-directed F ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ holds
+    δ x = transport (λ - → is-directed F - holds) (ψ x ⁻¹) ε
+     where
+      ε = directify-works F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
 
 \end{code}
