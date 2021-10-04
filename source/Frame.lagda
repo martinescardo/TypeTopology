@@ -464,41 +464,37 @@ syntax binary-join F x y = x ∨[ F ] y
 ∨[_]-assoc : (F : frame 𝓤 𝓥 𝓦)
            → (x y z : ⟨ F ⟩)
            → (x ∨[ F ] y) ∨[ F ] z ≡ x ∨[ F ] (y ∨[ F ] z)
-∨[_]-assoc F x y z = ≤-is-antisymmetric (poset-of F) β γ
+∨[_]-assoc F x y z =
+ ≤-is-antisymmetric (poset-of F) (∨[ F ]-least β γ) (∨[ F ]-least δ ε)
  where
+  open PosetNotation  (poset-of F)
   open PosetReasoning (poset-of F)
 
-  δ : (y ≤[ poset-of F ] (x ∨[ F ] (y ∨[ F ] z))) holds
-  δ = y                     ≤⟨ ∨[ F ]-upper₁ y z            ⟩
-      y ∨[ F ] z            ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
-      x ∨[ F ] (y ∨[ F ] z) ■
-
-  ε : (x ≤[ poset-of F ] ((x ∨[ F ] y) ∨[ F ] z)) holds
-  ε = x                     ≤⟨ ∨[ F ]-upper₁ x y            ⟩
-      x ∨[ F ] y            ≤⟨ ∨[ F ]-upper₁ (x ∨[ F ] y) z ⟩
-      (x ∨[ F ] y) ∨[ F ] z ■
-
-  η : (y ≤[ poset-of F ] ((x ∨[ F ] y) ∨[ F ] z)) holds
+  η : (y ≤ ((x ∨[ F ] y) ∨[ F ] z)) holds
   η = y                     ≤⟨ ∨[ F ]-upper₂ x y            ⟩
       x ∨[ F ] y            ≤⟨ ∨[ F ]-upper₁ (x ∨[ F ] y) z ⟩
       (x ∨[ F ] y) ∨[ F ] z ■
 
-  ζ : ((y ∨[ F ] z) ≤[ poset-of F ] ((x ∨[ F ] y) ∨[ F ] z)) holds
-  ζ = ∨[ F ]-least η (∨[ F ]-upper₂ (x ∨[ F ] y) z)
+  θ : (y ≤ (x ∨[ F ] (y ∨[ F ] z))) holds
+  θ = y                     ≤⟨ ∨[ F ]-upper₁ y z            ⟩
+      y ∨[ F ] z            ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
+      x ∨[ F ] (y ∨[ F ] z) ■
 
-  β₀ : ((x ∨[ F ] y) ≤[ poset-of F ] (x ∨[ F ] (y ∨[ F ] z))) holds
-  β₀ = ∨[ F ]-least (∨[ F ]-upper₁ x (y ∨[ F ] z)) δ
+  δ : (x ≤ ((x ∨[ F ] y) ∨[ F ] z)) holds
+  δ = x                     ≤⟨ ∨[ F ]-upper₁ x y            ⟩
+      x ∨[ F ] y            ≤⟨ ∨[ F ]-upper₁ (x ∨[ F ] y) z ⟩
+      (x ∨[ F ] y) ∨[ F ] z ■
 
-  β₁ : (z ≤[ poset-of F ] (x ∨[ F ] (y ∨[ F ] z))) holds
-  β₁ = z                      ≤⟨ ∨[ F ]-upper₂ y z            ⟩
-       y ∨[ F ] z             ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
-       x ∨[ F ] (y ∨[ F ] z)  ■
+  ε : ((y ∨[ F ] z) ≤ ((x ∨[ F ] y) ∨[ F ] z)) holds
+  ε = ∨[ F ]-least η (∨[ F ]-upper₂ (x ∨[ F ] y) z)
 
-  β : (((x ∨[ F ] y) ∨[ F ] z) ≤[ poset-of F ] (x ∨[ F ] (y ∨[ F ] z))) holds
-  β = ∨[ F ]-least β₀ β₁
+  β : ((x ∨[ F ] y) ≤ (x ∨[ F ] (y ∨[ F ] z))) holds
+  β = ∨[ F ]-least (∨[ F ]-upper₁ x (y ∨[ F ] z)) θ
 
-  γ : ((x ∨[ F ] (y ∨[ F ] z)) ≤[ poset-of F ] ((x ∨[ F ] y) ∨[ F ] z)) holds
-  γ = ∨[ F ]-least ε ζ
+  γ : (z ≤ (x ∨[ F ] (y ∨[ F ] z))) holds
+  γ = z                      ≤⟨ ∨[ F ]-upper₂ y z            ⟩
+      y ∨[ F ] z             ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
+      x ∨[ F ] (y ∨[ F ] z)  ■
 \end{code}
 
 \begin{code}
@@ -878,7 +874,7 @@ directify-preserves-joins F S = ≤-is-antisymmetric (poset-of F) β γ
    where
     κ : (is : List (index S)) → ((directify F S [ is ]) ≤ (⋁[ F ] S)) holds
     κ []       = 𝟎-is-bottom F (⋁[ F ] S)
-    κ (i ∷ is) = (S [ i ]) ∨[ F ] directify F S [ is ] ≤⟨ † ⟩
+    κ (i ∷ is) = S [ i ] ∨[ F ] directify F S [ is ] ≤⟨ † ⟩
                  ⋁[ F ] S                              ■
                   where
                    † = ∨[ F ]-least (⋁[ F ]-upper S i) (κ is)
