@@ -4,6 +4,7 @@ Ported from `ayberkt/formal-topology-in-UF`.
 
  * Frames.
  * Frame homomorphisms.
+ * Frame bases.
 
 \begin{code}[hide]
 
