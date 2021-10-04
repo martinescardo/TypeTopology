@@ -136,5 +136,6 @@ module AllCombinators
  open Implication fe public
  open Disjunction pt public
  open Existential pt public
+ open Truncation  pt public
 
 \end{code}
