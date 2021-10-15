@@ -139,6 +139,7 @@ import Empty
 import Escardo-Simpson-LICS2001        -- By Todd Waugh Ambridge
 import ExtendedSumCompact
 import Fin
+import Fin-Properties
 import FiniteHistoryDependentGames     -- By Martin Escardo and Paulo Oliva
 import Finiteness-Universe-Invariance
 import FailureOfTotalSeparatedness
@@ -174,6 +175,7 @@ import List
 import LPO
 import Lumsdaine
 import MGS-TypeTopology-Interface
+import MoreTypes
 import NaturalNumbers
 import NaturalNumbers-Properties
 import NaturalsAddition
@@ -214,6 +216,7 @@ import SliceIdentityViaSIP
 import Slice
 import SliceMonad
 import SpartanMLTT
+import SpartanMLTT-List
 import SquashedCantor
 import SquashedSum
 import SRTclosure

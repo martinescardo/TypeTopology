@@ -12,6 +12,7 @@ There is also a proof in Egbert Rijke's book (to appear).
 
 open import SpartanMLTT
 open import Fin
+open import Fin-Properties
 open import UF-Subsingletons renaming (⊤Ω to ⊤)
 open import UF-Equiv
 open import UF-EquivalenceExamples

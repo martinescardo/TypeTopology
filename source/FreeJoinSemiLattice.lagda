@@ -9,8 +9,9 @@ subsets of X.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import ArithmeticViaEquivalence
-open import Fin hiding (⟨_⟩)
+open import Fin
 open import SpartanMLTT
+open import SpartanMLTT-List hiding (⟨_⟩)
 
 open import UF-Base
 open import UF-Equiv

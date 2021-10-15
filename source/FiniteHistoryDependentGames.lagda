@@ -495,7 +495,7 @@ no-repetitions : (n : ℕ) (X : Type) → DTT
 no-repetitions 0        X = []
 no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≢ x )
 
-open import Fin hiding ([] ; _∷_ ; _::_ ; hd ; tl ; _++_)
+open import Fin
 
 Permutations : ℕ → Type
 Permutations n = Path (no-repetitions n (Fin n))

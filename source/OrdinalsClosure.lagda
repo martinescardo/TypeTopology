@@ -1,6 +1,6 @@
 Martin Escardo, July 2018
 
-Closure properties of some ordinal construnctions.
+Closure properties of some ordinal constructions.
 
 \begin{code}
 

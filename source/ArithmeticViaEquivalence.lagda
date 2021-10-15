@@ -151,6 +151,7 @@ open import UF-Subsingletons
 open import UF-Equiv
 open import UF-EquivalenceExamples
 open import Fin
+open import Fin-Properties
 
 \end{code}
 
