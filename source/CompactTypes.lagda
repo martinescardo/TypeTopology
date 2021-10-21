@@ -1050,3 +1050,38 @@ compact-power-of-𝟚-has-discrete-exponent {𝓤} {X} τ κ x y = γ δ
   γ (inr u) = inr (β u)
 
 \end{code}
+
+Added 21st October 2021.
+
+\begin{code}
+
+decidable-subtype-of-compact-type : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ }
+                                  → Compact X {𝓥 ⊔ 𝓦}
+                                  → detachable A
+                                  → ((x : X) → is-prop (A x))
+                                  → Compact (Σ x ꞉ X , A x) {𝓦}
+decidable-subtype-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
+                                  X-compact
+                                  A-detachable
+                                  A-is-prop-valued
+                                  B B-detachable = γ II
+ where
+  I : (x : X) → decidable (Σ a ꞉ A x , B (x , a))
+  I x = Cases (A-detachable x)
+         (λ (a : A x)
+              → Cases (B-detachable (x , a))
+                 (λ (b : B (x , a))     → inl (a , b))
+                 (λ ν → inr (λ (a' , b) → ν (transport
+                                              (λ - → B (x , -))
+                                              (A-is-prop-valued x a' a)
+                                              b))))
+         (λ ν → inr (λ (a , b) → ν a))
+
+  II : decidable (Σ x ꞉ X , Σ a ꞉ A x , B (x , a))
+  II = X-compact (λ x → Σ a ꞉ A x , B (x , a)) I
+
+  γ : type-of II → decidable (Σ y ꞉ (Σ x ꞉ X , A x) , B y)
+  γ (inl (x , (a , b))) = inl ((x , a) , b)
+  γ (inr ν)             = inr (λ ((x , a) , b) → ν (x , (a , b)))
+
+\end{code}
