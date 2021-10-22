@@ -1812,3 +1812,93 @@ equivalent):
    β g s = select-equiv-with-𝟚 fe s (g s)
 
 \end{code}
+
+With Paulo Oliva (for applications to game theory), October 2021.
+
+Every inhabited detachable "subset" of Fin n has a minimal and a
+maximal element.
+
+\begin{code}
+
+Fin-wf : {n : ℕ} (A : Fin n → Type) (r₀ : Fin n)
+       → detachable A
+       → A r₀
+       → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → r ≼ s)
+Fin-wf {succ n} A 𝟎 d a = 𝟎 , a , λ s a' → ⟨⟩
+Fin-wf {succ n} A (suc r₀) d a = γ
+ where
+  IH : Σ r ꞉ Fin n , A (suc r) × ((s : Fin n) → A (suc s) → r ≼ s)
+  IH = Fin-wf {n} (λ x → A (suc x)) r₀ (λ x → d (suc x)) a
+
+  r : Fin n
+  r = pr₁ IH
+
+  b : A (suc r)
+  b = pr₁ (pr₂ IH)
+
+  c : (s : Fin n) → A (suc s) → r ≼ s
+  c = pr₂ (pr₂ IH)
+
+  l : ¬ A 𝟎 → (s : Fin (succ n)) → A s → suc r ≼ s
+  l ν 𝟎 a       = 𝟘-elim (ν a)
+  l ν (suc x) a = c x a
+
+  γ : Σ r ꞉ Fin (succ n) , A r × ((s : Fin (succ n)) → A s → r ≼ s)
+  γ = Cases (d 𝟎)
+       (λ a₀ → 𝟎 , a₀ , λ s a' → ⟨⟩)
+       (λ (ν : ¬ A 𝟎) → suc r , b , l ν)
+
+Fin-co-wf : {n : ℕ} (A : Fin n → Type) (r₀ : Fin n)
+          → detachable A
+          → A r₀
+          → Σ r ꞉ Fin n , A r × ((s : Fin n) → A s → s ≼ r)
+Fin-co-wf {succ n} A 𝟎 d a = γ
+ where
+  δ : decidable (Σ i ꞉ Fin n , A (suc i))
+  δ = Fin-Compact (A ∘ suc) (d ∘ suc)
+
+  Γ = Σ r ꞉ Fin (succ n) , A r × ((s : Fin (succ n)) → A s → s ≼ r)
+
+  γ : Γ
+  γ = Cases δ f g
+   where
+    f : Σ i ꞉ Fin n , A (suc i) → Γ
+    f (i , b) = suc r' , a' , h
+     where
+      IH : Σ r' ꞉ Fin n , A (suc r') × ((s' : Fin n) → A (suc s') → s' ≼ r')
+      IH = Fin-co-wf {n} (A ∘ suc) i (d ∘ suc) b
+
+      r' : Fin n
+      r' = pr₁ IH
+
+      a' : A (suc r')
+      a' = pr₁ (pr₂ IH)
+
+      ϕ : (s' : Fin n) → A (suc s') → s' ≼ r'
+      ϕ = pr₂ (pr₂ IH)
+
+      h : (s : Fin (succ n)) → A s → s ≼ suc r'
+      h 𝟎       c = *
+      h (suc x) c = ϕ x c
+
+    g : ¬ (Σ i ꞉ Fin n , A (suc i)) → Γ
+    g ν = 𝟎 , a , h
+     where
+      h : (s : Fin (succ n)) → A s → s ≼ 𝟎
+      h (suc x) c = 𝟘-elim (ν (x , c))
+      h 𝟎       c = *
+
+Fin-co-wf {succ n} A (suc x) d a = suc (pr₁ IH) , pr₁ (pr₂ IH) , h
+ where
+  IH : Σ r ꞉ Fin n , A (suc r) × ((s : Fin n) → A (suc s) → s ≼ r)
+  IH = Fin-co-wf {n} (A ∘ suc) x  (d ∘ suc) a
+
+  h : (s : Fin (succ n)) → A s → s ≼ suc (pr₁ IH)
+  h 𝟎       b = *
+  h (suc x) b = pr₂ (pr₂ IH) x b
+
+\end{code}
+
+\begin{code}
+
+\end{code}
