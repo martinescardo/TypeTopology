@@ -257,6 +257,7 @@ import UF-FunExt
 import UF-hlevels
 import UF-IdEmbedding
 import UF-ImageAndSurjection
+import UF-ImageAndSurjection-F
 import UF-Knapp-UA
 import UF-KrausLemma
 import UF-LeftCancellable
@@ -264,7 +265,9 @@ import UF-Miscelanea
 import UF-Powerset
 import UF-PropIndexedPiSigma
 import UF-PropTrunc
+import UF-PropTrunc-F
 import UF-Quotient
+import UF-Quotient-F
 import UF-Retracts-FunExt
 import UF-Retracts
 import UF-Section-Embedding
