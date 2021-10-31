@@ -1,6 +1,9 @@
 Martin Escardo and Tom de Jong, October 2021
 
-Modified from UF-ImageAndSurjection.lagda to add the parameter F.
+Modified from UF-ImageAndSurjection.lagda to add the parameter F. For comments
+and explanations, this the original files.
+
+We use F to control the universe where propositional truncations live.
 
 \begin{code}
 
@@ -17,13 +20,6 @@ open import UF-Embeddings
 open import UF-Subsingletons
 open import UF-PropTrunc-F F
 open import UF-Retracts
-
-\end{code}
-
-A main application of propositional truncations is to be able to
-define images and surjections:
-
-\begin{code}
 
 module ImageAndSurjection (pt : propositional-truncations-exist) where
 
@@ -157,14 +153,6 @@ module ImageAndSurjection (pt : propositional-truncations-exist) where
    γ : ∃ (x' , a) ꞉ Σ A , (x' , ζ x' a) ≡ (x , b)
    γ = ∥∥-functor δ (i x b)
 
-\end{code}
-
-The following was marked as a TODO by Martin:
-  A map is an embedding iff its corestriction is an equivalence.
-It was done by Tom de Jong on 4 December 2020.
-
-\begin{code}
-
  corestriction-of-embedding-is-equivalence : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                                            → is-embedding f
                                            → is-equiv (corestriction f)
@@ -212,12 +200,6 @@ It was done by Tom de Jong on 4 December 2020.
     e₁ = equivs-are-embeddings (corestriction f) i
     e₂ : is-embedding pr₁
     e₂ = pr₁-is-embedding (λ y → ∥∥-is-prop)
-
-\end{code}
-
-Surjections can be characterized as follows, modulo size:
-
-\begin{code}
 
  imageInduction : ∀ {𝓦 𝓤 𝓥} {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X → Y) → 𝓤 ⊔ 𝓥 ⊔ 𝓦  ⁺ ̇
  imageInduction {𝓦} {𝓤} {𝓥} {X} {Y} f =
@@ -269,12 +251,6 @@ Surjections can be characterized as follows, modulo size:
    γ : ∥ A x ∥
    γ = ∥∥-functor δ (s x)
 
-\end{code}
-
-Added 13 February 2020 by Tom de Jong.
-
-\begin{code}
-
  surjection-≃-image : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } (f : X → Y)
                     → is-surjection f
                     → image f ≃ Y
@@ -287,12 +263,6 @@ Added 13 February 2020 by Tom de Jong.
    where
     γ : (y : Y) → (∃ x ꞉ X , f x ≡ y) ≃ 𝟙
     γ y = singleton-≃-𝟙 (pointed-props-are-singletons (s y) ∥∥-is-prop)
-
-\end{code}
-
-Added 18 December 2020 by Tom de Jong.
-
-\begin{code}
 
  ∘-is-surjection : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } {f : X → Y} {g : Y → Z}
                  → is-surjection f → is-surjection g → is-surjection (g ∘ f)

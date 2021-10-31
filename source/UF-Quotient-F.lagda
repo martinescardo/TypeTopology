@@ -1,6 +1,9 @@
 Martin Escardo and Tom de Jong, October 2021
 
-Modified from UF-Quotient.lagda to add the parameter F.
+Modified from UF-Quotient.lagda to add the parameter F. For comments
+and explanations, this the original files.
+
+We use F to control the universe where propositional truncations live.
 
 \begin{code}
 
@@ -24,42 +27,9 @@ module UF-Quotient-F
         (pe  : Prop-Ext)
        where
 
-\end{code}
-
-We define when a relation is subsingleton (or proposition) valued,
-reflexive, transitive or an equivalence.
-
-What is noteworthy, for the purpose of explaining universes in Agda to
-Dan, is that X is in a universe 𝓤, and the value of the relation is in
-a universe 𝓥, where 𝓤 and 𝓥 are arbitrary.
-
-(NB. The Agda library uses the word "Level" for universes, and then
-what we write "𝓤 ̇" here is written "Set 𝓤". This is not good for
-univalent mathematics, because the types in 𝓤 ̇ need not be sets, and
-also because it places emphasis on levels rather than universes
-themselves.)
-
-Then, for example, the function is-prop-valued defined below takes
-values in the least upper bound of 𝓤 and 𝓥, which is denoted by 𝓤 ⊔ 𝓥.
-
-We first define the type of five functions and then define them, where
-_≈_ is a variable:
-
-\begin{code}
-
 is-prop-valued is-equiv-relation : {X : 𝓤 ̇ } → (X → X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
 is-prop-valued _≈_ = ∀ x y → is-prop (x ≈ y)
 is-equiv-relation _≈_ = is-prop-valued _≈_ × reflexive _≈_ × symmetric _≈_ × transitive _≈_
-
-\end{code}
-
-Now, using an anonymous module with parameters (corresponding to a
-section in Coq), we assume propositional truncations that stay in the
-same universe, function extensionality for all universes, two
-universes 𝓤 and 𝓥, propositional truncation for the universe 𝓥, a type
-X : 𝓤 ̇, and an equivalence relation _≈_ with values in 𝓥 ̇.
-
-\begin{code}
 
 module quotient
        {𝓤 𝓥 : Universe}
@@ -74,30 +44,8 @@ module quotient
  open PropositionalTruncation F pt
  open ImageAndSurjection F pt
 
-\end{code}
-
-Now, Ω 𝓥 is the type of subsingletons, or (univalent) propositions, or
-h-propositions, or mere propositions, in the universe 𝓥, which lives
-in the next universe 𝓥 ⁺.
-
-From the relation _≈_ : X → (X → 𝓥 ̇ ) we define a relation
-X → (X → Ω 𝓥), which of course is formally a function. We then take
-the quotient X/≈ to be the image of this function.
-
-Of course, it is for constructing the image that we need propositional
-truncations.
-
-\begin{code}
-
  equiv-rel : X → (X → Ω 𝓥)
  equiv-rel x y = x ≈ y , ≈p x y
-
-\end{code}
-
-Then the quotient lives in the least upper bound of 𝓤 and 𝓥 ⁺, where 𝓥 ⁺
-is the successor of the universe 𝓥:
-
-\begin{code}
 
  X/≈ : F (𝓤 ⊔ (𝓥 ⁺)) ⊔ 𝓤 ⊔ (𝓥 ⁺) ̇
  X/≈ = image equiv-rel
@@ -110,27 +58,8 @@ is the successor of the universe 𝓥:
  η : X → X/≈
  η = corestriction equiv-rel
 
-\end{code}
-
-Then η is the universal solution to the problem of transforming
-equivalence _≈_ into equality _≡_ (in Agda the notation for the
-identity type is _≡_ - we can't use _=_ because this is a reserved
-symbol for definitional equality).
-
-By construction, η is a surjection, of course:
-
-\begin{code}
-
  η-surjection : is-surjection η
  η-surjection = corestriction-is-surjection equiv-rel
-
-\end{code}
-
-It is convenient to use the following induction principle for
-reasoning about the image. Notice that the property we consider has
-values in any universe 𝓦 we please:
-
-\begin{code}
 
  quotient-induction : ∀ {𝓦} (P : X/≈ → 𝓦 ̇ )
                     → ((x' : X/≈) → is-prop (P x'))
@@ -138,25 +67,12 @@ values in any universe 𝓦 we please:
                     → (x' : X/≈) → P x'
  quotient-induction = surjection-induction η η-surjection
 
-\end{code}
-
-The first part of the universal property of η says that equivalent
-points are mapped to equal points:
-
-\begin{code}
-
  η-equiv-equal : {x y : X} → x ≈ y → η x ≡ η y
  η-equiv-equal {x} {y} e =
    to-Σ-≡ (dfunext fe
           (λ z → to-Σ-≡ (pe (≈p x z) (≈p y z) (≈t y x z (≈s x y e)) (≈t x y z e) ,
                          being-prop-is-prop fe _ _)) ,
        ∥∥-is-prop _ _)
-
-\end{code}
-
-We also need the fact that η reflects equality into equivalence:
-
-\begin{code}
 
  η-equal-equiv : {x y : X} → η x ≡ η y → x ≈ y
  η-equal-equiv {x} {y} p = equiv-rel-reflect (ap pr₁ p)
@@ -168,24 +84,6 @@ We also need the fact that η reflects equality into equivalence:
      a = ap (λ - → pr₁ (- y)) (q ⁻¹)
      b : (y ≈ y) → (x ≈ y)
      b = Idtofun a
-
-\end{code}
-
-We are now ready to formulate and prove the universal property of the
-quotient. What is noteworthy here, regarding universes, is that the
-universal property says that we can eliminate into any set A of any
-universe 𝓦.
-
-                   η
-              X ------> X/≈
-               \       .
-                \     .
-               f \   . f'
-                  \ .
-                   v
-                   A
-
-\begin{code}
 
  universal-property : ∀ {𝓦} (A : 𝓦 ̇ )
                     → is-set A

@@ -1,6 +1,9 @@
 Martin Escardo and Tom de Jong, October 2021
 
-Modified from UF-PropTrunc.lagda to add the parameter F.
+Modified from UF-PropTrunc.lagda to add the parameter F. For comments
+and explanations, this the original files.
+
+We use F to control the universe where propositional truncations live.
 
 \begin{code}
 
@@ -16,14 +19,6 @@ open import UF-Subsingletons
 open import UF-FunExt
 open import UF-Subsingletons-FunExt
 open import UF-Equiv
-
-\end{code}
-
-We use the existence of propositional truncations as an
-assumption. The following type collects the data that constitutes this
-assumption.
-
-\begin{code}
 
 record propositional-truncations-exist : 𝓤ω where
  field
@@ -122,34 +117,8 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  prop-is-equivalent-to-its-truncation i =
   logically-equivalent-props-are-equivalent ∥∥-is-prop i (∥∥-rec i id) ∣_∣
 
-\end{code}
-
-Added 19/12/2019 by Tom de Jong.
-
-The following allows us to use Agda's do-notation with the ∥∥-monad.
-
-Note that the Kleisli laws hold trivially, because ∥ X ∥ is a proposition for
-any type X.
-
-It is quite convenient when dealing with multiple, successive ∥∥-rec calls.
-
-Agda's do-notation is powerful, because it can be combined with pattern
-matching, i.e. if
-  w ꞉ ∥ fiber f y ∥,
-then
-  x , p ← w
-is allowed in the do-block.
-
-(Note that in Haskell, you would write "return" for our function ∣_∣.)
-
-\begin{code}
-
  _>>=_ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → ∥ X ∥ → (X → ∥ Y ∥) → ∥ Y ∥
  s >>= f = ∥∥-rec ∥∥-is-prop f s
-
-\end{code}
-
-\begin{code}
 
  infixr 0 _∨_
 

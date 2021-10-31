@@ -1938,7 +1938,7 @@ compact-argmin {𝓤} {X} {n} p κ x₀ = II I
 
   II : type-of I → Σ x ꞉ X , ((y : X) → p x ≼ p y)
   II (.(p y) , ((y , refl) , ϕ)) = y , (λ y → ϕ (p y) (y , refl))
-  
+
 Fin-argmin : {a r : ℕ} (p : Fin (succ a) → Fin r)
            → Σ x ꞉ Fin (succ a) , ((y : Fin (succ a)) → p x ≼ p y)
 Fin-argmin {0} p = 𝟎 , α
@@ -1969,6 +1969,13 @@ Fin-argmin {succ a} p = γ
                    (contrapositive (<-coarser-than-≤ ⟦ p 𝟎 ⟧ ⟦ p (suc x) ⟧) ν)
       α (suc y) = ϕ y
 
+argmin : {a r : ℕ} → (Fin (succ a) → Fin r) → Fin (succ a)
+argmin p = pr₁ (Fin-argmin p)
+
+argmin-correct : {a r : ℕ} (p : Fin (succ a) → Fin r)
+               → (y : Fin (succ a)) → p (argmin p) ≼ p y
+argmin-correct p = pr₂ (Fin-argmin p)
+
 Fin-argmax : {a r : ℕ} (p : Fin (succ a) → Fin r)
            → Σ x ꞉ Fin (succ a) , ((y : Fin (succ a)) → p y ≼ p x)
 Fin-argmax {0} p = 𝟎 , α
@@ -1991,7 +1998,7 @@ Fin-argmax {succ a} p = γ
      where
       α : (y : (Fin (succ (succ a)))) → p y ≼ p 𝟎
       α 𝟎       = ≤-refl ⟦ p 𝟎 ⟧
-      α (suc y) = ≤-trans ⟦ p (suc y) ⟧ ⟦ p (suc x) ⟧ ⟦ p 𝟎 ⟧ (ϕ y) l 
+      α (suc y) = ≤-trans ⟦ p (suc y) ⟧ ⟦ p (suc x) ⟧ ⟦ p 𝟎 ⟧ (ϕ y) l
     h (inr ν) = suc x , α
      where
       α : (y : (Fin (succ (succ a)))) → p y ≼ p (suc x)
@@ -2006,24 +2013,24 @@ specification, and then prove their specification:
 
 \begin{code}
 
-argmin : {a r : ℕ} → (Fin (succ a) → Fin r) → Fin (succ a)
-argmin {0}      p = 𝟎
-argmin {succ a} p = γ
+argmin' : {a r : ℕ} → (Fin (succ a) → Fin r) → Fin (succ a)
+argmin' {0}      p = 𝟎
+argmin' {succ a} p = γ
  where
   m : Fin (succ a)
-  m = argmin {a} (p ∘ suc)
+  m = argmin' {a} (p ∘ suc)
 
   γ : Fin (succ (succ a))
   γ = Cases (≤-decidable ⟦ p 𝟎 ⟧ ⟦ p (suc m) ⟧)
        (λ (l : p 𝟎 ≼ p (suc m)) → 𝟎)
        (λ otherwise → suc m)
 
-argmax : {a r : ℕ} → (Fin (succ a) → Fin r) → Fin (succ a)
-argmax {0}      p = 𝟎
-argmax {succ a} p = γ
+argmax' : {a r : ℕ} → (Fin (succ a) → Fin r) → Fin (succ a)
+argmax' {0}      p = 𝟎
+argmax' {succ a} p = γ
  where
   m : Fin (succ a)
-  m = argmax {a} (p ∘ suc)
+  m = argmax' {a} (p ∘ suc)
 
   γ : Fin (succ (succ a))
   γ = Cases (≤-decidable ⟦ p 𝟎 ⟧ ⟦ p (suc m) ⟧)
@@ -2031,10 +2038,10 @@ argmax {succ a} p = γ
        (λ otherwise → 𝟎)
 
 {-
-argmax-correct : {a r : ℕ} (p : Fin (succ a) → Fin r)
-               → ((y : Fin (succ a)) → p y ≼ p (argmax p))               
-argmax-correct {0}      p 𝟎 = ≤-refl ⟦ p 𝟎 ⟧
-argmax-correct {succ a} p y = h y
+argmax'-correct : {a r : ℕ} (p : Fin (succ a) → Fin r)
+               → ((y : Fin (succ a)) → p y ≼ p (argmax p))
+argmax'-correct {0}      p 𝟎 = ≤-refl ⟦ p 𝟎 ⟧
+argmax'-correct {succ a} p y = h y
  where
   m : Fin (succ a)
   m = argmax {a} (p ∘ suc)

@@ -39,6 +39,11 @@ data Bool : 𝓤₀ ̇ where
 
 _||_ _&&_ : Bool → Bool → Bool
 
+
+if_then_else_ : {X : 𝓤 ̇ } → Bool → X → X → X
+if true  then x else y = x
+if false then x else y = y
+
 true  || y = true
 false || y = y
 
