@@ -524,4 +524,27 @@ semidecidable-closed-under-Σ {𝓤} H P ρ Q σ = ∥∥-rec being-semidecidabl
           claim : is-empty (Q₂ n)
           claim (q₁ , q) = nq₁ q₁
 
+Escardo-Knapp-Choice : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+Escardo-Knapp-Choice 𝓤 𝓥 = (P : 𝓤 ̇  ) (Q : 𝓥 ̇  )
+                         → is-semidecidable P
+                         → (P → is-semidecidable Q)
+                         → ∥ (P → semidecidability-structure Q) ∥
+
+theorem-3-1 : Semidecidable-Closed-Under-Σ 𝓤 𝓥
+            → Escardo-Knapp-Choice 𝓤 𝓥
+theorem-3-1 H P Q ρ σ = ∥∥-functor g τ
+ where
+  τ : is-semidecidable (P × Q)
+  τ = H P ρ (λ _ → Q) σ
+  f : P → (P × Q) ≃ Q
+  f p = logically-equivalent-props-are-equivalent
+         (×-is-prop (prop-if-semidecidable ρ) Q-is-prop) Q-is-prop
+          pr₂ (λ q → p , q)
+   where
+    Q-is-prop : is-prop Q
+    Q-is-prop = prop-if-semidecidable (σ p)
+  g : semidecidability-structure (P × Q) → (P → semidecidability-structure Q)
+  g 𝕤 p = semidecidability-structure-cong (f p) 𝕤
+
+
 \end{code}
