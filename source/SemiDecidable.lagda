@@ -160,6 +160,7 @@ silly-lemma {𝓤} {𝓥} {𝓦} {X} {Y} {A} =
 
 open import BinaryNaturals hiding (_+_)
 
+--TODO: Move down. This shouldn't be a top-level definition.
 trick : (X : ℕ → 𝓤 ̇  ) (ϕ : ℕ → 𝟚)
       → (Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , ⌜ →cong'' fe fe (≃-sym pairing) ⌝ ϕ (n , m) ≡ ₁))
       → (∃ X) ≃ (∃ k ꞉ ℕ , ϕ k ≡ ₁)
@@ -386,6 +387,8 @@ Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
    d : detachable B
    d x = δ (⌜ f ⌝ x)
 
+-- TODO: Promote this to another equivalent version of semidecidability-structure?
+-- TODO: Also add for the version → 𝟚?
 least-witness : (A : ℕ → 𝓤 ̇  )
               → ((n : ℕ) → is-prop (A n))
               → detachable A
@@ -546,5 +549,21 @@ theorem-3-1 H P Q ρ σ = ∥∥-functor g τ
   g : semidecidability-structure (P × Q) → (P → semidecidability-structure Q)
   g 𝕤 p = semidecidability-structure-cong (f p) 𝕤
 
+\end{code}
+
+Before proving the converse, we should add a lemma (to be used in
+semidecidability-structure-∃ as well) that says:
+
+    (Ψ : ℕ → ℕ → 𝟚)
+  → X ≃ ∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁
+  → semidecidability-structure X
+
+  (take ϕ : ℕ → 𝟚 to be ϕ = Ψ ∘ ⌜ pairing ⌝⁻¹ ∘ ⌜ curry-uncurry ⌝⁻¹)
+
+\begin{code}
+
+theorem-3-1-converse : Escardo-Knapp-Choice 𝓤 𝓥
+                     → Semidecidable-Closed-Under-Σ 𝓤 𝓥
+theorem-3-1-converse H P ρ Q σ = {!!}
 
 \end{code}
