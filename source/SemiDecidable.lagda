@@ -386,15 +386,53 @@ Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
    d : detachable B
    d x = δ (⌜ f ⌝ x)
 
-least-witnesses : (A : ℕ → 𝓤 ̇  )
-                → detachable A
-                → Σ B ꞉ (ℕ → 𝓤 ̇  ) , detachable B × (∃ A ≃ Σ B)
-least-witnesses {𝓤} A d = B , δ , {!!}
+least-witness : (A : ℕ → 𝓤 ̇  )
+              → ((n : ℕ) → is-prop (A n))
+              → detachable A
+              → Σ B ꞉ (ℕ → 𝓤 ̇  ) , ((n : ℕ) → is-prop (B n)) × detachable B × (∃ A ≃ Σ B)
+least-witness {𝓤} A A-is-prop-valued A-is-detachable =
+ B , B-is-prop-valued , B-is-detachable , γ
  where
-  B : ℕ → 𝓤 ̇
-  B n = A n × is-empty (Σ r ꞉ Fin' n , A (pr₁ r))
-  δ : detachable B
-  δ = {!!}
+   B : ℕ → 𝓤 ̇
+   B n = A n × is-empty (Σ r ꞉ Fin' n , A (pr₁ r))
+   B-is-detachable : detachable B
+   B-is-detachable n = ×-preserves-decidability (A-is-detachable n) (¬-preserves-decidability σ)
+    where
+     σ : decidable (Σ r ꞉ Fin' n , A (pr₁ r))
+     σ = Compact-cong (≃-Fin n) Fin-Compact (A ∘ pr₁)
+          (λ r → A-is-detachable (pr₁ r))
+   B-is-prop-valued : (n : ℕ) → is-prop (B n)
+   B-is-prop-valued n = ×-is-prop (A-is-prop-valued n) (negations-are-props fe)
+   ΣB-is-prop : is-prop (Σ B)
+   ΣB-is-prop (n , a , min) (n' , a' , min') =
+    to-subtype-≡ B-is-prop-valued (κ (<-linear n n'))
+     where
+      κ : (n < n') + (n ≡ n') + (n' < n)
+        → n ≡ n'
+      κ (inl k)       = 𝟘-elim (min' ((n , k) , a))
+      κ (inr (inl e)) = e
+      κ (inr (inr l)) = 𝟘-elim (min ((n' , l) , a'))
+   γ : ∃ A ≃ Σ B
+   γ = logically-equivalent-props-are-equivalent ∥∥-is-prop ΣB-is-prop f g
+    where
+     g : Σ B → ∥ Σ A ∥
+     g (n , a , _) = ∣ n , a ∣
+     f : ∥ Σ A ∥ → Σ B
+     f = ∥∥-rec ΣB-is-prop h
+      where
+       h : Σ A → Σ B
+       h (n , a) = k , a' , ν
+        where
+         u : Σμ A
+         u = minimal-from-given A A-is-detachable (n , a)
+         k : ℕ
+         k = pr₁ u
+         a' : A k
+         a' = pr₁ (pr₂ u)
+         min : (m : ℕ) → A m → k ≤ m
+         min = pr₂ (pr₂ u)
+         ν : is-empty (Σ r ꞉ Fin' k , A (pr₁ r))
+         ν ((m , l) , aₘ) = less-not-bigger-or-equal m k l (min m aₘ)
 
 \end{code}
 
@@ -402,93 +440,88 @@ We should now have enough...
 
 \begin{code}
 
-semidecidable-closed-under-Σ : Semidecidability-Closed-Under-Special-ω-Joins {!!}
-                             → Semidecidable-Closed-Under-Σ {!!} {!!}
-semidecidable-closed-under-Σ h P ρ Q σ = ∥∥-rec being-semidecidable-is-prop γ ρ
+semidecidable-closed-under-Σ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
+                             → Semidecidable-Closed-Under-Σ 𝓥 𝓤
+semidecidable-closed-under-Σ {𝓤} H P ρ Q σ = ∥∥-rec being-semidecidable-is-prop γ ρ
  where
   γ : semidecidability-structure P
     → is-semidecidable (Σ Q)
-  γ (α , e) = {!!}
+  γ (α , e) = is-semidecidable-cong ΣQ₂-ΣQ-equiv ΣQ₂-is-semidecidable
    where
     Q-is-prop-valued : (p : P) → is-prop (Q p)
     Q-is-prop-valued p = prop-if-semidecidable (σ p)
 
-    Q' : ℕ → {!!}
-    Q' n = Σ p ꞉ (α n ≡ ₁) , is-empty (Σ r ꞉ Fin' n , α (pr₁ r) ≡ ₁)
-                           × Q (⌜ e ⌝⁻¹ ∣ n , p ∣)
+    W : Σ Q₁ ꞉ (ℕ → 𝓤₀ ̇  ) , ((n : ℕ) → is-prop (Q₁ n))
+                           × detachable Q₁
+                           × ((∃ n ꞉ ℕ , α n ≡ ₁) ≃ Σ Q₁)
+    W = least-witness (λ n → α n ≡ ₁) (λ n → 𝟚-is-set)
+                      (λ n → 𝟚-is-discrete (α n) ₁)
 
-    Q-Q'-equivalence : Σ Q' ≃ Σ Q
-    Q-Q'-equivalence = qinveq f (g , {!!})
+    Q₁ : ℕ → 𝓤₀ ̇
+    Q₁ = pr₁ W
+    Q₁-is-prop-valued : (n : ℕ) → is-prop (Q₁ n)
+    Q₁-is-prop-valued = pr₁ (pr₂ W)
+    Q₁-is-detachable : detachable Q₁
+    Q₁-is-detachable = pr₁ (pr₂ (pr₂ W))
+    ΣQ₁-equiv : (∃ n ꞉ ℕ , α n ≡ ₁) ≃ Σ Q₁
+    ΣQ₁-equiv = pr₂ (pr₂ (pr₂ W))
+    ΣQ₁-to-P : Σ Q₁ → P
+    ΣQ₁-to-P = ⌜ e ⌝⁻¹ ∘ ⌜ ΣQ₁-equiv ⌝⁻¹
+
+    Q₂ : ℕ → 𝓤 ̇
+    Q₂ n = Σ q ꞉ Q₁ n , Q (ΣQ₁-to-P (n , q))
+    Q₂-is-prop-valued : (n : ℕ) → is-prop (Q₂ n)
+    Q₂-is-prop-valued n = Σ-is-prop (Q₁-is-prop-valued n)
+                           (λ q₁ → Q-is-prop-valued (ΣQ₁-to-P (n , q₁)))
+
+    ΣQ₂-is-prop : is-prop (Σ Q₂)
+    ΣQ₂-is-prop (n , q₁ , q) (n' , q₁' , q') =
+     to-subtype-≡ Q₂-is-prop-valued
+                  (ap pr₁ (equiv-to-prop (≃-sym ΣQ₁-equiv) ∥∥-is-prop
+                            (n , q₁) (n' , q₁')))
+
+    ΣQ₂-ΣQ-equiv : Σ Q₂ ≃ Σ Q
+    ΣQ₂-ΣQ-equiv = logically-equivalent-props-are-equivalent ΣQ₂-is-prop
+                    (Σ-is-prop (prop-if-semidecidable ρ)
+                    (λ p → prop-if-semidecidable (σ p)))
+                    f g
      where
-      f : Σ Q' → Σ Q
-      f (n , p , _ , q) = ⌜ e ⌝⁻¹ ∣ n , p ∣ , q
-      g : Σ Q → Σ Q'
-      g (p , q) = {!!}
+      f : Σ Q₂ → Σ Q
+      f (n , q₁ , q) = (ΣQ₁-to-P (n , q₁) , q)
+      g : Σ Q → Σ Q₂
+      g (p , q) = (n , q₁ , transport Q (prop-if-semidecidable ρ p p') q)
        where
         n : ℕ
-        n = {!!}
+        n = pr₁ (⌜ ΣQ₁-equiv ⌝ (⌜ e ⌝ p))
+        q₁ : Q₁ n
+        q₁ = pr₂ (⌜ ΣQ₁-equiv ⌝ (⌜ e ⌝ p))
+        p' : P
+        p' = ΣQ₁-to-P (n , q₁)
 
-    Q'-is-prop-valued : (n : ℕ) → is-prop (Q' n)
-    Q'-is-prop-valued n =
-      Σ-is-prop 𝟚-is-set
-       (λ (p : α n ≡ ₁) → ×-is-prop
-                           (negations-are-props fe)
-                           (prop-if-semidecidable (σ (⌜ e ⌝⁻¹ ∣ n , p ∣))))
-    Q'-is-special : is-prop (Σ Q')
-    Q'-is-special (n , p , min , q) (n' , p' , min' , q') =
-     to-subtype-≡ (Q'-is-prop-valued)
-                  (κ (<-linear n n'))
-      where
-       κ : (n < n') + (n ≡ n') + (n' < n) → n ≡ n'
-       κ (inl k)       = 𝟘-elim (min' ((n , k) , p))
-       κ (inr (inl e)) = e
-       κ (inr (inr l)) = 𝟘-elim (min ((n' , l) , p'))
-    ΣQ'-is-semidecidable : is-semidecidable (Σ Q')
-    ΣQ'-is-semidecidable = h Q' Q'-is-special τ
+    ΣQ₂-is-semidecidable : is-semidecidable (Σ Q₂)
+    ΣQ₂-is-semidecidable = H Q₂ ΣQ₂-is-prop τ
      where
-      τ : (n : ℕ) → is-semidecidable (Q' n)
-      τ n = κ (×-preserves-decidability (𝟚-is-discrete (α n) ₁)
-                                        (¬-preserves-decidability δ))
+      τ : (n : ℕ) → is-semidecidable (Q₂ n)
+      τ n = κ (Q₁-is-detachable n)
        where
-        A : Fin' n → 𝓤₀ ̇
-        A r = α (pr₁ r) ≡ ₁
-        κ : decidable ((α n ≡ ₁) × ¬ Σ A) → is-semidecidable (Q' n)
-        κ (inl (p , min)) = is-semidecidable-cong claim (σ 𝕡)
+        κ : decidable (Q₁ n) → is-semidecidable (Q₂ n)
+        κ (inl  q₁) = is-semidecidable-cong claim (σ p)
          where
-          𝕡 : P
-          𝕡 = ⌜ e ⌝⁻¹ ∣ n , p ∣
-          claim : Q 𝕡 ≃ Q' n
+          p : P
+          p = ΣQ₁-to-P (n , q₁)
+          claim : Q p ≃ Q₂ n
           claim = logically-equivalent-props-are-equivalent
-                   (Q-is-prop-valued 𝕡) (Q'-is-prop-valued n)
+                   (Q-is-prop-valued p) (Q₂-is-prop-valued n)
                    ϕ ψ
            where
-            ϕ : Q 𝕡 → Q' n
-            ϕ q = p , min , q
-            ψ : Q' n → Q 𝕡
-            ψ (p' , _ , q) =
-             transport Q (ap ⌜ e ⌝⁻¹ (∥∥-is-prop ∣ n , p' ∣ ∣ n , p ∣)) q
-        κ (inr h) = empty-types-are-semidecidable claim
+            ϕ : Q p → Q₂ n
+            ϕ q = q₁ , q
+            ψ : Q₂ n → Q p
+            ψ (q₁ , q) =
+             transport Q (prop-if-semidecidable ρ (ΣQ₁-to-P (n , q₁)) p) q
+        κ (inr nq₁) = empty-types-are-semidecidable claim
          where
-          claim : ¬ (Q' n)
-          claim (p , min , q) = h (p , min)
-        δ : decidable (Σ A)
-        δ = Compact-cong (≃-Fin n) Fin-Compact A (λ r → 𝟚-is-discrete _ _)
-
-
-{-
-𝟚-equality-cases f g
-       where
-        f : α n ≡ ₀ → is-semidecidable (Q' n)
-        f q = is-semidecidable-cong
-               (≃-sym (lr-implication negations-are-equiv-to-𝟘 claim))
-               𝟘-is-semidecidable
-         where
-          claim : ¬ (Q' n)
-          claim (p , _) = zero-is-not-one (q ⁻¹ ∙ p)
-        g : α n ≡ ₁ → is-semidecidable (Q' n)
-        g p = is-semidecidable-cong claim (σ 𝕡)
-         where
-
--}
+          claim : is-empty (Q₂ n)
+          claim (q₁ , q) = nq₁ q₁
 
 \end{code}
