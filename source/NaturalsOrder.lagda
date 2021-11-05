@@ -370,3 +370,23 @@ max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n)
 max-minus-property m n = minus-property (max m n) m (max-≤-upper-bound m n)
 
 \end{code}
+
+Tom de Jong, 5 November 2021.
+
+\begin{code}
+
+<-linear : (n m : ℕ) → n < m + (n ≡ m) + m < n
+<-linear zero     zero     = inr (inl refl)
+<-linear zero     (succ m) = inl *
+<-linear (succ n) zero     = inr (inr *)
+<-linear (succ n) (succ m) = γ IH
+ where
+  γ : (n < m) + (n ≡ m) + (m < n)
+    → (succ n < succ m) + (succ n ≡ succ m) + (succ m < succ n)
+  γ (inl k)       = inl k
+  γ (inr (inl e)) = inr (inl (ap succ e))
+  γ (inr (inr l)) = inr (inr l)
+  IH : (n < m) + (n ≡ m) + (m < n)
+  IH = <-linear n m
+
+\end{code}

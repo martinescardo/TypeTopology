@@ -575,6 +575,12 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
        → Y ≃ B → (X → Y) ≃ (X → B)
 →cong' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' = →cong fe fe' (≃-refl X)
 
+→cong'' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+        → funext 𝓦 𝓥
+        → funext 𝓤 𝓥
+        → X ≃ A → (X → Y) ≃ (A → Y)
+→cong'' {𝓤} {𝓥} {𝓣} {X} {Y} {B} fe fe' e = →cong fe fe' e (≃-refl Y)
+
 pr₁-equivalence : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ )
                 → ((x : X) → is-singleton (A x))
                 → is-equiv (pr₁ {𝓤} {𝓥} {X} {A})
