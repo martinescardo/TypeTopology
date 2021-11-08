@@ -31,7 +31,7 @@ open import UF-Equiv
   η y = ap (λ - → transport Y - y) (l a)
 
   ε'' : (f : Π Y) {x x' : X} → x ≡ x' → transport Y (i x x') (f x) ≡ f x'
-  ε'' t {x} refl = ap (λ - → transport Y - (t x)) (l x)
+  ε'' f {x} refl = ap (λ - → transport Y - (f x)) (l x)
 
   ε' : (f : Π Y) (x : X) → transport Y (i a x) (f a) ≡ f x
   ε' f x = ε'' f (i a x)

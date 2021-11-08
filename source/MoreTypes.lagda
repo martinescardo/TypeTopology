@@ -44,6 +44,10 @@ if_then_else_ : {X : 𝓤 ̇ } → Bool → X → X → X
 if true  then x else y = x
 if false then x else y = y
 
+Bool-induction : {A : Bool → 𝓤 ̇ } → A true → A false → (b : Bool) → A b
+Bool-induction x y true  = x
+Bool-induction x y false = y
+
 true  || y = true
 false || y = y
 
@@ -56,5 +60,13 @@ infixl 20 _&&_
 data List {𝓤 : Universe} (X : 𝓤 ̇ ) : 𝓤 ̇ where
  []  : List X
  _∷_ : X → List X → List X
+
+_++_ : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → List X → List X
+[]       ++ ys = ys
+(x ∷ xs) ++ ys = x ∷ (xs ++ ys)
+
+empty : {𝓤 : Universe} {X : 𝓤 ̇ } → List X → Bool
+empty []       = true
+empty (x ∷ xs) = false
 
 \end{code}
