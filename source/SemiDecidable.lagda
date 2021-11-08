@@ -22,10 +22,6 @@ open import UF-EquivalenceExamples
 
 \end{code}
 
-We assume function extensionality, propositional extensionality and
-the existence of propositional truncations, as explicit hypotheses for
-this file.
-
 \begin{code}
 module SemiDecidable
         (fe  : Fun-Ext)
@@ -84,10 +80,10 @@ open import UF-Equiv-FunExt
        → A ≃ B → (X ≃ A) ≃ (X ≃ B)
 ≃-cong' = ≃-cong (≃-refl _)
 
-semidecidability-structure-≃ : {𝓣 : Universe} (X : 𝓤 ̇  )
+semidecidability-structure-≃ : {𝓣 : Universe} {X : 𝓤 ̇  }
                              → semidecidability-structure X
                              ≃ semidecidability-structure' 𝓣 X
-semidecidability-structure-≃ {𝓤} {𝓣} X =
+semidecidability-structure-≃ {𝓤} {𝓣} {X} =
  (Σ α ꞉ (ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , α n ≡ ₁))                            ≃⟨ I   ⟩
  (Σ 𝔸 ꞉ (Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-subset A)
                           , X ≃ (∃ n ꞉ ℕ , ⌜ χ ⌝ 𝔸 n ≡ ₁))            ≃⟨ II  ⟩
@@ -119,9 +115,9 @@ is-semidecidable X = ∥ semidecidability-structure X ∥
 is-semidecidable' : (𝓣 : Universe) (X : 𝓤 ̇  ) → 𝓣 ⁺ ⊔ 𝓤 ̇
 is-semidecidable' 𝓣 X = ∥ semidecidability-structure' 𝓣 X ∥
 
-is-semidecidable-≃ : {𝓣 : Universe} (X : 𝓤 ̇  )
+is-semidecidable-≃ : {𝓣 : Universe} {X : 𝓤 ̇  }
                    → is-semidecidable X ≃ is-semidecidable' 𝓣 X
-is-semidecidable-≃ X = ∥∥-cong (semidecidability-structure-≃ X)
+is-semidecidable-≃ = ∥∥-cong (semidecidability-structure-≃)
 
 prop-if-semidecidability-structure : {X : 𝓤 ̇  }
                                    → semidecidability-structure X → is-prop X
@@ -135,7 +131,7 @@ prop-if-semidecidable = ∥∥-rec (being-prop-is-prop fe)
 
 \begin{code}
 
-
+-- TODO: Rename
 silly-lemma : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : (x : X) → Y x → 𝓦 ̇  }
             → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
             ≃ (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
@@ -160,51 +156,60 @@ silly-lemma {𝓤} {𝓥} {𝓦} {X} {Y} {A} =
 
 open import BinaryNaturals hiding (_+_)
 
---TODO: Move down. This shouldn't be a top-level definition.
-trick : (X : ℕ → 𝓤 ̇  ) (ϕ : ℕ → 𝟚)
-      → (Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , ⌜ →cong'' fe fe (≃-sym pairing) ⌝ ϕ (n , m) ≡ ₁))
-      → (∃ X) ≃ (∃ k ꞉ ℕ , ϕ k ≡ ₁)
-trick X ϕ h = ∃-cong h ● bar
+-- TODO: Make a version with ∃ n ꞉ ℕ , ∃ m ꞉ ℕ instead?
+semidecidability-pairing-lemma : {X : 𝓤 ̇  }
+  → (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁))
+  ≃ semidecidability-structure X
+semidecidability-pairing-lemma {𝓤} {X} =
+ (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁))            ≃⟨ I   ⟩
+ (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))        ≃⟨ II  ⟩
+ (Σ ϕ ꞉ (ℕ → 𝟚)     , X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , ⌜ e₂ ⌝ ϕ (n , m) ≡ ₁)) ≃⟨ III ⟩
+ (Σ ϕ ꞉ (ℕ → 𝟚)     , X ≃ (∃ k ꞉ ℕ           , ϕ k ≡ ₁))              ■
  where
-  ρ : (ℕ → 𝟚) → ℕ × ℕ → 𝟚
-  ρ = ⌜ →cong'' fe fe (≃-sym pairing) ⌝
-  foo : (Σ n ꞉ ℕ , Σ m ꞉ ℕ , ρ ϕ (n , m) ≡ ₁)
-      ≃ (Σ k ꞉ ℕ , ϕ k ≡ ₁)
-  foo = (Σ n ꞉ ℕ , Σ m ꞉ ℕ , ρ ϕ (n , m) ≡ ₁) ≃⟨ ≃-sym Σ-assoc ⟩
-        (Σ p ꞉ ℕ × ℕ ,  ρ ϕ p ≡ ₁) ≃⟨ ≃-sym (Σ-change-of-variable (λ p → ρ ϕ p ≡ ₁) ⌜ pairing ⌝⁻¹ (⌜⌝⁻¹-is-equiv pairing)) ⟩
-        (Σ k ꞉ ℕ , ρ ϕ (⌜ pairing ⌝⁻¹ k) ≡ ₁) ≃⟨ ≃-refl _ ⟩
-        (Σ k ꞉ ℕ , ϕ (⌜ pairing ⌝ (⌜ pairing ⌝⁻¹ k)) ≡ ₁) ≃⟨ Σ-cong (λ k → ≡-cong (ϕ (⌜ pairing ⌝ (⌜ pairing ⌝⁻¹ k))) ₁ (ap ϕ (≃-sym-is-rinv pairing k)) refl) ⟩
-        (Σ k ꞉ ℕ , ϕ k ≡ ₁) ■
-  bar : (∃ n ꞉ ℕ , ∃ m ꞉ ℕ , ρ ϕ (n , m) ≡ ₁)
-      ≃ (∃ k ꞉ ℕ , ϕ k ≡ ₁)
-  bar = (∃ n ꞉ ℕ , ∃ m ꞉ ℕ , ρ ϕ (n , m) ≡ ₁) ≃⟨ silly-lemma ⟩
-        (∃ n ꞉ ℕ , Σ m ꞉ ℕ , ρ ϕ (n , m) ≡ ₁) ≃⟨ ∥∥-cong foo ⟩
-        (∃ k ꞉ ℕ , ϕ k ≡ ₁) ■
+  e₁ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
+  e₁ = curry-uncurry (λ _ _ → fe)
+  e₂ : (ℕ → 𝟚) ≃ (ℕ × ℕ → 𝟚)
+  e₂ = →cong'' fe fe (≃-sym pairing)
+  I  = ≃-sym (Σ-change-of-variable (λ Ψ → X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁))
+                                   ⌜ e₁ ⌝ (⌜⌝-is-equiv e₁))
+  II = ≃-sym (Σ-change-of-variable
+               (λ Ψ → X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
+               ⌜ e₂ ⌝ (⌜⌝-is-equiv e₂))
+  III = Σ-cong (λ ϕ → ≃-cong' (∥∥-cong (lemma ϕ)))
+   where
+    ρ : ℕ × ℕ ≃ ℕ
+    ρ = pairing
+    σ : (ℕ → 𝟚) → (ℕ × ℕ → 𝟚)
+    σ = ⌜ e₂ ⌝
+    lemma : (ϕ : ℕ → 𝟚)
+          → (Σ n ꞉ ℕ , Σ m ꞉ ℕ , σ ϕ (n , m) ≡ ₁)
+          ≃ (Σ k ꞉ ℕ , ϕ k ≡ ₁)
+    lemma ϕ = (Σ n ꞉ ℕ , Σ m ꞉ ℕ , σ ϕ (n , m) ≡ ₁)           ≃⟨ ≃-sym Σ-assoc ⟩
+              (Σ p ꞉ ℕ × ℕ       , σ ϕ p ≡ ₁)                 ≃⟨ ⦅i⦆           ⟩
+              (Σ k ꞉ ℕ           , σ ϕ (⌜ ρ ⌝⁻¹ k) ≡ ₁)       ≃⟨ ≃-refl _      ⟩
+              (Σ k ꞉ ℕ           , ϕ (⌜ ρ ⌝ (⌜ ρ ⌝⁻¹ k)) ≡ ₁) ≃⟨ ⦅ii⦆          ⟩
+              (Σ k ꞉ ℕ           , ϕ k ≡ ₁)                   ■
+     where
+      ⦅i⦆  = ≃-sym (Σ-change-of-variable (λ p → σ ϕ p ≡ ₁) ⌜ ρ ⌝⁻¹ (⌜⌝⁻¹-is-equiv ρ))
+      ⦅ii⦆ = Σ-cong (λ k → ≡-cong-l _ _ (ap ϕ (≃-sym-is-rinv ρ k)))
 
--- In need of a better name. Maybe: semidecidability-structure-ω-joins ?
+-- TODO: In need of a better name. Maybe: semidecidability-structure-ω-joins ?
 semidecidability-structure-∃ : (X : ℕ → 𝓤 ̇  )
                              → (Π n ꞉ ℕ , semidecidability-structure (X n))
                              → semidecidability-structure (∃ X)
-semidecidability-structure-∃ X σ = (ϕ , trick X ϕ (pr₂ (⌜ lemma ⌝ σ)))
+semidecidability-structure-∃ X σ = ⌜ semidecidability-pairing-lemma ⌝ γ
  where
-  lemma =
-   (Π n ꞉ ℕ , semidecidability-structure (X n))                       ≃⟨ ΠΣ-distr-≃ ⟩
-   (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , Ψ n m ≡ ₁))        ≃⟨ I ⟩
-   (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , Ψ (n , m) ≡ ₁))    ≃⟨ II ⟩
-   (Σ ϕ ꞉ (ℕ → 𝟚) , Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , ⌜ e₂ ⌝ ϕ (n , m) ≡ ₁)) ■
-    where
-     e₁ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
-     e₁ = curry-uncurry (λ _ _ → fe)
-     e₂ : (ℕ → 𝟚) ≃ (ℕ × ℕ → 𝟚)
-     e₂ = →cong'' fe fe (≃-sym pairing)
-     I  = ≃-sym (Σ-change-of-variable
-                 (λ Ψ → Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , Ψ n m ≡ ₁))
-                 ⌜ e₁ ⌝ (⌜⌝-is-equiv e₁))
-     II = ≃-sym (Σ-change-of-variable
-                 (λ Ψ → Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
-                 ⌜ e₂ ⌝ (⌜⌝-is-equiv e₂))
-  ϕ : ℕ → 𝟚
-  ϕ = pr₁ (⌜ lemma ⌝ σ)
+  γ : Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , ∃ X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁)
+  γ = Ψ , e
+   where
+    lemma : (Π n ꞉ ℕ , semidecidability-structure (X n))
+          → (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , Π n ꞉ ℕ , X n ≃ (∃ m ꞉ ℕ , Ψ n m ≡ ₁))
+    lemma = ⌜ ΠΣ-distr-≃ ⌝
+    Ψ : ℕ → ℕ → 𝟚
+    Ψ = pr₁ (lemma σ)
+    e = ∃ X                             ≃⟨ ∃-cong (pr₂ (lemma σ)) ⟩
+        (∃ n ꞉ ℕ , ∃ m ꞉ ℕ , Ψ n m ≡ ₁) ≃⟨ silly-lemma            ⟩
+        (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁) ■
 
 key-construction : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
                  → (∃ A → (Σ Y))
@@ -244,7 +249,7 @@ semidecidability-structure-Σ : (X : ℕ → 𝓤 ̇  )
                              → semidecidability-structure (Σ X)
                              → (Π n ꞉ ℕ , semidecidability-structure (X n))
 semidecidability-structure-Σ X X-is-prop-valued (Ψ , e) n =
- ⌜ semidecidability-structure-≃ (X n) ⌝⁻¹ σ
+ ⌜ semidecidability-structure-≃ ⌝⁻¹ σ
   where
    φ : ℕ → 𝓤₀ ̇
    φ = key-construction ⌜ e ⌝⁻¹ n
@@ -551,19 +556,129 @@ theorem-3-1 H P Q ρ σ = ∥∥-functor g τ
 
 \end{code}
 
-Before proving the converse, we should add a lemma (to be used in
-semidecidability-structure-∃ as well) that says:
-
-    (Ψ : ℕ → ℕ → 𝟚)
-  → X ≃ ∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁
-  → semidecidability-structure X
-
-  (take ϕ : ℕ → 𝟚 to be ϕ = Ψ ∘ ⌜ pairing ⌝⁻¹ ∘ ⌜ curry-uncurry ⌝⁻¹)
-
 \begin{code}
 
-theorem-3-1-converse : Escardo-Knapp-Choice 𝓤 𝓥
+
+
+Semidecidable-Dominance-Axiom : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+Semidecidable-Dominance-Axiom 𝓤 𝓥 = (P : 𝓤 ̇  )
+                                  → is-semidecidable P
+                                  → (Q : 𝓥 ̇  )
+                                  → (P → is-semidecidable Q)
+                                  → is-semidecidable (P × Q)
+
+-- TODO: Reorganize using Dominance?
+closure-under-Σ-criterion : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
+                          → Semidecidable-Closed-Under-Σ 𝓤 𝓥
+closure-under-Σ-criterion {𝓤} {𝓥} D P ρ Q σ = τ
+ where
+  i : is-prop P
+  i = prop-if-semidecidable ρ
+  j : (p : P) → is-prop (Q p)
+  j p = prop-if-semidecidable (σ p)
+  Q' : 𝓤 ⊔ 𝓥 ̇
+  Q' = Σ Q
+  k : is-prop Q'
+  k = Σ-is-prop i j
+  e : (p : P) → Q' ≃ Q p
+  e p = logically-equivalent-props-are-equivalent k (j p)
+         (λ (p' , q) → transport Q (i p' p) q)
+         (λ q → p , q)
+  τ : is-semidecidable (Σ Q)
+  τ = is-semidecidable-cong (Σ-cong e) (D P ρ Q' τ')
+   where
+    τ' : P → is-semidecidable Q'
+    τ' p = is-semidecidable-cong (≃-sym (e p)) (σ p)
+
+theorem-3-1-converse : Escardo-Knapp-Choice 𝓤 (𝓤 ⊔ 𝓥)
                      → Semidecidable-Closed-Under-Σ 𝓤 𝓥
-theorem-3-1-converse H P ρ Q σ = {!!}
+theorem-3-1-converse {𝓤} {𝓥} EKC = closure-under-Σ-criterion γ
+ where
+  γ : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
+  γ P ρ Q σ = ∥∥-rec being-semidecidable-is-prop r ρ
+   where
+    r : semidecidability-structure P → is-semidecidable (P × Q)
+    r (α , e) = ∥∥-functor s (EKC P Q ρ σ)
+     where
+      to-P : (∃ n ꞉ ℕ , α n ≡ ₁) → P
+      to-P = ⌜ e ⌝⁻¹
+      s : (P → semidecidability-structure Q)
+        → semidecidability-structure (P × Q)
+      s σ⁺ = ⌜ semidecidability-pairing-lemma ⌝ τ
+       where
+        β : P → (ℕ → 𝟚)
+        β p = pr₁ (σ⁺ p)
+        φ : ℕ × ℕ → 𝓤₀ ̇
+        φ (n , m) = Σ b ꞉ α n ≡ ₁ , β (to-P ∣ n , b ∣) m ≡ ₁
+        φ-is-detachable : detachable φ
+        φ-is-detachable (n , m) = decidable-closed-under-Σ
+                                   𝟚-is-set
+                                   (𝟚-is-discrete (α n) ₁)
+                                   (λ b → 𝟚-is-discrete (β (to-P ∣ n , b ∣) m) ₁)
+        φ-is-prop-valued : (k : ℕ × ℕ) → is-prop (φ k)
+        φ-is-prop-valued k = Σ-is-prop 𝟚-is-set (λ b → 𝟚-is-set)
+        φ⁺ : ℕ × ℕ → Ω 𝓤₀
+        φ⁺ k = φ k , φ-is-prop-valued k
+
+        τ : Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ n m ≡ ₁)
+        τ = ⌜ uncurry-lemma ⌝ τ'
+         where
+          uncurry-lemma :
+             (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ (n , m) ≡ ₁))
+           ≃ (Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ ,  Ψ n m ≡ ₁))
+          uncurry-lemma = ≃-sym (Σ-change-of-variable _
+                                  ⌜ μ ⌝⁻¹ (⌜⌝⁻¹-is-equiv μ))
+           where
+            μ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
+            μ = curry-uncurry (λ _ _ → fe)
+
+          τ' : (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
+          τ' = Ψ , (P × Q                              ≃⟨ I  ⟩
+                   (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m))     ≃⟨ II ⟩
+                   (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁) ■)
+           where
+            χ : (Σ A ꞉ (ℕ × ℕ → Ω 𝓤₀) , is-decidable-subset A) → (ℕ × ℕ → 𝟚)
+            χ = ⌜ 𝟚-classifies-decidable-subsets fe fe pe ⌝⁻¹
+            Ψ : ℕ × ℕ → 𝟚
+            Ψ = χ (φ⁺ , φ-is-detachable)
+
+            II = ∥∥-cong (Σ-cong (λ n → Σ-cong
+                                  (λ m → logically-equivalent-props-are-equivalent
+                                          (φ-is-prop-valued (n , m))
+                                          𝟚-is-set
+                                          (rl-implication (lemma n m))
+                                          (lr-implication (lemma n m)))))
+             where
+              lemma : (n m : ℕ) → χ (φ⁺ , φ-is-detachable) (n , m) ≡ ₁ ⇔ (n , m) ∈ φ⁺
+              lemma n m = pr₂ (𝟚-classifies-decidable-subsets-values fe fe pe
+                                φ⁺ φ-is-detachable (n , m))
+            I  = logically-equivalent-props-are-equivalent j ∥∥-is-prop f g
+             where
+              j : is-prop (P × Q)
+              j = prop-criterion
+                   (λ (p , q) → ×-is-prop (prop-if-semidecidable ρ)
+                                          (prop-if-semidecidable (σ p)))
+              e' : (p : P) → Q ≃ (∃ m ꞉ ℕ , β p m ≡ ₁)
+              e' p = pr₂ (σ⁺ p)
+              g : (∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)) → P × Q
+              g = ∥∥-rec j g'
+               where
+                g' : (Σ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)) → P × Q
+                g' (n , m , b , b') = p , ⌜ e' p ⌝⁻¹ ∣ m , b' ∣
+                 where
+                  p : P
+                  p = to-P ∣ n , b ∣
+              f : P × Q → ∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
+              f (p , q) = ∥∥-rec ∥∥-is-prop f' (⌜ e ⌝ p)
+               where
+                f' : (Σ n ꞉ ℕ , α n ≡ ₁)
+                   → ∃ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m)
+                f' (n , b) = ∥∥-functor f'' (⌜ e' p' ⌝ q)
+                 where
+                  p' : P
+                  p' = to-P ∣ n , b ∣
+                  f'' : (Σ m ꞉ ℕ , β p' m ≡ ₁)
+                      → (Σ n ꞉ ℕ , Σ m ꞉ ℕ , φ (n , m))
+                  f'' (m , b') = n , m , b , b'
 
 \end{code}
