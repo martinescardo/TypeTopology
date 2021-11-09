@@ -46,6 +46,36 @@ semidecidability-structure' 𝓣 X = Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-s
 
 open import UF-Equiv-FunExt
 
+≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                   → {f : X → Y} {g : Y → Z}
+                   → is-equiv f → is-equiv (g ∘ f) → is-equiv g
+≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
+  where
+   𝕗 : X ≃ Y
+   𝕗 = (f , i)
+   f⁻¹ : Y → X
+   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
+   k : is-equiv (g ∘ f ∘ f⁻¹)
+   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
+   h : g ∼ g ∘ f ∘ f⁻¹
+   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
+
+≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
+                  → {f : X → Y} {g : Y → Z}
+                  → is-equiv g → is-equiv (g ∘ f) → is-equiv f
+≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
+ equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
+  where
+   𝕘 : Y ≃ Z
+   𝕘 = (g , i)
+   g⁻¹ : Z → Y
+   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
+   k : is-equiv (g⁻¹ ∘ g ∘ f)
+   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
+   h : f ∼ g⁻¹ ∘ g ∘ f
+   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
+
 ≃-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
        → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
 ≃-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} ϕ ψ =
@@ -66,15 +96,8 @@ open import UF-Equiv-FunExt
      II₂ : (g : A → B) → is-equiv g → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝)
      II₂ g i = ∘-is-equiv (⌜⌝-is-equiv ϕ) (∘-is-equiv i (⌜⌝⁻¹-is-equiv ψ))
      II₁ : (g : A → B) → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝) → is-equiv g
-     II₁ g i = equiv-closed-under-∼ c g j H
-      where
-       c : A → B
-       c = ⌜ ψ ⌝ ∘ ⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝ ∘ ⌜ ϕ ⌝⁻¹
-       j : is-equiv c
-       j = ∘-is-equiv (⌜⌝⁻¹-is-equiv ϕ) (∘-is-equiv i (⌜⌝-is-equiv ψ))
-       H : g ∼ (⌜ ψ ⌝ ∘ ⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝ ∘ ⌜ ϕ ⌝⁻¹)
-       H x = (≃-sym-is-rinv ψ (g ((⌜ ϕ ⌝ ∘ ⌜ ϕ ⌝⁻¹) x))
-               ∙ ap g (≃-sym-is-linv (≃-sym ϕ) x)      ) ⁻¹
+     II₁ g i = ≃-2-out-of-3-right (⌜⌝-is-equiv ϕ)
+                (≃-2-out-of-3-left (⌜⌝⁻¹-is-equiv ψ) i)
 
 ≃-cong' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } {B : 𝓦 ̇ }
        → A ≃ B → (X ≃ A) ≃ (X ≃ B)
