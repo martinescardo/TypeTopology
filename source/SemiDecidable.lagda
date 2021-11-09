@@ -212,7 +212,7 @@ semidecidability-structure-∃ X σ = ⌜ semidecidability-pairing-lemma ⌝ γ
         (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁) ■
 
 key-construction : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
-                 → (∃ A → (Σ Y))
+                 → (∃ A → Σ Y)
                  → X → X → 𝓤 ⊔ 𝓦 ̇
 key-construction {𝓤} {𝓥} {𝓦} {X} {Y} {A} f x y =
   Σ a ꞉ A y , pr₁ (f ∣ y , a ∣) ≡ x
@@ -264,6 +264,7 @@ semidecidability-structure-Σ X X-is-prop-valued (Ψ , e) n =
    σ : semidecidability-structure' 𝓤₀ (X n)
    σ = φ⁺ , φ-is-detachable , (blah X-is-prop-valued (≃-sym e) n)
 
+-- Countable-Semidecidable-Choice
 Countable-Semidecidability-Choice : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Countable-Semidecidability-Choice 𝓤 = (X : ℕ → 𝓤 ̇  )
                                     → (Π n ꞉ ℕ , ∥ semidecidability-structure (X n) ∥)
@@ -592,13 +593,13 @@ closure-under-Σ-criterion {𝓤} {𝓥} D P ρ Q σ = τ
 
 theorem-3-1-converse : Escardo-Knapp-Choice 𝓤 (𝓤 ⊔ 𝓥)
                      → Semidecidable-Closed-Under-Σ 𝓤 𝓥
-theorem-3-1-converse {𝓤} {𝓥} EKC = closure-under-Σ-criterion γ
+theorem-3-1-converse {𝓤} {𝓥} ekc = closure-under-Σ-criterion γ
  where
   γ : Semidecidable-Dominance-Axiom 𝓤 (𝓤 ⊔ 𝓥)
   γ P ρ Q σ = ∥∥-rec being-semidecidable-is-prop r ρ
    where
     r : semidecidability-structure P → is-semidecidable (P × Q)
-    r (α , e) = ∥∥-functor s (EKC P Q ρ σ)
+    r (α , e) = ∥∥-functor s (ekc P Q ρ σ)
      where
       to-P : (∃ n ꞉ ℕ , α n ≡ ₁) → P
       to-P = ⌜ e ⌝⁻¹
@@ -682,3 +683,31 @@ theorem-3-1-converse {𝓤} {𝓥} EKC = closure-under-Σ-criterion γ
                   f'' (m , b') = n , m , b , b'
 
 \end{code}
+
+Summary:
+
+   EKCˢᵈ <=> Dominance Axiom
+    ^                     ^
+    |                     |
+    |                     |
+Special CC <=> Special ω-joins in Ωˢᵈ
+    ^                     ^
+    |                     |
+    |                     |
+Semidecidable CC ==> ω-joins in Ωˢᵈ
+
+The conjecture is that ω-joins in Ωˢᵈ is equivalent to some form of countable choice. But which?!
+
+Discussion:
+
+ * Ωˢᵈ is closed under finitary (nullary + binary) joins
+ * Ωˢᵈ is closed under finitary (nullary + binary) meets
+ * LPO <=> Ωˢᵈ ≃ 𝟚.
+ * If LPO holds, then Ωˢᵈ is closed under negation. Conversely,
+   If
+     X ≃ ∃ n ꞉ ℕ , α n ≡ ₁
+   and
+     ∀ n ꞉ ℕ , γ n ≡ ₁ ≃ ¬ X
+                       ≃ ∃ n ꞉ ℕ , β n ≡ ₁
+
+ * TODO: Think about implication
