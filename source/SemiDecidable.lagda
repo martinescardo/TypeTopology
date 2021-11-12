@@ -395,11 +395,17 @@ open import Fin-Properties
 
 -- TODO: Move
 decidable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-               → X ⇔ Y
-               → decidable X
-               → decidable Y
+            → X ⇔ Y
+            → decidable X
+            → decidable Y
 decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
 decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
+
+decidable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → X ≃ Y
+            → decidable X
+            → decidable Y
+decidable-≃ e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
 open import CompactTypes
 Compact-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
@@ -734,3 +740,183 @@ Discussion:
                        ≃ ∃ n ꞉ ℕ , β n ≡ ₁
 
  * TODO: Think about implication
+
+\begin{code}
+
+𝟙-has-semidecidability-structure : semidecidability-structure (𝟙 {𝓤})
+𝟙-has-semidecidability-structure = ϕ , e
+ where
+  ϕ : ℕ → 𝟚
+  ϕ _ = ₁
+  w : ∃ n ꞉ ℕ , ϕ n ≡ ₁
+  w = ∣ 0 , refl ∣
+  e : 𝟙 ≃ (∃ n ꞉ ℕ , ϕ n ≡ ₁)
+  e = ≃-sym (lr-implication singletons-are-equiv-to-𝟙
+              (w , (∥∥-is-prop w)))
+
+𝟙-is-semidecidable : is-semidecidable (𝟙 {𝓤})
+𝟙-is-semidecidable = ∣ 𝟙-has-semidecidability-structure ∣
+
+singletons-have-semidecidability-structure : {X : 𝓤 ̇  } → is-singleton X
+                                           → semidecidability-structure X
+singletons-have-semidecidability-structure {𝓤} i =
+ semidecidability-structure-cong
+  (≃-sym (lr-implication singletons-are-equiv-to-𝟙 i))
+  (𝟙-has-semidecidability-structure {𝓤})
+
+singletons-are-semidecidable : {X : 𝓤 ̇  } → is-singleton X → is-semidecidable X
+singletons-are-semidecidable i = ∣ singletons-have-semidecidability-structure i ∣
+
+semidecidable-if-decidable-prop : {X : 𝓤 ̇  }
+                                → is-prop X
+                                → decidable X → is-semidecidable X
+semidecidable-if-decidable-prop i (inl  x) = singletons-are-semidecidable (x , i x)
+semidecidable-if-decidable-prop i (inr nx) = empty-types-are-semidecidable nx
+
+LPO : 𝓤₀ ̇
+LPO = (α : ℕ → 𝟚) → decidable (∃ n ꞉ ℕ , α n ≡ ₁)
+
+LPO-is-prop : is-prop LPO
+LPO-is-prop = Π-is-prop fe (λ α → decidability-of-prop-is-prop fe ∥∥-is-prop)
+
+-- Ωˢᵈ : (𝓤 : Universe) → 𝓤 ⁺ ̇
+-- Ωˢᵈ 𝓤 = Σ X ꞉ 𝓤 ̇  , is-semidecidable X
+
+open import UF-UniverseEmbedding
+
+LPO' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+LPO' 𝓤 = (X : 𝓤 ̇  ) → is-semidecidable X → decidable X
+
+LPO'-is-prop : {𝓤 : Universe} → is-prop (LPO' 𝓤)
+LPO'-is-prop = Π₂-is-prop fe (λ X σ → decidability-of-prop-is-prop fe
+                                       (prop-if-semidecidable σ))
+
+LPO-characterization : LPO ≃ LPO' 𝓤
+LPO-characterization {𝓤} = logically-equivalent-props-are-equivalent
+                            LPO-is-prop LPO'-is-prop f g
+ where
+  f : LPO → LPO' 𝓤
+  f lpo X σ = ∥∥-rec (decidability-of-prop-is-prop fe
+                       (prop-if-semidecidable σ)) γ σ
+   where
+    γ : semidecidability-structure X → decidable X
+    γ (α , e) = decidable-≃ (≃-sym e) (lpo α)
+  g : LPO' 𝓤 → LPO
+  g τ α = decidable-≃ (Lift-≃ 𝓤 X) (τ X' σ')
+   where
+    X : 𝓤₀ ̇
+    X = ∃ n ꞉ ℕ , α n ≡ ₁
+    X' : 𝓤 ̇
+    X' = Lift 𝓤 X
+    σ' : is-semidecidable X'
+    σ' = is-semidecidable-cong (≃-sym (Lift-≃ 𝓤 X)) ∣ α , ≃-refl X ∣
+
+MP : 𝓤₀ ̇
+MP = (α : ℕ → 𝟚) → ¬¬-stable (∃ n ꞉ ℕ , α n ≡ ₁)
+
+MP-is-prop : is-prop MP
+MP-is-prop = Π₂-is-prop fe (λ α h → ∥∥-is-prop)
+
+MP' : (𝓤 : Universe) → 𝓤 ⁺ ̇
+MP' 𝓤 = ((X : 𝓤 ̇  ) → is-semidecidable X → ¬¬-stable X)
+
+MP'-is-prop : {𝓤 : Universe} → is-prop (MP' 𝓤)
+MP'-is-prop = Π₃-is-prop fe (λ X σ h → prop-if-semidecidable σ)
+
+¬¬-stable-⇔ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ⇔ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-⇔ (f , g) σ h = f (σ (¬¬-functor g h))
+
+¬¬-stable-≃ : {X : 𝓤 ̇  } {Y : 𝓥 ̇  }
+            → X ≃ Y
+            → ¬¬-stable X
+            → ¬¬-stable Y
+¬¬-stable-≃ e = ¬¬-stable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+MP-characterization : {𝓤 : Universe}
+                    → MP
+                    ≃ MP' 𝓤
+MP-characterization {𝓤} = logically-equivalent-props-are-equivalent
+                           MP-is-prop MP'-is-prop f g
+ where
+  f : MP → MP' 𝓤
+  f mp X σ nnX = ∥∥-rec (prop-if-semidecidable σ) γ σ
+   where
+    γ : semidecidability-structure X → X
+    γ (α , e) = ⌜ e ⌝⁻¹ (mp α (¬¬-functor ⌜ e ⌝ nnX))
+  g : MP' 𝓤 → MP
+  g τ α = ¬¬-stable-≃ (Lift-≃ 𝓤 X) (τ X' σ')
+   where
+    X : 𝓤₀ ̇
+    X = ∃ n ꞉ ℕ , α n ≡ ₁
+    X' : 𝓤 ̇
+    X' = Lift 𝓤 X
+    σ' : is-semidecidable X'
+    σ' = is-semidecidable-cong (≃-sym (Lift-≃ 𝓤 X)) ∣ α , ≃-refl X ∣
+
+all-types-are-¬¬-decidable : (X : 𝓤 ̇  ) → ¬¬ (decidable X)
+all-types-are-¬¬-decidable X h = claim₂ claim₁
+ where
+  claim₁ : ¬ X
+  claim₁ x = h (inl x)
+  claim₂ : ¬¬ X
+  claim₂ nx = h (inr nx)
+
+Semidecidable-Closed-Under-Negations : (𝓤 : Universe) → 𝓤 ⁺ ̇
+Semidecidable-Closed-Under-Negations 𝓤 = (X : 𝓤 ̇  )
+                                       → is-semidecidable X
+                                       → is-semidecidable (¬ X)
+
+{-
+semidecidable-∨ : (X : 𝓤 ̇  ) (Y : 𝓥 ̇  )
+                → is-semidecidable X → is-semidecidable Y
+                → is-semidecidable (X ∨ Y)
+semidecidable-∨ X Y ρ σ = {!!}
+ where
+  τ : {!!}
+  τ = {!!}
+-}
+
+decidability-is-semidecidable : (X : 𝓤 ̇  )
+                              → is-semidecidable X
+                              → is-semidecidable (¬ X)
+                              → is-semidecidable (decidable X)
+decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop ψ τ
+ where
+  ψ : semidecidability-structure (¬ X) → is-semidecidable (decidable X)
+  ψ (β , g) = ∥∥-functor ϕ σ
+   where
+    ϕ : semidecidability-structure X → semidecidability-structure (decidable X)
+    ϕ (α , f) = γ , h
+     where
+      γ : ℕ → 𝟚
+      γ n = max𝟚 (α n) (β n)
+      h : decidable X ≃ (∃ n ꞉ ℕ , γ n ≡ ₁)
+      h = logically-equivalent-props-are-equivalent
+           (decidability-of-prop-is-prop fe (prop-if-semidecidable σ))
+           ∥∥-is-prop
+           u
+           v
+       where
+        u : decidable X → ∃ n ꞉ ℕ , γ n ≡ ₁
+        u (inl  x) = ∥∥-functor
+                      (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inl b))
+                      (⌜ f ⌝ x)
+        u (inr nx) = ∥∥-functor
+                      (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inr b))
+                      (⌜ g ⌝ nx)
+        v : ∃ n ꞉ ℕ , γ n ≡ ₁ → decidable X
+        v = {!!}
+
+LPO-from-semidecidable-negations : MP' 𝓤
+                                 → Semidecidable-Closed-Under-Negations 𝓤
+                                 → LPO' 𝓤
+LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
+                                             (all-types-are-¬¬-decidable X)
+ where
+  τ : is-semidecidable (decidable X)
+  τ = decidability-is-semidecidable X σ (h X σ)
+
+\end{code}
