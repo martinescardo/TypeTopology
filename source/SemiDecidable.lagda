@@ -893,12 +893,13 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
      where
       γ : ℕ → 𝟚
       γ n = max𝟚 (α n) (β n)
+      X-is-prop : is-prop X
+      X-is-prop = prop-if-semidecidable σ
+      dec-of-X-is-prop : is-prop (decidable X)
+      dec-of-X-is-prop = decidability-of-prop-is-prop fe X-is-prop
       h : decidable X ≃ (∃ n ꞉ ℕ , γ n ≡ ₁)
       h = logically-equivalent-props-are-equivalent
-           (decidability-of-prop-is-prop fe (prop-if-semidecidable σ))
-           ∥∥-is-prop
-           u
-           v
+           dec-of-X-is-prop ∥∥-is-prop u v
        where
         u : decidable X → ∃ n ꞉ ℕ , γ n ≡ ₁
         u (inl  x) = ∥∥-functor
@@ -908,7 +909,12 @@ decidability-is-semidecidable X σ τ = ∥∥-rec being-semidecidable-is-prop �
                       (λ (n , b) → n , max𝟚-lemma-converse (α n) (β n) (inr b))
                       (⌜ g ⌝ nx)
         v : ∃ n ꞉ ℕ , γ n ≡ ₁ → decidable X
-        v = {!!}
+        v = ∥∥-rec dec-of-X-is-prop ν
+         where
+          ν : (Σ n ꞉ ℕ , γ n ≡ ₁) → decidable X
+          ν (n , p) = cases (λ a → inl (⌜ f ⌝⁻¹ ∣ n , a ∣))
+                            (λ b → inr (⌜ g ⌝⁻¹ ∣ n , b ∣))
+                            (max𝟚-lemma (α n) (β n) p)
 
 LPO-from-semidecidable-negations : MP' 𝓤
                                  → Semidecidable-Closed-Under-Negations 𝓤
@@ -918,5 +924,154 @@ LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
  where
   τ : is-semidecidable (decidable X)
   τ = decidability-is-semidecidable X σ (h X σ)
+
+negation-is-decidable : {X : 𝓤 ̇  } → decidable X → decidable (¬ X)
+negation-is-decidable (inl x) = inr (λ h → h x)
+negation-is-decidable (inr h) = inl h
+
+semidecidable-negations-from-LPO : LPO' 𝓤
+                                 → Semidecidable-Closed-Under-Negations 𝓤
+semidecidable-negations-from-LPO lpo X σ =
+ semidecidable-if-decidable-prop (negations-are-props fe)
+  (negation-is-decidable (lpo X σ))
+
+LPO-≃-semidecidable-negations : MP' 𝓤
+                              → LPO' 𝓤 ≃ Semidecidable-Closed-Under-Negations 𝓤
+LPO-≃-semidecidable-negations mp =
+ logically-equivalent-props-are-equivalent
+  LPO'-is-prop
+  (Π₂-is-prop fe (λ X σ → being-semidecidable-is-prop))
+  semidecidable-negations-from-LPO
+  (LPO-from-semidecidable-negations mp)
+
+\end{code}
+
+\begin{code}
+
+Semidecidable-Closed-Under-Implications : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+Semidecidable-Closed-Under-Implications 𝓤 𝓥 = (X : 𝓤 ̇  ) (Y : 𝓥 ̇  )
+                                            → is-semidecidable X
+                                            → is-semidecidable Y
+                                            → is-semidecidable (X → Y)
+
+LPO-from-semidecidable-implications : MP' 𝓤
+                                    → Semidecidable-Closed-Under-Implications 𝓤 𝓤₀
+                                    → LPO' 𝓤
+LPO-from-semidecidable-implications mp h =
+ LPO-from-semidecidable-negations mp (λ X σ → h X 𝟘 σ 𝟘-is-semidecidable)
+
+lower-LPO : {𝓤 𝓥 : Universe} → LPO' (𝓤 ⊔ 𝓥) → LPO' 𝓤
+lower-LPO {𝓤} {𝓥} lpo X σ =
+ decidable-≃ (Lift-≃ 𝓥 X)
+  (lpo X' (is-semidecidable-cong (≃-sym (Lift-≃ 𝓥 X)) σ))
+   where
+    X' : 𝓤 ⊔ 𝓥 ̇
+    X' = Lift 𝓥 X
+
+semidecidable-implications-from-LPO : LPO' 𝓤
+                                    → Semidecidable-Closed-Under-Implications 𝓤 𝓤₀
+semidecidable-implications-from-LPO lpo X Y σ τ =
+ semidecidable-if-decidable-prop
+  (Π-is-prop fe (λ _ → prop-if-semidecidable τ))
+  (→-preserves-decidability (lpo X σ) (lower-LPO lpo Y τ))
+
+\end{code}
+
+See also CantorSchroederBernstein.lagda by Martín.
+
+BKS⁺ ⇔ (Ωˢᵈ ≃ Ω)
+
+EM   ⇔ (𝟚 ≃ Ωˢᵈ ≃ Ω)
+
+We have: Ωˢᵈ has all suprema ⇔ BKS⁺.
+Hence, BKS⁺ implies the above instance of special countable choice.
+
+We also have: BKS⁺ ⇒ Ωˢᵈ has all infima ⇒ (MP ⇒ LPO).
+
+\begin{code}
+
+BKS⁺ : (𝓤 : Universe) → (𝓤 ⁺) ̇
+BKS⁺ 𝓤 = (X : 𝓤 ̇  ) → is-prop X → is-semidecidable X
+
+open import UF-ExcludedMiddle
+
+BKS⁺→LPO→EM : {𝓤 : Universe} → BKS⁺ 𝓤 → LPO' 𝓤 → EM 𝓤
+BKS⁺→LPO→EM {𝓤} bks lpo X X-is-prop = lpo X (bks X X-is-prop)
+
+-- In CantorSchroederBernstein.lagda, we have: BKS⁺ 𝓤 → MP' 𝓤 → EM 𝓤
+
+Semidecidable-All-Meets : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+Semidecidable-All-Meets 𝓤 𝓥 = (X : 𝓤 ̇  ) (Y : X → 𝓥 ̇  )
+                            → ((x : X) → is-semidecidable (Y x))
+                            → is-semidecidable (Π Y)
+
+all-meets-implies-negations : Semidecidable-All-Meets 𝓤 𝓤₀
+                            → Semidecidable-Closed-Under-Negations 𝓤
+all-meets-implies-negations h X _ = h X (λ _ → 𝟘) (λ _ → 𝟘-is-semidecidable)
+
+all-meets-implies-LPO : Semidecidable-All-Meets 𝓤 𝓤₀
+                      → MP' 𝓤
+                      → LPO' 𝓤
+all-meets-implies-LPO h mp = LPO-from-semidecidable-negations mp (all-meets-implies-negations h)
+
+{-
+Π-preserves-decidability : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ }
+                         → is-prop A
+                         → decidable A
+                         → ((a : A) → decidable (B a))
+                         → decidable (Π B)
+Π-preserves-decidability {𝓤} {𝓥} {A} {B} i (inl  a) h = γ (h a)
+ where
+  γ : decidable (B a) → decidable (Π B)
+  γ (inl  b) = inl (λ a' → transport B (i a a') b)
+  γ (inr nb) = inr (λ f → nb (f a))
+Π-preserves-decidability _ (inr na) _ = inl (λ a → 𝟘-elim (na a))
+-}
+
+BKS⁺-implies-all-meets : BKS⁺ (𝓤 ⊔ 𝓥)
+                       → Semidecidable-All-Meets 𝓤 𝓥
+BKS⁺-implies-all-meets bks X Y σ = bks (Π Y) (Π-is-prop fe (λ x → prop-if-semidecidable (σ x)))
+
+Semidecidable-All-Joins : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+Semidecidable-All-Joins 𝓤 𝓥 = (X : 𝓤 ̇  ) (Y : X → 𝓥 ̇  )
+                            → ((x : X) → is-semidecidable (Y x))
+                            → is-semidecidable (∃ Y)
+
+BKS⁺-implies-all-joins : BKS⁺ (𝓤 ⊔ 𝓥)
+                       → Semidecidable-All-Joins 𝓤 𝓥
+BKS⁺-implies-all-joins bks X Y σ = bks (∃ Y) ∥∥-is-prop
+
+all-joins-implies-BKS⁺ : Semidecidable-All-Joins 𝓤 𝓤₀
+                       → BKS⁺ 𝓤
+all-joins-implies-BKS⁺ h X X-is-prop = is-semidecidable-cong γ (h X (λ _ → 𝟙) λ _ → 𝟙-is-semidecidable)
+ where
+  γ : ∥ X × 𝟙 ∥ ≃ X
+  γ = ∥ X × 𝟙 ∥ ≃⟨ ∥∥-cong 𝟙-rneutral ⟩
+      ∥ X ∥     ≃⟨ prop-is-equivalent-to-its-truncation X-is-prop ⟩
+      X         ■
+
+BKS⁺-implies-special-countable-choice : BKS⁺ 𝓤
+                                      → Countable-Semidecidability-Special-Choice 𝓤
+BKS⁺-implies-special-countable-choice {𝓤} bks = converse-in-special-cases γ
+ where
+  γ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
+  γ X i σ = is-semidecidable-cong (prop-is-equivalent-to-its-truncation i)
+             (BKS⁺-implies-all-joins bks ℕ X σ)
+
+\end{code}
+
+Notice that BKS⁺ implies propositional resizing.
+
+\begin{code}
+
+open import UF-Size
+
+BKS⁺-gives-Propositional-Resizing : BKS⁺ 𝓤
+                                  → propositional-resizing 𝓤 𝓤₀
+BKS⁺-gives-Propositional-Resizing bks X X-is-prop =
+ ∥∥-rec (prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe) X X-is-prop 𝓤₀) γ (bks X X-is-prop)
+  where
+   γ : semidecidability-structure X → X has-size 𝓤₀
+   γ (α , e) = (∃ n ꞉ ℕ , α n ≡ ₁) , (≃-sym e)
 
 \end{code}
