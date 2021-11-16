@@ -925,6 +925,17 @@ LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
   τ : is-semidecidable (decidable X)
   τ = decidability-is-semidecidable X σ (h X σ)
 
+{-
+
+  Assume MP and Ωˢᵈ closed under ¬.
+
+  Suppose X is semidecidable, then so is ¬ X. Hence, (X + ¬ X) is semidecidable.
+  But ¬¬ (X + ¬ X) just holds. By MP: ¬¬ Y → Y for every semidecidable Y.
+  Hence, (X + ¬ X) which is LPO.
+
+
+-}
+
 negation-is-decidable : {X : 𝓤 ̇  } → decidable X → decidable (¬ X)
 negation-is-decidable (inl x) = inr (λ h → h x)
 negation-is-decidable (inr h) = inl h
@@ -991,7 +1002,7 @@ We also have: BKS⁺ ⇒ Ωˢᵈ has all infima ⇒ (MP ⇒ LPO).
 \begin{code}
 
 BKS⁺ : (𝓤 : Universe) → (𝓤 ⁺) ̇
-BKS⁺ 𝓤 = (X : 𝓤 ̇  ) → is-prop X → is-semidecidable X
+BKS⁺ 𝓤 = (X : 𝓤 ̇  ) → is-prop X → is-semidecidable X -- Ωˢᵈ ≃ Ω
 
 open import UF-ExcludedMiddle
 
@@ -1041,6 +1052,7 @@ BKS⁺-implies-all-joins : BKS⁺ (𝓤 ⊔ 𝓥)
                        → Semidecidable-All-Joins 𝓤 𝓥
 BKS⁺-implies-all-joins bks X Y σ = bks (∃ Y) ∥∥-is-prop
 
+-- TODO: Arbitrary subsingleton joins suffice
 all-joins-implies-BKS⁺ : Semidecidable-All-Joins 𝓤 𝓤₀
                        → BKS⁺ 𝓤
 all-joins-implies-BKS⁺ h X X-is-prop = is-semidecidable-cong γ (h X (λ _ → 𝟙) λ _ → 𝟙-is-semidecidable)
@@ -1057,6 +1069,9 @@ BKS⁺-implies-special-countable-choice {𝓤} bks = converse-in-special-cases �
   γ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
   γ X i σ = is-semidecidable-cong (prop-is-equivalent-to-its-truncation i)
              (BKS⁺-implies-all-joins bks ℕ X σ)
+
+-- TODO: Hence, BKS⁺ → EKC.
+-- Is there a quick direct proof of this?
 
 \end{code}
 
