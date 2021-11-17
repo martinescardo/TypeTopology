@@ -1068,11 +1068,20 @@ BKS⁺-implies-special-countable-choice : BKS⁺ 𝓤
 BKS⁺-implies-special-countable-choice {𝓤} bks = converse-in-special-cases γ
  where
   γ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
-  γ X i σ = is-semidecidable-cong (prop-is-equivalent-to-its-truncation i)
-             (BKS⁺-implies-all-joins bks ℕ X σ)
+  γ X i σ = bks (Σ X) i
 
 -- TODO: Hence, BKS⁺ → EKC.
 -- Is there a quick direct proof of this?
+
+-- Answer: Yes (of course), using Theorem 3.1.
+
+\end{code}
+
+\begin{code}
+
+BKS⁺-implies-EKCˢᵈ : BKS⁺ (𝓤 ⊔ 𝓥)
+                   → Escardo-Knapp-Choice 𝓤 𝓥
+BKS⁺-implies-EKCˢᵈ bks = theorem-3-1 (λ P σ Q τ → bks (Σ Q) (Σ-is-prop (prop-if-semidecidable σ) (λ p → prop-if-semidecidable (τ p))))
 
 \end{code}
 
