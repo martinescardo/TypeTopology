@@ -324,3 +324,41 @@ TT-unchoice-is-equiv {𝓤} {𝓥} {𝓦} {X} {Y} {A} fe =
    (TT-choice , TT-choice-unchoice {𝓤} {𝓥} {𝓦} {X} {Y} {A})
 
 \end{code}
+
+\begin{code}
+
+≃-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+       → FunExt
+       → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
+≃-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} fe ϕ ψ =
+ (X ≃ Y)                              ≃⟨ I              ⟩
+ (Σ g ꞉ (A → B) , is-equiv (⌜ e ⌝ g)) ≃⟨ II             ⟩
+ (Σ g ꞉ (A → B) , is-equiv g)         ≃⟨ ≃-refl (A ≃ B) ⟩
+ (A ≃ B)                              ■
+  where
+   e : (A → B) ≃ (X → Y)
+   e = ≃-sym (→cong (fe 𝓦 𝓣) (fe 𝓤 𝓥) ϕ ψ)
+   I  = ≃-sym (Σ-change-of-variable is-equiv ⌜ e ⌝ (⌜⌝-is-equiv e))
+   II = Σ-cong (λ g → logically-equivalent-props-are-equivalent
+                       (being-equiv-is-prop fe (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝))
+                       (being-equiv-is-prop fe g)
+                       (II₁ g)
+                       (II₂ g))
+    where
+     II₂ : (g : A → B) → is-equiv g → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝)
+     II₂ g i = ∘-is-equiv (⌜⌝-is-equiv ϕ) (∘-is-equiv i (⌜⌝⁻¹-is-equiv ψ))
+     II₁ : (g : A → B) → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝) → is-equiv g
+     II₁ g i = ≃-2-out-of-3-right (⌜⌝-is-equiv ϕ)
+                (≃-2-out-of-3-left (⌜⌝⁻¹-is-equiv ψ) i)
+
+≃-cong-right : {X : 𝓤 ̇ } {A : 𝓥 ̇ } {B : 𝓦 ̇ }
+             → FunExt
+             → A ≃ B → (X ≃ A) ≃ (X ≃ B)
+≃-cong-right fe = ≃-cong fe (≃-refl _)
+
+≃-cong-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ }
+        → FunExt
+        → X ≃ Y → (X ≃ A) ≃ (Y ≃ A)
+≃-cong-left fe ϕ = ≃-cong fe ϕ (≃-refl _)
+
+\end{code}

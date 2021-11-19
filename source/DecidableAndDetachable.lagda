@@ -443,3 +443,22 @@ module _
    γ = pr₂ (boolean-value' (δ x))
 
 \end{code}
+
+Added by Tom de Jong, November 2021.
+
+\begin{code}
+
+decidable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+            → X ⇔ Y
+            → decidable X
+            → decidable Y
+decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
+decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
+
+decidable-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
+               → X ≃ Y
+               → decidable X
+               → decidable Y
+decidable-cong e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
+
+\end{code}

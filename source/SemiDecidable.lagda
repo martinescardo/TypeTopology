@@ -19,6 +19,7 @@ open import UF-Miscelanea
 
 open import UF-Powerset
 open import UF-EquivalenceExamples
+open import UF-Equiv-FunExt
 
 \end{code}
 
@@ -28,6 +29,9 @@ module SemiDecidable
         (pe  : Prop-Ext)
         (pt  : propositional-truncations-exist)
        where
+
+fe' : FunExt
+fe' 𝓤 𝓥 = fe
 
 open PropositionalTruncation pt
 open ImageAndSurjection pt
@@ -40,68 +44,9 @@ semidecidability-structure' 𝓣 X = Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-s
                                                     × (X ≃ (∃ n ꞉ ℕ , n ∈ A))
 
 --TODO: Move somewhere better
-∥∥-cong : {X : 𝓤 ̇  } {Y : 𝓥 ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
-∥∥-cong f = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
-             (∥∥-functor ⌜ f ⌝) (∥∥-functor ⌜ f ⌝⁻¹)
 
-open import UF-Equiv-FunExt
 
-≃-2-out-of-3-right : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                   → {f : X → Y} {g : Y → Z}
-                   → is-equiv f → is-equiv (g ∘ f) → is-equiv g
-≃-2-out-of-3-right {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
- equiv-closed-under-∼ (g ∘ f ∘ f⁻¹) g k h
-  where
-   𝕗 : X ≃ Y
-   𝕗 = (f , i)
-   f⁻¹ : Y → X
-   f⁻¹ = ⌜ 𝕗 ⌝⁻¹
-   k : is-equiv (g ∘ f ∘ f⁻¹)
-   k = ∘-is-equiv (⌜⌝⁻¹-is-equiv 𝕗) j
-   h : g ∼ g ∘ f ∘ f⁻¹
-   h y = ap g ((≃-sym-is-rinv 𝕗 y) ⁻¹)
-
-≃-2-out-of-3-left : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ }
-                  → {f : X → Y} {g : Y → Z}
-                  → is-equiv g → is-equiv (g ∘ f) → is-equiv f
-≃-2-out-of-3-left {𝓤} {𝓥} {𝓦} {X} {Y} {Z} {f} {g} i j =
- equiv-closed-under-∼ (g⁻¹ ∘ g ∘ f) f k h
-  where
-   𝕘 : Y ≃ Z
-   𝕘 = (g , i)
-   g⁻¹ : Z → Y
-   g⁻¹ = ⌜ 𝕘 ⌝⁻¹
-   k : is-equiv (g⁻¹ ∘ g ∘ f)
-   k = ∘-is-equiv j (⌜⌝⁻¹-is-equiv 𝕘)
-   h : f ∼ g⁻¹ ∘ g ∘ f
-   h x = (≃-sym-is-linv 𝕘 (f x)) ⁻¹
-
-≃-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-       → X ≃ A → Y ≃ B → (X ≃ Y) ≃ (A ≃ B)
-≃-cong {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} {A} {B} ϕ ψ =
- (X ≃ Y)                              ≃⟨ I              ⟩
- (Σ g ꞉ (A → B) , is-equiv (⌜ e ⌝ g)) ≃⟨ II             ⟩
- (Σ g ꞉ (A → B) , is-equiv g)         ≃⟨ ≃-refl (A ≃ B) ⟩
- (A ≃ B)                              ■
-  where
-   e : (A → B) ≃ (X → Y)
-   e = ≃-sym (→cong fe fe ϕ ψ)
-   I  = ≃-sym (Σ-change-of-variable is-equiv ⌜ e ⌝ (⌜⌝-is-equiv e))
-   II = Σ-cong (λ g → logically-equivalent-props-are-equivalent
-                       (being-equiv-is-prop (λ _ _ → fe) (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝))
-                       (being-equiv-is-prop (λ _ _ → fe) g)
-                       (II₁ g)
-                       (II₂ g))
-    where
-     II₂ : (g : A → B) → is-equiv g → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝)
-     II₂ g i = ∘-is-equiv (⌜⌝-is-equiv ϕ) (∘-is-equiv i (⌜⌝⁻¹-is-equiv ψ))
-     II₁ : (g : A → B) → is-equiv (⌜ ψ ⌝⁻¹ ∘ g ∘ ⌜ ϕ ⌝) → is-equiv g
-     II₁ g i = ≃-2-out-of-3-right (⌜⌝-is-equiv ϕ)
-                (≃-2-out-of-3-left (⌜⌝⁻¹-is-equiv ψ) i)
-
-≃-cong' : {X : 𝓤 ̇ } {A : 𝓥 ̇ } {B : 𝓦 ̇ }
-       → A ≃ B → (X ≃ A) ≃ (X ≃ B)
-≃-cong' = ≃-cong (≃-refl _)
+-- open import UF-Equiv-FunExt
 
 semidecidability-structure-≃ : {𝓣 : Universe} {X : 𝓤 ̇  }
                              → semidecidability-structure X
@@ -120,7 +65,7 @@ semidecidability-structure-≃ {𝓤} {𝓣} {X} =
           ⌜ χ ⌝ (⌜⌝-is-equiv χ))
    II  = Σ-assoc
    III = Σ-cong (λ A → Σ-cong
-                (λ δ → ≃-cong' (∥∥-cong (Σ-cong (λ n → κ A δ n)))))
+                (λ δ → ≃-cong-right fe' (∥∥-cong pt (Σ-cong (λ n → κ A δ n)))))
     where
      κ : (A : ℕ → Ω 𝓣) (δ : is-decidable-subset A) (n : ℕ )
        → (⌜ χ ⌝ (A , δ) n ≡ ₁) ≃ (A n holds)
@@ -140,7 +85,7 @@ is-semidecidable' 𝓣 X = ∥ semidecidability-structure' 𝓣 X ∥
 
 is-semidecidable-≃ : {𝓣 : Universe} {X : 𝓤 ̇  }
                    → is-semidecidable X ≃ is-semidecidable' 𝓣 X
-is-semidecidable-≃ = ∥∥-cong (semidecidability-structure-≃)
+is-semidecidable-≃ = ∥∥-cong pt (semidecidability-structure-≃)
 
 prop-if-semidecidability-structure : {X : 𝓤 ̇  }
                                    → semidecidability-structure X → is-prop X
@@ -153,29 +98,6 @@ prop-if-semidecidable = ∥∥-rec (being-prop-is-prop fe)
 \end{code}
 
 \begin{code}
-
--- TODO: Rename
-silly-lemma : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : (x : X) → Y x → 𝓦 ̇  }
-            → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
-            ≃ (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
-silly-lemma {𝓤} {𝓥} {𝓦} {X} {Y} {A} =
- logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop f g
-  where
-   g : (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
-     → (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
-   g = ∥∥-functor (λ (x , y , a) → x , ∣ y , a ∣)
-   f : (∃ x ꞉ X , ∃ y ꞉ Y x , A x y)
-     → (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
-   f = ∥∥-rec ∥∥-is-prop ϕ
-    where
-     ϕ : (Σ x ꞉ X , ∃ y ꞉ Y x , A x y)
-       → (∃ x ꞉ X , Σ y ꞉ Y x , A x y)
-     ϕ (x , p) = ∥∥-functor (λ (y , a) → x , y , a) p
-
-∃-cong : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {Y' : X → 𝓦 ̇  }
-       → ((x : X) → Y x ≃ Y' x)
-       → ∃ Y ≃ ∃ Y'
-∃-cong e = ∥∥-cong (Σ-cong e)
 
 open import BinaryNaturals hiding (_+_)
 
@@ -190,7 +112,7 @@ semidecidability-pairing-lemma {𝓤} {X} =
  (Σ ϕ ꞉ (ℕ → 𝟚)     , X ≃ (∃ k ꞉ ℕ           , ϕ k ≡ ₁))              ■
  where
   e₁ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
-  e₁ = curry-uncurry (λ _ _ → fe)
+  e₁ = curry-uncurry fe'
   e₂ : (ℕ → 𝟚) ≃ (ℕ × ℕ → 𝟚)
   e₂ = →cong'' fe fe (≃-sym pairing)
   I  = ≃-sym (Σ-change-of-variable (λ Ψ → X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁))
@@ -198,7 +120,7 @@ semidecidability-pairing-lemma {𝓤} {X} =
   II = ≃-sym (Σ-change-of-variable
                (λ Ψ → X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
                ⌜ e₂ ⌝ (⌜⌝-is-equiv e₂))
-  III = Σ-cong (λ ϕ → ≃-cong' (∥∥-cong (lemma ϕ)))
+  III = Σ-cong (λ ϕ → ≃-cong-right fe' (∥∥-cong pt (lemma ϕ)))
    where
     ρ : ℕ × ℕ ≃ ℕ
     ρ = pairing
@@ -230,8 +152,8 @@ semidecidability-structure-∃ X σ = ⌜ semidecidability-pairing-lemma ⌝ γ
     lemma = ⌜ ΠΣ-distr-≃ ⌝
     Ψ : ℕ → ℕ → 𝟚
     Ψ = pr₁ (lemma σ)
-    e = ∃ X                             ≃⟨ ∃-cong (pr₂ (lemma σ)) ⟩
-        (∃ n ꞉ ℕ , ∃ m ꞉ ℕ , Ψ n m ≡ ₁) ≃⟨ silly-lemma            ⟩
+    e = ∃ X                             ≃⟨ ∃-cong pt (pr₂ (lemma σ)) ⟩
+        (∃ n ꞉ ℕ , ∃ m ꞉ ℕ , Ψ n m ≡ ₁) ≃⟨ outer-∃-inner-Σ pt        ⟩
         (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁) ■
 
 key-construction : {X : 𝓤 ̇  } {Y : X → 𝓥 ̇  } {A : X → 𝓦 ̇  }
@@ -393,34 +315,9 @@ empty-types-are-semidecidable e =
 open import NaturalsOrder
 open import Fin-Properties
 
--- TODO: Move
-decidable-⇔ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ⇔ Y
-            → decidable X
-            → decidable Y
-decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inl  x) = inl (f x)
-decidable-⇔ {𝓤} {𝓥} {X} {Y} (f , g) (inr nx) = inr (nx ∘ g)
-
-decidable-≃ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-            → X ≃ Y
-            → decidable X
-            → decidable Y
-decidable-≃ e = decidable-⇔ (⌜ e ⌝ , ⌜ e ⌝⁻¹)
 
 open import CompactTypes
-Compact-cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
-             → X ≃ Y
-             → Compact X {𝓦}
-             → Compact Y {𝓦}
-Compact-cong {𝓤} {𝓥} {𝓦} {X} {Y} f c A δ =
- decidable-⇔ (⌜ g ⌝ , ⌜ g ⌝⁻¹) (c B d)
-  where
-   B : X → 𝓦 ̇
-   B x = A (⌜ f ⌝ x)
-   g : Σ B ≃ Σ A
-   g = Σ-change-of-variable A ⌜ f ⌝ (⌜⌝-is-equiv f)
-   d : detachable B
-   d x = δ (⌜ f ⌝ x)
+
 
 -- TODO: Promote this to another equivalent version of semidecidability-structure?
 -- TODO: Also add for the version → 𝟚?
@@ -660,7 +557,7 @@ theorem-3-1-converse {𝓤} {𝓥} ekc = closure-under-Σ-criterion γ
                                   ⌜ μ ⌝⁻¹ (⌜⌝⁻¹-is-equiv μ))
            where
             μ : (ℕ × ℕ → 𝟚) ≃ (ℕ → ℕ → 𝟚)
-            μ = curry-uncurry (λ _ _ → fe)
+            μ = curry-uncurry fe'
 
           τ' : (Σ Ψ ꞉ (ℕ × ℕ → 𝟚) , P × Q ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ (n , m) ≡ ₁))
           τ' = Ψ , (P × Q                              ≃⟨ I  ⟩
@@ -672,12 +569,12 @@ theorem-3-1-converse {𝓤} {𝓥} ekc = closure-under-Σ-criterion γ
             Ψ : ℕ × ℕ → 𝟚
             Ψ = χ (φ⁺ , φ-is-detachable)
 
-            II = ∥∥-cong (Σ-cong (λ n → Σ-cong
-                                  (λ m → logically-equivalent-props-are-equivalent
-                                          (φ-is-prop-valued (n , m))
-                                          𝟚-is-set
-                                          (rl-implication (lemma n m))
-                                          (lr-implication (lemma n m)))))
+            II = ∥∥-cong pt (Σ-cong (λ n → Σ-cong
+                                    (λ m → logically-equivalent-props-are-equivalent
+                                           (φ-is-prop-valued (n , m))
+                                           𝟚-is-set
+                                           (rl-implication (lemma n m))
+                                           (lr-implication (lemma n m)))))
              where
               lemma : (n m : ℕ) → χ (φ⁺ , φ-is-detachable) (n , m) ≡ ₁ ⇔ (n , m) ∈ φ⁺
               lemma n m = pr₂ (𝟚-classifies-decidable-subsets-values fe fe pe
@@ -800,9 +697,9 @@ LPO-characterization {𝓤} = logically-equivalent-props-are-equivalent
                        (prop-if-semidecidable σ)) γ σ
    where
     γ : semidecidability-structure X → decidable X
-    γ (α , e) = decidable-≃ (≃-sym e) (lpo α)
+    γ (α , e) = decidable-cong (≃-sym e) (lpo α)
   g : LPO' 𝓤 → LPO
-  g τ α = decidable-≃ (Lift-≃ 𝓤 X) (τ X' σ')
+  g τ α = decidable-cong (Lift-≃ 𝓤 X) (τ X' σ')
    where
     X : 𝓤₀ ̇
     X = ∃ n ꞉ ℕ , α n ≡ ₁
@@ -936,15 +833,13 @@ LPO-from-semidecidable-negations mp h X σ = mp (decidable X) τ
 
 -}
 
-negation-is-decidable : {X : 𝓤 ̇  } → decidable X → decidable (¬ X)
-negation-is-decidable (inl x) = inr (λ h → h x)
-negation-is-decidable (inr h) = inl h
+
 
 semidecidable-negations-from-LPO : LPO' 𝓤
                                  → Semidecidable-Closed-Under-Negations 𝓤
 semidecidable-negations-from-LPO lpo X σ =
  semidecidable-if-decidable-prop (negations-are-props fe)
-  (negation-is-decidable (lpo X σ))
+  (¬-preserves-decidability (lpo X σ))
 
 LPO-≃-semidecidable-negations : MP' 𝓤
                               → LPO' 𝓤 ≃ Semidecidable-Closed-Under-Negations 𝓤
@@ -973,7 +868,7 @@ LPO-from-semidecidable-implications mp h =
 
 lower-LPO : {𝓤 𝓥 : Universe} → LPO' (𝓤 ⊔ 𝓥) → LPO' 𝓤
 lower-LPO {𝓤} {𝓥} lpo X σ =
- decidable-≃ (Lift-≃ 𝓥 X)
+ decidable-cong (Lift-≃ 𝓥 X)
   (lpo X' (is-semidecidable-cong (≃-sym (Lift-≃ 𝓥 X)) σ))
    where
     X' : 𝓤 ⊔ 𝓥 ̇
@@ -1058,7 +953,7 @@ all-joins-implies-BKS⁺ : Semidecidable-All-Joins 𝓤 𝓤₀
 all-joins-implies-BKS⁺ h X X-is-prop = is-semidecidable-cong γ (h X (λ _ → 𝟙) λ _ → 𝟙-is-semidecidable)
  where
   γ : ∥ X × 𝟙 ∥ ≃ X
-  γ = ∥ X × 𝟙 ∥ ≃⟨ ∥∥-cong 𝟙-rneutral ⟩
+  γ = ∥ X × 𝟙 ∥ ≃⟨ ∥∥-cong pt 𝟙-rneutral ⟩
       ∥ X ∥     ≃⟨ prop-is-equivalent-to-its-truncation X-is-prop ⟩
       X         ■
 
@@ -1084,7 +979,7 @@ open import UF-Size
 BKS⁺-gives-Propositional-Resizing : BKS⁺ 𝓤
                                   → propositional-resizing 𝓤 𝓤₀
 BKS⁺-gives-Propositional-Resizing bks X X-is-prop =
- ∥∥-rec (prop-has-size-is-prop (λ _ → pe) (λ _ _ → fe) X X-is-prop 𝓤₀) γ (bks X X-is-prop)
+ ∥∥-rec (prop-has-size-is-prop (λ _ → pe) fe' X X-is-prop 𝓤₀) γ (bks X X-is-prop)
   where
    γ : semidecidability-structure X → X has-size 𝓤₀
    γ (α , e) = (∃ n ꞉ ℕ , α n ≡ ₁) , (≃-sym e)
