@@ -43,11 +43,6 @@ semidecidability-structure' : (𝓣 : Universe) (X : 𝓤 ̇  ) → 𝓣 ⁺ ⊔
 semidecidability-structure' 𝓣 X = Σ A ꞉ (ℕ → Ω 𝓣) , is-decidable-subset A
                                                     × (X ≃ (∃ n ꞉ ℕ , n ∈ A))
 
---TODO: Move somewhere better
-
-
--- open import UF-Equiv-FunExt
-
 semidecidability-structure-≃ : {𝓣 : Universe} {X : 𝓤 ̇  }
                              → semidecidability-structure X
                              ≃ semidecidability-structure' 𝓣 X
@@ -138,11 +133,10 @@ semidecidability-pairing-lemma {𝓤} {X} =
       ⦅i⦆  = ≃-sym (Σ-change-of-variable (λ p → σ ϕ p ≡ ₁) ⌜ ρ ⌝⁻¹ (⌜⌝⁻¹-is-equiv ρ))
       ⦅ii⦆ = Σ-cong (λ k → ≡-cong-l _ _ (ap ϕ (≃-sym-is-rinv ρ k)))
 
--- TODO: In need of a better name. Maybe: semidecidability-structure-ω-joins ?
-semidecidability-structure-∃ : (X : ℕ → 𝓤 ̇  )
-                             → (Π n ꞉ ℕ , semidecidability-structure (X n))
-                             → semidecidability-structure (∃ X)
-semidecidability-structure-∃ X σ = ⌜ semidecidability-pairing-lemma ⌝ γ
+∃-has-semidecidability-structure : (X : ℕ → 𝓤 ̇  )
+                                 → (Π n ꞉ ℕ , semidecidability-structure (X n))
+                                 → semidecidability-structure (∃ X)
+∃-has-semidecidability-structure X σ = ⌜ semidecidability-pairing-lemma ⌝ γ
  where
   γ : Σ Ψ ꞉ (ℕ → ℕ → 𝟚) , ∃ X ≃ (∃ n ꞉ ℕ , Σ m ꞉ ℕ , Ψ n m ≡ ₁)
   γ = Ψ , e
@@ -224,7 +218,7 @@ csc-implies-that-semidecidability-is-closed-under-ω-joins : {𝓤 : Universe}
  → Countable-Semidecidability-Choice 𝓤
  → Semidecidability-Closed-Under-ω-Joins 𝓤
 csc-implies-that-semidecidability-is-closed-under-ω-joins {𝓤} csc X σ =
- ∥∥-functor (semidecidability-structure-∃ X) (csc X σ)
+ ∥∥-functor (∃-has-semidecidability-structure X) (csc X σ)
 
 Semidecidability-Closed-Under-Special-ω-Joins : (𝓤 : Universe) → 𝓤 ⁺ ̇
 Semidecidability-Closed-Under-Special-ω-Joins 𝓤 = (X : ℕ → 𝓤 ̇  )
@@ -321,52 +315,50 @@ open import CompactTypes
 
 -- TODO: Promote this to another equivalent version of semidecidability-structure?
 -- TODO: Also add for the version → 𝟚?
-least-witness : (A : ℕ → 𝓤 ̇  )
-              → ((n : ℕ) → is-prop (A n))
-              → detachable A
-              → Σ B ꞉ (ℕ → 𝓤 ̇  ) , ((n : ℕ) → is-prop (B n)) × detachable B × (∃ A ≃ Σ B)
-least-witness {𝓤} A A-is-prop-valued A-is-detachable =
- B , B-is-prop-valued , B-is-detachable , γ
+least-witness : (A : ℕ → Ω 𝓤)
+              → is-decidable-subset A
+              → Σ B ꞉ (ℕ → Ω 𝓤) , is-decidable-subset B
+                                × ((∃ n ꞉ ℕ , n ∈ A) ≃ (Σ n ꞉ ℕ , n ∈ B))
+least-witness {𝓤} A A-is-decidable = B , B-is-decidable , γ
  where
-   B : ℕ → 𝓤 ̇
-   B n = A n × is-empty (Σ r ꞉ Fin' n , A (pr₁ r))
-   B-is-detachable : detachable B
-   B-is-detachable n = ×-preserves-decidability (A-is-detachable n) (¬-preserves-decidability σ)
+   B : ℕ → Ω 𝓤
+   B n = (n ∈ A × is-empty (Σ r ꞉ Fin' n , pr₁ r ∈ A))
+       , (×-is-prop (∈-is-prop A n) (negations-are-props fe))
+   B-is-decidable : is-decidable-subset B
+   B-is-decidable n = ×-preserves-decidability (A-is-decidable n) (¬-preserves-decidability σ)
     where
-     σ : decidable (Σ r ꞉ Fin' n , A (pr₁ r))
-     σ = Compact-cong (≃-Fin n) Fin-Compact (A ∘ pr₁)
-          (λ r → A-is-detachable (pr₁ r))
-   B-is-prop-valued : (n : ℕ) → is-prop (B n)
-   B-is-prop-valued n = ×-is-prop (A-is-prop-valued n) (negations-are-props fe)
-   ΣB-is-prop : is-prop (Σ B)
+     σ : decidable (Σ r ꞉ Fin' n , pr₁ r ∈ A)
+     σ = Compact-cong (≃-Fin n) Fin-Compact (pr₁ ∘ A ∘ pr₁)
+          (λ r → A-is-decidable (pr₁ r))
+   ΣB-is-prop : is-prop (Σ n ꞉ ℕ , n ∈ B)
    ΣB-is-prop (n , a , min) (n' , a' , min') =
-    to-subtype-≡ B-is-prop-valued (κ (<-linear n n'))
+    to-subtype-≡ (∈-is-prop B) (κ (<-linear n n'))
      where
       κ : (n < n') + (n ≡ n') + (n' < n)
         → n ≡ n'
       κ (inl k)       = 𝟘-elim (min' ((n , k) , a))
       κ (inr (inl e)) = e
       κ (inr (inr l)) = 𝟘-elim (min ((n' , l) , a'))
-   γ : ∃ A ≃ Σ B
+   γ : (∃ n ꞉ ℕ , n ∈ A) ≃ (Σ n ꞉ ℕ , n ∈ B)
    γ = logically-equivalent-props-are-equivalent ∥∥-is-prop ΣB-is-prop f g
     where
-     g : Σ B → ∥ Σ A ∥
+     g : (Σ n ꞉ ℕ , n ∈ B) → (∃ n ꞉ ℕ , n ∈ A)
      g (n , a , _) = ∣ n , a ∣
-     f : ∥ Σ A ∥ → Σ B
+     f : (∃ n ꞉ ℕ , n ∈ A) → (Σ n ꞉ ℕ , n ∈ B)
      f = ∥∥-rec ΣB-is-prop h
       where
-       h : Σ A → Σ B
+       h : (Σ n ꞉ ℕ , n ∈ A) → (Σ n ꞉ ℕ , n ∈ B)
        h (n , a) = k , a' , ν
         where
-         u : Σμ A
-         u = minimal-from-given A A-is-detachable (n , a)
+         u : Σμ (λ m → m ∈ A)
+         u = minimal-from-given (λ m → m ∈ A) A-is-decidable (n , a)
          k : ℕ
          k = pr₁ u
-         a' : A k
+         a' : k ∈ A
          a' = pr₁ (pr₂ u)
-         min : (m : ℕ) → A m → k ≤ m
+         min : (m : ℕ) → m ∈ A → k ≤ m
          min = pr₂ (pr₂ u)
-         ν : is-empty (Σ r ꞉ Fin' k , A (pr₁ r))
+         ν : is-empty (Σ r ꞉ Fin' k , pr₁ r ∈ A)
          ν ((m , l) , aₘ) = less-not-bigger-or-equal m k l (min m aₘ)
 
 \end{code}
@@ -386,27 +378,23 @@ semidecidable-closed-under-Σ {𝓤} H P ρ Q σ = ∥∥-rec being-semidecidabl
     Q-is-prop-valued : (p : P) → is-prop (Q p)
     Q-is-prop-valued p = prop-if-semidecidable (σ p)
 
-    W : Σ Q₁ ꞉ (ℕ → 𝓤₀ ̇  ) , ((n : ℕ) → is-prop (Q₁ n))
-                           × detachable Q₁
-                           × ((∃ n ꞉ ℕ , α n ≡ ₁) ≃ Σ Q₁)
-    W = least-witness (λ n → α n ≡ ₁) (λ n → 𝟚-is-set)
-                      (λ n → 𝟚-is-discrete (α n) ₁)
+    W : Σ B ꞉ (ℕ → Ω 𝓤₀) , is-decidable-subset B
+                         × ((∃ n ꞉ ℕ , α n ≡ ₁) ≃ (Σ n ꞉ ℕ , n ∈ B))
+    W = least-witness (λ n → (α n ≡ ₁) , 𝟚-is-set) (λ n → 𝟚-is-discrete (α n) ₁)
 
-    Q₁ : ℕ → 𝓤₀ ̇
+    Q₁ : ℕ → Ω 𝓤₀
     Q₁ = pr₁ W
-    Q₁-is-prop-valued : (n : ℕ) → is-prop (Q₁ n)
-    Q₁-is-prop-valued = pr₁ (pr₂ W)
-    Q₁-is-detachable : detachable Q₁
-    Q₁-is-detachable = pr₁ (pr₂ (pr₂ W))
-    ΣQ₁-equiv : (∃ n ꞉ ℕ , α n ≡ ₁) ≃ Σ Q₁
-    ΣQ₁-equiv = pr₂ (pr₂ (pr₂ W))
-    ΣQ₁-to-P : Σ Q₁ → P
+    Q₁-is-decidable : is-decidable-subset Q₁
+    Q₁-is-decidable = pr₁ (pr₂ W)
+    ΣQ₁-equiv : (∃ n ꞉ ℕ , α n ≡ ₁) ≃ (Σ n ꞉ ℕ , n ∈ Q₁)
+    ΣQ₁-equiv = pr₂ (pr₂ W)
+    ΣQ₁-to-P : (Σ n ꞉ ℕ , n ∈ Q₁) → P
     ΣQ₁-to-P = ⌜ e ⌝⁻¹ ∘ ⌜ ΣQ₁-equiv ⌝⁻¹
 
     Q₂ : ℕ → 𝓤 ̇
-    Q₂ n = Σ q ꞉ Q₁ n , Q (ΣQ₁-to-P (n , q))
+    Q₂ n = Σ q ꞉ n ∈ Q₁ , Q (ΣQ₁-to-P (n , q))
     Q₂-is-prop-valued : (n : ℕ) → is-prop (Q₂ n)
-    Q₂-is-prop-valued n = Σ-is-prop (Q₁-is-prop-valued n)
+    Q₂-is-prop-valued n = Σ-is-prop (∈-is-prop Q₁ n)
                            (λ q₁ → Q-is-prop-valued (ΣQ₁-to-P (n , q₁)))
 
     ΣQ₂-is-prop : is-prop (Σ Q₂)
@@ -414,7 +402,6 @@ semidecidable-closed-under-Σ {𝓤} H P ρ Q σ = ∥∥-rec being-semidecidabl
      to-subtype-≡ Q₂-is-prop-valued
                   (ap pr₁ (equiv-to-prop (≃-sym ΣQ₁-equiv) ∥∥-is-prop
                             (n , q₁) (n' , q₁')))
-
     ΣQ₂-ΣQ-equiv : Σ Q₂ ≃ Σ Q
     ΣQ₂-ΣQ-equiv = logically-equivalent-props-are-equivalent ΣQ₂-is-prop
                     (Σ-is-prop (prop-if-semidecidable ρ)
@@ -428,7 +415,7 @@ semidecidable-closed-under-Σ {𝓤} H P ρ Q σ = ∥∥-rec being-semidecidabl
        where
         n : ℕ
         n = pr₁ (⌜ ΣQ₁-equiv ⌝ (⌜ e ⌝ p))
-        q₁ : Q₁ n
+        q₁ : n ∈ Q₁
         q₁ = pr₂ (⌜ ΣQ₁-equiv ⌝ (⌜ e ⌝ p))
         p' : P
         p' = ΣQ₁-to-P (n , q₁)
@@ -437,9 +424,9 @@ semidecidable-closed-under-Σ {𝓤} H P ρ Q σ = ∥∥-rec being-semidecidabl
     ΣQ₂-is-semidecidable = H Q₂ ΣQ₂-is-prop τ
      where
       τ : (n : ℕ) → is-semidecidable (Q₂ n)
-      τ n = κ (Q₁-is-detachable n)
+      τ n = κ (Q₁-is-decidable n)
        where
-        κ : decidable (Q₁ n) → is-semidecidable (Q₂ n)
+        κ : decidable (n ∈ Q₁) → is-semidecidable (Q₂ n)
         κ (inl  q₁) = is-semidecidable-cong claim (σ p)
          where
           p : P
@@ -629,12 +616,17 @@ Discussion:
  * Ωˢᵈ is closed under finitary (nullary + binary) joins
  * Ωˢᵈ is closed under finitary (nullary + binary) meets
  * LPO <=> Ωˢᵈ ≃ 𝟚.
- * If LPO holds, then Ωˢᵈ is closed under negation. Conversely,
-   If
-     X ≃ ∃ n ꞉ ℕ , α n ≡ ₁
-   and
-     ∀ n ꞉ ℕ , γ n ≡ ₁ ≃ ¬ X
-                       ≃ ∃ n ꞉ ℕ , β n ≡ ₁
+ * If LPO holds, then Ωˢᵈ is closed under negation.
+
+   The converse holds if we assume Markov's Principle (MP), which says that
+   every semidecidable proposition is ¬¬-stable:
+     Assume MP and that Ωˢᵈ is closed under negation.
+     We show that LPO holds, i.e. every semidecidable proposition is decidable.
+     Let X be semidecidable. By assumption so is ¬ X. We prove that X is
+     decidable following the proof of Theorem 3.21 of Bauer's "First Steps in
+     Synthetic Computability Theory": note (X + ¬ X) ∈ Ωˢᵈ, so by MP it is
+     ¬¬-stable, but ¬¬ (X + ¬ X) is a theorem of constructive logic, so X is
+     decidable.                                                                 □
 
  * TODO: Think about implication
 
@@ -962,11 +954,20 @@ BKS⁺-implies-special-countable-choice : BKS⁺ 𝓤
 BKS⁺-implies-special-countable-choice {𝓤} bks = converse-in-special-cases γ
  where
   γ : Semidecidability-Closed-Under-Special-ω-Joins 𝓤
-  γ X i σ = is-semidecidable-cong (prop-is-equivalent-to-its-truncation i)
-             (BKS⁺-implies-all-joins bks ℕ X σ)
+  γ X i σ = bks (Σ X) i
 
 -- TODO: Hence, BKS⁺ → EKC.
 -- Is there a quick direct proof of this?
+
+-- Answer: Yes (of course), using Theorem 3.1.
+
+\end{code}
+
+\begin{code}
+
+BKS⁺-implies-EKCˢᵈ : BKS⁺ (𝓤 ⊔ 𝓥)
+                   → Escardo-Knapp-Choice 𝓤 𝓥
+BKS⁺-implies-EKCˢᵈ bks = theorem-3-1 (λ P σ Q τ → bks (Σ Q) (Σ-is-prop (prop-if-semidecidable σ) (λ p → prop-if-semidecidable (τ p))))
 
 \end{code}
 
