@@ -940,14 +940,26 @@ BKS⁺-implies-all-joins : BKS⁺ (𝓤 ⊔ 𝓥)
 BKS⁺-implies-all-joins bks X Y σ = bks (∃ Y) ∥∥-is-prop
 
 -- TODO: Arbitrary subsingleton joins suffice
+-- Implemented now:
+Semidecidable-Subsingleton-Joins : (𝓤 𝓥 : Universe) → (𝓤 ⊔ 𝓥) ⁺ ̇
+Semidecidable-Subsingleton-Joins 𝓤 𝓥 = (X : 𝓤 ̇  ) (Y : X → 𝓥 ̇  ) → is-prop X
+                                     → ((x : X) → is-semidecidable (Y x))
+                                     → is-semidecidable (∃ Y)
+
+subsingleton-joins-implies-BKS⁺ : Semidecidable-Subsingleton-Joins 𝓤 𝓤₀
+                                → BKS⁺ 𝓤
+subsingleton-joins-implies-BKS⁺ σ X X-is-prop =
+ is-semidecidable-cong γ (σ X (λ _ → 𝟙) X-is-prop (λ _ → 𝟙-is-semidecidable))
+  where
+   γ : ∥ X × 𝟙 ∥ ≃ X
+   γ = ∥ X × 𝟙 ∥ ≃⟨ ∥∥-cong pt 𝟙-rneutral ⟩
+       ∥ X ∥     ≃⟨ prop-is-equivalent-to-its-truncation X-is-prop ⟩
+       X         ■
+
 all-joins-implies-BKS⁺ : Semidecidable-All-Joins 𝓤 𝓤₀
                        → BKS⁺ 𝓤
-all-joins-implies-BKS⁺ h X X-is-prop = is-semidecidable-cong γ (h X (λ _ → 𝟙) λ _ → 𝟙-is-semidecidable)
- where
-  γ : ∥ X × 𝟙 ∥ ≃ X
-  γ = ∥ X × 𝟙 ∥ ≃⟨ ∥∥-cong pt 𝟙-rneutral ⟩
-      ∥ X ∥     ≃⟨ prop-is-equivalent-to-its-truncation X-is-prop ⟩
-      X         ■
+all-joins-implies-BKS⁺ j =
+ subsingleton-joins-implies-BKS⁺ (λ X Y X-is-prop σ → j X Y σ)
 
 BKS⁺-implies-special-countable-choice : BKS⁺ 𝓤
                                       → Countable-Semidecidability-Special-Choice 𝓤
