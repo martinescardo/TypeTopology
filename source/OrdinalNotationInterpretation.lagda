@@ -25,6 +25,9 @@ ordinal is a set (or satisfies the K axiom), which is proved in the
 module OrdinalNotions. This seems to be a new observation about the
 univalent notion of ordinal (as introduced in the HoTT Book).
 
+A dependency graph of this module is available at
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
