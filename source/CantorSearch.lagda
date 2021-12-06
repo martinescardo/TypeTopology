@@ -241,7 +241,7 @@ A n p = p (ε n p)
 
 ε 0 p        = c₀
 ε (succ n) p = case ε𝟚 (λ b → A n (p ∘ cons b)) of
-                λ b₀ → cons b₀ (ε n (p ∘ cons b₀))
+                (λ (b₀ : 𝟚) → cons b₀ (ε n (p ∘ cons b₀)))
 \end{code}
 
 The function A is designed to satisfy the specification

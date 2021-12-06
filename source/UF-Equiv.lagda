@@ -88,9 +88,6 @@ _ ≃⟨ d ⟩ e = d ● e
 _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
-Eq : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-Eq = _≃_
-
 Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
@@ -107,7 +104,7 @@ back-eqtofun e = pr₁ (pr₁ (pr₂ e))
 ⌜_⌝⁻¹          = back-eqtofun
 
 idtoeq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
-idtoeq X Y p = transport (Eq X) p (≃-refl X)
+idtoeq X Y p = transport (X ≃_) p (≃-refl X)
 
 idtoeq-traditional : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 idtoeq-traditional X _ refl = ≃-refl X

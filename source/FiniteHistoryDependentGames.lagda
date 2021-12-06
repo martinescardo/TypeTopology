@@ -29,13 +29,13 @@ infinite games instead.
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --safe #-} -- --exact-split
 
 open import SpartanMLTT hiding (J)
 open import UF-Base
 open import UF-FunExt
 
-module FiniteHistoryDependentGames (fe : Fun-Ext) where
+module FiniteHistoryDependentGamesNew (fe : Fun-Ext) where
 
 \end{code}
 
@@ -85,6 +85,10 @@ path-head (x :: xs) = x
 
 path-tail : {X : Type} {Xf : X → DTT} ((x :: xs) : Path (X ∷ Xf)) → Path (Xf x)
 path-tail (x :: xs) = xs
+
+plength : {Xt : DTT} → Path Xt → ℕ
+plength {[]}     ⟨⟩        = 0
+plength {X ∷ Xf} (x :: xs) = succ (plength {Xf x} xs)
 
 \end{code}
 
@@ -150,15 +154,26 @@ K-sequence : {Xt : DTT} {R : Type} → 𝓚 R Xt → K R (Path Xt)
 K-sequence {[]}     ⟨⟩        q = q ⟨⟩
 K-sequence {X ∷ Xf} (ϕ :: ϕf) q = ϕ (λ x → K-sequence {Xf x} (ϕf x) (λ xs → q (x :: xs)))
 
+J-sequence' : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence' {[]}     ⟨⟩        q = ⟨⟩
+J-sequence' {X ∷ Xf} (ε :: εf) q = h :: t h
+ where
+  t : (x : X) → Path (Xf x)
+  t x = J-sequence' {Xf x} (εf x) (λ xs → q (x :: xs))
+
+  h : X
+  h = ε (λ x → q (x :: t x))
+
 J-sequence : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
 J-sequence {[]}     ⟨⟩        q = ⟨⟩
-J-sequence {X ∷ Xf} (ε :: εf) q = h :: t h
+J-sequence {X ∷ Xf} (ε :: εf) q = γ
  where
   t : (x : X) → Path (Xf x)
   t x = J-sequence {Xf x} (εf x) (λ xs → q (x :: xs))
 
-  h : X
-  h = ε (λ x → q (x :: t x))
+  γ : Path (X ∷ Xf)
+  γ = case ε (λ x → q (x :: t x)) of
+       (λ h → h :: t h)
 
 \end{code}
 
@@ -176,12 +191,27 @@ record Game : Type₁ where
  field
   Xt  : DTT
   R   : Type
-  ϕt  : 𝓚 R Xt
   q   : Path Xt → R
+  ϕt  : 𝓚 R Xt
 
 open Game
 
+record Game⁻ : Type₁ where
+ constructor
+  game⁻
+
+ field
+  Xt  : DTT
+  R   : Type
+  q   : Path Xt → R
+
 \end{code}
+
+TODO. Game⁻ ≃ (Σ R : Type, DDTT R). Idea: In Game⁻, we know how to play
+the game, but we don't know what the objective of the game is.
+
+We can think of Xt as the rules of the game, and R, ϕt and q as the
+objective of the game.
 
 We define the optimal outcome of a game to be the sequencing of its
 quantifiers applied to the outcome function (Theorem 3.1 of [1]).
@@ -189,7 +219,7 @@ quantifiers applied to the outcome function (Theorem 3.1 of [1]).
 \begin{code}
 
 optimal-outcome : (G : Game) → R G
-optimal-outcome (game R Xt ϕt q) = K-sequence ϕt q
+optimal-outcome (game R Xt q ϕt) = K-sequence ϕt q
 
 \end{code}
 
@@ -284,8 +314,8 @@ is in subgame perfect equilibrium.
 
 \begin{code}
 
-is-optimal : {G : Game} (σ : Strategy (Xt G)) → Type
-is-optimal {game Xt R ϕt q} σ = is-sgpe {Xt} {R} ϕt q σ
+is-optimal : (G : Game) (σ : Strategy (Xt G)) → Type
+is-optimal (game Xt R ϕt q) σ = is-sgpe {Xt} {R} q ϕt σ
 
 \end{code}
 
@@ -318,9 +348,9 @@ This can be reformulated as follows in terms of the type of games:
 \begin{code}
 
 equilibrium-theorem : (G : Game) (σ : Strategy (Xt G))
-                    → is-optimal σ
+                    → is-optimal G σ
                     → optimal-outcome G ≡ q G (strategic-path σ)
-equilibrium-theorem (game Xt R ϕt q) = sgpe-lemma Xt ϕt q
+equilibrium-theorem (game Xt R ϕt q) = sgpe-lemma Xt q ϕt
 
 \end{code}
 
@@ -482,29 +512,433 @@ selection-strategy-theorem εt ϕt q a = III
 
 Selection-Strategy-Theorem : (G : Game) (εt : 𝓙 (R G) (Xt G))
                            → εt are-selections-of (ϕt G)
-                           → is-optimal (selection-strategy εt (q G))
-Selection-Strategy-Theorem (game Xt R ϕt q) εt = selection-strategy-theorem εt ϕt q
+                           → is-optimal G (selection-strategy εt (q G))
+Selection-Strategy-Theorem (game Xt R ϕt q) εt = selection-strategy-theorem εt q ϕt
 
 \end{code}
 
-Incomplete examples:
+Incomplete example:
 
 \begin{code}
 
-no-repetitions : (n : ℕ) (X : Type) → DTT
-no-repetitions 0        X = []
-no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≢ x )
+module permutations-example where
 
-open import Fin
+ open import MoreTypes
 
-Permutations : ℕ → Type
-Permutations n = Path (no-repetitions n (Fin n))
+ no-repetitions : (n : ℕ) (X : Type) → DTT
+ no-repetitions 0        X = []
+ no-repetitions (succ n) X = X ∷ λ (x : X) → no-repetitions n (Σ y ꞉ X , y ≢ x)
 
-example-permutation2 : Permutations 2
-example-permutation2 = 𝟎 , (𝟏 , λ ()) , ⟨⟩
+ Permutations : ℕ → Type
+ Permutations n = Path (no-repetitions n (Fin n))
+
+ example-permutation2 : Permutations 2
+ example-permutation2 = 𝟎 :: ((𝟏 , (λ ())) :: ⟨⟩)
+
+ example-permutation3 : Permutations 3
+ example-permutation3 = 𝟐 :: ((𝟏 :: (λ ())) :: (((𝟎 , (λ ())) , (λ ())) :: ⟨⟩))
 
 \end{code}
 
-TODO. Define tic-tac-toe using no-repetitions and Fin 9.
+We use the type GameJ to present games equipped with selection
+functions, as in some examples, such as tic-tac-toe this is easier
+than to give a game directly.
+
+\begin{code}
+
+data GameJ (R : Type) : Type₁ where
+  leaf   : R → GameJ R
+  branch : (X : Type) (Xf : X → GameJ R) (ε : J R X) → GameJ R
+
+
+dtt : {R : Type} → GameJ R → DTT
+dtt (leaf x)        = []
+dtt (branch X Xf ε) = X ∷ λ x → dtt (Xf x)
+
+predicate : {R : Type} (Γ : GameJ R) → Path (dtt Γ) → R
+predicate (leaf r)        ⟨⟩        = r
+predicate (branch X Xf ε) (x :: xs) = predicate (Xf x) xs
+
+selections : {R : Type} (Γ : GameJ R) → 𝓙 R (dtt Γ)
+selections (leaf r)        = ⟨⟩
+selections (branch X Xf ε) = ε :: (λ x → selections (Xf x))
+
+quantifiers : {R : Type} (Γ : GameJ R) → 𝓚 R (dtt Γ)
+quantifiers (leaf r)        = ⟨⟩
+quantifiers (branch X Xf ε) = overline ε :: (λ x → quantifiers (Xf x))
+
+Game-from-GameJ : {R : Type} → GameJ R → Game
+Game-from-GameJ {R} Γ = game (dtt Γ) R (predicate Γ) (quantifiers Γ)
+
+strategyJ : {R : Type} (Γ : GameJ R) → Strategy (dtt Γ)
+strategyJ Γ = selection-strategy (selections Γ) (predicate Γ)
+
+Selection-Strategy-TheoremJ : {R : Type} (Γ : GameJ R)
+                            → is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
+Selection-Strategy-TheoremJ {R} Γ = γ
+ where
+  δ : (Γ : GameJ R) → (selections Γ) are-selections-of (quantifiers Γ)
+  δ (leaf r)        = ⟨⟩
+  δ (branch X Xf ε) = (λ p → refl) , (λ x → δ (Xf x))
+
+  γ : is-optimal (Game-from-GameJ Γ) (strategyJ Γ)
+  γ = Selection-Strategy-Theorem (Game-from-GameJ Γ) (selections Γ) (δ Γ)
+
+\end{code}
+
+The following is used in conjunction with GameJ to build certain games
+in a convenient way.
+
+\begin{code}
+
+build-GameJ : {R          : Type}
+              (draw       : R)
+              (Board      : Type)
+              (transition : Board → R + (Σ M ꞉ Type , (M → Board) × J R M))
+              (n          : ℕ)
+              (b          : Board)
+            → GameJ R
+build-GameJ {R} draw Board transition n b = h n b
+ where
+  h : ℕ → Board → GameJ R
+  h 0        b = leaf draw
+  h (succ n) b = g (transition b) refl
+   where
+    g : (f : R + (Σ M ꞉ Type , (M → Board) × J R M)) → transition b ≡ f → GameJ R
+    g (inl r)              p = leaf r
+    g (inr (M , play , ε)) p = branch M Xf ε
+     where
+      Xf : M → GameJ R
+      Xf m = h n (play m)
+
+build-Game : {R          : Type}
+             (draw       : R)
+             (Board      : Type)
+             (transition : Board → R + (Σ M ꞉ Type , (M → Board) × J R M))
+             (n          : ℕ)
+             (b          : Board)
+           → Game
+build-Game draw Board transition n b = Game-from-GameJ (build-GameJ draw Board transition n b)
+
+\end{code}
+
+Complete this and move it to the compactness files:
+
+\begin{code}
+
+open import CompactTypes
+open import UF-Subsingletons
+
+\end{code}
+
+Example: Tic-tac-toe.
+
+\begin{code}
+
+
+open import DiscreteAndSeparated
+open import UF-Miscelanea
+
+tic-tac-toe : Game
+tic-tac-toe = build-Game draw Board transition 9 board₀
+ where
+  open import MoreTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
+  open import Fin
+  open import Fin-Properties
+
+
+  data Player : Type where
+   X O : Player
+
+  opponent : Player → Player
+  opponent X = O
+  opponent O = X
+
+  𝟛 = Fin 3
+
+  pattern X-wins = 𝟎
+  pattern draw   = 𝟏
+  pattern O-wins = 𝟐
+
+  Grid   = 𝟛 × 𝟛
+  Matrix = Grid → Maybe Player
+  Board  = Player × Matrix
+
+\end{code}
+
+Convention: in a board (p , A), p is the opponent of the the current player.
+
+\begin{code}
+
+  Grid-is-discrete : is-discrete Grid
+  Grid-is-discrete = ×-is-discrete Fin-is-discrete Fin-is-discrete
+
+  Grid-compact : Compact Grid {𝓤₀}
+  Grid-compact = ×-Compact Fin-Compact Fin-Compact
+
+  board₀ : Board
+  board₀ = X , (λ _ → Nothing)
+
+  Move : Board → Type
+  Move (_ , A) = Σ g ꞉ Grid , A g ≡ Nothing
+
+  Move-decidable : (b : Board) → decidable (Move b)
+  Move-decidable (_ , A) = Grid-compact
+                            (λ g → A g ≡ Nothing)
+                            (λ g → Nothing-is-isolated' (A g))
+
+  Move-compact : (b : Board) → Compact (Move b)
+  Move-compact (x , A) = decidable-subtype-of-compact-type
+                          Grid-compact
+                          (λ g → Nothing-is-isolated' (A g))
+                          (λ g → Nothing-is-h-isolated' (A g))
+
+  selection : (b : Board) → Move b → J 𝟛 (Move b)
+  selection b@(X , A) m p = pr₁ (compact-argmax p (Move-compact b) m)
+  selection b@(O , A) m p = pr₁ (compact-argmin p (Move-compact b) m)
+
+  _is_ : Maybe Player → Player → Bool
+  Nothing is _ = false
+  Just X  is X = true
+  Just O  is X = false
+  Just X  is O = false
+  Just O  is O = true
+
+  infix 30 _is_
+
+  wins : Player → Matrix → Bool
+  wins p A = line || col || diag
+   where
+    l₀ = A (𝟎 , 𝟎) is p && A (𝟎 , 𝟏) is p && A (𝟎 , 𝟐) is p
+    l₁ = A (𝟏 , 𝟎) is p && A (𝟏 , 𝟏) is p && A (𝟏 , 𝟐) is p
+    l₂ = A (𝟐 , 𝟎) is p && A (𝟐 , 𝟏) is p && A (𝟐 , 𝟐) is p
+    c₀ = A (𝟎 , 𝟎) is p && A (𝟏 , 𝟎) is p && A (𝟐 , 𝟎) is p
+    c₁ = A (𝟎 , 𝟏) is p && A (𝟏 , 𝟏) is p && A (𝟐 , 𝟏) is p
+    c₂ = A (𝟎 , 𝟐) is p && A (𝟏 , 𝟐) is p && A (𝟐 , 𝟐) is p
+    d₀ = A (𝟎 , 𝟎) is p && A (𝟏 , 𝟏) is p && A (𝟐 , 𝟐) is p
+    d₁ = A (𝟎 , 𝟐) is p && A (𝟏 , 𝟏) is p && A (𝟐 , 𝟎) is p
+    line = l₀ || l₁ || l₂
+    col  = c₀ || c₁ || c₂
+    diag = d₀ || d₁
+
+  update : (p : Player) (A : Matrix)
+         → Move (p , A) → Matrix
+  update p A (m , _) m' = f (Grid-is-discrete m m')
+   where
+    f : decidable (m ≡ m') → Maybe Player
+    f (inl _) = Just p
+    f (inr _) = A m'
+
+  play : (b : Board) (m : Move b) → Board
+  play (p , A) m = opponent p , update p A m
+
+  transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
+  transition (p , A) = f p A (wins p A) refl
+   where
+    f : (p : Player) (A : Matrix) (b : Bool) → wins p A ≡ b
+      → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
+    f X A true e  = inl X-wins
+    f O A true e  = inl O-wins
+    f p A false e = Cases (Move-decidable (p , A))
+                     (λ (g , e) → inr (Move (p , A) ,
+                                       (λ m → opponent p , update p A m) ,
+                                       selection (p , A) (g , e)))
+                     (λ ν → inl draw)
+
+t : R tic-tac-toe
+t = optimal-outcome tic-tac-toe
+
+\end{code}
+
+Another, more efficient, version of tic-tac-toe:
+
+\begin{code}
+
+data 𝟛 : Type where
+ O-wins draw X-wins : 𝟛
+
+tic-tac-toe₂J : GameJ 𝟛
+tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
+ where
+  open import MoreTypes
+
+
+  data Player : Type where
+   O X : Player
+
+  Cell = Fin 9
+
+
+  allMoves : List Cell
+  allMoves = list-Fin 9
+
+  -- The player in a board is the player who plays next.
+  Board = Player × List Cell × List Cell
+
+  wins : List Cell → Bool
+  wins = some-contained ((𝟎 ∷ 𝟏 ∷ 𝟐 ∷ [])
+                       ∷ (𝟑 ∷ 𝟒 ∷ 𝟓 ∷ [])
+                       ∷ (𝟔 ∷ 𝟕 ∷ 𝟖 ∷ [])
+                       ∷ (𝟎 ∷ 𝟑 ∷ 𝟔 ∷ [])
+                       ∷ (𝟏 ∷ 𝟒 ∷ 𝟕 ∷ [])
+                       ∷ (𝟐 ∷ 𝟓 ∷ 𝟖 ∷ [])
+                       ∷ (𝟎 ∷ 𝟒 ∷ 𝟖 ∷ [])
+                       ∷ (𝟐 ∷ 𝟒 ∷ 𝟔 ∷ [])
+                       ∷ [])
+
+  board₀ : Board
+  board₀ = (X , [] , [])
+
+  moves : List Cell → Type
+  moves xs = Σ c ꞉ Cell , ((c is-in xs) ≡ true)
+
+  transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
+  transition b@(X , xs , os) =
+   if wins os
+   then inl O-wins
+   else Bool-equality-cases (empty available)
+        (λ (_ : empty available ≡ true)  → inl draw)
+        (λ (e : empty available ≡ false) → inr (moves available , play , h available e))
+   where
+    available : List Cell
+    available = allMoves minus (xs ++ os)
+
+    play : moves available → Board
+    play (c , e) = (O , insert c xs , os)
+
+    f : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+    f ms       m X-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
+    f []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
+    f (x ∷ xs) m O-wins  q = ι γ
+     where
+      ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
+      ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
+      q' : moves (x ∷ xs) → 𝟛
+      q' m = q (ι m)
+      a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
+      a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
+      γ : moves (x ∷ xs)
+      γ = f xs x (q (x , a)) q'
+
+    f us@(x ∷ ms) m draw q = g us c
+     where
+      c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
+      c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
+      g : (vs : List Cell) → vs contained-in us ≡ true → moves (m ∷ us)
+      g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
+      g (y ∷ vs) c = k (q (y , a))
+       where
+        a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
+        a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
+        k : 𝟛 → moves (m ∷ us)
+        k X-wins = y , a
+        k r      = g vs (pr₂ (&&-gives-× c))
+
+    h : (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
+    h []       e q = 𝟘-elim (true-is-not-false e)
+    h (m ∷ ms) e q = f ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+
+  transition b@(O , xs , os) =
+   if wins xs
+   then inl X-wins
+   else Bool-equality-cases (empty available)
+         (λ (_ : empty available ≡ true)  → inl draw)
+         (λ (e : empty available ≡ false) → inr (moves available , play , h available e))
+   where
+    available : List Cell
+    available = allMoves minus (xs ++ os)
+
+    play : moves available → Board
+    play (c , e) = (X , xs , insert c os)
+
+    f : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+    f ms       m O-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
+    f []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
+    f (x ∷ xs) m X-wins  q = ι γ
+     where
+      ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
+      ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
+      q' : moves (x ∷ xs) → 𝟛
+      q' m = q (ι m)
+      a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
+      a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
+      γ : moves (x ∷ xs)
+      γ = f xs x (q (x , a)) q'
+
+    f us@(x ∷ ms) m draw q = g us c
+     where
+      c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
+      c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
+      g : (vs : List Cell) → vs contained-in us ≡ true → moves (m ∷ us)
+      g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
+      g (y ∷ vs) c = k (q (y , a))
+       where
+        a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
+        a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
+        k : 𝟛 → moves (m ∷ us)
+        k O-wins = y , a
+        k r      = g vs (pr₂ (&&-gives-× c))
+
+    h : (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
+    h []       e q = 𝟘-elim (true-is-not-false e)
+    h (m ∷ ms) e q = f ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+
+tic-tac-toe₂ : Game
+tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
+
+t₂ : R tic-tac-toe₂
+t₂ = optimal-outcome tic-tac-toe₂
+
+s₀ : Path (Xt tic-tac-toe₂)
+s₀ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
+
+l₀ : ℕ
+l₀ = plength s₀
+
+{- Slow:
+
+l₀-test : l₀ ≡ 9
+l₀-test = refl
+
+-}
+
+{- Slow:
+
+s₀-test : s₀ ≡ (𝟎 :: refl)
+           :: ((𝟒 :: refl)
+           :: ((𝟏 :: refl)
+           :: ((𝟐 :: refl)
+           :: ((𝟔 :: refl)
+           :: ((𝟑 :: refl)
+           :: ((𝟓 :: refl)
+           :: ((𝟕 :: refl)
+           :: ((𝟖 :: refl)
+           :: ⟨⟩))))))))
+s₀-test = refl
+
+-}
+
+\end{code}
+
 
 TODO. Generalize the above to multi-valued quantifiers, as in [1], using monads.
+
+\begin{code}
+
+data GameK (R : Type) : Type₁ where
+  leaf   : R → GameK R
+  branch : (X : Type) (Xf : X → GameK R) (ϕ : K R X) → GameK R
+
+\end{code}
+
+TODO. GameK ≃ Game and we have a map GameJ → GameK.
+
+TODO. Define game isomorphism (and possibly homomorphism more generally).
+
+\begin{code}
+
+data DTT' (X : Type) : Type₁ where
+  []  : DTT' X
+  _∷_ : (A : X → Type) (Xf : (x : X) → A x → DTT' X) → DTT' X
+
+\end{code}
