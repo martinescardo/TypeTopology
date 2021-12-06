@@ -35,7 +35,7 @@ open import SpartanMLTT hiding (J)
 open import UF-Base
 open import UF-FunExt
 
-module FiniteHistoryDependentGamesNew (fe : Fun-Ext) where
+module FiniteHistoryDependentGames (fe : Fun-Ext) where
 
 \end{code}
 
@@ -523,7 +523,7 @@ Incomplete example:
 
 module permutations-example where
 
- open import MoreTypes
+ open import NonSpartanMLTTTypes
 
  no-repetitions : (n : ℕ) (X : Type) → DTT
  no-repetitions 0        X = []
@@ -622,30 +622,22 @@ build-Game draw Board transition n b = Game-from-GameJ (build-GameJ draw Board t
 
 \end{code}
 
-Complete this and move it to the compactness files:
-
-\begin{code}
-
-open import CompactTypes
-open import UF-Subsingletons
-
-\end{code}
-
 Example: Tic-tac-toe.
 
 \begin{code}
 
 
-open import DiscreteAndSeparated
-open import UF-Miscelanea
-
 tic-tac-toe : Game
 tic-tac-toe = build-Game draw Board transition 9 board₀
  where
-  open import MoreTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
+  open import CompactTypes
+  open import UF-Subsingletons
+  open import DiscreteAndSeparated
+  open import UF-Miscelanea
+
+  open import NonSpartanMLTTTypes hiding (Fin ; 𝟎 ; 𝟏 ; 𝟐 ; 𝟑 ; 𝟒 ; 𝟓 ; 𝟔 ; 𝟕 ; 𝟖 ; 𝟗)
   open import Fin
   open import Fin-Properties
-
 
   data Player : Type where
    X O : Player
@@ -712,11 +704,14 @@ Convention: in a board (p , A), p is the opponent of the the current player.
     l₀ = A (𝟎 , 𝟎) is p && A (𝟎 , 𝟏) is p && A (𝟎 , 𝟐) is p
     l₁ = A (𝟏 , 𝟎) is p && A (𝟏 , 𝟏) is p && A (𝟏 , 𝟐) is p
     l₂ = A (𝟐 , 𝟎) is p && A (𝟐 , 𝟏) is p && A (𝟐 , 𝟐) is p
+
     c₀ = A (𝟎 , 𝟎) is p && A (𝟏 , 𝟎) is p && A (𝟐 , 𝟎) is p
     c₁ = A (𝟎 , 𝟏) is p && A (𝟏 , 𝟏) is p && A (𝟐 , 𝟏) is p
     c₂ = A (𝟎 , 𝟐) is p && A (𝟏 , 𝟐) is p && A (𝟐 , 𝟐) is p
+
     d₀ = A (𝟎 , 𝟎) is p && A (𝟏 , 𝟏) is p && A (𝟐 , 𝟐) is p
     d₁ = A (𝟎 , 𝟐) is p && A (𝟏 , 𝟏) is p && A (𝟐 , 𝟎) is p
+
     line = l₀ || l₁ || l₂
     col  = c₀ || c₁ || c₂
     diag = d₀ || d₁
@@ -750,7 +745,10 @@ t = optimal-outcome tic-tac-toe
 
 \end{code}
 
-Another, more efficient, version of tic-tac-toe:
+The above computation takes too long, due to the use of brute-force search.
+
+The following is another, more efficient, version of tic-tac-toe, with
+a more refined exhaustive search that allows us to compute answers.
 
 \begin{code}
 
@@ -760,8 +758,7 @@ data 𝟛 : Type where
 tic-tac-toe₂J : GameJ 𝟛
 tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
  where
-  open import MoreTypes
-
+  open import NonSpartanMLTTTypes
 
   data Player : Type where
    O X : Player

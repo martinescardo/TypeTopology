@@ -6,7 +6,7 @@ Non-spartan types in MLTT, which are definable from spartan MLTT, but we include
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module MoreTypes where
+module NonSpartanMLTTTypes where
 
 open import SpartanMLTT
 
@@ -198,6 +198,10 @@ pattern 𝟕 = suc 𝟔
 pattern 𝟖 = suc 𝟕
 pattern 𝟗 = suc 𝟖
 
+list-Fin : (n : ℕ) → List (Fin n)
+list-Fin zero     = []
+list-Fin (succ n) = 𝟎 ∷ map suc (list-Fin n)
+
 Fin-== : {n : ℕ} → Fin n → Fin n → Bool
 Fin-== {succ n} (suc x) (suc y) = Fin-== {n} x y
 Fin-== {succ n} (suc x) 𝟎       = false
@@ -213,10 +217,5 @@ module _ {n : ℕ} where
   eqFin : Eq (Fin n)
   _==_    {{eqFin}} = Fin-== {n}
   ==-refl {{eqFin}} = Fin-refl {n}
-
-list-Fin : (n : ℕ) → List (Fin n)
-list-Fin zero     = []
-list-Fin (succ n) = 𝟎 ∷ map suc (list-Fin n)
-
 
 \end{code}
