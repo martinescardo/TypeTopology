@@ -175,13 +175,13 @@ import List
 import LPO
 import Lumsdaine
 import MGS-TypeTopology-Interface
-import MoreTypes
 import NaturalNumbers
 import NaturalNumbers-Properties
 import NaturalsAddition
 import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
+import NonSpartanMLTTTypes
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
