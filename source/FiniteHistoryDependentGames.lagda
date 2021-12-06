@@ -884,22 +884,31 @@ tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
 t₂ : R tic-tac-toe₂
 t₂ = optimal-outcome tic-tac-toe₂
 
-s₀ : Path (Xt tic-tac-toe₂)
-s₀ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
+s₂ : Path (Xt tic-tac-toe₂)
+s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
 
-l₀ : ℕ
-l₀ = plength s₀
+l₂ : ℕ
+l₂ = plength s₂
 
 {- Slow:
 
-l₀-test : l₀ ≡ 9
-l₀-test = refl
+t₂-test : t₂ ≡ draw
+t₂-test = refl
 
 -}
 
+{- Slow:
+
+l₂-test : l₂ ≡ 9
+l₂-test = refl
+
+-}
+
+{- slow
+
 open import NonSpartanMLTTTypes
 
-s₀-test : s₀ ≡ (𝟎 :: refl)
+s₂-test : s₀ ≡ (𝟎 :: refl)
            :: ((𝟒 :: refl)
            :: ((𝟏 :: refl)
            :: ((𝟐 :: refl)
@@ -909,7 +918,8 @@ s₀-test : s₀ ≡ (𝟎 :: refl)
            :: ((𝟕 :: refl)
            :: ((𝟖 :: refl)
            :: ⟨⟩))))))))
-s₀-test = refl
+s₂-test = refl
+-}
 
 \end{code}
 
