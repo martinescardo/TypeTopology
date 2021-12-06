@@ -801,10 +801,10 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
     play : moves available → Board
     play (c , e) = (O , insert c xs , os)
 
-    arginf : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
-    arginf ms       m X-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
-    arginf []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
-    arginf (x ∷ xs) m O-wins  q = ι γ
+    argmax : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+    argmax ms       m X-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
+    argmax []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
+    argmax (x ∷ xs) m O-wins  q = ι γ
      where
       ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
       ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
@@ -813,9 +813,9 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
       a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
       a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
       γ : moves (x ∷ xs)
-      γ = arginf xs x (q (x , a)) q'
+      γ = argmax xs x (q (x , a)) q'
 
-    arginf us@(x ∷ ms) m draw q = g us c
+    argmax us@(x ∷ ms) m draw q = g us c
      where
       c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
       c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
@@ -831,7 +831,7 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
 
     h : (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
     h []       e q = 𝟘-elim (true-is-not-false e)
-    h (m ∷ ms) e q = arginf ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+    h (m ∷ ms) e q = argmax ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
 
   transition b@(O , xs , os) =
    if wins xs
@@ -846,10 +846,10 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
     play : moves available → Board
     play (c , e) = (X , xs , insert c os)
 
-    argsup : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
-    argsup ms       m O-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
-    argsup []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
-    argsup (x ∷ xs) m X-wins  q = ι γ
+    argmax : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+    argmax ms       m O-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
+    argmax []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
+    argmax (x ∷ xs) m X-wins  q = ι γ
      where
       ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
       ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
@@ -858,9 +858,9 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
       a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
       a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
       γ : moves (x ∷ xs)
-      γ = argsup xs x (q (x , a)) q'
+      γ = argmax xs x (q (x , a)) q'
 
-    argsup us@(x ∷ ms) m draw q = g us c
+    argmax us@(x ∷ ms) m draw q = g us c
      where
       c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
       c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
@@ -876,7 +876,7 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
 
     h : (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
     h []       e q = 𝟘-elim (true-is-not-false e)
-    h (m ∷ ms) e q = argsup ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+    h (m ∷ ms) e q = argmax ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
 
 tic-tac-toe₂ : Game
 tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
