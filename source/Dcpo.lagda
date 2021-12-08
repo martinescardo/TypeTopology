@@ -56,16 +56,16 @@ module _ {𝓤 𝓣 : Universe}
  is-sup s α = (is-upperbound s α)
             × ((u : D) → is-upperbound u α → s ⊑ u)
 
- is-sup-gives-is-upperbound : {I : 𝓥 ̇ } {s : D} {α : I → D}
-                            → is-sup s α
-                            → is-upperbound s α
- is-sup-gives-is-upperbound i = pr₁ i
+ sup-is-upperbound : {I : 𝓥 ̇ } {s : D} {α : I → D}
+                   → is-sup s α
+                   → is-upperbound s α
+ sup-is-upperbound i = pr₁ i
 
- is-sup-gives-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } {s : D} {α : I → D}
-                                           → is-sup s α
-                                           → (u : D)
-                                           → is-upperbound u α → s ⊑ u
- is-sup-gives-is-lowerbound-of-upperbounds i = pr₂ i
+ sup-is-lowerbound-of-upperbounds : {I : 𝓥 ̇ } {s : D} {α : I → D}
+                                  → is-sup s α
+                                  → (u : D)
+                                  → is-upperbound u α → s ⊑ u
+ sup-is-lowerbound-of-upperbounds i = pr₂ i
 
  has-sup : {I : 𝓥 ̇ } → (I → D) → 𝓤 ⊔ 𝓥 ⊔ 𝓣 ̇
  has-sup α = Σ s ꞉ D , is-sup s α
@@ -76,21 +76,31 @@ module _ {𝓤 𝓣 : Universe}
  sup-property : {I : 𝓥 ̇ } {α : I → D} (h : has-sup α) → is-sup (the-sup h) α
  sup-property (s , i) = i
 
+ is-inhabited : (X : 𝓥 ̇ ) → 𝓥 ̇
+ is-inhabited = ∥_∥
+
+ is-semidirected : {I : 𝓥 ̇  } → (I → D) → 𝓥 ⊔ 𝓣 ̇
+ is-semidirected {I} α = (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
+
  is-directed : {I : 𝓥 ̇ } → (I → D) → 𝓥 ⊔ 𝓣 ̇
- is-directed {I} α = ∥ I ∥ × ((i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k))
+ is-directed {I} α = is-inhabited I × is-semidirected α
 
- is-directed-gives-inhabited : {I : 𝓥 ̇ } (α : I → D) → is-directed α → ∥ I ∥
- is-directed-gives-inhabited α = pr₁
+ directed-implies-inhabited : {I : 𝓥 ̇ } (α : I → D) → is-directed α → ∥ I ∥
+ directed-implies-inhabited α = pr₁
 
- is-directed-order : {I : 𝓥 ̇ } (α : I → D) → is-directed α
-                   → (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
- is-directed-order α = pr₂
+ directed-implies-semidirected : {I : 𝓥 ̇ } (α : I → D) → is-directed α
+                               → (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
+ directed-implies-semidirected α = pr₂
+
+ being-inhabited-is-prop : {I : 𝓥 ̇ } → is-prop (is-inhabited I)
+ being-inhabited-is-prop = ∥∥-is-prop
+
+ being-semidirected-is-prop : {I : 𝓥 ̇  } (α : I → D) → is-prop (is-semidirected α)
+ being-semidirected-is-prop α = Π₂-is-prop fe (λ i j → ∥∥-is-prop)
 
  being-directed-is-prop : {I : 𝓥 ̇ } (α : I → D) → is-prop (is-directed α)
- being-directed-is-prop α = ×-is-prop ∥∥-is-prop
-                            (Π-is-prop fe
-                               (λ i → Π-is-prop fe
-                                       (λ j → ∥∥-is-prop )))
+ being-directed-is-prop α =
+  ×-is-prop being-inhabited-is-prop (being-semidirected-is-prop α)
 
  is-directed-complete : 𝓤 ⊔ (𝓥 ⁺) ⊔ 𝓣  ̇
  is-directed-complete = (I : 𝓥 ̇ ) (α : I → D) → is-directed α → has-sup α
@@ -134,22 +144,11 @@ module _ {𝓤 𝓣 : Universe}
    γ : dcpo-axioms → is-prop dcpo-axioms
    γ (s , p , r , t , a , c) =
     ×-is-prop  (being-set-is-prop fe)
-    (×-is-prop (Π-is-prop fe
-                 (λ (x : D) → Π-is-prop fe
-                                (λ (y : D) → being-prop-is-prop fe)))
-    (×-is-prop (Π-is-prop fe (λ (x : D) → p x x))
-    (×-is-prop (Π-is-prop fe
-                 (λ (x : D) → Π-is-prop fe
-                               (λ (y : D) → Π-is-prop fe
-                                             (λ (z : D) → Π-is-prop fe
-                                                           (λ (l : x ⊑ y) → Π-is-prop fe
-                                                                             (λ (m : y ⊑ z) → p x z))))))
-    (×-is-prop (Π-is-prop fe
-                 (λ (x : D) → Π-is-prop fe
-                               (λ y → Π-is-prop fe
-                                       (λ (l : x ⊑ y) → Π-is-prop fe
-                                                         λ (m : y ⊑ x) → s))))
-              (being-directed-complete-is-prop (s , p , r , t , a , c))))))
+    (×-is-prop (Π₂-is-prop fe (λ x y → being-prop-is-prop fe))
+    (×-is-prop (Π-is-prop fe (λ x → p x x))
+    (×-is-prop (Π₅-is-prop fe (λ x y z k l → p x z))
+    (×-is-prop (Π₄-is-prop fe (λ x y k l → s))
+    (being-directed-complete-is-prop (s , p , r , t , a , c))))))
 
 module _ {𝓤 𝓣 : Universe} where
 
@@ -203,12 +202,15 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → 𝓥 ⊔ 𝓣 ̇
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
- is-Directed-gives-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α → ∥ I ∥
- is-Directed-gives-inhabited 𝓓 α = pr₁
+ Directed-implies-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
+                            → is-Directed 𝓓 α → ∥ I ∥
+ Directed-implies-inhabited 𝓓 α = pr₁
 
- is-Directed-order : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → is-Directed 𝓓 α
-                   → (i j : I) → ∃ k ꞉ I , (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k)
- is-Directed-order 𝓓 α = pr₂
+ Directed-implies-semidirected : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
+                               → is-Directed 𝓓 α
+                               → (i j : I)
+                               → ∃ k ꞉ I , (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k)
+ Directed-implies-semidirected 𝓓 α = pr₂
 
  ∐ : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
  ∐ 𝓓 {I} {α} δ = pr₁ (directed-completeness 𝓓 I α δ)
@@ -222,8 +224,10 @@ module _ {𝓤 𝓣 : Universe} where
                  → ((i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
  ∐-is-upperbound 𝓓 δ = pr₁ (∐-is-sup 𝓓 δ)
 
- ∐-is-lowerbound-of-upperbounds : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} (δ : is-Directed 𝓓 α)
-                                → ((u : ⟨ 𝓓 ⟩) → ((i : I) → α i ⊑⟨ 𝓓 ⟩ u) → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ u)
+ ∐-is-lowerbound-of-upperbounds : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
+                                  (δ : is-Directed 𝓓 α)
+                                → ((u : ⟨ 𝓓 ⟩) → ((i : I) → α i ⊑⟨ 𝓓 ⟩ u)
+                                               → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ u)
  ∐-is-lowerbound-of-upperbounds 𝓓 δ = pr₂ (∐-is-sup 𝓓 δ)
 
 \end{code}
@@ -282,11 +286,8 @@ is-continuous 𝓓 𝓔 f = (I : 𝓥 ̇ ) (α : I → ⟨ 𝓓 ⟩) (δ : is-Di
 being-continuous-is-prop : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
                            → is-prop (is-continuous 𝓓 𝓔 f)
 being-continuous-is-prop 𝓓 𝓔 f =
-   Π-is-prop fe
-    (λ I → Π-is-prop fe
-            (λ α → Π-is-prop fe
-                     (λ δ → is-sup-is-prop (underlying-order 𝓔)
-                            (axioms-of-dcpo 𝓔) (f (∐ 𝓓 δ)) (f ∘ α))))
+ Π₃-is-prop fe (λ I α δ → is-sup-is-prop (underlying-order 𝓔)
+                                         (axioms-of-dcpo 𝓔) (f (∐ 𝓓 δ)) (f ∘ α))
 
 DCPO[_,_] : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
 DCPO[ 𝓓 , 𝓔 ] = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩), is-continuous 𝓓 𝓔 f
@@ -330,27 +331,28 @@ continuous-functions-are-monotone 𝓓 𝓔 (f , cts) x y l = γ
    b = transport (λ - → is-sup (underlying-order 𝓔) - (f ∘ α)) (ap f (a ⁻¹))
        (cts (𝟙 + 𝟙) α δ)
    γ : f x ⊑⟨ 𝓔 ⟩ f y
-   γ = is-sup-gives-is-upperbound (underlying-order 𝓔) b (inl *)
+   γ = sup-is-upperbound (underlying-order 𝓔) b (inl *)
 
 constant-functions-are-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                                     (e : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ d → e)
-constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v where
- u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
- u i = reflexivity 𝓔 e
- v : (y : ⟨ 𝓔 ⟩) → ((i : I) → e ⊑⟨ 𝓔 ⟩ y) → e ⊑⟨ 𝓔 ⟩ y
- v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) (λ (i : I) → l i)
-          (is-directed-gives-inhabited (underlying-order 𝓓) α δ)
+constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v
+ where
+  u : (i : I) → e ⊑⟨ 𝓔 ⟩ e
+  u i = reflexivity 𝓔 e
+  v : (y : ⟨ 𝓔 ⟩) → ((i : I) → e ⊑⟨ 𝓔 ⟩ y) → e ⊑⟨ 𝓔 ⟩ y
+  v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) (λ (i : I) → l i)
+            (Directed-implies-inhabited 𝓓 α δ)
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
 image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
- (is-Directed-gives-inhabited 𝓓 α δ) , γ
+ (Directed-implies-inhabited 𝓓 α δ) , γ
   where
    γ : (i j : I)
      → ∃ k ꞉ I , f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k)
-   γ i j = ∥∥-functor h (is-Directed-order 𝓓 α δ i j)
+   γ i j = ∥∥-functor h (Directed-implies-semidirected 𝓓 α δ i j)
     where
      h : (Σ k ꞉ I , (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
        → Σ k ꞉ I , f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k)
@@ -371,11 +373,11 @@ continuous-function-∐-≡ 𝓓 𝓔 (f , c) {I} {α} δ =
    ε : is-Directed 𝓔 (f ∘ α)
    ε = image-is-directed 𝓓 𝓔 (f , c) δ
    a : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ)
-   a = is-sup-gives-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
+   a = sup-is-lowerbound-of-upperbounds (underlying-order 𝓔) s
        (∐ 𝓔 (image-is-directed 𝓓 𝓔 (f , c) δ))
        (∐-is-upperbound 𝓔 ε)
    b : ∐ 𝓔 ε  ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
    b = ∐-is-lowerbound-of-upperbounds 𝓔 ε (f (∐ 𝓓 δ))
-       (is-sup-gives-is-upperbound (underlying-order 𝓔) s)
+       (sup-is-upperbound (underlying-order 𝓔) s)
 
 \end{code}
