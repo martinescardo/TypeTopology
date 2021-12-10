@@ -35,7 +35,7 @@ open import SpartanMLTT hiding (J)
 open import UF-Base
 open import UF-FunExt
 
-module FiniteHistoryDependentGames (fe : Fun-Ext) where
+module FiniteHistoryDependentGamesNew (fe : Fun-Ext) where
 
 \end{code}
 
@@ -754,6 +754,11 @@ a more refined exhaustive search that allows us to compute answers.
 data 𝟛 : Type where
  O-wins draw X-wins : 𝟛
 
+flip : 𝟛 → 𝟛
+flip O-wins = X-wins
+flip draw   = draw
+flip X-wins = O-wins
+
 tic-tac-toe₂J : GameJ 𝟛
 tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
  where
@@ -761,6 +766,10 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
 
   data Player : Type where
    O X : Player
+
+  opponent-wins : Player → 𝟛
+  opponent-wins X = O-wins
+  opponent-wins O = X-wins
 
   Cell = Fin 9
 
@@ -770,16 +779,20 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   -- The player in a board is the player who plays next.
   Board = Player × List Cell × List Cell
 
-  wins : List Cell → Bool
-  wins = some-contained ((𝟎 ∷ 𝟏 ∷ 𝟐 ∷ [])
-                       ∷ (𝟑 ∷ 𝟒 ∷ 𝟓 ∷ [])
-                       ∷ (𝟔 ∷ 𝟕 ∷ 𝟖 ∷ [])
-                       ∷ (𝟎 ∷ 𝟑 ∷ 𝟔 ∷ [])
-                       ∷ (𝟏 ∷ 𝟒 ∷ 𝟕 ∷ [])
-                       ∷ (𝟐 ∷ 𝟓 ∷ 𝟖 ∷ [])
-                       ∷ (𝟎 ∷ 𝟒 ∷ 𝟖 ∷ [])
-                       ∷ (𝟐 ∷ 𝟒 ∷ 𝟔 ∷ [])
-                       ∷ [])
+  winning : List Cell → Bool
+  winning = some-contained ((𝟎 ∷ 𝟏 ∷ 𝟐 ∷ [])
+                          ∷ (𝟑 ∷ 𝟒 ∷ 𝟓 ∷ [])
+                          ∷ (𝟔 ∷ 𝟕 ∷ 𝟖 ∷ [])
+                          ∷ (𝟎 ∷ 𝟑 ∷ 𝟔 ∷ [])
+                          ∷ (𝟏 ∷ 𝟒 ∷ 𝟕 ∷ [])
+                          ∷ (𝟐 ∷ 𝟓 ∷ 𝟖 ∷ [])
+                          ∷ (𝟎 ∷ 𝟒 ∷ 𝟖 ∷ [])
+                          ∷ (𝟐 ∷ 𝟒 ∷ 𝟔 ∷ [])
+                          ∷ [])
+
+  wins : Board → Bool
+  wins (O , xs , os) = winning os
+  wins (X , xs , os) = winning xs
 
   board₀ : Board
   board₀ = (X , [] , [])
@@ -787,96 +800,99 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   moves : List Cell → Type
   moves xs = Σ c ꞉ Cell , ((c is-in xs) ≡ true)
 
+  argmax : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+  argmax ms       m X-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
+  argmax []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
+  argmax (x ∷ xs) m O-wins  q = ι γ
+   where
+    ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
+    ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
+    q' : moves (x ∷ xs) → 𝟛
+    q' m = q (ι m)
+    a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
+    a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
+    γ : moves (x ∷ xs)
+    γ = argmax xs x (q (x , a)) q'
+
+  argmax us@(x ∷ ms) m draw q = g us c
+   where
+    c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
+    c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
+    g : (vs : List Cell) → vs contained-in us ≡ true → moves (m ∷ us)
+    g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
+    g (y ∷ vs) c = k (q (y , a))
+     where
+      a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
+      a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
+      k : 𝟛 → moves (m ∷ us)
+      k X-wins = y , a
+      k r      = g vs (pr₂ (&&-gives-× c))
+
+  argmin' : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+  argmin' ms m r q = argmax ms m (flip r) (λ xs → flip (q xs))
+
+  argmin : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
+  argmin ms       m O-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
+  argmin []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
+  argmin (x ∷ xs) m X-wins  q = ι γ
+   where
+    ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
+    ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
+    q' : moves (x ∷ xs) → 𝟛
+    q' m = q (ι m)
+    a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
+    a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
+    γ : moves (x ∷ xs)
+    γ = argmin xs x (q (x , a)) q'
+
+  argmin us@(x ∷ ms) m draw q = g us c
+   where
+    c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
+    c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
+    g : (vs : List Cell) → vs contained-in us ≡ true → moves (m ∷ us)
+    g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
+    g (y ∷ vs) c = k (q (y , a))
+     where
+      a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
+      a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
+      k : 𝟛 → moves (m ∷ us)
+      k O-wins = y , a
+      k r      = g vs (pr₂ (&&-gives-× c))
+
+  arg : Player → (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
+  arg _ []       e q = 𝟘-elim (true-is-not-false e)
+  arg X (m ∷ ms) e q = argmax ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+  arg O (m ∷ ms) e q = argmin ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+
+  available : Board → List Cell
+  available (_ , xs , os) = allMoves minus (xs ++ os)
+
+  play : (b : Board) → moves (available b) → Board
+  play (X , xs , os) (c , e) = (O , insert c xs , os)
+  play (O , xs , os) (c , e) = (X , xs , insert c os)
+
+
   transition : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
-  transition b@(X , xs , os) =
-   if wins os
-   then inl O-wins
-   else Bool-equality-cases (empty available)
-        (λ (_ : empty available ≡ true)  → inl draw)
-        (λ (e : empty available ≡ false) → inr (moves available , play , h available e))
-   where
-    available : List Cell
-    available = allMoves minus (xs ++ os)
+  transition b@(player , xs , os) =
+   if wins b
+   then inl (opponent-wins player)
+   else Bool-equality-cases (empty (available b))
+         (λ (_ : empty (available b) ≡ true)  → inl draw)
+         (λ (e : empty (available b) ≡ false) → inr (moves (available b) ,
+                                                     play b ,
+                                                     arg player (available b) e))
 
-    play : moves available → Board
-    play (c , e) = (O , insert c xs , os)
+  transition' : Board → 𝟛 + (Σ M ꞉ Type , (M → Board) × J 𝟛 M)
+  transition' b@(player , xs , os) =
+   if wins b
+   then inl (opponent-wins player)
+   else Case available b of
+         (λ a p → Bool-equality-cases (empty a)
+                 (λ (_ : empty a ≡ true)  → inl draw)
+                 (λ (e : empty a ≡ false) → inr (moves a ,
+                                                 (λ (m : moves a) → play b (transport moves p m)) ,
+                                                  arg player a e)))
 
-    argmax : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
-    argmax ms       m X-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
-    argmax []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
-    argmax (x ∷ xs) m O-wins  q = ι γ
-     where
-      ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
-      ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
-      q' : moves (x ∷ xs) → 𝟛
-      q' m = q (ι m)
-      a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
-      a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
-      γ : moves (x ∷ xs)
-      γ = argmax xs x (q (x , a)) q'
-
-    argmax us@(x ∷ ms) m draw q = g us c
-     where
-      c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
-      c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
-      g : (vs : List Cell) → vs contained-in us ≡ true → moves (m ∷ us)
-      g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
-      g (y ∷ vs) c = k (q (y , a))
-       where
-        a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
-        a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
-        k : 𝟛 → moves (m ∷ us)
-        k X-wins = y , a
-        k r      = g vs (pr₂ (&&-gives-× c))
-
-    h : (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
-    h []       e q = 𝟘-elim (true-is-not-false e)
-    h (m ∷ ms) e q = argmax ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
-
-  transition b@(O , xs , os) =
-   if wins xs
-   then inl X-wins
-   else Bool-equality-cases (empty available)
-         (λ (_ : empty available ≡ true)  → inl draw)
-         (λ (e : empty available ≡ false) → inr (moves available , play , h available e))
-   where
-    available : List Cell
-    available = allMoves minus (xs ++ os)
-
-    play : moves available → Board
-    play (c , e) = (X , xs , insert c os)
-
-    argmax : (ms : List Cell) (m : Cell) → 𝟛 → (moves (m ∷ ms) → 𝟛) → moves (m ∷ ms)
-    argmax ms       m O-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
-    argmax []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
-    argmax (x ∷ xs) m X-wins  q = ι γ
-     where
-      ι : moves (x ∷ xs) → moves (m ∷ x ∷ xs)
-      ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
-      q' : moves (x ∷ xs) → 𝟛
-      q' m = q (ι m)
-      a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
-      a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
-      γ : moves (x ∷ xs)
-      γ = argmax xs x (q (x , a)) q'
-
-    argmax us@(x ∷ ms) m draw q = g us c
-     where
-      c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
-      c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
-      g : (vs : List Cell) → vs contained-in us ≡ true → moves (m ∷ us)
-      g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
-      g (y ∷ vs) c = k (q (y , a))
-       where
-        a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
-        a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
-        k : 𝟛 → moves (m ∷ us)
-        k O-wins = y , a
-        k r      = g vs (pr₂ (&&-gives-× c))
-
-    h : (ms : List Cell) → empty ms ≡ false →  J 𝟛 (moves ms)
-    h []       e q = 𝟘-elim (true-is-not-false e)
-    h (m ∷ ms) e q = argmax ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
 
 tic-tac-toe₂ : Game
 tic-tac-toe₂ = Game-from-GameJ tic-tac-toe₂J
@@ -890,12 +906,9 @@ s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-ta
 l₂ : ℕ
 l₂ = plength s₂
 
-{- Slow:
-
 t₂-test : t₂ ≡ draw
 t₂-test = refl
 
--}
 
 {- Slow:
 
@@ -908,7 +921,7 @@ l₂-test = refl
 
 open import NonSpartanMLTTTypes
 
-s₂-test : s₀ ≡ (𝟎 :: refl)
+s₂-test : s₂ ≡ (𝟎 :: refl)
            :: ((𝟒 :: refl)
            :: ((𝟏 :: refl)
            :: ((𝟐 :: refl)

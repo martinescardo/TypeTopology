@@ -1,4 +1,4 @@
-Martin Escardo 2021
+Martin Escardo and Paulo Oliva 2021
 
 Non-spartan types in MLTT, which are definable from spartan MLTT, but we include here for some work on game theory with Paulo Oliva.
 
@@ -177,8 +177,8 @@ module _ {𝓤 : Universe}
 
  remove : X → List X → List X
  remove x []       = []
- remove x (y ∷ ys) = if x == y then remove x ys else (y ∷ remove x ys)
-                     -- if x == y then ys else (y ∷ remove x ys)
+ remove x (y ∷ ys) = -- if x == y then remove x ys else (y ∷ remove x ys)
+                     if x == y then ys else (y ∷ remove x ys)
 
  _minus_ : List X → List X → List X
  xs minus []       = xs
