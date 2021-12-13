@@ -895,12 +895,12 @@ s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-ta
 l₂ : ℕ
 l₂ = plength s₂
 
--- {- Slow
+{- Slow
 
 t₂-test : t₂ ≡ draw
 t₂-test = refl
 
--- -}
+-}
 
 {- Slow:
 
