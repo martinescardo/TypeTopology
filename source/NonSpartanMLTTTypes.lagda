@@ -115,74 +115,81 @@ map : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
 map f []       = []
 map f (x ∷ xs) = f x ∷ map f xs
 
-module _ {𝓤 : Universe}
-         {X : 𝓤 ̇ }
-         {{_ : Eq X}}
-       where
+module list-util
+          {𝓤 : Universe}
+          {X : 𝓤 ̇ }
+          {{_ : Eq X}}
+        where
 
- _is-in_ : X → List X → Bool
- x is-in []       = false
- x is-in (y ∷ ys) = (x == y) || (x is-in ys)
+  _is-in_ : X → List X → Bool
+  x is-in []       = false
+  x is-in (y ∷ ys) = (x == y) || (x is-in ys)
 
- insert : X → List X → List X
- insert x xs = x ∷ xs
+  insert : X → List X → List X
+  insert x xs = x ∷ xs
 
- _contained-in_ : List X → List X → Bool
- []       contained-in ys = true
- (x ∷ xs) contained-in ys = (x is-in ys) && (xs contained-in ys)
+  _contained-in_ : List X → List X → Bool
+  []       contained-in ys = true
+  (x ∷ xs) contained-in ys = (x is-in ys) && (xs contained-in ys)
 
- contained-lemma₀ : (x z : X) (xs ys : List X)
-                  → ys contained-in (x ∷ xs) ≡ true
-                  → ys contained-in (x ∷ z ∷ xs) ≡ true
- contained-lemma₀ x z xs []       e = e
- contained-lemma₀ x z xs (y ∷ ys) e = γ
-  where
-   IH : ys contained-in (x ∷ xs) ≡ true → ys contained-in (x ∷ z ∷ xs) ≡ true
-   IH = contained-lemma₀ x z xs ys
+  contained-lemma₀ : (x z : X) (xs ys : List X)
+                   → ys contained-in (x ∷ xs) ≡ true
+                   → ys contained-in (x ∷ z ∷ xs) ≡ true
+  contained-lemma₀ x z xs []       e = e
+  contained-lemma₀ x z xs (y ∷ ys) e = γ
+   where
+    IH : ys contained-in (x ∷ xs) ≡ true → ys contained-in (x ∷ z ∷ xs) ≡ true
+    IH = contained-lemma₀ x z xs ys
 
-   e₁ : (y == x) || (y is-in xs) ≡ true
-   e₁ = pr₁ (&&-gives-× e)
+    e₁ : (y == x) || (y is-in xs) ≡ true
+    e₁ = pr₁ (&&-gives-× e)
 
-   e₂ : ys contained-in (x ∷ xs) ≡ true
-   e₂ = pr₂ (&&-gives-× e)
+    e₂ : ys contained-in (x ∷ xs) ≡ true
+    e₂ = pr₂ (&&-gives-× e)
 
-   a : (y == x) || ((y == z) || (y is-in xs)) ≡ true
-   a = Cases (||-gives-+ e₁)
-        (λ (e : (y == x) ≡ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
-        (λ (e : y is-in xs ≡ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
+    a : (y == x) || ((y == z) || (y is-in xs)) ≡ true
+    a = Cases (||-gives-+ e₁)
+         (λ (e : (y == x) ≡ true)   → ||-left-intro ((y == z) || (y is-in xs)) e)
+         (λ (e : y is-in xs ≡ true) → ||-right-intro {y == x} ((y == z) || (y is-in xs)) (||-right-intro (y is-in xs) e))
 
-   b : ys contained-in (x ∷ z ∷ xs) ≡ true
-   b = IH e₂
+    b : ys contained-in (x ∷ z ∷ xs) ≡ true
+    b = IH e₂
 
-   γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ≡ true
-   γ = &&-intro a b
+    γ : ((y == x) || ((y == z) || (y is-in xs))) && (ys contained-in (x ∷ z ∷ xs)) ≡ true
+    γ = &&-intro a b
 
- contained-lemma₁ : (x : X) (ys : List X)
-                  → ys contained-in (x ∷ ys) ≡ true
- contained-lemma₁ x []       = refl
- contained-lemma₁ x (y ∷ ys) = γ
-  where
-   IH : ys contained-in (x ∷ ys) ≡ true
-   IH = contained-lemma₁ x ys
-   a : y == x || (y == y || (y is-in ys)) ≡ true
-   a = ||-right-intro {y == x} ((y == y) || (y is-in ys)) (||-left-intro (y is-in ys) (==-refl y))
-   b : ys contained-in (x ∷ y ∷ ys) ≡ true
-   b = contained-lemma₀ x y ys ys IH
-   γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ≡ true
-   γ = &&-intro a b
+  contained-lemma₁ : (x : X) (ys : List X)
+                   → ys contained-in (x ∷ ys) ≡ true
+  contained-lemma₁ x []       = refl
+  contained-lemma₁ x (y ∷ ys) = γ
+   where
+    IH : ys contained-in (x ∷ ys) ≡ true
+    IH = contained-lemma₁ x ys
 
- some-contained : List (List X) → List X → Bool
- some-contained []         ys = false
- some-contained (xs ∷ xss) ys = xs contained-in ys || some-contained xss ys
+    a : y == x || (y == y || (y is-in ys)) ≡ true
+    a = ||-right-intro {y == x} ((y == y) || (y is-in ys)) (||-left-intro (y is-in ys) (==-refl y))
 
- remove : X → List X → List X
- remove x []       = []
- remove x (y ∷ ys) = -- if x == y then remove x ys else (y ∷ remove x ys)
-                     if x == y then ys else (y ∷ remove x ys)
+    b : ys contained-in (x ∷ y ∷ ys) ≡ true
+    b = contained-lemma₀ x y ys ys IH
 
- _minus_ : List X → List X → List X
- xs minus []       = xs
- xs minus (y ∷ ys) = (remove y xs) minus ys
+    γ : (y == x || (y == y || (y is-in ys))) && (ys contained-in (x ∷ y ∷ ys)) ≡ true
+    γ = &&-intro a b
+
+  some-contained : List (List X) → List X → Bool
+  some-contained []         ys = false
+  some-contained (xs ∷ xss) ys = xs contained-in ys || some-contained xss ys
+
+  remove-first : X → List X → List X
+  remove-first x []       = []
+  remove-first x (y ∷ ys) = if x == y then ys else (y ∷ remove-first x ys)
+
+  remove-all : X → List X → List X
+  remove-all x []       = []
+  remove-all x (y ∷ ys) = if x == y then remove-all x ys else (y ∷ remove-all x ys)
+
+  _minus_ : List X → List X → List X
+  xs minus []       = xs
+  xs minus (y ∷ ys) = (remove-all y xs) minus ys
 
 data Fin : ℕ → 𝓤₀  ̇  where
  𝟎   : {n : ℕ} → Fin (succ n)
