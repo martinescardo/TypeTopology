@@ -117,7 +117,7 @@ import BuraliForti
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
-import Codistance              -- By Todd Waugh Ambridge and Martin Escardo
+import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
@@ -125,7 +125,7 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
--- import CubicalBinarySystem -- works with Agda 2.6.2 only. By Martin Escardo. and Alex Rice
+-- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DisconnectedTypes
@@ -303,7 +303,7 @@ import CantorSearch
 import CircleConstruction
 import CircleInduction
 import CircleModules
-import Codistance
+import Closeness
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
