@@ -154,32 +154,52 @@ K-sequence : {Xt : DTT} {R : Type} → 𝓚 R Xt → K R (Path Xt)
 K-sequence {[]}     ⟨⟩        q = q ⟨⟩
 K-sequence {X ∷ Xf} (ϕ :: ϕf) q = ϕ (λ x → K-sequence {Xf x} (ϕf x) (λ xs → q (x :: xs)))
 
-J-sequence : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
-J-sequence {[]}     ⟨⟩        q = ⟨⟩
-J-sequence {X ∷ Xf} (ε :: εf) q = h :: t h
+J-sequence₀ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence₀ {[]}     ⟨⟩        q = ⟨⟩
+J-sequence₀ {X ∷ Xf} (ε :: εf) q = h :: t h
  where
   t : (x : X) → Path (Xf x)
-  t x = J-sequence {Xf x} (εf x) (λ xs → q (x :: xs))
+  t x = J-sequence₀ {Xf x} (εf x) (λ xs → q (x :: xs))
 
   h : X
   h = ε (λ x → q (x :: t x))
 
 \end{code}
 
-This us of case-of doesn't seem to make evaluation faster:
+This use of case-of doesn't seem to make evaluation faster:
 
 \begin{code}
 
-J-sequence' : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
-J-sequence' {[]}     ⟨⟩        q = ⟨⟩
-J-sequence' {X ∷ Xf} (ε :: εf) q = γ
+J-sequence₁ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence₁ {[]}     ⟨⟩        q = ⟨⟩
+J-sequence₁ {X ∷ Xf} (ε :: εf) q = γ
  where
   t : (x : X) → Path (Xf x)
-  t x = J-sequence' {Xf x} (εf x) (λ xs → q (x :: xs))
+  t x = J-sequence₁ {Xf x} (εf x) (λ xs → q (x :: xs))
+
+  ν : X → Path (X ∷ Xf)
+  ν x = x :: t x
+
+  x₀ : X
+  x₀ = ε (λ x → q (ν x))
 
   γ : Path (X ∷ Xf)
-  γ = case ε (λ x → q (x :: t x)) of
-       (λ h → h :: t h)
+  γ = ν x₀
+
+\end{code}
+
+Or this:
+
+\begin{code}
+
+J-sequence₂ : {Xt : DTT} {R : Type} → 𝓙 R Xt → J R (Path Xt)
+J-sequence₂ {[]}     _         q = ⟨⟩
+J-sequence₂ {X ∷ Xf} (ε :: εf) q = ν (ε (λ x → q (ν x)))
+ where
+  ν : X → Path (X ∷ Xf)
+  ν x = x :: J-sequence₂ {Xf x} (εf x) (λ xs → q (x :: xs))
+
+J-sequence = J-sequence₂
 
 \end{code}
 
@@ -808,14 +828,22 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
   Move : List Cell → Type
   Move xs = Σ c ꞉ Cell , ((c is-in xs) ≡ true)
 
-  argmax : (ms : List Cell) (m : Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
-  argmax ms       m X-wins  q = m , need m == m || (m is-in ms) ≡ true
+\end{code}
+
+The following definition of argmax is somewhat convoluted because it
+is optimized for time, by minimizing the number of evaluations of the
+predicate q:
+
+\begin{code}
+
+  argmax : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
+  argmax m ms       X-wins  q = m , need m == m || (m is-in ms) ≡ true
                                     which-is-given-by ||-left-intro _ (==-refl m)
 
-  argmax []       m r       q = m , need m == m || (m is-in []) ≡ true
+  argmax m []       r       q = m , need m == m || (m is-in []) ≡ true
                                     which-is-given-by ||-left-intro _ (==-refl m)
 
-  argmax (x ∷ xs) m O-wins  q = ι γ
+  argmax m (x ∷ xs) O-wins  q = ι γ
    where
     ι : Move (x ∷ xs) → Move (m ∷ x ∷ xs)
     ι (c , e) = c , need c == m || (c is-in (x ∷ xs)) ≡ true
@@ -828,9 +856,9 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
     a = ||-right-intro {x == m} _ (||-left-intro _ (==-refl x))
 
     γ : Move (x ∷ xs)
-    γ = argmax xs x (q (x , a)) q'
+    γ = argmax x xs (q (x , a)) q'
 
-  argmax us@(x ∷ ms) m draw q = g us c
+  argmax m us@(x ∷ ms) draw q = g us c
    where
     c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
     c = &&-intro (||-left-intro _ (==-refl x)) (contained-lemma₁ x ms)
@@ -851,13 +879,13 @@ tic-tac-toe₂J = build-GameJ draw Board transition 9 board₀
       k X-wins = y , a
       k r      = g vs b
 
-  argmin : (ms : List Cell) (m : Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
-  argmin ms m r q = argmax ms m (flip r) (λ xs → flip (q xs))
+  argmin : (m : Cell) (ms : List Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
+  argmin m ms r q = argmax m ms (flip r) (λ xs → flip (q xs))
 
   arg : Player → (ms : List Cell) → empty ms ≡ false →  J 𝟛 (Move ms)
   arg _ []       e q = 𝟘-elim (true-is-not-false e)
-  arg X (m ∷ ms) e q = argmax ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
-  arg O (m ∷ ms) e q = argmin ms m (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+  arg X (m ∷ ms) e q = argmax m ms (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
+  arg O (m ∷ ms) e q = argmin m ms (q (m , ||-left-intro (m is-in ms) (==-refl m))) q
 
   play : (b : Board) → Move (available-moves b) → Board
   play (board X as xs os) (c , e) = board O (remove-first c as) (insert c xs) os
@@ -937,33 +965,3 @@ data DTT' (X : Type) : Type₁ where
   _∷_ : (A : X → Type) (Xf : (x : X) → A x → DTT' X) → DTT' X
 
 \end{code}
-
-Just in case we need this in the future:
-{-
-  argmin : (ms : List Cell) (m : Cell) → 𝟛 → (Move (m ∷ ms) → 𝟛) → Move (m ∷ ms)
-  argmin ms       m O-wins  q = m , ||-left-intro (m is-in ms) (==-refl m)
-  argmin []       m r       q = m , ||-left-intro (m is-in []) (==-refl m)
-  argmin (x ∷ xs) m X-wins  q = ι γ
-   where
-    ι : Move (x ∷ xs) → Move (m ∷ x ∷ xs)
-    ι (c , e) = c , ||-right-intro {c == m} (c is-in (x ∷ xs)) e
-    q' : Move (x ∷ xs) → 𝟛
-    q' m = q (ι m)
-    a : (x == m) || ((x == x) || (x is-in xs)) ≡ true
-    a = ||-right-intro {x == m} ((x == x) || (x is-in xs)) (||-left-intro (x is-in xs) (==-refl x))
-    γ : Move (x ∷ xs)
-    γ = argmin xs x (q (x , a)) q'
-  argmin us@(x ∷ ms) m draw q = g us c
-   where
-    c : ((x == x) || (x is-in ms)) && (ms contained-in (x ∷ ms)) ≡ true
-    c = &&-intro (||-left-intro (x is-in ms) (==-refl x)) (contained-lemma₁ x ms)
-    g : (vs : List Cell) → vs contained-in us ≡ true → Move (m ∷ us)
-    g []       c = m , ||-left-intro (m is-in (x ∷ ms)) (==-refl m)
-    g (y ∷ vs) c = k (q (y , a))
-     where
-      a : (y == m) || ((y == x) || (y is-in ms)) ≡ true
-      a = ||-right-intro {y == m} ((y == x) || (y is-in ms)) (pr₁ (&&-gives-× c))
-      k : 𝟛 → Move (m ∷ us)
-      k O-wins = y , a
-      k r      = g vs (pr₂ (&&-gives-× c))
--}
