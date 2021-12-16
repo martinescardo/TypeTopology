@@ -205,31 +205,31 @@ module _ {𝓥 : Universe} where
               (sup-is-upperbound (underlying-order (𝓓 ⁻)) IH)
 
   -- TODO: Continue here
-  iter-c : ℕ → DCPO[ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]
+  iter-c : ℕ → DCPO[ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]
   iter-c n = iter n , iter-is-continuous n
 
-  iter-is-ω-chain : (n : ℕ) → (iter-c n) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟹ᵈᶜᵖᵒ ⟪ 𝓓 ⟫ ⟩
+  iter-is-ω-chain : (n : ℕ) → (iter-c n) ⊑⟨ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻) ⟩
                               (iter-c (succ n))
   iter-is-ω-chain zero     f = ⊥-is-least 𝓓 (iter (succ zero) f)
-  iter-is-ω-chain (succ n) f = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f
+  iter-is-ω-chain (succ n) f = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) f
                                (iter n f)
                                (iter (succ n) f)
                                (iter-is-ω-chain n f)
 
   iter-increases : (n m : ℕ) → (n ≤ m)
-                 → (iter-c n) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟹ᵈᶜᵖᵒ ⟪ 𝓓 ⟫ ⟩ (iter-c m)
+                 → (iter-c n) ⊑⟨ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻) ⟩ (iter-c m)
   iter-increases n zero l     f = transport
-                                  (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter zero f)
+                                  (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter zero f)
                                   (unique-minimal n l ⁻¹)
-                                  (reflexivity ⟪ 𝓓 ⟫ (iter zero f))
+                                  (reflexivity (𝓓 ⁻) (iter zero f))
   iter-increases n (succ m) l f = h (≤-split n m l)
    where
-    h : (n ≤ m) + (n ≡ succ m) → (iter n f) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ m) f
-    h (inl l') = transitivity ⟪ 𝓓 ⟫ (iter n f) (iter m f) (iter (succ m) f)
+    h : (n ≤ m) + (n ≡ succ m) → (iter n f) ⊑⟪ 𝓓 ⟫ iter (succ m) f
+    h (inl l') = transitivity (𝓓 ⁻) (iter n f) (iter m f) (iter (succ m) f)
                  (iter-increases n m l' f)
                  (iter-is-ω-chain m f)
-    h (inr e)  = transport (λ - → iter - f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter (succ m) f) (e ⁻¹)
-                 (reflexivity ⟪ 𝓓 ⟫ (iter (succ m) f))
+    h (inr e)  = transport (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter (succ m) f) (e ⁻¹)
+                 (reflexivity (𝓓 ⁻) (iter (succ m) f))
 
 \end{code}
 
@@ -250,80 +250,80 @@ module _ where
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
-  iter-is-directed : is-directed (λ F G → ∀ f → F f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ G f) (iter 𝓓)
+  iter-is-directed : is-directed (λ F G → ∀ f → F f ⊑⟪ 𝓓 ⟫ G f) (iter 𝓓)
   iter-is-directed = ∣ zero ∣ , δ
    where
     δ : (i j : ℕ)
-      → ∃ k ꞉ ℕ , ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
-                × ((f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 k f)
+      → ∃ k ꞉ ℕ , ((f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 i f ⊑⟪ 𝓓 ⟫ iter 𝓓 k f)
+                × ((f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 j f ⊑⟪ 𝓓 ⟫ iter 𝓓 k f)
     δ i j = ∣ i +' j , l , m ∣
      where
-      l : (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 i f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 (i +' j) f
+      l : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 i f ⊑⟪ 𝓓 ⟫ iter 𝓓 (i +' j) f
       l = iter-increases 𝓓 i (i +' j)
           (cosubtraction i (i +' j) (j , (addition-commutativity j i)))
-      m : (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]) → iter 𝓓 j f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter 𝓓 (i +' j) f
+      m : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 j f ⊑⟪ 𝓓 ⟫ iter 𝓓 (i +' j) f
       m = iter-increases 𝓓 j (i +' j) (cosubtraction j (i +' j) (i , refl))
 
-  μ : DCPO[ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]
-  μ = continuous-functions-sup ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓) iter-is-directed
+  μ : DCPO[ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) , (𝓓 ⁻) ]
+  μ = continuous-functions-sup ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) iter-is-directed
 
-  μ-gives-a-fixed-point : (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ])
-                        → underlying-function ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ μ f
-                          ≡ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f
-                            (underlying-function ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ μ f))
-  μ-gives-a-fixed-point fc = antisymmetry ⟪ 𝓓 ⟫ (ν fc) (f (ν fc)) l m
+  μ-gives-a-fixed-point : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ])
+                        → underlying-function ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) μ f
+                          ≡ (underlying-function (𝓓 ⁻) (𝓓 ⁻) f
+                            (underlying-function ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) μ f))
+  μ-gives-a-fixed-point fc = antisymmetry (𝓓 ⁻) (ν fc) (f (ν fc)) l m
    where
-    ν : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ] → ⟨ ⟪ 𝓓 ⟫ ⟩
-    ν = underlying-function ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ μ
-    f : ⟨ ⟪ 𝓓 ⟫ ⟩ → ⟨ ⟪ 𝓓 ⟫ ⟩
-    f = underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc
-    δ : is-directed (underlying-order ⟪ 𝓓 ⟫)
-     (pointwise-family ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓) fc)
-    δ = pointwise-family-is-directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓)
+    ν : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ] → ⟪ 𝓓 ⟫
+    ν = underlying-function ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) μ
+    f : ⟪ 𝓓 ⟫ → ⟪ 𝓓 ⟫
+    f = underlying-function (𝓓 ⁻) (𝓓 ⁻) fc
+    δ : is-directed (underlying-order (𝓓 ⁻))
+     (pointwise-family ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) fc)
+    δ = pointwise-family-is-directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓)
         iter-is-directed fc
 
-    l : ν fc ⊑⟨ ⟪ 𝓓 ⟫ ⟩ f (ν fc)
-    l = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ δ (f (ν fc)) h
+    l : ν fc ⊑⟪ 𝓓 ⟫ f (ν fc)
+    l = ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) δ (f (ν fc)) h
      where
-      h : (n : ℕ) → iter 𝓓 n fc ⊑⟨ ⟪ 𝓓 ⟫ ⟩ f (ν fc)
+      h : (n : ℕ) → iter 𝓓 n fc ⊑⟪ 𝓓 ⟫ f (ν fc)
       h zero     = ⊥-is-least 𝓓 (f (ν fc))
-      h (succ n) = continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc
+      h (succ n) = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) fc
                    (iter 𝓓 n fc)
                    (ν fc)
-                   (∐-is-upperbound ⟪ 𝓓 ⟫ δ n)
+                   (∐-is-upperbound (𝓓 ⁻) δ n)
 
-    m : f (ν fc) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ν fc
-    m = sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫)
-        (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc ℕ α δ) (ν fc) k
+    m : f (ν fc) ⊑⟪ 𝓓 ⟫ ν fc
+    m = sup-is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
+        (continuity-of-function (𝓓 ⁻) (𝓓 ⁻) fc ℕ α δ) (ν fc) k
      where
-      α : ℕ → ⟨ ⟪ 𝓓 ⟫ ⟩
-      α = pointwise-family ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓) fc
-      k : (n : ℕ) → underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc (α n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ν fc
-      k n = transitivity ⟪ 𝓓 ⟫
+      α : ℕ → ⟪ 𝓓 ⟫
+      α = pointwise-family ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) fc
+      k : (n : ℕ) → underlying-function (𝓓 ⁻) (𝓓 ⁻) fc (α n) ⊑⟪ 𝓓 ⟫ ν fc
+      k n = transitivity (𝓓 ⁻)
             (f (α n)) (α (succ n)) (ν fc)
             p q
        where
-        p : underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc (α n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ α (succ n)
-        p = reflexivity ⟪ 𝓓 ⟫ (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc (α n))
-        q : α (succ n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ν fc
-        q = ∐-is-upperbound ⟪ 𝓓 ⟫ δ (succ n)
+        p : underlying-function (𝓓 ⁻) (𝓓 ⁻) fc (α n) ⊑⟪ 𝓓 ⟫ α (succ n)
+        p = reflexivity (𝓓 ⁻) (underlying-function (𝓓 ⁻) (𝓓 ⁻) fc (α n))
+        q : α (succ n) ⊑⟪ 𝓓 ⟫ ν fc
+        q = ∐-is-upperbound (𝓓 ⁻) δ (succ n)
 
   μ-gives-lowerbound-of-fixed-points :
-      (f : DCPO[ ⟪ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ])
-      (d : ⟨ ⟪ 𝓓 ⟫ ⟩)
-    → underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d  ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
-    → (underlying-function ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ μ) f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+      (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ])
+      (d : ⟪ 𝓓 ⟫)
+    → underlying-function (𝓓 ⁻) (𝓓 ⁻) f d  ⊑⟪ 𝓓 ⟫ d
+    → (underlying-function ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) μ) f ⊑⟪ 𝓓 ⟫ d
   μ-gives-lowerbound-of-fixed-points f d l =
-   ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫
-   (pointwise-family-is-directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟪ 𝓓 ⟫ (iter-c 𝓓)
+   ∐-is-lowerbound-of-upperbounds (𝓓 ⁻)
+   (pointwise-family-is-directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓)
     iter-is-directed f)
    d g
     where
-     g : (n : ℕ) → iter 𝓓 n f ⊑⟨ ⟪ 𝓓 ⟫ ⟩ d
+     g : (n : ℕ) → iter 𝓓 n f ⊑⟪ 𝓓 ⟫ d
      g zero     = ⊥-is-least 𝓓 d
-     g (succ n) = transitivity ⟪ 𝓓 ⟫
-                  (iter 𝓓 (succ n) f) (underlying-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f d) d
-                  (continuous-functions-are-monotone ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ f
+     g (succ n) = transitivity (𝓓 ⁻)
+                  (iter 𝓓 (succ n) f) (underlying-function (𝓓 ⁻) (𝓓 ⁻) f d) d
+                  (continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) f
                     (iter 𝓓 n f) d (g n))
                   l
 
