@@ -944,28 +944,30 @@ More tests.
 
 \begin{code}
 
-open import NonSpartanMLTTTypes
+module test where
 
-ε₂ : J Bool Bool
-ε₂ p = p true
+ open import NonSpartanMLTTTypes
 
-h : ℕ → DTT
-h 0        = []
-h (succ n) = Bool ∷ λ _ → h n
+ ε₂ : J Bool Bool
+ ε₂ p = p true
 
-εs : (n : ℕ) → 𝓙 Bool (h n)
-εs 0        = ⟨⟩
-εs (succ n) = ε₂ :: λ _ → εs n
+ h : ℕ → DTT
+ h 0        = []
+ h (succ n) = Bool ∷ λ _ → h n
 
-js : (n : ℕ) → J Bool (Path (h n))
-js n = J-sequence (εs n)
+ εs : (n : ℕ) → 𝓙 Bool (h n)
+ εs 0        = ⟨⟩
+ εs (succ n) = ε₂ :: λ _ → εs n
 
-qq : (n : ℕ) → Path (h n) → Bool
-qq 0        ⟨⟩        = true
-qq (succ n) (x :: xs) = not x && qq n xs
+ ε : (n : ℕ) → J Bool (Path (h n))
+ ε n = J-sequence (εs n)
 
-test : (n : ℕ) → Path (h n)
-test n = js n (qq n)
+ qq : (n : ℕ) → Path (h n) → Bool
+ qq 0        ⟨⟩        = true
+ qq (succ n) (x :: xs) = not x && qq n xs
+
+ test : (n : ℕ) → Path (h n)
+ test n = ε n (qq n)
 
 \end{code}
 
