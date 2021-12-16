@@ -56,6 +56,10 @@ Bool-equality-cases : {A : 𝓤 ̇ } (x : Bool) → (x ≡ true → A) → (x �
 Bool-equality-cases true  f g = f refl
 Bool-equality-cases false f g = g refl
 
+not : Bool → Bool
+not false = true
+not true  = false
+
 _||_ _&&_ : Bool → Bool → Bool
 
 true  || y = true

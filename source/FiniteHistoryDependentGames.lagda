@@ -166,7 +166,8 @@ J-sequence₀ {X ∷ Xf} (ε :: εf) q = h :: t h
 
 \end{code}
 
-This use of case-of doesn't seem to make evaluation faster:
+Try to make faster, exploiting Agda's evaluation strategy, but this
+doesn't seem to make any difference:
 
 \begin{code}
 
@@ -220,17 +221,7 @@ record Game : Type₁ where
 
 open Game
 
-record Game⁻ : Type₁ where
- constructor game⁻
- field
-  Xt  : DTT
-  R   : Type
-  q   : Path Xt → R
-
 \end{code}
-
-TODO. Game⁻ ≃ (Σ R : Type, DDTT R). Idea: In Game⁻, we know how to play
-the game, but we don't know what the objective of the game is.
 
 We can think of Xt as the rules of the game, and R, ϕt and q as the
 objective of the game.
@@ -355,11 +346,13 @@ sgpe-lemma : (Xt : DTT) {R : Type} (ϕt : 𝓚 R Xt) (q : Path Xt → R) (σ : S
 sgpe-lemma []       ⟨⟩        q ⟨⟩        ⟨⟩       = refl
 sgpe-lemma (X ∷ Xf) (ϕ :: ϕt) q (a :: σf) (h :: t) = γ
  where
-  IH : (x : X) → is-sgpe (ϕt x) (λ xs → q (x :: xs)) (σf x)
-               → K-sequence (ϕt x) (λ xs → q (x :: xs)) ≡ q (x :: strategic-path (σf x))
-  IH x = sgpe-lemma (Xf x) (ϕt x) (λ (xs : Path (Xf x)) → q (x :: xs)) (σf x)
+  observation-t : type-of t ≡ ((x : X) → is-sgpe (ϕt x) (λ xs → q (x :: xs)) (σf x))
+  observation-t = refl
 
-  γ = ϕ (λ x → K-sequence (ϕt x) (λ xs → q (x :: xs))) ≡⟨ ap ϕ (dfunext fe (λ x → IH x (t x))) ⟩
+  IH : (x : X) → K-sequence (ϕt x) (λ xs → q (x :: xs)) ≡ q (x :: strategic-path (σf x))
+  IH x = sgpe-lemma (Xf x) (ϕt x) (λ (xs : Path (Xf x)) → q (x :: xs)) (σf x) (t x)
+
+  γ = ϕ (λ x → K-sequence (ϕt x) (λ xs → q (x :: xs))) ≡⟨ ap ϕ (dfunext fe IH) ⟩
       ϕ (λ x → q (x :: strategic-path (σf x)))         ≡⟨ h ⁻¹ ⟩
       q (a :: strategic-path (σf a))                   ∎
 
@@ -908,6 +901,9 @@ t₂ = optimal-outcome tic-tac-toe₂
 s₂ : Path (Xt tic-tac-toe₂)
 s₂ = strategic-path (selection-strategy (selections tic-tac-toe₂J) (q tic-tac-toe₂))
 
+u₂ : Path (Xt tic-tac-toe₂)
+u₂ = J-sequence (selections tic-tac-toe₂J) (q tic-tac-toe₂)
+
 l₂ : ℕ
 l₂ = plength s₂
 
@@ -929,7 +925,7 @@ l₂-test = refl
 
 open import NonSpartanMLTTTypes
 
-s₂-test : s₂ ≡ (𝟎 :: refl)
+u₂-test : s₂ ≡ (𝟎 :: refl)
            :: ((𝟒 :: refl)
            :: ((𝟏 :: refl)
            :: ((𝟐 :: refl)
@@ -939,10 +935,41 @@ s₂-test : s₂ ≡ (𝟎 :: refl)
            :: ((𝟕 :: refl)
            :: ((𝟖 :: refl)
            :: ⟨⟩))))))))
-s₂-test = refl
+u₂-test = refl
 -}
 
 \end{code}
+
+More tests.
+
+\begin{code}
+
+open import NonSpartanMLTTTypes
+
+ε₂ : J Bool Bool
+ε₂ p = p true
+
+h : ℕ → DTT
+h 0        = []
+h (succ n) = Bool ∷ λ _ → h n
+
+εs : (n : ℕ) → 𝓙 Bool (h n)
+εs 0        = ⟨⟩
+εs (succ n) = ε₂ :: λ _ → εs n
+
+js : (n : ℕ) → J Bool (Path (h n))
+js n = J-sequence (εs n)
+
+qq : (n : ℕ) → Path (h n) → Bool
+qq 0        ⟨⟩        = true
+qq (succ n) (x :: xs) = not x && qq n xs
+
+test : (n : ℕ) → Path (h n)
+test n = js n (qq n)
+
+\end{code}
+
+
 
 TODO. Generalize the above to multi-valued quantifiers, as in [1], using monads.
 
@@ -964,4 +991,15 @@ data DTT' (X : Type) : Type₁ where
   []  : DTT' X
   _∷_ : (A : X → Type) (Xf : (x : X) → A x → DTT' X) → DTT' X
 
+record Game⁻ : Type₁ where
+ constructor game⁻
+ field
+  Xt  : DTT
+  R   : Type
+  q   : Path Xt → R
+
 \end{code}
+
+TODO. Game⁻ ≃ (Σ R : Type, DDTT R) for a suitable definition of
+DDTT. Idea: In Game⁻, we know how to play the game, but we don't know
+what the objective of the game is.
