@@ -85,12 +85,12 @@ module _ {𝓤 𝓣 : Universe}
  is-directed : {I : 𝓥 ̇ } → (I → D) → 𝓥 ⊔ 𝓣 ̇
  is-directed {I} α = is-inhabited I × is-semidirected α
 
- directed-implies-inhabited : {I : 𝓥 ̇ } (α : I → D) → is-directed α → ∥ I ∥
- directed-implies-inhabited α = pr₁
+ inhabited-if-directed : {I : 𝓥 ̇ } (α : I → D) → is-directed α → ∥ I ∥
+ inhabited-if-directed α = pr₁
 
- directed-implies-semidirected : {I : 𝓥 ̇ } (α : I → D) → is-directed α
+ semidirected-if-directed : {I : 𝓥 ̇ } (α : I → D) → is-directed α
                                → (i j : I) → ∃ k ꞉ I , (α i ⊑ α k) × (α j ⊑ α k)
- directed-implies-semidirected α = pr₂
+ semidirected-if-directed α = pr₂
 
  being-inhabited-is-prop : {I : 𝓥 ̇ } → is-prop (is-inhabited I)
  being-inhabited-is-prop = ∥∥-is-prop
@@ -202,15 +202,15 @@ module _ {𝓤 𝓣 : Universe} where
  is-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩) → 𝓥 ⊔ 𝓣 ̇
  is-Directed 𝓓 α = is-directed (underlying-order 𝓓) α
 
- Directed-implies-inhabited : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
-                            → is-Directed 𝓓 α → ∥ I ∥
- Directed-implies-inhabited 𝓓 α = pr₁
+ inhabited-if-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
+                       → is-Directed 𝓓 α → ∥ I ∥
+ inhabited-if-Directed 𝓓 α = pr₁
 
- Directed-implies-semidirected : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
+ semidirected-if-Directed : (𝓓 : DCPO) {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
                                → is-Directed 𝓓 α
                                → (i j : I)
                                → ∃ k ꞉ I , (α i ⊑⟨ 𝓓 ⟩ α k) × (α j ⊑⟨ 𝓓 ⟩ α k)
- Directed-implies-semidirected 𝓓 α = pr₂
+ semidirected-if-Directed 𝓓 α = pr₂
 
  ∐ : (𝓓 : DCPO) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩} → is-Directed 𝓓 α → ⟨ 𝓓 ⟩
  ∐ 𝓓 {I} {α} δ = pr₁ (directed-completeness 𝓓 I α δ)
@@ -341,18 +341,18 @@ constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v
   u i = reflexivity 𝓔 e
   v : (y : ⟨ 𝓔 ⟩) → ((i : I) → e ⊑⟨ 𝓔 ⟩ y) → e ⊑⟨ 𝓔 ⟩ y
   v y l  = ∥∥-rec (prop-valuedness 𝓔 e y) (λ (i : I) → l i)
-            (Directed-implies-inhabited 𝓓 α δ)
+            (inhabited-if-Directed 𝓓 α δ)
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇ } {α : I → ⟨ 𝓓 ⟩}
                   → is-Directed 𝓓 α
                   → is-Directed 𝓔 ((underlying-function 𝓓 𝓔 f) ∘ α)
 image-is-directed 𝓓 𝓔 (f , c) {I} {α} δ =
- (Directed-implies-inhabited 𝓓 α δ) , γ
+ (inhabited-if-Directed 𝓓 α δ) , γ
   where
    γ : (i j : I)
      → ∃ k ꞉ I , f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k)
-   γ i j = ∥∥-functor h (Directed-implies-semidirected 𝓓 α δ i j)
+   γ i j = ∥∥-functor h (semidirected-if-Directed 𝓓 α δ i j)
     where
      h : (Σ k ꞉ I , (α i) ⊑⟨ 𝓓 ⟩ (α k) × (α j) ⊑⟨ 𝓓 ⟩ (α k))
        → Σ k ꞉ I , f (α i) ⊑⟨ 𝓔 ⟩ f (α k) × f (α j) ⊑⟨ 𝓔 ⟩ f (α k)

@@ -57,8 +57,8 @@ module DcpoConstructionsGeneral
                                → is-directed (underlying-order 𝓔)
                                   (pointwise-family α d)
   pointwise-family-is-directed {I} α δ d =
-   (is-directed-gives-inhabited _hom-⊑_ α δ) ,
-   λ (i j : I) → ∥∥-functor (h i j) ((is-directed-order _hom-⊑_ α δ) i j)
+   (inhabited-if-directed _hom-⊑_ α δ) ,
+   λ (i j : I) → ∥∥-functor (h i j) ((semidirected-if-directed _hom-⊑_ α δ) i j)
     where
      β : ⟨ 𝓓 ⟩ → I → ⟨ 𝓔 ⟩
      β = pointwise-family α
@@ -108,7 +108,7 @@ module DcpoConstructionsGeneral
           q = ∐-is-lowerbound-of-upperbounds 𝓔 (ε (∐ 𝓓 φ)) y h
            where
             h : (i' : I) → β (∐ 𝓓 φ) i' ⊑⟨ 𝓔 ⟩ y
-            h i' = is-sup-gives-is-lowerbound-of-upperbounds (underlying-order 𝓔)
+            h i' = sup-is-lowerbound-of-upperbounds (underlying-order 𝓔)
                    (continuity-of-function 𝓓 𝓔 (α i') J γ φ) y m
              where
               m : (j : J) → underlying-function 𝓓 𝓔 (α i') (γ j) ⊑⟨ 𝓔 ⟩ y
@@ -271,7 +271,7 @@ This will be used in ScottModelOfPCF.
                   where
                    h : (j : I) → (pr₁ (f (α j)) (g (α i))) ⊑⟨ 𝓕 ⟩ y
                    h j = ∥∥-rec (prop-valuedness 𝓕 (pr₁ (f (α j)) (g (α i))) y)
-                         r (is-Directed-order 𝓓 α δ i j)
+                         r (semidirected-if-Directed 𝓓 α δ i j)
                     where
                      r : (Σ  k ꞉ I , α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
                        → (underlying-function 𝓔 𝓕 (f (α j)) (g (α i))) ⊑⟨ 𝓕 ⟩ y
@@ -412,11 +412,11 @@ lowest universe), because ℕ lives in 𝓤₀.
                          (δ : is-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α)
                          (n : ℕ) → is-Directed ⟪ 𝓓 ⟫ (n-family α n)
   n-family-is-directed {I} α δ n =
-    is-Directed-gives-inhabited ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ , ε
+    inhabited-if-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ , ε
    where
     ε : (i j : I) →  ∃  k ꞉ I , (n-family α n i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k) ×
                                   (n-family α n j) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ (n-family α n k)
-    ε i j = ∥∥-functor h (is-Directed-order ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ i j)
+    ε i j = ∥∥-functor h (semidirected-if-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ i j)
      where
       h : (Σ  k ꞉ I , (α i) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ (α k) ×
                         (α j) ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ (α k))
@@ -450,7 +450,7 @@ lowest universe), because ℕ lives in 𝓤₀.
      where
       g : (i : I)
         → (pointwise-family ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ α (∐ ⟪ 𝓓 ⟫ (φ n)) i) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ y
-      g i = is-sup-gives-is-lowerbound-of-upperbounds
+      g i = sup-is-lowerbound-of-upperbounds
              (underlying-order ⟪ 𝓓 ⟫) s y u
        where
         β : I → ⟨ ⟪ 𝓓 ⟫ ⟩
@@ -460,7 +460,7 @@ lowest universe), because ℕ lives in 𝓤₀.
         s = continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ (α i) I (n-family α n) (φ n)
         u : (j : I) → underlying-order ⟪ 𝓓 ⟫ (β j) y
         u j = ∥∥-rec (prop-valuedness ⟪ 𝓓 ⟫ (β j) y) v
-               (is-Directed-order ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ i j)
+               (semidirected-if-Directed ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α δ i j)
                 where
           v : (Σ  k ꞉ I , α i ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ α k
                           × α j ⊑⟨ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ ⟩ α k)
@@ -553,14 +553,14 @@ lowest universe), because ℕ lives in 𝓤₀.
                (iter n ∘ α)
           IH = iter-is-continuous n I α δ
           l : iter n s ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
-          l = is-sup-gives-is-lowerbound-of-upperbounds
+          l = sup-is-lowerbound-of-upperbounds
               (underlying-order ⟪ 𝓓 ⟫) IH
               (∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
               (∐-is-upperbound ⟪ 𝓓 ⟫ (n-family-is-directed α δ n))
           m : ∐ ⟪ 𝓓 ⟫ (n-family-is-directed α δ n) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ iter n s
           m = ∐-is-lowerbound-of-upperbounds ⟪ 𝓓 ⟫ (n-family-is-directed α δ n)
               (iter n s)
-              (is-sup-gives-is-upperbound (underlying-order ⟪ 𝓓 ⟫) IH)
+              (sup-is-upperbound (underlying-order ⟪ 𝓓 ⟫) IH)
 
   iter-c : ℕ → DCPO[ ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ , ⟪ 𝓓 ⟫ ]
   iter-c n = iter n , iter-is-continuous n
@@ -638,7 +638,7 @@ module _ where
                    (∐-is-upperbound ⟪ 𝓓 ⟫ δ n)
 
     m : f (ν fc) ⊑⟨ ⟪ 𝓓 ⟫ ⟩ ν fc
-    m = is-sup-gives-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫)
+    m = sup-is-lowerbound-of-upperbounds (underlying-order ⟪ 𝓓 ⟫)
         (continuity-of-function ⟪ 𝓓 ⟫ ⟪ 𝓓 ⟫ fc ℕ α δ) (ν fc) k
      where
       α : ℕ → ⟨ ⟪ 𝓓 ⟫ ⟩
@@ -706,7 +706,7 @@ In the following we show that the lifting of a set is a 𝓤₀-dcpo with bottom
                                           → (δ : is-directed _⊑'_ α )
                                           → wconstant (family-value-map α)
    directed-family-value-map-is-wconstant {I} α δ (i₀ , d₀) (i₁ , d₁) =
-    γ (is-directed-order _⊑'_ α δ i₀ i₁)
+    γ (semidirected-if-directed _⊑'_ α δ i₀ i₁)
      where
       f : Σ (λ i → is-defined (α i)) → X
       f = family-value-map α
@@ -947,7 +947,7 @@ future work.
          where
           r : a ≡ pr₁ f l
           r = ∥∥-rec (lifting-of-set-is-set ℕ-is-set)
-               h (is-Directed-gives-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
+               h (inhabited-if-Directed ⟪ 𝓛ᵈℕ ⟫ α δ)
            where
             h : (i : I) → a ≡ pr₁ f l
             h i = a                         ≡⟨ g ⟩
@@ -1122,7 +1122,7 @@ future work.
          where
           r : b ≡ pr₁ (pr₁ f b) l
           r = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h
-               (is-Directed-gives-inhabited ⟪ 𝓛ᵈℕ ⟫ α δ)
+               (inhabited-if-Directed ⟪ 𝓛ᵈℕ ⟫ α δ)
            where
             h : (i : I) → b ≡ pr₁ (pr₁ f b) l
             h i = b                         ≡⟨ g ⟩
