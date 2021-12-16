@@ -71,7 +71,7 @@ module _ {𝓥 : Universe} where
                    (δ : is-Directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) α)
                    (n : ℕ)
                  → ∐ (𝓓 ⁻) (pointwise-family-is-directed (𝓓 ⁻) (𝓓 ⁻) α δ
-                    (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))
+                           (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))
                    ≡ ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))
   double-∐-lemma {I} α δ n = antisymmetry (𝓓 ⁻) x y a b
    where
@@ -107,45 +107,33 @@ module _ {𝓥 : Universe} where
           v : (Σ  k ꞉ I , α i ⊑⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α k
                           × α j ⊑⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α k)
             → β j ⊑⟪ 𝓓 ⟫ y
-          v (k , l , m) = transitivity (𝓓 ⁻) (β j) (iter (succ n) (α k)) y p q
+          v (k , l , m) = β j                                 ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
+                          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ α k ⟩ (iter n (α j)) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
+                          iter (succ n) (α k)                 ⊑⟪ 𝓓 ⟫[ ⦅3⦆ ]
+                          y                                   ∎⟪ 𝓓 ⟫
            where
-            q : iter (succ n) (α k) ⊑⟪ 𝓓 ⟫ y
-            q = ∐-is-upperbound (𝓓 ⁻) (φ (succ n)) k
-            p : β j ⊑⟪ 𝓓 ⟫ iter (succ n) (α k)
-            p = transitivity (𝓓 ⁻)
-                (β j)
-                (underlying-function (𝓓 ⁻) (𝓓 ⁻) (α k) (iter n (α j)))
-                (iter (succ n) (α k))
-                p₀ p₁
-             where
-              p₀ : β j ⊑⟪ 𝓓 ⟫ underlying-function (𝓓 ⁻) (𝓓 ⁻) (α k)
-                                   (iter n (α j))
-              p₀ = l (iter n (α j))
-              p₁ : underlying-function (𝓓 ⁻) (𝓓 ⁻) (α k) (iter n (α j))
-                   ⊑⟪ 𝓓 ⟫ iter (succ n) (α k)
-              p₁ = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) (α k)
+            ⦅1⦆ = l (iter n (α j))
+            ⦅2⦆ = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) (α k)
                    (iter n (α j))
                    (iter n (α k))
                    (iter-is-monotone n (α j) (α k) m)
+            ⦅3⦆ = ∐-is-upperbound (𝓓 ⁻) (φ (succ n)) k
 
     b : y ⊑⟪ 𝓓 ⟫ x
     b = ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) (φ (succ n)) x h
      where
       h : (i : I) → (n-family α (succ n) i) ⊑⟪ 𝓓 ⟫ x
-      h i = transitivity (𝓓 ⁻) (n-family α (succ n) i)
-             (underlying-function (𝓓 ⁻) (𝓓 ⁻) (α i) (∐ (𝓓 ⁻) (φ n))) x p q
+      h i = n-family α (succ n) i                ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
+            [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ α i ⟩ (∐ (𝓓 ⁻) (φ n)) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
+            x                                    ∎⟪ 𝓓 ⟫
        where
-        p : iter (succ n) (α i) ⊑⟪ 𝓓 ⟫ underlying-function (𝓓 ⁻) (𝓓 ⁻)
-             (α i) (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
-        p = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) (α i)
-             (iter n (α i))
-             (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
-             (∐-is-upperbound (𝓓 ⁻) (φ n) i)
-        q : (underlying-function (𝓓 ⁻) (𝓓 ⁻) (α i)
-             (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))
-            ⊑⟪ 𝓓 ⟫ x
-        q = ∐-is-upperbound (𝓓 ⁻) ε i
+        ⦅1⦆ = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) (α i)
+               (iter n (α i))
+               (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
+               (∐-is-upperbound (𝓓 ⁻) (φ n) i)
+        ⦅2⦆ = ∐-is-upperbound (𝓓 ⁻) ε i
 
+  -- TODO: Continue here
   iter-is-continuous : (n : ℕ) → is-continuous ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter n)
   iter-is-continuous zero     I α δ = a , b
    where
