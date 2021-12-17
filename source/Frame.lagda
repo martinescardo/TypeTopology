@@ -431,6 +431,19 @@ binary-family {A = A} 𝓦 x y = 𝟚 𝓦  , α
   α (inl *) = x
   α (inr *) = y
 
+fmap-binary-family : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
+                   → (𝓦 : Universe)
+                   → (f : A → B)
+                   → (x y : A)
+                   → ⁅ f z ∣ z ε (binary-family 𝓦 x y) ⁆
+                   ≡ binary-family 𝓦 (f x) (f y)
+fmap-binary-family 𝓦 f x y = ap (λ - → 𝟚 𝓦 , -) (dfunext fe γ)
+ where
+  γ : ⁅ f z ∣ z ε binary-family 𝓦 x y ⁆ [_] ∼ binary-family 𝓦 (f x) (f y) [_]
+  γ (inl *) = refl
+  γ (inr *) = refl
+
+
 binary-join : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
 binary-join {𝓦 = 𝓦} F x y = ⋁[ F ] binary-family 𝓦 x y
 
@@ -713,12 +726,13 @@ distributivity′ F x S =
 binary-distributivity : (F : frame 𝓤 𝓥 𝓦)
                       → {x y z : ⟨ F ⟩}
                       → x ∧[ F ] (y ∨[ F ] z) ≡ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)
-binary-distributivity F {x} {y} {z} =
- x ∧[ F ] (y ∨[ F ] z)                           ≡⟨ distributivity F x _ ⟩
- ⋁⟨ i ⟩ (x ∧[ F ] ((binary-family _ y z) [ i ])) ≡⟨ {!!} ⟩
- (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)                ∎
+binary-distributivity {𝓦 = 𝓦} F {x} {y} {z} =
+ x ∧[ F ] (y ∨[ F ] z)                            ≡⟨ † ⟩
+ ⋁[ F ] ⁅ x ∧[ F ] w ∣ w ε binary-family 𝓦 y z ⁆  ≡⟨ ‡ ⟩
+ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)                 ∎
   where
-   open JoinNotation (λ - → ⋁[ F ] -)
+   † = distributivity F x (binary-family 𝓦 y z)
+   ‡ = ap (λ - → join-of F -) (fmap-binary-family 𝓦 (λ - → x ∧[ F ] -) y z)
 
 \end{code}
 
