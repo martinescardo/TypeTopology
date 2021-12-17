@@ -15,7 +15,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@type-topology-fix
+      uses: ayberkt/agda-github-action@v2.0
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source
