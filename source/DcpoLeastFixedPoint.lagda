@@ -100,7 +100,7 @@ module _ {𝓥 : Universe} where
         s : is-sup (underlying-order (𝓓 ⁻))
              (pointwise-family (𝓓 ⁻) (𝓓 ⁻) α (∐ (𝓓 ⁻) (φ n)) i) β
         s = continuity-of-function (𝓓 ⁻) (𝓓 ⁻) (α i) I (n-family α n) (φ n)
-        u : (j : I) → underlying-order (𝓓 ⁻) (β j) y
+        u : (j : I) → β j ⊑⟨ 𝓓 ⁻ ⟩ y
         u j = ∥∥-rec (prop-valuedness (𝓓 ⁻) (β j) y) v
                (semidirected-if-Directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) α δ i j)
                 where
@@ -154,39 +154,32 @@ module _ {𝓥 : Universe} where
           (∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n)))
           (iter (succ n) ∘ α)
       k = ∐-is-sup (𝓓 ⁻) (n-family-is-directed α δ (succ n))
-      h = iter (succ n) s  ≡⟨ refl ⟩
-          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (iter n s)
-
-               ≡⟨ ap ([ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩) e ⟩
-
-          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
-
-               ≡⟨ refl ⟩
-
+      h = iter (succ n) s                                           ≡⟨ refl ⟩
+          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (iter n s)                             ≡⟨ ⦅1⦆  ⟩
+          [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩ (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) ≡⟨ refl ⟩
           ∐ (𝓓 ⁻) (pointwise-family-is-directed (𝓓 ⁻) (𝓓 ⁻) α δ
-           (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))
-
-               ≡⟨ double-∐-lemma α δ n ⟩
-
-          ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))
-               ∎
+            (∐ (𝓓 ⁻) (n-family-is-directed α δ n)))                 ≡⟨ ⦅2⦆  ⟩
+          ∐ (𝓓 ⁻) (n-family-is-directed α δ (succ n))               ∎
        where
         s = (∐ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) {I} {α} δ)
-        e : iter n s ≡ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
-        e = antisymmetry (𝓓 ⁻) (iter n s) (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) l m
+        ⦅2⦆ = double-∐-lemma α δ n
+        ⦅1⦆ = ap ([ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩) e
          where
-          IH : is-sup (underlying-order (𝓓 ⁻)) (iter n (∐ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) δ))
-               (iter n ∘ α)
-          IH = iter-is-continuous n I α δ
-          l : iter n s ⊑⟪ 𝓓 ⟫ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
-          l = sup-is-lowerbound-of-upperbounds
-              (underlying-order (𝓓 ⁻)) IH
-              (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
-              (∐-is-upperbound (𝓓 ⁻) (n-family-is-directed α δ n))
-          m : ∐ (𝓓 ⁻) (n-family-is-directed α δ n) ⊑⟪ 𝓓 ⟫ iter n s
-          m = ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) (n-family-is-directed α δ n)
-              (iter n s)
-              (sup-is-upperbound (underlying-order (𝓓 ⁻)) IH)
+          e : iter n s ≡ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
+          e = antisymmetry (𝓓 ⁻) (iter n s) (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) l m
+           where
+            IH : is-sup (underlying-order (𝓓 ⁻)) (iter n (∐ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) δ))
+                 (iter n ∘ α)
+            IH = iter-is-continuous n I α δ
+            l : iter n s ⊑⟪ 𝓓 ⟫ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
+            l = sup-is-lowerbound-of-upperbounds
+                (underlying-order (𝓓 ⁻)) IH
+                (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
+                (∐-is-upperbound (𝓓 ⁻) (n-family-is-directed α δ n))
+            m : ∐ (𝓓 ⁻) (n-family-is-directed α δ n) ⊑⟪ 𝓓 ⟫ iter n s
+            m = ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) (n-family-is-directed α δ n)
+                (iter n s)
+                (sup-is-upperbound (underlying-order (𝓓 ⁻)) IH)
 
   iter-c : ℕ → DCPO[ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]
   iter-c n = iter n , iter-is-continuous n
@@ -261,7 +254,7 @@ module _ where
     f : ⟪ 𝓓 ⟫ → ⟪ 𝓓 ⟫
     f = [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ fc ⟩
     δ : is-directed (underlying-order (𝓓 ⁻))
-     (pointwise-family ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) fc)
+         (pointwise-family ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) fc)
     δ = pointwise-family-is-directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓)
         iter-is-directed fc
 
