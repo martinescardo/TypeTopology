@@ -133,7 +133,6 @@ module _ {𝓥 : Universe} where
                (∐-is-upperbound (𝓓 ⁻) (φ n) i)
         ⦅2⦆ = ∐-is-upperbound (𝓓 ⁻) ε i
 
-  -- TODO: Continue here
   iter-is-continuous : (n : ℕ) → is-continuous ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter n)
   iter-is-continuous zero     I α δ = a , b
    where
@@ -192,7 +191,6 @@ module _ {𝓥 : Universe} where
               (iter n s)
               (sup-is-upperbound (underlying-order (𝓓 ⁻)) IH)
 
-  -- TODO: Continue here
   iter-c : ℕ → DCPO[ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]
   iter-c n = iter n , iter-is-continuous n
 
@@ -213,9 +211,9 @@ module _ {𝓥 : Universe} where
   iter-increases n (succ m) l f = h (≤-split n m l)
    where
     h : (n ≤ m) + (n ≡ succ m) → (iter n f) ⊑⟪ 𝓓 ⟫ iter (succ m) f
-    h (inl l') = transitivity (𝓓 ⁻) (iter n f) (iter m f) (iter (succ m) f)
-                 (iter-increases n m l' f)
-                 (iter-is-ω-chain m f)
+    h (inl l') = iter n f        ⊑⟪ 𝓓 ⟫[ iter-increases n m l' f ]
+                 iter m f        ⊑⟪ 𝓓 ⟫[ iter-is-ω-chain m f     ]
+                 iter (succ m) f ∎⟪ 𝓓 ⟫
     h (inr e)  = transport (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter (succ m) f) (e ⁻¹)
                  (reflexivity (𝓓 ⁻) (iter (succ m) f))
 
@@ -287,14 +285,9 @@ module _ where
       α : ℕ → ⟪ 𝓓 ⟫
       α = pointwise-family ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) fc
       k : (n : ℕ) → underlying-function (𝓓 ⁻) (𝓓 ⁻) fc (α n) ⊑⟪ 𝓓 ⟫ ν fc
-      k n = transitivity (𝓓 ⁻)
-            (f (α n)) (α (succ n)) (ν fc)
-            p q
-       where
-        p : underlying-function (𝓓 ⁻) (𝓓 ⁻) fc (α n) ⊑⟪ 𝓓 ⟫ α (succ n)
-        p = reflexivity (𝓓 ⁻) (underlying-function (𝓓 ⁻) (𝓓 ⁻) fc (α n))
-        q : α (succ n) ⊑⟪ 𝓓 ⟫ ν fc
-        q = ∐-is-upperbound (𝓓 ⁻) δ (succ n)
+      k n = f (α n)    ⊑⟪ 𝓓 ⟫[ reflexivity (𝓓 ⁻) (f (α n))      ]
+            α (succ n) ⊑⟪ 𝓓 ⟫[ ∐-is-upperbound (𝓓 ⁻) δ (succ n) ]
+            ν fc       ∎⟪ 𝓓 ⟫
 
   μ-gives-lowerbound-of-fixed-points :
       (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ])
@@ -309,10 +302,10 @@ module _ where
     where
      g : (n : ℕ) → iter 𝓓 n f ⊑⟪ 𝓓 ⟫ d
      g zero     = ⊥-is-least 𝓓 d
-     g (succ n) = transitivity (𝓓 ⁻)
-                  (iter 𝓓 (succ n) f) (underlying-function (𝓓 ⁻) (𝓓 ⁻) f d) d
-                  (continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) f
-                    (iter 𝓓 n f) d (g n))
-                  l
+     g (succ n) = iter 𝓓 (succ n) f    ⊑⟪ 𝓓 ⟫[ k ]
+                  [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩ d ⊑⟪ 𝓓 ⟫[ l ]
+                  d ∎⟪ 𝓓 ⟫
+      where
+       k = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) f (iter 𝓓 n f) d (g n)
 
 \end{code}
