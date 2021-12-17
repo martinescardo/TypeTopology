@@ -30,7 +30,8 @@ open import NaturalNumbers-Properties
 module _ {𝓥 : Universe} where
 
  open import Dcpo pt fe 𝓥
- open import DcpoConstructions pt fe 𝓥
+ open import DcpoBasics pt fe 𝓥
+ open import DcpoExponential pt fe 𝓥
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
@@ -45,7 +46,7 @@ module _ {𝓥 : Universe} where
                                     iter (succ n) g               ∎⟪ 𝓓 ⟫
    where
     I  = l (iter n f)
-    II = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) g (iter n f) (iter n g)
+    II = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) g (iter n f) (iter n g)
           (iter-is-monotone n f g l)
 
   n-family : {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫) (n : ℕ) → I → ⟪ 𝓓 ⟫
@@ -113,7 +114,7 @@ module _ {𝓥 : Universe} where
                           y                                   ∎⟪ 𝓓 ⟫
            where
             ⦅1⦆ = l (iter n (α j))
-            ⦅2⦆ = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) (α k)
+            ⦅2⦆ = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) (α k)
                    (iter n (α j))
                    (iter n (α k))
                    (iter-is-monotone n (α j) (α k) m)
@@ -127,7 +128,7 @@ module _ {𝓥 : Universe} where
             [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ α i ⟩ (∐ (𝓓 ⁻) (φ n)) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
             x                                    ∎⟪ 𝓓 ⟫
        where
-        ⦅1⦆ = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) (α i)
+        ⦅1⦆ = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) (α i)
                (iter n (α i))
                (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
                (∐-is-upperbound (𝓓 ⁻) (φ n) i)
@@ -187,7 +188,7 @@ module _ {𝓥 : Universe} where
   iter-is-ω-chain : (n : ℕ) → (iter-c n) ⊑⟨ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻) ⟩
                               (iter-c (succ n))
   iter-is-ω-chain zero     f = ⊥-is-least 𝓓 (iter (succ zero) f)
-  iter-is-ω-chain (succ n) f = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) f
+  iter-is-ω-chain (succ n) f = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) f
                                (iter n f)
                                (iter (succ n) f)
                                (iter-is-ω-chain n f)
@@ -222,7 +223,8 @@ don't have a practical use for it anyway (at the time of writing).
 module _ where
 
  open import Dcpo pt fe 𝓤₀
- open import DcpoConstructions pt fe 𝓤₀
+ open import DcpoBasics pt fe 𝓤₀
+ open import DcpoExponential pt fe 𝓤₀
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
 
@@ -263,7 +265,7 @@ module _ where
      where
       h : (n : ℕ) → iter 𝓓 n fc ⊑⟪ 𝓓 ⟫ f (ν fc)
       h zero     = ⊥-is-least 𝓓 (f (ν fc))
-      h (succ n) = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) fc
+      h (succ n) = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) fc
                    (iter 𝓓 n fc)
                    (ν fc)
                    (∐-is-upperbound (𝓓 ⁻) δ n)
@@ -296,6 +298,6 @@ module _ where
                   [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩ d ⊑⟪ 𝓓 ⟫[ l ]
                   d ∎⟪ 𝓓 ⟫
       where
-       k = continuous-functions-are-monotone (𝓓 ⁻) (𝓓 ⁻) f (iter 𝓓 n f) d (g n)
+       k = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) f (iter 𝓓 n f) d (g n)
 
 \end{code}
