@@ -9,7 +9,7 @@ on:
 jobs:
   typecheck:
     runs-on: ubuntu-latest
-    name: Typecheck
+    name: Typechecking
     steps:
     - name: "Clone repository"
       uses: actions/checkout@v2
