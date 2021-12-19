@@ -353,8 +353,27 @@ Some projections.
 𝟏[_] : (F : frame 𝓤 𝓥 𝓦) →  ⟨ F ⟩
 𝟏[ (A , (_ , 𝟏 , _ , _) , p , _) ] = 𝟏
 
-𝟏-is-top : (F : frame 𝓤 𝓥 𝓦) → (x : ⟨ F ⟩) → (x ≤[ poset-of F ] 𝟏[ F ]) holds
+is-top : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥)
+is-top F t = Ɐ x ∶ ⟨ F ⟩ , x ≤[ poset-of F ] t
+
+𝟏-is-top : (F : frame 𝓤 𝓥 𝓦) → (is-top F 𝟏[ F ]) holds
 𝟏-is-top (A , _ , _ , p , _) = p
+
+𝟏-is-unique : (F : frame 𝓤 𝓥 𝓦) → (t : ⟨ F ⟩) → is-top F t holds → t ≡ 𝟏[ F ]
+𝟏-is-unique F t t-top = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  β : (t ≤[ poset-of F ] 𝟏[ F ]) holds
+  β = 𝟏-is-top F t
+
+  γ : (𝟏[ F ] ≤[ poset-of F ] t) holds
+  γ = t-top 𝟏[ F ]
+
+only-𝟏-is-above-𝟏 : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
+                  → (𝟏[ F ] ≤[ poset-of F ] x) holds → x ≡ 𝟏[ F ]
+only-𝟏-is-above-𝟏 F x p =
+ 𝟏-is-unique F x λ y → y ≤⟨ 𝟏-is-top F y ⟩ 𝟏[ F ] ≤⟨ p ⟩ x ■
+  where
+   open PosetReasoning (poset-of F)
 
 meet-of : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → ⟨ F ⟩
 meet-of (_ , (_ , _ , _∧_ , _) , _ , _) x y = x ∧ y
@@ -558,8 +577,8 @@ syntax binary-join F x y = x ∨[ F ] y
             → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
 𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
 
-𝟎-unit-of-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → 𝟎[ F ] ∨[ F ] x ≡ x
-𝟎-unit-of-∨ {𝓦 = 𝓦} F x = ≤-is-antisymmetric (poset-of F) β γ
+𝟎-right-unit-of-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → 𝟎[ F ] ∨[ F ] x ≡ x
+𝟎-right-unit-of-∨ {𝓦 = 𝓦} F x = ≤-is-antisymmetric (poset-of F) β γ
  where
   open PosetNotation (poset-of F)
 
@@ -569,6 +588,11 @@ syntax binary-join F x y = x ∨[ F ] y
   γ : (x ≤ (𝟎[ F ] ∨[ F ] x)) holds
   γ = ⋁[ F ]-upper (binary-family 𝓦 𝟎[ F ] x) (inr *)
 
+𝟎-left-unit-of-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → x ∨[ F ] 𝟎[ F ] ≡ x
+𝟎-left-unit-of-∨ {𝓦 = 𝓦} F x =
+ x ∨[ F ] 𝟎[ F ]  ≡⟨ ∨[ F ]-is-commutative x 𝟎[ F ] ⟩
+ 𝟎[ F ] ∨[ F ] x  ≡⟨ 𝟎-right-unit-of-∨ F x          ⟩
+ x                ∎
 
 \end{code}
 
@@ -885,7 +909,7 @@ directify-functorial F S@(I , α) = γ
                   directify F S [ js ]                ≡⟨ †    ⟩
                   𝟎[ F ]  ∨[ F ] directify F S [ js ] ∎
                    where
-                    † = 𝟎-unit-of-∨ F (directify F S [ js ]) ⁻¹
+                    † = 𝟎-right-unit-of-∨ F (directify F S [ js ]) ⁻¹
   γ (i ∷ is) js =
    directify F S [ (i ∷ is) ++ js ]                              ≡⟨ refl ⟩
    α i ∨[ F ] directify F S [ is ++ js ]                         ≡⟨ †    ⟩
@@ -954,7 +978,7 @@ directify-preserves-joins F S = ≤-is-antisymmetric (poset-of F) β γ
    where
     ν : (i : index S) → (S [ i ] ≤ (⋁[ F ] directify F S)) holds
     ν i =
-     S [ i ]                   ≡⟨ 𝟎-unit-of-∨ F (S [ i ]) ⁻¹             ⟩ₚ
+     S [ i ]                   ≡⟨ 𝟎-right-unit-of-∨ F (S [ i ]) ⁻¹       ⟩ₚ
      𝟎[ F ] ∨[ F ] S [ i ]     ≡⟨ ∨[ F ]-is-commutative 𝟎[ F ] (S [ i ]) ⟩ₚ
      S [ i ] ∨[ F ] 𝟎[ F ]     ≡⟨ refl                                   ⟩ₚ
      directify F S [ i ∷ [] ]  ≤⟨ ⋁[ F ]-upper (directify F S) (i ∷ [])  ⟩
