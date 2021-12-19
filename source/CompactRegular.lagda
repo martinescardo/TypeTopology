@@ -133,12 +133,12 @@ well-inside-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
   _⊓_ = λ x y → x ∧[ F ] y
 
   γ : U ≡ U ∧[ F ] V
-  γ = U                       ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
-      U ⊓ 𝟏[ F ]              ≡⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
-      U ⊓ (V ∨[ F ] W)        ≡⟨ binary-distributivity F               ⟩
-      (U ⊓ V) ∨[ F ] (U ⊓ W)  ≡⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
-      (U ⊓ V) ∨[ F ] 𝟎[ F ]   ≡⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
-      U ⊓ V                   ∎
+  γ = U                        ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
+      U ⊓ 𝟏[ F ]               ≡⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
+      U ⊓ (V ∨[ F ] W)         ≡⟨ binary-distributivity F               ⟩
+      (U ⊓ V) ∨[ F ] (U ⊓ W)   ≡⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
+      (U ⊓ V) ∨[ F ] 𝟎[ F ]    ≡⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
+      U ⊓ V                    ∎
 
 \end{code}
 
@@ -215,50 +215,60 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
    γ = pr₁ ((∨-is-scott-continuous F U) S dir)
    δ = pr₂ ((∨-is-scott-continuous F U) S dir)
 
-
-
 ⋜-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
                               → isCompact F holds
                               → (U V : ⟨ F ⟩)
                               → U ⋜[ F ] V
                               → (U ≪[ F ] V) holds
-⋜-implies-≪-in-compact-frames F κ U V (W , c₁ , c₂) S d q =
+⋜-implies-≪-in-compact-frames {𝓦 = 𝓦} F κ U V (W , c₁ , c₂) S d q =
  ∥∥-rec ∃-is-prop θ ζ
   where
    open PosetNotation  (poset-of F)
    open PosetReasoning (poset-of F)
 
-   ε : ((W ∨[ F ] (⋁[ F ] S)) ≤ (⋁[ F ] ⁅ W ∧[ F ] Sᵢ ∣ Sᵢ ε S ⁆)) holds
-   ε = W ∨[ F ] (⋁[ F ] S) ≤⟨ {!!} ⟩ {!!} ≤⟨ {!!} ⟩ {!!} ■
+   T : Fam 𝓦 ⟨ F ⟩
+   T = ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆
 
-   δ : (𝟏[ F ] ≤ (⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆)) holds
+   δ : (𝟏[ F ] ≤ (⋁[ F ] T)) holds
    δ = 𝟏[ F ]                          ≡⟨ c₂ ⁻¹                              ⟩ₚ
        V ∨[ F ] W                      ≤⟨ ∨[ F ]-left-mono q                 ⟩
        (⋁[ F ] S) ∨[ F ] W             ≡⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
        W ∨[ F ] (⋁[ F ] S)             ≡⟨ ∨-is-scott-continuous-eq F W S d   ⟩ₚ
        ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ■
 
-   up : _
+   ε : ((W ∨[ F ] (⋁[ F ] S)) ≤ (⋁[ F ] T)) holds
+   ε = W ∨[ F ] (⋁[ F ] S)              ≤⟨ 𝟏-is-top F (W ∨[ F ] (⋁[ F ] S)) ⟩
+       𝟏[ F ]                           ≤⟨ δ                                ⟩
+       ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
+
+   -- T is closed under binary upper bounds.
+   up : (Ɐ i , Ɐ j ,
+           Ǝ k , (T [ i ] ≤ T [ k ]) holds × (T [ j ] ≤ T [ k ]) holds) holds
    up i j = ∥∥-rec ∃-is-prop r (pr₂ d i j)
     where
      r  = λ (k , p , q) → ∣ k , ∨[ F ]-right-mono p , ∨[ F ]-right-mono q ∣
 
-   d′ : (is-directed (poset-of F) ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
-   d′ = pr₁ d , up
+   T-is-directed : (is-directed (poset-of F) ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
+   T-is-directed = pr₁ d , up
 
-   ζ : ∥ Σ i ꞉ index S , (S [ i ]) ∨[ F ] W ≡ 𝟏[ F ] ∥
-   ζ = {!!}
+   ζ : ∥ Σ i ꞉ index S , (𝟏[ F ] ≤ (W ∨[ F ] (S [ i ]))) holds ∥
+   ζ = κ ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ T-is-directed δ
 
-   θ : Σ i ꞉ index S , (S [ i ]) ∨[ F ] W ≡ 𝟏[ F ]
+   θ : Σ i ꞉ index S , (𝟏[ F ] ≤ (W ∨[ F ] S [ i ])) holds
      → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
-   θ (i , p) = ∣ {!!} , {!!} ∣
+   θ (i , p) = ∣ i , well-inside-implies-below F U (S [ i ]) (W , (c₁ , ι)) ∣
+    where
+     η = 𝟏[ F ]              ≤⟨ p                                 ⟩
+         W ∨[ F ] (S [ i ])  ≡⟨ ∨[ F ]-is-commutative W (S [ i ]) ⟩ₚ
+         (S [ i ]) ∨[ F ] W  ■
 
+     ι = only-𝟏-is-above-𝟏 F ((S [ i ]) ∨[ F ] W) η
 
 clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
+                                      → isCompact F holds
                                       → (x : ⟨ F ⟩)
                                       → isClopen F x
                                       → isCompactOpen F x holds
-clopens-are-compact-in-compact-frames F x x⋜x S S-dir =
-  {!!}
+clopens-are-compact-in-compact-frames F κ x = ⋜-implies-≪-in-compact-frames F κ x x
 
 \end{code}
