@@ -533,20 +533,21 @@ We now use the theorem by Kraus et al. to construct the map f♭ from fₛ.
 
   f♭ : 𝓚 X → L
   f♭ (A , κ) =
-   wconstant-map-to-set-truncation-of-domain-map _ L-is-set
-    (fₛ A) (fₛ-is-wconstant A) κ
+   pr₁ (wconstant-map-to-set-factors-through-truncation-of-domain L-is-set
+    (fₛ A) (fₛ-is-wconstant A)) κ
 
   f♭-in-terms-of-fₛ : (A : 𝓟 X) {n : ℕ} {e : (Fin n → 𝕋 A)} (σ : is-surjection e)
-                     (κ : is-Kuratowski-finite (𝕋 A))
-                   → f♭ (A , κ) ≡ fₛ A (n , e , σ)
+                      (κ : is-Kuratowski-finite (𝕋 A))
+                    → f♭ (A , κ) ≡ fₛ A (n , e , σ)
   f♭-in-terms-of-fₛ A {n} {e} σ κ = f♭ (A , κ)             ≡⟨ I  ⟩
                                     f♭ (A , ∣ n , e , σ ∣) ≡⟨ II ⟩
                                     fₛ A (n , e , σ)       ∎
    where
     I  = ap (λ - → f♭ (A , -)) (∥∥-is-prop κ ∣ n , e , σ ∣)
-    II = (wconstant-map-to-set-factors-through-truncation-of-domain
-          (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 A) , is-surjection e) L-is-set
-          (fₛ A) (fₛ-is-wconstant A) (n , e , σ)) ⁻¹
+    II = (pr₂ (wconstant-map-to-set-factors-through-truncation-of-domain
+                L-is-set
+                (fₛ A) (fₛ-is-wconstant A))
+          (n , e , σ)) ⁻¹
 
 \end{code}
 
