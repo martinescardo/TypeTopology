@@ -748,9 +748,9 @@ distributivity′ F x S =
    † = ap (λ - → join-of F (index S , -)) (dfunext fe ‡)
 
 binary-distributivity : (F : frame 𝓤 𝓥 𝓦)
-                      → {x y z : ⟨ F ⟩}
+                      → (x y z : ⟨ F ⟩)
                       → x ∧[ F ] (y ∨[ F ] z) ≡ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)
-binary-distributivity {𝓦 = 𝓦} F {x} {y} {z} =
+binary-distributivity {𝓦 = 𝓦} F x y z =
  x ∧[ F ] (y ∨[ F ] z)                            ≡⟨ † ⟩
  ⋁[ F ] ⁅ x ∧[ F ] w ∣ w ε binary-family 𝓦 y z ⁆  ≡⟨ ‡ ⟩
  (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)                 ∎
