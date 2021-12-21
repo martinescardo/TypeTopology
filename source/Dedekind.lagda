@@ -2,13 +2,32 @@ Martin Escardo, 20th December 2021
 
 Some thoughts about Dedekind reals.
 
-We generalize the rationals to any type with a prop-valued,
-irreflexive relation _<_, simply to avoid having to define the
-rational numbers.
+A Dedekind real in constructive type theory is defined as a triple
+(L , U , p) where L and U are data, namely given sets of rational
+numbers, and p is property of (L , U).
 
-To show that the Dedekind reals agree with their version proposed by Troelstra,
-we further assume that _<_ is dense, upper open, and satisfies p ≢ q →
-¬(q < p) → p < q (which the type of rationals does).
+But actually, given a lower Dedekind section L, there is at most one
+pair (U , p) such that (L , U , p) is a Dedekind real. Hence the
+Dedekind data (U , p) is actually property of the lower real L. A more
+precise statement of this phenomenon is given below.
+
+We generalize the rationals to any type with a proposition-valued,
+irreflexive relation _<_, simply to avoid having to define the
+rational numbers. But also it is interesting than nothing other than
+proposition-valued irreflexive relation is needed for the above
+discussion.
+
+We also discuss a version of the Dedekind reals proposed by Troelstra.
+To show that it agrees with the usual one, we further assume that _<_
+is dense, upper open, and satisfies p ≢ q → ¬(q < p) → p < q (which
+the type of rationals does).
+
+We also discussed what happens when we assume the principle of
+excluded middle.
+
+Here we adopt HoTT/UF as our type-theoretic foundation, which, in
+particular, is well-suited to discuss the distinction between data and
+property.
 
 \begin{code}
 
@@ -163,12 +182,12 @@ technical-lemma : (L L' U U' : 𝓟 ℚ)
                 → L  ⊆ L'
                 → U' ⊆ U
 technical-lemma L L' U U'
-       U'-lower-open
-       LU-located
-       LU'-ordered
-       L-is-contained-in-L'
-       q
-       q-is-in-U'  = γ
+                U'-lower-open
+                LU-located
+                LU'-ordered
+                L-is-contained-in-L'
+                q
+                q-is-in-U'        = γ
  where
   I : ∃ q' ꞉ ℚ , (q' < q) × q' ∈ U'
   I = U'-lower-open q q-is-in-U'
@@ -269,7 +288,7 @@ being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-≡
                                                  (at-most-one-upper-section l u₀ u₁ p₀ p₁)
 \end{code}
 
-We define the the Dedekind reals as a subset of the lower reals:
+We define the Dedekind reals as a subset of the lower reals:
 
 \begin{code}
 
