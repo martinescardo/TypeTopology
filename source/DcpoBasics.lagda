@@ -514,4 +514,28 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
    h (inl *) = ⊥-is-least 𝓓 y
    h (inr i) = y-is-ub i
 
+∐ˢˢ-is-sup : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫) (ρ : is-prop I)
+           → is-sup (underlying-order (𝓓 ⁻)) (∐ˢˢ 𝓓 α ρ) α
+∐ˢˢ-is-sup 𝓓 α ρ = ∐ˢˢ-is-upperbound 𝓓 α ρ
+                 , ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 α ρ
+
+∐ˢˢ-≡-if-continuous-and-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                                 (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+                               → is-continuous (𝓓 ⁻) (𝓔 ⁻) f
+                               → is-strict 𝓓 𝓔 f
+                               → {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+                               → (ρ : is-prop I)
+                               → f (∐ˢˢ 𝓓 α ρ) ≡ ∐ˢˢ 𝓔 (f ∘ α) ρ
+∐ˢˢ-≡-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
+ sups-are-unique
+  (underlying-order (𝓔 ⁻))
+  (axioms-of-dcpo (𝓔 ⁻)) (f ∘ α)
+  (preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ)
+  (∐ˢˢ-is-sup 𝓔 (f ∘ α) ρ)
+
+∐ˢˢ-family-≡ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟪ 𝓓 ⟫} (ρ : is-prop I)
+             → α ≡ β
+             → ∐ˢˢ 𝓓 α ρ ≡ ∐ˢˢ 𝓓 β ρ
+∐ˢˢ-family-≡ 𝓓 ρ refl = refl
+
 \end{code}
