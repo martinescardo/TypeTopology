@@ -492,4 +492,26 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
  preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str
   (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
 
+∐ˢˢ-is-upperbound : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+                    (ρ : is-prop I)
+                  → is-upperbound
+                     (underlying-order (𝓓 ⁻)) (∐ˢˢ 𝓓 α ρ) α
+∐ˢˢ-is-upperbound 𝓓 {I} α ρ i = ∐-is-upperbound (𝓓 ⁻) δ (inr i)
+ where
+  δ : is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
+  δ = add-⊥-is-directed 𝓓 (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
+
+∐ˢˢ-is-lowerbound-of-upperbounds : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+                                   (ρ : is-prop I)
+                                 → is-lowerbound-of-upperbounds
+                                    (underlying-order (𝓓 ⁻)) (∐ˢˢ 𝓓 α ρ) α
+∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 {I} α ρ y y-is-ub =
+ ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) δ y h
+  where
+   δ : is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
+   δ = add-⊥-is-directed 𝓓 (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
+   h : (i : 𝟙 + I) → add-⊥ 𝓓 α i ⊑⟪ 𝓓 ⟫ y
+   h (inl *) = ⊥-is-least 𝓓 y
+   h (inr i) = y-is-ub i
+
 \end{code}
