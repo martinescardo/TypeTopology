@@ -577,6 +577,15 @@ syntax binary-join F x y = x ∨[ F ] y
             → (x : ⟨ F ⟩) → (𝟎[ F ] ≤[ poset-of F ] x) holds
 𝟎-is-bottom F x = ⋁[ F ]-least (𝟘 , λ ()) (x , λ ())
 
+only-𝟎-is-below-𝟎 : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
+                  → (x ≤[ poset-of F ] 𝟎[ F ]) holds → x ≡ 𝟎[ F ]
+only-𝟎-is-below-𝟎 F x p =
+ ≤-is-antisymmetric (poset-of F) p (𝟎-is-bottom F x)
+
+𝟎-is-unique : (F : frame 𝓤 𝓥 𝓦) (b : ⟨ F ⟩)
+            → ((x : ⟨ F ⟩) → (b ≤[ poset-of F ] x) holds) → b ≡ 𝟎[ F ]
+𝟎-is-unique F b φ = only-𝟎-is-below-𝟎 F b (φ 𝟎[ F ])
+
 𝟎-right-unit-of-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → 𝟎[ F ] ∨[ F ] x ≡ x
 𝟎-right-unit-of-∨ {𝓦 = 𝓦} F x = ≤-is-antisymmetric (poset-of F) β γ
  where
