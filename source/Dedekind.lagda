@@ -395,6 +395,8 @@ dedekind-agrees-with-troelstra ϕ ua = eqtoid ua ℝ 𝕋 e
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
 \end{code}
 
+We now consider consequences of excluded middle.
+
 \begin{code}
 
 open import UF-ExcludedMiddle
