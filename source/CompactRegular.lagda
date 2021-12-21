@@ -17,6 +17,7 @@ module CompactRegular
 
 open import UF-Subsingletons
 open import UF-Subsingleton-Combinators
+open import UF-Equiv using (_≃_; logically-equivalent-props-give-is-equiv)
 open import Frame pt fe hiding (is-directed)
 
 open AllCombinators pt fe
@@ -118,25 +119,26 @@ compacts-are-closed-under-joins F U V κ₁ κ₂ S dir@(_ , up) p =
 
 \begin{code}
 
-well-inside : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇ 
-well-inside F U V =
+-- The type family expressing that a given open of a frame is clopen.
+well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇ 
+well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (V ∨[ F ] W ≡ 𝟏[ F ])
 
-infix 4 well-inside
+infix 4 well-inside₀
 
-syntax well-inside F U V = U ⋜[ F ] V
+syntax well-inside₀ F U V = U ⋜₀[ F ] V
 
 -- The well inside relation is not propositional in general, even though the
 -- “has complement” (i.e. is well inside itself) is propositional.
 well-inside-is-not-prop : is-univalent 𝓤₀
                         → Σ F ꞉ frame 𝓤₁ 𝓤₀ 𝓤₀ ,
-                           (¬ ((x y : ⟨ F ⟩) → is-prop (x ⋜[ F ] y)))
+                           (¬ ((x y : ⟨ F ⟩) → is-prop (x ⋜₀[ F ] y)))
 well-inside-is-not-prop ua = IF , ε
  where
   IF : frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
   IF = 𝟎-𝔽𝕣𝕞 ua
 
-  γ₂ : 𝟎[ IF ] ⋜[ IF ] 𝟏[ IF ]
+  γ₂ : 𝟎[ IF ] ⋜₀[ IF ] 𝟏[ IF ]
   γ₂ = 𝟏[ IF ] , (β , γ)
         where
          abstract
@@ -146,7 +148,7 @@ well-inside-is-not-prop ua = IF , ε
           γ : 𝟏[ IF ] ∨[ IF ] 𝟏[ IF ] ≡ 𝟏[ IF ]
           γ = 𝟏-right-annihilator-for-∨ IF 𝟏[ IF ]
 
-  γ₁ : 𝟎[ IF ] ⋜[ IF ] 𝟏[ IF ]
+  γ₁ : 𝟎[ IF ] ⋜₀[ IF ] 𝟏[ IF ]
   γ₁ = 𝟎[ IF ] , (β , γ)
         where
          abstract
@@ -162,17 +164,26 @@ well-inside-is-not-prop ua = IF , ε
     γ : ⊥Ω holds
     γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) *
 
-  ε : ¬ ((x y : ⟨ IF ⟩) → is-prop (well-inside IF x y))
+  ε : ¬ ((x y : ⟨ IF ⟩) → is-prop (well-inside₀ IF x y))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-≡ δ))
    where
     δ : γ₁ ≡ γ₂
     δ = ψ 𝟎[ IF ] 𝟏[ IF ] γ₁ γ₂
 
-well-inside-implies-below : (F : frame 𝓤 𝓥 𝓦)
+-- Because well inside is not propositional, we have to truncate it to get a
+-- relation.
+well-inside : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω 𝓤
+well-inside F U V = ∥ U ⋜₀[ F ] V ∥Ω
+
+infix 4 well-inside
+
+syntax well-inside F U V = U ⋜[ F ] V
+
+well-inside₀-implies-below : (F : frame 𝓤 𝓥 𝓦)
                           → (U V : ⟨ F ⟩)
-                          → U ⋜[ F ] V
+                          → U ⋜₀[ F ] V
                           → (U ≤[ poset-of F ] V) holds
-well-inside-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
+well-inside₀-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
  where
   _⊓_ = λ x y → x ∧[ F ] y
 
@@ -190,11 +201,11 @@ An open x in a frame F is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
-is-clopen′ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇ 
-is-clopen′ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
+is-clopen₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇ 
+is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
 
-is-clopen′-is-prop : (F : frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen′ F U)
-is-clopen′-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-≡ β γ
+is-clopen₀-is-prop : (F : frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)
+is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-≡ β γ
  where
   P = poset-of F -- we refer to the underlying poset of F as P.
 
@@ -225,7 +236,30 @@ is-clopen′-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
         viii = 𝟏-right-unit-of-∧ F W₂
 
 is-clopen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
-is-clopen F U = is-clopen′ F U , is-clopen′-is-prop F U
+is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
+
+clopen-implies-well-inside-oneself : (F : frame 𝓤 𝓥 𝓦)
+                                   → (U : ⟨ F ⟩)
+                                   → (is-clopen F U ⇒ U ⋜[ F ] U) holds
+clopen-implies-well-inside-oneself F U = ∣_∣
+
+well-inside-oneself-implies-clopen : (F : frame 𝓤 𝓥 𝓦)
+                                          → (U : ⟨ F ⟩)
+                                          → (U ⋜[ F ] U ⇒ is-clopen F U) holds
+well-inside-oneself-implies-clopen F U =
+ ∥∥-rec (holds-is-prop (is-clopen F U)) id
+
+clopenness-equivalent-to-well-inside-oneself : (F : frame 𝓤 𝓥 𝓦)
+                                             → (U : ⟨ F ⟩)
+                                             → (U ⋜[ F ] U) holds
+                                             ≃ is-clopen F U holds
+clopenness-equivalent-to-well-inside-oneself F U =
+   well-inside-oneself-implies-clopen F U
+ , logically-equivalent-props-give-is-equiv
+    (holds-is-prop (U ⋜[ F ] U))
+    (holds-is-prop (is-clopen F U))
+    (well-inside-oneself-implies-clopen F U)
+    (clopen-implies-well-inside-oneself F U)
 
 \end{code}
 
@@ -293,12 +327,12 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
    γ = pr₁ ((∨-is-scott-continuous F U) S dir)
    δ = pr₂ ((∨-is-scott-continuous F U) S dir)
 
-⋜-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
-                              → isCompact F holds
-                              → (U V : ⟨ F ⟩)
-                              → U ⋜[ F ] V
-                              → (U ≪[ F ] V) holds
-⋜-implies-≪-in-compact-frames {𝓦 = 𝓦} F κ U V (W , c₁ , c₂) S d q =
+⋜₀-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
+                               → isCompact F holds
+                               → (U V : ⟨ F ⟩)
+                               → U ⋜₀[ F ] V
+                               → (U ≪[ F ] V) holds
+⋜₀-implies-≪-in-compact-frames {𝓦 = 𝓦} F κ U V (W , c₁ , c₂) S d q =
  ∥∥-rec ∃-is-prop θ ζ
   where
    open PosetNotation  (poset-of F)
@@ -334,7 +368,7 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
 
    θ : Σ i ꞉ index S , (𝟏[ F ] ≤ (W ∨[ F ] S [ i ])) holds
      → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
-   θ (i , p) = ∣ i , well-inside-implies-below F U (S [ i ]) (W , (c₁ , ι)) ∣
+   θ (i , p) = ∣ i , well-inside₀-implies-below F U (S [ i ]) (W , (c₁ , ι)) ∣
     where
      η = 𝟏[ F ]              ≤⟨ p                                 ⟩
          W ∨[ F ] (S [ i ])  ≡⟨ ∨[ F ]-is-commutative W (S [ i ]) ⟩ₚ
@@ -342,11 +376,17 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
 
      ι = only-𝟏-is-above-𝟏 F ((S [ i ]) ∨[ F ] W) η
 
+⋜-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
+                              → isCompact F holds
+                              → (U V : ⟨ F ⟩) → (U ⋜[ F ] V ⇒ U ≪[ F ] V) holds
+⋜-implies-≪-in-compact-frames F κ U V =
+ ∥∥-rec (holds-is-prop (U ≪[ F ] V)) (⋜₀-implies-≪-in-compact-frames F κ U V)
+
 clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
                                       → isCompact F holds
                                       → (x : ⟨ F ⟩)
                                       → is-clopen F x holds
                                       → is-compact-open F x holds
-clopens-are-compact-in-compact-frames F κ x = ⋜-implies-≪-in-compact-frames F κ x x
+clopens-are-compact-in-compact-frames F κ x = ⋜₀-implies-≪-in-compact-frames F κ x x
 
 \end{code}
