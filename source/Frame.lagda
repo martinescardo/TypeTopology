@@ -812,9 +812,9 @@ directed one.
 
 \begin{code}
 
-directify-works : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
-                → is-directed F (directify F S) holds
-directify-works F S@(I , α) = ∣ [] ∣ , υ
+directify-is-directed : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                      → is-directed F (directify F S) holds
+directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
  where
   open PropositionalTruncation pt
   open PosetNotation (poset-of F)
@@ -942,6 +942,6 @@ directify-basis {𝓦 = 𝓦} F =
       → is-directed F ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ holds
     δ x = transport (λ - → is-directed F - holds) (ψ x ⁻¹) ε
      where
-      ε = directify-works F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+      ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
 
 \end{code}
