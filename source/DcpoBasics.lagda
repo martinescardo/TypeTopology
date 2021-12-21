@@ -50,9 +50,8 @@ image-is-directed 𝓓 𝓔 {f} m {I} {α} δ =
  inhabited-if-Directed 𝓓 α δ , γ
   where
    γ : is-semidirected (underlying-order 𝓔) (f ∘ α)
-   γ i j = do
-    k , u , v ← semidirected-if-Directed 𝓓 α δ i j
-    ∣ k , m (α i) (α k) u , m (α j) (α k) v ∣
+   γ i j = ∥∥-functor (λ (k , u , v) → k , m (α i) (α k) u , m (α j) (α k) v)
+                      (semidirected-if-Directed 𝓓 α δ i j)
 
 continuity-criterion : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                        (f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩)
@@ -99,7 +98,7 @@ monotone-if-continuous 𝓓 𝓔 (f , cts) x y l = γ
    δ : is-Directed 𝓓 α
    δ = (∣ inl * ∣ , ε)
     where
-     ε : (i j : 𝟙 + 𝟙) → ∃ (\k → α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
+     ε : (i j : 𝟙 + 𝟙) → ∃ k ꞉ 𝟙 + 𝟙 , α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k
      ε (inl *) (inl *) = ∣ inr * , l , l ∣
      ε (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
      ε (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
@@ -186,40 +185,6 @@ TO DO
 
 \begin{code}
 
-strongly-directed-complete : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
-                           → is-semidirected (underlying-order (𝓓 ⁻)) α
-                           → has-sup (underlying-order (𝓓 ⁻)) α
-strongly-directed-complete {𝓤} {𝓣} 𝓓 {I} {α} ε = s , u , v
- where
-  _⊑_ : ⟪ 𝓓 ⟫ → ⟪ 𝓓 ⟫ → 𝓣 ̇
-  _⊑_ = underlying-order (𝓓 ⁻)
-  J : 𝓥 ̇
-  J = 𝟙{𝓥} + I
-  β : J → ⟪ 𝓓 ⟫
-  β (inl *) = ⊥ 𝓓
-  β (inr i) = α i
-  δ : is-directed _⊑_ β
-  δ = (∣ inl * ∣ , κ)
-   where
-    κ : (a b : J) → ∃ \c → (β a ⊑ β c) × (β b ⊑ β c)
-    κ (inl *) b = ∣ b , ⊥-is-least 𝓓 (β b) , reflexivity (𝓓 ⁻) (β b) ∣
-    κ (inr i) (inl *) = ∣ (inr i) , reflexivity (𝓓 ⁻) (α i) , ⊥-is-least 𝓓 (α i) ∣
-    κ (inr i) (inr j) = ∥∥-functor γ (ε i j)
-     where
-      γ : (Σ \(k : I) → (α i) ⊑ (α k) × (α j) ⊑ (α k))
-        → Σ \(c : J) → (β (inr i) ⊑ β c) × (β (inr j) ⊑ β c)
-      γ (k , l) = (inr k , l)
-  s : ⟪ 𝓓 ⟫
-  s = ∐ (𝓓 ⁻) δ
-  u : is-upperbound _⊑_ s α
-  u i = ∐-is-upperbound (𝓓 ⁻) δ (inr i)
-  v : ((t : ⟪ 𝓓 ⟫) → is-upperbound _⊑_ t α → s ⊑ t)
-  v t l = ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) δ t h
-   where
-    h : (k : J) → (β k) ⊑ t
-    h (inl *) = ⊥-is-least 𝓓 t
-    h (inr i) = l i
-
 ∐-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
                 (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
               → ((i : I) → α i ⊑⟨ 𝓓 ⟩ β i)
@@ -231,6 +196,8 @@ strongly-directed-complete {𝓤} {𝓣} 𝓓 {I} {α} ε = s , u , v
         β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
         ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
+-- TODO: Unused?
+{-
 double-∐-swap : {I J : 𝓥 ̇ } (𝓓 : DCPO {𝓤} {𝓣}) {γ : I × J → ⟨ 𝓓 ⟩}
               → (δᵢ : (i : I) → is-Directed 𝓓 (λ (j : J) → γ (i , j)))
               → (δⱼ : (j : J) → is-Directed 𝓓 (λ (i : I) → γ (i , j)))
@@ -260,6 +227,7 @@ double-∐-swap {𝓤} {𝓣} {I} {J} 𝓓 {γ} δᵢ δⱼ ε₁ ε₂ =
        z j = γ (i , j)  ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 (δⱼ j) i ]
              ∐ 𝓓 (δⱼ j) ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε₁ j ]
              ∐ 𝓓 ε₁     ∎⟨ 𝓓 ⟩
+-}
 
 \end{code}
 
@@ -368,5 +336,160 @@ to-continuous-function-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {�
                          → f ≡ g
 to-continuous-function-≡ 𝓓 𝓔 h =
  to-subtype-≡ (being-continuous-is-prop 𝓓 𝓔) (dfunext fe h)
+
+\end{code}
+
+\begin{code}
+
+add-⊥ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+      → (𝟙{𝓥} + I) → ⟪ 𝓓 ⟫
+add-⊥ 𝓓 α (inl *) = ⊥ 𝓓
+add-⊥ 𝓓 α (inr i) = α i
+
+add-⊥-is-directed : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+                  → is-semidirected (underlying-order (𝓓 ⁻)) α
+                  → is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
+add-⊥-is-directed 𝓓 {I} {α} σ = ∣ inl * ∣ , δ
+ where
+  δ : is-semidirected (underlying-order (𝓓 ⁻)) (add-⊥ 𝓓 _)
+  δ (inl *) a       = ∣ a , ⊥-is-least 𝓓 (add-⊥ 𝓓 α a) ,
+                            reflexivity (𝓓 ⁻) (add-⊥ 𝓓 α a) ∣
+  δ (inr i) (inl *) = ∣ (inr i) , reflexivity (𝓓 ⁻) (α i)
+                                , ⊥-is-least 𝓓 (α i)        ∣
+  δ (inr i) (inr j) = ∥∥-functor (λ (k , u , v) → (inr k , u , v)) (σ i j)
+
+adding-⊥-preserves-sup : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ }
+                         (α : I → ⟪ 𝓓 ⟫) (x : ⟪ 𝓓 ⟫)
+                       → is-sup (underlying-order (𝓓 ⁻)) x α
+                       → is-sup (underlying-order (𝓓 ⁻)) x (add-⊥ 𝓓 α)
+adding-⊥-preserves-sup 𝓓 {I} α x x-is-sup = x-is-ub , x-is-lb-of-ubs
+ where
+  x-is-ub : (i : 𝟙 + I) → add-⊥ 𝓓 α i ⊑⟪ 𝓓 ⟫ x
+  x-is-ub (inl *) = ⊥-is-least 𝓓 x
+  x-is-ub (inr i) = sup-is-upperbound (underlying-order (𝓓 ⁻)) x-is-sup i
+  x-is-lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
+                    x (add-⊥ 𝓓 α)
+  x-is-lb-of-ubs y y-is-ub = sup-is-lowerbound-of-upperbounds
+                              (underlying-order (𝓓 ⁻)) x-is-sup y
+                              (λ i → y-is-ub (inr i))
+
+adding-⊥-reflects-sup : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ }
+                        (α : I → ⟪ 𝓓 ⟫) (x : ⟪ 𝓓 ⟫)
+                      → is-sup (underlying-order (𝓓 ⁻)) x (add-⊥ 𝓓 α)
+                      → is-sup (underlying-order (𝓓 ⁻)) x α
+adding-⊥-reflects-sup 𝓓 {I} α x x-is-sup = x-is-ub , x-is-lb-of-ubs
+ where
+  x-is-ub : (i : I) → α i ⊑⟪ 𝓓 ⟫ x
+  x-is-ub i = sup-is-upperbound (underlying-order (𝓓 ⁻)) x-is-sup (inr i)
+  x-is-lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻)) x α
+  x-is-lb-of-ubs y y-is-ub = sup-is-lowerbound-of-upperbounds
+                              (underlying-order (𝓓 ⁻)) x-is-sup y
+                              h
+   where
+    h : is-upperbound (underlying-order (𝓓 ⁻)) y (add-⊥ 𝓓 α)
+    h (inl *) = ⊥-is-least 𝓓 y
+    h (inr i) = y-is-ub i
+
+semidirected-complete-if-pointed : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+                                 → is-semidirected (underlying-order (𝓓 ⁻)) α
+                                 → has-sup (underlying-order (𝓓 ⁻)) α
+semidirected-complete-if-pointed 𝓓 {I} {α} σ = x , x-is-sup
+ where
+  δ : is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
+  δ = add-⊥-is-directed 𝓓 σ
+  x : ⟪ 𝓓 ⟫
+  x = ∐ (𝓓 ⁻) δ
+  x-is-sup : is-sup (underlying-order (𝓓 ⁻)) x α
+  x-is-sup = adding-⊥-reflects-sup 𝓓 α x (∐-is-sup (𝓓 ⁻) δ)
+
+∐ˢᵈ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+    → is-semidirected (underlying-order (𝓓 ⁻)) α → ⟪ 𝓓 ⟫
+∐ˢᵈ 𝓓 {I} {α} σ = pr₁ (semidirected-complete-if-pointed 𝓓 σ)
+
+∐ˢᵈ-in-terms-of-∐ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+                    (σ : is-semidirected (underlying-order (𝓓 ⁻)) α)
+                  → ∐ˢᵈ 𝓓 σ ≡ ∐ (𝓓 ⁻) (add-⊥-is-directed 𝓓 σ)
+∐ˢᵈ-in-terms-of-∐ 𝓓 {I} {α} σ = refl
+
+preserves-semidirected-sups-if-continuous-and-strict :
+   (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+   (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+ → is-continuous (𝓓 ⁻) (𝓔 ⁻) f
+ → is-strict 𝓓 𝓔 f
+ → {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+ → (σ : is-semidirected (underlying-order (𝓓 ⁻)) α)
+ → is-sup (underlying-order (𝓔 ⁻)) (f (∐ˢᵈ 𝓓 σ)) (f ∘ α)
+preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str {I} {α} σ =
+ ub , lb-of-ubs
+ where
+  δ : is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
+  δ = add-⊥-is-directed 𝓓 σ
+  claim₁ : is-sup (underlying-order (𝓔 ⁻)) (f (∐ (𝓓 ⁻) δ))
+            (f ∘ add-⊥ 𝓓 α)
+  claim₁ = con (𝟙 + I) (add-⊥ 𝓓 α) (add-⊥-is-directed 𝓓 σ)
+  claim₂ : is-sup (underlying-order (𝓔 ⁻)) (f (∐ˢᵈ 𝓓 σ))
+            (f ∘ add-⊥ 𝓓 α)
+  claim₂ = back-transport
+            (λ - → is-sup (underlying-order (𝓔 ⁻)) (f -) (f ∘ (add-⊥ 𝓓 α)))
+            (∐ˢᵈ-in-terms-of-∐ 𝓓 σ) claim₁
+  ub : (i : I) → f (α i) ⊑⟪ 𝓔 ⟫ f (∐ˢᵈ 𝓓 σ)
+  ub i = sup-is-upperbound (underlying-order (𝓔 ⁻)) claim₂ (inr i)
+  lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻)) (f (∐ˢᵈ 𝓓 σ))
+                (f ∘ α)
+  lb-of-ubs y y-is-ub = sup-is-lowerbound-of-upperbounds (underlying-order (𝓔 ⁻))
+                         claim₂ y h
+   where
+    h : is-upperbound (underlying-order (𝓔 ⁻)) y (f ∘ add-⊥ 𝓓 α)
+    h (inl *) = f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫[ ≡-to-⊑ (𝓔 ⁻) str ]
+                ⊥ 𝓔     ⊑⟪ 𝓔 ⟫[ ⊥-is-least 𝓔 y ]
+                y       ∎⟪ 𝓔 ⟫
+    h (inr i) = y-is-ub i
+
+\end{code}
+
+\begin{code}
+
+subsingleton-indexed-is-semidirected : (𝓓 : DCPO {𝓤} {𝓣})
+                                       {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
+                                     → is-prop I
+                                     → is-semidirected (underlying-order 𝓓) α
+subsingleton-indexed-is-semidirected 𝓓 α ρ i j = ∣ i , r , r' ∣
+  where
+   r : α i ⊑⟨ 𝓓 ⟩ α i
+   r = reflexivity 𝓓 (α i)
+   r' : α j ⊑⟨ 𝓓 ⟩ α i
+   r' = transport (λ k → α k ⊑⟨ 𝓓 ⟩ α i) (ρ i j) r
+
+subsingleton-complete-if-pointed : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+                                 → is-prop I
+                                 → has-sup (underlying-order (𝓓 ⁻)) α
+subsingleton-complete-if-pointed 𝓓 α ρ =
+ semidirected-complete-if-pointed 𝓓 σ
+  where
+   σ : is-semidirected (underlying-order (𝓓 ⁻)) α
+   σ = subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ
+
+∐ˢˢ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+    → is-prop I → ⟪ 𝓓 ⟫
+∐ˢˢ 𝓓 {I} α ρ = pr₁ (subsingleton-complete-if-pointed 𝓓 α ρ)
+
+∐ˢˢ-in-terms-of-∐ˢᵈ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
+                      (ρ : is-prop I)
+                    → ∐ˢˢ 𝓓 α ρ
+                    ≡ ∐ˢᵈ 𝓓
+                       (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
+∐ˢˢ-in-terms-of-∐ˢᵈ 𝓓 {I} {α} σ = refl
+
+preserves-subsingleton-sups-if-continuous-and-strict :
+   (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+   (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+ → is-continuous (𝓓 ⁻) (𝓔 ⁻) f
+ → is-strict 𝓓 𝓔 f
+ → {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
+ → (ρ : is-prop I)
+ → is-sup (underlying-order (𝓔 ⁻)) (f (∐ˢˢ 𝓓 α ρ)) (f ∘ α)
+preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
+ preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str
+  (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
 
 \end{code}
