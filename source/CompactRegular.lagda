@@ -284,7 +284,7 @@ clopenness-equivalent-to-well-inside-oneself F U =
 
 isRegular : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥)
 isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
-  where
+ where
   open Joins (λ U V → U ≤[ poset-of F ] V)
 
 \end{code}
@@ -298,32 +298,32 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
                       → is-scott-continuous F F (λ - → U ∨[ F ] -) holds
 ∨-is-scott-continuous F U S dir = β , γ
  where
- open PosetNotation  (poset-of F) using (_≤_)
- open PosetReasoning (poset-of F)
- open Joins _≤_
+  open PosetNotation  (poset-of F) using (_≤_)
+  open PosetReasoning (poset-of F)
+  open Joins _≤_
 
- β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
- β i = ∨[ F ]-right-mono (⋁[ F ]-upper S i)
+  β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
+  β i = ∨[ F ]-right-mono (⋁[ F ]-upper S i)
 
- γ : (Ɐ (u′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
-       ((U ∨[ F ] (⋁[ F ] S)) ≤ u′)) holds
- γ (u′ , p) = ∨[ F ]-least γ₁ γ₂
-  where
-   δ₁ : index S → (U ≤ u′) holds
-   δ₁ i = U                  ≤⟨ ∨[ F ]-upper₁ U (S [ i ]) ⟩
-          U ∨[ F ] (S [ i ]) ≤⟨ p i                       ⟩
-          u′                 ■
+  γ : (Ɐ (u′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
+        ((U ∨[ F ] (⋁[ F ] S)) ≤ u′)) holds
+  γ (u′ , p) = ∨[ F ]-least γ₁ γ₂
+   where
+    δ₁ : index S → (U ≤ u′) holds
+    δ₁ i = U                  ≤⟨ ∨[ F ]-upper₁ U (S [ i ]) ⟩
+           U ∨[ F ] (S [ i ]) ≤⟨ p i                       ⟩
+           u′                 ■
 
-   γ₁ : (U ≤[ poset-of F ] u′) holds
-   γ₁ = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] u′)) δ₁ (pr₁ dir)
+    γ₁ : (U ≤[ poset-of F ] u′) holds
+    γ₁ = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] u′)) δ₁ (pr₁ dir)
 
-   γ₂ : ((⋁[ F ] S) ≤[ poset-of F ] u′) holds
-   γ₂ = ⋁[ F ]-least S (u′ , δ₂)
-    where
-     δ₂ : (u′ is-an-upper-bound-of S) holds
-     δ₂ i = S [ i ]                         ≤⟨ ∨[ F ]-upper₂ U (S [ i ]) ⟩
-            U ∨[ F ] (S [ i ])              ≤⟨ p i                       ⟩
-            u′                              ■
+    γ₂ : ((⋁[ F ] S) ≤[ poset-of F ] u′) holds
+    γ₂ = ⋁[ F ]-least S (u′ , δ₂)
+     where
+      δ₂ : (u′ is-an-upper-bound-of S) holds
+      δ₂ i = S [ i ]                         ≤⟨ ∨[ F ]-upper₂ U (S [ i ]) ⟩
+             U ∨[ F ] (S [ i ])              ≤⟨ p i                       ⟩
+             u′                              ■
 
 ∨-is-scott-continuous-eq : (F : frame 𝓤 𝓥 𝓦)
                          → (U : ⟨ F ⟩)
