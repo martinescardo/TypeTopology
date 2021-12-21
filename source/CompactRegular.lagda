@@ -56,8 +56,8 @@ syntax way-below F x y = x ≪[ F ] y
 
 \begin{code}
 
-isCompactOpen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-isCompactOpen F x = x ≪[ F ] x
+is-compact-open : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-compact-open F x = x ≪[ F ] x
 
 \end{code}
 
@@ -66,7 +66,7 @@ A compact frame is simply a frame whose top element is finite.
 \begin{code}
 
 isCompact : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-isCompact F = isCompactOpen F 𝟏[ F ]
+isCompact F = is-compact-open F 𝟏[ F ]
 
 \end{code}
 
@@ -74,9 +74,9 @@ isCompact F = isCompactOpen F 𝟏[ F ]
 
 compacts-are-closed-under-joins : (F : frame 𝓤 𝓥 𝓦)
                                 → (U V : ⟨ F ⟩)
-                                → isCompactOpen F U holds
-                                → isCompactOpen F V holds
-                                → isCompactOpen F (U ∨[ F ] V) holds
+                                → is-compact-open F U holds
+                                → is-compact-open F V holds
+                                → is-compact-open F (U ∨[ F ] V) holds
 compacts-are-closed-under-joins F U V κ₁ κ₂ S dir@(_ , up) p =
  ∥∥-rec₂ ∃-is-prop γ s₁′ s₂′
   where
@@ -346,7 +346,7 @@ clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
                                       → isCompact F holds
                                       → (x : ⟨ F ⟩)
                                       → is-clopen F x holds
-                                      → isCompactOpen F x holds
+                                      → is-compact-open F x holds
 clopens-are-compact-in-compact-frames F κ x = ⋜-implies-≪-in-compact-frames F κ x x
 
 \end{code}
