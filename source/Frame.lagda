@@ -964,9 +964,9 @@ directed one.
 
 \begin{code}
 
-directify-is-directed : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
-                      → is-directed F (directify F S) holds
-directify-is-directed F S@(I , α) = ∣ [] ∣ , υ
+directify-works : (F : frame 𝓤 𝓥 𝓦) (S : Fam 𝓦 ⟨ F ⟩)
+                → is-directed F (directify F S) holds
+directify-works F S@(I , α) = ∣ [] ∣ , υ
  where
   open PropositionalTruncation pt
   open PosetNotation (poset-of F)
@@ -1052,7 +1052,8 @@ directify-preserves-joins₀ F S x p =
 
 directify-basis : (F : frame 𝓤 𝓥 𝓦)
                 → (has-basis F ⇒ has-directed-basis F) holds
-directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis F)) γ
+directify-basis {𝓦 = 𝓦} F =
+ ∥∥-rec (holds-is-prop (has-directed-basis F)) γ
  where
   open PropositionalTruncation pt
   open PosetNotation (poset-of F)
@@ -1093,7 +1094,7 @@ directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis 
       → is-directed F ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ holds
     δ x = transport (λ - → is-directed F - holds) (ψ x ⁻¹) ε
      where
-      ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+      ε = directify-works F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
 
 \end{code}
 
@@ -1107,7 +1108,7 @@ is-scott-continuous : (F : frame 𝓤  𝓥  𝓦)
                     → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
 is-scott-continuous {𝓦 = 𝓦} F G f =
  let
-  open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
+   open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
  in
    Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ ,
     is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
