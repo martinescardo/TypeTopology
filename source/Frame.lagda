@@ -1052,8 +1052,7 @@ directify-preserves-joins₀ F S x p =
 
 directify-basis : (F : frame 𝓤 𝓥 𝓦)
                 → (has-basis F ⇒ has-directed-basis F) holds
-directify-basis {𝓦 = 𝓦} F =
- ∥∥-rec (holds-is-prop (has-directed-basis F)) γ
+directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis F)) γ
  where
   open PropositionalTruncation pt
   open PosetNotation (poset-of F)
