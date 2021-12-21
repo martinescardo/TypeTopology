@@ -3,7 +3,8 @@ Martin Escardo, 20th December 2021
 Some thoughts about Dedekind reals.
 
 We generalize the rationals to any type with a prop-valued,
-irreflexive relation _<_.
+irreflexive relation _<_, simply to avoid having to define the
+rational numbers.
 
 To show that the Dedekind reals agree with their version proposed by Troelstra,
 we further assume that _<_ is dense, upper open, and satisfies p ≢ q →
