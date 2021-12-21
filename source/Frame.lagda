@@ -1107,7 +1107,7 @@ is-scott-continuous : (F : frame 𝓤  𝓥  𝓦)
                     → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ⊔ 𝓤′ ⊔ 𝓥′)
 is-scott-continuous {𝓦 = 𝓦} F G f =
  let
-   open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
+  open Joins (λ x y → x ≤[ poset-of G ] y) using (_is-lub-of_)
  in
    Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ ,
     is-directed F S ⇒ f (⋁[ F ] S) is-lub-of ⁅ f s ∣ s ε S ⁆
