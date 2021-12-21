@@ -439,8 +439,8 @@ TODO: Explain flip code
    v : (⦅ifZero⦆₀ b a ♯) l' ⊑' (⦅ifZero⦆₀ a b ♯) l
    v q = (lemma (♯-is-defined (⦅ifZero⦆₀ b a) l' q)) ⁻¹
 
- ifZero♯-double-flip-equation : ?
- ifZero♯-double-flip-equation = ?
+ ifZero♯-double-flip-equation : {!!}
+ ifZero♯-double-flip-equation = {!!}
 
  ⦅ifZero⦆ : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ  ]
  ⦅ifZero⦆ = ⦅ifZero⦆₂ , c
