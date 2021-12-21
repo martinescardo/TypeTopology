@@ -124,6 +124,13 @@ open propositional-truncations-exist pt
 
 \end{code}
 
+\begin{code}
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : is-univalent 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≡ ⊥Ω
+𝟎-of-IF-is-⊥ ua =
+ ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 ua)) γ λ ()
+ where
+  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 ua) ]  ⊥Ω) holds
+  γ x = ∥∥-rec 𝟘-is-prop (λ ()) x
 \end{code}
 
 \section{Proof of initiality}
