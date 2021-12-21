@@ -53,7 +53,7 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
    u i e = ∐-is-upperbound 𝓓 δ i
    v : (f : DCPO[ 𝓔 , 𝓓 ])
      → ((i : I) → k (α i) ⊑⟨ 𝓔 ⟹ᵈᶜᵖᵒ 𝓓 ⟩ f)
-     → (e : ⟨ 𝓔 ⟩) → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ (underlying-function 𝓔 𝓓 f e)
+     → (e : ⟨ 𝓔 ⟩) → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ [ 𝓔 , 𝓓 ]⟨ f ⟩ e
    v (f , _) l e = ∐-is-lowerbound-of-upperbounds 𝓓 δ (f e)
                    (λ (i : I) → (l i) e)
 
@@ -62,18 +62,18 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
   S₀ᵈᶜᵖᵒ : DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ]
          → DCPO[ 𝓓 , 𝓔 ]
          → DCPO[ 𝓓 , 𝓕 ]
-  S₀ᵈᶜᵖᵒ (f , cf) (g , cg) = (λ x → underlying-function 𝓔 𝓕 (f x) (g x)) , c
+  S₀ᵈᶜᵖᵒ (f , cf) (g , cg) = (λ x → [ 𝓔 , 𝓕 ]⟨ f x ⟩ (g x)) , c
    where
 
-    c : is-continuous 𝓓 𝓕 (λ x → underlying-function 𝓔 𝓕 (f x) (g x))
+    c : is-continuous 𝓓 𝓕 (λ x → [ 𝓔 , 𝓕 ]⟨ f x ⟩ (g x))
     c I α δ = u , v
      where
-      u : (i : I) → underlying-function 𝓔 𝓕 (f (α i)) (g (α i)) ⊑⟨ 𝓕 ⟩
-                    underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (g (∐ 𝓓 δ))
+      u : (i : I) → [ 𝓔 , 𝓕 ]⟨ f (α i) ⟩   (g (α i)) ⊑⟨ 𝓕 ⟩
+                    [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (g (∐ 𝓓 δ))
       u i = transitivity 𝓕
-            (underlying-function 𝓔 𝓕 (f (α i)) (g (α i)))
-            (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (g (α i)))
-            (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (g (∐ 𝓓 δ)))
+            ([ 𝓔 , 𝓕 ]⟨ f (α i) ⟩ (g (α i)))
+            ([ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (g (α i)))
+            ([ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (g (∐ 𝓓 δ)))
             (l (g (α i)))
             (monotone-if-continuous 𝓔 𝓕 (f (∐ 𝓓 δ)) (g (α i))
              (g (∐ 𝓓 δ)) m)
@@ -85,42 +85,37 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
         m = monotone-if-continuous 𝓓 𝓔 (g , cg) (α i) (∐ 𝓓 δ)
             (∐-is-upperbound 𝓓 δ i)
       v : (y : ⟨ 𝓕 ⟩)
-        → ((i : I) → (underlying-function 𝓔 𝓕 (f (α i)) (g (α i))) ⊑⟨ 𝓕 ⟩ y)
-        → (underlying-function 𝓔 𝓕  (f (∐ 𝓓 δ)) (g (∐ 𝓓 δ))) ⊑⟨ 𝓕 ⟩ y
+        → ((i : I) → ([ 𝓔 , 𝓕 ]⟨ f (α i) ⟩ (g (α i))) ⊑⟨ 𝓕 ⟩ y)
+        → ([ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (g (∐ 𝓓 δ))) ⊑⟨ 𝓕 ⟩ y
       v y ineqs = γ
        where
-        γ : underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (g (∐ 𝓓 δ)) ⊑⟨ 𝓕 ⟩ y
-        γ = transport (λ - → underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) - ⊑⟨ 𝓕 ⟩ y)
+        γ : [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (g (∐ 𝓓 δ)) ⊑⟨ 𝓕 ⟩ y
+        γ = transport (λ - → [ 𝓔 , 𝓕  ]⟨ f (∐ 𝓓 δ) ⟩ - ⊑⟨ 𝓕 ⟩ y)
             e₀ γ₀
          where
           e₀ : ∐ 𝓔 (image-is-directed' 𝓓 𝓔 (g , cg) δ) ≡ g (∐ 𝓓 δ)
           e₀ = (continuous-∐-≡ 𝓓 𝓔 (g , cg) δ) ⁻¹
           ε₀ : is-Directed 𝓔 (g ∘ α)
           ε₀ = image-is-directed' 𝓓 𝓔 (g , cg) δ
-          γ₀ : (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (∐ 𝓔 ε₀)) ⊑⟨ 𝓕 ⟩ y
+          γ₀ : [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (∐ 𝓔 ε₀) ⊑⟨ 𝓕 ⟩ y
           γ₀ = transport (λ - → - ⊑⟨ 𝓕 ⟩ y) e₁ γ₁
            where
             e₁ : ∐ 𝓕 (image-is-directed' 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀) ≡
-                 underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) (∐ 𝓔 ε₀)
+                 [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (∐ 𝓔 ε₀)
             e₁ = (continuous-∐-≡ 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀) ⁻¹
-            ε₁ : is-Directed 𝓕
-                 (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ)) ∘ (g ∘ α))
+            ε₁ : is-Directed 𝓕 ([ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ ∘ (g ∘ α))
             ε₁ = image-is-directed' 𝓔 𝓕 (f (∐ 𝓓 δ)) ε₀
             γ₁ : (∐ 𝓕 ε₁) ⊑⟨ 𝓕 ⟩ y
             γ₁ = ∐-is-lowerbound-of-upperbounds 𝓕 ε₁ y γ₂
              where
-              γ₂ : (i : I)
-                 → (underlying-function 𝓔 𝓕 (f (∐ 𝓓 δ))) (g (α i)) ⊑⟨ 𝓕 ⟩ y
-              γ₂ i = transport
-                     (λ - → (underlying-function 𝓔 𝓕 -) (g (α i)) ⊑⟨ 𝓕 ⟩ y )
-                     e₂ γ₃
+              γ₂ : (i : I) → [ 𝓔 , 𝓕 ]⟨ f (∐ 𝓓 δ) ⟩ (g (α i)) ⊑⟨ 𝓕 ⟩ y
+              γ₂ i = transport (λ - → [ 𝓔 , 𝓕 ]⟨ - ⟩ (g (α i)) ⊑⟨ 𝓕 ⟩ y) e₂ γ₃
                where
                 ε₂ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f ∘ α)
                 ε₂ = image-is-directed' 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ
                 e₂ : ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ≡ f (∐ 𝓓 δ)
                 e₂ = (continuous-∐-≡ 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (f , cf) δ) ⁻¹
-                γ₃ : underlying-function 𝓔 𝓕 (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂) (g (α i))
-                   ⊑⟨ 𝓕 ⟩ y
+                γ₃ : [ 𝓔 , 𝓕 ]⟨ ∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) {I} {f ∘ α} ε₂ ⟩ (g (α i)) ⊑⟨ 𝓕 ⟩ y
                 γ₃ = ∐-is-lowerbound-of-upperbounds 𝓕
                       (pointwise-family-is-directed 𝓔 𝓕 (f ∘ α) ε₂ (g (α i)))
                       y h
@@ -130,19 +125,19 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
                         r (semidirected-if-Directed 𝓓 α δ i j)
                    where
                     r : (Σ  k ꞉ I , α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k)
-                      → (underlying-function 𝓔 𝓕 (f (α j)) (g (α i))) ⊑⟨ 𝓕 ⟩ y
+                      → [ 𝓔 , 𝓕 ]⟨ f (α j) ⟩ (g (α i)) ⊑⟨ 𝓕 ⟩ y
                     r (k , l , m ) = transitivity 𝓕
-                                      (underlying-function 𝓔 𝓕 (f (α j))
+                                      ([ 𝓔 , 𝓕 ]⟨ f (α j) ⟩
                                        (g (α i)))
-                                      (underlying-function 𝓔 𝓕 (f (α k))
+                                      ([ 𝓔 , 𝓕 ]⟨ f (α k) ⟩
                                        (g (α k)))
                                       y
                                       (transitivity 𝓕
-                                        (underlying-function 𝓔 𝓕 (f (α j))
+                                        ([ 𝓔 , 𝓕 ]⟨ f (α j) ⟩
                                           (g (α i)))
-                                        (underlying-function 𝓔 𝓕 (f (α k))
+                                        ([ 𝓔 , 𝓕 ]⟨ f (α k) ⟩
                                           (g (α i)))
-                                      (underlying-function 𝓔 𝓕 (f (α k))
+                                      ([ 𝓔 , 𝓕 ]⟨ f (α k) ⟩
                                           (g (α k)))
                                       (s (g (α i)))
                                       (monotone-if-continuous 𝓔 𝓕
@@ -166,29 +161,28 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
     c I α δ = u , v
      where
       u : (i : I) (d : ⟨ 𝓓 ⟩)
-        → underlying-function 𝓓 𝓕 (h (α i)) d ⊑⟨ 𝓕 ⟩
-          underlying-function 𝓓 𝓕 (h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ)) d
+        → [ 𝓓 , 𝓕 ]⟨ h (α i) ⟩ d ⊑⟨ 𝓕 ⟩
+          [ 𝓓 , 𝓕 ]⟨ h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ )⟩ d
       u i d = monotone-if-continuous 𝓔 𝓕 (f d)
-              (underlying-function 𝓓 𝓔 (α i) d)
-              (underlying-function 𝓓 𝓔 (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ) d)
+              ([ 𝓓 , 𝓔 ]⟨ α i ⟩ d)
+              ([ 𝓓 , 𝓔 ]⟨ ∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ ⟩ d)
               (∐-is-upperbound 𝓔 (pointwise-family-is-directed 𝓓 𝓔 α δ d) i)
       v : (g : DCPO[ 𝓓 , 𝓕 ])
         → ((i : I) → h (α i) ⊑⟨ 𝓓 ⟹ᵈᶜᵖᵒ 𝓕 ⟩ g)
-        → (d : ⟨ 𝓓 ⟩) → underlying-function 𝓓 𝓕 (h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔)
-                          {I} {α} δ)) d
-                         ⊑⟨ 𝓕 ⟩ underlying-function 𝓓 𝓕 g d
-      v g l d = transport (λ - → - ⊑⟨ 𝓕 ⟩ underlying-function 𝓓 𝓕 g d) e s
+        → (d : ⟨ 𝓓 ⟩)
+        → [ 𝓓 , 𝓕 ]⟨ h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ) ⟩ d ⊑⟨ 𝓕 ⟩ [ 𝓓 , 𝓕 ]⟨ g ⟩ d
+      v g l d = transport (λ - → - ⊑⟨ 𝓕 ⟩ [ 𝓓 , 𝓕 ]⟨ g ⟩ d) e s
        where
         ε : is-Directed 𝓔 (pointwise-family 𝓓 𝓔 α d)
         ε = pointwise-family-is-directed 𝓓 𝓔 α δ d
         e : ∐ 𝓕 (image-is-directed' 𝓔 𝓕 (f d) ε)
-            ≡ underlying-function 𝓓 𝓕 (h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ)) d
+            ≡ [ 𝓓 , 𝓕 ]⟨ h (∐ (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) {I} {α} δ) ⟩ d
         e = (continuous-∐-≡ 𝓔 𝓕 (f d) ε) ⁻¹
         φ : is-Directed 𝓕
-            (underlying-function 𝓔 𝓕 (f d) ∘ (pointwise-family 𝓓 𝓔 α d))
+            ([ 𝓔 , 𝓕 ]⟨ f d ⟩ ∘ (pointwise-family 𝓓 𝓔 α d))
         φ = image-is-directed' 𝓔 𝓕 (f d) ε
-        s : ∐ 𝓕 φ ⊑⟨ 𝓕 ⟩ (underlying-function 𝓓 𝓕 g) d
-        s = ∐-is-lowerbound-of-upperbounds 𝓕 φ (underlying-function 𝓓 𝓕 g d)
+        s : ∐ 𝓕 φ ⊑⟨ 𝓕 ⟩ [ 𝓓 , 𝓕 ]⟨ g ⟩ d
+        s = ∐-is-lowerbound-of-upperbounds 𝓕 φ ([ 𝓓 , 𝓕 ]⟨ g ⟩ d)
             (λ (i : I) → l i d)
 
   Sᵈᶜᵖᵒ : DCPO[ 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 , (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⟹ᵈᶜᵖᵒ (𝓓 ⟹ᵈᶜᵖᵒ 𝓕) ]
@@ -218,10 +212,10 @@ module _ (𝓓 : DCPO {𝓤} {𝓣})
                   (λ (i : I) → l i g d)
        where
         ε : is-Directed 𝓕 (λ (i : I) → pr₁ (pr₁ (S₁ᵈᶜᵖᵒ (α i)) g) d)
-        ε = pointwise-family-is-directed 𝓔 𝓕 β φ (underlying-function 𝓓 𝓔 g d)
+        ε = pointwise-family-is-directed 𝓔 𝓕 β φ ([ 𝓓 , 𝓔 ]⟨ g ⟩ d)
          where
           β : I → DCPO[ 𝓔 , 𝓕 ]
-          β i = underlying-function 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) (α i) d
+          β i = [ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ]⟨ α i ⟩ d
           φ : is-Directed (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) β
           φ = pointwise-family-is-directed 𝓓 (𝓔 ⟹ᵈᶜᵖᵒ 𝓕) α δ d
 
