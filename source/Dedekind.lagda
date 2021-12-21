@@ -366,12 +366,12 @@ troelstra-gives-dedekind (further ℚ-is-dense order-criterion ℚ-is-upper-open
 
 \end{code}
 
-Question. Can we prove that ℝ = troeltra-reals with propositional and
-functional extensionality, without univalence? The problem is that the
-Dedekind condition and the troelstra condition have different universe
-levels, and hence propositional extensionality is not applicable to
-show that they are equal, as their equality doesn't even type
-check. Would universe lifting help? I haven't thought about this.
+Question. Can we prove that ℝ = 𝕋 with propositional and functional
+extensionality, without univalence? The problem is that the Dedekind
+condition and the troelstra condition have different universe levels,
+and hence propositional extensionality is not applicable to show that
+they are equal, as their equality doesn't even type check. Would
+universe lifting help? I haven't thought about this.
 
 \begin{code}
 
