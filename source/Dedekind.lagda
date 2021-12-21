@@ -49,8 +49,6 @@ record further-properties-of-order : 𝓣 ̇ where
   ℚ-is-lower-open : (q : ℚ) → ∃ p ꞉ ℚ , (p < q)
   ℚ-is-upper-open : (p : ℚ) → ∃ q ꞉ ℚ , (p < q)
 
-open further-properties-of-order
-
 open import UF-Powerset
 open import UF-Subsingletons-FunExt
 
@@ -111,14 +109,26 @@ The set of lower reals:
             (powersets-are-sets'' fe fe pe)
             (λ {l} → being-lower-real-is-prop l)
 
+\end{code}
+
+The set of upper reals:
+
+\begin{code}
+
 𝕌 : 𝓣⁺  ̇
 𝕌 = Σ U ꞉ 𝓟 ℚ , is-upper-real U
 
-are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓣  ̇
-are-located L U = (p q : ℚ) → p < q → p ∈ L ∨ q ∈ U
+\end{code}
+
+Next we define the set of Dedekind reals after some preparation.
+
+\begin{code}
 
 are-ordered : 𝓟 ℚ → 𝓟 ℚ → 𝓣  ̇
 are-ordered L U = (p q : ℚ) → p ∈ L → q ∈ U → p < q
+
+are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓣  ̇
+are-located L U = (p q : ℚ) → p < q → p ∈ L ∨ q ∈ U
 
 being-ordered-is-prop : (L U : 𝓟 ℚ) → is-prop (are-ordered L U)
 being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-valued _ _)
@@ -172,45 +182,59 @@ any-two-upper-sections-are-equal : (L U U' : 𝓟 ℚ)
                                  → U  upper-section-of L
                                  → U' upper-section-of L
                                  → U ≡ U'
-any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) =
-  subset-extensionality'' pe fe fe
-   (technical-lemma L L U' U a w b (⊆-refl' L))
-   (technical-lemma L L U U' u c v (⊆-refl' L))
+any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
+ where
+  i : U ⊆ U'
+  i = technical-lemma L L U' U a w b (⊆-refl' L)
+
+  j : U' ⊆ U
+  j = technical-lemma L L U U' u c v (⊆-refl' L)
+
+  γ : U ≡ U'
+  γ = subset-extensionality'' pe fe fe i j
 
 _is-upper-section-of_ : 𝕌 → 𝕃 → 𝓣 ̇
 (U , _) is-upper-section-of  (L , _) = are-ordered L U × are-located L U
-
-at-most-one-upper-section : (l : 𝕃) (u₀ u₁ : 𝕌)
-                          → u₀ is-upper-section-of l
-                          → u₁ is-upper-section-of l
-                          → u₀ ≡ u₁
-at-most-one-upper-section (L , l)
-                          (U₀ , _ , _ , U₀-is-lower-open)
-                          (U₁ , _ , _ , U₁-is-lower-open)
-                          (lu₀-ordered , lu₀-located)
-                          (lu₁-ordered , lu₁-located)
-  = to-subtype-≡
-      being-upper-real-is-prop
-      (any-two-upper-sections-are-equal L U₀ U₁
-          (U₀-is-lower-open , lu₀-ordered , lu₀-located)
-          (U₁-is-lower-open , lu₁-ordered , lu₁-located))
-
-is-dedekind : 𝕃 → 𝓣⁺ ̇
-is-dedekind l = Σ u ꞉ 𝕌 , (u is-upper-section-of l)
 
 being-upper-section-is-prop : (l : 𝕃) (u : 𝕌) → is-prop (u is-upper-section-of l)
 being-upper-section-is-prop (L , _) (U , _) = ×-is-prop
                                                (being-ordered-is-prop L U)
                                                (being-located-is-prop L U)
 
-being-dedekind-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
-being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-≡
-                                                (being-upper-section-is-prop l)
-                                                (at-most-one-upper-section l u₀ u₁ p₀ p₁)
+at-most-one-upper-section : (l : 𝕃) (u₀ u₁ : 𝕌)
+                          → u₀ is-upper-section-of l
+                          → u₁ is-upper-section-of l
+                          → u₀ ≡ u₁
+at-most-one-upper-section (L , l)
+                          u₀@(U₀ , _ , _ , U₀-is-lower-open)
+                          u₁@(U₁ , _ , _ , U₁-is-lower-open)
+                          (lu₀-ordered , lu₀-located)
+                          (lu₁-ordered , lu₁-located)      = γ
+ where
+  γ : u₀ ≡ u₁
+  γ = to-subtype-≡
+        being-upper-real-is-prop
+        (any-two-upper-sections-are-equal L U₀ U₁
+            (U₀-is-lower-open , lu₀-ordered , lu₀-located)
+            (U₁-is-lower-open , lu₁-ordered , lu₁-located))
 
 \end{code}
 
-The Dedekind reals:
+The Dedekind condition for a lower real:
+
+\begin{code}
+
+is-dedekind : 𝕃 → 𝓣⁺ ̇
+is-dedekind l = Σ u ꞉ 𝕌 , (u is-upper-section-of l)
+
+being-dedekind-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
+being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-≡
+                                                 (being-upper-section-is-prop l)
+                                                 (at-most-one-upper-section l u₀ u₁ p₀ p₁)
+
+\end{code}
+
+We define the the Dedekind reals as a subset of the lower reals:
 
 \begin{code}
 
@@ -257,9 +281,8 @@ open import UF-Embeddings
 
 ℝ-is-set : is-set ℝ
 ℝ-is-set = subsets-of-sets-are-sets 𝕃 is-dedekind
-            𝕃-is-set
-            (λ {l} → being-dedekind-is-prop l)
-
+             𝕃-is-set
+             (λ {l} → being-dedekind-is-prop l)
 \end{code}
 
 We now consider an alternative definition of the Dedekind reals
@@ -267,11 +290,11 @@ offered by Troelstra.
 
 \begin{code}
 
-is-bounded : 𝓟 ℚ → 𝓣 ̇
-is-bounded L = ∃ s ꞉ ℚ , s ∉ L
+is-bounded-above : 𝓟 ℚ → 𝓣 ̇
+is-bounded-above L = ∃ s ꞉ ℚ , s ∉ L
 
-being-bounded-is-prop : (L : 𝓟 ℚ) → is-prop (is-bounded L)
-being-bounded-is-prop L = ∃-is-prop
+being-bounded-above-is-prop : (L : 𝓟 ℚ) → is-prop (is-bounded-above L)
+being-bounded-above-is-prop L = ∃-is-prop
 
 is-troelstra-located : 𝓟 ℚ → 𝓣 ̇
 is-troelstra-located L = ((r s : ℚ) → r < s → r ∈ L ∨ s ∉ L)
@@ -280,12 +303,18 @@ being-troelstra-located-is-prop : (L : 𝓟 ℚ) → is-prop (is-troelstra-locat
 being-troelstra-located-is-prop L = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
 
 is-troelstra : 𝕃 → 𝓣 ̇
-is-troelstra (L , _) = is-bounded L × is-troelstra-located L
+is-troelstra (L , _) = is-bounded-above L × is-troelstra-located L
 
 being-troelstra-is-prop : (l : 𝕃) → is-prop (is-troelstra l)
 being-troelstra-is-prop (L , _) = ×-is-prop
-                                   (being-bounded-is-prop L)
+                                   (being-bounded-above-is-prop L)
                                    (being-troelstra-located-is-prop L)
+
+\end{code}
+
+The Dedekind and Troelstra conditions are equivalent:
+
+\begin{code}
 
 dedekind-gives-troelstra : (l : 𝕃) → is-dedekind l → is-troelstra l
 dedekind-gives-troelstra (L , _ , _ , _)
@@ -312,9 +341,12 @@ dedekind-gives-troelstra (L , _ , _ , _)
 
 \end{code}
 
-For the converse, we need further assumptions on _<_:
+For the converse, we need the further assumptions on _<_ mentioned
+above:
 
 \begin{code}
+
+open further-properties-of-order
 
 troelstra-gives-dedekind : further-properties-of-order
                          → (l : 𝕃) → is-troelstra l → is-dedekind l
@@ -384,6 +416,12 @@ troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open
   γ = (U , (U-is-inhabited , U-is-upper , U-is-lower-open)) , LU-ordered , LU-located
 
 
+\end{code}
+
+The set of Troelstra reals, again as a subset of the lower reals:
+
+\begin{code}
+
 𝕋 : 𝓣⁺ ̇
 𝕋 = Σ l ꞉ 𝕃 , is-troelstra l
 
@@ -446,21 +484,28 @@ The bounded lower reals:
 \begin{code}
 
 𝕃β : 𝓣 ⁺ ̇
-𝕃β = Σ (L , _) ꞉ 𝕃 , is-bounded L
+𝕃β = Σ (L , _) ꞉ 𝕃 , is-bounded-above L
+
+\end{code}
+
+The boundedness condition only excludes a point at infinity in the
+lower reals:
+
+\begin{code}
 
 ∞ : 𝓟 ℚ
 ∞ = λ q → ⊤Ω
 
-∞-is-lower-real-but-not-bounded : further-properties-of-order
-                                → (is-lower-real ∞) × (¬ is-bounded ∞)
-∞-is-lower-real-but-not-bounded ϕ = a , b
+∞-is-lower-real-but-not-bounded-above : further-properties-of-order
+                                      → (is-lower-real ∞) × (¬ is-bounded-above ∞)
+∞-is-lower-real-but-not-bounded-above ϕ = a , b
  where
   a : is-lower-real ∞
   a = ∥∥-rec (being-inhabited-is-prop ∞) (λ q → ∣ q , * ∣) (ℚ-is-inhabited ϕ) ,
-     (λ _ _ _ _ → *) ,
-     (λ p * → ∥∥-rec ∃-is-prop (λ (q , i) → ∣ q , i , * ∣) (ℚ-is-upper-open ϕ p))
+      (λ _ _ _ _ → *) ,
+      (λ p * → ∥∥-rec ∃-is-prop (λ (q , i) → ∣ q , i , * ∣) (ℚ-is-upper-open ϕ p))
 
-  b : ¬ is-bounded ∞
+  b : ¬ is-bounded-above ∞
   b bounded = ∥∥-rec 𝟘-is-prop (λ (q , q-is-not-in-∞) → q-is-not-in-∞ *) bounded
 
 \end{code}
@@ -474,11 +519,12 @@ agree with the bounded lower reals if we assume excluded middle:
 𝕋-and-𝕃β-agree-under-EM : EM 𝓣 → further-properties-of-order → 𝕋 ≡ 𝕃β
 𝕋-and-𝕃β-agree-under-EM em ϕ = ap Σ γ
  where
-  δ : is-troelstra ∼ λ (L , _) → is-bounded L
-  δ l@(L , c) = pe (being-troelstra-is-prop l) (being-bounded-is-prop L)
+  δ : is-troelstra ∼ λ (L , _) → is-bounded-above L
+  δ l@(L , c) = pe (being-troelstra-is-prop l) (being-bounded-above-is-prop L)
                    pr₁
                    λ β → β , EM-gives-troelstra-locatedness em l
-  γ : is-troelstra ≡ λ (L , _) → is-bounded L
+
+  γ : is-troelstra ≡ (λ (L , _) → is-bounded-above L)
   γ = dfunext fe δ
 
 \end{code}
@@ -496,7 +542,7 @@ agree with the bounded lower reals:
                                 ∙ 𝕋-and-𝕃β-agree-under-EM em ϕ
 \end{code}
 
-We will also need ℚ-upper and -lower openness for the following:
+We also need further properties of order for embedding the rationals into the reals:
 
 \begin{code}
 
@@ -522,8 +568,7 @@ module rational-reals (ϕ : further-properties-of-order) where
 
 
  ℚ-to-𝕌-is-upper-section-of-ℚ-to-𝕃 : (q : ℚ) → (ℚ-to-𝕌 q) is-upper-section-of (ℚ-to-𝕃 q)
- ℚ-to-𝕌-is-upper-section-of-ℚ-to-𝕃 q = (λ p → transitivity ϕ p q) ,
-                                       (λ p → cotransitivity ϕ p q)
+ ℚ-to-𝕌-is-upper-section-of-ℚ-to-𝕃 q = (λ p → transitivity ϕ p q) , (λ p → cotransitivity ϕ p q)
 
  ℚ-to-𝕃-is-dedekind : (q : ℚ) → is-dedekind (ℚ-to-𝕃 q)
  ℚ-to-𝕃-is-dedekind q = ℚ-to-𝕌 q , ℚ-to-𝕌-is-upper-section-of-ℚ-to-𝕃 q
@@ -536,6 +581,32 @@ module rational-reals (ϕ : further-properties-of-order) where
  ℚ-to-ℝ-is-embedding = {!!}
 -}
 
+\end{code}
+
+TODO. Derive a constructive taboo from the assumption that every
+bounded lower real is a Dedekind real.
+
+\begin{code}
+{-
+blah : (A : 𝓣 ̇ ) → is-prop A → ℚ → ℚ → 𝕃
+blah A i p₀ p₁ = L , L-is-inhabited , L-is-lower , L-is-upper-open
+ where
+  L : 𝓟 ℚ
+  L p = (((p < p₀) × (A → p < p₁)) ,
+        ×-is-prop
+         (order-is-prop-valued p p₀)
+         (Π-is-prop fe (λ _ → order-is-prop-valued p p₁)))
+
+
+  L-is-inhabited : is-inhabited L
+  L-is-inhabited = {!!}
+
+  L-is-lower : is-lower L
+  L-is-lower = {!!}
+
+  L-is-upper-open : is-upper-open L
+  L-is-upper-open = {!!}
+-}
 \end{code}
 
 TODO. Define Dedekind completeness and show that ℝ is Dedekind complete.
