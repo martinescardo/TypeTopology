@@ -491,7 +491,7 @@ dedekind-agrees-with-troelstra ϕ = γ
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
 
 dedekind-agrees-with-troelstra' : further-properties-of-ℚ-and-its-order
-                                → is-univalent (𝓣 ⁺)
+                                → is-univalent 𝓣⁺
                                 → ℝ ≡ 𝕋
 dedekind-agrees-with-troelstra' ϕ ua = eqtoid ua ℝ 𝕋 (dedekind-agrees-with-troelstra ϕ)
 
