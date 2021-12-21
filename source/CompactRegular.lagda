@@ -43,22 +43,22 @@ is-directed P (I , s) =
 \end{code}
 
 \begin{code}
-way-below : (F : frame 𝓤 𝓥 𝓦) → (x y : ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F x y =
+way-below : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
  Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
-  y ≤ (⋁[ F ] S) ⇒ (Ǝ i ∶ index S , (x ≤ S [ i ]) holds)
+  V ≤ (⋁[ F ] S) ⇒ (Ǝ i ∶ index S , (U ≤ S [ i ]) holds)
    where
     open PosetNotation (poset-of F) using (_≤_)
 
 infix 5 way-below
 
-syntax way-below F x y = x ≪[ F ] y
+syntax way-below F U V = U ≪[ F ] V
 \end{code}
 
 \begin{code}
 
 is-compact-open : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-compact-open F x = x ≪[ F ] x
+is-compact-open F U = U ≪[ F ] U
 
 \end{code}
 
@@ -132,7 +132,7 @@ syntax well-inside₀ F U V = U ⋜₀[ F ] V
 -- “has complement” (i.e. is well inside itself) is propositional.
 well-inside-is-not-prop : is-univalent 𝓤₀
                         → Σ F ꞉ frame 𝓤₁ 𝓤₀ 𝓤₀ ,
-                           (¬ ((x y : ⟨ F ⟩) → is-prop (x ⋜₀[ F ] y)))
+                           (¬ ((U V : ⟨ F ⟩) → is-prop (U ⋜₀[ F ] V)))
 well-inside-is-not-prop ua = IF , ε
  where
   IF : frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
@@ -164,7 +164,7 @@ well-inside-is-not-prop ua = IF , ε
     γ : ⊥Ω holds
     γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) *
 
-  ε : ¬ ((x y : ⟨ IF ⟩) → is-prop (well-inside₀ IF x y))
+  ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-≡ δ))
    where
     δ : γ₁ ≡ γ₂
@@ -185,7 +185,7 @@ well-inside₀-implies-below : (F : frame 𝓤 𝓥 𝓦)
                           → (U ≤[ poset-of F ] V) holds
 well-inside₀-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
  where
-  _⊓_ = λ x y → x ∧[ F ] y
+  _⊓_ = λ U V → U ∧[ F ] V
 
   γ : U ≡ U ∧[ F ] V
   γ = U                        ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
@@ -197,7 +197,7 @@ well-inside₀-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
 
 \end{code}
 
-An open x in a frame F is *clopen* iff it is well-inside itself.
+An open U in a frame F is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
@@ -268,16 +268,16 @@ clopenness-equivalent-to-well-inside-oneself F U =
 \begin{code}
 
 ↓↓[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam (𝓤 ⊔ 𝓥) ⟨ F ⟩
-↓↓[ F ] x = (Σ y ꞉ ⟨ F ⟩ , (y ≤[ poset-of F ] x) holds) , pr₁
+↓↓[ F ] U = (Σ V ꞉ ⟨ F ⟩ , (V ≤[ poset-of F ] U) holds) , pr₁
 
 \end{code}
 
 \begin{code}
 
 isRegular : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥)
-isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
+isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
   where
-  open Joins (λ x y → x ≤[ poset-of F ] y)
+  open Joins (λ U V → U ≤[ poset-of F ] V)
 
 \end{code}
 
@@ -285,35 +285,35 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
 
 \begin{code}
 ∨-is-scott-continuous : (F : frame 𝓤 𝓥 𝓦)
-                      → (x : ⟨ F ⟩)
-                      → is-scott-continuous F F (λ - → x ∨[ F ] -) holds
-∨-is-scott-continuous F x S dir = β , γ
+                      → (U : ⟨ F ⟩)
+                      → is-scott-continuous F F (λ - → U ∨[ F ] -) holds
+∨-is-scott-continuous F U S dir = β , γ
  where
  open PosetNotation  (poset-of F) using (_≤_)
  open PosetReasoning (poset-of F)
  open Joins _≤_
 
- β : ((x ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ x ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
+ β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
  β i = ∨[ F ]-right-mono (⋁[ F ]-upper S i)
 
- γ : (Ɐ (u′ , _) ∶ upper-bound ⁅ x ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
-       ((x ∨[ F ] (⋁[ F ] S)) ≤ u′)) holds
+ γ : (Ɐ (u′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
+       ((U ∨[ F ] (⋁[ F ] S)) ≤ u′)) holds
  γ (u′ , p) = ∨[ F ]-least γ₁ γ₂
   where
-   δ₁ : index S → (x ≤ u′) holds
-   δ₁ i = x                  ≤⟨ ∨[ F ]-upper₁ x (S [ i ]) ⟩
-          x ∨[ F ] (S [ i ]) ≤⟨ p i                       ⟩
+   δ₁ : index S → (U ≤ u′) holds
+   δ₁ i = U                  ≤⟨ ∨[ F ]-upper₁ U (S [ i ]) ⟩
+          U ∨[ F ] (S [ i ]) ≤⟨ p i                       ⟩
           u′                 ■
 
-   γ₁ : (x ≤[ poset-of F ] u′) holds
-   γ₁ = ∥∥-rec (holds-is-prop (x ≤[ poset-of F ] u′)) δ₁ (pr₁ dir)
+   γ₁ : (U ≤[ poset-of F ] u′) holds
+   γ₁ = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] u′)) δ₁ (pr₁ dir)
 
    γ₂ : ((⋁[ F ] S) ≤[ poset-of F ] u′) holds
    γ₂ = ⋁[ F ]-least S (u′ , δ₂)
     where
      δ₂ : (u′ is-an-upper-bound-of S) holds
-     δ₂ i = S [ i ]                         ≤⟨ ∨[ F ]-upper₂ x (S [ i ]) ⟩
-            x ∨[ F ] (S [ i ])              ≤⟨ p i                       ⟩
+     δ₂ i = S [ i ]                         ≤⟨ ∨[ F ]-upper₂ U (S [ i ]) ⟩
+            U ∨[ F ] (S [ i ])              ≤⟨ p i                       ⟩
             u′                              ■
 
 ∨-is-scott-continuous-eq : (F : frame 𝓤 𝓥 𝓦)
@@ -384,9 +384,10 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
 
 clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
                                       → isCompact F holds
-                                      → (x : ⟨ F ⟩)
-                                      → is-clopen F x holds
-                                      → is-compact-open F x holds
-clopens-are-compact-in-compact-frames F κ x = ⋜₀-implies-≪-in-compact-frames F κ x x
+                                      → (U : ⟨ F ⟩)
+                                      → is-clopen F U holds
+                                      → is-compact-open F U holds
+clopens-are-compact-in-compact-frames F κ U =
+ ⋜₀-implies-≪-in-compact-frames F κ  U U
 
 \end{code}
