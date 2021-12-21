@@ -98,23 +98,26 @@ module _ {𝓤 𝓣 : Universe}
  dcpo-axioms = poset-axioms × is-directed-complete
 
  is-sup-is-prop : dcpo-axioms → {I : 𝓥 ̇ } (d : D) (α : I → D)
-                  → is-prop (is-sup d α)
+                → is-prop (is-sup d α)
  is-sup-is-prop ((s , p , r , t , a) , c) {I} d α = γ
   where
    γ : is-prop (is-sup d α)
    γ = ×-is-prop (Π-is-prop fe (λ i → p (α i) d))
                  (Π₂-is-prop fe (λ x l → p d x))
 
+ sups-are-unique : dcpo-axioms
+                 → {I : 𝓥 ̇ } (α : I → D) {x y : D}
+                 → is-sup x α → is-sup y α → x ≡ y
+ sups-are-unique ((s , p , r , t , a) , c) {I} α {x} {y} x-is-sup y-is-sup =
+  a x y
+   (sup-is-lowerbound-of-upperbounds x-is-sup y (sup-is-upperbound y-is-sup))
+   (sup-is-lowerbound-of-upperbounds y-is-sup x (sup-is-upperbound x-is-sup))
+
  having-sup-is-prop : dcpo-axioms → {I : 𝓥 ̇ } (α : I → D)
-                      → is-prop (has-sup α)
- having-sup-is-prop ((s , p , r , t , a) , c) {I} α = γ
-  where
-   γ : is-prop (has-sup α)
-   γ (j , (u , l)) (j' , (u' , l')) =
-     to-Σ-≡ (q , is-sup-is-prop ((s , p , r , t , a) , c) j' α _ _)
-    where
-     q : j ≡ j'
-     q = a j j' (l j' u') (l' j u)
+                    → is-prop (has-sup α)
+ having-sup-is-prop ax {I} α σ τ =
+  to-subtype-≡ (λ x → is-sup-is-prop ax x α)
+               (sups-are-unique ax α (pr₂ σ) (pr₂ τ))
 
  being-directed-complete-is-prop : dcpo-axioms → is-prop is-directed-complete
  being-directed-complete-is-prop a =
@@ -334,5 +337,10 @@ syntax underlying-function 𝓓 𝓔 f = [ 𝓓 , 𝓔 ]⟨ f ⟩
 continuity-of-function : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (f : DCPO[ 𝓓 , 𝓔 ])
                        → is-continuous 𝓓 𝓔 [ 𝓓 ,  𝓔 ]⟨ f ⟩
 continuity-of-function 𝓓 𝓔 (_ , c) = c
+
+is-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+          → (⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+          → 𝓤' ̇
+is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ≡ ⊥ 𝓔
 
 \end{code}
