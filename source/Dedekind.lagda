@@ -170,15 +170,15 @@ at-most-one-upper-section (L , l)
 is-dedekind : 𝕃 → 𝓣⁺ ̇
 is-dedekind l = Σ u ꞉ 𝕌 , (u is-upper-section-of l)
 
-being-a-couple-is-prop : (l : 𝕃) (u : 𝕌) → is-prop (u is-upper-section-of l)
-being-a-couple-is-prop l u = ×-is-prop
-                              (Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-valued _ _))
-                              (Π₃-is-prop fe (λ _ _ _ → ∨-is-prop))
+being-upper-section-is-prop : (l : 𝕃) (u : 𝕌) → is-prop (u is-upper-section-of l)
+being-upper-section-is-prop l u = ×-is-prop
+                                   (Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-valued _ _))
+                                   (Π₃-is-prop fe (λ _ _ _ → ∨-is-prop))
 
 having-partner-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
 having-partner-is-prop l (u₀ , p₀) (u₁ , p₁) =
       to-subtype-≡
-        (being-a-couple-is-prop l)
+        (being-upper-section-is-prop l)
         (at-most-one-upper-section l u₀ u₁ p₀ p₁)
 
 \end{code}
