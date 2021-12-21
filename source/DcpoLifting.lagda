@@ -26,12 +26,12 @@ open import UF-Subsingletons-FunExt
 open import UF-ImageAndSurjection
 open ImageAndSurjection pt
 
-open import Lifting 𝓣
+open import Lifting 𝓣 hiding (⊥)
 open import LiftingMiscelanea 𝓣
 open import LiftingMiscelanea-PropExt-FunExt 𝓣 pe fe
 open import LiftingMonad 𝓣
 
-open import Dcpo pt fe 𝓣 hiding (⊥)
+open import Dcpo pt fe 𝓣 -- hiding (⊥)
 open import DcpoBasics pt fe 𝓣
 
 open import Poset fe
@@ -147,7 +147,10 @@ module _ {𝓤 : Universe}
              lifting-sup-is-lowerbound-of-upperbounds δ
 
  𝓛-DCPO⊥ : DCPO⊥ {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
- 𝓛-DCPO⊥ = 𝓛-DCPO , ⊥ , λ _ → unique-from-𝟘
+ 𝓛-DCPO⊥ = 𝓛-DCPO , l , (λ _ → unique-from-𝟘)
+  where
+   l : 𝓛 X
+   l = (𝟘 , 𝟘-elim , 𝟘-is-prop)
 
 \end{code}
 
@@ -192,5 +195,71 @@ module _ {𝓤 : Universe}
                    (is-continuous (𝓛-DCPO s₀) (𝓛-DCPO s₁))
                    (dfunext fe (𝓛̇-♯-∼ f))
                    (♯-is-continuous (η ∘ f))
+
+\end{code}
+
+\begin{code}
+
+module _
+         {X : 𝓤 ̇ }
+         (X-is-set : is-set X)
+         (𝓓 : DCPO⊥ {𝓥} {𝓦})
+         (f : X → ⟪ 𝓓 ⟫)
+       where
+
+ 𝓛X : DCPO⊥ {𝓣 ⁺ ⊔ 𝓤} {𝓣 ⁺ ⊔ 𝓤}
+ 𝓛X = 𝓛-DCPO⊥ X-is-set
+
+ f̃ : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫
+ f̃ (P , ϕ , P-is-prop) = ∐ˢˢ 𝓓 (f ∘ ϕ) P-is-prop
+
+ f̃-is-strict : is-strict 𝓛X 𝓓 f̃
+ f̃-is-strict = strictness-criterion 𝓛X 𝓓 f̃ γ
+  where
+   γ : f̃ (⊥ 𝓛X) ⊑⟪ 𝓓 ⟫ ⊥ 𝓓
+   γ = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓
+        (f ∘ unique-from-𝟘) 𝟘-is-prop (⊥ 𝓓) 𝟘-induction
+
+ f̃-is-continuous : is-continuous (𝓛X ⁻) (𝓓 ⁻) f̃
+ f̃-is-continuous I α δ = {!!}
+
+ f̃-after-η-is-f : f̃ ∘ η ∼ f
+ f̃-after-η-is-f x = antisymmetry (𝓓 ⁻) (f̃ (η x)) (f x) u v
+  where
+   u : f̃ (η x) ⊑⟪ 𝓓 ⟫ f x
+   u = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ (λ _ → x)) 𝟙-is-prop
+        (f x) (λ _ → reflexivity (𝓓 ⁻) (f x))
+   v : f x ⊑⟪ 𝓓 ⟫ f̃ (η x)
+   v = ∐ˢˢ-is-upperbound 𝓓 (λ _ → f x) 𝟙-is-prop *
+
+ all-partial-elements-are-subsingleton-sups :
+    (l : ⟪ 𝓛X ⟫)
+  → l ≡ ∐ˢˢ 𝓛X (η ∘ value l) (being-defined-is-prop l)
+ all-partial-elements-are-subsingleton-sups (P , ϕ , ρ) =
+  antisymmetry (𝓛X ⁻) (P , ϕ , ρ) (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) u v
+   where
+    v : ∐ˢˢ 𝓛X (η ∘ ϕ) ρ ⊑' (P , ϕ , ρ)
+    v = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓛X (η ∘ ϕ) ρ (P , ϕ , ρ)
+         (λ p * → (is-defined-η-≡ p) ⁻¹)
+    u : (P , ϕ , ρ) ⊑' ∐ˢˢ 𝓛X (η ∘ ϕ) ρ
+    u p = antisymmetry (𝓛X ⁻) (P , ϕ , ρ) (∐ˢˢ 𝓛X (η ∘ ϕ) ρ)
+           u' v
+     where
+      u' = (P , ϕ , ρ)      ⊑⟪ 𝓛X ⟫[ ≡-to-⊑ (𝓛X ⁻) (is-defined-η-≡ p) ]
+           η (ϕ p)          ⊑⟪ 𝓛X ⟫[ ∐ˢˢ-is-upperbound 𝓛X (η ∘ ϕ) ρ p ]
+           ∐ˢˢ 𝓛X (η ∘ ϕ) ρ ∎⟪ 𝓛X ⟫
+
+ f̃-is-unique : (g : ⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫)
+             → is-continuous (𝓛X ⁻) (𝓓 ⁻) g
+             → is-strict 𝓛X 𝓓 g
+             → g ∘ η ∼ f
+             → g ∼ f̃
+ f̃-is-unique g con str eq (P , ϕ , ρ) =
+  g (P , ϕ , ρ)        ≡⟨ ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ)) ⟩
+  g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ≡⟨ {!!} ⟩
+  ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ≡⟨ {!!} ⟩
+  ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ≡⟨ refl ⟩
+  f̃ (P , ϕ , ρ)        ∎
+
 
 \end{code}
