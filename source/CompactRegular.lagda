@@ -3,6 +3,9 @@ Ayberk Tosun, 9 December 2021
 Based on `ayberkt/formal-topology-in-UF`.
 
 \begin{code}[hide]
+
+{-# OPTIONS --without-K --exact-split --safe #-}
+
 open import SpartanMLTT
 open import UF-Base
 open import UF-PropTrunc
