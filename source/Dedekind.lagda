@@ -65,7 +65,7 @@ is-lower : 𝓟 ℚ → 𝓣 ̇
 is-lower L = (q : ℚ) → q ∈ L → (p : ℚ) → p < q → p ∈ L
 
 is-upper-open : 𝓟 ℚ → 𝓣 ̇
-is-upper-open A = (p : ℚ) → p ∈ A → ∃ p' ꞉ ℚ , ((p < p') × p' ∈ A)
+is-upper-open L = (p : ℚ) → p ∈ L → ∃ p' ꞉ ℚ , ((p < p') × p' ∈ L)
 
 is-lower-real : 𝓟 ℚ → 𝓣 ̇
 is-lower-real L = is-inhabited L × is-lower L × is-upper-open L
@@ -80,7 +80,7 @@ is-upper : 𝓟 ℚ → 𝓣 ̇
 is-upper U = (p : ℚ) → p ∈ U → (q : ℚ) → p < q → q ∈ U
 
 is-lower-open : 𝓟 ℚ → 𝓣 ̇
-is-lower-open A = (q : ℚ) → q ∈ A → ∃ q' ꞉ ℚ , ((q' < q) × q' ∈ A)
+is-lower-open U = (q : ℚ) → q ∈ U → ∃ q' ꞉ ℚ , ((q' < q) × q' ∈ U)
 
 is-upper-real : 𝓟 ℚ → 𝓣 ̇
 is-upper-real U = is-inhabited U × is-upper U × is-lower-open U
