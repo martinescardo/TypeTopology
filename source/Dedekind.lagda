@@ -137,14 +137,14 @@ lemma₀ L L' U U'
   γ : q ∈ U
   γ = ∥∥-rec (∈-is-prop U q) II I
 
-are-dedekind-section : 𝓟 ℚ → 𝓟 ℚ → 𝓣 ̇
-are-dedekind-section L U = is-lower-open U × ordered L U × located L U
+_upper-section-of_ : 𝓟 ℚ → 𝓟 ℚ → 𝓣 ̇
+U upper-section-of L = is-lower-open U × ordered L U × located L U
 
-any-two-are-dedekind-sections-are-equal : (L U U' : 𝓟 ℚ)
-                                        → are-dedekind-section L U
-                                        → are-dedekind-section L U'
-                                        → U ≡ U'
-any-two-are-dedekind-sections-are-equal L U U' (a , b , c) (u , v , w) =
+any-two-upper-sections-are-equal : (L U U' : 𝓟 ℚ)
+                                 → U  upper-section-of L
+                                 → U' upper-section-of L
+                                 → U ≡ U'
+any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) =
   subset-extensionality'' pe fe fe
    (lemma₀ L L U' U a w b (⊆-refl' L))
    (lemma₀ L L U U' u c v (⊆-refl' L))
@@ -163,7 +163,7 @@ at-most-one-upper-section (L , l)
                           (lu₁-ordered , lu₁-located)
   = to-subtype-≡
       being-upper-real-is-prop
-      (any-two-are-dedekind-sections-are-equal L U₀ U₁
+      (any-two-upper-sections-are-equal L U₀ U₁
           (U₀-is-lower-open , lu₀-ordered , lu₀-located)
           (U₁-is-lower-open , lu₁-ordered , lu₁-located))
 
@@ -198,7 +198,7 @@ Dedekind real:
 \begin{code}
 
 subset-with-a-partner-is-lower : (L : 𝓟 ℚ)
-                               → (Σ U ꞉ 𝓟 ℚ , are-dedekind-section L U)
+                               → (Σ U ꞉ 𝓟 ℚ , U upper-section-of L)
                                → is-lower L
 subset-with-a-partner-is-lower L
   (U , U-lower-open , LU-ordered , LU-located ) = γ
@@ -467,11 +467,11 @@ We will also need ℚ-upper and -lower openness for the following:
 rational-couple : (q : ℚ) → is-upper-section-of (ℚ-to-𝕃 q) (ℚ-to-𝕌 q)
 rational-couple = {!!}
 
-rationals-have-are-dedekind-section : (q : ℚ) → is-dedekind (ℚ-to-𝕃 q)
-rationals-have-are-dedekind-section q = ℚ-to-𝕌 q , rational-couple q
+rationals-have-_is-upper-section-of_ : (q : ℚ) → is-dedekind (ℚ-to-𝕃 q)
+rationals-have-_is-upper-section-of_ q = ℚ-to-𝕌 q , rational-couple q
 
 ℚ-to-ℝ : ℚ → ℝ
-ℚ-to-ℝ q = ℚ-to-𝕃 q , rationals-have-are-dedekind-section q
+ℚ-to-ℝ q = ℚ-to-𝕃 q , rationals-have-_is-upper-section-of_ q
 -}
 \end{code}
 
