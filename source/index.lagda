@@ -128,6 +128,7 @@ import ConvergentSequenceInfCompact
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
+import Dedekind
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
