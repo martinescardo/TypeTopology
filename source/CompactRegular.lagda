@@ -175,7 +175,7 @@ well-inside-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
   γ : U ≡ U ∧[ F ] V
   γ = U                        ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
       U ⊓ 𝟏[ F ]               ≡⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
-      U ⊓ (V ∨[ F ] W)         ≡⟨ binary-distributivity F               ⟩
+      U ⊓ (V ∨[ F ] W)         ≡⟨ binary-distributivity F U V W         ⟩
       (U ⊓ V) ∨[ F ] (U ⊓ W)   ≡⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
       (U ⊓ V) ∨[ F ] 𝟎[ F ]    ≡⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
       U ⊓ V                    ∎
