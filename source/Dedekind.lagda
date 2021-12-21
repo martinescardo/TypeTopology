@@ -5,8 +5,8 @@ Some thoughts about Dedekind reals.
 We generalize the rationals to any type with a prop-valued,
 irreflexive relation _<_.
 
-To show that the Dedekind reals agree with teh Troelstra reals, we
-further assume that _<_ is dense, upper open, and satisfies p ≢ q →
+To show that the Dedekind reals agree with their Troelstra's version,
+we further assume that _<_ is dense, upper open, and satisfies p ≢ q →
 ¬(q < p) → p < q (which the type of rationals does).
 
 \begin{code}
