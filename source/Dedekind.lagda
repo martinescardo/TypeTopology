@@ -120,7 +120,7 @@ The set of lower reals:
 
 \begin{code}
 
-𝕃 : 𝓣⁺  ̇
+𝕃 : 𝓣⁺ ̇
 𝕃 = Σ L ꞉ 𝓟 ℚ , is-lower-real L
 
 𝕃-is-set : is-set 𝕃
@@ -134,7 +134,7 @@ The set of upper reals:
 
 \begin{code}
 
-𝕌 : 𝓣⁺  ̇
+𝕌 : 𝓣⁺ ̇
 𝕌 = Σ U ꞉ 𝓟 ℚ , is-upper-real U
 
 \end{code}
@@ -273,7 +273,7 @@ We define the the Dedekind reals as a subset of the lower reals:
 
 \begin{code}
 
-ℝ : 𝓣⁺  ̇
+ℝ : 𝓣⁺ ̇
 ℝ = Σ l ꞉ 𝕃 , is-dedekind l
 
 \end{code}
@@ -520,7 +520,7 @@ The bounded lower reals:
 
 \begin{code}
 
-𝕃β : 𝓣 ⁺ ̇
+𝕃β : 𝓣⁺ ̇
 𝕃β = Σ (L , _) ꞉ 𝕃 , is-bounded-above L
 
 \end{code}
