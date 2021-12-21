@@ -37,7 +37,7 @@ pe {𝓤} = pe' 𝓤
 
 open PropositionalTruncation pt
 
-record further-properties-of-order : 𝓣 ̇ where
+record further-properties-of-ℚ-and-its-order : 𝓣 ̇ where
  constructor
   further
  field
@@ -346,9 +346,9 @@ above:
 
 \begin{code}
 
-open further-properties-of-order
+open further-properties-of-ℚ-and-its-order
 
-troelstra-gives-dedekind : further-properties-of-order
+troelstra-gives-dedekind : further-properties-of-ℚ-and-its-order
                          → (l : 𝕃) → is-troelstra l → is-dedekind l
 troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open) (a , b) = γ
  where
@@ -439,7 +439,7 @@ universe lifting help? I haven't thought about this.
 open import UF-Equiv
 open import UF-Univalence
 
-dedekind-agrees-with-troelstra : further-properties-of-order → ℝ ≃ 𝕋
+dedekind-agrees-with-troelstra : further-properties-of-ℚ-and-its-order → ℝ ≃ 𝕋
 dedekind-agrees-with-troelstra ϕ = γ
  where
   f : ℝ → 𝕋
@@ -453,7 +453,7 @@ dedekind-agrees-with-troelstra ϕ = γ
                (λ (l , h) → to-subtype-≡ being-dedekind-is-prop refl) ,
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
 
-dedekind-agrees-with-troelstra' : further-properties-of-order
+dedekind-agrees-with-troelstra' : further-properties-of-ℚ-and-its-order
                                 → is-univalent (𝓣 ⁺)
                                 → ℝ ≡ 𝕋
 dedekind-agrees-with-troelstra' ϕ ua = eqtoid ua ℝ 𝕋 (dedekind-agrees-with-troelstra ϕ)
@@ -496,7 +496,7 @@ lower reals:
 ∞ : 𝓟 ℚ
 ∞ = λ q → ⊤Ω
 
-∞-is-lower-real-but-not-bounded-above : further-properties-of-order
+∞-is-lower-real-but-not-bounded-above : further-properties-of-ℚ-and-its-order
                                       → (is-lower-real ∞) × (¬ is-bounded-above ∞)
 ∞-is-lower-real-but-not-bounded-above ϕ = a , b
  where
@@ -516,7 +516,7 @@ agree with the bounded lower reals if we assume excluded middle:
 
 \begin{code}
 
-𝕋-and-𝕃β-agree-under-EM : EM 𝓣 → further-properties-of-order → 𝕋 ≡ 𝕃β
+𝕋-and-𝕃β-agree-under-EM : EM 𝓣 → further-properties-of-ℚ-and-its-order → 𝕋 ≡ 𝕃β
 𝕋-and-𝕃β-agree-under-EM em ϕ = ap Σ γ
  where
   δ : is-troelstra ∼ λ (L , _) → is-bounded-above L
@@ -535,7 +535,7 @@ agree with the bounded lower reals:
 \begin{code}
 
 ℝ-and-𝕃β-agree-under-EM : EM 𝓣
-                        → further-properties-of-order
+                        → further-properties-of-ℚ-and-its-order
                         → is-univalent 𝓣⁺
                         → ℝ ≡ 𝕃β
 ℝ-and-𝕃β-agree-under-EM em ϕ ua = dedekind-agrees-with-troelstra' ϕ ua
@@ -546,11 +546,11 @@ We also need further properties of order for embedding the rationals into the re
 
 \begin{code}
 
-module rational-reals (ϕ : further-properties-of-order) where
+module rational-reals (ϕ : further-properties-of-ℚ-and-its-order) where
 
  ℚ-to-𝕃 : ℚ → 𝕃
  ℚ-to-𝕃 q = L ,
-            ∥∥-rec (being-inhabited-is-prop L) ∣_∣ (ℚ-is-lower-open ϕ q) ,
+            ℚ-is-lower-open ϕ q ,
             (λ p i r j → transitivity ϕ r p q j i) ,
             (λ p →  ℚ-is-dense ϕ p q)
   where
@@ -559,7 +559,7 @@ module rational-reals (ϕ : further-properties-of-order) where
 
  ℚ-to-𝕌 : ℚ → 𝕌
  ℚ-to-𝕌 q = U ,
-            ∥∥-rec (being-inhabited-is-prop U) ∣_∣ (ℚ-is-upper-open ϕ q) ,
+            ℚ-is-upper-open ϕ q ,
             (λ p i r j → transitivity ϕ q p r i j) ,
             (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-is-dense ϕ q p i))
   where
