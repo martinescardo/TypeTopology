@@ -66,8 +66,8 @@ A compact frame is simply a frame whose top element is finite.
 
 \begin{code}
 
-isCompact : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-isCompact F = is-compact-open F 𝟏[ F ]
+is-compact : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-compact F = is-compact-open F 𝟏[ F ]
 
 \end{code}
 
@@ -328,7 +328,7 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
    δ = pr₂ ((∨-is-scott-continuous F U) S dir)
 
 ⋜₀-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
-                               → isCompact F holds
+                               → is-compact F holds
                                → (U V : ⟨ F ⟩)
                                → U ⋜₀[ F ] V
                                → (U ≪[ F ] V) holds
@@ -377,13 +377,13 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
      ι = only-𝟏-is-above-𝟏 F ((S [ i ]) ∨[ F ] W) η
 
 ⋜-implies-≪-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
-                              → isCompact F holds
+                              → is-compact F holds
                               → (U V : ⟨ F ⟩) → (U ⋜[ F ] V ⇒ U ≪[ F ] V) holds
 ⋜-implies-≪-in-compact-frames F κ U V =
  ∥∥-rec (holds-is-prop (U ≪[ F ] V)) (⋜₀-implies-≪-in-compact-frames F κ U V)
 
 clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
-                                      → isCompact F holds
+                                      → is-compact F holds
                                       → (U : ⟨ F ⟩)
                                       → is-clopen F U holds
                                       → is-compact-open F U holds
