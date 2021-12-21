@@ -21,6 +21,8 @@ open import Frame pt fe hiding (is-directed)
 
 open AllCombinators pt fe
 open PropositionalTruncation pt
+
+open import InitialFrame pt fe
 \end{code}
 
 \section{The way below relation}
@@ -123,6 +125,44 @@ well-inside F U V =
 infix 4 well-inside
 
 syntax well-inside F U V = U ⋜[ F ] V
+
+-- The well inside relation is not propositional in general, even though the
+-- “has complement” (i.e. is well inside itself) is propositional.
+well-inside-is-not-prop : (ua : is-univalent 𝓤₀)
+                        → ¬ ((F : frame 𝓤₁ 𝓤₀ 𝓤₀) → (x y : ⟨ F ⟩) → is-prop (x ⋜[ F ] y))
+well-inside-is-not-prop ua ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-≡ δ))
+ where
+  IF : frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
+  IF = 𝟎-𝔽𝕣𝕞 ua
+
+  γ₂ : 𝟎[ IF ] ⋜[ IF ] 𝟏[ IF ]
+  γ₂ = 𝟏[ IF ] , (β , γ)
+        where
+         abstract
+          β : 𝟎[ IF ] ∧[ IF ] 𝟏[ IF ] ≡ 𝟎[ IF ]
+          β = 𝟎-left-annihilator-for-∧ IF 𝟏[ IF ]
+
+          γ : 𝟏[ IF ] ∨[ IF ] 𝟏[ IF ] ≡ 𝟏[ IF ]
+          γ = 𝟏-right-annihilator-for-∨ IF 𝟏[ IF ]
+
+  γ₁ : 𝟎[ IF ] ⋜[ IF ] 𝟏[ IF ]
+  γ₁ = 𝟎[ IF ] , (β , γ)
+        where
+         abstract
+          β : 𝟎[ IF ] ∧[ IF ] 𝟎[ IF ] ≡ 𝟎[ IF ]
+          β = 𝟎-right-annihilator-for-∧ IF 𝟎[ IF ]
+
+          γ : 𝟏[ IF ] ∨[ IF ] 𝟎[ IF ] ≡ 𝟏[ IF ]
+          γ = 𝟏-left-annihilator-for-∨ IF 𝟎[ IF ]
+
+  𝟎-is-not-𝟏 : ¬ (𝟎[ IF ] ≡ 𝟏[ IF ])
+  𝟎-is-not-𝟏 p = γ
+   where
+    γ : ⊥Ω holds
+    γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) *
+
+  δ : γ₁ ≡ γ₂
+  δ = ψ IF 𝟎[ IF ] 𝟏[ IF ] γ₁ γ₂
 
 well-inside-implies-below : (F : frame 𝓤 𝓥 𝓦)
                           → (U V : ⟨ F ⟩)
