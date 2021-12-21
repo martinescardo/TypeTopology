@@ -139,7 +139,7 @@ The set of upper reals:
 
 \end{code}
 
-Next we define the set of Dedekind reals as asubset of the lower
+Next we define the set of Dedekind reals as a subset of the lower
 reals, after some preparation.
 
 \begin{code}
