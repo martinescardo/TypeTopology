@@ -190,8 +190,42 @@ An open x in a frame F is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
-isClopen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇ 
-isClopen F U = U ⋜[ F ] U
+is-clopen′ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇ 
+is-clopen′ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
+
+is-clopen′-is-prop : (F : frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen′ F U)
+is-clopen′-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-≡ β γ
+ where
+  P = poset-of F -- we refer to the underlying poset of F as P.
+
+  β : (W : ⟨ F ⟩) → is-prop ((U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ]))
+  β W = ×-is-prop carrier-of-[ P ]-is-set carrier-of-[ P ]-is-set
+
+  γ : W₁ ≡ W₂
+  γ = W₁                                  ≡⟨ (𝟏-right-unit-of-∧ F W₁) ⁻¹       ⟩
+      W₁ ∧[ F ] 𝟏[ F ]                    ≡⟨ ap (λ - → meet-of F W₁ -) (q₂ ⁻¹) ⟩
+      W₁ ∧[ F ] (U ∨[ F ] W₂)             ≡⟨ binary-distributivity F W₁ U W₂   ⟩
+      (W₁ ∧[ F ] U) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ i                                 ⟩
+      (U ∧[ F ] W₁) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ ii                                ⟩
+      𝟎[ F ] ∨[ F ] (W₁ ∧[ F ] W₂)        ≡⟨ iii                               ⟩
+      (U ∧[ F ] W₂) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ iv                                ⟩
+      (W₂ ∧[ F ] U) ∨[ F ] (W₁ ∧[ F ] W₂) ≡⟨ v                                 ⟩
+      (W₂ ∧[ F ] U) ∨[ F ] (W₂ ∧[ F ] W₁) ≡⟨ vi                                ⟩
+      W₂ ∧[ F ] (U ∨[ F ] W₁)             ≡⟨ vii                               ⟩
+      W₂ ∧[ F ] 𝟏[ F ]                    ≡⟨ viii                              ⟩
+      W₂                                  ∎
+       where
+        i   = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative W₁ U)
+        ii  = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) p₁
+        iii = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (p₂ ⁻¹)
+        iv  = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative U W₂)
+        v   = ap (λ - → (W₂ ∧[ F ] U) ∨[ F ] -) (∧[ F ]-is-commutative W₁ W₂)
+        vi  = binary-distributivity F W₂ U W₁ ⁻¹
+        vii = ap (λ - → W₂ ∧[ F ] -) q₁
+        viii = 𝟏-right-unit-of-∧ F W₂
+
+is-clopen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
+is-clopen F U = is-clopen′ F U , is-clopen′-is-prop F U
 
 \end{code}
 
@@ -311,7 +345,7 @@ isRegular F = Ɐ x ∶ ⟨ F ⟩ , x is-lub-of (↓↓[ F ] x)
 clopens-are-compact-in-compact-frames : (F : frame 𝓤 𝓥 𝓦)
                                       → isCompact F holds
                                       → (x : ⟨ F ⟩)
-                                      → isClopen F x
+                                      → is-clopen F x holds
                                       → isCompactOpen F x holds
 clopens-are-compact-in-compact-frames F κ x = ⋜-implies-≪-in-compact-frames F κ x x
 
