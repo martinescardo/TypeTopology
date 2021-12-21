@@ -80,6 +80,11 @@ being-upper-real-is-prop U = ×₃-is-prop
                                ∃-is-prop
                                (Π₄-is-prop fe (λ _ _ _ _ → ∈-is-prop U _))
                                (Π₂-is-prop fe (λ _ _ → ∃-is-prop))
+\end{code}
+
+The set of lower reals:
+
+\begin{code}
 
 𝕃 : 𝓣⁺  ̇
 𝕃 = Σ L ꞉ 𝓟 ℚ , is-lower-real L
@@ -175,8 +180,8 @@ being-upper-section-is-prop l u = ×-is-prop
                                    (Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-valued _ _))
                                    (Π₃-is-prop fe (λ _ _ _ → ∨-is-prop))
 
-having-partner-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
-having-partner-is-prop l (u₀ , p₀) (u₁ , p₁) =
+being-dedekind-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
+being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) =
       to-subtype-≡
         (being-upper-section-is-prop l)
         (at-most-one-upper-section l u₀ u₁ p₀ p₁)
@@ -197,10 +202,10 @@ Dedekind real:
 
 \begin{code}
 
-subset-with-a-partner-is-lower : (L : 𝓟 ℚ)
-                               → (Σ U ꞉ 𝓟 ℚ , U upper-section-of L)
-                               → is-lower L
-subset-with-a-partner-is-lower L
+subset-with-upper-section-is-prop : (L : 𝓟 ℚ)
+                                  → (Σ U ꞉ 𝓟 ℚ , U upper-section-of L)
+                                  → is-lower L
+subset-with-upper-section-is-prop L
   (U , U-lower-open , LU-ordered , LU-located ) = γ
  where
   γ : is-lower L
@@ -226,12 +231,12 @@ and hence ℝ is a set:
 open import UF-Embeddings
 
 ℝ-to-𝕃-is-embedding : is-embedding ℝ-to-𝕃
-ℝ-to-𝕃-is-embedding = pr₁-is-embedding having-partner-is-prop
+ℝ-to-𝕃-is-embedding = pr₁-is-embedding being-dedekind-is-prop
 
 ℝ-is-set : is-set ℝ
 ℝ-is-set = subsets-of-sets-are-sets 𝕃 is-dedekind
             𝕃-is-set
-            (λ {l} → having-partner-is-prop l)
+            (λ {l} → being-dedekind-is-prop l)
 
 \end{code}
 
@@ -363,7 +368,7 @@ troelstra-gives-dedekind (further ℚ-is-dense order-criterion ℚ-is-upper-open
 
 Question. Can we prove that ℝ = troeltra-reals with propositional and
 functional extensionality, without univalence? The problem is that the
-partner condition and the troelstra condition have different universe
+Dedekind condition and the troelstra condition have different universe
 levels, and hence propositional extensionality is not applicable to
 show that they are equal, as their equality doesn't even type
 check. Would universe lifting help? I haven't thought about this.
@@ -386,7 +391,7 @@ dedekind-agrees-with-troelstra ϕ ua = eqtoid ua ℝ 𝕋 e
 
   e : ℝ ≃ 𝕋
   e = qinveq f (g ,
-               (λ (l , h) → to-subtype-≡ having-partner-is-prop refl) ,
+               (λ (l , h) → to-subtype-≡ being-dedekind-is-prop refl) ,
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
 \end{code}
 
