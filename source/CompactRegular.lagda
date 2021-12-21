@@ -27,6 +27,7 @@ open AllCombinators pt fe
 open PropositionalTruncation pt
 
 open import InitialFrame pt fe
+
 \end{code}
 
 \section{The way below relation}
@@ -38,14 +39,17 @@ definition that make it a bit inconvenient to work with. It might be
 good idea to address this duplication at some point.
 
 \begin{code}
+
 is-directed : (P : poset 𝓤 𝓥) → (S : Fam 𝓦 ∣ P ∣ₚ) → Ω (𝓥 ⊔ 𝓦)
 is-directed P (I , s) =
    ∥ I ∥Ω
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , Ǝ k ∶ I , ((s i ≤ s k) ∧ (s j ≤ s k)) holds)
   where open PosetNotation P using (_≤_)
+
 \end{code}
 
 \begin{code}
+
 way-below : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
  Ɐ S ∶ Fam 𝓦 ⟨ F ⟩ , is-directed (poset-of F) S ⇒
@@ -56,6 +60,7 @@ way-below {𝓤 = 𝓤} {𝓦 = 𝓦} F U V =
 infix 5 way-below
 
 syntax way-below F U V = U ≪[ F ] V
+
 \end{code}
 
 \begin{code}
@@ -287,6 +292,7 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
 \section{Some properties}
 
 \begin{code}
+
 ∨-is-scott-continuous : (F : frame 𝓤 𝓥 𝓦)
                       → (U : ⟨ F ⟩)
                       → is-scott-continuous F F (λ - → U ∨[ F ] -) holds
