@@ -343,4 +343,11 @@ is-strict : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
           → 𝓤' ̇
 is-strict 𝓓 𝓔 f = f (⊥ 𝓓) ≡ ⊥ 𝓔
 
+strictness-criterion : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                       (f : ⟪ 𝓓 ⟫ → ⟪ 𝓔 ⟫)
+                     → f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫ ⊥ 𝓔
+                     → is-strict 𝓓 𝓔 f
+strictness-criterion 𝓓 𝓔 f crit =
+ antisymmetry (𝓔 ⁻) (f (⊥ 𝓓)) (⊥ 𝓔) crit (⊥-is-least 𝓔 (f (⊥ 𝓓)))
+
 \end{code}
