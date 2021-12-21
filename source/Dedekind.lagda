@@ -55,11 +55,26 @@ open import UF-Subsingletons-FunExt
 
 𝓣⁺ = 𝓣 ⁺
 
+\end{code}
+
+Lower real conditions:
+
+\begin{code}
+
 is-lower : 𝓟 ℚ → 𝓣 ̇
 is-lower L = (q : ℚ) → q ∈ L → (p : ℚ) → p < q → p ∈ L
 
 is-upper-open : 𝓟 ℚ → 𝓣 ̇
 is-upper-open A = (p : ℚ) → p ∈ A → ∃ p' ꞉ ℚ , ((p < p') × p' ∈ A)
+
+is-lower-real : 𝓟 ℚ → 𝓣 ̇
+is-lower-real L = is-inhabited L × is-lower L × is-upper-open L
+
+\end{code}
+
+Upper real conditions:
+
+\begin{code}
 
 is-upper : 𝓟 ℚ → 𝓣 ̇
 is-upper U = (p : ℚ) → p ∈ U → (q : ℚ) → p < q → q ∈ U
@@ -67,11 +82,14 @@ is-upper U = (p : ℚ) → p ∈ U → (q : ℚ) → p < q → q ∈ U
 is-lower-open : 𝓟 ℚ → 𝓣 ̇
 is-lower-open A = (q : ℚ) → q ∈ A → ∃ q' ꞉ ℚ , ((q' < q) × q' ∈ A)
 
-is-lower-real : 𝓟 ℚ → 𝓣 ̇
-is-lower-real L = is-inhabited L × is-lower L × is-upper-open L
-
 is-upper-real : 𝓟 ℚ → 𝓣 ̇
 is-upper-real U = is-inhabited U × is-upper U × is-lower-open U
+
+\end{code}
+
+The conditions are property:
+
+\begin{code}
 
 being-lower-is-prop : (L : 𝓟 ℚ) → is-prop (is-lower L)
 being-lower-is-prop L = Π₄-is-prop fe (λ _ _ _ _ → ∈-is-prop L _)
@@ -121,7 +139,8 @@ The set of upper reals:
 
 \end{code}
 
-Next we define the set of Dedekind reals after some preparation.
+Next we define the set of Dedekind reals as asubset of the lower
+reals, after some preparation.
 
 \begin{code}
 
@@ -176,6 +195,12 @@ technical-lemma L L' U U'
   γ : q ∈ U
   γ = ∥∥-rec (∈-is-prop U q) II I
 
+\end{code}
+
+The following definition is of an auxiliary character:
+
+\begin{code}
+
 _upper-section-of_ : 𝓟 ℚ → 𝓟 ℚ → 𝓣 ̇
 U upper-section-of L = is-lower-open U × are-ordered L U × are-located L U
 
@@ -194,6 +219,12 @@ any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
   γ : U ≡ U'
   γ = subset-extensionality'' pe fe fe i j
 
+\end{code}
+
+The following is the version of the definition we are interested in:
+
+\begin{code}
+
 _is-upper-section-of_ : 𝕌 → 𝕃 → 𝓣 ̇
 (U , _) is-upper-section-of  (L , _) = are-ordered L U × are-located L U
 
@@ -201,6 +232,11 @@ being-upper-section-is-prop : (l : 𝕃) (u : 𝕌) → is-prop (u is-upper-sect
 being-upper-section-is-prop (L , _) (U , _) = ×-is-prop
                                                (being-ordered-is-prop L U)
                                                (being-located-is-prop L U)
+\end{code}
+
+We use the above auxiliary definition and lemma to establish the following:
+
+\begin{code}
 
 at-most-one-upper-section : (l : 𝕃) (u₀ u₁ : 𝕌)
                           → u₀ is-upper-section-of l
@@ -218,7 +254,6 @@ at-most-one-upper-section (L , l)
         (any-two-upper-sections-are-equal L U₀ U₁
             (U₀-is-lower-open , lu₀-ordered , lu₀-located)
             (U₁-is-lower-open , lu₁-ordered , lu₁-located))
-
 \end{code}
 
 The Dedekind condition for a lower real:
@@ -232,7 +267,6 @@ being-dedekind-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
 being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-≡
                                                  (being-upper-section-is-prop l)
                                                  (at-most-one-upper-section l u₀ u₁ p₀ p₁)
-
 \end{code}
 
 We define the the Dedekind reals as a subset of the lower reals:
@@ -286,6 +320,10 @@ open import UF-Embeddings
              (λ {l} → being-dedekind-is-prop l)
 \end{code}
 
+NB. This won't be a *topological* embedding in topological
+models. Because ℝ and 𝕃 are sets, in the sense of HoTT/UF, the
+embedding condition merely says that the map is left-cancellable.
+
 We now consider an alternative definition of the Dedekind reals
 offered by Troelstra.
 
@@ -294,23 +332,22 @@ offered by Troelstra.
 is-bounded-above : 𝓟 ℚ → 𝓣 ̇
 is-bounded-above L = ∃ s ꞉ ℚ , s ∉ L
 
-being-bounded-above-is-prop : (L : 𝓟 ℚ) → is-prop (is-bounded-above L)
-being-bounded-above-is-prop L = ∃-is-prop
-
 is-troelstra-located : 𝓟 ℚ → 𝓣 ̇
 is-troelstra-located L = ((r s : ℚ) → r < s → r ∈ L ∨ s ∉ L)
 
-being-troelstra-located-is-prop : (L : 𝓟 ℚ) → is-prop (is-troelstra-located L)
-being-troelstra-located-is-prop L = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
-
 is-troelstra : 𝕃 → 𝓣 ̇
 is-troelstra (L , _) = is-bounded-above L × is-troelstra-located L
+
+being-bounded-above-is-prop : (L : 𝓟 ℚ) → is-prop (is-bounded-above L)
+being-bounded-above-is-prop L = ∃-is-prop
+
+being-troelstra-located-is-prop : (L : 𝓟 ℚ) → is-prop (is-troelstra-located L)
+being-troelstra-located-is-prop L = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
 
 being-troelstra-is-prop : (l : 𝕃) → is-prop (is-troelstra l)
 being-troelstra-is-prop (L , _) = ×-is-prop
                                    (being-bounded-above-is-prop L)
                                    (being-troelstra-located-is-prop L)
-
 \end{code}
 
 The Dedekind and Troelstra conditions are equivalent:
@@ -416,7 +453,6 @@ troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open
   γ : is-dedekind l
   γ = (U , (U-is-inhabited , U-is-upper , U-is-lower-open)) , LU-ordered , LU-located
 
-
 \end{code}
 
 The set of Troelstra reals, again as a subset of the lower reals:
@@ -521,7 +557,8 @@ agree with the bounded lower reals if we assume excluded middle:
 𝕋-and-𝕃β-agree-under-EM em ϕ = ap Σ γ
  where
   δ : is-troelstra ∼ λ (L , _) → is-bounded-above L
-  δ l@(L , c) = pe (being-troelstra-is-prop l) (being-bounded-above-is-prop L)
+  δ l@(L , c) = pe (being-troelstra-is-prop l)
+                   (being-bounded-above-is-prop L)
                    pr₁
                    λ β → β , EM-gives-troelstra-locatedness em l
 
