@@ -20,6 +20,8 @@ module DcpoLifting
 
 open PropositionalTruncation pt
 
+open import UF-Equiv
+
 open import UF-Miscelanea
 open import UF-Subsingletons-FunExt
 
@@ -221,7 +223,46 @@ module _
         (f ∘ unique-from-𝟘) 𝟘-is-prop (⊥ 𝓓) 𝟘-induction
 
  f̃-is-continuous : is-continuous (𝓛X ⁻) (𝓓 ⁻) f̃
- f̃-is-continuous I α δ = {!!}
+ f̃-is-continuous I α δ = ub , lb-of-ubs
+  where
+   s : 𝓛 X
+   s = ∐ (𝓛X ⁻) δ
+   ρ : (l : 𝓛 X) → is-prop (is-defined l)
+   ρ = being-defined-is-prop
+   lemma : (i : I) (p : is-defined (α i))
+         → value (α i) p ≡ value s ∣ i , p ∣
+   lemma i p = ≡-of-values-from-≡
+                (family-defined-somewhere-sup-≡ X-is-set δ i p)
+   ub : (i : I) → f̃ (α i) ⊑⟪ 𝓓 ⟫ f̃ s
+   ub i = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value (α i)) (ρ (α i)) (f̃ s) γ
+    where
+     γ : (p : is-defined (α i))
+       → f (value (α i) p) ⊑⟪ 𝓓 ⟫ f̃ s
+     γ p = f (value (α i) p)     ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
+           f (value s ∣ i , p ∣) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
+           f̃ s                   ∎⟪ 𝓓 ⟫
+      where
+       ⦅1⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (lemma i p))
+       ⦅2⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value s) (ρ s) ∣ i , p ∣
+   lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
+                (f̃ s) (f̃ ∘ α)
+   lb-of-ubs y y-is-ub = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ value s) (ρ s)
+                          y γ
+    where
+     γ : (q : is-defined s)
+       → (f (value s q)) ⊑⟪ 𝓓 ⟫ y
+     γ q = ∥∥-rec (prop-valuedness (𝓓 ⁻) (f (value s q)) y) r q
+      where
+       r : (Σ i ꞉ I , is-defined (α i)) → f (value s q) ⊑⟪ 𝓓 ⟫ y
+       r (i , p) = f (value s q)                     ⊑⟪ 𝓓 ⟫[ ⦅1⦆       ]
+                   f (value s ∣ i , p ∣)             ⊑⟪ 𝓓 ⟫[ ⦅2⦆       ]
+                   f (value (α i) p)                 ⊑⟪ 𝓓 ⟫[ ⦅3⦆       ]
+                   ∐ˢˢ 𝓓 (f ∘ value (α i)) (ρ (α i)) ⊑⟪ 𝓓 ⟫[ y-is-ub i ]
+                   y                                 ∎⟪ 𝓓 ⟫
+        where
+         ⦅1⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (value-is-constant s q ∣ i , p ∣))
+         ⦅2⦆ = ≡-to-⊑ (𝓓 ⁻) (ap f (lemma i p ⁻¹))
+         ⦅3⦆ = ∐ˢˢ-is-upperbound 𝓓 (f ∘ value (α i)) (being-defined-is-prop (α i)) p
 
  f̃-after-η-is-f : f̃ ∘ η ∼ f
  f̃-after-η-is-f x = antisymmetry (𝓓 ⁻) (f̃ (η x)) (f x) u v
@@ -254,12 +295,33 @@ module _
              → is-strict 𝓛X 𝓓 g
              → g ∘ η ≡ f
              → g ∼ f̃
- f̃-is-unique g con str eq (P , ϕ , ρ) =
-  g (P , ϕ , ρ)        ≡⟨ ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ)) ⟩
-  g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ≡⟨ ∐ˢˢ-≡-if-continuous-and-strict 𝓛X 𝓓 g con str (η ∘ ϕ) ρ ⟩
-  ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ≡⟨ ∐ˢˢ-family-≡ 𝓓 ρ (ap (_∘ ϕ) eq) ⟩
-  ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ≡⟨ refl ⟩
-  f̃ (P , ϕ , ρ)        ∎
+ f̃-is-unique g con str eq (P , ϕ , ρ) = g (P , ϕ , ρ)        ≡⟨ ⦅1⦆  ⟩
+                                        g (∐ˢˢ 𝓛X (η ∘ ϕ) ρ) ≡⟨ ⦅2⦆  ⟩
+                                        ∐ˢˢ 𝓓 (g ∘ η ∘ ϕ) ρ  ≡⟨ ⦅3⦆  ⟩
+                                        ∐ˢˢ 𝓓 (f ∘ ϕ) ρ      ≡⟨ refl ⟩
+                                        f̃ (P , ϕ , ρ)        ∎
+   where
+    ⦅1⦆ = ap g (all-partial-elements-are-subsingleton-sups (P , ϕ , ρ))
+    ⦅2⦆ = ∐ˢˢ-≡-if-continuous-and-strict 𝓛X 𝓓 g con str (η ∘ ϕ) ρ
+    ⦅3⦆ = ∐ˢˢ-family-≡ 𝓓 ρ (ap (_∘ ϕ) eq)
 
+ 𝓛-gives-the-free-pointed-dcpo-on-a-set :
+  ∃! h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
+                          × is-strict 𝓛X 𝓓 h
+                          × (h ∘ η ≡ f)
+ 𝓛-gives-the-free-pointed-dcpo-on-a-set =
+  (f̃ , f̃-is-continuous , f̃-is-strict , (dfunext fe f̃-after-η-is-f)) , γ
+   where
+    γ : is-central (Σ h ꞉ (⟪ 𝓛X ⟫ → ⟪ 𝓓 ⟫) , is-continuous (𝓛X ⁻) (𝓓 ⁻) h
+                                           × is-strict 𝓛X 𝓓 h
+                                           × (h ∘ η ≡ f))
+         (f̃ , f̃-is-continuous , f̃-is-strict , dfunext fe f̃-after-η-is-f)
+    γ (g , cont , str , eq) =
+     to-subtype-≡ (λ h → ×₃-is-prop (being-continuous-is-prop (𝓛X ⁻) (𝓓 ⁻) h)
+                                    (being-strict-is-prop 𝓛X 𝓓 h)
+                                    (equiv-to-prop
+                                      (≃-funext fe (h ∘ η) f)
+                                      (Π-is-prop fe (λ _ → sethood (𝓓 ⁻)))))
+                                    ((dfunext fe (f̃-is-unique g cont str eq)) ⁻¹)
 
 \end{code}
