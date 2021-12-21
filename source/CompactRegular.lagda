@@ -368,7 +368,7 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
 
    θ : Σ i ꞉ index S , (𝟏[ F ] ≤ (W ∨[ F ] S [ i ])) holds
      → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
-   θ (i , p) = ∣ i , well-inside₀-implies-below F U (S [ i ]) (W , (c₁ , ι)) ∣
+   θ (i , p) = ∣ i , well-inside₀-implies-below F U (S [ i ]) (W , c₁ , ι) ∣
     where
      η = 𝟏[ F ]              ≤⟨ p                                 ⟩
          W ∨[ F ] (S [ i ])  ≡⟨ ∨[ F ]-is-commutative W (S [ i ]) ⟩ₚ
