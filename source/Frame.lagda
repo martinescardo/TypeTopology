@@ -739,6 +739,34 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
 
 \begin{code}
 
+𝟎-right-annihilator-for-∧ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
+                          → x ∧[ F ] 𝟎[ F ] ≡ 𝟎[ F ]
+𝟎-right-annihilator-for-∧ F x =
+ only-𝟎-is-below-𝟎 F (x ∧[ F ] 𝟎[ F ]) (∧[ F ]-lower₂ x 𝟎[ F ])
+
+𝟎-left-annihilator-for-∧ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
+                         → 𝟎[ F ] ∧[ F ] x ≡ 𝟎[ F ]
+𝟎-left-annihilator-for-∧ F x =
+ 𝟎[ F ] ∧[ F ] x  ≡⟨ ∧[ F ]-is-commutative 𝟎[ F ] x ⟩
+ x ∧[ F ] 𝟎[ F ]  ≡⟨ 𝟎-right-annihilator-for-∧ F x  ⟩
+ 𝟎[ F ]           ∎
+
+𝟏-right-annihilator-for-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
+                          → x ∨[ F ] 𝟏[ F ] ≡ 𝟏[ F ]
+𝟏-right-annihilator-for-∨ F x =
+ only-𝟏-is-above-𝟏 F (x ∨[ F ] 𝟏[ F ]) (∨[ F ]-upper₂ x 𝟏[ F ])
+
+𝟏-left-annihilator-for-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩)
+                         → 𝟏[ F ] ∨[ F ] x ≡ 𝟏[ F ]
+𝟏-left-annihilator-for-∨ F x =
+ 𝟏[ F ] ∨[ F ] x  ≡⟨ ∨[ F ]-is-commutative 𝟏[ F ] x ⟩
+ x ∨[ F ] 𝟏[ F ]  ≡⟨ 𝟏-right-annihilator-for-∨ F x  ⟩
+ 𝟏[ F ] ∎
+
+\end{code}
+
+\begin{code}
+
 distributivity′ : (F : frame 𝓤 𝓥 𝓦)
                 → (x : ⟨ F ⟩)
                 → (S : Fam 𝓦 ⟨ F ⟩)
