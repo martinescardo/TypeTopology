@@ -126,13 +126,13 @@ being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-value
 being-located-is-prop : (L U : 𝓟 ℚ) → is-prop (are-located L U)
 being-located-is-prop _ _ = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
 
-lemma₀ : (L L' U U' : 𝓟 ℚ)
-       → is-lower-open U'
-       → are-located L  U
-       → are-ordered L' U'
-       → L  ⊆ L'
-       → U' ⊆ U
-lemma₀ L L' U U'
+technical-lemma : (L L' U U' : 𝓟 ℚ)
+                → is-lower-open U'
+                → are-located L  U
+                → are-ordered L' U'
+                → L  ⊆ L'
+                → U' ⊆ U
+technical-lemma L L' U U'
        U'-lower-open
        LU-located
        LU'-ordered
@@ -174,8 +174,8 @@ any-two-upper-sections-are-equal : (L U U' : 𝓟 ℚ)
                                  → U ≡ U'
 any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) =
   subset-extensionality'' pe fe fe
-   (lemma₀ L L U' U a w b (⊆-refl' L))
-   (lemma₀ L L U U' u c v (⊆-refl' L))
+   (technical-lemma L L U' U a w b (⊆-refl' L))
+   (technical-lemma L L U U' u c v (⊆-refl' L))
 
 _is-upper-section-of_ : 𝕌 → 𝕃 → 𝓣 ̇
 (U , _) is-upper-section-of  (L , _) = are-ordered L U × are-located L U
@@ -200,14 +200,13 @@ is-dedekind l = Σ u ꞉ 𝕌 , (u is-upper-section-of l)
 
 being-upper-section-is-prop : (l : 𝕃) (u : 𝕌) → is-prop (u is-upper-section-of l)
 being-upper-section-is-prop (L , _) (U , _) = ×-is-prop
-                                              (being-ordered-is-prop L U)
-                                              (being-located-is-prop L U)
+                                               (being-ordered-is-prop L U)
+                                               (being-located-is-prop L U)
 
 being-dedekind-is-prop : (l : 𝕃) → is-prop (is-dedekind l)
-being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) =
-      to-subtype-≡
-        (being-upper-section-is-prop l)
-        (at-most-one-upper-section l u₀ u₁ p₀ p₁)
+being-dedekind-is-prop l (u₀ , p₀) (u₁ , p₁) = to-subtype-≡
+                                                (being-upper-section-is-prop l)
+                                                (at-most-one-upper-section l u₀ u₁ p₀ p₁)
 
 \end{code}
 
@@ -225,10 +224,10 @@ Dedekind real:
 
 \begin{code}
 
-subset-with-upper-section-is-prop : (L : 𝓟 ℚ)
-                                  → (Σ U ꞉ 𝓟 ℚ , U upper-section-of L)
-                                  → is-lower L
-subset-with-upper-section-is-prop L
+subset-with-upper-section-is-lower : (L : 𝓟 ℚ)
+                                   → (Σ U ꞉ 𝓟 ℚ , U upper-section-of L)
+                                   → is-lower L
+subset-with-upper-section-is-lower L
   (U , U-lower-open , LU-ordered , LU-located ) = γ
  where
   γ : is-lower L
@@ -300,7 +299,6 @@ dedekind-gives-troelstra (L , _ , _ , _)
      where
       c : q ∈ L → q < q
       c q-is-in-L = LU-ordered q q q-is-in-L q-is-in-U
-
 
   b : (r s : ℚ) → r < s → r ∈ L ∨ s ∉ L
   b r s less = ∥∥-functor f (LU-located r s less)
