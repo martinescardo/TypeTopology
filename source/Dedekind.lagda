@@ -392,15 +392,15 @@ NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
              → ((L , Li , ordered-located-gives-lower L U o l , Lo) ,
                 (U , Ui , ordered-located-gives-upper L U o l , Uo) ,
                 o , l)) ,
-            ( λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+            (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
              → to-Σ-≡ (to-subtype-≡ being-lower-real-is-prop refl ,
                        being-dedekind-is-prop (L , Li , Ll , Lo) _ _)) ,
-            λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+            (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
              → to-subtype-≡ (λ (L , U) → ×₆-is-prop
                                           (being-inhabited-is-prop L) (being-upper-open-is-prop L)
                                           (being-inhabited-is-prop U) (being-lower-open-is-prop U)
                                           (being-ordered-is-prop L U) (being-located-is-prop L U))
-                                          refl)
+                                          refl))
 \end{code}
 
 We now consider an alternative definition of the Dedekind reals
