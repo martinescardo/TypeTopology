@@ -234,7 +234,7 @@ future work.
 
 \begin{code}
 
-module _
+module IfZeroDenotationalSemantics
         (pe : propext 𝓥)
        where
 
