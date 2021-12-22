@@ -123,8 +123,8 @@ image-is-directed' : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                    → is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
 image-is-directed' 𝓓 𝓔 f {I} {α} δ = γ
  where
-  -- abstract (TODO)
-   γ : is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
+  -- abstract -- (TODO)
+   -- γ : is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
    γ = image-is-directed 𝓓 𝓔 m δ
     where
      m : is-monotone 𝓓 𝓔 [ 𝓓 , 𝓔 ]⟨ f ⟩
@@ -251,8 +251,8 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
                 → is-continuous 𝓓 𝓔' (g ∘ f)
 ∘-is-continuous 𝓓 𝓔 𝓔' f g cf cg = γ
  where
---  abstract (TODO)
-   γ : is-continuous 𝓓 𝓔' (g ∘ f)
+  -- abstract -- (TODO)
+   -- γ : is-continuous 𝓓 𝓔' (g ∘ f)
    γ = continuity-criterion 𝓓 𝓔' (g ∘ f) m ψ
     where
      mf : is-monotone 𝓓 𝓔 f
@@ -274,11 +274,15 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
        εf = image-is-directed' 𝓓 𝓔 (f , cf) δ
        εg : is-Directed 𝓔' (g ∘ f ∘ α)
        εg = image-is-directed' 𝓔 𝓔' (g , cg) εf
+       -- TODO: Remove typings
+       -- l₁ : g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ g (∐ 𝓔 εf)
        l₁ = mg (f (∐ 𝓓 δ)) (∐ 𝓔 εf) h
         where
          h : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 εf
          h = continuous-∐-⊑ 𝓓 𝓔 (f , cf) δ
+       -- l₂ : g (∐ 𝓔 εf) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' εg
        l₂ = continuous-∐-⊑ 𝓔 𝓔' (g , cg) εf
+       -- l₃ : ∐ 𝓔' εg ⊑⟨ 𝓔' ⟩ ∐ 𝓔' ε
        l₃ = ≡-to-⊑ 𝓔' (∐-independent-of-directedness-witness 𝓔' εg ε)
 
 ∘-is-continuous₃ : {𝓦₁ 𝓣₁ 𝓦₂ 𝓣₂ 𝓦₃ 𝓣₃ 𝓦₄ 𝓣₄ : Universe}
@@ -292,7 +296,8 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
                  → is-continuous 𝓓₁ 𝓓₄ (h ∘ g ∘ f)
 ∘-is-continuous₃ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f g h cf cg ch = γ
  where
-  -- abstract (TODO)
+  -- abstract -- (TODO)
+   -- γ : is-continuous 𝓓₁ 𝓓₄ (h ∘ g ∘ f)
    γ = ∘-is-continuous 𝓓₁ 𝓓₂ 𝓓₄ f (h ∘ g) cf
         (∘-is-continuous 𝓓₂ 𝓓₃ 𝓓₄ g h cg ch)
 
@@ -537,5 +542,57 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
              → α ≡ β
              → ∐ˢˢ 𝓓 α ρ ≡ ∐ˢˢ 𝓓 β ρ
 ∐ˢˢ-family-≡ 𝓓 ρ refl = refl
+
+\end{code}
+
+\begin{code}
+
+_≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+𝓓 ≃ᵈᶜᵖᵒ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , Σ g ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩) ,
+                ((d : ⟨ 𝓓 ⟩) → g (f d) ≡ d)
+              × ((e : ⟨ 𝓔 ⟩) → f (g e) ≡ e)
+              × is-continuous 𝓓 𝓔 f
+              × is-continuous 𝓔 𝓓 g
+
+_≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⁻ ⟩ → ⟨ 𝓔 ⁻ ⟩) , Σ g ꞉ (⟨ 𝓔 ⁻ ⟩ → ⟨ 𝓓 ⁻ ⟩) ,
+                ((d : ⟨ 𝓓 ⁻ ⟩) → g (f d) ≡ d)
+               × ((e : ⟨ 𝓔 ⁻ ⟩) → f (g e) ≡ e)
+               × is-continuous (𝓓 ⁻) (𝓔 ⁻) f
+               × is-continuous (𝓔 ⁻) (𝓓 ⁻) g
+               × is-strict 𝓓 𝓔 f
+               × is-strict 𝓔 𝓓 g
+
+≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                → (𝓓 ⁻) ≃ᵈᶜᵖᵒ (𝓔 ⁻) → 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔
+≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ 𝓓 𝓔 (f , g , gf , fg , cf , cg) =
+ f , g , gf , fg , cf , cg , sf , sg
+  where
+   sf : is-strict 𝓓 𝓔 f
+   sf = antisymmetry (𝓔 ⁻) (f (⊥ 𝓓)) (⊥ 𝓔) γ (⊥-is-least 𝓔 (f (⊥ 𝓓)))
+    where
+     γ = f (⊥ 𝓓)     ⊑⟨ 𝓔 ⁻ ⟩[ l₁ ]
+         f (g (⊥ 𝓔)) ⊑⟨ 𝓔 ⁻ ⟩[ l₂ ]
+         ⊥ 𝓔         ∎⟨ 𝓔 ⁻ ⟩
+      where
+       l₁ = monotone-if-continuous (𝓓 ⁻) (𝓔 ⁻) (f , cf) (⊥ 𝓓) (g (⊥ 𝓔))
+             (⊥-is-least 𝓓 (g (⊥ 𝓔)))
+       l₂ = ≡-to-⊑ (𝓔 ⁻) (fg (⊥ 𝓔))
+   sg : is-strict 𝓔 𝓓 g
+   sg = antisymmetry (𝓓 ⁻) (g (⊥ 𝓔)) (⊥ 𝓓) γ (⊥-is-least 𝓓 (g (⊥ 𝓔)))
+    where
+     γ = g (⊥ 𝓔)     ⊑⟨ 𝓓 ⁻ ⟩[ l₁ ]
+         g (f (⊥ 𝓓)) ⊑⟨ 𝓓 ⁻ ⟩[ l₂ ]
+         ⊥ 𝓓         ∎⟨ 𝓓 ⁻ ⟩
+      where
+       l₁ = monotone-if-continuous (𝓔 ⁻) (𝓓 ⁻) (g , cg) (⊥ 𝓔) (f (⊥ 𝓓))
+             (⊥-is-least 𝓔 (f (⊥ 𝓓)))
+       l₂ = ≡-to-⊑ (𝓓 ⁻) (gf (⊥ 𝓓))
+\end{code}
+
+\begin{code}
+
+is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
+is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
 
 \end{code}

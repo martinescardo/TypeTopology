@@ -147,11 +147,10 @@ _⟹ᵈᶜᵖᵒ⊥_ : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
 
 \end{code}
 
-TODO: Review later (when needed for 𝓓∞)
+TODO: Review code
 
 \begin{code}
 
-{-
 DCPO-∘-is-monotone₁ : (𝓓 : DCPO {𝓤} {𝓣})
                       (𝓔 : DCPO {𝓤'} {𝓣'})
                       (𝓔' : DCPO {𝓦} {𝓦'})
@@ -166,7 +165,7 @@ DCPO-∘-is-monotone₂ : (𝓓 : DCPO {𝓤} {𝓣})
                     → is-monotone (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) (𝓓 ⟹ᵈᶜᵖᵒ 𝓔')
                        (λ f → DCPO-∘ 𝓓 𝓔 𝓔' f g)
 DCPO-∘-is-monotone₂ 𝓓 𝓔 𝓔' g (f , cf) (h , ch) l x =
- continuous-implies-monotone 𝓔 𝓔' g (f x) (h x) (l x)
+ monotone-if-continuous 𝓔 𝓔' g (f x) (h x) (l x)
 
 DCPO-∘-is-continuous₁ : (𝓓 : DCPO {𝓤} {𝓣})
                         (𝓔 : DCPO {𝓤'} {𝓣'})
@@ -243,6 +242,5 @@ DCPO-∘₃-is-continuous₂ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f h =
  ∘-is-continuous (𝓓₂ ⟹ᵈᶜᵖᵒ 𝓓₃) (𝓓₂ ⟹ᵈᶜᵖᵒ 𝓓₄) (𝓓₁ ⟹ᵈᶜᵖᵒ 𝓓₄)
   (λ g → DCPO-∘ 𝓓₂ 𝓓₃ 𝓓₄ g h) (DCPO-∘ 𝓓₁ 𝓓₂ 𝓓₄ f)
   (DCPO-∘-is-continuous₂ 𝓓₂ 𝓓₃ 𝓓₄ h) (DCPO-∘-is-continuous₁ 𝓓₁ 𝓓₂ 𝓓₄ f)
--}
 
 \end{code}

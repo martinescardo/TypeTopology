@@ -5,8 +5,8 @@ Tom de Jong, 12 & 13 May 2020.
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-FunExt
 open import UF-PropTrunc
+open import UF-FunExt
 
 module DcpoLimitsSequential
         (pt : propositional-truncations-exist)

@@ -2,7 +2,7 @@ Tom de Jong, 5 May 2020 - 10 May 2020
 
 \begin{code}
 
-{-# OPTIONS --without-K --exact-split --safe #-}
+{-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -118,31 +118,31 @@ module Diagram
  𝓓∞ : DCPO {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣}
  𝓓∞ = (𝓓∞-carrier , _≼_ , pa , dc)
   where
-   abstract
-    pa : PosetAxioms.poset-axioms _≼_
-    pa = sl , pv , r , t , a
-     where
-      open PosetAxioms {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣} {𝓓∞-carrier} _≼_
-      sl : is-set 𝓓∞-carrier
-      sl = subsets-of-sets-are-sets _ _
-            (Π-is-set fe (λ i → sethood (𝓓 i)))
-            (Π-is-prop fe
-              (λ i → Π-is-prop fe
-              (λ j → Π-is-prop fe
-              (λ l → sethood (𝓓 i)))))
-      pv : is-prop-valued
-      pv σ τ = Π-is-prop fe (λ i → prop-valuedness (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i))
-      r : is-reflexive
-      r σ i = reflexivity (𝓓 i) (⦅ σ ⦆ i)
-      t : is-transitive
-      t σ τ ρ l k i = transitivity (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (⦅ ρ ⦆ i) (l i) (k i)
-      a : is-antisymmetric
-      a σ τ l k =
-       to-𝓓∞-≡ (λ i → antisymmetry (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (l i) (k i))
+   -- abstract (TODO)
+   pa : PosetAxioms.poset-axioms _≼_
+   pa = sl , pv , r , t , a
+    where
+     open PosetAxioms {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣} {𝓓∞-carrier} _≼_
+     sl : is-set 𝓓∞-carrier
+     sl = subsets-of-sets-are-sets _ _
+           (Π-is-set fe (λ i → sethood (𝓓 i)))
+           (Π-is-prop fe
+             (λ i → Π-is-prop fe
+             (λ j → Π-is-prop fe
+             (λ l → sethood (𝓓 i)))))
+     pv : is-prop-valued
+     pv σ τ = Π-is-prop fe (λ i → prop-valuedness (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i))
+     r : is-reflexive
+     r σ i = reflexivity (𝓓 i) (⦅ σ ⦆ i)
+     t : is-transitive
+     t σ τ ρ l k i = transitivity (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (⦅ ρ ⦆ i) (l i) (k i)
+     a : is-antisymmetric
+     a σ τ l k =
+      to-𝓓∞-≡ (λ i → antisymmetry (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i) (l i) (k i))
    dc : is-directed-complete _≼_
    dc 𝓐 α δ = (𝓓∞-∐ α δ) , ub , lb-of-ubs
     where
-     abstract
+     -- abstract (TODO)
       δ' : (i : I) → is-Directed (𝓓 i) (family-at-ith-component α i)
       δ' = family-at-ith-component-is-directed α δ
       ub : (a : 𝓐) → α a ≼ (𝓓∞-∐ α δ)
@@ -555,6 +555,58 @@ module Diagram
                   (π lⱼ , π-is-continuous lⱼ)
          u₇ = ≡-to-⊑ (𝓓 j) (π-equality σ lⱼ)
 
+\end{code}
+
+TO DO: Write some comment here.
+
+Curried version of ε∞-family
+
+\begin{code}
+
+ open import DcpoExponential pt fe 𝓥
+
+ ε∞π∞-family : I → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
+ ε∞π∞-family i = DCPO-∘ 𝓓∞ (𝓓 i) 𝓓∞ (π∞' i) (ε∞' i)
+
+ ε∞π∞-family-is-monotone : {i j : I} → i ⊑ j
+                         → ε∞π∞-family i ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family j
+ ε∞π∞-family-is-monotone {i} {j} l σ = ε∞-family-is-monotone σ i j l
+
+ ε∞π∞-family-is-directed : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
+ ε∞π∞-family-is-directed = I-inhabited , δ
+  where
+   δ : is-semidirected (underlying-order (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞)) ε∞π∞-family
+   δ i j = ∥∥-functor γ (I-semidirected i j)
+    where
+     γ : (Σ k ꞉ I , i ⊑ k × j ⊑ k)
+       → (Σ k ꞉ I , ε∞π∞-family i ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family k
+                  × ε∞π∞-family j ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family k)
+     γ (k , lᵢ , lⱼ) =
+      k , ε∞π∞-family-is-monotone lᵢ ,
+          ε∞π∞-family-is-monotone lⱼ
+
+ ∐-of-ε∞π∞s-is-id : ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} ε∞π∞-family-is-directed
+                  ≡ id , id-is-continuous 𝓓∞
+ ∐-of-ε∞π∞s-is-id = to-continuous-function-≡ 𝓓∞ 𝓓∞ γ
+  where
+   δ : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
+   δ = ε∞π∞-family-is-directed
+   γ : [ 𝓓∞ , 𝓓∞ ]⟨ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} δ ⟩ ∼ id
+   γ σ = ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₁ ≡⟨ e₁ ⟩
+         ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₂ ≡⟨ e₂ ⟩
+         σ                                  ∎
+    where
+     δ₁ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
+     δ₁ = pointwise-family-is-directed 𝓓∞ 𝓓∞ ε∞π∞-family δ σ
+     δ₂ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
+     δ₂ = ε∞-family-is-directed σ
+     e₁ = ∐-independent-of-directedness-witness 𝓓∞ δ₁ δ₂
+     e₂ = (∐-of-ε∞s σ) ⁻¹
+
+\end{code}
+
+\begin{code}
+
  module DcpoCocone
          (𝓔 : DCPO {𝓤'} {𝓣'})
          (g : (i : I) → ⟨ 𝓓 i ⟩ → ⟨ 𝓔 ⟩)
@@ -665,7 +717,7 @@ module Diagram
    ∐ 𝓔 {I} {λ i → g i (⦅ σ ⦆ i)} δ₃      ≡⟨ refl ⟩
    colimit-mediating-arrow σ             ∎
     where
-     p : (λ i → (h ∘ ε∞ i) (pr₁ σ i)) ≡ (λ i → g i (⦅ σ ⦆ i))
+     p : (λ i → (h ∘ ε∞ i) (⦅ σ ⦆ i)) ≡ (λ i → g i (⦅ σ ⦆ i))
      p = dfunext fe (λ i → h-comm i (⦅ σ ⦆ i))
      δ : is-Directed 𝓓∞ {I} (ε∞-family σ)
      δ = ε∞-family-is-directed σ
@@ -729,22 +781,5 @@ module Diagram
                  y                                      ∎⟨ 𝓔 ⟩
             where
              v = ∐-is-upperbound 𝓔 (colimit-family-is-directed (α a)) i
-
-\end{code}
-
-Experimenting with packaged parameters
-
-TODO: Remove?
-
-\begin{code}
-
- {-
- limit-mediating-arrow' : (𝓔 : DCPO {𝓤'} {𝓣'})
-                        → (f : (i : I) → DCPO[ 𝓔 , 𝓓 i ])
-                        → ((i j : I) (l : i ⊑ j) → π l ∘ pr₁ (f j) ∼ pr₁ (f i))
-                        → ⟨ 𝓔 ⟩ → ⟨ 𝓓∞ ⟩
- limit-mediating-arrow' 𝓔 f =
-  DcpoCone.limit-mediating-arrow 𝓔 (λ i → pr₁ (f i)) (λ i → pr₂ (f i))
- -}
 
 \end{code}
