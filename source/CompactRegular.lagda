@@ -215,6 +215,10 @@ infix 4 well-inside
 
 syntax well-inside F U V = U ⋜[ F ] V
 
+\end{code}
+
+\begin{code}
+
 well-inside₀-implies-below : (F : frame 𝓤 𝓥 𝓦)
                           → (U V : ⟨ F ⟩)
                           → U ⋜₀[ F ] V
