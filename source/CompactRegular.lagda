@@ -337,7 +337,7 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
   open Joins _≤_
 
   β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
-  β i = ∨[ F ]-right-mono (⋁[ F ]-upper S i)
+  β i = ∨[ F ]-right-monotone (⋁[ F ]-upper S i)
 
   γ : (Ɐ (u′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
         ((U ∨[ F ] (⋁[ F ] S)) ≤ u′)) holds
@@ -386,7 +386,7 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
 
    δ : (𝟏[ F ] ≤ (⋁[ F ] T)) holds
    δ = 𝟏[ F ]                           ≡⟨ c₂ ⁻¹                              ⟩ₚ
-       V ∨[ F ] W                       ≤⟨ ∨[ F ]-left-mono q                 ⟩
+       V ∨[ F ] W                       ≤⟨ ∨[ F ]-left-monotone q             ⟩
        (⋁[ F ] S) ∨[ F ] W              ≡⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
        W ∨[ F ] (⋁[ F ] S)              ≡⟨ ∨-is-scott-continuous-eq F W S d   ⟩ₚ
        ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
@@ -406,7 +406,7 @@ The family `T` we defined is also directed by the directedness of `S`.
            Ǝ k , (T [ i ] ≤ T [ k ]) holds × (T [ j ] ≤ T [ k ]) holds) holds
    up i j = ∥∥-rec ∃-is-prop r (pr₂ d i j)
     where
-     r  = λ (k , p , q) → ∣ k , ∨[ F ]-right-mono p , ∨[ F ]-right-mono q ∣
+     r  = λ (k , p , q) → ∣ k , ∨[ F ]-right-monotone p , ∨[ F ]-right-monotone q ∣
 
 \end{code}
 
