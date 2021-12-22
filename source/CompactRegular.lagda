@@ -339,8 +339,8 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
   β : ((U ∨[ F ] (⋁[ F ] S)) is-an-upper-bound-of ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
   β i = ∨[ F ]-right-monotone (⋁[ F ]-upper S i)
 
-  γ : (Ɐ (u′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
-        ((U ∨[ F ] (⋁[ F ] S)) ≤ u′)) holds
+  γ : (Ɐ (U′ , _) ∶ upper-bound ⁅ U ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ,
+        ((U ∨[ F ] (⋁[ F ] S)) ≤ U′)) holds
   γ (u′ , p) = ∨[ F ]-least γ₁ γ₂
    where
     δ₁ : index S → (U ≤ u′) holds
