@@ -63,6 +63,8 @@ syntax way-below F U V = U ≪[ F ] V
 
 \end{code}
 
+A compact open is one that is way below itself.
+
 \begin{code}
 
 is-compact-open : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
@@ -78,6 +80,8 @@ is-compact : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
 is-compact F = is-compact-open F 𝟏[ F ]
 
 \end{code}
+
+Compacts opens are always closed undery binary joins.
 
 \begin{code}
 
