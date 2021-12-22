@@ -219,6 +219,8 @@ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣})
 
 \end{code}
 
+TODO: Revise comments
+
 Finally, we construct the ifZero function, specific to the lifting of ℕ.
 Again, this will be used in ScottModelOfPCF.
 
@@ -263,136 +265,104 @@ module _
     where
      u : (i : I) (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (α i)) ♯) l))
        → ((⦅ifZero⦆₀ a (α i)) ♯) l ≡ ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
-     u i l d = ((⦅ifZero⦆₀ a (α i)) ♯) l             ≡⟨ q₀ ⟩
-               ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ q₁ ⟩
-               ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ q₂ ⟩
+     u i l d = ((⦅ifZero⦆₀ a (α i)) ♯) l             ≡⟨ q₁ ⟩
+               ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ q₂ ⟩
+               ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ q₃ ⟩
                ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l     ∎
       where
        e : is-defined l
        e = ♯-is-defined (⦅ifZero⦆₀ a (α i)) l d
-       p₀ : value l e ≡ zero → ⦅ifZero⦆₀ a (α i) (value l e)
-          ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-       p₀ q = ⦅ifZero⦆₀ a (α i) (value l e)
-                 ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q ⟩
-              ⦅ifZero⦆₀ a (α i) zero
-                 ≡⟨ refl ⟩
-              a
-                 ≡⟨ refl ⟩
-              ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero
-                 ≡⟨ ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) (q ⁻¹) ⟩
-              ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                 ∎
-       pₛ : (n : ℕ) → value l e ≡ succ n → ⦅ifZero⦆₀ a (α i) (value l e)
-                                         ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-       pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)
-                   ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q ⟩
-                ⦅ifZero⦆₀ a (α i) (succ n)
-                   ≡⟨ refl ⟩
-                α i
-                   ≡⟨ family-defined-somewhere-sup-≡ ℕ-is-set δ i e₁ ⟩
-                ∐ (𝓛ᵈℕ ⁻) δ
-                   ≡⟨ refl ⟩
-                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (succ n)
-                    ≡⟨ ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) (q ⁻¹) ⟩
-                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                   ∎
-        where
-         e₁ : is-defined (α i)
-         e₁ = ≡-to-is-defined (ap (⦅ifZero⦆₀ a (α i)) q)
-              (≡-to-is-defined (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) d)
-       q₀ = ♯-on-total-element (⦅ifZero⦆₀ a (α i)) e
-       q₁ = ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (α i) n
+       q₁ = ♯-on-total-element (⦅ifZero⦆₀ a (α i)) e
+       q₃ = (♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e) ⁻¹
+       q₂ = ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (α i) n
                                      ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n} (value l e) p₀ pₛ
-       q₂ = (♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e) ⁻¹
+        where
+         p₀ : value l e ≡ zero
+            → ⦅ifZero⦆₀ a (α i) (value l e) ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
+         p₀ q = ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ ap (⦅ifZero⦆₀ a (α i)) q  ⟩
+                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ≡⟨ ap (⦅ifZero⦆₀ a _) (q ⁻¹) ⟩
+                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ∎
+         pₛ : (n : ℕ) → value l e ≡ succ n
+            → ⦅ifZero⦆₀ a (α i) (value l e) ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
+         pₛ n q = ⦅ifZero⦆₀ a (α i) (value l e)         ≡⟨ ⦅1⦆  ⟩
+                  ⦅ifZero⦆₀ a (α i) (succ n)            ≡⟨ refl ⟩
+                  α i                                   ≡⟨ ⦅2⦆  ⟩
+                  ∐ (𝓛ᵈℕ ⁻) δ                           ≡⟨ refl ⟩
+                  ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (succ n)    ≡⟨ ⦅3⦆  ⟩
+                  ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ∎
+          where
+           ⦅1⦆ = ap (⦅ifZero⦆₀ a (α i)) q
+           ⦅3⦆ = ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) (q ⁻¹)
+           ⦅2⦆ = family-defined-somewhere-sup-≡ ℕ-is-set δ i eᵢ
+            where
+             eᵢ : is-defined (α i)
+             eᵢ = ≡-to-is-defined (ap (⦅ifZero⦆₀ a (α i)) q)
+                   (≡-to-is-defined
+                     (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) d)
+
      v : (f : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ])
        → ((i : I) → ⦅ifZero⦆₁ a (α i) ⊑⟪ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟫ f)
        → (l : 𝓛 ℕ) (d : is-defined (((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l))
-       → ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l ≡ pr₁ f l
-     v f ineqs l d = ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
-                       ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e ⟩
-                     ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                       ≡⟨ ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n
-                                                   ≡ pr₁ f l}
-                           (value l e) p₀ pₛ ⟩
-                     pr₁ f l
-                       ∎
+       → ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l ≡ [ 𝓛ᵈℕ ⁻ , 𝓛ᵈℕ ⁻ ]⟨ f ⟩ l
+     v (f , _) ineqs l d = ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l     ≡⟨ q₁ ⟩
+                           ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ q₂ ⟩
+                           f l                                  ∎
       where
        e : is-defined l
        e = ♯-is-defined (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) l d
-       p₀ : value l e ≡ zero → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ pr₁ f l
-       p₀ q = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                 ≡⟨ ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q ⟩
-              ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero
-                 ≡⟨ refl ⟩
-              a
-                 ≡⟨ r ⟩
-              pr₁ f l
-                 ∎
+       q₁ = ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e
+       q₂ = ℕ-cases {𝓥 ⁺} {λ (n : ℕ) → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) n ≡ f l}
+             (value l e) p₀ pₛ
         where
-         r : a ≡ pr₁ f l
-         r = ∥∥-rec (lifting-of-set-is-set ℕ-is-set)
-              h (inhabited-if-Directed (𝓛ᵈℕ ⁻) α δ)
+         p₀ : value l e ≡ zero
+            → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ f l
+         p₀ q = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ ⦅1⦆  ⟩
+                ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero        ≡⟨ refl ⟩
+                a                                     ≡⟨ ⦅2⦆  ⟩
+                f l                                   ∎
           where
-           h : (i : I) → a ≡ pr₁ f l
-           h i = a                         ≡⟨ g ⟩
-                 ((⦅ifZero⦆₀ a (α i)) ♯) l ≡⟨ ineqs i l e₀ ⟩
-                 pr₁ f l                   ∎
+           ⦅1⦆ = ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q
+           ⦅2⦆ = ∥∥-rec (lifting-of-set-is-set ℕ-is-set)
+                  h (inhabited-if-Directed (𝓛ᵈℕ ⁻) α δ)
             where
-             g = a
-                    ≡⟨ refl ⟩
-                 ⦅ifZero⦆₀ a (α i) zero
-                    ≡⟨ ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹) ⟩
-                 ⦅ifZero⦆₀ a (α i) (value l e)
-                    ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e) ⁻¹ ⟩
-                 ((⦅ifZero⦆₀ a (α i)) ♯) l
-                    ∎
-             e₀ : is-defined (((⦅ifZero⦆₀ a (α i)) ♯) l)
-             e₀ = ≡-to-is-defined (g' ∙ g) d
+             h : (i : I) → a ≡ f l
+             h i = a                             ≡⟨ ⦅1'⦆ ⟩
+                   ⦅ifZero⦆₀ a (α i) (value l e) ≡⟨ ⦅2'⦆ ⟩
+                   ((⦅ifZero⦆₀ a (α i)) ♯) l     ≡⟨ ⦅3'⦆ ⟩
+                   f l                           ∎
               where
-               g' = ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
-                        ≡⟨ ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e ⟩
-                    ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                        ≡⟨ ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q ⟩
-                    ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) zero
-                        ≡⟨ refl ⟩
-                    a
-                        ∎
+               ⦅1'⦆ = ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹)
+               ⦅2'⦆ = (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e) ⁻¹
+               ⦅3'⦆ = ineqs i l (≡-to-is-defined r d)
+                where
+                 r : ((⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) ♯) l
+                   ≡ ((⦅ifZero⦆₀ a (α i)) ♯) l
+                 r = q₁ ∙ ⦅1⦆ ∙ ⦅1'⦆ ∙ ⦅2'⦆
 
-       pₛ : (m : ℕ) → value l e ≡ succ m → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                                         ≡ pr₁ f l
-       pₛ m q = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h eₛ
-        where
-         g : (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) ♯) l ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-         g = ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e
-         g' = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                 ≡⟨ ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q ⟩
-              ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (succ m)
-                 ≡⟨ refl ⟩
-             ∐ (𝓛ᵈℕ ⁻) δ
-                 ∎
-         eₛ : is-defined (∐ (𝓛ᵈℕ ⁻) δ)
-         eₛ = ≡-to-is-defined (g ∙ g') d
-         h : (Σ i ꞉ I , is-defined (α i))
-           → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ pr₁ f l
-         h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
-                         ≡⟨ g' ⟩
-                      ∐ (𝓛ᵈℕ ⁻) δ
-                         ≡⟨ (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹ ⟩
-                      α i
-                         ≡⟨ h' ⟩
-                      ((⦅ifZero⦆₀ a (α i)) ♯) l
-                         ≡⟨ ineqs i l (≡-to-is-defined h' dᵢ) ⟩
-                      pr₁ f l
-                         ∎
+         pₛ : (m : ℕ) → value l e ≡ succ m
+            → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ f l
+         pₛ m q = ∥∥-rec (lifting-of-set-is-set ℕ-is-set) h e'
           where
-           h' = α i
-                   ≡⟨ refl ⟩
-                ⦅ifZero⦆₀ a (α i) (succ m)
-                   ≡⟨ ap (⦅ifZero⦆₀ a (α i)) (q ⁻¹) ⟩
-                ⦅ifZero⦆₀ a (α i) (value l e)
-                   ≡⟨ (♯-on-total-element (⦅ifZero⦆₀ a (α i)) {l} e) ⁻¹ ⟩
-                ((⦅ifZero⦆₀ a (α i)) ♯) l
-                   ∎
+           ⦅1⦆ : (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) ♯) l
+               ≡ ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e)
+           ⦅1⦆ = ♯-on-total-element (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) {l} e
+           ⦅2⦆ : ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ ∐ (𝓛ᵈℕ ⁻) δ
+           ⦅2⦆ = ap (⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ)) q
+           e' : is-defined (∐ (𝓛ᵈℕ ⁻) δ)
+           e' = ≡-to-is-defined (⦅1⦆ ∙ ⦅2⦆) d
+           h : (Σ i ꞉ I , is-defined (α i))
+             → ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡ f l
+           h (i , dᵢ) = ⦅ifZero⦆₀ a (∐ (𝓛ᵈℕ ⁻) δ) (value l e) ≡⟨ ⦅1'⦆ ⟩
+                        ∐ (𝓛ᵈℕ ⁻) δ                           ≡⟨ ⦅2'⦆ ⟩
+                        α i                                   ≡⟨ ⦅3'⦆ ⟩
+                        ((⦅ifZero⦆₀ a (α i)) ♯) l             ≡⟨ ⦅4'⦆ ⟩
+                        f l                                   ∎
+            where
+             ⦅1'⦆ = ⦅2⦆
+             ⦅2'⦆ = (family-defined-somewhere-sup-≡ ℕ-is-set δ i dᵢ) ⁻¹
+             ⦅3'⦆ = (♯-on-total-element (⦅ifZero⦆₀ a (α i)) e
+                     ∙ ap (⦅ifZero⦆₀ a (α i)) q) ⁻¹
+             ⦅4'⦆ = ineqs i l (≡-to-is-defined ⦅3'⦆ dᵢ)
 
 \end{code}
 
