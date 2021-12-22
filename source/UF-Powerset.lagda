@@ -41,13 +41,19 @@ powersets-are-sets' {𝓤} ua = powersets-are-sets
 full : {X : 𝓤 ̇ } →  X → Ω 𝓥
 full _ = 𝟙 , 𝟙-is-prop
 
-
-
 _∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 x ∈ A = A x holds
 
 _∉_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 x ∉ A = ¬ (x ∈ A)
+
+are-disjoint : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+are-disjoint {𝓤} {𝓥} {𝓦} {X} A B = (x : X) → ¬((x ∈ A) × (x ∈ B))
+
+being-disjoint-is-prop : Fun-Ext
+                       → {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦)
+                       → is-prop (are-disjoint A B)
+being-disjoint-is-prop fe A B = Π-is-prop fe (λ _ → negations-are-props fe)
 
 _⊆_ : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B

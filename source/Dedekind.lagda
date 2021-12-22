@@ -306,16 +306,20 @@ the usual one:
 
 open import UF-Equiv
 
-NB : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
-               , is-inhabited L × is-lower L × is-upper-open L
-               × is-inhabited U × is-upper U × is-lower-open U
-               × are-ordered L U × are-located L U)
+is-dedekind-section : 𝓟 ℚ × 𝓟 ℚ → 𝓣 ̇
+is-dedekind-section (L , U) = is-inhabited L × is-lower L × is-upper-open L
+                            × is-inhabited U × is-upper U × is-lower-open U
+                            × are-ordered L U × are-located L U
 
+NB : ℝ ≃ (Σ (L , R) ꞉ 𝓟 ℚ × 𝓟 ℚ , is-dedekind-section (L , R))
 NB = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
              → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
+
            ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l)
              → ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)) ,
+
             (λ _ → refl) ,
+
             (λ _ → refl))
 \end{code}
 
@@ -387,20 +391,89 @@ NB₂ : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
                 × are-ordered L U × are-located L U)
 
 NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
-             → ((L , U) , Li , Lo , Ui , Uo , o , l))
-           ((λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-             → ((L , Li , ordered-located-gives-lower L U o l , Lo) ,
-                (U , Ui , ordered-located-gives-upper L U o l , Uo) ,
-                o , l)) ,
-            (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-             → to-Σ-≡ (to-subtype-≡ being-lower-real-is-prop refl ,
-                       being-dedekind-is-prop (L , Li , Ll , Lo) _ _)) ,
-            (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
-             → to-subtype-≡ (λ (L , U) → ×₆-is-prop
-                                          (being-inhabited-is-prop L) (being-upper-open-is-prop L)
-                                          (being-inhabited-is-prop U) (being-lower-open-is-prop U)
-                                          (being-ordered-is-prop L U) (being-located-is-prop L U))
-                                          refl))
+              → ((L , U) , Li , Lo , Ui , Uo , o , l))
+
+            ((λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+              → ((L , Li , ordered-located-gives-lower L U o l , Lo) ,
+                 (U , Ui , ordered-located-gives-upper L U o l , Uo) ,
+                 o , l)) ,
+
+             (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+              → to-Σ-≡ (to-subtype-≡ being-lower-real-is-prop refl ,
+                        being-dedekind-is-prop (L , Li , Ll , Lo) _ _)) ,
+
+             (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+              → to-subtype-≡ (λ (L , U) → ×₆-is-prop
+                                           (being-inhabited-is-prop L)
+                                           (being-upper-open-is-prop L)
+                                           (being-inhabited-is-prop U)
+                                           (being-lower-open-is-prop U)
+                                           (being-ordered-is-prop L U)
+                                           (being-located-is-prop L U))
+                              refl))
+\end{code}
+
+And there is a further set of axioms for defining ℝ.
+
+\begin{code}
+
+disjoint-criterion : (L U : 𝓟 ℚ)
+                   → are-ordered L U
+                   → are-disjoint L U
+disjoint-criterion L U o p (p-is-in-L , p-is-in-U) =
+ order-is-irrefl p (o p p p-is-in-L p-is-in-U)
+
+module _ (ϕ : further-properties-of-ℚ-and-its-order) where
+
+ open further-properties-of-ℚ-and-its-order ϕ
+
+ ordered-criterion : (L U : 𝓟 ℚ)
+                   → is-lower L
+                   → are-disjoint L U
+                   → are-ordered L U
+ ordered-criterion L U L-is-lower LU-disjoint p q p-in-L q-in-U = γ
+  where
+   I : p ∉ U
+   I p-in-U = LU-disjoint p (p-in-L , p-in-U)
+
+   II : p ≢ q
+   II e = I (transport (_∈ U) (e ⁻¹) q-in-U)
+
+   III : ¬(q < p)
+   III l = LU-disjoint q (L-is-lower p p-in-L q l , q-in-U)
+
+   γ : p < q
+   γ = order-criterion p q II III
+
+
+ NB₃ : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
+                 , is-inhabited L × is-lower L × is-upper-open L
+                 × is-inhabited U × is-upper U × is-lower-open U
+                 × are-disjoint L U × are-located L U)
+
+ NB₃ = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+               → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , disjoint-criterion L U o , l))
+
+             ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , d , l)
+               → ((L , Li , Ll , Lo) ,
+                  (U , Ui , Uu , Uo) ,
+                  ordered-criterion L U Ll d , l)) ,
+
+              (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+               → to-Σ-≡ (to-subtype-≡ being-lower-real-is-prop refl ,
+                         being-dedekind-is-prop (L , Li , Ll , Lo) _ _)) ,
+
+              (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
+               → to-subtype-≡ (λ (L , U) → ×₈-is-prop
+                                            (being-inhabited-is-prop L)
+                                            (being-lower-is-prop L)
+                                            (being-upper-open-is-prop L)
+                                            (being-inhabited-is-prop U)
+                                            (being-upper-is-prop U)
+                                            (being-lower-open-is-prop U)
+                                            (being-disjoint-is-prop fe L U)
+                                            (being-located-is-prop L U))
+                               refl))
 \end{code}
 
 We now consider an alternative definition of the Dedekind reals
@@ -463,20 +536,23 @@ above:
 
 \begin{code}
 
-open further-properties-of-ℚ-and-its-order
+candidate-upper-section : 𝓟 ℚ → 𝓟 ℚ
+candidate-upper-section L = λ q → (∃ p ꞉ ℚ , (p < q) × (p ∉ L)) , ∃-is-prop
 
 troelstra-gives-dedekind : further-properties-of-ℚ-and-its-order
                          → (l : ℝᴸ) → is-troelstra l → is-dedekind l
 troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open) (a , b) = γ
  where
+  open further-properties-of-ℚ-and-its-order ϕ
+
   U : 𝓟 ℚ
-  U q = (∃ p ꞉ ℚ , (p < q) × (p ∉ L)) , ∃-is-prop
+  U = candidate-upper-section L
 
   U-is-inhabited : is-inhabited U
   U-is-inhabited = ∥∥-rec (being-inhabited-is-prop U) f a
    where
     f : (Σ s ꞉ ℚ , s ∉ L) → is-inhabited U
-    f (s , ν) = ∥∥-functor g (ℚ-is-upper-open ϕ s)
+    f (s , ν) = ∥∥-functor g (ℚ-is-upper-open s)
      where
       g : (Σ p ꞉ ℚ , s < p) → Σ p ꞉ ℚ , p ∈ U
       g (p , i) = p , ∣ s , i , ν ∣
@@ -489,7 +565,7 @@ troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open
      where
       g : (r ∈ L) + (q ∉ L) → p < q
       g (inl r-is-in-L)     = 𝟘-elim (r-is-not-in-L r-is-in-L)
-      g (inr q-is-not-in-L) = order-criterion ϕ p q I II
+      g (inr q-is-not-in-L) = order-criterion p q I II
        where
         I : p ≢ q
         I refl = q-is-not-in-L p-is-in-L
@@ -507,7 +583,7 @@ troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open
   U-is-lower-open q q-is-in-U = ∥∥-rec ∃-is-prop f q-is-in-U
    where
     f : (Σ p ꞉ ℚ , (p < q) × (p ∉ L)) → ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-    f (p , i , p-is-not-in-L) = ∥∥-functor g (ℚ-is-dense ϕ p q i)
+    f (p , i , p-is-not-in-L) = ∥∥-functor g (ℚ-is-dense p q i)
      where
       g : (Σ p' ꞉ ℚ , (p < p') × (p' < q))
         → Σ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
@@ -517,7 +593,7 @@ troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open
   LU-located p q less = ∥∥-rec ∨-is-prop II I
    where
     I : ∃ p' ꞉ ℚ , (p < p') × (p' < q)
-    I = ℚ-is-dense ϕ p q less
+    I = ℚ-is-dense p q less
 
     II : (Σ p' ꞉ ℚ , (p < p') × (p' < q)) → p ∈ L ∨ q ∈ U
     II (p' , i , j) = ∥∥-rec ∨-is-prop IV III
@@ -552,8 +628,6 @@ universe lifting help? I haven't thought about this.
 
 \begin{code}
 
-open import UF-Univalence
-
 dedekind-agrees-with-troelstra : further-properties-of-ℚ-and-its-order → ℝ ≃ ℝᵀ
 dedekind-agrees-with-troelstra ϕ = γ
  where
@@ -567,12 +641,6 @@ dedekind-agrees-with-troelstra ϕ = γ
   γ = qinveq f (g ,
                (λ (l , h) → to-subtype-≡ being-dedekind-is-prop refl) ,
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
-
-dedekind-agrees-with-troelstra' : further-properties-of-ℚ-and-its-order
-                                → is-univalent 𝓣⁺
-                                → ℝ ≡ ℝᵀ
-dedekind-agrees-with-troelstra' ϕ ua = eqtoid ua ℝ ℝᵀ (dedekind-agrees-with-troelstra ϕ)
-
 \end{code}
 
 We now consider consequences of excluded middle.
@@ -615,10 +683,11 @@ lower reals:
                                       → (is-lower-real ∞) × (¬ is-bounded-above ∞)
 ∞-is-lower-real-but-not-bounded-above ϕ = a , b
  where
+  open further-properties-of-ℚ-and-its-order ϕ
   a : is-lower-real ∞
-  a = ∥∥-rec (being-inhabited-is-prop ∞) (λ q → ∣ q , * ∣) (ℚ-is-inhabited ϕ) ,
+  a = ∥∥-rec (being-inhabited-is-prop ∞) (λ q → ∣ q , * ∣) ℚ-is-inhabited ,
       (λ _ _ _ _ → *) ,
-      (λ p * → ∥∥-rec ∃-is-prop (λ (q , i) → ∣ q , i , * ∣) (ℚ-is-upper-open ϕ p))
+      (λ p * → ∥∥-rec ∃-is-prop (λ (q , i) → ∣ q , i , * ∣) (ℚ-is-upper-open p))
 
   b : ¬ is-bounded-above ∞
   b bounded = ∥∥-rec 𝟘-is-prop (λ (q , q-is-not-in-∞) → q-is-not-in-∞ *) bounded
@@ -638,24 +707,24 @@ agree with the bounded lower reals if we assume excluded middle:
   δ l@(L , c) = pe (being-troelstra-is-prop l)
                    (being-bounded-above-is-prop L)
                    pr₁
-                   λ β → β , EM-gives-troelstra-locatedness em l
+                   (λ β → β , EM-gives-troelstra-locatedness em l)
 
   γ : is-troelstra ≡ (λ (L , _) → is-bounded-above L)
   γ = dfunext fe δ
 
 \end{code}
 
-And assuming both univalence and excluded middle, the Dedekind reals
-agree with the bounded lower reals:
+Therefore, under excluded middle, the Dedekind reals agree with the
+bounded lower reals:
 
 \begin{code}
 
 ℝ-and-ℝᴮᴸ-agree-under-EM : EM 𝓣
                         → further-properties-of-ℚ-and-its-order
-                        → is-univalent 𝓣⁺
-                        → ℝ ≡ ℝᴮᴸ
-ℝ-and-ℝᴮᴸ-agree-under-EM em ϕ ua = dedekind-agrees-with-troelstra' ϕ ua
-                                ∙ ℝᵀ-and-ℝᴮᴸ-agree-under-EM em ϕ
+                        → ℝ ≃ ℝᴮᴸ
+ℝ-and-ℝᴮᴸ-agree-under-EM em ϕ = transport (ℝ ≃_)
+                                 (ℝᵀ-and-ℝᴮᴸ-agree-under-EM em ϕ)
+                                 (dedekind-agrees-with-troelstra ϕ)
 \end{code}
 
 We also need further properties of order for embedding the rationals into the reals:
@@ -664,27 +733,29 @@ We also need further properties of order for embedding the rationals into the re
 
 module rational-reals (ϕ : further-properties-of-ℚ-and-its-order) where
 
+ open further-properties-of-ℚ-and-its-order ϕ
+
  ℚ-to-ℝᴸ : ℚ → ℝᴸ
  ℚ-to-ℝᴸ q = L ,
-             ℚ-is-lower-open ϕ q ,
-             (λ p i r j → transitivity ϕ r p q j i) ,
-             (λ p →  ℚ-is-dense ϕ p q)
+             ℚ-is-lower-open q ,
+             (λ p i r j → transitivity r p q j i) ,
+             (λ p →  ℚ-is-dense p q)
   where
    L : 𝓟 ℚ
    L p = (p < q) , order-is-prop-valued p q
 
  ℚ-to-ℝᵁ : ℚ → ℝᵁ
  ℚ-to-ℝᵁ q = U ,
-             ℚ-is-upper-open ϕ q ,
-             (λ p i r j → transitivity ϕ q p r i j) ,
-             (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-is-dense ϕ q p i))
+             ℚ-is-upper-open q ,
+             (λ p i r j → transitivity q p r i j) ,
+             (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-is-dense q p i))
   where
    U : 𝓟 ℚ
    U p = (q < p) , order-is-prop-valued q p
 
 
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ : (q : ℚ) → (ℚ-to-ℝᵁ q) is-upper-section-of (ℚ-to-ℝᴸ q)
- ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → transitivity ϕ p q) , (λ p → cotransitivity ϕ p q)
+ ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → transitivity p q) , (λ p → cotransitivity p q)
 
  ℚ-to-ℝᴸ-is-dedekind : (q : ℚ) → is-dedekind (ℚ-to-ℝᴸ q)
  ℚ-to-ℝᴸ-is-dedekind q = ℚ-to-ℝᵁ q , ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q
@@ -724,5 +795,3 @@ blah A i p₀ p₁ = L , L-is-inhabited , L-is-lower , L-is-upper-open
   L-is-upper-open = {!!}
 -}
 \end{code}
-
-TODO. Define Dedekind completeness and show that ℝ is Dedekind complete.
