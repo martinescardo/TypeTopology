@@ -542,11 +542,18 @@ syntax binary-join F x y = x ∨[ F ] y
       y ∨[ F ] z             ≤⟨ ∨[ F ]-upper₂ x (y ∨[ F ] z) ⟩
       x ∨[ F ] (y ∨[ F ] z)  ■
 
-∨[_]-left-mono : (F : frame 𝓤 𝓥 𝓦)
+\end{code}
+
+By fixing the left or right argument of `_∨_` to anything, we get a monotonic
+map.
+
+\begin{code}
+
+∨[_]-left-monotone : (F : frame 𝓤 𝓥 𝓦)
                → {x y z : ⟨ F ⟩}
                → (x ≤[ poset-of F ] y) holds
                → ((x ∨[ F ] z) ≤[ poset-of F ] (y ∨[ F ] z)) holds
-∨[_]-left-mono F {x = x} {y} {z} p = ∨[ F ]-least γ (∨[ F ]-upper₂ y z)
+∨[_]-left-monotone F {x = x} {y} {z} p = ∨[ F ]-least γ (∨[ F ]-upper₂ y z)
  where
   open PosetNotation  (poset-of F) using (_≤_)
   open PosetReasoning (poset-of F)
@@ -554,13 +561,13 @@ syntax binary-join F x y = x ∨[ F ] y
   γ : (x ≤ (y ∨[ F ] z)) holds
   γ = x ≤⟨ p ⟩ y ≤⟨ ∨[ F ]-upper₁ y z ⟩ y ∨[ F ] z ■
 
-∨[_]-right-mono : (F : frame 𝓤 𝓥 𝓦)
+∨[_]-right-monotone : (F : frame 𝓤 𝓥 𝓦)
                 → {x y z : ⟨ F ⟩}
                 → (x ≤[ poset-of F ] y) holds
                 → ((z ∨[ F ] x) ≤[ poset-of F ] (z ∨[ F ] y)) holds
-∨[_]-right-mono F {x} {y} {z} p =
+∨[_]-right-monotone F {x} {y} {z} p =
  z ∨[ F ] x  ≡⟨ ∨[ F ]-is-commutative z x ⟩ₚ
- x ∨[ F ] z  ≤⟨ ∨[ F ]-left-mono p        ⟩
+ x ∨[ F ] z  ≤⟨ ∨[ F ]-left-monotone p    ⟩
  y ∨[ F ] z  ≡⟨ ∨[ F ]-is-commutative y z ⟩ₚ
  z ∨[ F ] y  ■
   where
