@@ -268,13 +268,13 @@ is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
       W₂ ∧[ F ] 𝟏[ F ]                    ≡⟨ viii                              ⟩
       W₂                                  ∎
        where
-        i   = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative W₁ U)
-        ii  = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) p₁
-        iii = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (p₂ ⁻¹)
-        iv  = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative U W₂)
-        v   = ap (λ - → (W₂ ∧[ F ] U) ∨[ F ] -) (∧[ F ]-is-commutative W₁ W₂)
-        vi  = binary-distributivity F W₂ U W₁ ⁻¹
-        vii = ap (λ - → W₂ ∧[ F ] -) q₁
+        i    = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative W₁ U)
+        ii   = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) p₁
+        iii  = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (p₂ ⁻¹)
+        iv   = ap (λ - → - ∨[ F ] (W₁ ∧[ F ] W₂)) (∧[ F ]-is-commutative U W₂)
+        v    = ap (λ - → (W₂ ∧[ F ] U) ∨[ F ] -) (∧[ F ]-is-commutative W₁ W₂)
+        vi   = binary-distributivity F W₂ U W₁ ⁻¹
+        vii  = ap (λ - → W₂ ∧[ F ] -) q₁
         viii = 𝟏-right-unit-of-∧ F W₂
 
 is-clopen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
