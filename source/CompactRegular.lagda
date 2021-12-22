@@ -280,28 +280,28 @@ is-clopen₀-is-prop F U (W₁ , p₁ , q₁) (W₂ , p₂ , q₂) = to-subtype-
 is-clopen : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Ω 𝓤
 is-clopen F U = is-clopen₀ F U , is-clopen₀-is-prop F U
 
-clopen-implies-well-inside-oneself : (F : frame 𝓤 𝓥 𝓦)
+clopen-implies-well-inside-itself : (F : frame 𝓤 𝓥 𝓦)
                                    → (U : ⟨ F ⟩)
                                    → (is-clopen F U ⇒ U ⋜[ F ] U) holds
-clopen-implies-well-inside-oneself F U = ∣_∣
+clopen-implies-well-inside-itself F U = ∣_∣
 
-well-inside-oneself-implies-clopen : (F : frame 𝓤 𝓥 𝓦)
+well-inside-itself-implies-clopen : (F : frame 𝓤 𝓥 𝓦)
                                           → (U : ⟨ F ⟩)
                                           → (U ⋜[ F ] U ⇒ is-clopen F U) holds
-well-inside-oneself-implies-clopen F U =
+well-inside-itself-implies-clopen F U =
  ∥∥-rec (holds-is-prop (is-clopen F U)) id
 
-clopenness-equivalent-to-well-inside-oneself : (F : frame 𝓤 𝓥 𝓦)
+clopenness-equivalent-to-well-inside-itself : (F : frame 𝓤 𝓥 𝓦)
                                              → (U : ⟨ F ⟩)
                                              → (U ⋜[ F ] U) holds
                                              ≃ is-clopen F U holds
-clopenness-equivalent-to-well-inside-oneself F U =
-   well-inside-oneself-implies-clopen F U
+clopenness-equivalent-to-well-inside-itself F U =
+   well-inside-itself-implies-clopen F U
  , logically-equivalent-props-give-is-equiv
     (holds-is-prop (U ⋜[ F ] U))
     (holds-is-prop (is-clopen F U))
-    (well-inside-oneself-implies-clopen F U)
-    (clopen-implies-well-inside-oneself F U)
+    (well-inside-itself-implies-clopen F U)
+    (clopen-implies-well-inside-itself F U)
 
 \end{code}
 
