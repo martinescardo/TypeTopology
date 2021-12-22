@@ -396,12 +396,21 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
        𝟏[ F ]                           ≤⟨ δ                                ⟩
        ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
 
-   -- T is closed under binary upper bounds.
+\end{code}
+
+The family `T` we defined is also directed by the directedness of `S`.
+
+\begin{code}
+
    up : (Ɐ i , Ɐ j ,
            Ǝ k , (T [ i ] ≤ T [ k ]) holds × (T [ j ] ≤ T [ k ]) holds) holds
    up i j = ∥∥-rec ∃-is-prop r (pr₂ d i j)
     where
      r  = λ (k , p , q) → ∣ k , ∨[ F ]-right-mono p , ∨[ F ]-right-mono q ∣
+
+\end{code}
+
+\begin{code}
 
    T-is-directed : (is-directed (poset-of F) ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆) holds
    T-is-directed = pr₁ d , up
