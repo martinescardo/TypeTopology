@@ -161,10 +161,10 @@ complement” predicate (i.e. is well inside itself) is propositional.
 
 \begin{code}
 
-well-inside-is-not-prop : is-univalent 𝓤₀
+well-inside₀-is-not-prop : is-univalent 𝓤₀
                         → Σ F ꞉ frame 𝓤₁ 𝓤₀ 𝓤₀ ,
                            (¬ ((U V : ⟨ F ⟩) → is-prop (U ⋜₀[ F ] V)))
-well-inside-is-not-prop ua = IF , ε
+well-inside₀-is-not-prop ua = IF , ε
  where
   IF : frame 𝓤₁ 𝓤₀ 𝓤₀ -- “IF” standing for “initial frame”.
   IF = 𝟎-𝔽𝕣𝕞 ua
