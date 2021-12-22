@@ -219,25 +219,27 @@ syntax well-inside F U V = U ⋜[ F ] V
 
 \begin{code}
 
-well-inside₀-implies-below : (F : frame 𝓤 𝓥 𝓦)
+well-inside-implies-below : (F : frame 𝓤 𝓥 𝓦)
                           → (U V : ⟨ F ⟩)
-                          → U ⋜₀[ F ] V
-                          → (U ≤[ poset-of F ] V) holds
-well-inside₀-implies-below F U V (W , c₁ , c₂) = connecting-lemma₂ F γ
+                          → (U ⋜[ F ] V ⇒ (U ≤[ poset-of F ] V)) holds
+well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ
  where
   _⊓_ = λ U V → U ∧[ F ] V
 
-  γ : U ≡ U ∧[ F ] V
-  γ = U                        ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
-      U ⊓ 𝟏[ F ]               ≡⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
-      U ⊓ (V ∨[ F ] W)         ≡⟨ binary-distributivity F U V W         ⟩
-      (U ⊓ V) ∨[ F ] (U ⊓ W)   ≡⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
-      (U ⊓ V) ∨[ F ] 𝟎[ F ]    ≡⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
-      U ⊓ V                    ∎
+  γ : U ⋜₀[ F ] V → (U ≤[ poset-of F ] V) holds
+  γ (W , c₁ , c₂) = connecting-lemma₂ F δ
+   where
+    δ : U ≡ U ∧[ F ] V
+    δ = U                        ≡⟨ 𝟏-right-unit-of-∧ F U ⁻¹              ⟩
+        U ⊓ 𝟏[ F ]               ≡⟨ ap (U ⊓_) (c₂ ⁻¹)                     ⟩
+        U ⊓ (V ∨[ F ] W)         ≡⟨ binary-distributivity F U V W         ⟩
+        (U ⊓ V) ∨[ F ] (U ⊓ W)   ≡⟨ ap (λ - → binary-join F (U ⊓ V) -) c₁ ⟩
+        (U ⊓ V) ∨[ F ] 𝟎[ F ]    ≡⟨ 𝟎-left-unit-of-∨ F (U ⊓ V)            ⟩
+        U ⊓ V                    ∎
 
 \end{code}
 
-An open U in a frame F is *clopen* iff it is well-inside itself.
+An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
 
 \begin{code}
 
@@ -383,11 +385,11 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
    T = ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆
 
    δ : (𝟏[ F ] ≤ (⋁[ F ] T)) holds
-   δ = 𝟏[ F ]                          ≡⟨ c₂ ⁻¹                              ⟩ₚ
-       V ∨[ F ] W                      ≤⟨ ∨[ F ]-left-mono q                 ⟩
-       (⋁[ F ] S) ∨[ F ] W             ≡⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
-       W ∨[ F ] (⋁[ F ] S)             ≡⟨ ∨-is-scott-continuous-eq F W S d   ⟩ₚ
-       ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆ ■
+   δ = 𝟏[ F ]                           ≡⟨ c₂ ⁻¹                              ⟩ₚ
+       V ∨[ F ] W                       ≤⟨ ∨[ F ]-left-mono q                 ⟩
+       (⋁[ F ] S) ∨[ F ] W              ≡⟨ ∨[ F ]-is-commutative (⋁[ F ] S) W ⟩ₚ
+       W ∨[ F ] (⋁[ F ] S)              ≡⟨ ∨-is-scott-continuous-eq F W S d   ⟩ₚ
+       ⋁[ F ] ⁅ W ∨[ F ] Sᵢ ∣ Sᵢ ε S ⁆  ■
 
    ε : ((W ∨[ F ] (⋁[ F ] S)) ≤ (⋁[ F ] T)) holds
    ε = W ∨[ F ] (⋁[ F ] S)              ≤⟨ 𝟏-is-top F (W ∨[ F ] (⋁[ F ] S)) ⟩
@@ -409,7 +411,7 @@ isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
 
    θ : Σ i ꞉ index S , (𝟏[ F ] ≤ (W ∨[ F ] S [ i ])) holds
      → ∃ i ꞉ index S , (U ≤ S [ i ]) holds
-   θ (i , p) = ∣ i , well-inside₀-implies-below F U (S [ i ]) (W , c₁ , ι) ∣
+   θ (i , p) = ∣ i , well-inside-implies-below F U (S [ i ]) ∣ W , c₁ , ι ∣ ∣
     where
      η = 𝟏[ F ]              ≤⟨ p                                 ⟩
          W ∨[ F ] (S [ i ])  ≡⟨ ∨[ F ]-is-commutative W (S [ i ]) ⟩ₚ
