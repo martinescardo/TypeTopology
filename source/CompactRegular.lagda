@@ -96,13 +96,25 @@ compacts-are-closed-under-joins F U V κ₁ κ₂ S dir@(_ , up) p =
    open PosetNotation  (poset-of F) using (_≤_)
    open PosetReasoning (poset-of F)
 
-   -- S covers U.
+\end{code}
+
+We know that both `U` and `V` are covered by `S` by the assumption that `U ∨ V`
+is covered by `S`
+
+\begin{code}
+
    q₁ : (U ≤ (⋁[ F ] S)) holds
    q₁ = U ≤⟨ ∨[ F ]-upper₁ U V ⟩ U ∨[ F ] V ≤⟨ p ⟩ ⋁[ F ] S ■
 
-   -- S covers V.
    q₂ : (V ≤ (⋁[ F ] S)) holds
    q₂ = V ≤⟨ ∨[ F ]-upper₂ U V ⟩ U ∨[ F ] V ≤⟨ p ⟩ ⋁[ F ] S ■
+
+\end{code}
+
+Therefore there must exist indices `i₁` and `i₂` such that `U ≤ Sᵢ₁` and `V ≤
+Sᵢ₂`.
+
+\begin{code}
 
    s₁′ : ∥ Σ i₁ ꞉ index S , (U ≤ S [ i₁ ]) holds ∥
    s₁′ = κ₁ S dir q₁
@@ -129,9 +141,11 @@ compacts-are-closed-under-joins F U V κ₁ κ₂ S dir@(_ , up) p =
 
 \section{Well Inside}
 
+`well-inside₀` is the type family expressing that a given open of a frame is
+clopen.
+
 \begin{code}
 
--- The type family expressing that a given open of a frame is clopen.
 well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇ 
 well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (V ∨[ F ] W ≡ 𝟏[ F ])
@@ -140,8 +154,13 @@ infix 4 well-inside₀
 
 syntax well-inside₀ F U V = U ⋜₀[ F ] V
 
--- The well inside relation is not propositional in general, even though the
--- “has complement” (i.e. is well inside itself) is propositional.
+\end{code}
+
+The well inside relation is not propositional in general, even though the “has
+complement” predicate (i.e. is well inside itself) is propositional.
+
+\begin{code}
+
 well-inside-is-not-prop : is-univalent 𝓤₀
                         → Σ F ꞉ frame 𝓤₁ 𝓤₀ 𝓤₀ ,
                            (¬ ((U V : ⟨ F ⟩) → is-prop (U ⋜₀[ F ] V)))
@@ -182,8 +201,13 @@ well-inside-is-not-prop ua = IF , ε
     δ : γ₁ ≡ γ₂
     δ = ψ 𝟎[ IF ] 𝟏[ IF ] γ₁ γ₂
 
--- Because well inside is not propositional, we have to truncate it to get a
--- relation.
+\end{code}
+
+Because well inside is not propositional, we have to truncate it to get a
+relation.
+
+\begin{code}
+
 well-inside : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω 𝓤
 well-inside F U V = ∥ U ⋜₀[ F ] V ∥Ω
 
