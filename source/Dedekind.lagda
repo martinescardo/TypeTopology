@@ -440,7 +440,7 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
    I p-in-U = LU-disjoint p (p-in-L , p-in-U)
 
    II : p ≢ q
-   II e = I (transport (_∈ U) (e ⁻¹) q-in-U)
+   II refl = I q-in-U
 
    III : ¬(q < p)
    III l = LU-disjoint q (L-is-lower p p-in-L q l , q-in-U)
