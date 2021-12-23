@@ -1,25 +1,27 @@
 Tom de Jong & Martin Escardo, 20 May 2019.
-Refactored January 2020, December 2021.
+Refactored January 2020, December 2021 by Tom de Jong.
 
- * Directed complete posets.
- * Continuous maps.
- * TODO: Update (Examples and constructions in DcpoConstructions)
+Definitions of:
+ * Directed complete posets (dcpos).
+ * Scott continuous maps.
+ * Pointed dcpos (i.e. dcpos with a least element) and strict continuous maps
+   (i.e. continuous maps that preserve the least element)
+
+See Dcpos.lagda for an overview of the formalization the theory of dcpos.
 
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
-open import UF-Base
-open import UF-PropTrunc
-open import UF-Subsingletons
+
 open import UF-FunExt
 open import UF-PropTrunc
 
 module Dcpo
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-        (𝓥 : Universe) -- where the index type for directed completeness lives
+        (𝓥 : Universe) -- where the index types for directed completeness live
        where
 
 open PropositionalTruncation pt
@@ -145,6 +147,9 @@ following definitions.
 
 \end{code}
 
+We have now developed enough material to define dcpos and we introduce some
+convenient projections.
+
 \begin{code}
 
 module _ {𝓤 𝓣 : Universe} where
@@ -185,7 +190,7 @@ module _ {𝓤 𝓣 : Universe} where
 
 \end{code}
 
-We also consider dcpos with a least element.
+We also consider pointed dcpos, i.e. dcpos with a least element.
 
 \begin{code}
 
@@ -304,7 +309,7 @@ Next, we introduce ∐-notation for the supremum of a directed family in a dcpo.
 
 \end{code}
 
-Next, we define continuous maps between dcpos.
+Finally, we define (strict) continuous maps between (pointed) dcpos.
 
 \begin{code}
 

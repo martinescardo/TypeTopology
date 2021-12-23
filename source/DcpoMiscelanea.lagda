@@ -1,27 +1,68 @@
+Tom de Jong, January 2020.
+
+December 2021: Added material on semidirected and subsingleton suprema.
+
+A collection of various useful facts on (pointed) directed complete posets and
+Scott continuous maps between them.
+
+The table of contents is roughly:
+ * Lemmas for establishing Scott continuity of maps between dcpos.
+ * Continuity of basic functions (constant functions, identity, composition).
+ * Defining isomorphisms of (pointed) dcpos.
+ * Pointed dcpos have semidirected & subsingleton suprema and these are
+   preserved by maps that are both strict and continuous.
+
+   The latter is used to be prove (in DcpoLifting.lagda) that the lifting yields
+   the free pointed dcpo on a set.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT hiding (J)
+open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoBasics
+module DcpoMiscelanea
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓥 : Universe)
        where
 
-open import UF-Subsingletons
 open PropositionalTruncation pt
+
+open import UF-Subsingletons
+
+open import Dcpo pt fe 𝓥
 
 \end{code}
 
-TO DO
+Some preliminary basic lemmas.
 
 \begin{code}
 
-open import Dcpo pt fe 𝓥
+∐-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
+                (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
+              → ((i : I) → α i ⊑⟨ 𝓓 ⟩ β i)
+              → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
+∐-is-monotone 𝓓 {I} {α} {β} δ ε l = ∐-is-lowerbound-of-upperbounds 𝓓 δ (∐ 𝓓 ε) γ
+ where
+  γ : (i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
+  γ i = α i   ⊑⟨ 𝓓 ⟩[ l i ]
+        β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
+        ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
+
+∐-family-≡ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
+             (p : α ≡ β) (δ : is-Directed 𝓓 α)
+           → ∐ 𝓓 {I} {α} δ ≡ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
+∐-family-≡ 𝓓 {I} {α} {α} refl δ = refl
+
+to-continuous-function-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
+                           {f g : DCPO[ 𝓓 , 𝓔 ]}
+                         → [ 𝓓 , 𝓔 ]⟨ f ⟩ ∼ [ 𝓓 , 𝓔 ]⟨ g ⟩
+                         → f ≡ g
+to-continuous-function-≡ 𝓓 𝓔 h =
+ to-subtype-≡ (being-continuous-is-prop 𝓓 𝓔) (dfunext fe h)
 
 ≡-to-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) {x y : ⟨ 𝓓 ⟩} → x ≡ y → x ⊑⟨ 𝓓 ⟩ y
 ≡-to-⊑ 𝓓 {x} {x} refl = reflexivity 𝓓 x
@@ -38,6 +79,12 @@ open import Dcpo pt fe 𝓥
 is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
             → (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) → 𝓤 ⊔ 𝓣 ⊔ 𝓣' ̇
 is-monotone 𝓓 𝓔 f = (x y : ⟨ 𝓓 ⟩) → x ⊑⟨ 𝓓 ⟩ y → f x ⊑⟨ 𝓔 ⟩ f y
+
+\end{code}
+
+Lemmas for establishing Scott continuity of maps between dcpos.
+
+\begin{code}
 
 image-is-directed : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                     {f : ⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩}
@@ -121,14 +168,10 @@ image-is-directed' : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                      (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
                    → is-Directed 𝓓 α
                    → is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
-image-is-directed' 𝓓 𝓔 f {I} {α} δ = γ
+image-is-directed' 𝓓 𝓔 f {I} {α} δ = image-is-directed 𝓓 𝓔 m δ
  where
-  -- abstract -- (TODO)
-   -- γ : is-Directed 𝓔 ([ 𝓓 , 𝓔 ]⟨ f ⟩ ∘ α)
-   γ = image-is-directed 𝓓 𝓔 m δ
-    where
-     m : is-monotone 𝓓 𝓔 [ 𝓓 , 𝓔 ]⟨ f ⟩
-     m = monotone-if-continuous 𝓓 𝓔 f
+  m : is-monotone 𝓓 𝓔 [ 𝓓 , 𝓔 ]⟨ f ⟩
+  m = monotone-if-continuous 𝓓 𝓔 f
 
 continuous-∐-⊑ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                  (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
@@ -168,6 +211,12 @@ continuous-∐-≡ 𝓓 𝓔 (f , c) {I} {α} δ =
    b : ∐ 𝓔 ε ⊑⟨ 𝓔 ⟩ f (∐ 𝓓 δ)
    b = continuous-∐-⊒ 𝓓 𝓔 (f , c) δ
 
+\end{code}
+
+Continuity of basic functions (constant functions, identity, composition).
+
+\begin{code}
+
 constant-functions-are-continuous : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                                     (e : ⟨ 𝓔 ⟩) → is-continuous 𝓓 𝓔 (λ d → e)
 constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v
@@ -178,60 +227,6 @@ constant-functions-are-continuous 𝓓 𝓔 e I α δ = u , v
   v y l  = ∥∥-rec (prop-valuedness 𝓔 e y)
                   (λ (i : I) → l i)
                   (inhabited-if-Directed 𝓓 α δ)
-
-\end{code}
-
-TO DO
-
-\begin{code}
-
-∐-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
-                (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
-              → ((i : I) → α i ⊑⟨ 𝓓 ⟩ β i)
-              → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
-∐-is-monotone 𝓓 {I} {α} {β} δ ε l = ∐-is-lowerbound-of-upperbounds 𝓓 δ (∐ 𝓓 ε) γ
- where
-  γ : (i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
-  γ i = α i   ⊑⟨ 𝓓 ⟩[ l i ]
-        β i   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε i ]
-        ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
-
--- TODO: Unused?
-{-
-double-∐-swap : {I J : 𝓥 ̇ } (𝓓 : DCPO {𝓤} {𝓣}) {γ : I × J → ⟨ 𝓓 ⟩}
-              → (δᵢ : (i : I) → is-Directed 𝓓 (λ (j : J) → γ (i , j)))
-              → (δⱼ : (j : J) → is-Directed 𝓓 (λ (i : I) → γ (i , j)))
-              → (ε₁ : is-Directed 𝓓 (λ (j : J) → ∐ 𝓓 (δⱼ j)))
-              → (ε₂ : is-Directed 𝓓 (λ (i : I) → ∐ 𝓓 (δᵢ i)))
-              → ∐ 𝓓 ε₁ ≡ ∐ 𝓓 ε₂
-double-∐-swap {𝓤} {𝓣} {I} {J} 𝓓 {γ} δᵢ δⱼ ε₁ ε₂ =
- antisymmetry 𝓓 (∐ 𝓓 ε₁) (∐ 𝓓 ε₂) u v
-  where
-   u : ∐ 𝓓 ε₁ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε₂
-   u = ∐-is-lowerbound-of-upperbounds 𝓓 ε₁ (∐ 𝓓 ε₂) w
-    where
-     w : (j : J) → ∐ 𝓓 (δⱼ j) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε₂
-     w j = ∐-is-lowerbound-of-upperbounds 𝓓 (δⱼ j) (∐ 𝓓 ε₂) z
-      where
-       z : (i : I) → γ (i , j) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε₂
-       z i = γ (i , j)  ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 (δᵢ i) j ]
-             ∐ 𝓓 (δᵢ i) ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε₂ i ]
-             ∐ 𝓓 ε₂     ∎⟨ 𝓓 ⟩
-   v : ∐ 𝓓 ε₂ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε₁
-   v = ∐-is-lowerbound-of-upperbounds 𝓓 ε₂ (∐ 𝓓 ε₁) w
-    where
-     w : (i : I) → ∐ 𝓓 (δᵢ i) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε₁
-     w i = ∐-is-lowerbound-of-upperbounds 𝓓 (δᵢ i) (∐ 𝓓 ε₁) z
-      where
-       z : (j : J) → γ (i , j) ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε₁
-       z j = γ (i , j)  ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 (δⱼ j) i ]
-             ∐ 𝓓 (δⱼ j) ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε₁ j ]
-             ∐ 𝓓 ε₁     ∎⟨ 𝓓 ⟩
--}
-
-\end{code}
-
-\begin{code}
 
 id-is-monotone : (𝓓 : DCPO {𝓤} {𝓣}) → is-monotone 𝓓 𝓓 id
 id-is-monotone 𝓓 x y l = l
@@ -249,41 +244,33 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
                 → is-continuous 𝓓 𝓔 f
                 → is-continuous 𝓔 𝓔' g
                 → is-continuous 𝓓 𝓔' (g ∘ f)
-∘-is-continuous 𝓓 𝓔 𝓔' f g cf cg = γ
+∘-is-continuous 𝓓 𝓔 𝓔' f g cf cg = continuity-criterion 𝓓 𝓔' (g ∘ f) m ψ
  where
-  -- abstract -- (TODO)
-   -- γ : is-continuous 𝓓 𝓔' (g ∘ f)
-   γ = continuity-criterion 𝓓 𝓔' (g ∘ f) m ψ
-    where
-     mf : is-monotone 𝓓 𝓔 f
-     mf = monotone-if-continuous 𝓓 𝓔 (f , cf)
-     mg : is-monotone 𝓔 𝓔' g
-     mg = monotone-if-continuous 𝓔 𝓔' (g , cg)
-     m : is-monotone 𝓓 𝓔' (g ∘ f)
-     m x y l = mg (f x) (f y) (mf x y l)
-     ψ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
-       → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
-     ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]
-               g (∐ 𝓔 εf)    ⊑⟨ 𝓔' ⟩[ l₂ ]
-               ∐ 𝓔' εg       ⊑⟨ 𝓔' ⟩[ l₃ ]
-               ∐ 𝓔' ε        ∎⟨ 𝓔' ⟩
-      where
-       ε : is-Directed 𝓔' (g ∘ f ∘ α)
-       ε = image-is-directed 𝓓 𝓔' m δ
-       εf : is-Directed 𝓔 (f ∘ α)
-       εf = image-is-directed' 𝓓 𝓔 (f , cf) δ
-       εg : is-Directed 𝓔' (g ∘ f ∘ α)
-       εg = image-is-directed' 𝓔 𝓔' (g , cg) εf
-       -- TODO: Remove typings
-       -- l₁ : g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ g (∐ 𝓔 εf)
-       l₁ = mg (f (∐ 𝓓 δ)) (∐ 𝓔 εf) h
-        where
-         h : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 εf
-         h = continuous-∐-⊑ 𝓓 𝓔 (f , cf) δ
-       -- l₂ : g (∐ 𝓔 εf) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' εg
-       l₂ = continuous-∐-⊑ 𝓔 𝓔' (g , cg) εf
-       -- l₃ : ∐ 𝓔' εg ⊑⟨ 𝓔' ⟩ ∐ 𝓔' ε
-       l₃ = ≡-to-⊑ 𝓔' (∐-independent-of-directedness-witness 𝓔' εg ε)
+  mf : is-monotone 𝓓 𝓔 f
+  mf = monotone-if-continuous 𝓓 𝓔 (f , cf)
+  mg : is-monotone 𝓔 𝓔' g
+  mg = monotone-if-continuous 𝓔 𝓔' (g , cg)
+  m : is-monotone 𝓓 𝓔' (g ∘ f)
+  m x y l = mg (f x) (f y) (mf x y l)
+  ψ : (I : 𝓥 ̇) (α : I → ⟨ 𝓓 ⟩) (δ : is-Directed 𝓓 α)
+    → g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩ ∐ 𝓔' (image-is-directed 𝓓 𝓔' m δ)
+  ψ I α δ = g (f (∐ 𝓓 δ)) ⊑⟨ 𝓔' ⟩[ l₁ ]
+            g (∐ 𝓔 εf)    ⊑⟨ 𝓔' ⟩[ l₂ ]
+            ∐ 𝓔' εg       ⊑⟨ 𝓔' ⟩[ l₃ ]
+            ∐ 𝓔' ε        ∎⟨ 𝓔' ⟩
+   where
+    ε : is-Directed 𝓔' (g ∘ f ∘ α)
+    ε = image-is-directed 𝓓 𝓔' m δ
+    εf : is-Directed 𝓔 (f ∘ α)
+    εf = image-is-directed' 𝓓 𝓔 (f , cf) δ
+    εg : is-Directed 𝓔' (g ∘ f ∘ α)
+    εg = image-is-directed' 𝓔 𝓔' (g , cg) εf
+    l₁ = mg (f (∐ 𝓓 δ)) (∐ 𝓔 εf) h
+     where
+      h : f (∐ 𝓓 δ) ⊑⟨ 𝓔 ⟩ ∐ 𝓔 εf
+      h = continuous-∐-⊑ 𝓓 𝓔 (f , cf) δ
+    l₂ = continuous-∐-⊑ 𝓔 𝓔' (g , cg) εf
+    l₃ = ≡-to-⊑ 𝓔' (∐-independent-of-directedness-witness 𝓔' εg ε)
 
 ∘-is-continuous₃ : {𝓦₁ 𝓣₁ 𝓦₂ 𝓣₂ 𝓦₃ 𝓣₃ 𝓦₄ 𝓣₄ : Universe}
                    (𝓓₁ : DCPO {𝓦₁} {𝓣₁}) (𝓓₂ : DCPO {𝓦₂} {𝓣₂})
@@ -294,12 +281,9 @@ id-is-continuous 𝓓 = continuity-criterion 𝓓 𝓓 id (id-is-monotone 𝓓) 
                  → is-continuous 𝓓₂ 𝓓₃ g
                  → is-continuous 𝓓₃ 𝓓₄ h
                  → is-continuous 𝓓₁ 𝓓₄ (h ∘ g ∘ f)
-∘-is-continuous₃ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f g h cf cg ch = γ
- where
-  -- abstract -- (TODO)
-   -- γ : is-continuous 𝓓₁ 𝓓₄ (h ∘ g ∘ f)
-   γ = ∘-is-continuous 𝓓₁ 𝓓₂ 𝓓₄ f (h ∘ g) cf
-        (∘-is-continuous 𝓓₂ 𝓓₃ 𝓓₄ g h cg ch)
+∘-is-continuous₃ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f g h cf cg ch =
+ ∘-is-continuous 𝓓₁ 𝓓₂ 𝓓₄ f (h ∘ g) cf
+                 (∘-is-continuous 𝓓₂ 𝓓₃ 𝓓₄ g h cg ch)
 
 DCPO-∘ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) (𝓔' : DCPO {𝓦} {𝓦'})
        → DCPO[ 𝓓 , 𝓔 ] → DCPO[ 𝓔 , 𝓔' ] → DCPO[ 𝓓 , 𝓔' ]
@@ -312,37 +296,64 @@ DCPO-∘₃ : {𝓦₁ 𝓣₁ 𝓦₂ 𝓣₂ 𝓦₃ 𝓣₃ 𝓦₄ 𝓣₄ :
         → DCPO[ 𝓓₁ , 𝓓₄ ]
 DCPO-∘₃ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f g h = DCPO-∘ 𝓓₁ 𝓓₂ 𝓓₄ f (DCPO-∘ 𝓓₂ 𝓓₃ 𝓓₄ g h)
 
-DCPO-∘₃-underlying-function : {𝓦₁ 𝓣₁ 𝓦₂ 𝓣₂ 𝓦₃ 𝓣₃ 𝓦₄ 𝓣₄ : Universe}
-                              (𝓓₁ : DCPO {𝓦₁} {𝓣₁}) (𝓓₂ : DCPO {𝓦₂} {𝓣₂})
-                              (𝓓₃ : DCPO {𝓦₃} {𝓣₃}) (𝓓₄ : DCPO {𝓦₄} {𝓣₄})
-                              (f : DCPO[ 𝓓₁ , 𝓓₂ ]) (g : DCPO[ 𝓓₂ , 𝓓₃ ])
-                              (h : DCPO[ 𝓓₃ , 𝓓₄ ])
-                            → [ 𝓓₁ , 𝓓₄ ]⟨ DCPO-∘₃ 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f g h ⟩
-                            ≡ [ 𝓓₃ , 𝓓₄ ]⟨ h ⟩ ∘ [ 𝓓₂ , 𝓓₃ ]⟨ g ⟩
-                               ∘ [ 𝓓₁ , 𝓓₂ ]⟨ f ⟩
-DCPO-∘₃-underlying-function 𝓓₁ 𝓓₂ 𝓓₃ 𝓓₄ f g h = refl
-
 \end{code}
+
+Defining isomorphisms of (pointed) dcpos.
 
 \begin{code}
 
-∐-family-≡ : (𝓓 : DCPO {𝓤} {𝓣}) {I : 𝓥 ̇ } {α β : I → ⟨ 𝓓 ⟩}
-             (p : α ≡ β) (δ : is-Directed 𝓓 α)
-           → ∐ 𝓓 {I} {α} δ ≡ ∐ 𝓓 {I} {β} (transport (is-Directed 𝓓) p δ)
-∐-family-≡ 𝓓 {I} {α} {α} refl δ = refl
+_≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+𝓓 ≃ᵈᶜᵖᵒ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , Σ g ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩) ,
+                ((d : ⟨ 𝓓 ⟩) → g (f d) ≡ d)
+              × ((e : ⟨ 𝓔 ⟩) → f (g e) ≡ e)
+              × is-continuous 𝓓 𝓔 f
+              × is-continuous 𝓔 𝓓 g
+
+_≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
+𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⁻ ⟩ → ⟨ 𝓔 ⁻ ⟩) , Σ g ꞉ (⟨ 𝓔 ⁻ ⟩ → ⟨ 𝓓 ⁻ ⟩) ,
+                ((d : ⟨ 𝓓 ⁻ ⟩) → g (f d) ≡ d)
+               × ((e : ⟨ 𝓔 ⁻ ⟩) → f (g e) ≡ e)
+               × is-continuous (𝓓 ⁻) (𝓔 ⁻) f
+               × is-continuous (𝓔 ⁻) (𝓓 ⁻) g
+               × is-strict 𝓓 𝓔 f
+               × is-strict 𝓔 𝓓 g
+
+≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
+                → (𝓓 ⁻) ≃ᵈᶜᵖᵒ (𝓔 ⁻) → 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔
+≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ 𝓓 𝓔 (f , g , gf , fg , cf , cg) =
+ f , g , gf , fg , cf , cg , sf , sg
+  where
+   sf : is-strict 𝓓 𝓔 f
+   sf = antisymmetry (𝓔 ⁻) (f (⊥ 𝓓)) (⊥ 𝓔) γ (⊥-is-least 𝓔 (f (⊥ 𝓓)))
+    where
+     γ = f (⊥ 𝓓)     ⊑⟨ 𝓔 ⁻ ⟩[ l₁ ]
+         f (g (⊥ 𝓔)) ⊑⟨ 𝓔 ⁻ ⟩[ l₂ ]
+         ⊥ 𝓔         ∎⟨ 𝓔 ⁻ ⟩
+      where
+       l₁ = monotone-if-continuous (𝓓 ⁻) (𝓔 ⁻) (f , cf) (⊥ 𝓓) (g (⊥ 𝓔))
+             (⊥-is-least 𝓓 (g (⊥ 𝓔)))
+       l₂ = ≡-to-⊑ (𝓔 ⁻) (fg (⊥ 𝓔))
+   sg : is-strict 𝓔 𝓓 g
+   sg = antisymmetry (𝓓 ⁻) (g (⊥ 𝓔)) (⊥ 𝓓) γ (⊥-is-least 𝓓 (g (⊥ 𝓔)))
+    where
+     γ = g (⊥ 𝓔)     ⊑⟨ 𝓓 ⁻ ⟩[ l₁ ]
+         g (f (⊥ 𝓓)) ⊑⟨ 𝓓 ⁻ ⟩[ l₂ ]
+         ⊥ 𝓓         ∎⟨ 𝓓 ⁻ ⟩
+      where
+       l₁ = monotone-if-continuous (𝓔 ⁻) (𝓓 ⁻) (g , cg) (⊥ 𝓔) (f (⊥ 𝓓))
+             (⊥-is-least 𝓔 (f (⊥ 𝓓)))
+       l₂ = ≡-to-⊑ (𝓓 ⁻) (gf (⊥ 𝓓))
+
+is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
+is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
 
 \end{code}
 
-\begin{code}
+Pointed dcpos have semidirected & subsingleton suprema and these are preserved
+by maps that are both strict and continuous.
 
-to-continuous-function-≡ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
-                           {f g : DCPO[ 𝓓 , 𝓔 ]}
-                         → [ 𝓓 , 𝓔 ]⟨ f ⟩ ∼ [ 𝓓 , 𝓔 ]⟨ g ⟩
-                         → f ≡ g
-to-continuous-function-≡ 𝓓 𝓔 h =
- to-subtype-≡ (being-continuous-is-prop 𝓓 𝓔) (dfunext fe h)
-
-\end{code}
+This is used to be prove (in DcpoLifting.lagda) that the lifting yields the free
+pointed dcpo on a set.
 
 \begin{code}
 
@@ -450,10 +461,6 @@ preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str {I} {α
                 y       ∎⟪ 𝓔 ⟫
     h (inr i) = y-is-ub i
 
-\end{code}
-
-\begin{code}
-
 subsingleton-indexed-is-semidirected : (𝓓 : DCPO {𝓤} {𝓣})
                                        {I : 𝓥 ̇ } (α : I → ⟨ 𝓓 ⟩)
                                      → is-prop I
@@ -542,57 +549,5 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
              → α ≡ β
              → ∐ˢˢ 𝓓 α ρ ≡ ∐ˢˢ 𝓓 β ρ
 ∐ˢˢ-family-≡ 𝓓 ρ refl = refl
-
-\end{code}
-
-\begin{code}
-
-_≃ᵈᶜᵖᵒ_ : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-𝓓 ≃ᵈᶜᵖᵒ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓔 ⟩) , Σ g ꞉ (⟨ 𝓔 ⟩ → ⟨ 𝓓 ⟩) ,
-                ((d : ⟨ 𝓓 ⟩) → g (f d) ≡ d)
-              × ((e : ⟨ 𝓔 ⟩) → f (g e) ≡ e)
-              × is-continuous 𝓓 𝓔 f
-              × is-continuous 𝓔 𝓓 g
-
-_≃ᵈᶜᵖᵒ⊥_ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓤' ⊔ 𝓣' ̇
-𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔 = Σ f ꞉ (⟨ 𝓓 ⁻ ⟩ → ⟨ 𝓔 ⁻ ⟩) , Σ g ꞉ (⟨ 𝓔 ⁻ ⟩ → ⟨ 𝓓 ⁻ ⟩) ,
-                ((d : ⟨ 𝓓 ⁻ ⟩) → g (f d) ≡ d)
-               × ((e : ⟨ 𝓔 ⁻ ⟩) → f (g e) ≡ e)
-               × is-continuous (𝓓 ⁻) (𝓔 ⁻) f
-               × is-continuous (𝓔 ⁻) (𝓓 ⁻) g
-               × is-strict 𝓓 𝓔 f
-               × is-strict 𝓔 𝓓 g
-
-≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) (𝓔 : DCPO⊥ {𝓤'} {𝓣'})
-                → (𝓓 ⁻) ≃ᵈᶜᵖᵒ (𝓔 ⁻) → 𝓓 ≃ᵈᶜᵖᵒ⊥ 𝓔
-≃ᵈᶜᵖᵒ-to-≃ᵈᶜᵖᵒ⊥ 𝓓 𝓔 (f , g , gf , fg , cf , cg) =
- f , g , gf , fg , cf , cg , sf , sg
-  where
-   sf : is-strict 𝓓 𝓔 f
-   sf = antisymmetry (𝓔 ⁻) (f (⊥ 𝓓)) (⊥ 𝓔) γ (⊥-is-least 𝓔 (f (⊥ 𝓓)))
-    where
-     γ = f (⊥ 𝓓)     ⊑⟨ 𝓔 ⁻ ⟩[ l₁ ]
-         f (g (⊥ 𝓔)) ⊑⟨ 𝓔 ⁻ ⟩[ l₂ ]
-         ⊥ 𝓔         ∎⟨ 𝓔 ⁻ ⟩
-      where
-       l₁ = monotone-if-continuous (𝓓 ⁻) (𝓔 ⁻) (f , cf) (⊥ 𝓓) (g (⊥ 𝓔))
-             (⊥-is-least 𝓓 (g (⊥ 𝓔)))
-       l₂ = ≡-to-⊑ (𝓔 ⁻) (fg (⊥ 𝓔))
-   sg : is-strict 𝓔 𝓓 g
-   sg = antisymmetry (𝓓 ⁻) (g (⊥ 𝓔)) (⊥ 𝓓) γ (⊥-is-least 𝓓 (g (⊥ 𝓔)))
-    where
-     γ = g (⊥ 𝓔)     ⊑⟨ 𝓓 ⁻ ⟩[ l₁ ]
-         g (f (⊥ 𝓓)) ⊑⟨ 𝓓 ⁻ ⟩[ l₂ ]
-         ⊥ 𝓓         ∎⟨ 𝓓 ⁻ ⟩
-      where
-       l₁ = monotone-if-continuous (𝓔 ⁻) (𝓓 ⁻) (g , cg) (⊥ 𝓔) (f (⊥ 𝓓))
-             (⊥-is-least 𝓔 (f (⊥ 𝓓)))
-       l₂ = ≡-to-⊑ (𝓓 ⁻) (gf (⊥ 𝓓))
-\end{code}
-
-\begin{code}
-
-is-a-non-trivial-pointed-dcpo : (𝓓 : DCPO⊥ {𝓤} {𝓣}) → 𝓤 ̇
-is-a-non-trivial-pointed-dcpo 𝓓 = ∃ x ꞉ ⟪ 𝓓 ⟫ , x ≢ ⊥ 𝓓
 
 \end{code}
