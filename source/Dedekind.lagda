@@ -400,8 +400,9 @@ NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
                  o , l)) ,
 
              (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-              → to-Σ-≡ (to-subtype-≡ being-lower-real-is-prop refl ,
-                        being-dedekind-is-prop (L , Li , Ll , Lo) _ _)) ,
+              → to-subtype-≡ being-dedekind-is-prop
+                  (to-subtype-≡ being-lower-real-is-prop
+                     refl)) ,
 
              (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
               → to-subtype-≡ (λ (L , U) → ×₆-is-prop
@@ -411,7 +412,7 @@ NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
                                            (being-lower-open-is-prop U)
                                            (being-ordered-is-prop L U)
                                            (being-located-is-prop L U))
-                              refl))
+                  refl))
 \end{code}
 
 And there is a further set of axioms for defining ℝ, assuming the
@@ -462,8 +463,9 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
                   ordered-criterion L U Ll d , l)) ,
 
               (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-               → to-Σ-≡ (to-subtype-≡ being-lower-real-is-prop refl ,
-                         being-dedekind-is-prop (L , Li , Ll , Lo) _ _)) ,
+               → to-subtype-≡ being-dedekind-is-prop
+                   (to-subtype-≡ being-lower-real-is-prop
+                      refl)) ,
 
               (λ ((L , U) , Li , Lo , Ui , Uo , o , l)
                → to-subtype-≡ (λ (L , U) → ×₈-is-prop
@@ -475,7 +477,7 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
                                             (being-lower-open-is-prop U)
                                             (being-disjoint-is-prop fe L U)
                                             (being-located-is-prop L U))
-                               refl))
+                   refl))
 \end{code}
 
 We now consider an alternative definition of the Dedekind reals
@@ -567,10 +569,10 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
                                     → is-lower L
                                     → is-located L
                                     → are-ordered L (candidate-upper-section L)
- candidate-upper-section-is-ordered L L-is-lower b p q p-is-in-L q-is-in-U = γ
+ candidate-upper-section-is-ordered L L-is-lower located p q p-is-in-L q-is-in-U = γ
     where
      f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
-     f (r , i , r-is-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (b r q i)
+     f (r , i , r-is-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (located r q i)
       where
        g : (r ∈ L) + (q ∉ L) → p < q
        g (inl r-is-in-L)     = 𝟘-elim (r-is-not-in-L r-is-in-L)
@@ -600,7 +602,7 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
        III = located p p' i
 
        IV : (p ∈ L) + (p' ∉ L) → p ∈ L ∨ q ∈ candidate-upper-section L
-       IV (inl p-is-in-L) = ∣ inl p-is-in-L ∣
+       IV (inl p-is-in-L)      = ∣ inl p-is-in-L ∣
        IV (inr p'-is-not-in-L) = ∣ inr ∣ (p' , j , p'-is-not-in-L) ∣ ∣
 
  candidate-upper-section-is-inhabited : (L : 𝓟 ℚ)
