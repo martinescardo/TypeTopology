@@ -29,6 +29,8 @@ Here we adopt HoTT/UF as our type-theoretic foundation, which, in
 particular, is well-suited to discuss the distinction between data and
 property.
 
+See also the discussion at https://twitter.com/EscardoMartin/status/1473393261012295681
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -712,11 +714,6 @@ dedekind-agrees-with-troelstra ϕ = γ
   γ = qinveq f (g ,
                (λ (l , h) → to-subtype-≡ being-dedekind-is-prop refl) ,
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
-\end{code}
-
-\begin{code}
-
-
 \end{code}
 
 We now consider consequences of excluded middle.
