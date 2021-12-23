@@ -23,13 +23,15 @@ open import UF-Miscelanea
 open import PCF pt
 
 open import Dcpo pt fe 𝓤₀
-open import DcpoConstructions pt fe 𝓤₀
-open IfZeroDenotationalSemantics pe
--- open DcpoConstructionsGeneral 𝓤₀
-open import DcpoLeastFixedPoint pt fe
-open import DcpoLifting pt fe 𝓤₀ pe
-open import DcpoBasics pt fe 𝓤₀
 open import DcpoExponential pt fe 𝓤₀
+open import DcpoMiscelanea pt fe 𝓤₀
+
+open import DcpoPCFCombinators pt fe 𝓤₀
+open IfZeroDenotationalSemantics pe
+
+open import DcpoLeastFixedPoint pt fe
+
+open import DcpoLifting pt fe 𝓤₀ pe
 
 open import Lifting 𝓤₀
 open import LiftingMonad 𝓤₀ hiding (μ)

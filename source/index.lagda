@@ -93,9 +93,9 @@ import PartialElements
 import UF
 import Types2019
 import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
-import PCFModules    -- by Tom de Jong
-import Dyadics       -- by Tom de Jong
-import CircleModules -- by Tom de Jong
+import PCFModules    -- By Tom de Jong
+import Dyadics       -- By Tom de Jong
+import CircleModules -- By Tom de Jong
 
 \end{code}
 
@@ -311,9 +311,15 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
-import DcpoConstructions
-import Dcpo
-import Dcpos
+import Dcpo                         -- By Tom de Jong and Martin Escardo
+import DcpoBilimits                 -- By Tom de Jong
+import DcpoBilimitsSequential       -- "
+import DcpoDinfinity
+import DcpoExponential
+import DcpoLeastFixedPoint
+import DcpoMiscelanea
+import DcpoPCFCombinators
+import Dcpos                        -- "
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DisconnectedTypes
@@ -424,8 +430,8 @@ import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import PartialElements
-import PCF
-import PCFModules
+import PCF                         -- By Tom de Jong and Martin Escardo
+import PCFModules                  -- By Tom de Jong
 import Pi
 import Plus
 import PlusOneLC
@@ -436,7 +442,7 @@ import PropTychonoff
 import QuasiDecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
-import ScottModelOfPCF
+import ScottModelOfPCF             -- By Tom de Jong
 import Sequence
 import sigma-frame
 import Sigma
