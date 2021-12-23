@@ -19,8 +19,8 @@ discussion.
 
 We also discuss a version of the Dedekind reals proposed by Troelstra.
 To show that it agrees with the usual one, we further assume that _<_
-is dense, upper open, and satisfies p ≢ q → ¬(q < p) → p < q (which
-the type of rationals does).
+is dense, upper open, and satisfies p ≢ q → p ≮ q → p < q (which the
+type of rationals does).
 
 We also discuss what happens when we assume the principle of
 excluded middle.
