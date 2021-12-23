@@ -71,6 +71,7 @@ record further-properties-of-ℚ-and-its-order : 𝓣 ̇ where
   transitivity    : (p q r : ℚ) → p < q → q < r → p < r
   order-criterion : (p q : ℚ) → p ≢ q → ¬(q < p) → p < q
   cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r)
+  tightness       : (p q : ℚ) → ¬(q < p) → ¬(p < q) → p ≡ q
   ℚ-is-lower-open : (q : ℚ) → ∃ p ꞉ ℚ , (p < q)
   ℚ-is-upper-open : (p : ℚ) → ∃ q ꞉ ℚ , (p < q)
 
@@ -198,7 +199,7 @@ technical-lemma L U L' U'
     III : q' ∈ L ∨ q ∈ U
     III = LU-located q' q l
 
-    IV : ¬ (q' ∈ L)
+    IV : q' ∉ L
     IV j = order-is-irrefl q' b
      where
       a : q' ∈ L'
@@ -837,10 +838,43 @@ module rational-reals (ϕ : further-properties-of-ℚ-and-its-order) where
  ℚ-to-ℝ : ℚ → ℝ
  ℚ-to-ℝ q = ℚ-to-ℝᴸ q , ℚ-to-ℝᴸ-is-dedekind q
 
-{- TODO.
+ ℚ-to-ℝᴸ-is-embedding : is-embedding ℚ-to-ℝᴸ
+ ℚ-to-ℝᴸ-is-embedding (L , L-is-dedekind) (p , a) (q , b) = γ
+  where
+   I : ℚ-to-ℝᴸ p ≡ ℚ-to-ℝᴸ q
+   I = a ∙ b ⁻¹
+
+   II : (λ r → (r < p) , _) ≡ (λ r → (r < q) , _)
+   II = ap pr₁ I
+
+   III : (λ r → r < p) ≡ (λ r → r < q)
+   III = ap (λ f r → pr₁ (f r)) II
+
+   A : (r : ℚ) → r < p → r < q
+   A r = idtofun (r < p) (r < q) (happly III r)
+
+   B : (r : ℚ) → r < q → r < p
+   B r = idtofun (r < q) (r < p) (happly (III ⁻¹) r)
+
+   IV-A : ¬ (q < p)
+   IV-A less = order-is-irrefl q (A q less)
+
+   IV-B : ¬ (p < q)
+   IV-B less = order-is-irrefl p (B p less)
+
+   V : p ≡ q
+   V = tightness p q IV-A IV-B
+
+   γ : (p , a) ≡ (q , b)
+   γ = to-subtype-≡ (λ _ → ℝᴸ-is-set) V
+
  ℚ-to-ℝ-is-embedding : is-embedding ℚ-to-ℝ
- ℚ-to-ℝ-is-embedding = {!!}
--}
+ ℚ-to-ℝ-is-embedding = embedding-factor ℚ-to-ℝ pr₁
+                        ℚ-to-ℝᴸ-is-embedding
+                        (pr₁-is-embedding being-dedekind-is-prop)
+  where
+   notice-that : pr₁ ∘ ℚ-to-ℝ ≡ ℚ-to-ℝᴸ
+   notice-that = refl
 
 \end{code}
 
