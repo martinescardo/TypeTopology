@@ -1,8 +1,34 @@
 Tom de Jong, 12 May 2020 - 9 June 2020.
 
+We construct Scott's famous nontrivial pointed dcpo D∞ for which D∞ is
+isomorphic to its own function space.
+
+This formalization is based on Scott's "Continuous lattices"
+(doi:10.1007/BFB0073967), specifically pages 126--128.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+
+\end{code}
+
+We use the flag --experimental-lossy-unification to speed up the type-checking.
+
+This flag was kindly implemented by Andrea Vezzosi upon request.
+
+Documentation for the flag (written by Andrea Vezzosi) can be found here:
+https://agda.readthedocs.io/en/latest/language/lossy-unification.html
+
+The most important takeaway from the documentation is that the flag is sound:
+
+  "[...] if Agda accepts code with the flag enabled it should also accept it
+  without the flag (with enough resources, and possibly needing extra type
+  annotations)."
+
+A related issue (originally opened by Wolfram Kahl in 2015) can be found here:
+https://github.com/agda/agda/issues/1625
+
+\begin{code}
 
 open import SpartanMLTT
 open import UF-FunExt
@@ -20,14 +46,20 @@ open PropositionalTruncation pt
 open import UF-Base
 
 open import Dcpo pt fe 𝓤₀
-open import DcpoBasics pt fe 𝓤₀
 open import DcpoExponential pt fe 𝓤₀
--- open import DcpoLimits pt fe 𝓤₀ 𝓤₁ 𝓤₁ hiding (𝓓∞)
-open import DcpoLimitsSequential pt fe 𝓤₁ 𝓤₁
 open import DcpoLifting pt fe 𝓤₀ pe
+open import DcpoMiscelanea pt fe 𝓤₀
+
+open import DcpoBilimitsSequential pt fe 𝓤₁ 𝓤₁
 
 open import NaturalsOrder
 open import NaturalsAddition renaming (_+_ to _+'_)
+
+\end{code}
+
+We start by defining the ℕ-indexed diagram of iterated exponentials.
+
+\begin{code}
 
 𝓓⊥ : ℕ → DCPO⊥ {𝓤₁} {𝓤₁}
 𝓓⊥ zero     = 𝓛-DCPO⊥ {𝓤₀} {𝟙{𝓤₀}} (props-are-sets 𝟙-is-prop)
@@ -175,10 +207,14 @@ open import NaturalsAddition renaming (_+_ to _+'_)
    m : is-monotone (𝓓 (succ n)) (𝓓 (succ n)) f
    m = monotone-if-continuous (𝓓 (succ n)) (𝓓 (succ n)) (f , c)
 
+\end{code}
+
+With the diagram defined, we consider its bilimit D∞.
+
+\begin{code}
+
 open SequentialDiagram
-      𝓓
-      ε
-      π
+      𝓓 ε π
       επ-deflation
       ε-section-of-π
       ε-is-continuous
@@ -214,10 +250,10 @@ open SequentialDiagram
     γ : ([ 𝓓 n , 𝓓 n ]⟨ π (succ n) h ⟩) ∼ π∞ n ∘ f ∘ ε∞ n
     γ x = [ 𝓓 n , 𝓓 n ]⟨ (π (succ n) h) ⟩ x                       ≡⟨ e₁   ⟩
           (π n ∘ [ 𝓓 (succ n) , 𝓓 (succ n) ]⟨ h ⟩ ∘ ε n) x        ≡⟨ refl ⟩
-          (π n ∘ π∞ (succ n) ∘ f') x                              ≡⟨ e₂    ⟩
-          (π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n) ∘ f') x       ≡⟨ e₃    ⟩
-          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε n) x                        ≡⟨ e₄    ⟩
-          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n)) x ≡⟨ e₅    ⟩
+          (π n ∘ π∞ (succ n) ∘ f') x                              ≡⟨ e₂   ⟩
+          (π⁺ {n} {succ n} (≤-succ n) ∘ π∞ (succ n) ∘ f') x       ≡⟨ e₃   ⟩
+          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε n) x                        ≡⟨ e₄   ⟩
+          (π∞ n ∘ f ∘ ε∞ (succ n) ∘ ε⁺ {n} {succ n} (≤-succ n)) x ≡⟨ e₅   ⟩
           (π∞ n ∘ f ∘ ε∞ n) x                                     ∎
            where
             f' : ⟨ 𝓓 n ⟩ → ⟨ 𝓓∞ ⟩
@@ -245,6 +281,9 @@ open DcpoCone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) π-exp π-exp-is-continuous π-e
 π-exp∞' = π-exp∞ , π-exp∞-is-continuous
 
 \end{code}
+
+The point is to prove that the map π-exp∞ : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟩ is an
+isomorphism.
 
 \begin{code}
 
@@ -310,6 +349,9 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
 
 \end{code}
 
+The map ε-exp∞ : ⟨ 𝓓∞ ⟩ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ is going to be the desired inverse of
+π-exp∞.
+
 \begin{code}
 
 ε-exp-family : ⟨ 𝓓∞ ⟩ → ℕ → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
@@ -369,6 +411,29 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
 π-exp-family : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ → ℕ → ⟨ 𝓓∞ ⟩
 π-exp-family φ n = ε∞ (succ n) (π-exp (succ n) φ)
 
+\end{code}
+
+In the code below we would like to write things as
+ x ⊑⟨ 𝓓∞ ⟩[ u ]
+ y ⊑⟨ 𝓓∞ ⟩[ v ]
+ z ∎⟨ 𝓓∞ ⟩
+
+However, Agda has trouble figuring out some implicit arguments. (I believe
+because it can't 'see' the additional witnesses (of continuity, etc.) that the
+underlying functions of x, y and z are equipped with.)
+
+Not using the _⊑⟨_⟩[_] syntax in favour of using transitivity directly and
+explicitly naming all its arguments solves the above problem, but it doesn't
+read very well.
+
+Instead, we solve the problem by noting that the order on 𝓓∞ is pointwise and
+that therefore we are really proving that for every i : ℕ we have
+ ⦅ x ⦆ i ⊑⟨ 𝓓 i ⟩[ u i ]
+ ⦅ y ⦆ i ⊑⟨ 𝓓 i ⟩[ v i ]
+ ⦅ z ⦆ i ∎⟨ 𝓓 i ⟩
+
+\begin{code}
+
 π-exp-family-is-directed : (φ : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩)
                          → is-Directed 𝓓∞ (π-exp-family φ)
 π-exp-family-is-directed φ = ∣ 0 ∣ , γ
@@ -405,18 +470,6 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
        ⦅ ε∞-family σ k        ⦆ i ⊑⟨ 𝓓 i ⟩[ lₖ i ]
        ⦅ ε∞-family σ (succ k) ⦆ i ⊑⟨ 𝓓 i ⟩[ reflexivity 𝓓∞ (π-exp-family φ k) i ]
        ⦅ π-exp-family φ k ⦆     i ∎⟨ 𝓓 i ⟩
-      {- TODO: Review
-      lₙ' = π-exp-family φ n     ⊑⟨ 𝓓∞ ⟩[ reflexivity 𝓓∞ (π-exp-family φ n) ]
-            ε∞-family σ (succ n) ⊑⟨ 𝓓∞ ⟩[ lₙ ]
-            ε∞-family σ k        ⊑⟨ 𝓓∞ ⟩[ lₖ ]
-            ε∞-family σ (succ k) ⊑⟨ 𝓓∞ ⟩[ reflexivity 𝓓∞ (π-exp-family φ k) ]
-            π-exp-family φ k     ∎⟨ 𝓓∞ ⟩
-      lₘ' = π-exp-family φ m     ⊑⟨ 𝓓∞ ⟩[ reflexivity 𝓓∞ (π-exp-family φ m) ]
-            ε∞-family σ (succ m) ⊑⟨ 𝓓∞ ⟩[ lₘ ]
-            ε∞-family σ k        ⊑⟨ 𝓓∞ ⟩[ lₖ ]
-            ε∞-family σ (succ k) ⊑⟨ 𝓓∞ ⟩[ reflexivity 𝓓∞ (π-exp-family φ k) ]
-            π-exp-family φ k     ∎⟨ 𝓓∞ ⟩
-      -}
 
 π-exp∞-alt : (φ : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩)
            → π-exp∞ φ ≡ ∐ 𝓓∞ (π-exp-family-is-directed φ)
@@ -447,10 +500,6 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
       h n i = ⦅ π-exp-family φ n     ⦆ i ⊑⟨ 𝓓 i ⟩[ reflexivity 𝓓∞ (π-exp-family φ n) i ]
               ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ δ₁ (succ n) i ]
               ⦅ ∐ 𝓓∞ δ₁              ⦆ i ∎⟨ 𝓓 i ⟩
-
-\end{code}
-
-\begin{code}
 
 π-exp-family-is-monotone : (φ : ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩) {n m : ℕ} → n ≤ m
                          → π-exp-family φ n ⊑⟨ 𝓓∞ ⟩ π-exp-family φ m
@@ -501,6 +550,9 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
    u₃ = reflexivity 𝓓∞ ([ 𝓓∞ , 𝓓∞ ]⟨ ε-exp-family τ n ⟩ ρ)
 
 \end{code}
+
+Finally, we have established enough material to prove that ε-exp∞ is the inverse
+of π-exp∞.
 
 \begin{code}
 
@@ -568,17 +620,14 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
      l₂ = ∐-is-lowerbound-of-upperbounds 𝓓∞ δ₅ (∐ 𝓓∞ δ₄) γ
       where
        γ : is-upperbound (underlying-order 𝓓∞) (∐ 𝓓∞ δ₄) (ε∞-family σ)
-       γ n i = ⦅ ε∞-family σ n        ⦆ i ⊑⟨ 𝓓 i ⟩[ u i                           ]
-               ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ≡-to-⊑ 𝓓∞ ((r n) ⁻¹) i        ]
-               ⦅ f n n                ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ (δ₃ n) n i ]
-               ⦅ ∐ 𝓓∞ (δ₃ n)          ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ δ₄ n i     ]
-               ⦅ ∐ 𝓓∞ δ₄              ⦆ i ∎⟨ 𝓓 i ⟩
-        where
-         u = ε∞-family-is-monotone σ n (succ n) (≤-succ n)
-
-\end{code}
-
-\begin{code}
+       γ n i =
+        ⦅ ε∞-family σ n        ⦆ i ⊑⟨ 𝓓 i ⟩[ u i                           ]
+        ⦅ ε∞-family σ (succ n) ⦆ i ⊑⟨ 𝓓 i ⟩[ ≡-to-⊑ 𝓓∞ ((r n) ⁻¹) i        ]
+        ⦅ f n n                ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ (δ₃ n) n i ]
+        ⦅ ∐ 𝓓∞ (δ₃ n)          ⦆ i ⊑⟨ 𝓓 i ⟩[ ∐-is-upperbound 𝓓∞ δ₄ n i     ]
+        ⦅ ∐ 𝓓∞ δ₄              ⦆ i ∎⟨ 𝓓 i ⟩
+         where
+          u = ε∞-family-is-monotone σ n (succ n) (≤-succ n)
 
 π-exp∞-section-of-ε-exp∞ : ε-exp∞ ∘ π-exp∞ ∼ id
 π-exp∞-section-of-ε-exp∞ φ =
@@ -656,11 +705,10 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
      δ₅' : is-semidirected (underlying-order 𝓔) (λ n → f' n n)
      δ₅' n m = ∣ n +' m , uₙ  , uₘ ∣
       where
-       abstract -- TODO
-        uₙ : f' n n ⊑⟨ 𝓔 ⟩ f' (n +' m) (n +' m)
-        uₙ = f'-mon n (n +' m) n (n +' m) (≤-+ n m) (≤-+ n m)
-        uₘ : f' m m ⊑⟨ 𝓔 ⟩ f' (n +' m) (n +' m)
-        uₘ = f'-mon m (n +' m) m (n +' m) (≤-+' n m) (≤-+' n m)
+       uₙ : f' n n ⊑⟨ 𝓔 ⟩ f' (n +' m) (n +' m)
+       uₙ = f'-mon n (n +' m) n (n +' m) (≤-+ n m) (≤-+ n m)
+       uₘ : f' m m ⊑⟨ 𝓔 ⟩ f' (n +' m) (n +' m)
+       uₘ = f'-mon m (n +' m) m (n +' m) (≤-+' n m) (≤-+' n m)
    δ₆ : is-Directed 𝓔 (λ n → g' n n)
    δ₆ = transport (is-Directed 𝓔) q δ₅
    e₁ = ap ε-exp∞ (π-exp∞-alt φ)
@@ -730,39 +778,42 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
             ε∞π∞-family-is-directed (ϕ (s₁ σ))
        γ : is-upperbound (underlying-order 𝓓∞) ([ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ)
             (pointwise-family 𝓓∞ 𝓓∞ ε∞π∞-family (ϕ (s₁ σ)))
-       γ n i = ⦅ (ε∞ n ∘ π∞ n ∘ ϕ ∘ s₁) σ ⦆ i ⊑⟨ 𝓓 i ⟩[ continuous-∐-⊑ 𝓓∞ 𝓓∞ h δ₁' i ]
-               ⦅ ∐ 𝓓∞ δ₂'                 ⦆ i ⊑⟨ 𝓓 i ⟩[ γ₁ i ]
-               ⦅ [ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ  ⦆ i ∎⟨ 𝓓 i ⟩
-        where
-         h : DCPO[ 𝓓∞ , 𝓓∞ ]
-         h = DCPO-∘₃ 𝓓∞ 𝓓∞ (𝓓 n) 𝓓∞ φ (π∞' n) (ε∞' n)
-         δ₁' : is-Directed 𝓓∞ (pointwise-family 𝓓∞ 𝓓∞ ε∞π∞-family σ)
-         δ₁' = pointwise-family-is-directed 𝓓∞ 𝓓∞ ε∞π∞-family
-               ε∞π∞-family-is-directed σ
-         δ₂' : is-Directed 𝓓∞
-                (λ m → (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ m ∘ π∞ m) σ)
-         δ₂' = image-is-directed' 𝓓∞ 𝓓∞ h δ₁'
-         γ₁ : ∐ 𝓓∞ δ₂' ⊑⟨ 𝓓∞ ⟩ [ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ
-         γ₁ = ∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂'
-               ([ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ) γ₂
-          where
-           γ₂ : is-upperbound (underlying-order 𝓓∞) ([ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ)
+       γ n i =
+        ⦅ (ε∞ n ∘ π∞ n ∘ ϕ ∘ s₁) σ ⦆ i ⊑⟨ 𝓓 i ⟩[ continuous-∐-⊑ 𝓓∞ 𝓓∞ h δ₁' i ]
+        ⦅ ∐ 𝓓∞ δ₂'                 ⦆ i ⊑⟨ 𝓓 i ⟩[ γ₁ i ]
+        ⦅ [ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ  ⦆ i ∎⟨ 𝓓 i ⟩
+         where
+          h : DCPO[ 𝓓∞ , 𝓓∞ ]
+          h = DCPO-∘₃ 𝓓∞ 𝓓∞ (𝓓 n) 𝓓∞ φ (π∞' n) (ε∞' n)
+          δ₁' : is-Directed 𝓓∞ (pointwise-family 𝓓∞ 𝓓∞ ε∞π∞-family σ)
+          δ₁' = pointwise-family-is-directed 𝓓∞ 𝓓∞ ε∞π∞-family
+                ε∞π∞-family-is-directed σ
+          δ₂' : is-Directed 𝓓∞
                  (λ m → (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ m ∘ π∞ m) σ)
-           γ₂ m i = ⦅ (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ m ∘ π∞ m) σ ⦆ i ⊑⟨ 𝓓 i ⟩[ u₁ i ]
-                    ⦅ g n m σ                           ⦆ i ⊑⟨ 𝓓 i ⟩[ u₂ i ]
-                    ⦅ g (n +' m) m σ                    ⦆ i ⊑⟨ 𝓓 i ⟩[ u₃ i ]
-                    ⦅ g (n +' m) (n +' m) σ             ⦆ i ⊑⟨ 𝓓 i ⟩[ u₄ i ]
-                    ⦅ [ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ           ⦆ i ∎⟨ 𝓓 i ⟩
-            where
-             δ₃' : is-Directed 𝓓∞ (pointwise-family 𝓓∞ 𝓓∞ (λ k → g' k k) σ)
-             δ₃' = pointwise-family-is-directed 𝓓∞ 𝓓∞ (λ k → g' k k) δ₆ σ
-             u₁ = reflexivity 𝓓∞ (g n m σ)
-             u₂ = g'-mon n (n +' m) m m (≤-+ n m) (≤-refl m) σ
-             u₃ = g'-mon (n +' m) (n +' m) m (n +' m)
-                   (≤-refl (n +' m)) (≤-+' n m) σ
-             u₄ = ∐-is-upperbound 𝓓∞ δ₃' (n +' m)
+          δ₂' = image-is-directed' 𝓓∞ 𝓓∞ h δ₁'
+          γ₁ : ∐ 𝓓∞ δ₂' ⊑⟨ 𝓓∞ ⟩ [ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ
+          γ₁ = ∐-is-lowerbound-of-upperbounds 𝓓∞ δ₂'
+                ([ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ) γ₂
+           where
+            γ₂ : is-upperbound (underlying-order 𝓓∞) ([ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ)
+                  (λ m → (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ m ∘ π∞ m) σ)
+            γ₂ m i = ⦅ (ε∞ n ∘ π∞ n ∘ ϕ ∘ ε∞ m ∘ π∞ m) σ ⦆ i ⊑⟨ 𝓓 i ⟩[ u₁ i ]
+                     ⦅ g n m σ                           ⦆ i ⊑⟨ 𝓓 i ⟩[ u₂ i ]
+                     ⦅ g (n +' m) m σ                    ⦆ i ⊑⟨ 𝓓 i ⟩[ u₃ i ]
+                     ⦅ g (n +' m) (n +' m) σ             ⦆ i ⊑⟨ 𝓓 i ⟩[ u₄ i ]
+                     ⦅ [ 𝓓∞ , 𝓓∞ ]⟨ ∐ 𝓔 δ₆ ⟩ σ           ⦆ i ∎⟨ 𝓓 i ⟩
+             where
+              δ₃' : is-Directed 𝓓∞ (pointwise-family 𝓓∞ 𝓓∞ (λ k → g' k k) σ)
+              δ₃' = pointwise-family-is-directed 𝓓∞ 𝓓∞ (λ k → g' k k) δ₆ σ
+              u₁ = reflexivity 𝓓∞ (g n m σ)
+              u₂ = g'-mon n (n +' m) m m (≤-+ n m) (≤-refl m) σ
+              u₃ = g'-mon (n +' m) (n +' m) m (n +' m)
+                    (≤-refl (n +' m)) (≤-+' n m) σ
+              u₄ = ∐-is-upperbound 𝓓∞ δ₃' (n +' m)
 
 \end{code}
+
+Hence, D∞ is isomorphic (as a dcpo) to its self-exponential (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞).
 
 \begin{code}
 
@@ -772,6 +823,9 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
  ε-exp∞-is-continuous , π-exp∞-is-continuous
 
 \end{code}
+
+But actually we want D∞ to be a pointed dcpo and we want it to be isomorphic to
+the pointed exponential (𝓓∞⊥ ⟹ᵈᶜᵖᵒ⊥ 𝓓∞⊥), which we prove now.
 
 \begin{code}
 
@@ -831,6 +885,9 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
 
 \end{code}
 
+Finally, we show that 𝓓∞ is nontrivial, i.e. it has an element σ₀ such that σ₀
+is not the least element.
+
 \begin{code}
 
 σ₀ : ⟨ 𝓓∞ ⟩
@@ -848,8 +905,8 @@ open DcpoCocone (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε-exp ε-exp-is-continuous ε
     e₁ = ap (π⁺ {n} {m} l) ((ε⁺-comp * l x₀) ⁻¹)
     e₂ = ε⁺-section-of-π⁺ l (ε⁺ {0} {n} * x₀)
 
-𝓓∞⊥-is-non-trivial : σ₀ ≢ ⊥ 𝓓∞⊥
-𝓓∞⊥-is-non-trivial e = 𝟘-is-not-𝟙 (γ ⁻¹)
+𝓓∞⊥-is-nontrivial : σ₀ ≢ ⊥ 𝓓∞⊥
+𝓓∞⊥-is-nontrivial e = 𝟘-is-not-𝟙 (γ ⁻¹)
  where
   e₀ : ⦅ σ₀ ⦆ 0 ≡ ⊥ (𝓓⊥ 0)
   e₀ = ap (λ - → ⦅ - ⦆ 0) e

@@ -1,5 +1,7 @@
 Tom de Jong, 12 & 13 May 2020.
 
+We specialize the work of DcpoBilimits.lagda to ℕ-indexed diagrams.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}
@@ -8,7 +10,7 @@ open import SpartanMLTT
 open import UF-PropTrunc
 open import UF-FunExt
 
-module DcpoLimitsSequential
+module DcpoBilimitsSequential
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓤 𝓣 : Universe)
@@ -17,8 +19,8 @@ module DcpoLimitsSequential
 open PropositionalTruncation pt
 
 open import Dcpo pt fe 𝓤₀
-open import DcpoBasics pt fe 𝓤₀
-open import DcpoLimits pt fe 𝓤₀ 𝓤 𝓣
+open import DcpoBilimits pt fe 𝓤₀ 𝓤 𝓣
+open import DcpoMiscelanea pt fe 𝓤₀
 
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties
@@ -377,13 +379,6 @@ The most laborious part: composing two ε⁺s is ε⁺ on ≤-trans. And similar
      where
       h : a +' b , r ≡ s
       h = left-addition-is-embedding n k (a +' b , r) s
-
-\end{code}
-
-\begin{code}
-
--- ε-in-terms-of-ε⁺-helper : (n : ℕ) → ε n ∼ ε⁺-helper n (succ n) 1 refl
--- ε-in-terms-of-ε⁺-helper n x = refl
 
  ε-in-terms-of-ε⁺ : (n : ℕ) → ε n ∼ ε⁺ {n} {succ n} (≤-succ n)
  ε-in-terms-of-ε⁺ n x =

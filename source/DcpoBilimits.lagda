@@ -1,14 +1,43 @@
 Tom de Jong, 5 May 2020 - 10 May 2020
 
+We construct bilimits of diagrams indexed by directed posets in the category of
+dcpos as objects and embedding-projection pairs as morphisms.
+
+This formalization is based on Scott's "Continuous lattices"
+(doi:10.1007/BFB0073967), specifically pages 124--126, but generalizes it from
+ℕ-indexed diagrams to diagrams indexed by a directed poset.
+
+We specialize to ℕ-indexed diagrams in DcpoBilimitsSequential.lagda.
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe --experimental-lossy-unification #-}
+
+\end{code}
+
+We use the flag --experimental-lossy-unification to speed up the type-checking.
+
+This flag was kindly implemented by Andrea Vezzosi upon request.
+
+Documentation for the flag (written by Andrea Vezzosi) can be found here:
+https://agda.readthedocs.io/en/latest/language/lossy-unification.html
+
+The most important takeaway from the documentation is that the flag is sound:
+
+  "[...] if Agda accepts code with the flag enabled it should also accept it
+  without the flag (with enough resources, and possibly needing extra type
+  annotations)."
+
+A related issue (originally opened by Wolfram Kahl in 2015) can be found here:
+https://github.com/agda/agda/issues/1625
+
+\begin{code}
 
 open import SpartanMLTT
 open import UF-FunExt
 open import UF-PropTrunc
 
-module DcpoLimits
+module DcpoBilimits
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
         (𝓥 : Universe)
@@ -18,7 +47,7 @@ module DcpoLimits
 open PropositionalTruncation pt
 
 open import Dcpo pt fe 𝓥
-open import DcpoBasics pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
 
 open import Poset fe
 
@@ -63,12 +92,7 @@ module Diagram
 
  to-𝓓∞-≡ : {σ τ : 𝓓∞-carrier} → ((i : I) → ⦅ σ ⦆ i ≡ ⦅ τ ⦆ i) → σ ≡ τ
  to-𝓓∞-≡ h =
-  to-subtype-≡
-   (λ σ → Π-is-prop fe
-    (λ i → Π-is-prop fe
-    (λ j → Π-is-prop fe
-    (λ l → sethood (𝓓 i)))))
-   (dfunext fe h)
+  to-subtype-≡ (λ σ → Π₃-is-prop fe (λ i j l → sethood (𝓓 i))) (dfunext fe h)
 
  family-at-ith-component : {𝓐 : 𝓥 ̇ } (α : 𝓐 → 𝓓∞-carrier) (i : I) → 𝓐 → ⟨ 𝓓 i ⟩
  family-at-ith-component α i a = ⦅ α a ⦆ i
@@ -118,7 +142,6 @@ module Diagram
  𝓓∞ : DCPO {𝓥 ⊔ 𝓤 ⊔ 𝓦} {𝓥 ⊔ 𝓣}
  𝓓∞ = (𝓓∞-carrier , _≼_ , pa , dc)
   where
-   -- abstract (TODO)
    pa : PosetAxioms.poset-axioms _≼_
    pa = sl , pv , r , t , a
     where
@@ -126,10 +149,7 @@ module Diagram
      sl : is-set 𝓓∞-carrier
      sl = subsets-of-sets-are-sets _ _
            (Π-is-set fe (λ i → sethood (𝓓 i)))
-           (Π-is-prop fe
-             (λ i → Π-is-prop fe
-             (λ j → Π-is-prop fe
-             (λ l → sethood (𝓓 i)))))
+           (Π₃-is-prop fe (λ i j l → sethood (𝓓 i)))
      pv : is-prop-valued
      pv σ τ = Π-is-prop fe (λ i → prop-valuedness (𝓓 i) (⦅ σ ⦆ i) (⦅ τ ⦆ i))
      r : is-reflexive
@@ -142,14 +162,13 @@ module Diagram
    dc : is-directed-complete _≼_
    dc 𝓐 α δ = (𝓓∞-∐ α δ) , ub , lb-of-ubs
     where
-     -- abstract (TODO)
-      δ' : (i : I) → is-Directed (𝓓 i) (family-at-ith-component α i)
-      δ' = family-at-ith-component-is-directed α δ
-      ub : (a : 𝓐) → α a ≼ (𝓓∞-∐ α δ)
-      ub a i = ∐-is-upperbound (𝓓 i) (δ' i) a
-      lb-of-ubs : is-lowerbound-of-upperbounds _≼_ (𝓓∞-∐ α δ) α
-      lb-of-ubs τ ub i = ∐-is-lowerbound-of-upperbounds (𝓓 i) (δ' i) (⦅ τ ⦆ i)
-                         (λ a → ub a i)
+     δ' : (i : I) → is-Directed (𝓓 i) (family-at-ith-component α i)
+     δ' = family-at-ith-component-is-directed α δ
+     ub : (a : 𝓐) → α a ≼ (𝓓∞-∐ α δ)
+     ub a i = ∐-is-upperbound (𝓓 i) (δ' i) a
+     lb-of-ubs : is-lowerbound-of-upperbounds _≼_ (𝓓∞-∐ α δ) α
+     lb-of-ubs τ ub i = ∐-is-lowerbound-of-upperbounds (𝓓 i) (δ' i) (⦅ τ ⦆ i)
+                        (λ a → ub a i)
 
  π∞ : (i : I) → ⟨ 𝓓∞ ⟩ → ⟨ 𝓓 i ⟩
  π∞ i (σ , _) = σ i
@@ -389,6 +408,9 @@ module Diagram
 
 \end{code}
 
+This concludes the construction of the bilimit. We proceed by showing that it is
+indeed the limit of the diagram.
+
 \begin{code}
 
  module DcpoCone
@@ -443,6 +465,9 @@ module Diagram
       u₃ = ∐-is-lowerbound-of-upperbounds (𝓓 i) δ' (⦅ σ ⦆ i) (λ a → ub a i)
 
 \end{code}
+
+Next, we wish to show that 𝓓∞ is also the colimit of the diagram. The following
+are preliminaries for doing so.
 
 \begin{code}
 
@@ -557,53 +582,7 @@ module Diagram
 
 \end{code}
 
-TO DO: Write some comment here.
-
-Curried version of ε∞-family
-
-\begin{code}
-
- open import DcpoExponential pt fe 𝓥
-
- ε∞π∞-family : I → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
- ε∞π∞-family i = DCPO-∘ 𝓓∞ (𝓓 i) 𝓓∞ (π∞' i) (ε∞' i)
-
- ε∞π∞-family-is-monotone : {i j : I} → i ⊑ j
-                         → ε∞π∞-family i ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family j
- ε∞π∞-family-is-monotone {i} {j} l σ = ε∞-family-is-monotone σ i j l
-
- ε∞π∞-family-is-directed : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
- ε∞π∞-family-is-directed = I-inhabited , δ
-  where
-   δ : is-semidirected (underlying-order (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞)) ε∞π∞-family
-   δ i j = ∥∥-functor γ (I-semidirected i j)
-    where
-     γ : (Σ k ꞉ I , i ⊑ k × j ⊑ k)
-       → (Σ k ꞉ I , ε∞π∞-family i ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family k
-                  × ε∞π∞-family j ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family k)
-     γ (k , lᵢ , lⱼ) =
-      k , ε∞π∞-family-is-monotone lᵢ ,
-          ε∞π∞-family-is-monotone lⱼ
-
- ∐-of-ε∞π∞s-is-id : ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} ε∞π∞-family-is-directed
-                  ≡ id , id-is-continuous 𝓓∞
- ∐-of-ε∞π∞s-is-id = to-continuous-function-≡ 𝓓∞ 𝓓∞ γ
-  where
-   δ : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
-   δ = ε∞π∞-family-is-directed
-   γ : [ 𝓓∞ , 𝓓∞ ]⟨ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} δ ⟩ ∼ id
-   γ σ = ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₁ ≡⟨ e₁ ⟩
-         ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₂ ≡⟨ e₂ ⟩
-         σ                                  ∎
-    where
-     δ₁ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
-     δ₁ = pointwise-family-is-directed 𝓓∞ 𝓓∞ ε∞π∞-family δ σ
-     δ₂ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
-     δ₂ = ε∞-family-is-directed σ
-     e₁ = ∐-independent-of-directedness-witness 𝓓∞ δ₁ δ₂
-     e₂ = (∐-of-ε∞s σ) ⁻¹
-
-\end{code}
+We now show that 𝓓∞ is the colimit of the diagram.
 
 \begin{code}
 
@@ -781,5 +760,53 @@ Curried version of ε∞-family
                  y                                      ∎⟨ 𝓔 ⟩
             where
              v = ∐-is-upperbound 𝓔 (colimit-family-is-directed (α a)) i
+
+\end{code}
+
+Finally, we consider a curried version of ε∞-family, which will prove useful
+(see DcpoDinfinity.lagda) in the construction of Scott's D∞ for which D∞ is
+isomorphic to its own self-exponential.
+
+\begin{code}
+
+ open import DcpoExponential pt fe 𝓥
+
+ ε∞π∞-family : I → ⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩
+ ε∞π∞-family i = DCPO-∘ 𝓓∞ (𝓓 i) 𝓓∞ (π∞' i) (ε∞' i)
+
+ ε∞π∞-family-is-monotone : {i j : I} → i ⊑ j
+                         → ε∞π∞-family i ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family j
+ ε∞π∞-family-is-monotone {i} {j} l σ = ε∞-family-is-monotone σ i j l
+
+ ε∞π∞-family-is-directed : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
+ ε∞π∞-family-is-directed = I-inhabited , δ
+  where
+   δ : is-semidirected (underlying-order (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞)) ε∞π∞-family
+   δ i j = ∥∥-functor γ (I-semidirected i j)
+    where
+     γ : (Σ k ꞉ I , i ⊑ k × j ⊑ k)
+       → (Σ k ꞉ I , ε∞π∞-family i ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family k
+                  × ε∞π∞-family j ⊑⟨ 𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞ ⟩ ε∞π∞-family k)
+     γ (k , lᵢ , lⱼ) =
+      k , ε∞π∞-family-is-monotone lᵢ ,
+          ε∞π∞-family-is-monotone lⱼ
+
+ ∐-of-ε∞π∞s-is-id : ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} ε∞π∞-family-is-directed
+                  ≡ id , id-is-continuous 𝓓∞
+ ∐-of-ε∞π∞s-is-id = to-continuous-function-≡ 𝓓∞ 𝓓∞ γ
+  where
+   δ : is-Directed (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) ε∞π∞-family
+   δ = ε∞π∞-family-is-directed
+   γ : [ 𝓓∞ , 𝓓∞ ]⟨ ∐ (𝓓∞ ⟹ᵈᶜᵖᵒ 𝓓∞) {I} {ε∞π∞-family} δ ⟩ ∼ id
+   γ σ = ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₁ ≡⟨ e₁ ⟩
+         ∐ 𝓓∞ {I} {λ i → ε∞ i (⦅ σ ⦆ i)} δ₂ ≡⟨ e₂ ⟩
+         σ                                  ∎
+    where
+     δ₁ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
+     δ₁ = pointwise-family-is-directed 𝓓∞ 𝓓∞ ε∞π∞-family δ σ
+     δ₂ : is-Directed 𝓓∞ (λ i → ε∞ i (⦅ σ ⦆ i))
+     δ₂ = ε∞-family-is-directed σ
+     e₁ = ∐-independent-of-directedness-witness 𝓓∞ δ₁ δ₂
+     e₂ = (∐-of-ε∞s σ) ⁻¹
 
 \end{code}
