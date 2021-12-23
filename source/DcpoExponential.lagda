@@ -1,6 +1,7 @@
-Tom de Jong, May 2019; major additions January 2020; refactored December 2021.
+Tom de Jong, May 2019.
+Major additions January 2020.
 
-We construct the exponential (pointed) dcpos 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 and 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓔 for
+We construct the exponential (pointed) dcpos (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) and (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓔) for
 (pointed) dcpos 𝓓 and 𝓔.
 
 \begin{code}
@@ -101,7 +102,6 @@ _⟹ᵈᶜᵖᵒ_ : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'}
 𝓓 ⟹ᵈᶜᵖᵒ 𝓔 = DCPO[ 𝓓 , 𝓔 ] , _⊑_ , pa , dc
  where
   _⊑_ = 𝓓 hom-⊑ 𝓔
-  -- abstract (TODO)
   pa : PosetAxioms.poset-axioms _⊑_
   pa = s , p , r , t , a
    where
@@ -124,15 +124,14 @@ _⟹ᵈᶜᵖᵒ_ : DCPO {𝓤} {𝓣} → DCPO {𝓤'} {𝓣'}
   dc : is-directed-complete _⊑_
   dc I α δ = (continuous-functions-sup 𝓓 𝓔 α δ) , u , v
    where
-    -- abstract (TODO)
-     u : (i : I) → α i ⊑ continuous-functions-sup 𝓓 𝓔 α δ
-     u i d = ∐-is-upperbound 𝓔 (pointwise-family-is-directed 𝓓 𝓔 α δ d) i
-     v : (g : DCPO[ 𝓓 , 𝓔 ])
-       → ((i : I) → α i ⊑ g)
-       → continuous-functions-sup 𝓓 𝓔 α δ ⊑ g
-     v (g , _) l d = ∐-is-lowerbound-of-upperbounds 𝓔
-                      (pointwise-family-is-directed 𝓓 𝓔 α δ d)
-                      (g d) (λ (i : I) → l i d)
+    u : (i : I) → α i ⊑ continuous-functions-sup 𝓓 𝓔 α δ
+    u i d = ∐-is-upperbound 𝓔 (pointwise-family-is-directed 𝓓 𝓔 α δ d) i
+    v : (g : DCPO[ 𝓓 , 𝓔 ])
+      → ((i : I) → α i ⊑ g)
+      → continuous-functions-sup 𝓓 𝓔 α δ ⊑ g
+    v (g , _) l d = ∐-is-lowerbound-of-upperbounds 𝓔
+                     (pointwise-family-is-directed 𝓓 𝓔 α δ d)
+                     (g d) (λ (i : I) → l i d)
 
 infixr 20 _⟹ᵈᶜᵖᵒ⊥_
 
@@ -147,7 +146,10 @@ _⟹ᵈᶜᵖᵒ⊥_ : DCPO⊥ {𝓤} {𝓣} → DCPO⊥ {𝓤'} {𝓣'}
 
 \end{code}
 
-TODO: Review code
+Now that we have constructed exponentials, we can state and prove additional
+continuity results regarding composition of continuous functions.
+
+(These results are used in constructing Scott's D∞ in DcpoDinfinity.lagda.)
 
 \begin{code}
 
@@ -188,7 +190,7 @@ DCPO-∘-is-continuous₁ 𝓓 𝓔 𝓔' f I α δ =
          → [ 𝓔 , 𝓔' ]⟨ (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓔') {I} {α} δ) ⟩ ([ 𝓓 , 𝓔 ]⟨ f ⟩ x)
          ≡ ∐ 𝓔' (pointwise-family-is-directed 𝓓 𝓔' β ε x)
        ψ x = [ 𝓔 , 𝓔' ]⟨ (∐ (𝓔 ⟹ᵈᶜᵖᵒ 𝓔') {I} {α} δ) ⟩ ([ 𝓓 , 𝓔 ]⟨ f ⟩ x) ≡⟨ e₁ ⟩
-             ∐ 𝓔' ε'                                                         ≡⟨ e₂ ⟩
+             ∐ 𝓔' ε'                                                     ≡⟨ e₂ ⟩
              ∐ 𝓔' (pointwise-family-is-directed 𝓓 𝓔' β ε x) ∎
         where
          ε' : is-Directed 𝓔' (pointwise-family 𝓔 𝓔' α ([ 𝓓 , 𝓔 ]⟨ f ⟩ x))
