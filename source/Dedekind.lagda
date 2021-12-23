@@ -14,7 +14,7 @@ precise statement of this phenomenon is given below.
 We generalize the rationals to any type with a proposition-valued,
 irreflexive relation _<_, simply to avoid having to define the
 rational numbers. But also it is interesting than nothing other than
-proposition-valued irreflexive relation is needed for the above
+a proposition-valued irreflexive relation is needed for the above
 discussion.
 
 We also discuss a version of the Dedekind reals proposed by Troelstra.
@@ -417,7 +417,8 @@ NB₂ = qinveq (λ ((L , Li , _ , Lo) , (U , Ui , _ , Uo) , o , l)
                               refl))
 \end{code}
 
-And there is a further set of axioms for defining ℝ.
+And there is a further set of axioms for defining ℝ, assuming the
+above further properties of order:
 
 \begin{code}
 
@@ -540,7 +541,7 @@ dedekind-gives-troelstra l@(L , _ , _ , _)
 
 For the converse, we need the further assumptions on _<_ mentioned
 above. A lower Dedekind real may or may not have an upper section. If
-it does, it is given vt the following candidate.
+it does, it is given by the following candidate.
 
 \begin{code}
 
