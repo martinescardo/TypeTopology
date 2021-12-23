@@ -47,20 +47,14 @@ open import UF-Equiv
 
 module Dedekind
         (pt  : propositional-truncations-exist)
-        (fe' : FunExt)
-        (pe' : PropExt)
+        (fe  : Fun-Ext)
+        (pe  : Prop-Ext)
         {𝓤  : Universe}
         (ℚ   : 𝓤 ̇ )
         (_<_ : ℚ → ℚ → 𝓤 ̇ )
         (order-is-prop-valued : (p q : ℚ) → is-prop (p < q))
         (order-is-irrefl      : (q : ℚ) → ¬(q < q))
        where
-
-fe : Fun-Ext
-fe {𝓤} {𝓥} = fe' 𝓤 𝓥
-
-pe : Prop-Ext
-pe {𝓤} = pe' 𝓤
 
 open PropositionalTruncation pt
 
