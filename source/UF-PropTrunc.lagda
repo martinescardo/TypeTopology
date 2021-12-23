@@ -104,6 +104,12 @@ module PropositionalTruncation (pt : propositional-truncations-exist) where
  gdn-pt : {X : 𝓤 ̇ } → (∀ {𝓥} (P : 𝓥 ̇ ) → is-prop P → (X → P) → P) → ∥ X ∥
  gdn-pt {𝓤} {X} φ = φ ∥ X ∥ ∥∥-is-prop ∣_∣
 
+ is-inhabited : {X : 𝓤 ̇ } → (X → Ω 𝓥) → 𝓤 ⊔ 𝓥 ̇
+ is-inhabited {𝓤} {𝓥} {X} A = ∃ x ꞉ X , A x holds
+
+ being-inhabited-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) → is-prop (is-inhabited A)
+ being-inhabited-is-prop {𝓤} {𝓥} {X} A = ∃-is-prop
+
  inhabited-is-nonempty : {X : 𝓤 ̇ } → ∥ X ∥ → ¬¬ X
  inhabited-is-nonempty s = pt-gdn s 𝟘 𝟘-is-prop
 

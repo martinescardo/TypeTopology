@@ -48,12 +48,6 @@ We start with some basic constructions on the powerset.
 ⦅_⦆[_] : {X : 𝓤 ̇ } → X → is-set X → 𝓟 X
 ⦅ x ⦆[ i ] = (λ y → ((y ≡ x) , i))
 
-∅ : {X : 𝓤 ̇ } → 𝓟 X
-∅ x = 𝟘 , 𝟘-is-prop
-
-∅-is-least : {X : 𝓤 ̇ } (A : 𝓟 X) → ∅ ⊆ A
-∅-is-least x _ = 𝟘-induction
-
 _∪_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓟 X
 (A ∪ B) x = ∥ x ∈ A + x ∈ B ∥ , ∥∥-is-prop
 

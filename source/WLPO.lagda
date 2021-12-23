@@ -58,13 +58,13 @@ open import UF-FunExt
 
 WLPO-gives-ℕ∞-discrete : FunExt → WLPO → is-discrete ℕ∞
 WLPO-gives-ℕ∞-discrete fe wlpo u v =
- Cases (wlpo (ℕ∞-codistance u v))
-  (λ (p : ℕ∞-codistance u v ≡ ∞)
+ Cases (wlpo (ℕ∞-closeness u v))
+  (λ (p : ℕ∞-closeness u v ≡ ∞)
         → inl (ℕ∞-infinitely-close-are-equal u v p))
-  (λ (n : ℕ∞-codistance u v ≢ ∞)
+  (λ (n : ℕ∞-closeness u v ≢ ∞)
         → inr (contrapositive (λ (q : u ≡ v) → ℕ∞-equal-are-infinitely-close u v q) n))
  where
-  open import Codistance fe
+  open import Closeness fe
 
 \end{code}
 

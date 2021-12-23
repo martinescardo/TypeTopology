@@ -66,7 +66,7 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with Agda 2.6.1 and 2.6.2.
+   * This has been tested with 2.6.2.
 
 Click at the imported module names to navigate to them:
 
@@ -117,7 +117,7 @@ import BuraliForti
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
-import Codistance              -- By Todd Waugh Ambridge and Martin Escardo
+import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
@@ -125,9 +125,10 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
--- import CubicalBinarySystem -- works with Agda 2.6.2 only. By Martin Escardo. and Alex Rice
+-- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
+import Dedekind
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
@@ -146,6 +147,7 @@ import FailureOfTotalSeparatedness
 import Frame-version1
 import Frame                           -- By Ayberk Tosun
 import InitialFrame                    -- By Ayberk Tosun
+import CompactRegular                  -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
@@ -303,7 +305,7 @@ import CantorSearch
 import CircleConstruction
 import CircleInduction
 import CircleModules
-import Codistance
+import Closeness
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic

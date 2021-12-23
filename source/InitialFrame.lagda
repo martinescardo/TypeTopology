@@ -77,9 +77,9 @@ open propositional-truncations-exist pt
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
   ⋁ U = Ǝ i ∶ index U , ((U [ i ]) holds)
 
-  open Meets _⊑_
+  open Meets _⊑_ renaming (is-top to is-the-top)
 
-  top : is-top (⊤Ω {𝓤}) holds
+  top : is-the-top (⊤Ω {𝓤}) holds
   top _ _ = *
 
   meet : (Ɐ (P , Q) , (P ∧ Q) is-glb-of (P , Q)) holds
@@ -100,27 +100,37 @@ open propositional-truncations-exist pt
     γ : (Ɐ (P , _) ∶ upper-bound U , (⋁ U) ⊑ P) holds
     γ ((A , A-prop) , q) r = ∥∥-rec A-prop (uncurry q) r
 
-  iss : is-set (Ω 𝓤)
-  iss = carrier-of-[ 𝟎F-poset ua ]-is-set
+  abstract
+   iss : is-set (Ω 𝓤)
+   iss = carrier-of-[ 𝟎F-poset ua ]-is-set
 
-  dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
-          (P ∧ (⋁ U) ≡[ iss ]≡  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
-  dist (P , U) = Ω-ext-from-univalence ua β γ
-   where
-    β : (P ∧ ⋁ U ⇒ (⋁⟨ i ⟩ (P ∧ U [ i ]))) holds
-    β (p , u) = ∥∥-rec (holds-is-prop (⋁⟨ i ⟩ (P ∧ U [ i ]))) α u
-     where
-      α : Σ i ꞉ index U , (U [ i ]) holds → (⋁⟨ i ⟩ P ∧ U [ i ]) holds
-      α (i , uᵢ) = ∣ i , p , uᵢ ∣
+   dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
+           (P ∧ (⋁ U) ≡[ iss ]≡  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
+   dist (P , U) = Ω-ext-from-univalence ua β γ
+    where
+     β : (P ∧ ⋁ U ⇒ (⋁⟨ i ⟩ (P ∧ U [ i ]))) holds
+     β (p , u) = ∥∥-rec (holds-is-prop (⋁⟨ i ⟩ (P ∧ U [ i ]))) α u
+      where
+       α : Σ i ꞉ index U , (U [ i ]) holds → (⋁⟨ i ⟩ P ∧ U [ i ]) holds
+       α (i , uᵢ) = ∣ i , p , uᵢ ∣
 
-    γ : ((⋁⟨ i ⟩ P ∧ U [ i ]) ⇒ P ∧ ⋁ U) holds
-    γ p = ∥∥-rec (holds-is-prop (P ∧ (⋁ U))) δ p
-     where
-      δ : Sigma (index (index U , (λ i → P ∧ U [ i ])))
-            (λ i → ((index U , (λ i₁ → P ∧ U [ i₁ ])) [ i ]) holds) →
-            (P ∧ (⋁ U)) holds
-      δ (i , q , uᵢ) = q , ∣ i , uᵢ ∣
+     γ : ((⋁⟨ i ⟩ P ∧ U [ i ]) ⇒ P ∧ ⋁ U) holds
+     γ p = ∥∥-rec (holds-is-prop (P ∧ (⋁ U))) δ p
+      where
+       δ : Sigma (index (index U , (λ i → P ∧ U [ i ])))
+             (λ i → ((index U , (λ i₁ → P ∧ U [ i₁ ])) [ i ]) holds) →
+             (P ∧ (⋁ U)) holds
+       δ (i , q , uᵢ) = q , ∣ i , uᵢ ∣
 
+\end{code}
+
+\begin{code}
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : is-univalent 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≡ ⊥Ω
+𝟎-of-IF-is-⊥ ua =
+ ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 ua)) γ λ ()
+ where
+  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 ua) ]  ⊥Ω) holds
+  γ x = ∥∥-rec 𝟘-is-prop (λ ()) x
 \end{code}
 
 \section{Proof of initiality}
