@@ -23,7 +23,7 @@ open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Dcpo pt fe 𝓥
-open import DcpoBasics pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
 
 open import Poset fe
 

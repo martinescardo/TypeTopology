@@ -34,7 +34,7 @@ open import LiftingMiscelanea-PropExt-FunExt 𝓣 pe fe
 open import LiftingMonad 𝓣
 
 open import Dcpo pt fe 𝓣 -- hiding (⊥)
-open import DcpoBasics pt fe 𝓣
+open import DcpoMiscelanea pt fe 𝓣
 
 open import Poset fe
 

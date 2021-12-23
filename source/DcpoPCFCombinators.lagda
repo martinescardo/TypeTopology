@@ -1,9 +1,11 @@
 Tom de Jong, 27 May 2019.
+Refactored December 2021.
 
-* Dcpo of continuous functions (i.e. the exponential in the category of dcpos)
-* Continuous K and S functions
-* The lifting of a set is a dcpo
-* Continuous ifZero function specific to the lifting of the natural numbers
+* Continuous K and S functions. These will interpret the K and S combinators of
+  PCF in ScottModelOfPCF.lagda.
+* Continuous ifZero function specific to the lifting of the natural numbers.
+  This will then be used to interpret the ifZero combinator of PCF in
+  ScottModelOfPCF.lagda.
 
 \begin{code}
 
@@ -11,30 +13,35 @@ Tom de Jong, 27 May 2019.
 
 open import SpartanMLTT
 open import UF-FunExt
-open import UF-Subsingletons
 open import UF-PropTrunc
 
-module DcpoConstructions
+module DcpoPCFCombinators
         (pt : propositional-truncations-exist)
         (fe : ∀ {𝓤 𝓥} → funext 𝓤 𝓥)
-        (𝓥 : Universe) -- where the index types for directed completeness live
+        (𝓥 : Universe)
        where
 
 open PropositionalTruncation pt
-open import UF-Base
-open import UF-Miscelanea
+
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
 open import Poset fe
 open import Dcpo pt fe 𝓥
-open import DcpoBasics pt fe 𝓥
+open import DcpoMiscelanea pt fe 𝓥
 open import DcpoExponential pt fe 𝓥
 
 \end{code}
 
-We proceed by defining continuous K and S functions.
-This will be used in ScottModelOfPCF.
+We start by defining continuous K and S functions. These will interpret the K
+and S combinators of PCF in ScottModelOfPCF.lagda.
+
+This requires a little (straightforward) work, because S must be continuous in
+all of its arguments.
+Therefore, it is not enough to have S of type
+  DCPO[ 𝓓 , 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 ] → DCPO[ 𝓓 , 𝓔 ] → DCPO[ 𝓓 , 𝓕 ].
+Rather we should have S of type
+  DCPO[𝓓 ⟹ᵈᶜᵖᵒ 𝓔 ⟹ᵈᶜᵖᵒ 𝓕 , (𝓓 ⟹ᵈᶜᵖᵒ 𝓔) ⟹ᵈᶜᵖᵒ (𝓓 ⟹ᵈᶜᵖᵒ 𝓕) ].
 
 \begin{code}
 
@@ -221,16 +228,9 @@ module _ (𝓓 : DCPO⊥ {𝓤} {𝓣})
 
 TODO: Revise comments
 
-Finally, we construct the ifZero function, specific to the lifting of ℕ.
-Again, this will be used in ScottModelOfPCF.
-
-The continuity proofs are not very appealing and the second proof could perhaps
-be simplified by exploiting the "symmetry" of ifZero: for example,
-ifZero a b 0 ≡ ifZero b a 1).
-The second proof is essentially identical to the
-first proof; the only difference is that we have to introduce an additional
-parameter in the second proof. We leave simplifications of the proofs for
-future work.
+Finally, we construct the continuous ifZero function, specific to the lifting of
+ℕ. This will then be used to interpret the ifZero combinator of PCF in
+ScottModelOfPCF.lagda.
 
 \begin{code}
 
@@ -242,7 +242,10 @@ module IfZeroDenotationalSemantics
  open import LiftingMiscelanea 𝓥
  open import LiftingMiscelanea-PropExt-FunExt 𝓥 pe fe
  open import LiftingMonad 𝓥
+
  open import DcpoLifting pt fe 𝓥 pe
+
+ open import UF-Miscelanea
 
  open import NaturalNumbers-Properties
 
@@ -366,7 +369,9 @@ module IfZeroDenotationalSemantics
 
 \end{code}
 
-TODO: Explain flip code
+We can exploit the fact that ifZero a b 0 ≡ ifZero b a 1, to reduce the proof
+that ifZero is continuous in its first argument to continuity in its second
+argument. The "flip"-code below prepares for this.
 
 \begin{code}
 
@@ -402,6 +407,12 @@ TODO: Explain flip code
    u q = lemma (♯-is-defined (⦅ifZero⦆₀ a b) l q)
    v : (⦅ifZero⦆₀ b a ♯) l' ⊑' (⦅ifZero⦆₀ a b ♯) l
    v q = (lemma (♯-is-defined (⦅ifZero⦆₀ b a) l' q)) ⁻¹
+
+\end{code}
+
+We are now ready to give the final continuity proof.
+
+\begin{code}
 
  ⦅ifZero⦆ : DCPO⊥[ 𝓛ᵈℕ , 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ ⟹ᵈᶜᵖᵒ⊥ 𝓛ᵈℕ  ]
  ⦅ifZero⦆ = ⦅ifZero⦆₂ , c
