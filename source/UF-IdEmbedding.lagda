@@ -134,12 +134,12 @@ bother):
 eqtofun-lc : is-univalent 𝓤
            → FunExt
            → (X Y : 𝓤 ̇ ) → left-cancellable(Eqtofun X Y)
-eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = go
+eqtofun-lc ua fe X Y {f , jef} {g , jeg} p = γ
  where
   q : yoneda-nat f is-equiv jef g p ≡ jeg
   q = being-equiv-is-prop fe g _ _
-  go : f , jef ≡ g , jeg
-  go = to-Σ-Id (p , q)
+  γ : f , jef ≡ g , jeg
+  γ = to-Σ-Id (p , q)
 
 \end{code}
 

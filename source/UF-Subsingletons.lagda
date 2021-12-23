@@ -414,13 +414,13 @@ proposition is a proposition:
 
 sum-of-contradictory-props : {P : 𝓤 ̇ } {Q : 𝓥 ̇ }
                            → is-prop P → is-prop Q → (P → Q → 𝟘 {𝓦}) → is-prop (P + Q)
-sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = go
+sum-of-contradictory-props {𝓤} {𝓥} {𝓦} {P} {Q} i j f = γ
  where
-  go : (x y : P + Q) → x ≡ y
-  go (inl p) (inl p') = ap inl (i p p')
-  go (inl p) (inr q)  = 𝟘-elim {𝓤 ⊔ 𝓥} {𝓦} (f p q)
-  go (inr q) (inl p)  = 𝟘-elim (f p q)
-  go (inr q) (inr q') = ap inr (j q q')
+  γ : (x y : P + Q) → x ≡ y
+  γ (inl p) (inl p') = ap inl (i p p')
+  γ (inl p) (inr q)  = 𝟘-elim {𝓤 ⊔ 𝓥} {𝓦} (f p q)
+  γ (inr q) (inl p)  = 𝟘-elim (f p q)
+  γ (inr q) (inr q') = ap inr (j q q')
 
 \end{code}
 
