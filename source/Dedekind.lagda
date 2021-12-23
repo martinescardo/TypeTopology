@@ -905,8 +905,11 @@ independently by Steve Vickers and Toby Bartels.
     h (inl ℓ)       = order-is-irrefl 𝟎 (transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
     h (inr (_ , ℓ)) = order-is-irrefl 𝟏 ℓ
 
+  b : ℝᴮᴸ
+  b = (l , L-is-bounded-above)
+
   γ : A + ¬ A
-  γ = l-dedekind-gives-A-decidable (α (l , L-is-bounded-above))
+  γ = l-dedekind-gives-A-decidable (α b)
 
 \end{code}
 
