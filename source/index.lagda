@@ -2,7 +2,7 @@
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
-   Martin Escardo
+   Martin Escardo and collaborators
    2010--2021--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology

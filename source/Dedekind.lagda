@@ -27,7 +27,8 @@ excluded middle.
 
 Here we adopt HoTT/UF as our type-theoretic foundation, which, in
 particular, is well-suited to discuss the distinction between data and
-property.
+property. The univalence axiom is not used anywhere here, but we
+mention it in some discussions.
 
 See also the discussion at https://twitter.com/EscardoMartin/status/1473393261012295681
 
@@ -840,70 +841,70 @@ independently by Steve Vickers and Toby Bartels.
                                                 → LEM
  all-bounded-lower-reals-are-dedekind-gives-LEM α A A-is-prop = γ
   where
-  L : 𝓟 ℚ
-  L p = ((p < 𝟎) ∨ (A × (p < 𝟏))) , ∨-is-prop
+   L : 𝓟 ℚ
+   L p = ((p < 𝟎) ∨ (A × (p < 𝟏))) , ∨-is-prop
 
-  L-is-inhabited : is-inhabited L
-  L-is-inhabited = ∥∥-functor h (ℚ-is-lower-open 𝟎)
-   where
-    h : (Σ p ꞉ ℚ , p < 𝟎) → Σ p ꞉ ℚ , p ∈ L
-    h (p , ℓ) = p , ∣ inl ℓ ∣
+   L-is-inhabited : is-inhabited L
+   L-is-inhabited = ∥∥-functor h (ℚ-is-lower-open 𝟎)
+    where
+     h : (Σ p ꞉ ℚ , p < 𝟎) → Σ p ꞉ ℚ , p ∈ L
+     h (p , ℓ) = p , ∣ inl ℓ ∣
 
-  L-is-lower : is-lower L
-  L-is-lower p p-in-L p' j = ∥∥-functor h p-in-L
-   where
-    h : (p < 𝟎) + (A × (p < 𝟏)) → (p' < 𝟎) + (A × (p' < 𝟏))
-    h (inl ℓ)       = inl (transitivity p' p 𝟎 j ℓ)
-    h (inr (a , ℓ)) = inr (a , transitivity p' p 𝟏 j ℓ)
+   L-is-lower : is-lower L
+   L-is-lower p p-in-L p' j = ∥∥-functor h p-in-L
+    where
+     h : (p < 𝟎) + (A × (p < 𝟏)) → (p' < 𝟎) + (A × (p' < 𝟏))
+     h (inl ℓ)       = inl (transitivity p' p 𝟎 j ℓ)
+     h (inr (a , ℓ)) = inr (a , transitivity p' p 𝟏 j ℓ)
 
-  L-is-upper-open : is-upper-open L
-  L-is-upper-open p p-in-L = ∥∥-rec ∃-is-prop h p-in-L
-   where
-    h : (p < 𝟎) + (A × (p < 𝟏)) → ∃ p' ꞉ ℚ , (p < p') × (p' ∈ L)
-    h (inl ℓ) = ∥∥-functor k (ℚ-is-dense p 𝟎 ℓ)
-     where
-      k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟎)) → Σ p' ꞉ ℚ , (p < p') × (p' ∈ L)
-      k (p' , i , j) = p' , i , ∣ inl j ∣
-    h (inr (a , ℓ)) = ∥∥-functor k (ℚ-is-dense p 𝟏 ℓ)
-     where
-      k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟏)) → Σ p' ꞉ ℚ , (p < p') × p' ∈ L
-      k (p' , i , j) = p' , i , ∣ inr (a , j) ∣
+   L-is-upper-open : is-upper-open L
+   L-is-upper-open p p-in-L = ∥∥-rec ∃-is-prop h p-in-L
+    where
+     h : (p < 𝟎) + (A × (p < 𝟏)) → ∃ p' ꞉ ℚ , (p < p') × (p' ∈ L)
+     h (inl ℓ) = ∥∥-functor k (ℚ-is-dense p 𝟎 ℓ)
+      where
+       k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟎)) → Σ p' ꞉ ℚ , (p < p') × (p' ∈ L)
+       k (p' , i , j) = p' , i , ∣ inl j ∣
+     h (inr (a , ℓ)) = ∥∥-functor k (ℚ-is-dense p 𝟏 ℓ)
+      where
+       k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟏)) → Σ p' ꞉ ℚ , (p < p') × p' ∈ L
+       k (p' , i , j) = p' , i , ∣ inr (a , j) ∣
 
-  l : ℝᴸ
-  l = (L , L-is-inhabited , L-is-lower , L-is-upper-open)
+   l : ℝᴸ
+   l = (L , L-is-inhabited , L-is-lower , L-is-upper-open)
 
-  l-dedekind-gives-A-decidable : is-dedekind l → A + ¬ A
-  l-dedekind-gives-A-decidable ((U , U-is-inhabited , U-is-upper-open) , LU-ordered , LU-located) = δ
-   where
-    δ : A + ¬ A
-    δ = ∥∥-rec (decidability-of-prop-is-prop fe A-is-prop) h (LU-located 𝟎 ½ 𝟎-is-less-than-½)
-     where
-      h : (𝟎 ∈ L) + (½ ∈ U) → A + ¬ A
-      h (inl 𝟘-in-L) = inl (∥∥-rec A-is-prop k 𝟘-in-L)
-       where
-        k : (𝟎 < 𝟎) + (A × (𝟎 < 𝟏)) → A
-        k (inl ℓ)       = 𝟘-elim (order-is-irrefl 𝟎 ℓ)
-        k (inr (a , _)) = a
-      h (inr ½-in-U) = inr ν
-       where
-        ν : ¬ A
-        ν a = disjoint-criterion L U LU-ordered ½ (½-in-L , ½-in-U)
-         where
-          ½-in-L : ½ ∈ L
-          ½-in-L = ∣ inr (a , ½-is-less-than-𝟏) ∣
+   l-dedekind-gives-A-decidable : is-dedekind l → A + ¬ A
+   l-dedekind-gives-A-decidable ((U , U-is-inhabited , U-is-upper-open) , LU-ordered , LU-located) = δ
+    where
+     δ : A + ¬ A
+     δ = ∥∥-rec (decidability-of-prop-is-prop fe A-is-prop) h (LU-located 𝟎 ½ 𝟎-is-less-than-½)
+      where
+       h : (𝟎 ∈ L) + (½ ∈ U) → A + ¬ A
+       h (inl 𝟘-in-L) = inl (∥∥-rec A-is-prop k 𝟘-in-L)
+        where
+         k : (𝟎 < 𝟎) + (A × (𝟎 < 𝟏)) → A
+         k (inl ℓ)       = 𝟘-elim (order-is-irrefl 𝟎 ℓ)
+         k (inr (a , _)) = a
+       h (inr ½-in-U) = inr ν
+        where
+         ν : ¬ A
+         ν a = disjoint-criterion L U LU-ordered ½ (½-in-L , ½-in-U)
+          where
+           ½-in-L : ½ ∈ L
+           ½-in-L = ∣ inr (a , ½-is-less-than-𝟏) ∣
 
-  L-is-bounded-above : is-bounded-above L
-  L-is-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
-   where
-    h : ¬((𝟏 < 𝟎) + (A × (𝟏 < 𝟏)))
-    h (inl ℓ)       = order-is-irrefl 𝟎 (transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
-    h (inr (_ , ℓ)) = order-is-irrefl 𝟏 ℓ
+   L-is-bounded-above : is-bounded-above L
+   L-is-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
+    where
+     h : ¬((𝟏 < 𝟎) + (A × (𝟏 < 𝟏)))
+     h (inl ℓ)       = order-is-irrefl 𝟎 (transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
+     h (inr (_ , ℓ)) = order-is-irrefl 𝟏 ℓ
 
-  b : ℝᴮᴸ
-  b = (l , L-is-bounded-above)
+   b : ℝᴮᴸ
+   b = (l , L-is-bounded-above)
 
-  γ : A + ¬ A
-  γ = l-dedekind-gives-A-decidable (α b)
+   γ : A + ¬ A
+   γ = l-dedekind-gives-A-decidable (α b)
 
 \end{code}
 
@@ -965,7 +966,9 @@ The canonical embedding of the rationals into the reals:
    γ = to-subtype-≡ (λ _ → ℝᴸ-is-set) V
 
  ℚ-to-ℝ-is-embedding : is-embedding ℚ-to-ℝ
- ℚ-to-ℝ-is-embedding = embedding-factor ℚ-to-ℝ ℝ-to-ℝᴸ
+ ℚ-to-ℝ-is-embedding = factor-is-embedding
+                        ℚ-to-ℝ
+                        ℝ-to-ℝᴸ
                         ℚ-to-ℝᴸ-is-embedding
                         ℝ-to-ℝᴸ-is-embedding
   where

@@ -1251,7 +1251,7 @@ ainjective-retract-sub {𝓤} {𝓣} R A φ X β i = ainjective-retract-of-subty
   p : k ∘ l ≡ Id
   p = refl
   c : is-embedding l
-  c = embedding-factor l k Id-is-embedding b
+  c = factor-is-embedding l k Id-is-embedding b
   d : ainjective-type X 𝓤 (𝓤 ⁺ ⊔ 𝓣)
   d = ainjective-resizing R X i
 
