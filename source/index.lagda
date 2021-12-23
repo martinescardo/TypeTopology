@@ -93,9 +93,9 @@ import PartialElements
 import UF
 import Types2019
 import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
-import PCFModules    -- by Tom de Jong
-import Dyadics       -- by Tom de Jong
-import CircleModules -- by Tom de Jong
+import PCFModules    -- By Tom de Jong
+import Dyadics       -- By Tom de Jong
+import CircleModules -- By Tom de Jong
 
 \end{code}
 
@@ -126,6 +126,7 @@ import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
+import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
@@ -313,8 +314,14 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
-import DcpoConstructions
 import Dcpo
+import DcpoBilimits
+import DcpoBilimitsSequential
+import DcpoDinfinity
+import DcpoExponential
+import DcpoLeastFixedPoint
+import DcpoMiscelanea
+import DcpoPCFCombinators
 import Dcpos
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
@@ -433,6 +440,7 @@ import Plus
 import PlusOneLC
 import Plus-Properties
 import Plus-Type
+import Poset
 import PropInfTychonoff
 import PropTychonoff
 import QuasiDecidable
