@@ -126,6 +126,7 @@ import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
 -- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
+import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import Dedekind
@@ -313,15 +314,15 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
-import Dcpo                         -- By Tom de Jong and Martin Escardo
-import DcpoBilimits                 -- By Tom de Jong
-import DcpoBilimitsSequential       -- "
+import Dcpo
+import DcpoBilimits
+import DcpoBilimitsSequential
 import DcpoDinfinity
 import DcpoExponential
 import DcpoLeastFixedPoint
 import DcpoMiscelanea
 import DcpoPCFCombinators
-import Dcpos                        -- "
+import Dcpos
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
 import DisconnectedTypes
@@ -432,19 +433,20 @@ import OrdinalsType
 import OrdinalsWellOrderArithmetic
 import OrdinalsWellOrderTransport
 import PartialElements
-import PCF                         -- By Tom de Jong and Martin Escardo
-import PCFModules                  -- By Tom de Jong
+import PCF
+import PCFModules
 import Pi
 import Plus
 import PlusOneLC
 import Plus-Properties
 import Plus-Type
+import Poset
 import PropInfTychonoff
 import PropTychonoff
 import QuasiDecidable
 import RicesTheoremForTheUniverse
 import RootsTruncation
-import ScottModelOfPCF             -- By Tom de Jong
+import ScottModelOfPCF
 import Sequence
 import sigma-frame
 import Sigma
