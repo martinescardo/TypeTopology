@@ -630,6 +630,12 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
                         (candidate-upper-section-is-ordered
                           L lower located p p p-is-in-L p-is-in-U)) ∣
 
+\end{code}
+
+The candidate upper section is the unique candidate in the following sense:
+
+\begin{code}
+
  unique-candidate : (L U : 𝓟 ℚ)
                   → is-dedekind-section (L , U) → U ≡ candidate-upper-section L
  unique-candidate L U (Li , Ll , Lo , Ui , Uu , Uo , ordered , located) = γ
@@ -657,8 +663,14 @@ module _ (ϕ : further-properties-of-ℚ-and-its-order) where
         (Uo , ordered , located)
         III
 
+\end{code}
+
+And, as promised, the Troelstra condition implies the Dedekind condition:
+
+\begin{code}
+
  troelstra-gives-dedekind : (l : ℝᴸ) → is-troelstra l → is-dedekind l
- troelstra-gives-dedekind l@(L , L-is-inhabited , L-is-lower , L-is-upper-open)
+ troelstra-gives-dedekind (L , L-is-inhabited , L-is-lower , L-is-upper-open)
                           (bounded , located) =
   (candidate-upper-section L ,
     (candidate-upper-section-is-inhabited L bounded located ,
