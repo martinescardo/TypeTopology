@@ -36,9 +36,14 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
 open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
+open import UF-Powerset
+open import UF-Embeddings
+open import UF-Equiv
 
 module Dedekind
         (pt  : propositional-truncations-exist)
@@ -70,9 +75,6 @@ record further-properties-of-ℚ-and-its-order : 𝓣 ̇ where
   cotransitivity  : (p q r : ℚ) → p < r → (p < q) ∨ (q < r)
   ℚ-is-lower-open : (q : ℚ) → ∃ p ꞉ ℚ , (p < q)
   ℚ-is-upper-open : (p : ℚ) → ∃ q ꞉ ℚ , (p < q)
-
-open import UF-Powerset
-open import UF-Subsingletons-FunExt
 
 𝓣⁺ = 𝓣 ⁺
 
@@ -309,8 +311,6 @@ and hence ℝ is a set:
 ℝ-to-ℝᴸ : ℝ → ℝᴸ
 ℝ-to-ℝᴸ = pr₁
 
-open import UF-Embeddings
-
 ℝ-to-ℝᴸ-is-embedding : is-embedding ℝ-to-ℝᴸ
 ℝ-to-ℝᴸ-is-embedding = pr₁-is-embedding being-dedekind-is-prop
 
@@ -328,8 +328,6 @@ We unpack and reorder the definition to emphasize that it amounts to
 the usual one:
 
 \begin{code}
-
-open import UF-Equiv
 
 is-dedekind-section : 𝓟 ℚ × 𝓟 ℚ → 𝓣 ̇
 is-dedekind-section (L , U) = is-inhabited L × is-lower L × is-upper-open L
@@ -387,7 +385,6 @@ ordered-located-gives-upper L U LU-ordered LU-located = γ
     b (inl u) = 𝟘-elim (order-is-irrefl q (LU-ordered q q u l))
     b (inr v) = v
 
-open import UF-Base
 
 NB₂ : ℝ ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
                 , is-inhabited L × is-upper-open L
