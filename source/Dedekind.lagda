@@ -484,16 +484,16 @@ offered by Troelstra.
 is-bounded-above : 𝓟 ℚ → 𝓣 ̇
 is-bounded-above L = ∃ s ꞉ ℚ , s ∉ L
 
-is-troelstra-located : 𝓟 ℚ → 𝓣 ̇
-is-troelstra-located L = ((r s : ℚ) → r < s → r ∈ L ∨ s ∉ L)
+is-located : 𝓟 ℚ → 𝓣 ̇
+is-located L = ((r s : ℚ) → r < s → r ∈ L ∨ s ∉ L)
 
 is-troelstra : ℝᴸ → 𝓣 ̇
-is-troelstra (L , _) = is-bounded-above L × is-troelstra-located L
+is-troelstra (L , _) = is-bounded-above L × is-located L
 
 being-bounded-above-is-prop : (L : 𝓟 ℚ) → is-prop (is-bounded-above L)
 being-bounded-above-is-prop L = ∃-is-prop
 
-being-troelstra-located-is-prop : (L : 𝓟 ℚ) → is-prop (is-troelstra-located L)
+being-troelstra-located-is-prop : (L : 𝓟 ℚ) → is-prop (is-located L)
 being-troelstra-located-is-prop L = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
 
 being-troelstra-is-prop : (l : ℝᴸ) → is-prop (is-troelstra l)
@@ -507,11 +507,11 @@ The Dedekind and Troelstra conditions are equivalent:
 \begin{code}
 
 dedekind-gives-troelstra : (l : ℝᴸ) → is-dedekind l → is-troelstra l
-dedekind-gives-troelstra (L , _ , _ , _)
-                        ((U , U-is-inhabited , _ , _) , LU-ordered , LU-located) = a , b
+dedekind-gives-troelstra l@(L , _ , _ , _)
+                          ((U , U-is-inhabited , _ , _) , LU-ordered , LU-located) = γ
  where
-  a : (∃ s ꞉ ℚ , s ∉ L)
-  a = ∥∥-functor f U-is-inhabited
+  bounded : (∃ s ꞉ ℚ , s ∉ L)
+  bounded = ∥∥-functor f U-is-inhabited
    where
     f : (Σ q ꞉ ℚ , q ∈ U) → Σ q ꞉ ℚ , q ∉ L
     f (q , q-is-in-U) = q , (λ q-is-in-L → order-is-irrefl q (c q-is-in-L))
@@ -519,8 +519,8 @@ dedekind-gives-troelstra (L , _ , _ , _)
       c : q ∈ L → q < q
       c q-is-in-L = LU-ordered q q q-is-in-L q-is-in-U
 
-  b : (r s : ℚ) → r < s → r ∈ L ∨ s ∉ L
-  b r s less = ∥∥-functor f (LU-located r s less)
+  located : (r s : ℚ) → r < s → r ∈ L ∨ s ∉ L
+  located r s less = ∥∥-functor f (LU-located r s less)
    where
     f : (r ∈ L) + (s ∈ U) → (r ∈ L) + (s ∉ L)
     f (inl r-is-in-L) = inl r-is-in-L
@@ -529,84 +529,143 @@ dedekind-gives-troelstra (L , _ , _ , _)
       d : s ∈ L → s < s
       d s-is-in-L = LU-ordered s s s-is-in-L r-is-in-L
 
+  γ : is-troelstra l
+  γ = bounded , located
+
 \end{code}
 
 For the converse, we need the further assumptions on _<_ mentioned
-above:
+above. A lower Dedekind real may or may not have an upper section. If
+it does, it is given vt the following candidate.
 
 \begin{code}
 
 candidate-upper-section : 𝓟 ℚ → 𝓟 ℚ
 candidate-upper-section L = λ q → (∃ p ꞉ ℚ , (p < q) × (p ∉ L)) , ∃-is-prop
 
-troelstra-gives-dedekind : further-properties-of-ℚ-and-its-order
-                         → (l : ℝᴸ) → is-troelstra l → is-dedekind l
-troelstra-gives-dedekind ϕ l@(L , L-is-inhabited , L-is-lower , L-is-upper-open) (a , b) = γ
- where
-  open further-properties-of-ℚ-and-its-order ϕ
+module _ (ϕ : further-properties-of-ℚ-and-its-order) where
 
-  U : 𝓟 ℚ
-  U = candidate-upper-section L
+ open further-properties-of-ℚ-and-its-order ϕ
 
-  U-is-inhabited : is-inhabited U
-  U-is-inhabited = ∥∥-rec (being-inhabited-is-prop U) f a
-   where
-    f : (Σ s ꞉ ℚ , s ∉ L) → is-inhabited U
-    f (s , ν) = ∥∥-functor g (ℚ-is-upper-open s)
-     where
-      g : (Σ p ꞉ ℚ , s < p) → Σ p ꞉ ℚ , p ∈ U
-      g (p , i) = p , ∣ s , i , ν ∣
+ candidate-upper-section-is-lower-open : (L : 𝓟 ℚ)
+                                       → is-lower-open (candidate-upper-section L)
+ candidate-upper-section-is-lower-open L q q-is-in-U = γ
+  where
+   f : (Σ p ꞉ ℚ , (p < q) × (p ∉ L)) → ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
+   f (p , i , p-is-not-in-L) = ∥∥-functor g (ℚ-is-dense p q i)
+    where
+     g : (Σ p' ꞉ ℚ , (p < p') × (p' < q))
+       → Σ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
+     g (p' , j , k) = p' , k , ∣ p , j , p-is-not-in-L ∣
 
-  LU-ordered : are-ordered L U
-  LU-ordered p q p-is-in-L q-is-in-U = ∥∥-rec (order-is-prop-valued p q) f q-is-in-U
-   where
-    f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
-    f (r , i , r-is-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (b r q i)
-     where
-      g : (r ∈ L) + (q ∉ L) → p < q
-      g (inl r-is-in-L)     = 𝟘-elim (r-is-not-in-L r-is-in-L)
-      g (inr q-is-not-in-L) = order-criterion p q I II
-       where
-        I : p ≢ q
-        I refl = q-is-not-in-L p-is-in-L
+   γ : ∃ q' ꞉ ℚ , ((q' < q) × (q' ∈ candidate-upper-section L))
+   γ = ∥∥-rec ∃-is-prop f q-is-in-U
 
-        II : ¬(q < p)
-        II less = q-is-not-in-L (L-is-lower p p-is-in-L q less)
+ candidate-upper-section-is-ordered : (L : 𝓟 ℚ)
+                                    → is-lower L
+                                    → is-located L
+                                    → are-ordered L (candidate-upper-section L)
+ candidate-upper-section-is-ordered L L-is-lower b p q p-is-in-L q-is-in-U = γ
+    where
+     f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
+     f (r , i , r-is-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (b r q i)
+      where
+       g : (r ∈ L) + (q ∉ L) → p < q
+       g (inl r-is-in-L)     = 𝟘-elim (r-is-not-in-L r-is-in-L)
+       g (inr q-is-not-in-L) = order-criterion p q I II
+        where
+         I : p ≢ q
+         I refl = q-is-not-in-L p-is-in-L
 
-  U-is-upper : is-upper U
-  U-is-upper p p-is-in-U q less = ∣ p ,
-                                   less ,
-                                   (λ p-is-in-L → order-is-irrefl p
-                                                   (LU-ordered p p p-is-in-L p-is-in-U)) ∣
+         II : ¬(q < p)
+         II less = q-is-not-in-L (L-is-lower p p-is-in-L q less)
 
-  U-is-lower-open : is-lower-open U
-  U-is-lower-open q q-is-in-U = ∥∥-rec ∃-is-prop f q-is-in-U
-   where
-    f : (Σ p ꞉ ℚ , (p < q) × (p ∉ L)) → ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-    f (p , i , p-is-not-in-L) = ∥∥-functor g (ℚ-is-dense p q i)
-     where
-      g : (Σ p' ꞉ ℚ , (p < p') × (p' < q))
-        → Σ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-      g (p' , j , k) = p' , k , ∣ p , j , p-is-not-in-L ∣
+     γ : p < q
+     γ = ∥∥-rec (order-is-prop-valued p q) f q-is-in-U
 
-  LU-located : are-located L U
-  LU-located p q less = ∥∥-rec ∨-is-prop II I
-   where
-    I : ∃ p' ꞉ ℚ , (p < p') × (p' < q)
-    I = ℚ-is-dense p q less
+ candidate-upper-section-is-located : (L : 𝓟 ℚ)
+                                    → is-located L
+                                    → are-located L (candidate-upper-section L)
+ candidate-upper-section-is-located L located p q less = ∥∥-rec ∨-is-prop II I
+    where
+     I : ∃ p' ꞉ ℚ , (p < p') × (p' < q)
+     I = ℚ-is-dense p q less
 
-    II : (Σ p' ꞉ ℚ , (p < p') × (p' < q)) → p ∈ L ∨ q ∈ U
-    II (p' , i , j) = ∥∥-rec ∨-is-prop IV III
-     where
-      III : p ∈ L ∨ p' ∉ L
-      III = b p p' i
+     II : (Σ p' ꞉ ℚ , (p < p') × (p' < q)) → p ∈ L ∨ q ∈ candidate-upper-section L
+     II (p' , i , j) = ∥∥-rec ∨-is-prop IV III
+      where
+       III : p ∈ L ∨ p' ∉ L
+       III = located p p' i
 
-      IV : (p ∈ L) + (p' ∉ L) → p ∈ L ∨ q ∈ U
-      IV (inl p-is-in-L) = ∣ inl p-is-in-L ∣
-      IV (inr p'-is-not-in-L) = ∣ inr ∣ (p' , j , p'-is-not-in-L) ∣ ∣
+       IV : (p ∈ L) + (p' ∉ L) → p ∈ L ∨ q ∈ candidate-upper-section L
+       IV (inl p-is-in-L) = ∣ inl p-is-in-L ∣
+       IV (inr p'-is-not-in-L) = ∣ inr ∣ (p' , j , p'-is-not-in-L) ∣ ∣
 
-  γ : is-dedekind l
-  γ = (U , (U-is-inhabited , U-is-upper , U-is-lower-open)) , LU-ordered , LU-located
+ candidate-upper-section-is-inhabited : (L : 𝓟 ℚ)
+                                      → is-bounded-above L
+                                      → is-located L
+                                      → is-inhabited (candidate-upper-section L)
+ candidate-upper-section-is-inhabited L bounded located =  γ
+    where
+     f : (Σ s ꞉ ℚ , s ∉ L) → is-inhabited (candidate-upper-section L)
+     f (s , ν) = ∥∥-functor g (ℚ-is-upper-open s)
+      where
+       g : (Σ p ꞉ ℚ , s < p) → Σ p ꞉ ℚ , p ∈ candidate-upper-section L
+       g (p , i) = p , ∣ s , i , ν ∣
+
+     γ : is-inhabited (candidate-upper-section L)
+     γ = ∥∥-rec (being-inhabited-is-prop (candidate-upper-section L)) f bounded
+
+ candidate-upper-section-is-upper : (L : 𝓟 ℚ)
+                                  → is-lower L
+                                  → is-bounded-above L
+                                  → is-located L
+                                  → is-upper (candidate-upper-section L)
+ candidate-upper-section-is-upper L lower bounded located p p-is-in-U q less = γ
+  where
+   γ : ∃ q' ꞉ ℚ , (q' < q) × (q' ∉ L)
+   γ = ∣ p ,
+        less ,
+        (λ p-is-in-L → order-is-irrefl p
+                        (candidate-upper-section-is-ordered
+                          L lower located p p p-is-in-L p-is-in-U)) ∣
+
+ unique-candidate : (L U : 𝓟 ℚ)
+                  → is-dedekind-section (L , U) → U ≡ candidate-upper-section L
+ unique-candidate L U (Li , Ll , Lo , Ui , Uu , Uo , ordered , located) = γ
+  where
+   l : ℝᴸ
+   l = (L , Li , Ll , Lo)
+
+   u : ℝᵁ
+   u = (U , Ui , Uu , Uo)
+
+   I : is-dedekind l
+   I = u , ordered , located
+
+   II : is-located L
+   II = pr₂ (dedekind-gives-troelstra l I)
+
+   III : (candidate-upper-section L) upper-section-of L
+   III = candidate-upper-section-is-lower-open L ,
+         candidate-upper-section-is-ordered L Ll II ,
+         candidate-upper-section-is-located L II
+
+   γ : U ≡ candidate-upper-section L
+   γ = any-two-upper-sections-are-equal L U
+        (candidate-upper-section L)
+        (Uo , ordered , located)
+        III
+
+ troelstra-gives-dedekind : (l : ℝᴸ) → is-troelstra l → is-dedekind l
+ troelstra-gives-dedekind l@(L , L-is-inhabited , L-is-lower , L-is-upper-open)
+                          (bounded , located) =
+  (candidate-upper-section L ,
+    (candidate-upper-section-is-inhabited L bounded located ,
+     candidate-upper-section-is-upper L L-is-lower bounded located ,
+     candidate-upper-section-is-lower-open L)) ,
+   candidate-upper-section-is-ordered L L-is-lower located ,
+   candidate-upper-section-is-located L located
 
 \end{code}
 
@@ -643,13 +702,18 @@ dedekind-agrees-with-troelstra ϕ = γ
                (λ (l , k) → to-subtype-≡ being-troelstra-is-prop refl))
 \end{code}
 
+\begin{code}
+
+
+\end{code}
+
 We now consider consequences of excluded middle.
 
 \begin{code}
 
 open import UF-ExcludedMiddle
 
-EM-gives-troelstra-locatedness : EM 𝓣 → ((L , _) : ℝᴸ) → is-troelstra-located L
+EM-gives-troelstra-locatedness : EM 𝓣 → ((L , _) : ℝᴸ) → is-located L
 EM-gives-troelstra-locatedness
   em l@(L , L-is-inhabited , L-is-lower , L-is-upper-open) r s less = γ δ
  where
