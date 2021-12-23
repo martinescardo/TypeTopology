@@ -223,12 +223,12 @@ The following definition is of an auxiliary character:
 
 \begin{code}
 
-_upper-section-of_ : 𝓟 ℚ → 𝓟 ℚ → 𝓣 ̇
-U upper-section-of L = is-lower-open U × are-ordered L U × are-located L U
+_is-an-upper-section-of_ : 𝓟 ℚ → 𝓟 ℚ → 𝓣 ̇
+U is-an-upper-section-of L = is-lower-open U × are-ordered L U × are-located L U
 
 any-two-upper-sections-are-equal : (L U U' : 𝓟 ℚ)
-                                 → U  upper-section-of L
-                                 → U' upper-section-of L
+                                 → U  is-an-upper-section-of L
+                                 → U' is-an-upper-section-of L
                                  → U ≡ U'
 any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
  where
@@ -301,6 +301,29 @@ We define the Dedekind reals as a subset of the lower reals:
 
 \end{code}
 
+The forgetful map of the reals into the lower reals is an embedding
+and hence ℝ is a set:
+
+\begin{code}
+
+ℝ-to-ℝᴸ : ℝ → ℝᴸ
+ℝ-to-ℝᴸ = pr₁
+
+open import UF-Embeddings
+
+ℝ-to-ℝᴸ-is-embedding : is-embedding ℝ-to-ℝᴸ
+ℝ-to-ℝᴸ-is-embedding = pr₁-is-embedding being-dedekind-is-prop
+
+ℝ-is-set : is-set ℝ
+ℝ-is-set = subsets-of-sets-are-sets ℝᴸ is-dedekind
+             ℝᴸ-is-set
+             (λ {l} → being-dedekind-is-prop l)
+\end{code}
+
+NB. This won't be a *topological* embedding in topological
+models. Because ℝ and ℝᴸ are sets, in the sense of HoTT/UF, the
+embedding condition merely says that the map is left-cancellable.
+
 We unpack and reorder the definition to emphasize that it amounts to
 the usual one:
 
@@ -324,29 +347,6 @@ NB = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
 
             (λ _ → refl))
 \end{code}
-
-The forgetful map of the reals into the lower reals is an embedding
-and hence ℝ is a set:
-
-\begin{code}
-
-ℝ-to-ℝᴸ : ℝ → ℝᴸ
-ℝ-to-ℝᴸ = pr₁
-
-open import UF-Embeddings
-
-ℝ-to-ℝᴸ-is-embedding : is-embedding ℝ-to-ℝᴸ
-ℝ-to-ℝᴸ-is-embedding = pr₁-is-embedding being-dedekind-is-prop
-
-ℝ-is-set : is-set ℝ
-ℝ-is-set = subsets-of-sets-are-sets ℝᴸ is-dedekind
-             ℝᴸ-is-set
-             (λ {l} → being-dedekind-is-prop l)
-\end{code}
-
-NB. This won't be a *topological* embedding in topological
-models. Because ℝ and ℝᴸ are sets, in the sense of HoTT/UF, the
-embedding condition merely says that the map is left-cancellable.
 
 The following shows that there is some redundancy in the definition of
 Dedekind real:
@@ -654,7 +654,7 @@ The candidate upper section is the unique candidate in the following sense:
    II : is-located L
    II = pr₂ (dedekind-gives-troelstra l I)
 
-   III : (candidate-upper-section L) upper-section-of L
+   III : (candidate-upper-section L) is-an-upper-section-of L
    III = candidate-upper-section-is-lower-open L ,
          candidate-upper-section-is-ordered L Ll II ,
          candidate-upper-section-is-located L II
