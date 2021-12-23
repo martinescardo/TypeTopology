@@ -65,8 +65,6 @@ pe {𝓤} = pe' 𝓤
 open PropositionalTruncation pt
 
 record further-properties-of-ℚ-and-its-order : 𝓣 ̇ where
- constructor
-  further
  field
   ℚ-is-inhabited  : ∥ ℚ ∥
   ℚ-is-dense      : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q) × (q < r)
@@ -335,17 +333,17 @@ is-dedekind-section (L , U) = is-inhabited L × is-lower L × is-upper-open L
                             × are-ordered L U × are-located L U
 
 
-NB : ℝ ≃ (Σ (L , R) ꞉ 𝓟 ℚ × 𝓟 ℚ , is-dedekind-section (L , R))
+NB₁ : ℝ ≃ (Σ (L , R) ꞉ 𝓟 ℚ × 𝓟 ℚ , is-dedekind-section (L , R))
 
-NB = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
-             → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
+NB₁ = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
+              → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
 
-           ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l)
-             → ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)) ,
+            ((λ ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l)
+              → ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)) ,
 
-            (λ _ → refl) ,
+             (λ _ → refl) ,
 
-            (λ _ → refl))
+             (λ _ → refl))
 \end{code}
 
 The following shows that there is some redundancy in the definition of
