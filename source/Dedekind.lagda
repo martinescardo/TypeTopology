@@ -8,8 +8,8 @@ numbers, and p is property of (L , U).
 
 But actually, given a lower Dedekind section L, there is at most one
 pair (U , p) such that (L , U , p) is a Dedekind real. Hence the
-Dedekind data (U , p) is actually property of the lower real L. A more
-precise statement of this phenomenon is given below.
+Dedekind data (U , p) is property of the lower real L rather than
+data. A more precise statement of this phenomenon is given below.
 
 We generalize the rationals to any type with a proposition-valued,
 irreflexive relation _<_, simply to avoid having to define the
