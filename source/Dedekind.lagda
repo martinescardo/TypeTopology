@@ -429,7 +429,7 @@ module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
          (tightness         : (p q : ℚ) → q ≮ p → p ≮ q → p ≡ q)
          (ℚ-is-lower-open   : (q : ℚ) → ∃ p ꞉ ℚ , (p < q))
          (ℚ-is-upper-open   : (p : ℚ) → ∃ q ꞉ ℚ , (p < q))
-         (𝟎 ½ 𝟏 𝟐           : ℚ)
+         (𝟎 ½ 𝟏             : ℚ)
          (𝟎-is-less-than-½  : 𝟎 < ½)
          (½-is-less-than-𝟏  : ½ < 𝟏)
        where
@@ -819,7 +819,7 @@ bounded lower reals:
                                   (dedekind-agrees-with-troelstra)
 \end{code}
 
-It follows that bounded real numbers are Dedekind under excluded middle.
+It follows that bounded lower reals are Dedekind under excluded middle.
 
 \begin{code}
 
