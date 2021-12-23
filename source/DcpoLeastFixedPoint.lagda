@@ -1,5 +1,5 @@
 Tom de Jong, May 2019.
-(Refactored Dec 2021.)
+Refactored Dec 2021.
 
 Least fixed points of Scott continuous maps.
 
@@ -9,7 +9,6 @@ Least fixed points of Scott continuous maps.
 
 open import SpartanMLTT
 open import UF-FunExt
-open import UF-Subsingletons
 open import UF-PropTrunc
 
 module DcpoLeastFixedPoint
@@ -18,7 +17,7 @@ module DcpoLeastFixedPoint
        where
 
 open PropositionalTruncation pt
-open import UF-Base
+
 open import UF-Miscelanea
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -30,7 +29,7 @@ open import NaturalNumbers-Properties
 module _ {𝓥 : Universe} where
 
  open import Dcpo pt fe 𝓥
- open import DcpoBasics pt fe 𝓥
+ open import DcpoMiscelanea pt fe 𝓥
  open import DcpoExponential pt fe 𝓥
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
@@ -41,12 +40,12 @@ module _ {𝓥 : Universe} where
 
   iter-is-monotone : (n : ℕ) → is-monotone ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter n)
   iter-is-monotone zero     f g l = ⊥-is-least 𝓓 (iter zero g)
-  iter-is-monotone (succ n) f g l = iter (succ n) f               ⊑⟪ 𝓓 ⟫[ I  ]
-                                    [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ g ⟩ (iter n f) ⊑⟪ 𝓓 ⟫[ II ]
+  iter-is-monotone (succ n) f g l = iter (succ n) f               ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
+                                    [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ g ⟩ (iter n f) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
                                     iter (succ n) g               ∎⟪ 𝓓 ⟫
    where
-    I  = l (iter n f)
-    II = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) g (iter n f) (iter n g)
+    ⦅1⦆ = l (iter n f)
+    ⦅2⦆ = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) g (iter n f) (iter n g)
           (iter-is-monotone n f g l)
 
   n-family : {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫) (n : ℕ) → I → ⟪ 𝓓 ⟫
@@ -105,8 +104,7 @@ module _ {𝓥 : Universe} where
         u j = ∥∥-rec (prop-valuedness (𝓓 ⁻) (β j) y) v
                (semidirected-if-Directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) α δ i j)
                 where
-          v : (Σ  k ꞉ I , α i ⊑⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α k
-                        × α j ⊑⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α k)
+          v : (Σ  k ꞉ I , α i ⊑⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α k × α j ⊑⟪ 𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓 ⟫ α k)
             → β j ⊑⟪ 𝓓 ⟫ y
           v (k , l , m) = β j                                 ⊑⟪ 𝓓 ⟫[ ⦅1⦆ ]
                           [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ α k ⟩ (iter n (α j)) ⊑⟪ 𝓓 ⟫[ ⦅2⦆ ]
@@ -167,20 +165,21 @@ module _ {𝓥 : Universe} where
         ⦅1⦆ = ap ([ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ s ⟩) e
          where
           e : iter n s ≡ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
-          e = antisymmetry (𝓓 ⁻) (iter n s) (∐ (𝓓 ⁻) (n-family-is-directed α δ n)) l m
+          e = antisymmetry (𝓓 ⁻) (iter n s) (∐ (𝓓 ⁻)
+               (n-family-is-directed α δ n)) l m
            where
             IH : is-sup (underlying-order (𝓓 ⁻)) (iter n (∐ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) δ))
                  (iter n ∘ α)
             IH = iter-is-continuous n I α δ
             l : iter n s ⊑⟪ 𝓓 ⟫ ∐ (𝓓 ⁻) (n-family-is-directed α δ n)
             l = sup-is-lowerbound-of-upperbounds
-                (underlying-order (𝓓 ⁻)) IH
-                (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
-                (∐-is-upperbound (𝓓 ⁻) (n-family-is-directed α δ n))
+                 (underlying-order (𝓓 ⁻)) IH
+                 (∐ (𝓓 ⁻) (n-family-is-directed α δ n))
+                 (∐-is-upperbound (𝓓 ⁻) (n-family-is-directed α δ n))
             m : ∐ (𝓓 ⁻) (n-family-is-directed α δ n) ⊑⟪ 𝓓 ⟫ iter n s
             m = ∐-is-lowerbound-of-upperbounds (𝓓 ⁻) (n-family-is-directed α δ n)
-                (iter n s)
-                (sup-is-upperbound (underlying-order (𝓓 ⁻)) IH)
+                 (iter n s)
+                 (sup-is-upperbound (underlying-order (𝓓 ⁻)) IH)
 
   iter-c : ℕ → DCPO[ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]
   iter-c n = iter n , iter-is-continuous n
@@ -189,16 +188,16 @@ module _ {𝓥 : Universe} where
                               (iter-c (succ n))
   iter-is-ω-chain zero     f = ⊥-is-least 𝓓 (iter (succ zero) f)
   iter-is-ω-chain (succ n) f = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) f
-                               (iter n f)
-                               (iter (succ n) f)
-                               (iter-is-ω-chain n f)
+                                (iter n f)
+                                (iter (succ n) f)
+                                (iter-is-ω-chain n f)
 
   iter-increases : (n m : ℕ) → (n ≤ m)
                  → (iter-c n) ⊑⟨ ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) ⟹ᵈᶜᵖᵒ (𝓓 ⁻) ⟩ (iter-c m)
   iter-increases n zero l     f = transport
-                                  (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter zero f)
-                                  (unique-minimal n l ⁻¹)
-                                  (reflexivity (𝓓 ⁻) (iter zero f))
+                                   (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter zero f)
+                                   (unique-minimal n l ⁻¹)
+                                   (reflexivity (𝓓 ⁻) (iter zero f))
   iter-increases n (succ m) l f = h (≤-split n m l)
    where
     h : (n ≤ m) + (n ≡ succ m) → (iter n f) ⊑⟪ 𝓓 ⟫ iter (succ m) f
@@ -206,7 +205,7 @@ module _ {𝓥 : Universe} where
                  iter m f        ⊑⟪ 𝓓 ⟫[ iter-is-ω-chain m f     ]
                  iter (succ m) f ∎⟪ 𝓓 ⟫
     h (inr e)  = transport (λ - → iter - f ⊑⟪ 𝓓 ⟫ iter (succ m) f) (e ⁻¹)
-                 (reflexivity (𝓓 ⁻) (iter (succ m) f))
+                  (reflexivity (𝓓 ⁻) (iter (succ m) f))
 
 \end{code}
 
@@ -223,7 +222,7 @@ don't have a practical use for it anyway (at the time of writing).
 module _ where
 
  open import Dcpo pt fe 𝓤₀
- open import DcpoBasics pt fe 𝓤₀
+ open import DcpoMiscelanea pt fe 𝓤₀
  open import DcpoExponential pt fe 𝓤₀
 
  module _ (𝓓 : DCPO⊥ {𝓤} {𝓣}) where
@@ -238,7 +237,7 @@ module _ where
      where
       l : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 i f ⊑⟪ 𝓓 ⟫ iter 𝓓 (i +' j) f
       l = iter-increases 𝓓 i (i +' j)
-          (cosubtraction i (i +' j) (j , (addition-commutativity j i)))
+           (cosubtraction i (i +' j) (j , (addition-commutativity j i)))
       m : (f : DCPO[ (𝓓 ⁻) , (𝓓 ⁻) ]) → iter 𝓓 j f ⊑⟪ 𝓓 ⟫ iter 𝓓 (i +' j) f
       m = iter-increases 𝓓 j (i +' j) (cosubtraction j (i +' j) (i , refl))
 
@@ -272,7 +271,7 @@ module _ where
 
     m : f (ν fc) ⊑⟪ 𝓓 ⟫ ν fc
     m = sup-is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
-        (continuity-of-function (𝓓 ⁻) (𝓓 ⁻) fc ℕ α δ) (ν fc) k
+         (continuity-of-function (𝓓 ⁻) (𝓓 ⁻) fc ℕ α δ) (ν fc) k
      where
       α : ℕ → ⟪ 𝓓 ⟫
       α = pointwise-family ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓) fc
@@ -288,15 +287,15 @@ module _ where
     → [ (𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻ , 𝓓 ⁻ ]⟨ μ ⟩ f ⊑⟪ 𝓓 ⟫ d
   μ-gives-lowerbound-of-fixed-points f d l =
    ∐-is-lowerbound-of-upperbounds (𝓓 ⁻)
-   (pointwise-family-is-directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓)
-    iter-is-directed f)
-   d g
+    (pointwise-family-is-directed ((𝓓 ⟹ᵈᶜᵖᵒ⊥ 𝓓) ⁻) (𝓓 ⁻) (iter-c 𝓓)
+      iter-is-directed f)
+    d g
     where
      g : (n : ℕ) → iter 𝓓 n f ⊑⟪ 𝓓 ⟫ d
      g zero     = ⊥-is-least 𝓓 d
      g (succ n) = iter 𝓓 (succ n) f    ⊑⟪ 𝓓 ⟫[ k ]
                   [ 𝓓 ⁻ , 𝓓 ⁻ ]⟨ f ⟩ d ⊑⟪ 𝓓 ⟫[ l ]
-                  d ∎⟪ 𝓓 ⟫
+                  d                    ∎⟪ 𝓓 ⟫
       where
        k = monotone-if-continuous (𝓓 ⁻) (𝓓 ⁻) f (iter 𝓓 n f) d (g n)
 
