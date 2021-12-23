@@ -336,7 +336,9 @@ is-dedekind-section (L , U) = is-inhabited L × is-lower L × is-upper-open L
                             × is-inhabited U × is-upper U × is-lower-open U
                             × are-ordered L U × are-located L U
 
+
 NB : ℝ ≃ (Σ (L , R) ꞉ 𝓟 ℚ × 𝓟 ℚ , is-dedekind-section (L , R))
+
 NB = qinveq (λ ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l)
              → ((L , U) , Li , Ll , Lo , Ui , Uu , Uo , o , l))
 
@@ -757,6 +759,7 @@ lower reals:
 ∞-is-lower-real-but-not-bounded-above ϕ = a , b
  where
   open further-properties-of-ℚ-and-its-order ϕ
+
   a : is-lower-real ∞
   a = ∥∥-rec (being-inhabited-is-prop ∞) (λ q → ∣ q , * ∣) ℚ-is-inhabited ,
       (λ _ _ _ _ → *) ,
@@ -793,8 +796,8 @@ bounded lower reals:
 \begin{code}
 
 ℝ-and-ℝᴮᴸ-agree-under-EM : EM 𝓣
-                        → further-properties-of-ℚ-and-its-order
-                        → ℝ ≃ ℝᴮᴸ
+                         → further-properties-of-ℚ-and-its-order
+                         → ℝ ≃ ℝᴮᴸ
 ℝ-and-ℝᴮᴸ-agree-under-EM em ϕ = transport (ℝ ≃_)
                                  (ℝᵀ-and-ℝᴮᴸ-agree-under-EM em ϕ)
                                  (dedekind-agrees-with-troelstra ϕ)
