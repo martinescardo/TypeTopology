@@ -177,10 +177,10 @@ technical-lemma L U L' U'
                 LU'-ordered
                 L-is-contained-in-L'
                 q
-                q-is-in-U'        = γ
+                q-in-U'             = γ
  where
   I : ∃ q' ꞉ ℚ , (q' < q) × q' ∈ U'
-  I = U'-lower-open q q-is-in-U'
+  I = U'-lower-open q q-in-U'
 
   II : (Σ q' ꞉ ℚ , (q' < q) × q' ∈ U') → q ∈ U
   II (q' , l , i) = VI
@@ -412,8 +412,8 @@ used in the definition of Dedekind reals.
 disjoint-criterion : (L U : 𝓟 ℚ)
                    → are-ordered L U
                    → are-disjoint L U
-disjoint-criterion L U o p (p-is-in-L , p-is-in-U) =
- order-is-irrefl p (o p p p-is-in-L p-is-in-U)
+disjoint-criterion L U o p (p-in-L , p-in-U) =
+ order-is-irrefl p (o p p p-in-L p-in-U)
 
 \end{code}
 
@@ -461,7 +461,6 @@ module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
 
    γ : p < q
    γ = order-criterion p q II III
-
 
 \end{code}
 
@@ -539,20 +538,20 @@ The Dedekind and Troelstra conditions are equivalent:
    bounded = ∥∥-functor f U-is-inhabited
     where
      f : (Σ q ꞉ ℚ , q ∈ U) → Σ q ꞉ ℚ , q ∉ L
-     f (q , q-is-in-U) = q , (λ q-is-in-L → order-is-irrefl q (c q-is-in-L))
+     f (q , q-in-U) = q , (λ q-in-L → order-is-irrefl q (c q-in-L))
       where
        c : q ∈ L → q < q
-       c q-is-in-L = LU-ordered q q q-is-in-L q-is-in-U
+       c q-in-L = LU-ordered q q q-in-L q-in-U
 
    located : (r s : ℚ) → r < s → r ∈ L ∨ s ∉ L
    located r s ℓ = ∥∥-functor f (LU-located r s ℓ)
     where
      f : (r ∈ L) + (s ∈ U) → (r ∈ L) + (s ∉ L)
-     f (inl r-is-in-L) = inl r-is-in-L
-     f (inr r-is-in-L) = inr (λ s-is-in-L → order-is-irrefl s (d s-is-in-L))
+     f (inl r-in-L) = inl r-in-L
+     f (inr r-in-L) = inr (λ s-in-L → order-is-irrefl s (d s-in-L))
       where
        d : s ∈ L → s < s
-       d s-is-in-L = LU-ordered s s s-is-in-L r-is-in-L
+       d s-in-L = LU-ordered s s s-in-L r-in-L
 
    γ : is-troelstra l
    γ = bounded , located
@@ -569,39 +568,39 @@ does, it is given by the following candidate.
 
  candidate-upper-section-is-lower-open : (L : 𝓟 ℚ)
                                        → is-lower-open (candidate-upper-section L)
- candidate-upper-section-is-lower-open L q q-is-in-U = γ
+ candidate-upper-section-is-lower-open L q q-in-U = γ
   where
    f : (Σ p ꞉ ℚ , (p < q) × (p ∉ L)) → ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-   f (p , i , p-is-not-in-L) = ∥∥-functor g (ℚ-is-dense p q i)
+   f (p , i , p-not-in-L) = ∥∥-functor g (ℚ-is-dense p q i)
     where
      g : (Σ p' ꞉ ℚ , (p < p') × (p' < q))
        → Σ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-     g (p' , j , k) = p' , k , ∣ p , j , p-is-not-in-L ∣
+     g (p' , j , k) = p' , k , ∣ p , j , p-not-in-L ∣
 
    γ : ∃ q' ꞉ ℚ , ((q' < q) × (q' ∈ candidate-upper-section L))
-   γ = ∥∥-rec ∃-is-prop f q-is-in-U
+   γ = ∥∥-rec ∃-is-prop f q-in-U
 
  candidate-upper-section-is-ordered : (L : 𝓟 ℚ)
                                     → is-lower L
                                     → is-located L
                                     → are-ordered L (candidate-upper-section L)
- candidate-upper-section-is-ordered L L-is-lower located p q p-is-in-L q-is-in-U = γ
+ candidate-upper-section-is-ordered L L-is-lower located p q p-in-L q-in-U = γ
     where
      f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
-     f (r , i , r-is-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (located r q i)
+     f (r , i , r-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (located r q i)
       where
        g : (r ∈ L) + (q ∉ L) → p < q
-       g (inl r-is-in-L)     = 𝟘-elim (r-is-not-in-L r-is-in-L)
-       g (inr q-is-not-in-L) = order-criterion p q I II
+       g (inl r-in-L)     = 𝟘-elim (r-not-in-L r-in-L)
+       g (inr q-not-in-L) = order-criterion p q I II
         where
          I : p ≢ q
-         I refl = q-is-not-in-L p-is-in-L
+         I refl = q-not-in-L p-in-L
 
          II : q ≮ p
-         II ℓ = q-is-not-in-L (L-is-lower p p-is-in-L q ℓ)
+         II ℓ = q-not-in-L (L-is-lower p p-in-L q ℓ)
 
      γ : p < q
-     γ = ∥∥-rec (order-is-prop-valued p q) f q-is-in-U
+     γ = ∥∥-rec (order-is-prop-valued p q) f q-in-U
 
  candidate-upper-section-is-located : (L : 𝓟 ℚ)
                                     → is-located L
@@ -618,14 +617,13 @@ does, it is given by the following candidate.
        III = located p p' i
 
        IV : (p ∈ L) + (p' ∉ L) → p ∈ L ∨ q ∈ candidate-upper-section L
-       IV (inl p-is-in-L)      = ∣ inl p-is-in-L ∣
-       IV (inr p'-is-not-in-L) = ∣ inr ∣ (p' , j , p'-is-not-in-L) ∣ ∣
+       IV (inl p-in-L)      = ∣ inl p-in-L ∣
+       IV (inr p'-not-in-L) = ∣ inr ∣ (p' , j , p'-not-in-L) ∣ ∣
 
  candidate-upper-section-is-inhabited : (L : 𝓟 ℚ)
                                       → is-bounded-above L
-                                      → is-located L
                                       → is-inhabited (candidate-upper-section L)
- candidate-upper-section-is-inhabited L bounded located =  γ
+ candidate-upper-section-is-inhabited L bounded =  γ
     where
      f : (Σ s ꞉ ℚ , s ∉ L) → is-inhabited (candidate-upper-section L)
      f (s , ν) = ∥∥-functor g (ℚ-is-upper-open s)
@@ -638,17 +636,16 @@ does, it is given by the following candidate.
 
  candidate-upper-section-is-upper : (L : 𝓟 ℚ)
                                   → is-lower L
-                                  → is-bounded-above L
                                   → is-located L
                                   → is-upper (candidate-upper-section L)
- candidate-upper-section-is-upper L lower bounded located p p-is-in-U q ℓ = γ
+ candidate-upper-section-is-upper L lower located p p-in-U q ℓ = γ
   where
    γ : ∃ q' ꞉ ℚ , (q' < q) × (q' ∉ L)
    γ = ∣ p ,
         ℓ ,
-        (λ p-is-in-L → order-is-irrefl p
-                        (candidate-upper-section-is-ordered
-                          L lower located p p p-is-in-L p-is-in-U)) ∣
+        (λ p-in-L → order-is-irrefl p
+                     (candidate-upper-section-is-ordered
+                     L lower located p p p-in-L p-in-U)) ∣
 \end{code}
 
 The candidate upper section is the unique candidate in the following
@@ -695,8 +692,8 @@ And, as promised, the Troelstra condition implies the Dedekind condition:
   where
    γ : is-dedekind l
    γ = ((candidate-upper-section L ,
-         (candidate-upper-section-is-inhabited L bounded located ,
-          candidate-upper-section-is-upper L L-is-lower bounded located ,
+         (candidate-upper-section-is-inhabited L bounded ,
+          candidate-upper-section-is-upper L L-is-lower located ,
           candidate-upper-section-is-lower-open L)) ,
         candidate-upper-section-is-ordered L L-is-lower located ,
         candidate-upper-section-is-located L located)
@@ -751,8 +748,8 @@ proposition, then so is A + ¬ A, and thus A + ¬ A is equivalent to A ∨ ¬ A.
    δ = lem (s ∈ L) (∈-is-prop L s)
 
    γ : type-of δ → (r ∈ L) ∨ (s ∉ L)
-   γ (inl s-is-in-L)     = ∣ inl (L-is-lower s s-is-in-L r ℓ) ∣
-   γ (inr s-is-not-in-L) = ∣ inr s-is-not-in-L ∣
+   γ (inl s-in-L)     = ∣ inl (L-is-lower s s-in-L r ℓ) ∣
+   γ (inr s-not-in-L) = ∣ inr s-not-in-L ∣
 
 \end{code}
 
@@ -784,7 +781,7 @@ lower reals:
  ∞-is-not-bounded-above : ¬ is-bounded-above ∞
  ∞-is-not-bounded-above bounded = ∥∥-rec
                                     𝟘-is-prop
-                                    (λ (q , q-is-not-in-∞) → q-is-not-in-∞ *)
+                                    (λ (q , q-not-in-∞) → q-not-in-∞ *)
                                     bounded
 \end{code}
 
@@ -913,23 +910,16 @@ The canonical embedding of the rationals into the reals:
 \begin{code}
 
  ℚ-to-ℝᴸ : ℚ → ℝᴸ
- ℚ-to-ℝᴸ q = L ,
+ ℚ-to-ℝᴸ q = (λ p → (p < q) , order-is-prop-valued p q) ,
              ℚ-is-lower-open q ,
              (λ p i r j → transitivity r p q j i) ,
              (λ p →  ℚ-is-dense p q)
-  where
-   L : 𝓟 ℚ
-   L p = (p < q) , order-is-prop-valued p q
 
  ℚ-to-ℝᵁ : ℚ → ℝᵁ
- ℚ-to-ℝᵁ q = U ,
+ ℚ-to-ℝᵁ q = (λ p → (q < p) , order-is-prop-valued q p) ,
              ℚ-is-upper-open q ,
              (λ p i r j → transitivity q p r i j) ,
              (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-is-dense q p i))
-  where
-   U : 𝓟 ℚ
-   U p = (q < p) , order-is-prop-valued q p
-
 
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ : (q : ℚ) → (ℚ-to-ℝᵁ q) is-upper-section-of (ℚ-to-ℝᴸ q)
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → transitivity p q) , (λ p → cotransitivity p q)
