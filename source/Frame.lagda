@@ -837,6 +837,35 @@ binary-distributivity {𝓦 = 𝓦} F x y z =
    † = distributivity F x (binary-family 𝓦 y z)
    ‡ = ap (λ - → join-of F -) (fmap-binary-family 𝓦 (λ - → x ∧[ F ] -) y z)
 
+binary-distributivity-op : (F : frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
+                         → x ∨[ F ] (y ∧[ F ] z) ≡ (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)
+binary-distributivity-op F x y z =
+ x ∨[ F ] (y ∧[ F ] z)                                   ≡⟨ †    ⟩
+ x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))             ≡⟨ I    ⟩
+ x ∨[ F ] (z ∧[ F ] (x ∨[ F ] y))                        ≡⟨ II   ⟩
+ x ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)                        ≡⟨ III  ⟩
+ (x ∧[ F ] (x ∨[ F ] y)) ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)  ≡⟨ IV   ⟩
+ ((x ∨[ F ] y) ∧[ F ] x) ∨[ F ] ((x ∨[ F ] y) ∧[ F ] z)  ≡⟨ V    ⟩
+ (x ∨[ F ] y) ∧[ F ] (x ∨[ F ] z)                        ∎
+  where
+   w   = (x ∨[ F ] y) ∧[ F ] z
+
+   I   = ap (λ - → x ∨[ F ] -) ((binary-distributivity F z x y) ⁻¹)
+   II  = ap (λ - → x ∨[ F ] -) (∧[ F ]-is-commutative z (x ∨[ F ] y))
+   III = ap (λ - → - ∨[ F ] w) (absorptionᵒᵖ-right F x y) ⁻¹
+   IV  = ap (λ - → - ∨[ F ] w) (∧[ F ]-is-commutative x (x ∨[ F ] y))
+   V   = (binary-distributivity F (x ∨[ F ] y) x z) ⁻¹
+
+   † : x ∨[ F ] (y ∧[ F ] z) ≡ x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))
+   † = x ∨[ F ] (y ∧[ F ] z)                        ≡⟨ i    ⟩
+       (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] (y ∧[ F ] z)  ≡⟨ ii   ⟩
+       (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] (z ∧[ F ] y)  ≡⟨ iii  ⟩
+       x ∨[ F ] ((z ∧[ F ] x) ∨[ F ] (z ∧[ F ] y))  ∎
+        where
+         i   = ap (λ - → - ∨[ F ] (y ∧[ F ] z)) (absorption-left F x z) ⁻¹
+         ii  = ap (λ - → (x ∨[ F ] (z ∧[ F ] x)) ∨[ F ] -) (∧[ F ]-is-commutative y z)
+         iii = ∨[ F ]-assoc x (z ∧[ F ] x) (z ∧[ F ] y)
+
 \end{code}
 
 \begin{code}
