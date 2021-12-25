@@ -305,6 +305,18 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 \end{code}
 
+\begin{code}
+
+𝟎-is-clopen : (F : frame 𝓤 𝓥 𝓦) → 𝟎[ F ] ⋜₀[ F ] 𝟎[ F ]
+𝟎-is-clopen F = 𝟏[ F ] , β , γ
+ where
+  β : 𝟎[ F ] ∧[ F ] 𝟏[ F ] ≡ 𝟎[ F ]
+  β = 𝟎-left-annihilator-for-∧ F 𝟏[ F ]
+
+  γ : 𝟎[ F ] ∨[ F ] 𝟏[ F ] ≡ 𝟏[ F ]
+  γ = 𝟏-right-annihilator-for-∨ F 𝟎[ F ]
+
+\end{code}
 \section{Definition of regularity}
 
 \begin{code}
