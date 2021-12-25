@@ -317,6 +317,20 @@ clopenness-equivalent-to-well-inside-itself F U =
   γ = 𝟏-right-annihilator-for-∨ F 𝟎[ F ]
 
 \end{code}
+
+\begin{code}
+
+𝟎-is-well-inside-anything : (F : frame 𝓤 𝓥 𝓦) (U : ⟨ F ⟩)
+                          → (𝟎[ F ] ⋜[ F ] U) holds
+𝟎-is-well-inside-anything F U = T≤U⋜V≤W-implies-T⋜W F β ∣ 𝟎-is-clopen F ∣ γ
+ where
+  β : (𝟎[ F ] ≤[ poset-of F ] 𝟎[ F ]) holds
+  β = ≤-is-reflexive (poset-of F) 𝟎[ F ]
+
+  γ : (𝟎[ F ] ≤[ poset-of F ] U) holds
+  γ = 𝟎-is-bottom F U
+
+\end{code}
 \section{Definition of regularity}
 
 \begin{code}
