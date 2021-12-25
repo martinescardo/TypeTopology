@@ -26,7 +26,7 @@ type theory. Their specifications are as follows:
     countable existential quantification, or countable joins in the
     frame of propositions.
 
-    They for a dominance.
+    They form a dominance.
 
   * The initial σ-frame.
 

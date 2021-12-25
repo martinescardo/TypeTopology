@@ -175,7 +175,7 @@ technical-lemma L U L' U'
                 U'-lower-open
                 LU-located
                 LU'-ordered
-                L-is-contained-in-L'
+                L-contained-in-L'
                 q
                 q-in-U'             = γ
  where
@@ -192,7 +192,7 @@ technical-lemma L U L' U'
     IV j = order-is-irrefl q' b
      where
       a : q' ∈ L'
-      a = L-is-contained-in-L' q' j
+      a = L-contained-in-L' q' j
 
       b : q' < q'
       b = LU'-ordered q' q' a i
@@ -448,7 +448,7 @@ module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
                    → is-lower L
                    → are-disjoint L U
                    → are-ordered L U
- ordered-criterion L U L-is-lower LU-disjoint p q p-in-L q-in-U = γ
+ ordered-criterion L U L-lower LU-disjoint p q p-in-L q-in-U = γ
   where
    I : p ∉ U
    I p-in-U = LU-disjoint p (p-in-L , p-in-U)
@@ -457,7 +457,7 @@ module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
    II refl = I q-in-U
 
    III : q ≮ p
-   III ℓ = LU-disjoint q (L-is-lower p p-in-L q ℓ , q-in-U)
+   III ℓ = LU-disjoint q (L-lower p p-in-L q ℓ , q-in-U)
 
    γ : p < q
    γ = order-criterion p q II III
@@ -532,10 +532,10 @@ The Dedekind and Troelstra conditions are equivalent:
 
  dedekind-gives-troelstra : (l : ℝᴸ) → is-dedekind l → is-troelstra l
  dedekind-gives-troelstra l@(L , _ , _ , _)
-                           ((U , U-is-inhabited , _ , _) , LU-ordered , LU-located) = γ
+                           ((U , U-inhabited , _ , _) , LU-ordered , LU-located) = γ
   where
    bounded : (∃ s ꞉ ℚ , s ∉ L)
-   bounded = ∥∥-functor f U-is-inhabited
+   bounded = ∥∥-functor f U-inhabited
     where
      f : (Σ q ꞉ ℚ , q ∈ U) → Σ q ꞉ ℚ , q ∉ L
      f (q , q-in-U) = q , (λ q-in-L → order-is-irrefl q (c q-in-L))
@@ -584,7 +584,7 @@ does, it is given by the following candidate.
                                     → is-lower L
                                     → is-located L
                                     → are-ordered L (candidate-upper-section L)
- candidate-upper-section-is-ordered L L-is-lower located p q p-in-L q-in-U = γ
+ candidate-upper-section-is-ordered L L-lower located p q p-in-L q-in-U = γ
     where
      f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
      f (r , i , r-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (located r q i)
@@ -597,7 +597,7 @@ does, it is given by the following candidate.
          I refl = q-not-in-L p-in-L
 
          II : q ≮ p
-         II ℓ = q-not-in-L (L-is-lower p p-in-L q ℓ)
+         II ℓ = q-not-in-L (L-lower p p-in-L q ℓ)
 
      γ : p < q
      γ = ∥∥-rec (order-is-prop-valued p q) f q-in-U
@@ -645,7 +645,7 @@ does, it is given by the following candidate.
         ℓ ,
         (λ p-in-L → order-is-irrefl p
                      (candidate-upper-section-is-ordered
-                     L lower located p p p-in-L p-in-U)) ∣
+                       L lower located p p p-in-L p-in-U)) ∣
 \end{code}
 
 The candidate upper section is the unique candidate in the following
@@ -687,15 +687,15 @@ And, as promised, the Troelstra condition implies the Dedekind condition:
 \begin{code}
 
  troelstra-gives-dedekind : (l : ℝᴸ) → is-troelstra l → is-dedekind l
- troelstra-gives-dedekind l@(L , L-is-inhabited , L-is-lower , L-is-upper-open)
+ troelstra-gives-dedekind l@(L , L-inhabited , L-lower , L-upper-open)
                             (bounded , located) = γ
   where
    γ : is-dedekind l
    γ = ((candidate-upper-section L ,
          (candidate-upper-section-is-inhabited L bounded ,
-          candidate-upper-section-is-upper L L-is-lower located ,
+          candidate-upper-section-is-upper L L-lower located ,
           candidate-upper-section-is-lower-open L)) ,
-        candidate-upper-section-is-ordered L L-is-lower located ,
+        candidate-upper-section-is-ordered L L-lower located ,
         candidate-upper-section-is-located L located)
 
 \end{code}
@@ -742,13 +742,13 @@ proposition, then so is A + ¬ A, and thus A + ¬ A is equivalent to A ∨ ¬ A.
 
  LEM-gives-locatedness : LEM → ((L , _) : ℝᴸ) → is-located L
  LEM-gives-locatedness
-   lem l@(L , L-is-inhabited , L-is-lower , L-is-upper-open) r s ℓ = γ δ
+   lem l@(L , L-inhabited , L-lower , L-upper-open) r s ℓ = γ δ
   where
    δ : (s ∈ L) + (s ∉ L)
    δ = lem (s ∈ L) (∈-is-prop L s)
 
    γ : type-of δ → (r ∈ L) ∨ (s ∉ L)
-   γ (inl s-in-L)     = ∣ inl (L-is-lower s s-in-L r ℓ) ∣
+   γ (inl s-in-L)     = ∣ inl (L-lower s s-in-L r ℓ) ∣
    γ (inr s-not-in-L) = ∣ inr s-not-in-L ∣
 
 \end{code}
@@ -783,6 +783,21 @@ lower reals:
                                     𝟘-is-prop
                                     (λ (q , q-not-in-∞) → q-not-in-∞ *)
                                     bounded
+
+ unbounded-is-∞ : ¬ (Σ L ꞉ 𝓟 ℚ , is-lower-real L × ¬ is-bounded-above L × (L ≢ ∞))
+ unbounded-is-∞ (L , (L-inhabited , L-lower , L-upper-open) , unbounded , ν) = {!!}
+  where
+   α : (p : ℚ) → ¬(p ∉ L)
+   α p u = unbounded ∣ p , u ∣
+   β : ¬((p : ℚ) → p ∈ L)
+   β f = ν (dfunext fe (λ p → holds-gives-equal-⊤ pe fe (L p) (f p)))
+
+   δ : ¬ is-bounded-above L
+   δ bounded = ν {!!}
+
+   γ : 𝟘
+   γ = {!!}
+
 \end{code}
 
 In connection with a discussion above, notice that we don't need
@@ -841,21 +856,21 @@ independently by Steve Vickers and Toby Bartels.
    L : 𝓟 ℚ
    L p = ((p < 𝟎) ∨ (A × (p < 𝟏))) , ∨-is-prop
 
-   L-is-inhabited : is-inhabited L
-   L-is-inhabited = ∥∥-functor h (ℚ-is-lower-open 𝟎)
+   L-inhabited : is-inhabited L
+   L-inhabited = ∥∥-functor h (ℚ-is-lower-open 𝟎)
     where
      h : (Σ p ꞉ ℚ , p < 𝟎) → Σ p ꞉ ℚ , p ∈ L
      h (p , ℓ) = p , ∣ inl ℓ ∣
 
-   L-is-lower : is-lower L
-   L-is-lower p p-in-L p' j = ∥∥-functor h p-in-L
+   L-lower : is-lower L
+   L-lower p p-in-L p' j = ∥∥-functor h p-in-L
     where
      h : (p < 𝟎) + (A × (p < 𝟏)) → (p' < 𝟎) + (A × (p' < 𝟏))
      h (inl ℓ)       = inl (transitivity p' p 𝟎 j ℓ)
      h (inr (a , ℓ)) = inr (a , transitivity p' p 𝟏 j ℓ)
 
-   L-is-upper-open : is-upper-open L
-   L-is-upper-open p p-in-L = ∥∥-rec ∃-is-prop h p-in-L
+   L-upper-open : is-upper-open L
+   L-upper-open p p-in-L = ∥∥-rec ∃-is-prop h p-in-L
     where
      h : (p < 𝟎) + (A × (p < 𝟏)) → ∃ p' ꞉ ℚ , (p < p') × (p' ∈ L)
      h (inl ℓ) = ∥∥-functor k (ℚ-is-dense p 𝟎 ℓ)
@@ -868,10 +883,10 @@ independently by Steve Vickers and Toby Bartels.
        k (p' , i , j) = p' , i , ∣ inr (a , j) ∣
 
    l : ℝᴸ
-   l = (L , L-is-inhabited , L-is-lower , L-is-upper-open)
+   l = (L , L-inhabited , L-lower , L-upper-open)
 
    l-dedekind-gives-A-decidable : is-dedekind l → A + ¬ A
-   l-dedekind-gives-A-decidable ((U , U-is-inhabited , U-is-upper-open) , LU-ordered , LU-located) = δ
+   l-dedekind-gives-A-decidable ((U , _ , _) , LU-ordered , LU-located) = δ
     where
      δ : A + ¬ A
      δ = ∥∥-rec (decidability-of-prop-is-prop fe A-is-prop) h (LU-located 𝟎 ½ 𝟎-is-less-than-½)
@@ -890,15 +905,15 @@ independently by Steve Vickers and Toby Bartels.
            ½-in-L : ½ ∈ L
            ½-in-L = ∣ inr (a , ½-is-less-than-𝟏) ∣
 
-   L-is-bounded-above : is-bounded-above L
-   L-is-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
+   L-bounded-above : is-bounded-above L
+   L-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
     where
      h : ¬((𝟏 < 𝟎) + (A × (𝟏 < 𝟏)))
      h (inl ℓ)       = order-is-irrefl 𝟎 (transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
      h (inr (_ , ℓ)) = order-is-irrefl 𝟏 ℓ
 
    b : ℝᴮᴸ
-   b = (l , L-is-bounded-above)
+   b = (l , L-bounded-above)
 
    γ : A + ¬ A
    γ = l-dedekind-gives-A-decidable (α b)
