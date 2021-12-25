@@ -239,6 +239,40 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
 
 \end{code}
 
+\begin{code}
+
+T≤U⋜V≤W-implies-T⋜W : (F : frame 𝓤 𝓥 𝓦)
+                    → {T U V W : ⟨ F ⟩}
+                    → (T ≤[ poset-of F ] U) holds
+                    → (U ⋜[ F ] V) holds
+                    → (V ≤[ poset-of F ] W) holds
+                    → (T ⋜[ F ] W) holds
+T≤U⋜V≤W-implies-T⋜W F {T} {U} {V} {W} p q r =
+ ∥∥-rec (holds-is-prop (T ⋜[ F ] W)) γ q
+  where
+   γ : U ⋜₀[ F ] V → (T ⋜[ F ] W) holds
+   γ (S , c₁ , c₂) = ∣ S , δ , ε ∣
+    where
+     open PosetReasoning (poset-of F)
+
+     δ : T ∧[ F ] S ≡ 𝟎[ F ]
+     δ = only-𝟎-is-below-𝟎 F (T ∧[ F ] S) δ₁
+      where
+       δ₁ : ((T ∧[ F ] S) ≤[ poset-of F ] 𝟎[ F ]) holds
+       δ₁ = T ∧[ F ] S  ≤⟨ ∧[ F ]-left-monotone p ⟩
+            U ∧[ F ] S  ≡⟨ c₁                     ⟩ₚ
+            𝟎[ F ]      ■
+
+     ε : W ∨[ F ] S ≡ 𝟏[ F ]
+     ε = only-𝟏-is-above-𝟏 F (W ∨[ F ] S) ε₁
+      where
+       ε₁ : (𝟏[ F ] ≤[ poset-of F ] (W ∨[ F ] S)) holds
+       ε₁ = 𝟏[ F ]      ≡⟨ c₂ ⁻¹                  ⟩ₚ
+            V ∨[ F ] S  ≤⟨ ∨[ F ]-left-monotone r ⟩
+            W ∨[ F ] S  ■
+
+\end{code}
+
 An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
 
 \begin{code}
