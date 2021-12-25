@@ -791,6 +791,41 @@ distributivity′ F x S =
    ‡ = ∧[ F ]-is-commutative x ∘ (_[_] S)
    † = ap (λ - → join-of F (index S , -)) (dfunext fe ‡)
 
+absorption-right : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                 → x ∨[ F ] (x ∧[ F ] y) ≡ x
+absorption-right F x y = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  β : ((x ∨[ F ] (x ∧[ F ] y)) ≤[ poset-of F ] x) holds
+  β = ∨[ F ]-least (≤-is-reflexive (poset-of F) x) (∧[ F ]-lower₁ x y)
+
+  γ : (x ≤[ poset-of F ] (x ∨[ F ] (x ∧[ F ] y))) holds
+  γ = ∨[ F ]-upper₁ x (x ∧[ F ] y)
+
+absorption-left : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                → x ∨[ F ] (y ∧[ F ] x) ≡ x
+absorption-left F x y =
+ x ∨[ F ] (y ∧[ F ] x) ≡⟨ ap (λ - → x ∨[ F ] -) (∧[ F ]-is-commutative y x) ⟩
+ x ∨[ F ] (x ∧[ F ] y) ≡⟨ absorption-right F x y                            ⟩
+ x                     ∎
+
+absorptionᵒᵖ-right : (F : frame 𝓤 𝓥 𝓦) → (x y : ⟨ F ⟩) → x ∧[ F ] (x ∨[ F ] y) ≡ x
+absorptionᵒᵖ-right F x y = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  β : ((x ∧[ F ] (x ∨[ F ] y)) ≤[ poset-of F ] x) holds
+  β = ∧[ F ]-lower₁ x (x ∨[ F ] y)
+
+  γ : (x ≤[ poset-of F ] (x ∧[ F ] (x ∨[ F ] y))) holds
+  γ = ∧[ F ]-greatest x (x ∨[ F ] y) x
+       (≤-is-reflexive (poset-of F) x)
+       (∨[ F ]-upper₁ x y)
+
+absorptionᵒᵖ-left : (F : frame 𝓤 𝓥 𝓦) (x y : ⟨ F ⟩)
+                  → x ∧[ F ] (y ∨[ F ] x) ≡ x
+absorptionᵒᵖ-left F x y =
+ x ∧[ F ] (y ∨[ F ] x)  ≡⟨ ap (λ - → x ∧[ F ] -) (∨[ F ]-is-commutative y x) ⟩
+ x ∧[ F ] (x ∨[ F ] y)  ≡⟨ absorptionᵒᵖ-right F x y                          ⟩
+ x                      ∎
+
 binary-distributivity : (F : frame 𝓤 𝓥 𝓦)
                       → (x y z : ⟨ F ⟩)
                       → x ∧[ F ] (y ∨[ F ] z) ≡ (x ∧[ F ] y) ∨[ F ] (x ∧[ F ] z)
