@@ -595,3 +595,28 @@ clopens-are-compact-in-compact-frames F κ U =
  ⋜₀-implies-≪-in-compact-frames F κ  U U
 
 \end{code}
+
+\begin{code}
+
+≪-implies-⋜-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
+                              → is-regular F holds
+                              → (U V : ⟨ F ⟩)
+                              → (U ≪[ F ] V) holds
+                              → (U ⋜[ F ] V) holds
+≪-implies-⋜-in-regular-frames F ρ U V κ =
+ ∥∥-rec (holds-is-prop ((U ⋜[ F ] V))) {!!} (κ {!↓↓[ F ] V!} {!!} {!!})
+  where
+   -- Stone Spaces pg. 303 (PDF pg. 324)
+   W : ⟨ F ⟩
+   W = {!!}
+
+   p : (W ⋜[ F ] V) holds
+   p = {!T≤U⋜V≤W-implies-T⋜W!}
+
+   β : (U ≤[ poset-of F ] {!!}) holds
+   β = {!!}
+
+   γ : {!!}
+   γ = {!!}
+
+\end{code}
