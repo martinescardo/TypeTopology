@@ -742,6 +742,52 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
   γ : (Ɐ (l , _) ∶ lower-bound (y , x) , l ≤ (x ∧[ F ] y)) holds
   γ (l , p , q) = ∧[ F ]-greatest x y l q p
 
+∧[_]-is-associative : (F : frame 𝓤 𝓥 𝓦) (x y z : ⟨ F ⟩)
+                    → x ∧[ F ] (y ∧[ F ] z) ≡ (x ∧[ F ] y) ∧[ F ] z
+∧[ F ]-is-associative x y z = ≤-is-antisymmetric (poset-of F) β γ
+ where
+  open PosetReasoning (poset-of F)
+
+  abstract
+   β : ((x ∧[ F ] (y ∧[ F ] z)) ≤[ poset-of F ] ((x ∧[ F ] y) ∧[ F ] z)) holds
+   β = ∧[ F ]-greatest (x ∧[ F ] y) z (x ∧[ F ] (y ∧[ F ] z)) δ ε
+    where
+     δ : ((x ∧[ F ] (y ∧[ F ] z)) ≤[ poset-of F ] (x ∧[ F ] y)) holds
+     δ = ∧[ F ]-greatest x y (x ∧[ F ] (y ∧[ F ] z)) δ₁ δ₂
+      where
+       δ₁ : ((x ∧[ F ] (y ∧[ F ] z)) ≤[ poset-of F ] x) holds
+       δ₁ = ∧[ F ]-lower₁ x (y ∧[ F ] z)
+
+       δ₂ : ((x ∧[ F ] (y ∧[ F ] z)) ≤[ poset-of F ] y) holds
+       δ₂ = x ∧[ F ] (y ∧[ F ] z) ≤⟨ ∧[ F ]-lower₂ x (y ∧[ F ] z) ⟩
+            y ∧[ F ] z            ≤⟨ ∧[ F ]-lower₁ y z            ⟩
+            y                     ■
+
+     ε : ((x ∧[ F ] (y ∧[ F ] z)) ≤[ poset-of F ] z) holds
+     ε = x ∧[ F ] (y ∧[ F ] z)  ≤⟨ ∧[ F ]-lower₂ x (y ∧[ F ] z) ⟩
+         y ∧[ F ] z             ≤⟨ ∧[ F ]-lower₂ y z            ⟩
+         z                      ■
+
+   γ : (((x ∧[ F ] y) ∧[ F ] z) ≤[ poset-of F ] (x ∧[ F ] (y ∧[ F ] z))) holds
+   γ = ∧[ F ]-greatest x (y ∧[ F ] z) ((x ∧[ F ] y) ∧[ F ] z) ζ η
+    where
+     ζ : (((x ∧[ F ] y) ∧[ F ] z) ≤[ poset-of F ] x) holds
+     ζ = (x ∧[ F ] y) ∧[ F ] z     ≤⟨ ∧[ F ]-lower₁ (x ∧[ F ] y) z ⟩
+         x ∧[ F ] y                ≤⟨ ∧[ F ]-lower₁ x y            ⟩
+         x                         ■
+
+     η : (((x ∧[ F ] y) ∧[ F ] z) ≤[ poset-of F ] (y ∧[ F ] z)) holds
+     η = ∧[ F ]-greatest y z ((x ∧[ F ] y) ∧[ F ] z) η₀ η₁
+      where
+       η₀ : (((x ∧[ F ] y) ∧[ F ] z) ≤[ poset-of F ] y) holds
+       η₀ = (x ∧[ F ] y) ∧[ F ] z  ≤⟨ ∧[ F ]-lower₁ (x ∧[ F ] y) z ⟩
+            x ∧[ F ] y             ≤⟨ ∧[ F ]-lower₂ x y            ⟩
+            y                      ■
+
+       η₁ : (((x ∧[ F ] y) ∧[ F ] z) ≤[ poset-of F ] z) holds
+       η₁ = ∧[ F ]-lower₂ (x ∧[ F ] y) z
+
+\end{code}
 \end{code}
 
 \begin{code}
