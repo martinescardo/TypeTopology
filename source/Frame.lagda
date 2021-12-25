@@ -788,6 +788,35 @@ frame-morphisms-are-monotonic F G f (_ , ψ , _) (x , y) p =
        η₁ = ∧[ F ]-lower₂ (x ∧[ F ] y) z
 
 \end{code}
+
+\begin{code}
+
+∧[_]-left-monotone : (F : frame 𝓤 𝓥 𝓦)
+                   → {x y z : ⟨ F ⟩}
+                   → (x ≤[ poset-of F ] y) holds
+                   → ((x ∧[ F ] z) ≤[ poset-of F ] (y ∧[ F ] z)) holds
+∧[ F ]-left-monotone {x} {y} {z} p = ∧[ F ]-greatest y z (x ∧[ F ] z) β γ
+ where
+  open PosetReasoning (poset-of F)
+
+  β : ((x ∧[ F ] z) ≤[ poset-of F ] y) holds
+  β = x ∧[ F ] z ≤⟨ ∧[ F ]-lower₁ x z ⟩ x ≤⟨ p ⟩ y ■
+
+  γ : ((x ∧[ F ] z) ≤[ poset-of F ] z) holds
+  γ = ∧[ F ]-lower₂ x z
+
+∧[_]-right-monotone : (F : frame 𝓤 𝓥 𝓦)
+                    → {x y z : ⟨ F ⟩}
+                    → (x ≤[ poset-of F ] y) holds
+                    → ((z ∧[ F ] x) ≤[ poset-of F ] (z ∧[ F ] y)) holds
+∧[ F ]-right-monotone {x} {y} {z} p =
+ z ∧[ F ] x  ≡⟨ ∧[ F ]-is-commutative z x ⟩ₚ
+ x ∧[ F ] z  ≤⟨ ∧[ F ]-left-monotone p    ⟩
+ y ∧[ F ] z  ≡⟨ ∧[ F ]-is-commutative y z ⟩ₚ
+ z ∧[ F ] y  ■
+  where
+   open PosetReasoning (poset-of F)
+
 \end{code}
 
 \begin{code}
