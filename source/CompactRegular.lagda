@@ -331,19 +331,111 @@ clopenness-equivalent-to-well-inside-itself F U =
   γ = 𝟎-is-bottom F U
 
 \end{code}
+
+\begin{code}
+
+well-inside-upwards : (F : frame 𝓤 𝓥 𝓦) (U₁ U₂ V : ⟨ F ⟩)
+                    → (U₁ ⋜[ F ] V) holds
+                    → (U₂ ⋜[ F ] V) holds
+                    → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
+well-inside-upwards F U₁ U₂ V =
+ ∥∥-rec₂ (holds-is-prop ((U₁ ∨[ F ] U₂) ⋜[ F ] V)) γ
+  where
+   open PosetReasoning (poset-of F)
+
+   γ : U₁ ⋜₀[ F ] V → U₂ ⋜₀[ F ] V → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
+   γ (W₁ , c₁ , d₁) (W₂ , c₂ , d₂) = ∣ (W₁ ∧[ F ] W₂) , c , d ∣
+    where
+     δ : (W₁ ∧[ F ] W₂) ∧[ F ] U₂ ≡ 𝟎[ F ]
+     δ = (W₁ ∧[ F ] W₂) ∧[ F ] U₂  ≡⟨ (∧[ F ]-is-associative W₁ W₂ U₂) ⁻¹ ⟩
+         W₁ ∧[ F ] (W₂ ∧[ F ] U₂)  ≡⟨ †                                   ⟩
+         W₁ ∧[ F ] (U₂ ∧[ F ] W₂)  ≡⟨ ap (λ - → meet-of F W₁ -) c₂        ⟩
+         W₁ ∧[ F ] 𝟎[ F ]          ≡⟨ 𝟎-right-annihilator-for-∧ F W₁      ⟩
+         𝟎[ F ]                    ∎
+          where
+           † = ap (λ - → W₁ ∧[ F ] -) (∧[ F ]-is-commutative W₂ U₂)
+
+     ε : ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ≡ 𝟎[ F ]
+     ε = (W₁ ∧[ F ] W₂) ∧[ F ] U₁  ≡⟨ †                                   ⟩
+         (W₂ ∧[ F ] W₁) ∧[ F ] U₁  ≡⟨ (∧[ F ]-is-associative W₂ W₁ U₁) ⁻¹ ⟩
+         W₂ ∧[ F ] (W₁ ∧[ F ] U₁)  ≡⟨ ‡                                   ⟩
+         W₂ ∧[ F ] (U₁ ∧[ F ] W₁)  ≡⟨ ap (λ - → W₂ ∧[ F ] -) c₁           ⟩
+         W₂ ∧[ F ] 𝟎[ F ]          ≡⟨ 𝟎-right-annihilator-for-∧ F W₂      ⟩
+         𝟎[ F ]                    ∎
+          where
+           † = ap (λ - → - ∧[ F ] U₁) (∧[ F ]-is-commutative W₁ W₂)
+           ‡ = ap (λ - → W₂ ∧[ F ] -) (∧[ F ]-is-commutative W₁ U₁)
+
+     c : ((U₁ ∨[ F ] U₂) ∧[ F ] (W₁ ∧[ F ] W₂)) ≡ 𝟎[ F ]
+     c = (U₁ ∨[ F ] U₂) ∧[ F ] (W₁ ∧[ F ] W₂)                          ≡⟨ i    ⟩
+         (W₁ ∧[ F ] W₂) ∧[ F ] (U₁ ∨[ F ] U₂)                          ≡⟨ ii   ⟩
+         ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] ((W₁ ∧[ F ] W₂) ∧[ F ] U₂)  ≡⟨ iii  ⟩
+         ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] 𝟎[ F ]                      ≡⟨ iv   ⟩
+         (W₁ ∧[ F ] W₂) ∧[ F ] U₁                                      ≡⟨ ε    ⟩
+         𝟎[ F ]                                                        ∎
+          where
+           i   = ∧[ F ]-is-commutative (U₁ ∨[ F ] U₂) (W₁ ∧[ F ] W₂)
+           ii  = binary-distributivity F (W₁ ∧[ F ] W₂) U₁ U₂
+           iii = ap (λ - → ((W₁ ∧[ F ] W₂) ∧[ F ] U₁) ∨[ F ] -) δ
+           iv  = 𝟎-left-unit-of-∨ F ((W₁ ∧[ F ] W₂) ∧[ F ] U₁)
+
+     d : V ∨[ F ] (W₁ ∧[ F ] W₂) ≡ 𝟏[ F ]
+     d = V ∨[ F ] (W₁ ∧[ F ] W₂)            ≡⟨ i   ⟩
+         (V ∨[ F ] W₁) ∧[ F ] (V ∨[ F ] W₂) ≡⟨ ii  ⟩
+         𝟏[ F ] ∧[ F ] (V ∨[ F ] W₂)        ≡⟨ iii ⟩
+         𝟏[ F ] ∧[ F ] 𝟏[ F ]               ≡⟨ iv  ⟩
+         𝟏[ F ] ∎
+          where
+           i   = binary-distributivity-op F V W₁ W₂
+           ii  = ap (λ - → - ∧[ F ] (V ∨[ F ] W₂)) d₁
+           iii = ap (λ - → 𝟏[ F ] ∧[ F ] -) d₂
+           iv  = 𝟏-right-unit-of-∧ F 𝟏[ F ]
+
+\end{code}
+
 \section{Definition of regularity}
 
 \begin{code}
 
-↓↓[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam (𝓤 ⊔ 𝓥) ⟨ F ⟩
-↓↓[ F ] U = (Σ V ꞉ ⟨ F ⟩ , (V ≤[ poset-of F ] U) holds) , pr₁
+↓↓[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam 𝓤 ⟨ F ⟩
+↓↓[ F ] U = (Σ V ꞉ ⟨ F ⟩ , (V ⋜[ F ] U) holds) , pr₁
 
 \end{code}
 
 \begin{code}
 
-isRegular : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥)
-isRegular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
+↓↓[_]-is-directed : (F : frame 𝓤 𝓥 𝓦)
+                  → (U : ⟨ F ⟩) → is-directed (poset-of F) (↓↓[ F ] U) holds
+↓↓[_]-is-directed F U = β , γ
+ where
+  β : ∥ index (↓↓[ F ] U) ∥
+  β = ∣ 𝟎[ F ] , 𝟎-is-well-inside-anything F U  ∣
+
+\end{code}
+
+We now want to prove that this set is upwards-closed.
+
+\begin{code}
+
+  Ψ = Ɐ i ∶ index (↓↓[ F ] U) ,
+       Ɐ j ∶ index (↓↓[ F ] U) ,
+        Ǝ k ∶ index (↓↓[ F ] U) ,
+           ((↓↓[ F ] U [ i ]) ≤[ poset-of F ] (↓↓[ F ] U [ k ])) holds
+         × ((↓↓[ F ] U [ j ]) ≤[ poset-of F ] (↓↓[ F ] U [ k ])) holds
+
+  γ : Ψ holds
+  γ i@(V₁ , p₁) j@(V₂ , p₂) =
+   ∣ ((V₁ ∨[ F ] V₂) , δ) , ∨[ F ]-upper₁ V₁ V₂ , ∨[ F ]-upper₂ V₁ V₂ ∣
+    where
+     δ : ((V₁ ∨[ F ] V₂) ⋜[ F ] U) holds
+     δ = well-inside-upwards F V₁ V₂ U p₁ p₂
+
+\end{code}
+
+\begin{code}
+
+is-regular : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥)
+is-regular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
  where
   open Joins (λ U V → U ≤[ poset-of F ] V)
 
