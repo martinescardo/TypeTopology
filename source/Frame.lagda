@@ -1054,12 +1054,14 @@ is-directed F (I , β) =
  ∧ (Ɐ i ∶ I , Ɐ j ∶ I , (Ǝ k ∶ I , ((β i ≤ β k) ∧ (β j ≤ β k)) holds))
   where open PosetNotation (poset-of F)
 
+has-directed-basis₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
+has-directed-basis₀ {𝓦 = 𝓦} F =
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ ,
+  Σ b ꞉ is-basis-for F ℬ ,
+   Π x ꞉ ⟨ F ⟩ , is-directed F (⁅ ℬ [ i ] ∣ i ε pr₁ (b x) ⁆) holds
+
 has-directed-basis : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-has-directed-basis {𝓦 = 𝓦} F =
- ∥ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩
- , Σ b ꞉ is-basis-for F ℬ ,
-    Π x ꞉ ⟨ F ⟩ ,
-     is-directed F (⁅ ℬ [ i ] ∣ i ε pr₁ (b x) ⁆) holds ∥Ω
+has-directed-basis {𝓦 = 𝓦} F = ∥ has-directed-basis₀ F ∥Ω
 
 \end{code}
 
