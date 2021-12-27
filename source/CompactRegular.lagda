@@ -12,6 +12,7 @@ open import UF-PropTrunc
 open import UF-FunExt
 open import UF-Univalence
 open import UF-UA-FunExt
+open import List hiding ([_])
 
 module CompactRegular
         (pt : propositional-truncations-exist)
