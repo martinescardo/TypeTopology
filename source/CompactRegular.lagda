@@ -463,16 +463,7 @@ We now want to prove that this set is upwards-closed.
    ∣ ((V₁ ∨[ F ] V₂) , δ) , ∨[ F ]-upper₁ V₁ V₂ , ∨[ F ]-upper₂ V₁ V₂ ∣
     where
      δ : ((V₁ ∨[ F ] V₂) ⋜[ F ] U) holds
-     δ = well-inside-upwards F V₁ V₂ U p₁ p₂
-
-\end{code}
-
-\begin{code}
-
-is-regular : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥)
-is-regular F = Ɐ U ∶ ⟨ F ⟩ , U is-lub-of (↓↓[ F ] U)
- where
-  open Joins (λ U V → U ≤[ poset-of F ] V)
+     δ = well-inside-upwards F p₁ p₂
 
 \end{code}
 
