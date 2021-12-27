@@ -368,11 +368,11 @@ clopenness-equivalent-to-well-inside-itself F U =
 
 \begin{code}
 
-well-inside-upwards : (F : frame 𝓤 𝓥 𝓦) (U₁ U₂ V : ⟨ F ⟩)
+well-inside-upwards : (F : frame 𝓤 𝓥 𝓦) {U₁ U₂ V : ⟨ F ⟩}
                     → (U₁ ⋜[ F ] V) holds
                     → (U₂ ⋜[ F ] V) holds
                     → ((U₁ ∨[ F ] U₂) ⋜[ F ] V) holds
-well-inside-upwards F U₁ U₂ V =
+well-inside-upwards F {U₁} {U₂} {V} =
  ∥∥-rec₂ (holds-is-prop ((U₁ ∨[ F ] U₂) ⋜[ F ] V)) γ
   where
    open PosetReasoning (poset-of F)
