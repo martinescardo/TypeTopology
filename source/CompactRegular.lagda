@@ -769,3 +769,36 @@ zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
          η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])
 
 \end{code}
+
+\section{Stone Locales}
+
+A frame F is called Stone iff it is compact and zero-dimensional.
+
+\begin{code}
+
+is-stone : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-stone F = is-compact F ∧ is-zero-dimensional F
+
+\end{code}
+
+In a Stone locale, an open is a clopen iff it is compact.
+
+\begin{code}
+
+clopen-iff-compact-in-stone-frame : (F : frame 𝓤 𝓥 𝓦)
+                                  → is-stone F holds
+                                  → (U : ⟨ F ⟩)
+                                  → (is-clopen F U holds)
+                                  ⇔ (is-compact-open F U holds)
+clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
+ where
+  β : (is-clopen F U ⇒ is-compact-open F U) holds
+  β = clopens-are-compact-in-compact-frames F κ U
+
+  ρ : is-regular F holds
+  ρ = zero-dimensional-locales-are-regular F ζ
+
+  γ : (is-compact-open F U ⇒ is-clopen F U) holds
+  γ = compacts-are-clopen-in-regular-frames F ρ U
+
+\end{code}
