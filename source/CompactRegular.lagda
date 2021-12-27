@@ -719,3 +719,14 @@ directification-preserves-regularity F ℬ β r U = γ
      ζ (k , q) = T≤U⋜V≤W-implies-T⋜W F q (ρ↑ V k) (≤-is-reflexive (poset-of F) V)
 
 \end{code}
+
+\begin{code}
+
+compacts-are-clopen-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
+                                      → is-regular F holds
+                                      → (Ɐ U ∶ ⟨ F ⟩ ,
+                                          is-compact-open F U ⇒ is-clopen F U) holds
+compacts-are-clopen-in-regular-frames F r U =
+ well-inside-itself-implies-clopen F U ∘ ≪-implies-⋜-in-regular-frames F r U U
+
+\end{code}
