@@ -663,25 +663,65 @@ basis-of-zero-dimensional-frame : (F : frame 𝓤 𝓥 𝓦)
                                 → (is-zero-dimensional F ⇒ has-basis F) holds
 basis-of-zero-dimensional-frame F =
  ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
+
+directification-preserves-regularity : (F : frame 𝓤 𝓥 𝓦)
+                                     → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                     → (β : is-basis-for F ℬ)
+                                     → is-regular-basis F ℬ β holds
+                                     → let
+                                        ℬ↑ = directify F ℬ
+                                        β↑ = directified-basis-is-basis F ℬ β
+                                       in
+                                        is-regular-basis F ℬ↑ β↑ holds
+directification-preserves-regularity F ℬ β r U = γ
+ where
+  ℬ↑ = directify F ℬ
+  β↑ = directified-basis-is-basis F ℬ β
+
+  𝒥  = pr₁ (β U)
+  𝒥↑ = pr₁ (β↑ U)
+
+  γ : (Ɐ js ∶ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
+  γ []       = 𝟎-is-well-inside-anything F U
+  γ (j ∷ js) = well-inside-upwards F (r U j) (γ js)
+
 ≪-implies-⋜-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
-                              → is-regular F holds
+                              → (is-regular F) holds
                               → (U V : ⟨ F ⟩)
-                              → (U ≪[ F ] V) holds
-                              → (U ⋜[ F ] V) holds
-≪-implies-⋜-in-regular-frames F ρ U V κ =
- ∥∥-rec (holds-is-prop ((U ⋜[ F ] V))) {!!} (κ {!↓↓[ F ] V!} {!!} {!!})
+                              → (U ≪[ F ] V ⇒ U ⋜[ F ] V) holds
+≪-implies-⋜-in-regular-frames {𝓦 = 𝓦} F r U V =
+ ∥∥-rec (holds-is-prop (U ≪[ F ] V ⇒ U ⋜[ F ] V)) γ r
   where
-   -- Stone Spaces pg. 303 (PDF pg. 324)
-   W : ⟨ F ⟩
-   W = {!!}
+   γ : is-regular₀ F → (U ≪[ F ] V ⇒ U ⋜[ F ] V) holds
+   γ (ℬ , δ) κ = ∥∥-rec (holds-is-prop (U ⋜[ F ] V)) ζ (κ S ε c)
+    where
+     ℬ↑ : Fam 𝓦 ⟨ F ⟩
+     ℬ↑ = directify F ℬ
 
-   p : (W ⋜[ F ] V) holds
-   p = {!T≤U⋜V≤W-implies-T⋜W!}
+     β : is-basis-for F ℬ
+     β U = pr₁ (δ U) , pr₁ (pr₂ (δ U))
 
-   β : (U ≤[ poset-of F ] {!!}) holds
-   β = {!!}
+     β↑ : is-basis-for F ℬ↑
+     β↑ = directified-basis-is-basis F ℬ β
 
-   γ : {!!}
-   γ = {!!}
+     ρ : is-regular-basis F ℬ β holds
+     ρ U = pr₂ (pr₂ (δ U))
 
+     ρ↑ : is-regular-basis F ℬ↑ β↑ holds
+     ρ↑ = directification-preserves-regularity F ℬ β ρ
+
+     𝒥 : Fam 𝓦 (index ℬ↑)
+     𝒥 = pr₁ (β↑ V)
+
+     S : Fam 𝓦 ⟨ F ⟩
+     S = ⁅ ℬ↑ [ i ] ∣ i ε 𝒥 ⁆
+
+     ε : is-directed (poset-of F) S holds
+     ε = covers-of-directified-basis-are-directed F ℬ β V
+
+     c : (V ≤[ poset-of F ] (⋁[ F ] S)) holds
+     c = reflexivity+ (poset-of F) (⋁[ F ]-unique S V (pr₂ (β↑ V)))
+
+     ζ : Σ k ꞉ index S , (U ≤[ poset-of F ] (S [ k ])) holds → (U ⋜[ F ] V) holds
+     ζ (k , q) = T≤U⋜V≤W-implies-T⋜W F q (ρ↑ V k) (≤-is-reflexive (poset-of F) V)
 \end{code}
