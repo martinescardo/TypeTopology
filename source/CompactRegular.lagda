@@ -634,28 +634,7 @@ basis-of-regular-frame F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
 
 \end{code}
 
-\section{Zero-dimensionality}
-
-A locale L is said to be zero-dimensional iff it has a basis consisting of
-clopen elements.
-
 \begin{code}
-
-consists-of-clopens : (F : frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
-consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
-
-is-zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
-is-zero-dimensional₀ {𝓦 = 𝓦} F =
- Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
-
-is-zero-dimensional : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-zero-dimensional {𝓦 = 𝓦} F =
- Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
-
-basis-of-zero-dimensional-frame : (F : frame 𝓤 𝓥 𝓦)
-                                → (is-zero-dimensional F ⇒ has-basis F) holds
-basis-of-zero-dimensional-frame F =
- ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
 
 directification-preserves-regularity : (F : frame 𝓤 𝓥 𝓦)
                                      → (ℬ : Fam 𝓦 ⟨ F ⟩)
@@ -720,6 +699,7 @@ directification-preserves-regularity F ℬ β r U = γ
 
 \end{code}
 
+
 \begin{code}
 
 compacts-are-clopen-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
@@ -728,5 +708,30 @@ compacts-are-clopen-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
                                           is-compact-open F U ⇒ is-clopen F U) holds
 compacts-are-clopen-in-regular-frames F r U =
  well-inside-itself-implies-clopen F U ∘ ≪-implies-⋜-in-regular-frames F r U U
+
+\end{code}
+
+\section{Zero-dimensionality}
+
+A locale L is said to be zero-dimensional iff it has a basis consisting of
+clopen elements.
+
+\begin{code}
+
+consists-of-clopens : (F : frame 𝓤 𝓥 𝓦) → (S : Fam 𝓦 ⟨ F ⟩) → Ω (𝓤 ⊔ 𝓦)
+consists-of-clopens F S = Ɐ i ∶ index S , is-clopen F (S [ i ])
+
+is-zero-dimensional₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇
+is-zero-dimensional₀ {𝓦 = 𝓦} F =
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
+
+is-zero-dimensional : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-zero-dimensional {𝓦 = 𝓦} F =
+ Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ × consists-of-clopens F ℬ holds
+
+basis-of-zero-dimensional-frame : (F : frame 𝓤 𝓥 𝓦)
+                                → (is-zero-dimensional F ⇒ has-basis F) holds
+basis-of-zero-dimensional-frame F =
+ ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
 
 \end{code}
