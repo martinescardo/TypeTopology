@@ -735,3 +735,37 @@ basis-of-zero-dimensional-frame F =
  ∥∥-rec (holds-is-prop (has-basis F)) λ { (ℬ , δ , _) → ∣ ℬ , δ ∣ }
 
 \end{code}
+
+Every zero-dimensional locale is regular.
+
+\begin{code}
+
+zero-dimensional-locales-are-regular : (F : frame 𝓤 𝓥 𝓦)
+                                     → is-zero-dimensional F holds
+                                     → is-regular F holds
+zero-dimensional-locales-are-regular {𝓦 = 𝓦} F =
+ ∥∥-rec (holds-is-prop (is-regular F)) γ
+  where
+   open Joins (λ x y → x ≤[ poset-of F ] y)
+
+   γ : is-zero-dimensional₀ F → is-regular F holds
+   γ (ℬ , β , ξ) = ∣ ℬ , δ ∣
+    where
+     δ : Π U ꞉ ⟨ F ⟩ ,
+          Σ J ꞉ Fam 𝓦 (index ℬ) ,
+             (U is-lub-of (fmap-syntax (_[_] ℬ) J)) holds
+           × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
+     δ U = 𝒥 , c , ε
+      where
+       𝒥 = pr₁ (β U)
+
+       c : (U is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆) holds
+       c = pr₂ (β U)
+
+       ε : Π i ꞉ index 𝒥 , (ℬ [ 𝒥 [ i ] ] ⋜[ F ] U) holds
+       ε i = T≤U⋜V≤W-implies-T⋜W F η ∣ ξ (𝒥 [ i ]) ∣ (pr₁ c i)
+        where
+         η : ((ℬ [ 𝒥 [ i ] ]) ≤[ poset-of F ] (ℬ [ 𝒥 [ i ] ])) holds
+         η = ≤-is-reflexive (poset-of F) (ℬ [ 𝒥 [ i ] ])
+
+\end{code}
