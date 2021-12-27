@@ -1198,6 +1198,79 @@ directify-preserves-joins₀ F S x p =
 
 \begin{code}
 
+directified-basis-is-basis : (F : frame 𝓤 𝓥 𝓦)
+                           → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                           → is-basis-for F ℬ
+                           → is-basis-for F (directify F ℬ)
+directified-basis-is-basis {𝓦 = 𝓦} F ℬ β = β↑
+ where
+  open PosetNotation (poset-of F)
+  open Joins (λ x y → x ≤ y)
+
+  ℬ↑ = directify F ℬ
+
+  𝒥 : ⟨ F ⟩ → Fam 𝓦 (index ℬ)
+  𝒥 x = pr₁ (β x)
+
+  𝒦 : ⟨ F ⟩ → Fam 𝓦 (List (index ℬ))
+  𝒦 x = List (index (𝒥 x)) , (λ - → 𝒥 x [ - ]) <$>_
+
+  φ : (x : ⟨ F ⟩)
+    → (is : List (index (𝒥 x)))
+    → directify F ℬ [ (λ - → 𝒥 x [ - ]) <$> is ]
+    ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ [ is ]
+  φ x []       = refl
+  φ x (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ x is)
+
+  ψ : (x : ⟨ F ⟩)
+    → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+  ψ x = to-Σ-≡ (refl , dfunext fe (φ x))
+
+  β↑ : (x : ⟨ F ⟩)
+     → Σ J ꞉ Fam 𝓦 (index ℬ↑) , (x is-lub-of ⁅ ℬ↑ [ j ] ∣ j ε J ⁆) holds
+  β↑ x = 𝒦 x , transport (λ - → (x is-lub-of -) holds) (ψ x ⁻¹) δ
+    where
+    p : (x is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆) holds
+    p = pr₂ (β x)
+
+    δ : (x is-lub-of directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆) holds
+    δ = directify-preserves-joins₀ F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ x p
+
+  δ : (x : ⟨ F ⟩)
+    → is-directed F ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ holds
+  δ x = transport (λ - → is-directed F - holds) (ψ x ⁻¹) ε
+    where
+    ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
+
+covers-of-directified-basis-are-directed : (F : frame 𝓤 𝓥 𝓦)
+                                         → (ℬ : Fam 𝓦 ⟨ F ⟩)
+                                         → (β : is-basis-for F ℬ)
+                                         → (x : ⟨ F ⟩)
+                                         → let
+                                            ℬ↑ = directify F ℬ
+                                            β↑ = directified-basis-is-basis F ℬ β
+                                            𝒥↑ = pr₁ (β↑ x)
+                                           in
+                                            is-directed F (⁅ ℬ↑ [ i ] ∣ i ε 𝒥↑ ⁆) holds
+covers-of-directified-basis-are-directed {𝓦 = 𝓦} F ℬ β x =
+ transport (λ - → is-directed F - holds) (ψ ⁻¹) ε
+  where
+   𝒥 = pr₁ (β x)
+
+   𝒦 : Fam 𝓦 (List (index ℬ))
+   𝒦 = ⁅ (λ - → 𝒥 [ - ]) <$> is ∣ is ∶ List (index 𝒥) ⁆
+
+   φ : (is : List (index 𝒥))
+     → directify F ℬ [ (λ - → 𝒥 [ - ]) <$> is ]
+     ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆ [ is ]
+   φ []       = refl
+   φ (i ∷ is) = ap (λ - → (_ ∨[ F ] -)) (φ is)
+
+   ψ : ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+   ψ = to-Σ-≡ (refl , dfunext fe φ)
+
+   ε = directify-is-directed F ⁅ ℬ [ j ] ∣ j ε 𝒥 ⁆
+
 directify-basis : (F : frame 𝓤 𝓥 𝓦)
                 → (has-basis F ⇒ has-directed-basis F) holds
 directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis F)) γ
@@ -1207,12 +1280,12 @@ directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis 
   open Joins (λ x y → x ≤ y)
 
   γ : Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ → has-directed-basis F holds
-  γ (ℬ@(I , _) , b) = ∣ directify F ℬ , β , δ ∣
+  γ (ℬ , β) = ∣ directify F ℬ , (directified-basis-is-basis F ℬ β) , δ ∣
    where
-    𝒥 : ⟨ F ⟩ → Fam 𝓦 I
-    𝒥 x = pr₁ (b x)
+    𝒥 : ⟨ F ⟩ → Fam 𝓦 (index ℬ)
+    𝒥 x = pr₁ (β x)
 
-    𝒦 : ⟨ F ⟩ → Fam 𝓦 (List I)
+    𝒦 : ⟨ F ⟩ → Fam 𝓦 (List (index ℬ))
     𝒦 x = List (index (𝒥 x)) , (λ - → 𝒥 x [ - ]) <$>_
 
     φ : (x : ⟨ F ⟩)
@@ -1225,17 +1298,6 @@ directify-basis {𝓦 = 𝓦} F = ∥∥-rec (holds-is-prop (has-directed-basis 
     ψ : (x : ⟨ F ⟩)
       → ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ ≡ directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆
     ψ x = to-Σ-≡ (refl , dfunext fe (φ x))
-
-    β : (x : ⟨ F ⟩)
-      → Σ J ꞉ Fam 𝓦 (List I)
-        , (x is-lub-of ⁅ directify F ℬ [ j ] ∣ j ε J ⁆) holds
-    β x = 𝒦 x , transport (λ - → (x is-lub-of -) holds) (ψ x ⁻¹) δ
-     where
-      p : (x is-lub-of ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆) holds
-      p = pr₂ (b x)
-
-      δ : (x is-lub-of directify F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆) holds
-      δ = directify-preserves-joins₀ F ⁅ ℬ [ j ] ∣ j ε 𝒥 x ⁆ x p
 
     δ : (x : ⟨ F ⟩)
       → is-directed F ⁅ directify F ℬ [ is ] ∣ is ε 𝒦 x ⁆ holds
