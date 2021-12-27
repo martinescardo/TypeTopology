@@ -596,8 +596,51 @@ clopens-are-compact-in-compact-frames F κ U =
 
 \end{code}
 
+\section{Regularity}
+
 \begin{code}
 
+is-regular : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-regular {𝓤 = 𝓤} {𝓥} {𝓦} F =
+ let
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+
+  P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇ 
+  P ℬ = Π x ꞉ ⟨ F ⟩ ,
+         Σ J ꞉ Fam 𝓦 (index ℬ) ,
+            (x is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
+          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] x) holds)
+ in
+  Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , P ℬ
+
+is-regular-basis : (F : frame 𝓤 𝓥 𝓦)
+                 → (ℬ : Fam 𝓦 ⟨ F ⟩) → (β : is-basis-for F ℬ) → Ω (𝓤 ⊔ 𝓦)
+is-regular-basis F ℬ β =
+ Ɐ U ∶ ⟨ F ⟩ ,
+  let 𝒥 = pr₁ (β U) in
+   Ɐ j ∶ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
+
+is-regular₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
+is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
+ let
+  open Joins (λ x y → x ≤[ poset-of F ] y)
+
+  P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇ 
+  P ℬ = Π x ꞉ ⟨ F ⟩ ,
+         Σ J ꞉ Fam 𝓦 (index ℬ) ,
+            (x is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
+          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] x) holds)
+ in
+  Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , P ℬ
+
+basis-of-regular-frame : (F : frame 𝓤 𝓥 𝓦)
+                       → (is-regular F ⇒ has-basis F) holds
+basis-of-regular-frame F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
+ where
+  γ : is-regular₀ F → has-basis F holds
+  γ (ℬ , δ)= ∣ ℬ , (λ U → pr₁ (δ U) , pr₁ (pr₂ (δ U))) ∣
+
+\end{code}
 ≪-implies-⋜-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
                               → is-regular F holds
                               → (U V : ⟨ F ⟩)
