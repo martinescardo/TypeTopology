@@ -633,6 +633,7 @@ basis-of-regular-frame F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
   γ (ℬ , δ)= ∣ ℬ , (λ U → pr₁ (δ U) , pr₁ (pr₂ (δ U))) ∣
 
 \end{code}
+
 \section{Zero-dimensionality}
 
 A locale L is said to be zero-dimensional iff it has a basis consisting of
@@ -716,4 +717,5 @@ directification-preserves-regularity F ℬ β r U = γ
 
      ζ : Σ k ꞉ index S , (U ≤[ poset-of F ] (S [ k ])) holds → (U ⋜[ F ] V) holds
      ζ (k , q) = T≤U⋜V≤W-implies-T⋜W F q (ρ↑ V k) (≤-is-reflexive (poset-of F) V)
+
 \end{code}
