@@ -56,7 +56,7 @@ module Dedekind
         (ℚ   : 𝓤 ̇ )
         (less-than            : ℚ → ℚ → 𝓤 ̇ )
         (order-is-prop-valued : (p q : ℚ) → is-prop (less-than p q))
-        (order-is-irrefl      : (q : ℚ) → ¬(less-than q q))
+        (order-is-irrefl      : (q : ℚ) → ¬ less-than q q)
        where
 
 open PropositionalTruncation pt
@@ -168,19 +168,19 @@ being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-value
 being-located-is-prop : (L U : 𝓟 ℚ) → is-prop (are-located L U)
 being-located-is-prop _ _ = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
 
-technical-lemma : (L U L' U' : 𝓟 ℚ)
-                → is-lower-open U'
-                → are-located L  U
-                → are-ordered L' U'
-                → L  ⊆ L'
-                → U' ⊆ U
-technical-lemma L U L' U'
-                U'-lower-open
-                LU-located
-                LU'-ordered
-                L-contained-in-L'
-                q
-                q-in-U'             = γ
+order-lemma : (L U L' U' : 𝓟 ℚ)
+            → is-lower-open U'
+            → are-located L  U
+            → are-ordered L' U'
+            → L  ⊆ L'
+            → U' ⊆ U
+order-lemma L U L' U'
+            U'-lower-open
+            LU-located
+            LU'-ordered
+            L-contained-in-L'
+            q
+            q-in-U'             = γ
  where
   I : ∃ q' ꞉ ℚ , (q' < q) × q' ∈ U'
   I = U'-lower-open q q-in-U'
@@ -211,19 +211,19 @@ technical-lemma L U L' U'
   γ = ∥∥-rec (∈-is-prop U q) II I
 
 
-technical-lemma-converse : (L U L' U' : 𝓟 ℚ)
-                         → is-upper-open L
-                         → are-located L' U'
-                         → are-ordered L  U
-                         → U' ⊆ U
-                         → L  ⊆ L'
-technical-lemma-converse L U L' U'
-                L-upper-open
-                LU'-located
-                LU-ordered
-                U'-contained-in-U
-                q
-                q-in-L             = γ
+order-lemma-converse : (L U L' U' : 𝓟 ℚ)
+                     → is-upper-open L
+                     → are-located L' U'
+                     → are-ordered L  U
+                     → U' ⊆ U
+                     → L  ⊆ L'
+order-lemma-converse L U L' U'
+                     L-upper-open
+                     LU'-located
+                     LU-ordered
+                     U'-contained-in-U
+                     q
+                     q-in-L             = γ
  where
   I : ∃ q' ꞉ ℚ , (q < q') × q' ∈ L
   I = L-upper-open q q-in-L
@@ -269,10 +269,10 @@ any-two-upper-sections-are-equal : (L U U' : 𝓟 ℚ)
 any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
  where
   i : U ⊆ U'
-  i = technical-lemma L U' L U  a w b (⊆-refl' L)
+  i = order-lemma L U' L U  a w b (⊆-refl' L)
 
   j : U ⊇ U'
-  j = technical-lemma L U  L U' u c v (⊆-refl' L)
+  j = order-lemma L U  L U' u c v (⊆-refl' L)
 
   γ : U ≡ U'
   γ = subset-extensionality'' pe fe fe i j
@@ -1110,12 +1110,12 @@ We now name all the projections out of ℝ:
  uppercut-lc x y p = lowercut-lc x y III
   where
    I : lowercut x ⊆ lowercut y
-   I = technical-lemma-converse (lowercut x) (uppercut x) (lowercut y) (uppercut y)
+   I = order-lemma-converse (lowercut x) (uppercut x) (lowercut y) (uppercut y)
         (lowercut-is-upper-open x) (cuts-are-located y) (cuts-are-ordered x)
         (transport (_⊆ uppercut x) p (⊆-refl (uppercut x)))
 
    II : lowercut x ⊇ lowercut y
-   II = technical-lemma-converse (lowercut y) (uppercut y) (lowercut x) (uppercut x)
+   II = order-lemma-converse (lowercut y) (uppercut y) (lowercut x) (uppercut x)
          (lowercut-is-upper-open y) (cuts-are-located x) (cuts-are-ordered y)
          (transport (uppercut x ⊆_) p (⊆-refl (uppercut x)))
 
@@ -1125,7 +1125,7 @@ We now name all the projections out of ℝ:
  <-irrefl : (x : ℝ) → x ≮ x
  <-irrefl x ℓ = γ
   where
-   δ : ¬(Σ q ꞉ ℚ , ((x < q) × (q < x)))
+   δ : ¬ (Σ q ꞉ ℚ , ((x < q) × (q < x)))
    δ (q , a , b) = cuts-are-disjoint x q b a
 
    γ : 𝟘
@@ -1176,8 +1176,11 @@ We now name all the projections out of ℝ:
  _≤'_ : ℝ → ℝ → 𝓤 ̇
  x ≤' y = (q : ℚ) → y < q → x < q
 
+ ≤'-is-prop-valued : (x y : ℝ) → is-prop (x ≤' y)
+ ≤'-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (uppercut x) _)
+
  ≤-gives-≤' : (x y : ℝ) → x ≤ y → x ≤' y
- ≤-gives-≤' x y ℓ = technical-lemma
+ ≤-gives-≤' x y ℓ = order-lemma
                      (lowercut x) (uppercut x)
                      (lowercut y) (uppercut y)
                      (uppercut-is-lower-open y)
@@ -1186,7 +1189,7 @@ We now name all the projections out of ℝ:
                      ℓ
 
  ≤'-gives-≤ : (x y : ℝ) → x ≤' y → x ≤ y
- ≤'-gives-≤ x y ℓ = technical-lemma-converse
+ ≤'-gives-≤ x y ℓ = order-lemma-converse
                      (lowercut x) (uppercut x)
                      (lowercut y) (uppercut y)
                      (lowercut-is-upper-open x)
@@ -1281,7 +1284,7 @@ We now name all the projections out of ℝ:
    IV : y ≤ x
    IV = not-<-gives-≤ y x I
 
- ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬(x ≡ y) → x ≡ y
+ ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ≡ y) → x ≡ y
  ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
   where
    c : ¬¬ (x ≡ y) → ¬ (x ♯ y)
