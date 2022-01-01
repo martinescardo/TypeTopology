@@ -114,6 +114,7 @@ import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
+import CanonicalMap
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
@@ -223,6 +224,7 @@ import SpartanMLTT-List
 import SquashedCantor
 import SquashedSum
 import SRTclosure
+import StrictOrder
 import Swap
 import sigma-sup-lattice
 import sigma-frame

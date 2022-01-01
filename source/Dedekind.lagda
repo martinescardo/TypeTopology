@@ -45,6 +45,8 @@ open import UF-Subsingletons-FunExt
 open import UF-Powerset
 open import UF-Embeddings
 open import UF-Equiv
+open import StrictOrder
+open import CanonicalMap
 
 module Dedekind
         (pt  : propositional-truncations-exist)
@@ -52,15 +54,16 @@ module Dedekind
         (pe  : Prop-Ext)
         {𝓤  : Universe}
         (ℚ   : 𝓤 ̇ )
-        (_<_ : ℚ → ℚ → 𝓤 ̇ )
-        (order-is-prop-valued : (p q : ℚ) → is-prop (p < q))
-        (order-is-irrefl      : (q : ℚ) → ¬(q < q))
+        (less-than            : ℚ → ℚ → 𝓤 ̇ )
+        (order-is-prop-valued : (p q : ℚ) → is-prop (less-than p q))
+        (order-is-irrefl      : (q : ℚ) → ¬(less-than q q))
        where
 
 open PropositionalTruncation pt
 
-_≮_ : ℚ → ℚ → 𝓤 ̇
-p ≮ q = ¬(p < q)
+instance
+ strict-order-ℚ : Strict-Order ℚ ℚ
+ _<_ {{strict-order-ℚ}} = less-than
 
 𝓤⁺ = 𝓤 ⁺
 
@@ -206,6 +209,49 @@ technical-lemma L U L' U'
 
   γ : q ∈ U
   γ = ∥∥-rec (∈-is-prop U q) II I
+
+
+technical-lemma-converse : (L U L' U' : 𝓟 ℚ)
+                         → is-upper-open L
+                         → are-located L' U'
+                         → are-ordered L  U
+                         → U' ⊆ U
+                         → L  ⊆ L'
+technical-lemma-converse L U L' U'
+                L-upper-open
+                LU'-located
+                LU-ordered
+                U'-contained-in-U
+                q
+                q-in-L             = γ
+ where
+  I : ∃ q' ꞉ ℚ , (q < q') × q' ∈ L
+  I = L-upper-open q q-in-L
+
+  II : (Σ q' ꞉ ℚ , (q < q') × q' ∈ L) → q ∈ L'
+  II (q' , l , i) = VI
+   where
+    III : q ∈ L' ∨ q' ∈ U'
+    III = LU'-located q q' l
+
+    IV : q' ∉ U'
+    IV j = order-is-irrefl q' b
+     where
+      a : q' ∈ U
+      a = U'-contained-in-U q' j
+
+      b : q' < q'
+      b = LU-ordered q' q' i a
+
+    V : (q ∈ L') + (q' ∈ U') → q ∈ L'
+    V (inl j) = j
+    V (inr k) = 𝟘-elim (IV k)
+
+    VI : q ∈ L'
+    VI = ∥∥-rec (∈-is-prop L' q) V III
+
+  γ : q ∈ L'
+  γ = ∥∥-rec (∈-is-prop L' q) II I
 
 \end{code}
 
@@ -783,21 +829,6 @@ lower reals:
                                     𝟘-is-prop
                                     (λ (q , q-not-in-∞) → q-not-in-∞ *)
                                     bounded
-
- unbounded-is-∞ : ¬ (Σ L ꞉ 𝓟 ℚ , is-lower-real L × ¬ is-bounded-above L × (L ≢ ∞))
- unbounded-is-∞ (L , (L-inhabited , L-lower , L-upper-open) , unbounded , ν) = {!!}
-  where
-   α : (p : ℚ) → ¬(p ∉ L)
-   α p u = unbounded ∣ p , u ∣
-   β : ¬((p : ℚ) → p ∈ L)
-   β f = ν (dfunext fe (λ p → holds-gives-equal-⊤ pe fe (L p) (f p)))
-
-   δ : ¬ is-bounded-above L
-   δ bounded = ν {!!}
-
-   γ : 𝟘
-   γ = {!!}
-
 \end{code}
 
 In connection with a discussion above, notice that we don't need
@@ -979,5 +1010,276 @@ The canonical embedding of the rationals into the reals:
   where
    notice-that : ℝ-to-ℝᴸ ∘ ℚ-to-ℝ ≡ ℚ-to-ℝᴸ
    notice-that = refl
+
+ open import CanonicalMap
+
+ instance
+  canonical-map-ℚ-ℝ : Canonical-Map ℚ ℝ
+  ι {{canonical-map-ℚ-ℝ}} = ℚ-to-ℝ
+
+  canonical-map-ℚ-ℝᴸ : Canonical-Map ℚ ℝᴸ
+  ι {{canonical-map-ℚ-ℝᴸ}} = ℚ-to-ℝᴸ
+
+  canonical-map-ℚ-ℝᵁ : Canonical-Map ℚ ℝᵁ
+  ι {{canonical-map-ℚ-ℝᵁ}} = ℚ-to-ℝᵁ
+
+
+\end{code}
+
+\begin{code}
+
+ lowercut : ℝ → 𝓟 ℚ
+ lowercut ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = L
+
+ uppercut : ℝ → 𝓟 ℚ
+ uppercut ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = U
+
+ _ℚ<ℝ_ : ℚ → ℝ → 𝓤 ̇
+ q ℚ<ℝ x = q ∈ lowercut x
+
+ _ℝ<ℚ_ : ℝ → ℚ → 𝓤 ̇
+ x ℝ<ℚ q = q ∈ uppercut x
+
+ open import StrictOrder
+
+ instance
+  strict-order-ℚ-ℝ : Strict-Order ℚ ℝ
+  _<_ {{strict-order-ℚ-ℝ}} = _ℚ<ℝ_
+
+  strict-order-ℝ-ℚ : Strict-Order ℝ ℚ
+  _<_ {{strict-order-ℝ-ℚ}} = _ℝ<ℚ_
+
+ _ℝ<ℝ_ : ℝ → ℝ → 𝓤 ̇
+ x ℝ<ℝ y = ∃ q ꞉ ℚ , (x < q) × (q < y)
+
+ instance
+  strict-order-ℝ-ℝ : Strict-Order ℝ ℝ
+  _<_ {{strict-order-ℝ-ℝ}} = _ℝ<ℝ_
+
+ <-is-prop-valued : (x y : ℝ) → is-prop (x < y)
+ <-is-prop-valued x y = ∃-is-prop
+
+ lowercut-is-inhabited : (x : ℝ) → ∃ p ꞉ ℚ , p < x
+ lowercut-is-inhabited ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Li
+
+ uppercut-is-inhabited : (x : ℝ) → ∃ q ꞉ ℚ , x < q
+ uppercut-is-inhabited ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Ui
+
+ lowercut-is-lower : (x : ℝ) (q : ℚ) → q < x → (p : ℚ) → p < q → p < x
+ lowercut-is-lower ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Ll
+
+ uppercut-is-upper : (x : ℝ) (p : ℚ) → x < p → (q : ℚ) → p < q → x < q
+ uppercut-is-upper ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Uu
+
+ lowercut-is-upper-open : (x : ℝ) (p : ℚ) → p < x → ∃ q ꞉ ℚ , (p < q) × (q < x)
+ lowercut-is-upper-open ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Lo
+
+ uppercut-is-lower-open : (x : ℝ) (q : ℚ) → x < q → ∃ p ꞉ ℚ , (p < q) × (x < p)
+ uppercut-is-lower-open ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Uo
+
+ cuts-are-ordered : (x : ℝ) (p q : ℚ) → p < x → x < q → p < q
+ cuts-are-ordered ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = o
+
+ cuts-are-located : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (x < q)
+ cuts-are-located ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = l
+
+ cuts-are-disjoint : (x : ℝ) (p : ℚ) → p < x → x < p → 𝟘
+ cuts-are-disjoint x p l m = disjoint-criterion
+                               (lowercut x) (uppercut x)
+                               (cuts-are-ordered x)
+                               p
+                               (l , m)
+
+ lowercut-is-bounded : (x : ℝ) → ∃ p ꞉ ℚ , p ≮ x
+ lowercut-is-bounded (l , δ) = pr₁ (dedekind-gives-troelstra l δ)
+
+ lowercut-is-located : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
+ lowercut-is-located (l , δ) = pr₂ (dedekind-gives-troelstra l δ)
+
+
+ lowercut-lc : (x y : ℝ) → lowercut x ≡ lowercut y → x ≡ y
+ lowercut-lc x y p = to-subtype-≡ being-dedekind-is-prop
+                       (to-subtype-≡ being-lower-real-is-prop p)
+
+ uppercut-lc : (x y : ℝ) → uppercut x ≡ uppercut y → x ≡ y
+ uppercut-lc x y p = lowercut-lc x y γ
+  where
+   γ : lowercut x ≡ lowercut y
+   γ = subset-extensionality'' pe fe fe
+        (technical-lemma-converse (lowercut x) (uppercut x) (lowercut y) (uppercut y)
+          (lowercut-is-upper-open x) (cuts-are-located y) (cuts-are-ordered x)
+          (transport (_⊆ uppercut x) p (⊆-refl (uppercut x))))
+        (technical-lemma-converse (lowercut y) (uppercut y) (lowercut x) (uppercut x)
+          (lowercut-is-upper-open y) (cuts-are-located x) (cuts-are-ordered y)
+          (transport (uppercut x ⊆_) p (⊆-refl (uppercut x))))
+
+ <-irrefl : (x : ℝ) → x ≮ x
+ <-irrefl x ℓ = γ
+  where
+   δ : ¬(Σ q ꞉ ℚ , ((x < q) × (q < x)))
+   δ (q , a , b) = cuts-are-disjoint x q b a
+
+   γ : 𝟘
+   γ = ∥∥-rec 𝟘-is-prop δ ℓ
+
+ <-trans : (x y z : ℝ) → x < y → y < z → x < z
+ <-trans x y z i j = ∥∥-functor₂ f i j
+  where
+   f : (Σ p ꞉ ℚ , (x < p) × (p < y))
+     → (Σ q ꞉ ℚ , (y < q) × (q < z))
+     →  Σ r ꞉ ℚ , (x < r) × (r < z)
+   f (p , i , j) (q , k , l) = p , i , v
+    where
+     u : p < q
+     u = cuts-are-ordered y p q j k
+
+     v : p < z
+     v = lowercut-is-lower z q l p u
+
+ <-is-prop : (x y : ℝ) → is-prop (x < y)
+ <-is-prop x y = ∃-is-prop
+
+ <-cotrans-ℚ : (p q : ℚ) → p < q → (z : ℝ) → (p < z) ∨ (z < q)
+ <-cotrans-ℚ p q ℓ z = cuts-are-located z p q ℓ
+
+ <-cotrans : (x y : ℝ) → x < y → (z : ℝ) → (x < z) ∨ (z < y)
+ <-cotrans x y ℓ z = V
+  where
+   I : (Σ q ꞉ ℚ , ((x < q) × (q < y))) → (x < z) ∨ (z < y)
+   I (q , a , b) = ∥∥-rec ∨-is-prop III II
+    where
+     II : ∃ p ꞉ ℚ , (p < q) × (x < p)
+     II = uppercut-is-lower-open x q a
+
+     III : (Σ p ꞉ ℚ , (p < q) × (x < p)) → (x < z) ∨ (z < y)
+     III (p , c , d) = ∥∥-functor IV (<-cotrans-ℚ p q c z)
+       where
+        IV : (p < z) + (z < q) → (x < z) + (z < y)
+        IV (inl ℓ) = inl ∣ p , d , ℓ ∣
+        IV (inr ℓ) = inr ∣ q , ℓ , b ∣
+
+   V : (x < z) ∨ (z < y)
+   V = ∥∥-rec ∨-is-prop I ℓ
+
+
+ _≤_ : ℝ → ℝ → 𝓤 ̇
+ x ≤ y = (q : ℚ) → q < x → q < y
+
+ ≤-is-prop-valued : (x y : ℝ) → is-prop (x ≤ y)
+ ≤-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
+
+ _≤'_ : ℝ → ℝ → 𝓤 ̇
+ x ≤' y = (q : ℚ) → y < q → x < q
+
+ ≤-gives-≤' : (x y : ℝ) → x ≤ y → x ≤' y
+ ≤-gives-≤' x y ℓ = technical-lemma
+                     (lowercut x) (uppercut x)
+                     (lowercut y) (uppercut y)
+                     (uppercut-is-lower-open y)
+                     (cuts-are-located x)
+                     (cuts-are-ordered y)
+                     ℓ
+
+ ≤'-gives-≤ : (x y : ℝ) → x ≤' y → x ≤ y
+ ≤'-gives-≤ x y ℓ = technical-lemma-converse
+                     (lowercut x) (uppercut x)
+                     (lowercut y) (uppercut y)
+                     (lowercut-is-upper-open x)
+                     (cuts-are-located y)
+                     (cuts-are-ordered x)
+                     ℓ
+
+ not-<-gives-≤ : (x y : ℝ) → y ≮ x → x ≤ y
+ not-<-gives-≤ x y ν q ℓ = VI
+  where
+   I : (p : ℚ) → p < x → y ≮ p
+   I p m l = ν ∣ p , l , m ∣
+
+   II : ∃ p ꞉ ℚ , (q < p) × (p < x)
+   II = lowercut-is-upper-open x q ℓ
+
+   III : (Σ p ꞉ ℚ , (q < p) × (p < x)) → q < y
+   III (p , i , j) = ∥∥-rec (∈-is-prop (lowercut y) q) V IV
+    where
+     IV : (q < y) ∨ (y < p)
+     IV = <-cotrans-ℚ q p i y
+
+     V : (q < y) + (y < p) → q < y
+     V (inl k) = k
+     V (inr l) = 𝟘-elim (I p j l)
+
+   VI : q < y
+   VI = ∥∥-rec (∈-is-prop (lowercut y) q) III II
+
+ ≤-gives-not-< : (x y : ℝ) → x ≤ y → y ≮ x
+ ≤-gives-not-< x y ℓ i = II
+  where
+   I : ¬ (Σ p ꞉ ℚ , (y < p) × (p < x))
+   I (p , j , k) = cuts-are-disjoint y p (ℓ p k) j
+
+   II : 𝟘
+   II = ∥∥-rec 𝟘-is-prop I i
+
+ ≤-refl : (x : ℝ) → x ≤ x
+ ≤-refl x q ℓ = ℓ
+
+ ≤-trans : (x y z : ℝ) → x ≤ y → y ≤ z → x ≤ z
+ ≤-trans x y z l m p i = m p (l p i)
+
+ ≤-antisym : (x y : ℝ) → x ≤ y → y ≤ x → x ≡ y
+ ≤-antisym x y l m = lowercut-lc x y γ
+  where
+   γ : lowercut x ≡ lowercut y
+   γ = subset-extensionality'' pe fe fe l m
+
+
+ _♯_ : ℝ → ℝ → 𝓤 ̇
+ x ♯ y = (x < y) + (y < x)
+
+ ♯-is-prop-valued : (x y : ℝ) → is-prop (x ♯ y)
+ ♯-is-prop-valued x y = sum-of-contradictory-props (<-is-prop x y) (<-is-prop y x)
+                          (λ i j → <-irrefl x (<-trans x y x i j))
+
+ ♯-irrefl : (x : ℝ) → ¬ (x ♯ x)
+ ♯-irrefl x (inl ℓ) = <-irrefl x ℓ
+ ♯-irrefl x (inr ℓ) = <-irrefl x ℓ
+
+ ♯-gives-≢ : (x y : ℝ) → x ♯ y → x ≢ y
+ ♯-gives-≢ x x s refl = ♯-irrefl x s
+
+ ♯-sym : (x y : ℝ) → x ♯ y → y ♯ x
+ ♯-sym x y (inl ℓ) = inr ℓ
+ ♯-sym x y (inr ℓ) = inl ℓ
+
+ ♯-cotrans : (x y : ℝ) → x ♯ y → (z : ℝ) → (x ♯ z) ∨ (y ♯ z)
+ ♯-cotrans x y (inl ℓ) z = ∥∥-functor
+                             (cases (λ (ℓ : x < z) → inl (inl ℓ))
+                                    (λ (ℓ : z < y) → inr (inr ℓ)))
+                             (<-cotrans x y ℓ z)
+ ♯-cotrans x y (inr ℓ) z = ∥∥-functor
+                             (cases (λ (ℓ : y < z) → inr (inl ℓ))
+                                    (λ (ℓ : z < x) → inl (inr ℓ)))
+                             (<-cotrans y x ℓ z)
+
+ ♯-tight : (x y : ℝ) → ¬ (x ♯ y) → x ≡ y
+ ♯-tight x y ν = ≤-antisym x y III IV
+  where
+   I : x ≮ y
+   I ℓ = ν (inl ℓ)
+
+   II : y ≮ x
+   II ℓ = ν (inr ℓ)
+
+   III : x ≤ y
+   III = not-<-gives-≤ x y II
+
+   IV : y ≤ x
+   IV = not-<-gives-≤ y x I
+
+ ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬(x ≡ y) → x ≡ y
+ ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
+  where
+   c : ¬¬ (x ≡ y) → ¬ (x ♯ y)
+   c = contrapositive (♯-gives-≢ x y)
 
 \end{code}
