@@ -1026,6 +1026,8 @@ The canonical embedding of the rationals into the reals:
 
 \end{code}
 
+We now consider order and apartness on real numbers.
+
 \begin{code}
 
  lowercut : ℝ → 𝓟 ℚ
@@ -1039,8 +1041,6 @@ The canonical embedding of the rationals into the reals:
 
  _ℝ<ℚ_ : ℝ → ℚ → 𝓤 ̇
  x ℝ<ℚ q = q ∈ uppercut x
-
- open import StrictOrder
 
  instance
   strict-order-ℚ-ℝ : Strict-Order ℚ ℝ
@@ -1058,6 +1058,12 @@ The canonical embedding of the rationals into the reals:
 
  <-is-prop-valued : (x y : ℝ) → is-prop (x < y)
  <-is-prop-valued x y = ∃-is-prop
+
+\end{code}
+
+We now name all the projections out of ℝ:
+
+\begin{code}
 
  lowercut-is-inhabited : (x : ℝ) → ∃ p ꞉ ℚ , p < x
  lowercut-is-inhabited ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Li
@@ -1097,11 +1103,11 @@ The canonical embedding of the rationals into the reals:
  lowercut-is-located (l , δ) = pr₂ (dedekind-gives-troelstra l δ)
 
  lowercut-lc : (x y : ℝ) → lowercut x ≡ lowercut y → x ≡ y
- lowercut-lc x y p = to-subtype-≡ being-dedekind-is-prop
-                       (to-subtype-≡ being-lower-real-is-prop p)
+ lowercut-lc x y e = to-subtype-≡ being-dedekind-is-prop
+                       (to-subtype-≡ being-lower-real-is-prop e)
 
  uppercut-lc : (x y : ℝ) → uppercut x ≡ uppercut y → x ≡ y
- uppercut-lc x y p = lowercut-lc x y γ
+ uppercut-lc x y p = lowercut-lc x y III
   where
    I : lowercut x ⊆ lowercut y
    I = technical-lemma-converse (lowercut x) (uppercut x) (lowercut y) (uppercut y)
@@ -1113,8 +1119,8 @@ The canonical embedding of the rationals into the reals:
          (lowercut-is-upper-open y) (cuts-are-located x) (cuts-are-ordered y)
          (transport (uppercut x ⊆_) p (⊆-refl (uppercut x)))
 
-   γ : lowercut x ≡ lowercut y
-   γ = subset-extensionality'' pe fe fe I II
+   III : lowercut x ≡ lowercut y
+   III = subset-extensionality'' pe fe fe I II
 
  <-irrefl : (x : ℝ) → x ≮ x
  <-irrefl x ℓ = γ
@@ -1160,7 +1166,6 @@ The canonical embedding of the rationals into the reals:
 
    V : (x < z) ∨ (z < y)
    V = ∥∥-rec ∨-is-prop I ℓ
-
 
  _≤_ : ℝ → ℝ → 𝓤 ̇
  x ≤ y = (q : ℚ) → q < x → q < y
@@ -1231,7 +1236,6 @@ The canonical embedding of the rationals into the reals:
   where
    γ : lowercut x ≡ lowercut y
    γ = subset-extensionality'' pe fe fe l m
-
 
  _♯_ : ℝ → ℝ → 𝓤 ̇
  x ♯ y = (x < y) + (y < x)
