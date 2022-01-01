@@ -1083,7 +1083,7 @@ The canonical embedding of the rationals into the reals:
  cuts-are-located : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (x < q)
  cuts-are-located ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = l
 
- cuts-are-disjoint : (x : ℝ) (p : ℚ) → p < x → x < p → 𝟘
+ cuts-are-disjoint : (x : ℝ) (p : ℚ) → p < x → x ≮ p
  cuts-are-disjoint x p l m = disjoint-criterion
                                (lowercut x) (uppercut x)
                                (cuts-are-ordered x)
@@ -1095,7 +1095,6 @@ The canonical embedding of the rationals into the reals:
 
  lowercut-is-located : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
  lowercut-is-located (l , δ) = pr₂ (dedekind-gives-troelstra l δ)
-
 
  lowercut-lc : (x y : ℝ) → lowercut x ≡ lowercut y → x ≡ y
  lowercut-lc x y p = to-subtype-≡ being-dedekind-is-prop
@@ -1139,9 +1138,6 @@ The canonical embedding of the rationals into the reals:
 
      v : p < z
      v = lowercut-is-lower z q l p u
-
- <-is-prop : (x y : ℝ) → is-prop (x < y)
- <-is-prop x y = ∃-is-prop
 
  <-cotrans-ℚ : (p q : ℚ) → p < q → (z : ℝ) → (p < z) ∨ (z < q)
  <-cotrans-ℚ p q ℓ z = cuts-are-located z p q ℓ
@@ -1241,7 +1237,8 @@ The canonical embedding of the rationals into the reals:
  x ♯ y = (x < y) + (y < x)
 
  ♯-is-prop-valued : (x y : ℝ) → is-prop (x ♯ y)
- ♯-is-prop-valued x y = sum-of-contradictory-props (<-is-prop x y) (<-is-prop y x)
+ ♯-is-prop-valued x y = sum-of-contradictory-props
+                          (<-is-prop-valued x y) (<-is-prop-valued y x)
                           (λ i j → <-irrefl x (<-trans x y x i j))
 
  ♯-irrefl : (x : ℝ) → ¬ (x ♯ x)
