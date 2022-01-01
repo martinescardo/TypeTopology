@@ -487,12 +487,31 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
  𝟎-is-less-than-𝟏 : 𝟎 < 𝟏
  𝟎-is-less-than-𝟏 = ℚ-transitivity 𝟎 ½ 𝟏 𝟎-is-less-than-½ ½-is-less-than-𝟏
 
- equality-criterion : (p q : ℚ)
-                    → ((r : ℚ) → r < p → r < q)
-                    → ((r : ℚ) → r < q → r < p)
-                    → p ≡ q
- equality-criterion p q f g = ℚ-tightness p q (λ ℓ → ≺-is-irrefl q (f q ℓ))
-                                              (λ ℓ → ≺-is-irrefl p (g p ℓ))
+ instance
+  order-ℚ-ℚ : Order ℚ ℚ
+  _≤_ {{order-ℚ-ℚ}} p q = (r : ℚ) → r < p → r < q
+
+ ℚ-≤-antisym : (p q : ℚ) → p ≤ q → q ≤ p → p ≡ q
+ ℚ-≤-antisym p q i j = ℚ-tightness p q (λ ℓ → ≺-is-irrefl q (i q ℓ))
+                                       (λ ℓ → ≺-is-irrefl p (j p ℓ))
+
+ <-or-≡-gives-≤-on-ℚ : (p q : ℚ) → (p < q) + (p ≡ q) → p ≤ q
+ <-or-≡-gives-≤-on-ℚ p q (inl ℓ)    r m = ℚ-transitivity r p q m ℓ
+ <-or-≡-gives-≤-on-ℚ p q (inr refl) r ℓ = ℓ
+
+ ℚ-trichotomy = (p q : ℚ) → (p < q) + (p ≡ q) + (p > q)
+
+ ≤-on-ℚ-gives-≡-or-< : ℚ-trichotomy
+                     → (p q : ℚ) → p ≤ q → (p < q) + (p ≡ q)
+ ≤-on-ℚ-gives-≡-or-< τ p q ℓ = γ (τ p q)
+  where
+   I : q ≮ p
+   I m = ≺-is-irrefl q (ℓ q m)
+
+   γ : (p < q) + (p ≡ q) + (p > q) → (p < q) + (p ≡ q)
+   γ (inl i)       = inl i
+   γ (inr (inl e)) = inr e
+   γ (inr (inr j)) = 𝟘-elim (I j)
 
  ordered-criterion : (L U : 𝓟 ℚ)
                    → is-lower L
@@ -1001,7 +1020,7 @@ The canonical embedding of the rationals into the reals:
    B r = idtofun (r < q) (r < p) (happly (III ⁻¹) r)
 
    V : p ≡ q
-   V = equality-criterion p q A B
+   V =  ℚ-≤-antisym p q A B
 
    γ : (p , a) ≡ (q , b)
    γ = to-subtype-≡ (λ _ → ℝᴸ-is-set) V
@@ -1304,10 +1323,6 @@ We now name all the projections out of ℝ:
                            (≺-is-prop-valued p q)
                            (λ (r , i , j) → ℚ-transitivity p r q i j)
 
- instance
-  order-ℚ-ℚ : Order ℚ ℚ
-  _≤_ {{order-ℚ-ℚ}} p q = (r : ℚ) → r < p → r < q
-
  ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ℚ-to-ℝ p ≤ ℚ-to-ℝ q)
  ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
 
@@ -1319,23 +1334,5 @@ We now name all the projections out of ℝ:
 
  ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ℚ-to-ℝ p ≤ ℚ-to-ℝ q → p ≤ q
  ℚ-to-ℝ-reflects-≤ p q l = l
-
- ≡-or-<-gives-≤-on-ℚ : (p q : ℚ) → (p ≡ q) + (p < q) → p ≤ q
- ≡-or-<-gives-≤-on-ℚ p q (inl refl) r ℓ = ℓ
- ≡-or-<-gives-≤-on-ℚ p q (inr ℓ)    r m = ℚ-transitivity r p q m ℓ
-
- ℚ-trichotomy = (p q : ℚ) → (p < q) + (p ≡ q) + (p > q)
-
- ≤-on-ℚ-gives-≡-or-< : ℚ-trichotomy
-                     → (p q : ℚ) → p ≤ q → (p ≡ q) + (p < q)
- ≤-on-ℚ-gives-≡-or-< τ p q ℓ = γ (τ p q)
-  where
-   I : q ≮ p
-   I m = ≺-is-irrefl q (ℓ q m)
-
-   γ : (p < q) + (p ≡ q) + (p > q) → (p ≡ q) + (p < q)
-   γ (inl i)       = inr i
-   γ (inr (inl e)) = inl e
-   γ (inr (inr j)) = 𝟘-elim (I j)
 
 \end{code}
