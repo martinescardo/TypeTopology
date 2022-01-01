@@ -7,7 +7,7 @@ that a canonical map is something we decide to call a canonical map.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module CanonicalMap where
+module CanonicalMapNotation where
 
 open import SpartanMLTT
 

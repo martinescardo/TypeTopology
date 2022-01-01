@@ -45,8 +45,8 @@ open import UF-Subsingletons-FunExt
 open import UF-Powerset
 open import UF-Embeddings
 open import UF-Equiv
-open import StrictOrder
-open import CanonicalMap
+open import OrderNotation
+open import CanonicalMapNotation
 
 module Dedekind
         (pt  : propositional-truncations-exist)
@@ -54,16 +54,16 @@ module Dedekind
         (pe  : Prop-Ext)
         {𝓤  : Universe}
         (ℚ   : 𝓤 ̇ )
-        (less-than            : ℚ → ℚ → 𝓤 ̇ )
-        (order-is-prop-valued : (p q : ℚ) → is-prop (less-than p q))
-        (order-is-irrefl      : (q : ℚ) → ¬ less-than q q)
+        (_≺_              : ℚ → ℚ → 𝓤 ̇ )
+        (≺-is-prop-valued : (p q : ℚ) → is-prop (p ≺ q))
+        (≺-is-irrefl      : (q : ℚ) → ¬ (q ≺ q))
        where
 
 open PropositionalTruncation pt
 
 instance
  strict-order-ℚ : Strict-Order ℚ ℚ
- _<_ {{strict-order-ℚ}} = less-than
+ _<_ {{strict-order-ℚ}} = _≺_
 
 𝓤⁺ = 𝓤 ⁺
 
@@ -163,7 +163,7 @@ are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓤  ̇
 are-located L U = (p q : ℚ) → p < q → p ∈ L ∨ q ∈ U
 
 being-ordered-is-prop : (L U : 𝓟 ℚ) → is-prop (are-ordered L U)
-being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → order-is-prop-valued _ _)
+being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _)
 
 being-located-is-prop : (L U : 𝓟 ℚ) → is-prop (are-located L U)
 being-located-is-prop _ _ = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
@@ -192,7 +192,7 @@ order-lemma L U L' U'
     III = LU-located q' q l
 
     IV : q' ∉ L
-    IV j = order-is-irrefl q' b
+    IV j = ≺-is-irrefl q' b
      where
       a : q' ∈ L'
       a = L-contained-in-L' q' j
@@ -235,7 +235,7 @@ order-lemma-converse L U L' U'
     III = LU'-located q q' l
 
     IV : q' ∉ U'
-    IV j = order-is-irrefl q' b
+    IV j = ≺-is-irrefl q' b
      where
       a : q' ∈ U
       a = U'-contained-in-U q' j
@@ -353,6 +353,10 @@ and hence ℝ is a set:
              is-dedekind
              ℝᴸ-is-set
              (λ {l} → being-dedekind-is-prop l)
+instance
+ canonical-map-ℝ-to-ℝᴸ : Canonical-Map ℝ ℝᴸ
+ ι {{canonical-map-ℝ-to-ℝᴸ}} = ℝ-to-ℝᴸ
+
 \end{code}
 
 NB. This won't be a *topological* embedding in topological
@@ -402,7 +406,7 @@ ordered-located-gives-lower L U LU-ordered LU-located = γ
 
     b : (p ∈ L) + (q ∈ U) → p ∈ L
     b (inl u) = u
-    b (inr v) = 𝟘-elim (order-is-irrefl q (LU-ordered q q l v))
+    b (inr v) = 𝟘-elim (≺-is-irrefl q (LU-ordered q q l v))
 
 ordered-located-gives-upper : (L U : 𝓟 ℚ)
                             → are-ordered L U
@@ -417,7 +421,7 @@ ordered-located-gives-upper L U LU-ordered LU-located = γ
     a = LU-located q p m
 
     b : (q ∈ L) + (p ∈ U) → p ∈ U
-    b (inl u) = 𝟘-elim (order-is-irrefl q (LU-ordered q q u l))
+    b (inl u) = 𝟘-elim (≺-is-irrefl q (LU-ordered q q u l))
     b (inr v) = v
 
 
@@ -459,7 +463,7 @@ disjoint-criterion : (L U : 𝓟 ℚ)
                    → are-ordered L U
                    → are-disjoint L U
 disjoint-criterion L U o p (p-in-L , p-in-U) =
- order-is-irrefl p (o p p p-in-L p-in-U)
+ ≺-is-irrefl p (o p p p-in-L p-in-U)
 
 \end{code}
 
@@ -468,11 +472,11 @@ and a few more:
 
 \begin{code}
 
-module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q) × (q < r))
-         (transitivity      : (p q r : ℚ) → p < q → q < r → p < r)
-         (order-criterion   : (p q : ℚ) → p ≢ q → q ≮ p → p < q)
-         (cotransitivity    : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
-         (tightness         : (p q : ℚ) → q ≮ p → p ≮ q → p ≡ q)
+module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q) × (q < r))
+         (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
+         (ℚ-order-criterion : (p q : ℚ) → p ≢ q → q ≮ p → p < q)
+         (ℚ-co-transitivity : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
+         (ℚ-tightness       : (p q : ℚ) → q ≮ p → p ≮ q → p ≡ q)
          (ℚ-is-lower-open   : (q : ℚ) → ∃ p ꞉ ℚ , (p < q))
          (ℚ-is-upper-open   : (p : ℚ) → ∃ q ꞉ ℚ , (p < q))
          (𝟎 ½ 𝟏             : ℚ)
@@ -481,14 +485,14 @@ module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
        where
 
  𝟎-is-less-than-𝟏 : 𝟎 < 𝟏
- 𝟎-is-less-than-𝟏 = transitivity 𝟎 ½ 𝟏 𝟎-is-less-than-½ ½-is-less-than-𝟏
+ 𝟎-is-less-than-𝟏 = ℚ-transitivity 𝟎 ½ 𝟏 𝟎-is-less-than-½ ½-is-less-than-𝟏
 
  equality-criterion : (p q : ℚ)
                     → ((r : ℚ) → r < p → r < q)
                     → ((r : ℚ) → r < q → r < p)
                     → p ≡ q
- equality-criterion p q f g = tightness p q (λ ℓ → order-is-irrefl q (f q ℓ))
-                                            (λ ℓ → order-is-irrefl p (g p ℓ))
+ equality-criterion p q f g = ℚ-tightness p q (λ ℓ → ≺-is-irrefl q (f q ℓ))
+                                              (λ ℓ → ≺-is-irrefl p (g p ℓ))
 
  ordered-criterion : (L U : 𝓟 ℚ)
                    → is-lower L
@@ -506,7 +510,7 @@ module _ (ℚ-is-dense        : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
    III ℓ = LU-disjoint q (L-lower p p-in-L q ℓ , q-in-U)
 
    γ : p < q
-   γ = order-criterion p q II III
+   γ = ℚ-order-criterion p q II III
 
 \end{code}
 
@@ -584,7 +588,7 @@ The Dedekind and Troelstra conditions are equivalent:
    bounded = ∥∥-functor f U-inhabited
     where
      f : (Σ q ꞉ ℚ , q ∈ U) → Σ q ꞉ ℚ , q ∉ L
-     f (q , q-in-U) = q , (λ q-in-L → order-is-irrefl q (c q-in-L))
+     f (q , q-in-U) = q , (λ q-in-L → ≺-is-irrefl q (c q-in-L))
       where
        c : q ∈ L → q < q
        c q-in-L = LU-ordered q q q-in-L q-in-U
@@ -594,7 +598,7 @@ The Dedekind and Troelstra conditions are equivalent:
     where
      f : (r ∈ L) + (s ∈ U) → (r ∈ L) + (s ∉ L)
      f (inl r-in-L) = inl r-in-L
-     f (inr r-in-L) = inr (λ s-in-L → order-is-irrefl s (d s-in-L))
+     f (inr r-in-L) = inr (λ s-in-L → ≺-is-irrefl s (d s-in-L))
       where
        d : s ∈ L → s < s
        d s-in-L = LU-ordered s s s-in-L r-in-L
@@ -617,7 +621,7 @@ does, it is given by the following candidate.
  candidate-upper-section-is-lower-open L q q-in-U = γ
   where
    f : (Σ p ꞉ ℚ , (p < q) × (p ∉ L)) → ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-   f (p , i , p-not-in-L) = ∥∥-functor g (ℚ-is-dense p q i)
+   f (p , i , p-not-in-L) = ∥∥-functor g (ℚ-density p q i)
     where
      g : (Σ p' ꞉ ℚ , (p < p') × (p' < q))
        → Σ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
@@ -633,11 +637,11 @@ does, it is given by the following candidate.
  candidate-upper-section-is-ordered L L-lower located p q p-in-L q-in-U = γ
     where
      f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
-     f (r , i , r-not-in-L) = ∥∥-rec (order-is-prop-valued p q) g (located r q i)
+     f (r , i , r-not-in-L) = ∥∥-rec (≺-is-prop-valued p q) g (located r q i)
       where
        g : (r ∈ L) + (q ∉ L) → p < q
        g (inl r-in-L)     = 𝟘-elim (r-not-in-L r-in-L)
-       g (inr q-not-in-L) = order-criterion p q I II
+       g (inr q-not-in-L) = ℚ-order-criterion p q I II
         where
          I : p ≢ q
          I refl = q-not-in-L p-in-L
@@ -646,7 +650,7 @@ does, it is given by the following candidate.
          II ℓ = q-not-in-L (L-lower p p-in-L q ℓ)
 
      γ : p < q
-     γ = ∥∥-rec (order-is-prop-valued p q) f q-in-U
+     γ = ∥∥-rec (≺-is-prop-valued p q) f q-in-U
 
  candidate-upper-section-is-located : (L : 𝓟 ℚ)
                                     → is-located L
@@ -654,7 +658,7 @@ does, it is given by the following candidate.
  candidate-upper-section-is-located L located p q ℓ = ∥∥-rec ∨-is-prop II I
     where
      I : ∃ p' ꞉ ℚ , (p < p') × (p' < q)
-     I = ℚ-is-dense p q ℓ
+     I = ℚ-density p q ℓ
 
      II : (Σ p' ꞉ ℚ , (p < p') × (p' < q)) → p ∈ L ∨ q ∈ candidate-upper-section L
      II (p' , i , j) = ∥∥-rec ∨-is-prop IV III
@@ -689,7 +693,7 @@ does, it is given by the following candidate.
    γ : ∃ q' ꞉ ℚ , (q' < q) × (q' ∉ L)
    γ = ∣ p ,
         ℓ ,
-        (λ p-in-L → order-is-irrefl p
+        (λ p-in-L → ≺-is-irrefl p
                      (candidate-upper-section-is-ordered
                        L lower located p p p-in-L p-in-U)) ∣
 \end{code}
@@ -897,18 +901,18 @@ independently by Steve Vickers and Toby Bartels.
    L-lower p p-in-L p' j = ∥∥-functor h p-in-L
     where
      h : (p < 𝟎) + (A × (p < 𝟏)) → (p' < 𝟎) + (A × (p' < 𝟏))
-     h (inl ℓ)       = inl (transitivity p' p 𝟎 j ℓ)
-     h (inr (a , ℓ)) = inr (a , transitivity p' p 𝟏 j ℓ)
+     h (inl ℓ)       = inl (ℚ-transitivity p' p 𝟎 j ℓ)
+     h (inr (a , ℓ)) = inr (a , ℚ-transitivity p' p 𝟏 j ℓ)
 
    L-upper-open : is-upper-open L
    L-upper-open p p-in-L = ∥∥-rec ∃-is-prop h p-in-L
     where
      h : (p < 𝟎) + (A × (p < 𝟏)) → ∃ p' ꞉ ℚ , (p < p') × (p' ∈ L)
-     h (inl ℓ) = ∥∥-functor k (ℚ-is-dense p 𝟎 ℓ)
+     h (inl ℓ) = ∥∥-functor k (ℚ-density p 𝟎 ℓ)
       where
        k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟎)) → Σ p' ꞉ ℚ , (p < p') × (p' ∈ L)
        k (p' , i , j) = p' , i , ∣ inl j ∣
-     h (inr (a , ℓ)) = ∥∥-functor k (ℚ-is-dense p 𝟏 ℓ)
+     h (inr (a , ℓ)) = ∥∥-functor k (ℚ-density p 𝟏 ℓ)
       where
        k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟏)) → Σ p' ꞉ ℚ , (p < p') × p' ∈ L
        k (p' , i , j) = p' , i , ∣ inr (a , j) ∣
@@ -926,7 +930,7 @@ independently by Steve Vickers and Toby Bartels.
        h (inl 𝟘-in-L) = inl (∥∥-rec A-is-prop k 𝟘-in-L)
         where
          k : (𝟎 < 𝟎) + (A × (𝟎 < 𝟏)) → A
-         k (inl ℓ)       = 𝟘-elim (order-is-irrefl 𝟎 ℓ)
+         k (inl ℓ)       = 𝟘-elim (≺-is-irrefl 𝟎 ℓ)
          k (inr (a , _)) = a
        h (inr ½-in-U) = inr ν
         where
@@ -940,8 +944,8 @@ independently by Steve Vickers and Toby Bartels.
    L-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
     where
      h : ¬((𝟏 < 𝟎) + (A × (𝟏 < 𝟏)))
-     h (inl ℓ)       = order-is-irrefl 𝟎 (transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
-     h (inr (_ , ℓ)) = order-is-irrefl 𝟏 ℓ
+     h (inl ℓ)       = ≺-is-irrefl 𝟎 (ℚ-transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
+     h (inr (_ , ℓ)) = ≺-is-irrefl 𝟏 ℓ
 
    b : ℝᴮᴸ
    b = (l , L-bounded-above)
@@ -956,19 +960,20 @@ The canonical embedding of the rationals into the reals:
 \begin{code}
 
  ℚ-to-ℝᴸ : ℚ → ℝᴸ
- ℚ-to-ℝᴸ q = (λ p → (p < q) , order-is-prop-valued p q) ,
+ ℚ-to-ℝᴸ q = (λ p → (p < q) , ≺-is-prop-valued p q) ,
              ℚ-is-lower-open q ,
-             (λ p i r j → transitivity r p q j i) ,
-             (λ p →  ℚ-is-dense p q)
+             (λ p i r j → ℚ-transitivity r p q j i) ,
+             (λ p →  ℚ-density p q)
 
  ℚ-to-ℝᵁ : ℚ → ℝᵁ
- ℚ-to-ℝᵁ q = (λ p → (q < p) , order-is-prop-valued q p) ,
+ ℚ-to-ℝᵁ q = (λ p → (q < p) , ≺-is-prop-valued q p) ,
              ℚ-is-upper-open q ,
-             (λ p i r j → transitivity q p r i j) ,
-             (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-is-dense q p i))
+             (λ p i r j → ℚ-transitivity q p r i j) ,
+             (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-density q p i))
 
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ : (q : ℚ) → (ℚ-to-ℝᵁ q) is-upper-section-of (ℚ-to-ℝᴸ q)
- ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → transitivity p q) , (λ p → cotransitivity p q)
+ ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → ℚ-transitivity p q) ,
+                                         (λ p → ℚ-co-transitivity p q)
 
  ℚ-to-ℝᴸ-is-dedekind : (q : ℚ) → is-dedekind (ℚ-to-ℝᴸ q)
  ℚ-to-ℝᴸ-is-dedekind q = ℚ-to-ℝᵁ q , ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q
@@ -1011,18 +1016,15 @@ The canonical embedding of the rationals into the reals:
    notice-that : ℝ-to-ℝᴸ ∘ ℚ-to-ℝ ≡ ℚ-to-ℝᴸ
    notice-that = refl
 
- open import CanonicalMap
-
  instance
-  canonical-map-ℚ-ℝ : Canonical-Map ℚ ℝ
-  ι {{canonical-map-ℚ-ℝ}} = ℚ-to-ℝ
+  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
+  ι {{canonical-map-ℚ-to-ℝ}} = ℚ-to-ℝ
 
-  canonical-map-ℚ-ℝᴸ : Canonical-Map ℚ ℝᴸ
-  ι {{canonical-map-ℚ-ℝᴸ}} = ℚ-to-ℝᴸ
+  canonical-map-ℚ-to-ℝᴸ : Canonical-Map ℚ ℝᴸ
+  ι {{canonical-map-ℚ-to-ℝᴸ}} = ℚ-to-ℝᴸ
 
-  canonical-map-ℚ-ℝᵁ : Canonical-Map ℚ ℝᵁ
-  ι {{canonical-map-ℚ-ℝᵁ}} = ℚ-to-ℝᵁ
-
+  canonical-map-ℚ-to-ℝᵁ : Canonical-Map ℚ ℝᵁ
+  ι {{canonical-map-ℚ-to-ℝᵁ}} = ℚ-to-ℝᵁ
 
 \end{code}
 
@@ -1036,25 +1038,16 @@ We now consider order and apartness on real numbers.
  uppercut : ℝ → 𝓟 ℚ
  uppercut ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = U
 
- _ℚ<ℝ_ : ℚ → ℝ → 𝓤 ̇
- q ℚ<ℝ x = q ∈ lowercut x
-
- _ℝ<ℚ_ : ℝ → ℚ → 𝓤 ̇
- x ℝ<ℚ q = q ∈ uppercut x
-
  instance
   strict-order-ℚ-ℝ : Strict-Order ℚ ℝ
-  _<_ {{strict-order-ℚ-ℝ}} = _ℚ<ℝ_
+  _<_ {{strict-order-ℚ-ℝ}} p x = p ∈ lowercut x
 
   strict-order-ℝ-ℚ : Strict-Order ℝ ℚ
-  _<_ {{strict-order-ℝ-ℚ}} = _ℝ<ℚ_
-
- _ℝ<ℝ_ : ℝ → ℝ → 𝓤 ̇
- x ℝ<ℝ y = ∃ q ꞉ ℚ , (x < q) × (q < y)
+  _<_ {{strict-order-ℝ-ℚ}} x q = q ∈ uppercut x
 
  instance
   strict-order-ℝ-ℝ : Strict-Order ℝ ℝ
-  _<_ {{strict-order-ℝ-ℝ}} = _ℝ<ℝ_
+  _<_ {{strict-order-ℝ-ℝ}} x y = ∃ q ꞉ ℚ , (x < q) × (q < y)
 
  <-is-prop-valued : (x y : ℝ) → is-prop (x < y)
  <-is-prop-valued x y = ∃-is-prop
@@ -1167,8 +1160,9 @@ We now name all the projections out of ℝ:
    V : (x < z) ∨ (z < y)
    V = ∥∥-rec ∨-is-prop I ℓ
 
- _≤_ : ℝ → ℝ → 𝓤 ̇
- x ≤ y = (q : ℚ) → q < x → q < y
+ instance
+  order-ℝ-ℝ : Order ℝ ℝ
+  _≤_ {{order-ℝ-ℝ}} x y = (q : ℚ) → q < x → q < y
 
  ≤-is-prop-valued : (x y : ℝ) → is-prop (x ≤ y)
  ≤-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
@@ -1196,6 +1190,18 @@ We now name all the projections out of ℝ:
                      (cuts-are-located y)
                      (cuts-are-ordered x)
                      ℓ
+
+ <-gives-≤ : (x y : ℝ) → x < y → x ≤ y
+ <-gives-≤ x y ℓ p m = ∥∥-rec (∈-is-prop (lowercut y) p) f ℓ
+  where
+   f : (Σ q ꞉ ℚ , (x < q) × (q < y)) → p < y
+   f (q , i , j) = II
+    where
+     I : p < q
+     I = cuts-are-ordered x p q m i
+
+     II : p < y
+     II = lowercut-is-lower y q j p I
 
  not-<-gives-≤ : (x y : ℝ) → y ≮ x → x ≤ y
  not-<-gives-≤ x y ν q ℓ = VI
@@ -1289,5 +1295,47 @@ We now name all the projections out of ℝ:
   where
    c : ¬¬ (x ≡ y) → ¬ (x ♯ y)
    c = contrapositive (♯-gives-≢ x y)
+
+ ℚ-to-ℝ-preserves-< : (p q : ℚ) → p < q → ℚ-to-ℝ p < ℚ-to-ℝ q
+ ℚ-to-ℝ-preserves-< = ℚ-density
+
+ ℚ-to-ℝ-reflects-< : (p q : ℚ) → ℚ-to-ℝ p < ℚ-to-ℝ q → p < q
+ ℚ-to-ℝ-reflects-< p q = ∥∥-rec
+                           (≺-is-prop-valued p q)
+                           (λ (r , i , j) → ℚ-transitivity p r q i j)
+
+ instance
+  order-ℚ-ℚ : Order ℚ ℚ
+  _≤_ {{order-ℚ-ℚ}} p q = (r : ℚ) → r < p → r < q
+
+ ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ℚ-to-ℝ p ≤ ℚ-to-ℝ q)
+ ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
+
+ ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p ≤ q)
+ ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ℚ-to-ℝ p) (ℚ-to-ℝ q)
+
+ ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ℚ-to-ℝ p ≤ ℚ-to-ℝ q
+ ℚ-to-ℝ-preserves-≤ p q l = l
+
+ ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ℚ-to-ℝ p ≤ ℚ-to-ℝ q → p ≤ q
+ ℚ-to-ℝ-reflects-≤ p q l = l
+
+ ≡-or-<-gives-≤-on-ℚ : (p q : ℚ) → (p ≡ q) + (p < q) → p ≤ q
+ ≡-or-<-gives-≤-on-ℚ p q (inl refl) r ℓ = ℓ
+ ≡-or-<-gives-≤-on-ℚ p q (inr ℓ)    r m = ℚ-transitivity r p q m ℓ
+
+ ℚ-trichotomy = (p q : ℚ) → (p < q) + (p ≡ q) + (p > q)
+
+ ≤-on-ℚ-gives-≡-or-< : ℚ-trichotomy
+                     → (p q : ℚ) → p ≤ q → (p ≡ q) + (p < q)
+ ≤-on-ℚ-gives-≡-or-< τ p q ℓ = γ (τ p q)
+  where
+   I : q ≮ p
+   I m = ≺-is-irrefl q (ℓ q m)
+
+   γ : (p < q) + (p ≡ q) + (p > q) → (p ≡ q) + (p < q)
+   γ (inl i)       = inr i
+   γ (inr (inl e)) = inl e
+   γ (inr (inr j)) = 𝟘-elim (I j)
 
 \end{code}

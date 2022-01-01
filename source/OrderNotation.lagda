@@ -6,7 +6,7 @@ Type-class for notation for strict orders.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-module StrictOrder where
+module OrderNotation where
 
 open import SpartanMLTT
 
@@ -21,5 +21,14 @@ record Strict-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 �
  p > q = q < p
 
 open Strict-Order {{...}} public
+
+record Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇  where
+ field
+   _≤_ : X → Y → 𝓦  ̇
+
+ _≥_ : Y → X → 𝓦 ̇
+ p ≥ q = q ≤ p
+
+open Order {{...}} public
 
 \end{code}
