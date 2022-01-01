@@ -114,7 +114,7 @@ import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
-import CanonicalMap
+import CanonicalMapNotation
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
@@ -186,6 +186,7 @@ import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
 import NonSpartanMLTTTypes
+import SRTclosure
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
@@ -223,8 +224,7 @@ import SpartanMLTT
 import SpartanMLTT-List
 import SquashedCantor
 import SquashedSum
-import SRTclosure
-import StrictOrder
+import OrderNotation
 import Swap
 import sigma-sup-lattice
 import sigma-frame

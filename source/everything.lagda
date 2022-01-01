@@ -20,7 +20,7 @@ import BanachFixedPointTheorem
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
-import CanonicalMap
+import CanonicalMapNotation
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSchroederBernstein
 import CantorSearch
@@ -187,7 +187,7 @@ import SpartanMLTT-List
 import SpartanMLTT
 import SquashedCantor
 import SquashedSum
-import StrictOrder
+import OrderNotation
 import Swap
 import TheTopologyOfTheUniverse
 import ToppedOrdinalArithmetic
