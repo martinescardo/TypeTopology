@@ -271,7 +271,7 @@ any-two-upper-sections-are-equal L U U' (a , b , c) (u , v , w) = γ
   i : U ⊆ U'
   i = technical-lemma L U' L U  a w b (⊆-refl' L)
 
-  j : U' ⊆ U
+  j : U ⊇ U'
   j = technical-lemma L U  L U' u c v (⊆-refl' L)
 
   γ : U ≡ U'
@@ -1104,14 +1104,18 @@ The canonical embedding of the rationals into the reals:
  uppercut-lc : (x y : ℝ) → uppercut x ≡ uppercut y → x ≡ y
  uppercut-lc x y p = lowercut-lc x y γ
   where
+   I : lowercut x ⊆ lowercut y
+   I = technical-lemma-converse (lowercut x) (uppercut x) (lowercut y) (uppercut y)
+        (lowercut-is-upper-open x) (cuts-are-located y) (cuts-are-ordered x)
+        (transport (_⊆ uppercut x) p (⊆-refl (uppercut x)))
+
+   II : lowercut x ⊇ lowercut y
+   II = technical-lemma-converse (lowercut y) (uppercut y) (lowercut x) (uppercut x)
+         (lowercut-is-upper-open y) (cuts-are-located x) (cuts-are-ordered y)
+         (transport (uppercut x ⊆_) p (⊆-refl (uppercut x)))
+
    γ : lowercut x ≡ lowercut y
-   γ = subset-extensionality'' pe fe fe
-        (technical-lemma-converse (lowercut x) (uppercut x) (lowercut y) (uppercut y)
-          (lowercut-is-upper-open x) (cuts-are-located y) (cuts-are-ordered x)
-          (transport (_⊆ uppercut x) p (⊆-refl (uppercut x))))
-        (technical-lemma-converse (lowercut y) (uppercut y) (lowercut x) (uppercut x)
-          (lowercut-is-upper-open y) (cuts-are-located x) (cuts-are-ordered y)
-          (transport (uppercut x ⊆_) p (⊆-refl (uppercut x))))
+   γ = subset-extensionality'' pe fe fe I II
 
  <-irrefl : (x : ℝ) → x ≮ x
  <-irrefl x ℓ = γ

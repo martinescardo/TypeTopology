@@ -55,8 +55,9 @@ being-disjoint-is-prop : Fun-Ext
                        → is-prop (are-disjoint A B)
 being-disjoint-is-prop fe A B = Π-is-prop fe (λ _ → negations-are-props fe)
 
-_⊆_ : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+_⊆_ _⊇_ : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
+A ⊇ B = B ⊆ A
 
 ∈-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∈ A)
 ∈-is-prop A x = holds-is-prop (A x)
