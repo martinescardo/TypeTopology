@@ -1223,15 +1223,13 @@ There are four equivalent ways to define the _≤_ order on ℝ:
  x ≤₃ y = (p q : ℚ) → p < x → y < q → p < q
 
  ≤₀-is-prop-valued : (x y : ℝ) → is-prop (x ≤₀ y)
- ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
-
  ≤₁-is-prop-valued : (x y : ℝ) → is-prop (x ≤₁ y)
- ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (uppercut x) _)
-
  ≤₂-is-prop-valued : (x y : ℝ) → is-prop (x ≤₂ y)
- ≤₂-is-prop-valued x y = negations-are-props fe
-
  ≤₃-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ y)
+
+ ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
+ ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (uppercut x) _)
+ ≤₂-is-prop-valued x y = negations-are-props fe
  ≤₃-is-prop-valued x y = Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _)
 
  instance
