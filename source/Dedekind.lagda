@@ -1090,7 +1090,6 @@ We now consider order and apartness on real numbers.
   strict-order-ℝ-ℚ : Strict-Order ℝ ℚ
   _<_ {{strict-order-ℝ-ℚ}} x q = q ∈ uppercut x
 
- instance
   strict-order-ℝ-ℝ : Strict-Order ℝ ℝ
   _<_ {{strict-order-ℝ-ℝ}} x y = ∃ q ꞉ ℚ , (x < q) × (q < y)
 
@@ -1099,46 +1098,46 @@ We now consider order and apartness on real numbers.
 
 \end{code}
 
-We now name all the projections out of ℝ:
+We now name all the projections out of ℝ. We first give their types
+and then define them, for the sake of clarity.
 
 \begin{code}
 
- lowercut-is-inhabited : (x : ℝ) → ∃ p ꞉ ℚ , p < x
- lowercut-is-inhabited ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Li
-
- uppercut-is-inhabited : (x : ℝ) → ∃ q ꞉ ℚ , x < q
- uppercut-is-inhabited ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Ui
-
- lowercut-is-lower : (x : ℝ) (q : ℚ) → q < x → (p : ℚ) → p < q → p < x
- lowercut-is-lower ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Ll
-
- uppercut-is-upper : (x : ℝ) (p : ℚ) → x < p → (q : ℚ) → p < q → x < q
- uppercut-is-upper ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Uu
-
+ lowercut-is-inhabited  : (x : ℝ) → ∃ p ꞉ ℚ , p < x
+ uppercut-is-inhabited  : (x : ℝ) → ∃ q ꞉ ℚ , x < q
+ lowercut-is-lower      : (x : ℝ) (q : ℚ) → q < x → (p : ℚ) → p < q → p < x
+ uppercut-is-upper      : (x : ℝ) (p : ℚ) → x < p → (q : ℚ) → p < q → x < q
  lowercut-is-upper-open : (x : ℝ) (p : ℚ) → p < x → ∃ q ꞉ ℚ , (p < q) × (q < x)
- lowercut-is-upper-open ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Lo
-
  uppercut-is-lower-open : (x : ℝ) (q : ℚ) → x < q → ∃ p ꞉ ℚ , (p < q) × (x < p)
+ cuts-are-ordered       : (x : ℝ) (p q : ℚ) → p < x → x < q → p < q
+ cuts-are-located       : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (x < q)
+ cuts-are-disjoint      : (x : ℝ) (p : ℚ) → p < x → x ≮ p
+ lowercut-is-bounded    : (x : ℝ) → ∃ p ꞉ ℚ , p ≮ x
+ lowercut-is-located    : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
+
+ lowercut-is-inhabited  ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Li
+ uppercut-is-inhabited  ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Ui
+ lowercut-is-lower      ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Ll
+ uppercut-is-upper      ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Uu
+ lowercut-is-upper-open ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Lo
  uppercut-is-lower-open ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = Uo
+ cuts-are-ordered       ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = o
+ cuts-are-located       ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = l
 
- cuts-are-ordered : (x : ℝ) (p q : ℚ) → p < x → x < q → p < q
- cuts-are-ordered ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = o
-
- cuts-are-located : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (x < q)
- cuts-are-located ((L , Li , Ll , Lo) , (U , Ui , Uu , Uo) , o , l) = l
-
- cuts-are-disjoint : (x : ℝ) (p : ℚ) → p < x → x ≮ p
  cuts-are-disjoint x p l m = disjoint-criterion
                                (lowercut x) (uppercut x)
                                (cuts-are-ordered x)
                                p
                                (l , m)
-
- lowercut-is-bounded : (x : ℝ) → ∃ p ꞉ ℚ , p ≮ x
  lowercut-is-bounded (l , δ) = pr₁ (dedekind-gives-troelstra l δ)
-
- lowercut-is-located : (x : ℝ) (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
  lowercut-is-located (l , δ) = pr₂ (dedekind-gives-troelstra l δ)
+
+\end{code}
+
+The lower and upper cut projections are left-cancellable (and hence
+embeddings, as the types under consideration are all sets).
+
+\begin{code}
 
  lowercut-lc : (x y : ℝ) → lowercut x ≡ lowercut y → x ≡ y
  lowercut-lc x y e = to-subtype-≡ being-dedekind-is-prop
@@ -1159,6 +1158,12 @@ We now name all the projections out of ℝ:
 
    III : lowercut x ≡ lowercut y
    III = subset-extensionality'' pe fe fe I II
+
+\end{code}
+
+We now develop the basic properties of the _<_ order.
+
+\begin{code}
 
  <-irrefl : (x : ℝ) → x ≮ x
  <-irrefl x ℓ = γ
