@@ -1222,6 +1222,16 @@ There are four equivalent ways to define the _≤_ order on ℝ:
  x ≤₂ y = y ≮ x
  x ≤₃ y = (p q : ℚ) → p < x → y < q → p < q
 
+\end{code}
+
+The last definition has the advantage that it is applicable when x is
+a lower real and y is an upper reals. See the interval domain
+below. But we adopted the first definition for Dedekind reals before
+we realized that. It doesn't matter much, because we can switch
+between all the definitions in the case of the reals.
+
+\begin{code}
+
  ≤₀-is-prop-valued : (x y : ℝ) → is-prop (x ≤₀ y)
  ≤₁-is-prop-valued : (x y : ℝ) → is-prop (x ≤₁ y)
  ≤₂-is-prop-valued : (x y : ℝ) → is-prop (x ≤₂ y)
