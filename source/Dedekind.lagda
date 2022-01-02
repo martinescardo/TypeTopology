@@ -1205,42 +1205,42 @@ We now name all the projections out of ℝ:
    V : (x < z) ∨ (z < y)
    V = ∥∥-rec ∨-is-prop I ℓ
 
+\end{code}
+
+There are four equivalent ways to define the _≤_ order on ℝ:
+
+\begin{code}
+
+ _≤₀_ _≤₁_ _≤₂_ _≤₃_ : ℝ → ℝ → 𝓤 ̇
+ x ≤₀ y = (p : ℚ) → p < x → p < y
+ x ≤₁ y = (q : ℚ) → y < q → x < q
+ x ≤₂ y = y ≮ x
+ x ≤₃ y = (p q : ℚ) → p < x → y < q → p < q
+
+ ≤₀-is-prop-valued : (x y : ℝ) → is-prop (x ≤₀ y)
+ ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
+
+ ≤₁-is-prop-valued : (x y : ℝ) → is-prop (x ≤₁ y)
+ ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (uppercut x) _)
+
+ ≤₂-is-prop-valued : (x y : ℝ) → is-prop (x ≤₂ y)
+ ≤₂-is-prop-valued x y = negations-are-props fe
+
+ ≤₃-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ y)
+ ≤₃-is-prop-valued x y = Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _)
+
  instance
   order-ℝ-ℝ : Order ℝ ℝ
-  _≤_ {{order-ℝ-ℝ}} x y = (q : ℚ) → q < x → q < y
+  _≤_ {{order-ℝ-ℝ}} = _≤₀_
 
  ≤-is-prop-valued : (x y : ℝ) → is-prop (x ≤ y)
- ≤-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
-
- _≤'_ : ℝ → ℝ → 𝓤 ̇
- x ≤' y = (q : ℚ) → y < q → x < q
-
- ≤'-is-prop-valued : (x y : ℝ) → is-prop (x ≤' y)
- ≤'-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (uppercut x) _)
-
- ≤-gives-≤' : (x y : ℝ) → x ≤ y → x ≤' y
- ≤-gives-≤' x y ℓ = order-lemma
-                     (lowercut x) (uppercut x)
-                     (lowercut y) (uppercut y)
-                     (uppercut-is-lower-open y)
-                     (cuts-are-located x)
-                     (cuts-are-ordered y)
-                     ℓ
-
- ≤'-gives-≤ : (x y : ℝ) → x ≤' y → x ≤ y
- ≤'-gives-≤ x y ℓ = order-lemma-converse
-                     (lowercut x) (uppercut x)
-                     (lowercut y) (uppercut y)
-                     (lowercut-is-upper-open x)
-                     (cuts-are-located y)
-                     (cuts-are-ordered x)
-                     ℓ
+ ≤-is-prop-valued = ≤₀-is-prop-valued
 
  <-gives-≤ : (x y : ℝ) → x < y → x ≤ y
- <-gives-≤ x y ℓ p m = ∥∥-rec (∈-is-prop (lowercut y) p) f ℓ
+ <-gives-≤ x y ℓ p m = ∥∥-rec (∈-is-prop (lowercut y) p) γ ℓ
   where
-   f : (Σ q ꞉ ℚ , (x < q) × (q < y)) → p < y
-   f (q , i , j) = II
+   γ : (Σ q ꞉ ℚ , (x < q) × (q < y)) → p < y
+   γ (q , i , j) = II
     where
      I : p < q
      I = cuts-are-ordered x p q m i
@@ -1248,8 +1248,26 @@ We now name all the projections out of ℝ:
      II : p < y
      II = lowercut-is-lower y q j p I
 
- not-<-gives-≤ : (x y : ℝ) → y ≮ x → x ≤ y
- not-<-gives-≤ x y ν q ℓ = VI
+ ≤-gives-≤₁ : (x y : ℝ) → x ≤ y → x ≤₁ y
+ ≤-gives-≤₁ x y ℓ = order-lemma
+                     (lowercut x) (uppercut x)
+                     (lowercut y) (uppercut y)
+                     (uppercut-is-lower-open y)
+                     (cuts-are-located x)
+                     (cuts-are-ordered y)
+                     ℓ
+
+ ≤₁-gives-≤ : (x y : ℝ) → x ≤₁ y → x ≤ y
+ ≤₁-gives-≤ x y ℓ = order-lemma-converse
+                     (lowercut x) (uppercut x)
+                     (lowercut y) (uppercut y)
+                     (lowercut-is-upper-open x)
+                     (cuts-are-located y)
+                     (cuts-are-ordered x)
+                     ℓ
+
+ ≤₂-gives-≤ : (x y : ℝ) → x ≤₂ y → x ≤ y
+ ≤₂-gives-≤ x y ν q ℓ = VI
   where
    I : (p : ℚ) → p < x → y ≮ p
    I p m l = ν ∣ p , l , m ∣
@@ -1270,14 +1288,35 @@ We now name all the projections out of ℝ:
    VI : q < y
    VI = ∥∥-rec (∈-is-prop (lowercut y) q) III II
 
- ≤-gives-not-< : (x y : ℝ) → x ≤ y → y ≮ x
- ≤-gives-not-< x y ℓ i = II
+ ≤-gives-≤₂ : (x y : ℝ) → x ≤ y → x ≤₂ y
+ ≤-gives-≤₂ x y ℓ i = II
   where
    I : ¬ (Σ p ꞉ ℚ , (y < p) × (p < x))
    I (p , j , k) = cuts-are-disjoint y p (ℓ p k) j
 
    II : 𝟘
    II = ∥∥-rec 𝟘-is-prop I i
+
+ ≤₃-gives-≤ : (x y : ℝ) → x ≤₃ y → x ≤ y
+ ≤₃-gives-≤ x y l = III
+  where
+   I : ¬ (Σ p ꞉ ℚ , (y < p) × (p < x))
+   I (p , i , j) = ≺-irrefl p (l p p j i)
+
+   II : y ≮ x
+   II m = ∥∥-rec 𝟘-is-prop I m
+
+   III : x ≤ y
+   III = ≤₂-gives-≤ x y II
+
+ ≤-gives-≤₃ : (x y : ℝ) → x ≤ y → x ≤₃ y
+ ≤-gives-≤₃ x y l p q i j = II
+  where
+   I : p < y
+   I = l p i
+
+   II : p < q
+   II = cuts-are-ordered y p q I j
 
  ≤-refl : (x : ℝ) → x ≤ x
  ≤-refl x q ℓ = ℓ
@@ -1336,10 +1375,10 @@ Apartness of real numbers and its basic properties:
    II ℓ = ν (inr ℓ)
 
    III : x ≤ y
-   III = not-<-gives-≤ x y II
+   III = ≤₂-gives-≤ x y II
 
    IV : y ≤ x
-   IV = not-<-gives-≤ y x I
+   IV = ≤₂-gives-≤ y x I
 
  ℝ-is-¬¬-separated : (x y : ℝ) → ¬¬ (x ≡ y) → x ≡ y
  ℝ-is-¬¬-separated x y ϕ = ♯-tight x y (c ϕ)
@@ -1349,7 +1388,7 @@ Apartness of real numbers and its basic properties:
 
  ℝ-order-criterion : (x y : ℝ) → x ≤ y → x ♯ y → x < y
  ℝ-order-criterion x y ℓ (inl m) = m
- ℝ-order-criterion x y ℓ (inr m) = 𝟘-elim (≤-gives-not-< x y ℓ m)
+ ℝ-order-criterion x y ℓ (inr m) = 𝟘-elim (≤-gives-≤₂ x y ℓ m)
 
 \end{code}
 
@@ -1372,10 +1411,10 @@ Relationship between the orders of ℚ and ℝ:
  ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ι p) (ι q)
 
  ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ι p ≤ ι q
- ℚ-to-ℝ-preserves-≤ p q l = l
+ ℚ-to-ℝ-preserves-≤ p q = id
 
  ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
- ℚ-to-ℝ-reflects-≤ p q l = l
+ ℚ-to-ℝ-reflects-≤ p q = id
 
 \end{code}
 
