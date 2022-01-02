@@ -31,4 +31,13 @@ record Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥
 
 open Order {{...}} public
 
+record Square-Order {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇  where
+ field
+   _⊑_ : X → Y → 𝓦  ̇
+
+ _⊒_ : Y → X → 𝓦 ̇
+ p ⊒ q = q ⊑ p
+
+open Square-Order {{...}} public
+
 \end{code}

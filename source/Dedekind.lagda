@@ -56,7 +56,7 @@ module Dedekind
         (ℚ   : 𝓤 ̇ )
         (_≺_              : ℚ → ℚ → 𝓤 ̇ )
         (≺-is-prop-valued : (p q : ℚ) → is-prop (p ≺ q))
-        (≺-is-irrefl      : (q : ℚ) → ¬ (q ≺ q))
+        (≺-irrefl         : (q : ℚ) → ¬ (q ≺ q))
        where
 
 open PropositionalTruncation pt
@@ -149,6 +149,26 @@ The sets of lower and upper reals:
              is-upper-real
              (powersets-are-sets'' fe fe pe)
              (λ {l} → being-upper-real-is-prop l)
+
+ℝᴸ-to-𝓟ℚ : ℝᴸ → 𝓟 ℚ
+ℝᴸ-to-𝓟ℚ = pr₁
+
+ℝᴸ-to-𝓟ℚ-is-embedding : is-embedding ℝᴸ-to-𝓟ℚ
+ℝᴸ-to-𝓟ℚ-is-embedding = pr₁-is-embedding being-lower-real-is-prop
+
+ℝᵁ-to-𝓟ℚ : ℝᵁ → 𝓟 ℚ
+ℝᵁ-to-𝓟ℚ = pr₁
+
+ℝᵁ-to-𝓟ℚ-is-embedding : is-embedding ℝᵁ-to-𝓟ℚ
+ℝᵁ-to-𝓟ℚ-is-embedding = pr₁-is-embedding being-upper-real-is-prop
+
+instance
+ canonical-map-ℝᴸ-to-𝓟ℚ : Canonical-Map ℝᴸ (𝓟 ℚ)
+ ι {{canonical-map-ℝᴸ-to-𝓟ℚ}} = ℝᴸ-to-𝓟ℚ
+
+ canonical-map-ℝᵁ-to-𝓟ℚ : Canonical-Map ℝᵁ (𝓟 ℚ)
+ ι {{canonical-map-ℝᵁ-to-𝓟ℚ}} = ℝᵁ-to-𝓟ℚ
+
 \end{code}
 
 Next we define the set of Dedekind reals as a subset of the lower
@@ -192,7 +212,7 @@ order-lemma L U L' U'
     III = LU-located q' q l
 
     IV : q' ∉ L
-    IV j = ≺-is-irrefl q' b
+    IV j = ≺-irrefl q' b
      where
       a : q' ∈ L'
       a = L-contained-in-L' q' j
@@ -235,7 +255,7 @@ order-lemma-converse L U L' U'
     III = LU'-located q q' l
 
     IV : q' ∉ U'
-    IV j = ≺-is-irrefl q' b
+    IV j = ≺-irrefl q' b
      where
       a : q' ∈ U
       a = U'-contained-in-U q' j
@@ -286,8 +306,8 @@ The following is the version of the definition we are interested in:
 _is-upper-section-of_ : ℝᵁ → ℝᴸ → 𝓤 ̇
 (U , _) is-upper-section-of  (L , _) = are-ordered L U × are-located L U
 
-being-upper-section-is-prop : (l : ℝᴸ) (u : ℝᵁ)
-                            → is-prop (u is-upper-section-of l)
+being-upper-section-is-prop : (x : ℝᴸ) (y : ℝᵁ)
+                            → is-prop (y is-upper-section-of x)
 being-upper-section-is-prop (L , _) (U , _) = ×-is-prop
                                                (being-ordered-is-prop L U)
                                                (being-located-is-prop L U)
@@ -353,6 +373,7 @@ and hence ℝ is a set:
              is-dedekind
              ℝᴸ-is-set
              (λ {l} → being-dedekind-is-prop l)
+
 instance
  canonical-map-ℝ-to-ℝᴸ : Canonical-Map ℝ ℝᴸ
  ι {{canonical-map-ℝ-to-ℝᴸ}} = ℝ-to-ℝᴸ
@@ -406,7 +427,7 @@ ordered-located-gives-lower L U LU-ordered LU-located = γ
 
     b : (p ∈ L) + (q ∈ U) → p ∈ L
     b (inl u) = u
-    b (inr v) = 𝟘-elim (≺-is-irrefl q (LU-ordered q q l v))
+    b (inr v) = 𝟘-elim (≺-irrefl q (LU-ordered q q l v))
 
 ordered-located-gives-upper : (L U : 𝓟 ℚ)
                             → are-ordered L U
@@ -421,7 +442,7 @@ ordered-located-gives-upper L U LU-ordered LU-located = γ
     a = LU-located q p m
 
     b : (q ∈ L) + (p ∈ U) → p ∈ U
-    b (inl u) = 𝟘-elim (≺-is-irrefl q (LU-ordered q q u l))
+    b (inl u) = 𝟘-elim (≺-irrefl q (LU-ordered q q u l))
     b (inr v) = v
 
 
@@ -462,8 +483,7 @@ used in the definition of Dedekind reals.
 disjoint-criterion : (L U : 𝓟 ℚ)
                    → are-ordered L U
                    → are-disjoint L U
-disjoint-criterion L U o p (p-in-L , p-in-U) =
- ≺-is-irrefl p (o p p p-in-L p-in-U)
+disjoint-criterion L U o p (p-in-L , p-in-U) = ≺-irrefl p (o p p p-in-L p-in-U)
 
 \end{code}
 
@@ -474,7 +494,7 @@ and a few more:
 
 module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q) × (q < r))
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
-         (ℚ-order-criterion : (p q : ℚ) → p ≢ q → q ≮ p → p < q)
+         (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≢ q → p < q)
          (ℚ-co-transitivity : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
          (ℚ-tightness       : (p q : ℚ) → q ≮ p → p ≮ q → p ≡ q)
          (ℚ-is-lower-open   : (q : ℚ) → ∃ p ꞉ ℚ , (p < q))
@@ -492,8 +512,8 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
   _≤_ {{order-ℚ-ℚ}} p q = (r : ℚ) → r < p → r < q
 
  ℚ-≤-antisym : (p q : ℚ) → p ≤ q → q ≤ p → p ≡ q
- ℚ-≤-antisym p q i j = ℚ-tightness p q (λ ℓ → ≺-is-irrefl q (i q ℓ))
-                                       (λ ℓ → ≺-is-irrefl p (j p ℓ))
+ ℚ-≤-antisym p q i j = ℚ-tightness p q (λ ℓ → ≺-irrefl q (i q ℓ))
+                                       (λ ℓ → ≺-irrefl p (j p ℓ))
 
  <-or-≡-gives-≤-on-ℚ : (p q : ℚ) → (p < q) + (p ≡ q) → p ≤ q
  <-or-≡-gives-≤-on-ℚ p q (inl ℓ)    r m = ℚ-transitivity r p q m ℓ
@@ -506,7 +526,7 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
  ≤-on-ℚ-gives-≡-or-< τ p q ℓ = γ (τ p q)
   where
    I : q ≮ p
-   I m = ≺-is-irrefl q (ℓ q m)
+   I m = ≺-irrefl q (ℓ q m)
 
    γ : (p < q) + (p ≡ q) + (p > q) → (p < q) + (p ≡ q)
    γ (inl i)       = inl i
@@ -529,7 +549,7 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
    III ℓ = LU-disjoint q (L-lower p p-in-L q ℓ , q-in-U)
 
    γ : p < q
-   γ = ℚ-order-criterion p q II III
+   γ = ℚ-order-criterion p q III II
 
 \end{code}
 
@@ -607,7 +627,7 @@ The Dedekind and Troelstra conditions are equivalent:
    bounded = ∥∥-functor f U-inhabited
     where
      f : (Σ q ꞉ ℚ , q ∈ U) → Σ q ꞉ ℚ , q ∉ L
-     f (q , q-in-U) = q , (λ q-in-L → ≺-is-irrefl q (c q-in-L))
+     f (q , q-in-U) = q , (λ q-in-L → ≺-irrefl q (c q-in-L))
       where
        c : q ∈ L → q < q
        c q-in-L = LU-ordered q q q-in-L q-in-U
@@ -617,7 +637,7 @@ The Dedekind and Troelstra conditions are equivalent:
     where
      f : (r ∈ L) + (s ∈ U) → (r ∈ L) + (s ∉ L)
      f (inl r-in-L) = inl r-in-L
-     f (inr r-in-L) = inr (λ s-in-L → ≺-is-irrefl s (d s-in-L))
+     f (inr r-in-L) = inr (λ s-in-L → ≺-irrefl s (d s-in-L))
       where
        d : s ∈ L → s < s
        d s-in-L = LU-ordered s s s-in-L r-in-L
@@ -660,7 +680,7 @@ does, it is given by the following candidate.
       where
        g : (r ∈ L) + (q ∉ L) → p < q
        g (inl r-in-L)     = 𝟘-elim (r-not-in-L r-in-L)
-       g (inr q-not-in-L) = ℚ-order-criterion p q I II
+       g (inr q-not-in-L) = ℚ-order-criterion p q II I
         where
          I : p ≢ q
          I refl = q-not-in-L p-in-L
@@ -712,7 +732,7 @@ does, it is given by the following candidate.
    γ : ∃ q' ꞉ ℚ , (q' < q) × (q' ∉ L)
    γ = ∣ p ,
         ℓ ,
-        (λ p-in-L → ≺-is-irrefl p
+        (λ p-in-L → ≺-irrefl p
                      (candidate-upper-section-is-ordered
                        L lower located p p p-in-L p-in-U)) ∣
 \end{code}
@@ -949,7 +969,7 @@ independently by Steve Vickers and Toby Bartels.
        h (inl 𝟘-in-L) = inl (∥∥-rec A-is-prop k 𝟘-in-L)
         where
          k : (𝟎 < 𝟎) + (A × (𝟎 < 𝟏)) → A
-         k (inl ℓ)       = 𝟘-elim (≺-is-irrefl 𝟎 ℓ)
+         k (inl ℓ)       = 𝟘-elim (≺-irrefl 𝟎 ℓ)
          k (inr (a , _)) = a
        h (inr ½-in-U) = inr ν
         where
@@ -963,8 +983,8 @@ independently by Steve Vickers and Toby Bartels.
    L-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
     where
      h : ¬((𝟏 < 𝟎) + (A × (𝟏 < 𝟏)))
-     h (inl ℓ)       = ≺-is-irrefl 𝟎 (ℚ-transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
-     h (inr (_ , ℓ)) = ≺-is-irrefl 𝟏 ℓ
+     h (inl ℓ)       = ≺-irrefl 𝟎 (ℚ-transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
+     h (inr (_ , ℓ)) = ≺-irrefl 𝟏 ℓ
 
    b : ℝᴮᴸ
    b = (l , L-bounded-above)
@@ -1039,13 +1059,19 @@ The canonical embedding of the rationals into the reals:
   canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
   ι {{canonical-map-ℚ-to-ℝ}} = ℚ-to-ℝ
 
+\end{code}
+
+We could also define
+
   canonical-map-ℚ-to-ℝᴸ : Canonical-Map ℚ ℝᴸ
   ι {{canonical-map-ℚ-to-ℝᴸ}} = ℚ-to-ℝᴸ
 
   canonical-map-ℚ-to-ℝᵁ : Canonical-Map ℚ ℝᵁ
   ι {{canonical-map-ℚ-to-ℝᵁ}} = ℚ-to-ℝᵁ
 
-\end{code}
+but this would give us a number of unsolved constraints when using ι,
+and it doesn't seem we are going to need to use these canonical maps
+often.
 
 We now consider order and apartness on real numbers.
 
@@ -1265,6 +1291,12 @@ We now name all the projections out of ℝ:
    γ : lowercut x ≡ lowercut y
    γ = subset-extensionality'' pe fe fe l m
 
+\end{code}
+
+Apartness of real numbers and its basic properties:
+
+\begin{code}
+
  _♯_ : ℝ → ℝ → 𝓤 ̇
  x ♯ y = (x < y) + (y < x)
 
@@ -1315,24 +1347,132 @@ We now name all the projections out of ℝ:
    c : ¬¬ (x ≡ y) → ¬ (x ♯ y)
    c = contrapositive (♯-gives-≢ x y)
 
- ℚ-to-ℝ-preserves-< : (p q : ℚ) → p < q → ℚ-to-ℝ p < ℚ-to-ℝ q
+ ℝ-order-criterion : (x y : ℝ) → x ≤ y → x ♯ y → x < y
+ ℝ-order-criterion x y ℓ (inl m) = m
+ ℝ-order-criterion x y ℓ (inr m) = 𝟘-elim (≤-gives-not-< x y ℓ m)
+
+\end{code}
+
+Relationship between the orders of ℚ and ℝ:
+
+\begin{code}
+
+ ℚ-to-ℝ-preserves-< : (p q : ℚ) → p < q → ι p < ι q
  ℚ-to-ℝ-preserves-< = ℚ-density
 
- ℚ-to-ℝ-reflects-< : (p q : ℚ) → ℚ-to-ℝ p < ℚ-to-ℝ q → p < q
+ ℚ-to-ℝ-reflects-< : (p q : ℚ) → ι p < ι q → p < q
  ℚ-to-ℝ-reflects-< p q = ∥∥-rec
                            (≺-is-prop-valued p q)
                            (λ (r , i , j) → ℚ-transitivity p r q i j)
 
- ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ℚ-to-ℝ p ≤ ℚ-to-ℝ q)
+ ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ι p ≤ ι q)
  ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
 
  ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p ≤ q)
- ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ℚ-to-ℝ p) (ℚ-to-ℝ q)
+ ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ι p) (ι q)
 
- ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ℚ-to-ℝ p ≤ ℚ-to-ℝ q
+ ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ι p ≤ ι q
  ℚ-to-ℝ-preserves-≤ p q l = l
 
- ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ℚ-to-ℝ p ≤ ℚ-to-ℝ q → p ≤ q
+ ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
  ℚ-to-ℝ-reflects-≤ p q l = l
+
+\end{code}
+
+The partial reals, or interval domain, arise from dropping the
+locatedness condition from the Dedekind reals.
+
+\begin{code}
+
+ instance
+  strict-order-ℚ-ℝᴸ : Strict-Order ℚ ℝᴸ
+  _<_ {{strict-order-ℚ-ℝᴸ}} p (L , _) = p ∈ L
+
+  strict-order-ℝᵁ-ℚ : Strict-Order ℝᵁ ℚ
+  _<_ {{strict-order-ℝᵁ-ℚ}} (U , _) p = p ∈ U
+
+ instance
+  order-ℝᴸ-ℝᵁ : Order ℝᴸ ℝᵁ
+  _≤_ {{order-ℝᴸ-ℝᵁ}} x y = (p q : ℚ) → p < x → y < q → p < q
+
+ 𝓡 : 𝓤⁺ ̇
+ 𝓡 = Σ (x , y) ꞉ ℝᴸ × ℝᵁ , (x ≤ y)
+
+ 𝓡-is-set : is-set 𝓡
+ 𝓡-is-set = subsets-of-sets-are-sets (ℝᴸ × ℝᵁ) (λ (x , y) → x ≤ y)
+              (×-is-set ℝᴸ-is-set ℝᵁ-is-set)
+              (Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _))
+
+ NB₄ : 𝓡 ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
+                  , (is-inhabited L × is-lower L × is-upper-open L)
+                  × (is-inhabited U × is-upper U × is-lower-open U)
+                  × are-ordered L U)
+
+ NB₄ = qinveq (λ (((L , Li , Ll , Lo) , (U , Ui , Uu , Uo)) , o)
+               → (L , U) , (Li , Ll , Lo) , ((Ui , Uu , Uo) , o))
+             ((λ ((L , U) , (Li , Ll , Lo) , ((Ui , Uu , Uo) , o))
+               → (((L , Li , Ll , Lo) , (U , Ui , Uu , Uo)) , o)) ,
+              (λ _ → refl) ,
+              (λ _ → refl))
+
+ ℝ-to-𝓡 : ℝ → 𝓡
+ ℝ-to-𝓡 (x , y , o , _) = (x , y) , o
+
+ ℝ-to-𝓡-is-embedding : is-embedding ℝ-to-𝓡
+ ℝ-to-𝓡-is-embedding ((x , y) , o) ((x , y , o , l) , refl) ((x , y , o , m) , refl) = γ
+  where
+   δ : l ≡ m
+   δ = being-located-is-prop (ι x) (ι y) l m
+
+   γ : ((x , y , o , l) , refl) ≡ ((x , y , o , m) , refl)
+   γ = ap (λ - → (x , y , o , -) , refl) δ
+
+ instance
+  canonical-map-ℝ-to-𝓡 : Canonical-Map ℝ 𝓡
+  ι {{canonical-map-ℝ-to-𝓡}} = ℝ-to-𝓡
+
+  order-ℝᴸ-ℝᴸ : Order ℝᴸ ℝᴸ
+  _≤_ {{order-ℝᴸ-ℝᴸ}} x y = (p : ℚ) → p < x → p < y
+
+  order-ℝᵁ-ℝᵁ : Order ℝᵁ ℝᵁ
+  _≤_ {{order-ℝᵁ-ℝᵁ}} x y = (p : ℚ) → y < p → x < p
+
+  square-order-𝓡-𝓡 : Square-Order 𝓡 𝓡
+  _⊑_ {{square-order-𝓡-𝓡}} ((x , y) , _) ((x' , y') , _) = (x ≤ x') × (y' ≤ y)
+
+\end{code}
+
+Notice that this is reverse inclusion of intervals: wider intervals
+are lower in the square order.
+
+If we drop the inhabitation conditions, the endpoints can be ±∞:
+
+\begin{code}
+
+ 𝓡∞ = (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
+             , (is-lower L × is-upper-open L)
+             × (is-upper U × is-lower-open U)
+             × are-ordered L U)
+
+ 𝓡-to-𝓡∞ : 𝓡 → 𝓡∞
+ 𝓡-to-𝓡∞ (((L , _ , Ll , Lo) , (U , _ , Uu , Uo)) , o) = (L , U) , (Ll , Lo) , (Uu , Uo) , o
+
+ ⊥𝓡 : 𝓡∞
+ ⊥𝓡 = (∅ , ∅) , ((λ _ ()) , (λ _ ())) , ((λ _ ()) , (λ _ ())) , (λ p q ())
+
+ 𝓡-to-𝓡∞-is-embedding : is-embedding 𝓡-to-𝓡∞
+ 𝓡-to-𝓡∞-is-embedding ((L , U) , (Ll , Lo) , (Uu , Uo) , o)
+                        ((((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl)
+                        ((((L , j , Ll , Lo) , U , l , Uu , Uo) , o) , refl)
+   = (((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl ≡⟨ I ⟩
+     (((L , j , Ll , Lo) , U , l , Uu , Uo) , o) , refl ∎
+  where
+   I = ap₂ (λ i k → (((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl)
+           (being-inhabited-is-prop L i j)
+           (being-inhabited-is-prop U k l)
+
+ instance
+  canonical-map-𝓡-to-𝓡∞ : Canonical-Map 𝓡 𝓡∞
+  ι {{canonical-map-𝓡-to-𝓡∞}} = 𝓡-to-𝓡∞
 
 \end{code}
