@@ -1438,21 +1438,21 @@ Relationship between the orders of ℚ and ℝ:
  ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
  ℚ-to-ℝ-reflects-≤ p q = id
 
- ι-left : (x : ℝ) (q : ℚ) → x < q → x < ι q
- ι-left x q l = ∥∥-functor (λ (p , m , o) → p , o , m) (uppercut-is-lower-open x q l)
+ ℚ-to-ℝ-right : (x : ℝ) (q : ℚ) → x < q → x < ι q
+ ℚ-to-ℝ-right x q l = ∥∥-functor (λ (p , m , o) → p , o , m) (uppercut-is-lower-open x q l)
 
- ι-left-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
- ι-left-converse x q = ∥∥-rec
-                         (strict-order-ℝ-ℚ-is-prop-valued x q)
-                         (λ (p , m , o) → uppercut-is-upper x p m q o)
+ ℚ-to-ℝ-right-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
+ ℚ-to-ℝ-right-converse x q = ∥∥-rec
+                               (strict-order-ℝ-ℚ-is-prop-valued x q)
+                               (λ (p , m , o) → uppercut-is-upper x p m q o)
 
- ι-right : (p : ℚ) (x : ℝ) → p < x → ι p < x
- ι-right p x = lowercut-is-upper-open x p
+ ℚ-to-ℝ-left : (p : ℚ) (x : ℝ) → p < x → ι p < x
+ ℚ-to-ℝ-left p x = lowercut-is-upper-open x p
 
- ι-right-converse : (p : ℚ) (x : ℝ) → ι p < x → p < x
- ι-right-converse p x = ∥∥-rec
-                          (strict-order-ℚ-ℝ-is-prop-valued p x)
-                          (λ (q , m , o) → lowercut-is-lower x q o p m)
+ ℚ-to-ℝ-left-converse : (p : ℚ) (x : ℝ) → ι p < x → p < x
+ ℚ-to-ℝ-left-converse p x = ∥∥-rec
+                              (strict-order-ℚ-ℝ-is-prop-valued p x)
+                              (λ (q , m , o) → lowercut-is-lower x q o p m)
 \end{code}
 
 We now consider the existence of least upper bounds of bounded
@@ -1518,6 +1518,28 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
 
   strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
   strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
+
+  strict-order-ℚ-F-observation : (p : ℚ) (𝔁 : F)
+                               → (p ≮ 𝔁) ⇔ (𝔁 ≤ ι p)
+  strict-order-ℚ-F-observation p 𝔁 = f , g
+   where
+    f : p ≮ 𝔁 → 𝔁 ≤ ι p
+    f ν i = I
+     where
+      I : (q : ℚ) → q < 𝔁 i → q < p
+      I q l = ℚ-order-criterion q p II III
+       where
+        II : p ≮ q
+        II m = ν ∣ i , lowercut-is-lower (𝔁 i) q l p m ∣
+
+        III : q ≢ p
+        III refl = ν ∣ i , l ∣
+
+    g : 𝔁 ≤ ι p → p ≮ 𝔁
+    g l = ∥∥-rec 𝟘-is-prop I
+     where
+      I : ¬ (Σ i ꞉ 𝕀 , p < 𝔁 i)
+      I (i , m) = ≺-irrefl p (l i p m)
 
   is-upper-bounded-family : F → 𝓤⁺ ̇
   is-upper-bounded-family 𝔁 = ∃ β ꞉ ℝ , (𝔁 ≤ β)
