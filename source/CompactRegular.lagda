@@ -598,10 +598,10 @@ is-regular {𝓤 = 𝓤} {𝓥} {𝓦} F =
   open Joins (λ x y → x ≤[ poset-of F ] y)
 
   P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇ 
-  P ℬ = Π x ꞉ ⟨ F ⟩ ,
+  P ℬ = Π U ꞉ ⟨ F ⟩ ,
          Σ J ꞉ Fam 𝓦 (index ℬ) ,
-            (x is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
-          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] x) holds)
+            (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
+          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
  in
   Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , P ℬ
 
