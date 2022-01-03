@@ -75,4 +75,9 @@ inl-preservation {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} f p l x = γ x (f (inl x)) 
     r : f (inl x) ≡ f (inr *)
     r = q ∙ p ⁻¹
 
++functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
+         → (X → A) → (Y → B) → X + Y → A + B
++functor f g (inl x) = inl (f x)
++functor f g (inr y) = inr (g y)
+
 \end{code}

@@ -37,6 +37,7 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import Plus-Properties
 open import UF-Base
 open import UF-PropTrunc
 open import UF-FunExt
@@ -1093,6 +1094,12 @@ We now consider order and apartness on real numbers.
   strict-order-ℝ-ℝ : Strict-Order ℝ ℝ
   _<_ {{strict-order-ℝ-ℝ}} x y = ∃ q ꞉ ℚ , (x < q) × (q < y)
 
+ strict-order-ℚ-ℝ-is-prop-valued : (p : ℚ) (x : ℝ) → is-prop (p < x)
+ strict-order-ℚ-ℝ-is-prop-valued p x = ∈-is-prop (lowercut x) p
+
+ strict-order-ℝ-ℚ-is-prop-valued : (x : ℝ) (q : ℚ) → is-prop (x < q)
+ strict-order-ℝ-ℚ-is-prop-valued x q = ∈-is-prop (uppercut x) q
+
  <-is-prop-valued : (x y : ℝ) → is-prop (x < y)
  <-is-prop-valued x y = ∃-is-prop
 
@@ -1212,7 +1219,9 @@ We now develop the basic properties of the _<_ order.
 
 \end{code}
 
-There are four equivalent ways to define the _≤_ order on ℝ:
+There are four equivalent ways to define the _≤_ order on ℝ (and
+another three, not included here, replacing the type of rational
+numbers by the type of reals):
 
 \begin{code}
 
@@ -1225,10 +1234,10 @@ There are four equivalent ways to define the _≤_ order on ℝ:
 \end{code}
 
 The last definition has the advantage that it is applicable when x is
-a lower real and y is an upper reals. See the interval domain
-below. But we adopted the first definition for Dedekind reals before
-we realized that. It doesn't matter much, because we can switch
-between all the definitions in the case of the reals.
+a lower real and y is an upper real. See the interval domain
+below. But we adopted the first definition for reals before we
+realized that. It doesn't matter much, because we can switch between
+all the definitions in the case of the reals.
 
 \begin{code}
 
@@ -1237,8 +1246,8 @@ between all the definitions in the case of the reals.
  ≤₂-is-prop-valued : (x y : ℝ) → is-prop (x ≤₂ y)
  ≤₃-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ y)
 
- ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (lowercut y) _)
- ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → ∈-is-prop (uppercut x) _)
+ ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → strict-order-ℚ-ℝ-is-prop-valued _ y)
+ ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → strict-order-ℝ-ℚ-is-prop-valued x _)
  ≤₂-is-prop-valued x y = negations-are-props fe
  ≤₃-is-prop-valued x y = Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _)
 
@@ -1250,7 +1259,7 @@ between all the definitions in the case of the reals.
  ≤-is-prop-valued = ≤₀-is-prop-valued
 
  <-gives-≤ : (x y : ℝ) → x < y → x ≤ y
- <-gives-≤ x y ℓ p m = ∥∥-rec (∈-is-prop (lowercut y) p) γ ℓ
+ <-gives-≤ x y ℓ p m = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p y) γ ℓ
   where
    γ : (Σ q ꞉ ℚ , (x < q) × (q < y)) → p < y
    γ (q , i , j) = II
@@ -1289,7 +1298,7 @@ between all the definitions in the case of the reals.
    II = lowercut-is-upper-open x q ℓ
 
    III : (Σ p ꞉ ℚ , (q < p) × (p < x)) → q < y
-   III (p , i , j) = ∥∥-rec (∈-is-prop (lowercut y) q) V IV
+   III (p , i , j) = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued q y) V IV
     where
      IV : (q < y) ∨ (y < p)
      IV = <-cotrans-ℚ q p i y
@@ -1299,7 +1308,7 @@ between all the definitions in the case of the reals.
      V (inr l) = 𝟘-elim (I p j l)
 
    VI : q < y
-   VI = ∥∥-rec (∈-is-prop (lowercut y) q) III II
+   VI = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued q y) III II
 
  ≤-gives-≤₂ : (x y : ℝ) → x ≤ y → x ≤₂ y
  ≤-gives-≤₂ x y ℓ i = II
@@ -1428,6 +1437,140 @@ Relationship between the orders of ℚ and ℝ:
 
  ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
  ℚ-to-ℝ-reflects-≤ p q = id
+
+\end{code}
+
+We now consider least upper bounds of families of real numbers.
+
+\begin{code}
+
+ module _ {𝕀 : 𝓤 ̇ } where
+
+  F = 𝕀 → ℝ
+
+  instance
+   order-F-ℝ : Order F ℝ
+   _≤_ {{order-F-ℝ}} 𝔁 y = ∀ i → 𝔁 i ≤ y
+
+  order-F-ℝ-is-prop-valued : (𝔁 : F) (y : ℝ)
+                           → is-prop (𝔁 ≤ y)
+  order-F-ℝ-is-prop-valued 𝔁 y = Π-is-prop fe (λ i → ≤-is-prop-valued (𝔁 i) y)
+
+  _has-lub_ : F → ℝ → 𝓤⁺ ̇
+  𝔁 has-lub y = (𝔁 ≤ y) × ((z : ℝ) → 𝔁 ≤ z → y ≤ z)
+
+  having-lub-is-prop : (𝔁 : F) (y : ℝ)
+                     → is-prop (𝔁 has-lub y)
+  having-lub-is-prop 𝔁 y = ×-is-prop
+                             (order-F-ℝ-is-prop-valued 𝔁 y)
+                             (Π₂-is-prop fe (λ z _ → ≤-is-prop-valued y z))
+
+  at-most-one-lub : (𝔁 : F) → is-prop (Σ y ꞉ ℝ , 𝔁 has-lub y)
+  at-most-one-lub 𝔁 (y , a , b) (y' , a' , b') = γ
+   where
+    I : y ≡ y'
+    I = ≤-antisym y y' (b y' a') (b' y a)
+
+    γ : (y , a , b) ≡ (y' , a' , b')
+    γ = to-subtype-≡ (having-lub-is-prop 𝔁) I
+
+  instance
+   strict-order-ℚ-F : Strict-Order ℚ F
+   _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝕀 , p < 𝔁 i
+
+   strict-order-F-ℚ : Strict-Order F ℚ
+   _<_ {{strict-order-F-ℚ}} 𝔁 q = (i : 𝕀) → 𝔁 i < q
+
+  strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
+  strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
+
+  strict-order-F-ℚ-is-prop : (𝔁 : F) (q : ℚ) → is-prop (𝔁 < q)
+  strict-order-F-ℚ-is-prop 𝔁 q = Π-is-prop fe (λ i → strict-order-ℝ-ℚ-is-prop-valued (𝔁 i) q)
+
+  is-upper-bounded-family : F → 𝓤⁺ ̇
+  is-upper-bounded-family 𝔁 = ∃ β ꞉ ℝ , (𝔁 ≤ β)
+
+  is-located-family : F → 𝓤 ̇
+  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (𝔁 < q)
+
+  lub-conditions : F → 𝓤⁺ ̇
+  lub-conditions 𝔁 = ∥ 𝕀 ∥ × is-upper-bounded-family 𝔁 × is-located-family 𝔁
+
+  lub : (𝔁 : F)
+      → lub-conditions 𝔁
+      → Σ y ꞉ ℝ , (𝔁 has-lub y)
+  lub 𝔁 (𝕀-inhabited , 𝔁-bounded , 𝔁-located) = y , a , b
+   where
+    L : 𝓟 ℚ
+    L p = (p < 𝔁) , strict-order-ℚ-F-is-prop p 𝔁
+
+    L-inhabited : ∃ p ꞉ ℚ , p < 𝔁
+    L-inhabited = ∥∥-rec ∃-is-prop I 𝕀-inhabited
+     where
+      I : 𝕀 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝕀 , p < 𝔁 i
+      I i = III II
+       where
+        II : Σ i ꞉ 𝕀 , ∃ p ꞉ ℚ , p < 𝔁 i
+        II = i , lowercut-is-inhabited (𝔁 i)
+
+        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝕀 , p < 𝔁 i
+        III (i , s) = ∥∥-functor IV s
+         where
+          IV : (Σ p ꞉ ℚ , p < 𝔁 i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝕀 , p < 𝔁 i
+          IV (p , l) = p , ∣ i , l ∣
+
+    L-lower : (q : ℚ) → q < 𝔁 → (p : ℚ) → p < q → p < 𝔁
+    L-lower q l p m = ∥∥-functor (λ (i , k) → i , lowercut-is-lower (𝔁 i) q k p m) l
+
+    L-upper-open : (p : ℚ) → p < 𝔁 → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+    L-upper-open p = ∥∥-rec ∃-is-prop f
+     where
+      f : (Σ i ꞉ 𝕀 , p < 𝔁 i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+      f (i , l) = ∥∥-functor g (lowercut-is-upper-open (𝔁 i) p l)
+       where
+        g : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝔁 i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+        g (p' , m , o) = p' , m , ∣ i , o ∣
+
+    yᴸ : ℝᴸ
+    yᴸ = (L , L-inhabited , L-lower , L-upper-open)
+
+    L-bounded-above : ∃ q ꞉ ℚ , q ≮ 𝔁
+    L-bounded-above = ∥∥-rec ∃-is-prop I 𝔁-bounded
+     where
+      I : (Σ β ꞉ ℝ , 𝔁 ≤ β) → ∃ q ꞉ ℚ , q ≮ 𝔁
+      I (β , l) = ∥∥-functor II (uppercut-is-inhabited β)
+       where
+        II : (Σ q ꞉ ℚ , β < q) → Σ q ꞉ ℚ , q ≮ 𝔁
+        II (q , m) = q , ∥∥-rec 𝟘-is-prop III
+         where
+          III : ¬ (Σ i ꞉ 𝕀 , q < 𝔁 i)
+          III (i , o) = ≺-irrefl q (cuts-are-ordered β q q (l i q o) m)
+
+    L-located : (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
+    L-located p q l = ∥∥-functor (+functor id II) I
+     where
+      I : (p < 𝔁) ∨ (𝔁 < q)
+      I = 𝔁-located p q l
+      II : 𝔁 < q → q ≮ 𝔁
+      II m o = ∥∥-rec 𝟘-is-prop III o
+       where
+        III : ¬ (Σ i ꞉ 𝕀 , q < 𝔁 i)
+        III (i , k) = ≺-irrefl q (cuts-are-ordered (𝔁 i) q q k (m i))
+
+    τ : is-troelstra yᴸ
+    τ = L-bounded-above , L-located
+
+    y : ℝ
+    y = (yᴸ , troelstra-gives-dedekind yᴸ τ)
+
+    a : 𝔁 ≤ y
+    a i p l = ∣ i , l ∣
+
+    b : (z : ℝ) → 𝔁 ≤ z → y ≤ z
+    b z l p = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p z) f
+     where
+      f : (Σ i ꞉ 𝕀 , p < 𝔁 i) → p < z
+      f (i , m) = l i p m
 
 \end{code}
 

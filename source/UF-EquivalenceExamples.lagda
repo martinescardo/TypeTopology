@@ -8,6 +8,7 @@ Expanded on demand whenever a general equivalence is needed.
 
 open import SpartanMLTT
 open import Two-Properties
+open import Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
@@ -342,11 +343,6 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
    η (inl (inl x)) = refl
    η (inl (inr x)) = refl
    η (inr x)       = refl
-
-+functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-         → (X → A) → (Y → B) → X + Y → A + B
-+functor f g (inl x) = inl (f x)
-+functor f g (inr y) = inr (g y)
 
 +cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
       → X ≃ A → Y ≃ B → X + Y ≃ A + B
