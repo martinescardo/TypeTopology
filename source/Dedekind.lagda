@@ -1438,9 +1438,47 @@ Relationship between the orders of ℚ and ℝ:
  ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
  ℚ-to-ℝ-reflects-≤ p q = id
 
+ ι-left : (x : ℝ) (q : ℚ) → x < q → x < ι q
+ ι-left x q l = ∥∥-functor (λ (p , m , o) → p , o , m) (uppercut-is-lower-open x q l)
+
+ ι-left-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
+ ι-left-converse x q = ∥∥-rec
+                         (strict-order-ℝ-ℚ-is-prop-valued x q)
+                         (λ (p , m , o) → uppercut-is-upper x p m q o)
+
+ ι-right : (p : ℚ) (x : ℝ) → p < x → ι p < x
+ ι-right p x = lowercut-is-upper-open x p
+
+ ι-right-converse : (p : ℚ) (x : ℝ) → ι p < x → p < x
+ ι-right-converse p x = ∥∥-rec
+                          (strict-order-ℚ-ℝ-is-prop-valued p x)
+                          (λ (q , m , o) → lowercut-is-lower x q o p m)
 \end{code}
 
-We now consider least upper bounds of families of real numbers.
+We now consider the existence of least upper bounds of bounded
+families 𝔁 : 𝕀 → ℝ with 𝕀 inhabited.
+
+A sufficient condition, given by Bishop, is that
+
+  (p q : ℚ) → p < q → (∃ i ꞉ 𝕀 , p < 𝔁 i)
+                    ∨ ((i : 𝕀) → 𝔁 i < q)
+
+We observe that the weaker condition
+
+  (p q : ℚ) → p < q →  (∃ i ꞉ 𝕀 , p < 𝔁 i)
+                    ∨ ¬(∃ i ꞉ 𝕀 , q < 𝔁 i)
+
+suffices.
+
+If we define (p < 𝔁) = (∃ i ꞉ 𝕀 , p < 𝔁 i), then this weaker sufficient
+condition reads
+
+  (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
+
+so that we see that it is analogous to Troelstra's locatedness
+condition discussed above.
+
+In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
 
 \begin{code}
 
@@ -1450,7 +1488,7 @@ We now consider least upper bounds of families of real numbers.
 
   instance
    order-F-ℝ : Order F ℝ
-   _≤_ {{order-F-ℝ}} 𝔁 y = ∀ i → 𝔁 i ≤ y
+   _≤_ {{order-F-ℝ}} 𝔁 y = (i : 𝕀) → 𝔁 i ≤ y
 
   order-F-ℝ-is-prop-valued : (𝔁 : F) (y : ℝ)
                            → is-prop (𝔁 ≤ y)
@@ -1478,27 +1516,21 @@ We now consider least upper bounds of families of real numbers.
    strict-order-ℚ-F : Strict-Order ℚ F
    _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝕀 , p < 𝔁 i
 
-   order-F-ℚ : Order F ℚ
-   _≤_ {{order-F-ℚ}} 𝔁 q = (i : 𝕀) → 𝔁 i < q
-
   strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
   strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
-
-  order-F-ℚ-is-prop : (𝔁 : F) (q : ℚ) → is-prop (𝔁 ≤ q)
-  order-F-ℚ-is-prop 𝔁 q = Π-is-prop fe (λ i → strict-order-ℝ-ℚ-is-prop-valued (𝔁 i) q)
 
   is-upper-bounded-family : F → 𝓤⁺ ̇
   is-upper-bounded-family 𝔁 = ∃ β ꞉ ℝ , (𝔁 ≤ β)
 
   is-located-family : F → 𝓤 ̇
-  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (𝔁 ≤ q)
+  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
 
-  lub-conditions : F → 𝓤⁺ ̇
-  lub-conditions 𝔁 = ∥ 𝕀 ∥ × is-upper-bounded-family 𝔁 × is-located-family 𝔁
+  lub-sufficient-conditions : F → 𝓤⁺ ̇
+  lub-sufficient-conditions 𝔁 = ∥ 𝕀 ∥
+                              × is-upper-bounded-family 𝔁
+                              × is-located-family 𝔁
 
-  lub : (𝔁 : F)
-      → lub-conditions 𝔁
-      → Σ y ꞉ ℝ , (𝔁 has-lub y)
+  lub : (𝔁 : F) → lub-sufficient-conditions 𝔁 → Σ y ꞉ ℝ , (𝔁 has-lub y)
   lub 𝔁 (𝕀-inhabited , 𝔁-bounded , 𝔁-located) = y , a , b
    where
     L : 𝓟 ℚ
@@ -1547,15 +1579,7 @@ We now consider least upper bounds of families of real numbers.
           III (i , o) = ≺-irrefl q (cuts-are-ordered β q q (l i q o) m)
 
     L-located : (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
-    L-located p q l = ∥∥-functor (+functor id II) I
-     where
-      I : (p < 𝔁) ∨ (𝔁 ≤ q)
-      I = 𝔁-located p q l
-      II : 𝔁 ≤ q → q ≮ 𝔁
-      II m o = ∥∥-rec 𝟘-is-prop III o
-       where
-        III : ¬ (Σ i ꞉ 𝕀 , q < 𝔁 i)
-        III (i , k) = ≺-irrefl q (cuts-are-ordered (𝔁 i) q q k (m i))
+    L-located = 𝔁-located
 
     τ : is-troelstra yᴸ
     τ = L-bounded-above , L-located
