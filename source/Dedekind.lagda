@@ -1478,20 +1478,20 @@ We now consider least upper bounds of families of real numbers.
    strict-order-ℚ-F : Strict-Order ℚ F
    _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝕀 , p < 𝔁 i
 
-   strict-order-F-ℚ : Strict-Order F ℚ
-   _<_ {{strict-order-F-ℚ}} 𝔁 q = (i : 𝕀) → 𝔁 i < q
+   order-F-ℚ : Order F ℚ
+   _≤_ {{order-F-ℚ}} 𝔁 q = (i : 𝕀) → 𝔁 i < q
 
   strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
   strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
 
-  strict-order-F-ℚ-is-prop : (𝔁 : F) (q : ℚ) → is-prop (𝔁 < q)
-  strict-order-F-ℚ-is-prop 𝔁 q = Π-is-prop fe (λ i → strict-order-ℝ-ℚ-is-prop-valued (𝔁 i) q)
+  order-F-ℚ-is-prop : (𝔁 : F) (q : ℚ) → is-prop (𝔁 ≤ q)
+  order-F-ℚ-is-prop 𝔁 q = Π-is-prop fe (λ i → strict-order-ℝ-ℚ-is-prop-valued (𝔁 i) q)
 
   is-upper-bounded-family : F → 𝓤⁺ ̇
   is-upper-bounded-family 𝔁 = ∃ β ꞉ ℝ , (𝔁 ≤ β)
 
   is-located-family : F → 𝓤 ̇
-  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (𝔁 < q)
+  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (𝔁 ≤ q)
 
   lub-conditions : F → 𝓤⁺ ̇
   lub-conditions 𝔁 = ∥ 𝕀 ∥ × is-upper-bounded-family 𝔁 × is-located-family 𝔁
@@ -1549,9 +1549,9 @@ We now consider least upper bounds of families of real numbers.
     L-located : (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
     L-located p q l = ∥∥-functor (+functor id II) I
      where
-      I : (p < 𝔁) ∨ (𝔁 < q)
+      I : (p < 𝔁) ∨ (𝔁 ≤ q)
       I = 𝔁-located p q l
-      II : 𝔁 < q → q ≮ 𝔁
+      II : 𝔁 ≤ q → q ≮ 𝔁
       II m o = ∥∥-rec 𝟘-is-prop III o
        where
         III : ¬ (Σ i ꞉ 𝕀 , q < 𝔁 i)
