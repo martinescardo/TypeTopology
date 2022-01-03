@@ -1456,21 +1456,21 @@ Relationship between the orders of ℚ and ℝ:
 \end{code}
 
 We now consider the existence of least upper bounds of bounded
-families 𝔁 : 𝕀 → ℝ with 𝕀 inhabited.
+families 𝔁 : 𝑰 → ℝ with 𝑰 inhabited.
 
 A sufficient condition, given by Bishop, is that
 
-  (p q : ℚ) → p < q → (∃ i ꞉ 𝕀 , p < 𝔁 i)
-                    ∨ ((i : 𝕀) → 𝔁 i < q)
+  (p q : ℚ) → p < q → (∃ i ꞉ 𝑰 , p < 𝔁 i)
+                    ∨ ((i : 𝑰) → 𝔁 i < q)
 
 We observe that the weaker condition
 
-  (p q : ℚ) → p < q →  (∃ i ꞉ 𝕀 , p < 𝔁 i)
-                    ∨ ¬(∃ i ꞉ 𝕀 , q < 𝔁 i)
+  (p q : ℚ) → p < q →  (∃ i ꞉ 𝑰 , p < 𝔁 i)
+                    ∨ ¬(∃ i ꞉ 𝑰 , q < 𝔁 i)
 
 suffices.
 
-If we define (p < 𝔁) = (∃ i ꞉ 𝕀 , p < 𝔁 i), then this weaker sufficient
+If we define (p < 𝔁) = (∃ i ꞉ 𝑰 , p < 𝔁 i), then this weaker sufficient
 condition reads
 
   (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
@@ -1482,13 +1482,13 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
 
 \begin{code}
 
- module _ {𝕀 : 𝓤 ̇ } where
+ module _ {𝑰 : 𝓤 ̇ } where
 
-  F = 𝕀 → ℝ
+  F = 𝑰 → ℝ
 
   instance
    order-F-ℝ : Order F ℝ
-   _≤_ {{order-F-ℝ}} 𝔁 y = (i : 𝕀) → 𝔁 i ≤ y
+   _≤_ {{order-F-ℝ}} 𝔁 y = (i : 𝑰) → 𝔁 i ≤ y
 
   order-F-ℝ-is-prop-valued : (𝔁 : F) (y : ℝ)
                            → is-prop (𝔁 ≤ y)
@@ -1514,7 +1514,7 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
 
   instance
    strict-order-ℚ-F : Strict-Order ℚ F
-   _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝕀 , p < 𝔁 i
+   _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝑰 , p < 𝔁 i
 
   strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
   strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
@@ -1538,7 +1538,7 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
     g : 𝔁 ≤ ι p → p ≮ 𝔁
     g l = ∥∥-rec 𝟘-is-prop I
      where
-      I : ¬ (Σ i ꞉ 𝕀 , p < 𝔁 i)
+      I : ¬ (Σ i ꞉ 𝑰 , p < 𝔁 i)
       I (i , m) = ≺-irrefl p (l i p m)
 
   is-upper-bounded-family : F → 𝓤⁺ ̇
@@ -1548,29 +1548,29 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
   is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
 
   lub-sufficient-conditions : F → 𝓤⁺ ̇
-  lub-sufficient-conditions 𝔁 = ∥ 𝕀 ∥
+  lub-sufficient-conditions 𝔁 = ∥ 𝑰 ∥
                               × is-upper-bounded-family 𝔁
                               × is-located-family 𝔁
 
   lub : (𝔁 : F) → lub-sufficient-conditions 𝔁 → Σ y ꞉ ℝ , (𝔁 has-lub y)
-  lub 𝔁 (𝕀-inhabited , 𝔁-bounded , 𝔁-located) = y , a , b
+  lub 𝔁 (𝑰-inhabited , 𝔁-bounded , 𝔁-located) = y , a , b
    where
     L : 𝓟 ℚ
     L p = (p < 𝔁) , strict-order-ℚ-F-is-prop p 𝔁
 
     L-inhabited : ∃ p ꞉ ℚ , p < 𝔁
-    L-inhabited = ∥∥-rec ∃-is-prop I 𝕀-inhabited
+    L-inhabited = ∥∥-rec ∃-is-prop I 𝑰-inhabited
      where
-      I : 𝕀 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝕀 , p < 𝔁 i
+      I : 𝑰 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝑰 , p < 𝔁 i
       I i = III II
        where
-        II : Σ i ꞉ 𝕀 , ∃ p ꞉ ℚ , p < 𝔁 i
+        II : Σ i ꞉ 𝑰 , ∃ p ꞉ ℚ , p < 𝔁 i
         II = i , lowercut-is-inhabited (𝔁 i)
 
-        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝕀 , p < 𝔁 i
+        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝑰 , p < 𝔁 i
         III (i , s) = ∥∥-functor IV s
          where
-          IV : (Σ p ꞉ ℚ , p < 𝔁 i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝕀 , p < 𝔁 i
+          IV : (Σ p ꞉ ℚ , p < 𝔁 i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝑰 , p < 𝔁 i
           IV (p , l) = p , ∣ i , l ∣
 
     L-lower : (q : ℚ) → q < 𝔁 → (p : ℚ) → p < q → p < 𝔁
@@ -1579,7 +1579,7 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
     L-upper-open : (p : ℚ) → p < 𝔁 → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
     L-upper-open p = ∥∥-rec ∃-is-prop f
      where
-      f : (Σ i ꞉ 𝕀 , p < 𝔁 i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+      f : (Σ i ꞉ 𝑰 , p < 𝔁 i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
       f (i , l) = ∥∥-functor g (lowercut-is-upper-open (𝔁 i) p l)
        where
         g : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝔁 i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
@@ -1597,7 +1597,7 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
         II : (Σ q ꞉ ℚ , β < q) → Σ q ꞉ ℚ , q ≮ 𝔁
         II (q , m) = q , ∥∥-rec 𝟘-is-prop III
          where
-          III : ¬ (Σ i ꞉ 𝕀 , q < 𝔁 i)
+          III : ¬ (Σ i ꞉ 𝑰 , q < 𝔁 i)
           III (i , o) = ≺-irrefl q (cuts-are-ordered β q q (l i q o) m)
 
     L-located : (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
@@ -1615,7 +1615,7 @@ In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
     b : (z : ℝ) → 𝔁 ≤ z → y ≤ z
     b z l p = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p z) f
      where
-      f : (Σ i ꞉ 𝕀 , p < 𝔁 i) → p < z
+      f : (Σ i ꞉ 𝑰 , p < 𝔁 i) → p < z
       f (i , m) = l i p m
 
 \end{code}
