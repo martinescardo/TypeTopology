@@ -428,45 +428,6 @@ well-inside-upwards F {U₁} {U₂} {V} =
 
 \end{code}
 
-\section{Definition of regularity}
-
-\begin{code}
-
-↓↓[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam 𝓤 ⟨ F ⟩
-↓↓[ F ] U = (Σ V ꞉ ⟨ F ⟩ , (V ⋜[ F ] U) holds) , pr₁
-
-\end{code}
-
-\begin{code}
-
-↓↓[_]-is-directed : (F : frame 𝓤 𝓥 𝓦)
-                  → (U : ⟨ F ⟩) → is-directed (poset-of F) (↓↓[ F ] U) holds
-↓↓[_]-is-directed F U = β , γ
- where
-  β : ∥ index (↓↓[ F ] U) ∥
-  β = ∣ 𝟎[ F ] , 𝟎-is-well-inside-anything F U  ∣
-
-\end{code}
-
-We now want to prove that this set is upwards-closed.
-
-\begin{code}
-
-  Ψ = Ɐ i ∶ index (↓↓[ F ] U) ,
-       Ɐ j ∶ index (↓↓[ F ] U) ,
-        Ǝ k ∶ index (↓↓[ F ] U) ,
-           ((↓↓[ F ] U [ i ]) ≤[ poset-of F ] (↓↓[ F ] U [ k ])) holds
-         × ((↓↓[ F ] U [ j ]) ≤[ poset-of F ] (↓↓[ F ] U [ k ])) holds
-
-  γ : Ψ holds
-  γ i@(V₁ , p₁) j@(V₂ , p₂) =
-   ∣ ((V₁ ∨[ F ] V₂) , δ) , ∨[ F ]-upper₁ V₁ V₂ , ∨[ F ]-upper₂ V₁ V₂ ∣
-    where
-     δ : ((V₁ ∨[ F ] V₂) ⋜[ F ] U) holds
-     δ = well-inside-upwards F p₁ p₂
-
-\end{code}
-
 \section{Some properties}
 
 \begin{code}
@@ -590,27 +551,19 @@ clopens-are-compact-in-compact-frames F κ U =
 
 \section{Regularity}
 
+We would like to be able to express regularity using `↓↓` defined as:
+
 \begin{code}
 
-is-regular : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
-is-regular {𝓤 = 𝓤} {𝓥} {𝓦} F =
- let
-  open Joins (λ x y → x ≤[ poset-of F ] y)
+↓↓[_] : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → Fam 𝓤 ⟨ F ⟩
+↓↓[ F ] U = (Σ V ꞉ ⟨ F ⟩ , (V ⋜[ F ] U) holds) , pr₁
 
-  P : Fam 𝓦 ⟨ F ⟩ → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺ ̇ 
-  P ℬ = Π U ꞉ ⟨ F ⟩ ,
-         Σ J ꞉ Fam 𝓦 (index ℬ) ,
-            (U is-lub-of ⁅ ℬ [ j ] ∣ j ε J ⁆) holds
-          × (Π i ꞉ index J , (ℬ [ J [ i ] ] ⋜[ F ] U) holds)
- in
-  Ǝ ℬ ∶ Fam 𝓦 ⟨ F ⟩ , P ℬ
+\end{code}
 
-is-regular-basis : (F : frame 𝓤 𝓥 𝓦)
-                 → (ℬ : Fam 𝓦 ⟨ F ⟩) → (β : is-basis-for F ℬ) → Ω (𝓤 ⊔ 𝓦)
-is-regular-basis F ℬ β =
- Ɐ U ∶ ⟨ F ⟩ ,
-  let 𝒥 = pr₁ (β U) in
-   Ɐ j ∶ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
+but there are size problems with this. Therefore, we define regularity as
+follows:
+
+\begin{code}
 
 is-regular₀ : (F : frame 𝓤 𝓥 𝓦) → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
 is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
@@ -625,6 +578,32 @@ is-regular₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
  in
   Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , P ℬ
 
+\end{code}
+
+\begin{code}
+
+is-regular : (F : frame 𝓤 𝓥 𝓦) → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+is-regular {𝓤 = 𝓤} {𝓥} {𝓦} F = ∥ is-regular₀ F ∥Ω
+
+\end{code}
+
+Even though this definition is a bit more convenient to work with, it simply
+asserts the existence of a regular basis i.e. a basis in which every open in a
+basic covering family for some open `U` is well inside `U`.
+
+\begin{code}
+
+is-regular-basis : (F : frame 𝓤 𝓥 𝓦)
+                 → (ℬ : Fam 𝓦 ⟨ F ⟩) → (β : is-basis-for F ℬ) → Ω (𝓤 ⊔ 𝓦)
+is-regular-basis F ℬ β =
+ Ɐ U ∶ ⟨ F ⟩ , let 𝒥 = pr₁ (β U) in Ɐ j ∶ (index 𝒥) , ℬ [ 𝒥 [ j ] ] ⋜[ F ] U
+
+\end{code}
+
+A projection for easily referring to the basis of a regular frame:
+
+\begin{code}
+
 basis-of-regular-frame : (F : frame 𝓤 𝓥 𝓦)
                        → (is-regular F ⇒ has-basis F) holds
 basis-of-regular-frame F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
@@ -633,6 +612,9 @@ basis-of-regular-frame F r = ∥∥-rec (holds-is-prop (has-basis F)) γ r
   γ (ℬ , δ)= ∣ ℬ , (λ U → pr₁ (δ U) , pr₁ (pr₂ (δ U))) ∣
 
 \end{code}
+
+When we directify the basis of a regular frame, the directified basis is also
+regular:
 
 \begin{code}
 
@@ -656,6 +638,13 @@ directification-preserves-regularity F ℬ β r U = γ
   γ : (Ɐ js ∶ index 𝒥↑ , ℬ↑ [ 𝒥↑ [ js ] ] ⋜[ F ] U) holds
   γ []       = 𝟎-is-well-inside-anything F U
   γ (j ∷ js) = well-inside-upwards F (r U j) (γ js)
+
+\end{code}
+
+This gives us that covering families in a regular frame are directed from
+which the result we are interested in follows:
+
+\begin{code}
 
 ≪-implies-⋜-in-regular-frames : (F : frame 𝓤 𝓥 𝓦)
                               → (is-regular F) holds
@@ -698,7 +687,6 @@ directification-preserves-regularity F ℬ β r U = γ
      ζ (k , q) = T≤U⋜V≤W-implies-T⋜W F q (ρ↑ V k) (≤-is-reflexive (poset-of F) V)
 
 \end{code}
-
 
 \begin{code}
 
