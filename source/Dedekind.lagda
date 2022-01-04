@@ -37,17 +37,19 @@ See also the discussion at https://twitter.com/EscardoMartin/status/147339326101
 {-# OPTIONS --without-K --exact-split --safe #-}
 
 open import SpartanMLTT
+open import CanonicalMapNotation
+open import OrderNotation
 open import Plus-Properties
+
 open import UF-Base
-open import UF-PropTrunc
-open import UF-FunExt
-open import UF-Subsingletons
-open import UF-Subsingletons-FunExt
-open import UF-Powerset
 open import UF-Embeddings
 open import UF-Equiv
-open import OrderNotation
-open import CanonicalMapNotation
+open import UF-FunExt
+open import UF-Powerset
+open import UF-PropTrunc
+open import UF-Size
+open import UF-Subsingletons
+open import UF-Subsingletons-FunExt
 
 module Dedekind
         (pt  : propositional-truncations-exist)
@@ -1060,6 +1062,12 @@ The canonical embedding of the rationals into the reals:
   canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
   ι {{canonical-map-ℚ-to-ℝ}} = ℚ-to-ℝ
 
+ is-rational : ℝ → 𝓤⁺ ̇
+ is-rational x = Σ q ꞉ ℚ , ι q ≡ x
+
+ being-rational-is-prop : (x : ℝ) → is-prop (is-rational x)
+ being-rational-is-prop = ℚ-to-ℝ-is-embedding
+
 \end{code}
 
 We could also define
@@ -1136,6 +1144,7 @@ and then define them, for the sake of clarity.
                                (cuts-are-ordered x)
                                p
                                (l , m)
+
  lowercut-is-bounded (l , δ) = pr₁ (dedekind-gives-troelstra l δ)
  lowercut-is-located (l , δ) = pr₂ (dedekind-gives-troelstra l δ)
 
@@ -1219,25 +1228,24 @@ We now develop the basic properties of the _<_ order.
 
 \end{code}
 
-There are four equivalent ways to define the _≤_ order on ℝ (and
-another three, not included here, replacing the type of rational
-numbers by the type of reals):
+There are a number of equivalent ways to define the _≤_ order on ℝ. We
+give four for now, and three more later.
 
 \begin{code}
 
  _≤₀_ _≤₁_ _≤₂_ _≤₃_ : ℝ → ℝ → 𝓤 ̇
- x ≤₀ y = (p : ℚ) → p < x → p < y
- x ≤₁ y = (q : ℚ) → y < q → x < q
- x ≤₂ y = y ≮ x
- x ≤₃ y = (p q : ℚ) → p < x → y < q → p < q
+ x ≤₀ y  = (p : ℚ) → p < x → p < y
+ x ≤₁ y  = (q : ℚ) → y < q → x < q
+ x ≤₂ y  = y ≮ x
+ x ≤₃ y  = (p q : ℚ) → p < x → y < q → p < q
 
 \end{code}
 
-The last definition has the advantage that it is applicable when x is
-a lower real and y is an upper real. See the interval domain
-below. But we adopted the first definition for reals before we
-realized that. It doesn't matter much, because we can switch between
-all the definitions in the case of the reals.
+Definition (3) has the advantage that it is applicable when x is a
+lower real and y is an upper real. See the interval domain below. But
+we adopted the first definition for reals before we realized that. It
+doesn't matter much, because we can switch between all the definitions
+in the case of the reals.
 
 \begin{code}
 
@@ -1257,18 +1265,6 @@ all the definitions in the case of the reals.
 
  ≤-is-prop-valued : (x y : ℝ) → is-prop (x ≤ y)
  ≤-is-prop-valued = ≤₀-is-prop-valued
-
- <-gives-≤ : (x y : ℝ) → x < y → x ≤ y
- <-gives-≤ x y ℓ p m = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p y) γ ℓ
-  where
-   γ : (Σ q ꞉ ℚ , (x < q) × (q < y)) → p < y
-   γ (q , i , j) = II
-    where
-     I : p < q
-     I = cuts-are-ordered x p q m i
-
-     II : p < y
-     II = lowercut-is-lower y q j p I
 
  ≤-gives-≤₁ : (x y : ℝ) → x ≤ y → x ≤₁ y
  ≤-gives-≤₁ x y ℓ = order-lemma
@@ -1354,6 +1350,164 @@ all the definitions in the case of the reals.
 
 \end{code}
 
+The type ℝ is large, in the sense that it lives in 𝓤⁺ rather than 𝓤,
+but it is locally small, in the sense that each identity type x ≡ y
+with x,y:ℝ, which also lives in 𝓤⁺, has copy in the universe 𝓤, namely
+the type (x ≤ y) × (y ≤ x).
+
+\begin{code}
+
+ ℝ-is-locally-small : is-locally-small ℝ
+ ℝ-is-locally-small x y = γ
+  where
+   f : (x ≤ y) × (y ≤ x) → x ≡ y
+   f = uncurry (≤-antisym x y)
+
+   g : x ≡ y → (x ≤ y) × (y ≤ x)
+   g refl = ≤-refl x , ≤-refl x
+
+   e : ((x ≤ y) × (y ≤ x)) ≃ (x ≡ y)
+   e = qinveq
+        f
+        (g ,
+         (λ a → ×-is-prop (≤-is-prop-valued x y) (≤-is-prop-valued y x) (g (f a)) a) ,
+         (λ b → ℝ-is-set (f (g b)) b))
+
+   γ : (x ≡ y) has-size 𝓤
+   γ = ((x ≤ y) × (y ≤ x)) , e
+
+\end{code}
+
+Relationship between the orders of ℚ and ℝ:
+
+\begin{code}
+
+ ℚ-to-ℝ-preserves-< : (p q : ℚ) → p < q → ι p < ι q
+ ℚ-to-ℝ-preserves-< = ℚ-density
+
+ ℚ-to-ℝ-reflects-< : (p q : ℚ) → ι p < ι q → p < q
+ ℚ-to-ℝ-reflects-< p q = ∥∥-rec
+                           (≺-is-prop-valued p q)
+                           (λ (r , i , j) → ℚ-transitivity p r q i j)
+
+ ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ι p ≤ ι q)
+ ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
+
+ ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p ≤ q)
+ ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ι p) (ι q)
+
+ ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ι p ≤ ι q
+ ℚ-to-ℝ-preserves-≤ p q = id
+
+ ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
+ ℚ-to-ℝ-reflects-≤ p q = id
+
+ ℚ-to-ℝ-left : (p : ℚ) (x : ℝ) → p < x → ι p < x
+ ℚ-to-ℝ-left p x = lowercut-is-upper-open x p
+
+ ℚ-to-ℝ-left-converse : (p : ℚ) (x : ℝ) → ι p < x → p < x
+ ℚ-to-ℝ-left-converse p x = ∥∥-rec
+                              (strict-order-ℚ-ℝ-is-prop-valued p x)
+                              (λ (q , m , o) → lowercut-is-lower x q o p m)
+
+ ℚ-to-ℝ-right : (x : ℝ) (q : ℚ) → x < q → x < ι q
+ ℚ-to-ℝ-right x q l = ∥∥-functor (λ (p , m , o) → p , o , m) (uppercut-is-lower-open x q l)
+
+ ℚ-to-ℝ-right-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
+ ℚ-to-ℝ-right-converse x q = ∥∥-rec
+                               (strict-order-ℝ-ℚ-is-prop-valued x q)
+                               (λ (p , m , o) → uppercut-is-upper x p m q o)
+\end{code}
+
+The promised three more ways to define _≤_ on ℝ:
+
+\begin{code}
+
+ _≤₀ₐ_ _≤₁ₐ_ _≤₃ₐ_ : ℝ → ℝ → 𝓤⁺ ̇
+ x ≤₀ₐ y = (z : ℝ) → z < x → z < y
+ x ≤₁ₐ y = (z : ℝ) → y < z → x < z
+ x ≤₃ₐ y = (z t : ℝ) → z < x → y < t → z < t
+
+ ≤₀ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₀ₐ y)
+ ≤₁ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₁ₐ y)
+ ≤₃ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ₐ y)
+
+ ≤₀ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → <-is-prop-valued z y)
+ ≤₁ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → <-is-prop-valued x z)
+ ≤₃ₐ-is-prop-valued x y = Π₄-is-prop fe (λ z t _ _ → <-is-prop-valued z t)
+
+ ≤₀-gives-≤₀ₐ : (x y : ℝ) → x ≤₀ y → x ≤₀ₐ y
+ ≤₀-gives-≤₀ₐ x y l z = ∥∥-functor f
+  where
+   f : (Σ p ꞉ ℚ , (z < p) × (p < x))
+     → (Σ p ꞉ ℚ , (z < p) × (p < y))
+   f (p , u , v) = p , u , l p v
+
+ ≤₀ₐ-gives-≤₀ : (x y : ℝ) → x ≤₀ₐ y → x ≤₀ y
+ ≤₀ₐ-gives-≤₀ x y l p m = II
+  where
+   I : ι p < y
+   I = l (ι p) (ℚ-to-ℝ-left p x m)
+
+   II : p < y
+   II = ℚ-to-ℝ-left-converse p y I
+
+ ≤₁-gives-≤₁ₐ : (x y : ℝ) → x ≤₁ y → x ≤₁ₐ y
+ ≤₁-gives-≤₁ₐ x y l z = ∥∥-functor f
+  where
+   f : (Σ p ꞉ ℚ , (y < p) × (p < z))
+     → (Σ p ꞉ ℚ , (x < p) × (p < z))
+   f (p , u , v) = p , l p u , v
+
+ ≤₁ₐ-gives-≤₁ : (x y : ℝ) → x ≤₁ₐ y → x ≤₁ y
+ ≤₁ₐ-gives-≤₁ x y l p m = II
+  where
+   I : x < ι p
+   I = l (ι p) (ℚ-to-ℝ-right y p m)
+
+   II : x < p
+   II = ℚ-to-ℝ-right-converse x p I
+
+ ≤₃ₐ-gives-≤₃ : (x y : ℝ) → x ≤₃ₐ y → x ≤₃ y
+ ≤₃ₐ-gives-≤₃ x y l p q m o = ℚ-to-ℝ-reflects-< p q γ
+  where
+   γ : ι p < ι q
+   γ = l (ι p) (ι q) (ℚ-to-ℝ-left p x m) (ℚ-to-ℝ-right y q o)
+
+ ≤₃-gives-≤₃ₐ : (x y : ℝ) → x ≤₃ y → x ≤₃ₐ y
+ ≤₃-gives-≤₃ₐ x y l z t m o = ∥∥-functor₂ f m o
+  where
+   f : (Σ p ꞉ ℚ , (z < p) × (p < x))
+     → (Σ q ꞉ ℚ , (y < q) × (q < t))
+     → (Σ p ꞉ ℚ , (z < p) × (p < t))
+   f (p , i , j) (q , u , v) = p , i , II
+    where
+     I : p < q
+     I = l p q j u
+
+     II : p < t
+     II = lowercut-is-lower t q v p I
+
+\end{code}
+
+Relationship between _<_ and _≤_ on ℝ:
+
+\begin{code}
+
+ <-gives-≤' : (x y : ℝ) → x < y → x ≤ y
+ <-gives-≤' x y l = ≤₀ₐ-gives-≤₀ x y f
+  where
+   f : (z : ℝ) → z < x → z < y
+   f z m = <-trans z x y m l
+
+ <-≤-trans : (x y z : ℝ) → x < y → y ≤ z → x < z
+ <-≤-trans x y z l m = ≤₀-gives-≤₀ₐ y z m x l
+
+ ≤-<-trans : (x y z : ℝ) → x ≤ y → y < z → x < z
+ ≤-<-trans x y z l m = ≤₁-gives-≤₁ₐ x y (≤-gives-≤₁ x y l) z m
+
+\end{code}
+
 Apartness of real numbers and its basic properties:
 
 \begin{code}
@@ -1412,47 +1566,15 @@ Apartness of real numbers and its basic properties:
  ℝ-order-criterion x y ℓ (inl m) = m
  ℝ-order-criterion x y ℓ (inr m) = 𝟘-elim (≤-gives-≤₂ x y ℓ m)
 
-\end{code}
+ is-irrational : ℝ → 𝓤⁺ ̇
+ is-irrational x = ¬ (Σ q ꞉ ℚ , ι q ≡ x)
 
-Relationship between the orders of ℚ and ℝ:
+ is-strongly-irrational : ℝ → 𝓤 ̇
+ is-strongly-irrational x = (q : ℚ) → ι q ♯ x
 
-\begin{code}
+ being-irrational-is-prop : (x : ℝ) → is-prop (is-irrational x)
+ being-irrational-is-prop x = negations-are-props fe
 
- ℚ-to-ℝ-preserves-< : (p q : ℚ) → p < q → ι p < ι q
- ℚ-to-ℝ-preserves-< = ℚ-density
-
- ℚ-to-ℝ-reflects-< : (p q : ℚ) → ι p < ι q → p < q
- ℚ-to-ℝ-reflects-< p q = ∥∥-rec
-                           (≺-is-prop-valued p q)
-                           (λ (r , i , j) → ℚ-transitivity p r q i j)
-
- ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ι p ≤ ι q)
- ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
-
- ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p ≤ q)
- ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ι p) (ι q)
-
- ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ι p ≤ ι q
- ℚ-to-ℝ-preserves-≤ p q = id
-
- ℚ-to-ℝ-reflects-≤ : (p q : ℚ) → ι p ≤ ι q → p ≤ q
- ℚ-to-ℝ-reflects-≤ p q = id
-
- ℚ-to-ℝ-right : (x : ℝ) (q : ℚ) → x < q → x < ι q
- ℚ-to-ℝ-right x q l = ∥∥-functor (λ (p , m , o) → p , o , m) (uppercut-is-lower-open x q l)
-
- ℚ-to-ℝ-right-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
- ℚ-to-ℝ-right-converse x q = ∥∥-rec
-                               (strict-order-ℝ-ℚ-is-prop-valued x q)
-                               (λ (p , m , o) → uppercut-is-upper x p m q o)
-
- ℚ-to-ℝ-left : (p : ℚ) (x : ℝ) → p < x → ι p < x
- ℚ-to-ℝ-left p x = lowercut-is-upper-open x p
-
- ℚ-to-ℝ-left-converse : (p : ℚ) (x : ℝ) → ι p < x → p < x
- ℚ-to-ℝ-left-converse p x = ∥∥-rec
-                              (strict-order-ℚ-ℝ-is-prop-valued p x)
-                              (λ (q , m , o) → lowercut-is-lower x q o p m)
 \end{code}
 
 We now consider the existence of least upper bounds of bounded
@@ -1478,7 +1600,8 @@ condition reads
 so that we see that it is analogous to Troelstra's locatedness
 condition discussed above.
 
-In the following, we write 𝔁 ≤ y to mean that y is an upper bound of 𝔁.
+In the following, we write 𝔁 ≤ y to mean that the real number y is an
+upper bound of the family 𝔁.
 
 \begin{code}
 
