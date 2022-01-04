@@ -1393,7 +1393,7 @@ Relationship between the orders of ℚ and ℝ:
  ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ι p ≤ ι q)
  ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
 
- ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p ≤ q)
+ ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (ι p ≤ ι q)
  ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ι p) (ι q)
 
  ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ι p ≤ ι q
@@ -1411,7 +1411,8 @@ Relationship between the orders of ℚ and ℝ:
                               (λ (q , m , o) → lowercut-is-lower x q o p m)
 
  ℚ-to-ℝ-right : (x : ℝ) (q : ℚ) → x < q → x < ι q
- ℚ-to-ℝ-right x q l = ∥∥-functor (λ (p , m , o) → p , o , m) (uppercut-is-lower-open x q l)
+ ℚ-to-ℝ-right x q l = ∥∥-functor (λ (p , m , o) → p , o , m)
+                                (uppercut-is-lower-open x q l)
 
  ℚ-to-ℝ-right-converse : (x : ℝ) (q : ℚ) → x < ι q → x < q
  ℚ-to-ℝ-right-converse x q = ∥∥-rec
@@ -1574,6 +1575,9 @@ Apartness of real numbers and its basic properties:
 
  being-irrational-is-prop : (x : ℝ) → is-prop (is-irrational x)
  being-irrational-is-prop x = negations-are-props fe
+
+ being-strongly-irrational-is-prop : (x : ℝ) → is-prop (is-strongly-irrational x)
+ being-strongly-irrational-is-prop x = Π-is-prop fe (λ q → ♯-is-prop-valued (ι q) x)
 
 \end{code}
 
