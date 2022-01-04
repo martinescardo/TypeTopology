@@ -790,3 +790,88 @@ clopen-iff-compact-in-stone-frame F (κ , ζ) U = β , γ
   γ = compacts-are-clopen-in-regular-frames F ρ U
 
 \end{code}
+
+\section{Spectrality}
+
+\begin{code}
+
+consists-of-compact-opens : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+consists-of-compact-opens F U = Ɐ i ∶ index U , is-compact-open F (U [ i ])
+
+contains-top : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+contains-top F U = Ǝ t ∶ index U , is-top F (U [ t ]) holds
+
+closed-under-binary-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+closed-under-binary-meets F U =
+ Ɐ i ∶ index U , Ɐ j ∶ index U ,
+  Ǝ k ∶ index U ,
+   ((U [ i ]) ≤[ poset-of F ] (U [ k ]) ∧ (U [ j ]) ≤[ poset-of F ] (U [ k ])) holds
+
+closed-under-finite-meets : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦)
+closed-under-finite-meets F S = contains-top F S ∧ closed-under-binary-meets F S
+
+is-spectral₀ : frame 𝓤 𝓥 𝓦 → (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) ̇ 
+is-spectral₀ {𝓤 = 𝓤} {𝓥} {𝓦} F =
+ Σ ℬ ꞉ Fam 𝓦 ⟨ F ⟩ , is-basis-for F ℬ
+                   × consists-of-compact-opens F ℬ holds
+                   × closed-under-binary-meets F ℬ holds
+
+is-spectral : frame 𝓤 𝓥 𝓦 → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺) 
+is-spectral F = ∥ is-spectral₀ F ∥Ω
+
+\end{code}
+
+\begin{code}
+
+cofinal-in : (F : frame 𝓤 𝓥 𝓦) → Fam 𝓦 ⟨ F ⟩ → Fam 𝓦 ⟨ F ⟩ → Ω (𝓥 ⊔ 𝓦)
+cofinal-in F R S =
+ Ɐ i ∶ index R , Ǝ j ∶ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+
+cofinal-implies-join-covered : (F : frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+                             → cofinal-in F R S holds
+                             → ((⋁[ F ] R) ≤[ poset-of F ] (⋁[ F ] S)) holds
+cofinal-implies-join-covered F R S φ = ⋁[ F ]-least R ((⋁[ F ] S) , β)
+ where
+  open PosetReasoning (poset-of F)
+
+  β : (i : index R) → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+  β i = ∥∥-rec (holds-is-prop ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S))) γ (φ i)
+   where
+    γ : Σ j ꞉ index S , ((R [ i ]) ≤[ poset-of F ] (S [ j ])) holds
+        → ((R [ i ]) ≤[ poset-of F ] (⋁[ F ] S)) holds
+    γ (j , p) = R [ i ] ≤⟨ p ⟩ S [ j ] ≤⟨ ⋁[ F ]-upper S j ⟩ ⋁[ F ] S ■
+
+bicofinal-implies-same-join : (F : frame 𝓤 𝓥 𝓦) (R S : Fam 𝓦 ⟨ F ⟩)
+                            → cofinal-in F R S holds
+                            → cofinal-in F S R holds
+                            → ⋁[ F ] R ≡ ⋁[ F ] S
+bicofinal-implies-same-join F R S φ ψ =
+ ≤-is-antisymmetric
+  (poset-of F)
+  (cofinal-implies-join-covered F R S φ)
+  (cofinal-implies-join-covered F S R ψ)
+
+compact-rel-syntax : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → Ω (𝓤 ⊔ 𝓥 ⊔ 𝓦 ⁺)
+compact-rel-syntax F U V =
+ Ɐ W ∶ ⟨ F ⟩ , is-compact-open F W ⇒ W ≤[ poset-of F ] U ⇒ W ≤[ poset-of F ] V
+
+syntax compact-rel-syntax F U V = U ≤ₖ[ F ] V
+
+spectral-yoneda : (F : frame 𝓤 𝓥 𝓦) → is-spectral F holds → (U V : ⟨ F ⟩)
+                → (U ≤ₖ[ F ] V ⇒ U ≤[ poset-of F ] V) holds
+spectral-yoneda {𝓦 = 𝓦} F σ U V W =
+ ∥∥-rec (holds-is-prop (U ≤[ poset-of F ] V)) γ σ
+  where
+   open PosetReasoning (poset-of F)
+   open JoinNotation (λ - → ⋁[ F ] -)
+
+   γ : is-spectral₀ F → (U ≤[ poset-of F ] V) holds
+   γ (ℬ , υ , φ , ψ) =
+    U                           ≤⟨ {!!} ⟩
+    ⋁[ F ] ⁅ ℬ [ i ] ∣ i ε ℐ ⁆  ≤⟨ {!!} ⟩
+    V                           ■
+    where
+     ℐ : Fam 𝓦 (index ℬ)
+     ℐ = pr₁ (υ U)
+
+\end{code}
