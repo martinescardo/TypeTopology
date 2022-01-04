@@ -310,6 +310,12 @@ module _
      ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ → L x ≲ (I , α , δ)
      ⦅2⦆ x-below-∐α j = approximating-family-is-way-below x j I α δ x-below-∐α
 
+ -- TODO: Are the above equivalences?
+ open import UF-Equiv
+ Johnstone-Joyal-≃ : ∐-map-has-specified-left-adjoint
+                   ≃ structurally-continuous 𝓓
+ Johnstone-Joyal-≃ = {!!}
+
  -- TODO: Comment further on this.
  -- In turns out that monotonicity of L need not be required, as it follows from
  -- the "hom-set" condition.
@@ -471,7 +477,7 @@ module _
 
 \end{code}
 
-Continuity and pseudo-continuity (for comparison)
+Continuity and pseudocontinuity (for comparison)
 
 \begin{code}
 
@@ -503,15 +509,15 @@ structurally-continuous-prime 𝓓 C x =
 is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
 
-is-quasicontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-is-quasicontinuous-dcpo 𝓓 =
+is-psuedocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-psuedocontinuous-dcpo 𝓓 =
    (x : ⟨ 𝓓 ⟩)
  → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                    × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
 
-being-quasicontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
-                                   → is-prop (is-quasicontinuous-dcpo 𝓓)
-being-quasicontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
+being-psuedocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
+                                   → is-prop (is-psuedocontinuous-dcpo 𝓓)
+being-psuedocontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
 
 continuous-dcpo-hierarchy₁ : (𝓓 : DCPO {𝓤} {𝓣})
                            → structurally-continuous 𝓓
@@ -520,8 +526,49 @@ continuous-dcpo-hierarchy₁ 𝓓 = ∣_∣
 
 continuous-dcpo-hierarchy₂ : (𝓓 : DCPO {𝓤} {𝓣})
                            → is-continuous-dcpo 𝓓
-                           → is-quasicontinuous-dcpo 𝓓
+                           → is-psuedocontinuous-dcpo 𝓓
 continuous-dcpo-hierarchy₂ 𝓓 c x =
  ∥∥-functor (λ C → structurally-continuous-prime 𝓓 C x) c
+
+\end{code}
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+        (c : is-continuous-dcpo 𝓓)
+       where
+
+ ≪-nullary-interpolation : (x : ⟨ 𝓓 ⟩) → ∃ y ꞉ ⟨ 𝓓 ⟩ , y ≪⟨ 𝓓 ⟩ x
+ ≪-nullary-interpolation x =
+  ∥∥-rec ∥∥-is-prop (λ C → str-≪-nullary-interpolation 𝓓 C x) c
+
+ ≪-unary-interpolation : {x y : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ y
+                       → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d) × (d ≪⟨ 𝓓 ⟩ y)
+ ≪-unary-interpolation x-way-below-y =
+  ∥∥-rec ∥∥-is-prop (λ C → str-≪-unary-interpolation 𝓓 C x-way-below-y) c
+
+ ≪-binary-interpolation : {x y z : ⟨ 𝓓 ⟩} → x ≪⟨ 𝓓 ⟩ z → y ≪⟨ 𝓓 ⟩ z
+                        → ∃ d ꞉ ⟨ 𝓓 ⟩ , (x ≪⟨ 𝓓 ⟩ d)
+                                      × (y ≪⟨ 𝓓 ⟩ d)
+                                      × (d ≪⟨ 𝓓 ⟩ z)
+ ≪-binary-interpolation {x} {y} {z} u v =
+  ∥∥-rec ∥∥-is-prop (λ C → str-≪-binary-interpolation 𝓓 C u v) c
+
+\end{code}
+
+Quotienting Ind and pseudocontinuity
+
+TODO: Write some more
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ open Ind-completion 𝓓
+
+ -- TODO: Continue
 
 \end{code}
