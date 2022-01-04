@@ -162,6 +162,9 @@ module Ind-completion
                   β j   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε j ]
                   ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
 
+ ∐-map-is-monotone : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
+ ∐-map-is-monotone (I , α , δ) (J , β , ε) = ≲-to-⊑-of-∐ δ ε
+
  ι : ⟨ 𝓓 ⟩ → Ind
  ι x = 𝟙 , (λ _ → x) , ∣ * ∣ , σ
   where
@@ -250,6 +253,25 @@ structural-basis 𝓓 {B} β =
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
+        (C : structurally-continuous 𝓓)
+       where
+
+ open structurally-continuous C
+
+ approximating-family-∐-⊑ : (x : ⟨ 𝓓 ⟩)
+                          → ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ x
+ approximating-family-∐-⊑ x = ≡-to-⊑ 𝓓 (approximating-family-∐-≡ x)
+
+ approximating-family-∐-⊒ : (x : ⟨ 𝓓 ⟩)
+                          → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
+ approximating-family-∐-⊒ x = ≡-to-⊑ 𝓓 ((approximating-family-∐-≡ x) ⁻¹)
+
+\end{code}
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
        where
 
  open Ind-completion 𝓓
@@ -288,7 +310,23 @@ module _
      ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ → L x ≲ (I , α , δ)
      ⦅2⦆ x-below-∐α j = approximating-family-is-way-below x j I α δ x-below-∐α
 
- -- TODO: What about monotonicitiy of L?
+ -- TODO: Comment further on this.
+ -- In turns out that monotonicity of L need not be required, as it follows from
+ -- the "hom-set" condition.
+
+ left-adjoint-to-∐-map-is-monotone : (L : ⟨ 𝓓 ⟩ → Ind)
+                                   → left-adjoint-to-∐-map L
+                                   → (x y  : ⟨ 𝓓 ⟩)
+                                   → x ⊑⟨ 𝓓 ⟩ y
+                                   → L x ≲ L y
+ left-adjoint-to-∐-map-is-monotone L L-left-adjoint x y x-below-y i = goal
+  where
+   C = Johnstone-Joyal₁ (L , L-left-adjoint)
+   open structurally-continuous C
+   goal = ≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i) x-below-y
+           (index-of-approximating-family y)
+           (approximating-family y) (approximating-family-is-directed y)
+           (approximating-family-∐-⊒ 𝓓 C y)
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -296,14 +334,6 @@ module _
        where
 
  open structurally-continuous C
-
- approximating-family-∐-⊑ : (x : ⟨ 𝓓 ⟩)
-                          → ∐ 𝓓 (approximating-family-is-directed x) ⊑⟨ 𝓓 ⟩ x
- approximating-family-∐-⊑ x = ≡-to-⊑ 𝓓 (approximating-family-∐-≡ x)
-
- approximating-family-∐-⊒ : (x : ⟨ 𝓓 ⟩)
-                          → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 (approximating-family-is-directed x)
- approximating-family-∐-⊒ x = ≡-to-⊑ 𝓓 ((approximating-family-∐-≡ x) ⁻¹)
 
  structurally-continuous-⊑-criterion :
     {x y : ⟨ 𝓓 ⟩}
@@ -353,7 +383,7 @@ module _
          → Σ i ꞉ Iʸ , (𝓑 i₁ ≲ 𝓑 i) × (𝓑 i₂ ≲ 𝓑 i)
        r (i , u , v) = i , l₁ , l₂
         where
-         w = approximating-family-∐-⊒ (αʸ i)
+         w = approximating-family-∐-⊒ 𝓓 C (αʸ i)
          l₁ : 𝓑 i₁ ≲ 𝓑 i
          l₁ j = approximating-family-is-way-below (αʸ i₁) j (J i) (β i) (δ i)
                  (αʸ i₁     ⊑⟨ 𝓓 ⟩[ u ]
@@ -419,10 +449,10 @@ module _
 
   (i₁ , d₁-below-zⁱ₁)                    ← d₁-way-below-z _ _
                                             (approximating-family-is-directed z)
-                                            (approximating-family-∐-⊒ z)
+                                            (approximating-family-∐-⊒ 𝓓 C z)
   (i₂ , d₂-below-zⁱ₂)                    ← d₂-way-below-z _ _
                                             (approximating-family-is-directed z)
-                                            (approximating-family-∐-⊒ z)
+                                            (approximating-family-∐-⊒ 𝓓 C z)
 
   (i , zⁱ₁-below-zⁱ , zⁱ₂-below-zⁱ)      ← semidirected-if-Directed 𝓓 _
                                             (approximating-family-is-directed z)
@@ -438,5 +468,60 @@ module _
                              , ≪-⊑-to-≪ 𝓓 y-way-below-d₂ d₂-below-αⁱ
                              , approximating-family-is-way-below z i ∣
 
+
+\end{code}
+
+Continuity and pseudo-continuity (for comparison)
+
+\begin{code}
+
+is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
+
+being-continuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
+                              → is-prop (is-continuous-dcpo 𝓓)
+being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
+
+structurally-continuous' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+structurally-continuous' 𝓓 =
+   (x : ⟨ 𝓓 ⟩)
+ → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+                                 × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
+
+structurally-continuous-prime : (𝓓 : DCPO {𝓤} {𝓣})
+                              → structurally-continuous 𝓓
+                              → structurally-continuous' 𝓓
+structurally-continuous-prime 𝓓 C x =
+   index-of-approximating-family x
+ , approximating-family x
+ , approximating-family-is-way-below x
+ , approximating-family-is-directed x
+ , approximating-family-∐-≡ x
+ where
+  open structurally-continuous C
+
+is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
+
+is-quasicontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-quasicontinuous-dcpo 𝓓 =
+   (x : ⟨ 𝓓 ⟩)
+ → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+                                   × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
+
+being-quasicontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
+                                   → is-prop (is-quasicontinuous-dcpo 𝓓)
+being-quasicontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
+
+continuous-dcpo-hierarchy₁ : (𝓓 : DCPO {𝓤} {𝓣})
+                           → structurally-continuous 𝓓
+                           → is-continuous-dcpo 𝓓
+continuous-dcpo-hierarchy₁ 𝓓 = ∣_∣
+
+continuous-dcpo-hierarchy₂ : (𝓓 : DCPO {𝓤} {𝓣})
+                           → is-continuous-dcpo 𝓓
+                           → is-quasicontinuous-dcpo 𝓓
+continuous-dcpo-hierarchy₂ 𝓓 c x =
+ ∥∥-functor (λ C → structurally-continuous-prime 𝓓 C x) c
 
 \end{code}
