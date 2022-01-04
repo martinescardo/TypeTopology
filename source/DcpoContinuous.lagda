@@ -41,6 +41,20 @@ module Ind-completion
  _≲_ : Ind → Ind → 𝓥 ⊔ 𝓣 ̇
  (I , α , _) ≲ (J , β , _) = (i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j
 
+ ≲-is-reflexive : (α : Ind) → α ≲ α
+ ≲-is-reflexive (I , α , δ) i = ∣ i , reflexivity 𝓓 (α i) ∣
+
+ ≲-is-transitive : (σ τ ρ : Ind) → σ ≲ τ → τ ≲ ρ → σ ≲ ρ
+ ≲-is-transitive (I , α , δ) (J , β , ε) (K , γ , ϕ)
+  α-cofinal-in-β β-cofinal-in-γ i = ∥∥-rec ∥∥-is-prop r (α-cofinal-in-β i)
+   where
+    r : (Σ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
+      → ∃ k ꞉ K , α i ⊑⟨ 𝓓 ⟩ γ k
+    r (j , u) = ∥∥-functor (λ (k , v) → k , (α i ⊑⟨ 𝓓 ⟩[ u ]
+                                             β j ⊑⟨ 𝓓 ⟩[ v ]
+                                             γ k ∎⟨ 𝓓 ⟩))
+                           (β-cofinal-in-γ j)
+
  is-semidirected' : {A : 𝓥 ̇  } (𝓐 : A → Ind)
                   → 𝓥 ⊔ 𝓣 ̇
  is-semidirected' {A} 𝓐 = (a₁ a₂ : A) → ∃ a ꞉ A , (𝓐 a₁ ≲ 𝓐 a) × (𝓐 a₂ ≲ 𝓐 a)
@@ -111,6 +125,91 @@ module Ind-completion
                                        (Ind-∐ 𝓐 ρ σ) 𝓐
  Ind-∐-is-lowerbound-of-upperbounds {A} 𝓐 ρ σ _ ub (i , j) = ub i j
 
+ ∐-map : Ind → ⟨ 𝓓 ⟩
+ ∐-map (I , α , δ) = ∐ 𝓓 δ
+
+ left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
+
+ ∐-map-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ ∐-map-has-specified-left-adjoint = Σ left-adjoint-to-∐-map
+
+ left-adjoint-to-∐-map-criterion : (⟨ 𝓓 ⟩ → Ind)
+                                 → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ left-adjoint-to-∐-map-criterion L =
+  (x : ⟨ 𝓓 ⟩) → (∐ 𝓓 (δ x) ≡ x) × ((i : I x) → α x i ≪⟨ 𝓓 ⟩ x)
+   where
+    I : (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
+    I x = pr₁ (L x)
+    α : (x : ⟨ 𝓓 ⟩) → I x → ⟨ 𝓓 ⟩
+    α x = pr₁ (pr₂ (L x))
+    δ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (α x)
+    δ x = pr₂ (pr₂ (L x))
+
+ ≲-to-⊑-of-∐ : {I J : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
+               (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
+             → (I , α , δ) ≲ (J , β , ε)
+             → ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
+ ≲-to-⊑-of-∐ {I} {J} {α} {β} δ ε α-cofinal-in-β =
+  ∐-is-lowerbound-of-upperbounds 𝓓 δ (∐ 𝓓 ε) h
+   where
+    h : (i : I) → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
+    h i = ∥∥-rec (prop-valuedness 𝓓 (α i) (∐ 𝓓 ε)) r (α-cofinal-in-β i)
+     where
+      r : (Σ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j)
+        → α i ⊑⟨ 𝓓 ⟩ ∐ 𝓓 ε
+      r (j , u) = α i   ⊑⟨ 𝓓 ⟩[ u ]
+                  β j   ⊑⟨ 𝓓 ⟩[ ∐-is-upperbound 𝓓 ε j ]
+                  ∐ 𝓓 ε ∎⟨ 𝓓 ⟩
+
+ ι : ⟨ 𝓓 ⟩ → Ind
+ ι x = 𝟙 , (λ _ → x) , ∣ * ∣ , σ
+  where
+   σ : is-semidirected (underlying-order 𝓓) (λ _ → x)
+   σ i j = ∣ * , reflexivity 𝓓 x , reflexivity 𝓓 x ∣
+
+ left-adjoint-to-∐-map-characterization : (L : ⟨ 𝓓 ⟩ → Ind)
+                                        → left-adjoint-to-∐-map-criterion L
+                                        ⇔ left-adjoint-to-∐-map L
+ left-adjoint-to-∐-map-characterization L = ⦅⇒⦆ , ⦅⇐⦆
+  where
+   ⦅⇒⦆ : left-adjoint-to-∐-map-criterion L → left-adjoint-to-∐-map L
+   ⦅⇒⦆ c x σ@(I , α , δ) = lr , rl
+    where
+     lr : L x ≲ σ → x ⊑⟨ 𝓓 ⟩ ∐-map σ
+     lr Lx-cofinal-in-σ = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map σ) (pr₁ (c x))
+                            (≲-to-⊑-of-∐ (pr₂ (pr₂ (L x))) δ Lx-cofinal-in-σ)
+     rl : x ⊑⟨ 𝓓 ⟩ ∐-map σ → L x ≲ σ
+     rl x-below-∐α i = pr₂ (c x) i I α δ x-below-∐α
+   ⦅⇐⦆ : left-adjoint-to-∐-map L → left-adjoint-to-∐-map-criterion L
+   ⦅⇐⦆ l x = ⦅1⦆ , ⦅2⦆
+    where
+     I : 𝓥 ̇
+     I = pr₁ (L x)
+     α : I → ⟨ 𝓓 ⟩
+     α = pr₁ (pr₂ (L x))
+     δ : is-Directed 𝓓 α
+     δ = pr₂ (pr₂ (L x))
+     ⦅2⦆ : (i : I) → α i ≪⟨ 𝓓 ⟩ x
+     ⦅2⦆ i I α δ x-below-∐α = claim i
+      where
+       claim : L x ≲ (I , α , δ)
+       claim = rl-implication (l x (I , α , δ)) x-below-∐α
+     ⦅1⦆ : ∐ 𝓓 δ ≡ x
+     ⦅1⦆ = antisymmetry 𝓓 (∐ 𝓓 δ) x u v
+      where
+       v : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
+       v = lr-implication (l x (I , α , δ)) (≲-is-reflexive (L x))
+       ε : is-Directed 𝓓 (pr₁ (pr₂ (ι x)))
+       ε = pr₂ (pr₂ (ι x))
+       u = ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅a⦆ ]
+           ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩[ ⦅b⦆ ]
+           x     ∎⟨ 𝓓 ⟩
+        where
+         ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
+               (rl-implication (l x (ι x)) (∐-is-upperbound 𝓓 ε *))
+         ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ * → reflexivity 𝓓 x)
+
 \end{code}
 
 \begin{code}
@@ -148,6 +247,48 @@ structural-basis 𝓓 {B} β =
                 Σ α ꞉ (I → B) , ((i : I) → β (α i) ≪⟨ 𝓓 ⟩ x)
                               × (Σ δ ꞉ is-Directed 𝓓 (β ∘ α) , ∐ 𝓓 δ ≡ x)
 -}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ open Ind-completion 𝓓
+
+ Johnstone-Joyal₁ : ∐-map-has-specified-left-adjoint
+                  → structurally-continuous 𝓓
+ Johnstone-Joyal₁ (L , L-left-adjoint) = record {
+   index-of-approximating-family     = λ x → pr₁ (L x);
+   approximating-family              = λ x → pr₁ (pr₂ (L x));
+   approximating-family-is-directed  = λ x → pr₂ (pr₂ (L x));
+   approximating-family-is-way-below = λ x → pr₂ (crit x);
+   approximating-family-∐-≡          = λ x → pr₁ (crit x)
+  }
+   where
+    crit : left-adjoint-to-∐-map-criterion L
+    crit = rl-implication (left-adjoint-to-∐-map-characterization L)
+            L-left-adjoint
+
+ Johnstone-Joyal₂ : structurally-continuous 𝓓
+                  → ∐-map-has-specified-left-adjoint
+ Johnstone-Joyal₂ C = L , L-is-left-adjoint
+  where
+   open structurally-continuous C
+   L : ⟨ 𝓓 ⟩ → Ind
+   L x = index-of-approximating-family x
+       , approximating-family x
+       , approximating-family-is-directed x
+   L-is-left-adjoint : left-adjoint-to-∐-map L
+   L-is-left-adjoint x σ@(I , α , δ) = ⦅1⦆ , ⦅2⦆
+    where
+     ⦅1⦆ : L x ≲ (I , α , δ) → x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
+     ⦅1⦆ Lx-cofinal-in-α = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ)
+                           (approximating-family-∐-≡ x)
+                           (≲-to-⊑-of-∐ (approximating-family-is-directed x)
+                                        δ Lx-cofinal-in-α)
+     ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ → L x ≲ (I , α , δ)
+     ⦅2⦆ x-below-∐α j = approximating-family-is-way-below x j I α δ x-below-∐α
+
+ -- TODO: What about monotonicitiy of L?
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
