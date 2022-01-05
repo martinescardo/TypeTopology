@@ -18,6 +18,9 @@ module DcpoContinuous
 
 open PropositionalTruncation pt
 
+open import UF-Base hiding (_≈_)
+open import UF-Equiv
+
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
 
@@ -40,6 +43,9 @@ module Ind-completion
 
  _≲_ : Ind → Ind → 𝓥 ⊔ 𝓣 ̇
  (I , α , _) ≲ (J , β , _) = (i : I) → ∃ j ꞉ J , α i ⊑⟨ 𝓓 ⟩ β j
+
+ ≲-is-prop-valued : (α β : Ind) → is-prop (α ≲ β)
+ ≲-is-prop-valued α β = Π-is-prop fe (λ i → ∥∥-is-prop)
 
  ≲-is-reflexive : (α : Ind) → α ≲ α
  ≲-is-reflexive (I , α , δ) i = ∣ i , reflexivity 𝓓 (α i) ∣
@@ -130,6 +136,13 @@ module Ind-completion
 
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
+
+ being-left-adjoint-to-∐-map-is-prop : (L : ⟨ 𝓓 ⟩ → Ind)
+                                     → is-prop (left-adjoint-to-∐-map L)
+ being-left-adjoint-to-∐-map-is-prop L =
+  Π₂-is-prop fe (λ x α → ×-is-prop
+                          (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map α)))
+                          (Π-is-prop fe (λ _ → ≲-is-prop-valued (L x) α)))
 
  ∐-map-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-specified-left-adjoint = Σ left-adjoint-to-∐-map
@@ -241,6 +254,43 @@ record structurally-continuous (𝓓 : DCPO {𝓤} {𝓣}) : 𝓥 ⁺ ⊔ 𝓤 �
   approximating-family-∐-≡ : (x : ⟨ 𝓓 ⟩)
                            → ∐ 𝓓 (approximating-family-is-directed x) ≡ x
 
+structurally-continuous' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+structurally-continuous' 𝓓 =
+   (x : ⟨ 𝓓 ⟩)
+ → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
+                                 × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
+
+structurally-continuous-prime : (𝓓 : DCPO {𝓤} {𝓣})
+                              → structurally-continuous 𝓓
+                              → structurally-continuous' 𝓓
+structurally-continuous-prime 𝓓 C x =
+   index-of-approximating-family x
+ , approximating-family x
+ , approximating-family-is-way-below x
+ , approximating-family-is-directed x
+ , approximating-family-∐-≡ x
+ where
+  open structurally-continuous C
+
+structurally-continuous-unprime : (𝓓 : DCPO {𝓤} {𝓣})
+                                → structurally-continuous' 𝓓
+                                → structurally-continuous 𝓓
+structurally-continuous-unprime 𝓓 C' = record {
+  index-of-approximating-family     = λ x → pr₁ (C' x);
+  approximating-family              = λ x → pr₁ (pr₂ (C' x));
+  approximating-family-is-directed  = λ x → pr₁ (pr₂ (pr₂ (pr₂ (C' x))));
+  approximating-family-is-way-below = λ x → pr₁ (pr₂ (pr₂ (C' x)));
+  approximating-family-∐-≡          = λ x → pr₂ (pr₂ (pr₂ (pr₂ (C' x))))
+ }
+
+structurally-continuous-≃ : (𝓓 : DCPO {𝓤} {𝓣})
+                          → structurally-continuous 𝓓
+                          ≃ structurally-continuous' 𝓓
+structurally-continuous-≃ 𝓓 = qinveq (structurally-continuous-prime 𝓓)
+                                    ((structurally-continuous-unprime 𝓓) ,
+                                     ((λ x → refl) , (λ x → refl)))
+
+
 -- TODO: Review this
 {-
 structural-basis : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓦 ̇  } (β : B → ⟨ 𝓓 ⟩)
@@ -311,10 +361,28 @@ module _
      ⦅2⦆ x-below-∐α j = approximating-family-is-way-below x j I α δ x-below-∐α
 
  -- TODO: Are the above equivalences?
- open import UF-Equiv
  Johnstone-Joyal-≃ : ∐-map-has-specified-left-adjoint
                    ≃ structurally-continuous 𝓓
- Johnstone-Joyal-≃ = {!!}
+ Johnstone-Joyal-≃ = qinveq f (g , σ , τ)
+  where
+   f = Johnstone-Joyal₁
+   g = Johnstone-Joyal₂
+   σ : g ∘ f ∼ id
+   σ (L , L-left-adjoint) =
+    to-subtype-≡ being-left-adjoint-to-∐-map-is-prop refl
+   τ : f ∘ g ∼ id
+   τ C = f (g C)         ≡⟨ refl ⟩
+         ϕ (ψ (f (g C))) ≡⟨ h    ⟩
+         ϕ (ψ C)         ≡⟨ refl ⟩
+         C               ∎
+    where
+     ϕ : structurally-continuous' 𝓓 → structurally-continuous 𝓓
+     ϕ = structurally-continuous-unprime 𝓓
+     ψ : structurally-continuous 𝓓 → structurally-continuous' 𝓓
+     ψ = structurally-continuous-prime 𝓓
+     h = ap ϕ (dfunext fe
+          (λ x → to-Σ-≡ (refl , (to-Σ-≡ (refl ,
+                  (to-×-≡ refl  (to-Σ-≡ (refl , (sethood 𝓓 _ _)))))))))
 
  -- TODO: Comment further on this.
  -- In turns out that monotonicity of L need not be required, as it follows from
@@ -488,26 +556,8 @@ being-continuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
                               → is-prop (is-continuous-dcpo 𝓓)
 being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 
-structurally-continuous' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-structurally-continuous' 𝓓 =
-   (x : ⟨ 𝓓 ⟩)
- → Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
-                                 × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x)
-
-structurally-continuous-prime : (𝓓 : DCPO {𝓤} {𝓣})
-                              → structurally-continuous 𝓓
-                              → structurally-continuous' 𝓓
-structurally-continuous-prime 𝓓 C x =
-   index-of-approximating-family x
- , approximating-family x
- , approximating-family-is-way-below x
- , approximating-family-is-directed x
- , approximating-family-∐-≡ x
- where
-  open structurally-continuous C
-
-is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
+-- is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+-- is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
 
 is-psuedocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-psuedocontinuous-dcpo 𝓓 =
@@ -564,11 +614,39 @@ TODO: Write some more
 \begin{code}
 
 module _
+        (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
  open Ind-completion 𝓓
 
- -- TODO: Continue
+ _≈_ : Ind → Ind → 𝓥 ⊔ 𝓣 ̇
+ α ≈ β = α ≲ β × β ≲ α
+
+ ≈-is-prop-valued : (α β : Ind) → is-prop (α ≈ β)
+ ≈-is-prop-valued α β = ×-is-prop (≲-is-prop-valued α β) (≲-is-prop-valued β α)
+
+ ≈-is-reflexive : (α : Ind) → α ≈ α
+ ≈-is-reflexive α = (≲-is-reflexive α) , (≲-is-reflexive α)
+
+ ≈-is-symmetric : (α β : Ind) → α ≈ β → β ≈ α
+ ≈-is-symmetric α β (u , v) = (v , u)
+
+ ≈-is-transitive : (α β γ : Ind) → α ≈ β → β ≈ γ → α ≈ γ
+ ≈-is-transitive α β γ (p , q) (u , v) =
+  (≲-is-transitive α β γ p u) , (≲-is-transitive γ β α v q)
+
+ open import UF-Quotient pt fe pe
+
+ open quotient Ind _≈_
+       ≈-is-prop-valued ≈-is-reflexive ≈-is-symmetric ≈-is-transitive
+
+ Ind' = X/≈ -- the quotient
+
+ _≲'_ : Ind' → Ind' → {!!} ̇
+ _≲'_ x = {!!}
+
+ -- TODO: Continue...
+ -- Implement poset reflection abstractly? Perhaps just assume it (abstractly) here
 
 \end{code}
