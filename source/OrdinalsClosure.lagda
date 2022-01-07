@@ -448,50 +448,50 @@ Overᵒ-is-order-reflecting τ υ f p (inr *) x y ((n , q) , l) = 𝟘-elim (+di
 \begin{code}
 
 𝟙ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y)
-𝟙ᵒ-inf-compact p = * , f , g , h
+𝟙ᵒ-inf-compact p = ⋆ , f , g , h
  where
-  f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p * ≡ ₀
-  f (* , r) = r
-  g : (x : 𝟙) → p x ≡ ₀ → * ≼⟪ 𝟙ᵒ ⟫ x
-  g * r a = 𝟘-elim a
+  f : (Σ x ꞉ 𝟙 , p x ≡ ₀) → p ⋆ ≡ ₀
+  f (⋆ , r) = r
+  g : (x : 𝟙) → p x ≡ ₀ → ⋆ ≼⟪ 𝟙ᵒ ⟫ x
+  g ⋆ r a = 𝟘-elim a
   h : (x : 𝟙) → root-lower-bound (λ x y → x ≼⟪ 𝟙ᵒ ⟫ y) p x
-    → x ≼⟪ 𝟙ᵒ ⟫ *
-  h * φ a = 𝟘-elim a
+    → x ≼⟪ 𝟙ᵒ ⟫ ⋆
+  h ⋆ φ a = 𝟘-elim a
 
 𝟚ᵒ-inf-compact : inf-compact (λ x y → x ≼⟪ 𝟚ᵒ ⟫ y)
 𝟚ᵒ-inf-compact p = 𝟚-equality-cases φ γ
  where
   _≤_ : 𝟙 + 𝟙 → 𝟙 + 𝟙 → 𝓤₀ ̇
   x ≤ y = x ≼⟪ 𝟚ᵒ ⟫ y
-  φ : (r : p (inl *) ≡ ₀) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
-  φ r = inl * , f , g , h
+  φ : (r : p (inl ⋆) ≡ ₀) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
+  φ r = inl ⋆ , f , g , h
    where
-    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inl *) ≡ ₀
-    f (inl * , s) = s
-    f (inr * , s) = r
+    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inl ⋆) ≡ ₀
+    f (inl ⋆ , s) = s
+    f (inr ⋆ , s) = r
 
-    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inl * ≤ x
-    g (inl *) s l = 𝟘-elim l
-    g (inr *) s l = 𝟘-elim l
+    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inl ⋆ ≤ x
+    g (inl ⋆) s l = 𝟘-elim l
+    g (inr ⋆) s l = 𝟘-elim l
 
-    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inl *
-    h (inl *) φ l = 𝟘-elim l
-    h (inr *) φ * = φ (inl *) r *
+    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inl ⋆
+    h (inl ⋆) φ l = 𝟘-elim l
+    h (inr ⋆) φ ⋆ = φ (inl ⋆) r ⋆
 
-  γ : (r : p (inl *) ≡ ₁) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
-  γ r = inr * , f , g , h
+  γ : (r : p (inl ⋆) ≡ ₁) → Σ x ꞉ 𝟙 + 𝟙 , conditional-root _≤_ p x × roots-infimum _≤_ p x
+  γ r = inr ⋆ , f , g , h
    where
-    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inr *) ≡ ₀
-    f (inl * , s) = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
-    f (inr * , s) = s
+    f : (Σ x ꞉ 𝟙 + 𝟙 , p x ≡ ₀) → p (inr ⋆) ≡ ₀
+    f (inl ⋆ , s) = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+    f (inr ⋆ , s) = s
 
-    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inr * ≤ x
-    g (inl *) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
-    g (inr *) s l = 𝟘-elim l
+    g : (x : 𝟙 + 𝟙) → p x ≡ ₀ → inr ⋆ ≤ x
+    g (inl ⋆) s l = 𝟘-elim (zero-is-not-one (s ⁻¹ ∙ r))
+    g (inr ⋆) s l = 𝟘-elim l
 
-    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inr *
-    h (inl *) φ a = 𝟘-elim a
-    h (inr *) φ a = 𝟘-elim a
+    h : (x : 𝟙 + 𝟙) → root-lower-bound _≤_ p x → x ≤ inr ⋆
+    h (inl ⋆) φ a = 𝟘-elim a
+    h (inr ⋆) φ a = 𝟘-elim a
 
 \end{code}
 

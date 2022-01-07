@@ -1217,55 +1217,55 @@ fst _ _ = pr₁
 clopen-projections-∃-compact : ∀ {𝓤 𝓦} (X : 𝓤 ̇ )
                              → (∀ {𝓥} (A : 𝓥 ̇ ) → is-clopen-map (fst A X))
                              → ∃-compact X
-clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p (pr₂ z)) *)
+clopen-projections-∃-compact {𝓤} {𝓦} X κ p = g (κ 𝟙 (λ z → p (pr₂ z)) ⋆)
  where
-  g : decidable (∃ z ꞉ 𝟙 {𝓦} × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *))
+  g : decidable (∃ z ꞉ 𝟙 {𝓦} × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ ⋆))
     → decidable (∃ x ꞉ X , p x ≡ ₀)
   g (inl e) = inl (∥∥-functor h e)
    where
-    h : (Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)) → Σ x ꞉ X , p x ≡ ₀
-    h ((* , x) , r , _) = x , r
+    h : (Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ ⋆)) → Σ x ꞉ X , p x ≡ ₀
+    h ((⋆ , x) , r , _) = x , r
   g (inr u) = inr (contrapositive (∥∥-functor h) u)
    where
-    h : (Σ x ꞉ X , p x ≡ ₀) → Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ *)
-    h (x , r) = (* , x) , (r , refl)
+    h : (Σ x ꞉ X , p x ≡ ₀) → Σ z ꞉ 𝟙 × X , (p (pr₂ z) ≡ ₀) × (pr₁ z ≡ ⋆)
+    h (x , r) = (⋆ , x) , (r , refl)
 
 
 \end{code}
 
 TODO.
 
-* Consider 𝟚-perfect maps.
+⋆ Consider 𝟚-perfect maps.
 
-* ∃-compactness: attainability of minima. Existence of potential
+⋆ ∃-compactness: attainability of minima. Existence of potential
   maxima.
 
-* Relation of Π-compactness with finiteness and discreteness.
+⋆ Relation of Π-compactness with finiteness and discreteness.
 
-* Non-classical cotaboos Every Π-compact subtype of ℕ is finite. Every
+⋆ Non-classical cotaboos Every Π-compact subtype of ℕ is finite. Every
   Π-compact subtype of a discrete type is finite. What are the
   cotaboos necessary (and sufficient) to prove that the type of
   decidable subsingletons of ℕ∞→ℕ is Π-compact?  Continuity principles
   are enough.
 
-* 𝟚-subspace: e:X→Y such that every clopen X→𝟚 extends to some clopen
+⋆ 𝟚-subspace: e:X→Y such that every clopen X→𝟚 extends to some clopen
   Y→𝟚 (formulated with Σ and ∃). Or to a largest such clopen, or a
   smallest such clopen (right and left adjoints to the restriction map
   (Y→𝟚)→(X→𝟚) that maps v to v ∘ e and could be written e ⁻¹[ v ].  A
   𝟚-subspace-embedding of totally separated types should be a
   (homotopy) embedding, but not conversely (find a counter-example).
 
-* 𝟚-injective types (injectives wrt to 𝟚-subspace-embeddigs). They
+⋆ 𝟚-injective types (injectives wrt to 𝟚-subspace-embeddigs). They
   should be the retracts of powers of 𝟚. Try to characterize them
   "intrinsically".
 
-* Relation of 𝟚-subspaces with Π-compact subtypes.
+⋆ Relation of 𝟚-subspaces with Π-compact subtypes.
 
-* 𝟚-Hofmann-Mislove theorem: clopen filters of clopens should
+⋆ 𝟚-Hofmann-Mislove theorem: clopen filters of clopens should
   correspond to Π-compact (𝟚-saturated) 𝟚-subspaces. Are cotaboos
   needed for this?
 
-* Which results here depend on the particular dominance 𝟚, and which
+⋆ Which results here depend on the particular dominance 𝟚, and which
   ones generalize to any dominance, or to any "suitable" dominance? In
   particular, it is of interest to generalize this to "Sierpinki like"
   dominances. And what is "Sierpinski like" in precise (internal)

@@ -58,7 +58,7 @@ the functor 𝟙 + (-), which we refer to as corecursion.
   f : (α β : 𝓢) → head α ≡ head β → 𝟙 {𝓤₀} + X
   f α β q = inr (tail α , tail β)
   g : (α β : 𝓢) → head α ≢ head β → 𝟙 {𝓤₀} + X
-  g α β n = inl *
+  g α β n = inl ⋆
   p : X → 𝟙 {𝓤₀} + X
   p (α , β) = cases (f α β) (g α β) (δ (head α) (head β))
   c : 𝓢 → 𝓢 → ℕ∞
@@ -89,10 +89,10 @@ The two defining properties of the function c are the following:
   where
    t : δ (head α) (head β) ≡ inr n
    t = discrete-inr (fe 𝓤 𝓤₀) δ (head α) (head β) n
-   r : p (α , β) ≡ inl *
+   r : p (α , β) ≡ inl ⋆
    r = ap (cases (f α β) (g α β)) t
-   γ : p (α , β) ≡ inl * → c α β ≡ Zero
-   γ = Coalg-morphism-Zero p (α , β) *
+   γ : p (α , β) ≡ inl ⋆ → c α β ≡ Zero
+   γ = Coalg-morphism-Zero p (α , β) ⋆
 
  closeness-eq₁ α β q = γ r
   where
@@ -214,10 +214,10 @@ Ultra property:
                          → ((k : ℕ) → k ≤ n → α k ≡ β k)
                          → n ⊏ c α β
  closeness-conceptually₁ α β zero α≈ₙβ
-  = transport (0 ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
+  = transport (0 ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 ⋆) ⁻¹)
     (is-positive-Succ (c (tail α) (tail β)))
  closeness-conceptually₁ α β (succ n) α≈ₙβ
-  = transport (succ n ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 *) ⁻¹)
+  = transport (succ n ⊏_) (closeness-eq₁ α β (α≈ₙβ 0 ⋆) ⁻¹)
     (closeness-conceptually₁ (tail α) (tail β) n (λ m → α≈ₙβ (succ m)))
 
  closeness-conceptually₂ : (α β : 𝓢) (n : ℕ)
@@ -227,7 +227,7 @@ Ultra property:
   = closeness-eq₁' α β (⊏-trans'' (c α β) n 0 k≤n ⊏ₙcαβ)
  closeness-conceptually₂ α β n ⊏ₙcαβ (succ k) k≤n
   = closeness-conceptually₂ (tail α) (tail β) k (transport (succ k ⊏_)
-      (closeness-eq₁ α β (closeness-eq₁' α β (⊏-trans'' (c α β) n 0 * ⊏ₙcαβ)))
+      (closeness-eq₁ α β (closeness-eq₁' α β (⊏-trans'' (c α β) n 0 ⋆ ⊏ₙcαβ)))
       (⊏-trans'' (c α β) n (succ k) k≤n ⊏ₙcαβ))
     k (≤-refl k)
 

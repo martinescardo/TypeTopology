@@ -213,7 +213,7 @@ The compact∙ ordinals are retracts of the Cantor type (ℕ → 𝟚).
 
 \begin{code}
 
-Κ-Cantor-retract One       = (λ _ → *) , (λ _ → λ n → ₀) , 𝟙-is-prop *
+Κ-Cantor-retract One       = (λ _ → ⋆) , (λ _ → λ n → ₀) , 𝟙-is-prop ⋆
 Κ-Cantor-retract (Add ν μ) = +-retract-of-Cantor (Κ ν) (Κ μ)
                               (Κ-Cantor-retract ν) (Κ-Cantor-retract μ)
 Κ-Cantor-retract (Mul ν μ) = ×-retract-of-Cantor (Κ ν) (Κ μ)
@@ -387,7 +387,7 @@ Added 31 July 2018:
 
 \begin{code}
 
-Δ-retract-of-ℕ One       = (λ _ → *) , (λ _ → 0) , 𝟙-is-prop *
+Δ-retract-of-ℕ One       = (λ _ → ⋆) , (λ _ → 0) , 𝟙-is-prop ⋆
 Δ-retract-of-ℕ (Add ν μ) = Σ-retract-of-ℕ
                              retract-𝟙+𝟙-of-ℕ
                              (dep-cases (λ _ → Δ-retract-of-ℕ ν)

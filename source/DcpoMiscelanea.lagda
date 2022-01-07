@@ -143,26 +143,26 @@ monotone-if-continuous 𝓓 𝓔 (f , cts) x y l = γ
    α (inl *) = x
    α (inr *) = y
    δ : is-Directed 𝓓 α
-   δ = (∣ inl * ∣ , ε)
+   δ = (∣ inl ⋆ ∣ , ε)
     where
      ε : (i j : 𝟙 + 𝟙) → ∃ k ꞉ 𝟙 + 𝟙 , α i ⊑⟨ 𝓓 ⟩ α k × α j ⊑⟨ 𝓓 ⟩ α k
-     ε (inl *) (inl *) = ∣ inr * , l , l ∣
-     ε (inl *) (inr *) = ∣ inr * , l , reflexivity 𝓓 y ∣
-     ε (inr *) (inl *) = ∣ inr * , reflexivity 𝓓 y , l ∣
-     ε (inr *) (inr *) = ∣ inr * , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
+     ε (inl ⋆) (inl ⋆) = ∣ inr ⋆ , l , l ∣
+     ε (inl ⋆) (inr ⋆) = ∣ inr ⋆ , l , reflexivity 𝓓 y ∣
+     ε (inr ⋆) (inl ⋆) = ∣ inr ⋆ , reflexivity 𝓓 y , l ∣
+     ε (inr ⋆) (inr ⋆) = ∣ inr ⋆ , reflexivity 𝓓 y , reflexivity 𝓓 y ∣
    a : y ≡ ∐ 𝓓 δ
    a = antisymmetry 𝓓 y (∐ 𝓓 δ)
-           (∐-is-upperbound 𝓓 δ (inr *))
+           (∐-is-upperbound 𝓓 δ (inr ⋆))
            (∐-is-lowerbound-of-upperbounds 𝓓 δ y h)
     where
      h : (i : 𝟙 + 𝟙) → α i ⊑⟨ 𝓓 ⟩ y
-     h (inl *) = l
-     h (inr *) = reflexivity 𝓓 y
+     h (inl ⋆) = l
+     h (inr ⋆) = reflexivity 𝓓 y
    b : is-sup (underlying-order 𝓔) (f y) (f ∘ α)
    b = transport (λ - → is-sup (underlying-order 𝓔) - (f ∘ α)) (ap f (a ⁻¹))
        (cts (𝟙 + 𝟙) α δ)
    γ : f x ⊑⟨ 𝓔 ⟩ f y
-   γ = sup-is-upperbound (underlying-order 𝓔) b (inl *)
+   γ = sup-is-upperbound (underlying-order 𝓔) b (inl ⋆)
 
 image-is-directed' : (𝓓 : DCPO {𝓤} {𝓣}) (𝓔 : DCPO {𝓤'} {𝓣'})
                      (f : DCPO[ 𝓓 , 𝓔 ]) {I : 𝓥 ̇} {α : I → ⟨ 𝓓 ⟩}
@@ -359,18 +359,18 @@ pointed dcpo on a set.
 
 add-⊥ : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫)
       → (𝟙{𝓥} + I) → ⟪ 𝓓 ⟫
-add-⊥ 𝓓 α (inl *) = ⊥ 𝓓
+add-⊥ 𝓓 α (inl ⋆) = ⊥ 𝓓
 add-⊥ 𝓓 α (inr i) = α i
 
 add-⊥-is-directed : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
                   → is-semidirected (underlying-order (𝓓 ⁻)) α
                   → is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
-add-⊥-is-directed 𝓓 {I} {α} σ = ∣ inl * ∣ , δ
+add-⊥-is-directed 𝓓 {I} {α} σ = ∣ inl ⋆ ∣ , δ
  where
   δ : is-semidirected (underlying-order (𝓓 ⁻)) (add-⊥ 𝓓 _)
-  δ (inl *) a       = ∣ a , ⊥-is-least 𝓓 (add-⊥ 𝓓 α a) ,
+  δ (inl ⋆) a       = ∣ a , ⊥-is-least 𝓓 (add-⊥ 𝓓 α a) ,
                             reflexivity (𝓓 ⁻) (add-⊥ 𝓓 α a) ∣
-  δ (inr i) (inl *) = ∣ (inr i) , reflexivity (𝓓 ⁻) (α i)
+  δ (inr i) (inl ⋆) = ∣ (inr i) , reflexivity (𝓓 ⁻) (α i)
                                 , ⊥-is-least 𝓓 (α i)        ∣
   δ (inr i) (inr j) = ∥∥-functor (λ (k , u , v) → (inr k , u , v)) (σ i j)
 
@@ -381,7 +381,7 @@ adding-⊥-preserves-sup : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ }
 adding-⊥-preserves-sup 𝓓 {I} α x x-is-sup = x-is-ub , x-is-lb-of-ubs
  where
   x-is-ub : (i : 𝟙 + I) → add-⊥ 𝓓 α i ⊑⟪ 𝓓 ⟫ x
-  x-is-ub (inl *) = ⊥-is-least 𝓓 x
+  x-is-ub (inl ⋆) = ⊥-is-least 𝓓 x
   x-is-ub (inr i) = sup-is-upperbound (underlying-order (𝓓 ⁻)) x-is-sup i
   x-is-lb-of-ubs : is-lowerbound-of-upperbounds (underlying-order (𝓓 ⁻))
                     x (add-⊥ 𝓓 α)
@@ -403,7 +403,7 @@ adding-⊥-reflects-sup 𝓓 {I} α x x-is-sup = x-is-ub , x-is-lb-of-ubs
                               h
    where
     h : is-upperbound (underlying-order (𝓓 ⁻)) y (add-⊥ 𝓓 α)
-    h (inl *) = ⊥-is-least 𝓓 y
+    h (inl ⋆) = ⊥-is-least 𝓓 y
     h (inr i) = y-is-ub i
 
 semidirected-complete-if-pointed : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } {α : I → ⟪ 𝓓 ⟫}
@@ -456,7 +456,7 @@ preserves-semidirected-sups-if-continuous-and-strict 𝓓 𝓔 f con str {I} {α
                          claim₂ y h
    where
     h : is-upperbound (underlying-order (𝓔 ⁻)) y (f ∘ add-⊥ 𝓓 α)
-    h (inl *) = f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫[ ≡-to-⊑ (𝓔 ⁻) str ]
+    h (inl ⋆) = f (⊥ 𝓓) ⊑⟪ 𝓔 ⟫[ ≡-to-⊑ (𝓔 ⁻) str ]
                 ⊥ 𝓔     ⊑⟪ 𝓔 ⟫[ ⊥-is-least 𝓔 y ]
                 y       ∎⟪ 𝓔 ⟫
     h (inr i) = y-is-ub i
@@ -523,7 +523,7 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
    δ : is-Directed (𝓓 ⁻) (add-⊥ 𝓓 α)
    δ = add-⊥-is-directed 𝓓 (subsingleton-indexed-is-semidirected (𝓓 ⁻) α ρ)
    h : (i : 𝟙 + I) → add-⊥ 𝓓 α i ⊑⟪ 𝓓 ⟫ y
-   h (inl *) = ⊥-is-least 𝓓 y
+   h (inl ⋆) = ⊥-is-least 𝓓 y
    h (inr i) = y-is-ub i
 
 ∐ˢˢ-is-sup : (𝓓 : DCPO⊥ {𝓤} {𝓣}) {I : 𝓥 ̇ } (α : I → ⟪ 𝓓 ⟫) (ρ : is-prop I)

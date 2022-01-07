@@ -792,7 +792,7 @@ maps P → 𝟙 from propositions P are embeddings, as alluded above:
 \begin{code}
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
-ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ s * , pr₂ s
+ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P h f = pr₁ s ⋆ , pr₂ s
  where
   s : Σ f' ꞉ (𝟙 → D), f' ∘ unique-to-𝟙 ∼ f
   s = i unique-to-𝟙 (prop-embedding P h 𝓥) f
@@ -1221,7 +1221,7 @@ ainjective-characterization {𝓤} R D = a , b
 
 We emphasize that this is a logical equivalence ``if and only if''
 rather than an ∞-groupoid equivalence ``≃''. So this characterizes the
-types that *can* be equipped with algebraic-injective structure.
+types that ⋆can⋆ be equipped with algebraic-injective structure.
 
 We also have that an algebraically injective (n+1)-type is a retract
 of an exponential power of the universe of n-types. We prove something
@@ -1613,7 +1613,7 @@ aflabby-decidability-lemma {𝓦} P i φ = γ
   δ : (d' : D) → d ≡ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
-  δ (inr *)       r = 𝟘-elim (m n)
+  δ (inr ⋆)       r = 𝟘-elim (m n)
    where
     n : ¬ P
     n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
@@ -1630,7 +1630,7 @@ excluded middle holds:
 \begin{code}
 
 pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇ ) → D → aflabby D 𝓦) → EM 𝓦
-pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-decidability-lemma P i (α ((P + ¬ P) + 𝟙) (inr ⋆))
 
 \end{code}
 
@@ -1660,7 +1660,7 @@ pointed-types-injective-gives-EM : ((D : 𝓦 ̇ ) → D → injective-type D �
 pointed-types-injective-gives-EM {𝓦} β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙 {𝓦}) 𝓦 (𝓦 ⁺)
-   a = β ((P + ¬ P) + 𝟙) (inr *)
+   a = β ((P + ¬ P) + 𝟙) (inr ⋆)
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓦 𝓦 ∥
    b = injective-gives-∥ainjective∥ ((P + ¬ P) + 𝟙) a
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓦 ∥
@@ -1685,7 +1685,7 @@ pointed-types-injective-gives-EM'' : Ω-resizing 𝓤
 pointed-types-injective-gives-EM'' {𝓤} ω β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
-   a = β ((P + ¬ P) + 𝟙) (inr *)
+   a = β ((P + ¬ P) + 𝟙) (inr ⋆)
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
    b = pr₁ (injectivity-in-terms-of-ainjectivity ω ((P + ¬ P) + 𝟙)) a
    c : ∥ aflabby ((P + ¬ P) + 𝟙) 𝓤 ∥

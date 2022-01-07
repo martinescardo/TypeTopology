@@ -104,10 +104,10 @@ Lift : (𝓥 : Universe) → 𝓤 ̇ → 𝓤 ⊔ 𝓥 ̇
 Lift 𝓥 X = X × 𝟙 {𝓥}
 
 lift : (𝓥 : Universe) {X : 𝓤 ̇ } → X → Lift 𝓥 X
-lift 𝓥 x = (x , *)
+lift 𝓥 x = (x , ⋆)
 
 lower : {X : 𝓤 ̇ } → Lift 𝓥 X → X
-lower (x , *) = x
+lower (x , ⋆) = x
 
 η-Lift : (𝓥 : Universe) {X : 𝓤 ̇ } (𝔁 : Lift 𝓥 X)
        → lift 𝓥 (lower 𝔁) ≡ 𝔁

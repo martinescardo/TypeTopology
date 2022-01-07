@@ -221,10 +221,10 @@ propositional extensionality, which are consequences of univalence:
     γ = 𝟚-equality-cases a b
 
 𝟙-compact∙ : compact∙ (𝟙 {𝓤})
-𝟙-compact∙ p = * , f
+𝟙-compact∙ p = ⋆ , f
  where
-  f : (r : p * ≡ ₁) (x : 𝟙) → p x ≡ ₁
-  f r * = r
+  f : (r : p ⋆ ≡ ₁) (x : 𝟙) → p x ≡ ₁
+  f r ⋆ = r
 
 \end{code}
 
@@ -544,11 +544,11 @@ retract-compact∙ (_ , φ) = retractions-preserve-compactness φ
 𝟙+𝟙-compact∙ = retract-compact∙ (f , r) 𝟚-compact∙
  where
   f : 𝟚 → 𝟙 + 𝟙
-  f = 𝟚-cases (inl *) (inr *)
+  f = 𝟚-cases (inl ⋆) (inr ⋆)
 
   r : (y : 𝟙 + 𝟙) → Σ x ꞉ 𝟚 , f x ≡ y
-  r (inl *) = ₀ , refl
-  r (inr *) = ₁ , refl
+  r (inl ⋆) = ₀ , refl
+  r (inr ⋆) = ₁ , refl
 
 equiv-compact∙ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X ≃ Y → compact∙ X → compact∙ Y
 equiv-compact∙ (f , (g , fg) , (h , hf)) = retract-compact∙ (f , (λ y → g y , fg y))
@@ -737,11 +737,11 @@ that any decidable proposition is logically equivalent to either 𝟘 or
 𝟘-Compact A δ = inr (λ (σ : Σ A) → 𝟘-elim (pr₁ σ))
 
 𝟙-Compact : Compact (𝟙 {𝓤}) {𝓥}
-𝟙-Compact A δ = γ (δ *)
+𝟙-Compact A δ = γ (δ ⋆)
  where
-  γ : A * + ¬ A * → decidable (Σ A)
-  γ (inl a) = inl (* , a)
-  γ (inr u) = inr (λ {(* , a) → u a})
+  γ : A ⋆ + ¬ A ⋆ → decidable (Σ A)
+  γ (inl a) = inl (⋆ , a)
+  γ (inr u) = inr (λ {(⋆ , a) → u a})
 
 +-Compact : {X : 𝓤 ̇ } {Y : 𝓥 ̇ }
           → Compact X {𝓦} → Compact Y {𝓦} → Compact (X + Y) {𝓦}
@@ -892,14 +892,14 @@ module CompactTypesPT (pt : propositional-truncations-exist) where
    A p = 𝟙
 
    α : detachable A
-   α p = inl *
+   α p = inl ⋆
 
    β : decidable (∃ p ꞉ P , A p)
    β = κ A α
 
    γ : type-of β → decidable P
    γ (inl e) = inl (∥∥-rec i pr₁ e)
-   γ (inr ν) = inr (contrapositive (λ p → ∣ p , * ∣) ν)
+   γ (inr ν) = inr (contrapositive (λ p → ∣ p , ⋆ ∣) ν)
 
 \end{code}
 
@@ -915,21 +915,21 @@ Variation:
   where
    A : P + 𝟙 → 𝓤 ̇
    A (inl p) = 𝟙
-   A (inr *) = 𝟘
+   A (inr ⋆) = 𝟘
 
    α : detachable A
-   α (inl p) = inl *
-   α (inr *) = inr (λ z → 𝟘-elim z)
+   α (inl p) = inl ⋆
+   α (inr ⋆) = inr (λ z → 𝟘-elim z)
 
    β : decidable (∃ x ꞉ P + 𝟙 , A x)
    β = κ A α
 
    δ : Σ A → P
-   δ (inl p , *) = p
-   δ (inr * , a) = 𝟘-elim a
+   δ (inl p , ⋆) = p
+   δ (inr ⋆ , a) = 𝟘-elim a
 
    ϕ : P → ∃ A
-   ϕ p = ∣ inl p , * ∣
+   ϕ p = ∣ inl p , ⋆ ∣
 
    γ : type-of β → decidable P
    γ (inl e) = inl (∥∥-rec i δ e)
@@ -990,14 +990,14 @@ Compact-types-are-decidable X c = γ
   A _ = 𝟙
 
   δ : detachable A
-  δ _ = inl *
+  δ _ = inl ⋆
 
   a : decidable (X × 𝟙)
   a = c A δ
 
   f : decidable (X × 𝟙) → decidable X
-  f (inl (x , *)) = inl x
-  f (inr ν)       = inr (contrapositive (λ x → (x , *)) ν)
+  f (inl (x , ⋆)) = inl x
+  f (inr ν)       = inr (contrapositive (λ x → (x , ⋆)) ν)
 
   γ : decidable X
   γ = f a

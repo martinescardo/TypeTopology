@@ -271,7 +271,7 @@ module _
    u = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓓 (f ∘ (λ _ → x)) 𝟙-is-prop
         (f x) (λ _ → reflexivity (𝓓 ⁻) (f x))
    v : f x ⊑⟪ 𝓓 ⟫ f̃ (η x)
-   v = ∐ˢˢ-is-upperbound 𝓓 (λ _ → f x) 𝟙-is-prop *
+   v = ∐ˢˢ-is-upperbound 𝓓 (λ _ → f x) 𝟙-is-prop ⋆
 
  all-partial-elements-are-subsingleton-sups :
     (l : ⟪ 𝓛X ⟫)
@@ -281,7 +281,7 @@ module _
    where
     v : ∐ˢˢ 𝓛X (η ∘ ϕ) ρ ⊑' (P , ϕ , ρ)
     v = ∐ˢˢ-is-lowerbound-of-upperbounds 𝓛X (η ∘ ϕ) ρ (P , ϕ , ρ)
-         (λ p * → (is-defined-η-≡ p) ⁻¹)
+         (λ p ⋆ → (is-defined-η-≡ p) ⁻¹)
     u : (P , ϕ , ρ) ⊑' ∐ˢˢ 𝓛X (η ∘ ϕ) ρ
     u p = antisymmetry (𝓛X ⁻) (P , ϕ , ρ) (∐ˢˢ 𝓛X (η ∘ ϕ) ρ)
            u' v

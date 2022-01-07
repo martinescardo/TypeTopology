@@ -45,12 +45,12 @@ subtraction (succ m) (succ n) l = pr₁ IH , ap succ (pr₂ IH)
   IH = subtraction m n l
 
 cosubtraction : (m n : ℕ) → (Σ k ꞉ ℕ , k +' m ≡ n) → m ≤ n
-cosubtraction zero n (.n , refl) = *
+cosubtraction zero n (.n , refl) = ⋆
 cosubtraction (succ m) zero (k , p) = positive-not-zero (k +' m) p
 cosubtraction (succ m) (succ .(k +' m)) (k , refl) = cosubtraction m (k +' m) (k , refl)
 
 zero-minimal : (n : ℕ) → zero ≤ n
-zero-minimal n = *
+zero-minimal n = ⋆
 
 zero-minimal' : (n : ℕ) → ¬ (succ n ≤ zero)
 zero-minimal' n l = l
@@ -68,7 +68,7 @@ succ-order-injective m n l = l
             → ((n : ℕ) → P zero n (zero-minimal n))
             → ((m n : ℕ) (l : m ≤ n) → P m n l → P (succ m) (succ n) (succ-monotone m n l))
             → (m n : ℕ) (l : m ≤ n) → P m n l
-≤-induction P base step zero n *            = base n
+≤-induction P base step zero n ⋆            = base n
 ≤-induction P base step (succ m) zero l     = 𝟘-elim l
 ≤-induction P base step (succ m) (succ n) l = step m n l (≤-induction P base step m n l)
 
@@ -76,11 +76,11 @@ succ≤≡ : (m n : ℕ) → (succ m ≤ succ n) ≡ (m ≤ n)
 succ≤≡ m n = refl
 
 ≤-refl : (n : ℕ) → n ≤ n
-≤-refl zero     = *
+≤-refl zero     = ⋆
 ≤-refl (succ n) = ≤-refl n
 
 ≤-trans : (l m n : ℕ) → l ≤ m → m ≤ n → l ≤ n
-≤-trans zero m n p q = *
+≤-trans zero m n p q = ⋆
 ≤-trans (succ l) zero n p q = 𝟘-elim p
 ≤-trans (succ l) (succ m) zero p q = 𝟘-elim q
 ≤-trans (succ l) (succ m) (succ n) p q = ≤-trans l m n p q
@@ -92,7 +92,7 @@ succ≤≡ m n = refl
 ≤-anti (succ m) (succ n) p q = ap succ (≤-anti m n p q)
 
 ≤-succ : (n : ℕ) → n ≤ succ n
-≤-succ zero     = *
+≤-succ zero     = ⋆
 ≤-succ (succ n) = ≤-succ n
 
 unique-minimal : (n : ℕ) → n ≤ zero → n ≡ zero
@@ -221,7 +221,7 @@ Induction on z, then x, then y:
 
 ℕ-cotransitive : cotransitive _<_
 ℕ-cotransitive zero     y        zero     l = inr l
-ℕ-cotransitive (succ x) y        zero     l = inr (≤-trans 1 (succ(succ x)) y * l)
+ℕ-cotransitive (succ x) y        zero     l = inr (≤-trans 1 (succ(succ x)) y ⋆ l)
 ℕ-cotransitive zero     (succ y) (succ z) l = inl (zero-minimal y)
 ℕ-cotransitive (succ x) (succ y) (succ z) l = γ IH
  where
@@ -347,23 +347,23 @@ max-ord→ (succ x) zero     le = 𝟘-elim le
 max-ord→ (succ x) (succ y) le = ap succ (max-ord→ x y le)
 
 max-ord← : (x y : ℕ) → max x y ≡ y → x ≤ y
-max-ord← zero     y        p = *
+max-ord← zero     y        p = ⋆
 max-ord← (succ x) zero     p = 𝟘-elim (positive-not-zero x p)
 max-ord← (succ x) (succ y) p = max-ord← x y (succ-lc p)
 
 max-≤-upper-bound : (m n : ℕ) → m ≤ max m n
-max-≤-upper-bound zero     n        = *
+max-≤-upper-bound zero     n        = ⋆
 max-≤-upper-bound (succ m) zero     = ≤-refl m
 max-≤-upper-bound (succ m) (succ n) = max-≤-upper-bound m n
 
 minus : (m n : ℕ) → n ≤ m → ℕ
 minus zero     n        le = zero
-minus (succ m) zero     *  = succ m
+minus (succ m) zero     ⋆  = succ m
 minus (succ m) (succ n) le = minus m n le
 
 minus-property : (m n : ℕ) (le : n ≤ m) → minus m n le ∔ n ≡ m
-minus-property zero     zero     *  = refl
-minus-property (succ m) zero     *  = refl
+minus-property zero     zero     ⋆  = refl
+minus-property (succ m) zero     ⋆  = refl
 minus-property (succ m) (succ n) le = ap succ (minus-property m n le)
 
 max-minus-property : (m n : ℕ) → minus (max m n) m (max-≤-upper-bound m n) ∔ m ≡ max m n

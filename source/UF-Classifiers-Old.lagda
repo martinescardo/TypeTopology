@@ -392,7 +392,7 @@ module type-classifier-bis
    ϕ = qinveq α (β , a , b)
     where
      α : (Σ X ꞉ 𝓤 ̇ , (X → Y)) → Green-map
-     α (X , f) = X , (f , (λ y → *))
+     α (X , f) = X , (f , (λ y → ⋆))
      β : Green-map → (Σ X ꞉ 𝓤 ̇ , (X → Y))
      β (X , f , g) = X , f
      a : (p : Σ (λ X → X → Y)) → β (α p) ≡ p
@@ -401,15 +401,15 @@ module type-classifier-bis
      b (X , f , g) = to-Σ-≡ (refl ,
                              to-Σ-≡ (refl ,
                                      dfunext (univalence-gives-funext ua)
-                                      (λ y → 𝟙-is-prop * (g y))))
+                                      (λ y → 𝟙-is-prop ⋆ (g y))))
    ψ : (Y → Green) ≃ (Y → 𝓤 ̇ )
    ψ = →cong fe' fe' (≃-refl Y) γ
     where
      γ : Green ≃ 𝓤 ̇
-     γ = qinveq pr₁ ((λ X → (X , * )) , c , λ x → refl)
+     γ = qinveq pr₁ ((λ X → (X , ⋆ )) , c , λ x → refl)
       where
-       c : (p : Σ (λ X → 𝟙)) → pr₁ p , * ≡ p
-       c (x , *) = refl
+       c : (p : Σ (λ X → 𝟙)) → pr₁ p , ⋆ ≡ p
+       c (x , ⋆) = refl
 
 \end{code}
 
@@ -462,11 +462,11 @@ module singleton-classifier
     iii = →cong fe fe' (≃-refl Y) ψ
      where
       ψ : Σ (λ X → is-singleton X) ≃ 𝟙
-      ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop *))
+      ψ = qinveq unique-to-𝟙 ((λ _ → 𝟙 , 𝟙-is-singleton) , (a , 𝟙-is-prop ⋆))
        where
        a : (p : Σ (λ v → is-singleton v)) → 𝟙 , 𝟙-is-singleton ≡ p
-       a (X , s) = to-Σ-≡ ((eqtoid ua 𝟙 X (singleton-≃-𝟙' s)) ,
-                           (being-singleton-is-prop fe _ s))
+       a (X , s) = to-Σ-≡ (eqtoid ua 𝟙 X (singleton-≃-𝟙' s) ,
+                           being-singleton-is-prop fe _ s)
 
 open import UF-PropTrunc
 

@@ -1044,8 +1044,8 @@ aflabby-pointed D φ = pr₁ (φ 𝟘 𝟘-is-prop unique-from-𝟘)
 
 
 ainjective-types-are-aflabby : (D : 𝓦 ̇ ) → ainjective-type D 𝓤 𝓥 → aflabby D 𝓤
-ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → *) (prop-embedding P isp 𝓥) f) * ,
-                                                       pr₂ (i (λ p → *) (prop-embedding P isp 𝓥) f)
+ainjective-types-are-aflabby {𝓦} {𝓤} {𝓥} D i P isp f = pr₁ (i (λ p → ⋆) (prop-embedding P isp 𝓥) f) ⋆ ,
+                                                       pr₂ (i (λ p → ⋆) (prop-embedding P isp 𝓥) f)
 
 aflabby-types-are-ainjective : (D : 𝓦 ̇ ) → aflabby D (𝓤 ⊔ 𝓥) → ainjective-type D 𝓤 𝓥
 aflabby-types-are-ainjective D φ {X} {Y} j e f = f' , p
@@ -1131,7 +1131,7 @@ aflabby-EM-lemma {𝓦} P i φ = γ
   δ : (d' : D) → d ≡ d' → P + ¬ P
   δ (inl (inl p)) r = inl p
   δ (inl (inr n)) r = inr n
-  δ (inr *)       r = 𝟘-elim (m n)
+  δ (inr ⋆)       r = 𝟘-elim (m n)
    where
     n : ¬ P
     n p = 𝟘-elim (+disjoint ((a p)⁻¹ ∙ r))
@@ -1143,7 +1143,7 @@ aflabby-EM-lemma {𝓦} P i φ = γ
   γ = δ d refl
 
 pointed-types-aflabby-gives-EM : ((D : 𝓦 ̇ ) → D → aflabby D 𝓦) → EM 𝓦
-pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr *))
+pointed-types-aflabby-gives-EM {𝓦} α P i = aflabby-EM-lemma P i (α ((P + ¬ P) + 𝟙) (inr ⋆))
 
 EM-gives-pointed-types-ainjective : EM (𝓤 ⊔ 𝓥) → (D : 𝓦 ̇ ) → D → ainjective-type D 𝓤 𝓥
 EM-gives-pointed-types-ainjective em D d = aflabby-types-are-ainjective D (EM-gives-pointed-types-aflabby D em d)
@@ -1506,7 +1506,7 @@ This is now answered 8th Feb (see below).
 
 Added 7th Feb 2019. (Preliminary answer.)
 
-However, with Ω₀-resizing, for a *set* D : 𝓤 we do have
+However, with Ω₀-resizing, for a ⋆set⋆ D : 𝓤 we do have
 
   injective-type D 𝓤 𝓤 ⇔ ∥ ainjective-type D 𝓤 𝓤 ∥,
 
@@ -1625,7 +1625,7 @@ Here are some corollaries:
  pointed-types-injective-gives-EM {𝓤} ω ua β P i = e
   where
    a : injective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤
-   a = β ((P + ¬ P) + 𝟙) (inr *)
+   a = β ((P + ¬ P) + 𝟙) (inr ⋆)
 
    b : ∥ ainjective-type ((P + ¬ P) + 𝟙) 𝓤 𝓤 ∥
    b = pr₁ (injectivity-in-terms-of-ainjectivity ω ua ((P + ¬ P) + 𝟙)) a

@@ -216,7 +216,7 @@ Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n 
 Over-inl X Y f n = refl
 
 Over-inr : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
-         → Over X Y f (inr *) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
+         → Over X Y f (inr ⋆) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
 Over-inr X Y f = refl
 
 \end{code}
@@ -241,14 +241,14 @@ Over-dense X Y f d (inl n) =
   (is-equiv-is-dense
     ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹
     (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
-Over-dense X Y f d (inr *) =
+Over-dense X Y f d (inr ⋆) =
  comp-dense {_} {𝓤₀}
   (is-equiv-is-dense
-    ⌜ Π-extension-out-of-range X over (inr *) (λ x → +disjoint) ⌝
-    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
+    ⌜ Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint) ⌝
+    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint))))
   (is-equiv-is-dense
-    ⌜ Π-extension-out-of-range Y over (inr *) (λ x → +disjoint) ⌝⁻¹
-   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+    ⌜ Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint) ⌝⁻¹
+   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint)))))
 
 Over-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                  (f : (n : ℕ) → X n → Y n)
@@ -264,14 +264,14 @@ Over-embedding {𝓤} X Y f d (inl n) =
   (equivs-are-embeddings
     ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹
    (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
-Over-embedding {𝓤} X Y f d (inr *) =
+Over-embedding {𝓤} X Y f d (inr ⋆) =
  ∘-is-embedding {𝓤} {𝓤₀}
   (equivs-are-embeddings
-    ⌜ Π-extension-out-of-range X over (inr *) (λ x → +disjoint) ⌝
-    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
+    ⌜ Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint) ⌝
+    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint))))
   (equivs-are-embeddings
-    ⌜ Π-extension-out-of-range Y over (inr *) (λ x → +disjoint) ⌝⁻¹
-   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+    ⌜ Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint) ⌝⁻¹
+   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint)))))
 
 Σ₁-functor : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
            → Σ₁ X → Σ₁ Y

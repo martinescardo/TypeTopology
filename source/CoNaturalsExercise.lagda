@@ -36,7 +36,7 @@ incl-is-a-section : Σ retr ꞉ ((ℕ → 𝟚) → ℕ∞) , retr ∘ incl ≡ 
 incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
  where
   f-retr : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
-  f-retr ₀ α = inl *
+  f-retr ₀ α = inl ⋆
   f-retr ₁ α = inr α
 
   p-retr : (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
@@ -49,9 +49,9 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
   retr-spec = ℕ∞-corec-homomorphism p-retr
 
   retr-spec₀ : (α : ℕ → 𝟚) → head α ≡ ₀ → retr α ≡ Zero
-  retr-spec₀ α r = coalg-morphism-Zero p-retr retr retr-spec α * lemma
+  retr-spec₀ α r = coalg-morphism-Zero p-retr retr retr-spec α ⋆ lemma
    where
-    lemma : p-retr α ≡ inl *
+    lemma : p-retr α ≡ inl ⋆
     lemma = ap (λ - → f-retr - (tail α)) r
 
   retr-spec₁ : (α : ℕ → 𝟚) → head α ≡ ₁ → retr α ≡ Succ (retr (tail α))

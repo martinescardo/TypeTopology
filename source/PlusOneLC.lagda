@@ -27,10 +27,10 @@ open import DiscreteAndSeparated
 +𝟙-cancellable {𝓤} {𝓥} {𝓦} {𝓣} {X} {Y} (φ , i) = qinveq f' (g' , η' , ε')
  where
   z₀ : X + 𝟙
-  z₀ = inr *
+  z₀ = inr ⋆
 
   t₀ : Y + 𝟙
-  t₀ = inr *
+  t₀ = inr ⋆
 
   j : is-isolated z₀
   j = new-point-is-isolated
@@ -74,7 +74,7 @@ open import DiscreteAndSeparated
 
   q = g t₀     ≡⟨ ap g (p ⁻¹) ⟩
       g (f z₀) ≡⟨ η z₀ ⟩
-      inr *    ∎
+      inr ⋆    ∎
 
   g' : Y → X
   g' y = pr₁ (inl-preservation g q (sections-are-lc g (f , ε)) y)
@@ -111,19 +111,19 @@ module old (fe : FunExt) where
  open import UF-Base
  open import UF-Subsingletons-FunExt
 
- add-and-remove-point : {X : 𝓤 ̇ } →  X ≃ (X + 𝟙) ∖ (inr *)
+ add-and-remove-point : {X : 𝓤 ̇ } →  X ≃ (X + 𝟙) ∖ (inr ⋆)
  add-and-remove-point {𝓤} {X} = qinveq f (g , ε , η)
   where
-   f : X → (X + 𝟙 {𝓤}) ∖ inr *
+   f : X → (X + 𝟙 {𝓤}) ∖ inr ⋆
    f x = (inl x , +disjoint)
 
-   g : (X + 𝟙) ∖ inr * → X
+   g : (X + 𝟙) ∖ inr ⋆ → X
    g (inl x , u) = x
-   g (inr * , u) = 𝟘-elim (u refl)
+   g (inr ⋆ , u) = 𝟘-elim (u refl)
 
    η : f ∘ g ∼ id
    η (inl x , u) = to-Σ-≡' (negations-are-props (fe 𝓤 𝓤₀) _ _)
-   η (inr * , u) = 𝟘-elim (u refl)
+   η (inr ⋆ , u) = 𝟘-elim (u refl)
 
    ε : g ∘ f ∼ id
    ε x = refl
@@ -148,10 +148,10 @@ module old (fe : FunExt) where
   where
    f : (Y + 𝟙) ∖ (inl b) → Y
    f (inl y , u) = y
-   f (inr * , u) = b
+   f (inr ⋆ , u) = b
 
    g' : (y : Y) → decidable (inl b ≡ inl y) → (Y + 𝟙) ∖ (inl b)
-   g' y (inl p) = (inr * , +disjoint')
+   g' y (inl p) = (inr ⋆ , +disjoint')
    g' y (inr u) = (inl y , contrapositive (_⁻¹) u)
 
    g : Y → (Y + 𝟙) ∖ (inl b)
@@ -168,14 +168,14 @@ module old (fe : FunExt) where
      h = equality-cases (i (inl y)) φ ψ
      p : pr₁ (g' y (i (inl y))) ≡ inl y
      p = ap (pr₁ ∘ (g' y)) h
-   ε (inr * , u) = equality-cases (i (inl b)) φ ψ
+   ε (inr ⋆ , u) = equality-cases (i (inl b)) φ ψ
     where
-     φ : (p : inl b ≡ inl b) → i (inl b) ≡ inl p → g (f (inr * , u)) ≡ (inr * , u)
+     φ : (p : inl b ≡ inl b) → i (inl b) ≡ inl p → g (f (inr ⋆ , u)) ≡ (inr ⋆ , u)
      φ p q = r ∙ to-Σ-≡ (refl , negations-are-props (fe 𝓥 𝓤₀) _ _)
       where
-       r : g b ≡ (inr * , +disjoint')
+       r : g b ≡ (inr ⋆ , +disjoint')
        r = ap (g' b) q
-     ψ : (v : inl b ≢ inl b) → i (inl b) ≡ inr v → g (f (inr * , u)) ≡ (inr * , u)
+     ψ : (v : inl b ≢ inl b) → i (inl b) ≡ inr v → g (f (inr ⋆ , u)) ≡ (inr ⋆ , u)
      ψ v q = 𝟘-elim (v refl)
 
    η : f ∘ g ∼ id
@@ -186,15 +186,15 @@ module old (fe : FunExt) where
      ψ : (u : inl b ≢ inl y) → i (inl y) ≡ inr u → f (g' y (i (inl y))) ≡ y
      ψ _ = ap ((λ d → f (g' y d)))
 
- add-one-and-remove-isolated-point {𝓥} {Y} (inr *) _ = ≃-sym add-and-remove-point
+ add-one-and-remove-isolated-point {𝓥} {Y} (inr ⋆) _ = ≃-sym add-and-remove-point
 
  +𝟙-cancellable' : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → (X + 𝟙) ≃ (Y + 𝟙) → X ≃ Y
  +𝟙-cancellable' {𝓤} {𝓥} {X} {Y} (φ , e) =
     X                  ≃⟨ add-and-remove-point ⟩
-   (X + 𝟙) ∖ inr *     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr *) ⟩
-   (Y + 𝟙) ∖ φ (inr *) ≃⟨ add-one-and-remove-isolated-point
-                           (φ (inr *))
-                           (equivs-preserve-isolatedness φ e (inr *)
+   (X + 𝟙) ∖ inr ⋆     ≃⟨ remove-points φ (equivs-are-qinvs φ e) (inr ⋆) ⟩
+   (Y + 𝟙) ∖ φ (inr ⋆) ≃⟨ add-one-and-remove-isolated-point
+                           (φ (inr ⋆))
+                           (equivs-preserve-isolatedness φ e (inr ⋆)
                              new-point-is-isolated) ⟩
     Y                  ■
 
@@ -213,7 +213,7 @@ remove-and-add-isolated-point : funext 𝓤 𝓤₀
 remove-and-add-isolated-point fe {X} x₀ ι = qinveq f (g , ε , η)
  where
   ϕ : (x : X) → decidable (x₀ ≡ x) → X ∖ x₀ + 𝟙
-  ϕ x (inl p) = inr *
+  ϕ x (inl p) = inr ⋆
   ϕ x (inr ν) = inl (x , (λ (p : x ≡ x₀) → ν (p ⁻¹)))
 
   f : X → X ∖ x₀ + 𝟙
@@ -221,13 +221,13 @@ remove-and-add-isolated-point fe {X} x₀ ι = qinveq f (g , ε , η)
 
   g : X ∖ x₀ + 𝟙 → X
   g (inl (x , _)) = x
-  g (inr *) = x₀
+  g (inr ⋆) = x₀
 
   η' : (y : X ∖ x₀ + 𝟙) (d : decidable (x₀ ≡ g y)) → ϕ (g y) d ≡ y
   η' (inl (x , ν)) (inl q) = 𝟘-elim (ν (q ⁻¹))
   η' (inl (x , ν)) (inr _) = ap (λ - → inl (x , -)) (negations-are-props fe _ _)
-  η' (inr *) (inl p)       = refl
-  η' (inr *) (inr ν)       = 𝟘-elim (ν refl)
+  η' (inr ⋆) (inl p)       = refl
+  η' (inr ⋆) (inr ν)       = 𝟘-elim (ν refl)
 
   η : f ∘ g ∼ id
   η y = η' y (ι (g y))

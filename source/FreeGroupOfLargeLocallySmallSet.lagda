@@ -143,7 +143,7 @@ of the) local smalless of the type A.
  from-≡[FA] {x ∷ s} {y ∷ t} (p , q) = ap₂ _∷_ (from-≡[X] p) (from-≡[FA] q)
 
  to-≡[FA] : {s t : FA} → s ≡ t → s ≡[FA] t
- to-≡[FA] {[]} {[]}       p = *
+ to-≡[FA] {[]} {[]}       p = ⋆
  to-≡[FA] {x ∷ s} {y ∷ t} p = to-≡[X]  (equal-heads p) ,
                               to-≡[FA] (equal-tails p)
 
@@ -158,7 +158,7 @@ of the) local smalless of the type A.
  (x ∷ s) ▶ (y ∷ t) = ((x ∷ s) ◗ (y ∷ t)) + (x ≡[X] y × (s ▶ t))
 
  ▶-lemma : (x y : X) (s : List X) → y ≡ x ⁻ → (x ∷ y ∷ s) ▶ s
- ▶-lemma x _ []      refl = to-≡[X] {x ⁻} refl , *
+ ▶-lemma x _ []      refl = to-≡[X] {x ⁻} refl , ⋆
  ▶-lemma x _ (z ∷ s) refl = inl (to-≡[X]  {x ⁻} refl ,
                                  to-≡[X]  {z}   refl ,
                                  to-≡[FA] {s}   refl)
@@ -199,7 +199,7 @@ We now show that _▶_ defined above is logically equivalent to _▷_.
  ▷-gives-▶ (u , v , x , refl , refl) = f u v x
   where
    f : (u v : FA) (x : X) → (u ++ [ x ] ++ [ x ⁻ ] ++ v) ▶ (u ++ v)
-   f []      []      x = to-≡[X] {x ⁻} refl , *
+   f []      []      x = to-≡[X] {x ⁻} refl , ⋆
    f []      (y ∷ v) x = inl (to-≡[X] {x ⁻} refl , to-≡[X] {y} refl , to-≡[FA] {v} refl)
    f (y ∷ u) v       x = inr (to-≡[X] {y} refl , f u v x)
 
@@ -270,7 +270,7 @@ corresponding notion of reduct for such chains:
  chain-lemma← : (s t : FA) (n : ℕ)
               → s ▷[ n ] t
               → Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ t
- chain-lemma← s t 0        r           = * , r
+ chain-lemma← s t 0        r           = ⋆ , r
  chain-lemma← s t (succ n) (u , b , c) = γ IH l
   where
    IH : Σ ρ ꞉ redex-chain n u , chain-reduct u n ρ ≡ t
@@ -303,14 +303,14 @@ which we now use for that purpose.
  ≏-gives-∿ : (s t : FA) → s ≏ t → s ∿ t
  ≏-gives-∿ s t (m , n , ρ , σ , p) = γ
   where
-   a : s ▷* chain-reduct s m ρ
+   a : s ▷⋆ chain-reduct s m ρ
    a = m , chain-lemma→ s m ρ
 
-   b : t ▷* chain-reduct t n σ
+   b : t ▷⋆ chain-reduct t n σ
    b = n , chain-lemma→ t n σ
 
-   c : Σ u ꞉ FA , (s ▷* u) × (t ▷* u)
-   c = chain-reduct t n σ  , transport (s ▷*_) (from-≡[FA] p) a , b
+   c : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
+   c = chain-reduct t n σ  , transport (s ▷⋆_) (from-≡[FA] p) a , b
 
    γ : s ∿ t
    γ = to-∿ s t c
@@ -318,7 +318,7 @@ which we now use for that purpose.
  ∿-gives-≏ : (s t : FA) → s ∿ t → s ≏ t
  ∿-gives-≏ s t e = γ a
   where
-   a : Σ u ꞉ FA , (s ▷* u) × (t ▷* u)
+   a : Σ u ꞉ FA , (s ▷⋆ u) × (t ▷⋆ u)
    a = from-∿ Church-Rosser s t e
 
    γ : type-of a → s ≏ t
@@ -490,20 +490,20 @@ pattern matching.
  NB-fiber₀-η-is-decidable : (s : FA) → fiber₀-η s + ¬ (fiber₀-η s)
  NB-fiber₀-η-is-decidable []             = inr id
  NB-fiber₀-η-is-decidable (x ∷ y ∷ s)    = inr id
- NB-fiber₀-η-is-decidable ((₀ , a) ∷ []) = inl *
+ NB-fiber₀-η-is-decidable ((₀ , a) ∷ []) = inl ⋆
  NB-fiber₀-η-is-decidable ((₁ , a) ∷ []) = inr id
 
  fiber-η→ : (s : FA) → fiber₀-η s → (Σ a ꞉ A , η a ≡ s)
  fiber-η→ [] ()
  fiber-η→ (x ∷ y ∷ s) ()
- fiber-η→ (₀ , a ∷ []) * = a , refl
+ fiber-η→ (₀ , a ∷ []) ⋆ = a , refl
  fiber-η→ (₁ , a ∷ []) ()
 
  fiber-η← : (s : FA) → (Σ a ꞉ A , η a ≡ s) → fiber₀-η s
- fiber-η← .(η a) (a , refl) = *
+ fiber-η← .(η a) (a , refl) = ⋆
 
  η-fiber₀-η : (a : A) → fiber₀-η (η a)
- η-fiber₀-η a = *
+ η-fiber₀-η a = ⋆
 
 \end{code}
 
@@ -537,19 +537,19 @@ as "the ∾-fiber of s over η".
    γ : η a ∿ s → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , fiber₀-η (chain-reduct s n ρ)
    γ e = δ (d c)
     where
-     c : Σ u ꞉ FA , (η a ▷* u) × (s ▷* u)
+     c : Σ u ꞉ FA , (η a ▷⋆ u) × (s ▷⋆ u)
      c = from-∿ Church-Rosser (η a) s e
 
      d : type-of c → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
      d (u , r , r₁) = δ r₂
       where
        p : η a ≡ u
-       p = η-irreducible* r
+       p = η-irreducible⋆ r
 
-       r₂ : s  ▷* η a
-       r₂ = transport (s ▷*_) (p ⁻¹) r₁
+       r₂ : s  ▷⋆ η a
+       r₂ = transport (s ▷⋆_) (p ⁻¹) r₁
 
-       δ : s  ▷* η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
+       δ : s  ▷⋆ η a → Σ n ꞉ ℕ , Σ ρ ꞉ redex-chain n s , chain-reduct s n ρ ≡ η a
        δ (n , r₃) = (n , chain-lemma← s (η a) n r₃)
 
      δ : type-of (d c) → codomain γ

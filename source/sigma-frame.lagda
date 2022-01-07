@@ -22,7 +22,7 @@ did with σ-sup-lattices. Perhaps it would be better to define a
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT hiding (*)
+open import SpartanMLTT
 open import UF-FunExt
 open import UF-Subsingletons
 

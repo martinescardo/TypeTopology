@@ -47,9 +47,9 @@ homomorphism to the final coalgebra PRED : ℕ∞ → 𝟙 + ℕ∞ on ℕ∞.
 private
  κ-min : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-min (u , v) = 𝟚-Cases (positivity u)
-                  (inl *)
+                  (inl ⋆)
                   (𝟚-Cases (positivity v)
-                    (inl *)
+                    (inl ⋆)
                     (inr (Pred u , Pred v)))
 
 min : ℕ∞ × ℕ∞ → ℕ∞
@@ -65,8 +65,8 @@ min-eq₀ : ∀ v   → min (Zero , v) ≡ Zero
 min-eq₁ : ∀ u   → min (Succ u , Zero) ≡ Zero
 min-eq₂ : ∀ u v → min (Succ u , Succ v) ≡ Succ (min (u , v))
 
-min-eq₀ = λ v   → Coalg-morphism-Zero κ-min (Zero , v) * refl
-min-eq₁ = λ u   → Coalg-morphism-Zero κ-min (Succ u , Zero) * refl
+min-eq₀ = λ v   → Coalg-morphism-Zero κ-min (Zero , v) ⋆ refl
+min-eq₁ = λ u   → Coalg-morphism-Zero κ-min (Succ u , Zero) ⋆ refl
 min-eq₂ = λ u v → Coalg-morphism-Succ κ-min (Succ u , Succ v) (u , v) refl
 
 \end{code}
@@ -79,7 +79,7 @@ private
  κ-max : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-max (u , v) = 𝟚-Cases (positivity u)
                    (𝟚-Cases (positivity v)
-                      (inl *)
+                      (inl ⋆)
                       (inr (Zero , Pred v)))
                    (𝟚-Cases (positivity v)
                       (inr (Pred u , Zero))
@@ -93,7 +93,7 @@ max-eq₁ : ∀ v   → max' (Zero , Succ v) ≡ Succ (max' (Zero , v))
 max-eq₂ : ∀ u   → max' (Succ u , Zero) ≡ Succ (max' (u , Zero))
 max-eq₃ : ∀ u v → max' (Succ u , Succ v) ≡ Succ (max' (u , v))
 
-max-eq₀ =         Coalg-morphism-Zero κ-max (Zero , Zero) * refl
+max-eq₀ =         Coalg-morphism-Zero κ-max (Zero , Zero) ⋆ refl
 max-eq₁ = λ v   → Coalg-morphism-Succ κ-max (Zero , Succ v) (Zero , v) refl
 max-eq₂ = λ u   → Coalg-morphism-Succ κ-max (Succ u , Zero) (u , Zero) refl
 max-eq₃ = λ u v → Coalg-morphism-Succ κ-max (Succ u , Succ v) (u , v) refl
@@ -108,7 +108,7 @@ private
  κ-add : ℕ∞ × ℕ∞ → 𝟙 {𝓤₀} + ℕ∞ × ℕ∞
  κ-add (u , v) = 𝟚-Cases (positivity u)
                    (𝟚-Cases (positivity v)
-                      (inl *)
+                      (inl ⋆)
                       (inr (Zero , Pred v)))
                    (inr (Pred u , v))
 
@@ -119,7 +119,7 @@ add-eq₀ :         add (Zero , Zero) ≡ Zero
 add-eq₁ : ∀ v   → add (Zero , Succ v) ≡ Succ (add (Zero , v))
 add-eq₂ : ∀ u v → add (Succ u , v) ≡ Succ (add (u , v))
 
-add-eq₀ =         Coalg-morphism-Zero κ-add (Zero , Zero) * refl
+add-eq₀ =         Coalg-morphism-Zero κ-add (Zero , Zero) ⋆ refl
 add-eq₁ = λ v   → Coalg-morphism-Succ κ-add (Zero , Succ v) (Zero , v) refl
 add-eq₂ = λ u v → Coalg-morphism-Succ κ-add (Succ u , v) (u , v) refl
 
@@ -322,11 +322,11 @@ min-associative u v w = ap (λ - → - (u , v , w)) p
   g (u , v , w) = min (min (u , v) , w)
   κ : ℕ∞ × ℕ∞ × ℕ∞ → 𝟙 + ℕ∞ × ℕ∞ × ℕ∞
   κ (u , v , w) = 𝟚-Cases (positivity u)
-                   (inl *)
+                   (inl ⋆)
                    (𝟚-Cases (positivity v)
-                     (inl *)
+                     (inl ⋆)
                      (𝟚-Cases (positivity w)
-                       (inl *)
+                       (inl ⋆)
                        (inr (Pred u , Pred v , Pred w))))
   f-homomorphism : is-homomorphism κ f
   f-homomorphism = dfunext fe₀ γ
