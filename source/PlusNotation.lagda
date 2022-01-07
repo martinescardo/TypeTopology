@@ -12,8 +12,11 @@ open import Universes
 
 record Plus {𝓤} {𝓥} {𝓦} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : (𝓤 ⊔ 𝓥 ⊔ 𝓦)⁺ ̇  where
  field
-   _+_ : X → Y → 𝓦  ̇
+   _∔_ : X → Y → 𝓦  ̇
+
+ infixl 31 _∔_
 
 open Plus {{...}} public
+
 
 \end{code}
