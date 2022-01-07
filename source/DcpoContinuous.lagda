@@ -134,8 +134,12 @@ module Ind-completion
  ∐-map : Ind → ⟨ 𝓓 ⟩
  ∐-map (I , α , δ) = ∐ 𝓓 δ
 
+ left-adjoint-to-∐-map-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
+
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
+ left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
+  -- (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
 
  being-left-adjoint-to-∐-map-is-prop : (L : ⟨ 𝓓 ⟩ → Ind)
                                      → is-prop (left-adjoint-to-∐-map L)
@@ -147,17 +151,14 @@ module Ind-completion
  ∐-map-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-specified-left-adjoint = Σ left-adjoint-to-∐-map
 
+ left-adjoint-to-∐-map-criterion-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ left-adjoint-to-∐-map-criterion-local x (I , α , δ) =
+  (∐ 𝓓 δ ≡ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+
  left-adjoint-to-∐-map-criterion : (⟨ 𝓓 ⟩ → Ind)
                                  → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  left-adjoint-to-∐-map-criterion L =
-  (x : ⟨ 𝓓 ⟩) → (∐ 𝓓 (δ x) ≡ x) × ((i : I x) → α x i ≪⟨ 𝓓 ⟩ x)
-   where
-    I : (x : ⟨ 𝓓 ⟩) → 𝓥 ̇
-    I x = pr₁ (L x)
-    α : (x : ⟨ 𝓓 ⟩) → I x → ⟨ 𝓓 ⟩
-    α x = pr₁ (pr₂ (L x))
-    δ : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 (α x)
-    δ x = pr₂ (pr₂ (L x))
+  (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-criterion-local x (L x)
 
  ≲-to-⊑-of-∐ : {I J : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
@@ -184,47 +185,58 @@ module Ind-completion
    σ : is-semidirected (underlying-order 𝓓) (λ _ → x)
    σ i j = ∣ * , reflexivity 𝓓 x , reflexivity 𝓓 x ∣
 
- left-adjoint-to-∐-map-characterization : (L : ⟨ 𝓓 ⟩ → Ind)
-                                        → left-adjoint-to-∐-map-criterion L
-                                        ⇔ left-adjoint-to-∐-map L
- left-adjoint-to-∐-map-characterization L = ⦅⇒⦆ , ⦅⇐⦆
+ left-adjoint-to-∐-map-characterization-local :
+    (x : ⟨ 𝓓 ⟩) (σ : Ind)
+  → left-adjoint-to-∐-map-criterion-local x σ
+  ⇔ left-adjoint-to-∐-map-local x σ
+ left-adjoint-to-∐-map-characterization-local x σ@(I , α , δ) = ⦅⇒⦆ , ⦅⇐⦆
   where
-   ⦅⇒⦆ : left-adjoint-to-∐-map-criterion L → left-adjoint-to-∐-map L
-   ⦅⇒⦆ c x σ@(I , α , δ) = lr , rl
+   ⦅⇒⦆ : left-adjoint-to-∐-map-criterion-local x σ
+       → left-adjoint-to-∐-map-local x σ
+   ⦅⇒⦆ (x-is-sup-of-α , x-is-way-upperbound-of-α) τ@(J , β , ε) = lr , rl
     where
-     lr : L x ≲ σ → x ⊑⟨ 𝓓 ⟩ ∐-map σ
-     lr Lx-cofinal-in-σ = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map σ) (pr₁ (c x))
-                            (≲-to-⊑-of-∐ (pr₂ (pr₂ (L x))) δ Lx-cofinal-in-σ)
-     rl : x ⊑⟨ 𝓓 ⟩ ∐-map σ → L x ≲ σ
-     rl x-below-∐α i = pr₂ (c x) i I α δ x-below-∐α
-   ⦅⇐⦆ : left-adjoint-to-∐-map L → left-adjoint-to-∐-map-criterion L
-   ⦅⇐⦆ l x = ⦅1⦆ , ⦅2⦆
+     lr : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
+     lr α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-is-sup-of-α
+                          (≲-to-⊑-of-∐ δ ε α-cofinal-in-β)
+     rl : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
+     rl x-below-∐β i = x-is-way-upperbound-of-α i J β ε x-below-∐β
+   ⦅⇐⦆ : left-adjoint-to-∐-map-local x σ
+       → left-adjoint-to-∐-map-criterion-local x σ
+   ⦅⇐⦆ ladj = ⦅1⦆ , ⦅2⦆
     where
-     I : 𝓥 ̇
-     I = pr₁ (L x)
-     α : I → ⟨ 𝓓 ⟩
-     α = pr₁ (pr₂ (L x))
-     δ : is-Directed 𝓓 α
-     δ = pr₂ (pr₂ (L x))
      ⦅2⦆ : (i : I) → α i ≪⟨ 𝓓 ⟩ x
-     ⦅2⦆ i I α δ x-below-∐α = claim i
+     ⦅2⦆ i J β ε x-below-∐β = h i
       where
-       claim : L x ≲ (I , α , δ)
-       claim = rl-implication (l x (I , α , δ)) x-below-∐α
+       h : (I , α , δ) ≲ (J , β , ε)
+       h = rl-implication (ladj (J , β , ε)) x-below-∐β
      ⦅1⦆ : ∐ 𝓓 δ ≡ x
      ⦅1⦆ = antisymmetry 𝓓 (∐ 𝓓 δ) x u v
       where
        v : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
-       v = lr-implication (l x (I , α , δ)) (≲-is-reflexive (L x))
-       ε : is-Directed 𝓓 (pr₁ (pr₂ (ι x)))
-       ε = pr₂ (pr₂ (ι x))
+       v = lr-implication (ladj (I , α , δ)) (≲-is-reflexive (I , α , δ))
+       u : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ x
        u = ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅a⦆ ]
            ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩[ ⦅b⦆ ]
            x     ∎⟨ 𝓓 ⟩
         where
+         ε : is-Directed 𝓓 (pr₁ (pr₂ (ι x)))
+         ε = pr₂ (pr₂ (ι x))
          ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
-               (rl-implication (l x (ι x)) (∐-is-upperbound 𝓓 ε *))
+               (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε *))
          ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ * → reflexivity 𝓓 x)
+
+ -- TODO: Rename and move this
+ Π-⇔ : {X : 𝓤' ̇  } {A : X → 𝓥' ̇  } {B : X → 𝓦 ̇  }
+     → ((x : X) → A x ⇔ B x)
+     → Π A ⇔ Π B
+ Π-⇔ h = (λ f x → lr-implication (h x) (f x)) ,
+         (λ g x → rl-implication (h x) (g x))
+
+ left-adjoint-to-∐-map-characterization : (L : ⟨ 𝓓 ⟩ → Ind)
+                                        → left-adjoint-to-∐-map-criterion L
+                                        ⇔ left-adjoint-to-∐-map L
+ left-adjoint-to-∐-map-characterization L =
+  Π-⇔ (λ x → left-adjoint-to-∐-map-characterization-local x (L x))
 
 \end{code}
 
@@ -552,6 +564,8 @@ Continuity and pseudocontinuity (for comparison)
 is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
 
+-- TODO: Add truncated version of Johnstone-Joyal-≃
+
 being-continuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
                               → is-prop (is-continuous-dcpo 𝓓)
 being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
@@ -559,14 +573,14 @@ being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 -- is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 -- is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
 
-is-psuedocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
-is-psuedocontinuous-dcpo 𝓓 =
+is-pseudocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+is-pseudocontinuous-dcpo 𝓓 =
    (x : ⟨ 𝓓 ⟩)
  → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , (is-way-upperbound 𝓓 x α)
                                    × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
 
 being-psuedocontinuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
-                                   → is-prop (is-psuedocontinuous-dcpo 𝓓)
+                                   → is-prop (is-pseudocontinuous-dcpo 𝓓)
 being-psuedocontinuous-dcpo-is-prop 𝓓 = Π-is-prop fe (λ x → ∥∥-is-prop)
 
 continuous-dcpo-hierarchy₁ : (𝓓 : DCPO {𝓤} {𝓣})
@@ -576,7 +590,7 @@ continuous-dcpo-hierarchy₁ 𝓓 = ∣_∣
 
 continuous-dcpo-hierarchy₂ : (𝓓 : DCPO {𝓤} {𝓣})
                            → is-continuous-dcpo 𝓓
-                           → is-psuedocontinuous-dcpo 𝓓
+                           → is-pseudocontinuous-dcpo 𝓓
 continuous-dcpo-hierarchy₂ 𝓓 c x =
  ∥∥-functor (λ C → structurally-continuous-prime 𝓓 C x) c
 
@@ -613,6 +627,141 @@ TODO: Write some more
 
 \begin{code}
 
+open import UF-ImageAndSurjection
+
+open ImageAndSurjection pt
+
+record poset-reflection (X : 𝓤 ̇  ) (_≲_ : X → X → 𝓣 ̇  )
+                        (≲-is-prop-valued : (x y : X) → is-prop (x ≲ y))
+                        (≲-is-reflexive : (x : X) → x ≲ x)
+                        (≲-is-transitive : (x y z : X) → x ≲ y → y ≲ z → x ≲ z)
+                        : 𝓤ω where
+ field
+  X̃ : 𝓤 ⊔ 𝓣 ⁺ ̇
+  η : X → X̃
+  η-is-surjective : is-surjection η
+  _≤_ : X̃ → X̃ → 𝓣 ̇
+  ≤-is-prop-valued : (x' y' : X̃) → is-prop (x' ≤ y')
+  ≤-is-reflexive : (x' : X̃) → x' ≤ x'
+  ≤-is-transitive : (x' y' z' : X̃) → x' ≤ y' → y' ≤ z' → x' ≤ z'
+  ≤-is-antisymmetric : (x' y' : X̃) → x' ≤ y' → y' ≤ x' → x' ≡ y'
+  η-preserves-order : (x y : X) → x ≲ y → η x ≤ η y
+  η-reflects-order  : (x y : X) → η x ≤ η y → x ≲ y
+  universal-property : {Q : 𝓤' ̇  } (_⊑_ : Q → Q → 𝓣' ̇  )
+                     → ((q : Q) → q ⊑ q)
+                     → ((p q r : Q) → p ⊑ q → q ⊑ r → p ⊑ r)
+                     → ((p q : Q) → p ⊑ q → q ⊑ p → p ≡ q)
+                     → (f : X → Q)
+                     → ((x y : X) → x ≲ y → f x ⊑ f y)
+                     → ∃! f̃ ꞉ (X̃ → Q) , ((x' y' : X̃) → x' ≤ y' → f̃ x' ⊑ f̃ y')
+                                       × (f̃ ∘ η ≡ f)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ open Ind-completion 𝓓
+
+ module _
+         (pr : poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive)
+        where
+
+  open poset-reflection pr
+
+  Ind' : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
+  Ind' = X̃
+
+  -- TODO: Rename?
+  ∐-map'-helper : Σ f̃ ꞉ (Ind' → ⟨ 𝓓 ⟩) , ((σ' τ' : Ind') → σ' ≤ τ'
+                                                         → f̃ σ' ⊑⟨ 𝓓 ⟩ f̃ τ')
+                                       × (f̃ ∘ η ≡ ∐-map)
+  ∐-map'-helper = center (universal-property (underlying-order 𝓓)
+                    (reflexivity 𝓓) (transitivity 𝓓) (antisymmetry 𝓓)
+                    ∐-map ∐-map-is-monotone)
+
+  ∐-map' : Ind' → ⟨ 𝓓 ⟩
+  ∐-map' = pr₁ ∐-map'-helper
+
+  left-adjoint-to-∐-map' : (⟨ 𝓓 ⟩ → Ind') → 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
+  left-adjoint-to-∐-map' L' = (x : ⟨ 𝓓 ⟩) (α' : Ind') → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
+
+  being-left-adjoint-to-∐-map'-is-prop : (L' : ⟨ 𝓓 ⟩ → Ind')
+                                       → is-prop (left-adjoint-to-∐-map' L')
+  being-left-adjoint-to-∐-map'-is-prop L' =
+   Π₂-is-prop fe (λ x α' → ×-is-prop
+                            (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map' α')))
+                            (Π-is-prop fe (λ _ → ≤-is-prop-valued (L' x) α')))
+
+  ∐-map'-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
+  ∐-map'-has-specified-left-adjoint = Σ left-adjoint-to-∐-map'
+
+  ∐-map'-having-left-adjoint-is-prop : is-prop ∐-map'-has-specified-left-adjoint
+  ∐-map'-having-left-adjoint-is-prop
+   (L , L-is-left-adjoint) (L' , L'-is-left-adjoint) =
+    to-subtype-≡ being-left-adjoint-to-∐-map'-is-prop
+                 (dfunext fe (λ x → ≤-is-antisymmetric (L x) (L' x)
+                   (rl-implication (L-is-left-adjoint x (L' x))
+                                   (lr-implication (L'-is-left-adjoint x (L' x)) (≤-is-reflexive (L' x))))
+                   (rl-implication (L'-is-left-adjoint x (L x))
+                                   (lr-implication (L-is-left-adjoint x (L x)) (≤-is-reflexive (L x))))))
+
+  pseudo₁ : is-pseudocontinuous-dcpo 𝓓
+          → ∐-map'-has-specified-left-adjoint
+  pseudo₁ pc = L' , {!!}
+   where
+    L' : ⟨ 𝓓 ⟩ → Ind'
+    L' x = {!!}
+
+  pseudo₂ : ∐-map'-has-specified-left-adjoint
+          → is-pseudocontinuous-dcpo 𝓓
+  pseudo₂ (L' , L'-is-left-adjoint) x =
+   ∥∥-rec ∥∥-is-prop r (η-is-surjective (L' x))
+    where
+     r : (Σ σ ꞉ Ind , η σ ≡ L' x)
+       → ∥ Σ I ꞉ 𝓥 ̇  , Σ α ꞉ (I → ⟨ 𝓓 ⟩) , is-way-upperbound 𝓓 x α
+                                         × (Σ δ ꞉ is-Directed 𝓓 α , ∐ 𝓓 δ ≡ x) ∥
+     r (σ@(I , α , δ) , p) = ∣ I , α , pr₂ claim , (δ , pr₁ claim) ∣
+      where
+       claim : (∐ 𝓓 δ ≡ x) × is-way-upperbound 𝓓 x α
+       claim = rl-implication
+                (left-adjoint-to-∐-map-characterization-local x σ)
+                ladj-local
+        where
+         ladj-local : left-adjoint-to-∐-map-local x (I , α , δ)
+         ladj-local τ = ⦅⇒⦆ , ⦅⇐⦆
+          where
+           comm-eq : ∐-map' (η τ) ≡ ∐-map τ
+           comm-eq = happly (pr₂ (pr₂ ∐-map'-helper)) τ
+           ⦅⇒⦆ : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
+           ⦅⇒⦆ σ-cofinal-in-τ = x           ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+                               ∐-map' (η τ) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+                               ∐-map      τ ∎⟨ 𝓓 ⟩
+
+            where
+             ⦅2⦆ = ≡-to-⊑ 𝓓 comm-eq
+             ⦅1⦆ = lr-implication (L'-is-left-adjoint x (η τ))
+                   (≤-is-transitive (L' x) (η σ) (η τ)
+                     (transport (λ - → - ≤ η σ) p (≤-is-reflexive (η σ)))
+                     ησ-less-than-ητ)
+              where
+               ησ-less-than-ητ : η σ ≤ η τ
+               ησ-less-than-ητ = η-preserves-order σ τ σ-cofinal-in-τ
+           ⦅⇐⦆ : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
+           ⦅⇐⦆ x-below-∐τ = η-reflects-order σ τ lem
+            where
+             lem : η σ ≤ η τ
+             lem = back-transport (λ - → - ≤ η τ) p lem'
+              where
+               lem' : L' x ≤ η τ
+               lem' = rl-implication (L'-is-left-adjoint x (η τ))
+                       (x            ⊑⟨ 𝓓 ⟩[ x-below-∐τ            ]
+                        ∐-map τ      ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (comm-eq ⁻¹) ]
+                        ∐-map' (η τ) ∎⟨ 𝓓 ⟩)
+
+
+
+
+{-
 module _
         (pe : Prop-Ext)
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -648,5 +797,6 @@ module _
 
  -- TODO: Continue...
  -- Implement poset reflection abstractly? Perhaps just assume it (abstractly) here
+-}
 
 \end{code}
