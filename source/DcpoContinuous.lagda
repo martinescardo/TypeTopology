@@ -141,12 +141,17 @@ module Ind-completion
  left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
   -- (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
 
+ -- TODO: Move elsewhere
+ ⇔-is-prop : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → is-prop X → is-prop Y → is-prop (X ⇔ Y)
+ ⇔-is-prop X-is-prop Y-is-prop = ×-is-prop
+  (Π-is-prop fe (λ _ → Y-is-prop))
+  (Π-is-prop fe (λ _ → X-is-prop))
+
  being-left-adjoint-to-∐-map-is-prop : (L : ⟨ 𝓓 ⟩ → Ind)
                                      → is-prop (left-adjoint-to-∐-map L)
  being-left-adjoint-to-∐-map-is-prop L =
-  Π₂-is-prop fe (λ x α → ×-is-prop -- TODO: Implement ⇔-is-prop
-                          (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map α)))
-                          (Π-is-prop fe (λ _ → ≲-is-prop-valued (L x) α)))
+  Π₂-is-prop fe (λ x α → ⇔-is-prop (≲-is-prop-valued (L x) α)
+                                   (prop-valuedness 𝓓 x (∐-map α)))
 
  ∐-map-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-specified-left-adjoint = Σ left-adjoint-to-∐-map
@@ -576,8 +581,7 @@ being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 -- is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 -- is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
 
--- TODO: Add truncated version of Johnstone-Joyal-≃
--- Added the TODO:
+-- A truncated version of Johnstone-Joyal-≃
 
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
@@ -805,7 +809,7 @@ module _
                   pr₁ ω ∣ τ ∣   ≡⟨ (pr₂ ω τ) ⁻¹                         ⟩
                   η (J , β , ε) ∎
             lemma₁ : {σ τ : Ind'} → σ ≡ τ → σ ≤ η α ⇔ τ ≤ η α
-            lemma₁ refl = (id , id)
+            lemma₁ refl = ⇔-refl
           claim₂ : (η (J , β , ε) ≤ η α) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map' (η α)
           claim₂ = ⇔-trans ((η-reflects-order  (J , β , ε) α) ,
                             (η-preserves-order (J , β , ε) α))
@@ -815,7 +819,7 @@ module _
             eq₂ = happly (pr₂ (pr₂ ∐-map'-helper)) α
             lemma₂ : {d e : ⟨ 𝓓 ⟩} → d ≡ e
                    → x ⊑⟨ 𝓓 ⟩ d ⇔ x ⊑⟨ 𝓓 ⟩ e
-            lemma₂ refl = (id , id)
+            lemma₂ refl = ⇔-refl
             claim₂' : ((J , β , ε) ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
             claim₂' = lr-implication
                        (left-adjoint-to-∐-map-characterization-local
