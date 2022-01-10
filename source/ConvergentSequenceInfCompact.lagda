@@ -18,39 +18,40 @@ module ConvergentSequenceInfCompact (fe₀ : funext 𝓤₀ 𝓤₀) where
 open import Two-Properties
 open import InfCompact
 open import GenericConvergentSequence
+open import OrderNotation
+open import CanonicalMapNotation
 
 ℕ∞-inf-compact : inf-compact _≼_
 ℕ∞-inf-compact p = a , putative-root-lemma , lower-bound-lemma , uborlb-lemma
  where
   α : ℕ → 𝟚
-  α 0       = p (under 0)
-  α (succ n) = min𝟚 (α n) (p (under (succ n)))
+  α 0       = p (ι 0)
+  α (succ n) = min𝟚 (α n) (p (ι (succ n)))
 
   a : ℕ∞
   a = (α , λ i → Lemma[minab≤₂a])
 
-  Dagger₀ : (n : ℕ) → a ≡ under n → p (under n) ≡ ₀
-  Dagger₀ 0 r =  ap (λ - → incl - 0) r
-  Dagger₀ (succ n) r = p (under (succ n)) ≡⟨ w ⟩
-                       α (succ n)         ≡⟨ t ⟩
-                       ₀                  ∎
+  Dagger₀ : (n : ℕ) → a ≡ ι n → p (ι n) ≡ ₀
+  Dagger₀ 0        r = ap (λ - → incl - 0) r
+  Dagger₀ (succ n) r = p (ι (succ n)) ≡⟨ w ⟩
+                       α (succ n)     ≡⟨ t ⟩
+                       ₀              ∎
    where
     s : α n ≡ ₁
-    s = ap (λ - → incl - n) r ∙ under-diagonal₁ n
+    s = ap (λ - → incl - n) r ∙ ι-diagonal₁ n
 
-    t : α (succ n) ≡ ₀
-    t = α (succ n)                     ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-        incl (under (succ n)) (succ n) ≡⟨ under-diagonal₀ n ⟩
-        ₀                              ∎
+    t = α (succ n)                 ≡⟨ ap (λ - → incl - (succ n)) r ⟩
+        incl (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+        ₀                          ∎
 
-    w : p (under (succ n)) ≡ α (succ n)
-    w = (ap (λ - → min𝟚 - (p (under (succ n)))) s)⁻¹
+    w : p (ι (succ n)) ≡ α (succ n)
+    w = (ap (λ - → min𝟚 - (p (ι (succ n)))) s)⁻¹
 
-  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (under n) ≡ ₁
+  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (ι n) ≡ ₁
   Dagger₁ r 0 = ap (λ - → incl - 0) r
-  Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⟩
-                       α (succ n)         ≡⟨ t ⟩
-                       ₁                  ∎
+  Dagger₁ r (succ n) = p (ι (succ n)) ≡⟨ w ⟩
+                       α (succ n)     ≡⟨ t ⟩
+                       ₁              ∎
    where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
@@ -58,21 +59,21 @@ open import GenericConvergentSequence
     t : α (succ n) ≡ ₁
     t = ap (λ - → incl - (succ n)) r
 
-    w : p (under (succ n)) ≡ α (succ n)
-    w = (ap (λ - → min𝟚 - (p (under (succ n)))) s)⁻¹
+    w : p (ι (succ n)) ≡ α (succ n)
+    w = (ap (λ - → min𝟚 - (p (ι (succ n)))) s)⁻¹
 
-  Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
+  Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ ι n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
-    Lemma : a ≡ under n → p a ≡ ₀
-    Lemma t = p a         ≡⟨ ap p t ⟩
-              p (under n) ≡⟨ Dagger₀ n t ⟩
-              ₀           ∎
+    Lemma : a ≡ ι n → p a ≡ ₀
+    Lemma t = p a     ≡⟨ ap p t ⟩
+              p (ι n) ≡⟨ Dagger₀ n t ⟩
+              ₀       ∎
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
   Claim₁ r = not-finite-is-∞ fe₀ (Claim₀ r)
 
-  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (under n) ≡ ₁
+  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (ι n) ≡ ₁
   Claim₂ r = Dagger₁ (Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁
@@ -109,7 +110,7 @@ open import GenericConvergentSequence
 
   lower-bound-lemma u r (succ n) s = lemma
    where
-    remark : min𝟚 (incl a n) (p (under (succ n))) ≡ ₁
+    remark : min𝟚 (incl a n) (p (ι (succ n))) ≡ ₁
     remark = s
 
     IH : incl a n ≡ ₁ → incl u n ≡ ₁
@@ -118,19 +119,19 @@ open import GenericConvergentSequence
     claim₀ : incl u n ≡ ₁
     claim₀ = IH (Lemma[min𝟚ab≡₁→a≡₁] s)
 
-    claim₁ : p (under (succ n)) ≡ ₁
+    claim₁ : p (ι (succ n)) ≡ ₁
     claim₁ = Lemma[min𝟚ab≡₁→b≡₁]{(incl a n)} s
 
-    claim₂ : incl u (succ n) ≡ ₀ → u ≡ under (succ n)
+    claim₂ : incl u (succ n) ≡ ₀ → u ≡ ι (succ n)
     claim₂ = Succ-criterion fe₀ claim₀
 
-    claim₃ : incl u (succ n) ≡ ₀ → p u ≡ p (under (succ n))
+    claim₃ : incl u (succ n) ≡ ₀ → p u ≡ p (ι (succ n))
     claim₃ t = ap p (claim₂ t)
 
     claim₄ : incl u (succ n) ≡ ₀ → p u ≡ ₁
-    claim₄ t = p u                ≡⟨ claim₃ t ⟩
-               p (under (succ n)) ≡⟨ claim₁ ⟩
-               ₁                  ∎
+    claim₄ t = p u            ≡⟨ claim₃ t ⟩
+               p (ι (succ n)) ≡⟨ claim₁ ⟩
+               ₁              ∎
 
     claim₅ : incl u (succ n) ≢ ₀
     claim₅ t = equal-₁-different-from-₀ (claim₄ t) r

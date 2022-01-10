@@ -54,6 +54,7 @@ open import DcpoBilimitsSequential pt fe 𝓤₁ 𝓤₁
 
 open import NaturalsOrder
 open import NaturalsAddition renaming (_+_ to _+'_)
+open import OrderNotation
 
 \end{code}
 

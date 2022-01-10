@@ -1844,26 +1844,3 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
   ι {{canonical-map-𝓡-to-𝓡∞}} = 𝓡-to-𝓡∞
 
 \end{code}
-
-Thoughts about limits of Cauchy sequences. Suppose we have 𝔁 : ℕ → ℝ
-satisfying
-
-  (ε : ℚ) → ε > 0 → ∃ k : ℕ , ((i j : ℕ) → d (𝔁 (k + i) , 𝔁 (k + j)) < ε).
-
-How do we define its limit as a Dedekind real?
-
-Notice that the relation d (x , y) < ε is equivalent to
-
-  ∃ p q : ℚ , (p < x) × (y < q) × (q < p + ε).
-
-Call the limit (to be constructed) y.
-
-By definition of limit, for every ε > 0 there is k such that, for all
-i, we have d (𝔁 (k+i), y) < ε.
-
-
-Write B r x for the open ball of radius r centered at x.
-
-B ε (𝔁 (k + i)) ⊆ B ε (𝔁 k)
-
-means d (𝔁 (k + i) , y) < ε → d (𝔁 k , y) < ε

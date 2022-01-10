@@ -26,6 +26,7 @@ open import UF-PropTrunc
 open import GenericConvergentSequence
 open import CompactTypes
 open import DiscreteAndSeparated
+open import CanonicalMapNotation
 
 \end{code}
 
@@ -37,10 +38,10 @@ This is the main theorem proved in this module:
 ℕ∞-compact∙ p = a , Lemma
  where
   α : ℕ → 𝟚
-  α 0       = p (under 0)
-  α(succ n) = min𝟚 (α n) (p (under(succ n)))
+  α 0       = p (ι 0)
+  α(succ n) = min𝟚 (α n) (p (ι (succ n)))
 
-  d' : (n : ℕ) → min𝟚 (α n) (p (under(succ n))) ≡ ₁ → α n ≡ ₁
+  d' : (n : ℕ) → min𝟚 (α n) (p (ι (succ n))) ≡ ₁ → α n ≡ ₁
   d' n = Lemma[minab≤₂a] {α n}
 
   d : is-decreasing α
@@ -49,57 +50,55 @@ This is the main theorem proved in this module:
   a : ℕ∞
   a = (α , d)
 
-  Dagger₀ : (n : ℕ) → a ≡ under n → p (under n) ≡ ₀
-  Dagger₀ 0 r =  p (under 0)      ≡⟨ refl ⟩
-                 α 0              ≡⟨ ap (λ - → incl - 0) r ⟩
-                 incl (under 0) 0 ≡⟨ refl ⟩
-                 ₀                ∎
+  Dagger₀ : (n : ℕ) → a ≡ ι n → p (ι n) ≡ ₀
+  Dagger₀ 0 r =  p (ι 0)      ≡⟨ refl ⟩
+                 α 0          ≡⟨ ap (λ - → incl - 0) r ⟩
+                 incl (ι 0) 0 ≡⟨ refl ⟩
+                 ₀            ∎
 
-  Dagger₀ (succ n) r = p (under (succ n))             ≡⟨ w ⁻¹ ⟩
-                       α (succ n)                     ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-                       incl (under (succ n)) (succ n) ≡⟨ under-diagonal₀ n ⟩
-                       ₀                              ∎
+  Dagger₀ (succ n) r = p (ι (succ n))             ≡⟨ w ⁻¹ ⟩
+                       α (succ n)                 ≡⟨ ap (λ - → incl - (succ n)) r ⟩
+                       incl (ι (succ n)) (succ n) ≡⟨ ι-diagonal₀ n ⟩
+                       ₀                          ∎
    where
-    t : α n ≡ ₁
-    t = α n                     ≡⟨ ap (λ - → incl - n) r  ⟩
-        incl (under (succ n)) n ≡⟨ under-diagonal₁ n ⟩
-        ₁                       ∎
+    t = α n                 ≡⟨ ap (λ - → incl - n) r  ⟩
+        incl (ι (succ n)) n ≡⟨ ι-diagonal₁ n ⟩
+        ₁                   ∎
 
-    w : α(succ n) ≡ p (under(succ n))
-    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p (under(succ n)))) t ⟩
-        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
-        p (under(succ n))           ∎
+    w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) t ⟩
+        min𝟚 ₁ (p (ι (succ n))) ≡⟨ refl ⟩
+        p (ι (succ n))          ∎
 
-  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (under n) ≡ ₁
-  Dagger₁ r 0 = p (under 0) ≡⟨ refl ⟩
+  Dagger₁ : a ≡ ∞ → (n : ℕ) → p (ι n) ≡ ₁
+  Dagger₁ r 0 = p (ι 0) ≡⟨ refl ⟩
                 α 0         ≡⟨ ap (λ - → incl - 0) r ⟩
                 incl ∞ 0    ≡⟨ refl ⟩
                 ₁           ∎
-  Dagger₁ r (succ n) = p (under (succ n)) ≡⟨ w ⁻¹ ⟩
-                       α (succ n)         ≡⟨ ap (λ - → incl - (succ n)) r ⟩
-                       incl ∞ (succ n)    ≡⟨ refl ⟩
-                       ₁                  ∎
+  Dagger₁ r (succ n) = p (ι (succ n))  ≡⟨ w ⁻¹ ⟩
+                       α (succ n)      ≡⟨ ap (λ - → incl - (succ n)) r ⟩
+                       incl ∞ (succ n) ≡⟨ refl ⟩
+                       ₁               ∎
    where
     s : α n ≡ ₁
     s = ap (λ - → incl - n) r
 
-    w : α(succ n) ≡ p (under(succ n))
-    w = α (succ n)                  ≡⟨ ap (λ - → min𝟚 - (p (under(succ n)))) s ⟩
-        min𝟚 ₁ (p (under (succ n))) ≡⟨ refl ⟩
-        p (under (succ n))          ∎
+    w : α(succ n) ≡ p (ι (succ n))
+    w = α (succ n)              ≡⟨ ap (λ - → min𝟚 - (p (ι (succ n)))) s ⟩
+        min𝟚 ₁ (p (ι (succ n))) ≡⟨ refl ⟩
+        p (ι (succ n))          ∎
 
-  Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ under n
+  Claim₀ : p a ≡ ₁ → (n : ℕ) → a ≢ ι n
   Claim₀ r n s = equal-₁-different-from-₀ r (Lemma s)
    where
-    Lemma : a ≡ under n → p a ≡ ₀
-    Lemma t = p a         ≡⟨ ap p t ⟩
-              p (under n) ≡⟨ Dagger₀ n t ⟩
-              ₀           ∎
+    Lemma : a ≡ ι n → p a ≡ ₀
+    Lemma t = p a     ≡⟨ ap p t ⟩
+              p (ι n) ≡⟨ Dagger₀ n t ⟩
+              ₀       ∎
 
   Claim₁ : p a ≡ ₁ → a ≡ ∞
   Claim₁ r = not-finite-is-∞ fe (Claim₀ r)
 
-  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (under n) ≡ ₁
+  Claim₂ : p a ≡ ₁ → (n : ℕ) → p (ι n) ≡ ₁
   Claim₂ r = Dagger₁(Claim₁ r)
 
   Claim₃ : p a ≡ ₁ → p ∞ ≡ ₁

@@ -30,10 +30,11 @@ open import OrdinalsType
 open import OrdinalArithmetic fe
 open import OrdinalsWellOrderArithmetic
 open import ToppedOrdinalsType fe
-open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
-open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
+open import GenericConvergentSequence
+open import NaturalsOrder
 open import InjectiveTypes fe
 open import SquashedSum fe
+open import CanonicalMapNotation
 
 open import UF-Subsingletons
 open import UF-Embeddings
@@ -109,7 +110,7 @@ ordinals defined above.
 \begin{code}
 
 ∑¹ : (ℕ → Ordᵀ) → Ordᵀ
-∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ (under , under-embedding fe₀))
+∑¹ τ = ∑ ℕ∞ᵒ (τ ↗ (ι , ι-embedding fe₀))
 
 \end{code}
 

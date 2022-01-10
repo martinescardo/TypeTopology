@@ -76,6 +76,7 @@ open import TheTopologyOfTheUniverse fe
 open import GenericConvergentSequence
 open import WLPO
 open import BasicDiscontinuityTaboo fe
+open import CanonicalMapNotation
 
 \end{code}
 
@@ -97,7 +98,7 @@ Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma ,
   Q : ℕ∞ → 𝓤 ̇
   Q = pr₁ (Universe-Indiscreteness-Theorem (λ i → X) Y)
 
-  Q-lemma : (i : ℕ) → Q (under i) ≃ X
+  Q-lemma : (i : ℕ) → Q (ι i) ≃ X
   Q-lemma = pr₁ (pr₂ (Universe-Indiscreteness-Theorem (λ i → X) Y))
 
   Q-lemma∞ : Q ∞ ≃ Y
@@ -106,8 +107,8 @@ Rice's-Theorem-for-U {𝓤} P e X Y r s = basic-discontinuity-taboo p (p-lemma ,
   p : ℕ∞ → 𝟚
   p u = P (Q u)
 
-  p-lemma : (i : ℕ) → p (under i) ≡ ₀
-  p-lemma i = e (Q (under i)) X (Q-lemma i) ∙ r
+  p-lemma : (i : ℕ) → p (ι i) ≡ ₀
+  p-lemma i = e (Q (ι i)) X (Q-lemma i) ∙ r
 
   p-lemma∞ : p ∞ ≡ ₁
   p-lemma∞ = e (Q ∞) Y Q-lemma∞ ∙ s
