@@ -20,6 +20,7 @@ open PropositionalTruncation pt
 
 open import UF-Base hiding (_≈_)
 open import UF-Equiv
+open import UF-EquivalenceExamples
 
 open import UF-Subsingletons
 open import UF-Subsingletons-FunExt
@@ -137,33 +138,44 @@ module Ind-completion
  left-adjoint-to-∐-map-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β) -- TODO: Replace by ≃?
 
- left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
-  -- (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
-
  -- TODO: Move elsewhere
  ⇔-is-prop : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → is-prop X → is-prop Y → is-prop (X ⇔ Y)
  ⇔-is-prop X-is-prop Y-is-prop = ×-is-prop
   (Π-is-prop fe (λ _ → Y-is-prop))
   (Π-is-prop fe (λ _ → X-is-prop))
 
+ left-adjoint-to-∐-map-local-is-prop : (x : ⟨ 𝓓 ⟩) (σ : Ind)
+                                     → is-prop (left-adjoint-to-∐-map-local x σ)
+ left-adjoint-to-∐-map-local-is-prop x σ =
+  Π-is-prop fe (λ τ → ⇔-is-prop (≲-is-prop-valued σ τ)
+                                (prop-valuedness 𝓓 x (∐-map τ)))
+
+ left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
+  -- (x : ⟨ 𝓓 ⟩) (α : Ind) → (L x ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
+
  being-left-adjoint-to-∐-map-is-prop : (L : ⟨ 𝓓 ⟩ → Ind)
                                      → is-prop (left-adjoint-to-∐-map L)
  being-left-adjoint-to-∐-map-is-prop L =
-  Π₂-is-prop fe (λ x α → ⇔-is-prop (≲-is-prop-valued (L x) α)
-                                   (prop-valuedness 𝓓 x (∐-map α)))
+  Π-is-prop fe (λ x → left-adjoint-to-∐-map-local-is-prop x (L x))
 
  ∐-map-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  ∐-map-has-specified-left-adjoint = Σ left-adjoint-to-∐-map
 
- left-adjoint-to-∐-map-criterion-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map-criterion-local x (I , α , δ) =
+ left-adjoint-to-∐-map-local-criterion : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ left-adjoint-to-∐-map-local-criterion x (I , α , δ) =
   (∐ 𝓓 δ ≡ x) × ((i : I) → α i ≪⟨ 𝓓 ⟩ x)
+
+ left-adjoint-to-∐-map-local-criterion-is-prop :
+    (x : ⟨ 𝓓 ⟩) (σ : Ind)
+  → is-prop (left-adjoint-to-∐-map-local-criterion x σ)
+ left-adjoint-to-∐-map-local-criterion-is-prop x σ =
+  ×-is-prop (sethood 𝓓) (Π-is-prop fe (λ i → ≪-is-prop-valued 𝓓))
 
  left-adjoint-to-∐-map-criterion : (⟨ 𝓓 ⟩ → Ind)
                                  → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  left-adjoint-to-∐-map-criterion L =
-  (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-criterion-local x (L x)
+  (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local-criterion x (L x)
 
  ≲-to-⊑-of-∐ : {I J : 𝓥 ̇  } {α : I → ⟨ 𝓓 ⟩} {β : J → ⟨ 𝓓 ⟩}
                (δ : is-Directed 𝓓 α) (ε : is-Directed 𝓓 β)
@@ -198,56 +210,56 @@ module Ind-completion
 
  left-adjoint-to-∐-map-characterization-local :
     (x : ⟨ 𝓓 ⟩) (σ : Ind)
-  → left-adjoint-to-∐-map-criterion-local x σ
-  ⇔ left-adjoint-to-∐-map-local x σ
- left-adjoint-to-∐-map-characterization-local x σ@(I , α , δ) = ⦅⇒⦆ , ⦅⇐⦆
-  where
-   ⦅⇒⦆ : left-adjoint-to-∐-map-criterion-local x σ
-       → left-adjoint-to-∐-map-local x σ
-   ⦅⇒⦆ (x-sup-of-α , α-way-below-x) τ@(J , β , ε) = lr , rl
-    where
-     lr : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
-     lr α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-sup-of-α
-                          (≲-to-⊑-of-∐ δ ε α-cofinal-in-β)
-     rl : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
-     rl x-below-∐β i = α-way-below-x i J β ε x-below-∐β
-   ⦅⇐⦆ : left-adjoint-to-∐-map-local x σ
-       → left-adjoint-to-∐-map-criterion-local x σ
-   ⦅⇐⦆ ladj = ⦅1⦆ , ⦅2⦆
-    where
-     ⦅2⦆ : (i : I) → α i ≪⟨ 𝓓 ⟩ x
-     ⦅2⦆ i J β ε x-below-∐β = h i
-      where
-       h : (I , α , δ) ≲ (J , β , ε)
-       h = rl-implication (ladj (J , β , ε)) x-below-∐β
-     ⦅1⦆ : ∐ 𝓓 δ ≡ x
-     ⦅1⦆ = antisymmetry 𝓓 (∐ 𝓓 δ) x u v
-      where
-       v : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
-       v = lr-implication (ladj (I , α , δ)) (≲-is-reflexive (I , α , δ))
-       u : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ x
-       u = ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅a⦆ ]
-           ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩[ ⦅b⦆ ]
-           x     ∎⟨ 𝓓 ⟩
-        where
-         ε : is-Directed 𝓓 ⌞ x ⌟
-         ε = ⌞⌟-is-directed x
-         ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
-               (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε ⋆))
-         ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ _ → reflexivity 𝓓 x)
-
- -- TODO: Rename and move this
- Π-⇔ : {X : 𝓤' ̇  } {A : X → 𝓥' ̇  } {B : X → 𝓦 ̇  }
-     → ((x : X) → A x ⇔ B x)
-     → Π A ⇔ Π B
- Π-⇔ h = (λ f x → lr-implication (h x) (f x)) ,
-         (λ g x → rl-implication (h x) (g x))
+  → left-adjoint-to-∐-map-local-criterion x σ
+  ≃ left-adjoint-to-∐-map-local x σ
+ left-adjoint-to-∐-map-characterization-local x σ@(I , α , δ) =
+  logically-equivalent-props-are-equivalent
+   (left-adjoint-to-∐-map-local-criterion-is-prop x σ)
+   (left-adjoint-to-∐-map-local-is-prop x σ)
+   ⦅⇒⦆ ⦅⇐⦆
+   where
+    ⦅⇒⦆ : left-adjoint-to-∐-map-local-criterion x σ
+        → left-adjoint-to-∐-map-local x σ
+    ⦅⇒⦆ (x-sup-of-α , α-way-below-x) τ@(J , β , ε) = lr , rl
+     where
+      lr : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
+      lr α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-sup-of-α
+                           (≲-to-⊑-of-∐ δ ε α-cofinal-in-β)
+      rl : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
+      rl x-below-∐β i = α-way-below-x i J β ε x-below-∐β
+    ⦅⇐⦆ : left-adjoint-to-∐-map-local x σ
+        → left-adjoint-to-∐-map-local-criterion x σ
+    ⦅⇐⦆ ladj = ⦅1⦆ , ⦅2⦆
+     where
+      ⦅2⦆ : (i : I) → α i ≪⟨ 𝓓 ⟩ x
+      ⦅2⦆ i J β ε x-below-∐β = h i
+       where
+        h : (I , α , δ) ≲ (J , β , ε)
+        h = rl-implication (ladj (J , β , ε)) x-below-∐β
+      ⦅1⦆ : ∐ 𝓓 δ ≡ x
+      ⦅1⦆ = antisymmetry 𝓓 (∐ 𝓓 δ) x u v
+       where
+        v : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ
+        v = lr-implication (ladj (I , α , δ)) (≲-is-reflexive (I , α , δ))
+        u : ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩ x
+        u = ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅a⦆ ]
+            ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩[ ⦅b⦆ ]
+            x     ∎⟨ 𝓓 ⟩
+         where
+          ε : is-Directed 𝓓 ⌞ x ⌟
+          ε = ⌞⌟-is-directed x
+          ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
+                (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε ⋆))
+          ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ _ → reflexivity 𝓓 x)
 
  left-adjoint-to-∐-map-characterization : (L : ⟨ 𝓓 ⟩ → Ind)
                                         → left-adjoint-to-∐-map-criterion L
-                                        ⇔ left-adjoint-to-∐-map L
+                                        ≃ left-adjoint-to-∐-map L
  left-adjoint-to-∐-map-characterization L =
-  Π-⇔ (λ x → left-adjoint-to-∐-map-characterization-local x (L x))
+  Π-cong fe fe ⟨ 𝓓 ⟩
+   (λ x → left-adjoint-to-∐-map-local-criterion x (L x))
+   (λ x → left-adjoint-to-∐-map-local x (L x))
+   (λ x → left-adjoint-to-∐-map-characterization-local x (L x))
 
 \end{code}
 
@@ -360,8 +372,7 @@ module _
   }
    where
     crit : left-adjoint-to-∐-map-criterion L
-    crit = rl-implication (left-adjoint-to-∐-map-characterization L)
-            L-left-adjoint
+    crit = ⌜ left-adjoint-to-∐-map-characterization L ⌝⁻¹ L-left-adjoint
 
  Johnstone-Joyal₂ : structurally-continuous 𝓓
                   → ∐-map-has-specified-left-adjoint
@@ -828,10 +839,9 @@ module _
                    → x ⊑⟨ 𝓓 ⟩ d ⇔ x ⊑⟨ 𝓓 ⟩ e
             lemma₂ refl = ⇔-refl
             claim₂' : ((J , β , ε) ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
-            claim₂' = lr-implication
-                       (left-adjoint-to-∐-map-characterization-local
-                         x (J , β , ε))
-                       (x-sup-of-β , β-way-below-x) α
+            claim₂' = ⌜ left-adjoint-to-∐-map-characterization-local
+                         x (J , β , ε) ⌝
+                      (x-sup-of-β , β-way-below-x) α
 
   pseudo₂ : ∐-map'-has-specified-left-adjoint
           → is-pseudocontinuous-dcpo 𝓓
@@ -844,8 +854,7 @@ module _
      r (σ@(I , α , δ) , p) = ∣ I , α , pr₂ claim , (δ , pr₁ claim) ∣
       where
        claim : (∐ 𝓓 δ ≡ x) × is-way-upperbound 𝓓 x α
-       claim = rl-implication
-                (left-adjoint-to-∐-map-characterization-local x σ)
+       claim = ⌜ left-adjoint-to-∐-map-characterization-local x σ ⌝⁻¹
                 ladj-local
         where
          ladj-local : left-adjoint-to-∐-map-local x (I , α , δ)
