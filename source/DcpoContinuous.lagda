@@ -664,14 +664,14 @@ open import UF-ImageAndSurjection
 
 open ImageAndSurjection pt
 
-record poset-reflection (X : 𝓤 ̇  ) (_≲_ : X → X → 𝓣 ̇  )
+record poset-reflection (F : Universe → Universe → Universe)
+                        (X : 𝓤 ̇  ) (_≲_ : X → X → 𝓣 ̇  )
                         (≲-is-prop-valued : (x y : X) → is-prop (x ≲ y))
                         (≲-is-reflexive : (x : X) → x ≲ x)
                         (≲-is-transitive : (x y z : X) → x ≲ y → y ≲ z → x ≲ z)
                         : 𝓤ω where
  field
-  X̃ : 𝓤 ⊔ 𝓣 ⁺ ̇  -- maybe assume this to be in some universe that is a general
-                -- function of 𝓤 and 𝓣
+  X̃ : F 𝓤 𝓣 ̇   -- X̃ can live in any type universe, possibly depending on 𝓤 and 𝓣
   X̃-is-set : is-set X̃ -- This follows from the properties of ≤, so it's
                       -- actually redundant, but convenient to assume it.
   η : X → X̃
@@ -683,6 +683,9 @@ record poset-reflection (X : 𝓤 ̇  ) (_≲_ : X → X → 𝓣 ̇  )
   ≤-is-antisymmetric : (x' y' : X̃) → x' ≤ y' → y' ≤ x' → x' ≡ y'
   η-preserves-order : (x y : X) → x ≲ y → η x ≤ η y
   η-reflects-order  : (x y : X) → η x ≤ η y → x ≲ y
+  -- Important: the universal property should apply to *any* poset,
+  -- possibly with different universe parameters than the preorder (X , ≲)
+  -- and the poset (X̃ , ≤).
   universal-property : {Q : 𝓤' ̇  } (_⊑_ : Q → Q → 𝓣' ̇  )
                      → ((q : Q) → q ⊑ q)
                      → ((p q r : Q) → p ⊑ q → q ⊑ r → p ⊑ r)
@@ -693,36 +696,40 @@ record poset-reflection (X : 𝓤 ̇  ) (_≲_ : X → X → 𝓣 ̇  )
                                        × (f̃ ∘ η ≡ f)
 
 module _
+        (F : Universe → Universe → Universe)
         (𝓓 : DCPO {𝓤} {𝓣})
        where
 
  open Ind-completion 𝓓
 
  module _
-         (pr : poset-reflection Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive)
+         (pr : poset-reflection F Ind _≲_ ≲-is-prop-valued ≲-is-reflexive ≲-is-transitive)
         where
 
   open poset-reflection pr
 
-  Ind' : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
+  Ind' : F (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣) ̇
   Ind' = X̃
 
   Ind'-is-set : is-set Ind'
   Ind'-is-set = X̃-is-set
 
-  -- TODO: Rename?
-  ∐-map'-helper : Σ f̃ ꞉ (Ind' → ⟨ 𝓓 ⟩) , ((σ' τ' : Ind') → σ' ≤ τ'
-                                                         → f̃ σ' ⊑⟨ 𝓓 ⟩ f̃ τ')
-                                       × (f̃ ∘ η ≡ ∐-map)
-  ∐-map'-helper = center (universal-property (underlying-order 𝓓)
-                    (reflexivity 𝓓) (transitivity 𝓓) (antisymmetry 𝓓)
-                    ∐-map ∐-map-is-monotone)
+  ∐-map'-specification :
+    Σ f̃ ꞉ (Ind' → ⟨ 𝓓 ⟩) , ((σ' τ' : Ind') → σ' ≤ τ'
+                                           → f̃ σ' ⊑⟨ 𝓓 ⟩ f̃ τ')
+                         × (f̃ ∘ η ≡ ∐-map)
+  ∐-map'-specification =
+   center (universal-property (underlying-order 𝓓)
+                              (reflexivity 𝓓) (transitivity 𝓓) (antisymmetry 𝓓)
+                              ∐-map ∐-map-is-monotone)
 
   ∐-map' : Ind' → ⟨ 𝓓 ⟩
-  ∐-map' = pr₁ ∐-map'-helper
+  ∐-map' = pr₁ ∐-map'-specification
 
-  left-adjoint-to-∐-map' : (⟨ 𝓓 ⟩ → Ind') → 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
-  left-adjoint-to-∐-map' L' = (x : ⟨ 𝓓 ⟩) (α' : Ind') → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
+  left-adjoint-to-∐-map' : (⟨ 𝓓 ⟩ → Ind')
+                         → (𝓥 ⊔ 𝓤 ⊔ 𝓣 ⊔ F (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)) ̇
+  left-adjoint-to-∐-map' L' =
+   (x : ⟨ 𝓓 ⟩) (α' : Ind') → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
 
   being-left-adjoint-to-∐-map'-is-prop : (L' : ⟨ 𝓓 ⟩ → Ind')
                                        → is-prop (left-adjoint-to-∐-map' L')
@@ -731,7 +738,7 @@ module _
                             (Π-is-prop fe (λ _ → prop-valuedness 𝓓 x (∐-map' α')))
                             (Π-is-prop fe (λ _ → ≤-is-prop-valued (L' x) α')))
 
-  ∐-map'-has-specified-left-adjoint : 𝓥 ⁺ ⊔ 𝓣 ⁺ ⊔ 𝓤 ̇
+  ∐-map'-has-specified-left-adjoint : (𝓥 ⊔ 𝓤 ⊔ 𝓣 ⊔ F (𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣) (𝓥 ⊔ 𝓣)) ̇
   ∐-map'-has-specified-left-adjoint = Σ left-adjoint-to-∐-map'
 
   ∐-map'-having-left-adjoint-is-prop : is-prop ∐-map'-has-specified-left-adjoint
@@ -816,7 +823,7 @@ module _
                            (⇔-trans claim₂' (lemma₂ (eq₂ ⁻¹)))
            where
             eq₂ : ∐-map' (η α) ≡ ∐-map α
-            eq₂ = happly (pr₂ (pr₂ ∐-map'-helper)) α
+            eq₂ = happly (pr₂ (pr₂ ∐-map'-specification)) α
             lemma₂ : {d e : ⟨ 𝓓 ⟩} → d ≡ e
                    → x ⊑⟨ 𝓓 ⟩ d ⇔ x ⊑⟨ 𝓓 ⟩ e
             lemma₂ refl = ⇔-refl
@@ -845,7 +852,7 @@ module _
          ladj-local τ = ⦅⇒⦆ , ⦅⇐⦆
           where
            comm-eq : ∐-map' (η τ) ≡ ∐-map τ
-           comm-eq = happly (pr₂ (pr₂ ∐-map'-helper)) τ
+           comm-eq = happly (pr₂ (pr₂ ∐-map'-specification)) τ
            ⦅⇒⦆ : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
            ⦅⇒⦆ σ-cofinal-in-τ = x           ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
                                ∐-map' (η τ) ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
