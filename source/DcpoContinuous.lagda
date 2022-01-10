@@ -135,7 +135,7 @@ module Ind-completion
  ∐-map (I , α , δ) = ∐ 𝓓 δ
 
  left-adjoint-to-∐-map-local : ⟨ 𝓓 ⟩ → Ind → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
- left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β)
+ left-adjoint-to-∐-map-local x α = (β : Ind) → (α ≲ β) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map β) -- TODO: Replace by ≃?
 
  left-adjoint-to-∐-map : (⟨ 𝓓 ⟩ → Ind) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
  left-adjoint-to-∐-map L = (x : ⟨ 𝓓 ⟩) → left-adjoint-to-∐-map-local x (L x)
@@ -179,11 +179,17 @@ module Ind-completion
  ∐-map-is-monotone : (α β : Ind) → α ≲ β → ∐-map α ⊑⟨ 𝓓 ⟩ ∐-map β
  ∐-map-is-monotone (I , α , δ) (J , β , ε) = ≲-to-⊑-of-∐ δ ε
 
- ι : ⟨ 𝓓 ⟩ → Ind
- ι x = 𝟙 , (λ _ → x) , ∣ * ∣ , σ
+ ⌞_⌟ : ⟨ 𝓓 ⟩ → (𝟙{𝓥} → ⟨ 𝓓 ⟩)
+ ⌞_⌟ x = λ _ → x
+
+ ⌞⌟-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 ⌞ x ⌟
+ ⌞⌟-is-directed x = ∣ * ∣ , σ
   where
    σ : is-semidirected (underlying-order 𝓓) (λ _ → x)
    σ i j = ∣ * , reflexivity 𝓓 x , reflexivity 𝓓 x ∣
+
+ ι : ⟨ 𝓓 ⟩ → Ind
+ ι x = 𝟙 , ⌞ x ⌟ , ⌞⌟-is-directed x
 
  left-adjoint-to-∐-map-characterization-local :
     (x : ⟨ 𝓓 ⟩) (σ : Ind)
@@ -193,13 +199,13 @@ module Ind-completion
   where
    ⦅⇒⦆ : left-adjoint-to-∐-map-criterion-local x σ
        → left-adjoint-to-∐-map-local x σ
-   ⦅⇒⦆ (x-is-sup-of-α , x-is-way-upperbound-of-α) τ@(J , β , ε) = lr , rl
+   ⦅⇒⦆ (x-sup-of-α , α-way-below-x) τ@(J , β , ε) = lr , rl
     where
      lr : σ ≲ τ → x ⊑⟨ 𝓓 ⟩ ∐-map τ
-     lr α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-is-sup-of-α
+     lr α-cofinal-in-β = transport (λ - → - ⊑⟨ 𝓓 ⟩ ∐-map τ) x-sup-of-α
                           (≲-to-⊑-of-∐ δ ε α-cofinal-in-β)
      rl : x ⊑⟨ 𝓓 ⟩ ∐-map τ → σ ≲ τ
-     rl x-below-∐β i = x-is-way-upperbound-of-α i J β ε x-below-∐β
+     rl x-below-∐β i = α-way-below-x i J β ε x-below-∐β
    ⦅⇐⦆ : left-adjoint-to-∐-map-local x σ
        → left-adjoint-to-∐-map-criterion-local x σ
    ⦅⇐⦆ ladj = ⦅1⦆ , ⦅2⦆
@@ -219,8 +225,8 @@ module Ind-completion
            ∐ 𝓓 ε ⊑⟨ 𝓓 ⟩[ ⦅b⦆ ]
            x     ∎⟨ 𝓓 ⟩
         where
-         ε : is-Directed 𝓓 (pr₁ (pr₂ (ι x)))
-         ε = pr₂ (pr₂ (ι x))
+         ε : is-Directed 𝓓 ⌞ x ⌟
+         ε = ⌞⌟-is-directed x
          ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
                (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε *))
          ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ * → reflexivity 𝓓 x)
@@ -372,7 +378,6 @@ module _
      ⦅2⦆ : x ⊑⟨ 𝓓 ⟩ ∐ 𝓓 δ → L x ≲ (I , α , δ)
      ⦅2⦆ x-below-∐α j = approximating-family-is-way-below x j I α δ x-below-∐α
 
- -- TODO: Are the above equivalences?
  Johnstone-Joyal-≃ : ∐-map-has-specified-left-adjoint
                    ≃ structurally-continuous 𝓓
  Johnstone-Joyal-≃ = qinveq f (g , σ , τ)
@@ -564,14 +569,38 @@ Continuity and pseudocontinuity (for comparison)
 is-continuous-dcpo : DCPO {𝓤} {𝓣} → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-continuous-dcpo 𝓓 = ∥ structurally-continuous 𝓓 ∥
 
--- TODO: Add truncated version of Johnstone-Joyal-≃
-
 being-continuous-dcpo-is-prop : (𝓓 : DCPO {𝓤} {𝓣})
                               → is-prop (is-continuous-dcpo 𝓓)
 being-continuous-dcpo-is-prop 𝓓 = ∥∥-is-prop
 
 -- is-continuous-dcpo' : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 -- is-continuous-dcpo' 𝓓 = ∥ structurally-continuous' 𝓓 ∥
+
+-- TODO: Add truncated version of Johnstone-Joyal-≃
+-- Added the TODO:
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ open Ind-completion 𝓓
+
+ ∐-map-has-unspecified-left-adjoint : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ ∐-map-has-unspecified-left-adjoint = ∥ ∐-map-has-specified-left-adjoint ∥
+
+ -- TODO: Move this
+ ∥∥-cong : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } → X ≃ Y → ∥ X ∥ ≃ ∥ Y ∥
+ ∥∥-cong e = logically-equivalent-props-are-equivalent ∥∥-is-prop ∥∥-is-prop
+              (∥∥-functor ⌜ e ⌝) (∥∥-functor ⌜ e ⌝⁻¹)
+
+ continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint :
+   ∐-map-has-unspecified-left-adjoint ≃ is-continuous-dcpo 𝓓
+ continuous-dcpo-iff-∐-map-has-unspecified-left-adjoint =
+  ∥∥-cong (Johnstone-Joyal-≃ 𝓓)
+
+\end{code}
+
+\begin{code}
 
 is-pseudocontinuous-dcpo : (𝓓 : DCPO {𝓤} {𝓣}) → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
 is-pseudocontinuous-dcpo 𝓓 =
@@ -713,6 +742,17 @@ module _
                                    (lr-implication (L-is-left-adjoint x (L x))
                                      (≤-is-reflexive (L x))))))
 
+  -- TODO: Move these two general lemmas
+  open import UF-EquivalenceExamples
+
+  ⇔-trans : {X : 𝓤' ̇  } {Y : 𝓥' ̇  } {Z : 𝓦' ̇  }
+         → X ⇔ Y → Y ⇔ Z → X ⇔ Z
+  ⇔-trans (f , g) (h , k) = (h ∘ f , g ∘ k)
+
+  ⇔-refl : {X : 𝓤' ̇  } → X ⇔ X
+  ⇔-refl = (id , id)
+  --
+
   pseudo₁ : is-pseudocontinuous-dcpo 𝓓
           → ∐-map'-has-specified-left-adjoint
   pseudo₁ pc = L' , ladj
@@ -755,41 +795,32 @@ module _
       r (α , refl) = ∥∥-rec goal-is-prop ρ (pc x)
        where
         ρ : dom → (L' x ≤ α') ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map' α')
-        ρ τ@(J , β , β-way-below-x , ε , x-sup-of-β) = f , g
+        ρ τ@(J , β , β-way-below-x , ε , x-sup-of-β) = ⇔-trans claim₁ claim₂
          where
-          -- TODO: Introduce ⇔-cong? Or use ≃ instead?
-          claim₁ : L' x ≤ η α ⇔ η (J , β , ε) ≤ η α
-          claim₁ = forw , back
+          claim₁ : (L' x ≤ η α) ⇔ (η (J , β , ε) ≤ η α)
+          claim₁ = lemma₁ eq₁
            where
-            eq₁ : L' x ≡ η (J , β , ε)
-            eq₁ = ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ τ ∣) ∙ w ⁻¹
-             where
-              w : η (J , β , ε) ≡ pr₁ ω ∣ τ ∣
-              w = pr₂ ω τ
-            forw : L' x ≤ η α → η (J , β , ε) ≤ η α
-            forw u = transport (λ - → - ≤ η α) eq₁ u
-            back : η (J , β , ε) ≤ η α → L' x ≤ η α
-            back v = back-transport (λ - → - ≤ η α) eq₁ v
-          lemma : (J , β , ε) ≲ α ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map α
-          lemma = lr-implication
-                   (left-adjoint-to-∐-map-characterization-local x (J , β , ε))
-                   (x-sup-of-β , β-way-below-x) α
-          eq₂ : ∐-map' (η α) ≡ ∐-map α
-          eq₂ = happly (pr₂ (pr₂ ∐-map'-helper)) α
-          f : L' x ≤ η α → x ⊑⟨ 𝓓 ⟩ ∐-map' (η α)
-          f u = x            ⊑⟨ 𝓓 ⟩[ lr-implication lemma
-                                      (η-reflects-order (J , β , ε) α
-                                      (lr-implication claim₁ u)) ]
-                ∐-map α      ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 (eq₂ ⁻¹) ]
-                ∐-map' (η α) ∎⟨ 𝓓 ⟩
-          g : x ⊑⟨ 𝓓 ⟩ ∐-map' (η α) → L' x ≤ η α
-          g v = rl-implication claim₁
-                 (η-preserves-order (J , β , ε) α
-                   (rl-implication lemma
-                     (x            ⊑⟨ 𝓓 ⟩[ v ]
-                      ∐-map' (η α) ⊑⟨ 𝓓 ⟩[ ≡-to-⊑ 𝓓 eq₂ ]
-                      ∐-map     α  ∎⟨ 𝓓 ⟩)
-                   ))
+            eq₁ = L' x          ≡⟨ refl                                 ⟩
+                  pr₁ ω (pc x)  ≡⟨ ap (pr₁ ω) (∥∥-is-prop (pc x) ∣ τ ∣) ⟩
+                  pr₁ ω ∣ τ ∣   ≡⟨ (pr₂ ω τ) ⁻¹                         ⟩
+                  η (J , β , ε) ∎
+            lemma₁ : {σ τ : Ind'} → σ ≡ τ → σ ≤ η α ⇔ τ ≤ η α
+            lemma₁ refl = (id , id)
+          claim₂ : (η (J , β , ε) ≤ η α) ⇔ x ⊑⟨ 𝓓 ⟩ ∐-map' (η α)
+          claim₂ = ⇔-trans ((η-reflects-order  (J , β , ε) α) ,
+                            (η-preserves-order (J , β , ε) α))
+                           (⇔-trans claim₂' (lemma₂ (eq₂ ⁻¹)))
+           where
+            eq₂ : ∐-map' (η α) ≡ ∐-map α
+            eq₂ = happly (pr₂ (pr₂ ∐-map'-helper)) α
+            lemma₂ : {d e : ⟨ 𝓓 ⟩} → d ≡ e
+                   → x ⊑⟨ 𝓓 ⟩ d ⇔ x ⊑⟨ 𝓓 ⟩ e
+            lemma₂ refl = (id , id)
+            claim₂' : ((J , β , ε) ≲ α) ⇔ (x ⊑⟨ 𝓓 ⟩ ∐-map α)
+            claim₂' = lr-implication
+                       (left-adjoint-to-∐-map-characterization-local
+                         x (J , β , ε))
+                       (x-sup-of-β , β-way-below-x) α
 
   pseudo₂ : ∐-map'-has-specified-left-adjoint
           → is-pseudocontinuous-dcpo 𝓓
