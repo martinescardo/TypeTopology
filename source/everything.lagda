@@ -165,6 +165,7 @@ import Pi
 import Plus-Properties
 import Plus-Type
 import Plus
+import PlusNotation
 import PlusOneLC
 import Poset
 import PropInfTychonoff

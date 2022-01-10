@@ -135,7 +135,7 @@ module DecidableDominance where
                                     (being-prop-is-prop fe)
                                     (decidability-of-prop-is-prop fe)) ,
                           (λ X → pr₁) ,
-                          (𝟙-is-prop , inl *) ,
+                          (𝟙-is-prop , inl ⋆) ,
                           λ P Q dP dQ → Σ-is-prop (pr₁ dP) (λ p → pr₁ (dQ p)) ,
                                          decidable-closed-under-Σ (pr₁ dP) (pr₂ dP) λ p → pr₂ (dQ p)
 

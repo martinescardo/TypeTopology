@@ -512,7 +512,7 @@ open import UF-PropIndexedPiSigma
    where
     i   = pr₂ (+construction (a 𝟎) k)
     ii  = +comm
-    iii = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop *))
+    iii = +cong φ (≃-sym (prop-indexed-sum 𝟙-is-prop ⋆))
     iv  = Σ+distr (Fin n) 𝟙 (λ i → Fin (a i))
 
   g : Σ k' ꞉ ℕ , Fin k' ≃ (Σ i ꞉ Fin (succ n) , Fin (a i))
@@ -578,7 +578,7 @@ module _ (fe : funext 𝓤₀ 𝓤₀) where
     where
      i   = pr₂ (×construction (a 𝟎) k)
      ii  = ×comm
-     iii = ×-cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop *))
+     iii = ×-cong φ (≃-sym (prop-indexed-product fe 𝟙-is-prop ⋆))
      iv  = Π×+ fe
 
    g : Σ k' ꞉ ℕ , Fin k' ≃ (Π i ꞉ Fin (succ n) , Fin (a i))

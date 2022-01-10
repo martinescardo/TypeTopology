@@ -485,12 +485,12 @@ syntax binary-join F x y = x ∨[ F ] y
 ∨[_]-upper₁ : (F : frame 𝓤 𝓥 𝓦)
             → let open Joins (λ x y → x ≤[ poset-of F ] y) in
               (x y : ⟨ F ⟩) → (x ≤[ poset-of F ] (x ∨[ F ] y)) holds
-∨[_]-upper₁ {𝓦 = 𝓦} F x y = ⋁[ F ]-upper (binary-family 𝓦 x y) (inl *)
+∨[_]-upper₁ {𝓦 = 𝓦} F x y = ⋁[ F ]-upper (binary-family 𝓦 x y) (inl ⋆)
 
 ∨[_]-upper₂ : (F : frame 𝓤 𝓥 𝓦)
             → let open Joins (λ x y → x ≤[ poset-of F ] y) in
               (x y : ⟨ F ⟩) → (y ≤[ poset-of F ] (x ∨[ F ] y)) holds
-∨[_]-upper₂ {𝓦 = 𝓦} F x y = ⋁[ F ]-upper (binary-family 𝓦 x y) (inr *)
+∨[_]-upper₂ {𝓦 = 𝓦} F x y = ⋁[ F ]-upper (binary-family 𝓦 x y) (inr ⋆)
 
 ∨[_]-is-commutative : (F : frame 𝓤 𝓥 𝓦)
                     → (x y : ⟨ F ⟩)
@@ -602,7 +602,7 @@ only-𝟎-is-below-𝟎 F x p =
   β = ∨[ F ]-least (𝟎-is-bottom F x) (≤-is-reflexive (poset-of F) x)
 
   γ : (x ≤ (𝟎[ F ] ∨[ F ] x)) holds
-  γ = ⋁[ F ]-upper (binary-family 𝓦 𝟎[ F ] x) (inr *)
+  γ = ⋁[ F ]-upper (binary-family 𝓦 𝟎[ F ] x) (inr ⋆)
 
 𝟎-left-unit-of-∨ : (F : frame 𝓤 𝓥 𝓦) (x : ⟨ F ⟩) → x ∨[ F ] 𝟎[ F ] ≡ x
 𝟎-left-unit-of-∨ {𝓦 = 𝓦} F x =
@@ -893,7 +893,7 @@ is-basis-for {𝓦 = 𝓦} F (I , β) =
 
 \end{code}
 
-A 𝓦-frame has a (small) basis iff there *merely* exists a 𝓦-family
+A 𝓦-frame has a (small) basis iff there exists a 𝓦-family
 that forms a basis for it. Having a basis should be a property and
 not a structure so this is important.
 

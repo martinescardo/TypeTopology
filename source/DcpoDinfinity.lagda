@@ -896,14 +896,14 @@ is not the least element.
   x₀ : ⟨ 𝓓 0 ⟩
   x₀ = 𝟙 , id , 𝟙-is-prop
   σ : (n : ℕ) → ⟨ 𝓓 n ⟩
-  σ n = ε⁺ {0} {n} * x₀
+  σ n = ε⁺ {0} {n} ⋆ x₀
   p : (n m : ℕ) (l : n ≤ m) → π⁺ l (σ m) ≡ σ n
-  p n m l = π⁺ {n} {m} l (ε⁺ {0} {m} * x₀)                  ≡⟨ e₁ ⟩
-            (π⁺ {n} {m} l ∘ ε⁺ {n} {m} l ∘ ε⁺ {0} {n} *) x₀ ≡⟨ e₂ ⟩
-            ε⁺ {0} {n} * x₀                                 ∎
+  p n m l = π⁺ {n} {m} l (ε⁺ {0} {m} ⋆ x₀)                  ≡⟨ e₁ ⟩
+            (π⁺ {n} {m} l ∘ ε⁺ {n} {m} l ∘ ε⁺ {0} {n} ⋆) x₀ ≡⟨ e₂ ⟩
+            ε⁺ {0} {n} ⋆ x₀                                 ∎
    where
-    e₁ = ap (π⁺ {n} {m} l) ((ε⁺-comp * l x₀) ⁻¹)
-    e₂ = ε⁺-section-of-π⁺ l (ε⁺ {0} {n} * x₀)
+    e₁ = ap (π⁺ {n} {m} l) ((ε⁺-comp ⋆ l x₀) ⁻¹)
+    e₂ = ε⁺-section-of-π⁺ l (ε⁺ {0} {n} ⋆ x₀)
 
 𝓓∞⊥-is-nontrivial : σ₀ ≢ ⊥ 𝓓∞⊥
 𝓓∞⊥-is-nontrivial e = 𝟘-is-not-𝟙 (γ ⁻¹)

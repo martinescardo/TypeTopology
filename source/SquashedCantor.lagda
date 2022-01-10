@@ -165,25 +165,25 @@ following coinductive definition (see the module CoNaturals).
 
 Head-step : Cantor → 𝟙 {𝓤₀} + Cantor
 Head-step α = 𝟚-equality-cases
-                (λ (r : head α ≡ ₀) → inl *)
+                (λ (r : head α ≡ ₀) → inl ⋆)
                 (λ (r : head α ≡ ₁) → inr (tail α))
 
 Head : Cantor → ℕ∞
 Head = ℕ∞-corec Head-step
 
-Head-step₀ : (α : Cantor) → head α ≡ ₀ → Head-step α ≡ inl *
+Head-step₀ : (α : Cantor) → head α ≡ ₀ → Head-step α ≡ inl ⋆
 Head-step₀ α = ap (λ - → 𝟚-equality-cases
-                           (λ (r : - ≡ ₀) → inl *)
+                           (λ (r : - ≡ ₀) → inl ⋆)
                            (λ (r : - ≡ ₁) → inr (tail α)))
 
 Head-step₁ : (α : Cantor) → head α ≡ ₁ → Head-step α ≡ inr (tail α)
 Head-step₁ α = ap (λ - → 𝟚-equality-cases
-                           (λ (r : - ≡ ₀) → inl *)
+                           (λ (r : - ≡ ₀) → inl ⋆)
                            (λ (r : - ≡ ₁) → inr (tail α)))
 
 Head₀ : (α : Cantor) → head α ≡ ₀ → Head α ≡ Zero
 Head₀ α r = coalg-morphism-Zero
-             Head-step Head (ℕ∞-corec-homomorphism Head-step) α * (Head-step₀ α r)
+             Head-step Head (ℕ∞-corec-homomorphism Head-step) α ⋆ (Head-step₀ α r)
 
 Head₁ : (α : Cantor) → head α ≡ ₁ → Head α ≡ Succ (Head (tail α))
 Head₁ α r = coalg-morphism-Succ

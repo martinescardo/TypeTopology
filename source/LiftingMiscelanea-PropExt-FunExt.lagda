@@ -112,7 +112,7 @@ module _ {𝓤 : Universe}
 
  is-defined-η-≡ : {l : 𝓛 X} (d : is-defined l) → l ≡ η (value l d)
  is-defined-η-≡ {l} d =
-  ⊑-to-⊑' ((λ _ → *) , λ (e : is-defined l) → value-is-constant l e d) d
+  ⊑-to-⊑' ((λ _ → ⋆) , λ (e : is-defined l) → value-is-constant l e d) d
 
  ⋍-to-≡ : {l m : 𝓛 X} → l ⋍ m → l ≡ m
  ⋍-to-≡ {l} {m} (deq , veq) = ⊑-anti pe fe fe (a , b)
@@ -165,7 +165,7 @@ module _ {𝓤 : Universe}
    b = r , s
     where
      r : is-defined (𝓛̇ f l) → is-defined (((η ∘ f) ♯) l)
-     r d = d , *
+     r d = d , ⋆
      s : (d : is-defined (𝓛̇ f l))
        → value (𝓛̇ f l) d ≡ value (((η ∘ f) ♯) l) (r d)
      s d = refl

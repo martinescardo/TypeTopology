@@ -146,7 +146,7 @@ clopen.
 
 \begin{code}
 
-well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇ 
+well-inside₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → ⟨ F ⟩ → 𝓤 ̇
 well-inside₀ F U V =
  Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (V ∨[ F ] W ≡ 𝟏[ F ])
 
@@ -193,7 +193,7 @@ well-inside₀-is-not-prop ua = IF , ε
   𝟎-is-not-𝟏 p = γ
    where
     γ : ⊥Ω holds
-    γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) *
+    γ = transport _holds (𝟏[ IF ] ≡⟨ p ⁻¹ ⟩ 𝟎[ IF ] ≡⟨ 𝟎-of-IF-is-⊥ ua ⟩ ⊥Ω ∎) ⋆
 
   ε : ¬ ((U V : ⟨ IF ⟩) → is-prop (well-inside₀ IF U V))
   ε ψ = 𝟎-is-not-𝟏 (pr₁ (from-Σ-≡ δ))
@@ -239,11 +239,11 @@ well-inside-implies-below F U V = ∥∥-rec (holds-is-prop (U ≤[ poset-of F ]
 
 \end{code}
 
-An open _U_ in a frame _A_ is *clopen* iff it is well-inside itself.
+An open _U_ in a frame _A_ is ⋆clopen⋆ iff it is well-inside itself.
 
 \begin{code}
 
-is-clopen₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇ 
+is-clopen₀ : (F : frame 𝓤 𝓥 𝓦) → ⟨ F ⟩ → 𝓤 ̇
 is-clopen₀ F U = Σ W ꞉ ⟨ F ⟩ , (U ∧[ F ] W ≡ 𝟎[ F ]) × (U ∨[ F ] W ≡ 𝟏[ F ])
 
 is-clopen₀-is-prop : (F : frame 𝓤 𝓥 𝓦) → (U : ⟨ F ⟩) → is-prop (is-clopen₀ F U)

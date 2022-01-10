@@ -108,7 +108,7 @@ The empty set and singletons and Kuratowski finite subsets.
     e : Fin 1 → 𝕋 ⦅ x ⦆[ i ]
     e 𝟎 = x , refl
     σ : is-surjection e
-    σ (x , refl) = ∣ inr * , refl ∣
+    σ (x , refl) = ∣ inr ⋆ , refl ∣
 
 from-Fin-0 : {X : 𝓤 ̇ } → Fin 0 → X
 from-Fin-0 = unique-from-𝟘
@@ -437,7 +437,7 @@ abstract induction principle for Kuratowski finite subsets.
 
 Finally we will show that 𝓚 X is the free join-semilattice on a set X.
 Concretely, if L is a join-semilattice and f : X → L is any function, then there
-is a *unique* mediating map f♭ : 𝓚 X → L such that:
+is a ⋆unique⋆ mediating map f♭ : 𝓚 X → L such that:
 (i)  f♭ is a join-semilattice homomorphism, i.e.
      - f♭ preserves the least element;
      - f♭ preserves binary joins.
@@ -456,7 +456,7 @@ The idea in defining f♭ is to map a Kuratowski finite subset A to the finite
 join ∨ⁿ (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) in L, where e is some eumeration
 (i.e. surjection) e : Fin n ↠ 𝕋 ⟨ A ⟩.
 
-However, since Kuratowski finite subsets come with an *unspecified* such
+However, since Kuratowski finite subsets come with an ⋆unspecified⋆ such
 enumeration, we must show that the choice of enumeration is irrelevant, i.e. any
 two enumerations give rise to the same finite join. We then use a theorem by
 Kraus et al. [1] (see wconstant-map-to-set-factors-through-truncation-of-domain)

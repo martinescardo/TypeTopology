@@ -133,7 +133,7 @@ End of digression.
 \begin{code}
 
 𝟙-decidable : decidable (𝟙 {𝓤})
-𝟙-decidable = pointed-decidable *
+𝟙-decidable = pointed-decidable ⋆
 
 ×-preserves-decidability : {A : 𝓤 ̇ } {B : 𝓥 ̇ }
                          → decidable A
@@ -346,7 +346,7 @@ module _
    -- Because of the definition of boolean-value above,
    -- the map f (somewhat confusingly) sends ₀ to 𝟙 and ₁ to 𝟘.
    f : 𝟚 → Ωᵈ 𝓤
-   f ₀ = ((𝟙 , 𝟙-is-prop) , inl *)
+   f ₀ = ((𝟙 , 𝟙-is-prop) , inl ⋆)
    f ₁ = ((𝟘 , 𝟘-is-prop) , inr 𝟘-elim)
    g : Ωᵈ 𝓤 → 𝟚
    g (P , δ) = pr₁ (boolean-value δ)
@@ -363,7 +363,7 @@ module _
         → (f ∘ g) P ≡ P
      ε₀ e = to-Ωᵈ-equality (f (g P)) P
              (λ _ → pr₁ lemma e)
-             (λ _ → back-transport (λ (b : 𝟚) → ⟨ f b ⟩) e *)
+             (λ _ → back-transport (λ (b : 𝟚) → ⟨ f b ⟩) e ⋆)
      ε₁ : g P ≡ ₁
         → (f ∘ g) P ≡ P
      ε₁ e = to-Ωᵈ-equality (f (g P)) P

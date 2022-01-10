@@ -102,10 +102,10 @@ has decidable equality (not proved here).
 \begin{code}
 
 normality-is-decidable : (x : 𝔹) → is-normal x + ¬ is-normal x
-normality-is-decidable L         = inl *
-normality-is-decidable R         = inl *
+normality-is-decidable L         = inl ⋆
+normality-is-decidable R         = inl ⋆
 normality-is-decidable (l L)     = inr id
-normality-is-decidable (l R)     = inl *
+normality-is-decidable (l R)     = inl ⋆
 normality-is-decidable (l (l x)) = normality-is-decidable (l x)
 normality-is-decidable (l (r x)) = normality-is-decidable (r x)
 normality-is-decidable (r L)     = inr id
@@ -150,15 +150,15 @@ The preservation proofs are by case analysis without induction:
 \begin{code}
 
 𝕝-preserves-normality : (x : 𝔹) → is-normal x → is-normal (𝕝 x)
-𝕝-preserves-normality L     i = *
-𝕝-preserves-normality R     i = *
+𝕝-preserves-normality L     i = ⋆
+𝕝-preserves-normality R     i = ⋆
 𝕝-preserves-normality (l x) i = i
 𝕝-preserves-normality (r x) i = i
 
 𝕣-preserves-normality : (x : 𝔹) → is-normal x → is-normal (𝕣 x)
-𝕣-preserves-normality L         * = *
-𝕣-preserves-normality R         * = *
-𝕣-preserves-normality (l R)     * = *
+𝕣-preserves-normality L         ⋆ = ⋆
+𝕣-preserves-normality R         ⋆ = ⋆
+𝕣-preserves-normality (l R)     ⋆ = ⋆
 𝕣-preserves-normality (l (l x)) i = i
 𝕣-preserves-normality (l (r x)) i = i
 𝕣-preserves-normality (r (l x)) i = i
@@ -185,8 +185,8 @@ proof by induction:
 \begin{code}
 
 normalize-is-normal : (x : 𝔹) → is-normal (normalize x)
-normalize-is-normal L     = *
-normalize-is-normal R     = *
+normalize-is-normal L     = ⋆
+normalize-is-normal R     = ⋆
 normalize-is-normal (l x) = 𝕝-preserves-normality (normalize x) (normalize-is-normal x)
 normalize-is-normal (r x) = 𝕣-preserves-normality (normalize x) (normalize-is-normal x)
 
@@ -215,7 +215,7 @@ nfp-lemma-l : (x : 𝔹) → is-normal (l x) → 𝕝 (normalize x) ≡ l x
 nfp-lemma-r : (x : 𝔹) → is-normal (r x) → 𝕣 (normalize x) ≡ r x
 
 nfp-lemma-l L     i = 𝟘-elim i
-nfp-lemma-l R     * = refl
+nfp-lemma-l R     ⋆ = refl
 nfp-lemma-l (l x) i = ap 𝕝 (nfp-lemma-l x i)
 nfp-lemma-l (r x) i = ap 𝕝 (nfp-lemma-r x i)
 
@@ -233,8 +233,8 @@ using the above two lemmas.
 \begin{code}
 
 normals-are-fixed-points : (x : 𝔹) → is-normal x → normalize x ≡ x
-normals-are-fixed-points L     * = refl
-normals-are-fixed-points R     * = refl
+normals-are-fixed-points L     ⋆ = refl
+normals-are-fixed-points R     ⋆ = refl
 normals-are-fixed-points (l x) i = nfp-lemma-l x i
 normals-are-fixed-points (r x) i = nfp-lemma-r x i
 
@@ -294,8 +294,8 @@ x ≡[𝔹] y = χ x y holds
 ≡[𝔹]-is-prop-valued x y = holds-is-prop (χ x y)
 
 refl[𝔹] : (x : 𝔹) → x ≡[𝔹] x
-refl[𝔹] L     = *
-refl[𝔹] R     = *
+refl[𝔹] L     = ⋆
+refl[𝔹] R     = ⋆
 refl[𝔹] (l x) = refl[𝔹] x
 refl[𝔹] (r x) = refl[𝔹] x
 
@@ -307,12 +307,12 @@ The induction principle for our notion of equality:
 
 J𝔹 : (x : 𝔹) (A : (y : 𝔹) → x ≡[𝔹] y → 𝓥 ̇ )
     → A x (refl[𝔹] x) → (y : 𝔹) (r : x ≡[𝔹] y) → A y r
-J𝔹 L     A b L     * = b
+J𝔹 L     A b L     ⋆ = b
 J𝔹 L     A b R     p = 𝟘-elim p
 J𝔹 L     A b (l y) p = 𝟘-elim p
 J𝔹 L     A b (r y) p = 𝟘-elim p
 J𝔹 R     A b L     p = 𝟘-elim p
-J𝔹 R     A b R     * = b
+J𝔹 R     A b R     ⋆ = b
 J𝔹 R     A b (l y) p = 𝟘-elim p
 J𝔹 R     A b (r y) p = 𝟘-elim p
 J𝔹 (l x) A b L     p = 𝟘-elim p
@@ -371,12 +371,12 @@ Hedberg's Theorem.
 \begin{code}
 
 ≡[𝔹]-is-decidable : (x y : 𝔹) → (x ≡[𝔹] y) + ¬ (x ≡[𝔹] y)
-≡[𝔹]-is-decidable L     L     = inl *
+≡[𝔹]-is-decidable L     L     = inl ⋆
 ≡[𝔹]-is-decidable L     R     = inr id
 ≡[𝔹]-is-decidable L     (l y) = inr id
 ≡[𝔹]-is-decidable L     (r y) = inr id
 ≡[𝔹]-is-decidable R     L     = inr id
-≡[𝔹]-is-decidable R     R     = inl *
+≡[𝔹]-is-decidable R     R     = inl ⋆
 ≡[𝔹]-is-decidable R     (l y) = inr id
 ≡[𝔹]-is-decidable R     (r y) = inr id
 ≡[𝔹]-is-decidable (l x) L     = inr id
@@ -426,9 +426,9 @@ being-normal-is-prop (r (r x)) = being-normal-is-prop (r x)
              (λ {x} → being-normal-is-prop x)
 
 Left Center Right : 𝕄
-Left   = L , *
-Center = C , *
-Right  = R , *
+Left   = L , ⋆
+Center = C , ⋆
+Right  = R , ⋆
 
 left right : 𝕄 → 𝕄
 left  (x , i) = 𝕝 x , 𝕝-preserves-normality x i
@@ -517,12 +517,12 @@ perhaps unexpected proof):
             → 𝕄-inductive P a b f g
             → (x : 𝕄) → P x
 
-𝕄-induction P a b f g ι (L ,           *) = a
-𝕄-induction P a b f g ι (R ,           *) = b
-𝕄-induction P a b f g ι (l R ,         i) = f (R , *) b
+𝕄-induction P a b f g ι (L ,           ⋆) = a
+𝕄-induction P a b f g ι (R ,           ⋆) = b
+𝕄-induction P a b f g ι (l R ,         i) = f (R , ⋆) b
 𝕄-induction P a b f g ι (l (l x) ,     i) = f (l x , i) (𝕄-induction P a b f g ι (l x , i))
 𝕄-induction P a b f g ι (l (r x) ,     i) = f (r x , i) (𝕄-induction P a b f g ι (r x , i))
-𝕄-induction P a b f g ι (r (l R) ,     i) = g (l R , *) (f (R , *) b)
+𝕄-induction P a b f g ι (r (l R) ,     i) = g (l R , ⋆) (f (R , ⋆) b)
 𝕄-induction P a b f g ι (r (l (l x)) , i) = g (l (l x) , i) (𝕄-induction P a b f g ι (l (l x) , i))
 𝕄-induction P a b f g ι (r (l (r x)) , i) = g (l (r x) , i) (𝕄-induction P a b f g ι (l (r x) , i))
 𝕄-induction P a b f g ι (r (r (l x)) , i) = g (r (l x) , i) (𝕄-induction P a b f g ι (r (l x) , i))
@@ -571,8 +571,8 @@ assumption a ≡ f Left a:
                     → (ι : 𝕄-inductive P a b f g)
                     → (x : 𝕄) → 𝕄-induction P a b f g ι (left x) ≡ f x (𝕄-induction P a b f g ι x)
 
-𝕄-induction-eq-left P a b f g ι (L ,   *) = pr₁ (pr₂ ι)
-𝕄-induction-eq-left P a b f g ι (R ,   *) = refl
+𝕄-induction-eq-left P a b f g ι (L ,   ⋆) = pr₁ (pr₂ ι)
+𝕄-induction-eq-left P a b f g ι (R ,   ⋆) = refl
 𝕄-induction-eq-left P a b f g ι (l x , i) = refl
 𝕄-induction-eq-left P a b f g ι (r x , i) = refl
 
@@ -591,8 +591,8 @@ equations f Right b ≡ g Left a and b ≡ g Right b as assumptions:
                     → (ι : 𝕄-inductive P a b f g)
                     → (x : 𝕄) → 𝕄-induction P a b f g ι (right x) ≡ g x (𝕄-induction P a b f g ι x)
 
-𝕄-induction-eq-right P a b f g ι (L ,       *) = pr₁ (pr₂ (pr₂ ι))
-𝕄-induction-eq-right P a b f g ι (R ,       *) = pr₂ (pr₂ (pr₂ ι))
+𝕄-induction-eq-right P a b f g ι (L ,       ⋆) = pr₁ (pr₂ (pr₂ ι))
+𝕄-induction-eq-right P a b f g ι (R ,       ⋆) = pr₂ (pr₂ (pr₂ ι))
 𝕄-induction-eq-right P a b f g ι (l R ,     i) = refl
 𝕄-induction-eq-right P a b f g ι (l (l x) , i) = refl
 𝕄-induction-eq-right P a b f g ι (l (r x) , i) = refl

@@ -23,7 +23,7 @@ We have zero and successor for finite sets, with the following types:
 \begin{code}
 
 fzero : {n : ℕ} → Fin (succ n)
-fzero = inr *
+fzero = inr ⋆
 
 fsucc : {n : ℕ} → Fin n → Fin (succ n)
 fsucc = inl
@@ -38,9 +38,9 @@ clarity in definitions by pattern matching:
 
 \begin{code}
 
-pattern 𝟎     = inr *
-pattern 𝟏     = inl (inr *)
-pattern 𝟐     = inl (inl (inr *))
+pattern 𝟎     = inr ⋆
+pattern 𝟏     = inl (inr ⋆)
+pattern 𝟐     = inl (inl (inr ⋆))
 pattern suc i = inl i
 
 \end{code}

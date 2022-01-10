@@ -12,7 +12,7 @@ relation coinciding with the binary meet order.
 
 {-# OPTIONS --without-K --exact-split --safe #-}
 
-open import SpartanMLTT hiding (*)
+open import SpartanMLTT
 open import UF-FunExt
 open import UF-Subsingletons hiding (Ω₀)
 
@@ -200,7 +200,7 @@ module _ (pe : Prop-Ext)
      r = pe (×-is-prop i 𝟙-is-prop)
             i
             (λ (p , _) → p)
-            (λ p → (p , SpartanMLTT.*))
+            (λ p → (p , ⋆))
 
      γ : ((P × 𝟙) , _) ≡ (P , _)
      γ = to-subtype-≡ (λ _ → being-prop-is-prop fe) r

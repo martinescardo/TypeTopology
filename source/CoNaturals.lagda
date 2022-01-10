@@ -84,7 +84,7 @@ private
  fe₀ = fe 𝓤₀ 𝓤₀
 
 Zero' : 𝟙 + ℕ∞
-Zero' = inl {𝓤₀} {𝓤₀} *
+Zero' = inl {𝓤₀} {𝓤₀} ⋆
 
 Pred' : ℕ∞ → 𝟙 + ℕ∞
 Pred' u = inr {𝓤₀} {𝓤₀} (Pred u)
@@ -99,11 +99,11 @@ PRED-Succ : (u : ℕ∞) → PRED(Succ u) ≡ inr u
 PRED-Succ u = ap inr Pred-Succ
 
 SUCC : 𝟙 {𝓤₀} + ℕ∞ → ℕ∞
-SUCC(inl *) = Zero
+SUCC(inl ⋆) = Zero
 SUCC(inr u) = Succ u
 
 PRED-SUCC : {y : 𝟙 + ℕ∞} → PRED(SUCC y) ≡ y
-PRED-SUCC{inl *} = refl
+PRED-SUCC{inl ⋆} = refl
 PRED-SUCC{inr u} = refl
 
 SUCC-lc : {y z : 𝟙 + ℕ∞} → SUCC y ≡ SUCC z → y ≡ z
@@ -145,7 +145,7 @@ PRED-lc {u} {v} r = u             ≡⟨ SUCC-PRED ⁻¹ ⟩
 𝟙+ f (inr x) = inr(f x)
 
 𝟙+id-is-id : {X : 𝓤 ̇ } → 𝟙+ id ∼ id {𝓤} {𝟙 + X}
-𝟙+id-is-id {𝓤} {X} (inl *) = refl
+𝟙+id-is-id {𝓤} {X} (inl ⋆) = refl
 𝟙+id-is-id {𝓤} {X} (inr x) = refl
 
 is-homomorphism : {X : 𝓤 ̇ } → (X → 𝟙 + X) → (X → ℕ∞) → 𝓤 ̇
@@ -198,7 +198,7 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
   h-spec x = equality-cases (κ x) l₀ l₁
    where
     l₀ : (s : 𝟙) → κ x ≡ inl s → PRED(h x) ≡ (𝟙+ h)(κ x)
-    l₀ * r = PRED (h x) ≡⟨ ap PRED c ⟩
+    l₀ ⋆ r = PRED (h x) ≡⟨ ap PRED c ⟩
              PRED Zero  ≡⟨ PRED-Zero ⟩
              Zero'      ≡⟨ (ap (𝟙+ h) r)⁻¹ ⟩
              𝟙+ h (κ x) ∎
@@ -264,14 +264,14 @@ coalgebra homomorphisms in more detail.
 coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X) (h : X → ℕ∞)
                     → is-homomorphism κ h
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → h x ≡ Zero
-coalg-morphism-Zero p h a x * κ = h x               ≡⟨ SUCC-PRED ⁻¹ ⟩
+coalg-morphism-Zero p h a x ⋆ κ = h x               ≡⟨ SUCC-PRED ⁻¹ ⟩
                                   SUCC (PRED (h x)) ≡⟨ ap SUCC c ⟩
-                                  SUCC (inl *)      ∎
+                                  SUCC (inl ⋆)      ∎
  where
-  c : PRED(h x) ≡ inl *
+  c : PRED(h x) ≡ inl ⋆
   c = PRED (h x) ≡⟨ ap (λ - → - x) a ⟩
       𝟙+ h (p x) ≡⟨ ap (𝟙+ h) κ ⟩
-      inl *      ∎
+      inl ⋆      ∎
 
 Coalg-morphism-Zero : {X : 𝓤 ̇ } (κ : X →  𝟙 + X)
                     → (x : X) (s : 𝟙) → κ x ≡ inl s → ℕ∞-corec κ x ≡ Zero

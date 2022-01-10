@@ -156,8 +156,8 @@ agreement← : (α β : Cantor)
              (n : ℕ)
            → ((k : ℕ) → k < n → α k ≡ β k)
            → (α ≡⟦ n ⟧ β)
-agreement← α β 0        ϕ = *
-agreement← α β (succ n) ϕ = ϕ 0 * , agreement← (tail α) (tail β) n (λ k → ϕ (succ k))
+agreement← α β 0        ϕ = ⋆
+agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (λ k → ϕ (succ k))
 
 \end{code}
 
@@ -191,10 +191,10 @@ modulus-zero-iff-constant  : (p : Cantor → 𝟚)
 modulus-zero-iff-constant p = I , II
  where
   I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : Cantor) → p α ≡ p β)
-  I u α β = u α β *
+  I u α β = u α β ⋆
 
   II :  ((α β : Cantor) → p α ≡ p β) → 0 is-a-modulus-of-uniform-continuity-of p
-  II κ α β * = κ α β
+  II κ α β ⋆ = κ α β
 
 \end{code}
 
@@ -275,7 +275,7 @@ A-property→ : (p : Cantor → 𝟚)
             → n is-a-modulus-of-uniform-continuity-of p
             → A n p ≡ ₁
             → (α : Cantor) → p α ≡ ₁
-A-property→ p 0        u r α = p α  ≡⟨ u α c₀ * ⟩
+A-property→ p 0        u r α = p α  ≡⟨ u α c₀ ⋆ ⟩
                                p c₀ ≡⟨ r ⟩
                                ₁    ∎
 A-property→ p (succ n) u r α = IV
@@ -372,7 +372,7 @@ In the worst case, however, A n p runs in time 2ⁿ.
  xor (succ n) α = head α ⊕ xor n (tail α)
 
  xor-uc : (n : ℕ) → n is-a-modulus-of-uniform-continuity-of (xor n)
- xor-uc 0        α β *       = refl
+ xor-uc 0        α β ⋆       = refl
  xor-uc (succ n) α β (p , q) = γ
   where
    IH : xor n (tail α) ≡ xor n (tail β)

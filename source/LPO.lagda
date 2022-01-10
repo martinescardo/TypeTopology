@@ -202,7 +202,7 @@ has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
 
 under𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}
 under𝟙-inverse .(under n) (inl (n , refl)) = inl n
-under𝟙-inverse u (inr g) = inr *
+under𝟙-inverse u (inr g) = inr ⋆
 
 LPO-gives-has-section-under𝟙 : LPO → Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 ∘ s ∼ id
 LPO-gives-has-section-under𝟙 lpo = s , ε

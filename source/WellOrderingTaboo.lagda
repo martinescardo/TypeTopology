@@ -130,7 +130,7 @@ module swan
       g l = 𝟘-elim (all-elements-are-minimal s y l)
 
   P-must-hold : P
-  P-must-hold = Idtofun γ *
+  P-must-hold = Idtofun γ ⋆
    where
     γ : 𝟙 ≡ P
     γ = ap pr₁ (all-elements-are-equal 𝟙-in-S P-in-S)
@@ -142,7 +142,7 @@ module swan
        where
         h : ¬¬ (𝟙 ≡ P)
         h = ¬¬-functor
-             (λ p → pe 𝟙-is-prop P-is-prop (λ _ → p) (λ _ → *))
+             (λ p → pe 𝟙-is-prop P-is-prop (λ _ → p) (λ _ → ⋆))
              P-is-not-false
 
 \end{code}
@@ -406,7 +406,7 @@ module ClassicalWellOrder
 
  (2) We would like the above to express that every inhabited subset has a
  minimal element, but in the absence of propositional resizing, this is tricky,
- because it would require having an axiom *scheme* consisting of a definition
+ because it would require having an axiom ⋆scheme⋆ consisting of a definition
  referring to families (A : X → 𝓥 ̇ ) for each universe level 𝓥.
 
  We don't wish to assume propsitional resizing here or have axiom schemes, so we
@@ -445,7 +445,7 @@ Assuming excluded middle (for 𝓤 ⊔ 𝓣), we show
 
 A remark on well-order-gives-minimal (see below) is in order.
   It may seem that it repeats nonempty-has-minimal in OrdinalNotions.lagda, but
-  nonempty-has-minimal uses ¬¬ and excluded middle in *every* universe to
+  nonempty-has-minimal uses ¬¬ and excluded middle in ⋆every⋆ universe to
   construct propositional truncations, and ∃ in particular, but we just assume
   propositional truncations and when we assume excluded middle, we only do so
   for specific universes.
@@ -597,7 +597,7 @@ with a fairly direct proof.
         A-is-prop-valued (₀ , _) = P-is-prop
         A-is-prop-valued (₁ , _) = 𝟙-is-prop
         A-is-inhabited : ∃ A
-        A-is-inhabited = ∣ ι ₁ , * ∣
+        A-is-inhabited = ∣ ι ₁ , ⋆ ∣
         f : (Σ x ꞉ 𝟚' , A x × ((y : 𝟚') → A y → ¬ (y ≺ x)))
           → P + ¬ P
         f ((₀ , _) , p , _) = inl p
@@ -610,7 +610,7 @@ with a fairly direct proof.
         B-is-prop-valued (₀ , _) = 𝟙-is-prop
         B-is-prop-valued (₁ , _) = P-is-prop
         B-is-inhabited : ∃ B
-        B-is-inhabited = ∣ ι ₀ , * ∣
+        B-is-inhabited = ∣ ι ₀ , ⋆ ∣
         g : (Σ x ꞉ 𝟚' , B x × ((y : 𝟚') → B y → ¬ (y ≺ x)))
           → P + ¬ P
         g ((₀ , _) , _ , m) = inr (λ p → m (ι ₁) p l)

@@ -381,7 +381,7 @@ under𝟙-embedding : funext₀ → is-embedding under𝟙
 under𝟙-embedding fe = disjoint-cases-embedding under (λ _ → ∞) (under-embedding fe) g d
  where
   g : is-embedding (λ _ → ∞)
-  g x (* , p) (* , q) = ap (λ - → * , -) (ℕ∞-is-set fe p q)
+  g x (* , p) (⋆ , q) = ap (λ - → ⋆ , -) (ℕ∞-is-set fe p q)
 
   d : (n : ℕ) (y : 𝟙) → under n ≢ ∞
   d n _ p = ∞-is-not-finite n (p ⁻¹)
@@ -390,7 +390,7 @@ under𝟙-dense : funext₀ → is-dense under𝟙
 under𝟙-dense fe (u , f) = g (not-finite-is-∞ fe h)
  where
   g : ¬ (u ≡ ∞)
-  g p = f ((inr *) , (p ⁻¹))
+  g p = f ((inr ⋆) , (p ⁻¹))
 
   h : (n : ℕ) → ¬ (u ≡ under n)
   h n p = f (inl n , (p ⁻¹))

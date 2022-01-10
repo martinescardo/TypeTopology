@@ -45,10 +45,10 @@ succₒ α = α +ₒ 𝟙ₒ  ,
           plus.top-preservation
            (underlying-order α)
            (underlying-order 𝟙ₒ)
-           (prop.topped 𝟙 𝟙-is-prop *)
+           (prop.topped 𝟙 𝟙-is-prop ⋆)
 
 𝟙ᵒ 𝟚ᵒ ℕ∞ᵒ : Ordᵀ
-𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop *
+𝟙ᵒ  = 𝟙ₒ , prop.topped 𝟙 𝟙-is-prop ⋆
 𝟚ᵒ  = succₒ 𝟙ₒ
 ℕ∞ᵒ = (ℕ∞ₒ , ∞ , ∞-top)
 

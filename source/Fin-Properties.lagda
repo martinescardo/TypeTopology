@@ -1878,7 +1878,7 @@ Fin-co-wf {𝓤} {succ n} A 𝟎 d a = γ
       ϕ = pr₂ (pr₂ IH)
 
       h : (s : Fin (succ n)) → A s → s ≼ suc r'
-      h 𝟎       c = *
+      h 𝟎       c = ⋆
       h (suc x) c = ϕ x c
 
     g : ¬ (Σ i ꞉ Fin n , A (suc i)) → Γ
@@ -1886,7 +1886,7 @@ Fin-co-wf {𝓤} {succ n} A 𝟎 d a = γ
      where
       h : (s : Fin (succ n)) → A s → s ≼ 𝟎
       h (suc x) c = 𝟘-elim (ν (x , c))
-      h 𝟎       c = *
+      h 𝟎       c = ⋆
 
 Fin-co-wf {𝓤} {succ n} A (suc x) d a = suc (pr₁ IH) , pr₁ (pr₂ IH) , h
  where
@@ -1894,7 +1894,7 @@ Fin-co-wf {𝓤} {succ n} A (suc x) d a = suc (pr₁ IH) , pr₁ (pr₂ IH) , h
   IH = Fin-co-wf {𝓤} {n} (A ∘ suc) x  (d ∘ suc) a
 
   h : (s : Fin (succ n)) → A s → s ≼ suc (pr₁ IH)
-  h 𝟎       b = *
+  h 𝟎       b = ⋆
   h (suc x) b = pr₂ (pr₂ IH) x b
 
 compact-argmax : {X : 𝓤  ̇ } {n : ℕ } (p : X → Fin n)

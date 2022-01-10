@@ -473,7 +473,7 @@ singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ⇔ X ≃ 𝟙 
 singletons-are-equiv-to-𝟙 {𝓤} {𝓥} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙
-  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-* x)⁻¹)) , ((λ _ → x₀) , φ))
+  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-⋆ x)⁻¹)) , ((λ _ → x₀) , φ))
   back : X ≃ 𝟙 → is-singleton X
   back (f , (s , fs) , (r , rf)) = retract-of-singleton (r , f , rf) 𝟙-is-singleton
 

@@ -230,7 +230,7 @@ type injectivity purposes).
 
 𝓛-alg-Law₀'-gives₀ : {X : 𝓤 ̇ } (∐ : joinop X)
                     → 𝓛-alg-Law₀' ∐ → 𝓛-alg-Law₀ ∐
-𝓛-alg-Law₀'-gives₀ {𝓤} {X} ∐ φ x = φ 𝟙 𝟙-is-prop (λ _ → x) *
+𝓛-alg-Law₀'-gives₀ {𝓤} {X} ∐ φ x = φ 𝟙 𝟙-is-prop (λ _ → x) ⋆
 
 \end{code}
 

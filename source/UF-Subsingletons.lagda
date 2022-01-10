@@ -78,7 +78,7 @@ is-contr : 𝓤 ̇ → 𝓤 ̇
 is-contr = is-singleton
 
 𝟙-is-singleton : is-singleton (𝟙 {𝓤})
-𝟙-is-singleton = * , (λ (x : 𝟙) → (𝟙-all-* x)⁻¹)
+𝟙-is-singleton = ⋆ , (λ (x : 𝟙) → (𝟙-all-⋆ x)⁻¹)
 
 singletons-are-props : {X : 𝓤 ̇ } → is-singleton X → is-prop X
 singletons-are-props (c , φ) x y = x ≡⟨ (φ x) ⁻¹ ⟩
@@ -104,7 +104,7 @@ The two prototypical propositions:
 𝟘-is-prop {𝓤} x y = unique-from-𝟘 {𝓤} {𝓤} x
 
 𝟙-is-prop : is-prop (𝟙 {𝓤})
-𝟙-is-prop {𝓤} * * = refl {𝓤}
+𝟙-is-prop {𝓤} ⋆ ⋆ = refl {𝓤}
 
 \end{code}
 
@@ -453,7 +453,7 @@ used in the following construction.
 \begin{code}
 
 𝟘-is-not-𝟙 : 𝟘 {𝓤} ≢ 𝟙 {𝓤}
-𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) *)
+𝟘-is-not-𝟙 p = 𝟘-elim (Idtofun (p ⁻¹) ⋆)
 
 \end{code}
 

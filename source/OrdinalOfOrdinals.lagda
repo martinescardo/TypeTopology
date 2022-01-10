@@ -945,7 +945,7 @@ module example where
      → under𝟙-inverse x d ≺⟨ ℕₒ +ₒ 𝟙ₒ ⟩ under𝟙-inverse y e
    p .(under n) .(under m) (inl (n , refl)) (inl (m , refl)) (k , r , l) =
     back-transport (λ - → - < m) (under-lc r) (⊏-gives-< k m l)
-   p .(under n) y (inl (n , refl)) (inr f) l = *
+   p .(under n) y (inl (n , refl)) (inr f) l = ⋆
    p x y (inr f) e (k , r , l) =
     𝟘-elim (∞-is-not-finite k ((not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry f))⁻¹ ∙ r))
 
