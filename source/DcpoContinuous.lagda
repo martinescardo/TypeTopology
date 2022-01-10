@@ -188,10 +188,10 @@ module Ind-completion
  ⌞_⌟ x = λ _ → x
 
  ⌞⌟-is-directed : (x : ⟨ 𝓓 ⟩) → is-Directed 𝓓 ⌞ x ⌟
- ⌞⌟-is-directed x = ∣ * ∣ , σ
+ ⌞⌟-is-directed x = ∣ ⋆ ∣ , σ
   where
    σ : is-semidirected (underlying-order 𝓓) (λ _ → x)
-   σ i j = ∣ * , reflexivity 𝓓 x , reflexivity 𝓓 x ∣
+   σ i j = ∣ ⋆ , reflexivity 𝓓 x , reflexivity 𝓓 x ∣
 
  ι : ⟨ 𝓓 ⟩ → Ind
  ι x = 𝟙 , ⌞ x ⌟ , ⌞⌟-is-directed x
@@ -233,8 +233,8 @@ module Ind-completion
          ε : is-Directed 𝓓 ⌞ x ⌟
          ε = ⌞⌟-is-directed x
          ⦅a⦆ = ≲-to-⊑-of-∐ δ ε
-               (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε *))
-         ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ * → reflexivity 𝓓 x)
+               (rl-implication (ladj (ι x)) (∐-is-upperbound 𝓓 ε ⋆))
+         ⦅b⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 ε x (λ _ → reflexivity 𝓓 x)
 
  -- TODO: Rename and move this
  Π-⇔ : {X : 𝓤' ̇  } {A : X → 𝓥' ̇  } {B : X → 𝓦 ̇  }
