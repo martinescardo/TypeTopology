@@ -1899,13 +1899,16 @@ We also consider the following notation of locator for families:
                       + (Π i ꞉ 𝐼 , 𝔁 i < q)
 
  pointwise-locator-gives-bishop-locator : (𝐼 : 𝓤 ̇ ) (𝔁 : 𝐼 → ℝ)
-                                        → compact 𝐼
+                                        → searchable 𝐼
                                         → ((i : 𝐼) → locator (𝔁 i))
                                         → bishop-locator 𝔁
  pointwise-locator-gives-bishop-locator 𝐼 𝔁 κ ℓ p q l = γ
   where
    γ : (Σ i ꞉ 𝐼 , p < 𝔁 i) + (Π i ꞉ 𝐼 , 𝔁 i < q)
-   γ = compact-gives-Σ+Π 𝐼 (λ i → p < 𝔁 i ) (λ i → 𝔁 i < q) κ (λ i → ℓ i p q l)
+   γ = compact-gives-Σ+Π 𝐼
+        (λ i → p < 𝔁 i ) (λ i → 𝔁 i < q)
+        (compact∙-gives-compact κ)
+        (λ i → ℓ i p q l)
 
  lub-with-locators : (𝐼 : 𝓤 ̇ ) (𝔁 : 𝐼 → ℝ)
                    → searchable 𝐼
@@ -1918,7 +1921,7 @@ We also consider the following notation of locator for families:
    h = ∣ compact∙-gives-pointed κ ∣
 
    I : bishop-locator 𝔁
-   I = pointwise-locator-gives-bishop-locator 𝐼 𝔁 (compact∙-gives-compact κ) ℓ
+   I = pointwise-locator-gives-bishop-locator 𝐼 𝔁 κ ℓ
 
    II : (p q : ℚ) → p < q → ((Σ i ꞉ 𝐼 , p < 𝔁 i) + (Π i ꞉ 𝐼 , 𝔁 i < q)) → (p < 𝔁) ∨ (𝔁 < q)
    II p q l (inl (i , m)) = ∣ inl ∣ i , m ∣ ∣
@@ -1943,7 +1946,7 @@ We also consider the following notation of locator for families:
      δ (q' , i , j) = VII (I p q' i)
       where
        VII : ((Σ i ꞉ 𝐼 , p < 𝔁 i) + (Π i ꞉ 𝐼 , 𝔁 i < q')) → (p < y) + (y < q)
-       VII (inl (i , m)) = inl ∣ i , m ∣
+       VII (inl (o , m)) = inl ∣ o , m ∣
        VII (inr ϕ)       = inr IX
         where
          VIII : q' ≮ y
