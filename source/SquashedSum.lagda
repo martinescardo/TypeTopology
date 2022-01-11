@@ -35,18 +35,18 @@ open import UF-Miscelanea
 
 Recall that the map
 
-  under : ℕ → ℕ∞
+  ι : ℕ → ℕ∞
 
 is the canonical embedding. Given a type family X : ℕ → 𝓤 ̇, we take its
 right Kan extension
 
-  X / under : ℕ∞ → 𝓤 ̇
+  X / ι : ℕ∞ → 𝓤 ̇
 
 and then its sum, which we call the squashed sum of X and write
 
   Σ¹ X.
 
-We have that (X / under) ∞ ≃ 𝟙. What is interesting is that if each
+We have that (X / ι) ∞ ≃ 𝟙. What is interesting is that if each
 X n is compact then so is its squashed sum Σ¹ X.
 
 \begin{code}
