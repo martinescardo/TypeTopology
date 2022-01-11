@@ -105,6 +105,8 @@ on it, it decidable whether it has a root:
 compact : 𝓤 ̇ → 𝓤 ̇
 compact = Σ-compact
 
+exhaustible = compact
+
 \end{code}
 
 Notice that compactness in this sense is not in general a univalent
@@ -119,6 +121,8 @@ compactness and pointedness, and hence the notation "compact∙":
 
 compact∙ : 𝓤 ̇ → 𝓤 ̇
 compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+
+searchable = compact∙
 
 \end{code}
 
