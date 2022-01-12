@@ -325,17 +325,6 @@ structurally-continuous-≃ 𝓓 = qinveq (structurally-continuous-prime 𝓓)
                                     ((structurally-continuous-unprime 𝓓) ,
                                      ((λ x → refl) , (λ x → refl)))
 
-
--- TODO: Review this
-{-
-structural-basis : (𝓓 : DCPO {𝓤} {𝓣}) {B : 𝓦 ̇  } (β : B → ⟨ 𝓓 ⟩)
-                 → 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ⊔ 𝓦 ̇
-structural-basis 𝓓 {B} β =
-  (x : ⟨ 𝓓 ⟩) → Σ I ꞉ 𝓥 ̇  ,
-                Σ α ꞉ (I → B) , ((i : I) → β (α i) ≪⟨ 𝓓 ⟩ x)
-                              × (Σ δ ꞉ is-Directed 𝓓 (β ∘ α) , ∐ 𝓓 δ ≡ x)
--}
-
 module _
         (𝓓 : DCPO {𝓤} {𝓣})
         (C : structurally-continuous 𝓓)
@@ -927,5 +916,122 @@ module _
  -- TODO: Continue...
  -- Implement poset reflection abstractly? Perhaps just assume it (abstractly) here
 -}
+
+\end{code}
+
+Local smallness...
+
+\begin{code}
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ ≪-is-small-valued-str : structurally-continuous 𝓓
+                       → is-locally-small 𝓓
+                       → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
+ ≪-is-small-valued-str C (_⊑ₛ_ , φ) x y = (∃ i ꞉ I , x ⊑ₛ α i) , ψ
+  where
+   open structurally-continuous C
+   I : 𝓥 ̇
+   I = index-of-approximating-family y
+   α : I → ⟨ 𝓓 ⟩
+   α = approximating-family y
+   ψ : (∃ i ꞉ I , x ⊑ₛ α i) ≃ (x ≪⟨ 𝓓 ⟩ y)
+   ψ = logically-equivalent-props-are-equivalent ∥∥-is-prop (≪-is-prop-valued 𝓓)
+        ⦅⇒⦆ ⦅⇐⦆
+    where
+     ⦅⇐⦆ : x ≪⟨ 𝓓 ⟩ y → ∃ i ꞉ I , x ⊑ₛ α i
+     ⦅⇐⦆ x-way-below-y = ∥∥-functor r (x-way-below-y I α
+                                      (approximating-family-is-directed y)
+                                      (approximating-family-∐-⊒ 𝓓 C y))
+      where
+       r : (Σ i ꞉ I , x ⊑⟨ 𝓓 ⟩ α i) → Σ i ꞉ I , x ⊑ₛ α i
+       r (i , x-below-αᵢ) = (i , ⌜ φ x (α i) ⌝⁻¹ x-below-αᵢ)
+     ⦅⇒⦆ : (∃ i ꞉ I , x ⊑ₛ α i) → x ≪⟨ 𝓓 ⟩ y
+     ⦅⇒⦆ h J β ε y-below-∐β = ∥∥-rec ∥∥-is-prop r h
+      where
+       r : (Σ i ꞉ I , x ⊑ₛ α i) → ∃ j ꞉ J , x ⊑⟨ 𝓓 ⟩ β j
+       r (i , x-belowₛ-αᵢ) = ⊑-≪-to-≪ 𝓓 x-below-αᵢ
+                                         (approximating-family-is-way-below y i)
+                                         J β ε y-below-∐β
+        where
+         x-below-αᵢ : x ⊑⟨ 𝓓 ⟩ α i
+         x-below-αᵢ = ⌜ φ x (α i) ⌝ x-belowₛ-αᵢ
+
+ ≪-is-small-valued-str' : structurally-continuous 𝓓
+                        → is-locally-small 𝓓
+                        → Σ _≪ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  )
+                        , ((x y : ⟨ 𝓓 ⟩) → (x ≪ₛ y) ≃ (x ≪⟨ 𝓓 ⟩ y))
+ ≪-is-small-valued-str' C ls =
+  ⌜ small-binary-relation-equivalence ⌝ (≪-is-small-valued-str C ls)
+
+ ≪-is-small-valued-str-converse : structurally-continuous 𝓓
+                                → ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
+                                → is-locally-small 𝓓
+ ≪-is-small-valued-str-converse C ≪-is-small-valued =
+  ⌜ local-smallness-equivalent-definitions 𝓓 ⌝⁻¹ γ
+   where
+    _≪ₛ_ : ⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇
+    x ≪ₛ y = pr₁ (≪-is-small-valued x y)
+    φ : (x y : ⟨ 𝓓 ⟩) → x ≪ₛ y ≃ x ≪⟨ 𝓓 ⟩ y
+    φ x y = pr₂ (≪-is-small-valued x y)
+    γ : (x y : ⟨ 𝓓 ⟩) → is-small (x ⊑⟨ 𝓓 ⟩ y)
+    γ x y = (∀ (i : I) → α i ≪ₛ y) , ψ
+     where
+      open structurally-continuous C
+      I : 𝓥 ̇
+      I = index-of-approximating-family x
+      α : I → ⟨ 𝓓 ⟩
+      α = approximating-family x
+      ψ : (∀ (i : I) → α i ≪ₛ y) ≃ x ⊑⟨ 𝓓 ⟩ y
+      ψ = logically-equivalent-props-are-equivalent
+           (Π-is-prop fe (λ i → equiv-to-prop (φ (α i) y) (≪-is-prop-valued 𝓓)))
+           (prop-valuedness 𝓓 x y)
+           ⦅⇒⦆ ⦅⇐⦆
+       where
+        ⦅⇐⦆ : x ⊑⟨ 𝓓 ⟩ y → (∀ (i : I) → α i ≪ₛ y)
+        ⦅⇐⦆ x-below-y i =
+         ⌜ φ (α i) y ⌝⁻¹ (≪-⊑-to-≪ 𝓓 (approximating-family-is-way-below x i)
+                                      x-below-y)
+        ⦅⇒⦆ : (∀ (i : I) → α i ≪ₛ y) → x ⊑⟨ 𝓓 ⟩ y
+        ⦅⇒⦆ α-way-below-y = x     ⊑⟨ 𝓓 ⟩[ ⦅1⦆ ]
+                            ∐ 𝓓 δ ⊑⟨ 𝓓 ⟩[ ⦅2⦆ ]
+                            y     ∎⟨ 𝓓 ⟩
+         where
+          δ : is-Directed 𝓓 α
+          δ = approximating-family-is-directed x
+          ⦅1⦆ = approximating-family-∐-⊒ 𝓓 C x
+          ⦅2⦆ = ∐-is-lowerbound-of-upperbounds 𝓓 δ y
+                (λ i → ≪-to-⊑ 𝓓 (⌜ φ (α i) y ⌝ (α-way-below-y i)))
+
+
+ module _
+         (pe : PropExt)
+        where
+
+  open import UF-Size hiding (is-small ; is-locally-small)
+
+  ≪-is-small-valued : is-continuous-dcpo 𝓓
+                    → is-locally-small 𝓓
+                    → (x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y)
+  ≪-is-small-valued c ls x y = ∥∥-rec p (λ C → ≪-is-small-valued-str C ls x y) c
+   where
+    p : is-prop (is-small (x ≪⟨ 𝓓 ⟩ y))
+    p = prop-has-size-is-prop pe (λ _ _ → fe) (x ≪⟨ 𝓓 ⟩ y) (≪-is-prop-valued 𝓓) 𝓥
+
+  ≪-is-small-valued' : is-continuous-dcpo 𝓓
+                     → is-locally-small 𝓓
+                     → Σ _≪ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  )
+                     , ((x y : ⟨ 𝓓 ⟩) → (x ≪ₛ y) ≃ (x ≪⟨ 𝓓 ⟩ y))
+  ≪-is-small-valued' c ls =
+   ⌜ small-binary-relation-equivalence ⌝ (≪-is-small-valued c ls)
+
+  ≪-is-small-valued-converse : is-continuous-dcpo 𝓓
+                             → ((x y : ⟨ 𝓓 ⟩) → is-small (x ≪⟨ 𝓓 ⟩ y))
+                             → is-locally-small 𝓓
+  ≪-is-small-valued-converse c ws =
+   ∥∥-rec (being-locally-small-is-prop 𝓓 pe)
+    (λ C → ≪-is-small-valued-str-converse C ws) c
 
 \end{code}

@@ -14,6 +14,7 @@ The table of contents is roughly:
 
    The latter is used to be prove (in DcpoLifting.lagda) that the lifting yields
    the free pointed dcpo on a set.
+ * Defining local smallness for dcpos.
 
 \begin{code}
 
@@ -549,5 +550,75 @@ preserves-subsingleton-sups-if-continuous-and-strict 𝓓 𝓔 f con str α ρ =
              → α ≡ β
              → ∐ˢˢ 𝓓 α ρ ≡ ∐ˢˢ 𝓓 β ρ
 ∐ˢˢ-family-≡ 𝓓 ρ refl = refl
+
+\end{code}
+
+Many examples of dcpos conveniently happen to be locally small.
+
+We present two definitions and prove they are equivalent. The former is easier
+to work with, while the latter arguably looks more like the familiar categorical
+notion of a locally small category.
+
+\begin{code}
+
+open import UF-Equiv
+open import UF-EquivalenceExamples
+
+open import UF-Size hiding (is-small ; is-locally-small)
+
+open import UF-Subsingletons-FunExt
+
+is-small : (X : 𝓤 ̇  ) → 𝓥 ⁺ ⊔ 𝓤 ̇
+is-small X = X has-size 𝓥
+
+small-binary-relation-equivalence : {X : 𝓤 ̇  } {Y : 𝓦 ̇  } {R : X → Y → 𝓣 ̇  }
+                                  → ((x : X) (y : Y) → is-small (R x y))
+                                  ≃ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇  ) ,
+                                      ((x : X) (y : Y) → Rₛ x y ≃ R x y))
+small-binary-relation-equivalence {𝓤} {𝓦} {𝓣} {X} {Y} {R} =
+ ((x : X) (y : Y)    → is-small (R x y))                            ≃⟨ I   ⟩
+ ((((x , y) : X × Y) → is-small (R x y)))                           ≃⟨ II  ⟩
+ (Σ R' ꞉ (X × Y → 𝓥 ̇  ) , (((x , y) : X × Y) → R' (x , y) ≃ R x y)) ≃⟨ III ⟩
+ (Σ R' ꞉ (X × Y → 𝓥 ̇  ) , ((x : X) (y : Y) → R' (x , y) ≃ R x y))   ≃⟨ IV  ⟩
+ (Σ Rₛ ꞉ (X → Y → 𝓥 ̇  ) , ((x : X) (y : Y) → Rₛ x y ≃ R x y))       ■
+  where
+   φ : {𝓤 𝓥 𝓦 : Universe}
+       {X : 𝓤 ̇ } {Y : X → 𝓥 ̇ } {Z : (Σ x ꞉ X , Y x) → 𝓦 ̇ }
+     → Π Z ≃ (Π x ꞉ X , Π y ꞉ Y x , Z (x , y))
+   φ = curry-uncurry (λ _ _ → fe)
+   I   = ≃-sym φ
+   II  = ΠΣ-distr-≃
+   III = Σ-cong (λ R → φ)
+   IV  = Σ-change-of-variable (λ R' → (x : X) (y : Y) → R' x y ≃ R x y)
+          ⌜ φ ⌝ (⌜⌝-is-equiv φ)
+
+module _
+        (𝓓 : DCPO {𝓤} {𝓣})
+       where
+
+ is-locally-small : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ is-locally-small = Σ _⊑ₛ_ ꞉ (⟨ 𝓓 ⟩ → ⟨ 𝓓 ⟩ → 𝓥 ̇  ) ,
+                             ((x y : ⟨ 𝓓 ⟩) → (x ⊑ₛ y) ≃ (x ⊑⟨ 𝓓 ⟩ y))
+
+ is-locally-small' : 𝓥 ⁺ ⊔ 𝓤 ⊔ 𝓣 ̇
+ is-locally-small' = (x y : ⟨ 𝓓 ⟩) → is-small (x ⊑⟨ 𝓓 ⟩ y)
+
+ local-smallness-equivalent-definitions : is-locally-small ≃ is-locally-small'
+ local-smallness-equivalent-definitions =
+  ≃-sym (small-binary-relation-equivalence)
+
+ module _
+         (pe : PropExt)
+        where
+
+  being-locally-small'-is-prop : is-prop is-locally-small'
+  being-locally-small'-is-prop =
+   Π₂-is-prop fe (λ x y → prop-has-size-is-prop pe (λ _ _ → fe)
+                           (x ⊑⟨ 𝓓 ⟩ y) (prop-valuedness 𝓓 x y) 𝓥)
+
+  being-locally-small-is-prop : is-prop is-locally-small
+  being-locally-small-is-prop =
+   equiv-to-prop local-smallness-equivalent-definitions
+                 being-locally-small'-is-prop
 
 \end{code}
