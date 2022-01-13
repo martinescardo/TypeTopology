@@ -90,7 +90,7 @@ LPO-gives-compact-ℕ lpo β = cases a b d
         v = curry u
 
         g : (n : ℕ) → β n ≡ ₁
-        g n = force-decreasing-is-smaller β n e
+        g n = ≤₂-criterion-converse (force-decreasing-is-smaller β n) e
           where
             c : x ≡ ι n → 𝟘
             c = v n

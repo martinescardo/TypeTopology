@@ -585,12 +585,11 @@ x ≺₂ y = Σ p ꞉ (X → 𝟚) , (p x <₂ p y)
                      × ((u v : X) → (u < v → p u ≤₂ p v)
                                   × (p u <₂ p v → u < v)))
     → (x < z) + (z < y)
-  g (p , (r , s) , φ) = Cases (𝟚-is-discrete (p z) ₀)
-                         (λ (t : p z ≡ ₀)
-                            → inr (pr₂ (φ z y) (t , s)))
-                         (λ (t : ¬ (p z ≡ ₀))
-                            → inl (pr₂ (φ x z) (r , (different-from-₀-equal-₁ t))))
-
+  g (p , m , ϕ) = Cases (𝟚-is-discrete (p z) ₀)
+                   (λ (t : p z ≡ ₀)
+                            →  inr (pr₂ (ϕ z y) (Lemma[a≡₀→b<c→a<c] t m)))
+                   (λ (t : ¬ (p z ≡ ₀))
+                            → inl (pr₂ (ϕ x z) (Lemma[a<b→c≢₀→a<c] m t)))
 \end{code}
 
 It seems that this is not going to be useful, because although ℕ∞

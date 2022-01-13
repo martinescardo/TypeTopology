@@ -1581,30 +1581,30 @@ Apartness of real numbers and its basic properties:
 \end{code}
 
 We now consider the existence of least upper bounds of bounded
-families 𝔁 : 𝐼 → ℝ with 𝐼 inhabited.
+families x : 𝐼 → ℝ with 𝐼 inhabited.
 
 A sufficient condition, given by Bishop, is that
 
-  (p q : ℚ) → p < q → (∃ i ꞉ 𝐼 , p < 𝔁 i)
-                    ∨ (Π i ꞉ 𝐼 , 𝔁 i < q)
+  (p q : ℚ) → p < q → (∃ i ꞉ 𝐼 , p < x i)
+                    ∨ (Π i ꞉ 𝐼 , x i < q)
 
 We observe that the weaker condition
 
-  (p q : ℚ) → p < q →  (∃ i ꞉ 𝐼 , p < 𝔁 i)
-                    ∨ ¬(∃ i ꞉ 𝐼 , q < 𝔁 i)
+  (p q : ℚ) → p < q →  (∃ i ꞉ 𝐼 , p < x i)
+                    ∨ ¬(∃ i ꞉ 𝐼 , q < x i)
 
 suffices.
 
-If we define (p < 𝔁) = (∃ i ꞉ 𝐼 , p < 𝔁 i), then this weaker sufficient
+If we define (p < x) = (∃ i ꞉ 𝐼 , p < x i), then this weaker sufficient
 condition reads
 
-  (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
+  (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
 
 so that we see that it is analogous to Troelstra's locatedness
 condition discussed above.
 
-In the following, we write 𝔁 ≤ y to mean that the real number y is an
-upper bound of the family 𝔁.
+In the following, we write x ≤ y to mean that the real number y is an
+upper bound of the family x.
 
 \begin{code}
 
@@ -1614,123 +1614,123 @@ upper bound of the family 𝔁.
 
   instance
    order-F-ℝ : Order F ℝ
-   _≤_ {{order-F-ℝ}} 𝔁 y = (i : 𝐼) → 𝔁 i ≤ y
+   _≤_ {{order-F-ℝ}} x y = (i : 𝐼) → x i ≤ y
 
-  order-F-ℝ-is-prop-valued : (𝔁 : F) (y : ℝ)
-                           → is-prop (𝔁 ≤ y)
-  order-F-ℝ-is-prop-valued 𝔁 y = Π-is-prop fe (λ i → ≤₀-is-prop-valued (𝔁 i) y)
+  order-F-ℝ-is-prop-valued : (x : F) (y : ℝ)
+                           → is-prop (x ≤ y)
+  order-F-ℝ-is-prop-valued x y = Π-is-prop fe (λ i → ≤₀-is-prop-valued (x i) y)
 
   _has-lub_ : F → ℝ → 𝓤⁺ ̇
-  𝔁 has-lub y = (𝔁 ≤ y) × ((z : ℝ) → 𝔁 ≤ z → y ≤ z)
+  x has-lub y = (x ≤ y) × ((z : ℝ) → x ≤ z → y ≤ z)
 
   _has-a-lub : F → 𝓤⁺ ̇
-  𝔁 has-a-lub = Σ y ꞉ ℝ , (𝔁 has-lub y)
+  x has-a-lub = Σ y ꞉ ℝ , (x has-lub y)
 
-  having-lub-is-prop : (𝔁 : F) (y : ℝ)
-                     → is-prop (𝔁 has-lub y)
-  having-lub-is-prop 𝔁 y = ×-is-prop
-                             (order-F-ℝ-is-prop-valued 𝔁 y)
+  having-lub-is-prop : (x : F) (y : ℝ)
+                     → is-prop (x has-lub y)
+  having-lub-is-prop x y = ×-is-prop
+                             (order-F-ℝ-is-prop-valued x y)
                              (Π₂-is-prop fe (λ z _ → ≤₀-is-prop-valued y z))
 
-  having-a-lub-is-prop : (𝔁 : F) → is-prop (𝔁 has-a-lub)
-  having-a-lub-is-prop 𝔁 (y , a , b) (y' , a' , b') = γ
+  having-a-lub-is-prop : (x : F) → is-prop (x has-a-lub)
+  having-a-lub-is-prop x (y , a , b) (y' , a' , b') = γ
    where
     I : y ≡ y'
     I = ≤-ℝ-ℝ-antisym y y' (b y' a') (b' y a)
 
     γ : (y , a , b) ≡ (y' , a' , b')
-    γ = to-subtype-≡ (having-lub-is-prop 𝔁) I
+    γ = to-subtype-≡ (having-lub-is-prop x) I
 
   instance
    strict-order-ℚ-F : Strict-Order ℚ F
-   _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝐼 , p < 𝔁 i
+   _<_ {{strict-order-ℚ-F}} p x = ∃ i ꞉ 𝐼 , p < x i
 
-  strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
-  strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
+  strict-order-ℚ-F-is-prop : (p : ℚ) (x : F) → is-prop (p < x)
+  strict-order-ℚ-F-is-prop p x = ∃-is-prop
 
-  strict-order-ℚ-F-observation : (p : ℚ) (𝔁 : F)
-                               → (p ≮ 𝔁) ⇔ (𝔁 ≤ ι p)
-  strict-order-ℚ-F-observation p 𝔁 = f , g
+  strict-order-ℚ-F-observation : (p : ℚ) (x : F)
+                               → (p ≮ x) ⇔ (x ≤ ι p)
+  strict-order-ℚ-F-observation p x = f , g
    where
-    f : p ≮ 𝔁 → 𝔁 ≤ ι p
+    f : p ≮ x → x ≤ ι p
     f ν i = I
      where
-      I : (q : ℚ) → q < 𝔁 i → q < p
+      I : (q : ℚ) → q < x i → q < p
       I q l = ℚ-order-criterion q p II III
        where
         II : p ≮ q
-        II m = ν ∣ i , lowercut-is-lower (𝔁 i) q l p m ∣
+        II m = ν ∣ i , lowercut-is-lower (x i) q l p m ∣
 
         III : q ≢ p
         III refl = ν ∣ i , l ∣
 
-    g : 𝔁 ≤ ι p → p ≮ 𝔁
+    g : x ≤ ι p → p ≮ x
     g l = ∥∥-rec 𝟘-is-prop I
      where
-      I : ¬ (Σ i ꞉ 𝐼 , p < 𝔁 i)
+      I : ¬ (Σ i ꞉ 𝐼 , p < x i)
       I (i , m) = <-ℚ-ℚ-irrefl p (l i p m)
 
   is-upper-bounded : F → 𝓤⁺ ̇
-  is-upper-bounded 𝔁 = ∃ y ꞉ ℝ , (𝔁 ≤ y)
+  is-upper-bounded x = ∃ y ꞉ ℝ , (x ≤ y)
 
   is-located-family : F → 𝓤 ̇
-  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
+  is-located-family x = (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
 
   lub-sufficient-conditions : F → 𝓤⁺ ̇
-  lub-sufficient-conditions 𝔁 = ∥ 𝐼 ∥
-                              × is-upper-bounded 𝔁
-                              × is-located-family 𝔁
+  lub-sufficient-conditions x = ∥ 𝐼 ∥
+                              × is-upper-bounded x
+                              × is-located-family x
 
-  lub : (𝔁 : F) → lub-sufficient-conditions 𝔁 → 𝔁 has-a-lub
-  lub 𝔁 (𝐼-inhabited , 𝔁-bounded , 𝔁-located) = y , a , b
+  lub : (x : F) → lub-sufficient-conditions x → x has-a-lub
+  lub x (𝐼-inhabited , x-bounded , x-located) = y , a , b
    where
     L : 𝓟 ℚ
-    L p = (p < 𝔁) , strict-order-ℚ-F-is-prop p 𝔁
+    L p = (p < x) , strict-order-ℚ-F-is-prop p x
 
-    L-inhabited : ∃ p ꞉ ℚ , p < 𝔁
+    L-inhabited : ∃ p ꞉ ℚ , p < x
     L-inhabited = ∥∥-rec ∃-is-prop I 𝐼-inhabited
      where
-      I : 𝐼 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < 𝔁 i
+      I : 𝐼 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < x i
       I i = III II
        where
-        II : Σ i ꞉ 𝐼 , ∃ p ꞉ ℚ , p < 𝔁 i
-        II = i , lowercut-is-inhabited (𝔁 i)
+        II : Σ i ꞉ 𝐼 , ∃ p ꞉ ℚ , p < x i
+        II = i , lowercut-is-inhabited (x i)
 
-        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < 𝔁 i
+        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < x i
         III (i , s) = ∥∥-functor IV s
          where
-          IV : (Σ p ꞉ ℚ , p < 𝔁 i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < 𝔁 i
+          IV : (Σ p ꞉ ℚ , p < x i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < x i
           IV (p , l) = p , ∣ i , l ∣
 
-    L-lower : (q : ℚ) → q < 𝔁 → (p : ℚ) → p < q → p < 𝔁
-    L-lower q l p m = ∥∥-functor (λ (i , k) → i , lowercut-is-lower (𝔁 i) q k p m) l
+    L-lower : (q : ℚ) → q < x → (p : ℚ) → p < q → p < x
+    L-lower q l p m = ∥∥-functor (λ (i , k) → i , lowercut-is-lower (x i) q k p m) l
 
-    L-upper-open : (p : ℚ) → p < 𝔁 → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+    L-upper-open : (p : ℚ) → p < x → ∃ p' ꞉ ℚ , ((p < p') × (p' < x))
     L-upper-open p = ∥∥-rec ∃-is-prop f
      where
-      f : (Σ i ꞉ 𝐼 , p < 𝔁 i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
-      f (i , l) = ∥∥-functor g (lowercut-is-upper-open (𝔁 i) p l)
+      f : (Σ i ꞉ 𝐼 , p < x i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < x))
+      f (i , l) = ∥∥-functor g (lowercut-is-upper-open (x i) p l)
        where
-        g : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝔁 i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+        g : (Σ p' ꞉ ℚ , (p < p') × (p' < x i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < x))
         g (p' , m , o) = p' , m , ∣ i , o ∣
 
     yᴸ : ℝᴸ
     yᴸ = (L , L-inhabited , L-lower , L-upper-open)
 
-    L-bounded-above : ∃ q ꞉ ℚ , q ≮ 𝔁
-    L-bounded-above = ∥∥-rec ∃-is-prop I 𝔁-bounded
+    L-bounded-above : ∃ q ꞉ ℚ , q ≮ x
+    L-bounded-above = ∥∥-rec ∃-is-prop I x-bounded
      where
-      I : (Σ β ꞉ ℝ , 𝔁 ≤ β) → ∃ q ꞉ ℚ , q ≮ 𝔁
+      I : (Σ β ꞉ ℝ , x ≤ β) → ∃ q ꞉ ℚ , q ≮ x
       I (β , l) = ∥∥-functor II (uppercut-is-inhabited β)
        where
-        II : (Σ q ꞉ ℚ , β < q) → Σ q ꞉ ℚ , q ≮ 𝔁
+        II : (Σ q ꞉ ℚ , β < q) → Σ q ꞉ ℚ , q ≮ x
         II (q , m) = q , ∥∥-rec 𝟘-is-prop III
          where
-          III : ¬ (Σ i ꞉ 𝐼 , q < 𝔁 i)
+          III : ¬ (Σ i ꞉ 𝐼 , q < x i)
           III (i , o) = <-ℚ-ℚ-irrefl q (cuts-are-ordered β q q (l i q o) m)
 
-    L-located : (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
-    L-located = 𝔁-located
+    L-located : (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
+    L-located = x-located
 
     τ : is-troelstra yᴸ
     τ = L-bounded-above , L-located
@@ -1738,43 +1738,43 @@ upper bound of the family 𝔁.
     y : ℝ
     y = (yᴸ , troelstra-gives-dedekind yᴸ τ)
 
-    a : 𝔁 ≤ y
+    a : x ≤ y
     a i p l = ∣ i , l ∣
 
-    b : (z : ℝ) → 𝔁 ≤ z → y ≤ z
+    b : (z : ℝ) → x ≤ z → y ≤ z
     b z l p = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p z) f
      where
-      f : (Σ i ꞉ 𝐼 , p < 𝔁 i) → p < z
+      f : (Σ i ꞉ 𝐼 , p < x i) → p < z
       f (i , m) = l i p m
 
   instance
    strict-order-F-ℚ : Strict-Order F ℚ
-   _<_ {{strict-order-F-ℚ}} 𝔁 q = (i : 𝐼) → 𝔁 i < q
+   _<_ {{strict-order-F-ℚ}} x q = (i : 𝐼) → x i < q
 
-  strict-order-F-ℚ-is-prop : (q : ℚ) (𝔁 : F) → is-prop (𝔁 < q)
-  strict-order-F-ℚ-is-prop q 𝔁 = Π-is-prop fe
-                                  (λ i → strict-order-ℝ-ℚ-is-prop-valued (𝔁 i) q)
+  strict-order-F-ℚ-is-prop : (q : ℚ) (x : F) → is-prop (x < q)
+  strict-order-F-ℚ-is-prop q x = Π-is-prop fe
+                                  (λ i → strict-order-ℝ-ℚ-is-prop-valued (x i) q)
 
   is-bishop-located : F → 𝓤 ̇
-  is-bishop-located 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (𝔁 < q)
+  is-bishop-located x = (p q : ℚ) → p < q → (p < x) ∨ (x < q)
 
-  bishop-located-families-are-located : (𝔁 : F)
-                                      → is-bishop-located 𝔁
-                                      → is-located-family 𝔁
-  bishop-located-families-are-located 𝔁 located p q l = IV
+  bishop-located-families-are-located : (x : F)
+                                      → is-bishop-located x
+                                      → is-located-family x
+  bishop-located-families-are-located x located p q l = IV
 
    where
-    I : 𝔁 < q → q ≮ 𝔁
+    I : x < q → q ≮ x
     I m = ∥∥-rec 𝟘-is-prop II
      where
-      II : ¬ (Σ i ꞉ 𝐼 , q < 𝔁 i)
-      II (i , o) = <-ℚ-ℚ-irrefl q (cuts-are-ordered (𝔁 i) q q o (m i))
+      II : ¬ (Σ i ꞉ 𝐼 , q < x i)
+      II (i , o) = <-ℚ-ℚ-irrefl q (cuts-are-ordered (x i) q q o (m i))
 
-    III : (p < 𝔁) + (𝔁 < q) → (p < 𝔁) + (q ≮ 𝔁)
+    III : (p < x) + (x < q) → (p < x) + (q ≮ x)
     III (inl l) = inl l
     III (inr m) = inr (I m)
 
-    IV : (p < 𝔁) ∨ (q ≮ 𝔁)
+    IV : (p < x) ∨ (q ≮ x)
     IV = ∥∥-functor III (located p q l)
 
 \end{code}
@@ -1887,55 +1887,55 @@ Auke Booij in his PhD thesis.
 
 \end{code}
 
-We also consider the following notation of locator for families:
+We also consider the following notion of locator for families:
 
 \begin{code}
 
  bishop-locator : {𝐼 : 𝓤 ̇ } → (𝐼 → ℝ) → 𝓤 ̇
- bishop-locator {𝐼} 𝔁 = (p q : ℚ)
+ bishop-locator {𝐼} x = (p q : ℚ)
                       → p < q
-                      → (Σ i ꞉ 𝐼 , p < 𝔁 i)
-                      + (Π i ꞉ 𝐼 , 𝔁 i < q)
+                      → (Σ i ꞉ 𝐼 , p < x i)
+                      + (Π i ꞉ 𝐼 , x i < q)
 
- pointwise-locator-gives-bishop-locator : (𝐼 : 𝓤 ̇ ) (𝔁 : 𝐼 → ℝ)
+ pointwise-locator-gives-bishop-locator : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
                                         → searchable 𝐼
-                                        → ((i : 𝐼) → locator (𝔁 i))
-                                        → bishop-locator 𝔁
- pointwise-locator-gives-bishop-locator 𝐼 𝔁 κ ℓ p q l = γ
+                                        → ((i : 𝐼) → locator (x i))
+                                        → bishop-locator x
+ pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ p q l = γ
   where
-   γ : (Σ i ꞉ 𝐼 , p < 𝔁 i) + (Π i ꞉ 𝐼 , 𝔁 i < q)
+   γ : (Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q)
    γ = compact-gives-Σ+Π 𝐼
-        (λ i → p < 𝔁 i ) (λ i → 𝔁 i < q)
+        (λ i → p < x i ) (λ i → x i < q)
         (compact∙-gives-compact κ)
         (λ i → ℓ i p q l)
 
- lub-with-locators : (𝐼 : 𝓤 ̇ ) (𝔁 : 𝐼 → ℝ)
+ lub-with-locators : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
                    → searchable 𝐼
-                   → is-upper-bounded 𝔁
-                   → ((i : 𝐼) → locator (𝔁 i))
-                   → Σ y ꞉ ℝ , (𝔁 has-lub y) × locator y
- lub-with-locators 𝐼 𝔁 κ β ℓ = γ
+                   → is-upper-bounded x
+                   → ((i : 𝐼) → locator (x i))
+                   → Σ y ꞉ ℝ , (x has-lub y) × locator y
+ lub-with-locators 𝐼 x κ β ℓ = γ
   where
    h : ∥ 𝐼 ∥
    h = ∣ compact∙-gives-pointed κ ∣
 
-   I : bishop-locator 𝔁
-   I = pointwise-locator-gives-bishop-locator 𝐼 𝔁 κ ℓ
+   I : bishop-locator x
+   I = pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ
 
-   II : (p q : ℚ) → p < q → ((Σ i ꞉ 𝐼 , p < 𝔁 i) + (Π i ꞉ 𝐼 , 𝔁 i < q)) → (p < 𝔁) ∨ (𝔁 < q)
+   II : (p q : ℚ) → p < q → ((Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q)) → (p < x) ∨ (x < q)
    II p q l (inl (i , m)) = ∣ inl ∣ i , m ∣ ∣
    II p q l (inr ϕ)       = ∣ inr ϕ ∣
 
-   III : is-bishop-located 𝔁
+   III : is-bishop-located x
    III p q l = II p q l (I p q l)
 
-   IV : 𝔁 has-a-lub
-   IV = lub 𝔁 (h , β , bishop-located-families-are-located 𝔁 III)
+   IV : x has-a-lub
+   IV = lub x (h , β , bishop-located-families-are-located x III)
 
    y : ℝ
    y = pr₁ IV
 
-   V : 𝔁 has-lub y
+   V : x has-lub y
    V = pr₂ IV
 
    VI : (p q : ℚ) → p < q → (p < y) + (y < q)
@@ -1944,17 +1944,17 @@ We also consider the following notation of locator for families:
      δ : (Σ q' ꞉ ℚ , (p < q') × (q' < q)) → (p < y) + (y < q)
      δ (q' , i , j) = VII (I p q' i)
       where
-       VII : ((Σ i ꞉ 𝐼 , p < 𝔁 i) + (Π i ꞉ 𝐼 , 𝔁 i < q')) → (p < y) + (y < q)
+       VII : ((Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q')) → (p < y) + (y < q)
        VII (inl (o , m)) = inl ∣ o , m ∣
        VII (inr ϕ)       = inr IX
         where
          VIII : q' ≮ y
-         VIII = ∥∥-rec 𝟘-is-prop (λ (i , o) → <-ℚ-ℚ-irrefl q' (cuts-are-ordered (𝔁 i) q' q' o (ϕ i)))
+         VIII = ∥∥-rec 𝟘-is-prop (λ (i , o) → <-ℚ-ℚ-irrefl q' (cuts-are-ordered (x i) q' q' o (ϕ i)))
 
          IX : ∃ q' ꞉ ℚ , (q' < q) × q' ≮ y
          IX = ∣ q' , j , VIII ∣
 
-   γ : Σ y ꞉ ℝ , (𝔁 has-lub y) × locator y
+   γ : Σ y ꞉ ℝ , (x has-lub y) × locator y
    γ = (y , V , VI)
 
 \end{code}
@@ -1969,38 +1969,44 @@ Limits of sequences, but using the topological, rather than metric, structure of
                                          (strict-order-ℝ-ℚ-is-prop-valued x q)
 
  _has-limit_ : (ℕ → ℝ) → ℝ → 𝓤 ̇
- 𝔁 has-limit 𝔁∞ = (p q : ℚ)
-                 → 𝔁∞ ∈ ⦅ p , q ⦆
-                 → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → 𝔁 k ∈ ⦅ p , q ⦆)
+ x has-limit x∞ = (p q : ℚ)
+                 → x∞ ∈ ⦅ p , q ⦆
+                 → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → x k ∈ ⦅ p , q ⦆)
 
  open import GenericConvergentSequence
 
- Problem₁ = (𝔁 : ℕ → ℝ) (𝔁∞ : ℝ)
-          → 𝔁 has-limit 𝔁∞
-          → Σ 𝔁̂ ꞉ (ℕ∞ → ℝ)
-                 , ((n : ℕ) → 𝔁̂ (ι n) ≡ 𝔁 n)
-                 × (𝔁̂ ∞ ≡ 𝔁∞)
-
- Problem₂ = (𝔁 : ℕ → ℝ) (𝔁∞ : ℝ)
-          → ((n : ℕ) → locator (𝔁 n))
-          → locator 𝔁∞
-          → 𝔁 has-limit 𝔁∞
-          → Σ 𝔁̂ ꞉ (ℕ∞ → ℝ)
-                 , ((n : ℕ) → 𝔁̂ (ι n) ≡ 𝔁 n)
-                 × (𝔁̂ ∞ ≡ 𝔁∞)
-                 × ((𝓃 : ℕ∞) → locator (𝔁̂ 𝓃))
-
- Problem₃ = (𝔁 : ℕ∞ → ℝ)
-          → (𝔁 ∘ ι) has-limit (𝔁 ∞)
-          → ((n : ℕ) → locator (𝔁 (ι n)))
-          → locator (𝔁 ∞)
-
  is-continuous-ℕ∞-ℝ : (ℕ∞ → ℝ) → 𝓤 ̇
- is-continuous-ℕ∞-ℝ 𝔁 = (𝓃 : ℕ∞) (p q : ℚ)
-                      → 𝔁 𝓃 ∈ ⦅ p , q ⦆
+ is-continuous-ℕ∞-ℝ x = (𝓃 : ℕ∞) (p q : ℚ)
+                      → x 𝓃 ∈ ⦅ p , q ⦆
                       → ∃ 𝓀 ꞉ ℕ∞
                             , (𝓀 ≺ 𝓃)
-                            × ((𝒾 : ℕ∞) → 𝒾 ≽ 𝓀 → 𝔁 𝒾 ∈ ⦅ p , q ⦆)
+                            × ((𝒾 : ℕ∞) → 𝒾 ≽ 𝓀 → x 𝒾 ∈ ⦅ p , q ⦆)
+
+\end{code}
+
+Some (overlapping) problems:
+
+\begin{code}
+
+ Problem₁ = (x : ℕ → ℝ) (x∞ : ℝ)
+          → x has-limit x∞
+          → Σ x̂ ꞉ (ℕ∞ → ℝ)
+                 , ((n : ℕ) → x̂ (ι n) ≡ x n)
+                 × (x̂ ∞ ≡ x∞)
+
+ Problem₂ = (x : ℕ → ℝ) (x∞ : ℝ)
+          → ((n : ℕ) → locator (x n))
+          → locator x∞
+          → x has-limit x∞
+          → Σ x̂ ꞉ (ℕ∞ → ℝ)
+                 , ((n : ℕ) → x̂ (ι n) ≡ x n)
+                 × (x̂ ∞ ≡ x∞)
+                 × ((𝓃 : ℕ∞) → locator (x̂ 𝓃))
+
+ Problem₃ = (x : ℕ∞ → ℝ)
+          → (x ∘ ι) has-limit (x ∞)
+          → ((n : ℕ) → locator (x (ι n)))
+          → locator (x ∞)
 
  Problem₄ = Σ A ꞉ (ℝ → Ω 𝓤) , (Σ x ꞉ ℝ , x ∈ A) ≃ ℕ∞
 

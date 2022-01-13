@@ -191,8 +191,8 @@ homomorphism-existence {𝓤} {X} κ = h , dfunext (fe 𝓤 𝓤₀) h-spec
   hl (inr x) r = refl
 
   h : X → ℕ∞
-  h x = ((λ i → E(Q(succ i) (inr x))) ,
-          λ i → hl(Q(succ i) (inr x)))
+  h x = (λ i → E(Q(succ i) (inr x))) ,
+        (λ i → ≤₂-criterion (hl(Q(succ i) (inr x))))
 
   h-spec : (x : X) → PRED(h x) ≡ (𝟙+ h)(κ x)
   h-spec x = equality-cases (κ x) l₀ l₁

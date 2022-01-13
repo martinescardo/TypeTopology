@@ -814,9 +814,9 @@ having-inf-is-prop : {X : 𝓤 ̇ } (p : X → 𝟚) (n : 𝟚) → is-prop (p h
 having-inf-is-prop {𝓤} {X} p n (f , g) (f' , g') = to-×-≡ r s
  where
   r : f ≡ f'
-  r = dfunext (fe 𝓤 𝓤₀) (λ x → dfunext (fe 𝓤₀ 𝓤₀) (λ r → 𝟚-is-set (f x r) (f' x r)))
+  r = dfunext (fe 𝓤 𝓤₀) (λ x → ≤₂-is-prop-valued (f x) (f' x))
   s : g ≡ g'
-  s = dfunext (fe 𝓤₀ 𝓤) (λ n → dfunext (fe 𝓤 𝓤₀) (λ φ → dfunext (fe 𝓤₀ 𝓤₀) (λ r → 𝟚-is-set (g n φ r) (g' n φ r))))
+  s = dfunext (fe 𝓤₀ 𝓤) (λ m → dfunext (fe 𝓤 𝓤₀) (λ ϕ → ≤₂-is-prop-valued (g m ϕ) (g' m ϕ)))
 
 at-most-one-inf : {X : 𝓤 ̇ } (p : X → 𝟚) → is-prop (Σ n ꞉ 𝟚 , p has-inf n)
 at-most-one-inf p (n , f , g) (n' , f' , g') = to-Σ-≡ (≤₂-anti (g' n f) (g n' f') , having-inf-is-prop p n' _ _)
@@ -831,27 +831,30 @@ having-infs-is-prop {𝓤} {X} = Π-is-prop (fe 𝓤 𝓤) at-most-one-inf
 Π-compact-has-infs c p = g (c p)
  where
   g : decidable (∀ x → p x ≡ ₁) → Σ n ꞉ 𝟚 , p has-inf n
-  g (inl α) = ₁ , (λ x _ → α x) , λ m _ → ₁-top
-  g (inr u) = ₀ , (λ _ → ₀-bottom) , h
+  g (inl α) = ₁ , (λ x → back-transport (₁ ≤₂_) (α x) (≤₂-refl {₀})) , λ m ϕ → ₁-top
+  g (inr u) = ₀ , (λ _ → ₀-bottom {₀}) , h
    where
     h : (m : 𝟚) → (∀ x → m ≤₂ p x) → m ≤₂ ₀
-    h _ φ r = 𝟘-elim (u α)
+    h m φ = ≤₂-criterion f
      where
-      α : ∀ x → p x ≡ ₁
-      α x = φ x r
+      f : m ≡ ₁ → ₀ ≡ ₁
+      f r = 𝟘-elim (u α)
+       where
+        α : ∀ x → p x ≡ ₁
+        α x = ₁-maximal (transport (_≤₂ p x) r (φ x))
 
 has-infs-Π-compact : {X : 𝓤 ̇ } → has-infs X → Π-compact X
 has-infs-Π-compact h p = f (h p)
  where
   f : (Σ n ꞉ 𝟚 , p has-inf n) → decidable (∀ x → p x ≡ ₁)
-  f (₀ , _ , h) = inr u
+  f (₀ , _ , l) = inr u
    where
     u : ¬ ∀ x → p x ≡ ₁
-    u α = zero-is-not-one (h ₁ (λ x r → α x) refl)
+    u α = l ₁ (λ x → ≤₂-criterion (λ _ → α x))
   f (₁ , g , _) = inl α
    where
     α : ∀ x → p x ≡ ₁
-    α x = g x refl
+    α x = ₁-maximal (g x)
 
 \end{code}
 
@@ -870,7 +873,7 @@ inf-property c p = pr₂ (Π-compact-has-infs c p)
 
 inf₁ : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
      → inf c p ≡ ₁ → ∀ x → p x ≡ ₁
-inf₁ c {p} r x = pr₁ (inf-property c p) x r
+inf₁ c {p} r x = ≤₂-criterion-converse (pr₁ (inf-property c p) x) r
 
 inf₁-converse : {X : 𝓤 ̇ } (c : Π-compact X) {p : X → 𝟚}
               → (∀ x → p x ≡ ₁) → inf c p ≡ ₁
@@ -879,7 +882,7 @@ inf₁-converse c {p} α = ₁-maximal (h g)
   h : (∀ x → ₁ ≤₂ p x) → ₁ ≤₂ inf c p
   h = pr₂ (inf-property c p) ₁
   g : ∀ x → ₁ ≤₂ p x
-  g x _ = α x
+  g x = ₁-maximal-converse (α x)
 
 \end{code}
 
@@ -946,18 +949,18 @@ Right adjoints to Κ are characterized as follows:
       l₀ : ₁ ≤₂ A p → Κ ₁ ≤̇ p
       l₀ = pr₂ (φ ₁ p)
       l₁ : Κ ₁ ≤̇ p
-      l₁ = l₀ (λ _ → r)
+      l₁ = l₀ (₁-maximal-converse r)
       l₂ : (x : X) → ₁ ≤₂ p x
       l₂ = l₁
       l₃ : (x : X) → p x ≡ ₁
-      l₃ x = l₂ x refl
+      l₃ x = ≤₂-criterion-converse (l₂ x) refl
     f₁ : p ≡ (λ x → ₁) → A p ≡ ₁
-    f₁ s = l₀ refl
+    f₁ s = ≤₂-criterion-converse l₀ refl
      where
       l₃ : (x : X) → p x ≡ ₁
       l₃ = happly s
       l₂ : (x : X) → ₁ ≤₂ p x
-      l₂ x _ = l₃ x
+      l₂ x = ₁-maximal-converse (l₃ x)
       l₁ : Κ ₁ ≤̇ p
       l₁ = l₂
       l₀ : ₁ ≤₂ A p
@@ -966,19 +969,20 @@ Right adjoints to Κ are characterized as follows:
   g γ n p = (g₀ n refl , g₁ n refl)
    where
     g₀ : ∀ m → m ≡ n → Κ m ≤̇ p → m ≤₂ A p
-    g₀ ₀ r l q = 𝟘-elim (zero-is-not-one q)
-    g₀ ₁ refl l refl = pr₂ (γ p) l₁
+    g₀ ₀ r l = ₀-bottom {₀}
+    g₀ ₁ refl l = ₁-maximal-converse (pr₂ (γ p) l₁)
      where
       l₀ : (x : X) → p x ≡ ₁
-      l₀ x = l x refl
+      l₀ x = ₁-maximal (l x)
       l₁ : p ≡ (λ x → ₁)
       l₁ = dfunext (fe 𝓤 𝓤₀) l₀
+
     g₁ : ∀ m → m ≡ n → m ≤₂ A p → Κ m ≤̇ p
-    g₁ ₀ r l x q = 𝟘-elim (zero-is-not-one q)
-    g₁ ₁ refl l x refl = l₀ x
+    g₁ ₀ r l x = ₀-bottom {₀}
+    g₁ ₁ refl l x = ₁-maximal-converse (l₀ x)
      where
       l₁ : p ≡ (λ x → ₁)
-      l₁ = pr₁ (γ p) (l refl)
+      l₁ = pr₁ (γ p) (₁-maximal l)
       l₀ : (x : X) → p x ≡ ₁
       l₀ = happly l₁
 

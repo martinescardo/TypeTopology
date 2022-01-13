@@ -41,11 +41,8 @@ This is the main theorem proved in this module:
   α 0       = p (ι 0)
   α(succ n) = min𝟚 (α n) (p (ι (succ n)))
 
-  d' : (n : ℕ) → min𝟚 (α n) (p (ι (succ n))) ≡ ₁ → α n ≡ ₁
-  d' n = Lemma[minab≤₂a] {α n}
-
   d : is-decreasing α
-  d = d'
+  d n = Lemma[minab≤₂a] {α n}
 
   a : ℕ∞
   a = (α , d)
