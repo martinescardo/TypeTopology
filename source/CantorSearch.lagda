@@ -14,6 +14,8 @@ open import SpartanMLTT
 open import Two-Properties
 open import DiscreteAndSeparated
 open import NaturalsOrder
+open import OrderNotation
+
 open import UF-FunExt
 open import UF-Base
 

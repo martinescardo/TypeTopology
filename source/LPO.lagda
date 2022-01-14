@@ -39,17 +39,19 @@ open import UF-Subsingletons-FunExt
 open import GenericConvergentSequence
 open import CompactTypes
 open import NaturalsOrder
+open import OrderNotation
+open import CanonicalMapNotation
 
 LPO : 𝓤₀ ̇
-LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ≡ under n)
+LPO = (x : ℕ∞) → decidable (Σ n ꞉ ℕ , x ≡ ι n)
 
 LPO-is-prop : is-prop LPO
 LPO-is-prop = Π-is-prop (fe 𝓤₀ 𝓤₀) f
  where
-  a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ≡ under n)
-  a x (n , p) (m , q) = to-Σ-≡ (under-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe 𝓤₀ 𝓤₀)_ _)
+  a : (x : ℕ∞) → is-prop (Σ n ꞉ ℕ , x ≡ ι n)
+  a x (n , p) (m , q) = to-Σ-≡ (ℕ-to-ℕ∞-lc (p ⁻¹ ∙ q) , ℕ∞-is-set (fe 𝓤₀ 𝓤₀)_ _)
 
-  f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ≡ under n))
+  f : (x : ℕ∞) → is-prop (decidable (Σ n ꞉ ℕ , x ≡ ι n))
   f x = decidability-of-prop-is-prop (fe 𝓤₀ 𝓤₀) (a x)
 
 \end{code}
@@ -62,7 +64,7 @@ sense of UF) to our formulation.
 \begin{code}
 
 LPO-gives-compact-ℕ : LPO → compact ℕ
-LPO-gives-compact-ℕ lpo β = cases a b d
+LPO-gives-compact-ℕ ℓ β = cases a b d
   where
     A = (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
 
@@ -72,49 +74,49 @@ LPO-gives-compact-ℕ lpo β = cases a b d
     x : ℕ∞
     x = (α , force-decreasing-is-decreasing β)
 
-    d : decidable(Σ n ꞉ ℕ , x ≡ under n)
-    d = lpo x
+    d : decidable(Σ n ꞉ ℕ , x ≡ ι n)
+    d = ℓ x
 
-    a : (Σ n ꞉ ℕ , x ≡ under n) → A
+    a : (Σ n ꞉ ℕ , x ≡ ι n) → A
     a (n , p) = inl (force-decreasing-is-not-much-smaller β n c)
       where
         c : α n ≡ ₀
-        c = ap (λ - → incl - n) p ∙ under-diagonal₀ n
+        c = ap (λ - → ι - n) p ∙ ι-diagonal₀ n
 
-    b : (¬ (Σ n ꞉ ℕ , x ≡ under n)) → A
+    b : (¬ (Σ n ꞉ ℕ , x ≡ ι n)) → A
     b u = inr g
       where
-        v : (n : ℕ) → x ≡ under n → 𝟘
+        v : (n : ℕ) → x ≡ ι n → 𝟘
         v = curry u
 
         g : (n : ℕ) → β n ≡ ₁
-        g n = force-decreasing-is-smaller β n e
+        g n = ≤₂-criterion-converse (force-decreasing-is-smaller β n) e
           where
-            c : x ≡ under n → 𝟘
+            c : x ≡ ι n → 𝟘
             c = v n
 
             l : x ≡ ∞
             l = not-finite-is-∞ (fe 𝓤₀ 𝓤₀) v
 
             e : α n ≡ ₁
-            e = ap (λ - → incl - n) l
+            e = ap (λ - → ι - n) l
 
 compact-ℕ-gives-LPO : compact ℕ → LPO
-compact-ℕ-gives-LPO chlpo x = cases a b d
+compact-ℕ-gives-LPO κ x = γ
   where
-    A = decidable (Σ n ꞉ ℕ , x ≡ under n)
+    A = decidable (Σ n ꞉ ℕ , x ≡ ι n)
 
     β : ℕ → 𝟚
-    β = incl x
+    β = ι x
 
     d : (Σ n ꞉ ℕ , β n ≡ ₀) + (Π n ꞉ ℕ , β n ≡ ₁)
-    d = chlpo β
+    d = κ β
 
     a : (Σ n ꞉ ℕ , β n ≡ ₀) → A
     a (n , p) = inl (pr₁ g , pr₂(pr₂ g))
       where
-        g : Σ m ꞉ ℕ , (m ≤ n) × (x ≡ under m)
-        g = under-lemma (fe 𝓤₀ 𝓤₀) x n p
+        g : Σ m ꞉ ℕ , (m ≤ n) × (x ≡ ι m)
+        g = ℕ-to-ℕ∞-lemma (fe 𝓤₀ 𝓤₀) x n p
 
     b : (Π n ꞉ ℕ , β n ≡ ₁) → A
     b φ = inr g
@@ -122,14 +124,17 @@ compact-ℕ-gives-LPO chlpo x = cases a b d
         ψ : ¬ (Σ n ꞉ ℕ , β n ≡ ₀)
         ψ = uncurry (λ n → equal-₁-different-from-₀(φ n))
 
-        f : (Σ n ꞉ ℕ , x ≡ under n) → Σ n ꞉ ℕ , β n ≡ ₀
-        f (n , p) = (n , (ap (λ - → incl - n) p ∙ under-diagonal₀ n))
+        f : (Σ n ꞉ ℕ , x ≡ ι n) → Σ n ꞉ ℕ , β n ≡ ₀
+        f (n , p) = (n , (ap (λ - → ι - n) p ∙ ι-diagonal₀ n))
           where
-           l : incl x n ≡ incl (under n) n
-           l = ap (λ - → incl - n) p
+           l : ι x n ≡ ι (ι n) n
+           l = ap (λ - → ι - n) p
 
-        g : ¬ (Σ n ꞉ ℕ , x ≡ under n)
+        g : ¬ (Σ n ꞉ ℕ , x ≡ ι n)
         g = contrapositive f ψ
+
+    γ : decidable (Σ n ꞉ ℕ , x ≡ ι n)
+    γ = cases a b d
 
 \end{code}
 
@@ -181,38 +186,38 @@ open import NaturalNumbers-Properties
 \end{code}
 
 Another condition equivalent to LPO is that the obvious
-embedding under𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
+embedding ι𝟙 : ℕ + 𝟙 → ℕ∞ has a section:
 
 \begin{code}
 
-has-section-under𝟙-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 ∘ s ∼ id) → LPO
-has-section-under𝟙-gives-LPO (s , ε) u = ψ (s u) refl
+has-section-ι𝟙-gives-LPO : (Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id) → LPO
+has-section-ι𝟙-gives-LPO (s , ε) u = ψ (s u) refl
  where
-  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ n ꞉ ℕ , u ≡ under n)
+  ψ : (z : ℕ + 𝟙) → s u ≡ z → decidable(Σ n ꞉ ℕ , u ≡ ι n)
   ψ (inl n) p = inl (n , (u            ≡⟨ (ε u) ⁻¹ ⟩
-                          under𝟙 (s u) ≡⟨ ap under𝟙 p ⟩
-                          under n      ∎))
+                          ι𝟙 (s u) ≡⟨ ap ι𝟙 p ⟩
+                          ι n      ∎))
   ψ (inr *) p = inr γ
    where
-    γ : ¬ (Σ n ꞉ ℕ , u ≡ under n)
-    γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap under𝟙 p)⁻¹ ⟩
-                                   under𝟙 (s u) ≡⟨ ε u ⟩
+    γ : ¬ (Σ n ꞉ ℕ , u ≡ ι n)
+    γ (n , q) = ∞-is-not-finite n (∞            ≡⟨ (ap ι𝟙 p)⁻¹ ⟩
+                                   ι𝟙 (s u) ≡⟨ ε u ⟩
                                    u            ≡⟨ q ⟩
-                                   under n      ∎)
+                                   ι n      ∎)
 
-under𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ≡ under n) → ℕ + 𝟙 {𝓤₀}
-under𝟙-inverse .(under n) (inl (n , refl)) = inl n
-under𝟙-inverse u (inr g) = inr ⋆
+ι𝟙-inverse : (u : ℕ∞) → decidable (Σ n ꞉ ℕ , u ≡ ι n) → ℕ + 𝟙 {𝓤₀}
+ι𝟙-inverse .(ι n) (inl (n , refl)) = inl n
+ι𝟙-inverse u (inr g) = inr ⋆
 
-LPO-gives-has-section-under𝟙 : LPO → Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , under𝟙 ∘ s ∼ id
-LPO-gives-has-section-under𝟙 lpo = s , ε
+LPO-gives-has-section-ι𝟙 : LPO → Σ s ꞉ (ℕ∞ → ℕ + 𝟙) , ι𝟙 ∘ s ∼ id
+LPO-gives-has-section-ι𝟙 lpo = s , ε
  where
   s : ℕ∞ → ℕ + 𝟙
-  s u = under𝟙-inverse u (lpo u)
-  φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ under n)) → under𝟙 (under𝟙-inverse u d) ≡ u
-  φ .(under n) (inl (n , refl)) = refl
+  s u = ι𝟙-inverse u (lpo u)
+  φ : (u : ℕ∞) (d : decidable (Σ n ꞉ ℕ , u ≡ ι n)) → ι𝟙 (ι𝟙-inverse u d) ≡ u
+  φ .(ι n) (inl (n , refl)) = refl
   φ u (inr g) = (not-finite-is-∞ (fe 𝓤₀ 𝓤₀) (curry g))⁻¹
-  ε : under𝟙 ∘ s ∼ id
+  ε : ι𝟙 ∘ s ∼ id
   ε u = φ u (lpo u)
 
 \end{code}

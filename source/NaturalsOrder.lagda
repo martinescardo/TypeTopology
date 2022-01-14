@@ -12,17 +12,20 @@ open import UF-Subsingletons
 open import OrdinalNotions
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties
+open import OrderNotation
 
-_≤_ _≥_ : ℕ → ℕ → 𝓤₀ ̇
-zero ≤ n        = 𝟙
-succ m ≤ zero   = 𝟘
-succ m ≤ succ n = m ≤ n
+_≤ℕ_ : ℕ → ℕ → 𝓤₀ ̇
+zero ≤ℕ n        = 𝟙
+succ m ≤ℕ zero   = 𝟘
+succ m ≤ℕ succ n = m ≤ℕ n
 
-x ≥ y = y ≤ x
+instance
+ Order-ℕ-ℕ : Order ℕ ℕ
+ _≤_ {{Order-ℕ-ℕ}} = _≤ℕ_
 
 ≤-is-prop-valued : (m n : ℕ) → is-prop (m ≤ n)
-≤-is-prop-valued zero n = 𝟙-is-prop
-≤-is-prop-valued (succ m) zero = 𝟘-is-prop
+≤-is-prop-valued zero     n        = 𝟙-is-prop
+≤-is-prop-valued (succ m) zero     = 𝟘-is-prop
 ≤-is-prop-valued (succ m) (succ n) = ≤-is-prop-valued m n
 
 open import UF-Base
@@ -124,13 +127,15 @@ unique-minimal (succ n) l = 𝟘-elim l
   γ : n +' m ≡ m +' n
   γ = addition-commutativity n m
 
-_<_ _>_ : ℕ → ℕ → 𝓤₀ ̇
-m < n = succ m ≤ n
+_<ℕ_ : ℕ → ℕ → 𝓤₀ ̇
+m <ℕ n = succ m ≤ℕ n
+
+instance
+ Strict-Order-ℕ-ℕ : Strict-Order ℕ ℕ
+ _<_ {{Strict-Order-ℕ-ℕ}} = _<ℕ_
 
 <-succ : (n : ℕ) → n < succ n
 <-succ = ≤-refl
-
-x > y = y < x
 
 not-less-than-itself : (n : ℕ) → ¬ (n < n)
 not-less-than-itself zero l = l

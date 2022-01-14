@@ -25,6 +25,7 @@ open import UF-Subsingletons-FunExt
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalsOrder
 open import NaturalNumbers-Properties
+open import OrderNotation
 
 module _ {𝓥 : Universe} where
 

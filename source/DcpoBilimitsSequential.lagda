@@ -25,6 +25,7 @@ open import DcpoMiscelanea pt fe 𝓤₀
 open import NaturalsAddition renaming (_+_ to _+'_)
 open import NaturalNumbers-Properties
 open import NaturalsOrder
+open import OrderNotation
 
 open import UF-Equiv
 open import UF-EquivalenceExamples

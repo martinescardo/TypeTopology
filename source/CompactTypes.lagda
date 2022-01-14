@@ -105,6 +105,8 @@ on it, it decidable whether it has a root:
 compact : 𝓤 ̇ → 𝓤 ̇
 compact = Σ-compact
 
+exhaustible = compact
+
 \end{code}
 
 Notice that compactness in this sense is not in general a univalent
@@ -119,6 +121,8 @@ compactness and pointedness, and hence the notation "compact∙":
 
 compact∙ : 𝓤 ̇ → 𝓤 ̇
 compact∙ X = (p : X → 𝟚) → Σ x₀ ꞉ X , (p x₀ ≡ ₁ → (x : X) → p x ≡ ₁)
+
+searchable = compact∙
 
 \end{code}
 
@@ -1083,5 +1087,30 @@ decidable-subtype-of-compact-type {𝓤} {𝓥} {𝓦} {X} {A}
   γ : type-of II → decidable (Σ y ꞉ (Σ x ꞉ X , A x) , B y)
   γ (inl (x , (a , b))) = inl ((x , a) , b)
   γ (inr ν)             = inr (λ ((x , a) , b) → ν (x , (a , b)))
+
+\end{code}
+
+Added 10th January 2022. (Is this somewhere already?)
+
+\begin{code}
+
+compact-gives-Σ+Π : (X : 𝓤 ̇ ) (A : X → 𝓥 ̇ ) (B : X → 𝓦 ̇ )
+                  → compact X
+                  → (q : (x : X) → A x + B x)
+                  → (Σ x ꞉ X , A x) + (Π x ꞉ X , B x)
+compact-gives-Σ+Π X A B κ q = III II
+ where
+  p : X → 𝟚
+  p = pr₁ (indicator q)
+
+  I : (x : X) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → B x)
+  I = pr₂ (indicator q)
+
+  II : (Σ x ꞉ X , p x ≡ ₀) + (Π x ꞉ X , p x ≡ ₁)
+  II = κ p
+
+  III : type-of II → (Σ x ꞉ X , A x) + (Π x ꞉ X , B x)
+  III (inl (x , e)) = inl (x , pr₁ (I x) e)
+  III (inr ϕ)       = inr (λ x → pr₂ (I x) (ϕ x))
 
 \end{code}

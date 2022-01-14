@@ -202,9 +202,9 @@ The following is a special case we are interested in:
 \begin{code}
 
 boolean-value : {A : 𝓤 ̇ }
-            → decidable A
-            → Σ b ꞉ 𝟚 , (b ≡ ₀ →   A)
-                      × (b ≡ ₁ → ¬ A)
+              → decidable A
+              → Σ b ꞉ 𝟚 , (b ≡ ₀ →   A)
+                        × (b ≡ ₁ → ¬ A)
 boolean-value = which-of
 
 \end{code}
@@ -218,11 +218,11 @@ requires choice, which holds in BHK-style constructive mathematics:
 
 \begin{code}
 
-indicator : {X : 𝓤 ̇ } → {A B : X → 𝓥 ̇ }
+indicator : {X : 𝓤 ̇ } {A : X → 𝓥 ̇ } {B : X → 𝓦 ̇ }
           → ((x : X) → A x + B x)
           → Σ p ꞉ (X → 𝟚) , ((x : X) → (p x ≡ ₀ → A x)
                                      × (p x ≡ ₁ → B x))
-indicator {𝓤} {𝓥} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
+indicator {𝓤} {𝓥} {𝓦} {X} {A} {B} h = (λ x → pr₁(lemma₁ x)) , (λ x → pr₂(lemma₁ x))
  where
   lemma₀ : (x : X) → (A x + B x) → Σ b ꞉ 𝟚 , (b ≡ ₀ → A x) × (b ≡ ₁ → B x)
   lemma₀ x = which-of

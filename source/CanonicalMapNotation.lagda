@@ -17,4 +17,7 @@ record Canonical-Map {𝓤} {𝓥} (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) : 𝓤 ⊔ 𝓥
 
 open Canonical-Map {{...}} public
 
+canonical-map : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → {{_ : Canonical-Map X Y}} → X → Y
+canonical-map X Y = ι
+
 \end{code}

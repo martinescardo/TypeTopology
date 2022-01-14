@@ -16,8 +16,8 @@ open import SpartanMLTT
 open import OrdinalNotions
 open import OrdinalsType
 open import OrdinalsWellOrderArithmetic
-open import GenericConvergentSequence renaming (_≺_ to _≺[ℕ∞]_)
-open import NaturalsOrder hiding (_≤_) renaming (_<_ to _≺[ℕ]_)
+open import GenericConvergentSequence
+open import NaturalsOrder
 
 open import UF-Subsingletons
 
@@ -52,8 +52,8 @@ Here the subscript is the letter "o":
 \begin{code}
 
 ℕₒ ℕ∞ₒ : Ord
-ℕₒ = (ℕ , _≺[ℕ]_ , ℕ-ordinal)
-ℕ∞ₒ = (ℕ∞ , _≺[ℕ∞]_ , ℕ∞-ordinal (fe 𝓤₀ 𝓤₀))
+ℕₒ = (ℕ , _<ℕ_ , ℕ-ordinal)
+ℕ∞ₒ = (ℕ∞ , _≺ℕ∞_ , ℕ∞-ordinal (fe 𝓤₀ 𝓤₀))
 
 \end{code}
 

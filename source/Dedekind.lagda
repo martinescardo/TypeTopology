@@ -40,6 +40,8 @@ open import SpartanMLTT
 open import CanonicalMapNotation
 open import OrderNotation
 open import Plus-Properties
+open import CompactTypes
+open import NaturalsOrder
 
 open import UF-Base
 open import UF-Embeddings
@@ -57,16 +59,16 @@ module Dedekind
         (pe  : Prop-Ext)
         {𝓤  : Universe}
         (ℚ   : 𝓤 ̇ )
-        (_≺_              : ℚ → ℚ → 𝓤 ̇ )
-        (≺-is-prop-valued : (p q : ℚ) → is-prop (p ≺ q))
-        (≺-irrefl         : (q : ℚ) → ¬ (q ≺ q))
+        (_<-ℚ-ℚ_             : ℚ → ℚ → 𝓤 ̇ )
+        (<-ℚ-ℚ-is-prop-valued : (p q : ℚ) → is-prop (p <-ℚ-ℚ q))
+        (<-ℚ-ℚ-irrefl         : (q : ℚ) → ¬ (q <-ℚ-ℚ q))
        where
 
 open PropositionalTruncation pt
 
 instance
  strict-order-ℚ : Strict-Order ℚ ℚ
- _<_ {{strict-order-ℚ}} = _≺_
+ _<_ {{strict-order-ℚ}} = _<-ℚ-ℚ_
 
 𝓤⁺ = 𝓤 ⁺
 
@@ -156,14 +158,8 @@ The sets of lower and upper reals:
 ℝᴸ-to-𝓟ℚ : ℝᴸ → 𝓟 ℚ
 ℝᴸ-to-𝓟ℚ = pr₁
 
-ℝᴸ-to-𝓟ℚ-is-embedding : is-embedding ℝᴸ-to-𝓟ℚ
-ℝᴸ-to-𝓟ℚ-is-embedding = pr₁-is-embedding being-lower-real-is-prop
-
 ℝᵁ-to-𝓟ℚ : ℝᵁ → 𝓟 ℚ
 ℝᵁ-to-𝓟ℚ = pr₁
-
-ℝᵁ-to-𝓟ℚ-is-embedding : is-embedding ℝᵁ-to-𝓟ℚ
-ℝᵁ-to-𝓟ℚ-is-embedding = pr₁-is-embedding being-upper-real-is-prop
 
 instance
  canonical-map-ℝᴸ-to-𝓟ℚ : Canonical-Map ℝᴸ (𝓟 ℚ)
@@ -171,6 +167,12 @@ instance
 
  canonical-map-ℝᵁ-to-𝓟ℚ : Canonical-Map ℝᵁ (𝓟 ℚ)
  ι {{canonical-map-ℝᵁ-to-𝓟ℚ}} = ℝᵁ-to-𝓟ℚ
+
+ℝᴸ-to-𝓟ℚ-is-embedding : is-embedding (canonical-map ℝᴸ (𝓟 ℚ))
+ℝᴸ-to-𝓟ℚ-is-embedding = pr₁-is-embedding being-lower-real-is-prop
+
+ℝᵁ-to-𝓟ℚ-is-embedding : is-embedding (canonical-map ℝᵁ (𝓟 ℚ))
+ℝᵁ-to-𝓟ℚ-is-embedding = pr₁-is-embedding being-upper-real-is-prop
 
 \end{code}
 
@@ -186,7 +188,7 @@ are-located : 𝓟 ℚ → 𝓟 ℚ → 𝓤  ̇
 are-located L U = (p q : ℚ) → p < q → p ∈ L ∨ q ∈ U
 
 being-ordered-is-prop : (L U : 𝓟 ℚ) → is-prop (are-ordered L U)
-being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _)
+being-ordered-is-prop _ _ = Π₄-is-prop fe (λ _ _ _ _ → <-ℚ-ℚ-is-prop-valued _ _)
 
 being-located-is-prop : (L U : 𝓟 ℚ) → is-prop (are-located L U)
 being-located-is-prop _ _ = Π₃-is-prop fe (λ _ _ _ → ∨-is-prop)
@@ -215,7 +217,7 @@ order-lemma L U L' U'
     III = LU-located q' q l
 
     IV : q' ∉ L
-    IV j = ≺-irrefl q' b
+    IV j = <-ℚ-ℚ-irrefl q' b
      where
       a : q' ∈ L'
       a = L-contained-in-L' q' j
@@ -258,7 +260,7 @@ order-lemma-converse L U L' U'
     III = LU'-located q q' l
 
     IV : q' ∉ U'
-    IV j = ≺-irrefl q' b
+    IV j = <-ℚ-ℚ-irrefl q' b
      where
       a : q' ∈ U
       a = U'-contained-in-U q' j
@@ -430,7 +432,7 @@ ordered-located-gives-lower L U LU-ordered LU-located = γ
 
     b : (p ∈ L) + (q ∈ U) → p ∈ L
     b (inl u) = u
-    b (inr v) = 𝟘-elim (≺-irrefl q (LU-ordered q q l v))
+    b (inr v) = 𝟘-elim (<-ℚ-ℚ-irrefl q (LU-ordered q q l v))
 
 ordered-located-gives-upper : (L U : 𝓟 ℚ)
                             → are-ordered L U
@@ -445,7 +447,7 @@ ordered-located-gives-upper L U LU-ordered LU-located = γ
     a = LU-located q p m
 
     b : (q ∈ L) + (p ∈ U) → p ∈ U
-    b (inl u) = 𝟘-elim (≺-irrefl q (LU-ordered q q u l))
+    b (inl u) = 𝟘-elim (<-ℚ-ℚ-irrefl q (LU-ordered q q u l))
     b (inr v) = v
 
 
@@ -486,7 +488,7 @@ used in the definition of Dedekind reals.
 disjoint-criterion : (L U : 𝓟 ℚ)
                    → are-ordered L U
                    → are-disjoint L U
-disjoint-criterion L U o p (p-in-L , p-in-U) = ≺-irrefl p (o p p p-in-L p-in-U)
+disjoint-criterion L U o p (p-in-L , p-in-U) = <-ℚ-ℚ-irrefl p (o p p p-in-L p-in-U)
 
 \end{code}
 
@@ -495,7 +497,7 @@ and a few more:
 
 \begin{code}
 
-module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q) × (q < r))
+module _ (ℚ-density         : (p r : ℚ) → p < r → Σ q ꞉ ℚ , (p < q) × (q < r))
          (ℚ-transitivity    : (p q r : ℚ) → p < q → q < r → p < r)
          (ℚ-order-criterion : (p q : ℚ) → q ≮ p → p ≢ q → p < q)
          (ℚ-co-transitivity : (p q r : ℚ) → p < r → (p < q) ∨ (q < r))
@@ -515,8 +517,8 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
   _≤_ {{order-ℚ-ℚ}} p q = (r : ℚ) → r < p → r < q
 
  ℚ-≤-antisym : (p q : ℚ) → p ≤ q → q ≤ p → p ≡ q
- ℚ-≤-antisym p q i j = ℚ-tightness p q (λ ℓ → ≺-irrefl q (i q ℓ))
-                                       (λ ℓ → ≺-irrefl p (j p ℓ))
+ ℚ-≤-antisym p q i j = ℚ-tightness p q (λ ℓ → <-ℚ-ℚ-irrefl q (i q ℓ))
+                                       (λ ℓ → <-ℚ-ℚ-irrefl p (j p ℓ))
 
  <-or-≡-gives-≤-on-ℚ : (p q : ℚ) → (p < q) + (p ≡ q) → p ≤ q
  <-or-≡-gives-≤-on-ℚ p q (inl ℓ)    r m = ℚ-transitivity r p q m ℓ
@@ -529,7 +531,7 @@ module _ (ℚ-density         : (p r : ℚ) → p < r → ∃ q ꞉ ℚ , (p < q
  ≤-on-ℚ-gives-≡-or-< τ p q ℓ = γ (τ p q)
   where
    I : q ≮ p
-   I m = ≺-irrefl q (ℓ q m)
+   I m = <-ℚ-ℚ-irrefl q (ℓ q m)
 
    γ : (p < q) + (p ≡ q) + (p > q) → (p < q) + (p ≡ q)
    γ (inl i)       = inl i
@@ -630,7 +632,7 @@ The Dedekind and Troelstra conditions are equivalent:
    bounded = ∥∥-functor f U-inhabited
     where
      f : (Σ q ꞉ ℚ , q ∈ U) → Σ q ꞉ ℚ , q ∉ L
-     f (q , q-in-U) = q , (λ q-in-L → ≺-irrefl q (c q-in-L))
+     f (q , q-in-U) = q , (λ q-in-L → <-ℚ-ℚ-irrefl q (c q-in-L))
       where
        c : q ∈ L → q < q
        c q-in-L = LU-ordered q q q-in-L q-in-U
@@ -640,7 +642,7 @@ The Dedekind and Troelstra conditions are equivalent:
     where
      f : (r ∈ L) + (s ∈ U) → (r ∈ L) + (s ∉ L)
      f (inl r-in-L) = inl r-in-L
-     f (inr r-in-L) = inr (λ s-in-L → ≺-irrefl s (d s-in-L))
+     f (inr r-in-L) = inr (λ s-in-L → <-ℚ-ℚ-irrefl s (d s-in-L))
       where
        d : s ∈ L → s < s
        d s-in-L = LU-ordered s s s-in-L r-in-L
@@ -663,11 +665,11 @@ does, it is given by the following candidate.
  candidate-upper-section-is-lower-open L q q-in-U = γ
   where
    f : (Σ p ꞉ ℚ , (p < q) × (p ∉ L)) → ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-   f (p , i , p-not-in-L) = ∥∥-functor g (ℚ-density p q i)
+   f (p , i , p-not-in-L) = g (ℚ-density p q i)
     where
      g : (Σ p' ꞉ ℚ , (p < p') × (p' < q))
-       → Σ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
-     g (p' , j , k) = p' , k , ∣ p , j , p-not-in-L ∣
+       →  ∃ p' ꞉ ℚ , (p' < q) × (∃ p ꞉ ℚ , (p < p') × (p ∉ L))
+     g (p' , j , k) = ∣ p' , k , ∣ p , j , p-not-in-L ∣ ∣
 
    γ : ∃ q' ꞉ ℚ , ((q' < q) × (q' ∈ candidate-upper-section L))
    γ = ∥∥-rec ∃-is-prop f q-in-U
@@ -679,7 +681,7 @@ does, it is given by the following candidate.
  candidate-upper-section-is-ordered L L-lower located p q p-in-L q-in-U = γ
     where
      f : (Σ r ꞉ ℚ , (r < q) × (r ∉ L)) → p < q
-     f (r , i , r-not-in-L) = ∥∥-rec (≺-is-prop-valued p q) g (located r q i)
+     f (r , i , r-not-in-L) = ∥∥-rec (<-ℚ-ℚ-is-prop-valued p q) g (located r q i)
       where
        g : (r ∈ L) + (q ∉ L) → p < q
        g (inl r-in-L)     = 𝟘-elim (r-not-in-L r-in-L)
@@ -692,7 +694,7 @@ does, it is given by the following candidate.
          II ℓ = q-not-in-L (L-lower p p-in-L q ℓ)
 
      γ : p < q
-     γ = ∥∥-rec (≺-is-prop-valued p q) f q-in-U
+     γ = ∥∥-rec (<-ℚ-ℚ-is-prop-valued p q) f q-in-U
 
  candidate-upper-section-is-located : (L : 𝓟 ℚ)
                                     → is-located L
@@ -700,7 +702,7 @@ does, it is given by the following candidate.
  candidate-upper-section-is-located L located p q ℓ = ∥∥-rec ∨-is-prop II I
     where
      I : ∃ p' ꞉ ℚ , (p < p') × (p' < q)
-     I = ℚ-density p q ℓ
+     I = ∣ ℚ-density p q ℓ ∣
 
      II : (Σ p' ꞉ ℚ , (p < p') × (p' < q)) → p ∈ L ∨ q ∈ candidate-upper-section L
      II (p' , i , j) = ∥∥-rec ∨-is-prop IV III
@@ -735,7 +737,7 @@ does, it is given by the following candidate.
    γ : ∃ q' ꞉ ℚ , (q' < q) × (q' ∉ L)
    γ = ∣ p ,
         ℓ ,
-        (λ p-in-L → ≺-irrefl p
+        (λ p-in-L → <-ℚ-ℚ-irrefl p
                      (candidate-upper-section-is-ordered
                        L lower located p p p-in-L p-in-U)) ∣
 \end{code}
@@ -859,22 +861,22 @@ lower reals:
 
 \begin{code}
 
- ∞ : 𝓟 ℚ
- ∞ = λ q → ⊤Ω
+ infty : 𝓟 ℚ
+ infty = λ q → ⊤Ω
 
- ∞-is-lower-real : is-lower-real ∞
- ∞-is-lower-real = ∣ 𝟎 , ⋆ ∣ ,
+ infty-is-lower-real : is-lower-real infty
+ infty-is-lower-real = ∣ 𝟎 , ⋆ ∣ ,
                    (λ _ _ _ _ → ⋆) ,
                    (λ p ⋆ → ∥∥-rec
                               ∃-is-prop
                               (λ (q , i) → ∣ q , i , ⋆ ∣)
                               (ℚ-is-upper-open p))
 
- ∞-is-not-bounded-above : ¬ is-bounded-above ∞
- ∞-is-not-bounded-above bounded = ∥∥-rec
-                                    𝟘-is-prop
-                                    (λ (q , q-not-in-∞) → q-not-in-∞ ⋆)
-                                    bounded
+ infty-is-not-bounded-above : ¬ is-bounded-above infty
+ infty-is-not-bounded-above bounded = ∥∥-rec
+                                        𝟘-is-prop
+                                        (λ (q , q-not-in-infty) → q-not-in-infty ⋆)
+                                        bounded
 \end{code}
 
 In connection with a discussion above, notice that we don't need
@@ -950,14 +952,14 @@ independently by Steve Vickers and Toby Bartels.
    L-upper-open p p-in-L = ∥∥-rec ∃-is-prop h p-in-L
     where
      h : (p < 𝟎) + (A × (p < 𝟏)) → ∃ p' ꞉ ℚ , (p < p') × (p' ∈ L)
-     h (inl ℓ) = ∥∥-functor k (ℚ-density p 𝟎 ℓ)
+     h (inl ℓ) = k (ℚ-density p 𝟎 ℓ)
       where
-       k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟎)) → Σ p' ꞉ ℚ , (p < p') × (p' ∈ L)
-       k (p' , i , j) = p' , i , ∣ inl j ∣
-     h (inr (a , ℓ)) = ∥∥-functor k (ℚ-density p 𝟏 ℓ)
+       k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟎)) → ∃ p' ꞉ ℚ , (p < p') × (p' ∈ L)
+       k (p' , i , j) = ∣ p' , i , ∣ inl j ∣ ∣
+     h (inr (a , ℓ)) = k (ℚ-density p 𝟏 ℓ)
       where
-       k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟏)) → Σ p' ꞉ ℚ , (p < p') × p' ∈ L
-       k (p' , i , j) = p' , i , ∣ inr (a , j) ∣
+       k : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝟏)) → ∃ p' ꞉ ℚ , (p < p') × p' ∈ L
+       k (p' , i , j) = ∣ p' , i , ∣ inr (a , j) ∣ ∣
 
    l : ℝᴸ
    l = (L , L-inhabited , L-lower , L-upper-open)
@@ -972,7 +974,7 @@ independently by Steve Vickers and Toby Bartels.
        h (inl 𝟘-in-L) = inl (∥∥-rec A-is-prop k 𝟘-in-L)
         where
          k : (𝟎 < 𝟎) + (A × (𝟎 < 𝟏)) → A
-         k (inl ℓ)       = 𝟘-elim (≺-irrefl 𝟎 ℓ)
+         k (inl ℓ)       = 𝟘-elim (<-ℚ-ℚ-irrefl 𝟎 ℓ)
          k (inr (a , _)) = a
        h (inr ½-in-U) = inr ν
         where
@@ -986,8 +988,8 @@ independently by Steve Vickers and Toby Bartels.
    L-bounded-above = ∣ 𝟏 , (λ 𝟏-in-L → ∥∥-rec 𝟘-is-prop h 𝟏-in-L) ∣
     where
      h : ¬((𝟏 < 𝟎) + (A × (𝟏 < 𝟏)))
-     h (inl ℓ)       = ≺-irrefl 𝟎 (ℚ-transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
-     h (inr (_ , ℓ)) = ≺-irrefl 𝟏 ℓ
+     h (inl ℓ)       = <-ℚ-ℚ-irrefl 𝟎 (ℚ-transitivity 𝟎 𝟏 𝟎 𝟎-is-less-than-𝟏 ℓ)
+     h (inr (_ , ℓ)) = <-ℚ-ℚ-irrefl 𝟏 ℓ
 
    b : ℝᴮᴸ
    b = (l , L-bounded-above)
@@ -1002,16 +1004,16 @@ The canonical embedding of the rationals into the reals:
 \begin{code}
 
  ℚ-to-ℝᴸ : ℚ → ℝᴸ
- ℚ-to-ℝᴸ q = (λ p → (p < q) , ≺-is-prop-valued p q) ,
+ ℚ-to-ℝᴸ q = (λ p → (p < q) , <-ℚ-ℚ-is-prop-valued p q) ,
              ℚ-is-lower-open q ,
              (λ p i r j → ℚ-transitivity r p q j i) ,
-             (λ p →  ℚ-density p q)
+             (λ p i → ∣ ℚ-density p q i ∣)
 
  ℚ-to-ℝᵁ : ℚ → ℝᵁ
- ℚ-to-ℝᵁ q = (λ p → (q < p) , ≺-is-prop-valued q p) ,
+ ℚ-to-ℝᵁ q = (λ p → (q < p) , <-ℚ-ℚ-is-prop-valued q p) ,
              ℚ-is-upper-open q ,
              (λ p i r j → ℚ-transitivity q p r i j) ,
-             (λ p i → ∥∥-functor (λ (r , j , k) → r , k , j) (ℚ-density q p i))
+             (λ p i → ∣(λ (r , j , k) → r , k , j) (ℚ-density q p i)∣)
 
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ : (q : ℚ) → (ℚ-to-ℝᵁ q) is-upper-section-of (ℚ-to-ℝᴸ q)
  ℚ-to-ℝᵁ-is-upper-section-of-ℚ-to-ℝᴸ q = (λ p → ℚ-transitivity p q) ,
@@ -1048,7 +1050,11 @@ The canonical embedding of the rationals into the reals:
    γ : (p , a) ≡ (q , b)
    γ = to-subtype-≡ (λ _ → ℝᴸ-is-set) V
 
- ℚ-to-ℝ-is-embedding : is-embedding ℚ-to-ℝ
+ instance
+  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
+  ι {{canonical-map-ℚ-to-ℝ}} = ℚ-to-ℝ
+
+ ℚ-to-ℝ-is-embedding : is-embedding (canonical-map ℚ ℝ)
  ℚ-to-ℝ-is-embedding = factor-is-embedding
                         ℚ-to-ℝ
                         ℝ-to-ℝᴸ
@@ -1057,10 +1063,6 @@ The canonical embedding of the rationals into the reals:
   where
    notice-that : ℝ-to-ℝᴸ ∘ ℚ-to-ℝ ≡ ℚ-to-ℝᴸ
    notice-that = refl
-
- instance
-  canonical-map-ℚ-to-ℝ : Canonical-Map ℚ ℝ
-  ι {{canonical-map-ℚ-to-ℝ}} = ℚ-to-ℝ
 
  is-rational : ℝ → 𝓤⁺ ̇
  is-rational x = Σ q ꞉ ℚ , ι q ≡ x
@@ -1072,15 +1074,14 @@ The canonical embedding of the rationals into the reals:
 
 We could also define
 
+ instance
   canonical-map-ℚ-to-ℝᴸ : Canonical-Map ℚ ℝᴸ
   ι {{canonical-map-ℚ-to-ℝᴸ}} = ℚ-to-ℝᴸ
 
   canonical-map-ℚ-to-ℝᵁ : Canonical-Map ℚ ℝᵁ
   ι {{canonical-map-ℚ-to-ℝᵁ}} = ℚ-to-ℝᵁ
 
-but this would give us a number of unsolved constraints when using ι,
-and it doesn't seem we are going to need to use these canonical maps
-often.
+but this would give us trouble with unsolved constraints.
 
 We now consider order and apartness on real numbers.
 
@@ -1108,8 +1109,8 @@ We now consider order and apartness on real numbers.
  strict-order-ℝ-ℚ-is-prop-valued : (x : ℝ) (q : ℚ) → is-prop (x < q)
  strict-order-ℝ-ℚ-is-prop-valued x q = ∈-is-prop (uppercut x) q
 
- <-is-prop-valued : (x y : ℝ) → is-prop (x < y)
- <-is-prop-valued x y = ∃-is-prop
+ strict-order-ℝ-ℝ-is-prop-valued : (x y : ℝ) → is-prop (x < y)
+ strict-order-ℝ-ℝ-is-prop-valued x y = ∃-is-prop
 
 \end{code}
 
@@ -1190,8 +1191,8 @@ We now develop the basic properties of the _<_ order.
    γ : 𝟘
    γ = ∥∥-rec 𝟘-is-prop δ ℓ
 
- <-trans : (x y z : ℝ) → x < y → y < z → x < z
- <-trans x y z i j = ∥∥-functor₂ f i j
+ <-ℝ-ℝ-trans : (x y z : ℝ) → x < y → y < z → x < z
+ <-ℝ-ℝ-trans x y z i j = ∥∥-functor₂ f i j
   where
    f : (Σ p ꞉ ℚ , (x < p) × (p < y))
      → (Σ q ꞉ ℚ , (y < q) × (q < z))
@@ -1257,14 +1258,11 @@ in the case of the reals.
  ≤₀-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → strict-order-ℚ-ℝ-is-prop-valued _ y)
  ≤₁-is-prop-valued x y = Π₂-is-prop fe (λ _ _ → strict-order-ℝ-ℚ-is-prop-valued x _)
  ≤₂-is-prop-valued x y = negations-are-props fe
- ≤₃-is-prop-valued x y = Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _)
+ ≤₃-is-prop-valued x y = Π₄-is-prop fe (λ _ _ _ _ → <-ℚ-ℚ-is-prop-valued _ _)
 
  instance
   order-ℝ-ℝ : Order ℝ ℝ
   _≤_ {{order-ℝ-ℝ}} = _≤₀_
-
- ≤-is-prop-valued : (x y : ℝ) → is-prop (x ≤ y)
- ≤-is-prop-valued = ≤₀-is-prop-valued
 
  ≤-gives-≤₁ : (x y : ℝ) → x ≤ y → x ≤₁ y
  ≤-gives-≤₁ x y ℓ = order-lemma
@@ -1319,7 +1317,7 @@ in the case of the reals.
  ≤₃-gives-≤ x y l = III
   where
    I : ¬ (Σ p ꞉ ℚ , (y < p) × (p < x))
-   I (p , i , j) = ≺-irrefl p (l p p j i)
+   I (p , i , j) = <-ℚ-ℚ-irrefl p (l p p j i)
 
    II : y ≮ x
    II m = ∥∥-rec 𝟘-is-prop I m
@@ -1336,14 +1334,14 @@ in the case of the reals.
    II : p < q
    II = cuts-are-ordered y p q I j
 
- ≤-refl : (x : ℝ) → x ≤ x
- ≤-refl x q ℓ = ℓ
+ ≤-ℝ-refl : (x : ℝ) → x ≤ x
+ ≤-ℝ-refl x q ℓ = ℓ
 
- ≤-trans : (x y z : ℝ) → x ≤ y → y ≤ z → x ≤ z
- ≤-trans x y z l m p i = m p (l p i)
+ ≤-ℝ-ℝ-trans : (x y z : ℝ) → x ≤ y → y ≤ z → x ≤ z
+ ≤-ℝ-ℝ-trans x y z l m p i = m p (l p i)
 
- ≤-antisym : (x y : ℝ) → x ≤ y → y ≤ x → x ≡ y
- ≤-antisym x y l m = lowercut-lc x y γ
+ ≤-ℝ-ℝ-antisym : (x y : ℝ) → x ≤ y → y ≤ x → x ≡ y
+ ≤-ℝ-ℝ-antisym x y l m = lowercut-lc x y γ
   where
    γ : lowercut x ≡ lowercut y
    γ = subset-extensionality'' pe fe fe l m
@@ -1361,16 +1359,16 @@ the type (x ≤ y) × (y ≤ x).
  ℝ-is-locally-small x y = γ
   where
    f : (x ≤ y) × (y ≤ x) → x ≡ y
-   f = uncurry (≤-antisym x y)
+   f = uncurry (≤-ℝ-ℝ-antisym x y)
 
    g : x ≡ y → (x ≤ y) × (y ≤ x)
-   g refl = ≤-refl x , ≤-refl x
+   g refl = ≤-ℝ-refl x , ≤-ℝ-refl x
 
    e : ((x ≤ y) × (y ≤ x)) ≃ (x ≡ y)
    e = qinveq
         f
         (g ,
-         (λ a → ×-is-prop (≤-is-prop-valued x y) (≤-is-prop-valued y x) (g (f a)) a) ,
+         (λ a → ×-is-prop (≤₀-is-prop-valued x y) (≤₀-is-prop-valued y x) (g (f a)) a) ,
          (λ b → ℝ-is-set (f (g b)) b))
 
    γ : (x ≡ y) has-size 𝓤
@@ -1383,18 +1381,18 @@ Relationship between the orders of ℚ and ℝ:
 \begin{code}
 
  ℚ-to-ℝ-preserves-< : (p q : ℚ) → p < q → ι p < ι q
- ℚ-to-ℝ-preserves-< = ℚ-density
+ ℚ-to-ℝ-preserves-< p q l = ∣ ℚ-density p q l ∣
 
  ℚ-to-ℝ-reflects-< : (p q : ℚ) → ι p < ι q → p < q
  ℚ-to-ℝ-reflects-< p q = ∥∥-rec
-                           (≺-is-prop-valued p q)
+                           (<-ℚ-ℚ-is-prop-valued p q)
                            (λ (r , i , j) → ℚ-transitivity p r q i j)
 
  ≤-on-ℚ-agrees-with-≤-on-ℝ : (p q : ℚ) → (p ≤ q) ≡ (ι p ≤ ι q)
  ≤-on-ℚ-agrees-with-≤-on-ℝ p q = refl
 
  ≤-on-ℚ-is-prop-valued : (p q : ℚ) → is-prop (ι p ≤ ι q)
- ≤-on-ℚ-is-prop-valued p q = ≤-is-prop-valued (ι p) (ι q)
+ ≤-on-ℚ-is-prop-valued p q = ≤₀-is-prop-valued (ι p) (ι q)
 
  ℚ-to-ℝ-preserves-≤ : (p q : ℚ) → p ≤ q → ι p ≤ ι q
  ℚ-to-ℝ-preserves-≤ p q = id
@@ -1433,9 +1431,9 @@ The promised three more ways to define _≤_ on ℝ:
  ≤₁ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₁ₐ y)
  ≤₃ₐ-is-prop-valued : (x y : ℝ) → is-prop (x ≤₃ₐ y)
 
- ≤₀ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → <-is-prop-valued z y)
- ≤₁ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → <-is-prop-valued x z)
- ≤₃ₐ-is-prop-valued x y = Π₄-is-prop fe (λ z t _ _ → <-is-prop-valued z t)
+ ≤₀ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → strict-order-ℝ-ℝ-is-prop-valued z y)
+ ≤₁ₐ-is-prop-valued x y = Π₂-is-prop fe (λ z _ → strict-order-ℝ-ℝ-is-prop-valued x z)
+ ≤₃ₐ-is-prop-valued x y = Π₄-is-prop fe (λ z t _ _ → strict-order-ℝ-ℝ-is-prop-valued z t)
 
  ≤₀-gives-≤₀ₐ : (x y : ℝ) → x ≤₀ y → x ≤₀ₐ y
  ≤₀-gives-≤₀ₐ x y l z = ∥∥-functor f
@@ -1499,13 +1497,13 @@ Relationship between _<_ and _≤_ on ℝ:
  <-gives-≤' x y l = ≤₀ₐ-gives-≤₀ x y f
   where
    f : (z : ℝ) → z < x → z < y
-   f z m = <-trans z x y m l
+   f z m = <-ℝ-ℝ-trans z x y m l
 
  <-≤-trans : (x y z : ℝ) → x < y → y ≤ z → x < z
  <-≤-trans x y z l m = ≤₀-gives-≤₀ₐ y z m x l
 
- ≤-<-trans : (x y z : ℝ) → x ≤ y → y < z → x < z
- ≤-<-trans x y z l m = ≤₁-gives-≤₁ₐ x y (≤-gives-≤₁ x y l) z m
+ ≤-<-ℝ-ℝ-trans : (x y z : ℝ) → x ≤ y → y < z → x < z
+ ≤-<-ℝ-ℝ-trans x y z l m = ≤₁-gives-≤₁ₐ x y (≤-gives-≤₁ x y l) z m
 
 \end{code}
 
@@ -1518,8 +1516,9 @@ Apartness of real numbers and its basic properties:
 
  ♯-is-prop-valued : (x y : ℝ) → is-prop (x ♯ y)
  ♯-is-prop-valued x y = sum-of-contradictory-props
-                          (<-is-prop-valued x y) (<-is-prop-valued y x)
-                          (λ i j → <-irrefl x (<-trans x y x i j))
+                          (strict-order-ℝ-ℝ-is-prop-valued x y)
+                          (strict-order-ℝ-ℝ-is-prop-valued y x)
+                          (λ i j → <-irrefl x (<-ℝ-ℝ-trans x y x i j))
 
  ♯-irrefl : (x : ℝ) → ¬ (x ♯ x)
  ♯-irrefl x (inl ℓ) = <-irrefl x ℓ
@@ -1543,7 +1542,7 @@ Apartness of real numbers and its basic properties:
                              (<-cotrans y x ℓ z)
 
  ♯-tight : (x y : ℝ) → ¬ (x ♯ y) → x ≡ y
- ♯-tight x y ν = ≤-antisym x y III IV
+ ♯-tight x y ν = ≤-ℝ-ℝ-antisym x y III IV
   where
    I : x ≮ y
    I ℓ = ν (inl ℓ)
@@ -1582,30 +1581,30 @@ Apartness of real numbers and its basic properties:
 \end{code}
 
 We now consider the existence of least upper bounds of bounded
-families 𝔁 : 𝐼 → ℝ with 𝐼 inhabited.
+families x : 𝐼 → ℝ with 𝐼 inhabited.
 
 A sufficient condition, given by Bishop, is that
 
-  (p q : ℚ) → p < q → (∃ i ꞉ 𝐼 , p < 𝔁 i)
-                    ∨ ((i : 𝐼) → 𝔁 i < q)
+  (p q : ℚ) → p < q → (∃ i ꞉ 𝐼 , p < x i)
+                    ∨ (Π i ꞉ 𝐼 , x i < q)
 
 We observe that the weaker condition
 
-  (p q : ℚ) → p < q →  (∃ i ꞉ 𝐼 , p < 𝔁 i)
-                    ∨ ¬(∃ i ꞉ 𝐼 , q < 𝔁 i)
+  (p q : ℚ) → p < q →  (∃ i ꞉ 𝐼 , p < x i)
+                    ∨ ¬(∃ i ꞉ 𝐼 , q < x i)
 
 suffices.
 
-If we define (p < 𝔁) = (∃ i ꞉ 𝐼 , p < 𝔁 i), then this weaker sufficient
+If we define (p < x) = (∃ i ꞉ 𝐼 , p < x i), then this weaker sufficient
 condition reads
 
-  (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
+  (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
 
 so that we see that it is analogous to Troelstra's locatedness
 condition discussed above.
 
-In the following, we write 𝔁 ≤ y to mean that the real number y is an
-upper bound of the family 𝔁.
+In the following, we write x ≤ y to mean that the real number y is an
+upper bound of the family x.
 
 \begin{code}
 
@@ -1615,120 +1614,123 @@ upper bound of the family 𝔁.
 
   instance
    order-F-ℝ : Order F ℝ
-   _≤_ {{order-F-ℝ}} 𝔁 y = (i : 𝐼) → 𝔁 i ≤ y
+   _≤_ {{order-F-ℝ}} x y = (i : 𝐼) → x i ≤ y
 
-  order-F-ℝ-is-prop-valued : (𝔁 : F) (y : ℝ)
-                           → is-prop (𝔁 ≤ y)
-  order-F-ℝ-is-prop-valued 𝔁 y = Π-is-prop fe (λ i → ≤-is-prop-valued (𝔁 i) y)
+  order-F-ℝ-is-prop-valued : (x : F) (y : ℝ)
+                           → is-prop (x ≤ y)
+  order-F-ℝ-is-prop-valued x y = Π-is-prop fe (λ i → ≤₀-is-prop-valued (x i) y)
 
   _has-lub_ : F → ℝ → 𝓤⁺ ̇
-  𝔁 has-lub y = (𝔁 ≤ y) × ((z : ℝ) → 𝔁 ≤ z → y ≤ z)
+  x has-lub y = (x ≤ y) × ((z : ℝ) → x ≤ z → y ≤ z)
 
-  having-lub-is-prop : (𝔁 : F) (y : ℝ)
-                     → is-prop (𝔁 has-lub y)
-  having-lub-is-prop 𝔁 y = ×-is-prop
-                             (order-F-ℝ-is-prop-valued 𝔁 y)
-                             (Π₂-is-prop fe (λ z _ → ≤-is-prop-valued y z))
+  _has-a-lub : F → 𝓤⁺ ̇
+  x has-a-lub = Σ y ꞉ ℝ , (x has-lub y)
 
-  at-most-one-lub : (𝔁 : F) → is-prop (Σ y ꞉ ℝ , 𝔁 has-lub y)
-  at-most-one-lub 𝔁 (y , a , b) (y' , a' , b') = γ
+  having-lub-is-prop : (x : F) (y : ℝ)
+                     → is-prop (x has-lub y)
+  having-lub-is-prop x y = ×-is-prop
+                             (order-F-ℝ-is-prop-valued x y)
+                             (Π₂-is-prop fe (λ z _ → ≤₀-is-prop-valued y z))
+
+  having-a-lub-is-prop : (x : F) → is-prop (x has-a-lub)
+  having-a-lub-is-prop x (y , a , b) (y' , a' , b') = γ
    where
     I : y ≡ y'
-    I = ≤-antisym y y' (b y' a') (b' y a)
+    I = ≤-ℝ-ℝ-antisym y y' (b y' a') (b' y a)
 
     γ : (y , a , b) ≡ (y' , a' , b')
-    γ = to-subtype-≡ (having-lub-is-prop 𝔁) I
+    γ = to-subtype-≡ (having-lub-is-prop x) I
 
   instance
    strict-order-ℚ-F : Strict-Order ℚ F
-   _<_ {{strict-order-ℚ-F}} p 𝔁 = ∃ i ꞉ 𝐼 , p < 𝔁 i
+   _<_ {{strict-order-ℚ-F}} p x = ∃ i ꞉ 𝐼 , p < x i
 
-  strict-order-ℚ-F-is-prop : (p : ℚ) (𝔁 : F) → is-prop (p < 𝔁)
-  strict-order-ℚ-F-is-prop p 𝔁 = ∃-is-prop
+  strict-order-ℚ-F-is-prop : (p : ℚ) (x : F) → is-prop (p < x)
+  strict-order-ℚ-F-is-prop p x = ∃-is-prop
 
-  strict-order-ℚ-F-observation : (p : ℚ) (𝔁 : F)
-                               → (p ≮ 𝔁) ⇔ (𝔁 ≤ ι p)
-  strict-order-ℚ-F-observation p 𝔁 = f , g
+  strict-order-ℚ-F-observation : (p : ℚ) (x : F)
+                               → (p ≮ x) ⇔ (x ≤ ι p)
+  strict-order-ℚ-F-observation p x = f , g
    where
-    f : p ≮ 𝔁 → 𝔁 ≤ ι p
+    f : p ≮ x → x ≤ ι p
     f ν i = I
      where
-      I : (q : ℚ) → q < 𝔁 i → q < p
+      I : (q : ℚ) → q < x i → q < p
       I q l = ℚ-order-criterion q p II III
        where
         II : p ≮ q
-        II m = ν ∣ i , lowercut-is-lower (𝔁 i) q l p m ∣
+        II m = ν ∣ i , lowercut-is-lower (x i) q l p m ∣
 
         III : q ≢ p
         III refl = ν ∣ i , l ∣
 
-    g : 𝔁 ≤ ι p → p ≮ 𝔁
+    g : x ≤ ι p → p ≮ x
     g l = ∥∥-rec 𝟘-is-prop I
      where
-      I : ¬ (Σ i ꞉ 𝐼 , p < 𝔁 i)
-      I (i , m) = ≺-irrefl p (l i p m)
+      I : ¬ (Σ i ꞉ 𝐼 , p < x i)
+      I (i , m) = <-ℚ-ℚ-irrefl p (l i p m)
 
-  is-upper-bounded-family : F → 𝓤⁺ ̇
-  is-upper-bounded-family 𝔁 = ∃ β ꞉ ℝ , (𝔁 ≤ β)
+  is-upper-bounded : F → 𝓤⁺ ̇
+  is-upper-bounded x = ∃ y ꞉ ℝ , (x ≤ y)
 
   is-located-family : F → 𝓤 ̇
-  is-located-family 𝔁 = (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
+  is-located-family x = (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
 
   lub-sufficient-conditions : F → 𝓤⁺ ̇
-  lub-sufficient-conditions 𝔁 = ∥ 𝐼 ∥
-                              × is-upper-bounded-family 𝔁
-                              × is-located-family 𝔁
+  lub-sufficient-conditions x = ∥ 𝐼 ∥
+                              × is-upper-bounded x
+                              × is-located-family x
 
-  lub : (𝔁 : F) → lub-sufficient-conditions 𝔁 → Σ y ꞉ ℝ , (𝔁 has-lub y)
-  lub 𝔁 (𝐼-inhabited , 𝔁-bounded , 𝔁-located) = y , a , b
+  lub : (x : F) → lub-sufficient-conditions x → x has-a-lub
+  lub x (𝐼-inhabited , x-bounded , x-located) = y , a , b
    where
     L : 𝓟 ℚ
-    L p = (p < 𝔁) , strict-order-ℚ-F-is-prop p 𝔁
+    L p = (p < x) , strict-order-ℚ-F-is-prop p x
 
-    L-inhabited : ∃ p ꞉ ℚ , p < 𝔁
+    L-inhabited : ∃ p ꞉ ℚ , p < x
     L-inhabited = ∥∥-rec ∃-is-prop I 𝐼-inhabited
      where
-      I : 𝐼 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < 𝔁 i
+      I : 𝐼 → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < x i
       I i = III II
        where
-        II : Σ i ꞉ 𝐼 , ∃ p ꞉ ℚ , p < 𝔁 i
-        II = i , lowercut-is-inhabited (𝔁 i)
+        II : Σ i ꞉ 𝐼 , ∃ p ꞉ ℚ , p < x i
+        II = i , lowercut-is-inhabited (x i)
 
-        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < 𝔁 i
+        III : type-of II → ∃ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < x i
         III (i , s) = ∥∥-functor IV s
          where
-          IV : (Σ p ꞉ ℚ , p < 𝔁 i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < 𝔁 i
+          IV : (Σ p ꞉ ℚ , p < x i) → Σ p ꞉ ℚ , ∃ i ꞉ 𝐼 , p < x i
           IV (p , l) = p , ∣ i , l ∣
 
-    L-lower : (q : ℚ) → q < 𝔁 → (p : ℚ) → p < q → p < 𝔁
-    L-lower q l p m = ∥∥-functor (λ (i , k) → i , lowercut-is-lower (𝔁 i) q k p m) l
+    L-lower : (q : ℚ) → q < x → (p : ℚ) → p < q → p < x
+    L-lower q l p m = ∥∥-functor (λ (i , k) → i , lowercut-is-lower (x i) q k p m) l
 
-    L-upper-open : (p : ℚ) → p < 𝔁 → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+    L-upper-open : (p : ℚ) → p < x → ∃ p' ꞉ ℚ , ((p < p') × (p' < x))
     L-upper-open p = ∥∥-rec ∃-is-prop f
      where
-      f : (Σ i ꞉ 𝐼 , p < 𝔁 i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
-      f (i , l) = ∥∥-functor g (lowercut-is-upper-open (𝔁 i) p l)
+      f : (Σ i ꞉ 𝐼 , p < x i) → ∃ p' ꞉ ℚ , ((p < p') × (p' < x))
+      f (i , l) = ∥∥-functor g (lowercut-is-upper-open (x i) p l)
        where
-        g : (Σ p' ꞉ ℚ , (p < p') × (p' < 𝔁 i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < 𝔁))
+        g : (Σ p' ꞉ ℚ , (p < p') × (p' < x i)) → Σ p' ꞉ ℚ , ((p < p') × (p' < x))
         g (p' , m , o) = p' , m , ∣ i , o ∣
 
     yᴸ : ℝᴸ
     yᴸ = (L , L-inhabited , L-lower , L-upper-open)
 
-    L-bounded-above : ∃ q ꞉ ℚ , q ≮ 𝔁
-    L-bounded-above = ∥∥-rec ∃-is-prop I 𝔁-bounded
+    L-bounded-above : ∃ q ꞉ ℚ , q ≮ x
+    L-bounded-above = ∥∥-rec ∃-is-prop I x-bounded
      where
-      I : (Σ β ꞉ ℝ , 𝔁 ≤ β) → ∃ q ꞉ ℚ , q ≮ 𝔁
+      I : (Σ β ꞉ ℝ , x ≤ β) → ∃ q ꞉ ℚ , q ≮ x
       I (β , l) = ∥∥-functor II (uppercut-is-inhabited β)
        where
-        II : (Σ q ꞉ ℚ , β < q) → Σ q ꞉ ℚ , q ≮ 𝔁
+        II : (Σ q ꞉ ℚ , β < q) → Σ q ꞉ ℚ , q ≮ x
         II (q , m) = q , ∥∥-rec 𝟘-is-prop III
          where
-          III : ¬ (Σ i ꞉ 𝐼 , q < 𝔁 i)
-          III (i , o) = ≺-irrefl q (cuts-are-ordered β q q (l i q o) m)
+          III : ¬ (Σ i ꞉ 𝐼 , q < x i)
+          III (i , o) = <-ℚ-ℚ-irrefl q (cuts-are-ordered β q q (l i q o) m)
 
-    L-located : (p q : ℚ) → p < q → (p < 𝔁) ∨ (q ≮ 𝔁)
-    L-located = 𝔁-located
+    L-located : (p q : ℚ) → p < q → (p < x) ∨ (q ≮ x)
+    L-located = x-located
 
     τ : is-troelstra yᴸ
     τ = L-bounded-above , L-located
@@ -1736,14 +1738,44 @@ upper bound of the family 𝔁.
     y : ℝ
     y = (yᴸ , troelstra-gives-dedekind yᴸ τ)
 
-    a : 𝔁 ≤ y
+    a : x ≤ y
     a i p l = ∣ i , l ∣
 
-    b : (z : ℝ) → 𝔁 ≤ z → y ≤ z
+    b : (z : ℝ) → x ≤ z → y ≤ z
     b z l p = ∥∥-rec (strict-order-ℚ-ℝ-is-prop-valued p z) f
      where
-      f : (Σ i ꞉ 𝐼 , p < 𝔁 i) → p < z
+      f : (Σ i ꞉ 𝐼 , p < x i) → p < z
       f (i , m) = l i p m
+
+  instance
+   strict-order-F-ℚ : Strict-Order F ℚ
+   _<_ {{strict-order-F-ℚ}} x q = (i : 𝐼) → x i < q
+
+  strict-order-F-ℚ-is-prop : (q : ℚ) (x : F) → is-prop (x < q)
+  strict-order-F-ℚ-is-prop q x = Π-is-prop fe
+                                  (λ i → strict-order-ℝ-ℚ-is-prop-valued (x i) q)
+
+  is-bishop-located : F → 𝓤 ̇
+  is-bishop-located x = (p q : ℚ) → p < q → (p < x) ∨ (x < q)
+
+  bishop-located-families-are-located : (x : F)
+                                      → is-bishop-located x
+                                      → is-located-family x
+  bishop-located-families-are-located x located p q l = IV
+
+   where
+    I : x < q → q ≮ x
+    I m = ∥∥-rec 𝟘-is-prop II
+     where
+      II : ¬ (Σ i ꞉ 𝐼 , q < x i)
+      II (i , o) = <-ℚ-ℚ-irrefl q (cuts-are-ordered (x i) q q o (m i))
+
+    III : (p < x) + (x < q) → (p < x) + (q ≮ x)
+    III (inl l) = inl l
+    III (inr m) = inr (I m)
+
+    IV : (p < x) ∨ (q ≮ x)
+    IV = ∥∥-functor III (located p q l)
 
 \end{code}
 
@@ -1769,7 +1801,7 @@ locatedness condition from the Dedekind reals.
  𝓡-is-set : is-set 𝓡
  𝓡-is-set = subsets-of-sets-are-sets (ℝᴸ × ℝᵁ) (λ (x , y) → x ≤ y)
               (×-is-set ℝᴸ-is-set ℝᵁ-is-set)
-              (Π₄-is-prop fe (λ _ _ _ _ → ≺-is-prop-valued _ _))
+              (Π₄-is-prop fe (λ _ _ _ _ → <-ℚ-ℚ-is-prop-valued _ _))
 
  NB₄ : 𝓡 ≃ (Σ (L , U) ꞉ 𝓟 ℚ × 𝓟 ℚ
                   , (is-inhabited L × is-lower L × is-upper-open L)
@@ -1786,15 +1818,6 @@ locatedness condition from the Dedekind reals.
  ℝ-to-𝓡 : ℝ → 𝓡
  ℝ-to-𝓡 (x , y , o , _) = (x , y) , o
 
- ℝ-to-𝓡-is-embedding : is-embedding ℝ-to-𝓡
- ℝ-to-𝓡-is-embedding ((x , y) , o) ((x , y , o , l) , refl) ((x , y , o , m) , refl) = γ
-  where
-   δ : l ≡ m
-   δ = being-located-is-prop (ι x) (ι y) l m
-
-   γ : ((x , y , o , l) , refl) ≡ ((x , y , o , m) , refl)
-   γ = ap (λ - → (x , y , o , -) , refl) δ
-
  instance
   canonical-map-ℝ-to-𝓡 : Canonical-Map ℝ 𝓡
   ι {{canonical-map-ℝ-to-𝓡}} = ℝ-to-𝓡
@@ -1807,6 +1830,15 @@ locatedness condition from the Dedekind reals.
 
   square-order-𝓡-𝓡 : Square-Order 𝓡 𝓡
   _⊑_ {{square-order-𝓡-𝓡}} ((x , y) , _) ((x' , y') , _) = (x ≤ x') × (y' ≤ y)
+
+ ℝ-to-𝓡-is-embedding : is-embedding (canonical-map ℝ 𝓡)
+ ℝ-to-𝓡-is-embedding ((x , y) , o) ((x , y , o , l) , refl) ((x , y , o , m) , refl) = γ
+  where
+   δ : l ≡ m
+   δ = being-located-is-prop (ι x) (ι y) l m
+
+   γ : ((x , y , o , l) , refl) ≡ ((x , y , o , m) , refl)
+   γ = ap (λ - → (x , y , o , -) , refl) δ
 
 \end{code}
 
@@ -1828,7 +1860,11 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
  ⊥𝓡 : 𝓡∞
  ⊥𝓡 = (∅ , ∅) , ((λ _ ()) , (λ _ ())) , ((λ _ ()) , (λ _ ())) , (λ p q ())
 
- 𝓡-to-𝓡∞-is-embedding : is-embedding 𝓡-to-𝓡∞
+ instance
+  canonical-map-𝓡-to-𝓡∞ : Canonical-Map 𝓡 𝓡∞
+  ι {{canonical-map-𝓡-to-𝓡∞}} = 𝓡-to-𝓡∞
+
+ 𝓡-to-𝓡∞-is-embedding : is-embedding (canonical-map 𝓡 𝓡∞)
  𝓡-to-𝓡∞-is-embedding ((L , U) , (Ll , Lo) , (Uu , Uo) , o)
                         ((((L , i , Ll , Lo) , U , k , Uu , Uo) , o) , refl)
                         ((((L , j , Ll , Lo) , U , l , Uu , Uo) , o) , refl)
@@ -1839,31 +1875,151 @@ If we drop the inhabitation conditions, the endpoints can be ±∞:
            (being-inhabited-is-prop L i j)
            (being-inhabited-is-prop U k l)
 
- instance
-  canonical-map-𝓡-to-𝓡∞ : Canonical-Map 𝓡 𝓡∞
-  ι {{canonical-map-𝓡-to-𝓡∞}} = 𝓡-to-𝓡∞
+\end{code}
+
+The notion of a locator for a real number was studied by my student
+Auke Booij in his PhD thesis.
+
+\begin{code}
+
+ locator : ℝ → 𝓤 ̇
+ locator x = (p q : ℚ) → p < q → (p < x) + (x < q)
 
 \end{code}
 
-Thoughts about limits of Cauchy sequences. Suppose we have 𝔁 : ℕ → ℝ
-satisfying
+We also consider the following notion of locator for families:
 
-  (ε : ℚ) → ε > 0 → ∃ k : ℕ , ((i j : ℕ) → d (𝔁 (k + i) , 𝔁 (k + j)) < ε).
+\begin{code}
 
-How do we define its limit as a Dedekind real?
+ bishop-locator : {𝐼 : 𝓤 ̇ } → (𝐼 → ℝ) → 𝓤 ̇
+ bishop-locator {𝐼} x = (p q : ℚ)
+                      → p < q
+                      → (Σ i ꞉ 𝐼 , p < x i)
+                      + (Π i ꞉ 𝐼 , x i < q)
 
-Notice that the relation d (x , y) < ε is equivalent to
+ pointwise-locator-gives-bishop-locator : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
+                                        → searchable 𝐼
+                                        → ((i : 𝐼) → locator (x i))
+                                        → bishop-locator x
+ pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ p q l = γ
+  where
+   γ : (Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q)
+   γ = compact-gives-Σ+Π 𝐼
+        (λ i → p < x i ) (λ i → x i < q)
+        (compact∙-gives-compact κ)
+        (λ i → ℓ i p q l)
 
-  ∃ p q : ℚ , (p < x) × (y < q) × (q < p + ε).
+ lub-with-locators : (𝐼 : 𝓤 ̇ ) (x : 𝐼 → ℝ)
+                   → searchable 𝐼
+                   → is-upper-bounded x
+                   → ((i : 𝐼) → locator (x i))
+                   → Σ y ꞉ ℝ , (x has-lub y) × locator y
+ lub-with-locators 𝐼 x κ β ℓ = γ
+  where
+   h : ∥ 𝐼 ∥
+   h = ∣ compact∙-gives-pointed κ ∣
 
-Call the limit (to be constructed) y.
+   I : bishop-locator x
+   I = pointwise-locator-gives-bishop-locator 𝐼 x κ ℓ
 
-By definition of limit, for every ε > 0 there is k such that, for all
-i, we have d (𝔁 (k+i), y) < ε.
+   II : (p q : ℚ) → p < q → ((Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q)) → (p < x) ∨ (x < q)
+   II p q l (inl (i , m)) = ∣ inl ∣ i , m ∣ ∣
+   II p q l (inr ϕ)       = ∣ inr ϕ ∣
 
+   III : is-bishop-located x
+   III p q l = II p q l (I p q l)
 
-Write B r x for the open ball of radius r centered at x.
+   IV : x has-a-lub
+   IV = lub x (h , β , bishop-located-families-are-located x III)
 
-B ε (𝔁 (k + i)) ⊆ B ε (𝔁 k)
+   y : ℝ
+   y = pr₁ IV
 
-means d (𝔁 (k + i) , y) < ε → d (𝔁 k , y) < ε
+   V : x has-lub y
+   V = pr₂ IV
+
+   VI : (p q : ℚ) → p < q → (p < y) + (y < q)
+   VI p q l = δ (ℚ-density p q l)
+    where
+     δ : (Σ q' ꞉ ℚ , (p < q') × (q' < q)) → (p < y) + (y < q)
+     δ (q' , i , j) = VII (I p q' i)
+      where
+       VII : ((Σ i ꞉ 𝐼 , p < x i) + (Π i ꞉ 𝐼 , x i < q')) → (p < y) + (y < q)
+       VII (inl (o , m)) = inl ∣ o , m ∣
+       VII (inr ϕ)       = inr IX
+        where
+         VIII : q' ≮ y
+         VIII = ∥∥-rec 𝟘-is-prop (λ (i , o) → <-ℚ-ℚ-irrefl q' (cuts-are-ordered (x i) q' q' o (ϕ i)))
+
+         IX : ∃ q' ꞉ ℚ , (q' < q) × q' ≮ y
+         IX = ∣ q' , j , VIII ∣
+
+   γ : Σ y ꞉ ℝ , (x has-lub y) × locator y
+   γ = (y , V , VI)
+
+\end{code}
+
+Limits of sequences, but using the topological, rather than metric, structure of the reals.
+
+\begin{code}
+
+ ⦅_,_⦆ : ℚ → ℚ → (ℝ → Ω 𝓤)
+ ⦅ p , q ⦆ = λ x → ((p < x) × (x < q)) , ×-is-prop
+                                         (strict-order-ℚ-ℝ-is-prop-valued p x)
+                                         (strict-order-ℝ-ℚ-is-prop-valued x q)
+
+ _has-limit_ : (ℕ → ℝ) → ℝ → 𝓤 ̇
+ x has-limit x∞ = (p q : ℚ)
+                 → x∞ ∈ ⦅ p , q ⦆
+                 → ∃ n ꞉ ℕ , ((k : ℕ) → k ≥ n → x k ∈ ⦅ p , q ⦆)
+
+ open import GenericConvergentSequence
+
+ is-continuous-ℕ∞-ℝ : (ℕ∞ → ℝ) → 𝓤 ̇
+ is-continuous-ℕ∞-ℝ x = (𝓃 : ℕ∞) (p q : ℚ)
+                      → x 𝓃 ∈ ⦅ p , q ⦆
+                      → ∃ 𝓀 ꞉ ℕ∞
+                            , (𝓀 ≺ 𝓃)
+                            × ((𝒾 : ℕ∞) → 𝒾 ≽ 𝓀 → x 𝒾 ∈ ⦅ p , q ⦆)
+
+\end{code}
+
+Some (overlapping) problems:
+
+\begin{code}
+
+ Problem₁ = (x : ℕ → ℝ) (x∞ : ℝ)
+          → x has-limit x∞
+          → Σ x̂ ꞉ (ℕ∞ → ℝ)
+                 , ((n : ℕ) → x̂ (ι n) ≡ x n)
+                 × (x̂ ∞ ≡ x∞)
+
+ Problem₂ = (x : ℕ → ℝ) (x∞ : ℝ)
+          → ((n : ℕ) → locator (x n))
+          → locator x∞
+          → x has-limit x∞
+          → Σ x̂ ꞉ (ℕ∞ → ℝ)
+                 , ((n : ℕ) → x̂ (ι n) ≡ x n)
+                 × (x̂ ∞ ≡ x∞)
+                 × ((𝓃 : ℕ∞) → locator (x̂ 𝓃))
+
+ Problem₃ = (x : ℕ∞ → ℝ)
+          → (x ∘ ι) has-limit (x ∞)
+          → ((n : ℕ) → locator (x (ι n)))
+          → locator (x ∞)
+
+ Problem₄ = Σ A ꞉ (ℝ → Ω 𝓤) , (Σ x ꞉ ℝ , x ∈ A) ≃ ℕ∞
+
+ Problem₅ = Σ A ꞉ (ℝ → Ω 𝓤)
+                , ((Σ x ꞉ ℝ , x ∈ A) ≃ ℕ∞)
+                × ((x : ℝ) → x ∈ A → locator x)
+
+ Problem₆ = (A : ℝ → Ω 𝓤)
+          → ((Σ x ꞉ ℝ , x ∈ A) ≃ ℕ∞)
+          → (x : ℝ)
+          → x ∈ A
+          → locator x
+
+\end{code}
+
+Should some of the above ∃ be Σ and/or vice-versa?

@@ -17,6 +17,8 @@ open import Closeness fe
 open import NaturalsOrder
 open import UF-Miscelanea
 open import NaturalNumbers-Properties
+open import OrderNotation
+open import CanonicalMapNotation
 
 \end{code}
 
@@ -66,7 +68,7 @@ Given a CUT C, the definition of a Cauchy sequence is as expected.
 
 CUT-CauchySequence : ClosenessSpace → 𝓤 ̇
 CUT-CauchySequence (X , c , _) = Σ s ꞉ (ℕ → X) , Π ε ꞉ ℕ , Σ N ꞉ ℕ
-                                 , ∀ m n → (N < m) × (N < n) → under ε ≺ c (s m) (s n)
+                                 , ∀ m n → (N < m) × (N < n) → ι ε ≺ c (s m) (s n)
 
 \end{code}
 
@@ -174,17 +176,17 @@ BanachFixedPointTheorem (X , c , p) x₀ complete (T , succ k , _ , r)
   limit : has-limit s
   limit = complete (s , λ ε → ε , γ ε)
    where
-    γ : Π ε ꞉ ℕ , ((m n : ℕ) → (ε < m) × (ε < n) → under ε ≺ c (s m) (s n))
+    γ : Π ε ꞉ ℕ , ((m n : ℕ) → (ε < m) × (ε < n) → ι ε ≺ c (s m) (s n))
     γ ε (succ m) (succ n) (ε<sm , ε<sn)
-      = ≺≼-gives-≺ (under ε) ((Succ ^ succ k) (c (s m) (s n))) (c (T (s m)) (T (s n)))
+      = ≺≼-gives-≺ (ι ε) ((Succ ^ succ k) (c (s m) (s n))) (c (T (s m)) (T (s n)))
                    (q k ε (ε<sm , ε<sn)) (r (s m) (s n))
      where
       q : (k : ℕ) (ε : ℕ) → (ε < succ m) × (ε < succ n)
-        → under ε ≺ (Succ ^ succ k) (c (s m) (s n))
+        → ι ε ≺ (Succ ^ succ k) (c (s m) (s n))
       q 0 0 _ = 0 , refl , refl
       q 0 (succ ε) (ε<sm , ε<sn)
-       = ≺-Succ (under ε) (c (s m) (s n)) (γ ε m n (ε<sm , ε<sn))
+       = ≺-Succ (ι ε) (c (s m) (s n)) (γ ε m n (ε<sm , ε<sn))
       q (succ k) ε ε<
-       = ≺-Succ-r (under ε) ((Succ ^ succ k) (c (s m) (s n))) (q k ε ε<)
+       = ≺-Succ-r (ι ε) ((Succ ^ succ k) (c (s m) (s n))) (q k ε ε<)
 
 \end{code}

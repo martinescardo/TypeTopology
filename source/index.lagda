@@ -206,7 +206,6 @@ import Pi
 import Plus
 import PlusOneLC
 import Plus-Properties
-import PlusNotation
 import PropInfTychonoff
 import PropTychonoff
 import QuasiDecidable
