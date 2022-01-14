@@ -307,8 +307,8 @@ empty-types-are-semidecidable e =
  ∣ empty-types-have-semidecidability-structure e ∣
 
 open import NaturalsOrder
+open import OrderNotation
 open import Fin-Properties
-
 
 open import CompactTypes
 
