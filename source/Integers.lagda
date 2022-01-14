@@ -22,7 +22,7 @@ module Integers where
 ℤ : 𝓤₀ ̇
 ℤ = 𝟙 + ℕ + ℕ
 
-pattern 𝟎     = inl *
+pattern 𝟎     = inl ⋆
 pattern pos i = inr (inl i)
 pattern neg i = inr (inr i)
 

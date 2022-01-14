@@ -48,12 +48,6 @@ We start with some basic constructions on the powerset.
 ⦅_⦆[_] : {X : 𝓤 ̇ } → X → is-set X → 𝓟 X
 ⦅ x ⦆[ i ] = (λ y → ((y ≡ x) , i))
 
-∅ : {X : 𝓤 ̇ } → 𝓟 X
-∅ x = 𝟘 , 𝟘-is-prop
-
-∅-is-least : {X : 𝓤 ̇ } (A : 𝓟 X) → ∅ ⊆ A
-∅-is-least x _ = 𝟘-induction
-
 _∪_ : {X : 𝓤 ̇ } → 𝓟 X → 𝓟 X → 𝓟 X
 (A ∪ B) x = ∥ x ∈ A + x ∈ B ∥ , ∥∥-is-prop
 
@@ -114,7 +108,7 @@ The empty set and singletons and Kuratowski finite subsets.
     e : Fin 1 → 𝕋 ⦅ x ⦆[ i ]
     e 𝟎 = x , refl
     σ : is-surjection e
-    σ (x , refl) = ∣ inr * , refl ∣
+    σ (x , refl) = ∣ inr ⋆ , refl ∣
 
 from-Fin-0 : {X : 𝓤 ̇ } → Fin 0 → X
 from-Fin-0 = unique-from-𝟘
@@ -443,7 +437,7 @@ abstract induction principle for Kuratowski finite subsets.
 
 Finally we will show that 𝓚 X is the free join-semilattice on a set X.
 Concretely, if L is a join-semilattice and f : X → L is any function, then there
-is a *unique* mediating map f♭ : 𝓚 X → L such that:
+is a ⋆unique⋆ mediating map f♭ : 𝓚 X → L such that:
 (i)  f♭ is a join-semilattice homomorphism, i.e.
      - f♭ preserves the least element;
      - f♭ preserves binary joins.
@@ -462,7 +456,7 @@ The idea in defining f♭ is to map a Kuratowski finite subset A to the finite
 join ∨ⁿ (f ∘ 𝕋-to-carrier ⟨ A ⟩ ∘ e) in L, where e is some eumeration
 (i.e. surjection) e : Fin n ↠ 𝕋 ⟨ A ⟩.
 
-However, since Kuratowski finite subsets come with an *unspecified* such
+However, since Kuratowski finite subsets come with an ⋆unspecified⋆ such
 enumeration, we must show that the choice of enumeration is irrelevant, i.e. any
 two enumerations give rise to the same finite join. We then use a theorem by
 Kraus et al. [1] (see wconstant-map-to-set-factors-through-truncation-of-domain)
@@ -533,20 +527,21 @@ We now use the theorem by Kraus et al. to construct the map f♭ from fₛ.
 
   f♭ : 𝓚 X → L
   f♭ (A , κ) =
-   wconstant-map-to-set-truncation-of-domain-map _ L-is-set
-    (fₛ A) (fₛ-is-wconstant A) κ
+   pr₁ (wconstant-map-to-set-factors-through-truncation-of-domain L-is-set
+    (fₛ A) (fₛ-is-wconstant A)) κ
 
   f♭-in-terms-of-fₛ : (A : 𝓟 X) {n : ℕ} {e : (Fin n → 𝕋 A)} (σ : is-surjection e)
-                     (κ : is-Kuratowski-finite (𝕋 A))
-                   → f♭ (A , κ) ≡ fₛ A (n , e , σ)
+                      (κ : is-Kuratowski-finite (𝕋 A))
+                    → f♭ (A , κ) ≡ fₛ A (n , e , σ)
   f♭-in-terms-of-fₛ A {n} {e} σ κ = f♭ (A , κ)             ≡⟨ I  ⟩
                                     f♭ (A , ∣ n , e , σ ∣) ≡⟨ II ⟩
                                     fₛ A (n , e , σ)       ∎
    where
     I  = ap (λ - → f♭ (A , -)) (∥∥-is-prop κ ∣ n , e , σ ∣)
-    II = (wconstant-map-to-set-factors-through-truncation-of-domain
-          (Σ n ꞉ ℕ , Σ e ꞉ (Fin n → 𝕋 A) , is-surjection e) L-is-set
-          (fₛ A) (fₛ-is-wconstant A) (n , e , σ)) ⁻¹
+    II = (pr₂ (wconstant-map-to-set-factors-through-truncation-of-domain
+                L-is-set
+                (fₛ A) (fₛ-is-wconstant A))
+          (n , e , σ)) ⁻¹
 
 \end{code}
 

@@ -35,11 +35,29 @@ powersets-are-sets' {𝓤} ua = powersets-are-sets
                                (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
                                (univalence-gives-propext (ua 𝓤))
 
+∅ : {X : 𝓤 ̇ } →  X → Ω 𝓥
+∅ _ = 𝟘 , 𝟘-is-prop
+
+full : {X : 𝓤 ̇ } →  X → Ω 𝓥
+full _ = 𝟙 , 𝟙-is-prop
+
 _∈_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
 x ∈ A = A x holds
 
-_⊆_ : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+_∉_ : {X : 𝓤 ̇ } → X → (X → Ω 𝓥) → 𝓥 ̇
+x ∉ A = ¬ (x ∈ A)
+
+are-disjoint : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
+are-disjoint {𝓤} {𝓥} {𝓦} {X} A B = (x : X) → ¬((x ∈ A) × (x ∈ B))
+
+being-disjoint-is-prop : Fun-Ext
+                       → {X : 𝓤 ̇ } (A : X → Ω 𝓥) (B : X → Ω 𝓦)
+                       → is-prop (are-disjoint A B)
+being-disjoint-is-prop fe A B = Π-is-prop fe (λ _ → negations-are-props fe)
+
+_⊆_ _⊇_ : {X : 𝓤 ̇ } → (X → Ω 𝓥) → (X → Ω 𝓦) → 𝓤 ⊔ 𝓥 ⊔ 𝓦 ̇
 A ⊆ B = ∀ x → x ∈ A → x ∈ B
+A ⊇ B = B ⊆ A
 
 ∈-is-prop : {X : 𝓤 ̇ } (A : X → Ω 𝓥) (x : X) → is-prop (x ∈ A)
 ∈-is-prop A x = holds-is-prop (A x)
@@ -55,8 +73,14 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
           → {X : 𝓤 ̇ } (A B : 𝓟 X) → is-prop (A ⊆ B)
 ⊆-is-prop fe = ⊆-is-prop' fe fe
 
+∅-is-least : {X : 𝓤 ̇ } (A : 𝓟 X) → ∅ {𝓤} {𝓤} ⊆ A
+∅-is-least x _ = 𝟘-induction
+
+⊆-refl' : {X : 𝓤 ̇ } (A : X → Ω 𝓥) → A ⊆ A
+⊆-refl' A x = id
+
 ⊆-refl : {X : 𝓤 ̇ } (A : 𝓟 X) → A ⊆ A
-⊆-refl A x = id
+⊆-refl = ⊆-refl'
 
 ⊆-trans : {X : 𝓤 ̇ } (A B C : 𝓟 X) → A ⊆ B → B ⊆ C → A ⊆ C
 ⊆-trans A B C s t x a = t x (s x a)
@@ -66,18 +90,26 @@ A ⊆ B = ∀ x → x ∈ A → x ∈ B
 
 ⊆-refl-consequence {X} A A (refl) = ⊆-refl A , ⊆-refl A
 
+subset-extensionality'' : propext 𝓥
+                        → funext 𝓤 (𝓥 ⁺)
+                        → funext 𝓥 𝓥
+                        → {X : 𝓤 ̇ } {A B : X → Ω 𝓥}
+                        → A ⊆ B → B ⊆ A → A ≡ B
+
+subset-extensionality'' {𝓥} {𝓤} pe fe fe' {X} {A} {B} h k = dfunext fe φ
+ where
+  φ : (x : X) → A x ≡ B x
+  φ x = to-subtype-≡
+           (λ _ → being-prop-is-prop fe')
+           (pe (holds-is-prop (A x)) (holds-is-prop (B x))
+               (h x) (k x))
+
 subset-extensionality : propext 𝓤
                       → funext 𝓤 (𝓤 ⁺)
                       → {X : 𝓤 ̇ } {A B : 𝓟 X}
                       → A ⊆ B → B ⊆ A → A ≡ B
 
-subset-extensionality {𝓤} pe fe {X} {A} {B} h k = dfunext fe φ
- where
-  φ : (x : X) → A x ≡ B x
-  φ x = to-subtype-≡
-           (λ _ → being-prop-is-prop (lower-funext 𝓤 (𝓤 ⁺) fe))
-           (pe (holds-is-prop (A x)) (holds-is-prop (B x))
-               (h x) (k x))
+subset-extensionality {𝓤} pe fe = subset-extensionality'' pe fe (lower-funext 𝓤 (𝓤 ⁺) fe)
 
 subset-extensionality' : Univalence
                        → {X : 𝓤 ̇ } {A B : 𝓟 X}
@@ -88,5 +120,6 @@ subset-extensionality' {𝓤} ua = subset-extensionality
                                  (univalence-gives-funext' 𝓤 (𝓤 ⁺) (ua 𝓤) (ua (𝓤 ⁺)))
 
 infix  40 _∈_
+infix  40 _∉_
 
 \end{code}

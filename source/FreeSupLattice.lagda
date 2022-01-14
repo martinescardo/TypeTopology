@@ -39,12 +39,6 @@ We start with some basic constructions on the powerset.
 ⦅_⦆[_] : {X : 𝓥 ̇ } → X → is-set X → 𝓟 X
 ⦅ x ⦆[ i ] = (λ y → ((y ≡ x) , i))
 
-∅ : {X : 𝓤 ̇ } → 𝓟 X
-∅ x = 𝟘 , 𝟘-is-prop
-
-∅-is-least : {X : 𝓤 ̇ } (A : 𝓟 X) → ∅ ⊆ A
-∅-is-least x _ = 𝟘-induction
-
 ⋃  : {X I : 𝓥 ̇ } (α : I → 𝓟 X) → 𝓟 X
 ⋃ {𝓥} {X} {I} α x = (∃ i ꞉ I , x ∈ α i) , ∃-is-prop
 

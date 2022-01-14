@@ -116,7 +116,7 @@ naive-prop-valued-funext 𝓤 𝓥 = (X : 𝓤 ̇ ) (Y : 𝓥 ̇ )
                               → is-prop Y
                               → is-prop (X → Y)
 
-propositional-univalence : (𝓤 : Universe) → 𝓤 ⁺ ̇
+propositional-univalence : (𝓤 : Universe) → 𝓤 ⁺  ̇
 propositional-univalence 𝓤 = (P : 𝓤 ̇ ) → is-prop P → (Y : 𝓤 ̇ ) → is-equiv (idtoeq P Y)
 
 prop-eqtoid : propositional-univalence 𝓤

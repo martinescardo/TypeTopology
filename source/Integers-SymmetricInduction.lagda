@@ -42,13 +42,13 @@ module Integers-SymmetricInduction where
  (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₚ ꞉ Π (A ∘ pos) ,
                        Σ hₙ ꞉ Π (A ∘ neg) , Q₂ hₒ (g₂ (hₚ , hₙ))) ≃⟨ V    ⟩
  (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₚ ꞉ Π (A ∘ pos) ,
-                       Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ *) hₚ
-                                          × Qₙ' (hₒ *) hₙ)        ≃⟨ VI   ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , ((Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ *) hₚ)
-                     ×  (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ)))    ≃⟨ VII  ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , 𝟙 × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ))  ≃⟨ VIII ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ)        ≃⟨ IX   ⟩
- (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) , Qₙ (hₒ *) hₙ)         ≃⟨ X    ⟩
+                       Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ ⋆) hₚ
+                                          × Qₙ' (hₒ ⋆) hₙ)        ≃⟨ VI   ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , ((Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ ⋆) hₚ)
+                     ×  (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ ⋆) hₙ)))    ≃⟨ VII  ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , 𝟙 × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ ⋆) hₙ))  ≃⟨ VIII ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ ⋆) hₙ)        ≃⟨ IX   ⟩
+ (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , Σ hₙ ꞉ Π (A ∘ neg) , Qₙ (hₒ ⋆) hₙ)         ≃⟨ X    ⟩
  (Σ hₒ ꞉ Π (A ∘ ⌜𝟎⌝) , 𝟙)                                         ≃⟨ XI   ⟩
  Π (A ∘ ⌜𝟎⌝)                                                      ≃⟨ XII  ⟩
  A 𝟎 ■
@@ -80,12 +80,12 @@ module Integers-SymmetricInduction where
    V    = Σ-cong λ hₒ → Σ-cong (λ hₚ → Σ-cong (λ hₙ → γ hₒ hₚ hₙ))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))  (hₚ : Π (A ∘ pos)) (hₙ : Π (A ∘ neg))
-       → Q₂ hₒ (g₂ (hₚ , hₙ)) ≃ Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ
+       → Q₂ hₒ (g₂ (hₚ , hₙ)) ≃ Qₚ (hₒ ⋆) hₚ × Qₙ' (hₒ ⋆) hₙ
      γ hₒ hₚ hₙ = qinveq φ (ψ , η , ε)
       where
-       φ : Q₂ hₒ (g₂ (hₚ , hₙ)) → Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ
+       φ : Q₂ hₒ (g₂ (hₚ , hₙ)) → Qₚ (hₒ ⋆) hₚ × Qₙ' (hₒ ⋆) hₙ
        φ q = ((q 𝟎 , q ∘ pos) , (q (neg 0) , q ∘ neg ∘ succ))
-       ψ : (Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ) → Q₂ hₒ (g₂ (hₚ , hₙ))
+       ψ : (Qₚ (hₒ ⋆) hₚ × Qₙ' (hₒ ⋆) hₙ) → Q₂ hₒ (g₂ (hₚ , hₙ))
        ψ ((qₒ , qₚ) , (qₒ' , qₙ')) = c
         where
          c : Q₂ hₒ (g₂ (hₚ , hₙ))
@@ -106,9 +106,9 @@ module Integers-SymmetricInduction where
    VI   = Σ-cong γ
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
-       → (Σ hₚ ꞉ Π (A ∘ pos) , Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ *) hₚ × Qₙ' (hₒ *) hₙ)
-       ≃ (  (Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ *) hₚ)
-          × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ *) hₙ))
+       → (Σ hₚ ꞉ Π (A ∘ pos) , Σ hₙ ꞉ Π (A ∘ neg) , Qₚ (hₒ ⋆) hₚ × Qₙ' (hₒ ⋆) hₙ)
+       ≃ (  (Σ hₚ ꞉ Π (A ∘ pos) , Qₚ (hₒ ⋆) hₚ)
+          × (Σ hₙ ꞉ Π (A ∘ neg) , Qₙ' (hₒ ⋆) hₙ))
      γ hₒ = qinveq φ (ψ , η , ε)
       where
        φ : _
@@ -122,37 +122,37 @@ module Integers-SymmetricInduction where
    VII  = Σ-cong (λ hₒ → ×-cong (singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ)) (≃-refl _))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
-       → is-singleton ((Σ hₚ ꞉ Π (A ∘ pos) , Qₚ  (hₒ *) hₚ))
+       → is-singleton ((Σ hₚ ꞉ Π (A ∘ pos) , Qₚ  (hₒ ⋆) hₚ))
      γ hₒ = (ℕ-is-nno-dep fe (A ∘ pos) a₀ s)
       where
        a₀ : A (pos 0)
-       a₀ = ⌜ (f 𝟎) ⌝ (hₒ *)
+       a₀ = ⌜ (f 𝟎) ⌝ (hₒ ⋆)
        s : (n : ℕ) → A (pos n) → A (pos (succ n))
        s n = ⌜ f (pos n) ⌝
    VIII = Σ-cong (λ hₒ → 𝟙-lneutral)
    IX   = Σ-cong (λ hₒ → Σ-cong (λ hₙ → γ hₒ hₙ))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝)) (hₙ : Π (A ∘ neg))
-       → Qₙ' (hₒ *) hₙ ≃ Qₙ (hₒ *) hₙ
+       → Qₙ' (hₒ ⋆) hₙ ≃ Qₙ (hₒ ⋆) hₙ
      γ hₒ hₙ = ×-cong γ₀ (Π-cong fe fe ℕ _ _ γₙ)
       where
        f₀ = ⌜ f (neg 0) ⌝
        f₀⁻¹ = ⌜ (f (neg 0)) ⌝⁻¹
        e₀ : is-equiv f₀
        e₀ = ⌜⌝-is-equiv (f (neg 0))
-       γ₀ : (hₒ * ≡ f₀ (hₙ 0))
-          ≃ (hₙ 0 ≡ f₀⁻¹ (hₒ *))
-       γ₀ = (hₒ * ≡ f₀ (hₙ 0))             ≃⟨ I₀   ⟩
-            (f₀ (hₙ 0) ≡ hₒ *)             ≃⟨ II₀  ⟩
-            (f₀ (hₙ 0) ≡ f₀ (f₀⁻¹ (hₒ *))) ≃⟨ III₀ ⟩
-            (hₙ 0 ≡ f₀⁻¹ (hₒ *)) ■
+       γ₀ : (hₒ ⋆ ≡ f₀ (hₙ 0))
+          ≃ (hₙ 0 ≡ f₀⁻¹ (hₒ ⋆))
+       γ₀ = (hₒ ⋆ ≡ f₀ (hₙ 0))             ≃⟨ I₀   ⟩
+            (f₀ (hₙ 0) ≡ hₒ ⋆)             ≃⟨ II₀  ⟩
+            (f₀ (hₙ 0) ≡ f₀ (f₀⁻¹ (hₒ ⋆))) ≃⟨ III₀ ⟩
+            (hₙ 0 ≡ f₀⁻¹ (hₒ ⋆)) ■
         where
          I₀   = ≡-flip
-         II₀  = ≡-cong-r (f₀ (hₙ 0)) (hₒ *)
-                 ((inverses-are-sections f₀ e₀ (hₒ *)) ⁻¹)
+         II₀  = ≡-cong-r (f₀ (hₙ 0)) (hₒ ⋆)
+                 ((inverses-are-sections f₀ e₀ (hₒ ⋆)) ⁻¹)
          III₀ = embedding-criterion-converse f₀
                  (equivs-are-embeddings f₀ e₀)
-                 (hₙ 0) (f₀⁻¹ (hₒ *))
+                 (hₙ 0) (f₀⁻¹ (hₒ ⋆))
        fₙ : (n : ℕ) → A (neg (succ n)) → A (neg n)
        fₙ n = ⌜ f (neg (succ n)) ⌝
        eₙ : (n : ℕ) → is-equiv (fₙ n)
@@ -176,11 +176,11 @@ module Integers-SymmetricInduction where
    X    = Σ-cong (λ hₒ → singleton-≃-𝟙 {𝓤} {𝓤₀} (γ hₒ))
     where
      γ : (hₒ : Π (A ∘ ⌜𝟎⌝))
-       → is-singleton ((Σ hₙ ꞉ Π (A ∘ neg) , Qₙ  (hₒ *) hₙ))
+       → is-singleton ((Σ hₙ ꞉ Π (A ∘ neg) , Qₙ  (hₒ ⋆) hₙ))
      γ hₒ = (ℕ-is-nno-dep fe (A ∘ neg) a₀ s)
       where
        a₀ : A (neg 0)
-       a₀ = ⌜ (f (neg 0)) ⌝⁻¹ (hₒ *)
+       a₀ = ⌜ (f (neg 0)) ⌝⁻¹ (hₒ ⋆)
        s : (n : ℕ) → A (neg n) → A (neg (succ n))
        s n = ⌜ (f (neg (succ n))) ⌝⁻¹
    XI   = 𝟙-rneutral

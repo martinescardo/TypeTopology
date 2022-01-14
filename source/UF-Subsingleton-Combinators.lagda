@@ -48,8 +48,8 @@ module Universal (fe : Fun-Ext) where
  ∀[]-syntax : {I : 𝓤 ̇} → (I → Ω 𝓥) → Ω (𝓤 ⊔ 𝓥)
  ∀[]-syntax {I = I} P = ∀[∶]-syntax I P
 
- infix 3 ∀[∶]-syntax
- infix 3 ∀[]-syntax
+ infixr -1 ∀[∶]-syntax
+ infixr -1 ∀[]-syntax
 
  syntax ∀[∶]-syntax I (λ i → e) = Ɐ i ∶ I , e
  syntax ∀[]-syntax    (λ i → e) = Ɐ i , e
@@ -114,8 +114,8 @@ module Existential (pt : propositional-truncations-exist) where
  ∃[]-syntax : {I : 𝓤 ̇} → (I → 𝓥 ̇) → Ω (𝓤 ⊔ 𝓥)
  ∃[]-syntax {I = I} P = ∃[∶]-syntax I P
 
- infix 2 ∃[∶]-syntax
- infix 2 ∃[]-syntax
+ infixr -1 ∃[∶]-syntax
+ infixr -1 ∃[]-syntax
 
  syntax ∃[∶]-syntax I (λ i → e) = Ǝ i ∶ I , e
  syntax ∃[]-syntax    (λ i → e) = Ǝ i , e

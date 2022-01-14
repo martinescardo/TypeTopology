@@ -1,6 +1,7 @@
-Tom de Jong, 4 June 2019
+Tom de Jong, 4 June 2019.
+Updated 23 December 2021.
 
-Generic module for directed complete posets (with a least element)
+Generic overview module for (pointed) directed complete posets.
 
 \begin{code}
 
@@ -8,7 +9,27 @@ Generic module for directed complete posets (with a least element)
 
 module Dcpos where
 
+-- Basic definitions of (pointed) directed complete posets and
+-- Scott continuous maps
 import Dcpo
-import DcpoConstructions
+-- Various lemmas on directed completeness and Scott continuity
+import DcpoMiscelanea
+
+-- Exponentials of dcpos
+import DcpoExponential
+
+-- Least fixed points of Scott continuous maps
+import DcpoLeastFixedPoint
+
+-- Denotational semantics of the K, S and ifZero combinators of PCF
+import DcpoPCFCombinators
+
+-- Directed bilimits in the category of dcpos and embedding-projections pairs,
+-- leading to the construction of Scott's famous 𝓓∞ that is isomorphic to its
+-- own function space.
+import DcpoBilimits
+import DcpoBilimitsSequential
+import DcpoDinfinity
+
 
 \end{code}

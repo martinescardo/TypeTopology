@@ -28,40 +28,42 @@ open import DiscreteAndSeparated
 open import GenericConvergentSequence
 open import ADecidableQuantificationOverTheNaturals fe
 open import DecidableAndDetachable
+open import CanonicalMapNotation
 
 Lemma-3·1 : (q : ℕ∞ → ℕ∞ → 𝟚)
-          → decidable ((m : ℕ) → ¬ ((n : ℕ) → q (under m) (under n) ≡ ₁))
+          → decidable ((m : ℕ) → ¬ ((n : ℕ) → q (ι m) (ι n) ≡ ₁))
 Lemma-3·1 q = claim₄
  where
   A : ℕ∞ → 𝓤₀ ̇
-  A u = (n : ℕ) → q u (under n) ≡ ₁
+  A u = (n : ℕ) → q u (ι n) ≡ ₁
 
   claim₀ :  (u : ℕ∞) → decidable (A u)
   claim₀ u = Theorem-8·2 (q u)
 
   p : ℕ∞ → 𝟚
   p = pr₁ (indicator claim₀)
-  p-spec : (x : ℕ∞) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ (A x))
+
+  p-spec : (x : ℕ∞) → (p x ≡ ₀ → A x) × (p x ≡ ₁ → ¬ A x)
   p-spec = pr₂ (indicator claim₀)
 
-  claim₁ : decidable ((n : ℕ) → p (under n) ≡ ₁)
+  claim₁ : decidable ((n : ℕ) → p (ι n) ≡ ₁)
   claim₁ = Theorem-8·2 p
 
-  claim₂ : ((n : ℕ) → ¬ A (under n)) → (n : ℕ) → p (under n) ≡ ₁
-  claim₂ φ n = different-from-₀-equal-₁ (λ v → φ n (pr₁ (p-spec (under n)) v))
+  claim₂ : ((n : ℕ) → ¬ A (ι n)) → (n : ℕ) → p (ι n) ≡ ₁
+  claim₂ φ n = different-from-₀-equal-₁ (λ v → φ n (pr₁ (p-spec (ι n)) v))
 
-  claim₃ : decidable ((n : ℕ) → p (under n) ≡ ₁) → decidable ((n : ℕ) → ¬ (A (under n)))
-  claim₃ (inl f) = inl (λ n → pr₂ (p-spec (under n)) (f n))
+  claim₃ : decidable ((n : ℕ) → p (ι n) ≡ ₁) → decidable ((n : ℕ) → ¬ A (ι n))
+  claim₃ (inl f) = inl (λ n → pr₂ (p-spec (ι n)) (f n))
   claim₃ (inr u) = inr (contrapositive claim₂ u)
 
-  claim₄ : decidable ((n : ℕ) → ¬ (A (under n)))
+  claim₄ : decidable ((n : ℕ) → ¬ (A (ι n)))
   claim₄ = claim₃ claim₁
 
 \end{code}
 
 Omitting the inclusion function, or coercion,
 
-   under : ℕ → ℕ∞,
+   ι : ℕ → ℕ∞,
 
 a map f : ℕ∞ → ℕ is called continuous iff
 
@@ -85,7 +87,7 @@ and its negation to
 \begin{code}
 
 non-continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-non-continuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (under m) (under n)) ≡[ℕ] f ∞)
+non-continuous f = (m : ℕ) → ¬ ((n : ℕ) → f (max (ι m) (ι n)) ≡[ℕ] f ∞)
 
 Theorem-3·2 : (f : ℕ∞ → ℕ) → decidable (non-continuous f)
 Theorem-3·2 f = Lemma-3·1 ((λ x y → χ≡ (f (max x y)) (f ∞)))
@@ -107,6 +109,6 @@ For future use:
 \begin{code}
 
 continuous : (ℕ∞ → ℕ) → 𝓤₀ ̇
-continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (under m) (under n)) ≡ f ∞)
+continuous f = Σ m ꞉ ℕ , ((n : ℕ) → f (max (ι m) (ι n)) ≡ f ∞)
 
 \end{code}

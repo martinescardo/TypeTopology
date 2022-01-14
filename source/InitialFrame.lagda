@@ -77,10 +77,10 @@ open propositional-truncations-exist pt
   ⋁_ : Fam 𝓤 (Ω 𝓤) → Ω 𝓤
   ⋁ U = Ǝ i ∶ index U , ((U [ i ]) holds)
 
-  open Meets _⊑_
+  open Meets _⊑_ renaming (is-top to is-the-top)
 
-  top : is-top (⊤Ω {𝓤}) holds
-  top _ _ = *
+  top : is-the-top (⊤Ω {𝓤}) holds
+  top _ _ = ⋆
 
   meet : (Ɐ (P , Q) , (P ∧ Q) is-glb-of (P , Q)) holds
   meet (P , Q) = β , γ
@@ -100,27 +100,37 @@ open propositional-truncations-exist pt
     γ : (Ɐ (P , _) ∶ upper-bound U , (⋁ U) ⊑ P) holds
     γ ((A , A-prop) , q) r = ∥∥-rec A-prop (uncurry q) r
 
-  iss : is-set (Ω 𝓤)
-  iss = carrier-of-[ 𝟎F-poset ua ]-is-set
+  abstract
+   iss : is-set (Ω 𝓤)
+   iss = carrier-of-[ 𝟎F-poset ua ]-is-set
 
-  dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
-          (P ∧ (⋁ U) ≡[ iss ]≡  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
-  dist (P , U) = Ω-ext-from-univalence ua β γ
-   where
-    β : (P ∧ ⋁ U ⇒ (⋁⟨ i ⟩ (P ∧ U [ i ]))) holds
-    β (p , u) = ∥∥-rec (holds-is-prop (⋁⟨ i ⟩ (P ∧ U [ i ]))) α u
-     where
-      α : Σ i ꞉ index U , (U [ i ]) holds → (⋁⟨ i ⟩ P ∧ U [ i ]) holds
-      α (i , uᵢ) = ∣ i , p , uᵢ ∣
+   dist : (Ɐ(P , U) ∶ Ω 𝓤 × Fam 𝓤 (Ω 𝓤) ,
+           (P ∧ (⋁ U) ≡[ iss ]≡  ⋁⟨ i ⟩ P ∧ U [ i ])) holds
+   dist (P , U) = Ω-ext-from-univalence ua β γ
+    where
+     β : (P ∧ ⋁ U ⇒ (⋁⟨ i ⟩ (P ∧ U [ i ]))) holds
+     β (p , u) = ∥∥-rec (holds-is-prop (⋁⟨ i ⟩ (P ∧ U [ i ]))) α u
+      where
+       α : Σ i ꞉ index U , (U [ i ]) holds → (⋁⟨ i ⟩ P ∧ U [ i ]) holds
+       α (i , uᵢ) = ∣ i , p , uᵢ ∣
 
-    γ : ((⋁⟨ i ⟩ P ∧ U [ i ]) ⇒ P ∧ ⋁ U) holds
-    γ p = ∥∥-rec (holds-is-prop (P ∧ (⋁ U))) δ p
-     where
-      δ : Sigma (index (index U , (λ i → P ∧ U [ i ])))
-            (λ i → ((index U , (λ i₁ → P ∧ U [ i₁ ])) [ i ]) holds) →
-            (P ∧ (⋁ U)) holds
-      δ (i , q , uᵢ) = q , ∣ i , uᵢ ∣
+     γ : ((⋁⟨ i ⟩ P ∧ U [ i ]) ⇒ P ∧ ⋁ U) holds
+     γ p = ∥∥-rec (holds-is-prop (P ∧ (⋁ U))) δ p
+      where
+       δ : Sigma (index (index U , (λ i → P ∧ U [ i ])))
+             (λ i → ((index U , (λ i₁ → P ∧ U [ i₁ ])) [ i ]) holds) →
+             (P ∧ (⋁ U)) holds
+       δ (i , q , uᵢ) = q , ∣ i , uᵢ ∣
 
+\end{code}
+
+\begin{code}
+𝟎-of-IF-is-⊥ : {𝓦 : Universe} → (ua : is-univalent 𝓦) → 𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≡ ⊥Ω
+𝟎-of-IF-is-⊥ ua =
+ ≤-is-antisymmetric (poset-of (𝟎-𝔽𝕣𝕞 ua)) γ λ ()
+ where
+  γ : (𝟎[ 𝟎-𝔽𝕣𝕞 ua ] ≤[ poset-of (𝟎-𝔽𝕣𝕞 ua) ]  ⊥Ω) holds
+  γ x = ∥∥-rec 𝟘-is-prop (λ ()) x
 \end{code}
 
 \section{Proof of initiality}
@@ -144,7 +154,7 @@ f-respects-⊤ ua A = ≤-is-antisymmetric (poset-of A) α β
   α = 𝟏-is-top A (f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ])
 
   β : (𝟏[ A ] ≤A f ua A 𝟏[ 𝟎-𝔽𝕣𝕞 ua ]) holds
-  β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤Ω holds ⁆) *
+  β = ⋁[ A ]-upper (⁅ 𝟏[ A ] ∣ x ∶ ⊤Ω holds ⁆) ⋆
 
 \end{code}
 
@@ -211,7 +221,7 @@ f-respects-⋁ ua A U = β , γ
 main-lemma : {𝓦 : Universe} (ua : is-univalent 𝓦) (P : Ω 𝓦)
            → (P ⊑ (⋁[ 𝟎-𝔽𝕣𝕞 ua ] ⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆)) holds
 main-lemma ua P p =
- ⋁[ 𝟎-𝔽𝕣𝕞 ua ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆) p *
+ ⋁[ 𝟎-𝔽𝕣𝕞 ua ]-upper (⁅ 𝟏[ 𝟎-𝔽𝕣𝕞 ua ] ∣ x ∶ P holds ⁆) p ⋆
 
 \end{code}
 

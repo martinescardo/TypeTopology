@@ -8,6 +8,7 @@ Expanded on demand whenever a general equivalence is needed.
 
 open import SpartanMLTT
 open import Two-Properties
+open import Plus-Properties
 open import UF-Base
 open import UF-Equiv
 open import UF-FunExt
@@ -245,13 +246,13 @@ An application of Π-cong is the following:
    f (o , y) = y
 
    g : Y → 𝟙 × Y
-   g y = (* , y)
+   g y = (⋆ , y)
 
    η : ∀ x → f (g x) ≡ x
    η y = refl
 
    ε : ∀ z → g (f z) ≡ z
-   ε (o , y) = ap (_, y) (𝟙-is-prop * o)
+   ε (o , y) = ap (_, y) (𝟙-is-prop ⋆ o)
 
 ×-comm : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } → X × Y ≃ Y × X
 ×-comm {𝓤} {𝓥} {X} {Y} = qinveq f (g , ε , η)
@@ -318,7 +319,7 @@ An application of Π-cong is the following:
                          X       ■
 
 one-𝟙-only : (𝓤 𝓥 : Universe) → 𝟙 {𝓤} ≃ 𝟙 {𝓥}
-one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (unique-to-𝟙 , (λ {* → refl}))
+one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {⋆ → refl})) , (unique-to-𝟙 , (λ {⋆ → refl}))
 
 +assoc : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {Z : 𝓦 ̇ } → (X + Y) + Z ≃ X + (Y + Z)
 +assoc {𝓤} {𝓥} {𝓦} {X} {Y} {Z} = qinveq f (g , η , ε)
@@ -342,11 +343,6 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
    η (inl (inl x)) = refl
    η (inl (inr x)) = refl
    η (inr x)       = refl
-
-+functor : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
-         → (X → A) → (Y → B) → X + Y → A + B
-+functor f g (inl x) = inl (f x)
-+functor f g (inr y) = inr (g y)
 
 +cong : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : 𝓦 ̇ } {B : 𝓣 ̇ }
       → X ≃ A → Y ≃ B → X + Y ≃ A + B
@@ -381,7 +377,7 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
  where
    f : X × Y + X → X × (Y + 𝟙)
    f (inl (x , y)) = x , inl y
-   f (inr x)       = x , inr *
+   f (inr x)       = x , inr ⋆
 
    g : X × (Y + 𝟙) → X × Y + X
    g (x , inl y) = inl (x , y)
@@ -389,7 +385,7 @@ one-𝟙-only _ _ = unique-to-𝟙 , (unique-to-𝟙 , (λ {* → refl})) , (uni
 
    ε : (t : X × (Y + 𝟙)) → (f ∘ g) t ≡ t
    ε (x , inl y) = refl
-   ε (x , inr *) = refl
+   ε (x , inr ⋆) = refl
 
    η : (u : X × Y + X) → (g ∘ f) u ≡ u
    η (inl (x , y)) = refl
@@ -454,16 +450,16 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
 𝟘→ {𝓤} {𝓥} {𝓦} {X} fe = qinveq f (g , ε , η)
  where
   f : 𝟙 → 𝟘 → X
-  f * y = 𝟘-elim y
+  f ⋆ y = 𝟘-elim y
 
   g : (𝟘 → X) → 𝟙
-  g h = *
+  g h = ⋆
 
   η : (h : 𝟘 → X) → f (g h) ≡ h
   η h = dfunext fe (λ z → 𝟘-elim z)
 
   ε : (y : 𝟙) → g (f y) ≡ y
-  ε * = refl
+  ε ⋆ = refl
 
 𝟙→ : {X : 𝓤 ̇ }
    → funext 𝓥 𝓤
@@ -471,16 +467,16 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
 𝟙→ {𝓤} {𝓥} {X} fe = qinveq f (g , ε , η)
  where
   f : X → 𝟙 → X
-  f x * = x
+  f x ⋆ = x
 
   g : (𝟙 → X) → X
-  g h = h *
+  g h = h ⋆
 
   η : (h : 𝟙 → X) → f (g h) ≡ h
   η h = dfunext fe γ
    where
     γ : (t : 𝟙) → f (g h) t ≡ h t
-    γ * = refl
+    γ ⋆ = refl
 
   ε : (x : X) → g (f x) ≡ x
   ε x = refl
@@ -495,11 +491,11 @@ Ap+ {𝓤} {𝓥} {𝓦} {X} {Y} Z (f , (g , ε) , (h , η)) = f' , (g' , ε') ,
   g : (t : 𝟙) → X → 𝟙
   g t = unique-to-𝟙
 
-  ε : (α : X → 𝟙) → g * ≡ α
-  ε α = dfunext fe λ (x : X) → 𝟙-is-prop (g * x) (α x)
+  ε : (α : X → 𝟙) → g ⋆ ≡ α
+  ε α = dfunext fe λ (x : X) → 𝟙-is-prop (g ⋆ x) (α x)
 
-  η : (t : 𝟙) → * ≡ t
-  η = 𝟙-is-prop *
+  η : (t : 𝟙) → ⋆ ≡ t
+  η = 𝟙-is-prop ⋆
 
 
 Π×+ : {X : 𝓤 ̇ } {Y : 𝓥 ̇ } {A : X + Y → 𝓦 ̇ } → funext (𝓤 ⊔ 𝓥) 𝓦
@@ -772,16 +768,16 @@ singleton-≃-𝟙' = singleton-≃ 𝟙-is-singleton
       → propext 𝓤
       → is-prop P
       → (𝟙 ≡ P) ≃ P
-𝟙-≡-≃ P fe pe i = qinveq (λ q → Idtofun q *) (f , ε , η)
+𝟙-≡-≃ P fe pe i = qinveq (λ q → Idtofun q ⋆) (f , ε , η)
  where
   f : P → 𝟙 ≡ P
   f p = pe 𝟙-is-prop i (λ _ → p) unique-to-𝟙
 
-  η : (p : P) → Idtofun (f p) * ≡ p
-  η p = i (Idtofun (f p) *) p
+  η : (p : P) → Idtofun (f p) ⋆ ≡ p
+  η p = i (Idtofun (f p) ⋆) p
 
-  ε : (q : 𝟙 ≡ P) → f (Idtofun q *) ≡ q
-  ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q *)) q
+  ε : (q : 𝟙 ≡ P) → f (Idtofun q ⋆) ≡ q
+  ε q = identifications-of-props-are-props pe fe P i 𝟙 (f (Idtofun q ⋆)) q
 
 empty-≃-𝟘 : {X : 𝓤 ̇ } → (X → 𝟘 {𝓥}) → X ≃ 𝟘 {𝓦}
 empty-≃-𝟘 i = qinveq (𝟘-elim ∘ i) (𝟘-elim , (λ x → 𝟘-elim (i x)) , (λ x → 𝟘-elim x))
@@ -893,12 +889,12 @@ fiber-of-composite {𝓤} {𝓥} {𝓦} {X} {Y} {Z} f g z =
 
 fiber-of-unique-to-𝟙 : {𝓥 : Universe} {X : 𝓤 ̇ }
                      → (u : 𝟙) → fiber (unique-to-𝟙 {_} {𝓥} {X}) u ≃ X
-fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} * =
- (Σ x ꞉ X , unique-to-𝟙 x ≡ *) ≃⟨ Σ-cong ψ ⟩
+fiber-of-unique-to-𝟙 {𝓤} {𝓥} {X} ⋆ =
+ (Σ x ꞉ X , unique-to-𝟙 x ≡ ⋆) ≃⟨ Σ-cong ψ ⟩
  X × 𝟙{𝓥}                      ≃⟨ 𝟙-rneutral ⟩
  X                             ■
   where
-   ψ : (x : X) → (* ≡ *) ≃ 𝟙
+   ψ : (x : X) → (⋆ ≡ ⋆) ≃ 𝟙
    ψ x = singleton-≃-𝟙
          (pointed-props-are-singletons refl (props-are-sets 𝟙-is-prop))
 

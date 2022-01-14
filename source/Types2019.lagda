@@ -7,6 +7,12 @@ Types 2019 meeting
 
 (navigate to them by clicking at their names).
 
+A dependency graph is available at
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/Types2019-dependency-graph.pdf
+
+A dependency graph of the master file is available at
+https://www.cs.bham.ac.uk/~mhe/TypeTopology/OrdinalNotationInterpretation.pdf
+
 \begin{code}
 
 {-# OPTIONS --without-K --exact-split --safe #-}

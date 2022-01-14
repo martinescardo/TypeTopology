@@ -9,13 +9,13 @@ on:
 jobs:
   typecheck:
     runs-on: ubuntu-latest
-    name: Typecheck
+    name: Typechecking
     steps:
     - name: "Clone repository"
       uses: actions/checkout@v2
     - name: Run Agda
       id: typecheck
-      uses: ayberkt/agda-github-action@type-topology-fix
+      uses: ayberkt/agda-github-action@v2.1.1
       with:
         main-file: AllModulesIndex.lagda
         source-dir: source

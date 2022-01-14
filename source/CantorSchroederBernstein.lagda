@@ -1075,14 +1075,14 @@ ulemma {𝓤} fe pe {X} {Y} φ = em
   T : 𝓤 ⁺ ̇
   T = Σ P ꞉ 𝓤 ̇ , is-prop P × P
 
-  c : (t : T) → (𝟙 , 𝟙-is-prop , *) ≡ t
+  c : (t : T) → (𝟙 , 𝟙-is-prop , ⋆) ≡ t
   c = 𝟙-is-true-props-center fe pe
 
   f : T → X
   f (P , i , p) = ⌜ φ P i ⌝⁻¹ (inl p)
 
   x : X
-  x = f (𝟙 , 𝟙-is-prop , *)
+  x = f (𝟙 , 𝟙-is-prop , ⋆)
 
   ν : (P : 𝓤 ̇ ) (i : is-prop P) (y : Y) → ⌜ φ P i ⌝ x ≡ inr y → ¬ P
   ν P i y r p = γ

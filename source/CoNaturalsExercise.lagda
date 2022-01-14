@@ -31,39 +31,40 @@ open import Two-Properties
 open import CoNaturals fe
 open import GenericConvergentSequence
 open import Sequence fe
+open import CanonicalMapNotation
 
-incl-is-a-section : Σ retr ꞉ ((ℕ → 𝟚) → ℕ∞) , retr ∘ incl ≡ id
-incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
+ℕ∞-to-ℕ→𝟚-is-a-section : Σ ρ ꞉ ((ℕ → 𝟚) → ℕ∞) , ρ ∘ ι ≡ id
+ℕ∞-to-ℕ→𝟚-is-a-section  = ρ , dfunext (fe 𝓤₀ 𝓤₀) lemma
  where
-  f-retr : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
-  f-retr ₀ α = inl *
-  f-retr ₁ α = inr α
+  f-ρ : 𝟚 → (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
+  f-ρ ₀ α = inl ⋆
+  f-ρ ₁ α = inr α
 
-  p-retr : (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
-  p-retr α = f-retr (head α) (tail α)
+  p-ρ : (ℕ → 𝟚) → 𝟙 + (ℕ → 𝟚)
+  p-ρ α = f-ρ (head α) (tail α)
 
-  retr : (ℕ → 𝟚) → ℕ∞
-  retr = ℕ∞-corec p-retr
+  ρ : (ℕ → 𝟚) → ℕ∞
+  ρ = ℕ∞-corec p-ρ
 
-  retr-spec : PRED ∘ retr ≡ (𝟙+ retr) ∘ p-retr
-  retr-spec = ℕ∞-corec-homomorphism p-retr
+  ρ-spec : PRED ∘ ρ ≡ (𝟙+ ρ) ∘ p-ρ
+  ρ-spec = ℕ∞-corec-homomorphism p-ρ
 
-  retr-spec₀ : (α : ℕ → 𝟚) → head α ≡ ₀ → retr α ≡ Zero
-  retr-spec₀ α r = coalg-morphism-Zero p-retr retr retr-spec α * lemma
+  ρ-spec₀ : (α : ℕ → 𝟚) → head α ≡ ₀ → ρ α ≡ Zero
+  ρ-spec₀ α r = coalg-morphism-Zero p-ρ ρ ρ-spec α ⋆ lemma
    where
-    lemma : p-retr α ≡ inl *
-    lemma = ap (λ - → f-retr - (tail α)) r
+    lemma : p-ρ α ≡ inl ⋆
+    lemma = ap (λ - → f-ρ - (tail α)) r
 
-  retr-spec₁ : (α : ℕ → 𝟚) → head α ≡ ₁ → retr α ≡ Succ (retr (tail α))
-  retr-spec₁ α r = coalg-morphism-Succ p-retr retr retr-spec α (tail α) lemma
+  ρ-spec₁ : (α : ℕ → 𝟚) → head α ≡ ₁ → ρ α ≡ Succ (ρ (tail α))
+  ρ-spec₁ α r = coalg-morphism-Succ p-ρ ρ ρ-spec α (tail α) lemma
    where
-    lemma : p-retr α ≡ inr (tail α)
-    lemma = ap (λ - → f-retr - (tail α)) r
+    lemma : p-ρ α ≡ inr (tail α)
+    lemma = ap (λ - → f-ρ - (tail α)) r
 
   R : ℕ∞ → ℕ∞ → 𝓤₀ ̇
-  R u v = Σ w ꞉ ℕ∞ , (retr (incl w) ≡ u) × (w ≡ v)
+  R u v = Σ w ꞉ ℕ∞ , (ρ (ι w) ≡ u) × (w ≡ v)
 
-  r : (u : ℕ∞) → R (retr (incl u)) u
+  r : (u : ℕ∞) → R (ρ (ι u)) u
   r u = (u , refl , refl)
 
   R-positivity : (u v : ℕ∞) → R u v → positivity u ≡ positivity v
@@ -72,11 +73,11 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
     lemma₀ : positivity w ≡ ₀ → positivity u ≡ positivity v
     lemma₀ r = ap positivity claim₃
      where
-      claim₀ : retr (incl w) ≡ Zero
-      claim₀ = retr-spec₀ (incl w) r
+      claim₀ : ρ (ι w) ≡ Zero
+      claim₀ = ρ-spec₀ (ι w) r
       claim₁ : v ≡ Zero
       claim₁ = d ⁻¹ ∙ is-Zero-equal-Zero (fe 𝓤₀ 𝓤₀) r
-      claim₂ : retr (incl w) ≡ v
+      claim₂ : ρ (ι w) ≡ v
       claim₂ = claim₀ ∙ claim₁ ⁻¹
       claim₃ : u ≡ v
       claim₃ = c ⁻¹ ∙ claim₂
@@ -84,10 +85,10 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
     lemma₁ : positivity w ≡ ₁ → positivity u ≡ positivity v
     lemma₁ r = claim₂ ∙ claim₄ ⁻¹
      where
-      claim₀ : positivity (retr (incl w)) ≡ ₁
-      claim₀ = ap positivity (retr-spec₁ (incl w) r)
+      claim₀ : positivity (ρ (ι w)) ≡ ₁
+      claim₀ = ap positivity (ρ-spec₁ (ι w) r)
 
-      claim₁ : positivity (retr (incl w)) ≡ positivity u
+      claim₁ : positivity (ρ (ι w)) ≡ positivity u
       claim₁ = ap positivity c
 
       claim₂ : positivity u ≡ ₁
@@ -101,16 +102,16 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
   R-Pred : (u v : ℕ∞) → R u v → R (Pred u) (Pred v)
   R-Pred u v (w , c , d) = (Pred w , lemma₀ , lemma₁)
    where
-    lemma₀ : retr (incl (Pred w)) ≡ Pred u
+    lemma₀ : ρ (ι (Pred w)) ≡ Pred u
     lemma₀ = claim ∙ claim₀
      where
-     claim₀ : Pred (retr (incl w)) ≡ Pred u
+     claim₀ : Pred (ρ (ι w)) ≡ Pred u
      claim₀ = ap Pred c
 
-     claim :  retr (incl (Pred w)) ≡ Pred (retr (incl w))
+     claim :  ρ (ι (Pred w)) ≡ Pred (ρ (ι w))
      claim = 𝟚-equality-cases claim₁ claim₂
       where
-       claim₁ : is-Zero w → retr (incl (Pred w)) ≡ Pred (retr (incl w))
+       claim₁ : is-Zero w → ρ (ι (Pred w)) ≡ Pred (ρ (ι w))
        claim₁ r = c₃ ∙ c₅ ⁻¹
         where
          c₀ : w ≡ Zero
@@ -118,27 +119,27 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
          c₁ : Pred w ≡ Zero
          c₁ = ap Pred c₀
 
-         c₂ : incl (Pred w) 0 ≡ ₀
-         c₂ = ap (head ∘ incl) c₁
+         c₂ : ι (Pred w) 0 ≡ ₀
+         c₂ = ap (head ∘ ι) c₁
 
-         c₃ : retr (incl (Pred w)) ≡ Zero
-         c₃ = retr-spec₀ (incl (Pred w)) c₂
+         c₃ : ρ (ι (Pred w)) ≡ Zero
+         c₃ = ρ-spec₀ (ι (Pred w)) c₂
 
-         c₄ : retr (incl w) ≡ Zero
-         c₄ = retr-spec₀ (incl w) r
+         c₄ : ρ (ι w) ≡ Zero
+         c₄ = ρ-spec₀ (ι w) r
 
-         c₅ : Pred (retr (incl w)) ≡ Zero
+         c₅ : Pred (ρ (ι w)) ≡ Zero
          c₅ = ap Pred c₄
-       claim₂ : is-positive w → retr (incl (Pred w)) ≡ Pred (retr (incl w))
+       claim₂ : is-positive w → ρ (ι (Pred w)) ≡ Pred (ρ (ι w))
        claim₂ r = c₃ ∙ c₁ ⁻¹
         where
-         c₀ : retr (incl w) ≡ Succ (retr (tail (incl w)))
-         c₀ = retr-spec₁ (incl w) r
+         c₀ : ρ (ι w) ≡ Succ (ρ (tail (ι w)))
+         c₀ = ρ-spec₁ (ι w) r
 
-         c₁ : Pred (retr (incl w)) ≡ retr (tail (incl w))
+         c₁ : Pred (ρ (ι w)) ≡ ρ (tail (ι w))
          c₁ = ap Pred c₀ ∙ Pred-Succ
 
-         c₃ : retr (incl (Pred w)) ≡ retr (tail (incl w))
+         c₃ : ρ (ι (Pred w)) ≡ ρ (tail (ι w))
          c₃ = refl
 
     lemma₁ : Pred w ≡ Pred v
@@ -147,7 +148,7 @@ incl-is-a-section  = retr , dfunext (fe 𝓤₀ 𝓤₀) lemma
   R-bisimulation : ℕ∞-bisimulation R
   R-bisimulation u v r = (R-positivity u v r , R-Pred u v r)
 
-  lemma : (u : ℕ∞) → retr (incl u) ≡ u
-  lemma u = ℕ∞-coinduction R R-bisimulation (retr (incl u)) u (r u)
+  lemma : (u : ℕ∞) → ρ (ι u) ≡ u
+  lemma u = ℕ∞-coinduction R R-bisimulation (ρ (ι u)) u (r u)
 
 \end{code}

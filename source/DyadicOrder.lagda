@@ -80,16 +80,16 @@ right-monotone = id
 ≺-is-transitive middle (left y) (right z) = 𝟘-induction
 ≺-is-transitive middle (right y) middle _ = id
 ≺-is-transitive middle (right y) (left z) _ = id
-≺-is-transitive middle (right y) (right z) _ _ = *
-≺-is-transitive (left x) middle middle _ _ = *
+≺-is-transitive middle (right y) (right z) _ _ = ⋆
+≺-is-transitive (left x) middle middle _ _ = ⋆
 ≺-is-transitive (left x) middle (left z) _ = 𝟘-induction
 ≺-is-transitive (left x) middle (right z) _ = id
 ≺-is-transitive (left x) (left y) middle _ = id
 ≺-is-transitive (left x) (left y) (left z) = ≺-is-transitive x y z
 ≺-is-transitive (left x) (left y) (right z) _ = id
-≺-is-transitive (left x) (right y) middle _ _ = *
+≺-is-transitive (left x) (right y) middle _ _ = ⋆
 ≺-is-transitive (left x) (right y) (left z) _ = 𝟘-induction
-≺-is-transitive (left x) (right y) (right z) _ _ = *
+≺-is-transitive (left x) (right y) (right z) _ _ = ⋆
 ≺-is-transitive (right x) middle z = 𝟘-induction
 ≺-is-transitive (right x) (left y) z = 𝟘-induction
 ≺-is-transitive (right x) (right y) middle _ = id
@@ -98,16 +98,16 @@ right-monotone = id
 
 ≺-is-linear : (x y : 𝔻) → x ≢ y → x ≺ y + y ≺ x
 ≺-is-linear middle middle p = 𝟘-induction (p refl)
-≺-is-linear middle (left y) _ = inr *
-≺-is-linear middle (right y) _ = inl *
-≺-is-linear (left x) middle _ = inl *
+≺-is-linear middle (left y) _ = inr ⋆
+≺-is-linear middle (right y) _ = inl ⋆
+≺-is-linear (left x) middle _ = inl ⋆
 ≺-is-linear (left x) (left y) lx≢ly = ≺-is-linear x y x≢y
  where
   x≢y : x ≢ y
   x≢y = contrapositive (ap left) lx≢ly
-≺-is-linear (left x) (right y) _ = inl *
-≺-is-linear (right x) middle _ = inr *
-≺-is-linear (right x) (left y) _ = inr *
+≺-is-linear (left x) (right y) _ = inl ⋆
+≺-is-linear (right x) middle _ = inr ⋆
+≺-is-linear (right x) (left y) _ = inr ⋆
 ≺-is-linear (right x) (right y) rx≢ry = ≺-is-linear x y x≢y
  where
   x≢y : x ≢ y
@@ -191,13 +191,13 @@ as explained at the top of this file).
 \begin{code}
 
 left-≺ : (x : 𝔻) → left x ≺ x
-left-≺ middle    = *
+left-≺ middle    = ⋆
 left-≺ (left x)  = left-≺ x
-left-≺ (right x) = *
+left-≺ (right x) = ⋆
 
 ≺-right : (x : 𝔻) → x ≺ right x
-≺-right middle    = *
-≺-right (left x)  = *
+≺-right middle    = ⋆
+≺-right (left x)  = ⋆
 ≺-right (right x) = ≺-right x
 
 ≺-has-no-left-endpoint-Σ : (x : 𝔻) → Σ y ꞉ 𝔻 , y ≺ x
@@ -207,13 +207,13 @@ left-≺ (right x) = *
 ≺-has-no-right-endpoint-Σ x = right x , ≺-right x
 
 ≺-is-dense-Σ : (x y : 𝔻) → x ≺ y → Σ z ꞉ 𝔻 , x ≺ z × z ≺ y
-≺-is-dense-Σ middle (right y) _ = right (left y) , * , left-≺ y
-≺-is-dense-Σ (left x) middle _ = left (right x) , ≺-right x , *
+≺-is-dense-Σ middle (right y) _ = right (left y) , ⋆ , left-≺ y
+≺-is-dense-Σ (left x) middle _ = left (right x) , ≺-right x , ⋆
 ≺-is-dense-Σ (left x) (left y) x≺y = γ (≺-is-dense-Σ x y x≺y)
  where
   γ : (Σ z ꞉ 𝔻 , x ≺ z × z ≺ y) → Σ z ꞉ 𝔻 , left x ≺ z × z ≺ left y
   γ (z , x≺z , z≺y) = left z , x≺z , z≺y
-≺-is-dense-Σ (left x) (right y) _ = middle , * , *
+≺-is-dense-Σ (left x) (right y) _ = middle , ⋆ , ⋆
 ≺-is-dense-Σ (right x) middle = 𝟘-induction
 ≺-is-dense-Σ (right x) (left y) = 𝟘-induction
 ≺-is-dense-Σ (right x) (right y) l = γ (≺-is-dense-Σ x y l)

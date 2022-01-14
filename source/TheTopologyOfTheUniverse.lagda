@@ -124,6 +124,7 @@ open import SpartanMLTT
 open import UF-Equiv
 open import GenericConvergentSequence
 open import InjectiveTypes fe
+open import CanonicalMapNotation
 
 \end{code}
 
@@ -139,15 +140,17 @@ lemmas needed to establish that).
 
 Universe-Indiscreteness-Theorem : (X : ℕ → 𝓤 ̇ ) (X∞ : 𝓤 ̇ )
 
-  → Σ Y ꞉ (ℕ∞ → 𝓤 ̇ ), ((i : ℕ) → Y (under i) ≃ X i)  ×  (Y ∞ ≃ X∞)
+  → Σ Y ꞉ (ℕ∞ → 𝓤 ̇ ), ((i : ℕ) → Y (ι i) ≃ X i)  ×  (Y ∞ ≃ X∞)
 
-Universe-Indiscreteness-Theorem {𝓤} X X∞ = Y , (λ i → a (inl i)) , (a (inr *))
+Universe-Indiscreteness-Theorem {𝓤} X X∞ = Y , (λ i → a (inl i)) , (a (inr ⋆))
  where
   X' : ℕ + 𝟙 → 𝓤 ̇
   X' = cases X (λ _ → X∞)
+
   Y : ℕ∞ → 𝓤 ̇
-  Y = X' / under𝟙
-  a : (z : ℕ + 𝟙) → Y (under𝟙 z) ≃ X' z
-  a z = Π-extension-in-range X' under𝟙 (under𝟙-embedding (fe 𝓤₀ 𝓤₀)) z
+  Y = X' / ι𝟙
+
+  a : (z : ℕ + 𝟙) → Y (ι𝟙 z) ≃ X' z
+  a z = Π-extension-in-range X' ι𝟙 (ι𝟙-embedding (fe 𝓤₀ 𝓤₀)) z
 
 \end{code}

@@ -2,8 +2,8 @@
    Various new theorems in univalent mathematics written in Agda
    -------------------------------------------------------------
 
-   Martin Escardo
-   2010--2021--∞, continuously evolving.
+   Martin Escardo and collaborators
+   2010--2022--∞, continuously evolving.
    https://www.cs.bham.ac.uk/~mhe/
    https://github.com/martinescardo/TypeTopology
 
@@ -55,7 +55,7 @@
      compactness of the Cantor type using countable Tychonoff.
      (https://www.cs.bham.ac.uk/~mhe/TypeTopology/UnsafeModulesIndex.html)
 
-   * In our last count, this development has 74000 lines, including
+   * In our last count, this development has 85000 lines, including
      comments and blank lines.
 
    * A module dependency graph is available, updated manually from
@@ -66,7 +66,7 @@
      file, explaining part of what we do in this development. See
      instead the comments in the various modules.
 
-   * This has been tested with Agda 2.6.1 and 2.6.2.
+   * This has been tested with 2.6.2.
 
 Click at the imported module names to navigate to them:
 
@@ -93,9 +93,9 @@ import PartialElements
 import UF
 import Types2019
 import MGS           -- Modular version of https://github.com/martinescardo/HoTT-UF-Agda-Lecture-Notes
-import PCFModules    -- by Tom de Jong
-import Dyadics       -- by Tom de Jong
-import CircleModules -- by Tom de Jong
+import PCFModules    -- By Tom de Jong
+import Dyadics       -- By Tom de Jong
+import CircleModules -- By Tom de Jong
 
 \end{code}
 
@@ -114,10 +114,11 @@ import BanachFixedPointTheorem -- By Todd Waugh Ambridge
 import BasicDiscontinuityTaboo
 import BinaryNaturals
 import BuraliForti
+import CanonicalMapNotation
 import CantorSchroederBernstein
 import CantorSchroederBernstein-TheoryLabLunch
 import CantorSearch
-import Codistance              -- By Todd Waugh Ambridge and Martin Escardo
+import Closeness              -- By Todd Waugh Ambridge and Martin Escardo
 import Compactness
 import CompactTypes
 import CoNaturalsArithmetic
@@ -125,9 +126,11 @@ import CoNaturalsExercise
 import CoNaturals
 import ConvergentSequenceCompact
 import ConvergentSequenceInfCompact
--- import CubicalBinarySystem -- works with Agda 2.6.2 only. By Martin Escardo. and Alex Rice
+-- import CubicalBinarySystem -- works with Agda 2.6.2 only and need the Cubical Library. By Martin Escardo and Alex Rice
+import DcpoDinfinity                   -- By Tom de Jong
 import DecidabilityOfNonContinuity
 import DecidableAndDetachable
+import Dedekind
 import DisconnectedTypes
 import DiscreteAndSeparated
 import Dyadic
@@ -146,6 +149,7 @@ import FailureOfTotalSeparatedness
 import Frame-version1
 import Frame                           -- By Ayberk Tosun
 import InitialFrame                    -- By Ayberk Tosun
+import CompactRegular                  -- By Ayberk Tosun
 import FreeGroup                       -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeGroupOfLargeLocallySmallSet -- By Marc Bezem, Thierry Coquand, Dybjer, and Martin Escardo.
 import FreeJoinSemiLattice             -- By Tom de Jong
@@ -175,13 +179,14 @@ import List
 import LPO
 import Lumsdaine
 import MGS-TypeTopology-Interface
-import MoreTypes
 import NaturalNumbers
 import NaturalNumbers-Properties
 import NaturalsAddition
 import NaturalsOrder
 import Negation
 import NonCollapsibleFamily
+import NonSpartanMLTTTypes
+import SRTclosure
 import OrdinalArithmetic
 import OrdinalArithmetic-Properties
 import OrdinalCodes
@@ -219,7 +224,7 @@ import SpartanMLTT
 import SpartanMLTT-List
 import SquashedCantor
 import SquashedSum
-import SRTclosure
+import OrderNotation
 import Swap
 import sigma-sup-lattice
 import sigma-frame
@@ -286,233 +291,11 @@ import UF-Yoneda
 
 \end{code}
 
-Now really everything without additional information:
+Everything again to make sure we didn't forget anything above.
 
 \begin{code}
 
-import ADecidableQuantificationOverTheNaturals
-import AlternativePlus
-import ArithmeticViaEquivalence
-import BanachFixedPointTheorem
-import BasicDiscontinuityTaboo
-import BinaryNaturals
-import BuraliForti
-import CantorSchroederBernstein
-import CantorSchroederBernstein-TheoryLabLunch
-import CantorSearch
-import CircleConstruction
-import CircleInduction
-import CircleModules
-import Codistance
-import Compactness
-import CompactTypes
-import CoNaturalsArithmetic
-import CoNaturalsExercise
-import CoNaturals
-import ConvergentSequenceCompact
-import ConvergentSequenceInfCompact
-import DcpoConstructions
-import Dcpo
-import Dcpos
-import DecidabilityOfNonContinuity
-import DecidableAndDetachable
-import DisconnectedTypes
-import DiscreteAndSeparated
-import Dominance
-import DummettDisjunction
-import Dyadic
-import DyadicOrder
-import DyadicOrder-PropTrunc
-import Dyadics
-import Empty
-import Empty-Type
-import Escardo-Simpson-LICS2001
-import ExtendedSumCompact
-import FailureOfTotalSeparatedness
-import Fin
-import FiniteHistoryDependentGames
-import Finiteness-Universe-Invariance
-import Frame-version1
-import Frame
-import FreeGroup
-import FreeGroupOfLargeLocallySmallSet
-import FreeJoinSemiLattice
-import FreeSupLattice
-import GeneralNotation
-import GenericConvergentSequence
-import Groups
-import HiggsInvolutionTheorem
-import Identity-Type
-import Id
-import InfCompact
-import InitialBinarySystem2
-import InitialBinarySystem
-import InitialFrame
-import InjectiveTypes-article
-import InjectiveTypes
-import Integers
-import Integers-Properties
-import Integers-SymmetricInduction
-import LawvereFPT
-import LexicographicCompactness
-import LexicographicOrder
-import LiftingAlgebras
-import LiftingEmbeddingDirectly
-import LiftingEmbeddingViaSIP
-import LiftingIdentityViaSIP
-import Lifting
-import LiftingMiscelanea
-import LiftingMiscelanea-PropExt-FunExt
-import LiftingMonad
-import LiftingMonadVariation
-import LiftingSet
-import LiftingSize
-import LiftingUnivalentPrecategory
-import List
-import LPO
-import Lumsdaine
-import MGS-Basic-UF
-import MGS-Choice
-import MGS-Classifiers
-import MGS-Embeddings
-import MGS-Equivalence-Constructions
-import MGS-Equivalence-Induction
-import MGS-Equivalences
-import MGS-Function-Graphs
-import MGS-FunExt-from-Univalence
-import MGS-HAE
-import MGS-hlevels
-import MGS
-import MGS-Map-Classifiers
-import MGS-MLTT
-import MGS-More-Exercise-Solutions
-import MGS-More-FunExt-Consequences
-import MGS-Partial-Functions
-import MGS-Powerset
-import MGS-Quotient
-import MGS-Retracts
-import MGS-SIP
-import MGS-Size
-import MGS-Solved-Exercises
-import MGS-Subsingleton-Theorems
-import MGS-Subsingleton-Truncation
-import MGS-TypeTopology-Interface
-import MGS-Unique-Existence
-import MGS-Univalence
-import MGS-Universe-Lifting
-import MGS-Yoneda
-import NaturalNumbers
-import NaturalNumbers-Properties
-import Natural-Numbers-Type
-import NaturalNumbers-UniversalProperty
-import NaturalsAddition
-import NaturalsOrder
-import Negation
-import NonCollapsibleFamily
-import OrdinalArithmetic
-import OrdinalArithmetic-Properties
-import OrdinalCodes
-import OrdinalNotationInterpretation
-import OrdinalNotions
-import OrdinalOfOrdinals
-import OrdinalOfTruthValues
-import OrdinalsClosure
-import OrdinalsFreeGroup
-import Ordinals
-import OrdinalsShulmanTaboo
-import OrdinalsType
-import OrdinalsWellOrderArithmetic
-import OrdinalsWellOrderTransport
-import PartialElements
-import PCF
-import PCFModules
-import Pi
-import Plus
-import PlusOneLC
-import Plus-Properties
-import Plus-Type
-import PropInfTychonoff
-import PropTychonoff
-import QuasiDecidable
-import RicesTheoremForTheUniverse
-import RootsTruncation
-import ScottModelOfPCF
-import Sequence
-import sigma-frame
-import Sigma
-import sigma-sup-lattice
-import Sigma-Type
-import SimpleTypes
-import SliceAlgebras
-import SliceEmbedding
-import SliceIdentityViaSIP
-import Slice
-import SliceMonad
-import SpartanMLTT
-import SquashedCantor
-import SquashedSum
-import SRTclosure
-import Swap
-import TheTopologyOfTheUniverse
-import ToppedOrdinalArithmetic
-import ToppedOrdinalsType
-import TotallySeparated
-import TotalSeparatedness
-import Two
-import Two-Properties
-import Types2019
-import UF-Base
-import UF-Choice
-import UF-Classifiers
-import UF-Classifiers-Old
-import UF-Connected
-import UF-Embeddings
-import UF-EquivalenceExamples
-import UF-Equiv-FunExt
-import UF-Equiv
-import UF-ExcludedMiddle
-import UF-Factorial
-import UF-FunExt-from-Naive-FunExt
-import UF-FunExt
-import UF-FunExt-Properties
-import UF-hlevels
-import UF-IdEmbedding
-import UF-ImageAndSurjection
-import UF-Knapp-UA
-import UF-KrausLemma
-import UF
-import UF-LeftCancellable
-import UF-Lower-FunExt
-import UF-Miscelanea
-import UF-Powerset
-import UF-PropIndexedPiSigma
-import UF-PropTrunc
-import UF-Quotient
-import UF-Retracts-FunExt
-import UF-Retracts
-import UF-Section-Embedding
-import UF-SIP-Examples
-import UF-SIP-IntervalObject
-import UF-SIP
-import UF-Size
-import UF-StructureIdentityPrinciple
-import UF-Subsingleton-Combinators
-import UF-Subsingletons-FunExt
-import UF-Subsingletons
-import UF-UA-FunExt
-import UF-Univalence
-import UF-UniverseEmbedding
-import UF-Yoneda
-import Unit
-import Unit-Properties
-import Unit-Type
-import UnivalenceFromScratch
-import Universes
-import WeaklyCompactTypes
-import WellOrderingTaboo
-import W
-import WLPO
-import W-Properties
+import everything
 
 \end{code}
 

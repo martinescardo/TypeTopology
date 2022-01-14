@@ -291,15 +291,15 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
 \end{code}
 
  Perhaps the following reformulation is more appealing, where Agda
- infers that (X , _·_) and (Y , _⋆_) are ∞-Magmas from the *proof*
+ infers that (X , _·_) and (Y , _*_) are ∞-Magmas from the *proof*
  "fact" of "fact'":
 
 \begin{code}
 
- fact' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
-       → ((X , _·_) ≡ (Y , _⋆_))
-       ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
- fact' X Y _·_ _⋆_ = fact (X , _·_) (Y , _⋆_)
+ fact' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
+       → ((X , _·_) ≡ (Y , _*_))
+       ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')))
+ fact' X Y _·_ _*_ = fact (X , _·_) (Y , _*_)
 
 \end{code}
 
@@ -318,15 +318,15 @@ module ∞-magma (𝓤 : Universe) (ua : is-univalent 𝓤) where
  fe : funext 𝓤 𝓤
  fe = univalence-gives-funext ua
 
- fact'' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_⋆_ : Y → Y → Y)
-        → ((X , _·_) ≡ (Y , _⋆_))
-        ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x'))
- fact'' X Y _·_ _⋆_ =
-   ((X , _·_) ≡ (Y , _⋆_))
-       ≃⟨ fact' X Y _·_ _⋆_ ⟩
-   (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x')))
+ fact'' : (X Y : 𝓤 ̇ ) (_·_ : X → X → X) (_*_ : Y → Y → Y)
+        → ((X , _·_) ≡ (Y , _*_))
+        ≃ (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x * f x'))
+ fact'' X Y _·_ _*_ =
+   ((X , _·_) ≡ (Y , _*_))
+       ≃⟨ fact' X Y _·_ _*_ ⟩
+   (Σ f ꞉ (X → Y) , is-equiv f × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x')))
        ≃⟨ Σ-cong (λ f → ×-cong (≃-refl (is-equiv f)) (≃-funext₂ fe fe _ _)) ⟩
-   (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x ⋆ f x')) ■
+   (Σ f ꞉ (X → Y) , is-equiv f × ((x x' : X) → f (x · x') ≡ f x * f x')) ■
 
 \end{code}
 
@@ -654,13 +654,13 @@ And now we are ready to apply gsip-with-axioms to our situation:
  fact = ≡-is-≃ₛ
 
  fact' : (X : 𝓤 ̇ ) (_·_ : X → X → X) (d : X) (α : Axioms X (_·_ , d))
-         (Y : 𝓤 ̇ ) (_⋆_ : Y → Y → Y) (e : Y) (β : Axioms Y (_⋆_ , e))
-       → ((X , (_·_ , d) , α) ≡ (Y , (_⋆_ , e) , β))
+         (Y : 𝓤 ̇ ) (_*_ : Y → Y → Y) (e : Y) (β : Axioms Y (_*_ , e))
+       → ((X , (_·_ , d) , α) ≡ (Y , (_*_ , e) , β))
        ≃ (Σ f ꞉ (X → Y)
               , is-equiv f
-              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x ⋆ f x'))
+              × ((λ x x' → f (x · x')) ≡ (λ x x' → f x * f x'))
               × (f d ≡ e))
- fact' X _·_ d α Y _⋆_ e β = fact (X , ((_·_ , d) , α)) (Y , ((_⋆_ , e) , β))
+ fact' X _·_ d α Y _*_ e β = fact (X , ((_·_ , d) , α)) (Y , ((_*_ , e) , β))
 
 \end{code}
 

@@ -20,7 +20,7 @@ open import Sigma-Type renaming (_,_ to infixr 4 _,_) public
 open Σ public
 
 Sigma : {𝓤 𝓥 : Universe} (X : 𝓤 ̇ ) (Y : X → 𝓥 ̇ ) → 𝓤 ⊔ 𝓥 ̇
-Sigma X Y = Σ Y
+Sigma _ Y = Σ Y
 
 syntax Sigma A (λ x → b) = Σ x ꞉ A , b
 

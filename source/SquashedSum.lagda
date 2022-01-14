@@ -28,37 +28,38 @@ open import ConvergentSequenceCompact fe₀
 open import InjectiveTypes fe
 open import ExtendedSumCompact fe
 open import DiscreteAndSeparated
+open import CanonicalMapNotation
 open import UF-Miscelanea
 
 \end{code}
 
 Recall that the map
 
-  under : ℕ → ℕ∞
+  ι : ℕ → ℕ∞
 
 is the canonical embedding. Given a type family X : ℕ → 𝓤 ̇, we take its
 right Kan extension
 
-  X / under : ℕ∞ → 𝓤 ̇
+  X / ι : ℕ∞ → 𝓤 ̇
 
 and then its sum, which we call the squashed sum of X and write
 
   Σ¹ X.
 
-We have that (X / under) ∞ ≃ 𝟙. What is interesting is that if each
+We have that (X / ι) ∞ ≃ 𝟙. What is interesting is that if each
 X n is compact then so is its squashed sum Σ¹ X.
 
 \begin{code}
 
 Σ¹ :(ℕ → 𝓤 ̇ ) → 𝓤 ̇
-Σ¹ X = Σ (X / under)
+Σ¹ X = Σ (X / ι)
 
 Σ¹-compact∙ : (X : ℕ → 𝓤 ̇ )
             → ((n : ℕ) → compact∙(X n))
             → compact∙(Σ¹ X)
 Σ¹-compact∙ X ε = extended-sum-compact∙
-                     under
-                     (under-embedding fe₀)
+                     ι
+                     (ι-embedding fe₀)
                      ε
                      ℕ∞-compact∙
 
@@ -86,8 +87,8 @@ over-embedding = inl-is-embedding ℕ 𝟙
 Σ₁ :(ℕ → 𝓤 ̇ ) → 𝓤 ̇
 Σ₁ X = Σ (X / over)
 
-under𝟙-over : (n : ℕ) → under𝟙 (over n) ≡ under n
-under𝟙-over n = refl
+ι𝟙-over : (n : ℕ) → ι𝟙 (over n) ≡ ι n
+ι𝟙-over n = refl
 
 over-is-discrete : (X : ℕ → 𝓤 ̇ )
                  → ((n : ℕ) → is-discrete (X n))
@@ -113,48 +114,48 @@ over-is-discrete X d (inr *) = retract-is-discrete {𝓤₀}
 \end{code}
 
 The type (X / over) z is densely embedded into the type
-(X / under) (under𝟙 z):
+(X / ι) (ι𝟙 z):
 
 \begin{code}
 
-over-under : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-           → (X / over) z ↪ᵈ (X / under) (under𝟙 z)
-over-under X (inl n) = equiv-dense-embedding (
+over-ι : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+           → (X / over) z ↪ᵈ (X / ι) (ι𝟙 z)
+over-ι X (inl n) = equiv-dense-embedding (
  (X / over) (over n)   ≃⟨ Π-extension-in-range X over over-embedding n ⟩
- X n                   ≃⟨ ≃-sym (Π-extension-in-range X under (under-embedding fe₀) n) ⟩
- (X / under) (under n) ■)
-over-under X (inr *) = equiv-dense-embedding (
+ X n                   ≃⟨ ≃-sym (Π-extension-in-range X ι (ι-embedding fe₀) n) ⟩
+ (X / ι) (ι n) ■)
+over-ι X (inr *) = equiv-dense-embedding (
  (X / over) (inr *) ≃⟨ Π-extension-out-of-range X over (inr *) (λ x → +disjoint ) ⟩
- 𝟙 {𝓤₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X under ∞ (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
- (X / under) ∞      ■ )
+ 𝟙 {𝓤₀}             ≃⟨ ≃-sym (Π-extension-out-of-range X ι ∞ (λ n p → ∞-is-not-finite n (p ⁻¹))) ⟩
+ (X / ι) ∞      ■ )
 
-over-under-map : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-               → (X / over) z → (X / under) (under𝟙 z)
-over-under-map X z = detofun (over-under X z)
+over-ι-map : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+               → (X / over) z → (X / ι) (ι𝟙 z)
+over-ι-map X z = detofun (over-ι X z)
 
-over-under-map-dense : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
-                     → is-dense (over-under-map X z)
-over-under-map-dense X z = is-dense-detofun (over-under X z)
+over-ι-map-dense : (X : ℕ → 𝓤 ̇ ) (z : ℕ + 𝟙)
+                     → is-dense (over-ι-map X z)
+over-ι-map-dense X z = is-dense-detofun (over-ι X z)
 
-over-under-map-left : (X : ℕ → 𝓤 ̇ ) (n : ℕ)
+over-ι-map-left : (X : ℕ → 𝓤 ̇ ) (n : ℕ)
                       (φ : (w : fiber over (inl n)) → X (pr₁ w))
-                    → over-under-map X (inl n) φ (n , refl)
+                    → over-ι-map X (inl n) φ (n , refl)
                     ≡ φ (n , refl)
-over-under-map-left X n φ =
+over-ι-map-left X n φ =
  transport
-  (λ - → over-under-map X (inl n) φ (n , refl)
+  (λ - → over-ι-map X (inl n) φ (n , refl)
        ≡ transport (λ - → X (pr₁ -)) - (φ (n , refl)))
   (props-are-sets
-    (under-embedding fe₀ (under n))
-    (under-embedding fe₀ (under n) (n , refl) (n , refl))
+    (ι-embedding fe₀ (ι n))
+    (ι-embedding fe₀ (ι n) (n , refl) (n , refl))
     refl)
   (f (n , refl))
  where
   -- We define this for the sake of clarity only:
-  f : (t : fiber under (under n))
-    → over-under-map X (inl n) φ t
+  f : (t : fiber ι (ι n))
+    → over-ι-map X (inl n) φ t
     ≡ transport (λ - → X (pr₁ -))
-                 (under-embedding fe₀ (under n) (n , refl) t)
+                 (ι-embedding fe₀ (ι n) (n , refl) t)
                  (φ (n , refl))
   f t = refl
 
@@ -166,20 +167,20 @@ the compact type Σ¹ X:
 \begin{code}
 
 Σ-up : (X : ℕ → 𝓤 ̇ ) → Σ₁ X → Σ¹ X
-Σ-up X = pair-fun under𝟙 (over-under-map X)
+Σ-up X = pair-fun ι𝟙 (over-ι-map X)
 
 Σ-up-embedding : (X : ℕ → 𝓤 ̇ ) → is-embedding (Σ-up X)
 Σ-up-embedding X = pair-fun-is-embedding
-                    under𝟙
-                    (over-under-map X)
-                    (under𝟙-embedding fe₀)
-                    (λ z → is-embedding-detofun (over-under X z))
+                    ι𝟙
+                    (over-ι-map X)
+                    (ι𝟙-embedding fe₀)
+                    (λ z → is-embedding-detofun (over-ι X z))
 
 Σ-up-dense : (X : ℕ → 𝓤 ̇ ) → is-dense (Σ-up X)
-Σ-up-dense X = pair-fun-dense under𝟙
-                (over-under-map X)
-                (under𝟙-dense fe₀)
-                (λ z → is-dense-detofun (over-under X z))
+Σ-up-dense X = pair-fun-dense ι𝟙
+                (over-ι-map X)
+                (ι𝟙-dense fe₀)
+                (λ z → is-dense-detofun (over-ι X z))
 
 \end{code}
 
@@ -216,7 +217,7 @@ Over-inl : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n 
 Over-inl X Y f n = refl
 
 Over-inr : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
-         → Over X Y f (inr *) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
+         → Over X Y f (inr ⋆) ≡ λ φ w → 𝟘-elim (+disjoint (pr₂ w))
 Over-inr X Y f = refl
 
 \end{code}
@@ -241,14 +242,14 @@ Over-dense X Y f d (inl n) =
   (is-equiv-is-dense
     ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹
     (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
-Over-dense X Y f d (inr *) =
+Over-dense X Y f d (inr ⋆) =
  comp-dense {_} {𝓤₀}
   (is-equiv-is-dense
-    ⌜ Π-extension-out-of-range X over (inr *) (λ x → +disjoint) ⌝
-    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
+    ⌜ Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint) ⌝
+    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint))))
   (is-equiv-is-dense
-    ⌜ Π-extension-out-of-range Y over (inr *) (λ x → +disjoint) ⌝⁻¹
-   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+    ⌜ Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint) ⌝⁻¹
+   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint)))))
 
 Over-embedding : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ )
                  (f : (n : ℕ) → X n → Y n)
@@ -264,14 +265,14 @@ Over-embedding {𝓤} X Y f d (inl n) =
   (equivs-are-embeddings
     ⌜ Π-extension-in-range Y over over-embedding n ⌝⁻¹
    (⌜⌝-is-equiv (≃-sym (Π-extension-in-range Y over over-embedding n))))
-Over-embedding {𝓤} X Y f d (inr *) =
+Over-embedding {𝓤} X Y f d (inr ⋆) =
  ∘-is-embedding {𝓤} {𝓤₀}
   (equivs-are-embeddings
-    ⌜ Π-extension-out-of-range X over (inr *) (λ x → +disjoint) ⌝
-    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr *) (λ x → +disjoint))))
+    ⌜ Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint) ⌝
+    (⌜⌝-is-equiv (Π-extension-out-of-range X over (inr ⋆) (λ x → +disjoint))))
   (equivs-are-embeddings
-    ⌜ Π-extension-out-of-range Y over (inr *) (λ x → +disjoint) ⌝⁻¹
-   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr *) (λ x → +disjoint)))))
+    ⌜ Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint) ⌝⁻¹
+   (⌜⌝-is-equiv (≃-sym (Π-extension-out-of-range Y over (inr ⋆) (λ x → +disjoint)))))
 
 Σ₁-functor : (X : ℕ → 𝓤 ̇ ) (Y : ℕ → 𝓤 ̇ ) (f : (n : ℕ) → X n → Y n)
            → Σ₁ X → Σ₁ Y
@@ -320,9 +321,9 @@ We don't need this for the moment:
 
 \begin{code}
 
-under𝟙-over-extension : {X : ℕ → 𝓤 ̇ } (u : ℕ∞)
-                      → ((X / over) / under𝟙) u ≃ (X / under) u
-under𝟙-over-extension = iterated-extension over under𝟙
+ι𝟙-over-extension : {X : ℕ → 𝓤 ̇ } (u : ℕ∞)
+                      → ((X / over) / ι𝟙) u ≃ (X / ι) u
+ι𝟙-over-extension = iterated-extension over ι𝟙
 
 \end{code}
 
@@ -351,7 +352,7 @@ Given a countable family of sets.
 extend it to a ℕ∞-indexed family of sets as follows
 
   _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇ )
-  X [ u ] = (k : ℕ) → under k ≡ u → X k
+  X [ u ] = (k : ℕ) → ι k ≡ u → X k
 
 where u ranges over ℕ∞, the one-point compactification of the natural
 numbers ℕ, defined in the module GenericConvergentSequence.
@@ -378,7 +379,7 @@ within intensional MLTT with function extensionality as a postulate
 module original-version-and-equivalence-with-new-version where
 
  _[_] : (ℕ → 𝓤₀ ̇ ) → (ℕ∞ → 𝓤₀ ̇ )
- X [ u ] = (k : ℕ) → under k ≡ u → X k
+ X [ u ] = (k : ℕ) → ι k ≡ u → X k
 
  Σᴵ : (ℕ → 𝓤₀ ̇ ) → 𝓤₀ ̇
  Σᴵ X = Σ u ꞉ ℕ∞ , X [ u ]
@@ -395,60 +396,60 @@ module original-version-and-equivalence-with-new-version where
  H : {X : ℕ → 𝓤₀ ̇ } → (u : ℕ∞) → u ≡ ∞ → (y y' : X [ u ]) → y ≡ y'
  H {X} u r y y' = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
-   lemma : (k : ℕ) (s : under k ≡ u) → y k s ≡ y' k s
+   lemma : (k : ℕ) (s : ι k ≡ u) → y k s ≡ y' k s
    lemma k s = 𝟘-elim(∞-is-not-finite k (r ⁻¹ ∙ s ⁻¹))
 
 \end{code}
 
- Next we have an isomorphism X [ u ] ≅ X n if under n ≡ u:
+ Next we have an isomorphism X [ u ] ≅ X n if ι n ≡ u:
 
 \begin{code}
 
- F : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → under n ≡ u → X n → X [ u ]
- F {X} n u r x k s = transport X (under-lc (r ∙ s ⁻¹)) x
+ F : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → ι n ≡ u → X n → X [ u ]
+ F {X} n u r x k s = transport X (ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)) x
 
- G : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → under n ≡ u → X [ u ] → X n
+ G : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) → ι n ≡ u → X [ u ] → X n
  G n u r y = y n r
 
- FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (y : (k : ℕ)
-   → under k ≡ u → X k) → F n u r (G n u r y) ≡ y
+ FG : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : ι n ≡ u) (y : (k : ℕ)
+   → ι k ≡ u → X k) → F n u r (G n u r y) ≡ y
  FG {X} n u r y = dfunext fe₀ (λ k → dfunext fe₀ (λ s → lemma k s))
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
    f = transport X
 
-   t : (k : ℕ) → under k ≡ u → n ≡ k
-   t k s = under-lc (r ∙ s ⁻¹)
+   t : (k : ℕ) → ι k ≡ u → n ≡ k
+   t k s = ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)
 
    A :  (n k : ℕ) → n ≡ k → 𝓤₀ ̇
-   A n k t = (u : ℕ∞) (r : under n ≡ u) (s : under k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
+   A n k t = (u : ℕ∞) (r : ι n ≡ u) (s : ι k ≡ u) (y : X [ u ]) → f t (y n r) ≡ y k s
 
    φ : (n : ℕ) → A n n refl
    φ n = λ u r s y → ap (y n) (ℕ∞-is-set fe₀ r s)
 
-   lemma : (k : ℕ) (s : under k ≡ u) → f (under-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
+   lemma : (k : ℕ) (s : ι k ≡ u) → f (ℕ-to-ℕ∞-lc (r ∙ s ⁻¹)) (y n r) ≡ y k s
    lemma k s = J A φ {n} {k} (t k s) u r s y
 
- GF : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : under n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
+ GF : {X : ℕ → 𝓤₀ ̇ } (n : ℕ) (u : ℕ∞) (r : ι n ≡ u) (x : X n) → G {X} n u r (F n u r x) ≡ x
  GF {X} n u r x = s
   where
    f : {m n : ℕ} → m ≡ n → X m → X n
    f = transport X
 
-   claim₀ : f (under-lc (r ∙ r ⁻¹)) x ≡ f (under-lc refl) x
-   claim₀ = ap (λ - → f (under-lc -) x) (trans-sym' r)
+   claim₀ : f (ℕ-to-ℕ∞-lc (r ∙ r ⁻¹)) x ≡ f (ℕ-to-ℕ∞-lc refl) x
+   claim₀ = ap (λ - → f (ℕ-to-ℕ∞-lc -) x) (trans-sym' r)
 
-   claim₁ : f (under-lc refl) x ≡ x
-   claim₁ = ap (λ - → f - x) (under-lc-refl n)
+   claim₁ : f (ℕ-to-ℕ∞-lc refl) x ≡ x
+   claim₁ = ap (λ - → f - x) (ℕ-to-ℕ∞-lc-refl n)
 
-   s : f (under-lc (r ∙ r ⁻¹)) x ≡ x
+   s : f (ℕ-to-ℕ∞-lc (r ∙ r ⁻¹)) x ≡ x
    s = claim₀ ∙ claim₁
 
 \end{code}
 
  We now can show that the type X [ u ] is compact for every u : ℕ∞
  provided the type X n is compact for every n : ℕ. This is tricky,
- because a priory it is not enough to consider the cases under n ≡ u and u ≡ ∞.
+ because a priory it is not enough to consider the cases ι n ≡ u and u ≡ ∞.
 
  The above isomorphism is used to prove the correctness of the witness
  y₀ below, which is easily defined (using one direction of the
@@ -468,7 +469,7 @@ module original-version-and-equivalence-with-new-version where
    y₀ : Y
    y₀ n r = pr₁(ε n (p ∘ (F n u r)))
 
-   lemma₁ : (n : ℕ) → under n ≡ u → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
+   lemma₁ : (n : ℕ) → ι n ≡ u → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
    lemma₁ n r e = claim₃
     where
      claim₀ : (y : Y) → p (F n u r (G n u r y)) ≡ p y
@@ -486,7 +487,7 @@ module original-version-and-equivalence-with-new-version where
    lemma₂ : u ≡ ∞ → p y₀ ≡ ₁ → (y : Y) → p y ≡ ₁
    lemma₂ r e y = ap p (H u r y y₀) ∙ e
 
-   lemma₁' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → (n : ℕ) → under n ≢ u
+   lemma₁' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → (n : ℕ) → ι n ≢ u
    lemma₁' e y s n r = zero-is-not-one (s ⁻¹ ∙ lemma₁ n r e y)
 
    lemma₂' : p y₀ ≡ ₁ → (y : Y) → p y ≡ ₀ → u ≢ ∞
@@ -519,8 +520,8 @@ module original-version-and-equivalence-with-new-version where
  open import UF-EquivalenceExamples
 
  agreement-lemma : (X : ℕ → 𝓤₀ ̇ ) (u : ℕ∞)
-                 → (X / under) u ≃ Π (λ x → under x ≡ u → X x)
- agreement-lemma X = 2nd-Π-extension-formula X under
+                 → (X / ι) u ≃ Π (λ x → ι x ≡ u → X x)
+ agreement-lemma X = 2nd-Π-extension-formula X ι
 
  agreement : (X : ℕ → 𝓤₀ ̇ ) → Σ¹ X ≃ Σᴵ X
  agreement X = Σ-cong (agreement-lemma X)

@@ -24,14 +24,15 @@ open import GenericConvergentSequence
 open import ConvergentSequenceCompact fe
 open import DecidableAndDetachable
 open import DiscreteAndSeparated
+open import CanonicalMapNotation
 open import UF-PropTrunc
 
 Lemma-8·1 : (p : ℕ∞ → 𝟚) → (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀))
-                         + ((n : ℕ) → p (under n) ≡ ₁)
+                         + ((n : ℕ) → p (ι n) ≡ ₁)
 Lemma-8·1 p = cases claim₀ claim₁ claim₂
  where
   claim₀ : (Σ y ꞉ ℕ∞ , p y ≢ p (Succ y))
-         → (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (under n) ≡ ₁)
+         → (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (ι n) ≡ ₁)
   claim₀ e = inl (𝟚-equality-cases case₀ case₁)
    where
     x : ℕ∞
@@ -56,23 +57,23 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
       s' = different-from-₁-equal-₀ (λ t → ne (r ∙ t ⁻¹))
 
   claim₁ : ((y : ℕ∞) → p y ≡ p (Succ y)) →
-            (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (under n) ≡ ₁)
+            (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (ι n) ≡ ₁)
   claim₁ f = 𝟚-equality-cases case₀ case₁
    where
     case₀ : p Zero ≡ ₀ →
-            (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (under n) ≡ ₁)
+            (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (ι n) ≡ ₁)
     case₀ r = inl (Zero , (s , r))
      where
       s : Zero ≢ ∞
       s t = ∞-is-not-finite 0 (t ⁻¹)
 
     case₁ : p Zero ≡ ₁ →
-            (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (under n) ≡ ₁)
+            (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) + ((n : ℕ) → p (ι n) ≡ ₁)
     case₁ r = inr by-induction
      where
-      by-induction : (n : ℕ) → p (under n) ≡ ₁
+      by-induction : (n : ℕ) → p (ι n) ≡ ₁
       by-induction 0 = r
-      by-induction (succ n) = (f (under n))⁻¹ ∙ by-induction n
+      by-induction (succ n) = (f (ι n))⁻¹ ∙ by-induction n
 
   claim₂ : (Σ y ꞉ ℕ∞ , p y ≢ p (Succ y)) + ((y : ℕ∞) → p y ≡ p (Succ y))
   claim₂ = g (ℕ∞-compact q)
@@ -91,32 +92,32 @@ Lemma-8·1 p = cases claim₀ claim₁ claim₂
      → (Σ y ꞉ ℕ∞ , p y ≢ p (Succ y)) + ((y : ℕ∞) → p y ≡ p (Succ y))
     g (inl (y , r)) = inl (y , (pr₁ (pr₂ f y) r))
     g (inr h ) = inr (λ y → discrete-is-¬¬-separated
-                           𝟚-is-discrete
-                           (p y) (p (Succ y))
-                           (pr₂ (pr₂ f y) (h y)))
+                             𝟚-is-discrete
+                             (p y) (p (Succ y))
+                             (pr₂ (pr₂ f y) (h y)))
 
+abstract
+ Theorem-8·2 : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (ι n) ≡ ₁)
+ Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
+  where
+   claim₀ : (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) →
+             decidable ((n : ℕ) → p (ι n) ≡ ₁)
+   claim₀ e = inr c₁
+    where
+     x : ℕ∞
+     x = pr₁ e
 
-Theorem-8·2 : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (under n) ≡ ₁)
-Theorem-8·2 p = cases claim₀ claim₁ (Lemma-8·1 p)
- where
-  claim₀ : (Σ x ꞉ ℕ∞ , (x ≢ ∞) × (p x ≡ ₀)) →
-            decidable ((n : ℕ) → p (under n) ≡ ₁)
-  claim₀ e = inr c₁
-   where
-    x : ℕ∞
-    x = pr₁ e
+     c₀ : ¬ ((n : ℕ) → x ≢ ι n)
+     c₀ = λ g → pr₁ (pr₂ e) (not-finite-is-∞ fe g)
 
-    c₀ : ¬ ((n : ℕ) → x ≢ under n)
-    c₀ = λ g → pr₁ (pr₂ e) (not-finite-is-∞ fe g)
+     c₁ : ¬ ((n : ℕ) → p (ι n) ≡ ₁)
+     c₁ g = c₀ d
+      where
+       d : (n : ℕ) → x ≢ ι n
+       d n r = equal-₀-different-from-₁ (pr₂ (pr₂ e)) (ap p r ∙ g n)
 
-    c₁ : ¬ ((n : ℕ) → p (under n) ≡ ₁)
-    c₁ g = c₀ d
-     where
-      d : (n : ℕ) → x ≢ under n
-      d n r = equal-₀-different-from-₁ (pr₂ (pr₂ e)) (ap p r ∙ g n)
-
-  claim₁ : ((n : ℕ) → p (under n) ≡ ₁) → decidable ((n : ℕ) → p (under n) ≡ ₁)
-  claim₁ f = inl f
+   claim₁ : ((n : ℕ) → p (ι n) ≡ ₁) → decidable ((n : ℕ) → p (ι n) ≡ ₁)
+   claim₁ f = inl f
 
 \end{code}
 
@@ -132,8 +133,8 @@ module examples where
 
 \end{code}
 
-    0 means that (n : ℕ) → p (under n) ≡ ₁
-    1 means that ¬ ((n : ℕ) → p (under n) ≡ ₁)
+    0 means that (n : ℕ) → p (ι n) ≡ ₁
+    1 means that ¬ ((n : ℕ) → p (ι n) ≡ ₁)
 
 \begin{code}
 
@@ -180,11 +181,11 @@ module examples where
     p₄ : ℕ∞ → 𝟚
     p₄ (α , _) = α 5 == α 100
 
-    to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (under n) ≡ ₁) → (p (under 17) ≡ ₁) + ℕ
+    to-something : (p : ℕ∞ → 𝟚) → decidable ((n : ℕ) → p (ι n) ≡ ₁) → (p (ι 17) ≡ ₁) + ℕ
     to-something p (inl f) = inl (f 17)
     to-something p (inr _) = inr 1070
 
-    eval1 : (p : ℕ∞ → 𝟚) → (p (under 17) ≡ ₁) + ℕ
+    eval1 : (p : ℕ∞ → 𝟚) → (p (ι 17) ≡ ₁) + ℕ
     eval1 p = to-something p (Theorem-8·2 p)
 
 \end{code}

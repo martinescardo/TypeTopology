@@ -142,11 +142,11 @@ open import Plus-Properties
   δ = (α  +ₒ β) ↓ inr b
 
   f : ⟨ γ ⟩ → ⟨ δ ⟩
-  f (inl a)       = inl a , *
+  f (inl a)       = inl a , ⋆
   f (inr (y , l)) = inr y , l
 
   g :  ⟨ δ ⟩ → ⟨ γ ⟩
-  g (inl a , *) = inl a
+  g (inl a , ⋆) = inl a
   g (inr y , l) = inr (y , l)
 
   η : g ∘ f ∼ id
@@ -154,7 +154,7 @@ open import Plus-Properties
   η (inr (y , l)) = refl
 
   ε : f ∘ g ∼ id
-  ε (inl a , *) = refl
+  ε (inl a , ⋆) = refl
   ε (inr y , l) = refl
 
   f-is-equiv : is-equiv f
@@ -465,7 +465,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
  where
   α = prop-ordinal P P-is-prop
   β = prop-ordinal 𝟙 𝟙-is-prop
-  σ = ϕ α β (fact₁-converse {𝓤} P 𝟙 P-is-prop 𝟙-is-prop (λ _ → *))
+  σ = ϕ α β (fact₁-converse {𝓤} P 𝟙 P-is-prop 𝟙-is-prop (λ _ → ⋆))
   γ : Ordinal 𝓤
   γ = pr₁ σ
 
@@ -476,7 +476,7 @@ ordinal-subtraction-gives-excluded-middle {𝓤} ϕ P P-is-prop = g
   s = ap ⟨_⟩ r
 
   t : P + ⟨ γ ⟩
-  t = idtofun 𝟙 (P + ⟨ γ ⟩) (s ⁻¹) *
+  t = idtofun 𝟙 (P + ⟨ γ ⟩) (s ⁻¹) ⋆
 
   f : ⟨ γ ⟩ → ¬ P
   f c p = z

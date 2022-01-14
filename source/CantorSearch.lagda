@@ -14,6 +14,8 @@ open import SpartanMLTT
 open import Two-Properties
 open import DiscreteAndSeparated
 open import NaturalsOrder
+open import OrderNotation
+
 open import UF-FunExt
 open import UF-Base
 
@@ -156,8 +158,8 @@ agreement← : (α β : Cantor)
              (n : ℕ)
            → ((k : ℕ) → k < n → α k ≡ β k)
            → (α ≡⟦ n ⟧ β)
-agreement← α β 0        ϕ = *
-agreement← α β (succ n) ϕ = ϕ 0 * , agreement← (tail α) (tail β) n (λ k → ϕ (succ k))
+agreement← α β 0        ϕ = ⋆
+agreement← α β (succ n) ϕ = ϕ 0 ⋆ , agreement← (tail α) (tail β) n (λ k → ϕ (succ k))
 
 \end{code}
 
@@ -191,10 +193,10 @@ modulus-zero-iff-constant  : (p : Cantor → 𝟚)
 modulus-zero-iff-constant p = I , II
  where
   I :  0 is-a-modulus-of-uniform-continuity-of p → ((α β : Cantor) → p α ≡ p β)
-  I u α β = u α β *
+  I u α β = u α β ⋆
 
   II :  ((α β : Cantor) → p α ≡ p β) → 0 is-a-modulus-of-uniform-continuity-of p
-  II κ α β * = κ α β
+  II κ α β ⋆ = κ α β
 
 \end{code}
 
@@ -241,7 +243,7 @@ A n p = p (ε n p)
 
 ε 0 p        = c₀
 ε (succ n) p = case ε𝟚 (λ b → A n (p ∘ cons b)) of
-                λ b₀ → cons b₀ (ε n (p ∘ cons b₀))
+                (λ (b₀ : 𝟚) → cons b₀ (ε n (p ∘ cons b₀)))
 \end{code}
 
 The function A is designed to satisfy the specification
@@ -275,7 +277,7 @@ A-property→ : (p : Cantor → 𝟚)
             → n is-a-modulus-of-uniform-continuity-of p
             → A n p ≡ ₁
             → (α : Cantor) → p α ≡ ₁
-A-property→ p 0        u r α = p α  ≡⟨ u α c₀ * ⟩
+A-property→ p 0        u r α = p α  ≡⟨ u α c₀ ⋆ ⟩
                                p c₀ ≡⟨ r ⟩
                                ₁    ∎
 A-property→ p (succ n) u r α = IV
@@ -372,7 +374,7 @@ In the worst case, however, A n p runs in time 2ⁿ.
  xor (succ n) α = head α ⊕ xor n (tail α)
 
  xor-uc : (n : ℕ) → n is-a-modulus-of-uniform-continuity-of (xor n)
- xor-uc 0        α β *       = refl
+ xor-uc 0        α β ⋆       = refl
  xor-uc (succ n) α β (p , q) = γ
   where
    IH : xor n (tail α) ≡ xor n (tail β)

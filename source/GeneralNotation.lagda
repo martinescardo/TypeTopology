@@ -89,6 +89,9 @@ This is used for efficiency as a substitute for lazy "let" (or "where"):
 case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → ((a : A) → B a) → B a
 case x of f = f x
 
+Case_of_ : {A : 𝓤 ̇ } {B : A → 𝓥 ̇ } → (a : A) → (f : (x : A) → x ≡ a → B a) → B a
+Case x of f = f x refl
+
 {-# NOINLINE case_of_ #-}
 
 \end{code}

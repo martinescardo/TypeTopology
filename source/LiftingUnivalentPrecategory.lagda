@@ -150,14 +150,14 @@ open import LiftingEmbeddingDirectly 𝓣
 η-fiber-same-as-is-defined pe fe fe' fe'' l = qinveq (f l) (g l , gf , fg)
  where
   f : (l : 𝓛 X) → fiber η l → is-defined l
-  f (.𝟙 , .(λ _ → x) , .𝟙-is-prop) (x , refl) = *
+  f (.𝟙 , .(λ _ → x) , .𝟙-is-prop) (x , refl) = ⋆
   g : (l : 𝓛 X) → is-defined l → fiber η l
   g (P , φ , i) p = φ p , ⊑-anti pe fe fe' (a , b)
    where
     a : η (φ p) ⊑ (P , φ , i)
     a = (λ _ → p) , (λ _ → refl)
     b : (P , φ , i) ⊑ η (φ p)
-    b = (λ _ → *) , (λ q → ap φ (i q p))
+    b = (λ _ → ⋆) , (λ q → ap φ (i q p))
   fg : (d : is-defined l) → f l (g l d) ≡ d
   fg d = being-defined-is-prop l (f l (g l d)) d
   gf : (z : fiber η l) → g l (f l z) ≡ z
@@ -573,7 +573,7 @@ We have yet another equivalence, using the above techniques:
 \begin{code}
 
 η-maximal : (x : X) (l : 𝓛 X) → η x ⊑ l → l ⊑ η x
-η-maximal x (P , ψ , i) (f , δ) = (λ p → *) , (λ p → ap ψ (i p (f *)) ∙ (δ *)⁻¹)
+η-maximal x (P , ψ , i) (f , δ) = (λ p → ⋆) , (λ p → ap ψ (i p (f ⋆)) ∙ (δ ⋆)⁻¹)
 
 ⊥-least : (l : 𝓛 X) → ⊥ ⊑ l
 ⊥-least l = unique-from-𝟘 , λ z → unique-from-𝟘 z
@@ -589,7 +589,7 @@ We have yet another equivalence, using the above techniques:
 η-≡-gives-⊑ {x} {y} p = id , (λ d → p)
 
 η-⊑-gives-≡ : {x y : X} → η x ⊑ η y → x ≡ y
-η-⊑-gives-≡ (f , δ) = δ *
+η-⊑-gives-≡ (f , δ) = δ ⋆
 
 η-≡-gives-⊑-is-equiv : funext 𝓣 𝓣
                      → funext 𝓣 𝓤
@@ -602,7 +602,7 @@ We have yet another equivalence, using the above techniques:
 
   β : {x y : X} (q : η x ⊑ η y) → η-≡-gives-⊑ (η-⊑-gives-≡ q) ≡ q
   β (f , δ) = to-×-≡ (dfunext fe (λ x → 𝟙-is-prop x (f x)))
-                     (dfunext fe' (λ x → ap δ (𝟙-is-prop * x)))
+                     (dfunext fe' (λ x → ap δ (𝟙-is-prop ⋆ x)))
 
 Id-via-lifting : funext 𝓣 𝓣
                → funext 𝓣 𝓤

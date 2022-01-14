@@ -88,9 +88,6 @@ _ ≃⟨ d ⟩ e = d ● e
 _■ : (X : 𝓤 ̇ ) → X ≃ X
 _■ = ≃-refl
 
-Eq : 𝓤 ̇ → 𝓥 ̇ → 𝓤 ⊔ 𝓥 ̇
-Eq = _≃_
-
 Eqtofun : (X : 𝓤 ̇ ) (Y : 𝓥 ̇ ) → X ≃ Y → X → Y
 Eqtofun X Y (f , _) = f
 
@@ -107,7 +104,7 @@ back-eqtofun e = pr₁ (pr₁ (pr₂ e))
 ⌜_⌝⁻¹          = back-eqtofun
 
 idtoeq : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
-idtoeq X Y p = transport (Eq X) p (≃-refl X)
+idtoeq X Y p = transport (X ≃_) p (≃-refl X)
 
 idtoeq-traditional : (X Y : 𝓤 ̇ ) → X ≡ Y → X ≃ Y
 idtoeq-traditional X _ refl = ≃-refl X
@@ -476,7 +473,7 @@ singletons-are-equiv-to-𝟙 : {X : 𝓤 ̇ } → is-singleton X ⇔ X ≃ 𝟙 
 singletons-are-equiv-to-𝟙 {𝓤} {𝓥} {X} = forth , back
  where
   forth : is-singleton X → X ≃ 𝟙
-  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-* x)⁻¹)) , ((λ _ → x₀) , φ))
+  forth (x₀ , φ) = unique-to-𝟙 , (((λ _ → x₀) , (λ x → (𝟙-all-⋆ x)⁻¹)) , ((λ _ → x₀) , φ))
   back : X ≃ 𝟙 → is-singleton X
   back (f , (s , fs) , (r , rf)) = retract-of-singleton (r , f , rf) 𝟙-is-singleton
 

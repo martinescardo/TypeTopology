@@ -693,7 +693,7 @@ We now show that ℕ + ℕ ≃ ℕ (July 2018).
   f (inr *) = 0
 
   g : ℕ → ℕ ∔ 𝟙
-  g 0        = inr *
+  g 0        = inr ⋆
   g (succ n) = inl n
 
   η : (n : ℕ) → f (g n) ≡ n
@@ -702,7 +702,7 @@ We now show that ℕ + ℕ ≃ ℕ (July 2018).
 
   ε : (z : ℕ ∔ 𝟙) → g (f z) ≡ z
   ε (inl n) = refl
-  ε (inr *) = refl
+  ε (inr ⋆) = refl
 
 two-𝔹-plus-𝟙 : 𝔹 ∔ 𝔹 ∔ 𝟙 ≃ 𝔹
 two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
@@ -710,10 +710,10 @@ two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
   f : 𝔹 ∔ 𝔹 ∔ 𝟙 {𝓤₀} → 𝔹
   f (inl b)       = L b
   f (inr (inl b)) = R b
-  f (inr (inr *)) = Z
+  f (inr (inr ⋆)) = Z
 
   g : 𝔹 → 𝔹 ∔ 𝔹 ∔ 𝟙
-  g Z = inr (inr *)
+  g Z = inr (inr ⋆)
   g (L b) = inl b
   g (R b) = inr (inl b)
 
@@ -725,7 +725,7 @@ two-𝔹-plus-𝟙 = qinveq f (g , ε , η)
   ε : (z : 𝔹 ∔ 𝔹 ∔ 𝟙) → g (f z) ≡ z
   ε (inl b)       = refl
   ε (inr (inl b)) = refl
-  ε (inr (inr *)) = refl
+  ε (inr (inr ⋆)) = refl
 
 two-ℕ-plus-𝟙 : ℕ ∔ ℕ ∔ 𝟙 ≃ ℕ
 two-ℕ-plus-𝟙 =
@@ -914,23 +914,23 @@ Now multiplication.
 
 \begin{code}
 
-_⋆_ : ℕ → ℕ → ℕ
-m ⋆ 0 = 0
-m ⋆ succ n = m ⋆ n + m -- m (n+1) = mn + m
+_*_ : ℕ → ℕ → ℕ
+m * 0 = 0
+m * succ n = m * n + m -- m (n+1) = mn + m
 
-_⋆♭_ : 𝔹 → 𝔹 → 𝔹
-m ⋆♭ Z = Z
-m ⋆♭ L n = Double (m ⋆♭ n) +♭ m
-m ⋆♭ R n = Double (m ⋆♭ n +♭ m)
+_*♭_ : 𝔹 → 𝔹 → 𝔹
+m *♭ Z = Z
+m *♭ L n = Double (m *♭ n) +♭ m
+m *♭ R n = Double (m *♭ n +♭ m)
 
-_⋆₁_ : 𝔹 → 𝔹 → 𝔹
-m    ⋆₁ Z = Z
-Z    ⋆₁ L n  = Z
-L m  ⋆₁ L n  = L (Double (m ⋆₁ n) +₀ m +₀ n) -- (2m+1) (2n+1) = 4mn + 2m + 2n + 1 = 2 (2mn+m+n)+1
-R m  ⋆₁ L n  = R (Double (m ⋆₁ n +₀ n) +₀ m) -- (2m+2) (2n+1) = 4mn + 2m + 4n + 2 = 2 (2 (mn+n)+m)+2
-Z    ⋆₁ R n  = Z
-L m  ⋆₁ R n  = R (Double (m ⋆₁ n +₀ m) +₀ n)
-R m  ⋆₁ R n  = Double (Double (m ⋆₁ n +₀ (m +₁ n))) -- (2m+2)(2n+2) = 4mn + 4m + 4n + 4 = 4(mn + m + n + 1)
+_*₁_ : 𝔹 → 𝔹 → 𝔹
+m    *₁ Z = Z
+Z    *₁ L n  = Z
+L m  *₁ L n  = L (Double (m *₁ n) +₀ m +₀ n) -- (2m+1) (2n+1) = 4mn + 2m + 2n + 1 = 2 (2mn+m+n)+1
+R m  *₁ L n  = R (Double (m *₁ n +₀ n) +₀ m) -- (2m+2) (2n+1) = 4mn + 2m + 4n + 2 = 2 (2 (mn+n)+m)+2
+Z    *₁ R n  = Z
+L m  *₁ R n  = R (Double (m *₁ n +₀ m) +₀ n)
+R m  *₁ R n  = Double (Double (m *₁ n +₀ (m +₁ n))) -- (2m+2)(2n+2) = 4mn + 4m + 4n + 4 = 4(mn + m + n + 1)
 
 \end{code}
 
@@ -940,7 +940,7 @@ Here is feeble evidence for the moment, in the form of an experiment:
 
 \begin{code}
 
-test : unary (binary 172 ⋆₁ binary 133) ≡ 172 ⋆ 133
+test : unary (binary 172 *₁ binary 133) ≡ 172 * 133
 test = refl
 
 \end{code}
@@ -991,11 +991,11 @@ And finally the fixities assumed above:
 \begin{code}
 
 infixl 6 _+_
-infixl 7 _⋆_
+infixl 7 _*_
 infixl 6 _+♭_
-infixl 7 _⋆♭_
+infixl 7 _*♭_
 infixl 6 _+₁_
 infixl 6 _+₀_
-infixl 7 _⋆₁_
+infixl 7 _*₁_
 
 \end{code}

@@ -494,7 +494,7 @@ univalence-via-singletons→ ua X = representable-singleton (X , (idtoeq X , ua 
 univalence-via-singletons← : ((X : 𝓤 ̇ ) → ∃! Y ꞉ 𝓤 ̇  , X ≃ Y) → is-univalent 𝓤
 univalence-via-singletons← φ X = universality-equiv X (≃-refl X)
                                   (central-point-is-universal
-                                     (Eq X)
+                                     (X ≃_)
                                      (X , ≃-refl X)
                                      (singletons-are-props (φ X) (X , ≃-refl X)))
 
@@ -545,8 +545,8 @@ Id-charac : FunExt
           → {X : 𝓤 ̇ } (x {y} : X) → (x ≡ y) ≃ Nat (Id y) (Id x)
 Id-charac fe {X} x {y} = yoneda-equivalence fe y (Id x)
 
-yoneda-nat-Eq : (X {Y} : 𝓤 ̇ ) → Eq X Y → Nat (Id Y) (Eq X)
-yoneda-nat-Eq X {Y} = yoneda-nat Y (Eq X)
+yoneda-nat-Eq : (X {Y} : 𝓤 ̇ ) → X ≃ Y → Nat (Y ≡_) (X ≃_)
+yoneda-nat-Eq X {Y} = yoneda-nat Y (X ≃_)
 
 yoneda-elem-Id : {X : 𝓤 ̇ } (x {y} : X) → Nat (Id y) (Id x) → Id x y
 yoneda-elem-Id x {y} = yoneda-elem y (Id x)
@@ -733,8 +733,8 @@ We need this elsewhere:
 
 \begin{code}
 
-idtoeq-bis : (X : 𝓤 ̇ ) → Nat (Id X) (Eq X)
-idtoeq-bis X = yoneda-nat X (Eq X) (≃-refl X)
+idtoeq-bis : (X : 𝓤 ̇ ) → Nat (X ≡_) (X ≃_)
+idtoeq-bis X = yoneda-nat X (X ≃_) (≃-refl X)
 
 Idtofun' : (X : 𝓤 ̇ ) → Nat (Id X) (λ Y → X → Y)
 Idtofun' X = yoneda-nat X (λ Y → X → Y) id
