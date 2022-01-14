@@ -317,7 +317,7 @@ instance
                             Ωᵈᵉᶜ-to-Ωˢᵈ-left-cancellable
                             Ωˢᵈ-is-set
 
-TODO: Use the above + 𝟚 ≃ Ωᵈᵉᶜ 𝓤 or don't use at all maybe?
+-- TODO: Use the above + 𝟚 ≃ Ωᵈᵉᶜ 𝓤 instead of the below, or don't use at all maybe?
 {-
 𝟚-to-Ωˢᵈ : 𝟚 → Ωˢᵈ 𝓤
 𝟚-to-Ωˢᵈ ₀ = 𝟘 , 𝟘-is-semidecidable
